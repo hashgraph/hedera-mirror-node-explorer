@@ -1,0 +1,74 @@
+<!--
+  -
+  - Hedera Mirror Node Explorer
+  -
+  - Copyright (C) 2021 - 2022 Hedera Hashgraph, LLC
+  -
+  - Licensed under the Apache License, Version 2.0 (the "License");
+  - you may not use this file except in compliance with the License.
+  - You may obtain a copy of the License at
+  -
+  -      http://www.apache.org/licenses/LICENSE-2.0
+  -
+  - Unless required by applicable law or agreed to in writing, software
+  - distributed under the License is distributed on an "AS IS" BASIS,
+  - WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+  - See the License for the specific language governing permissions and
+  - limitations under the License.
+  -
+  -->
+
+<!-- --------------------------------------------------------------------------------------------------------------- -->
+<!--                                                     TEMPLATE                                                    -->
+<!-- --------------------------------------------------------------------------------------------------------------- -->
+
+<template>
+
+  <hr class="h-top-banner" style="margin: 0; height: 4px"/>
+
+  <section class="section has-text-centered" style="height: calc(100vh - 300px)">
+
+    <p class="h-is-secondary-text" style="font-weight: 300">
+      No result
+    </p>
+    <br/>
+
+    <div class="block">
+      <p class="h-is-tertiary-text" style="font-weight: 300">
+        <span >No account, transaction, contract, token or topic matches "</span>
+        <span style="font-weight: 400">{{ this.searchedId }}</span>
+        <span >".</span>
+        <br/>
+        Make sure you enter either an entity ID (0.0.x) or a transaction ID (0.0.x@seconds.nanoseconds).
+      </p>
+    </div>
+
+  </section>
+</template>
+
+<!-- --------------------------------------------------------------------------------------------------------------- -->
+<!--                                                      SCRIPT                                                     -->
+<!-- --------------------------------------------------------------------------------------------------------------- -->
+
+<script lang="ts">
+
+import {defineComponent} from 'vue';
+
+export default defineComponent({
+  name: 'SearchResult',
+  props: {
+    "searchedId": String,
+    "network": String
+  }
+})
+
+</script>
+
+
+<!-- --------------------------------------------------------------------------------------------------------------- -->
+<!--                                                       STYLE                                                     -->
+<!-- --------------------------------------------------------------------------------------------------------------- -->
+
+<style scoped>
+
+</style>

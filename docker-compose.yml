@@ -1,0 +1,8 @@
+version: "3.7"
+services:
+  explorer:
+    container_name:  hedera-explorer
+    image: "hedera-explorer:latest"
+    restart: "unless-stopped"
+    ports:
+      - 9090:80

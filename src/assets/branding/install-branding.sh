@@ -1,0 +1,21 @@
+#!/usr/bin/env bash
+
+# Install default logos and theme
+cp ./src/assets/brand*.png ./src/assets/branding/
+cp ./src/assets/styles/brand-theme.scss ./src/assets/branding/
+
+# Install possible assets customization
+if [[ -z "${BRANDING_LOCATION}" ]]; then
+  BRANDING_DIR="./branding"
+else
+  BRANDING_DIR="${BRANDING_LOCATION}"
+fi
+
+cp ${BRANDING_DIR}/assets/* ./src/assets/branding/ 2>/dev/null | :
+cp ${BRANDING_DIR}/public/* ./public 2>/dev/null | :
+
+# When custom theme provided: pre-process SASS/SCSS files based on it
+npx sass ./src/assets/branding/brand-theme.scss ./src/assets/branding/brand-theme.css
+npx sass ./src/assets/styles/explorer.scss ./src/assets/styles/explorer.css
+npx sass ./src/assets/styles/explorer-bulma.sass ./src/assets/styles/explorer-bulma.css
+npx sass ./src/assets/styles/explorer-oruga.scss ./src/assets/styles/explorer-oruga.css

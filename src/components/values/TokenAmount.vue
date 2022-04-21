@@ -1,0 +1,112 @@
+<!--
+  -
+  - Hedera Mirror Node Explorer
+  -
+  - Copyright (C) 2021 - 2022 Hedera Hashgraph, LLC
+  -
+  - Licensed under the Apache License, Version 2.0 (the "License");
+  - you may not use this file except in compliance with the License.
+  - You may obtain a copy of the License at
+  -
+  -      http://www.apache.org/licenses/LICENSE-2.0
+  -
+  - Unless required by applicable law or agreed to in writing, software
+  - distributed under the License is distributed on an "AS IS" BASIS,
+  - WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+  - See the License for the specific language governing permissions and
+  - limitations under the License.
+  -
+  -->
+
+<!-- --------------------------------------------------------------------------------------------------------------- -->
+<!--                                                     TEMPLATE                                                    -->
+<!-- --------------------------------------------------------------------------------------------------------------- -->
+
+<template>
+  <span class="is-numeric">{{ amount }}</span>
+  <template v-if="tokenId != null">
+    <router-link :to="{name: 'TokenDetails', params: {tokenId: tokenId}}">
+      <span class="ml-2 h-is-smaller h-is-extra-text should-wrap">{{ extra }}</span>
+      <span v-if="errorFlag" class="icon h-is-smaller"><i class="fas fa-exclamation-triangle"/></span>
+    </router-link>
+  </template>
+</template>
+
+<!-- --------------------------------------------------------------------------------------------------------------- -->
+<!--                                                      SCRIPT                                                     -->
+<!-- --------------------------------------------------------------------------------------------------------------- -->
+
+<script lang="ts">
+
+import {computed, defineComponent, ref} from "vue";
+import {AxiosResponse} from "axios";
+import {TokenInfo} from "@/schemas/HederaSchemas";
+import {TokenInfoCollector} from "@/utils/TokenInfoCollector";
+
+export default defineComponent({
+  name: "TokenAmount",
+
+  props: {
+    amount: {
+      type: Number,
+      default: 0
+    },
+    tokenId: String,
+  },
+
+  setup(props) {
+    const response = ref<AxiosResponse<TokenInfo>|null>(null)
+
+    const extra = computed(() => {
+      let result: string
+      if (response.value !== null && response.value.status == 200) {
+        result = makeExtra(response.value as AxiosResponse<TokenInfo>)
+      } else {
+        result = ""
+      }
+      return result
+    })
+    const errorFlag = computed(() => {
+      return response.value !== null && response.value.status != 200
+    })
+
+    if (props.tokenId) {
+      TokenInfoCollector.instance.fetch(props.tokenId).then((r: AxiosResponse<TokenInfo>) => {
+        response.value = r
+      }, (reason: unknown) => {
+        console.warn("TokenInfoCollector did fail to fetch " + props.tokenId + " with reason: " + reason)
+        response.value = null
+      })
+    }
+
+    return { extra, errorFlag }
+  }
+});
+
+
+function makeExtra(response: AxiosResponse<TokenInfo>): string {
+  const name = response.data?.name
+  const symbol = response.data?.symbol
+  const maxLength = 40
+
+  let candidate1: string | null
+  if (symbol) {
+    const usable = symbol.search("://") == -1 && symbol.length < maxLength
+    candidate1 = usable ? symbol : null
+  } else {
+    candidate1 = null;
+  }
+
+  const candidate2 = name && name.length < maxLength ? name : null
+
+  return candidate1 ?? candidate2 ?? response.data.token_id ?? "?"
+}
+
+</script>
+
+<!-- --------------------------------------------------------------------------------------------------------------- -->
+<!--                                                       STYLE                                                     -->
+<!-- --------------------------------------------------------------------------------------------------------------- -->
+
+<style/>
+

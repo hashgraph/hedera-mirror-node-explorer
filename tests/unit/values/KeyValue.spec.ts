@@ -1,0 +1,74 @@
+/*-
+ *
+ * Hedera Mirror Node Explorer
+ *
+ * Copyright (C) 2021 - 2022 Hedera Hashgraph, LLC
+ *
+ * Licensed under the Apache License, Version 2.0 (the "License");
+ * you may not use this file except in compliance with the License.
+ * You may obtain a copy of the License at
+ *
+ *      http://www.apache.org/licenses/LICENSE-2.0
+ *
+ * Unless required by applicable law or agreed to in writing, software
+ * distributed under the License is distributed on an "AS IS" BASIS,
+ * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+ * See the License for the specific language governing permissions and
+ * limitations under the License.
+ *
+ */
+
+import {mount} from "@vue/test-utils"
+import router from "@/router";
+import KeyValue from "@/components/values/KeyValue.vue";
+
+describe("KeyValue.vue", () => {
+
+    it("props.keyBytes set", async () => {
+
+        await router.push("/") // To avoid "missing required param 'network'" error
+
+        const testBytes = "000102030405060708090A0B0C0D0E0F"
+        const wrapper = mount(KeyValue, {
+            global: {
+                plugins: [router]
+            },
+            props: {
+                keyBytes: testBytes
+            },
+        });
+
+        expect(wrapper.text()).toBe("0001 0203 0405 0607 0809 0A0B0C0D 0E0FCopy to Clipboard")
+    });
+
+    it("props.keyBytes unset, showNone=false", async () => {
+
+        await router.push("/") // To avoid "missing required param 'network'" error
+
+        const wrapper = mount(KeyValue, {
+            global: {
+                plugins: [router]
+            },
+            props: {
+            },
+        });
+
+        expect(wrapper.text()).toBe("")
+    });
+
+    it("props.keyBytes unset, showNone=true", async () => {
+
+        await router.push("/") // To avoid "missing required param 'network'" error
+
+        const wrapper = mount(KeyValue, {
+            global: {
+                plugins: [router]
+            },
+            props: {
+                showNone: true
+            },
+        });
+
+        expect(wrapper.text()).toBe("None")
+    });
+});

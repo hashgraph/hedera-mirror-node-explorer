@@ -1,0 +1,293 @@
+/*-
+ *
+ * Hedera Mirror Node Explorer
+ *
+ * Copyright (C) 2021 - 2022 Hedera Hashgraph, LLC
+ *
+ * Licensed under the Apache License, Version 2.0 (the "License");
+ * you may not use this file except in compliance with the License.
+ * You may obtain a copy of the License at
+ *
+ *      http://www.apache.org/licenses/LICENSE-2.0
+ *
+ * Unless required by applicable law or agreed to in writing, software
+ * distributed under the License is distributed on an "AS IS" BASIS,
+ * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+ * See the License for the specific language governing permissions and
+ * limitations under the License.
+ *
+ */
+
+// Import brand variables
+@import '../branding/brand-theme';
+
+//
+// TEXT
+//
+
+body {
+    font-feature-settings: "liga", "kern";
+}
+.h-is-primary-title {
+    font-style: normal;
+    font-weight: 900;
+    font-size: 30px;
+    line-height: 36px;
+}
+.h-is-primary-subtitle {
+    font-style: normal;
+    font-weight: 900;
+    font-size: 16px;
+    line-height: 19px;
+}
+.h-is-secondary-text {
+    font-style: normal;
+    font-weight: normal;
+    font-size: 34px;
+    line-height: 41px;
+    letter-spacing: -0.05em;
+}
+.h-is-tertiary-text {
+    font-style: normal;
+    font-weight: normal;
+    font-size: 18px;
+    line-height: 22px;
+}
+.h-is-table-heading {
+    font-style: normal;
+    font-weight: bold;
+    font-size: 11px;
+    line-height: 13px;
+}
+.h-is-text-size-1 {
+    font-style: normal;
+    font-weight: normal;
+    font-size: 9px;
+    line-height: 11px;
+}
+.h-is-text-size-2 {
+    font-style: normal;
+    font-weight: normal;
+    font-size: 10px;
+    line-height: 12px;
+}
+.h-is-text-size-3 {
+    font-style: normal;
+    font-weight: normal;
+    font-size: 11px;
+    line-height: 13px;
+}
+.h-is-property-text {
+    font-style: normal;
+    font-weight: normal;
+    font-size: 14px;
+    line-height: 17px;
+}
+.h-is-navbar-item {
+    font-style: normal;
+    font-weight: 300;
+    font-size: 14px;
+    line-height: 17px;
+}
+.h-is-dense {
+    letter-spacing: -0.05em;
+}
+.h-is-smaller {
+    font-size: 0.7em;
+}
+.h-is-extra-text {
+    color: $h-extra-text-color;
+}
+.h-has-pill {
+    color: black;
+    background: $h-pill-background;
+    border-radius: 15px;
+    padding: 3px 8px 3px;
+}
+.h-has-low-contrast {
+    opacity: 0.4
+}
+.is-numeric {
+    font-variant-numeric: tabular-nums;
+}
+.has-hbar:after {
+    content: "\210F";
+    font-weight: lighter;
+}
+.w200 {
+    max-width: 200px;
+    overflow: hidden;
+    white-space: nowrap;
+    text-overflow: ellipsis;
+}
+.w250 {
+    max-width: 250px;
+    overflow: hidden;
+    white-space: nowrap;
+    text-overflow: ellipsis;
+}
+.w300 {
+    max-width: 300px;
+    overflow: hidden;
+    white-space: nowrap;
+    text-overflow: ellipsis;
+}
+.w400 {
+    max-width: 400px;
+    overflow: hidden;
+    white-space: nowrap;
+    text-overflow: ellipsis;
+}
+.w600 {
+    max-width: 600px;
+    overflow: hidden;
+    white-space: nowrap;
+    text-overflow: ellipsis;
+}
+.should-wrap {
+    word-break: break-all;
+}
+
+//
+// TOP NAV BAR
+//
+
+#drop-down-menu .o-sel {
+    height: 44.5px;
+    font-weight: bold;
+    color: $h-highlight-color;
+    border-color: $h-highlight-color;
+    background-color: $h-page-background-color;
+    border-width: 0.5px;
+    border-top-width: 0;
+    padding-top: 20px;
+    padding-bottom: 7px;
+}
+#drop-down-menu .o-sel-arrow {
+    background-position: calc(100% - 7px) calc(100% - 10px);
+}
+a.button {
+    padding-top: 28px;
+    padding-bottom: 16px;
+}
+a.button.is-outlined {
+    border-top-width: 0
+}
+a.button.is-outlined:not(.is-active) {
+    font-weight: bold;
+    color: $h-highlight-color;
+    border-color: $h-highlight-color;
+}
+a.button.is-outlined.is-active {
+    color: grey;
+    border-color: grey;
+    font-weight: 300;
+}
+a.button.is-outlined.is-active:hover {
+    color: lightgrey;
+    border-color: lightgrey;
+    font-weight: 300;
+}
+a.button.is-ghost:hover {
+    text-decoration-thickness: 1px;
+    text-decoration-color: grey;
+    text-underline-offset: 9px;
+}
+a.button.is-ghost.is-rimmed {
+    text-decoration-line: underline;
+    text-decoration-style: solid;
+    text-decoration-color: $h-highlight-color;
+    text-decoration-thickness: 1px;
+    text-underline-offset: 9px;
+    font-weight: bold;
+}
+a.button.is-outlined {
+    padding-left: 0.6em;
+    padding-right: 0.6em;
+    margin-right: 0.4em;
+}
+a.button.is-ghost {
+    padding-left: 0.4em;
+    padding-right: 0.4em;
+}
+a.button.is-ghost.is-first {
+    padding-left: 2em;
+}
+a.button.is-ghost.is-last {
+    padding-right: 0;
+}
+
+//
+// TOP BANNER
+//
+
+.h-top-banner {
+    background: $h-top-banner-background-color;
+}
+
+//
+// ORUGA TABLES
+//
+
+table.o-table > thead > tr > th {
+    font-style: normal;
+    font-weight: bold;
+    font-size: 11px;
+    line-height: 13px;
+    padding-bottom: 12px;
+}
+table.o-table > tbody > tr > td {
+    vertical-align: middle;
+    font-style: normal;
+    font-weight: normal;
+    font-size: 11px;
+    line-height: 13px;
+    padding-top: 8px;
+    padding-bottom: 8px;
+}
+table.o-table > tbody > tr {
+    cursor: pointer;
+}
+table.o-table > tbody > tr {
+    animation: fadeIn linear 1s;
+}
+@keyframes fadeIn {
+    0% { opacity: 0.0 }
+    25% { opacity: 0.0 }
+    75% {opacity: 1.0 }
+    100% {opacity: 1.0 }
+}
+// Fix for o-table bug (?)
+table.o-table {
+    margin: 1rem 0
+}
+/*
+    Fix Bulma / Oruga conflict
+
+    In Bulma, rules:
+        table td:not([align]), table th:not([align]) {
+            text-align: inherit;
+        }
+        td:not([align]), th:not([align]) {
+            text-align: inherit;
+        }
+    break Oruga table setting:
+        o-table-column with position="right"
+    This prevents right alignment because Bulma rules above take precedence over generated classes:
+        o-table__td--right
+        o-table__th--right
+    (why?)
+
+    Rules below restore the correct precedence.
+ */
+table.o-table {
+    text-align: left
+}
+table.o-table td.o-table__td--right,
+table.o-table th.o-table__th--right {
+    text-align: right;
+}
+table.o-table td.o-table__td--left,
+table.o-table th.o-table__th--left {
+    text-align: left;
+}

@@ -1,0 +1,22 @@
+name: Hedera Mirror Node Explorer Unit Tests
+
+on: [ push, workflow_dispatch ]
+
+jobs:
+
+  checkout-build-and-test:
+
+    runs-on: ubuntu-latest
+
+    steps:
+      - name: Checkout repository
+        uses: actions/checkout@v2
+
+      - name: Set-up project dependencies
+        run: npm ci
+
+      - name: Build production bits
+        run: npm run build
+
+      - name: Run unit tests
+        run: npm run test:unit
