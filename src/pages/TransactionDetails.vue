@@ -34,7 +34,7 @@
         <span class="h-is-secondary-text">{{ transaction ? convertTransactionId(transactionId) : "" }}</span>
         <span v-if="showAllTransactionVisible" class="ml-4" id="allTransactionsLink">
           <router-link :to="{name: 'TransactionsById', params: {transactionId: transactionId}}">
-            <span class="h-is-text-size-3 has-text-grey">All transactions with the same ID</span>
+            <span class="h-is-property-text has-text-grey">See all transactions with the same ID</span>
           </router-link>
         </span>
      </template>

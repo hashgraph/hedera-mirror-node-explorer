@@ -30,7 +30,8 @@
 
     <DashboardCard>
       <template v-slot:title>
-        <span class="h-is-primary-title">Transactions with ID {{ normalizedTransactionId }}</span>
+        <span class="h-is-primary-title">Transactions with ID </span>
+        <span class="h-is-secondary-text">{{ normalizedTransactionId }}</span>
       </template>
       <template v-slot:control>
         <div class="is-flex is-align-items-flex-end">
