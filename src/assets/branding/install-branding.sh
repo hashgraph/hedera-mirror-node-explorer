@@ -1,16 +1,11 @@
-#!/usr/bin/env bash
+#!/bin/bash
 
 # Install default logos and theme
 cp ./src/assets/brand*.png ./src/assets/branding/
 cp ./src/assets/styles/brand-theme.scss ./src/assets/branding/
 
 # Install possible assets customization
-if [[ -z "${BRANDING_LOCATION}" ]]; then
-  BRANDING_DIR="./branding"
-else
-  BRANDING_DIR="${BRANDING_LOCATION}"
-fi
-
+BRANDING_DIR="${BRANDING_LOCATION:-./branding}"
 cp ${BRANDING_DIR}/assets/* ./src/assets/branding/ 2>/dev/null | :
 cp ${BRANDING_DIR}/public/* ./public 2>/dev/null | :
 
