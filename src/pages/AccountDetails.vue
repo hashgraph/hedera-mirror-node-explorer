@@ -32,6 +32,11 @@
       <template v-slot:title>
         <span class="h-is-primary-title">Account </span>
         <span class="h-is-secondary-text">{{ accountId }}</span>
+        <span v-if="showContractVisible" class="ml-4" id="showContractLink">
+          <router-link :to="{name: 'ContractDetails', params: {contractId: accountId}}">
+            <span class="h-is-property-text has-text-grey">Associated contract</span>
+          </router-link>
+        </span>
         <p class="h-is-tertiary-text" v-if="accountInfo != null"> {{ accountInfo }} </p>
       </template>
       <template v-slot:table>
@@ -167,7 +172,7 @@
 
 import {computed, defineComponent, onBeforeMount, onBeforeUnmount, onMounted, ref, watch} from 'vue';
 import axios from "axios";
-import {AccountBalanceTransactions, BalancesResponse} from "@/schemas/HederaSchemas";
+import {AccountBalanceTransactions, BalancesResponse, ContractResponse} from "@/schemas/HederaSchemas";
 import {operatorRegistry} from "@/schemas/OperatorRegistry";
 import KeyValue from "@/components/values/KeyValue.vue";
 import PlayPauseButton, {PlayPauseState} from "@/components/PlayPauseButton.vue";
@@ -216,10 +221,12 @@ export default defineComponent({
 
     onBeforeMount(() => {
       fetchAccount()
+      fetchContract()
     })
 
     watch(() => props.accountId, () => {
       fetchAccount()
+      fetchContract()
       cache.setAccountId(props.accountId)
       cache.start()
     });
@@ -283,6 +290,15 @@ export default defineComponent({
           .then(response => account.value = response.data)
     }
 
+    const showContractVisible = ref(false)
+    const fetchContract = () => {
+      showContractVisible.value = false
+      axios
+          .get<ContractResponse>("api/v1/contracts/" + props.accountId)
+          .then(() => showContractVisible.value = true)
+          .catch(() => null)
+    }
+
     return {
       cacheState,
       account,
@@ -292,6 +308,7 @@ export default defineComponent({
       accountInfo,
       displayAllTokenLinks,
       elapsed,
+      showContractVisible,
 
       // From TimeUtils
       formatSeconds

@@ -32,6 +32,11 @@
       <template v-slot:title>
         <span class="h-is-primary-title">Contract </span>
         <span class="h-is-secondary-text is-numeric">{{ contractId }}</span>
+        <span class="ml-4">
+          <router-link :to="{name: 'AccountDetails', params: {accountId: contractId}}">
+            <span class="h-is-property-text has-text-grey">Associated account</span>
+          </router-link>
+        </span>
       </template>
       <template v-slot:table>
         <div class="columns h-is-property-text">
