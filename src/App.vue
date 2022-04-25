@@ -20,7 +20,7 @@
 
 <template>
   <section class="section is-top-section">
-    <TopNavBar :hide-nav-bar="sizeFallBack"/>
+    <TopNavBar/>
   </section>
 
   <div v-if="sizeFallBack">
@@ -68,10 +68,13 @@
 
 <script lang="ts">
 
-import {computed, defineComponent, onMounted, ref} from 'vue';
+import {computed, defineComponent, onMounted, provide, ref} from 'vue';
 import TopNavBar from "@/components/TopNavBar.vue";
 
-export const MOBILE_BREAKPOINT = 874
+export const LARGE_BREAKPOINT = 1240
+export const MEDIUM_BREAKPOINT = 1120
+export const SMALL_BREAKPOINT = 1024
+export const FINAL_BREAKPOINT = 890
 
 export default defineComponent({
   name: 'App',
@@ -80,9 +83,30 @@ export default defineComponent({
   setup() {
     const windowWidth = ref(window.screen.width)
 
-    const sizeFallBack = computed(() => {
-      return windowWidth.value < MOBILE_BREAKPOINT
+    const isMobileScreen = computed(() => {
+      return windowWidth.value < SMALL_BREAKPOINT
     })
+    provide('isMobileScreen', isMobileScreen)
+
+    const isSmallScreen = computed(() => {
+      return windowWidth.value >= SMALL_BREAKPOINT
+    })
+    provide('isSmallScreen', isSmallScreen)
+
+    const isMediumScreen = computed(() => {
+      return windowWidth.value >= MEDIUM_BREAKPOINT
+    })
+    provide('isMediumScreen', isMediumScreen)
+
+    const isLargeScreen = computed(() => {
+      return windowWidth.value >= LARGE_BREAKPOINT
+    })
+    provide('isLargeScreen', isLargeScreen)
+
+    const sizeFallBack = computed(() => {
+      return windowWidth.value < FINAL_BREAKPOINT
+    })
+    provide('sizeFallBack', sizeFallBack)
 
     const  onResizeHandler = () => {
       windowWidth.value = window.innerWidth

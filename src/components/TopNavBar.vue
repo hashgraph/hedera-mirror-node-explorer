@@ -43,7 +43,16 @@
     <div class="is-flex-grow-0 is-flex-shrink-0 is-flex is-flex-direction-column mx-5">
       <div class="is-flex mb-3 is-align-items-baseline">
 
-        <div v-if="useDropDown" id="drop-down-menu">
+        <template v-if="useFlatMenu">
+          <a class="button is-outlined h-is-navbar-item"
+             :class="{ 'is-active': isTestnetSelected, 'is-highlighted': isMainnetSelected}"
+             @click="selectedNetwork = HederaNetwork.MAINNET">MAINNET</a>
+          <a class="button is-outlined h-is-navbar-item ml-2"
+             :class="{ 'is-active': isMainnetSelected, 'is-highlighted': isTestnetSelected}"
+             @click="selectedNetwork = HederaNetwork.TESTNET">TESTNET</a>
+        </template>
+
+        <div v-else id="drop-down-menu">
           <o-field>
             <o-select
                 v-model="selectedNetwork"
@@ -54,15 +63,6 @@
             </o-select>
           </o-field>
         </div>
-
-        <template v-else>
-          <a class="button is-outlined h-is-navbar-item"
-             :class="{ 'is-active': isTestnetSelected, 'is-highlighted': isMainnetSelected}"
-             @click="selectedNetwork = HederaNetwork.MAINNET">MAINNET</a>
-         <a class="button is-outlined h-is-navbar-item ml-2"
-             :class="{ 'is-active': isMainnetSelected, 'is-highlighted': isTestnetSelected}"
-             @click="selectedNetwork = HederaNetwork.TESTNET">TESTNET</a>
-        </template>
 
         <div class="is-flex-grow-1 px-2"/>
         <a id="dashboard-menu-item"
@@ -87,7 +87,7 @@
       </div>
       <SearchBar style="margin-top: 4px"/>
     </div>
-    <a id="built-on-hedera-logo" href="https://hedera.com" style="line-height: 1">
+    <a v-if="showTopRightLogo" id="built-on-hedera-logo" href="https://hedera.com" style="line-height: 1">
       <img alt="Built On Hedera" src="@/assets/built-on-hedera-white.svg" style="min-width: 104px;">
     </a>
 
@@ -101,7 +101,7 @@
 
 <script lang="ts">
 
-import {computed, defineComponent, onMounted, ref, watch, WatchStopHandle} from "vue";
+import {computed, defineComponent, inject, ref, watch, WatchStopHandle} from "vue";
 import {useRoute} from "vue-router";
 import router from "@/router";
 import SearchBar from "@/components/SearchBar.vue";
@@ -112,33 +112,18 @@ export enum HederaNetwork {
   MAINNET = "mainnet"
 }
 
-export const DROPDOWN_MENU_BREAKPOINT = 1240
-
 export default defineComponent({
   name: "TopNavBar",
   components: {AxiosStatus, SearchBar},
-
-  props: {
-    hideNavBar: Boolean
-  },
 
   setup() {
     const route = useRoute()
     const network = computed( () => { return route.params.network })
     const name = computed( () => { return route.name })
 
-    const windowWidth = ref(window.screen.width)
-    const useDropDown = computed(() => { return windowWidth.value < DROPDOWN_MENU_BREAKPOINT })
-
-    const  onResizeHandler = () => {
-      windowWidth.value = window.innerWidth
-    }
-
-    onMounted(() => {
-      windowWidth.value = window.innerWidth
-      window.addEventListener('resize', onResizeHandler);
-    })
-
+    const hideNavBar = inject('sizeFallBack', false)
+    const useFlatMenu = inject('isLargeScreen', true)
+    const showTopRightLogo = inject('isMediumScreen', true)
 
     watch(network, (value) => {
       updateSelectedNetworkSilently(value)
@@ -192,7 +177,9 @@ export default defineComponent({
 
     return {
       name,
-      useDropDown,
+      hideNavBar,
+      useFlatMenu,
+      showTopRightLogo,
       isMainnetSelected,
       isTestnetSelected,
       selectedNetwork,
@@ -225,26 +212,17 @@ export default defineComponent({
   #product-logo {
     max-width: 220px;
   }
-  #built-on-hedera-logo {
-    display: initial;
-  }
 }
 
 @media (max-width: 1119px) {
   #product-logo {
     max-width: 220px;
   }
-  #built-on-hedera-logo {
-    display: none;
-  }
 }
 
 @media (max-width: 1023px) {
   #product-logo {
     max-width: 165px;
-  }
-  #built-on-hedera-logo {
-    display: none;
   }
 }
 
