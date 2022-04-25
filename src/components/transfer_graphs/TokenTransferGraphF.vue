@@ -65,7 +65,7 @@
           </div>
 
           <!-- #3 : arrow -->
-          <div  style="line-height: 0">
+          <div  style="position: relative">
             <ArrowSegment
                 v-bind:source-count="tokenTransferLayout[s-1].sources.length"
                 v-bind:dest-count="tokenTransferLayout[s-1].destinations.length"
