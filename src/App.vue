@@ -92,6 +92,11 @@ export default defineComponent({
 
     const windowWidth = ref(window.screen.width)
 
+    const isMobileScreen = computed(() => {
+      return windowWidth.value < SMALL_BREAKPOINT
+    })
+    provide('isMobileScreen', isMobileScreen)
+
     const isSmallScreen = computed(() => {
       return windowWidth.value >= SMALL_BREAKPOINT
     })
