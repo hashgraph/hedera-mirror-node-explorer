@@ -56,8 +56,8 @@
         </div>
 
         <!-- #2 : dollar amount -->
-        <div class="justify-end">
-          <HbarExtra v-if="i <= hbarTransferLayout.sources.length"
+        <div class="justify-end" v-bind:class="{ 'mobile': isMobileScreen }">
+          <HbarExtra v-if="i <= hbarTransferLayout.sources.length && !isMobileScreen"
                      v-bind:tbarAmount="hbarTransferLayout.sources[i-1].transfer.amount"/>
         </div>
 
@@ -85,14 +85,14 @@
         </div>
 
         <!-- #6 : dollar amount -->
-        <div class="justify-end" v-bind:class="{'h-has-low-contrast': hasLowContrast(i-1)}">
-          <HbarExtra v-if="i <= hbarTransferLayout.destinations.length"
+        <div class="justify-end" v-bind:class="{'h-has-low-contrast': hasLowContrast(i-1), 'mobile': isMobileScreen}">
+          <HbarExtra v-if="i <= hbarTransferLayout.destinations.length && !isMobileScreen"
                      v-bind:tbarAmount="hbarTransferLayout.destinations[i-1].transfer.amount"/>
         </div>
 
         <!-- #7 : description -->
-        <div v-bind:class="{'h-has-low-contrast': hasLowContrast(i-1)}">
-          <span v-if="i <= hbarTransferLayout.destinations.length" class="h-is-smaller">{{
+        <div v-bind:class="{'h-has-low-contrast': hasLowContrast(i-1), 'mobile': isMobileScreen}">
+          <span v-if="i <= hbarTransferLayout.destinations.length && !isMobileScreen" class="h-is-smaller">{{
               hbarTransferLayout.destinations[i-1].description
             }}</span>
         </div>
@@ -111,7 +111,7 @@
 
 <script lang="ts">
 
-import {defineComponent, PropType, ref, watch} from "vue";
+import {defineComponent, inject, PropType, ref, watch} from "vue";
 import AccountLink from "@/components/values/AccountLink.vue";
 import ArrowSegment from "@/components/transfer_graphs/ArrowSegment.vue";
 import HbarAmount from "@/components/values/HbarAmount.vue";
@@ -141,9 +141,12 @@ export default defineComponent({
       hbarTransferLayout.value = new HbarTransferLayout(props.transaction)
     })
 
+    const isMobileScreen = inject("isMobileScreen", false)
+
     return {
       hbarTransferLayout,
-      hasLowContrast
+      hasLowContrast,
+      isMobileScreen
     }
   }
 })
@@ -163,6 +166,10 @@ export default defineComponent({
 
 div.container > div {
   margin-right: 1em;
+}
+
+div.container > div.mobile {
+  margin-right: 0;
 }
 
 div.container > div.justify-end {

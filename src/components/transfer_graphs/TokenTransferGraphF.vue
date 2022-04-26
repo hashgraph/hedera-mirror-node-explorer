@@ -58,8 +58,8 @@
           </div>
 
           <!-- #2 : token symbol -->
-          <div data-cy="tokenExtra">
-            <TokenExtra v-if="i <= tokenTransferLayout[s-1].sources.length"
+          <div data-cy="tokenExtra" v-bind:class="{ 'mobile': isMobileScreen }">
+            <TokenExtra v-if="i <= tokenTransferLayout[s-1].sources.length && !isMobileScreen"
                         v-bind:token-id="tokenTransferLayout[s-1].tokenId"
                         v-bind:use-anchor="true"/>
           </div>
@@ -88,15 +88,15 @@
           </div>
 
           <!-- #6 : token symbol -->
-          <div data-cy="tokenExtra">
-            <TokenExtra v-if="i <= tokenTransferLayout[s-1].destinations.length"
+          <div data-cy="tokenExtra" v-bind:class="{ 'mobile': isMobileScreen }">
+            <TokenExtra v-if="i <= tokenTransferLayout[s-1].destinations.length && !isMobileScreen"
                         v-bind:token-id="tokenTransferLayout[s-1].tokenId"
                         v-bind:use-anchor="true"/>
           </div>
 
           <!-- #7 : description -->
-          <div>
-            <template v-if="i <= tokenTransferLayout[s-1].descriptions.length">
+          <div v-bind:class="{ 'mobile': isMobileScreen }">
+            <template v-if="i <= tokenTransferLayout[s-1].descriptions.length && !isMobileScreen">
               <span  class="h-is-smaller">{{ tokenTransferLayout[s-1].descriptions[i-1] }}</span>
             </template>
           </div>
@@ -118,7 +118,7 @@
 
 <script lang="ts">
 
-import {defineComponent, PropType, ref, watch} from "vue";
+import {defineComponent, inject, PropType, ref, watch} from "vue";
 import AccountLink from "@/components/values/AccountLink.vue";
 import TokenAmount from "@/components/values/TokenAmount.vue";
 import ArrowSegment from "@/components/transfer_graphs/ArrowSegment.vue";
@@ -140,8 +140,11 @@ export default defineComponent({
       tokenTransferLayout.value = TokenTransferLayout.make(props.transaction)
     })
 
+    const isMobileScreen = inject("isMobileScreen", false)
+
     return {
       tokenTransferLayout,
+      isMobileScreen
     }
   }
 })
@@ -161,6 +164,10 @@ export default defineComponent({
 
 div.container > div {
   margin-right: 1em;
+}
+
+div.container > div.mobile {
+  margin-right: 0;
 }
 
 div.container > div.justify-end {

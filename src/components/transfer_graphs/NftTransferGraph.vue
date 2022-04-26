@@ -90,8 +90,8 @@
         </div>
 
         <!-- #5 : description -->
-        <div>
-          <span v-if="!compact" class="h-is-smaller">{{ nftTransferLayout[i-1].description }}</span>
+        <div v-bind:class="{ 'mobile': isMobileScreen }">
+          <span v-if="!compact && !isMobileScreen" class="h-is-smaller">{{ nftTransferLayout[i-1].description }}</span>
         </div>
 
       </template>
@@ -107,7 +107,7 @@
 
 <script lang="ts">
 
-import {defineComponent, PropType, ref, watch} from "vue";
+import {defineComponent, inject, PropType, ref, watch} from "vue";
 import AccountLink from "@/components/values/AccountLink.vue";
 import TokenLink from "@/components/values/TokenLink.vue";
 import ArrowSegment from "@/components/transfer_graphs/ArrowSegment.vue";
@@ -132,8 +132,11 @@ export default defineComponent({
       nftTransferLayout.value = NFTTransferLayout.make(props.transaction)
     })
 
+    const isMobileScreen = inject("isMobileScreen", false)
+
     return {
       nftTransferLayout,
+      isMobileScreen
     }
   }
 })
@@ -153,6 +156,10 @@ export default defineComponent({
 
 div.container > div {
   margin-right: 1em;
+}
+
+div.container > div.mobile {
+  margin-right: 0;
 }
 
 </style>

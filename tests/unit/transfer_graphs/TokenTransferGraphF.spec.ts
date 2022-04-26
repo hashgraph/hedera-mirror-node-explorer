@@ -118,6 +118,27 @@ describe("TokenTransferGraphF.vue", () => {
             "Token TransfersAccountToken AmountAccountToken Amount0.0.100-1023423\n\n" +
             "0.0.2001023423Transfer")
         expect(wrapper.text()).toMatch(SAMPLE_TOKEN.name)
+
+        await router.push("/") // To avoid "missing required param 'network'" error
+        const wrapper2 = mount(TokenTransferGraph, {
+            global: {
+                plugins: [router],
+                provide: { isMobileScreen: true }
+            },
+            props: {
+                transaction: transaction as Transaction
+            },
+        })
+
+        await flushPromises()
+
+        // console.log(wrapper2.html())
+        // console.log(wrapper2.text())
+
+        expect(wrapper2.text()).toBe(
+            "Token TransfersAccountToken AmountAccountToken Amount0.0.100-10\n\n" +
+            "0.0.20010")
+        expect(wrapper2.text()).not.toMatch(SAMPLE_TOKEN.name)
     })
 
     test("Single token, single source, two dest", async () => {

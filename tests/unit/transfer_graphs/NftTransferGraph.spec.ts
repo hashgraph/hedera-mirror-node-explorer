@@ -110,6 +110,41 @@ describe("NftTransferGraph.vue", () => {
             "0.0.100Transfer")
         expect(wrapper.text()).toMatch(SAMPLE_NONFUNGIBLE.name)
         expect(wrapper.text()).toMatch(SAMPLE_NONFUNGIBLE_DUDE.name)
+
+        wrapper.unmount()
+
+        await router.push("/") // To avoid "missing required param 'network'" error
+
+        const wrapper2 = mount(NftTransferGraph, {
+            global: {
+                plugins: [router],
+                provide: {
+                    isMobileScreen: true
+                }
+            },
+            props: {
+                transaction: transaction as Transaction
+            },
+        })
+
+        await flushPromises()
+
+        expect(wrapper2.text()).toBe(
+            "NFT TransfersAccountNon Fungible TokensAccount0.0.100\n\n" +
+            "0.0.748383Ħ Frens Kingdom #601 #602\n\n" +
+            "0.0.1010.0.100\n\n" +
+            "0.0.748384Ħ Frens Kingdom Dude #501\n\n" +
+            "0.0.1010.0.101\n\n" +
+            "0.0.748383Ħ Frens Kingdom #603 #604\n\n" +
+            "0.0.1000.0.101\n\n" +
+            "0.0.748384Ħ Frens Kingdom Dude #502\n\n" +
+            "0.0.100")
+        expect(wrapper2.text()).toMatch(SAMPLE_NONFUNGIBLE.name)
+        expect(wrapper2.text()).toMatch(SAMPLE_NONFUNGIBLE_DUDE.name)
+
+        wrapper2.unmount()
+
+
     })
 
     test("Mint, one token, one destination", async() => {
