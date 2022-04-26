@@ -31,7 +31,7 @@
       <p class="h-is-tertiary-text mb-4">NFT Transfers</p>
     </template>
 
-    <div class="container">
+    <div class="graph-container">
 
       <template v-if="!compact">
 
@@ -149,16 +149,16 @@ export default defineComponent({
 
 <style scoped>
 
-.container {
+.graph-container {
   display: inline-grid;
   grid-template-columns: repeat(6, auto)
 }
 
-div.container > div {
+div.graph-container > div {
   margin-right: 1em;
 }
 
-div.container > div.mobile {
+div.graph-container > div.mobile {
   margin-right: 0;
 }
 

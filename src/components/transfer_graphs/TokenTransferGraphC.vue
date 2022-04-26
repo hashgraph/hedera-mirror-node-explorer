@@ -26,7 +26,7 @@
 
   <div v-if="tokenTransferLayout.length >= 1" data-cy="tokenTransfers">
 
-    <div class="container">
+    <div class="graph-container">
 
       <template v-for="s in tokenTransferLayout.length" v-bind:key="s">
 
@@ -134,16 +134,16 @@ export default defineComponent({
 
 <style scoped>
 
-.container {
+.graph-container {
   display: inline-grid;
   grid-template-columns: repeat(6, auto)
 }
 
-div.container > div {
+div.graph-container > div {
   margin-right: 1em;
 }
 
-div.container > div.justify-end {
+div.graph-container > div.justify-end {
   justify-self: end;
 }
 

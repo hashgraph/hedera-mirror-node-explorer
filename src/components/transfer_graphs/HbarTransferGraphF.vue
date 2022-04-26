@@ -29,7 +29,7 @@
     <br/>
     <p class="h-is-tertiary-text mb-4">{{ title }}</p>
 
-    <div class="container">
+    <div class="graph-container">
 
       <div style="grid-column-end: span 1" class="h-is-text-size-3 has-text-grey-light has-text-weight-light mb-2">Account</div>
       <div style="grid-column-end: span 2" class="h-is-text-size-3 has-text-grey-light has-text-weight-light mb-2">Hbar Amount</div>
@@ -159,20 +159,20 @@ export default defineComponent({
 
 <style scoped>
 
-.container {
+.graph-container {
   display: inline-grid;
   grid-template-columns: repeat(8, auto)
 }
 
-div.container > div {
+div.graph-container > div {
   margin-right: 1em;
 }
 
-div.container > div.mobile {
+div.graph-container > div.mobile {
   margin-right: 0;
 }
 
-div.container > div.justify-end {
+div.graph-container > div.justify-end {
   justify-self: end;
 }
 

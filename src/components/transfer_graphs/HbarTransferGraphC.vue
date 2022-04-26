@@ -24,7 +24,7 @@
 
 <template>
 
-  <div v-if="hbarTransferLayout.rowCount >= 1" class="container" data-cy="hbarTransfers">
+  <div v-if="hbarTransferLayout.rowCount >= 1" class="graph-container" data-cy="hbarTransfers">
 
     <template v-for="i in hbarTransferLayout.rowCount" v-bind:key="i">
 
@@ -115,16 +115,16 @@ export default defineComponent({
 
 <style scoped>
 
-.container {
+.graph-container {
   display: inline-grid;
   grid-template-columns: repeat(5, auto)
 }
 
-div.container > div {
+div.graph-container > div {
   margin-right: 1em;
 }
 
-div.container > div.justify-end {
+div.graph-container > div.justify-end {
   justify-self: end;
 }
 
