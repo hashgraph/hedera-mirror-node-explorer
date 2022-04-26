@@ -95,7 +95,7 @@ describe("TopNavBar.vue", () => {
             global: {
                 plugins: [router, Oruga],
                 provide: {
-                    isLargeScreen: false
+                    isXLargeScreen: false
                 }
             },
             props: {},

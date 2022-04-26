@@ -122,8 +122,8 @@ export default defineComponent({
     const name = computed( () => { return route.name })
 
     const hideNavBar = inject('sizeFallBack', false)
-    const useFlatMenu = inject('isLargeScreen', true)
-    const showTopRightLogo = inject('isMediumScreen', true)
+    const useFlatMenu = inject('isXLargeScreen', true)
+    const showTopRightLogo = inject('isLargeScreen', true)
 
     watch(network, (value) => {
       updateSelectedNetworkSilently(value)

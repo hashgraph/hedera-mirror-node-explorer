@@ -71,9 +71,13 @@
 import {computed, defineComponent, onMounted, provide, ref} from 'vue';
 import TopNavBar from "@/components/TopNavBar.vue";
 
-export const LARGE_BREAKPOINT = 1240
-export const MEDIUM_BREAKPOINT = 1120
-export const SMALL_BREAKPOINT = 1024
+export const XLARGE_BREAKPOINT = 1240
+export const LARGE_BREAKPOINT = 1120
+export const MEDIUM_BREAKPOINT = 1024
+export const SMALL_BREAKPOINT = 768
+// this will eventually be the window min width
+// export const FINAL_BREAKPOINT = 576
+// temporary limit under which "mobile coming soon" is displayed
 export const FINAL_BREAKPOINT = 890
 
 export default defineComponent({
@@ -82,11 +86,6 @@ export default defineComponent({
 
   setup() {
     const windowWidth = ref(window.screen.width)
-
-    const isMobileScreen = computed(() => {
-      return windowWidth.value < SMALL_BREAKPOINT
-    })
-    provide('isMobileScreen', isMobileScreen)
 
     const isSmallScreen = computed(() => {
       return windowWidth.value >= SMALL_BREAKPOINT
@@ -102,6 +101,11 @@ export default defineComponent({
       return windowWidth.value >= LARGE_BREAKPOINT
     })
     provide('isLargeScreen', isLargeScreen)
+
+    const isXLargeScreen = computed(() => {
+      return windowWidth.value >= XLARGE_BREAKPOINT
+    })
+    provide('isXLargeScreen', isXLargeScreen)
 
     const sizeFallBack = computed(() => {
       return windowWidth.value < FINAL_BREAKPOINT
