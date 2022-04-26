@@ -27,11 +27,11 @@
   <template v-if="timestamp">
     <template v-if="seconds != null">
       <span>
-        <span class="mr-3 is-numeric" style="display: inline-block">
+        <span class="mr-3 is-numeric" style="white-space: nowrap">
           <span>{{ timePart.hour }}:{{ timePart.minute }}</span>
           <span class="h-is-text-size-3 has-text-grey">:{{ timePart.second }}.{{ timePart.fractionalSecond }}&nbsp;{{ timePart.dayPeriod }}</span>
         </span>
-        <span class="is-numeric">{{ datePart }}</span>
+        <span class="is-numeric" style="white-space: nowrap">{{ datePart }}</span>
       </span>
     </template>
     <template v-else>
