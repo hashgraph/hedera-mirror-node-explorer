@@ -33,6 +33,7 @@
       :per-page="pageSize"
       :striped="true"
       :v-model:current-page="currentPage"
+      :mobile-breakpoint="ORUGA_MOBILE_BREAKPOINT"
       aria-current-label="Current page"
       aria-next-label="Next page"
       aria-page-label="Page"
@@ -81,6 +82,7 @@ import {TokenNftCache} from "@/components/token/TokenNftCache";
 import TimestampValue from "@/components/values/TimestampValue.vue";
 import AccountLink from "@/components/values/AccountLink.vue";
 import BlobValue from "@/components/values/BlobValue.vue";
+import { ORUGA_MOBILE_BREAKPOINT } from '@/App.vue';
 
 export default defineComponent({
   name: 'TokenNftTable',
@@ -138,6 +140,7 @@ export default defineComponent({
       nfts,
       cache,
       currentPage,
+      ORUGA_MOBILE_BREAKPOINT
     }
   }
 });

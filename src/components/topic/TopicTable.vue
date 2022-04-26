@@ -31,6 +31,7 @@
       :per-page="nbItems ?? 15"
       :striped="true"
       :v-model:current-page="currentPage"
+      :mobile-breakpoint="ORUGA_MOBILE_BREAKPOINT"
       aria-current-label="Current page"
       aria-next-label="Next page"
       aria-page-label="Page"
@@ -71,6 +72,7 @@ import {TransactionCache} from "@/components/transaction/TransactionCache";
 import TimestampValue from "@/components/values/TimestampValue.vue";
 import router from "@/router";
 import BlobValue from "@/components/values/BlobValue.vue";
+import { ORUGA_MOBILE_BREAKPOINT } from '@/App.vue';
 
 export default defineComponent({
   name: 'TopicTable',
@@ -118,6 +120,7 @@ export default defineComponent({
       cache,
       handleClick,
       currentPage,
+      ORUGA_MOBILE_BREAKPOINT
     }
   }
 });

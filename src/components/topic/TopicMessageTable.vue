@@ -31,6 +31,7 @@
         :paginated="paginationNeeded"
         :per-page="pageSize"
         :striped="true"
+        :mobile-breakpoint="ORUGA_MOBILE_BREAKPOINT"
         aria-current-label="Current page"
         aria-next-label="Next page"
         aria-page-label="Page"
@@ -73,6 +74,7 @@ import {TopicMessageCache} from "@/components/topic/TopicMessageCache";
 import {PlayPauseState} from "@/components/PlayPauseButton.vue";
 import TimestampValue from "@/components/values/TimestampValue.vue";
 import BlobValue from "@/components/values/BlobValue.vue";
+import { ORUGA_MOBILE_BREAKPOINT } from '@/App.vue';
 
 export default defineComponent({
 
@@ -161,6 +163,7 @@ export default defineComponent({
       messages,
       cache,
       currentPage,
+      ORUGA_MOBILE_BREAKPOINT
     }
   }
 });

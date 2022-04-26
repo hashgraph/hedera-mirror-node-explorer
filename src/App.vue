@@ -80,6 +80,8 @@ export const SMALL_BREAKPOINT = 768
 // temporary limit under which "mobile coming soon" is displayed
 export const FINAL_BREAKPOINT = 890
 
+export const ORUGA_MOBILE_BREAKPOINT = SMALL_BREAKPOINT + "px"
+
 export default defineComponent({
   name: 'App',
   components: {TopNavBar},

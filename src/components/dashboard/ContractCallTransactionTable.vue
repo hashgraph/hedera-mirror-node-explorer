@@ -32,6 +32,7 @@
       :paginated="true"
       :per-page="nbItems ?? 15"
       :striped="true"
+      :mobile-breakpoint="ORUGA_MOBILE_BREAKPOINT"
       aria-current-label="Current page"
       aria-next-label="Next page"
       aria-page-label="Page"
@@ -77,6 +78,7 @@ import {PlayPauseState} from "@/components/PlayPauseButton.vue";
 import router from "@/router";
 import TimestampValue from "@/components/values/TimestampValue.vue";
 import TransactionSummary from "@/components/transaction/TransactionSummary.vue";
+import { ORUGA_MOBILE_BREAKPOINT } from '@/App.vue';
 
 export default defineComponent({
   name: 'ContractCallTransactionTable',
@@ -154,6 +156,9 @@ export default defineComponent({
       cache,
       handleClick,
       currentPage,
+
+      // From App
+      ORUGA_MOBILE_BREAKPOINT,
 
       // From TransactionID
       normalizeTransactionId

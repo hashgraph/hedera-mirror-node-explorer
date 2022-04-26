@@ -32,6 +32,7 @@
       :paginated="paginationNeeded"
       :per-page="pageSize"
       :striped="true"
+      :mobile-breakpoint="ORUGA_MOBILE_BREAKPOINT"
       aria-current-label="Current page"
       aria-next-label="Next page"
       aria-page-label="Page"
@@ -90,6 +91,7 @@ import router from "@/router";
 import {AccountTransactionCache} from "@/components/contract/AccountTransactionCache";
 import TimestampValue from "@/components/values/TimestampValue.vue";
 import HbarAmount from "@/components/values/HbarAmount.vue";
+import { ORUGA_MOBILE_BREAKPOINT } from '@/App.vue';
 
 export default defineComponent({
   name: 'ContractTransactionTable',
@@ -177,6 +179,9 @@ export default defineComponent({
       cache,
       handleClick,
       currentPage,
+
+      // From App
+      ORUGA_MOBILE_BREAKPOINT,
 
       // From TransactionTools
       makeTypeLabel,

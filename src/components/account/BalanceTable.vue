@@ -31,6 +31,7 @@
       :per-page="nbItems ?? 15"
       :striped="true"
       :v-model:current-page="currentPage"
+      :mobile-breakpoint="ORUGA_MOBILE_BREAKPOINT"
       aria-current-label="Current page"
       aria-next-label="Next page"
       aria-page-label="Page"
@@ -66,6 +67,7 @@ import TokenLink from "@/components/values/TokenLink.vue";
 import {BalanceCache} from "@/components/account/BalanceCache";
 import {useRouter} from "vue-router";
 import TokenAmount from "@/components/values/TokenAmount.vue";
+import { ORUGA_MOBILE_BREAKPOINT } from '@/App.vue';
 
 export default defineComponent({
   name: 'BalanceTable',
@@ -118,7 +120,7 @@ export default defineComponent({
     // 4) currentPage
     let currentPage = ref(1)
 
-    return {balances, cache, handleClick, currentPage}
+    return {balances, cache, handleClick, currentPage, ORUGA_MOBILE_BREAKPOINT}
   }
 });
 

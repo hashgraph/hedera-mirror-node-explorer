@@ -31,6 +31,7 @@
       :per-page="nbItems ?? 15"
       :striped="true"
       :v-model:current-page="currentPage"
+      :mobile-breakpoint="ORUGA_MOBILE_BREAKPOINT"
       aria-current-label="Current page"
       aria-next-label="Next page"
       aria-page-label="Page"
@@ -92,6 +93,7 @@ import HbarAmount from "@/components/values/HbarAmount.vue";
 import BlobValue from "@/components/values/BlobValue.vue";
 import TimestampValue from "@/components/values/TimestampValue.vue";
 import TokenAmount from "@/components/values/TokenAmount.vue";
+import { ORUGA_MOBILE_BREAKPOINT } from '@/App.vue';
 
 export default defineComponent({
   name: 'AccountTable',
@@ -134,6 +136,7 @@ export default defineComponent({
       cache,
       handleClick,
       currentPage,
+      ORUGA_MOBILE_BREAKPOINT
     }
   }
 });

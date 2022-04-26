@@ -31,6 +31,7 @@
       :per-page="nbItems ?? 15"
       :striped="true"
       :v-model:current-page="currentPage"
+      :mobile-breakpoint="ORUGA_MOBILE_BREAKPOINT"
       aria-current-label="Current page"
       aria-next-label="Next page"
       aria-page-label="Page"
@@ -63,6 +64,7 @@ import {defineComponent, onBeforeUnmount, onMounted, ref} from 'vue';
 import router from "@/router";
 import {Token} from "@/schemas/HederaSchemas";
 import {TokenCache} from "@/components/token/TokenCache";
+import { ORUGA_MOBILE_BREAKPOINT } from '@/App.vue';
 
 export default defineComponent({
   name: 'TokenTable',
@@ -109,6 +111,7 @@ export default defineComponent({
       cache,
       handleClick,
       currentPage,
+      ORUGA_MOBILE_BREAKPOINT
     }
   }
 });

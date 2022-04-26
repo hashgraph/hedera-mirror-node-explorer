@@ -32,6 +32,7 @@
       :per-page="pageSize"
       :striped="true"
       :v-model:current-page="currentPage"
+      :mobile-breakpoint="ORUGA_MOBILE_BREAKPOINT"
       aria-current-label="Current page"
       aria-next-label="Next page"
       aria-page-label="Page"
@@ -65,6 +66,7 @@ import {TokenDistribution} from "@/schemas/HederaSchemas";
 import {TokenBalanceCache} from "@/components/token/TokenBalanceCache";
 import router from "@/router";
 import TokenAmount from "@/components/values/TokenAmount.vue";
+import { ORUGA_MOBILE_BREAKPOINT } from '@/App.vue';
 
 export default defineComponent({
   name: 'TokenBalanceTable',
@@ -128,6 +130,7 @@ export default defineComponent({
       cache,
       currentPage,
       handleClick,
+      ORUGA_MOBILE_BREAKPOINT
     }
   }
 });
