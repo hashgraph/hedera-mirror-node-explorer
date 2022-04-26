@@ -40,7 +40,7 @@
     <router-view/>
   </div>
 
-  <section class="section">
+  <section v-if="!isTouchDevice" class="section">
 
     <hr class="h-top-banner mb-4 mt-0" style="height: 1px"/>
 
@@ -85,6 +85,9 @@ export default defineComponent({
   components: {TopNavBar},
 
   setup() {
+    const isTouchDevice = ('ontouchstart' in window)
+    provide('isTouchDevice', isTouchDevice)
+
     const windowWidth = ref(window.screen.width)
 
     const isSmallScreen = computed(() => {
@@ -122,6 +125,7 @@ export default defineComponent({
     })
 
     return {
+      isTouchDevice,
       sizeFallBack
     }
   },
