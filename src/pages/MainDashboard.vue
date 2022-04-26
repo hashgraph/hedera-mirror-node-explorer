@@ -50,9 +50,9 @@
 
     </div>
 
-    <div class="columns">
+    <div class="columns is-multiline">
 
-      <div class="column">
+      <div class="column" :class="{'is-full': !displaySideBySide}">
         <DashboardCard data-cy="smartContractCalls">
           <template v-slot:title>
             <span class="h-is-primary-subtitle">Smart Contract Calls</span>
@@ -100,7 +100,7 @@
 
 <script lang="ts">
 
-import {defineComponent, ref, watch} from 'vue';
+import {defineComponent, inject, ref, watch} from 'vue';
 
 import HbarMarketDashboard from "../components/dashboard/HbarMarketDashboard.vue";
 import DashboardCard from "@/components/DashboardCard.vue";
@@ -127,6 +127,8 @@ export default defineComponent({
   },
 
   setup(props) {
+    const displaySideBySide = inject('isLargeScreen')
+
     const CryptoTransactionCacheState = ref<PlayPauseState>(PlayPauseState.Play)
     const MessageTransactionCacheState = ref<PlayPauseState>(PlayPauseState.Play)
     const ContractCallTransactionCacheState = ref<PlayPauseState>(PlayPauseState.Play)
@@ -136,6 +138,7 @@ export default defineComponent({
     })
 
     return {
+      displaySideBySide,
       CryptoTransactionCacheState,
       MessageTransactionCacheState,
       ContractCallTransactionCacheState,
