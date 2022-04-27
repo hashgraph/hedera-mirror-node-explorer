@@ -29,14 +29,23 @@
     <br/>
     <p class="h-is-tertiary-text mb-4">{{ title }}</p>
 
-    <div class="graph-container">
+    <div class="graph-container" v-bind:class="{'graph-container-8': dollarVisible }">
 
-      <div style="grid-column-end: span 1" class="h-is-text-size-3 has-text-grey-light has-text-weight-light mb-2">Account</div>
-      <div style="grid-column-end: span 2" class="h-is-text-size-3 has-text-grey-light has-text-weight-light mb-2">Hbar Amount</div>
-      <div/>
-      <div style="grid-column-end: span 1" class="h-is-text-size-3 has-text-grey-light has-text-weight-light mb-2">Account</div>
-      <div style="grid-column-end: span 2" class="h-is-text-size-3 has-text-grey-light has-text-weight-light mb-2">Hbar Amount</div>
-      <div/>
+      <template v-if="dollarVisible">
+        <div style="grid-column-end: span 1" class="h-is-text-size-3 has-text-grey-light has-text-weight-light mb-2">Account</div>
+        <div style="grid-column-end: span 2" class="h-is-text-size-3 has-text-grey-light has-text-weight-light mb-2">Hbar Amount</div>
+        <div/>
+        <div style="grid-column-end: span 1" class="h-is-text-size-3 has-text-grey-light has-text-weight-light mb-2">Account</div>
+        <div style="grid-column-end: span 2" class="h-is-text-size-3 has-text-grey-light has-text-weight-light mb-2">Hbar Amount</div>
+        <div/>
+      </template>
+      <template v-else>
+        <div style="grid-column-end: span 1" class="h-is-text-size-3 has-text-grey-light has-text-weight-light mb-2">Account</div>
+        <div style="grid-column-end: span 1" class="h-is-text-size-3 has-text-grey-light has-text-weight-light mb-2">Hbar Amount</div>
+        <div/>
+        <div style="grid-column-end: span 1" class="h-is-text-size-3 has-text-grey-light has-text-weight-light mb-2">Account</div>
+        <div style="grid-column-end: span 1" class="h-is-text-size-3 has-text-grey-light has-text-weight-light mb-2">Hbar Amount</div>
+      </template>
 
       <template v-for="i in hbarTransferLayout.rowCount" v-bind:key="i">
 
@@ -55,11 +64,15 @@
                       v-bind:colored="true"/>
         </div>
 
-        <!-- #2 : dollar amount -->
-        <div class="justify-end" v-bind:class="{ 'mobile': isMobileScreen }">
-          <HbarExtra v-if="i <= hbarTransferLayout.sources.length && !isMobileScreen"
-                     v-bind:tbarAmount="hbarTransferLayout.sources[i-1].transfer.amount"/>
-        </div>
+        <template v-if="dollarVisible">
+
+          <!-- #2 : dollar amount -->
+          <div class="justify-end">
+            <HbarExtra v-if="i <= hbarTransferLayout.sources.length"
+                       v-bind:tbarAmount="hbarTransferLayout.sources[i-1].transfer.amount"/>
+          </div>
+
+        </template>
 
         <!-- #3 : arrow -->
         <div  style="position: relative">
@@ -84,18 +97,22 @@
                       v-bind:colored="true"/>
         </div>
 
-        <!-- #6 : dollar amount -->
-        <div class="justify-end" v-bind:class="{'h-has-low-contrast': hasLowContrast(i-1), 'mobile': isMobileScreen}">
-          <HbarExtra v-if="i <= hbarTransferLayout.destinations.length && !isMobileScreen"
-                     v-bind:tbarAmount="hbarTransferLayout.destinations[i-1].transfer.amount"/>
-        </div>
+        <template v-if="dollarVisible">
 
-        <!-- #7 : description -->
-        <div v-bind:class="{'h-has-low-contrast': hasLowContrast(i-1), 'mobile': isMobileScreen}">
-          <span v-if="i <= hbarTransferLayout.destinations.length && !isMobileScreen" class="h-is-smaller">{{
-              hbarTransferLayout.destinations[i-1].description
-            }}</span>
-        </div>
+          <!-- #6 : dollar amount -->
+          <div class="justify-end" v-bind:class="{'h-has-low-contrast': hasLowContrast(i-1)}">
+            <HbarExtra v-if="i <= hbarTransferLayout.destinations.length"
+                       v-bind:tbarAmount="hbarTransferLayout.destinations[i-1].transfer.amount"/>
+          </div>
+
+          <!-- #7 : description -->
+          <div v-bind:class="{'h-has-low-contrast': hasLowContrast(i-1)}">
+            <span v-if="i <= hbarTransferLayout.destinations.length" class="h-is-smaller">
+              {{ hbarTransferLayout.destinations[i-1].description }}
+            </span>
+          </div>
+
+        </template>
 
       </template>
 
@@ -141,12 +158,12 @@ export default defineComponent({
       hbarTransferLayout.value = new HbarTransferLayout(props.transaction)
     })
 
-    const isMobileScreen = inject("isMobileScreen", false)
+    const dollarVisible = inject("isSmallScreen", true)
 
     return {
       hbarTransferLayout,
       hasLowContrast,
-      isMobileScreen
+      dollarVisible
     }
   }
 })
@@ -161,15 +178,12 @@ export default defineComponent({
 
 .graph-container {
   display: inline-grid;
-  grid-template-columns: repeat(8, auto)
+  grid-template-columns: repeat(5, auto);
+  column-gap: 1em;
 }
 
-div.graph-container > div {
-  margin-right: 1em;
-}
-
-div.graph-container > div.mobile {
-  margin-right: 0;
+.graph-container-8 {
+  grid-template-columns: repeat(8, auto);
 }
 
 div.graph-container > div.justify-end {

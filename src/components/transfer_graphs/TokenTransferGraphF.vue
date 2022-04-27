@@ -29,14 +29,23 @@
     <br/>
     <p class="h-is-tertiary-text mb-4">Token Transfers</p>
 
-    <div class="graph-container">
+    <div class="graph-container" v-bind:class="{'graph-container-8': symbolVisible}">
 
-      <div style="grid-column-end: span 1" class="h-is-text-size-3 has-text-grey-light has-text-weight-light mb-2">Account</div>
-      <div style="grid-column-end: span 2" class="h-is-text-size-3 has-text-grey-light has-text-weight-light mb-2">Token Amount</div>
-      <div/>
-      <div style="grid-column-end: span 1" class="h-is-text-size-3 has-text-grey-light has-text-weight-light mb-2">Account</div>
-      <div style="grid-column-end: span 2" class="h-is-text-size-3 has-text-grey-light has-text-weight-light mb-2">Token Amount</div>
-      <div/>
+      <template v-if="symbolVisible">
+        <div style="grid-column-end: span 1" class="h-is-text-size-3 has-text-grey-light has-text-weight-light mb-2">Account</div>
+        <div style="grid-column-end: span 2" class="h-is-text-size-3 has-text-grey-light has-text-weight-light mb-2">Token Amount</div>
+        <div/>
+        <div style="grid-column-end: span 1" class="h-is-text-size-3 has-text-grey-light has-text-weight-light mb-2">Account</div>
+        <div style="grid-column-end: span 2" class="h-is-text-size-3 has-text-grey-light has-text-weight-light mb-2">Token Amount</div>
+        <div/>
+      </template>
+      <template v-else>
+        <div style="grid-column-end: span 1" class="h-is-text-size-3 has-text-grey-light has-text-weight-light mb-2">Account</div>
+        <div style="grid-column-end: span 1" class="h-is-text-size-3 has-text-grey-light has-text-weight-light mb-2">Token Amount</div>
+        <div/>
+        <div style="grid-column-end: span 1" class="h-is-text-size-3 has-text-grey-light has-text-weight-light mb-2">Account</div>
+        <div style="grid-column-end: span 1" class="h-is-text-size-3 has-text-grey-light has-text-weight-light mb-2">Token Amount</div>
+      </template>
 
       <template v-for="s in tokenTransferLayout.length" v-bind:key="s">
 
@@ -58,11 +67,13 @@
           </div>
 
           <!-- #2 : token symbol -->
-          <div data-cy="tokenExtra" v-bind:class="{ 'mobile': isMobileScreen }">
-            <TokenExtra v-if="i <= tokenTransferLayout[s-1].sources.length && !isMobileScreen"
-                        v-bind:token-id="tokenTransferLayout[s-1].tokenId"
-                        v-bind:use-anchor="true"/>
-          </div>
+          <template v-if="symbolVisible">
+            <div data-cy="tokenExtra">
+              <TokenExtra v-if="i <= tokenTransferLayout[s-1].sources.length"
+                          v-bind:token-id="tokenTransferLayout[s-1].tokenId"
+                          v-bind:use-anchor="true"/>
+            </div>
+          </template>
 
           <!-- #3 : arrow -->
           <div  style="position: relative">
@@ -87,19 +98,22 @@
                          v-bind:amount="tokenTransferLayout[s-1].destinations[i-1].amount"/>
           </div>
 
-          <!-- #6 : token symbol -->
-          <div data-cy="tokenExtra" v-bind:class="{ 'mobile': isMobileScreen }">
-            <TokenExtra v-if="i <= tokenTransferLayout[s-1].destinations.length && !isMobileScreen"
-                        v-bind:token-id="tokenTransferLayout[s-1].tokenId"
-                        v-bind:use-anchor="true"/>
-          </div>
+          <template v-if="symbolVisible">
 
-          <!-- #7 : description -->
-          <div v-bind:class="{ 'mobile': isMobileScreen }">
-            <template v-if="i <= tokenTransferLayout[s-1].descriptions.length && !isMobileScreen">
-              <span  class="h-is-smaller">{{ tokenTransferLayout[s-1].descriptions[i-1] }}</span>
-            </template>
-          </div>
+            <!-- #6 : token symbol -->
+            <div data-cy="tokenExtra">
+              <TokenExtra v-if="i <= tokenTransferLayout[s-1].destinations.length"
+                          v-bind:token-id="tokenTransferLayout[s-1].tokenId"
+                          v-bind:use-anchor="true"/>
+            </div>
+
+            <!-- #7 : description -->
+            <div>
+              <template v-if="i <= tokenTransferLayout[s-1].descriptions.length">
+                <span  class="h-is-smaller">{{ tokenTransferLayout[s-1].descriptions[i-1] }}</span>
+              </template>
+            </div>
+          </template>
 
 
         </template>
@@ -140,11 +154,11 @@ export default defineComponent({
       tokenTransferLayout.value = TokenTransferLayout.make(props.transaction)
     })
 
-    const isMobileScreen = inject("isMobileScreen", false)
+    const symbolVisible = inject("isSmallScreen", true)
 
     return {
       tokenTransferLayout,
-      isMobileScreen
+      symbolVisible
     }
   }
 })
@@ -159,15 +173,12 @@ export default defineComponent({
 
 .graph-container {
   display: inline-grid;
+  grid-template-columns: repeat(5, auto);
+  column-gap: 1em;
+}
+
+.graph-container-8 {
   grid-template-columns: repeat(8, auto)
-}
-
-div.graph-container > div {
-  margin-right: 1em;
-}
-
-div.graph-container > div.mobile {
-  margin-right: 0;
 }
 
 div.graph-container > div.justify-end {

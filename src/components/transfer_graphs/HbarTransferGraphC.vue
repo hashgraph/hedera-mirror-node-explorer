@@ -117,11 +117,8 @@ export default defineComponent({
 
 .graph-container {
   display: inline-grid;
-  grid-template-columns: repeat(5, auto)
-}
-
-div.graph-container > div {
-  margin-right: 1em;
+  grid-template-columns: repeat(5, auto);
+  column-gap: 1em
 }
 
 div.graph-container > div.justify-end {

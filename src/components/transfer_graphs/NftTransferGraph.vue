@@ -31,7 +31,7 @@
       <p class="h-is-tertiary-text mb-4">NFT Transfers</p>
     </template>
 
-    <div class="graph-container">
+    <div class="graph-container" v-bind:class="{'graph-container-6': descriptionVisible}">
 
       <template v-if="!compact">
 
@@ -40,7 +40,7 @@
         <div class="h-is-text-size-3 has-text-grey-light has-text-weight-light mb-2">Non Fungible Tokens</div>
         <div/>
         <div class="h-is-text-size-3 has-text-grey-light has-text-weight-light mb-2">Account</div>
-        <div/>
+        <div v-if="!compact && descriptionVisible"/>
       </template>
 
       <template v-for="i in nftTransferLayout.length" v-bind:key="i">
@@ -90,8 +90,8 @@
         </div>
 
         <!-- #5 : description -->
-        <div v-bind:class="{ 'mobile': isMobileScreen }">
-          <span v-if="!compact && !isMobileScreen" class="h-is-smaller">{{ nftTransferLayout[i-1].description }}</span>
+        <div v-if="!compact && descriptionVisible">
+          <span class="h-is-smaller">{{ nftTransferLayout[i-1].description }}</span>
         </div>
 
       </template>
@@ -132,11 +132,11 @@ export default defineComponent({
       nftTransferLayout.value = NFTTransferLayout.make(props.transaction)
     })
 
-    const isMobileScreen = inject("isMobileScreen", false)
+    const descriptionVisible = inject("isSmallScreen", true)
 
     return {
       nftTransferLayout,
-      isMobileScreen
+      descriptionVisible
     }
   }
 })
@@ -151,15 +151,12 @@ export default defineComponent({
 
 .graph-container {
   display: inline-grid;
+  grid-template-columns: repeat(5, auto);
+  column-gap: 1em;
+}
+
+.graph-container-6 {
   grid-template-columns: repeat(6, auto)
-}
-
-div.graph-container > div {
-  margin-right: 1em;
-}
-
-div.graph-container > div.mobile {
-  margin-right: 0;
 }
 
 </style>

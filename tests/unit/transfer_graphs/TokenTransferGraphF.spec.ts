@@ -123,7 +123,7 @@ describe("TokenTransferGraphF.vue", () => {
         const wrapper2 = mount(TokenTransferGraph, {
             global: {
                 plugins: [router],
-                provide: { isMobileScreen: true }
+                provide: { isSmallScreen: false }
             },
             props: {
                 transaction: transaction as Transaction

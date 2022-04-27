@@ -119,7 +119,7 @@ describe("NftTransferGraph.vue", () => {
             global: {
                 plugins: [router],
                 provide: {
-                    isMobileScreen: true
+                    isSmallScreen: false
                 }
             },
             props: {
