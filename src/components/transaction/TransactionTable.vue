@@ -29,8 +29,8 @@
       :data="transactions"
       :hoverable="true"
       :narrowed="narrowed"
-      :paginated="paginationNeeded && !isTouchDevice && isMediumScreen"
-      :per-page="pageSize"
+      :paginated="!isTouchDevice && paginationNeeded"
+      :per-page="isMediumScreen ? pageSize : 5"
       :striped="true"
       :mobile-breakpoint="ORUGA_MOBILE_BREAKPOINT"
       aria-current-label="Current page"
@@ -103,10 +103,9 @@ export default defineComponent({
     const isMediumScreen = inject('isMediumScreen', true)
 
     const DEFAULT_PAGE_SIZE = 15
-
     const pageSize = props.nbItems ?? DEFAULT_PAGE_SIZE
     const paginationNeeded = computed(() => {
-          return transactions.value.length > pageSize
+          return transactions.value.length > 5
         }
     )
 
@@ -114,7 +113,7 @@ export default defineComponent({
     let transactions = ref<Array<Transaction>>([])
 
     // 2) cache
-    const cache = new TransactionCache()
+    const cache = new TransactionCache(isTouchDevice ? 15 : 100)
     cache.responseDidChangeCB = () => {
       transactions.value = cache.getEntity()?.transactions ?? []
     }

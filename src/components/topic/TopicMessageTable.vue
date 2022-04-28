@@ -28,8 +28,8 @@
     <o-table
         v-model:current-page="currentPage"
         :data="messages"
-        :paginated="paginationNeeded && !isTouchDevice && isMediumScreen"
-        :per-page="pageSize"
+        :paginated="!isTouchDevice && paginationNeeded"
+        :per-page="isMediumScreen ? pageSize : 5"
         :striped="true"
         :mobile-breakpoint="ORUGA_MOBILE_BREAKPOINT"
         aria-current-label="Current page"
@@ -96,7 +96,6 @@ export default defineComponent({
     const isMediumScreen = inject('isMediumScreen', true)
 
     const DEFAULT_PAGE_SIZE = 15
-
     const pageSize = props.nbItems ?? DEFAULT_PAGE_SIZE
     const paginationNeeded = computed(() => {
           return messages.value.length > pageSize
@@ -107,7 +106,7 @@ export default defineComponent({
     let messages = ref<Array<TopicMessage>>([])
 
     // 2) cache
-    const cache = new TopicMessageCache(props.topicId)
+    const cache = new TopicMessageCache(props.topicId, isTouchDevice ? 15 : 100)
 
     cache.responseDidChangeCB = () => {
       messages.value = cache.getEntity()?.messages ?? []

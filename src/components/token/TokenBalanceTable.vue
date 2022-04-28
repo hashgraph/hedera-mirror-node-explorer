@@ -28,8 +28,8 @@
       :data="balances"
       :narrowed="true"
       :hoverable="true"
-      :paginated="!isTouchDevice && isMediumScreen"
-      :per-page="pageSize"
+      :paginated="!isTouchDevice && paginationNeeded"
+      :per-page="isMediumScreen ? pageSize : 5"
       :striped="true"
       :v-model:current-page="currentPage"
       :mobile-breakpoint="ORUGA_MOBILE_BREAKPOINT"
@@ -86,10 +86,9 @@ export default defineComponent({
     const isMediumScreen = inject('isMediumScreen', true)
 
     const DEFAULT_PAGE_SIZE = 15
-
     const pageSize = props.nbItems ?? DEFAULT_PAGE_SIZE
     const paginationNeeded = computed(() => {
-          return balances.value.length > pageSize
+          return balances.value.length > 5
         }
     )
 
@@ -97,7 +96,7 @@ export default defineComponent({
     let balances = ref<Array<TokenDistribution>>([])
 
     // 2) cache
-    const cache = new TokenBalanceCache(props.tokenId)
+    const cache = new TokenBalanceCache(props.tokenId, isTouchDevice ? 15 : 100)
 
     cache.responseDidChangeCB = () => {
       balances.value = cache.getEntity()?.balances ?? []

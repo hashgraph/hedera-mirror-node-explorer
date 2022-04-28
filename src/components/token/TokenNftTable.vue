@@ -29,8 +29,8 @@
       :data="nfts"
       :narrowed="true"
       :hoverable="false"
-      :paginated="paginationNeeded && !isTouchDevice && isMediumScreen"
-      :per-page="pageSize"
+      :paginated="paginationNeeded && !isTouchDevice"
+      :per-page="isMediumScreen ? pageSize : 5"
       :striped="true"
       :v-model:current-page="currentPage"
       :mobile-breakpoint="ORUGA_MOBILE_BREAKPOINT"
@@ -102,10 +102,9 @@ export default defineComponent({
     const isMediumScreen = inject('isMediumScreen', true)
 
     const DEFAULT_PAGE_SIZE = 15
-
     const pageSize = props.nbItems ?? DEFAULT_PAGE_SIZE
     const paginationNeeded = computed(() => {
-          return nfts.value.length > pageSize
+          return nfts.value.length > 5
         }
     )
 

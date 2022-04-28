@@ -27,8 +27,8 @@
   <o-table
       :data="accounts"
       :hoverable="true"
-      :paginated="!isTouchDevice && isMediumScreen"
-      :per-page="nbItems ?? 15"
+      :paginated="!isTouchDevice"
+      :per-page="isMediumScreen ? pageSize : 5"
       :striped="true"
       :v-model:current-page="currentPage"
       :mobile-breakpoint="ORUGA_MOBILE_BREAKPOINT"
@@ -104,15 +104,17 @@ export default defineComponent({
     nbItems: Number,
   },
 
-  setup() {
+  setup(props) {
     const isTouchDevice = inject('isTouchDevice', false)
     const isMediumScreen = inject('isMediumScreen', true)
+    const DEFAULT_PAGE_SIZE = 15
+    const pageSize = props.nbItems ?? DEFAULT_PAGE_SIZE
 
     // 1) accounts
     let accounts = ref<Array<AccountInfo>>([])
 
     // 2) cache
-    const cache = new AccountCache()
+    const cache = new AccountCache(isTouchDevice ? 15 : 100)
     cache.responseDidChangeCB = () => {
       accounts.value = cache.getEntity()?.accounts ?? []
     }
@@ -136,6 +138,7 @@ export default defineComponent({
     return {
       isTouchDevice,
       isMediumScreen,
+      pageSize,
       accounts,
       cache,
       handleClick,

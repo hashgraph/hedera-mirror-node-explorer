@@ -27,8 +27,8 @@
   <o-table
       :data="transactions"
       :hoverable="true"
-      :paginated="!isTouchDevice && isMediumScreen"
-      :per-page="nbItems ?? 15"
+      :paginated="!isTouchDevice"
+      :per-page="isMediumScreen ? pageSize : 5"
       :striped="true"
       :v-model:current-page="currentPage"
       :mobile-breakpoint="ORUGA_MOBILE_BREAKPOINT"
@@ -83,9 +83,11 @@ export default defineComponent({
     nbItems: Number,
   },
 
-  setup() {
+  setup(props) {
     const isTouchDevice = inject('isTouchDevice', false)
     const isMediumScreen = inject('isMediumScreen', true)
+    const DEFAULT_PAGE_SIZE = 15
+    const pageSize = props.nbItems ?? DEFAULT_PAGE_SIZE
 
     const transactionTypeFilter = TransactionType.CONSENSUSCREATETOPIC
     const transactionResultFilter = TransactionResult.SUCCESS
@@ -94,7 +96,7 @@ export default defineComponent({
     let transactions = ref<Array<Transaction>>([])
 
     // 2) cache
-    const cache = new TransactionCache()
+    const cache = new TransactionCache(isTouchDevice ? 15 : 100)
     cache.setTransactionType(transactionTypeFilter)
     cache.setTransactionResult(transactionResultFilter)
 
@@ -120,6 +122,7 @@ export default defineComponent({
     return {
       isTouchDevice,
       isMediumScreen,
+      pageSize,
       transactions,
       cache,
       handleClick,

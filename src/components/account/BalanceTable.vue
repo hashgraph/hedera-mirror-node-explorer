@@ -27,8 +27,8 @@
   <o-table
       :data="balances"
       :hoverable="true"
-      :paginated="!isTouchDevice && isMediumScreen"
-      :per-page="nbItems ?? 15"
+      :paginated="!isTouchDevice"
+      :per-page="isMediumScreen ? pageSize : 5"
       :striped="true"
       :v-model:current-page="currentPage"
       :mobile-breakpoint="ORUGA_MOBILE_BREAKPOINT"
@@ -85,6 +85,8 @@ export default defineComponent({
   setup(props) {
     const isTouchDevice = inject('isTouchDevice', false)
     const isMediumScreen = inject('isMediumScreen', true)
+    const DEFAULT_PAGE_SIZE = 15
+    const pageSize = props.nbItems ?? DEFAULT_PAGE_SIZE
 
     const router = useRouter()
 
@@ -92,7 +94,7 @@ export default defineComponent({
     let balances = ref<Array<TokenBalance>>([])
 
     // 2) cache
-    const cache = new BalanceCache(props.accountId)
+    const cache = new BalanceCache(props.accountId, isTouchDevice ? 15 : 100)
     cache.responseDidChangeCB = () => {
       let accountBalances = cache.getEntity()?.balances
       if (accountBalances && accountBalances.length > 0) {
@@ -125,6 +127,7 @@ export default defineComponent({
     return {
       isTouchDevice,
       isMediumScreen,
+      pageSize,
       balances,
       cache,
       handleClick,
