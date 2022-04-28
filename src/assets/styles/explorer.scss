@@ -257,10 +257,14 @@ table.o-table > tbody > tr {
     75% {opacity: 1.0 }
     100% {opacity: 1.0 }
 }
-// Fix for o-table bug (?)
+// Fixes for o-table "defects"
 table.o-table {
     margin: 1rem 0
 }
+div.o-table__pagination {
+    padding: 4px
+}
+
 /*
     Fix Bulma / Oruga conflict
 
