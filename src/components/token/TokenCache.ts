@@ -34,9 +34,9 @@ export class TokenCache extends EntityCache<TokensResponse> {
     // Public
     //
 
-    public constructor() {
+    public constructor(limit = 100) {
         super(5000, 10)
-        this.limit = 100
+        this.limit = limit
         this.sorting = DESCENDING
     }
 

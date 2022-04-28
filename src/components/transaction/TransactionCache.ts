@@ -33,9 +33,9 @@ export class TransactionCache extends EntityCache<TransactionResponse> {
     // Public
     //
 
-    public constructor() {
+    public constructor(limit = 100) {
         super(5000, 10)
-        this.limit = 100
+        this.limit = limit
     }
 
     public setAccountId(newValue: string|null): void {

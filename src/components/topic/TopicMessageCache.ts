@@ -31,10 +31,10 @@ export class TopicMessageCache extends EntityCache<TopicMessagesResponse> {
     // Public
     //
 
-    public constructor(topicId: string) {
+    public constructor(topicId: string, limit = 100) {
         super(5000, 10)
         this.topicId = topicId
-        this.limit = 100
+        this.limit = limit
     }
 
     public setTopicId(topicId: string): void {
