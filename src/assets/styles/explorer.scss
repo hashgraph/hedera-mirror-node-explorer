@@ -295,3 +295,11 @@ table.o-table td.o-table__td--left,
 table.o-table th.o-table__th--left {
     text-align: left;
 }
+
+//
+// MOBILE
+//
+.h-mobile-background {
+    background-color: $h-table-background-color;
+}
+

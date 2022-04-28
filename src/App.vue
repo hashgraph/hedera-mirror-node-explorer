@@ -36,7 +36,7 @@
     </section>
   </div>
 
-  <div v-else>
+  <div v-else :class="{'h-mobile-background': isTouchDevice || !isSmallScreen}">
     <router-view/>
   </div>
 
@@ -78,7 +78,7 @@ export const SMALL_BREAKPOINT = 768
 // this will eventually be the window min width
 // export const FINAL_BREAKPOINT = 576
 // temporary limit under which "mobile coming soon" is displayed
-export const FINAL_BREAKPOINT = 890
+export const FINAL_BREAKPOINT = 640
 
 export const ORUGA_MOBILE_BREAKPOINT = "1023px"
 
@@ -132,6 +132,7 @@ export default defineComponent({
 
     return {
       isTouchDevice,
+      isSmallScreen,
       sizeFallBack
     }
   },
