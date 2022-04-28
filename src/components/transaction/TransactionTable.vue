@@ -41,12 +41,7 @@
       @click="handleClick"
   >
     <o-table-column v-slot="props" field="transaction_id" label="ID">
-      <span class="is-numeric">
-        {{ props.row.transaction_id != null ? normalizeTransactionId(props.row.transaction_id, true) : "" }}
-      </span>
-      <span v-if="props.row.result !== 'SUCCESS'" class="icon has-text-danger">
-        <i class="fas fa-exclamation-triangle"></i>
-      </span>
+      <TransactionLabel v-bind:transaction-id="props.row.transaction_id" v-bind:result="props.row.result"/>
     </o-table-column>
 
     <o-table-column v-slot="props" field="name" label="Type">
@@ -81,6 +76,7 @@ import {PlayPauseState} from "@/components/PlayPauseButton.vue";
 import {TransactionOption} from "@/components/transaction/TransactionTypeSelect.vue";
 import router from "@/router";
 import TimestampValue from "@/components/values/TimestampValue.vue";
+import TransactionLabel from "@/components/values/TransactionLabel.vue";
 import TransactionSummary from "@/components/transaction/TransactionSummary.vue";
 import {normalizeTransactionId} from "@/utils/TransactionID";
 import { ORUGA_MOBILE_BREAKPOINT } from '@/App.vue';
@@ -88,7 +84,7 @@ import { ORUGA_MOBILE_BREAKPOINT } from '@/App.vue';
 export default defineComponent({
   name: 'TransactionTable',
 
-  components: {TransactionSummary, TimestampValue },
+  components: {TransactionSummary, TimestampValue, TransactionLabel },
 
   props: {
     narrowed: Boolean,

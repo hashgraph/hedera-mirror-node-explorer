@@ -41,9 +41,11 @@
       @click="handleClick"
   >
     <o-table-column v-slot="props" field="consensus_timestamp" label="Time">
-      <TimestampValue v-bind:timestamp="props.row.consensus_timestamp"/>
-      <span v-if="props.row.result !== 'SUCCESS'" class="icon has-text-danger">
-        <i class="fas fa-exclamation-triangle"></i>
+      <span>
+        <TimestampValue v-bind:timestamp="props.row.consensus_timestamp"/>
+        <span v-if="props.row.result !== 'SUCCESS'" class="icon has-text-danger">
+          <i class="fas fa-exclamation-triangle"></i>
+        </span>
       </span>
     </o-table-column>
 

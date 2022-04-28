@@ -96,7 +96,7 @@ describe("MainDashboard.vue", () => {
         expect(t0.exists()).toBe(true)
         expect(t0.get('thead').text()).toBe("ID Content Time")
         expect(t0.get('tbody').text()).toBe(
-            "0.0.29624024@1646025139.152901498 0.0.29624024\n\n" +
+            "0.0.29624024@1646025139.1529014980.0.29624024\n\n" +
             "123423\n\n" +
             "0.0.296939115:12:31.6676 AMFeb 28, 2022"
         )
@@ -107,7 +107,7 @@ describe("MainDashboard.vue", () => {
         expect(t1.exists()).toBe(true)
         expect(t1.get('thead').text()).toBe("ID Content Time")
         expect(t1.get('tbody').text()).toBe(
-            "0.0.29624024@1646025139.152901498 0.0.29624024\n\n" +
+            "0.0.29624024@1646025139.1529014980.0.29624024\n\n" +
             "123423\n\n" +
             "0.0.296939115:12:31.6676 AMFeb 28, 2022"
         )

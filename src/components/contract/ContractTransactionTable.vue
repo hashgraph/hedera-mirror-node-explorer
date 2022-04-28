@@ -43,12 +43,7 @@
   >
 
     <o-table-column v-slot="props" field="transaction_id" label="ID">
-      <div class="w300 is-numeric">
-        {{ props.row.transaction_id != null ? normalizeTransactionId(props.row.transaction_id, true) : "" }}
-        <div v-if="props.row.result !== 'SUCCESS'" class="icon has-text-danger">
-          <i class="fas fa-exclamation-triangle"></i>
-        </div>
-      </div>
+      <TransactionLabel v-bind:transaction-id="props.row.transaction_id" v-bind:result="props.row.result"/>
     </o-table-column>
 
     <o-table-column field="name" label="Type" v-slot="props">
@@ -90,13 +85,14 @@ import {PlayPauseState} from "@/components/PlayPauseButton.vue";
 import router from "@/router";
 import {AccountTransactionCache} from "@/components/contract/AccountTransactionCache";
 import TimestampValue from "@/components/values/TimestampValue.vue";
+import TransactionLabel from "@/components/values/TransactionLabel.vue";
 import HbarAmount from "@/components/values/HbarAmount.vue";
 import {ORUGA_MOBILE_BREAKPOINT} from '@/App.vue';
 
 export default defineComponent({
   name: 'ContractTransactionTable',
 
-  components: {HbarAmount, TimestampValue},
+  components: {HbarAmount, TimestampValue, TransactionLabel},
 
   props: {
     nbItems: Number,

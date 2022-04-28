@@ -80,12 +80,12 @@ describe("ContractTransactionTable.vue", () => {
 
         expect(wrapper.find('thead').text()).toBe("ID Type Net Amount Fees Time")
         expect(wrapper.find('tbody').text()).toBe(
-            "0.0.178899@1645373457.761328453 " +
+            "0.0.178899@1645373457.761328453" +
             "CONTRACT CALL" +
             "1.00000000" +
             "0.75871170" +
             "4:11:07.8897 PMFeb 20, 2022" +
-            "0.0.178899@1645373391.947654307 " +
+            "0.0.178899@1645373391.947654307" +
             "CONTRACT CALL" +
             "1.00000000" +
             "0.18787079" +

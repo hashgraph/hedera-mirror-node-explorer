@@ -42,12 +42,7 @@
   >
 
     <o-table-column v-slot="props" field="transaction_id" label="ID">
-      <div class="w400 is-numeric">
-        {{ props.row.transaction_id != null ? normalizeTransactionId(props.row.transaction_id, true) : "" }}
-        <div v-if="props.row.result !== 'SUCCESS'" class="icon has-text-danger">
-          <i class="fas fa-exclamation-triangle"></i>
-        </div>
-      </div>
+      <TransactionLabel v-bind:transaction-id="props.row.transaction_id" v-bind:result="props.row.result"/>
     </o-table-column>
 
     <o-table-column v-slot="props" label="Content">
@@ -75,6 +70,7 @@ import {EntityCacheState} from "@/utils/EntityCache";
 import {TransactionCache} from "@/components/transaction/TransactionCache";
 import {PlayPauseState} from "@/components/PlayPauseButton.vue";
 import TimestampValue from "@/components/values/TimestampValue.vue";
+import TransactionLabel from "@/components/values/TransactionLabel.vue";
 import router from "@/router";
 import TransactionSummary from "@/components/transaction/TransactionSummary.vue";
 import { ORUGA_MOBILE_BREAKPOINT } from '@/App.vue';
@@ -82,7 +78,7 @@ import { ORUGA_MOBILE_BREAKPOINT } from '@/App.vue';
 export default defineComponent({
   name: 'CryptoTransactionTable',
 
-  components: {TimestampValue, TransactionSummary},
+  components: {TimestampValue, TransactionSummary, TransactionLabel},
 
   props: {
     nbItems: Number,
