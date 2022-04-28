@@ -28,7 +28,7 @@
       :data="balances"
       :narrowed="true"
       :hoverable="true"
-      :paginated="paginationNeeded"
+      :paginated="!isTouchDevice && isMediumScreen"
       :per-page="pageSize"
       :striped="true"
       :v-model:current-page="currentPage"
@@ -61,7 +61,7 @@
 
 <script lang="ts">
 
-import {computed, defineComponent, onBeforeUnmount, onMounted, ref, watch} from 'vue';
+import {computed, defineComponent, inject, onBeforeUnmount, onMounted, ref, watch} from 'vue';
 import {TokenDistribution} from "@/schemas/HederaSchemas";
 import {TokenBalanceCache} from "@/components/token/TokenBalanceCache";
 import router from "@/router";
@@ -82,6 +82,8 @@ export default defineComponent({
   },
 
   setup(props) {
+    const isTouchDevice = inject('isTouchDevice', false)
+    const isMediumScreen = inject('isMediumScreen', true)
 
     const DEFAULT_PAGE_SIZE = 15
 
@@ -124,6 +126,8 @@ export default defineComponent({
     let currentPage = ref(1)
 
     return {
+      isTouchDevice,
+      isMediumScreen,
       pageSize,
       paginationNeeded,
       balances,

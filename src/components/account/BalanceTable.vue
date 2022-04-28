@@ -27,7 +27,7 @@
   <o-table
       :data="balances"
       :hoverable="true"
-      :paginated="true"
+      :paginated="!isTouchDevice && isMediumScreen"
       :per-page="nbItems ?? 15"
       :striped="true"
       :v-model:current-page="currentPage"
@@ -61,7 +61,7 @@
 
 <script lang="ts">
 
-import {defineComponent, onBeforeUnmount, onMounted, ref, watch} from 'vue';
+import {defineComponent, inject, onBeforeUnmount, onMounted, ref, watch} from 'vue';
 import {TokenBalance} from "@/schemas/HederaSchemas";
 import TokenLink from "@/components/values/TokenLink.vue";
 import {BalanceCache} from "@/components/account/BalanceCache";
@@ -83,6 +83,8 @@ export default defineComponent({
   },
 
   setup(props) {
+    const isTouchDevice = inject('isTouchDevice', false)
+    const isMediumScreen = inject('isMediumScreen', true)
 
     const router = useRouter()
 
@@ -120,7 +122,15 @@ export default defineComponent({
     // 4) currentPage
     let currentPage = ref(1)
 
-    return {balances, cache, handleClick, currentPage, ORUGA_MOBILE_BREAKPOINT}
+    return {
+      isTouchDevice,
+      isMediumScreen,
+      balances,
+      cache,
+      handleClick,
+      currentPage,
+      ORUGA_MOBILE_BREAKPOINT
+    }
   }
 });
 

@@ -29,7 +29,7 @@
       :data="transactions"
       :hoverable="true"
       :narrowed="narrowed"
-      :paginated="paginationNeeded"
+      :paginated="paginationNeeded && !isTouchDevice && isMediumScreen"
       :per-page="pageSize"
       :striped="true"
       :mobile-breakpoint="ORUGA_MOBILE_BREAKPOINT"
@@ -72,7 +72,7 @@
 
 <script lang="ts">
 
-import {computed, defineComponent, onBeforeUnmount, PropType, ref, watch} from 'vue';
+import {computed, defineComponent, inject, onBeforeUnmount, PropType, ref, watch} from 'vue';
 import {Transaction, TransactionType} from '@/schemas/HederaSchemas';
 import {makeTypeLabel} from "@/utils/TransactionTools";
 import {EntityCacheState} from "@/utils/EntityCache";
@@ -99,6 +99,8 @@ export default defineComponent({
   },
 
   setup(props, context) {
+    const isTouchDevice = inject('isTouchDevice', false)
+    const isMediumScreen = inject('isMediumScreen', true)
 
     const DEFAULT_PAGE_SIZE = 15
 
@@ -175,6 +177,8 @@ export default defineComponent({
     let currentPage = ref(1)
 
     return {
+      isTouchDevice,
+      isMediumScreen,
       pageSize,
       paginationNeeded,
       transactions,

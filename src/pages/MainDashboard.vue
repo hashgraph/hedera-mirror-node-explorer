@@ -127,7 +127,7 @@ export default defineComponent({
   },
 
   setup(props) {
-    const displaySideBySide = inject('isLargeScreen')
+    const displaySideBySide = inject('isLargeScreen', true)
 
     const CryptoTransactionCacheState = ref<PlayPauseState>(PlayPauseState.Play)
     const MessageTransactionCacheState = ref<PlayPauseState>(PlayPauseState.Play)

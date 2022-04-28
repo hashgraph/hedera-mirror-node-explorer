@@ -27,7 +27,7 @@
   <o-table
       :data="tokens"
       :hoverable="true"
-      :paginated="true"
+      :paginated="!isTouchDevice && isMediumScreen"
       :per-page="nbItems ?? 15"
       :striped="true"
       :v-model:current-page="currentPage"
@@ -60,7 +60,7 @@
 
 <script lang="ts">
 
-import {defineComponent, onBeforeUnmount, onMounted, ref} from 'vue';
+import {defineComponent, inject, onBeforeUnmount, onMounted, ref} from 'vue';
 import router from "@/router";
 import {Token} from "@/schemas/HederaSchemas";
 import {TokenCache} from "@/components/token/TokenCache";
@@ -77,6 +77,8 @@ export default defineComponent({
   },
 
   setup(props) {
+    const isTouchDevice = inject('isTouchDevice', false)
+    const isMediumScreen = inject('isMediumScreen', true)
 
     // 1) tokens
     let tokens = ref<Array<Token>>([])
@@ -107,6 +109,8 @@ export default defineComponent({
     let currentPage = ref(1)
 
     return {
+      isTouchDevice,
+      isMediumScreen,
       tokens,
       cache,
       handleClick,

@@ -26,7 +26,7 @@
 
   <o-table
       :data="contracts"
-      :paginated="true"
+      :paginated="!isTouchDevice && isMediumScreen"
       :per-page="nbItems ?? 15"
       :striped="true"
       :hoverable="true"
@@ -65,7 +65,7 @@
 
 <script lang="ts">
 
-import {defineComponent, onBeforeUnmount, onMounted, ref} from 'vue';
+import {defineComponent, inject, onBeforeUnmount, onMounted, ref} from 'vue';
 import {ContractCache} from "@/components/contract/ContractCache";
 import {Contract} from "@/schemas/HederaSchemas";
 import router from "@/router";
@@ -88,6 +88,8 @@ export default defineComponent({
   },
 
   setup() {
+    const isTouchDevice = inject('isTouchDevice', false)
+    const isMediumScreen = inject('isMediumScreen', true)
 
     // 1) contracts
     let contracts = ref<Array<Contract>>([])
@@ -112,7 +114,15 @@ export default defineComponent({
     // 4) currentPage
     let currentPage = ref(1)
 
-    return { contracts, cache, handleClick, currentPage, ORUGA_MOBILE_BREAKPOINT }
+    return {
+      isTouchDevice,
+      isMediumScreen,
+      contracts,
+      cache,
+      handleClick,
+      currentPage,
+      ORUGA_MOBILE_BREAKPOINT
+    }
   }
 });
 

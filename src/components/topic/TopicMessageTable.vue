@@ -28,7 +28,7 @@
     <o-table
         v-model:current-page="currentPage"
         :data="messages"
-        :paginated="paginationNeeded"
+        :paginated="paginationNeeded && !isTouchDevice && isMediumScreen"
         :per-page="pageSize"
         :striped="true"
         :mobile-breakpoint="ORUGA_MOBILE_BREAKPOINT"
@@ -66,7 +66,7 @@
 
 <script lang="ts">
 
-import {computed, defineComponent, onBeforeUnmount, PropType, ref, watch} from 'vue';
+import {computed, defineComponent, inject, onBeforeUnmount, PropType, ref, watch} from 'vue';
 
 import {TopicMessage} from "@/schemas/HederaSchemas"
 import {EntityCacheState} from "@/utils/EntityCache";
@@ -92,6 +92,8 @@ export default defineComponent({
   },
 
   setup(props, context) {
+    const isTouchDevice = inject('isTouchDevice', false)
+    const isMediumScreen = inject('isMediumScreen', true)
 
     const DEFAULT_PAGE_SIZE = 15
 
@@ -158,6 +160,8 @@ export default defineComponent({
     let currentPage = ref(1)
 
     return {
+      isTouchDevice,
+      isMediumScreen,
       pageSize,
       paginationNeeded,
       messages,

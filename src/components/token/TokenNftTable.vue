@@ -29,7 +29,7 @@
       :data="nfts"
       :narrowed="true"
       :hoverable="false"
-      :paginated="paginationNeeded"
+      :paginated="paginationNeeded && !isTouchDevice && isMediumScreen"
       :per-page="pageSize"
       :striped="true"
       :v-model:current-page="currentPage"
@@ -76,7 +76,7 @@
 
 <script lang="ts">
 
-import {computed, defineComponent, onBeforeUnmount, onMounted, ref, watch} from 'vue';
+import {computed, defineComponent, inject, onBeforeUnmount, onMounted, ref, watch} from 'vue';
 import {Nft} from "@/schemas/HederaSchemas";
 import {TokenNftCache} from "@/components/token/TokenNftCache";
 import TimestampValue from "@/components/values/TimestampValue.vue";
@@ -98,6 +98,8 @@ export default defineComponent({
   },
 
   setup(props) {
+    const isTouchDevice = inject('isTouchDevice', false)
+    const isMediumScreen = inject('isMediumScreen', true)
 
     const DEFAULT_PAGE_SIZE = 15
 
@@ -135,6 +137,8 @@ export default defineComponent({
     let currentPage = ref(1)
 
     return {
+      isTouchDevice,
+      isMediumScreen,
       pageSize,
       paginationNeeded,
       nfts,

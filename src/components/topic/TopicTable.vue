@@ -27,7 +27,7 @@
   <o-table
       :data="transactions"
       :hoverable="true"
-      :paginated="true"
+      :paginated="!isTouchDevice && isMediumScreen"
       :per-page="nbItems ?? 15"
       :striped="true"
       :v-model:current-page="currentPage"
@@ -66,7 +66,7 @@
 
 <script lang="ts">
 
-import {defineComponent, onBeforeUnmount, onMounted, ref} from 'vue';
+import {defineComponent, inject, onBeforeUnmount, onMounted, ref} from 'vue';
 import {Transaction, TransactionResult, TransactionType} from "@/schemas/HederaSchemas";
 import {TransactionCache} from "@/components/transaction/TransactionCache";
 import TimestampValue from "@/components/values/TimestampValue.vue";
@@ -84,6 +84,8 @@ export default defineComponent({
   },
 
   setup() {
+    const isTouchDevice = inject('isTouchDevice', false)
+    const isMediumScreen = inject('isMediumScreen', true)
 
     const transactionTypeFilter = TransactionType.CONSENSUSCREATETOPIC
     const transactionResultFilter = TransactionResult.SUCCESS
@@ -116,6 +118,8 @@ export default defineComponent({
     let currentPage = ref(1)
 
     return {
+      isTouchDevice,
+      isMediumScreen,
       transactions,
       cache,
       handleClick,

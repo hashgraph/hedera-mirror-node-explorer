@@ -29,7 +29,7 @@
       :data="transactions"
       :hoverable="true"
       :narrowed="true"
-      :paginated="paginationNeeded"
+      :paginated="paginationNeeded && !isTouchDevice && isMediumScreen"
       :per-page="pageSize"
       :striped="true"
       :mobile-breakpoint="ORUGA_MOBILE_BREAKPOINT"
@@ -81,7 +81,7 @@
 
 <script lang="ts">
 
-import {computed, defineComponent, onBeforeUnmount, PropType, ref, watch} from 'vue';
+import {computed, defineComponent, inject, onBeforeUnmount, PropType, ref, watch} from 'vue';
 import {Transaction} from "@/schemas/HederaSchemas";
 import {computeNetAmount, makeTypeLabel, showPositiveNetAmount} from "@/utils/TransactionTools";
 import {normalizeTransactionId,} from "@/utils/TransactionID";
@@ -91,7 +91,7 @@ import router from "@/router";
 import {AccountTransactionCache} from "@/components/contract/AccountTransactionCache";
 import TimestampValue from "@/components/values/TimestampValue.vue";
 import HbarAmount from "@/components/values/HbarAmount.vue";
-import { ORUGA_MOBILE_BREAKPOINT } from '@/App.vue';
+import {ORUGA_MOBILE_BREAKPOINT} from '@/App.vue';
 
 export default defineComponent({
   name: 'ContractTransactionTable',
@@ -105,14 +105,14 @@ export default defineComponent({
   },
 
   setup: function (props, context) {
+    const isTouchDevice = inject('isTouchDevice', false)
+    const isMediumScreen = inject('isMediumScreen', true)
 
     const DEFAULT_PAGE_SIZE = 15
-
     const pageSize = props.nbItems ?? DEFAULT_PAGE_SIZE
     const paginationNeeded = computed(() => {
-      return transactions.value.length > pageSize
-        }
-    )
+        return transactions.value.length > pageSize
+    })
 
     // 1) transactions
     let transactions = ref<Array<Transaction>>([])
@@ -174,6 +174,8 @@ export default defineComponent({
 
     return {
       pageSize,
+      isTouchDevice,
+      isMediumScreen,
       paginationNeeded,
       transactions,
       cache,

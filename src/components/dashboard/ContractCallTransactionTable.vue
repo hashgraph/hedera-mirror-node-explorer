@@ -29,7 +29,7 @@
       :data="transactions"
       :hoverable="true"
       :narrowed="true"
-      :paginated="true"
+      :paginated="!isTouchDevice && isMediumScreen"
       :per-page="nbItems ?? 15"
       :striped="true"
       :mobile-breakpoint="ORUGA_MOBILE_BREAKPOINT"
@@ -69,7 +69,7 @@
 
 <script lang="ts">
 
-import {defineComponent, onBeforeUnmount, PropType, ref, watch} from 'vue';
+import {defineComponent, inject, onBeforeUnmount, PropType, ref, watch} from 'vue';
 import {Transaction, TransactionType} from "@/schemas/HederaSchemas";
 import {normalizeTransactionId} from "@/utils/TransactionID";
 import {EntityCacheState} from "@/utils/EntityCache";
@@ -92,6 +92,8 @@ export default defineComponent({
   },
 
   setup(props, context) {
+    const isTouchDevice = inject('isTouchDevice', false)
+    const isMediumScreen = inject('isMediumScreen', true)
 
     // 1) transactions
     let transactions = ref<Array<Transaction>>([])
@@ -152,6 +154,8 @@ export default defineComponent({
     let currentPage = ref(1)
 
     return {
+      isTouchDevice,
+      isMediumScreen,
       transactions,
       cache,
       handleClick,

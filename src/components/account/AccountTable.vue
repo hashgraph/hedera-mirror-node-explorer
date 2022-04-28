@@ -27,7 +27,7 @@
   <o-table
       :data="accounts"
       :hoverable="true"
-      :paginated="true"
+      :paginated="!isTouchDevice && isMediumScreen"
       :per-page="nbItems ?? 15"
       :striped="true"
       :v-model:current-page="currentPage"
@@ -85,7 +85,7 @@
 
 <script lang="ts">
 
-import {defineComponent, onBeforeUnmount, onMounted, ref} from 'vue';
+import {defineComponent, inject, onBeforeUnmount, onMounted, ref} from 'vue';
 import {AccountInfo} from "@/schemas/HederaSchemas";
 import router from "@/router";
 import {AccountCache} from "@/components/account/AccountCache";
@@ -93,7 +93,7 @@ import HbarAmount from "@/components/values/HbarAmount.vue";
 import BlobValue from "@/components/values/BlobValue.vue";
 import TimestampValue from "@/components/values/TimestampValue.vue";
 import TokenAmount from "@/components/values/TokenAmount.vue";
-import { ORUGA_MOBILE_BREAKPOINT } from '@/App.vue';
+import {ORUGA_MOBILE_BREAKPOINT} from '@/App.vue';
 
 export default defineComponent({
   name: 'AccountTable',
@@ -105,6 +105,8 @@ export default defineComponent({
   },
 
   setup() {
+    const isTouchDevice = inject('isTouchDevice', false)
+    const isMediumScreen = inject('isMediumScreen', true)
 
     // 1) accounts
     let accounts = ref<Array<AccountInfo>>([])
@@ -132,6 +134,8 @@ export default defineComponent({
     let currentPage = ref(1)
 
     return {
+      isTouchDevice,
+      isMediumScreen,
       accounts,
       cache,
       handleClick,

@@ -68,7 +68,7 @@
 
 <script lang="ts">
 
-import {computed, defineComponent, onMounted, provide, ref} from 'vue';
+import {computed, defineComponent, onBeforeUnmount, onMounted, provide, ref} from 'vue';
 import TopNavBar from "@/components/TopNavBar.vue";
 
 export const XLARGE_BREAKPOINT = 1240
@@ -80,7 +80,7 @@ export const SMALL_BREAKPOINT = 768
 // temporary limit under which "mobile coming soon" is displayed
 export const FINAL_BREAKPOINT = 890
 
-export const ORUGA_MOBILE_BREAKPOINT = SMALL_BREAKPOINT + "px"
+export const ORUGA_MOBILE_BREAKPOINT = MEDIUM_BREAKPOINT + "px"
 
 export default defineComponent({
   name: 'App',
@@ -91,11 +91,6 @@ export default defineComponent({
     provide('isTouchDevice', isTouchDevice)
 
     const windowWidth = ref(window.screen.width)
-
-    const isMobileScreen = computed(() => {
-      return windowWidth.value < SMALL_BREAKPOINT
-    })
-    provide('isMobileScreen', isMobileScreen)
 
     const isSmallScreen = computed(() => {
       return windowWidth.value >= SMALL_BREAKPOINT
@@ -129,6 +124,10 @@ export default defineComponent({
     onMounted(() => {
       windowWidth.value = window.innerWidth
       window.addEventListener('resize', onResizeHandler);
+    })
+
+    onBeforeUnmount(() => {
+      window.removeEventListener('resize', onResizeHandler);
     })
 
     return {
