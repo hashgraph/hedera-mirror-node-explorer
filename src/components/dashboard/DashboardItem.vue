@@ -24,15 +24,15 @@
 
 <template>
 
-  <div class="is-flex is-align-items-center">
-    <div class="mr-2">
+  <div class="is-flex is-align-items-center mx-6">
+    <div v-if="isMediumScreen" class="mr-2">
       <slot name="symbol"></slot>
     </div>
-    <div class="is-flex is-align-items-flex-end has-text-white" style="padding-bottom: 3px;">
+    <div class="is-flex is-align-items-center has-text-white">
       <p class="dashboard-value has-text-white mr-2">${{ value }}</p>
-      <div class="is-flex-is-vertical" style="line-height: 1">
+      <div class="is-flex-is-vertical" :class="{'pt-1':isMediumScreen}" style="line-height: 1">
         <Variation v-if="variation" :variation="variation"/>
-        <p class="heading">{{ name }}</p>
+        <p class="h-is-text-size-1">{{ name }}</p>
       </div>
     </div>
   </div>
@@ -45,7 +45,7 @@
 
 <script lang="ts">
 
-import {defineComponent} from 'vue';
+import {defineComponent, inject} from 'vue';
 import Variation from "@/components/dashboard/Variation.vue";
 
 export default defineComponent({
@@ -58,7 +58,9 @@ export default defineComponent({
   },
 
   setup() {
-    return {}
+    const isMediumScreen = inject('isMediumScreen', true)
+
+    return {isMediumScreen}
   },
 
 });
@@ -74,9 +76,18 @@ export default defineComponent({
 .dashboard-value {
   font-style: normal;
   font-weight: 300;
-  font-size: 34px;
-  line-height: 41px;
+  font-size: 26px;
+  line-height: 31px;
   letter-spacing: -0.05em;
+}
+@media (min-width: 1024px) {
+  .dashboard-value {
+    font-style: normal;
+    font-weight: 300;
+    font-size: 34px;
+    line-height: 41px;
+    letter-spacing: -0.05em;
+  }
 }
 
 </style>

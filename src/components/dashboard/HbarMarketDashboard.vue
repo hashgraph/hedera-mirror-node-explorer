@@ -25,7 +25,7 @@
 <template>
 
   <div>
-    <div style="height: 60px;" class="is-flex is-justify-content-space-evenly h-top-banner py-4">
+    <div class="is-flex is-flex-wrap-wrap is-justify-content-space-evenly h-top-banner py-2">
 
       <DashboardItem :name="hbarPriceLabel" :value="hbarPrice" :variation="hbarPriceVariation">
         <template v-slot:symbol>
@@ -66,8 +66,8 @@ export default defineComponent({
   },
 
   setup() {
-    const hbarPriceLabel = 'Hbar Price'
-    const hbarMarketCapLabel = 'Hbar Market Cap'
+    const hbarPriceLabel = 'HBAR PRICE'
+    const hbarMarketCapLabel = 'HBAR MARKET CAP'
 
     // 1)
     const coinGeckoMarketData = ref<CoinGeckoMarketData|null>(null)
