@@ -133,7 +133,11 @@ const routes: Array<RouteRecordRaw> = [
     path: '/:network/search-result/:searchedId',
     name: 'NoSearchResult',
     component: NoSearchResult,
-    props: true
+    props:  route => ({
+      network: route.params.network as string|undefined,
+      searchedId: route.params.searchedId as string|undefined,
+      errorCount: Number(route.query.errorCount) as number|undefined
+    })
   },
   {
     path: '/:network/mobile-menu',

@@ -28,6 +28,7 @@ export class AxiosMonitor {
     private requestInterceptor: number | null = null
     private responseInterceptor: number | null = null
     private activeRequestCount = 0
+    private successfulRequestCount = 0
     private errorResponses = new Map<string, unknown>()
     private stateChangeCB: (() => void) | null = null
 
@@ -62,6 +63,10 @@ export class AxiosMonitor {
         return this.activeRequestCount
     }
 
+    public getSuccessfulRequestCount(): number {
+        return this.successfulRequestCount
+    }
+
     public getErrorResponses(): Map<string, unknown> {
         return this.errorResponses
     }
@@ -77,6 +82,7 @@ export class AxiosMonitor {
         if (this.errorResponses.size >= 1) {
             console.log("Clearing " + this.errorResponses.size + " error responses")
             this.errorResponses.clear()
+            this.successfulRequestCount = 0
             this.stateDidChange()
         }
     }
@@ -95,6 +101,7 @@ export class AxiosMonitor {
         let result: Promise<AxiosResponse>
         if (this.targetAxios !== null) {
             this.activeRequestCount -= 1
+            this.successfulRequestCount += 1
             this.errorResponses.delete(this.targetAxios.getUri(response.config))
             this.stateDidChange()
             result = Promise.resolve(response)

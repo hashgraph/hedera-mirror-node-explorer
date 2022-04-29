@@ -29,17 +29,28 @@
   <section class="section has-text-centered" style="height: calc(100vh - 300px)">
 
     <p class="h-is-secondary-text" style="font-weight: 300">
-      No result
+      <template v-if="errorCount >= 1">
+        Search error
+      </template>
+      <template v-else>
+        No result
+      </template>
     </p>
     <br/>
 
     <div class="block">
       <p class="h-is-tertiary-text" style="font-weight: 300">
-        <span >No account, transaction, contract, token or topic matches "</span>
-        <span style="font-weight: 400">{{ this.searchedId }}</span>
-        <span >".</span>
-        <br/>
-        Make sure you enter either an entity ID (0.0.x) or a transaction ID (0.0.x@seconds.nanoseconds).
+        <template v-if="errorCount >= 1">
+          Server reported errors during the search execution.<br/>
+          This might be transient. Try to search again in a few moments.
+        </template>
+        <template v-else>
+          <span >No account, transaction, contract, token or topic matches "</span>
+          <span style="font-weight: 400">{{ this.searchedId }}</span>
+          <span >".</span>
+          <br/>
+          Make sure you enter either an entity ID (0.0.x) or a transaction ID (0.0.x@seconds.nanoseconds).
+        </template>
       </p>
     </div>
 
@@ -58,6 +69,7 @@ export default defineComponent({
   name: 'SearchResult',
   props: {
     "searchedId": String,
+    "errorCount": Number,
     "network": String
   }
 })
