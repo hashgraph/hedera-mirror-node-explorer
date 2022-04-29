@@ -23,20 +23,20 @@
     <TopNavBar/>
   </section>
 
-  <div v-if="sizeFallBack">
-    <hr class="h-top-banner" style="margin: 0; height: 4px"/>
+<!--  <div v-if="sizeFallBack">-->
+<!--    <hr class="h-top-banner" style="margin: 0; height: 4px"/>-->
 
-    <section class="section has-text-centered" style="height: calc(100vh - 300px)">
+<!--    <section class="section has-text-centered" style="height: calc(100vh - 300px)">-->
 
-      <div class="block h-is-tertiary-text">
-        <p style="font-weight: 300">Mobile support coming soon...</p>
-        <p style="font-weight: 200">If on a desktop, please enlarge your browser window</p>
-      </div>
+<!--      <div class="block h-is-tertiary-text">-->
+<!--        <p style="font-weight: 300">Mobile support coming soon...</p>-->
+<!--        <p style="font-weight: 200">If on a desktop, please enlarge your browser window</p>-->
+<!--      </div>-->
 
-    </section>
-  </div>
+<!--    </section>-->
+<!--  </div>-->
 
-  <div v-else :class="{'h-mobile-background': isTouchDevice || !isSmallScreen}">
+  <div :class="{'h-mobile-background': isTouchDevice || !isSmallScreen}">
     <router-view/>
   </div>
 
@@ -143,10 +143,20 @@ export default defineComponent({
 
 section.section.is-top-section {
   padding-top: 0;
-  padding-bottom: 30px;
+  padding-bottom: 0;
   background-image: url("assets/block-chain-bg.png");
   background-repeat: no-repeat;
-  background-size: 112px
+  background-size: 104px
+}
+
+@media (min-width: 1024px) {
+  section.section.is-top-section {
+    padding-top: 0;
+    padding-bottom: 30px;
+    background-image: url("assets/block-chain-bg.png");
+    background-repeat: no-repeat;
+    background-size: 112px
+  }
 }
 
 </style>

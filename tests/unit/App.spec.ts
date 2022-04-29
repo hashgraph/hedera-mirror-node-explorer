@@ -109,7 +109,7 @@ describe("App.vue", () => {
         wrapper.unmount()
     });
 
-    test("smaller screen", async () => {
+    test.skip("smaller screen", async () => {
 
         const SMALLER_SCREEN_SIZE = 576
         await router.push("/") // To avoid "missing required param 'network'" error

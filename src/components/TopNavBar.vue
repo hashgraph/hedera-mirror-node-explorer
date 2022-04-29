@@ -24,13 +24,34 @@
 
 <template>
 
-  <div v-if="hideNavBar">
+<!--  <div v-if="hideNavBar">-->
+<!--    <span class="is-inline-flex is-align-items-center is-flex-grow-0 is-flex-shrink-0">-->
+<!--      <a @click="$router.push({name: 'MainDashboard'})" class="mr-3">-->
+<!--        <img alt="Product Logo" class="image" src="@/assets/branding/brand-product-logo.png" style="max-width: 270px;">-->
+<!--      </a>-->
+<!--      <AxiosStatus/>-->
+<!--    </span>-->
+<!--  </div>-->
+
+  <div v-if="isTouchDevice || !isMediumScreen"
+       class="is-flex is-align-items-center is-justify-content-space-between px-4 pt-3 pb-4">
+
     <span class="is-inline-flex is-align-items-center is-flex-grow-0 is-flex-shrink-0">
-      <a @click="$router.push({name: 'MainDashboard'})" class="mr-3">
-        <img alt="Product Logo" class="image" src="@/assets/branding/brand-product-logo.png" style="max-width: 270px;">
+      <a class="mr-3" @click="$router.push({name: 'MainDashboard'})">
+        <img alt="Product Logo" class="image" src="@/assets/branding/brand-product-logo.png" style="max-width: 165px;">
       </a>
       <AxiosStatus/>
     </span>
+
+    <div class="is-flex is-align-items-center pt-2">
+      <a href="#">
+        <img alt="Search bar" src="@/assets/magnifying-glass.png" style="max-height: 20px;">
+      </a>
+      <a href="#" class="ml-5">
+        <img alt="Search bar" src="@/assets/hamburger.png" style="max-height: 32px;">
+      </a>
+    </div>
+
   </div>
 
   <div v-else class="is-flex is-justify-content-space-between is-align-items-flex-end">
@@ -117,6 +138,10 @@ export default defineComponent({
   components: {AxiosStatus, SearchBar},
 
   setup() {
+    const isSmallScreen = inject('isSmallScreen', true)
+    const isMediumScreen = inject('isMediumScreen', true)
+    const isTouchDevice = inject('isTouchDevice', false)
+
     const route = useRoute()
     const network = computed( () => { return route.params.network })
     const name = computed( () => { return route.name })
@@ -176,6 +201,9 @@ export default defineComponent({
     })
 
     return {
+      isSmallScreen,
+      isMediumScreen,
+      isTouchDevice,
       name,
       hideNavBar,
       useFlatMenu,
@@ -222,7 +250,7 @@ export default defineComponent({
 
 @media (max-width: 1023px) {
   #product-logo {
-    max-width: 165px;
+    max-width: 220px;
   }
 }
 
