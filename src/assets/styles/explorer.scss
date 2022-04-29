@@ -89,6 +89,12 @@ body {
     font-size: 14px;
     line-height: 17px;
 }
+.h-is-mobile-navbar-item {
+    font-style: normal;
+    font-weight: 300;
+    font-size: 20px;
+    line-height: 24px;
+}
 .h-is-dense {
     letter-spacing: -0.05em;
 }
@@ -165,6 +171,22 @@ body {
 }
 #drop-down-menu .o-sel-arrow {
     background-position: calc(100% - 7px) calc(100% - 10px);
+}
+@media (max-width: 1023px) {
+    #drop-down-menu .o-sel {
+        width: 322px;
+        font-weight: bold;
+        color: $h-highlight-color;
+        border-color: $h-highlight-color;
+        background-color: $h-box-background-color;
+        border-width: 0.5px;
+        padding-top: 13px;
+        padding-bottom: 13px;
+        padding-left: 13px;
+    }
+    #drop-down-menu .o-sel-arrow {
+        background-position: calc(100% - 13px) calc(100% - 16px);
+    }
 }
 a.button {
     padding-top: 28px;

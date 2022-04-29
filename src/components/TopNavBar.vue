@@ -44,11 +44,16 @@
     </span>
 
     <div class="is-flex is-align-items-center pt-2">
-      <a href="#">
+      <a>
         <img alt="Search bar" src="@/assets/magnifying-glass.png" style="max-height: 20px;">
       </a>
-      <a href="#" class="ml-5">
+      <a v-if="name !== 'MobileMenu'" class="ml-5"
+         @click="$router.push({name: 'MobileMenu', query: {from: name}})">
         <img alt="Search bar" src="@/assets/hamburger.png" style="max-height: 32px;">
+      </a>
+      <a v-else class="ml-5"
+         @click="$router.back()">
+        <img alt="Search bar" src="@/assets/close-icon.png" style="max-height: 32px;">
       </a>
     </div>
 
@@ -150,6 +155,8 @@ export default defineComponent({
     const useFlatMenu = inject('isXLargeScreen', true)
     const showTopRightLogo = inject('isLargeScreen', true)
 
+    const isMobileMenuOpen = ref(false)
+
     watch(network, (value) => {
       updateSelectedNetworkSilently(value)
     })
@@ -169,7 +176,7 @@ export default defineComponent({
       }
       selectedNetwork.value = newValue
       selectedNetworkWatchHandle = watch(selectedNetwork, (selection) => {
-        router.replace({
+        router.push({
           name: name.value as string,
           params: { network: selection }
         })
@@ -208,6 +215,7 @@ export default defineComponent({
       hideNavBar,
       useFlatMenu,
       showTopRightLogo,
+      isMobileMenuOpen,
       isMainnetSelected,
       isTestnetSelected,
       selectedNetwork,
