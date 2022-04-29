@@ -42,6 +42,7 @@ export class SearchRequest {
 
     private promise = new DeferredPromise<void>()
     private countdown = 0
+    private errorCount = 0
 
     constructor(searchedId: string) {
         this.searchedId = searchedId
@@ -50,6 +51,7 @@ export class SearchRequest {
     run(): Promise<void> {
 
         this.countdown = 5
+        this.errorCount = 0
 
         const isEntityId = EntityID.parse(this.searchedId) != null
         const isTransactionId = TransactionID.parse(this.searchedId) != null
@@ -61,8 +63,9 @@ export class SearchRequest {
                 .then(response => {
                     this.account = response.data
                 })
-                .catch(() => { // To avoid console pollution
-                    return null
+                .catch((reason: unknown) => {
+                    this.updateErrorCount(reason)
+                    return null // To avoid console pollution
                 })
                 .finally(() => {
                     this.updatePromise()
@@ -79,8 +82,9 @@ export class SearchRequest {
                 .then(response => {
                     this.transactions = response.data.transactions
                 })
-                .catch(() => { // To avoid console pollution
-                    return null
+                .catch((reason: unknown) => {
+                    this.updateErrorCount(reason)
+                    return null // To avoid console pollution
                 })
                 .finally(() => {
                     this.updatePromise()
@@ -97,8 +101,9 @@ export class SearchRequest {
                 .then(response => {
                     this.tokenInfo = response.data
                 })
-                .catch(() => { // To avoid console pollution
-                    return null
+                .catch((reason: unknown) => {
+                    this.updateErrorCount(reason)
+                    return null // To avoid console pollution
                 })
                 .finally(() => {
                     this.updatePromise()
@@ -119,8 +124,9 @@ export class SearchRequest {
                 .then(response => {
                     this.topicMessages = response.data.messages
                 })
-                .catch(() => { // To avoid console pollution
-                    return null
+                .catch((reason: unknown) => {
+                    this.updateErrorCount(reason)
+                    return null // To avoid console pollution
                 })
                 .finally(() => {
                     this.updatePromise()
@@ -137,8 +143,9 @@ export class SearchRequest {
                 .then(response => {
                     this.contract = response.data
                 })
-                .catch(() => { // To avoid console pollution
-                    return null
+                .catch((reason: unknown) => {
+                    this.updateErrorCount(reason)
+                    return null // To avoid console pollution
                 })
                 .finally(() => {
                     this.updatePromise()
@@ -151,6 +158,10 @@ export class SearchRequest {
         return this.promise
     }
 
+    getErrorCount(): number {
+        return this.errorCount
+    }
+
 
     //
     // Private
@@ -160,6 +171,13 @@ export class SearchRequest {
         this.countdown -= 1
         if (this.countdown <= 0) {
             this.promise.resolveNow()
+        }
+    }
+
+    private updateErrorCount(reason: unknown): void {
+        const notFound = axios.isAxiosError(reason) && reason.request?.status == 404
+        if (!notFound) {
+            this.errorCount += 1
         }
     }
 }

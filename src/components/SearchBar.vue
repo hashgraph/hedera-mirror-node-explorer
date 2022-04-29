@@ -124,7 +124,7 @@ export default defineComponent({
               router.push({name: 'TopicDetails', params: { topicId: r.topicMessages[0].topic_id}})
               searchDidEnd(true)
             } else {
-              router.push({name: 'NoSearchResult', params: { searchedId: searchedId.value}})
+              router.push({name: 'NoSearchResult', params: { searchedId: searchedId.value}, query: { errorCount: r.getErrorCount()}})
               searchDidEnd(false)
             }
           } catch {
