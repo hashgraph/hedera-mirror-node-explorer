@@ -29,9 +29,10 @@
       :data="transactions"
       :hoverable="true"
       :narrowed="true"
-      :paginated="true"
-      :per-page="nbItems ?? 15"
+      :paginated="!isTouchDevice"
+      :per-page="isMediumScreen ? pageSize : 5"
       :striped="true"
+      :mobile-breakpoint="ORUGA_MOBILE_BREAKPOINT"
       aria-current-label="Current page"
       aria-next-label="Next page"
       aria-page-label="Page"
@@ -41,12 +42,7 @@
   >
 
     <o-table-column v-slot="props" field="transaction_id" label="ID">
-      <div class="w400 is-numeric">
-        {{ props.row.transaction_id != null ? normalizeTransactionId(props.row.transaction_id, true) : "" }}
-        <div v-if="props.row.result !== 'SUCCESS'" class="icon has-text-danger">
-          <i class="fas fa-exclamation-triangle"></i>
-        </div>
-      </div>
+      <TransactionLabel v-bind:transaction-id="props.row.transaction_id" v-bind:result="props.row.result"/>
     </o-table-column>
 
     <o-table-column v-slot="props" label="Content">
@@ -67,20 +63,22 @@
 
 <script lang="ts">
 
-import {defineComponent, onBeforeUnmount, PropType, ref, watch} from 'vue';
+import {defineComponent, inject, onBeforeUnmount, PropType, ref, watch} from 'vue';
 import {Transaction, TransactionType} from "@/schemas/HederaSchemas";
 import {normalizeTransactionId} from "@/utils/TransactionID";
 import {EntityCacheState} from "@/utils/EntityCache";
 import {TransactionCache} from "@/components/transaction/TransactionCache";
 import {PlayPauseState} from "@/components/PlayPauseButton.vue";
 import TimestampValue from "@/components/values/TimestampValue.vue";
+import TransactionLabel from "@/components/values/TransactionLabel.vue";
 import router from "@/router";
 import TransactionSummary from "@/components/transaction/TransactionSummary.vue";
+import { ORUGA_MOBILE_BREAKPOINT } from '@/App.vue';
 
 export default defineComponent({
   name: 'CryptoTransactionTable',
 
-  components: {TimestampValue, TransactionSummary},
+  components: {TimestampValue, TransactionSummary, TransactionLabel},
 
   props: {
     nbItems: Number,
@@ -89,12 +87,16 @@ export default defineComponent({
   },
 
   setup(props, context) {
+    const isTouchDevice = inject('isTouchDevice', false)
+    const isMediumScreen = inject('isMediumScreen', true)
+    const DEFAULT_PAGE_SIZE = 15
+    const pageSize = props.nbItems ?? DEFAULT_PAGE_SIZE
 
     // 1) transactions
     let transactions = ref<Array<Transaction>>([])
 
     // 2) cache
-    const cache = new TransactionCache()
+    const cache = new TransactionCache(isTouchDevice ? 5 : 100)
     cache.responseDidChangeCB = () => {
       transactions.value = cache.getEntity()?.transactions ?? []
     }
@@ -149,10 +151,16 @@ export default defineComponent({
     let currentPage = ref(1)
 
     return {
+      isTouchDevice,
+      isMediumScreen,
+      pageSize,
       transactions,
       cache,
       handleClick,
       currentPage,
+
+      // From App
+      ORUGA_MOBILE_BREAKPOINT,
 
       // From TransactionID
       normalizeTransactionId

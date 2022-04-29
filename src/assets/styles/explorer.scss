@@ -89,6 +89,12 @@ body {
     font-size: 14px;
     line-height: 17px;
 }
+.h-is-mobile-navbar-item {
+    font-style: normal;
+    font-weight: 300;
+    font-size: 20px;
+    line-height: 24px;
+}
 .h-is-dense {
     letter-spacing: -0.05em;
 }
@@ -165,6 +171,22 @@ body {
 }
 #drop-down-menu .o-sel-arrow {
     background-position: calc(100% - 7px) calc(100% - 10px);
+}
+@media (max-width: 1023px) {
+    #drop-down-menu .o-sel {
+        width: 322px;
+        font-weight: bold;
+        color: $h-highlight-color;
+        border-color: $h-highlight-color;
+        background-color: $h-box-background-color;
+        border-width: 0.5px;
+        padding-top: 13px;
+        padding-bottom: 13px;
+        padding-left: 13px;
+    }
+    #drop-down-menu .o-sel-arrow {
+        background-position: calc(100% - 13px) calc(100% - 16px);
+    }
 }
 a.button {
     padding-top: 28px;
@@ -257,10 +279,14 @@ table.o-table > tbody > tr {
     75% {opacity: 1.0 }
     100% {opacity: 1.0 }
 }
-// Fix for o-table bug (?)
+// Fixes for o-table "defects"
 table.o-table {
     margin: 1rem 0
 }
+div.o-table__pagination {
+    padding: 4px
+}
+
 /*
     Fix Bulma / Oruga conflict
 
@@ -291,3 +317,11 @@ table.o-table td.o-table__td--left,
 table.o-table th.o-table__th--left {
     text-align: left;
 }
+
+//
+// MOBILE
+//
+.h-mobile-background {
+    background-color: $h-table-background-color;
+}
+

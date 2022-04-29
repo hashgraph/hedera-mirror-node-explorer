@@ -29,9 +29,10 @@
       :data="transactions"
       :hoverable="true"
       :narrowed="true"
-      :paginated="true"
-      :per-page="nbItems ?? 15"
+      :paginated="!isTouchDevice"
+      :per-page="isMediumScreen ? pageSize : 5"
       :striped="true"
+      :mobile-breakpoint="ORUGA_MOBILE_BREAKPOINT"
       aria-current-label="Current page"
       aria-next-label="Next page"
       aria-page-label="Page"
@@ -67,7 +68,7 @@
 
 <script lang="ts">
 
-import {defineComponent, onBeforeUnmount, PropType, ref, watch} from 'vue';
+import {defineComponent, inject, onBeforeUnmount, PropType, ref, watch} from 'vue';
 import {Transaction, TransactionType} from "@/schemas/HederaSchemas";
 import {EntityCacheState} from "@/utils/EntityCache";
 import {TransactionCache} from "@/components/transaction/TransactionCache";
@@ -75,6 +76,7 @@ import {PlayPauseState} from "@/components/PlayPauseButton.vue";
 import TimestampValue from "@/components/values/TimestampValue.vue";
 import router from "@/router";
 import BlobValue from "@/components/values/BlobValue.vue";
+import { ORUGA_MOBILE_BREAKPOINT } from '@/App.vue';
 
 export default defineComponent({
   name: 'MessageTransactionTable',
@@ -88,12 +90,16 @@ export default defineComponent({
   },
 
   setup(props, context) {
+    const isTouchDevice = inject('isTouchDevice', false)
+    const isMediumScreen = inject('isMediumScreen', true)
+    const DEFAULT_PAGE_SIZE = 15
+    const pageSize = props.nbItems ?? DEFAULT_PAGE_SIZE
 
     // 1) transactions
     let transactions = ref<Array<Transaction>>([])
 
     // 2) cache
-    const cache = new TransactionCache()
+    const cache = new TransactionCache(isTouchDevice ? 5 : 100)
     cache.responseDidChangeCB = () => {
       transactions.value = cache.getEntity()?.transactions ?? []
     }
@@ -148,10 +154,14 @@ export default defineComponent({
     let currentPage = ref(1)
 
     return {
+      isTouchDevice,
+      isMediumScreen,
+      pageSize,
       transactions,
       cache,
       handleClick,
       currentPage,
+      ORUGA_MOBILE_BREAKPOINT
     }
   }
 });

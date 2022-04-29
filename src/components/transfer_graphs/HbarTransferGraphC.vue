@@ -24,7 +24,7 @@
 
 <template>
 
-  <div v-if="hbarTransferLayout.rowCount >= 1" class="container" data-cy="hbarTransfers">
+  <div v-if="hbarTransferLayout.rowCount >= 1" class="graph-container" data-cy="hbarTransfers">
 
     <template v-for="i in hbarTransferLayout.rowCount" v-bind:key="i">
 
@@ -38,7 +38,7 @@
       </div>
 
       <!-- #1 : arrow -->
-      <div  style="line-height: 0">
+      <div  style="position: relative">
         <ArrowSegment
             v-bind:source-count="hbarTransferLayout.sources.length"
             v-bind:compact="true"
@@ -52,7 +52,7 @@
       </div>
 
       <!-- #3 : arrow -->
-      <div  style="line-height: 0">
+      <div  style="position: relative">
         <ArrowSegment
             v-bind:dest-count="hbarTransferLayout.destinations.length"
             v-bind:compact="true"
@@ -115,16 +115,13 @@ export default defineComponent({
 
 <style scoped>
 
-.container {
+.graph-container {
   display: inline-grid;
-  grid-template-columns: repeat(5, auto)
+  grid-template-columns: repeat(5, auto);
+  column-gap: 1em
 }
 
-div.container > div {
-  margin-right: 1em;
-}
-
-div.container > div.justify-end {
+div.graph-container > div.justify-end {
   justify-self: end;
 }
 

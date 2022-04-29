@@ -93,13 +93,17 @@ describe("TopNavBar.vue", () => {
 
         const wrapper = mount(TopNavBar, {
             global: {
-                plugins: [router, Oruga]
+                plugins: [router, Oruga],
+                provide: {
+                    isXLargeScreen: false
+                }
             },
             props: {},
         });
 
         await flushPromises()
         // console.log(wrapper.text())
+        // console.log(wrapper.html())
 
         const links = wrapper.findAll("a")
         expect(links.length).toBe(8)

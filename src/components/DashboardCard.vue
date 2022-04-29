@@ -23,7 +23,7 @@
 <!-- --------------------------------------------------------------------------------------------------------------- -->
 
 <template>
-  <div class="box h-box-border" style="height: 100%">
+  <div :class="{'box': !isTouchDevice && isSmallScreen, 'h-box-border': !isTouchDevice && isSmallScreen}" style="height: 100%">
     <div class="is-flex is-align-items-center is-justify-content-space-between">
       <div>
         <slot name="title"></slot>
@@ -48,13 +48,20 @@
 
 <script lang="ts">
 
-import {defineComponent} from "vue";
+import {defineComponent, inject} from "vue";
 
 export default defineComponent({
   name: "DashboardCard",
 
   props: {
     subtitle: Boolean
+  },
+
+  setup() {
+    const isSmallScreen = inject('isSmallScreen', true)
+    const isTouchDevice = inject('isTouchDevice', false)
+
+    return { isSmallScreen, isTouchDevice }
   }
 })
 

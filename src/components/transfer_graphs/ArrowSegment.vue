@@ -98,9 +98,5 @@ export default defineComponent({
 <!--                                                       STYLE                                                     -->
 <!-- --------------------------------------------------------------------------------------------------------------- -->
 
-<style scoped>
-table, th, td {
-  border-width: 0
-}
-</style>
+<style/>
 

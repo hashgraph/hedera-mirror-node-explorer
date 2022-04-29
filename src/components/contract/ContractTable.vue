@@ -26,11 +26,12 @@
 
   <o-table
       :data="contracts"
-      :paginated="true"
-      :per-page="nbItems ?? 15"
+      :paginated="!isTouchDevice"
+      :per-page="isMediumScreen ? pageSize : 5"
       :striped="true"
       :hoverable="true"
       :v-model:current-page="currentPage"
+      :mobile-breakpoint="ORUGA_MOBILE_BREAKPOINT"
       default-sort="contract_id"
       aria-next-label="Next page"
       aria-previous-label="Previous page"
@@ -64,12 +65,13 @@
 
 <script lang="ts">
 
-import {defineComponent, onBeforeUnmount, onMounted, ref} from 'vue';
+import {defineComponent, inject, onBeforeUnmount, onMounted, ref} from 'vue';
 import {ContractCache} from "@/components/contract/ContractCache";
 import {Contract} from "@/schemas/HederaSchemas";
 import router from "@/router";
 import BlobValue from "@/components/values/BlobValue.vue";
 import TimestampValue from "@/components/values/TimestampValue.vue";
+import { ORUGA_MOBILE_BREAKPOINT } from '@/App.vue';
 
 
 //
@@ -85,13 +87,17 @@ export default defineComponent({
     nbItems: Number,
   },
 
-  setup() {
+  setup(props) {
+    const isTouchDevice = inject('isTouchDevice', false)
+    const isMediumScreen = inject('isMediumScreen', true)
+    const DEFAULT_PAGE_SIZE = 15
+    const pageSize = props.nbItems ?? DEFAULT_PAGE_SIZE
 
     // 1) contracts
     let contracts = ref<Array<Contract>>([])
 
     // 2) cache
-    const cache = new ContractCache()
+    const cache = new ContractCache(isTouchDevice ? 15 : 100)
     cache.responseDidChangeCB = () => {
       contracts.value = cache.getEntity()?.contracts ?? []
     }
@@ -110,7 +116,16 @@ export default defineComponent({
     // 4) currentPage
     let currentPage = ref(1)
 
-    return { contracts, cache, handleClick, currentPage }
+    return {
+      isTouchDevice,
+      isMediumScreen,
+      pageSize,
+      contracts,
+      cache,
+      handleClick,
+      currentPage,
+      ORUGA_MOBILE_BREAKPOINT
+    }
   }
 });
 

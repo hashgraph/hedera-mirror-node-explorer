@@ -22,6 +22,8 @@ import {EntityCache} from "@/utils/EntityCache";
 import {Nfts} from "@/schemas/HederaSchemas";
 import axios, {AxiosResponse} from "axios";
 
+const ASCENDING = 'asc'
+
 export class TokenNftCache extends EntityCache<Nfts> {
 
     private tokenId: string|null = null
@@ -32,11 +34,11 @@ export class TokenNftCache extends EntityCache<Nfts> {
     // Public
     //
 
-    public constructor(tokenId: string) {
+    public constructor(tokenId: string, limit = 100) {
         super(5000, 10)
         this.tokenId = tokenId
-        this.limit = 100
-        this.order = 'asc'
+        this.limit = limit
+        this.order = ASCENDING
     }
 
     public setTokenId(tokenId: string): void {

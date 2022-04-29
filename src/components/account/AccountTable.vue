@@ -27,10 +27,11 @@
   <o-table
       :data="accounts"
       :hoverable="true"
-      :paginated="true"
-      :per-page="nbItems ?? 15"
+      :paginated="!isTouchDevice"
+      :per-page="isMediumScreen ? pageSize : 5"
       :striped="true"
       :v-model:current-page="currentPage"
+      :mobile-breakpoint="ORUGA_MOBILE_BREAKPOINT"
       aria-current-label="Current page"
       aria-next-label="Next page"
       aria-page-label="Page"
@@ -84,7 +85,7 @@
 
 <script lang="ts">
 
-import {defineComponent, onBeforeUnmount, onMounted, ref} from 'vue';
+import {defineComponent, inject, onBeforeUnmount, onMounted, ref} from 'vue';
 import {AccountInfo} from "@/schemas/HederaSchemas";
 import router from "@/router";
 import {AccountCache} from "@/components/account/AccountCache";
@@ -92,6 +93,7 @@ import HbarAmount from "@/components/values/HbarAmount.vue";
 import BlobValue from "@/components/values/BlobValue.vue";
 import TimestampValue from "@/components/values/TimestampValue.vue";
 import TokenAmount from "@/components/values/TokenAmount.vue";
+import {ORUGA_MOBILE_BREAKPOINT} from '@/App.vue';
 
 export default defineComponent({
   name: 'AccountTable',
@@ -102,13 +104,17 @@ export default defineComponent({
     nbItems: Number,
   },
 
-  setup() {
+  setup(props) {
+    const isTouchDevice = inject('isTouchDevice', false)
+    const isMediumScreen = inject('isMediumScreen', true)
+    const DEFAULT_PAGE_SIZE = 15
+    const pageSize = props.nbItems ?? DEFAULT_PAGE_SIZE
 
     // 1) accounts
     let accounts = ref<Array<AccountInfo>>([])
 
     // 2) cache
-    const cache = new AccountCache()
+    const cache = new AccountCache(isTouchDevice ? 15 : 100)
     cache.responseDidChangeCB = () => {
       accounts.value = cache.getEntity()?.accounts ?? []
     }
@@ -130,10 +136,14 @@ export default defineComponent({
     let currentPage = ref(1)
 
     return {
+      isTouchDevice,
+      isMediumScreen,
+      pageSize,
       accounts,
       cache,
       handleClick,
       currentPage,
+      ORUGA_MOBILE_BREAKPOINT
     }
   }
 });

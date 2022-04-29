@@ -27,10 +27,11 @@
   <o-table
       :data="transactions"
       :hoverable="true"
-      :paginated="true"
-      :per-page="nbItems ?? 15"
+      :paginated="!isTouchDevice"
+      :per-page="isMediumScreen ? pageSize : 5"
       :striped="true"
       :v-model:current-page="currentPage"
+      :mobile-breakpoint="ORUGA_MOBILE_BREAKPOINT"
       aria-current-label="Current page"
       aria-next-label="Next page"
       aria-page-label="Page"
@@ -65,12 +66,13 @@
 
 <script lang="ts">
 
-import {defineComponent, onBeforeUnmount, onMounted, ref} from 'vue';
+import {defineComponent, inject, onBeforeUnmount, onMounted, ref} from 'vue';
 import {Transaction, TransactionResult, TransactionType} from "@/schemas/HederaSchemas";
 import {TransactionCache} from "@/components/transaction/TransactionCache";
 import TimestampValue from "@/components/values/TimestampValue.vue";
 import router from "@/router";
 import BlobValue from "@/components/values/BlobValue.vue";
+import { ORUGA_MOBILE_BREAKPOINT } from '@/App.vue';
 
 export default defineComponent({
   name: 'TopicTable',
@@ -81,7 +83,11 @@ export default defineComponent({
     nbItems: Number,
   },
 
-  setup() {
+  setup(props) {
+    const isTouchDevice = inject('isTouchDevice', false)
+    const isMediumScreen = inject('isMediumScreen', true)
+    const DEFAULT_PAGE_SIZE = 15
+    const pageSize = props.nbItems ?? DEFAULT_PAGE_SIZE
 
     const transactionTypeFilter = TransactionType.CONSENSUSCREATETOPIC
     const transactionResultFilter = TransactionResult.SUCCESS
@@ -90,7 +96,7 @@ export default defineComponent({
     let transactions = ref<Array<Transaction>>([])
 
     // 2) cache
-    const cache = new TransactionCache()
+    const cache = new TransactionCache(isTouchDevice ? 15 : 100)
     cache.setTransactionType(transactionTypeFilter)
     cache.setTransactionResult(transactionResultFilter)
 
@@ -114,10 +120,14 @@ export default defineComponent({
     let currentPage = ref(1)
 
     return {
+      isTouchDevice,
+      isMediumScreen,
+      pageSize,
       transactions,
       cache,
       handleClick,
       currentPage,
+      ORUGA_MOBILE_BREAKPOINT
     }
   }
 });

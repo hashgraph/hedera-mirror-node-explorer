@@ -27,10 +27,11 @@
   <o-table
       :data="tokens"
       :hoverable="true"
-      :paginated="true"
-      :per-page="nbItems ?? 15"
+      :paginated="!isTouchDevice"
+      :per-page="isMediumScreen ? pageSize : 5"
       :striped="true"
       :v-model:current-page="currentPage"
+      :mobile-breakpoint="ORUGA_MOBILE_BREAKPOINT"
       aria-current-label="Current page"
       aria-next-label="Next page"
       aria-page-label="Page"
@@ -59,10 +60,11 @@
 
 <script lang="ts">
 
-import {defineComponent, onBeforeUnmount, onMounted, ref} from 'vue';
+import {defineComponent, inject, onBeforeUnmount, onMounted, ref} from 'vue';
 import router from "@/router";
 import {Token} from "@/schemas/HederaSchemas";
 import {TokenCache} from "@/components/token/TokenCache";
+import { ORUGA_MOBILE_BREAKPOINT } from '@/App.vue';
 
 export default defineComponent({
   name: 'TokenTable',
@@ -75,12 +77,16 @@ export default defineComponent({
   },
 
   setup(props) {
+    const isTouchDevice = inject('isTouchDevice', false)
+    const isMediumScreen = inject('isMediumScreen', true)
+    const DEFAULT_PAGE_SIZE = 15
+    const pageSize = props.nbItems ?? DEFAULT_PAGE_SIZE
 
     // 1) tokens
     let tokens = ref<Array<Token>>([])
 
     // 2) cache
-    const cache = new TokenCache()
+    const cache = new TokenCache(isTouchDevice ? 15 : 100)
     cache.responseDidChangeCB = () => {
       tokens.value = cache.getEntity()?.tokens ?? []
     }
@@ -105,10 +111,14 @@ export default defineComponent({
     let currentPage = ref(1)
 
     return {
+      isTouchDevice,
+      isMediumScreen,
+      pageSize,
       tokens,
       cache,
       handleClick,
       currentPage,
+      ORUGA_MOBILE_BREAKPOINT
     }
   }
 });

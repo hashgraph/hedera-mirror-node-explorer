@@ -27,10 +27,11 @@
   <o-table
       :data="balances"
       :hoverable="true"
-      :paginated="true"
-      :per-page="nbItems ?? 15"
+      :paginated="!isTouchDevice"
+      :per-page="isMediumScreen ? pageSize : 5"
       :striped="true"
       :v-model:current-page="currentPage"
+      :mobile-breakpoint="ORUGA_MOBILE_BREAKPOINT"
       aria-current-label="Current page"
       aria-next-label="Next page"
       aria-page-label="Page"
@@ -60,12 +61,13 @@
 
 <script lang="ts">
 
-import {defineComponent, onBeforeUnmount, onMounted, ref, watch} from 'vue';
+import {defineComponent, inject, onBeforeUnmount, onMounted, ref, watch} from 'vue';
 import {TokenBalance} from "@/schemas/HederaSchemas";
 import TokenLink from "@/components/values/TokenLink.vue";
 import {BalanceCache} from "@/components/account/BalanceCache";
 import {useRouter} from "vue-router";
 import TokenAmount from "@/components/values/TokenAmount.vue";
+import { ORUGA_MOBILE_BREAKPOINT } from '@/App.vue';
 
 export default defineComponent({
   name: 'BalanceTable',
@@ -81,6 +83,10 @@ export default defineComponent({
   },
 
   setup(props) {
+    const isTouchDevice = inject('isTouchDevice', false)
+    const isMediumScreen = inject('isMediumScreen', true)
+    const DEFAULT_PAGE_SIZE = 15
+    const pageSize = props.nbItems ?? DEFAULT_PAGE_SIZE
 
     const router = useRouter()
 
@@ -88,7 +94,7 @@ export default defineComponent({
     let balances = ref<Array<TokenBalance>>([])
 
     // 2) cache
-    const cache = new BalanceCache(props.accountId)
+    const cache = new BalanceCache(props.accountId, isTouchDevice ? 15 : 100)
     cache.responseDidChangeCB = () => {
       let accountBalances = cache.getEntity()?.balances
       if (accountBalances && accountBalances.length > 0) {
@@ -118,7 +124,16 @@ export default defineComponent({
     // 4) currentPage
     let currentPage = ref(1)
 
-    return {balances, cache, handleClick, currentPage}
+    return {
+      isTouchDevice,
+      isMediumScreen,
+      pageSize,
+      balances,
+      cache,
+      handleClick,
+      currentPage,
+      ORUGA_MOBILE_BREAKPOINT
+    }
   }
 });
 

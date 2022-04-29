@@ -28,9 +28,10 @@
     <o-table
         v-model:current-page="currentPage"
         :data="messages"
-        :paginated="paginationNeeded"
-        :per-page="pageSize"
+        :paginated="!isTouchDevice && paginationNeeded"
+        :per-page="isMediumScreen ? pageSize : 5"
         :striped="true"
+        :mobile-breakpoint="ORUGA_MOBILE_BREAKPOINT"
         aria-current-label="Current page"
         aria-next-label="Next page"
         aria-page-label="Page"
@@ -65,7 +66,7 @@
 
 <script lang="ts">
 
-import {computed, defineComponent, onBeforeUnmount, PropType, ref, watch} from 'vue';
+import {computed, defineComponent, inject, onBeforeUnmount, PropType, ref, watch} from 'vue';
 
 import {TopicMessage} from "@/schemas/HederaSchemas"
 import {EntityCacheState} from "@/utils/EntityCache";
@@ -73,6 +74,7 @@ import {TopicMessageCache} from "@/components/topic/TopicMessageCache";
 import {PlayPauseState} from "@/components/PlayPauseButton.vue";
 import TimestampValue from "@/components/values/TimestampValue.vue";
 import BlobValue from "@/components/values/BlobValue.vue";
+import { ORUGA_MOBILE_BREAKPOINT } from '@/App.vue';
 
 export default defineComponent({
 
@@ -90,9 +92,10 @@ export default defineComponent({
   },
 
   setup(props, context) {
+    const isTouchDevice = inject('isTouchDevice', false)
+    const isMediumScreen = inject('isMediumScreen', true)
 
     const DEFAULT_PAGE_SIZE = 15
-
     const pageSize = props.nbItems ?? DEFAULT_PAGE_SIZE
     const paginationNeeded = computed(() => {
           return messages.value.length > pageSize
@@ -103,7 +106,7 @@ export default defineComponent({
     let messages = ref<Array<TopicMessage>>([])
 
     // 2) cache
-    const cache = new TopicMessageCache(props.topicId)
+    const cache = new TopicMessageCache(props.topicId, isTouchDevice ? 15 : 100)
 
     cache.responseDidChangeCB = () => {
       messages.value = cache.getEntity()?.messages ?? []
@@ -156,11 +159,14 @@ export default defineComponent({
     let currentPage = ref(1)
 
     return {
+      isTouchDevice,
+      isMediumScreen,
       pageSize,
       paginationNeeded,
       messages,
       cache,
       currentPage,
+      ORUGA_MOBILE_BREAKPOINT
     }
   }
 });

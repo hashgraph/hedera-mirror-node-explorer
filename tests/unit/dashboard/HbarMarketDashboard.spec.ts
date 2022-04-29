@@ -50,10 +50,10 @@ describe("HbarMarketDashboard.vue ", () => {
         expect(wrapper.text()).toBe(
             "$0.2460" +
             "↗ 8.42%" +
-            "Hbar Price" +
+            "HBAR PRICE" +
             "$4,486,259,941" +
             "↗ 8.42%" +
-            "Hbar Market Cap"
+            "HBAR MARKET CAP"
         )
 
         const logos = wrapper.findAll("img")

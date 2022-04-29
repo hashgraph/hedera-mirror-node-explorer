@@ -29,10 +29,11 @@
       :data="nfts"
       :narrowed="true"
       :hoverable="false"
-      :paginated="paginationNeeded"
-      :per-page="pageSize"
+      :paginated="paginationNeeded && !isTouchDevice"
+      :per-page="isMediumScreen ? pageSize : 5"
       :striped="true"
       :v-model:current-page="currentPage"
+      :mobile-breakpoint="ORUGA_MOBILE_BREAKPOINT"
       aria-current-label="Current page"
       aria-next-label="Next page"
       aria-page-label="Page"
@@ -75,12 +76,13 @@
 
 <script lang="ts">
 
-import {computed, defineComponent, onBeforeUnmount, onMounted, ref, watch} from 'vue';
+import {computed, defineComponent, inject, onBeforeUnmount, onMounted, ref, watch} from 'vue';
 import {Nft} from "@/schemas/HederaSchemas";
 import {TokenNftCache} from "@/components/token/TokenNftCache";
 import TimestampValue from "@/components/values/TimestampValue.vue";
 import AccountLink from "@/components/values/AccountLink.vue";
 import BlobValue from "@/components/values/BlobValue.vue";
+import { ORUGA_MOBILE_BREAKPOINT } from '@/App.vue';
 
 export default defineComponent({
   name: 'TokenNftTable',
@@ -96,12 +98,13 @@ export default defineComponent({
   },
 
   setup(props) {
+    const isTouchDevice = inject('isTouchDevice', false)
+    const isMediumScreen = inject('isMediumScreen', true)
 
     const DEFAULT_PAGE_SIZE = 15
-
     const pageSize = props.nbItems ?? DEFAULT_PAGE_SIZE
     const paginationNeeded = computed(() => {
-          return nfts.value.length > pageSize
+          return nfts.value.length > 5
         }
     )
 
@@ -133,11 +136,14 @@ export default defineComponent({
     let currentPage = ref(1)
 
     return {
+      isTouchDevice,
+      isMediumScreen,
       pageSize,
       paginationNeeded,
       nfts,
       cache,
       currentPage,
+      ORUGA_MOBILE_BREAKPOINT
     }
   }
 });

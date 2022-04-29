@@ -26,7 +26,7 @@
 
   <div v-if="tokenTransferLayout.length >= 1" data-cy="tokenTransfers">
 
-    <div class="container">
+    <div class="graph-container">
 
       <template v-for="s in tokenTransferLayout.length" v-bind:key="s">
 
@@ -43,7 +43,7 @@
           </div>
 
           <!-- #1 : arrow -->
-          <div  style="line-height: 0">
+          <div  style="position: relative">
             <ArrowSegment
                 v-bind:source-count="tokenTransferLayout[s-1].sources.length"
                 v-bind:compact="true"
@@ -64,7 +64,7 @@
           </div>
 
           <!-- #4 : arrow -->
-          <div  style="line-height: 0">
+          <div  style="position: relative">
             <ArrowSegment
                 v-bind:dest-count="tokenTransferLayout[s-1].destinations.length"
                 v-bind:compact="true"
@@ -134,16 +134,13 @@ export default defineComponent({
 
 <style scoped>
 
-.container {
+.graph-container {
   display: inline-grid;
-  grid-template-columns: repeat(6, auto)
+  grid-template-columns: repeat(6, auto);
+  column-gap: 1em
 }
 
-div.container > div {
-  margin-right: 1em;
-}
-
-div.container > div.justify-end {
+div.graph-container > div.justify-end {
   justify-self: end;
 }
 

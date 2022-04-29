@@ -20,27 +20,27 @@
 
 <template>
   <section class="section is-top-section">
-    <TopNavBar :hide-nav-bar="sizeFallBack"/>
+    <TopNavBar/>
   </section>
 
-  <div v-if="sizeFallBack">
-    <hr class="h-top-banner" style="margin: 0; height: 4px"/>
+<!--  <div v-if="sizeFallBack">-->
+<!--    <hr class="h-top-banner" style="margin: 0; height: 4px"/>-->
 
-    <section class="section has-text-centered" style="height: calc(100vh - 300px)">
+<!--    <section class="section has-text-centered" style="height: calc(100vh - 300px)">-->
 
-      <div class="block h-is-tertiary-text">
-        <p style="font-weight: 300">Mobile support coming soon...</p>
-        <p style="font-weight: 200">If on a desktop, please enlarge your browser window</p>
-      </div>
+<!--      <div class="block h-is-tertiary-text">-->
+<!--        <p style="font-weight: 300">Mobile support coming soon...</p>-->
+<!--        <p style="font-weight: 200">If on a desktop, please enlarge your browser window</p>-->
+<!--      </div>-->
 
-    </section>
-  </div>
+<!--    </section>-->
+<!--  </div>-->
 
-  <div v-else>
+  <div :class="{'h-mobile-background': isTouchDevice || !isSmallScreen}">
     <router-view/>
   </div>
 
-  <section class="section">
+  <section v-if="!isTouchDevice" class="section">
 
     <hr class="h-top-banner mb-4 mt-0" style="height: 1px"/>
 
@@ -68,21 +68,54 @@
 
 <script lang="ts">
 
-import {computed, defineComponent, onMounted, ref} from 'vue';
+import {computed, defineComponent, onBeforeUnmount, onMounted, provide, ref} from 'vue';
 import TopNavBar from "@/components/TopNavBar.vue";
 
-export const MOBILE_BREAKPOINT = 874
+export const XLARGE_BREAKPOINT = 1240
+export const LARGE_BREAKPOINT = 1120
+export const MEDIUM_BREAKPOINT = 1024
+export const SMALL_BREAKPOINT = 768
+// this will eventually be the window min width
+// export const FINAL_BREAKPOINT = 576
+// temporary limit under which "mobile coming soon" is displayed
+export const FINAL_BREAKPOINT = 640
+
+export const ORUGA_MOBILE_BREAKPOINT = "1023px"
 
 export default defineComponent({
   name: 'App',
   components: {TopNavBar},
 
   setup() {
+    const isTouchDevice = ('ontouchstart' in window)
+    provide('isTouchDevice', isTouchDevice)
+
     const windowWidth = ref(window.screen.width)
 
-    const sizeFallBack = computed(() => {
-      return windowWidth.value < MOBILE_BREAKPOINT
+    const isSmallScreen = computed(() => {
+      return windowWidth.value >= SMALL_BREAKPOINT
     })
+    provide('isSmallScreen', isSmallScreen)
+
+    const isMediumScreen = computed(() => {
+      return windowWidth.value >= MEDIUM_BREAKPOINT
+    })
+    provide('isMediumScreen', isMediumScreen)
+
+    const isLargeScreen = computed(() => {
+      return windowWidth.value >= LARGE_BREAKPOINT
+    })
+    provide('isLargeScreen', isLargeScreen)
+
+    const isXLargeScreen = computed(() => {
+      return windowWidth.value >= XLARGE_BREAKPOINT
+    })
+    provide('isXLargeScreen', isXLargeScreen)
+
+    const sizeFallBack = computed(() => {
+      return windowWidth.value < FINAL_BREAKPOINT
+    })
+    provide('sizeFallBack', sizeFallBack)
 
     const  onResizeHandler = () => {
       windowWidth.value = window.innerWidth
@@ -93,7 +126,13 @@ export default defineComponent({
       window.addEventListener('resize', onResizeHandler);
     })
 
+    onBeforeUnmount(() => {
+      window.removeEventListener('resize', onResizeHandler);
+    })
+
     return {
+      isTouchDevice,
+      isSmallScreen,
       sizeFallBack
     }
   },
@@ -104,10 +143,20 @@ export default defineComponent({
 
 section.section.is-top-section {
   padding-top: 0;
-  padding-bottom: 30px;
+  padding-bottom: 0;
   background-image: url("assets/block-chain-bg.png");
   background-repeat: no-repeat;
-  background-size: 112px
+  background-size: 104px
+}
+
+@media (min-width: 1024px) {
+  section.section.is-top-section {
+    padding-top: 0;
+    padding-bottom: 30px;
+    background-image: url("assets/block-chain-bg.png");
+    background-repeat: no-repeat;
+    background-size: 112px
+  }
 }
 
 </style>

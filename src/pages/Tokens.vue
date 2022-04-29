@@ -28,9 +28,9 @@
 
   <section class="section">
 
-    <div class="columns">
+    <div class="columns is-multiline">
 
-      <div class="column has-text-left">
+      <div class="column has-text-left" :class="{'is-full': !displaySideBySide}">
 
         <DashboardCard>
           <template v-slot:title>
@@ -68,7 +68,7 @@
 
 <script lang="ts">
 
-import {defineComponent} from 'vue';
+import {defineComponent, inject} from 'vue';
 import TokenTable from "@/components/token/TokenTable.vue";
 import DashboardCard from "@/components/DashboardCard.vue";
 
@@ -86,10 +86,13 @@ export default defineComponent({
   },
 
   setup() {
+    const displaySideBySide = inject('isLargeScreen', true)
+
     const FUNGIBLE = "FUNGIBLE_COMMON"
     const NONFUNGIBLE = "NON_FUNGIBLE_UNIQUE"
 
     return {
+      displaySideBySide,
       FUNGIBLE,
       NONFUNGIBLE
     }

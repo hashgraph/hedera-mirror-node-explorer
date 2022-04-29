@@ -31,7 +31,7 @@
       <p class="h-is-tertiary-text mb-4">NFT Transfers</p>
     </template>
 
-    <div class="container">
+    <div class="graph-container" v-bind:class="{'graph-container-6': descriptionVisible}">
 
       <template v-if="!compact">
 
@@ -40,7 +40,7 @@
         <div class="h-is-text-size-3 has-text-grey-light has-text-weight-light mb-2">Non Fungible Tokens</div>
         <div/>
         <div class="h-is-text-size-3 has-text-grey-light has-text-weight-light mb-2">Account</div>
-        <div/>
+        <div v-if="!compact && descriptionVisible"/>
       </template>
 
       <template v-for="i in nftTransferLayout.length" v-bind:key="i">
@@ -55,7 +55,7 @@
         </div>
 
         <!-- #1 : arrow -->
-        <div  style="line-height: 0">
+        <div  style="position: relative">
           <ArrowSegment v-bind:compact="compact"/>
         </div>
 
@@ -76,7 +76,7 @@
         </div>
 
         <!-- #3 : arrow -->
-        <div  style="line-height: 0">
+        <div  style="position: relative">
           <ArrowSegment v-bind:compact="compact"/>
         </div>
 
@@ -90,8 +90,8 @@
         </div>
 
         <!-- #5 : description -->
-        <div>
-          <span v-if="!compact" class="h-is-smaller">{{ nftTransferLayout[i-1].description }}</span>
+        <div v-if="!compact && descriptionVisible">
+          <span class="h-is-smaller">{{ nftTransferLayout[i-1].description }}</span>
         </div>
 
       </template>
@@ -107,7 +107,7 @@
 
 <script lang="ts">
 
-import {defineComponent, PropType, ref, watch} from "vue";
+import {defineComponent, inject, PropType, ref, watch} from "vue";
 import AccountLink from "@/components/values/AccountLink.vue";
 import TokenLink from "@/components/values/TokenLink.vue";
 import ArrowSegment from "@/components/transfer_graphs/ArrowSegment.vue";
@@ -132,8 +132,11 @@ export default defineComponent({
       nftTransferLayout.value = NFTTransferLayout.make(props.transaction)
     })
 
+    const descriptionVisible = inject("isSmallScreen", true)
+
     return {
       nftTransferLayout,
+      descriptionVisible
     }
   }
 })
@@ -146,13 +149,14 @@ export default defineComponent({
 
 <style scoped>
 
-.container {
+.graph-container {
   display: inline-grid;
-  grid-template-columns: repeat(6, auto)
+  grid-template-columns: repeat(5, auto);
+  column-gap: 1em;
 }
 
-div.container > div {
-  margin-right: 1em;
+.graph-container-6 {
+  grid-template-columns: repeat(6, auto)
 }
 
 </style>

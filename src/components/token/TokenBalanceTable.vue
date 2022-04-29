@@ -28,10 +28,11 @@
       :data="balances"
       :narrowed="true"
       :hoverable="true"
-      :paginated="paginationNeeded"
-      :per-page="pageSize"
+      :paginated="!isTouchDevice && paginationNeeded"
+      :per-page="isMediumScreen ? pageSize : 5"
       :striped="true"
       :v-model:current-page="currentPage"
+      :mobile-breakpoint="ORUGA_MOBILE_BREAKPOINT"
       aria-current-label="Current page"
       aria-next-label="Next page"
       aria-page-label="Page"
@@ -60,11 +61,12 @@
 
 <script lang="ts">
 
-import {computed, defineComponent, onBeforeUnmount, onMounted, ref, watch} from 'vue';
+import {computed, defineComponent, inject, onBeforeUnmount, onMounted, ref, watch} from 'vue';
 import {TokenDistribution} from "@/schemas/HederaSchemas";
 import {TokenBalanceCache} from "@/components/token/TokenBalanceCache";
 import router from "@/router";
 import TokenAmount from "@/components/values/TokenAmount.vue";
+import { ORUGA_MOBILE_BREAKPOINT } from '@/App.vue';
 
 export default defineComponent({
   name: 'TokenBalanceTable',
@@ -80,12 +82,13 @@ export default defineComponent({
   },
 
   setup(props) {
+    const isTouchDevice = inject('isTouchDevice', false)
+    const isMediumScreen = inject('isMediumScreen', true)
 
     const DEFAULT_PAGE_SIZE = 15
-
     const pageSize = props.nbItems ?? DEFAULT_PAGE_SIZE
     const paginationNeeded = computed(() => {
-          return balances.value.length > pageSize
+          return balances.value.length > 5
         }
     )
 
@@ -93,7 +96,7 @@ export default defineComponent({
     let balances = ref<Array<TokenDistribution>>([])
 
     // 2) cache
-    const cache = new TokenBalanceCache(props.tokenId)
+    const cache = new TokenBalanceCache(props.tokenId, isTouchDevice ? 15 : 100)
 
     cache.responseDidChangeCB = () => {
       balances.value = cache.getEntity()?.balances ?? []
@@ -122,12 +125,15 @@ export default defineComponent({
     let currentPage = ref(1)
 
     return {
+      isTouchDevice,
+      isMediumScreen,
       pageSize,
       paginationNeeded,
       balances,
       cache,
       currentPage,
       handleClick,
+      ORUGA_MOBILE_BREAKPOINT
     }
   }
 });
