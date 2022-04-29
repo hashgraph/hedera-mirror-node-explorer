@@ -120,8 +120,14 @@ export default defineComponent({
 
       loading.value = activeRequestCount >= 1
       error.value = errorResponseCount >= 1
-      explanation.value = makeExplanationOrSuggestion(AxiosMonitor.instance.getErrorResponses(), true)
-      suggestion.value = makeExplanationOrSuggestion(AxiosMonitor.instance.getErrorResponses(), false)
+      explanation.value = makeExplanationOrSuggestion(
+          AxiosMonitor.instance.getErrorResponses(),
+          AxiosMonitor.instance.getSuccessfulRequestCount(),
+          true)
+      suggestion.value = makeExplanationOrSuggestion(
+          AxiosMonitor.instance.getErrorResponses(),
+          AxiosMonitor.instance.getSuccessfulRequestCount(),
+          false)
     }
 
     //
@@ -172,10 +178,9 @@ export default defineComponent({
   }
 })
 
-function makeExplanationOrSuggestion(errors: Map<string, unknown>, explanation: boolean): string {
+function makeExplanationOrSuggestion(errors: Map<string, unknown>, successfulRequestCount: number, explanation: boolean): string {
 
   let errorCount_request = 0
-  let errorCount_response = 0
   let errorCount_429 = 0
 
 
@@ -189,10 +194,9 @@ function makeExplanationOrSuggestion(errors: Map<string, unknown>, explanation: 
         if (error.response.status == 429) {
           errorCount_429 += 1
         } else {
-          errorCount_response += 1
           statusCodes.add(error.response.status)
         }
-      } else if (error.request) {
+      } else {
         errorCount_request += 1
       }
     }
@@ -200,8 +204,28 @@ function makeExplanationOrSuggestion(errors: Map<string, unknown>, explanation: 
 
   let result: string
   const errorCount = errors.size
-  if (errorCount_response === errorCount) {
+  if (errorCount_429 >= 1) {
+    // At least one request failed with http status #429
+    result = explanation
+        ? "The server is busy (status #429)"
+        : "This is transient. Try to reload the page in a few moments."
+  } else if (errorCount_request === errorCount) {
+    // Failed requests do not have any response from server
+    if (successfulRequestCount >= 1) {
+      // Some requests did succeed => server overload ?
+      result = explanation
+          ? "The server is busy"
+          : "This is transient. Try to reload the page in a few moments."
+    } else {
+      // No request did succeed => internet connection is dead ?
+      result = explanation
+          ? "Internet connection issue ?"
+          : "Check your internet connection and reload the page."
+    }
+  } else {
+    // Other cases
     if (statusCodes.size == 1) {
+      // All requests returns the same http status
       const statusCode = statusCodes.values().next().value
       result = explanation
           ? "The server reported an error #" + statusCode
@@ -211,20 +235,6 @@ function makeExplanationOrSuggestion(errors: Map<string, unknown>, explanation: 
           ? "The server reported errors"
           : "This might be transient. Try to reload the page in a few moments."
     }
-  } else if (errorCount_429 === errorCount) {
-    result = explanation
-        ? "The server is busy"
-        : "This is transient. Try to reload the page in a few moments."
-  } else if (errorCount_request === errorCount) {
-    result = explanation
-        ? "Internet connection issue ?"
-        : "Check your internet connection and reload the page."
-  }
-  else {
-    // Mix of different errors
-    result =  explanation
-        ? "The server reported errors"
-        : "This might be transient. Try to reload the page in a few moments."
   }
 
   return result
