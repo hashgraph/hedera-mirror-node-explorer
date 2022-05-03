@@ -40,7 +40,7 @@
     <router-view/>
   </div>
 
-  <section v-if="!isTouchDevice" class="section">
+  <section class="section" :class="{'h-mobile-background': isTouchDevice || !isSmallScreen}">
 
     <hr class="h-top-banner mb-4 mt-0" style="height: 1px"/>
 
