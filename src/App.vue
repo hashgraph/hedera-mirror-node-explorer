@@ -40,7 +40,7 @@
     <router-view/>
   </div>
 
-  <section v-if="!isTouchDevice" class="section">
+  <section class="section" :class="{'h-mobile-background': isTouchDevice || !isSmallScreen}">
 
     <hr class="h-top-banner mb-4 mt-0" style="height: 1px"/>
 
@@ -56,7 +56,7 @@
 
       <span class="is-flex-grow-1"/>
 
-      <a href="#" style="line-height: 1">
+      <a href="#" class="ml-4" style="line-height: 1">
         <img alt="Sponsor Logo" src="@/assets/branding/brand-sponsor-logo.png" style="max-width: 124px;">
       </a>
 

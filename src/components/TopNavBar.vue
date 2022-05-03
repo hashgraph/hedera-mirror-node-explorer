@@ -34,7 +34,7 @@
 <!--  </div>-->
 
   <div v-if="isTouchDevice || !isMediumScreen"
-       class="is-flex is-align-items-center is-justify-content-space-between px-4 pt-3 pb-4">
+       class="is-flex is-align-items-center is-justify-content-space-between pt-3 pb-4">
 
     <span class="is-inline-flex is-align-items-center is-flex-grow-0 is-flex-shrink-0">
       <a class="mr-3" @click="$router.push({name: 'MainDashboard'})">
@@ -44,16 +44,17 @@
     </span>
 
     <div class="is-flex is-align-items-center pt-2">
-      <a>
-        <img alt="Search bar" src="@/assets/magnifying-glass.png" style="max-height: 20px;">
+      <a v-if="name !== 'MobileMenu' && name !== 'MobileSearch'"
+         @click="$router.push({name: 'MobileSearch'})">
+        <img alt="Search bar" src="@/assets/search-icon.png" style="max-height: 20px;">
       </a>
-      <a v-if="name !== 'MobileMenu'" class="ml-5"
+      <a v-if="name !== 'MobileMenu' && name !== 'MobileSearch'" class="ml-5"
          @click="$router.push({name: 'MobileMenu', query: {from: name}})">
         <img alt="Search bar" src="@/assets/hamburger.png" style="max-height: 32px;">
       </a>
-      <a v-else class="ml-5"
+      <a v-else class="ml-5 mr-2"
          @click="$router.back()">
-        <img alt="Search bar" src="@/assets/close-icon.png" style="max-height: 32px;">
+        <img alt="Search bar" src="@/assets/close-icon.png" style="max-height: 22px;">
       </a>
     </div>
 

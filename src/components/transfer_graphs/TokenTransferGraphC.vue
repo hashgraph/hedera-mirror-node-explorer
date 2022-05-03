@@ -56,14 +56,7 @@
                          v-bind:amount="tokenTransferLayout[s-1].netAmount"/>
           </div>
 
-          <!-- #3 : token symbol -->
-          <div data-cy="tokenExtra">
-            <TokenExtra v-if="i === 1"
-                        v-bind:token-id="tokenTransferLayout[s-1].tokenId"
-                        v-bind:use-anchor="false"/>
-          </div>
-
-          <!-- #4 : arrow -->
+          <!-- #3 : arrow -->
           <div  style="position: relative">
             <ArrowSegment
                 v-bind:dest-count="tokenTransferLayout[s-1].destinations.length"
@@ -71,7 +64,7 @@
                 v-bind:row-index="i-1"/>
           </div>
 
-          <!-- #5 : account id -->
+          <!-- #4 : account id -->
           <div>
             <template v-if="i <= tokenTransferLayout[s-1].destinations.length">
               <AccountLink v-bind:account-id="tokenTransferLayout[s-1].destinations[i-1].account"
@@ -104,11 +97,10 @@ import TokenAmount from "@/components/values/TokenAmount.vue";
 import ArrowSegment from "@/components/transfer_graphs/ArrowSegment.vue";
 import {TokenTransferLayout} from "@/components/transfer_graphs/layout/TokenTransferLayout";
 import {Transaction} from "@/schemas/HederaSchemas";
-import TokenExtra from "@/components/values/TokenExtra.vue";
 
 export default defineComponent({
   name: "TokenTransferGraphC",
-  components: {AccountLink, TokenAmount, ArrowSegment, TokenExtra},
+  components: {AccountLink, TokenAmount, ArrowSegment},
   props: {
     transaction: Object as PropType<Transaction>
   },
@@ -136,7 +128,7 @@ export default defineComponent({
 
 .graph-container {
   display: inline-grid;
-  grid-template-columns: repeat(6, auto);
+  grid-template-columns: repeat(5, auto);
   column-gap: 1em
 }
 

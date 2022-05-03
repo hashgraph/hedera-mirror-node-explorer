@@ -26,46 +26,17 @@
 
   <hr class="h-top-banner" style="margin: 0; height: 4px"/>
 
-  <section class="section has-text-centered" style="height: calc(100vh - 250px)">
+  <section class="section has-text-left" style="height: calc(100vh - 250px)">
 
-    <div class="is-flex is-justify-content-center">
-
-      <div class="is-flex is-flex-direction-column is-align-items-start" style="width: fit-content">
-        <div id="drop-down-menu" class="ml-1 mb-5 ">
-          <o-field>
-            <o-select
-                v-model="selectedNetwork"
-                class="h-is-navbar-item"
-            >
-              <option v-bind:key="HederaNetwork.MAINNET" v-bind:value="HederaNetwork.MAINNET">MAINNET</option>
-              <option v-bind:key="HederaNetwork.TESTNET" v-bind:value="HederaNetwork.TESTNET">TESTNET</option>
-            </o-select>
-          </o-field>
-        </div>
-        <a id="dashboard-menu-item"
-           :class="{'is-rimmed': isDashboardRoute, 'h-is-dense': !isDashboardRoute}"
-           class="button is-ghost h-is-mobile-navbar-item"
-           @click="$router.replace({name: 'MainDashboard'})">Dashboard</a>
-        <a :class="{ 'is-rimmed': isTransactionRoute, 'h-is-dense': !isTransactionRoute }"
-           class="button is-ghost h-is-mobile-navbar-item"
-           @click="$router.replace({name: 'Transactions'})">Transactions</a>
-        <a :class="{ 'is-rimmed': isTokenRoute, 'h-is-dense': !isTokenRoute }"
-           class="button is-ghost h-is-mobile-navbar-item"
-           @click="$router.replace({name: 'Tokens'})">Tokens</a>
-        <a :class="{ 'is-rimmed': isTopicRoute, 'h-is-dense': !isTopicRoute }"
-           class="button is-ghost h-is-mobile-navbar-item"
-           @click="$router.replace({name: 'Topics'})">Topics</a>
-        <a :class="{ 'is-rimmed': isContractRoute, 'h-is-dense': !isContractRoute }"
-           class="button is-ghost h-is-mobile-navbar-item"
-           @click="$router.replace({name: 'Contracts'})">Contracts</a>
-        <a :class="{ 'is-rimmed': isAccountRoute, 'h-is-dense': !isAccountRoute }"
-           class="button is-ghost h-is-mobile-navbar-item"
-           @click="$router.replace({name: 'Accounts'})">Accounts</a>
-      </div>
-
+    <div class="is-flex is-align-items-center mb-6">
+      <img alt="Search bar" src="@/assets/large-search-icon.png" style="width: 42px;">
+      <span class="ml-4">Search accounts, transactions, tokens, contracts and topics</span>
     </div>
 
+    <SearchBar/>
+
   </section>
+
 </template>
 
 <!-- --------------------------------------------------------------------------------------------------------------- -->
@@ -79,17 +50,23 @@ import {HederaNetwork} from "@/components/TopNavBar.vue";
 import {useRoute} from "vue-router";
 import router from "@/router";
 import {MEDIUM_BREAKPOINT} from "@/App.vue";
+import SearchBar from "@/components/SearchBar.vue";
 
 export default defineComponent({
-  name: 'MobileMenu',
+  name: 'MobileSearch',
+  components: {SearchBar},
   props: {
     "searchedId": String,
     "network": String
   },
   setup() {
     const route = useRoute()
-    const network = computed(() => { return route.params.network })
-    const name = computed(() => { return route.query.from })
+    const network = computed(() => {
+      return route.params.network
+    })
+    const name = computed(() => {
+      return route.query.from
+    })
 
     const selectedNetwork = ref(network.value)
     watch(selectedNetwork, (selection) => {
@@ -117,7 +94,7 @@ export default defineComponent({
       return name.value === 'Accounts' || name.value === 'AccountDetails' || name.value === 'AccountBalances'
     })
 
-    const  onResizeHandler = () => {
+    const onResizeHandler = () => {
       if (window.innerWidth >= MEDIUM_BREAKPOINT) {
         router.back()
       }

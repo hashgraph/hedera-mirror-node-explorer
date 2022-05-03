@@ -36,6 +36,7 @@ import axios from "axios";
 import {AxiosMonitor} from "@/utils/AxiosMonitor";
 import TransactionsById from "@/pages/TransactionsById.vue";
 import MobileMenu from "@/pages/MobileMenu.vue";
+import MobileSearch from "@/pages/MobileSearch.vue";
 
 const TESTNET_URL = "https://testnet.mirrornode.hedera.com/";
 const MAINNET_URL = "https://mainnet-public.mirrornode.hedera.com/";
@@ -143,6 +144,12 @@ const routes: Array<RouteRecordRaw> = [
     path: '/:network/mobile-menu',
     name: 'MobileMenu',
     component: MobileMenu,
+    props: true
+  },
+  {
+    path: '/:network/mobile-search',
+    name: 'MobileSearch',
+    component: MobileSearch,
     props: true
   },
   {

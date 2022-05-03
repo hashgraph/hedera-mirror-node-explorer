@@ -26,7 +26,7 @@
 
   <hr class="h-top-banner" style="margin: 0; height: 4px"/>
 
-  <section class="section has-text-centered" style="height: calc(100vh - 300px)">
+  <section class="section has-text-centered" style="height: calc(100vh - 250px)">
 
     <p class="h-is-secondary-text" style="font-weight: 300">
       <template v-if="errorCount >= 1">

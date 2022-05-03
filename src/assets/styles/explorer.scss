@@ -34,6 +34,11 @@ body {
     font-size: 30px;
     line-height: 36px;
 }
+@media (max-width: 767px) {
+    .h-is-primary-title {
+        font-size: 22px;
+    }
+}
 .h-is-primary-subtitle {
     font-style: normal;
     font-weight: 900;
@@ -46,6 +51,11 @@ body {
     font-size: 34px;
     line-height: 41px;
     letter-spacing: -0.05em;
+}
+@media (max-width: 767px) {
+    .h-is-secondary-text {
+        font-size: 26px;
+    }
 }
 .h-is-tertiary-text {
     font-style: normal;
@@ -175,10 +185,6 @@ body {
 @media (max-width: 1023px) {
     #drop-down-menu .o-sel {
         width: 322px;
-        font-weight: bold;
-        color: $h-highlight-color;
-        border-color: $h-highlight-color;
-        background-color: $h-box-background-color;
         border-width: 0.5px;
         padding-top: 13px;
         padding-bottom: 13px;
@@ -186,6 +192,11 @@ body {
     }
     #drop-down-menu .o-sel-arrow {
         background-position: calc(100% - 13px) calc(100% - 16px);
+    }
+}
+@media (max-width: 767px) {
+    #drop-down-menu .o-sel {
+        background-color: $h-mobile-page-background-color;
     }
 }
 a.button {
@@ -322,6 +333,6 @@ table.o-table th.o-table__th--left {
 // MOBILE
 //
 .h-mobile-background {
-    background-color: $h-table-background-color;
+    background-color: $h-mobile-page-background-color;
 }
 
