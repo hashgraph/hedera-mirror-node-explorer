@@ -44,10 +44,11 @@
     </span>
 
     <div class="is-flex is-align-items-center pt-2">
-      <a>
-        <img alt="Search bar" src="@/assets/magnifying-glass.png" style="max-height: 20px;">
+      <a v-if="name !== 'MobileMenu' && name !== 'MobileSearch'"
+         @click="$router.push({name: 'MobileSearch'})">
+        <img alt="Search bar" src="@/assets/search-icon.png" style="max-height: 20px;">
       </a>
-      <a v-if="name !== 'MobileMenu'" class="ml-5"
+      <a v-if="name !== 'MobileMenu' && name !== 'MobileSearch'" class="ml-5"
          @click="$router.push({name: 'MobileMenu', query: {from: name}})">
         <img alt="Search bar" src="@/assets/hamburger.png" style="max-height: 32px;">
       </a>

@@ -24,7 +24,20 @@
 
 <template>
 
-  <div>
+  <div v-if="isTouchDevice || !isMediumScreen">
+    <form data-cy="searchBar" class="control" action="" v-on:submit.prevent="performSearch">
+      <input
+          class="input has-background-white has-text-black"
+          style="border-radius: 10px; height: 50px"
+          type="text"
+          v-model="searchedId"
+          v-bind:disabled="searchInputDisabled"
+          ref="search-input"
+      />
+    </form>
+  </div>
+
+  <div v-else>
     <form data-cy="searchBar" class="control has-icons-right" action="" v-on:submit.prevent="performSearch">
       <input
              class="input has-text-white h-is-navbar-item"
@@ -48,7 +61,7 @@
 
 <script lang="ts">
 
-import {defineComponent, onMounted, ref, watch} from "vue";
+import {defineComponent, inject, onMounted, ref, watch} from "vue";
 import {SearchRequest} from "@/utils/SearchRequest";
 import router from "@/router";
 
@@ -60,6 +73,9 @@ const STYLE_BUSY_ICON = "fa fa-spinner fa-spin"
 export default defineComponent({
   name: "SearchBar",
   setup() {
+    const isMediumScreen = inject('isMediumScreen', true)
+    const isTouchDevice = inject('isTouchDevice', false)
+
     // 1)
     const searchedId = ref("")
 
@@ -146,6 +162,8 @@ export default defineComponent({
     })
 
     return {
+      isMediumScreen,
+      isTouchDevice,
       searchedId,
       searchInputDisabled,
       searchButtonDisabled,
