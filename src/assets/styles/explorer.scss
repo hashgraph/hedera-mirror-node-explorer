@@ -36,7 +36,7 @@ body {
 }
 @media (max-width: 767px) {
     .h-is-primary-title {
-        font-size: 22px;
+        font-size: 20px;
     }
 }
 .h-is-primary-subtitle {
@@ -54,7 +54,7 @@ body {
 }
 @media (max-width: 767px) {
     .h-is-secondary-text {
-        font-size: 26px;
+        font-size: 18px;
     }
 }
 .h-is-tertiary-text {
@@ -62,6 +62,11 @@ body {
     font-weight: normal;
     font-size: 18px;
     line-height: 22px;
+}
+@media (max-width: 767px) {
+    .h-is-tertiary-text {
+        font-size: 14px;
+    }
 }
 .h-is-table-heading {
     font-style: normal;

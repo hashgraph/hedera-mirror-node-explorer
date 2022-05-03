@@ -50,7 +50,7 @@
         <img alt="Built On Hedera" src="@/assets/built-on-hedera-white.svg" style="min-width: 104px;">
       </a>
 
-      <span class="h-is-property-text ml-5 pb-1" style="font-weight:300; color: #DBDBDB">
+      <span v-if="!isTouchDevice && isSmallScreen" class="h-is-property-text ml-5 pb-1" style="font-weight:300; color: #DBDBDB">
         Hedera Mirror Node Explorer is a ledger explorer for the Hedera network.
       </span>
 

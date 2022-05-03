@@ -31,8 +31,8 @@
     <DashboardCard>
       <template v-slot:title>
         <span class="h-is-primary-title">Account </span>
-        <span class="h-is-secondary-text">{{ accountId }}</span>
-        <span v-if="showContractVisible" class="ml-4" id="showContractLink">
+        <span class="h-is-secondary-text mr-3">{{ accountId }}</span>
+        <span v-if="showContractVisible" class="is-inline-block" id="showContractLink">
           <router-link :to="{name: 'ContractDetails', params: {contractId: accountId}}">
             <span class="h-is-property-text has-text-grey">Associated contract</span>
           </router-link>
@@ -72,7 +72,7 @@
             </div>
 
           </div>
-          <div class="column">
+          <div v-if="!isTouchDevice && isSmallScreen" class="column">
             <div class="has-text-right  has-text-grey">
               <span v-if="elapsed">Balance information obtained {{ elapsed }} ago</span>
             </div>
@@ -170,7 +170,7 @@
 
 <script lang="ts">
 
-import {computed, defineComponent, onBeforeMount, onBeforeUnmount, onMounted, ref, watch} from 'vue';
+import {computed, defineComponent, inject, onBeforeMount, onBeforeUnmount, onMounted, ref, watch} from 'vue';
 import axios from "axios";
 import {AccountBalanceTransactions, BalancesResponse, ContractResponse} from "@/schemas/HederaSchemas";
 import {operatorRegistry} from "@/schemas/OperatorRegistry";
@@ -208,6 +208,8 @@ export default defineComponent({
   },
 
   setup(props) {
+    const isSmallScreen = inject('isSmallScreen', true)
+    const isTouchDevice = inject('isTouchDevice', false)
 
     const cacheState = ref<PlayPauseState>(PlayPauseState.Play)
     const account = ref<AccountBalanceTransactions|null>(null)
@@ -300,6 +302,8 @@ export default defineComponent({
     }
 
     return {
+      isSmallScreen,
+      isTouchDevice,
       cacheState,
       account,
       balanceTimeStamp,
