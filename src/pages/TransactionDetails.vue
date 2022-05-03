@@ -41,9 +41,8 @@
       <template v-slot:table>
 
         <div v-if="transaction && transaction?.result !== TRANSACTION_SUCCESS" class="hero is-small is-danger mb-5 has-text-centered">
-          <div class="hero-body">
-            <span class="h-is-tertiary-text">Transaction has failed: </span>
-            <span class="h-is-secondary-text">{{ transaction?.result }}</span>
+          <div class="hero-body h-is-tertiary-text">
+            <span>Transaction has failed: {{ transaction?.result }}</span>
           </div>
         </div>
 
