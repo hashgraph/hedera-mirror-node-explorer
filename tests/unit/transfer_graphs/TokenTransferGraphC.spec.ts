@@ -85,8 +85,7 @@ describe("TokenTransferGraphC.vue", () => {
         // console.log(wrapper.html())
         // console.log(wrapper.text())
 
-        expect(wrapper.text()).toBe("MINT\n\n1023423\n\n0.0.200")
-        expect(wrapper.text()).toMatch(SAMPLE_TOKEN.name)
+        expect(wrapper.text()).toBe("MINT\n\n10\n\n0.0.200")
     })
 
     test("Single token, single source, single dest", async () => {
@@ -116,9 +115,8 @@ describe("TokenTransferGraphC.vue", () => {
 
         expect(wrapper.text()).toBe(
             "0.0.100\n\n" +
-            "1023423\n\n" +
+            "10\n\n" +
             "0.0.200")
-        expect(wrapper.text()).toMatch(SAMPLE_TOKEN.name)
     })
 
     test("Single token, single source, two dest", async () => {
@@ -149,10 +147,9 @@ describe("TokenTransferGraphC.vue", () => {
 
         expect(wrapper.text()).toBe(
             "0.0.100\n\n" +
-            "1023423\n\n" +
+            "10\n\n" +
             "0.0.200\n\n\n\n" +
             "0.0.201")
-        expect(wrapper.text()).toMatch(SAMPLE_TOKEN.name)
     })
 
     test("Single token, two sources, zero dest", async () => {
@@ -180,8 +177,7 @@ describe("TokenTransferGraphC.vue", () => {
         // console.log(wrapper.html())
         // console.log(wrapper.text())
 
-        expect(wrapper.text()).toBe("0.0.100\n\n1023423\n\nBURN0.0.101")
-        expect(wrapper.text()).toMatch(SAMPLE_TOKEN.name)
+        expect(wrapper.text()).toBe("0.0.100\n\n10\n\nBURN0.0.101")
     })
 
     test("Single token, two sources, single dest", async () => {
@@ -212,9 +208,8 @@ describe("TokenTransferGraphC.vue", () => {
 
         expect(wrapper.text()).toBe(
             "0.0.100\n\n" +
-            "1023423\n\n" +
+            "10\n\n" +
             "0.0.2000.0.101")
-        expect(wrapper.text()).toMatch(SAMPLE_TOKEN.name)
     })
 
     test("Single token, two sources, two dest", async () => {
@@ -246,10 +241,9 @@ describe("TokenTransferGraphC.vue", () => {
 
         expect(wrapper.text()).toBe(
             "0.0.100\n\n" +
-            "1023423\n\n" +
+            "10\n\n" +
             "0.0.2000.0.101\n\n\n\n" +
             "0.0.201")
-        expect(wrapper.text()).toMatch(SAMPLE_TOKEN.name)
     })
 
 
@@ -288,10 +282,10 @@ describe("TokenTransferGraphC.vue", () => {
         // console.log(wrapper.text())
 
         expect(wrapper.text()).toBe("0.0.100\n\n" +
-            "1023423\n\n" +
+            "10\n\n" +
             "0.0.2000.0.101\n\n\n\n" +
             "0.0.2010.0.100\n\n" +
-            "623423 DUDE\n\n" +
+            "6\n\n" +
             "0.0.200")
     })
 
