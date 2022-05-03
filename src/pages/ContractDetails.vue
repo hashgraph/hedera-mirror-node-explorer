@@ -31,8 +31,8 @@
     <DashboardCard>
       <template v-slot:title>
         <span class="h-is-primary-title">Contract </span>
-        <span class="h-is-secondary-text is-numeric">{{ contractId }}</span>
-        <span class="ml-4">
+        <span class="h-is-secondary-text is-numeric mr-3">{{ contractId }}</span>
+        <span class="is-inline-block">
           <router-link :to="{name: 'AccountDetails', params: {accountId: contractId}}">
             <span class="h-is-property-text has-text-grey">Associated account</span>
           </router-link>
