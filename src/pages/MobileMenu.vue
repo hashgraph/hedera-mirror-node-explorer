@@ -26,12 +26,12 @@
 
   <hr class="h-top-banner" style="margin: 0; height: 4px"/>
 
-  <section class="section has-text-centered">
+  <section class="section has-text-centered" style="height: calc(100vh - 250px)">
 
     <div class="is-flex is-justify-content-center">
 
       <div class="is-flex is-flex-direction-column is-align-items-start" style="width: fit-content">
-        <div id="drop-down-menu" class="ml-1 mb-5">
+        <div id="drop-down-menu" class="ml-1 mb-5 ">
           <o-field>
             <o-select
                 v-model="selectedNetwork"
