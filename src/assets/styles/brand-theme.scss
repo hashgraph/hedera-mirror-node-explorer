@@ -22,8 +22,9 @@
 $h-highlight-color: lightgrey;
 $h-page-background-color: #171717;
 $h-top-banner-background-color: #2f2f2f;
-$h-box-background-color:  #171717;
-$h-table-background-color:  #171717;
+$h-box-background-color: $h-page-background-color;
+$h-table-background-color: $h-page-background-color;
+$h-mobile-page-background-color: $h-page-background-color;
 $h-table-hover-background-color: black;
 $h-pill-background: lightgrey;
 $h-extra-text-color: $h-highlight-color;
