@@ -49,17 +49,20 @@ describe("HbarMarketDashboard.vue ", () => {
 
         expect(wrapper.text()).toBe(
             "$0.2460" +
-            "↗ 8.42%" +
+            "8.42%" +
             "HBAR PRICE" +
             "$4,486,259,941" +
-            "↗ 8.42%" +
+            "8.42%" +
             "HBAR MARKET CAP"
         )
 
         const logos = wrapper.findAll("img")
-        expect(logos.length).toBe(2)
+        expect(logos.length).toBe(4)
+
         expect(logos[0].attributes('alt')).toBe("Hbar Symbol")
-        expect(logos[1].attributes('alt')).toBe("World Market Symbol")
+        expect(logos[1].attributes('alt')).toBe("Trend Up")
+        expect(logos[2].attributes('alt')).toBe("World Market Symbol")
+        expect(logos[3].attributes('alt')).toBe("Trend Up")
     });
 
 });

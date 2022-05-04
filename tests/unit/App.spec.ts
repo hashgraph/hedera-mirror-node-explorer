@@ -98,13 +98,15 @@ describe("App.vue", () => {
         expect(cards[2].text()).toMatch(RegExp("^HCS Messages"))
 
         const logos = wrapper.findAll("img")
-        expect(logos.length).toBe(6)
+        expect(logos.length).toBe(8)
         expect(logos[0].attributes('alt')).toBe("Product Logo")
         expect(logos[1].attributes('alt')).toBe("Built On Hedera")
         expect(logos[2].attributes('alt')).toBe("Hbar Symbol")
-        expect(logos[3].attributes('alt')).toBe("World Market Symbol")
-        expect(logos[4].attributes('alt')).toBe("Built On Hedera")
-        expect(logos[5].attributes('alt')).toBe("Sponsor Logo")
+        expect(logos[3].attributes('alt')).toBe("Trend Up")
+        expect(logos[4].attributes('alt')).toBe("World Market Symbol")
+        expect(logos[5].attributes('alt')).toBe("Trend Up")
+        expect(logos[6].attributes('alt')).toBe("Built On Hedera")
+        expect(logos[7].attributes('alt')).toBe("Sponsor Logo")
 
         wrapper.unmount()
     });
