@@ -26,7 +26,7 @@
 
   <hr class="h-top-banner" style="margin: 0; height: 4px"/>
 
-  <section class="section has-text-left" style="height: calc(100vh - 250px)">
+  <section class="section has-text-left">
 
     <div class="is-flex is-align-items-center mb-6">
       <img alt="Search bar" src="@/assets/large-search-icon.png" style="width: 42px;">

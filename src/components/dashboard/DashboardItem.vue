@@ -24,7 +24,7 @@
 
 <template>
 
-  <div class="is-flex is-align-items-center mx-6">
+  <div class="is-flex is-align-items-center mx-5">
     <div v-if="isMediumScreen" class="mr-2">
       <slot name="symbol"></slot>
     </div>
@@ -76,8 +76,8 @@ export default defineComponent({
 .dashboard-value {
   font-style: normal;
   font-weight: 300;
-  font-size: 26px;
-  line-height: 31px;
+  font-size: 28px;
+  line-height: 34px;
   letter-spacing: -0.05em;
 }
 @media (min-width: 1024px) {

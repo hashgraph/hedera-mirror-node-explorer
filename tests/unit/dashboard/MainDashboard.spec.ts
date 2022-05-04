@@ -85,7 +85,7 @@ describe("MainDashboard.vue", () => {
 
         const dash = wrapper.findComponent(HbarMarketDashboard)
         expect(dash.exists()).toBe(true)
-        expect(dash.text()).toBe("$0.2460↗ 8.42%HBAR PRICE$4,486,259,941↗ 8.42%HBAR MARKET CAP")
+        expect(dash.text()).toBe("$0.24608.42%HBAR PRICE$4,486,259,9418.42%HBAR MARKET CAP")
 
         const cards = wrapper.findAllComponents(DashboardCard)
         expect(cards.length).toBe(3)
