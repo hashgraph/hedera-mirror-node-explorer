@@ -26,7 +26,7 @@
 
   <template v-if="amount !== 0 || !hideZero">
     <span class="has-hbar is-numeric"
-          :class="{ 'has-text-grey': isGrey, 'h-is-red': isRed, 'h-is-green': isGreen }">
+          :class="{ 'has-text-grey': isGrey, 'h-is-debit': isRed, 'h-is-credit': isGreen }">
       {{ formattedAmount }}
     </span>
   </template>
