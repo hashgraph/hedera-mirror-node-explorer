@@ -26,7 +26,7 @@
 
   <hr class="h-top-banner" style="margin: 0; height: 4px"/>
 
-  <section class="section has-text-centered" style="height: calc(100vh - 250px)">
+  <section class="section has-text-centered">
 
     <div class="is-flex is-justify-content-center">
 
