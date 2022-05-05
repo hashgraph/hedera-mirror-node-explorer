@@ -19,49 +19,17 @@
   -->
 
 <template>
+
   <section class="section is-top-section">
     <TopNavBar/>
   </section>
-
-<!--  <div v-if="sizeFallBack">-->
-<!--    <hr class="h-top-banner" style="margin: 0; height: 4px"/>-->
-
-<!--    <section class="section has-text-centered" style="height: calc(100vh - 300px)">-->
-
-<!--      <div class="block h-is-tertiary-text">-->
-<!--        <p style="font-weight: 300">Mobile support coming soon...</p>-->
-<!--        <p style="font-weight: 200">If on a desktop, please enlarge your browser window</p>-->
-<!--      </div>-->
-
-<!--    </section>-->
-<!--  </div>-->
 
   <div :class="{'h-mobile-background': isTouchDevice || !isSmallScreen}">
     <router-view/>
   </div>
 
   <section class="section" :class="{'h-mobile-background': isTouchDevice || !isSmallScreen}">
-
-    <hr class="h-top-banner mb-4 mt-0" style="height: 1px"/>
-
-    <div class="is-flex is-align-items-center">
-
-      <a href="https://hedera.com" style="line-height: 1">
-        <img alt="Built On Hedera" src="@/assets/built-on-hedera-white.svg" style="min-width: 104px;">
-      </a>
-
-      <span v-if="!isTouchDevice && isSmallScreen" class="h-is-property-text ml-5 pb-1" style="font-weight:300; color: #DBDBDB">
-        Hedera Mirror Node Explorer is a ledger explorer for the Hedera network.
-      </span>
-
-      <span class="is-flex-grow-1"/>
-
-      <a href="#" class="ml-4" style="line-height: 1">
-        <img alt="Sponsor Logo" src="@/assets/branding/brand-sponsor-logo.png" style="max-width: 104px;">
-      </a>
-
-    </div>
-
+    <Footer/>
   </section>
 
 </template>
@@ -70,6 +38,7 @@
 
 import {computed, defineComponent, onBeforeUnmount, onMounted, provide, ref} from 'vue';
 import TopNavBar from "@/components/TopNavBar.vue";
+import Footer from "@/components/Footer.vue";
 
 export const XLARGE_BREAKPOINT = 1240
 export const LARGE_BREAKPOINT = 1120
@@ -84,7 +53,7 @@ export const ORUGA_MOBILE_BREAKPOINT = "1023px"
 
 export default defineComponent({
   name: 'App',
-  components: {TopNavBar},
+  components: {Footer, TopNavBar},
 
   setup() {
     const isTouchDevice = ('ontouchstart' in window)
