@@ -25,10 +25,9 @@
 <template>
   <span class="is-numeric">{{ formattedAmount }}</span>
   <template v-if="showExtra && tokenId != null">
-    <router-link :to="{name: 'TokenDetails', params: {tokenId: tokenId}}">
-      <span class="ml-2 h-is-smaller h-is-extra-text should-wrap">{{ extra }}</span>
-      <span v-if="errorFlag" class="icon h-is-smaller"><i class="fas fa-exclamation-triangle"/></span>
-    </router-link>
+    <span class="ml-2">
+      <TokenExtra v-bind:token-id="tokenId" v-bind:use-anchor="useAnchor"/>
+    </span>
   </template>
 </template>
 
@@ -42,10 +41,12 @@ import {computed, defineComponent, ref} from "vue";
 import {AxiosResponse} from "axios";
 import {TokenInfo} from "@/schemas/HederaSchemas";
 import {TokenInfoCollector} from "@/utils/TokenInfoCollector";
+import TokenExtra from "@/components/values/TokenExtra.vue";
 
 export default defineComponent({
   name: "TokenAmount",
 
+  components: {TokenExtra},
   props: {
     amount: {
       type: Number,
@@ -55,6 +56,10 @@ export default defineComponent({
     showExtra: {
       type: Boolean,
       default: false
+    },
+    useAnchor: {
+      type: Boolean,
+      default: true
     }
   },
 
