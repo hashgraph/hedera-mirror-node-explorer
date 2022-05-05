@@ -107,19 +107,25 @@
             <div class="columns">
               <div class="column is-one-third has-text-weight-light">Total Supply</div>
               <div class="column" id="totalSupply">
-                {{ tokenInfo?.total_supply }}
+                <TokenAmount v-bind:amount="parseIntString(tokenInfo?.total_supply)"
+                             v-bind:token-id="tokenId"
+                             v-bind:show-extra="false"/>
               </div>
             </div>
             <div class="columns">
               <div class="column is-one-third has-text-weight-light">Initial Supply</div>
               <div class="column" id="initialSupply">
-                {{ tokenInfo?.initial_supply }}
+                <TokenAmount v-bind:amount="parseIntString(tokenInfo?.initial_supply)"
+                             v-bind:token-id="tokenId"
+                             v-bind:show-extra="false"/>
               </div>
             </div>
             <div class="columns">
               <div class="column is-one-third has-text-weight-light">Max Supply</div>
               <div class="column" id="maxSupply">
-                {{ tokenInfo?.max_supply }}
+                <TokenAmount v-bind:amount="parseIntString(tokenInfo?.max_supply)"
+                             v-bind:token-id="tokenId"
+                             v-bind:show-extra="false"/>
               </div>
             </div>
 
@@ -165,6 +171,7 @@ import TokenBalanceTable from "@/components/token/TokenBalanceTable.vue";
 import {formatSeconds} from "@/utils/Duration";
 import DashboardCard from "@/components/DashboardCard.vue";
 import BlobValue from "@/components/values/BlobValue.vue";
+import TokenAmount from "@/components/values/TokenAmount.vue";
 
 export default defineComponent({
 
@@ -176,6 +183,7 @@ export default defineComponent({
     TimestampValue,
     TokenBalanceTable,
     TokenNftTable,
+    TokenAmount,
     KeyValue
   },
 
@@ -211,12 +219,16 @@ export default defineComponent({
     return {
       tokenInfo,
       showTokenDetails,
-
-      formatSeconds
+      formatSeconds,
+      parseIntString
     }
   },
 });
 
+function parseIntString(s: string|undefined): number|undefined {
+  const result = Number(s)
+  return isNaN(result) ? undefined : result
+}
 
 
 </script>

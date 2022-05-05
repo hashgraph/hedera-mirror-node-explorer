@@ -48,7 +48,8 @@
     </o-table-column>
 
     <o-table-column v-slot="props" field="balance" label="Balance" position="right">
-      <TokenAmount v-bind:amount="props.row.balance ?? 0"/>
+      <TokenAmount v-bind:amount="props.row.balance ?? 0"
+                   v-bind:token-id="props.row.token_id"/>
     </o-table-column>
 
   </o-table>

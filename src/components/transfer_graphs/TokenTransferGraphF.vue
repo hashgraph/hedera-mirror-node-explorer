@@ -63,7 +63,8 @@
           <!-- #1 : token amount -->
           <div class="justify-end">
             <TokenAmount v-if="i <= tokenTransferLayout[s-1].sources.length"
-                         v-bind:amount="tokenTransferLayout[s-1].sources[i-1].amount"/>
+                         v-bind:amount="tokenTransferLayout[s-1].sources[i-1].amount"
+                         v-bind:token-id="tokenTransferLayout[s-1].tokenId"/>
           </div>
 
           <!-- #2 : token symbol -->
@@ -95,7 +96,8 @@
           <!-- #5 : token amount -->
           <div>
             <TokenAmount v-if="i <= tokenTransferLayout[s-1].destinations.length"
-                         v-bind:amount="tokenTransferLayout[s-1].destinations[i-1].amount"/>
+                         v-bind:amount="tokenTransferLayout[s-1].destinations[i-1].amount"
+                         v-bind:token-id="tokenTransferLayout[s-1].tokenId"/>
           </div>
 
           <template v-if="symbolVisible">
