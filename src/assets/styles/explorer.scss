@@ -259,11 +259,22 @@ a.button.is-ghost.is-last {
 }
 
 //
-// TOP BANNER
+// SEPARATORS
 //
 
 .h-top-banner {
     background: $h-top-banner-background-color;
+}
+
+.h-card-separator {
+    background: $h-top-banner-background-color;
+    margin: 16px 0;
+}
+@media (max-width: 767px) {
+    .h-card-separator {
+        width: 0;
+        margin: 10px 0;
+    }
 }
 
 //
@@ -356,9 +367,10 @@ table.o-table th.o-table__th--left {
 }
 
 //
-// MOBILE
+// BACKGROUND
 //
 .h-mobile-background {
     background-color: $h-mobile-page-background-color;
+    min-height: 450px;
 }
 

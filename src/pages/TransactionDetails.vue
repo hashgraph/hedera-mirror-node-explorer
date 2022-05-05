@@ -26,7 +26,7 @@
 
   <hr class="h-top-banner" style="margin: 0; height: 4px"/>
 
-  <section class="section">
+  <section class="section" :class="{'h-mobile-background': isTouchDevice || !isSmallScreen}">
 
     <DashboardCard>
       <template v-slot:title>
@@ -190,7 +190,7 @@
 
 <script lang="ts">
 
-import {computed, defineComponent, onBeforeMount, ref, watch} from 'vue';
+import {computed, defineComponent, inject, onBeforeMount, ref, watch} from 'vue';
 import axios, {AxiosResponse} from "axios";
 import {Transaction, TransactionByIdResponse} from "@/schemas/HederaSchemas";
 import {EntityDescriptor} from "@/utils/EntityDescriptor"
@@ -225,6 +225,8 @@ export default defineComponent({
   },
 
   setup(props) {
+    const isSmallScreen = inject('isSmallScreen', true)
+    const isTouchDevice = inject('isTouchDevice', false)
 
     const TRANSACTION_SUCCESS = 'SUCCESS'
     const response = ref<AxiosResponse<TransactionByIdResponse>|null>(null)
@@ -283,6 +285,8 @@ export default defineComponent({
     })
 
     return {
+      isSmallScreen,
+      isTouchDevice,
       transaction,
       netAmount,
       entity,
