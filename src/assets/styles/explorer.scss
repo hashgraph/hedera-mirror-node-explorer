@@ -269,6 +269,24 @@ a.button.is-ghost.is-last {
 // ORUGA TABLES
 //
 
+// Style borders on mobile
+@media (max-width: 1023px) {
+    .o-table__wrapper--mobile tr:not(.o-table--detailed):not(.o-table--empty):not(.o-table__footer) td:first-child {
+        border-top: #979797 1px solid;
+        border-bottom: #4A4A4A 1px solid;
+    }
+
+    .o-table__wrapper--mobile tr:not(.o-table--detailed):not(.o-table--empty):not(.o-table__footer) td:not(:first-child):not(:last-child) {
+        border-top: 0;
+        border-bottom: #4A4A4A 1px solid;
+    }
+
+    .o-table__wrapper--mobile tr:not(.o-table--detailed):not(.o-table--empty):not(.o-table__footer) td:last-child {
+        border-top: 0;
+        border-bottom: 0;
+    }
+}
+
 table.o-table > thead > tr > th {
     font-style: normal;
     font-weight: bold;
