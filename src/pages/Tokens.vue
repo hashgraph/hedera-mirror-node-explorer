@@ -26,7 +26,7 @@
 
   <hr class="h-top-banner" style="margin: 0; height: 4px"/>
 
-  <section class="section">
+  <section class="section" :class="{'h-mobile-background': isTouchDevice || !isSmallScreen}">
 
     <div class="columns is-multiline">
 
@@ -60,6 +60,8 @@
 
   </section>
 
+  <Footer/>
+
 </template>
 
 <!-- --------------------------------------------------------------------------------------------------------------- -->
@@ -71,6 +73,7 @@
 import {defineComponent, inject} from 'vue';
 import TokenTable from "@/components/token/TokenTable.vue";
 import DashboardCard from "@/components/DashboardCard.vue";
+import Footer from "@/components/Footer.vue";
 
 export default defineComponent({
   name: 'Tokens',
@@ -81,17 +84,22 @@ export default defineComponent({
   },
 
   components: {
+    Footer,
     DashboardCard,
     TokenTable
   },
 
   setup() {
+    const isSmallScreen = inject('isSmallScreen', true)
+    const isTouchDevice = inject('isTouchDevice', false)
     const displaySideBySide = inject('isLargeScreen', true)
 
     const FUNGIBLE = "FUNGIBLE_COMMON"
     const NONFUNGIBLE = "NON_FUNGIBLE_UNIQUE"
 
     return {
+      isSmallScreen,
+      isTouchDevice,
       displaySideBySide,
       FUNGIBLE,
       NONFUNGIBLE

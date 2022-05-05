@@ -26,7 +26,7 @@
 
   <hr class="h-has-blue-background" style="margin: 0; height: 4px"/>
 
-  <section class="section">
+  <section class="section" :class="{'h-mobile-background': isTouchDevice || !isSmallScreen}">
 
     <DashboardCard>
       <template v-slot:title>
@@ -46,8 +46,9 @@
       </template>
     </DashboardCard>
 
-
   </section>
+
+  <Footer/>
 
 </template>
 
@@ -57,11 +58,12 @@
 
 <script lang="ts">
 
-import {computed, defineComponent, ref} from 'vue';
+import {computed, defineComponent, inject, ref} from 'vue';
 import PlayPauseButton, {PlayPauseState} from "@/components/PlayPauseButton.vue";
 import DashboardCard from "@/components/DashboardCard.vue";
 import TransactionByIdTable from "@/components/transaction/TransactionByIdTable.vue";
 import {normalizeTransactionId} from "@/utils/TransactionID";
+import Footer from "@/components/Footer.vue";
 
 export default defineComponent({
   name: 'TransactionsById',
@@ -72,12 +74,15 @@ export default defineComponent({
   },
 
   components: {
+    Footer,
     DashboardCard,
     PlayPauseButton,
     TransactionByIdTable,
   },
 
   setup(props) {
+    const isSmallScreen = inject('isSmallScreen', true)
+    const isTouchDevice = inject('isTouchDevice', false)
 
     const cacheState = ref<PlayPauseState>(PlayPauseState.Play)
 
@@ -85,7 +90,7 @@ export default defineComponent({
       return props.transactionId ? normalizeTransactionId(props.transactionId, true) : "?";
     })
 
-    return {cacheState, normalizedTransactionId}
+    return {isSmallScreen, isTouchDevice, cacheState, normalizedTransactionId}
   }
 });
 

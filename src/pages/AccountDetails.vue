@@ -26,7 +26,7 @@
 
   <hr class="h-top-banner" style="margin: 0; height: 4px"/>
 
-  <section class="section">
+  <section class="section" :class="{'h-mobile-background': isTouchDevice || !isSmallScreen}">
 
     <DashboardCard>
       <template v-slot:title>
@@ -162,6 +162,8 @@
 
   </section>
 
+  <Footer/>
+
 </template>
 
 <!-- --------------------------------------------------------------------------------------------------------------- -->
@@ -184,6 +186,7 @@ import HbarAmount from "@/components/values/HbarAmount.vue";
 import TokenAmount from "@/components/values/TokenAmount.vue";
 import BlobValue from "@/components/values/BlobValue.vue";
 import {BalanceCache} from "@/components/account/BalanceCache";
+import Footer from "@/components/Footer.vue";
 
 const MAX_TOKEN_BALANCES = 10
 
@@ -192,6 +195,7 @@ export default defineComponent({
   name: 'AccountDetails',
 
   components: {
+    Footer,
     BlobValue,
     TokenAmount,
     HbarAmount,

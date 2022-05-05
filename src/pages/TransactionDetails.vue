@@ -180,6 +180,8 @@
 
   </section>
 
+  <Footer/>
+
 </template>
 
 <!-- --------------------------------------------------------------------------------------------------------------- -->
@@ -203,12 +205,14 @@ import DashboardCard from "@/components/DashboardCard.vue";
 import HbarAmount from "@/components/values/HbarAmount.vue";
 import BlobValue from "@/components/values/BlobValue.vue";
 import TransferGraphSection from "@/components/transfer_graphs/TransferGraphSection.vue";
+import Footer from "@/components/Footer.vue";
 
 export default defineComponent({
 
   name: 'TransactionDetails',
 
   components: {
+    Footer,
     HbarAmount, BlobValue,
     DashboardCard, EntityLink, AccountLink,
     HexaValue, TimestampValue, TransferGraphSection,

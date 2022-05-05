@@ -24,11 +24,7 @@
     <TopNavBar/>
   </section>
 
-  <div :class="{'h-mobile-background': isTouchDevice || !isSmallScreen}">
-    <router-view/>
-  </div>
-
-  <Footer/>
+  <router-view/>
 
 </template>
 
@@ -36,7 +32,6 @@
 
 import {computed, defineComponent, onBeforeUnmount, onMounted, provide, ref} from 'vue';
 import TopNavBar from "@/components/TopNavBar.vue";
-import Footer from "@/components/Footer.vue";
 
 export const XLARGE_BREAKPOINT = 1240
 export const LARGE_BREAKPOINT = 1120
@@ -51,7 +46,7 @@ export const ORUGA_MOBILE_BREAKPOINT = "1023px"
 
 export default defineComponent({
   name: 'App',
-  components: {Footer, TopNavBar},
+  components: {TopNavBar},
 
   setup() {
     const isTouchDevice = ('ontouchstart' in window)

@@ -26,7 +26,7 @@
 
   <hr class="h-top-banner" style="margin: 0; height: 4px"/>
 
-  <section class="section">
+  <section class="section" :class="{'h-mobile-background': isTouchDevice || !isSmallScreen}">
 
     <DashboardCard>
       <template v-slot:title>
@@ -152,6 +152,8 @@
 
   </section>
 
+  <Footer/>
+
 </template>
 
 <!-- --------------------------------------------------------------------------------------------------------------- -->
@@ -160,7 +162,7 @@
 
 <script lang="ts">
 
-import {defineComponent, onBeforeMount, ref, watch} from 'vue';
+import {defineComponent, inject, onBeforeMount, ref, watch} from 'vue';
 import router from "@/router";
 import axios from "axios";
 import KeyValue from "@/components/values/KeyValue.vue";
@@ -172,12 +174,14 @@ import {formatSeconds} from "@/utils/Duration";
 import DashboardCard from "@/components/DashboardCard.vue";
 import BlobValue from "@/components/values/BlobValue.vue";
 import TokenAmount from "@/components/values/TokenAmount.vue";
+import Footer from "@/components/Footer.vue";
 
 export default defineComponent({
 
   name: 'TokenDetails',
 
   components: {
+    Footer,
     BlobValue,
     DashboardCard,
     TimestampValue,
@@ -193,8 +197,9 @@ export default defineComponent({
   },
 
   setup(props) {
-
-    let tokenInfo = ref<TokenInfo | null> (null)
+    const isSmallScreen = inject('isSmallScreen', true)
+    const isTouchDevice = inject('isTouchDevice', false)
+    let tokenInfo = ref<TokenInfo | null>(null)
 
     onBeforeMount(() => {
       fetchTokenInfo();
@@ -217,6 +222,8 @@ export default defineComponent({
     }
 
     return {
+      isSmallScreen,
+      isTouchDevice,
       tokenInfo,
       showTokenDetails,
       formatSeconds,

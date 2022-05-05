@@ -26,7 +26,7 @@
 
   <hr class="h-top-banner" style="margin: 0; height: 4px"/>
 
-  <section class="section">
+  <section class="section" :class="{'h-mobile-background': isTouchDevice || !isSmallScreen}">
 
     <DashboardCard>
       <template v-slot:title>
@@ -190,6 +190,8 @@
 
   </section>
 
+  <Footer/>
+
 </template>
 
 <!-- --------------------------------------------------------------------------------------------------------------- -->
@@ -198,7 +200,7 @@
 
 <script lang="ts">
 
-import {computed, defineComponent, onBeforeMount, ref, watch} from 'vue';
+import {computed, defineComponent, inject, onBeforeMount, ref, watch} from 'vue';
 import axios from "axios";
 import {AccountBalanceTransactions, ContractResponse, TokenInfo} from "@/schemas/HederaSchemas";
 import KeyValue from "@/components/values/KeyValue.vue";
@@ -212,6 +214,7 @@ import DashboardCard from "@/components/DashboardCard.vue";
 import HbarAmount from "@/components/values/HbarAmount.vue";
 import TokenAmount from "@/components/values/TokenAmount.vue";
 import BlobValue from "@/components/values/BlobValue.vue";
+import Footer from "@/components/Footer.vue";
 
 const MAX_TOKEN_BALANCES = 3
 
@@ -225,6 +228,7 @@ export default defineComponent({
   name: 'ContractDetails',
 
   components: {
+    Footer,
     BlobValue,
     HbarAmount,
     TokenAmount,
@@ -243,6 +247,8 @@ export default defineComponent({
   },
 
   setup(props) {
+    const isSmallScreen = inject('isSmallScreen', true)
+    const isTouchDevice = inject('isTouchDevice', false)
     let contract = ref(null as ContractResponse | null)
     let account = ref(null as AccountBalanceTransactions | null)
     let balances = ref([] as Array<TokenSymbolBalance>)
@@ -322,6 +328,8 @@ export default defineComponent({
     })
 
     return {
+      isSmallScreen,
+      isTouchDevice,
       contract,
       account,
       balances,

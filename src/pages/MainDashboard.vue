@@ -26,7 +26,7 @@
 
   <HbarMarketDashboard/>
 
-  <section class="section">
+  <section class="section" :class="{'h-mobile-background': isTouchDevice || !isSmallScreen}">
 
     <div class="columns">
 
@@ -92,6 +92,8 @@
 
   </section>
 
+  <Footer/>
+
 </template>
 
 <!-- --------------------------------------------------------------------------------------------------------------- -->
@@ -109,11 +111,13 @@ import CryptoTransactionTable from "@/components/dashboard/CryptoTransactionTabl
 import MessageTransactionTable from "@/components/dashboard/MessageTransactionTable.vue";
 import ContractCallTransactionTable from "@/components/dashboard/ContractCallTransactionTable.vue";
 import {TransactionType} from "@/schemas/HederaSchemas";
+import Footer from "@/components/Footer.vue";
 
 export default defineComponent({
   name: 'MainDashboard',
 
   components: {
+    Footer,
     PlayPauseButton,
     DashboardCard,
     CryptoTransactionTable,
@@ -127,6 +131,8 @@ export default defineComponent({
   },
 
   setup(props) {
+    const isSmallScreen = inject('isSmallScreen', true)
+    const isTouchDevice = inject('isTouchDevice', false)
     const displaySideBySide = inject('isLargeScreen', true)
 
     const CryptoTransactionCacheState = ref<PlayPauseState>(PlayPauseState.Play)
@@ -138,6 +144,8 @@ export default defineComponent({
     })
 
     return {
+      isSmallScreen,
+      isTouchDevice,
       displaySideBySide,
       CryptoTransactionCacheState,
       MessageTransactionCacheState,

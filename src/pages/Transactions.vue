@@ -26,7 +26,7 @@
 
   <hr class="h-top-banner" style="margin: 0; height: 4px"/>
 
-  <section class="section">
+  <section class="section" :class="{'h-mobile-background': isTouchDevice || !isSmallScreen}">
 
     <DashboardCard>
       <template v-slot:title>
@@ -46,8 +46,9 @@
       </template>
     </DashboardCard>
 
-
   </section>
+
+  <Footer/>
 
 </template>
 
@@ -57,7 +58,7 @@
 
 <script lang="ts">
 
-import {defineComponent, ref, watch} from 'vue';
+import {defineComponent, inject, ref, watch} from 'vue';
 
 import TransactionTable from "@/components/transaction/TransactionTable.vue";
 import PlayPauseButton, {PlayPauseState} from "@/components/PlayPauseButton.vue";
@@ -65,6 +66,7 @@ import TransactionTypeSelect, {TransactionOption} from "@/components/transaction
 import {useRoute, useRouter} from "vue-router";
 import {TransactionType} from "@/schemas/HederaSchemas";
 import DashboardCard from "@/components/DashboardCard.vue";
+import Footer from "@/components/Footer.vue";
 
 export default defineComponent({
   name: 'Transactions',
@@ -74,6 +76,7 @@ export default defineComponent({
   },
 
   components: {
+    Footer,
     DashboardCard,
     TransactionTypeSelect,
     PlayPauseButton,
@@ -81,6 +84,8 @@ export default defineComponent({
   },
 
   setup() {
+    const isSmallScreen = inject('isSmallScreen', true)
+    const isTouchDevice = inject('isTouchDevice', false)
 
     const router = useRouter()
     const route = useRoute()
@@ -105,7 +110,7 @@ export default defineComponent({
 
     const cacheState = ref<PlayPauseState>(PlayPauseState.Play)
 
-    return {selectedTransactionType, cacheState}
+    return {isSmallScreen, isTouchDevice, selectedTransactionType, cacheState}
   }
 });
 
