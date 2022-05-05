@@ -33,7 +33,7 @@
 <!--    </span>-->
 <!--  </div>-->
 
-  <div v-if="isTouchDevice || !isMediumScreen"
+  <div v-if="!isMediumScreen"
        class="is-flex is-align-items-center is-justify-content-space-between pt-3 pb-4">
 
     <span class="is-inline-flex is-align-items-center is-flex-grow-0 is-flex-shrink-0">
