@@ -63,7 +63,7 @@
 
                   <div v-else>
                     <div v-for="b in tokenBalances ?? []" :key="b.token_id">
-                      <TokenAmount v-bind:amount="b.balance" v-bind:token-id="b.token_id"/>
+                      <TokenAmount v-bind:amount="b.balance" v-bind:token-id="b.token_id" v-bind:show-extra="true"/>
                     </div>
                   </div>
 

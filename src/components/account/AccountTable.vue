@@ -57,7 +57,8 @@
       <div v-else-if="props.row.balance?.tokens?.length === 1">
         <TokenAmount
             v-bind:amount="props.row.balance?.tokens[0].balance"
-            v-bind:token-id="props.row.balance?.tokens[0].token_id"/>
+            v-bind:token-id="props.row.balance?.tokens[0].token_id"
+            v-bind:show-extra="true"/>
       </div>
       <div v-else class="has-text-grey">
         None

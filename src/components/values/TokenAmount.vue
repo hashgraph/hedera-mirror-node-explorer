@@ -23,8 +23,8 @@
 <!-- --------------------------------------------------------------------------------------------------------------- -->
 
 <template>
-  <span class="is-numeric">{{ amount }}</span>
-  <template v-if="tokenId != null">
+  <span class="is-numeric">{{ formattedAmount }}</span>
+  <template v-if="showExtra && tokenId != null">
     <router-link :to="{name: 'TokenDetails', params: {tokenId: tokenId}}">
       <span class="ml-2 h-is-smaller h-is-extra-text should-wrap">{{ extra }}</span>
       <span v-if="errorFlag" class="icon h-is-smaller"><i class="fas fa-exclamation-triangle"/></span>
@@ -52,10 +52,24 @@ export default defineComponent({
       default: 0
     },
     tokenId: String,
+    showExtra: {
+      type: Boolean,
+      default: false
+    }
   },
 
   setup(props) {
     const response = ref<AxiosResponse<TokenInfo>|null>(null)
+
+    const formattedAmount = computed(() => {
+      let result: string
+      if (response.value !== null && response.value.status == 200) {
+        result = formatTokenAmount(props.amount, response.value.data.decimals)
+      } else {
+        result = ""
+      }
+      return result
+    })
 
     const extra = computed(() => {
       let result: string
@@ -79,10 +93,28 @@ export default defineComponent({
       })
     }
 
-    return { extra, errorFlag }
+    return { formattedAmount, extra, errorFlag }
   }
 });
 
+const amountFormatter = new Intl.NumberFormat('en-US')
+
+function formatTokenAmount(rawAmount: number, decimals: string|undefined): string {
+  const decimalCount = computeDecimalCount(decimals) ?? 0
+  const amount = rawAmount / Math.pow(10, decimalCount)
+  return amountFormatter.format(amount)
+}
+
+function computeDecimalCount(decimals: string|undefined): number|null {
+  let result: number|null
+  if (decimals) {
+    const n = Number(decimals)
+    result = isNaN(n) ? null : Math.floor(n)
+  } else {
+    result = null
+  }
+  return result
+}
 
 function makeExtra(response: AxiosResponse<TokenInfo>): string {
   const name = response.data?.name

@@ -38,7 +38,7 @@ mock.onGet(matcher).reply(200, SAMPLE_TOKEN);
 
 describe("TokenAmount.vue", () => {
 
-    it("no amount; topicId", async () => {
+    it("no amount; tokenId", async () => {
 
         await router.push("/") // To avoid "missing required param 'network'" error
 
@@ -49,9 +49,17 @@ describe("TokenAmount.vue", () => {
                 plugins: [router]
             },
             props: {
-                tokenId: SAMPLE_TOKEN.token_id
+                tokenId: SAMPLE_TOKEN.token_id,
             },
         });
+        await flushPromises()
+
+        expect(wrapper.text()).toBe(expectedAmount.toString())
+
+        await wrapper.setProps({
+                tokenId: SAMPLE_TOKEN.token_id,
+                showExtra: true
+            })
         await flushPromises()
 
         expect(wrapper.get('span').text()).toBe(expectedAmount.toString())
@@ -59,27 +67,7 @@ describe("TokenAmount.vue", () => {
         expect(wrapper.get('.h-is-extra-text').text()).toBe(SAMPLE_TOKEN.name)
     });
 
-    it("amount; no topicId", async () => {
-
-        await router.push("/") // To avoid "missing required param 'network'" error
-
-        const testAmount = 42
-
-        const wrapper = mount(TokenAmount, {
-            global: {
-                plugins: [router]
-            },
-            props: {
-                amount: testAmount
-            },
-        });
-        await flushPromises()
-
-        expect(wrapper.get('span').text()).toBe(testAmount.toString())
-        expect(() => wrapper.get('a')).toThrowError()
-    });
-
-    it("amount; topicId", async () => {
+    it("amount; no tokenId", async () => {
 
         await router.push("/") // To avoid "missing required param 'network'" error
 
@@ -91,9 +79,37 @@ describe("TokenAmount.vue", () => {
             },
             props: {
                 amount: testAmount,
-                tokenId: SAMPLE_TOKEN.token_id
             },
         });
+        await flushPromises()
+
+        expect(wrapper.get('span').text()).toBe("")
+        expect(() => wrapper.get('a')).toThrowError()
+    });
+
+    it("amount; tokenId", async () => {
+
+        await router.push("/") // To avoid "missing required param 'network'" error
+
+        const testAmount = 42
+
+        const wrapper = mount(TokenAmount, {
+            global: {
+                plugins: [router]
+            },
+            props: {
+                amount: testAmount,
+                tokenId: SAMPLE_TOKEN.token_id,
+            },
+        });
+        await flushPromises()
+
+        expect(wrapper.text()).toBe(testAmount.toString())
+
+        await wrapper.setProps({
+            tokenId: SAMPLE_TOKEN.token_id,
+            showExtra: true
+        })
         await flushPromises()
 
         expect(wrapper.get('span').text()).toBe(testAmount.toString())

@@ -53,7 +53,8 @@
           <!-- #2 : token amount -->
           <div class="justify-end">
             <TokenAmount v-if="i === 1"
-                         v-bind:amount="tokenTransferLayout[s-1].netAmount"/>
+                         v-bind:amount="tokenTransferLayout[s-1].netAmount"
+                         v-bind:token-id="tokenTransferLayout[s-1].tokenId"/>
           </div>
 
           <!-- #3 : arrow -->

@@ -59,6 +59,10 @@ describe("TokenBalanceTable.vue", () => {
         const mock = new MockAdapter(axios);
 
         const testTokenId = SAMPLE_TOKEN.token_id
+
+        const matcher2 = "/api/v1/tokens/" + SAMPLE_TOKEN.token_id
+        mock.onGet(matcher2).reply(200, SAMPLE_TOKEN);
+
         const matcher = "/api/v1/tokens/" + testTokenId + "/balances"
         mock.onGet(matcher).reply(200, SAMPLE_BALANCES);
 
