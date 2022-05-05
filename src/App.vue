@@ -28,9 +28,7 @@
     <router-view/>
   </div>
 
-  <section class="section" :class="{'h-mobile-background': isTouchDevice || !isSmallScreen}">
-    <Footer/>
-  </section>
+  <Footer/>
 
 </template>
 

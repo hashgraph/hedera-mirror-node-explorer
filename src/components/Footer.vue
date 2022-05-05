@@ -23,6 +23,8 @@
 <!-- --------------------------------------------------------------------------------------------------------------- -->
 
 <template>
+  <section class="section pt-0"
+           :class="{'h-mobile-background': !keepBackground && (isTouchDevice || !isSmallScreen)}">
 
     <hr class="h-top-banner mb-4 mt-0" style="height: 1px"/>
 
@@ -46,6 +48,7 @@
 
     </div>
 
+  </section>
 </template>
 
 <!-- --------------------------------------------------------------------------------------------------------------- -->
@@ -58,6 +61,13 @@ import {defineComponent, inject} from "vue";
 
 export default defineComponent({
   name: "Footer",
+
+  props: {
+    keepBackground: {
+      type: Boolean,
+      default: false
+    }
+  },
 
   setup() {
     const isSmallScreen = inject('isSmallScreen', true)
