@@ -32,7 +32,7 @@
         <slot name="control"></slot>
       </div>
     </div>
-    <hr class="h-top-banner" style="margin: 16px 0"/>
+    <hr class="h-card-separator"/>
     <div>
       <slot name="chart"></slot>
     </div>

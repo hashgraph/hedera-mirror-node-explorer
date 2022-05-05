@@ -23,7 +23,7 @@
 <!-- --------------------------------------------------------------------------------------------------------------- -->
 
 <template>
-  <div class="is-flex is-align-items-baseline">
+  <div class="is-flex is-align-items-center">
     <span v-if="isAutoPaused" class="h-is-text-size-1 h-is-dense">REFRESH PAUSED</span>
     <button
         class="button is-small has-text-white ml-2"

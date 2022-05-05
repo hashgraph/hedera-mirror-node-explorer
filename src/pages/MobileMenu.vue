@@ -26,11 +26,11 @@
 
   <hr class="h-top-banner" style="margin: 0; height: 4px"/>
 
-  <section class="section has-text-centered">
+  <section class="section has-text-centered" style="min-height: 450px">
 
     <div class="is-flex is-justify-content-center">
 
-      <div class="is-flex is-flex-direction-column is-align-items-start" style="width: fit-content">
+      <div class="is-flex is-flex-direction-column is-align-items-start">
         <div id="drop-down-menu" class="ml-1 mb-5 ">
           <o-field>
             <o-select

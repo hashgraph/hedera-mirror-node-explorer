@@ -74,7 +74,7 @@
           </div>
           <div v-if="!isTouchDevice && isSmallScreen" class="column">
             <div class="has-text-right  has-text-grey">
-              <span v-if="elapsed">Balance information obtained {{ elapsed }} ago</span>
+              <span v-if="elapsed">Balance from {{ elapsed }} ago</span>
             </div>
           </div>
         </div>
