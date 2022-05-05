@@ -57,7 +57,7 @@
       <span class="is-flex-grow-1"/>
 
       <a href="#" class="ml-4" style="line-height: 1">
-        <img alt="Sponsor Logo" src="@/assets/branding/brand-sponsor-logo.png" style="max-width: 124px;">
+        <img alt="Sponsor Logo" src="@/assets/branding/brand-sponsor-logo.png" style="max-width: 104px;">
       </a>
 
     </div>
