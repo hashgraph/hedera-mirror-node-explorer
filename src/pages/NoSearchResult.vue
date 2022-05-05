@@ -55,6 +55,9 @@
     </div>
 
   </section>
+
+  <Footer :keep-background="true"/>
+
 </template>
 
 <!-- --------------------------------------------------------------------------------------------------------------- -->
@@ -64,9 +67,11 @@
 <script lang="ts">
 
 import {defineComponent} from 'vue';
+import Footer from "@/components/Footer.vue";
 
 export default defineComponent({
   name: 'SearchResult',
+  components: {Footer},
   props: {
     "searchedId": String,
     "errorCount": Number,

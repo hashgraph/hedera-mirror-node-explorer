@@ -24,16 +24,7 @@
 
 <template>
 
-<!--  <div v-if="hideNavBar">-->
-<!--    <span class="is-inline-flex is-align-items-center is-flex-grow-0 is-flex-shrink-0">-->
-<!--      <a @click="$router.push({name: 'MainDashboard'})" class="mr-3">-->
-<!--        <img alt="Product Logo" class="image" src="@/assets/branding/brand-product-logo.png" style="max-width: 270px;">-->
-<!--      </a>-->
-<!--      <AxiosStatus/>-->
-<!--    </span>-->
-<!--  </div>-->
-
-  <div v-if="isTouchDevice || !isMediumScreen"
+  <div v-if="!isMediumScreen"
        class="is-flex is-align-items-center is-justify-content-space-between pt-3 pb-4">
 
     <span class="is-inline-flex is-align-items-center is-flex-grow-0 is-flex-shrink-0">

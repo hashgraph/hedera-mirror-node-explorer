@@ -24,7 +24,7 @@
 
 <template>
 
-  <div v-if="isTouchDevice || !isMediumScreen">
+  <div v-if="!isMediumScreen">
     <form data-cy="searchBar" class="control" action="" v-on:submit.prevent="performSearch">
       <input
           class="input has-background-white has-text-black"

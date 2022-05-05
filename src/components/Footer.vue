@@ -23,33 +23,32 @@
 <!-- --------------------------------------------------------------------------------------------------------------- -->
 
 <template>
+  <section class="section pt-0"
+           :class="{'h-mobile-background': !keepBackground && (isTouchDevice || !isSmallScreen)}">
 
-  <hr class="h-has-blue-background" style="margin: 0; height: 4px"/>
+    <hr class="h-top-banner mb-4 mt-0" style="height: 1px"/>
 
-  <section class="section" :class="{'h-mobile-background': isTouchDevice || !isSmallScreen}">
+    <div class="is-flex is-align-items-center">
 
-    <DashboardCard>
-      <template v-slot:title>
-        <span class="h-is-primary-title">Transactions with ID </span>
-        <span class="h-is-secondary-text">{{ normalizedTransactionId }}</span>
-      </template>
-      <template v-slot:control>
-        <div class="is-flex is-align-items-flex-end">
-          <PlayPauseButton v-model="cacheState"/>
-        </div>
-      </template>
-      <template v-slot:table>
-        <TransactionByIdTable
-            v-bind:transaction-id="transactionId"
-            v-model:cacheState="cacheState"
-        />
-      </template>
-    </DashboardCard>
+      <a href="https://hedera.com" style="line-height: 1">
+        <img alt="Built On Hedera" src="@/assets/built-on-hedera-white.svg" style="min-width: 104px;">
+      </a>
+
+      <span v-if="!isTouchDevice && isSmallScreen"
+            class="h-is-property-text ml-5 pb-1"
+            style="font-weight:300; color: #DBDBDB">
+        Hedera Mirror Node Explorer is a ledger explorer for the Hedera network.
+      </span>
+
+      <span class="is-flex-grow-1"/>
+
+      <a class="ml-4" href="#" style="line-height: 1">
+        <img alt="Sponsor Logo" src="@/assets/branding/brand-sponsor-logo.png" style="max-width: 104px;">
+      </a>
+
+    </div>
 
   </section>
-
-  <Footer/>
-
 </template>
 
 <!-- --------------------------------------------------------------------------------------------------------------- -->
@@ -58,46 +57,34 @@
 
 <script lang="ts">
 
-import {computed, defineComponent, inject, ref} from 'vue';
-import PlayPauseButton, {PlayPauseState} from "@/components/PlayPauseButton.vue";
-import DashboardCard from "@/components/DashboardCard.vue";
-import TransactionByIdTable from "@/components/transaction/TransactionByIdTable.vue";
-import {normalizeTransactionId} from "@/utils/TransactionID";
-import Footer from "@/components/Footer.vue";
+import {defineComponent, inject} from "vue";
 
 export default defineComponent({
-  name: 'TransactionsById',
+  name: "Footer",
 
   props: {
-    network: String,
-    transactionId: String
+    keepBackground: {
+      type: Boolean,
+      default: false
+    }
   },
 
-  components: {
-    Footer,
-    DashboardCard,
-    PlayPauseButton,
-    TransactionByIdTable,
-  },
-
-  setup(props) {
+  setup() {
     const isSmallScreen = inject('isSmallScreen', true)
     const isTouchDevice = inject('isTouchDevice', false)
 
-    const cacheState = ref<PlayPauseState>(PlayPauseState.Play)
-
-    const normalizedTransactionId = computed(() => {
-      return props.transactionId ? normalizeTransactionId(props.transactionId, true) : "?";
-    })
-
-    return {isSmallScreen, isTouchDevice, cacheState, normalizedTransactionId}
-  }
-});
+    return {
+      isSmallScreen,
+      isTouchDevice
+    }
+  },
+})
 
 </script>
 
 <!-- --------------------------------------------------------------------------------------------------------------- -->
-<!--                                                       STYLE                                                     -->
+<!--                                                      STYLE                                                      -->
 <!-- --------------------------------------------------------------------------------------------------------------- -->
 
-<style/>
+<style>
+</style>

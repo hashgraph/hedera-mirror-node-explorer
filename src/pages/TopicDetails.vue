@@ -26,7 +26,7 @@
 
   <hr class="h-top-banner" style="margin: 0; height: 4px"/>
 
-  <section class="section">
+  <section class="section" :class="{'h-mobile-background': isTouchDevice || !isSmallScreen}">
 
     <DashboardCard>
       <template v-slot:title>
@@ -43,6 +43,8 @@
 
   </section>
 
+  <Footer/>
+
 </template>
 
 <!-- --------------------------------------------------------------------------------------------------------------- -->
@@ -51,10 +53,11 @@
 
 <script lang="ts">
 
-import {defineComponent, ref} from 'vue';
+import {defineComponent, inject, ref} from 'vue';
 import PlayPauseButton, {PlayPauseState} from "@/components/PlayPauseButton.vue";
 import TopicMessageTable from "@/components/topic/TopicMessageTable.vue";
 import DashboardCard from "@/components/DashboardCard.vue";
+import Footer from "@/components/Footer.vue";
 
 export default defineComponent({
 
@@ -69,14 +72,19 @@ export default defineComponent({
   },
 
   components: {
+    Footer,
     DashboardCard,
     TopicMessageTable,
     PlayPauseButton
   },
 
   setup() {
+    const isSmallScreen = inject('isSmallScreen', true)
+    const isTouchDevice = inject('isTouchDevice', false)
     const cacheState = ref<PlayPauseState>(PlayPauseState.Play)
     return {
+      isSmallScreen,
+      isTouchDevice,
       cacheState
     }
   }

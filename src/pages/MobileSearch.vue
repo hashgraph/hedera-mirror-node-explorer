@@ -37,6 +37,8 @@
 
   </section>
 
+  <Footer :keep-background="true"/>
+
 </template>
 
 <!-- --------------------------------------------------------------------------------------------------------------- -->
@@ -45,21 +47,24 @@
 
 <script lang="ts">
 
-import {computed, defineComponent, onBeforeUnmount, onMounted, ref, watch} from 'vue';
+import {computed, defineComponent, inject, onBeforeUnmount, onMounted, ref, watch} from 'vue';
 import {HederaNetwork} from "@/components/TopNavBar.vue";
 import {useRoute} from "vue-router";
 import router from "@/router";
 import {MEDIUM_BREAKPOINT} from "@/App.vue";
 import SearchBar from "@/components/SearchBar.vue";
+import Footer from "@/components/Footer.vue";
 
 export default defineComponent({
   name: 'MobileSearch',
-  components: {SearchBar},
+  components: {Footer, SearchBar},
   props: {
     "searchedId": String,
     "network": String
   },
   setup() {
+    const isSmallScreen = inject('isSmallScreen', true)
+    const isTouchDevice = inject('isTouchDevice', false)
     const route = useRoute()
     const network = computed(() => {
       return route.params.network
@@ -107,6 +112,8 @@ export default defineComponent({
     })
 
     return {
+      isSmallScreen,
+      isTouchDevice,
       selectedNetwork,
       HederaNetwork,
       isDashboardRoute,

@@ -206,11 +206,6 @@ body {
         background-position: calc(100% - 13px) calc(100% - 16px);
     }
 }
-@media (max-width: 767px) {
-    #drop-down-menu .o-sel {
-        background-color: $h-mobile-page-background-color;
-    }
-}
 a.button {
     padding-top: 28px;
     padding-bottom: 16px;

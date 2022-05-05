@@ -26,7 +26,7 @@
 
   <hr class="h-top-banner" style="margin: 0; height: 4px"/>
 
-  <section class="section">
+  <section class="section" :class="{'h-mobile-background': isTouchDevice || !isSmallScreen}">
 
     <DashboardCard>
       <template v-slot:title>
@@ -39,6 +39,8 @@
 
   </section>
 
+  <Footer/>
+
 </template>
 
 <!-- --------------------------------------------------------------------------------------------------------------- -->
@@ -47,9 +49,10 @@
 
 <script lang="ts">
 
-import {defineComponent} from 'vue';
+import {defineComponent, inject} from 'vue';
 import TopicTable from "@/components/topic/TopicTable.vue";
 import DashboardCard from "@/components/DashboardCard.vue";
+import Footer from "@/components/Footer.vue";
 
 export default defineComponent({
   name: 'Topics',
@@ -59,9 +62,20 @@ export default defineComponent({
   },
 
   components: {
+    Footer,
     DashboardCard,
     TopicTable
   },
+
+  setup() {
+    const isSmallScreen = inject('isSmallScreen', true)
+    const isTouchDevice = inject('isTouchDevice', false)
+
+    return {
+      isSmallScreen,
+      isTouchDevice,
+    }
+  }
 });
 
 </script>
