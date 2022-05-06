@@ -146,15 +146,19 @@
         </div>
         <br/>
 
-        <div class="is-flex is-justify-content-space-between is-align-items-baseline" id="recentTransactions">
+        <div class="is-flex is-align-items-center is-justify-content-space-between" id="recentTransactions">
           <p class="h-is-tertiary-text">Recent Transactions</p>
-          <PlayPauseButton v-model="cacheState"/>
+          <div class="is-flex is-align-items-flex-end">
+            <PlayPauseButton v-model="cacheState"/>
+            <TransactionTypeSelect v-model="selectedTransactionType"/>
+          </div>
         </div>
 
         <TransactionTable
             v-bind:narrowed="true"
             v-bind:nb-items="10"
             v-bind:accountIdFilter="accountId"
+            v-bind:transactionTypeFilter="selectedTransactionType"
             v-model:cacheState="cacheState"
         />
       </template>
@@ -174,7 +178,7 @@
 
 import {computed, defineComponent, inject, onBeforeMount, onBeforeUnmount, onMounted, ref, watch} from 'vue';
 import axios from "axios";
-import {AccountBalanceTransactions, BalancesResponse, ContractResponse} from "@/schemas/HederaSchemas";
+import {AccountBalanceTransactions, BalancesResponse, ContractResponse, TransactionType} from "@/schemas/HederaSchemas";
 import {operatorRegistry} from "@/schemas/OperatorRegistry";
 import KeyValue from "@/components/values/KeyValue.vue";
 import PlayPauseButton, {PlayPauseState} from "@/components/PlayPauseButton.vue";
@@ -187,6 +191,8 @@ import TokenAmount from "@/components/values/TokenAmount.vue";
 import BlobValue from "@/components/values/BlobValue.vue";
 import {BalanceCache} from "@/components/account/BalanceCache";
 import Footer from "@/components/Footer.vue";
+import TransactionTypeSelect, {TransactionOption} from "@/components/transaction/TransactionTypeSelect.vue";
+import {useRoute, useRouter} from "vue-router";
 
 const MAX_TOKEN_BALANCES = 10
 
@@ -195,6 +201,7 @@ export default defineComponent({
   name: 'AccountDetails',
 
   components: {
+    TransactionTypeSelect,
     Footer,
     BlobValue,
     TokenAmount,
@@ -217,6 +224,27 @@ export default defineComponent({
 
     const cacheState = ref<PlayPauseState>(PlayPauseState.Play)
     const account = ref<AccountBalanceTransactions|null>(null)
+
+    const router = useRouter()
+    const route = useRoute()
+    const typeQuery = (route.query?.type as string ?? "").toUpperCase()
+
+    const selectedTransactionType = ref<TransactionOption>(
+        (Object.keys(TransactionType).indexOf(typeQuery) >= 0)
+            ? typeQuery as TransactionOption
+            : ""
+    )
+
+    const updateQuery = () => {
+      router.replace({
+        query: {type: selectedTransactionType.value.toLowerCase()}
+      })
+    }
+
+    updateQuery()
+    watch(selectedTransactionType, () => {
+      updateQuery()
+    })
 
     let balanceResponse = ref<BalancesResponse|null>(null)
 
@@ -309,6 +337,7 @@ export default defineComponent({
       isSmallScreen,
       isTouchDevice,
       cacheState,
+      selectedTransactionType,
       account,
       balanceTimeStamp,
       balance,
