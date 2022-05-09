@@ -18,6 +18,8 @@
  *
  */
 
+import {byteToHex} from "@/utils/B64Utils";
+
 export class EntityID {
 
     public readonly shard: number
@@ -62,6 +64,17 @@ export class EntityID {
 
     public toString(): string {
         return this.shard + "." + this.realm + "." + this.num
+    }
+
+    public toAddress(): string {
+        const buffer = new Uint8Array(20);
+        const view = new DataView(buffer.buffer, 0, 20);
+
+        view.setInt32(0, this.shard);
+        view.setBigInt64(4, BigInt(this.realm));
+        view.setBigInt64(12, BigInt(this.num));
+
+        return "0x" + byteToHex(buffer)
     }
 
     /*
