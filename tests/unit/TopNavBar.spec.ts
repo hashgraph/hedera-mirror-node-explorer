@@ -50,7 +50,7 @@ HMSF.forceUTC = true
 
 describe("TopNavBar.vue", () => {
 
-    it("Should display the regular (side-by-side) Network selection menu", async () => {
+    it("Should display logos, page links and search bar", async () => {
 
         await router.push("/") // To avoid "missing required param 'network'" error
         Object.defineProperty(window, 'innerWidth', {writable: true, configurable: true, value: 1920})
@@ -65,16 +65,16 @@ describe("TopNavBar.vue", () => {
         await flushPromises()
         // console.log(wrapper.text())
 
+        expect(wrapper.text()).toBe("MAINNETTESTNETPREVIEWNETDashboardTransactionsTokensTopicsContractsAccounts")
+
         const links = wrapper.findAll("a")
-        expect(links.length).toBe(10)
-        expect(links[1].text()).toBe("MAINNET")
-        expect(links[2].text()).toBe("TESTNET")
-        expect(links[3].text()).toBe("Dashboard")
-        expect(links[4].text()).toBe("Transactions")
-        expect(links[5].text()).toBe("Tokens")
-        expect(links[6].text()).toBe("Topics")
-        expect(links[7].text()).toBe("Contracts")
-        expect(links[8].text()).toBe("Accounts")
+        expect(links.length).toBe(8)
+        expect(links[1].text()).toBe("Dashboard")
+        expect(links[2].text()).toBe("Transactions")
+        expect(links[3].text()).toBe("Tokens")
+        expect(links[4].text()).toBe("Topics")
+        expect(links[5].text()).toBe("Contracts")
+        expect(links[6].text()).toBe("Accounts")
 
         expect(wrapper.findComponent(SearchBar).exists()).toBe(true)
 
@@ -105,16 +105,11 @@ describe("TopNavBar.vue", () => {
         // console.log(wrapper.text())
         // console.log(wrapper.html())
 
-        const links = wrapper.findAll("a")
-        expect(links.length).toBe(8)
-        expect(links[1].text()).toBe("Dashboard")
-        expect(links[2].text()).toBe("Transactions")
-        expect(links[3].text()).toBe("Tokens")
-        expect(links[4].text()).toBe("Topics")
-        expect(links[5].text()).toBe("Contracts")
-        expect(links[6].text()).toBe("Accounts")
-
-        expect(wrapper.findComponent(SearchBar).exists()).toBe(true)
+        const options = wrapper.findAll("option")
+        expect(options.length).toBe(3)
+        expect(options[0].text()).toBe("MAINNET")
+        expect(options[1].text()).toBe("TESTNET")
+        expect(options[2].text()).toBe("PREVIEWNET")
 
         wrapper.unmount()
     });

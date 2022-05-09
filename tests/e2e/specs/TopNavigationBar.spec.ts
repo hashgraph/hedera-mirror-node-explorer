@@ -32,12 +32,29 @@ describe('Top Navigation Bar', () => {
     cy.contains('Smart Contract Calls')
     cy.contains('HCS Messages')
 
-    cy.contains('MAINNET').click()
+    cy.get('select')
+        .select('MAINNET')
+        .should('have.value', 'mainnet')
+
+    cy.url().should('include', '/mainnet/dashboard')
     cy.contains('Crypto Transfers')
     cy.contains('Smart Contract Calls')
     cy.contains('HCS Messages')
 
-    cy.contains('TEST').click()
+    cy.get('select')
+        .select('TESTNET')
+        .should('have.value', 'testnet')
+
+    cy.url().should('include', '/testnet/dashboard')
+    cy.contains('Crypto Transfers')
+    cy.contains('Smart Contract Calls')
+    cy.contains('HCS Messages')
+
+    cy.get('select')
+        .select('PREVIEWNET')
+        .should('have.value', 'previewnet')
+
+    cy.url().should('include', '/previewnet/dashboard')
     cy.contains('Crypto Transfers')
     cy.contains('Smart Contract Calls')
     cy.contains('HCS Messages')

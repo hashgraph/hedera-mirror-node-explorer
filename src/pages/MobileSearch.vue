@@ -48,7 +48,6 @@
 <script lang="ts">
 
 import {computed, defineComponent, inject, onBeforeUnmount, onMounted, ref, watch} from 'vue';
-import {HederaNetwork} from "@/components/TopNavBar.vue";
 import {useRoute} from "vue-router";
 import router from "@/router";
 import {MEDIUM_BREAKPOINT} from "@/App.vue";
@@ -115,7 +114,6 @@ export default defineComponent({
       isSmallScreen,
       isTouchDevice,
       selectedNetwork,
-      HederaNetwork,
       isDashboardRoute,
       isTransactionRoute,
       isTokenRoute,
