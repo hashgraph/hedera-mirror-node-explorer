@@ -33,8 +33,8 @@
 import {computed, defineComponent, onBeforeUnmount, onMounted, provide, ref} from 'vue';
 import TopNavBar from "@/components/TopNavBar.vue";
 
-export const XLARGE_BREAKPOINT = 1240
-export const LARGE_BREAKPOINT = 1120
+// export const XLARGE_BREAKPOINT = 1240
+export const LARGE_BREAKPOINT = 1160
 export const MEDIUM_BREAKPOINT = 1024
 export const SMALL_BREAKPOINT = 768
 // this will eventually be the window min width
@@ -69,10 +69,10 @@ export default defineComponent({
     })
     provide('isLargeScreen', isLargeScreen)
 
-    const isXLargeScreen = computed(() => {
-      return windowWidth.value >= XLARGE_BREAKPOINT
-    })
-    provide('isXLargeScreen', isXLargeScreen)
+    // const isXLargeScreen = computed(() => {
+    //   return windowWidth.value >= XLARGE_BREAKPOINT
+    // })
+    // provide('isXLargeScreen', isXLargeScreen)
 
     const sizeFallBack = computed(() => {
       return windowWidth.value < FINAL_BREAKPOINT

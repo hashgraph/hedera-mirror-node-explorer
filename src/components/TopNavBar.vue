@@ -58,49 +58,39 @@
       </a>
       <AxiosStatus/>
     </span>
-    <div class="is-flex-grow-0 is-flex-shrink-0 is-flex is-flex-direction-column mx-5">
+    <div class="is-flex-grow-0 is-flex-shrink-0 is-flex is-flex-direction-column ml-4">
       <div class="is-flex mb-3 is-align-items-baseline">
 
-        <template v-if="useFlatMenu">
-          <a class="button is-outlined h-is-navbar-item"
-             :class="{ 'is-active': isTestnetSelected, 'is-highlighted': isMainnetSelected}"
-             @click="selectedNetwork = HederaNetwork.MAINNET">MAINNET</a>
-          <a class="button is-outlined h-is-navbar-item ml-2"
-             :class="{ 'is-active': isMainnetSelected, 'is-highlighted': isTestnetSelected}"
-             @click="selectedNetwork = HederaNetwork.TESTNET">TESTNET</a>
-        </template>
-
-        <div v-else id="drop-down-menu">
+        <div id="drop-down-menu">
           <o-field>
-            <o-select
-                v-model="selectedNetwork"
-                class="h-is-navbar-item"
-            >
-              <option v-bind:key="HederaNetwork.MAINNET" v-bind:value="HederaNetwork.MAINNET">MAINNET</option>
-              <option v-bind:key="HederaNetwork.TESTNET" v-bind:value="HederaNetwork.TESTNET">TESTNET</option>
+            <o-select v-model="selectedNetwork" class="h-is-navbar-item">
+              <option v-for="network in networkRegistry.getEntries()" :key="network.name" :value="network.name">
+                {{ network.displayName }}
+              </option>
+
             </o-select>
           </o-field>
         </div>
 
         <div class="is-flex-grow-1 px-2"/>
         <a id="dashboard-menu-item"
-            class="button is-ghost is-first h-is-navbar-item"
-           :class="{'is-rimmed': isDashboardRoute, 'h-is-dense': !isDashboardRoute}"
+            class="button is-ghost is-first h-is-navbar-item h-is-dense"
+           :class="{'is-rimmed': isDashboardRoute}"
            @click="$router.push({name: 'MainDashboard'})">Dashboard</a>
-        <a class="button is-ghost h-is-navbar-item"
-           :class="{ 'is-rimmed': isTransactionRoute, 'h-is-dense': !isTransactionRoute }"
+        <a class="button is-ghost h-is-navbar-item h-is-dense"
+           :class="{ 'is-rimmed': isTransactionRoute}"
            @click="$router.push({name: 'Transactions'})">Transactions</a>
-        <a class="button is-ghost h-is-navbar-item"
-           :class="{ 'is-rimmed': isTokenRoute, 'h-is-dense': !isTokenRoute }"
+        <a class="button is-ghost h-is-navbar-item h-is-dense"
+           :class="{ 'is-rimmed': isTokenRoute}"
            @click="$router.push({name: 'Tokens'})">Tokens</a>
-        <a class="button is-ghost h-is-navbar-item"
-           :class="{ 'is-rimmed': isTopicRoute, 'h-is-dense': !isTopicRoute }"
+        <a class="button is-ghost h-is-navbar-item h-is-dense"
+           :class="{ 'is-rimmed': isTopicRoute}"
            @click="$router.push({name: 'Topics'})">Topics</a>
-        <a class="button is-ghost h-is-navbar-item"
-           :class="{ 'is-rimmed': isContractRoute, 'h-is-dense': !isContractRoute }"
+        <a class="button is-ghost h-is-navbar-item h-is-dense"
+           :class="{ 'is-rimmed': isContractRoute}"
            @click="$router.push({name: 'Contracts'})">Contracts</a>
-        <a class="button is-ghost is-last h-is-navbar-item"
-           :class="{ 'is-rimmed': isAccountRoute, 'h-is-dense': !isAccountRoute }"
+        <a class="button is-ghost is-last h-is-navbar-item h-is-dense"
+           :class="{ 'is-rimmed': isAccountRoute}"
            @click="$router.push({name: 'Accounts'})">Accounts</a>
       </div>
       <SearchBar style="margin-top: 4px"/>
@@ -124,11 +114,7 @@ import {useRoute} from "vue-router";
 import router from "@/router";
 import SearchBar from "@/components/SearchBar.vue";
 import AxiosStatus from "@/components/AxiosStatus.vue";
-
-export enum HederaNetwork {
-  TESTNET = "testnet",
-  MAINNET = "mainnet"
-}
+import {networkRegistry} from "@/schemas/NetworkRegistry";
 
 export default defineComponent({
   name: "TopNavBar",
@@ -144,19 +130,12 @@ export default defineComponent({
     const name = computed( () => { return route.name })
 
     const hideNavBar = inject('sizeFallBack', false)
-    const useFlatMenu = inject('isXLargeScreen', true)
     const showTopRightLogo = inject('isLargeScreen', true)
 
     const isMobileMenuOpen = ref(false)
 
     watch(network, (value) => {
       updateSelectedNetworkSilently(value)
-    })
-    const isMainnetSelected = computed(() => {
-      return selectedNetwork.value == HederaNetwork.MAINNET
-    })
-    const isTestnetSelected = computed(() => {
-      return selectedNetwork.value == HederaNetwork.TESTNET
     })
 
     const selectedNetwork = ref(network.value)
@@ -166,7 +145,7 @@ export default defineComponent({
       if (selectedNetworkWatchHandle) {
         selectedNetworkWatchHandle()
       }
-      selectedNetwork.value = newValue
+      selectedNetwork.value = newValue as string
       selectedNetworkWatchHandle = watch(selectedNetwork, (selection) => {
         router.push({
           name: name.value as string,
@@ -205,11 +184,9 @@ export default defineComponent({
       isTouchDevice,
       name,
       hideNavBar,
-      useFlatMenu,
       showTopRightLogo,
       isMobileMenuOpen,
-      isMainnetSelected,
-      isTestnetSelected,
+      networkRegistry,
       selectedNetwork,
       isDashboardRoute,
       isTransactionRoute,
@@ -217,7 +194,6 @@ export default defineComponent({
       isTopicRoute,
       isContractRoute,
       isAccountRoute,
-      HederaNetwork
     }
   },
 })

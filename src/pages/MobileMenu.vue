@@ -37,29 +37,34 @@
                 v-model="selectedNetwork"
                 class="h-is-navbar-item"
             >
-              <option v-bind:key="HederaNetwork.MAINNET" v-bind:value="HederaNetwork.MAINNET">MAINNET</option>
-              <option v-bind:key="HederaNetwork.TESTNET" v-bind:value="HederaNetwork.TESTNET">TESTNET</option>
+              <option v-for="network in networkRegistry.getEntries()" :key="network.name" :value="network.name">
+                {{ network.displayName }}
+              </option>
+
+<!--              <option v-bind:key="HederaNetwork.MAINNET" v-bind:value="HederaNetwork.MAINNET">MAINNET</option>-->
+<!--              <option v-bind:key="HederaNetwork.TESTNET" v-bind:value="HederaNetwork.TESTNET">TESTNET</option>-->
+<!--              <option v-bind:key="HederaNetwork.PREVIEWNET" v-bind:value="HederaNetwork.PREVIEWNET">PREVIEWNET</option>-->
             </o-select>
           </o-field>
         </div>
         <a id="dashboard-menu-item"
-           :class="{'is-rimmed': isDashboardRoute, 'h-is-dense': !isDashboardRoute}"
-           class="button is-ghost h-is-mobile-navbar-item"
+           :class="{'is-rimmed': isDashboardRoute}"
+           class="button is-ghost h-is-mobile-navbar-item h-is-dense"
            @click="$router.replace({name: 'MainDashboard'})">Dashboard</a>
-        <a :class="{ 'is-rimmed': isTransactionRoute, 'h-is-dense': !isTransactionRoute }"
-           class="button is-ghost h-is-mobile-navbar-item"
+        <a :class="{ 'is-rimmed': isTransactionRoute}"
+           class="button is-ghost h-is-mobile-navbar-item h-is-dense"
            @click="$router.replace({name: 'Transactions'})">Transactions</a>
-        <a :class="{ 'is-rimmed': isTokenRoute, 'h-is-dense': !isTokenRoute }"
-           class="button is-ghost h-is-mobile-navbar-item"
+        <a :class="{ 'is-rimmed': isTokenRoute}"
+           class="button is-ghost h-is-mobile-navbar-item h-is-dense"
            @click="$router.replace({name: 'Tokens'})">Tokens</a>
-        <a :class="{ 'is-rimmed': isTopicRoute, 'h-is-dense': !isTopicRoute }"
-           class="button is-ghost h-is-mobile-navbar-item"
+        <a :class="{ 'is-rimmed': isTopicRoute}"
+           class="button is-ghost h-is-mobile-navbar-item h-is-dense"
            @click="$router.replace({name: 'Topics'})">Topics</a>
-        <a :class="{ 'is-rimmed': isContractRoute, 'h-is-dense': !isContractRoute }"
-           class="button is-ghost h-is-mobile-navbar-item"
+        <a :class="{ 'is-rimmed': isContractRoute}"
+           class="button is-ghost h-is-mobile-navbar-item h-is-dense"
            @click="$router.replace({name: 'Contracts'})">Contracts</a>
-        <a :class="{ 'is-rimmed': isAccountRoute, 'h-is-dense': !isAccountRoute }"
-           class="button is-ghost h-is-mobile-navbar-item"
+        <a :class="{ 'is-rimmed': isAccountRoute}"
+           class="button is-ghost h-is-mobile-navbar-item h-is-dense"
            @click="$router.replace({name: 'Accounts'})">Accounts</a>
       </div>
 
@@ -78,11 +83,11 @@
 <script lang="ts">
 
 import {computed, defineComponent, inject, onBeforeUnmount, onMounted, ref, watch} from 'vue';
-import {HederaNetwork} from "@/components/TopNavBar.vue";
 import {useRoute} from "vue-router";
 import router from "@/router";
 import {MEDIUM_BREAKPOINT} from "@/App.vue";
 import Footer from "@/components/Footer.vue";
+import {networkRegistry} from "@/schemas/NetworkRegistry";
 
 export default defineComponent({
   name: 'MobileMenu',
@@ -140,13 +145,13 @@ export default defineComponent({
       isSmallScreen,
       isTouchDevice,
       selectedNetwork,
-      HederaNetwork,
       isDashboardRoute,
       isTransactionRoute,
       isTokenRoute,
       isTopicRoute,
       isContractRoute,
-      isAccountRoute
+      isAccountRoute,
+      networkRegistry
     }
   }
 })

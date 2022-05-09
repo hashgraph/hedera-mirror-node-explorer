@@ -32,21 +32,16 @@ import Topics from "@/pages/Topics.vue";
 import TopicDetails from "@/pages/TopicDetails.vue";
 import NoSearchResult from "@/pages/NoSearchResult.vue";
 import AccountBalances from "@/pages/AccountBalances.vue";
-import axios from "axios";
 import {AxiosMonitor} from "@/utils/AxiosMonitor";
 import TransactionsById from "@/pages/TransactionsById.vue";
 import MobileMenu from "@/pages/MobileMenu.vue";
 import MobileSearch from "@/pages/MobileSearch.vue";
-
-const TESTNET_URL = "https://testnet.mirrornode.hedera.com/";
-const MAINNET_URL = "https://mainnet-public.mirrornode.hedera.com/";
-
-const LAST_USED_NETWORK_KEY = 'network'
+import {networkRegistry} from "@/schemas/NetworkRegistry";
 
 const routes: Array<RouteRecordRaw> = [
   {
     path: '/',
-    redirect: '/' + (localStorage.getItem(LAST_USED_NETWORK_KEY) ?? 'testnet') + '/dashboard'
+    redirect: '/' + networkRegistry.getLastUsedNetwork() + '/dashboard'
   },
   {
     path: '/:network/dashboard',
@@ -164,14 +159,14 @@ const router = createRouter({
 })
 
 router.beforeEach((to, from) => {
-  const fromNetwork = localStorage.getItem(LAST_USED_NETWORK_KEY)
-  const toNetwork = to.params.network
+  const fromNetwork = networkRegistry.getLastUsedNetwork()
+  const toNetwork = to.params.network as string
 
   let result
 
-  if (toNetwork == 'testnet' || toNetwork == 'mainnet') {
-    localStorage.setItem(LAST_USED_NETWORK_KEY, toNetwork);
-    axios.defaults.baseURL = (toNetwork == 'testnet') ? TESTNET_URL : MAINNET_URL
+  if(networkRegistry.lookup(toNetwork)) {
+
+    networkRegistry.useNetwork(toNetwork)
 
     if (fromNetwork && (fromNetwork != toNetwork) && (from.name == to.name)) {
       result = {
