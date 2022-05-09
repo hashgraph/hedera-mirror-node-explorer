@@ -74,7 +74,7 @@ export class EntityID {
         view.setBigInt64(4, BigInt(this.realm));
         view.setBigInt64(12, BigInt(this.num));
 
-        return "0x" + byteToHex(buffer)
+        return byteToHex(buffer)
     }
 
     /*
