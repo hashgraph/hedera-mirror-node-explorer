@@ -88,10 +88,9 @@ describe("TokenDetails.vue", () => {
 
         expect(wrapper.get("#createdAt").text()).toBe("10:02:30.2333 AMFeb 12, 2022")
         expect(wrapper.get("#modifiedAt").text()).toBe("10:02:30.2333 AMFeb 12, 2022")
-        expect(wrapper.get("#supplyType").text()).toBe("INFINITE")
         expect(wrapper.get("#totalSupply").text()).toBe("1")
         expect(wrapper.get("#initialSupply").text()).toBe("1")
-        expect(wrapper.get("#maxSupply").text()).toBe("0")
+        expect(wrapper.get("#maxSupply").text()).toBe("Infinite")
 
         expect(wrapper.text()).toMatch("Balances")
         expect(wrapper.findComponent(TokenBalanceTable).exists()).toBe(true)
@@ -134,7 +133,6 @@ describe("TokenDetails.vue", () => {
 
         expect(wrapper.get("#createdAt").text()).toBe("3:29:27.7128 PMMar 6, 2022")
         expect(wrapper.get("#modifiedAt").text()).toBe("8:56:33.5203 PMMar 6, 2022")
-        expect(wrapper.get("#supplyType").text()).toBe("FINITE")
         expect(wrapper.get("#totalSupply").text()).toBe("2")
         expect(wrapper.get("#initialSupply").text()).toBe("0")
         expect(wrapper.get("#maxSupply").text()).toBe("150")

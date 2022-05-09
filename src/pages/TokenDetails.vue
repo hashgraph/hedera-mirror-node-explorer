@@ -99,12 +99,6 @@
               </div>
             </div>
             <div class="columns">
-              <div class="column is-one-third has-text-weight-light">Supply Type</div>
-              <div class="column" id="supplyType">
-                {{ tokenInfo?.supply_type }}
-              </div>
-            </div>
-            <div class="columns">
               <div class="column is-one-third has-text-weight-light">Total Supply</div>
               <div class="column" id="totalSupply">
                 <TokenAmount v-bind:amount="parseIntString(tokenInfo?.total_supply)"
@@ -123,9 +117,14 @@
             <div class="columns">
               <div class="column is-one-third has-text-weight-light">Max Supply</div>
               <div class="column" id="maxSupply">
-                <TokenAmount v-bind:amount="parseIntString(tokenInfo?.max_supply)"
-                             v-bind:token-id="tokenId"
-                             v-bind:show-extra="false"/>
+                <template v-if="tokenInfo?.supply_type == 'INFINITE'">
+                  <div class="has-text-grey">Infinite</div>
+                </template>
+                <template v-else>
+                  <TokenAmount v-bind:amount="parseIntString(tokenInfo?.max_supply)"
+                               v-bind:token-id="tokenId"
+                               v-bind:show-extra="false"/>
+                </template>
               </div>
             </div>
 
