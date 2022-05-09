@@ -18,7 +18,7 @@
  *
  */
 
-import {byteToHex} from "@/utils/B64Utils";
+import {byteToHex} from "./B64Utils";
 
 export class EntityID {
 
