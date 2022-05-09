@@ -61,16 +61,7 @@
     <div class="is-flex-grow-0 is-flex-shrink-0 is-flex is-flex-direction-column ml-4">
       <div class="is-flex mb-3 is-align-items-baseline">
 
-        <template v-if="useFlatMenu">
-          <a v-for="network in networkRegistry.getEntries()" :key="network.name"
-             :class="{ 'is-active': selectedNetwork !== network.name, 'is-highlighted': selectedNetwork === network.name }"
-             class="button is-outlined h-is-navbar-item mr-2"
-             @click="selectedNetwork = network.name">
-            {{ network.displayName }}
-          </a>
-        </template>
-
-        <div v-else id="drop-down-menu">
+        <div id="drop-down-menu">
           <o-field>
             <o-select v-model="selectedNetwork" class="h-is-navbar-item">
               <option v-for="network in networkRegistry.getEntries()" :key="network.name" :value="network.name">
@@ -139,8 +130,6 @@ export default defineComponent({
     const name = computed( () => { return route.name })
 
     const hideNavBar = inject('sizeFallBack', false)
-    // const useFlatMenu = inject('isXLargeScreen', true)
-    const useFlatMenu = false
     const showTopRightLogo = inject('isLargeScreen', true)
 
     const isMobileMenuOpen = ref(false)
@@ -195,7 +184,6 @@ export default defineComponent({
       isTouchDevice,
       name,
       hideNavBar,
-      useFlatMenu,
       showTopRightLogo,
       isMobileMenuOpen,
       networkRegistry,
