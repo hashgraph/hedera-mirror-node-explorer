@@ -35,11 +35,11 @@ export class NetworkEntry {
 
 export class NetworkRegistry {
 
-    public static LAST_USED_NETWORK_KEY = 'network'
-    public static DEFAULT_NETWORK = 'testnet'
-    private readonly defaultUrl
+    private static readonly LAST_USED_NETWORK_KEY = 'network'
+    private static readonly DEFAULT_NETWORK = 'testnet'
+    private readonly defaultEntry: NetworkEntry
 
-    private readonly entries = [
+    private readonly entries: NetworkEntry[] = [
         {
             name: 'mainnet',
             displayName: 'MAINNET',
@@ -58,7 +58,7 @@ export class NetworkRegistry {
     ]
 
     constructor() {
-        this.defaultUrl = this.lookup(NetworkRegistry.DEFAULT_NETWORK)?.url
+        this.defaultEntry = this.lookup(NetworkRegistry.DEFAULT_NETWORK) ?? this.entries[0]
     }
 
     public getEntries(): Array<NetworkEntry> {
@@ -66,20 +66,17 @@ export class NetworkRegistry {
     }
 
     public lookup(name: string): NetworkEntry | null {
-        return this.entries.find(element => element.name === name) as NetworkEntry | null
+        return this.entries.find(element => element.name === name) ?? null
     }
 
     public getLastUsedNetwork(): string {
-        return localStorage.getItem(NetworkRegistry.LAST_USED_NETWORK_KEY) ?? NetworkRegistry.DEFAULT_NETWORK
+        return localStorage.getItem(NetworkRegistry.LAST_USED_NETWORK_KEY) ?? this.defaultEntry.name
     }
 
     public useNetwork(network: string): void {
-        localStorage.setItem(NetworkRegistry.LAST_USED_NETWORK_KEY, network);
-        axios.defaults.baseURL = this.lookup(network)?.url ?? this.defaultUrl
-    }
-
-    private addEntry(name: string, displayName: string, url: string): void {
-        this.entries.push(new NetworkEntry(name, displayName, url))
+        const newEntry = this.lookup(network) ?? this.defaultEntry
+        localStorage.setItem(NetworkRegistry.LAST_USED_NETWORK_KEY, newEntry.name);
+        axios.defaults.baseURL = newEntry.url
     }
 }
 
