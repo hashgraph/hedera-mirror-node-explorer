@@ -127,12 +127,12 @@
                 </template>
               </div>
             </div>
-            <div class="columns" id="ethereumAddress">
+            <div class="columns">
               <div class="column is-one-third has-text-weight-light">Ethereum Address</div>
-              <div class="column" v-if="ethereumAddress">
-                <HexaValue v-bind:byte-string="ethereumAddress"/>
+              <div class="column"  id="ethereumAddress">
+                <HexaValue v-if="ethereumAddress" v-bind:byte-string="ethereumAddress"/>
+                <div v-else class="has-text-grey">None</div>
               </div>
-              <div v-else class="column has-text-grey">None</div>
             </div>
 
           </div>

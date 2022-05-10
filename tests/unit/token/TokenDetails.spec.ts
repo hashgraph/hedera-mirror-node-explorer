@@ -91,6 +91,7 @@ describe("TokenDetails.vue", () => {
         expect(wrapper.get("#totalSupply").text()).toBe("1")
         expect(wrapper.get("#initialSupply").text()).toBe("1")
         expect(wrapper.get("#maxSupply").text()).toBe("Infinite")
+        expect(wrapper.get("#ethereumAddress").text()).toBe("0000 0000 0000 0000 0000 00000000 0000 01c4 9eecCopy to Clipboard")
 
         expect(wrapper.text()).toMatch("Balances")
         expect(wrapper.findComponent(TokenBalanceTable).exists()).toBe(true)
