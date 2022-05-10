@@ -127,6 +127,13 @@
                 </template>
               </div>
             </div>
+            <div class="columns">
+              <div class="column is-one-third has-text-weight-light">Ethereum Address</div>
+              <div class="column"  id="ethereumAddress">
+                <HexaValue v-if="ethereumAddress" v-bind:byte-string="ethereumAddress"/>
+                <div v-else class="has-text-grey">None</div>
+              </div>
+            </div>
 
           </div>
 
@@ -161,7 +168,7 @@
 
 <script lang="ts">
 
-import {defineComponent, inject, onBeforeMount, ref, watch} from 'vue';
+import {computed, defineComponent, inject, onBeforeMount, ref, watch} from 'vue';
 import router from "@/router";
 import axios from "axios";
 import KeyValue from "@/components/values/KeyValue.vue";
@@ -174,12 +181,15 @@ import DashboardCard from "@/components/DashboardCard.vue";
 import BlobValue from "@/components/values/BlobValue.vue";
 import TokenAmount from "@/components/values/TokenAmount.vue";
 import Footer from "@/components/Footer.vue";
+import HexaValue from "@/components/values/HexaValue.vue";
+import {EntityID} from "@/utils/EntityID";
 
 export default defineComponent({
 
   name: 'TokenDetails',
 
   components: {
+    HexaValue,
     Footer,
     BlobValue,
     DashboardCard,
@@ -220,13 +230,25 @@ export default defineComponent({
       router.push({name: 'TokenDetails', params: {tokenId: tokenId}})
     }
 
+    const ethereumAddress = computed(() => {
+      let result: string|undefined
+      if (props.tokenId) {
+        const entityID = EntityID.parse(props.tokenId)
+        result = entityID?.toAddress()
+      } else {
+        result = undefined
+      }
+      return result
+    })
+
     return {
       isSmallScreen,
       isTouchDevice,
       tokenInfo,
       showTokenDetails,
       formatSeconds,
-      parseIntString
+      parseIntString,
+      ethereumAddress
     }
   },
 });
