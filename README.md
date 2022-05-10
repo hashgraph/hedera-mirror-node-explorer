@@ -36,6 +36,15 @@ npm run test:e2e
 # Or run the tests in headless browser mode
 npm run test:e2e:headless
 ```
+### Run the Explorer with a local mirror node
+The Explorer can be used with a local mirror by means of a .env file located at the root 
+of the repository and containing the definition of the following variables to add a custom menu
+item in the network selector pull-down menu:
+
+- VUE_APP_LOCAL_MIRROR_NODE_URL=\<URL of the local mirror node\>
+- VUE_APP_LOCAL_MIRROR_NODE_MENU_NAME=\<label of the custom menu item\>
+
+The latter may be omitted and will default to 'LOCALNET'
 
 ### Run the Explorer locally in Docker
 ```
