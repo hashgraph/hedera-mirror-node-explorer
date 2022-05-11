@@ -319,9 +319,51 @@ export const SAMPLE_TRANSACTION = {
     "valid_start_timestamp": "1646025139.152901498",
 }
 
+export const SAMPLE_FAILED_TRANSACTION = {
+    "bytes": null,
+    "charged_tx_fee": 120694790,
+    "consensus_timestamp": "1652256326.071602560",
+    "entity_id": "0.0.34739492",
+    "max_fee": "1000000000",
+    "memo_base64": "",
+    "name": "CONTRACTCALL",
+    "node": "0.0.3",
+    "nonce": 0,
+    "parent_consensus_timestamp": null,
+    "result": "CONTRACT_REVERT_EXECUTED",
+    "scheduled": false,
+    "transaction_hash": "kLnhFcr1zLlhcuH4Doz6VF20IB4dEaxomChYqSie0+xkDNwaWrd2UFWl0ZxWYStj",
+    "transaction_id": "0.0.34376678-1652256313-310050890",
+    "transfers": [
+        {
+            "account": "0.0.3",
+            "amount": 1719386,
+            "is_approval": false
+        },
+        {
+            "account": "0.0.98",
+            "amount": 118975404,
+            "is_approval": false
+        },
+        {
+            "account": "0.0.34376678",
+            "amount": -120694790,
+            "is_approval": false
+        }
+    ],
+    "valid_duration_seconds": "120",
+    "valid_start_timestamp": "1652256313.310050890"
+}
+
 export const SAMPLE_TRANSACTIONS = {
     "transactions": [
         SAMPLE_TRANSACTION
+    ]
+}
+
+export const SAMPLE_FAILED_TRANSACTIONS = {
+    "transactions": [
+        SAMPLE_FAILED_TRANSACTION
     ]
 }
 
@@ -705,7 +747,23 @@ export const SAMPLE_CONTRACT_DUDE = {
     "created_timestamp": "1648377044.798291252",
     "deleted": false,
     "evm_address": "0x00000000000000000000000000000000000c41df",
-    "expiration_timestamp": null,
+    "expiration_timestamp": "1649648001.410978000",
+    "file_id": "0.0.803267",
+    "memo": "",
+    "obtainer_id": null,
+    "proxy_account_id": null,
+    "timestamp": {"from": "1648377044.798291252", "to": null},
+    "bytecode": "0x30783630383036303430353236303030" // deliberately kept only the first 16 bytes of the bytecode
+}
+
+export const SAMPLE_CONTRACT_DELETED = {
+    "admin_key": null,
+    "auto_renew_period": 7776000,
+    "contract_id": "0.0.803295",
+    "created_timestamp": "1648377044.798291252",
+    "deleted": true,
+    "evm_address": "0x00000000000000000000000000000000000c41df",
+    "expiration_timestamp": "1649648001.410978000",
     "file_id": "0.0.803267",
     "memo": "",
     "obtainer_id": null,

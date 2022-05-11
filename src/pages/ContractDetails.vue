@@ -39,6 +39,9 @@
         </span>
       </template>
       <template v-slot:table>
+
+        <NotificationBanner v-if="notification" :message="notification"/>
+
         <div class="columns h-is-property-text">
 
           <div class="column">
@@ -215,6 +218,7 @@ import HbarAmount from "@/components/values/HbarAmount.vue";
 import TokenAmount from "@/components/values/TokenAmount.vue";
 import BlobValue from "@/components/values/BlobValue.vue";
 import Footer from "@/components/Footer.vue";
+import NotificationBanner from "@/components/NotificationBanner.vue";
 
 const MAX_TOKEN_BALANCES = 3
 
@@ -228,6 +232,7 @@ export default defineComponent({
   name: 'ContractDetails',
 
   components: {
+    NotificationBanner,
     Footer,
     BlobValue,
     HbarAmount,
@@ -254,6 +259,21 @@ export default defineComponent({
     let balances = ref([] as Array<TokenSymbolBalance>)
     let displayAllTokenLinks = ref(false)
     const cacheState = ref<PlayPauseState>(PlayPauseState.Play)
+
+    const notification = computed(() => {
+      let result
+      if (contract.value?.deleted === true) {
+        result = "Contract is deleted"
+      } else {
+        const expiration = contract.value?.expiration_timestamp
+        if (expiration && Number.parseFloat(expiration) <= new Date().getTime() / 1000) {
+          result = "Contract has expired and is in grace period"
+        } else {
+          result = null
+        }
+      }
+      return result
+    })
 
     onBeforeMount(() => {
       fetchContract()
@@ -335,6 +355,7 @@ export default defineComponent({
       balances,
       displayAllTokenLinks,
       cacheState,
+      notification,
       obtainerId,
       proxyAccountId,
       formattedSolidity,
