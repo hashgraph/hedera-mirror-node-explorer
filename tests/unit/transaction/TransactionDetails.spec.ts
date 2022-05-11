@@ -24,8 +24,9 @@ import TransactionDetails from "@/pages/TransactionDetails.vue";
 import HbarTransferGraphF from "@/components/transfer_graphs/HbarTransferGraphF.vue";
 import TokenTransferGraph from "@/components/transfer_graphs/TokenTransferGraphF.vue";
 import NftTransferGraph from "@/components/transfer_graphs/NftTransferGraph.vue";
+import NotificationBanner from "@/components/NotificationBanner.vue";
 import axios from "axios";
-import {SAMPLE_COINGECKO, SAMPLE_CONTRACTCALL_TRANSACTIONS, SAMPLE_TOKEN, SAMPLE_TRANSACTION, SAMPLE_TRANSACTIONS} from "../Mocks";
+import {SAMPLE_COINGECKO, SAMPLE_CONTRACTCALL_TRANSACTIONS, SAMPLE_FAILED_TRANSACTION, SAMPLE_FAILED_TRANSACTIONS, SAMPLE_TOKEN, SAMPLE_TRANSACTION, SAMPLE_TRANSACTIONS} from "../Mocks";
 import MockAdapter from "axios-mock-adapter";
 import {HMSF} from "@/utils/HMSF";
 import {normalizeTransactionId} from "@/utils/TransactionID";
@@ -154,6 +155,37 @@ describe("TransactionDetails.vue", () => {
         expect(wrapper.findComponent(TokenTransferGraph).text()).toBe("")
         expect(wrapper.findComponent(NftTransferGraph).text()).toBe("")
 
+    });
+
+    it("Should display a notification banner for failed transaction", async () => {
+
+        await router.push("/") // To avoid "missing required param 'network'" error
+
+        const mock = new MockAdapter(axios);
+
+        const matcher1 = "/api/v1/transactions/" + SAMPLE_FAILED_TRANSACTION.transaction_id
+        mock.onGet(matcher1).reply(200, SAMPLE_FAILED_TRANSACTIONS);
+
+        const matcher2 = "https://api.coingecko.com/api/v3/coins/hedera-hashgraph"
+        mock.onGet(matcher2).reply(200, SAMPLE_COINGECKO);
+
+        const wrapper = mount(TransactionDetails, {
+            global: {
+                plugins: [router]
+            },
+            props: {
+                transactionId: SAMPLE_FAILED_TRANSACTION.transaction_id
+            },
+        });
+
+        await flushPromises()
+        // console.log(wrapper.html())
+
+        expect(wrapper.text()).toMatch(RegExp("^Transaction " + normalizeTransactionId(SAMPLE_FAILED_TRANSACTION.transaction_id, true)))
+
+        const banner = wrapper.findComponent(NotificationBanner)
+        expect(banner.exists()).toBe(true)
+        expect(banner.text()).toBe("Transaction has failed: CONTRACT_REVERT_EXECUTED")
     });
 
 });

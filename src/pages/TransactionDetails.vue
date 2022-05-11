@@ -40,11 +40,7 @@
      </template>
       <template v-slot:table>
 
-        <div v-if="transaction && transaction?.result !== TRANSACTION_SUCCESS" class="hero is-small is-danger mb-5 has-text-centered">
-          <div class="hero-body h-is-tertiary-text">
-            <span>Transaction has failed: {{ transaction?.result }}</span>
-          </div>
-        </div>
+        <NotificationBanner v-if="notify" :message="notification"/>
 
         <div class="columns h-is-property-text">
 
@@ -206,12 +202,14 @@ import HbarAmount from "@/components/values/HbarAmount.vue";
 import BlobValue from "@/components/values/BlobValue.vue";
 import TransferGraphSection from "@/components/transfer_graphs/TransferGraphSection.vue";
 import Footer from "@/components/Footer.vue";
+import NotificationBanner from "@/components/NotificationBanner.vue";
 
 export default defineComponent({
 
   name: 'TransactionDetails',
 
   components: {
+    NotificationBanner,
     Footer,
     HbarAmount, BlobValue,
     DashboardCard, EntityLink, AccountLink,
@@ -232,7 +230,10 @@ export default defineComponent({
     const response = ref<AxiosResponse<TransactionByIdResponse>|null>(null)
     const transaction = ref<Transaction|null>(null)
     let netAmount = ref(0)
-    let entity = ref<EntityDescriptor|null>(null)
+    let entity = ref<EntityDescriptor | null>(null)
+
+    const notify = computed(() => transaction.value && transaction.value.result !== TRANSACTION_SUCCESS)
+    const notification = computed(() => "Transaction has failed: " + transaction.value?.result)
 
     onBeforeMount(() => {
       fetchTransaction()
@@ -290,6 +291,8 @@ export default defineComponent({
       transaction,
       netAmount,
       entity,
+      notify,
+      notification,
       routeName,
       TRANSACTION_SUCCESS,
       convertTransactionId,
