@@ -128,7 +128,7 @@
               </div>
             </div>
             <div class="columns">
-              <div class="column is-one-third has-text-weight-light">Ethereum Address</div>
+              <div class="column is-one-third has-text-weight-light">Ethereum Compat. Address</div>
               <div class="column"  id="ethereumAddress">
                 <HexaValue v-if="ethereumAddress" v-bind:byte-string="ethereumAddress"/>
                 <div v-else class="has-text-grey">None</div>
