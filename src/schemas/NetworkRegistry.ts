@@ -59,6 +59,14 @@ export class NetworkRegistry {
 
     constructor() {
         this.defaultEntry = this.lookup(NetworkRegistry.DEFAULT_NETWORK) ?? this.entries[0]
+
+        if (process.env.VUE_APP_LOCAL_MIRROR_NODE_URL) {
+            this.entries.push(new NetworkEntry(
+                'localnet',
+                process.env.VUE_APP_LOCAL_MIRROR_NODE_MENU_NAME ?? "LOCALNET",
+                process.env.VUE_APP_LOCAL_MIRROR_NODE_URL
+            ))
+        }
     }
 
     public getEntries(): Array<NetworkEntry> {

@@ -5,4 +5,4 @@ services:
     image: "hedera-explorer:latest"
     restart: "unless-stopped"
     ports:
-      - 9090:80
+      - "9090:80"
