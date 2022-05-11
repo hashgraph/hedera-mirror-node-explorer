@@ -26,6 +26,7 @@ import MockAdapter from "axios-mock-adapter";
 import Oruga from "@oruga-ui/oruga-next";
 import ContractDetails from "@/pages/ContractDetails.vue";
 import {HMSF} from "@/utils/HMSF";
+import NotificationBanner from "@/components/NotificationBanner.vue";
 
 /*
     Bookmarks
@@ -123,6 +124,9 @@ describe("ContractDetails.vue", () => {
         // console.log(wrapper.text())
 
         expect(wrapper.text()).toMatch(RegExp("^Contract " + SAMPLE_CONTRACT.contract_id))
+
+        expect(wrapper.findComponent(NotificationBanner).exists()).toBe(false)
+
         expect(wrapper.get("#key").text()).toBe("4210 5082 0e14 85ac dd59 726088e0 e4a2 130e bbbb 7000 9f640ad9 5c78 dd5a 7b38Copy to ClipboardED25519")
         expect(wrapper.get("#memo").text()).toBe("Mirror Node acceptance test: 2022-03-07T15:09:15.228564328Z Create contract")
         expect(wrapper.get("#file").text()).toBe("0.0.749773")
@@ -138,6 +142,7 @@ describe("ContractDetails.vue", () => {
             contractId: SAMPLE_CONTRACT_DUDE.contract_id ?? undefined
         })
         await flushPromises()
+        // console.log(wrapper.text())
 
         expect(wrapper.text()).toMatch(RegExp("^Contract " + SAMPLE_CONTRACT_DUDE.contract_id))
         expect(wrapper.get("#key").text()).toBe("None")
@@ -146,4 +151,46 @@ describe("ContractDetails.vue", () => {
 
     });
 
+    it("Should display notification of grace period", async () => {
+
+        await router.push("/") // To avoid "missing required param 'network'" error
+
+        const mock = new MockAdapter(axios);
+
+        const contract = SAMPLE_CONTRACT_DUDE
+        const matcher1 = "/api/v1/contracts/" + contract.contract_id
+        mock.onGet(matcher1).reply(200, contract);
+
+        const matcher2 = "/api/v1/accounts/" + contract.contract_id
+        mock.onGet(matcher2).reply(200, SAMPLE_CONTRACT_AS_ACCOUNT);
+
+        const matcher4 = "https://api.coingecko.com/api/v3/coins/hedera-hashgraph"
+        mock.onGet(matcher4).reply(200, SAMPLE_COINGECKO);
+
+        const wrapper = mount(ContractDetails, {
+            global: {
+                plugins: [router, Oruga]
+            },
+            props: {
+                contractId: contract.contract_id
+            },
+        });
+
+        await flushPromises()
+        // console.log(wrapper.text())
+
+        expect(wrapper.text()).toMatch(RegExp("^Contract " + SAMPLE_CONTRACT_DUDE.contract_id))
+
+        const banner = wrapper.findComponent(NotificationBanner)
+        expect(banner.exists()).toBe(true)
+        expect(banner.text()).toBe("Contract has expired and is in grace period")
+    });
+
 });
+
+
+
+
+
+
+

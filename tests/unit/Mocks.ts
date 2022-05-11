@@ -747,7 +747,23 @@ export const SAMPLE_CONTRACT_DUDE = {
     "created_timestamp": "1648377044.798291252",
     "deleted": false,
     "evm_address": "0x00000000000000000000000000000000000c41df",
-    "expiration_timestamp": null,
+    "expiration_timestamp": "1649648001.410978000",
+    "file_id": "0.0.803267",
+    "memo": "",
+    "obtainer_id": null,
+    "proxy_account_id": null,
+    "timestamp": {"from": "1648377044.798291252", "to": null},
+    "bytecode": "0x30783630383036303430353236303030" // deliberately kept only the first 16 bytes of the bytecode
+}
+
+export const SAMPLE_CONTRACT_DELETED = {
+    "admin_key": null,
+    "auto_renew_period": 7776000,
+    "contract_id": "0.0.803295",
+    "created_timestamp": "1648377044.798291252",
+    "deleted": true,
+    "evm_address": "0x00000000000000000000000000000000000c41df",
+    "expiration_timestamp": "1649648001.410978000",
     "file_id": "0.0.803267",
     "memo": "",
     "obtainer_id": null,
