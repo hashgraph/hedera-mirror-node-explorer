@@ -31,7 +31,7 @@
     <DashboardCard>
       <template v-slot:title>
         <span class="h-is-primary-title">Contract </span>
-        <span class="h-is-secondary-text is-numeric mr-3">{{ contractId }}</span>
+        <span class="h-is-secondary-text is-numeric mr-3">{{ normalizedContractId }}</span>
         <span class="is-inline-block">
           <router-link :to="{name: 'AccountDetails', params: {accountId: contractId}}">
             <span class="h-is-property-text has-text-grey">Associated account</span>
@@ -219,6 +219,7 @@ import TokenAmount from "@/components/values/TokenAmount.vue";
 import BlobValue from "@/components/values/BlobValue.vue";
 import Footer from "@/components/Footer.vue";
 import NotificationBanner from "@/components/NotificationBanner.vue";
+import {EntityID} from "@/utils/EntityID";
 
 const MAX_TOKEN_BALANCES = 3
 
@@ -347,6 +348,10 @@ export default defineComponent({
       return result
     })
 
+    const normalizedContractId = computed(() => {
+      return props.contractId ? EntityID.normalize(props.contractId) : props.contractId
+    })
+
     return {
       isSmallScreen,
       isTouchDevice,
@@ -359,6 +364,7 @@ export default defineComponent({
       obtainerId,
       proxyAccountId,
       formattedSolidity,
+      normalizedContractId,
 
       processResponse,
       processTokenResponse,

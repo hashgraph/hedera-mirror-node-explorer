@@ -31,7 +31,7 @@
     <DashboardCard>
       <template v-slot:title>
         <span class="h-is-primary-title">Messages for Topic </span>
-        <span class="h-is-secondary-text">{{ topicId }}</span>
+        <span class="h-is-secondary-text">{{ normalizedTopicId }}</span>
       </template>
       <template v-slot:control>
         <PlayPauseButton v-model="cacheState"/>
@@ -53,11 +53,12 @@
 
 <script lang="ts">
 
-import {defineComponent, inject, ref} from 'vue';
+import {computed, defineComponent, inject, ref} from 'vue';
 import PlayPauseButton, {PlayPauseState} from "@/components/PlayPauseButton.vue";
 import TopicMessageTable from "@/components/topic/TopicMessageTable.vue";
 import DashboardCard from "@/components/DashboardCard.vue";
 import Footer from "@/components/Footer.vue";
+import {EntityID} from "@/utils/EntityID";
 
 export default defineComponent({
 
@@ -78,14 +79,18 @@ export default defineComponent({
     PlayPauseButton
   },
 
-  setup() {
+  setup(props) {
     const isSmallScreen = inject('isSmallScreen', true)
     const isTouchDevice = inject('isTouchDevice', false)
     const cacheState = ref<PlayPauseState>(PlayPauseState.Play)
+    const normalizedTopicId = computed(() => {
+      return props.topicId ? EntityID.normalize(props.topicId) : props.topicId
+    })
     return {
       isSmallScreen,
       isTouchDevice,
-      cacheState
+      cacheState,
+      normalizedTopicId,
     }
   }
 });
