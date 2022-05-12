@@ -31,7 +31,7 @@
     <DashboardCard>
       <template v-slot:title>
         <span class="h-is-primary-title">Account </span>
-        <span class="h-is-secondary-text mr-3">{{ accountId }}</span>
+        <span class="h-is-secondary-text mr-3">{{ normalizedAccountId }}</span>
         <span v-if="showContractVisible" class="is-inline-block" id="showContractLink">
           <router-link :to="{name: 'ContractDetails', params: {contractId: accountId}}">
             <span class="h-is-property-text has-text-grey">Associated contract</span>
@@ -193,6 +193,7 @@ import {BalanceCache} from "@/components/account/BalanceCache";
 import Footer from "@/components/Footer.vue";
 import TransactionTypeSelect, {TransactionOption} from "@/components/transaction/TransactionTypeSelect.vue";
 import {useRoute, useRouter} from "vue-router";
+import {EntityID} from "@/utils/EntityID";
 
 const MAX_TOKEN_BALANCES = 10
 
@@ -287,8 +288,12 @@ export default defineComponent({
       return (balances && balances.length > 0) ? balances[0].tokens : null
     })
 
+    const normalizedAccountId = computed(() => {
+      return props.accountId ? EntityID.normalize(props.accountId) : props.accountId
+    })
+
     const accountInfo = computed(() => {
-      const entry = props.accountId ? operatorRegistry.lookup(props.accountId) : null
+      const entry = normalizedAccountId.value ? operatorRegistry.lookup(normalizedAccountId.value) : null
       return entry != null ? entry.getDescription() : null
     })
 
@@ -339,6 +344,7 @@ export default defineComponent({
       cacheState,
       selectedTransactionType,
       account,
+      normalizedAccountId,
       balanceTimeStamp,
       balance,
       tokenBalances,

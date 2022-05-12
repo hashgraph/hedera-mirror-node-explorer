@@ -31,7 +31,7 @@
     <DashboardCard>
       <template v-slot:title>
         <span class="h-is-primary-title">Token </span>
-        <span class="h-is-secondary-text mr-2">{{ tokenId }}</span>
+        <span class="h-is-secondary-text mr-2">{{ normalizedTokenId }}</span>
         <span v-if="tokenInfo?.type === 'NON_FUNGIBLE_UNIQUE'"
               class="h-is-tertiary-text has-text-grey">Non Fungible</span>
         <span v-else class="h-is-tertiary-text has-text-grey">Fungible</span>
@@ -233,7 +233,7 @@ export default defineComponent({
     const ethereumAddress = computed(() => {
       let result: string|undefined
       if (props.tokenId) {
-        const entityID = EntityID.parse(props.tokenId)
+        const entityID = EntityID.parse(props.tokenId, true)
         result = entityID?.toAddress()
       } else {
         result = undefined
@@ -241,10 +241,15 @@ export default defineComponent({
       return result
     })
 
+    const normalizedTokenId = computed(() => {
+      return props.tokenId ? EntityID.normalize(props.tokenId) : props.tokenId
+    })
+
     return {
       isSmallScreen,
       isTouchDevice,
       tokenInfo,
+      normalizedTokenId,
       showTokenDetails,
       formatSeconds,
       parseIntString,

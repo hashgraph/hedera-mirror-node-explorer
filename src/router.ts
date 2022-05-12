@@ -31,6 +31,7 @@ import ContractDetails from "@/pages/ContractDetails.vue";
 import Topics from "@/pages/Topics.vue";
 import TopicDetails from "@/pages/TopicDetails.vue";
 import NoSearchResult from "@/pages/NoSearchResult.vue";
+import PageNotFound from "@/pages/PageNotFound.vue";
 import AccountBalances from "@/pages/AccountBalances.vue";
 import {AxiosMonitor} from "@/utils/AxiosMonitor";
 import TransactionsById from "@/pages/TransactionsById.vue";
@@ -42,6 +43,15 @@ const routes: Array<RouteRecordRaw> = [
   {
     path: '/',
     redirect: '/' + networkRegistry.getLastUsedNetwork() + '/dashboard'
+  },
+  {
+    path: '/page-not-found',
+    redirect: '/' + networkRegistry.getLastUsedNetwork() + '/page-not-found'
+  },
+  {
+    path: '/:network/page-not-found',
+    name: 'PageNotFound',
+    component: PageNotFound
   },
   {
     path: '/:network/dashboard',
@@ -149,7 +159,7 @@ const routes: Array<RouteRecordRaw> = [
   },
   {
     path: "/:catchAll(.*)",
-    redirect: '/'
+    redirect: '/page-not-found'
   },
 ]
 
@@ -180,7 +190,7 @@ router.beforeEach((to, from) => {
     }
   } else {
     // console.log("Unknown network: <" + toNetwork + ">")
-    result = '/'
+    result = '/page-not-found'
   }
 
   return result
@@ -211,6 +221,9 @@ router.beforeEach((to) => {
       break;
     case "NoSearchResult":
       document.title = "Hedera Explorer | Search Results";
+      break;
+    case "PageNotFound":
+      document.title = "Hedera Explorer | Page Not Found";
       break;
     default:
       document.title = "Hedera Explorer | " + (to.name as string);
