@@ -22,7 +22,7 @@
 
 describe('Hedera Explorer page not found', () => {
 
-  let target = "No page matches the specified URL"
+  const target = "No page matches the specified URL"
 
   beforeEach( () => {
     localStorage.removeItem("network")
