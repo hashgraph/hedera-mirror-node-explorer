@@ -23,16 +23,9 @@
 <!-- --------------------------------------------------------------------------------------------------------------- -->
 
 <template>
-  <div v-if="byteString" style="display: inline-block; position: relative" class="shy-scope">
-    <template v-if="!isSmallScreen" >
-      <div v-for="l in split()" :key="l">
-        <div class="is-family-monospace has-text-grey">{{ l }}</div>
-      </div>
-    </template>
-    <template v-else>
-      <div class="is-family-monospace has-text-grey">{{ flow() }}</div>
-    </template>
-    <div  v-if="isCopyEnabled" id="shyCopyButton" class="shy" style="position: absolute; left: 0; top: 0; width: 100%; height: 100%">
+  <div v-if="byteString" class="shy-scope" style="display: inline-block; position: relative">
+    <div class="is-family-monospace has-text-grey">{{ flow() }}</div>
+    <div v-if="isCopyEnabled" id="shyCopyButton" class="shy" style="position: absolute; left: 0; top: 0; width: 100%; height: 100%">
       <div style="position: absolute; left: 0; top: 0; width: 100%; height: 100%; background: rgba(0, 0, 0, 0.50)"></div>
       <div style="position: absolute; display: inline-block; left: 50%; top: 50%; transform: translate(-50%, -50%);">
         <button class="button is-dark h-is-text-size-3" v-on:click="copyToClipboard">Copy to Clipboard</button>
