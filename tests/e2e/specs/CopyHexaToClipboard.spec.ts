@@ -58,7 +58,7 @@ describe('Copy HexaValue to Clipboard', () => {
             .invoke('readText').should('not.be.empty')
             .then(($txt) => {
                 // cy.log($txt)
-                cy.get('#transactionHash').should(($hash) => {
+                cy.get('#transactionHashValue').should(($hash) => {
                     expect($txt.substr(0, $txt.length)).equal(
                         $hash.text()
                             .replace(/\s/g, "")

@@ -23,11 +23,9 @@
 <!-- --------------------------------------------------------------------------------------------------------------- -->
 
 <template>
-  <div v-if="byteString" style="display: inline-block; position: relative" class="shy-scope">
-    <div v-for="l in split()" :key="l">
-      <div class="is-family-monospace has-text-grey">{{ l }}</div>
-    </div>
-    <div  v-if="isCopyEnabled" id="shyCopyButton" class="shy" style="position: absolute; left: 0; top: 0; width: 100%; height: 100%">
+  <div v-if="byteString" class="shy-scope" style="display: inline-block; position: relative">
+    <div class="is-family-monospace has-text-grey">{{ flow() }}</div>
+    <div v-if="isCopyEnabled" id="shyCopyButton" class="shy" style="position: absolute; left: 0; top: 0; width: 100%; height: 100%">
       <div style="position: absolute; left: 0; top: 0; width: 100%; height: 100%; background: rgba(0, 0, 0, 0.50)"></div>
       <div style="position: absolute; display: inline-block; left: 50%; top: 50%; transform: translate(-50%, -50%);">
         <button class="button is-dark h-is-text-size-3" v-on:click="copyToClipboard">Copy to Clipboard</button>
@@ -44,9 +42,9 @@
 
 <script lang="ts">
 
-import {computed, defineComponent} from "vue";
+import {computed, defineComponent, inject} from "vue";
 
-const BYTES_PER_LINE = 12
+const BYTES_PER_LINE = 10
 
 export default defineComponent({
   name: "HexaValue",
@@ -59,8 +57,9 @@ export default defineComponent({
   },
 
   setup(props) {
+    const isSmallScreen = inject('isSmallScreen', true)
 
-    // 1)
+    // 1.a)
     const split = (): string[] => {
       const result = Array<string>()
       if (props.byteString) {
@@ -71,6 +70,11 @@ export default defineComponent({
         }
       }
       return result
+    }
+
+    // 1.b)
+    const flow = (): string => {
+      return props.byteString ? makeByteLine(props.byteString) : ""
     }
 
     // 2)
@@ -86,6 +90,8 @@ export default defineComponent({
     })
 
     return {
+      isSmallScreen,
+      flow,
       split,
       copyToClipboard,
       isCopyEnabled
