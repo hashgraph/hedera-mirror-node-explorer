@@ -45,134 +45,96 @@
         <div class="columns h-is-property-text">
 
           <div class="column">
-
-            <div class="columns">
-              <div class="column is-one-third has-text-weight-light">
-                Balance
-              </div>
-              <div class="column" id="balance">
+            <Property :id="'balance'">
+              <template v-slot:name>{{ tokens?.length ? 'Balances' : 'Balance' }}</template>
+              <template v-slot:value>
                 <div class="has-flex-direction-column">
                   <HbarAmount :amount="balance" :show-extra="true"/>
-
                   <div v-if="displayAllTokenLinks">
                     <router-link :to="{name: 'AccountBalances', params: {accountId: contractId}}">
                       See all token balances
                     </router-link>
                   </div>
-
                   <div v-else>
                     <div v-for="t in tokens" :key="t.token_id">
                       <TokenAmount :amount="t.balance" :token-id="t.token_id" :show-extra="true"/>
                     </div>
                   </div>
-
                 </div>
-              </div>
-            </div>
-
-            <div class="columns">
-              <div class="column is-one-third has-text-weight-light">
-                Key
-              </div>
-              <div class="column" id="key">
-                <KeyValue
-                    v-bind:key-bytes="contract?.admin_key?.key"
-                    v-bind:key-type="contract?.admin_key?._type"
-                    v-bind:show-none="true"/>
-              </div>
-            </div>
-            <div class="columns">
-              <div class="column is-one-third has-text-weight-light">
-                Memo
-              </div>
-              <div class="column should-wrap" id="memo">
-                <BlobValue v-bind:blob-value="contract?.memo" v-bind:show-none="true" v-bind:base64="true"/>
-              </div>
-            </div>
-            <div class="columns">
-              <div class="column is-one-third has-text-weight-light">
-                Expires at
-              </div>
-              <div class="column" id="expiresAt">
+              </template>
+            </Property>
+            <Property :id="'key'">
+              <template v-slot:name>Key</template>
+              <template v-slot:value>
+                <KeyValue :key-bytes="contract?.admin_key?.key" :key-type="contract?.admin_key?._type" :show-none="true"/>
+              </template>
+            </Property>
+            <Property :id="'memo'">
+              <template v-slot:name>Memo</template>
+              <template v-slot:value>
+                <BlobValue :blob-value="contract?.memo" :show-none="true" :base64="true" class="should-wrap"/>
+              </template>
+            </Property>
+            <Property :id="'expiresAt'">
+              <template v-slot:name>Expires at</template>
+              <template v-slot:value>
                 <TimestampValue v-bind:timestamp="contract?.expiration_timestamp" v-bind:show-none="true"/>
-              </div>
-            </div>
-            <div class="columns">
-              <div class="column is-one-third has-text-weight-light">
-                Auto Renew Period
-              </div>
-              <div class="column" id="autoRenewPeriod">
+              </template>
+            </Property>
+            <Property :id="'autoRenewPeriod'">
+              <template v-slot:name>Auto Renew Period</template>
+              <template v-slot:value>
                 {{ formatSeconds(contract?.auto_renew_period) }}
-              </div>
-            </div>
-            <div class="columns">
-              <div class="column is-one-third has-text-weight-light">
-                Code
-              </div>
-              <div  id="code">
-                <div v-if="contract?.bytecode != null" class="column">
-                <textarea v-model="contract.bytecode" readonly rows="4"
+              </template>
+            </Property>
+            <Property :id="'code'">
+              <template v-slot:name>Code</template>
+              <template v-slot:value>
+                <textarea v-if="contract?.bytecode" v-model="contract.bytecode" readonly rows="4"
                           style="width:100%; font-family: novamonoregular,monospace"></textarea>
-                </div>
-                <div v-else class="column has-text-grey">
-                  None
-                </div>
-              </div>
-            </div>
-
+                <div v-else class="column has-text-grey">None</div>
+              </template>
+            </Property>
           </div>
 
           <div class="column">
-
-            <div class="columns">
-              <div class="column is-one-third has-text-weight-light">
-                Obtainer
-              </div>
-              <div class="column" id="obtainer">
-                <AccountLink v-bind:account-id="obtainerId" v-bind:show-none="true"/>
-              </div>
-            </div>
-            <div class="columns">
-              <div class="column is-one-third has-text-weight-light">
-                Proxy Account
-              </div>
-              <div class="column" id="proxyAccount">
-                <AccountLink v-bind:account-id="proxyAccountId" v-bind:show-none="true"/>
-              </div>
-            </div>
-            <div class="columns">
-              <div class="column is-one-third has-text-weight-light">
-                Valid from
-              </div>
-              <div class="column" id="validFrom">
-                <TimestampValue v-bind:timestamp="contract?.timestamp?.from" v-bind:show-none="true"/>
-              </div>
-            </div>
-            <div class="columns">
-              <div class="column is-one-third has-text-weight-light">
-                Valid until
-              </div>
-              <div class="column" id="validUntil">
-                <TimestampValue v-bind:timestamp="contract?.timestamp?.to" v-bind:show-none="true"/>
-              </div>
-            </div>
-            <div class="columns">
-              <div class="column is-one-third has-text-weight-light">
-                File
-              </div>
-              <div class="column" id="file">
-                {{ contract?.file_id ?? "None" }}
-              </div>
-            </div>
-            <div class="columns">
-              <div class="column is-one-third has-text-weight-light">
-                Solidity
-              </div>
-              <div class="column" id="solidity">
-                <HexaValue v-bind:byteString="formattedSolidity" v-bind:show-none="true"/>
-              </div>
-            </div>
-
+            <Property :id="'obtainer'">
+              <template v-slot:name>Obtainer</template>
+              <template v-slot:value>
+                <AccountLink :account-id="obtainerId" :show-none="true"/>
+              </template>
+            </Property>
+            <Property :id="'proxyAccount'">
+              <template v-slot:name>Proxy Account</template>
+              <template v-slot:value>
+                <AccountLink :account-id="proxyAccountId" :show-none="true"/>
+              </template>
+            </Property>
+            <Property :id="'validFrom'">
+              <template v-slot:name>Valid from</template>
+              <template v-slot:value>
+                <TimestampValue :timestamp="contract?.timestamp?.from" :show-none="true"/>
+              </template>
+            </Property>
+            <Property :id="'validUntil'">
+              <template v-slot:name>Valid until</template>
+              <template v-slot:value>
+                <TimestampValue :timestamp="contract?.timestamp?.to" :show-none="true"/>
+              </template>
+            </Property>
+            <Property :id="'file'">
+              <template v-slot:name>File</template>
+              <template v-slot:value>
+                <div v-if="contract?.file_id">{{ contract?.file_id }}</div>
+                <div v-else class="has-text-grey">None</div>
+              </template>
+            </Property>
+            <Property :id="'solidity'">
+              <template v-slot:name>Solidity</template>
+              <template v-slot:value>
+                <HexaValue :byteString="formattedSolidity" :show-none="true"/>
+              </template>
+            </Property>
           </div>
 
         </div>
@@ -220,6 +182,7 @@ import BlobValue from "@/components/values/BlobValue.vue";
 import Footer from "@/components/Footer.vue";
 import NotificationBanner from "@/components/NotificationBanner.vue";
 import {EntityID} from "@/utils/EntityID";
+import Property from "@/components/Property.vue";
 
 const MAX_TOKEN_BALANCES = 3
 
@@ -228,6 +191,7 @@ export default defineComponent({
   name: 'ContractDetails',
 
   components: {
+    Property,
     NotificationBanner,
     Footer,
     BlobValue,

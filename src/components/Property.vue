@@ -29,7 +29,7 @@
       <div class="has-text-weight-light" :id="nameId">
         <slot name="name"/>
       </div>
-      <div :id="valueId" class="ml-4">
+      <div :id="valueId" class="ml-4 has-text-right">
         <slot name="value"/>
       </div>
     </div>
