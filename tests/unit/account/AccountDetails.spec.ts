@@ -99,16 +99,16 @@ describe("AccountDetails.vue", () => {
         // console.log(wrapper.html())
 
         expect(wrapper.text()).toMatch(RegExp("^Account " + SAMPLE_ACCOUNT.account))
-        expect(wrapper.get("#balance").text()).toBe("23.42647909$5.7637998234231ĦFRENSKINGDOM")
-        expect(wrapper.get("#key").text()).toBe(
-            "aa2f 7b3e 759f 4531 ec2e 7941afa4 49e6 a6e6 10ef b52a dae89e9c d8e9 d40d dcbf" +
+        expect(wrapper.get("#balanceValue").text()).toBe("23.42647909$5.7637998234231ĦFRENSKINGDOM")
+        expect(wrapper.get("#keyValue").text()).toBe(
+            "aa2f 7b3e 759f 4531 ec2e 7941 afa4 49e6 a6e6 10ef b52a dae8 9e9c d8e9 d40d dcbf" +
             "Copy to Clipboard" +
             "ED25519")
-        expect(wrapper.get("#memo").text()).toBe("None")
-        expect(wrapper.get("#expiresAt").text()).toBe("None")
-        expect(wrapper.get("#autoRenewPeriod").text()).toBe("90 days")
-        expect(wrapper.get("#maxAutoAssociation").text()).toBe("0")
-        expect(wrapper.get("#receiverSigRequired").text()).toBe("false")
+        expect(wrapper.get("#memoValue").text()).toBe("None")
+        expect(wrapper.get("#expiresAtValue").text()).toBe("None")
+        expect(wrapper.get("#autoRenewPeriodValue").text()).toBe("90 days")
+        expect(wrapper.get("#maxAutoAssociationValue").text()).toBe("0")
+        expect(wrapper.get("#receiverSigRequiredValue").text()).toBe("false")
 
         expect(wrapper.find("#recentTransactions").exists()).toBe(true)
         expect(wrapper.findComponent(TransactionTable).exists()).toBe(true)
@@ -154,8 +154,8 @@ describe("AccountDetails.vue", () => {
         // console.log(wrapper.text())
 
         expect(wrapper.text()).toMatch(RegExp("^Account " + SAMPLE_ACCOUNT.account))
-        expect(wrapper.get("#key").text()).toBe(
-            "aa2f 7b3e 759f 4531 ec2e 7941afa4 49e6 a6e6 10ef b52a dae89e9c d8e9 d40d dcbf" +
+        expect(wrapper.get("#keyValue").text()).toBe(
+            "aa2f 7b3e 759f 4531 ec2e 7941 afa4 49e6 a6e6 10ef b52a dae8 9e9c d8e9 d40d dcbf" +
             "Copy to Clipboard" +
             "ED25519")
 
@@ -175,15 +175,15 @@ describe("AccountDetails.vue", () => {
         // console.log(wrapper.text())
 
         expect(wrapper.text()).toMatch(RegExp("^Account " + SAMPLE_ACCOUNT_DUDE.account))
-        expect(wrapper.get("#key").text()).toBe(
-            "38f1 ea46 0e95 d97e ea13 aefac760 eaf9 9015 4b80 a360 8ab01d4a 2649 44d6 8746" +
+        expect(wrapper.get("#keyValue").text()).toBe(
+            "38f1 ea46 0e95 d97e ea13 aefa c760 eaf9 9015 4b80 a360 8ab0 1d4a 2649 44d6 8746" +
             "Copy to Clipboard" +
             "ED25519")
-        expect(wrapper.get("#memo").text()).toBe("Account Dude Memo in clear")
-        expect(wrapper.get("#expiresAt").text()).toBe("3:33:21.4109 AMApr 11, 2022")
-        expect(wrapper.get("#autoRenewPeriod").text()).toBe("77 days 3 hours 40 minutes")
-        expect(wrapper.get("#maxAutoAssociation").text()).toBe("10")
-        expect(wrapper.get("#receiverSigRequired").text()).toBe("true")
+        expect(wrapper.get("#memoValue").text()).toBe("Account Dude Memo in clear")
+        expect(wrapper.get("#expiresAtValue").text()).toBe("3:33:21.4109 AMApr 11, 2022")
+        expect(wrapper.get("#autoRenewPeriodValue").text()).toBe("77 days 3 hours 40 minutes")
+        expect(wrapper.get("#maxAutoAssociationValue").text()).toBe("10")
+        expect(wrapper.get("#receiverSigRequiredValue").text()).toBe("true")
     });
 
 });

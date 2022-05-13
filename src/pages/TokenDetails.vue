@@ -30,111 +30,91 @@
 
     <DashboardCard>
       <template v-slot:title>
-        <span class="h-is-primary-title">Token </span>
-        <span class="h-is-secondary-text mr-2">{{ tokenId }}</span>
-        <span v-if="tokenInfo?.type === 'NON_FUNGIBLE_UNIQUE'"
-              class="h-is-tertiary-text has-text-grey">Non Fungible</span>
+        <span v-if="tokenInfo?.type === 'NON_FUNGIBLE_UNIQUE'" class="h-is-tertiary-text has-text-grey">Non Fungible</span>
         <span v-else class="h-is-tertiary-text has-text-grey">Fungible</span>
+        <span class="h-is-primary-title"> Token </span>
+        <span class="h-is-secondary-text mr-2">{{ normalizedTokenId }}</span>
       </template>
       <template v-slot:table>
         <div class="columns h-is-property-text">
 
           <div class="column">
-
-            <div class="columns">
-              <div class="column is-one-third has-text-weight-light">Name</div>
-              <div class="column should-wrap" id="name">
-                <BlobValue v-bind:blob-value="tokenInfo?.name" v-bind:show-none="true"/>
-              </div>
-            </div>
-
-            <div class="columns">
-              <div class="column is-one-third has-text-weight-light">Symbol</div>
-              <div class="column should-wrap" id="symbol">
-                <BlobValue v-bind:blob-value="tokenInfo?.symbol" v-bind:show-none="true"/>
-              </div>
-            </div>
-
-            <div class="columns" id="adminKey">
-              <div class="column is-one-third has-text-weight-light">Admin Key</div>
-              <div v-if="tokenInfo?.admin_key != null" class="column">
-                <KeyValue
-                    v-bind:key-bytes="tokenInfo?.admin_key?.key"
-                    v-bind:key-type="tokenInfo?.admin_key?._type"
-                />
-              </div>
-              <div v-else class="column has-text-grey">None</div>
-            </div>
-            <div class="columns">
-              <div class="column is-one-third has-text-weight-light">Memo</div>
-              <div class="column should-wrap" id="memo">
-                <BlobValue v-bind:blob-value="tokenInfo?.memo" v-bind:show-none="true" v-bind:base64="true"/>
-              </div>
-            </div>
-            <div class="columns">
-              <div class="column is-one-third has-text-weight-light">Expires at</div>
-              <div class="column" id="expiresAt">
-                <TimestampValue v-bind:timestamp="tokenInfo?.expiry_timestamp" v-bind:nano="true" v-bind:show-none="true"/>
-              </div>
-            </div>
-            <div class="columns">
-              <div class="column is-one-third has-text-weight-light">Auto Renew Period</div>
-              <div class="column" id="autoRenewPeriod">{{ formatSeconds(tokenInfo?.auto_renew_period) }}</div>
-            </div>
-
+            <Property :id="'name'">
+              <template v-slot:name>Name</template>
+              <template v-slot:value>
+                <BlobValue v-bind:blob-value="tokenInfo?.name" v-bind:show-none="true" class="should-wrap"/>
+              </template>
+            </Property>
+            <Property :id="'symbol'">
+              <template v-slot:name>Symbol</template>
+              <template v-slot:value>
+                <BlobValue v-bind:blob-value="tokenInfo?.symbol" v-bind:show-none="true" class="should-wrap"/>
+              </template>
+            </Property>
+            <Property :id="'adminKey'">
+              <template v-slot:name>Admin Key</template>
+              <template v-slot:value>
+                <KeyValue :key-bytes="tokenInfo?.admin_key?.key" :key-type="tokenInfo?.admin_key?._type" :show-none="true"/>
+              </template>
+            </Property>
+            <Property :id="'memo'">
+              <template v-slot:name>Memo</template>
+              <template v-slot:value>
+                <BlobValue :blob-value="tokenInfo?.memo" :show-none="true" :base64="true" class="should-wrap"/>
+              </template>
+            </Property>
+            <Property :id="'expiresAt'">
+              <template v-slot:name>Expires at</template>
+              <template v-slot:value>
+                <TimestampValue :timestamp="tokenInfo?.expiry_timestamp" :nano="true" :show-none="true"/>
+              </template>
+            </Property>
+            <Property :id="'autoRenewPeriod'">
+              <template v-slot:name>Auto Renew Period</template>
+              <template v-slot:value>
+                {{ formatSeconds(tokenInfo?.auto_renew_period) }}
+              </template>
+            </Property>
           </div>
 
-          <div class="column has-text-left">
-
-            <div class="columns">
-              <div class="column is-one-third has-text-weight-light">Created at</div>
-              <div class="column" id="createdAt">
-                <TimestampValue v-bind:timestamp="tokenInfo?.created_timestamp" v-bind:show-none="true"/>
-              </div>
-            </div>
-            <div class="columns">
-              <div class="column is-one-third has-text-weight-light">Modified at</div>
-              <div class="column" id="modifiedAt">
-                <TimestampValue v-bind:timestamp="tokenInfo?.modified_timestamp" v-bind:show-none="true"/>
-              </div>
-            </div>
-            <div class="columns">
-              <div class="column is-one-third has-text-weight-light">Total Supply</div>
-              <div class="column" id="totalSupply">
-                <TokenAmount v-bind:amount="parseIntString(tokenInfo?.total_supply)"
-                             v-bind:token-id="tokenId"
-                             v-bind:show-extra="false"/>
-              </div>
-            </div>
-            <div class="columns">
-              <div class="column is-one-third has-text-weight-light">Initial Supply</div>
-              <div class="column" id="initialSupply">
-                <TokenAmount v-bind:amount="parseIntString(tokenInfo?.initial_supply)"
-                             v-bind:token-id="tokenId"
-                             v-bind:show-extra="false"/>
-              </div>
-            </div>
-            <div class="columns">
-              <div class="column is-one-third has-text-weight-light">Max Supply</div>
-              <div class="column" id="maxSupply">
-                <template v-if="tokenInfo?.supply_type == 'INFINITE'">
-                  <div class="has-text-grey">Infinite</div>
-                </template>
-                <template v-else>
-                  <TokenAmount v-bind:amount="parseIntString(tokenInfo?.max_supply)"
-                               v-bind:token-id="tokenId"
-                               v-bind:show-extra="false"/>
-                </template>
-              </div>
-            </div>
-            <div class="columns">
-              <div class="column is-one-third has-text-weight-light">Ethereum Compat. Address</div>
-              <div class="column"  id="ethereumAddress">
-                <HexaValue v-if="ethereumAddress" v-bind:byte-string="ethereumAddress"/>
-                <div v-else class="has-text-grey">None</div>
-              </div>
-            </div>
-
+          <div class="column">
+            <Property :id="'createdAt'">
+              <template v-slot:name>Created at</template>
+              <template v-slot:value>
+                <TimestampValue :timestamp="tokenInfo?.created_timestamp" :show-none="true"/>
+              </template>
+            </Property>
+            <Property :id="'modifiedAt'">
+              <template v-slot:name>Modified at</template>
+              <template v-slot:value>
+                <TimestampValue :timestamp="tokenInfo?.modified_timestamp" :show-none="true"/>
+              </template>
+            </Property>
+            <Property :id="'totalSupply'">
+              <template v-slot:name>Total Supply</template>
+              <template v-slot:value>
+                <TokenAmount :amount="parseIntString(tokenInfo?.total_supply)" :token-id="tokenId" :show-extra="false"/>
+              </template>
+            </Property>
+            <Property :id="'initialSupply'">
+              <template v-slot:name>Initial Supply</template>
+              <template v-slot:value>
+                <TokenAmount :amount="parseIntString(tokenInfo?.initial_supply)" :token-id="tokenId" :show-extra="false"/>
+              </template>
+            </Property>
+            <Property :id="'maxSupply'">
+              <template v-slot:name>Max Supply</template>
+              <template v-slot:value>
+                <div v-if="tokenInfo?.supply_type === 'INFINITE'" class="has-text-grey">Infinite</div>
+                <TokenAmount v-else :amount="parseIntString(tokenInfo?.max_supply)" :show-extra="false" :token-id="tokenId"/>
+              </template>
+            </Property>
+            <Property :id="'ethereumAddress'">
+              <template v-slot:name>Ethereum Compat. Address</template>
+              <template v-slot:value>
+                <HexaValue v-if="ethereumAddress" :byte-string="ethereumAddress" :show-none="true"/>
+              </template>
+            </Property>
           </div>
 
         </div>
@@ -183,12 +163,14 @@ import TokenAmount from "@/components/values/TokenAmount.vue";
 import Footer from "@/components/Footer.vue";
 import HexaValue from "@/components/values/HexaValue.vue";
 import {EntityID} from "@/utils/EntityID";
+import Property from "@/components/Property.vue";
 
 export default defineComponent({
 
   name: 'TokenDetails',
 
   components: {
+    Property,
     HexaValue,
     Footer,
     BlobValue,
@@ -233,7 +215,7 @@ export default defineComponent({
     const ethereumAddress = computed(() => {
       let result: string|undefined
       if (props.tokenId) {
-        const entityID = EntityID.parse(props.tokenId)
+        const entityID = EntityID.parse(props.tokenId, true)
         result = entityID?.toAddress()
       } else {
         result = undefined
@@ -241,10 +223,15 @@ export default defineComponent({
       return result
     })
 
+    const normalizedTokenId = computed(() => {
+      return props.tokenId ? EntityID.normalize(props.tokenId) : props.tokenId
+    })
+
     return {
       isSmallScreen,
       isTouchDevice,
       tokenInfo,
+      normalizedTokenId,
       showTokenDetails,
       formatSeconds,
       parseIntString,

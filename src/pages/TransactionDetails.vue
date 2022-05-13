@@ -38,82 +38,56 @@
           </router-link>
         </span>
      </template>
+
       <template v-slot:table>
 
-        <div v-if="transaction && transaction?.result !== TRANSACTION_SUCCESS" class="hero is-small is-danger mb-5 has-text-centered">
-          <div class="hero-body h-is-tertiary-text">
-            <span>Transaction has failed: {{ transaction?.result }}</span>
-          </div>
-        </div>
+        <NotificationBanner v-if="notify" :message="notification"/>
 
         <div class="columns h-is-property-text">
 
           <div class="column">
-
-            <div class="columns">
-              <div class="column is-one-third  has-text-weight-light">
-                Type
-              </div>
-              <div class="column" id="transactionType">
+            <Property :id="'transactionType'">
+              <template v-slot:name>Type</template>
+              <template v-slot:value>
                 {{ transaction ? makeTypeLabel(transaction.name) : "" }}
-              </div>
-            </div>
-            <div class="columns">
-              <div class="column is-one-third  has-text-weight-light">
-                Consensus at
-              </div>
-              <div class="column" id="consensusAt">
+              </template>
+            </Property>
+            <Property :id="'consensusAt'">
+              <template v-slot:name>Consensus at</template>
+              <template v-slot:value>
                 <TimestampValue v-bind:timestamp="transaction?.consensus_timestamp" v-bind:show-none="true" />
-              </div>
-            </div>
-            <div class="columns">
-              <div class="column is-one-third  has-text-weight-light">
-                Transaction Hash
-              </div>
-              <div class="column" id="transactionHash">
+              </template>
+            </Property>
+            <Property :id="'transactionHash'">
+              <template v-slot:name>Transaction Hash</template>
+              <template v-slot:value>
                 <HexaValue v-bind:byteString="transaction ? formatHash(transaction?.transaction_hash): undefined" v-bind:show-none="true"/>
-              </div>
-            </div>
-            <div class="columns">
-              <div class="column is-one-third  has-text-weight-light">
-                Net Amount
-              </div>
-              <div class="column" id="netAmount">
-                <template v-if="transaction">
-                  <HbarAmount v-bind:amount="computeNetAmount(transaction)" v-bind:show-extra="true"/>
-                </template>
-              </div>
-            </div>
-            <div class="columns">
-              <div class="column is-one-third  has-text-weight-light">
-                Charged Fee
-              </div>
-              <div class="column" id="chargedFee">
-                <template v-if="transaction">
-                  <HbarAmount v-bind:amount="transaction.charged_tx_fee" v-bind:show-extra="true"/>
-                </template>
-              </div>
-            </div>
-            <div class="columns">
-              <div class="column is-one-third  has-text-weight-light">
-                Max fee
-              </div>
-              <div class="column" id="maxFee">
-                <template v-if="transaction">
-                  <HbarAmount v-bind:amount="computeMaxFee(transaction)" v-bind:show-extra="true"/>
-                </template>
-              </div>
-            </div>
-
+              </template>
+            </Property>
+            <Property :id="'netAmount'">
+              <template v-slot:name>Net Amount</template>
+              <template v-slot:value>
+                <HbarAmount v-if="transaction" v-bind:amount="computeNetAmount(transaction)" v-bind:show-extra="true"/>
+              </template>
+            </Property>
+            <Property :id="'chargedFee'">
+              <template v-slot:name>Charged Fee</template>
+              <template v-slot:value>
+                <HbarAmount v-if="transaction" v-bind:amount="transaction.charged_tx_fee" v-bind:show-extra="true"/>
+              </template>
+            </Property>
+            <Property :id="'maxFee'">
+              <template v-slot:name>Max fee</template>
+              <template v-slot:value>
+                <HbarAmount v-if="transaction" v-bind:amount="computeMaxFee(transaction)" v-bind:show-extra="true"/>
+              </template>
+            </Property>
           </div>
 
           <div class="column">
-
-            <div v-if="transaction?.entity_id" id="entityKV" class="columns">
-              <div class="column is-one-third  has-text-weight-light">
-                {{ entity?.label }}
-              </div>
-              <div id="entityId" class="column">
+            <Property v-if="transaction?.entity_id" :id="'entityId'">
+              <template v-slot:name>{{ entity?.label }}</template>
+              <template v-slot:value>
                 <template v-if="entity?.routeName">
                   <EntityLink
                       v-bind:entity-id="transaction?.entity_id"
@@ -124,49 +98,38 @@
                 <template v-else>
                   {{ transaction?.entity_id }}
                 </template>
-              </div>
-            </div>
-            <div class="columns">
-              <div class="column is-one-third  has-text-weight-light">
-                Memo
-              </div>
-              <div class="column should-wrap" id="memo">
-                <BlobValue v-bind:blob-value="transaction?.memo_base64" v-bind:show-none="true" v-bind:base64="true"/>
-              </div>
-            </div>
-            <div class="columns">
-              <div class="column is-one-third  has-text-weight-light">
-                Operator Account
-              </div>
-              <div v-if="transaction" class="column" id="operatorAccount">
-                <AccountLink v-bind:accountId="makeOperatorAccountLabel(transaction)" v-bind:show-extra="true"/>
-              </div>
-            </div>
-            <div class="columns">
-              <div class="column is-one-third  has-text-weight-light">
-                Node Account
-              </div>
-              <div v-if="transaction" class="column" id="nodeAccount">
-                <AccountLink v-bind:accountId="transaction?.node" v-bind:show-extra="true"/>
-              </div>
-            </div>
-            <div class="columns">
-              <div class="column is-one-third  has-text-weight-light">
-                Duration
-              </div>
-              <div class="column" id="duration">
+              </template>
+            </Property>
+            <Property :id="'memo'">
+              <template v-slot:name>Memo</template>
+              <template v-slot:value>
+                <BlobValue :blob-value="transaction?.memo_base64" :show-none="true" :base64="true" class="should-wrap"/>
+              </template>
+            </Property>
+            <Property :id="'operatorAccount'">
+              <template v-slot:name>Operator Account</template>
+              <template v-slot:value>
+                <AccountLink v-if="transaction" v-bind:accountId="makeOperatorAccountLabel(transaction)" v-bind:show-extra="true"/>
+              </template>
+            </Property>
+            <Property :id="'nodeAccount'">
+              <template v-slot:name>Node Account</template>
+              <template v-slot:value>
+                <AccountLink v-if="transaction" v-bind:accountId="transaction?.node" v-bind:show-extra="true"/>
+              </template>
+            </Property>
+            <Property :id="'duration'">
+              <template v-slot:name>Duration</template>
+              <template v-slot:value>
                 {{ transaction ? transaction.valid_duration_seconds : "" }} seconds
-              </div>
-            </div>
-            <div class="columns">
-              <div class="column is-one-third  has-text-weight-light">
-                Scheduled
-              </div>
-              <div class="column" id="scheduled">
+              </template>
+            </Property>
+            <Property :id="'scheduled'">
+              <template v-slot:name>Scheduled</template>
+              <template v-slot:value>
                 {{ transaction ? transaction.scheduled : "" }}
-              </div>
-            </div>
-
+              </template>
+            </Property>
           </div>
 
         </div>
@@ -206,12 +169,16 @@ import HbarAmount from "@/components/values/HbarAmount.vue";
 import BlobValue from "@/components/values/BlobValue.vue";
 import TransferGraphSection from "@/components/transfer_graphs/TransferGraphSection.vue";
 import Footer from "@/components/Footer.vue";
+import NotificationBanner from "@/components/NotificationBanner.vue";
+import Property from "@/components/Property.vue";
 
 export default defineComponent({
 
   name: 'TransactionDetails',
 
   components: {
+    Property,
+    NotificationBanner,
     Footer,
     HbarAmount, BlobValue,
     DashboardCard, EntityLink, AccountLink,
@@ -232,7 +199,10 @@ export default defineComponent({
     const response = ref<AxiosResponse<TransactionByIdResponse>|null>(null)
     const transaction = ref<Transaction|null>(null)
     let netAmount = ref(0)
-    let entity = ref<EntityDescriptor|null>(null)
+    let entity = ref<EntityDescriptor | null>(null)
+
+    const notify = computed(() => transaction.value && transaction.value.result !== TRANSACTION_SUCCESS)
+    const notification = computed(() => "Transaction has failed: " + transaction.value?.result)
 
     onBeforeMount(() => {
       fetchTransaction()
@@ -290,6 +260,8 @@ export default defineComponent({
       transaction,
       netAmount,
       entity,
+      notify,
+      notification,
       routeName,
       TRANSACTION_SUCCESS,
       convertTransactionId,

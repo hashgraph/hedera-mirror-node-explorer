@@ -53,7 +53,7 @@ export class SearchRequest {
         this.countdown = 5
         this.errorCount = 0
 
-        const isEntityId = EntityID.parse(this.searchedId) != null
+        const isEntityId = EntityID.parse(this.searchedId, true) != null
         const isTransactionId = TransactionID.parse(this.searchedId) != null
 
         // 1) Searches accounts

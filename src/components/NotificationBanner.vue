@@ -24,26 +24,11 @@
 
 <template>
 
-  <hr class="h-top-banner" style="margin: 0; height: 4px"/>
-
-  <section class="section" :class="{'h-mobile-background': isTouchDevice || !isSmallScreen}">
-
-    <DashboardCard>
-      <template v-slot:title>
-        <span class="h-is-primary-title">Messages for Topic </span>
-        <span class="h-is-secondary-text">{{ normalizedTopicId }}</span>
-      </template>
-      <template v-slot:control>
-        <PlayPauseButton v-model="cacheState"/>
-      </template>
-      <template v-slot:table>
-        <TopicMessageTable v-model:cache-state="cacheState" v-bind:topic-id="topicId"/>
-      </template>
-    </DashboardCard>
-
-  </section>
-
-  <Footer/>
+  <div class="hero is-small is-danger mb-5 has-text-centered">
+    <div class="hero-body h-is-tertiary-text">
+      <span>{{ message }}</span>
+    </div>
+  </div>
 
 </template>
 
@@ -53,53 +38,24 @@
 
 <script lang="ts">
 
-import {computed, defineComponent, inject, ref} from 'vue';
-import PlayPauseButton, {PlayPauseState} from "@/components/PlayPauseButton.vue";
-import TopicMessageTable from "@/components/topic/TopicMessageTable.vue";
-import DashboardCard from "@/components/DashboardCard.vue";
-import Footer from "@/components/Footer.vue";
-import {EntityID} from "@/utils/EntityID";
+import {defineComponent} from "vue";
 
 export default defineComponent({
-
-  name: 'TopicDetails',
+  name: "NotificationBanner",
 
   props: {
-    topicId: {
+    message: {
       type: String,
       required: true
-    },
-    network: String
-  },
-
-  components: {
-    Footer,
-    DashboardCard,
-    TopicMessageTable,
-    PlayPauseButton
-  },
-
-  setup(props) {
-    const isSmallScreen = inject('isSmallScreen', true)
-    const isTouchDevice = inject('isTouchDevice', false)
-    const cacheState = ref<PlayPauseState>(PlayPauseState.Play)
-    const normalizedTopicId = computed(() => {
-      return props.topicId ? EntityID.normalize(props.topicId) : props.topicId
-    })
-    return {
-      isSmallScreen,
-      isTouchDevice,
-      cacheState,
-      normalizedTopicId,
     }
-  }
-});
+  },
+})
 
 </script>
 
 <!-- --------------------------------------------------------------------------------------------------------------- -->
-<!--                                                       STYLE                                                     -->
+<!--                                                      STYLE                                                      -->
 <!-- --------------------------------------------------------------------------------------------------------------- -->
 
-<style scoped>
+<style>
 </style>

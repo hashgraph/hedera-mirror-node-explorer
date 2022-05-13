@@ -39,7 +39,7 @@ describe('Token Navigation', () => {
             .then(($id) => {
                 // cy.log('Selected transaction Id: ' + $id.text())
                 cy.url().should('include', '/testnet/token/' + $id.text())
-                cy.contains('Token ' + $id.text() + 'Non Fungible')
+                cy.contains('Non Fungible Token ' + $id.text())
             })
 
         cy.go('back')
@@ -57,7 +57,7 @@ describe('Token Navigation', () => {
             .then(($id) => {
                 // cy.log('Selected transaction Id: ' + $id.text())
                 cy.url().should('include', '/testnet/token/' + $id.text())
-                cy.contains('Token ' + $id.text() + 'Fungible')
+                cy.contains('Fungible Token ' + $id.text())
             })
     })
 
@@ -65,7 +65,7 @@ describe('Token Navigation', () => {
     it('should follow links from NFT details', () => {
         cy.visit('#/testnet/token/' + nftId)
         cy.url().should('include', '/testnet/token/' + nftId)
-        cy.contains('Token ' + nftId + 'Non Fungible')
+        cy.contains('Non Fungible Token ' + nftId)
 
         cy.get('table')
             .find('tbody tr')
@@ -86,7 +86,7 @@ describe('Token Navigation', () => {
     it('should follow links from token details', () => {
         cy.visit('#/testnet/token/' + tokenId)
         cy.url().should('include', '/testnet/token/' + tokenId)
-        cy.contains('Token ' + tokenId + 'Fungible')
+        cy.contains('Fungible Token ' + tokenId)
 
         cy.get('table')
             .find('tbody tr')

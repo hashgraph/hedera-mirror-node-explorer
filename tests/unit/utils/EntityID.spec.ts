@@ -55,10 +55,12 @@ describe("EntityID.ts", () => {
 
     test("98", () => {
         const obj = EntityID.parse("98")
-        expect(obj?.shard).toBe(0)
-        expect(obj?.realm).toBe(0)
-        expect(obj?.num).toBe(98)
-        expect(obj?.toString()).toBe("0.0.98")
+        expect(obj).toBeNull()
+        const obj2 = EntityID.parse("98", true)
+        expect(obj2?.shard).toBe(0)
+        expect(obj2?.realm).toBe(0)
+        expect(obj2?.num).toBe(98)
+        expect(obj2?.toString()).toBe("0.0.98")
     })
 
     test("1.2.3.4", () => {

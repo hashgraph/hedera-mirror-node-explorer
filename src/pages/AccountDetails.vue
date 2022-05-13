@@ -31,7 +31,7 @@
     <DashboardCard>
       <template v-slot:title>
         <span class="h-is-primary-title">Account </span>
-        <span class="h-is-secondary-text mr-3">{{ accountId }}</span>
+        <span class="h-is-secondary-text mr-3">{{ normalizedAccountId }}</span>
         <span v-if="showContractVisible" class="is-inline-block" id="showContractLink">
           <router-link :to="{name: 'ContractDetails', params: {contractId: accountId}}">
             <span class="h-is-property-text has-text-grey">Associated contract</span>
@@ -39,43 +39,31 @@
         </span>
         <p class="h-is-tertiary-text" v-if="accountInfo != null"> {{ accountInfo }} </p>
       </template>
+
       <template v-slot:table>
 
         <div class="columns h-is-property-text">
           <div class="column">
-
-            <div class="columns">
-              <div v-if="tokenBalances?.length" class="column is-one-third has-text-weight-light">
-                Balances
-              </div>
-              <div v-else class="column is-one-third has-text-weight-light">
-                Balance
-              </div>
-              <div class="column" id="balance">
-                <div class="has-flex-direction-column h-is-tertiary-text">
-                  <HbarAmount v-bind:amount="balance" v-bind:show-extra="true"/>
-
-                  <div v-if="displayAllTokenLinks">
-                    <router-link :to="{name: 'AccountBalances', params: {accountId: accountId}}">
-                      See all token balances
-                    </router-link>
-                  </div>
-
-                  <div v-else>
-                    <div v-for="b in tokenBalances ?? []" :key="b.token_id">
-                      <TokenAmount v-bind:amount="b.balance" v-bind:token-id="b.token_id" v-bind:show-extra="true"/>
-                    </div>
-                  </div>
-
+            <Property :id="'balance'">
+              <template v-slot:name>{{ tokenBalances?.length ? 'Balances' : 'Balance' }}</template>
+              <template v-slot:value>
+                <div class="h-is-tertiary-text"><HbarAmount v-bind:amount="balance" v-bind:show-extra="true"/></div>
+                <div v-if="displayAllTokenLinks">
+                  <router-link :to="{name: 'AccountBalances', params: {accountId: accountId}}">
+                    See all token balances
+                  </router-link>
                 </div>
-              </div>
-            </div>
-
+                <div v-else>
+                  <div v-for="b in tokenBalances ?? []" :key="b.token_id" class="h-is-tertiary-text">
+                    <TokenAmount v-bind:amount="b.balance" v-bind:token-id="b.token_id" v-bind:show-extra="true"/>
+                  </div>
+                </div>
+                <div v-if="elapsed && !isSmallScreen" class="has-text-grey has-text-right"> {{ elapsed }} ago</div>
+              </template>
+            </Property>
           </div>
-          <div v-if="!isTouchDevice && isSmallScreen" class="column">
-            <div class="has-text-right  has-text-grey">
-              <span v-if="elapsed">Balance from {{ elapsed }} ago</span>
-            </div>
+          <div v-if="isSmallScreen && elapsed" class="column has-text-right  has-text-grey mt-1">
+              {{ elapsed }} ago
           </div>
         </div>
         <br/>
@@ -83,64 +71,45 @@
         <div class="columns h-is-property-text">
 
           <div class="column">
-
-            <div class="columns">
-              <div class="column is-one-third has-text-weight-light">
-                Key
-              </div>
-              <div v-if="account?.key != null" class="column" id="key">
-                <KeyValue v-bind:key-bytes="account?.key?.key" v-bind:key-type="account?.key?._type"/>
-              </div>
-              <div v-else class="column has-text-grey">
-                None
-              </div>
-            </div>
-            <div class="columns">
-              <div class="column is-one-third has-text-weight-light">
-                Memo
-              </div>
-              <div class="column should-wrap" id="memo">
-                <BlobValue v-bind:blob-value="account?.memo" v-bind:show-none="true" v-bind:base64="true"/>
-              </div>
-            </div>
-
+            <Property :id="'key'">
+              <template v-slot:name>Key</template>
+              <template v-slot:value>
+                <KeyValue :key-bytes="account?.key?.key" :key-type="account?.key?._type" :show-none="true"/>
+              </template>
+            </Property>
+            <Property :id="'memo'">
+              <template v-slot:name>Memo</template>
+              <template v-slot:value>
+                <BlobValue v-bind:blob-value="account?.memo" v-bind:show-none="true" v-bind:base64="true" class="should-wrap"/>
+              </template>
+            </Property>
+            <Property :id="'expiresAt'">
+              <template v-slot:name>Expires at</template>
+              <template v-slot:value>
+                <TimestampValue v-bind:timestamp="account?.expiry_timestamp" v-bind:show-none="true" />
+              </template>
+            </Property>
           </div>
 
-          <div class="column has-text-left">
-
-            <div class="columns">
-              <div class="column is-one-third has-text-weight-light">
-                Expires at
-              </div>
-              <div class="column" id="expiresAt">
-                <TimestampValue v-bind:timestamp="account?.expiry_timestamp" v-bind:show-none="true" />
-              </div>
-            </div>
-            <div class="columns">
-              <div class="column is-one-third has-text-weight-light">
-                Auto Renew Period
-              </div>
-              <div class="column" id="autoRenewPeriod">
+          <div class="column">
+            <Property :id="'autoRenewPeriod'">
+              <template v-slot:name>Auto Renew Period</template>
+              <template v-slot:value>
                 {{ formatSeconds(account?.auto_renew_period) }}
-              </div>
-            </div>
-            <div class="columns">
-              <div class="column is-one-third has-text-weight-light">
-                Max. Auto. Association
-              </div>
-              <div class="column" id="maxAutoAssociation">
+              </template>
+            </Property>
+            <Property :id="'maxAutoAssociation'">
+              <template v-slot:name>Max. Auto. Association</template>
+              <template v-slot:value>
                 {{ account?.max_automatic_token_associations ?? "" }}
-              </div>
-            </div>
-            <div class="columns">
-              <div class="column is-one-third has-text-weight-light">
-                Receiver Sig. Required
-              </div>
-              <div class="column" id="receiverSigRequired">
+              </template>
+            </Property>
+            <Property :id="'receiverSigRequired'">
+              <template v-slot:name>Receiver Sig. Required</template>
+              <template v-slot:value>
                 {{ account?.receiver_sig_required ?? ""}}
-              </div>
-            </div>
-
+              </template>
+            </Property>
           </div>
 
         </div>
@@ -193,6 +162,8 @@ import {BalanceCache} from "@/components/account/BalanceCache";
 import Footer from "@/components/Footer.vue";
 import TransactionTypeSelect, {TransactionOption} from "@/components/transaction/TransactionTypeSelect.vue";
 import {useRoute, useRouter} from "vue-router";
+import {EntityID} from "@/utils/EntityID";
+import Property from "@/components/Property.vue";
 
 const MAX_TOKEN_BALANCES = 10
 
@@ -201,6 +172,7 @@ export default defineComponent({
   name: 'AccountDetails',
 
   components: {
+    Property,
     TransactionTypeSelect,
     Footer,
     BlobValue,
@@ -287,8 +259,12 @@ export default defineComponent({
       return (balances && balances.length > 0) ? balances[0].tokens : null
     })
 
+    const normalizedAccountId = computed(() => {
+      return props.accountId ? EntityID.normalize(props.accountId) : props.accountId
+    })
+
     const accountInfo = computed(() => {
-      const entry = props.accountId ? operatorRegistry.lookup(props.accountId) : null
+      const entry = normalizedAccountId.value ? operatorRegistry.lookup(normalizedAccountId.value) : null
       return entry != null ? entry.getDescription() : null
     })
 
@@ -339,6 +315,7 @@ export default defineComponent({
       cacheState,
       selectedTransactionType,
       account,
+      normalizedAccountId,
       balanceTimeStamp,
       balance,
       tokenBalances,

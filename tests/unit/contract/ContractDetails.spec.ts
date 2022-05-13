@@ -26,6 +26,7 @@ import MockAdapter from "axios-mock-adapter";
 import Oruga from "@oruga-ui/oruga-next";
 import ContractDetails from "@/pages/ContractDetails.vue";
 import {HMSF} from "@/utils/HMSF";
+import NotificationBanner from "@/components/NotificationBanner.vue";
 
 /*
     Bookmarks
@@ -80,17 +81,17 @@ describe("ContractDetails.vue", () => {
         // console.log(wrapper.html())
 
         expect(wrapper.text()).toMatch(RegExp("^Contract " + SAMPLE_CONTRACT.contract_id))
-        expect(wrapper.get("#balance").text()).toBe("2.00000000$0.4921")
-        expect(wrapper.get("#key").text()).toBe("4210 5082 0e14 85ac dd59 726088e0 e4a2 130e bbbb 7000 9f640ad9 5c78 dd5a 7b38Copy to ClipboardED25519")
-        expect(wrapper.get("#memo").text()).toBe("Mirror Node acceptance test: 2022-03-07T15:09:15.228564328Z Create contract")
-        expect(wrapper.get("#expiresAt").text()).toBe("None")
-        expect(wrapper.get("#autoRenewPeriod").text()).toBe("90 days")
-        expect(wrapper.get("#obtainer").text()).toBe("None")
-        expect(wrapper.get("#proxyAccount").text()).toBe("None")
-        expect(wrapper.get("#validFrom").text()).toBe("3:09:15.9474 PMMar 7, 2022")
-        expect(wrapper.get("#validUntil").text()).toBe("None")
-        expect(wrapper.get("#file").text()).toBe("0.0.749773")
-        expect(wrapper.get("#solidity").text()).toBe("None")
+        expect(wrapper.get("#balanceValue").text()).toBe("2.00000000$0.4921")
+        expect(wrapper.get("#keyValue").text()).toBe("4210 5082 0e14 85ac dd59 7260 88e0 e4a2 130e bbbb 7000 9f64 0ad9 5c78 dd5a 7b38Copy to ClipboardED25519")
+        expect(wrapper.get("#memoValue").text()).toBe("Mirror Node acceptance test: 2022-03-07T15:09:15.228564328Z Create contract")
+        expect(wrapper.get("#expiresAtValue").text()).toBe("None")
+        expect(wrapper.get("#autoRenewPeriodValue").text()).toBe("90 days")
+        expect(wrapper.get("#obtainerValue").text()).toBe("None")
+        expect(wrapper.get("#proxyAccountValue").text()).toBe("None")
+        expect(wrapper.get("#validFromValue").text()).toBe("3:09:15.9474 PMMar 7, 2022")
+        expect(wrapper.get("#validUntilValue").text()).toBe("None")
+        expect(wrapper.get("#fileValue").text()).toBe("0.0.749773")
+        expect(wrapper.get("#solidityValue").text()).toBe("None")
 
     });
 
@@ -123,9 +124,12 @@ describe("ContractDetails.vue", () => {
         // console.log(wrapper.text())
 
         expect(wrapper.text()).toMatch(RegExp("^Contract " + SAMPLE_CONTRACT.contract_id))
-        expect(wrapper.get("#key").text()).toBe("4210 5082 0e14 85ac dd59 726088e0 e4a2 130e bbbb 7000 9f640ad9 5c78 dd5a 7b38Copy to ClipboardED25519")
-        expect(wrapper.get("#memo").text()).toBe("Mirror Node acceptance test: 2022-03-07T15:09:15.228564328Z Create contract")
-        expect(wrapper.get("#file").text()).toBe("0.0.749773")
+
+        expect(wrapper.findComponent(NotificationBanner).exists()).toBe(false)
+
+        expect(wrapper.get("#keyValue").text()).toBe("4210 5082 0e14 85ac dd59 7260 88e0 e4a2 130e bbbb 7000 9f64 0ad9 5c78 dd5a 7b38Copy to ClipboardED25519")
+        expect(wrapper.get("#memoValue").text()).toBe("Mirror Node acceptance test: 2022-03-07T15:09:15.228564328Z Create contract")
+        expect(wrapper.get("#fileValue").text()).toBe("0.0.749773")
 
         const contract2 = SAMPLE_CONTRACT_DUDE
         matcher1 = "/api/v1/contracts/" + contract2.contract_id
@@ -138,12 +142,55 @@ describe("ContractDetails.vue", () => {
             contractId: SAMPLE_CONTRACT_DUDE.contract_id ?? undefined
         })
         await flushPromises()
+        // console.log(wrapper.text())
 
         expect(wrapper.text()).toMatch(RegExp("^Contract " + SAMPLE_CONTRACT_DUDE.contract_id))
-        expect(wrapper.get("#key").text()).toBe("None")
-        expect(wrapper.get("#memo").text()).toBe("None")
-        expect(wrapper.get("#file").text()).toBe("0.0.803267")
+        expect(wrapper.get("#keyValue").text()).toBe("None")
+        expect(wrapper.get("#memoValue").text()).toBe("None")
+        expect(wrapper.get("#fileValue").text()).toBe("0.0.803267")
 
     });
 
+    it("Should display notification of grace period", async () => {
+
+        await router.push("/") // To avoid "missing required param 'network'" error
+
+        const mock = new MockAdapter(axios);
+
+        const contract = SAMPLE_CONTRACT_DUDE
+        const matcher1 = "/api/v1/contracts/" + contract.contract_id
+        mock.onGet(matcher1).reply(200, contract);
+
+        const matcher2 = "/api/v1/accounts/" + contract.contract_id
+        mock.onGet(matcher2).reply(200, SAMPLE_CONTRACT_AS_ACCOUNT);
+
+        const matcher4 = "https://api.coingecko.com/api/v3/coins/hedera-hashgraph"
+        mock.onGet(matcher4).reply(200, SAMPLE_COINGECKO);
+
+        const wrapper = mount(ContractDetails, {
+            global: {
+                plugins: [router, Oruga]
+            },
+            props: {
+                contractId: contract.contract_id
+            },
+        });
+
+        await flushPromises()
+        // console.log(wrapper.text())
+
+        expect(wrapper.text()).toMatch(RegExp("^Contract " + SAMPLE_CONTRACT_DUDE.contract_id))
+
+        const banner = wrapper.findComponent(NotificationBanner)
+        expect(banner.exists()).toBe(true)
+        expect(banner.text()).toBe("Contract has expired and is in grace period")
+    });
+
 });
+
+
+
+
+
+
+

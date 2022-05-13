@@ -31,7 +31,7 @@ export class EntityID {
     // Public
     //
 
-    public static parse(s: string): EntityID|null {
+    public static parse(s: string, autoComplete = false): EntityID|null {
         let result: EntityID|null
 
         const i1 = s.indexOf(".")
@@ -49,7 +49,7 @@ export class EntityID {
             } else {
                 result = new EntityID(shard, realm, num)
             }
-        } else if (i1 === -1 && i2 === -1) {
+        } else if (i1 === -1 && i2 === -1 && autoComplete) {
             const num = EntityID.parsePositiveInt(s)
             if (num == null) {
                 result = null
@@ -60,6 +60,11 @@ export class EntityID {
             result = null
         }
         return result
+    }
+
+    public static normalize(s: string): string {
+        const id = EntityID.parse(s, true)
+        return id !== null ? id.toString() : s
     }
 
     public toString(): string {

@@ -26,24 +26,22 @@
 
   <hr class="h-top-banner" style="margin: 0; height: 4px"/>
 
-  <section class="section" :class="{'h-mobile-background': isTouchDevice || !isSmallScreen}">
+  <section class="section has-text-centered" style="min-height: 450px">
 
-    <DashboardCard>
-      <template v-slot:title>
-        <span class="h-is-primary-title">Messages for Topic </span>
-        <span class="h-is-secondary-text">{{ normalizedTopicId }}</span>
-      </template>
-      <template v-slot:control>
-        <PlayPauseButton v-model="cacheState"/>
-      </template>
-      <template v-slot:table>
-        <TopicMessageTable v-model:cache-state="cacheState" v-bind:topic-id="topicId"/>
-      </template>
-    </DashboardCard>
+    <p class="h-is-secondary-text" style="font-weight: 300">Page not found</p>
+    <br/>
+
+    <div class="block">
+      <p class="h-is-tertiary-text" style="font-weight: 300">
+        No page matches the specified URL.
+        <br>
+        Check URL value or use tabs in navigation bar.
+      </p>
+    </div>
 
   </section>
 
-  <Footer/>
+  <Footer :keep-background="true"/>
 
 </template>
 
@@ -53,53 +51,19 @@
 
 <script lang="ts">
 
-import {computed, defineComponent, inject, ref} from 'vue';
-import PlayPauseButton, {PlayPauseState} from "@/components/PlayPauseButton.vue";
-import TopicMessageTable from "@/components/topic/TopicMessageTable.vue";
-import DashboardCard from "@/components/DashboardCard.vue";
+import {defineComponent} from 'vue';
 import Footer from "@/components/Footer.vue";
-import {EntityID} from "@/utils/EntityID";
 
 export default defineComponent({
-
-  name: 'TopicDetails',
-
-  props: {
-    topicId: {
-      type: String,
-      required: true
-    },
-    network: String
-  },
-
-  components: {
-    Footer,
-    DashboardCard,
-    TopicMessageTable,
-    PlayPauseButton
-  },
-
-  setup(props) {
-    const isSmallScreen = inject('isSmallScreen', true)
-    const isTouchDevice = inject('isTouchDevice', false)
-    const cacheState = ref<PlayPauseState>(PlayPauseState.Play)
-    const normalizedTopicId = computed(() => {
-      return props.topicId ? EntityID.normalize(props.topicId) : props.topicId
-    })
-    return {
-      isSmallScreen,
-      isTouchDevice,
-      cacheState,
-      normalizedTopicId,
-    }
-  }
-});
+  name: 'PageNotFound',
+  components: {Footer}
+})
 
 </script>
+
 
 <!-- --------------------------------------------------------------------------------------------------------------- -->
 <!--                                                       STYLE                                                     -->
 <!-- --------------------------------------------------------------------------------------------------------------- -->
 
-<style scoped>
-</style>
+<style scoped/>
