@@ -52,7 +52,7 @@
               </div>
               <div class="column" id="balance">
                 <div class="has-flex-direction-column">
-                  <HbarAmount v-bind:amount="account?.balance?.balance" v-bind:show-extra="true"/>
+                  <HbarAmount :amount="balance" :show-extra="true"/>
 
                   <div v-if="displayAllTokenLinks">
                     <router-link :to="{name: 'AccountBalances', params: {accountId: contractId}}">
@@ -61,8 +61,8 @@
                   </div>
 
                   <div v-else>
-                    <div v-for="b in balances" :key="b.symbol">
-                      <TokenAmount v-bind:amount="b.balance"/>
+                    <div v-for="t in tokens" :key="t.token_id">
+                      <TokenAmount :amount="t.balance" :token-id="t.token_id" :show-extra="true"/>
                     </div>
                   </div>
 
@@ -205,7 +205,7 @@
 
 import {computed, defineComponent, inject, onBeforeMount, ref, watch} from 'vue';
 import axios from "axios";
-import {AccountBalanceTransactions, ContractResponse, TokenInfo} from "@/schemas/HederaSchemas";
+import {AccountBalanceTransactions, ContractResponse} from "@/schemas/HederaSchemas";
 import KeyValue from "@/components/values/KeyValue.vue";
 import HexaValue from "@/components/values/HexaValue.vue";
 import ContractTransactionTable from "@/components/contract/ContractTransactionTable.vue";
@@ -222,11 +222,6 @@ import NotificationBanner from "@/components/NotificationBanner.vue";
 import {EntityID} from "@/utils/EntityID";
 
 const MAX_TOKEN_BALANCES = 3
-
-interface TokenSymbolBalance {
-  symbol: string
-  balance: number
-}
 
 export default defineComponent({
 
@@ -255,10 +250,11 @@ export default defineComponent({
   setup(props) {
     const isSmallScreen = inject('isSmallScreen', true)
     const isTouchDevice = inject('isTouchDevice', false)
-    let contract = ref(null as ContractResponse | null)
-    let account = ref(null as AccountBalanceTransactions | null)
-    let balances = ref([] as Array<TokenSymbolBalance>)
-    let displayAllTokenLinks = ref(false)
+    const contract = ref<ContractResponse | null>(null)
+    const account = ref<AccountBalanceTransactions | null>(null)
+    const balance = computed(() => account.value?.balance?.balance)
+    const tokens = computed(() => account.value?.balance?.tokens)
+    const displayAllTokenLinks = computed(() => tokens.value ? tokens.value.length > MAX_TOKEN_BALANCES : false)
     const cacheState = ref<PlayPauseState>(PlayPauseState.Play)
 
     const notification = computed(() => {
@@ -291,37 +287,10 @@ export default defineComponent({
             contract.value = response.data;
             axios
                 .get("api/v1/accounts/" + props.contractId)
-                .then(response => (processResponse(response.data)));
+                .then(response => {
+                  account.value = response.data
+                });
           });
-    }
-
-    const processResponse = (response: AccountBalanceTransactions) => {
-      account.value = response;
-      if (response.balance) {
-        let nbTokens: number = response.balance.tokens.length;
-        if (nbTokens) {
-
-          if (nbTokens > MAX_TOKEN_BALANCES) {
-            displayAllTokenLinks.value = true
-          } else {
-            for (let token of response.balance.tokens) {
-              axios
-                  .get("api/v1/tokens/" + token.token_id)
-                  .then(response => (processTokenResponse(response.data, token.balance)));
-            }
-          }
-        }
-      }
-    }
-
-    const processTokenResponse = (info: TokenInfo, balance: number | undefined) => {
-      if (info.symbol && balance) {
-        const token: TokenSymbolBalance = {
-          symbol: info.symbol,
-          balance: balance
-        }
-        balances.value.push(token)
-      }
     }
 
     const obtainerId = computed(() => {
@@ -357,7 +326,8 @@ export default defineComponent({
       isTouchDevice,
       contract,
       account,
-      balances,
+      balance,
+      tokens,
       displayAllTokenLinks,
       cacheState,
       notification,
@@ -365,9 +335,6 @@ export default defineComponent({
       proxyAccountId,
       formattedSolidity,
       normalizedContractId,
-
-      processResponse,
-      processTokenResponse,
 
       // From TimeUtils
       formatSeconds
