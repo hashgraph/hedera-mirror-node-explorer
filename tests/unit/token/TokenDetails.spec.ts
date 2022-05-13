@@ -91,7 +91,7 @@ describe("TokenDetails.vue", () => {
         expect(wrapper.get("#totalSupply").text()).toBe("1")
         expect(wrapper.get("#initialSupply").text()).toBe("1")
         expect(wrapper.get("#maxSupply").text()).toBe("Infinite")
-        expect(wrapper.get("#ethereumAddress").text()).toBe("0000 0000 0000 0000 0000 00000000 0000 01c4 9eecCopy to Clipboard")
+        expect(wrapper.get("#ethereumAddress").text()).toBe("0000 0000 0000 0000 0000 0000 0000 0000 01c4 9eecCopy to Clipboard")
 
         expect(wrapper.text()).toMatch("Balances")
         expect(wrapper.findComponent(TokenBalanceTable).exists()).toBe(true)
@@ -126,7 +126,7 @@ describe("TokenDetails.vue", () => {
         expect(wrapper.get("#name").text()).toBe("Ħ Frens Kingdom Dude")
         expect(wrapper.get("#symbol").text()).toBe("ĦFRENSKINGDOM")
         expect(wrapper.find("#adminKey").text()).toBe(
-            "Admin Keyc1a8 c8c5 b446 ce05 3b6e ff4fe4f0 192f 7653 5ea9 ed6b 2b919811 77ba 237f 4b5dCopy to ClipboardED25519"
+            "Admin Keyc1a8 c8c5 b446 ce05 3b6e ff4f e4f0 192f 7653 5ea9 ed6b 2b91 9811 77ba 237f 4b5dCopy to ClipboardED25519"
         )
         expect(wrapper.get("#memo").text()).toBe("None")
         expect(wrapper.get("#expiresAt").text()).toBe("None")

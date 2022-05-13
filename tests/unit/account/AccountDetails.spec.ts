@@ -101,7 +101,7 @@ describe("AccountDetails.vue", () => {
         expect(wrapper.text()).toMatch(RegExp("^Account " + SAMPLE_ACCOUNT.account))
         expect(wrapper.get("#balance").text()).toBe("23.42647909$5.7637998234231ĦFRENSKINGDOM")
         expect(wrapper.get("#key").text()).toBe(
-            "aa2f 7b3e 759f 4531 ec2e 7941afa4 49e6 a6e6 10ef b52a dae89e9c d8e9 d40d dcbf" +
+            "aa2f 7b3e 759f 4531 ec2e 7941 afa4 49e6 a6e6 10ef b52a dae8 9e9c d8e9 d40d dcbf" +
             "Copy to Clipboard" +
             "ED25519")
         expect(wrapper.get("#memo").text()).toBe("None")
@@ -155,7 +155,7 @@ describe("AccountDetails.vue", () => {
 
         expect(wrapper.text()).toMatch(RegExp("^Account " + SAMPLE_ACCOUNT.account))
         expect(wrapper.get("#key").text()).toBe(
-            "aa2f 7b3e 759f 4531 ec2e 7941afa4 49e6 a6e6 10ef b52a dae89e9c d8e9 d40d dcbf" +
+            "aa2f 7b3e 759f 4531 ec2e 7941 afa4 49e6 a6e6 10ef b52a dae8 9e9c d8e9 d40d dcbf" +
             "Copy to Clipboard" +
             "ED25519")
 
@@ -176,7 +176,7 @@ describe("AccountDetails.vue", () => {
 
         expect(wrapper.text()).toMatch(RegExp("^Account " + SAMPLE_ACCOUNT_DUDE.account))
         expect(wrapper.get("#key").text()).toBe(
-            "38f1 ea46 0e95 d97e ea13 aefac760 eaf9 9015 4b80 a360 8ab01d4a 2649 44d6 8746" +
+            "38f1 ea46 0e95 d97e ea13 aefa c760 eaf9 9015 4b80 a360 8ab0 1d4a 2649 44d6 8746" +
             "Copy to Clipboard" +
             "ED25519")
         expect(wrapper.get("#memo").text()).toBe("Account Dude Memo in clear")

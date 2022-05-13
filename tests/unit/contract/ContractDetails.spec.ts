@@ -82,7 +82,7 @@ describe("ContractDetails.vue", () => {
 
         expect(wrapper.text()).toMatch(RegExp("^Contract " + SAMPLE_CONTRACT.contract_id))
         expect(wrapper.get("#balance").text()).toBe("2.00000000$0.4921")
-        expect(wrapper.get("#key").text()).toBe("4210 5082 0e14 85ac dd59 726088e0 e4a2 130e bbbb 7000 9f640ad9 5c78 dd5a 7b38Copy to ClipboardED25519")
+        expect(wrapper.get("#key").text()).toBe("4210 5082 0e14 85ac dd59 7260 88e0 e4a2 130e bbbb 7000 9f64 0ad9 5c78 dd5a 7b38Copy to ClipboardED25519")
         expect(wrapper.get("#memo").text()).toBe("Mirror Node acceptance test: 2022-03-07T15:09:15.228564328Z Create contract")
         expect(wrapper.get("#expiresAt").text()).toBe("None")
         expect(wrapper.get("#autoRenewPeriod").text()).toBe("90 days")
@@ -127,7 +127,7 @@ describe("ContractDetails.vue", () => {
 
         expect(wrapper.findComponent(NotificationBanner).exists()).toBe(false)
 
-        expect(wrapper.get("#key").text()).toBe("4210 5082 0e14 85ac dd59 726088e0 e4a2 130e bbbb 7000 9f640ad9 5c78 dd5a 7b38Copy to ClipboardED25519")
+        expect(wrapper.get("#key").text()).toBe("4210 5082 0e14 85ac dd59 7260 88e0 e4a2 130e bbbb 7000 9f64 0ad9 5c78 dd5a 7b38Copy to ClipboardED25519")
         expect(wrapper.get("#memo").text()).toBe("Mirror Node acceptance test: 2022-03-07T15:09:15.228564328Z Create contract")
         expect(wrapper.get("#file").text()).toBe("0.0.749773")
 

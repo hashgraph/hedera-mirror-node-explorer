@@ -71,19 +71,19 @@ describe("TransactionDetails.vue", () => {
 
         expect(wrapper.text()).toMatch(RegExp("^Transaction " + normalizeTransactionId(SAMPLE_TRANSACTION.transaction_id, true)))
 
-        expect(wrapper.get("#transactionType").text()).toBe("CRYPTO TRANSFER")
-        expect(wrapper.get("#consensusAt").text()).toBe("5:12:31.6676 AMFeb 28, 2022") // UTC because of HMSF.forceUTC
-        expect(wrapper.get("#transactionHash").text()).toBe("a012 9612 32ed 7d28 4283 6e95f7e9 c435 6fdf e2de 0819 9091701a 969c 1d1f d936 71d3 078ee83b 28fb 460a 88b4 cbd8 ecd2Copy to Clipboard")
-        expect(wrapper.get("#netAmount").text()).toBe("0.00000000$0.0000")
-        expect(wrapper.get("#chargedFee").text()).toBe("0.00470065$0.0012")
-        expect(wrapper.get("#maxFee").text()).toBe("1.00000000$0.2460")
+        expect(wrapper.get("#transactionTypeValue").text()).toBe("CRYPTO TRANSFER")
+        expect(wrapper.get("#consensusAtValue").text()).toBe("5:12:31.6676 AMFeb 28, 2022") // UTC because of HMSF.forceUTC
+        expect(wrapper.get("#transactionHashValue").text()).toBe("a012 9612 32ed 7d28 4283 6e95 f7e9 c435 6fdf e2de 0819 9091 701a 969c 1d1f d936 71d3 078e e83b 28fb 460a 88b4 cbd8 ecd2Copy to Clipboard")
+        expect(wrapper.get("#netAmountValue").text()).toBe("0.00000000$0.0000")
+        expect(wrapper.get("#chargedFeeValue").text()).toBe("0.00470065$0.0012")
+        expect(wrapper.get("#maxFeeValue").text()).toBe("1.00000000$0.2460")
 
-        expect(wrapper.get("#memo").text()).toBe("None")
-        expect(wrapper.get("#operatorAccount").text()).toBe("0.0.29624024")
-        expect(wrapper.get("#nodeAccount").text()).toBe("0.0.7Node 4 - Nomura - Tokyo, Japan")
-        expect(wrapper.get("#duration").text()).toBe("120 seconds")
-        expect(wrapper.get("#entityKV").text()).toBe("Account ID0.0.29662956")
-        expect(wrapper.get("#scheduled").text()).toBe("false")
+        expect(wrapper.get("#memoValue").text()).toBe("None")
+        expect(wrapper.get("#operatorAccountValue").text()).toBe("0.0.29624024")
+        expect(wrapper.get("#nodeAccountValue").text()).toBe("0.0.7Node 4 - Nomura - Tokyo, Japan")
+        expect(wrapper.get("#durationValue").text()).toBe("120 seconds")
+        expect(wrapper.get("#entityId").text()).toBe("Account ID0.0.29662956")
+        expect(wrapper.get("#scheduledValue").text()).toBe("false")
 
         expect(wrapper.findComponent(HbarTransferGraphF).exists()).toBe(true)
         expect(wrapper.findComponent(TokenTransferGraph).exists()).toBe(true)
@@ -130,8 +130,8 @@ describe("TransactionDetails.vue", () => {
         await flushPromises()
 
         expect(wrapper.text()).toMatch(RegExp("^Transaction " + normalizeTransactionId(SAMPLE_TRANSACTION.transaction_id, true)))
-        expect(wrapper.get("#transactionType").text()).toBe("CRYPTO TRANSFER")
-        expect(wrapper.get("#memo").text()).toBe("None")
+        expect(wrapper.get("#transactionTypeValue").text()).toBe("CRYPTO TRANSFER")
+        expect(wrapper.get("#memoValue").text()).toBe("None")
 
         expect(wrapper.findComponent(HbarTransferGraphF).exists()).toBe(true)
         expect(wrapper.findComponent(TokenTransferGraph).exists()).toBe(true)
@@ -148,8 +148,8 @@ describe("TransactionDetails.vue", () => {
         // console.log(wrapper.text())
 
         expect(wrapper.text()).toMatch(RegExp("^Transaction " + normalizeTransactionId(transaction.transaction_id, true)))
-        expect(wrapper.get("#transactionType").text()).toBe("CONTRACT CALL")
-        expect(wrapper.get("#memo").text()).toBe("Mirror Node acceptance test: 2022-03-07T15:09:26.066680977Z Execute contract")
+        expect(wrapper.get("#transactionTypeValue").text()).toBe("CONTRACT CALL")
+        expect(wrapper.get("#memoValue").text()).toBe("Mirror Node acceptance test: 2022-03-07T15:09:26.066680977Z Execute contract")
 
         expect(wrapper.findComponent(HbarTransferGraphF).exists()).toBe(true)
         expect(wrapper.findComponent(TokenTransferGraph).text()).toBe("")

@@ -38,7 +38,7 @@ describe("KeyValue.vue", () => {
             },
         });
 
-        expect(wrapper.text()).toBe("0001 0203 0405 0607 0809 0A0B0C0D 0E0FCopy to Clipboard")
+        expect(wrapper.text()).toBe("0001 0203 0405 0607 0809 0A0B 0C0D 0E0FCopy to Clipboard")
     });
 
     it("props.keyBytes unset, showNone=false", async () => {
