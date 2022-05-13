@@ -31,21 +31,21 @@ describe('Main Dashboard Navigation', () => {
         cy.get('[data-cy=cryptoTransfers]').find('table').contains('td', '@').click()
         cy.url().should('include', '/testnet/transaction/')
         cy.contains('Transaction ')
-        cy.get('#transactionType').should('have.text', 'CRYPTO TRANSFER')
+        cy.get('#transactionTypeValue').should('have.text', 'CRYPTO TRANSFER')
     })
 
     it('should navigate to Smart Contract Call transaction details', () => {
         cy.get('[data-cy=smartContractCalls]').find('table').contains('td', '@').click()
         cy.url().should('include', '/testnet/transaction/')
         cy.contains('Transaction ')
-        cy.get('#transactionType').should('have.text', 'CONTRACT CALL')
+        cy.get('#transactionTypeValue').should('have.text', 'CONTRACT CALL')
     })
 
     it('should navigate to HCS Message transaction details', () => {
         cy.get('[data-cy=hcsMessages]').find('table').contains('td', '0.0.').click()
         cy.url().should('include', '/testnet/transaction/')
         cy.contains('Transaction ')
-        cy.get('#transactionType').should('have.text', 'HCS SUBMIT MESSAGE')
+        cy.get('#transactionTypeValue').should('have.text', 'HCS SUBMIT MESSAGE')
     })
 
 })
