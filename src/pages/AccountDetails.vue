@@ -48,7 +48,6 @@
               <template v-slot:name>{{ tokenBalances?.length ? 'Balances' : 'Balance' }}</template>
               <template v-slot:value>
                 <div class="h-is-tertiary-text"><HbarAmount v-bind:amount="balance" v-bind:show-extra="true"/></div>
-                <div v-if="elapsed && !isSmallScreen" class="has-text-grey has-text-right"> {{ elapsed }} ago</div>
                 <div v-if="displayAllTokenLinks">
                   <router-link :to="{name: 'AccountBalances', params: {accountId: accountId}}">
                     See all token balances
@@ -59,6 +58,7 @@
                     <TokenAmount v-bind:amount="b.balance" v-bind:token-id="b.token_id" v-bind:show-extra="true"/>
                   </div>
                 </div>
+                <div v-if="elapsed && !isSmallScreen" class="has-text-grey has-text-right"> {{ elapsed }} ago</div>
               </template>
             </Property>
           </div>
