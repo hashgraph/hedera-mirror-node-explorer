@@ -79,19 +79,19 @@ describe("TokenDetails.vue", () => {
 
         expect(wrapper.text()).toMatch(RegExp("^Token " + testTokenId + "Fungible"))
 
-        expect(wrapper.get("#name").text()).toBe("23423")
-        expect(wrapper.get("#symbol").text()).toBe("QmVGABnvpbPwLcfG4iuW2JSzY8MLkALhd54bdPAbJxoEkB")
+        expect(wrapper.get("#nameValue").text()).toBe("23423")
+        expect(wrapper.get("#symbolValue").text()).toBe("QmVGABnvpbPwLcfG4iuW2JSzY8MLkALhd54bdPAbJxoEkB")
         expect(wrapper.find("#adminKey").text()).toBe("Admin KeyNone")
-        expect(wrapper.get("#memo").text()).toBe("234234")
-        expect(wrapper.get("#expiresAt").text()).toBe("None")
-        expect(wrapper.get("#autoRenewPeriod").text()).toBe("90 days")
+        expect(wrapper.get("#memoValue").text()).toBe("234234")
+        expect(wrapper.get("#expiresAtValue").text()).toBe("None")
+        expect(wrapper.get("#autoRenewPeriodValue").text()).toBe("90 days")
 
-        expect(wrapper.get("#createdAt").text()).toBe("10:02:30.2333 AMFeb 12, 2022")
-        expect(wrapper.get("#modifiedAt").text()).toBe("10:02:30.2333 AMFeb 12, 2022")
-        expect(wrapper.get("#totalSupply").text()).toBe("1")
-        expect(wrapper.get("#initialSupply").text()).toBe("1")
-        expect(wrapper.get("#maxSupply").text()).toBe("Infinite")
-        expect(wrapper.get("#ethereumAddress").text()).toBe("0000 0000 0000 0000 0000 0000 0000 0000 01c4 9eecCopy to Clipboard")
+        expect(wrapper.get("#createdAtValue").text()).toBe("10:02:30.2333 AMFeb 12, 2022")
+        expect(wrapper.get("#modifiedAtValue").text()).toBe("10:02:30.2333 AMFeb 12, 2022")
+        expect(wrapper.get("#totalSupplyValue").text()).toBe("1")
+        expect(wrapper.get("#initialSupplyValue").text()).toBe("1")
+        expect(wrapper.get("#maxSupplyValue").text()).toBe("Infinite")
+        expect(wrapper.get("#ethereumAddressValue").text()).toBe("0000 0000 0000 0000 0000 0000 0000 0000 01c4 9eecCopy to Clipboard")
 
         expect(wrapper.text()).toMatch("Balances")
         expect(wrapper.findComponent(TokenBalanceTable).exists()).toBe(true)
@@ -123,20 +123,20 @@ describe("TokenDetails.vue", () => {
 
         expect(wrapper.text()).toMatch(RegExp("^Token " + testTokenId + "Non Fungible"))
 
-        expect(wrapper.get("#name").text()).toBe("Ħ Frens Kingdom Dude")
-        expect(wrapper.get("#symbol").text()).toBe("ĦFRENSKINGDOM")
+        expect(wrapper.get("#nameValue").text()).toBe("Ħ Frens Kingdom Dude")
+        expect(wrapper.get("#symbolValue").text()).toBe("ĦFRENSKINGDOM")
         expect(wrapper.find("#adminKey").text()).toBe(
             "Admin Keyc1a8 c8c5 b446 ce05 3b6e ff4f e4f0 192f 7653 5ea9 ed6b 2b91 9811 77ba 237f 4b5dCopy to ClipboardED25519"
         )
-        expect(wrapper.get("#memo").text()).toBe("None")
-        expect(wrapper.get("#expiresAt").text()).toBe("None")
-        expect(wrapper.get("#autoRenewPeriod").text()).toBe("90 days")
+        expect(wrapper.get("#memoValue").text()).toBe("None")
+        expect(wrapper.get("#expiresAtValue").text()).toBe("None")
+        expect(wrapper.get("#autoRenewPeriodValue").text()).toBe("90 days")
 
-        expect(wrapper.get("#createdAt").text()).toBe("3:29:27.7128 PMMar 6, 2022")
-        expect(wrapper.get("#modifiedAt").text()).toBe("8:56:33.5203 PMMar 6, 2022")
-        expect(wrapper.get("#totalSupply").text()).toBe("2")
-        expect(wrapper.get("#initialSupply").text()).toBe("0")
-        expect(wrapper.get("#maxSupply").text()).toBe("150")
+        expect(wrapper.get("#createdAtValue").text()).toBe("3:29:27.7128 PMMar 6, 2022")
+        expect(wrapper.get("#modifiedAtValue").text()).toBe("8:56:33.5203 PMMar 6, 2022")
+        expect(wrapper.get("#totalSupplyValue").text()).toBe("2")
+        expect(wrapper.get("#initialSupplyValue").text()).toBe("0")
+        expect(wrapper.get("#maxSupplyValue").text()).toBe("150")
 
         expect(wrapper.text()).toMatch("NFT Holders")
         expect(wrapper.findComponent(TokenNftTable).exists()).toBe(true)
@@ -167,8 +167,8 @@ describe("TokenDetails.vue", () => {
         // console.log(wrapper.text())
 
         expect(wrapper.text()).toMatch(RegExp("^Token " + testTokenId + "Non Fungible"))
-        expect(wrapper.get("#name").text()).toBe("Ħ Frens Kingdom Dude")
-        expect(wrapper.get("#symbol").text()).toBe("ĦFRENSKINGDOM")
+        expect(wrapper.get("#nameValue").text()).toBe("Ħ Frens Kingdom Dude")
+        expect(wrapper.get("#symbolValue").text()).toBe("ĦFRENSKINGDOM")
         expect(wrapper.text()).toMatch("NFT Holders")
         expect(wrapper.findComponent(TokenNftTable).exists()).toBe(true)
         expect(wrapper.findComponent(TokenBalanceTable).exists()).toBe(false)
@@ -188,8 +188,8 @@ describe("TokenDetails.vue", () => {
         // console.log(wrapper.text())
 
         expect(wrapper.text()).toMatch(RegExp("^Token " + testTokenId + "Fungible"))
-        expect(wrapper.get("#name").text()).toBe("23423")
-        expect(wrapper.get("#symbol").text()).toBe("QmVGABnvpbPwLcfG4iuW2JSzY8MLkALhd54bdPAbJxoEkB")
+        expect(wrapper.get("#nameValue").text()).toBe("23423")
+        expect(wrapper.get("#symbolValue").text()).toBe("QmVGABnvpbPwLcfG4iuW2JSzY8MLkALhd54bdPAbJxoEkB")
         expect(wrapper.text()).toMatch("Balances")
         expect(wrapper.findComponent(TokenNftTable).exists()).toBe(false)
         expect(wrapper.findComponent(TokenBalanceTable).exists()).toBe(true)
