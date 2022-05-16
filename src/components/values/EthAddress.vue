@@ -24,6 +24,7 @@
 
 <template>
   <HexaValue v-bind:byte-string="address" v-bind:show-none="showNone"/>
+  <br/>
   <a class="h-is-property-text" disabled="clickDisabled" @click="handleClick">Import in Metamask…</a>
   <span style="display: inline-block">
     <ModalDialog v-model:show-dialog="showErrorDialog">
