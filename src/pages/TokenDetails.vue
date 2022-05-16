@@ -110,9 +110,13 @@
               </template>
             </Property>
             <Property :id="'ethereumAddress'">
-              <template v-slot:name>Ethereum Compat. Address</template>
+              <template v-slot:name>ERC20 Address</template>
               <template v-slot:value>
-                <HexaValue v-if="ethereumAddress" :byte-string="ethereumAddress" :show-none="true"/>
+                <EthAddress v-if="ethereumAddress"
+                            :address="ethereumAddress"
+                            :symbol="tokenInfo?.symbol"
+                            :decimals="tokenInfo?.decimals"
+                            :show-none="true"/>
               </template>
             </Property>
           </div>
@@ -161,7 +165,7 @@ import DashboardCard from "@/components/DashboardCard.vue";
 import BlobValue from "@/components/values/BlobValue.vue";
 import TokenAmount from "@/components/values/TokenAmount.vue";
 import Footer from "@/components/Footer.vue";
-import HexaValue from "@/components/values/HexaValue.vue";
+import EthAddress from "@/components/values/EthAddress.vue";
 import {EntityID} from "@/utils/EntityID";
 import Property from "@/components/Property.vue";
 
@@ -171,7 +175,7 @@ export default defineComponent({
 
   components: {
     Property,
-    HexaValue,
+    EthAddress,
     Footer,
     BlobValue,
     DashboardCard,
