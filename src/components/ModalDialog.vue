@@ -33,7 +33,7 @@
             <div class="block h-is-tertiary-text mt-2">
               <slot name="dialogMessage"/>
             </div>
-            <div class="block h-is-property-text has-text-grey mb-2">
+            <div class="block h-is-property-text has-text-grey mb-2" style="line-height: 1.5">
               <slot name="dialogDetails"/>
             </div>
           </div>
