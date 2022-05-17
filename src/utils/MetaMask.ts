@@ -41,7 +41,8 @@ export function MetaMask_watchAsset(address: string, symbol: string|undefined, d
                 "options":{
                     "address": address,
                     "symbol": symbol,
-                    "decimals": decimals
+                    "decimals": decimals,
+                    "image": HederaLogo
                 },
             },
         }
@@ -68,3 +69,11 @@ export function MetaMask_watchAsset(address: string, symbol: string|undefined, d
 
     return new Promise<MetaMask_Status>(executor)
 }
+
+
+
+const HederaLogo =
+    'data:image/svg+xml;utf8,<svg id="Layer_1" data-name="Layer 1" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 40 40">' +
+    '<path d="M20 0a20 20 0 1 0 20 20A20 20 0 0 0 20 0" fill="black"></path>' +
+    '<path d="M28.13 28.65h-2.54v-5.4H14.41v5.4h-2.54V11.14h2.54v5.27h11.18v-5.27h2.54zm-13.6-7.42h11.18v-2.79H14.53z" fill="white"></path>' +
+    '</svg>'
