@@ -23,21 +23,9 @@
 <!-- --------------------------------------------------------------------------------------------------------------- -->
 
 <template>
-  <HexaValue v-bind:byte-string="address" v-bind:show-none="showNone"/>
-  <br/>
-  <ActionLink title="Import in MetaMask"
-              :enabled="address !== undefined"
-              :running="executing"
-              @action="handleAction"/>
-  <span style="display: inline-block">
-    <ModalDialog v-model:show-dialog="showErrorDialog">
-      <template v-slot:dialogMessage>Please install MetaMask!</template>
-      <template v-slot:dialogDetails>
-        <div class="block">
-          To watch this asset with MetaMask, you must download and install <a href="https://metamask.io">MetaMask</a> extension for your browser.
-        </div>
-      </template>
-    </ModalDialog>
+  <span class="is-inline-flex is-align-items-center">
+    <a @click="$emit('action')" :class="{'pointer-events-none': actionDisabled}">{{ title }}</a>
+    <span v-if="running" class="loader is-inline-block ml-2"/>
   </span>
 </template>
 
@@ -47,51 +35,32 @@
 
 <script lang="ts">
 
-import {computed, defineComponent, ref} from "vue";
-import HexaValue from "@/components/values/HexaValue.vue";
-import ModalDialog from "@/components/ModalDialog.vue";
-import ActionLink from "@/components/ActionLink.vue";
-import {MetaMask_Status, MetaMask_watchAsset} from "@/utils/MetaMask";
+import {computed, defineComponent} from "vue";
 
 export default defineComponent({
-  name: "EthAddress",
-  components: {HexaValue, ModalDialog, ActionLink},
+  name: "ActionLink",
   props: {
-    address: String,
-    symbol: String,
-    decimals: String,
-    showNone: {
+    title: {
+      type: String,
+      default: "Action"
+    },
+    enabled: {
+      type: Boolean,
+      default: true
+    },
+    running: {
       type: Boolean,
       default: false
-    },
+    }
   },
+  emits: ['action'],
   setup(props) {
 
-    const executing = ref(false)
-
-    const clickDisabled = computed(() => {
-      return executing.value || props.address == undefined
+    const actionDisabled = computed(() => {
+      return props.running || !props.enabled
     })
 
-    //
-    // showErrorDialog
-    //
-    const showErrorDialog = ref(false)
-
-    const handleAction = () => {
-      executing.value = true
-      MetaMask_watchAsset(props.address as string, props.symbol, props.decimals)
-          .then((status: MetaMask_Status) => {
-            if (status == MetaMask_Status.metaMaskNotInstalled) {
-              showErrorDialog.value = true
-            }
-          })
-          .finally(() => {
-        executing.value = false
-      })
-    }
-
-    return { showErrorDialog, handleAction, clickDisabled, executing }
+    return { actionDisabled }
   }
 })
 
@@ -101,4 +70,9 @@ export default defineComponent({
 <!--                                                      STYLE                                                      -->
 <!-- --------------------------------------------------------------------------------------------------------------- -->
 
-<style/>
+<style scoped>
+
+a.pointer-events-none {
+  pointer-events: none
+}
+</style>
