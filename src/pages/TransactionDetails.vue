@@ -41,7 +41,7 @@
 
       <template v-slot:table>
 
-        <NotificationBanner v-if="notify" :message="notification"/>
+        <NotificationBanner v-if="notification" :message="notification"/>
 
         <div class="columns h-is-property-text">
 
@@ -157,7 +157,7 @@ import {computed, defineComponent, inject, onBeforeMount, ref, watch} from 'vue'
 import axios, {AxiosResponse} from "axios";
 import {Transaction, TransactionByIdResponse} from "@/schemas/HederaSchemas";
 import {EntityDescriptor} from "@/utils/EntityDescriptor"
-import {TransactionID} from "@/utils/TransactionID";
+import {normalizeTransactionId, TransactionID} from "@/utils/TransactionID";
 import {computeNetAmount, makeOperatorAccountLabel, makeTypeLabel} from "@/utils/TransactionTools";
 import AccountLink from "@/components/values/AccountLink.vue";
 import {base64DecToArr, byteToHex} from "@/utils/B64Utils";
@@ -197,12 +197,25 @@ export default defineComponent({
 
     const TRANSACTION_SUCCESS = 'SUCCESS'
     const response = ref<AxiosResponse<TransactionByIdResponse>|null>(null)
+    const invalidId = ref(false)
+    const got404 = ref(false)
     const transaction = ref<Transaction|null>(null)
     let netAmount = ref(0)
     let entity = ref<EntityDescriptor | null>(null)
 
-    const notify = computed(() => transaction.value && transaction.value.result !== TRANSACTION_SUCCESS)
-    const notification = computed(() => "Transaction has failed: " + transaction.value?.result)
+    const notification = computed(() => {
+      let result
+      if (invalidId.value) {
+        result =  "Invalid transaction ID: " + props.transactionId
+      } else if(got404.value) {
+        result =  "Transaction with ID " + normalizeTransactionId(props.transactionId ?? "", true) + " was not found"
+      } else if (transaction.value && transaction.value.result !== TRANSACTION_SUCCESS) {
+        result =  "Transaction has failed: " + transaction.value?.result
+      } else {
+        result = null
+      }
+      return result
+    })
 
     onBeforeMount(() => {
       fetchTransaction()
@@ -217,16 +230,30 @@ export default defineComponent({
     })
 
     const fetchTransaction = () => {
-      axios
-          .get<TransactionByIdResponse>("api/v1/transactions/" + props.transactionId)
-          .then(r => {
-            response.value = r
-            transaction.value = r.data.transactions ? filter(r.data.transactions, props.consensusTimestamp) : null
-            if (transaction.value != null) {
-              netAmount.value = computeNetAmount(transaction.value);
-              entity.value = EntityDescriptor.makeEntityDescriptor(transaction.value);
-            }
-          });
+      got404.value = false
+      invalidId.value = false
+      response.value = null
+      transaction.value = null
+
+      if (props.transactionId && TransactionID.parse(props.transactionId)) {
+        axios
+            .get<TransactionByIdResponse>("api/v1/transactions/" + props.transactionId)
+            .then(r => {
+              response.value = r
+              transaction.value = r.data.transactions ? filter(r.data.transactions, props.consensusTimestamp) : null
+              if (transaction.value != null) {
+                netAmount.value = computeNetAmount(transaction.value)
+                entity.value = EntityDescriptor.makeEntityDescriptor(transaction.value)
+              }
+            })
+            .catch(reason => {
+              if(axios.isAxiosError(reason) && reason?.request?.status === 404) {
+                got404.value = true
+              }
+            })
+      } else {
+        invalidId.value = true
+      }
     }
 
     const convertTransactionId = (id: string) => {
@@ -260,7 +287,6 @@ export default defineComponent({
       transaction,
       netAmount,
       entity,
-      notify,
       notification,
       routeName,
       TRANSACTION_SUCCESS,
