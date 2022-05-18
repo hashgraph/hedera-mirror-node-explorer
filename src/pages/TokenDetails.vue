@@ -97,19 +97,19 @@
             </Property>
             <Property :id="'totalSupply'">
               <template v-slot:name>Total Supply</template>
-              <template v-slot:value>
+              <template v-slot:value v-if="validEntityId">
                 <TokenAmount :amount="parseIntString(tokenInfo?.total_supply)" :token-id="tokenId" :show-extra="false"/>
               </template>
             </Property>
             <Property :id="'initialSupply'">
               <template v-slot:name>Initial Supply</template>
-              <template v-slot:value>
+              <template v-slot:value v-if="validEntityId">
                 <TokenAmount :amount="parseIntString(tokenInfo?.initial_supply)" :token-id="tokenId" :show-extra="false"/>
               </template>
             </Property>
             <Property :id="'maxSupply'">
               <template v-slot:name>Max Supply</template>
-              <template v-slot:value>
+              <template v-slot:value v-if="validEntityId">
                 <div v-if="tokenInfo?.supply_type === 'INFINITE'" class="has-text-grey">Infinite</div>
                 <TokenAmount v-else :amount="parseIntString(tokenInfo?.max_supply)" :show-extra="false" :token-id="tokenId"/>
               </template>
@@ -263,6 +263,7 @@ export default defineComponent({
       isSmallScreen,
       isTouchDevice,
       tokenInfo,
+      validEntityId,
       normalizedTokenId,
       notification,
       showTokenDetails,
