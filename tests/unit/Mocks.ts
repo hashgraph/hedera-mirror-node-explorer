@@ -633,7 +633,7 @@ export const SAMPLE_CREATETOPIC_TRANSACTIONS = {
 
 export const SAMPLE_ACCOUNT = {
     "account": "0.0.730631",
-    "alias": null,
+    "alias": "CIQAAAH4AY2OFK2FL37TSPYEQGPPUJRP4XTKWHD62HKPQX543DTOFFQ",
     "auto_renew_period": 7776000,
     "balance": {
         "balance": 2342647909,
@@ -780,7 +780,7 @@ export const SAMPLE_CONTRACTS = {
 
 export const SAMPLE_CONTRACT_AS_ACCOUNT = {
     "account": "0.0.200611",
-    "alias": null,
+    "alias": "CIQAAAH4AY2OFK2FL37TSPYEQGPPUJRP4XTKWHD62HKPQX543DTOFFQ",
     "auto_renew_period": 7890000,
     "balance": {
         "balance": 200000000,

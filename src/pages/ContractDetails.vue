@@ -75,6 +75,12 @@
                 <BlobValue :blob-value="contract?.memo" :show-none="true" :base64="true" class="should-wrap"/>
               </template>
             </Property>
+            <Property :id="'alias'">
+              <template v-slot:name>Alias</template>
+              <template v-slot:value>
+                <HexaValue v-bind:byte-string="aliasByteString" v-bind:show-none="true"/>
+              </template>
+            </Property>
             <Property :id="'expiresAt'">
               <template v-slot:name>Expires at</template>
               <template v-slot:value>
@@ -135,6 +141,14 @@
                 <HexaValue :byteString="formattedSolidity" :show-none="true"/>
               </template>
             </Property>
+            <Property :id="'ethereumAddress'">
+              <template v-slot:name>ERC20 Address</template>
+              <template v-slot:value>
+                <EthAddress v-if="ethereumAddress"
+                            :address="ethereumAddress"
+                            :show-none="true"/>
+              </template>
+            </Property>
           </div>
 
         </div>
@@ -183,6 +197,10 @@ import Footer from "@/components/Footer.vue";
 import NotificationBanner from "@/components/NotificationBanner.vue";
 import {EntityID} from "@/utils/EntityID";
 import Property from "@/components/Property.vue";
+import {makeEthAddressForAccount} from "@/schemas/HederaUtils";
+import EthAddress from "@/components/values/EthAddress.vue";
+import {byteToHex} from "@/utils/B64Utils";
+import base32Decode from "base32-decode";
 
 const MAX_TOKEN_BALANCES = 3
 
@@ -203,7 +221,8 @@ export default defineComponent({
     PlayPauseButton,
     ContractTransactionTable,
     KeyValue,
-    HexaValue
+    HexaValue,
+    EthAddress
   },
 
   props: {
@@ -285,6 +304,15 @@ export default defineComponent({
       return props.contractId ? EntityID.normalize(props.contractId) : props.contractId
     })
 
+    const ethereumAddress = computed(() => {
+      return account.value !== null ? makeEthAddressForAccount(account.value) : null
+    })
+
+    const aliasByteString = computed(() => {
+      const alias = account.value?.alias
+      return alias ? byteToHex(new Uint8Array(base32Decode(alias, 'RFC4648'))) : null
+    })
+
     return {
       isSmallScreen,
       isTouchDevice,
@@ -299,6 +327,8 @@ export default defineComponent({
       proxyAccountId,
       formattedSolidity,
       normalizedContractId,
+      ethereumAddress,
+      aliasByteString,
 
       // From TimeUtils
       formatSeconds
