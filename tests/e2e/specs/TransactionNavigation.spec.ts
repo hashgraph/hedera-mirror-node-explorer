@@ -109,4 +109,14 @@ describe('Transaction Navigation', () => {
             })
     })
 
+    it('should detect navigation to unknown transaction ID', () => {
+        const unknownID = '9.9.9@1650446896.868427600'
+        cy.visit('#/testnet/transaction/' + normalizeTransactionId(unknownID))
+        cy.url().should('include', '/testnet/transaction/' + normalizeTransactionId(unknownID))
+        cy.contains('Transaction')
+
+        cy.get('[id=notificationBanner]')
+            .find('span')
+            .contains('Transaction with ID ' + unknownID + ' was not found')
+    })
 })

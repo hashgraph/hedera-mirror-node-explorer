@@ -102,4 +102,14 @@ describe('Token Navigation', () => {
             })
     })
 
+    it('should detect navigation to unknown token ID', () => {
+        const unknownID = '9.9.9'
+        cy.visit('#/testnet/token/' + unknownID)
+        cy.url().should('include', '/testnet/token/' + unknownID)
+        cy.contains('Token')
+
+        cy.get('[id=notificationBanner]')
+            .find('span')
+            .contains('Token with ID ' + unknownID + ' was not found')
+    })
 })
