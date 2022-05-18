@@ -18,13 +18,31 @@
  *
  */
 
-import {TokenInfo} from "@/schemas/HederaSchemas";
+import {AccountInfo, KeyType, TokenInfo} from "@/schemas/HederaSchemas";
 import {EntityID} from "@/utils/EntityID";
+import {byteToHex} from "@/utils/B64Utils";
+import base32Decode from "base32-decode";
 
-//
-// export function makeEthAddressForAccount(account: AccountInfo|Contract): string {
-//
-// }
+export function makeEthAddressForAccount(account: AccountInfo): string|null {
+    let result: string|null
+
+    if (account.alias) {
+        // Decodes BASE32 encoding of account.alias
+        const buffer = base32Decode(account.alias, 'RFC4648')
+        result = byteToHex(new Uint8Array(buffer))
+    } else if (account.key?._type == KeyType.ECDSA_SECP256K1) {
+        // Generates Eth. address from key
+        result = null // TBI
+    } else if (account.account) {
+        // Generates Eth. address from account id
+        const entityID = EntityID.parse(account.account, true)
+        result = entityID != null ? entityID.toAddress() : null
+    } else {
+        result = null
+    }
+
+    return result
+}
 
 export function makeEthAddressForToken(token: TokenInfo): string|null {
     let result: string|null

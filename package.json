@@ -27,7 +27,8 @@
     "vue": "^3.0.0",
     "vue-axios": "^3.4.0",
     "vue-router": "^4.0.0-0",
-    "@metamask/detect-provider": "^1.2.0"
+    "@metamask/detect-provider": "^1.2.0",
+    "base32-decode": "^1.0.0"
   },
   "devDependencies": {
     "@cypress/code-coverage": "^3.9.12",
