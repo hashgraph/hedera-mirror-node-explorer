@@ -168,6 +168,7 @@ import Footer from "@/components/Footer.vue";
 import EthAddress from "@/components/values/EthAddress.vue";
 import {EntityID} from "@/utils/EntityID";
 import Property from "@/components/Property.vue";
+import {makeEthAddressForToken} from "@/schemas/HederaUtils";
 
 export default defineComponent({
 
@@ -217,14 +218,7 @@ export default defineComponent({
     }
 
     const ethereumAddress = computed(() => {
-      let result: string|undefined
-      if (props.tokenId) {
-        const entityID = EntityID.parse(props.tokenId, true)
-        result = entityID?.toAddress()
-      } else {
-        result = undefined
-      }
-      return result
+      return tokenInfo.value !== null ? makeEthAddressForToken(tokenInfo.value) : null
     })
 
     const normalizedTokenId = computed(() => {
