@@ -255,9 +255,11 @@ export default defineComponent({
     watch(() => props.accountId, () => {
       fetchAccount()
       fetchContract()
-      cache.setAccountId(normalizedAccountId.value)
       if (validEntityId.value) {
+        cache.setAccountId(normalizedAccountId.value)
         cache.start()
+      } else {
+        cache.stop()
       }
     });
 
@@ -342,7 +344,7 @@ export default defineComponent({
 
     const fetchContract = () => {
       showContractVisible.value = false
-      if (account.value) {
+      if (validEntityId.value) {
         axios
             .get<ContractResponse>("api/v1/contracts/" + normalizedAccountId.value)
             .then(() => showContractVisible.value = true)
