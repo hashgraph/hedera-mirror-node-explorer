@@ -24,12 +24,13 @@
 
 <template>
   <HexaValue v-bind:byte-string="address" v-bind:show-none="showNone"/>
-  <br/>
-  <ActionLink title="Import in MetaMask"
-              :enabled="address !== undefined"
-              :running="executing"
-              @action="handleAction"/>
-  <span style="display: inline-block">
+  <template v-if="showImport">
+    <br/>
+    <ActionLink title="Import in MetaMask"
+                :enabled="address !== undefined"
+                :running="executing"
+                @action="handleAction"/>
+    <span style="display: inline-block">
     <ModalDialog v-model:show-dialog="showErrorDialog">
       <template v-slot:dialogMessage>Please install MetaMask!</template>
       <template v-slot:dialogDetails>
@@ -39,6 +40,7 @@
       </template>
     </ModalDialog>
   </span>
+  </template>
 </template>
 
 <!-- --------------------------------------------------------------------------------------------------------------- -->
@@ -60,6 +62,10 @@ export default defineComponent({
     address: String,
     symbol: String,
     decimals: String,
+    showImport: {
+      type: Boolean,
+      default: false
+    },
     showNone: {
       type: Boolean,
       default: false

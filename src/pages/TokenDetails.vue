@@ -116,6 +116,7 @@
                             :address="ethereumAddress"
                             :symbol="tokenInfo?.symbol"
                             :decimals="tokenInfo?.decimals"
+                            :show-import="true"
                             :show-none="true"/>
               </template>
             </Property>
