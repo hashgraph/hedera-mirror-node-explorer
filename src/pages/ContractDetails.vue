@@ -33,7 +33,7 @@
         <span class="h-is-primary-title">Contract </span>
         <span class="h-is-secondary-text is-numeric mr-3">{{ contract ? normalizedContractId : "" }}</span>
         <span v-if="contract" class="is-inline-block">
-          <router-link :to="{name: 'AccountDetails', params: {accountId: contractId}}">
+          <router-link :to="{name: 'AccountDetails', params: {accountId: normalizedContractId}}">
             <span class="h-is-property-text has-text-grey">Associated account</span>
           </router-link>
         </span>
@@ -227,9 +227,9 @@ export default defineComponent({
       return props.contractId ? EntityID.parse(props.contractId, true) != null : false
     })
     const normalizedContractId = computed(() => {
-      return props.contractId ? EntityID.normalize(props.contractId) : props.contractId
+      // return props.contractId ? EntityID.normalize(props.contractId) : props.contractId
+      return contract.value?.contract_id ? EntityID.normalize(contract.value.contract_id) : null
     })
-
 
     const notification = computed(() => {
       const expiration = contract.value?.expiration_timestamp
@@ -266,7 +266,7 @@ export default defineComponent({
             .then(response => {
               contract.value = response.data;
               axios
-                  .get("api/v1/accounts/" + props.contractId)
+                  .get("api/v1/accounts/" + normalizedContractId.value)
                   .then(response => {
                     account.value = response.data
                   })
