@@ -30,12 +30,17 @@
 
     <DashboardCard>
       <template v-slot:title>
-        <span v-if="tokenInfo?.type === 'NON_FUNGIBLE_UNIQUE'" class="h-is-tertiary-text has-text-grey">Non Fungible</span>
-        <span v-else class="h-is-tertiary-text has-text-grey">Fungible</span>
+        <span v-if="tokenInfo">
+          <span v-if="tokenInfo.type === 'NON_FUNGIBLE_UNIQUE'" class="h-is-tertiary-text has-text-grey">Non Fungible</span>
+          <span v-else class="h-is-tertiary-text has-text-grey">Fungible</span>
+        </span>
         <span class="h-is-primary-title"> Token </span>
         <span class="h-is-secondary-text mr-2">{{ normalizedTokenId }}</span>
       </template>
       <template v-slot:table>
+
+        <NotificationBanner v-if="notification" :message="notification"/>
+
         <div class="columns h-is-property-text">
 
           <div class="column">
@@ -92,19 +97,19 @@
             </Property>
             <Property :id="'totalSupply'">
               <template v-slot:name>Total Supply</template>
-              <template v-slot:value>
+              <template v-slot:value v-if="validEntityId">
                 <TokenAmount :amount="parseIntString(tokenInfo?.total_supply)" :token-id="tokenId" :show-extra="false"/>
               </template>
             </Property>
             <Property :id="'initialSupply'">
               <template v-slot:name>Initial Supply</template>
-              <template v-slot:value>
+              <template v-slot:value v-if="validEntityId">
                 <TokenAmount :amount="parseIntString(tokenInfo?.initial_supply)" :token-id="tokenId" :show-extra="false"/>
               </template>
             </Property>
             <Property :id="'maxSupply'">
               <template v-slot:name>Max Supply</template>
-              <template v-slot:value>
+              <template v-slot:value v-if="validEntityId">
                 <div v-if="tokenInfo?.supply_type === 'INFINITE'" class="has-text-grey">Infinite</div>
                 <TokenAmount v-else :amount="parseIntString(tokenInfo?.max_supply)" :show-extra="false" :token-id="tokenId"/>
               </template>
@@ -164,12 +169,14 @@ import Footer from "@/components/Footer.vue";
 import HexaValue from "@/components/values/HexaValue.vue";
 import {EntityID} from "@/utils/EntityID";
 import Property from "@/components/Property.vue";
+import NotificationBanner from "@/components/NotificationBanner.vue";
 
 export default defineComponent({
 
   name: 'TokenDetails',
 
   components: {
+    NotificationBanner,
     Property,
     HexaValue,
     Footer,
@@ -192,6 +199,26 @@ export default defineComponent({
     const isTouchDevice = inject('isTouchDevice', false)
     let tokenInfo = ref<TokenInfo | null>(null)
 
+    const got404 = ref(false)
+    const validEntityId = computed(() => {
+      return props.tokenId ? EntityID.parse(props.tokenId, true) != null : false
+    })
+    const normalizedTokenId = computed(() => {
+      return props.tokenId ? EntityID.normalize(props.tokenId) : props.tokenId
+    })
+
+    const notification = computed(() => {
+      let result
+      if (!validEntityId.value) {
+        result = "Invalid token ID: " + props.tokenId
+      } else if (got404.value) {
+        result = "Token with ID " + props.tokenId + " was not found"
+      } else {
+        result = null
+      }
+      return result
+    })
+
     onBeforeMount(() => {
       fetchTokenInfo();
     })
@@ -201,11 +228,20 @@ export default defineComponent({
     });
 
     const fetchTokenInfo = () => {
-      axios
-          .get("api/v1/tokens/" + props.tokenId)
-          .then(response => {
-            tokenInfo.value = response.data;
-          })
+      tokenInfo.value = null
+      got404.value = false
+      if (validEntityId.value) {
+        axios
+            .get("api/v1/tokens/" + props.tokenId)
+            .then(response => {
+              tokenInfo.value = response.data;
+            })
+            .catch(reason => {
+              if (axios.isAxiosError(reason) && reason?.request?.status === 404) {
+                got404.value = true
+              }
+            })
+      }
     }
 
     const showTokenDetails = (tokenId: string) => {
@@ -223,15 +259,13 @@ export default defineComponent({
       return result
     })
 
-    const normalizedTokenId = computed(() => {
-      return props.tokenId ? EntityID.normalize(props.tokenId) : props.tokenId
-    })
-
     return {
       isSmallScreen,
       isTouchDevice,
       tokenInfo,
+      validEntityId,
       normalizedTokenId,
+      notification,
       showTokenDetails,
       formatSeconds,
       parseIntString,

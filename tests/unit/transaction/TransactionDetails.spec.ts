@@ -30,6 +30,7 @@ import {SAMPLE_COINGECKO, SAMPLE_CONTRACTCALL_TRANSACTIONS, SAMPLE_FAILED_TRANSA
 import MockAdapter from "axios-mock-adapter";
 import {HMSF} from "@/utils/HMSF";
 import {normalizeTransactionId} from "@/utils/TransactionID";
+import Oruga from "@oruga-ui/oruga-next";
 
 /*
     Bookmarks
@@ -188,4 +189,23 @@ describe("TransactionDetails.vue", () => {
         expect(banner.text()).toBe("Transaction has failed: CONTRACT_REVERT_EXECUTED")
     });
 
+    it("Should detect invalid transaction ID", async () => {
+
+        await router.push("/") // To avoid "missing required param 'network'" error
+
+        const invalidTransactionId = "0.0.0.1000-1646025139-152901498"
+        const wrapper = mount(TransactionDetails, {
+            global: {
+                plugins: [router, Oruga]
+            },
+            props: {
+                transactionId: invalidTransactionId
+            },
+        });
+        await flushPromises()
+        // console.log(wrapper.html())
+        // console.log(wrapper.text())
+
+        expect(wrapper.get("#notificationBanner").text()).toBe("Invalid transaction ID: " + invalidTransactionId)
+    });
 });

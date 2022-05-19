@@ -31,7 +31,7 @@
     <DashboardCard>
       <template v-slot:title>
         <span class="h-is-primary-title">Account </span>
-        <span class="h-is-secondary-text mr-3">{{ normalizedAccountId }}</span>
+        <span class="h-is-secondary-text mr-3">{{ account ? normalizedAccountId : "" }}</span>
         <span v-if="showContractVisible" class="is-inline-block" id="showContractLink">
           <router-link :to="{name: 'ContractDetails', params: {contractId: accountId}}">
             <span class="h-is-property-text has-text-grey">Associated contract</span>
@@ -42,12 +42,14 @@
 
       <template v-slot:table>
 
+        <NotificationBanner v-if="notification" :message="notification"/>
+
         <div class="columns h-is-property-text">
           <div class="column">
             <Property :id="'balance'">
               <template v-slot:name>{{ tokenBalances?.length ? 'Balances' : 'Balance' }}</template>
               <template v-slot:value>
-                <div class="h-is-tertiary-text"><HbarAmount v-bind:amount="balance" v-bind:show-extra="true"/></div>
+                <div v-if="account" class="h-is-tertiary-text"><HbarAmount v-bind:amount="balance" v-bind:show-extra="true"/></div>
                 <div v-if="displayAllTokenLinks">
                   <router-link :to="{name: 'AccountBalances', params: {accountId: accountId}}">
                     See all token balances
@@ -62,8 +64,10 @@
               </template>
             </Property>
           </div>
-          <div v-if="isSmallScreen && elapsed" class="column has-text-right  has-text-grey mt-1">
+          <div class="column">
+            <div v-if="isSmallScreen && elapsed" class="has-text-right  has-text-grey mt-1">
               {{ elapsed }} ago
+            </div>
           </div>
         </div>
         <br/>
@@ -124,9 +128,10 @@
         </div>
 
         <TransactionTable
+            v-if="account"
             v-bind:narrowed="true"
             v-bind:nb-items="10"
-            v-bind:accountIdFilter="accountId"
+            v-bind:accountIdFilter="normalizedAccountId"
             v-bind:transactionTypeFilter="selectedTransactionType"
             v-model:cacheState="cacheState"
         />
@@ -164,6 +169,7 @@ import TransactionTypeSelect, {TransactionOption} from "@/components/transaction
 import {useRoute, useRouter} from "vue-router";
 import {EntityID} from "@/utils/EntityID";
 import Property from "@/components/Property.vue";
+import NotificationBanner from "@/components/NotificationBanner.vue";
 
 const MAX_TOKEN_BALANCES = 10
 
@@ -172,6 +178,7 @@ export default defineComponent({
   name: 'AccountDetails',
 
   components: {
+    NotificationBanner,
     Property,
     TransactionTypeSelect,
     Footer,
@@ -196,6 +203,7 @@ export default defineComponent({
 
     const cacheState = ref<PlayPauseState>(PlayPauseState.Play)
     const account = ref<AccountBalanceTransactions|null>(null)
+    const got404 = ref(false)
 
     const router = useRouter()
     const route = useRoute()
@@ -206,6 +214,20 @@ export default defineComponent({
             ? typeQuery as TransactionOption
             : ""
     )
+
+    const validEntityId = computed(() => {
+      return props.accountId ? EntityID.parse(props.accountId, true) != null : false
+    })
+
+    const normalizedAccountId = computed(() => {
+      return props.accountId ? EntityID.normalize(props.accountId) : props.accountId
+    })
+
+    const accountInfo = computed(() => {
+      const entry = normalizedAccountId.value ? operatorRegistry.lookup(normalizedAccountId.value) : null
+      return entry != null ? entry.getDescription() : null
+    })
+
 
     const updateQuery = () => {
       router.replace({
@@ -220,7 +242,7 @@ export default defineComponent({
 
     let balanceResponse = ref<BalancesResponse|null>(null)
 
-    const cache = new BalanceCache(props.accountId, 1, 60000)
+    const cache = new BalanceCache(normalizedAccountId.value, 1, 60000)
     cache.responseDidChangeCB = () => {
       balanceResponse.value = cache.getEntity()
     }
@@ -233,16 +255,34 @@ export default defineComponent({
     watch(() => props.accountId, () => {
       fetchAccount()
       fetchContract()
-      cache.setAccountId(props.accountId)
-      cache.start()
+      if (validEntityId.value) {
+        cache.setAccountId(normalizedAccountId.value)
+        cache.start()
+      } else {
+        cache.stop()
+      }
     });
 
     onMounted(() => {
-      cache.start()
+      if (validEntityId.value) {
+        cache.start()
+      }
     })
 
     onBeforeUnmount(() => {
       cache.stop()
+    })
+
+    const notification = computed(() => {
+      let result
+      if (!validEntityId.value) {
+        result =  "Invalid account ID: " + props.accountId
+      } else if (got404.value) {
+        result =  "Account with ID " + props.accountId + " was not found"
+      } else {
+        result = null
+      }
+      return result
     })
 
     const balanceTimeStamp = computed(() => {
@@ -259,17 +299,8 @@ export default defineComponent({
       return (balances && balances.length > 0) ? balances[0].tokens : null
     })
 
-    const normalizedAccountId = computed(() => {
-      return props.accountId ? EntityID.normalize(props.accountId) : props.accountId
-    })
-
-    const accountInfo = computed(() => {
-      const entry = normalizedAccountId.value ? operatorRegistry.lookup(normalizedAccountId.value) : null
-      return entry != null ? entry.getDescription() : null
-    })
-
     const displayAllTokenLinks = computed(() => {
-      const tokenCount = account.value?.balance?.tokens?.length ?? 0
+      const tokenCount = tokenBalances.value?.length ?? 0
       return tokenCount > MAX_TOKEN_BALANCES
     })
 
@@ -295,18 +326,30 @@ export default defineComponent({
       const params = {} as {
         limit: 1
       }
-      axios
-          .get<AccountBalanceTransactions>("api/v1/accounts/" + props.accountId, { params: params})
-          .then(response => account.value = response.data)
+      account.value = null
+      got404.value = false
+      if (validEntityId.value) {
+        axios
+            .get<AccountBalanceTransactions>("api/v1/accounts/" + normalizedAccountId.value, { params: params})
+            .then(response => account.value = response.data)
+            .catch(reason => {
+              if(axios.isAxiosError(reason) && reason?.request?.status === 404) {
+                got404.value = true
+              }
+            })
+      }
     }
 
     const showContractVisible = ref(false)
+
     const fetchContract = () => {
       showContractVisible.value = false
-      axios
-          .get<ContractResponse>("api/v1/contracts/" + props.accountId)
-          .then(() => showContractVisible.value = true)
-          .catch(() => null)
+      if (validEntityId.value) {
+        axios
+            .get<ContractResponse>("api/v1/contracts/" + normalizedAccountId.value)
+            .then(() => showContractVisible.value = true)
+            .catch(() => null)
+      }
     }
 
     return {
@@ -315,6 +358,8 @@ export default defineComponent({
       cacheState,
       selectedTransactionType,
       account,
+      notification,
+      validEntityId,
       normalizedAccountId,
       balanceTimeStamp,
       balance,

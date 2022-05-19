@@ -31,13 +31,16 @@
     <DashboardCard>
       <template v-slot:title>
         <span class="h-is-primary-title">Messages for Topic </span>
-        <span class="h-is-secondary-text">{{ normalizedTopicId }}</span>
+        <span v-if="validEntityId" class="h-is-secondary-text">{{ normalizedTopicId }}</span>
       </template>
       <template v-slot:control>
         <PlayPauseButton v-model="cacheState"/>
       </template>
       <template v-slot:table>
-        <TopicMessageTable v-model:cache-state="cacheState" v-bind:topic-id="topicId"/>
+
+        <NotificationBanner v-if="notification" :message="notification"/>
+
+        <TopicMessageTable v-if="validEntityId" v-model:cache-state="cacheState" v-bind:topic-id="topicId"/>
       </template>
     </DashboardCard>
 
@@ -58,6 +61,7 @@ import PlayPauseButton, {PlayPauseState} from "@/components/PlayPauseButton.vue"
 import TopicMessageTable from "@/components/topic/TopicMessageTable.vue";
 import DashboardCard from "@/components/DashboardCard.vue";
 import Footer from "@/components/Footer.vue";
+import NotificationBanner from "@/components/NotificationBanner.vue";
 import {EntityID} from "@/utils/EntityID";
 
 export default defineComponent({
@@ -73,6 +77,7 @@ export default defineComponent({
   },
 
   components: {
+    NotificationBanner,
     Footer,
     DashboardCard,
     TopicMessageTable,
@@ -83,14 +88,31 @@ export default defineComponent({
     const isSmallScreen = inject('isSmallScreen', true)
     const isTouchDevice = inject('isTouchDevice', false)
     const cacheState = ref<PlayPauseState>(PlayPauseState.Play)
+
+    const validEntityId = computed(() => {
+      return props.topicId ? EntityID.parse(props.topicId, true) != null : false
+    })
     const normalizedTopicId = computed(() => {
       return props.topicId ? EntityID.normalize(props.topicId) : props.topicId
     })
+
+    const notification = computed(() => {
+      let result
+      if (!validEntityId.value) {
+        result = "Invalid topic ID: " + props.topicId
+      } else {
+        result = null
+      }
+      return result
+    })
+
     return {
       isSmallScreen,
       isTouchDevice,
       cacheState,
+      validEntityId,
       normalizedTopicId,
+      notification
     }
   }
 });

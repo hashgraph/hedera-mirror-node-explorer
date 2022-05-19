@@ -128,4 +128,14 @@ describe('Account Navigation', () => {
             })
     })
 
+    it('should detect navigation to unknown account ID', () => {
+        const unknownID = '9.9.9'
+        cy.visit('#/testnet/account/' + unknownID)
+        cy.url().should('include', '/testnet/account/' + unknownID)
+        cy.contains('Account')
+
+        cy.get('[id=notificationBanner]')
+            .find('span')
+            .contains('Account with ID ' + unknownID + ' was not found')
+    })
 })
