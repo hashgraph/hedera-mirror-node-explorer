@@ -40,14 +40,14 @@ export function makeSummaryLabel(row: Transaction): string {
         case TransactionType.CRYPTOCREATEACCOUNT:
         case TransactionType.CRYPTODELETE:
         case TransactionType.CRYPTOUPDATEACCOUNT:
+        case TransactionType.TOKENASSOCIATE:
+        case TransactionType.TOKENDISSOCIATE:
             result = row.entity_id ? "Account ID: " + row.entity_id : ""
             break
         case TransactionType.TOKENBURN:
         case TransactionType.TOKENMINT:
         case TransactionType.TOKENCREATION:
         case TransactionType.TOKENDELETION:
-        case TransactionType.TOKENASSOCIATE:
-        case TransactionType.TOKENDISSOCIATE:
         case TransactionType.TOKENFEESCHEDULEUPDATE:
         case TransactionType.TOKENFREEZE:
         case TransactionType.TOKENUNFREEZE:
