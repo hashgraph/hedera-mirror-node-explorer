@@ -24,11 +24,21 @@
 
 <template>
 
+  <ModalDialog v-model:show-dialog="showErrorDialog" :iconClass="'fa fa-2x fa-info has-text-info'">
+    <template v-slot:dialogMessage>
+      <div>Hedera Mirror Node Explorer is a ledger explorer</div>
+      <div>for the Hedera network</div>
+    </template>
+    <template v-slot:dialogDetails>
+      <div>Build date: {{ buildTime }}</div>
+    </template>
+  </ModalDialog>
+
   <div v-if="!isMediumScreen"
        class="is-flex is-align-items-center is-justify-content-space-between pt-3 pb-4">
 
     <span class="is-inline-flex is-align-items-center is-flex-grow-0 is-flex-shrink-0">
-      <a class="mr-3" @click="$router.push({name: 'MainDashboard'})">
+      <a class="mr-3" @click="showErrorDialog=true">
         <img alt="Product Logo" class="image" src="@/assets/branding/brand-product-logo.png" style="max-width: 165px;">
       </a>
       <AxiosStatus/>
@@ -53,7 +63,7 @@
 
   <div v-else class="is-flex is-justify-content-space-between is-align-items-flex-end">
     <span class="is-inline-flex is-align-items-center is-flex-grow-0 is-flex-shrink-0">
-      <a id="product-logo" @click="$router.push({name: 'MainDashboard'})" class="mr-3">
+      <a id="product-logo" @click="showErrorDialog = true" class="mr-3">
         <img alt="Product Logo" class="image" src="@/assets/branding/brand-product-logo.png">
       </a>
       <AxiosStatus/>
@@ -115,15 +125,19 @@ import router from "@/router";
 import SearchBar from "@/components/SearchBar.vue";
 import AxiosStatus from "@/components/AxiosStatus.vue";
 import {networkRegistry} from "@/schemas/NetworkRegistry";
+import ModalDialog from "@/components/ModalDialog.vue";
 
 export default defineComponent({
   name: "TopNavBar",
-  components: {AxiosStatus, SearchBar},
+  components: {ModalDialog, AxiosStatus, SearchBar},
 
   setup() {
     const isSmallScreen = inject('isSmallScreen', true)
     const isMediumScreen = inject('isMediumScreen', true)
     const isTouchDevice = inject('isTouchDevice', false)
+    const buildTime = inject('buildTime', "not available")
+
+    const showErrorDialog = ref(false)
 
     const route = useRoute()
     const network = computed( () => { return route.params.network })
@@ -182,6 +196,8 @@ export default defineComponent({
       isSmallScreen,
       isMediumScreen,
       isTouchDevice,
+      buildTime,
+      showErrorDialog,
       name,
       hideNavBar,
       showTopRightLogo,
