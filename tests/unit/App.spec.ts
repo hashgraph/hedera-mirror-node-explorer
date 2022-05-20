@@ -87,7 +87,10 @@ describe("App.vue", () => {
 
         const navBar = wrapper.findComponent(TopNavBar)
         expect(navBar.exists()).toBe(true)
-        expect(navBar.text()).toBe("MAINNETTESTNETPREVIEWNETDashboardTransactionsTokensTopicsContractsAccounts")
+        expect(navBar.text()).toBe(
+            "Hedera Mirror Node Explorer is a ledger explorer for the Hedera network" +
+            "Build date: not available" +
+            "MAINNETTESTNETPREVIEWNETDashboardTransactionsTokensTopicsContractsAccounts")
 
         expect(wrapper.findComponent(HbarMarketDashboard).exists()).toBe(true)
 

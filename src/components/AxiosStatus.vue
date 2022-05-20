@@ -46,7 +46,7 @@
       <i class="fa fa-exclamation-triangle has-text-danger" @click="showErrorDialog = true"/>
     </template>
     <span style="display: inline-block">
-        <ModalDialog v-model:show-dialog="showErrorDialog">
+        <ModalDialog v-model:show-dialog="showErrorDialog" :iconClass="'fa fa-2x fa-exclamation-triangle has-text-danger'">
           <template v-slot:dialogMessage><slot name="message"/>{{ explanation }}</template>
           <template v-slot:dialogDetails>
             <div v-if="explanation" class="block">

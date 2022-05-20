@@ -65,7 +65,10 @@ describe("TopNavBar.vue", () => {
         await flushPromises()
         // console.log(wrapper.text())
 
-        expect(wrapper.text()).toBe("MAINNETTESTNETPREVIEWNETDashboardTransactionsTokensTopicsContractsAccounts")
+        expect(wrapper.text()).toBe(
+            "Hedera Mirror Node Explorer is a ledger explorer for the Hedera network" +
+            "Build date: not available" +
+            "MAINNETTESTNETPREVIEWNETDashboardTransactionsTokensTopicsContractsAccounts")
 
         const links = wrapper.findAll("a")
         expect(links.length).toBe(8)

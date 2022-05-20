@@ -49,6 +49,9 @@ export default defineComponent({
   components: {TopNavBar},
 
   setup() {
+    const buildTime = document.documentElement.dataset.buildTimestampUtc ?? "not available"
+    provide('buildTime', buildTime)
+
     const isTouchDevice = ('ontouchstart' in window)
     provide('isTouchDevice', isTouchDevice)
 

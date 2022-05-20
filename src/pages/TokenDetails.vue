@@ -30,9 +30,9 @@
 
     <DashboardCard>
       <template v-slot:title>
-        <span v-if="tokenInfo">
-          <span v-if="tokenInfo.type === 'NON_FUNGIBLE_UNIQUE'" class="h-is-tertiary-text has-text-grey">Non Fungible</span>
-          <span v-else class="h-is-tertiary-text has-text-grey">Fungible</span>
+        <span v-if="tokenInfo" class="h-is-primary-title">
+          <span v-if="tokenInfo.type === 'NON_FUNGIBLE_UNIQUE'">Non Fungible</span>
+          <span v-else>Fungible</span>
         </span>
         <span class="h-is-primary-title"> Token </span>
         <span class="h-is-secondary-text mr-2">{{ normalizedTokenId }}</span>
