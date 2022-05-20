@@ -48,14 +48,19 @@
 
  */
 
+import {networkRegistry} from "@/schemas/NetworkRegistry";
+import {EntityID} from "@/utils/EntityID";
+
 export class OperatorEntry {
     public readonly accountId: string
+    public readonly network: string|null
     public readonly name: string
     public readonly location: string|null
     public readonly nodeId: number|null
 
-    constructor(accountId: string, name: string, location: string|null, nodeId: number|null) {
+    constructor(accountId: string, network: string|null, name: string, location: string|null, nodeId: number|null) {
         this.accountId = accountId
+        this.network = network
         this.name = name
         this.location = location
         this.nodeId = nodeId
@@ -105,15 +110,28 @@ export class OperatorRegistry {
         this.addEntry("0.0.27", "ServiceNow", "Ogden, Utah", 24)
         this.addEntry("0.0.28", "Ubisoft", "Singapore, Republic of Singapore", 25)
 
-        this.addEntry("0.0.98", "Hedera fee collection account", null, null)
+        this.addEntry("0.0.98", "Hedera fee collection account", null, null, null)
     }
 
     public lookup(accountId: string): OperatorEntry|null {
-        return this.entries.get(accountId) ?? null
+        const result = this.entries.get(accountId)
+        const network = networkRegistry.getLastUsedNetwork()
+        return result && (result.network == network || result.network == null) ? result : null
     }
 
-    private addEntry(accountId: string, name: string, location: string|null, nodeID: number|null) {
-        this.entries.set(accountId, new OperatorEntry(accountId, name, location, nodeID))
+    public makeDescription(accountId: string): string | null {
+        let result: string|null
+        if (accountId && EntityID.isOperator(accountId)) {
+            const registryEntry = operatorRegistry.lookup(accountId)
+            result = registryEntry !== null ? registryEntry.getDescription() : "Node"
+        } else {
+            result = null
+        }
+        return result
+    }
+
+    private addEntry(accountId: string, name: string, location: string|null, nodeID: number|null, network: string|null = "mainnet") {
+        this.entries.set(accountId, new OperatorEntry(accountId, network, name, location, nodeID))
     }
 }
 
