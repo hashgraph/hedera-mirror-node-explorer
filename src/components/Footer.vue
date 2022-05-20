@@ -37,14 +37,17 @@
       <span v-if="!isTouchDevice && isSmallScreen"
             class="h-is-property-text ml-5 pb-1"
             style="font-weight:300; color: #DBDBDB">
-        Hedera Mirror Node Explorer is a ledger explorer for the Hedera network.
+        {{ productName }} is a ledger explorer for the Hedera network.
       </span>
 
       <span class="is-flex-grow-1"/>
 
-      <a class="ml-4" href="#" style="line-height: 1">
+      <a v-if="sponsorURL" class="ml-4" :href="sponsorURL" style="line-height: 1">
         <img alt="Sponsor Logo" src="@/assets/branding/brand-sponsor-logo.png" style="max-width: 104px;">
       </a>
+      <div v-else class="ml-4" style="line-height: 1">
+        <img alt="Sponsor Logo" src="@/assets/branding/brand-sponsor-logo.png" style="max-width: 104px;">
+      </div>
 
     </div>
 
@@ -73,9 +76,14 @@ export default defineComponent({
     const isSmallScreen = inject('isSmallScreen', true)
     const isTouchDevice = inject('isTouchDevice', false)
 
+    const productName = process.env.VUE_APP_PRODUCT_NAME ?? "Hedera Mirror Node Explorer"
+    const sponsorURL = process.env.VUE_APP_SPONSOR_URL ?? ""
+
     return {
       isSmallScreen,
-      isTouchDevice
+      isTouchDevice,
+      productName,
+      sponsorURL
     }
   },
 })

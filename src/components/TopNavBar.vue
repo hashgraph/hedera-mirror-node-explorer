@@ -25,10 +25,7 @@
 <template>
 
   <ModalDialog v-model:show-dialog="showErrorDialog" :iconClass="'fa fa-2x fa-info has-text-info'">
-    <template v-slot:dialogMessage>
-      <div>Hedera Mirror Node Explorer is a ledger explorer</div>
-      <div>for the Hedera network</div>
-    </template>
+    <template v-slot:dialogMessage>{{ productName }} is a ledger explorer for the Hedera network</template>
     <template v-slot:dialogDetails>
       <div>Build date: {{ buildTime }}</div>
     </template>
@@ -137,6 +134,8 @@ export default defineComponent({
     const isTouchDevice = inject('isTouchDevice', false)
     const buildTime = inject('buildTime', "not available")
 
+    const productName = process.env.VUE_APP_PRODUCT_NAME ?? "Hedera Mirror Node Explorer"
+
     const showErrorDialog = ref(false)
 
     const route = useRoute()
@@ -197,6 +196,7 @@ export default defineComponent({
       isMediumScreen,
       isTouchDevice,
       buildTime,
+      productName,
       showErrorDialog,
       name,
       hideNavBar,

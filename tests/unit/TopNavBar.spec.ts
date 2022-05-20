@@ -66,8 +66,7 @@ describe("TopNavBar.vue", () => {
         // console.log(wrapper.text())
 
         expect(wrapper.text()).toBe(
-            "Hedera Mirror Node Explorer is a ledger explorer" +
-            "for the Hedera network" +
+            "Hedera Mirror Node Explorer is a ledger explorer for the Hedera network" +
             "Build date: not available" +
             "MAINNETTESTNETPREVIEWNETDashboardTransactionsTokensTopicsContractsAccounts")
 
