@@ -80,8 +80,7 @@ export default defineComponent({
 
   setup(props) {
     const extra = computed(() => {
-      const entry = props.accountId ? operatorRegistry.lookup(props.accountId) : null
-      return entry ? entry.getDescription() : ""
+      return (props.accountId ? operatorRegistry.makeDescription(props.accountId) : null) ?? ""
     })
 
     return { extra }

@@ -224,8 +224,7 @@ export default defineComponent({
     })
 
     const accountInfo = computed(() => {
-      const entry = normalizedAccountId.value ? operatorRegistry.lookup(normalizedAccountId.value) : null
-      return entry != null ? entry.getDescription() : null
+      return normalizedAccountId.value ? operatorRegistry.makeDescription(normalizedAccountId.value) : null
     })
 
 
