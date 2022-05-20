@@ -62,4 +62,15 @@ describe('Contract Navigation', () => {
         cy.url().should('include', '/testnet/contract/' + contractId)
     })
 
+    it('should detect navigation to unknown contract ID', () => {
+        const unknownID = '9.9.9'
+        cy.visit('#/testnet/contract/' + unknownID)
+        cy.url().should('include', '/testnet/contract/' + unknownID)
+        cy.contains('Contract')
+
+        cy.get('[id=notificationBanner]')
+            .find('span')
+            .contains('Contract with ID ' + unknownID + ' was not found')
+    })
+
 })

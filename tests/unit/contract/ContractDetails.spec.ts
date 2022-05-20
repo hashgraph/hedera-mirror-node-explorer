@@ -189,6 +189,25 @@ describe("ContractDetails.vue", () => {
         expect(banner.text()).toBe("Contract has expired and is in grace period")
     });
 
+    it("Should detect invalid contract ID", async () => {
+
+        await router.push("/") // To avoid "missing required param 'network'" error
+
+        const invalidContractId = "0.0.0.1000"
+        const wrapper = mount(ContractDetails, {
+            global: {
+                plugins: [router, Oruga]
+            },
+            props: {
+                contractId: invalidContractId
+            },
+        });
+        await flushPromises()
+        // console.log(wrapper.html())
+        // console.log(wrapper.text())
+
+        expect(wrapper.get("#notificationBanner").text()).toBe("Invalid contract ID: " + invalidContractId)
+    });
 });
 
 

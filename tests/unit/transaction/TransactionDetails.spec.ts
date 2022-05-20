@@ -30,6 +30,7 @@ import {SAMPLE_COINGECKO, SAMPLE_CONTRACTCALL_TRANSACTIONS, SAMPLE_FAILED_TRANSA
 import MockAdapter from "axios-mock-adapter";
 import {HMSF} from "@/utils/HMSF";
 import {normalizeTransactionId} from "@/utils/TransactionID";
+import Oruga from "@oruga-ui/oruga-next";
 
 /*
     Bookmarks
@@ -80,7 +81,7 @@ describe("TransactionDetails.vue", () => {
 
         expect(wrapper.get("#memoValue").text()).toBe("None")
         expect(wrapper.get("#operatorAccountValue").text()).toBe("0.0.29624024")
-        expect(wrapper.get("#nodeAccountValue").text()).toBe("0.0.7Node 4 - Nomura - Tokyo, Japan")
+        expect(wrapper.get("#nodeAccountValue").text()).toBe("0.0.7Node")
         expect(wrapper.get("#durationValue").text()).toBe("120 seconds")
         expect(wrapper.get("#entityId").text()).toBe("Account ID0.0.29662956")
         expect(wrapper.get("#scheduledValue").text()).toBe("false")
@@ -91,7 +92,7 @@ describe("TransactionDetails.vue", () => {
 
         expect(wrapper.findComponent(HbarTransferGraphF).text()).toBe(
             "Fee TransfersAccountHbar AmountAccountHbar Amount0.0.29624024-0.00470065-$0.0012\n\n" +
-            "0.0.70.00022028$0.0001Node 4 - Nomura - Tokyo, Japan\n\n" +
+            "0.0.70.00022028$0.0001Node\n\n" +
             "0.0.980.00448037$0.0011Hedera fee collection account")
 
         expect(wrapper.findComponent(TokenTransferGraph).text()).toBe(
@@ -188,4 +189,23 @@ describe("TransactionDetails.vue", () => {
         expect(banner.text()).toBe("Transaction has failed: CONTRACT_REVERT_EXECUTED")
     });
 
+    it("Should detect invalid transaction ID", async () => {
+
+        await router.push("/") // To avoid "missing required param 'network'" error
+
+        const invalidTransactionId = "0.0.0.1000-1646025139-152901498"
+        const wrapper = mount(TransactionDetails, {
+            global: {
+                plugins: [router, Oruga]
+            },
+            props: {
+                transactionId: invalidTransactionId
+            },
+        });
+        await flushPromises()
+        // console.log(wrapper.html())
+        // console.log(wrapper.text())
+
+        expect(wrapper.get("#notificationBanner").text()).toBe("Invalid transaction ID: " + invalidTransactionId)
+    });
 });

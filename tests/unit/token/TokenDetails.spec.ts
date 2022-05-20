@@ -193,7 +193,25 @@ describe("TokenDetails.vue", () => {
         expect(wrapper.text()).toMatch("Balances")
         expect(wrapper.findComponent(TokenNftTable).exists()).toBe(false)
         expect(wrapper.findComponent(TokenBalanceTable).exists()).toBe(true)
-
     });
 
+    it("Should detect invalid token ID", async () => {
+
+        await router.push("/") // To avoid "missing required param 'network'" error
+
+        const invalidTokenId = "0.0.0.1000"
+        const wrapper = mount(TokenDetails, {
+            global: {
+                plugins: [router, Oruga]
+            },
+            props: {
+                tokenId: invalidTokenId
+            },
+        });
+        await flushPromises()
+        // console.log(wrapper.html())
+        // console.log(wrapper.text())
+
+        expect(wrapper.get("#notificationBanner").text()).toBe("Invalid token ID: " + invalidTokenId)
+    });
 });

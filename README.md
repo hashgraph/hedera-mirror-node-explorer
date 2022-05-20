@@ -49,7 +49,7 @@ The latter may be omitted and will default to 'LOCALNET'
 ### Run the Explorer locally in Docker
 ```
 npm run build:docker
-docker compose up
+docker-compose up -d
 ```
 
 ### Customize configuration

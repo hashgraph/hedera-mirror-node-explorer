@@ -31,9 +31,9 @@
     <DashboardCard>
       <template v-slot:title>
         <span class="h-is-primary-title">Contract </span>
-        <span class="h-is-secondary-text is-numeric mr-3">{{ normalizedContractId }}</span>
-        <span class="is-inline-block">
-          <router-link :to="{name: 'AccountDetails', params: {accountId: contractId}}">
+        <span class="h-is-secondary-text is-numeric mr-3">{{ contract ? normalizedContractId : "" }}</span>
+        <span v-if="contract" class="is-inline-block">
+          <router-link :to="{name: 'AccountDetails', params: {accountId: normalizedContractId}}">
             <span class="h-is-property-text has-text-grey">Associated account</span>
           </router-link>
         </span>
@@ -49,7 +49,7 @@
               <template v-slot:name>{{ tokens?.length ? 'Balances' : 'Balance' }}</template>
               <template v-slot:value>
                 <div class="has-flex-direction-column">
-                  <HbarAmount :amount="balance" :show-extra="true"/>
+                  <HbarAmount v-if="contract" :amount="balance" :show-extra="true"/>
                   <div v-if="displayAllTokenLinks">
                     <router-link :to="{name: 'AccountBalances', params: {accountId: contractId}}">
                       See all token balances
@@ -160,8 +160,9 @@
         </div>
 
         <ContractTransactionTable
+            v-if="contract"
             v-model:cacheState="cacheState"
-            v-bind:contract-id="contractId"
+            v-bind:contract-id="normalizedContractId"
             v-bind:nb-items="10"
         />
       </template>
@@ -240,17 +241,29 @@ export default defineComponent({
     const displayAllTokenLinks = computed(() => tokens.value ? tokens.value.length > MAX_TOKEN_BALANCES : false)
     const cacheState = ref<PlayPauseState>(PlayPauseState.Play)
 
+    const got404 = ref(false)
+    const validEntityId = computed(() => {
+      return props.contractId ? EntityID.parse(props.contractId, true) != null : false
+    })
+    const normalizedContractId = computed(() => {
+      // return props.contractId ? EntityID.normalize(props.contractId) : props.contractId
+      return contract.value?.contract_id ? EntityID.normalize(contract.value.contract_id) : null
+    })
+
     const notification = computed(() => {
+      const expiration = contract.value?.expiration_timestamp
       let result
-      if (contract.value?.deleted === true) {
+
+      if (!validEntityId.value) {
+        result = "Invalid contract ID: " + props.contractId
+      } else if (got404.value) {
+        result = "Contract with ID " + props.contractId + " was not found"
+      } else if (contract.value?.deleted === true) {
         result = "Contract is deleted"
+      } else if (expiration && Number.parseFloat(expiration) <= new Date().getTime() / 1000) {
+        result = "Contract has expired and is in grace period"
       } else {
-        const expiration = contract.value?.expiration_timestamp
-        if (expiration && Number.parseFloat(expiration) <= new Date().getTime() / 1000) {
-          result = "Contract has expired and is in grace period"
-        } else {
-          result = null
-        }
+        result = null
       }
       return result
     })
@@ -264,16 +277,25 @@ export default defineComponent({
     });
 
     const fetchContract = () => {
-      axios
-          .get("api/v1/contracts/" + props.contractId)
-          .then(response => {
-            contract.value = response.data;
-            axios
-                .get("api/v1/accounts/" + props.contractId)
-                .then(response => {
-                  account.value = response.data
-                });
-          });
+      contract.value = null
+      got404.value = false
+      if (validEntityId.value) {
+        axios
+            .get("api/v1/contracts/" + props.contractId)
+            .then(response => {
+              contract.value = response.data;
+              axios
+                  .get("api/v1/accounts/" + normalizedContractId.value)
+                  .then(response => {
+                    account.value = response.data
+                  })
+            })
+            .catch(reason => {
+              if (axios.isAxiosError(reason) && reason?.request?.status === 404) {
+                got404.value = true
+              }
+            })
+      }
     }
 
     const obtainerId = computed(() => {
@@ -298,10 +320,6 @@ export default defineComponent({
       }
 
       return result
-    })
-
-    const normalizedContractId = computed(() => {
-      return props.contractId ? EntityID.normalize(props.contractId) : props.contractId
     })
 
     const ethereumAddress = computed(() => {

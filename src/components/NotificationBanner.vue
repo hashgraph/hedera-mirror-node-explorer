@@ -24,7 +24,7 @@
 
 <template>
 
-  <div class="hero is-small is-danger mb-5 has-text-centered">
+  <div class="hero is-small is-danger mb-5 has-text-centered" id="notificationBanner">
     <div class="hero-body h-is-tertiary-text">
       <span>{{ message }}</span>
     </div>

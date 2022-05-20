@@ -51,9 +51,7 @@
     </o-table-column>
 
     <o-table-column v-slot="props" field="memo" label="Memo">
-      <div class="w600">
-        <BlobValue v-bind:blob-value="props.row.memo_base64" v-bind:base64="true" v-bind:show-none="true"/>
-      </div>
+        <BlobValue :blob-value="props.row.memo_base64" :base64="true" :show-none="true"/>
     </o-table-column>
 
   </o-table>

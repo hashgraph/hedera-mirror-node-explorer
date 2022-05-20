@@ -82,6 +82,15 @@ export class EntityID {
         return byteToHex(buffer)
     }
 
+    public isOperator(): boolean {
+        return this.shard == 0 && this.realm == 0 && this.num < 100
+    }
+
+    public static isOperator(entityID: string): boolean {
+        const eid = EntityID.parse(entityID)
+        return eid !== null && eid.isOperator()
+    }
+
     /*
      * Compare two account ID.
      * Accounts are sorted in ascending but account ids < 100 are put at the end.

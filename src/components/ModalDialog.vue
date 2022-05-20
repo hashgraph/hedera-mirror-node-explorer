@@ -28,7 +28,7 @@
     <div class="modal-content">
       <div class="box">
         <div class="is-flex is-flex-direction-row is-align-items-start">
-          <span class="icon is-large mr-4"><i class="fa fa-exclamation-triangle fa-2x has-text-danger"/></span>
+          <span class="icon is-large mr-4"><i :class="iconClass"/></span>
           <div>
             <div class="block h-is-tertiary-text mt-2">
               <slot name="dialogMessage"/>
@@ -59,7 +59,8 @@ export default defineComponent({
     showDialog: {
       type: Boolean,
       default: false
-    }
+    },
+    iconClass: String
   },
 
   setup(props, context) {

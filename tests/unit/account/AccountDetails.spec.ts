@@ -188,4 +188,23 @@ describe("AccountDetails.vue", () => {
         expect(wrapper.get("#receiverSigRequiredValue").text()).toBe("true")
     });
 
+    it("Should detect invalid account ID", async () => {
+
+        await router.push("/") // To avoid "missing required param 'network'" error
+
+        const invalidAccountId = "0.0.0.1000"
+        const wrapper = mount(AccountDetails, {
+            global: {
+                plugins: [router, Oruga]
+            },
+            props: {
+                accountId: invalidAccountId
+            },
+        });
+        await flushPromises()
+        // console.log(wrapper.html())
+        // console.log(wrapper.text())
+
+        expect(wrapper.get("#notificationBanner").text()).toBe("Invalid account ID: " + invalidAccountId)
+    });
 });

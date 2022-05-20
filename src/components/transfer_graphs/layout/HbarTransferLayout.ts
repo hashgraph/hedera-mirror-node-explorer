@@ -20,6 +20,7 @@
 
 import {compareTransferByAccount, Transaction, Transfer} from "@/schemas/HederaSchemas";
 import {computeNetAmount} from "@/utils/TransactionTools";
+import {EntityID} from "@/utils/EntityID";
 import {operatorRegistry} from "@/schemas/OperatorRegistry";
 
 export class HbarTransferLayout {
@@ -53,11 +54,11 @@ export class HbarTransferLayout {
             positiveTransfers.sort(compareTransferByAccount)
 
             for (const t of negativeTransfers) {
-                const payload = t.account === null || operatorRegistry.lookup(t.account) === null
+                const payload = t.account === null || !EntityID.isOperator(t.account)
                 this.sources.push(new HbarTransferRow(t, null, payload))
             }
             for (const t of positiveTransfers) {
-                const payload = t.account === null || operatorRegistry.lookup(t.account) === null
+                const payload = t.account === null || !EntityID.isOperator(t.account)
                 this.destinations.push(new HbarTransferRow(t, HbarTransferLayout.makeDescription(t), payload))
             }
         }
@@ -83,10 +84,7 @@ export class HbarTransferLayout {
     //
 
     private static makeDescription(t: Transfer): string {
-        const registryEntry = t.account != null ? operatorRegistry.lookup(t.account) : null
-        return registryEntry !== null ?
-            registryEntry.getDescription() :
-            "Transfer"
+        return (t.account !== null ? operatorRegistry.makeDescription(t.account) : null) ?? "Transfer"
     }
 
     private static removeFeeRows(rows: HbarTransferRow[]): number {

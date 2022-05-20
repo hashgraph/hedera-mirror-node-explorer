@@ -52,6 +52,8 @@ export class EntityDescriptor {
             case TransactionType.CRYPTOUPDATEACCOUNT:
             case TransactionType.CRYPTODELETELIVEHASH:
             case TransactionType.CRYPTOTRANSFER:
+            case TransactionType.TOKENASSOCIATE:
+            case TransactionType.TOKENDISSOCIATE:
                 result = new EntityDescriptor("Account ID", "AccountDetails")
                 break;
 
@@ -73,8 +75,6 @@ export class EntityDescriptor {
             case TransactionType.TOKENCREATION:
             case TransactionType.TOKENDELETION:
             case TransactionType.TOKENUPDATE:
-            case TransactionType.TOKENASSOCIATE:
-            case TransactionType.TOKENDISSOCIATE:
             case TransactionType.TOKENFEESCHEDULEUPDATE:
             case TransactionType.TOKENFREEZE:
             case TransactionType.TOKENGRANTKYC:
