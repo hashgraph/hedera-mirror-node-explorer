@@ -49,6 +49,7 @@
  */
 
 import {networkRegistry} from "@/schemas/NetworkRegistry";
+import {EntityID} from "@/utils/EntityID";
 
 export class OperatorEntry {
     public readonly accountId: string
@@ -116,6 +117,17 @@ export class OperatorRegistry {
         const result = this.entries.get(accountId)
         const network = networkRegistry.getLastUsedNetwork()
         return result && (result.network == network || result.network == null) ? result : null
+    }
+
+    public makeDescription(accountId: string): string | null {
+        let result: string|null
+        if (accountId && EntityID.isOperator(accountId)) {
+            const registryEntry = operatorRegistry.lookup(accountId)
+            result = registryEntry !== null ? registryEntry.getDescription() : "Node"
+        } else {
+            result = null
+        }
+        return result
     }
 
     private addEntry(accountId: string, name: string, location: string|null, nodeID: number|null, network: string|null = "mainnet") {
