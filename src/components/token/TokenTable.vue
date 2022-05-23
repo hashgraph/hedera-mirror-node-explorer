@@ -52,6 +52,8 @@
 
   </o-table>
 
+  <EmptyTable v-if="!tokens.length"/>
+
 </template>
 
 <!-- --------------------------------------------------------------------------------------------------------------- -->
@@ -65,11 +67,12 @@ import router from "@/router";
 import {Token} from "@/schemas/HederaSchemas";
 import {TokenCache} from "@/components/token/TokenCache";
 import { ORUGA_MOBILE_BREAKPOINT } from '@/App.vue';
+import EmptyTable from "@/components/EmptyTable.vue";
 
 export default defineComponent({
   name: 'TokenTable',
 
-  components: {},
+  components: {EmptyTable},
 
   props: {
     nbItems: Number,

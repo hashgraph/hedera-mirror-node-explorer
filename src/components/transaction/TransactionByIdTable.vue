@@ -61,6 +61,8 @@
 
   </o-table>
 
+  <EmptyTable v-if="!transactions.length"/>
+
 </template>
 
 <!-- --------------------------------------------------------------------------------------------------------------- -->
@@ -79,11 +81,12 @@ import TimestampValue from "@/components/values/TimestampValue.vue";
 import TransactionSummary from "@/components/transaction/TransactionSummary.vue";
 import {TransactionByIdCache} from "@/components/transaction/TransactionByIdCache";
 import { ORUGA_MOBILE_BREAKPOINT } from '@/App.vue';
+import EmptyTable from "@/components/EmptyTable.vue";
 
 export default defineComponent({
   name: 'TransactionByIdTable',
 
-  components: {TransactionSummary, TimestampValue },
+  components: {EmptyTable, TransactionSummary, TimestampValue },
 
   props: {
     narrowed: Boolean,
