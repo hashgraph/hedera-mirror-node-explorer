@@ -69,7 +69,6 @@
 import {computed, defineComponent, onBeforeUnmount, onMounted, ref, watch} from "vue";
 import {AxiosMonitor} from "@/utils/AxiosMonitor";
 import ModalDialog from "@/components/ModalDialog.vue";
-import axios from "axios";
 
 export default defineComponent({
 
@@ -120,14 +119,8 @@ export default defineComponent({
 
       loading.value = activeRequestCount >= 1
       error.value = errorResponseCount >= 1
-      explanation.value = makeExplanationOrSuggestion(
-          AxiosMonitor.instance.getErrorResponses(),
-          AxiosMonitor.instance.getSuccessfulRequestCount(),
-          true)
-      suggestion.value = makeExplanationOrSuggestion(
-          AxiosMonitor.instance.getErrorResponses(),
-          AxiosMonitor.instance.getSuccessfulRequestCount(),
-          false)
+      explanation.value = AxiosMonitor.instance.makeExplanationOrSuggestion(true)
+      suggestion.value = AxiosMonitor.instance.makeExplanationOrSuggestion(false)
     }
 
     //
@@ -177,68 +170,6 @@ export default defineComponent({
     }
   }
 })
-
-function makeExplanationOrSuggestion(errors: Map<string, unknown>, successfulRequestCount: number, explanation: boolean): string {
-
-  let errorCount_request = 0
-  let errorCount_429 = 0
-
-
-  const statusCodes = new Set<number>()
-  for (const error of errors.values()) {
-
-    // See https://axios-http.com/docs/handling_errors
-
-    if (axios.isAxiosError(error)) {
-      if (error.response) {
-        if (error.response.status == 429) {
-          errorCount_429 += 1
-        } else {
-          statusCodes.add(error.response.status)
-        }
-      } else {
-        errorCount_request += 1
-      }
-    }
-  }
-
-  let result: string
-  const errorCount = errors.size
-  if (errorCount_429 >= 1) {
-    // At least one request failed with http status #429
-    result = explanation
-        ? "The server is busy (status #429)"
-        : "This is transient. Try to reload the page in a few moments."
-  } else if (errorCount_request === errorCount) {
-    // Failed requests do not have any response from server
-    if (successfulRequestCount >= 1) {
-      // Some requests did succeed => server overload ?
-      result = explanation
-          ? "The server is busy"
-          : "This is transient. Try to reload the page in a few moments."
-    } else {
-      // No request did succeed => internet connection is dead ?
-      result = explanation
-          ? "Internet connection issue ?"
-          : "Check your internet connection and reload the page."
-    }
-  } else {
-    // Other cases
-    if (statusCodes.size == 1) {
-      // All requests returns the same http status
-      const statusCode = statusCodes.values().next().value
-      result = explanation
-          ? "The server reported an error #" + statusCode
-          : "This might be transient. Try to reload the page in a few moments."
-    } else {
-      result = explanation
-          ? "The server reported errors"
-          : "This might be transient. Try to reload the page in a few moments."
-    }
-  }
-
-  return result
-}
 
 
 </script>
