@@ -78,6 +78,8 @@
 
   </o-table>
 
+  <EmptyTable v-if="!accounts.length"/>
+
 </template>
 
 <!-- --------------------------------------------------------------------------------------------------------------- -->
@@ -95,11 +97,12 @@ import BlobValue from "@/components/values/BlobValue.vue";
 import TimestampValue from "@/components/values/TimestampValue.vue";
 import TokenAmount from "@/components/values/TokenAmount.vue";
 import {ORUGA_MOBILE_BREAKPOINT} from '@/App.vue';
+import EmptyTable from "@/components/EmptyTable.vue";
 
 export default defineComponent({
   name: 'AccountTable',
 
-  components: {BlobValue, HbarAmount, TimestampValue, TokenAmount},
+  components: {EmptyTable, BlobValue, HbarAmount, TimestampValue, TokenAmount},
 
   props: {
     nbItems: Number,

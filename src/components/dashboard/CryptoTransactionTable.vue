@@ -55,6 +55,8 @@
 
   </o-table>
 
+  <EmptyTable v-if="!transactions.length"/>
+
 </template>
 
 <!-- --------------------------------------------------------------------------------------------------------------- -->
@@ -74,11 +76,12 @@ import TransactionLabel from "@/components/values/TransactionLabel.vue";
 import router from "@/router";
 import TransactionSummary from "@/components/transaction/TransactionSummary.vue";
 import { ORUGA_MOBILE_BREAKPOINT } from '@/App.vue';
+import EmptyTable from "@/components/EmptyTable.vue";
 
 export default defineComponent({
   name: 'CryptoTransactionTable',
 
-  components: {TimestampValue, TransactionSummary, TransactionLabel},
+  components: {EmptyTable, TimestampValue, TransactionSummary, TransactionLabel},
 
   props: {
     nbItems: Number,

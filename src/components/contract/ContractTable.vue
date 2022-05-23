@@ -57,6 +57,8 @@
 
   </o-table>
 
+  <EmptyTable v-if="!contracts.length"/>
+
 </template>
 
 <!-- --------------------------------------------------------------------------------------------------------------- -->
@@ -72,6 +74,7 @@ import router from "@/router";
 import BlobValue from "@/components/values/BlobValue.vue";
 import TimestampValue from "@/components/values/TimestampValue.vue";
 import { ORUGA_MOBILE_BREAKPOINT } from '@/App.vue';
+import EmptyTable from "@/components/EmptyTable.vue";
 
 
 //
@@ -81,7 +84,7 @@ import { ORUGA_MOBILE_BREAKPOINT } from '@/App.vue';
 export default defineComponent({
   name: 'ContractTable',
 
-  components: {BlobValue, TimestampValue},
+  components: {EmptyTable, BlobValue, TimestampValue},
 
   props: {
     nbItems: Number,

@@ -68,6 +68,8 @@
 
   </o-table>
 
+  <EmptyTable v-if="!transactions.length"/>
+
 </template>
 
 <!-- --------------------------------------------------------------------------------------------------------------- -->
@@ -88,11 +90,12 @@ import TimestampValue from "@/components/values/TimestampValue.vue";
 import TransactionLabel from "@/components/values/TransactionLabel.vue";
 import HbarAmount from "@/components/values/HbarAmount.vue";
 import {ORUGA_MOBILE_BREAKPOINT} from '@/App.vue';
+import EmptyTable from "@/components/EmptyTable.vue";
 
 export default defineComponent({
   name: 'ContractTransactionTable',
 
-  components: {HbarAmount, TimestampValue, TransactionLabel},
+  components: {EmptyTable, HbarAmount, TimestampValue, TransactionLabel},
 
   props: {
     nbItems: Number,

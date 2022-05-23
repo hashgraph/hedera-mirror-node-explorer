@@ -66,6 +66,7 @@
     </o-table-column>
 
   </o-table>
+  <EmptyTable v-if="!nfts.length"/>
  </div>
 
 </template>
@@ -83,11 +84,12 @@ import TimestampValue from "@/components/values/TimestampValue.vue";
 import AccountLink from "@/components/values/AccountLink.vue";
 import BlobValue from "@/components/values/BlobValue.vue";
 import { ORUGA_MOBILE_BREAKPOINT } from '@/App.vue';
+import EmptyTable from "@/components/EmptyTable.vue";
 
 export default defineComponent({
   name: 'TokenNftTable',
 
-  components: {AccountLink, TimestampValue, BlobValue},
+  components: {EmptyTable, AccountLink, TimestampValue, BlobValue},
 
   props: {
     tokenId: {
