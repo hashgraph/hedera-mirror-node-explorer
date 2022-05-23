@@ -23,25 +23,10 @@
 <!-- --------------------------------------------------------------------------------------------------------------- -->
 
 <template>
-  <div class="modal has-text-white" v-bind:class="{'is-active': showDialog}">
-    <div class="modal-background" @click="handleClose"/>
-    <div class="modal-content">
-      <div class="box">
-        <div class="is-flex is-flex-direction-row is-align-items-start">
-          <span class="icon is-large mr-4"><i :class="iconClass"/></span>
-          <div>
-            <div class="block h-is-tertiary-text mt-2">
-              <slot name="dialogMessage"/>
-            </div>
-            <div class="block h-is-property-text has-text-grey mb-2" style="line-height: 1.5">
-              <slot name="dialogDetails"/>
-            </div>
-          </div>
-        </div>
-      </div>
-    </div>
-    <button class="modal-close is-large has-background-grey" aria-label="close" @click="handleClose"/>
-  </div>
+  <span class="is-inline-flex is-align-items-center">
+    <a @click="$emit('action')" :class="{'pointer-events-none': actionDisabled}">{{ title }}</a>
+    <span v-if="running" class="loader is-inline-block ml-2"/>
+  </span>
 </template>
 
 <!-- --------------------------------------------------------------------------------------------------------------- -->
@@ -50,36 +35,44 @@
 
 <script lang="ts">
 
-import {defineComponent} from "vue";
+import {computed, defineComponent} from "vue";
 
 export default defineComponent({
-  name: "ModalDialog",
-  components: {},
+  name: "ActionLink",
   props: {
-    showDialog: {
+    title: {
+      type: String,
+      default: "Action"
+    },
+    enabled: {
+      type: Boolean,
+      default: true
+    },
+    running: {
       type: Boolean,
       default: false
-    },
-    iconClass: String
-  },
-
-  setup(props, context) {
-    const handleClose = () => {
-      context.emit('update:showDialog', false)
     }
-    return { handleClose }
+  },
+  emits: ['action'],
+  setup(props) {
+
+    const actionDisabled = computed(() => {
+      return props.running || !props.enabled
+    })
+
+    return { actionDisabled }
   }
-});
+})
 
 </script>
 
 <!-- --------------------------------------------------------------------------------------------------------------- -->
-<!--                                                       STYLE                                                     -->
+<!--                                                      STYLE                                                      -->
 <!-- --------------------------------------------------------------------------------------------------------------- -->
 
 <style scoped>
-span.icon {
-  align-items: flex-start;
+
+a.pointer-events-none {
+  pointer-events: none
 }
 </style>
-

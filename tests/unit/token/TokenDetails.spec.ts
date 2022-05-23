@@ -91,7 +91,7 @@ describe("TokenDetails.vue", () => {
         expect(wrapper.get("#totalSupplyValue").text()).toBe("1")
         expect(wrapper.get("#initialSupplyValue").text()).toBe("1")
         expect(wrapper.get("#maxSupplyValue").text()).toBe("Infinite")
-        expect(wrapper.get("#ethereumAddressValue").text()).toBe("0000 0000 0000 0000 0000 0000 0000 0000 01c4 9eecCopy to Clipboard")
+        expect(wrapper.get("#ethereumAddressValue").text()).toBe("0000 0000 0000 0000 0000 0000 0000 0000 01c4 9eecCopy to ClipboardImport in MetaMaskPlease install MetaMask! To watch this asset with MetaMask, you must download and install MetaMask extension for your browser.")
 
         expect(wrapper.text()).toMatch("Balances")
         expect(wrapper.findComponent(TokenBalanceTable).exists()).toBe(true)

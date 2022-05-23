@@ -87,6 +87,12 @@
                 <BlobValue v-bind:blob-value="account?.memo" v-bind:show-none="true" v-bind:base64="true" class="should-wrap"/>
               </template>
             </Property>
+            <Property :id="'alias'">
+              <template v-slot:name>Alias</template>
+              <template v-slot:value>
+                <HexaValue v-bind:byte-string="aliasByteString" v-bind:show-none="true"/>
+              </template>
+            </Property>
             <Property :id="'expiresAt'">
               <template v-slot:name>Expires at</template>
               <template v-slot:value>
@@ -112,6 +118,14 @@
               <template v-slot:name>Receiver Sig. Required</template>
               <template v-slot:value>
                 {{ account?.receiver_sig_required ?? ""}}
+              </template>
+            </Property>
+            <Property :id="'ethereumAddress'">
+              <template v-slot:name>ERC20 Address</template>
+              <template v-slot:value>
+                <EthAddress v-if="ethereumAddress"
+                            :address="ethereumAddress"
+                            :show-none="true"/>
               </template>
             </Property>
           </div>
@@ -170,6 +184,11 @@ import {useRoute, useRouter} from "vue-router";
 import {EntityID} from "@/utils/EntityID";
 import Property from "@/components/Property.vue";
 import NotificationBanner from "@/components/NotificationBanner.vue";
+import {makeEthAddressForAccount} from "@/schemas/HederaUtils";
+import EthAddress from "@/components/values/EthAddress.vue";
+import HexaValue from "@/components/values/HexaValue.vue";
+import base32Decode from "base32-decode";
+import {byteToHex} from "@/utils/B64Utils";
 
 const MAX_TOKEN_BALANCES = 10
 
@@ -178,6 +197,7 @@ export default defineComponent({
   name: 'AccountDetails',
 
   components: {
+    HexaValue,
     NotificationBanner,
     Property,
     TransactionTypeSelect,
@@ -189,7 +209,8 @@ export default defineComponent({
     TransactionTable,
     PlayPauseButton,
     TimestampValue,
-    KeyValue
+    KeyValue,
+    EthAddress
   },
 
   props: {
@@ -351,6 +372,15 @@ export default defineComponent({
       }
     }
 
+    const ethereumAddress = computed(() => {
+      return account.value !== null ? makeEthAddressForAccount(account.value) : null
+    })
+
+    const aliasByteString = computed(() => {
+      const alias = account.value?.alias
+      return alias ? byteToHex(new Uint8Array(base32Decode(alias, 'RFC4648'))) : null
+    })
+
     return {
       isSmallScreen,
       isTouchDevice,
@@ -367,6 +397,8 @@ export default defineComponent({
       displayAllTokenLinks,
       elapsed,
       showContractVisible,
+      ethereumAddress,
+      aliasByteString,
 
       // From TimeUtils
       formatSeconds

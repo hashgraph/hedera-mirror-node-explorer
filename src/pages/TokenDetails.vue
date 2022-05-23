@@ -115,9 +115,14 @@
               </template>
             </Property>
             <Property :id="'ethereumAddress'">
-              <template v-slot:name>Ethereum Compat. Address</template>
+              <template v-slot:name>ERC20 Address</template>
               <template v-slot:value>
-                <HexaValue v-if="ethereumAddress" :byte-string="ethereumAddress" :show-none="true"/>
+                <EthAddress v-if="ethereumAddress"
+                            :address="ethereumAddress"
+                            :symbol="tokenInfo?.symbol"
+                            :decimals="tokenInfo?.decimals"
+                            :show-import="true"
+                            :show-none="true"/>
               </template>
             </Property>
           </div>
@@ -166,9 +171,10 @@ import DashboardCard from "@/components/DashboardCard.vue";
 import BlobValue from "@/components/values/BlobValue.vue";
 import TokenAmount from "@/components/values/TokenAmount.vue";
 import Footer from "@/components/Footer.vue";
-import HexaValue from "@/components/values/HexaValue.vue";
+import EthAddress from "@/components/values/EthAddress.vue";
 import {EntityID} from "@/utils/EntityID";
 import Property from "@/components/Property.vue";
+import {makeEthAddressForToken} from "@/schemas/HederaUtils";
 import NotificationBanner from "@/components/NotificationBanner.vue";
 
 export default defineComponent({
@@ -178,7 +184,7 @@ export default defineComponent({
   components: {
     NotificationBanner,
     Property,
-    HexaValue,
+    EthAddress,
     Footer,
     BlobValue,
     DashboardCard,
@@ -249,14 +255,7 @@ export default defineComponent({
     }
 
     const ethereumAddress = computed(() => {
-      let result: string|undefined
-      if (props.tokenId) {
-        const entityID = EntityID.parse(props.tokenId, true)
-        result = entityID?.toAddress()
-      } else {
-        result = undefined
-      }
-      return result
+      return tokenInfo.value !== null ? makeEthAddressForToken(tokenInfo.value) : null
     })
 
     return {

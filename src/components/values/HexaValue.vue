@@ -80,7 +80,7 @@ export default defineComponent({
     // 2)
     const copyToClipboard = (): void => {
       if (props.byteString) {
-        navigator.clipboard.writeText(props.byteString)
+        navigator.clipboard.writeText("0x" + props.byteString)
       }
     }
 
