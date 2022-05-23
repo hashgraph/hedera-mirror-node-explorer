@@ -94,12 +94,6 @@ export default defineComponent({
     onBeforeUnmount(() => {
       window.removeEventListener('resize', onResizeHandler);
     })
-
-    return {
-      isTouchDevice,
-      isSmallScreen,
-      sizeFallBack
-    }
   },
 });
 </script>
