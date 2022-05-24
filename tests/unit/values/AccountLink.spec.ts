@@ -58,7 +58,7 @@ describe("AccountLink.vue", () => {
             },
         });
 
-        expect(wrapper.text()).toBe("?")
+        expect(wrapper.text()).toBe("")
         expect(wrapper.findComponent("a").exists()).toBe(false)
     });
 

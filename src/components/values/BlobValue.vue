@@ -25,7 +25,7 @@
 <template>
   <a v-if="isURL" v-bind:href="blobValue">{{ blobValue }}</a>
   <span v-else-if="blobValue">{{ decodedValue }}</span>
-  <span v-else-if="showNone" class="has-text-grey">None</span>
+  <span v-else-if="showNone && !initialLoading" class="has-text-grey">None</span>
   <span v-else/>
 </template>
 
@@ -35,7 +35,8 @@
 
 <script lang="ts">
 
-import {computed, defineComponent} from "vue";
+import {computed, defineComponent, inject, ref} from "vue";
+import {initialLoadingKey} from "@/AppKeys";
 
 export default defineComponent({
   name: "BlobValue",
@@ -88,9 +89,13 @@ export default defineComponent({
       }
       return result
     })
+
+    const initialLoading = inject(initialLoadingKey, ref(false))
+
     return {
       isURL,
-      decodedValue
+      decodedValue,
+      initialLoading
     }
   }
 })

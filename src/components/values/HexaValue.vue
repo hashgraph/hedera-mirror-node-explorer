@@ -32,7 +32,7 @@
       </div>
     </div>
   </div>
-  <div v-else-if="showNone" class="has-text-grey">None</div>
+  <div v-else-if="showNone && !initialLoading" class="has-text-grey">None</div>
   <div v-else/>
 </template>
 
@@ -42,7 +42,8 @@
 
 <script lang="ts">
 
-import {computed, defineComponent, inject} from "vue";
+import {computed, defineComponent, inject, ref} from "vue";
+import {initialLoadingKey} from "@/AppKeys";
 
 const BYTES_PER_LINE = 10
 
@@ -89,12 +90,16 @@ export default defineComponent({
       return (props.byteString?.length ?? 0) >= 1
     })
 
+    // 4)
+    const initialLoading = inject(initialLoadingKey, ref(false))
+
     return {
       isSmallScreen,
       flow,
       split,
       copyToClipboard,
-      isCopyEnabled
+      isCopyEnabled,
+      initialLoading
     }
   }
 })
