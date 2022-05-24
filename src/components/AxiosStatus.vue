@@ -66,8 +66,8 @@
 
 <script lang="ts">
 
-import {computed, defineComponent, onBeforeUnmount, onMounted, ref, watch} from "vue";
-import {AxiosMonitor} from "@/utils/AxiosMonitor";
+import {computed, defineComponent, inject, onBeforeUnmount, onMounted, ref, watch} from "vue"
+import {errorKey, explanationKey, loadingKey, suggestionKey} from "@/AppKeys"
 import ModalDialog from "@/components/ModalDialog.vue";
 
 export default defineComponent({
@@ -78,15 +78,22 @@ export default defineComponent({
 
   setup() {
 
-    //
-    // loading
-    //
-    const loading = ref(false)
+    const loading = inject(loadingKey, ref(false))
+    const error = inject(errorKey, ref(false))
+    const explanation = inject(explanationKey, ref(""))
+    const suggestion = inject(suggestionKey, ref(""))
+
     watch(loading, (newValue, oldValue) => {
       if (oldValue && !newValue) {
         stopTimeout()
       } else if (!oldValue && newValue) {
         startTimeout()
+      }
+    })
+    watch(error, (newValue, oldValue) => {
+      if (oldValue && !newValue) {
+        // Error flag off => hides error dialog if needed
+        showErrorDialog.value = false
       }
     })
 
@@ -96,32 +103,6 @@ export default defineComponent({
     const late = computed(() => {
       return loading.value && timeoutElapsed.value
     })
-
-    //
-    // error
-    //
-    const error = ref(false)
-    watch(error, (newValue, oldValue) => {
-      if (oldValue && !newValue) {
-        // Error flag off => hides error dialog if needed
-        showErrorDialog.value = false
-      }
-    })
-
-    //
-    // Explanation / suggestion
-    //
-    const explanation = ref("")
-    const suggestion = ref("")
-    const monitorStateDidChange = () => {
-      const activeRequestCount = AxiosMonitor.instance.getActiveRequestCount()
-      const errorResponseCount = AxiosMonitor.instance.getErrorResponses().size
-
-      loading.value = activeRequestCount >= 1
-      error.value = errorResponseCount >= 1
-      explanation.value = AxiosMonitor.instance.makeExplanationOrSuggestion(true)
-      suggestion.value = AxiosMonitor.instance.makeExplanationOrSuggestion(false)
-    }
 
     //
     // timeoutElapsed
@@ -153,11 +134,9 @@ export default defineComponent({
     // Mount
     //
     onMounted(() => {
-      AxiosMonitor.instance.setStateChangeCB(monitorStateDidChange)
       startTimeout()
     })
     onBeforeUnmount(() => {
-      AxiosMonitor.instance.setStateChangeCB(null)
       stopTimeout()
     })
 

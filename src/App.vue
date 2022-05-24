@@ -32,6 +32,8 @@
 
 import {computed, defineComponent, onBeforeUnmount, onMounted, provide, ref} from 'vue';
 import TopNavBar from "@/components/TopNavBar.vue";
+import {errorKey, explanationKey, loadingKey, suggestionKey} from "@/AppKeys"
+import {AxiosMonitor} from "@/utils/AxiosMonitor"
 
 // export const XLARGE_BREAKPOINT = 1240
 export const LARGE_BREAKPOINT = 1160
@@ -86,12 +88,32 @@ export default defineComponent({
       windowWidth.value = window.innerWidth
     }
 
+    const loading = ref(false)
+    const error = ref(false)
+    const explanation = ref("")
+    const suggestion = ref("")
+    const monitorStateDidChange = () => {
+      const activeRequestCount = AxiosMonitor.instance.getActiveRequestCount()
+      const errorResponseCount = AxiosMonitor.instance.getErrorResponses().size
+
+      loading.value = activeRequestCount >= 1
+      error.value = errorResponseCount >= 1
+      explanation.value = AxiosMonitor.instance.makeExplanationOrSuggestion(true)
+      suggestion.value = AxiosMonitor.instance.makeExplanationOrSuggestion(false)
+    }
+    provide(loadingKey,     loading)
+    provide(errorKey,       error)
+    provide(explanationKey, explanation)
+    provide(suggestionKey,  suggestion)
+
     onMounted(() => {
       windowWidth.value = window.innerWidth
       window.addEventListener('resize', onResizeHandler);
+      AxiosMonitor.instance.setStateChangeCB(monitorStateDidChange)
     })
 
     onBeforeUnmount(() => {
+      AxiosMonitor.instance.setStateChangeCB(null)
       window.removeEventListener('resize', onResizeHandler);
     })
   },
