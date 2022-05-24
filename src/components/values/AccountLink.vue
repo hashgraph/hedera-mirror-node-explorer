@@ -40,9 +40,9 @@
     </template>
   </div>
 
-  <span v-else-if="showNone" class="has-text-grey">None</span>
+  <span v-else-if="showNone && !initialLoading" class="has-text-grey">None</span>
 
-  <span v-else>?</span>
+  <span v-else/>
 
 </template>
 
@@ -52,8 +52,9 @@
 
 <script lang="ts">
 
-import {computed, defineComponent, PropType} from "vue";
+import {computed, defineComponent, inject, PropType, ref} from "vue";
 import {operatorRegistry} from "@/schemas/OperatorRegistry";
+import {initialLoadingKey} from "@/AppKeys";
 
 export default defineComponent({
   name: "AccountLink",
@@ -83,7 +84,9 @@ export default defineComponent({
       return (props.accountId ? operatorRegistry.makeDescription(props.accountId) : null) ?? ""
     })
 
-    return { extra }
+    const initialLoading = inject(initialLoadingKey, ref(false))
+
+    return { extra, initialLoading }
   }
 });
 
