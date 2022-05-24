@@ -19,10 +19,16 @@
  */
 
 import axios, {Axios, AxiosRequestConfig, AxiosResponse} from "axios";
+import {ref} from "vue";
 
 export class AxiosMonitor {
 
     public static readonly instance = new AxiosMonitor()
+
+    public readonly loading = ref(false)
+    public readonly error = ref(false)
+    public readonly explanation = ref("")
+    public readonly suggestion = ref("")
 
     private targetAxios: Axios|null = null
     private requestInterceptor: number | null = null
@@ -30,7 +36,6 @@ export class AxiosMonitor {
     private activeRequestCount = 0
     private successfulRequestCount = 0
     private errorResponses = new Map<string, unknown>()
-    private stateChangeCB: (() => void) | null = null
 
     //
     // Public
@@ -57,25 +62,6 @@ export class AxiosMonitor {
                 (response: AxiosResponse) => this.requestFullfilled(response),
                 (reason: unknown) => this.requestRejected(reason))
         }
-    }
-
-    public getActiveRequestCount(): number {
-        return this.activeRequestCount
-    }
-
-    public getSuccessfulRequestCount(): number {
-        return this.successfulRequestCount
-    }
-
-    public getErrorResponses(): Map<string, unknown> {
-        return this.errorResponses
-    }
-
-    public setStateChangeCB(newValue: (() => void) | null): void {
-        if (this.stateChangeCB !== null && newValue !== null) {
-            console.trace("Will overwrite AxiosMonitor.stateChangeCB: BUG")
-        }
-        this.stateChangeCB = newValue
     }
 
     public clearErrorResponses(): void {
@@ -189,8 +175,9 @@ export class AxiosMonitor {
     }
 
     private stateDidChange(): void {
-        if (this.stateChangeCB) {
-            this.stateChangeCB()
-        }
+        this.loading.value = this.activeRequestCount >= 1
+        this.error.value = this.errorResponses.size >= 1
+        this.explanation.value = this.makeExplanationOrSuggestion(true)
+        this.suggestion.value = this.makeExplanationOrSuggestion(false)
     }
 }
