@@ -32,7 +32,7 @@
 
 import {computed, defineComponent, onBeforeUnmount, onMounted, provide, ref} from 'vue';
 import TopNavBar from "@/components/TopNavBar.vue";
-import {errorKey, explanationKey, loadingKey, suggestionKey} from "@/AppKeys"
+import {errorKey, explanationKey, initialLoadingKey, loadingKey, suggestionKey} from "@/AppKeys"
 import {AxiosMonitor} from "@/utils/AxiosMonitor"
 
 // export const XLARGE_BREAKPOINT = 1240
@@ -88,10 +88,11 @@ export default defineComponent({
       windowWidth.value = window.innerWidth
     }
 
-    provide(loadingKey,     AxiosMonitor.instance.loading)
-    provide(errorKey,       AxiosMonitor.instance.error)
-    provide(explanationKey, AxiosMonitor.instance.explanation)
-    provide(suggestionKey,  AxiosMonitor.instance.suggestion)
+    provide(loadingKey,         AxiosMonitor.instance.loading)
+    provide(initialLoadingKey,  AxiosMonitor.instance.initialLoading)
+    provide(errorKey,           AxiosMonitor.instance.error)
+    provide(explanationKey,     AxiosMonitor.instance.explanation)
+    provide(suggestionKey,      AxiosMonitor.instance.suggestion)
 
     onMounted(() => {
       windowWidth.value = window.innerWidth

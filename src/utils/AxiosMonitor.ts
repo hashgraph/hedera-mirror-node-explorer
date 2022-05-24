@@ -26,6 +26,7 @@ export class AxiosMonitor {
     public static readonly instance = new AxiosMonitor()
 
     public readonly loading = ref(false)
+    public readonly initialLoading = ref(false)
     public readonly error = ref(false)
     public readonly explanation = ref("")
     public readonly suggestion = ref("")
@@ -35,6 +36,7 @@ export class AxiosMonitor {
     private responseInterceptor: number | null = null
     private activeRequestCount = 0
     private successfulRequestCount = 0
+    private idlePeriodCount = 0
     private errorResponses = new Map<string, unknown>()
 
     //
@@ -149,6 +151,7 @@ export class AxiosMonitor {
         let result: Promise<AxiosResponse>
         if (this.targetAxios !== null) {
             this.activeRequestCount -= 1
+            this.idlePeriodCount += this.activeRequestCount == 0 ? +1 : 0
             this.successfulRequestCount += 1
             this.errorResponses.delete(this.targetAxios.getUri(response.config))
             this.stateDidChange()
@@ -163,6 +166,7 @@ export class AxiosMonitor {
         let result: unknown
         if (this.targetAxios !== null) {
             this.activeRequestCount -= 1
+            this.idlePeriodCount += this.activeRequestCount == 0 ? +1 : 0
             if (axios.isAxiosError(reason) && reason.request?.status != 404) {
                 this.errorResponses.set(this.targetAxios.getUri(reason.config), reason)
             }
@@ -176,6 +180,7 @@ export class AxiosMonitor {
 
     private stateDidChange(): void {
         this.loading.value = this.activeRequestCount >= 1
+        this.initialLoading.value = this.activeRequestCount >= 1 && this.idlePeriodCount == 0
         this.error.value = this.errorResponses.size >= 1
         this.explanation.value = this.makeExplanationOrSuggestion(true)
         this.suggestion.value = this.makeExplanationOrSuggestion(false)
