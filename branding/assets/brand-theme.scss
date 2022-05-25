@@ -1,0 +1,76 @@
+// Set brand variables
+// $h-highlight-color: #7dd8ff;
+$h-highlight-color: #5e8ef8;
+$h-page-background-color: black;
+// $h-top-banner-background-color: #121212;
+$h-top-banner-background-color: linear-gradient(
+  119.59deg,
+  #023ec2 20.62%,
+  #091a89 72.94%
+);
+$h-box-background-color: $h-page-background-color;
+$h-table-background-color: $h-page-background-color;
+$h-mobile-page-background-color: $h-page-background-color;
+$h-table-hover-background-color: black;
+$h-pill-background: $h-highlight-color;
+// $h-pill-background: #929292;
+$h-extra-text-color: #a1bfff;
+// $h-extra-text-color: $h-highlight-color;
+
+.h-box-border {
+  border: 0.5px solid #2f2f2f;
+  border-radius: 0.5rem;
+}
+
+body,
+button,
+a,
+input,
+optgroup,
+select,
+textarea {
+  font-family: "Raleway", "Roboto", Arial, Helvetica, sans-serif !important;
+}
+
+body,
+body .h-is-navbar-item {
+  font-weight: 500;
+}
+
+td {
+  font-weight: 500 !important;
+  letter-spacing: 0.6px !important;
+}
+
+.select select,
+.textarea,
+.input {
+  border-radius: 0.25rem;
+}
+
+body {
+  .o-pag__link--current {
+    background-color: #0651f6;
+    border-color: #0651f6;
+  }
+  .h-is-dense {
+    letter-spacing: 0px;
+  }
+  .section.is-top-section {
+    background: linear-gradient(
+      119.59deg,
+      #091a89 20.62%,
+      #000000 72.94%
+    ) !important;
+
+    select.h-is-navbar-item.o-sel {
+      background-color: #041164;
+    }
+  }
+}
+
+// Custom classes
+.footer-links a {
+  font-weight: 500;
+  font-size: 0.875rem;
+}

@@ -31,7 +31,5 @@ pnpm-debug.log*
 /tests/e2e/screenshots
 
 # Branding customization
-/branding
 /src/assets/branding
 /src/assets/styles
-/public
