@@ -53,7 +53,7 @@ export function formatSeconds(secondCount: number|string|undefined): string {
     if (secondCount) {
         const seconds = typeof secondCount == "number" ? secondCount : Number.parseInt(secondCount)
         if (isNaN(seconds)) {
-            result = "?"
+            result = secondCount.toString()
         } else {
             const duration = Duration.decompose(seconds)
             result = ""
