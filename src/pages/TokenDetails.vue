@@ -77,7 +77,7 @@
             <Property :id="'autoRenewPeriod'">
               <template v-slot:name>Auto Renew Period</template>
               <template v-slot:value>
-                <DurationValue v-bind:string-value="tokenInfo?.auto_renew_period"/>
+                <DurationValue v-bind:string-value="tokenInfo?.auto_renew_period?.toString()"/>
               </template>
             </Property>
           </div>
