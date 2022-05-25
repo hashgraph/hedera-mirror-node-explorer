@@ -105,7 +105,7 @@
             <Property :id="'autoRenewPeriod'">
               <template v-slot:name>Auto Renew Period</template>
               <template v-slot:value>
-                {{ formatSeconds(account?.auto_renew_period) }}
+                <DurationValue v-bind:number-value="account?.auto_renew_period"/>
               </template>
             </Property>
             <Property :id="'maxAutoAssociation'">
@@ -171,7 +171,8 @@ import {operatorRegistry} from "@/schemas/OperatorRegistry";
 import KeyValue from "@/components/values/KeyValue.vue";
 import PlayPauseButton, {PlayPauseState} from "@/components/PlayPauseButton.vue";
 import TransactionTable from "@/components/transaction/TransactionTable.vue";
-import {Duration, formatSeconds} from "@/utils/Duration";
+import {Duration} from "@/utils/Duration";
+import DurationValue from "@/components/values/DurationValue.vue";
 import TimestampValue from "@/components/values/TimestampValue.vue";
 import DashboardCard from "@/components/DashboardCard.vue";
 import HbarAmount from "@/components/values/HbarAmount.vue";
@@ -210,7 +211,8 @@ export default defineComponent({
     PlayPauseButton,
     TimestampValue,
     KeyValue,
-    EthAddress
+    EthAddress,
+    DurationValue
   },
 
   props: {
@@ -398,10 +400,7 @@ export default defineComponent({
       elapsed,
       showContractVisible,
       ethereumAddress,
-      aliasByteString,
-
-      // From TimeUtils
-      formatSeconds
+      aliasByteString
     }
   }
 });

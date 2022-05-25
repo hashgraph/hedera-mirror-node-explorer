@@ -90,7 +90,7 @@
             <Property :id="'autoRenewPeriod'">
               <template v-slot:name>Auto Renew Period</template>
               <template v-slot:value>
-                {{ formatSeconds(contract?.auto_renew_period) }}
+                <DurationValue v-bind:number-value="contract?.auto_renew_period"/>
               </template>
             </Property>
             <Property :id="'code'">
@@ -187,9 +187,9 @@ import KeyValue from "@/components/values/KeyValue.vue";
 import HexaValue from "@/components/values/HexaValue.vue";
 import ContractTransactionTable from "@/components/contract/ContractTransactionTable.vue";
 import PlayPauseButton, {PlayPauseState} from "@/components/PlayPauseButton.vue";
-import {formatSeconds} from "@/utils/Duration";
 import AccountLink from "@/components/values/AccountLink.vue";
 import TimestampValue from "@/components/values/TimestampValue.vue";
+import DurationValue from "@/components/values/DurationValue.vue";
 import DashboardCard from "@/components/DashboardCard.vue";
 import HbarAmount from "@/components/values/HbarAmount.vue";
 import TokenAmount from "@/components/values/TokenAmount.vue";
@@ -219,6 +219,7 @@ export default defineComponent({
     DashboardCard,
     AccountLink,
     TimestampValue,
+    DurationValue,
     PlayPauseButton,
     ContractTransactionTable,
     KeyValue,
@@ -346,10 +347,7 @@ export default defineComponent({
       formattedSolidity,
       normalizedContractId,
       ethereumAddress,
-      aliasByteString,
-
-      // From TimeUtils
-      formatSeconds
+      aliasByteString
     }
   },
 });
