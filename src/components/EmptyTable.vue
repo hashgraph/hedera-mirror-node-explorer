@@ -24,7 +24,8 @@
 
 <template>
   <div class="has-text-centered h-is-tertiary-text-text has-text-grey mb-4">
-    No Data
+    <span v-if="initialLoading">Loading…</span>
+    <span >No Data</span>
   </div>
 </template>
 
@@ -34,10 +35,16 @@
 
 <script lang="ts">
 
-import {defineComponent} from "vue";
+import {defineComponent, inject, ref} from "vue";
+import {initialLoadingKey} from "@/AppKeys";
 
 export default defineComponent({
   name: "EmptyTable",
+
+  setup() {
+    const initialLoading = inject(initialLoadingKey, ref(false))
+    return { initialLoading }
+  }
 })
 
 </script>
