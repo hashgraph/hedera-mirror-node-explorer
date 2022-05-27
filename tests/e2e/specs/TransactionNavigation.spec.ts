@@ -97,15 +97,69 @@ describe('Transaction Navigation', () => {
         cy.url().should('include', '/testnet/transaction/')
         cy.url().should('include', normalizeTransactionId(transactionId))
         cy.url().should('include', consensusTimestamp)
+    })
 
-        cy.get('#allTransactionsLink')
+    it('should follow schedule relationship links', () => {
+        const transactionId = "0.0.11495@1650446896.868427600"
+        const schedulingConsensusTimestamp = "1650446903.332120989"
+        const scheduledConsensusTimestamp = "1650446904.595635000"
+
+        cy.visit('#/testnet/transaction/' + normalizeTransactionId(transactionId) + "?t=" + schedulingConsensusTimestamp)
+        cy.url().should('include', '/testnet/transaction/')
+        cy.url().should('include', normalizeTransactionId(transactionId))
+        cy.url().should('include', schedulingConsensusTimestamp)
+
+        cy.get('#scheduledTransactionValue')
             .find('a')
             .click()
             .then(($id) => {
                 // cy.log('Selected operator Id: ' + $id.text())
-                cy.url().should('include', '/testnet/transactionsById/')
-                cy.url().should('include', normalizeTransactionId(transactionId))
-                cy.contains('Transactions with ID ' + transactionId)
+                cy.url().should('include', '/testnet/transaction/')
+                cy.url().should('include', normalizeTransactionId(transactionId) + "?t=" + scheduledConsensusTimestamp)
+                cy.contains('Transaction ' + transactionId)
+            })
+
+        cy.get('#schedulingTransactionValue')
+            .find('a')
+            .click()
+            .then(($id) => {
+                // cy.log('Selected operator Id: ' + $id.text())
+                cy.url().should('include', '/testnet/transaction/')
+                cy.url().should('include', normalizeTransactionId(transactionId) + "?t=" + schedulingConsensusTimestamp)
+                cy.contains('Transaction ' + transactionId)
+            })
+    })
+
+    it('should follow parent/child relationship links', () => {
+        const transactionId = "0.0.6036@1652787852.826165451"
+        const parentConsensusTimestamp = "1652787861.365127000"
+        const childConsensusTimestamp = "1652787861.365127001"
+
+        cy.visit('#/testnet/transaction/' + normalizeTransactionId(transactionId) + "?t=" + parentConsensusTimestamp)
+        cy.url().should('include', '/testnet/transaction/')
+        cy.url().should('include', normalizeTransactionId(transactionId))
+        cy.url().should('include', parentConsensusTimestamp)
+
+        cy.get('#childrenValue')
+            .find('a')
+            .should('have.length', 2)
+            .eq(0)
+            .click()
+            .then(($id) => {
+                // cy.log('Selected operator Id: ' + $id.text())
+                cy.url().should('include', '/testnet/transaction/')
+                cy.url().should('include', normalizeTransactionId(transactionId) + "?t=" + childConsensusTimestamp)
+                cy.contains('Transaction ' + transactionId)
+            })
+
+        cy.get('#parentTransactionValue')
+            .find('a')
+            .click()
+            .then(($id) => {
+                // cy.log('Selected operator Id: ' + $id.text())
+                cy.url().should('include', '/testnet/transaction/')
+                cy.url().should('include', normalizeTransactionId(transactionId) + "?t=" + parentConsensusTimestamp)
+                cy.contains('Transaction ' + transactionId)
             })
     })
 

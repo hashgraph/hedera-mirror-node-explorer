@@ -67,7 +67,7 @@ describe('Account Navigation', () => {
         cy.url().should('include', '/testnet/account/')
 
         cy.get('#balance')
-            .contains('a', "See all token balances")
+            .contains('a', "Show all token balances")
             .click()
 
         cy.url().should('include', 'accountbalances/' + accountId1)

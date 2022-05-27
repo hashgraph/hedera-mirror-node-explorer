@@ -44,13 +44,54 @@ describe('Search Bar', () => {
         )
     })
 
-    it('should find all transactions with the same ID', () => {
+    it('should find and list the scheduling/scheduled transactions', () => {
         const searchTransaction = "0.0.11852473@1650382121.542685062"
         testBody(
             searchTransaction,
             '/testnet/transactionsById/' + normalizeTransactionId(searchTransaction),
             'Transactions with ID ' + searchTransaction
         )
+        cy.get('table')
+            .find('tbody tr')
+            .should('have.length', 2)
+            .eq(0)
+            .find('td')
+            .eq(3)
+            .should('contain', 'Scheduling')  // criteria to check
+        cy.get('table')
+            .find('tbody tr')
+            .eq(1)
+            .find('td')
+            .eq(3)
+            .should('contain', 'Scheduled')  // criteria to check
+    })
+
+    it('should find and list the parent/child transactions', () => {
+        const searchTransaction = "0.0.6036@1652787852.826165451"
+        testBody(
+            searchTransaction,
+            '/testnet/transactionsById/' + normalizeTransactionId(searchTransaction),
+            'Transactions with ID ' + searchTransaction
+        )
+        cy.get('table')
+            .find('tbody tr')
+            .should('have.length', 3)
+            .eq(0)
+            .find('td')
+            .eq(3)
+            .should('contain', 'Parent')  // criteria to check
+        cy.get('table')
+            .find('tbody tr')
+            .eq(1)
+            .find('td')
+            .eq(3)
+            .should('contain', 'Child')  // criteria to check
+        cy.get('table')
+            .find('tbody tr')
+            .eq(2)
+            .find('td')
+            .eq(3)
+            .should('contain', 'Child')  // criteria to check
     })
 
     it('should find the NFT ID', () => {
