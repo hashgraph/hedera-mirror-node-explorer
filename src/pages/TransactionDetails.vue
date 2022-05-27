@@ -32,11 +32,6 @@
       <template v-slot:title>
         <span class="h-is-primary-title">Transaction </span>
         <span class="h-is-secondary-text mr-3">{{ transaction ? convertTransactionId(transactionId) : "" }}</span>
-        <span v-if="showAllTransactionVisible" class="is-inline-block" id="allTransactionsLink">
-          <router-link :to="{name: 'TransactionsById', params: {transactionId: transactionId}}">
-            <span class="h-is-property-text has-text-grey">See all transactions with the same ID</span>
-          </router-link>
-        </span>
      </template>
 
       <template v-slot:table>
@@ -352,11 +347,6 @@ export default defineComponent({
       return isNaN(result) ? -9999 : result
     }
 
-    const showAllTransactionVisible = computed(() => {
-      const transactionCount = response.value?.data.transactions?.length ?? 0
-      return transactionCount >= 2
-    })
-
     return {
       isSmallScreen,
       isTouchDevice,
@@ -373,7 +363,6 @@ export default defineComponent({
       makeTypeLabel,
       computeNetAmount,
       makeOperatorAccountLabel,
-      showAllTransactionVisible,
       displayAllChildrenLinks,
       scheduledTransaction,
       schedulingTransaction,
