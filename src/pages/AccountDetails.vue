@@ -105,19 +105,19 @@
             <Property :id="'autoRenewPeriod'">
               <template v-slot:name>Auto Renew Period</template>
               <template v-slot:value>
-                {{ formatSeconds(account?.auto_renew_period) }}
+                <DurationValue v-bind:number-value="account?.auto_renew_period"/>
               </template>
             </Property>
             <Property :id="'maxAutoAssociation'">
               <template v-slot:name>Max. Auto. Association</template>
               <template v-slot:value>
-                {{ account?.max_automatic_token_associations ?? "" }}
+                <StringValue :string-value="account?.max_automatic_token_associations?.toString()"/>
               </template>
             </Property>
             <Property :id="'receiverSigRequired'">
               <template v-slot:name>Receiver Sig. Required</template>
               <template v-slot:value>
-                {{ account?.receiver_sig_required ?? ""}}
+                <StringValue :string-value="account?.receiver_sig_required?.toString()"/>
               </template>
             </Property>
             <Property :id="'ethereumAddress'">
@@ -171,7 +171,8 @@ import {operatorRegistry} from "@/schemas/OperatorRegistry";
 import KeyValue from "@/components/values/KeyValue.vue";
 import PlayPauseButton, {PlayPauseState} from "@/components/PlayPauseButton.vue";
 import TransactionTable from "@/components/transaction/TransactionTable.vue";
-import {Duration, formatSeconds} from "@/utils/Duration";
+import {Duration} from "@/utils/Duration";
+import DurationValue from "@/components/values/DurationValue.vue";
 import TimestampValue from "@/components/values/TimestampValue.vue";
 import DashboardCard from "@/components/DashboardCard.vue";
 import HbarAmount from "@/components/values/HbarAmount.vue";
@@ -187,6 +188,7 @@ import NotificationBanner from "@/components/NotificationBanner.vue";
 import {makeEthAddressForAccount} from "@/schemas/HederaUtils";
 import EthAddress from "@/components/values/EthAddress.vue";
 import HexaValue from "@/components/values/HexaValue.vue";
+import StringValue from "@/components/values/StringValue.vue";
 import base32Decode from "base32-decode";
 import {byteToHex} from "@/utils/B64Utils";
 
@@ -210,7 +212,9 @@ export default defineComponent({
     PlayPauseButton,
     TimestampValue,
     KeyValue,
-    EthAddress
+    EthAddress,
+    DurationValue,
+    StringValue
   },
 
   props: {
@@ -398,10 +402,7 @@ export default defineComponent({
       elapsed,
       showContractVisible,
       ethereumAddress,
-      aliasByteString,
-
-      // From TimeUtils
-      formatSeconds
+      aliasByteString
     }
   }
 });

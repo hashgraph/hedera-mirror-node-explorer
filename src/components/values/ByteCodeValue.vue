@@ -23,10 +23,16 @@
 <!-- --------------------------------------------------------------------------------------------------------------- -->
 
 <template>
-  <a v-if="isURL" v-bind:href="blobValue">{{ blobValue }}</a>
-  <span v-else-if="blobValue">{{ decodedValue }}</span>
-  <span v-else-if="showNone && !initialLoading" class="has-text-grey">None</span>
-  <span v-else/>
+
+  <textarea v-if="textValue"
+            v-model="textValue"
+            readonly rows="4"
+            style="width:100%; font-family: novamonoregular,monospace"></textarea>
+
+  <span v-else-if="initialLoading"/>
+
+  <span v-else class="has-text-grey">None</span>
+
 </template>
 
 <!-- --------------------------------------------------------------------------------------------------------------- -->
@@ -35,75 +41,30 @@
 
 <script lang="ts">
 
-import {computed, defineComponent, inject, ref} from "vue";
+import {defineComponent, inject, ref, watch} from 'vue';
 import {initialLoadingKey} from "@/AppKeys";
 
 export default defineComponent({
-  name: "BlobValue",
-  components: {},
+  name: 'ByteCodeValue',
+
   props: {
-    blobValue: String,
-    showNone: {
-      type: Boolean,
-      default: false
-    },
-    base64: {
-      type: Boolean,
-      default: false
-    }
+    byteCode: String,
   },
 
   setup(props) {
-    const isURL = computed(() => {
-      let result: boolean
-      if (props.blobValue) {
-        try {
-          const url = new URL(props.blobValue)
-          result = url.protocol == "http:" || url.protocol == "https:"
-        } catch {
-          result = false
-        }
-      } else {
-        result = false
-      }
-      return result
+    const textValue = ref(props.byteCode)
+    watch(() => props.byteCode, () => {
+      textValue.value = props.byteCode
     })
-
-    const decodedValue = computed(() => {
-
-      const base64regex = /^([0-9a-zA-Z+/]{4})*(([0-9a-zA-Z+/]{2}==)|([0-9a-zA-Z+/]{3}=))?$/;
-
-      let result: string
-      if (props.blobValue) {
-        if (props.base64 && base64regex.test(props.blobValue)) {
-          try {
-            result = atob(props.blobValue)
-          } catch {
-            result = props.blobValue
-          }
-        } else {
-          result = props.blobValue
-        }
-      } else {
-        result = ""
-      }
-      return result
-    })
-
     const initialLoading = inject(initialLoadingKey, ref(false))
-
-    return {
-      isURL,
-      decodedValue,
-      initialLoading
-    }
+    return { textValue, initialLoading }
   }
-})
+});
 
 </script>
 
 <!-- --------------------------------------------------------------------------------------------------------------- -->
-<!--                                                      STYLE                                                      -->
+<!--                                                       STYLE                                                     -->
 <!-- --------------------------------------------------------------------------------------------------------------- -->
 
 <style/>

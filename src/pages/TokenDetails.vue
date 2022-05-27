@@ -77,7 +77,7 @@
             <Property :id="'autoRenewPeriod'">
               <template v-slot:name>Auto Renew Period</template>
               <template v-slot:value>
-                {{ formatSeconds(tokenInfo?.auto_renew_period) }}
+                <DurationValue v-bind:string-value="tokenInfo?.auto_renew_period?.toString()"/>
               </template>
             </Property>
           </div>
@@ -166,7 +166,7 @@ import {TokenInfo} from "@/schemas/HederaSchemas";
 import TimestampValue from "@/components/values/TimestampValue.vue";
 import TokenNftTable from "@/components/token/TokenNftTable.vue";
 import TokenBalanceTable from "@/components/token/TokenBalanceTable.vue";
-import {formatSeconds} from "@/utils/Duration";
+import DurationValue from "@/components/values/DurationValue.vue";
 import DashboardCard from "@/components/DashboardCard.vue";
 import BlobValue from "@/components/values/BlobValue.vue";
 import TokenAmount from "@/components/values/TokenAmount.vue";
@@ -189,6 +189,7 @@ export default defineComponent({
     BlobValue,
     DashboardCard,
     TimestampValue,
+    DurationValue,
     TokenBalanceTable,
     TokenNftTable,
     TokenAmount,
@@ -266,7 +267,6 @@ export default defineComponent({
       normalizedTokenId,
       notification,
       showTokenDetails,
-      formatSeconds,
       parseIntString,
       ethereumAddress
     }

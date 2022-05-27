@@ -72,7 +72,8 @@ describe("Duration.ts", () => {
     })
 
     test("invalid or undefined", () => {
-        expect(formatSeconds("ben voila")).toBe("?")
+        const invalidValue = "ben voila"
+        expect(formatSeconds(invalidValue)).toBe(invalidValue)
         expect(formatSeconds(undefined)).toBe("")
     })
 

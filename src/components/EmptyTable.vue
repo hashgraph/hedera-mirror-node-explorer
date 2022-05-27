@@ -23,10 +23,10 @@
 <!-- --------------------------------------------------------------------------------------------------------------- -->
 
 <template>
-  <a v-if="isURL" v-bind:href="blobValue">{{ blobValue }}</a>
-  <span v-else-if="blobValue">{{ decodedValue }}</span>
-  <span v-else-if="showNone && !initialLoading" class="has-text-grey">None</span>
-  <span v-else/>
+  <div class="has-text-centered h-is-tertiary-text-text has-text-grey mb-4">
+    <span v-if="initialLoading">Loading…</span>
+    <span >No Data</span>
+  </div>
 </template>
 
 <!-- --------------------------------------------------------------------------------------------------------------- -->
@@ -35,68 +35,15 @@
 
 <script lang="ts">
 
-import {computed, defineComponent, inject, ref} from "vue";
+import {defineComponent, inject, ref} from "vue";
 import {initialLoadingKey} from "@/AppKeys";
 
 export default defineComponent({
-  name: "BlobValue",
-  components: {},
-  props: {
-    blobValue: String,
-    showNone: {
-      type: Boolean,
-      default: false
-    },
-    base64: {
-      type: Boolean,
-      default: false
-    }
-  },
+  name: "EmptyTable",
 
-  setup(props) {
-    const isURL = computed(() => {
-      let result: boolean
-      if (props.blobValue) {
-        try {
-          const url = new URL(props.blobValue)
-          result = url.protocol == "http:" || url.protocol == "https:"
-        } catch {
-          result = false
-        }
-      } else {
-        result = false
-      }
-      return result
-    })
-
-    const decodedValue = computed(() => {
-
-      const base64regex = /^([0-9a-zA-Z+/]{4})*(([0-9a-zA-Z+/]{2}==)|([0-9a-zA-Z+/]{3}=))?$/;
-
-      let result: string
-      if (props.blobValue) {
-        if (props.base64 && base64regex.test(props.blobValue)) {
-          try {
-            result = atob(props.blobValue)
-          } catch {
-            result = props.blobValue
-          }
-        } else {
-          result = props.blobValue
-        }
-      } else {
-        result = ""
-      }
-      return result
-    })
-
+  setup() {
     const initialLoading = inject(initialLoadingKey, ref(false))
-
-    return {
-      isURL,
-      decodedValue,
-      initialLoading
-    }
+    return { initialLoading }
   }
 })
 
@@ -106,4 +53,5 @@ export default defineComponent({
 <!--                                                      STYLE                                                      -->
 <!-- --------------------------------------------------------------------------------------------------------------- -->
 
-<style/>
+<style>
+</style>

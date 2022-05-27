@@ -44,7 +44,7 @@
     </template>
   </template>
 
-  <span v-else-if="showNone" class="has-text-grey">None</span>
+  <span v-else-if="showNone && !initialLoading" class="has-text-grey">None</span>
 
   <span v-else/>
 
@@ -56,8 +56,9 @@
 
 <script lang="ts">
 
-import {computed, defineComponent} from "vue";
+import {computed, defineComponent, inject, ref} from "vue";
 import {HMSF} from "@/utils/HMSF";
+import {initialLoadingKey} from "@/AppKeys";
 
 export default defineComponent({
   name: "TimestampValue",
@@ -98,10 +99,13 @@ export default defineComponent({
       return seconds.value ? HMSF.extract(seconds.value, locale) : null
     })
 
+    const initialLoading = inject(initialLoadingKey, ref(false))
+
     return {
       seconds,
       datePart,
-      timePart
+      timePart,
+      initialLoading
     }
   }
 });

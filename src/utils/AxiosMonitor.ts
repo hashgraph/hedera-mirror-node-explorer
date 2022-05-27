@@ -19,18 +19,25 @@
  */
 
 import axios, {Axios, AxiosRequestConfig, AxiosResponse} from "axios";
+import {ref} from "vue";
 
 export class AxiosMonitor {
 
     public static readonly instance = new AxiosMonitor()
+
+    public readonly loading = ref(false)
+    public readonly initialLoading = ref(false)
+    public readonly error = ref(false)
+    public readonly explanation = ref("")
+    public readonly suggestion = ref("")
 
     private targetAxios: Axios|null = null
     private requestInterceptor: number | null = null
     private responseInterceptor: number | null = null
     private activeRequestCount = 0
     private successfulRequestCount = 0
+    private idlePeriodCount = 0
     private errorResponses = new Map<string, unknown>()
-    private stateChangeCB: (() => void) | null = null
 
     //
     // Public
@@ -59,25 +66,6 @@ export class AxiosMonitor {
         }
     }
 
-    public getActiveRequestCount(): number {
-        return this.activeRequestCount
-    }
-
-    public getSuccessfulRequestCount(): number {
-        return this.successfulRequestCount
-    }
-
-    public getErrorResponses(): Map<string, unknown> {
-        return this.errorResponses
-    }
-
-    public setStateChangeCB(newValue: (() => void) | null): void {
-        if (this.stateChangeCB !== null && newValue !== null) {
-            console.trace("Will overwrite AxiosMonitor.stateChangeCB: BUG")
-        }
-        this.stateChangeCB = newValue
-    }
-
     public clearErrorResponses(): void {
         if (this.errorResponses.size >= 1) {
             console.log("Clearing " + this.errorResponses.size + " error responses")
@@ -85,6 +73,68 @@ export class AxiosMonitor {
             this.successfulRequestCount = 0
             this.stateDidChange()
         }
+    }
+
+    public makeExplanationOrSuggestion(explanation: boolean): string {
+
+        let errorCount_request = 0
+        let errorCount_429 = 0
+
+
+        const statusCodes = new Set<number>()
+        for (const error of this.errorResponses.values()) {
+
+            // See https://axios-http.com/docs/handling_errors
+
+            if (axios.isAxiosError(error)) {
+                if (error.response) {
+                    if (error.response.status == 429) {
+                        errorCount_429 += 1
+                    } else {
+                        statusCodes.add(error.response.status)
+                    }
+                } else {
+                    errorCount_request += 1
+                }
+            }
+        }
+
+        let result: string
+        const errorCount = this.errorResponses.size
+        if (errorCount_429 >= 1) {
+            // At least one request failed with http status #429
+            result = explanation
+                ? "The server is busy (status #429)"
+                : "This is transient. Try to reload the page in a few moments."
+        } else if (errorCount_request === errorCount) {
+            // Failed requests do not have any response from server
+            if (this.successfulRequestCount >= 1) {
+                // Some requests did succeed => server overload ?
+                result = explanation
+                    ? "The server is busy"
+                    : "This is transient. Try to reload the page in a few moments."
+            } else {
+                // No request did succeed => internet connection is dead ?
+                result = explanation
+                    ? "Internet connection issue ?"
+                    : "Check your internet connection and reload the page."
+            }
+        } else {
+            // Other cases
+            if (statusCodes.size == 1) {
+                // All requests returns the same http status
+                const statusCode = statusCodes.values().next().value
+                result = explanation
+                    ? "The server reported an error #" + statusCode
+                    : "This might be transient. Try to reload the page in a few moments."
+            } else {
+                result = explanation
+                    ? "The server reported errors"
+                    : "This might be transient. Try to reload the page in a few moments."
+            }
+        }
+
+        return result
     }
 
     //
@@ -101,6 +151,7 @@ export class AxiosMonitor {
         let result: Promise<AxiosResponse>
         if (this.targetAxios !== null) {
             this.activeRequestCount -= 1
+            this.idlePeriodCount += this.activeRequestCount == 0 ? +1 : 0
             this.successfulRequestCount += 1
             this.errorResponses.delete(this.targetAxios.getUri(response.config))
             this.stateDidChange()
@@ -115,6 +166,7 @@ export class AxiosMonitor {
         let result: unknown
         if (this.targetAxios !== null) {
             this.activeRequestCount -= 1
+            this.idlePeriodCount += this.activeRequestCount == 0 ? +1 : 0
             if (axios.isAxiosError(reason) && reason.request?.status != 404) {
                 this.errorResponses.set(this.targetAxios.getUri(reason.config), reason)
             }
@@ -127,8 +179,10 @@ export class AxiosMonitor {
     }
 
     private stateDidChange(): void {
-        if (this.stateChangeCB) {
-            this.stateChangeCB()
-        }
+        this.loading.value = this.activeRequestCount >= 1
+        this.initialLoading.value = this.activeRequestCount >= 1 && this.idlePeriodCount == 0
+        this.error.value = this.errorResponses.size >= 1
+        this.explanation.value = this.makeExplanationOrSuggestion(true)
+        this.suggestion.value = this.makeExplanationOrSuggestion(false)
     }
 }

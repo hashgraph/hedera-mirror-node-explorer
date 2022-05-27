@@ -37,21 +37,19 @@
 
 <script lang="ts">
 
-import {computed, defineComponent, ref} from "vue";
+import {computed, defineComponent, inject, ref} from "vue";
 import {AxiosResponse} from "axios";
 import {TokenInfo} from "@/schemas/HederaSchemas";
 import {TokenInfoCollector} from "@/utils/TokenInfoCollector";
 import TokenExtra from "@/components/values/TokenExtra.vue";
+import {initialLoadingKey} from "@/AppKeys";
 
 export default defineComponent({
   name: "TokenAmount",
 
   components: {TokenExtra},
   props: {
-    amount: {
-      type: Number,
-      default: 0
-    },
+    amount: Number,
     tokenId: String,
     showExtra: {
       type: Boolean,
@@ -69,7 +67,13 @@ export default defineComponent({
     const formattedAmount = computed(() => {
       let result: string
       if (response.value !== null && response.value.status == 200) {
-        result = formatTokenAmount(props.amount, response.value.data.decimals)
+        if (props.amount) {
+          result = formatTokenAmount(props.amount, response.value.data.decimals)
+        } else if (initialLoading.value) {
+          result = ""
+        } else {
+          result = formatTokenAmount(0, response.value.data.decimals)
+        }
       } else {
         result = ""
       }
@@ -98,7 +102,9 @@ export default defineComponent({
       })
     }
 
-    return { formattedAmount, extra, errorFlag }
+    const initialLoading = inject(initialLoadingKey, ref(false))
+
+    return { formattedAmount, extra, errorFlag, initialLoading }
   }
 });
 

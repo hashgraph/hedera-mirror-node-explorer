@@ -48,10 +48,12 @@
     </o-table-column>
 
     <o-table-column v-slot="props" field="balance" label="Balance" position="right">
-      <TokenAmount v-bind:amount="props.row.balance ?? 0" v-bind:token-id="tokenId"/>
+      <TokenAmount v-bind:amount="props.row.balance" v-bind:token-id="tokenId"/>
     </o-table-column>
 
   </o-table>
+
+  <EmptyTable v-if="!balances.length"/>
 
 </template>
 
@@ -67,11 +69,12 @@ import {TokenBalanceCache} from "@/components/token/TokenBalanceCache";
 import router from "@/router";
 import TokenAmount from "@/components/values/TokenAmount.vue";
 import { ORUGA_MOBILE_BREAKPOINT } from '@/App.vue';
+import EmptyTable from "@/components/EmptyTable.vue";
 
 export default defineComponent({
   name: 'TokenBalanceTable',
 
-  components: {TokenAmount},
+  components: {EmptyTable, TokenAmount},
 
   props: {
     tokenId: {

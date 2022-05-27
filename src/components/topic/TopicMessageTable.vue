@@ -56,6 +56,7 @@
       </o-table-column>
 
     </o-table>
+    <EmptyTable v-if="!messages.length"/>
   </div>
 
 </template>
@@ -75,12 +76,13 @@ import {PlayPauseState} from "@/components/PlayPauseButton.vue";
 import TimestampValue from "@/components/values/TimestampValue.vue";
 import BlobValue from "@/components/values/BlobValue.vue";
 import { ORUGA_MOBILE_BREAKPOINT } from '@/App.vue';
+import EmptyTable from "@/components/EmptyTable.vue";
 
 export default defineComponent({
 
   name: 'TopicMessageTable',
 
-  components: {BlobValue, TimestampValue},
+  components: {EmptyTable, BlobValue, TimestampValue},
 
   props: {
     topicId: {
