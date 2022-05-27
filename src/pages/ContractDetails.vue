@@ -96,9 +96,7 @@
             <Property :id="'code'">
               <template v-slot:name>Code</template>
               <template v-slot:value>
-                <textarea v-if="contract?.bytecode" v-model="contract.bytecode" readonly rows="4"
-                          style="width:100%; font-family: novamonoregular,monospace"></textarea>
-                <div v-else class="column has-text-grey">None</div>
+                <ByteCodeValue :byte-code="contract?.bytecode"/>
               </template>
             </Property>
           </div>
@@ -194,6 +192,7 @@ import HbarAmount from "@/components/values/HbarAmount.vue";
 import TokenAmount from "@/components/values/TokenAmount.vue";
 import BlobValue from "@/components/values/BlobValue.vue";
 import StringValue from "@/components/values/StringValue.vue";
+import ByteCodeValue from "@/components/values/ByteCodeValue.vue";
 import Footer from "@/components/Footer.vue";
 import NotificationBanner from "@/components/NotificationBanner.vue";
 import {EntityID} from "@/utils/EntityID";
@@ -210,6 +209,7 @@ export default defineComponent({
   name: 'ContractDetails',
 
   components: {
+    ByteCodeValue,
     Property,
     NotificationBanner,
     Footer,
