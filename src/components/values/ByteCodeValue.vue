@@ -24,8 +24,8 @@
 
 <template>
 
-  <textarea v-if="byteCode"
-            v-model="byteCode"
+  <textarea v-if="textValue"
+            v-model="textValue"
             readonly rows="4"
             style="width:100%; font-family: novamonoregular,monospace"></textarea>
 
@@ -41,7 +41,7 @@
 
 <script lang="ts">
 
-import {defineComponent, inject, ref} from 'vue';
+import {defineComponent, inject, ref, watch} from 'vue';
 import {initialLoadingKey} from "@/AppKeys";
 
 export default defineComponent({
@@ -51,9 +51,13 @@ export default defineComponent({
     byteCode: String,
   },
 
-  setup() {
+  setup(props) {
+    const textValue = ref(props.byteCode)
+    watch(() => props.byteCode, () => {
+      textValue.value = props.byteCode
+    })
     const initialLoading = inject(initialLoadingKey, ref(false))
-    return { initialLoading }
+    return { textValue, initialLoading }
   }
 });
 
