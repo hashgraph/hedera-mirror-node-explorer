@@ -111,13 +111,13 @@
             <Property :id="'maxAutoAssociation'">
               <template v-slot:name>Max. Auto. Association</template>
               <template v-slot:value>
-                {{ account?.max_automatic_token_associations ?? "" }}
+                <StringValue :string-value="account?.max_automatic_token_associations?.toString()"/>
               </template>
             </Property>
             <Property :id="'receiverSigRequired'">
               <template v-slot:name>Receiver Sig. Required</template>
               <template v-slot:value>
-                {{ account?.receiver_sig_required ?? ""}}
+                <StringValue :string-value="account?.receiver_sig_required?.toString()"/>
               </template>
             </Property>
             <Property :id="'ethereumAddress'">
@@ -188,6 +188,7 @@ import NotificationBanner from "@/components/NotificationBanner.vue";
 import {makeEthAddressForAccount} from "@/schemas/HederaUtils";
 import EthAddress from "@/components/values/EthAddress.vue";
 import HexaValue from "@/components/values/HexaValue.vue";
+import StringValue from "@/components/values/StringValue.vue";
 import base32Decode from "base32-decode";
 import {byteToHex} from "@/utils/B64Utils";
 
@@ -212,7 +213,8 @@ export default defineComponent({
     TimestampValue,
     KeyValue,
     EthAddress,
-    DurationValue
+    DurationValue,
+    StringValue
   },
 
   props: {

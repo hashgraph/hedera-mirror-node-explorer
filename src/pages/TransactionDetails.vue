@@ -49,7 +49,7 @@
             <Property :id="'transactionType'">
               <template v-slot:name>Type</template>
               <template v-slot:value>
-                {{ transaction ? makeTypeLabel(transaction.name) : "" }}
+                <StringValue :string-value="transaction ? makeTypeLabel(transaction.name) : undefined"/>
               </template>
             </Property>
             <Property :id="'consensusAt'">
@@ -115,19 +115,19 @@
             <Property :id="'nodeAccount'">
               <template v-slot:name>Node Account</template>
               <template v-slot:value>
-                <AccountLink v-if="transaction" v-bind:accountId="transaction?.node" v-bind:show-extra="true"/>
+                <AccountLink v-bind:accountId="transaction?.node" v-bind:show-extra="true"/>
               </template>
             </Property>
             <Property :id="'duration'">
               <template v-slot:name>Duration</template>
               <template v-slot:value>
-                {{ transaction ? transaction.valid_duration_seconds : "" }} seconds
+                <DurationValue v-bind:string-value="transaction?.valid_duration_seconds"/>
               </template>
             </Property>
             <Property :id="'scheduled'">
               <template v-slot:name>Scheduled</template>
               <template v-slot:value>
-                {{ transaction ? transaction.scheduled : "" }}
+                <StringValue v-bind:string-value="transaction?.scheduled.toString()"/>
               </template>
             </Property>
           </div>
@@ -167,10 +167,12 @@ import EntityLink from "@/components/values/EntityLink.vue";
 import DashboardCard from "@/components/DashboardCard.vue";
 import HbarAmount from "@/components/values/HbarAmount.vue";
 import BlobValue from "@/components/values/BlobValue.vue";
+import StringValue from "@/components/values/StringValue.vue";
 import TransferGraphSection from "@/components/transfer_graphs/TransferGraphSection.vue";
 import Footer from "@/components/Footer.vue";
 import NotificationBanner from "@/components/NotificationBanner.vue";
 import Property from "@/components/Property.vue";
+import DurationValue from "@/components/values/DurationValue.vue";
 
 export default defineComponent({
 
@@ -183,6 +185,7 @@ export default defineComponent({
     HbarAmount, BlobValue,
     DashboardCard, EntityLink, AccountLink,
     HexaValue, TimestampValue, TransferGraphSection,
+    StringValue, DurationValue
   },
 
   props: {

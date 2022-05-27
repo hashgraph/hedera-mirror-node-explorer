@@ -82,7 +82,7 @@ describe("TransactionDetails.vue", () => {
         expect(wrapper.get("#memoValue").text()).toBe("None")
         expect(wrapper.get("#operatorAccountValue").text()).toBe("0.0.29624024")
         expect(wrapper.get("#nodeAccountValue").text()).toBe("0.0.7Node")
-        expect(wrapper.get("#durationValue").text()).toBe("120 seconds")
+        expect(wrapper.get("#durationValue").text()).toBe("2 minutes")
         expect(wrapper.get("#entityId").text()).toBe("Account ID0.0.29662956")
         expect(wrapper.get("#scheduledValue").text()).toBe("false")
 
