@@ -34,7 +34,7 @@
         <span class="h-is-secondary-text mr-3">{{ account ? normalizedAccountId : "" }}</span>
         <span v-if="showContractVisible" class="is-inline-block" id="showContractLink">
           <router-link :to="{name: 'ContractDetails', params: {contractId: accountId}}">
-            <span class="h-is-property-text has-text-grey">Associated contract</span>
+            <span class="h-is-property-text">Show associated contract</span>
           </router-link>
         </span>
         <p class="h-is-tertiary-text" v-if="accountInfo != null"> {{ accountInfo }} </p>
@@ -52,7 +52,7 @@
                 <div v-if="account" class="h-is-tertiary-text"><HbarAmount v-bind:amount="balance" v-bind:show-extra="true"/></div>
                 <div v-if="displayAllTokenLinks">
                   <router-link :to="{name: 'AccountBalances', params: {accountId: accountId}}">
-                    See all token balances
+                    Show all token balances
                   </router-link>
                 </div>
                 <div v-else>

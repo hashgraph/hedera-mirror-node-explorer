@@ -59,6 +59,10 @@
       <TransactionSummary v-bind:transaction="props.row"/>
     </o-table-column>
 
+    <o-table-column v-slot="props" label="Relationship">
+      {{ makeRelationshipLabel(props.row) }}
+    </o-table-column>
+
   </o-table>
 
   <EmptyTable v-if="!transactions.length"/>
@@ -73,14 +77,14 @@
 
 import {computed, defineComponent, inject, onBeforeUnmount, PropType, ref, watch} from 'vue';
 import {Transaction} from '@/schemas/HederaSchemas';
-import {makeTypeLabel} from "@/utils/TransactionTools";
+import {makeRelationshipLabel, makeTypeLabel} from "@/utils/TransactionTools";
 import {EntityCacheState} from "@/utils/EntityCache";
 import {PlayPauseState} from "@/components/PlayPauseButton.vue";
 import router from "@/router";
 import TimestampValue from "@/components/values/TimestampValue.vue";
 import TransactionSummary from "@/components/transaction/TransactionSummary.vue";
 import {TransactionByIdCache} from "@/components/transaction/TransactionByIdCache";
-import { ORUGA_MOBILE_BREAKPOINT } from '@/App.vue';
+import {ORUGA_MOBILE_BREAKPOINT} from '@/App.vue';
 import EmptyTable from "@/components/EmptyTable.vue";
 
 export default defineComponent({
@@ -180,6 +184,7 @@ export default defineComponent({
 
       // From TransactionTools
       makeTypeLabel,
+      makeRelationshipLabel
     }
   }
 });

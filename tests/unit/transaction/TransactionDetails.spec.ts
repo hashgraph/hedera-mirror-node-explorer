@@ -69,6 +69,7 @@ describe("TransactionDetails.vue", () => {
 
         await flushPromises()
         // console.log(wrapper.html())
+        // console.log(wrapper.text())
 
         expect(wrapper.text()).toMatch(RegExp("^Transaction " + normalizeTransactionId(SAMPLE_TRANSACTION.transaction_id, true)))
 
@@ -84,7 +85,6 @@ describe("TransactionDetails.vue", () => {
         expect(wrapper.get("#nodeAccountValue").text()).toBe("0.0.7Node")
         expect(wrapper.get("#durationValue").text()).toBe("2 minutes")
         expect(wrapper.get("#entityId").text()).toBe("Account ID0.0.29662956")
-        expect(wrapper.get("#scheduledValue").text()).toBe("false")
 
         expect(wrapper.findComponent(HbarTransferGraphF).exists()).toBe(true)
         expect(wrapper.findComponent(TokenTransferGraph).exists()).toBe(true)
