@@ -34,7 +34,7 @@
         <span class="h-is-secondary-text is-numeric mr-3">{{ contract ? normalizedContractId : "" }}</span>
         <span v-if="contract" class="is-inline-block">
           <router-link :to="{name: 'AccountDetails', params: {accountId: normalizedContractId}}">
-            <span class="h-is-property-text has-text-grey">Associated account</span>
+            <span class="h-is-property-text">Show associated account</span>
           </router-link>
         </span>
       </template>

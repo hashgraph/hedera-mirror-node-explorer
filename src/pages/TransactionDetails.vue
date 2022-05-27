@@ -122,7 +122,7 @@
               </template>
             </Property>
             <Property :id="'operatorAccount'">
-              <template v-slot:name>Operator Account</template>
+              <template v-slot:name>Payer Account</template>
               <template v-slot:value>
                 <AccountLink v-if="transaction" v-bind:accountId="makeOperatorAccountLabel(transaction)" v-bind:show-extra="true"/>
               </template>

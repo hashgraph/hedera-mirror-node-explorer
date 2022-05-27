@@ -24,9 +24,7 @@
 
 <template>
 
-  <div v-if="accountId === null">{{ nullLabel }}</div>
-
-  <div v-else-if="accountId">
+  <div v-if="accountId">
     <template v-if="noAnchor">
       <span class="is-numeric">{{ accountId }}</span>
     </template>
@@ -41,6 +39,8 @@
   </div>
 
   <span v-else-if="showNone && !initialLoading" class="has-text-grey">None</span>
+
+  <div v-else-if="accountId === null">{{ nullLabel }}</div>
 
   <span v-else/>
 
