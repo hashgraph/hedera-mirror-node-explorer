@@ -138,6 +138,20 @@ export function showPositiveNetAmount(row: Transaction): boolean {
     return result
 }
 
+export function makeRelationshipLabel(row: Transaction): string {
+    let result: string
+    if (row.name === TransactionType.SCHEDULECREATE) {
+        result = "Scheduling"
+    } else if (row.scheduled) {
+        result = "Scheduled"
+    } else if (row.nonce && row.nonce > 0) {
+        result = "Child"
+    } else {
+        result = "Parent"
+    }
+    return result
+}
+
 export function makeTypeLabel(type: TransactionType | undefined): string {
     let result: string
     switch (type) {

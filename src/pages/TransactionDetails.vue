@@ -100,6 +100,26 @@
                 </template>
               </template>
             </Property>
+            <Property v-if="schedulingTransaction" :id="'schedulingTransaction'">
+              <template v-slot:name>Scheduling</template>
+              <template v-slot:value>
+                <router-link :to="{
+                  name: 'TransactionDetails',
+                  params: { transactionId: schedulingTransaction.transaction_id },
+                  query: { t: schedulingTransaction.consensus_timestamp }
+                }">Show transaction</router-link>
+              </template>
+            </Property>
+            <Property v-if="scheduledTransaction" :id="'scheduledTransaction'">
+              <template v-slot:name>Scheduled</template>
+              <template v-slot:value>
+                <router-link :to="{
+                  name: 'TransactionDetails',
+                  params: { transactionId: scheduledTransaction.transaction_id },
+                  query: { t: scheduledTransaction.consensus_timestamp }
+                }">Show transaction</router-link>
+              </template>
+            </Property>
             <Property :id="'memo'">
               <template v-slot:name>Memo</template>
               <template v-slot:value>
@@ -124,10 +144,32 @@
                 <DurationValue v-bind:string-value="transaction?.valid_duration_seconds"/>
               </template>
             </Property>
-            <Property :id="'scheduled'">
-              <template v-slot:name>Scheduled</template>
+            <Property v-if="parentTransaction" :id="'parentTransaction'">
+              <template v-slot:name>Parent</template>
               <template v-slot:value>
-                <StringValue v-bind:string-value="transaction?.scheduled.toString()"/>
+                <router-link :to="{
+                  name: 'TransactionDetails',
+                  params: { transactionId: parentTransaction.transaction_id },
+                  query: { t: parentTransaction.consensus_timestamp }
+                }">Show transaction</router-link>
+              </template>
+            </Property>
+            <Property v-if="childTransactions.length" :id="'children'">
+              <template v-slot:name>Children</template>
+              <template v-slot:value>
+                <router-link v-if="displayAllChildrenLinks" :to="{name: 'TransactionsById', params: {transactionId: transactionId}}">
+                  {{ 'Show all ' + childTransactions.length + ' child transactions' }}
+                </router-link>
+                <div v-else>
+                  <router-link v-for="tx in childTransactions" :key="tx.nonce" :to="{
+                    name: 'TransactionDetails',
+                    params: { transactionId: tx.transaction_id },
+                    query: { t: tx.consensus_timestamp }
+                  }">
+                    <span class="mr-2">{{ '#' + tx.nonce }}</span>
+                    <span class="h-is-smaller">{{ makeTypeLabel(tx.name) }}</span>
+                    <br/></router-link>
+                </div>
               </template>
             </Property>
           </div>
@@ -155,7 +197,7 @@
 
 import {computed, defineComponent, inject, onBeforeMount, ref, watch} from 'vue';
 import axios, {AxiosResponse} from "axios";
-import {Transaction, TransactionByIdResponse} from "@/schemas/HederaSchemas";
+import {Transaction, TransactionByIdResponse, TransactionType} from "@/schemas/HederaSchemas";
 import {EntityDescriptor} from "@/utils/EntityDescriptor"
 import {normalizeTransactionId, TransactionID} from "@/utils/TransactionID";
 import {computeNetAmount, makeOperatorAccountLabel, makeTypeLabel} from "@/utils/TransactionTools";
@@ -173,6 +215,8 @@ import Footer from "@/components/Footer.vue";
 import NotificationBanner from "@/components/NotificationBanner.vue";
 import Property from "@/components/Property.vue";
 import DurationValue from "@/components/values/DurationValue.vue";
+
+const MAX_INLINE_CHILDREN = 3
 
 export default defineComponent({
 
@@ -205,6 +249,12 @@ export default defineComponent({
     const transaction = ref<Transaction|null>(null)
     let netAmount = ref(0)
     let entity = ref<EntityDescriptor | null>(null)
+    let scheduledTransaction = ref<Transaction | null>(null)
+    let schedulingTransaction = ref<Transaction | null>(null)
+    let parentTransaction = ref<Transaction | null>(null)
+    let childTransactions = ref<Array<Transaction>>([])
+
+    const displayAllChildrenLinks = computed(() => childTransactions.value.length > MAX_INLINE_CHILDREN )
 
     const notification = computed(() => {
       let result
@@ -228,6 +278,10 @@ export default defineComponent({
       fetchTransaction()
     });
 
+    watch(() => props.consensusTimestamp, () => {
+      fetchTransaction()
+    });
+
     const routeName = computed(() => {
       return entity?.value?.routeName
     })
@@ -243,10 +297,29 @@ export default defineComponent({
             .get<TransactionByIdResponse>("api/v1/transactions/" + props.transactionId)
             .then(r => {
               response.value = r
-              transaction.value = r.data.transactions ? filter(r.data.transactions, props.consensusTimestamp) : null
-              if (transaction.value != null) {
-                netAmount.value = computeNetAmount(transaction.value)
-                entity.value = EntityDescriptor.makeEntityDescriptor(transaction.value)
+              transaction.value = null
+              scheduledTransaction.value = null
+              schedulingTransaction.value = null
+              parentTransaction.value = null
+              childTransactions.value = []
+              if (r.data.transactions) {
+                transaction.value = filter(r.data.transactions, props.consensusTimestamp)
+                if (transaction.value != null) {
+                  netAmount.value = computeNetAmount(transaction.value)
+                  entity.value = EntityDescriptor.makeEntityDescriptor(transaction.value)
+                  scheduledTransaction.value = (transaction.value.name === TransactionType.SCHEDULECREATE)
+                      ? lookupScheduledTransaction(r.data.transactions)
+                      : null
+                  schedulingTransaction.value = transaction.value.scheduled
+                      ? lookupSchedulingTransaction(r.data.transactions)
+                      : null
+                  const children = lookupChildTransactions(r.data.transactions)
+                  if (children.length && transaction.value.nonce && transaction.value.nonce > 0) {
+                    parentTransaction.value = lookupParentTransaction(r.data.transactions)
+                  } else {
+                    childTransactions.value = children
+                  }
+                }
               }
             })
             .catch(reason => {
@@ -300,7 +373,12 @@ export default defineComponent({
       makeTypeLabel,
       computeNetAmount,
       makeOperatorAccountLabel,
-      showAllTransactionVisible
+      showAllTransactionVisible,
+      displayAllChildrenLinks,
+      scheduledTransaction,
+      schedulingTransaction,
+      parentTransaction,
+      childTransactions
     }
   },
 });
@@ -340,6 +418,38 @@ function lookupScheduledTransaction(transactions: Transaction[]): Transaction|nu
     if (t.scheduled) {
       result = t
       break
+    }
+  }
+  return result
+}
+
+function lookupSchedulingTransaction(transactions: Transaction[]): Transaction|null {
+  let result: Transaction | null = null
+  for (let t of transactions) {
+    if (t.name === TransactionType.SCHEDULECREATE) {
+      result = t
+      break
+    }
+  }
+  return result
+}
+
+function lookupParentTransaction(transactions: Transaction[]): Transaction|null {
+  let result: Transaction | null = null
+  for (let t of transactions) {
+    if (t.nonce === 0) {
+      result = t
+      break
+    }
+  }
+  return result
+}
+
+function lookupChildTransactions(transactions: Transaction[]): Transaction[] {
+  let result = new Array<Transaction>()
+  for (let t of transactions) {
+    if (t.nonce && t.nonce > 0) {
+      result.push(t)
     }
   }
   return result
