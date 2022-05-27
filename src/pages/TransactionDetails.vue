@@ -32,7 +32,12 @@
       <template v-slot:title>
         <span class="h-is-primary-title">Transaction </span>
         <span class="h-is-secondary-text mr-3">{{ transaction ? convertTransactionId(transactionId) : "" }}</span>
-     </template>
+        <span v-if="showAllTransactionVisible" class="is-inline-block" id="allTransactionsLink">
+          <router-link :to="{name: 'TransactionsById', params: {transactionId: transactionId}}">
+            <span class="h-is-property-text has-text-grey">See all transactions with the same ID</span>
+          </router-link>
+        </span>
+      </template>
 
       <template v-slot:table>
 
@@ -146,7 +151,7 @@
                   name: 'TransactionDetails',
                   params: { transactionId: parentTransaction.transaction_id },
                   query: { t: parentTransaction.consensus_timestamp }
-                }">Show transaction</router-link>
+                }">{{ makeTypeLabel(parentTransaction.name) }}</router-link>
               </template>
             </Property>
             <Property v-if="childTransactions.length" :id="'children'">
@@ -162,7 +167,7 @@
                     query: { t: tx.consensus_timestamp }
                   }">
                     <span class="mr-2">{{ '#' + tx.nonce }}</span>
-                    <span class="h-is-smaller">{{ makeTypeLabel(tx.name) }}</span>
+                    <span>{{ makeTypeLabel(tx.name) }}</span>
                     <br/></router-link>
                 </div>
               </template>
@@ -249,6 +254,10 @@ export default defineComponent({
     let parentTransaction = ref<Transaction | null>(null)
     let childTransactions = ref<Array<Transaction>>([])
 
+    const showAllTransactionVisible = computed(() => {
+      const count = response.value?.data.transactions?.length ?? 0
+      return count >= 2
+    })
     const displayAllChildrenLinks = computed(() => childTransactions.value.length > MAX_INLINE_CHILDREN )
 
     const notification = computed(() => {
@@ -302,17 +311,19 @@ export default defineComponent({
                 if (transaction.value != null) {
                   netAmount.value = computeNetAmount(transaction.value)
                   entity.value = EntityDescriptor.makeEntityDescriptor(transaction.value)
-                  scheduledTransaction.value = (transaction.value.name === TransactionType.SCHEDULECREATE)
-                      ? lookupScheduledTransaction(r.data.transactions)
-                      : null
-                  schedulingTransaction.value = transaction.value.scheduled
-                      ? lookupSchedulingTransaction(r.data.transactions)
-                      : null
-                  const children = lookupChildTransactions(r.data.transactions)
-                  if (children.length && transaction.value.nonce && transaction.value.nonce > 0) {
-                    parentTransaction.value = lookupParentTransaction(r.data.transactions)
-                  } else {
-                    childTransactions.value = children
+                  if (r.data.transactions.length >= 2) {
+                    scheduledTransaction.value = (transaction.value.name === TransactionType.SCHEDULECREATE)
+                        ? lookupScheduledTransaction(r.data.transactions)
+                        : null
+                    schedulingTransaction.value = transaction.value.scheduled
+                        ? lookupSchedulingTransaction(r.data.transactions)
+                        : null
+                    const children = lookupChildTransactions(r.data.transactions)
+                    if (children.length && transaction.value.nonce && transaction.value.nonce > 0) {
+                      parentTransaction.value = lookupParentTransaction(r.data.transactions)
+                    } else {
+                      childTransactions.value = children
+                    }
                   }
                 }
               }
@@ -363,6 +374,7 @@ export default defineComponent({
       makeTypeLabel,
       computeNetAmount,
       makeOperatorAccountLabel,
+      showAllTransactionVisible,
       displayAllChildrenLinks,
       scheduledTransaction,
       schedulingTransaction,
