@@ -131,8 +131,7 @@
             <Property :id="'file'">
               <template v-slot:name>File</template>
               <template v-slot:value>
-                <div v-if="contract?.file_id">{{ contract?.file_id }}</div>
-                <div v-else class="has-text-grey">None</div>
+                <StringValue :string-value="contract?.file_id"/>
               </template>
             </Property>
             <Property :id="'solidity'">
@@ -194,6 +193,7 @@ import DashboardCard from "@/components/DashboardCard.vue";
 import HbarAmount from "@/components/values/HbarAmount.vue";
 import TokenAmount from "@/components/values/TokenAmount.vue";
 import BlobValue from "@/components/values/BlobValue.vue";
+import StringValue from "@/components/values/StringValue.vue";
 import Footer from "@/components/Footer.vue";
 import NotificationBanner from "@/components/NotificationBanner.vue";
 import {EntityID} from "@/utils/EntityID";
@@ -224,6 +224,7 @@ export default defineComponent({
     ContractTransactionTable,
     KeyValue,
     HexaValue,
+    StringValue,
     EthAddress
   },
 
