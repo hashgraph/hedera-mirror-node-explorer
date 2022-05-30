@@ -20,8 +20,7 @@
 
 import {AccountInfo, KeyType, TokenInfo} from "@/schemas/HederaSchemas";
 import {EntityID} from "@/utils/EntityID";
-import {byteToHex, hexToByte} from "@/utils/B64Utils";
-import base32Decode from "base32-decode";
+import {base32ToAlias, byteToHex, hexToByte} from "@/utils/B64Utils";
 import {keccak256} from "js-sha3";
 
 export function makeEthAddressForAccount(account: AccountInfo): string|null {
@@ -29,7 +28,7 @@ export function makeEthAddressForAccount(account: AccountInfo): string|null {
 
     if (account.alias) {
         // Decodes BASE32 encoding of account.alias
-        const buffer = base32Decode(account.alias, 'RFC4648')
+        const buffer = base32ToAlias(account.alias)
         result = byteToHex(new Uint8Array(buffer))
     } else if (account.key?.key && account.key?._type == KeyType.ECDSA_SECP256K1) {
         // Generates Eth. address from key

@@ -19,6 +19,9 @@
  */
 
 
+import base32Decode from "base32-decode";
+import base32Encode from "base32-encode";
+
 //
 // https://developer.mozilla.org/en-US/docs/Glossary/Base64
 //
@@ -81,11 +84,12 @@ const HEXSET = "0123456789ABCDEF"
 export function hexToByte(hex: string): Uint8Array|null {
     let result: Uint8Array|null
     if (hex.length % 2 == 0) {
+        const startIndex = hex.startsWith("0x") ? 1 : 0
         const bytes = Array<number>()
         let ok = true
-        for (let i = 0, byteCount = hex.length / 2; i < byteCount && ok; i += 1) {
-            const b1 = hex[i].toUpperCase()
-            const b0 = hex[i+1].toUpperCase()
+        for (let i = startIndex, endIndex = hex.length / 2; i < endIndex && ok; i += 1) {
+            const b1 = hex[2*i].toUpperCase()
+            const b0 = hex[2*i+1].toUpperCase()
             const okB1 = HEXSET.indexOf(b1) != -1
             const okB0 = HEXSET.indexOf(b0) != -1
             if (okB0 && okB1) {
@@ -100,4 +104,16 @@ export function hexToByte(hex: string): Uint8Array|null {
         result = null
     }
     return result
+}
+
+//
+// Alias conversion
+//
+
+export function aliasToBase32(bytes: Uint8Array): string {
+    return base32Encode(bytes, 'RFC4648', { padding: false })
+}
+
+export function base32ToAlias(aliasBase32: string): Uint8Array {
+    return new Uint8Array(base32Decode(aliasBase32, 'RFC4648'))
 }

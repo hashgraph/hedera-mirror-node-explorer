@@ -29,6 +29,7 @@
     "vue-router": "^4.0.0-0",
     "@metamask/detect-provider": "^1.2.0",
     "base32-decode": "^1.0.0",
+    "base32-encode": "^1.2.0",
     "js-sha3": "^0.8.0"
   },
   "devDependencies": {

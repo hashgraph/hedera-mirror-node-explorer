@@ -29,11 +29,15 @@ import {
     SAMPLE_TRANSACTIONS
 } from "../Mocks";
 import {SearchRequest} from "@/utils/SearchRequest";
+import {base32ToAlias, byteToHex} from "@/utils/B64Utils";
 
 const mock = new MockAdapter(axios)
 
 const matcher_account = "/api/v1/accounts/" + SAMPLE_ACCOUNT.account
 mock.onGet(matcher_account).reply(200, SAMPLE_ACCOUNT)
+
+const matcher_account_with_alias = "/api/v1/accounts/" + SAMPLE_ACCOUNT.alias
+mock.onGet(matcher_account_with_alias).reply(200, SAMPLE_ACCOUNT)
 
 const matcher_transaction = "/api/v1/transactions/" + SAMPLE_TRANSACTION.transaction_id
 mock.onGet(matcher_transaction).reply(200, SAMPLE_TRANSACTIONS)
@@ -61,6 +65,31 @@ describe("SearchRequest.ts", () => {
         expect(r.tokenInfo).toBeNull()
         expect(r.topicMessages).toStrictEqual([])
         expect(r.contract).toBeNull()
+
+    })
+
+    test("account (with alias)", async () => {
+        const aliasHex = byteToHex(new Uint8Array(base32ToAlias(SAMPLE_ACCOUNT.alias)))
+        const r = new SearchRequest(aliasHex)
+        await r.run()
+
+        expect(r.searchedId).toBe(aliasHex)
+        expect(r.account).toStrictEqual(SAMPLE_ACCOUNT)
+        expect(r.transactions).toStrictEqual([])
+        expect(r.tokenInfo).toBeNull()
+        expect(r.topicMessages).toStrictEqual([])
+        expect(r.contract).toBeNull()
+
+        const aliasHex2 = "0x" + aliasHex
+        const r2 = new SearchRequest(aliasHex2)
+        await r2.run()
+
+        expect(r2.searchedId).toBe(aliasHex2)
+        expect(r2.account).toStrictEqual(SAMPLE_ACCOUNT)
+        expect(r2.transactions).toStrictEqual([])
+        expect(r2.tokenInfo).toBeNull()
+        expect(r2.topicMessages).toStrictEqual([])
+        expect(r2.contract).toBeNull()
 
     })
 

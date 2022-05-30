@@ -26,9 +26,10 @@ import {
     Transaction
 } from "@/schemas/HederaSchemas";
 import axios from "axios";
-import {TransactionID, normalizeTransactionId} from "@/utils/TransactionID";
+import {TransactionID} from "@/utils/TransactionID";
 import {DeferredPromise} from "@/utils/DeferredPromise";
 import {EntityID} from "@/utils/EntityID";
+import {aliasToBase32, hexToByte} from "@/utils/B64Utils";
 
 
 export class SearchRequest {
@@ -53,13 +54,18 @@ export class SearchRequest {
         this.countdown = 5
         this.errorCount = 0
 
-        const isEntityId = EntityID.parse(this.searchedId, true) != null
-        const isTransactionId = TransactionID.parse(this.searchedId) != null
+        const entityID = EntityID.parse(this.searchedId, true)
+        const normEntityID = entityID !== null ? entityID.toString() : null
+        const transactionID = TransactionID.parse(this.searchedId)
+        const normTransactionID = transactionID != null ? transactionID.toString(false) : null
+        const hexBytes = hexToByte(this.searchedId)
+        const hexByteString32 = (hexBytes !== null && hexBytes.length >= 15) ? aliasToBase32(hexBytes) : null
 
         // 1) Searches accounts
-        if (isEntityId) {
+        if (normEntityID !== null || hexByteString32 !== null) {
+            const entityOrAlias = hexByteString32 ? hexByteString32 : normEntityID
             axios
-                .get("api/v1/accounts/" + this.searchedId)
+                .get("api/v1/accounts/" + entityOrAlias)
                 .then(response => {
                     this.account = response.data
                 })
@@ -76,9 +82,9 @@ export class SearchRequest {
         }
 
         // 2) Searches transactions
-        if (isTransactionId) {
+        if (normTransactionID !== null) {
             axios
-                .get("api/v1/transactions/" + normalizeTransactionId(this.searchedId))
+                .get("api/v1/transactions/" + normTransactionID)
                 .then(response => {
                     this.transactions = response.data.transactions
                 })
@@ -95,9 +101,9 @@ export class SearchRequest {
         }
 
         // 3) Searches tokens
-        if (isEntityId) {
+        if (normEntityID !== null) {
             axios
-                .get("api/v1/tokens/" + this.searchedId)
+                .get("api/v1/tokens/" + normEntityID)
                 .then(response => {
                     this.tokenInfo = response.data
                 })
@@ -114,13 +120,13 @@ export class SearchRequest {
         }
 
         // 4) Searches topics
-        if (isEntityId) {
+        if (normEntityID !== null) {
             const params = {
                 order: "desc",
                 limit: "1"
             }
             axios
-                .get("api/v1/topics/" + this.searchedId + "/messages", {params})
+                .get("api/v1/topics/" + normEntityID + "/messages", {params})
                 .then(response => {
                     this.topicMessages = response.data.messages
                 })
@@ -137,9 +143,9 @@ export class SearchRequest {
         }
 
         // 5) Searches contracts
-        if (isEntityId) {
+        if (normEntityID !== null) {
             axios
-                .get<ContractResponse>("api/v1/contracts/" + this.searchedId)
+                .get<ContractResponse>("api/v1/contracts/" + normEntityID)
                 .then(response => {
                     this.contract = response.data
                 })

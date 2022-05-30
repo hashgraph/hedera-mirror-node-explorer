@@ -53,6 +53,15 @@ describe("EntityID.ts", () => {
         expect(obj?.toString()).toBe(str)
     })
 
+    test("0.0.721838", () => {
+        const str = "0.0.721838"
+        const obj = EntityID.parse(str)
+        expect(obj?.shard).toBe(0)
+        expect(obj?.realm).toBe(0)
+        expect(obj?.num).toBe(721838)
+        expect(obj?.toString()).toBe(str)
+    })
+
     test("98", () => {
         const obj = EntityID.parse("98")
         expect(obj).toBeNull()
@@ -61,6 +70,17 @@ describe("EntityID.ts", () => {
         expect(obj2?.realm).toBe(0)
         expect(obj2?.num).toBe(98)
         expect(obj2?.toString()).toBe("0.0.98")
+    })
+
+    test("Very big number", () => {
+        const veryBigNum = Math.pow(2, 32) - 1
+        const obj = EntityID.parse(veryBigNum.toString())
+        expect(obj).toBeNull()
+        const obj2 = EntityID.parse(veryBigNum.toString(), true)
+        expect(obj2?.shard).toBe(0)
+        expect(obj2?.realm).toBe(0)
+        expect(obj2?.num).toBe(veryBigNum)
+        expect(obj2?.toString()).toBe("0.0." + veryBigNum.toString())
     })
 
     test("1.2.3.4", () => {
@@ -81,6 +101,14 @@ describe("EntityID.ts", () => {
     test("0.0.c", () => {
         const obj = EntityID.parse("0.0.c")
         expect(obj).toBeNull()
+    })
+
+    test("Too Big Number", () => {
+        const tooBigNum = Math.pow(2, 32)
+        const obj = EntityID.parse(tooBigNum.toString())
+        expect(obj).toBeNull()
+        const obj2 = EntityID.parse(tooBigNum.toString(), true)
+        expect(obj2).toBeNull()
     })
 
     //
