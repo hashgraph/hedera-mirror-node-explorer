@@ -29,8 +29,7 @@ import axios from "axios";
 import {TransactionID} from "@/utils/TransactionID";
 import {DeferredPromise} from "@/utils/DeferredPromise";
 import {EntityID} from "@/utils/EntityID";
-import {hexToByte} from "@/utils/B64Utils";
-import base32Encode from "base32-encode";
+import {aliasToBase32, hexToByte} from "@/utils/B64Utils";
 
 
 export class SearchRequest {
@@ -60,7 +59,7 @@ export class SearchRequest {
         const transactionID = TransactionID.parse(this.searchedId)
         const normTransactionID = transactionID != null ? transactionID.toString(false) : null
         const hexBytes = hexToByte(this.searchedId)
-        const hexByteString32 = hexBytes !== null ? base32Encode(hexBytes, 'RFC4648', { padding: false }) : null
+        const hexByteString32 = hexBytes !== null ? aliasToBase32(hexBytes) : null
 
         // 1) Searches accounts
         if (normEntityID !== null || hexByteString32 !== null) {

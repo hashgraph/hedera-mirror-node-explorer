@@ -19,6 +19,9 @@
  */
 
 
+import base32Decode from "base32-decode";
+import base32Encode from "base32-encode";
+
 //
 // https://developer.mozilla.org/en-US/docs/Glossary/Base64
 //
@@ -101,4 +104,16 @@ export function hexToByte(hex: string): Uint8Array|null {
         result = null
     }
     return result
+}
+
+//
+// Alias conversion
+//
+
+export function aliasToBase32(bytes: Uint8Array): string {
+    return base32Encode(bytes, 'RFC4648', { padding: false })
+}
+
+export function base32ToAlias(aliasBase32: string): Uint8Array {
+    return new Uint8Array(base32Decode(aliasBase32, 'RFC4648'))
 }

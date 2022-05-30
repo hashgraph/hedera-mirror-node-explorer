@@ -199,8 +199,7 @@ import {EntityID} from "@/utils/EntityID";
 import Property from "@/components/Property.vue";
 import {makeEthAddressForAccount} from "@/schemas/HederaUtils";
 import EthAddress from "@/components/values/EthAddress.vue";
-import {byteToHex} from "@/utils/B64Utils";
-import base32Decode from "base32-decode";
+import {base32ToAlias, byteToHex} from "@/utils/B64Utils";
 
 const MAX_TOKEN_BALANCES = 3
 
@@ -330,7 +329,7 @@ export default defineComponent({
 
     const aliasByteString = computed(() => {
       const alias = account.value?.alias
-      return alias ? byteToHex(new Uint8Array(base32Decode(alias, 'RFC4648'))) : null
+      return alias ? byteToHex(new Uint8Array(base32ToAlias(alias))) : null
     })
 
     return {

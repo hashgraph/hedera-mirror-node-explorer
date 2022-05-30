@@ -18,9 +18,7 @@
  *
  */
 
-import {byteToHex, hexToByte} from "@/utils/B64Utils";
-import base32Decode from "base32-decode";
-import base32Encode from "base32-encode";
+import {aliasToBase32, base32ToAlias, byteToHex, hexToByte} from "@/utils/B64Utils";
 
 describe("B64Utils.ts", () => {
 
@@ -42,19 +40,19 @@ describe("B64Utils.ts", () => {
         expect(hexString2).toEqual(hexString)
     })
 
-    test("base32Encode", () => {
+    test("aliasToBase32()", () => {
 
         const decodedBytes = hexToByte(hexString)
         expect(decodedBytes).not.toBeNull()
 
-        const encodedString = base32Encode(decodedBytes!, 'RFC4648', { padding: false })
+        const encodedString = aliasToBase32(decodedBytes!)
         expect(encodedString).toEqual(base32String)
     })
 
 
-    test("base32Decode", () => {
+    test("base32ToAlias", () => {
 
-        const decodedBytes = base32Decode(base32String, 'RFC4648')
+        const decodedBytes = base32ToAlias(base32String)
         expect(decodedBytes).not.toBeNull()
 
         const decodedHex = byteToHex(new Uint8Array(decodedBytes))
