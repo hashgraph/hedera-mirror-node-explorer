@@ -54,6 +54,8 @@ export class EntityDescriptor {
             case TransactionType.CRYPTOTRANSFER:
             case TransactionType.TOKENASSOCIATE:
             case TransactionType.TOKENDISSOCIATE:
+            case TransactionType.CRYPTOAPPROVEALLOWANCE:
+            case TransactionType.CRYPTODELETEALLOWANCE:
                 result = new EntityDescriptor("Account ID", "AccountDetails")
                 break;
 
@@ -90,6 +92,7 @@ export class EntityDescriptor {
             case TransactionType.SYSTEMDELETE:
             case TransactionType.SYSTEMUNDELETE:
             case TransactionType.UNCHECKEDSUBMIT:
+            case TransactionType.ETHEREUMTRANSACTION:
             default:
                 result = new EntityDescriptor("Entity ID", null);
                 break;

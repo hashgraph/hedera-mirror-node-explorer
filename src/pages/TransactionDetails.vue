@@ -197,7 +197,13 @@
 
 import {computed, defineComponent, inject, onBeforeMount, ref, watch} from 'vue';
 import axios, {AxiosResponse} from "axios";
-import {Transaction, TransactionByIdResponse, TransactionType} from "@/schemas/HederaSchemas";
+import {
+  AccountBalanceTransactions,
+  ContractResponse,
+  Transaction,
+  TransactionByIdResponse,
+  TransactionType
+} from "@/schemas/HederaSchemas";
 import {EntityDescriptor} from "@/utils/EntityDescriptor"
 import {normalizeTransactionId, TransactionID} from "@/utils/TransactionID";
 import {computeNetAmount, makeOperatorAccountLabel, makeTypeLabel} from "@/utils/TransactionTools";
@@ -310,7 +316,20 @@ export default defineComponent({
                 transaction.value = filter(r.data.transactions, props.consensusTimestamp)
                 if (transaction.value != null) {
                   netAmount.value = computeNetAmount(transaction.value)
-                  entity.value = EntityDescriptor.makeEntityDescriptor(transaction.value)
+
+                  if (transaction.value.entity_id && transaction.value.name === TransactionType.ETHEREUMTRANSACTION) {
+                    axios.get<ContractResponse>("api/v1/contracts/" + transaction.value.entity_id)
+                        .then(() => entity.value = new EntityDescriptor("Contract ID", "ContractDetails"))
+                        .catch(() => {
+                          axios.get<AccountBalanceTransactions>("api/v1/accounts/" + transaction.value?.entity_id)
+                              .then(() => entity.value = new EntityDescriptor("Account ID", "AccountDetails"))
+                              .catch(() => entity.value = new EntityDescriptor("Entity ID", ""))
+
+                        })
+                  } else {
+                    entity.value = EntityDescriptor.makeEntityDescriptor(transaction.value)
+                  }
+
                   if (r.data.transactions.length >= 2) {
                     scheduledTransaction.value = (transaction.value.name === TransactionType.SCHEDULECREATE)
                         ? lookupScheduledTransaction(r.data.transactions)
