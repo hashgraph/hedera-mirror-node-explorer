@@ -81,9 +81,11 @@ const HEXSET = "0123456789ABCDEF"
 export function hexToByte(hex: string): Uint8Array|null {
     let result: Uint8Array|null
     if (hex.length % 2 == 0) {
+        const startIndex = hex.startsWith("0x") ? 2 : 0
+        const byteCount = (hex.length - startIndex) / 2
         const bytes = Array<number>()
         let ok = true
-        for (let i = 0, byteCount = hex.length / 2; i < byteCount && ok; i += 1) {
+        for (let i = startIndex; i < byteCount && ok; i += 1) {
             const b1 = hex[i].toUpperCase()
             const b0 = hex[i+1].toUpperCase()
             const okB1 = HEXSET.indexOf(b1) != -1
