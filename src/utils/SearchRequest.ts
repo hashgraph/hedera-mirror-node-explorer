@@ -29,6 +29,8 @@ import axios from "axios";
 import {TransactionID} from "@/utils/TransactionID";
 import {DeferredPromise} from "@/utils/DeferredPromise";
 import {EntityID} from "@/utils/EntityID";
+import {hexToByte} from "@/utils/B64Utils";
+import base32Encode from "base32-encode";
 
 
 export class SearchRequest {
@@ -57,11 +59,14 @@ export class SearchRequest {
         const normEntityID = entityID !== null ? entityID.toString() : null
         const transactionID = TransactionID.parse(this.searchedId)
         const normTransactionID = transactionID != null ? transactionID.toString(false) : null
+        const hexBytes = hexToByte(this.searchedId)
+        const hexByteString32 = hexBytes !== null ? base32Encode(hexBytes, 'RFC4648', { padding: false }) : null
 
         // 1) Searches accounts
-        if (normEntityID !== null) {
+        if (normEntityID !== null || hexByteString32 !== null) {
+            const entityOrAlias = hexByteString32 ? hexByteString32 : normEntityID
             axios
-                .get("api/v1/accounts/" + normEntityID)
+                .get("api/v1/accounts/" + entityOrAlias)
                 .then(response => {
                     this.account = response.data
                 })
