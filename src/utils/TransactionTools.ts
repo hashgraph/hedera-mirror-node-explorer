@@ -200,6 +200,12 @@ export function makeTypeLabel(type: TransactionType | undefined): string {
         case TransactionType.CRYPTOTRANSFER:
             result = "Crypto Transfer"
             break
+        case TransactionType.CRYPTOAPPROVEALLOWANCE:
+            result = "Crypto Approve Allowance"
+            break
+        case TransactionType.CRYPTODELETEALLOWANCE:
+            result = "Crypto Delete Allowance"
+            break
 
         case TransactionType.FILECREATE:
             result = "File Create";
@@ -283,6 +289,10 @@ export function makeTypeLabel(type: TransactionType | undefined): string {
 
         case TransactionType.UNCHECKEDSUBMIT:
             result = "Unchecked Submit";
+            break;
+
+        case TransactionType.ETHEREUMTRANSACTION:
+            result = "Ethereum Transaction";
             break;
 
         default:
