@@ -26,7 +26,7 @@ import {
     Transaction
 } from "@/schemas/HederaSchemas";
 import axios from "axios";
-import {TransactionID, normalizeTransactionId} from "@/utils/TransactionID";
+import {TransactionID} from "@/utils/TransactionID";
 import {DeferredPromise} from "@/utils/DeferredPromise";
 import {EntityID} from "@/utils/EntityID";
 
@@ -55,7 +55,8 @@ export class SearchRequest {
 
         const entityID = EntityID.parse(this.searchedId, true)
         const normEntityID = entityID !== null ? entityID.toString() : null
-        const isTransactionId = TransactionID.parse(this.searchedId) != null
+        const transactionID = TransactionID.parse(this.searchedId)
+        const normTransactionID = transactionID != null ? transactionID.toString(false) : null
 
         // 1) Searches accounts
         if (normEntityID !== null) {
@@ -77,9 +78,9 @@ export class SearchRequest {
         }
 
         // 2) Searches transactions
-        if (isTransactionId) {
+        if (normTransactionID !== null) {
             axios
-                .get("api/v1/transactions/" + normalizeTransactionId(this.searchedId))
+                .get("api/v1/transactions/" + normTransactionID)
                 .then(response => {
                     this.transactions = response.data.transactions
                 })
