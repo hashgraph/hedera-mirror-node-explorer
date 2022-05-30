@@ -80,6 +80,17 @@ describe("SearchRequest.ts", () => {
         expect(r.topicMessages).toStrictEqual([])
         expect(r.contract).toBeNull()
 
+        const aliasHex2 = "0x" + aliasHex
+        const r2 = new SearchRequest(aliasHex2)
+        await r2.run()
+
+        expect(r2.searchedId).toBe(aliasHex2)
+        expect(r2.account).toStrictEqual(SAMPLE_ACCOUNT)
+        expect(r2.transactions).toStrictEqual([])
+        expect(r2.tokenInfo).toBeNull()
+        expect(r2.topicMessages).toStrictEqual([])
+        expect(r2.contract).toBeNull()
+
     })
 
     test("transaction", async () => {
