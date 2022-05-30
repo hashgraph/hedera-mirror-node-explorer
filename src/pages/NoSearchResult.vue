@@ -48,8 +48,8 @@
           <span >No account, transaction, contract, token or topic matches "</span>
           <span style="font-weight: 400">{{ this.searchedId }}</span>
           <span >".</span>
-          <br/>
-          Make sure you enter either an entity ID (0.0.x) or a transaction ID (0.0.x@seconds.nanoseconds).
+          <br/><br/>
+          Make sure you enter either an entity ID (0.0.x), a transaction ID (0.0.x@seconds.nanoseconds)<br/>or an account alias using hexadecimal notation.
         </template>
       </p>
     </div>
