@@ -163,6 +163,58 @@ describe('Transaction Navigation', () => {
             })
     })
 
+    it('should handle ETHEREUMTRANSACTION type', () => {
+        const transactionId = "0.0.34912635@1653499859.000000336"
+        const parentConsensusTimestamp = "1653499919.290794746"
+        const childConsensusTimestamp = "1653499919.290794747"
+        const contractId = "0.0.34912638"
+
+        cy.visit('#/testnet/transaction/' + normalizeTransactionId(transactionId) + "?t=" + parentConsensusTimestamp)
+        cy.url().should('include', '/testnet/transaction/')
+        cy.url().should('include', normalizeTransactionId(transactionId))
+        cy.url().should('include', parentConsensusTimestamp)
+
+        cy.get('#transactionTypeValue')
+            .should('contain', "ETHEREUM TRANSACTION")
+        cy.get('#entityIdName')
+            .should('contain', "Contract ID")
+
+        cy.get('#entityIdValue')
+            .find('a')
+            .should('have.length', 1)
+            .eq(0)
+            .click()
+            .then(($id) => {
+                // cy.log('Selected operator Id: ' + $id.text())
+                cy.url().should('include', '/testnet/contract/')
+                cy.url().should('include', contractId)
+                cy.contains('Contract ' + contractId)
+            })
+        cy.go('back')
+
+        cy.get('#childrenValue')
+            .find('a')
+            .should('have.length', 1)
+            .eq(0)
+            .click()
+            .then(($id) => {
+                // cy.log('Selected operator Id: ' + $id.text())
+                cy.url().should('include', '/testnet/transaction/')
+                cy.url().should('include', normalizeTransactionId(transactionId) + "?t=" + childConsensusTimestamp)
+                cy.contains('Transaction ' + transactionId)
+            })
+
+        cy.get('#parentTransactionValue')
+            .find('a')
+            .click()
+            .then(($id) => {
+                // cy.log('Selected operator Id: ' + $id.text())
+                cy.url().should('include', '/testnet/transaction/')
+                cy.url().should('include', normalizeTransactionId(transactionId) + "?t=" + parentConsensusTimestamp)
+                cy.contains('Transaction ' + transactionId)
+            })
+    })
+
     it('should detect navigation to unknown transaction ID', () => {
         const unknownID = '9.9.9@1650446896.868427600'
         cy.visit('#/testnet/transaction/' + normalizeTransactionId(unknownID))
