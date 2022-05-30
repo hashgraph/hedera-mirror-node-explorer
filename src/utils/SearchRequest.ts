@@ -59,7 +59,7 @@ export class SearchRequest {
         const transactionID = TransactionID.parse(this.searchedId)
         const normTransactionID = transactionID != null ? transactionID.toString(false) : null
         const hexBytes = hexToByte(this.searchedId)
-        const hexByteString32 = hexBytes !== null ? aliasToBase32(hexBytes) : null
+        const hexByteString32 = (hexBytes !== null && hexBytes.length >= 15) ? aliasToBase32(hexBytes) : null
 
         // 1) Searches accounts
         if (normEntityID !== null || hexByteString32 !== null) {
