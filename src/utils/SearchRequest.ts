@@ -29,7 +29,7 @@ import axios from "axios";
 import {TransactionID} from "@/utils/TransactionID";
 import {DeferredPromise} from "@/utils/DeferredPromise";
 import {EntityID} from "@/utils/EntityID";
-import {aliasToBase32, hexToByte} from "@/utils/B64Utils";
+import {aliasToBase32, byteToHex, hexToByte} from "@/utils/B64Utils";
 
 
 export class SearchRequest {
@@ -59,6 +59,7 @@ export class SearchRequest {
         const transactionID = TransactionID.parse(this.searchedId)
         const normTransactionID = transactionID != null ? transactionID.toString(false) : null
         const hexBytes = hexToByte(this.searchedId)
+        const hexByteString = (hexBytes !== null && hexBytes.length >= 15) ? byteToHex(hexBytes) : null
         const hexByteString32 = (hexBytes !== null && hexBytes.length >= 15) ? aliasToBase32(hexBytes) : null
 
         // 1) Searches accounts
@@ -143,9 +144,10 @@ export class SearchRequest {
         }
 
         // 5) Searches contracts
-        if (normEntityID !== null) {
+        if (normEntityID !== null || hexByteString !== null) {
+            const entityOrAddress = hexByteString ? hexByteString : normEntityID
             axios
-                .get<ContractResponse>("api/v1/contracts/" + normEntityID)
+                .get<ContractResponse>("api/v1/contracts/" + entityOrAddress)
                 .then(response => {
                     this.contract = response.data
                 })
