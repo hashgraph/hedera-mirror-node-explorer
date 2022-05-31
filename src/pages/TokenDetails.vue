@@ -119,7 +119,7 @@
               <template v-slot:value>
                 <EthAddress v-if="ethereumAddress"
                             :address="ethereumAddress"
-                            :symbol="tokenInfo?.symbol"
+                            :symbol="tokenSymbol"
                             :decimals="tokenInfo?.decimals"
                             :show-import="true"
                             :show-none="true"/>
@@ -174,7 +174,7 @@ import Footer from "@/components/Footer.vue";
 import EthAddress from "@/components/values/EthAddress.vue";
 import {EntityID} from "@/utils/EntityID";
 import Property from "@/components/Property.vue";
-import {makeEthAddressForToken} from "@/schemas/HederaUtils";
+import {makeEthAddressForToken, makeTokenSymbol} from "@/schemas/HederaUtils";
 import NotificationBanner from "@/components/NotificationBanner.vue";
 
 export default defineComponent({
@@ -259,6 +259,8 @@ export default defineComponent({
       return tokenInfo.value !== null ? makeEthAddressForToken(tokenInfo.value) : null
     })
 
+    const tokenSymbol = computed( () => makeTokenSymbol(tokenInfo.value, 11))
+
     return {
       isSmallScreen,
       isTouchDevice,
@@ -268,7 +270,8 @@ export default defineComponent({
       notification,
       showTokenDetails,
       parseIntString,
-      ethereumAddress
+      ethereumAddress,
+      tokenSymbol
     }
   },
 });

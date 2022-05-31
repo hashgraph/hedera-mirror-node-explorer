@@ -59,4 +59,18 @@ export function makeEthAddressForToken(token: TokenInfo): string|null {
         result = null
     }
     return result
- }
+}
+
+export function makeTokenSymbol(token: TokenInfo | null, maxLength: number): string {
+    const symbol = token?.symbol
+    const name = token?.name
+
+    const symbolUsable = symbol && symbol.search("://") == -1
+
+    const candidate1 = symbol && symbolUsable && symbol.length <= maxLength ? symbol : null
+    const candidate2 = name && name.length <= maxLength ? name : null
+    const candidate3 = symbol && symbolUsable ? symbol.slice(0, maxLength) : null
+    const candidate4 = name ? name.slice(0, maxLength) : null
+
+    return candidate1 ?? candidate2 ?? candidate3 ?? candidate4 ?? token?.token_id ?? "?"
+}

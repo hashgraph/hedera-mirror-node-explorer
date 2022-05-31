@@ -45,6 +45,7 @@ import {defineComponent, ref} from "vue";
 import {AxiosResponse} from "axios";
 import {TokenInfo} from "@/schemas/HederaSchemas";
 import {TokenInfoCollector} from "@/utils/TokenInfoCollector";
+import {makeTokenSymbol} from "@/schemas/HederaUtils";
 
 export default defineComponent({
   name: "TokenExtra",
@@ -71,7 +72,8 @@ export default defineComponent({
         if (props.showName) {
           extra.value = r.data.name ?? ""
         } else {
-          extra.value = makeExtra(r)
+          // extra.value = makeExtra(r)
+          extra.value = makeTokenSymbol(r.data, 40)
         }
       }, (reason: unknown) => {
         console.warn("TokenInfoCollector did fail to fetch " + props.tokenId + " with reason: " + reason)
@@ -82,25 +84,6 @@ export default defineComponent({
     return { extra }
   }
 });
-
-
-function makeExtra(response: AxiosResponse<TokenInfo>): string {
-  const name = response.data?.name
-  const symbol = response.data?.symbol
-  const maxLength = 40
-
-  let candidate1: string | null
-  if (symbol) {
-    const usable = symbol.search("://") == -1 && symbol.length < maxLength
-    candidate1 = usable ? symbol : null
-  } else {
-    candidate1 = null;
-  }
-
-  const candidate2 = name && name.length < maxLength ? name : null
-
-  return candidate1 ?? candidate2 ?? response.data.token_id ?? "?"
-}
 
 </script>
 
