@@ -138,6 +138,12 @@
                 <HexaValue :byteString="formattedSolidity" :show-none="true"/>
               </template>
             </Property>
+            <Property :id="'evmAddress'">
+              <template v-slot:name>EVM Address</template>
+              <template v-slot:value>
+                <HexaValue :byte-string="contract?.evm_address" :show-none="true"/>
+              </template>
+            </Property>
             <Property :id="'ethereumAddress'">
               <template v-slot:name>ERC20 Address</template>
               <template v-slot:value>

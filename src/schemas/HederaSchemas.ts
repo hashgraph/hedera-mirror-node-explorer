@@ -382,6 +382,7 @@ export interface Contract {
     contract_id: string | null | undefined   // Network entity ID in the format of shard.realm.num
     created_timestamp: string | null | undefined
     deleted: boolean | undefined
+    evm_address: string | undefined
     expiration_timestamp: string | null | undefined
     file_id: string | null | undefined   // Network entity ID in the format of shard.realm.num
     memo: string | undefined
