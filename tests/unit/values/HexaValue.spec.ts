@@ -77,5 +77,23 @@ describe("HexaValue.vue", () => {
         // Clipboard copy must be tested in e2e tests
     });
 
+    //
+    // byteString set
+    //
+
+    it("props.byteString set (with 0x)", async () => {
+
+        const wrapper = mount(HexaValue, {
+            props: {
+                byteString: "0x" + BYTE_STRING
+            }
+        });
+        await flushPromises()
+
+        // console.log(wrapper.html())
+
+        expect(wrapper.text()).toBe("0102 0304 0506 0708 090A 0B0C 0D0E 0FCopy to Clipboard")
+    });
+
 
 });
