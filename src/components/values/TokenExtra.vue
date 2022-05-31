@@ -72,7 +72,6 @@ export default defineComponent({
         if (props.showName) {
           extra.value = r.data.name ?? ""
         } else {
-          // extra.value = makeExtra(r)
           extra.value = makeTokenSymbol(r.data, 40)
         }
       }, (reason: unknown) => {
