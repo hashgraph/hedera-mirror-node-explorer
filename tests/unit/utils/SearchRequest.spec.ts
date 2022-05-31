@@ -52,6 +52,9 @@ mock.onGet(matcher_topic).reply(200, SAMPLE_TOPIC_MESSAGES)
 const matcher_contracts = "/api/v1/contracts/" + SAMPLE_CONTRACT.contract_id
 mock.onGet(matcher_contracts).reply(200, SAMPLE_CONTRACT)
 
+const matcher_contracts_with_evm_address = "/api/v1/contracts/" + SAMPLE_CONTRACT.evm_address.slice(2)
+mock.onGet(matcher_contracts_with_evm_address).reply(200, SAMPLE_CONTRACT)
+
 
 describe("SearchRequest.ts", () => {
 
@@ -137,6 +140,19 @@ describe("SearchRequest.ts", () => {
         await r.run()
 
         expect(r.searchedId).toBe(SAMPLE_CONTRACT.contract_id)
+        expect(r.account).toBeNull()
+        expect(r.transactions).toStrictEqual([])
+        expect(r.tokenInfo).toBeNull()
+        expect(r.topicMessages).toStrictEqual([])
+        expect(r.contract).toStrictEqual(SAMPLE_CONTRACT)
+
+    })
+
+    test("contract (with evm address)", async () => {
+        const r = new SearchRequest(SAMPLE_CONTRACT.evm_address)
+        await r.run()
+
+        expect(r.searchedId).toBe(SAMPLE_CONTRACT.evm_address)
         expect(r.account).toBeNull()
         expect(r.transactions).toStrictEqual([])
         expect(r.tokenInfo).toBeNull()

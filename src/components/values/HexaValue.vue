@@ -23,7 +23,7 @@
 <!-- --------------------------------------------------------------------------------------------------------------- -->
 
 <template>
-  <div v-if="byteString" class="shy-scope" style="display: inline-block; position: relative">
+  <div v-if="normByteString" class="shy-scope" style="display: inline-block; position: relative">
     <div class="is-family-monospace has-text-grey">{{ flow() }}</div>
     <div v-if="isCopyEnabled" id="shyCopyButton" class="shy" style="position: absolute; left: 0; top: 0; width: 100%; height: 100%">
       <div style="position: absolute; left: 0; top: 0; width: 100%; height: 100%; background: rgba(0, 0, 0, 0.50)"></div>
@@ -45,8 +45,6 @@
 import {computed, defineComponent, inject, ref} from "vue";
 import {initialLoadingKey} from "@/AppKeys";
 
-const BYTES_PER_LINE = 10
-
 export default defineComponent({
   name: "HexaValue",
   props: {
@@ -60,43 +58,41 @@ export default defineComponent({
   setup(props) {
     const isSmallScreen = inject('isSmallScreen', true)
 
-    // 1.a)
-    const split = (): string[] => {
-      const result = Array<string>()
+    // 0)
+    const normByteString = computed((): string|undefined => {
+      let result: string|undefined
       if (props.byteString) {
-        const charPerLine = BYTES_PER_LINE * 2
-        for (let i = 0; i < props.byteString.length; i += charPerLine) {
-          const line = props.byteString.substring(i, i + charPerLine)
-          result.push(makeByteLine(line))
-        }
+        result = props.byteString.startsWith("0x") ? props.byteString.slice(2) : props.byteString
+      } else {
+        result = undefined
       }
       return result
-    }
+    })
 
-    // 1.b)
+    // 1)
     const flow = (): string => {
-      return props.byteString ? makeByteLine(props.byteString) : ""
+      return normByteString.value ? makeByteLine(normByteString.value) : ""
     }
 
     // 2)
     const copyToClipboard = (): void => {
       if (props.byteString) {
-        navigator.clipboard.writeText("0x" + props.byteString)
+        navigator.clipboard.writeText("0x" + normByteString.value)
       }
     }
 
     // 3)
     const isCopyEnabled = computed(() => {
-      return (props.byteString?.length ?? 0) >= 1
+      return (normByteString.value?.length ?? 0) >= 1
     })
 
     // 4)
     const initialLoading = inject(initialLoadingKey, ref(false))
 
     return {
+      normByteString,
       isSmallScreen,
       flow,
-      split,
       copyToClipboard,
       isCopyEnabled,
       initialLoading
