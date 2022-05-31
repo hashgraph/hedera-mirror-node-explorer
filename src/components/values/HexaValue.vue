@@ -45,8 +45,6 @@
 import {computed, defineComponent, inject, ref} from "vue";
 import {initialLoadingKey} from "@/AppKeys";
 
-const BYTES_PER_LINE = 10
-
 export default defineComponent({
   name: "HexaValue",
   props: {
@@ -60,20 +58,7 @@ export default defineComponent({
   setup(props) {
     const isSmallScreen = inject('isSmallScreen', true)
 
-    // 1.a)
-    const split = (): string[] => {
-      const result = Array<string>()
-      if (props.byteString) {
-        const charPerLine = BYTES_PER_LINE * 2
-        for (let i = 0; i < props.byteString.length; i += charPerLine) {
-          const line = props.byteString.substring(i, i + charPerLine)
-          result.push(makeByteLine(line))
-        }
-      }
-      return result
-    }
-
-    // 1.b)
+    // 1)
     const flow = (): string => {
       return props.byteString ? makeByteLine(props.byteString) : ""
     }
@@ -96,7 +81,6 @@ export default defineComponent({
     return {
       isSmallScreen,
       flow,
-      split,
       copyToClipboard,
       isCopyEnabled,
       initialLoading
