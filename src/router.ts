@@ -19,6 +19,7 @@
  */
 
 import {createRouter, createWebHashHistory, RouteRecordRaw} from 'vue-router'
+import {AxiosMonitor} from "@/utils/AxiosMonitor";
 import MainDashboard from "@/pages/MainDashboard.vue";
 import Transactions from "@/pages/Transactions.vue";
 import TransactionDetails from "@/pages/TransactionDetails.vue";
@@ -33,10 +34,11 @@ import TopicDetails from "@/pages/TopicDetails.vue";
 import NoSearchResult from "@/pages/NoSearchResult.vue";
 import PageNotFound from "@/pages/PageNotFound.vue";
 import AccountBalances from "@/pages/AccountBalances.vue";
-import {AxiosMonitor} from "@/utils/AxiosMonitor";
 import TransactionsById from "@/pages/TransactionsById.vue";
 import MobileMenu from "@/pages/MobileMenu.vue";
 import MobileSearch from "@/pages/MobileSearch.vue";
+import Nodes from "@/pages/Nodes.vue";
+import NodeDetails from "@/pages/NodeDetails.vue";
 import {networkRegistry} from "@/schemas/NetworkRegistry";
 
 const routes: Array<RouteRecordRaw> = [
@@ -133,6 +135,18 @@ const routes: Array<RouteRecordRaw> = [
     path: '/:network/topic/:topicId',
     name: 'TopicDetails',
     component: TopicDetails,
+    props: true
+  },
+  {
+    path: '/:network/nodes',
+    name: 'Nodes',
+    component: Nodes,
+    props: true
+  },
+  {
+    path: '/:network/node/:nodeId',
+    name: 'NodeDetails',
+    component: NodeDetails,
     props: true
   },
   {
