@@ -35,13 +35,10 @@ import TopNavBar from "@/components/TopNavBar.vue";
 import {errorKey, explanationKey, initialLoadingKey, loadingKey, suggestionKey} from "@/AppKeys"
 import {AxiosMonitor} from "@/utils/AxiosMonitor"
 
-// export const XLARGE_BREAKPOINT = 1240
-export const LARGE_BREAKPOINT = 1160
+export const XLARGE_BREAKPOINT = 1450
+export const LARGE_BREAKPOINT = 1280
 export const MEDIUM_BREAKPOINT = 1024
 export const SMALL_BREAKPOINT = 768
-// this will eventually be the window min width
-// export const FINAL_BREAKPOINT = 576
-// temporary limit under which "mobile coming soon" is displayed
 export const FINAL_BREAKPOINT = 640
 
 export const ORUGA_MOBILE_BREAKPOINT = "1023px"
@@ -78,11 +75,11 @@ export default defineComponent({
     //   return windowWidth.value >= XLARGE_BREAKPOINT
     // })
     // provide('isXLargeScreen', isXLargeScreen)
-
-    const sizeFallBack = computed(() => {
-      return windowWidth.value < FINAL_BREAKPOINT
-    })
-    provide('sizeFallBack', sizeFallBack)
+    //
+    // const sizeFallBack = computed(() => {
+    //   return windowWidth.value < FINAL_BREAKPOINT
+    // })
+    // provide('sizeFallBack', sizeFallBack)
 
     const  onResizeHandler = () => {
       windowWidth.value = window.innerWidth
