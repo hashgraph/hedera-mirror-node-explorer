@@ -77,7 +77,7 @@ export default defineComponent({
     const hbarPriceLabel = 'HBAR PRICE'
     const hbarMarketCapLabel = 'HBAR MARKET CAP'
     const hbarReleasedLabel = 'HBAR RELEASED'
-    const hbarTotalLabel = 'HBAR TOTAL SUPPLY'
+    const hbarTotalLabel = 'HBAR TOTAL'
 
     // 1)
     const coinGeckoMarketData = ref<CoinGeckoMarketData|null>(null)

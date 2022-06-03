@@ -58,7 +58,7 @@ describe("HbarMarketDashboard.vue ", () => {
             "21,084,620,884.43" +
             "HBAR RELEASED" +
             "50,000,000,000" +
-            "HBAR TOTAL SUPPLY"
+            "HBAR TOTAL"
         )
 
         const logos = wrapper.findAll("img")
