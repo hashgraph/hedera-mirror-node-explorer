@@ -92,7 +92,7 @@ describe("MainDashboard.vue", () => {
             "$0.24608.42%HBAR PRICE" +
             "$4,486,259,9418.42%HBAR MARKET CAP" +
             "21,084,620,884.43HBAR RELEASED" +
-            "50,000,000,000HBAR TOTAL SUPPLY")
+            "50,000,000,000HBAR TOTAL")
 
         const cards = wrapper.findAllComponents(DashboardCard)
         expect(cards.length).toBe(3)

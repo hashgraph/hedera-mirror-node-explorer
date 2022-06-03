@@ -28,7 +28,8 @@
     <div v-if="isMediumScreen" class="mr-2">
       <slot name="symbol"></slot>
     </div>
-    <div class="is-flex is-align-items-center has-text-white">
+    <div class="is-flex has-text-white"
+         :class="{'is-align-items-center': variation, 'is-align-items-baseline': !variation}">
       <p class="dashboard-value has-text-white mr-2">{{ value }}</p>
       <div class="is-flex-is-vertical" :class="{'pt-1':isMediumScreen}" style="line-height: 1">
         <Variation v-if="variation" :variation="variation"/>
