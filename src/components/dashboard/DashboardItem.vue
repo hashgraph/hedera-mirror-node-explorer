@@ -24,12 +24,12 @@
 
 <template>
 
-  <div class="is-flex is-align-items-center mx-5">
+  <div class="is-flex is-align-items-center mx-3">
     <div v-if="isMediumScreen" class="mr-2">
       <slot name="symbol"></slot>
     </div>
     <div class="is-flex is-align-items-center has-text-white">
-      <p class="dashboard-value has-text-white mr-2">${{ value }}</p>
+      <p class="dashboard-value has-text-white mr-2">{{ value }}</p>
       <div class="is-flex-is-vertical" :class="{'pt-1':isMediumScreen}" style="line-height: 1">
         <Variation v-if="variation" :variation="variation"/>
         <p class="h-is-text-size-1">{{ name }}</p>

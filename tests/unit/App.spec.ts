@@ -21,7 +21,7 @@
 import {flushPromises, mount} from "@vue/test-utils"
 import router from "@/router";
 import axios from "axios";
-import {SAMPLE_COINGECKO, SAMPLE_TOKEN, SAMPLE_TRANSACTIONS} from "./Mocks";
+import {SAMPLE_COINGECKO, SAMPLE_NETWORK_SUPPLY, SAMPLE_TOKEN, SAMPLE_TRANSACTIONS} from "./Mocks";
 import App from "@/App.vue";
 import TopNavBar from "@/components/TopNavBar.vue";
 import HbarMarketDashboard from "@/components/dashboard/HbarMarketDashboard.vue";
@@ -70,6 +70,9 @@ describe("App.vue", () => {
 
         const matcher3 = "https://api.coingecko.com/api/v3/coins/hedera-hashgraph"
         mock.onGet(matcher3).reply(200, SAMPLE_COINGECKO);
+
+        const matcher4 = "/api/v1/network/supply/"
+        mock.onGet(matcher4).reply(200, SAMPLE_NETWORK_SUPPLY);
 
         const wrapper = mount(App, {
             global: {
