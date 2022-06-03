@@ -142,7 +142,6 @@ export default defineComponent({
     const network = computed( () => { return route.params.network })
     const name = computed( () => { return route.name })
 
-    const hideNavBar = inject('sizeFallBack', false)
     const showTopRightLogo = inject('isLargeScreen', true)
 
     const isMobileMenuOpen = ref(false)
@@ -199,7 +198,6 @@ export default defineComponent({
       productName,
       showErrorDialog,
       name,
-      hideNavBar,
       showTopRightLogo,
       isMobileMenuOpen,
       networkRegistry,
