@@ -27,7 +27,7 @@
 
 import {flushPromises, mount} from "@vue/test-utils";
 import router from "@/router";
-import {SAMPLE_TOKEN} from "../Mocks";
+import {SAMPLE_TOKEN, SAMPLE_TOKEN_DUDE} from "../Mocks";
 import TokenAmount from "@/components/values/TokenAmount.vue";
 import MockAdapter from "axios-mock-adapter";
 import axios from "axios";
@@ -35,6 +35,8 @@ import axios from "axios";
 const mock = new MockAdapter(axios);
 const matcher = "/api/v1/tokens/" + SAMPLE_TOKEN.token_id
 mock.onGet(matcher).reply(200, SAMPLE_TOKEN);
+const matcher2 = "/api/v1/tokens/" + SAMPLE_TOKEN_DUDE.token_id
+mock.onGet(matcher2).reply(200, SAMPLE_TOKEN_DUDE);
 
 describe("TokenAmount.vue", () => {
 
@@ -115,6 +117,16 @@ describe("TokenAmount.vue", () => {
         expect(wrapper.get('span').text()).toBe(testAmount.toString())
         expect(wrapper.get('a').attributes('href')).toMatch(RegExp("/token/" + SAMPLE_TOKEN.token_id + "$"))
         expect(wrapper.get('.h-is-extra-text').text()).toBe(SAMPLE_TOKEN.name)
+
+        await wrapper.setProps({
+            tokenId: SAMPLE_TOKEN_DUDE.token_id,
+            showExtra: true
+        })
+        await flushPromises()
+
+        expect(wrapper.get('span').text()).toBe((testAmount / 100).toString())
+        expect(wrapper.get('a').attributes('href')).toMatch(RegExp("/token/" + SAMPLE_TOKEN_DUDE.token_id + "$"))
+        expect(wrapper.get('.h-is-extra-text').text()).toBe(SAMPLE_TOKEN_DUDE.name)
     });
 
 });
