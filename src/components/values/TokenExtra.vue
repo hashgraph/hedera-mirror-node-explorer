@@ -63,12 +63,10 @@ export default defineComponent({
 
   setup(props) {
     const extra = ref("")
-    const response = ref<AxiosResponse<TokenInfo>|null>(null)
 
     const updateExtra = () => {
       if (props.tokenId) {
         TokenInfoCollector.instance.fetch(props.tokenId).then((r: AxiosResponse<TokenInfo>) => {
-          response.value = r
           if (props.showName) {
             extra.value = r.data.name ?? ""
           } else {
@@ -76,7 +74,6 @@ export default defineComponent({
           }
         }, (reason: unknown) => {
           console.warn("TokenInfoCollector did fail to fetch " + props.tokenId + " with reason: " + reason)
-          response.value = null
         })
       }
     }
