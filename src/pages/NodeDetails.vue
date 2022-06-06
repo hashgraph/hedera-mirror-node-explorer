@@ -92,6 +92,14 @@
                            v-bind:show-none="true"/>
               </template>
             </Property>
+            <Property :id="'serviceEndpoints'">
+              <template v-slot:name>Service Endpoints</template>
+              <template v-slot:value>
+                <div v-for="s in node?.service_endpoints" :key="s.ip_address_v4">
+                  <Endpoint :address="s.ip_address_v4" :port="s.port"></Endpoint>
+                </div>
+              </template>
+            </Property>
           </div>
 
         </div>
@@ -127,12 +135,14 @@ import Property from "@/components/Property.vue";
 import {base64DecToArr, byteToHex} from "@/utils/B64Utils";
 import HexaValue from "@/components/values/HexaValue.vue";
 import {operatorRegistry} from "@/schemas/OperatorRegistry";
+import Endpoint from "@/components/values/Endpoint.vue";
 
 export default defineComponent({
 
   name: 'NodeDetails',
 
   components: {
+    Endpoint,
     HexaValue,
     Property,
     NotificationBanner,
