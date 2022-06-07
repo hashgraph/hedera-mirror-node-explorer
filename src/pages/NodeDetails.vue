@@ -43,7 +43,7 @@
             <Property :id="'nodeAccount'">
               <template v-slot:name>Node Account</template>
               <template v-slot:value>
-                <AccountLink v-bind:accountId="node?.node_account_id"/>
+                <AccountLink :accountId="node?.node_account_id" :show-none="true"/>
               </template>
             </Property>
             <Property :id="'description'">
@@ -95,9 +95,7 @@
             <Property :id="'serviceEndpoints'">
               <template v-slot:name>Service Endpoints</template>
               <template v-slot:value>
-                <div v-for="s in node?.service_endpoints" :key="s.ip_address_v4">
-                  <Endpoint :address="s.ip_address_v4" :port="s.port"></Endpoint>
-                </div>
+                <Endpoints :endpoints="node?.service_endpoints"></Endpoints>
               </template>
             </Property>
           </div>
@@ -135,14 +133,14 @@ import Property from "@/components/Property.vue";
 import {base64DecToArr, byteToHex} from "@/utils/B64Utils";
 import HexaValue from "@/components/values/HexaValue.vue";
 import {operatorRegistry} from "@/schemas/OperatorRegistry";
-import Endpoint from "@/components/values/Endpoint.vue";
+import Endpoints from "@/components/values/Endpoints.vue";
 
 export default defineComponent({
 
   name: 'NodeDetails',
 
   components: {
-    Endpoint,
+    Endpoints,
     HexaValue,
     Property,
     NotificationBanner,
@@ -157,7 +155,7 @@ export default defineComponent({
 
   props: {
     nodeId: {
-      type: Number,
+      type: String,
       required: true
     },
     network: String
@@ -167,7 +165,18 @@ export default defineComponent({
     const isSmallScreen = inject('isSmallScreen', true)
     const isTouchDevice = inject('isTouchDevice', false)
     const node = ref<NetworkNode | null>(null)
-    const notification = ""
+
+    const unknownNodeId = ref(false)
+    const notification = computed(() => {
+      let result
+      if (unknownNodeId.value) {
+        result =  "Node with ID " + props.nodeId + " was not found"
+      } else {
+        result = null
+      }
+      return result
+    })
+
     const nodeDescription = computed(() => {
       let result
       if (node.value?.description) {
@@ -181,14 +190,18 @@ export default defineComponent({
     onBeforeMount(() => fetchNode(props.nodeId))
     watch(() => props.nodeId, () => fetchNode(props.nodeId));
 
-    const fetchNode = (nodeId: number) => {
+    const fetchNode = (nodeId: string) => {
       const url = "api/v1/network/nodes"
       const queryParams = {params: {'node.id': nodeId}}
       axios
           .get<NetworkNodesResponse>(url, queryParams)
           .then(result => {
-            if (result.data.nodes) {
+            if (result.data.nodes && result.data.nodes.length > 0) {
               node.value = result.data.nodes[0]
+              unknownNodeId.value = false
+            } else {
+              node.value = null
+              unknownNodeId.value = true
             }
           })
     }

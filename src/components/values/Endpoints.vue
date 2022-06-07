@@ -24,12 +24,16 @@
 
 <template>
 
-  <span v-if="address">
-    <span>{{ address }}</span>
-    <span v-if="port" class="has-text-grey h-is-smaller">{{ ':' + port }}</span>
-  </span>
+  <div v-if="endpoints && endpoints.length">
+    <div v-for="s in endpoints" :key="s.ip_address_v4">
+      <span v-if="s.ip_address_v4">{{ s.ip_address_v4 }}</span>
+      <span v-if="s.ip_address_v4 && s.port != null" class="has-text-grey h-is-smaller">{{ ':' + s.port }}</span>
+    </div>
+  </div>
 
-  <span v-else/>
+  <span v-else-if="initialLoading"/>
+
+  <span v-else class="has-text-grey">None</span>
 
 </template>
 
@@ -39,15 +43,15 @@
 
 <script lang="ts">
 
-import {defineComponent, inject, ref} from 'vue';
+import {defineComponent, inject, PropType, ref} from 'vue';
 import {initialLoadingKey} from "@/AppKeys";
+import {ServiceEndPoint} from "@/schemas/HederaSchemas";
 
 export default defineComponent({
-  name: 'Endpoint',
+  name: 'Endpoints',
 
   props: {
-    address: String,
-    port: Number,
+    endpoints: Object as PropType<Array<ServiceEndPoint>|undefined>,
   },
 
   setup() {
