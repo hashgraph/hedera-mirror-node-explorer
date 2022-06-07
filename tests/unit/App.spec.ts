@@ -21,7 +21,7 @@
 import {flushPromises, mount} from "@vue/test-utils"
 import router from "@/router";
 import axios from "axios";
-import {SAMPLE_COINGECKO, SAMPLE_TOKEN, SAMPLE_TRANSACTIONS} from "./Mocks";
+import {SAMPLE_COINGECKO, SAMPLE_NETWORK_SUPPLY, SAMPLE_TOKEN, SAMPLE_TRANSACTIONS} from "./Mocks";
 import App from "@/App.vue";
 import TopNavBar from "@/components/TopNavBar.vue";
 import HbarMarketDashboard from "@/components/dashboard/HbarMarketDashboard.vue";
@@ -71,6 +71,9 @@ describe("App.vue", () => {
         const matcher3 = "https://api.coingecko.com/api/v3/coins/hedera-hashgraph"
         mock.onGet(matcher3).reply(200, SAMPLE_COINGECKO);
 
+        const matcher4 = "/api/v1/network/supply/"
+        mock.onGet(matcher4).reply(200, SAMPLE_NETWORK_SUPPLY);
+
         const wrapper = mount(App, {
             global: {
                 plugins: [router, Oruga]
@@ -101,56 +104,13 @@ describe("App.vue", () => {
         expect(cards[2].text()).toMatch(RegExp("^HCS Messages"))
 
         const logos = wrapper.findAll("img")
-        expect(logos.length).toBe(8)
+        expect(logos.length).toBe(6)
         expect(logos[0].attributes('alt')).toBe("Product Logo")
         expect(logos[1].attributes('alt')).toBe("Built On Hedera")
-        expect(logos[2].attributes('alt')).toBe("Hbar Symbol")
+        expect(logos[2].attributes('alt')).toBe("Trend Up")
         expect(logos[3].attributes('alt')).toBe("Trend Up")
-        expect(logos[4].attributes('alt')).toBe("World Market Symbol")
-        expect(logos[5].attributes('alt')).toBe("Trend Up")
-        expect(logos[6].attributes('alt')).toBe("Built On Hedera")
-        expect(logos[7].attributes('alt')).toBe("Sponsor Logo")
-
-        wrapper.unmount()
-    });
-
-    test.skip("smaller screen", async () => {
-
-        const SMALLER_SCREEN_SIZE = 576
-        await router.push("/") // To avoid "missing required param 'network'" error
-        Object.defineProperty(window, 'innerWidth', {
-            writable: true,
-            configurable: true,
-            value: SMALLER_SCREEN_SIZE })
-
-        const wrapper = mount(App, {
-            global: {
-                plugins: [router, Oruga]
-            },
-            props: {},
-        });
-
-        await flushPromises()
-        // console.log(wrapper.html())
-        // console.log(wrapper.text())
-
-        const sections = wrapper.findAll('section')
-        expect(sections.length).toBe(3)
-        expect(sections[1].text()).toBe("Mobile support coming soon...If on a desktop, please enlarge your browser window")
-
-        const navBar = wrapper.findComponent(TopNavBar)
-        expect(navBar.exists()).toBe(true)
-        expect(navBar.text()).toBe("")
-
-        expect(wrapper.findComponent(HbarMarketDashboard).exists()).toBe(false)
-        expect(wrapper.findComponent(DashboardCard).exists()).toBe(false)
-
-        const logos = wrapper.findAll("img")
-        expect(logos.length).toBe(3)
-
-        expect(logos[0].attributes('alt')).toBe("Product Logo")
-        expect(logos[1].attributes('alt')).toBe("Built On Hedera")
-        expect(logos[2].attributes('alt')).toBe("Sponsor Logo")
+        expect(logos[4].attributes('alt')).toBe("Built On Hedera")
+        expect(logos[5].attributes('alt')).toBe("Sponsor Logo")
 
         wrapper.unmount()
     });

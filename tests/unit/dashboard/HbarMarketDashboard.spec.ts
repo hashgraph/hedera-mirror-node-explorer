@@ -27,22 +27,23 @@
 
 import {flushPromises, mount} from "@vue/test-utils";
 import HbarMarketDashboard from "@/components/dashboard/HbarMarketDashboard.vue";
-import {SAMPLE_COINGECKO} from "../Mocks";
+import {SAMPLE_COINGECKO, SAMPLE_NETWORK_SUPPLY} from "../Mocks";
 import MockAdapter from "axios-mock-adapter";
 import axios from "axios";
-
-const mock = new MockAdapter(axios);
-const matcher = "https://api.coingecko.com/api/v3/coins/hedera-hashgraph"
-mock.onGet(matcher).reply(200, SAMPLE_COINGECKO);
 
 describe("HbarMarketDashboard.vue ", () => {
 
     test("with amount set", async () => {
 
-        const wrapper = mount(HbarMarketDashboard, {
-            props: {
-            },
-        });
+        const mock = new MockAdapter(axios);
+
+        const matcher1 = "https://api.coingecko.com/api/v3/coins/hedera-hashgraph"
+        mock.onGet(matcher1).reply(200, SAMPLE_COINGECKO);
+
+        const matcher2 = "/api/v1/network/supply/"
+        mock.onGet(matcher2).reply(200, SAMPLE_NETWORK_SUPPLY);
+
+        const wrapper = mount(HbarMarketDashboard);
 
         await flushPromises()
         // console.log(wrapper.text())
@@ -53,16 +54,18 @@ describe("HbarMarketDashboard.vue ", () => {
             "HBAR PRICE" +
             "$4,486,259,941" +
             "8.42%" +
-            "HBAR MARKET CAP"
+            "HBAR MARKET CAP" +
+            "21,084,620,884.43" +
+            "HBAR RELEASED" +
+            "50,000,000,000" +
+            "HBAR TOTAL"
         )
 
         const logos = wrapper.findAll("img")
-        expect(logos.length).toBe(4)
+        expect(logos.length).toBe(2)
 
-        expect(logos[0].attributes('alt')).toBe("Hbar Symbol")
+        expect(logos[0].attributes('alt')).toBe("Trend Up")
         expect(logos[1].attributes('alt')).toBe("Trend Up")
-        expect(logos[2].attributes('alt')).toBe("World Market Symbol")
-        expect(logos[3].attributes('alt')).toBe("Trend Up")
     });
 
 });

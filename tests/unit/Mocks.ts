@@ -937,6 +937,16 @@ export const SAMPLE_TOPIC_DUDE_MESSAGES = {
 }
 
 //
+// https://mainnet-public.mirrornode.hedera.com/api/v1/network/supply
+//
+
+export const SAMPLE_NETWORK_SUPPLY = {
+    "released_supply": "2108462088443004452",
+    "timestamp": "1654245000.545436000",
+    "total_supply": "5000000000000000000"
+}
+
+//
 // https://api.coingecko.com/api/v3/coins/hedera-hashgraph
 //
 

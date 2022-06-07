@@ -24,12 +24,13 @@
 
 <template>
 
-  <div class="is-flex is-align-items-center mx-5">
+  <div class="is-flex is-align-items-center mx-3">
     <div v-if="isMediumScreen" class="mr-2">
       <slot name="symbol"></slot>
     </div>
-    <div class="is-flex is-align-items-center has-text-white">
-      <p class="dashboard-value has-text-white mr-2">${{ value }}</p>
+    <div class="is-flex has-text-white"
+         :class="{'is-align-items-center': variation, 'is-align-items-baseline': !variation}">
+      <p class="dashboard-value has-text-white is-numeric mr-2">{{ value }}</p>
       <div class="is-flex-is-vertical" :class="{'pt-1':isMediumScreen}" style="line-height: 1">
         <Variation v-if="variation" :variation="variation"/>
         <p class="h-is-text-size-1">{{ name }}</p>
@@ -80,7 +81,7 @@ export default defineComponent({
   line-height: 34px;
   letter-spacing: -0.05em;
 }
-@media (min-width: 1024px) {
+@media (min-width: 1450px) {
   .dashboard-value {
     font-style: normal;
     font-weight: 300;
