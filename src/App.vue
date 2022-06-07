@@ -71,16 +71,6 @@ export default defineComponent({
     })
     provide('isLargeScreen', isLargeScreen)
 
-    // const isXLargeScreen = computed(() => {
-    //   return windowWidth.value >= XLARGE_BREAKPOINT
-    // })
-    // provide('isXLargeScreen', isXLargeScreen)
-    //
-    // const sizeFallBack = computed(() => {
-    //   return windowWidth.value < FINAL_BREAKPOINT
-    // })
-    // provide('sizeFallBack', sizeFallBack)
-
     const  onResizeHandler = () => {
       windowWidth.value = window.innerWidth
     }
