@@ -71,7 +71,7 @@ export default defineComponent({
           if (props.showName) {
             extra.value = r.data.name ?? ""
           } else {
-            extra.value = makeTokenSymbol(r.date, 40)
+            extra.value = makeTokenSymbol(r.data, 40)
           }
         }, (reason: unknown) => {
           console.warn("TokenInfoCollector did fail to fetch " + props.tokenId + " with reason: " + reason)
