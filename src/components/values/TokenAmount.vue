@@ -37,7 +37,7 @@
 
 <script lang="ts">
 
-import {computed, defineComponent, inject, ref, watch} from "vue";
+import {computed, defineComponent, inject, onMounted, ref, watch} from "vue";
 import {AxiosResponse} from "axios";
 import {TokenInfo} from "@/schemas/HederaSchemas";
 import {TokenInfoCollector} from "@/utils/TokenInfoCollector";
@@ -106,9 +106,12 @@ export default defineComponent({
     watch(() => props.tokenId, () => {
       updateResponse()
     })
-    updateResponse()
 
     const initialLoading = inject(initialLoadingKey, ref(false))
+
+    onMounted(() => {
+      updateResponse()
+    })
 
     return { formattedAmount, extra, errorFlag, initialLoading }
   }
