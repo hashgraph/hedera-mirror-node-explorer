@@ -446,6 +446,15 @@ export interface ServiceEndPoint {
     ip_address_v4: string
     port: number
 }
+// ---------------------------------------------------------------------------------------------------------------------
+//                                                      Network
+// ---------------------------------------------------------------------------------------------------------------------
+
+export interface NetworkSupplyResponse {
+    released_supply:	string | undefined  // The network's released supply of hbars in tinybars
+    timestamp:	string | undefined  // The consensus timestamp at which the released supply was valid
+    total_supply:	string | undefined  // The network's total supply of hbars in tinybars
+}
 
 // ---------------------------------------------------------------------------------------------------------------------
 //                                                      Misc

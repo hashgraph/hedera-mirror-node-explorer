@@ -24,21 +24,36 @@
 
 <template>
 
-  <div>
+  <div v-if="isLargeScreen">
     <div class="is-flex is-flex-wrap-wrap is-justify-content-space-evenly h-top-banner py-2">
+      <DashboardItem :name="hbarPriceLabel" :value="'$' + hbarPrice" :variation="hbarPriceVariation"/>
+      <DashboardItem :name="hbarMarketCapLabel" :value="'$' + hbarMarketCap" :variation="hbarMarketCapVariation"/>
+      <DashboardItem :name="hbarReleasedLabel" :value="hbarReleased"/>
+      <DashboardItem :name="hbarTotalLabel" :value="hbarTotal"/>
+    </div>
+  </div>
 
-      <DashboardItem :name="hbarPriceLabel" :value="hbarPrice" :variation="hbarPriceVariation">
-        <template v-slot:symbol>
-          <img alt="Hbar Symbol" class="image" src="@/assets/hbar.png" style="width: 28px; height: 37px;">
-        </template>
-      </DashboardItem>
+  <div v-else-if="isSmallScreen">
+    <div class="is-flex is-flex-wrap-wrap is-justify-content-space-evenly h-top-banner py-2">
+      <div class="is-flex is-flex-direction-column is-align-items-start">
+        <DashboardItem :name="hbarPriceLabel" :value="'$' + hbarPrice" :variation="hbarPriceVariation"/>
+        <DashboardItem :name="hbarMarketCapLabel" :value="'$' + hbarMarketCap" :variation="hbarMarketCapVariation"/>
+      </div>
+      <div class="is-flex is-flex-direction-column is-align-items-start">
+        <DashboardItem :name="hbarReleasedLabel" :value="hbarReleased"/>
+        <DashboardItem :name="hbarTotalLabel" :value="hbarTotal"/>
+      </div>
+    </div>
+  </div>
 
-      <DashboardItem :name="hbarMarketCapLabel" :value="hbarMarketCap" :variation="hbarMarketCapVariation">
-        <template v-slot:symbol>
-          <img alt="World Market Symbol" class="image" src="@/assets/market-logo.png" style="width: 43px; height: 43px;">
-        </template>
-      </DashboardItem>
-
+  <div v-else>
+    <div class="is-flex is-flex-wrap-wrap is-justify-content-space-evenly h-top-banner py-2">
+      <div class="is-flex is-flex-direction-column is-align-items-start">
+        <DashboardItem :name="hbarPriceLabel" :value="'$' + hbarPrice" :variation="hbarPriceVariation"/>
+        <DashboardItem :name="hbarMarketCapLabel" :value="'$' + hbarMarketCap" :variation="hbarMarketCapVariation"/>
+        <DashboardItem :name="hbarReleasedLabel" :value="hbarReleased"/>
+        <DashboardItem :name="hbarTotalLabel" :value="hbarTotal"/>
+      </div>
     </div>
   </div>
 
@@ -50,9 +65,11 @@
 
 <script lang="ts">
 
-import {computed, defineComponent, onBeforeUnmount, onMounted, ref} from 'vue';
+import {computed, defineComponent, inject, onBeforeUnmount, onMounted, ref} from 'vue';
+import axios from "axios";
 import {CoinGeckoMarketData} from "@/schemas/CoinGeckoMarketData";
 import {CoinGeckoCache} from "@/components/dashboard/CoinGeckoCache";
+import {NetworkSupplyResponse} from "@/schemas/HederaSchemas";
 import DashboardItem from "@/components/dashboard/DashboardItem.vue";
 
 export default defineComponent({
@@ -66,8 +83,13 @@ export default defineComponent({
   },
 
   setup() {
-    const hbarPriceLabel = 'HBAR PRICE'
+    const isSmallScreen = inject('isSmallScreen', true)
+    const isLargeScreen = inject('isLargeScreen', true)
+
+    const hbarPriceLabel =     'HBAR PRICE'
     const hbarMarketCapLabel = 'HBAR MARKET CAP'
+    const hbarReleasedLabel = 'HBAR RELEASED'
+    const hbarTotalLabel = 'HBAR TOTAL'
 
     // 1)
     const coinGeckoMarketData = ref<CoinGeckoMarketData|null>(null)
@@ -90,31 +112,55 @@ export default defineComponent({
       return mc ? Math.round(mc.usd).toLocaleString('en-US') : ""
     })
 
-    // 4)
+    // 5)
     const hbarMarketCapVariation = computed(() => {
       const mccp24 = coinGeckoMarketData.value?.market_cap_change_percentage_24h
       return mccp24 ? (Math.round(mccp24 * 100)/100).toFixed(2) : ""
     })
+
+    // 6)
+    let hbarReleased = ref("")
+    let hbarTotal = ref("")
 
     const cache = new CoinGeckoCache();
     cache.responseDidChangeCB = () => {
       coinGeckoMarketData.value = cache.getEntity()?.market_data ?? null;
     }
     onMounted(() => {
+      fetchNetworkSupply()
       cache.start()
     })
     onBeforeUnmount(() => {
       cache.stop()
     })
 
+    const fetchNetworkSupply = () => {
+      axios
+          .get<NetworkSupplyResponse>("api/v1/network/supply/")
+          .then(result => {
+            if (result.data.released_supply) {
+              hbarReleased.value = (Number(result.data.released_supply)/100000000).toLocaleString('en-US')
+            }
+            if (result.data.total_supply) {
+              hbarTotal.value = (Number(result.data.total_supply)/100000000).toLocaleString('en-US')
+            }
+          })
+    }
+
     return {
+      isSmallScreen,
+      isLargeScreen,
       hbarPriceLabel,
       hbarMarketCapLabel,
+      hbarReleasedLabel,
+      hbarTotalLabel,
       coinGeckoMarketData,
       hbarPrice,
       hbarPriceVariation,
       hbarMarketCap,
-      hbarMarketCapVariation
+      hbarMarketCapVariation,
+      hbarReleased,
+      hbarTotal
     }
   },
 });

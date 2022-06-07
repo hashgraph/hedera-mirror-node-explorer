@@ -21,7 +21,7 @@
 import {flushPromises, mount} from "@vue/test-utils"
 import router from "@/router";
 import axios from "axios";
-import {SAMPLE_COINGECKO, SAMPLE_TOKEN, SAMPLE_TRANSACTIONS} from "../Mocks";
+import {SAMPLE_COINGECKO, SAMPLE_NETWORK_SUPPLY, SAMPLE_TOKEN, SAMPLE_TRANSACTIONS} from "../Mocks";
 import MainDashboard from "@/pages/MainDashboard.vue";
 import HbarMarketDashboard from "@/components/dashboard/HbarMarketDashboard.vue";
 import DashboardCard from "@/components/DashboardCard.vue";
@@ -73,6 +73,9 @@ describe("MainDashboard.vue", () => {
         const matcher3 = "https://api.coingecko.com/api/v3/coins/hedera-hashgraph"
         mock.onGet(matcher3).reply(200, SAMPLE_COINGECKO);
 
+        const matcher4 = "/api/v1/network/supply/"
+        mock.onGet(matcher4).reply(200, SAMPLE_NETWORK_SUPPLY);
+
         const wrapper = mount(MainDashboard, {
             global: {
                 plugins: [router, Oruga]
@@ -85,7 +88,11 @@ describe("MainDashboard.vue", () => {
 
         const dash = wrapper.findComponent(HbarMarketDashboard)
         expect(dash.exists()).toBe(true)
-        expect(dash.text()).toBe("$0.24608.42%HBAR PRICE$4,486,259,9418.42%HBAR MARKET CAP")
+        expect(dash.text()).toBe(
+            "$0.24608.42%HBAR PRICE" +
+            "$4,486,259,9418.42%HBAR MARKET CAP" +
+            "21,084,620,884.43HBAR RELEASED" +
+            "50,000,000,000HBAR TOTAL")
 
         const cards = wrapper.findAllComponents(DashboardCard)
         expect(cards.length).toBe(3)
