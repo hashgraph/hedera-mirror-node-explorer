@@ -41,7 +41,7 @@
 
 <script lang="ts">
 
-import {defineComponent, ref, watch} from "vue";
+import {defineComponent, onMounted, ref, watch} from "vue";
 import {AxiosResponse} from "axios";
 import {TokenInfo} from "@/schemas/HederaSchemas";
 import {TokenInfoCollector} from "@/utils/TokenInfoCollector";
@@ -81,7 +81,10 @@ export default defineComponent({
     watch(() => props.tokenId, () => {
       updateExtra()
     })
-    updateExtra()
+
+    onMounted(() => {
+      updateExtra()
+    })
 
     return { extra }
   }
