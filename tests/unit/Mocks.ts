@@ -1002,9 +1002,9 @@ export const SAMPLE_NETWORK_NODES = {
         {
             "description": "",
             "file_id": "0.0.102",
-            "memo": "0.0.4",
-            "node_id": 1,
-            "node_account_id": "0.0.4",
+            "memo": "0.0.5",
+            "node_id": 2,
+            "node_account_id": "0.0.5",
             "node_cert_hash": "0xffd6ada74a3a34a9",
             "public_key": "0x308201a2300d0609",
             "service_endpoints": [

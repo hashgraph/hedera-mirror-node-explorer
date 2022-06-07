@@ -39,7 +39,7 @@
       </div>
     </o-table-column>
 
-    <o-table-column v-slot="props" field="node_account_id" label="Node Account">
+    <o-table-column v-slot="props" field="node_account_id" label="Account">
       <div class="is-numeric">
         {{ props.row.node_account_id }}
       </div>
