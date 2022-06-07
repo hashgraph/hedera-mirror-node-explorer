@@ -74,7 +74,7 @@ export const SAMPLE_TOKEN_DUDE = {
         "fixed_fees": [],
         "fractional_fees": []
     },
-    "decimals": "0",
+    "decimals": "2",
     "deleted": false,
     "expiry_timestamp": null,
     "fee_schedule_key": null,

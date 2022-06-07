@@ -41,7 +41,7 @@
 
 <script lang="ts">
 
-import {defineComponent, ref} from "vue";
+import {defineComponent, onMounted, ref, watch} from "vue";
 import {AxiosResponse} from "axios";
 import {TokenInfo} from "@/schemas/HederaSchemas";
 import {TokenInfoCollector} from "@/utils/TokenInfoCollector";
@@ -64,21 +64,28 @@ export default defineComponent({
 
   setup(props) {
     const extra = ref("")
-    const response = ref<AxiosResponse<TokenInfo>|null>(null)
 
-    if (props.tokenId) {
-      TokenInfoCollector.instance.fetch(props.tokenId).then((r: AxiosResponse<TokenInfo>) => {
-        response.value = r
-        if (props.showName) {
-          extra.value = r.data.name ?? ""
-        } else {
-          extra.value = makeTokenSymbol(r.data, 40)
-        }
-      }, (reason: unknown) => {
-        console.warn("TokenInfoCollector did fail to fetch " + props.tokenId + " with reason: " + reason)
-        response.value = null
-      })
+    const updateExtra = () => {
+      if (props.tokenId) {
+        TokenInfoCollector.instance.fetch(props.tokenId).then((r: AxiosResponse<TokenInfo>) => {
+          if (props.showName) {
+            extra.value = r.data.name ?? ""
+          } else {
+            extra.value = makeTokenSymbol(r.data, 40)
+          }
+        }, (reason: unknown) => {
+          console.warn("TokenInfoCollector did fail to fetch " + props.tokenId + " with reason: " + reason)
+        })
+      }
     }
+
+    watch(() => props.tokenId, () => {
+      updateExtra()
+    })
+
+    onMounted(() => {
+      updateExtra()
+    })
 
     return { extra }
   }

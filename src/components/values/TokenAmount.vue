@@ -37,7 +37,7 @@
 
 <script lang="ts">
 
-import {computed, defineComponent, inject, ref} from "vue";
+import {computed, defineComponent, inject, onMounted, ref, watch} from "vue";
 import {AxiosResponse} from "axios";
 import {TokenInfo} from "@/schemas/HederaSchemas";
 import {TokenInfoCollector} from "@/utils/TokenInfoCollector";
@@ -93,16 +93,25 @@ export default defineComponent({
       return response.value !== null && response.value.status != 200
     })
 
-    if (props.tokenId) {
-      TokenInfoCollector.instance.fetch(props.tokenId).then((r: AxiosResponse<TokenInfo>) => {
-        response.value = r
-      }, (reason: unknown) => {
-        console.warn("TokenInfoCollector did fail to fetch " + props.tokenId + " with reason: " + reason)
-        response.value = null
-      })
+    const updateResponse = () => {
+      if (props.tokenId) {
+        TokenInfoCollector.instance.fetch(props.tokenId).then((r: AxiosResponse<TokenInfo>) => {
+          response.value = r
+        }, (reason: unknown) => {
+          console.warn("TokenInfoCollector did fail to fetch " + props.tokenId + " with reason: " + reason)
+          response.value = null
+        })
+      }
     }
+    watch(() => props.tokenId, () => {
+      updateResponse()
+    })
 
     const initialLoading = inject(initialLoadingKey, ref(false))
+
+    onMounted(() => {
+      updateResponse()
+    })
 
     return { formattedAmount, extra, errorFlag, initialLoading }
   }

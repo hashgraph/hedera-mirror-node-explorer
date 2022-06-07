@@ -308,8 +308,8 @@ describe("TokenTransferGraphF.vue", () => {
 
         expect(wrapper.text()).toBe("Token TransfersAccountToken AmountAccountToken Amount0.0.100-723423\n\n" +
             "0.0.200223423Transfer0.0.101-323423\n\n" +
-            "0.0.201823423Transfer0.0.100-623423 DUDE\n\n" +
-            "0.0.200623423 DUDETransfer")
+            "0.0.201823423Transfer0.0.100-0.0623423 DUDE\n\n" +
+            "0.0.2000.0623423 DUDETransfer")
     })
 
 })
