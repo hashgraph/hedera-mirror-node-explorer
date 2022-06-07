@@ -25,7 +25,7 @@
 <template>
   <div class="has-text-centered h-is-tertiary-text-text has-text-grey mb-4">
     <span v-if="initialLoading">Loading…</span>
-    <span >No Data</span>
+    <span v-else>No Data</span>
   </div>
 </template>
 
