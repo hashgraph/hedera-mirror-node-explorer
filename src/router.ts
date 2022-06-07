@@ -18,7 +18,7 @@
  *
  */
 
-import {createRouter, createWebHashHistory, RouteRecordRaw} from 'vue-router'
+import {createRouter, createWebHashHistory, RouteLocationNormalized, RouteRecordRaw} from 'vue-router'
 import MainDashboard from "@/pages/MainDashboard.vue";
 import Transactions from "@/pages/Transactions.vue";
 import TransactionDetails from "@/pages/TransactionDetails.vue";
@@ -37,16 +37,18 @@ import {AxiosMonitor} from "@/utils/AxiosMonitor";
 import TransactionsById from "@/pages/TransactionsById.vue";
 import MobileMenu from "@/pages/MobileMenu.vue";
 import MobileSearch from "@/pages/MobileSearch.vue";
-import {networkRegistry} from "@/schemas/NetworkRegistry";
+import {NetworkEntry, networkRegistry} from "@/schemas/NetworkRegistry";
+import {AppStorage} from "@/AppStorage";
+import axios from "axios";
 
 const routes: Array<RouteRecordRaw> = [
   {
     path: '/',
-    redirect: '/' + networkRegistry.getLastUsedNetwork() + '/dashboard'
+    redirect: '/' + AppStorage.getLastNetwork().name  + '/dashboard'
   },
   {
     path: '/page-not-found',
-    redirect: '/' + networkRegistry.getLastUsedNetwork() + '/page-not-found'
+    redirect: '/' + AppStorage.getLastNetwork().name + '/page-not-found'
   },
   {
     path: '/:network/page-not-found',
@@ -168,31 +170,19 @@ const router = createRouter({
   routes
 })
 
-router.beforeEach((to, from) => {
-  const fromNetwork = networkRegistry.getLastUsedNetwork()
-  const toNetwork = to.params.network as string
+router.beforeEach((to) => {
+  let result: boolean | string
 
-  let result
-
-  if(networkRegistry.lookup(toNetwork)) {
-
-    networkRegistry.useNetwork(toNetwork)
-
-    if (fromNetwork && (fromNetwork != toNetwork) && (from.name == to.name)) {
-      result = {
-        name: 'MainDashboard',
-        params: {
-          network: toNetwork
-        }
-      }
-    } else {
-      result = true
-    }
+  const toEntry = getNetworkEntryFromRoute(to)
+  if (toEntry !== null) {
+    // Network is valid => updates AppStorage and axios
+    result = true
+    AppStorage.setLastNetwork(toEntry)
+    axios.defaults.baseURL = toEntry.url
   } else {
-    // console.log("Unknown network: <" + toNetwork + ">")
+    // Network is invalid => page not found
     result = '/page-not-found'
   }
-
   return result
 })
 
@@ -235,3 +225,20 @@ router.beforeEach(() => {
 })
 
 export default router
+
+export function getNetworkEntryFromRoute(r: RouteLocationNormalized): NetworkEntry | null {
+
+  let networkName: string|null
+  const networkParam = r.params.network
+  if (Array.isArray(networkParam)) {
+    networkName = networkParam.length >= 1 ? networkParam[0] : null
+  } else {
+    networkName = networkParam
+  }
+
+  return networkName !== null ? networkRegistry.lookup(networkName) : null
+}
+
+export function getNetworkEntryFromCurrentRoute(): NetworkEntry {
+  return getNetworkEntryFromRoute(router.currentRoute.value) ?? networkRegistry.getDefaultEntry()
+}
