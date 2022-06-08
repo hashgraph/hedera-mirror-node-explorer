@@ -47,13 +47,13 @@
 
     <o-table-column v-slot="props" field="description" label="Description">
       <div class="should-wrap">
-        <BlobValue v-bind:blob-value="props.row.description" v-bind:show-none="true"/>
+        <BlobValue v-bind:blob-value="makeDescription(props.row)" v-bind:show-none="true"/>
       </div>
     </o-table-column>
 
-    <o-table-column v-slot="props" field="memo" label="Memo">
+    <o-table-column field="stake" label="Stake">
       <div class="should-wrap">
-        <BlobValue v-bind:base64="true" v-bind:blob-value="props.row.memo" v-bind:show-none="true"/>
+        <HbarAmount :amount="0"  />
       </div>
     </o-table-column>
 
@@ -76,6 +76,8 @@ import {ORUGA_MOBILE_BREAKPOINT} from '@/App.vue';
 import EmptyTable from "@/components/EmptyTable.vue";
 import axios from "axios";
 import router from "@/router";
+import {operatorRegistry} from "@/schemas/OperatorRegistry";
+import HbarAmount from "@/components/values/HbarAmount.vue";
 
 
 //
@@ -85,7 +87,7 @@ import router from "@/router";
 export default defineComponent({
   name: 'NodeTable',
 
-  components: {EmptyTable, BlobValue},
+  components: {HbarAmount, EmptyTable, BlobValue},
 
   props: {},
 
@@ -111,6 +113,16 @@ export default defineComponent({
           })
     }
 
+    const makeDescription = (node: NetworkNode) => {
+      let result
+      if (node.description) {
+        result = node.description
+      } else {
+        result = node.node_account_id ? operatorRegistry.lookup(node.node_account_id)?.getDescription() : null
+      }
+      return result
+    }
+
     const handleClick = (n: NetworkNode) => {
       router.push({name: 'NodeDetails', params: { nodeId: n.node_id}})
     }
@@ -119,6 +131,7 @@ export default defineComponent({
       isTouchDevice,
       isMediumScreen,
       nodes,
+      makeDescription,
       handleClick,
       ORUGA_MOBILE_BREAKPOINT
     }
