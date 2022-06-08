@@ -73,6 +73,7 @@ export class AxiosMonitor {
             this.successfulRequestCount = 0
             this.stateDidChange()
         }
+        this.idlePeriodCount = 0
     }
 
     public makeExplanationOrSuggestion(explanation: boolean): string {
