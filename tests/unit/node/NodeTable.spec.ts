@@ -71,12 +71,12 @@ describe("NodeTable.vue", () => {
         // console.log(wrapper.text())
         // console.log(wrapper.html())
 
-        expect(wrapper.get('thead').text()).toBe("Node Account Description Memo")
+        expect(wrapper.get('thead').text()).toBe("Node Account Description Stake")
         expect(wrapper.get('tbody').findAll('tr').length).toBe(3)
         expect(wrapper.get('tbody').text()).toBe(
-            "0" + "0.0.3" + "None" + "0.0.3" +
-            "1" + "0.0.4" + "None" + "0.0.4" +
-            "2" + "0.0.5" + "None" + "0.0.5")
+            "0" + "0.0.3" + "None" + "0.00000000" +
+            "1" + "0.0.4" + "None" + "0.00000000" +
+            "2" + "0.0.5" + "None" + "0.00000000")
 
         wrapper.unmount()
         await flushPromises()
