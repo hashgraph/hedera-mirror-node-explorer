@@ -52,12 +52,6 @@
                 <BlobValue :base64="false" :blob-value="nodeDescription" :show-none="true" class="should-wrap"/>
               </template>
             </Property>
-            <Property :id="'memo'">
-              <template v-slot:name>Memo</template>
-              <template v-slot:value>
-                <BlobValue :base64="true" :blob-value="node?.memo" :show-none="true" class="should-wrap"/>
-              </template>
-            </Property>
             <Property :id="'publicKey'">
               <template v-slot:name>Public Key</template>
               <template v-slot:value>
