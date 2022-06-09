@@ -23,91 +23,156 @@
 <!-- --------------------------------------------------------------------------------------------------------------- -->
 
 <template>
-
-  <ModalDialog v-model:show-dialog="showErrorDialog" :iconClass="'fa fa-2x fa-info has-text-info'">
-    <template v-slot:dialogMessage>{{ productName }} is a ledger explorer for the Hedera network</template>
+  <ModalDialog
+    v-model:show-dialog="showErrorDialog"
+    :iconClass="'fa fa-2x fa-info has-text-info'"
+  >
+    <template v-slot:dialogMessage
+      >{{ productName }} is a ledger explorer for the Hedera network</template
+    >
     <template v-slot:dialogDetails>
       <div>Build date: {{ buildTime }}</div>
     </template>
   </ModalDialog>
 
-  <div v-if="!isMediumScreen"
-       class="is-flex is-align-items-center is-justify-content-space-between pt-3 pb-4">
-
-    <span class="is-inline-flex is-align-items-center is-flex-grow-0 is-flex-shrink-0">
-      <a class="mr-3" @click="showErrorDialog=true">
-        <img alt="Product Logo" class="image" src="@/assets/branding/brand-product-logo.png" style="max-width: 165px;">
+  <div
+    v-if="!isMediumScreen"
+    class="is-flex is-align-items-center is-justify-content-space-between pt-3 pb-4"
+  >
+    <span
+      class="is-inline-flex is-align-items-center is-flex-grow-0 is-flex-shrink-0"
+    >
+      <a class="mr-3" @click="showErrorDialog = true">
+        <img
+          alt="Product Logo"
+          class="image"
+          src="@/assets/branding/brand-product-logo.png"
+          style="max-width: 165px"
+        />
       </a>
-      <AxiosStatus/>
+      <AxiosStatus />
     </span>
 
     <div class="is-flex is-align-items-center pt-2">
-      <a v-if="name !== 'MobileMenu' && name !== 'MobileSearch'"
-         @click="$router.push({name: 'MobileSearch'})">
-        <img alt="Search bar" src="@/assets/search-icon.png" style="max-height: 20px;">
+      <a
+        v-if="name !== 'MobileMenu' && name !== 'MobileSearch'"
+        @click="$router.push({ name: 'MobileSearch' })"
+      >
+        <img
+          alt="Search bar"
+          src="@/assets/search-icon.png"
+          style="max-height: 20px"
+        />
       </a>
-      <a v-if="name !== 'MobileMenu' && name !== 'MobileSearch'" class="ml-5"
-         @click="$router.push({name: 'MobileMenu', query: {from: name}})">
-        <img alt="Search bar" src="@/assets/hamburger.png" style="max-height: 32px;">
+      <a
+        v-if="name !== 'MobileMenu' && name !== 'MobileSearch'"
+        class="ml-5"
+        @click="$router.push({ name: 'MobileMenu', query: { from: name } })"
+      >
+        <img
+          alt="Search bar"
+          src="@/assets/hamburger.png"
+          style="max-height: 32px"
+        />
       </a>
-      <a v-else class="ml-5 mr-2"
-         @click="$router.back()">
-        <img alt="Search bar" src="@/assets/close-icon.png" style="max-height: 22px;">
+      <a v-else class="ml-5 mr-2" @click="$router.back()">
+        <img
+          alt="Search bar"
+          src="@/assets/close-icon.png"
+          style="max-height: 22px"
+        />
       </a>
     </div>
-
   </div>
 
-  <div v-else class="is-flex is-justify-content-space-between is-align-items-flex-end">
-    <span class="is-inline-flex is-align-items-center is-flex-grow-0 is-flex-shrink-0">
+  <div
+    v-else
+    class="is-flex is-justify-content-space-between is-align-items-flex-end"
+  >
+    <span
+      class="is-inline-flex is-align-items-center is-flex-grow-0 is-flex-shrink-0"
+    >
       <a id="product-logo" @click="showErrorDialog = true" class="mr-3">
-        <img alt="Product Logo" class="image" src="@/assets/branding/brand-product-logo.png">
+        <img
+          alt="Product Logo"
+          class="image"
+          src="@/assets/branding/brand-product-logo.png"
+        />
       </a>
-      <AxiosStatus/>
+      <AxiosStatus />
     </span>
-    <div class="is-flex-grow-0 is-flex-shrink-0 is-flex is-flex-direction-column ml-4">
+    <div
+      class="is-flex-grow-0 is-flex-shrink-0 is-flex is-flex-direction-column ml-4"
+    >
       <div class="is-flex mb-3 is-align-items-baseline">
-
         <div id="drop-down-menu">
           <o-field>
             <o-select v-model="selectedNetwork" class="h-is-navbar-item">
-              <option v-for="network in networkRegistry.getEntries()" :key="network.name" :value="network.name">
+              <option
+                v-for="network in networkRegistry.getEntries()"
+                :key="network.name"
+                :value="network.name"
+              >
                 {{ network.displayName }}
               </option>
-
             </o-select>
           </o-field>
         </div>
 
-        <div class="is-flex-grow-1 px-2"/>
-        <a id="dashboard-menu-item"
-            class="button is-ghost is-first h-is-navbar-item h-is-dense"
-           :class="{'is-rimmed': isDashboardRoute}"
-           @click="$router.push({name: 'MainDashboard'})">Dashboard</a>
-        <a class="button is-ghost h-is-navbar-item h-is-dense"
-           :class="{ 'is-rimmed': isTransactionRoute}"
-           @click="$router.push({name: 'Transactions'})">Transactions</a>
-        <a class="button is-ghost h-is-navbar-item h-is-dense"
-           :class="{ 'is-rimmed': isTokenRoute}"
-           @click="$router.push({name: 'Tokens'})">Tokens</a>
-        <a class="button is-ghost h-is-navbar-item h-is-dense"
-           :class="{ 'is-rimmed': isTopicRoute}"
-           @click="$router.push({name: 'Topics'})">Topics</a>
-        <a class="button is-ghost h-is-navbar-item h-is-dense"
-           :class="{ 'is-rimmed': isContractRoute}"
-           @click="$router.push({name: 'Contracts'})">Contracts</a>
-        <a class="button is-ghost is-last h-is-navbar-item h-is-dense"
-           :class="{ 'is-rimmed': isAccountRoute}"
-           @click="$router.push({name: 'Accounts'})">Accounts</a>
+        <div class="is-flex-grow-1 px-2" />
+        <a
+          id="dashboard-menu-item"
+          class="button is-ghost is-first h-is-navbar-item h-is-dense"
+          :class="{ 'is-rimmed': isDashboardRoute }"
+          @click="$router.push({ name: 'MainDashboard' })"
+          >Dashboard</a
+        >
+        <a
+          class="button is-ghost h-is-navbar-item h-is-dense"
+          :class="{ 'is-rimmed': isTransactionRoute }"
+          @click="$router.push({ name: 'Transactions' })"
+          >Transactions</a
+        >
+        <a
+          class="button is-ghost h-is-navbar-item h-is-dense"
+          :class="{ 'is-rimmed': isTokenRoute }"
+          @click="$router.push({ name: 'Tokens' })"
+          >Tokens</a
+        >
+        <a
+          class="button is-ghost h-is-navbar-item h-is-dense"
+          :class="{ 'is-rimmed': isTopicRoute }"
+          @click="$router.push({ name: 'Topics' })"
+          >Topics</a
+        >
+        <a
+          class="button is-ghost h-is-navbar-item h-is-dense"
+          :class="{ 'is-rimmed': isContractRoute }"
+          @click="$router.push({ name: 'Contracts' })"
+          >Contracts</a
+        >
+        <a
+          class="button is-ghost is-last h-is-navbar-item h-is-dense"
+          :class="{ 'is-rimmed': isAccountRoute }"
+          @click="$router.push({ name: 'Accounts' })"
+          >Accounts</a
+        >
       </div>
-      <SearchBar style="margin-top: 4px"/>
+      <SearchBar style="margin-top: 4px" />
     </div>
-    <a v-if="showTopRightLogo" id="built-on-hedera-logo" href="https://hedera.com" style="line-height: 1">
-      <img alt="Built On Hedera" src="@/assets/built-on-hedera-white.svg" style="min-width: 104px;">
+    <a
+      v-if="showTopRightLogo"
+      id="built-on-hedera-logo"
+      href="https://hedera.com"
+      style="line-height: 1"
+    >
+      <img
+        alt="Built On Hedera"
+        src="@/assets/built-on-hedera-white.svg"
+        style="min-width: 104px"
+      />
     </a>
-
   </div>
-
 </template>
 
 <!-- --------------------------------------------------------------------------------------------------------------- -->
@@ -115,80 +180,99 @@
 <!-- --------------------------------------------------------------------------------------------------------------- -->
 
 <script lang="ts">
-
-import {computed, defineComponent, inject, ref, watch, WatchStopHandle} from "vue";
-import {useRoute} from "vue-router";
+import {
+  computed,
+  defineComponent,
+  inject,
+  ref,
+  watch,
+  WatchStopHandle,
+} from "vue";
+import { useRoute } from "vue-router";
 import router from "@/router";
 import SearchBar from "@/components/SearchBar.vue";
 import AxiosStatus from "@/components/AxiosStatus.vue";
-import {networkRegistry} from "@/schemas/NetworkRegistry";
+import { networkRegistry } from "@/schemas/NetworkRegistry";
 import ModalDialog from "@/components/ModalDialog.vue";
 
 export default defineComponent({
   name: "TopNavBar",
-  components: {ModalDialog, AxiosStatus, SearchBar},
+  components: { ModalDialog, AxiosStatus, SearchBar },
 
   setup() {
-    const isSmallScreen = inject('isSmallScreen', true)
-    const isMediumScreen = inject('isMediumScreen', true)
-    const isTouchDevice = inject('isTouchDevice', false)
-    const buildTime = inject('buildTime', "not available")
+    const isSmallScreen = inject("isSmallScreen", true);
+    const isMediumScreen = inject("isMediumScreen", true);
+    const isTouchDevice = inject("isTouchDevice", false);
+    const buildTime = inject("buildTime", "not available");
 
-    const productName = process.env.VUE_APP_PRODUCT_NAME ?? "Hedera Mirror Node Explorer"
+    const productName =
+      process.env.VUE_APP_PRODUCT_NAME ?? "Hedera Mirror Node Explorer";
 
-    const showErrorDialog = ref(false)
+    const showErrorDialog = ref(false);
 
-    const route = useRoute()
-    const network = computed( () => { return route.params.network })
-    const name = computed( () => { return route.name })
+    const route = useRoute();
+    const network = computed(() => {
+      return route.params.network;
+    });
+    const name = computed(() => {
+      return route.name;
+    });
 
-    const showTopRightLogo = inject('isLargeScreen', true)
+    const showTopRightLogo = inject("isLargeScreen", true);
 
-    const isMobileMenuOpen = ref(false)
+    const isMobileMenuOpen = ref(false);
 
     watch(network, (value) => {
-      updateSelectedNetworkSilently(value)
-    })
+      updateSelectedNetworkSilently(value);
+    });
 
-    const selectedNetwork = ref(network.value)
-    
-    let selectedNetworkWatchHandle: WatchStopHandle|undefined
-    const updateSelectedNetworkSilently = (newValue: string|string[]) => {
+    const selectedNetwork = ref(network.value);
+
+    let selectedNetworkWatchHandle: WatchStopHandle | undefined;
+    const updateSelectedNetworkSilently = (newValue: string | string[]) => {
       if (selectedNetworkWatchHandle) {
-        selectedNetworkWatchHandle()
+        selectedNetworkWatchHandle();
       }
-      selectedNetwork.value = newValue as string
+      selectedNetwork.value = newValue as string;
       selectedNetworkWatchHandle = watch(selectedNetwork, (selection) => {
         router.push({
           name: name.value as string,
-          params: { network: selection }
-        })
-      })
-    }
+          params: { network: selection },
+        });
+      });
+    };
 
     const isDashboardRoute = computed(() => {
-      return name.value === 'MainDashboard'
-    })
+      return name.value === "MainDashboard";
+    });
 
     const isTransactionRoute = computed(() => {
-      return name.value === 'Transactions' || name.value === 'TransactionsById' || name.value === 'TransactionDetails'
-    })
+      return (
+        name.value === "Transactions" ||
+        name.value === "TransactionsById" ||
+        name.value === "TransactionDetails"
+      );
+    });
 
     const isTokenRoute = computed(() => {
-      return name.value === 'Tokens' || name.value === 'TokenDetails'
-    })
+      return name.value === "Tokens" || name.value === "TokenDetails";
+    });
 
     const isTopicRoute = computed(() => {
-      return name.value === 'Topics' || name.value === 'TopicDetails'
-    })
+      return name.value === "Topics" || name.value === "TopicDetails";
+    });
 
     const isContractRoute = computed(() => {
-      return name.value === 'Contracts' || name.value === 'ContractDetails'
-    })
+      return name.value === "Contracts" || name.value === "ContractDetails";
+    });
 
     const isAccountRoute = computed(() => {
-      return name.value === 'Accounts' || name.value === 'AccountDetails' || name.value === 'AccountBalances'
-    })
+      return (
+        name.value === "Accounts" ||
+        name.value === "AccountDetails" ||
+        name.value === "AccountBalances"
+      );
+    });
 
     return {
       isSmallScreen,
@@ -208,10 +292,9 @@ export default defineComponent({
       isTopicRoute,
       isContractRoute,
       isAccountRoute,
-    }
+    };
   },
-})
-
+});
 </script>
 
 <!-- --------------------------------------------------------------------------------------------------------------- -->
@@ -219,7 +302,6 @@ export default defineComponent({
 <!-- --------------------------------------------------------------------------------------------------------------- -->
 
 <style>
-
 @media (min-width: 1240px) {
   #product-logo {
     max-width: 242px;
@@ -243,5 +325,4 @@ export default defineComponent({
     max-width: 220px;
   }
 }
-
 </style>

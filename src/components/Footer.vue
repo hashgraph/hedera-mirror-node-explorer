@@ -23,7 +23,7 @@
 <!-- --------------------------------------------------------------------------------------------------------------- -->
 
 <template>
-  <section
+  <footer
     class="section pt-0"
     :class="{
       'h-mobile-background':
@@ -38,18 +38,18 @@
     >
       <a href="https://www.lworks.io" style="line-height: 1">
         <img
-          alt="Ledger Works"
+          alt="Ledger Works."
           src="@/assets/branding/brand-product-logo.png"
           style="max-height: 3rem"
         />
       </a>
       <div
-        class="footer-links ml-5 pb-1 is-flex"
+        class="ml-5 pb-1 is-flex footer-links"
         style="gap: 1rem; flex-wrap: wrap"
       >
+        <a href="https://app.lworks.io/signin">Sign In</a>
         <a href="https://www.lworks.io/about">About Us</a>
         <a href="https://www.lworks.io/contact">Contact Us</a>
-        <a href="https://app.lworks.io/signin">Sign In</a>
         <a href="https://www.lworks.io/privacy-policy">Privacy Policy</a>
         <a href="https://www.lworks.io/terms-of-use">Terms of Use</a>
       </div>
@@ -85,7 +85,11 @@
         />
       </div> -->
     </div>
-  </section>
+    <p class="h-is-text-size-3 mt-4 has-text-centered">
+      Powered by
+      <a href="https://hashscan.io/" target="_blank" rel="noopener">HashScan</a>
+    </p>
+  </footer>
 </template>
 
 <!-- --------------------------------------------------------------------------------------------------------------- -->
