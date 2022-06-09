@@ -37,7 +37,7 @@ import {AxiosMonitor} from "@/utils/AxiosMonitor"
 
 export const XLARGE_BREAKPOINT = 1450
 export const LARGE_BREAKPOINT = 1280
-export const MEDIUM_BREAKPOINT = 1024
+export const MEDIUM_BREAKPOINT = 1080
 export const SMALL_BREAKPOINT = 768
 export const FINAL_BREAKPOINT = 640
 

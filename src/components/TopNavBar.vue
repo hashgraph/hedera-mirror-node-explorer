@@ -80,8 +80,7 @@
         </div>
 
         <div class="is-flex-grow-1 px-2"/>
-        <a id="dashboard-menu-item"
-            class="button is-ghost is-first h-is-navbar-item h-is-dense"
+        <a id="dashboard-menu-item" class="button is-ghost is-first h-is-navbar-item h-is-dense"
            :class="{'is-rimmed': isDashboardRoute}"
            @click="$router.push({name: 'MainDashboard'})">Dashboard</a>
         <a class="button is-ghost h-is-navbar-item h-is-dense"
@@ -96,9 +95,12 @@
         <a class="button is-ghost h-is-navbar-item h-is-dense"
            :class="{ 'is-rimmed': isContractRoute}"
            @click="$router.push({name: 'Contracts'})">Contracts</a>
-        <a class="button is-ghost is-last h-is-navbar-item h-is-dense"
+        <a class="button is-ghost h-is-navbar-item h-is-dense"
            :class="{ 'is-rimmed': isAccountRoute}"
            @click="$router.push({name: 'Accounts'})">Accounts</a>
+        <a class="button is-ghost is-last h-is-navbar-item h-is-dense"
+           :class="{ 'is-rimmed': isNodeRoute}"
+           @click="$router.push({name: 'Nodes'})">Nodes</a>
       </div>
       <SearchBar style="margin-top: 4px"/>
     </div>
@@ -190,6 +192,10 @@ export default defineComponent({
       return name.value === 'Accounts' || name.value === 'AccountDetails' || name.value === 'AccountBalances'
     })
 
+    const isNodeRoute = computed(() => {
+      return name.value === 'Nodes' || name.value === 'NodeDetails'
+    })
+
     return {
       isSmallScreen,
       isMediumScreen,
@@ -208,6 +214,7 @@ export default defineComponent({
       isTopicRoute,
       isContractRoute,
       isAccountRoute,
+      isNodeRoute,
     }
   },
 })
