@@ -22,7 +22,7 @@
     "@fortawesome/vue-fontawesome": "^3.0.0-5",
     "@oruga-ui/oruga-next": "^0.5.5",
     "axios": "^0.24.0",
-    "bulma": "^0.9.3",
+    "bulma": "^0.9.4",
     "core-js": "^3.6.5",
     "vue": "^3.0.0",
     "vue-axios": "^3.4.0",
