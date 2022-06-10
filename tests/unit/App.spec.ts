@@ -93,7 +93,7 @@ describe("App.vue", () => {
         expect(navBar.text()).toBe(
             "Hedera Mirror Node Explorer is a ledger explorer for the Hedera network" +
             "Build date: not available" +
-            "MAINNETTESTNETPREVIEWNETDashboardTransactionsTokensTopicsContractsAccounts")
+            "MAINNETTESTNETDashboardTransactionsTokensTopicsContractsAccounts")
 
         expect(wrapper.findComponent(HbarMarketDashboard).exists()).toBe(true)
 
@@ -104,13 +104,12 @@ describe("App.vue", () => {
         expect(cards[2].text()).toMatch(RegExp("^HCS Messages"))
 
         const logos = wrapper.findAll("img")
-        expect(logos.length).toBe(6)
+        expect(logos.length).toBe(5)
         expect(logos[0].attributes('alt')).toBe("Product Logo")
         expect(logos[1].attributes('alt')).toBe("Built On Hedera")
         expect(logos[2].attributes('alt')).toBe("Trend Up")
         expect(logos[3].attributes('alt')).toBe("Trend Up")
-        expect(logos[4].attributes('alt')).toBe("Built On Hedera")
-        expect(logos[5].attributes('alt')).toBe("Sponsor Logo")
+        expect(logos[4].attributes('alt')).toBe("Ledger Works.")
 
         wrapper.unmount()
     });

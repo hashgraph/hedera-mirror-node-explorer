@@ -43,7 +43,6 @@
 
 <!--              <option v-bind:key="HederaNetwork.MAINNET" v-bind:value="HederaNetwork.MAINNET">MAINNET</option>-->
 <!--              <option v-bind:key="HederaNetwork.TESTNET" v-bind:value="HederaNetwork.TESTNET">TESTNET</option>-->
-<!--              <option v-bind:key="HederaNetwork.PREVIEWNET" v-bind:value="HederaNetwork.PREVIEWNET">PREVIEWNET</option>-->
             </o-select>
           </o-field>
         </div>

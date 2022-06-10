@@ -68,7 +68,7 @@ describe("TopNavBar.vue", () => {
         expect(wrapper.text()).toBe(
             "Hedera Mirror Node Explorer is a ledger explorer for the Hedera network" +
             "Build date: not available" +
-            "MAINNETTESTNETPREVIEWNETDashboardTransactionsTokensTopicsContractsAccounts")
+            "MAINNETTESTNETDashboardTransactionsTokensTopicsContractsAccounts")
 
         const links = wrapper.findAll("a")
         expect(links.length).toBe(8)
@@ -109,10 +109,9 @@ describe("TopNavBar.vue", () => {
         // console.log(wrapper.html())
 
         const options = wrapper.findAll("option")
-        expect(options.length).toBe(3)
+        expect(options.length).toBe(2)
         expect(options[0].text()).toBe("MAINNET")
         expect(options[1].text()).toBe("TESTNET")
-        expect(options[2].text()).toBe("PREVIEWNET")
 
         wrapper.unmount()
     });

@@ -50,14 +50,15 @@ describe('Top Navigation Bar', () => {
     cy.contains('Smart Contract Calls')
     cy.contains('HCS Messages')
 
-    cy.get('select')
-        .select('PREVIEWNET')
-        .should('have.value', 'previewnet')
+    // TODO may not be valuable to check that PREVIEWNET does NOT exist?
+    // cy.get('select')
+    //     .select('PREVIEWNET')
+    //     .should('have.value', 'previewnet')
 
-    cy.url().should('include', '/previewnet/dashboard')
-    cy.contains('Crypto Transfers')
-    cy.contains('Smart Contract Calls')
-    cy.contains('HCS Messages')
+    // cy.url().should('include', '/previewnet/dashboard')
+    // cy.contains('Crypto Transfers')
+    // cy.contains('Smart Contract Calls')
+    // cy.contains('HCS Messages')
   })
 
   it('should navigate to top level pages', () => {
