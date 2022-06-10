@@ -140,7 +140,8 @@ export default defineComponent({
     const ContractCallTransactionCacheState = ref<PlayPauseState>(PlayPauseState.Play)
 
     watch(() => props.network, () => {
-      window.location.href = "/";
+      // We don't want to wait for table periodic refresh => we trigger a full reload
+      window.location.reload();
     })
 
     return {
