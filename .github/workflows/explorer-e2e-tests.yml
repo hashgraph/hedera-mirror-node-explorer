@@ -13,6 +13,7 @@ jobs:
       - name: Cypress run
         uses: cypress-io/github-action@v2
         with:
+          install-command: npm install
           browser: chrome
           headless: true
           start: npm run serve:prod

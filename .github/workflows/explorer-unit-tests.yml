@@ -13,7 +13,7 @@ jobs:
         uses: actions/checkout@v2
 
       - name: Set-up project dependencies
-        run: npm ci
+        run: npm install
 
       - name: Build production bits
         run: npm run build
