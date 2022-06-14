@@ -197,36 +197,38 @@ router.beforeEach((to, from) => {
 })
 
 router.beforeEach((to) => {
+  const titlePrefix = process.env.VUE_APP_DOCUMENT_TITLE_PREFIX ?? "Hedera"
+
   switch (to.name as string) {
     case "MainDashboard":
-      document.title = "Hedera Explorer | Dashboard";
+      document.title = titlePrefix + " | Dashboard";
       break;
     case "TransactionDetails":
-      document.title = "Hedera Explorer | Transaction " + to.params.transactionId;
+      document.title = titlePrefix + " | Transaction " + to.params.transactionId;
       break;
     case "TokenDetails":
-      document.title = "Hedera Explorer | Token " + to.params.tokenId;
+      document.title = titlePrefix + " | Token " + to.params.tokenId;
       break;
     case "TopicDetails":
-      document.title = "Hedera Explorer | Topic " + to.params.topicId;
+      document.title = titlePrefix + " | Topic " + to.params.topicId;
       break;
     case "ContractDetails":
-      document.title = "Hedera Explorer | Contract " + to.params.contractId;
+      document.title = titlePrefix + " | Contract " + to.params.contractId;
       break;
     case "AccountDetails":
-      document.title = "Hedera Explorer | Account " + to.params.accountId;
+      document.title = titlePrefix + " | Account " + to.params.accountId;
       break;
     case "AccountBalances":
-      document.title = "Hedera Explorer | Balances for Account " + to.params.accountId;
+      document.title = titlePrefix + " | Balances for Account " + to.params.accountId;
       break;
     case "NoSearchResult":
-      document.title = "Hedera Explorer | Search Results";
+      document.title = titlePrefix + " | Search Results";
       break;
     case "PageNotFound":
-      document.title = "Hedera Explorer | Page Not Found";
+      document.title = titlePrefix + " | Page Not Found";
       break;
     default:
-      document.title = "Hedera Explorer | " + (to.name as string);
+      document.title = titlePrefix + " | " + (to.name as string);
   }
 });
 
