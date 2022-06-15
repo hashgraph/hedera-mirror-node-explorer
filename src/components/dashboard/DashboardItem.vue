@@ -24,13 +24,10 @@
 
 <template>
 
-  <div class="is-flex is-align-items-center mx-3">
-    <div v-if="isMediumScreen" class="mr-2">
-      <slot name="symbol"></slot>
-    </div>
+  <div class="is-flex is-align-items-center">
     <div class="is-flex has-text-white"
          :class="{'is-align-items-center': variation, 'is-align-items-baseline': !variation}">
-      <p class="dashboard-value has-text-white is-numeric mr-2">{{ value }}</p>
+      <p class="dashboard-value has-text-white mr-2" :class="{'is-numeric':isNumeric}" >{{ value }}</p>
       <div class="is-flex-is-vertical" :class="{'pt-1':isMediumScreen}" style="line-height: 1">
         <Variation v-if="variation" :variation="variation"/>
         <p class="h-is-text-size-1">{{ name }}</p>
@@ -55,7 +52,11 @@ export default defineComponent({
   props: {
     name: String,
     value: String,
-    variation: String
+    variation: String,
+    isNumeric: {
+      type: Boolean,
+      default: false
+    }
   },
 
   setup() {
