@@ -68,12 +68,13 @@ describe("NodeTable.vue", () => {
         // console.log(wrapper.text())
         // console.log(wrapper.html())
 
-        expect(wrapper.get('thead').text()).toBe("Node Account Description Stake")
+        expect(wrapper.get('thead').text()).toBe("Node Account Hosted By Location Stake Stake Range % of Total Stake")
         expect(wrapper.get('tbody').findAll('tr').length).toBe(3)
         expect(wrapper.get('tbody').text()).toBe(
-            "0" + "0.0.3" + "None" + "0.00000000" +
-            "1" + "0.0.4" + "None" + "0.00000000" +
-            "2" + "0.0.5" + "None" + "0.00000000")
+            "0" + "0.0.3" + "None" + "None" + "12352698.00000000" + "3,8%" +
+            "1" + "0.0.4" + "None" + "None" + "12352698.00000000" + "3,8%" +
+            "2" + "0.0.5" + "None" + "None" + "12352698.00000000" + "3,8%"
+        )
 
         wrapper.unmount()
         await flushPromises()

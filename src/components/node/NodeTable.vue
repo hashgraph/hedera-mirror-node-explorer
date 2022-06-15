@@ -45,15 +45,31 @@
       </div>
     </o-table-column>
 
-    <o-table-column v-slot="props" field="description" label="Description">
+    <o-table-column v-slot="props" field="hosted_by" label="Hosted By">
       <div class="should-wrap">
-        <BlobValue v-bind:blob-value="makeDescription(props.row)" v-bind:show-none="true"/>
+        <BlobValue v-bind:blob-value="makeHost(props.row)" v-bind:show-none="true"/>
       </div>
     </o-table-column>
 
-    <o-table-column field="stake" label="Stake">
+    <o-table-column v-slot="props" field="location" label="Location">
       <div class="should-wrap">
-        <HbarAmount :amount="0"  />
+        <BlobValue v-bind:blob-value="makeLocation(props.row)" v-bind:show-none="true"/>
+      </div>
+    </o-table-column>
+
+    <o-table-column v-slot="props" field="stake" label="Stake">
+      <div class="should-wrap">
+        <HbarAmount :amount="makeStake(props.row)"  />
+      </div>
+    </o-table-column>
+
+    <o-table-column field="stake" label="Stake Range">
+      <span> </span>
+    </o-table-column>
+
+    <o-table-column v-slot="props" field="stake" label="% of Total Stake" position="right">
+      <div class="should-wrap">
+        {{ makeStakePercentage(props.row) }}
       </div>
     </o-table-column>
 
@@ -86,7 +102,7 @@ import HbarAmount from "@/components/values/HbarAmount.vue";
 export default defineComponent({
   name: 'NodeTable',
 
-  components: {HbarAmount, EmptyTable, BlobValue},
+  components: {EmptyTable, BlobValue, HbarAmount},
 
   props: {
     nodes: Object as PropType<Array<NetworkNode>|undefined>,
@@ -96,15 +112,10 @@ export default defineComponent({
     const isTouchDevice = inject('isTouchDevice', false)
     const isMediumScreen = inject('isMediumScreen', true)
 
-    const makeDescription = (node: NetworkNode) => {
-      let result
-      if (node.description) {
-        result = node.description
-      } else {
-        result = node.node_account_id ? operatorRegistry.lookup(node.node_account_id)?.getDescription() : null
-      }
-      return result
-    }
+    const makeHost = (node: NetworkNode) => node.node_account_id ? operatorRegistry.lookup(node.node_account_id)?.name : null
+    const makeLocation = (node: NetworkNode) => node.node_account_id ? operatorRegistry.lookup(node.node_account_id)?.location : null
+    const makeStake = (node: NetworkNode) => 1235269800000000
+    const makeStakePercentage = (node: NetworkNode) => '3,8%'
 
     const handleClick = (n: NetworkNode) => {
       router.push({name: 'NodeDetails', params: { nodeId: n.node_id}})
@@ -113,7 +124,10 @@ export default defineComponent({
     return {
       isTouchDevice,
       isMediumScreen,
-      makeDescription,
+      makeHost,
+      makeLocation,
+      makeStake,
+      makeStakePercentage,
       handleClick,
       ORUGA_MOBILE_BREAKPOINT
     }
