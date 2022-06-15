@@ -69,12 +69,11 @@
 
 <script lang="ts">
 
-import {defineComponent, inject, onBeforeMount, ref} from 'vue';
-import {NetworkNode, NetworkNodesResponse} from "@/schemas/HederaSchemas";
+import {defineComponent, inject, PropType} from 'vue';
+import {NetworkNode} from "@/schemas/HederaSchemas";
 import BlobValue from "@/components/values/BlobValue.vue";
 import {ORUGA_MOBILE_BREAKPOINT} from '@/App.vue';
 import EmptyTable from "@/components/EmptyTable.vue";
-import axios from "axios";
 import router from "@/router";
 import {operatorRegistry} from "@/schemas/OperatorRegistry";
 import HbarAmount from "@/components/values/HbarAmount.vue";
@@ -89,29 +88,13 @@ export default defineComponent({
 
   components: {HbarAmount, EmptyTable, BlobValue},
 
-  props: {},
+  props: {
+    nodes: Object as PropType<Array<NetworkNode>|undefined>,
+  },
 
   setup() {
     const isTouchDevice = inject('isTouchDevice', false)
     const isMediumScreen = inject('isMediumScreen', true)
-    let nodes = ref<Array<NetworkNode> | null>([])
-
-    onBeforeMount(() => fetchNodes())
-
-    const fetchNodes = (nextUrl: string | null = null) => {
-      const url = nextUrl ?? "api/v1/network/nodes"
-      axios
-          .get<NetworkNodesResponse>(url, {params: {limit: 25}})
-          .then(result => {
-            if (result.data.nodes) {
-              nodes.value = nodes.value!.concat(result.data.nodes)
-            }
-            const next = result.data.links?.next
-            if (next) {
-              fetchNodes(next)
-            }
-          })
-    }
 
     const makeDescription = (node: NetworkNode) => {
       let result
@@ -130,7 +113,6 @@ export default defineComponent({
     return {
       isTouchDevice,
       isMediumScreen,
-      nodes,
       makeDescription,
       handleClick,
       ORUGA_MOBILE_BREAKPOINT

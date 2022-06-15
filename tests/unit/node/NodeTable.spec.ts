@@ -20,12 +20,11 @@
 
 import {flushPromises, mount} from "@vue/test-utils"
 import router from "@/router";
-import axios from "axios";
 import {SAMPLE_NETWORK_NODES} from "../Mocks";
-import MockAdapter from "axios-mock-adapter";
 import Oruga from "@oruga-ui/oruga-next";
 import {HMSF} from "@/utils/HMSF";
 import NodeTable from "@/components/node/NodeTable.vue";
+import {NetworkNode} from "@/schemas/HederaSchemas";
 
 /*
     Bookmarks
@@ -56,14 +55,12 @@ describe("NodeTable.vue", () => {
 
         await router.push("/") // To avoid "missing required param 'network'" error
 
-        const mock = new MockAdapter(axios);
-
-        const matcher1 = "api/v1/network/nodes"
-        mock.onGet(matcher1).reply(200, SAMPLE_NETWORK_NODES);
-
         const wrapper = mount(NodeTable, {
             global: {
                 plugins: [router, Oruga]
+            },
+            props: {
+                nodes: SAMPLE_NETWORK_NODES.nodes as Array<NetworkNode>
             }
         });
 

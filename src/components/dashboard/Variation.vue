@@ -26,11 +26,11 @@
 
   <div v-if="variation >= 0" class="is-flex is-align-items-baseline" :class="{'mb-1':isMediumScreen, 'mt-1':!isMediumScreen}">
     <img class="image mr-1" alt="Trend Up" src="@/assets/trend-up.png" style="width: 18px; height: 9px">
-    <span class="is-size-7">{{ variation }}%</span>
+    <span>{{ variation }}%</span>
   </div>
   <div v-else class="is-flex is-align-items-baseline" :class="{'mb-1':isMediumScreen, 'mt-1':!isMediumScreen}">
     <img class="image mr-1" alt="Trend Down" src="@/assets/trend-down.png" style="width: 18px; height: 9px">
-    <span class="is-size-7">{{ absVariation }}%</span>
+    <span>{{ absVariation }}%</span>
   </div>
 
 </template>

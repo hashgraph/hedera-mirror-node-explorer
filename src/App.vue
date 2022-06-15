@@ -41,7 +41,7 @@ export const MEDIUM_BREAKPOINT = 1080
 export const SMALL_BREAKPOINT = 768
 export const FINAL_BREAKPOINT = 640
 
-export const ORUGA_MOBILE_BREAKPOINT = "1023px"
+export const ORUGA_MOBILE_BREAKPOINT = "1080px"
 
 export default defineComponent({
   name: 'App',
