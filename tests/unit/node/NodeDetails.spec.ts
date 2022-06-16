@@ -83,7 +83,7 @@ describe("NodeDetails.vue", () => {
         // console.log(wrapper.html())
         // console.log(wrapper.text())
 
-        expect(wrapper.text()).toMatch(RegExp("^Network Node " + node))
+        expect(wrapper.text()).toMatch(RegExp("^Node " + node))
         expect(wrapper.get("#nodeAccountValue").text()).toBe("0.0.3")
         expect(wrapper.get("#descriptionValue").text()).toBe("None")
         expect(wrapper.get("#publicKeyValue").text()).toBe("3082 01a2 300d 0609Copy to ClipboardRSA")
