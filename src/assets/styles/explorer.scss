@@ -132,6 +132,24 @@ body {
 .is-numeric {
     font-variant-numeric: tabular-nums;
 }
+
+.h-is-stake-range-bar {
+    width: 150px;
+    margin-top: initial;
+    margin-bottom: initial;
+}
+@media (min-width: 1080px) {
+    .h-is-stake-range-bar {
+        width: 150px;
+        margin-top: 12px;
+        margin-bottom: 3px;
+    }
+    #node-table table.o-table > tbody > tr > td {
+        padding-top: 0;
+        padding-bottom: 0;
+    }
+}
+
 .has-hbar:after {
     content: "\210F";
     font-weight: lighter;
@@ -277,13 +295,27 @@ a.button.is-ghost.is-last {
         margin: 10px 0;
     }
 }
+.h-has-column-separator {
+    padding-top: initial;
+    border-top: initial;
+    padding-left: 1rem;
+    border-left: 1px solid grey;
+}
+@media (max-width: 767px) {
+    .h-has-column-separator {
+        padding-top: 1rem;
+        border-top: 1px solid grey;
+        padding-left: initial;
+        border-left: initial;
+    }
+}
 
 //
 // ORUGA TABLES
 //
 
 // Style borders on mobile
-@media (max-width: 1023px) {
+@media (max-width: 1079px) {
     .o-table__wrapper--mobile tr:not(.o-table--detailed):not(.o-table--empty):not(.o-table__footer) td:first-child {
         border-top: #979797 1px solid;
         border-bottom: #4A4A4A 1px solid;

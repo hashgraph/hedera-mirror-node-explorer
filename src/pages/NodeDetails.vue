@@ -30,14 +30,14 @@
 
     <DashboardCard>
       <template v-slot:title>
-        <span class="h-is-primary-title">Network Node </span>
+        <span class="h-is-primary-title">Node </span>
         <span class="h-is-secondary-text is-numeric mr-3">{{ nodeId }}</span>
       </template>
       <template v-slot:table>
 
         <NotificationBanner v-if="notification" :message="notification"/>
 
-        <div class="columns h-is-property-text">
+        <div class="columns h-is-property-text mt-3">
 
           <div class="column">
             <Property :id="'nodeAccount'">
@@ -52,15 +52,6 @@
                 <BlobValue :base64="false" :blob-value="nodeDescription" :show-none="true" class="should-wrap"/>
               </template>
             </Property>
-            <Property :id="'publicKey'">
-              <template v-slot:name>Public Key</template>
-              <template v-slot:value>
-                <KeyValue :key-bytes="node?.public_key" :key-type="'RSA'" :show-none="true"/>
-              </template>
-            </Property>
-          </div>
-
-          <div class="column">
             <Property :id="'file'">
               <template v-slot:name>Address Book File</template>
               <template v-slot:value>
@@ -68,15 +59,27 @@
               </template>
             </Property>
             <Property :id="'rangeFrom'">
-              <template v-slot:name>From</template>
+              <template v-slot:name>Node existed since</template>
               <template v-slot:value>
                 <TimestampValue :show-none="true" :timestamp="node?.timestamp?.from"/>
               </template>
             </Property>
             <Property :id="'rangeTo'">
-              <template v-slot:name>To</template>
+              <template v-slot:name>Node expiry date</template>
               <template v-slot:value>
                 <TimestampValue :show-none="true" :timestamp="node?.timestamp?.to"/>
+              </template>
+            </Property>
+            <Property :id="'serviceEndpoints'">
+              <template v-slot:name>Service Endpoints</template>
+              <template v-slot:value>
+                <Endpoints :endpoints="node?.service_endpoints"></Endpoints>
+              </template>
+            </Property>
+            <Property :id="'publicKey'">
+              <template v-slot:name>Public Key</template>
+              <template v-slot:value>
+                <KeyValue :key-bytes="node?.public_key" :key-type="'RSA'" :show-none="true"/>
               </template>
             </Property>
             <Property :id="'nodeCertHash'">
@@ -86,12 +89,18 @@
                            v-bind:show-none="true"/>
               </template>
             </Property>
-            <Property :id="'serviceEndpoints'">
-              <template v-slot:name>Service Endpoints</template>
-              <template v-slot:value>
-                <Endpoints :endpoints="node?.service_endpoints"></Endpoints>
-              </template>
-            </Property>
+          </div>
+
+          <div class="column h-has-column-separator">
+            <NetworkDashboardItem :title="'Stake for Consensus'" :value="consensusStake" :name="'HBAR'"/>
+            <p class="h-is-property-text h-is-extra-text mt-1">{{ consensusPercentage }}% of total</p>
+            <br/><br/>
+            <NetworkDashboardItem :title="'Stake Rewarded'" :value="stakeRewarded" :name="'HBAR'"/>
+            <p class="h-is-property-text h-is-extra-text mt-1">{{ rewardPercentage }}% of total</p>
+            <br/><br/>
+            <NetworkDashboardItem :title="'Current Staking Period'" :value="stakingPeriod" :name="'HOURS'"/>
+            <p class="h-is-property-text h-is-extra-text mt-1">from 00:00 am today to 11:59 pm today</p>
+            <div class="mt-6"/>
           </div>
 
         </div>
@@ -128,12 +137,14 @@ import {base64DecToArr, byteToHex} from "@/utils/B64Utils";
 import HexaValue from "@/components/values/HexaValue.vue";
 import {operatorRegistry} from "@/schemas/OperatorRegistry";
 import Endpoints from "@/components/values/Endpoints.vue";
+import NetworkDashboardItem from "@/components/node/NetworkDashboardItem.vue";
 
 export default defineComponent({
 
   name: 'NodeDetails',
 
   components: {
+    NetworkDashboardItem,
     Endpoints,
     HexaValue,
     Property,
@@ -181,6 +192,12 @@ export default defineComponent({
       return result
     })
 
+    const consensusStake = '1,897,202,087'
+    const consensusPercentage = 4
+    const stakeRewarded = '12,202,087'
+    const rewardPercentage = 3
+    const stakingPeriod = '24'
+
     onBeforeMount(() => fetchNode(props.nodeId))
     watch(() => props.nodeId, () => fetchNode(props.nodeId));
 
@@ -208,6 +225,11 @@ export default defineComponent({
       isSmallScreen,
       isTouchDevice,
       node,
+      consensusStake,
+      consensusPercentage,
+      stakeRewarded,
+      rewardPercentage,
+      stakingPeriod,
       notification,
       nodeDescription,
       formatHash

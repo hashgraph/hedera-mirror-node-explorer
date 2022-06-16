@@ -65,12 +65,13 @@
       </o-table-column>
 
       <o-table-column field="stake" label="Stake Range">
-        <div class="is-flex-direction-column" style="margin-top: 12px; margin-bottom: 3px">
-          <progress class="progress is-small is-info" max="100" style="max-height: 8px; margin-bottom: 1px"
-                    value="45"></progress>
+        <div class="is-flex-direction-column h-is-stake-range-bar">
+          <progress class="progress is-large is-info h-is-progress-bar" max="100"
+                    style="max-height: 8px; margin-bottom: 1px;" value="45"></progress>
           <div class="is-flex is-justify-content-space-between">
-            <img class="image" alt="Minimum staking mark" src="@/assets/min-mark.png" style="max-height: 8px; margin-left: 16px">
-            <img class="image" alt="Maximum staking mark" src="@/assets/max-mark.png" style="max-height: 8px">
+            <img alt="Minimum staking mark" class="image" src="@/assets/min-mark.png"
+                 style="max-height: 8px; margin-left: 16px">
+            <img alt="Maximum staking mark" class="image" src="@/assets/max-mark.png" style="max-height: 8px">
           </div>
         </div>
       </o-table-column>
@@ -114,7 +115,7 @@ export default defineComponent({
   components: {EmptyTable, BlobValue, HbarAmount},
 
   props: {
-    nodes: Object as PropType<Array<NetworkNode>|undefined>,
+    nodes: Object as PropType<Array<NetworkNode> | undefined>,
   },
 
   setup() {
@@ -127,7 +128,7 @@ export default defineComponent({
     const makeStakePercentage = (node: NetworkNode) => '3,8%'
 
     const handleClick = (n: NetworkNode) => {
-      router.push({name: 'NodeDetails', params: { nodeId: n.node_id}})
+      router.push({name: 'NodeDetails', params: {nodeId: n.node_id}})
     }
 
     return {
@@ -150,8 +151,5 @@ export default defineComponent({
 <!-- --------------------------------------------------------------------------------------------------------------- -->
 
 <style>
-#node-table table.o-table > tbody > tr > td {
-   padding-top: 0;
-   padding-bottom: 0;
-}
+
 </style>
