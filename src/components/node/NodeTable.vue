@@ -24,56 +24,65 @@
 
 <template>
 
-  <o-table
-      :data="nodes"
-      :hoverable="true"
-      :mobile-breakpoint="ORUGA_MOBILE_BREAKPOINT"
-      :paginated="false"
-      :striped="true"
-      default-sort="node_id"
-      @click="handleClick"
-  >
-    <o-table-column v-slot="props" field="node_id" label="Node">
-      <div class="is-numeric">
-        {{ props.row.node_id }}
-      </div>
-    </o-table-column>
+  <div id="node-table">
+    <o-table
+        :data="nodes"
+        :hoverable="true"
+        :mobile-breakpoint="ORUGA_MOBILE_BREAKPOINT"
+        :paginated="false"
+        :striped="true"
+        default-sort="node_id"
+        @click="handleClick"
+    >
+      <o-table-column v-slot="props" field="node_id" label="Node">
+        <div class="is-numeric">
+          {{ props.row.node_id }}
+        </div>
+      </o-table-column>
 
-    <o-table-column v-slot="props" field="node_account_id" label="Account">
-      <div class="is-numeric">
-        {{ props.row.node_account_id }}
-      </div>
-    </o-table-column>
+      <o-table-column v-slot="props" field="node_account_id" label="Account">
+        <div class="is-numeric">
+          {{ props.row.node_account_id }}
+        </div>
+      </o-table-column>
 
-    <o-table-column v-slot="props" field="hosted_by" label="Hosted By">
-      <div class="should-wrap">
-        <BlobValue v-bind:blob-value="makeHost(props.row)" v-bind:show-none="true"/>
-      </div>
-    </o-table-column>
+      <o-table-column v-slot="props" field="hosted_by" label="Hosted By">
+        <div class="should-wrap">
+          <BlobValue v-bind:blob-value="makeHost(props.row)" v-bind:show-none="true"/>
+        </div>
+      </o-table-column>
 
-    <o-table-column v-slot="props" field="location" label="Location">
-      <div class="should-wrap">
-        <BlobValue v-bind:blob-value="makeLocation(props.row)" v-bind:show-none="true"/>
-      </div>
-    </o-table-column>
+      <o-table-column v-slot="props" field="location" label="Location">
+        <div class="should-wrap">
+          <BlobValue v-bind:blob-value="makeLocation(props.row)" v-bind:show-none="true"/>
+        </div>
+      </o-table-column>
 
-    <o-table-column v-slot="props" field="stake" label="Stake">
-      <div class="should-wrap">
-        <HbarAmount :amount="makeStake(props.row)"  />
-      </div>
-    </o-table-column>
+      <o-table-column v-slot="props" field="stake" label="Stake">
+        <div class="should-wrap">
+          <HbarAmount :amount="makeStake(props.row)"/>
+        </div>
+      </o-table-column>
 
-    <o-table-column field="stake" label="Stake Range">
-      <span> </span>
-    </o-table-column>
+      <o-table-column field="stake" label="Stake Range">
+        <div class="is-flex-direction-column" style="margin-top: 12px; margin-bottom: 3px">
+          <progress class="progress is-small is-info" max="100" style="max-height: 8px; margin-bottom: 1px"
+                    value="45"></progress>
+          <div class="is-flex is-justify-content-space-between">
+            <img class="image" alt="Minimum staking mark" src="@/assets/min-mark.png" style="max-height: 8px; margin-left: 16px">
+            <img class="image" alt="Maximum staking mark" src="@/assets/max-mark.png" style="max-height: 8px">
+          </div>
+        </div>
+      </o-table-column>
 
-    <o-table-column v-slot="props" field="stake" label="% of Total Stake" position="right">
-      <div class="should-wrap">
-        {{ makeStakePercentage(props.row) }}
-      </div>
-    </o-table-column>
+      <o-table-column v-slot="props" field="stake" label="% of Total Stake" position="right">
+        <div class="should-wrap">
+          {{ makeStakePercentage(props.row) }}
+        </div>
+      </o-table-column>
 
-  </o-table>
+    </o-table>
+  </div>
 
   <EmptyTable v-if="!nodes.length"/>
 
@@ -140,4 +149,9 @@ export default defineComponent({
 <!--                                                       STYLE                                                     -->
 <!-- --------------------------------------------------------------------------------------------------------------- -->
 
-<style/>
+<style>
+#node-table table.o-table > tbody > tr > td {
+   padding-top: 0;
+   padding-bottom: 0;
+}
+</style>
