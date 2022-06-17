@@ -174,13 +174,13 @@ router.beforeEach((to, from) => {
   let result: boolean | string
 
   const toEntry = getNetworkEntryFromRoute(to)
-  const fromEntry = getNetworkEntryFromRoute(from) ?? networkRegistry.getDefaultEntry()
+  const fromEntry = getNetworkEntryFromRoute(from)
   if (toEntry !== null) {
     // Network is valid
-    if (fromEntry != toEntry) {
+    AppStorage.setLastNetwork(toEntry)
+    axios.defaults.baseURL = toEntry.url
+    if (fromEntry != null && fromEntry != toEntry) {
       // Network is changing => updates AppStorage and axios
-      AppStorage.setLastNetwork(toEntry)
-      axios.defaults.baseURL = toEntry.url
       if (to.name != "MainDashboard") {
         // We re-route on MainDashboard
         result = "/" + toEntry.name + "/dashboard"
