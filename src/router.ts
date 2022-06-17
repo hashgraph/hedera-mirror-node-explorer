@@ -181,7 +181,7 @@ router.beforeEach((to, from) => {
     axios.defaults.baseURL = toEntry.url
     if (fromEntry != null && fromEntry != toEntry) {
       // Network is changing => updates AppStorage and axios
-      if (to.name != "MainDashboard") {
+      if (to.name != "MainDashboard" && to.name != "PageNotFound") {
         // We re-route on MainDashboard
         result = "/" + toEntry.name + "/dashboard"
       }
