@@ -125,7 +125,7 @@ export default defineComponent({
     const makeHost = (node: NetworkNode) => node.node_account_id ? operatorRegistry.lookup(node.node_account_id)?.name : null
     const makeLocation = (node: NetworkNode) => node.node_account_id ? operatorRegistry.lookup(node.node_account_id)?.location : null
     const makeStake = (node: NetworkNode) => 1235269800000000
-    const makeStakePercentage = (node: NetworkNode) => '3,8%'
+    const makeStakePercentage = (node: NetworkNode) => '3.8%'
 
     const handleClick = (n: NetworkNode) => {
       router.push({name: 'NodeDetails', params: {nodeId: n.node_id}})
