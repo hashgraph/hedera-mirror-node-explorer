@@ -39,9 +39,9 @@ export class TransactionCacheV2 extends EntityCacheV2<TransactionResponse> {
         super(5000, 10)
         this.limit = limit
 
-        watch(() => this.accountId, () => this.clear)
-        watch(() => this.transactionType, () => this.clear)
-        watch(() => this.transactionResult, () => this.clear)
+        watch(this.accountId, () => this.clear())
+        watch(this.transactionType, () => this.clear())
+        watch(this.transactionResult, () => this.clear())
     }
 
     public readonly lastTimestamp = computed(() => {
