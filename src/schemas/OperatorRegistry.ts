@@ -48,7 +48,7 @@
 
  */
 
-import {networkRegistry} from "@/schemas/NetworkRegistry";
+import {getNetworkEntryFromCurrentRoute} from "@/router";
 import {EntityID} from "@/utils/EntityID";
 
 export class OperatorEntry {
@@ -115,7 +115,7 @@ export class OperatorRegistry {
 
     public lookup(accountId: string): OperatorEntry|null {
         const result = this.entries.get(accountId)
-        const network = networkRegistry.getLastUsedNetwork()
+        const network = getNetworkEntryFromCurrentRoute().name
         return result && (result.network == network || result.network == null) ? result : null
     }
 
