@@ -18,8 +18,6 @@
  *
  */
 
-import axios from "axios";
-
 export class NetworkEntry {
 
     public readonly name: string
@@ -35,7 +33,6 @@ export class NetworkEntry {
 
 export class NetworkRegistry {
 
-    private static readonly LAST_USED_NETWORK_KEY = 'network'
     private static readonly DEFAULT_NETWORK = 'testnet'
     private readonly defaultEntry: NetworkEntry
 
@@ -73,18 +70,12 @@ export class NetworkRegistry {
         return this.entries
     }
 
+    public getDefaultEntry(): NetworkEntry {
+        return this.defaultEntry
+    }
+
     public lookup(name: string): NetworkEntry | null {
         return this.entries.find(element => element.name === name) ?? null
-    }
-
-    public getLastUsedNetwork(): string {
-        return localStorage.getItem(NetworkRegistry.LAST_USED_NETWORK_KEY) ?? this.defaultEntry.name
-    }
-
-    public useNetwork(network: string): void {
-        const newEntry = this.lookup(network) ?? this.defaultEntry
-        localStorage.setItem(NetworkRegistry.LAST_USED_NETWORK_KEY, newEntry.name);
-        axios.defaults.baseURL = newEntry.url
     }
 }
 
