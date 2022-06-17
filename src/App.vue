@@ -24,6 +24,8 @@
     <TopNavBar/>
   </section>
 
+  <hr class="h-top-banner" style="margin: 0; height: 4px"/>
+
   <router-view/>
 
 </template>

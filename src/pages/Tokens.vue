@@ -24,8 +24,6 @@
 
 <template>
 
-  <hr class="h-top-banner" style="margin: 0; height: 4px"/>
-
   <section class="section" :class="{'h-mobile-background': isTouchDevice || !isSmallScreen}">
 
     <div class="columns is-multiline">
