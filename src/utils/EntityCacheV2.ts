@@ -48,7 +48,6 @@ export abstract class EntityCacheV2<E> {
     }
 
     public clear(): void {
-        console.warn("EntityCacheV2.clear()")
         const wasStarted = this.state.value == EntityCacheStateV2.Started
         if (wasStarted) {
             this.state.value = EntityCacheStateV2.Stopped
