@@ -78,7 +78,6 @@ import {ORUGA_MOBILE_BREAKPOINT} from '@/App.vue';
 import EmptyTable from "@/components/EmptyTable.vue";
 import router from "@/router";
 import {operatorRegistry} from "@/schemas/OperatorRegistry";
-import HbarAmount from "@/components/values/HbarAmount.vue";
 
 
 //
@@ -88,7 +87,7 @@ import HbarAmount from "@/components/values/HbarAmount.vue";
 export default defineComponent({
   name: 'NodeTable',
 
-  components: {EmptyTable, BlobValue, HbarAmount},
+  components: {EmptyTable, BlobValue},
 
   props: {
     nodes: Object as PropType<Array<NetworkNode> | undefined>,
