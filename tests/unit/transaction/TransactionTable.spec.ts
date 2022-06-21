@@ -24,10 +24,9 @@ import axios from "axios";
 import {SAMPLE_TOKEN, SAMPLE_TRANSACTIONS} from "../Mocks";
 import MockAdapter from "axios-mock-adapter";
 import Oruga from "@oruga-ui/oruga-next";
-import TransactionTable from "@/components/transaction/TransactionTable.vue";
+import TransactionTableV2 from "@/components/transaction/TransactionTableV2.vue";
 import {HMSF} from "@/utils/HMSF";
-import PlayPauseState from "@/components/PlayPauseButton.vue";
-import {TransactionType} from "@/schemas/HederaSchemas";
+import {Transaction} from "@/schemas/HederaSchemas";
 
 /*
     Bookmarks
@@ -52,7 +51,7 @@ Object.defineProperty(window, 'matchMedia', {
 
 HMSF.forceUTC = true
 
-describe("TransactionTable.vue", () => {
+describe("TransactionTableV2.vue", () => {
 
     test("all props", async () => {
 
@@ -60,22 +59,17 @@ describe("TransactionTable.vue", () => {
 
         const mock = new MockAdapter(axios)
 
-        const matcher1 = "/api/v1/transactions"
-        mock.onGet(matcher1).reply(200, SAMPLE_TRANSACTIONS)
-
         const matcher2 = "/api/v1/tokens/" + SAMPLE_TOKEN.token_id
         mock.onGet(matcher2).reply(200, SAMPLE_TOKEN)
 
-        const wrapper = mount(TransactionTable, {
+        const wrapper = mount(TransactionTableV2, {
             global: {
                 plugins: [router, Oruga]
             },
             props: {
                 narrowed: true,
                 nbItems: 42,
-                accountIdFilter: "0.0.42",
-                transactionTypeFilter: TransactionType.CRYPTOTRANSFER,
-                cacheState: PlayPauseState.Pause
+                transactions: SAMPLE_TRANSACTIONS.transactions as Array<Transaction>,
             },
         });
 
