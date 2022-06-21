@@ -162,7 +162,7 @@ export default defineComponent({
       selectedNetwork.value = newValue as string
       selectedNetworkWatchHandle = watch(selectedNetwork, (selection) => {
         router.push({
-          name: name.value as string,
+          name: "MainDashboard",
           params: { network: selection }
         })
       })
