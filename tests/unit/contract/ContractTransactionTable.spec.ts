@@ -20,13 +20,11 @@
 
 import {flushPromises, mount} from "@vue/test-utils"
 import router from "@/router";
-import axios from "axios";
 import {SAMPLE_CONTRACT_AS_ACCOUNT} from "../Mocks";
-import MockAdapter from "axios-mock-adapter";
 import Oruga from "@oruga-ui/oruga-next";
 import ContractTransactionTable from "@/components/contract/ContractTransactionTable.vue";
 import {HMSF} from "@/utils/HMSF";
-import PlayPauseState from "@/components/PlayPauseButton.vue";
+import {Transaction} from "@/schemas/HederaSchemas";
 
 /*
     Bookmarks
@@ -57,20 +55,13 @@ describe("ContractTransactionTable.vue", () => {
 
         await router.push("/") // To avoid "missing required param 'network'" error
 
-        const mock = new MockAdapter(axios)
-
-        const testContract = SAMPLE_CONTRACT_AS_ACCOUNT.account
-        const matcher1 = "/api/v1/accounts/" + testContract
-        mock.onGet(matcher1).reply(200, SAMPLE_CONTRACT_AS_ACCOUNT)
-
         const wrapper = mount(ContractTransactionTable, {
             global: {
                 plugins: [router, Oruga]
             },
             props: {
-                contractId: testContract,
                 nbItems: 42,
-                cacheState: PlayPauseState.Pause
+                transactions: SAMPLE_CONTRACT_AS_ACCOUNT.transactions as Array<Transaction>
             },
         });
 
