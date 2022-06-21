@@ -247,6 +247,9 @@ export default defineComponent({
       return normalizedAccountId.value ? operatorRegistry.makeDescription(normalizedAccountId.value) : null
     })
 
+    const nodeId = computed(() => {
+      return normalizedAccountId.value ? operatorRegistry.lookup(normalizedAccountId.value)?.nodeId : null
+    })
 
     //
     // transaction filter selection
@@ -449,6 +452,7 @@ export default defineComponent({
       balance,
       tokenBalances,
       accountInfo,
+      nodeId,
       displayAllTokenLinks,
       elapsed,
       showContractVisible,
