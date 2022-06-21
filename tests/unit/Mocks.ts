@@ -937,6 +937,94 @@ export const SAMPLE_TOPIC_DUDE_MESSAGES = {
 }
 
 //
+// https://previewnet.mirrornode.hedera.com/api/v1/network/nodes
+//
+
+export const SAMPLE_NETWORK_NODES = {
+    "nodes": [
+        {
+            "description": "",
+            "file_id": "0.0.102",
+            "memo": "0.0.3",
+            "node_id": 0,
+            "node_account_id": "0.0.3",
+            "node_cert_hash": "0xffd6ada74a3a34a9",
+            "public_key": "0x308201a2300d0609",
+            "service_endpoints": [
+                {
+                    "ip_address_v4": "3.211.248.172",
+                    "port": 50211
+                },
+                {
+                    "ip_address_v4": "3.211.248.172",
+                    "port": 50212
+                },
+                {
+                    "ip_address_v4": "35.231.208.148",
+                    "port": 0
+                },
+                {
+                    "ip_address_v4": "35.231.208.148",
+                    "port": 50211
+                },
+                {
+                    "ip_address_v4": "35.231.208.148",
+                    "port": 50212
+                },
+            ],
+            "timestamp": {
+                "from": "1654531806.041135961",
+                "to": null
+            }
+        },
+        {
+            "description": "",
+            "file_id": "0.0.102",
+            "memo": "0.0.4",
+            "node_id": 1,
+            "node_account_id": "0.0.4",
+            "node_cert_hash": "0xffd6ada74a3a34a9",
+            "public_key": "0x308201a2300d0609",
+            "service_endpoints": [
+                {
+                    "ip_address_v4": "3.133.213.146",
+                    "port": 50211
+                },
+                {
+                    "port": 50212
+                }
+            ],
+            "timestamp": {
+                "from": "1654531806.041135961",
+                "to": null
+            }
+        },
+        {
+            "description": "",
+            "file_id": "0.0.102",
+            "memo": "0.0.5",
+            "node_id": 2,
+            "node_account_id": "0.0.5",
+            "node_cert_hash": "0xffd6ada74a3a34a9",
+            "public_key": "0x308201a2300d0609",
+            "service_endpoints": [
+                {
+                    "ip_address_v4": "3.133.213.146",
+                    "port": 50211
+                },
+                {
+                    "ip_address_v4": "3.133.213.147"
+                }
+            ],
+            "timestamp": {
+                "from": "1654531806.041135961",
+                "to": null
+            }
+        }
+    ],
+}
+
+//
 // https://mainnet-public.mirrornode.hedera.com/api/v1/network/supply
 //
 

@@ -66,6 +66,9 @@
         <a :class="{ 'is-rimmed': isAccountRoute}"
            class="button is-ghost h-is-mobile-navbar-item h-is-dense"
            @click="$router.replace({name: 'Accounts'})">Accounts</a>
+        <a :class="{ 'is-rimmed': isNodeRoute}"
+           class="button is-ghost h-is-mobile-navbar-item h-is-dense"
+           @click="$router.replace({name: 'Nodes'})">Nodes</a>
       </div>
 
     </div>
@@ -128,6 +131,9 @@ export default defineComponent({
     const isAccountRoute = computed(() => {
       return name.value === 'Accounts' || name.value === 'AccountDetails' || name.value === 'AccountBalances'
     })
+    const isNodeRoute = computed(() => {
+      return name.value === 'Nodes' || name.value === 'NodeDetails'
+    })
 
     const  onResizeHandler = () => {
       if (window.innerWidth >= MEDIUM_BREAKPOINT) {
@@ -151,6 +157,7 @@ export default defineComponent({
       isTopicRoute,
       isContractRoute,
       isAccountRoute,
+      isNodeRoute,
       networkRegistry
     }
   }

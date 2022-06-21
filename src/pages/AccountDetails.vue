@@ -37,7 +37,9 @@
             <span class="h-is-property-text">Show associated contract</span>
           </router-link>
         </span>
-        <p class="h-is-tertiary-text" v-if="accountInfo != null"> {{ accountInfo }} </p>
+        <router-link v-if="accountInfo != null" :to="{name: 'NodeDetails', params: {nodeId: nodeId}}">
+          <p class="h-is-tertiary-text"> {{ accountInfo }} </p>
+        </router-link>
       </template>
 
       <template v-slot:table>
@@ -245,6 +247,9 @@ export default defineComponent({
       return normalizedAccountId.value ? operatorRegistry.makeDescription(normalizedAccountId.value) : null
     })
 
+    const nodeId = computed(() => {
+      return normalizedAccountId.value ? operatorRegistry.lookup(normalizedAccountId.value)?.nodeId : null
+    })
 
     //
     // transaction filter selection
@@ -447,6 +452,7 @@ export default defineComponent({
       balance,
       tokenBalances,
       accountInfo,
+      nodeId,
       displayAllTokenLinks,
       elapsed,
       showContractVisible,

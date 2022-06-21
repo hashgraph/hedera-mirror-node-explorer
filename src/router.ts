@@ -37,6 +37,8 @@ import {AxiosMonitor} from "@/utils/AxiosMonitor";
 import TransactionsById from "@/pages/TransactionsById.vue";
 import MobileMenu from "@/pages/MobileMenu.vue";
 import MobileSearch from "@/pages/MobileSearch.vue";
+import Nodes from "@/pages/Nodes.vue";
+import NodeDetails from "@/pages/NodeDetails.vue";
 import {NetworkEntry, networkRegistry} from "@/schemas/NetworkRegistry";
 import {AppStorage} from "@/AppStorage";
 import axios from "axios";
@@ -135,6 +137,18 @@ const routes: Array<RouteRecordRaw> = [
     path: '/:network/topic/:topicId',
     name: 'TopicDetails',
     component: TopicDetails,
+    props: true
+  },
+  {
+    path: '/:network/nodes',
+    name: 'Nodes',
+    component: Nodes,
+    props: true
+  },
+  {
+    path: '/:network/node/:nodeId',
+    name: 'NodeDetails',
+    component: NodeDetails,
     props: true
   },
   {

@@ -24,18 +24,16 @@
 
 <template>
 
-  <div class="is-flex is-align-items-center">
-    <div class="is-flex has-text-white"
-         :class="{'is-align-items-center': variation, 'is-align-items-baseline': !variation}">
-      <p class="dashboard-value has-text-white mr-2" :class="{'is-numeric':isNumeric}" >{{ value }}</p>
-      <div class="is-flex-is-vertical"
-           :class="{'h-is-text-size-3':isMediumScreen, 'h-is-text-size-1':!isMediumScreen, 'pt-1':isMediumScreen}"
-           style="line-height: 1">
-        <Variation v-if="variation" :variation="variation"/>
-        <p class="h-is-text-size-1">{{ name }}</p>
-      </div>
+  <div v-if="endpoints && endpoints.length">
+    <div v-for="s in endpoints" :key="s.ip_address_v4">
+      <span v-if="s.ip_address_v4">{{ s.ip_address_v4 }}</span>
+      <span v-if="s.ip_address_v4 && s.port != null" class="has-text-grey h-is-smaller">{{ ':' + s.port }}</span>
     </div>
   </div>
+
+  <span v-else-if="initialLoading"/>
+
+  <span v-else class="has-text-grey">None</span>
 
 </template>
 
@@ -45,28 +43,21 @@
 
 <script lang="ts">
 
-import {defineComponent, inject} from 'vue';
-import Variation from "@/components/dashboard/Variation.vue";
+import {defineComponent, inject, PropType, ref} from 'vue';
+import {initialLoadingKey} from "@/AppKeys";
+import {ServiceEndPoint} from "@/schemas/HederaSchemas";
 
 export default defineComponent({
-  name: 'DashboardItem',
-  components: {Variation},
+  name: 'Endpoints',
+
   props: {
-    name: String,
-    value: String,
-    variation: String,
-    isNumeric: {
-      type: Boolean,
-      default: false
-    }
+    endpoints: Object as PropType<Array<ServiceEndPoint>|undefined>,
   },
 
   setup() {
-    const isMediumScreen = inject('isMediumScreen', true)
-
-    return {isMediumScreen}
-  },
-
+    const initialLoading = inject(initialLoadingKey, ref(false))
+    return {initialLoading}
+  }
 });
 
 </script>
@@ -75,34 +66,4 @@ export default defineComponent({
 <!--                                                       STYLE                                                     -->
 <!-- --------------------------------------------------------------------------------------------------------------- -->
 
-<style scoped>
-
-.dashboard-value {
-  font-style: normal;
-  font-weight: 300;
-  font-size: 22px;
-  line-height: 28px;
-  letter-spacing: -0.05em;
-}
-
-@media (min-width: 1080px) {
-  .dashboard-value {
-    font-style: normal;
-    font-weight: 300;
-    font-size: 28px;
-    line-height: 34px;
-    letter-spacing: -0.05em;
-  }
-}
-
-@media (min-width: 1450px) {
-  .dashboard-value {
-    font-style: normal;
-    font-weight: 300;
-    font-size: 34px;
-    line-height: 41px;
-    letter-spacing: -0.05em;
-  }
-}
-
-</style>
+<style/>
