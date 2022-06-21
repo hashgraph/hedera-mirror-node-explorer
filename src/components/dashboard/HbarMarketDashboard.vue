@@ -36,12 +36,12 @@
   <div v-else-if="isSmallScreen">
     <div class="is-flex is-flex-wrap-wrap is-justify-content-space-evenly h-top-banner py-2">
       <div class="is-flex is-flex-direction-column is-align-items-start">
-        <DashboardItem :name="hbarPriceLabel" :value="'$' + hbarPrice" :variation="hbarPriceVariation"/>
-        <DashboardItem :name="hbarMarketCapLabel" :value="'$' + hbarMarketCap" :variation="hbarMarketCapVariation"/>
+        <DashboardItem :name="hbarPriceLabel" :value="'$' + hbarPrice" :variation="hbarPriceVariation" :is-numeric="true"/>
+        <DashboardItem :name="hbarMarketCapLabel" :value="'$' + hbarMarketCap" :variation="hbarMarketCapVariation" :is-numeric="true"/>
       </div>
       <div class="is-flex is-flex-direction-column is-align-items-start">
-        <DashboardItem :name="hbarReleasedLabel" :value="hbarReleased"/>
-        <DashboardItem :name="hbarTotalLabel" :value="hbarTotal"/>
+        <DashboardItem :name="hbarReleasedLabel" :value="hbarReleased" :is-numeric="true"/>
+        <DashboardItem :name="hbarTotalLabel" :value="hbarTotal" :is-numeric="true"/>
       </div>
     </div>
   </div>
@@ -49,10 +49,10 @@
   <div v-else>
     <div class="is-flex is-flex-wrap-wrap is-justify-content-space-evenly h-top-banner py-2">
       <div class="is-flex is-flex-direction-column is-align-items-start">
-        <DashboardItem :name="hbarPriceLabel" :value="'$' + hbarPrice" :variation="hbarPriceVariation"/>
-        <DashboardItem :name="hbarMarketCapLabel" :value="'$' + hbarMarketCap" :variation="hbarMarketCapVariation"/>
-        <DashboardItem :name="hbarReleasedLabel" :value="hbarReleased"/>
-        <DashboardItem :name="hbarTotalLabel" :value="hbarTotal"/>
+        <DashboardItem :name="hbarPriceLabel" :value="'$' + hbarPrice" :variation="hbarPriceVariation" :is-numeric="true"/>
+        <DashboardItem :name="hbarMarketCapLabel" :value="'$' + hbarMarketCap" :variation="hbarMarketCapVariation" :is-numeric="true"/>
+        <DashboardItem :name="hbarReleasedLabel" :value="hbarReleased" :is-numeric="true"/>
+        <DashboardItem :name="hbarTotalLabel" :value="hbarTotal" :is-numeric="true"/>
       </div>
     </div>
   </div>

@@ -24,18 +24,9 @@
 
 <template>
 
-  <div class="is-flex is-align-items-center">
-    <div class="is-flex has-text-white"
-         :class="{'is-align-items-center': variation, 'is-align-items-baseline': !variation}">
-      <p class="dashboard-value has-text-white mr-2" :class="{'is-numeric':isNumeric}" >{{ value }}</p>
-      <div class="is-flex-is-vertical"
-           :class="{'h-is-text-size-3':isMediumScreen, 'h-is-text-size-1':!isMediumScreen, 'pt-1':isMediumScreen}"
-           style="line-height: 1">
-        <Variation v-if="variation" :variation="variation"/>
-        <p class="h-is-text-size-1">{{ name }}</p>
-      </div>
-    </div>
-  </div>
+  <p v-if="isMediumScreen" class="h-is-property-text mb-1">{{ title }}</p>
+  <p v-else class="h-is-text-size-3 mb-1">{{ title }}</p>
+  <DashboardItem :is-numeric="false" :name="name" :value="value" :variation="variation"/>
 
 </template>
 
@@ -46,27 +37,24 @@
 <script lang="ts">
 
 import {defineComponent, inject} from 'vue';
-import Variation from "@/components/dashboard/Variation.vue";
+import DashboardItem from "@/components/dashboard/DashboardItem.vue";
 
 export default defineComponent({
-  name: 'DashboardItem',
-  components: {Variation},
+  name: 'NetworkDashboardItem',
+  components: {DashboardItem},
   props: {
+    title: String,
     name: String,
     value: String,
-    variation: String,
-    isNumeric: {
-      type: Boolean,
-      default: false
-    }
+    variation: String
   },
-
   setup() {
     const isMediumScreen = inject('isMediumScreen', true)
 
-    return {isMediumScreen}
-  },
-
+    return {
+      isMediumScreen
+    }
+  }
 });
 
 </script>
@@ -75,34 +63,4 @@ export default defineComponent({
 <!--                                                       STYLE                                                     -->
 <!-- --------------------------------------------------------------------------------------------------------------- -->
 
-<style scoped>
-
-.dashboard-value {
-  font-style: normal;
-  font-weight: 300;
-  font-size: 22px;
-  line-height: 28px;
-  letter-spacing: -0.05em;
-}
-
-@media (min-width: 1080px) {
-  .dashboard-value {
-    font-style: normal;
-    font-weight: 300;
-    font-size: 28px;
-    line-height: 34px;
-    letter-spacing: -0.05em;
-  }
-}
-
-@media (min-width: 1450px) {
-  .dashboard-value {
-    font-style: normal;
-    font-weight: 300;
-    font-size: 34px;
-    line-height: 41px;
-    letter-spacing: -0.05em;
-  }
-}
-
-</style>
+<style/>
