@@ -35,14 +35,11 @@
       </template>
       <template v-slot:control>
         <div class="is-flex is-align-items-flex-end">
-          <PlayPauseButton v-model="cacheState"/>
+          <PlayPauseButtonV2 v-model:state="transactionCacheState"/>
         </div>
       </template>
       <template v-slot:table>
-        <TransactionByIdTable
-            v-bind:transaction-id="transactionId"
-            v-model:cacheState="cacheState"
-        />
+        <TransactionByIdTable v-bind:transactions="transactions"/>
       </template>
     </DashboardCard>
 
@@ -58,12 +55,14 @@
 
 <script lang="ts">
 
-import {computed, defineComponent, inject, ref} from 'vue';
-import PlayPauseButton, {PlayPauseState} from "@/components/PlayPauseButton.vue";
+import {computed, defineComponent, inject, onBeforeMount, onMounted, watch} from 'vue';
+import PlayPauseButtonV2 from "@/components/PlayPauseButtonV2.vue";
 import DashboardCard from "@/components/DashboardCard.vue";
 import TransactionByIdTable from "@/components/transaction/TransactionByIdTable.vue";
 import {normalizeTransactionId} from "@/utils/TransactionID";
 import Footer from "@/components/Footer.vue";
+import {EntityCacheStateV2} from "@/utils/EntityCacheV2";
+import {TransactionByIdCache} from "@/components/transaction/TransactionByIdCache";
 
 export default defineComponent({
   name: 'TransactionsById',
@@ -76,7 +75,7 @@ export default defineComponent({
   components: {
     Footer,
     DashboardCard,
-    PlayPauseButton,
+    PlayPauseButtonV2,
     TransactionByIdTable,
   },
 
@@ -84,13 +83,38 @@ export default defineComponent({
     const isSmallScreen = inject('isSmallScreen', true)
     const isTouchDevice = inject('isTouchDevice', false)
 
-    const cacheState = ref<PlayPauseState>(PlayPauseState.Play)
-
     const normalizedTransactionId = computed(() => {
       return props.transactionId ? normalizeTransactionId(props.transactionId, true) : "?";
     })
 
-    return {isSmallScreen, isTouchDevice, cacheState, normalizedTransactionId}
+    //
+    // transactionCache
+    //
+
+    const transactionCache = new TransactionByIdCache();
+
+    const setupTransactionCache = () => {
+      transactionCache.transactionId.value = props.transactionId ?? null
+      transactionCache.state.value = EntityCacheStateV2.Started
+    }
+
+    watch(() => props.transactionId, () => {
+      setupTransactionCache()
+    })
+    onMounted(() => {
+      setupTransactionCache()
+    })
+    onBeforeMount(() => {
+      transactionCache.state.value = EntityCacheStateV2.Stopped
+    })
+
+    return {
+      isSmallScreen,
+      isTouchDevice,
+      transactions: transactionCache.transactions,
+      transactionCacheState: transactionCache.state,
+      normalizedTransactionId
+    }
   }
 });
 

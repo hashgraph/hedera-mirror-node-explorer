@@ -18,13 +18,14 @@
  *
  */
 
-import {EntityCache} from "@/utils/EntityCache";
-import {TransactionByIdResponse, TransactionResponse} from "@/schemas/HederaSchemas";
+import {EntityCacheV2} from "@/utils/EntityCacheV2";
+import {Transaction, TransactionByIdResponse, TransactionResponse} from "@/schemas/HederaSchemas";
 import axios, {AxiosResponse} from "axios";
+import {computed, Ref, ref, watch} from "vue";
 
-export class TransactionByIdCache extends EntityCache<TransactionByIdResponse> {
+export class TransactionByIdCache extends EntityCacheV2<TransactionByIdResponse> {
 
-    private transactionId: string|null = null
+    public readonly transactionId = ref<string|null>(null)
     private readonly limit: number
 
     //
@@ -34,12 +35,12 @@ export class TransactionByIdCache extends EntityCache<TransactionByIdResponse> {
     public constructor(limit = 100) {
         super(5000, 10)
         this.limit = limit
+        watch(this.transactionId, () => this.clear())
     }
 
-    public setTransactionId(newValue: string|null): void {
-        this.transactionId = newValue
-        this.clear()
-    }
+    public readonly transactions: Ref<Array<Transaction>> = computed(() => {
+        return this.response.value?.data?.transactions ?? []
+    })
 
 
     //
@@ -48,8 +49,8 @@ export class TransactionByIdCache extends EntityCache<TransactionByIdResponse> {
 
     protected load(): Promise<AxiosResponse<TransactionByIdResponse>> {
         let result: Promise<AxiosResponse<TransactionByIdResponse>>
-        if (this.transactionId !== null) {
-            result = axios.get<TransactionResponse>("api/v1/transactions/" + this.transactionId )
+        if (this.transactionId.value !== null) {
+            result = axios.get<TransactionResponse>("api/v1/transactions/" + this.transactionId.value )
         } else {
             result = Promise.reject("transactionId is null")
         }
