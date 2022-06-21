@@ -20,12 +20,11 @@
 
 import {flushPromises, mount} from "@vue/test-utils"
 import router from "@/router";
-import axios from "axios";
-import MockAdapter from "axios-mock-adapter";
 import Oruga from "@oruga-ui/oruga-next";
 import {SAMPLE_CREATETOPIC_TRANSACTIONS} from "../Mocks";
 import TopicTable from "@/components/topic/TopicTable.vue";
 import {HMSF} from "@/utils/HMSF";
+import {Transaction} from "@/schemas/HederaSchemas";
 
 /*
     Bookmarks
@@ -56,17 +55,13 @@ describe("TopicTable.vue", () => {
 
         await router.push("/") // To avoid "missing required param 'network'" error
 
-        const mock = new MockAdapter(axios)
-
-        const matcher = "api/v1/transactions"
-        mock.onGet(matcher).reply(200, SAMPLE_CREATETOPIC_TRANSACTIONS)
-
         const wrapper = mount(TopicTable, {
             global: {
                 plugins: [router, Oruga]
             },
             props: {
-                nbItems: 42
+                nbItems: 42,
+                transactions: SAMPLE_CREATETOPIC_TRANSACTIONS.transactions as Transaction[]
             },
         });
 

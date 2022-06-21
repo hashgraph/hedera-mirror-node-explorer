@@ -36,12 +36,11 @@
             <span class="h-is-primary-subtitle">Crypto Transfers</span>
           </template>
           <template v-slot:control>
-            <PlayPauseButton
-                v-model="CryptoTransactionCacheState"/>
+            <PlayPauseButtonV2 v-model:state="cryptoTransactionCacheState"/>
           </template>
           <template v-slot:table>
             <CryptoTransactionTable
-                v-model:cacheState="CryptoTransactionCacheState"
+                v-bind:transactions="cryptoTransactions"
                 v-bind:nb-items="6"
             />
           </template>
@@ -58,12 +57,11 @@
             <span class="h-is-primary-subtitle">Smart Contract Calls</span>
           </template>
           <template v-slot:control>
-            <PlayPauseButton
-                v-model="ContractCallTransactionCacheState"/>
+            <PlayPauseButtonV2 v-model:state="contractCallTransactionCacheState"/>
           </template>
           <template v-slot:table>
             <ContractCallTransactionTable
-                v-model:cacheState="ContractCallTransactionCacheState"
+                v-bind:transactions="contractCallTransactions"
                 v-bind:nb-items="6"
             />
           </template>
@@ -76,12 +74,11 @@
             <span class="h-is-primary-subtitle">HCS Messages</span>
           </template>
           <template v-slot:control>
-            <PlayPauseButton
-                v-model="MessageTransactionCacheState"/>
+            <PlayPauseButtonV2 v-model:state="messageTransactionCacheState"/>
           </template>
           <template v-slot:table>
             <MessageTransactionTable
-                v-model:cacheState="MessageTransactionCacheState"
+                v-bind:transactions="messageTransactions"
                 v-bind:nb-items="6"
             />
           </template>
@@ -102,23 +99,25 @@
 
 <script lang="ts">
 
-import {defineComponent, inject, ref, watch} from 'vue';
+import {defineComponent, inject, onBeforeUnmount, onMounted, watch} from 'vue';
 
 import HbarMarketDashboard from "../components/dashboard/HbarMarketDashboard.vue";
 import DashboardCard from "@/components/DashboardCard.vue";
-import PlayPauseButton, {PlayPauseState} from "@/components/PlayPauseButton.vue";
+import PlayPauseButtonV2 from "@/components/PlayPauseButtonV2.vue";
 import CryptoTransactionTable from "@/components/dashboard/CryptoTransactionTable.vue";
 import MessageTransactionTable from "@/components/dashboard/MessageTransactionTable.vue";
 import ContractCallTransactionTable from "@/components/dashboard/ContractCallTransactionTable.vue";
 import {TransactionType} from "@/schemas/HederaSchemas";
 import Footer from "@/components/Footer.vue";
+import {TransactionCacheV2} from "@/components/transaction/TransactionCacheV2";
+import {EntityCacheStateV2} from "@/utils/EntityCacheV2";
 
 export default defineComponent({
   name: 'MainDashboard',
 
   components: {
     Footer,
-    PlayPauseButton,
+    PlayPauseButtonV2,
     DashboardCard,
     CryptoTransactionTable,
     MessageTransactionTable,
@@ -135,22 +134,43 @@ export default defineComponent({
     const isTouchDevice = inject('isTouchDevice', false)
     const displaySideBySide = inject('isLargeScreen', true)
 
-    const CryptoTransactionCacheState = ref<PlayPauseState>(PlayPauseState.Play)
-    const MessageTransactionCacheState = ref<PlayPauseState>(PlayPauseState.Play)
-    const ContractCallTransactionCacheState = ref<PlayPauseState>(PlayPauseState.Play)
+    const cryptoTransactionCache = new TransactionCacheV2()
+    cryptoTransactionCache.transactionType.value = TransactionType.CRYPTOTRANSFER
+
+    const messageTransactionCache = new TransactionCacheV2()
+    messageTransactionCache.transactionType.value = TransactionType.CONSENSUSSUBMITMESSAGE
+
+    const contractCallTransactionCache = new TransactionCacheV2()
+    contractCallTransactionCache.transactionType.value = TransactionType.CONTRACTCALL
+
+    onMounted(() => {
+      cryptoTransactionCache.state.value = EntityCacheStateV2.Started
+      messageTransactionCache.state.value = EntityCacheStateV2.Started
+      contractCallTransactionCache.state.value = EntityCacheStateV2.Started
+    })
+
+    onBeforeUnmount(() => {
+      cryptoTransactionCache.state.value = EntityCacheStateV2.Stopped
+      messageTransactionCache.state.value = EntityCacheStateV2.Stopped
+      contractCallTransactionCache.state.value = EntityCacheStateV2.Stopped
+    })
 
     watch(() => props.network, () => {
-      // We don't want to wait for table periodic refresh => we trigger a full reload
-      window.location.reload();
+      cryptoTransactionCache.clear()
+      messageTransactionCache.clear()
+      contractCallTransactionCache.clear()
     })
 
     return {
       isSmallScreen,
       isTouchDevice,
       displaySideBySide,
-      CryptoTransactionCacheState,
-      MessageTransactionCacheState,
-      ContractCallTransactionCacheState,
+      cryptoTransactions: cryptoTransactionCache.transactions,
+      cryptoTransactionCacheState: cryptoTransactionCache.state,
+      messageTransactions: messageTransactionCache.transactions,
+      messageTransactionCacheState: messageTransactionCache.state,
+      contractCallTransactions: contractCallTransactionCache.transactions,
+      contractCallTransactionCacheState: contractCallTransactionCache.state,
       TransactionType}
   }
 

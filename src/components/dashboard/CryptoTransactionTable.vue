@@ -65,17 +65,13 @@
 
 <script lang="ts">
 
-import {defineComponent, inject, onBeforeUnmount, PropType, ref, watch} from 'vue';
-import {Transaction, TransactionType} from "@/schemas/HederaSchemas";
-import {normalizeTransactionId} from "@/utils/TransactionID";
-import {EntityCacheState} from "@/utils/EntityCache";
-import {TransactionCache} from "@/components/transaction/TransactionCache";
-import {PlayPauseState} from "@/components/PlayPauseButton.vue";
+import {defineComponent, inject, PropType, ref} from 'vue';
+import {Transaction} from "@/schemas/HederaSchemas";
 import TimestampValue from "@/components/values/TimestampValue.vue";
 import TransactionLabel from "@/components/values/TransactionLabel.vue";
 import router from "@/router";
 import TransactionSummary from "@/components/transaction/TransactionSummary.vue";
-import { ORUGA_MOBILE_BREAKPOINT } from '@/App.vue';
+import {ORUGA_MOBILE_BREAKPOINT} from '@/App.vue';
 import EmptyTable from "@/components/EmptyTable.vue";
 
 export default defineComponent({
@@ -85,65 +81,18 @@ export default defineComponent({
 
   props: {
     nbItems: Number,
-    accountIdFilter: String,
-    cacheState: String as PropType<PlayPauseState>
+    transactions: {
+      type: Array as PropType<Array<Transaction>>,
+      default: () => []
+    }
   },
 
-  setup(props, context) {
+  setup(props) {
     const isTouchDevice = inject('isTouchDevice', false)
     const isMediumScreen = inject('isMediumScreen', true)
+
     const DEFAULT_PAGE_SIZE = 15
     const pageSize = props.nbItems ?? DEFAULT_PAGE_SIZE
-
-    // 1) transactions
-    let transactions = ref<Array<Transaction>>([])
-
-    // 2) cache
-    const cache = new TransactionCache(isTouchDevice ? 5 : 100)
-    cache.responseDidChangeCB = () => {
-      transactions.value = cache.getEntity()?.transactions ?? []
-    }
-    cache.stateDidChangeCB = () => {
-      let newState: PlayPauseState
-      switch (cache.getState()) {
-        default:
-        case EntityCacheState.Stopped:
-          newState = cache.isAutoStopped() ? PlayPauseState.AutoPause : PlayPauseState.Pause
-          break
-        case EntityCacheState.Updating:
-        case EntityCacheState.Ready:
-          newState = PlayPauseState.Play
-          break
-      }
-      context.emit('update:cacheState', newState)
-    }
-    const updateCacheAccountId = (currentValue: string | undefined) => {
-      cache.setAccountId(currentValue ?? null)
-    }
-    const updateCacheState = (currentValue: PlayPauseState | undefined) => {
-      switch (currentValue ?? PlayPauseState.Play) {
-        case PlayPauseState.Pause:
-        case PlayPauseState.AutoPause:
-          cache.stop()
-          break
-        case PlayPauseState.Play:
-          cache.start()
-          break
-      }
-    }
-    cache.setTransactionType(TransactionType.CRYPTOTRANSFER)
-    updateCacheAccountId(props.accountIdFilter)
-    updateCacheState(props.cacheState)
-    watch(() => props.accountIdFilter, (currentValue) => {
-      updateCacheAccountId(currentValue)
-      updateCacheState(PlayPauseState.Play)
-    })
-    watch(() => props.cacheState, (currentValue) => {
-      updateCacheState(currentValue)
-    })
-    onBeforeUnmount(() => {
-      cache.stop()
-    })
 
     // 3) handleClick
     const handleClick = (t: Transaction) => {
@@ -157,16 +106,11 @@ export default defineComponent({
       isTouchDevice,
       isMediumScreen,
       pageSize,
-      transactions,
-      cache,
       handleClick,
       currentPage,
 
       // From App
       ORUGA_MOBILE_BREAKPOINT,
-
-      // From TransactionID
-      normalizeTransactionId
     }
   }
 });

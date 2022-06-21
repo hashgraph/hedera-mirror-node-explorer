@@ -33,7 +33,7 @@
         <span class="h-is-primary-title">Recent Topics</span>
       </template>
       <template v-slot:table>
-        <TopicTable/>
+        <TopicTable v-bind:transactions="transactions"/>
       </template>
     </DashboardCard>
 
@@ -49,10 +49,13 @@
 
 <script lang="ts">
 
-import {defineComponent, inject} from 'vue';
+import {defineComponent, inject, onBeforeUnmount, onMounted, watch} from 'vue';
 import TopicTable from "@/components/topic/TopicTable.vue";
 import DashboardCard from "@/components/DashboardCard.vue";
 import Footer from "@/components/Footer.vue";
+import {TransactionCacheV2} from "@/components/transaction/TransactionCacheV2";
+import {TransactionResult, TransactionType} from "@/schemas/HederaSchemas";
+import {EntityCacheStateV2} from "@/utils/EntityCacheV2";
 
 export default defineComponent({
   name: 'Topics',
@@ -67,11 +70,28 @@ export default defineComponent({
     TopicTable
   },
 
-  setup() {
+  setup(props) {
     const isSmallScreen = inject('isSmallScreen', true)
     const isTouchDevice = inject('isTouchDevice', false)
 
+    const transactionCache = new TransactionCacheV2()
+    transactionCache.transactionType.value = TransactionType.CONSENSUSCREATETOPIC
+    transactionCache.transactionResult.value = TransactionResult.SUCCESS
+
+    onMounted(() => {
+      transactionCache.state.value = EntityCacheStateV2.Started
+    })
+
+    watch(() => props.network, () => {
+      transactionCache.clear()
+    })
+
+    onBeforeUnmount(() => {
+      transactionCache.state.value = EntityCacheStateV2.Stopped
+    })
+
     return {
+      transactions: transactionCache.transactions,
       isSmallScreen,
       isTouchDevice,
     }
