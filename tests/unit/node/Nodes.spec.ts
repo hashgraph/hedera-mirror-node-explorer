@@ -78,22 +78,17 @@ describe("Nodes.vue", () => {
 
         expect(cards[0].text()).toMatch(RegExp("^Network"))
         const items = cards[0].findAllComponents(NetworkDashboardItem)
-        expect(items.length).toBe(6)
+        expect(items.length).toBe(1)
         expect(items[0].text()).toMatch(RegExp("Total Nodes"))
-        expect(items[1].text()).toMatch(RegExp("Last Staked"))
-        expect(items[2].text()).toMatch(RegExp("Total Staked"))
-        expect(items[3].text()).toMatch(RegExp("Staking Period"))
-        expect(items[4].text()).toMatch(RegExp("Total Rewarded"))
-        expect(items[5].text()).toMatch(RegExp("Staking Period"))
 
         expect(cards[1].text()).toMatch(RegExp("^Nodes"))
         const table = cards[1].findComponent(NodeTable)
         expect(table.exists()).toBe(true)
-        expect(table.get('thead').text()).toBe("Node Account Hosted By Location Stake Stake Range % of Total Stake")
+        expect(table.get('thead').text()).toBe("Node Account Hosted By Location")
         expect(wrapper.get('tbody').text()).toBe(
-            "0" + "0.0.3" + "None" + "None" + "12352698.00000000" + "3,8%" +
-            "1" + "0.0.4" + "None" + "None" + "12352698.00000000" + "3,8%" +
-            "2" + "0.0.5" + "None" + "None" + "12352698.00000000" + "3,8%"
+            "0" + "0.0.3" + "None" + "None" +
+            "1" + "0.0.4" + "None" + "None" +
+            "2" + "0.0.5" + "None" + "None"
         )
     });
 

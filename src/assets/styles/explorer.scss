@@ -133,23 +133,6 @@ body {
     font-variant-numeric: tabular-nums;
 }
 
-.h-is-stake-range-bar {
-    width: 150px;
-    margin-top: initial;
-    margin-bottom: initial;
-}
-@media (min-width: 1080px) {
-    .h-is-stake-range-bar {
-        width: 150px;
-        margin-top: 12px;
-        margin-bottom: 3px;
-    }
-    #node-table table.o-table > tbody > tr > td {
-        padding-top: 0;
-        padding-bottom: 0;
-    }
-}
-
 .has-hbar:after {
     content: "\210F";
     font-weight: lighter;

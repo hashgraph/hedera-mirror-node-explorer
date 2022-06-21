@@ -76,6 +76,9 @@
                 <Endpoints :endpoints="node?.service_endpoints"></Endpoints>
               </template>
             </Property>
+          </div>
+
+          <div class="column">
             <Property :id="'publicKey'">
               <template v-slot:name>Public Key</template>
               <template v-slot:value>
@@ -89,18 +92,6 @@
                            v-bind:show-none="true"/>
               </template>
             </Property>
-          </div>
-
-          <div class="column h-has-column-separator">
-            <NetworkDashboardItem :title="'Stake for Consensus'" :value="consensusStake" :name="'HBAR'"/>
-            <p class="h-is-property-text h-is-extra-text mt-1">{{ consensusPercentage }}% of total</p>
-            <br/><br/>
-            <NetworkDashboardItem :title="'Stake Rewarded'" :value="stakeRewarded" :name="'HBAR'"/>
-            <p class="h-is-property-text h-is-extra-text mt-1">{{ rewardPercentage }}% of total</p>
-            <br/><br/>
-            <NetworkDashboardItem :title="'Current Staking Period'" :value="stakingPeriod" :name="'HOURS'"/>
-            <p class="h-is-property-text h-is-extra-text mt-1">from 00:00 am today to 11:59 pm today</p>
-            <div class="mt-6"/>
           </div>
 
         </div>
@@ -137,14 +128,12 @@ import {base64DecToArr, byteToHex} from "@/utils/B64Utils";
 import HexaValue from "@/components/values/HexaValue.vue";
 import {operatorRegistry} from "@/schemas/OperatorRegistry";
 import Endpoints from "@/components/values/Endpoints.vue";
-import NetworkDashboardItem from "@/components/node/NetworkDashboardItem.vue";
 
 export default defineComponent({
 
   name: 'NodeDetails',
 
   components: {
-    NetworkDashboardItem,
     Endpoints,
     HexaValue,
     Property,
@@ -194,9 +183,6 @@ export default defineComponent({
 
     const consensusStake = '1,897,202,087'
     const consensusPercentage = 4
-    const stakeRewarded = '12,202,087'
-    const rewardPercentage = 3
-    const stakingPeriod = '24'
 
     onBeforeMount(() => fetchNode(props.nodeId))
     watch(() => props.nodeId, () => fetchNode(props.nodeId));
@@ -227,9 +213,6 @@ export default defineComponent({
       node,
       consensusStake,
       consensusPercentage,
-      stakeRewarded,
-      rewardPercentage,
-      stakingPeriod,
       notification,
       nodeDescription,
       formatHash

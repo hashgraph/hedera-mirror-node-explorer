@@ -37,18 +37,6 @@
         <div v-if="isSmallScreen" class="is-flex is-justify-content-space-between">
           <div class="is-flex-direction-column">
             <NetworkDashboardItem :title="'Total Nodes'" :value="totalNodes"/>
-            <div class="mt-4"/>
-            <NetworkDashboardItem :title="'Last Staked'" :value="lastStakedTime"/>
-          </div>
-          <div class="is-flex-direction-column">
-            <NetworkDashboardItem :name="'HBAR'" :title="'Total Staked'" :value="totalStaked" :variation="'2.14'"/>
-            <div class="mt-4"/>
-            <NetworkDashboardItem :title="'Next Staking Period'" :value="nextStakedTime"/>
-          </div>
-          <div class="is-flex-direction-column">
-            <NetworkDashboardItem :name="'HBAR'" :title="'Total Rewarded'" :value="totalRewarded" :variation="totalRewardedVariation"/>
-            <div class="mt-4"/>
-            <NetworkDashboardItem :title="'Staking Period'" :value="stakingPeriod"/>
           </div>
         </div>
 

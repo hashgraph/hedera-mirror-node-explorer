@@ -58,30 +58,6 @@
         </div>
       </o-table-column>
 
-      <o-table-column v-slot="props" field="stake" label="Stake">
-        <div class="should-wrap">
-          <HbarAmount :amount="makeStake(props.row)"/>
-        </div>
-      </o-table-column>
-
-      <o-table-column field="stake" label="Stake Range">
-        <div class="is-flex-direction-column h-is-stake-range-bar">
-          <progress class="progress is-large is-info h-is-progress-bar" max="100"
-                    style="max-height: 8px; margin-bottom: 1px;" value="45"></progress>
-          <div class="is-flex is-justify-content-space-between">
-            <img alt="Minimum staking mark" class="image" src="@/assets/min-mark.png"
-                 style="max-height: 8px; margin-left: 16px">
-            <img alt="Maximum staking mark" class="image" src="@/assets/max-mark.png" style="max-height: 8px">
-          </div>
-        </div>
-      </o-table-column>
-
-      <o-table-column v-slot="props" field="stake" label="% of Total Stake" position="right">
-        <div class="should-wrap">
-          {{ makeStakePercentage(props.row) }}
-        </div>
-      </o-table-column>
-
     </o-table>
   </div>
 
@@ -124,8 +100,6 @@ export default defineComponent({
 
     const makeHost = (node: NetworkNode) => node.node_account_id ? operatorRegistry.lookup(node.node_account_id)?.name : null
     const makeLocation = (node: NetworkNode) => node.node_account_id ? operatorRegistry.lookup(node.node_account_id)?.location : null
-    const makeStake = (node: NetworkNode) => 1235269800000000
-    const makeStakePercentage = (node: NetworkNode) => '3.8%'
 
     const handleClick = (n: NetworkNode) => {
       router.push({name: 'NodeDetails', params: {nodeId: n.node_id}})
@@ -136,8 +110,6 @@ export default defineComponent({
       isMediumScreen,
       makeHost,
       makeLocation,
-      makeStake,
-      makeStakePercentage,
       handleClick,
       ORUGA_MOBILE_BREAKPOINT
     }
