@@ -182,7 +182,7 @@
 
 <script lang="ts">
 
-import {computed, defineComponent, inject, onBeforeMount, onMounted, ref, watch} from 'vue';
+import {computed, defineComponent, inject, onBeforeUnmount, onMounted, ref, watch} from 'vue';
 import axios from "axios";
 import {AccountBalanceTransactions, ContractResponse} from "@/schemas/HederaSchemas";
 import KeyValue from "@/components/values/KeyValue.vue";
@@ -364,7 +364,7 @@ export default defineComponent({
     onMounted(() => {
       setupTransactionCache()
     })
-    onBeforeMount(() => {
+    onBeforeUnmount(() => {
       transactionCache.state.value = EntityCacheStateV2.Stopped
     })
 

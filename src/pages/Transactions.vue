@@ -55,7 +55,7 @@
 
 <script lang="ts">
 
-import {computed, defineComponent, inject, onBeforeMount, onMounted, ref, watch} from 'vue';
+import {computed, defineComponent, inject, onBeforeUnmount, onMounted, ref, watch} from 'vue';
 
 import TransactionTableV2 from "@/components/transaction/TransactionTableV2.vue";
 import PlayPauseButtonV2 from "@/components/PlayPauseButtonV2.vue";
@@ -123,7 +123,7 @@ export default defineComponent({
     onMounted(() => {
       setupTransactionCache()
     })
-    onBeforeMount(() => {
+    onBeforeUnmount(() => {
       transactionCache.state.value = EntityCacheStateV2.Stopped
     })
 
