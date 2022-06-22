@@ -26,6 +26,7 @@ import MockAdapter from "axios-mock-adapter";
 import Oruga from "@oruga-ui/oruga-next";
 import AccountTable from "@/components/account/AccountTable.vue";
 import {HMSF} from "@/utils/HMSF";
+import {AccountInfo} from "@/schemas/HederaSchemas";
 
 /*
     Bookmarks
@@ -58,9 +59,6 @@ describe("AccountTable.vue", () => {
 
         const mock = new MockAdapter(axios);
 
-        const matcher1 = "/api/v1/accounts"
-        mock.onGet(matcher1).reply(200, SAMPLE_ACCOUNTS);
-
         const matcher2 = "/api/v1/tokens/" + SAMPLE_TOKEN.token_id
         mock.onGet(matcher2).reply(200, SAMPLE_TOKEN)
 
@@ -69,7 +67,8 @@ describe("AccountTable.vue", () => {
                 plugins: [router, Oruga]
             },
             props: {
-                nbItems: 42
+                nbItems: 42,
+                accounts: SAMPLE_ACCOUNTS.accounts as AccountInfo[]
             },
         });
 

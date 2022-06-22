@@ -28,6 +28,7 @@ import AccountTable from "@/components/account/AccountTable.vue";
 import MockAdapter from "axios-mock-adapter";
 import Oruga from "@oruga-ui/oruga-next";
 import {HMSF} from "@/utils/HMSF";
+import {EntityCacheStateV2} from "@/utils/EntityCacheV2";
 
 /*
     Bookmarks
@@ -90,6 +91,11 @@ describe("Accounts.vue", () => {
             "None" +
             "23.42647909"
         )
+
+        wrapper.unmount()
+        await flushPromises()
+
+        expect(wrapper.vm.accountCache.state.value).toBe(EntityCacheStateV2.Stopped)
     });
 
 });

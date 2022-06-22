@@ -18,13 +18,14 @@
  *
  */
 
-import {EntityCache} from "@/utils/EntityCache";
-import {AccountsResponse} from "@/schemas/HederaSchemas";
+import {EntityCacheV2} from "@/utils/EntityCacheV2";
+import {AccountInfo, AccountsResponse} from "@/schemas/HederaSchemas";
 import axios, {AxiosResponse} from "axios";
+import {computed, Ref} from "vue";
 
 const DESCENDING = 'desc'
 
-export class AccountCache extends EntityCache<AccountsResponse> {
+export class AccountCache extends EntityCacheV2<AccountsResponse> {
 
     private readonly limit: number
     private readonly sorting: string
@@ -38,6 +39,10 @@ export class AccountCache extends EntityCache<AccountsResponse> {
         this.limit = limit
         this.sorting = DESCENDING
     }
+
+    public readonly accounts: Ref<Array<AccountInfo>> = computed(() => {
+        return this.response.value?.data?.accounts ?? []
+    })
 
     //
     // EntityCache

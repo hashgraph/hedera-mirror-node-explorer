@@ -33,7 +33,7 @@
         <span class="h-is-primary-title">Recent Accounts</span>
       </template>
       <template v-slot:table>
-        <AccountTable/>
+        <AccountTable v-bind:accounts="accounts"/>
       </template>
     </DashboardCard>
 
@@ -49,10 +49,12 @@
 
 <script lang="ts">
 
-import {defineComponent, inject} from 'vue';
+import {defineComponent, inject, onBeforeUnmount, onMounted} from 'vue';
 import AccountTable from "@/components/account/AccountTable.vue";
 import DashboardCard from "@/components/DashboardCard.vue";
 import Footer from "@/components/Footer.vue";
+import {AccountCache} from "@/components/account/AccountCache";
+import {EntityCacheStateV2} from "@/utils/EntityCacheV2";
 
 export default defineComponent({
   name: 'Accounts',
@@ -70,9 +72,20 @@ export default defineComponent({
   setup() {
     const isSmallScreen = inject('isSmallScreen', true)
     const isTouchDevice = inject('isTouchDevice', false)
+
+    const accountCache = new AccountCache()
+    onMounted(() => {
+      accountCache.state.value = EntityCacheStateV2.Started
+    })
+    onBeforeUnmount(() => {
+      accountCache.state.value = EntityCacheStateV2.Stopped
+    })
+
     return {
       isSmallScreen,
-      isTouchDevice
+      isTouchDevice,
+      accounts: accountCache.accounts,
+      accountCache, // For testing purpose
     }
   }
 });
