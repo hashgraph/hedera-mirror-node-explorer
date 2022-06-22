@@ -18,11 +18,12 @@
  *
  */
 
-import {EntityCache} from "@/utils/EntityCache";
+import {EntityCacheV2} from "@/utils/EntityCacheV2";
 import {CoinGeckoResponse} from "@/schemas/CoinGeckoMarketData";
 import axios, {AxiosResponse} from "axios";
+import {computed} from "vue";
 
-export class CoinGeckoCache extends EntityCache<CoinGeckoResponse> {
+export class CoinGeckoCache extends EntityCacheV2<CoinGeckoResponse> {
 
     //
     // Public
@@ -31,6 +32,30 @@ export class CoinGeckoCache extends EntityCache<CoinGeckoResponse> {
     public constructor() {
         super(60000, null)
     }
+
+    public readonly marketData = computed(() => {
+        return this.response.value?.data?.market_data
+    })
+
+    public readonly hbarPrice = computed(() => {
+        const currentPrice = this.marketData.value?.current_price
+        return currentPrice ? (Math.round(currentPrice.usd * 10000) / 10000).toFixed(4) : ""
+    })
+
+    public readonly hbarPriceVariation = computed(() => {
+        const pcp24 = this.marketData.value?.price_change_percentage_24h
+        return pcp24 ? (Math.round(pcp24 * 100)/100).toFixed(2) : ""
+    })
+
+    public readonly hbarMarketCap = computed(() => {
+        const mc = this.marketData.value?.market_cap
+        return mc ? Math.round(mc.usd).toLocaleString('en-US') : ""
+    })
+
+    public readonly hbarMarketCapVariation = computed(() => {
+        const mccp24 = this.marketData.value?.market_cap_change_percentage_24h
+        return mccp24 ? (Math.round(mccp24 * 100)/100).toFixed(2) : ""
+    })
 
 
     //
