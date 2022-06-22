@@ -28,6 +28,7 @@ import TokenBalanceTable from "@/components/token/TokenBalanceTable.vue";
 import MockAdapter from "axios-mock-adapter";
 import {HMSF} from "@/utils/HMSF";
 import Oruga from "@oruga-ui/oruga-next";
+import {EntityCacheStateV2} from "@/utils/EntityCacheV2";
 
 /*
     Bookmarks
@@ -77,6 +78,8 @@ describe("TokenDetails.vue", () => {
         await flushPromises()
         // console.log(wrapper.text())
 
+        expect(wrapper.vm.tokenNftCache.state.value).toBe(EntityCacheStateV2.Started)
+
         expect(wrapper.text()).toMatch(RegExp("^Fungible Token " + testTokenId))
 
         expect(wrapper.get("#nameValue").text()).toBe("23423")
@@ -96,6 +99,11 @@ describe("TokenDetails.vue", () => {
         expect(wrapper.text()).toMatch("Balances")
         expect(wrapper.findComponent(TokenBalanceTable).exists()).toBe(true)
         expect(wrapper.findComponent(TokenNftTable).exists()).toBe(false)
+
+        wrapper.unmount()
+        await flushPromises()
+
+        expect(wrapper.vm.tokenNftCache.state.value).toBe(EntityCacheStateV2.Stopped)
     });
 
     it("Should display details of non fungible token", async () => {
@@ -166,6 +174,8 @@ describe("TokenDetails.vue", () => {
         await flushPromises()
         // console.log(wrapper.text())
 
+        expect(wrapper.vm.tokenNftCache.state.value).toBe(EntityCacheStateV2.Started)
+
         expect(wrapper.text()).toMatch(RegExp("^Non Fungible Token " + testTokenId))
         expect(wrapper.get("#nameValue").text()).toBe("Ħ Frens Kingdom Dude")
         expect(wrapper.get("#symbolValue").text()).toBe("ĦFRENSKINGDOM")
@@ -193,6 +203,11 @@ describe("TokenDetails.vue", () => {
         expect(wrapper.text()).toMatch("Balances")
         expect(wrapper.findComponent(TokenNftTable).exists()).toBe(false)
         expect(wrapper.findComponent(TokenBalanceTable).exists()).toBe(true)
+
+        wrapper.unmount()
+        await flushPromises()
+
+        expect(wrapper.vm.tokenNftCache.state.value).toBe(EntityCacheStateV2.Stopped)
     });
 
     it("Should detect invalid token ID", async () => {

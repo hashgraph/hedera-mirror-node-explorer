@@ -134,7 +134,7 @@
           <div v-if="tokenInfo.type === 'NON_FUNGIBLE_UNIQUE'">
             <p class="h-is-tertiary-text mb-2">NFT Holders</p>
 
-            <TokenNftTable v-bind:nb-items="10" v-bind:token-id="tokenId"/>
+            <TokenNftTable v-bind:nb-items="10" v-bind:nfts="nfts"/>
           </div>
 
           <div v-else>
@@ -158,7 +158,7 @@
 
 <script lang="ts">
 
-import {computed, defineComponent, inject, onBeforeMount, ref, watch} from 'vue';
+import {computed, defineComponent, inject, onBeforeMount, onBeforeUnmount, onMounted, ref, watch} from 'vue';
 import router from "@/router";
 import axios from "axios";
 import KeyValue from "@/components/values/KeyValue.vue";
@@ -176,6 +176,8 @@ import {EntityID} from "@/utils/EntityID";
 import Property from "@/components/Property.vue";
 import {makeEthAddressForToken, makeTokenSymbol} from "@/schemas/HederaUtils";
 import NotificationBanner from "@/components/NotificationBanner.vue";
+import {EntityCacheStateV2} from "@/utils/EntityCacheV2";
+import {TokenNftCache} from "@/components/token/TokenNftCache";
 
 export default defineComponent({
 
@@ -261,6 +263,27 @@ export default defineComponent({
 
     const tokenSymbol = computed( () => makeTokenSymbol(tokenInfo.value, 11))
 
+    //
+    // tokenNftCache
+    //
+
+    const tokenNftCache = new TokenNftCache();
+
+    const setupTransactionCache = () => {
+      tokenNftCache.tokenId.value = props.tokenId ?? null
+      tokenNftCache.state.value = EntityCacheStateV2.Started
+    }
+
+    watch(() => props.tokenId, () => {
+      setupTransactionCache()
+    })
+    onMounted(() => {
+      setupTransactionCache()
+    })
+    onBeforeUnmount(() => {
+      tokenNftCache.state.value = EntityCacheStateV2.Stopped
+    })
+
     return {
       isSmallScreen,
       isTouchDevice,
@@ -271,7 +294,9 @@ export default defineComponent({
       showTokenDetails,
       parseIntString,
       ethereumAddress,
-      tokenSymbol
+      tokenSymbol,
+      nfts: tokenNftCache.nfts,
+      tokenNftCache, // For test purpose
     }
   },
 });
