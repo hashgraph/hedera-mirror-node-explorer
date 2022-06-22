@@ -388,7 +388,6 @@ export interface Contract {
     memo: string | undefined
     obtainer_id: string | null | undefined   // Network entity ID in the format of shard.realm.num
     proxy_account_id: string | null | undefined   // Network entity ID in the format of shard.realm.num
-    solidity_address: string | undefined
     timestamp: TimestampRange | undefined   // timestamp range the entity is valid for
 
 }
