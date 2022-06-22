@@ -48,14 +48,13 @@ export abstract class EntityCacheV2<E> {
     }
 
     public clear(): void {
-        const wasStarted = this.state.value == EntityCacheStateV2.Started
-        if (wasStarted) {
-            this.state.value = EntityCacheStateV2.Stopped
-        }
+
         this.response.value = null
         this.updateCount = 0
-        if (wasStarted) {
-            this.state.value = EntityCacheStateV2.Started
+
+        if (this.state.value == EntityCacheStateV2.Started) {
+            this.stop();
+            this.start();
         }
     }
 
@@ -75,21 +74,29 @@ export abstract class EntityCacheV2<E> {
                 case EntityCacheStateV2.Started:
                     // => newValue == EntityCacheStateV2.Stopped || newValue == EntityCacheStateV2.AutoStopped
                     // => we stop
-                    if (this.timeoutID != -1) {
-                        clearTimeout(this.timeoutID)
-                        this.timeoutID = -1
-                    }
-                    this.sessionId += 1
+                    this.stop();
                     break;
                 case EntityCacheStateV2.Stopped:
                 case EntityCacheStateV2.AutoStopped:
                     // => newValue == EntityCacheStateV2.Started
                     // => we start
-                    this.updateCount = 0
-                    this.updateCache()
+                    this.start();
                     break;
             }
         }
+    }
+
+    private start() {
+        this.updateCount = 0
+        this.updateCache()
+    }
+
+    private stop() {
+        if (this.timeoutID != -1) {
+            clearTimeout(this.timeoutID)
+            this.timeoutID = -1
+        }
+        this.sessionId += 1
     }
 
     private updateCache(): void {

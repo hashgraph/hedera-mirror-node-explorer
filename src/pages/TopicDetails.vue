@@ -34,13 +34,13 @@
         <span v-if="validEntityId" class="h-is-secondary-text">{{ normalizedTopicId }}</span>
       </template>
       <template v-slot:control>
-        <PlayPauseButton v-model="cacheState"/>
+        <PlayPauseButtonV2 v-model:state="cacheState"/>
       </template>
       <template v-slot:table>
 
         <NotificationBanner v-if="notification" :message="notification"/>
 
-        <TopicMessageTable v-if="validEntityId" v-model:cache-state="cacheState" v-bind:topic-id="topicId"/>
+        <TopicMessageTable v-if="validEntityId" v-bind:messages="messages"/>
       </template>
     </DashboardCard>
 
@@ -56,13 +56,15 @@
 
 <script lang="ts">
 
-import {computed, defineComponent, inject, ref} from 'vue';
-import PlayPauseButton, {PlayPauseState} from "@/components/PlayPauseButton.vue";
+import {computed, defineComponent, inject, onBeforeMount, onMounted, watch} from 'vue';
+import PlayPauseButtonV2 from "@/components/PlayPauseButtonV2.vue";
 import TopicMessageTable from "@/components/topic/TopicMessageTable.vue";
 import DashboardCard from "@/components/DashboardCard.vue";
 import Footer from "@/components/Footer.vue";
 import NotificationBanner from "@/components/NotificationBanner.vue";
 import {EntityID} from "@/utils/EntityID";
+import {TopicMessageCache} from "@/components/topic/TopicMessageCache";
+import {EntityCacheStateV2} from "@/utils/EntityCacheV2";
 
 export default defineComponent({
 
@@ -81,13 +83,12 @@ export default defineComponent({
     Footer,
     DashboardCard,
     TopicMessageTable,
-    PlayPauseButton
+    PlayPauseButtonV2
   },
 
   setup(props) {
     const isSmallScreen = inject('isSmallScreen', true)
     const isTouchDevice = inject('isTouchDevice', false)
-    const cacheState = ref<PlayPauseState>(PlayPauseState.Play)
 
     const validEntityId = computed(() => {
       return props.topicId ? EntityID.parse(props.topicId, true) != null : false
@@ -106,10 +107,31 @@ export default defineComponent({
       return result
     })
 
+    //
+    // messageCache
+    //
+
+    const messageCache = new TopicMessageCache()
+
+    const setupMessageCache = () => {
+      messageCache.topicId.value = props.topicId
+      messageCache.state.value = EntityCacheStateV2.Started
+    }
+    watch(() => props.topicId, () => {
+      setupMessageCache()
+    })
+    onMounted(() => {
+      setupMessageCache()
+    })
+    onBeforeMount(() => {
+      messageCache.state.value = EntityCacheStateV2.Stopped
+    })
+
     return {
       isSmallScreen,
       isTouchDevice,
-      cacheState,
+      messages: messageCache.messages,
+      cacheState: messageCache.state,
       validEntityId,
       normalizedTopicId,
       notification
