@@ -28,6 +28,7 @@ import ContractTable from "@/components/contract/ContractTable.vue";
 import MockAdapter from "axios-mock-adapter";
 import Oruga from "@oruga-ui/oruga-next";
 import {HMSF} from "@/utils/HMSF";
+import {EntityCacheStateV2} from "@/utils/EntityCacheV2";
 
 /*
     Bookmarks
@@ -74,6 +75,8 @@ describe("Contracts.vue", () => {
         await flushPromises()
         // console.log(wrapper.text())
 
+        expect(wrapper.vm.contractCache.state.value).toBe(EntityCacheStateV2.AutoStopped)
+
         const card = wrapper.findComponent(DashboardCard)
         expect(card.exists()).toBe(true)
         expect(card.text()).toMatch(RegExp("^Recent Contracts"))
@@ -86,6 +89,11 @@ describe("Contracts.vue", () => {
             "3:09:15.9474 PMMar 7, 2022" +
             "Mirror Node acceptance test: 2022-03-07T15:09:15.228564328Z Create contract"
         )
+
+        wrapper.unmount()
+        await flushPromises()
+
+        expect(wrapper.vm.contractCache.state.value).toBe(EntityCacheStateV2.AutoStopped)
     });
 
 });
