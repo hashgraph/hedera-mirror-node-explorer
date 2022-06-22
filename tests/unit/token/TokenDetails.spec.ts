@@ -78,7 +78,8 @@ describe("TokenDetails.vue", () => {
         await flushPromises()
         // console.log(wrapper.text())
 
-        expect(wrapper.vm.tokenNftCache.state.value).toBe(EntityCacheStateV2.Started)
+        expect(wrapper.vm.tokenBalanceCache.state.value).toBe(EntityCacheStateV2.Started)
+        expect(wrapper.vm.tokenNftCache.state.value).toBe(EntityCacheStateV2.Stopped)
 
         expect(wrapper.text()).toMatch(RegExp("^Fungible Token " + testTokenId))
 
@@ -103,6 +104,7 @@ describe("TokenDetails.vue", () => {
         wrapper.unmount()
         await flushPromises()
 
+        expect(wrapper.vm.tokenBalanceCache.state.value).toBe(EntityCacheStateV2.Stopped)
         expect(wrapper.vm.tokenNftCache.state.value).toBe(EntityCacheStateV2.Stopped)
     });
 
@@ -129,6 +131,9 @@ describe("TokenDetails.vue", () => {
         await flushPromises()
         // console.log(wrapper.text())
 
+        expect(wrapper.vm.tokenBalanceCache.state.value).toBe(EntityCacheStateV2.Stopped)
+        expect(wrapper.vm.tokenNftCache.state.value).toBe(EntityCacheStateV2.Started)
+
         expect(wrapper.text()).toMatch(RegExp("^Non Fungible Token " + testTokenId))
 
         expect(wrapper.get("#nameValue").text()).toBe("Ħ Frens Kingdom Dude")
@@ -149,6 +154,12 @@ describe("TokenDetails.vue", () => {
         expect(wrapper.text()).toMatch("NFT Holders")
         expect(wrapper.findComponent(TokenNftTable).exists()).toBe(true)
         expect(wrapper.findComponent(TokenBalanceTable).exists()).toBe(false)
+
+        wrapper.unmount()
+        await flushPromises()
+
+        expect(wrapper.vm.tokenBalanceCache.state.value).toBe(EntityCacheStateV2.Stopped)
+        expect(wrapper.vm.tokenNftCache.state.value).toBe(EntityCacheStateV2.Stopped)
     });
 
     it("Should update when token id changes", async () => {
@@ -174,6 +185,7 @@ describe("TokenDetails.vue", () => {
         await flushPromises()
         // console.log(wrapper.text())
 
+        expect(wrapper.vm.tokenBalanceCache.state.value).toBe(EntityCacheStateV2.Stopped)
         expect(wrapper.vm.tokenNftCache.state.value).toBe(EntityCacheStateV2.Started)
 
         expect(wrapper.text()).toMatch(RegExp("^Non Fungible Token " + testTokenId))
@@ -207,6 +219,7 @@ describe("TokenDetails.vue", () => {
         wrapper.unmount()
         await flushPromises()
 
+        expect(wrapper.vm.tokenBalanceCache.state.value).toBe(EntityCacheStateV2.Stopped)
         expect(wrapper.vm.tokenNftCache.state.value).toBe(EntityCacheStateV2.Stopped)
     });
 

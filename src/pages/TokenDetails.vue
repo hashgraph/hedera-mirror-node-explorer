@@ -140,7 +140,7 @@
           <div v-else>
             <p class="h-is-tertiary-text mb-2">Balances</p>
 
-            <TokenBalanceTable v-bind:nb-items="10" v-bind:token-id="tokenId"/>
+            <TokenBalanceTable v-bind:nb-items="10" v-bind:token-id="tokenId" v-bind:token-balances="tokenBalances"/>
           </div>
         </template>
       </template>
@@ -178,6 +178,7 @@ import {makeEthAddressForToken, makeTokenSymbol} from "@/schemas/HederaUtils";
 import NotificationBanner from "@/components/NotificationBanner.vue";
 import {EntityCacheStateV2} from "@/utils/EntityCacheV2";
 import {TokenNftCache} from "@/components/token/TokenNftCache";
+import {TokenBalanceCache} from "@/components/token/TokenBalanceCache";
 
 export default defineComponent({
 
@@ -206,7 +207,8 @@ export default defineComponent({
   setup(props) {
     const isSmallScreen = inject('isSmallScreen', true)
     const isTouchDevice = inject('isTouchDevice', false)
-    let tokenInfo = ref<TokenInfo | null>(null)
+
+    const tokenInfo = ref<TokenInfo | null>(null)
 
     const got404 = ref(false)
     const validEntityId = computed(() => {
@@ -264,17 +266,51 @@ export default defineComponent({
     const tokenSymbol = computed( () => makeTokenSymbol(tokenInfo.value, 11))
 
     //
+    // tokenBalanceCache
+    //
+
+    const tokenBalanceCache = new TokenBalanceCache();
+    const isFungible = computed(() => {
+      return tokenInfo.value != null && tokenInfo.value.type != "NON_FUNGIBLE_UNIQUE"
+    })
+    const setupTokenBalanceCache = () => {
+      if (isFungible.value) {
+        tokenBalanceCache.tokenId.value = props.tokenId ?? null
+        tokenBalanceCache.state.value = EntityCacheStateV2.Started
+      }
+      else {
+        tokenBalanceCache.state.value = EntityCacheStateV2.Stopped
+      }
+    }
+    watch([() => props.tokenId, isFungible], () => {
+      setupTokenBalanceCache()
+    })
+    onMounted(() => {
+      setupTokenBalanceCache()
+    })
+    onBeforeUnmount(() => {
+      tokenBalanceCache.state.value = EntityCacheStateV2.Stopped
+    })
+
+    //
     // tokenNftCache
     //
 
     const tokenNftCache = new TokenNftCache();
-
+    const isNFT = computed(() => {
+      return tokenInfo.value != null && tokenInfo.value.type == "NON_FUNGIBLE_UNIQUE"
+    })
     const setupTransactionCache = () => {
-      tokenNftCache.tokenId.value = props.tokenId ?? null
-      tokenNftCache.state.value = EntityCacheStateV2.Started
+      if (isNFT.value) {
+        tokenNftCache.tokenId.value = props.tokenId ?? null
+        tokenNftCache.state.value = EntityCacheStateV2.Started
+      }
+      else {
+        tokenNftCache.state.value = EntityCacheStateV2.Stopped
+      }
     }
 
-    watch(() => props.tokenId, () => {
+    watch([() => props.tokenId, isNFT], () => {
       setupTransactionCache()
     })
     onMounted(() => {
@@ -296,7 +332,9 @@ export default defineComponent({
       ethereumAddress,
       tokenSymbol,
       nfts: tokenNftCache.nfts,
+      tokenBalances: tokenBalanceCache.balances,
       tokenNftCache, // For test purpose
+      tokenBalanceCache, // For test purpose
     }
   },
 });

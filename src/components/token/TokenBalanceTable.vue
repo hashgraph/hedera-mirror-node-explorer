@@ -25,7 +25,7 @@
 <template>
 
   <o-table
-      :data="balances"
+      :data="tokenBalances"
       :narrowed="true"
       :hoverable="true"
       :paginated="!isTouchDevice && paginationNeeded"
@@ -53,7 +53,7 @@
 
   </o-table>
 
-  <EmptyTable v-if="!balances.length"/>
+  <EmptyTable v-if="!tokenBalances.length"/>
 
 </template>
 
@@ -63,12 +63,11 @@
 
 <script lang="ts">
 
-import {computed, defineComponent, inject, onBeforeUnmount, onMounted, ref, watch} from 'vue';
+import {computed, defineComponent, inject, PropType, ref} from 'vue';
 import {TokenDistribution} from "@/schemas/HederaSchemas";
-import {TokenBalanceCache} from "@/components/token/TokenBalanceCache";
 import router from "@/router";
 import TokenAmount from "@/components/values/TokenAmount.vue";
-import { ORUGA_MOBILE_BREAKPOINT } from '@/App.vue';
+import {ORUGA_MOBILE_BREAKPOINT} from '@/App.vue';
 import EmptyTable from "@/components/EmptyTable.vue";
 
 export default defineComponent({
@@ -81,6 +80,10 @@ export default defineComponent({
       type: String,
       required: true
     },
+    tokenBalances: {
+      type: Array as PropType<Array<TokenDistribution>>,
+      default: () => []
+    },
     nbItems: Number,
   },
 
@@ -91,31 +94,7 @@ export default defineComponent({
     const DEFAULT_PAGE_SIZE = 15
     const pageSize = props.nbItems ?? DEFAULT_PAGE_SIZE
     const paginationNeeded = computed(() => {
-          return balances.value.length > 5
-        }
-    )
-
-    // 1) balances
-    let balances = ref<Array<TokenDistribution>>([])
-
-    // 2) cache
-    const cache = new TokenBalanceCache(props.tokenId, isTouchDevice ? 15 : 100)
-
-    cache.responseDidChangeCB = () => {
-      balances.value = cache.getEntity()?.balances ?? []
-    }
-
-    onMounted(() => {
-      cache.start()
-    })
-
-    onBeforeUnmount(() => {
-      cache.stop()
-    })
-
-    watch(() => props.tokenId, () => {
-          cache.setTokenId(props.tokenId)
-          cache.start()
+          return props.tokenBalances.length > 5
         }
     )
 
@@ -132,8 +111,6 @@ export default defineComponent({
       isMediumScreen,
       pageSize,
       paginationNeeded,
-      balances,
-      cache,
       currentPage,
       handleClick,
       ORUGA_MOBILE_BREAKPOINT
