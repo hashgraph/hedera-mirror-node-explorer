@@ -42,6 +42,7 @@ import NodeDetails from "@/pages/NodeDetails.vue";
 import {NetworkEntry, networkRegistry} from "@/schemas/NetworkRegistry";
 import {AppStorage} from "@/AppStorage";
 import axios from "axios";
+import Staking from "@/pages/Staking.vue";
 
 const routes: Array<RouteRecordRaw> = [
   {
@@ -149,6 +150,12 @@ const routes: Array<RouteRecordRaw> = [
     path: '/:network/node/:nodeId',
     name: 'NodeDetails',
     component: NodeDetails,
+    props: true
+  },
+  {
+    path: '/:network/staking',
+    name: 'Staking',
+    component: Staking,
     props: true
   },
   {

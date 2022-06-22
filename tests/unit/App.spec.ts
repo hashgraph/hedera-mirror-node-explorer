@@ -55,6 +55,10 @@ HMSF.forceUTC = true
 
 describe("App.vue", () => {
 
+    beforeEach(() => {
+        process.env = Object.assign(process.env, { VUE_APP_ENABLE_STAKING: false });
+    })
+
     test("normal screen", async () => {
 
         await router.push("/") // To avoid "missing required param 'network'" error
