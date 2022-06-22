@@ -44,7 +44,9 @@ export abstract class EntityCacheV2<E> {
         this.updatePeriod = updatePeriod
         this.maxUpdateCount = maxUpdateCount
 
-        watch(this.state, (newValue, oldValue) => { this.stateDidChange(newValue, oldValue) })
+        watch(this.state, (newValue, oldValue) => {
+            this.stateDidChange(newValue, oldValue)
+        }, { flush: 'sync'}); // sync is required so that this.state can be mutated in onBeforeUnmount()
     }
 
     public clear(): void {
