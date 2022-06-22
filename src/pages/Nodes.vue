@@ -43,16 +43,6 @@
         <div v-else>
           <div class="is-flex-direction-column">
             <NetworkDashboardItem :title="'Total Nodes'" :value="totalNodes"/>
-            <div class="mt-4"/>
-            <NetworkDashboardItem :title="'Last Staked'" :value="lastStakedTime"/>
-            <div class="mt-4"/>
-            <NetworkDashboardItem :name="'HBAR'" :title="'Total Staked'" :value="totalStaked" :variation="totalStakedVariation"/>
-            <div class="mt-4"/>
-            <NetworkDashboardItem :title="'Next Staking Period'" :value="nextStakedTime"/>
-            <div class="mt-4"/>
-            <NetworkDashboardItem :name="'HBAR'" :title="'Total Rewarded'" :value="totalRewarded" :variation="totalRewardedVariation"/>
-            <div class="mt-4"/>
-            <NetworkDashboardItem :title="'Staking Period'" :value="stakingPeriod"/>
             <div class="mt-6"/>
           </div>
         </div>
@@ -110,13 +100,6 @@ export default defineComponent({
     let nodes = ref<Array<NetworkNode> | null>([])
 
     const totalNodes = computed(() => nodes.value!.length.toString() ?? "")
-    const lastStakedTime = '10h 22min ago'
-    const totalStaked = '1,209,109,578'
-    const totalStakedVariation = '2.14'
-    const nextStakedTime = 'in 14h 38min'
-    const totalRewarded = '3,929,928'
-    const totalRewardedVariation = '2.14'
-    const stakingPeriod = '24h'
 
     onBeforeMount(() => fetchNodes())
 
@@ -140,13 +123,6 @@ export default defineComponent({
       isTouchDevice,
       nodes,
       totalNodes,
-      lastStakedTime,
-      totalStaked,
-      totalStakedVariation,
-      nextStakedTime,
-       totalRewarded,
-       totalRewardedVariation,
-       stakingPeriod,
     }
   }
 });

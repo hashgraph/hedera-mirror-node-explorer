@@ -181,9 +181,6 @@ export default defineComponent({
       return result
     })
 
-    const consensusStake = '1,897,202,087'
-    const consensusPercentage = 4
-
     onBeforeMount(() => fetchNode(props.nodeId))
     watch(() => props.nodeId, () => fetchNode(props.nodeId));
 
@@ -211,8 +208,6 @@ export default defineComponent({
       isSmallScreen,
       isTouchDevice,
       node,
-      consensusStake,
-      consensusPercentage,
       notification,
       nodeDescription,
       formatHash
