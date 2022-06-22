@@ -132,12 +132,6 @@
                 <StringValue :string-value="contract?.file_id"/>
               </template>
             </Property>
-            <Property :id="'solidity'">
-              <template v-slot:name>Solidity</template>
-              <template v-slot:value>
-                <HexaValue :byteString="formattedSolidity" :show-none="true"/>
-              </template>
-            </Property>
             <Property :id="'evmAddress'">
               <template v-slot:name>EVM Address</template>
               <template v-slot:value>
@@ -288,19 +282,6 @@ export default defineComponent({
     const balance = computed(() => account.value?.balance?.balance)
     const tokens = computed(() => account.value?.balance?.tokens)
     const displayAllTokenLinks = computed(() => tokens.value ? tokens.value.length > MAX_TOKEN_BALANCES : false)
-    const formattedSolidity = computed(() => {
-      let result: string
-
-      const solidityAddress = contract.value?.solidity_address
-      if (solidityAddress && solidityAddress.indexOf("0x") == 0) {
-        // solidityAddress starts with 0x
-        result = solidityAddress.substring(2)
-      } else {
-        result = solidityAddress ?? ""
-      }
-
-      return result
-    })
     const notification = computed(() => {
       const expiration = contract.value?.expiration_timestamp
       let result
@@ -381,7 +362,6 @@ export default defineComponent({
       notification,
       obtainerId,
       proxyAccountId,
-      formattedSolidity,
       normalizedContractId,
       ethereumAddress,
       aliasByteString
