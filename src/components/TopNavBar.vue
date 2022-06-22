@@ -141,7 +141,7 @@ export default defineComponent({
     const buildTime = inject('buildTime', "not available")
 
     const productName = process.env.VUE_APP_PRODUCT_NAME ?? "Hedera Mirror Node Explorer"
-    const isStakingEnabled = process.env.VUE_APP_ENABLE_STAKING == 'true'
+    const isStakingEnabled = process.env.VUE_APP_ENABLE_STAKING === 'true'
 
     onMounted(() => console.log("isStakingEnabled: " + isStakingEnabled))
 

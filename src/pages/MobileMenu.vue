@@ -99,7 +99,7 @@ export default defineComponent({
   setup() {
     const isSmallScreen = inject('isSmallScreen', true)
     const isTouchDevice = inject('isTouchDevice', false)
-    const isStakingEnabled = process.env.VUE_APP_ENABLE_STAKING == 'true'
+    const isStakingEnabled = process.env.VUE_APP_ENABLE_STAKING === 'true'
 
     const route = useRoute()
     const network = computed(() => { return route.params.network })
