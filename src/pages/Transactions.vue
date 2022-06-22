@@ -34,15 +34,12 @@
       </template>
       <template v-slot:control>
         <div class="is-flex is-align-items-flex-end">
-          <PlayPauseButton v-model="cacheState"/>
-          <TransactionTypeSelect v-model="selectedTransactionType"/>
+          <PlayPauseButtonV2 v-model:state="transactionCacheState"/>
+          <TransactionFilterSelect v-model:filter="selectedTransactionFilter"/>
         </div>
       </template>
       <template v-slot:table>
-        <TransactionTable
-            v-model:cacheState="cacheState"
-            v-bind:transactionTypeFilter="selectedTransactionType"
-        />
+        <TransactionTableV2 v-bind:transactions="transactions"/>
       </template>
     </DashboardCard>
 
@@ -58,15 +55,16 @@
 
 <script lang="ts">
 
-import {defineComponent, inject, ref, watch} from 'vue';
+import {computed, defineComponent, inject, onBeforeUnmount, onMounted, ref, watch} from 'vue';
 
-import TransactionTable from "@/components/transaction/TransactionTable.vue";
-import PlayPauseButton, {PlayPauseState} from "@/components/PlayPauseButton.vue";
-import TransactionTypeSelect, {TransactionOption} from "@/components/transaction/TransactionTypeSelect.vue";
+import TransactionTableV2 from "@/components/transaction/TransactionTableV2.vue";
+import PlayPauseButtonV2 from "@/components/PlayPauseButtonV2.vue";
+import TransactionFilterSelect from "@/components/transaction/TransactionFilterSelect.vue";
 import {useRoute, useRouter} from "vue-router";
-import {TransactionType} from "@/schemas/HederaSchemas";
 import DashboardCard from "@/components/DashboardCard.vue";
 import Footer from "@/components/Footer.vue";
+import {TransactionCacheV2} from "@/components/transaction/TransactionCacheV2";
+import {EntityCacheStateV2} from "@/utils/EntityCacheV2";
 
 export default defineComponent({
   name: 'Transactions',
@@ -78,9 +76,9 @@ export default defineComponent({
   components: {
     Footer,
     DashboardCard,
-    TransactionTypeSelect,
-    PlayPauseButton,
-    TransactionTable,
+    TransactionFilterSelect,
+    PlayPauseButtonV2,
+    TransactionTableV2,
   },
 
   setup() {
@@ -89,28 +87,53 @@ export default defineComponent({
 
     const router = useRouter()
     const route = useRoute()
-    const typeQuery = (route.query?.type as string ?? "").toUpperCase()
 
-    const selectedTransactionType = ref<TransactionOption>(
-        (Object.keys(TransactionType).indexOf(typeQuery) >= 0)
-            ? typeQuery as TransactionOption
-            : ""
-    )
+    //
+    // transaction filter selection
+    //
 
+    const selectedTransactionFilter = ref("")
     const updateQuery = () => {
       router.replace({
-        query: {type: selectedTransactionType.value.toLowerCase()}
+        query: {type: selectedTransactionFilter.value.toLowerCase()}
       })
     }
-
-    updateQuery()
-    watch(selectedTransactionType, () => {
+    watch(selectedTransactionFilter, () => {
       updateQuery()
     })
 
-    const cacheState = ref<PlayPauseState>(PlayPauseState.Play)
+    //
+    // transactionCache
+    //
 
-    return {isSmallScreen, isTouchDevice, selectedTransactionType, cacheState}
+    const transactionCache = new TransactionCacheV2();
+
+    const setupTransactionCache = () => {
+      transactionCache.transactionType.value = transactionFilterFromRoute.value
+      transactionCache.state.value = EntityCacheStateV2.Started
+      selectedTransactionFilter.value = transactionFilterFromRoute.value
+    }
+
+    const transactionFilterFromRoute = computed(() => {
+      return (route.query?.type as string ?? "").toUpperCase()
+    })
+    watch(transactionFilterFromRoute, () => {
+      setupTransactionCache()
+    })
+    onMounted(() => {
+      setupTransactionCache()
+    })
+    onBeforeUnmount(() => {
+      transactionCache.state.value = EntityCacheStateV2.Stopped
+    })
+
+    return {
+      isSmallScreen,
+      isTouchDevice,
+      transactions: transactionCache.transactions,
+      transactionCacheState: transactionCache.state,
+      selectedTransactionFilter,
+    }
   }
 });
 

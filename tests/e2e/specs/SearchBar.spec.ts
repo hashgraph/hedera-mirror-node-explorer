@@ -32,7 +32,11 @@ describe('Search Bar', () => {
 
     it('should find the account ID', () => {
         const searchAccount = "0.0.3"
-        testBody(searchAccount, '/testnet/account/' + searchAccount, 'Account ' + searchAccount)
+        testBody(searchAccount, '/testnet/account/' + searchAccount, 'Account ', true)
+
+        cy.visit('#/testnet/account/0.0.4')
+        cy.url().should('include', '/testnet/account/0.0.4')
+        testBody(searchAccount, '/testnet/account/' + searchAccount, 'Account ', true)
     })
 
     it('should find the transaction ID', () => {
@@ -40,7 +44,7 @@ describe('Search Bar', () => {
         testBody(
             searchTransaction,
             '/testnet/transaction/' + normalizeTransactionId(searchTransaction),
-            'Transaction ' + searchTransaction
+            'Transaction '
         )
     })
 
@@ -49,7 +53,7 @@ describe('Search Bar', () => {
         testBody(
             searchTransaction,
             '/testnet/transactionsById/' + normalizeTransactionId(searchTransaction),
-            'Transactions with ID ' + searchTransaction
+            'Transactions with ID '
         )
         cy.get('table')
             .find('tbody tr')
@@ -71,7 +75,7 @@ describe('Search Bar', () => {
         testBody(
             searchTransaction,
             '/testnet/transactionsById/' + normalizeTransactionId(searchTransaction),
-            'Transactions with ID ' + searchTransaction
+            'Transactions with ID '
         )
         cy.get('table')
             .find('tbody tr')
@@ -96,27 +100,41 @@ describe('Search Bar', () => {
 
     it('should find the NFT ID', () => {
         const searchNFT = "0.0.30961728"
-        testBody(searchNFT, '/testnet/token/' + searchNFT, 'Token ' + searchNFT)
+        testBody(searchNFT, '/testnet/token/' + searchNFT, 'Token ', true)
+
+        cy.visit('#/testnet/token/0.0.45960942')
+        cy.url().should('include', '/testnet/token/0.0.45960942')
+        testBody(searchNFT, '/testnet/token/' + searchNFT, 'Token ', true)
     })
 
     it('should find the token ID', () => {
-        const searchToken = "0.0.30960947"
-        testBody(searchToken, '/testnet/token/' + searchToken, 'Token ' + searchToken)
+        const searchToken = "0.0.45960539"
+        testBody(searchToken, '/testnet/token/' + searchToken, 'Token ', true)
+
+        cy.visit('#/testnet/token/0.0.30960947')
+        cy.url().should('include', '/testnet/token/0.0.30960947')
+        testBody(searchToken, '/testnet/token/' + searchToken, 'Token ', true)
     })
 
     it('should find the topic ID', () => {
-        const searchTopic = "0.0.30961057"
-        testBody(searchTopic, '/testnet/topic/' + searchTopic, 'Messages for Topic ' + searchTopic)
+        const searchTopic = "0.0.45960950"
+        testBody(searchTopic, '/testnet/topic/' + searchTopic, 'Messages for Topic ', true)
+
+        cy.visit('#/testnet/topic/0.0.45960954')
+        cy.url().should('include', '/testnet/topic/0.0.45960954')
+        testBody(searchTopic, '/testnet/topic/' + searchTopic, 'Messages for Topic ', true)
     })
 
     it('should find the contract ID', () => {
-        const searchContract = "0.0.30962023"
-        testBody(searchContract, '/testnet/contract/' + searchContract, 'Contract ' + searchContract)
+        const searchContract = "0.0.45960092"
+        testBody(searchContract, '/testnet/contract/' + searchContract, 'Contract ', true)
+
+        cy.visit('#/testnet/contract/0.0.30962023')
+        cy.url().should('include', '/testnet/contract/0.0.30962023')
+        testBody(searchContract, '/testnet/contract/' + searchContract, 'Contract ', true)
     })
 
     it('should not fail with empty search string', () => {
-        cy.visit('/')
-
         cy.get('[data-cy=searchBar]').submit()
 
         cy.url().should('include', '/testnet/dashboard')
@@ -125,17 +143,23 @@ describe('Search Bar', () => {
 
     it('should bring "No result" with unknown ID', () => {
         const unknownID = "42.42.42"
-        testBody(unknownID, '/testnet/search-result/' + unknownID, 'No result')
+        testBody(unknownID, '/testnet/search-result/' + unknownID)
     })
 
 })
 
-const testBody = (searchID: string, expectedPath: string, expectedTitle: string ) => {
+const testBody = (searchID: string, expectedPath: string, expectedTitle: string = null, expectTable = false) => {
     cy.get('[data-cy=searchBar]').within(() => {
         cy.get('input').type(searchID)
     }).submit()
 
-    cy.url({ timeout: 5000 }).should('include', expectedPath)
-    cy.contains(expectedTitle)
+    cy.url({timeout: 5000}).should('include', expectedPath)
+    cy.contains(expectedTitle ? (expectedTitle + searchID) : 'No result')
+    if (expectTable) {
+        cy.get('table')
+            .find('tbody tr')
+            .should('have.length.gt', 1)
+        cy.contains('No Data').should("not.exist")
+    }
 }
 

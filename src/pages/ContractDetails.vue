@@ -159,13 +159,12 @@
 
         <div class="is-flex is-justify-content-space-between is-align-items-baseline">
           <p class="h-is-tertiary-text">Recent Transactions</p>
-          <PlayPauseButton v-model="cacheState"/>
+          <PlayPauseButtonV2 v-model:state="cacheState"/>
         </div>
 
         <ContractTransactionTable
             v-if="contract"
-            v-model:cacheState="cacheState"
-            v-bind:contract-id="normalizedContractId"
+            v-bind:transactions="transactions"
             v-bind:nb-items="10"
         />
       </template>
@@ -183,13 +182,13 @@
 
 <script lang="ts">
 
-import {computed, defineComponent, inject, onBeforeMount, ref, watch} from 'vue';
+import {computed, defineComponent, inject, onBeforeUnmount, onMounted, ref, watch} from 'vue';
 import axios from "axios";
 import {AccountBalanceTransactions, ContractResponse} from "@/schemas/HederaSchemas";
 import KeyValue from "@/components/values/KeyValue.vue";
 import HexaValue from "@/components/values/HexaValue.vue";
 import ContractTransactionTable from "@/components/contract/ContractTransactionTable.vue";
-import PlayPauseButton, {PlayPauseState} from "@/components/PlayPauseButton.vue";
+import PlayPauseButtonV2 from "@/components/PlayPauseButtonV2.vue";
 import AccountLink from "@/components/values/AccountLink.vue";
 import TimestampValue from "@/components/values/TimestampValue.vue";
 import DurationValue from "@/components/values/DurationValue.vue";
@@ -206,6 +205,8 @@ import Property from "@/components/Property.vue";
 import {makeEthAddressForAccount} from "@/schemas/HederaUtils";
 import EthAddress from "@/components/values/EthAddress.vue";
 import {base32ToAlias, byteToHex} from "@/utils/B64Utils";
+import {TransactionCacheV2} from "@/components/transaction/TransactionCacheV2";
+import {EntityCacheStateV2} from "@/utils/EntityCacheV2";
 
 const MAX_TOKEN_BALANCES = 3
 
@@ -225,7 +226,7 @@ export default defineComponent({
     AccountLink,
     TimestampValue,
     DurationValue,
-    PlayPauseButton,
+    PlayPauseButtonV2,
     ContractTransactionTable,
     KeyValue,
     HexaValue,
@@ -241,14 +242,12 @@ export default defineComponent({
   setup(props) {
     const isSmallScreen = inject('isSmallScreen', true)
     const isTouchDevice = inject('isTouchDevice', false)
-    const contract = ref<ContractResponse | null>(null)
     const account = ref<AccountBalanceTransactions | null>(null)
-    const balance = computed(() => account.value?.balance?.balance)
-    const tokens = computed(() => account.value?.balance?.tokens)
-    const displayAllTokenLinks = computed(() => tokens.value ? tokens.value.length > MAX_TOKEN_BALANCES : false)
-    const cacheState = ref<PlayPauseState>(PlayPauseState.Play)
 
-    const got404 = ref(false)
+    //
+    // basic computed's
+    //
+
     const validEntityId = computed(() => {
       return props.contractId ? EntityID.parse(props.contractId, true) != null : false
     })
@@ -257,6 +256,51 @@ export default defineComponent({
       return contract.value?.contract_id ? EntityID.normalize(contract.value.contract_id) : null
     })
 
+    const ethereumAddress = computed(() => {
+      return account.value !== null ? makeEthAddressForAccount(account.value) : null
+    })
+
+    const aliasByteString = computed(() => {
+      const alias = account.value?.alias
+      return alias ? byteToHex(new Uint8Array(base32ToAlias(alias))) : null
+    })
+
+    //
+    // contract
+    //
+
+    const contract = ref<ContractResponse | null>(null)
+    const contractError = ref<unknown>(null)
+
+    const got404 = computed(() => {
+      return contractError.value !== null
+          && axios.isAxiosError(contractError.value)
+          && contractError.value?.request?.status === 404
+    })
+    const obtainerId = computed(() => {
+      const result = contract.value?.obtainer_id
+      return result === null ? undefined : result
+    })
+    const proxyAccountId = computed(() => {
+      const result = contract.value?.proxy_account_id
+      return result === null ? undefined : result
+    })
+    const balance = computed(() => account.value?.balance?.balance)
+    const tokens = computed(() => account.value?.balance?.tokens)
+    const displayAllTokenLinks = computed(() => tokens.value ? tokens.value.length > MAX_TOKEN_BALANCES : false)
+    const formattedSolidity = computed(() => {
+      let result: string
+
+      const solidityAddress = contract.value?.solidity_address
+      if (solidityAddress && solidityAddress.indexOf("0x") == 0) {
+        // solidityAddress starts with 0x
+        result = solidityAddress.substring(2)
+      } else {
+        result = solidityAddress ?? ""
+      }
+
+      return result
+    })
     const notification = computed(() => {
       const expiration = contract.value?.expiration_timestamp
       let result
@@ -275,17 +319,8 @@ export default defineComponent({
       return result
     })
 
-    onBeforeMount(() => {
-      fetchContract()
-    })
-
-    watch(() => props.contractId, () => {
-      fetchContract()
-    });
-
     const fetchContract = () => {
       contract.value = null
-      got404.value = false
       if (validEntityId.value) {
         axios
             .get("api/v1/contracts/" + props.contractId)
@@ -298,44 +333,39 @@ export default defineComponent({
                   })
             })
             .catch(reason => {
-              if (axios.isAxiosError(reason) && reason?.request?.status === 404) {
-                got404.value = true
-              }
+              contractError.value = reason
             })
       }
     }
 
-    const obtainerId = computed(() => {
-      const result = contract.value?.obtainer_id
-      return result === null ? undefined : result
+    watch(() => props.contractId, () => {
+      fetchContract()
+    });
+
+    onMounted(() => {
+      fetchContract()
     })
 
-    const proxyAccountId = computed(() => {
-      const result = contract.value?.proxy_account_id
-      return result === null ? undefined : result
+    //
+    // transactionCache
+    //
+
+    const transactionCache = new TransactionCacheV2();
+
+    const setupTransactionCache = () => {
+      transactionCache.state.value = EntityCacheStateV2.Stopped
+      transactionCache.accountId.value = normalizedContractId.value ?? ""
+      transactionCache.state.value = EntityCacheStateV2.Started
+    }
+
+    watch(normalizedContractId, () => {
+      setupTransactionCache()
     })
-
-    const formattedSolidity = computed(() => {
-      let result: string
-
-      const solidityAddress = contract.value?.solidity_address
-      if (solidityAddress && solidityAddress.indexOf("0x") == 0) {
-        // solidityAddress starts with 0x
-        result = solidityAddress.substring(2)
-      } else {
-        result = solidityAddress ?? ""
-      }
-
-      return result
+    onMounted(() => {
+      setupTransactionCache()
     })
-
-    const ethereumAddress = computed(() => {
-      return account.value !== null ? makeEthAddressForAccount(account.value) : null
-    })
-
-    const aliasByteString = computed(() => {
-      const alias = account.value?.alias
-      return alias ? byteToHex(new Uint8Array(base32ToAlias(alias))) : null
+    onBeforeUnmount(() => {
+      transactionCache.state.value = EntityCacheStateV2.Stopped
     })
 
     return {
@@ -346,7 +376,8 @@ export default defineComponent({
       balance,
       tokens,
       displayAllTokenLinks,
-      cacheState,
+      transactions: transactionCache.transactions,
+      cacheState: transactionCache.state,
       notification,
       obtainerId,
       proxyAccountId,

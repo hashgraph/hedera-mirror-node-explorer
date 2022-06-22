@@ -20,13 +20,11 @@
 
 import {flushPromises, mount} from "@vue/test-utils"
 import router from "@/router";
-import axios from "axios";
-import MockAdapter from "axios-mock-adapter";
 import Oruga from "@oruga-ui/oruga-next";
 import {SAMPLE_CRYPTO_TRANSACTIONS} from "../Mocks";
 import CryptoTransactionTable from "@/components/dashboard/CryptoTransactionTable.vue";
-import PlayPauseState from "@/components/PlayPauseButton.vue";
 import {HMSF} from "@/utils/HMSF";
+import {Transaction} from "@/schemas/HederaSchemas";
 
 /*
     Bookmarks
@@ -57,18 +55,13 @@ describe("CryptoTransactionTable.vue", () => {
 
         await router.push("/") // To avoid "missing required param 'network'" error
 
-        const mock = new MockAdapter(axios)
-
-        const matcher = "api/v1/transactions"
-        mock.onGet(matcher).reply(200, SAMPLE_CRYPTO_TRANSACTIONS)
-
         const wrapper = mount(CryptoTransactionTable, {
             global: {
                 plugins: [router, Oruga]
             },
             props: {
                 nbItems: 42,
-                cacheState: PlayPauseState.Pause
+                transactions: SAMPLE_CRYPTO_TRANSACTIONS.transactions as Array<Transaction>
             },
         });
 

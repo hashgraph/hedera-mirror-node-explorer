@@ -25,7 +25,7 @@ import {SAMPLE_COINGECKO, SAMPLE_NETWORK_SUPPLY, SAMPLE_TOKEN, SAMPLE_TRANSACTIO
 import MainDashboard from "@/pages/MainDashboard.vue";
 import HbarMarketDashboard from "@/components/dashboard/HbarMarketDashboard.vue";
 import DashboardCard from "@/components/DashboardCard.vue";
-import PlayPauseButton from "@/components/PlayPauseButton.vue";
+import PlayPauseButtonV2 from "@/components/PlayPauseButtonV2.vue";
 import CryptoTransactionTable from "@/components/dashboard/CryptoTransactionTable.vue";
 import ContractCallTransactionTable from "@/components/dashboard/ContractCallTransactionTable.vue";
 import MessageTransactionTable from "@/components/dashboard/MessageTransactionTable.vue";
@@ -98,7 +98,7 @@ describe("MainDashboard.vue", () => {
         expect(cards.length).toBe(3)
 
         expect(cards[0].text()).toMatch(RegExp("^Crypto Transfers"))
-        expect(cards[0].findComponent(PlayPauseButton).exists()).toBe(true)
+        expect(cards[0].findComponent(PlayPauseButtonV2).exists()).toBe(true)
         const t0 = cards[0].findComponent(CryptoTransactionTable)
         expect(t0.exists()).toBe(true)
         expect(t0.get('thead').text()).toBe("ID Content Time")
@@ -109,7 +109,7 @@ describe("MainDashboard.vue", () => {
         )
 
         expect(cards[1].text()).toMatch(RegExp("^Smart Contract Calls"))
-        expect(cards[1].findComponent(PlayPauseButton).exists()).toBe(true)
+        expect(cards[1].findComponent(PlayPauseButtonV2).exists()).toBe(true)
         const t1 = cards[1].findComponent(ContractCallTransactionTable)
         expect(t1.exists()).toBe(true)
         expect(t1.get('thead').text()).toBe("ID Content Time")
@@ -120,7 +120,7 @@ describe("MainDashboard.vue", () => {
         )
 
         expect(cards[2].text()).toMatch(RegExp("^HCS Messages"))
-        expect(cards[2].findComponent(PlayPauseButton).exists()).toBe(true)
+        expect(cards[2].findComponent(PlayPauseButtonV2).exists()).toBe(true)
         const t2 = cards[2].findComponent(MessageTransactionTable)
         expect(t2.exists()).toBe(true)
         expect(t2.get('thead').text()).toBe("Topic ID Memo Time")

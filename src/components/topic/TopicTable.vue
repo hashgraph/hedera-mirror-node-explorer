@@ -66,13 +66,12 @@
 
 <script lang="ts">
 
-import {defineComponent, inject, onBeforeUnmount, onMounted, ref} from 'vue';
-import {Transaction, TransactionResult, TransactionType} from "@/schemas/HederaSchemas";
-import {TransactionCache} from "@/components/transaction/TransactionCache";
+import {defineComponent, inject, PropType, ref} from 'vue';
+import {Transaction} from "@/schemas/HederaSchemas";
 import TimestampValue from "@/components/values/TimestampValue.vue";
 import router from "@/router";
 import BlobValue from "@/components/values/BlobValue.vue";
-import { ORUGA_MOBILE_BREAKPOINT } from '@/App.vue';
+import {ORUGA_MOBILE_BREAKPOINT} from '@/App.vue';
 import EmptyTable from "@/components/EmptyTable.vue";
 
 export default defineComponent({
@@ -82,35 +81,18 @@ export default defineComponent({
 
   props: {
     nbItems: Number,
+    transactions: {
+      type: Array as PropType<Array<Transaction>>,
+      default: () => []
+    }
   },
 
   setup(props) {
     const isTouchDevice = inject('isTouchDevice', false)
     const isMediumScreen = inject('isMediumScreen', true)
+
     const DEFAULT_PAGE_SIZE = 15
     const pageSize = props.nbItems ?? DEFAULT_PAGE_SIZE
-
-    const transactionTypeFilter = TransactionType.CONSENSUSCREATETOPIC
-    const transactionResultFilter = TransactionResult.SUCCESS
-
-    // 1) transactions
-    let transactions = ref<Array<Transaction>>([])
-
-    // 2) cache
-    const cache = new TransactionCache(isTouchDevice ? 15 : 100)
-    cache.setTransactionType(transactionTypeFilter)
-    cache.setTransactionResult(transactionResultFilter)
-
-    cache.responseDidChangeCB = () => {
-      transactions.value = cache.getEntity()?.transactions ?? []
-    }
-
-    onMounted(() => {
-      cache.start()
-    })
-    onBeforeUnmount(() => {
-      cache.stop()
-    })
 
     // 3) handleClick
     const handleClick = (t: Transaction) => {
@@ -124,10 +106,10 @@ export default defineComponent({
       isTouchDevice,
       isMediumScreen,
       pageSize,
-      transactions,
-      cache,
       handleClick,
       currentPage,
+
+      // From App
       ORUGA_MOBILE_BREAKPOINT
     }
   }

@@ -18,6 +18,28 @@
   -
   -->
 
+<!--
+
+  USAGE NOTES
+
+  <template>
+    ...
+    <TransactionTableV2 v-bind:transactions="transactions"/>
+    ...
+  </template>
+
+  <script>
+    ...
+    const transactionCache = new TransactionCache()
+    ...
+
+    return {
+      transactions: transactionCache.transactions
+    }
+  </script>
+
+  -->
+
 <!-- --------------------------------------------------------------------------------------------------------------- -->
 <!--                                                     TEMPLATE                                                    -->
 <!-- --------------------------------------------------------------------------------------------------------------- -->
@@ -69,102 +91,40 @@
 
 <script lang="ts">
 
-import {computed, defineComponent, inject, onBeforeUnmount, PropType, ref, watch} from 'vue';
-import {Transaction, TransactionType} from '@/schemas/HederaSchemas';
+import {computed, defineComponent, inject, PropType, ref} from 'vue';
+import {Transaction} from '@/schemas/HederaSchemas';
 import {makeTypeLabel} from "@/utils/TransactionTools";
-import {EntityCacheState} from "@/utils/EntityCache";
-import {TransactionCache} from "@/components/transaction/TransactionCache";
-import {PlayPauseState} from "@/components/PlayPauseButton.vue";
-import {TransactionOption} from "@/components/transaction/TransactionTypeSelect.vue";
 import router from "@/router";
 import TimestampValue from "@/components/values/TimestampValue.vue";
 import TransactionLabel from "@/components/values/TransactionLabel.vue";
 import TransactionSummary from "@/components/transaction/TransactionSummary.vue";
-import {normalizeTransactionId} from "@/utils/TransactionID";
-import { ORUGA_MOBILE_BREAKPOINT } from '@/App.vue';
+import {ORUGA_MOBILE_BREAKPOINT} from '@/App.vue';
 import EmptyTable from "@/components/EmptyTable.vue";
 
 export default defineComponent({
-  name: 'TransactionTable',
+  name: 'TransactionTableV2',
 
   components: {EmptyTable, TransactionSummary, TimestampValue, TransactionLabel },
 
   props: {
     narrowed: Boolean,
     nbItems: Number,
-    accountIdFilter: String,
-    transactionTypeFilter: String as PropType<TransactionOption>,
-    cacheState: String as PropType<PlayPauseState>
+    transactions: {
+      type: Array as PropType<Array<Transaction>>,
+      default: () => []
+    }
   },
 
-  setup(props, context) {
+  setup(props) {
     const isTouchDevice = inject('isTouchDevice', false)
     const isMediumScreen = inject('isMediumScreen', true)
 
     const DEFAULT_PAGE_SIZE = 15
     const pageSize = props.nbItems ?? DEFAULT_PAGE_SIZE
     const paginationNeeded = computed(() => {
-          return transactions.value.length > 5
+          return props.transactions.length > 5
         }
     )
-
-    // 1) transactions
-    let transactions = ref<Array<Transaction>>([])
-
-    // 2) cache
-    const cache = new TransactionCache(isTouchDevice ? 15 : 100)
-    cache.responseDidChangeCB = () => {
-      transactions.value = cache.getEntity()?.transactions ?? []
-    }
-    cache.stateDidChangeCB = () => {
-      let newState: PlayPauseState
-      switch (cache.getState()) {
-        default:
-        case EntityCacheState.Stopped:
-          newState = cache.isAutoStopped() ? PlayPauseState.AutoPause : PlayPauseState.Pause
-          break
-        case EntityCacheState.Updating:
-        case EntityCacheState.Ready:
-          newState = PlayPauseState.Play
-          break
-      }
-      context.emit('update:cacheState', newState)
-    }
-    const updateCacheAccountId = (currentValue: string | undefined) => {
-      cache.setAccountId(currentValue ?? null)
-    }
-    const updateCacheTransactionType = (currentValue: TransactionOption | undefined) => {
-      const transactionOption = currentValue ?? ""
-      cache.setTransactionType(transactionOption == "" ? null : transactionOption)
-    }
-    const updateCacheState = (currentValue: PlayPauseState | undefined) => {
-      switch (currentValue ?? PlayPauseState.Play) {
-        case PlayPauseState.Pause:
-        case PlayPauseState.AutoPause:
-          cache.stop()
-          break
-        case PlayPauseState.Play:
-          cache.start()
-          break
-      }
-    }
-    updateCacheAccountId(props.accountIdFilter)
-    updateCacheTransactionType(props.transactionTypeFilter)
-    updateCacheState(props.cacheState)
-    watch(() => props.accountIdFilter, (currentValue) => {
-      updateCacheAccountId(currentValue)
-      updateCacheState(PlayPauseState.Play)
-    })
-    watch(() => props.transactionTypeFilter, (currentValue) => {
-      updateCacheTransactionType(currentValue)
-      updateCacheState(PlayPauseState.Play)
-    })
-    watch(() => props.cacheState, (currentValue) => {
-      updateCacheState(currentValue)
-    })
-    onBeforeUnmount(() => {
-      cache.stop()
-    })
 
     // 3) handleClick
     const handleClick = (t: Transaction) => {
@@ -179,22 +139,14 @@ export default defineComponent({
       isMediumScreen,
       pageSize,
       paginationNeeded,
-      transactions,
-      cache,
       handleClick,
       currentPage,
 
       // From App
       ORUGA_MOBILE_BREAKPOINT,
 
-      // From HederaSchemas
-      TransactionType,
-
       // From TransactionTools
       makeTypeLabel,
-
-      // From TransactionID
-      normalizeTransactionId
     }
   }
 });

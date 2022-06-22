@@ -32,7 +32,7 @@ import {
 } from "../Mocks";
 import MockAdapter from "axios-mock-adapter";
 import Oruga from "@oruga-ui/oruga-next";
-import TransactionTable from "@/components/transaction/TransactionTable.vue";
+import TransactionTableV2 from "@/components/transaction/TransactionTableV2.vue";
 import {HMSF} from "@/utils/HMSF";
 
 /*
@@ -112,7 +112,7 @@ describe("AccountDetails.vue", () => {
         expect(wrapper.get("#receiverSigRequiredValue").text()).toBe("false")
 
         expect(wrapper.find("#recentTransactions").exists()).toBe(true)
-        expect(wrapper.findComponent(TransactionTable).exists()).toBe(true)
+        expect(wrapper.findComponent(TransactionTableV2).exists()).toBe(true)
     });
 
     it("Should update when account id changes", async () => {

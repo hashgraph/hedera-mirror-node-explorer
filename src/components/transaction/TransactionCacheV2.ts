@@ -18,15 +18,17 @@
  *
  */
 
-import {EntityCache} from "@/utils/EntityCache";
+import {EntityCacheV2} from "@/utils/EntityCacheV2";
 import {Transaction, TransactionResponse} from "@/schemas/HederaSchemas";
 import axios, {AxiosResponse} from "axios";
+import {computed, ref, Ref, watch} from "vue";
 
-export class TransactionCache extends EntityCache<TransactionResponse> {
+export class TransactionCacheV2 extends EntityCacheV2<TransactionResponse> {
 
-    private accountId: string|null = null
-    private transactionType: string|null = null
-    private transactionResult: string|null = null
+    public readonly accountId: Ref<string> = ref("");
+    public readonly transactionType: Ref<string> = ref("");
+    public readonly transactionResult: Ref<string> = ref("");
+
     private readonly limit: number
 
     //
@@ -36,34 +38,26 @@ export class TransactionCache extends EntityCache<TransactionResponse> {
     public constructor(limit = 100) {
         super(5000, 10)
         this.limit = limit
+
+        watch(this.accountId, () => this.clear())
+        watch(this.transactionType, () => this.clear())
+        watch(this.transactionResult, () => this.clear())
     }
 
-    public setAccountId(newValue: string|null): void {
-        this.accountId = newValue
-        this.clear()
-    }
-
-    public setTransactionType(newValue: string|null): void {
-        this.transactionType = newValue
-        this.clear()
-    }
-
-    public setTransactionResult(newValue: string|null): void {
-        this.transactionResult = newValue
-        this.clear()
-    }
-
-    public getLastTimestamp(): string|null {
-        let result: string|null
-        const transactions = this.getEntity()?.transactions
-        if (transactions != null && transactions.length >= 1) {
-            result = transactions[0].consensus_timestamp ?? null
+    public readonly lastTimestamp = computed(() => {
+        let result: string
+        const transactions = this.transactions.value
+        if (transactions && transactions.length >= 1) {
+            result = transactions[0].consensus_timestamp ?? ""
         } else {
-            result = null
+            result = ""
         }
         return result
-    }
+    })
 
+    public readonly transactions: Ref<Array<Transaction>> = computed(() => {
+        return this.response.value?.data?.transactions ?? []
+    })
 
     //
     // EntityCache
@@ -79,22 +73,21 @@ export class TransactionCache extends EntityCache<TransactionResponse> {
             timestamp: string | undefined
         }
         params.limit = this.limit
-        if (this.accountId != null && this.accountId.length > 0) {
-            params["account.id"] = this.accountId
+        if (this.accountId.value != "") {
+            params["account.id"] = this.accountId.value
         }
-        if (this.transactionType != null && this.transactionType.length > 0) {
-            params.transactiontype = this.transactionType
+        if (this.transactionType.value != "") {
+            params.transactiontype = this.transactionType.value
         }
-        if (this.transactionResult != null && this.transactionResult.length > 0) {
-            params.result = this.transactionResult
+        if (this.transactionResult.value != "") {
+            params.result = this.transactionResult.value
         }
-        const lastTimestamp = this.getLastTimestamp()
-        if (lastTimestamp != null) {
-            params.timestamp = "gt:" + lastTimestamp
+        if (this.lastTimestamp.value != "") {
+            params.timestamp = "gt:" + this.lastTimestamp.value
         }
         return axios
             .get<TransactionResponse>("api/v1/transactions", { params: params} )
-            .then(response => this.mergeResponse(response, lastTimestamp))
+            .then(response => this.mergeResponse(response, this.lastTimestamp.value))
     }
 
     //
@@ -104,7 +97,7 @@ export class TransactionCache extends EntityCache<TransactionResponse> {
     private mergeResponse( next: AxiosResponse<TransactionResponse>, lastTimestamp: string|null) :
         AxiosResponse<TransactionResponse> {
 
-        const prev = this.getResponse()
+        const prev = this.response.value
         if (prev != null && lastTimestamp != null) {
             const prevTransactions = prev.data.transactions ?? Array<Transaction>()
             const nextTransactions = next.data.transactions ?? Array<Transaction>()

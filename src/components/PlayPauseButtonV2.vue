@@ -18,6 +18,28 @@
   -
   -->
 
+<!--
+
+  USAGE NOTES
+
+  <template>
+    ...
+    <PlayPauseButtonV2 v-model:state="transactionCacheState"/>
+    ...
+  </template>
+
+  <script>
+    ...
+    const transactionCache = new TransactionCache()
+    ...
+
+    return {
+      transactionCacheState: transactionCache.state
+    }
+  </script>
+
+  -->
+
 <!-- --------------------------------------------------------------------------------------------------------------- -->
 <!--                                                     TEMPLATE   v-on:click="clicked"                                                  -->
 <!-- --------------------------------------------------------------------------------------------------------------- -->
@@ -42,37 +64,40 @@
 <script lang="ts">
 
 import {computed, defineComponent, PropType} from "vue";
+import {EntityCacheStateV2} from "@/utils/EntityCacheV2";
 
 export default defineComponent({
-  name: "PlayPauseButton",
+  name: "PlayPauseButtonV2",
 
   props: {
-    modelValue: String as PropType<PlayPauseState>
+    state: {
+      type: String as PropType<EntityCacheStateV2>,
+      default: EntityCacheStateV2.Stopped
+    }
   },
 
   setup(props, context) {
 
     const isPlaying = computed(() => {
-      return (props.modelValue ?? PlayPauseState.Pause) == PlayPauseState.Play
+      return props.state === EntityCacheStateV2.Started
     })
     const isAutoPaused = computed(() => {
-      return (props.modelValue ?? PlayPauseState.Pause) == PlayPauseState.AutoPause
+      return props.state === EntityCacheStateV2.AutoStopped
     })
 
     const handleClick = () => {
-      let newValue: PlayPauseState
-      switch(props.modelValue) {
+      let newValue: EntityCacheStateV2
+      switch(props.state) {
         default:
-        case PlayPauseState.Play:
-          newValue = PlayPauseState.Pause
+        case EntityCacheStateV2.Started:
+          newValue = EntityCacheStateV2.Stopped
           break
-        case PlayPauseState.Pause:
-        case PlayPauseState.AutoPause:
-          newValue = PlayPauseState.Play
+        case EntityCacheStateV2.Stopped:
+        case EntityCacheStateV2.AutoStopped:
+          newValue = EntityCacheStateV2.Started
           break
       }
-      // modelValueState.value = newValue
-      context.emit('update:modelValue', newValue) // => loopback will update props.modelValue
+      context.emit('update:state', newValue) // => loopback will update props.state
     }
 
 
@@ -83,8 +108,6 @@ export default defineComponent({
     }
   }
 });
-
-export enum PlayPauseState { Play = "PLAY", Pause = "PAUSE", AutoPause = "AUTO_PAUSE" }
 
 </script>
 

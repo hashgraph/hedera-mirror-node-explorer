@@ -24,22 +24,13 @@
 
 <template>
 
-  <hr class="h-top-banner" style="margin: 0; height: 4px"/>
-
-  <section class="section" :class="{'h-mobile-background': isTouchDevice || !isSmallScreen}">
-
-    <DashboardCard>
-      <template v-slot:title>
-        <span class="h-is-primary-title">Recent Topics</span>
-      </template>
-      <template v-slot:table>
-        <TopicTable v-bind:transactions="transactions"/>
-      </template>
-    </DashboardCard>
-
-  </section>
-
-  <Footer/>
+  <o-field>
+    <o-select v-model="selectedFilter" class="ml-2 h-is-text-size-1">
+      <option v-for="f in filterValues" v-bind:key="f" v-bind:value="f">
+        {{ makeFilterLabel(f) }}
+      </option>
+    </o-select>
+  </o-field>
 
 </template>
 
@@ -49,54 +40,52 @@
 
 <script lang="ts">
 
-import {defineComponent, inject, onBeforeUnmount, onMounted, watch} from 'vue';
-import TopicTable from "@/components/topic/TopicTable.vue";
-import DashboardCard from "@/components/DashboardCard.vue";
-import Footer from "@/components/Footer.vue";
-import {TransactionCacheV2} from "@/components/transaction/TransactionCacheV2";
-import {TransactionResult, TransactionType} from "@/schemas/HederaSchemas";
-import {EntityCacheStateV2} from "@/utils/EntityCacheV2";
+import {defineComponent, ref, watch} from "vue";
+import {TransactionType} from "@/schemas/HederaSchemas";
+import {makeTypeLabel} from "@/utils/TransactionTools";
 
 export default defineComponent({
-  name: 'Topics',
+  name: "TransactionFilterSelect",
 
   props: {
-    network: String
+    filter: {
+      type: String,
+      default: ""
+    }
   },
 
-  components: {
-    Footer,
-    DashboardCard,
-    TopicTable
-  },
+  setup(props, context) {
 
-  setup(props) {
-    const isSmallScreen = inject('isSmallScreen', true)
-    const isTouchDevice = inject('isTouchDevice', false)
+    // 1) filterValues
+    const filterValues = makeFilterValues()
 
-    const transactionCache = new TransactionCacheV2()
-    transactionCache.transactionType.value = TransactionType.CONSENSUSCREATETOPIC
-    transactionCache.transactionResult.value = TransactionResult.SUCCESS
-
-    onMounted(() => {
-      transactionCache.state.value = EntityCacheStateV2.Started
+    // 2) selectedFilter
+    const selectedFilter = ref<string>(props.filter)
+    watch(selectedFilter, () => {
+      context.emit('update:filter', selectedFilter.value)
+    })
+    watch(() => props.filter, () => {
+      selectedFilter.value = props.filter
     })
 
-    watch(() => props.network, () => {
-      transactionCache.clear()
-    })
-
-    onBeforeUnmount(() => {
-      transactionCache.state.value = EntityCacheStateV2.Stopped
-    })
+    // 3) makeFilterLabel
+    const makeFilterLabel = (filterValue: string): string => {
+      return filterValue == "" ? "TYPES: ALL" : makeTypeLabel(filterValue as TransactionType)
+    }
 
     return {
-      transactions: transactionCache.transactions,
-      isSmallScreen,
-      isTouchDevice,
+      filterValues,
+      selectedFilter,
+      makeFilterLabel,
     }
   }
 });
+
+export function makeFilterValues(): string[] {
+  const result = Object.keys(TransactionType)
+  result.splice(0, 0, "")
+  return result
+}
 
 </script>
 
@@ -104,6 +93,4 @@ export default defineComponent({
 <!--                                                       STYLE                                                     -->
 <!-- --------------------------------------------------------------------------------------------------------------- -->
 
-<style scoped>
-
-</style>
+<style/>

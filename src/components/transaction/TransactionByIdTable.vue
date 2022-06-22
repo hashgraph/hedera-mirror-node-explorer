@@ -75,15 +75,12 @@
 
 <script lang="ts">
 
-import {computed, defineComponent, inject, onBeforeUnmount, PropType, ref, watch} from 'vue';
+import {computed, defineComponent, inject, PropType, ref} from 'vue';
 import {Transaction} from '@/schemas/HederaSchemas';
 import {makeRelationshipLabel, makeTypeLabel} from "@/utils/TransactionTools";
-import {EntityCacheState} from "@/utils/EntityCache";
-import {PlayPauseState} from "@/components/PlayPauseButton.vue";
 import router from "@/router";
 import TimestampValue from "@/components/values/TimestampValue.vue";
 import TransactionSummary from "@/components/transaction/TransactionSummary.vue";
-import {TransactionByIdCache} from "@/components/transaction/TransactionByIdCache";
 import {ORUGA_MOBILE_BREAKPOINT} from '@/App.vue';
 import EmptyTable from "@/components/EmptyTable.vue";
 
@@ -95,69 +92,22 @@ export default defineComponent({
   props: {
     narrowed: Boolean,
     nbItems: Number,
-    transactionId: String,
-    cacheState: String as PropType<PlayPauseState>
+    transactions: {
+      type: Array as PropType<Array<Transaction>>,
+      default: () => []
+    }
   },
 
-  setup(props, context) {
+  setup(props) {
     const isTouchDevice = inject('isTouchDevice', false)
     const isMediumScreen = inject('isMediumScreen', true)
 
     const DEFAULT_PAGE_SIZE = 15
     const pageSize = props.nbItems ?? DEFAULT_PAGE_SIZE
     const paginationNeeded = computed(() => {
-          return transactions.value.length > 5
+          return props.transactions.length > 5
         }
     )
-
-    // 1) transactions
-    let transactions = ref<Array<Transaction>>([])
-
-    // 2) cache
-    const cache = new TransactionByIdCache(isTouchDevice ? 15 : 100)
-    cache.responseDidChangeCB = () => {
-      transactions.value = cache.getEntity()?.transactions ?? []
-    }
-    cache.stateDidChangeCB = () => {
-      let newState: PlayPauseState
-      switch (cache.getState()) {
-        default:
-        case EntityCacheState.Stopped:
-          newState = cache.isAutoStopped() ? PlayPauseState.AutoPause : PlayPauseState.Pause
-          break
-        case EntityCacheState.Updating:
-        case EntityCacheState.Ready:
-          newState = PlayPauseState.Play
-          break
-      }
-      context.emit('update:cacheState', newState)
-    }
-    const updateTransactionId = (currentValue: string | undefined) => {
-      cache.setTransactionId(currentValue ?? null)
-    }
-    const updateCacheState = (currentValue: PlayPauseState | undefined) => {
-      switch (currentValue ?? PlayPauseState.Play) {
-        case PlayPauseState.Pause:
-        case PlayPauseState.AutoPause:
-          cache.stop()
-          break
-        case PlayPauseState.Play:
-          cache.start()
-          break
-      }
-    }
-    updateTransactionId(props.transactionId)
-    updateCacheState(props.cacheState)
-    watch(() => props.transactionId, (currentValue) => {
-      updateTransactionId(currentValue)
-      updateCacheState(PlayPauseState.Play)
-    })
-    watch(() => props.cacheState, (currentValue) => {
-      updateCacheState(currentValue)
-    })
-    onBeforeUnmount(() => {
-      cache.stop()
-    })
 
     // 3) handleClick
     const handleClick = (t: Transaction) => {
@@ -174,8 +124,6 @@ export default defineComponent({
       isMediumScreen,
       pageSize,
       paginationNeeded,
-      transactions,
-      cache,
       handleClick,
       currentPage,
 

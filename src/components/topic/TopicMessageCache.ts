@@ -18,40 +18,40 @@
  *
  */
 
-import {EntityCache} from "@/utils/EntityCache";
+import {EntityCacheV2} from "@/utils/EntityCacheV2";
 import {TopicMessage, TopicMessagesResponse} from "@/schemas/HederaSchemas";
 import axios, {AxiosResponse} from "axios";
+import {computed, Ref, ref, watch} from "vue";
 
-export class TopicMessageCache extends EntityCache<TopicMessagesResponse> {
+export class TopicMessageCache extends EntityCacheV2<TopicMessagesResponse> {
 
-    private topicId: string
+    public readonly topicId = ref<string|null>(null)
     private readonly limit: number
 
     //
     // Public
     //
 
-    public constructor(topicId: string, limit = 100) {
+    public constructor(limit = 100) {
         super(5000, 10)
-        this.topicId = topicId
         this.limit = limit
+        watch(this.topicId, () => this.clear())
     }
 
-    public setTopicId(topicId: string): void {
-        this.topicId = topicId
-        this.clear()
-    }
-
-    public getLastTimestamp(): string|null {
+    public readonly lastTimestamp = computed(() => {
         let result: string|null
-        const messages = this.getEntity()?.messages
-        if (messages != null && messages.length >= 1) {
-            result = messages[0].consensus_timestamp ?? null
+        const messages = this.messages.value
+        if (messages.length >= 1) {
+            result = messages[0].consensus_timestamp ?? ""
         } else {
             result = null
         }
         return result
-    }
+    })
+
+    public readonly messages: Ref<Array<TopicMessage>> = computed(() => {
+        return this.response.value?.data?.messages ?? []
+    })
 
 
     //
@@ -67,13 +67,12 @@ export class TopicMessageCache extends EntityCache<TopicMessagesResponse> {
         }
         params.limit = this.limit
         params.order = 'desc'
-        const lastTimestamp = this.getLastTimestamp()
-        if (lastTimestamp != null) {
-            params.timestamp = "gt:" + lastTimestamp
+        if (this.lastTimestamp.value != null) {
+            params.timestamp = "gt:" + this.lastTimestamp.value
         }
         return axios
-            .get<TopicMessagesResponse>("api/v1/topics/" + this.topicId + "/messages", { params: params} )
-            .then(response => this.mergeResponse(response, lastTimestamp))
+            .get<TopicMessagesResponse>("api/v1/topics/" + this.topicId.value + "/messages", { params: params} )
+            .then(response => this.mergeResponse(response, this.lastTimestamp.value))
     }
 
     //
@@ -83,7 +82,7 @@ export class TopicMessageCache extends EntityCache<TopicMessagesResponse> {
     private mergeResponse( next: AxiosResponse<TopicMessagesResponse>, lastTimestamp: string|null) :
         AxiosResponse<TopicMessagesResponse> {
 
-        const prev = this.getResponse()
+        const prev = this.response.value
         if (prev != null && lastTimestamp != null) {
             const prevMessages = prev.data.messages ?? Array<TopicMessage>()
             const nextMessages = next.data.messages ?? Array<TopicMessage>()
