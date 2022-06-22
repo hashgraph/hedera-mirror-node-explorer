@@ -26,6 +26,7 @@ import MockAdapter from "axios-mock-adapter";
 import Oruga from "@oruga-ui/oruga-next";
 import TokenTable from "@/components/token/TokenTable.vue";
 import {HMSF} from "@/utils/HMSF";
+import {Token} from "@/schemas/HederaSchemas";
 
 /*
     Bookmarks
@@ -66,7 +67,8 @@ describe("TokenTable.vue", () => {
                 plugins: [router, Oruga]
             },
             props: {
-                nbItems: 42
+                nbItems: 42,
+                tokens: SAMPLE_TOKENS.tokens as Array<Token>
             },
         });
 

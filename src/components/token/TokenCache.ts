@@ -18,15 +18,16 @@
  *
  */
 
-import {EntityCache} from "@/utils/EntityCache";
-import {TokensResponse} from "@/schemas/HederaSchemas";
+import {EntityCacheV2} from "@/utils/EntityCacheV2";
+import {Token, TokensResponse} from "@/schemas/HederaSchemas";
 import axios, {AxiosResponse} from "axios";
+import {computed, Ref, ref, watch} from "vue";
 
 const DESCENDING = 'desc'
 
-export class TokenCache extends EntityCache<TokensResponse> {
+export class TokenCache extends EntityCacheV2<TokensResponse> {
 
-    private tokenType: string|null = null
+    public readonly tokenType = ref<string|null>(null)
     private readonly limit: number
     private readonly sorting: string
 
@@ -38,12 +39,12 @@ export class TokenCache extends EntityCache<TokensResponse> {
         super(5000, 10)
         this.limit = limit
         this.sorting = DESCENDING
+        watch(this.tokenType, () => this.clear())
     }
 
-    public setTokenType(newValue: string|null): void {
-        this.tokenType = newValue
-        this.clear()
-    }
+    public readonly tokens: Ref<Array<Token>> = computed(() => {
+        return this.response.value?.data?.tokens ?? []
+    })
 
     //
     // EntityCache
@@ -58,8 +59,8 @@ export class TokenCache extends EntityCache<TokensResponse> {
         }
         params.limit = this.limit
         params.order = this.sorting
-        if (this.tokenType != null && this.tokenType.length > 0) {
-            params.type = this.tokenType
+        if (this.tokenType.value != null && this.tokenType.value.length > 0) {
+            params.type = this.tokenType.value
         }
 
         return axios.get<TokensResponse>("api/v1/tokens", { params: params} )

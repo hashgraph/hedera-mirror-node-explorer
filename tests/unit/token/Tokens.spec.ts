@@ -28,6 +28,7 @@ import TokenTable from "@/components/token/TokenTable.vue";
 import MockAdapter from "axios-mock-adapter";
 import Oruga from "@oruga-ui/oruga-next";
 import {HMSF} from "@/utils/HMSF";
+import {EntityCacheStateV2} from "@/utils/EntityCacheV2";
 
 /*
     Bookmarks
@@ -73,6 +74,9 @@ describe("Tokens.vue", () => {
         await flushPromises()
         // console.log(wrapper.text())
 
+        expect(wrapper.vm.nfTokenCache.state.value).toBe(EntityCacheStateV2.Started)
+        expect(wrapper.vm.funTokenCache.state.value).toBe(EntityCacheStateV2.Started)
+
         const cards = wrapper.findAllComponents(DashboardCard)
         expect(cards.length).toBe(2)
 
@@ -99,6 +103,12 @@ describe("Tokens.vue", () => {
             "0.0.748383" +
             "ĦFRENSKINGDOM"
         )
+
+        wrapper.unmount()
+        await flushPromises()
+
+        expect(wrapper.vm.nfTokenCache.state.value).toBe(EntityCacheStateV2.Stopped)
+        expect(wrapper.vm.funTokenCache.state.value).toBe(EntityCacheStateV2.Stopped)
     });
 
 });
