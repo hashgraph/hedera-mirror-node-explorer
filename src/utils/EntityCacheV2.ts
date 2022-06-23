@@ -19,7 +19,7 @@
  */
 
 import {AxiosResponse} from "axios";
-import {computed, Ref, ref, watch} from "vue";
+import {computed, Ref, ref, watch, WatchOptions} from "vue";
 
 
 export abstract class EntityCacheV2<E> {
@@ -36,6 +36,10 @@ export abstract class EntityCacheV2<E> {
         return this.response.value?.data ?? null
     })
 
+    // EntityCacheV2 and its subclasses must watch with flush='sync'
+    // to make sure that watchers are invoked during onBeforeUnmount()
+    protected static WATCH_OPTIONS: WatchOptions = { flush: 'sync' }
+
     //
     // Public
     //
@@ -45,8 +49,8 @@ export abstract class EntityCacheV2<E> {
         this.maxUpdateCount = maxUpdateCount
 
         watch(this.state, (newValue, oldValue) => {
-            this.stateDidChange(newValue, oldValue)
-        }, { flush: 'sync'}); // sync is required so that this.state can be mutated in onBeforeUnmount()
+            this.stateDidChange(newValue, oldValue ?? EntityCacheStateV2.Stopped)
+        }, EntityCacheV2.WATCH_OPTIONS);
     }
 
     public clear(): void {

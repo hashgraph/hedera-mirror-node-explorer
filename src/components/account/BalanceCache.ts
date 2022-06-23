@@ -35,7 +35,7 @@ export class BalanceCache extends EntityCacheV2<BalancesResponse> {
     public constructor(limit = 100, updatePeriod: number|null = null) {
         super(updatePeriod)
         this.limit = limit
-        watch(this.accountId, () => this.clear())
+        watch(this.accountId, () => this.clear(), EntityCacheV2.WATCH_OPTIONS)
     }
 
     public readonly hbarBalance: Ref<number|null> = computed(() => {

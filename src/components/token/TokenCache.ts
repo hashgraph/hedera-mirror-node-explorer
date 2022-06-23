@@ -39,7 +39,7 @@ export class TokenCache extends EntityCacheV2<TokensResponse> {
         super(5000, 10)
         this.limit = limit
         this.sorting = DESCENDING
-        watch(this.tokenType, () => this.clear())
+        watch(this.tokenType, () => this.clear(), EntityCacheV2.WATCH_OPTIONS)
     }
 
     public readonly tokens: Ref<Array<Token>> = computed(() => {

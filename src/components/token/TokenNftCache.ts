@@ -39,7 +39,7 @@ export class TokenNftCache extends EntityCacheV2<Nfts> {
         super(5000, 10)
         this.limit = limit
         this.order = ASCENDING
-        watch(this.tokenId, () => this.clear())
+        watch(this.tokenId, () => this.clear(), EntityCacheV2.WATCH_OPTIONS)
     }
 
     public readonly nfts: Ref<Array<Nft>> = computed(() => {
