@@ -106,9 +106,9 @@ export default defineComponent({
   props: {
     nbItems: Number,
     accounts: {
-      type: Object as PropType<Array<AccountInfo>>,
-      default: []
-    }
+      type: Array as PropType<Array<AccountInfo>>,
+      default: () => [],
+    },
   },
 
   setup(props) {
