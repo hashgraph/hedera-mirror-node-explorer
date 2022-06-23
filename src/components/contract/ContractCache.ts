@@ -31,8 +31,8 @@ export class ContractCache extends EntityCacheV2<ContractsResponse> {
     // Public
     //
 
-    public constructor(limit = 100, updatePeriod: number|null = null) {
-        super(updatePeriod)
+    public constructor(limit = 100) {
+        super(5000)
         this.limit = limit
     }
 
