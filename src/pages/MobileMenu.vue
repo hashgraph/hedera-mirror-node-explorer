@@ -33,17 +33,10 @@
       <div class="is-flex is-flex-direction-column is-align-items-start">
         <div id="drop-down-menu" class="ml-1 mb-5 ">
           <o-field>
-            <o-select
-                v-model="selectedNetwork"
-                class="h-is-navbar-item"
-            >
+            <o-select v-model="selectedNetwork" class="h-is-navbar-item">
               <option v-for="network in networkRegistry.getEntries()" :key="network.name" :value="network.name">
                 {{ network.displayName }}
               </option>
-
-<!--              <option v-bind:key="HederaNetwork.MAINNET" v-bind:value="HederaNetwork.MAINNET">MAINNET</option>-->
-<!--              <option v-bind:key="HederaNetwork.TESTNET" v-bind:value="HederaNetwork.TESTNET">TESTNET</option>-->
-<!--              <option v-bind:key="HederaNetwork.PREVIEWNET" v-bind:value="HederaNetwork.PREVIEWNET">PREVIEWNET</option>-->
             </o-select>
           </o-field>
         </div>
@@ -69,6 +62,10 @@
         <a :class="{ 'is-rimmed': isNodeRoute}"
            class="button is-ghost h-is-mobile-navbar-item h-is-dense"
            @click="$router.replace({name: 'Nodes'})">Nodes</a>
+        <a v-if="isStakingEnabled"
+           :class="{ 'is-rimmed': isStakingRoute}"
+           class="button is-ghost h-is-mobile-navbar-item h-is-dense"
+           @click="$router.replace({name: 'Staking'})">Staking</a>
       </div>
 
     </div>
@@ -102,10 +99,11 @@ export default defineComponent({
   setup() {
     const isSmallScreen = inject('isSmallScreen', true)
     const isTouchDevice = inject('isTouchDevice', false)
+    const isStakingEnabled = process.env.VUE_APP_ENABLE_STAKING === 'true'
+
     const route = useRoute()
     const network = computed(() => { return route.params.network })
     const name = computed(() => { return route.query.from })
-
     const selectedNetwork = ref(network.value)
     watch(selectedNetwork, (selection) => {
       router.replace({
@@ -134,6 +132,9 @@ export default defineComponent({
     const isNodeRoute = computed(() => {
       return name.value === 'Nodes' || name.value === 'NodeDetails'
     })
+    const isStakingRoute = computed(() => {
+      return name.value === 'Staking'
+    })
 
     const  onResizeHandler = () => {
       if (window.innerWidth >= MEDIUM_BREAKPOINT) {
@@ -150,6 +151,7 @@ export default defineComponent({
     return {
       isSmallScreen,
       isTouchDevice,
+      isStakingEnabled,
       selectedNetwork,
       isDashboardRoute,
       isTransactionRoute,
@@ -158,6 +160,7 @@ export default defineComponent({
       isContractRoute,
       isAccountRoute,
       isNodeRoute,
+      isStakingRoute,
       networkRegistry
     }
   }

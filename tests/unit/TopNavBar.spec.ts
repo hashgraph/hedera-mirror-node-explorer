@@ -50,6 +50,10 @@ HMSF.forceUTC = true
 
 describe("TopNavBar.vue", () => {
 
+    beforeEach(() => {
+        process.env = Object.assign(process.env, { VUE_APP_ENABLE_STAKING: false });
+    })
+
     it("Should display logos, page links and search bar", async () => {
 
         await router.push("/") // To avoid "missing required param 'network'" error

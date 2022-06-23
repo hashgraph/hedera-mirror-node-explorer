@@ -98,9 +98,13 @@
         <a class="button is-ghost h-is-navbar-item h-is-dense"
            :class="{ 'is-rimmed': isAccountRoute}"
            @click="$router.push({name: 'Accounts'})">Accounts</a>
-        <a class="button is-ghost is-last h-is-navbar-item h-is-dense"
-           :class="{ 'is-rimmed': isNodeRoute}"
+        <a class="button is-ghost h-is-navbar-item h-is-dense"
+           :class="{ 'is-rimmed': isNodeRoute, 'is-last': !isStakingEnabled}"
            @click="$router.push({name: 'Nodes'})">Nodes</a>
+        <a v-if="isStakingEnabled"
+           class="button is-ghost is-last h-is-navbar-item h-is-dense"
+           :class="{ 'is-rimmed': isStakingRoute}"
+           @click="$router.push({name: 'Staking'})">Staking</a>
       </div>
       <SearchBar style="margin-top: 4px"/>
     </div>
@@ -118,7 +122,7 @@
 
 <script lang="ts">
 
-import {computed, defineComponent, inject, ref, watch, WatchStopHandle} from "vue";
+import {computed, defineComponent, inject, onMounted, ref, watch, WatchStopHandle} from "vue";
 import {useRoute} from "vue-router";
 import router from "@/router";
 import SearchBar from "@/components/SearchBar.vue";
@@ -137,6 +141,9 @@ export default defineComponent({
     const buildTime = inject('buildTime', "not available")
 
     const productName = process.env.VUE_APP_PRODUCT_NAME ?? "Hedera Mirror Node Explorer"
+    const isStakingEnabled = process.env.VUE_APP_ENABLE_STAKING === 'true'
+
+    onMounted(() => console.log("isStakingEnabled: " + isStakingEnabled))
 
     const showErrorDialog = ref(false)
 
@@ -196,12 +203,17 @@ export default defineComponent({
       return name.value === 'Nodes' || name.value === 'NodeDetails'
     })
 
+    const isStakingRoute = computed(() => {
+      return name.value === 'Staking'
+    })
+
     return {
       isSmallScreen,
       isMediumScreen,
       isTouchDevice,
       buildTime,
       productName,
+      isStakingEnabled,
       showErrorDialog,
       name,
       showTopRightLogo,
@@ -215,6 +227,7 @@ export default defineComponent({
       isContractRoute,
       isAccountRoute,
       isNodeRoute,
+      isStakingRoute
     }
   },
 })

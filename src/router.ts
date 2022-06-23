@@ -42,6 +42,7 @@ import NodeDetails from "@/pages/NodeDetails.vue";
 import {NetworkEntry, networkRegistry} from "@/schemas/NetworkRegistry";
 import {AppStorage} from "@/AppStorage";
 import axios from "axios";
+import Staking from "@/pages/Staking.vue";
 
 const routes: Array<RouteRecordRaw> = [
   {
@@ -152,6 +153,12 @@ const routes: Array<RouteRecordRaw> = [
     props: true
   },
   {
+    path: '/:network/staking',
+    name: 'Staking',
+    component: Staking,
+    props: true
+  },
+  {
     path: '/:network/search-result/:searchedId',
     name: 'NoSearchResult',
     component: NoSearchResult,
@@ -182,6 +189,18 @@ const routes: Array<RouteRecordRaw> = [
 const router = createRouter({
   history: createWebHashHistory(process.env.BASE_URL),
   routes
+})
+
+router.beforeEach((to) => {
+  let result: boolean | string
+
+  if (to.name === 'Staking' && process.env.VUE_APP_ENABLE_STAKING !== 'true') {
+    // Staking page not enabled => re-route to PageNotFound
+    result = "/page-not-found"
+  } else {
+    result = true
+  }
+  return result
 })
 
 router.beforeEach((to, from) => {
