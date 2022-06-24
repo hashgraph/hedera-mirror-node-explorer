@@ -33,7 +33,11 @@ export class NetworkEntry {
 
 export class NetworkRegistry {
 
-    private static readonly DEFAULT_NETWORK = 'testnet'
+    public static readonly MAIN_NETWORK = 'mainnet'
+    public static readonly TEST_NETWORK = 'testnet'
+    public static readonly PREVIEW_NETWORK = 'previewnet'
+
+    private static readonly DEFAULT_NETWORK = NetworkRegistry.TEST_NETWORK
     private readonly defaultEntry: NetworkEntry
 
     private readonly entries: NetworkEntry[] = [

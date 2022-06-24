@@ -24,37 +24,48 @@
 
 <template>
 
-  <div v-if="isLargeScreen">
-    <div class="is-flex is-flex-wrap-wrap is-justify-content-space-evenly h-top-banner py-2">
-      <DashboardItem :name="hbarPriceLabel" :value="'$' + hbarPrice" :variation="hbarPriceVariation"/>
-      <DashboardItem :name="hbarMarketCapLabel" :value="'$' + hbarMarketCap" :variation="hbarMarketCapVariation"/>
-      <DashboardItem :name="hbarReleasedLabel" :value="hbarReleased"/>
-      <DashboardItem :name="hbarTotalLabel" :value="hbarTotal"/>
-    </div>
-  </div>
+  <div v-if="isMainNetwork">
 
-  <div v-else-if="isSmallScreen">
-    <div class="is-flex is-flex-wrap-wrap is-justify-content-space-evenly h-top-banner py-2">
-      <div class="is-flex is-flex-direction-column is-align-items-start">
-        <DashboardItem :name="hbarPriceLabel" :value="'$' + hbarPrice" :variation="hbarPriceVariation" :is-numeric="true"/>
-        <DashboardItem :name="hbarMarketCapLabel" :value="'$' + hbarMarketCap" :variation="hbarMarketCapVariation" :is-numeric="true"/>
-      </div>
-      <div class="is-flex is-flex-direction-column is-align-items-start">
-        <DashboardItem :name="hbarReleasedLabel" :value="hbarReleased" :is-numeric="true"/>
-        <DashboardItem :name="hbarTotalLabel" :value="hbarTotal" :is-numeric="true"/>
+    <div v-if="isLargeScreen">
+      <div class="is-flex is-flex-wrap-wrap is-justify-content-space-evenly h-top-banner py-2">
+        <DashboardItem :name="hbarPriceLabel" :value="'$' + hbarPrice" :variation="hbarPriceVariation"/>
+        <DashboardItem :name="hbarMarketCapLabel" :value="'$' + hbarMarketCap" :variation="hbarMarketCapVariation"/>
+        <DashboardItem :name="hbarReleasedLabel" :value="hbarReleased"/>
+        <DashboardItem :name="hbarTotalLabel" :value="hbarTotal"/>
       </div>
     </div>
-  </div>
 
+    <div v-else-if="isSmallScreen">
+      <div class="is-flex is-flex-wrap-wrap is-justify-content-space-evenly h-top-banner py-2">
+        <div class="is-flex is-flex-direction-column is-align-items-start">
+          <DashboardItem :is-numeric="true" :name="hbarPriceLabel" :value="'$' + hbarPrice" :variation="hbarPriceVariation"/>
+          <DashboardItem :is-numeric="true" :name="hbarMarketCapLabel" :value="'$' + hbarMarketCap" :variation="hbarMarketCapVariation"/>
+        </div>
+        <div class="is-flex is-flex-direction-column is-align-items-start">
+          <DashboardItem :is-numeric="true" :name="hbarReleasedLabel" :value="hbarReleased"/>
+          <DashboardItem :is-numeric="true" :name="hbarTotalLabel" :value="hbarTotal"/>
+        </div>
+      </div>
+    </div>
+
+    <div v-else>
+      <div class="is-flex is-flex-wrap-wrap is-justify-content-space-evenly h-top-banner py-2">
+        <div class="is-flex is-flex-direction-column is-align-items-start">
+          <DashboardItem :is-numeric="true" :name="hbarPriceLabel" :value="'$' + hbarPrice" :variation="hbarPriceVariation"/>
+          <DashboardItem :is-numeric="true" :name="hbarMarketCapLabel" :value="'$' + hbarMarketCap" :variation="hbarMarketCapVariation"/>
+          <DashboardItem :is-numeric="true" :name="hbarReleasedLabel" :value="hbarReleased"/>
+          <DashboardItem :is-numeric="true" :name="hbarTotalLabel" :value="hbarTotal"/>
+        </div>
+      </div>
+    </div>
+
+  </div>
   <div v-else>
-    <div class="is-flex is-flex-wrap-wrap is-justify-content-space-evenly h-top-banner py-2">
-      <div class="is-flex is-flex-direction-column is-align-items-start">
-        <DashboardItem :name="hbarPriceLabel" :value="'$' + hbarPrice" :variation="hbarPriceVariation" :is-numeric="true"/>
-        <DashboardItem :name="hbarMarketCapLabel" :value="'$' + hbarMarketCap" :variation="hbarMarketCapVariation" :is-numeric="true"/>
-        <DashboardItem :name="hbarReleasedLabel" :value="hbarReleased" :is-numeric="true"/>
-        <DashboardItem :name="hbarTotalLabel" :value="hbarTotal" :is-numeric="true"/>
-      </div>
+
+    <div class="is-flex is-justify-content-center h-top-banner py-2">
+        <DashboardItem :value="currentNetworkDisplayName"/>
     </div>
+
   </div>
 
 </template>
@@ -71,6 +82,8 @@ import {CoinGeckoMarketData} from "@/schemas/CoinGeckoMarketData";
 import {CoinGeckoCache} from "@/components/dashboard/CoinGeckoCache";
 import {NetworkSupplyResponse} from "@/schemas/HederaSchemas";
 import DashboardItem from "@/components/dashboard/DashboardItem.vue";
+import {NetworkRegistry, networkRegistry} from "@/schemas/NetworkRegistry";
+import router from "@/router";
 
 export default defineComponent({
 
@@ -86,7 +99,21 @@ export default defineComponent({
     const isSmallScreen = inject('isSmallScreen', true)
     const isLargeScreen = inject('isLargeScreen', true)
 
-    const hbarPriceLabel =     'HBAR PRICE'
+    const isMainNetwork = computed(() => router.currentRoute.value.params.network == NetworkRegistry.MAIN_NETWORK)
+    const isTestNetwork = computed(() => router.currentRoute.value.params.network == NetworkRegistry.TEST_NETWORK)
+    const isPreviewNetwork = computed(() => router.currentRoute.value.params.network == NetworkRegistry.PREVIEW_NETWORK)
+
+    const currentNetworkDisplayName = computed(() => {
+      let displayName
+      if (Array.isArray(router.currentRoute.value.params.network)) {
+        displayName = networkRegistry.lookup(router.currentRoute.value.params.network[0])?.displayName
+      } else {
+        displayName = networkRegistry.lookup(router.currentRoute.value.params.network)?.displayName
+      }
+      return displayName
+    })
+
+    const hbarPriceLabel = 'HBAR PRICE'
     const hbarMarketCapLabel = 'HBAR MARKET CAP'
     const hbarReleasedLabel = 'HBAR RELEASED'
     const hbarTotalLabel = 'HBAR TOTAL'
@@ -148,6 +175,10 @@ export default defineComponent({
     }
 
     return {
+      isMainNetwork,
+      isTestNetwork,
+      isPreviewNetwork,
+      currentNetworkDisplayName,
       isSmallScreen,
       isLargeScreen,
       hbarPriceLabel,
