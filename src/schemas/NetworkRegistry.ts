@@ -59,8 +59,8 @@ export class NetworkRegistry {
 
         if (process.env.VUE_APP_LOCAL_MIRROR_NODE_URL) {
             this.entries.push(new NetworkEntry(
-                'localnet',
-                process.env.VUE_APP_LOCAL_MIRROR_NODE_MENU_NAME ?? "LOCALNET",
+                'devnet',
+                process.env.VUE_APP_LOCAL_MIRROR_NODE_MENU_NAME ?? "DEVNET",
                 process.env.VUE_APP_LOCAL_MIRROR_NODE_URL
             ))
         }
