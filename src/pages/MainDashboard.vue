@@ -159,6 +159,9 @@ export default defineComponent({
       cryptoTransactionCache.clear()
       messageTransactionCache.clear()
       contractCallTransactionCache.clear()
+      cryptoTransactionCache.state.value = EntityCacheStateV2.Started
+      messageTransactionCache.state.value = EntityCacheStateV2.Started
+      contractCallTransactionCache.state.value = EntityCacheStateV2.Started
     })
 
     return {
