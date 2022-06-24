@@ -24,7 +24,8 @@
     <TopNavBar/>
   </section>
 
-  <hr class="h-top-banner" style="margin: 0; height: 4px"/>
+  <hr class="h-has-mainnet-color"
+      :class="{'h-has-testnet-color':isTestNetwork, 'h-has-previewnet-color':isPreviewNetwork}" style="margin: 0; height: 4px"/>
 
   <router-view/>
 
@@ -36,6 +37,8 @@ import {computed, defineComponent, onBeforeUnmount, onMounted, provide, ref} fro
 import TopNavBar from "@/components/TopNavBar.vue";
 import {errorKey, explanationKey, initialLoadingKey, loadingKey, suggestionKey} from "@/AppKeys"
 import {AxiosMonitor} from "@/utils/AxiosMonitor"
+import router from "@/router";
+import {NetworkRegistry} from "@/schemas/NetworkRegistry";
 
 export const XLARGE_BREAKPOINT = 1450
 export const LARGE_BREAKPOINT = 1280
@@ -50,6 +53,10 @@ export default defineComponent({
   components: {TopNavBar},
 
   setup() {
+    const isMainNetwork = computed(() => router.currentRoute.value.params.network == NetworkRegistry.MAIN_NETWORK)
+    const isTestNetwork = computed(() => router.currentRoute.value.params.network == NetworkRegistry.TEST_NETWORK)
+    const isPreviewNetwork = computed(() => router.currentRoute.value.params.network == NetworkRegistry.PREVIEW_NETWORK)
+
     const buildTime = document.documentElement.dataset.buildTimestampUtc ?? "not available"
     provide('buildTime', buildTime)
 
@@ -91,6 +98,12 @@ export default defineComponent({
     onBeforeUnmount(() => {
       window.removeEventListener('resize', onResizeHandler);
     })
+
+    return {
+       isMainNetwork,
+       isTestNetwork,
+       isPreviewNetwork,
+    }
   },
 });
 </script>

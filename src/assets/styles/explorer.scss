@@ -22,6 +22,20 @@
 @import '../branding/brand-theme';
 
 //
+// COLORS
+//
+
+.h-has-mainnet-color {
+    background: $h-mainnet-color;
+}
+.h-has-testnet-color {
+    background: $h-testnet-color;
+}
+.h-has-previewnet-color {
+    background: $h-previewnet-color;
+}
+
+//
 // TEXT
 //
 
@@ -185,8 +199,8 @@ body {
 #drop-down-menu .o-sel {
     height: 44.5px;
     font-weight: bold;
-    color: $h-highlight-color;
-    border-color: $h-highlight-color;
+    color: $h-mainnet-highlight-color;
+    border-color: $h-mainnet-highlight-color;
     background-color: $h-page-background-color;
     border-width: 0.5px;
     border-top-width: 0;
@@ -217,8 +231,8 @@ a.button.is-outlined {
 }
 a.button.is-outlined:not(.is-active) {
     font-weight: bold;
-    color: $h-highlight-color;
-    border-color: $h-highlight-color;
+    color: $h-mainnet-highlight-color;
+    border-color: $h-mainnet-highlight-color;
 }
 a.button.is-outlined.is-active {
     color: grey;
@@ -238,7 +252,7 @@ a.button.is-ghost:hover {
 a.button.is-ghost.is-rimmed {
     text-decoration-line: underline;
     text-decoration-style: solid;
-    text-decoration-color: $h-highlight-color;
+    text-decoration-color: $h-mainnet-highlight-color;
     text-decoration-thickness: 1px;
     text-underline-offset: 9px;
     font-weight: bold;
@@ -264,12 +278,8 @@ a.button.is-ghost.is-last {
 // SEPARATORS
 //
 
-.h-top-banner {
-    background: $h-top-banner-background-color;
-}
-
 .h-card-separator {
-    background: $h-top-banner-background-color;
+    background: $h-mainnet-color;
     margin: 16px 0;
 }
 @media (max-width: 767px) {
