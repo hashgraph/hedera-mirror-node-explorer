@@ -67,8 +67,7 @@
 
 <script lang="ts">
 
-import {defineComponent, inject, onBeforeUnmount, onMounted, ref} from 'vue';
-import {ContractCache} from "@/components/contract/ContractCache";
+import {defineComponent, inject, PropType, ref} from 'vue';
 import {Contract} from "@/schemas/HederaSchemas";
 import router from "@/router";
 import BlobValue from "@/components/values/BlobValue.vue";
@@ -88,6 +87,10 @@ export default defineComponent({
 
   props: {
     nbItems: Number,
+    contracts: {
+      type: Array as PropType<Array<Contract>>,
+      default: () => []
+    }
   },
 
   setup(props) {
@@ -95,21 +98,6 @@ export default defineComponent({
     const isMediumScreen = inject('isMediumScreen', true)
     const DEFAULT_PAGE_SIZE = 15
     const pageSize = props.nbItems ?? DEFAULT_PAGE_SIZE
-
-    // 1) contracts
-    let contracts = ref<Array<Contract>>([])
-
-    // 2) cache
-    const cache = new ContractCache(isTouchDevice ? 15 : 100)
-    cache.responseDidChangeCB = () => {
-      contracts.value = cache.getEntity()?.contracts ?? []
-    }
-    onMounted(() => {
-      cache.start()
-    })
-    onBeforeUnmount(() => {
-      cache.stop()
-    })
 
     // 3) handleClick
     const handleClick = (c: Contract) => {
@@ -123,8 +111,6 @@ export default defineComponent({
       isTouchDevice,
       isMediumScreen,
       pageSize,
-      contracts,
-      cache,
       handleClick,
       currentPage,
       ORUGA_MOBILE_BREAKPOINT

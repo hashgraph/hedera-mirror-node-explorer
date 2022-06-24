@@ -34,7 +34,7 @@
         <span class="h-is-secondary-text">{{ accountId }}</span>
       </template>
       <template v-slot:table>
-        <BalanceTable v-bind:account-id="accountId"/>
+        <BalanceTable v-bind:balances="tokenBalances"/>
       </template>
     </DashboardCard>
 
@@ -50,10 +50,12 @@
 
 <script lang="ts">
 
-import {defineComponent, inject} from 'vue';
+import {defineComponent, inject, onBeforeUnmount, onMounted, watch} from 'vue';
 import BalanceTable from "@/components/account/BalanceTable.vue";
 import DashboardCard from "@/components/DashboardCard.vue";
 import Footer from "@/components/Footer.vue";
+import {BalanceCache} from "@/components/account/BalanceCache";
+import {EntityCacheStateV2} from "@/utils/EntityCacheV2";
 
 export default defineComponent({
 
@@ -70,12 +72,33 @@ export default defineComponent({
     network: String
   },
 
-  setup() {
+  setup(props) {
     const isSmallScreen = inject('isSmallScreen', true)
     const isTouchDevice = inject('isTouchDevice', false)
+
+    //
+    // balanceCache
+    //
+    const balanceCache = new BalanceCache()
+    const setupBalanceCache = () => {
+      balanceCache.accountId.value = props.accountId ?? null
+      balanceCache.state.value = EntityCacheStateV2.Started
+    }
+    watch(() => props.accountId, () => {
+      setupBalanceCache()
+    })
+    onMounted(() => {
+      setupBalanceCache()
+    })
+    onBeforeUnmount(() => {
+      balanceCache.state.value = EntityCacheStateV2.Stopped
+    })
+
     return {
       isSmallScreen,
-      isTouchDevice
+      isTouchDevice,
+      tokenBalances: balanceCache.tokenBalances,
+      balanceCacheState: balanceCache.state,
     }
   }
 });

@@ -20,12 +20,11 @@
 
 import {flushPromises, mount} from "@vue/test-utils"
 import router from "@/router";
-import axios from "axios";
 import {SAMPLE_CONTRACTS} from "../Mocks";
-import MockAdapter from "axios-mock-adapter";
 import Oruga from "@oruga-ui/oruga-next";
 import {HMSF} from "@/utils/HMSF";
 import ContractTable from "@/components/contract/ContractTable.vue";
+import {Contract} from "@/schemas/HederaSchemas";
 
 /*
     Bookmarks
@@ -56,18 +55,13 @@ describe("ContractTable.vue", () => {
 
         await router.push("/") // To avoid "missing required param 'network'" error
 
-        const mock = new MockAdapter(axios);
-
-        const contracts = SAMPLE_CONTRACTS
-        const matcher1 = "api/v1/contracts"
-        mock.onGet(matcher1).reply(200, contracts);
-
         const wrapper = mount(ContractTable, {
             global: {
                 plugins: [router, Oruga]
             },
             props: {
-                nbItems: 42
+                nbItems: 42,
+                contracts: SAMPLE_CONTRACTS.contracts as Array<Contract>
             },
         });
 

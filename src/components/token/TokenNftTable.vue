@@ -77,13 +77,12 @@
 
 <script lang="ts">
 
-import {computed, defineComponent, inject, onBeforeUnmount, onMounted, ref, watch} from 'vue';
+import {computed, defineComponent, inject, PropType, ref} from 'vue';
 import {Nft} from "@/schemas/HederaSchemas";
-import {TokenNftCache} from "@/components/token/TokenNftCache";
 import TimestampValue from "@/components/values/TimestampValue.vue";
 import AccountLink from "@/components/values/AccountLink.vue";
 import BlobValue from "@/components/values/BlobValue.vue";
-import { ORUGA_MOBILE_BREAKPOINT } from '@/App.vue';
+import {ORUGA_MOBILE_BREAKPOINT} from '@/App.vue';
 import EmptyTable from "@/components/EmptyTable.vue";
 
 export default defineComponent({
@@ -92,9 +91,9 @@ export default defineComponent({
   components: {EmptyTable, AccountLink, TimestampValue, BlobValue},
 
   props: {
-    tokenId: {
-      type: String,
-      required: true
+    nfts: {
+      type: Array as PropType<Array<Nft>>,
+      default: () => []
     },
     nbItems: Number,
   },
@@ -106,31 +105,7 @@ export default defineComponent({
     const DEFAULT_PAGE_SIZE = 15
     const pageSize = props.nbItems ?? DEFAULT_PAGE_SIZE
     const paginationNeeded = computed(() => {
-          return nfts.value.length > 5
-        }
-    )
-
-    // 1) nfts
-    let nfts = ref<Array<Nft>>([])
-
-    // 2) cache
-    const cache = new TokenNftCache(props.tokenId)
-
-    cache.responseDidChangeCB = () => {
-      nfts.value = cache.getEntity()?.nfts ?? []
-    }
-
-    onMounted(() => {
-      cache.start()
-    })
-
-    onBeforeUnmount(() => {
-      cache.stop()
-    })
-
-    watch(() => props.tokenId, () => {
-          cache.setTokenId(props.tokenId)
-          cache.start()
+          return props.nfts.length > 5
         }
     )
 
@@ -142,8 +117,6 @@ export default defineComponent({
       isMediumScreen,
       pageSize,
       paginationNeeded,
-      nfts,
-      cache,
       currentPage,
       ORUGA_MOBILE_BREAKPOINT
     }

@@ -20,12 +20,11 @@
 
 import {flushPromises, mount} from "@vue/test-utils"
 import router from "@/router";
-import axios from "axios";
 import {SAMPLE_NFTS} from "../Mocks";
-import MockAdapter from "axios-mock-adapter";
 import Oruga from "@oruga-ui/oruga-next";
 import TokenNftTable from "@/components/token/TokenNftTable.vue";
 import {HMSF} from "@/utils/HMSF";
+import {Nft} from "@/schemas/HederaSchemas";
 
 /*
     Bookmarks
@@ -56,18 +55,12 @@ describe("TokenNftTable.vue", () => {
 
         await router.push("/") // To avoid "missing required param 'network'" error
 
-        const mock = new MockAdapter(axios);
-
-        const testTokenId = SAMPLE_NFTS.nfts[0].token_id
-        const matcher = "/api/v1/tokens/" + testTokenId + "/nfts"
-        mock.onGet(matcher).reply(200, SAMPLE_NFTS);
-
         const wrapper = mount(TokenNftTable, {
             global: {
                 plugins: [router, Oruga]
             },
             props: {
-                tokenId: testTokenId
+                nfts: SAMPLE_NFTS.nfts as Array<Nft>
             },
         });
 

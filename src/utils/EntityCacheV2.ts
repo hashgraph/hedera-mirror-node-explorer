@@ -19,7 +19,7 @@
  */
 
 import {AxiosResponse} from "axios";
-import {computed, Ref, ref, watch} from "vue";
+import {computed, Ref, ref, watch, WatchOptions} from "vue";
 
 
 export abstract class EntityCacheV2<E> {
@@ -36,6 +36,10 @@ export abstract class EntityCacheV2<E> {
         return this.response.value?.data ?? null
     })
 
+    // EntityCacheV2 and its subclasses must watch with flush='sync'
+    // to make sure that watchers are invoked during onBeforeUnmount()
+    protected static WATCH_OPTIONS: WatchOptions = { flush: 'sync' }
+
     //
     // Public
     //
@@ -45,8 +49,8 @@ export abstract class EntityCacheV2<E> {
         this.maxUpdateCount = maxUpdateCount
 
         watch(this.state, (newValue, oldValue) => {
-            this.stateDidChange(newValue, oldValue)
-        }, { flush: 'sync'}); // sync is required so that this.state can be mutated in onBeforeUnmount()
+            this.stateDidChange(newValue, oldValue ?? EntityCacheStateV2.Stopped)
+        }, EntityCacheV2.WATCH_OPTIONS);
     }
 
     public clear(): void {
@@ -71,20 +75,10 @@ export abstract class EntityCacheV2<E> {
     //
 
     private stateDidChange(newValue: EntityCacheStateV2, oldValue: EntityCacheStateV2): void {
-        if (oldValue != newValue) {
-            switch(oldValue) {
-                case EntityCacheStateV2.Started:
-                    // => newValue == EntityCacheStateV2.Stopped || newValue == EntityCacheStateV2.AutoStopped
-                    // => we stop
-                    this.stop();
-                    break;
-                case EntityCacheStateV2.Stopped:
-                case EntityCacheStateV2.AutoStopped:
-                    // => newValue == EntityCacheStateV2.Started
-                    // => we start
-                    this.start();
-                    break;
-            }
+        if (oldValue != EntityCacheStateV2.Started && newValue == EntityCacheStateV2.Started) {
+            this.start()
+        } else if (oldValue == EntityCacheStateV2.Started && newValue != EntityCacheStateV2.Started) {
+            this.stop()
         }
     }
 

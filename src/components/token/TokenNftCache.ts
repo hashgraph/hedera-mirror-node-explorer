@@ -18,15 +18,16 @@
  *
  */
 
-import {EntityCache} from "@/utils/EntityCache";
-import {Nfts} from "@/schemas/HederaSchemas";
+import {EntityCacheV2} from "@/utils/EntityCacheV2";
+import {Nft, Nfts} from "@/schemas/HederaSchemas";
 import axios, {AxiosResponse} from "axios";
+import {computed, Ref, ref, watch} from "vue";
 
 const ASCENDING = 'asc'
 
-export class TokenNftCache extends EntityCache<Nfts> {
+export class TokenNftCache extends EntityCacheV2<Nfts> {
 
-    private tokenId: string|null = null
+    public readonly tokenId = ref<string|null>(null)
     private readonly limit: number
     private readonly order: string
 
@@ -34,17 +35,16 @@ export class TokenNftCache extends EntityCache<Nfts> {
     // Public
     //
 
-    public constructor(tokenId: string, limit = 100) {
+    public constructor(limit = 100) {
         super(5000, 10)
-        this.tokenId = tokenId
         this.limit = limit
         this.order = ASCENDING
+        watch(this.tokenId, () => this.clear(), EntityCacheV2.WATCH_OPTIONS)
     }
 
-    public setTokenId(tokenId: string): void {
-        this.tokenId = tokenId
-        this.clear()
-    }
+    public readonly nfts: Ref<Array<Nft>> = computed(() => {
+        return this.response.value?.data?.nfts ?? []
+    })
 
     //
     // EntityCache
@@ -55,7 +55,7 @@ export class TokenNftCache extends EntityCache<Nfts> {
             limit: this.limit,
             order: this.order
         }
-        return axios.get<Nfts>("api/v1/tokens/" + this.tokenId + "/nfts", { params: params} )
+        return axios.get<Nfts>("api/v1/tokens/" + this.tokenId.value + "/nfts", { params: params} )
     }
 
 }

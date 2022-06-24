@@ -35,7 +35,7 @@ export class TransactionByIdCache extends EntityCacheV2<TransactionByIdResponse>
     public constructor(limit = 100) {
         super(5000, 10)
         this.limit = limit
-        watch(this.transactionId, () => this.clear())
+        watch(this.transactionId, () => this.clear(), EntityCacheV2.WATCH_OPTIONS)
     }
 
     public readonly transactions: Ref<Array<Transaction>> = computed(() => {

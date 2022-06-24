@@ -62,11 +62,10 @@
 
 <script lang="ts">
 
-import {defineComponent, inject, onBeforeUnmount, onMounted, ref} from 'vue';
+import {defineComponent, inject, PropType, ref} from 'vue';
 import router from "@/router";
 import {Token} from "@/schemas/HederaSchemas";
-import {TokenCache} from "@/components/token/TokenCache";
-import { ORUGA_MOBILE_BREAKPOINT } from '@/App.vue';
+import {ORUGA_MOBILE_BREAKPOINT} from '@/App.vue';
 import EmptyTable from "@/components/EmptyTable.vue";
 
 export default defineComponent({
@@ -76,7 +75,10 @@ export default defineComponent({
 
   props: {
     nbItems: Number,
-    tokenType: String
+    tokens: {
+      type: Array as PropType<Array<Token>>,
+      default: () => []
+    }
   },
 
   setup(props) {
@@ -84,26 +86,6 @@ export default defineComponent({
     const isMediumScreen = inject('isMediumScreen', true)
     const DEFAULT_PAGE_SIZE = 15
     const pageSize = props.nbItems ?? DEFAULT_PAGE_SIZE
-
-    // 1) tokens
-    let tokens = ref<Array<Token>>([])
-
-    // 2) cache
-    const cache = new TokenCache(isTouchDevice ? 15 : 100)
-    cache.responseDidChangeCB = () => {
-      tokens.value = cache.getEntity()?.tokens ?? []
-    }
-    if (props.tokenType) {
-      cache.setTokenType(props.tokenType)
-    }
-
-    onMounted(() => {
-      cache.start()
-    })
-
-    onBeforeUnmount(() => {
-      cache.stop()
-    })
 
     // 3) handleClick
     const handleClick = (t: Token) => {
@@ -117,8 +99,6 @@ export default defineComponent({
       isTouchDevice,
       isMediumScreen,
       pageSize,
-      tokens,
-      cache,
       handleClick,
       currentPage,
       ORUGA_MOBILE_BREAKPOINT
