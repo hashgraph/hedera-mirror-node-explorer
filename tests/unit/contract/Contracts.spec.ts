@@ -75,7 +75,7 @@ describe("Contracts.vue", () => {
         await flushPromises()
         // console.log(wrapper.text())
 
-        expect(wrapper.vm.contractCache.state.value).toBe(EntityCacheStateV2.AutoStopped)
+        expect(wrapper.vm.contractCache.state.value).toBe(EntityCacheStateV2.Started)
 
         const card = wrapper.findComponent(DashboardCard)
         expect(card.exists()).toBe(true)
@@ -93,7 +93,7 @@ describe("Contracts.vue", () => {
         wrapper.unmount()
         await flushPromises()
 
-        expect(wrapper.vm.contractCache.state.value).toBe(EntityCacheStateV2.AutoStopped)
+        expect(wrapper.vm.contractCache.state.value).toBe(EntityCacheStateV2.Stopped)
     });
 
 });
