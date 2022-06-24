@@ -75,20 +75,10 @@ export abstract class EntityCacheV2<E> {
     //
 
     private stateDidChange(newValue: EntityCacheStateV2, oldValue: EntityCacheStateV2): void {
-        if (oldValue != newValue) {
-            switch(oldValue) {
-                case EntityCacheStateV2.Started:
-                    // => newValue == EntityCacheStateV2.Stopped || newValue == EntityCacheStateV2.AutoStopped
-                    // => we stop
-                    this.stop();
-                    break;
-                case EntityCacheStateV2.Stopped:
-                case EntityCacheStateV2.AutoStopped:
-                    // => newValue == EntityCacheStateV2.Started
-                    // => we start
-                    this.start();
-                    break;
-            }
+        if (oldValue != EntityCacheStateV2.Started && newValue == EntityCacheStateV2.Started) {
+            this.start()
+        } else if (oldValue == EntityCacheStateV2.Started && newValue != EntityCacheStateV2.Started) {
+            this.stop()
         }
     }
 
