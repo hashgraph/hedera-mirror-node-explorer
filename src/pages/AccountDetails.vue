@@ -49,7 +49,7 @@
             <Property :id="'balance'">
               <template v-slot:name>{{ tokenBalances?.length ? 'Balances' : 'Balance' }}</template>
               <template v-slot:value>
-                <div v-if="account" class="h-is-tertiary-text"><HbarAmount v-bind:amount="balance" v-bind:show-extra="true"/></div>
+                <div v-if="account" class="h-is-tertiary-text"><HbarAmount v-bind:amount="hbarBalance" v-bind:show-extra="true"/></div>
                 <div v-if="displayAllTokenLinks">
                   <router-link :to="{name: 'AccountBalances', params: {accountId: accountId}}">
                     Show all token balances
@@ -164,7 +164,7 @@
 
 import {computed, defineComponent, inject, onBeforeUnmount, onMounted, ref, watch} from 'vue';
 import axios from "axios";
-import {AccountBalanceTransactions, BalancesResponse, ContractResponse} from "@/schemas/HederaSchemas";
+import {AccountBalanceTransactions, ContractResponse} from "@/schemas/HederaSchemas";
 import {operatorRegistry} from "@/schemas/OperatorRegistry";
 import KeyValue from "@/components/values/KeyValue.vue";
 import PlayPauseButtonV2 from "@/components/PlayPauseButtonV2.vue";
@@ -351,30 +351,15 @@ export default defineComponent({
     // balanceCache
     //
 
-    const balanceCache = new BalanceCache(undefined, 1, 60000)
-    const balanceResponse = ref<BalancesResponse|null>(null)
-    balanceCache.responseDidChangeCB = () => {
-      balanceResponse.value = balanceCache.getEntity()
-    }
-    const balanceTimeStamp = computed(() => {
-      return balanceResponse.value?.timestamp ?? null
-    })
-    const balance = computed(() => {
-      const balances = balanceResponse.value?.balances
-      return (balances && balances.length > 0) ? balances[0].balance : null
-    })
-    const tokenBalances = computed(() => {
-      const balances = balanceResponse.value?.balances
-      return (balances && balances.length > 0) ? balances[0].tokens : null
-    })
+    const balanceCache = new BalanceCache(1, 60000)
     const displayAllTokenLinks = computed(() => {
-      const tokenCount = tokenBalances.value?.length ?? 0
+      const tokenCount = balanceCache.tokenBalances.value?.length ?? 0
       return tokenCount > MAX_TOKEN_BALANCES
     })
     const elapsed = computed(() => {
-          let result
-          if (balanceTimeStamp.value) {
-            const duration = Duration.decompose(new Date().getTime() / 1000 - Number.parseFloat(balanceTimeStamp.value))
+          let result: string|null
+          if (balanceCache.balanceTimeStamp.value) {
+            const duration = Duration.decompose(new Date().getTime() / 1000 - Number.parseFloat(balanceCache.balanceTimeStamp.value))
             if (duration.minutes >= 2) {
               result = duration.minutes + " minutes"
             } else if (duration.minutes == 1) {
@@ -391,10 +376,10 @@ export default defineComponent({
 
     const setupBalanceCache = () => {
       if (validEntityId.value) {
-        balanceCache.setAccountId(normalizedAccountId.value)
-        balanceCache.start()
+        balanceCache.accountId.value = normalizedAccountId.value ?? null
+        balanceCache.state.value = EntityCacheStateV2.Started
       } else {
-        balanceCache.stop()
+        balanceCache.state.value = EntityCacheStateV2.Stopped
       }
     }
 
@@ -405,7 +390,7 @@ export default defineComponent({
       setupBalanceCache()
     })
     onBeforeUnmount(() => {
-      balanceCache.stop()
+      balanceCache.state.value = EntityCacheStateV2.Stopped
     })
 
     //
@@ -446,9 +431,10 @@ export default defineComponent({
       notification,
       validEntityId,
       normalizedAccountId,
-      balanceTimeStamp,
-      balance,
-      tokenBalances,
+      balanceTimeStamp: balanceCache.balanceTimeStamp,
+      hbarBalance: balanceCache.hbarBalance,
+      tokenBalances: balanceCache.tokenBalances,
+      balanceCache: balanceCache, // For testing purpose
       accountInfo,
       nodeId,
       displayAllTokenLinks,

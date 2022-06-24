@@ -80,8 +80,8 @@
 
 import {computed, defineComponent, inject, onBeforeUnmount, onMounted, ref} from 'vue';
 import axios from "axios";
-import {CoinGeckoMarketData} from "@/schemas/CoinGeckoMarketData";
 import {CoinGeckoCache} from "@/components/dashboard/CoinGeckoCache";
+import {EntityCacheStateV2} from "@/utils/EntityCacheV2";
 import {NetworkSupplyResponse} from "@/schemas/HederaSchemas";
 import DashboardItem from "@/components/dashboard/DashboardItem.vue";
 import {NetworkRegistry, networkRegistry} from "@/schemas/NetworkRegistry";
@@ -120,47 +120,25 @@ export default defineComponent({
     const hbarReleasedLabel = 'HBAR RELEASED'
     const hbarTotalLabel = 'HBAR TOTAL'
 
-    // 1)
-    const coinGeckoMarketData = ref<CoinGeckoMarketData|null>(null)
-
-    // 2)
-    const hbarPrice = computed(() => {
-      const currentPrice = coinGeckoMarketData.value?.current_price
-      return currentPrice ? (Math.round(currentPrice.usd * 10000) / 10000).toFixed(4) : ""
-    })
-
-    // 3)
-    const hbarPriceVariation = computed(() => {
-      const pcp24 = coinGeckoMarketData.value?.price_change_percentage_24h
-      return pcp24 ? (Math.round(pcp24 * 100)/100).toFixed(2) : ""
-    })
-
-    // 4)
-    const hbarMarketCap = computed(() => {
-      const mc = coinGeckoMarketData.value?.market_cap
-      return mc ? Math.round(mc.usd).toLocaleString('en-US') : ""
-    })
-
-    // 5)
-    const hbarMarketCapVariation = computed(() => {
-      const mccp24 = coinGeckoMarketData.value?.market_cap_change_percentage_24h
-      return mccp24 ? (Math.round(mccp24 * 100)/100).toFixed(2) : ""
-    })
-
-    // 6)
-    let hbarReleased = ref("")
-    let hbarTotal = ref("")
-
-    const cache = new CoinGeckoCache();
-    cache.responseDidChangeCB = () => {
-      coinGeckoMarketData.value = cache.getEntity()?.market_data ?? null;
-    }
+    //
+    // coinGeckoCache
+    //
+    const coinGeckoCache = new CoinGeckoCache()
     onMounted(() => {
-      fetchNetworkSupply()
-      cache.start()
+      coinGeckoCache.state.value = EntityCacheStateV2.Started
     })
     onBeforeUnmount(() => {
-      cache.stop()
+      coinGeckoCache.state.value = EntityCacheStateV2.Stopped
+    })
+
+    //
+    // hbarReleased / hbarTotal
+    //
+
+    let hbarReleased = ref("")
+    let hbarTotal = ref("")
+    onMounted(() => {
+      fetchNetworkSupply()
     })
 
     const fetchNetworkSupply = () => {
@@ -187,11 +165,12 @@ export default defineComponent({
       hbarMarketCapLabel,
       hbarReleasedLabel,
       hbarTotalLabel,
-      coinGeckoMarketData,
-      hbarPrice,
-      hbarPriceVariation,
-      hbarMarketCap,
-      hbarMarketCapVariation,
+      marketData: coinGeckoCache.marketData,
+      hbarPrice: coinGeckoCache.hbarPrice,
+      hbarPriceVariation: coinGeckoCache.hbarPriceVariation,
+      hbarMarketCap: coinGeckoCache.hbarMarketCap,
+      hbarMarketCapVariation: coinGeckoCache.hbarMarketCapVariation,
+      coinGeckoCache, // For testing purpose
       hbarReleased,
       hbarTotal
     }

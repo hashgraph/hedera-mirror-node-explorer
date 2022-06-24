@@ -18,29 +18,39 @@
  *
  */
 
-import {EntityCache} from "@/utils/EntityCache";
-import {BalancesResponse} from "@/schemas/HederaSchemas";
+import {EntityCacheV2} from "@/utils/EntityCacheV2";
+import {BalancesResponse, TokenBalance} from "@/schemas/HederaSchemas";
 import axios, {AxiosResponse} from "axios";
+import {computed, Ref, ref, watch} from "vue";
 
-export class BalanceCache extends EntityCache<BalancesResponse> {
+export class BalanceCache extends EntityCacheV2<BalancesResponse> {
 
+    public readonly accountId = ref<string|null>(null)
     private readonly limit: number
-    private accountId: string|undefined
 
     //
     // Public
     //
 
-    public constructor(accountId: string|undefined , limit = 100, updatePeriod: number|null = null) {
+    public constructor(limit = 100, updatePeriod: number|null = null) {
         super(updatePeriod)
         this.limit = limit
-        this.accountId = accountId
+        watch(this.accountId, () => this.clear(), EntityCacheV2.WATCH_OPTIONS)
     }
 
-    public setAccountId(accountId: string | undefined): void {
-        this.accountId = accountId
-        this.clear()
-    }
+    public readonly hbarBalance: Ref<number|null> = computed(() => {
+        const allBalances = this.response.value?.data?.balances
+        return allBalances && allBalances.length >= 1 ? allBalances[0].balance : null
+    })
+
+    public readonly tokenBalances: Ref<Array<TokenBalance>> = computed(() => {
+        const allBalances = this.response.value?.data?.balances
+        return allBalances && allBalances.length >= 1 ? allBalances[0].tokens : []
+    })
+
+    public readonly balanceTimeStamp: Ref<string|null> = computed(() => {
+        return this.response.value?.data?.timestamp ?? null
+    })
 
     //
     // EntityCache
@@ -48,7 +58,7 @@ export class BalanceCache extends EntityCache<BalancesResponse> {
 
     protected load(): Promise<AxiosResponse<BalancesResponse>> {
         const params = {
-            'account.id': this.accountId,
+            'account.id': this.accountId.value,
             limit: this.limit,
             order: 'asc'
         }

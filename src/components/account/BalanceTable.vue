@@ -64,13 +64,12 @@
 
 <script lang="ts">
 
-import {defineComponent, inject, onBeforeUnmount, onMounted, ref, watch} from 'vue';
+import {defineComponent, inject, PropType, ref} from 'vue';
 import {TokenBalance} from "@/schemas/HederaSchemas";
 import TokenLink from "@/components/values/TokenLink.vue";
-import {BalanceCache} from "@/components/account/BalanceCache";
 import {useRouter} from "vue-router";
 import TokenAmount from "@/components/values/TokenAmount.vue";
-import { ORUGA_MOBILE_BREAKPOINT } from '@/App.vue';
+import {ORUGA_MOBILE_BREAKPOINT} from '@/App.vue';
 import EmptyTable from "@/components/EmptyTable.vue";
 
 export default defineComponent({
@@ -83,7 +82,10 @@ export default defineComponent({
   },
 
   props: {
-    accountId: String,
+    balances: {
+      type: Array as PropType<Array<TokenBalance>>,
+      default: () => []
+    },
     nbItems: Number,
   },
 
@@ -94,32 +96,6 @@ export default defineComponent({
     const pageSize = props.nbItems ?? DEFAULT_PAGE_SIZE
 
     const router = useRouter()
-
-    // 1) balances
-    let balances = ref<Array<TokenBalance>>([])
-
-    // 2) cache
-    const cache = new BalanceCache(props.accountId, isTouchDevice ? 15 : 100)
-    cache.responseDidChangeCB = () => {
-      let accountBalances = cache.getEntity()?.balances
-      if (accountBalances && accountBalances.length > 0) {
-        balances.value = accountBalances[0].tokens
-      }
-    }
-
-    onMounted(() => {
-      cache.start()
-    })
-
-    onBeforeUnmount(() => {
-      cache.stop()
-    })
-
-    watch(() => props.accountId, (currentValue) => {
-          cache.setAccountId(currentValue)
-          cache.start()
-        }
-    )
 
     // 3) handleClick
     const handleClick = (balance: TokenBalance) => {
@@ -133,8 +109,6 @@ export default defineComponent({
       isTouchDevice,
       isMediumScreen,
       pageSize,
-      balances,
-      cache,
       handleClick,
       currentPage,
       ORUGA_MOBILE_BREAKPOINT

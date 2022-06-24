@@ -34,6 +34,7 @@ import MockAdapter from "axios-mock-adapter";
 import Oruga from "@oruga-ui/oruga-next";
 import TransactionTableV2 from "@/components/transaction/TransactionTableV2.vue";
 import {HMSF} from "@/utils/HMSF";
+import {EntityCacheStateV2} from "@/utils/EntityCacheV2";
 
 /*
     Bookmarks
@@ -186,6 +187,11 @@ describe("AccountDetails.vue", () => {
         expect(wrapper.get("#autoRenewPeriodValue").text()).toBe("77 days 3 hours 40 minutes")
         expect(wrapper.get("#maxAutoAssociationValue").text()).toBe("10")
         expect(wrapper.get("#receiverSigRequiredValue").text()).toBe("true")
+
+        wrapper.unmount()
+        await flushPromises()
+
+        expect(wrapper.vm.balanceCache.state.value).toBe(EntityCacheStateV2.Stopped)
     });
 
     it("Should detect invalid account ID", async () => {

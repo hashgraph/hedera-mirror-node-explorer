@@ -31,7 +31,7 @@
         <span class="h-is-primary-title">Recent Contracts</span>
       </template>
       <template v-slot:table>
-        <ContractTable/>
+        <ContractTable v-bind:contracts="contracts"/>
       </template>
     </DashboardCard>
 
@@ -47,10 +47,12 @@
 
 <script lang="ts">
 
-import {defineComponent, inject} from 'vue';
+import {defineComponent, inject, onBeforeUnmount, onMounted} from 'vue';
 import ContractTable from "@/components/contract/ContractTable.vue";
 import DashboardCard from "@/components/DashboardCard.vue";
 import Footer from "@/components/Footer.vue";
+import {ContractCache} from "@/components/contract/ContractCache";
+import {EntityCacheStateV2} from "@/utils/EntityCacheV2";
 
 export default defineComponent({
   name: 'Contracts',
@@ -68,9 +70,23 @@ export default defineComponent({
   setup() {
     const isSmallScreen = inject('isSmallScreen', true)
     const isTouchDevice = inject('isTouchDevice', false)
+
+    //
+    // contractCache
+    //
+    const contractCache = new ContractCache(isTouchDevice ? 15 : 100)
+    onMounted(() => {
+      contractCache.state.value = EntityCacheStateV2.Started
+    })
+    onBeforeUnmount(() => {
+      contractCache.state.value = EntityCacheStateV2.Stopped
+    })
+
     return {
       isSmallScreen,
-      isTouchDevice
+      isTouchDevice,
+      contracts: contractCache.contracts,
+      contractCache: contractCache, // For testing purpose
     }
   }
   });

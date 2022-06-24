@@ -35,7 +35,7 @@ export class TopicMessageCache extends EntityCacheV2<TopicMessagesResponse> {
     public constructor(limit = 100) {
         super(5000, 10)
         this.limit = limit
-        watch(this.topicId, () => this.clear())
+        watch(this.topicId, () => this.clear(), EntityCacheV2.WATCH_OPTIONS)
     }
 
     public readonly lastTimestamp = computed(() => {

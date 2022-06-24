@@ -31,6 +31,7 @@ import {SAMPLE_COINGECKO, SAMPLE_NETWORK_SUPPLY} from "../Mocks";
 import MockAdapter from "axios-mock-adapter";
 import axios from "axios";
 import router from "@/router";
+import {EntityCacheStateV2} from "@/utils/EntityCacheV2";
 
 describe("HbarMarketDashboard.vue ", () => {
 
@@ -51,6 +52,8 @@ describe("HbarMarketDashboard.vue ", () => {
         await flushPromises()
         // console.log(wrapper.text())
 
+        expect(wrapper.vm.coinGeckoCache.state.value).toBe(EntityCacheStateV2.Started)
+
         expect(wrapper.text()).toBe(
             "$0.2460" +
             "8.42%" +
@@ -69,6 +72,11 @@ describe("HbarMarketDashboard.vue ", () => {
 
         expect(logos[0].attributes('alt')).toBe("Trend Up")
         expect(logos[1].attributes('alt')).toBe("Trend Up")
+
+        wrapper.unmount()
+        await flushPromises()
+
+        expect(wrapper.vm.coinGeckoCache.state.value).toBe(EntityCacheStateV2.Stopped)
     });
 
     it("should display the testnet banner", async () => {

@@ -18,11 +18,12 @@
  *
  */
 
-import {EntityCache} from "@/utils/EntityCache";
-import {ContractsResponse} from "@/schemas/HederaSchemas";
+import {EntityCacheV2} from "@/utils/EntityCacheV2";
+import {Contract, ContractsResponse} from "@/schemas/HederaSchemas";
 import axios, {AxiosResponse} from "axios";
+import {computed, Ref} from "vue";
 
-export class ContractCache extends EntityCache<ContractsResponse> {
+export class ContractCache extends EntityCacheV2<ContractsResponse> {
 
     private readonly limit: number
 
@@ -30,10 +31,14 @@ export class ContractCache extends EntityCache<ContractsResponse> {
     // Public
     //
 
-    public constructor(limit = 100, updatePeriod: number|null = null) {
-        super(updatePeriod)
+    public constructor(limit = 100) {
+        super(5000)
         this.limit = limit
     }
+
+    public readonly contracts: Ref<Array<Contract>> = computed(() => {
+        return this.response.value?.data?.contracts ?? []
+    })
 
 
     //

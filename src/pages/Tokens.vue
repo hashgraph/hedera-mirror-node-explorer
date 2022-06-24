@@ -35,7 +35,7 @@
             <span class="h-is-primary-title">Recent Non Fungible Tokens</span>
           </template>
           <template v-slot:table>
-            <TokenTable v-bind:token-type="NONFUNGIBLE"/>
+            <TokenTable v-bind:tokens="nftTokens"/>
           </template>
         </DashboardCard>
 
@@ -48,7 +48,7 @@
             <span class="h-is-primary-title">Recent Fungible Tokens</span>
           </template>
           <template v-slot:table>
-            <TokenTable v-bind:token-type="FUNGIBLE"/>
+            <TokenTable v-bind:tokens="funTokens"/>
           </template>
         </DashboardCard>
 
@@ -68,10 +68,12 @@
 
 <script lang="ts">
 
-import {defineComponent, inject} from 'vue';
+import {defineComponent, inject, onBeforeUnmount, onMounted} from 'vue';
 import TokenTable from "@/components/token/TokenTable.vue";
 import DashboardCard from "@/components/DashboardCard.vue";
 import Footer from "@/components/Footer.vue";
+import {TokenCache} from "@/components/token/TokenCache";
+import {EntityCacheStateV2} from "@/utils/EntityCacheV2";
 
 export default defineComponent({
   name: 'Tokens',
@@ -95,12 +97,38 @@ export default defineComponent({
     const FUNGIBLE = "FUNGIBLE_COMMON"
     const NONFUNGIBLE = "NON_FUNGIBLE_UNIQUE"
 
+    //
+    // nfTokenCache
+    //
+    const nfTokenCache = new TokenCache(isTouchDevice ? 15 : 100)
+    onMounted(() => {
+      nfTokenCache.tokenType.value = NONFUNGIBLE
+      nfTokenCache.state.value = EntityCacheStateV2.Started
+    })
+    onBeforeUnmount(() => {
+      nfTokenCache.state.value = EntityCacheStateV2.Stopped
+    })
+
+    //
+    // funTokenCache
+    //
+    const funTokenCache = new TokenCache(isTouchDevice ? 15 : 100)
+    onMounted(() => {
+      funTokenCache.tokenType.value = FUNGIBLE
+      funTokenCache.state.value = EntityCacheStateV2.Started
+    })
+    onBeforeUnmount(() => {
+      funTokenCache.state.value = EntityCacheStateV2.Stopped
+    })
+
     return {
       isSmallScreen,
       isTouchDevice,
       displaySideBySide,
-      FUNGIBLE,
-      NONFUNGIBLE
+      nftTokens: nfTokenCache.tokens,
+      funTokens: funTokenCache.tokens,
+      nfTokenCache, // For testing purpose
+      funTokenCache, // For testing purpose
     }
 
   }

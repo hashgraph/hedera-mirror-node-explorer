@@ -58,10 +58,6 @@ describe("BalanceTable.vue", () => {
 
         const mock = new MockAdapter(axios);
 
-        const testAccount = SAMPLE_ACCOUNT_BALANCES.balances[0].account
-        const matcher1 = "/api/v1/balances"
-        mock.onGet(matcher1).reply(200, SAMPLE_ACCOUNT_BALANCES);
-
         const matcher2 = "/api/v1/tokens/"
         mock.onGet(matcher2 + SAMPLE_TOKEN.token_id).reply(200, SAMPLE_TOKEN)
         mock.onGet(matcher2 + SAMPLE_NONFUNGIBLE.token_id).reply(200, SAMPLE_NONFUNGIBLE)
@@ -71,7 +67,7 @@ describe("BalanceTable.vue", () => {
                 plugins: [router, Oruga]
             },
             props: {
-                accountId: testAccount,
+                balances: SAMPLE_ACCOUNT_BALANCES.balances[0].tokens,
                 nbItems: 42
             },
         });

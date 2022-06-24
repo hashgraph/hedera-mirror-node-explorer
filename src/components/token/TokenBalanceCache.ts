@@ -18,15 +18,16 @@
  *
  */
 
-import {EntityCache} from "@/utils/EntityCache";
-import {TokenBalancesResponse} from "@/schemas/HederaSchemas";
+import {EntityCacheV2} from "@/utils/EntityCacheV2";
+import {TokenBalancesResponse, TokenDistribution} from "@/schemas/HederaSchemas";
 import axios, {AxiosResponse} from "axios";
+import {computed, Ref, ref, watch} from "vue";
 
 const ASCENDING = 'asc'
 
-export class TokenBalanceCache extends EntityCache<TokenBalancesResponse> {
+export class TokenBalanceCache extends EntityCacheV2<TokenBalancesResponse> {
 
-    private tokenId: string|null = null
+    public readonly tokenId = ref<string|null>(null)
     private readonly limit: number
     private readonly order: string
 
@@ -34,17 +35,16 @@ export class TokenBalanceCache extends EntityCache<TokenBalancesResponse> {
     // Public
     //
 
-    public constructor(tokenId: string, limit = 100) {
+    public constructor(limit = 100) {
         super(5000, 10)
-        this.tokenId = tokenId
         this.limit = limit
         this.order = ASCENDING
+        watch(this.tokenId, () => this.clear(), EntityCacheV2.WATCH_OPTIONS)
     }
 
-    public setTokenId(tokenId: string): void {
-        this.tokenId = tokenId
-        this.clear()
-    }
+    public readonly balances: Ref<Array<TokenDistribution>> = computed(() => {
+        return this.response.value?.data?.balances ?? []
+    })
 
     //
     // EntityCache
@@ -55,7 +55,7 @@ export class TokenBalanceCache extends EntityCache<TokenBalancesResponse> {
             limit: this.limit,
             order: this.order
         }
-        return axios.get<TokenBalancesResponse>("api/v1/tokens/" + this.tokenId + "/balances", { params: params} )
+        return axios.get<TokenBalancesResponse>("api/v1/tokens/" + this.tokenId.value + "/balances", { params: params} )
     }
 
 }

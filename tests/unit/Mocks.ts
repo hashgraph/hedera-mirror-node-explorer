@@ -733,7 +733,6 @@ export const SAMPLE_CONTRACT = {
         "from": "1646665755.947488266",
         "to": null
     },
-    "bytecode": "0x36303830363034303532363030303630" // deliberately kept only the first 16 bytes of the bytecode
 }
 
 //
