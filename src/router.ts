@@ -39,7 +39,7 @@ import MobileMenu from "@/pages/MobileMenu.vue";
 import MobileSearch from "@/pages/MobileSearch.vue";
 import Nodes from "@/pages/Nodes.vue";
 import NodeDetails from "@/pages/NodeDetails.vue";
-import {NetworkEntry, networkRegistry} from "@/schemas/NetworkRegistry";
+import {NetworkEntry, NetworkRegistry, networkRegistry} from "@/schemas/NetworkRegistry";
 import {AppStorage} from "@/AppStorage";
 import axios from "axios";
 import Staking from "@/pages/Staking.vue";
@@ -212,6 +212,27 @@ router.beforeEach((to, from) => {
     // Network is valid
     AppStorage.setLastNetwork(toEntry)
     axios.defaults.baseURL = toEntry.url
+
+    if (toEntry.name == NetworkRegistry.TEST_NETWORK) {
+      document.documentElement.style.setProperty('--h-theme-background-color', 'var(--h-testnet-background-color)')
+      document.documentElement.style.setProperty('--h-theme-highlight-color', 'var(--h-testnet-highlight-color)')
+      document.documentElement.style.setProperty('--h-theme-pagination-background-color', 'var(--h-testnet-pagination-background-color)')
+      document.documentElement.style.setProperty('--h-theme-box-shadow-color', 'var(--h-testnet-box-shadow-color)')
+      document.documentElement.style.setProperty('--h-theme-dropdown-arrow', 'var(--h-testnet-dropdown-arrow)')
+    } else if (toEntry.name == NetworkRegistry.PREVIEW_NETWORK) {
+      document.documentElement.style.setProperty('--h-theme-background-color', 'var(--h-previewnet-background-color)')
+      document.documentElement.style.setProperty('--h-theme-highlight-color', 'var(--h-previewnet-highlight-color)')
+      document.documentElement.style.setProperty('--h-theme-pagination-background-color', 'var(--h-previewnet-pagination-background-color)')
+      document.documentElement.style.setProperty('--h-theme-box-shadow-color', 'var(--h-previewnet-box-shadow-color)')
+      document.documentElement.style.setProperty('--h-theme-dropdown-arrow', 'var(--h-previewnet-dropdown-arrow)')
+    } else {
+      document.documentElement.style.setProperty('--h-theme-background-color', 'var(--h-mainnet-background-color)')
+      document.documentElement.style.setProperty('--h-theme-highlight-color', 'var(--h-mainnet-highlight-color)')
+      document.documentElement.style.setProperty('--h-theme-pagination-background-color', 'var(--h-mainnet-pagination-background-color)')
+      document.documentElement.style.setProperty('--h-theme-box-shadow-color', 'var(--h-mainnet-box-shadow-color)')
+      document.documentElement.style.setProperty('--h-theme-dropdown-arrow', 'var(--h-mainnet-dropdown-arrow)')
+    }
+
     if (fromEntry != null && fromEntry != toEntry) {
       // Network is changing => updates AppStorage and axios
       if (to.name != "MainDashboard" && to.name != "PageNotFound") {

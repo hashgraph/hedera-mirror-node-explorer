@@ -26,7 +26,7 @@
   <section class="section pt-0"
            :class="{'h-mobile-background': !keepBackground && (isTouchDevice || !isSmallScreen)}">
 
-    <hr class="h-top-banner mb-4 mt-0" style="height: 1px"/>
+    <hr class="h-has-background-color mb-4 mt-0" style="height: 1px"/>
 
     <div class="is-flex is-align-items-center">
 

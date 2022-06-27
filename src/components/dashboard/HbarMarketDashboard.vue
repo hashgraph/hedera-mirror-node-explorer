@@ -24,7 +24,7 @@
 
 <template>
 
-  <div v-if="isMainNetwork" class="h-has-mainnet-color">
+  <div v-if="isMainNetwork" class="h-has-background-color">
 
     <div v-if="isLargeScreen" >
       <div class="is-flex is-flex-wrap-wrap is-justify-content-space-evenly pb-2">
@@ -60,9 +60,7 @@
     </div>
 
   </div>
-  <div v-else
-       class="h-has-mainnet-color"
-       :class="{'h-has-testnet-color':isTestNetwork, 'h-has-previewnet-color':isPreviewNetwork}">
+  <div v-else class="h-has-background-color">
 
     <div class="is-flex is-justify-content-center h-mainnet-top-banner pb-2">
         <DashboardItem :value="currentNetworkDisplayName"/>

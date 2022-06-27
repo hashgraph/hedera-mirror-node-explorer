@@ -24,8 +24,7 @@
     <TopNavBar/>
   </section>
 
-  <hr class="h-has-mainnet-color"
-      :class="{'h-has-testnet-color':isTestNetwork, 'h-has-previewnet-color':isPreviewNetwork}" style="margin: 0; height: 4px"/>
+  <hr class="h-has-background-color" style="margin: 0; height: 4px"/>
 
   <router-view/>
 

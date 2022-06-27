@@ -25,14 +25,8 @@
 // COLORS
 //
 
-.h-has-mainnet-color {
-    background: $h-mainnet-color;
-}
-.h-has-testnet-color {
-    background: $h-testnet-color;
-}
-.h-has-previewnet-color {
-    background: $h-previewnet-color;
+.h-has-background-color {
+    background: $h-background-color;
 }
 
 //
@@ -136,7 +130,7 @@ body {
 }
 .h-has-pill {
     color: black;
-    background: $h-pill-background;
+    background: $h-pill-background-color;
     border-radius: 15px;
     padding: 3px 8px 3px;
 }
@@ -199,8 +193,8 @@ body {
 #drop-down-menu .o-sel {
     height: 44.5px;
     font-weight: bold;
-    color: $h-mainnet-highlight-color;
-    border-color: $h-mainnet-highlight-color;
+    color: $h-highlight-color;
+    border-color: $h-highlight-color;
     background-color: $h-page-background-color;
     border-width: 0.5px;
     border-top-width: 0;
@@ -231,8 +225,8 @@ a.button.is-outlined {
 }
 a.button.is-outlined:not(.is-active) {
     font-weight: bold;
-    color: $h-mainnet-highlight-color;
-    border-color: $h-mainnet-highlight-color;
+    color: $h-highlight-color;
+    border-color: $h-highlight-color;
 }
 a.button.is-outlined.is-active {
     color: grey;
@@ -252,7 +246,7 @@ a.button.is-ghost:hover {
 a.button.is-ghost.is-rimmed {
     text-decoration-line: underline;
     text-decoration-style: solid;
-    text-decoration-color: $h-mainnet-highlight-color;
+    text-decoration-color: $h-highlight-color;
     text-decoration-thickness: 1px;
     text-underline-offset: 9px;
     font-weight: bold;
@@ -279,7 +273,7 @@ a.button.is-ghost.is-last {
 //
 
 .h-card-separator {
-    background: $h-mainnet-color;
+    background: $h-background-color;
     margin: 16px 0;
 }
 @media (max-width: 767px) {

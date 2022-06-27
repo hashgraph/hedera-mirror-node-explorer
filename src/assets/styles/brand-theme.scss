@@ -18,26 +18,54 @@
  *
  */
 
-// Set brand variables
-$h-mainnet-color: #575757;
-$h-testnet-color: #575757;
-$h-previewnet-color: #575757;
+:root {
+    // Theme for MAINNET
+    --h-mainnet-background-color: #575757;
+    --h-mainnet-highlight-color: lightgrey;
+    --h-mainnet-page-background-color: #171717;
+    --h-mainnet-box-background-color: #202020;
+    --h-mainnet-pill-background-color: lightgrey;
 
-$h-mainnet-highlight-color: lightgrey;
-$h-testnet-highlight-color: lightgrey;
-$h-previewnet-highlight-color: lightgrey;
+    // Theme for TESTNET
+    --h-testnet-background-color: #575757;
+    --h-testnet-highlight-color: lightgrey;
+    --h-testnet-page-background-color: #171717;
+    --h-testnet-box-background-color: #202020;
+    --h-testnet-pill-background-color: lightgrey;
 
-$h-page-background-color: #171717;
-$h-box-background-color: $h-page-background-color;
-$h-table-background-color: $h-page-background-color;
-$h-mobile-page-background-color: $h-page-background-color;
+    // Theme for PREVIEWNET
+    --h-previewnet-background-color: #575757;
+    --h-previewnet-highlight-color: lightgrey;
+    --h-previewnet-page-background-color: #171717;
+    --h-previewnet-box-background-color: #202020;
+    --h-previewnet-pill-background-color: lightgrey;
 
-$h-table-hover-background-color: black;
-$h-pill-background: lightgrey;
-$h-extra-text-color: $h-mainnet-highlight-color;
-
-.h-box-border {
-    border: 0.5px solid lightgrey;
+    // Active Theme
+    --h-theme-background-color: var(--h-mainnet-background-color);
+    --h-theme-highlight-color: var(--h-mainnet-highlight-color);
+    --h-theme-page-background-color: var(--h-mainnet-page-background-color);
+    --h-theme-box-background-color: var(--h-mainnet-box-background-color);
+    --h-theme-pill-background-color: var(--h-mainnet-pill-background-color);
 }
+
+// Theme SCSS variables
+$h-background-color: var(--h-theme-background-color);
+$h-highlight-color: var(--h-theme-highlight-color);
+$h-page-background-color: var(--h-theme-page-background-color);
+$h-box-background-color: var(--h-theme-box-background-color);
+$h-pill-background-color: var(--h-theme-pill-background-color);
+
+$h-table-background-color: $h-box-background-color;
+$h-mobile-page-background-color: $h-box-background-color;
+$h-table-hover-background-color: $h-page-background-color;
+$h-extra-text-color: $h-highlight-color;
+
+// Global styling of boxes
+.h-box-border {
+    border: 0.5px solid;
+    border-image-slice: 1;
+    border-image-source: $h-background-color;
+}
+
 
 
