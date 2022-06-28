@@ -24,7 +24,7 @@
     <TopNavBar/>
   </section>
 
-  <hr class="h-has-background-color" style="margin: 0; height: 4px"/>
+  <hr v-if="!onMainDashboardPage" class="h-has-background-color" style="margin: 0; height: 4px"/>
 
   <router-view/>
 
@@ -38,6 +38,7 @@ import {errorKey, explanationKey, initialLoadingKey, loadingKey, suggestionKey} 
 import {AxiosMonitor} from "@/utils/AxiosMonitor"
 import router from "@/router";
 import {NetworkRegistry} from "@/schemas/NetworkRegistry";
+import {useRoute} from "vue-router";
 
 export const XLARGE_BREAKPOINT = 1450
 export const LARGE_BREAKPOINT = 1280
@@ -52,6 +53,9 @@ export default defineComponent({
   components: {TopNavBar},
 
   setup() {
+    const route = useRoute()
+    const onMainDashboardPage = computed( () => { return route.name == "MainDashboard" })
+
     const isMainNetwork = computed(() => router.currentRoute.value.params.network == NetworkRegistry.MAIN_NETWORK)
     const isTestNetwork = computed(() => router.currentRoute.value.params.network == NetworkRegistry.TEST_NETWORK)
     const isPreviewNetwork = computed(() => router.currentRoute.value.params.network == NetworkRegistry.PREVIEW_NETWORK)
@@ -99,9 +103,10 @@ export default defineComponent({
     })
 
     return {
-       isMainNetwork,
-       isTestNetwork,
-       isPreviewNetwork,
+      onMainDashboardPage,
+      isMainNetwork,
+      isTestNetwork,
+      isPreviewNetwork,
     }
   },
 });
