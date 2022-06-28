@@ -36,8 +36,6 @@ import {computed, defineComponent, onBeforeUnmount, onMounted, provide, ref} fro
 import TopNavBar from "@/components/TopNavBar.vue";
 import {errorKey, explanationKey, initialLoadingKey, loadingKey, suggestionKey} from "@/AppKeys"
 import {AxiosMonitor} from "@/utils/AxiosMonitor"
-import router from "@/router";
-import {NetworkRegistry} from "@/schemas/NetworkRegistry";
 import {useRoute} from "vue-router";
 
 export const XLARGE_BREAKPOINT = 1450
@@ -55,10 +53,6 @@ export default defineComponent({
   setup() {
     const route = useRoute()
     const onMainDashboardPage = computed( () => { return route.name == "MainDashboard" })
-
-    const isMainNetwork = computed(() => router.currentRoute.value.params.network == NetworkRegistry.MAIN_NETWORK)
-    const isTestNetwork = computed(() => router.currentRoute.value.params.network == NetworkRegistry.TEST_NETWORK)
-    const isPreviewNetwork = computed(() => router.currentRoute.value.params.network == NetworkRegistry.PREVIEW_NETWORK)
 
     const buildTime = document.documentElement.dataset.buildTimestampUtc ?? "not available"
     provide('buildTime', buildTime)
@@ -103,10 +97,7 @@ export default defineComponent({
     })
 
     return {
-      onMainDashboardPage,
-      isMainNetwork,
-      isTestNetwork,
-      isPreviewNetwork,
+      onMainDashboardPage
     }
   },
 });

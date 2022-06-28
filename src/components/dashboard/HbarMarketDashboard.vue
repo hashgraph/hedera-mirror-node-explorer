@@ -100,8 +100,6 @@ export default defineComponent({
     const isLargeScreen = inject('isLargeScreen', true)
 
     const isMainNetwork = computed(() => router.currentRoute.value.params.network == NetworkRegistry.MAIN_NETWORK)
-    const isTestNetwork = computed(() => router.currentRoute.value.params.network == NetworkRegistry.TEST_NETWORK)
-    const isPreviewNetwork = computed(() => router.currentRoute.value.params.network == NetworkRegistry.PREVIEW_NETWORK)
 
     const currentNetworkDisplayName = computed(() => {
       let displayName
@@ -154,8 +152,6 @@ export default defineComponent({
 
     return {
       isMainNetwork,
-      isTestNetwork,
-      isPreviewNetwork,
       currentNetworkDisplayName,
       isSmallScreen,
       isLargeScreen,
