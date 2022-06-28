@@ -20,34 +20,20 @@
 
 import {AccountInfo, KeyType, TokenInfo} from "@/schemas/HederaSchemas";
 import {EntityID} from "@/utils/EntityID";
-import {base32ToAlias, byteToHex, hexToByte} from "@/utils/B64Utils";
-import {keccak256} from "js-sha3";
+import { ethers } from "ethers";
 
 export function makeEthAddressForAccount(account: AccountInfo): string|null {
-    let result: string|null
-
-    if (account.alias) {
-        // Decodes BASE32 encoding of account.alias
-        const buffer = base32ToAlias(account.alias)
-        result = byteToHex(new Uint8Array(buffer))
-    } else if (account.key?.key && account.key?._type == KeyType.ECDSA_SECP256K1) {
-        // Generates Eth. address from key
-        const buffer = hexToByte(account.key.key)
-        const hash = buffer !== null ? hexToByte(keccak256(buffer)) : null
-        if (hash !== null) {
-            result = byteToHex(hash.slice(-20))
-        } else {
-            result = null
-        }
-    } else if (account.account) {
-        // Generates Eth. address from account id
-        const entityID = EntityID.parse(account.account, true)
-        result = entityID != null ? entityID.toAddress() : null
-    } else {
-        result = null
+    if (account.evm_address) return account.evm_address;
+    if (account.key?.key && account.key?._type == KeyType.ECDSA_SECP256K1) {
+        // Generates Ethereum address from public key
+        return ethers.utils.computeAddress("0x" + account.key.key)
     }
-
-    return result
+    if (account.account) {
+        // Generates Ethereum address from account id
+        const entityID = EntityID.parse(account.account, true)
+        return entityID != null ? entityID.toAddress() : null
+    }
+    return null;
 }
 
 export function makeEthAddressForToken(token: TokenInfo): string|null {

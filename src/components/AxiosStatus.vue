@@ -112,7 +112,7 @@ export default defineComponent({
     const startTimeout = () => {
       if (timeoutID == -1) {
         timeoutElapsed.value = false
-        timeoutID = setTimeout(() => {
+        timeoutID = window.setTimeout(() => {
           timeoutElapsed.value = true
           timeoutID = -1
         }, 1000)
@@ -120,7 +120,7 @@ export default defineComponent({
     }
     const stopTimeout = () => {
       if (timeoutID != -1) {
-        clearTimeout(timeoutID)
+        window.clearTimeout(timeoutID)
         timeoutID = -1
       }
     }

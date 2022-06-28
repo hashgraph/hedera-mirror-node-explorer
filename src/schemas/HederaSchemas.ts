@@ -40,6 +40,7 @@ export interface AccountInfo {
     memo: string | undefined
     receiver_sig_required: boolean
     alias: string | null | undefined  // RFC4648 no-padding base32 encoded account alias
+    evm_address: string | null | undefined
 }
 
 export interface AccountBalanceTransactions extends AccountInfo {
@@ -388,7 +389,6 @@ export interface Contract {
     memo: string | undefined
     obtainer_id: string | null | undefined   // Network entity ID in the format of shard.realm.num
     proxy_account_id: string | null | undefined   // Network entity ID in the format of shard.realm.num
-    solidity_address: string | undefined
     timestamp: TimestampRange | undefined   // timestamp range the entity is valid for
 
 }

@@ -65,10 +65,21 @@
             </Property>
           </div>
           <div class="column">
-            <div v-if="isSmallScreen && elapsed" class="has-text-right  has-text-grey mt-1">
+            <div v-if="isSmallScreen && elapsed" class="has-text-right has-text-grey mt-1">
               {{ elapsed }} ago
             </div>
           </div>
+        </div>
+        <div class="columns h-is-property-text">
+          <div class="column">
+            <Property :id="'alias'">
+              <template v-slot:name>Alias</template>
+              <template v-slot:value>
+                <StringValue :string-value="account?.alias"/>
+              </template>
+            </Property>
+          </div>
+          <div class="column"><!-- spacer--></div>
         </div>
         <br/>
 
@@ -85,12 +96,6 @@
               <template v-slot:name>Memo</template>
               <template v-slot:value>
                 <BlobValue v-bind:blob-value="account?.memo" v-bind:show-none="true" v-bind:base64="true" class="should-wrap"/>
-              </template>
-            </Property>
-            <Property :id="'alias'">
-              <template v-slot:name>Alias</template>
-              <template v-slot:value>
-                <HexaValue v-bind:byte-string="aliasByteString" v-bind:show-none="true"/>
               </template>
             </Property>
             <Property :id="'expiresAt'">
@@ -121,7 +126,7 @@
               </template>
             </Property>
             <Property :id="'ethereumAddress'">
-              <template v-slot:name>ERC20 Address</template>
+              <template v-slot:name>Ethereum Address</template>
               <template v-slot:value>
                 <EthAddress v-if="ethereumAddress"
                             :address="ethereumAddress"
@@ -185,9 +190,7 @@ import Property from "@/components/Property.vue";
 import NotificationBanner from "@/components/NotificationBanner.vue";
 import {makeEthAddressForAccount} from "@/schemas/HederaUtils";
 import EthAddress from "@/components/values/EthAddress.vue";
-import HexaValue from "@/components/values/HexaValue.vue";
 import StringValue from "@/components/values/StringValue.vue";
-import {base32ToAlias, byteToHex} from "@/utils/B64Utils";
 import {TransactionCacheV2} from "@/components/transaction/TransactionCacheV2";
 import {EntityCacheStateV2} from "@/utils/EntityCacheV2";
 
@@ -198,7 +201,6 @@ export default defineComponent({
   name: 'AccountDetails',
 
   components: {
-    HexaValue,
     NotificationBanner,
     Property,
     TransactionFilterSelect,
@@ -277,10 +279,6 @@ export default defineComponent({
     })
     const ethereumAddress = computed(() => {
       return account.value !== null ? makeEthAddressForAccount(account.value) : null
-    })
-    const aliasByteString = computed(() => {
-      const alias = account.value?.alias
-      return alias ? byteToHex(new Uint8Array(base32ToAlias(alias))) : null
     })
 
     const notification = computed(() => {
@@ -440,8 +438,7 @@ export default defineComponent({
       displayAllTokenLinks,
       elapsed,
       showContractVisible,
-      ethereumAddress,
-      aliasByteString
+      ethereumAddress
     }
   }
 });

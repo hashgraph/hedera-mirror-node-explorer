@@ -19,6 +19,7 @@
  */
 
 import detectEthereumProvider from "@metamask/detect-provider";
+import { MetaMaskInpageProvider } from '@metamask/providers';
 
 /*
     References:
@@ -48,7 +49,7 @@ export function MetaMask_watchAsset(address: string, symbol: string|undefined, d
         }
         const onFullfilled = (provider: unknown) => {
             if (provider) {
-                (provider as any).request(requestParams).then(
+                (provider as MetaMaskInpageProvider).request(requestParams).then(
                     () => {
                         resolve(MetaMask_Status.watchDone)
                     },
