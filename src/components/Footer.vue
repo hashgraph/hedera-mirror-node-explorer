@@ -34,11 +34,14 @@
         <img alt="Built On Hedera" src="@/assets/built-on-hedera-white.svg" style="min-width: 104px;">
       </a>
 
-      <span v-if="!isTouchDevice && isSmallScreen"
-            class="h-is-property-text ml-5 pb-1"
-            style="font-weight:300; color: #DBDBDB">
-        {{ productName }} is a ledger explorer for the Hedera network.
-      </span>
+      <div v-if="!isTouchDevice && isSmallScreen" class="is-flex is-flex-direction-column is-align-items-flex-start">
+        <span class="h-is-property-text ml-5 pb-1" style="font-weight:300; color: #DBDBDB">
+          {{ productName }} is a ledger explorer for the Hedera network.
+        </span>
+        <span class="h-is-text-size-1 ml-5 pb-1" style="font-weight:300; color: #DBDBDB">
+          Built {{ buildTime }}
+        </span>
+      </div>
 
       <span class="is-flex-grow-1"/>
 
@@ -73,6 +76,8 @@ export default defineComponent({
   },
 
   setup() {
+    const buildTime = inject('buildTime', "not available")
+
     const isSmallScreen = inject('isSmallScreen', true)
     const isTouchDevice = inject('isTouchDevice', false)
 
@@ -80,6 +85,7 @@ export default defineComponent({
     const sponsorURL = process.env.VUE_APP_SPONSOR_URL ?? ""
 
     return {
+      buildTime,
       isSmallScreen,
       isTouchDevice,
       productName,
