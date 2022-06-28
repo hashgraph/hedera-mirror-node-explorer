@@ -122,7 +122,7 @@
 
 <script lang="ts">
 
-import {computed, defineComponent, inject, onMounted, ref, watch, WatchStopHandle} from "vue";
+import {computed, defineComponent, inject, ref, watch, WatchStopHandle} from "vue";
 import {useRoute} from "vue-router";
 import router from "@/router";
 import SearchBar from "@/components/SearchBar.vue";
@@ -142,8 +142,6 @@ export default defineComponent({
 
     const productName = process.env.VUE_APP_PRODUCT_NAME ?? "Hedera Mirror Node Explorer"
     const isStakingEnabled = process.env.VUE_APP_ENABLE_STAKING === 'true'
-
-    onMounted(() => console.log("isStakingEnabled: " + isStakingEnabled))
 
     const showErrorDialog = ref(false)
 

@@ -61,7 +61,7 @@ describe("App.vue", () => {
 
     test("normal screen", async () => {
 
-        await router.push("/") // To avoid "missing required param 'network'" error
+        await router.push({name: "MainDashboard", params: { network: 'mainnet' }})
         Object.defineProperty(window, 'innerWidth', {writable: true, configurable: true, value: 1920})
 
         const mock = new MockAdapter(axios)

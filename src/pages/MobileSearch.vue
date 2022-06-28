@@ -24,8 +24,6 @@
 
 <template>
 
-  <hr class="h-top-banner" style="margin: 0; height: 4px"/>
-
   <section class="section has-text-left" style="min-height: 450px">
 
     <div class="is-flex is-align-items-center mb-6">

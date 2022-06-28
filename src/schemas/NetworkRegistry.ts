@@ -33,7 +33,11 @@ export class NetworkEntry {
 
 export class NetworkRegistry {
 
-    private static readonly DEFAULT_NETWORK = 'testnet'
+    public static readonly MAIN_NETWORK = 'mainnet'
+    public static readonly TEST_NETWORK = 'testnet'
+    public static readonly PREVIEW_NETWORK = 'previewnet'
+
+    private static readonly DEFAULT_NETWORK = NetworkRegistry.TEST_NETWORK
     private readonly defaultEntry: NetworkEntry
 
     private readonly entries: NetworkEntry[] = [
@@ -59,8 +63,8 @@ export class NetworkRegistry {
 
         if (process.env.VUE_APP_LOCAL_MIRROR_NODE_URL) {
             this.entries.push(new NetworkEntry(
-                'localnet',
-                process.env.VUE_APP_LOCAL_MIRROR_NODE_MENU_NAME ?? "LOCALNET",
+                'devnet',
+                process.env.VUE_APP_LOCAL_MIRROR_NODE_MENU_NAME ?? "DEVNET",
                 process.env.VUE_APP_LOCAL_MIRROR_NODE_URL
             ))
         }

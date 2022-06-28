@@ -24,6 +24,8 @@
     <TopNavBar/>
   </section>
 
+  <hr v-if="!onMainDashboardPage" class="h-has-background-color" style="margin: 0; height: 4px"/>
+
   <router-view/>
 
 </template>
@@ -34,6 +36,7 @@ import {computed, defineComponent, onBeforeUnmount, onMounted, provide, ref} fro
 import TopNavBar from "@/components/TopNavBar.vue";
 import {errorKey, explanationKey, initialLoadingKey, loadingKey, suggestionKey} from "@/AppKeys"
 import {AxiosMonitor} from "@/utils/AxiosMonitor"
+import {useRoute} from "vue-router";
 
 export const XLARGE_BREAKPOINT = 1450
 export const LARGE_BREAKPOINT = 1280
@@ -48,6 +51,9 @@ export default defineComponent({
   components: {TopNavBar},
 
   setup() {
+    const route = useRoute()
+    const onMainDashboardPage = computed( () => { return route.name == "MainDashboard" })
+
     const buildTime = document.documentElement.dataset.buildTimestampUtc ?? "not available"
     provide('buildTime', buildTime)
 
@@ -89,6 +95,10 @@ export default defineComponent({
     onBeforeUnmount(() => {
       window.removeEventListener('resize', onResizeHandler);
     })
+
+    return {
+      onMainDashboardPage
+    }
   },
 });
 </script>

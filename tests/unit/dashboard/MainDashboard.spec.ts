@@ -60,7 +60,7 @@ describe("MainDashboard.vue", () => {
 
     test("no props", async () => {
 
-        await router.push("/") // To avoid "missing required param 'network'" error
+        await router.push({name: "MainDashboard", params: { network: 'mainnet' }})
 
         const mock = new MockAdapter(axios)
 

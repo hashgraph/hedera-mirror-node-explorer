@@ -30,11 +30,14 @@ import HbarMarketDashboard from "@/components/dashboard/HbarMarketDashboard.vue"
 import {SAMPLE_COINGECKO, SAMPLE_NETWORK_SUPPLY} from "../Mocks";
 import MockAdapter from "axios-mock-adapter";
 import axios from "axios";
+import router from "@/router";
 import {EntityCacheStateV2} from "@/utils/EntityCacheV2";
 
 describe("HbarMarketDashboard.vue ", () => {
 
-    test("with amount set", async () => {
+    it("should display the market dashboard banner", async () => {
+
+        await router.push({name: "MainDashboard", params: { network: 'mainnet' }})
 
         const mock = new MockAdapter(axios);
 
@@ -76,4 +79,25 @@ describe("HbarMarketDashboard.vue ", () => {
         expect(wrapper.vm.coinGeckoCache.state.value).toBe(EntityCacheStateV2.Stopped)
     });
 
+    it("should display the testnet banner", async () => {
+
+        await router.push({name: "MainDashboard", params: { network: 'testnet' }})
+
+        const wrapper = mount(HbarMarketDashboard);
+        await flushPromises()
+        // console.log(wrapper.text())
+
+        expect(wrapper.text()).toBe("TESTNET")
+    });
+
+    it("should display the previewnet banner", async () => {
+
+        await router.push({name: "MainDashboard", params: { network: 'previewnet' }})
+
+        const wrapper = mount(HbarMarketDashboard);
+        await flushPromises()
+        // console.log(wrapper.text())
+
+        expect(wrapper.text()).toBe("PREVIEWNET")
+    });
 });
