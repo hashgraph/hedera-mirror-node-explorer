@@ -49,7 +49,6 @@
  */
 
 import {getNetworkEntryFromCurrentRoute} from "@/router";
-import {EntityID} from "@/utils/EntityID";
 
 export class OperatorEntry {
     public readonly accountId: string
@@ -81,6 +80,7 @@ export class OperatorEntry {
 export class OperatorRegistry {
 
     private readonly entries = new Map<string, OperatorEntry>()
+    private readonly networkEntries = new Map<string, Map<string, OperatorEntry>>()
 
     constructor() {
         this.addEntry("0.0.3", "LG", "Seoul, South Korea", 0)
@@ -110,29 +110,59 @@ export class OperatorRegistry {
         this.addEntry("0.0.27", "ServiceNow", "Ogden, Utah", 24)
         this.addEntry("0.0.28", "Ubisoft", "Singapore, Republic of Singapore", 25)
 
+        this.addTestnetEntry("0.0.3", 0)
+        this.addTestnetEntry("0.0.4", 1)
+        this.addTestnetEntry("0.0.5", 2)
+        this.addTestnetEntry("0.0.6", 3)
+        this.addTestnetEntry("0.0.7", 4)
+        this.addTestnetEntry("0.0.8", 5)
+        this.addTestnetEntry("0.0.9", 6)
+
+        this.addPreviewnetEntry("0.0.3", 0)
+        this.addPreviewnetEntry("0.0.4", 1)
+        this.addPreviewnetEntry("0.0.5", 2)
+        this.addPreviewnetEntry("0.0.6", 3)
+        this.addPreviewnetEntry("0.0.7", 4)
+        this.addPreviewnetEntry("0.0.8", 5)
+        this.addPreviewnetEntry("0.0.9", 6)
+
         this.addEntry("0.0.98", "Hedera fee collection account", null, null, null)
     }
 
     public lookup(accountId: string): OperatorEntry|null {
-        const result = this.entries.get(accountId)
         const network = getNetworkEntryFromCurrentRoute().name
-        return result && (result.network == network || result.network == null) ? result : null
+        return this.entries.get(accountId) ?? this.networkEntries.get(network)?.get(accountId) ?? null
     }
 
     public makeDescription(accountId: string): string | null {
-        let result: string|null
-        if (accountId && EntityID.isOperator(accountId)) {
-            const registryEntry = operatorRegistry.lookup(accountId)
-            result = registryEntry !== null ? registryEntry.getDescription() : "Node"
-        } else {
-            result = null
-        }
-        return result
+        const registryEntry = operatorRegistry.lookup(accountId)
+        return registryEntry !== null ? registryEntry.getDescription() : null
     }
 
     private addEntry(accountId: string, name: string, location: string|null, nodeID: number|null, network: string|null = "mainnet") {
-        this.entries.set(accountId, new OperatorEntry(accountId, network, name, location, nodeID))
+        let targetEntries: Map<string, OperatorEntry>
+        if (network != null) {
+            const networkEntries = this.networkEntries.get(network);
+            if (networkEntries) {
+                targetEntries = networkEntries
+            } else {
+                targetEntries = new Map<string, OperatorEntry>()
+                this.networkEntries.set(network, targetEntries)
+            }
+        } else {
+            targetEntries = this.entries
+        }
+        targetEntries.set(accountId, new OperatorEntry(accountId, network, name, location, nodeID))
     }
+
+    private addTestnetEntry(accountId: string, nodeID: number|null) {
+        this.addEntry(accountId, "testnet", null, nodeID, "testnet")
+    }
+
+    private addPreviewnetEntry(accountId: string, nodeID: number|null) {
+        this.addEntry(accountId, "previewnet", null, nodeID, "previewnet")
+    }
+
 }
 
 export const operatorRegistry = new OperatorRegistry()
