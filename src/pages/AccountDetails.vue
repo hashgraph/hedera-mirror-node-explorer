@@ -35,9 +35,12 @@
             <span class="h-is-property-text">Show associated contract</span>
           </router-link>
         </span>
-        <router-link v-if="accountInfo != null" :to="{name: 'NodeDetails', params: {nodeId: nodeId}}">
-          <p class="h-is-tertiary-text"> {{ accountInfo }} </p>
-        </router-link>
+        <template v-if="accountInfo">
+          <router-link v-if="nodeId" :to="{name: 'NodeDetails', params: {nodeId: nodeId}}">
+            <p class="h-is-tertiary-text"> {{ accountInfo }} </p>
+          </router-link>
+          <p v-else class="h-is-tertiary-text"> {{ accountInfo }} </p>
+        </template>
       </template>
 
       <template v-slot:table>
