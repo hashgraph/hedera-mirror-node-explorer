@@ -20,7 +20,6 @@
 
 import {compareTransferByAccount, Transaction, Transfer} from "@/schemas/HederaSchemas";
 import {computeNetAmount} from "@/utils/TransactionTools";
-import {EntityID} from "@/utils/EntityID";
 import {operatorRegistry} from "@/schemas/OperatorRegistry";
 
 export class HbarTransferLayout {
@@ -54,11 +53,11 @@ export class HbarTransferLayout {
             positiveTransfers.sort(compareTransferByAccount)
 
             for (const t of negativeTransfers) {
-                const payload = t.account === null || !EntityID.isOperator(t.account)
+                const payload = t.account === null || operatorRegistry.lookup(t.account) === null
                 this.sources.push(new HbarTransferRow(t, null, payload))
             }
             for (const t of positiveTransfers) {
-                const payload = t.account === null || !EntityID.isOperator(t.account)
+                const payload = t.account === null || operatorRegistry.lookup(t.account) === null
                 this.destinations.push(new HbarTransferRow(t, HbarTransferLayout.makeDescription(t), payload))
             }
         }
