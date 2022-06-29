@@ -40,7 +40,12 @@ export interface AccountInfo {
     memo: string | undefined
     receiver_sig_required: boolean
     alias: string | null | undefined  // RFC4648 no-padding base32 encoded account alias
-    evm_address: string | null | undefined
+    ethereum_nonce: number | null
+    evm_address: string | null // A network entity encoded as an EVM address in hex.
+    decline_reward: boolean
+    staked_account_id: string | null
+    staked_node_id: number | null
+    stake_period_start : string | null
 }
 
 export interface AccountBalanceTransactions extends AccountInfo {
@@ -440,6 +445,12 @@ export interface NetworkNode {
     public_key: string | null | undefined   // hex encoded X509 RSA public key used to sign stream files
     service_endpoints: [ServiceEndPoint] | undefined
     timestamp: TimestampRange | undefined
+    max_stake: number | null // The maximum stake (rewarded or not rewarded) this node can have as consensus weight
+    min_stake: number | null // The minimum stake (rewarded or not rewarded) this node must reach before having non-zero consensus weight
+    stake: number | null // The node consensus weight at the beginning of the staking period
+    stake_not_rewarded: number | null // The sum (balance + stakedToMe) for all accounts staked to this node with declineReward=true at the beginning of the staking period
+    stake_rewarded: number | null // The sum (balance + staked) for all accounts staked to the node that are not declining rewards at the beginning of the staking period
+    staking_period: TimestampRange | null
 }
 
 export interface ServiceEndPoint {

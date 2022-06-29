@@ -53,14 +53,21 @@ describe("NodeTable.vue", () => {
 
     it("should list the 3 nodes in the table", async () => {
 
+        process.env = Object.assign(process.env, { VUE_APP_ENABLE_STAKING: true });
+
         await router.push("/") // To avoid "missing required param 'network'" error
 
+        let testTotalStaked = 0
+        for (let node of SAMPLE_NETWORK_NODES.nodes) {
+            testTotalStaked += node.stake
+        }
         const wrapper = mount(NodeTable, {
             global: {
                 plugins: [router, Oruga]
             },
             props: {
-                nodes: SAMPLE_NETWORK_NODES.nodes as Array<NetworkNode>
+                nodes: SAMPLE_NETWORK_NODES.nodes as Array<NetworkNode>,
+                totalStaked: testTotalStaked
             }
         });
 
@@ -68,12 +75,12 @@ describe("NodeTable.vue", () => {
         // console.log(wrapper.text())
         // console.log(wrapper.html())
 
-        expect(wrapper.get('thead').text()).toBe("Node Account Hosted By Location")
+        expect(wrapper.get('thead').text()).toBe("Node Account Hosted By Location Stake Unrewarded Stake")
         expect(wrapper.get('tbody').findAll('tr').length).toBe(3)
         expect(wrapper.get('tbody').text()).toBe(
-            "0" + "0.0.3" + "testnet" + "None" +
-            "1" + "0.0.4" + "testnet" + "None"+
-            "2" + "0.0.5" + "testnet" + "None"
+            "0" + "0.0.3" + "testnet" + "None" + "6000000 (0.25%)" + "1000000" +
+            "1" + "0.0.4" + "testnet" + "None" + "9000000 (0.375%)" + "2000000" +
+            "2" + "0.0.5" + "testnet" + "None" + "9000000 (0.375%)" + "2000000"
         )
 
         wrapper.unmount()

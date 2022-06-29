@@ -32,16 +32,52 @@
       </template>
       <template v-slot:table>
 
-        <div v-if="isSmallScreen" class="is-flex is-justify-content-space-between">
-          <div class="is-flex-direction-column">
-            <NetworkDashboardItem :title="'Total Nodes'" :value="totalNodes"/>
+        <div v-if="isStakingEnabled">
+          <div v-if="isSmallScreen" class="is-flex is-justify-content-space-between">
+            <div class="is-flex-direction-column">
+              <NetworkDashboardItem :title="'Total Nodes'" :value="totalNodes"/>
+              <div class="mt-4"/>
+              <NetworkDashboardItem :title="'Last Staked'" :value="formatSeconds(sinceLastStakedTime)"/>
+            </div>
+            <div class="is-flex-direction-column">
+              <NetworkDashboardItem :name="'HBAR'" :title="'Total Staked'" :value="totalStaked.toString()"/>
+              <div class="mt-4"/>
+              <NetworkDashboardItem :title="'Next Staking Period'" :value="formatSeconds(untilNextStakedTime)"/>
+            </div>
+            <div class="is-flex-direction-column">
+              <NetworkDashboardItem :name="'HBAR'" :title="'Total Rewarded'" :value="totalRewarded.toString()"/>
+              <div class="mt-4"/>
+              <NetworkDashboardItem :title="'Staking Period'" :value="'24 hours'"/>
+            </div>
+          </div>
+          <div v-else>
+            <div class="is-flex-direction-column">
+              <NetworkDashboardItem :title="'Total Nodes'" :value="totalNodes"/>
+              <div class="mt-4"/>
+              <NetworkDashboardItem :title="'Last Staked'" :value="formatSeconds(sinceLastStakedTime)"/>
+              <div class="mt-4"/>
+              <NetworkDashboardItem :name="'HBAR'" :title="'Total Staked'" :value="totalStaked.toString()"/>
+              <div class="mt-4"/>
+              <NetworkDashboardItem :title="'Next Staking Period'" :value="formatSeconds(untilNextStakedTime)"/>
+              <div class="mt-4"/>
+              <NetworkDashboardItem :name="'HBAR'" :title="'Total Rewarded'" :value="totalRewarded.toString()"/>
+              <div class="mt-4"/>
+              <NetworkDashboardItem :title="'Staking Period'" :value="'24 hours'"/>
+              <div class="mt-6"/>
+            </div>
           </div>
         </div>
-
         <div v-else>
-          <div class="is-flex-direction-column">
-            <NetworkDashboardItem :title="'Total Nodes'" :value="totalNodes"/>
-            <div class="mt-6"/>
+          <div v-if="isSmallScreen" class="is-flex is-justify-content-space-between">
+            <div class="is-flex-direction-column">
+              <NetworkDashboardItem :title="'Total Nodes'" :value="totalNodes"/>
+            </div>
+          </div>
+          <div v-else>
+            <div class="is-flex-direction-column">
+              <NetworkDashboardItem :title="'Total Nodes'" :value="totalNodes"/>
+              <div class="mt-6"/>
+            </div>
           </div>
         </div>
 
@@ -53,7 +89,7 @@
         <span class="h-is-primary-title">Nodes</span>
       </template>
       <template v-slot:table>
-        <NodeTable :nodes="nodes"/>
+        <NodeTable :nodes="nodes" :total-staked="totalStaked"/>
       </template>
     </DashboardCard>
 
@@ -76,6 +112,7 @@ import NodeTable from "@/components/node/NodeTable.vue";
 import NetworkDashboardItem from "@/components/node/NetworkDashboardItem.vue";
 import axios from "axios";
 import {NetworkNode, NetworkNodesResponse} from "@/schemas/HederaSchemas";
+import {formatSeconds} from "@/utils/Duration";
 
 export default defineComponent({
   name: 'Nodes',
@@ -92,12 +129,28 @@ export default defineComponent({
   },
 
   setup() {
+    const STAKING_PERIOD = 60 * 60 * 24
+
+    const isStakingEnabled = process.env.VUE_APP_ENABLE_STAKING === 'true'
+
     const isSmallScreen = inject('isSmallScreen', true)
     const isTouchDevice = inject('isTouchDevice', false)
 
     let nodes = ref<Array<NetworkNode> | null>([])
 
     const totalNodes = computed(() => nodes.value?.length.toString() ?? "")
+
+    const totalStaked = ref(0)
+    const totalRewarded = ref(0)
+
+    const sinceLastStakedTime = computed(() => {
+      const now = new Date()
+      console.log("Current time: " + now.toLocaleTimeString())
+      const midnight = Date.UTC(now.getFullYear(), now.getMonth(), now.getDate(), 0,0,0)
+      return Math.round((now.getTime() - midnight) / 1000 / 60) * 60
+    })
+
+    const untilNextStakedTime = computed(() => STAKING_PERIOD - sinceLastStakedTime.value)
 
     onBeforeMount(() => fetchNodes())
 
@@ -108,6 +161,14 @@ export default defineComponent({
           .then(result => {
             if (result.data.nodes) {
               nodes.value = nodes.value ? nodes.value.concat(result.data.nodes) : result.data.nodes
+              for (const n of result.data.nodes) {
+                if (n.stake) {
+                  totalStaked.value += n.stake
+                }
+                if (n.stake_rewarded) {
+                  totalRewarded.value += n.stake_rewarded
+                }
+              }
             }
             const next = result.data.links?.next
             if (next) {
@@ -117,10 +178,16 @@ export default defineComponent({
     }
 
     return {
+      isStakingEnabled,
       isSmallScreen,
       isTouchDevice,
       nodes,
       totalNodes,
+      sinceLastStakedTime,
+      totalStaked,
+      untilNextStakedTime,
+      totalRewarded,
+      formatSeconds
     }
   }
 });
