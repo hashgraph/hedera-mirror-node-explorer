@@ -85,8 +85,8 @@ describe("AccountLink.vue", () => {
 
         await router.push("/") // To avoid "missing required param 'network'" error
 
-        const testAccountId = "0.0.21" // EDF - Paris, France
-        const testExtra = "Node"
+        const testAccountId = "0.0.6" // EDF - Paris, France
+        const testExtra = "Node 3 - testnet"
         const wrapper = mount(AccountLink, {
             global: {
                 plugins: [router]

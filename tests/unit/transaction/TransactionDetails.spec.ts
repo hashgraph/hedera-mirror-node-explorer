@@ -82,7 +82,7 @@ describe("TransactionDetails.vue", () => {
 
         expect(wrapper.get("#memoValue").text()).toBe("None")
         expect(wrapper.get("#operatorAccountValue").text()).toBe("0.0.29624024")
-        expect(wrapper.get("#nodeAccountValue").text()).toBe("0.0.7Node")
+        expect(wrapper.get("#nodeAccountValue").text()).toBe("0.0.7Node 4 - testnet")
         expect(wrapper.get("#durationValue").text()).toBe("2 minutes")
         expect(wrapper.get("#entityId").text()).toBe("Account ID0.0.29662956")
 
@@ -92,7 +92,7 @@ describe("TransactionDetails.vue", () => {
 
         expect(wrapper.findComponent(HbarTransferGraphF).text()).toBe(
             "Fee TransfersAccountHbar AmountAccountHbar Amount0.0.29624024-0.00470065-$0.0012\n\n" +
-            "0.0.70.00022028$0.0001Node\n\n" +
+            "0.0.70.00022028$0.0001Node 4 - testnet\n\n" +
             "0.0.980.00448037$0.0011Hedera fee collection account")
 
         expect(wrapper.findComponent(TokenTransferGraph).text()).toBe(

@@ -71,9 +71,9 @@ describe("NodeTable.vue", () => {
         expect(wrapper.get('thead').text()).toBe("Node Account Hosted By Location")
         expect(wrapper.get('tbody').findAll('tr').length).toBe(3)
         expect(wrapper.get('tbody').text()).toBe(
-            "0" + "0.0.3" + "None" + "None" +
-            "1" + "0.0.4" + "None" + "None"+
-            "2" + "0.0.5" + "None" + "None"
+            "0" + "0.0.3" + "testnet" + "None" +
+            "1" + "0.0.4" + "testnet" + "None"+
+            "2" + "0.0.5" + "testnet" + "None"
         )
 
         wrapper.unmount()
