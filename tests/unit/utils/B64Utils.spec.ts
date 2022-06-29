@@ -29,14 +29,14 @@ describe("B64Utils.ts", () => {
     test("hexToByte() <=> byteToHex()", ()=> {
         const decodedBytes = hexToByte(hexString)
         expect(decodedBytes).not.toBeNull()
-        const hexString2 = byteToHex(decodedBytes!)
+        const hexString2 = decodedBytes? byteToHex(decodedBytes) : ""
         expect(hexString2).toEqual(hexString)
     })
 
     test("hexToByte() <=> byteToHex()   with 0x prefix", ()=> {
         const decodedBytes = hexToByte("0x" + hexString)
         expect(decodedBytes).not.toBeNull()
-        const hexString2 = byteToHex(decodedBytes!)
+        const hexString2 = decodedBytes? byteToHex(decodedBytes) : ""
         expect(hexString2).toEqual(hexString)
     })
 
@@ -45,7 +45,7 @@ describe("B64Utils.ts", () => {
         const decodedBytes = hexToByte(hexString)
         expect(decodedBytes).not.toBeNull()
 
-        const encodedString = aliasToBase32(decodedBytes!)
+        const encodedString = decodedBytes? aliasToBase32(decodedBytes) : ""
         expect(encodedString).toEqual(base32String)
     })
 

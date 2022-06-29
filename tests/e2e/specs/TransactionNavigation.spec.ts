@@ -112,7 +112,7 @@ describe('Transaction Navigation', () => {
         cy.get('#scheduledTransactionValue')
             .find('a')
             .click()
-            .then(($id) => {
+            .then(() => {
                 // cy.log('Selected operator Id: ' + $id.text())
                 cy.url().should('include', '/testnet/transaction/')
                 cy.url().should('include', normalizeTransactionId(transactionId) + "?t=" + scheduledConsensusTimestamp)
@@ -122,7 +122,7 @@ describe('Transaction Navigation', () => {
         cy.get('#schedulingTransactionValue')
             .find('a')
             .click()
-            .then(($id) => {
+            .then(() => {
                 // cy.log('Selected operator Id: ' + $id.text())
                 cy.url().should('include', '/testnet/transaction/')
                 cy.url().should('include', normalizeTransactionId(transactionId) + "?t=" + schedulingConsensusTimestamp)
@@ -145,7 +145,7 @@ describe('Transaction Navigation', () => {
             .should('have.length', 2)
             .eq(0)
             .click()
-            .then(($id) => {
+            .then(() => {
                 // cy.log('Selected operator Id: ' + $id.text())
                 cy.url().should('include', '/testnet/transaction/')
                 cy.url().should('include', normalizeTransactionId(transactionId) + "?t=" + childConsensusTimestamp)
@@ -155,7 +155,7 @@ describe('Transaction Navigation', () => {
         cy.get('#parentTransactionValue')
             .find('a')
             .click()
-            .then(($id) => {
+            .then(() => {
                 // cy.log('Selected operator Id: ' + $id.text())
                 cy.url().should('include', '/testnet/transaction/')
                 cy.url().should('include', normalizeTransactionId(transactionId) + "?t=" + parentConsensusTimestamp)
@@ -184,7 +184,7 @@ describe('Transaction Navigation', () => {
             .should('have.length', 1)
             .eq(0)
             .click()
-            .then(($id) => {
+            .then(() => {
                 // cy.log('Selected operator Id: ' + $id.text())
                 cy.url().should('include', '/testnet/contract/')
                 cy.url().should('include', contractId)
@@ -197,7 +197,7 @@ describe('Transaction Navigation', () => {
             .should('have.length', 1)
             .eq(0)
             .click()
-            .then(($id) => {
+            .then(() => {
                 // cy.log('Selected operator Id: ' + $id.text())
                 cy.url().should('include', '/testnet/transaction/')
                 cy.url().should('include', normalizeTransactionId(transactionId) + "?t=" + childConsensusTimestamp)
@@ -207,7 +207,7 @@ describe('Transaction Navigation', () => {
         cy.get('#parentTransactionValue')
             .find('a')
             .click()
-            .then(($id) => {
+            .then(() => {
                 // cy.log('Selected operator Id: ' + $id.text())
                 cy.url().should('include', '/testnet/transaction/')
                 cy.url().should('include', normalizeTransactionId(transactionId) + "?t=" + parentConsensusTimestamp)

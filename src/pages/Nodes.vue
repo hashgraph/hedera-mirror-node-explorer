@@ -97,7 +97,7 @@ export default defineComponent({
 
     let nodes = ref<Array<NetworkNode> | null>([])
 
-    const totalNodes = computed(() => nodes.value!.length.toString() ?? "")
+    const totalNodes = computed(() => nodes.value?.length.toString() ?? "")
 
     onBeforeMount(() => fetchNodes())
 

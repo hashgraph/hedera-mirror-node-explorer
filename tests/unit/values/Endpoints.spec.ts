@@ -79,7 +79,7 @@ describe("Endpoint.vue", () => {
             "3.133.213.147")
     })
 
-    it("should ouput \<address\>:\<port\> for all 5 endpoints", async () => {
+    it("should ouput <address>:<port> for all 5 endpoints", async () => {
         const wrapper = mount(Endpoints, {
             global: {
                 plugins: [router]

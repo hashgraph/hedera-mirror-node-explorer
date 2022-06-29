@@ -89,7 +89,7 @@ export abstract class EntityCacheV2<E> {
 
     private stop() {
         if (this.timeoutID != -1) {
-            clearTimeout(this.timeoutID)
+            window.clearTimeout(this.timeoutID)
             this.timeoutID = -1
         }
         this.sessionId += 1
@@ -109,7 +109,7 @@ export abstract class EntityCacheV2<E> {
                 this.updateCount += 1
             } // else we keep last response and update count unchanged
             if (this.updatePeriod != null && this.updateCount < this.computeMaxUpdateCount()) {
-                this.timeoutID = setTimeout(() => {
+                this.timeoutID = window.setTimeout(() => {
                     this.updateCache()
                 }, this.updatePeriod)
             } else {
