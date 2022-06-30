@@ -37,12 +37,12 @@
             <div class="is-flex-direction-column">
               <NetworkDashboardItem :title="'Total Nodes'" :value="totalNodes"/>
               <div class="mt-4"/>
-              <NetworkDashboardItem :title="'Last Staked'" :value="formatSeconds(sinceLastStakedTime)"/>
+              <NetworkDashboardItem :title="'Last Staked'" :value="formatSeconds(sinceLastStakedTime) + ' ago'"/>
             </div>
             <div class="is-flex-direction-column">
               <NetworkDashboardItem :name="'HBAR'" :title="'Total Staked'" :value="totalStaked.toString()"/>
               <div class="mt-4"/>
-              <NetworkDashboardItem :title="'Next Staking Period'" :value="formatSeconds(untilNextStakedTime)"/>
+              <NetworkDashboardItem :title="'Next Staking Period'" :value="'in ' + formatSeconds(untilNextStakedTime)"/>
             </div>
             <div class="is-flex-direction-column">
               <NetworkDashboardItem :name="'HBAR'" :title="'Total Rewarded'" :value="totalRewarded.toString()"/>
@@ -54,11 +54,11 @@
             <div class="is-flex-direction-column">
               <NetworkDashboardItem :title="'Total Nodes'" :value="totalNodes"/>
               <div class="mt-4"/>
-              <NetworkDashboardItem :title="'Last Staked'" :value="formatSeconds(sinceLastStakedTime)"/>
+              <NetworkDashboardItem :title="'Last Staked'" :value="formatSeconds(sinceLastStakedTime) + 'ago'"/>
               <div class="mt-4"/>
               <NetworkDashboardItem :name="'HBAR'" :title="'Total Staked'" :value="totalStaked.toString()"/>
               <div class="mt-4"/>
-              <NetworkDashboardItem :title="'Next Staking Period'" :value="formatSeconds(untilNextStakedTime)"/>
+              <NetworkDashboardItem :title="'Next Staking Period'" :value="'in' + formatSeconds(untilNextStakedTime)"/>
               <div class="mt-4"/>
               <NetworkDashboardItem :name="'HBAR'" :title="'Total Rewarded'" :value="totalRewarded.toString()"/>
               <div class="mt-4"/>
@@ -129,7 +129,7 @@ export default defineComponent({
   },
 
   setup() {
-    const STAKING_PERIOD = 60 * 60 * 24
+    const PERIOD_24H = 60 * 60 * 24
 
     const isStakingEnabled = process.env.VUE_APP_ENABLE_STAKING === 'true'
 
@@ -145,12 +145,18 @@ export default defineComponent({
 
     const sinceLastStakedTime = computed(() => {
       const now = new Date()
-      console.log("Current time: " + now.toLocaleTimeString())
-      const midnight = Date.UTC(now.getFullYear(), now.getMonth(), now.getDate(), 0,0,0)
-      return Math.round((now.getTime() - midnight) / 1000 / 60) * 60
+      const midnight = new Date(now.getFullYear(), now.getMonth(), now.getDate(), 0,0,0)
+      const zoneOffsetInSeconds = now.getTimezoneOffset() * 60
+
+      let secondsElapsed = Math.floor((now.getTime() - midnight.getTime()) / 1000 / 60) * 60
+      if (secondsElapsed < zoneOffsetInSeconds) {
+        secondsElapsed += PERIOD_24H
+      }
+      secondsElapsed = (secondsElapsed + zoneOffsetInSeconds ) % PERIOD_24H
+      return secondsElapsed
     })
 
-    const untilNextStakedTime = computed(() => STAKING_PERIOD - sinceLastStakedTime.value)
+    const untilNextStakedTime = computed(() => PERIOD_24H - sinceLastStakedTime.value)
 
     onBeforeMount(() => fetchNodes())
 
