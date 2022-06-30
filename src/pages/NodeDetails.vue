@@ -74,9 +74,6 @@
                 <Endpoints :endpoints="node?.service_endpoints"></Endpoints>
               </template>
             </Property>
-          </div>
-
-          <div class="column">
             <Property :id="'publicKey'">
               <template v-slot:name>Public Key</template>
               <template v-slot:value>
@@ -90,6 +87,20 @@
                            v-bind:show-none="true"/>
               </template>
             </Property>
+          </div>
+
+          <div class="column" :class="{'h-has-column-separator': isStakingEnabled}">
+            <div v-if="isStakingEnabled">
+              <NetworkDashboardItem :name="'HBAR'" :title="'Stake for Consensus'" :value="totalStaked.toString()"/>
+              <p class="h-is-property-text h-is-extra-text mt-1">{{ stakePercentage }}% of total</p>
+              <br/><br/>
+              <NetworkDashboardItem :name="'HBAR'" :title="'Stake Rewarded'" :value="totalRewarded.toString()"/>
+              <p class="h-is-property-text h-is-extra-text mt-1">{{ rewardPercentage }}% of total</p>
+              <br/><br/>
+              <NetworkDashboardItem :name="'HOURS'" :title="'Current Staking Period'" :value="'24'"/>
+              <p class="h-is-property-text h-is-extra-text mt-1">from 00:00 am today to 11:59 pm today UTC</p>
+              <div class="mt-6"/>
+            </div>
           </div>
 
         </div>
@@ -126,12 +137,14 @@ import {base64DecToArr, byteToHex} from "@/utils/B64Utils";
 import HexaValue from "@/components/values/HexaValue.vue";
 import {operatorRegistry} from "@/schemas/OperatorRegistry";
 import Endpoints from "@/components/values/Endpoints.vue";
+import NetworkDashboardItem from "@/components/node/NetworkDashboardItem.vue";
 
 export default defineComponent({
 
   name: 'NodeDetails',
 
   components: {
+    NetworkDashboardItem,
     Endpoints,
     HexaValue,
     Property,
@@ -154,9 +167,21 @@ export default defineComponent({
   },
 
   setup(props) {
+    const isStakingEnabled = process.env.VUE_APP_ENABLE_STAKING === 'true'
+
     const isSmallScreen = inject('isSmallScreen', true)
     const isTouchDevice = inject('isTouchDevice', false)
+    let nodes = ref<Array<NetworkNode> | null>([])
     const node = ref<NetworkNode | null>(null)
+
+    const totalStaked = ref(0)
+    const totalRewarded = ref(0)
+    const stakePercentage = computed(() =>
+      node.value?.stake && totalStaked.value ? node.value.stake / totalStaked.value : 0
+    )
+    const rewardPercentage = computed(() =>
+        node.value?.stake_rewarded && totalRewarded.value ? node.value.stake_rewarded / totalRewarded.value : 0
+    )
 
     const unknownNodeId = ref(false)
     const notification = computed(() => {
@@ -179,8 +204,35 @@ export default defineComponent({
       return result
     })
 
-    onBeforeMount(() => fetchNode(props.nodeId))
+    onBeforeMount(() => {
+      fetchNodes()
+      fetchNode(props.nodeId)
+    })
     watch(() => props.nodeId, () => fetchNode(props.nodeId));
+
+    const fetchNodes = (nextUrl: string | null = null) => {
+      const url = nextUrl ?? "api/v1/network/nodes"
+      axios
+          .get<NetworkNodesResponse>(url, {params: {limit: 25}})
+          .then(result => {
+            if (result.data.nodes) {
+              nodes.value = nodes.value ? nodes.value.concat(result.data.nodes) : result.data.nodes
+              for (const n of result.data.nodes) {
+
+                if (n.stake) {
+                  totalStaked.value += n.stake
+                }
+                if (n.stake_rewarded) {
+                  totalRewarded.value += n.stake_rewarded
+                }
+              }
+            }
+            const next = result.data.links?.next
+            if (next) {
+              fetchNodes(next)
+            }
+          })
+    }
 
     const fetchNode = (nodeId: string) => {
       const url = "api/v1/network/nodes"
@@ -203,9 +255,14 @@ export default defineComponent({
     }
 
     return {
+      isStakingEnabled,
       isSmallScreen,
       isTouchDevice,
       node,
+      totalStaked,
+      totalRewarded,
+      stakePercentage,
+      rewardPercentage,
       notification,
       nodeDescription,
       formatHash

@@ -57,6 +57,8 @@ describe("Nodes.vue", () => {
 
     it("should display the nodes pages containing the node table", async () => {
 
+        process.env = Object.assign(process.env, { VUE_APP_ENABLE_STAKING: true });
+
         await router.push("/") // To avoid "missing required param 'network'" error
 
         const mock = new MockAdapter(axios);
@@ -78,17 +80,17 @@ describe("Nodes.vue", () => {
 
         expect(cards[0].text()).toMatch(RegExp("^Network"))
         const items = cards[0].findAllComponents(NetworkDashboardItem)
-        expect(items.length).toBe(1)
+        expect(items.length).toBe(6)
         expect(items[0].text()).toMatch(RegExp("Total Nodes"))
 
         expect(cards[1].text()).toMatch(RegExp("^Nodes"))
         const table = cards[1].findComponent(NodeTable)
         expect(table.exists()).toBe(true)
-        expect(table.get('thead').text()).toBe("Node Account Hosted By Location")
+        expect(table.get('thead').text()).toBe("Node Account Hosted By Location Stake Unrewarded Stake")
         expect(wrapper.get('tbody').text()).toBe(
-            "0" + "0.0.3" + "testnet" + "None" +
-            "1" + "0.0.4" + "testnet" + "None" +
-            "2" + "0.0.5" + "testnet" + "None"
+            "0" + "0.0.3" + "testnet" + "None" + "6000000 (0.25%)" + "1000000" +
+            "1" + "0.0.4" + "testnet" + "None" + "9000000 (0.375%)" + "2000000" +
+            "2" + "0.0.5" + "testnet" + "None" + "9000000 (0.375%)" + "2000000"
         )
     });
 

@@ -56,6 +56,10 @@ export default defineComponent({
       type: Number,
       default: 0
     },
+    decimals: {
+      type: Number,
+      default: 8
+    },
     showExtra: {
       type: Boolean,
       default: false
@@ -79,7 +83,7 @@ export default defineComponent({
       return props.amount / 100000000
     })
     const formattedAmount = computed(() => {
-      return hbarAmount.value.toFixed(8)
+      return hbarAmount.value.toFixed(props.decimals)
     })
 
     const isGrey = computed(() => {

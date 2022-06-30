@@ -58,6 +58,29 @@
         </div>
       </o-table-column>
 
+      <div v-if="isStakingEnabled">
+        <o-table-column v-slot="props" field="stake" label="Stake" position="right">
+          <HbarAmount :amount="props.row.stake" :decimals="0"/>
+          <span>{{ ' (' + makeStakePercentage(props.row) + '%)' }}</span>
+        </o-table-column>
+
+        <o-table-column v-slot="props" field="stake_not_rewarded" label="Unrewarded Stake" position="right">
+          <HbarAmount :amount="props.row.stake_not_rewarded" :decimals="0"/>
+        </o-table-column>
+
+<!--        <o-table-column field="stake_range" label="Stake Range">-->
+<!--          <div class="is-flex-direction-column h-is-stake-range-bar">-->
+<!--            <progress id="range" class="progress is-large is-info h-is-progress-bar" max="100"-->
+<!--                      style="max-height: 8px; margin-bottom: 1px;" :value="45"></progress>-->
+<!--            <div class="is-flex is-justify-content-space-between">-->
+<!--              <img alt="Minimum staking mark" class="image" src="@/assets/min-mark.png"-->
+<!--                   style="max-height: 8px; margin-left: 16px">-->
+<!--              <img alt="Maximum staking mark" class="image" src="@/assets/max-mark.png" style="max-height: 8px">-->
+<!--            </div>-->
+<!--          </div>-->
+<!--        </o-table-column>-->
+
+      </div>
     </o-table>
   </div>
 
@@ -76,8 +99,9 @@ import {NetworkNode} from "@/schemas/HederaSchemas";
 import BlobValue from "@/components/values/BlobValue.vue";
 import {ORUGA_MOBILE_BREAKPOINT} from '@/App.vue';
 import EmptyTable from "@/components/EmptyTable.vue";
-import router from "@/router";
 import {operatorRegistry} from "@/schemas/OperatorRegistry";
+import HbarAmount from "@/components/values/HbarAmount.vue";
+import router from "@/router";
 
 
 //
@@ -87,28 +111,36 @@ import {operatorRegistry} from "@/schemas/OperatorRegistry";
 export default defineComponent({
   name: 'NodeTable',
 
-  components: {EmptyTable, BlobValue},
+  components: {HbarAmount, EmptyTable, BlobValue},
 
   props: {
     nodes: Object as PropType<Array<NetworkNode> | undefined>,
+    totalStaked: Number
   },
 
-  setup() {
+  setup(props) {
+    const isStakingEnabled = process.env.VUE_APP_ENABLE_STAKING === 'true'
+
     const isTouchDevice = inject('isTouchDevice', false)
     const isMediumScreen = inject('isMediumScreen', true)
 
     const makeHost = (node: NetworkNode) => node.node_account_id ? operatorRegistry.lookup(node.node_account_id)?.name : null
     const makeLocation = (node: NetworkNode) => node.node_account_id ? operatorRegistry.lookup(node.node_account_id)?.location : null
+    const makeStakePercentage = (node: NetworkNode) => {
+      return node.stake && props.totalStaked ? node.stake / props.totalStaked : 0
+    }
 
-    const handleClick = (n: NetworkNode) => {
-      router.push({name: 'NodeDetails', params: {nodeId: n.node_id}})
+    const handleClick = (node: NetworkNode) => {
+      router.push({name: 'NodeDetails', params: {nodeId: node.node_id}})
     }
 
     return {
+      isStakingEnabled,
       isTouchDevice,
       isMediumScreen,
       makeHost,
       makeLocation,
+      makeStakePercentage,
       handleClick,
       ORUGA_MOBILE_BREAKPOINT
     }

@@ -974,7 +974,13 @@ export const SAMPLE_NETWORK_NODES = {
             "timestamp": {
                 "from": "1654531806.041135961",
                 "to": null
-            }
+            },
+            "max_stake":         1000000000000000,
+            "min_stake":          100000000000000,
+            "stake":              600000000000000,
+            "stake_not_rewarded": 100000000000000,
+            "stake_rewarded":     500000000000000,
+            "staking_period": null
         },
         {
             "description": "",
@@ -996,7 +1002,13 @@ export const SAMPLE_NETWORK_NODES = {
             "timestamp": {
                 "from": "1654531806.041135961",
                 "to": null
-            }
+            },
+            "max_stake":         2000000000000000,
+            "min_stake":          100000000000000,
+            "stake":              900000000000000,
+            "stake_not_rewarded": 200000000000000,
+            "stake_rewarded":     700000000000000,
+            "staking_period": null
         },
         {
             "description": "",
@@ -1018,7 +1030,13 @@ export const SAMPLE_NETWORK_NODES = {
             "timestamp": {
                 "from": "1654531806.041135961",
                 "to": null
-            }
+            },
+            "max_stake":         3000000000000000,
+            "min_stake":          100000000000000,
+            "stake":              900000000000000,
+            "stake_not_rewarded": 200000000000000,
+            "stake_rewarded":     700000000000000,
+            "staking_period": null
         }
     ],
 }
