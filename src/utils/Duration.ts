@@ -60,7 +60,11 @@ export function formatSeconds(secondCount: number|string|undefined): string {
             if (duration.days >= 2) {
                 result += duration.days + " days "
             } else if (duration.days == 1) {
-                result += "1 day "
+                if (!duration.hours && !duration.minutes && !duration.seconds) {
+                    result += "24 hours "
+                } else {
+                    result += "1 day "
+                }
             }
             if (duration.hours >= 2) {
                 result += duration.hours + " hours "

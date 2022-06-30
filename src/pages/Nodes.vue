@@ -47,7 +47,7 @@
             <div class="is-flex-direction-column">
               <NetworkDashboardItem :name="'HBAR'" :title="'Total Rewarded'" :value="totalRewarded.toString()"/>
               <div class="mt-4"/>
-              <NetworkDashboardItem :title="'Staking Period'" :value="'24 hours'"/>
+              <NetworkDashboardItem :title="'Staking Period'" :value="formatSeconds(durationMin*60)"/>
             </div>
           </div>
           <div v-else>
@@ -62,7 +62,7 @@
               <div class="mt-4"/>
               <NetworkDashboardItem :name="'HBAR'" :title="'Total Rewarded'" :value="totalRewarded.toString()"/>
               <div class="mt-4"/>
-              <NetworkDashboardItem :title="'Staking Period'" :value="'24 hours'"/>
+              <NetworkDashboardItem :title="'Staking Period'" :value="formatSeconds(durationMin*60)"/>
               <div class="mt-6"/>
             </div>
           </div>
@@ -142,6 +142,7 @@ export default defineComponent({
     const totalRewarded = ref(0)
     const stakingPeriod = ref<StakingPeriod | null>(null)
 
+    const durationMin = computed(() => stakingPeriod.value?.durationMin ? (stakingPeriod.value.durationMin) : null)
     const elapsedMin = computed(() => stakingPeriod.value?.elapsedMin ? (stakingPeriod.value.elapsedMin) : null)
     const remainingMin = computed(() => stakingPeriod.value?.remainingMin ? (stakingPeriod.value?.remainingMin) : null)
 
@@ -191,6 +192,7 @@ export default defineComponent({
         endTimeInSec = null
       }
       stakingPeriod.value = new StakingPeriod(startTimeInSec, endTimeInSec)
+      console.log("Period duration:" + stakingPeriod.value.durationMin)
     }
 
     return {
@@ -199,10 +201,11 @@ export default defineComponent({
       isTouchDevice,
       nodes,
       totalNodes,
-      elapsedMin,
       totalStaked,
-      remainingMin,
       totalRewarded,
+      durationMin,
+      elapsedMin,
+      remainingMin,
       formatSeconds
     }
   }

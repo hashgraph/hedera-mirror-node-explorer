@@ -23,6 +23,7 @@ export class StakingPeriod {
     public readonly currentDate: Date
     public readonly startTime: number
     public readonly endTime: number
+    public readonly durationMin: number
     public readonly elapsedMin: number
     public readonly remainingMin: number
 
@@ -32,7 +33,7 @@ export class StakingPeriod {
 
         this.currentDate = new Date()
         if (startTimeInSec === null || isNaN(startTimeInSec)) {
-            this.startTime = new Date(Date.UTC(this.currentDate.getUTCFullYear(), this.currentDate.getUTCMonth(), this.currentDate.getUTCDate())).getTime()
+            this.startTime = Date.UTC(this.currentDate.getUTCFullYear(), this.currentDate.getUTCMonth(), this.currentDate.getUTCDate())
         } else {
             this.startTime = startTimeInSec * 1000
         }
@@ -42,6 +43,7 @@ export class StakingPeriod {
             this.endTime = endTimeInSec * 1000
         }
 
+        this.durationMin = (this.endTime - this.startTime) / 1000 / 60
         this.elapsedMin = Math.floor((this.currentDate.getTime() - this.startTime) / 1000 / 60)
         this.remainingMin = Math.ceil((this.endTime - this.currentDate.getTime()) / 1000 / 60)
     }
