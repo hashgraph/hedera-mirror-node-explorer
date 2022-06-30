@@ -11,13 +11,14 @@ jobs:
         uses: actions/checkout@v2
 
       - name: Cypress run
-        uses: cypress-io/github-action@v2
+        uses: cypress-io/github-action@v4
         with:
           install-command: npm install
           browser: chrome
           headless: true
           start: npm run serve:prod
           wait-on: 'https://localhost:38920'
+          config-file: cypress.json
           spec: tests/e2e/specs/*
 
           
