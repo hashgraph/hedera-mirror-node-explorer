@@ -37,12 +37,12 @@
             <div class="is-flex-direction-column">
               <NetworkDashboardItem :title="'Total Nodes'" :value="totalNodes"/>
               <div class="mt-4"/>
-              <NetworkDashboardItem :title="'Last Staked'" :value="formatSeconds(sinceLastStakedTime) + ' ago'"/>
+              <NetworkDashboardItem :title="'Last Staked'" :value="formatSeconds(elapsedMin*60) + ' ago'"/>
             </div>
             <div class="is-flex-direction-column">
               <NetworkDashboardItem :name="'HBAR'" :title="'Total Staked'" :value="totalStaked.toString()"/>
               <div class="mt-4"/>
-              <NetworkDashboardItem :title="'Next Staking Period'" :value="'in ' + formatSeconds(untilNextStakedTime)"/>
+              <NetworkDashboardItem :title="'Next Staking Period'" :value="'in ' + formatSeconds(remainingMin*60)"/>
             </div>
             <div class="is-flex-direction-column">
               <NetworkDashboardItem :name="'HBAR'" :title="'Total Rewarded'" :value="totalRewarded.toString()"/>
@@ -54,11 +54,11 @@
             <div class="is-flex-direction-column">
               <NetworkDashboardItem :title="'Total Nodes'" :value="totalNodes"/>
               <div class="mt-4"/>
-              <NetworkDashboardItem :title="'Last Staked'" :value="formatSeconds(sinceLastStakedTime) + 'ago'"/>
+              <NetworkDashboardItem :title="'Last Staked'" :value="formatSeconds(elapsedMin*60) + 'ago'"/>
               <div class="mt-4"/>
               <NetworkDashboardItem :name="'HBAR'" :title="'Total Staked'" :value="totalStaked.toString()"/>
               <div class="mt-4"/>
-              <NetworkDashboardItem :title="'Next Staking Period'" :value="'in' + formatSeconds(untilNextStakedTime)"/>
+              <NetworkDashboardItem :title="'Next Staking Period'" :value="'in' + formatSeconds(remainingMin*60)"/>
               <div class="mt-4"/>
               <NetworkDashboardItem :name="'HBAR'" :title="'Total Rewarded'" :value="totalRewarded.toString()"/>
               <div class="mt-4"/>
@@ -105,7 +105,7 @@
 
 <script lang="ts">
 
-import {computed, defineComponent, inject, onBeforeMount, ref} from 'vue';
+import {computed, defineComponent, inject, onBeforeUnmount, onMounted, ref} from 'vue';
 import DashboardCard from "@/components/DashboardCard.vue";
 import Footer from "@/components/Footer.vue";
 import NodeTable from "@/components/node/NodeTable.vue";
@@ -113,6 +113,7 @@ import NetworkDashboardItem from "@/components/node/NetworkDashboardItem.vue";
 import axios from "axios";
 import {NetworkNode, NetworkNodesResponse} from "@/schemas/HederaSchemas";
 import {formatSeconds} from "@/utils/Duration";
+import {StakingPeriod} from "@/utils/StakingPeriod";
 
 export default defineComponent({
   name: 'Nodes',
@@ -129,36 +130,33 @@ export default defineComponent({
   },
 
   setup() {
-    const PERIOD_24H = 60 * 60 * 24
-
     const isStakingEnabled = process.env.VUE_APP_ENABLE_STAKING === 'true'
 
     const isSmallScreen = inject('isSmallScreen', true)
     const isTouchDevice = inject('isTouchDevice', false)
 
     let nodes = ref<Array<NetworkNode> | null>([])
-
     const totalNodes = computed(() => nodes.value?.length.toString() ?? "")
 
     const totalStaked = ref(0)
     const totalRewarded = ref(0)
+    const stakingPeriod = ref<StakingPeriod | null>(null)
 
-    const sinceLastStakedTime = computed(() => {
-      const now = new Date()
-      const midnight = new Date(now.getFullYear(), now.getMonth(), now.getDate(), 0,0,0)
-      const zoneOffsetInSeconds = now.getTimezoneOffset() * 60
+    const elapsedMin = computed(() => stakingPeriod.value?.elapsedMin ? (stakingPeriod.value.elapsedMin) : null)
+    const remainingMin = computed(() => stakingPeriod.value?.remainingMin ? (stakingPeriod.value?.remainingMin) : null)
 
-      let secondsElapsed = Math.floor((now.getTime() - midnight.getTime()) / 1000 / 60) * 60
-      if (secondsElapsed < zoneOffsetInSeconds) {
-        secondsElapsed += PERIOD_24H
-      }
-      secondsElapsed = (secondsElapsed + zoneOffsetInSeconds ) % PERIOD_24H
-      return secondsElapsed
+    let intervalHandle = -1
+
+    onMounted(() => {
+      fetchNodes()
+      updateStakingPeriod()
+      intervalHandle = window.setInterval( () => updateStakingPeriod(), 10000)
     })
 
-    const untilNextStakedTime = computed(() => PERIOD_24H - sinceLastStakedTime.value)
-
-    onBeforeMount(() => fetchNodes())
+    onBeforeUnmount(() => {
+      window.clearInterval(intervalHandle)
+      intervalHandle = -1
+    })
 
     const fetchNodes = (nextUrl: string | null = null) => {
       const url = nextUrl ?? "api/v1/network/nodes"
@@ -183,15 +181,27 @@ export default defineComponent({
           })
     }
 
+    const updateStakingPeriod = () => {
+      let startTimeInSec, endTimeInSec
+      if (nodes.value?.length) {
+        startTimeInSec = nodes.value[0].staking_period?.from ? Number.parseInt(nodes.value[0].staking_period?.from) : null
+        endTimeInSec = nodes.value[0].staking_period?.to ? Number.parseInt(nodes.value[0].staking_period?.to) : null
+      } else {
+        startTimeInSec = null
+        endTimeInSec = null
+      }
+      stakingPeriod.value = new StakingPeriod(startTimeInSec, endTimeInSec)
+    }
+
     return {
       isStakingEnabled,
       isSmallScreen,
       isTouchDevice,
       nodes,
       totalNodes,
-      sinceLastStakedTime,
+      elapsedMin,
       totalStaked,
-      untilNextStakedTime,
+      remainingMin,
       totalRewarded,
       formatSeconds
     }
