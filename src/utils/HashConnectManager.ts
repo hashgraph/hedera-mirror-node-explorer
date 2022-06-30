@@ -26,7 +26,6 @@ import WalletMetadata = HashConnectTypes.WalletMetadata;
 
 export class HashConnectManager {
 
-    private readonly hashConnect = new HashConnect(true)
     private readonly initData: Ref<HashConnectTypes.InitilizationData | null> = ref(null)
     private readonly connectionState: Ref<HashConnectTypes.ConnectionState | null> = ref(null)
     private readonly pairingString: Ref<string|null> = ref(null)
@@ -37,6 +36,8 @@ export class HashConnectManager {
         description: "A ledger explorer for the Hedera network",
         icon: HederaLogo
     }
+
+    private hashConnect: HashConnect | null = null
 
     //
     // Public
@@ -51,6 +52,11 @@ export class HashConnectManager {
     })
 
     public async connect(): Promise<void> {
+
+        // Creates HashConnect
+        if (this.hashConnect === null) {
+            this.hashConnect = new HashConnect(true)
+        }
 
         // Initializes
         const hashConnectKey = AppStorage.getHashConnectPrivKey() ?? undefined
@@ -71,11 +77,12 @@ export class HashConnectManager {
             this.hashConnect.connectToLocalWallet(this.pairingString.value)
             this.hashConnect.findLocalWallets()
 
+            const hashConnect = this.hashConnect
             const pairingString = this.pairingString.value
             this.hashConnect.foundExtensionEvent.once((walletMetadata) => {
                 this.walletMetadata.value = walletMetadata
                 console.log("walletMetadata=" + this.walletMetadata.value)
-                this.hashConnect.connectToLocalWallet(pairingString)
+                hashConnect.connectToLocalWallet(pairingString)
             })
         }
 
