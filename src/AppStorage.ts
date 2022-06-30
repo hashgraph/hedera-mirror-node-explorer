@@ -45,4 +45,84 @@ export class AppStorage {
         }
     }
 
+
+    private static readonly HASH_CONNECT_PRIV_KEY_KEY = "hashconnect-priv-key"
+
+    public static getHashConnectPrivKey(): string | null {
+        let result: string|null
+        try {
+            result = localStorage.getItem(AppStorage.HASH_CONNECT_PRIV_KEY_KEY)
+        } catch {
+            // Navigator is setup to block all cookies => no key
+            result = null
+        }
+        return result
+    }
+
+    public static setHashConnectPrivKey(newValue: string|null): void {
+        try {
+            if (newValue != null) {
+                localStorage.setItem(AppStorage.HASH_CONNECT_PRIV_KEY_KEY, newValue);
+            } else {
+                localStorage.removeItem(AppStorage.HASH_CONNECT_PRIV_KEY_KEY)
+            }
+        } catch {
+            // Navigator is setup to block all cookies => we forget key
+        }
+    }
+
+
+
+    private static readonly HASH_CONNECT_TOPIC_KEY = "hashconnect-topic"
+
+    public static getHashConnectTopic(): string | null {
+        let result: string|null
+        try {
+            result = localStorage.getItem(AppStorage.HASH_CONNECT_TOPIC_KEY)
+        } catch {
+            // Navigator is setup to block all cookies => no id
+            result = null
+        }
+        return result
+    }
+
+    public static setHashConnectTopic(newValue: string|null): void {
+        try {
+            if (newValue != null) {
+                localStorage.setItem(AppStorage.HASH_CONNECT_TOPIC_KEY, newValue);
+            } else {
+                localStorage.removeItem(AppStorage.HASH_CONNECT_TOPIC_KEY)
+            }
+        } catch {
+            // Navigator is setup to block all cookies => we forget id
+        }
+    }
+
+
+    private static readonly HASH_CONNECT_PAIRING_STRING_KEY = "hashconnect-pairing-string"
+
+    public static getHashConnectPairingString(): string | null {
+        let result: string|null
+        try {
+            result = localStorage.getItem(AppStorage.HASH_CONNECT_PAIRING_STRING_KEY)
+        } catch {
+            // Navigator is setup to block all cookies => no id
+            result = null
+        }
+        return result
+    }
+
+    public static setHashConnectPairingString(newValue: string|null): void {
+        try {
+            if (newValue != null) {
+                localStorage.setItem(AppStorage.HASH_CONNECT_PAIRING_STRING_KEY, newValue);
+            } else {
+                localStorage.removeItem(AppStorage.HASH_CONNECT_PAIRING_STRING_KEY)
+            }
+        } catch {
+            // Navigator is setup to block all cookies => we forget id
+        }
+    }
+
+
 }

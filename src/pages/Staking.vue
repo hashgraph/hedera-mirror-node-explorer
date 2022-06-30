@@ -33,9 +33,16 @@
       <template v-slot:table>
 
         <section class="section has-text-centered" style="min-height: 450px">
-           <p class="h-is-tertiary-text" style="font-weight: 300">
-              To view or change your staking you first need to connect to your wallet.
-            </p>
+          <p class="h-is-tertiary-text" style="font-weight: 300">
+            To view or change your staking you first need to connect to your wallet.
+          </p>
+          <br/>
+          <template v-if="connected">
+            <p>Connected to wallet {{ walletName ?? "?" }}</p>
+          </template>
+          <template v-else>
+            <button class="button" @click="connectToWallet">Connect to Wallet…</button>
+          </template>
         </section>
 
       </template>
@@ -56,6 +63,7 @@
 import {defineComponent, inject} from 'vue';
 import DashboardCard from "@/components/DashboardCard.vue";
 import Footer from "@/components/Footer.vue";
+import {hashConnectManager} from "@/utils/HashConnectManager";
 
 export default defineComponent({
   name: 'Staking',
@@ -73,9 +81,16 @@ export default defineComponent({
     const isSmallScreen = inject('isSmallScreen', true)
     const isTouchDevice = inject('isTouchDevice', false)
 
+    const connectToWallet = () => {
+      hashConnectManager.connect()
+    }
+
     return {
       isSmallScreen,
       isTouchDevice,
+      connectToWallet,
+      connected: hashConnectManager.connected,
+      walletName: hashConnectManager.walletName
     }
   }
 });
