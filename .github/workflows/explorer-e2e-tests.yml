@@ -17,7 +17,7 @@ jobs:
           browser: chrome
           headless: true
           start: npm run serve:prod
-          wait-on: 'http://localhost:38920'
+          wait-on: 'https://localhost:38920'
           spec: tests/e2e/specs/*
 
           
