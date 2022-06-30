@@ -74,17 +74,15 @@ export class HashConnectManager {
             this.pairingString.value = this.hashConnect.generatePairingString(
                 this.connectionState.value, "testnet", false);
             AppStorage.setHashConnectPairingString(this.pairingString.value)
-            this.hashConnect.connectToLocalWallet(this.pairingString.value)
-            this.hashConnect.findLocalWallets()
-
-            const hashConnect = this.hashConnect
-            const pairingString = this.pairingString.value
-            this.hashConnect.foundExtensionEvent.once((walletMetadata) => {
-                this.walletMetadata.value = walletMetadata
-                console.log("walletMetadata=" + this.walletMetadata.value)
-                hashConnect.connectToLocalWallet(pairingString)
-            })
         }
+
+        // Find wallets
+        this.hashConnect.connectToLocalWallet(this.pairingString.value)
+        this.hashConnect.findLocalWallets()
+        this.hashConnect.foundExtensionEvent.once((walletMetadata) => {
+            this.walletMetadata.value = walletMetadata
+            console.log("walletMetadata=" + JSON.stringify(this.walletMetadata.value))
+        })
 
         // Extensions
     }

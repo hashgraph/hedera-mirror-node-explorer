@@ -38,7 +38,7 @@
           </p>
           <br/>
           <template v-if="connected">
-            <p>Connected to wallet {{ walletName ?? "?" }}</p>
+            <p>Connected to {{ walletName ?? "?" }}</p>
           </template>
           <template v-else>
             <button class="button" @click="connectToWallet">Connect to Wallet…</button>
