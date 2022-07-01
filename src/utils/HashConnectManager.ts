@@ -117,6 +117,17 @@ export class HashConnectManager {
 
     }
 
+    public reset(): void {
+        AppStorage.setHashConnectPrivKey(null)
+        for (const network of ["mainnet", "testnet"]) {
+            AppStorage.setHashConnectConnectionContext(null, network)
+            AppStorage.setHashConnectPairingData(null, network)
+        }
+        this.initData.value = null
+        this.connectionContext.value = null
+        this.pairingData.value = null
+    }
+
 }
 
 export interface HashConnectConnectionContext {

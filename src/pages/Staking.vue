@@ -93,8 +93,13 @@ export default defineComponent({
     const isSmallScreen = inject('isSmallScreen', true)
     const isTouchDevice = inject('isTouchDevice', false)
 
-    const connectToWallet = () => {
-      hashConnectManager.connect("testnet")
+    const connectToWallet = (event: MouseEvent) => {
+      if (event.altKey) {
+        hashConnectManager.reset()
+        console.log("HashConnectManager has been reset")
+      } else {
+        hashConnectManager.connect("testnet")
+      }
     }
 
     return {
