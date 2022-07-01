@@ -20,16 +20,14 @@
 
 import {computed, Ref, ref} from "vue";
 import {AppStorage} from "@/AppStorage";
-import {HashConnect, HashConnectTypes} from "hashconnect";
+import {HashConnect, HashConnectTypes, MessageTypes} from "hashconnect";
 import {HederaLogo} from "@/utils/MetaMask";
-import WalletMetadata = HashConnectTypes.WalletMetadata;
 
 export class HashConnectManager {
 
     private readonly initData: Ref<HashConnectTypes.InitilizationData | null> = ref(null)
-    private readonly connectionState: Ref<HashConnectTypes.ConnectionState | null> = ref(null)
-    private readonly pairingString: Ref<string|null> = ref(null)
-    private readonly walletMetadata: Ref<WalletMetadata|null> = ref(null)
+    private readonly connectionContext: Ref<HashConnectConnectionContext | null> = ref(null)
+    private readonly pairingData: Ref<MessageTypes.ApprovePairing | null> = ref(null)
 
     private readonly appMetadata: HashConnectTypes.AppMetadata = {
         name: "Hedera Explorer",
@@ -43,50 +41,88 @@ export class HashConnectManager {
     // Public
     //
 
-    public readonly connected = computed<boolean>(() => {
-        return this.connectionState.value != null
+    public readonly connectedNetwork = computed<string | undefined>(() => {
+        return this.connectionContext.value?.network
     })
 
-    public readonly walletName = computed<string|undefined>(() => {
-        return this.walletMetadata.value?.name
+    public readonly paired = computed<boolean>(() => {
+        return this.pairingData.value != null
     })
 
-    public async connect(): Promise<void> {
+    public readonly pairedWalletName = computed<string|undefined>( () => {
+        return this.pairingData.value?.metadata.name
+    })
 
-        // Creates HashConnect
-        if (this.hashConnect === null) {
-            this.hashConnect = new HashConnect(true)
+    public readonly pairedWalletIconURL = computed<string|undefined>( () => {
+        return this.pairingData.value?.metadata.icon
+    })
+
+    public readonly pairedAccountIds = computed<Array<string>>(() => {
+        return this.pairingData.value?.accountIds ?? []
+    })
+
+    public async connect(network: string): Promise<void> {
+
+        if (this.connectionContext.value?.network == network) {
+
+            await Promise.resolve()
+
+        } else {
+
+            // Creates HashConnect
+            if (this.hashConnect === null) {
+                this.hashConnect = new HashConnect(true)
+            }
+
+            // Initializes
+            const hashConnectKey = AppStorage.getHashConnectPrivKey() ?? undefined
+            this.initData.value = await this.hashConnect.init(this.appMetadata, hashConnectKey)
+            AppStorage.setHashConnectPrivKey(this.initData.value.privKey)
+
+            // Connects with network
+            const connectionContext = AppStorage.getHashConnectConnectionContext(network)
+            if (connectionContext == null) {
+
+                // First connection with network
+                const connectionState = await this.hashConnect.connect()
+                const pairingString = this.hashConnect.generatePairingString(connectionState, network, true)
+                this.connectionContext.value = {
+                    network: network,
+                    topic: connectionState.topic,
+                    pairingString: pairingString
+                }
+                AppStorage.setHashConnectConnectionContext(this.connectionContext.value, network)
+                this.hashConnect.findLocalWallets()
+                this.hashConnect.connectToLocalWallet(pairingString)
+
+            } else {
+                this.connectionContext.value = connectionContext
+
+                // Second connection
+                const pairingData = AppStorage.getHashConnectPairingData(network)
+                await this.hashConnect.connect(connectionContext.topic, pairingData?.metadata)
+                this.hashConnect.connectToLocalWallet(connectionContext.pairingString)
+            }
+
+            // Setups events
+            this.hashConnect.pairingEvent.on((pairingData) => {
+
+                this.pairingData.value = pairingData
+                AppStorage.setHashConnectPairingData(this.pairingData.value, network)
+
+                console.log(JSON.stringify(this.pairingData.value))
+            });
+
         }
 
-        // Initializes
-        const hashConnectKey = AppStorage.getHashConnectPrivKey() ?? undefined
-        this.initData.value = await this.hashConnect.init(this.appMetadata, hashConnectKey)
-        AppStorage.setHashConnectPrivKey(this.initData.value.privKey)
-
-        // Connects
-        const topic = AppStorage.getHashConnectTopic() ?? undefined
-        this.connectionState.value = await this.hashConnect.connect(topic)
-        AppStorage.setHashConnectTopic(this.connectionState.value.topic)
-
-        // Pairing
-        this.pairingString.value = AppStorage.getHashConnectPairingString()
-        if (this.pairingString.value === null) {
-            this.pairingString.value = this.hashConnect.generatePairingString(
-                this.connectionState.value, "testnet", false);
-            AppStorage.setHashConnectPairingString(this.pairingString.value)
-        }
-
-        // Find wallets
-        this.hashConnect.connectToLocalWallet(this.pairingString.value)
-        this.hashConnect.findLocalWallets()
-        this.hashConnect.foundExtensionEvent.once((walletMetadata) => {
-            this.walletMetadata.value = walletMetadata
-            console.log("walletMetadata=" + JSON.stringify(this.walletMetadata.value))
-        })
-
-        // Extensions
     }
 
+}
+
+export interface HashConnectConnectionContext {
+    network: string
+    topic: string
+    pairingString: string
 }
 
 export const hashConnectManager = new HashConnectManager()

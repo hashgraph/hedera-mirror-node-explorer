@@ -37,8 +37,20 @@
             To view or change your staking you first need to connect to your wallet.
           </p>
           <br/>
-          <template v-if="connected">
+          <template v-if="paired">
             <p>Connected to {{ walletName ?? "?" }}</p>
+            <p>Network: {{ connectedNetwork }}</p>
+            <template v-if="accountIds.length === 0">
+              <p>No account found</p>
+            </template>
+            <template v-else>
+              <template v-for="accountId in accountIds" :key="accountId">
+                <p>Account ID: {{ accountId }}</p>
+              </template>
+            </template>
+          </template>
+          <template v-else-if="connectedNetwork">
+            <p>Connecting…</p>
           </template>
           <template v-else>
             <button class="button" @click="connectToWallet">Connect to Wallet…</button>
@@ -82,15 +94,18 @@ export default defineComponent({
     const isTouchDevice = inject('isTouchDevice', false)
 
     const connectToWallet = () => {
-      hashConnectManager.connect()
+      hashConnectManager.connect("testnet")
     }
 
     return {
       isSmallScreen,
       isTouchDevice,
       connectToWallet,
-      connected: hashConnectManager.connected,
-      walletName: hashConnectManager.walletName
+      connectedNetwork: hashConnectManager.connectedNetwork,
+      paired: hashConnectManager.paired,
+      walletName: hashConnectManager.pairedWalletName,
+      walletIconURL: hashConnectManager.pairedWalletIconURL,
+      accountIds: hashConnectManager.pairedAccountIds
     }
   }
 });

@@ -19,6 +19,8 @@
  */
 
 import {NetworkEntry, networkRegistry} from "@/schemas/NetworkRegistry";
+import {HashConnectConnectionContext} from "@/utils/HashConnectManager";
+import {MessageTypes} from "hashconnect";
 
 export class AppStorage {
 
@@ -125,4 +127,67 @@ export class AppStorage {
     }
 
 
+    private static readonly HASH_CONNECT_CONNECTION_CONTEXT = "hashconnect-connection-context-"
+
+    public static getHashConnectConnectionContext(network: string): HashConnectConnectionContext | null {
+        const key = AppStorage.HASH_CONNECT_CONNECTION_CONTEXT + network
+        return this.getJsonValue(key) as HashConnectConnectionContext | null
+    }
+
+    public static setHashConnectConnectionContext(newValue: HashConnectConnectionContext|null, network: string): void {
+        const key = AppStorage.HASH_CONNECT_CONNECTION_CONTEXT + network
+        this.setJsonValue(newValue, key)
+    }
+
+
+    private static readonly HASH_CONNECT_PAIRING_DATA = "hashconnect-pairing-data-"
+
+    public static getHashConnectPairingData(network: string): MessageTypes.ApprovePairing | null {
+        const key = AppStorage.HASH_CONNECT_PAIRING_DATA + network
+        return this.getJsonValue(key) as MessageTypes.ApprovePairing | null
+    }
+
+    public static setHashConnectPairingData(newValue: MessageTypes.ApprovePairing|null, network: string): void {
+        const key = AppStorage.HASH_CONNECT_PAIRING_DATA + network
+        this.setJsonValue(newValue, key)
+    }
+
+
+    //
+    // Private
+    //
+
+    private static getJsonValue(key: string): unknown | null {
+        let result: unknown|null
+        try {
+            const jsonText = localStorage.getItem(key)
+            if (jsonText != null) {
+                try {
+                    result = JSON.parse(jsonText)
+                } catch {
+                    console.log("Ignored invalid JSON text from " + key)
+                    result = null
+                }
+            } else {
+                result = null;
+            }
+        } catch {
+            // Navigator is setup to block all cookies => no id
+            result = null
+        }
+        return result
+    }
+
+    private static setJsonValue(newValue: unknown | null, key: string) {
+        try {
+            if (newValue != null) {
+                const jsonText = JSON.stringify(newValue);
+                localStorage.setItem(key, jsonText);
+            } else {
+                localStorage.removeItem(key)
+            }
+        } catch {
+            // Navigator is setup to block all cookies => we forget id
+        }
+    }
 }
