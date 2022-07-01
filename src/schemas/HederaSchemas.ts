@@ -42,10 +42,13 @@ export interface AccountInfo {
     alias: string | null | undefined  // RFC4648 no-padding base32 encoded account alias
     ethereum_nonce: number | null
     evm_address: string | null // A network entity encoded as an EVM address in hex.
-    decline_reward: boolean
-    staked_account_id: string | null
-    staked_node_id: number | null
-    stake_period_start : string | null
+    decline_reward: boolean | null      // Whether the account declines receiving a staking reward
+    staked_account_id: string | null    // The account to which this account is staking
+    staked_node_id: number | null       // The id of the node to which this account is staking
+    stake_period_start : string | null  // The staking period during which either the staking settings for this account
+                                        // changed (such as starting staking or changing stakedNode) or the most recent
+                                        // reward was earned, whichever is later. If this account is not currently
+                                        // staked to a node, then the value is null
 }
 
 export interface AccountBalanceTransactions extends AccountInfo {

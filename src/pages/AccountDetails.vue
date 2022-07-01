@@ -89,10 +89,33 @@
         <div class="columns h-is-property-text">
 
           <div class="column">
-            <Property :id="'key'">
-              <template v-slot:name>Key</template>
+            <Property v-if="account?.staked_account_id" :id="'stakedAccount'">
+              <template v-slot:name>Staked Account</template>
               <template v-slot:value>
-                <KeyValue :key-bytes="account?.key?.key" :key-type="account?.key?._type" :show-none="true"/>
+                <AccountLink :accountId="account.staked_account_id" v-bind:show-extra="true"/>
+              </template>
+            </Property>
+            <Property v-else :id="'stakedNode'">
+              <template v-slot:name>Staked to</template>
+              <template v-slot:value>
+                <div v-if="account?.staked_node_id != null">
+                  <router-link :to="{name: 'NodeDetails', params: {nodeId: account?.staked_node_id}}">
+                    {{ stakedNodeDescription ?? "Node " +  account.staked_node_id}}
+                  </router-link>
+                </div>
+                <span v-else class="has-text-grey">None</span>
+              </template>
+            </Property>
+            <Property :id="'stakePeriodStart'">
+              <template v-slot:name>Stake Period Started</template>
+              <template v-slot:value>
+                <TimestampValue :timestamp="account?.stake_period_start" :show-none="true"/>
+              </template>
+            </Property>
+            <Property :id="'declineReward'" >
+              <template v-slot:name>Decline Reward</template>
+              <template v-slot:value>
+                <StringValue :string-value="account?.decline_reward?.toString()"/>
               </template>
             </Property>
             <Property :id="'memo'">
@@ -107,15 +130,15 @@
                 <TimestampValue v-bind:timestamp="account?.expiry_timestamp" v-bind:show-none="true" />
               </template>
             </Property>
-          </div>
-
-          <div class="column">
             <Property :id="'autoRenewPeriod'">
               <template v-slot:name>Auto Renew Period</template>
               <template v-slot:value>
                 <DurationValue v-bind:number-value="account?.auto_renew_period"/>
               </template>
             </Property>
+          </div>
+
+          <div class="column">
             <Property :id="'maxAutoAssociation'">
               <template v-slot:name>Max. Auto. Association</template>
               <template v-slot:value>
@@ -126,6 +149,12 @@
               <template v-slot:name>Receiver Sig. Required</template>
               <template v-slot:value>
                 <StringValue :string-value="account?.receiver_sig_required?.toString()"/>
+              </template>
+            </Property>
+            <Property :id="'key'">
+              <template v-slot:name>Key</template>
+              <template v-slot:value>
+                <KeyValue :key-bytes="account?.key?.key" :key-type="account?.key?._type" :show-none="true"/>
               </template>
             </Property>
             <Property :id="'ethereumAddress'">
@@ -172,7 +201,7 @@
 
 import {computed, defineComponent, inject, onBeforeUnmount, onMounted, ref, watch} from 'vue';
 import axios from "axios";
-import {AccountBalanceTransactions, ContractResponse} from "@/schemas/HederaSchemas";
+import {AccountBalanceTransactions, ContractResponse, NetworkNode, NetworkNodesResponse} from "@/schemas/HederaSchemas";
 import {operatorRegistry} from "@/schemas/OperatorRegistry";
 import KeyValue from "@/components/values/KeyValue.vue";
 import PlayPauseButtonV2 from "@/components/PlayPauseButtonV2.vue";
@@ -196,6 +225,7 @@ import EthAddress from "@/components/values/EthAddress.vue";
 import StringValue from "@/components/values/StringValue.vue";
 import {TransactionCacheV2} from "@/components/transaction/TransactionCacheV2";
 import {EntityCacheStateV2} from "@/utils/EntityCacheV2";
+import AccountLink from "@/components/values/AccountLink.vue";
 
 const MAX_TOKEN_BALANCES = 10
 
@@ -204,6 +234,7 @@ export default defineComponent({
   name: 'AccountDetails',
 
   components: {
+    AccountLink,
     NotificationBanner,
     Property,
     TransactionFilterSelect,
@@ -303,7 +334,12 @@ export default defineComponent({
       if (validEntityId.value) {
         axios
             .get<AccountBalanceTransactions>("api/v1/accounts/" + normalizedAccountId.value, { params: params})
-            .then(response => account.value = response.data)
+            .then(response => {
+              account.value = response.data
+              if (account.value.staked_node_id !== null) {
+                fetchNode(account.value.staked_node_id)
+              }
+            })
             .catch(reason => accountError.value = reason)
       } else {
         account.value = null
@@ -421,6 +457,33 @@ export default defineComponent({
       fetchContract()
     })
 
+    //
+    // staking
+    //
+    const stakedNode = ref<NetworkNode|null>(null)
+    const stakedNodeDescription = computed(() => {
+      let description
+      if (stakedNode.value?.description) {
+        description = stakedNode.value?.description
+      } else {
+        description = stakedNode.value?.node_account_id ? operatorRegistry.makeDescription(stakedNode.value?.node_account_id) : null
+      }
+      return description
+    })
+
+    const fetchNode = (nodeId: number) => {
+      const url = "api/v1/network/nodes"
+      const queryParams = {params: {'node.id': nodeId}}
+      axios
+          .get<NetworkNodesResponse>(url, queryParams)
+          .then(result => {
+            if (result.data.nodes && result.data.nodes.length > 0) {
+              stakedNode.value = result.data.nodes[0]
+            } else {
+              stakedNode.value = null
+            }
+          })
+    }
 
     return {
       isSmallScreen,
@@ -441,7 +504,8 @@ export default defineComponent({
       displayAllTokenLinks,
       elapsed,
       showContractVisible,
-      ethereumAddress
+      ethereumAddress,
+      stakedNodeDescription
     }
   }
 });

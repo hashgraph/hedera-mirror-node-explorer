@@ -654,7 +654,13 @@ export const SAMPLE_ACCOUNT = {
         },
     "max_automatic_token_associations": 0,
     "memo": "",
-    "receiver_sig_required": false
+    "receiver_sig_required": false,
+    "evm_address": null,
+    "ethereum_nonce": null,
+    "decline_reward": null,
+    "staked_node_id": null,
+    "staked_account_id": null,
+    "stake_period_start" : null
 }
 
 //
@@ -681,6 +687,58 @@ export const SAMPLE_ACCOUNT_DUDE = {
     "max_automatic_token_associations": 10,
     "memo": "Account Dude Memo in clear",
     "receiver_sig_required": true,
+    "evm_address": null,
+    "ethereum_nonce": null,
+    "decline_reward": null,
+    "staked_node_id": null,
+    "staked_account_id": null,
+    "stake_period_start" : null
+}
+
+export const SAMPLE_ACCOUNT_STAKING_NODE = {
+    "account": "0.0.730632",
+    "alias": null,
+    "auto_renew_period": 6666000,
+    "balance": {
+        "balance": 31669471,
+        "timestamp": "1648548001.410978000",
+        "tokens": []
+    },
+    "deleted": false,
+    "expiry_timestamp": "1649648001.410978000",
+    "key": {"_type": "ED25519", "key": "38f1ea460e95d97eea13aefac760eaf990154b80a3608ab01d4a264944d68746"},
+    "max_automatic_token_associations": 10,
+    "memo": "Account staking to account",
+    "receiver_sig_required": true,
+    "evm_address": null,
+    "ethereum_nonce": null,
+    "decline_reward": false,
+    "staked_node_id": 1,
+    "staked_account_id": null,
+    "stake_period_start" : "1646333100.356842286"
+}
+
+export const SAMPLE_ACCOUNT_STAKING_ACCOUNT = {
+    "account": "0.0.730632",
+    "alias": null,
+    "auto_renew_period": 6666000,
+    "balance": {
+        "balance": 31669471,
+        "timestamp": "1648548001.410978000",
+        "tokens": []
+    },
+    "deleted": false,
+    "expiry_timestamp": "1649648001.410978000",
+    "key": {"_type": "ED25519", "key": "38f1ea460e95d97eea13aefac760eaf990154b80a3608ab01d4a264944d68746"},
+    "max_automatic_token_associations": 10,
+    "memo": "Account staking to account",
+    "receiver_sig_required": true,
+    "evm_address": null,
+    "ethereum_nonce": null,
+    "decline_reward": true,
+    "staked_node_id": null,
+    "staked_account_id": "0.0.5",
+    "stake_period_start" : "1646333100.356842286"
 }
 
 export const SAMPLE_ACCOUNTS = {
@@ -705,6 +763,17 @@ export const SAMPLE_ACCOUNT_BALANCES = {
                     "balance": 1
                 }
             ]
+        }
+    ]
+}
+
+export const SAMPLE_ACCOUNT_HBAR_BALANCE = {
+    "timestamp": "1646728200.821070000",
+    "balances": [
+        {
+            "account": "0.0.730631",
+            "balance": 2342647909,
+            "tokens": []
         }
     ]
 }
