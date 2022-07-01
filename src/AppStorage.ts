@@ -74,59 +74,6 @@ export class AppStorage {
     }
 
 
-
-    private static readonly HASH_CONNECT_TOPIC_KEY = "hashconnect-topic"
-
-    public static getHashConnectTopic(): string | null {
-        let result: string|null
-        try {
-            result = localStorage.getItem(AppStorage.HASH_CONNECT_TOPIC_KEY)
-        } catch {
-            // Navigator is setup to block all cookies => no id
-            result = null
-        }
-        return result
-    }
-
-    public static setHashConnectTopic(newValue: string|null): void {
-        try {
-            if (newValue != null) {
-                localStorage.setItem(AppStorage.HASH_CONNECT_TOPIC_KEY, newValue);
-            } else {
-                localStorage.removeItem(AppStorage.HASH_CONNECT_TOPIC_KEY)
-            }
-        } catch {
-            // Navigator is setup to block all cookies => we forget id
-        }
-    }
-
-
-    private static readonly HASH_CONNECT_PAIRING_STRING_KEY = "hashconnect-pairing-string"
-
-    public static getHashConnectPairingString(): string | null {
-        let result: string|null
-        try {
-            result = localStorage.getItem(AppStorage.HASH_CONNECT_PAIRING_STRING_KEY)
-        } catch {
-            // Navigator is setup to block all cookies => no id
-            result = null
-        }
-        return result
-    }
-
-    public static setHashConnectPairingString(newValue: string|null): void {
-        try {
-            if (newValue != null) {
-                localStorage.setItem(AppStorage.HASH_CONNECT_PAIRING_STRING_KEY, newValue);
-            } else {
-                localStorage.removeItem(AppStorage.HASH_CONNECT_PAIRING_STRING_KEY)
-            }
-        } catch {
-            // Navigator is setup to block all cookies => we forget id
-        }
-    }
-
-
     private static readonly HASH_CONNECT_CONNECTION_CONTEXT = "hashconnect-connection-context-"
 
     public static getHashConnectConnectionContext(network: string): HashConnectConnectionContext | null {
