@@ -89,35 +89,37 @@
         <div class="columns h-is-property-text">
 
           <div class="column">
-            <Property v-if="account?.staked_account_id" :id="'stakedAccount'">
-              <template v-slot:name>Staked Account</template>
-              <template v-slot:value>
-                <AccountLink :accountId="account.staked_account_id" v-bind:show-extra="true"/>
-              </template>
-            </Property>
-            <Property v-else :id="'stakedNode'">
-              <template v-slot:name>Staked to</template>
-              <template v-slot:value>
-                <div v-if="account?.staked_node_id != null">
-                  <router-link :to="{name: 'NodeDetails', params: {nodeId: account?.staked_node_id}}">
-                    {{ stakedNodeDescription ?? "Node " +  account.staked_node_id}}
-                  </router-link>
-                </div>
-                <span v-else class="has-text-grey">None</span>
-              </template>
-            </Property>
-            <Property :id="'stakePeriodStart'">
-              <template v-slot:name>Stake Period Started</template>
-              <template v-slot:value>
-                <TimestampValue :timestamp="account?.stake_period_start" :show-none="true"/>
-              </template>
-            </Property>
-            <Property :id="'declineReward'" >
-              <template v-slot:name>Decline Reward</template>
-              <template v-slot:value>
-                <StringValue :string-value="account?.decline_reward?.toString()"/>
-              </template>
-            </Property>
+            <div v-if="isStakingEnabled">
+              <Property v-if="account?.staked_account_id" :id="'stakedAccount'">
+                <template v-slot:name>Staked Account</template>
+                <template v-slot:value>
+                  <AccountLink :accountId="account.staked_account_id" v-bind:show-extra="true"/>
+                </template>
+              </Property>
+              <Property v-else :id="'stakedNode'">
+                <template v-slot:name>Staked to</template>
+                <template v-slot:value>
+                  <div v-if="account?.staked_node_id != null">
+                    <router-link :to="{name: 'NodeDetails', params: {nodeId: account?.staked_node_id}}">
+                      {{ stakedNodeDescription ?? "Node " +  account.staked_node_id}}
+                    </router-link>
+                  </div>
+                  <span v-else class="has-text-grey">None</span>
+                </template>
+              </Property>
+              <Property :id="'stakePeriodStart'">
+                <template v-slot:name>Stake Period Started</template>
+                <template v-slot:value>
+                  <TimestampValue :timestamp="account?.stake_period_start" :show-none="true"/>
+                </template>
+              </Property>
+              <Property :id="'declineReward'" >
+                <template v-slot:name>Decline Reward</template>
+                <template v-slot:value>
+                  <StringValue :string-value="account?.decline_reward?.toString()"/>
+                </template>
+              </Property>
+            </div>
             <Property :id="'memo'">
               <template v-slot:name>Memo</template>
               <template v-slot:value>
@@ -136,21 +138,37 @@
                 <DurationValue v-bind:number-value="account?.auto_renew_period"/>
               </template>
             </Property>
-          </div>
+            <div v-if="!isStakingEnabled">
+              <Property :id="'maxAutoAssociation'">
+                <template v-slot:name>Max. Auto. Association</template>
+                <template v-slot:value>
+                  <StringValue :string-value="account?.max_automatic_token_associations?.toString()"/>
+                </template>
+              </Property>
+              <Property :id="'receiverSigRequired'">
+                <template v-slot:name>Receiver Sig. Required</template>
+                <template v-slot:value>
+                  <StringValue :string-value="account?.receiver_sig_required?.toString()"/>
+                </template>
+              </Property>
+            </div>
+            </div>
 
           <div class="column">
-            <Property :id="'maxAutoAssociation'">
-              <template v-slot:name>Max. Auto. Association</template>
-              <template v-slot:value>
-                <StringValue :string-value="account?.max_automatic_token_associations?.toString()"/>
-              </template>
-            </Property>
-            <Property :id="'receiverSigRequired'">
-              <template v-slot:name>Receiver Sig. Required</template>
-              <template v-slot:value>
-                <StringValue :string-value="account?.receiver_sig_required?.toString()"/>
-              </template>
-            </Property>
+            <div v-if="isStakingEnabled">
+              <Property :id="'maxAutoAssociation'">
+                <template v-slot:name>Max. Auto. Association</template>
+                <template v-slot:value>
+                  <StringValue :string-value="account?.max_automatic_token_associations?.toString()"/>
+                </template>
+              </Property>
+              <Property :id="'receiverSigRequired'">
+                <template v-slot:name>Receiver Sig. Required</template>
+                <template v-slot:value>
+                  <StringValue :string-value="account?.receiver_sig_required?.toString()"/>
+                </template>
+              </Property>
+            </div>
             <Property :id="'key'">
               <template v-slot:name>Key</template>
               <template v-slot:value>
@@ -258,6 +276,8 @@ export default defineComponent({
   },
 
   setup(props) {
+    const isStakingEnabled = process.env.VUE_APP_ENABLE_STAKING === 'true'
+
     const isSmallScreen = inject('isSmallScreen', true)
     const isTouchDevice = inject('isTouchDevice', false)
 
@@ -486,6 +506,7 @@ export default defineComponent({
     }
 
     return {
+      isStakingEnabled,
       isSmallScreen,
       isTouchDevice,
       transactions: transactionCache.transactions,
