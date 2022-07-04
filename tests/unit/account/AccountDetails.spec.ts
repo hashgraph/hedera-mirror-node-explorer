@@ -26,6 +26,11 @@ import {
     SAMPLE_ACCOUNT,
     SAMPLE_ACCOUNT_BALANCES, SAMPLE_ACCOUNT_DUDE,
     SAMPLE_COINGECKO,
+    SAMPLE_ACCOUNT_HBAR_BALANCE,
+    SAMPLE_ACCOUNT_STAKING_ACCOUNT,
+    SAMPLE_ACCOUNT_STAKING_NODE,
+    SAMPLE_FAILED_TRANSACTIONS,
+    SAMPLE_NETWORK_NODES,
     SAMPLE_NONFUNGIBLE,
     SAMPLE_TOKEN, SAMPLE_TOKEN_DUDE,
     SAMPLE_TRANSACTIONS
@@ -212,5 +217,85 @@ describe("AccountDetails.vue", () => {
         // console.log(wrapper.text())
 
         expect(wrapper.get("#notificationBanner").text()).toBe("Invalid account ID: " + invalidAccountId)
+    });
+
+    it("Should display account staking to node", async () => {
+
+        process.env = Object.assign(process.env, { VUE_APP_ENABLE_STAKING: true });
+        await router.push("/") // To avoid "missing required param 'network'" error
+
+        const mock = new MockAdapter(axios);
+
+        const matcher1 = "/api/v1/accounts/" + SAMPLE_ACCOUNT_STAKING_NODE.account
+        mock.onGet(matcher1).reply(200, SAMPLE_ACCOUNT_STAKING_NODE);
+
+        const matcher2 = "/api/v1/transactions"
+        mock.onGet(matcher2).reply(200, SAMPLE_FAILED_TRANSACTIONS);
+
+        const matcher3 = "/api/v1/network/nodes"
+        mock.onGet(matcher3).reply(200, SAMPLE_NETWORK_NODES);
+
+        const matcher4 = "/api/v1/balances"
+        mock.onGet(matcher4).reply(200, SAMPLE_ACCOUNT_HBAR_BALANCE);
+
+        const matcher5 = "https://api.coingecko.com/api/v3/coins/hedera-hashgraph"
+        mock.onGet(matcher5).reply(200, SAMPLE_COINGECKO);
+
+        const wrapper = mount(AccountDetails, {
+            global: {
+                plugins: [router, Oruga]
+            },
+            props: {
+                accountId: SAMPLE_ACCOUNT_STAKING_NODE.account ?? undefined
+            },
+        });
+
+        await flushPromises()
+        // console.log(wrapper.html())
+
+        expect(wrapper.get("#stakedNodeValue").text()).toBe("Node 0 - testnet")
+        expect(wrapper.find("#stakedAccount").exists()).toBe(false)
+        expect(wrapper.get("#stakePeriodStartValue").text()).toBe("6:45:00.3568 PMMar 3, 2022")
+        expect(wrapper.get("#declineRewardValue").text()).toBe("false")
+    });
+
+    it("Should display account staking to account", async () => {
+
+        process.env = Object.assign(process.env, { VUE_APP_ENABLE_STAKING: true });
+        await router.push("/") // To avoid "missing required param 'network'" error
+
+        const mock = new MockAdapter(axios);
+
+        const matcher1 = "/api/v1/accounts/" + SAMPLE_ACCOUNT_STAKING_ACCOUNT.account
+        mock.onGet(matcher1).reply(200, SAMPLE_ACCOUNT_STAKING_ACCOUNT);
+
+        const matcher2 = "/api/v1/transactions"
+        mock.onGet(matcher2).reply(200, SAMPLE_FAILED_TRANSACTIONS);
+
+        const matcher3 = "/api/v1/network/nodes"
+        mock.onGet(matcher3).reply(200, SAMPLE_NETWORK_NODES);
+
+        const matcher4 = "/api/v1/balances"
+        mock.onGet(matcher4).reply(200, SAMPLE_ACCOUNT_HBAR_BALANCE);
+
+        const matcher5 = "https://api.coingecko.com/api/v3/coins/hedera-hashgraph"
+        mock.onGet(matcher5).reply(200, SAMPLE_COINGECKO);
+
+        const wrapper = mount(AccountDetails, {
+            global: {
+                plugins: [router, Oruga]
+            },
+            props: {
+                accountId: SAMPLE_ACCOUNT_STAKING_NODE.account ?? undefined
+            },
+        });
+
+        await flushPromises()
+        // console.log(wrapper.html())
+
+        expect(wrapper.get("#stakedAccountValue").text()).toBe("0.0.5Node 2 - testnet")
+        expect(wrapper.find("#stakedNodeValue").exists()).toBe(false)
+        expect(wrapper.get("#stakePeriodStartValue").text()).toBe("6:45:00.3568 PMMar 3, 2022")
+        expect(wrapper.get("#declineRewardValue").text()).toBe("true")
     });
 });

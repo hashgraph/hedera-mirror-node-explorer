@@ -192,7 +192,6 @@ export default defineComponent({
         endTimeInSec = null
       }
       stakingPeriod.value = new StakingPeriod(startTimeInSec, endTimeInSec)
-      console.log("Period duration:" + stakingPeriod.value.durationMin)
     }
 
     return {
