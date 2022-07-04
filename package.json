@@ -4,6 +4,7 @@
   "private": true,
   "scripts": {
     "serve": "npm run install:branding && vue-cli-service serve",
+    "serve:https": "npm run install:branding && vue-cli-service serve --https",
     "serve:prod": "npm run install:branding && vue-cli-service serve --mode production --port 38920",
     "build": "npm run install:branding && vue-cli-service build",
     "test:unit": "npm run install:branding && vue-cli-service test:unit --runInBand",
