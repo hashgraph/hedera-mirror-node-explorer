@@ -45,6 +45,7 @@ export class HashConnectManager {
 
     public constructor(routeManager: RouteManager) {
         this.routeManager = routeManager
+        this.currentContext.value = AppStorage.getHashConnectContext(this.routeManager.currentNetwork.value)
         watch(this.routeManager.currentNetwork, (newValue) => this.networkDidChange(newValue))
     }
 
@@ -107,6 +108,15 @@ export class HashConnectManager {
         }
 
     }
+
+    public disconnect(): void {
+
+        if (this.currentContext.value != null) {
+            AppStorage.setHashConnectContext(null, this.currentContext.value.network)
+            this.currentContext.value = null
+        }
+    }
+
 
     public reset(): void {
         AppStorage.setHashConnectPrivKey(null)
