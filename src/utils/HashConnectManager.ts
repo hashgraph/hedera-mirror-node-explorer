@@ -168,7 +168,6 @@ export class HashConnectManager {
         // Setup events
         hashConnect.pairingEvent.once((pairingData) => {
             if (pairingData.network == context.network) {
-                console.log("pairingData=" + JSON.stringify(pairingData))
                 const newContext: HashConnectContext = {
                     network: context.network,
                     topic: context.topic,
