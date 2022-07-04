@@ -46,6 +46,8 @@
             <template v-else>
               <p>No account found</p>
             </template>
+            <br/>
+            <button class="button" @click="disconnectFromWallet">Disconnect from Wallet</button>
           </template>
           <template v-else>
             <button class="button" @click="connectToWallet">Connect to Wallet…</button>
@@ -100,10 +102,15 @@ export default defineComponent({
       }
     }
 
+    const disconnectFromWallet = () => {
+      hashConnectManager.disconnect()
+    }
+
     return {
       isSmallScreen,
       isTouchDevice,
       connectToWallet,
+      disconnectFromWallet,
       connected: hashConnectManager.connected,
       connectedNetwork: hashConnectManager.connectedNetwork,
       walletName: hashConnectManager.walletName,
