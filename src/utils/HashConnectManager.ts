@@ -135,15 +135,17 @@ export class HashConnectManager {
         hashConnect.connectToLocalWallet(pairingString)
 
         // Setup events
-        hashConnect.pairingEvent.on((pairingData) => {
-            const newContext: HashConnectContext = {
-                network: network,
-                topic: connectionState.topic,
-                pairingString: pairingString,
-                pairingData: pairingData
+        hashConnect.pairingEvent.once((pairingData) => {
+            if (pairingData.network == network) {
+                const newContext: HashConnectContext = {
+                    network: network,
+                    topic: connectionState.topic,
+                    pairingString: pairingString,
+                    pairingData: pairingData
+                }
+                AppStorage.setHashConnectContext(newContext, network)
+                this.currentContext.value = newContext
             }
-            AppStorage.setHashConnectContext(newContext, network)
-            this.currentContext.value = newContext
         });
     }
 
@@ -154,15 +156,18 @@ export class HashConnectManager {
         this.currentContext.value = context
 
         // Setup events
-        hashConnect.pairingEvent.on((pairingData) => {
-            const newContext: HashConnectContext = {
-                network: context.network,
-                topic: context.topic,
-                pairingString: context.pairingString,
-                pairingData: pairingData
+        hashConnect.pairingEvent.once((pairingData) => {
+            if (pairingData.network == context.network) {
+                console.log("pairingData=" + JSON.stringify(pairingData))
+                const newContext: HashConnectContext = {
+                    network: context.network,
+                    topic: context.topic,
+                    pairingString: context.pairingString,
+                    pairingData: pairingData
+                }
+                AppStorage.setHashConnectContext(newContext, newContext.network);
+                this.currentContext.value = newContext
             }
-            AppStorage.setHashConnectContext(newContext, newContext.network);
-            this.currentContext.value = newContext
         });
     }
 
