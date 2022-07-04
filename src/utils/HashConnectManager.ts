@@ -37,7 +37,6 @@ export class HashConnectManager {
     }
 
     private hashConnect: HashConnect | null = null
-    private connectionContexts = new Map<string, HashConnectContext>()
 
 
     //
@@ -116,7 +115,6 @@ export class HashConnectManager {
         }
         this.initData.value = null
         this.currentContext.value = null
-        this.connectionContexts.clear()
     }
 
 
@@ -125,7 +123,7 @@ export class HashConnectManager {
     //
 
     private networkDidChange(newValue: string) {
-        this.currentContext.value = this.connectionContexts.get(newValue) ?? null
+        this.currentContext.value = AppStorage.getHashConnectContext(newValue)
     }
 
     private async firstConnect(hashConnect: HashConnect, network: string) {
@@ -145,7 +143,6 @@ export class HashConnectManager {
                 pairingData: pairingData
             }
             AppStorage.setHashConnectContext(newContext, network)
-            this.connectionContexts.set(network, newContext)
             this.currentContext.value = newContext
         });
     }
@@ -165,7 +162,6 @@ export class HashConnectManager {
                 pairingData: pairingData
             }
             AppStorage.setHashConnectContext(newContext, newContext.network);
-            this.connectionContexts.set(newContext.network, newContext)
             this.currentContext.value = newContext
         });
     }
