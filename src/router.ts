@@ -43,6 +43,8 @@ import {NetworkEntry, NetworkRegistry, networkRegistry} from "@/schemas/NetworkR
 import {AppStorage} from "@/AppStorage";
 import axios from "axios";
 import Staking from "@/pages/Staking.vue";
+import {RouteManager} from "@/utils/RouteManager";
+import {HashConnectManager} from "@/utils/HashConnectManager";
 
 const routes: Array<RouteRecordRaw> = [
   {
@@ -310,3 +312,6 @@ export function getNetworkEntryFromRoute(r: RouteLocationNormalized): NetworkEnt
 export function getNetworkEntryFromCurrentRoute(): NetworkEntry {
   return getNetworkEntryFromRoute(router.currentRoute.value) ?? networkRegistry.getDefaultEntry()
 }
+
+export const routeManager = new RouteManager(router)
+export const hashConnectManager = new HashConnectManager(routeManager)

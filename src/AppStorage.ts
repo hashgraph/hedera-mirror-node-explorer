@@ -19,8 +19,7 @@
  */
 
 import {NetworkEntry, networkRegistry} from "@/schemas/NetworkRegistry";
-import {HashConnectConnectionContext} from "@/utils/HashConnectManager";
-import {MessageTypes} from "hashconnect";
+import {HashConnectContext} from "@/utils/HashConnectManager";
 
 export class AppStorage {
 
@@ -74,28 +73,15 @@ export class AppStorage {
     }
 
 
-    private static readonly HASH_CONNECT_CONNECTION_CONTEXT = "hashconnect-connection-context-"
+    private static readonly HASH_CONNECT_CONNECTION_CONTEXT = "hashconnect-context-"
 
-    public static getHashConnectConnectionContext(network: string): HashConnectConnectionContext | null {
+    public static getHashConnectContext(network: string): HashConnectContext | null {
         const key = AppStorage.HASH_CONNECT_CONNECTION_CONTEXT + network
-        return this.getJsonValue(key) as HashConnectConnectionContext | null
+        return this.getJsonValue(key) as HashConnectContext | null
     }
 
-    public static setHashConnectConnectionContext(newValue: HashConnectConnectionContext|null, network: string): void {
+    public static setHashConnectContext(newValue: HashConnectContext|null, network: string): void {
         const key = AppStorage.HASH_CONNECT_CONNECTION_CONTEXT + network
-        this.setJsonValue(newValue, key)
-    }
-
-
-    private static readonly HASH_CONNECT_PAIRING_DATA = "hashconnect-pairing-data-"
-
-    public static getHashConnectPairingData(network: string): MessageTypes.ApprovePairing | null {
-        const key = AppStorage.HASH_CONNECT_PAIRING_DATA + network
-        return this.getJsonValue(key) as MessageTypes.ApprovePairing | null
-    }
-
-    public static setHashConnectPairingData(newValue: MessageTypes.ApprovePairing|null, network: string): void {
-        const key = AppStorage.HASH_CONNECT_PAIRING_DATA + network
         this.setJsonValue(newValue, key)
     }
 

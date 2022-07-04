@@ -37,20 +37,15 @@
             To view or change your staking you first need to connect to your wallet.
           </p>
           <br/>
-          <template v-if="paired">
+          <template v-if="connected">
             <p>Connected to {{ walletName ?? "?" }}</p>
             <p>Network: {{ connectedNetwork }}</p>
-            <template v-if="accountIds.length === 0">
-              <p>No account found</p>
+            <template v-if="accountId">
+              <p>Account ID: {{ accountId }}</p>
             </template>
             <template v-else>
-              <template v-for="accountId in accountIds" :key="accountId">
-                <p>Account ID: {{ accountId }}</p>
-              </template>
+              <p>No account found</p>
             </template>
-          </template>
-          <template v-else-if="connectedNetwork">
-            <p>Connecting…</p>
           </template>
           <template v-else>
             <button class="button" @click="connectToWallet">Connect to Wallet…</button>
@@ -75,7 +70,7 @@
 import {defineComponent, inject} from 'vue';
 import DashboardCard from "@/components/DashboardCard.vue";
 import Footer from "@/components/Footer.vue";
-import {hashConnectManager} from "@/utils/HashConnectManager";
+import {hashConnectManager} from "@/router";
 
 export default defineComponent({
   name: 'Staking',
@@ -98,7 +93,10 @@ export default defineComponent({
         hashConnectManager.reset()
         console.log("HashConnectManager has been reset")
       } else {
-        hashConnectManager.connect("testnet")
+        hashConnectManager.connect()
+      }
+      if (event.target instanceof HTMLButtonElement) {
+        event.target.blur()
       }
     }
 
@@ -106,11 +104,11 @@ export default defineComponent({
       isSmallScreen,
       isTouchDevice,
       connectToWallet,
+      connected: hashConnectManager.connected,
       connectedNetwork: hashConnectManager.connectedNetwork,
-      paired: hashConnectManager.paired,
-      walletName: hashConnectManager.pairedWalletName,
-      walletIconURL: hashConnectManager.pairedWalletIconURL,
-      accountIds: hashConnectManager.pairedAccountIds
+      walletName: hashConnectManager.walletName,
+      walletIconURL: hashConnectManager.walletIconURL,
+      accountId: hashConnectManager.accountId
     }
   }
 });
