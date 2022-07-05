@@ -24,6 +24,16 @@
 
 <template>
 
+  <ModalDialog v-model:show-dialog="showChangeStakeDialog" >
+    <template v-slot:dialogMessage>Change Staking</template>
+    <template v-slot:dialogDetails>(Place holder)</template>
+  </ModalDialog>
+
+  <ModalDialog v-model:show-dialog="showStopConfirmationDialog" >
+    <template v-slot:dialogMessage>Stop Staking Confirmation</template>
+    <template v-slot:dialogDetails>(Place holder)</template>
+  </ModalDialog>
+
   <section :class="{'h-mobile-background': isTouchDevice || !isSmallScreen}" class="section">
 
     <DashboardCard>
@@ -32,20 +42,23 @@
         <span v-if="accountId" class="h-is-tertiary-text mr-3"> for account {{ accountId }}</span>
       </template>
 
-      <template v-slot:control>
-        <div class="is-flex is-align-items-flex-end">
-          <button class="button is-white is-small" >STOP STAKING</button>
-          <button class="button is-white is-small ml-4" >CHANGE STAKED TO</button>
-        </div>
-      </template>
-
       <template v-slot:table>
 
         <template v-if="accountId">
-          <div v-if="isSmallScreen" class="is-flex is-justify-content-space-between">
-            <NetworkDashboardItem :name="stakedSince" :title="'Staked to'" :value="stakedTo"/>
-            <NetworkDashboardItem :name="stakedAmount ? 'HBAR' : ''" :title="'My Stake'" :value="stakedAmount"/>
-            <NetworkDashboardItem :title="'Decline Reward'" :value="declineReward"/>
+          <div v-if="isSmallScreen">
+            <div class="is-flex is-justify-content-space-between">
+              <NetworkDashboardItem :name="stakedSince" :title="'Staked to'" :value="stakedTo"/>
+              <NetworkDashboardItem :name="stakedAmount ? 'HBAR' : ''" :title="'My Stake'" :value="stakedAmount"/>
+              <NetworkDashboardItem :title="'Decline Reward'" :value="declineReward"/>
+            </div>
+            <br/>
+            <div class="is-flex is-justify-content-space-between">
+              <div class="is-flex is-justify-content-flex-start">
+                <button class="button is-white is-small" @click="showStopConfirmationDialog = true">STOP STAKING</button>
+                <button class="button is-white is-small ml-4" @click="showChangeStakeDialog = true">CHANGE STAKED TO</button>
+              </div>
+              <button class="button is-white is-small" @click="disconnectFromWallet">DISCONNECT FROM WALLET</button>
+            </div>
           </div>
           <div v-else>
             <div class="is-flex-direction-column">
@@ -54,12 +67,16 @@
               <NetworkDashboardItem :name="stakedAmount ? 'HBAR' : ''" :title="'My Stake'" :value="stakedAmount"/>
               <div class="mt-4"/>
               <NetworkDashboardItem :title="'Decline Reward'" :value="declineReward"/>
-              <div class="mt-6"/>
+              <div class="mt-4"/>
             </div>
-          </div>
-          <br/>
-          <div class="is-flex is-justify-content-center">
-            <button class="button is-white is-small" @click="disconnectFromWallet">DISCONNECT FROM WALLET</button>
+              <div class="is-flex is-justify-content-center">
+                  <button class="button is-white is-small" @click="showStopConfirmationDialog = true">STOP STAKING</button>
+                  <button class="button is-white is-small ml-4" @click="showChangeStakeDialog = true">CHANGE STAKED TO</button>
+                </div>
+            <div class="is-flex is-justify-content-center mt-4">
+              <button class="button is-white is-small" @click="disconnectFromWallet">DISCONNECT FROM WALLET</button>
+            </div>
+            <div class="mt-6"/>
           </div>
         </template>
 
@@ -120,6 +137,7 @@ import {AccountBalanceTransactions, NetworkNode, NetworkNodesResponse} from "@/s
 import {HMSF} from "@/utils/HMSF";
 import {operatorRegistry} from "@/schemas/OperatorRegistry";
 import TransactionTableV2 from "@/components/transaction/TransactionTableV2.vue";
+import ModalDialog from "@/components/ModalDialog.vue";
 
 export default defineComponent({
   name: 'Staking',
@@ -129,6 +147,7 @@ export default defineComponent({
   },
 
   components: {
+    ModalDialog,
     TransactionTableV2,
     NetworkDashboardItem,
     Footer,
@@ -160,6 +179,9 @@ export default defineComponent({
     //
     const account = ref<AccountBalanceTransactions | null>(null)
     const accountError = ref<unknown>(null)
+
+    const showChangeStakeDialog = ref(false)
+    const showStopConfirmationDialog = ref(false)
 
     const isStaked = computed(() => account?.value?.staked_node_id || account?.value?.staked_account_id)
 
@@ -278,6 +300,8 @@ export default defineComponent({
       accountId: hashConnectManager.accountId,
       account,
       isStaked,
+      showChangeStakeDialog,
+      showStopConfirmationDialog,
       isIndirectStaking,
       stakedTo,
       stakedAmount,
