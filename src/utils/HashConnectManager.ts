@@ -138,14 +138,24 @@ export class HashConnectManager {
 
     private async firstConnect(hashConnect: HashConnect, network: string) {
 
-        // First connection with network
+        // Connecting
         const connectionState = await hashConnect.connect()
         const pairingString = hashConnect.generatePairingString(connectionState, network, true)
+        const newContext: HashConnectContext = {
+            network: network,
+            topic: connectionState.topic,
+            pairingString: pairingString,
+            pairingData: null
+        }
+        AppStorage.setHashConnectContext(newContext, network)
+        this.currentContext.value = newContext
+
+        // Pairing
         hashConnect.findLocalWallets()
         hashConnect.connectToLocalWallet(pairingString)
 
         // Setup events
-        hashConnect.pairingEvent.once((pairingData) => {
+        hashConnect.pairingEvent.on((pairingData) => {
             if (pairingData.network == network) {
                 const newContext: HashConnectContext = {
                     network: network,
@@ -166,7 +176,7 @@ export class HashConnectManager {
         this.currentContext.value = context
 
         // Setup events
-        hashConnect.pairingEvent.once((pairingData) => {
+        hashConnect.pairingEvent.on((pairingData) => {
             if (pairingData.network == context.network) {
                 const newContext: HashConnectContext = {
                     network: context.network,
@@ -186,5 +196,5 @@ export interface HashConnectContext {
     network: string
     topic: string
     pairingString: string
-    pairingData: MessageTypes.ApprovePairing
+    pairingData: MessageTypes.ApprovePairing | null
 }
