@@ -82,10 +82,10 @@
 
         <template v-else-if="connected">
           <section class="section has-text-centered" style="min-height: 450px">
-            <p>Connected to {{ walletName ?? "?" }}</p>
-            <p>No account found</p>
+            <p>Connecting to your Wallet...</p>
+            <p>You need to select which account you wish to connect with.</p>
             <br/>
-            <button class="button is-white is-small" @click="disconnectFromWallet">DISCONNECT FROM WALLET</button>
+            <button class="button is-white is-small" @click="disconnectFromWallet">ABORT CONNEXION</button>
           </section>
         </template>
 
