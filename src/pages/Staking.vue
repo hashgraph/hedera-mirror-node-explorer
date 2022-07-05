@@ -85,7 +85,7 @@
       </template>
     </DashboardCard>
 
-    <DashboardCard v-if="accountId">
+    <DashboardCard v-if="accountId" :class="{'h-has-opacity-20': isIndirectStaking}">
       <template v-slot:title>
         <p class="h-is-primary-title">Transactions That Payed Reward</p>
       </template>
@@ -162,6 +162,8 @@ export default defineComponent({
     const accountError = ref<unknown>(null)
 
     const isStaked = computed(() => account?.value?.staked_node_id || account?.value?.staked_account_id)
+
+    const isIndirectStaking = computed(() => account?.value?.staked_account_id)
 
     const stakedTo = computed(() => {
       let result
@@ -276,6 +278,7 @@ export default defineComponent({
       accountId: hashConnectManager.accountId,
       account,
       isStaked,
+      isIndirectStaking,
       stakedTo,
       stakedAmount,
       stakedSince,
