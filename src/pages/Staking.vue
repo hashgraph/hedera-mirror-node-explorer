@@ -24,10 +24,8 @@
 
 <template>
 
-  <ModalDialog v-model:show-dialog="showChangeStakeDialog" >
-    <template v-slot:dialogMessage>Change Staking</template>
-    <template v-slot:dialogDetails>(Place holder)</template>
-  </ModalDialog>
+  <StakingDialog v-model:show-dialog="showChangeStakeDialog" :account="account" :staked-to="stakedTo" :network-node="stakedNode">
+  </StakingDialog>
 
   <ModalDialog v-model:show-dialog="showStopConfirmationDialog" >
     <template v-slot:dialogMessage>Stop Staking Confirmation</template>
@@ -39,7 +37,8 @@
     <DashboardCard>
       <template v-slot:title>
         <span class="h-is-primary-title">My Staking </span>
-        <span v-if="accountId" class="h-is-tertiary-text mr-3"> for account {{ accountId }}</span>
+        <span v-if="accountId" class="h-is-tertiary-text"> for account </span>
+        <span v-if="accountId" class="h-is-secondary-text has-text-weight-light mr-3">{{ accountId }}</span>
       </template>
 
       <template v-slot:table>
@@ -128,7 +127,6 @@
 <script lang="ts">
 
 import {computed, defineComponent, inject, onBeforeMount, ref, watch} from 'vue';
-import DashboardCard from "@/components/DashboardCard.vue";
 import Footer from "@/components/Footer.vue";
 import {hashConnectManager} from "@/router";
 import NetworkDashboardItem from "@/components/node/NetworkDashboardItem.vue";
@@ -138,6 +136,8 @@ import {HMSF} from "@/utils/HMSF";
 import {operatorRegistry} from "@/schemas/OperatorRegistry";
 import TransactionTableV2 from "@/components/transaction/TransactionTableV2.vue";
 import ModalDialog from "@/components/ModalDialog.vue";
+import StakingDialog from "@/components/StakingDialog.vue";
+import DashboardCard from "@/components/DashboardCard.vue";
 
 export default defineComponent({
   name: 'Staking',
@@ -147,11 +147,12 @@ export default defineComponent({
   },
 
   components: {
+    DashboardCard,
+    StakingDialog,
     ModalDialog,
     TransactionTableV2,
     NetworkDashboardItem,
     Footer,
-    DashboardCard
   },
 
   setup() {
@@ -304,6 +305,7 @@ export default defineComponent({
       showStopConfirmationDialog,
       isIndirectStaking,
       stakedTo,
+      stakedNode,
       stakedAmount,
       stakedSince,
       declineReward
