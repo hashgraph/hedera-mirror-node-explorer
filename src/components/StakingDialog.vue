@@ -25,7 +25,7 @@
 <template>
   <div :class="{'is-active': showDialog}" class="modal has-text-white">
     <div class="modal-background"/>
-    <div class="modal-content" style="border-radius: 16px; border-width: 10px; border-color: yellow">
+    <div class="modal-content" style="width: 768px">
       <div class="box">
         <div class="is-flex is-justify-content-space-between is-align-items-self-end">
           <span>
@@ -53,6 +53,52 @@
           </template>
         </Property>
 
+        <div class="columns">
+          <div class="column is-one-third has-text-weight-light">
+            Stake To
+          </div>
+          <div class="column">
+            <div class="is-flex">
+              <div class="control" style="width: 10rem">
+                <label class="radio">
+                  <input checked="checked" name="stakeTarget" type="radio">
+                  Node
+                </label>
+              </div>
+              <o-field>
+                <o-select v-model="selectedNode" class="h-is-text-size-1" style="border-radius: 4px">
+                  <option v-for="f in filterValues" v-bind:key="f" v-bind:value="f"
+                          style="background-color: var(--h-theme-page-background-color)">
+                    {{ f }}
+                  </option>
+                </o-select>
+              </o-field>
+            </div>
+            <div class="is-flex mt-2">
+              <div class="control" style="width: 10rem">
+                <label class="radio ml-0">
+                  <input name="stakeTarget" type="radio">
+                  Other Account
+                </label>
+              </div>
+              <o-field>
+                <o-input placeholder="0.0.1234"></o-input>
+              </o-field>
+            </div>
+          </div>
+        </div>
+
+        <div class="columns">
+          <div class="column is-one-third has-text-weight-light">
+            Decline Reward
+          </div>
+          <div class="column">
+            <label class="checkbox">
+              <input checked="checked" type="checkbox">
+            </label>
+          </div>
+        </div>
+
         <Property :id="'changeCost'">
           <template v-slot:name>Change Transaction Cost</template>
           <template v-slot:value>
@@ -65,17 +111,6 @@
           <button class="button is-info is-small ml-4" @click="handleChange">CHANGE</button>
         </div>
 
-        <!--        <template v-if="accountId">-->
-        <!--          <div v-if="isSmallScreen" class="is-flex is-justify-content-space-between">-->
-        <!--          </div>-->
-        <!--          <div v-else>-->
-        <!--          </div>-->
-        <!--          <br/>-->
-        <!--          <div class="is-flex is-justify-content-center">-->
-        <!--            <button class="button is-white is-small" @click="disconnectFromWallet">DISCONNECT FROM WALLET</button>-->
-        <!--          </div>-->
-        <!--        </template>-->
-
       </div>
     </div>
   </div>
@@ -87,7 +122,7 @@
 
 <script lang="ts">
 
-import {computed, defineComponent, PropType} from "vue";
+import {computed, defineComponent, PropType, ref} from "vue";
 import {AccountBalanceTransactions, NetworkNode} from "@/schemas/HederaSchemas";
 import Property from "@/components/Property.vue";
 import HbarAmount from "@/components/values/HbarAmount.vue";
@@ -113,6 +148,10 @@ export default defineComponent({
 
     const accountId = computed(() => props.account?.account)
 
+    const selectedAccount = ref("")
+    const selectedNode = ref(0)
+    const filterValues = ['Node1', 'Node2', 'Node3']
+
     const handleCancel = () => {
       context.emit('update:showDialog', false)
     }
@@ -123,6 +162,9 @@ export default defineComponent({
 
     return {
       accountId,
+      selectedAccount,
+      selectedNode,
+      filterValues,
       handleCancel,
       handleChange
     }
