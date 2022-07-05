@@ -24,9 +24,11 @@
 
 <template>
 
-  <p v-if="isMediumScreen" class="h-is-property-text mb-1">{{ title }}</p>
-  <p v-else class="h-is-text-size-3 mb-1">{{ title }}</p>
-  <DashboardItem :is-numeric="false" :name="name" :value="value" :variation="variation"/>
+  <div class="is-flex is-flex-direction-column is-align-items-flex-start">
+    <p v-if="isMediumScreen" class="h-is-property-text mb-1">{{ title }}</p>
+    <p v-else class="h-is-text-size-3 mb-1">{{ title }}</p>
+    <DashboardItem :is-numeric="false" :name="name" :value="value" :variation="variation"/>
+  </div>
 
 </template>
 
