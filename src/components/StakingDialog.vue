@@ -68,7 +68,7 @@
               <o-field>
                 <o-select v-model="selectedNode" class="h-is-text-size-1" style="border-radius: 4px">
                   <option v-for="f in filterValues" v-bind:key="f" v-bind:value="f"
-                          style="background-color: var(--h-theme-page-background-color)">
+                          style="background-color: var(--h-theme-box-background-color)">
                     {{ f }}
                   </option>
                 </o-select>
@@ -82,7 +82,9 @@
                 </label>
               </div>
               <o-field>
-                <o-input placeholder="0.0.1234"></o-input>
+                <o-input placeholder="0.0.1234"
+                         style="width: 12rem; color: white; background-color: var(--h-theme-box-background-color) ">
+                </o-input>
               </o-field>
             </div>
           </div>
@@ -122,11 +124,13 @@
 
 <script lang="ts">
 
-import {computed, defineComponent, PropType, ref} from "vue";
-import {AccountBalanceTransactions, NetworkNode} from "@/schemas/HederaSchemas";
+import {computed, defineComponent, onMounted, PropType, ref} from "vue";
+import {AccountBalanceTransactions, NetworkNode, NetworkNodesResponse} from "@/schemas/HederaSchemas";
 import Property from "@/components/Property.vue";
 import HbarAmount from "@/components/values/HbarAmount.vue";
 import StringValue from "@/components/values/StringValue.vue";
+import axios from "axios";
+import {operatorRegistry} from "@/schemas/OperatorRegistry";
 
 export default defineComponent({
   name: "StakingDialog",
@@ -150,7 +154,6 @@ export default defineComponent({
 
     const selectedAccount = ref("")
     const selectedNode = ref(0)
-    const filterValues = ['Node1', 'Node2', 'Node3']
 
     const handleCancel = () => {
       context.emit('update:showDialog', false)
@@ -160,11 +163,73 @@ export default defineComponent({
       context.emit('update:showDialog', false)
     }
 
+    //
+    // Nodes
+    //
+    let nodes = ref<Array<NetworkNode> | null>([])
+
+    const totalStaked = computed(() => {
+      let result = 0
+      if (nodes.value) {
+        for (const n of nodes.value) {
+          if (n.stake) {
+            result += n.stake
+          }
+        }
+      }
+      return result
+    })
+
+    const filterValues = computed(() => {
+      const result = Array<string>()
+      if (nodes.value) {
+        for (const n of nodes.value) {
+          const nodeDescription = makeNodeDescription(n)
+          if (nodeDescription) {
+            result.push(nodeDescription)
+          }
+        }
+      }
+      return result
+    })
+
+    const fetchNodes = (nextUrl: string | null = null) => {
+      const url = nextUrl ?? "api/v1/network/nodes"
+      console.log("calling axios with URL: " + url)
+      axios
+          .get<NetworkNodesResponse>(url, {params: {limit: 25}})
+          .then(result => {
+            if (result.data.nodes) {
+              for (const n of result.data.nodes) {
+                console.log("got node: " + n.node_account_id)
+              }
+              nodes.value = nodes.value ? nodes.value.concat(result.data.nodes) : result.data.nodes
+            }
+            const next = result.data.links?.next
+            if (next) {
+              fetchNodes(next)
+            }
+          })
+    }
+
+    onMounted(() => fetchNodes())
+
+    const makeNodeDescription = (node: NetworkNode) => {
+      let result
+      if (node.description) {
+        result = node.description
+      } else {
+        result = node.node_account_id ? operatorRegistry.lookup(node.node_account_id)?.getDescription() : null
+      }
+      return result
+    }
+
     return {
       accountId,
       selectedAccount,
       selectedNode,
       filterValues,
+      totalStaked,
       handleCancel,
       handleChange
     }
