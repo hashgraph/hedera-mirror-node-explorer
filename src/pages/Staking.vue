@@ -32,6 +32,13 @@
         <span v-if="accountId" class="h-is-tertiary-text mr-3"> for account {{ accountId }}</span>
       </template>
 
+      <template v-slot:control>
+        <div class="is-flex is-align-items-flex-end">
+          <button class="button is-white is-small" >STOP STAKING</button>
+          <button class="button is-white is-small ml-4" >CHANGE STAKED TO</button>
+        </div>
+      </template>
+
       <template v-slot:table>
 
         <template v-if="accountId">
@@ -52,7 +59,7 @@
           </div>
           <br/>
           <div class="is-flex is-justify-content-center">
-            <button class="button" @click="disconnectFromWallet">Disconnect from Wallet</button>
+            <button class="button is-white is-small" @click="disconnectFromWallet">DISCONNECT FROM WALLET</button>
           </div>
         </template>
 
@@ -61,7 +68,7 @@
             <p>Connected to {{ walletName ?? "?" }}</p>
             <p>No account found</p>
             <br/>
-            <button class="button" @click="disconnectFromWallet">Disconnect from Wallet</button>
+            <button class="button is-white is-small" @click="disconnectFromWallet">DISCONNECT FROM WALLET</button>
           </section>
         </template>
 
@@ -71,7 +78,7 @@
               To view or change your staking you first need to connect to your wallet.
             </p>
             <br/>
-            <button class="button" @click="connectToWallet">Connect to Wallet…</button>
+            <button class="button is-white is-small" @click="connectToWallet">CONNECT TO WALLET…</button>
           </section>
         </template>
 
