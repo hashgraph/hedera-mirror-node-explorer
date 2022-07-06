@@ -23,11 +23,11 @@ import {HashConnect, HashConnectTypes, MessageTypes} from "hashconnect";
 import {AppStorage} from "@/AppStorage";
 import {HederaLogo} from "@/utils/MetaMask";
 import {RouteManager} from "@/utils/RouteManager";
+import {AccountUpdateTransaction, TransactionResponse} from "@hashgraph/sdk";
 
 export class HashConnectManager {
 
     private readonly routeManager: RouteManager
-    private readonly initData: Ref<HashConnectTypes.InitilizationData | null> = ref(null)
     private readonly currentContext: Ref<HashConnectContext | null> = ref(null)
 
     private readonly appMetadata: HashConnectTypes.AppMetadata = {
@@ -45,8 +45,8 @@ export class HashConnectManager {
 
     public constructor(routeManager: RouteManager) {
         this.routeManager = routeManager
-        this.currentContext.value = AppStorage.getHashConnectContext(this.routeManager.currentNetwork.value)
         watch(this.routeManager.currentNetwork, (newValue) => this.networkDidChange(newValue))
+        this.reconnect()
     }
 
     public readonly connected = computed<boolean>(() => {
@@ -75,36 +75,75 @@ export class HashConnectManager {
 
     public async connect(): Promise<void> {
 
-        if (this.currentContext.value != null) {
+        // Creates HashConnect
+        if (this.hashConnect === null) {
 
-            await Promise.resolve()
+            this.hashConnect = new HashConnect(true)
 
-        } else {
-
-            // Creates HashConnect
-            if (this.hashConnect === null) {
-                this.hashConnect = new HashConnect(true)
-            }
-
-            // Initializes
             const hashConnectKey = AppStorage.getHashConnectPrivKey() ?? undefined
-            this.initData.value = await this.hashConnect.init(this.appMetadata, hashConnectKey)
-            AppStorage.setHashConnectPrivKey(this.initData.value.privKey)
+            const initData = await this.hashConnect.init(this.appMetadata, hashConnectKey)
+            AppStorage.setHashConnectPrivKey(initData.privKey)
 
-            // Connects with network
+        }
+
+        // Connects with network
+        if (this.currentContext.value === null) {
+
             const network = this.routeManager.currentNetwork.value
             const context = AppStorage.getHashConnectContext(network)
-            if (context == null) {
+
+            if (context === null) {
 
                 // First connection
-                await this.firstConnect(this.hashConnect, network)
+                const connectionState = await this.hashConnect.connect()
+                const pairingString = this.hashConnect.generatePairingString(connectionState, network, true)
+                const newContext: HashConnectContext = {
+                    network: network,
+                    topic: connectionState.topic,
+                    pairingString: pairingString,
+                    pairingData: null
+                }
+                AppStorage.setHashConnectContext(newContext, network)
+                this.currentContext.value = newContext
 
-             } else {
+                // Pairing
+                this.hashConnect.findLocalWallets()
+                this.hashConnect.connectToLocalWallet(pairingString)
+
+                // Setup events
+                this.hashConnect.pairingEvent.on((pairingData) => {
+                    if (pairingData.network == network) {
+                        const newContext: HashConnectContext = {
+                            network: network,
+                            topic: connectionState.topic,
+                            pairingString: pairingString,
+                            pairingData: pairingData
+                        }
+                        AppStorage.setHashConnectContext(newContext, network)
+                        this.currentContext.value = newContext
+                    }
+                });
+
+            } else {
+                this.currentContext.value = context
 
                 // Second connection
-                await this.secondConnect(this.hashConnect, context);
-           }
+                await this.hashConnect.connect(context.topic, context.pairingData?.metadata)
 
+                // Setup events
+                this.hashConnect.pairingEvent.on((pairingData) => {
+                    if (pairingData.network == context.network) {
+                        const newContext: HashConnectContext = {
+                            network: context.network,
+                            topic: context.topic,
+                            pairingString: context.pairingString,
+                            pairingData: pairingData
+                        }
+                        AppStorage.setHashConnectContext(newContext, newContext.network);
+                        this.currentContext.value = newContext
+                    }
+                });
+            }
         }
 
     }
@@ -123,10 +162,32 @@ export class HashConnectManager {
         for (const network of ["mainnet", "testnet"]) {
             AppStorage.setHashConnectContext(null, network)
         }
-        this.initData.value = null
         this.currentContext.value = null
     }
 
+    public async stakeToNode(nodeID: number): Promise<TransactionResponse> {
+        let result: Promise<TransactionResponse>
+
+        // Connects if needed
+        await this.connect()
+
+        // Updates account's stakeNodeId
+        if (this.hashConnect !== null && this.currentContext.value !== null && this.accountId.value !== null) {
+            const provider = this.hashConnect.getProvider(this.currentContext.value.network,
+                this.currentContext.value.topic, this.accountId.value)
+            const signer = this.hashConnect.getSigner(provider)
+            const trans = await new AccountUpdateTransaction()
+            trans.setAccountId(this.accountId.value)
+            trans.setStakedNodeId(nodeID)
+            await trans.freezeWithSigner(signer)
+            result = trans.executeWithSigner(signer)
+
+        } else {
+            result = Promise.reject("Failed to connect to wallet")
+        }
+
+        return result;
+    }
 
     //
     // Private
@@ -136,60 +197,12 @@ export class HashConnectManager {
         this.currentContext.value = AppStorage.getHashConnectContext(newValue)
     }
 
-    private async firstConnect(hashConnect: HashConnect, network: string) {
-
-        // Connecting
-        const connectionState = await hashConnect.connect()
-        const pairingString = hashConnect.generatePairingString(connectionState, network, true)
-        const newContext: HashConnectContext = {
-            network: network,
-            topic: connectionState.topic,
-            pairingString: pairingString,
-            pairingData: null
+    private reconnect() {
+        const network = this.routeManager.currentNetwork.value
+        if (AppStorage.getHashConnectContext(network) !== null) {
+            this.connect().then()
         }
-        AppStorage.setHashConnectContext(newContext, network)
-        this.currentContext.value = newContext
-
-        // Pairing
-        hashConnect.findLocalWallets()
-        hashConnect.connectToLocalWallet(pairingString)
-
-        // Setup events
-        hashConnect.pairingEvent.on((pairingData) => {
-            if (pairingData.network == network) {
-                const newContext: HashConnectContext = {
-                    network: network,
-                    topic: connectionState.topic,
-                    pairingString: pairingString,
-                    pairingData: pairingData
-                }
-                AppStorage.setHashConnectContext(newContext, network)
-                this.currentContext.value = newContext
-            }
-        });
     }
-
-    private async secondConnect(hashConnect: HashConnect, context: HashConnectContext) {
-
-        // Second connection
-        await hashConnect.connect(context.topic, context.pairingData?.metadata)
-        this.currentContext.value = context
-
-        // Setup events
-        hashConnect.pairingEvent.on((pairingData) => {
-            if (pairingData.network == context.network) {
-                const newContext: HashConnectContext = {
-                    network: context.network,
-                    topic: context.topic,
-                    pairingString: context.pairingString,
-                    pairingData: pairingData
-                }
-                AppStorage.setHashConnectContext(newContext, newContext.network);
-                this.currentContext.value = newContext
-            }
-        });
-    }
-
 }
 
 export interface HashConnectContext {
