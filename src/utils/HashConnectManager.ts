@@ -27,7 +27,6 @@ import {RouteManager} from "@/utils/RouteManager";
 export class HashConnectManager {
 
     private readonly routeManager: RouteManager
-    private readonly initData: Ref<HashConnectTypes.InitilizationData | null> = ref(null)
     private readonly currentContext: Ref<HashConnectContext | null> = ref(null)
 
     private readonly appMetadata: HashConnectTypes.AppMetadata = {
@@ -83,13 +82,8 @@ export class HashConnectManager {
 
             // Creates HashConnect
             if (this.hashConnect === null) {
-                this.hashConnect = new HashConnect(true)
+                this.hashConnect = await this.makeHashConnect()
             }
-
-            // Initializes
-            const hashConnectKey = AppStorage.getHashConnectPrivKey() ?? undefined
-            this.initData.value = await this.hashConnect.init(this.appMetadata, hashConnectKey)
-            AppStorage.setHashConnectPrivKey(this.initData.value.privKey)
 
             // Connects with network
             const network = this.routeManager.currentNetwork.value
@@ -123,7 +117,6 @@ export class HashConnectManager {
         for (const network of ["mainnet", "testnet"]) {
             AppStorage.setHashConnectContext(null, network)
         }
-        this.initData.value = null
         this.currentContext.value = null
     }
 
@@ -134,6 +127,14 @@ export class HashConnectManager {
 
     private networkDidChange(newValue: string) {
         this.currentContext.value = AppStorage.getHashConnectContext(newValue)
+    }
+
+    private async makeHashConnect(): Promise<HashConnect> {
+        const result = new HashConnect(true)
+        const hashConnectKey = AppStorage.getHashConnectPrivKey() ?? undefined
+        const initData = await result.init(this.appMetadata, hashConnectKey)
+        AppStorage.setHashConnectPrivKey(initData.privKey)
+        return result
     }
 
     private async firstConnect(hashConnect: HashConnect, network: string) {
