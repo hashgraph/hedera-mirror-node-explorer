@@ -25,7 +25,7 @@
 <template>
   <div :class="{'is-active': showDialog}" class="modal has-text-white">
     <div class="modal-background"/>
-    <div class="modal-content" style="width: 768px">
+    <div class="modal-content" style="width: 768px; border-radius: 16px">
       <div class="box">
         <div class="is-flex is-justify-content-space-between is-align-items-self-end">
           <span>
@@ -49,7 +49,7 @@
         <Property :id="'currentlyStakedTo'">
           <template v-slot:name>Currently Staked To</template>
           <template v-slot:value>
-            <StringValue v-if="account" :string-value="stakedTo"/>
+            <StringValue v-if="account" :string-value="currentlyStakedTo"/>
           </template>
         </Property>
 
@@ -61,15 +61,16 @@
             <div class="is-flex">
               <div class="control" style="width: 10rem">
                 <label class="radio">
-                  <input checked="checked" name="stakeTarget" type="radio">
+                  <input name="stakeTarget" type="radio" value="node" v-model="stakeChoice">
                   Node
                 </label>
               </div>
               <o-field>
-                <o-select v-model="selectedNode" class="h-is-text-size-1" style="border-radius: 4px">
-                  <option v-for="f in filterValues" v-bind:key="f" v-bind:value="f"
+                <o-select v-model="selectedNode" :disabled="!isNodeSelected"
+                          class="h-is-text-size-1" style="border-radius: 4px">
+                  <option v-for="n in nodes" :key="n.node_id" :value="n.node_id"
                           style="background-color: var(--h-theme-box-background-color)">
-                    {{ f }}
+                    {{ makeNodeDescription(n) }}
                   </option>
                 </o-select>
               </o-field>
@@ -77,12 +78,12 @@
             <div class="is-flex mt-2">
               <div class="control" style="width: 10rem">
                 <label class="radio ml-0">
-                  <input name="stakeTarget" type="radio">
+                  <input name="stakeTarget" type="radio" value="account" v-model="stakeChoice">
                   Other Account
                 </label>
               </div>
               <o-field>
-                <o-input placeholder="0.0.1234"
+                <o-input v-model="selectedAccount" placeholder="0.0.1234" :disabled="!isAccountSelected"
                          style="width: 12rem; color: white; background-color: var(--h-theme-box-background-color) ">
                 </o-input>
               </o-field>
@@ -96,7 +97,7 @@
           </div>
           <div class="column">
             <label class="checkbox">
-              <input checked="checked" type="checkbox">
+              <input checked="checked" type="checkbox" v-model="declineChoice" :disabled="!isNodeSelected">
             </label>
           </div>
         </div>
@@ -110,7 +111,8 @@
 
         <div class="is-flex is-justify-content-flex-end">
           <button class="button is-white is-small" @click="handleCancel">CANCEL</button>
-          <button class="button is-info is-small ml-4" @click="handleChange">CHANGE</button>
+          <button class="button is-info is-small ml-4"
+                  :disabled="!enableChangeButton" @click="handleChange">CHANGE</button>
         </div>
 
       </div>
@@ -124,13 +126,14 @@
 
 <script lang="ts">
 
-import {computed, defineComponent, onMounted, PropType, ref} from "vue";
+import {computed, defineComponent, onMounted, PropType, ref, watch} from "vue";
 import {AccountBalanceTransactions, NetworkNode, NetworkNodesResponse} from "@/schemas/HederaSchemas";
 import Property from "@/components/Property.vue";
 import HbarAmount from "@/components/values/HbarAmount.vue";
 import StringValue from "@/components/values/StringValue.vue";
 import axios from "axios";
 import {operatorRegistry} from "@/schemas/OperatorRegistry";
+import {EntityID} from "@/utils/EntityID";
 
 export default defineComponent({
   name: "StakingDialog",
@@ -141,19 +144,44 @@ export default defineComponent({
       default: false
     },
     account: Object as PropType<AccountBalanceTransactions>,
-    stakedTo: String,
-    networkNode: {
-      type: Object as PropType<NetworkNode | null>,
-      default: null
-    }
+    currentlyStakedTo: String,
   },
 
   setup(props, context) {
-
     const accountId = computed(() => props.account?.account)
 
-    const selectedAccount = ref("")
-    const selectedNode = ref(0)
+    const stakeChoice = ref("node")
+    const isNodeSelected = computed(() => stakeChoice.value === 'node')
+    const isAccountSelected = computed(() => stakeChoice.value === 'account')
+
+    const selectedAccount = ref<string|null>(null)
+    const isSelectedAccountValid = ref(true)
+    watch(selectedAccount, () => {
+      if (selectedAccount.value?.length) {
+        isSelectedAccountValid.value = isValidEntityId(selectedAccount.value ?? "")
+      } else {
+        isSelectedAccountValid.value = false
+        selectedAccount.value = null
+      }
+    })
+
+    const selectedNode = ref(null)
+
+    const declineChoice = ref(false)
+    watch(accountId, () => declineChoice.value = props.account?.decline_reward ?? false)
+
+    const enableChangeButton = computed(() => {
+      console.log("staked_account_id: " + props.account?.staked_account_id)
+      console.log("selectedAccount: " + selectedAccount.value)
+      console.log("staked_node_id: " + props.account?.staked_node_id)
+      console.log("selectedNode: " + selectedNode.value)
+      console.log("decline_reward: " + props.account?.decline_reward)
+      console.log("declineChoice: " + declineChoice.value)
+
+      return (isAccountSelected.value && isSelectedAccountValid.value && props.account?.staked_account_id != selectedAccount.value)
+          || (isNodeSelected.value  && selectedNode.value && props.account?.staked_node_id != selectedNode.value)
+          || (props.account?.decline_reward != declineChoice.value)
+    })
 
     const handleCancel = () => {
       context.emit('update:showDialog', false)
@@ -161,6 +189,10 @@ export default defineComponent({
 
     const handleChange = () => {
       context.emit('update:showDialog', false)
+    }
+
+    const isValidEntityId = (entity: string) => {
+      return EntityID.parse(entity, true) != null
     }
 
     //
@@ -180,29 +212,12 @@ export default defineComponent({
       return result
     })
 
-    const filterValues = computed(() => {
-      const result = Array<string>()
-      if (nodes.value) {
-        for (const n of nodes.value) {
-          const nodeDescription = makeNodeDescription(n)
-          if (nodeDescription) {
-            result.push(nodeDescription)
-          }
-        }
-      }
-      return result
-    })
-
     const fetchNodes = (nextUrl: string | null = null) => {
       const url = nextUrl ?? "api/v1/network/nodes"
-      console.log("calling axios with URL: " + url)
       axios
           .get<NetworkNodesResponse>(url, {params: {limit: 25}})
           .then(result => {
             if (result.data.nodes) {
-              for (const n of result.data.nodes) {
-                console.log("got node: " + n.node_account_id)
-              }
               nodes.value = nodes.value ? nodes.value.concat(result.data.nodes) : result.data.nodes
             }
             const next = result.data.links?.next
@@ -226,12 +241,18 @@ export default defineComponent({
 
     return {
       accountId,
+      stakeChoice,
+      isNodeSelected,
+      isAccountSelected,
       selectedAccount,
       selectedNode,
-      filterValues,
+      declineChoice,
+      enableChangeButton,
+      nodes,
       totalStaked,
       handleCancel,
-      handleChange
+      handleChange,
+      makeNodeDescription
     }
   }
 });
