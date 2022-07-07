@@ -138,13 +138,20 @@ import Footer from "@/components/Footer.vue";
 import {hashConnectManager} from "@/router";
 import NetworkDashboardItem from "@/components/node/NetworkDashboardItem.vue";
 import axios from "axios";
-import {AccountBalanceTransactions, NetworkNode, NetworkNodesResponse} from "@/schemas/HederaSchemas";
+import {
+  AccountBalanceTransactions,
+  NetworkNode,
+  NetworkNodesResponse,
+  TransactionByIdResponse
+} from "@/schemas/HederaSchemas";
 import {HMSF} from "@/utils/HMSF";
 import {operatorRegistry} from "@/schemas/OperatorRegistry";
 import TransactionTableV2 from "@/components/transaction/TransactionTableV2.vue";
 import StakingDialog from "@/components/StakingDialog.vue";
 import DashboardCard from "@/components/DashboardCard.vue";
 import ConfirmDialog from "@/components/ConfirmDialog.vue";
+import {TransactionResponse} from "@hashgraph/sdk";
+import {TransactionID} from "@/utils/TransactionID";
 
 export default defineComponent({
   name: 'Staking',
@@ -297,7 +304,35 @@ export default defineComponent({
     }
 
     const handleStopStaking = () => {
-      console.log("handleStopStaking")
+      handleChangeStaking(-1)
+    }
+
+    const handleChangeStaking = (nodeId: number) => {
+      const successCB = (result: TransactionResponse) => {
+        const transactionID = TransactionID.normalize(result.transactionId.toString(), false)
+        waitForTransactionRefresh(transactionID, 10)
+      }
+      const errorCB = (reason: unknown) => {
+        console.log("Did fail to stake to node" + nodeId + " account  " + account.value)
+        console.log("reason = " + JSON.stringify(reason))
+      }
+      hashConnectManager.stakeToNode(nodeId).then(successCB, errorCB)
+    }
+
+    const waitForTransactionRefresh = (transactionID: string, attemptIndex: number) => {
+      if (attemptIndex >= 0) {
+        const successCB = () => {
+          fetchAccount()
+        }
+        const errorCB = () => {
+          setTimeout(() => {
+            waitForTransactionRefresh(transactionID, attemptIndex - 1)
+          }, 2000)
+        }
+        axios.get<TransactionByIdResponse>("api/v1/transactions/" + transactionID ).then(successCB, errorCB)
+      } else {
+        console.log("Mirror node still not refreshed : giving up")
+      }
     }
 
     return {
@@ -320,7 +355,8 @@ export default defineComponent({
       declineReward,
       connectToWallet,
       disconnectFromWallet,
-      handleStopStaking
+      handleStopStaking,
+      handleChangeStaking,
     }
   }
 });
