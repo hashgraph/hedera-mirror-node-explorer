@@ -24,13 +24,18 @@
 
 <template>
 
-  <StakingDialog v-model:show-dialog="showChangeStakeDialog" :account="account" :staked-to="stakedTo" :network-node="stakedNode">
-  </StakingDialog>
+  <StakingDialog v-model:show-dialog="showStakingDialog" :account="account" :currently-staked-to="stakedTo"></StakingDialog>
 
-  <ModalDialog v-model:show-dialog="showStopConfirmationDialog" >
-    <template v-slot:dialogMessage>Stop Staking Confirmation</template>
-    <template v-slot:dialogDetails>(Place holder)</template>
-  </ModalDialog>
+  <ConfirmDialog v-model:show-dialog="showStopConfirmationDialog" @onConfirm="handleStopStaking">
+    <template v-slot:dialogTitle>
+            <span class="h-is-primary-title">My Staking </span>
+            <span v-if="accountId" class="h-is-tertiary-text"> for account </span>
+            <span v-if="accountId" class="h-is-secondary-text has-text-weight-light mr-3">{{ accountId }}</span>
+    </template>
+    <template v-slot:dialogMessage>
+      Do you want to stop staking to {{ stakedTo }} ?
+    </template>
+  </ConfirmDialog>
 
   <section :class="{'h-mobile-background': isTouchDevice || !isSmallScreen}" class="section">
 
@@ -137,9 +142,9 @@ import {AccountBalanceTransactions, NetworkNode, NetworkNodesResponse} from "@/s
 import {HMSF} from "@/utils/HMSF";
 import {operatorRegistry} from "@/schemas/OperatorRegistry";
 import TransactionTableV2 from "@/components/transaction/TransactionTableV2.vue";
-import ModalDialog from "@/components/ModalDialog.vue";
 import StakingDialog from "@/components/StakingDialog.vue";
 import DashboardCard from "@/components/DashboardCard.vue";
+import ConfirmDialog from "@/components/ConfirmDialog.vue";
 
 export default defineComponent({
   name: 'Staking',
@@ -149,9 +154,9 @@ export default defineComponent({
   },
 
   components: {
+    ConfirmDialog,
     DashboardCard,
     StakingDialog,
-    ModalDialog,
     TransactionTableV2,
     NetworkDashboardItem,
     Footer,
@@ -291,11 +296,13 @@ export default defineComponent({
           })
     }
 
+    const handleStopStaking = () => {
+      console.log("handleStopStaking")
+    }
+
     return {
       isSmallScreen,
       isTouchDevice,
-      connectToWallet,
-      disconnectFromWallet,
       connected: hashConnectManager.connected,
       connectedNetwork: hashConnectManager.connectedNetwork,
       walletName: hashConnectManager.walletName,
@@ -310,7 +317,10 @@ export default defineComponent({
       stakedNode,
       stakedAmount,
       stakedSince,
-      declineReward
+      declineReward,
+      connectToWallet,
+      disconnectFromWallet,
+      handleStopStaking
     }
   }
 });
