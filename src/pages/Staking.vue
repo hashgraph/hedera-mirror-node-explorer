@@ -56,7 +56,7 @@
                 <button class="button is-white is-small" @click="showStopConfirmationDialog = true">STOP STAKING</button>
                 <button class="button is-white is-small ml-4" @click="showChangeStakeDialog = true">CHANGE STAKED TO</button>
               </div>
-              <button class="button is-white is-small" @click="disconnectFromWallet">DISCONNECT FROM WALLET</button>
+              <button class="button is-white is-small" @click="disconnectFromWallet">DISCONNECT WALLET</button>
             </div>
           </div>
           <div v-else>
@@ -73,7 +73,7 @@
                   <button class="button is-white is-small ml-4" @click="showChangeStakeDialog = true">CHANGE STAKED TO</button>
                 </div>
             <div class="is-flex is-justify-content-center mt-4">
-              <button class="button is-white is-small" @click="disconnectFromWallet">DISCONNECT FROM WALLET</button>
+              <button class="button is-white is-small" @click="disconnectFromWallet">DISCONNECT WALLET</button>
             </div>
             <div class="mt-6"/>
           </div>
@@ -81,8 +81,8 @@
 
         <template v-else-if="connected">
           <section class="section has-text-centered" style="min-height: 450px">
-            <p>Connecting to your Wallet...</p>
-            <p>You need to select which account you wish to connect with.</p>
+            <p>Connecting your Wallet...</p>
+            <p>You need to select which account you wish to connect.</p>
             <br/>
             <button class="button is-white is-small" @click="disconnectFromWallet">ABORT CONNEXION</button>
           </section>
@@ -91,10 +91,10 @@
         <template v-else>
           <section class="section has-text-centered" style="min-height: 450px">
             <p class="h-is-tertiary-text" style="font-weight: 300">
-              To view or change your staking you first need to connect to your wallet.
+              To view or change your staking you first need to connect your wallet.
             </p>
             <br/>
-            <button class="button is-white is-small" @click="connectToWallet">CONNECT TO WALLET…</button>
+            <button class="button is-white is-small" @click="connectToWallet">CONNECT WALLET…</button>
           </section>
         </template>
 
