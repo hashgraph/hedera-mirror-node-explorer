@@ -23,6 +23,19 @@
 <!-- --------------------------------------------------------------------------------------------------------------- -->
 
 <template>
+
+  <ConfirmDialog v-model:show-dialog="showConfirmationDialog"
+                 @onConfirm="handleConfirmChange" @onCancel="handleCancelChange">
+    <template v-slot:dialogTitle>
+      <span class="h-is-primary-title">Change Staking </span>
+      <span v-if="accountId" class="h-is-tertiary-text"> for account </span>
+      <span v-if="accountId" class="h-is-secondary-text has-text-weight-light mr-3">{{ accountId }}</span>
+    </template>
+    <template v-slot:dialogMessage>
+      Do you want to stake to {{ selectedNodeDescription }} ?
+    </template>
+  </ConfirmDialog>
+
   <div :class="{'is-active': showDialog}" class="modal has-text-white">
     <div class="modal-background"/>
     <div class="modal-content" style="width: 768px; border-radius: 16px">
@@ -134,10 +147,11 @@ import StringValue from "@/components/values/StringValue.vue";
 import axios from "axios";
 import {operatorRegistry} from "@/schemas/OperatorRegistry";
 import {EntityID} from "@/utils/EntityID";
+import ConfirmDialog from "@/components/ConfirmDialog.vue";
 
 export default defineComponent({
   name: "StakingDialog",
-  components: {StringValue, HbarAmount, Property},
+  components: {ConfirmDialog, StringValue, HbarAmount, Property},
   props: {
     showDialog: {
       type: Boolean,
@@ -149,6 +163,8 @@ export default defineComponent({
 
   setup(props, context) {
     const accountId = computed(() => props.account?.account)
+
+    const showConfirmationDialog = ref(false)
 
     const stakeChoice = ref("node")
     const isNodeSelected = computed(() => stakeChoice.value === 'node')
@@ -165,7 +181,10 @@ export default defineComponent({
       }
     })
 
-    const selectedNode = ref(null)
+    const selectedNode = ref<number|null>(null)
+    const selectedNodeDescription = computed(() => {
+      return (selectedNode.value && nodes.value) ? makeNodeDescription(nodes.value[selectedNode.value]) : null
+    })
 
     const declineChoice = ref(false)
     watch(accountId, () => declineChoice.value = props.account?.decline_reward ?? false)
@@ -182,6 +201,18 @@ export default defineComponent({
 
     const handleChange = () => {
       context.emit('update:showDialog', false)
+      showConfirmationDialog.value = true
+    }
+
+    const handleCancelChange = () => {
+      context.emit('update:showDialog', true)
+    }
+
+    const handleConfirmChange = () => {
+      console.log("handleConfirmChange")
+      console.log("  nodeId:" + selectedNode.value)
+      console.log("  accountId:" + selectedAccount.value)
+      console.log("  declineReward:" + declineChoice.value)
     }
 
     const isValidEntityId = (entity: string) => {
@@ -234,17 +265,21 @@ export default defineComponent({
 
     return {
       accountId,
+      showConfirmationDialog,
       stakeChoice,
       isNodeSelected,
       isAccountSelected,
       selectedAccount,
       selectedNode,
+      selectedNodeDescription,
       declineChoice,
       enableChangeButton,
       nodes,
       totalStaked,
       handleCancel,
       handleChange,
+      handleCancelChange,
+      handleConfirmChange,
       makeNodeDescription
     }
   }
