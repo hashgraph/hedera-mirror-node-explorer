@@ -31,9 +31,8 @@
       <span v-if="accountId" class="h-is-tertiary-text"> for account </span>
       <span v-if="accountId" class="h-is-secondary-text has-text-weight-light mr-3">{{ accountId }}</span>
     </template>
-    <template v-slot:dialogMessage>
-      Do you want to stake to {{ selectedNodeDescription }} ?
-    </template>
+    <template v-if="isNodeSelected" v-slot:dialogMessage> Do you want to stake to {{ selectedNodeDescription }} ?</template>
+    <template v-else v-slot:dialogMessage> Do you want to stake to account {{ selectedAccount }} ?</template>
   </ConfirmDialog>
 
   <div :class="{'is-active': showDialog}" class="modal has-text-white">
