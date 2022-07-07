@@ -93,6 +93,11 @@ export class TransactionID {
         return  this.entityID.toString() + sep1 + this.seconds + sep2 + this.nanoSeconds.toString().padStart(9, '0')
     }
 
+    public static normalize(transactionID: string, useArobas = true): string {
+        const tid = TransactionID.parse(transactionID)
+        return tid != null ? tid.toString(useArobas) : transactionID
+    }
+
     //
     // Private
     //
