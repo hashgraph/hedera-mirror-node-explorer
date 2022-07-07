@@ -70,11 +70,12 @@ export default defineComponent({
 
     const handleCancel = () => {
       context.emit('update:showDialog', false)
+      context.emit('onCancel')
     }
 
     const handleConfirm = () => {
-      context.emit('onConfirm')
       context.emit('update:showDialog', false)
+      context.emit('onConfirm')
     }
 
     return {
