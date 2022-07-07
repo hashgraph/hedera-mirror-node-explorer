@@ -165,7 +165,7 @@ export class HashConnectManager {
         this.currentContext.value = null
     }
 
-    public async stakeToNode(nodeID: number): Promise<TransactionResponse> {
+    public async changeStaking(nodeId: number|null, accountId: string|null, declineReward: boolean|null): Promise<TransactionResponse> {
         let result: Promise<TransactionResponse>
 
         // Connects if needed
@@ -178,7 +178,19 @@ export class HashConnectManager {
             const signer = this.hashConnect.getSigner(provider)
             const trans = await new AccountUpdateTransaction()
             trans.setAccountId(this.accountId.value)
-            trans.setStakedNodeId(nodeID)
+            if (nodeId !== null) {
+                trans.setStakedNodeId(nodeId)
+                trans.setStakedAccountId("0.0.0")
+            } else if (accountId !== null) {
+                trans.setStakedNodeId(-1)
+                trans.setStakedAccountId(accountId)
+            } else {
+                trans.setStakedNodeId(-1)
+                trans.setStakedAccountId("0.0.0")
+            }
+            if (declineReward !== null) {
+                trans.setDeclineStakingReward(declineReward)
+            }
             await trans.freezeWithSigner(signer)
             result = trans.executeWithSigner(signer)
 

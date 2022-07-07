@@ -304,10 +304,10 @@ export default defineComponent({
     }
 
     const handleStopStaking = () => {
-      handleChangeStaking(-1)
+      handleChangeStaking(null, null, null)
     }
 
-    const handleChangeStaking = (nodeId: number) => {
+    const handleChangeStaking = (nodeId: number|null, accountId: string|null, declineReward: boolean|null) => {
       const successCB = (result: TransactionResponse) => {
         const transactionID = TransactionID.normalize(result.transactionId.toString(), false)
         waitForTransactionRefresh(transactionID, 10)
@@ -316,7 +316,7 @@ export default defineComponent({
         console.log("Did fail to stake to node" + nodeId + " account  " + account.value)
         console.log("reason = " + JSON.stringify(reason))
       }
-      hashConnectManager.stakeToNode(nodeId).then(successCB, errorCB)
+      hashConnectManager.changeStaking(nodeId, accountId, declineReward).then(successCB, errorCB)
     }
 
     const waitForTransactionRefresh = (transactionID: string, attemptIndex: number) => {
