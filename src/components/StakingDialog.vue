@@ -171,13 +171,6 @@ export default defineComponent({
     watch(accountId, () => declineChoice.value = props.account?.decline_reward ?? false)
 
     const enableChangeButton = computed(() => {
-      console.log("staked_account_id: " + props.account?.staked_account_id)
-      console.log("selectedAccount: " + selectedAccount.value)
-      console.log("staked_node_id: " + props.account?.staked_node_id)
-      console.log("selectedNode: " + selectedNode.value)
-      console.log("decline_reward: " + props.account?.decline_reward)
-      console.log("declineChoice: " + declineChoice.value)
-
       return (isAccountSelected.value && isSelectedAccountValid.value && props.account?.staked_account_id != selectedAccount.value)
           || (isNodeSelected.value  && selectedNode.value && props.account?.staked_node_id != selectedNode.value)
           || (props.account?.decline_reward != declineChoice.value)
