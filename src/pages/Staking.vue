@@ -53,8 +53,9 @@
             <br/>
             <div class="is-flex is-justify-content-space-between">
               <div class="is-flex is-justify-content-flex-start">
-                <button class="button is-white is-small" @click="showStopConfirmationDialog = true">STOP STAKING</button>
-                <button class="button is-white is-small ml-4" @click="showChangeStakeDialog = true">CHANGE STAKED TO</button>
+                <button class="button is-white is-small"
+                        :disabled="!stakedTo" @click="showStopConfirmationDialog = true">STOP STAKING</button>
+                <button class="button is-white is-small ml-4" @click="showStakingDialog = true">CHANGE STAKED TO</button>
               </div>
               <button class="button is-white is-small" @click="disconnectFromWallet">DISCONNECT WALLET</button>
             </div>
@@ -69,8 +70,9 @@
               <div class="mt-4"/>
             </div>
               <div class="is-flex is-justify-content-center">
-                  <button class="button is-white is-small" @click="showStopConfirmationDialog = true">STOP STAKING</button>
-                  <button class="button is-white is-small ml-4" @click="showChangeStakeDialog = true">CHANGE STAKED TO</button>
+                  <button class="button is-white is-small"
+                          :disabled="!stakedTo" @click="showStopConfirmationDialog = true">STOP STAKING</button>
+                  <button class="button is-white is-small ml-4" @click="showStakingDialog = true">CHANGE STAKED TO</button>
                 </div>
             <div class="is-flex is-justify-content-center mt-4">
               <button class="button is-white is-small" @click="disconnectFromWallet">DISCONNECT WALLET</button>
@@ -181,7 +183,7 @@ export default defineComponent({
     const account = ref<AccountBalanceTransactions | null>(null)
     const accountError = ref<unknown>(null)
 
-    const showChangeStakeDialog = ref(false)
+    const showStakingDialog = ref(false)
     const showStopConfirmationDialog = ref(false)
 
     const isStaked = computed(() => account?.value?.staked_node_id || account?.value?.staked_account_id)
@@ -301,7 +303,7 @@ export default defineComponent({
       accountId: hashConnectManager.accountId,
       account,
       isStaked,
-      showChangeStakeDialog,
+      showStakingDialog,
       showStopConfirmationDialog,
       isIndirectStaking,
       stakedTo,
