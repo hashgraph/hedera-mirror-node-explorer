@@ -325,11 +325,11 @@ export default defineComponent({
           fetchAccount()
         }
         const errorCB = () => {
-          setTimeout(() => {
-            waitForTransactionRefresh(transactionID, attemptIndex - 1)
-          }, 2000)
+          waitForTransactionRefresh(transactionID, attemptIndex - 1)
         }
-        axios.get<TransactionByIdResponse>("api/v1/transactions/" + transactionID ).then(successCB, errorCB)
+        setTimeout(() => {
+          axios.get<TransactionByIdResponse>("api/v1/transactions/" + transactionID ).then(successCB, errorCB)
+        }, 3000)
       } else {
         console.log("Mirror node still not refreshed : giving up")
       }
