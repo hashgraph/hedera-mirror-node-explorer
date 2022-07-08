@@ -40,6 +40,15 @@
     </template>
   </ConfirmDialog>
 
+  <ProgressDialog v-model:show-dialog="showProgressDialog"
+                  :mode="progressDialogMode"
+                  :main-message="progressMainMessage"
+                  :extra-message="progressExtraMessage">
+    <template v-slot:dialogTitle>
+      <span class="h-is-primary-title">Updating staking…</span>
+    </template>
+  </ProgressDialog>
+
   <section :class="{'h-mobile-background': isTouchDevice || !isSmallScreen}" class="section">
 
     <DashboardCard>
@@ -155,6 +164,7 @@ import DashboardCard from "@/components/DashboardCard.vue";
 import ConfirmDialog from "@/components/ConfirmDialog.vue";
 import {TransactionResponse} from "@hashgraph/sdk";
 import {TransactionID} from "@/utils/TransactionID";
+import ProgressDialog, {Mode} from "@/components/ProgressDialog.vue";
 
 export default defineComponent({
   name: 'Staking',
@@ -165,6 +175,7 @@ export default defineComponent({
 
   components: {
     ConfirmDialog,
+    ProgressDialog,
     DashboardCard,
     StakingDialog,
     TransactionTableV2,
@@ -311,13 +322,21 @@ export default defineComponent({
     }
 
     const handleChangeStaking = (nodeId: number|null, accountId: string|null, declineReward: boolean|null) => {
+
+      showProgressDialog.value = true
+      progressDialogMode.value = Mode.Busy
+      progressMainMessage.value = "Connecting to Hedera Network"
+      progressExtraMessage.value = null
+
       const successCB = (result: TransactionResponse) => {
+        progressMainMessage.value = "Checking operation…"
         const transactionID = TransactionID.normalize(result.transactionId.toString(), false)
         waitForTransactionRefresh(transactionID, 10)
       }
       const errorCB = (reason: unknown) => {
-        console.log("Did fail to stake to node" + nodeId + " account  " + account.value)
-        console.log("reason = " + JSON.stringify(reason))
+        progressDialogMode.value = Mode.Error
+        progressMainMessage.value = "Failed to change staking for account " + account.value
+        progressExtraMessage.value = JSON.stringify(reason)
       }
       hashConnectManager.changeStaking(nodeId, accountId, declineReward).then(successCB, errorCB)
     }
@@ -325,6 +344,8 @@ export default defineComponent({
     const waitForTransactionRefresh = (transactionID: string, attemptIndex: number) => {
       if (attemptIndex >= 0) {
         const successCB = () => {
+          progressMainMessage.value = "Operation did complete"
+          progressDialogMode.value = Mode.Success
           fetchAccount()
         }
         const errorCB = () => {
@@ -334,9 +355,16 @@ export default defineComponent({
           axios.get<TransactionByIdResponse>("api/v1/transactions/" + transactionID ).then(successCB, errorCB)
         }, 3000)
       } else {
-        console.log("Mirror node still not refreshed : giving up")
+        progressMainMessage.value = "Operation did complete"
+        progressExtraMessage.value = "Staking tab should reflect the result in a few seconds"
+        progressDialogMode.value = Mode.Success
       }
     }
+
+    const showProgressDialog = ref(false)
+    const progressDialogMode = ref(Mode.Busy)
+    const progressMainMessage = ref<string|null>(null)
+    const progressExtraMessage = ref<string|null>(null)
 
     return {
       isSmallScreen,
@@ -360,6 +388,11 @@ export default defineComponent({
       disconnectFromWallet,
       handleStopStaking,
       handleChangeStaking,
+
+      showProgressDialog,
+      progressDialogMode,
+      progressMainMessage,
+      progressExtraMessage,
     }
   }
 });
