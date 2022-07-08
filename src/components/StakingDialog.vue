@@ -219,7 +219,7 @@ export default defineComponent({
     //
     // Nodes
     //
-    let nodes = ref<Array<NetworkNode> | null>([])
+    const nodes = ref<Array<NetworkNode> | null>([])
 
     const totalStaked = computed(() => {
       let result = 0
