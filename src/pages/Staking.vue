@@ -154,9 +154,11 @@ import {
   AccountBalanceTransactions,
   NetworkNode,
   NetworkNodesResponse,
+  Transaction,
   TransactionByIdResponse
 } from "@/schemas/HederaSchemas";
 import {HMSF} from "@/utils/HMSF";
+import {waitFor} from "@/utils/TimerUtils";
 import {operatorRegistry} from "@/schemas/OperatorRegistry";
 import TransactionTableV2 from "@/components/transaction/TransactionTableV2.vue";
 import StakingDialog from "@/components/StakingDialog.vue";
@@ -317,48 +319,68 @@ export default defineComponent({
           })
     }
 
+    //
+    // handleStopStaking / handleChangeStaking
+    //
+
     const handleStopStaking = () => {
-      handleChangeStaking(null, null, null)
+      changeStaking(null, null, null)
     }
 
     const handleChangeStaking = (nodeId: number|null, accountId: string|null, declineReward: boolean|null) => {
+      changeStaking(nodeId, accountId, declineReward)
+    }
+
+    const changeStaking = (nodeId: number|null, accountId: string|null, declineReward: boolean|null) => {
 
       showProgressDialog.value = true
       progressDialogMode.value = Mode.Busy
-      progressMainMessage.value = "Connecting to Hedera Network"
-      progressExtraMessage.value = null
+      progressMainMessage.value = "Connecting to Hedera Network using your wallet…"
+      progressExtraMessage.value = "Check your wallet for any approval action"
 
-      const successCB = (result: TransactionResponse) => {
-        progressMainMessage.value = "Checking operation…"
-        const transactionID = TransactionID.normalize(result.transactionId.toString(), false)
-        waitForTransactionRefresh(transactionID, 10)
-      }
-      const errorCB = (reason: unknown) => {
-        progressDialogMode.value = Mode.Error
-        progressMainMessage.value = "Failed to change staking for account " + account.value
-        progressExtraMessage.value = JSON.stringify(reason)
-      }
-      hashConnectManager.changeStaking(nodeId, accountId, declineReward).then(successCB, errorCB)
+      hashConnectManager.changeStaking(nodeId, accountId, declineReward)
+          .then((response: TransactionResponse) => {
+            progressMainMessage.value = "Checking for Hedera Mirror Node…"
+            progressExtraMessage.value = null
+            const transactionID = TransactionID.normalize(response.transactionId.toString(), false)
+            return waitForTransactionRefresh(transactionID, 10)
+          })
+          .then((response: Transaction | string) => {
+            progressDialogMode.value = Mode.Success
+            progressMainMessage.value = "Operation did complete"
+            if (typeof response == "string") {
+              progressExtraMessage.value = "Transaction Id: " + TransactionID.normalize(response)
+            } else {
+              const transactionID = response.transaction_id ? TransactionID.normalize(response.transaction_id) : "?"
+              progressExtraMessage.value = "Transaction Id: " + transactionID
+            }
+            fetchAccount()
+          })
+          .catch(() => {
+            progressDialogMode.value = Mode.Error
+            progressMainMessage.value = "Operation did fail"
+            progressExtraMessage.value = "Wallet rejected this operation"
+            fetchAccount()
+          })
     }
 
-    const waitForTransactionRefresh = (transactionID: string, attemptIndex: number) => {
+    const waitForTransactionRefresh = async (transactionID: string, attemptIndex: number) => {
+      let result: Promise<Transaction | string>
+
       if (attemptIndex >= 0) {
-        const successCB = () => {
-          progressMainMessage.value = "Operation did complete"
-          progressDialogMode.value = Mode.Success
-          fetchAccount()
+        await waitFor(3000)
+        try {
+          const response = await axios.get<TransactionByIdResponse>("api/v1/transactions/" + transactionID )
+          const transactions = response.data.transactions ?? []
+          result = Promise.resolve(transactions.length >= 1 ? transactions[0] : transactionID)
+        } catch {
+          result = waitForTransactionRefresh(transactionID, attemptIndex - 1)
         }
-        const errorCB = () => {
-          waitForTransactionRefresh(transactionID, attemptIndex - 1)
-        }
-        setTimeout(() => {
-          axios.get<TransactionByIdResponse>("api/v1/transactions/" + transactionID ).then(successCB, errorCB)
-        }, 3000)
       } else {
-        progressMainMessage.value = "Operation did complete"
-        progressExtraMessage.value = "Staking tab should reflect the result in a few seconds"
-        progressDialogMode.value = Mode.Success
+        result = Promise.resolve(transactionID)
       }
+
+      return result
     }
 
     const showProgressDialog = ref(false)
