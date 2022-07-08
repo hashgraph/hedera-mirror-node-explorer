@@ -24,7 +24,10 @@
 
 <template>
 
-  <StakingDialog v-model:show-dialog="showStakingDialog" :account="account" :currently-staked-to="stakedTo"></StakingDialog>
+  <StakingDialog v-model:show-dialog="showStakingDialog"
+                 :account="account"
+                 :currently-staked-to="stakedTo"
+                 v-on:change-staking="handleChangeStaking"/>
 
   <ConfirmDialog v-model:show-dialog="showStopConfirmationDialog" @onConfirm="handleStopStaking">
     <template v-slot:dialogTitle>

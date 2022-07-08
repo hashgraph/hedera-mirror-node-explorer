@@ -159,7 +159,7 @@ export default defineComponent({
     account: Object as PropType<AccountBalanceTransactions>,
     currentlyStakedTo: String,
   },
-
+  emits: [ "changeStaking"],
   setup(props, context) {
     const accountId = computed(() => props.account?.account)
 
@@ -208,10 +208,8 @@ export default defineComponent({
     }
 
     const handleConfirmChange = () => {
-      console.log("handleConfirmChange")
-      console.log("  nodeId:" + selectedNode.value)
-      console.log("  accountId:" + selectedAccount.value)
-      console.log("  declineReward:" + declineChoice.value)
+      const declineReward = declineChoice.value != props.account?.decline_reward ? declineChoice.value : null;
+      context.emit("changeStaking", selectedNode.value, selectedAccount.value, declineReward)
     }
 
     const isValidEntityId = (entity: string) => {
