@@ -78,7 +78,7 @@ export class HashConnectManager {
         // Creates HashConnect
         if (this.hashConnect === null) {
 
-            this.hashConnect = new HashConnect(true)
+            this.hashConnect = new HashConnect(false)
 
             const hashConnectKey = AppStorage.getHashConnectPrivKey() ?? undefined
             const initData = await this.hashConnect.init(this.appMetadata, hashConnectKey)
