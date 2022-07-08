@@ -159,7 +159,7 @@ export default defineComponent({
     account: Object as PropType<AccountBalanceTransactions>,
     currentlyStakedTo: String,
   },
-  emits: [ "changeStaking"],
+  emits: [ "changeStaking", "update:showDialog"],
   setup(props, context) {
     const accountId = computed(() => props.account?.account)
 
