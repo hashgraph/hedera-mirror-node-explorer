@@ -108,7 +108,7 @@
           </div>
           <div class="column">
             <label class="checkbox">
-              <input checked="checked" type="checkbox" v-model="declineChoice" :disabled="!isNodeSelected">
+              <input checked="checked" type="checkbox" v-model="declineChoice" :disabled="!isNodeSelected || selectedNode == null">
             </label>
           </div>
         </div>
