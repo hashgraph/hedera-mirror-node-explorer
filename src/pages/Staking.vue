@@ -29,14 +29,12 @@
                  :currently-staked-to="stakedTo"
                  v-on:change-staking="handleChangeStaking"/>
 
-  <ConfirmDialog v-model:show-dialog="showStopConfirmationDialog" @onConfirm="handleStopStaking">
+  <ConfirmDialog v-model:show-dialog="showStopConfirmDialog" @onConfirm="handleStopStaking"
+                 :main-message="'Do you want to stop staking to ' + stakedTo +'?'">
     <template v-slot:dialogTitle>
             <span class="h-is-primary-title">My Staking </span>
             <span v-if="accountId" class="h-is-tertiary-text"> for account </span>
             <span v-if="accountId" class="h-is-secondary-text has-text-weight-light mr-3">{{ accountId }}</span>
-    </template>
-    <template v-slot:dialogMessage>
-      Do you want to stop staking to {{ stakedTo }} ?
     </template>
   </ConfirmDialog>
 
@@ -71,7 +69,7 @@
             <div class="is-flex is-justify-content-space-between">
               <div class="is-flex is-justify-content-flex-start">
                 <button class="button is-white is-small"
-                        :disabled="!stakedTo" @click="showStopConfirmationDialog = true">STOP STAKING</button>
+                        :disabled="!stakedTo" @click="showStopConfirmDialog = true">STOP STAKING</button>
                 <button class="button is-white is-small ml-4" @click="showStakingDialog = true">CHANGE STAKED TO</button>
               </div>
               <button class="button is-white is-small" @click="disconnectFromWallet">DISCONNECT WALLET</button>
@@ -88,7 +86,7 @@
             </div>
               <div class="is-flex is-justify-content-center">
                   <button class="button is-white is-small"
-                          :disabled="!stakedTo" @click="showStopConfirmationDialog = true">STOP STAKING</button>
+                          :disabled="!stakedTo" @click="showStopConfirmDialog = true">STOP STAKING</button>
                   <button class="button is-white is-small ml-4" @click="showStakingDialog = true">CHANGE STAKED TO</button>
                 </div>
             <div class="is-flex is-justify-content-center mt-4">
@@ -212,7 +210,7 @@ export default defineComponent({
     const accountError = ref<unknown>(null)
 
     const showStakingDialog = ref(false)
-    const showStopConfirmationDialog = ref(false)
+    const showStopConfirmDialog = ref(false)
 
     const isStaked = computed(() => account?.value?.staked_node_id || account?.value?.staked_account_id)
 
@@ -399,7 +397,7 @@ export default defineComponent({
       account,
       isStaked,
       showStakingDialog,
-      showStopConfirmationDialog,
+      showStopConfirmDialog,
       isIndirectStaking,
       stakedTo,
       stakedNode,

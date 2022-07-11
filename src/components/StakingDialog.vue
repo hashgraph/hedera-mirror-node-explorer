@@ -24,15 +24,14 @@
 
 <template>
 
-  <ConfirmDialog v-model:show-dialog="showConfirmationDialog"
+  <ConfirmDialog v-model:show-dialog="showConfirmDialog" :main-message="confirmMessage"
                  @onConfirm="handleConfirmChange" @onCancel="handleCancelChange">
     <template v-slot:dialogTitle>
       <span class="h-is-primary-title">Change Staking </span>
       <span v-if="accountId" class="h-is-tertiary-text"> for account </span>
-      <span v-if="accountId" class="h-is-secondary-text has-text-weight-light mr-3">{{ accountId }}</span>
+      <span v-if="accountId" class="h-is-secondary-text has-text-weight-light mr-3"
+            style="line-height: 36px">{{ accountId }}</span>
     </template>
-    <template v-if="isNodeSelected" v-slot:dialogMessage> Do you want to stake to {{ selectedNodeDescription }} ?</template>
-    <template v-else v-slot:dialogMessage> Do you want to stake to account {{ selectedAccount }} ?</template>
   </ConfirmDialog>
 
   <div :class="{'is-active': showDialog}" class="modal has-text-white">
@@ -163,7 +162,10 @@ export default defineComponent({
   setup(props, context) {
     const accountId = computed(() => props.account?.account)
 
-    const showConfirmationDialog = ref(false)
+    const showConfirmDialog = ref(false)
+    const confirmMessage = computed(() => isNodeSelected.value
+        ? "Do you want to stake to " + selectedNodeDescription.value
+        : "Do you want to stake to account " + selectedAccount.value)
 
     const stakeChoice = ref("node")
     const isNodeSelected = computed(() => stakeChoice.value === 'node')
@@ -200,7 +202,7 @@ export default defineComponent({
 
     const handleChange = () => {
       context.emit('update:showDialog', false)
-      showConfirmationDialog.value = true
+      showConfirmDialog.value = true
     }
 
     const handleCancelChange = () => {
@@ -262,7 +264,8 @@ export default defineComponent({
 
     return {
       accountId,
-      showConfirmationDialog,
+      showConfirmDialog,
+      confirmMessage,
       stakeChoice,
       isNodeSelected,
       isAccountSelected,

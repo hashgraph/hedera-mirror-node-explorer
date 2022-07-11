@@ -34,9 +34,8 @@
 
         <hr class="h-card-separator"/>
 
-        <div class="block h-is-tertiary-text mt-2">
-          <slot name="dialogMessage"/>
-        </div>
+        <div class="block h-is-tertiary-text mt-2">{{ mainMessage }}</div>
+        <div class="block h-is-property-text">{{ extraMessage }}</div>
 
         <div class="is-flex is-justify-content-flex-end">
           <button class="button is-white is-small" @click="handleCancel">CANCEL</button>
@@ -64,6 +63,8 @@ export default defineComponent({
       type: Boolean,
       default: false
     },
+    mainMessage: String,
+    extraMessage: String,
   },
 
   setup(props, context) {
