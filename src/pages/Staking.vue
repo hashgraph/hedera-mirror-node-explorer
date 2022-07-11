@@ -322,7 +322,7 @@ export default defineComponent({
     //
 
     const handleStopStaking = () => {
-      changeStaking(null, null, null)
+      changeStaking(null, null, account.value?.decline_reward ? false : null)
     }
 
     const handleChangeStaking = (nodeId: number|null, accountId: string|null, declineReward: boolean|null) => {
