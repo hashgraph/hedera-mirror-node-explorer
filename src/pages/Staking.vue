@@ -70,7 +70,7 @@
               <div class="is-flex is-justify-content-flex-start">
                 <button class="button is-white is-small"
                         :disabled="!stakedTo" @click="showStopConfirmDialog = true">STOP STAKING</button>
-                <button class="button is-white is-small ml-4" @click="showStakingDialog = true">CHANGE STAKED TO</button>
+                <button class="button is-white is-small ml-4" @click="showStakingDialog = true">CHANGE STAKING</button>
               </div>
               <button class="button is-white is-small" @click="disconnectFromWallet">DISCONNECT WALLET</button>
             </div>
@@ -261,8 +261,6 @@ export default defineComponent({
     })
 
     const declineReward = computed(() => {
-      console.log("account.value?.decline_reward" + account.value?.decline_reward)
-      console.log("account.value?.decline_reward?.toString()" + account.value?.decline_reward?.toString())
       return account.value?.decline_reward?.toString() ?? null
     })
 
@@ -333,14 +331,14 @@ export default defineComponent({
 
       showProgressDialog.value = true
       progressDialogMode.value = Mode.Busy
-      progressDialogTitle.value = (nodeId == null && accountId == null && declineReward == null) ? "Stopping staking…" : "Updating staking…"
+      progressDialogTitle.value = (nodeId == null && accountId == null && !declineReward) ? "Stopping staking" : "Updating staking"
       progressMainMessage.value = "Connecting to Hedera Network using your wallet…"
       progressExtraMessage.value = "Check your wallet for any approval request"
 
       hashConnectManager.changeStaking(nodeId, accountId, declineReward)
           .then((response: TransactionResponse) => {
             progressMainMessage.value = "Completing operation…"
-            progressExtraMessage.value = null
+            progressExtraMessage.value = "This may take a few seconds"
             const transactionID = TransactionID.normalize(response.transactionId.toString(), false)
             return waitForTransactionRefresh(transactionID, 10)
           })
