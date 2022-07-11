@@ -335,30 +335,30 @@ export default defineComponent({
       progressDialogMode.value = Mode.Busy
       progressDialogTitle.value = (nodeId == null && accountId == null && declineReward == null) ? "Stopping staking…" : "Updating staking…"
       progressMainMessage.value = "Connecting to Hedera Network using your wallet…"
-      progressExtraMessage.value = "Check your wallet for any approval action"
+      progressExtraMessage.value = "Check your wallet for any approval request"
 
       hashConnectManager.changeStaking(nodeId, accountId, declineReward)
           .then((response: TransactionResponse) => {
-            progressMainMessage.value = "Checking for Hedera Mirror Node…"
+            progressMainMessage.value = "Completing operation…"
             progressExtraMessage.value = null
             const transactionID = TransactionID.normalize(response.transactionId.toString(), false)
             return waitForTransactionRefresh(transactionID, 10)
           })
           .then((response: Transaction | string) => {
             progressDialogMode.value = Mode.Success
-            progressMainMessage.value = "Operation did complete"
+            progressMainMessage.value = "Operation completed"
             if (typeof response == "string") {
-              progressExtraMessage.value = "Transaction Id: " + TransactionID.normalize(response)
+              progressExtraMessage.value = "with transaction ID: " + TransactionID.normalize(response)
             } else {
               const transactionID = response.transaction_id ? TransactionID.normalize(response.transaction_id) : "?"
-              progressExtraMessage.value = "Transaction Id: " + transactionID
+              progressExtraMessage.value = "with transaction ID: " + transactionID
             }
             fetchAccount()
           })
           .catch(() => {
             progressDialogMode.value = Mode.Error
-            progressMainMessage.value = "Operation did fail"
-            progressExtraMessage.value = "Wallet rejected this operation"
+            progressMainMessage.value = "Operation did not complete"
+            progressExtraMessage.value = "Your wallet rejected this operation"
             fetchAccount()
           })
     }
