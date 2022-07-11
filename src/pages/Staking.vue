@@ -43,7 +43,7 @@
                   :main-message="progressMainMessage"
                   :extra-message="progressExtraMessage">
     <template v-slot:dialogTitle>
-      <span class="h-is-primary-title">Updating staking…</span>
+      <span class="h-is-primary-title">{{ progressDialogTitle }}</span>
     </template>
   </ProgressDialog>
 
@@ -333,6 +333,7 @@ export default defineComponent({
 
       showProgressDialog.value = true
       progressDialogMode.value = Mode.Busy
+      progressDialogTitle.value = (nodeId == null && accountId == null && declineReward == null) ? "Stopping staking…" : "Updating staking…"
       progressMainMessage.value = "Connecting to Hedera Network using your wallet…"
       progressExtraMessage.value = "Check your wallet for any approval action"
 
@@ -383,6 +384,7 @@ export default defineComponent({
 
     const showProgressDialog = ref(false)
     const progressDialogMode = ref(Mode.Busy)
+    const progressDialogTitle = ref<string|null>(null)
     const progressMainMessage = ref<string|null>(null)
     const progressExtraMessage = ref<string|null>(null)
 
@@ -408,9 +410,9 @@ export default defineComponent({
       disconnectFromWallet,
       handleStopStaking,
       handleChangeStaking,
-
       showProgressDialog,
       progressDialogMode,
+      progressDialogTitle,
       progressMainMessage,
       progressExtraMessage,
     }
