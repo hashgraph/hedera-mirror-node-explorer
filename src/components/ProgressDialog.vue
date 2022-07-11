@@ -35,8 +35,10 @@
         <hr class="h-card-separator"/>
 
         <div v-if="mainMessage" class="block h-is-tertiary-text mt-2"> {{ mainMessage }} </div>
+        <div v-else class="block h-is-tertiary-text" style="visibility: hidden">Filler</div>
 
-        <div v-if="extraMessage" class="block h-is-property-text mt-2"> {{ extraMessage }} </div>
+        <div v-if="extraMessage" class="block h-is-property-text"> {{ extraMessage }} </div>
+        <div v-else class="block h-is-property-text" style="visibility: hidden">Filler</div>
 
         <div class="is-flex is-justify-content-flex-end">
           <button class="button is-white is-small" :disabled="closeDisabled" @click="handleClose">CLOSE</button>
