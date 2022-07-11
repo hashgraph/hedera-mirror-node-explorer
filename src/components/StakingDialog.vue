@@ -186,6 +186,11 @@ export default defineComponent({
     const selectedNodeDescription = computed(() => {
       return (selectedNode.value && nodes.value) ? makeNodeDescription(nodes.value[selectedNode.value]) : null
     })
+    watch(accountId, () => {
+      if ( isNodeSelected.value && selectedNode.value == null) {
+        selectedNode.value = props.account?.staked_node_id ?? null
+      }
+    })
 
     const declineChoice = ref(false)
     watch(accountId, () => declineChoice.value = props.account?.decline_reward ?? false)
