@@ -163,9 +163,19 @@ export default defineComponent({
     const accountId = computed(() => props.account?.account)
 
     const showConfirmDialog = ref(false)
-    const confirmMessage = computed(() => isNodeSelected.value
-        ? "Do you want to stake to " + selectedNodeDescription.value
-        : "Do you want to stake to account " + selectedAccount.value)
+    const confirmMessage = computed(() => {
+          let result: string
+          if (isNodeSelected.value) {
+            if (selectedNode.value !== props.account?.staked_node_id) {
+              result = "Do you want to stake to " + selectedNodeDescription.value + "?"
+            } else {
+              result = declineChoice.value ? "Do you want to decline reward?" : "Do you want to stop declining reward?"
+            }
+          } else {
+            result = "Do you want to stake to account " + selectedAccount.value
+          }
+          return result
+        })
 
     const stakeChoice = ref("node")
     const isNodeSelected = computed(() => stakeChoice.value === 'node')
