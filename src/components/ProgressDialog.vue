@@ -38,7 +38,7 @@
         <div v-if="mainMessage" class="block h-is-tertiary-text mt-2"> {{ mainMessage }} </div>
         <div v-else class="block h-is-tertiary-text" style="visibility: hidden">Filler</div>
 
-        <div class="is-flex is-align-items-baseline" style="line-height: 21px">
+        <div class="is-flex is-align-items-baseline mt-4" style="line-height: 21px">
           <span v-if="extraMessage" class="h-is-property-text"> {{ extraMessage }} </span>
           <span v-else class="h-is-property-text" style="visibility: hidden">Filler</span>
           <TransactionLink v-if="extraTransaction" :transaction-id="extraTransaction" class="ml-2"/>
