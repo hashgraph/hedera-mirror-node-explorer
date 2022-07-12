@@ -123,6 +123,21 @@
       </template>
     </DashboardCard>
 
+    <DashboardCard v-if="accountId" :class="{'h-has-opacity-20': isIndirectStaking}">
+      <template v-slot:title>
+        <p class="h-is-primary-title">Rewards Calculator</p>
+      </template>
+      <template v-slot:table>
+        <div class="is-flex is-justify-content-space-between">
+          <NetworkDashboardItem :name="'HBAR'" :title="'Current period earnings'" :value="'0'"/>
+          <NetworkDashboardItem :name="'HBAR'" :title="'Approx monthly earnings'" :value="'0'"/>
+          <NetworkDashboardItem :name="'HBAR'" :title="'Approx yearly earnings'" :value="'0'"/>
+          <NetworkDashboardItem :title="'Approx yearly reward rate'" :value="'0%'"/>
+        </div>
+
+      </template>
+    </DashboardCard>
+
   </section>
 
   <Footer/>
