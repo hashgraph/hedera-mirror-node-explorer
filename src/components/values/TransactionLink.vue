@@ -23,30 +23,17 @@
 <!-- --------------------------------------------------------------------------------------------------------------- -->
 
 <template>
-  <div :class="{'is-active': showDialog}" class="modal has-text-white">
-    <div class="modal-background"/>
-    <div class="modal-content" style="width: 768px; border-radius: 16px">
-      <div class="box">
 
-        <div class="h-is-primary-title">
-          <slot name="dialogTitle"/>
-        </div>
-
-        <hr class="h-card-separator"/>
-
-        <div v-if="mainMessage" class="block h-is-tertiary-text mt-2">{{ mainMessage }}</div>
-        <div v-else class="block h-is-property-text" style="visibility: hidden">Filler</div>
-        <div v-if="extraMessage" class="h-is-property-text">{{ extraMessage }}</div>
-        <div v-else class="h-is-property-text" style="visibility: hidden">Filler</div>
-
-        <div class="is-flex is-justify-content-flex-end">
-          <button class="button is-white is-small" @click="handleCancel">CANCEL</button>
-          <button class="button is-info is-small ml-4" @click="handleConfirm">CONFIRM</button>
-        </div>
-
-      </div>
-    </div>
+  <div v-if="transactionId">
+    <router-link :to="{name: 'TransactionDetails', params: {transactionId: transactionId}}">
+      <span class="is-numeric">{{ normalizedId }}</span>
+    </router-link>
   </div>
+
+  <span v-else-if="showNone" class="has-text-grey">None</span>
+
+  <span v-else/>
+
 </template>
 
 <!-- --------------------------------------------------------------------------------------------------------------- -->
@@ -55,36 +42,23 @@
 
 <script lang="ts">
 
-import {defineComponent} from "vue";
+import {computed, defineComponent, PropType} from "vue";
+import {TransactionID} from "@/utils/TransactionID";
 
 export default defineComponent({
-  name: "ConfirmDialog",
-  components: {},
+  name: "TransactionLink",
+
   props: {
-    showDialog: {
+    transactionId: String as PropType<string|null>,
+    showNone: {
       type: Boolean,
-      default: false
+      default: true
     },
-    mainMessage: String,
-    extraMessage: String,
   },
 
-  setup(props, context) {
-
-    const handleCancel = () => {
-      context.emit('update:showDialog', false)
-      context.emit('onCancel')
-    }
-
-    const handleConfirm = () => {
-      context.emit('update:showDialog', false)
-      context.emit('onConfirm')
-    }
-
-    return {
-      handleCancel,
-      handleConfirm,
-    }
+  setup(props) {
+    const normalizedId = computed(() => TransactionID.normalize(props.transactionId ?? "?"))
+    return { normalizedId }
   }
 });
 

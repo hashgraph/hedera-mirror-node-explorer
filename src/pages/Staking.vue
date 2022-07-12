@@ -41,7 +41,10 @@
   <ProgressDialog v-model:show-dialog="showProgressDialog"
                   :mode="progressDialogMode"
                   :main-message="progressMainMessage"
-                  :extra-message="progressExtraMessage">
+                  :extra-message="progressExtraMessage"
+                  :extra-transaction="progressExtraTransaction"
+                  :show-spinner="showProgressSpinner"
+  >
     <template v-slot:dialogTitle>
       <span class="h-is-primary-title">{{ progressDialogTitle }}</span>
     </template>
@@ -334,29 +337,32 @@ export default defineComponent({
       progressDialogTitle.value = (nodeId == null && accountId == null && !declineReward) ? "Stopping staking" : "Updating staking"
       progressMainMessage.value = "Connecting to Hedera Network using your wallet…"
       progressExtraMessage.value = "Check your wallet for any approval request"
+      progressExtraTransaction.value = null
+      showProgressSpinner.value = false
 
       hashConnectManager.changeStaking(nodeId, accountId, declineReward)
           .then((response: TransactionResponse) => {
             progressMainMessage.value = "Completing operation…"
             progressExtraMessage.value = "This may take a few seconds"
+            showProgressSpinner.value = true
             const transactionID = TransactionID.normalize(response.transactionId.toString(), false)
             return waitForTransactionRefresh(transactionID, 10)
           })
           .then((response: Transaction | string) => {
             progressDialogMode.value = Mode.Success
             progressMainMessage.value = "Operation completed"
-            if (typeof response == "string") {
-              progressExtraMessage.value = "with transaction ID: " + TransactionID.normalize(response)
-            } else {
-              const transactionID = response.transaction_id ? TransactionID.normalize(response.transaction_id) : "?"
-              progressExtraMessage.value = "with transaction ID: " + transactionID
-            }
+            showProgressSpinner.value = false
+            progressExtraMessage.value = "with transaction ID:"
+            const transactionID = typeof response == "string" ? response : response.transaction_id
+            progressExtraTransaction.value = transactionID ?? null
             fetchAccount()
           })
           .catch(() => {
             progressDialogMode.value = Mode.Error
             progressMainMessage.value = "Operation did not complete"
             progressExtraMessage.value = "Your wallet rejected this operation"
+            progressExtraTransaction.value = null
+            showProgressSpinner.value = false
             fetchAccount()
           })
     }
@@ -385,6 +391,8 @@ export default defineComponent({
     const progressDialogTitle = ref<string|null>(null)
     const progressMainMessage = ref<string|null>(null)
     const progressExtraMessage = ref<string|null>(null)
+    const progressExtraTransaction = ref<string|null>(null)
+    const showProgressSpinner = ref(false)
 
     return {
       isSmallScreen,
@@ -413,6 +421,8 @@ export default defineComponent({
       progressDialogTitle,
       progressMainMessage,
       progressExtraMessage,
+      progressExtraTransaction,
+      showProgressSpinner
     }
   }
 });

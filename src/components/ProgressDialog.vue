@@ -28,8 +28,9 @@
     <div class="modal-content" style="width: 768px; border-radius: 16px">
       <div class="box">
 
-        <div class="h-is-primary-title">
+        <div class="is-flex h-is-primary-title is-justify-content-space-between is-align-items-baseline">
           <slot name="dialogTitle"/>
+          <span v-if="showSpinner" class="loader is-inline-block"/>
         </div>
 
         <hr class="h-card-separator"/>
@@ -37,8 +38,11 @@
         <div v-if="mainMessage" class="block h-is-tertiary-text mt-2"> {{ mainMessage }} </div>
         <div v-else class="block h-is-tertiary-text" style="visibility: hidden">Filler</div>
 
-        <div v-if="extraMessage" class="block h-is-property-text"> {{ extraMessage }} </div>
-        <div v-else class="block h-is-property-text" style="visibility: hidden">Filler</div>
+        <div class="is-flex is-align-items-baseline" style="line-height: 21px">
+          <span v-if="extraMessage" class="h-is-property-text"> {{ extraMessage }} </span>
+          <span v-else class="h-is-property-text" style="visibility: hidden">Filler</span>
+          <TransactionLink v-if="extraTransaction" :transaction-id="extraTransaction" class="ml-2"/>
+        </div>
 
         <div class="is-flex is-justify-content-flex-end">
           <button class="button is-white is-small" :disabled="closeDisabled" @click="handleClose">CLOSE</button>
@@ -56,12 +60,13 @@
 <script lang="ts">
 
 import {computed, defineComponent, PropType} from "vue";
+import TransactionLink from "@/components/values/TransactionLink.vue";
 
 export enum Mode { Busy = 1, Success = 2, Error = 3 }
 
 export default defineComponent({
-  name: "ConfirmDialog",
-  components: {},
+  name: "ProgressDialog",
+  components: {TransactionLink},
   props: {
     showDialog: {
       type: Boolean,
@@ -73,6 +78,8 @@ export default defineComponent({
     },
     mainMessage: String,
     extraMessage: String,
+    extraTransaction: String,
+    showSpinner: Boolean
   },
 
   setup(props, context) {
