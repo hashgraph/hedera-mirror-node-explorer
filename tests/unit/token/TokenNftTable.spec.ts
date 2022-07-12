@@ -72,11 +72,11 @@ describe("TokenNftTable.vue", () => {
         expect(wrapper.find('tbody').text()).toBe(
             "20.0.700000" +
             "false" +
-            "8:56:33.5203 PMMar 6, 2022" +
+            "8:56:33.5203 PMMar 6, 2022, UTC" +
             "bafkreib55tplmtanco46tmj75ntattrbynthjoq2nbganqt4p7nr4eg3741" +
             "0.0.700000" +
             "false" +
-            "8:52:39.7092 PMMar 6, 2022" +
+            "8:52:39.7092 PMMar 6, 2022, UTC" +
             "bafkreibu25ajaankb3bxihulobd27da2inqy6kymtn5mzlct6re7dhoh4m"
         )
     });

@@ -105,7 +105,7 @@ describe("MainDashboard.vue", () => {
         expect(t0.get('tbody').text()).toBe(
             "0.0.29624024@1646025139.1529014980.0.29624024\n\n" +
             "1\n\n" +
-            "0.0.296939115:12:31.6676 AMFeb 28, 2022"
+            "0.0.296939115:12:31.6676 AMFeb 28, 2022, UTC"
         )
 
         expect(cards[1].text()).toMatch(RegExp("^Smart Contract Calls"))
@@ -116,7 +116,7 @@ describe("MainDashboard.vue", () => {
         expect(t1.get('tbody').text()).toBe(
             "0.0.29624024@1646025139.1529014980.0.29624024\n\n" +
             "1\n\n" +
-            "0.0.296939115:12:31.6676 AMFeb 28, 2022"
+            "0.0.296939115:12:31.6676 AMFeb 28, 2022, UTC"
         )
 
         expect(cards[2].text()).toMatch(RegExp("^HCS Messages"))
@@ -127,7 +127,7 @@ describe("MainDashboard.vue", () => {
         expect(t2.get('tbody').text()).toBe(
             "0.0.29662956" +
             "None" +
-            "5:12:31.6676 AMFeb 28, 2022"
+            "5:12:31.6676 AMFeb 28, 2022, UTC"
         )
 
     });

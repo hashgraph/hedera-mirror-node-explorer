@@ -72,11 +72,11 @@ describe("TopicTable.vue", () => {
         expect(wrapper.find('thead').text()).toBe("Topic Created Memo")
         expect(wrapper.find('tbody').text()).toBe(
             "0.0.750040" +
-            "6:14:56.3105 PMMar 7, 2022" +
+            "6:14:56.3105 PMMar 7, 2022, UTC" +
             "None"
             +
             "0.0.749794" +
-            "3:14:06.1051 PMMar 7, 2022" +
+            "3:14:06.1051 PMMar 7, 2022, UTC" +
             "Mirror Node acceptance test: 2022-03-07T15:14:18.167555058Z Create Topic"
         )
     });

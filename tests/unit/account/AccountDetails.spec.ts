@@ -188,7 +188,7 @@ describe("AccountDetails.vue", () => {
             "ED25519")
         expect(wrapper.get("#memoValue").text()).toBe("Account Dude Memo in clear")
         expect(wrapper.get("#aliasValue").text()).toBe("None")
-        expect(wrapper.get("#expiresAtValue").text()).toBe("3:33:21.4109 AMApr 11, 2022")
+        expect(wrapper.get("#expiresAtValue").text()).toBe("3:33:21.4109 AMApr 11, 2022, UTC")
         expect(wrapper.get("#autoRenewPeriodValue").text()).toBe("77 days 3 hours 40 minutes")
         expect(wrapper.get("#maxAutoAssociationValue").text()).toBe("10")
         expect(wrapper.get("#receiverSigRequiredValue").text()).toBe("true")
@@ -255,7 +255,7 @@ describe("AccountDetails.vue", () => {
 
         expect(wrapper.get("#stakedNodeValue").text()).toBe("Node 0 - testnet")
         expect(wrapper.find("#stakedAccount").exists()).toBe(false)
-        expect(wrapper.get("#stakePeriodStartValue").text()).toBe("6:45:00.3568 PMMar 3, 2022")
+        expect(wrapper.get("#stakePeriodStartValue").text()).toBe("6:45:00.3568 PMMar 3, 2022, UTC")
         expect(wrapper.get("#declineRewardValue").text()).toBe("false")
     });
 
@@ -295,7 +295,7 @@ describe("AccountDetails.vue", () => {
 
         expect(wrapper.get("#stakedAccountValue").text()).toBe("0.0.5Node 2 - testnet")
         expect(wrapper.find("#stakedNodeValue").exists()).toBe(false)
-        expect(wrapper.get("#stakePeriodStartValue").text()).toBe("6:45:00.3568 PMMar 3, 2022")
+        expect(wrapper.get("#stakePeriodStartValue").text()).toBe("6:45:00.3568 PMMar 3, 2022, UTC")
         expect(wrapper.get("#declineRewardValue").text()).toBe("true")
     });
 });
