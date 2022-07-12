@@ -54,9 +54,11 @@
 
     <DashboardCard>
       <template v-slot:title>
-        <span class="h-is-primary-title">My Staking </span>
-        <span v-if="accountId" class="h-is-tertiary-text"> for account </span>
-        <span v-if="accountId" class="h-is-secondary-text has-text-weight-light mr-3">{{ accountId }}</span>
+          <span class="h-is-primary-title">My Staking </span>
+          <span v-if="accountId" class="h-is-tertiary-text"> for account </span>
+          <div v-if="accountId" class="h-is-secondary-text has-text-weight-light mr-3 is-inline-block">
+            <AccountLink :account-id="accountId">{{ accountId }}</AccountLink>
+          </div>
       </template>
 
       <template v-slot:table>
@@ -168,6 +170,7 @@ import ConfirmDialog from "@/components/ConfirmDialog.vue";
 import {TransactionResponse} from "@hashgraph/sdk";
 import {TransactionID} from "@/utils/TransactionID";
 import ProgressDialog, {Mode} from "@/components/ProgressDialog.vue";
+import AccountLink from "@/components/values/AccountLink.vue";
 
 export default defineComponent({
   name: 'Staking',
@@ -177,6 +180,7 @@ export default defineComponent({
   },
 
   components: {
+    AccountLink,
     ConfirmDialog,
     ProgressDialog,
     DashboardCard,
