@@ -71,7 +71,7 @@
           <div class="column">
             <div class="is-flex">
               <div class="control" style="width: 10rem">
-                <label class="radio">
+                <label class="radio h-radio-button">
                   <input name="stakeTarget" type="radio" value="node" v-model="stakeChoice">
                   Node
                 </label>
@@ -88,7 +88,7 @@
             </div>
             <div class="is-flex mt-2">
               <div class="control" style="width: 10rem">
-                <label class="radio ml-0">
+                <label class="radio h-radio-button ml-0">
                   <input name="stakeTarget" type="radio" value="account" v-model="stakeChoice">
                   Other Account
                 </label>
