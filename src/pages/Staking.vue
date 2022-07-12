@@ -106,7 +106,7 @@
             <p>Connecting your Wallet...</p>
             <p>You need to select which account you wish to connect.</p>
             <br/>
-            <button class="button is-white is-small" @click="disconnectFromWallet">ABORT CONNEXION</button>
+            <button class="button is-white is-small" @click="disconnectFromWallet">ABORT CONNECTION</button>
           </section>
         </template>
 
