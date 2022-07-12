@@ -70,7 +70,7 @@ describe("TimestampValue.vue", () => {
     // GMT: Monday 22 February 2021 00:44:13.165
     // https://www.epochconverter.com
 
-    const TIMESTAMP_STRING = "12:44:13.1650 AMFeb 22, 2021"
+    const TIMESTAMP_STRING = "12:44:13.1650 AMFeb 22, 2021, UTC"
 
     it("blobValue undefined, nano == false", async () => {
 

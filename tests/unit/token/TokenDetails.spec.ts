@@ -90,8 +90,8 @@ describe("TokenDetails.vue", () => {
         expect(wrapper.get("#expiresAtValue").text()).toBe("None")
         expect(wrapper.get("#autoRenewPeriodValue").text()).toBe("90 days")
 
-        expect(wrapper.get("#createdAtValue").text()).toBe("10:02:30.2333 AMFeb 12, 2022")
-        expect(wrapper.get("#modifiedAtValue").text()).toBe("10:02:30.2333 AMFeb 12, 2022")
+        expect(wrapper.get("#createdAtValue").text()).toBe("10:02:30.2333 AMFeb 12, 2022, UTC")
+        expect(wrapper.get("#modifiedAtValue").text()).toBe("10:02:30.2333 AMFeb 12, 2022, UTC")
         expect(wrapper.get("#totalSupplyValue").text()).toBe("1")
         expect(wrapper.get("#initialSupplyValue").text()).toBe("1")
         expect(wrapper.get("#maxSupplyValue").text()).toBe("Infinite")
@@ -145,8 +145,8 @@ describe("TokenDetails.vue", () => {
         expect(wrapper.get("#expiresAtValue").text()).toBe("None")
         expect(wrapper.get("#autoRenewPeriodValue").text()).toBe("90 days")
 
-        expect(wrapper.get("#createdAtValue").text()).toBe("3:29:27.7128 PMMar 6, 2022")
-        expect(wrapper.get("#modifiedAtValue").text()).toBe("8:56:33.5203 PMMar 6, 2022")
+        expect(wrapper.get("#createdAtValue").text()).toBe("3:29:27.7128 PMMar 6, 2022, UTC")
+        expect(wrapper.get("#modifiedAtValue").text()).toBe("8:56:33.5203 PMMar 6, 2022, UTC")
         expect(wrapper.get("#totalSupplyValue").text()).toBe("2")
         expect(wrapper.get("#initialSupplyValue").text()).toBe("0")
         expect(wrapper.get("#maxSupplyValue").text()).toBe("150")

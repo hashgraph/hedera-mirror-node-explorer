@@ -79,7 +79,7 @@ describe("TransactionTableV2.vue", () => {
         expect(wrapper.find('tbody').text()).toBe(
             "0.0.29624024@1646025139.152901498CRYPTO TRANSFER0.0.29624024\n\n" +
             "1\n\n" +
-            "0.0.296939115:12:31.6676 AMFeb 28, 2022"
+            "0.0.296939115:12:31.6676 AMFeb 28, 2022, UTC"
         )
     });
 

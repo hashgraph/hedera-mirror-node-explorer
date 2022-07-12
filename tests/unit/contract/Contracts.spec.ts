@@ -86,7 +86,7 @@ describe("Contracts.vue", () => {
         expect(table.get('thead').text()).toBe("Contract Created Memo")
         expect(table.get('tbody').text()).toBe(
             "0.0.749775" +
-            "3:09:15.9474 PMMar 7, 2022" +
+            "3:09:15.9474 PMMar 7, 2022, UTC" +
             "Mirror Node acceptance test: 2022-03-07T15:09:15.228564328Z Create contract"
         )
 
