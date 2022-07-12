@@ -73,11 +73,11 @@ describe("MessageTransactionTable.vue", () => {
         expect(wrapper.find('tbody').text()).toBe(
             "0.0.120438" +
             "None" +
-            "1:59:03.9969 PMMar 8, 2022"
+            "1:59:03.9969 PMMar 8, 2022, UTC"
             +
             "0.0.120438" +
             "None" +
-            "1:59:03.9622 PMMar 8, 2022"
+            "1:59:03.9622 PMMar 8, 2022, UTC"
         )
     });
 

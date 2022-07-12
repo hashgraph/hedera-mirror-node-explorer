@@ -88,6 +88,7 @@ export default defineComponent({
       day: "numeric",
       month: "short",
       year: "numeric",
+      timeZoneName: "short",
       timeZone: HMSF.forceUTC ? "UTC" : undefined
     }
     const dateFormat = new Intl.DateTimeFormat(locale, dateOptions)
