@@ -35,8 +35,19 @@
 
         <hr class="h-card-separator"/>
 
-        <div v-if="mainMessage" class="block h-is-tertiary-text mt-2"> {{ mainMessage }} </div>
-        <div v-else class="block h-is-tertiary-text" style="visibility: hidden">Filler</div>
+        <div class="is-flex is-align-items-baseline" style="line-height: 21px">
+
+          <div v-if="mode === Mode.Success" class="icon is-medium has-text-success ml-0">
+            <i class="fas fa-check"/>
+          </div>
+          <div v-else-if="mode === Mode.Error" class="icon is-medium has-text-danger">
+            <span style="font-size: 18px; font-weight: 900">X</span>
+          </div>
+          <div v-else />
+
+          <div v-if="mainMessage" class="block h-is-tertiary-text mt-2"> {{ mainMessage }}</div>
+          <div v-else class="block h-is-tertiary-text" style="visibility: hidden">Filler</div>
+        </div>
 
         <div class="is-flex is-align-items-baseline mt-4" style="line-height: 21px">
           <span v-if="extraMessage" class="h-is-property-text"> {{ extraMessage }} </span>
@@ -93,6 +104,7 @@ export default defineComponent({
     return {
       handleClose,
       closeDisabled,
+      Mode,
     }
   }
 });
