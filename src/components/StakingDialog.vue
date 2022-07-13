@@ -104,7 +104,7 @@
 
         <div class="columns">
           <div class="column is-one-third has-text-weight-light">
-            Decline Reward
+            Decline Rewards
           </div>
           <div class="column">
             <label class="checkbox">
@@ -169,7 +169,7 @@ export default defineComponent({
             if (selectedNode.value !== props.account?.staked_node_id) {
               result = "Do you want to stake to " + selectedNodeDescription.value + "?"
             } else {
-              result = declineChoice.value ? "Do you want to decline reward?" : "Do you want to stop declining reward?"
+              result = declineChoice.value ? "Do you want to decline rewards?" : "Do you want to accept rewards?"
             }
           } else {
             result = "Do you want to stake to account " + selectedAccount.value

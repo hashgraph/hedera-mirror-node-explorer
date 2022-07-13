@@ -113,9 +113,9 @@
                 </template>
               </Property>
               <Property :id="'declineReward'" >
-                <template v-slot:name>Decline Reward</template>
+                <template v-slot:name>Rewards</template>
                 <template v-slot:value>
-                  <StringValue :string-value="account?.decline_reward?.toString()"/>
+                  <StringValue :string-value="account?.decline_reward ? 'Declined' : 'Accepted'"/>
                 </template>
               </Property>
             <Property :id="'memo'">

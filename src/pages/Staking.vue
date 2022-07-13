@@ -68,7 +68,7 @@
             <div class="is-flex is-justify-content-space-between">
               <NetworkDashboardItem :name="stakedSince" :title="'Staked to'" :value="stakedTo"/>
               <NetworkDashboardItem :name="stakedAmount ? 'HBAR' : ''" :title="'My Stake'" :value="stakedAmount"/>
-              <NetworkDashboardItem :title="'Decline Reward'" :value="declineReward"/>
+              <NetworkDashboardItem :title="'Rewards'" :value="declineReward ? 'Declined' : 'Accepted'"/>
             </div>
             <br/>
             <div class="is-flex is-justify-content-space-between">
@@ -86,7 +86,7 @@
               <div class="mt-4"/>
               <NetworkDashboardItem :name="stakedAmount ? 'HBAR' : ''" :title="'My Stake'" :value="stakedAmount"/>
               <div class="mt-4"/>
-              <NetworkDashboardItem :title="'Decline Reward'" :value="declineReward"/>
+              <NetworkDashboardItem :title="'Rewards'" :value="declineReward ? 'Decline' : 'Accepted'"/>
               <div class="mt-4"/>
             </div>
               <div class="is-flex is-justify-content-center">
