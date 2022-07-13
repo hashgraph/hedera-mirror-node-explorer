@@ -125,6 +125,19 @@
 
     <DashboardCard v-if="accountId" :class="{'h-has-opacity-20': isIndirectStaking}">
       <template v-slot:title>
+        <p class="h-is-primary-title">Staking Rewards Transactions</p>
+      </template>
+      <template v-slot:table>
+        <TransactionTableV2
+            :narrowed="true"
+            :nb-items="10"
+            :transactions="[]"
+        />
+      </template>
+    </DashboardCard>
+
+    <DashboardCard v-if="accountId" :class="{'h-has-opacity-20': isIndirectStaking}">
+      <template v-slot:title>
         <p class="h-is-primary-title">Rewards Calculator</p>
       </template>
       <template v-slot:table>
@@ -165,6 +178,7 @@ import {
 import {HMSF} from "@/utils/HMSF";
 import {waitFor} from "@/utils/TimerUtils";
 import {operatorRegistry} from "@/schemas/OperatorRegistry";
+import TransactionTableV2 from "@/components/transaction/TransactionTableV2.vue";
 import StakingDialog from "@/components/StakingDialog.vue";
 import DashboardCard from "@/components/DashboardCard.vue";
 import ConfirmDialog from "@/components/ConfirmDialog.vue";
@@ -186,6 +200,7 @@ export default defineComponent({
     ProgressDialog,
     DashboardCard,
     StakingDialog,
+    TransactionTableV2,
     NetworkDashboardItem,
     Footer,
   },
