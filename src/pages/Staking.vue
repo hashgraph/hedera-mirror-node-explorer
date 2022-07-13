@@ -125,7 +125,12 @@
 
     <DashboardCard v-if="accountId" :class="{'h-has-opacity-20': isIndirectStaking}">
       <template v-slot:title>
-        <p class="h-is-primary-title">Staking Rewards Transactions</p>
+        <span class="h-is-primary-title">Staking Rewards Transactions</span>
+      </template>
+      <template v-slot:control>
+        <div class="is-flex is-align-items-flex-end">
+          <PlayPauseButtonV2 v-model:state="transactionCacheState"/>
+        </div>
       </template>
       <template v-slot:table>
         <TransactionTableV2
@@ -188,6 +193,7 @@ import ProgressDialog, {Mode} from "@/components/ProgressDialog.vue";
 import AccountLink from "@/components/values/AccountLink.vue";
 import {RewardsTransactionCache} from "@/components/transaction/RewardsTransactionCache";
 import {EntityCacheStateV2} from "@/utils/EntityCacheV2";
+import PlayPauseButtonV2 from "@/components/PlayPauseButtonV2.vue";
 
 export default defineComponent({
   name: 'Staking',
@@ -197,6 +203,7 @@ export default defineComponent({
   },
 
   components: {
+    PlayPauseButtonV2,
     AccountLink,
     ConfirmDialog,
     ProgressDialog,
@@ -461,6 +468,7 @@ export default defineComponent({
       progressExtraTransaction,
       showProgressSpinner,
       transactions: transactionCache.filteredTransactions,
+      transactionCacheState: transactionCache.state,
     }
   }
 });
