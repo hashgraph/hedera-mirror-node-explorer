@@ -54,11 +54,13 @@ $h-highlight-color: var(--h-theme-highlight-color);
 $h-page-background-color: var(--h-theme-page-background-color);
 $h-box-background-color: var(--h-theme-box-background-color);
 $h-pill-background-color: var(--h-theme-pill-background-color);
+// These remain the same whatever the chosen network
+$h-extra-text-color: var(--h-mainnet-highlight-color);
+$h-radio-hover-color: var(--h-mainnet-highlight-color);
 
 $h-table-background-color: $h-box-background-color;
 $h-mobile-page-background-color: $h-box-background-color;
 $h-table-hover-background-color: $h-page-background-color;
-$h-extra-text-color: $h-highlight-color;
 
 // Global styling of boxes
 .h-box-border {

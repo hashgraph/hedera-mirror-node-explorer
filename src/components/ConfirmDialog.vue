@@ -23,23 +23,32 @@
 <!-- --------------------------------------------------------------------------------------------------------------- -->
 
 <template>
+  <div :class="{'is-active': showDialog}" class="modal has-text-white">
+    <div class="modal-background"/>
+    <div class="modal-content" style="width: 768px; border-radius: 16px">
+      <div class="box">
 
-  <div class="is-flex is-align-items-center">
-    <div class="is-flex has-text-white"
-         :class="{'is-align-items-center': variation, 'is-align-items-baseline': !variation}">
-      <p class="dashboard-value has-text-white mr-2" :class="{'is-numeric':isNumeric}" >
-        <span v-if="value">{{ value }}</span>
-        <span v-else class="has-text-grey">None</span>
-      </p>
-      <div class="is-flex-is-vertical"
-           :class="{'h-is-text-size-3':isMediumScreen, 'h-is-text-size-1':!isMediumScreen, 'pt-1':isMediumScreen}"
-           style="line-height: 1">
-        <Variation v-if="variation" :variation="variation"/>
-        <p class="h-is-text-size-1">{{ name }}</p>
+        <div class="h-is-primary-title">
+          <slot name="dialogTitle"/>
+        </div>
+
+        <hr class="h-card-separator"/>
+
+        <div v-if="mainMessage" class="block h-is-tertiary-text mt-2">{{ mainMessage }}</div>
+        <div v-else class="block h-is-property-text" style="visibility: hidden">Filler</div>
+        <div class="mt-4" style="line-height: 21px">
+          <span v-if="extraMessage" class="h-is-property-text">{{ extraMessage }}</span>
+          <span v-else class="h-is-property-text" style="visibility: hidden">Filler</span>
+        </div>
+
+        <div class="is-flex is-justify-content-flex-end">
+          <button class="button is-white is-small" @click="handleCancel">CANCEL</button>
+          <button class="button is-info is-small ml-4" @click="handleConfirm">CONFIRM</button>
+        </div>
+
       </div>
     </div>
   </div>
-
 </template>
 
 <!-- --------------------------------------------------------------------------------------------------------------- -->
@@ -48,28 +57,37 @@
 
 <script lang="ts">
 
-import {defineComponent, inject} from 'vue';
-import Variation from "@/components/dashboard/Variation.vue";
+import {defineComponent} from "vue";
 
 export default defineComponent({
-  name: 'DashboardItem',
-  components: {Variation},
+  name: "ConfirmDialog",
+  components: {},
   props: {
-    name: String,
-    value: String,
-    variation: String,
-    isNumeric: {
+    showDialog: {
       type: Boolean,
       default: false
+    },
+    mainMessage: String,
+    extraMessage: String,
+  },
+
+  setup(props, context) {
+
+    const handleCancel = () => {
+      context.emit('update:showDialog', false)
+      context.emit('onCancel')
     }
-  },
 
-  setup() {
-    const isMediumScreen = inject('isMediumScreen', true)
+    const handleConfirm = () => {
+      context.emit('update:showDialog', false)
+      context.emit('onConfirm')
+    }
 
-    return {isMediumScreen}
-  },
-
+    return {
+      handleCancel,
+      handleConfirm,
+    }
+  }
 });
 
 </script>
@@ -78,34 +96,5 @@ export default defineComponent({
 <!--                                                       STYLE                                                     -->
 <!-- --------------------------------------------------------------------------------------------------------------- -->
 
-<style scoped>
+<style/>
 
-.dashboard-value {
-  font-style: normal;
-  font-weight: 300;
-  font-size: 22px;
-  line-height: 28px;
-  letter-spacing: -0.05em;
-}
-
-@media (min-width: 1080px) {
-  .dashboard-value {
-    font-style: normal;
-    font-weight: 300;
-    font-size: 28px;
-    line-height: 34px;
-    letter-spacing: -0.05em;
-  }
-}
-
-@media (min-width: 1450px) {
-  .dashboard-value {
-    font-style: normal;
-    font-weight: 300;
-    font-size: 34px;
-    line-height: 41px;
-    letter-spacing: -0.05em;
-  }
-}
-
-</style>

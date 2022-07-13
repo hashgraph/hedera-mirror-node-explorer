@@ -19,30 +19,105 @@
  */
 
 import {NetworkEntry, networkRegistry} from "@/schemas/NetworkRegistry";
+import {HashConnectContext} from "@/utils/HashConnectManager";
 
 export class AppStorage {
+
+    private static readonly VERSION = "v1"
+
+    //
+    // network
+    //
 
     private static readonly LAST_USED_NETWORK_KEY = 'network'
 
     public static getLastNetwork(): NetworkEntry {
-        let result: NetworkEntry|null
-        try {
-            const item = localStorage.getItem(AppStorage.LAST_USED_NETWORK_KEY)
-            result = item !== null ? networkRegistry.lookup(item) : null
-        } catch {
-            // Navigator is setup to block all cookies => we'll use an hardcoded fallback
-            result = null
-        }
+        const item = this.getLocalStorageItem(this.LAST_USED_NETWORK_KEY)
+        const result = item != null ? networkRegistry.lookup(item) : null
         return result ?? networkRegistry.getDefaultEntry()
     }
 
     public static setLastNetwork(newValue: string|NetworkEntry): void {
         const newItem = typeof newValue == "string" ? newValue : newValue.name
+        this.setLocalStorageItem(this.LAST_USED_NETWORK_KEY, newItem)
+    }
+
+
+    //
+    // hashconnect-priv-key
+    //
+
+    private static readonly HASH_CONNECT_PRIV_KEY_KEY = "hashconnect/priv-key"
+
+    public static getHashConnectPrivKey(): string | null {
+        return this.getLocalStorageItem(this.HASH_CONNECT_PRIV_KEY_KEY)
+    }
+
+    public static setHashConnectPrivKey(newValue: string|null): void {
+        this.setLocalStorageItem(this.HASH_CONNECT_PRIV_KEY_KEY, newValue)
+    }
+
+
+    //
+    // hashconnect-context
+    //
+
+    public static getHashConnectContext(network: string): HashConnectContext | null {
+        const key = "hashconnect/" + network + "/context"
+        return this.getJsonValue(key) as HashConnectContext | null
+    }
+
+    public static setHashConnectContext(newValue: HashConnectContext|null, network: string): void {
+        const key = "hashconnect/" + network + "/context"
+        this.setJsonValue(newValue, key)
+    }
+
+
+    //
+    // Private
+    //
+
+    private static getLocalStorageItem(keySuffix: string): string|null {
+        let result: string|null
         try {
-            localStorage.setItem(AppStorage.LAST_USED_NETWORK_KEY, newItem);
+            result = localStorage.getItem(AppStorage.VERSION + "/" + keySuffix)
         } catch {
-            // Navigator is setup to block all cookies => we forget last used network
+            result = null
+        }
+        return result
+    }
+
+    private static setLocalStorageItem(keySuffix: string, value: string|null) {
+        const key = AppStorage.VERSION + "/" + keySuffix
+        try {
+            if (value != null) {
+                localStorage.setItem(key, value);
+            } else {
+                localStorage.removeItem(key);
+            }
+        } catch {
+            // Ignored
         }
     }
 
+    private static getJsonValue(keySuffix: string): unknown | null {
+        let result: unknown|null
+        const jsonText = this.getLocalStorageItem(keySuffix)
+        if (jsonText != null) {
+            try {
+                result = JSON.parse(jsonText)
+            } catch {
+                console.log("Ignored invalid JSON text from " + keySuffix)
+                result = null
+            }
+        } else {
+            result = null;
+        }
+        return result
+    }
+
+    private static setJsonValue(newValue: unknown | null, keySuffix: string) {
+        const item = newValue != null ? JSON.stringify(newValue) : null
+        this.setLocalStorageItem(keySuffix, item)
+    }
 }

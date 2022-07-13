@@ -29,6 +29,14 @@
     background: $h-background-color;
 }
 
+.h-has-opacity-20 {
+    opacity: 20%;
+}
+
+.h-radio-button:hover {
+    color: $h-radio-hover-color;
+}
+
 //
 // TEXT
 //
@@ -184,6 +192,14 @@ body {
 }
 .h-is-credit {
     color: #27D19E;
+}
+
+//
+// BUTTONS
+//
+
+.h-button {
+    border-radius: 3px;
 }
 
 //

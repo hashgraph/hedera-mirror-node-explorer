@@ -89,7 +89,6 @@
         <div class="columns h-is-property-text">
 
           <div class="column">
-            <div v-if="isStakingEnabled">
               <Property v-if="account?.staked_account_id" :id="'stakedAccount'">
                 <template v-slot:name>Staked Account</template>
                 <template v-slot:value>
@@ -114,12 +113,11 @@
                 </template>
               </Property>
               <Property :id="'declineReward'" >
-                <template v-slot:name>Decline Reward</template>
+                <template v-slot:name>Rewards</template>
                 <template v-slot:value>
-                  <StringValue :string-value="account?.decline_reward?.toString()"/>
+                  <StringValue :string-value="account?.decline_reward ? 'Declined' : 'Accepted'"/>
                 </template>
               </Property>
-            </div>
             <Property :id="'memo'">
               <template v-slot:name>Memo</template>
               <template v-slot:value>
@@ -138,24 +136,9 @@
                 <DurationValue v-bind:number-value="account?.auto_renew_period"/>
               </template>
             </Property>
-            <div v-if="!isStakingEnabled">
-              <Property :id="'maxAutoAssociation'">
-                <template v-slot:name>Max. Auto. Association</template>
-                <template v-slot:value>
-                  <StringValue :string-value="account?.max_automatic_token_associations?.toString()"/>
-                </template>
-              </Property>
-              <Property :id="'receiverSigRequired'">
-                <template v-slot:name>Receiver Sig. Required</template>
-                <template v-slot:value>
-                  <StringValue :string-value="account?.receiver_sig_required?.toString()"/>
-                </template>
-              </Property>
-            </div>
-            </div>
+          </div>
 
           <div class="column">
-            <div v-if="isStakingEnabled">
               <Property :id="'maxAutoAssociation'">
                 <template v-slot:name>Max. Auto. Association</template>
                 <template v-slot:value>
@@ -168,7 +151,6 @@
                   <StringValue :string-value="account?.receiver_sig_required?.toString()"/>
                 </template>
               </Property>
-            </div>
             <Property :id="'key'">
               <template v-slot:name>Key</template>
               <template v-slot:value>
