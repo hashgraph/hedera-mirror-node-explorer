@@ -166,6 +166,11 @@ export class HashConnectManager {
     }
 
     public async changeStaking(nodeId: number|null, accountId: string|null, declineReward: boolean|null): Promise<TransactionResponse> {
+
+        console.log("changeStaking - nodeId:        " + nodeId)
+        console.log("                accountId:     " + accountId)
+        console.log("                declineReward: " + declineReward)
+
         let result: Promise<TransactionResponse>
 
         // Connects if needed

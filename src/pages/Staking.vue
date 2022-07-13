@@ -131,7 +131,7 @@
         <TransactionTableV2
             :narrowed="true"
             :nb-items="10"
-            :transactions="[]"
+            :transactions="transactions"
         />
       </template>
     </DashboardCard>
@@ -163,7 +163,7 @@
 
 <script lang="ts">
 
-import {computed, defineComponent, inject, onBeforeMount, ref, watch} from 'vue';
+import {computed, defineComponent, inject, onBeforeUnmount, onMounted, ref, watch} from 'vue';
 import Footer from "@/components/Footer.vue";
 import {hashConnectManager} from "@/router";
 import NetworkDashboardItem from "@/components/node/NetworkDashboardItem.vue";
@@ -186,6 +186,8 @@ import {TransactionResponse} from "@hashgraph/sdk";
 import {TransactionID} from "@/utils/TransactionID";
 import ProgressDialog, {Mode} from "@/components/ProgressDialog.vue";
 import AccountLink from "@/components/values/AccountLink.vue";
+import {RewardsTransactionCache} from "@/components/transaction/RewardsTransactionCache";
+import {EntityCacheStateV2} from "@/utils/EntityCacheV2";
 
 export default defineComponent({
   name: 'Staking',
@@ -304,7 +306,7 @@ export default defineComponent({
       }
     }
 
-    onBeforeMount(() => fetchAccount())
+    onMounted(() => fetchAccount())
     watch(hashConnectManager.accountId, () => fetchAccount())
 
     //
@@ -413,6 +415,22 @@ export default defineComponent({
     const progressExtraTransaction = ref<string|null>(null)
     const showProgressSpinner = ref(false)
 
+    //
+    // Rewards Transactions Cache
+    //
+    const transactionCache = new RewardsTransactionCache()
+    const setupTransactionCache = () => {
+      if(hashConnectManager.accountId.value) {
+        transactionCache.accountId.value = hashConnectManager.accountId.value
+        transactionCache.state.value = EntityCacheStateV2.Started
+      }
+    }
+    onMounted(() => setupTransactionCache())
+    watch(hashConnectManager.accountId, () => setupTransactionCache())
+    onBeforeUnmount(() => {
+      transactionCache.state.value = EntityCacheStateV2.Stopped
+    })
+
     return {
       isSmallScreen,
       isTouchDevice,
@@ -441,7 +459,8 @@ export default defineComponent({
       progressMainMessage,
       progressExtraMessage,
       progressExtraTransaction,
-      showProgressSpinner
+      showProgressSpinner,
+      transactions: transactionCache.filteredTransactions,
     }
   }
 });
