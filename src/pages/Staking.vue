@@ -68,7 +68,7 @@
             <div class="is-flex is-justify-content-space-between">
               <NetworkDashboardItem :name="stakedSince" :title="'Staked to'" :value="stakedTo"/>
               <NetworkDashboardItem :name="stakedAmount ? 'HBAR' : ''" :title="'My Stake'" :value="stakedAmount"/>
-              <NetworkDashboardItem :title="'Rewards'" :value="declineReward ? 'Declined' : 'Accepted'"/>
+              <NetworkDashboardItem :title="'Rewards'" :value="declineReward===true ? 'Declined' : 'Accepted'"/>
             </div>
             <br/>
             <div class="is-flex is-justify-content-space-between">
