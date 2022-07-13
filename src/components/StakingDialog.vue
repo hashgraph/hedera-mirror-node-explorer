@@ -225,8 +225,10 @@ export default defineComponent({
     }
 
     const handleConfirmChange = () => {
+      const stakedNode = isNodeSelected.value ? selectedNode.value : null
+      const stakedAccount = isAccountSelected.value ? selectedAccount.value : null
       const declineReward = declineChoice.value != props.account?.decline_reward ? declineChoice.value : null;
-      context.emit("changeStaking", selectedNode.value, selectedAccount.value, declineReward)
+      context.emit("changeStaking", stakedNode, stakedAccount, declineReward)
     }
 
     const isValidEntityId = (entity: string) => {
