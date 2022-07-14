@@ -301,7 +301,7 @@ export default defineComponent({
       return result
     })
 
-    const ignoreReward = computed(() => account.value?.staked_account_id !== null)
+    const ignoreReward = computed(() => account.value === null || account.value.staked_node_id === null)
 
     const fetchAccount = () => {
       console.log("fetch account: " + hashConnectManager.accountId.value)
