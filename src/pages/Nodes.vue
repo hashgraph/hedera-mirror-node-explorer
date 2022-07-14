@@ -32,7 +32,6 @@
       </template>
       <template v-slot:table>
 
-        <div v-if="isStakingEnabled">
           <div v-if="isSmallScreen" class="is-flex is-justify-content-space-between">
             <div class="is-flex-direction-column">
               <NetworkDashboardItem :title="'Total Nodes'" :value="totalNodes"/>
@@ -66,20 +65,6 @@
               <div class="mt-6"/>
             </div>
           </div>
-        </div>
-        <div v-else>
-          <div v-if="isSmallScreen" class="is-flex is-justify-content-space-between">
-            <div class="is-flex-direction-column">
-              <NetworkDashboardItem :title="'Total Nodes'" :value="totalNodes"/>
-            </div>
-          </div>
-          <div v-else>
-            <div class="is-flex-direction-column">
-              <NetworkDashboardItem :title="'Total Nodes'" :value="totalNodes"/>
-              <div class="mt-6"/>
-            </div>
-          </div>
-        </div>
 
       </template>
     </DashboardCard>
@@ -130,8 +115,6 @@ export default defineComponent({
   },
 
   setup() {
-    const isStakingEnabled = process.env.VUE_APP_ENABLE_STAKING === 'true'
-
     const isSmallScreen = inject('isSmallScreen', true)
     const isTouchDevice = inject('isTouchDevice', false)
 
@@ -195,7 +178,6 @@ export default defineComponent({
     }
 
     return {
-      isStakingEnabled,
       isSmallScreen,
       isTouchDevice,
       nodes,

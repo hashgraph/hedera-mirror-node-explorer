@@ -58,7 +58,6 @@
         </div>
       </o-table-column>
 
-      <div v-if="isStakingEnabled">
         <o-table-column v-slot="props" field="stake" label="Stake" position="right">
           <HbarAmount :amount="props.row.stake" :decimals="0"/>
           <span>{{ ' (' + makeStakePercentage(props.row) + '%)' }}</span>
@@ -80,7 +79,6 @@
 <!--          </div>-->
 <!--        </o-table-column>-->
 
-      </div>
     </o-table>
   </div>
 
@@ -119,8 +117,6 @@ export default defineComponent({
   },
 
   setup(props) {
-    const isStakingEnabled = process.env.VUE_APP_ENABLE_STAKING === 'true'
-
     const isTouchDevice = inject('isTouchDevice', false)
     const isMediumScreen = inject('isMediumScreen', true)
 
@@ -135,7 +131,6 @@ export default defineComponent({
     }
 
     return {
-      isStakingEnabled,
       isTouchDevice,
       isMediumScreen,
       makeHost,
