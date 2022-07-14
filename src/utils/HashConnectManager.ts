@@ -185,9 +185,7 @@ export class HashConnectManager {
             trans.setAccountId(this.accountId.value)
             if (nodeId !== null) {
                 trans.setStakedNodeId(nodeId)
-                trans.setStakedAccountId("0.0.0")
             } else if (accountId !== null) {
-                trans.setStakedNodeId(-1)
                 trans.setStakedAccountId(accountId)
             } else {
                 trans.setStakedNodeId(-1)
