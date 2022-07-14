@@ -68,7 +68,7 @@
             <div class="is-flex is-justify-content-space-between">
               <NetworkDashboardItem :name="stakedSince" :title="'Staked to'" :value="stakedTo"/>
               <NetworkDashboardItem :name="stakedAmount ? 'HBAR' : ''" :title="'My Stake'" :value="stakedAmount"/>
-              <NetworkDashboardItem :title="'Rewards'" :value="declineReward===true ? 'Declined' : 'Accepted'"/>
+              <NetworkDashboardItem :title="'Rewards'" :value="declineReward" :class="{'h-has-opacity-20': ignoreReward}"/>
             </div>
             <br/>
             <div class="is-flex is-justify-content-space-between">
@@ -86,7 +86,7 @@
               <div class="mt-4"/>
               <NetworkDashboardItem :name="stakedAmount ? 'HBAR' : ''" :title="'My Stake'" :value="stakedAmount"/>
               <div class="mt-4"/>
-              <NetworkDashboardItem :title="'Rewards'" :value="declineReward ? 'Decline' : 'Accepted'"/>
+              <NetworkDashboardItem :title="'Rewards'" :value="declineReward" :class="{'h-has-opacity-20': ignoreReward}"/>
               <div class="mt-4"/>
             </div>
               <div class="is-flex is-justify-content-center">
@@ -292,8 +292,16 @@ export default defineComponent({
     })
 
     const declineReward = computed(() => {
-      return account.value?.decline_reward?.toString() ?? null
+      let result: string | null
+      if (account.value && account.value.decline_reward !== null) {
+        result = account.value.decline_reward === true ? 'Declined' : 'Accepted'
+      } else {
+        result = null
+      }
+      return result
     })
+
+    const ignoreReward = computed(() => account.value?.staked_account_id !== null)
 
     const fetchAccount = () => {
       console.log("fetch account: " + hashConnectManager.accountId.value)
@@ -456,6 +464,7 @@ export default defineComponent({
       stakedAmount,
       stakedSince,
       declineReward,
+      ignoreReward,
       connectToWallet,
       disconnectFromWallet,
       handleStopStaking,
