@@ -24,7 +24,7 @@ import {TransactionCacheV2} from "@/components/transaction/TransactionCacheV2";
 
 export class RewardsTransactionCache extends TransactionCacheV2 {
 
-    private static rewardAccountId = "0.0.46822468"
+    private static rewardAccountId = "0.0.800"
 
     //
     // Public
