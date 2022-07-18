@@ -141,20 +141,7 @@
       </template>
     </DashboardCard>
 
-    <DashboardCard v-if="accountId" :class="{'h-has-opacity-20': isIndirectStaking}">
-      <template v-slot:title>
-        <p class="h-is-primary-title">Rewards Calculator</p>
-      </template>
-      <template v-slot:table>
-        <div class="is-flex is-justify-content-space-between">
-          <NetworkDashboardItem :name="'HBAR'" :title="'Current period earnings'" :value="'0'"/>
-          <NetworkDashboardItem :name="'HBAR'" :title="'Approx monthly earnings'" :value="'0'"/>
-          <NetworkDashboardItem :name="'HBAR'" :title="'Approx yearly earnings'" :value="'0'"/>
-          <NetworkDashboardItem :title="'Approx yearly reward rate'" :value="'0%'"/>
-        </div>
-
-      </template>
-    </DashboardCard>
+    <RewardsCalculator v-if="accountId" :class="{'h-has-opacity-20': isIndirectStaking}" :node-id="stakedNode?.node_id"/>
 
   </section>
 
@@ -194,6 +181,7 @@ import AccountLink from "@/components/values/AccountLink.vue";
 import {RewardsTransactionCache} from "@/components/staking/RewardsTransactionCache";
 import {EntityCacheStateV2} from "@/utils/EntityCacheV2";
 import PlayPauseButtonV2 from "@/components/PlayPauseButtonV2.vue";
+import RewardsCalculator from "@/components/staking/RewardsCalculator.vue";
 
 export default defineComponent({
   name: 'Staking',
@@ -203,6 +191,7 @@ export default defineComponent({
   },
 
   components: {
+    RewardsCalculator,
     PlayPauseButtonV2,
     AccountLink,
     ConfirmDialog,

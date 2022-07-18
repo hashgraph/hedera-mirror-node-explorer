@@ -28,7 +28,7 @@
     <div class="is-flex has-text-white"
          :class="{'is-align-items-center': variation, 'is-align-items-baseline': !variation}">
       <p class="dashboard-value has-text-white mr-2" :class="{'is-numeric':isNumeric}" >
-        <span v-if="value">{{ value }}</span>
+        <span v-if="value !== null">{{ value }}</span>
         <span v-else class="has-text-grey">None</span>
       </p>
       <div class="is-flex-is-vertical"
