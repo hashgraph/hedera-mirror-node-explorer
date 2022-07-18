@@ -19,45 +19,32 @@
  */
 
 
-import {WalletManager} from "@/utils/wallet/WalletManager";
-import {HashConnect, HashConnectTypes} from "hashconnect";
+import {HashConnect, HashConnectTypes, MessageTypes} from "hashconnect";
 import {AppStorage} from "@/AppStorage";
-import {HashConnectContext} from "@/utils/HashConnectManager";
 import {HederaLogo} from "@/utils/MetaMask";
+import {WalletDriver} from "@/utils/wallet/WalletDriver";
+import {HashConnectSigner} from "hashconnect/dist/provider/signer";
+import {Executable, Transaction} from "@hashgraph/sdk";
 
-export class HashpackManager extends WalletManager {
+export class WalletDriver_Hashpack extends WalletDriver {
 
-    //
-    // WalletManager
-    //
-
-    public async connect(): Promise<void> {
-        if (this.signerRef.value === null) {
-            await this.connectToHashpack()
-        }
-    }
-
-    public async disconnect(): Promise<void> {
-        if (this.signerRef.value !== null) {
-            await this.disconnectFromHashpack()
-        }
-    }
-
-    protected shouldFreeze(): boolean {
-        return true;
-    }
+    private network: string|null = null
+    private signer: HashConnectSigner|null = null
 
     //
-    // Private
+    // Public
     //
 
-    private readonly appMetadata: HashConnectTypes.AppMetadata = {
-        name: "Hedera Explorer",
-        description: "A ledger explorer for the Hedera network",
-        icon: HederaLogo
+    public constructor() {
+        super("Hashpack", null)
     }
 
-    private async connectToHashpack(): Promise<void> {
+
+    //
+    // WalletDriver
+    //
+
+    public async connect(network: string): Promise<void> {
 
         // connect / init
         const hashConnect = new HashConnect(false)
@@ -66,7 +53,6 @@ export class HashpackManager extends WalletManager {
         AppStorage.setHashConnectPrivKey(initData.privKey)
 
 
-        const network = this.routeManager.currentNetwork.value
         const context = AppStorage.getHashConnectContext(network)
 
         if (context === null) {
@@ -103,8 +89,7 @@ export class HashpackManager extends WalletManager {
             const accountId = accountIds.length >= 1 ? accountIds[0] : null
             if (accountId !== null) {
                 const provider = hashConnect.getProvider(network, connectionState.topic, accountId)
-                this.signerRef.value = hashConnect.getSigner(provider)
-                this.accountIdRef.value = accountId
+                this.signer = hashConnect.getSigner(provider)
             } else {
                 await this.disconnect()
             }
@@ -119,8 +104,7 @@ export class HashpackManager extends WalletManager {
             const accountId = accountIds.length >= 1 ? accountIds[0] : null
             if (accountId !== null) {
                 const provider = hashConnect.getProvider(network, context.topic, accountId)
-                this.signerRef.value = hashConnect.getSigner(provider)
-                this.accountIdRef.value = accountId
+                this.signer = hashConnect.getSigner(provider)
             } else {
                 await this.disconnect()
             }
@@ -128,9 +112,53 @@ export class HashpackManager extends WalletManager {
         }
     }
 
-    public disconnectFromHashpack(): void {
-        this.signerRef.value = null
-        this.accountIdRef.value = null
+    public async disconnect(): Promise<void> {
+        if (this.signer !== null) {
+            this.signer = null
+            this.network = null
+        }
     }
 
+    public async call<RequestT, ResponseT, OutputT>(request: Executable<RequestT, ResponseT, OutputT>): Promise<OutputT> {
+        let result: Promise<OutputT>
+        if (this.signer !== null) {
+            if (request instanceof Transaction) {
+                await request.freezeWithSigner(this.signer)
+            }
+            result = this.signer.call(request)
+        } else {
+            result = Promise.reject<OutputT>("Bug")
+        }
+        return result
+    }
+
+    public isConnected(): boolean {
+        return this.signer != null
+    }
+
+    public getNetwork(): string|null {
+        return this.network
+    }
+
+    public getAccountId(): string|null {
+        return this.signer?.getAccountId().toString() ?? null
+    }
+
+    //
+    // Private
+    //
+
+    private readonly appMetadata: HashConnectTypes.AppMetadata = {
+        name: "Hedera Explorer",
+        description: "A ledger explorer for the Hedera network",
+        icon: HederaLogo
+    }
+
+}
+
+export interface HashConnectContext {
+    network: string
+    topic: string
+    pairingString: string
+    pairingData: MessageTypes.ApprovePairing | null
 }
