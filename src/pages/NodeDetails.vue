@@ -89,8 +89,7 @@
             </Property>
           </div>
 
-          <div class="column" :class="{'h-has-column-separator': isStakingEnabled}">
-            <div v-if="isStakingEnabled">
+          <div class="column h-has-column-separator">
               <NetworkDashboardItem :name="'HBAR'" :title="'Stake for Consensus'" :value="totalStaked.toString()"/>
               <p class="h-is-property-text h-is-extra-text mt-1">{{ stakePercentage }}% of total</p>
               <br/><br/>
@@ -100,7 +99,6 @@
               <NetworkDashboardItem :name="'HOURS'" :title="'Current Staking Period'" :value="'24'"/>
               <p class="h-is-property-text h-is-extra-text mt-1">from 00:00 am today to 11:59 pm today UTC</p>
               <div class="mt-6"/>
-            </div>
           </div>
 
         </div>
@@ -167,8 +165,6 @@ export default defineComponent({
   },
 
   setup(props) {
-    const isStakingEnabled = process.env.VUE_APP_ENABLE_STAKING === 'true'
-
     const isSmallScreen = inject('isSmallScreen', true)
     const isTouchDevice = inject('isTouchDevice', false)
     let nodes = ref<Array<NetworkNode> | null>([])
@@ -255,7 +251,6 @@ export default defineComponent({
     }
 
     return {
-      isStakingEnabled,
       isSmallScreen,
       isTouchDevice,
       node,
