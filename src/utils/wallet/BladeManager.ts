@@ -47,6 +47,10 @@ export class BladeManager extends WalletManager {
         }
     }
 
+    protected shouldFreeze(): boolean {
+        return false;
+    }
+
     //
     // Private
     //
