@@ -450,7 +450,6 @@ export default defineComponent({
       isSmallScreen,
       isTouchDevice,
       connected: hashConnectManager.connected,
-      connectedNetwork: hashConnectManager.connectedNetwork,
       walletName: hashConnectManager.walletName,
       walletIconURL: hashConnectManager.walletIconURL,
       accountId: hashConnectManager.accountId,

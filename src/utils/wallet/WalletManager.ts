@@ -79,6 +79,9 @@ export abstract class WalletManager {
             if (declineReward !== null) {
                 trans.setDeclineStakingReward(declineReward)
             }
+            if (this.shouldFreeze()) {
+                await trans.freezeWithSigner(this.signerRef.value)
+            }
             result = this.signerRef.value.call(trans)
 
         } else {
@@ -99,6 +102,8 @@ export abstract class WalletManager {
     protected readonly walletIconURLRef = ref<string|null>(null)
 
     protected readonly accountIdRef = ref<string|null>(null)
+
+    protected abstract shouldFreeze(): boolean;
 
 }
 
