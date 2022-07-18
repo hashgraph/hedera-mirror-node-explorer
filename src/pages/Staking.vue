@@ -191,7 +191,7 @@ import {TransactionResponse} from "@hashgraph/sdk";
 import {TransactionID} from "@/utils/TransactionID";
 import ProgressDialog, {Mode} from "@/components/ProgressDialog.vue";
 import AccountLink from "@/components/values/AccountLink.vue";
-import {RewardsTransactionCache} from "@/components/transaction/RewardsTransactionCache";
+import {RewardsTransactionCache} from "@/components/staking/RewardsTransactionCache";
 import {EntityCacheStateV2} from "@/utils/EntityCacheV2";
 import PlayPauseButtonV2 from "@/components/PlayPauseButtonV2.vue";
 
