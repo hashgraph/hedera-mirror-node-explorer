@@ -18,7 +18,6 @@
  *
  */
 
-import {WalletUnexpectedError} from "@/utils/wallet/WalletManager";
 import {Executable} from "@hashgraph/sdk";
 
 export abstract class WalletDriver {
@@ -31,15 +30,15 @@ export abstract class WalletDriver {
     //
 
     public async connect(network: string): Promise<void> {
-        return Promise.reject<void>(new WalletUnexpectedError("Not yet implemented"))
+        throw this.toBeImplemented("Connection to " + network + " aborted because implementation is missing")
     }
 
     public async disconnect(): Promise<void> {
-        return Promise.reject<void>(new WalletUnexpectedError("Not yet implemented"))
+        throw this.toBeImplemented("Disconnect aborted because implementation is missing")
     }
 
     public async call<RequestT, ResponseT, OutputT>(request: Executable<RequestT, ResponseT, OutputT>): Promise<OutputT> {
-        return Promise.reject<OutputT>(new WalletUnexpectedError("Not yet implemented"))
+        throw this.toBeImplemented("Call of " + request.toString() + " aborted because implementation is missing")
     }
 
     public abstract isConnected(): boolean
@@ -57,4 +56,39 @@ export abstract class WalletDriver {
         this.iconURL = iconURL
     }
 
+    protected extensionNotFound(): WalletDriverError {
+        const message = this.name + " extension not found"
+        const extra = "Please install " + this.name + " extension."
+        return new WalletDriverError(message, extra)
+    }
+
+    protected connectFailure(extra: string): WalletDriverError {
+        const message = "Connection of " + this.name + " failed"
+        return new WalletDriverError(message, extra)
+    }
+
+    protected disconnectFailure(extra: string): WalletDriverError {
+        const message = "Disconnection from " + this.name + " failed"
+        return new WalletDriverError(message, extra)
+    }
+
+    protected callFailure(extra: string): WalletDriverError {
+        const message = this.name + " failed during operation execution"
+        return new WalletDriverError(message, extra)
+    }
+
+    protected toBeImplemented(methodName: string): WalletDriverError {
+        const message = methodName + " must be subclassed"
+        return new WalletDriverError(message, "bug")
+    }
+}
+
+export class WalletDriverError extends Error {
+
+    public readonly extra: string
+
+    public constructor(message: string, extra: string) {
+        super(message)
+        this.extra = extra
+    }
 }
