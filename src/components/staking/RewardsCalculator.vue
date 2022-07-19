@@ -59,10 +59,10 @@
       </div>
 
       <div class="is-flex is-justify-content-space-between">
-        <NetworkDashboardItem :name="'HBAR'" :title="'Current period earnings'" :value="currentEarning.toString()"/>
-        <NetworkDashboardItem :name="'HBAR'" :title="'Approx monthly earnings'" :value="monthlyEarning.toString()"/>
-        <NetworkDashboardItem :name="'HBAR'" :title="'Approx yearly earnings'" :value="yearlyEarning.toString()"/>
-        <NetworkDashboardItem :title="'Approx yearly reward rate'" :value="yearlyRate*100 + '%'"/>
+        <NetworkDashboardItem :name="'HBAR'" :title="'Current 24h Period Earning'" :value="currentEarning.toString()"/>
+        <NetworkDashboardItem :name="'HBAR'" :title="'Approx Monthly Earning'" :value="monthlyEarning.toString()"/>
+        <NetworkDashboardItem :name="'HBAR'" :title="'Approx Yearly Earning'" :value="yearlyEarning.toString()"/>
+        <NetworkDashboardItem :title="'Approx Yearly Reward Rate'" :value="yearlyRate*100 + '%'"/>
       </div>
 
     </template>
