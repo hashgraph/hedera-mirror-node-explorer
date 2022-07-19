@@ -110,7 +110,7 @@ export default defineComponent({
         (nodes.value && selectedNodeId.value !== null) ? nodes.value[selectedNodeId.value].reward_rate_start : 0)
     const currentEarning = computed(() => rewardRate.value && amountStaked.value ? Math.round(amountStaked.value * rewardRate.value * 10000) / 10000 : 0)
     const monthlyEarning = computed(() => currentEarning.value ? Math.round(currentEarning.value * 30 * 100) / 100 : 0)
-    const yearlyEarning = computed(() => currentEarning.value ? Math.round(currentEarning.value * 365) : 0)
+    const yearlyEarning = computed(() => currentEarning.value ? Math.round(currentEarning.value * 365 * 10) / 10 : 0)
     const yearlyRate = computed(() => rewardRate.value ? Math.round(rewardRate.value * 365 * 10000) / 10000  : 0)
 
     //
