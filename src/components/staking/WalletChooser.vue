@@ -54,7 +54,7 @@
 
 <script lang="ts">
 
-import {defineComponent, onMounted} from "vue";
+import {defineComponent} from "vue";
 import {walletManager} from "@/router";
 import {WalletDriver} from "@/utils/wallet/WalletDriver";
 
@@ -69,11 +69,6 @@ export default defineComponent({
   },
 
   setup(props, context) {
-
-    onMounted(() => {
-      for (const d of walletManager.getDrivers()) {
-      }
-    })
 
     const handleChoose = (wallet: WalletDriver) => {
       walletManager.setActiveDriver(wallet)
