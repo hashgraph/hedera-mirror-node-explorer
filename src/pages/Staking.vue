@@ -50,6 +50,8 @@
     </template>
   </ProgressDialog>
 
+  <WalletChooser v-model:show-dialog="showWalletChooser"/>
+
   <section :class="{'h-mobile-background': isTouchDevice || !isSmallScreen}" class="section">
 
     <DashboardCard>
@@ -116,7 +118,7 @@
               To view or change your staking you first need to connect your wallet.
             </p>
             <br/>
-            <button class="button is-white is-small" @click="connectToWallet">CONNECT WALLET…</button>
+            <button class="button is-white is-small" @click="chooseWallet">CONNECT WALLET…</button>
           </section>
         </template>
 
@@ -182,6 +184,7 @@ import {RewardsTransactionCache} from "@/components/staking/RewardsTransactionCa
 import {EntityCacheStateV2} from "@/utils/EntityCacheV2";
 import PlayPauseButtonV2 from "@/components/PlayPauseButtonV2.vue";
 import RewardsCalculator from "@/components/staking/RewardsCalculator.vue";
+import WalletChooser from "@/components/staking/WalletChooser.vue";
 
 export default defineComponent({
   name: 'Staking',
@@ -191,6 +194,7 @@ export default defineComponent({
   },
 
   components: {
+    WalletChooser,
     RewardsCalculator,
     PlayPauseButtonV2,
     AccountLink,
@@ -207,11 +211,8 @@ export default defineComponent({
     const isSmallScreen = inject('isSmallScreen', true)
     const isTouchDevice = inject('isTouchDevice', false)
 
-    const connectToWallet = (event: MouseEvent) => {
-      walletManager.connect()
-      if (event.target instanceof HTMLButtonElement) {
-        event.target.blur()
-      }
+    const chooseWallet = () => {
+      showWalletChooser.value = true
     }
 
     const disconnectFromWallet = () => {
@@ -226,6 +227,7 @@ export default defineComponent({
 
     const showStakingDialog = ref(false)
     const showStopConfirmDialog = ref(false)
+    const showWalletChooser = ref(false)
 
     const isStaked = computed(() => account?.value?.staked_node_id || account?.value?.staked_account_id)
 
@@ -288,7 +290,6 @@ export default defineComponent({
     const ignoreReward = computed(() => account.value === null || account.value.staked_node_id === null)
 
     const fetchAccount = () => {
-      console.log("fetch account: " + walletManager.accountId.value)
       const params = {} as {
         limit: 1
       }
@@ -324,7 +325,6 @@ export default defineComponent({
     })
 
     const fetchNode = (nodeId: number) => {
-      console.log("fetch node: " + nodeId)
       const url = "api/v1/network/nodes"
       const queryParams = {params: {'node.id': nodeId}}
       axios
@@ -441,6 +441,7 @@ export default defineComponent({
       isStaked,
       showStakingDialog,
       showStopConfirmDialog,
+      showWalletChooser,
       isIndirectStaking,
       stakedTo,
       stakedNode,
@@ -448,7 +449,7 @@ export default defineComponent({
       stakedSince,
       declineReward,
       ignoreReward,
-      connectToWallet,
+      chooseWallet,
       disconnectFromWallet,
       handleStopStaking,
       handleChangeStaking,
