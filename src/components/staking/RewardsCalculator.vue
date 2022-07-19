@@ -145,8 +145,6 @@ export default defineComponent({
 
     onMounted(() => {
       fetchNodes()
-      console.log("props.nodeId: " + props.nodeId)
-      console.log("selectedNodeId.value: " + selectedNodeId.value)
     })
 
     const makeNodeDescription = (node: NetworkNode) => {
