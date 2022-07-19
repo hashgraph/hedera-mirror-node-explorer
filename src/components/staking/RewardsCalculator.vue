@@ -34,7 +34,7 @@
         <div class="column is-three-fifths">
           <div class="is-flex is-flex-direction-column is-align-items-flex-start">
             <p v-if="isMediumScreen" class="h-is-property-text mb-3">Choose node staked to</p>
-            <p v-else class="h-is-text-size-3 mb-1">Title</p>
+            <p v-else class="h-is-text-size-3 mb-1">Choose node staked to</p>
             <o-field style="width: 100%">
               <o-select v-model="selectedNodeId" class="h-is-text-size-1" style="border-radius: 4px">
                 <option v-for="n in nodes" :key="n.node_id" :value="n.node_id"
@@ -48,12 +48,12 @@
         <div class="column">
           <div class="is-flex is-flex-direction-column is-align-items-flex-start">
             <p v-if="isMediumScreen" class="h-is-property-text mb-3">Enter HBAR amount staked</p>
-            <p v-else class="h-is-text-size-3 mb-1">Title</p>
-            <o-field style="width: 100%">
-              <o-input v-model="amountStaked" placeholder="0" class="has-text-right"
-                       style=" color: white; background-color: var(--h-theme-box-background-color) ">
-              </o-input>
-            </o-field>
+            <p v-else class="h-is-text-size-3 mb-1">Enter HBAR amount staked</p>
+              <input class="input is-small has-text-right" type="text" placeholder="0"
+                     :value="amountStaked"
+                     @input="event => handleInput(event.target.value)"
+                     style="width: 100%; height: 26px; margin-top: 1.5px; border-radius: 4px; border-width: 1px;
+                     color: white; background-color: var(--h-theme-box-background-color)">
           </div>
         </div>
       </div>
@@ -104,7 +104,8 @@ export default defineComponent({
     const selectedNodeId = ref<number | null>(props.nodeId ?? null)
     watch(() => props.nodeId, () => selectedNodeId.value = props.nodeId ?? null)
 
-    const amountStaked = ref<number|null>(null)
+    const amountStaked = ref<number|null>(100)
+
     const rewardRate = computed(() =>
         (nodes.value && selectedNodeId.value !== null) ? nodes.value[selectedNodeId.value].reward_rate_start : 0)
     const currentEarning = computed(() => rewardRate.value && amountStaked.value ? Math.round(amountStaked.value * rewardRate.value * 10000) / 10000 : 0)
@@ -156,6 +157,17 @@ export default defineComponent({
       return result
     }
 
+    const handleInput = (value: string) => {
+      const previousAmount = amountStaked.value
+      const newAmount = Number(value)
+      if (!Number.isNaN(newAmount) && newAmount >= 0 && newAmount <= 50000000000) {
+        amountStaked.value = newAmount
+      } else {
+        amountStaked.value = null
+        amountStaked.value = previousAmount
+      }
+    }
+
     return {
       isSmallScreen,
       isMediumScreen,
@@ -169,6 +181,7 @@ export default defineComponent({
       yearlyRate,
       nodes,
       makeNodeDescription,
+      handleInput
     }
   }
 });
