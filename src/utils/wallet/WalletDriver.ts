@@ -30,11 +30,6 @@ export abstract class WalletDriver {
     // Public
     //
 
-    public constructor(name: string, iconURL: string|null) {
-        this.name = name
-        this.iconURL = iconURL
-    }
-
     public async connect(network: string): Promise<void> {
         return Promise.reject<void>(new WalletUnexpectedError("Not yet implemented"))
     }
@@ -52,4 +47,14 @@ export abstract class WalletDriver {
     public abstract getNetwork(): string|null
 
     public abstract getAccountId(): string|null
+
+    //
+    // Protected
+    //
+
+    protected constructor(name: string, iconURL: string|null) {
+        this.name = name
+        this.iconURL = iconURL
+    }
+
 }
