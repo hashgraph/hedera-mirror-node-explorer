@@ -18,13 +18,23 @@
  *
  */
 
-import {RouteManager} from "@/utils/RouteManager";
 import {computed, ref, watch} from "vue";
-import {AccountUpdateTransaction, Signer, TransactionResponse} from "@hashgraph/sdk";
+import {AccountUpdateTransaction, TransactionResponse} from "@hashgraph/sdk";
+import {RouteManager} from "@/utils/RouteManager";
+import {WalletDriver} from "@/utils/wallet/WalletDriver";
+import {WalletDriver_Blade} from "@/utils/wallet/WalletDriver_Blade";
+import {WalletDriver_Hashpack} from "@/utils/wallet/WalletDriver_Hashpack";
 
-export abstract class WalletManager {
+export class WalletManager {
 
-    protected readonly routeManager: RouteManager
+    private readonly routeManager: RouteManager
+    private readonly bladeDriver = new WalletDriver_Blade()
+    private readonly hashpackDriver = new WalletDriver_Hashpack()
+
+    private readonly connectedRef = ref(false)
+    private readonly accountIdRef = ref<string|null>(null)
+
+    private activeDriver: WalletDriver = this.hashpackDriver
 
     //
     // Public
@@ -35,20 +45,36 @@ export abstract class WalletManager {
         watch(this.routeManager.currentNetwork, () => this.disconnect())
     }
 
-    public connected = computed(() => this.signerRef.value != null)
+    public getDrivers(): WalletDriver[] {
+        return [this.bladeDriver, this.hashpackDriver]
+    }
+
+    public getActiveDriver(): WalletDriver {
+        return this.activeDriver
+    }
+
+    public setActiveDriver(newValue: WalletDriver): void {
+        if (this.activeDriver != newValue) {
+            this.activeDriver = newValue;
+            this.connectedRef.value = this.activeDriver.isConnected()
+            this.accountIdRef.value = this.activeDriver.getAccountId()
+        }
+    }
+
+    public connected = computed(() => this.connectedRef.value)
 
     public accountId = computed(() => this.accountIdRef.value)
 
-    public walletName = computed(() => this.walletNameRef.value)
-
-    public walletIconURL = computed(() => this.walletIconURLRef.value)
-
     public async connect(): Promise<void> {
-        return Promise.reject<void>(new WalletUnexpectedError("Not yet implemented"))
+        await this.activeDriver.connect(this.routeManager.currentNetwork.value)
+        this.connectedRef.value = this.activeDriver.isConnected()
+        this.accountIdRef.value = this.activeDriver.getAccountId()
     }
 
     public async disconnect(): Promise<void> {
-        return Promise.reject<void>(new WalletUnexpectedError("Not yet implemented"))
+        await this.activeDriver.disconnect()
+        this.connectedRef.value = this.activeDriver.isConnected()
+        this.accountIdRef.value = null
     }
 
     public async changeStaking(nodeId: number|null, accountId: string|null, declineReward: boolean|null): Promise<TransactionResponse> {
@@ -63,14 +89,12 @@ export abstract class WalletManager {
         await this.connect()
 
         // Updates account's stakeNodeId
-        if (this.signerRef.value !== null && this.accountId.value !== null) {
+        if (this.accountId.value !== null) {
             const trans = await new AccountUpdateTransaction()
             trans.setAccountId(this.accountId.value)
             if (nodeId !== null) {
                 trans.setStakedNodeId(nodeId)
-                trans.setStakedAccountId("0.0.0")
             } else if (accountId !== null) {
-                trans.setStakedNodeId(-1)
                 trans.setStakedAccountId(accountId)
             } else {
                 trans.setStakedNodeId(-1)
@@ -79,10 +103,7 @@ export abstract class WalletManager {
             if (declineReward !== null) {
                 trans.setDeclineStakingReward(declineReward)
             }
-            if (this.shouldFreeze()) {
-                await trans.freezeWithSigner(this.signerRef.value)
-            }
-            result = this.signerRef.value.call(trans)
+            result = this.activeDriver.call(trans)
 
         } else {
             result = Promise.reject("Failed to connect to wallet")
@@ -90,20 +111,6 @@ export abstract class WalletManager {
 
         return result;
     }
-
-    //
-    // Protected
-    //
-
-    protected readonly signerRef = ref<Signer|null>(null)
-
-    protected readonly walletNameRef = ref<string|null>(null)
-
-    protected readonly walletIconURLRef = ref<string|null>(null)
-
-    protected readonly accountIdRef = ref<string|null>(null)
-
-    protected abstract shouldFreeze(): boolean;
 
 }
 

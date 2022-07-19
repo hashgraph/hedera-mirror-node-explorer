@@ -157,7 +157,7 @@
 
 import {computed, defineComponent, inject, onBeforeUnmount, onMounted, ref, watch} from 'vue';
 import Footer from "@/components/Footer.vue";
-import {hashConnectManager} from "@/router";
+import {walletManager} from "@/router";
 import NetworkDashboardItem from "@/components/node/NetworkDashboardItem.vue";
 import axios from "axios";
 import {
@@ -208,19 +208,14 @@ export default defineComponent({
     const isTouchDevice = inject('isTouchDevice', false)
 
     const connectToWallet = (event: MouseEvent) => {
-      if (event.altKey) {
-        hashConnectManager.reset()
-        console.log("HashConnectManager has been reset")
-      } else {
-        hashConnectManager.connect()
-      }
+      walletManager.connect()
       if (event.target instanceof HTMLButtonElement) {
         event.target.blur()
       }
     }
 
     const disconnectFromWallet = () => {
-      hashConnectManager.disconnect()
+      walletManager.disconnect()
     }
 
     //
@@ -293,13 +288,13 @@ export default defineComponent({
     const ignoreReward = computed(() => account.value === null || account.value.staked_node_id === null)
 
     const fetchAccount = () => {
-      console.log("fetch account: " + hashConnectManager.accountId.value)
+      console.log("fetch account: " + walletManager.accountId.value)
       const params = {} as {
         limit: 1
       }
-      if (hashConnectManager.accountId.value) {
+      if (walletManager.accountId.value) {
         axios
-            .get<AccountBalanceTransactions>("api/v1/accounts/" + hashConnectManager.accountId.value, {params: params})
+            .get<AccountBalanceTransactions>("api/v1/accounts/" + walletManager.accountId.value, {params: params})
             .then(response => {
               account.value = response.data
               if (account.value.staked_node_id !== null) {
@@ -311,7 +306,7 @@ export default defineComponent({
     }
 
     onMounted(() => fetchAccount())
-    watch(hashConnectManager.accountId, () => fetchAccount())
+    watch(walletManager.accountId, () => fetchAccount())
 
     //
     // Node
@@ -365,7 +360,7 @@ export default defineComponent({
       progressExtraTransaction.value = null
       showProgressSpinner.value = false
 
-      hashConnectManager.changeStaking(nodeId, accountId, declineReward)
+      walletManager.changeStaking(nodeId, accountId, declineReward)
           .then((response: TransactionResponse) => {
             progressMainMessage.value = "Completing operation…"
             progressExtraMessage.value = "This may take a few seconds"
@@ -424,13 +419,13 @@ export default defineComponent({
     //
     const transactionCache = new RewardsTransactionCache()
     const setupTransactionCache = () => {
-      if(hashConnectManager.accountId.value) {
-        transactionCache.accountId.value = hashConnectManager.accountId.value
+      if(walletManager.accountId.value) {
+        transactionCache.accountId.value = walletManager.accountId.value
         transactionCache.state.value = EntityCacheStateV2.Started
       }
     }
     onMounted(() => setupTransactionCache())
-    watch(hashConnectManager.accountId, () => setupTransactionCache())
+    watch(walletManager.accountId, () => setupTransactionCache())
     onBeforeUnmount(() => {
       transactionCache.state.value = EntityCacheStateV2.Stopped
     })
@@ -438,10 +433,10 @@ export default defineComponent({
     return {
       isSmallScreen,
       isTouchDevice,
-      connected: hashConnectManager.connected,
-      walletName: hashConnectManager.walletName,
-      walletIconURL: hashConnectManager.walletIconURL,
-      accountId: hashConnectManager.accountId,
+      connected: walletManager.connected,
+      walletName: walletManager.getActiveDriver().name,
+      walletIconURL: walletManager.getActiveDriver().iconURL,
+      accountId: walletManager.accountId,
       account,
       isStaked,
       showStakingDialog,
