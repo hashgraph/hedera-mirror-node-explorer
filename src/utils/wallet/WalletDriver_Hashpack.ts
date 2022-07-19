@@ -45,6 +45,52 @@ export class WalletDriver_Hashpack extends WalletDriver {
     //
 
     public async connect(network: string): Promise<void> {
+        try {
+            await this.performConnect(network)
+        } catch(error) {
+            throw this.connectFailure(error.message)
+        }
+    }
+
+    public async disconnect(): Promise<void> {
+        if (this.signer !== null) {
+            this.signer = null
+            this.network = null
+        }
+        return Promise.resolve()
+    }
+
+    public async call<RequestT, ResponseT, OutputT>(request: Executable<RequestT, ResponseT, OutputT>): Promise<OutputT> {
+        try {
+            return await this.performCall(request)
+        } catch(error) {
+            throw this.callFailure(error.message)
+        }
+    }
+
+    public isConnected(): boolean {
+        return this.signer != null
+    }
+
+    public getNetwork(): string|null {
+        return this.network
+    }
+
+    public getAccountId(): string|null {
+        return this.signer?.getAccountId().toString() ?? null
+    }
+
+    //
+    // Private
+    //
+
+    private readonly appMetadata: HashConnectTypes.AppMetadata = {
+        name: "Hedera Explorer",
+        description: "A ledger explorer for the Hedera network",
+        icon: HederaLogo
+    }
+
+    private async performConnect(network: string): Promise<void> {
 
         // connect / init
         const hashConnect = new HashConnect(false)
@@ -112,14 +158,7 @@ export class WalletDriver_Hashpack extends WalletDriver {
         }
     }
 
-    public async disconnect(): Promise<void> {
-        if (this.signer !== null) {
-            this.signer = null
-            this.network = null
-        }
-    }
-
-    public async call<RequestT, ResponseT, OutputT>(request: Executable<RequestT, ResponseT, OutputT>): Promise<OutputT> {
+    private async performCall<RequestT, ResponseT, OutputT>(request: Executable<RequestT, ResponseT, OutputT>): Promise<OutputT> {
         let result: Promise<OutputT>
         if (this.signer !== null) {
             if (request instanceof Transaction) {
@@ -127,31 +166,9 @@ export class WalletDriver_Hashpack extends WalletDriver {
             }
             result = this.signer.call(request)
         } else {
-            result = Promise.reject<OutputT>("Bug")
+            throw this.callFailure("Signer not found (bug)")
         }
         return result
-    }
-
-    public isConnected(): boolean {
-        return this.signer != null
-    }
-
-    public getNetwork(): string|null {
-        return this.network
-    }
-
-    public getAccountId(): string|null {
-        return this.signer?.getAccountId().toString() ?? null
-    }
-
-    //
-    // Private
-    //
-
-    private readonly appMetadata: HashConnectTypes.AppMetadata = {
-        name: "Hedera Explorer",
-        description: "A ledger explorer for the Hedera network",
-        icon: HederaLogo
     }
 
 }
