@@ -59,8 +59,8 @@
       </o-table-column>
 
         <o-table-column v-slot="props" field="stake" label="Stake" position="right">
-          <HbarAmount :amount="props.row.stake" :decimals="0"/>
-          <span>{{ ' (' + makeStakePercentage(props.row) + '%)' }}</span>
+            <HbarAmount :amount="props.row.stake ?? 0" :decimals="0"/>
+            <span class="ml-1">{{ '(' + makeStakePercentage(props.row) + '%)' }}</span>
         </o-table-column>
 
         <o-table-column v-slot="props" field="stake_not_rewarded" label="Unrewarded Stake" position="right">
@@ -123,7 +123,7 @@ export default defineComponent({
     const makeHost = (node: NetworkNode) => node.node_account_id ? operatorRegistry.lookup(node.node_account_id)?.name : null
     const makeLocation = (node: NetworkNode) => node.node_account_id ? operatorRegistry.lookup(node.node_account_id)?.location : null
     const makeStakePercentage = (node: NetworkNode) => {
-      return node.stake && props.totalStaked ? node.stake / props.totalStaked : 0
+      return node.stake && props.totalStaked ? Math.round(node.stake / props.totalStaked * 1000) / 10 : 0
     }
 
     const handleClick = (node: NetworkNode) => {

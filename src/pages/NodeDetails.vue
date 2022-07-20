@@ -90,11 +90,11 @@
           </div>
 
           <div class="column h-has-column-separator">
-              <NetworkDashboardItem :name="'HBAR'" :title="'Stake for Consensus'" :value="totalStaked.toString()"/>
+              <NetworkDashboardItem :name="'HBAR'" :title="'Stake for Consensus'" :value="stake.toString()"/>
               <p class="h-is-property-text h-is-extra-text mt-1">{{ stakePercentage }}% of total</p>
               <br/><br/>
-              <NetworkDashboardItem :name="'HBAR'" :title="'Stake Rewarded'" :value="totalRewarded.toString()"/>
-              <p class="h-is-property-text h-is-extra-text mt-1">{{ rewardPercentage }}% of total</p>
+              <NetworkDashboardItem :name="'HBAR'" :title="'Stake Rewarded'" :value="stakeRewarded.toString()"/>
+              <p class="h-is-property-text h-is-extra-text mt-1">{{ stakeRewardedPercentage }}% of total</p>
               <br/><br/>
               <NetworkDashboardItem :name="'HOURS'" :title="'Current Staking Period'" :value="'24'"/>
               <p class="h-is-property-text h-is-extra-text mt-1">from 00:00 am today to 11:59 pm today UTC</p>
@@ -167,17 +167,18 @@ export default defineComponent({
   setup(props) {
     const isSmallScreen = inject('isSmallScreen', true)
     const isTouchDevice = inject('isTouchDevice', false)
-    let nodes = ref<Array<NetworkNode> | null>([])
+    const nodes = ref<Array<NetworkNode> | null>([])
     const node = ref<NetworkNode | null>(null)
 
-    const totalStaked = ref(0)
-    const totalRewarded = ref(0)
+    const stake = computed(() => node.value?.stake ? Math.round(node.value.stake / 100000000) : 0)
+    const stakeTotal = ref(0)
     const stakePercentage = computed(() =>
-      node.value?.stake && totalStaked.value ? node.value.stake / totalStaked.value : 0
-    )
-    const rewardPercentage = computed(() =>
-        node.value?.stake_rewarded && totalRewarded.value ? node.value.stake_rewarded / totalRewarded.value : 0
-    )
+        stakeTotal.value ? Math.round(stake.value / stakeTotal.value * 10000) / 100 : 0)
+
+    const stakeRewarded = computed(() => node.value?.stake_rewarded ? Math.round(node.value.stake_rewarded / 100000000) : 0)
+    const stakeRewardedTotal = ref(0)
+    const stakeRewardedPercentage = computed(() =>
+        stakeRewardedTotal.value ? Math.round(stakeRewarded.value / stakeRewardedTotal.value * 10000) / 100 : 0)
 
     const unknownNodeId = ref(false)
     const notification = computed(() => {
@@ -216,10 +217,10 @@ export default defineComponent({
               for (const n of result.data.nodes) {
 
                 if (n.stake) {
-                  totalStaked.value += n.stake
+                  stakeTotal.value += n.stake/100000000
                 }
                 if (n.stake_rewarded) {
-                  totalRewarded.value += n.stake_rewarded
+                  stakeRewardedTotal.value += n.stake_rewarded/100000000
                 }
               }
             }
@@ -254,10 +255,10 @@ export default defineComponent({
       isSmallScreen,
       isTouchDevice,
       node,
-      totalStaked,
-      totalRewarded,
+      stake,
       stakePercentage,
-      rewardPercentage,
+      stakeRewarded,
+      stakeRewardedPercentage,
       notification,
       nodeDescription,
       formatHash
