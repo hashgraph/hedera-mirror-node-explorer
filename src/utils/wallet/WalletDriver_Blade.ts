@@ -19,9 +19,9 @@
  */
 
 
-import {BladeSigner} from "@bladelabs/blade-web3.js";
+import {BladeSigner, BladeWalletError} from "@bladelabs/blade-web3.js";
 import {HederaNetwork} from "@bladelabs/blade-web3.js/lib/src/models/blade";
-import {WalletDriver} from "@/utils/wallet/WalletDriver";
+import {WalletDriver, WalletDriverError} from "@/utils/wallet/WalletDriver";
 import {Executable} from "@hashgraph/sdk";
 
 export class WalletDriver_Blade extends WalletDriver {
@@ -45,26 +45,40 @@ export class WalletDriver_Blade extends WalletDriver {
         const hNetwork = WalletDriver_Blade.makeHederaNetwork(network)
         if (this.signer === null && hNetwork !== null) {
             const newSigner = new BladeSigner()
-            await newSigner.createSession(hNetwork)
-            this.signer = newSigner
-            this.network = network
+            try {
+                await newSigner.createSession(hNetwork)
+                this.signer = newSigner
+                this.network = network
+            } catch(reason) {
+                throw this.makeConnectError(reason)
+            }
         }
     }
 
     public async disconnect(): Promise<void> {
         if (this.signer !== null) {
-            await this.signer.killSession()
-            this.signer = null
-            this.network = null
+            try {
+                await this.signer.killSession()
+            } catch(reason) {
+                const extra = reason instanceof Error ? reason.message : JSON.stringify(reason)
+                throw this.disconnectFailure(extra)
+            } finally {
+                this.signer = null
+                this.network = null
+            }
         }
     }
 
     public async call<RequestT, ResponseT, OutputT>(request: Executable<RequestT, ResponseT, OutputT>): Promise<OutputT> {
         let result: Promise<OutputT>
         if (this.signer !== null) {
-            result = this.signer.call(request)
+            try {
+                result = this.signer.call(request)
+            } catch(reason) {
+                throw this.callFailure(reason.message)
+            }
         } else {
-            result = Promise.reject<OutputT>("Bug")
+            throw this.callFailure("Signer not found (bug)")
         }
         return result
     }
@@ -101,4 +115,20 @@ export class WalletDriver_Blade extends WalletDriver {
         return result
     }
 
+    private makeConnectError(reason: unknown): WalletDriverError {
+        let result: WalletDriverError
+        if (reason instanceof Error) {
+            switch(reason.name) {
+                case BladeWalletError.ExtensionNotFound:
+                    result = this.extensionNotFound()
+                    break
+                default:
+                    result = this.connectFailure(reason.message)
+                    break
+            }
+        } else {
+            result = this.connectFailure(JSON.stringify(reason))
+        }
+        return result
+    }
 }

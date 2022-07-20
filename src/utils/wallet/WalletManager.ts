@@ -113,9 +113,3 @@ export class WalletManager {
     }
 
 }
-
-export class WalletUnexpectedError extends Error {
-    constructor(message: string) {
-        super(message)
-    }
-}
