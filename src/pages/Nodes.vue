@@ -74,7 +74,7 @@
         <span class="h-is-primary-title">Nodes</span>
       </template>
       <template v-slot:table>
-        <NodeTable :nodes="nodes" :total-staked="totalStaked"/>
+        <NodeTable :nodes="nodes" :total-hbar-staked="totalStaked"/>
       </template>
     </DashboardCard>
 
@@ -149,14 +149,18 @@ export default defineComponent({
           .then(result => {
             if (result.data.nodes) {
               nodes.value = nodes.value ? nodes.value.concat(result.data.nodes) : result.data.nodes
+              let staked = 0
+              let rewarded = 0
               for (const n of result.data.nodes) {
                 if (n.stake) {
-                  totalStaked.value += n.stake
+                  staked += n.stake/100000000
                 }
                 if (n.stake_rewarded) {
-                  totalRewarded.value += n.stake_rewarded
+                  rewarded += n.stake_rewarded/100000000
                 }
               }
+              totalStaked.value = staked
+              totalRewarded.value = rewarded
             }
             const next = result.data.links?.next
             if (next) {

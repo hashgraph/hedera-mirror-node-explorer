@@ -214,15 +214,18 @@ export default defineComponent({
           .then(result => {
             if (result.data.nodes) {
               nodes.value = nodes.value ? nodes.value.concat(result.data.nodes) : result.data.nodes
+              let staked = 0
+              let rewarded = 0
               for (const n of result.data.nodes) {
-
                 if (n.stake) {
-                  stakeTotal.value += n.stake/100000000
+                  staked += n.stake/100000000
                 }
                 if (n.stake_rewarded) {
-                  stakeRewardedTotal.value += n.stake_rewarded/100000000
+                  rewarded += n.stake_rewarded/100000000
                 }
               }
+              stakeTotal.value = staked
+              stakeRewardedTotal.value = rewarded
             }
             const next = result.data.links?.next
             if (next) {

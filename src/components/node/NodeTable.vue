@@ -113,7 +113,7 @@ export default defineComponent({
 
   props: {
     nodes: Object as PropType<Array<NetworkNode> | undefined>,
-    totalStaked: Number
+    totalHbarStaked: Number
   },
 
   setup(props) {
@@ -123,7 +123,7 @@ export default defineComponent({
     const makeHost = (node: NetworkNode) => node.node_account_id ? operatorRegistry.lookup(node.node_account_id)?.name : null
     const makeLocation = (node: NetworkNode) => node.node_account_id ? operatorRegistry.lookup(node.node_account_id)?.location : null
     const makeStakePercentage = (node: NetworkNode) => {
-      return node.stake && props.totalStaked ? Math.round(node.stake / props.totalStaked * 1000) / 10 : 0
+      return node.stake && props.totalHbarStaked ? Math.round(node.stake / props.totalHbarStaked / 100000) / 10 : 0
     }
 
     const handleClick = (node: NetworkNode) => {
