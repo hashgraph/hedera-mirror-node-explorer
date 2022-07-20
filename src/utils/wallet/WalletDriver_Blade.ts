@@ -34,7 +34,7 @@ export class WalletDriver_Blade extends WalletDriver {
     //
 
     public constructor() {
-        super("Blade", null)
+        super("Blade", "https://www.bladewallet.io/wp-content/uploads/2022/04/BladeWalletWhite.svg")
     }
 
     //

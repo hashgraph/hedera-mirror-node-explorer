@@ -36,7 +36,7 @@ export class WalletDriver_Hashpack extends WalletDriver {
     //
 
     public constructor() {
-        super("Hashpack", null)
+        super("Hashpack", "https://uploads-ssl.webflow.com/61ce2e4bcaa2660da2bb419e/61cf5cc71c9324950d7e071d_logo-colour-white.svg")
     }
 
 

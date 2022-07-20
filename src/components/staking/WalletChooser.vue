@@ -36,9 +36,13 @@
         </div>
         <hr class="h-card-separator"/>
 
-        <div class="is-flex is-justify-content-left">
-          <div v-for="d in walletManager.getDrivers()" :key="d.name">
-            <button class="button is-white is-small mr-4" @click="handleChoose(d)">{{ d.name }}</button>
+        <div class="is-flex is-justify-content-left is-align-items-center">
+          <div v-for="d in drivers" :key="d.name">
+              <a @click="handleChoose(d)">
+                <figure class="image my-4 mr-6" style="width: 128px">
+                  <img alt="wallet logo" :src="d.iconURL">
+                </figure>
+              </a>
           </div>
         </div>
 
@@ -54,7 +58,7 @@
 
 <script lang="ts">
 
-import {defineComponent, onMounted} from "vue";
+import {defineComponent} from "vue";
 import {walletManager} from "@/router";
 import {WalletDriver} from "@/utils/wallet/WalletDriver";
 
@@ -70,11 +74,6 @@ export default defineComponent({
 
   setup(props, context) {
 
-    onMounted(() => {
-      for (const d of walletManager.getDrivers()) {
-      }
-    })
-
     const handleChoose = (wallet: WalletDriver) => {
       walletManager.setActiveDriver(wallet)
       walletManager.connect()
@@ -87,6 +86,7 @@ export default defineComponent({
 
     return {
       walletManager,
+      drivers:walletManager.getDrivers(),
       handleChoose,
       handleCancel
     }
@@ -99,5 +99,10 @@ export default defineComponent({
 <!--                                                       STYLE                                                     -->
 <!-- --------------------------------------------------------------------------------------------------------------- -->
 
-<style/>
+<style scoped>
 
+.image:hover {
+  opacity: 60%;
+}
+
+</style>
