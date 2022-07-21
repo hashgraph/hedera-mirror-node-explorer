@@ -67,7 +67,7 @@ describe("NodeTable.vue", () => {
             },
             props: {
                 nodes: SAMPLE_NETWORK_NODES.nodes as Array<NetworkNode>,
-                totalStaked: testTotalStaked
+                totalHbarStaked: testTotalStaked/100000000
             }
         });
 
