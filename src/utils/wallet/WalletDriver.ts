@@ -78,6 +78,9 @@ export abstract class WalletDriver {
         return new WalletDriverError(message, "bug")
     }
 
+    public silentMessage(): string {
+        return this.name + " wallet is silent";
+    }
 
     //
     // Protected

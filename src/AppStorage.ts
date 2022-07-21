@@ -19,7 +19,7 @@
  */
 
 import {NetworkEntry, networkRegistry} from "@/schemas/NetworkRegistry";
-import {HashConnectContext} from "@/utils/wallet/WalletDriver_Hashpack";
+import {HashConnectContext} from "@/utils/wallet/WalletDriver_HashpackV2";
 
 export class AppStorage {
 

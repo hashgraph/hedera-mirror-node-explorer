@@ -23,13 +23,15 @@ import {AccountUpdateTransaction, TransactionResponse} from "@hashgraph/sdk";
 import {RouteManager} from "@/utils/RouteManager";
 import {WalletDriver} from "@/utils/wallet/WalletDriver";
 import {WalletDriver_Blade} from "@/utils/wallet/WalletDriver_Blade";
-import {WalletDriver_Hashpack} from "@/utils/wallet/WalletDriver_Hashpack";
+import {WalletDriver_HashpackV2} from "@/utils/wallet/WalletDriver_HashpackV2";
+import {timeGuard, TimeGuardError} from "@/utils/TimerUtils";
 
 export class WalletManager {
 
     private readonly routeManager: RouteManager
     private readonly bladeDriver = new WalletDriver_Blade()
-    private readonly hashpackDriver = new WalletDriver_Hashpack()
+    private readonly hashpackDriver = new WalletDriver_HashpackV2()
+    private readonly timeout = 30000; // milliseconds
 
     private readonly connectedRef = ref(false)
     private readonly accountIdRef = ref<string|null>(null)
@@ -66,15 +68,32 @@ export class WalletManager {
     public accountId = computed(() => this.accountIdRef.value)
 
     public async connect(): Promise<void> {
-        await this.activeDriver.connect(this.routeManager.currentNetwork.value)
-        this.connectedRef.value = this.activeDriver.isConnected()
-        this.accountIdRef.value = this.activeDriver.getAccountId()
+        try {
+            await timeGuard(this.activeDriver.connect(this.routeManager.currentNetwork.value), this.timeout)
+            this.connectedRef.value = this.activeDriver.isConnected()
+            this.accountIdRef.value = this.activeDriver.getAccountId()
+        } catch(error) {
+            if (error instanceof TimeGuardError) {
+                this.activeDriver.connectFailure(this.activeDriver.silentMessage())
+            } else {
+                throw error
+            }
+        }
     }
 
     public async disconnect(): Promise<void> {
-        await this.activeDriver.disconnect()
-        this.connectedRef.value = this.activeDriver.isConnected()
-        this.accountIdRef.value = null
+        try {
+            await timeGuard(this.activeDriver.disconnect(), this.timeout)
+        } catch(error) {
+            if (error instanceof TimeGuardError) {
+                this.activeDriver.connectFailure(this.activeDriver.silentMessage())
+            } else {
+                throw error
+            }
+        } finally {
+            this.connectedRef.value = false
+            this.accountIdRef.value = null
+        }
     }
 
     public async changeStaking(nodeId: number|null, accountId: string|null, declineReward: boolean|null): Promise<TransactionResponse> {
@@ -83,7 +102,7 @@ export class WalletManager {
         console.log("                accountId:     " + accountId)
         console.log("                declineReward: " + declineReward)
 
-        let result: Promise<TransactionResponse>
+        let result: TransactionResponse
 
         // Connects if needed
         await this.connect()
@@ -103,13 +122,22 @@ export class WalletManager {
             if (declineReward !== null) {
                 trans.setDeclineStakingReward(declineReward)
             }
-            result = this.activeDriver.call(trans)
+
+            try {
+                result = await timeGuard(this.activeDriver.call(trans), this.timeout)
+            } catch(error) {
+                if (error instanceof TimeGuardError) {
+                    throw this.activeDriver.callFailure(this.activeDriver.silentMessage())
+                } else {
+                    throw error
+                }
+            }
 
         } else {
-            result = Promise.reject("Failed to connect to wallet")
+            throw this.activeDriver.callFailure("No account id")
         }
 
-        return result;
+        return Promise.resolve(result)
     }
 
 }

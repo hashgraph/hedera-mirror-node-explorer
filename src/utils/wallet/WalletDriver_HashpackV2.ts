@@ -23,10 +23,12 @@ import {HashConnect, HashConnectTypes, MessageTypes} from "hashconnect";
 import {AppStorage} from "@/AppStorage";
 import {HederaLogo} from "@/utils/MetaMask";
 import {WalletDriver} from "@/utils/wallet/WalletDriver";
+import {WalletDriverError} from "@/utils/wallet/WalletDriverError";
 import {HashConnectSigner} from "hashconnect/dist/provider/signer";
 import {Executable, Transaction} from "@hashgraph/sdk";
+import {timeGuard, TimeGuardError} from "@/utils/TimerUtils";
 
-export class WalletDriver_Hashpack extends WalletDriver {
+export class WalletDriver_HashpackV2 extends WalletDriver {
 
     private network: string|null = null
     private signer: HashConnectSigner|null = null
@@ -45,11 +47,7 @@ export class WalletDriver_Hashpack extends WalletDriver {
     //
 
     public async connect(network: string): Promise<void> {
-        try {
-            await this.performConnect(network)
-        } catch(error) {
-            throw this.connectFailure(error.message)
-        }
+        await this.performConnect(network)
     }
 
     public async disconnect(): Promise<void> {
@@ -64,7 +62,11 @@ export class WalletDriver_Hashpack extends WalletDriver {
         try {
             return await this.performCall(request)
         } catch(error) {
-            throw this.callFailure(error.message)
+            if (error instanceof WalletDriverError) {
+                throw error
+            } else {
+                throw this.callFailure(error.message)
+            }
         }
     }
 
@@ -98,63 +100,63 @@ export class WalletDriver_Hashpack extends WalletDriver {
         const initData = await hashConnect.init(this.appMetadata, hashConnectKey)
         AppStorage.setHashConnectPrivKey(initData.privKey)
 
-
-        const context = AppStorage.getHashConnectContext(network)
-
+        let context = AppStorage.getHashConnectContext(network)
         if (context === null) {
 
             // First connection
             const connectionState = await hashConnect.connect()
             const pairingString = hashConnect.generatePairingString(connectionState, network, true)
-            const newContext: HashConnectContext = {
-                network: network,
-                topic: connectionState.topic,
-                pairingString: pairingString,
-                pairingData: null
+
+            // Find extension
+            hashConnect.findLocalWallets()
+            try {
+                await timeGuard(hashConnect.foundExtensionEvent.once(), 200)
+            } catch(error) {
+                if (error instanceof TimeGuardError) {
+                    throw this.extensionNotFound()
+                } else {
+                    throw error
+                }
             }
-            AppStorage.setHashConnectContext(newContext, network)
 
             // Pairing
-            hashConnect.findLocalWallets()
             hashConnect.connectToLocalWallet(pairingString)
-
-            // Setup events
             const pairingData = await hashConnect.pairingEvent.once()
-            if (pairingData.network == network) {
-                const newContext: HashConnectContext = {
+
+            // Check pairing data
+            console.log("pairingData = " + JSON.stringify(pairingData))
+            if (pairingData.network != network) {
+                throw this.connectFailure("Unexpected pairing data")
+            } else {
+                context = {
                     network: network,
                     topic: connectionState.topic,
                     pairingString: pairingString,
                     pairingData: pairingData
                 }
-                AppStorage.setHashConnectContext(newContext, network)
-            }
-
-            // Updates signer
-            const accountIds = pairingData.accountIds
-            const accountId = accountIds.length >= 1 ? accountIds[0] : null
-            if (accountId !== null) {
-                const provider = hashConnect.getProvider(network, connectionState.topic, accountId)
-                this.signer = hashConnect.getSigner(provider)
-            } else {
-                await this.disconnect()
+                AppStorage.setHashConnectContext(context, network)
             }
 
         } else {
 
             // Second connection
-            await hashConnect.connect(context.topic, context.pairingData?.metadata)
-
-            // Updates signer
-            const accountIds = context.pairingData?.accountIds ?? []
-            const accountId = accountIds.length >= 1 ? accountIds[0] : null
-            if (accountId !== null) {
-                const provider = hashConnect.getProvider(network, context.topic, accountId)
-                this.signer = hashConnect.getSigner(provider)
-            } else {
-                await this.disconnect()
+            try {
+                await hashConnect.connect(context.topic, context.pairingData?.metadata)
+            } catch(error) {
+                AppStorage.setHashConnectContext(null, network)
+                throw error
             }
 
+        }
+
+        // Updates signer
+        const accountIds = context.pairingData?.accountIds ?? []
+        const accountId = accountIds.length >= 1 ? accountIds[0] : null
+        if (accountId !== null) {
+            const provider = hashConnect.getProvider(network, context.topic, accountId)
+            this.signer = hashConnect.getSigner(provider)
+        } else {
+            await this.disconnect()
         }
     }
 
@@ -177,5 +179,5 @@ export interface HashConnectContext {
     network: string
     topic: string
     pairingString: string
-    pairingData: MessageTypes.ApprovePairing | null
+    pairingData: MessageTypes.ApprovePairing
 }
