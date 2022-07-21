@@ -166,7 +166,12 @@ export class WalletDriver_Hashpack extends WalletDriver {
             if (request instanceof Transaction) {
                 await request.freezeWithSigner(this.signer)
             }
-            result = this.signer.call(request)
+            const response = await this.signer.call(request)
+            if (response) {
+                result = Promise.resolve(response)
+            } else { // When user clicks on "Reject" button HashConnectSigner.call() returns undefined :(
+                throw this.callFailure(this.name + " wallet did reject operation")
+            }
         } else {
             throw this.callFailure("Signer not found (bug)")
         }
