@@ -64,8 +64,12 @@
         </o-table-column>
 
         <o-table-column v-slot="props" field="stake_not_rewarded" label="Unrewarded Stake" position="right">
-          <HbarAmount :amount="props.row.stake_not_rewarded" :decimals="0"/>
+          <HbarAmount :amount="props.row.stake_not_rewarded ?? 0" :decimals="0"/>
         </o-table-column>
+
+      <o-table-column v-slot="props" field="last_reward_rate" label="Last Reward Rate" position="right">
+        {{ makeApproxYearlyRate(props.row) }}
+      </o-table-column>
 
 <!--        <o-table-column field="stake_range" label="Stake Range">-->
 <!--          <div class="is-flex-direction-column h-is-stake-range-bar">-->
@@ -125,6 +129,13 @@ export default defineComponent({
     const makeStakePercentage = (node: NetworkNode) => {
       return node.stake && props.totalHbarStaked ? Math.round(node.stake / props.totalHbarStaked / 100000) / 10 : 0
     }
+    const makeApproxYearlyRate = (node: NetworkNode) => {
+      const formatter = new Intl.NumberFormat("en-US", {
+        style: 'percent',
+        maximumFractionDigits: 2
+      })
+      return formatter.format(node.reward_rate_start ? node.reward_rate_start * 365 : 0);
+    }
 
     const handleClick = (node: NetworkNode) => {
       router.push({name: 'NodeDetails', params: {nodeId: node.node_id}})
@@ -136,6 +147,7 @@ export default defineComponent({
       makeHost,
       makeLocation,
       makeStakePercentage,
+      makeApproxYearlyRate,
       handleClick,
       ORUGA_MOBILE_BREAKPOINT
     }
