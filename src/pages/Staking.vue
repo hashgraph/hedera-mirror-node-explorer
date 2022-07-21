@@ -233,6 +233,9 @@ export default defineComponent({
       showWalletChooser.value = true
     }
 
+    //
+    // handleChooseWallet
+    //
     const handleChooseWallet = (wallet: WalletDriver) => {
       walletManager.setActiveDriver(wallet)
       connecting.value = true
@@ -257,9 +260,14 @@ export default defineComponent({
           .finally(() => connecting.value = false)
     }
 
+    //
+    // disconnectFromWallet
+    //
+
     const disconnectFromWallet = () => {
-      walletManager.disconnect()
-      connecting.value = false
+      walletManager
+          .disconnect()
+          .finally(() => connecting.value = false)
     }
 
     //
@@ -348,7 +356,7 @@ export default defineComponent({
     watch(walletManager.accountId, () => fetchAccount())
 
     //
-    // Node
+    // stakedNode
     //
     const stakedNode = ref<NetworkNode | null>(null)
 
@@ -415,10 +423,15 @@ export default defineComponent({
             progressExtraTransaction.value = transactionID ?? null
             fetchAccount()
           })
-          .catch(() => {
+          .catch((error) => {
             progressDialogMode.value = Mode.Error
-            progressMainMessage.value = "Operation did not complete"
-            progressExtraMessage.value = "Your wallet rejected this operation"
+            if (error instanceof WalletDriverError) {
+              progressMainMessage.value = error.message
+              progressExtraMessage.value = error.extra
+            } else {
+              progressMainMessage.value = "Operation did not complete"
+              progressExtraMessage.value = JSON.stringify(error.message)
+            }
             progressExtraTransaction.value = null
             showProgressSpinner.value = false
             fetchAccount()
