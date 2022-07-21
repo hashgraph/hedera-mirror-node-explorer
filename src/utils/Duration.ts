@@ -58,28 +58,25 @@ export function formatSeconds(secondCount: number|string|undefined): string {
             const duration = Duration.decompose(seconds)
             result = ""
             if (duration.days >= 2) {
-                result += duration.days + " days "
+                const dayUnit = (!duration.hours && !duration.minutes && !duration.seconds) ? " days" : "d "
+                result += duration.days + dayUnit
             } else if (duration.days == 1) {
-                if (!duration.hours && !duration.minutes && !duration.seconds) {
-                    result += "24 hours "
-                } else {
-                    result += "1 day "
-                }
+                result = (!duration.hours && !duration.minutes && !duration.seconds) ? "24h" : "1d "
             }
             if (duration.hours >= 2) {
-                result += duration.hours + " hours "
+                result += duration.hours + "h "
             } else if (duration.hours == 1) {
-                result += "1 hour "
+                result += "1h "
             }
             if (duration.minutes >= 2) {
-                result += duration.minutes + " minutes "
+                result += duration.minutes + "min "
             } else if (duration.minutes == 1) {
-                result += "1 minute "
+                result += "1min "
             }
             if (duration.seconds >= 2) {
-                result += duration.seconds + " seconds "
+                result += duration.seconds + "s "
             } else if (duration.seconds == 1) {
-                result += "1 second "
+                result += "1s "
             }
             result = result.trim()
         }

@@ -90,6 +90,9 @@
           </div>
 
           <div class="column h-has-column-separator">
+              <NetworkDashboardItem :name="'APPROX YEARLY EQUIVALENT'" :title="'Last Period Reward Rate'"
+                                    :value="approxYearlyRate.toString()"/>
+              <br/><br/>
               <NetworkDashboardItem :name="'HBAR'" :title="'Stake for Consensus'" :value="stake.toString()"/>
               <p class="h-is-property-text h-is-extra-text mt-1">{{ stakePercentage }}% of total</p>
               <br/><br/>
@@ -170,6 +173,13 @@ export default defineComponent({
     const nodes = ref<Array<NetworkNode> | null>([])
     const node = ref<NetworkNode | null>(null)
 
+    const approxYearlyRate = computed(() => {
+      const formatter = new Intl.NumberFormat("en-US", {
+        style: 'percent',
+        maximumFractionDigits: 2
+      })
+      return formatter.format(node.value?.reward_rate_start ? node.value.reward_rate_start * 365 : 0);
+    })
     const stake = computed(() => node.value?.stake ? Math.round(node.value.stake / 100000000) : 0)
     const stakeTotal = ref(0)
     const stakePercentage = computed(() =>
@@ -258,6 +268,7 @@ export default defineComponent({
       isSmallScreen,
       isTouchDevice,
       node,
+      approxYearlyRate,
       stake,
       stakePercentage,
       stakeRewarded,

@@ -49,7 +49,7 @@ describe("DurationValue.vue", () => {
         expect(wrapper.text()).toBe("None")
 
         const D = 3600 * 3 + 60 * 2 + 42
-        const S = "3 hours 2 minutes 42 seconds"
+        const S = "3h 2min 42s"
         await wrapper.setProps({
             numberValue: D,
             loading: true
@@ -57,7 +57,7 @@ describe("DurationValue.vue", () => {
         expect(wrapper.text()).toBe(S)
 
         const D1 = 3600 * 5 + 60 + 42
-        const S1 = "5 hours 1 minute 42 seconds"
+        const S1 = "5h 1min 42s"
         await wrapper.setProps({
             numberValue: undefined,
             stringValue: D1.toString(),
