@@ -72,11 +72,12 @@ export default defineComponent({
     },
   },
 
+  emits: [ "chooseWallet", "update:showDialog"],
+
   setup(props, context) {
 
     const handleChoose = (wallet: WalletDriver) => {
-      walletManager.setActiveDriver(wallet)
-      walletManager.connect()
+      context.emit('chooseWallet', wallet)
       context.emit('update:showDialog', false)
     }
 

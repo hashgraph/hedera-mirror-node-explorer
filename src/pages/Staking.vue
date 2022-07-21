@@ -50,7 +50,8 @@
     </template>
   </ProgressDialog>
 
-  <WalletChooser v-model:show-dialog="showWalletChooser"/>
+  <WalletChooser v-model:show-dialog="showWalletChooser"
+                 v-on:choose-wallet="handleChooseWallet"/>
 
   <section :class="{'h-mobile-background': isTouchDevice || !isSmallScreen}" class="section">
 
@@ -103,7 +104,7 @@
           </div>
         </template>
 
-        <template v-else-if="connected">
+        <template v-else-if="connecting">
           <section class="section has-text-centered" style="min-height: 450px">
             <p>Connecting your Wallet...</p>
             <p>You need to select which account you wish to connect.</p>
@@ -178,13 +179,15 @@ import DashboardCard from "@/components/DashboardCard.vue";
 import ConfirmDialog from "@/components/ConfirmDialog.vue";
 import {TransactionResponse} from "@hashgraph/sdk";
 import {TransactionID} from "@/utils/TransactionID";
-import ProgressDialog, {Mode} from "@/components/staking/ProgressDialog.vue";
+import ProgressDialog from "@/components/staking/ProgressDialog.vue";
 import AccountLink from "@/components/values/AccountLink.vue";
-import {RewardsTransactionCache} from "@/components/staking/RewardsTransactionCache";
 import {EntityCacheStateV2} from "@/utils/EntityCacheV2";
 import PlayPauseButtonV2 from "@/components/PlayPauseButtonV2.vue";
 import RewardsCalculator from "@/components/staking/RewardsCalculator.vue";
 import WalletChooser from "@/components/staking/WalletChooser.vue";
+import {WalletDriver, WalletDriverError} from "@/utils/wallet/WalletDriver";
+import { RewardsTransactionCache } from '@/components/staking/RewardsTransactionCache';
+import { Mode } from '@/components/staking/ProgressDialog.vue';
 
 export default defineComponent({
   name: 'Staking',
@@ -211,12 +214,51 @@ export default defineComponent({
     const isSmallScreen = inject('isSmallScreen', true)
     const isTouchDevice = inject('isTouchDevice', false)
 
+    const showStakingDialog = ref(false)
+    const showStopConfirmDialog = ref(false)
+    const showWalletChooser = ref(false)
+    const showErrorDialog = ref(false)
+    const showProgressDialog = ref(false)
+    const progressDialogMode = ref(Mode.Busy)
+    const progressDialogTitle = ref<string|null>(null)
+    const progressMainMessage = ref<string|null>(null)
+    const progressExtraMessage = ref<string|null>(null)
+    const progressExtraTransaction = ref<string|null>(null)
+    const showProgressSpinner = ref(false)
+
+    const connecting = ref(false)
+
     const chooseWallet = () => {
       showWalletChooser.value = true
     }
 
+    const handleChooseWallet = (wallet: WalletDriver) => {
+      walletManager.setActiveDriver(wallet)
+      connecting.value = true
+      walletManager
+          .connect()
+          .catch((reason) => {
+            console.log("handleChooseWallet - reason:" + reason.toString())
+            showProgressDialog.value = true
+            progressDialogMode.value = Mode.Error
+            progressDialogTitle.value = "Could not connect wallet"
+            showProgressSpinner.value = false
+            progressExtraTransaction.value = null
+
+            if (reason instanceof WalletDriverError) {
+              progressMainMessage.value = reason.message
+              progressExtraMessage.value = reason.extra
+            } else {
+              progressMainMessage.value = "Unexpected error"
+              progressExtraMessage.value = JSON.stringify(reason)
+            }
+          })
+          .finally(() => connecting.value = false)
+    }
+
     const disconnectFromWallet = () => {
       walletManager.disconnect()
+      connecting.value = false
     }
 
     //
@@ -225,12 +267,7 @@ export default defineComponent({
     const account = ref<AccountBalanceTransactions | null>(null)
     const accountError = ref<unknown>(null)
 
-    const showStakingDialog = ref(false)
-    const showStopConfirmDialog = ref(false)
-    const showWalletChooser = ref(false)
-
     const isStaked = computed(() => account?.value?.staked_node_id || account?.value?.staked_account_id)
-
     const isIndirectStaking = computed(() => account?.value?.staked_account_id)
 
     const stakedTo = computed(() => {
@@ -406,14 +443,6 @@ export default defineComponent({
       return result
     }
 
-    const showProgressDialog = ref(false)
-    const progressDialogMode = ref(Mode.Busy)
-    const progressDialogTitle = ref<string|null>(null)
-    const progressMainMessage = ref<string|null>(null)
-    const progressExtraMessage = ref<string|null>(null)
-    const progressExtraTransaction = ref<string|null>(null)
-    const showProgressSpinner = ref(false)
-
     //
     // Rewards Transactions Cache
     //
@@ -433,6 +462,7 @@ export default defineComponent({
     return {
       isSmallScreen,
       isTouchDevice,
+      connecting,
       connected: walletManager.connected,
       walletName: walletManager.getActiveDriver().name,
       walletIconURL: walletManager.getActiveDriver().iconURL,
@@ -442,6 +472,7 @@ export default defineComponent({
       showStakingDialog,
       showStopConfirmDialog,
       showWalletChooser,
+      showErrorDialog,
       isIndirectStaking,
       stakedTo,
       stakedNode,
@@ -450,6 +481,7 @@ export default defineComponent({
       declineReward,
       ignoreReward,
       chooseWallet,
+      handleChooseWallet,
       disconnectFromWallet,
       handleStopStaking,
       handleChangeStaking,
