@@ -233,8 +233,7 @@ export default defineComponent({
       return props.contractId ? EntityID.parse(props.contractId, true) != null : false
     })
     const normalizedContractId = computed(() => {
-      // return props.contractId ? EntityID.normalize(props.contractId) : props.contractId
-      return contract.value?.contract_id ? EntityID.normalize(contract.value.contract_id) : null
+      return props.contractId ? EntityID.normalize(props.contractId) : props.contractId
     })
 
     const aliasByteString = computed(() => {
