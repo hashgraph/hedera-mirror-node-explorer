@@ -258,8 +258,6 @@ export default defineComponent({
   },
 
   setup(props) {
-    const isStakingEnabled = process.env.VUE_APP_ENABLE_STAKING === 'true'
-
     const isSmallScreen = inject('isSmallScreen', true)
     const isTouchDevice = inject('isTouchDevice', false)
 
@@ -488,7 +486,6 @@ export default defineComponent({
     }
 
     return {
-      isStakingEnabled,
       isSmallScreen,
       isTouchDevice,
       transactions: transactionCache.transactions,
