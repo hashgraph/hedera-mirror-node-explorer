@@ -400,9 +400,9 @@ export default defineComponent({
           if (balanceCache.balanceTimeStamp.value) {
             const duration = Duration.decompose(new Date().getTime() / 1000 - Number.parseFloat(balanceCache.balanceTimeStamp.value))
             if (duration.minutes >= 2) {
-              result = duration.minutes + " minutes"
+              result = duration.minutes + "min"
             } else if (duration.minutes == 1) {
-              result = "1 minute"
+              result = "1min"
             } else {
               result = "just moments"
             }

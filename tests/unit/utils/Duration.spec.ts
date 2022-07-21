@@ -28,7 +28,7 @@ describe("Duration.ts", () => {
         const hours = 21
         const days = 42
         const secondCount = seconds + 60 * minutes + 3600 * hours + 3600 * 24 * days
-        const durationText = "42 days 21 hours 42 minutes 42 seconds"
+        const durationText = "42d 21h 42min 42s"
 
         const d = Duration.decompose(secondCount)
         expect(d.seconds).toBe(seconds)
@@ -39,11 +39,11 @@ describe("Duration.ts", () => {
         expect(formatSeconds(secondCount.toString())).toBe(durationText)
    })
 
-    test("42 days", () => {
+    test("42 days 42 seconds", () => {
         const seconds = 42
         const days = 42
         const secondCount = seconds + 3600 * 24 * days
-        const durationText = "42 days 42 seconds"
+        const durationText = "42d 42s"
 
         const d = Duration.decompose(secondCount)
         expect(d.seconds).toBe(seconds)
@@ -60,7 +60,7 @@ describe("Duration.ts", () => {
         const hours = 1
         const days = 1
         const secondCount = seconds + 60 * minutes + 3600 * hours + 3600 * 24 * days
-        const durationText = "1 day 1 hour 1 minute 1 second"
+        const durationText = "1d 1h 1min 1s"
 
         const d = Duration.decompose(secondCount)
         expect(d.seconds).toBe(seconds)
