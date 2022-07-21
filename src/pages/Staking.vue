@@ -185,8 +185,9 @@ import {EntityCacheStateV2} from "@/utils/EntityCacheV2";
 import PlayPauseButtonV2 from "@/components/PlayPauseButtonV2.vue";
 import RewardsCalculator from "@/components/staking/RewardsCalculator.vue";
 import WalletChooser from "@/components/staking/WalletChooser.vue";
-import {WalletDriver, WalletDriverError} from "@/utils/wallet/WalletDriver";
-import { RewardsTransactionCache } from '@/components/staking/RewardsTransactionCache';
+import {WalletDriver} from "@/utils/wallet/WalletDriver";
+import {WalletDriverError} from "@/utils/wallet/WalletDriverError";
+import {RewardsTransactionCache} from '@/components/staking/RewardsTransactionCache';
 import { Mode } from '@/components/staking/ProgressDialog.vue';
 
 export default defineComponent({

@@ -21,7 +21,8 @@
 
 import {BladeSigner, BladeWalletError} from "@bladelabs/blade-web3.js";
 import {HederaNetwork} from "@bladelabs/blade-web3.js/lib/src/models/blade";
-import {WalletDriver, WalletDriverError} from "@/utils/wallet/WalletDriver";
+import {WalletDriver} from "@/utils/wallet/WalletDriver";
+import {WalletDriverError} from "@/utils/wallet/WalletDriverError";
 import {Executable} from "@hashgraph/sdk";
 
 export class WalletDriver_Blade extends WalletDriver {

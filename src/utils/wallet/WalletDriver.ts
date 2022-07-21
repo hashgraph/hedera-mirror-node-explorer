@@ -19,6 +19,7 @@
  */
 
 import {Executable} from "@hashgraph/sdk";
+import {WalletDriverError} from "@/utils/wallet/WalletDriverError";
 
 export abstract class WalletDriver {
 
@@ -26,7 +27,7 @@ export abstract class WalletDriver {
     public readonly iconURL: string|null
 
     //
-    // Public
+    // Public (to be subclassed)
     //
 
     public async connect(network: string): Promise<void> {
@@ -48,47 +49,42 @@ export abstract class WalletDriver {
     public abstract getAccountId(): string|null
 
     //
+    // Public (utilities)
+    //
+
+    public extensionNotFound(): WalletDriverError {
+        const message = this.name + " extension not found"
+        const extra = "Please install " + this.name + " extension."
+        return new WalletDriverError(message, extra)
+    }
+
+    public connectFailure(extra: string): WalletDriverError {
+        const message = "Connection of " + this.name + " failed"
+        return new WalletDriverError(message, extra)
+    }
+
+    public disconnectFailure(extra: string): WalletDriverError {
+        const message = "Disconnection from " + this.name + " failed"
+        return new WalletDriverError(message, extra)
+    }
+
+    public callFailure(extra: string): WalletDriverError {
+        const message = this.name + " failed during operation execution"
+        return new WalletDriverError(message, extra)
+    }
+
+    public toBeImplemented(methodName: string): WalletDriverError {
+        const message = methodName + " must be subclassed"
+        return new WalletDriverError(message, "bug")
+    }
+
+
+    //
     // Protected
     //
 
     protected constructor(name: string, iconURL: string|null) {
         this.name = name
         this.iconURL = iconURL
-    }
-
-    protected extensionNotFound(): WalletDriverError {
-        const message = this.name + " extension not found"
-        const extra = "Please install " + this.name + " extension."
-        return new WalletDriverError(message, extra)
-    }
-
-    protected connectFailure(extra: string): WalletDriverError {
-        const message = "Connection of " + this.name + " failed"
-        return new WalletDriverError(message, extra)
-    }
-
-    protected disconnectFailure(extra: string): WalletDriverError {
-        const message = "Disconnection from " + this.name + " failed"
-        return new WalletDriverError(message, extra)
-    }
-
-    protected callFailure(extra: string): WalletDriverError {
-        const message = this.name + " failed during operation execution"
-        return new WalletDriverError(message, extra)
-    }
-
-    protected toBeImplemented(methodName: string): WalletDriverError {
-        const message = methodName + " must be subclassed"
-        return new WalletDriverError(message, "bug")
-    }
-}
-
-export class WalletDriverError extends Error {
-
-    public readonly extra: string
-
-    public constructor(message: string, extra: string) {
-        super(message)
-        this.extra = extra
     }
 }
