@@ -23,14 +23,14 @@ import {AccountUpdateTransaction, TransactionResponse} from "@hashgraph/sdk";
 import {RouteManager} from "@/utils/RouteManager";
 import {WalletDriver} from "@/utils/wallet/WalletDriver";
 import {WalletDriver_Blade} from "@/utils/wallet/WalletDriver_Blade";
-import {WalletDriver_HashpackV2} from "@/utils/wallet/WalletDriver_HashpackV2";
+import {WalletDriver_Hashpack} from "@/utils/wallet/WalletDriver_Hashpack";
 import {timeGuard, TimeGuardError} from "@/utils/TimerUtils";
 
 export class WalletManager {
 
     private readonly routeManager: RouteManager
     private readonly bladeDriver = new WalletDriver_Blade()
-    private readonly hashpackDriver = new WalletDriver_HashpackV2()
+    private readonly hashpackDriver = new WalletDriver_Hashpack()
     private readonly timeout = 30000; // milliseconds
 
     private readonly connectedRef = ref(false)

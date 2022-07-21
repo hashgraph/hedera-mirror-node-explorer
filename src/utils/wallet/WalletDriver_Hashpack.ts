@@ -28,7 +28,7 @@ import {HashConnectSigner} from "hashconnect/dist/provider/signer";
 import {Executable, Transaction} from "@hashgraph/sdk";
 import {timeGuard, TimeGuardError} from "@/utils/TimerUtils";
 
-export class WalletDriver_HashpackV2 extends WalletDriver {
+export class WalletDriver_Hashpack extends WalletDriver {
 
     private network: string|null = null
     private signer: HashConnectSigner|null = null
