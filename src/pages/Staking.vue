@@ -177,7 +177,6 @@ import TransactionTableV2 from "@/components/transaction/TransactionTableV2.vue"
 import StakingDialog from "@/components/staking/StakingDialog.vue";
 import DashboardCard from "@/components/DashboardCard.vue";
 import ConfirmDialog from "@/components/ConfirmDialog.vue";
-import {TransactionResponse} from "@hashgraph/sdk";
 import {TransactionID} from "@/utils/TransactionID";
 import ProgressDialog from "@/components/staking/ProgressDialog.vue";
 import AccountLink from "@/components/values/AccountLink.vue";
@@ -396,46 +395,49 @@ export default defineComponent({
       changeStaking(nodeId, accountId, declineReward)
     }
 
-    const changeStaking = (nodeId: number|null, accountId: string|null, declineReward: boolean|null) => {
+    const changeStaking = async (nodeId: number|null, accountId: string|null, declineReward: boolean|null) => {
 
-      showProgressDialog.value = true
-      progressDialogMode.value = Mode.Busy
-      progressDialogTitle.value = (nodeId == null && accountId == null && !declineReward) ? "Stopping staking" : "Updating staking"
-      progressMainMessage.value = "Connecting to Hedera Network using your wallet…"
-      progressExtraMessage.value = "Check your wallet for any approval request"
-      progressExtraTransaction.value = null
-      showProgressSpinner.value = false
+      try {
 
-      walletManager.changeStaking(nodeId, accountId, declineReward)
-          .then((response: TransactionResponse) => {
-            progressMainMessage.value = "Completing operation…"
-            progressExtraMessage.value = "This may take a few seconds"
-            showProgressSpinner.value = true
-            const transactionID = TransactionID.normalize(response.transactionId.toString(), false)
-            return waitForTransactionRefresh(transactionID, 10)
-          })
-          .then((response: Transaction | string) => {
-            progressDialogMode.value = Mode.Success
-            progressMainMessage.value = "Operation completed"
-            showProgressSpinner.value = false
-            progressExtraMessage.value = "with transaction ID:"
-            const transactionID = typeof response == "string" ? response : response.transaction_id
-            progressExtraTransaction.value = transactionID ?? null
-            fetchAccount()
-          })
-          .catch((error) => {
-            progressDialogMode.value = Mode.Error
-            if (error instanceof WalletDriverError) {
-              progressMainMessage.value = error.message
-              progressExtraMessage.value = error.extra
-            } else {
-              progressMainMessage.value = "Operation did not complete"
-              progressExtraMessage.value = JSON.stringify(error.message)
-            }
-            progressExtraTransaction.value = null
-            showProgressSpinner.value = false
-            fetchAccount()
-          })
+        showProgressDialog.value = true
+        progressDialogMode.value = Mode.Busy
+        progressDialogTitle.value = (nodeId == null && accountId == null && !declineReward) ? "Stopping staking" : "Updating staking"
+        progressMainMessage.value = "Connecting to Hedera Network using your wallet…"
+        progressExtraMessage.value = "Check your wallet for any approval request"
+        progressExtraTransaction.value = null
+        showProgressSpinner.value = false
+        const response = await walletManager.changeStaking(nodeId, accountId, declineReward)
+
+        progressMainMessage.value = "Completing operation…"
+        progressExtraMessage.value = "This may take a few seconds"
+        showProgressSpinner.value = true
+        const transactionID = TransactionID.normalize(response.transactionId.toString(), false)
+        await waitForTransactionRefresh(transactionID, 10)
+
+        progressDialogMode.value = Mode.Success
+        progressMainMessage.value = "Operation completed"
+        showProgressSpinner.value = false
+        progressExtraMessage.value = "with transaction ID:"
+        progressExtraTransaction.value = transactionID
+
+      } catch(error) {
+
+        progressDialogMode.value = Mode.Error
+        if (error instanceof WalletDriverError) {
+          progressMainMessage.value = error.message
+          progressExtraMessage.value = error.extra
+        } else {
+          progressMainMessage.value = "Operation did not complete"
+          progressExtraMessage.value = JSON.stringify(error.message)
+        }
+        progressExtraTransaction.value = null
+        showProgressSpinner.value = false
+
+      } finally {
+
+        fetchAccount()
+      }
+
     }
 
     const waitForTransactionRefresh = async (transactionID: string, attemptIndex: number) => {
