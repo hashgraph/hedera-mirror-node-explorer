@@ -143,11 +143,15 @@
 
         <div class="is-flex is-justify-content-space-between is-align-items-baseline">
           <p class="h-is-tertiary-text">Recent Transactions</p>
-          <PlayPauseButtonV2 v-model:state="cacheState"/>
+          <div class="is-flex is-align-items-flex-end">
+            <PlayPauseButtonV2 v-model:state="cacheState"/>
+            <TransactionFilterSelect v-model:filter="selectedTransactionFilter"/>
+          </div>
         </div>
 
         <ContractTransactionTable
             v-if="contract"
+            v-bind:narrowed="true"
             v-bind:transactions="transactions"
             v-bind:nb-items="10"
         />
@@ -189,6 +193,8 @@ import Property from "@/components/Property.vue";
 import {base32ToAlias, byteToHex} from "@/utils/B64Utils";
 import {TransactionCacheV2} from "@/components/transaction/TransactionCacheV2";
 import {EntityCacheStateV2} from "@/utils/EntityCacheV2";
+import {useRoute, useRouter} from "vue-router";
+import TransactionFilterSelect from "@/components/transaction/TransactionFilterSelect.vue";
 
 const MAX_TOKEN_BALANCES = 3
 
@@ -197,6 +203,7 @@ export default defineComponent({
   name: 'ContractDetails',
 
   components: {
+    TransactionFilterSelect,
     ByteCodeValue,
     Property,
     NotificationBanner,
@@ -225,6 +232,10 @@ export default defineComponent({
     const isTouchDevice = inject('isTouchDevice', false)
     const account = ref<AccountBalanceTransactions | null>(null)
 
+    const router = useRouter()
+    const route = useRoute()
+
+
     //
     // basic computed's
     //
@@ -233,8 +244,7 @@ export default defineComponent({
       return props.contractId ? EntityID.parse(props.contractId, true) != null : false
     })
     const normalizedContractId = computed(() => {
-      // return props.contractId ? EntityID.normalize(props.contractId) : props.contractId
-      return contract.value?.contract_id ? EntityID.normalize(contract.value.contract_id) : null
+      return props.contractId ? EntityID.normalize(props.contractId) : props.contractId
     })
 
     const aliasByteString = computed(() => {
@@ -243,6 +253,20 @@ export default defineComponent({
     })
 
     //
+    // transaction filter selection
+    //
+
+    const selectedTransactionFilter = ref("")
+    const updateQuery = () => {
+      router.replace({
+        query: {type: selectedTransactionFilter.value.toLowerCase()}
+      })
+    }
+    watch(selectedTransactionFilter, () => {
+      updateQuery()
+    })
+
+//
     // contract
     //
 
@@ -319,10 +343,15 @@ export default defineComponent({
     const setupTransactionCache = () => {
       transactionCache.state.value = EntityCacheStateV2.Stopped
       transactionCache.accountId.value = normalizedContractId.value ?? ""
+      transactionCache.transactionType.value = transactionFilterFromRoute.value
       transactionCache.state.value = EntityCacheStateV2.Started
+      selectedTransactionFilter.value = transactionFilterFromRoute.value
     }
 
-    watch(normalizedContractId, () => {
+    const transactionFilterFromRoute = computed(() => {
+      return (route.query?.type as string ?? "").toUpperCase()
+    })
+    watch([transactionFilterFromRoute, normalizedContractId], () => {
       setupTransactionCache()
     })
     onMounted(() => {
@@ -342,6 +371,7 @@ export default defineComponent({
       displayAllTokenLinks,
       transactions: transactionCache.transactions,
       cacheState: transactionCache.state,
+      selectedTransactionFilter,
       notification,
       obtainerId,
       proxyAccountId,
