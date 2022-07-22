@@ -38,49 +38,49 @@
         <div class="columns h-is-property-text mt-3">
 
           <div class="column">
-            <Property :id="'nodeAccount'">
+            <Property id="nodeAccount">
               <template v-slot:name>Node Account</template>
               <template v-slot:value>
                 <AccountLink :accountId="node?.node_account_id" :show-none="true"/>
               </template>
             </Property>
-            <Property :id="'description'">
+            <Property id="description">
               <template v-slot:name>Description</template>
               <template v-slot:value>
                 <BlobValue :base64="false" :blob-value="nodeDescription" :show-none="true" class="should-wrap"/>
               </template>
             </Property>
-            <Property :id="'file'">
+            <Property id="file">
               <template v-slot:name>Address Book File</template>
               <template v-slot:value>
                 <StringValue :string-value="node?.file_id"/>
               </template>
             </Property>
-            <Property :id="'rangeFrom'">
+            <Property id="rangeFrom">
               <template v-slot:name>Node existed since</template>
               <template v-slot:value>
                 <TimestampValue :show-none="true" :timestamp="node?.timestamp?.from"/>
               </template>
             </Property>
-            <Property :id="'rangeTo'">
+            <Property id="rangeTo">
               <template v-slot:name>Node expiry date</template>
               <template v-slot:value>
                 <TimestampValue :show-none="true" :timestamp="node?.timestamp?.to"/>
               </template>
             </Property>
-            <Property :id="'serviceEndpoints'">
+            <Property id="serviceEndpoints">
               <template v-slot:name>Service Endpoints</template>
               <template v-slot:value>
                 <Endpoints :endpoints="node?.service_endpoints"></Endpoints>
               </template>
             </Property>
-            <Property :id="'publicKey'">
+            <Property id="publicKey">
               <template v-slot:name>Public Key</template>
               <template v-slot:value>
                 <KeyValue :key-bytes="node?.public_key" :key-type="'RSA'" :show-none="true"/>
               </template>
             </Property>
-            <Property :id="'nodeCertHash'">
+            <Property id="nodeCertHash">
               <template v-slot:name>Certificate Hash</template>
               <template v-slot:value>
                 <HexaValue v-bind:byteString="node ? formatHash(node?.node_cert_hash): undefined"

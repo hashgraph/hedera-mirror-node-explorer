@@ -49,7 +49,7 @@
 
         <div class="columns h-is-property-text">
           <div class="column">
-            <Property :id="'balance'">
+            <Property id="balance">
               <template v-slot:name>{{ tokenBalances?.length ? 'Balances' : 'Balance' }}</template>
               <template v-slot:value>
                 <div v-if="account" class="h-is-tertiary-text"><HbarAmount v-bind:amount="hbarBalance" v-bind:show-extra="true"/></div>
@@ -75,7 +75,7 @@
         </div>
         <div class="columns h-is-property-text">
           <div class="column">
-            <Property :id="'alias'">
+            <Property id="alias">
               <template v-slot:name>Alias</template>
               <template v-slot:value>
                 <StringValue :string-value="account?.alias"/>
@@ -89,13 +89,13 @@
         <div class="columns h-is-property-text">
 
           <div class="column">
-              <Property v-if="account?.staked_account_id" :id="'stakedAccount'">
+              <Property v-if="account?.staked_account_id" id="stakedAccount">
                 <template v-slot:name>Staked Account</template>
                 <template v-slot:value>
                   <AccountLink :accountId="account.staked_account_id" v-bind:show-extra="true"/>
                 </template>
               </Property>
-              <Property v-else :id="'stakedNode'">
+              <Property v-else id="stakedNode">
                 <template v-slot:name>Staked to</template>
                 <template v-slot:value>
                   <div v-if="account?.staked_node_id != null">
@@ -106,31 +106,31 @@
                   <span v-else class="has-text-grey">None</span>
                 </template>
               </Property>
-              <Property :id="'stakePeriodStart'">
+              <Property id="stakePeriodStart">
                 <template v-slot:name>Stake Period Started</template>
                 <template v-slot:value>
                   <TimestampValue :timestamp="account?.stake_period_start" :show-none="true"/>
                 </template>
               </Property>
-              <Property :id="'declineReward'" >
+              <Property id="declineReward" >
                 <template v-slot:name>Rewards</template>
                 <template v-slot:value>
                   <StringValue :string-value="account?.decline_reward ? 'Declined' : 'Accepted'"/>
                 </template>
               </Property>
-            <Property :id="'memo'">
+            <Property id="memo">
               <template v-slot:name>Memo</template>
               <template v-slot:value>
                 <BlobValue v-bind:blob-value="account?.memo" v-bind:show-none="true" v-bind:base64="true" class="should-wrap"/>
               </template>
             </Property>
-            <Property :id="'expiresAt'">
+            <Property id="expiresAt">
               <template v-slot:name>Expires at</template>
               <template v-slot:value>
                 <TimestampValue v-bind:timestamp="account?.expiry_timestamp" v-bind:show-none="true" />
               </template>
             </Property>
-            <Property :id="'autoRenewPeriod'">
+            <Property id="autoRenewPeriod">
               <template v-slot:name>Auto Renew Period</template>
               <template v-slot:value>
                 <DurationValue v-bind:number-value="account?.auto_renew_period"/>
@@ -139,25 +139,25 @@
           </div>
 
           <div class="column">
-              <Property :id="'maxAutoAssociation'">
+              <Property id="maxAutoAssociation">
                 <template v-slot:name>Max. Auto. Association</template>
                 <template v-slot:value>
                   <StringValue :string-value="account?.max_automatic_token_associations?.toString()"/>
                 </template>
               </Property>
-              <Property :id="'receiverSigRequired'">
+              <Property id="receiverSigRequired">
                 <template v-slot:name>Receiver Sig. Required</template>
                 <template v-slot:value>
                   <StringValue :string-value="account?.receiver_sig_required?.toString()"/>
                 </template>
               </Property>
-            <Property :id="'key'">
+            <Property id="key">
               <template v-slot:name>Key</template>
               <template v-slot:value>
                 <KeyValue :key-bytes="account?.key?.key" :key-type="account?.key?._type" :show-none="true"/>
               </template>
             </Property>
-            <Property :id="'ethereumAddress'">
+            <Property id="ethereumAddress">
               <template v-slot:name>Ethereum Address</template>
               <template v-slot:value>
                 <EthAddress v-if="ethereumAddress"

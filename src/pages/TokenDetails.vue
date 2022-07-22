@@ -42,37 +42,37 @@
         <div class="columns h-is-property-text">
 
           <div class="column">
-            <Property :id="'name'">
+            <Property id="name">
               <template v-slot:name>Name</template>
               <template v-slot:value>
                 <BlobValue v-bind:blob-value="tokenInfo?.name" v-bind:show-none="true" class="should-wrap"/>
               </template>
             </Property>
-            <Property :id="'symbol'">
+            <Property id="symbol">
               <template v-slot:name>Symbol</template>
               <template v-slot:value>
                 <BlobValue v-bind:blob-value="tokenInfo?.symbol" v-bind:show-none="true" class="should-wrap"/>
               </template>
             </Property>
-            <Property :id="'adminKey'">
+            <Property id="adminKey">
               <template v-slot:name>Admin Key</template>
               <template v-slot:value>
                 <KeyValue :key-bytes="tokenInfo?.admin_key?.key" :key-type="tokenInfo?.admin_key?._type" :show-none="true"/>
               </template>
             </Property>
-            <Property :id="'memo'">
+            <Property id="memo">
               <template v-slot:name>Memo</template>
               <template v-slot:value>
                 <BlobValue :blob-value="tokenInfo?.memo" :show-none="true" :base64="true" class="should-wrap"/>
               </template>
             </Property>
-            <Property :id="'expiresAt'">
+            <Property id="expiresAt">
               <template v-slot:name>Expires at</template>
               <template v-slot:value>
                 <TimestampValue :timestamp="tokenInfo?.expiry_timestamp" :nano="true" :show-none="true"/>
               </template>
             </Property>
-            <Property :id="'autoRenewPeriod'">
+            <Property id="autoRenewPeriod">
               <template v-slot:name>Auto Renew Period</template>
               <template v-slot:value>
                 <DurationValue v-bind:string-value="tokenInfo?.auto_renew_period?.toString()"/>
@@ -81,38 +81,38 @@
           </div>
 
           <div class="column">
-            <Property :id="'createdAt'">
+            <Property id="createdAt">
               <template v-slot:name>Created at</template>
               <template v-slot:value>
                 <TimestampValue :timestamp="tokenInfo?.created_timestamp" :show-none="true"/>
               </template>
             </Property>
-            <Property :id="'modifiedAt'">
+            <Property id="modifiedAt">
               <template v-slot:name>Modified at</template>
               <template v-slot:value>
                 <TimestampValue :timestamp="tokenInfo?.modified_timestamp" :show-none="true"/>
               </template>
             </Property>
-            <Property :id="'totalSupply'">
+            <Property id="totalSupply">
               <template v-slot:name>Total Supply</template>
               <template v-slot:value v-if="validEntityId">
                 <TokenAmount :amount="parseIntString(tokenInfo?.total_supply)" :token-id="tokenId" :show-extra="false"/>
               </template>
             </Property>
-            <Property :id="'initialSupply'">
+            <Property id="initialSupply">
               <template v-slot:name>Initial Supply</template>
               <template v-slot:value v-if="validEntityId">
                 <TokenAmount :amount="parseIntString(tokenInfo?.initial_supply)" :token-id="tokenId" :show-extra="false"/>
               </template>
             </Property>
-            <Property :id="'maxSupply'">
+            <Property id="maxSupply">
               <template v-slot:name>Max Supply</template>
               <template v-slot:value v-if="validEntityId">
                 <div v-if="tokenInfo?.supply_type === 'INFINITE'" class="has-text-grey">Infinite</div>
                 <TokenAmount v-else :amount="parseIntString(tokenInfo?.max_supply)" :show-extra="false" :token-id="tokenId"/>
               </template>
             </Property>
-            <Property :id="'ethereumAddress'">
+            <Property id="ethereumAddress">
               <template v-slot:name>ERC20 Address</template>
               <template v-slot:value>
                 <EthAddress v-if="ethereumAddress"

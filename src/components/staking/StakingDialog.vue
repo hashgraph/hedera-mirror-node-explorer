@@ -50,14 +50,14 @@
         </div>
         <hr class="h-card-separator"/>
 
-        <Property :id="'amountStaked'">
+        <Property id="amountStaked">
           <template v-slot:name>Amount Staked</template>
           <template v-slot:value>
             <HbarAmount v-if="account" :amount="account.balance.balance" :show-extra="true"/>
           </template>
         </Property>
 
-        <Property :id="'currentlyStakedTo'">
+        <Property id="currentlyStakedTo">
           <template v-slot:name>Currently Staked To</template>
           <template v-slot:value>
             <StringValue v-if="account" :string-value="currentlyStakedTo"/>
@@ -113,7 +113,7 @@
           </div>
         </div>
 
-        <Property :id="'changeCost'">
+        <Property id="changeCost">
           <template v-slot:name>Change Transaction Cost</template>
           <template v-slot:value>
             <HbarAmount v-if="account" :amount="10000000" :show-extra="true" :decimals="1"/>
