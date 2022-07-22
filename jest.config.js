@@ -11,6 +11,6 @@ module.exports = {
     },
 
     transformIgnorePatterns: [
-        "node_modules/(?!hashconnect)"
+        "node_modules/(?!hashconnect|@bladelabs)"
     ]
 }

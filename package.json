@@ -34,6 +34,7 @@
     "vue-axios": "^3.4.0",
     "vue-router": "^4.0.0-0",
     "hashconnect": "^0.1.9",
+    "@bladelabs/blade-web3.js": "^0.9.11",
     "@hashgraph/sdk": "^2.16.4"
   },
   "devDependencies": {

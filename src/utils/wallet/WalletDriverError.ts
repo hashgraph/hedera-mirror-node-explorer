@@ -18,21 +18,13 @@
  *
  */
 
-// Wraps window.setTimeout() in an async function
-export async function waitFor(milliseconds: number): Promise<void> {
-    return new Promise(resolve => setTimeout(resolve, milliseconds))
-}
 
+export class WalletDriverError extends Error {
 
-export async function timeGuard<T>(p: Promise<T>, milliseconds: number): Promise<T> {
-    const timeout = new Promise<T>((resolve, reject) => {
-        window.setTimeout(() => reject(new TimeGuardError()), milliseconds)
-    })
-    return Promise.race<T>([p, timeout])
-}
+    public readonly extra: string
 
-export class TimeGuardError extends Error {
-    constructor() {
-        super("TimeGuardError")
+    public constructor(message: string, extra: string) {
+        super(message)
+        this.extra = extra
     }
 }

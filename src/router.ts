@@ -44,7 +44,7 @@ import {AppStorage} from "@/AppStorage";
 import axios from "axios";
 import Staking from "@/pages/Staking.vue";
 import {RouteManager} from "@/utils/RouteManager";
-import {HashConnectManager} from "@/utils/HashConnectManager";
+import {WalletManager} from "@/utils/wallet/WalletManager";
 
 const routes: Array<RouteRecordRaw> = [
   {
@@ -314,4 +314,4 @@ export function getNetworkEntryFromCurrentRoute(): NetworkEntry {
 }
 
 export const routeManager = new RouteManager(router)
-export const hashConnectManager = new HashConnectManager(routeManager)
+export const walletManager = new WalletManager(routeManager)

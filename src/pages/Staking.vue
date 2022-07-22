@@ -50,6 +50,9 @@
     </template>
   </ProgressDialog>
 
+  <WalletChooser v-model:show-dialog="showWalletChooser"
+                 v-on:choose-wallet="handleChooseWallet"/>
+
   <section :class="{'h-mobile-background': isTouchDevice || !isSmallScreen}" class="section">
 
     <DashboardCard>
@@ -68,7 +71,7 @@
             <div class="is-flex is-justify-content-space-between">
               <NetworkDashboardItem :name="stakedSince" :title="'Staked to'" :value="stakedTo"/>
               <NetworkDashboardItem :name="stakedAmount ? 'HBAR' : ''" :title="'My Stake'" :value="stakedAmount"/>
-              <NetworkDashboardItem :title="'Rewards'" :value="declineReward ? 'Declined' : 'Accepted'"/>
+              <NetworkDashboardItem :title="'Rewards'" :value="declineReward" :class="{'h-has-opacity-20': ignoreReward}"/>
             </div>
             <br/>
             <div class="is-flex is-justify-content-space-between">
@@ -86,7 +89,7 @@
               <div class="mt-4"/>
               <NetworkDashboardItem :name="stakedAmount ? 'HBAR' : ''" :title="'My Stake'" :value="stakedAmount"/>
               <div class="mt-4"/>
-              <NetworkDashboardItem :title="'Rewards'" :value="declineReward ? 'Decline' : 'Accepted'"/>
+              <NetworkDashboardItem :title="'Rewards'" :value="declineReward" :class="{'h-has-opacity-20': ignoreReward}"/>
               <div class="mt-4"/>
             </div>
               <div class="is-flex is-justify-content-center">
@@ -101,7 +104,7 @@
           </div>
         </template>
 
-        <template v-else-if="connected">
+        <template v-else-if="connecting">
           <section class="section has-text-centered" style="min-height: 450px">
             <p>Connecting your Wallet...</p>
             <p>You need to select which account you wish to connect.</p>
@@ -116,7 +119,7 @@
               To view or change your staking you first need to connect your wallet.
             </p>
             <br/>
-            <button class="button is-white is-small" @click="connectToWallet">CONNECT WALLET…</button>
+            <button class="button is-white is-small" @click="chooseWallet">CONNECT WALLET…</button>
           </section>
         </template>
 
@@ -125,18 +128,23 @@
 
     <DashboardCard v-if="accountId" :class="{'h-has-opacity-20': isIndirectStaking}">
       <template v-slot:title>
-        <p class="h-is-primary-title">Rewards Calculator</p>
+        <span class="h-is-primary-title">Staking Rewards Transactions</span>
+      </template>
+      <template v-slot:control>
+        <div class="is-flex is-align-items-flex-end">
+          <PlayPauseButtonV2 v-model:state="transactionCacheState"/>
+        </div>
       </template>
       <template v-slot:table>
-        <div class="is-flex is-justify-content-space-between">
-          <NetworkDashboardItem :name="'HBAR'" :title="'Current period earnings'" :value="'0'"/>
-          <NetworkDashboardItem :name="'HBAR'" :title="'Approx monthly earnings'" :value="'0'"/>
-          <NetworkDashboardItem :name="'HBAR'" :title="'Approx yearly earnings'" :value="'0'"/>
-          <NetworkDashboardItem :title="'Approx yearly reward rate'" :value="'0%'"/>
-        </div>
-
+        <TransactionTableV2
+            :narrowed="true"
+            :nb-items="10"
+            :transactions="transactions"
+        />
       </template>
     </DashboardCard>
+
+    <RewardsCalculator v-if="accountId" :class="{'h-has-opacity-20': isIndirectStaking}" :node-id="stakedNode?.node_id"/>
 
   </section>
 
@@ -150,9 +158,9 @@
 
 <script lang="ts">
 
-import {computed, defineComponent, inject, onBeforeMount, ref, watch} from 'vue';
+import {computed, defineComponent, inject, onBeforeUnmount, onMounted, ref, watch} from 'vue';
 import Footer from "@/components/Footer.vue";
-import {hashConnectManager} from "@/router";
+import {walletManager} from "@/router";
 import NetworkDashboardItem from "@/components/node/NetworkDashboardItem.vue";
 import axios from "axios";
 import {
@@ -165,13 +173,21 @@ import {
 import {HMSF} from "@/utils/HMSF";
 import {waitFor} from "@/utils/TimerUtils";
 import {operatorRegistry} from "@/schemas/OperatorRegistry";
-import StakingDialog from "@/components/StakingDialog.vue";
+import TransactionTableV2 from "@/components/transaction/TransactionTableV2.vue";
+import StakingDialog from "@/components/staking/StakingDialog.vue";
 import DashboardCard from "@/components/DashboardCard.vue";
 import ConfirmDialog from "@/components/ConfirmDialog.vue";
-import {TransactionResponse} from "@hashgraph/sdk";
 import {TransactionID} from "@/utils/TransactionID";
-import ProgressDialog, {Mode} from "@/components/ProgressDialog.vue";
+import ProgressDialog from "@/components/staking/ProgressDialog.vue";
 import AccountLink from "@/components/values/AccountLink.vue";
+import {EntityCacheStateV2} from "@/utils/EntityCacheV2";
+import PlayPauseButtonV2 from "@/components/PlayPauseButtonV2.vue";
+import RewardsCalculator from "@/components/staking/RewardsCalculator.vue";
+import WalletChooser from "@/components/staking/WalletChooser.vue";
+import {WalletDriver} from "@/utils/wallet/WalletDriver";
+import {WalletDriverError} from "@/utils/wallet/WalletDriverError";
+import {RewardsTransactionCache} from '@/components/staking/RewardsTransactionCache';
+import { Mode } from '@/components/staking/ProgressDialog.vue';
 
 export default defineComponent({
   name: 'Staking',
@@ -181,11 +197,15 @@ export default defineComponent({
   },
 
   components: {
+    WalletChooser,
+    RewardsCalculator,
+    PlayPauseButtonV2,
     AccountLink,
     ConfirmDialog,
     ProgressDialog,
     DashboardCard,
     StakingDialog,
+    TransactionTableV2,
     NetworkDashboardItem,
     Footer,
   },
@@ -194,20 +214,59 @@ export default defineComponent({
     const isSmallScreen = inject('isSmallScreen', true)
     const isTouchDevice = inject('isTouchDevice', false)
 
-    const connectToWallet = (event: MouseEvent) => {
-      if (event.altKey) {
-        hashConnectManager.reset()
-        console.log("HashConnectManager has been reset")
-      } else {
-        hashConnectManager.connect()
-      }
-      if (event.target instanceof HTMLButtonElement) {
-        event.target.blur()
-      }
+    const showStakingDialog = ref(false)
+    const showStopConfirmDialog = ref(false)
+    const showWalletChooser = ref(false)
+    const showErrorDialog = ref(false)
+    const showProgressDialog = ref(false)
+    const progressDialogMode = ref(Mode.Busy)
+    const progressDialogTitle = ref<string|null>(null)
+    const progressMainMessage = ref<string|null>(null)
+    const progressExtraMessage = ref<string|null>(null)
+    const progressExtraTransaction = ref<string|null>(null)
+    const showProgressSpinner = ref(false)
+
+    const connecting = ref(false)
+
+    const chooseWallet = () => {
+      showWalletChooser.value = true
     }
 
+    //
+    // handleChooseWallet
+    //
+    const handleChooseWallet = (wallet: WalletDriver) => {
+      walletManager.setActiveDriver(wallet)
+      connecting.value = true
+      walletManager
+          .connect()
+          .catch((reason) => {
+            console.log("handleChooseWallet - reason:" + reason.toString())
+            showProgressDialog.value = true
+            progressDialogMode.value = Mode.Error
+            progressDialogTitle.value = "Could not connect wallet"
+            showProgressSpinner.value = false
+            progressExtraTransaction.value = null
+
+            if (reason instanceof WalletDriverError) {
+              progressMainMessage.value = reason.message
+              progressExtraMessage.value = reason.extra
+            } else {
+              progressMainMessage.value = "Unexpected error"
+              progressExtraMessage.value = JSON.stringify(reason)
+            }
+          })
+          .finally(() => connecting.value = false)
+    }
+
+    //
+    // disconnectFromWallet
+    //
+
     const disconnectFromWallet = () => {
-      hashConnectManager.disconnect()
+      walletManager
+          .disconnect()
+          .finally(() => connecting.value = false)
     }
 
     //
@@ -216,11 +275,7 @@ export default defineComponent({
     const account = ref<AccountBalanceTransactions | null>(null)
     const accountError = ref<unknown>(null)
 
-    const showStakingDialog = ref(false)
-    const showStopConfirmDialog = ref(false)
-
     const isStaked = computed(() => account?.value?.staked_node_id || account?.value?.staked_account_id)
-
     const isIndirectStaking = computed(() => account?.value?.staked_account_id)
 
     const stakedTo = computed(() => {
@@ -268,17 +323,24 @@ export default defineComponent({
     })
 
     const declineReward = computed(() => {
-      return account.value?.decline_reward?.toString() ?? null
+      let result: string | null
+      if (account.value && account.value.decline_reward !== null) {
+        result = account.value.decline_reward === true ? 'Declined' : 'Accepted'
+      } else {
+        result = null
+      }
+      return result
     })
 
+    const ignoreReward = computed(() => account.value === null || account.value.staked_node_id === null)
+
     const fetchAccount = () => {
-      console.log("fetch account: " + hashConnectManager.accountId.value)
       const params = {} as {
         limit: 1
       }
-      if (hashConnectManager.accountId.value) {
+      if (walletManager.accountId.value) {
         axios
-            .get<AccountBalanceTransactions>("api/v1/accounts/" + hashConnectManager.accountId.value, {params: params})
+            .get<AccountBalanceTransactions>("api/v1/accounts/" + walletManager.accountId.value, {params: params})
             .then(response => {
               account.value = response.data
               if (account.value.staked_node_id !== null) {
@@ -289,11 +351,11 @@ export default defineComponent({
       }
     }
 
-    onBeforeMount(() => fetchAccount())
-    watch(hashConnectManager.accountId, () => fetchAccount())
+    onMounted(() => fetchAccount())
+    watch(walletManager.accountId, () => fetchAccount())
 
     //
-    // Node
+    // stakedNode
     //
     const stakedNode = ref<NetworkNode | null>(null)
 
@@ -308,7 +370,6 @@ export default defineComponent({
     })
 
     const fetchNode = (nodeId: number) => {
-      console.log("fetch node: " + nodeId)
       const url = "api/v1/network/nodes"
       const queryParams = {params: {'node.id': nodeId}}
       axios
@@ -334,41 +395,49 @@ export default defineComponent({
       changeStaking(nodeId, accountId, declineReward)
     }
 
-    const changeStaking = (nodeId: number|null, accountId: string|null, declineReward: boolean|null) => {
+    const changeStaking = async (nodeId: number|null, accountId: string|null, declineReward: boolean|null) => {
 
-      showProgressDialog.value = true
-      progressDialogMode.value = Mode.Busy
-      progressDialogTitle.value = (nodeId == null && accountId == null && !declineReward) ? "Stopping staking" : "Updating staking"
-      progressMainMessage.value = "Connecting to Hedera Network using your wallet…"
-      progressExtraMessage.value = "Check your wallet for any approval request"
-      progressExtraTransaction.value = null
-      showProgressSpinner.value = false
+      try {
 
-      hashConnectManager.changeStaking(nodeId, accountId, declineReward)
-          .then((response: TransactionResponse) => {
-            progressMainMessage.value = "Completing operation…"
-            progressExtraMessage.value = "This may take a few seconds"
-            showProgressSpinner.value = true
-            const transactionID = TransactionID.normalize(response.transactionId.toString(), false)
-            return waitForTransactionRefresh(transactionID, 10)
-          })
-          .then((response: Transaction | string) => {
-            progressDialogMode.value = Mode.Success
-            progressMainMessage.value = "Operation completed"
-            showProgressSpinner.value = false
-            progressExtraMessage.value = "with transaction ID:"
-            const transactionID = typeof response == "string" ? response : response.transaction_id
-            progressExtraTransaction.value = transactionID ?? null
-            fetchAccount()
-          })
-          .catch(() => {
-            progressDialogMode.value = Mode.Error
-            progressMainMessage.value = "Operation did not complete"
-            progressExtraMessage.value = "Your wallet rejected this operation"
-            progressExtraTransaction.value = null
-            showProgressSpinner.value = false
-            fetchAccount()
-          })
+        showProgressDialog.value = true
+        progressDialogMode.value = Mode.Busy
+        progressDialogTitle.value = (nodeId == null && accountId == null && !declineReward) ? "Stopping staking" : "Updating staking"
+        progressMainMessage.value = "Connecting to Hedera Network using your wallet…"
+        progressExtraMessage.value = "Check your wallet for any approval request"
+        progressExtraTransaction.value = null
+        showProgressSpinner.value = false
+        const response = await walletManager.changeStaking(nodeId, accountId, declineReward)
+
+        progressMainMessage.value = "Completing operation…"
+        progressExtraMessage.value = "This may take a few seconds"
+        showProgressSpinner.value = true
+        const transactionID = TransactionID.normalize(response.transactionId.toString(), false)
+        await waitForTransactionRefresh(transactionID, 10)
+
+        progressDialogMode.value = Mode.Success
+        progressMainMessage.value = "Operation completed"
+        showProgressSpinner.value = false
+        progressExtraMessage.value = "with transaction ID:"
+        progressExtraTransaction.value = transactionID
+
+      } catch(error) {
+
+        progressDialogMode.value = Mode.Error
+        if (error instanceof WalletDriverError) {
+          progressMainMessage.value = error.message
+          progressExtraMessage.value = error.extra
+        } else {
+          progressMainMessage.value = "Operation did not complete"
+          progressExtraMessage.value = JSON.stringify(error.message)
+        }
+        progressExtraTransaction.value = null
+        showProgressSpinner.value = false
+
+      } finally {
+
+        fetchAccount()
+      }
+
     }
 
     const waitForTransactionRefresh = async (transactionID: string, attemptIndex: number) => {
@@ -390,33 +459,45 @@ export default defineComponent({
       return result
     }
 
-    const showProgressDialog = ref(false)
-    const progressDialogMode = ref(Mode.Busy)
-    const progressDialogTitle = ref<string|null>(null)
-    const progressMainMessage = ref<string|null>(null)
-    const progressExtraMessage = ref<string|null>(null)
-    const progressExtraTransaction = ref<string|null>(null)
-    const showProgressSpinner = ref(false)
+    //
+    // Rewards Transactions Cache
+    //
+    const transactionCache = new RewardsTransactionCache()
+    const setupTransactionCache = () => {
+      if(walletManager.accountId.value) {
+        transactionCache.accountId.value = walletManager.accountId.value
+        transactionCache.state.value = EntityCacheStateV2.Started
+      }
+    }
+    onMounted(() => setupTransactionCache())
+    watch(walletManager.accountId, () => setupTransactionCache())
+    onBeforeUnmount(() => {
+      transactionCache.state.value = EntityCacheStateV2.Stopped
+    })
 
     return {
       isSmallScreen,
       isTouchDevice,
-      connected: hashConnectManager.connected,
-      connectedNetwork: hashConnectManager.connectedNetwork,
-      walletName: hashConnectManager.walletName,
-      walletIconURL: hashConnectManager.walletIconURL,
-      accountId: hashConnectManager.accountId,
+      connecting,
+      connected: walletManager.connected,
+      walletName: walletManager.getActiveDriver().name,
+      walletIconURL: walletManager.getActiveDriver().iconURL,
+      accountId: walletManager.accountId,
       account,
       isStaked,
       showStakingDialog,
       showStopConfirmDialog,
+      showWalletChooser,
+      showErrorDialog,
       isIndirectStaking,
       stakedTo,
       stakedNode,
       stakedAmount,
       stakedSince,
       declineReward,
-      connectToWallet,
+      ignoreReward,
+      chooseWallet,
+      handleChooseWallet,
       disconnectFromWallet,
       handleStopStaking,
       handleChangeStaking,
@@ -426,7 +507,9 @@ export default defineComponent({
       progressMainMessage,
       progressExtraMessage,
       progressExtraTransaction,
-      showProgressSpinner
+      showProgressSpinner,
+      transactions: transactionCache.filteredTransactions,
+      transactionCacheState: transactionCache.state,
     }
   }
 });

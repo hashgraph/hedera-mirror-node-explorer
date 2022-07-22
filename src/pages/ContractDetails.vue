@@ -43,7 +43,7 @@
         <div class="columns h-is-property-text">
 
           <div class="column">
-            <Property :id="'balance'">
+            <Property id="balance">
               <template v-slot:name>{{ tokens?.length ? 'Balances' : 'Balance' }}</template>
               <template v-slot:value>
                 <div class="has-flex-direction-column">
@@ -61,37 +61,37 @@
                 </div>
               </template>
             </Property>
-            <Property :id="'key'">
+            <Property id="key">
               <template v-slot:name>Admin Key</template>
               <template v-slot:value>
                 <KeyValue :key-bytes="contract?.admin_key?.key" :key-type="contract?.admin_key?._type" :show-none="true"/>
               </template>
             </Property>
-            <Property :id="'memo'">
+            <Property id="memo">
               <template v-slot:name>Memo</template>
               <template v-slot:value>
                 <BlobValue :blob-value="contract?.memo" :show-none="true" :base64="true" class="should-wrap"/>
               </template>
             </Property>
-            <Property :id="'alias'">
+            <Property id="alias">
               <template v-slot:name>Alias</template>
               <template v-slot:value>
                 <HexaValue v-bind:byte-string="aliasByteString" v-bind:show-none="true"/>
               </template>
             </Property>
-            <Property :id="'expiresAt'">
+            <Property id="expiresAt">
               <template v-slot:name>Expires at</template>
               <template v-slot:value>
                 <TimestampValue v-bind:timestamp="contract?.expiration_timestamp" v-bind:show-none="true"/>
               </template>
             </Property>
-            <Property :id="'autoRenewPeriod'">
+            <Property id="autoRenewPeriod">
               <template v-slot:name>Auto Renew Period</template>
               <template v-slot:value>
                 <DurationValue v-bind:number-value="contract?.auto_renew_period"/>
               </template>
             </Property>
-            <Property :id="'code'">
+            <Property id="code">
               <template v-slot:name>Code</template>
               <template v-slot:value>
                 <ByteCodeValue :byte-code="contract?.bytecode"/>
@@ -100,37 +100,37 @@
           </div>
 
           <div class="column">
-            <Property :id="'obtainer'">
+            <Property id="obtainer">
               <template v-slot:name>Obtainer</template>
               <template v-slot:value>
                 <AccountLink :account-id="obtainerId" :show-none="true"/>
               </template>
             </Property>
-            <Property :id="'proxyAccount'">
+            <Property id="proxyAccount">
               <template v-slot:name>Proxy Account</template>
               <template v-slot:value>
                 <AccountLink :account-id="proxyAccountId" :show-none="true"/>
               </template>
             </Property>
-            <Property :id="'validFrom'">
+            <Property id="validFrom">
               <template v-slot:name>Valid from</template>
               <template v-slot:value>
                 <TimestampValue :timestamp="contract?.timestamp?.from" :show-none="true"/>
               </template>
             </Property>
-            <Property :id="'validUntil'">
+            <Property id="validUntil">
               <template v-slot:name>Valid until</template>
               <template v-slot:value>
                 <TimestampValue :timestamp="contract?.timestamp?.to" :show-none="true"/>
               </template>
             </Property>
-            <Property :id="'file'">
+            <Property id="file">
               <template v-slot:name>File</template>
               <template v-slot:value>
                 <StringValue :string-value="contract?.file_id"/>
               </template>
             </Property>
-            <Property :id="'evmAddress'">
+            <Property id="evmAddress">
               <template v-slot:name>EVM Address</template>
               <template v-slot:value>
                 <HexaValue :byte-string="contract?.evm_address" :show-none="true"/>

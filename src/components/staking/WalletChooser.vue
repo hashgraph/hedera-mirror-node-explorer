@@ -24,18 +24,28 @@
 
 <template>
 
-  <div class="is-flex is-align-items-center">
-    <div class="is-flex has-text-white"
-         :class="{'is-align-items-center': variation, 'is-align-items-baseline': !variation}">
-      <p class="dashboard-value has-text-white mr-2" :class="{'is-numeric':isNumeric}" >
-        <span v-if="value !== null">{{ value }}</span>
-        <span v-else class="has-text-grey">None</span>
-      </p>
-      <div class="is-flex-is-vertical"
-           :class="{'h-is-text-size-3':isMediumScreen, 'h-is-text-size-1':!isMediumScreen, 'pt-1':isMediumScreen}"
-           style="line-height: 1">
-        <Variation v-if="variation" :variation="variation"/>
-        <p class="h-is-text-size-1">{{ name }}</p>
+  <div :class="{'is-active': showDialog}" class="modal has-text-white">
+    <div class="modal-background"/>
+    <div class="modal-content" style="width: 768px; border-radius: 16px">
+      <div class="box">
+        <div class="is-flex is-justify-content-space-between is-align-items-self-end">
+            <span class="h-is-primary-title">Choose Wallet</span>
+          <a @click="handleCancel">
+            <img alt="" src="@/assets/close-icon.png" style="max-height: 20px;">
+          </a>
+        </div>
+        <hr class="h-card-separator"/>
+
+        <div class="is-flex is-justify-content-left is-align-items-center">
+          <div v-for="d in drivers" :key="d.name">
+              <a @click="handleChoose(d)">
+                <figure class="image my-4 mr-6" style="width: 128px">
+                  <img alt="wallet logo" :src="d.iconURL">
+                </figure>
+              </a>
+          </div>
+        </div>
+
       </div>
     </div>
   </div>
@@ -48,28 +58,40 @@
 
 <script lang="ts">
 
-import {defineComponent, inject} from 'vue';
-import Variation from "@/components/dashboard/Variation.vue";
+import {defineComponent} from "vue";
+import {walletManager} from "@/router";
+import {WalletDriver} from "@/utils/wallet/WalletDriver";
 
 export default defineComponent({
-  name: 'DashboardItem',
-  components: {Variation},
+  name: "WalletChooser",
+  components: {},
   props: {
-    name: String,
-    value: String,
-    variation: String,
-    isNumeric: {
+    showDialog: {
       type: Boolean,
       default: false
+    },
+  },
+
+  emits: [ "chooseWallet", "update:showDialog"],
+
+  setup(props, context) {
+
+    const handleChoose = (wallet: WalletDriver) => {
+      context.emit('chooseWallet', wallet)
+      context.emit('update:showDialog', false)
     }
-  },
 
-  setup() {
-    const isMediumScreen = inject('isMediumScreen', true)
+    const handleCancel = () => {
+      context.emit('update:showDialog', false)
+    }
 
-    return {isMediumScreen}
-  },
-
+    return {
+      walletManager,
+      drivers:walletManager.getDrivers(),
+      handleChoose,
+      handleCancel
+    }
+  }
 });
 
 </script>
@@ -80,32 +102,8 @@ export default defineComponent({
 
 <style scoped>
 
-.dashboard-value {
-  font-style: normal;
-  font-weight: 300;
-  font-size: 22px;
-  line-height: 28px;
-  letter-spacing: -0.05em;
-}
-
-@media (min-width: 1080px) {
-  .dashboard-value {
-    font-style: normal;
-    font-weight: 300;
-    font-size: 28px;
-    line-height: 34px;
-    letter-spacing: -0.05em;
-  }
-}
-
-@media (min-width: 1450px) {
-  .dashboard-value {
-    font-style: normal;
-    font-weight: 300;
-    font-size: 34px;
-    line-height: 41px;
-    letter-spacing: -0.05em;
-  }
+.image:hover {
+  opacity: 60%;
 }
 
 </style>
