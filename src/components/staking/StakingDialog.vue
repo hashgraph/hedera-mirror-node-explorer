@@ -77,8 +77,8 @@
                 </label>
               </div>
               <o-field>
-                <o-select v-model="selectedNode" :disabled="!isNodeSelected"
-                          class="h-is-text-size-1" style="border-radius: 4px">
+                <o-select v-model="selectedNode"
+                          class="h-is-text-size-1" style="border-radius: 4px"  @focus="stakeChoice='node'">
                   <option v-for="n in nodes" :key="n.node_id" :value="n.node_id"
                           style="background-color: var(--h-theme-box-background-color)">
                     {{ makeNodeDescription(n) }} - {{ makeNodeStake(n) }}
@@ -94,7 +94,7 @@
                 </label>
               </div>
               <o-field>
-                <o-input v-model="selectedAccount" placeholder="0.0.1234" :disabled="!isAccountSelected"
+                <o-input v-model="selectedAccount" placeholder="0.0.1234" @focus="stakeChoice='account'"
                          style="width: 12rem; color: white; background-color: var(--h-theme-box-background-color) ">
                 </o-input>
               </o-field>
@@ -297,6 +297,8 @@ export default defineComponent({
       return result
     }
 
+    const testOnFocus = () => { console.log("onfocus triggered") }
+
     return {
       accountId,
       showConfirmDialog,
@@ -316,7 +318,8 @@ export default defineComponent({
       handleCancelChange,
       handleConfirmChange,
       makeNodeDescription,
-      makeNodeStake
+      makeNodeStake,
+      testOnFocus
     }
   }
 });
