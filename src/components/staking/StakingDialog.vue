@@ -81,7 +81,7 @@
                           class="h-is-text-size-1" style="border-radius: 4px">
                   <option v-for="n in nodes" :key="n.node_id" :value="n.node_id"
                           style="background-color: var(--h-theme-box-background-color)">
-                    {{ makeNodeDescription(n) }}
+                    {{ makeNodeDescription(n) }} - {{ makeNodeStake(n) }}
                   </option>
                 </o-select>
               </o-field>
@@ -116,7 +116,7 @@
         <Property :id="'changeCost'">
           <template v-slot:name>Change Transaction Cost</template>
           <template v-slot:value>
-            <HbarAmount v-if="account" :amount="10000000" :show-extra="true"/>
+            <HbarAmount v-if="account" :amount="10000000" :show-extra="true" :decimals="1"/>
           </template>
         </Property>
 
@@ -279,6 +279,24 @@ export default defineComponent({
       return result
     }
 
+    const makeNodeStake = (node: NetworkNode) => {
+      const amountFormatter = new Intl.NumberFormat("en-US", {
+        maximumFractionDigits: 0
+      })
+      const percentFormatter = new Intl.NumberFormat("en-US", {
+        style: 'percent',
+        maximumFractionDigits: 0
+      })
+      const stakeAmount = node.stake ? node.stake / 100000000 : 0
+      const percentMax = node.stake && node.max_stake ? node.stake / node.max_stake : 0
+
+      let result = amountFormatter.format(stakeAmount) + "ℏ staked"
+      if (percentMax !== 0) {
+        result += " (" + percentFormatter.format(percentMax) + " of max)"
+      }
+      return result
+    }
+
     return {
       accountId,
       showConfirmDialog,
@@ -297,7 +315,8 @@ export default defineComponent({
       handleChange,
       handleCancelChange,
       handleConfirmChange,
-      makeNodeDescription
+      makeNodeDescription,
+      makeNodeStake
     }
   }
 });
