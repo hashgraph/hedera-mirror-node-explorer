@@ -133,13 +133,13 @@ export default defineComponent({
             const next = result.data.links?.next
             if (next) {
               fetchNodes(next)
-            } else {
-              if (nodes.value) {
-                for (let i = 0; i < nodes.value?.length; i++) {
-                  // TODO: REMOVE FAKED VALUES
-                  nodes.value[i].reward_rate_start = i * 1.25 / 365 / 100
-                }
-              }
+            // } else {
+            //   // FAKED VALUES FOR NODE REWARD RATES
+            //   if (nodes.value) {
+            //     for (let i = 0; i < nodes.value?.length; i++) {
+            //       nodes.value[i].reward_rate_start = i * 1.25 / 365 / 100
+            //     }
+            //   }
             }
           })
     }
