@@ -37,6 +37,24 @@
     color: $h-radio-hover-color;
 }
 
+.h-chooser-figure {
+    width: 150px;
+    height: 80px;
+    line-height: 60px;
+    text-align: center;
+    padding: 8px;
+    border: solid 0.5px transparent;
+    border-radius: 6px;
+}
+.h-chooser-figure:hover {
+    border-color: var(--h-theme-highlight-color);
+    background-color: var(--h-theme-page-background-color);
+}
+
+.h-chooser-img {
+    vertical-align: middle;
+}
+
 //
 // TEXT
 //
