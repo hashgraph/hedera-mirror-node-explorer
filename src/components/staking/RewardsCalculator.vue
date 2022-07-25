@@ -59,9 +59,9 @@
       </div>
 
       <div class="is-flex is-justify-content-space-between">
-        <NetworkDashboardItem :name="'HBAR'" :title="'Current 24h Period Earning'" :value="currentEarning.toString()"/>
-        <NetworkDashboardItem :name="'HBAR'" :title="'Approx Monthly Earning'" :value="monthlyEarning.toString()"/>
-        <NetworkDashboardItem :name="'HBAR'" :title="'Approx Yearly Earning'" :value="yearlyEarning.toString()"/>
+        <NetworkDashboardItem :name="'HBAR'" :title="'Current 24h Period Reward'" :value="currentReward.toString()"/>
+        <NetworkDashboardItem :name="'HBAR'" :title="'Approx Monthly Reward'" :value="monthlyReward.toString()"/>
+        <NetworkDashboardItem :name="'HBAR'" :title="'Approx Yearly Reward'" :value="yearlyReward.toString()"/>
         <NetworkDashboardItem :title="'Approx Yearly Reward Rate'" :value="yearlyRate*100 + '%'"/>
       </div>
 
@@ -110,9 +110,9 @@ export default defineComponent({
         (nodes.value && selectedNodeId.value !== null && selectedNodeId.value < nodes.value.length)
             ? nodes.value[selectedNodeId.value].reward_rate_start
             : 0)
-    const currentEarning = computed(() => rewardRate.value && amountStaked.value ? Math.round(amountStaked.value * rewardRate.value * 10000) / 10000 : 0)
-    const monthlyEarning = computed(() => currentEarning.value ? Math.round(currentEarning.value * 30 * 100) / 100 : 0)
-    const yearlyEarning = computed(() => currentEarning.value ? Math.round(currentEarning.value * 365 * 10) / 10 : 0)
+    const currentReward = computed(() => rewardRate.value && amountStaked.value ? Math.round(amountStaked.value * rewardRate.value * 10000) / 10000 : 0)
+    const monthlyReward = computed(() => currentReward.value ? Math.round(currentReward.value * 30 * 100) / 100 : 0)
+    const yearlyReward = computed(() => currentReward.value ? Math.round(currentReward.value * 365 * 10) / 10 : 0)
     const yearlyRate = computed(() => rewardRate.value ? Math.round(rewardRate.value * 365 * 10000) / 10000  : 0)
 
     //
@@ -194,9 +194,9 @@ export default defineComponent({
       selectedNodeId,
       amountStaked,
       rewardRate,
-      currentEarning,
-      monthlyEarning,
-      yearlyEarning,
+      currentReward,
+      monthlyReward,
+      yearlyReward,
       yearlyRate,
       nodes,
       makeNodeDescription,
