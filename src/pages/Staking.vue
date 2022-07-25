@@ -76,11 +76,11 @@
             <br/>
             <div class="is-flex is-justify-content-space-between">
               <div class="is-flex is-justify-content-flex-start">
-                <button class="button is-white is-small"
+                <button id="stopStakingButton" class="button is-white is-small"
                         :disabled="!stakedTo" @click="showStopConfirmDialog = true">STOP STAKING</button>
-                <button class="button is-white is-small ml-4" @click="showStakingDialog = true">CHANGE STAKING</button>
+                <button id="showStakingDialog" class="button is-white is-small ml-4" @click="showStakingDialog = true">CHANGE STAKING</button>
               </div>
-              <button class="button is-white is-small" @click="disconnectFromWallet">DISCONNECT WALLET</button>
+              <button id="disconnectWalletButton" class="button is-white is-small" @click="disconnectFromWallet">DISCONNECT WALLET</button>
             </div>
           </div>
           <div v-else>
@@ -93,12 +93,12 @@
               <div class="mt-4"/>
             </div>
               <div class="is-flex is-justify-content-center">
-                  <button class="button is-white is-small"
+                  <button id="stopStakingButton" class="button is-white is-small"
                           :disabled="!stakedTo" @click="showStopConfirmDialog = true">STOP STAKING</button>
-                  <button class="button is-white is-small ml-4" @click="showStakingDialog = true">CHANGE STAKED TO</button>
+                  <button id="showStakingDialog" class="button is-white is-small ml-4" @click="showStakingDialog = true">CHANGE STAKED TO</button>
                 </div>
             <div class="is-flex is-justify-content-center mt-4">
-              <button class="button is-white is-small" @click="disconnectFromWallet">DISCONNECT WALLET</button>
+              <button id="disconnectWalletButton" class="button is-white is-small" @click="disconnectFromWallet">DISCONNECT WALLET</button>
             </div>
             <div class="mt-6"/>
           </div>
@@ -109,7 +109,7 @@
             <p>Connecting your Wallet...</p>
             <p>You need to select which account you wish to connect.</p>
             <br/>
-            <button class="button is-white is-small" @click="disconnectFromWallet">ABORT CONNECTION</button>
+            <button id="abortConnectWalletButton" class="button is-white is-small" @click="disconnectFromWallet">ABORT CONNECTION</button>
           </section>
         </template>
 
@@ -119,7 +119,7 @@
               To view or change your staking you first need to connect your wallet.
             </p>
             <br/>
-            <button class="button is-white is-small" @click="chooseWallet">CONNECT WALLET…</button>
+            <button id="connectWalletButton" class="button is-white is-small" @click="chooseWallet">CONNECT WALLET…</button>
           </section>
         </template>
 
