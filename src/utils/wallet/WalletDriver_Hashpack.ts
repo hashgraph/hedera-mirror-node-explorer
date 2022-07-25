@@ -58,7 +58,7 @@ export class WalletDriver_Hashpack extends WalletDriver {
         return Promise.resolve()
     }
 
-    public async call<RequestT, ResponseT, OutputT>(request: Executable<RequestT, ResponseT, OutputT>): Promise<OutputT> {
+    public async updateAccount<RequestT, ResponseT, OutputT>(request: Executable<RequestT, ResponseT, OutputT>): Promise<OutputT> {
         try {
             return await this.performCall(request)
         } catch(error) {

@@ -124,7 +124,7 @@ export class WalletManager {
             }
 
             try {
-                result = await timeGuard(this.activeDriver.call(trans), this.timeout)
+                result = await timeGuard(this.activeDriver.updateAccount(trans), this.timeout)
             } catch(error) {
                 if (error instanceof TimeGuardError) {
                     throw this.activeDriver.callFailure(this.activeDriver.silentMessage())

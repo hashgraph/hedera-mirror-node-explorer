@@ -70,7 +70,7 @@ export class WalletDriver_Blade extends WalletDriver {
         }
     }
 
-    public async call<RequestT, ResponseT, OutputT>(request: Executable<RequestT, ResponseT, OutputT>): Promise<OutputT> {
+    public async updateAccount<RequestT, ResponseT, OutputT>(request: Executable<RequestT, ResponseT, OutputT>): Promise<OutputT> {
         let result: Promise<OutputT>
         if (this.signer !== null) {
             try {
