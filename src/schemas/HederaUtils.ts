@@ -20,13 +20,13 @@
 
 import {AccountInfo, KeyType, TokenInfo} from "@/schemas/HederaSchemas";
 import {EntityID} from "@/utils/EntityID";
-import { ethers } from "ethers";
+import { hethers } from "hethers";
 
 export function makeEthAddressForAccount(account: AccountInfo): string|null {
     if (account.evm_address) return account.evm_address;
     if (account.key?.key && account.key?._type == KeyType.ECDSA_SECP256K1) {
         // Generates Ethereum address from public key
-        return ethers.utils.computeAddress("0x" + account.key.key)
+        return hethers.utils.computeAddress("0x" + account.key.key)
     }
     if (account.account) {
         // Generates Ethereum address from account id
@@ -59,4 +59,8 @@ export function makeTokenSymbol(token: TokenInfo | null, maxLength: number): str
     const candidate4 = name ? name.slice(0, maxLength) : null
 
     return candidate1 ?? candidate2 ?? candidate3 ?? candidate4 ?? token?.token_id ?? "?"
+}
+
+export function isValidEthereumAddress(hexString: string): boolean {
+    return hethers.utils.isAddress(hexString)
 }

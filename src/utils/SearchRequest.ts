@@ -30,12 +30,13 @@ import {TransactionID} from "@/utils/TransactionID";
 import {DeferredPromise} from "@/utils/DeferredPromise";
 import {EntityID} from "@/utils/EntityID";
 import {aliasToBase32, byteToHex, hexToByte} from "@/utils/B64Utils";
-
+import {isValidEthereumAddress} from "@/schemas/HederaUtils";
 
 export class SearchRequest {
 
     public readonly searchedId: string
     public account: AccountBalanceTransactions|null = null
+    public accountEth: AccountBalanceTransactions|null = null
     public transactions = Array<Transaction>()
     public tokenInfo: TokenInfo|null = null
     public topicMessages = Array<TopicMessage>()
@@ -51,7 +52,7 @@ export class SearchRequest {
 
     run(): Promise<void> {
 
-        this.countdown = 5
+        this.countdown = 6
         this.errorCount = 0
 
         const entityID = EntityID.parse(this.searchedId, true)
@@ -82,7 +83,26 @@ export class SearchRequest {
             this.updatePromise()
         }
 
-        // 2) Searches transactions
+        // 2) Search for accounts with an ethereum addresses as alias. Can return multiple results
+        if (hexByteString !== null && isValidEthereumAddress(hexByteString)) {
+            axios
+                .get("api/v1/accounts/" + hexByteString)
+                .then(response => {
+                    if(response.data) this.accountEth = response.data
+                })
+                .catch((reason: unknown) => {
+                    this.updateErrorCount(reason)
+                    return null // To avoid console pollution
+                })
+                .finally(() => {
+                    this.updatePromise()
+                });
+        } else {
+            // No account will match => no need to call server
+            this.updatePromise()
+        }
+
+        // 3) Searches transactions
         if (normTransactionID !== null) {
             axios
                 .get("api/v1/transactions/" + normTransactionID)
@@ -101,7 +121,7 @@ export class SearchRequest {
             this.updatePromise()
         }
 
-        // 3) Searches tokens
+        // 4) Searches tokens
         if (normEntityID !== null) {
             axios
                 .get("api/v1/tokens/" + normEntityID)
@@ -120,7 +140,7 @@ export class SearchRequest {
             this.updatePromise()
         }
 
-        // 4) Searches topics
+        // 5) Searches topics
         if (normEntityID !== null) {
             const params = {
                 order: "desc",
@@ -143,7 +163,7 @@ export class SearchRequest {
             this.updatePromise()
         }
 
-        // 5) Searches contracts
+        // 6) Searches contracts
         if (normEntityID !== null || hexByteString !== null) {
             const entityOrAddress = hexByteString ? hexByteString : normEntityID
             axios

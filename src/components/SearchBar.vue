@@ -123,6 +123,9 @@ export default defineComponent({
             } else if (r.account != null) {
               router.push({name: 'AccountDetails', params: { accountId: r.account.account}})
               searchDidEnd(true)
+            } else if (r.accountEth != null) {
+              router.push({name: 'AccountDetails', params: { accountId: r.accountEth.account}})
+              searchDidEnd(true)
             } else if (r.transactions.length >= 1) {
               const transaction = r.transactions[0]
               if (r.transactions.length == 1) {
