@@ -75,7 +75,7 @@ describe("NodeTable.vue", () => {
         // console.log(wrapper.text())
         // console.log(wrapper.html())
 
-        expect(wrapper.get('thead').text()).toBe("Node Account Hosted By Location Stake Unrewarded Stake Last Reward Rate")
+        expect(wrapper.get('thead').text()).toBe("Node Account Hosted By Location Stake Unrewarded Stake Last Reward Rate Stake Range")
         expect(wrapper.get('tbody').findAll('tr').length).toBe(3)
         expect(wrapper.get('tbody').text()).toBe(
             "0" + "0.0.3" + "testnet" + "None" + "6000000(25%)" + "1000000" + "0%" +
