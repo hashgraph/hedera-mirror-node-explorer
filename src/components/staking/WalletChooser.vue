@@ -39,8 +39,8 @@
         <div class="is-flex is-justify-content-left is-align-items-center">
           <div v-for="d in drivers" :key="d.name">
               <a @click="handleChoose(d)">
-                <figure class="image my-4 mr-6" style="width: 128px">
-                  <img alt="wallet logo" :src="d.iconURL">
+                <figure class="h-chooser-figure my-4 mr-6">
+                  <img class="h-chooser-img" alt="wallet logo" :src="d.iconURL">
                 </figure>
               </a>
           </div>
@@ -100,10 +100,4 @@ export default defineComponent({
 <!--                                                       STYLE                                                     -->
 <!-- --------------------------------------------------------------------------------------------------------------- -->
 
-<style scoped>
-
-.image:hover {
-  opacity: 60%;
-}
-
-</style>
+<style/>
