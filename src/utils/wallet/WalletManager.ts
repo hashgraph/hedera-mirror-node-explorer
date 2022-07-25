@@ -31,6 +31,7 @@ export class WalletManager {
     private readonly routeManager: RouteManager
     private readonly bladeDriver = new WalletDriver_Blade()
     private readonly hashpackDriver = new WalletDriver_Hashpack()
+    private readonly drivers: Array<WalletDriver> = [this.bladeDriver, this.hashpackDriver]
     private readonly timeout = 30000; // milliseconds
 
     private readonly connectedRef = ref(false)
@@ -48,7 +49,7 @@ export class WalletManager {
     }
 
     public getDrivers(): WalletDriver[] {
-        return [this.bladeDriver, this.hashpackDriver]
+        return this.drivers
     }
 
     public getActiveDriver(): WalletDriver {
