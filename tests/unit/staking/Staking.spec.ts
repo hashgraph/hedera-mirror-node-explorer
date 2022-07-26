@@ -38,6 +38,7 @@ import NetworkDashboardItem from "@/components/node/NetworkDashboardItem.vue";
 import ConfirmDialog from "@/components/ConfirmDialog.vue";
 import ProgressDialog from "@/components/staking/ProgressDialog.vue";
 import {waitFor} from "@/utils/TimerUtils";
+import {TransactionID} from "@/utils/TransactionID";
 
 /*
     Bookmarks
@@ -138,6 +139,8 @@ describe("Staking.vue", () => {
         expect(progressDialog.text()).toBe("Stopping stakingCompleting operation…This may take a few secondsCLOSE");
         await waitFor(3000)
         await flushPromises()
+        expect(progressDialog.text()).toBe("Stopping stakingOperation completedwith transaction ID:0.0.29624024@1646025139.152901498CLOSE")
+        expect(progressDialog.text()).toMatch(TransactionID.normalize(STAKE_UPDATE_TRANSACTION_ID))
 
         // Click "CLOSE"
         const closeButton = progressDialog.get("button")
