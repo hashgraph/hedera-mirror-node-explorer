@@ -69,14 +69,17 @@
             Stake To
           </div>
           <div class="column">
-            <div class="is-flex">
-              <div class="control" style="width: 10rem">
-                <label class="radio h-radio-button">
-                  <input name="stakeTarget" type="radio" value="node" v-model="stakeChoice">
-                  Node
-                </label>
+            <div class="columns">
+              <div class="column is-one-fifth">
+                <div class="control" style="width: 100px">
+                  <label class="radio h-radio-button">
+                    <input name="stakeTarget" type="radio" value="node" v-model="stakeChoice">
+                    Node
+                  </label>
+                </div>
               </div>
-              <o-field>
+              <div class="column">
+                <o-field>
                 <o-select v-model="selectedNode"
                           class="h-is-text-size-1" style="border-radius: 4px"  @focus="stakeChoice='node'">
                   <option v-for="n in nodes" :key="n.node_id" :value="n.node_id"
@@ -85,28 +88,39 @@
                   </option>
                 </o-select>
               </o-field>
+              </div>
             </div>
-            <div class="is-flex mt-2">
-              <div class="control" style="width: 10rem">
+            <div class="columns">
+              <div class="column is-one-fifth pt-0">
+                <div class="control" style="width: 100px">
                 <label class="radio h-radio-button ml-0">
                   <input name="stakeTarget" type="radio" value="account" v-model="stakeChoice">
-                  Other Account
+                  Account
                 </label>
+                </div>
               </div>
-              <o-field>
-                <o-input v-model="selectedAccount" placeholder="0.0.1234" @focus="stakeChoice='account'"
-                         style="width: 12rem; color: white; background-color: var(--h-theme-box-background-color) ">
-                </o-input>
-              </o-field>
-            </div>
+              <div class="column pt-0">
+                <div class="is-flex is-align-items-flex-start">
+                  <o-field>
+                    <o-input v-model="selectedAccount" placeholder="0.0.1234" @focus="stakeChoice='account'"
+                             style="width: 9rem; color: white; background-color: var(--h-theme-box-background-color) ">
+                    </o-input>
+                  </o-field>
+                  <div class="is-inline-block h-is-text-size-1 is-italic has-text-grey ml-2" style="height:22px; margin-top:2px; font-weight:300">
+                    When staked to another account, the rewards are paid to that account, not this one.
+                  </div>
+                </div>
+              </div>
+
+
           </div>
         </div>
-
+        </div>
         <div class="columns">
-          <div class="column is-one-third has-text-weight-light">
+          <div class="column is-one-third has-text-weight-light pt-0">
             Decline Rewards
           </div>
-          <div class="column">
+          <div class="column pt-0">
             <label class="checkbox">
               <input checked="checked" type="checkbox" v-model="declineChoice" :disabled="!isNodeSelected || selectedNode == null">
             </label>

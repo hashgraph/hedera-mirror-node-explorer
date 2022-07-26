@@ -74,7 +74,7 @@
         <span class="h-is-primary-title">Nodes</span>
       </template>
       <template v-slot:table>
-        <NodeTable :nodes="nodes" :total-hbar-staked="totalStaked"/>
+        <NodeTable :nodes="nodes" :total-hbar-staked="totalStaked" :min-stake="minStake" :max-stake="maxStake"/>
       </template>
     </DashboardCard>
 
@@ -121,6 +121,8 @@ export default defineComponent({
     let nodes = ref<Array<NetworkNode> | null>([])
     const totalNodes = computed(() => nodes.value?.length.toString() ?? "")
 
+    const minStake = ref(0)
+    const maxStake = ref(0)
     const totalStaked = ref(0)
     const totalRewarded = ref(0)
     const stakingPeriod = ref<StakingPeriod | null>(null)
@@ -149,6 +151,11 @@ export default defineComponent({
           .then(result => {
             if (result.data.nodes) {
               nodes.value = nodes.value ? nodes.value.concat(result.data.nodes) : result.data.nodes
+              if (nodes.value.length) {
+                totalStaked.value = nodes.value[0].stake_total ?? 0
+                minStake.value = nodes.value[0].min_stake ?? 0
+                maxStake.value = nodes.value[0].max_stake ?? 0
+              }
               let staked = 0
               let rewarded = 0
               for (const n of result.data.nodes) {
@@ -187,6 +194,8 @@ export default defineComponent({
       nodes,
       totalNodes,
       totalStaked,
+      minStake,
+      maxStake,
       totalRewarded,
       durationMin,
       elapsedMin,
