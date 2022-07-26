@@ -27,8 +27,17 @@ import WalletChooser from "@/components/staking/WalletChooser.vue";
 import {WalletDriver_Mock} from "./WalletDriver_Mock";
 import MockAdapter from "axios-mock-adapter";
 import axios from "axios";
-import {SAMPLE_ACCOUNT_STAKING_ACCOUNT, SAMPLE_COINGECKO, SAMPLE_NETWORK_NODES} from "../Mocks";
+import {
+    SAMPLE_ACCOUNT_STAKING_ACCOUNT,
+    SAMPLE_COINGECKO,
+    SAMPLE_NETWORK_NODES,
+    SAMPLE_TRANSACTION,
+    SAMPLE_TRANSACTIONS
+} from "../Mocks";
 import NetworkDashboardItem from "@/components/node/NetworkDashboardItem.vue";
+import ConfirmDialog from "@/components/ConfirmDialog.vue";
+import ProgressDialog from "@/components/staking/ProgressDialog.vue";
+import {waitFor} from "@/utils/TimerUtils";
 
 /*
     Bookmarks
@@ -59,17 +68,30 @@ describe("Staking.vue", () => {
 
         await router.push("/") // To avoid "missing required param 'network'" error
 
+        // Account for which we want to update staking
+        // => we clone existing mocked account because we're going to mute this mock
+        const TARGET_ACCOUNT = JSON.parse(JSON.stringify(SAMPLE_ACCOUNT_STAKING_ACCOUNT))
+        const TARGET_ACCOUNT_ID = TARGET_ACCOUNT.account
+
+        // Transaction used to represent stake update operation
+        const STAKE_UPDATE_TRANSACTION = SAMPLE_TRANSACTION
+        const STAKE_UPDATE_TRANSACTIONS = SAMPLE_TRANSACTIONS
+        const STAKE_UPDATE_TRANSACTION_ID = STAKE_UPDATE_TRANSACTION.transaction_id
+
+        // Adds test driver to WalletManager
+        const testDriver = new WalletDriver_Mock(TARGET_ACCOUNT, STAKE_UPDATE_TRANSACTION_ID)
+        walletManager.getDrivers().push(testDriver)
+
+        // Mocks axios
         const mock = new MockAdapter(axios);
-        const matcher1 = "/api/v1/accounts/" + SAMPLE_ACCOUNT_STAKING_ACCOUNT.account
-        mock.onGet(matcher1).reply(200, SAMPLE_ACCOUNT_STAKING_ACCOUNT);
+        const matcher1 = "/api/v1/accounts/" + testDriver.account.account
+        mock.onGet(matcher1).reply(200, testDriver.account)
         const matcher2 = "/api/v1/network/nodes"
         mock.onGet(matcher2).reply(200, SAMPLE_NETWORK_NODES);
         const matcher3 = "https://api.coingecko.com/api/v3/coins/hedera-hashgraph"
         mock.onGet(matcher3).reply(200, SAMPLE_COINGECKO);
-
-        const TRANSACTION_ID = SAMPLE_ACCOUNT_STAKING_ACCOUNT.account + "-1658820778-124427189"
-        const testDriver = new WalletDriver_Mock(SAMPLE_ACCOUNT_STAKING_ACCOUNT.account, TRANSACTION_ID)
-        walletManager.getDrivers().push(testDriver)
+        const matcher4 = "/api/v1/transactions/" + STAKE_UPDATE_TRANSACTION_ID
+        mock.onGet(matcher4).reply(200, STAKE_UPDATE_TRANSACTIONS)
 
         const wrapper = mount(Staking, {
             global: {
@@ -92,7 +114,7 @@ describe("Staking.vue", () => {
         await flushPromises()
         expect(walletManager.getActiveDriver()).toBe(testDriver)
         expect(testDriver.isConnected()).toBeTruthy()
-        expect(testDriver.getAccountId()).toBe(SAMPLE_ACCOUNT_STAKING_ACCOUNT.account)
+        expect(testDriver.getAccountId()).toBe(TARGET_ACCOUNT_ID)
 
         // Check staking information
         const ndis = wrapper.findAllComponents(NetworkDashboardItem)
@@ -100,33 +122,40 @@ describe("Staking.vue", () => {
         expect(ndis[0].text()).toBe("Staked toAccount 0.0.5since Mar 3, 2022")
         expect(ndis[1].text()).toBe("My Stake0.31669471HBAR")
         expect(ndis[2].text()).toBe("RewardsDeclined")
-        //
-        // // Click "STOP STAKING"
-        // await wrapper.get("#stopStakingButton").trigger("click")
-        // const confirmDialog = wrapper.getComponent(ConfirmDialog)
-        // expect(confirmDialog.text()).toBe("Change Staking  for account 0.0.730632Do you want to decline rewards?FillerCANCELCONFIRM")
-        // const confirmButtons = confirmDialog.findAll("button")
-        // expect(confirmButtons.length).toBe(2) // Cancel and Confirm
-        // expect(confirmButtons[1].text()).toBe("CONFIRM")
-        // await confirmButtons[1].trigger("click")
-        //
-        // // Updates mock
-        // const PATCHED_ACCOUNT = JSON.parse(JSON.stringify(SAMPLE_ACCOUNT_STAKING_ACCOUNT))
-        // PATCHED_ACCOUNT.stake_account_id = null
-        // PATCHED_ACCOUNT.stake_node_id = null
-        // PATCHED_ACCOUNT.decline_reward = null
-        // mock.onGet(matcher1).reply(200, PATCHED_ACCOUNT);
-        // jest.spyOn(axios, 'get').mockResolvedValue({data: PATCHED_ACCOUNT})
-        // await flushPromises()
-        // expect(testDriver.updateAccountCounter).toBe(1)
-        //
-        // // Check staking information
-        // const ndis2 = wrapper.findAllComponents(NetworkDashboardItem)
-        // expect(ndis2.length).toBeGreaterThanOrEqual(3)
-        // expect(ndis2[0].text()).toBe("None")
-        // expect(ndis2[1].text()).toBe("None")
-        // expect(ndis2[2].text()).toBe("RewardsNone")
-        //
+
+        // Click "STOP STAKING"
+        await wrapper.get("#stopStakingButton").trigger("click")
+        const confirmDialog = wrapper.getComponent(ConfirmDialog)
+        expect(confirmDialog.text()).toBe("Change Staking  for account 0.0.730632Do you want to decline rewards?FillerCANCELCONFIRM")
+        const confirmButtons = confirmDialog.findAll("button")
+        expect(confirmButtons.length).toBe(2) // Cancel and Confirm
+        expect(confirmButtons[1].text()).toBe("CONFIRM")
+        await confirmButtons[1].trigger("click")
+        await flushPromises()
+
+        // Wait ...
+        const progressDialog = wrapper.getComponent(ProgressDialog);
+        expect(progressDialog.text()).toBe("Stopping stakingCompleting operation…This may take a few secondsCLOSE");
+        await waitFor(3000)
+        await flushPromises()
+
+        // Click "CLOSE"
+        const closeButton = progressDialog.get("button")
+        expect(closeButton.attributes().disabled).toBeUndefined()
+        expect(closeButton.text()).toBe("CLOSE")
+        await closeButton.trigger("click")
+        await flushPromises()
+
+        // Check staking information
+        expect(ndis[0].text()).toBe("Staked toNone")
+        expect(ndis[1].text()).toBe("My StakeNone")
+        expect(ndis[2].text()).toBe("RewardsNone")
+
+        // Check driver
+        expect(testDriver.updateAccountCounter).toBe(1)
+        expect(testDriver.account.staked_node_id).toBeNull()
+        expect(testDriver.account.staked_account_id).toBeNull()
+        expect(testDriver.account.decline_reward).toBeNull()
 
         // Click "DISCONNECT WALLET"
         await wrapper.get("#disconnectWalletButton").trigger("click")

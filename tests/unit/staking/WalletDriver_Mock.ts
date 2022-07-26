@@ -20,29 +20,27 @@
 
 import {WalletDriver} from "@/utils/wallet/WalletDriver";
 import {AccountUpdateTransaction} from "@hashgraph/sdk";
+import {AccountBalanceTransactions} from "@/schemas/HederaSchemas";
 
 export class WalletDriver_Mock extends WalletDriver {
 
     private static WALLET_NAME = "WalletMock"
 
-    private readonly accountID: string
-    private readonly transactionId:string
+    public readonly account: AccountBalanceTransactions
+    public readonly transactionId: string
 
     private connected = false
     private network: string|null = null
 
-    public stakedNodeId: number|null = null
-    public stakedAccountId: string|null = null
-    public declineStakingRewards: boolean|null = null
     public updateAccountCounter = 0
 
     //
     // Public
     //
 
-    public constructor(accountID: string, transactionId: string) {
+    public constructor(account: AccountBalanceTransactions, transactionId: string) {
         super(WalletDriver_Mock.WALLET_NAME, null)
-        this.accountID = accountID
+        this.account = account
         this.transactionId = transactionId
     }
 
@@ -52,9 +50,7 @@ export class WalletDriver_Mock extends WalletDriver {
     //
 
     public async connect(network: string): Promise<void> {
-        if (this.connected) {
-            throw this.connectFailure("Already connected")
-        } else {
+        if (!this.connected) {
             this.connected = true
             this.network = network
         }
@@ -64,8 +60,6 @@ export class WalletDriver_Mock extends WalletDriver {
         if (this.connected) {
             this.connected = false
             this.network = null
-        } else {
-            throw this.connectFailure("Not connected yet")
         }
     }
 
@@ -73,13 +67,14 @@ export class WalletDriver_Mock extends WalletDriver {
         let result: string
 
         this.updateAccountCounter += 1
-        console.log("WalletDriver_Mock.updateAccount()")
         if (this.connected) {
             const targetAccountID = request.accountId?.toString()
-            if (this.accountID == targetAccountID) {
-                this.stakedNodeId = request.stakedNodeId?.toNumber() ?? null
-                this.stakedAccountId = request.stakedAccountId?.toString() ?? null
-                this.declineStakingRewards = request.declineStakingRewards
+            if (this.account.account == targetAccountID) {
+                const stakedNodeId = request.stakedNodeId?.toNumber() ?? -1
+                const stakedAccountId = request.stakedAccountId?.toString() ?? "0.0.0"
+                this.account.staked_node_id = stakedNodeId != -1 ? stakedNodeId : null
+                this.account.staked_account_id = stakedAccountId != "0.0.0" ? stakedAccountId : null
+                this.account.decline_reward = request.declineStakingRewards
                 result = this.transactionId
             } else {
                 throw this.callFailure("Unexpected account id: " + targetAccountID)
@@ -92,7 +87,7 @@ export class WalletDriver_Mock extends WalletDriver {
     }
 
     getAccountId(): string | null {
-        return this.connected ? this.accountID : null
+        return this.connected ? (this.account.account ?? null) : null
     }
 
     getNetwork(): string | null {
