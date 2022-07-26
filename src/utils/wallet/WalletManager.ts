@@ -99,10 +99,6 @@ export class WalletManager {
 
     public async changeStaking(nodeId: number|null, accountId: string|null, declineReward: boolean|null): Promise<string> {
 
-        console.log("changeStaking - nodeId:        " + nodeId)
-        console.log("                accountId:     " + accountId)
-        console.log("                declineReward: " + declineReward)
-
         let result: string
 
         // Connects if needed
