@@ -18,7 +18,7 @@
  *
  */
 
-import {AccountUpdateTransaction, TransactionResponse} from "@hashgraph/sdk";
+import {AccountUpdateTransaction} from "@hashgraph/sdk";
 import {WalletDriverError} from "@/utils/wallet/WalletDriverError";
 
 export abstract class WalletDriver {
@@ -38,7 +38,7 @@ export abstract class WalletDriver {
         throw this.toBeImplemented("Disconnect aborted because implementation is missing")
     }
 
-    public async updateAccount(request: AccountUpdateTransaction): Promise<TransactionResponse> {
+    public async updateAccount(request: AccountUpdateTransaction): Promise<string> {
         throw this.toBeImplemented("Call of " + request.toString() + " aborted because implementation is missing")
     }
 

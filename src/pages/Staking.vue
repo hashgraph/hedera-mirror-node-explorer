@@ -177,8 +177,7 @@ import TransactionTableV2 from "@/components/transaction/TransactionTableV2.vue"
 import StakingDialog from "@/components/staking/StakingDialog.vue";
 import DashboardCard from "@/components/DashboardCard.vue";
 import ConfirmDialog from "@/components/ConfirmDialog.vue";
-import {TransactionID} from "@/utils/TransactionID";
-import ProgressDialog from "@/components/staking/ProgressDialog.vue";
+import ProgressDialog, {Mode} from "@/components/staking/ProgressDialog.vue";
 import AccountLink from "@/components/values/AccountLink.vue";
 import {EntityCacheStateV2} from "@/utils/EntityCacheV2";
 import PlayPauseButtonV2 from "@/components/PlayPauseButtonV2.vue";
@@ -187,7 +186,6 @@ import WalletChooser from "@/components/staking/WalletChooser.vue";
 import {WalletDriver} from "@/utils/wallet/WalletDriver";
 import {WalletDriverError} from "@/utils/wallet/WalletDriverError";
 import {RewardsTransactionCache} from '@/components/staking/RewardsTransactionCache';
-import { Mode } from '@/components/staking/ProgressDialog.vue';
 
 export default defineComponent({
   name: 'Staking',
@@ -406,12 +404,11 @@ export default defineComponent({
         progressExtraMessage.value = "Check your wallet for any approval request"
         progressExtraTransaction.value = null
         showProgressSpinner.value = false
-        const response = await walletManager.changeStaking(nodeId, accountId, declineReward)
+        const transactionID = await walletManager.changeStaking(nodeId, accountId, declineReward)
 
         progressMainMessage.value = "Completing operation…"
         progressExtraMessage.value = "This may take a few seconds"
         showProgressSpinner.value = true
-        const transactionID = TransactionID.normalize(response.transactionId.toString(), false)
         await waitForTransactionRefresh(transactionID, 10)
 
         progressDialogMode.value = Mode.Success

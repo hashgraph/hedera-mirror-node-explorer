@@ -55,10 +55,6 @@ HMSF.forceUTC = true
 
 describe("Staking.vue", () => {
 
-    const TRANSACTION_ID = ""
-    const TRANSACTION_HASH = ""
-    const TRANSACTION_NODE_ID = ""
-
     test("no props", async () => {
 
         await router.push("/") // To avoid "missing required param 'network'" error
@@ -71,9 +67,8 @@ describe("Staking.vue", () => {
         const matcher3 = "https://api.coingecko.com/api/v3/coins/hedera-hashgraph"
         mock.onGet(matcher3).reply(200, SAMPLE_COINGECKO);
 
-        const testDriver = new WalletDriver_Mock(
-            SAMPLE_ACCOUNT_STAKING_ACCOUNT.account,
-            TRANSACTION_ID, TRANSACTION_HASH, TRANSACTION_NODE_ID)
+        const TRANSACTION_ID = SAMPLE_ACCOUNT_STAKING_ACCOUNT.account + "-1658820778-124427189"
+        const testDriver = new WalletDriver_Mock(SAMPLE_ACCOUNT_STAKING_ACCOUNT.account, TRANSACTION_ID)
         walletManager.getDrivers().push(testDriver)
 
         const wrapper = mount(Staking, {

@@ -19,7 +19,7 @@
  */
 
 import {WalletDriver} from "@/utils/wallet/WalletDriver";
-import {AccountUpdateTransaction, TransactionResponse} from "@hashgraph/sdk";
+import {AccountUpdateTransaction} from "@hashgraph/sdk";
 
 export class WalletDriver_Mock extends WalletDriver {
 
@@ -27,8 +27,6 @@ export class WalletDriver_Mock extends WalletDriver {
 
     private readonly accountID: string
     private readonly transactionId:string
-    private readonly transactionHash: string
-    private readonly transactionNodeId: string
 
     private connected = false
     private network: string|null = null
@@ -42,13 +40,10 @@ export class WalletDriver_Mock extends WalletDriver {
     // Public
     //
 
-    public constructor(accountID: string, transactionId: string,
-                       transactionHash: string, transactionNodeId: string) {
+    public constructor(accountID: string, transactionId: string) {
         super(WalletDriver_Mock.WALLET_NAME, null)
         this.accountID = accountID
         this.transactionId = transactionId
-        this.transactionHash = transactionHash
-        this.transactionNodeId = transactionNodeId
     }
 
 
@@ -74,8 +69,8 @@ export class WalletDriver_Mock extends WalletDriver {
         }
     }
 
-    public async updateAccount(request: AccountUpdateTransaction): Promise<TransactionResponse> {
-        let result: TransactionResponse
+    public async updateAccount(request: AccountUpdateTransaction): Promise<string> {
+        let result: string
 
         this.updateAccountCounter += 1
         console.log("WalletDriver_Mock.updateAccount()")
@@ -85,11 +80,7 @@ export class WalletDriver_Mock extends WalletDriver {
                 this.stakedNodeId = request.stakedNodeId?.toNumber() ?? null
                 this.stakedAccountId = request.stakedAccountId?.toString() ?? null
                 this.declineStakingRewards = request.declineStakingRewards
-                result = TransactionResponse.fromJSON({
-                    nodeId: this.transactionNodeId,
-                    transactionHash: this.transactionHash,
-                    transactionId: this.transactionId
-                })
+                result = this.transactionId
             } else {
                 throw this.callFailure("Unexpected account id: " + targetAccountID)
             }

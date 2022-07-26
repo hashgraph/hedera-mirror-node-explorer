@@ -19,7 +19,7 @@
  */
 
 import {computed, ref, watch} from "vue";
-import {AccountUpdateTransaction, TransactionResponse} from "@hashgraph/sdk";
+import {AccountUpdateTransaction} from "@hashgraph/sdk";
 import {RouteManager} from "@/utils/RouteManager";
 import {WalletDriver} from "@/utils/wallet/WalletDriver";
 import {WalletDriver_Blade} from "@/utils/wallet/WalletDriver_Blade";
@@ -97,13 +97,13 @@ export class WalletManager {
         }
     }
 
-    public async changeStaking(nodeId: number|null, accountId: string|null, declineReward: boolean|null): Promise<TransactionResponse> {
+    public async changeStaking(nodeId: number|null, accountId: string|null, declineReward: boolean|null): Promise<string> {
 
         console.log("changeStaking - nodeId:        " + nodeId)
         console.log("                accountId:     " + accountId)
         console.log("                declineReward: " + declineReward)
 
-        let result: TransactionResponse
+        let result: string
 
         // Connects if needed
         await this.connect()

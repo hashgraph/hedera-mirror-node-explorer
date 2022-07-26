@@ -23,7 +23,7 @@ import {BladeSigner, BladeWalletError} from "@bladelabs/blade-web3.js";
 import {HederaNetwork} from "@bladelabs/blade-web3.js/lib/src/models/blade";
 import {WalletDriver} from "@/utils/wallet/WalletDriver";
 import {WalletDriverError} from "@/utils/wallet/WalletDriverError";
-import {Executable} from "@hashgraph/sdk";
+import {AccountUpdateTransaction} from "@hashgraph/sdk";
 
 export class WalletDriver_Blade extends WalletDriver {
 
@@ -70,11 +70,12 @@ export class WalletDriver_Blade extends WalletDriver {
         }
     }
 
-    public async updateAccount<RequestT, ResponseT, OutputT>(request: Executable<RequestT, ResponseT, OutputT>): Promise<OutputT> {
-        let result: Promise<OutputT>
+    public async updateAccount(request: AccountUpdateTransaction): Promise<string> {
+        let result: Promise<string>
         if (this.signer !== null) {
             try {
-                result = this.signer.call(request)
+                const response = await this.signer.call(request)
+                result = Promise.resolve(response.transactionId.toString())
             } catch(reason) {
                 throw this.callFailure(reason.message)
             }
