@@ -355,6 +355,6 @@ describe("Staking.vue", () => {
         expect(testDriver.isConnected()).toBeFalsy()
         expect(testDriver.getAccountId()).toBe(null)
 
-    }, 20000);
+    })
 
 });
