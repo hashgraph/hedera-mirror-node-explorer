@@ -70,6 +70,8 @@ describe("Staking.vue", () => {
 
         await router.push("/") // To avoid "missing required param 'network'" error
 
+        const POLLING = 2 // ms
+
         // Account for which we want to update staking
         // => we clone existing mocked account because we're going to mute this mock
         const TARGET_ACCOUNT = JSON.parse(JSON.stringify(SAMPLE_ACCOUNT_STAKING_ACCOUNT))
@@ -104,7 +106,7 @@ describe("Staking.vue", () => {
             global: {
                 plugins: [router, Oruga]
             },
-            props: {},
+            props: { polling: POLLING},
         });
 
         await flushPromises()
@@ -188,7 +190,7 @@ describe("Staking.vue", () => {
         const waitAndClose = async(busyText: string, completeText: string) => {
             const progressDialog = wrapper.getComponent(ProgressDialog);
             expect(progressDialog.text()).toBe(busyText);
-            await waitFor(3000)
+            await waitFor(POLLING * 2)
             await flushPromises()
             expect(progressDialog.text()).toBe(completeText)
 
@@ -240,7 +242,6 @@ describe("Staking.vue", () => {
         }
         await stakeToNodeSelect.setValue("2")
         expect(stakeToNodeSelect.element.value).toBe("2")
-        console.log("stakeToNodeSelect=" + stakeToNodeSelect.html())
 
         // 3.5) And clicks "CHANGE"
         await changeButton.trigger("click")

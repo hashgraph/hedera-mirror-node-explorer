@@ -191,7 +191,11 @@ export default defineComponent({
   name: 'Staking',
 
   props: {
-    network: String
+    network: String,
+    polling: { // For testing purpose
+      type: Number,
+      default: 3000 // Because a transaction emerges 3 or 4 seconds in mirror node after its completion in network
+    }
   },
 
   components: {
@@ -208,7 +212,7 @@ export default defineComponent({
     Footer,
   },
 
-  setup() {
+  setup(props) {
     const isSmallScreen = inject('isSmallScreen', true)
     const isTouchDevice = inject('isTouchDevice', false)
 
@@ -441,7 +445,7 @@ export default defineComponent({
       let result: Promise<Transaction | string>
 
       if (attemptIndex >= 0) {
-        await waitFor(3000)
+        await waitFor(props.polling)
         try {
           const response = await axios.get<TransactionByIdResponse>("api/v1/transactions/" + transactionID )
           const transactions = response.data.transactions ?? []
