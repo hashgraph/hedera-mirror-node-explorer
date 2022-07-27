@@ -103,6 +103,31 @@ describe("EntityID.ts", () => {
         expect(obj).toBeNull()
     })
 
+    test("0.0.", () => {
+        const obj = EntityID.parse("0.0.")
+        expect(obj).toBeNull()
+    })
+
+    test("0.0", () => {
+        const obj = EntityID.parse("0.0")
+        expect(obj).toBeNull()
+    })
+
+    test("0.", () => {
+        const obj = EntityID.parse("0.")
+        expect(obj).toBeNull()
+    })
+
+    test("..", () => {
+        const obj = EntityID.parse("..")
+        expect(obj).toBeNull()
+    })
+
+    test(".", () => {
+        const obj = EntityID.parse(".")
+        expect(obj).toBeNull()
+    })
+
     test("Too Big Number", () => {
         const tooBigNum = Math.pow(2, 32)
         const obj = EntityID.parse(tooBigNum.toString())
