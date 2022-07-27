@@ -65,7 +65,7 @@
         <NetworkDashboardItem :title="'Approx Yearly Reward Rate'" :value="yearlyRate*100 + '%'"/>
       </div>
 
-      <div class="mt-2 h-is-text-size-2 is-italic has-text-grey" style="font-weight:300">
+      <div class="mt-2 h-is-text-size-2 is-italic has-text-grey">
         These numbers are not individualized and only for illustrative purposes.
         Please see the
         <a href="https://docs.hedera.com/guides/core-concepts/staking" class="is-underlined has-text-grey">
