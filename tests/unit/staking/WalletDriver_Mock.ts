@@ -70,11 +70,18 @@ export class WalletDriver_Mock extends WalletDriver {
         if (this.connected) {
             const targetAccountID = request.accountId?.toString()
             if (this.account.account == targetAccountID) {
-                const stakedNodeId = request.stakedNodeId?.toNumber() ?? -1
-                const stakedAccountId = request.stakedAccountId?.toString() ?? "0.0.0"
-                this.account.staked_node_id = stakedNodeId != -1 ? stakedNodeId : null
-                this.account.staked_account_id = stakedAccountId != "0.0.0" ? stakedAccountId : null
-                this.account.decline_reward = request.declineStakingRewards
+                if (request.stakedNodeId !== null) {
+                    const stakeNodeId = request.stakedNodeId.toNumber()
+                    this.account.staked_node_id = stakeNodeId != -1 ? stakeNodeId : null
+                    this.account.staked_account_id = null
+                } else if (request.stakedAccountId !== null) {
+                    const stakedAccountId = request.stakedAccountId.toString()
+                    this.account.staked_node_id = null
+                    this.account.staked_account_id = stakedAccountId != "0.0.0" ? stakedAccountId : null
+                }
+                if (request.declineStakingRewards !== null) {
+                    this.account.decline_reward = request.declineStakingRewards
+                }
                 result = this.transactionId
             } else {
                 throw this.callFailure("Unexpected account id: " + targetAccountID)
