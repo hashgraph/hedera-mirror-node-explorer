@@ -110,7 +110,7 @@ export class EntityID {
     private static readonly MAX_INT = Math.pow(2, 32) // Max supported by mirror node rest api on May 30, 2022
 
     public static parsePositiveInt(s: string): number|null {
-        const n = Number(s)
+        const n = s.length >= 1 ? Number(s) : -1
         return (isNaN(n) || Math.floor(n) != n || n < 0 || n >= EntityID.MAX_INT) ? null : n
     }
 
