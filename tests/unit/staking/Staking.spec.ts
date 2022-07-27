@@ -38,7 +38,8 @@ import NetworkDashboardItem from "@/components/node/NetworkDashboardItem.vue";
 import ConfirmDialog from "@/components/ConfirmDialog.vue";
 import ProgressDialog from "@/components/staking/ProgressDialog.vue";
 import {waitFor} from "@/utils/TimerUtils";
-import {TransactionID} from "@/utils/TransactionID";
+import StakingDialog from "@/components/staking/StakingDialog.vue";
+import {nextTick} from "vue";
 
 /*
     Bookmarks
@@ -104,69 +105,141 @@ describe("Staking.vue", () => {
         await flushPromises()
 
 
-        // Click "CONNECT WALLET"
+        // Clicks "CONNECT WALLET"
         await wrapper.get("#connectWalletButton").trigger("click")
         await flushPromises()
         const walletChooser = wrapper.getComponent(WalletChooser)
         expect(walletChooser.element.classList.contains("is-active")).toBeTruthy()
 
-        // Choose wallet "DriverMock"
+        // Chooses wallet "DriverMock"
         await walletChooser.get("#" + testDriver.name).trigger("click")
         await flushPromises()
         expect(walletManager.getActiveDriver()).toBe(testDriver)
         expect(testDriver.isConnected()).toBeTruthy()
         expect(testDriver.getAccountId()).toBe(TARGET_ACCOUNT_ID)
 
-        // Check staking information
+        // Checks staking information
         const ndis = wrapper.findAllComponents(NetworkDashboardItem)
         expect(ndis.length).toBeGreaterThanOrEqual(3)
         expect(ndis[0].text()).toBe("Staked toAccount 0.0.5since Mar 3, 2022")
         expect(ndis[1].text()).toBe("My Stake0.31669471HBAR")
         expect(ndis[2].text()).toBe("RewardsDeclined")
 
-        // Click "STOP STAKING"
+        // Clicks "CHANGE STAKING"
+        await wrapper.get("#showStakingDialog").trigger("click")
+        await flushPromises()
+
+        // Checks StakingDialog content
+        const stakingDialog = wrapper.getComponent(StakingDialog)
+        const stakingModals = stakingDialog.findAll(".modal")
+        expect(stakingModals.length).toBeGreaterThanOrEqual(2)
+        const stakingModal = stakingModals[1]
+        expect(stakingModal.element.classList.contains("is-active")).toBeTruthy()
+        expect(stakingModal.get("#amountStakedValue").text()).toBe("0.31669471$0.0779")
+        expect(stakingModal.get("#currentlyStakedToValue").text()).toBe("Account 0.0.5")
+        const buttons = stakingModal.findAll("button")
+        expect(buttons.length).toBe(2) // Cancel and Change
+        const changeButton = buttons[1]
+        expect(changeButton.text()).toBe("CHANGE")
+        expect(changeButton.attributes("disabled")).toBeDefined()
+
+        // Select "Stake To Account" radio boxes
+        const stakingRadios = stakingModal.findAll<HTMLInputElement>("input[type='radio']")
+        expect(stakingRadios.length).toBe(2)
+        const stakingToAccountRadio = stakingRadios[1]
+        await stakingToAccountRadio.setValue(true)
+
+        // Enters "0.0.7" in "Stake to Account" input
+        const newStakeToAccountInput = stakingModal.get<HTMLInputElement>("input[type='text']")
+        await newStakeToAccountInput.trigger("click")
+        await newStakeToAccountInput.setValue("0.0.7")
+        expect(newStakeToAccountInput.element.value).toBe("0.0.7")
+        await flushPromises()
+
+        // And clicks "CHANGE"
+        // expect(changeButton.attributes("disabled")).toBeUndefined()
+        await changeButton.trigger("click")
+        await nextTick()
+
+        // Confirms
+        const changeConfirmDialog = stakingDialog.getComponent(ConfirmDialog)
+        expect(changeConfirmDialog.text()).toBe("Change Staking  for account 0.0.730632Do you want to stake to account 0.0.7FillerCANCELCONFIRM")
+        const changeConfirmButtons = changeConfirmDialog.findAll("button")
+        expect(changeConfirmButtons.length).toBe(2) // Cancel and Confirm
+        expect(changeConfirmButtons[1].text()).toBe("CONFIRM")
+        await changeConfirmButtons[1].trigger("click")
+        await nextTick()
+
+        // Wait ...
+        const wait = async(busyText: string, completeText: string) => {
+            const progressDialog = wrapper.getComponent(ProgressDialog);
+            expect(progressDialog.text()).toBe(busyText);
+            await waitFor(3000)
+            await flushPromises()
+            expect(progressDialog.text()).toBe(completeText)
+        }
+        await wait("Updating stakingConnecting to Hedera Network using your wallet…Check your wallet for any approval requestCLOSE",
+            "Updating stakingOperation completedwith transaction ID:0.0.29624024@1646025139.152901498CLOSE")
+
+        // Clicks "CLOSE"
+        const clickOnClose = async () => {
+            const progressDialog = wrapper.getComponent(ProgressDialog);
+            const closeButton = progressDialog.get("button")
+            expect(closeButton.attributes().disabled).toBeUndefined()
+            expect(closeButton.text()).toBe("CLOSE")
+            await closeButton.trigger("click")
+            await flushPromises()
+        }
+        await clickOnClose()
+
+        // Checks staking information
+        expect(ndis[0].text()).toBe("Staked toAccount 0.0.7since Mar 3, 2022")
+        expect(ndis[1].text()).toBe("My Stake0.31669471HBAR")
+        expect(ndis[2].text()).toBe("RewardsNone")
+
+        // Checks driver
+        expect(testDriver.updateAccountCounter).toBe(1)
+        expect(testDriver.account.staked_node_id).toBeNull()
+        expect(testDriver.account.staked_account_id).toBe("0.0.7")
+        expect(testDriver.account.decline_reward).toBeNull()
+
+        // Clicks "STOP STAKING"
         await wrapper.get("#stopStakingButton").trigger("click")
-        const confirmDialog = wrapper.getComponent(ConfirmDialog)
-        expect(confirmDialog.text()).toBe("Change Staking  for account 0.0.730632Do you want to decline rewards?FillerCANCELCONFIRM")
+
+        // Confirms
+        const confirmDialog = wrapper.findAllComponents(ConfirmDialog)[1]
+        expect(confirmDialog.text()).toBe("My Staking  for account 0.0.730632Do you want to stop staking to Account 0.0.7?FillerCANCELCONFIRM")
         const confirmButtons = confirmDialog.findAll("button")
         expect(confirmButtons.length).toBe(2) // Cancel and Confirm
         expect(confirmButtons[1].text()).toBe("CONFIRM")
         await confirmButtons[1].trigger("click")
         await flushPromises()
 
-        // Wait ...
-        const progressDialog = wrapper.getComponent(ProgressDialog);
-        expect(progressDialog.text()).toBe("Stopping stakingCompleting operation…This may take a few secondsCLOSE");
-        await waitFor(3000)
-        await flushPromises()
-        expect(progressDialog.text()).toBe("Stopping stakingOperation completedwith transaction ID:0.0.29624024@1646025139.152901498CLOSE")
-        expect(progressDialog.text()).toMatch(TransactionID.normalize(STAKE_UPDATE_TRANSACTION_ID))
+        // Waits ...
+        await wait("Stopping stakingCompleting operation…This may take a few secondsCLOSE",
+            "Stopping stakingOperation completedwith transaction ID:0.0.29624024@1646025139.152901498CLOSE")
 
-        // Click "CLOSE"
-        const closeButton = progressDialog.get("button")
-        expect(closeButton.attributes().disabled).toBeUndefined()
-        expect(closeButton.text()).toBe("CLOSE")
-        await closeButton.trigger("click")
-        await flushPromises()
+        // Clicks "CLOSE"
+        await clickOnClose()
 
-        // Check staking information
+        // Checks staking information
         expect(ndis[0].text()).toBe("Staked toNone")
         expect(ndis[1].text()).toBe("My StakeNone")
         expect(ndis[2].text()).toBe("RewardsNone")
 
-        // Check driver
-        expect(testDriver.updateAccountCounter).toBe(1)
+        // Checks driver
+        expect(testDriver.updateAccountCounter).toBe(2)
         expect(testDriver.account.staked_node_id).toBeNull()
         expect(testDriver.account.staked_account_id).toBeNull()
         expect(testDriver.account.decline_reward).toBeNull()
 
-        // Click "DISCONNECT WALLET"
+        // Clicks "DISCONNECT WALLET"
         await wrapper.get("#disconnectWalletButton").trigger("click")
         await flushPromises()
         expect(walletManager.getActiveDriver()).toBe(testDriver)
         expect(testDriver.isConnected()).toBeFalsy()
         expect(testDriver.getAccountId()).toBe(null)
 
-    });
+    }, 10000);
 
 });
