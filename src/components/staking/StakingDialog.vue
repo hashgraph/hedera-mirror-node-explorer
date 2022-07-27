@@ -80,7 +80,7 @@
               </div>
               <div class="column">
                 <o-field>
-                <o-select v-model="selectedNode"
+                <o-select v-model="selectedNode" :class="{'has-text-grey': !isNodeSelected}"
                           class="h-is-text-size-1" style="border-radius: 4px"  @focus="stakeChoice='node'">
                   <option v-for="n in nodes" :key="n.node_id" :value="n.node_id"
                           style="background-color: var(--h-theme-box-background-color)">
@@ -100,20 +100,29 @@
                 </div>
               </div>
               <div class="column pt-0">
-                <div class="is-flex is-align-items-flex-start">
-                  <input class="input is-small has-text-right" type="text" placeholder="0.0.1234"
+                <div class="is-flex is-align-items-center">
+                  <input class="input is-small has-text-right has-text-white" type="text" placeholder="0.0.1234"
+                         :class="{'has-text-grey': !isAccountSelected}"
                          :value="selectedAccount"
                          @focus="stakeChoice='account'"
                          @input="event => handleInput(event.target.value)"
                          style="width: 9rem; height:26px; margin-top: 1px; border-radius: 4px; border-width: 1px;
-                         color: white; background-color: var(--h-theme-box-background-color)">
+                         background-color: var(--h-theme-box-background-color)">
 
-                  <div class="is-inline-block h-is-text-size-1 is-italic has-text-grey ml-2" style="height:22px; margin-top:2px; font-weight:300">
-                    When staked to another account, the rewards are paid to that account, not this one.
+                  <div v-if="isAccountSelected && showUnknownAccountMessage"
+                       class="is-inline-block h-is-text-size-2 has-text-danger ml-3">
+                    This account does not exist
+                  </div>
+                  <div v-else-if="isAccountSelected && showInvalidAccountIDMessage"
+                       class="is-inline-block h-is-text-size-2 has-text-danger ml-3">
+                    Invalid account ID
+                  </div>
+                  <div v-else-if="isAccountSelected && isSelectedAccountValidated"
+                       class="is-inline-block h-is-text-size-2 is-italic has-text-grey ml-3">
+                    Rewards will now be paid to that account.
                   </div>
                 </div>
               </div>
-
 
           </div>
         </div>
@@ -197,13 +206,27 @@ export default defineComponent({
     const isNodeSelected = computed(() => stakeChoice.value === 'node')
     const isAccountSelected = computed(() => stakeChoice.value === 'account')
 
-    const selectedAccount = ref<string|null>(null)
-    const isSelectedAccountValid = ref(true)
+    const selectedAccount = ref<string | null>(null)
+    const isSelectedAccountValidated = ref(false)
+    const showUnknownAccountMessage = ref(false)
+    const showInvalidAccountIDMessage = ref(false)
+
+    let validationTimerId = -1
+
     watch(selectedAccount, () => {
+      showUnknownAccountMessage.value = false
+      showInvalidAccountIDMessage.value = false
+      isSelectedAccountValidated.value = false
+
+      if (validationTimerId != -1) {
+        window.clearTimeout(validationTimerId)
+        validationTimerId = -1
+      }
       if (selectedAccount.value?.length) {
-        isSelectedAccountValid.value = isValidEntityId(selectedAccount.value ?? "")
+        validationTimerId = window.setTimeout(
+            () => validateAccount(selectedAccount.value ?? ""),
+            500)
       } else {
-        isSelectedAccountValid.value = false
         selectedAccount.value = null
       }
     })
@@ -222,7 +245,8 @@ export default defineComponent({
     watch(accountId, () => declineChoice.value = props.account?.decline_reward ?? false)
 
     const enableChangeButton = computed(() => {
-      return (isAccountSelected.value && isSelectedAccountValid.value && props.account?.staked_account_id != selectedAccount.value)
+      return (
+          isAccountSelected.value && isSelectedAccountValidated.value && props.account?.staked_account_id != selectedAccount.value)
           || (isNodeSelected.value  && selectedNode.value && props.account?.staked_node_id != selectedNode.value)
           || (props.account?.decline_reward != declineChoice.value)
     })
@@ -330,6 +354,22 @@ export default defineComponent({
       }
     }
 
+    const validateAccount = (accountId: string) => {
+      if (isValidEntityId(accountId ?? "")) {
+        const params = {} as {
+          limit: 1
+        }
+        if (accountId) {
+          axios
+              .get<AccountBalanceTransactions>("api/v1/accounts/" + accountId, {params: params})
+              .then(() => isSelectedAccountValidated.value = true)
+              .catch(() => showUnknownAccountMessage.value = true)
+        }
+      } else {
+        showInvalidAccountIDMessage.value = true
+      }
+    }
+
     return {
       accountId,
       showConfirmDialog,
@@ -337,6 +377,9 @@ export default defineComponent({
       stakeChoice,
       isNodeSelected,
       isAccountSelected,
+      showUnknownAccountMessage,
+      showInvalidAccountIDMessage,
+      isSelectedAccountValidated,
       selectedAccount,
       selectedNode,
       selectedNodeDescription,
