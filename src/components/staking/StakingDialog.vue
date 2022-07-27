@@ -101,11 +101,13 @@
               </div>
               <div class="column pt-0">
                 <div class="is-flex is-align-items-flex-start">
-                  <o-field>
-                    <o-input v-model="selectedAccount" placeholder="0.0.1234" @focus="stakeChoice='account'"
-                             style="width: 9rem; color: white; background-color: var(--h-theme-box-background-color) ">
-                    </o-input>
-                  </o-field>
+                  <input class="input is-small has-text-right" type="text" placeholder="0.0.1234"
+                         :value="selectedAccount"
+                         @focus="stakeChoice='account'"
+                         @input="event => handleInput(event.target.value)"
+                         style="width: 9rem; height:26px; margin-top: 1px; border-radius: 4px; border-width: 1px;
+                         color: white; background-color: var(--h-theme-box-background-color)">
+
                   <div class="is-inline-block h-is-text-size-1 is-italic has-text-grey ml-2" style="height:22px; margin-top:2px; font-weight:300">
                     When staked to another account, the rewards are paid to that account, not this one.
                   </div>
@@ -311,7 +313,22 @@ export default defineComponent({
       return result
     }
 
-    const testOnFocus = () => { console.log("onfocus triggered") }
+    const handleInput = (value: string) => {
+      const previousValue = selectedAccount.value
+      let isValid = true
+      for (const c of value) {
+        if ((c < '0' || c > '9') && c !== '.') {
+          isValid = false
+          break
+        }
+      }
+      if (isValid) {
+        selectedAccount.value = value
+      } else {
+        selectedAccount.value = ""
+        selectedAccount.value = previousValue
+      }
+    }
 
     return {
       accountId,
@@ -333,7 +350,7 @@ export default defineComponent({
       handleConfirmChange,
       makeNodeDescription,
       makeNodeStake,
-      testOnFocus
+      handleInput
     }
   }
 });
