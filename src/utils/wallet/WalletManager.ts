@@ -38,6 +38,7 @@ export class WalletManager {
     private readonly accountIdRef = ref<string|null>(null)
 
     private activeDriver: WalletDriver = this.hashpackDriver
+    private readonly walletNameRef = ref(this.activeDriver.name)
 
     //
     // Public
@@ -61,12 +62,15 @@ export class WalletManager {
             this.activeDriver = newValue;
             this.connectedRef.value = this.activeDriver.isConnected()
             this.accountIdRef.value = this.activeDriver.getAccountId()
+            this.walletNameRef.value = this.activeDriver.name
         }
     }
 
     public connected = computed(() => this.connectedRef.value)
 
     public accountId = computed(() => this.accountIdRef.value)
+
+    public walletName = computed(() => this.walletNameRef.value)
 
     public async connect(): Promise<void> {
         try {
