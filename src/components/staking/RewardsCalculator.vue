@@ -85,7 +85,7 @@
 
 <script lang="ts">
 
-import {computed, defineComponent, inject, onMounted, PropType, ref, watch} from 'vue';
+import {computed, defineComponent, inject, onBeforeMount, onMounted, PropType, ref, watch} from 'vue';
 import NetworkDashboardItem from "@/components/node/NetworkDashboardItem.vue";
 import DashboardCard from "@/components/DashboardCard.vue";
 import {NetworkNode, NetworkNodesResponse} from "@/schemas/HederaSchemas";
@@ -115,11 +115,11 @@ export default defineComponent({
     watch(() => props.nodeId, () => selectedNodeId.value = props.nodeId ?? null)
 
     const amountStaked = ref<number>( 100)
-    watch(() => props.amountInHbar, () => {
-      if (props.amountInHbar) {
-        amountStaked.value = props.amountInHbar
-      }
-    })
+    const updateAmountStaked = () => {
+      amountStaked.value = props.amountInHbar ?? 100
+    }
+    watch(() => props.amountInHbar, updateAmountStaked)
+    onBeforeMount(updateAmountStaked)
 
     const rewardRate = computed(() =>
         (nodes.value && selectedNodeId.value !== null && selectedNodeId.value < nodes.value.length)
