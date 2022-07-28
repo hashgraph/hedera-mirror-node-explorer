@@ -144,7 +144,9 @@
       </template>
     </DashboardCard>
 
-    <RewardsCalculator v-if="accountId" :class="{'h-has-opacity-20': isIndirectStaking}" :node-id="stakedNode?.node_id"/>
+    <RewardsCalculator v-if="accountId" :class="{'h-has-opacity-20': isIndirectStaking}"
+                       :amount-in-hbar="balanceInHbar"
+                       :node-id="stakedNode?.node_id"/>
 
   </section>
 
@@ -243,7 +245,7 @@ export default defineComponent({
       walletManager
           .connect()
           .catch((reason) => {
-            console.log("handleChooseWallet - reason:" + reason.toString())
+            console.warn("Failed to connect wallet - reason:" + reason.toString())
             showProgressDialog.value = true
             progressDialogMode.value = Mode.Error
             progressDialogTitle.value = "Could not connect wallet"
@@ -289,6 +291,12 @@ export default defineComponent({
       } else {
         result = null
       }
+      return result
+    })
+
+    const balanceInHbar = computed(() => {
+      const balance = account.value?.balance?.balance ?? 0
+      const result = balance / 100000000
       return result
     })
 
@@ -493,6 +501,7 @@ export default defineComponent({
       isIndirectStaking,
       stakedTo,
       stakedNode,
+      balanceInHbar,
       stakedAmount,
       stakedSince,
       declineReward,
