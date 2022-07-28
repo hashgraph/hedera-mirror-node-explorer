@@ -296,8 +296,7 @@ export default defineComponent({
 
     const balanceInHbar = computed(() => {
       const balance = account.value?.balance?.balance ?? 0
-      const result = balance / 100000000
-      return result
+      return balance / 100000000
     })
 
     const stakedAmount = computed(() => {
