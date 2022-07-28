@@ -80,7 +80,7 @@
                         :disabled="!stakedTo" @click="showStopConfirmDialog = true">STOP STAKING</button>
                 <button id="showStakingDialog" class="button is-white is-small ml-4" @click="showStakingDialog = true">CHANGE STAKING</button>
               </div>
-              <button id="disconnectWalletButton" class="button is-white is-small" @click="disconnectFromWallet">DISCONNECT WALLET</button>
+              <button id="disconnectWalletButton" class="button is-white is-small" @click="disconnectFromWallet">DISCONNECT {{ walletName.toLocaleUpperCase() }}</button>
             </div>
           </div>
           <div v-else>
@@ -489,7 +489,7 @@ export default defineComponent({
       isTouchDevice,
       connecting,
       connected: walletManager.connected,
-      walletName: walletManager.getActiveDriver().name,
+      walletName: walletManager.walletName,
       walletIconURL: walletManager.getActiveDriver().iconURL,
       accountId: walletManager.accountId,
       account,
