@@ -97,6 +97,7 @@ export default defineComponent({
 
   props: {
     network: String,
+    amountInHbar: Number,
     nodeId: Number as PropType<number|null>
   },
 
@@ -113,7 +114,12 @@ export default defineComponent({
     const selectedNodeId = ref<number | null>(props.nodeId ?? null)
     watch(() => props.nodeId, () => selectedNodeId.value = props.nodeId ?? null)
 
-    const amountStaked = ref<number|null>(100)
+    const amountStaked = ref<number>( 100)
+    watch(() => props.amountInHbar, () => {
+      if (props.amountInHbar) {
+        amountStaked.value = props.amountInHbar
+      }
+    })
 
     const rewardRate = computed(() =>
         (nodes.value && selectedNodeId.value !== null && selectedNodeId.value < nodes.value.length)
@@ -191,7 +197,7 @@ export default defineComponent({
       if (!Number.isNaN(newAmount) && newAmount >= 0 && newAmount <= 50000000000) {
         amountStaked.value = newAmount
       } else {
-        amountStaked.value = null
+        amountStaked.value = -1
         amountStaked.value = previousAmount
       }
     }
