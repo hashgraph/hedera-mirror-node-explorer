@@ -136,6 +136,10 @@ describe("Staking.vue", () => {
         expect(ndis[1].text()).toBe("My Stake0.31669471HBAR")
         expect(ndis[2].text()).toBe("RewardsDeclined")
 
+        // 1.4) Checks disconnect button
+        expect(wrapper.get("#disconnectWalletButton").text()).toBe("DISCONNECT WALLETMOCK")
+
+
         //
         // 2) Stake to account 0.0.7
         //
