@@ -38,7 +38,7 @@
 
         <div class="is-flex is-justify-content-left is-align-items-center">
           <div v-for="d in drivers" :key="d.name">
-              <a @click="handleChoose(d)">
+              <a :id="d.name" @click="handleChoose(d)">
                 <figure class="h-chooser-figure my-4 mr-6">
                   <img class="h-chooser-img" alt="wallet logo" :src="d.iconURL">
                 </figure>

@@ -76,11 +76,11 @@
             <br/>
             <div class="is-flex is-justify-content-space-between">
               <div class="is-flex is-justify-content-flex-start">
-                <button class="button is-white is-small"
+                <button id="stopStakingButton" class="button is-white is-small"
                         :disabled="!stakedTo" @click="showStopConfirmDialog = true">STOP STAKING</button>
-                <button class="button is-white is-small ml-4" @click="showStakingDialog = true">CHANGE STAKING</button>
+                <button id="showStakingDialog" class="button is-white is-small ml-4" @click="showStakingDialog = true">CHANGE STAKING</button>
               </div>
-              <button class="button is-white is-small" @click="disconnectFromWallet">DISCONNECT WALLET</button>
+              <button id="disconnectWalletButton" class="button is-white is-small" @click="disconnectFromWallet">DISCONNECT WALLET</button>
             </div>
           </div>
           <div v-else>
@@ -93,12 +93,12 @@
               <div class="mt-4"/>
             </div>
               <div class="is-flex is-justify-content-center">
-                  <button class="button is-white is-small"
+                  <button id="stopStakingButton" class="button is-white is-small"
                           :disabled="!stakedTo" @click="showStopConfirmDialog = true">STOP STAKING</button>
-                  <button class="button is-white is-small ml-4" @click="showStakingDialog = true">CHANGE STAKED TO</button>
+                  <button id="showStakingDialog" class="button is-white is-small ml-4" @click="showStakingDialog = true">CHANGE STAKED TO</button>
                 </div>
             <div class="is-flex is-justify-content-center mt-4">
-              <button class="button is-white is-small" @click="disconnectFromWallet">DISCONNECT WALLET</button>
+              <button id="disconnectWalletButton" class="button is-white is-small" @click="disconnectFromWallet">DISCONNECT WALLET</button>
             </div>
             <div class="mt-6"/>
           </div>
@@ -109,7 +109,7 @@
             <p>Connecting your Wallet...</p>
             <p>You need to select which account you wish to connect.</p>
             <br/>
-            <button class="button is-white is-small" @click="disconnectFromWallet">ABORT CONNECTION</button>
+            <button id="abortConnectWalletButton" class="button is-white is-small" @click="disconnectFromWallet">ABORT CONNECTION</button>
           </section>
         </template>
 
@@ -119,7 +119,7 @@
               To view or change your staking you first need to connect your wallet.
             </p>
             <br/>
-            <button class="button is-white is-small" @click="chooseWallet">CONNECT WALLET…</button>
+            <button id="connectWalletButton" class="button is-white is-small" @click="chooseWallet">CONNECT WALLET…</button>
           </section>
         </template>
 
@@ -177,8 +177,7 @@ import TransactionTableV2 from "@/components/transaction/TransactionTableV2.vue"
 import StakingDialog from "@/components/staking/StakingDialog.vue";
 import DashboardCard from "@/components/DashboardCard.vue";
 import ConfirmDialog from "@/components/ConfirmDialog.vue";
-import {TransactionID} from "@/utils/TransactionID";
-import ProgressDialog from "@/components/staking/ProgressDialog.vue";
+import ProgressDialog, {Mode} from "@/components/staking/ProgressDialog.vue";
 import AccountLink from "@/components/values/AccountLink.vue";
 import {EntityCacheStateV2} from "@/utils/EntityCacheV2";
 import PlayPauseButtonV2 from "@/components/PlayPauseButtonV2.vue";
@@ -187,13 +186,16 @@ import WalletChooser from "@/components/staking/WalletChooser.vue";
 import {WalletDriver} from "@/utils/wallet/WalletDriver";
 import {WalletDriverError} from "@/utils/wallet/WalletDriverError";
 import {RewardsTransactionCache} from '@/components/staking/RewardsTransactionCache';
-import { Mode } from '@/components/staking/ProgressDialog.vue';
 
 export default defineComponent({
   name: 'Staking',
 
   props: {
-    network: String
+    network: String,
+    polling: { // For testing purpose
+      type: Number,
+      default: 3000 // Because a transaction emerges 3 or 4 seconds in mirror node after its completion in network
+    }
   },
 
   components: {
@@ -210,7 +212,7 @@ export default defineComponent({
     Footer,
   },
 
-  setup() {
+  setup(props) {
     const isSmallScreen = inject('isSmallScreen', true)
     const isTouchDevice = inject('isTouchDevice', false)
 
@@ -406,12 +408,11 @@ export default defineComponent({
         progressExtraMessage.value = "Check your wallet for any approval request"
         progressExtraTransaction.value = null
         showProgressSpinner.value = false
-        const response = await walletManager.changeStaking(nodeId, accountId, declineReward)
+        const transactionID = await walletManager.changeStaking(nodeId, accountId, declineReward)
 
         progressMainMessage.value = "Completing operation…"
         progressExtraMessage.value = "This may take a few seconds"
         showProgressSpinner.value = true
-        const transactionID = TransactionID.normalize(response.transactionId.toString(), false)
         await waitForTransactionRefresh(transactionID, 10)
 
         progressDialogMode.value = Mode.Success
@@ -444,7 +445,7 @@ export default defineComponent({
       let result: Promise<Transaction | string>
 
       if (attemptIndex >= 0) {
-        await waitFor(3000)
+        await waitFor(props.polling)
         try {
           const response = await axios.get<TransactionByIdResponse>("api/v1/transactions/" + transactionID )
           const transactions = response.data.transactions ?? []

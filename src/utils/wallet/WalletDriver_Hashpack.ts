@@ -25,7 +25,7 @@ import {HederaLogo} from "@/utils/MetaMask";
 import {WalletDriver} from "@/utils/wallet/WalletDriver";
 import {WalletDriverError} from "@/utils/wallet/WalletDriverError";
 import {HashConnectSigner} from "hashconnect/dist/provider/signer";
-import {Executable, Transaction} from "@hashgraph/sdk";
+import {AccountUpdateTransaction, Executable, Transaction} from "@hashgraph/sdk";
 import {timeGuard, TimeGuardError} from "@/utils/TimerUtils";
 
 export class WalletDriver_Hashpack extends WalletDriver {
@@ -58,9 +58,10 @@ export class WalletDriver_Hashpack extends WalletDriver {
         return Promise.resolve()
     }
 
-    public async call<RequestT, ResponseT, OutputT>(request: Executable<RequestT, ResponseT, OutputT>): Promise<OutputT> {
+    public async updateAccount(request: AccountUpdateTransaction): Promise<string> {
         try {
-            return await this.performCall(request)
+            const response = await this.performCall(request)
+            return response.transactionId.toString()
         } catch(error) {
             if (error instanceof WalletDriverError) {
                 throw error

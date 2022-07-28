@@ -19,7 +19,7 @@
  */
 
 import {computed, ref, watch} from "vue";
-import {AccountUpdateTransaction, TransactionResponse} from "@hashgraph/sdk";
+import {AccountUpdateTransaction} from "@hashgraph/sdk";
 import {RouteManager} from "@/utils/RouteManager";
 import {WalletDriver} from "@/utils/wallet/WalletDriver";
 import {WalletDriver_Blade} from "@/utils/wallet/WalletDriver_Blade";
@@ -31,6 +31,7 @@ export class WalletManager {
     private readonly routeManager: RouteManager
     private readonly bladeDriver = new WalletDriver_Blade()
     private readonly hashpackDriver = new WalletDriver_Hashpack()
+    private readonly drivers: Array<WalletDriver> = [this.bladeDriver, this.hashpackDriver]
     private readonly timeout = 30000; // milliseconds
 
     private readonly connectedRef = ref(false)
@@ -48,7 +49,7 @@ export class WalletManager {
     }
 
     public getDrivers(): WalletDriver[] {
-        return [this.bladeDriver, this.hashpackDriver]
+        return this.drivers
     }
 
     public getActiveDriver(): WalletDriver {
@@ -96,13 +97,9 @@ export class WalletManager {
         }
     }
 
-    public async changeStaking(nodeId: number|null, accountId: string|null, declineReward: boolean|null): Promise<TransactionResponse> {
+    public async changeStaking(nodeId: number|null, accountId: string|null, declineReward: boolean|null): Promise<string> {
 
-        console.log("changeStaking - nodeId:        " + nodeId)
-        console.log("                accountId:     " + accountId)
-        console.log("                declineReward: " + declineReward)
-
-        let result: TransactionResponse
+        let result: string
 
         // Connects if needed
         await this.connect()
@@ -124,7 +121,7 @@ export class WalletManager {
             }
 
             try {
-                result = await timeGuard(this.activeDriver.call(trans), this.timeout)
+                result = await timeGuard(this.activeDriver.updateAccount(trans), this.timeout)
             } catch(error) {
                 if (error instanceof TimeGuardError) {
                     throw this.activeDriver.callFailure(this.activeDriver.silentMessage())
