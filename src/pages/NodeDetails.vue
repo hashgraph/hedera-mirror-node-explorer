@@ -173,12 +173,16 @@ export default defineComponent({
     const nodes = ref<Array<NetworkNode> | null>([])
     const node = ref<NetworkNode | null>(null)
 
+    const rewardRate = computed(() =>
+        node.value?.reward_rate_start && node.value?.stake_rewarded
+            ? node.value.reward_rate_start / node.value?.stake_rewarded
+            : 0)
     const approxYearlyRate = computed(() => {
       const formatter = new Intl.NumberFormat("en-US", {
         style: 'percent',
         maximumFractionDigits: 2
       })
-      return formatter.format(node.value?.reward_rate_start ? node.value.reward_rate_start * 365 : 0);
+      return formatter.format(rewardRate.value * 365);
     })
     const stake = computed(() => node.value?.stake ? Math.round(node.value.stake / 100000000) : 0)
     const stakeTotal = ref(0)
