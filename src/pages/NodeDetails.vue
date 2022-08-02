@@ -96,6 +96,10 @@
               <NetworkDashboardItem :name="'HBAR'" :title="'Stake for Consensus'" :value="stake.toString()"/>
               <p class="h-is-property-text h-is-extra-text mt-1">{{ stakePercentage }}% of total</p>
               <br/><br/>
+              <NetworkDashboardItem :name="'HBAR'" :title="'Min Stake'" :value="minStake.toString()"/>
+              <br/><br/>
+              <NetworkDashboardItem :name="'HBAR'" :title="'Max Stake'" :value="maxStake.toString()"/>
+              <br/><br/>
               <NetworkDashboardItem :name="'HBAR'" :title="'Stake Rewarded'" :value="stakeRewarded.toString()"/>
               <p class="h-is-property-text h-is-extra-text mt-1">{{ stakeRewardedPercentage }}% of total</p>
               <br/><br/>
@@ -185,7 +189,9 @@ export default defineComponent({
       return formatter.format(rewardRate.value * 365);
     })
     const stake = computed(() => node.value?.stake ? Math.round(node.value.stake / 100000000) : 0)
-    const stakeTotal = ref(0)
+    const minStake = computed(() => node.value?.min_stake ? Math.round(node.value.min_stake / 100000000) : 0)
+    const maxStake = computed(() => node.value?.max_stake ? Math.round(node.value.max_stake / 100000000) : 0)
+    const stakeTotal = computed(() => node.value?.stake_total ? Math.round(node.value.stake_total / 100000000) : 0)
     const stakePercentage = computed(() =>
         stakeTotal.value ? Math.round(stake.value / stakeTotal.value * 10000) / 100 : 0)
 
@@ -228,18 +234,11 @@ export default defineComponent({
           .then(result => {
             if (result.data.nodes) {
               nodes.value = nodes.value ? nodes.value.concat(result.data.nodes) : result.data.nodes
-              let staked = 0
-              let rewarded = 0
               for (const n of result.data.nodes) {
-                if (n.stake) {
-                  staked += n.stake/100000000
-                }
                 if (n.stake_rewarded) {
-                  rewarded += n.stake_rewarded/100000000
+                  stakeRewardedTotal.value += n.stake_rewarded/100000000
                 }
               }
-              stakeTotal.value = staked
-              stakeRewardedTotal.value = rewarded
             }
             const next = result.data.links?.next
             if (next) {
@@ -274,6 +273,8 @@ export default defineComponent({
       node,
       approxYearlyRate,
       stake,
+      minStake,
+      maxStake,
       stakePercentage,
       stakeRewarded,
       stakeRewardedPercentage,
