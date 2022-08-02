@@ -69,7 +69,7 @@
         These numbers are not individualized and only for illustrative purposes.
         Please see the
         <a href="https://docs.hedera.com/guides/core-concepts/staking" class="is-underlined has-text-grey">
-          staking documentation
+          <span>staking documentation</span>
         </a>
         for factors that can influence these numbers.
       </div>
