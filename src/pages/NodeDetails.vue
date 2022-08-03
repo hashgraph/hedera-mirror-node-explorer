@@ -100,8 +100,11 @@
               <br/><br/>
               <NetworkDashboardItem :name="'HBAR'" :title="'Max Stake'" :value="maxStake.toString()"/>
               <br/><br/>
-              <NetworkDashboardItem :name="'HBAR'" :title="'Stake Rewarded'" :value="stakeRewarded.toString()"/>
+              <NetworkDashboardItem :name="'HBAR'" :title="'Rewarded Stake'" :value="stakeRewarded.toString()"/>
               <p class="h-is-property-text h-is-extra-text mt-1">{{ stakeRewardedPercentage }}% of total</p>
+              <br/><br/>
+              <NetworkDashboardItem :name="'HBAR'" :title="'Unrewarded Stake'" :value="stakeUnrewarded.toString()"/>
+              <p class="h-is-property-text h-is-extra-text mt-1">{{ stakeUnrewardedPercentage }}% of total</p>
               <br/><br/>
               <NetworkDashboardItem :name="'HOURS'" :title="'Current Staking Period'" :value="'24'"/>
               <p class="h-is-property-text h-is-extra-text mt-1">from 00:00 am today to 11:59 pm today UTC</p>
@@ -200,6 +203,11 @@ export default defineComponent({
     const stakeRewardedPercentage = computed(() =>
         stakeRewardedTotal.value ? Math.round(stakeRewarded.value / stakeRewardedTotal.value * 10000) / 100 : 0)
 
+    const stakeUnrewarded = computed(() => node.value?.stake_not_rewarded ? Math.round(node.value.stake_not_rewarded / 100000000) : 0)
+    const stakeUnrewardedTotal = ref(0)
+    const stakeUnrewardedPercentage = computed(() =>
+        stakeUnrewardedTotal.value ? Math.round(stakeUnrewarded.value / stakeUnrewardedTotal.value * 10000) / 100 : 0)
+
     const unknownNodeId = ref(false)
     const notification = computed(() => {
       let result
@@ -278,6 +286,8 @@ export default defineComponent({
       stakePercentage,
       stakeRewarded,
       stakeRewardedPercentage,
+      stakeUnrewarded,
+      stakeUnrewardedPercentage,
       notification,
       nodeDescription,
       formatHash

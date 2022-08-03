@@ -60,8 +60,8 @@
 
         <o-table-column v-slot="props" field="stake" label="Stake" position="right">
           <span class="regular-node-column">
-            <HbarAmount :amount="props.row.stake ?? 0" :decimals="0"/>
-            <span class="ml-1">{{ '(' + makeStakePercentage(props.row) + '%)' }}</span>
+            <HbarAmount :amount="makeUnclampedStake(props.row)" :decimals="0"/>
+            <span class="ml-1">{{ '(' + makeWeightPercentage(props.row) + ')' }}</span>
           </span>
         </o-table-column>
 
@@ -78,7 +78,7 @@
       </o-table-column>
 
       <o-table-column id="stake-range-column" v-slot="props" field="stake-range" label="Stake Range" style="  padding-bottom: 2px; padding-top: 12px;">
-        <div  v-if="props.row.stake && props.row.max_stake" class="is-flex-direction-column stake-range-column">
+        <div class="is-flex-direction-column stake-range-column">
           <progress id="range" class="progress is-large stake-progress"
                     :class="{'is-info': !isStakeInRange(props.row), 'is-success': isStakeInRange(props.row)}"
                     style="width: 120px; max-height: 8px; margin-bottom: 1px;"
@@ -127,7 +127,7 @@ export default defineComponent({
 
   props: {
     nodes: Object as PropType<Array<NetworkNode> | undefined>,
-    totalHbarStaked: Number,
+    unclampedStakeTotal: Number,
     minStake: Number,
     maxStake: Number,
   },
@@ -138,8 +138,13 @@ export default defineComponent({
 
     const makeHost = (node: NetworkNode) => node.node_account_id ? operatorRegistry.lookup(node.node_account_id)?.name : null
     const makeLocation = (node: NetworkNode) => node.node_account_id ? operatorRegistry.lookup(node.node_account_id)?.location : null
-    const makeStakePercentage = (node: NetworkNode) => {
-      return node.stake && props.totalHbarStaked ? Math.round(node.stake / props.totalHbarStaked / 100000) / 10 : 0
+    const makeUnclampedStake = (node: NetworkNode) => (node.stake_rewarded ?? 0) + (node.stake_not_rewarded ?? 0)
+    const makeWeightPercentage = (node: NetworkNode) => {
+      const formatter = new Intl.NumberFormat("en-US", {
+        style: 'percent',
+        maximumFractionDigits: 1
+      })
+      return formatter.format(node.stake && node.stake_total ? node.stake / node.stake_total : 0);
     }
 
     const rewardRate = (node: NetworkNode) => {
@@ -175,11 +180,11 @@ export default defineComponent({
     })
 
     const makeStakeProgress = (node: NetworkNode) =>
-        node.stake && progressScale.value ? node.stake / progressScale.value * 100 : 0
+        progressScale.value ? (makeUnclampedStake(node) / 100000000) / progressScale.value * 100 : 0
 
-    const isStakeInRange =  (node: NetworkNode) => {
+    const isStakeInRange = (node: NetworkNode) => {
       let result: boolean
-      const stake = node.stake
+      const stake = (node.stake ?? 0) / 100000000
       if (stake && props.minStake && props.maxStake) {
         result = stake >= props.minStake && stake < props.maxStake
       }
@@ -194,7 +199,8 @@ export default defineComponent({
       isMediumScreen,
       makeHost,
       makeLocation,
-      makeStakePercentage,
+      makeUnclampedStake,
+      makeWeightPercentage,
       makeApproxYearlyRate,
       handleClick,
       minStakePix,
