@@ -69,7 +69,7 @@
         These numbers are not individualized and only for illustrative purposes.
         Please see the
         <a href="https://docs.hedera.com/guides/core-concepts/staking" class="is-underlined has-text-grey">
-          staking documentation
+          <span>staking documentation</span>
         </a>
         for factors that can influence these numbers.
       </div>
@@ -121,10 +121,16 @@ export default defineComponent({
     watch(() => props.amountInHbar, updateAmountStaked)
     onBeforeMount(updateAmountStaked)
 
-    const rewardRate = computed(() =>
-        (nodes.value && selectedNodeId.value !== null && selectedNodeId.value < nodes.value.length)
-            ? nodes.value[selectedNodeId.value].reward_rate_start
-            : 0)
+    const rewardRate = computed(() => {
+      let result
+      if (nodes.value && selectedNodeId.value !== null && selectedNodeId.value < nodes.value.length) {
+        const node = nodes.value[selectedNodeId.value]
+        result = node.reward_rate_start && node.stake_rewarded ? node.reward_rate_start / node.stake_rewarded : 0
+      } else {
+        result = 0
+      }
+      return result
+    })
     const currentReward = computed(() => rewardRate.value && amountStaked.value ? Math.round(amountStaked.value * rewardRate.value * 10000) / 10000 : 0)
     const monthlyReward = computed(() => currentReward.value ? Math.round(currentReward.value * 30 * 100) / 100 : 0)
     const yearlyReward = computed(() => currentReward.value ? Math.round(currentReward.value * 365 * 10) / 10 : 0)

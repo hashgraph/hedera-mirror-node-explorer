@@ -141,12 +141,16 @@ export default defineComponent({
     const makeStakePercentage = (node: NetworkNode) => {
       return node.stake && props.totalHbarStaked ? Math.round(node.stake / props.totalHbarStaked / 100000) / 10 : 0
     }
+
+    const rewardRate = (node: NetworkNode) => {
+      return node.reward_rate_start && node.stake_rewarded ? node.reward_rate_start / node.stake_rewarded : 0
+    }
     const makeApproxYearlyRate = (node: NetworkNode) => {
       const formatter = new Intl.NumberFormat("en-US", {
         style: 'percent',
         maximumFractionDigits: 2
       })
-      return formatter.format(node.reward_rate_start ? node.reward_rate_start * 365 : 0);
+      return formatter.format(rewardRate(node) * 365);
     }
 
     const handleClick = (node: NetworkNode) => {

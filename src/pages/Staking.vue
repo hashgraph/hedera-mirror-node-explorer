@@ -136,10 +136,11 @@
         </div>
       </template>
       <template v-slot:table>
-        <TransactionTableV2
+        <RewardsTransactionTable
             :narrowed="true"
             :nb-items="10"
             :transactions="transactions"
+            :account-id="accountId"
         />
       </template>
     </DashboardCard>
@@ -175,7 +176,7 @@ import {
 import {HMSF} from "@/utils/HMSF";
 import {waitFor} from "@/utils/TimerUtils";
 import {operatorRegistry} from "@/schemas/OperatorRegistry";
-import TransactionTableV2 from "@/components/transaction/TransactionTableV2.vue";
+import RewardsTransactionTable from "@/components/staking/RewardsTransactionTable.vue";
 import StakingDialog from "@/components/staking/StakingDialog.vue";
 import DashboardCard from "@/components/DashboardCard.vue";
 import ConfirmDialog from "@/components/ConfirmDialog.vue";
@@ -209,7 +210,7 @@ export default defineComponent({
     ProgressDialog,
     DashboardCard,
     StakingDialog,
-    TransactionTableV2,
+    RewardsTransactionTable,
     NetworkDashboardItem,
     Footer,
   },

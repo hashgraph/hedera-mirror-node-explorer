@@ -152,22 +152,15 @@ export default defineComponent({
             if (result.data.nodes) {
               nodes.value = nodes.value ? nodes.value.concat(result.data.nodes) : result.data.nodes
               if (nodes.value.length) {
-                totalStaked.value = nodes.value[0].stake_total ?? 0
-                minStake.value = nodes.value[0].min_stake ?? 0
-                maxStake.value = nodes.value[0].max_stake ?? 0
+                totalStaked.value = Math.round((nodes.value[0].stake_total ?? 0) / 100000000)
+                minStake.value = Math.round((nodes.value[0].min_stake ?? 0) / 100000000)
+                maxStake.value = Math.round((nodes.value[0].max_stake ?? 0) / 100000000)
               }
-              let staked = 0
-              let rewarded = 0
               for (const n of result.data.nodes) {
-                if (n.stake) {
-                  staked += n.stake/100000000
-                }
                 if (n.stake_rewarded) {
-                  rewarded += n.stake_rewarded/100000000
+                  totalRewarded.value += n.stake_rewarded/100000000
                 }
               }
-              totalStaked.value = staked
-              totalRewarded.value = rewarded
             }
             const next = result.data.links?.next
             if (next) {

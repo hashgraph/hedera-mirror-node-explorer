@@ -56,4 +56,23 @@ export class RewardsTransactionCache extends TransactionCacheV2 {
         }
         return result
     }
+
+    public static getAmountRewarded(transaction: Transaction, accountId: string): number {
+        let fromRewards = 0
+        let toAccount = 0
+        if (transaction.transfers) {
+            for (const t of transaction.transfers) {
+                if (t.account === RewardsTransactionCache.rewardAccountId && t.amount < 0) {
+                    fromRewards = Math.abs(t.amount)
+                }
+                if (t.account === accountId && t.amount > 0) {
+                    toAccount = t.amount
+                }
+                if (fromRewards != 0 && toAccount != 0) {
+                    break
+                }
+            }
+        }
+        return Math.min(fromRewards, toAccount)
+    }
 }
