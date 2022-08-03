@@ -151,7 +151,6 @@
 
         <ContractTransactionTable
             v-if="contract"
-            v-bind:narrowed="true"
             v-bind:transactions="transactions"
             v-bind:nb-items="10"
         />

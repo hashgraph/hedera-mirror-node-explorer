@@ -83,7 +83,13 @@ export default defineComponent({
       return props.amount / 100000000
     })
     const formattedAmount = computed(() => {
-      return hbarAmount.value.toFixed(props.decimals)
+      const amountFormatter = new Intl.NumberFormat('en-US', {
+        minimumFractionDigits: props.decimals,
+        maximumFractionDigits: 8
+      })
+      return amountFormatter.format(hbarAmount.value)
+
+      // return hbarAmount.value.toFixed(props.decimals)
     })
 
     const isGrey = computed(() => {

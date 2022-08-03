@@ -39,12 +39,12 @@
               <NetworkDashboardItem :title="'Last Staked'" :value="formatSeconds(elapsedMin*60) + ' ago'"/>
             </div>
             <div class="is-flex-direction-column">
-              <NetworkDashboardItem :name="'HBAR'" :title="'Total Staked'" :value="totalStaked.toString()"/>
+              <NetworkDashboardItem :name="'HBAR'" :title="'Total Staked'" :value="unclampedStakeTotal.toLocaleString('en-US')"/>
               <div class="mt-4"/>
               <NetworkDashboardItem :title="'Next Staking Period'" :value="'in ' + formatSeconds(remainingMin*60)"/>
             </div>
             <div class="is-flex-direction-column">
-              <NetworkDashboardItem :name="'HBAR'" :title="'Total Rewarded'" :value="totalRewarded.toString()"/>
+              <NetworkDashboardItem :name="'HBAR'" :title="'Total Rewarded'" :value="totalRewarded.toLocaleString('en-US')"/>
               <div class="mt-4"/>
               <NetworkDashboardItem :title="'Staking Period'" :value="formatSeconds(durationMin*60)"/>
             </div>
@@ -55,11 +55,11 @@
               <div class="mt-4"/>
               <NetworkDashboardItem :title="'Last Staked'" :value="formatSeconds(elapsedMin*60) + 'ago'"/>
               <div class="mt-4"/>
-              <NetworkDashboardItem :name="'HBAR'" :title="'Total Staked'" :value="totalStaked.toString()"/>
+              <NetworkDashboardItem :name="'HBAR'" :title="'Total Staked'" :value="unclampedStakeTotal.toLocaleString('en-US')"/>
               <div class="mt-4"/>
               <NetworkDashboardItem :title="'Next Staking Period'" :value="'in' + formatSeconds(remainingMin*60)"/>
               <div class="mt-4"/>
-              <NetworkDashboardItem :name="'HBAR'" :title="'Total Rewarded'" :value="totalRewarded.toString()"/>
+              <NetworkDashboardItem :name="'HBAR'" :title="'Total Rewarded'" :value="totalRewarded.toLocaleString('en-US')"/>
               <div class="mt-4"/>
               <NetworkDashboardItem :title="'Staking Period'" :value="formatSeconds(durationMin*60)"/>
               <div class="mt-6"/>
@@ -74,7 +74,7 @@
         <span class="h-is-primary-title">Nodes</span>
       </template>
       <template v-slot:table>
-        <NodeTable :nodes="nodes" :total-hbar-staked="totalStaked" :min-stake="minStake" :max-stake="maxStake"/>
+        <NodeTable :nodes="nodes" :unclamped-stake-total="unclampedStakeTotal" :min-stake="minStake" :max-stake="maxStake"/>
       </template>
     </DashboardCard>
 
@@ -123,7 +123,8 @@ export default defineComponent({
 
     const minStake = ref(0)
     const maxStake = ref(0)
-    const totalStaked = ref(0)
+    const stakeTotal = ref(0)
+    const unclampedStakeTotal = ref(0)
     const totalRewarded = ref(0)
     const stakingPeriod = ref<StakingPeriod | null>(null)
 
@@ -152,13 +153,14 @@ export default defineComponent({
             if (result.data.nodes) {
               nodes.value = nodes.value ? nodes.value.concat(result.data.nodes) : result.data.nodes
               if (nodes.value.length) {
-                totalStaked.value = Math.round((nodes.value[0].stake_total ?? 0) / 100000000)
+                stakeTotal.value = Math.round((nodes.value[0].stake_total ?? 0) / 100000000)
                 minStake.value = Math.round((nodes.value[0].min_stake ?? 0) / 100000000)
                 maxStake.value = Math.round((nodes.value[0].max_stake ?? 0) / 100000000)
               }
               for (const n of result.data.nodes) {
                 if (n.stake_rewarded) {
                   totalRewarded.value += n.stake_rewarded/100000000
+                  unclampedStakeTotal.value += (n.stake_rewarded + (n.stake_not_rewarded ?? 0))/100000000
                 }
               }
             }
@@ -186,7 +188,8 @@ export default defineComponent({
       isTouchDevice,
       nodes,
       totalNodes,
-      totalStaked,
+      stakeTotal,
+      unclampedStakeTotal,
       minStake,
       maxStake,
       totalRewarded,

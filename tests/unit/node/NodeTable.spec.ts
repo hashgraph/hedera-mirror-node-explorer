@@ -67,7 +67,9 @@ describe("NodeTable.vue", () => {
             },
             props: {
                 nodes: SAMPLE_NETWORK_NODES.nodes as Array<NetworkNode>,
-                totalHbarStaked: testTotalStaked/100000000
+                unclampedStakeTotal: testTotalStaked/100000000,
+                minStake: SAMPLE_NETWORK_NODES.nodes[0].min_stake,
+                maxStake: SAMPLE_NETWORK_NODES.nodes[0].max_stake
             }
         });
 
@@ -78,9 +80,9 @@ describe("NodeTable.vue", () => {
         expect(wrapper.get('thead').text()).toBe("Node Account Hosted By Location Stake Unrewarded Stake Last Reward Rate Stake Range")
         expect(wrapper.get('tbody').findAll('tr').length).toBe(3)
         expect(wrapper.get('tbody').text()).toBe(
-            "0" + "0.0.3" + "testnet" + "None" + "6000000(25%)" + "1000000" + "0%" +
-            "1" + "0.0.4" + "testnet" + "None" + "9000000(37.5%)" + "2000000" + "0%" +
-            "2" + "0.0.5" + "testnet" + "None" + "9000000(37.5%)" + "2000000" + "0%"
+            "0" + "0.0.3" + "testnet" + "None" + "6,000,000(25%)" + "1,000,000" + "0%" +
+            "1" + "0.0.4" + "testnet" + "None" + "9,000,000(37.5%)" + "2,000,000" + "0%" +
+            "2" + "0.0.5" + "testnet" + "None" + "9,000,000(37.5%)" + "2,000,000" + "0%"
         )
 
         wrapper.unmount()

@@ -90,7 +90,7 @@
 
           <div class="column">
               <Property v-if="account?.staked_account_id" id="stakedAccount">
-                <template v-slot:name>Staked Account</template>
+                <template v-slot:name>Staked to Account</template>
                 <template v-slot:value>
                   <AccountLink :accountId="account.staked_account_id" v-bind:show-extra="true"/>
                 </template>

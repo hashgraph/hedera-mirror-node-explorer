@@ -88,9 +88,9 @@ describe("Nodes.vue", () => {
         expect(table.exists()).toBe(true)
         expect(table.get('thead').text()).toBe("Node Account Hosted By Location Stake Unrewarded Stake Last Reward Rate Stake Range")
         expect(wrapper.get('tbody').text()).toBe(
-            "0" + "0.0.3" + "testnet" + "None" + "6000000(25%)" + "1000000" + "0%" +
-            "1" + "0.0.4" + "testnet" + "None" + "9000000(37.5%)" + "2000000" + "0%" +
-            "2" + "0.0.5" + "testnet" + "None" + "9000000(37.5%)" + "2000000" + "0%"
+            "0" + "0.0.3" + "testnet" + "None" + "6,000,000(25%)" + "1,000,000" + "0%" +
+            "1" + "0.0.4" + "testnet" + "None" + "9,000,000(37.5%)" + "2,000,000" + "0%" +
+            "2" + "0.0.5" + "testnet" + "None" + "9,000,000(37.5%)" + "2,000,000" + "0%"
         )
     });
 
