@@ -40,11 +40,11 @@ import {useRoute} from "vue-router";
 
 export const XLARGE_BREAKPOINT = 1450
 export const LARGE_BREAKPOINT = 1280
-export const MEDIUM_BREAKPOINT = 1080
+export const MEDIUM_BREAKPOINT = 1140
 export const SMALL_BREAKPOINT = 768
 export const FINAL_BREAKPOINT = 640
 
-export const ORUGA_MOBILE_BREAKPOINT = "1080px"
+export const ORUGA_MOBILE_BREAKPOINT = "1140px"
 
 export default defineComponent({
   name: 'App',
@@ -113,7 +113,7 @@ section.section.is-top-section {
   background-size: 104px
 }
 
-@media (min-width: 1024px) {
+@media (min-width: 1140px) {
   section.section.is-top-section {
     padding-top: 0;
     padding-bottom: 30px;
