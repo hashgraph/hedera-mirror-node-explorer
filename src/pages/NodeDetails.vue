@@ -96,14 +96,14 @@
               <NetworkDashboardItem :name="'HBAR'" :title="'Stake for Consensus'" :value="stake.toString()"/>
               <p class="h-is-property-text h-is-extra-text mt-1">{{ stakePercentage }}% of total</p>
               <br/><br/>
-              <NetworkDashboardItem :name="'HBAR'" :title="'Min Stake'" :value="minStake.toString()"/>
+              <NetworkDashboardItem :name="'HBAR'" :title="'Min Stake'" :value="minStake.toLocaleString('en-US')"/>
               <br/><br/>
-              <NetworkDashboardItem :name="'HBAR'" :title="'Max Stake'" :value="maxStake.toString()"/>
+              <NetworkDashboardItem :name="'HBAR'" :title="'Max Stake'" :value="maxStake.toLocaleString('en-US')"/>
               <br/><br/>
-              <NetworkDashboardItem :name="'HBAR'" :title="'Rewarded Stake'" :value="stakeRewarded.toString()"/>
+              <NetworkDashboardItem :name="'HBAR'" :title="'Rewarded Stake'" :value="stakeRewarded.toLocaleString('en-US')"/>
               <p class="h-is-property-text h-is-extra-text mt-1">{{ stakeRewardedPercentage }}% of total</p>
               <br/><br/>
-              <NetworkDashboardItem :name="'HBAR'" :title="'Unrewarded Stake'" :value="stakeUnrewarded.toString()"/>
+              <NetworkDashboardItem :name="'HBAR'" :title="'Unrewarded Stake'" :value="stakeUnrewarded.toLocaleString('en-US')"/>
               <p class="h-is-property-text h-is-extra-text mt-1">{{ stakeUnrewardedPercentage }}% of total</p>
               <br/><br/>
               <NetworkDashboardItem :name="'HOURS'" :title="'Current Staking Period'" :value="'24'"/>

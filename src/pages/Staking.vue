@@ -303,7 +303,10 @@ export default defineComponent({
     const stakedAmount = computed(() => {
       let result
       if ( isStaked.value && account.value?.balance?.balance != null) {
-        result = (account.value.balance.balance / 100000000).toString()
+        const amountFormatter = new Intl.NumberFormat("en-US", {
+          maximumFractionDigits: 8
+        })
+        result = amountFormatter.format(account.value.balance.balance / 100000000)
       }
       else {
         result = null

@@ -39,12 +39,12 @@
               <NetworkDashboardItem :title="'Last Staked'" :value="formatSeconds(elapsedMin*60) + ' ago'"/>
             </div>
             <div class="is-flex-direction-column">
-              <NetworkDashboardItem :name="'HBAR'" :title="'Total Staked'" :value="stakeTotal.toString()"/>
+              <NetworkDashboardItem :name="'HBAR'" :title="'Total Staked'" :value="unclampedStakeTotal.toLocaleString('en-US')"/>
               <div class="mt-4"/>
               <NetworkDashboardItem :title="'Next Staking Period'" :value="'in ' + formatSeconds(remainingMin*60)"/>
             </div>
             <div class="is-flex-direction-column">
-              <NetworkDashboardItem :name="'HBAR'" :title="'Total Rewarded'" :value="totalRewarded.toString()"/>
+              <NetworkDashboardItem :name="'HBAR'" :title="'Total Rewarded'" :value="totalRewarded.toLocaleString('en-US')"/>
               <div class="mt-4"/>
               <NetworkDashboardItem :title="'Staking Period'" :value="formatSeconds(durationMin*60)"/>
             </div>
@@ -55,11 +55,11 @@
               <div class="mt-4"/>
               <NetworkDashboardItem :title="'Last Staked'" :value="formatSeconds(elapsedMin*60) + 'ago'"/>
               <div class="mt-4"/>
-              <NetworkDashboardItem :name="'HBAR'" :title="'Total Staked'" :value="stakeTotal.toString()"/>
+              <NetworkDashboardItem :name="'HBAR'" :title="'Total Staked'" :value="unclampedStakeTotal.toLocaleString('en-US')"/>
               <div class="mt-4"/>
               <NetworkDashboardItem :title="'Next Staking Period'" :value="'in' + formatSeconds(remainingMin*60)"/>
               <div class="mt-4"/>
-              <NetworkDashboardItem :name="'HBAR'" :title="'Total Rewarded'" :value="totalRewarded.toString()"/>
+              <NetworkDashboardItem :name="'HBAR'" :title="'Total Rewarded'" :value="totalRewarded.toLocaleString('en-US')"/>
               <div class="mt-4"/>
               <NetworkDashboardItem :title="'Staking Period'" :value="formatSeconds(durationMin*60)"/>
               <div class="mt-6"/>
@@ -74,7 +74,7 @@
         <span class="h-is-primary-title">Nodes</span>
       </template>
       <template v-slot:table>
-        <NodeTable :nodes="nodes" :total-hbar-staked="unclampedStakeTotal" :min-stake="minStake" :max-stake="maxStake"/>
+        <NodeTable :nodes="nodes" :unclamped-stake-total="unclampedStakeTotal" :min-stake="minStake" :max-stake="maxStake"/>
       </template>
     </DashboardCard>
 
