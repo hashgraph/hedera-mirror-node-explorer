@@ -279,18 +279,7 @@ export default defineComponent({
     // Nodes
     //
     const nodes = ref<Array<NetworkNode> | null>([])
-
-    const totalStaked = computed(() => {
-      let result = 0
-      if (nodes.value) {
-        for (const n of nodes.value) {
-          if (n.stake) {
-            result += n.stake
-          }
-        }
-      }
-      return result
-    })
+    const unclampedStakeTotal = ref(0)
 
     const fetchNodes = (nextUrl: string | null = null) => {
       const url = nextUrl ?? "api/v1/network/nodes"
@@ -299,6 +288,9 @@ export default defineComponent({
           .then(result => {
             if (result.data.nodes) {
               nodes.value = nodes.value ? nodes.value.concat(result.data.nodes) : result.data.nodes
+              for (const n of result.data.nodes) {
+                unclampedStakeTotal.value += ((n.stake_rewarded ?? 0) + (n.stake_not_rewarded ?? 0))/100000000
+              }
             }
             const next = result.data.links?.next
             if (next) {
@@ -325,14 +317,17 @@ export default defineComponent({
       })
       const percentFormatter = new Intl.NumberFormat("en-US", {
         style: 'percent',
-        maximumFractionDigits: 0
+        maximumFractionDigits: 1
       })
-      const stakeAmount = node.stake ? node.stake / 100000000 : 0
-      const percentMax = node.stake && node.max_stake ? node.stake / node.max_stake : 0
+      const unclampedStakeAmount = ((node.stake_rewarded ?? 0) + (node.stake_not_rewarded ?? 0))/100000000
+      const percentMin = node.min_stake ? unclampedStakeAmount / (node.min_stake / 100000000) : 0
+      const percentMax = node.max_stake ? unclampedStakeAmount / (node.max_stake / 100000000) : 0
 
-      let result = amountFormatter.format(stakeAmount) + "ℏ staked"
-      if (percentMax !== 0) {
-        result += " (" + percentFormatter.format(percentMax) + " of max)"
+      let result = amountFormatter.format(unclampedStakeAmount) + "ℏ staked"
+      if (percentMin != 0 && percentMin < 1) {
+        result += " (" + percentFormatter.format(percentMin) + " of Min)"
+      } else if (percentMax !== 0) {
+        result += " (" + percentFormatter.format(percentMax) + " of Max)"
       }
       return result
     }
@@ -386,7 +381,6 @@ export default defineComponent({
       declineChoice,
       enableChangeButton,
       nodes,
-      totalStaked,
       handleCancel,
       handleChange,
       handleCancelChange,
