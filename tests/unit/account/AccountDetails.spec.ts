@@ -296,6 +296,6 @@ describe("AccountDetails.vue", () => {
         expect(wrapper.get("#stakedAccountValue").text()).toBe("0.0.5Node 2 - testnet")
         expect(wrapper.find("#stakedNodeValue").exists()).toBe(false)
         expect(wrapper.get("#stakePeriodStartValue").text()).toBe("6:45:00.3568 PMMar 3, 2022, UTC")
-        expect(wrapper.get("#declineRewardValue").text()).toBe("Declined")
+        expect(wrapper.find("#declineRewardValue").exists()).toBe(false)
     });
 });
