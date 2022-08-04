@@ -93,7 +93,7 @@
               <NetworkDashboardItem :name="'APPROX YEARLY EQUIVALENT'" :title="'Last Period Reward Rate'"
                                     :value="approxYearlyRate.toString()"/>
               <br/><br/>
-              <NetworkDashboardItem :name="'HBAR'" :title="'Stake for Consensus'" :value="stake.toString()"/>
+              <NetworkDashboardItem :name="'HBAR'" :title="'Stake for Consensus'" :value="stake.toLocaleString('en-US')"/>
               <p class="h-is-property-text h-is-extra-text mt-1">{{ stakePercentage }}% of total</p>
               <br/><br/>
               <NetworkDashboardItem :name="'HBAR'" :title="'Min Stake'" :value="minStake.toLocaleString('en-US')"/>
