@@ -246,6 +246,9 @@ export default defineComponent({
                 if (n.stake_rewarded) {
                   stakeRewardedTotal.value += n.stake_rewarded/100000000
                 }
+                if (n.stake_not_rewarded) {
+                  stakeUnrewardedTotal.value += n.stake_not_rewarded/100000000
+                }
               }
             }
             const next = result.data.links?.next
