@@ -101,9 +101,6 @@
       </div>
       <SearchBar style="margin-top: 4px"/>
     </div>
-    <a v-if="showTopRightLogo" id="built-on-hedera-logo" href="https://hedera.com" style="line-height: 1">
-      <img alt="Built On Hedera" src="@/assets/built-on-hedera-white.svg" style="min-width: 104px;">
-    </a>
 
   </div>
 
@@ -138,8 +135,6 @@ export default defineComponent({
     const route = useRoute()
     const network = computed( () => { return route.params.network })
     const name = computed( () => { return route.name })
-
-    const showTopRightLogo = inject('isLargeScreen', true)
 
     const isMobileMenuOpen = ref(false)
 
@@ -203,7 +198,6 @@ export default defineComponent({
       productName,
       isStakingEnabled,
       name,
-      showTopRightLogo,
       isMobileMenuOpen,
       networkRegistry,
       selectedNetwork,
@@ -234,18 +228,6 @@ export default defineComponent({
 }
 
 @media (max-width: 1239px) {
-  #product-logo {
-    max-width: 220px;
-  }
-}
-
-@media (max-width: 1119px) {
-  #product-logo {
-    max-width: 220px;
-  }
-}
-
-@media (max-width: 1023px) {
   #product-logo {
     max-width: 220px;
   }

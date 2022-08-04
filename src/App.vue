@@ -20,7 +20,7 @@
 
 <template>
 
-  <section class="section is-top-section">
+  <section class="section is-top-section" :class="{'is-medium-screen': isMediumScreen}">
     <TopNavBar/>
   </section>
 
@@ -40,11 +40,11 @@ import {useRoute} from "vue-router";
 
 export const XLARGE_BREAKPOINT = 1450
 export const LARGE_BREAKPOINT = 1280
-export const MEDIUM_BREAKPOINT = 1080
+export const MEDIUM_BREAKPOINT = 1140
 export const SMALL_BREAKPOINT = 768
 export const FINAL_BREAKPOINT = 640
 
-export const ORUGA_MOBILE_BREAKPOINT = "1080px"
+export const ORUGA_MOBILE_BREAKPOINT = "1140px"
 
 export default defineComponent({
   name: 'App',
@@ -97,6 +97,7 @@ export default defineComponent({
     })
 
     return {
+      isMediumScreen,
       onMainDashboardPage
     }
   },
@@ -112,15 +113,9 @@ section.section.is-top-section {
   background-repeat: no-repeat;
   background-size: 104px
 }
-
-@media (min-width: 1024px) {
-  section.section.is-top-section {
-    padding-top: 0;
-    padding-bottom: 30px;
-    background-image: url("assets/block-chain-bg.png");
-    background-repeat: no-repeat;
-    background-size: 112px
-  }
+section.section.is-top-section.is-medium-screen {
+  padding-bottom: 30px;
+  background-size: 112px
 }
 
 </style>
