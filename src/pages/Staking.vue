@@ -71,7 +71,7 @@
             <div class="is-flex is-justify-content-space-between">
               <NetworkDashboardItem :name="stakedSince" :title="'Staked to'" :value="stakedTo"/>
               <NetworkDashboardItem :name="stakedAmount ? 'HBAR' : ''" :title="'My Stake'" :value="stakedAmount"/>
-              <NetworkDashboardItem :title="'Rewards'" :value="declineReward" :class="{'h-has-opacity-20': ignoreReward}"/>
+              <NetworkDashboardItem :title="'Rewards'" :value="declineReward" :class="{'h-has-opacity-40': ignoreReward}"/>
             </div>
             <br/>
             <div class="is-flex is-justify-content-space-between">
@@ -89,7 +89,7 @@
               <div class="mt-4"/>
               <NetworkDashboardItem :name="stakedAmount ? 'HBAR' : ''" :title="'My Stake'" :value="stakedAmount"/>
               <div class="mt-4"/>
-              <NetworkDashboardItem :title="'Rewards'" :value="declineReward" :class="{'h-has-opacity-20': ignoreReward}"/>
+              <NetworkDashboardItem :title="'Rewards'" :value="declineReward" :class="{'h-has-opacity-40': ignoreReward}"/>
               <div class="mt-4"/>
             </div>
               <div class="is-flex is-justify-content-center">
@@ -126,7 +126,7 @@
       </template>
     </DashboardCard>
 
-    <DashboardCard v-if="accountId" :class="{'h-has-opacity-20': isIndirectStaking}">
+    <DashboardCard v-if="accountId" :class="{'h-has-opacity-40': isIndirectStaking}">
       <template v-slot:title>
         <span class="h-is-primary-title">Recent Staking Rewards Transactions</span>
       </template>
@@ -145,7 +145,7 @@
       </template>
     </DashboardCard>
 
-    <RewardsCalculator v-if="accountId" :class="{'h-has-opacity-20': isIndirectStaking}"
+    <RewardsCalculator v-if="accountId" :class="{'h-has-opacity-40': isIndirectStaking}"
                        :amount-in-hbar="balanceInHbar"
                        :node-id="stakedNode?.node_id"/>
 
