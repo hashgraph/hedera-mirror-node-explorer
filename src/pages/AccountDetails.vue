@@ -112,7 +112,7 @@
                   <TimestampValue :timestamp="account?.stake_period_start" :show-none="true"/>
                 </template>
               </Property>
-              <Property id="declineReward" >
+              <Property id="declineReward" v-if="account?.staked_node_id != null">
                 <template v-slot:name>Rewards</template>
                 <template v-slot:value>
                   <StringValue :string-value="account?.decline_reward ? 'Declined' : 'Accepted'"/>
