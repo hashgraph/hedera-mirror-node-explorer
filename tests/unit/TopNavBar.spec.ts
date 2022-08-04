@@ -73,7 +73,7 @@ describe("TopNavBar.vue", () => {
             "MAINNETTESTNETPREVIEWNETDashboardTransactionsTokensTopicsContractsAccountsNodes")
 
         const links = wrapper.findAll("a")
-        expect(links.length).toBe(9)
+        expect(links.length).toBe(8)
         expect(links[1].text()).toBe("Dashboard")
         expect(links[2].text()).toBe("Transactions")
         expect(links[3].text()).toBe("Tokens")
@@ -84,9 +84,8 @@ describe("TopNavBar.vue", () => {
         expect(wrapper.findComponent(SearchBar).exists()).toBe(true)
 
         const logos = wrapper.findAll("img")
-        expect(logos.length).toBe(2)
+        expect(logos.length).toBe(1)
         expect(logos[0].attributes('alt')).toBe("Product Logo")
-        expect(logos[1].attributes('alt')).toBe("Built On Hedera")
 
         wrapper.unmount()
     });
