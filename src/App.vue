@@ -20,7 +20,7 @@
 
 <template>
 
-  <section class="section is-top-section">
+  <section class="section is-top-section" :class="{'is-medium-screen': isMediumScreen}">
     <TopNavBar/>
   </section>
 
@@ -97,6 +97,7 @@ export default defineComponent({
     })
 
     return {
+      isMediumScreen,
       onMainDashboardPage
     }
   },
@@ -112,15 +113,9 @@ section.section.is-top-section {
   background-repeat: no-repeat;
   background-size: 104px
 }
-
-@media (min-width: 1140px) {
-  section.section.is-top-section {
-    padding-top: 0;
-    padding-bottom: 30px;
-    background-image: url("assets/block-chain-bg.png");
-    background-repeat: no-repeat;
-    background-size: 112px
-  }
+section.section.is-top-section.is-medium-screen {
+  padding-bottom: 30px;
+  background-size: 112px
 }
 
 </style>

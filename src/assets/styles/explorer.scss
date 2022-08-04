@@ -238,17 +238,20 @@ body {
 #drop-down-menu .o-sel-arrow {
     background-position: calc(100% - 7px) calc(100% - 10px);
 }
-@media (max-width: 1139px) {
-    #drop-down-menu .o-sel {
-        width: 322px;
-        border-width: 0.5px;
-        padding-top: 13px;
-        padding-bottom: 13px;
-        padding-left: 13px;
-    }
-    #drop-down-menu .o-sel-arrow {
-        background-position: calc(100% - 13px) calc(100% - 16px);
-    }
+#mobile-drop-down-menu .o-sel {
+    height: 44.5px;
+    width: 322px;
+    font-weight: bold;
+    color: $h-highlight-color;
+    border-color: $h-highlight-color;
+    background-color: $h-page-background-color;
+    border-width: 0.5px;
+    padding-top: 13px;
+    padding-bottom: 13px;
+    padding-left: 13px;
+}
+#mobile-drop-down-menu .o-sel-arrow {
+    background-position: calc(100% - 13px) calc(100% - 16px);
 }
 a.button {
     padding-top: 28px;

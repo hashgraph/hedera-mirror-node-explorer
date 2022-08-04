@@ -229,7 +229,7 @@ export default defineComponent({
 
 @media (max-width: 1239px) {
   #product-logo {
-    max-width: 200px;
+    max-width: 220px;
   }
 }
 
