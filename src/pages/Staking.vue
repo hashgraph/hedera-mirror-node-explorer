@@ -189,6 +189,7 @@ import WalletChooser from "@/components/staking/WalletChooser.vue";
 import {WalletDriver} from "@/utils/wallet/WalletDriver";
 import {WalletDriverError} from "@/utils/wallet/WalletDriverError";
 import {RewardsTransactionCache} from '@/components/staking/RewardsTransactionCache';
+import {normalizeTransactionId} from "@/utils/TransactionID";
 
 export default defineComponent({
   name: 'Staking',
@@ -419,8 +420,7 @@ export default defineComponent({
         progressExtraMessage.value = "Check your wallet for any approval request"
         progressExtraTransaction.value = null
         showProgressSpinner.value = false
-        const transactionID = await walletManager.changeStaking(nodeId, accountId, declineReward)
-
+        const transactionID = normalizeTransactionId(await walletManager.changeStaking(nodeId, accountId, declineReward))
         progressMainMessage.value = "Completing operation…"
         progressExtraMessage.value = "This may take a few seconds"
         showProgressSpinner.value = true
