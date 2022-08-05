@@ -61,7 +61,8 @@
         <o-table-column v-slot="props" field="stake" label="Stake" position="right">
           <span class="regular-node-column">
             <HbarAmount :amount="makeUnclampedStake(props.row)" :decimals="0"/>
-            <span class="ml-1">{{ '(' + makeWeightPercentage(props.row) + ')' }}</span>
+            <span v-if="props.row.stake" class="ml-1">{{ '(' + makeWeightPercentage(props.row) + ')' }}</span>
+            <span v-else class="ml-1 has-text-grey">(&lt;Min)</span>
           </span>
         </o-table-column>
 
