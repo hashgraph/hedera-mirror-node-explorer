@@ -92,7 +92,7 @@
               </template>
             </Property>
             <Property id="code">
-              <template v-slot:name>Code</template>
+              <template v-slot:name>Initcode</template>
               <template v-slot:value>
                 <ByteCodeValue :byte-code="contract?.bytecode"/>
               </template>
