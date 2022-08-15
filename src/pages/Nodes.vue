@@ -44,7 +44,7 @@
               <NetworkDashboardItem :title="'Next Staking Period'" :value="'in ' + formatSeconds(remainingMin*60)"/>
             </div>
             <div class="is-flex-direction-column">
-              <NetworkDashboardItem :name="'HBAR'" :title="'Total Rewarded'" :value="totalRewarded.toLocaleString('en-US')"/>
+              <NetworkDashboardItem :name="'HBAR'" :title="'Last Period Reward'" :value="totalRewarded.toLocaleString('en-US')"/>
               <div class="mt-4"/>
               <NetworkDashboardItem :title="'Staking Period'" :value="formatSeconds(durationMin*60)"/>
             </div>
@@ -59,7 +59,7 @@
               <div class="mt-4"/>
               <NetworkDashboardItem :title="'Next Staking Period'" :value="'in' + formatSeconds(remainingMin*60)"/>
               <div class="mt-4"/>
-              <NetworkDashboardItem :name="'HBAR'" :title="'Total Rewarded'" :value="totalRewarded.toLocaleString('en-US')"/>
+              <NetworkDashboardItem :name="'HBAR'" :title="'Last Period Reward'" :value="totalRewarded.toLocaleString('en-US')"/>
               <div class="mt-4"/>
               <NetworkDashboardItem :title="'Staking Period'" :value="formatSeconds(durationMin*60)"/>
               <div class="mt-6"/>
@@ -158,10 +158,8 @@ export default defineComponent({
                 maxStake.value = Math.round((nodes.value[0].max_stake ?? 0) / 100000000)
               }
               for (const n of result.data.nodes) {
-                if (n.stake_rewarded) {
-                  totalRewarded.value += n.stake_rewarded/100000000
-                  unclampedStakeTotal.value += (n.stake_rewarded + (n.stake_not_rewarded ?? 0))/100000000
-                }
+                totalRewarded.value += (n.reward_rate_start ?? 0)/100000000
+                unclampedStakeTotal.value += ((n.stake_rewarded ?? 0) + (n.stake_not_rewarded ?? 0))/100000000
               }
             }
             const next = result.data.links?.next
