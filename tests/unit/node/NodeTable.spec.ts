@@ -51,7 +51,12 @@ HMSF.forceUTC = true
 
 describe("NodeTable.vue", () => {
 
-    const tooltipNotRewarded = "This is the total amount staked to this node by accounts that have chosen to decline rewards (and all accounts staked to those accounts)."
+    const tooltipStake = "This is the total amount staked to this node, followed by its consensus weight" +
+        " (absent when amount staked is below the minimum, and until stake-based consensus is activated)."
+    const tooltipNotRewarded = "This is the total amount staked to this node by accounts that have chosen " +
+        "to decline rewards (and all accounts staked to those accounts)."
+    const tooltipRewardRate = "This is an approximate annual reward rate based on the reward payed for the " +
+        "last 24h period."
 
     it("should list the 3 nodes in the table", async () => {
 
@@ -82,9 +87,9 @@ describe("NodeTable.vue", () => {
         expect(wrapper.get('thead').text()).toBe("Node Account Hosted By Location Stake Stake Not Rewarded Last Reward Rate Stake Range")
         expect(wrapper.get('tbody').findAll('tr').length).toBe(3)
         expect(wrapper.get('tbody').text()).toBe(
-            "0" + "0.0.3" + "testnet" + "None" + "6,000,000(25%)" + tooltipNotRewarded + "1,000,000" + "0%" +
-            "1" + "0.0.4" + "testnet" + "None" + "9,000,000(37.5%)" + tooltipNotRewarded + "2,000,000" + "0%" +
-            "2" + "0.0.5" + "testnet" + "None" + "9,000,000(37.5%)" + tooltipNotRewarded + "2,000,000" + "0%"
+            "0" + "0.0.3" + "testnet" + "None" + tooltipStake + "6,000,000(25%)" + tooltipNotRewarded + "1,000,000" + tooltipRewardRate + "0%" +
+            "1" + "0.0.4" + "testnet" + "None" + tooltipStake + "9,000,000(37.5%)" + tooltipNotRewarded + "2,000,000" + tooltipRewardRate + "0%" +
+            "2" + "0.0.5" + "testnet" + "None" + tooltipStake + "9,000,000(37.5%)" + tooltipNotRewarded + "2,000,000" + tooltipRewardRate + "0%"
         )
 
         wrapper.unmount()

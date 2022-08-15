@@ -58,16 +58,21 @@
         </div>
       </o-table-column>
 
-        <o-table-column v-slot="props" field="stake" label="Stake" position="right">
+      <o-table-column v-slot="props" field="stake" label="Stake" position="right">
+        <o-tooltip :label="tooltipStake"
+                   multiline
+                   :delay="tooltipDelay"
+                   class="h-tooltip">
           <span class="regular-node-column">
             <HbarAmount :amount="makeUnclampedStake(props.row)" :decimals="0"/>
             <span v-if="props.row.stake" class="ml-1">{{ '(' + makeWeightPercentage(props.row) + ')' }}</span>
             <span v-else class="ml-1 has-text-grey">(&lt;Min)</span>
           </span>
-        </o-table-column>
+        </o-tooltip>
+      </o-table-column>
 
        <o-table-column v-slot="props" field="stake_not_rewarded" label="Stake Not Rewarded" position="right">
-         <o-tooltip label="This is the total amount staked to this node by accounts that have chosen to decline rewards (and all accounts staked to those accounts)."
+         <o-tooltip :label="tooltipNotRewarded"
                     multiline
                     :delay="tooltipDelay"
                     class="h-tooltip">
@@ -78,9 +83,14 @@
        </o-table-column>
 
       <o-table-column v-slot="props" field="last_reward_rate" label="Last Reward Rate" position="right">
-        <span class="regular-node-column">
-          {{ makeApproxYearlyRate(props.row) }}
-        </span>
+        <o-tooltip :label="tooltipRewardRate"
+                   multiline
+                   :delay="tooltipDelay"
+                   class="h-tooltip">
+          <span class="regular-node-column">
+            {{ makeApproxYearlyRate(props.row) }}
+          </span>
+        </o-tooltip>
       </o-table-column>
 
       <o-table-column id="stake-range-column" v-slot="props" field="stake-range" label="Stake Range" style="  padding-bottom: 2px; padding-top: 12px;">
@@ -140,6 +150,12 @@ export default defineComponent({
 
   setup(props) {
     const tooltipDelay = 500
+    const tooltipStake = "This is the total amount staked to this node, followed by its consensus weight " +
+        "(absent when amount staked is below the minimum, and until stake-based consensus is activated)."
+    const tooltipNotRewarded = "This is the total amount staked to this node by accounts that have chosen " +
+        "to decline rewards (and all accounts staked to those accounts)."
+    const tooltipRewardRate = "This is an approximate annual reward rate based on the reward payed for the " +
+        "last 24h period."
 
     const isTouchDevice = inject('isTouchDevice', false)
     const isMediumScreen = inject('isMediumScreen', true)
@@ -204,6 +220,9 @@ export default defineComponent({
 
     return {
       tooltipDelay,
+      tooltipStake,
+      tooltipNotRewarded,
+      tooltipRewardRate,
       isTouchDevice,
       isMediumScreen,
       makeHost,
@@ -232,6 +251,7 @@ export default defineComponent({
   --oruga-tooltip-background-color:var(--h-theme-highlight-color);
   --oruga-tooltip-arrow-margin:5px;
   --oruga-tooltip-content-font-size:0.75rem;
+  --oruga-tooltip-content-weight-normal:300;
 }
 .min-offset {
   margin-left: v-bind(minStakePix);
