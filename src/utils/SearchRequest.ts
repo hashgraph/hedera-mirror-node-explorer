@@ -59,7 +59,7 @@ export class SearchRequest {
         const transactionID = TransactionID.parse(this.searchedId)
         const normTransactionID = transactionID != null ? transactionID.toString(false) : null
         const hexBytes = hexToByte(this.searchedId)
-        const hexByteString = (hexBytes !== null && hexBytes.length >= 15) ? byteToHex(hexBytes) : null
+        const evmAddress = (hexBytes !== null && hexBytes.length == 20) ? byteToHex(hexBytes) : null
         const hexByteString32 = (hexBytes !== null && hexBytes.length >= 15) ? aliasToBase32(hexBytes) : null
 
         // 1) Searches accounts
@@ -144,8 +144,8 @@ export class SearchRequest {
         }
 
         // 5) Searches contracts
-        if (normEntityID !== null || hexByteString !== null) {
-            const entityOrAddress = hexByteString ? hexByteString : normEntityID
+        if (normEntityID !== null || evmAddress !== null) {
+            const entityOrAddress = evmAddress ? evmAddress : normEntityID
             axios
                 .get<ContractResponse>("api/v1/contracts/" + entityOrAddress)
                 .then(response => {
@@ -183,7 +183,7 @@ export class SearchRequest {
     }
 
     private updateErrorCount(reason: unknown): void {
-        const notFound = axios.isAxiosError(reason) && reason.request?.status == 404
+        const notFound = axios.isAxiosError(reason) && reason.response?.status == 404
         if (!notFound) {
             this.errorCount += 1
         }

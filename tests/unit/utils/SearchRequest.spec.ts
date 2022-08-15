@@ -55,6 +55,10 @@ mock.onGet(matcher_contracts).reply(200, SAMPLE_CONTRACT)
 const matcher_contracts_with_evm_address = "/api/v1/contracts/" + SAMPLE_CONTRACT.evm_address.slice(2)
 mock.onGet(matcher_contracts_with_evm_address).reply(200, SAMPLE_CONTRACT)
 
+const INVALID_EVM_ADDRESS = "0102030405060708090102030405060708"; // 19 bytes : should be 20
+const matcher_contracts_with_invalid_evm_address = "/api/v1/contracts/" + INVALID_EVM_ADDRESS
+mock.onGet(matcher_contracts_with_invalid_evm_address).reply(400)
+
 
 describe("SearchRequest.ts", () => {
 
@@ -68,6 +72,7 @@ describe("SearchRequest.ts", () => {
         expect(r.tokenInfo).toBeNull()
         expect(r.topicMessages).toStrictEqual([])
         expect(r.contract).toBeNull()
+        expect(r.getErrorCount()).toBe(0)
 
     })
 
@@ -82,6 +87,7 @@ describe("SearchRequest.ts", () => {
         expect(r.tokenInfo).toBeNull()
         expect(r.topicMessages).toStrictEqual([])
         expect(r.contract).toBeNull()
+        expect(r.getErrorCount()).toBe(0)
 
         const aliasHex2 = "0x" + aliasHex
         const r2 = new SearchRequest(aliasHex2)
@@ -93,6 +99,7 @@ describe("SearchRequest.ts", () => {
         expect(r2.tokenInfo).toBeNull()
         expect(r2.topicMessages).toStrictEqual([])
         expect(r2.contract).toBeNull()
+        expect(r.getErrorCount()).toBe(0)
 
     })
 
@@ -106,6 +113,7 @@ describe("SearchRequest.ts", () => {
         expect(r.tokenInfo).toBeNull()
         expect(r.topicMessages).toStrictEqual([])
         expect(r.contract).toBeNull()
+        expect(r.getErrorCount()).toBe(0)
 
     })
 
@@ -119,6 +127,7 @@ describe("SearchRequest.ts", () => {
         expect(r.tokenInfo).toStrictEqual(SAMPLE_TOKEN)
         expect(r.topicMessages).toStrictEqual([])
         expect(r.contract).toBeNull()
+        expect(r.getErrorCount()).toBe(0)
 
     })
 
@@ -132,6 +141,7 @@ describe("SearchRequest.ts", () => {
         expect(r.tokenInfo).toBeNull()
         expect(r.topicMessages).toStrictEqual(SAMPLE_TOPIC_MESSAGES.messages)
         expect(r.contract).toBeNull()
+        expect(r.getErrorCount()).toBe(0)
 
     })
 
@@ -145,6 +155,7 @@ describe("SearchRequest.ts", () => {
         expect(r.tokenInfo).toBeNull()
         expect(r.topicMessages).toStrictEqual([])
         expect(r.contract).toStrictEqual(SAMPLE_CONTRACT)
+        expect(r.getErrorCount()).toBe(0)
 
     })
 
@@ -158,6 +169,7 @@ describe("SearchRequest.ts", () => {
         expect(r.tokenInfo).toBeNull()
         expect(r.topicMessages).toStrictEqual([])
         expect(r.contract).toStrictEqual(SAMPLE_CONTRACT)
+        expect(r.getErrorCount()).toBe(0)
 
     })
 
@@ -172,6 +184,33 @@ describe("SearchRequest.ts", () => {
         expect(r.tokenInfo).toBeNull()
         expect(r.topicMessages).toStrictEqual([])
         expect(r.contract).toBeNull()
+        expect(r.getErrorCount()).toBe(0)
+
+    })
+
+    test("unknown account alias and invalid evm address", async () => {
+        const r = new SearchRequest(INVALID_EVM_ADDRESS)
+        await r.run()
+
+        expect(r.searchedId).toBe(INVALID_EVM_ADDRESS)
+        expect(r.account).toBeNull()
+        expect(r.transactions).toStrictEqual([])
+        expect(r.tokenInfo).toBeNull()
+        expect(r.topicMessages).toStrictEqual([])
+        expect(r.contract).toBeNull()
+        expect(r.getErrorCount()).toBe(0)
+
+        const aliasHex2 = "0x" + INVALID_EVM_ADDRESS
+        const r2 = new SearchRequest(aliasHex2)
+        await r2.run()
+
+        expect(r2.searchedId).toBe(aliasHex2)
+        expect(r.account).toBeNull()
+        expect(r2.transactions).toStrictEqual([])
+        expect(r2.tokenInfo).toBeNull()
+        expect(r2.topicMessages).toStrictEqual([])
+        expect(r2.contract).toBeNull()
+        expect(r.getErrorCount()).toBe(0)
 
     })
 
@@ -186,6 +225,7 @@ describe("SearchRequest.ts", () => {
         expect(r.tokenInfo).toBeNull()
         expect(r.topicMessages).toStrictEqual([])
         expect(r.contract).toBeNull()
+        expect(r.getErrorCount()).toBe(0)
 
     })
 
