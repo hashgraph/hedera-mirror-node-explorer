@@ -183,7 +183,7 @@ export class SearchRequest {
     }
 
     private updateErrorCount(reason: unknown): void {
-        const notFound = axios.isAxiosError(reason) && reason.request?.status == 404
+        const notFound = axios.isAxiosError(reason) && reason.response?.status == 404
         if (!notFound) {
             this.errorCount += 1
         }
