@@ -66,7 +66,7 @@
           </span>
         </o-table-column>
 
-       <o-table-column v-slot="props" field="stake_not_rewarded" label="Unrewarded Stake" position="right">
+       <o-table-column v-slot="props" field="stake_not_rewarded" label="Stake Not Rewarded" position="right">
          <o-tooltip label="This is the total amount staked to this node by accounts that have chosen to decline rewards (and all accounts staked to those accounts)."
                     multiline
                     delay="500"
