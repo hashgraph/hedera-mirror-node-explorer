@@ -69,7 +69,7 @@
        <o-table-column v-slot="props" field="stake_not_rewarded" label="Stake Not Rewarded" position="right">
          <o-tooltip label="This is the total amount staked to this node by accounts that have chosen to decline rewards (and all accounts staked to those accounts)."
                     multiline
-                    delay="500"
+                    :delay="tooltipDelay"
                     class="h-tooltip">
            <span class="regular-node-column">
              <HbarAmount :amount="props.row.stake_not_rewarded ?? 0" :decimals="0"/>
@@ -139,6 +139,8 @@ export default defineComponent({
   },
 
   setup(props) {
+    const tooltipDelay = 500
+
     const isTouchDevice = inject('isTouchDevice', false)
     const isMediumScreen = inject('isMediumScreen', true)
 
@@ -201,6 +203,7 @@ export default defineComponent({
     }
 
     return {
+      tooltipDelay,
       isTouchDevice,
       isMediumScreen,
       makeHost,

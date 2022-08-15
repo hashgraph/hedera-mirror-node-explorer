@@ -55,6 +55,8 @@ HMSF.forceUTC = true
 
 describe("Nodes.vue", () => {
 
+    const tooltipNotRewarded = "This is the total amount staked to this node by accounts that have chosen to decline rewards (and all accounts staked to those accounts)."
+
     it("should display the nodes pages containing the node table", async () => {
 
         process.env = Object.assign(process.env, { VUE_APP_ENABLE_STAKING: true });
@@ -86,11 +88,11 @@ describe("Nodes.vue", () => {
         expect(cards[1].text()).toMatch(RegExp("^Nodes"))
         const table = cards[1].findComponent(NodeTable)
         expect(table.exists()).toBe(true)
-        expect(table.get('thead').text()).toBe("Node Account Hosted By Location Stake Unrewarded Stake Last Reward Rate Stake Range")
+        expect(table.get('thead').text()).toBe("Node Account Hosted By Location Stake Stake Not Rewarded Last Reward Rate Stake Range")
         expect(wrapper.get('tbody').text()).toBe(
-            "0" + "0.0.3" + "testnet" + "None" + "6,000,000(25%)" + "1,000,000" + "0%" +
-            "1" + "0.0.4" + "testnet" + "None" + "9,000,000(37.5%)" + "2,000,000" + "0%" +
-            "2" + "0.0.5" + "testnet" + "None" + "9,000,000(37.5%)" + "2,000,000" + "0%"
+            "0" + "0.0.3" + "testnet" + "None" + "6,000,000(25%)" + tooltipNotRewarded + "1,000,000" + "0%" +
+            "1" + "0.0.4" + "testnet" + "None" + "9,000,000(37.5%)" + tooltipNotRewarded + "2,000,000" + "0%" +
+            "2" + "0.0.5" + "testnet" + "None" + "9,000,000(37.5%)" + tooltipNotRewarded + "2,000,000" + "0%"
         )
     });
 
