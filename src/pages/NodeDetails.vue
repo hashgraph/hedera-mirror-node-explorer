@@ -90,7 +90,7 @@
           </div>
 
           <div class="column h-has-column-separator">
-              <NetworkDashboardItem :name="'APPROX YEARLY EQUIVALENT'" :title="'Last Period Reward Rate'"
+              <NetworkDashboardItem :name="'APPROX ANNUAL EQUIVALENT'" :title="'Last Period Reward Rate'"
                                     :value="approxYearlyRate.toString()"/>
               <br/><br/>
               <NetworkDashboardItem :name="'HBAR'" :title="'Stake for Consensus'" :value="stake.toLocaleString('en-US')"/>
@@ -101,10 +101,10 @@
               <br/><br/>
               <NetworkDashboardItem :name="'HBAR'" :title="'Max Stake'" :value="maxStake.toLocaleString('en-US')"/>
               <br/><br/>
-              <NetworkDashboardItem :name="'HBAR'" :title="'Rewarded Stake'" :value="stakeRewarded.toLocaleString('en-US')"/>
+              <NetworkDashboardItem :name="'HBAR'" :title="'Stake Rewarded'" :value="stakeRewarded.toLocaleString('en-US')"/>
               <p class="h-is-property-text h-is-extra-text mt-1">{{ stakeRewardedPercentage }}% of total</p>
               <br/><br/>
-              <NetworkDashboardItem :name="'HBAR'" :title="'Unrewarded Stake'" :value="stakeUnrewarded.toLocaleString('en-US')"/>
+              <NetworkDashboardItem :name="'HBAR'" :title="'Stake Not Rewarded'" :value="stakeUnrewarded.toLocaleString('en-US')"/>
               <p class="h-is-property-text h-is-extra-text mt-1">{{ stakeUnrewardedPercentage }}% of total</p>
               <br/><br/>
               <NetworkDashboardItem :name="'HOURS'" :title="'Current Staking Period'" :value="'24'"/>
