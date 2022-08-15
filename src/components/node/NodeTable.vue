@@ -66,11 +66,16 @@
           </span>
         </o-table-column>
 
-        <o-table-column v-slot="props" field="stake_not_rewarded" label="Unrewarded Stake" position="right">
-          <span class="regular-node-column">
-            <HbarAmount :amount="props.row.stake_not_rewarded ?? 0" :decimals="0"/>
+       <o-table-column v-slot="props" field="stake_not_rewarded" label="Unrewarded Stake" position="right">
+         <o-tooltip label="This is the total amount staked to this node by accounts that have chosen to decline rewards (and all accounts staked to those accounts)."
+                    multiline
+                    delay="500"
+                    class="h-tooltip">
+           <span class="regular-node-column">
+             <HbarAmount :amount="props.row.stake_not_rewarded ?? 0" :decimals="0"/>
           </span>
-        </o-table-column>
+         </o-tooltip>
+       </o-table-column>
 
       <o-table-column v-slot="props" field="last_reward_rate" label="Last Reward Rate" position="right">
         <span class="regular-node-column">
@@ -220,6 +225,11 @@ export default defineComponent({
 <!-- --------------------------------------------------------------------------------------------------------------- -->
 
 <style>
+.h-tooltip {
+  --oruga-tooltip-background-color:var(--h-theme-highlight-color);
+  --oruga-tooltip-arrow-margin:5px;
+  --oruga-tooltip-content-font-size:0.75rem;
+}
 .min-offset {
   margin-left: v-bind(minStakePix);
 }
