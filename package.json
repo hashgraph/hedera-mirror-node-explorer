@@ -17,9 +17,9 @@
     "docker": "docker run --name hedera-explorer -d -p 9090:80 ${npm_package_name}:latest"
   },
   "dependencies": {
-    "@fortawesome/fontawesome-svg-core": "^1.2.36",
-    "@fortawesome/free-brands-svg-icons": "^5.15.4",
-    "@fortawesome/free-solid-svg-icons": "^5.15.4",
+    "@fortawesome/fontawesome-svg-core": "^6.1.2",
+    "@fortawesome/free-brands-svg-icons": "^6.1.2",
+    "@fortawesome/free-solid-svg-icons": "^6.1.2",
     "@fortawesome/vue-fontawesome": "^3.0.0-5",
     "@metamask/detect-provider": "^1.2.0",
     "@metamask/providers": "^9.0.0",
