@@ -17,14 +17,14 @@
     "docker": "docker run --name hedera-explorer -d -p 9090:80 ${npm_package_name}:latest"
   },
   "dependencies": {
-    "@fortawesome/fontawesome-svg-core": "^1.2.36",
-    "@fortawesome/free-brands-svg-icons": "^5.15.4",
-    "@fortawesome/free-solid-svg-icons": "^5.15.4",
+    "@fortawesome/fontawesome-svg-core": "^6.1.2",
+    "@fortawesome/free-brands-svg-icons": "^6.1.2",
+    "@fortawesome/free-solid-svg-icons": "^6.1.2",
     "@fortawesome/vue-fontawesome": "^3.0.0-5",
     "@metamask/detect-provider": "^1.2.0",
-    "@metamask/providers": "^9.0.0",
+    "@metamask/providers": "^9.1.0",
     "@oruga-ui/oruga-next": "^0.5.5",
-    "axios": "^0.24.0",
+    "axios": "^0.27.2",
     "base32-decode": "^1.0.0",
     "base32-encode": "^1.2.0",
     "bulma": "^0.9.4",
@@ -35,7 +35,7 @@
     "vue-router": "^4.0.0-0",
     "hashconnect": "^0.1.9",
     "@bladelabs/blade-web3.js": "^0.9.11",
-    "@hashgraph/sdk": "^2.16.4"
+    "@hashgraph/sdk": "^2.18.0"
   },
   "devDependencies": {
     "@cypress/code-coverage": "^3.9.12",
