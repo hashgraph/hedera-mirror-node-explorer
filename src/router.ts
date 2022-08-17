@@ -45,6 +45,7 @@ import axios from "axios";
 import Staking from "@/pages/Staking.vue";
 import {RouteManager} from "@/utils/RouteManager";
 import {WalletManager} from "@/utils/wallet/WalletManager";
+import BlockDetails from "@/pages/BlockDetails.vue";
 
 const routes: Array<RouteRecordRaw> = [
   {
@@ -158,6 +159,12 @@ const routes: Array<RouteRecordRaw> = [
     path: '/:network/staking',
     name: 'Staking',
     component: Staking,
+    props: true
+  },
+  {
+    path: '/:network/block/:blockNb',
+    name: 'BlockDetails',
+    component: BlockDetails,
     props: true
   },
   {
