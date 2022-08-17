@@ -19,7 +19,6 @@
  */
 
 import {NetworkEntry, networkRegistry} from "@/schemas/NetworkRegistry";
-import {HashConnectContext} from "@/utils/wallet/WalletDriver_Hashpack";
 
 export class AppStorage {
 
@@ -40,36 +39,6 @@ export class AppStorage {
     public static setLastNetwork(newValue: string|NetworkEntry): void {
         const newItem = typeof newValue == "string" ? newValue : newValue.name
         this.setLocalStorageItem(this.LAST_USED_NETWORK_KEY, newItem)
-    }
-
-
-    //
-    // hashconnect-priv-key
-    //
-
-    private static readonly HASH_CONNECT_PRIV_KEY_KEY = "hashconnect/priv-key"
-
-    public static getHashConnectPrivKey(): string | null {
-        return this.getLocalStorageItem(this.HASH_CONNECT_PRIV_KEY_KEY)
-    }
-
-    public static setHashConnectPrivKey(newValue: string|null): void {
-        this.setLocalStorageItem(this.HASH_CONNECT_PRIV_KEY_KEY, newValue)
-    }
-
-
-    //
-    // hashconnect-context
-    //
-
-    public static getHashConnectContext(network: string): HashConnectContext | null {
-        const key = "hashconnect/" + network + "/context"
-        return this.getJsonValue(key) as HashConnectContext | null
-    }
-
-    public static setHashConnectContext(newValue: HashConnectContext|null, network: string): void {
-        const key = "hashconnect/" + network + "/context"
-        this.setJsonValue(newValue, key)
     }
 
 
@@ -98,26 +67,5 @@ export class AppStorage {
         } catch {
             // Ignored
         }
-    }
-
-    private static getJsonValue(keySuffix: string): unknown | null {
-        let result: unknown|null
-        const jsonText = this.getLocalStorageItem(keySuffix)
-        if (jsonText != null) {
-            try {
-                result = JSON.parse(jsonText)
-            } catch {
-                console.log("Ignored invalid JSON text from " + keySuffix)
-                result = null
-            }
-        } else {
-            result = null;
-        }
-        return result
-    }
-
-    private static setJsonValue(newValue: unknown | null, keySuffix: string) {
-        const item = newValue != null ? JSON.stringify(newValue) : null
-        this.setLocalStorageItem(keySuffix, item)
     }
 }
