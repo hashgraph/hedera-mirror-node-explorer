@@ -114,7 +114,7 @@
         </template>
 
         <template v-else>
-          <section class="section has-text-centered" style="min-height: 450px">
+          <section class="section has-text-centered pt-0" :class="{'pb-0': isSmallScreen}">
             <p class="h-is-tertiary-text" style="font-weight: 300">
               To view or change your staking you first need to connect your wallet.
             </p>
@@ -145,8 +145,7 @@
       </template>
     </DashboardCard>
 
-    <RewardsCalculator v-if="accountId" :class="{'h-has-opacity-40': isIndirectStaking}"
-                       :amount-in-hbar="balanceInHbar"
+    <RewardsCalculator :amount-in-hbar="balanceInHbar"
                        :node-id="stakedNode?.node_id"/>
 
   </section>
@@ -297,7 +296,7 @@ export default defineComponent({
     })
 
     const balanceInHbar = computed(() => {
-      const balance = account.value?.balance?.balance ?? 0
+      const balance = account.value?.balance?.balance ?? 10000000000
       return balance / 100000000
     })
 
