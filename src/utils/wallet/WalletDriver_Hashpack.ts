@@ -125,7 +125,6 @@ export class WalletDriver_Hashpack extends WalletDriver {
             const pairingData = await hashConnect.pairingEvent.once()
 
             // Check pairing data
-            console.log("pairingData = " + JSON.stringify(pairingData))
             if (pairingData.network != network) {
                 throw this.connectFailure("Unexpected pairing data")
             } else {
