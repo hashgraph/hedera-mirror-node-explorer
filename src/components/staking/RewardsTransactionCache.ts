@@ -19,8 +19,9 @@
  */
 
 import {Transaction} from "@/schemas/HederaSchemas";
-import {computed, Ref} from "vue";
+import {ref, Ref, watch} from "vue";
 import {TransactionCacheV2} from "@/components/transaction/TransactionCacheV2";
+import {EntityCacheV2} from "@/utils/EntityCacheV2";
 
 export class RewardsTransactionCache extends TransactionCacheV2 {
 
@@ -32,47 +33,41 @@ export class RewardsTransactionCache extends TransactionCacheV2 {
 
     public constructor(limit = 100) {
         super(limit)
+        watch([this.accountId, this.transactions],
+            () => this.filterTransactions(), EntityCacheV2.WATCH_OPTIONS)
     }
 
-    public readonly filteredTransactions: Ref<Array<Transaction>> = computed(() => {
+    public readonly filteredTransactions: Ref<Array<Transaction>> = ref([])
+
+    private filterTransactions(): void {
         const result: Array<Transaction> = []
         for (const t of this.transactions.value) {
-            if (RewardsTransactionCache.filterTransaction(t)) {
+            if (RewardsTransactionCache.getAmountRewarded(t, this.accountId.value) > 0) {
                 result.push(t)
             }
         }
-        return result
-    })
-
-    private static filterTransaction(transaction: Transaction): boolean {
-        let result = false
-        if (transaction.transfers) {
-            for (const t of transaction.transfers) {
-                if (t.account === RewardsTransactionCache.rewardAccountId && t.amount < 0) {
-                    result = true
-                    break
-                }
-            }
-        }
-        return result
+        this.filteredTransactions.value = result
     }
 
     public static getAmountRewarded(transaction: Transaction, accountId: string): number {
-        let fromRewards = 0
-        let toAccount = 0
+        let result = 0
+        let rewardCandidate = null
         if (transaction.transfers) {
             for (const t of transaction.transfers) {
                 if (t.account === RewardsTransactionCache.rewardAccountId && t.amount < 0) {
-                    fromRewards = Math.abs(t.amount)
-                }
-                if (t.account === accountId && t.amount > 0) {
-                    toAccount = t.amount
-                }
-                if (fromRewards != 0 && toAccount != 0) {
+                    rewardCandidate = Math.abs(t.amount)
                     break
                 }
             }
+            if (rewardCandidate) {
+                for (const t of transaction.transfers) {
+                    if (t.amount === rewardCandidate && t.account === accountId) {
+                        result = rewardCandidate
+                        break
+                    }
+                }
+            }
         }
-        return Math.min(fromRewards, toAccount)
+        return result
     }
 }
