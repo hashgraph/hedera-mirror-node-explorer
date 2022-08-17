@@ -626,6 +626,154 @@ export const SAMPLE_CREATETOPIC_TRANSACTIONS = {
     ]
 }
 
+export const SAMPLE_REWARDS_TRANSACTIONS = {
+    "transactions": [
+        {
+            "bytes": null,
+            "charged_tx_fee": 78643,
+            "consensus_timestamp": "1646746059.558562000",
+            "entity_id": null,
+            "max_fee": "4000000",
+            "memo_base64": "",
+            "name": "CRYPTOTRANSFER",
+            "node": "0.0.17",
+            "nonce": 0,
+            "parent_consensus_timestamp": null,
+            "result": "SUCCESS",
+            "scheduled": false,
+            "transaction_hash": "RYfHjZoGCeAr9K1CNwVMztmx/F2im7Ae3yHkI3thlluzucsoP0uEuj3bKq+Qh84x",
+            "transaction_id": "0.0.14622-1646746046-722961649",
+            "transfers": [
+                {
+                    "account": "0.0.17",
+                    "amount": 2017
+                },
+                {
+                    "account": "0.0.98",
+                    "amount": 76626
+                },
+                {
+                    "account": "0.0.14622",
+                    "amount": -78643
+                },
+                {
+                    "account": "0.0.800",
+                    "amount": -123456789,
+                    "is_approval": false
+                },
+                {
+                    "account": "0.0.15818224",
+                    "amount": 123456789,
+                    "is_approval": false
+                },
+                {
+                    "account": "0.0.14684",
+                    "amount": 90000
+                },
+                {
+                    "account": "0.0.14698",
+                    "amount": -90000
+                }
+            ],
+            "valid_duration_seconds": "120",
+            "valid_start_timestamp": "1646746046.722961649"
+        },
+        {
+            "bytes": null,
+            "charged_tx_fee": 273792,
+            "consensus_timestamp": "1660577929.534382083",
+            "entity_id": "0.0.47813131",
+            "max_fee": "200000000",
+            "memo_base64": "",
+            "name": "CRYPTOUPDATEACCOUNT",
+            "node": "0.0.3",
+            "nonce": 0,
+            "parent_consensus_timestamp": null,
+            "result": "SUCCESS",
+            "scheduled": false,
+            "transaction_hash": "j7iGcapZ01hw9tAmf5P1cojq3NEeONl5i43oBrknSD3uaPaS9BzKjkoEG4SHVWr3",
+            "transaction_id": "0.0.47813131-1660577918-385318328",
+            "transfers": [
+                {
+                    "account": "0.0.3",
+                    "amount": 11070,
+                    "is_approval": false
+                },
+                {
+                    "account": "0.0.98",
+                    "amount": 262722,
+                    "is_approval": false
+                },
+                {
+                    "account": "0.0.800",
+                    "amount": -2334450720,
+                    "is_approval": false
+                },
+                {
+                    "account": "0.0.15818224",
+                    "amount": 2334450720,
+                    "is_approval": false
+                },
+                {
+                    "account": "0.0.47813131",
+                    "amount": -273792,
+                    "is_approval": false
+                }
+            ],
+            "valid_duration_seconds": "120",
+            "valid_start_timestamp": "1660577918.385318328"
+        },
+        {
+            "bytes": null,
+            "charged_tx_fee": 78643,
+            "consensus_timestamp": "1646746059.040288661",
+            "entity_id": null,
+            "max_fee": "4000000",
+            "memo_base64": "",
+            "name": "CRYPTOTRANSFER",
+            "node": "0.0.5",
+            "nonce": 0,
+            "parent_consensus_timestamp": null,
+            "result": "SUCCESS",
+            "scheduled": false,
+            "transaction_hash": "+eQ70U7gSMiSavPTAr1RoKsWipe3H/oef5CiZ051Xli73Dc0XxXdQPnwT8Sml9sE",
+            "transaction_id": "0.0.19852-1646746046-457048377",
+            "transfers": [
+                {
+                    "account": "0.0.5",
+                    "amount": 2017
+                },
+                {
+                    "account": "0.0.98",
+                    "amount": 76626
+                },
+                {
+                    "account": "0.0.14684",
+                    "amount": 90000
+                },
+                {
+                    "account": "0.0.800",
+                    "amount": -234567890,
+                    "is_approval": false
+                },
+                {
+                    "account": "0.0.15818224",
+                    "amount": 234567890,
+                    "is_approval": false
+                },
+                {
+                    "account": "0.0.14698",
+                    "amount": -90000
+                },
+                {
+                    "account": "0.0.19852", "amount": -78643
+                }
+            ],
+            "valid_duration_seconds": "120",
+            "valid_start_timestamp": "1646746046.457048377"
+        }
+    ]
+}
 
 //
 // Account inspired from: https://mainnet-public.mirrornode.hedera.com/api/v1/accounts/0.0.730631
