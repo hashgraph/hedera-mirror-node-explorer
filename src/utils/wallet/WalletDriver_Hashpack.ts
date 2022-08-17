@@ -20,7 +20,6 @@
 
 
 import {HashConnect, HashConnectTypes, MessageTypes} from "hashconnect";
-import {AppStorage} from "@/AppStorage";
 import {HederaLogo} from "@/utils/MetaMask";
 import {WalletDriver} from "@/utils/wallet/WalletDriver";
 import {WalletDriverError} from "@/utils/wallet/WalletDriverError";
@@ -32,6 +31,8 @@ export class WalletDriver_Hashpack extends WalletDriver {
 
     private network: string|null = null
     private signer: HashConnectSigner|null = null
+    private lastHashConnectKey: string|null = null
+    private lastHashConnectContext: HashConnectContext|null = null;
 
     //
     // Public
@@ -97,12 +98,10 @@ export class WalletDriver_Hashpack extends WalletDriver {
 
         // connect / init
         const hashConnect = new HashConnect(false)
-        const hashConnectKey = AppStorage.getHashConnectPrivKey() ?? undefined
-        const initData = await hashConnect.init(this.appMetadata, hashConnectKey)
-        AppStorage.setHashConnectPrivKey(initData.privKey)
+        const initData = await hashConnect.init(this.appMetadata, this.lastHashConnectKey ?? undefined)
+        this.lastHashConnectKey = initData.privKey
 
-        let context = AppStorage.getHashConnectContext(network)
-        if (context === null) {
+        if (this.lastHashConnectContext === null || this.lastHashConnectContext.network != network) {
 
             // First connection
             const connectionState = await hashConnect.connect()
@@ -128,32 +127,33 @@ export class WalletDriver_Hashpack extends WalletDriver {
             if (pairingData.network != network) {
                 throw this.connectFailure("Unexpected pairing data")
             } else {
-                context = {
+                this.lastHashConnectContext = {
                     network: network,
                     topic: connectionState.topic,
                     pairingString: pairingString,
                     pairingData: pairingData
                 }
-                AppStorage.setHashConnectContext(context, network)
             }
 
         } else {
 
             // Second connection
             try {
-                await hashConnect.connect(context.topic, context.pairingData?.metadata)
+                await hashConnect.connect(
+                    this.lastHashConnectContext.topic,
+                    this.lastHashConnectContext.pairingData.metadata)
             } catch(error) {
-                AppStorage.setHashConnectContext(null, network)
+                this.lastHashConnectContext = null
                 throw error
             }
 
         }
 
         // Updates signer
-        const accountIds = context.pairingData?.accountIds ?? []
+        const accountIds = this.lastHashConnectContext.pairingData.accountIds ?? []
         const accountId = accountIds.length >= 1 ? accountIds[0] : null
         if (accountId !== null) {
-            const provider = hashConnect.getProvider(network, context.topic, accountId)
+            const provider = hashConnect.getProvider(network, this.lastHashConnectContext.topic, accountId)
             this.signer = hashConnect.getSigner(provider)
         } else {
             await this.disconnect()
