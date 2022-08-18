@@ -46,6 +46,7 @@ import Staking from "@/pages/Staking.vue";
 import {RouteManager} from "@/utils/RouteManager";
 import {WalletManager} from "@/utils/wallet/WalletManager";
 import BlockDetails from "@/pages/BlockDetails.vue";
+import Blocks from "@/pages/Blocks.vue";
 
 const routes: Array<RouteRecordRaw> = [
   {
@@ -162,6 +163,12 @@ const routes: Array<RouteRecordRaw> = [
     props: true
   },
   {
+    path: '/:network/blocks',
+    name: 'Blocks',
+    component: Blocks,
+    props: true
+  },
+  {
     path: '/:network/block/:blockHon',
     name: 'BlockDetails',
     component: BlockDetails,
@@ -205,6 +212,9 @@ router.beforeEach((to) => {
 
   if (to.name === 'Staking' && process.env.VUE_APP_ENABLE_STAKING !== 'true') {
     // Staking page not enabled => re-route to PageNotFound
+    result = "/page-not-found"
+  } else if (to.name === 'Blocks' && process.env.VUE_APP_ENABLE_BLOCKS !== 'true') {
+    // Blocks page not enabled => re-route to PageNotFound
     result = "/page-not-found"
   } else {
     result = true
