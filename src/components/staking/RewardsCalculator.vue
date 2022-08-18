@@ -65,14 +65,7 @@
         <NetworkDashboardItem :title="'Approx Yearly Reward Rate'" :value="yearlyRate*100 + '%'"/>
       </div>
 
-      <div class="mt-2 h-is-text-size-2 is-italic has-text-grey">
-        These numbers are not individualized and only for illustrative purposes.
-        Please see the
-        <a href="https://docs.hedera.com/guides/core-concepts/staking" class="is-underlined has-text-grey">
-          <span>staking documentation</span>
-        </a>
-        for factors that can influence these numbers.
-      </div>
+      <div v-html="htmlNotice"/>
 
     </template>
   </DashboardCard>
@@ -107,6 +100,8 @@ export default defineComponent({
   },
 
   setup(props) {
+    const htmlNotice = process.env.VUE_APP_ESTIMATOR_NOTICE ?? ""
+
     const isSmallScreen = inject('isSmallScreen', true)
     const isMediumScreen = inject('isMediumScreen', true)
     const isTouchDevice = inject('isTouchDevice', false)
@@ -205,6 +200,7 @@ export default defineComponent({
     }
 
     return {
+      htmlNotice,
       isSmallScreen,
       isMediumScreen,
       isTouchDevice,
