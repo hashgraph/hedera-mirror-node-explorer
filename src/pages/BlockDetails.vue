@@ -28,7 +28,7 @@
 
     <DashboardCard>
       <template v-slot:title>
-        <span class="h-is-primary-title">Block {{ blockNb ?? "" }}</span>
+        <span class="h-is-primary-title">Block {{ block?.number.toString() ?? "" }}</span>
       </template>
 
       <template v-slot:table>
@@ -119,7 +119,7 @@
 
 import {computed, defineComponent, inject, onMounted, ref, watch} from 'vue';
 import {Block} from "@/schemas/HederaSchemas";
-import {BlockNb} from "@/utils/BlockNb";
+import {BlockHON} from "@/utils/BlockHON";
 import DashboardCard from "@/components/DashboardCard.vue";
 import NotificationBanner from "@/components/NotificationBanner.vue";
 import Property from "@/components/Property.vue";
@@ -144,7 +144,7 @@ export default defineComponent({
   },
 
   props: {
-    blockNb: String,
+    blockHon: String,
     network: String
   },
 
@@ -152,8 +152,8 @@ export default defineComponent({
     const isSmallScreen = inject('isSmallScreen', true)
     const isTouchDevice = inject('isTouchDevice', false)
 
-    const validBlockNb = computed(() => {
-      return props.blockNb ? BlockNb.parse(props.blockNb) !== null : false
+    const normBlockHON = computed(() => {
+      return props.blockHon ? BlockHON.parse(props.blockHon) : null
     })
 
     //
@@ -171,10 +171,10 @@ export default defineComponent({
 
     const notification = computed(() => {
       let result
-      if (!validBlockNb.value) {
-        result =  "Invalid block NB: " + props.blockNb
+      if (normBlockHON.value === null) {
+        result =  "Invalid block number or hash: " + props.blockHon
       } else if (got404.value) {
-        result =  "Block with NB " + props.blockNb + " was not found"
+        result =  "Block " + normBlockHON.value + " was not found"
       } else {
         result = null
       }
@@ -182,9 +182,9 @@ export default defineComponent({
     })
 
     const fetchBlock = () => {
-      if (validBlockNb.value) {
+      if (normBlockHON.value !== null) {
         axios
-            .get<Block>("api/v1/blocks/" + props.blockNb)
+            .get<Block>("api/v1/blocks/" + normBlockHON.value)
             .then(response => {
               block.value = response.data
               blockError.value = null
@@ -199,7 +199,7 @@ export default defineComponent({
       }
     }
 
-    watch(() => props.blockNb, () => fetchBlock())
+    watch(() => props.blockHon, () => fetchBlock())
     onMounted(() => fetchBlock())
 
     return {

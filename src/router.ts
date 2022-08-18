@@ -162,7 +162,7 @@ const routes: Array<RouteRecordRaw> = [
     props: true
   },
   {
-    path: '/:network/block/:blockNb',
+    path: '/:network/block/:blockHon',
     name: 'BlockDetails',
     component: BlockDetails,
     props: true

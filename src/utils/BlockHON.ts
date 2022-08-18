@@ -18,11 +18,25 @@
  *
  */
 
-export class BlockNb {
+import {byteToHex, hexToByte} from "@/utils/B64Utils";
 
-    public static parse(s: string): number|null {
-        const n = s.length >= 1 ? Number(s) : -1
-        return n > 0 && Math.floor(n) == n ? n : null
+export class BlockHON { // Block Hash or Number
+
+    public static parse(s: string): string|null {
+        return BlockHON.parseBlockHash(s) ?? BlockHON.parseBlockNumber(s)
     }
 
+    //
+    // Private
+    //
+
+    private static parseBlockNumber(s: string): string|null {
+        const n = parseInt(s, 10)
+        return n > 0 && n.toString() == s ? n.toString() : null
+    }
+
+    private static parseBlockHash(s: string): string|null {
+        const bytes = hexToByte(s)
+        return bytes != null && bytes.length == 48 ? byteToHex(bytes) : null
+    }
 }
