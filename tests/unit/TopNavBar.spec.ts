@@ -50,11 +50,9 @@ HMSF.forceUTC = true
 
 describe("TopNavBar.vue", () => {
 
-    beforeEach(() => {
-        process.env = Object.assign(process.env, { VUE_APP_ENABLE_STAKING: false });
-    })
-
-    it("Should display logos, page links and search bar", async () => {
+    it("Should display page links without Staking and Blocks", async () => {
+        process.env = Object.assign(process.env, { VUE_APP_ENABLE_STAKING: true });
+        process.env = Object.assign(process.env, { VUE_APP_ENABLE_BLOCKS: true });
 
         await router.push("/") // To avoid "missing required param 'network'" error
         Object.defineProperty(window, 'innerWidth', {writable: true, configurable: true, value: 1920})
@@ -70,16 +68,43 @@ describe("TopNavBar.vue", () => {
         // console.log(wrapper.text())
 
         expect(wrapper.text()).toBe(
-            "MAINNETTESTNETPREVIEWNETDashboardTransactionsTokensTopicsContractsAccountsNodes")
+            "MAINNETTESTNETPREVIEWNETDashboardTransactionsTokensTopicsContractsAccountsNodesStakingBlocks")
 
         const links = wrapper.findAll("a")
-        expect(links.length).toBe(8)
+        expect(links.length).toBe(10)
+    })
+
+    it("Should display logos, page links and full search bar", async () => {
+        process.env = Object.assign(process.env, { VUE_APP_ENABLE_STAKING: true });
+        process.env = Object.assign(process.env, { VUE_APP_ENABLE_BLOCKS: true });
+
+        await router.push("/") // To avoid "missing required param 'network'" error
+        Object.defineProperty(window, 'innerWidth', {writable: true, configurable: true, value: 1920})
+
+        const wrapper = mount(TopNavBar, {
+            global: {
+                plugins: [router, Oruga]
+            },
+            props: {},
+        });
+
+        await flushPromises()
+        // console.log(wrapper.text())
+
+        expect(wrapper.text()).toBe(
+            "MAINNETTESTNETPREVIEWNETDashboardTransactionsTokensTopicsContractsAccountsNodesStakingBlocks")
+
+        const links = wrapper.findAll("a")
+        expect(links.length).toBe(10)
         expect(links[1].text()).toBe("Dashboard")
         expect(links[2].text()).toBe("Transactions")
         expect(links[3].text()).toBe("Tokens")
         expect(links[4].text()).toBe("Topics")
         expect(links[5].text()).toBe("Contracts")
         expect(links[6].text()).toBe("Accounts")
+        expect(links[7].text()).toBe("Nodes")
+        expect(links[8].text()).toBe("Staking")
+        expect(links[9].text()).toBe("Blocks")
 
         expect(wrapper.findComponent(SearchBar).exists()).toBe(true)
 

@@ -64,6 +64,10 @@
            :class="{ 'is-rimmed': isStakingRoute}"
            class="button is-ghost h-is-mobile-navbar-item h-is-dense"
            @click="$router.replace({name: 'Staking'})">Staking</a>
+        <a v-if="isBlocksEnabled"
+           :class="{ 'is-rimmed': isBlocksRoute}"
+           class="button is-ghost h-is-mobile-navbar-item h-is-dense"
+           @click="$router.replace({name: 'Blocks'})">Blocks</a>
       </div>
 
     </div>
@@ -98,6 +102,7 @@ export default defineComponent({
     const isSmallScreen = inject('isSmallScreen', true)
     const isTouchDevice = inject('isTouchDevice', false)
     const isStakingEnabled = process.env.VUE_APP_ENABLE_STAKING === 'true'
+    const isBlocksEnabled = process.env.VUE_APP_ENABLE_BLOCKS === 'true'
 
     const route = useRoute()
     const network = computed(() => { return route.params.network })
@@ -133,6 +138,9 @@ export default defineComponent({
     const isStakingRoute = computed(() => {
       return name.value === 'Staking'
     })
+    const isBlocksRoute = computed(() => {
+      return name.value === 'Blocks'
+    })
 
     const  onResizeHandler = () => {
       if (window.innerWidth >= MEDIUM_BREAKPOINT) {
@@ -150,6 +158,7 @@ export default defineComponent({
       isSmallScreen,
       isTouchDevice,
       isStakingEnabled,
+      isBlocksEnabled,
       selectedNetwork,
       isDashboardRoute,
       isTransactionRoute,
@@ -159,6 +168,7 @@ export default defineComponent({
       isAccountRoute,
       isNodeRoute,
       isStakingRoute,
+      isBlocksRoute,
       networkRegistry
     }
   }
