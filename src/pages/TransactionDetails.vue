@@ -131,7 +131,7 @@
               </template>
             </Property>
             <Property id="nodeAccount">
-              <template v-slot:name>Node Account</template>
+              <template v-slot:name>Node Submitted To</template>
               <template v-slot:value>
                 <AccountLink v-bind:accountId="transaction?.node" v-bind:show-extra="true"/>
               </template>
