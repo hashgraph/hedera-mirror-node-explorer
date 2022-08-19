@@ -20,23 +20,29 @@
 
 import {byteToHex, hexToByte} from "@/utils/B64Utils";
 
-export class BlockHON { // Block Hash or Number
+export class PathParam { // Block Hash or Number
 
-    public static parse(s: string): string|null {
-        return BlockHON.parseBlockHash(s) ?? BlockHON.parseBlockNumber(s)
+    public static parseBlockHashOrNumber(s: string|undefined): string|null {
+        let result: string|null
+
+        if (s) {
+            const bytes = hexToByte(s)
+            if (bytes != null && bytes.length == 48 ) { // SHA384 byte count
+                result = byteToHex(bytes)
+            } else {
+                const n = parseInt(s)
+                if (isNaN(n) || n < 0 || n.toString() != s) {
+                    result = null
+                } else {
+                    result = n.toString()
+                }
+            }
+
+        } else {
+            result = null
+        }
+
+        return result
     }
 
-    //
-    // Private
-    //
-
-    private static parseBlockNumber(s: string): string|null {
-        const n = parseInt(s, 10)
-        return n > 0 && n.toString() == s ? n.toString() : null
-    }
-
-    private static parseBlockHash(s: string): string|null {
-        const bytes = hexToByte(s)
-        return bytes != null && bytes.length == 48 ? byteToHex(bytes) : null
-    }
 }

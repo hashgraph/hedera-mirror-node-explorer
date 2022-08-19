@@ -19,48 +19,48 @@
  */
 
 
-import {BlockHON} from "@/utils/BlockHON";
+import {PathParam} from "@/utils/PathParam";
 
-describe("BlockHON", () => {
+describe("PathParam", () => {
 
-    test("BlockHON.parse() with a hash", () => {
+    test("PathParam.parseBlockHashOrNumber() with a hash", () => {
 
         const sampleHash = "aa1c941f33e06fc8458bf82880527b01473ca7dff9dee0159542c00971038109dbd86515ff4ff1f4d9fd25428d39489b"
 
-        let hon = BlockHON.parse(sampleHash)
+        let hon = PathParam.parseBlockHashOrNumber(sampleHash)
         expect(hon).toBe(sampleHash)
 
-        hon = BlockHON.parse("0x" + sampleHash)
+        hon = PathParam.parseBlockHashOrNumber("0x" + sampleHash)
         expect(hon).toBe(sampleHash)
     })
 
-    test("BlockHON.parse() with a number", () => {
+    test("PathParam.parseBlockHashOrNumber() with a number", () => {
 
         const sampleNb = "444"
-        const hon = BlockHON.parse(sampleNb)
+        const hon = PathParam.parseBlockHashOrNumber(sampleNb)
         expect(hon).toBe(sampleNb)
     })
 
-    test("BlockHON.parse() with invalid block number", () => {
-        expect(BlockHON.parse("-1")).toBeNull()
+    test("PathParam.parse() with invalid block number", () => {
+        expect(PathParam.parseBlockHashOrNumber("-1")).toBeNull()
     })
 
-    test("BlockHON.parse() with invalid block hash", () => {
+    test("PathParam.parseBlockHashOrNumber() with invalid block hash", () => {
 
         const tooShort = "1c941f33e06fc8458bf82880527b01473ca7dff9dee0159542c00971038109dbd86515ff4ff1f4d9fd25428d39489b"
 
-        let hon = BlockHON.parse(tooShort)
+        let hon = PathParam.parseBlockHashOrNumber(tooShort)
         expect(hon).toBeNull()
 
-        hon = BlockHON.parse("0x" + tooShort)
+        hon = PathParam.parseBlockHashOrNumber("0x" + tooShort)
         expect(hon).toBeNull()
 
         const tooLong = "aa1c941f33e06fc8458bf82880527b01473ca7dff9dee0159542c00971038109dbd86515ff4ff1f4d9fd25428d39489b00"
 
-        hon = BlockHON.parse(tooLong)
+        hon = PathParam.parseBlockHashOrNumber(tooLong)
         expect(hon).toBeNull()
 
-        hon = BlockHON.parse("0x" + tooShort)
+        hon = PathParam.parseBlockHashOrNumber("0x" + tooShort)
         expect(hon).toBeNull()
     })
 })

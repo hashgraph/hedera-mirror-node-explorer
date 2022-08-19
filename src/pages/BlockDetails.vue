@@ -127,7 +127,7 @@
 <script lang="ts">
 
 import {computed, defineComponent, inject, onMounted, watch} from 'vue';
-import {BlockHON} from "@/utils/BlockHON";
+import {PathParam} from "@/utils/PathParam";
 import {BlockLoader} from "@/components/block/BlockLoader";
 import DashboardCard from "@/components/DashboardCard.vue";
 import NotificationBanner from "@/components/NotificationBanner.vue";
@@ -165,9 +165,7 @@ export default defineComponent({
     const isSmallScreen = inject('isSmallScreen', true)
     const isTouchDevice = inject('isTouchDevice', false)
 
-    const normBlockHON = computed(() => {
-      return props.blockHon ? BlockHON.parse(props.blockHon) : null
-    })
+    const normBlockHON = computed(() => PathParam.parseBlockHashOrNumber(props.blockHon))
 
     //
     // block
