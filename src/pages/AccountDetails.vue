@@ -29,7 +29,7 @@
     <DashboardCard>
       <template v-slot:title>
         <span class="h-is-primary-title">Account </span>
-        <span class="h-is-secondary-text mr-3">{{ account ? normalizedAccountId : "" }}</span>
+        <span class="h-is-secondary-text mr-3">{{ account?.account ?? "" }}</span>
         <span v-if="showContractVisible" class="is-inline-block" id="showContractLink">
           <router-link :to="{name: 'ContractDetails', params: {contractId: accountId}}">
             <span class="h-is-property-text">Show associated contract</span>
@@ -217,7 +217,7 @@ import {BalanceCache} from "@/components/account/BalanceCache";
 import Footer from "@/components/Footer.vue";
 import TransactionFilterSelect from "@/components/transaction/TransactionFilterSelect.vue";
 import {useRoute, useRouter} from "vue-router";
-import {EntityID} from "@/utils/EntityID";
+import {PathParam} from "@/utils/PathParam";
 import Property from "@/components/Property.vue";
 import NotificationBanner from "@/components/NotificationBanner.vue";
 import {makeEthAddressForAccount} from "@/schemas/HederaUtils";
@@ -270,19 +270,19 @@ export default defineComponent({
     //
 
     const validEntityId = computed(() => {
-      return props.accountId ? EntityID.parse(props.accountId, true) != null : false
+      return props.accountId ? PathParam.parseAccountIdOrAliasOrEvmAddress(props.accountId) != null : false
     })
 
     const normalizedAccountId = computed(() => {
-      return props.accountId ? EntityID.normalize(props.accountId) : props.accountId
+      return account.value ? PathParam.parseAccountIdOrAliasOrEvmAddress(props.accountId) : props.accountId
     })
 
     const accountInfo = computed(() => {
-      return normalizedAccountId.value ? operatorRegistry.makeDescription(normalizedAccountId.value) : null
+      return account.value?.account ? operatorRegistry.makeDescription(account.value?.account) : null
     })
 
     const nodeId = computed(() => {
-      return normalizedAccountId.value ? operatorRegistry.lookup(normalizedAccountId.value)?.nodeId : null
+      return account.value?.account ? operatorRegistry.lookup(account.value?.account)?.nodeId : null
     })
 
     //
@@ -364,7 +364,7 @@ export default defineComponent({
 
     const setupTransactionCache = () => {
       transactionCache.state.value = EntityCacheStateV2.Stopped
-      transactionCache.accountId.value = normalizedAccountId.value ?? ""
+      transactionCache.accountId.value = account.value?.account ?? ""
       transactionCache.transactionType.value = transactionFilterFromRoute.value
       transactionCache.state.value = EntityCacheStateV2.Started
       selectedTransactionFilter.value = transactionFilterFromRoute.value
@@ -373,7 +373,7 @@ export default defineComponent({
     const transactionFilterFromRoute = computed(() => {
       return (route.query?.type as string ?? "").toUpperCase()
     })
-    watch([transactionFilterFromRoute, normalizedAccountId], () => {
+    watch([transactionFilterFromRoute, account], () => {
       setupTransactionCache()
     })
     onMounted(() => {
@@ -413,14 +413,14 @@ export default defineComponent({
 
     const setupBalanceCache = () => {
       if (validEntityId.value) {
-        balanceCache.accountId.value = normalizedAccountId.value ?? null
+        balanceCache.accountId.value = account.value?.account ?? null
         balanceCache.state.value = EntityCacheStateV2.Started
       } else {
         balanceCache.state.value = EntityCacheStateV2.Stopped
       }
     }
 
-    watch(normalizedAccountId, () => {
+    watch(account, () => {
       setupBalanceCache()
     });
     onMounted(() => {
