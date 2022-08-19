@@ -23,7 +23,9 @@
 <!-- --------------------------------------------------------------------------------------------------------------- -->
 
 <template>
-  <span class="is-numeric">{{ formattedAmount }}</span>
+  <span v-if="formattedAmount !== '0'">{{ formattedAmount }}</span>
+  <span v-else-if="initialLoading"/>
+  <span v-else class="has-text-grey">0</span>
 </template>
 
 <!-- --------------------------------------------------------------------------------------------------------------- -->
@@ -46,9 +48,7 @@ export default defineComponent({
     const formattedAmount = computed(() => {
       let result: string
         if (props.amount) {
-          result = new Intl.NumberFormat("en-US").format(props.amount);
-        } else if (initialLoading.value) {
-          result = ""
+          result = props.amount.toLocaleString()
         } else {
           result = "0"
         }

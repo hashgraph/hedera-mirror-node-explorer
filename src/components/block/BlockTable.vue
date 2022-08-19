@@ -70,7 +70,7 @@
       <TimestampValue v-bind:timestamp="props.row.timestamp.from"/>
     </o-table-column>
 
-    <o-table-column v-slot="props" field="count" label="No.of Transactions" position="right">
+    <o-table-column v-slot="props" field="count" label="No. Transactions" position="right">
       <PlainAmount v-bind:amount="props.row.count"/>
     </o-table-column>
 

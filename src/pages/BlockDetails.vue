@@ -38,9 +38,9 @@
         <div class="columns h-is-property-text">
           <div class="column">
             <Property id="count">
-              <template v-slot:name>No. of Transactions</template>
+              <template v-slot:name>No. Transactions</template>
               <template v-slot:value>
-                <StringValue :string-value="block?.count?.toLocaleString()"/>
+                <PlainAmount :amount="block?.count"/>
               </template>
             </Property>
           </div>
@@ -84,7 +84,7 @@
             <Property id="gasUsed">
               <template v-slot:name>Gas Used</template>
               <template v-slot:value>
-                <StringValue :string-value="block?.gas_used?.toLocaleString()"/>
+                <PlainAmount :amount="block?.gas_used"/>
               </template>
             </Property>
           </div>
@@ -127,12 +127,14 @@ import TimestampValue from "@/components/values/TimestampValue.vue";
 import StringValue from "@/components/values/StringValue.vue";
 import KeyValue from "@/components/values/KeyValue.vue";
 import Footer from "@/components/Footer.vue";
+import PlainAmount from "@/components/values/PlainAmount.vue";
 
 export default defineComponent({
 
   name: 'BlockDetails',
 
   components: {
+    PlainAmount,
     DashboardCard,
     NotificationBanner,
     Property,
