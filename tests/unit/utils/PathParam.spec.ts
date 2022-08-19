@@ -23,6 +23,10 @@ import {PathParam} from "@/utils/PathParam";
 
 describe("PathParam", () => {
 
+    //
+    // parseBlockHashOrNumber()
+    //
+
     test("PathParam.parseBlockHashOrNumber() with a hash", () => {
 
         const sampleHash = "aa1c941f33e06fc8458bf82880527b01473ca7dff9dee0159542c00971038109dbd86515ff4ff1f4d9fd25428d39489b"
@@ -62,5 +66,35 @@ describe("PathParam", () => {
 
         hon = PathParam.parseBlockHashOrNumber("0x" + tooShort)
         expect(hon).toBeNull()
+    })
+
+    //
+    // parseAccountIdOrAliasOrEvmAddress()
+    //
+
+    test("PathParam.parseAccountIdOrAliasOrEvmAddress() with entity id", () => {
+
+        const accountId = "0.0.1234"
+
+        const pp = PathParam.parseAccountIdOrAliasOrEvmAddress(accountId)
+        expect(pp).toBe(accountId)
+    })
+
+    test("PathParam.parseAccountIdOrAliasOrEvmAddress() with alias", () => {
+
+        const alias = "HIQQGOSRIF3EM35ICXWUQH722CIRBIWTIT3MTN4MDUKK7Q2RYOSRXYZ5"
+
+        const pp = PathParam.parseAccountIdOrAliasOrEvmAddress(alias)
+        expect(pp).toBe(alias)
+    })
+
+    test("PathParam.parseAccountIdOrAliasOrEvmAddress() with evm address", () => {
+
+        const evmAddress = "a94f5374fce5edbc8e2a8697c15331677e6ebf0b"
+
+        let pp = PathParam.parseAccountIdOrAliasOrEvmAddress(evmAddress)
+        expect(pp).toBe("0x" + evmAddress)
+        pp = PathParam.parseAccountIdOrAliasOrEvmAddress("0x" + evmAddress)
+        expect(pp).toBe("0x" + evmAddress)
     })
 })

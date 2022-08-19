@@ -18,7 +18,8 @@
  *
  */
 
-import {byteToHex, hexToByte} from "@/utils/B64Utils";
+import {aliasToBase32, base32ToAlias, byteToHex, hexToByte} from "@/utils/B64Utils";
+import {EntityID} from "@/utils/EntityID";
 
 export class PathParam { // Block Hash or Number
 
@@ -45,4 +46,26 @@ export class PathParam { // Block Hash or Number
         return result
     }
 
+    public static parseAccountIdOrAliasOrEvmAddress(s: string|undefined): string|null {
+        let result: string|null
+
+        if (s) {
+            const id = EntityID.parse(s)
+            if (id !== null) {
+                result = id.toString()
+            } else {
+                const alias = base32ToAlias(s)
+                if (alias !== null) {
+                    result = aliasToBase32(alias)
+                } else {
+                    const address = hexToByte(s)
+                    result = address !== null && address.length == 20 ? "0x" + byteToHex(address) : null
+                }
+            }
+        } else {
+            result = null
+        }
+
+        return result
+    }
 }
