@@ -117,9 +117,9 @@
 
 <script lang="ts">
 
-import {computed, defineComponent, inject, onMounted, ref, watch} from 'vue';
-import {Block} from "@/schemas/HederaSchemas";
+import {computed, defineComponent, inject, onMounted, watch} from 'vue';
 import {BlockHON} from "@/utils/BlockHON";
+import {BlockLoader} from "@/components/block/BlockLoader";
 import DashboardCard from "@/components/DashboardCard.vue";
 import NotificationBanner from "@/components/NotificationBanner.vue";
 import Property from "@/components/Property.vue";
@@ -127,7 +127,6 @@ import TimestampValue from "@/components/values/TimestampValue.vue";
 import StringValue from "@/components/values/StringValue.vue";
 import KeyValue from "@/components/values/KeyValue.vue";
 import Footer from "@/components/Footer.vue";
-import axios from "axios";
 
 export default defineComponent({
 
@@ -160,52 +159,26 @@ export default defineComponent({
     // block
     //
 
-    const block = ref<Block|null>(null)
-    const blockError = ref<unknown>(null)
-
-    const got404 = computed(() => {
-      return blockError.value !== null
-          && axios.isAxiosError(blockError.value)
-          && blockError.value?.request?.status === 404
-    })
+    const blockLoader = new BlockLoader()
+    watch(normBlockHON, () => blockLoader.blockHON.value = normBlockHON.value)
+    onMounted(() => blockLoader.blockHON.value = normBlockHON.value)
 
     const notification = computed(() => {
       let result
-      if (normBlockHON.value === null) {
+      if (blockLoader.blockHON.value === null) {
         result =  "Invalid block number or hash: " + props.blockHon
-      } else if (got404.value) {
-        result =  "Block " + normBlockHON.value + " was not found"
+      } else if (blockLoader.got404.value) {
+        result =  "Block " + blockLoader.blockHON.value + " was not found"
       } else {
         result = null
       }
       return result
     })
 
-    const fetchBlock = () => {
-      if (normBlockHON.value !== null) {
-        axios
-            .get<Block>("api/v1/blocks/" + normBlockHON.value)
-            .then(response => {
-              block.value = response.data
-              blockError.value = null
-            })
-            .catch(reason => {
-              block.value = null
-              blockError.value = reason
-            })
-      } else {
-        block.value = null
-        blockError.value = null
-      }
-    }
-
-    watch(() => props.blockHon, () => fetchBlock())
-    onMounted(() => fetchBlock())
-
     return {
       isSmallScreen,
       isTouchDevice,
-      block,
+      block: blockLoader.entity,
       notification,
     }
   }
