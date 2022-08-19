@@ -19,7 +19,7 @@
  */
 
 import axios, {AxiosResponse} from "axios";
-import {computed, Ref, ref} from "vue";
+import {computed, ComputedRef, Ref, ref} from "vue";
 
 
 export abstract class EntityLoader<E> {
@@ -32,10 +32,10 @@ export abstract class EntityLoader<E> {
     // Public
     //
 
-    public response = computed(() => this.responseRef.value)
-    public entity = computed(() => this.responseRef.value?.data ?? null)
-    public error = computed(() => this.errorRef.value)
-    public got404 = computed(() => this.errorRef.value !== null
+    public response: ComputedRef<AxiosResponse<E>|null> = computed(() => this.responseRef.value)
+    public entity: ComputedRef<E|null> = computed(() => this.responseRef.value?.data ?? null)
+    public error: ComputedRef<unknown> = computed(() => this.errorRef.value)
+    public got404: ComputedRef<boolean> = computed(() => this.errorRef.value !== null
                                             && axios.isAxiosError(this.errorRef.value)
                                             && this.errorRef.value?.response?.status === 404)
 
