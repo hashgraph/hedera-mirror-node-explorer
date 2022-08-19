@@ -49,7 +49,6 @@ export class BlockLoader extends EntityLoader<Block> {
     //
 
     private blockHonDidChange() {
-        console.log("this.blockHON.value=" + this.blockHON.value)
         if (this.blockHON.value != null) {
             this.requestLoad()
         } else {
