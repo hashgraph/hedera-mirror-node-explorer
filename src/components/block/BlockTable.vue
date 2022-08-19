@@ -70,12 +70,12 @@
       <TimestampValue v-bind:timestamp="props.row.timestamp.from"/>
     </o-table-column>
 
-    <o-table-column v-slot="props" field="count" label="No.of Transactions">
-      {{ props.row.count }}
+    <o-table-column v-slot="props" field="count" label="No.of Transactions" position="right">
+      <PlainAmount v-bind:amount="props.row.count"/>
     </o-table-column>
 
-    <o-table-column v-slot="props" field="gas_used" label="Gas Used">
-      {{ props.row.gas_used }}
+    <o-table-column v-slot="props" field="gas_used" label="Gas Used" position="right">
+      <PlainAmount v-bind:amount="props.row.gas_used"/>
     </o-table-column>
   </o-table>
 
@@ -95,11 +95,12 @@ import router from "@/router";
 import TimestampValue from "@/components/values/TimestampValue.vue";
 import {ORUGA_MOBILE_BREAKPOINT} from '@/App.vue';
 import EmptyTable from "@/components/EmptyTable.vue";
+import PlainAmount from "@/components/values/PlainAmount.vue";
 
 export default defineComponent({
   name: 'BlockTable',
 
-  components: {TimestampValue, EmptyTable },
+  components: {PlainAmount, TimestampValue, EmptyTable },
 
   props: {
     narrowed: Boolean,
