@@ -31,7 +31,7 @@
         <span class="h-is-primary-title">Blocks</span>
       </template>
       <template v-slot:table>
-<!--        <NodeTable :nodes="nodes" :unclamped-stake-total="unclampedStakeTotal" :min-stake="minStake" :max-stake="maxStake"/>-->
+        <BlockTable :blocks="blocks"/>
       </template>
     </DashboardCard>
 
@@ -47,10 +47,12 @@
 
 <script lang="ts">
 
-import {defineComponent, inject, onBeforeUnmount, onMounted, ref} from 'vue';
+import {defineComponent, inject, onBeforeUnmount, onMounted} from 'vue';
 import DashboardCard from "@/components/DashboardCard.vue";
 import Footer from "@/components/Footer.vue";
-import {Block} from "@/schemas/HederaSchemas";
+import BlockTable from "@/components/block/BlockTable.vue";
+import {BlockCache} from "@/components/block/BlockCache";
+import {EntityCacheStateV2} from "@/utils/EntityCacheV2";
 
 export default defineComponent({
   name: 'Blocks',
@@ -60,6 +62,7 @@ export default defineComponent({
   },
 
   components: {
+    BlockTable,
     Footer,
     DashboardCard
   },
@@ -68,23 +71,16 @@ export default defineComponent({
     const isSmallScreen = inject('isSmallScreen', true)
     const isTouchDevice = inject('isTouchDevice', false)
 
-    let blocks = ref<Array<Block> | null>([])
-
-    onMounted(() => {
-      fetchBlocks()
-    })
-
-    onBeforeUnmount(() => {
-    })
-
-    const fetchBlocks = (nextUrl: string | null = null) => {
-      const url = nextUrl ?? "api/v1/network/blocks"
-    }
+    // BlockCache
+    const blockCache = new BlockCache()
+    onMounted(() => blockCache.state.value = EntityCacheStateV2.Started)
+    onBeforeUnmount(() => blockCache.state.value = EntityCacheStateV2.Stopped)
 
     return {
       isSmallScreen,
       isTouchDevice,
-      blocks,
+      blocks: blockCache.blocks,
+      cacheState: blockCache.state
     }
   }
 });

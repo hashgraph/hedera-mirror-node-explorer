@@ -476,6 +476,11 @@ export interface NetworkSupplyResponse {
 //                                                      Block
 // ---------------------------------------------------------------------------------------------------------------------
 
+export interface BlocksResponse {
+    blocks: Array<Block> | undefined
+    links: Links | undefined
+}
+
 export interface Block {
     count: number | undefined // integer - minimum 0
     gas_used: number | null | undefined // integer - minimum 0
