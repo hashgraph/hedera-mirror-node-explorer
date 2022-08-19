@@ -126,7 +126,7 @@
 
 <script lang="ts">
 
-import {computed, defineComponent, inject, onMounted, ref, watch} from 'vue';
+import {computed, defineComponent, inject, onMounted, watch} from 'vue';
 import {BlockHON} from "@/utils/BlockHON";
 import {BlockLoader} from "@/components/block/BlockLoader";
 import DashboardCard from "@/components/DashboardCard.vue";
@@ -138,8 +138,7 @@ import KeyValue from "@/components/values/KeyValue.vue";
 import Footer from "@/components/Footer.vue";
 import PlainAmount from "@/components/values/PlainAmount.vue";
 import BlockTransactionTable from "@/components/blocks/BlockTransactionTable.vue";
-import {Transaction, TransactionResponse} from "@/schemas/HederaSchemas";
-import axios from "axios";
+import {BlockTransactionsLoader} from "@/components/block/BlockTransactionsLoader";
 
 export default defineComponent({
 
@@ -193,36 +192,19 @@ export default defineComponent({
     //
     // transactions
     //
-
-    const transactions = ref<Array<Transaction>>()
-    onMounted(() => fetchBlockTransactions())
-    watch(blockLoader.entity, () => fetchBlockTransactions())
-    const fetchBlockTransactions = () => {
-      const params = {} as {
-        limit: number,
-        timestamp: string
-      }
-      if (blockLoader.entity.value?.count && blockLoader.entity.value.timestamp) {
-        params.limit = Math.min(blockLoader.entity.value.count, 100)
-        params.timestamp = "lte:" + blockLoader.entity.value.timestamp.to
-        console.log("BlockDetails::fetchBlockTransactions")
-        console.log("       prams.limit: " + params.limit)
-        console.log("       params.timestamp: " + params.timestamp)
-
-        axios
-            .get<TransactionResponse>("api/v1/transactions", { params: params} )
-            .then((response) => {
-              console.log("       response.data.blocks?.length: " + response.data.transactions?.length)
-              transactions.value = response.data.transactions
-            })
-      }
+    const blockTransactionLoader = new BlockTransactionsLoader()
+    const setupBlockTransactionsLoader = () => {
+      blockTransactionLoader.limit.value = blockLoader.entity.value?.count ?? 0
+      blockTransactionLoader.timestamp.value = blockLoader.entity.value?.timestamp?.to ?? ""
     }
+    onMounted(() => setupBlockTransactionsLoader())
+    watch(blockLoader.entity, () => setupBlockTransactionsLoader())
 
     return {
       isSmallScreen,
       isTouchDevice,
       block: blockLoader.entity,
-      transactions,
+      transactions: blockTransactionLoader.transactions,
       notification,
     }
   }
