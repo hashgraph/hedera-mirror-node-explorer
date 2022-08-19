@@ -114,6 +114,12 @@ export function aliasToBase32(bytes: Uint8Array): string {
     return base32Encode(bytes, 'RFC4648', { padding: false })
 }
 
-export function base32ToAlias(aliasBase32: string): Uint8Array {
-    return new Uint8Array(base32Decode(aliasBase32, 'RFC4648'))
+export function base32ToAlias(aliasBase32: string): Uint8Array|null {
+    let result: Uint8Array | null
+    try {
+        result = new Uint8Array(base32Decode(aliasBase32, 'RFC4648'))
+    } catch {
+        result = null
+    }
+    return result
 }
