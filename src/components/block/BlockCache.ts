@@ -65,13 +65,9 @@ export class BlockCache extends EntityCacheV2<BlocksResponse> {
         if (this.lastNumber.value != -1) {
             params["block.number"] = "gt:" + this.lastNumber.value
         }
-        console.log("BlockCache::load")
-        console.log("       prams.limit: " + params.limit)
-        console.log("       prams.block.number: " + params["block.number"])
         return axios
             .get<BlocksResponse>("api/v1/blocks", { params: params} )
             .then((response) => {
-                console.log("       response.data.blocks?.length: " + response.data.blocks?.length)
                 return this.mergeResponse(response, this.lastNumber.value)
             })
     }
