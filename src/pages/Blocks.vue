@@ -30,6 +30,11 @@
       <template v-slot:title>
         <span class="h-is-primary-title">Blocks</span>
       </template>
+      <template v-slot:control>
+        <div class="is-flex is-align-items-flex-end">
+          <PlayPauseButtonV2 v-model:state="cacheState"/>
+        </div>
+      </template>
       <template v-slot:table>
         <BlockTable :blocks="blocks"/>
       </template>
@@ -53,6 +58,7 @@ import Footer from "@/components/Footer.vue";
 import BlockTable from "@/components/block/BlockTable.vue";
 import {BlockCache} from "@/components/block/BlockCache";
 import {EntityCacheStateV2} from "@/utils/EntityCacheV2";
+import PlayPauseButtonV2 from "@/components/PlayPauseButtonV2.vue";
 
 export default defineComponent({
   name: 'Blocks',
@@ -62,6 +68,7 @@ export default defineComponent({
   },
 
   components: {
+    PlayPauseButtonV2,
     BlockTable,
     Footer,
     DashboardCard
