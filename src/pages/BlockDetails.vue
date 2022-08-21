@@ -31,6 +31,17 @@
         <span class="h-is-primary-title">Block {{ block?.number.toString() ?? "" }}</span>
       </template>
 
+      <template v-slot:control>
+        <div class="is-flex is-justify-content-flex-end is-align-items-center">
+          <button :disabled="disablePreviousButton"
+                  class="button is-white is-small" @click="handlePreviousButton">&lt; PREV BLOCK
+          </button>
+          <button :disabled="disableNextButton"
+                  class="button is-white is-small ml-4" @click="handleNextButton">NEXT BLOCK &gt;
+          </button>
+        </div>
+      </template>
+
       <template v-slot:table>
 
         <NotificationBanner v-if="notification" :message="notification"/>
@@ -126,7 +137,7 @@
 
 <script lang="ts">
 
-import {computed, defineComponent, inject, onMounted, watch} from 'vue';
+import {computed, defineComponent, inject, onMounted, ref, watch} from 'vue';
 import {PathParam} from "@/utils/PathParam";
 import {BlockLoader} from "@/components/block/BlockLoader";
 import DashboardCard from "@/components/DashboardCard.vue";
@@ -162,6 +173,7 @@ export default defineComponent({
   },
 
   setup(props) {
+    const nullHash = "0x000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000"
     const isSmallScreen = inject('isSmallScreen', true)
     const isTouchDevice = inject('isTouchDevice', false)
 
@@ -170,7 +182,6 @@ export default defineComponent({
     //
     // block
     //
-
     const blockLoader = new BlockLoader()
     watch(normBlockHON, () => blockLoader.blockHON.value = normBlockHON.value)
     onMounted(() => blockLoader.blockHON.value = normBlockHON.value)
@@ -198,12 +209,25 @@ export default defineComponent({
     onMounted(() => setupBlockTransactionsLoader())
     watch(blockLoader.entity, () => setupBlockTransactionsLoader())
 
+    const disablePreviousButton = ref(true)
+    const disableNextButton = ref(true)
+    watch(blockLoader.entity, () => {
+      disablePreviousButton.value = blockLoader.entity.value?.previous_hash === nullHash
+      disableNextButton.value = false
+    })
+    const handlePreviousButton = () => alert("Feature not available")
+    const handleNextButton = () => alert("Feature not available")
+
     return {
       isSmallScreen,
       isTouchDevice,
       block: blockLoader.entity,
       transactions: blockTransactionLoader.transactions,
       notification,
+      disablePreviousButton,
+      disableNextButton,
+      handlePreviousButton,
+      handleNextButton,
     }
   }
 });
