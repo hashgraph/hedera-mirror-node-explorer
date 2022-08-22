@@ -34,10 +34,10 @@
       <template v-slot:control>
         <div class="is-flex is-justify-content-flex-end is-align-items-center">
           <button :disabled="disablePreviousButton"
-                  class="button is-white is-small" @click="handlePreviousButton">&lt; PREV BLOCK
+                  class="button is-white is-small" @click="handlePreviousBlock">&lt; PREV BLOCK
           </button>
           <button :disabled="disableNextButton"
-                  class="button is-white is-small ml-4" @click="handleNextButton">NEXT BLOCK &gt;
+                  class="button is-white is-small ml-4" @click="handleNextBlock">NEXT BLOCK &gt;
           </button>
         </div>
       </template>
@@ -150,6 +150,7 @@ import Footer from "@/components/Footer.vue";
 import PlainAmount from "@/components/values/PlainAmount.vue";
 import BlockTransactionTable from "@/components/blocks/BlockTransactionTable.vue";
 import {BlockTransactionsLoader} from "@/components/block/BlockTransactionsLoader";
+import router from "@/router";
 
 export default defineComponent({
 
@@ -215,8 +216,16 @@ export default defineComponent({
       disablePreviousButton.value = blockLoader.entity.value?.previous_hash === nullHash
       disableNextButton.value = false
     })
-    const handlePreviousButton = () => alert("Feature not available")
-    const handleNextButton = () => alert("Feature not available")
+    const handlePreviousBlock = () => {
+      router.push({
+        params: { blockHon: blockLoader.entity.value?.previous_hash }
+      })
+    }
+    const handleNextBlock = () => {
+      router.push({
+        params: { blockHon: (blockLoader.entity.value?.number??0) + 1 }
+      })
+    }
 
     return {
       isSmallScreen,
@@ -226,8 +235,8 @@ export default defineComponent({
       notification,
       disablePreviousButton,
       disableNextButton,
-      handlePreviousButton,
-      handleNextButton,
+      handlePreviousBlock,
+      handleNextBlock,
     }
   }
 });
