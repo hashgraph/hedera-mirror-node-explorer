@@ -33,10 +33,10 @@
 
       <template v-slot:control>
         <div class="is-flex is-justify-content-flex-end is-align-items-center">
-          <button :disabled="disablePreviousButton"
-                  class="button is-white is-small" @click="handlePreviousBlock">&lt; PREV BLOCK
+          <button id="prev-block-button" :disabled="disablePreviousButton"
+                  class="button is-white is-small" @click="handlePreviousBlock">&lt; PREV. BLOCK
           </button>
-          <button :disabled="disableNextButton"
+          <button id="next-block-button" :disabled="disableNextButton"
                   class="button is-white is-small ml-4" @click="handleNextBlock">NEXT BLOCK &gt;
           </button>
         </div>
@@ -218,7 +218,8 @@ export default defineComponent({
     })
     const handlePreviousBlock = () => {
       router.push({
-        params: { blockHon: blockLoader.entity.value?.previous_hash }
+        // params: { blockHon: blockLoader.entity.value?.previous_hash }
+        params: { blockHon: (blockLoader.entity.value?.number??0) - 1 }
       })
     }
     const handleNextBlock = () => {
