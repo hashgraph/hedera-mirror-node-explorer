@@ -77,6 +77,17 @@ describe('Top Navigation Bar', () => {
     cy.contains('Accounts').click()
     cy.contains('Recent Accounts')
 
+    cy.contains('Nodes').click()
+    cy.contains('Network')
+    cy.contains('Nodes')
+
+    cy.contains('Staking').click()
+    cy.contains('My Staking')
+    cy.contains('Rewards Estimator')
+
+    cy.contains('Blocks').click()
+    cy.contains('Blocks')
+
     cy.contains('Dashboard').click()
     cy.contains('Crypto Transfers')
     cy.contains('Smart Contract Calls')
