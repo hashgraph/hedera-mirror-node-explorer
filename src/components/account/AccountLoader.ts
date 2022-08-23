@@ -22,7 +22,7 @@ import {EntityLoader} from "@/utils/EntityLoader";
 import {AccountBalanceTransactions} from "@/schemas/HederaSchemas";
 import {makeEthAddressForAccount} from "@/schemas/HederaUtils";
 import {operatorRegistry} from "@/schemas/OperatorRegistry";
-import {computed, ref, Ref, watch} from "vue";
+import {computed, Ref} from "vue";
 import axios, {AxiosResponse} from "axios";
 
 export class AccountLoader extends EntityLoader<AccountBalanceTransactions> {
@@ -31,12 +31,13 @@ export class AccountLoader extends EntityLoader<AccountBalanceTransactions> {
     // Public
     //
 
-    public constructor() {
+    public constructor(accountLocator: Ref<string|null>) {
         super()
-        watch(this.accountLocator, () => this.requestLoad())
+        this.accountLocator = accountLocator
+        this.watchAndReload([this.accountLocator])
     }
 
-    public readonly accountLocator: Ref<string|null> = ref(null) // Entity Id or Alias or EVM Address
+    public readonly accountLocator: Ref<string|null> // Entity Id or Alias or EVM Address
 
     public readonly accountId: Ref<string|null> = computed(() => this.entity.value?.account ?? null)
 

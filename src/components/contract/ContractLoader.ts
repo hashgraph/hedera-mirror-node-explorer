@@ -20,21 +20,22 @@
 
 import {EntityLoader} from "@/utils/EntityLoader";
 import {ContractResponse} from "@/schemas/HederaSchemas";
-import {ref, Ref, watch} from "vue";
+import {Ref} from "vue";
 import axios, {AxiosResponse} from "axios";
 
 export class ContractLoader extends EntityLoader<ContractResponse> {
+
+    private readonly contractLocator: Ref<string|null> // Contract Id or EVM Address
 
     //
     // Public
     //
 
-    public constructor() {
+    public constructor(contractLocator: Ref<string|null>) {
         super()
-        watch(this.contractLocator, () => this.requestLoad())
+        this.contractLocator = contractLocator
+        this.watchAndReload([this.contractLocator])
     }
-
-    public readonly contractLocator: Ref<string|null> = ref(null) // Contract Id or EVM Address
 
 
     //

@@ -20,21 +20,25 @@
 
 import {EntityLoader} from "@/utils/EntityLoader";
 import {Block} from "@/schemas/HederaSchemas";
-import {ref, watch, Ref} from "vue";
+import {computed, ComputedRef, Ref} from "vue";
 import axios, {AxiosResponse} from "axios";
 
 export class BlockLoader extends EntityLoader<Block> {
+
+    public readonly blockLocator: Ref<string|null>
 
     //
     // Public
     //
 
-    public constructor() {
+    public constructor(blockLocator: Ref<string|null>) {
         super()
-        watch(this.blockHON, () => this.requestLoad())
+        this.blockLocator = blockLocator
+        this.watchAndReload([this.blockLocator])
     }
 
-    public readonly blockHON: Ref<string|null> = ref(null)
+    public readonly blockCount: ComputedRef<number|null> = computed(() => this.entity.value?.count ?? null)
+    public readonly toTimestamp: ComputedRef<string|null> = computed(() => this.entity.value?.timestamp?.to ?? null)
 
     //
     // EntityLoader
@@ -42,8 +46,8 @@ export class BlockLoader extends EntityLoader<Block> {
 
     protected async load(): Promise<AxiosResponse<Block>|null> {
         let result: Promise<AxiosResponse<Block>|null>
-        if (this.blockHON.value != null) {
-            result = axios.get<Block>("api/v1/blocks/" + this.blockHON.value)
+        if (this.blockLocator.value != null) {
+            result = axios.get<Block>("api/v1/blocks/" + this.blockLocator.value)
         } else {
             result = Promise.resolve(null)
         }

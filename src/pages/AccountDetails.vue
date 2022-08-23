@@ -283,12 +283,9 @@ export default defineComponent({
     // account
     //
 
-    const accountLoader = new AccountLoader()
-    const setupAccountLoader = () => {
-      accountLoader.accountLocator.value = PathParam.parseAccountIdOrAliasOrEvmAddress(props.accountId)
-    }
-    watch(() => props.accountId, () => setupAccountLoader());
-    onMounted(() => setupAccountLoader())
+    const accountLocator = computed(() => PathParam.parseAccountIdOrAliasOrEvmAddress(props.accountId))
+    const accountLoader = new AccountLoader(accountLocator)
+    onMounted(() => accountLoader.requestLoad())
 
     const notification = computed(() => {
       let result
@@ -386,12 +383,8 @@ export default defineComponent({
     //
     // contract
     //
-    const contractLoader = new ContractLoader()
-    const setupContractLoader = () => {
-      contractLoader.contractLocator.value = accountLoader.accountId.value
-    }
-    watch(accountLoader.accountId, () => setupContractLoader());
-    onMounted(() => setupContractLoader())
+    const contractLoader = new ContractLoader(accountLoader.accountId)
+    onMounted(() => contractLoader.requestLoad())
     const showContractVisible = computed(() => {
       return contractLoader.entity.value != null
     })

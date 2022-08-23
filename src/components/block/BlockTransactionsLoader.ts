@@ -20,24 +20,26 @@
 
 import {EntityLoader} from "@/utils/EntityLoader";
 import {TransactionResponse} from "@/schemas/HederaSchemas";
-import {ref, watch, Ref, computed} from "vue";
+import {computed, Ref} from "vue";
 import axios, {AxiosResponse} from "axios";
 
 export class BlockTransactionsLoader extends EntityLoader<TransactionResponse> {
+
+    private readonly timestamp: Ref<string|null>
+    private readonly limit: Ref<number|null>
 
     //
     // Public
     //
 
-    public constructor() {
+    public constructor(timestamp: Ref<string|null>, limit: Ref<number|null>) {
         super()
-        watch([this.timestamp, this.limit], () => this.requestLoad())
+        this.timestamp = timestamp
+        this.limit = limit
+        this.watchAndReload([this.timestamp, this.limit])
     }
 
     public transactions = computed(() => this.entity.value?.transactions ?? [])
-
-    public readonly timestamp: Ref<string|null> = ref(null)
-    public readonly limit: Ref<number|null> = ref(null)
 
     //
     // EntityLoader
