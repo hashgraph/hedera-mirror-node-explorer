@@ -1166,6 +1166,7 @@ export const SAMPLE_NETWORK_NODES = {
             "node_account_id": "0.0.3",
             "node_cert_hash": "0xffd6ada74a3a34a9",
             "public_key": "0x308201a2300d0609",
+            "reward_rate_start": 13698630137,
             "service_endpoints": [
                 {
                     "ip_address_v4": "3.211.248.172",
@@ -1208,6 +1209,7 @@ export const SAMPLE_NETWORK_NODES = {
             "node_account_id": "0.0.4",
             "node_cert_hash": "0xffd6ada74a3a34a9",
             "public_key": "0x308201a2300d0609",
+            "reward_rate_start": 38356164383,
             "service_endpoints": [
                 {
                     "ip_address_v4": "3.133.213.146",
@@ -1237,6 +1239,7 @@ export const SAMPLE_NETWORK_NODES = {
             "node_account_id": "0.0.5",
             "node_cert_hash": "0xffd6ada74a3a34a9",
             "public_key": "0x308201a2300d0609",
+            "reward_rate_start": 57534246575,
             "service_endpoints": [
                 {
                     "ip_address_v4": "3.133.213.146",
