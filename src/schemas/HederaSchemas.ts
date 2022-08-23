@@ -472,6 +472,18 @@ export interface NetworkSupplyResponse {
     total_supply:	string | undefined  // The network's total supply of hbars in tinybars
 }
 
+export interface  NetworkStake {
+    max_staking_reward_rate_per_hbar: number,
+    node_reward_fee_fraction: number,
+    stake_total: number,
+    staking_period: TimestampRange,
+    staking_period_duration: number,
+    staking_periods_stored: number,
+    staking_reward_fee_fraction: number,
+    staking_reward_rate: number,
+    staking_start_threshold: number
+}
+
 // ---------------------------------------------------------------------------------------------------------------------
 //                                                      Block
 // ---------------------------------------------------------------------------------------------------------------------

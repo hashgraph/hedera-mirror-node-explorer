@@ -144,6 +144,7 @@ export default defineComponent({
   props: {
     nodes: Object as PropType<Array<NetworkNode> | undefined>,
     unclampedStakeTotal: Number,
+    stakeTotal: Number,
     minStake: Number,
     maxStake: Number,
   },
@@ -168,7 +169,7 @@ export default defineComponent({
         style: 'percent',
         maximumFractionDigits: 1
       })
-      return formatter.format(node.stake && node.stake_total ? node.stake / node.stake_total : 0);
+      return formatter.format(node.stake && props.stakeTotal ? node.stake / props.stakeTotal : 0);
     }
 
     const rewardRate = (node: NetworkNode) => {
@@ -204,11 +205,11 @@ export default defineComponent({
     })
 
     const makeStakeProgress = (node: NetworkNode) =>
-        progressScale.value ? (makeUnclampedStake(node) / 100000000) / progressScale.value * 100 : 0
+        progressScale.value ? makeUnclampedStake(node)  / progressScale.value * 100 : 0
 
     const isStakeInRange = (node: NetworkNode) => {
       let result: boolean
-      const stake = (node.stake ?? 0) / 100000000
+      const stake = node.stake ?? 0
       if (stake && props.minStake && props.maxStake) {
         result = stake >= props.minStake && stake < props.maxStake
       }

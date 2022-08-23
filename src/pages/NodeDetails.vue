@@ -90,24 +90,24 @@
           </div>
 
           <div class="column h-has-column-separator">
-              <NetworkDashboardItem :name="'APPROX ANNUAL EQUIVALENT'" :title="'Last Period Reward Rate'"
+              <NetworkDashboardItem id="yearlyRate" :name="'APPROX ANNUAL EQUIVALENT'" :title="'Last Period Reward Rate'"
                                     :value="approxYearlyRate.toString()"/>
               <br/><br/>
-              <NetworkDashboardItem :name="'HBAR'" :title="'Stake for Consensus'" :value="stake.toLocaleString('en-US')"/>
-                <p v-if="stake" class="h-is-property-text h-is-extra-text mt-1">{{ stakePercentage }}% of total</p>
+              <NetworkDashboardItem id="consensusStake" :name="'HBAR'" :title="'Stake for Consensus'" :value="makeFloorHbarAmount(stake)"/>
+                <p id="consensusStakePercent" v-if="stake" class="h-is-property-text h-is-extra-text mt-1">{{ stakePercentage }}% of total</p>
                 <p v-else class="h-is-property-text h-is-extra-text mt-1">(&lt;Min)</p>
               <br/><br/>
-              <NetworkDashboardItem :name="'HBAR'" :title="'Min Stake'" :value="minStake.toLocaleString('en-US')"/>
+              <NetworkDashboardItem id="minStake" :name="'HBAR'" :title="'Min Stake'" :value="makeFloorHbarAmount(minStake)"/>
               <br/><br/>
-              <NetworkDashboardItem :name="'HBAR'" :title="'Max Stake'" :value="maxStake.toLocaleString('en-US')"/>
+              <NetworkDashboardItem id="maxStake" :name="'HBAR'" :title="'Max Stake'" :value="makeFloorHbarAmount(maxStake)"/>
               <br/><br/>
-              <NetworkDashboardItem :name="'HBAR'" :title="'Stake Rewarded'" :value="stakeRewarded.toLocaleString('en-US')"/>
-              <p class="h-is-property-text h-is-extra-text mt-1">{{ stakeRewardedPercentage }}% of total</p>
+              <NetworkDashboardItem id="rewarded" :name="'HBAR'" :title="'Stake Rewarded'" :value="makeFloorHbarAmount(stakeRewarded)"/>
+              <p id="rewardedPercent" class="h-is-property-text h-is-extra-text mt-1">{{ stakeRewardedPercentage }}% of total</p>
               <br/><br/>
-              <NetworkDashboardItem :name="'HBAR'" :title="'Stake Not Rewarded'" :value="stakeUnrewarded.toLocaleString('en-US')"/>
-              <p class="h-is-property-text h-is-extra-text mt-1">{{ stakeUnrewardedPercentage }}% of total</p>
+              <NetworkDashboardItem id="notRewarded" :name="'HBAR'" :title="'Stake Not Rewarded'" :value="makeFloorHbarAmount(stakeUnrewarded)"/>
+              <p id="notRewardedPercent" class="h-is-property-text h-is-extra-text mt-1">{{ stakeUnrewardedPercentage }}% of total</p>
               <br/><br/>
-              <NetworkDashboardItem :name="'HOURS'" :title="'Current Staking Period'" :value="'24'"/>
+              <NetworkDashboardItem id="stakingPeriod" :name="'HOURS'" :title="'Current Staking Period'" :value="'24'"/>
               <p class="h-is-property-text h-is-extra-text mt-1">from 00:00 am today to 11:59 pm today UTC</p>
               <div class="mt-6"/>
           </div>
@@ -147,6 +147,7 @@ import HexaValue from "@/components/values/HexaValue.vue";
 import {operatorRegistry} from "@/schemas/OperatorRegistry";
 import Endpoints from "@/components/values/Endpoints.vue";
 import NetworkDashboardItem from "@/components/node/NetworkDashboardItem.vue";
+import {StakeLoader} from "@/components/staking/StakeLoader";
 
 export default defineComponent({
 
@@ -180,6 +181,7 @@ export default defineComponent({
     const isTouchDevice = inject('isTouchDevice', false)
     const nodes = ref<Array<NetworkNode> | null>([])
     const node = ref<NetworkNode | null>(null)
+    const stakeLoader = new StakeLoader()
 
     const rewardRate = computed(() =>
         node.value?.reward_rate_start && node.value?.stake_rewarded
@@ -192,19 +194,27 @@ export default defineComponent({
       })
       return formatter.format(rewardRate.value * 365);
     })
-    const stake = computed(() => node.value?.stake ? Math.round(node.value.stake / 100000000) : 0)
-    const minStake = computed(() => node.value?.min_stake ? Math.round(node.value.min_stake / 100000000) : 0)
-    const maxStake = computed(() => node.value?.max_stake ? Math.round(node.value.max_stake / 100000000) : 0)
-    const stakeTotal = computed(() => node.value?.stake_total ? Math.round(node.value.stake_total / 100000000) : 0)
+    const stake = computed(() => node.value?.stake ?? 0)
+    const minStake = computed(() => node.value?.min_stake ?? 0)
+    const maxStake = computed(() => node.value?.max_stake ?? 0)
+    const stakeTotal = computed(() => {
+      let result
+      if (stakeLoader.got404.value) {
+        result = (node.value?.stake_total ?? 0)
+      } else {
+        result = (stakeLoader.entity.value?.stake_total ?? 0)
+      }
+      return result
+    })
     const stakePercentage = computed(() =>
         stakeTotal.value ? Math.round(stake.value / stakeTotal.value * 10000) / 100 : 0)
 
-    const stakeRewarded = computed(() => node.value?.stake_rewarded ? Math.round(node.value.stake_rewarded / 100000000) : 0)
+    const stakeRewarded = computed(() => node.value?.stake_rewarded ?? 0)
     const stakeRewardedTotal = ref(0)
     const stakeRewardedPercentage = computed(() =>
         stakeRewardedTotal.value ? Math.round(stakeRewarded.value / stakeRewardedTotal.value * 10000) / 100 : 0)
 
-    const stakeUnrewarded = computed(() => node.value?.stake_not_rewarded ? Math.round(node.value.stake_not_rewarded / 100000000) : 0)
+    const stakeUnrewarded = computed(() => node.value?.stake_not_rewarded ?? 0)
     const stakeUnrewardedTotal = ref(0)
     const stakeUnrewardedPercentage = computed(() =>
         stakeUnrewardedTotal.value ? Math.round(stakeUnrewarded.value / stakeUnrewardedTotal.value * 10000) / 100 : 0)
@@ -245,10 +255,10 @@ export default defineComponent({
               nodes.value = nodes.value ? nodes.value.concat(result.data.nodes) : result.data.nodes
               for (const n of result.data.nodes) {
                 if (n.stake_rewarded) {
-                  stakeRewardedTotal.value += n.stake_rewarded/100000000
+                  stakeRewardedTotal.value += n.stake_rewarded
                 }
                 if (n.stake_not_rewarded) {
-                  stakeUnrewardedTotal.value += n.stake_not_rewarded/100000000
+                  stakeUnrewardedTotal.value += n.stake_not_rewarded
                 }
               }
             }
@@ -279,6 +289,8 @@ export default defineComponent({
       return hash != undefined ? byteToHex(base64DecToArr(hash)) : ""
     }
 
+    const makeFloorHbarAmount = (tinyBarAmount: number) => Math.floor((tinyBarAmount ?? 0) / 100000000).toLocaleString('en-US')
+
     return {
       isSmallScreen,
       isTouchDevice,
@@ -294,7 +306,8 @@ export default defineComponent({
       stakeUnrewardedPercentage,
       notification,
       nodeDescription,
-      formatHash
+      formatHash,
+      makeFloorHbarAmount
     }
   },
 });

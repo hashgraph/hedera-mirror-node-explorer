@@ -21,7 +21,7 @@
 import {flushPromises, mount} from "@vue/test-utils"
 import router from "@/router";
 import axios from "axios";
-import {SAMPLE_NETWORK_NODES} from "../Mocks";
+import {SAMPLE_NETWORK_NODES, SAMPLE_NETWORK_STAKE} from "../Mocks";
 import DashboardCard from "@/components/DashboardCard.vue";
 import MockAdapter from "axios-mock-adapter";
 import Oruga from "@oruga-ui/oruga-next";
@@ -72,6 +72,8 @@ describe("Nodes.vue", () => {
 
         const matcher1 = "/api/v1/network/nodes"
         mock.onGet(matcher1).reply(200, SAMPLE_NETWORK_NODES);
+        const matcher2 = "/api/v1/network/stake"
+        mock.onGet(matcher2).reply(200, SAMPLE_NETWORK_STAKE);
 
         const wrapper = mount(Nodes, {
             global: {
@@ -88,16 +90,21 @@ describe("Nodes.vue", () => {
         expect(cards[0].text()).toMatch(RegExp("^Network"))
         const items = cards[0].findAllComponents(NetworkDashboardItem)
         expect(items.length).toBe(6)
-        expect(items[0].text()).toMatch(RegExp("Total Nodes"))
+        expect(items[0].text()).toMatch(RegExp("Total Nodes3"))
+        expect(items[1].text()).toMatch(RegExp("Last Staked"))
+        expect(items[2].text()).toMatch(RegExp("Total Staked24,000,000HBAR"))
+        expect(items[3].text()).toMatch(RegExp("Next Staking Periodin"))
+        expect(items[4].text()).toMatch(RegExp("Last Period Reward1,095HBAR"))
+        expect(items[5].text()).toMatch(RegExp("Staking Period24h"))
 
         expect(cards[1].text()).toMatch(RegExp("^Nodes"))
         const table = cards[1].findComponent(NodeTable)
         expect(table.exists()).toBe(true)
         expect(table.get('thead').text()).toBe("Node Account Hosted By Location Stake Stake Not Rewarded Last Reward Rate Stake Range")
         expect(wrapper.get('tbody').text()).toBe(
-            "0" + "0.0.3" + "testnet" + "None" + tooltipStake + "6,000,000(25%)" + tooltipNotRewarded + "1,000,000" + tooltipRewardRate + "0%" +
-            "1" + "0.0.4" + "testnet" + "None" + tooltipStake + "9,000,000(37.5%)" + tooltipNotRewarded + "2,000,000" + tooltipRewardRate + "0%" +
-            "2" + "0.0.5" + "testnet" + "None" + tooltipStake + "9,000,000(37.5%)" + tooltipNotRewarded + "2,000,000" + tooltipRewardRate + "0%"
+            "0" + "0.0.3" + "testnet" + "None" + tooltipStake + "6,000,000(25%)" + tooltipNotRewarded + "1,000,000" + tooltipRewardRate + "1%" +
+            "1" + "0.0.4" + "testnet" + "None" + tooltipStake + "9,000,000(37.5%)" + tooltipNotRewarded + "2,000,000" + tooltipRewardRate + "2%" +
+            "2" + "0.0.5" + "testnet" + "None" + tooltipStake + "9,000,000(37.5%)" + tooltipNotRewarded + "2,000,000" + tooltipRewardRate + "3%"
         )
     });
 

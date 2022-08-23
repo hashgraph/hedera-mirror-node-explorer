@@ -74,7 +74,8 @@ describe("NodeTable.vue", () => {
             },
             props: {
                 nodes: SAMPLE_NETWORK_NODES.nodes as Array<NetworkNode>,
-                unclampedStakeTotal: testTotalStaked/100000000,
+                unclampedStakeTotal: testTotalStaked,
+                stakeTotal: testTotalStaked,
                 minStake: SAMPLE_NETWORK_NODES.nodes[0].min_stake,
                 maxStake: SAMPLE_NETWORK_NODES.nodes[0].max_stake
             }
@@ -87,9 +88,9 @@ describe("NodeTable.vue", () => {
         expect(wrapper.get('thead').text()).toBe("Node Account Hosted By Location Stake Stake Not Rewarded Last Reward Rate Stake Range")
         expect(wrapper.get('tbody').findAll('tr').length).toBe(3)
         expect(wrapper.get('tbody').text()).toBe(
-            "0" + "0.0.3" + "testnet" + "None" + tooltipStake + "6,000,000(25%)" + tooltipNotRewarded + "1,000,000" + tooltipRewardRate + "0%" +
-            "1" + "0.0.4" + "testnet" + "None" + tooltipStake + "9,000,000(37.5%)" + tooltipNotRewarded + "2,000,000" + tooltipRewardRate + "0%" +
-            "2" + "0.0.5" + "testnet" + "None" + tooltipStake + "9,000,000(37.5%)" + tooltipNotRewarded + "2,000,000" + tooltipRewardRate + "0%"
+            "0" + "0.0.3" + "testnet" + "None" + tooltipStake + "6,000,000(25%)" + tooltipNotRewarded + "1,000,000" + tooltipRewardRate + "1%" +
+            "1" + "0.0.4" + "testnet" + "None" + tooltipStake + "9,000,000(37.5%)" + tooltipNotRewarded + "2,000,000" + tooltipRewardRate + "2%" +
+            "2" + "0.0.5" + "testnet" + "None" + tooltipStake + "9,000,000(37.5%)" + tooltipNotRewarded + "2,000,000" + tooltipRewardRate + "3%"
         )
 
         wrapper.unmount()

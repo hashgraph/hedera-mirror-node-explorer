@@ -92,6 +92,18 @@ describe("NodeDetails.vue", () => {
         expect(wrapper.get("#rangeToValue").text()).toBe("None")
         expect(wrapper.get("#nodeCertHashValue").text()).toBe("d317 df77 a69d 6bbe 1add adf8 6bCopy to Clipboard")
         expect(wrapper.get("#serviceEndpointsValue").text()).toBe("3.211.248.172:502113.211.248.172:5021235.231.208.148:035.231.208.148:5021135.231.208.148:50212")
+
+        expect(wrapper.get("#yearlyRate").text()).toBe("Last Period Reward Rate1%APPROX ANNUAL EQUIVALENT")
+        expect(wrapper.get("#consensusStake").text()).toBe("Stake for Consensus6,000,000HBAR")
+        expect(wrapper.get("#consensusStakePercent").text()).toBe("25% of total")
+        expect(wrapper.get("#minStake").text()).toBe("Min Stake1,000,000HBAR")
+        expect(wrapper.get("#maxStake").text()).toBe("Max Stake30,000,000HBAR")
+        expect(wrapper.get("#rewarded").text()).toBe("Stake Rewarded5,000,000HBAR")
+        expect(wrapper.get("#rewardedPercent").text()).toBe("26.32% of total")
+        expect(wrapper.get("#notRewarded").text()).toBe("Stake Not Rewarded1,000,000HBAR")
+        expect(wrapper.get("#notRewardedPercent").text()).toBe("20% of total")
+        expect(wrapper.get("#stakingPeriod").text()).toBe("Current Staking Period24HOURS")
+
     });
 
     it("Should update when account id changes", async () => {
