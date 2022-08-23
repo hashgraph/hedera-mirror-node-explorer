@@ -39,12 +39,12 @@
               <NetworkDashboardItem :title="'Last Staked'" :value="formatSeconds(elapsedMin*60) + ' ago'"/>
             </div>
             <div class="is-flex-direction-column">
-              <NetworkDashboardItem :name="'HBAR'" :title="'Total Staked'" :value="unclampedStakeTotal.toLocaleString('en-US')"/>
+              <NetworkDashboardItem :name="'HBAR'" :title="'Total Staked'" :value="makeHbarAmount(unclampedStakeTotal)"/>
               <div class="mt-4"/>
               <NetworkDashboardItem :title="'Next Staking Period'" :value="'in ' + formatSeconds(remainingMin*60)"/>
             </div>
             <div class="is-flex-direction-column">
-              <NetworkDashboardItem :name="'HBAR'" :title="'Last Period Reward'" :value="totalRewarded.toLocaleString('en-US')"/>
+              <NetworkDashboardItem :name="'HBAR'" :title="'Last Period Reward'" :value="makeHbarAmount(totalRewarded)"/>
               <div class="mt-4"/>
               <NetworkDashboardItem :title="'Staking Period'" :value="formatSeconds(durationMin*60)"/>
             </div>
@@ -55,11 +55,11 @@
               <div class="mt-4"/>
               <NetworkDashboardItem :title="'Last Staked'" :value="formatSeconds(elapsedMin*60) + 'ago'"/>
               <div class="mt-4"/>
-              <NetworkDashboardItem :name="'HBAR'" :title="'Total Staked'" :value="unclampedStakeTotal.toLocaleString('en-US')"/>
+              <NetworkDashboardItem :name="'HBAR'" :title="'Total Staked'" :value="makeHbarAmount(unclampedStakeTotal)"/>
               <div class="mt-4"/>
               <NetworkDashboardItem :title="'Next Staking Period'" :value="'in' + formatSeconds(remainingMin*60)"/>
               <div class="mt-4"/>
-              <NetworkDashboardItem :name="'HBAR'" :title="'Last Period Reward'" :value="totalRewarded.toLocaleString('en-US')"/>
+              <NetworkDashboardItem :name="'HBAR'" :title="'Last Period Reward'" :value="makeHbarAmount(totalRewarded)"/>
               <div class="mt-4"/>
               <NetworkDashboardItem :title="'Staking Period'" :value="formatSeconds(durationMin*60)"/>
               <div class="mt-6"/>
@@ -153,13 +153,13 @@ export default defineComponent({
             if (result.data.nodes) {
               nodes.value = nodes.value ? nodes.value.concat(result.data.nodes) : result.data.nodes
               if (nodes.value.length) {
-                stakeTotal.value = Math.round((nodes.value[0].stake_total ?? 0) / 100000000)
-                minStake.value = Math.round((nodes.value[0].min_stake ?? 0) / 100000000)
-                maxStake.value = Math.round((nodes.value[0].max_stake ?? 0) / 100000000)
+                stakeTotal.value = (nodes.value[0].stake_total ?? 0)
+                minStake.value = (nodes.value[0].min_stake ?? 0)
+                maxStake.value = (nodes.value[0].max_stake ?? 0)
               }
               for (const n of result.data.nodes) {
-                totalRewarded.value += (n.reward_rate_start ?? 0)/100000000
-                unclampedStakeTotal.value += ((n.stake_rewarded ?? 0) + (n.stake_not_rewarded ?? 0))/100000000
+                totalRewarded.value += (n.reward_rate_start ?? 0)
+                unclampedStakeTotal.value += (n.stake_rewarded ?? 0) + (n.stake_not_rewarded ?? 0)
               }
             }
             const next = result.data.links?.next
@@ -181,6 +181,8 @@ export default defineComponent({
       stakingPeriod.value = new StakingPeriod(startTimeInSec, endTimeInSec)
     }
 
+    const makeHbarAmount = (tinyBarAmount: number) => (tinyBarAmount/100000000).toLocaleString('en-US')
+
     return {
       isSmallScreen,
       isTouchDevice,
@@ -194,6 +196,7 @@ export default defineComponent({
       durationMin,
       elapsedMin,
       remainingMin,
+      makeHbarAmount,
       formatSeconds
     }
   }

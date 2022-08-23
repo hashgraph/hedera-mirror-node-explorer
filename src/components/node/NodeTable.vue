@@ -204,11 +204,11 @@ export default defineComponent({
     })
 
     const makeStakeProgress = (node: NetworkNode) =>
-        progressScale.value ? (makeUnclampedStake(node) / 100000000) / progressScale.value * 100 : 0
+        progressScale.value ? makeUnclampedStake(node)  / progressScale.value * 100 : 0
 
     const isStakeInRange = (node: NetworkNode) => {
       let result: boolean
-      const stake = (node.stake ?? 0) / 100000000
+      const stake = node.stake ?? 0
       if (stake && props.minStake && props.maxStake) {
         result = stake >= props.minStake && stake < props.maxStake
       }

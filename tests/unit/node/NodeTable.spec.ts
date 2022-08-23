@@ -74,7 +74,7 @@ describe("NodeTable.vue", () => {
             },
             props: {
                 nodes: SAMPLE_NETWORK_NODES.nodes as Array<NetworkNode>,
-                unclampedStakeTotal: testTotalStaked/100000000,
+                unclampedStakeTotal: testTotalStaked,
                 minStake: SAMPLE_NETWORK_NODES.nodes[0].min_stake,
                 maxStake: SAMPLE_NETWORK_NODES.nodes[0].max_stake
             }
