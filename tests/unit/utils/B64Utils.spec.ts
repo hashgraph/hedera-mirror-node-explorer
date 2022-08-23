@@ -55,7 +55,7 @@ describe("B64Utils.ts", () => {
         const decodedBytes = base32ToAlias(base32String)
         expect(decodedBytes).not.toBeNull()
 
-        const decodedHex = byteToHex(new Uint8Array(decodedBytes))
+        const decodedHex = byteToHex(decodedBytes!)
         expect(decodedHex).toEqual(hexString)
     })
 

@@ -473,6 +473,33 @@ export interface NetworkSupplyResponse {
 }
 
 // ---------------------------------------------------------------------------------------------------------------------
+//                                                      Block
+// ---------------------------------------------------------------------------------------------------------------------
+
+export interface BlocksResponse {
+    blocks: Array<Block> | undefined
+    links: Links | undefined
+}
+
+export interface Block {
+    count: number | undefined // integer - minimum 0
+    gas_used: number | null | undefined // integer - minimum 0
+    hapi_version: string | undefined
+    hash: string | undefined
+    logs_bloom: string | null | undefined // pattern ^0x[0-9a-fA-F]{512}$
+    name: string | undefined
+    number: number | undefined
+    previous_hash: string | undefined
+    size: number | null | undefined // integer
+    timestamp: TimestampRange | undefined
+}
+
+export interface TimestampRange {
+    from: string | undefined // pattern: ^\d{1,10}(\.\d{1,9})?$
+    to: string | null | undefined // pattern: ^\d{1,10}(\.\d{1,9})?$
+}
+
+// ---------------------------------------------------------------------------------------------------------------------
 //                                                      Misc
 // ---------------------------------------------------------------------------------------------------------------------
 

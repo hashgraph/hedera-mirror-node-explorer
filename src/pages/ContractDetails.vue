@@ -247,8 +247,9 @@ export default defineComponent({
     })
 
     const aliasByteString = computed(() => {
-      const alias = account.value?.alias
-      return alias ? byteToHex(new Uint8Array(base32ToAlias(alias))) : null
+      const alias32 = account.value?.alias
+      const aliasBytes = alias32 ? base32ToAlias(alias32) : null
+      return aliasBytes !== null ? byteToHex(aliasBytes) : null
     })
 
     //

@@ -77,7 +77,7 @@ describe("SearchRequest.ts", () => {
     })
 
     test("account (with alias)", async () => {
-        const aliasHex = byteToHex(new Uint8Array(base32ToAlias(SAMPLE_ACCOUNT.alias)))
+        const aliasHex = byteToHex(base32ToAlias(SAMPLE_ACCOUNT.alias)!)
         const r = new SearchRequest(aliasHex)
         await r.run()
 

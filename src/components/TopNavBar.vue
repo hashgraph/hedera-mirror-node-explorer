@@ -98,6 +98,10 @@
            class="button is-ghost is-last h-is-navbar-item h-is-dense"
            :class="{ 'is-rimmed': isStakingRoute}"
            @click="$router.push({name: 'Staking'})">Staking</a>
+        <a v-if="isBlocksEnabled"
+           class="button is-ghost is-last h-is-navbar-item h-is-dense"
+           :class="{ 'is-rimmed': isBlocksRoute}"
+           @click="$router.push({name: 'Blocks'})">Blocks</a>
       </div>
       <SearchBar style="margin-top: 4px"/>
     </div>
@@ -131,6 +135,7 @@ export default defineComponent({
 
     const productName = process.env.VUE_APP_PRODUCT_NAME ?? "Hedera Mirror Node Explorer"
     const isStakingEnabled = process.env.VUE_APP_ENABLE_STAKING === 'true'
+    const isBlocksEnabled = process.env.VUE_APP_ENABLE_BLOCKS === 'true'
 
     const route = useRoute()
     const network = computed( () => { return route.params.network })
@@ -190,6 +195,10 @@ export default defineComponent({
       return name.value === 'Staking'
     })
 
+    const isBlocksRoute = computed(() => {
+      return name.value === 'Blocks'
+    })
+
     return {
       isSmallScreen,
       isMediumScreen,
@@ -197,6 +206,7 @@ export default defineComponent({
       buildTime,
       productName,
       isStakingEnabled,
+      isBlocksEnabled,
       name,
       isMobileMenuOpen,
       networkRegistry,
@@ -208,7 +218,8 @@ export default defineComponent({
       isContractRoute,
       isAccountRoute,
       isNodeRoute,
-      isStakingRoute
+      isStakingRoute,
+      isBlocksRoute
     }
   },
 })

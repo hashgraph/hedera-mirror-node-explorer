@@ -57,6 +57,7 @@ describe("App.vue", () => {
 
     beforeEach(() => {
         process.env = Object.assign(process.env, { VUE_APP_ENABLE_STAKING: false });
+        process.env = Object.assign(process.env, { VUE_APP_ENABLE_BLOCKS: false });
     })
 
     test("normal screen", async () => {
