@@ -144,6 +144,7 @@ export default defineComponent({
   props: {
     nodes: Object as PropType<Array<NetworkNode> | undefined>,
     unclampedStakeTotal: Number,
+    stakeTotal: Number,
     minStake: Number,
     maxStake: Number,
   },
@@ -168,7 +169,7 @@ export default defineComponent({
         style: 'percent',
         maximumFractionDigits: 1
       })
-      return formatter.format(node.stake && node.stake_total ? node.stake / node.stake_total : 0);
+      return formatter.format(node.stake && props.stakeTotal ? node.stake / props.stakeTotal : 0);
     }
 
     const rewardRate = (node: NetworkNode) => {

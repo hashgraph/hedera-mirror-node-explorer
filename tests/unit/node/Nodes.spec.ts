@@ -21,7 +21,7 @@
 import {flushPromises, mount} from "@vue/test-utils"
 import router from "@/router";
 import axios from "axios";
-import {SAMPLE_NETWORK_NODES} from "../Mocks";
+import {SAMPLE_NETWORK_NODES, SAMPLE_NETWORK_STAKE} from "../Mocks";
 import DashboardCard from "@/components/DashboardCard.vue";
 import MockAdapter from "axios-mock-adapter";
 import Oruga from "@oruga-ui/oruga-next";
@@ -72,6 +72,8 @@ describe("Nodes.vue", () => {
 
         const matcher1 = "/api/v1/network/nodes"
         mock.onGet(matcher1).reply(200, SAMPLE_NETWORK_NODES);
+        const matcher2 = "/api/v1/network/stake"
+        mock.onGet(matcher2).reply(200, SAMPLE_NETWORK_STAKE);
 
         const wrapper = mount(Nodes, {
             global: {

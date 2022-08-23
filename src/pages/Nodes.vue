@@ -39,12 +39,12 @@
               <NetworkDashboardItem :title="'Last Staked'" :value="formatSeconds(elapsedMin*60) + ' ago'"/>
             </div>
             <div class="is-flex-direction-column">
-              <NetworkDashboardItem :name="'HBAR'" :title="'Total Staked'" :value="makeHbarAmount(unclampedStakeTotal)"/>
+              <NetworkDashboardItem :name="'HBAR'" :title="'Total Staked'" :value="makeFloorHbarAmount(unclampedStakeTotal)"/>
               <div class="mt-4"/>
               <NetworkDashboardItem :title="'Next Staking Period'" :value="'in ' + formatSeconds(remainingMin*60)"/>
             </div>
             <div class="is-flex-direction-column">
-              <NetworkDashboardItem :name="'HBAR'" :title="'Last Period Reward'" :value="makeHbarAmount(totalRewarded)"/>
+              <NetworkDashboardItem :name="'HBAR'" :title="'Last Period Reward'" :value="makeFloorHbarAmount(totalRewarded)"/>
               <div class="mt-4"/>
               <NetworkDashboardItem :title="'Staking Period'" :value="formatSeconds(durationMin*60)"/>
             </div>
@@ -55,11 +55,11 @@
               <div class="mt-4"/>
               <NetworkDashboardItem :title="'Last Staked'" :value="formatSeconds(elapsedMin*60) + 'ago'"/>
               <div class="mt-4"/>
-              <NetworkDashboardItem :name="'HBAR'" :title="'Total Staked'" :value="makeHbarAmount(unclampedStakeTotal)"/>
+              <NetworkDashboardItem :name="'HBAR'" :title="'Total Staked'" :value="makeFloorHbarAmount(unclampedStakeTotal)"/>
               <div class="mt-4"/>
               <NetworkDashboardItem :title="'Next Staking Period'" :value="'in' + formatSeconds(remainingMin*60)"/>
               <div class="mt-4"/>
-              <NetworkDashboardItem :name="'HBAR'" :title="'Last Period Reward'" :value="makeHbarAmount(totalRewarded)"/>
+              <NetworkDashboardItem :name="'HBAR'" :title="'Last Period Reward'" :value="makeFloorHbarAmount(totalRewarded)"/>
               <div class="mt-4"/>
               <NetworkDashboardItem :title="'Staking Period'" :value="formatSeconds(durationMin*60)"/>
               <div class="mt-6"/>
@@ -74,7 +74,11 @@
         <span class="h-is-primary-title">Nodes</span>
       </template>
       <template v-slot:table>
-        <NodeTable :nodes="nodes" :unclamped-stake-total="unclampedStakeTotal" :min-stake="minStake" :max-stake="maxStake"/>
+        <NodeTable :nodes="nodes"
+                   :unclamped-stake-total="unclampedStakeTotal"
+                   :stake-total="stakeTotal"
+                   :min-stake="minStake"
+                   :max-stake="maxStake"/>
       </template>
     </DashboardCard>
 
@@ -99,6 +103,7 @@ import axios from "axios";
 import {NetworkNode, NetworkNodesResponse} from "@/schemas/HederaSchemas";
 import {formatSeconds} from "@/utils/Duration";
 import {StakingPeriod} from "@/utils/StakingPeriod";
+import {StakeLoader} from "@/components/staking/StakeLoader";
 
 export default defineComponent({
   name: 'Nodes',
@@ -120,10 +125,22 @@ export default defineComponent({
 
     let nodes = ref<Array<NetworkNode> | null>([])
     const totalNodes = computed(() => nodes.value?.length.toString() ?? "")
+    const stakeLoader = new StakeLoader()
 
     const minStake = ref(0)
     const maxStake = ref(0)
-    const stakeTotal = ref(0)
+    const compatibilityStakeTotal = ref(0)
+
+    const stakeTotal = computed(() => {
+      let result
+      if (stakeLoader.got404.value) {
+        result = compatibilityStakeTotal.value
+      } else {
+        result = (stakeLoader.entity.value?.stake_total ?? 0)
+      }
+      return result
+    })
+
     const unclampedStakeTotal = ref(0)
     const totalRewarded = ref(0)
     const stakingPeriod = ref<StakingPeriod | null>(null)
@@ -153,9 +170,9 @@ export default defineComponent({
             if (result.data.nodes) {
               nodes.value = nodes.value ? nodes.value.concat(result.data.nodes) : result.data.nodes
               if (nodes.value.length) {
-                stakeTotal.value = (nodes.value[0].stake_total ?? 0)
-                minStake.value = (nodes.value[0].min_stake ?? 0)
-                maxStake.value = (nodes.value[0].max_stake ?? 0)
+                compatibilityStakeTotal.value = nodes.value[0].stake_total ?? 0
+                minStake.value = nodes.value[0].min_stake ?? 0
+                maxStake.value = nodes.value[0].max_stake ?? 0
               }
               for (const n of result.data.nodes) {
                 totalRewarded.value += (n.reward_rate_start ?? 0)
@@ -181,7 +198,7 @@ export default defineComponent({
       stakingPeriod.value = new StakingPeriod(startTimeInSec, endTimeInSec)
     }
 
-    const makeHbarAmount = (tinyBarAmount: number) => (tinyBarAmount/100000000).toLocaleString('en-US')
+    const makeFloorHbarAmount = (tinyBarAmount: number) => Math.floor((tinyBarAmount ?? 0) / 100000000).toLocaleString('en-US')
 
     return {
       isSmallScreen,
@@ -196,7 +213,7 @@ export default defineComponent({
       durationMin,
       elapsedMin,
       remainingMin,
-      makeHbarAmount,
+      makeFloorHbarAmount,
       formatSeconds
     }
   }
