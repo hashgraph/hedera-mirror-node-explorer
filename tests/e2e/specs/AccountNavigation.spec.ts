@@ -138,4 +138,38 @@ describe('Account Navigation', () => {
             .find('span')
             .contains('Account with ID ' + unknownID + ' was not found')
     })
+
+    it('should follow link to associated contract and back', () => {
+        const accountId = '0.0.47981544'
+        cy.visit('#/testnet/account/' + accountId)
+        cy.url().should('include', '/testnet/account/' + accountId)
+        cy.contains('Account ' + accountId)
+        cy.contains('a', "Show associated contract")
+            .click()
+
+        cy.url().should('include', '/testnet/contract/' + accountId)
+        cy.contains('Contract ' + accountId)
+        cy.contains('a', "Show associated account")
+            .click()
+
+        cy.url().should('include', '/testnet/account/' + accountId)
+        cy.contains('Account ' + accountId)
+    })
+
+    it('should not show a link to associated contract', () => {
+        const accountId = '0.0.47981544'
+        const searchId = '0.0.3'
+        cy.visit('#/testnet/account/' + accountId)
+        cy.url().should('include', '/testnet/account/' + accountId)
+        cy.contains('Account ' + accountId)
+        cy.contains('a', "Show associated contract")
+
+        cy.get('[data-cy=searchBar]').within(() => {
+            cy.get('input').type(searchId)
+        }).submit()
+
+        cy.url({timeout: 5000}).should('include', '/testnet/account/' + searchId)
+        cy.contains('Account ' + searchId)
+        cy.contains('a', "Show associated contract").should('not.exist')
+    })
 })
