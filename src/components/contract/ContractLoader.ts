@@ -31,7 +31,7 @@ export class ContractLoader extends EntityLoader<ContractResponse> {
 
     public constructor() {
         super()
-        watch(this.contractLocator, () => this.contractLocatorDidChange())
+        watch(this.contractLocator, () => this.requestLoad())
     }
 
     public readonly contractLocator: Ref<string|null> = ref(null) // Contract Id or EVM Address
@@ -41,21 +41,14 @@ export class ContractLoader extends EntityLoader<ContractResponse> {
     // EntityLoader
     //
 
-    protected async load(): Promise<AxiosResponse<ContractResponse>> {
-        return axios.get<ContractResponse>("api/v1/contracts/" + this.contractLocator.value)
-    }
-
-
-    //
-    // Private
-    //
-
-    private contractLocatorDidChange() {
+    protected async load(): Promise<AxiosResponse<ContractResponse>|null> {
+        let result: Promise<AxiosResponse<ContractResponse>|null>
         if (this.contractLocator.value != null) {
-            this.requestLoad()
+            result = axios.get<ContractResponse>("api/v1/contracts/" + this.contractLocator.value)
         } else {
-            this.clear()
+            result = Promise.resolve(null)
         }
+        return result
     }
 
 }

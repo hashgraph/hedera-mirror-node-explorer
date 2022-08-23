@@ -33,7 +33,7 @@ export class AccountLoader extends EntityLoader<AccountBalanceTransactions> {
 
     public constructor() {
         super()
-        watch(this.accountLocator, () => this.accountLocatorDidChange())
+        watch(this.accountLocator, () => this.requestLoad())
     }
 
     public readonly accountLocator: Ref<string|null> = ref(null) // Entity Id or Alias or EVM Address
@@ -59,24 +59,18 @@ export class AccountLoader extends EntityLoader<AccountBalanceTransactions> {
     // EntityLoader
     //
 
-    protected async load(): Promise<AxiosResponse<AccountBalanceTransactions>> {
-        const url = "api/v1/accounts/" + this.accountLocator.value
-        const params = {
-            limit: 1
-        }
-        return axios.get<AccountBalanceTransactions>(url, { params: params})
-    }
-
-    //
-    // Private
-    //
-
-    private accountLocatorDidChange() {
+    protected async load(): Promise<AxiosResponse<AccountBalanceTransactions>|null> {
+        let result: Promise<AxiosResponse<AccountBalanceTransactions>|null>
         if (this.accountLocator.value != null) {
-            this.requestLoad()
+            const url = "api/v1/accounts/" + this.accountLocator.value
+            const params = {
+                limit: 1
+            }
+            result = axios.get<AccountBalanceTransactions>(url, { params: params})
         } else {
-            this.clear()
+            result = Promise.resolve(null)
         }
+        return result
     }
 
 }

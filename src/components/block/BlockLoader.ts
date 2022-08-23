@@ -31,7 +31,7 @@ export class BlockLoader extends EntityLoader<Block> {
 
     public constructor() {
         super()
-        watch(this.blockHON, () => this.blockHonDidChange())
+        watch(this.blockHON, () => this.requestLoad())
     }
 
     public readonly blockHON: Ref<string|null> = ref(null)
@@ -40,19 +40,13 @@ export class BlockLoader extends EntityLoader<Block> {
     // EntityLoader
     //
 
-    protected async load(): Promise<AxiosResponse<Block>> {
-        return axios.get<Block>("api/v1/blocks/" + this.blockHON.value)
-    }
-
-    //
-    // Private
-    //
-
-    private blockHonDidChange() {
+    protected async load(): Promise<AxiosResponse<Block>|null> {
+        let result: Promise<AxiosResponse<Block>|null>
         if (this.blockHON.value != null) {
-            this.requestLoad()
+            result = axios.get<Block>("api/v1/blocks/" + this.blockHON.value)
         } else {
-            this.clear()
+            result = Promise.resolve(null)
         }
+        return result
     }
 }

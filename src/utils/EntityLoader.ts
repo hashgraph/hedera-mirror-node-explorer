@@ -43,27 +43,22 @@ export abstract class EntityLoader<E> {
     // Protected
     //
 
-    protected async load(): Promise<AxiosResponse<E>> {
+    protected async load(): Promise<AxiosResponse<E>|null> {
         throw Error("must be subclassed")
     }
 
     protected requestLoad(): void {
         this.requestCounter += 1
-        const resolve = (newResponse: AxiosResponse<E>) => this.loadDidComplete(newResponse, this.requestCounter)
+        const resolve = (newResponse: AxiosResponse<E>|null) => this.loadDidComplete(newResponse, this.requestCounter)
         const reject = (reason: unknown) => this.loadDidFail(reason, this.requestCounter)
         this.load().then(resolve, reject)
-    }
-
-    protected clear(): void {
-        this.responseRef.value = null
-        this.errorRef.value = null
     }
 
     //
     // Private
     //
 
-    private loadDidComplete(newResponse: AxiosResponse<E>, requestCounter: number) {
+    private loadDidComplete(newResponse: AxiosResponse<E>|null, requestCounter: number) {
         if (this.requestCounter == requestCounter) {
             this.responseRef.value = newResponse
             this.errorRef.value = null

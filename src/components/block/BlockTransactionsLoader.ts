@@ -31,7 +31,7 @@ export class BlockTransactionsLoader extends EntityLoader<TransactionResponse> {
 
     public constructor() {
         super()
-        watch([this.timestamp, this.limit], () => this.paramsDidChange())
+        watch([this.timestamp, this.limit], () => this.requestLoad())
     }
 
     public transactions = computed(() => this.entity.value?.transactions ?? [])
@@ -43,25 +43,19 @@ export class BlockTransactionsLoader extends EntityLoader<TransactionResponse> {
     // EntityLoader
     //
 
-    protected async load(): Promise<AxiosResponse<TransactionResponse>> {
-        const params = {} as {
-            limit: number,
-            timestamp: string
-        }
-        params.limit = Math.min(this.limit.value ?? 0, 100)
-        params.timestamp = "lte:" + this.timestamp.value
-        return axios.get<TransactionResponse>("api/v1/transactions", { params: params} )
-    }
-
-    //
-    // Private
-    //
-
-    private paramsDidChange() {
+    protected async load(): Promise<AxiosResponse<TransactionResponse>|null> {
+        let result: Promise<AxiosResponse<TransactionResponse>|null>
         if (this.limit.value && this.timestamp.value) {
-            this.requestLoad()
+            const params = {} as {
+                limit: number,
+                timestamp: string
+            }
+            params.limit = Math.min(this.limit.value ?? 0, 100)
+            params.timestamp = "lte:" + this.timestamp.value
+            result = axios.get<TransactionResponse>("api/v1/transactions", { params: params} )
         } else {
-            this.clear()
+            result = Promise.resolve(null)
         }
+        return result
     }
 }
