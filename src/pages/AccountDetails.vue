@@ -201,7 +201,7 @@
 
 import {computed, defineComponent, inject, onBeforeUnmount, onMounted, ref, watch} from 'vue';
 import axios from "axios";
-import {ContractResponse, NetworkNode, NetworkNodesResponse} from "@/schemas/HederaSchemas";
+import {NetworkNode, NetworkNodesResponse} from "@/schemas/HederaSchemas";
 import {operatorRegistry} from "@/schemas/OperatorRegistry";
 import KeyValue from "@/components/values/KeyValue.vue";
 import PlayPauseButtonV2 from "@/components/PlayPauseButtonV2.vue";
@@ -226,6 +226,7 @@ import {TransactionCacheV2} from "@/components/transaction/TransactionCacheV2";
 import {EntityCacheStateV2} from "@/utils/EntityCacheV2";
 import AccountLink from "@/components/values/AccountLink.vue";
 import {AccountLoader} from "@/components/account/AccountLoader";
+import {ContractLoader} from "@/components/contract/ContractLoader";
 
 const MAX_TOKEN_BALANCES = 10
 
@@ -294,7 +295,7 @@ export default defineComponent({
       if (accountLoader.accountLocator.value === null) {
         result =  "Invalid account ID: " + props.accountId
       } else if (accountLoader.got404.value) {
-        result =  "Account with ID " + props.accountId + " was not found"
+        result =  "Account with ID " + accountLoader.accountLocator.value + " was not found"
       } else {
         result = null
       }
@@ -385,29 +386,16 @@ export default defineComponent({
     //
     // contract
     //
-    const contract = ref<ContractResponse|null>(null)
-    const showContractVisible = computed(() => {
-      return contract.value != null
-    })
-
-    const fetchContract = () => {
-      if (accountLoader.accountId.value) {
-        axios
-            .get<ContractResponse>("api/v1/contracts/" + accountLoader.accountId.value)
-            .then(response => contract.value = response.data)
-            .catch(() => null)
-      } else {
-        contract.value = null
-      }
+    const contractLoader = new ContractLoader()
+    const setupContractLoader = () => {
+      contractLoader.contractLocator.value = accountLoader.accountId.value
     }
-
-    watch(accountLoader.accountId, () => {
-      fetchContract()
-    });
-
-    onMounted(() => {
-      fetchContract()
+    watch(accountLoader.accountId, () => setupContractLoader());
+    onMounted(() => setupContractLoader())
+    const showContractVisible = computed(() => {
+      return contractLoader.entity.value != null
     })
+
 
     //
     // staking
