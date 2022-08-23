@@ -1262,6 +1262,25 @@ export const SAMPLE_NETWORK_NODES = {
 }
 
 //
+// https://testnet.mirrornode.hedera.com/api/v1/network/stake
+//
+
+export const SAMPLE_NETWORK_STAKE = {
+    "max_staking_reward_rate_per_hbar": 0,
+    "node_reward_fee_fraction": 0,
+    "stake_total": 2400000000000000,
+    "staking_period": {
+        "from": "1661212800.000000000",
+        "to": "1661299200.000000000"
+    },
+    "staking_period_duration": 0,
+    "staking_periods_stored": 0,
+    "staking_reward_fee_fraction": 0,
+    "staking_reward_rate": 0,
+    "staking_start_threshold": 0
+}
+
+//
 // https://mainnet-public.mirrornode.hedera.com/api/v1/network/supply
 //
 
