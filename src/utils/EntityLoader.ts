@@ -51,7 +51,7 @@ export abstract class EntityLoader<E> {
     // Protected
     //
 
-    protected watchAndReload(sources: WatchSource<unknown>[]) {
+    protected watchAndReload(sources: WatchSource<unknown>[]): void {
         if (this.watchStopHandle != null) {
             this.watchStopHandle()
             this.watchStopHandle = null
