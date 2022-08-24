@@ -30,7 +30,7 @@
     <template v-slot:dialogDetails>
       <slot name="dialogDetails"/>
 
-      <div class="is-flex is-justify-content-end is-align-items-center">
+      <div class="is-flex is-justify-content-end is-align-items-center mt-3 has-text-grey-light">
         <span>Please don't show me this next time</span>
         <label class="checkbox ml-2 mt-1">
           <input type="checkbox">
