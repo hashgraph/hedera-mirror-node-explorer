@@ -36,7 +36,7 @@
             </div>
           </div>
           <a @click="handleClose">
-            <img alt="Close icon" src="@/assets/close-icon.png" style="max-height: 20px;">
+            <img alt="Modal close icon" src="@/assets/close-icon.png" style="max-height: 20px;">
           </a>
 
         </div>
