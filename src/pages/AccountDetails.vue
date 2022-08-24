@@ -200,9 +200,6 @@
 <script lang="ts">
 
 import {computed, defineComponent, inject, onBeforeUnmount, onMounted, ref, watch} from 'vue';
-import axios from "axios";
-import {NetworkNode, NetworkNodesResponse} from "@/schemas/HederaSchemas";
-import {operatorRegistry} from "@/schemas/OperatorRegistry";
 import KeyValue from "@/components/values/KeyValue.vue";
 import PlayPauseButtonV2 from "@/components/PlayPauseButtonV2.vue";
 import TransactionTableV2 from "@/components/transaction/TransactionTableV2.vue";
@@ -227,6 +224,7 @@ import {EntityCacheStateV2} from "@/utils/EntityCacheV2";
 import AccountLink from "@/components/values/AccountLink.vue";
 import {AccountLoader} from "@/components/account/AccountLoader";
 import {ContractLoader} from "@/components/contract/ContractLoader";
+import {NodeLoader} from "@/components/node/NodeLoader";
 
 const MAX_TOKEN_BALANCES = 10
 
@@ -297,12 +295,6 @@ export default defineComponent({
         result = null
       }
       return result
-    })
-
-    watch(accountLoader.stakedNodeId, (stakedNodeId: number|null) => {
-      if (stakedNodeId !== null) {
-        fetchNode(stakedNodeId)
-      }
     })
 
 
@@ -393,30 +385,7 @@ export default defineComponent({
     //
     // staking
     //
-    const stakedNode = ref<NetworkNode|null>(null)
-    const stakedNodeDescription = computed(() => {
-      let description
-      if (stakedNode.value?.description) {
-        description = stakedNode.value?.description
-      } else {
-        description = stakedNode.value?.node_account_id ? operatorRegistry.makeDescription(stakedNode.value?.node_account_id) : null
-      }
-      return description
-    })
-
-    const fetchNode = (nodeId: number) => {
-      const url = "api/v1/network/nodes"
-      const queryParams = {params: {'node.id': nodeId}}
-      axios
-          .get<NetworkNodesResponse>(url, queryParams)
-          .then(result => {
-            if (result.data.nodes && result.data.nodes.length > 0) {
-              stakedNode.value = result.data.nodes[0]
-            } else {
-              stakedNode.value = null
-            }
-          })
-    }
+    const stakeNodeLoader = new NodeLoader(accountLoader.stakedNodeId)
 
     return {
       isSmallScreen,
@@ -437,7 +406,7 @@ export default defineComponent({
       displayAllTokenLinks,
       elapsed,
       showContractVisible,
-      stakedNodeDescription
+      stakedNodeDescription: stakeNodeLoader.nodeDescription
     }
   }
 });
