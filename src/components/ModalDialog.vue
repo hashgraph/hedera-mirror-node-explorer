@@ -24,23 +24,32 @@
 
 <template>
   <div class="modal has-text-white" v-bind:class="{'is-active': showDialog}">
-    <div class="modal-background" @click="handleClose"/>
-    <div class="modal-content">
+    <div class="modal-background"/>
+    <div class="modal-content" style="width: 768px; border-radius: 16px">
       <div class="box">
-        <div class="is-flex is-flex-direction-row is-align-items-start">
-          <span class="icon is-large mr-4"><i :class="iconClass"/></span>
-          <div>
+
+        <div class="is-flex is-justify-content-space-between is-align-items-baseline">
+          <div class="is-flex is-justify-content-start is-align-items-baseline">
+            <span v-if="iconClass" class="icon ml-2 mr-5"><i :class="iconClass"/></span>
             <div class="block h-is-tertiary-text mt-2">
               <slot name="dialogMessage"/>
             </div>
-            <div class="block h-is-property-text has-text-grey mb-2" style="line-height: 1.5">
-              <slot name="dialogDetails"/>
-            </div>
           </div>
+          <a class="ml-5 mr-2"
+             @click="handleClose">
+             <img alt="Close icon" src="@/assets/close-icon.png" style="max-height: 22px;">
+          </a>
+
         </div>
+
+        <hr class="h-card-separator"/>
+
+        <div class="block h-is-property-text has-text-grey mb-2" style="line-height: 1.5">
+          <slot name="dialogDetails"/>
+        </div>
+
       </div>
     </div>
-    <button class="modal-close is-large has-background-grey" aria-label="close" @click="handleClose"/>
   </div>
 </template>
 
@@ -66,6 +75,7 @@ export default defineComponent({
   setup(props, context) {
     const handleClose = () => {
       context.emit('update:showDialog', false)
+      context.emit('onClose')
     }
     return { handleClose }
   }
