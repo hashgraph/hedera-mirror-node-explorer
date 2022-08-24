@@ -24,14 +24,14 @@
 
 <template>
 
-  <ModalDialog v-model:show-dialog="showDisclaimerDialog" @onClose="handleCloseDisclaimer">
+  <OptOutDialog v-model:show-dialog="showDisclaimerDialog" @onClose="handleCloseDisclaimer">
     <template v-slot:dialogMessage>
       <span>Disclaimer</span>
     </template>
     <template v-slot:dialogDetails>
       <div v-html="disclaimer"/>
     </template>
-  </ModalDialog>
+  </OptOutDialog>
 
   <div :class="{'is-active': showDialog}" class="modal has-text-white">
     <div class="modal-background"/>
@@ -70,11 +70,11 @@
 import {defineComponent, ref} from "vue";
 import {walletManager} from "@/router";
 import {WalletDriver} from "@/utils/wallet/WalletDriver";
-import ModalDialog from "@/components/ModalDialog.vue";
+import OptOutDialog from "@/components/staking/OptOutDialog.vue";
 
 export default defineComponent({
   name: "WalletChooser",
-  components: {ModalDialog},
+  components: {OptOutDialog},
   props: {
     showDialog: {
       type: Boolean,
