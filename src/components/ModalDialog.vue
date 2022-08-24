@@ -35,9 +35,8 @@
               <slot name="dialogMessage"/>
             </div>
           </div>
-          <a class="ml-5 mr-2"
-             @click="handleClose">
-             <img alt="Close icon" src="@/assets/close-icon.png" style="max-height: 22px;">
+          <a @click="handleClose">
+            <img alt="Close icon" src="@/assets/close-icon.png" style="max-height: 20px;">
           </a>
 
         </div>
