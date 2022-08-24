@@ -24,6 +24,15 @@
 
 <template>
 
+  <ModalDialog v-model:show-dialog="showDisclaimerDialog" @onClose="handleCloseDisclaimer">
+    <template v-slot:dialogMessage>
+      <span>Disclaimer</span>
+    </template>
+    <template v-slot:dialogDetails>
+      <div v-html="disclaimer"/>
+    </template>
+  </ModalDialog>
+
   <div :class="{'is-active': showDialog}" class="modal has-text-white">
     <div class="modal-background"/>
     <div class="modal-content" style="width: 768px; border-radius: 16px">
@@ -58,13 +67,14 @@
 
 <script lang="ts">
 
-import {defineComponent} from "vue";
+import {defineComponent, ref} from "vue";
 import {walletManager} from "@/router";
 import {WalletDriver} from "@/utils/wallet/WalletDriver";
+import ModalDialog from "@/components/ModalDialog.vue";
 
 export default defineComponent({
   name: "WalletChooser",
-  components: {},
+  components: {ModalDialog},
   props: {
     showDialog: {
       type: Boolean,
@@ -75,17 +85,33 @@ export default defineComponent({
   emits: [ "chooseWallet", "update:showDialog"],
 
   setup(props, context) {
+    let chosenWallet: WalletDriver
+    const showDisclaimerDialog = ref(false)
+    const disclaimer = process.env.VUE_APP_WALLET_CHOOSER_DISCLAIMER_POPUP ?? ""
 
     const handleChoose = (wallet: WalletDriver) => {
-      context.emit('chooseWallet', wallet)
       context.emit('update:showDialog', false)
+      chosenWallet = wallet
+      if (disclaimer) {
+        showDisclaimerDialog.value = true
+      } else {
+        context.emit('chooseWallet', chosenWallet)
+      }
     }
 
     const handleCancel = () => {
       context.emit('update:showDialog', false)
     }
 
+    const handleCloseDisclaimer = () => {
+      showDisclaimerDialog.value = false
+      context.emit('chooseWallet', chosenWallet)
+    }
+
     return {
+      showDisclaimerDialog,
+      disclaimer,
+      handleCloseDisclaimer,
       walletManager,
       drivers:walletManager.getDrivers(),
       handleChoose,
