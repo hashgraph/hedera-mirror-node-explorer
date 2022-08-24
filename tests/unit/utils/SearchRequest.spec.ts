@@ -29,7 +29,7 @@ import {
     SAMPLE_TRANSACTIONS
 } from "../Mocks";
 import {SearchRequest} from "@/utils/SearchRequest";
-import {base32ToAlias, byteToHex} from "@/utils/B64Utils";
+import {base32ToAlias, base64DecToArr, byteToHex} from "@/utils/B64Utils";
 
 const mock = new MockAdapter(axios)
 
@@ -41,6 +41,10 @@ mock.onGet(matcher_account_with_alias).reply(200, SAMPLE_ACCOUNT)
 
 const matcher_transaction = "/api/v1/transactions/" + SAMPLE_TRANSACTION.transaction_id
 mock.onGet(matcher_transaction).reply(200, SAMPLE_TRANSACTIONS)
+
+const TRANSACTION_HASH = byteToHex(base64DecToArr(SAMPLE_TRANSACTION.transaction_hash))
+const matcher_transaction_with_hash = "/api/v1/transactions/" + TRANSACTION_HASH
+mock.onGet(matcher_transaction_with_hash).reply(200, SAMPLE_TRANSACTIONS)
 
 const matcher_token = "/api/v1/tokens/" + SAMPLE_TOKEN.token_id
 mock.onGet(matcher_token).reply(200, SAMPLE_TOKEN)
@@ -108,6 +112,20 @@ describe("SearchRequest.ts", () => {
         await r.run()
 
         expect(r.searchedId).toBe(SAMPLE_TRANSACTION.transaction_id)
+        expect(r.account).toBeNull()
+        expect(r.transactions).toStrictEqual([SAMPLE_TRANSACTION])
+        expect(r.tokenInfo).toBeNull()
+        expect(r.topicMessages).toStrictEqual([])
+        expect(r.contract).toBeNull()
+        expect(r.getErrorCount()).toBe(0)
+
+    })
+
+    test("transaction (with hash)", async () => {
+        const r = new SearchRequest(TRANSACTION_HASH)
+        await r.run()
+
+        expect(r.searchedId).toBe(TRANSACTION_HASH)
         expect(r.account).toBeNull()
         expect(r.transactions).toStrictEqual([SAMPLE_TRANSACTION])
         expect(r.tokenInfo).toBeNull()

@@ -98,6 +98,15 @@ describe('Search Bar', () => {
             .should('contain', 'Child')  // criteria to check
     })
 
+    it('should find the transaction by hash', () => {
+        const searchTransaction = "0x1dc948b993ec66c161f83d8c686b641152d5a6f49b79550db9a22dd0d44cb60cd814c50c3b8abdabb8bc3d457adbfc38"
+        testBody(
+            searchTransaction,
+            '/testnet/transaction/' + searchTransaction,
+            'Transaction '
+        )
+    })
+
     it('should find the NFT ID', () => {
         const searchNFT = "0.0.30961728"
         testBody(searchNFT, '/testnet/token/' + searchNFT, 'Token ', true)
