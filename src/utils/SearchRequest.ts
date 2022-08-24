@@ -85,7 +85,7 @@ export class SearchRequest {
 
         // 2) Searches transactions
         if (normTransactionID !== null || transactionHash !== null) {
-            const transactionPathParam = transactionID !== null ? transactionID : transactionHash
+            const transactionPathParam = normTransactionID !== null ? normTransactionID : transactionHash
             axios
                 .get("api/v1/transactions/" + transactionPathParam)
                 .then(response => {
