@@ -46,7 +46,7 @@
       <span class="is-flex-grow-1"/>
 
       <a v-if="termsOfUseURL" :href="termsOfUseURL">
-        <span class="h-is-text-size-2" style="font-weight:300; color: #DBDBDB">
+        <span class="h-is-text-size-3" style="font-weight:300">
           Terms of Use
         </span>
       </a>
