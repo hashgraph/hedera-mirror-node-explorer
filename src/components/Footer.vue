@@ -34,7 +34,7 @@
         <img alt="Built On Hedera" src="@/assets/built-on-hedera-white.svg" style="min-width: 104px;">
       </a>
 
-      <div v-if="!isTouchDevice && isSmallScreen" class="is-flex is-flex-direction-column is-align-items-flex-start">
+      <div v-if="!isTouchDevice && isMediumScreen" class="is-flex is-flex-direction-column is-align-items-flex-start">
         <span class="h-is-property-text ml-5 pb-1" style="font-weight:300; color: #DBDBDB">
           {{ productName }} is a ledger explorer for the Hedera network.
         </span>
@@ -45,7 +45,12 @@
 
       <span class="is-flex-grow-1"/>
 
-      <a v-if="sponsorURL" class="ml-4" :href="sponsorURL" style="line-height: 1">
+      <a v-if="termsOfUseURL" :href="termsOfUseURL">
+        <span class="h-is-text-size-2" style="font-weight:300; color: #DBDBDB">
+          Terms of Use
+        </span>
+      </a>
+      <a v-if="sponsorURL" :href="sponsorURL" class="ml-4" style="line-height: 1">
         <img alt="Sponsor Logo" src="@/assets/branding/brand-sponsor-logo.png" style="max-width: 104px;">
       </a>
       <div v-else class="ml-4" style="line-height: 1">
@@ -78,18 +83,22 @@ export default defineComponent({
   setup() {
     const buildTime = inject('buildTime', "not available")
 
+    const isMediumScreen = inject('isMediumScreen', true)
     const isSmallScreen = inject('isSmallScreen', true)
     const isTouchDevice = inject('isTouchDevice', false)
 
     const productName = process.env.VUE_APP_PRODUCT_NAME ?? "Hedera Mirror Node Explorer"
     const sponsorURL = process.env.VUE_APP_SPONSOR_URL ?? ""
+    const termsOfUseURL = process.env.VUE_APP_TERMS_OF_USE_URL ?? ""
 
     return {
       buildTime,
       isSmallScreen,
+      isMediumScreen,
       isTouchDevice,
       productName,
-      sponsorURL
+      sponsorURL,
+      termsOfUseURL
     }
   },
 })
