@@ -59,11 +59,6 @@ export class NodeLoader extends EntityLoader<NetworkNodesResponse> {
         return result
     })
 
-    public requestLoad(): void {
-        console.log("NodeLoader.requestLoad")
-        super.requestLoad()
-    }
-
 
     //
     // EntityLoader
