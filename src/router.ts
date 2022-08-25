@@ -103,6 +103,11 @@ const routes: Array<RouteRecordRaw> = [
     props: true
   },
   {
+    // EIP 3091 Support
+    path: '/:network/address/:accountAddress',
+    redirect: to => '/' + to.params.network + '/account/' + to.params.accountAddress
+  },
+  {
     path: '/:network/accountbalances/:accountId',
     name: 'AccountBalances',
     component: AccountBalances,
