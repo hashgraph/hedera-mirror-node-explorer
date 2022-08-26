@@ -24,16 +24,6 @@
 
 <template>
 
-  <OptOutDialog v-model:show-dialog="showDisclaimerDialog"
-                @onClose="handleCancelDisclaimer" @onAgree="handleAgreeDisclaimer">
-    <template v-slot:dialogMessage>
-      <span>Disclaimer</span>
-    </template>
-    <template v-slot:dialogDetails>
-      <div v-html="disclaimer"/>
-    </template>
-  </OptOutDialog>
-
   <div :class="{'is-active': showDialog}" class="modal has-text-white">
     <div class="modal-background"/>
     <div class="modal-content" style="width: 768px; border-radius: 16px">
@@ -65,6 +55,17 @@
       </div>
     </div>
   </div>
+
+
+  <OptOutDialog v-model:show-dialog="showDisclaimerDialog"
+                @onClose="handleCancelDisclaimer" @onAgree="handleAgreeDisclaimer">
+    <template v-slot:dialogMessage>
+      <span>Disclaimer</span>
+    </template>
+    <template v-slot:dialogDetails>
+      <div v-html="disclaimer"/>
+    </template>
+  </OptOutDialog>
 
 </template>
 
