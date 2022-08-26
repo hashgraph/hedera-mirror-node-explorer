@@ -56,6 +56,7 @@
 
 import {defineComponent, ref} from "vue";
 import ModalDialog from "@/components/ModalDialog.vue";
+import {AppStorage} from "@/AppStorage";
 
 export default defineComponent({
   name: "OptOutDialog",
@@ -71,12 +72,13 @@ export default defineComponent({
     const dontShowNextTime = ref(false)
     const handleAgree = () => {
       if (dontShowNextTime.value) {
-        console.log("Should store NOT NEXT TIME")
+        AppStorage.setSkipDisclaimer(true)
       }
       context.emit('update:showDialog', false)
       context.emit('onAgree')
     }
     const handleCancel = () => {
+      dontShowNextTime.value = false
       context.emit('update:showDialog', false)
       context.emit('onClose')
     }

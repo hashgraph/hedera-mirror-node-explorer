@@ -79,6 +79,7 @@ import {defineComponent, ref} from "vue";
 import {walletManager} from "@/router";
 import {WalletDriver} from "@/utils/wallet/WalletDriver";
 import OptOutDialog from "@/components/staking/OptOutDialog.vue";
+import {AppStorage} from "@/AppStorage";
 
 export default defineComponent({
   name: "WalletChooser",
@@ -99,7 +100,7 @@ export default defineComponent({
 
     const handleConnect = () => {
       context.emit('update:showDialog', false)
-      if (disclaimer) {
+      if (disclaimer && !AppStorage.getSkipDisclaimer()) {
         showDisclaimerDialog.value = true
       } else {
         context.emit('chooseWallet', chosenWallet.value)
