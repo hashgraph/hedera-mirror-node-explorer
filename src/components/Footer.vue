@@ -34,23 +34,24 @@
         <img alt="Built On Hedera" src="@/assets/built-on-hedera-white.svg" style="min-width: 104px;">
       </a>
 
-      <div v-if="!isTouchDevice && isMediumScreen" class="is-flex is-flex-direction-column is-align-items-flex-start">
-        <span class="h-is-property-text ml-5 pb-1" style="font-weight:300; color: #DBDBDB">
-          {{ productName }} is a ledger explorer for the Hedera network.
+      <div class="is-flex is-flex-direction-column is-align-items-flex-start ml-5">
+        <span class="h-is-property-text pb-1" style="font-weight:300; color: #DBDBDB">
+          <span>{{ productName }}</span>
+          <span v-if="!isTouchDevice && isMediumScreen"> is a ledger explorer for the Hedera network.</span>
         </span>
-        <span class="h-is-text-size-1 ml-5 pb-1" style="font-weight:300; color: #DBDBDB">
+        <span class="h-is-text-size-1" style="font-weight:300; color: #DBDBDB">
           Built {{ buildTime }}
         </span>
+        <a v-if="termsOfUseURL" :href="termsOfUseURL" style="line-height: 1rem">
+          <span class="h-is-text-size-3" style="font-weight:300">
+           See Terms of Use
+          </span>
+        </a>
       </div>
 
       <span class="is-flex-grow-1"/>
 
-      <a v-if="termsOfUseURL" :href="termsOfUseURL">
-        <span class="h-is-text-size-3" style="font-weight:300">
-          Terms of Use
-        </span>
-      </a>
-      <a v-if="sponsorURL" :href="sponsorURL" class="ml-4" style="line-height: 1">
+      <a v-if="sponsorURL" :href="sponsorURL" class="ml-4">
         <img alt="Sponsor Logo" src="@/assets/branding/brand-sponsor-logo.png" style="max-width: 104px;">
       </a>
       <div v-else class="ml-4" style="line-height: 1">
