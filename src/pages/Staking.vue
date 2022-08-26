@@ -186,16 +186,9 @@ import Footer from "@/components/Footer.vue";
 import {walletManager} from "@/router";
 import NetworkDashboardItem from "@/components/node/NetworkDashboardItem.vue";
 import axios from "axios";
-import {
-  AccountBalanceTransactions,
-  NetworkNode,
-  NetworkNodesResponse,
-  Transaction,
-  TransactionByIdResponse
-} from "@/schemas/HederaSchemas";
+import {AccountBalanceTransactions, Transaction, TransactionByIdResponse} from "@/schemas/HederaSchemas";
 import {HMSF} from "@/utils/HMSF";
 import {waitFor} from "@/utils/TimerUtils";
-import {operatorRegistry} from "@/schemas/OperatorRegistry";
 import RewardsTransactionTable from "@/components/staking/RewardsTransactionTable.vue";
 import StakingDialog from "@/components/staking/StakingDialog.vue";
 import DashboardCard from "@/components/DashboardCard.vue";
@@ -210,6 +203,7 @@ import {WalletDriver} from "@/utils/wallet/WalletDriver";
 import {WalletDriverError} from "@/utils/wallet/WalletDriverError";
 import {RewardsTransactionCache} from '@/components/staking/RewardsTransactionCache';
 import {normalizeTransactionId} from "@/utils/TransactionID";
+import {NodeLoader} from "@/components/node/NodeLoader";
 
 export default defineComponent({
   name: 'Staking',
@@ -305,11 +299,11 @@ export default defineComponent({
     const isIndirectStaking = computed(() => account?.value?.staked_account_id)
 
     const stakedTo = computed(() => {
-      let result
+      let result: string|null
       if (account.value?.staked_account_id) {
         result = "Account " + account.value.staked_account_id
       } else if (account.value?.staked_node_id) {
-        result = stakedNodeDescription.value
+        result = stakedNodeLoader.nodeDescription.value
       } else {
         result = null
       }
@@ -377,9 +371,6 @@ export default defineComponent({
             .get<AccountBalanceTransactions>("api/v1/accounts/" + walletManager.accountId.value, {params: params})
             .then(response => {
               account.value = response.data
-              if (account.value.staked_node_id !== null) {
-                fetchNode(account.value.staked_node_id)
-              }
             })
             .catch(reason => accountError.value = reason)
       }
@@ -391,31 +382,8 @@ export default defineComponent({
     //
     // stakedNode
     //
-    const stakedNode = ref<NetworkNode | null>(null)
 
-    const stakedNodeDescription = computed(() => {
-      let description
-      if (stakedNode.value?.description) {
-        description = stakedNode.value?.description
-      } else {
-        description = stakedNode.value?.node_account_id ? operatorRegistry.makeDescription(stakedNode.value?.node_account_id) : null
-      }
-      return description
-    })
-
-    const fetchNode = (nodeId: number) => {
-      const url = "api/v1/network/nodes"
-      const queryParams = {params: {'node.id': nodeId}}
-      axios
-          .get<NetworkNodesResponse>(url, queryParams)
-          .then(result => {
-            if (result.data.nodes && result.data.nodes.length > 0) {
-              stakedNode.value = result.data.nodes[0]
-            } else {
-              stakedNode.value = null
-            }
-          })
-    }
+    const stakedNodeLoader = new NodeLoader(computed(() => account.value?.staked_node_id ?? null))
 
     //
     // handleStopStaking / handleChangeStaking
@@ -523,7 +491,7 @@ export default defineComponent({
       showErrorDialog,
       isIndirectStaking,
       stakedTo,
-      stakedNode,
+      stakedNode: stakedNodeLoader.node,
       balanceInHbar,
       stakedAmount,
       stakedSince,
