@@ -186,7 +186,7 @@ import Footer from "@/components/Footer.vue";
 import {walletManager} from "@/router";
 import NetworkDashboardItem from "@/components/node/NetworkDashboardItem.vue";
 import axios from "axios";
-import {AccountBalanceTransactions, Transaction, TransactionByIdResponse} from "@/schemas/HederaSchemas";
+import {Transaction, TransactionByIdResponse} from "@/schemas/HederaSchemas";
 import {HMSF} from "@/utils/HMSF";
 import {waitFor} from "@/utils/TimerUtils";
 import RewardsTransactionTable from "@/components/staking/RewardsTransactionTable.vue";
@@ -204,6 +204,7 @@ import {WalletDriverError} from "@/utils/wallet/WalletDriverError";
 import {RewardsTransactionCache} from '@/components/staking/RewardsTransactionCache';
 import {normalizeTransactionId} from "@/utils/TransactionID";
 import {NodeLoader} from "@/components/node/NodeLoader";
+import {AccountLoader} from "@/components/account/AccountLoader";
 
 export default defineComponent({
   name: 'Staking',
@@ -292,17 +293,17 @@ export default defineComponent({
     //
     // Account
     //
-    const account = ref<AccountBalanceTransactions | null>(null)
-    const accountError = ref<unknown>(null)
+    const accountLoader = new AccountLoader(walletManager.accountId)
+    onMounted(() => accountLoader.requestLoad())
 
-    const isStaked = computed(() => account?.value?.staked_node_id || account?.value?.staked_account_id)
-    const isIndirectStaking = computed(() => account?.value?.staked_account_id)
+    const isStaked = computed(() => accountLoader.stakedNodeId.value || accountLoader.stakedAccountId.value)
+    const isIndirectStaking = computed(() => accountLoader.stakedAccountId.value)
 
     const stakedTo = computed(() => {
       let result: string|null
-      if (account.value?.staked_account_id) {
-        result = "Account " + account.value.staked_account_id
-      } else if (account.value?.staked_node_id) {
+      if (accountLoader.stakedAccountId.value) {
+        result = "Account " + accountLoader.stakedAccountId.value
+      } else if (accountLoader.stakedNodeId) {
         result = stakedNodeLoader.nodeDescription.value
       } else {
         result = null
@@ -311,17 +312,17 @@ export default defineComponent({
     })
 
     const balanceInHbar = computed(() => {
-      const balance = account.value?.balance?.balance ?? 10000000000
+      const balance = accountLoader.balance.value ?? 10000000000
       return balance / 100000000
     })
 
     const stakedAmount = computed(() => {
       let result
-      if ( isStaked.value && account.value?.balance?.balance != null) {
+      if ( isStaked.value && accountLoader.balance.value != null) {
         const amountFormatter = new Intl.NumberFormat("en-US", {
           maximumFractionDigits: 8
         })
-        result = amountFormatter.format(account.value.balance.balance / 100000000)
+        result = amountFormatter.format(accountLoader.balance.value / 100000000)
       }
       else {
         result = null
@@ -340,9 +341,9 @@ export default defineComponent({
     const dateFormat = new Intl.DateTimeFormat(locale, dateOptions)
 
     const stakedSince = computed(() => {
-      let result
-      if (isStaked.value && account.value?.stake_period_start) {
-        const seconds = Number.parseFloat(account.value.stake_period_start);
+      let result: string | null
+      if (isStaked.value && accountLoader.stakePeriodStart.value) {
+        const seconds = Number.parseFloat(accountLoader.stakePeriodStart.value);
         result = "since " + dateFormat.format(seconds * 1000)
       } else {
         result = null
@@ -352,45 +353,29 @@ export default defineComponent({
 
     const declineReward = computed(() => {
       let result: string | null
-      if (account.value && account.value.decline_reward !== null) {
-        result = account.value.decline_reward === true ? 'Declined' : 'Accepted'
+      if (accountLoader.entity.value && accountLoader.entity.value.decline_reward !== null) {
+        result = accountLoader.entity.value.decline_reward === true ? 'Declined' : 'Accepted'
       } else {
         result = null
       }
       return result
     })
 
-    const ignoreReward = computed(() => account.value === null || account.value.staked_node_id === null)
+    const ignoreReward = computed(() => accountLoader.stakedNodeId.value === null)
 
-    const fetchAccount = () => {
-      const params = {} as {
-        limit: 1
-      }
-      if (walletManager.accountId.value) {
-        axios
-            .get<AccountBalanceTransactions>("api/v1/accounts/" + walletManager.accountId.value, {params: params})
-            .then(response => {
-              account.value = response.data
-            })
-            .catch(reason => accountError.value = reason)
-      }
-    }
-
-    onMounted(() => fetchAccount())
-    watch(walletManager.accountId, () => fetchAccount())
 
     //
     // stakedNode
     //
 
-    const stakedNodeLoader = new NodeLoader(computed(() => account.value?.staked_node_id ?? null))
+    const stakedNodeLoader = new NodeLoader(accountLoader.stakedNodeId)
 
     //
     // handleStopStaking / handleChangeStaking
     //
 
     const handleStopStaking = () => {
-      changeStaking(null, null, account.value?.decline_reward ? false : null)
+      changeStaking(null, null, accountLoader.entity.value?.decline_reward ? false : null)
     }
 
     const handleChangeStaking = (nodeId: number|null, accountId: string|null, declineReward: boolean|null) => {
@@ -435,7 +420,7 @@ export default defineComponent({
 
       } finally {
 
-        fetchAccount()
+        accountLoader.requestLoad()
       }
 
     }
@@ -483,7 +468,7 @@ export default defineComponent({
       walletName: walletManager.walletName,
       walletIconURL: walletManager.getActiveDriver().iconURL,
       accountId: walletManager.accountId,
-      account,
+      account: accountLoader.entity,
       isStaked,
       showStakingDialog,
       showStopConfirmDialog,
