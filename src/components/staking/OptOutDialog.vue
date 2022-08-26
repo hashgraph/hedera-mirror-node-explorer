@@ -30,7 +30,7 @@
     <template v-slot:dialogDetails>
       <slot name="dialogDetails"/>
 
-      <div class="is-flex is-justify-content-space-between is-align-items-baseline">
+      <div class="is-flex is-justify-content-space-between is-align-items-baseline mt-4">
         <div class="is-flex is-justify-content-start is-align-items-center mt-3 has-text-grey-light">
           <label class="checkbox mr-2 mt-1">
             <input v-model="dontShowNextTime" type="checkbox">
