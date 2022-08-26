@@ -68,4 +68,17 @@ export class PathParam { // Block Hash or Number
 
         return result
     }
+
+    public static parseNodeId(s: string|undefined): number|null {
+        let result: number|null
+
+        if (s) {
+            const n = parseInt(s)
+            result =  isNaN(n) || n < 0 ? null : n
+        } else {
+            result = null
+        }
+
+        return result
+    }
 }

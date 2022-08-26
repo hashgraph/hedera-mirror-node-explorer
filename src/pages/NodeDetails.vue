@@ -130,7 +130,7 @@
 
 <script lang="ts">
 
-import {computed, defineComponent, inject, onBeforeMount, ref, watch} from 'vue';
+import {computed, defineComponent, inject, onBeforeMount, ref} from 'vue';
 import axios from "axios";
 import {NetworkNode, NetworkNodesResponse} from "@/schemas/HederaSchemas";
 import KeyValue from "@/components/values/KeyValue.vue";
@@ -144,10 +144,11 @@ import NotificationBanner from "@/components/NotificationBanner.vue";
 import Property from "@/components/Property.vue";
 import {base64DecToArr, byteToHex} from "@/utils/B64Utils";
 import HexaValue from "@/components/values/HexaValue.vue";
-import {operatorRegistry} from "@/schemas/OperatorRegistry";
 import Endpoints from "@/components/values/Endpoints.vue";
 import NetworkDashboardItem from "@/components/node/NetworkDashboardItem.vue";
 import {StakeLoader} from "@/components/staking/StakeLoader";
+import {NodeLoader} from "@/components/node/NodeLoader";
+import {PathParam} from "@/utils/PathParam";
 
 export default defineComponent({
 
@@ -180,44 +181,28 @@ export default defineComponent({
     const isSmallScreen = inject('isSmallScreen', true)
     const isTouchDevice = inject('isTouchDevice', false)
     const nodes = ref<Array<NetworkNode> | null>([])
-    const node = ref<NetworkNode | null>(null)
+    const nodeLoader = new NodeLoader(computed(() => PathParam.parseNodeId(props.nodeId)))
     const stakeLoader = new StakeLoader()
 
-    const rewardRate = computed(() =>
-        node.value?.reward_rate_start && node.value?.stake_rewarded
-            ? node.value.reward_rate_start / node.value?.stake_rewarded
-            : 0)
-    const approxYearlyRate = computed(() => {
-      const formatter = new Intl.NumberFormat("en-US", {
-        style: 'percent',
-        maximumFractionDigits: 2
-      })
-      return formatter.format(rewardRate.value * 365);
-    })
-    const stake = computed(() => node.value?.stake ?? 0)
-    const minStake = computed(() => node.value?.min_stake ?? 0)
-    const maxStake = computed(() => node.value?.max_stake ?? 0)
     const stakeTotal = computed(() => {
       let result
       if (stakeLoader.got404.value) {
-        result = (node.value?.stake_total ?? 0)
+        result = (nodeLoader.node.value?.stake_total ?? 0)
       } else {
         result = (stakeLoader.entity.value?.stake_total ?? 0)
       }
       return result
     })
     const stakePercentage = computed(() =>
-        stakeTotal.value ? Math.round(stake.value / stakeTotal.value * 10000) / 100 : 0)
+        stakeTotal.value ? Math.round(nodeLoader.stake.value / stakeTotal.value * 10000) / 100 : 0)
 
-    const stakeRewarded = computed(() => node.value?.stake_rewarded ?? 0)
     const stakeRewardedTotal = ref(0)
     const stakeRewardedPercentage = computed(() =>
-        stakeRewardedTotal.value ? Math.round(stakeRewarded.value / stakeRewardedTotal.value * 10000) / 100 : 0)
+        stakeRewardedTotal.value ? Math.round(nodeLoader.stakeRewarded.value / stakeRewardedTotal.value * 10000) / 100 : 0)
 
-    const stakeUnrewarded = computed(() => node.value?.stake_not_rewarded ?? 0)
     const stakeUnrewardedTotal = ref(0)
     const stakeUnrewardedPercentage = computed(() =>
-        stakeUnrewardedTotal.value ? Math.round(stakeUnrewarded.value / stakeUnrewardedTotal.value * 10000) / 100 : 0)
+        stakeUnrewardedTotal.value ? Math.round(nodeLoader.stakeUnrewarded.value / stakeUnrewardedTotal.value * 10000) / 100 : 0)
 
     const unknownNodeId = ref(false)
     const notification = computed(() => {
@@ -230,21 +215,10 @@ export default defineComponent({
       return result
     })
 
-    const nodeDescription = computed(() => {
-      let result
-      if (node.value?.description) {
-        result = node.value?.description
-      } else {
-        result = node.value?.node_account_id ? operatorRegistry.lookup(node.value?.node_account_id)?.getDescription() : null
-      }
-      return result
-    })
-
     onBeforeMount(() => {
       fetchNodes()
-      fetchNode(props.nodeId)
+      nodeLoader.requestLoad()
     })
-    watch(() => props.nodeId, () => fetchNode(props.nodeId));
 
     const fetchNodes = (nextUrl: string | null = null) => {
       const url = nextUrl ?? "api/v1/network/nodes"
@@ -269,22 +243,6 @@ export default defineComponent({
           })
     }
 
-    const fetchNode = (nodeId: string) => {
-      const url = "api/v1/network/nodes"
-      const queryParams = {params: {'node.id': nodeId}}
-      axios
-          .get<NetworkNodesResponse>(url, queryParams)
-          .then(result => {
-            if (result.data.nodes && result.data.nodes.length > 0) {
-              node.value = result.data.nodes[0]
-              unknownNodeId.value = false
-            } else {
-              node.value = null
-              unknownNodeId.value = true
-            }
-          })
-    }
-
     const formatHash = (hash: string | undefined) => {
       return hash != undefined ? byteToHex(base64DecToArr(hash)) : ""
     }
@@ -294,18 +252,18 @@ export default defineComponent({
     return {
       isSmallScreen,
       isTouchDevice,
-      node,
-      approxYearlyRate,
-      stake,
-      minStake,
-      maxStake,
+      node: nodeLoader.node,
+      approxYearlyRate: nodeLoader.approxYearlyRate,
+      stake: nodeLoader.stake,
+      minStake: nodeLoader.minStake,
+      maxStake: nodeLoader.maxStake,
       stakePercentage,
-      stakeRewarded,
+      stakeRewarded: nodeLoader.stakeRewarded,
       stakeRewardedPercentage,
-      stakeUnrewarded,
+      stakeUnrewarded: nodeLoader.stakeUnrewarded,
       stakeUnrewardedPercentage,
       notification,
-      nodeDescription,
+      nodeDescription: nodeLoader.nodeDescription,
       formatHash,
       makeFloorHbarAmount
     }

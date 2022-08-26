@@ -59,6 +59,28 @@ export class NodeLoader extends EntityLoader<NetworkNodesResponse> {
         return result
     })
 
+    //
+    // Public (staking)
+    //
+
+    public readonly rewardRate = computed(() =>
+        this.node.value?.reward_rate_start && this.node.value?.stake_rewarded
+            ? this.node.value.reward_rate_start / this.node.value?.stake_rewarded
+            : 0)
+
+    public readonly approxYearlyRate = computed(() => {
+        const formatter = new Intl.NumberFormat("en-US", {
+            style: 'percent',
+            maximumFractionDigits: 2
+        })
+        return formatter.format(this.rewardRate.value * 365);
+    })
+
+    public readonly stake = computed(() => this.node.value?.stake ?? 0)
+    public readonly minStake = computed(() => this.node.value?.min_stake ?? 0)
+    public readonly maxStake = computed(() => this.node.value?.max_stake ?? 0)
+    public readonly stakeRewarded = computed(() => this.node.value?.stake_rewarded ?? 0)
+    public readonly stakeUnrewarded = computed(() => this.node.value?.stake_not_rewarded ?? 0)
 
     //
     // EntityLoader
