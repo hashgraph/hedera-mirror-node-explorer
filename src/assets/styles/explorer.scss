@@ -46,11 +46,18 @@
     border: solid 0.5px transparent;
     border-radius: 6px;
 }
-.h-chooser-figure:hover {
-    border-color: var(--h-theme-highlight-color);
+.h-chooser-figure:hover:not(.selected) {
+    border: solid 0.5px var(--h-theme-highlight-color);
+    background-color: initial;
+}
+.h-chooser-figure:active:not(.selected) {
+    border: solid 0.5px var(--h-theme-highlight-color);
     background-color: var(--h-theme-page-background-color);
 }
-
+.h-chooser-figure.selected {
+    border: solid 1.5px var(--h-theme-highlight-color);
+    background-color: initial;
+}
 .h-chooser-img {
     vertical-align: middle;
 }
