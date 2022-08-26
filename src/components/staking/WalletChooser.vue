@@ -24,7 +24,8 @@
 
 <template>
 
-  <OptOutDialog v-model:show-dialog="showDisclaimerDialog" @onClose="handleCloseDisclaimer">
+  <OptOutDialog v-model:show-dialog="showDisclaimerDialog"
+                @onClose="handleCancelDisclaimer" @onAgree="handleAgreeDisclaimer">
     <template v-slot:dialogMessage>
       <span>Disclaimer</span>
     </template>
@@ -103,7 +104,11 @@ export default defineComponent({
       context.emit('update:showDialog', false)
     }
 
-    const handleCloseDisclaimer = () => {
+    const handleCancelDisclaimer = () => {
+      showDisclaimerDialog.value = false
+    }
+
+    const handleAgreeDisclaimer = () => {
       showDisclaimerDialog.value = false
       context.emit('chooseWallet', chosenWallet)
     }
@@ -111,7 +116,8 @@ export default defineComponent({
     return {
       showDisclaimerDialog,
       disclaimer,
-      handleCloseDisclaimer,
+      handleCancelDisclaimer,
+      handleAgreeDisclaimer,
       walletManager,
       drivers:walletManager.getDrivers(),
       handleChoose,

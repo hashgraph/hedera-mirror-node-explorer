@@ -23,19 +23,27 @@
 <!-- --------------------------------------------------------------------------------------------------------------- -->
 
 <template>
-  <ModalDialog :show-dialog="showDialog" :icon-class="iconClass">
+  <ModalDialog :icon-class="iconClass" :show-dialog="showDialog">
     <template v-slot:dialogMessage>
       <slot name="dialogMessage"/>
     </template>
     <template v-slot:dialogDetails>
       <slot name="dialogDetails"/>
 
-      <div class="is-flex is-justify-content-start is-align-items-center mt-3 has-text-grey-light">
-        <label class="checkbox mr-2 mt-1">
-          <input type="checkbox">
-        </label>
-        <span>Please don't show me this next time</span>
+      <div class="is-flex is-justify-content-space-between is-align-items-baseline">
+        <div class="is-flex is-justify-content-start is-align-items-center mt-3 has-text-grey-light">
+          <label class="checkbox mr-2 mt-1">
+            <input v-model="dontShowNextTime" type="checkbox">
+          </label>
+          <span>Please don't show me this next time</span>
+        </div>
+
+        <div class="is-flex is-justify-content-flex-end">
+          <button class="button is-white is-small" @click="handleCancel">CANCEL</button>
+          <button class="button is-info is-small ml-4" @click="handleAgree">AGREE</button>
+        </div>
       </div>
+
     </template>
   </ModalDialog>
 </template>
@@ -46,7 +54,7 @@
 
 <script lang="ts">
 
-import {defineComponent} from "vue";
+import {defineComponent, ref} from "vue";
 import ModalDialog from "@/components/ModalDialog.vue";
 
 export default defineComponent({
@@ -58,6 +66,25 @@ export default defineComponent({
       default: false
     },
     iconClass: String
+  },
+  setup(props, context) {
+    const dontShowNextTime = ref(false)
+    const handleAgree = () => {
+      if (dontShowNextTime.value) {
+        console.log("Should store NOT NEXT TIME")
+      }
+      context.emit('update:showDialog', false)
+      context.emit('onAgree')
+    }
+    const handleCancel = () => {
+      context.emit('update:showDialog', false)
+      context.emit('onClose')
+    }
+    return {
+      dontShowNextTime,
+      handleAgree,
+      handleCancel
+    }
   }
 });
 
