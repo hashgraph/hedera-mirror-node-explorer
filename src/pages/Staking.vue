@@ -82,6 +82,13 @@
               </div>
               <button id="disconnectWalletButton" class="button is-white is-small" @click="disconnectFromWallet">DISCONNECT {{ walletName.toLocaleUpperCase() }}</button>
             </div>
+            <div class="mt-5 h-is-text-size-2 is-italic has-text-grey has-text-centered">
+              <span class="has-text-grey-light">Please Note: </span>
+              Staking is in Phase 1 and will not pay out rewards until Phase 3.<br/>
+              Your full balance is automatically staked.<br/>
+              Your funds are fully available for use while staked.<br/>
+              You can unstake or switch nodes freely.
+            </div>
           </div>
           <div v-else>
             <div class="is-flex-direction-column">
@@ -93,12 +100,19 @@
               <div class="mt-4"/>
             </div>
               <div class="is-flex is-justify-content-center">
-                  <button id="stopStakingButton" class="button is-white is-small"
+                  <button id="stopStakingButtonSmall" class="button is-white is-small"
                           :disabled="!stakedTo" @click="showStopConfirmDialog = true">STOP STAKING</button>
-                  <button id="showStakingDialog" class="button is-white is-small ml-4" @click="showStakingDialog = true">CHANGE STAKED TO</button>
+                  <button id="showStakingDialogSmall" class="button is-white is-small ml-4" @click="showStakingDialog = true">CHANGE STAKED TO</button>
                 </div>
             <div class="is-flex is-justify-content-center mt-4">
-              <button id="disconnectWalletButton" class="button is-white is-small" @click="disconnectFromWallet">DISCONNECT WALLET</button>
+              <button id="disconnectWalletButtonSmall" class="button is-white is-small" @click="disconnectFromWallet">DISCONNECT WALLET</button>
+            </div>
+            <div class="mt-5 h-is-text-size-2 is-italic has-text-grey has-text-centered">
+              <span class="has-text-grey-light">Please Note: </span>
+              Staking is in Phase 1 and will not pay out rewards until Phase 3.<br/>
+              Your full balance is automatically staked.<br/>
+              Your funds are fully available for use while staked.<br/>
+              You can unstake or switch nodes freely.
             </div>
             <div class="mt-6"/>
           </div>

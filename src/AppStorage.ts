@@ -41,6 +41,19 @@ export class AppStorage {
         this.setLocalStorageItem(this.LAST_USED_NETWORK_KEY, newItem)
     }
 
+    //
+    // skip disclaimer (wallet chooser)
+    //
+
+    private static readonly DISCLAIMER_SKIP_KEY = 'skipDisclaimer'
+
+    public static getSkipDisclaimer(): boolean {
+        return  this.getLocalStorageItem(this.DISCLAIMER_SKIP_KEY) != null
+    }
+
+    public static setSkipDisclaimer(newValue: boolean|null): void {
+        this.setLocalStorageItem(this.DISCLAIMER_SKIP_KEY, newValue ? "true" : null)
+    }
 
     //
     // Private

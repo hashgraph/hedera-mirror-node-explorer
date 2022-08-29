@@ -23,33 +23,29 @@
 <!-- --------------------------------------------------------------------------------------------------------------- -->
 
 <template>
-  <div class="modal has-text-white" v-bind:class="{'is-active': showDialog}">
-    <div class="modal-background"/>
-    <div class="modal-content" style="width: 768px; border-radius: 16px">
-      <div class="box">
+  <ModalDialog :icon-class="iconClass" :show-dialog="showDialog">
+    <template v-slot:dialogMessage>
+      <slot name="dialogMessage"/>
+    </template>
+    <template v-slot:dialogDetails>
+      <slot name="dialogDetails"/>
 
-        <div class="is-flex is-justify-content-space-between is-align-items-baseline">
-          <div class="is-flex is-justify-content-start is-align-items-baseline">
-            <span v-if="iconClass" class="icon ml-2 mr-5"><i :class="iconClass"/></span>
-            <div class="block h-is-tertiary-text mt-2">
-              <slot name="dialogMessage"/>
-            </div>
-          </div>
-          <a @click="handleClose">
-            <img alt="Modal close icon" src="@/assets/close-icon.png" style="max-height: 20px;">
-          </a>
-
+      <div class="is-flex is-justify-content-space-between is-align-items-baseline mt-4">
+        <div class="is-flex is-justify-content-start is-align-items-center mt-3 has-text-grey-light">
+          <label class="checkbox mr-2 mt-1">
+            <input v-model="dontShowNextTime" type="checkbox">
+          </label>
+          <span>Please don't show me this next time</span>
         </div>
 
-        <hr class="h-card-separator"/>
-
-        <div class="block h-is-property-text has-text-grey mb-2" style="line-height: 1.5">
-          <slot name="dialogDetails"/>
+        <div class="is-flex is-justify-content-flex-end">
+          <button class="button is-white is-small" @click="handleCancel">CANCEL</button>
+          <button class="button is-info is-small ml-4" @click="handleAgree">AGREE</button>
         </div>
-
       </div>
-    </div>
-  </div>
+
+    </template>
+  </ModalDialog>
 </template>
 
 <!-- --------------------------------------------------------------------------------------------------------------- -->
@@ -58,11 +54,13 @@
 
 <script lang="ts">
 
-import {defineComponent} from "vue";
+import {defineComponent, ref} from "vue";
+import ModalDialog from "@/components/ModalDialog.vue";
+import {AppStorage} from "@/AppStorage";
 
 export default defineComponent({
-  name: "ModalDialog",
-  components: {},
+  name: "OptOutDialog",
+  components: {ModalDialog},
   props: {
     showDialog: {
       type: Boolean,
@@ -70,13 +68,25 @@ export default defineComponent({
     },
     iconClass: String
   },
-
   setup(props, context) {
-    const handleClose = () => {
+    const dontShowNextTime = ref(false)
+    const handleAgree = () => {
+      if (dontShowNextTime.value) {
+        AppStorage.setSkipDisclaimer(true)
+      }
+      context.emit('update:showDialog', false)
+      context.emit('onAgree')
+    }
+    const handleCancel = () => {
+      dontShowNextTime.value = false
       context.emit('update:showDialog', false)
       context.emit('onClose')
     }
-    return { handleClose }
+    return {
+      dontShowNextTime,
+      handleAgree,
+      handleCancel
+    }
   }
 });
 
@@ -87,8 +97,5 @@ export default defineComponent({
 <!-- --------------------------------------------------------------------------------------------------------------- -->
 
 <style scoped>
-span.icon {
-  align-items: flex-start;
-}
 </style>
 

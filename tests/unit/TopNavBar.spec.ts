@@ -71,7 +71,7 @@ describe("TopNavBar.vue", () => {
             "MAINNETTESTNETPREVIEWNETDashboardTransactionsTokensTopicsContractsAccountsNodesStakingBlocks")
 
         const links = wrapper.findAll("a")
-        expect(links.length).toBe(10)
+        expect(links.length).toBe(11)
     })
 
     it("Should display logos, page links and full search bar", async () => {
@@ -95,22 +95,24 @@ describe("TopNavBar.vue", () => {
             "MAINNETTESTNETPREVIEWNETDashboardTransactionsTokensTopicsContractsAccountsNodesStakingBlocks")
 
         const links = wrapper.findAll("a")
-        expect(links.length).toBe(10)
-        expect(links[1].text()).toBe("Dashboard")
-        expect(links[2].text()).toBe("Transactions")
-        expect(links[3].text()).toBe("Tokens")
-        expect(links[4].text()).toBe("Topics")
-        expect(links[5].text()).toBe("Contracts")
-        expect(links[6].text()).toBe("Accounts")
-        expect(links[7].text()).toBe("Nodes")
-        expect(links[8].text()).toBe("Staking")
-        expect(links[9].text()).toBe("Blocks")
+        expect(links.length).toBe(11)
+
+        expect(links[2].text()).toBe("Dashboard")
+        expect(links[3].text()).toBe("Transactions")
+        expect(links[4].text()).toBe("Tokens")
+        expect(links[5].text()).toBe("Topics")
+        expect(links[6].text()).toBe("Contracts")
+        expect(links[7].text()).toBe("Accounts")
+        expect(links[8].text()).toBe("Nodes")
+        expect(links[9].text()).toBe("Staking")
+        expect(links[10].text()).toBe("Blocks")
 
         expect(wrapper.findComponent(SearchBar).exists()).toBe(true)
 
         const logos = wrapper.findAll("img")
-        expect(logos.length).toBe(1)
+        expect(logos.length).toBe(2)
         expect(logos[0].attributes('alt')).toBe("Product Logo")
+        expect(logos[1].attributes('alt')).toBe("Modal close icon")
 
         wrapper.unmount()
     });

@@ -40,6 +40,7 @@ import ProgressDialog from "@/components/staking/ProgressDialog.vue";
 import {waitFor} from "@/utils/TimerUtils";
 import StakingDialog from "@/components/staking/StakingDialog.vue";
 import {nextTick} from "vue";
+import OptOutDialog from "@/components/staking/OptOutDialog.vue";
 
 /*
     Bookmarks
@@ -120,12 +121,14 @@ describe("Staking.vue", () => {
         await wrapper.get("#connectWalletButton").trigger("click")
         await flushPromises()
         const walletChooser = wrapper.getComponent(WalletChooser)
-        expect(walletChooser.element.classList.contains("is-active")).toBeTruthy()
+        expect(walletChooser.get(".modal").element.classList.contains("is-active")).toBeTruthy()
 
         // 1.2) Chooses wallet "DriverMock"
         await walletChooser.get("#" + testDriver.name).trigger("click")
+        await nextTick()
+        await walletChooser.get("#connectButton").trigger("click")
         await flushPromises()
-        expect(walletManager.getActiveDriver()).toBe(testDriver)
+        expect(walletManager.getActiveDriver()).toStrictEqual(testDriver)
         expect(testDriver.isConnected()).toBeTruthy()
         expect(testDriver.getAccountId()).toBe(TARGET_ACCOUNT_ID)
 
@@ -355,7 +358,7 @@ describe("Staking.vue", () => {
         // 6.1) Clicks "DISCONNECT WALLET"
         await wrapper.get("#disconnectWalletButton").trigger("click")
         await flushPromises()
-        expect(walletManager.getActiveDriver()).toBe(testDriver)
+        expect(walletManager.getActiveDriver()).toStrictEqual(testDriver)
         expect(testDriver.isConnected()).toBeFalsy()
         expect(testDriver.getAccountId()).toBe(null)
 
