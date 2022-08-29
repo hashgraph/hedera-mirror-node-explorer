@@ -18,7 +18,7 @@
  *
  */
 
-import {Transaction, TransactionType} from "@/schemas/HederaSchemas";
+import { Transaction, TransactionType } from "@/schemas/HederaSchemas";
 
 export class EntityDescriptor {
 
@@ -56,6 +56,10 @@ export class EntityDescriptor {
             case TransactionType.TOKENDISSOCIATE:
             case TransactionType.CRYPTOAPPROVEALLOWANCE:
             case TransactionType.CRYPTODELETEALLOWANCE:
+            case TransactionType.TOKENGRANTKYC:
+            case TransactionType.TOKENREVOKEKYC:
+            case TransactionType.TOKENFREEZE:
+            case TransactionType.TOKENUNFREEZE:
                 result = new EntityDescriptor("Account ID", "AccountDetails")
                 break;
 
@@ -78,12 +82,8 @@ export class EntityDescriptor {
             case TransactionType.TOKENDELETION:
             case TransactionType.TOKENUPDATE:
             case TransactionType.TOKENFEESCHEDULEUPDATE:
-            case TransactionType.TOKENFREEZE:
-            case TransactionType.TOKENGRANTKYC:
             case TransactionType.TOKENMINT:
             case TransactionType.TOKENPAUSE:
-            case TransactionType.TOKENREVOKEKYC:
-            case TransactionType.TOKENUNFREEZE:
             case TransactionType.TOKENUNPAUSE:
             case TransactionType.TOKENWIPE:
                 result = new EntityDescriptor("Token ID", "TokenDetails");
