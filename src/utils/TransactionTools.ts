@@ -18,7 +18,7 @@
  *
  */
 
-import {Transaction, TransactionType} from "@/schemas/HederaSchemas";
+import { Transaction, TransactionType } from "@/schemas/HederaSchemas";
 
 export function makeSummaryLabel(row: Transaction): string {
     let result: string
@@ -42,6 +42,10 @@ export function makeSummaryLabel(row: Transaction): string {
         case TransactionType.CRYPTOUPDATEACCOUNT:
         case TransactionType.TOKENASSOCIATE:
         case TransactionType.TOKENDISSOCIATE:
+        case TransactionType.TOKENGRANTKYC:
+        case TransactionType.TOKENREVOKEKYC:
+        case TransactionType.TOKENFREEZE:
+        case TransactionType.TOKENUNFREEZE:
             result = row.entity_id ? "Account ID: " + row.entity_id : ""
             break
         case TransactionType.TOKENBURN:
@@ -49,12 +53,9 @@ export function makeSummaryLabel(row: Transaction): string {
         case TransactionType.TOKENCREATION:
         case TransactionType.TOKENDELETION:
         case TransactionType.TOKENFEESCHEDULEUPDATE:
-        case TransactionType.TOKENFREEZE:
-        case TransactionType.TOKENUNFREEZE:
         case TransactionType.TOKENPAUSE:
         case TransactionType.TOKENUNPAUSE:
         case TransactionType.TOKENUPDATE:
-        case TransactionType.TOKENGRANTKYC:
             result = row.entity_id ? "Token ID: " + row.entity_id : ""
             break
         case TransactionType.CONTRACTCREATEINSTANCE:
@@ -130,7 +131,7 @@ export function showPositiveNetAmount(row: Transaction): boolean {
     const netAmount = computeNetAmount(row)
     switch (row.name) {
         case TransactionType.CRYPTOTRANSFER:
-            result= true
+            result = true
             break
         default:
             result = netAmount > 0
