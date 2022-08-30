@@ -35,7 +35,7 @@
     </div>
   </div>
 
-  <div v-else class="columns" :id="id">
+  <div v-else class="columns" :id="id" style="margin-bottom: -0.75rem;">
     <div class="column is-one-third has-text-weight-light" :id="nameId">
       <slot name="name"/>
     </div>
