@@ -81,6 +81,18 @@ body {
         line-height: 19px;
     }
 }
+.h-is-secondary-title {
+    font-style: normal;
+    font-weight: 900;
+    font-size: 22px;
+    line-height: 26px;
+}
+@media (max-width: 767px) {
+    .h-is-secondary-title {
+        font-size: 16px;
+        line-height: 19px;
+    }
+}
 .h-is-primary-subtitle {
     font-style: normal;
     font-weight: 900;
@@ -327,16 +339,14 @@ a.button.is-ghost.is-last {
     }
 }
 .h-has-column-separator {
-    padding-top: initial;
-    border-top: initial;
     padding-left: 1rem;
+    padding-top: 12px;
     border-left: 1px solid grey;
 }
 @media (max-width: 767px) {
     .h-has-column-separator {
+        padding-left: 12px;
         padding-top: 1rem;
-        border-top: 1px solid grey;
-        padding-left: initial;
         border-left: initial;
     }
 }
