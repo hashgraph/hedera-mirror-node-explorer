@@ -31,7 +31,7 @@
         <span class="h-is-primary-title">Token Balances for Account </span>
         <span class="h-is-secondary-text">{{ accountId }}</span>
       </template>
-      <template v-slot:table>
+      <template v-slot:content>
         <BalanceTable v-bind:balances="tokenBalances"/>
       </template>
     </DashboardCard>

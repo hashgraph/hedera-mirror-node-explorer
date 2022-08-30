@@ -36,7 +36,7 @@
           <PlayPauseButtonV2 v-model:state="transactionCacheState"/>
         </div>
       </template>
-      <template v-slot:table>
+      <template v-slot:content>
         <TransactionByIdTable v-bind:transactions="transactions"/>
       </template>
     </DashboardCard>

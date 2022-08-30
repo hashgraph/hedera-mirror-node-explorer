@@ -37,53 +37,51 @@
         </span>
       </template>
 
-      <template v-slot:table>
-
+      <template v-slot:content>
         <NotificationBanner v-if="notification" :message="notification"/>
+      </template>
 
-        <div class="columns h-is-property-text">
+      <template v-slot:leftContent>
+        <Property id="transactionType">
+          <template v-slot:name>Type</template>
+          <template v-slot:value>
+            <StringValue :string-value="transaction ? makeTypeLabel(transaction.name) : undefined"/>
+          </template>
+        </Property>
+        <Property id="consensusAt">
+          <template v-slot:name>Consensus at</template>
+          <template v-slot:value>
+            <TimestampValue v-bind:timestamp="transaction?.consensus_timestamp" v-bind:show-none="true" />
+          </template>
+        </Property>
+        <Property id="transactionHash">
+          <template v-slot:name>Transaction Hash</template>
+          <template v-slot:value>
+            <HexaValue v-bind:byteString="transaction ? formatHash(transaction?.transaction_hash): undefined" v-bind:show-none="true"/>
+          </template>
+        </Property>
+        <Property id="block">
+          <template v-slot:name>Block</template>
+          <template v-slot:value>
+            TBD
+          </template>
+        </Property>
+        <Property id="nodeAccount">
+          <template v-slot:name>Node Submitted To</template>
+          <template v-slot:value>
+            <AccountLink v-bind:accountId="transaction?.node" v-bind:show-extra="true"/>
+          </template>
+        </Property>
+        <Property id="memo">
+          <template v-slot:name>Memo</template>
+          <template v-slot:value>
+            <BlobValue :blob-value="transaction?.memo_base64" :show-none="true" :base64="true" class="should-wrap"/>
+          </template>
+        </Property>
+      </template>
 
-          <div class="column">
-            <Property id="transactionType">
-              <template v-slot:name>Type</template>
-              <template v-slot:value>
-                <StringValue :string-value="transaction ? makeTypeLabel(transaction.name) : undefined"/>
-              </template>
-            </Property>
-            <Property id="consensusAt">
-              <template v-slot:name>Consensus at</template>
-              <template v-slot:value>
-                <TimestampValue v-bind:timestamp="transaction?.consensus_timestamp" v-bind:show-none="true" />
-              </template>
-            </Property>
-            <Property id="transactionHash">
-              <template v-slot:name>Transaction Hash</template>
-              <template v-slot:value>
-                <HexaValue v-bind:byteString="transaction ? formatHash(transaction?.transaction_hash): undefined" v-bind:show-none="true"/>
-              </template>
-            </Property>
-            <Property id="netAmount">
-              <template v-slot:name>Net Amount</template>
-              <template v-slot:value>
-                <HbarAmount v-if="transaction" v-bind:amount="computeNetAmount(transaction)" v-bind:show-extra="true"/>
-              </template>
-            </Property>
-            <Property id="chargedFee">
-              <template v-slot:name>Charged Fee</template>
-              <template v-slot:value>
-                <HbarAmount v-if="transaction" v-bind:amount="transaction.charged_tx_fee" v-bind:show-extra="true"/>
-              </template>
-            </Property>
-            <Property id="maxFee">
-              <template v-slot:name>Max fee</template>
-              <template v-slot:value>
-                <HbarAmount v-if="transaction" v-bind:amount="computeMaxFee(transaction)" v-bind:show-extra="true"/>
-              </template>
-            </Property>
-          </div>
-
-          <div class="column">
-            <Property v-if="transaction?.entity_id" id="entityId">
+      <template v-slot:rightContent>
+        <Property v-if="transaction?.entity_id" id="entityId">
               <template v-slot:name>{{ entity?.label }}</template>
               <template v-slot:value>
                 <template v-if="entity?.routeName">
@@ -98,7 +96,37 @@
                 </template>
               </template>
             </Property>
-            <Property v-if="schedulingTransaction" id="schedulingTransaction">
+        <Property id="operatorAccount">
+              <template v-slot:name>Payer Account</template>
+              <template v-slot:value>
+                <AccountLink v-if="transaction" v-bind:accountId="makeOperatorAccountLabel(transaction)" v-bind:show-extra="true"/>
+              </template>
+            </Property>
+        <Property id="chargedFee">
+              <template v-slot:name>Charged Fee</template>
+              <template v-slot:value>
+                <HbarAmount v-if="transaction" v-bind:amount="transaction.charged_tx_fee" v-bind:show-extra="true"/>
+              </template>
+            </Property>
+        <Property id="maxFee">
+              <template v-slot:name>Max fee</template>
+              <template v-slot:value>
+                <HbarAmount v-if="transaction" v-bind:amount="computeMaxFee(transaction)" v-bind:show-extra="true"/>
+              </template>
+            </Property>
+        <Property id="netAmount">
+              <template v-slot:name>Net Amount</template>
+              <template v-slot:value>
+                <HbarAmount v-if="transaction" v-bind:amount="computeNetAmount(transaction)" v-bind:show-extra="true"/>
+              </template>
+            </Property>
+        <Property id="duration">
+              <template v-slot:name>Valid Duration</template>
+              <template v-slot:value>
+                <DurationValue v-bind:string-value="transaction?.valid_duration_seconds"/>
+              </template>
+            </Property>
+        <Property v-if="schedulingTransaction" id="schedulingTransaction">
               <template v-slot:name>Scheduling</template>
               <template v-slot:value>
                 <router-link :to="{
@@ -108,7 +136,7 @@
                 }">Show transaction</router-link>
               </template>
             </Property>
-            <Property v-if="scheduledTransaction" id="scheduledTransaction">
+        <Property v-if="scheduledTransaction" id="scheduledTransaction">
               <template v-slot:name>Scheduled</template>
               <template v-slot:value>
                 <router-link :to="{
@@ -118,31 +146,7 @@
                 }">Show transaction</router-link>
               </template>
             </Property>
-            <Property id="memo">
-              <template v-slot:name>Memo</template>
-              <template v-slot:value>
-                <BlobValue :blob-value="transaction?.memo_base64" :show-none="true" :base64="true" class="should-wrap"/>
-              </template>
-            </Property>
-            <Property id="operatorAccount">
-              <template v-slot:name>Payer Account</template>
-              <template v-slot:value>
-                <AccountLink v-if="transaction" v-bind:accountId="makeOperatorAccountLabel(transaction)" v-bind:show-extra="true"/>
-              </template>
-            </Property>
-            <Property id="nodeAccount">
-              <template v-slot:name>Node Submitted To</template>
-              <template v-slot:value>
-                <AccountLink v-bind:accountId="transaction?.node" v-bind:show-extra="true"/>
-              </template>
-            </Property>
-            <Property id="duration">
-              <template v-slot:name>Duration</template>
-              <template v-slot:value>
-                <DurationValue v-bind:string-value="transaction?.valid_duration_seconds"/>
-              </template>
-            </Property>
-            <Property v-if="parentTransaction" id="parentTransaction">
+        <Property v-if="parentTransaction" id="parentTransaction">
               <template v-slot:name>Parent</template>
               <template v-slot:value>
                 <router-link :to="{
@@ -152,7 +156,7 @@
                 }">{{ makeTypeLabel(parentTransaction.name) }}</router-link>
               </template>
             </Property>
-            <Property v-if="childTransactions.length" id="children">
+        <Property v-if="childTransactions.length" id="children">
               <template v-slot:name>Children</template>
               <template v-slot:value>
                 <router-link v-if="displayAllChildrenLinks" :to="{name: 'TransactionsById', params: {transactionId: transactionId}}">
@@ -170,14 +174,29 @@
                 </div>
               </template>
             </Property>
-          </div>
+      </template>
+    </DashboardCard>
 
-        </div>
-
+    <DashboardCard>
+      <template v-slot:title>
+        <span class="h-is-secondary-title">Transfers</span>
+      </template>
+      <template v-slot:content>
         <div class="h-is-property-text">
           <TransferGraphSection v-bind:transaction="transaction"/>
         </div>
+      </template>
+    </DashboardCard>
 
+    <DashboardCard v-if="false">
+      <template v-slot:title>
+        <span class="h-is-secondary-title">Contract Results</span>
+      </template>
+    </DashboardCard>
+
+    <DashboardCard v-if="false">
+      <template v-slot:title>
+        <span class="h-is-secondary-title">Logs</span>
       </template>
     </DashboardCard>
 
@@ -224,7 +243,7 @@ const MAX_INLINE_CHILDREN = 3
 
 export default defineComponent({
 
-  name: 'TransactionDetails',
+  name: 'TransactionDetailsV2',
 
   components: {
     Property,

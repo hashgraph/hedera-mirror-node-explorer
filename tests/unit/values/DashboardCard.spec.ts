@@ -27,33 +27,30 @@ import DashboardCard from "@/components/DashboardCard.vue";
 
 describe("DashboardCard.vue", () => {
 
-    it("all slots empty", async () => {
+    it("should have all slots empty", async () => {
 
         const wrapper = mount(DashboardCard, {});
 
         expect(wrapper.text()).toBe("")
     })
 
-    it("all slots setup", async () => {
+    it("should have all slots setup", async () => {
 
         const sampleTitle = "ZeTitle"
         const sampleControl = "ZeControl"
-        const sampleChart = "ZeChart"
-        const sampleTable = "ZeTable"
+        const sampleContent = "ZeContent"
 
         const wrapper = mount(DashboardCard, {
             slots: {
                 title: sampleTitle,
                 control: sampleControl,
-                chart: sampleChart,
-                table: sampleTable,
+                content: sampleContent,
             }
         });
 
         expect(wrapper.text()).toContain(sampleTitle)
         expect(wrapper.text()).toContain(sampleControl)
-        expect(wrapper.text()).toContain(sampleChart)
-        expect(wrapper.text()).toContain(sampleTable)
+        expect(wrapper.text()).toContain(sampleContent)
     })
 
 })

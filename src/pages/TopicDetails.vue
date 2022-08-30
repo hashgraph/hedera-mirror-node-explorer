@@ -34,7 +34,7 @@
       <template v-slot:control>
         <PlayPauseButtonV2 v-model:state="cacheState"/>
       </template>
-      <template v-slot:table>
+      <template v-slot:content>
 
         <NotificationBanner v-if="notification" :message="notification"/>
 
