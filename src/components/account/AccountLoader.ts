@@ -19,11 +19,12 @@
  */
 
 import {EntityLoader} from "@/utils/EntityLoader";
-import {AccountBalanceTransactions} from "@/schemas/HederaSchemas";
+import {AccountBalanceTransactions, TokenBalance} from "@/schemas/HederaSchemas";
 import {makeEthAddressForAccount} from "@/schemas/HederaUtils";
 import {operatorRegistry} from "@/schemas/OperatorRegistry";
 import {computed, Ref} from "vue";
 import axios, {AxiosResponse} from "axios";
+import {base32ToAlias, byteToHex} from "@/utils/B64Utils";
 
 export class AccountLoader extends EntityLoader<AccountBalanceTransactions> {
 
@@ -43,6 +44,8 @@ export class AccountLoader extends EntityLoader<AccountBalanceTransactions> {
 
     public readonly balance: Ref<number|null> = computed(() => this.entity.value?.balance?.balance ?? null)
 
+    public readonly tokens: Ref<[TokenBalance]|null> = computed(() => this.entity.value?.balance?.tokens ?? null)
+
     public readonly stakedNodeId: Ref<number|null> = computed(() => this.entity.value?.staked_node_id ?? null)
 
     public readonly stakedAccountId: Ref<string|null> = computed(() => this.entity.value?.staked_account_id ?? null)
@@ -61,6 +64,11 @@ export class AccountLoader extends EntityLoader<AccountBalanceTransactions> {
         return this.entity.value !== null ? makeEthAddressForAccount(this.entity.value) : null
     })
 
+    public readonly aliasByteString = computed(() => {
+        const alias32 = this.entity.value?.alias
+        const aliasBytes = alias32 ? base32ToAlias(alias32) : null
+        return aliasBytes !== null ? byteToHex(aliasBytes) : null
+    })
 
     //
     // EntityLoader

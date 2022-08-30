@@ -20,7 +20,7 @@
 
 import {EntityLoader} from "@/utils/EntityLoader";
 import {ContractResponse} from "@/schemas/HederaSchemas";
-import {Ref} from "vue";
+import {computed, Ref} from "vue";
 import axios, {AxiosResponse} from "axios";
 
 export class ContractLoader extends EntityLoader<ContractResponse> {
@@ -37,6 +37,17 @@ export class ContractLoader extends EntityLoader<ContractResponse> {
         this.watchAndReload([this.contractLocator])
     }
 
+    public readonly contractId = computed(() => {
+        return this.entity.value?.contract_id ?? null
+    })
+
+    public readonly obtainerId = computed(() => {
+        return this.entity.value?.obtainer_id ?? null
+    })
+
+    public readonly proxyAccountId = computed(() => {
+        return this.entity.value?.proxy_account_id ?? null
+    })
 
     //
     // EntityLoader

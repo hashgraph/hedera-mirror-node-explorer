@@ -103,13 +103,13 @@
             <Property id="obtainer">
               <template v-slot:name>Obtainer</template>
               <template v-slot:value>
-                <AccountLink :account-id="obtainerId" :show-none="true"/>
+                <AccountLink :account-id="obtainerId" :show-none="true" null-label="None"/>
               </template>
             </Property>
             <Property id="proxyAccount">
               <template v-slot:name>Proxy Account</template>
               <template v-slot:value>
-                <AccountLink :account-id="proxyAccountId" :show-none="true"/>
+                <AccountLink :account-id="proxyAccountId" :show-none="true" null-label="None"/>
               </template>
             </Property>
             <Property id="validFrom">
@@ -170,8 +170,6 @@
 <script lang="ts">
 
 import {computed, defineComponent, inject, onBeforeUnmount, onMounted, ref, watch} from 'vue';
-import axios from "axios";
-import {AccountBalanceTransactions, ContractResponse} from "@/schemas/HederaSchemas";
 import KeyValue from "@/components/values/KeyValue.vue";
 import HexaValue from "@/components/values/HexaValue.vue";
 import ContractTransactionTable from "@/components/contract/ContractTransactionTable.vue";
@@ -189,7 +187,8 @@ import Footer from "@/components/Footer.vue";
 import NotificationBanner from "@/components/NotificationBanner.vue";
 import {EntityID} from "@/utils/EntityID";
 import Property from "@/components/Property.vue";
-import {base32ToAlias, byteToHex} from "@/utils/B64Utils";
+import {ContractLoader} from "@/components/contract/ContractLoader";
+import {AccountLoader} from "@/components/account/AccountLoader";
 import {TransactionCacheV2} from "@/components/transaction/TransactionCacheV2";
 import {EntityCacheStateV2} from "@/utils/EntityCacheV2";
 import {useRoute, useRouter} from "vue-router";
@@ -229,7 +228,6 @@ export default defineComponent({
   setup(props) {
     const isSmallScreen = inject('isSmallScreen', true)
     const isTouchDevice = inject('isTouchDevice', false)
-    const account = ref<AccountBalanceTransactions | null>(null)
 
     const router = useRouter()
     const route = useRoute()
@@ -243,13 +241,7 @@ export default defineComponent({
       return props.contractId ? EntityID.parse(props.contractId, true) != null : false
     })
     const normalizedContractId = computed(() => {
-      return props.contractId ? EntityID.normalize(props.contractId) : props.contractId
-    })
-
-    const aliasByteString = computed(() => {
-      const alias32 = account.value?.alias
-      const aliasBytes = alias32 ? base32ToAlias(alias32) : null
-      return aliasBytes !== null ? byteToHex(aliasBytes) : null
+      return props.contractId ? EntityID.normalize(props.contractId) : null
     })
 
     //
@@ -266,38 +258,27 @@ export default defineComponent({
       updateQuery()
     })
 
-//
+    //
     // contract
     //
 
-    const contract = ref<ContractResponse | null>(null)
-    const contractError = ref<unknown>(null)
+    const contractLoader = new ContractLoader(normalizedContractId)
+    onMounted(() => contractLoader.requestLoad())
 
-    const got404 = computed(() => {
-      return contractError.value !== null
-          && axios.isAxiosError(contractError.value)
-          && contractError.value?.request?.status === 404
-    })
-    const obtainerId = computed(() => {
-      const result = contract.value?.obtainer_id
-      return result === null ? undefined : result
-    })
-    const proxyAccountId = computed(() => {
-      const result = contract.value?.proxy_account_id
-      return result === null ? undefined : result
-    })
-    const balance = computed(() => account.value?.balance?.balance)
-    const tokens = computed(() => account.value?.balance?.tokens)
-    const displayAllTokenLinks = computed(() => tokens.value ? tokens.value.length > MAX_TOKEN_BALANCES : false)
+    const accountLoader = new AccountLoader(contractLoader.contractId)
+    onMounted(() => accountLoader.requestLoad())
+
+    const displayAllTokenLinks = computed(() => accountLoader.tokens.value ? accountLoader.tokens.value.length > MAX_TOKEN_BALANCES : false)
+
     const notification = computed(() => {
-      const expiration = contract.value?.expiration_timestamp
-      let result
+      let result: string|null
 
+      const expiration = contractLoader.entity.value?.expiration_timestamp
       if (!validEntityId.value) {
         result = "Invalid contract ID: " + props.contractId
-      } else if (got404.value) {
+      } else if (contractLoader.got404.value) {
         result = "Contract with ID " + props.contractId + " was not found"
-      } else if (contract.value?.deleted === true) {
+      } else if (contractLoader.entity.value?.deleted === true) {
         result = "Contract is deleted"
       } else if (expiration && Number.parseFloat(expiration) <= new Date().getTime() / 1000) {
         result = "Contract has expired and is in grace period"
@@ -305,33 +286,6 @@ export default defineComponent({
         result = null
       }
       return result
-    })
-
-    const fetchContract = () => {
-      contract.value = null
-      if (validEntityId.value) {
-        axios
-            .get("api/v1/contracts/" + props.contractId)
-            .then(response => {
-              contract.value = response.data;
-              axios
-                  .get("api/v1/accounts/" + normalizedContractId.value)
-                  .then(response => {
-                    account.value = response.data
-                  })
-            })
-            .catch(reason => {
-              contractError.value = reason
-            })
-      }
-    }
-
-    watch(() => props.contractId, () => {
-      fetchContract()
-    });
-
-    onMounted(() => {
-      fetchContract()
     })
 
     //
@@ -364,19 +318,19 @@ export default defineComponent({
     return {
       isSmallScreen,
       isTouchDevice,
-      contract,
-      account,
-      balance,
-      tokens,
+      contract: contractLoader.entity,
+      account: accountLoader.entity,
+      balance: accountLoader.balance,
+      tokens: accountLoader.tokens,
       displayAllTokenLinks,
       transactions: transactionCache.transactions,
       cacheState: transactionCache.state,
       selectedTransactionFilter,
       notification,
-      obtainerId,
-      proxyAccountId,
+      obtainerId: contractLoader.obtainerId,
+      proxyAccountId: contractLoader.proxyAccountId,
       normalizedContractId,
-      aliasByteString
+      aliasByteString: accountLoader.aliasByteString
     }
   },
 });
