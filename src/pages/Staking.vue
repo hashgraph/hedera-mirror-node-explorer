@@ -64,7 +64,7 @@
           </div>
       </template>
 
-      <template v-slot:table>
+      <template v-slot:content>
 
         <template v-if="accountId">
           <div v-if="isSmallScreen">
@@ -156,7 +156,7 @@
           <PlayPauseButtonV2 v-model:state="transactionCacheState"/>
         </div>
       </template>
-      <template v-slot:table>
+      <template v-slot:content>
         <RewardsTransactionTable
             :narrowed="true"
             :nb-items="10"

@@ -30,7 +30,7 @@
       <template v-slot:title>
         <span class="h-is-primary-title">Recent Accounts</span>
       </template>
-      <template v-slot:table>
+      <template v-slot:content>
         <AccountTable v-bind:accounts="accounts"/>
       </template>
     </DashboardCard>

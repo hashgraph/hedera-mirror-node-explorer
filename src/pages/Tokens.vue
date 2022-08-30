@@ -34,7 +34,7 @@
           <template v-slot:title>
             <span class="h-is-primary-title">Recent Non Fungible Tokens</span>
           </template>
-          <template v-slot:table>
+          <template v-slot:content>
             <TokenTable v-bind:tokens="nftTokens"/>
           </template>
         </DashboardCard>
@@ -47,7 +47,7 @@
           <template v-slot:title>
             <span class="h-is-primary-title">Recent Fungible Tokens</span>
           </template>
-          <template v-slot:table>
+          <template v-slot:content>
             <TokenTable v-bind:tokens="funTokens"/>
           </template>
         </DashboardCard>

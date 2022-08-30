@@ -30,7 +30,7 @@
       <template v-slot:title>
         <span class="h-is-primary-title">Network</span>
       </template>
-      <template v-slot:table>
+      <template v-slot:content>
 
           <div v-if="isSmallScreen" class="is-flex is-justify-content-space-between">
             <div class="is-flex-direction-column">
@@ -73,7 +73,7 @@
       <template v-slot:title>
         <span class="h-is-primary-title">Nodes</span>
       </template>
-      <template v-slot:table>
+      <template v-slot:content>
         <NodeTable :nodes="nodes"
                    :unclamped-stake-total="unclampedStakeTotal"
                    :stake-total="stakeTotal"

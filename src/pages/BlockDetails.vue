@@ -42,7 +42,7 @@
         </div>
       </template>
 
-      <template v-slot:table>
+      <template v-slot:content>
 
         <NotificationBanner v-if="notification" :message="notification"/>
 
@@ -120,7 +120,7 @@
       <template v-slot:title>
         <span class="h-is-primary-title">Block Transactions</span>
       </template>
-      <template v-slot:table>
+      <template v-slot:content>
         <BlockTransactionTable :transactions="transactions"/>
       </template>
     </DashboardCard>

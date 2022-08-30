@@ -35,7 +35,7 @@
         <span class="h-is-primary-title"> Token </span>
         <span class="h-is-secondary-text mr-2">{{ normalizedTokenId }}</span>
       </template>
-      <template v-slot:table>
+      <template v-slot:content>
 
         <NotificationBanner v-if="notification" :message="notification"/>
 

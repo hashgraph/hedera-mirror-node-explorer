@@ -32,12 +32,26 @@
         <slot name="control"></slot>
       </div>
     </div>
-    <hr class="h-card-separator"/>
+
+    <hr class="h-card-separator mb-5"/>
+
     <div>
-      <slot name="chart"></slot>
+      <slot name="content"></slot>
     </div>
-    <div>
-      <slot name="table"></slot>
+
+    <div class="columns h-is-property-text">
+
+      <div class="column">
+        <div>
+          <slot name="leftContent"></slot>
+        </div>
+      </div>
+      <div class="column" :class="{'h-has-column-separator':slots.rightContent}">
+        <div>
+          <slot name="rightContent"></slot>
+        </div>
+      </div>
+
     </div>
   </div>
 </template>
@@ -48,7 +62,7 @@
 
 <script lang="ts">
 
-import {defineComponent, inject} from "vue";
+import {defineComponent, inject, useSlots} from "vue";
 
 export default defineComponent({
   name: "DashboardCard",
@@ -60,8 +74,8 @@ export default defineComponent({
   setup() {
     const isSmallScreen = inject('isSmallScreen', true)
     const isTouchDevice = inject('isTouchDevice', false)
-
-    return { isSmallScreen, isTouchDevice }
+    const slots = useSlots()
+    return { isSmallScreen, isTouchDevice, slots }
   }
 })
 

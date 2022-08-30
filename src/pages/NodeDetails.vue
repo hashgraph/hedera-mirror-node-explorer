@@ -31,7 +31,7 @@
         <span class="h-is-primary-title">Node </span>
         <span class="h-is-secondary-text is-numeric mr-3">{{ nodeId }}</span>
       </template>
-      <template v-slot:table>
+      <template v-slot:content>
 
         <NotificationBanner v-if="notification" :message="notification"/>
 
