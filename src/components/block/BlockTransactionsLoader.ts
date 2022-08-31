@@ -20,48 +20,44 @@
 
 import {EntityLoader} from "@/utils/EntityLoader";
 import {TransactionResponse} from "@/schemas/HederaSchemas";
-import {ref, watch, Ref, computed} from "vue";
+import {computed, Ref} from "vue";
 import axios, {AxiosResponse} from "axios";
 
 export class BlockTransactionsLoader extends EntityLoader<TransactionResponse> {
+
+    private readonly timestamp: Ref<string|null>
+    private readonly limit: Ref<number|null>
 
     //
     // Public
     //
 
-    public constructor() {
+    public constructor(timestamp: Ref<string|null>, limit: Ref<number|null>) {
         super()
-        watch([this.timestamp, this.limit], () => this.paramsDidChange())
+        this.timestamp = timestamp
+        this.limit = limit
+        this.watchAndReload([this.timestamp, this.limit])
     }
 
     public transactions = computed(() => this.entity.value?.transactions ?? [])
-
-    public readonly timestamp: Ref<string|null> = ref(null)
-    public readonly limit: Ref<number|null> = ref(null)
 
     //
     // EntityLoader
     //
 
-    protected async load(): Promise<AxiosResponse<TransactionResponse>> {
-        const params = {} as {
-            limit: number,
-            timestamp: string
-        }
-        params.limit = Math.min(this.limit.value ?? 0, 100)
-        params.timestamp = "lte:" + this.timestamp.value
-        return axios.get<TransactionResponse>("api/v1/transactions", { params: params} )
-    }
-
-    //
-    // Private
-    //
-
-    private paramsDidChange() {
+    protected async load(): Promise<AxiosResponse<TransactionResponse>|null> {
+        let result: Promise<AxiosResponse<TransactionResponse>|null>
         if (this.limit.value && this.timestamp.value) {
-            this.requestLoad()
+            const params = {} as {
+                limit: number,
+                timestamp: string
+            }
+            params.limit = Math.min(this.limit.value ?? 0, 100)
+            params.timestamp = "lte:" + this.timestamp.value
+            result = axios.get<TransactionResponse>("api/v1/transactions", { params: params} )
         } else {
-            this.clear()
+            result = Promise.resolve(null)
         }
+        return result
     }
 }

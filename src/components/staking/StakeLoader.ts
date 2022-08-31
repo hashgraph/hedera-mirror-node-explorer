@@ -37,7 +37,7 @@ export class StakeLoader extends EntityLoader<NetworkStake> {
     // EntityLoader
     //
 
-    protected async load(): Promise<AxiosResponse<NetworkStake>> {
+    protected async load(): Promise<AxiosResponse<NetworkStake>|null> {
         return axios.get<NetworkStake>("api/v1/network/stake")
     }
 }

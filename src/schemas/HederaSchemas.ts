@@ -417,6 +417,7 @@ export interface ContractResultsResponse {
 
 export interface ContractResult {
     amount: number | null | undefined
+    bloom: string | null | undefined
     call_result: string | null | undefined
     contract_id: string | null | undefined
     created_contract_ids: Array<string> | null | undefined
@@ -424,9 +425,48 @@ export interface ContractResult {
     from: string | undefined
     function_parameters: string | undefined
     gas_limit: number | undefined
-    gas_used: number | undefined
+    gas_used: number | null | undefined
+    hash: string | null | undefined
+    result: string | undefined
+    status: string | undefined
     timestamp: string | undefined
     to: string | undefined
+}
+
+export interface ContractResultDetails extends ContractResult {
+    access_list: string | null | undefined
+    block_gas_used: number | null | undefined // integer
+    block_hash: string | null | undefined
+    block_number: number | null | undefined // integer
+    chain_id: string | null | undefined
+    gas_price: string | null | undefined
+    logs: ContractResultLog[] | undefined
+    max_fee_per_gas: string | null | undefined
+    max_priority_fee_per_gas: string | null | undefined
+    nonce: number | null | undefined // integer
+    r: string | null | undefined
+    s: string | null | undefined
+    state_changes: ContractResultStateChanges[] | undefined
+    transaction_index: number | null | undefined // integer
+    type: number | null | undefined // The type of the wrapped ethereum transaction, 0 (Pre-Eip1559) or 2 (Post-Eip1559)
+    v: number | null | undefined
+}
+
+export interface ContractResultLog {
+    address: string | undefined
+    bloom: string | null | undefined
+    contract_id: string | null | undefined
+    data: string | null | undefined
+    index: number | undefined // integer
+    topics: string[] | undefined
+}
+
+export interface ContractResultStateChanges {
+    address: string | undefined
+    contract_id: string | null | undefined
+    slot: string | undefined
+    value_read: string | undefined
+    value_written: string | null | undefined
 }
 
 // ---------------------------------------------------------------------------------------------------------------------

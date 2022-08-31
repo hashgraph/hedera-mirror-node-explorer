@@ -156,11 +156,9 @@
 
 <script lang="ts">
 
-import {computed, defineComponent, inject, onBeforeMount, onBeforeUnmount, onMounted, ref, watch} from 'vue';
+import {computed, defineComponent, inject, onBeforeUnmount, onMounted, watch} from 'vue';
 import router from "@/router";
-import axios from "axios";
 import KeyValue from "@/components/values/KeyValue.vue";
-import {TokenInfo} from "@/schemas/HederaSchemas";
 import TimestampValue from "@/components/values/TimestampValue.vue";
 import TokenNftTable from "@/components/token/TokenNftTable.vue";
 import TokenBalanceTable from "@/components/token/TokenBalanceTable.vue";
@@ -172,11 +170,11 @@ import Footer from "@/components/Footer.vue";
 import EthAddress from "@/components/values/EthAddress.vue";
 import {EntityID} from "@/utils/EntityID";
 import Property from "@/components/Property.vue";
-import {makeEthAddressForToken, makeTokenSymbol} from "@/schemas/HederaUtils";
 import NotificationBanner from "@/components/NotificationBanner.vue";
 import {EntityCacheStateV2} from "@/utils/EntityCacheV2";
 import {TokenNftCache} from "@/components/token/TokenNftCache";
 import {TokenBalanceCache} from "@/components/token/TokenBalanceCache";
+import {TokenInfoLoader} from "@/components/token/TokenInfoLoader";
 
 export default defineComponent({
 
@@ -206,21 +204,21 @@ export default defineComponent({
     const isSmallScreen = inject('isSmallScreen', true)
     const isTouchDevice = inject('isTouchDevice', false)
 
-    const tokenInfo = ref<TokenInfo | null>(null)
-
-    const got404 = ref(false)
     const validEntityId = computed(() => {
       return props.tokenId ? EntityID.parse(props.tokenId, true) != null : false
     })
     const normalizedTokenId = computed(() => {
-      return props.tokenId ? EntityID.normalize(props.tokenId) : props.tokenId
+      return props.tokenId ? EntityID.normalize(props.tokenId) : null
     })
+
+    const tokenInfoLoader = new TokenInfoLoader(normalizedTokenId)
+    onMounted(() => tokenInfoLoader.requestLoad())
 
     const notification = computed(() => {
       let result
       if (!validEntityId.value) {
         result = "Invalid token ID: " + props.tokenId
-      } else if (got404.value) {
+      } else if (tokenInfoLoader.got404.value) {
         result = "Token with ID " + props.tokenId + " was not found"
       } else {
         result = null
@@ -228,51 +226,17 @@ export default defineComponent({
       return result
     })
 
-    onBeforeMount(() => {
-      fetchTokenInfo();
-    })
-
-    watch(() => props.tokenId, () => {
-      fetchTokenInfo()
-    });
-
-    const fetchTokenInfo = () => {
-      tokenInfo.value = null
-      got404.value = false
-      if (validEntityId.value) {
-        axios
-            .get("api/v1/tokens/" + props.tokenId)
-            .then(response => {
-              tokenInfo.value = response.data;
-            })
-            .catch(reason => {
-              if (axios.isAxiosError(reason) && reason?.request?.status === 404) {
-                got404.value = true
-              }
-            })
-      }
-    }
-
     const showTokenDetails = (tokenId: string) => {
       router.push({name: 'TokenDetails', params: {tokenId: tokenId}})
     }
-
-    const ethereumAddress = computed(() => {
-      return tokenInfo.value !== null ? makeEthAddressForToken(tokenInfo.value) : null
-    })
-
-    const tokenSymbol = computed( () => makeTokenSymbol(tokenInfo.value, 11))
 
     //
     // tokenBalanceCache
     //
 
     const tokenBalanceCache = new TokenBalanceCache();
-    const isFungible = computed(() => {
-      return tokenInfo.value != null && tokenInfo.value.type != "NON_FUNGIBLE_UNIQUE"
-    })
     const setupTokenBalanceCache = () => {
-      if (isFungible.value) {
+      if (tokenInfoLoader.isFungible.value) {
         tokenBalanceCache.tokenId.value = props.tokenId ?? null
         tokenBalanceCache.state.value = EntityCacheStateV2.Started
       }
@@ -280,7 +244,7 @@ export default defineComponent({
         tokenBalanceCache.state.value = EntityCacheStateV2.Stopped
       }
     }
-    watch([() => props.tokenId, isFungible], () => {
+    watch([() => props.tokenId, tokenInfoLoader.isFungible], () => {
       setupTokenBalanceCache()
     })
     onMounted(() => {
@@ -296,7 +260,7 @@ export default defineComponent({
 
     const tokenNftCache = new TokenNftCache();
     const isNFT = computed(() => {
-      return tokenInfo.value != null && tokenInfo.value.type == "NON_FUNGIBLE_UNIQUE"
+      return tokenInfoLoader.entity.value != null && tokenInfoLoader.entity.value.type == "NON_FUNGIBLE_UNIQUE"
     })
     const setupTransactionCache = () => {
       if (isNFT.value) {
@@ -321,14 +285,14 @@ export default defineComponent({
     return {
       isSmallScreen,
       isTouchDevice,
-      tokenInfo,
+      tokenInfo: tokenInfoLoader.entity,
       validEntityId,
       normalizedTokenId,
       notification,
       showTokenDetails,
       parseIntString,
-      ethereumAddress,
-      tokenSymbol,
+      ethereumAddress: tokenInfoLoader.ethereumAddress,
+      tokenSymbol: tokenInfoLoader.tokenSymbol,
       nfts: tokenNftCache.nfts,
       tokenBalances: tokenBalanceCache.balances,
       tokenNftCache, // For test purpose

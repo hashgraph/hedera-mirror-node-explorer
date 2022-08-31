@@ -183,16 +183,15 @@ export default defineComponent({
     //
     // block
     //
-    const blockLoader = new BlockLoader()
-    watch(normBlockHON, () => blockLoader.blockHON.value = normBlockHON.value)
-    onMounted(() => blockLoader.blockHON.value = normBlockHON.value)
+    const blockLoader = new BlockLoader(normBlockHON)
+    onMounted(() => blockLoader.requestLoad())
 
     const notification = computed(() => {
       let result
-      if (blockLoader.blockHON.value === null) {
+      if (blockLoader.blockLocator.value === null) {
         result =  "Invalid block number or hash: " + props.blockHon
       } else if (blockLoader.got404.value) {
-        result =  "Block " + blockLoader.blockHON.value + " was not found"
+        result =  "Block " + blockLoader.blockLocator.value + " was not found"
       } else {
         result = null
       }
@@ -202,13 +201,8 @@ export default defineComponent({
     //
     // transactions
     //
-    const blockTransactionLoader = new BlockTransactionsLoader()
-    const setupBlockTransactionsLoader = () => {
-      blockTransactionLoader.limit.value = blockLoader.entity.value?.count ?? 0
-      blockTransactionLoader.timestamp.value = blockLoader.entity.value?.timestamp?.to ?? ""
-    }
-    onMounted(() => setupBlockTransactionsLoader())
-    watch(blockLoader.entity, () => setupBlockTransactionsLoader())
+    const blockTransactionLoader = new BlockTransactionsLoader(blockLoader.toTimestamp, blockLoader.blockCount)
+    onMounted(() => blockTransactionLoader.requestLoad())
 
     const disablePreviousButton = ref(true)
     const disableNextButton = ref(true)

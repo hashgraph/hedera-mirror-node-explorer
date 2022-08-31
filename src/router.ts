@@ -47,6 +47,7 @@ import {RouteManager} from "@/utils/RouteManager";
 import {WalletManager} from "@/utils/wallet/WalletManager";
 import BlockDetails from "@/pages/BlockDetails.vue";
 import Blocks from "@/pages/Blocks.vue";
+import ContractResultDetails from "@/pages/ContractResultDetails.vue";
 
 const routes: Array<RouteRecordRaw> = [
   {
@@ -101,6 +102,11 @@ const routes: Array<RouteRecordRaw> = [
     name: 'AccountDetails',
     component: AccountDetails,
     props: true
+  },
+  {
+    // EIP 3091 Support
+    path: '/:network/address/:accountAddress',
+    redirect: to => '/' + to.params.network + '/account/' + to.params.accountAddress
   },
   {
     path: '/:network/accountbalances/:accountId',
@@ -172,6 +178,19 @@ const routes: Array<RouteRecordRaw> = [
     path: '/:network/block/:blockHon',
     name: 'BlockDetails',
     component: BlockDetails,
+    props: true
+  },
+  {
+    path: '/:network/contracts/:contractId/results/:timestamp',
+    name: 'ContractResultDetails',
+    component: ContractResultDetails,
+    props: true
+  },
+  {
+    // EIP 3091 Support
+    path: '/:network/tx/:transactionIdOrHash',
+    name: 'ContractResultDetails3091',
+    component: ContractResultDetails,
     props: true
   },
   {

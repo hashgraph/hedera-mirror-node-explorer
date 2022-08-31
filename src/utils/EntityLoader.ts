@@ -19,7 +19,7 @@
  */
 
 import axios, {AxiosResponse} from "axios";
-import {computed, ComputedRef, Ref, ref} from "vue";
+import {computed, ComputedRef, Ref, ref, watch, WatchSource, WatchStopHandle} from "vue";
 
 
 export abstract class EntityLoader<E> {
@@ -27,6 +27,7 @@ export abstract class EntityLoader<E> {
     private readonly responseRef: Ref<AxiosResponse<E> | null> = ref(null)
     private readonly errorRef: Ref<unknown> = ref(null)
     private requestCounter = 0
+    private watchStopHandle: WatchStopHandle|null = null
 
     //
     // Public
@@ -39,31 +40,36 @@ export abstract class EntityLoader<E> {
                                             && axios.isAxiosError(this.errorRef.value)
                                             && this.errorRef.value?.response?.status === 404)
 
-    //
-    // Protected
-    //
-
-    protected async load(): Promise<AxiosResponse<E>> {
-        throw Error("must be subclassed")
-    }
-
-    protected requestLoad(): void {
+    public requestLoad(): void {
         this.requestCounter += 1
-        const resolve = (newResponse: AxiosResponse<E>) => this.loadDidComplete(newResponse, this.requestCounter)
+        const resolve = (newResponse: AxiosResponse<E>|null) => this.loadDidComplete(newResponse, this.requestCounter)
         const reject = (reason: unknown) => this.loadDidFail(reason, this.requestCounter)
         this.load().then(resolve, reject)
     }
 
-    protected clear(): void {
-        this.responseRef.value = null
-        this.errorRef.value = null
+    //
+    // Protected
+    //
+
+    protected watchAndReload(sources: WatchSource<unknown>[]): void {
+        if (this.watchStopHandle != null) {
+            this.watchStopHandle()
+            this.watchStopHandle = null
+        }
+        if (sources.length >= 1) {
+            this.watchStopHandle = watch(sources, () => this.requestLoad())
+        }
+    }
+
+    protected async load(): Promise<AxiosResponse<E>|null> {
+        throw Error("must be subclassed")
     }
 
     //
     // Private
     //
 
-    private loadDidComplete(newResponse: AxiosResponse<E>, requestCounter: number) {
+    private loadDidComplete(newResponse: AxiosResponse<E>|null, requestCounter: number) {
         if (this.requestCounter == requestCounter) {
             this.responseRef.value = newResponse
             this.errorRef.value = null

@@ -200,9 +200,6 @@
 <script lang="ts">
 
 import {computed, defineComponent, inject, onBeforeUnmount, onMounted, ref, watch} from 'vue';
-import axios from "axios";
-import {AccountBalanceTransactions, ContractResponse, NetworkNode, NetworkNodesResponse} from "@/schemas/HederaSchemas";
-import {operatorRegistry} from "@/schemas/OperatorRegistry";
 import KeyValue from "@/components/values/KeyValue.vue";
 import PlayPauseButtonV2 from "@/components/PlayPauseButtonV2.vue";
 import TransactionTableV2 from "@/components/transaction/TransactionTableV2.vue";
@@ -220,12 +217,14 @@ import {useRoute, useRouter} from "vue-router";
 import {PathParam} from "@/utils/PathParam";
 import Property from "@/components/Property.vue";
 import NotificationBanner from "@/components/NotificationBanner.vue";
-import {makeEthAddressForAccount} from "@/schemas/HederaUtils";
 import EthAddress from "@/components/values/EthAddress.vue";
 import StringValue from "@/components/values/StringValue.vue";
 import {TransactionCacheV2} from "@/components/transaction/TransactionCacheV2";
 import {EntityCacheStateV2} from "@/utils/EntityCacheV2";
 import AccountLink from "@/components/values/AccountLink.vue";
+import {AccountLoader} from "@/components/account/AccountLoader";
+import {ContractLoader} from "@/components/contract/ContractLoader";
+import {NodeLoader} from "@/components/node/NodeLoader";
 
 const MAX_TOKEN_BALANCES = 10
 
@@ -264,27 +263,6 @@ export default defineComponent({
     const router = useRouter()
     const route = useRoute()
 
-
-    //
-    // basic computed's
-    //
-
-    const validEntityId = computed(() => {
-      return props.accountId ? PathParam.parseAccountIdOrAliasOrEvmAddress(props.accountId) != null : false
-    })
-
-    const normalizedAccountId = computed(() => {
-      return account.value ? PathParam.parseAccountIdOrAliasOrEvmAddress(props.accountId) : props.accountId
-    })
-
-    const accountInfo = computed(() => {
-      return account.value?.account ? operatorRegistry.makeDescription(account.value?.account) : null
-    })
-
-    const nodeId = computed(() => {
-      return account.value?.account ? operatorRegistry.lookup(account.value?.account)?.nodeId : null
-    })
-
     //
     // transaction filter selection
     //
@@ -303,56 +281,20 @@ export default defineComponent({
     // account
     //
 
-    const account = ref<AccountBalanceTransactions|null>(null)
-    const accountError = ref<unknown>(null)
-
-    const got404 = computed(() => {
-      return accountError.value !== null
-          && axios.isAxiosError(accountError.value)
-          && accountError.value?.request?.status === 404
-    })
-    const ethereumAddress = computed(() => {
-      return account.value !== null ? makeEthAddressForAccount(account.value) : null
-    })
+    const accountLocator = computed(() => PathParam.parseAccountIdOrAliasOrEvmAddress(props.accountId))
+    const accountLoader = new AccountLoader(accountLocator)
+    onMounted(() => accountLoader.requestLoad())
 
     const notification = computed(() => {
       let result
-      if (!validEntityId.value) {
+      if (accountLoader.accountLocator.value === null) {
         result =  "Invalid account ID: " + props.accountId
-      } else if (got404.value) {
-        result =  "Account with ID " + props.accountId + " was not found"
+      } else if (accountLoader.got404.value) {
+        result =  "Account with ID " + accountLoader.accountLocator.value + " was not found"
       } else {
         result = null
       }
       return result
-    })
-
-    const fetchAccount = () => {
-      const params = {} as {
-        limit: 1
-      }
-      if (validEntityId.value) {
-        axios
-            .get<AccountBalanceTransactions>("api/v1/accounts/" + normalizedAccountId.value, { params: params})
-            .then(response => {
-              account.value = response.data
-              if (account.value.staked_node_id !== null) {
-                fetchNode(account.value.staked_node_id)
-              }
-            })
-            .catch(reason => accountError.value = reason)
-      } else {
-        account.value = null
-        accountError.value = null
-      }
-    }
-
-    watch(() => props.accountId, () => {
-      fetchAccount()
-    });
-
-    onMounted(() => {
-      fetchAccount()
     })
 
 
@@ -364,7 +306,7 @@ export default defineComponent({
 
     const setupTransactionCache = () => {
       transactionCache.state.value = EntityCacheStateV2.Stopped
-      transactionCache.accountId.value = account.value?.account ?? ""
+      transactionCache.accountId.value = accountLoader.accountId.value ?? ""
       transactionCache.transactionType.value = transactionFilterFromRoute.value
       transactionCache.state.value = EntityCacheStateV2.Started
       selectedTransactionFilter.value = transactionFilterFromRoute.value
@@ -373,7 +315,7 @@ export default defineComponent({
     const transactionFilterFromRoute = computed(() => {
       return (route.query?.type as string ?? "").toUpperCase()
     })
-    watch([transactionFilterFromRoute, account], () => {
+    watch([transactionFilterFromRoute, accountLoader.entity], () => {
       setupTransactionCache()
     })
     onMounted(() => {
@@ -412,15 +354,15 @@ export default defineComponent({
     )
 
     const setupBalanceCache = () => {
-      if (validEntityId.value) {
-        balanceCache.accountId.value = account.value?.account ?? null
+      if (accountLoader.entity.value) {
+        balanceCache.accountId.value = accountLoader.accountId.value
         balanceCache.state.value = EntityCacheStateV2.Started
       } else {
         balanceCache.state.value = EntityCacheStateV2.Stopped
       }
     }
 
-    watch(account, () => {
+    watch(accountLoader.entity, () => {
       setupBalanceCache()
     });
     onMounted(() => {
@@ -433,57 +375,17 @@ export default defineComponent({
     //
     // contract
     //
-    const contract = ref<ContractResponse|null>(null)
+    const contractLoader = new ContractLoader(accountLoader.accountId)
+    onMounted(() => contractLoader.requestLoad())
     const showContractVisible = computed(() => {
-      return contract.value != null
+      return contractLoader.entity.value != null
     })
 
-    const fetchContract = () => {
-      if (validEntityId.value) {
-        axios
-            .get<ContractResponse>("api/v1/contracts/" + normalizedAccountId.value)
-            .then(response => contract.value = response.data)
-            .catch(() => null)
-      } else {
-        contract.value = null
-      }
-    }
-
-    watch(() => props.accountId, () => {
-      fetchContract()
-    });
-
-    onMounted(() => {
-      fetchContract()
-    })
 
     //
     // staking
     //
-    const stakedNode = ref<NetworkNode|null>(null)
-    const stakedNodeDescription = computed(() => {
-      let description
-      if (stakedNode.value?.description) {
-        description = stakedNode.value?.description
-      } else {
-        description = stakedNode.value?.node_account_id ? operatorRegistry.makeDescription(stakedNode.value?.node_account_id) : null
-      }
-      return description
-    })
-
-    const fetchNode = (nodeId: number) => {
-      const url = "api/v1/network/nodes"
-      const queryParams = {params: {'node.id': nodeId}}
-      axios
-          .get<NetworkNodesResponse>(url, queryParams)
-          .then(result => {
-            if (result.data.nodes && result.data.nodes.length > 0) {
-              stakedNode.value = result.data.nodes[0]
-            } else {
-              stakedNode.value = null
-            }
-          })
-    }
+    const stakeNodeLoader = new NodeLoader(accountLoader.stakedNodeId)
 
     return {
       isSmallScreen,
@@ -491,21 +393,20 @@ export default defineComponent({
       transactions: transactionCache.transactions,
       transactionCacheState: transactionCache.state,
       selectedTransactionFilter,
-      account,
       notification,
-      validEntityId,
-      normalizedAccountId,
+      account: accountLoader.entity,
+      normalizedAccountI: accountLoader.accountId,
+      accountInfo: accountLoader.accountInfo,
+      nodeId: accountLoader.nodeId,
+      ethereumAddress: accountLoader.ethereumAddress,
       balanceTimeStamp: balanceCache.balanceTimeStamp,
       hbarBalance: balanceCache.hbarBalance,
       tokenBalances: balanceCache.tokenBalances,
       balanceCache: balanceCache, // For testing purpose
-      accountInfo,
-      nodeId,
       displayAllTokenLinks,
       elapsed,
       showContractVisible,
-      ethereumAddress,
-      stakedNodeDescription
+      stakedNodeDescription: stakeNodeLoader.nodeDescription
     }
   }
 });
