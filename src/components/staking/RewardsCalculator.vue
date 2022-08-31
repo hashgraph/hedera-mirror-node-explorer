@@ -81,9 +81,10 @@
 import {computed, defineComponent, inject, onBeforeMount, onMounted, PropType, ref, watch} from 'vue';
 import NetworkDashboardItem from "@/components/node/NetworkDashboardItem.vue";
 import DashboardCard from "@/components/DashboardCard.vue";
-import {NetworkNode, NetworkNodesResponse} from "@/schemas/HederaSchemas";
-import axios from "axios";
+import {NetworkNode} from "@/schemas/HederaSchemas";
 import {operatorRegistry} from "@/schemas/OperatorRegistry";
+import {NodesLoader} from "@/components/node/NodesLoader";
+import nodes from "@/pages/Nodes.vue";
 
 export default defineComponent({
   name: 'RewardsCalculator',
@@ -106,8 +107,15 @@ export default defineComponent({
     const isMediumScreen = inject('isMediumScreen', true)
     const isTouchDevice = inject('isTouchDevice', false)
 
-    const selectedNodeId = ref<number | null>(props.nodeId ?? null)
-    watch(() => props.nodeId, () => selectedNodeId.value = props.nodeId ?? null)
+    // const selectedNodeId = ref<number | null>(props.nodeId ?? null)
+    // watch(() => props.nodeId, () => selectedNodeId.value = props.nodeId ?? null)
+    //
+    const selectedNodeId = computed(() => props.nodeId ?? null)
+    const selectedNode = computed(() => {
+      const nodeNb = selectedNodeId.value
+      const nodes = nodesLoader.nodes.value
+      return nodeNb != null && nodeNb < nodes.length ? nodes[nodeNb] : null
+    })
 
     const amountStaked = ref<number>( 100)
     const updateAmountStaked = () => {
@@ -117,9 +125,9 @@ export default defineComponent({
     onBeforeMount(updateAmountStaked)
 
     const rewardRate = computed(() => {
-      let result
-      if (nodes.value && selectedNodeId.value !== null && selectedNodeId.value < nodes.value.length) {
-        const node = nodes.value[selectedNodeId.value]
+      let result: number
+      if (selectedNode.value) {
+        const node = selectedNode.value
         result = node.reward_rate_start && node.stake_rewarded ? node.reward_rate_start / node.stake_rewarded : 0
       } else {
         result = 0
@@ -134,24 +142,8 @@ export default defineComponent({
     //
     // Nodes
     //
-    const nodes = ref<Array<NetworkNode> | null>([])
-
-    const fetchNodes = (nextUrl: string | null = null) => {
-      const url = nextUrl ?? "api/v1/network/nodes"
-      axios
-          .get<NetworkNodesResponse>(url, {params: {limit: 25}})
-          .then(result => {
-            if (result.data.nodes) {
-              nodes.value = nodes.value ? nodes.value.concat(result.data.nodes) : result.data.nodes
-            }
-            const next = result.data.links?.next
-            if (next) {
-              fetchNodes(next)
-            }
-          })
-    }
-
-    onMounted(() => fetchNodes())
+    const nodesLoader = new NodesLoader()
+    onMounted(() => nodesLoader.requestLoad())
 
     const makeNodeDescription = (node: NetworkNode) => {
       let result
