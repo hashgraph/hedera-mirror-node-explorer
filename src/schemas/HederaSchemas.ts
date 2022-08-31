@@ -474,7 +474,7 @@ export interface ContractResultStateChanges {
 // ---------------------------------------------------------------------------------------------------------------------
 
 export interface NetworkNodesResponse {
-    nodes: [NetworkNode] | undefined
+    nodes: NetworkNode[] | undefined
     links: Links | undefined
 }
 
