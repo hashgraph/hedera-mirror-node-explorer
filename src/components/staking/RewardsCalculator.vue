@@ -135,7 +135,6 @@ export default defineComponent({
     // Nodes
     //
     const nodes = ref<Array<NetworkNode> | null>([])
-    const unclampedStakeTotal = ref(0)
 
     const fetchNodes = (nextUrl: string | null = null) => {
       const url = nextUrl ?? "api/v1/network/nodes"
@@ -144,9 +143,6 @@ export default defineComponent({
           .then(result => {
             if (result.data.nodes) {
               nodes.value = nodes.value ? nodes.value.concat(result.data.nodes) : result.data.nodes
-              for (const n of result.data.nodes) {
-                unclampedStakeTotal.value += ((n.stake_rewarded ?? 0) + (n.stake_not_rewarded ?? 0))/100000000
-              }
             }
             const next = result.data.links?.next
             if (next) {
