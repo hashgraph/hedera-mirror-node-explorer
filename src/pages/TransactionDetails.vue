@@ -115,7 +115,7 @@
             <HbarAmount v-if="transaction" v-bind:amount="computeMaxFee(transaction)" v-bind:show-extra="true"/>
           </template>
         </Property>
-        <Property id="netAmount">
+        <Property id="netAmount" v-if="false">
           <template v-slot:name>Net Amount</template>
           <template v-slot:value>
             <HbarAmount v-if="transaction" v-bind:amount="computeNetAmount(transaction)" v-bind:show-extra="true"/>
