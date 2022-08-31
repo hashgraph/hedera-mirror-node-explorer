@@ -82,98 +82,115 @@
 
       <template v-slot:rightContent>
         <Property v-if="transaction?.entity_id" id="entityId">
-              <template v-slot:name>{{ entity?.label }}</template>
-              <template v-slot:value>
-                <template v-if="entity?.routeName">
-                  <EntityLink
-                      v-bind:entity-id="transaction?.entity_id"
-                      v-bind:route-name="routeName"
-                      v-bind:show-extra="true"
-                  />
-                </template>
-                <template v-else>
-                  {{ transaction?.entity_id }}
-                </template>
-              </template>
-            </Property>
+          <template v-slot:name>{{ entity?.label }}</template>
+          <template v-slot:value>
+            <template v-if="entity?.routeName">
+              <EntityLink
+                  v-bind:entity-id="transaction?.entity_id"
+                  v-bind:route-name="routeName"
+                  v-bind:show-extra="true"
+              />
+            </template>
+            <template v-else>
+              {{ transaction?.entity_id }}
+            </template>
+          </template>
+        </Property>
         <Property id="operatorAccount">
-              <template v-slot:name>Payer Account</template>
-              <template v-slot:value>
-                <AccountLink v-if="transaction" v-bind:accountId="makeOperatorAccountLabel(transaction)" v-bind:show-extra="true"/>
-              </template>
-            </Property>
+          <template v-slot:name>Payer Account</template>
+          <template v-slot:value>
+            <AccountLink v-if="transaction" v-bind:accountId="makeOperatorAccountLabel(transaction)"
+                         v-bind:show-extra="true"/>
+          </template>
+        </Property>
         <Property id="chargedFee">
-              <template v-slot:name>Charged Fee</template>
-              <template v-slot:value>
-                <HbarAmount v-if="transaction" v-bind:amount="transaction.charged_tx_fee" v-bind:show-extra="true"/>
-              </template>
-            </Property>
+          <template v-slot:name>Charged Fee</template>
+          <template v-slot:value>
+            <HbarAmount v-if="transaction" v-bind:amount="transaction.charged_tx_fee" v-bind:show-extra="true"/>
+          </template>
+        </Property>
         <Property id="maxFee">
-              <template v-slot:name>Max fee</template>
-              <template v-slot:value>
-                <HbarAmount v-if="transaction" v-bind:amount="computeMaxFee(transaction)" v-bind:show-extra="true"/>
-              </template>
-            </Property>
+          <template v-slot:name>Max fee</template>
+          <template v-slot:value>
+            <HbarAmount v-if="transaction" v-bind:amount="computeMaxFee(transaction)" v-bind:show-extra="true"/>
+          </template>
+        </Property>
         <Property id="netAmount">
-              <template v-slot:name>Net Amount</template>
-              <template v-slot:value>
-                <HbarAmount v-if="transaction" v-bind:amount="computeNetAmount(transaction)" v-bind:show-extra="true"/>
-              </template>
-            </Property>
+          <template v-slot:name>Net Amount</template>
+          <template v-slot:value>
+            <HbarAmount v-if="transaction" v-bind:amount="computeNetAmount(transaction)" v-bind:show-extra="true"/>
+          </template>
+        </Property>
         <Property id="duration">
-              <template v-slot:name>Valid Duration</template>
-              <template v-slot:value>
-                <DurationValue v-bind:string-value="transaction?.valid_duration_seconds"/>
-              </template>
-            </Property>
+          <template v-slot:name>Valid Duration</template>
+          <template v-slot:value>
+            <DurationValue v-bind:string-value="transaction?.valid_duration_seconds"/>
+          </template>
+        </Property>
+        <Property id="nonce">
+          <template v-slot:name>Nonce</template>
+          <template v-slot:value>
+            {{ transaction?.nonce }}
+          </template>
+        </Property>
         <Property v-if="schedulingTransaction" id="schedulingTransaction">
-              <template v-slot:name>Scheduling</template>
-              <template v-slot:value>
-                <router-link :to="{
+          <template v-slot:name>Scheduling</template>
+          <template v-slot:value>
+            <router-link :to="{
                   name: 'TransactionDetails',
                   params: { transactionId: schedulingTransaction.transaction_id },
                   query: { t: schedulingTransaction.consensus_timestamp }
-                }">Show transaction</router-link>
-              </template>
-            </Property>
-        <Property v-if="scheduledTransaction" id="scheduledTransaction">
-              <template v-slot:name>Scheduled</template>
-              <template v-slot:value>
-                <router-link :to="{
+                }">Show transaction
+            </router-link>
+          </template>
+        </Property>
+        <Property v-else-if="scheduledTransaction" id="scheduledTransaction">
+          <template v-slot:name>Scheduled</template>
+          <template v-slot:value>
+            <router-link :to="{
                   name: 'TransactionDetails',
                   params: { transactionId: scheduledTransaction.transaction_id },
                   query: { t: scheduledTransaction.consensus_timestamp }
-                }">Show transaction</router-link>
-              </template>
-            </Property>
+                }">Show transaction
+            </router-link>
+          </template>
+        </Property>
+        <Property v-else>
+          <template v-slot:name>Scheduled</template>
+          <template v-slot:value>
+            <span class="has-text-grey">False</span>
+          </template>
+        </Property>
         <Property v-if="parentTransaction" id="parentTransaction">
-              <template v-slot:name>Parent</template>
-              <template v-slot:value>
-                <router-link :to="{
+          <template v-slot:name>Parent</template>
+          <template v-slot:value>
+            <router-link :to="{
                   name: 'TransactionDetails',
                   params: { transactionId: parentTransaction.transaction_id },
                   query: { t: parentTransaction.consensus_timestamp }
-                }">{{ makeTypeLabel(parentTransaction.name) }}</router-link>
-              </template>
-            </Property>
+                }">{{ makeTypeLabel(parentTransaction.name) }}
+            </router-link>
+          </template>
+        </Property>
         <Property v-if="childTransactions.length" id="children">
-              <template v-slot:name>Children</template>
-              <template v-slot:value>
-                <router-link v-if="displayAllChildrenLinks" :to="{name: 'TransactionsById', params: {transactionId: transactionId}}">
-                  {{ 'Show all ' + childTransactions.length + ' child transactions' }}
-                </router-link>
-                <div v-else>
-                  <router-link v-for="tx in childTransactions" :key="tx.nonce" :to="{
+          <template v-slot:name>Children</template>
+          <template v-slot:value>
+            <router-link v-if="displayAllChildrenLinks"
+                         :to="{name: 'TransactionsById', params: {transactionId: transactionId}}">
+              {{ 'Show all ' + childTransactions.length + ' child transactions' }}
+            </router-link>
+            <div v-else>
+              <router-link v-for="tx in childTransactions" :key="tx.nonce" :to="{
                     name: 'TransactionDetails',
                     params: { transactionId: tx.transaction_id },
                     query: { t: tx.consensus_timestamp }
                   }">
-                    <span class="mr-2">{{ '#' + tx.nonce }}</span>
-                    <span>{{ makeTypeLabel(tx.name) }}</span>
-                    <br/></router-link>
-                </div>
-              </template>
-            </Property>
+                <span class="mr-2">{{ '#' + tx.nonce }}</span>
+                <span>{{ makeTypeLabel(tx.name) }}</span>
+                <br/></router-link>
+            </div>
+          </template>
+        </Property>
       </template>
     </DashboardCard>
 
@@ -188,13 +205,80 @@
       </template>
     </DashboardCard>
 
-    <DashboardCard v-if="false">
+    <DashboardCard v-if="contractResult">
       <template v-slot:title>
-        <span class="h-is-secondary-title">Contract Results</span>
+        <span class="h-is-secondary-title">Contract Result</span>
       </template>
+
+      <template v-slot:leftContent>
+        <Property id="result">
+          <template v-slot:name>Result</template>
+          <template v-slot:value>
+            <StringValue :string-value="contractResult?.result"/>
+          </template>
+        </Property>
+        <Property id="from">
+          <template v-slot:name>From</template>
+          <template v-slot:value>
+            <HexaValue :byte-string="contractResult?.from" v-bind:show-none="true"/>
+          </template>
+        </Property>
+        <Property id="to">
+          <template v-slot:name>To</template>
+          <template v-slot:value>
+            <HexaValue :byte-string="contractResult?.to" v-bind:show-none="true"/>
+          </template>
+        </Property>
+        <Property id="type">
+          <template v-slot:name>Type</template>
+          <template v-slot:value>
+            <StringValue :string-value="contractResult?.type?.toString()"/>
+          </template>
+        </Property>
+        <Property id="errorMessage">
+          <template v-slot:name>Error Message</template>
+          <template v-slot:value>
+            <StringValue :string-value="contractResult?.error_message"/>
+          </template>
+        </Property>
+      </template>
+
+      <template v-slot:rightContent>
+        <Property id="gasLimit">
+          <template v-slot:name>Gas Limit</template>
+          <template v-slot:value>
+            <PlainAmount :amount="contractResult?.gas_limit"/>
+          </template>
+        </Property>
+        <Property id="gasUsed">
+          <template v-slot:name>Gas Used</template>
+          <template v-slot:value>
+            <PlainAmount :amount="contractResult?.gas_used"/>
+          </template>
+        </Property>
+        <Property id="maxFeePerGas">
+          <template v-slot:name>Max Fee Per Gas</template>
+          <template v-slot:value>
+            <StringValue :string-value="contractResult?.max_fee_per_gas"/>
+          </template>
+        </Property>
+        <Property id="maxPriorityFeePerGas">
+          <template v-slot:name>Max Priority Fee Per Gas</template>
+          <template v-slot:value>
+            <StringValue :string-value="contractResult?.max_priority_fee_per_gas"/>
+          </template>
+        </Property>
+        <Property id="gasPrice">
+          <template v-slot:name>Gas Price</template>
+          <template v-slot:value>
+            <HbarAmount :amount="contractResult?.gas_price ?? 0" :show-extra="true"/>
+          </template>
+        </Property>
+      </template>
+
     </DashboardCard>
 
-    <DashboardCard v-if="false">
+    <DashboardCard v-if="contractResult">
       <template v-slot:title>
         <span class="h-is-secondary-title">Logs</span>
       </template>
@@ -212,7 +296,7 @@
 
 <script lang="ts">
 
-import {computed, defineComponent, inject, onBeforeMount, ref, watch} from 'vue';
+import {computed, defineComponent, inject, onBeforeMount, onMounted, ref, watch} from 'vue';
 import axios, {AxiosResponse} from "axios";
 import {
   AccountBalanceTransactions,
@@ -224,6 +308,7 @@ import {
 import {EntityDescriptor} from "@/utils/EntityDescriptor"
 import {normalizeTransactionId, TransactionID} from "@/utils/TransactionID";
 import {computeNetAmount, makeOperatorAccountLabel, makeTypeLabel} from "@/utils/TransactionTools";
+import {ContractResultDetailsLoader} from "@/components/contract/ContractResultDetailsLoader";
 import AccountLink from "@/components/values/AccountLink.vue";
 import {base64DecToArr, byteToHex} from "@/utils/B64Utils";
 import HexaValue from "@/components/values/HexaValue.vue";
@@ -238,6 +323,7 @@ import Footer from "@/components/Footer.vue";
 import NotificationBanner from "@/components/NotificationBanner.vue";
 import Property from "@/components/Property.vue";
 import DurationValue from "@/components/values/DurationValue.vue";
+import PlainAmount from "@/components/values/PlainAmount.vue";
 
 const MAX_INLINE_CHILDREN = 3
 
@@ -246,6 +332,7 @@ export default defineComponent({
   name: 'TransactionDetailsV2',
 
   components: {
+    PlainAmount,
     Property,
     NotificationBanner,
     Footer,
@@ -286,16 +373,22 @@ export default defineComponent({
     const notification = computed(() => {
       let result
       if (invalidId.value) {
-        result =  "Invalid transaction ID: " + props.transactionId
-      } else if(got404.value) {
-        result =  "Transaction with ID " + normalizeTransactionId(props.transactionId ?? "", true) + " was not found"
+        result = "Invalid transaction ID: " + props.transactionId
+      } else if (got404.value) {
+        result = "Transaction with ID " + normalizeTransactionId(props.transactionId ?? "", true) + " was not found"
       } else if (transaction.value && transaction.value.result !== TRANSACTION_SUCCESS) {
-        result =  "Transaction has failed: " + transaction.value?.result
+        result = "Transaction has failed: " + transaction.value?.result
       } else {
         result = null
       }
       return result
     })
+
+    const contractResultDetailsLoader = new ContractResultDetailsLoader(
+        ref(null),
+        ref(null),
+        computed(() => props.transactionId ?? null))
+    onMounted(() => contractResultDetailsLoader.requestLoad())
 
     onBeforeMount(() => {
       fetchTransaction()
@@ -415,7 +508,8 @@ export default defineComponent({
       scheduledTransaction,
       schedulingTransaction,
       parentTransaction,
-      childTransactions
+      childTransactions,
+      contractResult: contractResultDetailsLoader.entity
     }
   },
 });
