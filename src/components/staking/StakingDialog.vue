@@ -163,7 +163,8 @@
 <script lang="ts">
 
 import {computed, defineComponent, onMounted, PropType, ref, watch} from "vue";
-import {AccountBalanceTransactions, NetworkNode, NetworkNodesResponse} from "@/schemas/HederaSchemas";
+import {AccountBalanceTransactions, NetworkNode} from "@/schemas/HederaSchemas";
+import {NodesLoader} from "@/components/node/NodesLoader";
 import Property from "@/components/Property.vue";
 import HbarAmount from "@/components/values/HbarAmount.vue";
 import StringValue from "@/components/values/StringValue.vue";
@@ -233,7 +234,7 @@ export default defineComponent({
 
     const selectedNode = ref<number|null>(null)
     const selectedNodeDescription = computed(() => {
-      return (selectedNode.value && nodes.value) ? makeNodeDescription(nodes.value[selectedNode.value]) : null
+      return (selectedNode.value && nodesLoader.nodes.value) ? makeNodeDescription(nodesLoader.nodes.value[selectedNode.value]) : null
     })
     watch(accountId, () => {
       if ( isNodeSelected.value && selectedNode.value == null) {
@@ -278,28 +279,9 @@ export default defineComponent({
     //
     // Nodes
     //
-    const nodes = ref<Array<NetworkNode> | null>([])
-    const unclampedStakeTotal = ref(0)
 
-    const fetchNodes = (nextUrl: string | null = null) => {
-      const url = nextUrl ?? "api/v1/network/nodes"
-      axios
-          .get<NetworkNodesResponse>(url, {params: {limit: 25}})
-          .then(result => {
-            if (result.data.nodes) {
-              nodes.value = nodes.value ? nodes.value.concat(result.data.nodes) : result.data.nodes
-              for (const n of result.data.nodes) {
-                unclampedStakeTotal.value += ((n.stake_rewarded ?? 0) + (n.stake_not_rewarded ?? 0))/100000000
-              }
-            }
-            const next = result.data.links?.next
-            if (next) {
-              fetchNodes(next)
-            }
-          })
-    }
-
-    onMounted(() => fetchNodes())
+    const nodesLoader = new NodesLoader()
+    onMounted(() => nodesLoader.requestLoad())
 
     const makeNodeDescription = (node: NetworkNode) => {
       let result
@@ -380,7 +362,7 @@ export default defineComponent({
       selectedNodeDescription,
       declineChoice,
       enableChangeButton,
-      nodes,
+      nodes: nodesLoader.nodes,
       handleCancel,
       handleChange,
       handleCancelChange,
