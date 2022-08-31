@@ -34,7 +34,7 @@
 
           <div v-if="isSmallScreen" class="is-flex is-justify-content-space-between">
             <div class="is-flex-direction-column">
-              <NetworkDashboardItem :title="'Total Nodes'" :value="totalNodes"/>
+              <NetworkDashboardItem :title="'Total Nodes'" :value="totalNodes.toString()"/>
               <div class="mt-4"/>
               <NetworkDashboardItem :title="'Last Staked'" :value="formatSeconds(elapsedMin*60) + ' ago'"/>
             </div>
@@ -99,11 +99,10 @@ import DashboardCard from "@/components/DashboardCard.vue";
 import Footer from "@/components/Footer.vue";
 import NodeTable from "@/components/node/NodeTable.vue";
 import NetworkDashboardItem from "@/components/node/NetworkDashboardItem.vue";
-import axios from "axios";
-import {NetworkNode, NetworkNodesResponse} from "@/schemas/HederaSchemas";
 import {formatSeconds} from "@/utils/Duration";
 import {StakingPeriod} from "@/utils/StakingPeriod";
 import {StakeLoader} from "@/components/staking/StakeLoader";
+import {NodesLoader} from "@/components/node/NodesLoader";
 
 export default defineComponent({
   name: 'Nodes',
@@ -123,36 +122,33 @@ export default defineComponent({
     const isSmallScreen = inject('isSmallScreen', true)
     const isTouchDevice = inject('isTouchDevice', false)
 
-    let nodes = ref<Array<NetworkNode> | null>([])
-    const totalNodes = computed(() => nodes.value?.length.toString() ?? "")
+    const nodesLoader = new NodesLoader()
+    onMounted(() => nodesLoader.requestLoad())
+
     const stakeLoader = new StakeLoader()
 
-    const minStake = ref(0)
-    const maxStake = ref(0)
-    const compatibilityStakeTotal = ref(0)
+    const minStake = computed(() => nodesLoader.node0.value?.min_stake ?? 0)
+    const maxStake = computed(() => nodesLoader.node0.value?.max_stake ?? 0)
 
     const stakeTotal = computed(() => {
       let result
       if (stakeLoader.got404.value) {
-        result = compatibilityStakeTotal.value
+        result = nodesLoader.stakeTotal.value ?? 0
       } else {
         result = (stakeLoader.entity.value?.stake_total ?? 0)
       }
       return result
     })
 
-    const unclampedStakeTotal = ref(0)
-    const totalRewarded = ref(0)
     const stakingPeriod = ref<StakingPeriod | null>(null)
 
-    const durationMin = computed(() => stakingPeriod.value?.durationMin ? (stakingPeriod.value.durationMin) : null)
-    const elapsedMin = computed(() => stakingPeriod.value?.elapsedMin ? (stakingPeriod.value.elapsedMin) : null)
-    const remainingMin = computed(() => stakingPeriod.value?.remainingMin ? (stakingPeriod.value?.remainingMin) : null)
+    const durationMin = computed(() => stakingPeriod.value?.durationMin ??  null)
+    const elapsedMin = computed(() => stakingPeriod.value?.elapsedMin ?? null)
+    const remainingMin = computed(() => stakingPeriod.value?.remainingMin ?? null)
 
     let intervalHandle = -1
 
     onMounted(() => {
-      fetchNodes()
       updateStakingPeriod()
       intervalHandle = window.setInterval( () => updateStakingPeriod(), 10000)
     })
@@ -162,35 +158,12 @@ export default defineComponent({
       intervalHandle = -1
     })
 
-    const fetchNodes = (nextUrl: string | null = null) => {
-      const url = nextUrl ?? "api/v1/network/nodes"
-      axios
-          .get<NetworkNodesResponse>(url, {params: {limit: 25}})
-          .then(result => {
-            if (result.data.nodes) {
-              nodes.value = nodes.value ? nodes.value.concat(result.data.nodes) : result.data.nodes
-              if (nodes.value.length) {
-                compatibilityStakeTotal.value = nodes.value[0].stake_total ?? 0
-                minStake.value = nodes.value[0].min_stake ?? 0
-                maxStake.value = nodes.value[0].max_stake ?? 0
-              }
-              for (const n of result.data.nodes) {
-                totalRewarded.value += (n.reward_rate_start ?? 0) * (n.stake_rewarded ?? 0) / 100000000
-                unclampedStakeTotal.value += (n.stake_rewarded ?? 0) + (n.stake_not_rewarded ?? 0)
-              }
-            }
-            const next = result.data.links?.next
-            if (next) {
-              fetchNodes(next)
-            }
-          })
-    }
-
     const updateStakingPeriod = () => {
       let startTimeInSec, endTimeInSec
-      if (nodes.value?.length) {
-        startTimeInSec = nodes.value[0].staking_period?.from ? Number.parseInt(nodes.value[0].staking_period?.from) : null
-        endTimeInSec = nodes.value[0].staking_period?.to ? Number.parseInt(nodes.value[0].staking_period?.to) : null
+      const node0 = nodesLoader.node0.value
+      if (node0) {
+        startTimeInSec = node0.staking_period?.from ? Number.parseInt(node0.staking_period?.from) : null
+        endTimeInSec = node0.staking_period?.to ? Number.parseInt(node0.staking_period?.to) : null
       } else {
         startTimeInSec = null
         endTimeInSec = null
@@ -203,13 +176,13 @@ export default defineComponent({
     return {
       isSmallScreen,
       isTouchDevice,
-      nodes,
-      totalNodes,
+      nodes: nodesLoader.nodes,
+      totalNodes: nodesLoader.nodeCount,
       stakeTotal,
-      unclampedStakeTotal,
+      unclampedStakeTotal: nodesLoader.unclampedStakeTotal,
       minStake,
       maxStake,
-      totalRewarded,
+      totalRewarded: nodesLoader.totalRewarded,
       durationMin,
       elapsedMin,
       remainingMin,
