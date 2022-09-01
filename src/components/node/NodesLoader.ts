@@ -36,7 +36,7 @@ export class NodesLoader extends EntityBatchLoader<NetworkNodesResponse> {
     public readonly totalRewarded: ComputedRef<number> = computed(() => {
         let result = 0
         for (const n of this.nodes.value) {
-            result += (n.reward_rate_start ?? 0)
+            result += (n.reward_rate_start ?? 0) * (n.stake_rewarded ?? 0) / 100000000
         }
         return result
     })
