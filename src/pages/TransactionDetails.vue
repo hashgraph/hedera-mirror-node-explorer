@@ -60,10 +60,10 @@
             <HexaValue v-bind:byteString="transaction ? formatHash(transaction?.transaction_hash): undefined" v-bind:show-none="true"/>
           </template>
         </Property>
-        <Property id="block">
+        <Property id="blockNumber">
           <template v-slot:name>Block</template>
           <template v-slot:value>
-            TBD
+            <BlockLink :block-number="blockNumber"/>
           </template>
         </Property>
         <Property id="nodeAccount">
@@ -299,7 +299,7 @@
 import {computed, defineComponent, inject, onBeforeMount, onMounted, ref, watch} from 'vue';
 import axios, {AxiosResponse} from "axios";
 import {
-  AccountBalanceTransactions,
+  AccountBalanceTransactions, BlocksResponse,
   ContractResponse,
   Transaction,
   TransactionByIdResponse,
@@ -324,6 +324,8 @@ import NotificationBanner from "@/components/NotificationBanner.vue";
 import Property from "@/components/Property.vue";
 import DurationValue from "@/components/values/DurationValue.vue";
 import PlainAmount from "@/components/values/PlainAmount.vue";
+import {BlocksResponseCollector} from "@/utils/BlocksResponseCollector";
+import BlockLink from "@/components/values/BlockLink.vue";
 
 const MAX_INLINE_CHILDREN = 3
 
@@ -332,6 +334,7 @@ export default defineComponent({
   name: 'TransactionDetailsV2',
 
   components: {
+    BlockLink,
     PlainAmount,
     Property,
     NotificationBanner,
@@ -363,6 +366,7 @@ export default defineComponent({
     let schedulingTransaction = ref<Transaction | null>(null)
     let parentTransaction = ref<Transaction | null>(null)
     let childTransactions = ref<Array<Transaction>>([])
+    const blockNumber = ref<number | null>(null)
 
     const showAllTransactionVisible = computed(() => {
       const count = response.value?.data.transactions?.length ?? 0
@@ -384,6 +388,10 @@ export default defineComponent({
       return result
     })
 
+    const routeName = computed(() => {
+      return entity?.value?.routeName
+    })
+
     const contractResultDetailsLoader = new ContractResultDetailsLoader(
         ref(null),
         ref(null),
@@ -402,8 +410,19 @@ export default defineComponent({
       fetchTransaction()
     });
 
-    const routeName = computed(() => {
-      return entity?.value?.routeName
+    watch(transaction, () => {
+        if (transaction.value?.consensus_timestamp) {
+          BlocksResponseCollector.instance.fetch(transaction.value.consensus_timestamp)
+              .then((r: AxiosResponse<BlocksResponse>) => {
+                    blockNumber.value = r.data?.blocks ? (r.data?.blocks[0].number ?? null) : null
+                  }
+              , (reason: unknown) => {
+                console.warn("BlocksResponseCollector failed to find block with reason: " + reason)
+                    blockNumber.value = null
+              })
+        } else {
+          blockNumber.value = null
+        }
     })
 
     const fetchTransaction = () => {
@@ -499,7 +518,7 @@ export default defineComponent({
       convertTransactionId,
       formatHash,
       computeMaxFee,
-
+      blockNumber,
       makeTypeLabel,
       computeNetAmount,
       makeOperatorAccountLabel,
