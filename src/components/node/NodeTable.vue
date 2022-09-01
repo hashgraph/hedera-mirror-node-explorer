@@ -173,7 +173,7 @@ export default defineComponent({
     }
 
     const rewardRate = (node: NetworkNode) => {
-      return node.reward_rate_start && node.stake_rewarded ? node.reward_rate_start / node.stake_rewarded : 0
+      return (node.reward_rate_start ?? 0) / 100000000
     }
     const makeApproxYearlyRate = (node: NetworkNode) => {
       const formatter = new Intl.NumberFormat("en-US", {
