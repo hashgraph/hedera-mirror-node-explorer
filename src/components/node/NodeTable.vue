@@ -248,12 +248,6 @@ export default defineComponent({
 <!-- --------------------------------------------------------------------------------------------------------------- -->
 
 <style>
-.h-tooltip {
-  --oruga-tooltip-background-color:var(--h-theme-highlight-color);
-  --oruga-tooltip-arrow-margin:5px;
-  --oruga-tooltip-content-font-size:0.75rem;
-  --oruga-tooltip-content-weight-normal:300;
-}
 .min-offset {
   margin-left: v-bind(minStakePix);
 }
