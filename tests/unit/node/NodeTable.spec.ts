@@ -52,7 +52,7 @@ HMSF.forceUTC = true
 describe("NodeTable.vue", () => {
 
     const tooltipStake = "This is the total amount staked to this node, followed by its consensus weight" +
-        " (absent when amount staked is below the minimum, and until stake-based consensus is activated)."
+        " (weight is absent when the amount staked is below minimum)."
     const tooltipNotRewarded = "This is the total amount staked to this node by accounts that have chosen " +
         "to decline rewards (and all accounts staked to those accounts)."
     const tooltipRewardRate = "This is an approximate annual reward rate based on the reward payed for the " +
