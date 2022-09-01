@@ -28,13 +28,17 @@
 
     <DashboardCard>
       <template v-slot:title>
-        <span class="h-is-primary-title">Transaction </span>
-        <span class="h-is-secondary-text mr-3">{{ transaction ? convertTransactionId(transactionId) : "" }}</span>
-        <span v-if="showAllTransactionVisible" class="is-inline-block" id="allTransactionsLink">
+        <div class="is-flex is-align-items-center">
+          <span class="h-is-primary-title">Transaction </span>
+          <span class="h-is-secondary-text mr-3">{{ transaction ? convertTransactionId(transactionId) : "" }}</span>
+          <div v-if="transaction?.result === TRANSACTION_SUCCESS" class="h-has-pill has-background-success mr-3 h-is-text-size-2 mt-3">SUCCESS</div>
+          <div v-else class="h-has-pill has-background-danger mr-3 h-is-text-size-2 mt-3">FAILURE</div>
+          <span v-if="showAllTransactionVisible" class="is-inline-block mt-2" id="allTransactionsLink">
           <router-link :to="{name: 'TransactionsById', params: {transactionId: transactionId}}">
             <span class="h-is-property-text has-text-grey">See all transactions with the same ID</span>
           </router-link>
         </span>
+        </div>
       </template>
 
       <template v-slot:content>
@@ -343,7 +347,8 @@
 import {computed, defineComponent, inject, onBeforeMount, onMounted, ref, watch} from 'vue';
 import axios, {AxiosResponse} from "axios";
 import {
-  AccountBalanceTransactions, BlocksResponse,
+  AccountBalanceTransactions,
+  BlocksResponse,
   ContractResponse,
   Transaction,
   TransactionByIdResponse,
@@ -427,7 +432,7 @@ export default defineComponent({
       } else if (got404.value) {
         result = "Transaction with ID " + normalizeTransactionId(props.transactionId ?? "", true) + " was not found"
       } else if (transaction.value && transaction.value.result !== TRANSACTION_SUCCESS) {
-        result = "Transaction has failed: " + transaction.value?.result
+        result = transaction.value?.result
       } else {
         result = null
       }
