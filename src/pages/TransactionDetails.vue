@@ -238,7 +238,7 @@
         <Property id="errorMessage">
           <template v-slot:name>Error Message</template>
           <template v-slot:value>
-            <StringValue :string-value="contractResult?.error_message"/>
+            <HexaValue :byte-string ="contractResult?.error_message"/>
           </template>
         </Property>
       </template>
