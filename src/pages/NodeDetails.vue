@@ -130,9 +130,7 @@
 
 <script lang="ts">
 
-import {computed, defineComponent, inject, onBeforeMount, ref} from 'vue';
-import axios from "axios";
-import {NetworkNode, NetworkNodesResponse} from "@/schemas/HederaSchemas";
+import {computed, defineComponent, inject, onMounted, ref} from 'vue';
 import KeyValue from "@/components/values/KeyValue.vue";
 import AccountLink from "@/components/values/AccountLink.vue";
 import TimestampValue from "@/components/values/TimestampValue.vue";
@@ -147,7 +145,8 @@ import HexaValue from "@/components/values/HexaValue.vue";
 import Endpoints from "@/components/values/Endpoints.vue";
 import NetworkDashboardItem from "@/components/node/NetworkDashboardItem.vue";
 import {StakeLoader} from "@/components/staking/StakeLoader";
-import {NodeLoader} from "@/components/node/NodeLoader";
+import {NodeCursor} from "@/components/node/NodeCursor";
+import {NodesLoader} from "@/components/node/NodesLoader";
 import {PathParam} from "@/utils/PathParam";
 
 export default defineComponent({
@@ -180,29 +179,30 @@ export default defineComponent({
   setup(props) {
     const isSmallScreen = inject('isSmallScreen', true)
     const isTouchDevice = inject('isTouchDevice', false)
-    const nodes = ref<Array<NetworkNode> | null>([])
-    const nodeLoader = new NodeLoader(computed(() => PathParam.parseNodeId(props.nodeId)))
+
+    const nodesLoader = new NodesLoader()
+    onMounted(() => nodesLoader.requestLoad())
+
+    const nodeCursor = new NodeCursor(computed(() => PathParam.parseNodeId(props.nodeId)), nodesLoader)
     const stakeLoader = new StakeLoader()
 
     const stakeTotal = computed(() => {
       let result
       if (stakeLoader.got404.value) {
-        result = (nodeLoader.node.value?.stake_total ?? 0)
+        result = (nodeCursor.node.value?.stake_total ?? 0)
       } else {
         result = (stakeLoader.entity.value?.stake_total ?? 0)
       }
       return result
     })
     const stakePercentage = computed(() =>
-        stakeTotal.value ? Math.round(nodeLoader.stake.value / stakeTotal.value * 10000) / 100 : 0)
+        stakeTotal.value ? Math.round(nodeCursor.stake.value / stakeTotal.value * 10000) / 100 : 0)
 
-    const stakeRewardedTotal = ref(0)
     const stakeRewardedPercentage = computed(() =>
-        stakeRewardedTotal.value ? Math.round(nodeLoader.stakeRewarded.value / stakeRewardedTotal.value * 10000) / 100 : 0)
+        nodesLoader.stakeRewardedTotal.value != 0 ? Math.round(nodeCursor.stakeRewarded.value / nodesLoader.stakeRewardedTotal.value * 10000) / 100 : 0)
 
-    const stakeUnrewardedTotal = ref(0)
     const stakeUnrewardedPercentage = computed(() =>
-        stakeUnrewardedTotal.value ? Math.round(nodeLoader.stakeUnrewarded.value / stakeUnrewardedTotal.value * 10000) / 100 : 0)
+        nodesLoader.stakeUnrewardedTotal.value != 0 ? Math.round(nodeCursor.stakeUnrewarded.value / nodesLoader.stakeUnrewardedTotal.value * 10000) / 100 : 0)
 
     const unknownNodeId = ref(false)
     const notification = computed(() => {
@@ -215,34 +215,6 @@ export default defineComponent({
       return result
     })
 
-    onBeforeMount(() => {
-      fetchNodes()
-      nodeLoader.requestLoad()
-    })
-
-    const fetchNodes = (nextUrl: string | null = null) => {
-      const url = nextUrl ?? "api/v1/network/nodes"
-      axios
-          .get<NetworkNodesResponse>(url, {params: {limit: 25}})
-          .then(result => {
-            if (result.data.nodes) {
-              nodes.value = nodes.value ? nodes.value.concat(result.data.nodes) : result.data.nodes
-              for (const n of result.data.nodes) {
-                if (n.stake_rewarded) {
-                  stakeRewardedTotal.value += n.stake_rewarded
-                }
-                if (n.stake_not_rewarded) {
-                  stakeUnrewardedTotal.value += n.stake_not_rewarded
-                }
-              }
-            }
-            const next = result.data.links?.next
-            if (next) {
-              fetchNodes(next)
-            }
-          })
-    }
-
     const formatHash = (hash: string | undefined) => {
       return hash != undefined ? byteToHex(base64DecToArr(hash)) : ""
     }
@@ -252,18 +224,18 @@ export default defineComponent({
     return {
       isSmallScreen,
       isTouchDevice,
-      node: nodeLoader.node,
-      approxYearlyRate: nodeLoader.approxYearlyRate,
-      stake: nodeLoader.stake,
-      minStake: nodeLoader.minStake,
-      maxStake: nodeLoader.maxStake,
+      node: nodeCursor.node,
+      approxYearlyRate: nodeCursor.approxYearlyRate,
+      stake: nodeCursor.stake,
+      minStake: nodeCursor.minStake,
+      maxStake: nodeCursor.maxStake,
       stakePercentage,
-      stakeRewarded: nodeLoader.stakeRewarded,
+      stakeRewarded: nodeCursor.stakeRewarded,
       stakeRewardedPercentage,
-      stakeUnrewarded: nodeLoader.stakeUnrewarded,
+      stakeUnrewarded: nodeCursor.stakeUnrewarded,
       stakeUnrewardedPercentage,
       notification,
-      nodeDescription: nodeLoader.nodeDescription,
+      nodeDescription: nodeCursor.nodeDescription,
       formatHash,
       makeFloorHbarAmount
     }

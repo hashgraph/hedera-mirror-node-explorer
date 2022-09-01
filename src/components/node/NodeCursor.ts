@@ -18,29 +18,37 @@
  *
  */
 
-import {NetworkNode, NetworkNodesResponse} from "@/schemas/HederaSchemas";
+import {NetworkNode} from "@/schemas/HederaSchemas";
 import {operatorRegistry} from "@/schemas/OperatorRegistry";
-import {EntityLoader} from "@/utils/EntityLoader";
-import axios, {AxiosResponse} from "axios";
+import {NodesLoader} from "@/components/node/NodesLoader";
 import {computed, ComputedRef, Ref} from "vue";
 
-export class NodeLoader extends EntityLoader<NetworkNodesResponse> {
+export class NodeCursor {
 
     public readonly nodeId: Ref<number|null>
+    public readonly nodesLoader: NodesLoader
+
 
     //
     // Public
     //
 
-    public constructor(nodeId: Ref<number|null>) {
-        super()
+    public constructor(nodeId: Ref<number|null>, nodesLoader: NodesLoader) {
         this.nodeId = nodeId
-        this.watchAndReload([this.nodeId])
+        this.nodesLoader = nodesLoader
     }
 
     public readonly node: ComputedRef<NetworkNode|null> = computed(() => {
-        const nodes = this.entity.value?.nodes
-        return nodes && nodes.length >= 1 ? nodes[0] : null
+        let result: NetworkNode|null = null
+        if (this.nodeId.value !== null) {
+            for (const n of this.nodesLoader.nodes.value) {
+                if (n.node_id == this.nodeId.value) {
+                    result = n
+                    break
+                }
+            }
+        }
+        return result
     })
 
     public readonly nodeDescription: ComputedRef<string|null> = computed(() => {
@@ -60,20 +68,27 @@ export class NodeLoader extends EntityLoader<NetworkNodesResponse> {
     })
 
     //
-    // EntityLoader
+    // Public (staking)
     //
 
-    protected async load(): Promise<AxiosResponse<NetworkNodesResponse>|null> {
-        let result: Promise<AxiosResponse<NetworkNodesResponse>|null>
-        if (this.nodeId.value != null) {
-            const url = "api/v1/network/nodes"
-            const queryParams = {params: {'node.id': this.nodeId.value}}
-            result = axios.get<NetworkNodesResponse>(url, queryParams)
-        } else {
-            result = Promise.resolve(null)
-        }
-        return result
-    }
+    public readonly rewardRate = computed(() =>
+        this.node.value?.reward_rate_start
+            ? this.node.value.reward_rate_start / 100000000
+            : 0)
+
+    public readonly approxYearlyRate = computed(() => {
+        const formatter = new Intl.NumberFormat("en-US", {
+            style: 'percent',
+            maximumFractionDigits: 2
+        })
+        return formatter.format(this.rewardRate.value * 365);
+    })
+
+    public readonly stake = computed(() => this.node.value?.stake ?? 0)
+    public readonly minStake = computed(() => this.node.value?.min_stake ?? 0)
+    public readonly maxStake = computed(() => this.node.value?.max_stake ?? 0)
+    public readonly stakeRewarded = computed(() => this.node.value?.stake_rewarded ?? 0)
+    public readonly stakeUnrewarded = computed(() => this.node.value?.stake_not_rewarded ?? 0)
 
 
 }
