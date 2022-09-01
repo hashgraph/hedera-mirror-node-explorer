@@ -194,7 +194,7 @@
       </template>
     </DashboardCard>
 
-    <DashboardCard>
+    <DashboardCard style="margin-top: 2rem">
       <template v-slot:title>
         <span class="h-is-secondary-title">Transfers</span>
       </template>
@@ -205,7 +205,7 @@
       </template>
     </DashboardCard>
 
-    <DashboardCard v-if="contractResult">
+    <DashboardCard v-if="contractResult" style="margin-top: 2rem">
       <template v-slot:title>
         <span class="h-is-secondary-title">Contract Result</span>
       </template>
@@ -278,9 +278,42 @@
 
     </DashboardCard>
 
-    <DashboardCard v-if="contractResult">
+    <DashboardCard v-if="contractResult" style="margin-top: 2rem">
       <template v-slot:title>
         <span class="h-is-secondary-title">Logs</span>
+      </template>
+
+      <template v-slot:leftContent>
+        <template v-for="(l, logIndex) in contractResult?.logs" :key="l.index">
+          <Property id="logIndex">
+            <template v-slot:name>Index</template>
+            <template v-slot:value>
+              <StringValue :string-value="l.index.toString()"/>
+            </template>
+          </Property>
+          <Property id="logAddress">
+            <template v-slot:name>Address</template>
+            <template v-slot:value>
+              <HexaValue v-bind:byteString="l.address" :show-none="true"/>
+            </template>
+          </Property>
+          <Property id="logData">
+            <template v-slot:name>Data</template>
+            <template v-slot:value>
+              <HexaValue v-bind:byteString="l.data" :show-none="true"/>
+            </template>
+          </Property>
+          <Property id="logTopics" v-for="(t, topicIndex) in l.topics" :key="t">
+            <template v-slot:name>{{ topicIndex === 0 ? "Topics" : "" }}</template>
+            <template v-slot:value>
+              <div class="is-flex">
+                <HexaValue v-bind:byteString="'(' + topicIndex + ') '" class="mr-2"/>
+                <HexaValue v-bind:byteString="t" :show-none="true"/>
+              </div>
+            </template>
+          </Property>
+          <hr v-if="logIndex < contractResult?.logs.length - 1" class="h-card-separator" style="height: 1px; background: grey"/>
+        </template>
       </template>
     </DashboardCard>
 
