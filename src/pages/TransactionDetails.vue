@@ -278,7 +278,7 @@
 
     </DashboardCard>
 
-    <DashboardCard v-if="contractResult" style="margin-top: 2rem">
+    <DashboardCard v-if="contractResult?.logs?.length" style="margin-top: 2rem">
       <template v-slot:title>
         <span class="h-is-secondary-title">Logs</span>
       </template>
