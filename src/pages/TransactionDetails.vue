@@ -283,27 +283,38 @@
         <span class="h-is-secondary-title">Logs</span>
       </template>
 
+      <template v-slot:control>
+        <div class="is-flex is-justify-content-flex-end is-align-items-center">
+          <button id="prev-block-button" :disabled="logCursor===0"
+                  class="button is-white is-small" @click="logCursor-=1">&lt; PREVIOUS
+          </button>
+          <button id="next-block-button" :disabled="logCursor===contractResult?.logs.length - NB_LOG_DISPLAYED"
+                  class="button is-white is-small ml-4" @click="logCursor+=1">NEXT &gt;
+          </button>
+        </div>
+      </template>
+
       <template v-slot:leftContent>
-        <template v-for="(l, logIndex) in contractResult?.logs" :key="l.index">
+        <template v-for="logIndex in NB_LOG_DISPLAYED" :key="logIndex">
           <Property id="logIndex">
             <template v-slot:name>Index</template>
             <template v-slot:value>
-              <StringValue :string-value="l.index.toString()"/>
+              <StringValue :string-value="contractResult?.logs[logCursor + logIndex - 1].index.toString()"/>
             </template>
           </Property>
           <Property id="logAddress">
             <template v-slot:name>Address</template>
             <template v-slot:value>
-              <HexaValue v-bind:byteString="l.address" :show-none="true"/>
+              <HexaValue v-bind:byteString="contractResult?.logs[logCursor + logIndex - 1].address" :show-none="true"/>
             </template>
           </Property>
           <Property id="logData">
             <template v-slot:name>Data</template>
             <template v-slot:value>
-              <HexaValue v-bind:byteString="l.data" :show-none="true"/>
+              <HexaValue v-bind:byteString="contractResult?.logs[logCursor + logIndex - 1].data" :show-none="true"/>
             </template>
           </Property>
-          <Property id="logTopics" v-for="(t, topicIndex) in l.topics" :key="t">
+          <Property id="logTopics" v-for="(t, topicIndex) in contractResult?.logs[logCursor + logIndex - 1].topics" :key="t">
             <template v-slot:name>{{ topicIndex === 0 ? "Topics" : "" }}</template>
             <template v-slot:value>
               <div class="is-flex">
@@ -361,6 +372,7 @@ import {BlocksResponseCollector} from "@/utils/BlocksResponseCollector";
 import BlockLink from "@/components/values/BlockLink.vue";
 
 const MAX_INLINE_CHILDREN = 3
+const NB_LOG_DISPLAYED = 2
 
 export default defineComponent({
 
@@ -400,6 +412,7 @@ export default defineComponent({
     let parentTransaction = ref<Transaction | null>(null)
     let childTransactions = ref<Array<Transaction>>([])
     const blockNumber = ref<number | null>(null)
+    const logCursor = ref(0)
 
     const showAllTransactionVisible = computed(() => {
       const count = response.value?.data.transactions?.length ?? 0
@@ -540,6 +553,7 @@ export default defineComponent({
     }
 
     return {
+      NB_LOG_DISPLAYED,
       isSmallScreen,
       isTouchDevice,
       transaction,
@@ -552,6 +566,7 @@ export default defineComponent({
       formatHash,
       computeMaxFee,
       blockNumber,
+      logCursor,
       makeTypeLabel,
       computeNetAmount,
       makeOperatorAccountLabel,
