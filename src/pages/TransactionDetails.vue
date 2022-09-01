@@ -376,7 +376,7 @@ const NB_LOG_DISPLAYED = 2
 
 export default defineComponent({
 
-  name: 'TransactionDetailsV2',
+  name: 'TransactionDetails',
 
   components: {
     BlockLink,
