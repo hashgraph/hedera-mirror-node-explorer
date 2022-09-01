@@ -186,7 +186,7 @@ describe("TransactionDetails.vue", () => {
 
         const banner = wrapper.findComponent(NotificationBanner)
         expect(banner.exists()).toBe(true)
-        expect(banner.text()).toBe("Transaction has failed: CONTRACT_REVERT_EXECUTED")
+        expect(banner.text()).toBe("CONTRACT_REVERT_EXECUTED")
     });
 
     it("Should detect invalid transaction ID", async () => {
