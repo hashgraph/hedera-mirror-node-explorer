@@ -175,7 +175,7 @@ export default defineComponent({
                 maxStake.value = nodes.value[0].max_stake ?? 0
               }
               for (const n of result.data.nodes) {
-                totalRewarded.value += (n.reward_rate_start ?? 0)
+                totalRewarded.value += (n.reward_rate_start ?? 0) * (n.stake_rewarded ?? 0) / 100000000
                 unclampedStakeTotal.value += (n.stake_rewarded ?? 0) + (n.stake_not_rewarded ?? 0)
               }
             }

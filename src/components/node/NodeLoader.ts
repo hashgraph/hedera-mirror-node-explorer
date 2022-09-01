@@ -64,8 +64,8 @@ export class NodeLoader extends EntityLoader<NetworkNodesResponse> {
     //
 
     public readonly rewardRate = computed(() =>
-        this.node.value?.reward_rate_start && this.node.value?.stake_rewarded
-            ? this.node.value.reward_rate_start / this.node.value?.stake_rewarded
+        this.node.value?.reward_rate_start
+            ? this.node.value.reward_rate_start / 100000000
             : 0)
 
     public readonly approxYearlyRate = computed(() => {
