@@ -203,8 +203,9 @@ import {WalletDriver} from "@/utils/wallet/WalletDriver";
 import {WalletDriverError} from "@/utils/wallet/WalletDriverError";
 import {RewardsTransactionCache} from '@/components/staking/RewardsTransactionCache';
 import {normalizeTransactionId} from "@/utils/TransactionID";
-import {NodeLoader} from "@/components/node/NodeLoader";
+import {NodeCursor} from "@/components/node/NodeCursor";
 import {AccountLoader} from "@/components/account/AccountLoader";
+import {NodesLoader} from "@/components/node/NodesLoader";
 
 export default defineComponent({
   name: 'Staking',
@@ -368,7 +369,9 @@ export default defineComponent({
     // stakedNode
     //
 
-    const stakedNodeLoader = new NodeLoader(accountLoader.stakedNodeId)
+    const nodesLoader = new NodesLoader()
+    onMounted(() => nodesLoader.requestLoad())
+    const stakedNodeLoader = new NodeCursor(accountLoader.stakedNodeId, nodesLoader)
 
     //
     // handleStopStaking / handleChangeStaking

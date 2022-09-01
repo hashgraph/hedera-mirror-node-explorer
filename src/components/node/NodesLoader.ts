@@ -54,6 +54,22 @@ export class NodesLoader extends EntityBatchLoader<NetworkNodesResponse> {
     public readonly minStake = computed(() => this.node0.value?.min_stake ?? 0)
     public readonly maxStake = computed(() => this.node0.value?.max_stake ?? 0)
 
+    public readonly stakeRewardedTotal: ComputedRef<number> = computed(() => {
+        let result = 0
+        for (const n of this.nodes.value) {
+            result += n.stake_rewarded ?? 0
+        }
+        return result
+    })
+
+    public readonly stakeUnrewardedTotal: ComputedRef<number> = computed(() => {
+        let result = 0
+        for (const n of this.nodes.value) {
+            result += n.stake_not_rewarded ?? 0
+        }
+        return result
+    })
+
     //
     // EntityBatchLoader
     //
