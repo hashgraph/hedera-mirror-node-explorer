@@ -112,7 +112,7 @@ describe("TransactionDetails.vue", () => {
             "0.0.29693911123423Transfer")
 
         expect(wrapper.findComponent(NftTransferGraph).text()).toBe(
-            "")
+            "NFT TransfersNone")
 
     });
 
@@ -151,7 +151,7 @@ describe("TransactionDetails.vue", () => {
 
         expect(wrapper.findComponent(HbarTransferGraphF).exists()).toBe(true)
         expect(wrapper.findComponent(TokenTransferGraph).exists()).toBe(true)
-        expect(wrapper.findComponent(NftTransferGraph).text()).toBe("")
+        expect(wrapper.findComponent(NftTransferGraph).text()).toContain("NFT TransfersNone")
 
         const transaction = SAMPLE_CONTRACTCALL_TRANSACTIONS.transactions[0]
         matcher1 = "/api/v1/transactions/" + transaction.transaction_id
@@ -168,8 +168,8 @@ describe("TransactionDetails.vue", () => {
         expect(wrapper.get("#memoValue").text()).toBe("Mirror Node acceptance test: 2022-03-07T15:09:26.066680977Z Execute contract")
 
         expect(wrapper.findComponent(HbarTransferGraphF).exists()).toBe(true)
-        expect(wrapper.findComponent(TokenTransferGraph).text()).toBe("")
-        expect(wrapper.findComponent(NftTransferGraph).text()).toBe("")
+        expect(wrapper.findComponent(TokenTransferGraph).text()).toContain("Token TransfersNone")
+        expect(wrapper.findComponent(NftTransferGraph).text()).toContain("NFT TransfersNone")
 
     });
 

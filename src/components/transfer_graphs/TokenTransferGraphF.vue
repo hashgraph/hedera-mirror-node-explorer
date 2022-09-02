@@ -24,10 +24,10 @@
 
 <template>
 
-  <div v-if="tokenTransferLayout.length >= 1" data-cy="tokenTransfers">
+  <div data-cy="tokenTransfers">
+    <p class="h-is-tertiary-text mb-2">Token Transfers</p>
 
-    <br/>
-    <p class="h-is-tertiary-text mb-4">Token Transfers</p>
+    <div v-if="tokenTransferLayout.length >= 1">
 
     <div class="graph-container" v-bind:class="{'graph-container-8': symbolVisible}">
 
@@ -124,6 +124,9 @@
 
     </div>
 
+    </div>
+
+    <p v-else class="has-text-grey">None</p>
   </div>
 
 </template>

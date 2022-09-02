@@ -32,11 +32,14 @@
     <HbarTransferGraphF
         v-else
         v-bind:transaction="transaction" title="Hbar Transfers"/>
+    <br/>
 
   </template>
 
   <NftTransferGraph
       v-bind:transaction="transaction" v-bind:compact="compact"/>
+
+  <br/>
 
   <TokenTransferGraphC
       v-if="compact"
@@ -46,8 +49,9 @@
       v-bind:transaction="transaction"/>
 
   <template v-if="netAmount === 0 && !compact">
+    <br/>
     <HbarTransferGraphF
-        v-bind:transaction="transaction" title="Fee Transfers"/>
+        v-bind:transaction="transaction" title="Fee Transfers" :show-none="true"/>
   </template>
 
 
