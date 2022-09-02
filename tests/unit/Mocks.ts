@@ -1294,6 +1294,25 @@ export const SAMPLE_NETWORK_SUPPLY = {
 }
 
 //
+// https://previewnet.mirrornode.hedera.com/api/v1/blocks?timestamp=gte:1662111646.528325857&limit=1
+//
+
+export const SAMPLE_BLOCKSRESPONSE = {
+    "blocks": [{
+        "count": 1,
+        "hapi_version": "0.30.0",
+        "hash": "0xe4416a679dc2d757e4f179501bbf8ab0f90b4aa2a69c60366919606e4d5e447cb501e90e9224de836cfcedbc72c0c559",
+        "name": "2022-09-02T09_45_08.062537644Z.rcd.gz",
+        "number": 271027,
+        "previous_hash": "0xa3cf2030a81300c57f5f16ce90d2fb6aacef13cb1412b9c89f50792742544dc10460626ca8554e7a87e162c7d3218b2e",
+        "size": 840,
+        "timestamp": {"from": "1662111908.062537644", "to": "1662111908.062537644"},
+        "gas_used": 0,
+        "logs_bloom": "0x"
+    }]
+}
+
+//
 // https://api.coingecko.com/api/v3/coins/hedera-hashgraph
 //
 

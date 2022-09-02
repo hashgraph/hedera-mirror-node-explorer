@@ -26,7 +26,16 @@ import TokenTransferGraph from "@/components/transfer_graphs/TokenTransferGraphF
 import NftTransferGraph from "@/components/transfer_graphs/NftTransferGraph.vue";
 import NotificationBanner from "@/components/NotificationBanner.vue";
 import axios from "axios";
-import {SAMPLE_COINGECKO, SAMPLE_CONTRACTCALL_TRANSACTIONS, SAMPLE_FAILED_TRANSACTION, SAMPLE_FAILED_TRANSACTIONS, SAMPLE_TOKEN, SAMPLE_TRANSACTION, SAMPLE_TRANSACTIONS} from "../Mocks";
+import {
+    SAMPLE_BLOCKSRESPONSE,
+    SAMPLE_COINGECKO,
+    SAMPLE_CONTRACTCALL_TRANSACTIONS,
+    SAMPLE_FAILED_TRANSACTION,
+    SAMPLE_FAILED_TRANSACTIONS,
+    SAMPLE_TOKEN,
+    SAMPLE_TRANSACTION,
+    SAMPLE_TRANSACTIONS
+} from "../Mocks";
 import MockAdapter from "axios-mock-adapter";
 import {HMSF} from "@/utils/HMSF";
 import {normalizeTransactionId} from "@/utils/TransactionID";
@@ -57,6 +66,9 @@ describe("TransactionDetails.vue", () => {
 
         const matcher3 = "https://api.coingecko.com/api/v3/coins/hedera-hashgraph"
         mock.onGet(matcher3).reply(200, SAMPLE_COINGECKO);
+
+        const matcher4 = "/api/v1/blocks"
+        mock.onGet(matcher4).reply(200, SAMPLE_BLOCKSRESPONSE);
 
         const wrapper = mount(TransactionDetails, {
             global: {
@@ -119,6 +131,9 @@ describe("TransactionDetails.vue", () => {
         const matcher3 = "https://api.coingecko.com/api/v3/coins/hedera-hashgraph"
         mock.onGet(matcher3).reply(200, SAMPLE_COINGECKO);
 
+        const matcher4 = "/api/v1/blocks"
+        mock.onGet(matcher4).reply(200, SAMPLE_BLOCKSRESPONSE);
+
         const wrapper = mount(TransactionDetails, {
             global: {
                 plugins: [router]
@@ -169,6 +184,9 @@ describe("TransactionDetails.vue", () => {
 
         const matcher2 = "https://api.coingecko.com/api/v3/coins/hedera-hashgraph"
         mock.onGet(matcher2).reply(200, SAMPLE_COINGECKO);
+
+        const matcher3 = "/api/v1/blocks"
+        mock.onGet(matcher3).reply(200, SAMPLE_BLOCKSRESPONSE);
 
         const wrapper = mount(TransactionDetails, {
             global: {
