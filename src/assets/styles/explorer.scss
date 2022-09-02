@@ -326,9 +326,12 @@ a.button.is-ghost.is-last {
 }
 
 //
-// SEPARATORS
+// CARDS AND SEPARATORS
 //
 
+.h-card:not(:first-child) {
+    margin-top: 2rem;
+}
 .h-card-separator {
     background: $h-background-color;
     margin: 16px 0;

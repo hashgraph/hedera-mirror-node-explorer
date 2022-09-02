@@ -26,7 +26,7 @@
 
   <section class="section" :class="{'h-mobile-background': isTouchDevice || !isSmallScreen}">
 
-    <DashboardCard>
+    <DashboardCard class="h-card">
       <template v-slot:title>
         <div class="is-flex is-align-items-center">
           <span class="h-is-primary-title">Transaction </span>
@@ -198,7 +198,7 @@
       </template>
     </DashboardCard>
 
-    <DashboardCard style="margin-top: 2rem">
+    <DashboardCard class="h-card">
       <template v-slot:title>
         <span class="h-is-secondary-title">Transfers</span>
       </template>
@@ -209,7 +209,7 @@
       </template>
     </DashboardCard>
 
-    <DashboardCard v-if="contractResult" style="margin-top: 2rem">
+    <DashboardCard v-if="contractResult" class="h-card">
       <template v-slot:title>
         <span class="h-is-secondary-title">Contract Result</span>
       </template>
@@ -282,7 +282,7 @@
 
     </DashboardCard>
 
-    <DashboardCard v-if="contractResult?.logs?.length" style="margin-top: 2rem">
+    <DashboardCard v-if="contractResult?.logs?.length" class="h-card">
       <template v-slot:title>
         <span class="h-is-secondary-title">Logs</span>
       </template>
