@@ -31,10 +31,12 @@
         <div class="is-flex is-align-items-center">
           <span class="h-is-primary-title">Transaction </span>
           <span class="h-is-secondary-text mr-3">{{ transaction ? convertTransactionId(transactionId) : "" }}</span>
-          <div v-if="transaction?.result === TRANSACTION_SUCCESS"
-               class="h-has-pill has-background-success mr-3 h-is-text-size-2 mt-3">SUCCESS
+          <div v-if="transaction">
+            <div v-if="transaction?.result === TRANSACTION_SUCCESS"
+                 class="h-has-pill has-background-success mr-3 h-is-text-size-2 mt-3">SUCCESS
+            </div>
+            <div v-else class="h-has-pill has-background-danger mr-3 h-is-text-size-2 mt-3">FAILURE</div>
           </div>
-          <div v-else class="h-has-pill has-background-danger mr-3 h-is-text-size-2 mt-3">FAILURE</div>
           <span v-if="showAllTransactionVisible" class="is-inline-block mt-2" id="allTransactionsLink">
           <router-link :to="{name: 'TransactionsById', params: {transactionId: transactionId}}">
             <span class="h-is-property-text has-text-grey">See all transactions with the same ID</span>
