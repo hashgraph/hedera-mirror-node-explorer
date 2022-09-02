@@ -31,7 +31,9 @@
         <div class="is-flex is-align-items-center">
           <span class="h-is-primary-title">Transaction </span>
           <span class="h-is-secondary-text mr-3">{{ transaction ? convertTransactionId(transactionId) : "" }}</span>
-          <div v-if="transaction?.result === TRANSACTION_SUCCESS" class="h-has-pill has-background-success mr-3 h-is-text-size-2 mt-3">SUCCESS</div>
+          <div v-if="transaction?.result === TRANSACTION_SUCCESS"
+               class="h-has-pill has-background-success mr-3 h-is-text-size-2 mt-3">SUCCESS
+          </div>
           <div v-else class="h-has-pill has-background-danger mr-3 h-is-text-size-2 mt-3">FAILURE</div>
           <span v-if="showAllTransactionVisible" class="is-inline-block mt-2" id="allTransactionsLink">
           <router-link :to="{name: 'TransactionsById', params: {transactionId: transactionId}}">
@@ -288,48 +290,41 @@
       </template>
 
       <template v-slot:control>
-        <div class="is-flex is-justify-content-flex-end is-align-items-center">
+        <div class="is-flex is-justify-content-flex-end is-align-items-baseline">
+          <o-field>
+            <o-select v-model="nbLogLines" class="h-is-text-size-1">
+              <option v-for="n in Math.min(MAX_LOG_LINES, Math.ceil(contractResult?.logs?.length / 2))" :key="n" :value="n">
+                {{ (n === Math.ceil(contractResult?.logs?.length / 2)) ? 'Show all' : 'Show ' + n + (n === 1 ? ' line' :' line') }}
+              </option>
+            </o-select>
+          </o-field>
           <button id="prev-block-button" :disabled="logCursor===0"
-                  class="button is-white is-small" @click="logCursor-=1">&lt; PREVIOUS
+                  class="button is-white is-small ml-4" @click="logCursor -= 1">&lt; PREVIOUS
           </button>
-          <button id="next-block-button" :disabled="logCursor===contractResult?.logs.length - NB_LOG_DISPLAYED"
-                  class="button is-white is-small ml-4" @click="logCursor+=1">NEXT &gt;
+          <button id="next-block-button" :disabled="logCursor >= contractResult?.logs.length - 2 * nbLogLines"
+                  class="button is-white is-small ml-4" @click="logCursor += 1">NEXT &gt;
           </button>
         </div>
       </template>
 
       <template v-slot:leftContent>
-        <template v-for="logIndex in NB_LOG_DISPLAYED" :key="logIndex">
-          <Property id="logIndex">
-            <template v-slot:name>Index</template>
-            <template v-slot:value>
-              <StringValue :string-value="contractResult?.logs[logCursor + logIndex - 1].index.toString()"/>
-            </template>
-          </Property>
-          <Property id="logAddress">
-            <template v-slot:name>Address</template>
-            <template v-slot:value>
-              <HexaValue v-bind:byteString="contractResult?.logs[logCursor + logIndex - 1].address" :show-none="true"/>
-            </template>
-          </Property>
-          <Property id="logData">
-            <template v-slot:name>Data</template>
-            <template v-slot:value>
-              <HexaValue v-bind:byteString="contractResult?.logs[logCursor + logIndex - 1].data" :show-none="true"/>
-            </template>
-          </Property>
-          <Property id="logTopics" v-for="(t, topicIndex) in contractResult?.logs[logCursor + logIndex - 1].topics" :key="t">
-            <template v-slot:name>{{ topicIndex === 0 ? "Topics" : "" }}</template>
-            <template v-slot:value>
-              <div class="is-flex">
-                <HexaValue v-bind:byteString="'(' + topicIndex + ') '" class="mr-2"/>
-                <HexaValue v-bind:byteString="t" :show-none="true"/>
-              </div>
-            </template>
-          </Property>
-          <hr v-if="logIndex < contractResult?.logs.length - 1" class="h-card-separator" style="height: 1px; background: grey"/>
+
+        <template v-for="l in nbLogLines" :key="l">
+          <ContractResultLog :log="contractResult?.logs[logCursor + l - 1]"/>
+          <hr v-if="l < nbLogLines" class="h-card-separator" style="height: 1px; background: grey"/>
         </template>
+
       </template>
+
+      <template v-slot:rightContent>
+
+        <template v-for="l in nbLogLines" :key="l">
+          <ContractResultLog :log="contractResult?.logs[logCursor + nbLogLines + l - 1]"/>
+          <hr v-if="l < nbLogLines" class="h-card-separator" style="height: 1px; background: grey"/>
+        </template>
+
+      </template>
+
     </DashboardCard>
 
   </section>
@@ -375,15 +370,18 @@ import DurationValue from "@/components/values/DurationValue.vue";
 import PlainAmount from "@/components/values/PlainAmount.vue";
 import {BlocksResponseCollector} from "@/utils/BlocksResponseCollector";
 import BlockLink from "@/components/values/BlockLink.vue";
+import ContractResultLog from "@/components/contract/ContractResultLog.vue";
 
 const MAX_INLINE_CHILDREN = 3
-const NB_LOG_DISPLAYED = 2
+const NB_LOG_LINES = 2
+const MAX_LOG_LINES = 2
 
 export default defineComponent({
 
   name: 'TransactionDetails',
 
   components: {
+    ContractResultLog,
     BlockLink,
     PlainAmount,
     Property,
@@ -418,6 +416,8 @@ export default defineComponent({
     let childTransactions = ref<Array<Transaction>>([])
     const blockNumber = ref<number | null>(null)
     const logCursor = ref(0)
+    const nbLogLines = ref(NB_LOG_LINES)
+    watch(nbLogLines, () => logCursor.value = 0)
 
     const showAllTransactionVisible = computed(() => {
       const count = response.value?.data.transactions?.length ?? 0
@@ -528,7 +528,7 @@ export default defineComponent({
               }
             })
             .catch(reason => {
-              if(axios.isAxiosError(reason) && reason?.request?.status === 404) {
+              if (axios.isAxiosError(reason) && reason?.request?.status === 404) {
                 got404.value = true
               }
             })
@@ -558,7 +558,8 @@ export default defineComponent({
     }
 
     return {
-      NB_LOG_DISPLAYED,
+      NB_LOG_LINES,
+      MAX_LOG_LINES,
       isSmallScreen,
       isTouchDevice,
       transaction,
@@ -572,6 +573,7 @@ export default defineComponent({
       computeMaxFee,
       blockNumber,
       logCursor,
+      nbLogLines,
       makeTypeLabel,
       computeNetAmount,
       makeOperatorAccountLabel,
@@ -668,6 +670,10 @@ function lookupChildTransactions(transactions: Transaction[]): Transaction[] {
 
 .columns button{
   vertical-align: initial;
+}
+
+.button.is-small {
+  font-size: 0.65rem;
 }
 
 </style>
