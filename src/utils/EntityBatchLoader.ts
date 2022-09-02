@@ -63,7 +63,6 @@ export abstract class EntityBatchLoader<E> extends EntityLoader<E> {
                             const next = previous != null ? this.mergeResponses(previous, response) : response
                             const afterNextURL = this.nextURL(response.data)
                             if (afterNextURL !== null) {
-                                console.log("next is " + afterNextURL)
                                 resolve(this.recurseLoad(afterNextURL, next, recursionCount - 1))
                             } else {
                                 resolve(next)
