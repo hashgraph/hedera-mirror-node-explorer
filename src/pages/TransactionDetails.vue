@@ -296,7 +296,7 @@
           <o-field>
             <o-select v-model="nbLogLines" class="h-is-text-size-1">
               <option v-for="n in Math.min(MAX_LOG_LINES, Math.ceil(contractResult?.logs?.length / 2))" :key="n" :value="n">
-                {{ (n === Math.ceil(contractResult?.logs?.length / 2)) ? 'Show all' : 'Show ' + n + (n === 1 ? ' line' :' line') }}
+                {{ (n === Math.ceil(contractResult?.logs?.length / 2)) ? 'Show all' : 'Show ' + n + (n === 1 ? ' line' :' lines') }}
               </option>
             </o-select>
           </o-field>
@@ -321,8 +321,10 @@
       <template v-slot:rightContent>
 
         <template v-for="l in nbLogLines" :key="l">
-          <ContractResultLog :log="contractResult?.logs[logCursor + nbLogLines + l - 1]"/>
-          <hr v-if="l < nbLogLines" class="h-card-separator" style="height: 1px; background: grey"/>
+          <ContractResultLog v-if="logCursor + nbLogLines + l - 1 < contractResult?.logs.length"
+                             :log="contractResult?.logs[logCursor + nbLogLines + l - 1]"/>
+          <hr v-if="logCursor + nbLogLines + l - 1 < contractResult?.logs.length - 1 && l < nbLogLines"
+              class="h-card-separator" style="height: 1px; background: grey"/>
         </template>
 
       </template>
@@ -376,7 +378,7 @@ import ContractResultLog from "@/components/contract/ContractResultLog.vue";
 
 const MAX_INLINE_CHILDREN = 3
 const NB_LOG_LINES = 2
-const MAX_LOG_LINES = 2
+const MAX_LOG_LINES = 10
 
 export default defineComponent({
 
