@@ -96,8 +96,9 @@ export abstract class EntityCacheV2<E> {
     }
 
     private updateCache(): void {
-        const resolve = (newResponse: AxiosResponse<E>) => this.loadDidComplete(newResponse, this.sessionId)
-        const reject = (/*reason: unknown*/) => this.loadDidComplete(null, this.sessionId)
+        const capturedSessionId = this.sessionId
+        const resolve = (newResponse: AxiosResponse<E>) => this.loadDidComplete(newResponse, capturedSessionId)
+        const reject = (/*reason: unknown*/) => this.loadDidComplete(null, capturedSessionId)
         this.load().then(resolve, reject)
     }
 
