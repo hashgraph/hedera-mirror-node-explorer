@@ -95,7 +95,7 @@
            :class="{ 'is-rimmed': isNodeRoute, 'is-last': !isStakingEnabled}"
            @click="$router.push({name: 'Nodes'})">Nodes</a>
         <a v-if="isStakingEnabled"
-           class="button is-ghost is-last h-is-navbar-item h-is-dense"
+           class="button is-ghost h-is-navbar-item h-is-dense"
            :class="{ 'is-rimmed': isStakingRoute}"
            @click="$router.push({name: 'Staking'})">Staking</a>
         <a v-if="isBlocksEnabled"
