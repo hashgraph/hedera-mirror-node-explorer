@@ -291,6 +291,8 @@ export default defineComponent({
         result =  "Invalid account ID: " + props.accountId
       } else if (accountLoader.got404.value) {
         result =  "Account with ID " + accountLoader.accountLocator.value + " was not found"
+      } else if (accountLoader.entity.value?.deleted === true) {
+        result = "Account is deleted"
       } else {
         result = null
       }
