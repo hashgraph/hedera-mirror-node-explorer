@@ -31,13 +31,12 @@
         <span class="h-is-primary-title">Node </span>
         <span class="h-is-secondary-text is-numeric mr-3">{{ nodeId }}</span>
       </template>
+
       <template v-slot:content>
-
         <NotificationBanner v-if="notification" :message="notification"/>
+      </template>
 
-        <div class="columns h-is-property-text mt-3">
-
-          <div class="column">
+      <template v-slot:leftContent>
             <Property id="nodeAccount">
               <template v-slot:name>Node Account</template>
               <template v-slot:value>
@@ -87,9 +86,9 @@
                            v-bind:show-none="true"/>
               </template>
             </Property>
-          </div>
+      </template>
 
-          <div class="column h-has-column-separator">
+      <template v-slot:rightContent>
               <NetworkDashboardItem id="yearlyRate" :name="'APPROX ANNUAL EQUIVALENT'" :title="'Last Period Reward Rate'"
                                     :value="approxYearlyRate.toString()"/>
               <br/><br/>
@@ -110,12 +109,9 @@
               <NetworkDashboardItem id="stakingPeriod" :name="'HOURS'" :title="'Current Staking Period'" :value="'24'"/>
               <p class="h-is-property-text h-is-extra-text mt-1">from 00:00 am today to 11:59 pm today UTC</p>
               <div class="mt-6"/>
-          </div>
-
-        </div>
-        <br/>
-
+              <br/>
       </template>
+
     </DashboardCard>
 
   </section>

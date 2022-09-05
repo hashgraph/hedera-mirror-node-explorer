@@ -27,19 +27,21 @@
   <section class="section" :class="{'h-mobile-background': isTouchDevice || !isSmallScreen}">
 
     <DashboardCard>
+
       <template v-slot:title>
         <span class="h-is-primary-title">Messages for Topic </span>
         <span v-if="validEntityId" class="h-is-secondary-text">{{ normalizedTopicId }}</span>
       </template>
+
       <template v-slot:control>
         <PlayPauseButtonV2 v-model:state="cacheState"/>
       </template>
+
       <template v-slot:content>
-
         <NotificationBanner v-if="notification" :message="notification"/>
-
         <TopicMessageTable v-if="validEntityId" v-bind:messages="messages"/>
       </template>
+
     </DashboardCard>
 
   </section>

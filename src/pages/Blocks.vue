@@ -31,9 +31,7 @@
         <span class="h-is-primary-title">Blocks</span>
       </template>
       <template v-slot:control>
-        <div class="is-flex is-align-items-flex-end">
-          <PlayPauseButtonV2 v-model:state="cacheState"/>
-        </div>
+        <PlayPauseButtonV2 v-model:state="cacheState"/>
       </template>
       <template v-slot:content>
         <BlockTable :blocks="blocks"/>
