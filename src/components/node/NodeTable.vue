@@ -155,7 +155,7 @@ export default defineComponent({
         "(weight is absent when the amount staked is below minimum)."
     const tooltipNotRewarded = "This is the total amount staked to this node by accounts that have chosen " +
         "to decline rewards (and all accounts staked to those accounts)."
-    const tooltipRewardRate = "This is an approximate annual reward rate based on the reward payed for the " +
+    const tooltipRewardRate = "This is an approximate annual reward rate based on the reward earned during the " +
         "last 24h period."
 
     const isTouchDevice = inject('isTouchDevice', false)

@@ -27,6 +27,7 @@
   <section class="section" :class="{'h-mobile-background': isTouchDevice || !isSmallScreen}">
 
     <DashboardCard>
+
       <template v-slot:title>
         <span class="h-is-primary-title">Contract Result for {{ result?.contract_id ?? "" }} at {{ result?.timestamp }}</span>
       </template>
