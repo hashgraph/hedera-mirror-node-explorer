@@ -150,6 +150,7 @@ export function compareNftTransfer(t1: NftTransfer, t2: NftTransfer): number {
 export interface Transfer {
     account: string | null                          // Network entity ID in the format of shard.realm.num
     amount: number
+    is_approval: boolean | undefined
 }
 
 export interface TokenTransfer extends Transfer {
