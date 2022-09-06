@@ -452,6 +452,10 @@ export default defineComponent({
         ref(null),
         computed(() => props.transactionId ?? null))
     onMounted(() => contractResultDetailsLoader.requestLoad())
+    watch(contractResultDetailsLoader.entity, () => {
+      const nbLinesForAll = Math.ceil(contractResultDetailsLoader.entity.value?.logs?.length ?? 0 / 2)
+      nbLogLines.value = Math.min(nbLogLines.value, nbLinesForAll)
+    })
 
     onBeforeMount(() => {
       fetchTransaction()
