@@ -246,7 +246,7 @@
         <Property id="errorMessage">
           <template v-slot:name>Error Message</template>
           <template v-slot:value>
-            <HexaValue :byte-string ="contractResult?.error_message"/>
+            <HexaValue :byte-string ="contractResult?.error_message" v-bind:show-none="true"/>
           </template>
         </Property>
       </template>
