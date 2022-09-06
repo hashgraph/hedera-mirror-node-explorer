@@ -33,13 +33,14 @@ import {
     SAMPLE_NETWORK_NODES,
     SAMPLE_NONFUNGIBLE,
     SAMPLE_TOKEN, SAMPLE_TOKEN_DUDE,
-    SAMPLE_TRANSACTIONS
+    SAMPLE_TRANSACTIONS, SAMPLE_ACCOUNT_DELETED,
 } from "../Mocks";
 import MockAdapter from "axios-mock-adapter";
 import Oruga from "@oruga-ui/oruga-next";
 import TransactionTableV2 from "@/components/transaction/TransactionTableV2.vue";
 import {HMSF} from "@/utils/HMSF";
 import {EntityCacheStateV2} from "@/utils/EntityCacheV2";
+import NotificationBanner from "@/components/NotificationBanner.vue";
 
 /*
     Bookmarks
@@ -217,6 +218,52 @@ describe("AccountDetails.vue", () => {
         // console.log(wrapper.text())
 
         expect(wrapper.get("#notificationBanner").text()).toBe("Invalid account ID: " + invalidAccountId)
+    });
+
+    it("Should display notification of deleted contract", async () => {
+
+        await router.push("/") // To avoid "missing required param 'network'" error
+
+        const mock = new MockAdapter(axios);
+
+        const deletedAccount = SAMPLE_ACCOUNT_DELETED
+        const matcher1 = "/api/v1/accounts/" + deletedAccount.account
+        mock.onGet(matcher1).reply(200, deletedAccount);
+
+        const matcher2 = "/api/v1/transactions"
+        mock.onGet(matcher2).reply(200, SAMPLE_TRANSACTIONS);
+
+        const token = SAMPLE_TOKEN
+        const matcher3 = "/api/v1/tokens/" + token.token_id
+        mock.onGet(matcher3).reply(200, token);
+
+        const nft = SAMPLE_NONFUNGIBLE
+        const matcher4 = "/api/v1/tokens/" + nft.token_id
+        mock.onGet(matcher4).reply(200, nft);
+
+        const matcher5 = "/api/v1/balances"
+        mock.onGet(matcher5).reply(200, SAMPLE_ACCOUNT_BALANCES);
+
+        const matcher6 = "https://api.coingecko.com/api/v3/coins/hedera-hashgraph"
+        mock.onGet(matcher6).reply(200, SAMPLE_COINGECKO);
+
+        const wrapper = mount(AccountDetails, {
+            global: {
+                plugins: [router, Oruga]
+            },
+            props: {
+                accountId: deletedAccount.account ?? undefined
+            },
+        });
+
+        await flushPromises()
+        // console.log(wrapper.text())
+
+            expect(wrapper.text()).toMatch(RegExp("^Account " + deletedAccount.account))
+
+        const banner = wrapper.findComponent(NotificationBanner)
+        expect(banner.exists()).toBe(true)
+        expect(banner.text()).toBe("Account is deleted")
     });
 
     it("Should display account staking to node", async () => {

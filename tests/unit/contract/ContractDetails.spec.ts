@@ -21,7 +21,13 @@
 import {flushPromises, mount} from "@vue/test-utils"
 import router from "@/router";
 import axios from "axios";
-import {SAMPLE_COINGECKO, SAMPLE_CONTRACT, SAMPLE_CONTRACT_AS_ACCOUNT, SAMPLE_CONTRACT_DUDE} from "../Mocks";
+import {
+    SAMPLE_COINGECKO,
+    SAMPLE_CONTRACT,
+    SAMPLE_CONTRACT_AS_ACCOUNT,
+    SAMPLE_CONTRACT_DELETED,
+    SAMPLE_CONTRACT_DUDE
+} from "../Mocks";
 import MockAdapter from "axios-mock-adapter";
 import Oruga from "@oruga-ui/oruga-next";
 import ContractDetails from "@/pages/ContractDetails.vue";
@@ -189,6 +195,41 @@ describe("ContractDetails.vue", () => {
         const banner = wrapper.findComponent(NotificationBanner)
         expect(banner.exists()).toBe(true)
         expect(banner.text()).toBe("Contract has expired and is in grace period")
+    });
+
+    it("Should display notification of deleted contract", async () => {
+
+        await router.push("/") // To avoid "missing required param 'network'" error
+
+        const mock = new MockAdapter(axios);
+
+        const contract = SAMPLE_CONTRACT_DELETED
+        const matcher1 = "/api/v1/contracts/" + contract.contract_id
+        mock.onGet(matcher1).reply(200, contract);
+
+        const matcher2 = "/api/v1/accounts/" + contract.contract_id
+        mock.onGet(matcher2).reply(200, SAMPLE_CONTRACT_AS_ACCOUNT);
+
+        const matcher4 = "https://api.coingecko.com/api/v3/coins/hedera-hashgraph"
+        mock.onGet(matcher4).reply(200, SAMPLE_COINGECKO);
+
+        const wrapper = mount(ContractDetails, {
+            global: {
+                plugins: [router, Oruga]
+            },
+            props: {
+                contractId: contract.contract_id
+            },
+        });
+
+        await flushPromises()
+        // console.log(wrapper.text())
+
+        expect(wrapper.text()).toMatch(RegExp("^Contract " + contract.contract_id))
+
+        const banner = wrapper.findComponent(NotificationBanner)
+        expect(banner.exists()).toBe(true)
+        expect(banner.text()).toBe("Contract is deleted")
     });
 
     it("Should detect invalid contract ID", async () => {
