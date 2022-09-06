@@ -49,10 +49,10 @@ export class TokenTransferLayout {
         }
         if (balance < 0) {
             // We add a destination transfer to null account id
-            this.destinations.push({ account: null, amount: -balance, token_id: tokenId})
+            this.destinations.push({ account: null, amount: -balance, token_id: tokenId, is_approval: false})
         } else if (balance > 0) {
             // We add a source transfer from null account id
-            this.sources.push({ account: null, amount: -balance, token_id: tokenId})
+            this.sources.push({ account: null, amount: -balance, token_id: tokenId, is_approval: false})
         }
 
         let netAmount = 0
