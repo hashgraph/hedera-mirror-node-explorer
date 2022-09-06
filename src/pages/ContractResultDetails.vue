@@ -27,83 +27,69 @@
   <section class="section" :class="{'h-mobile-background': isTouchDevice || !isSmallScreen}">
 
     <DashboardCard>
+
       <template v-slot:title>
         <span class="h-is-primary-title">Contract Result for {{ result?.contract_id ?? "" }} at {{ result?.timestamp }}</span>
       </template>
 
-      <template v-slot:table>
-
-        <div class="columns h-is-property-text">
-          <div class="column">
+      <template v-slot:leftContent>
             <Property id="from">
               <template v-slot:name>From</template>
               <template v-slot:value>
                 <HexaValue :byte-string="result?.from" v-bind:show-none="true"/>
               </template>
             </Property>
-
             <Property id="to">
               <template v-slot:name>To</template>
               <template v-slot:value>
                 <HexaValue :byte-string="result?.to" v-bind:show-none="true"/>
               </template>
             </Property>
-
             <Property id="type">
               <template v-slot:name>Type</template>
               <template v-slot:value>
                 <StringValue :string-value="result?.type?.toString()"/>
               </template>
             </Property>
-
             <Property id="errorMessage">
               <template v-slot:name>Error Message</template>
               <template v-slot:value>
                 <StringValue :string-value="result?.error_message"/>
               </template>
             </Property>
-          </div>
+      </template>
 
-          <div class="column">
-
+      <template v-slot:rightContent>
             <Property id="gasLimit">
               <template v-slot:name>Gas Limit</template>
               <template v-slot:value>
                 <PlainAmount :amount="result?.gas_limit"/>
               </template>
             </Property>
-
             <Property id="gasUsed">
               <template v-slot:name>Gas Used</template>
               <template v-slot:value>
                 <PlainAmount :amount="result?.gas_used"/>
               </template>
             </Property>
-
             <Property id="maxFeePerGas">
               <template v-slot:name>Max Fee Per Gas</template>
               <template v-slot:value>
                 <StringValue :string-value="result?.max_fee_per_gas"/>
               </template>
             </Property>
-
             <Property id="maxPriorityFeePerGas">
               <template v-slot:name>Max Priority Fee Per Gas</template>
               <template v-slot:value>
                 <StringValue :string-value="result?.max_priority_fee_per_gas"/>
               </template>
             </Property>
-
             <Property id="gasPrice">
               <template v-slot:name>Gas Price</template>
               <template v-slot:value>
                 <StringValue :string-value="result?.gas_price"/>
               </template>
             </Property>
-
-          </div>
-        </div>
-
       </template>
 
     </DashboardCard>
