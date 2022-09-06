@@ -776,6 +776,135 @@ export const SAMPLE_REWARDS_TRANSACTIONS = {
 }
 
 //
+// https://testnet.mirrornode.hedera.com/api/v1/transactions/0.0.48113503-1662470948-432078184
+//
+
+export const SAMPLE_PARENT_CHILD_TRANSACTIONS = {
+    "transactions":
+        [{
+            "bytes": null,
+            "charged_tx_fee": 160800000,
+            "consensus_timestamp": "1662470957.014478705",
+            "entity_id": "0.0.48193749",
+            "max_fee": "200000000",
+            "memo_base64": "",
+            "name": "CONTRACTCALL",
+            "node": "0.0.5",
+            "nonce": 0,
+            "parent_consensus_timestamp": null,
+            "result": "SUCCESS",
+            "scheduled": false,
+            "transaction_hash": "jthcv17LsslWUAzQkuIzeVMFpwJ3Uf5g6sSp1aZ8qqSWTz52XhPaMGAzt/5UgYob",
+            "transaction_id": "0.0.48113503-1662470948-432078184",
+            "transfers": [{"account": "0.0.98", "amount": 160800000, "is_approval": false}, {
+                "account": "0.0.48113503",
+                "amount": -5160800000,
+                "is_approval": false
+            }, {"account": "0.0.48193749", "amount": 5000000000, "is_approval": false}],
+            "valid_duration_seconds": "120",
+            "valid_start_timestamp": "1662470948.432078184"
+        }, {
+            "bytes": null,
+            "charged_tx_fee": 0,
+            "consensus_timestamp": "1662470957.014478706",
+            "entity_id": "0.0.48193741",
+            "max_fee": "0",
+            "memo_base64": "",
+            "name": "TOKENMINT",
+            "nft_transfers": [{
+                "is_approval": false,
+                "receiver_account_id": "0.0.48113503",
+                "sender_account_id": null,
+                "serial_number": 1,
+                "token_id": "0.0.48193741"
+            }, {
+                "is_approval": false,
+                "receiver_account_id": "0.0.48113503",
+                "sender_account_id": null,
+                "serial_number": 2,
+                "token_id": "0.0.48193741"
+            }, {
+                "is_approval": false,
+                "receiver_account_id": "0.0.48113503",
+                "sender_account_id": null,
+                "serial_number": 3,
+                "token_id": "0.0.48193741"
+            }, {
+                "is_approval": false,
+                "receiver_account_id": "0.0.48113503",
+                "sender_account_id": null,
+                "serial_number": 4,
+                "token_id": "0.0.48193741"
+            }, {
+                "is_approval": false,
+                "receiver_account_id": "0.0.48113503",
+                "sender_account_id": null,
+                "serial_number": 5,
+                "token_id": "0.0.48193741"
+            }],
+            "node": null,
+            "nonce": 1,
+            "parent_consensus_timestamp": "1662470957.014478705",
+            "result": "SUCCESS",
+            "scheduled": false,
+            "transaction_hash": "gLobKtgAWqka6N/3K5o2TS8XKeQIafH8wxkzZfycRJcOfJ7vccaR/6drUU8j6Xci",
+            "transaction_id": "0.0.48113503-1662470948-432078184",
+            "transfers": [],
+            "valid_duration_seconds": null,
+            "valid_start_timestamp": "1662470948.432078184"
+        }, {
+            "bytes": null,
+            "charged_tx_fee": 0,
+            "consensus_timestamp": "1662470957.014478707",
+            "entity_id": null,
+            "max_fee": "0",
+            "memo_base64": "",
+            "name": "CRYPTOTRANSFER",
+            "nft_transfers": [{
+                "is_approval": false,
+                "receiver_account_id": "0.0.48193739",
+                "sender_account_id": "0.0.48113503",
+                "serial_number": 1,
+                "token_id": "0.0.48193741"
+            }, {
+                "is_approval": false,
+                "receiver_account_id": "0.0.48193739",
+                "sender_account_id": "0.0.48113503",
+                "serial_number": 2,
+                "token_id": "0.0.48193741"
+            }, {
+                "is_approval": false,
+                "receiver_account_id": "0.0.48193739",
+                "sender_account_id": "0.0.48113503",
+                "serial_number": 3,
+                "token_id": "0.0.48193741"
+            }, {
+                "is_approval": false,
+                "receiver_account_id": "0.0.48193739",
+                "sender_account_id": "0.0.48113503",
+                "serial_number": 4,
+                "token_id": "0.0.48193741"
+            }, {
+                "is_approval": false,
+                "receiver_account_id": "0.0.48193739",
+                "sender_account_id": "0.0.48113503",
+                "serial_number": 5,
+                "token_id": "0.0.48193741"
+            }],
+            "node": null,
+            "nonce": 2,
+            "parent_consensus_timestamp": "1662470957.014478705",
+            "result": "SUCCESS",
+            "scheduled": false,
+            "transaction_hash": "Gqep6H2B3iE4id1qPG92q51LP20WXW7r53ujWlKekk8RBhYTfpFiD4iJBkK8UnGc",
+            "transaction_id": "0.0.48113503-1662470948-432078184",
+            "transfers": [],
+            "valid_duration_seconds": null,
+            "valid_start_timestamp": "1662470948.432078184"
+        }]
+}
+
+//
 // Account inspired from: https://mainnet-public.mirrornode.hedera.com/api/v1/accounts/0.0.730631
 //
 

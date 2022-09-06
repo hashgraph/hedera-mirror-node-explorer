@@ -63,6 +63,10 @@
       {{ makeRelationshipLabel(props.row) }}
     </o-table-column>
 
+    <o-table-column v-slot="props" label="Nonce">
+      {{ props.row.nonce }}
+    </o-table-column>
+
   </o-table>
 
   <EmptyTable v-if="!transactions.length"/>
