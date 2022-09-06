@@ -246,7 +246,7 @@
         <Property id="errorMessage">
           <template v-slot:name>Error Message</template>
           <template v-slot:value>
-            <HexaValue :byte-string ="contractResult?.error_message"/>
+            <HexaValue :byte-string ="contractResult?.error_message" v-bind:show-none="true"/>
           </template>
         </Property>
       </template>
@@ -291,7 +291,7 @@
         <span class="h-is-secondary-title">Logs</span>
       </template>
 
-      <template v-slot:control>
+      <template v-slot:control v-if="contractResult?.logs.length > 2">
         <div class="is-flex is-justify-content-flex-end is-align-items-baseline">
           <o-field>
             <o-select v-model="nbLogLines" class="h-is-text-size-1">
@@ -452,6 +452,10 @@ export default defineComponent({
         ref(null),
         computed(() => props.transactionId ?? null))
     onMounted(() => contractResultDetailsLoader.requestLoad())
+    watch(contractResultDetailsLoader.entity, () => {
+      const nbLinesForAll = Math.ceil(contractResultDetailsLoader.entity.value?.logs?.length ?? 0 / 2)
+      nbLogLines.value = Math.min(nbLogLines.value, nbLinesForAll)
+    })
 
     onBeforeMount(() => {
       fetchTransaction()
