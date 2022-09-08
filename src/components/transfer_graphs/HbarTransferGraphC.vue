@@ -24,7 +24,7 @@
 
 <template>
 
-  <div v-if="hbarTransferLayout.rowCount >= 1" class="graph-container" data-cy="hbarTransfers">
+  <div v-if="hbarTransferLayout.rowCount >= 1" class="graph-container">
 
     <template v-for="i in hbarTransferLayout.rowCount" v-bind:key="i">
 

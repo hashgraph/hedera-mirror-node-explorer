@@ -24,7 +24,7 @@
 
 <template>
 
-  <div data-cy="tokenTransfers">
+  <div>
     <p class="h-is-tertiary-text mb-2">Token Transfers</p>
 
     <div v-if="tokenTransferLayout.length >= 1">

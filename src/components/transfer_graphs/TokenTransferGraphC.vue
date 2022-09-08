@@ -24,7 +24,7 @@
 
 <template>
 
-  <div v-if="tokenTransferLayout.length >= 1" data-cy="tokenTransfers">
+  <div v-if="tokenTransferLayout.length >= 1">
 
     <div class="graph-container">
 

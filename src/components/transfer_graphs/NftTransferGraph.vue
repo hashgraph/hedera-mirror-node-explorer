@@ -27,7 +27,7 @@
   <div>
     <div v-if="!compact" class="h-is-tertiary-text mb-2">NFT Transfers</div>
 
-    <div  v-if="nftTransferLayout.length >= 1" data-cy="nftTransfers">
+    <div  v-if="nftTransferLayout.length >= 1">
 
     <div class="graph-container" v-bind:class="{'graph-container-6': descriptionVisible}">
 
