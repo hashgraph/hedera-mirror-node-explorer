@@ -83,19 +83,21 @@
           </div>
 
           <div class="column">
-            <Property v-if="transaction?.entity_id" id="entityId">
+            <Property v-if="systemContract" id="entityId">
+              <template v-slot:name>Contract ID</template>
+              <template v-slot:value>{{ systemContract }}</template>
+            </Property>
+            <Property v-else-if="transaction?.entity_id" id="entityId">
               <template v-slot:name>{{ entity?.label }}</template>
               <template v-slot:value>
-                <template v-if="entity?.routeName">
-                  <EntityLink
-                      v-bind:entity-id="transaction?.entity_id"
-                      v-bind:route-name="routeName"
-                      v-bind:show-extra="true"
-                  />
-                </template>
-                <template v-else>
+                <EntityLink v-if="entity?.routeName"
+                    v-bind:entity-id="transaction?.entity_id"
+                    v-bind:route-name="routeName"
+                    v-bind:show-extra="true"
+                />
+                <span v-else>
                   {{ transaction?.entity_id }}
-                </template>
+                </span>
               </template>
             </Property>
             <Property v-if="schedulingTransaction" id="schedulingTransaction">
@@ -219,6 +221,7 @@ import Footer from "@/components/Footer.vue";
 import NotificationBanner from "@/components/NotificationBanner.vue";
 import Property from "@/components/Property.vue";
 import DurationValue from "@/components/values/DurationValue.vue";
+import {systemContractRegistry} from "@/schemas/SystemContractRegistry";
 
 const MAX_INLINE_CHILDREN = 3
 
@@ -253,6 +256,7 @@ export default defineComponent({
     const transaction = ref<Transaction|null>(null)
     let netAmount = ref(0)
     let entity = ref<EntityDescriptor | null>(null)
+    let systemContract = ref<string | null>(null)
     let scheduledTransaction = ref<Transaction | null>(null)
     let schedulingTransaction = ref<Transaction | null>(null)
     let parentTransaction = ref<Transaction | null>(null)
@@ -324,6 +328,13 @@ export default defineComponent({
                               .catch(() => entity.value = new EntityDescriptor("Entity ID", ""))
 
                         })
+                  } else if(transaction.value.name === TransactionType.CONTRACTCALL) {
+                    if (transaction.value.entity_id) {
+                      systemContract.value = systemContractRegistry.lookup(transaction.value.entity_id)
+                    }
+                    if(! systemContract.value) {
+                      entity.value = EntityDescriptor.makeEntityDescriptor(transaction.value)
+                    }
                   } else {
                     entity.value = EntityDescriptor.makeEntityDescriptor(transaction.value)
                   }
@@ -381,6 +392,7 @@ export default defineComponent({
       transaction,
       netAmount,
       entity,
+      systemContract,
       notification,
       routeName,
       TRANSACTION_SUCCESS,
