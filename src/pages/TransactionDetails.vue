@@ -341,6 +341,8 @@ export default defineComponent({
                       || !systemContract.value
                   ) {
                     entity.value = EntityDescriptor.makeEntityDescriptor(transaction.value)
+                  } else {
+                    entity.value = null
                   }
 
                   if (r.data.transactions.length >= 2) {
