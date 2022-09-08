@@ -26,7 +26,16 @@ import TokenTransferGraph from "@/components/transfer_graphs/TokenTransferGraphF
 import NftTransferGraph from "@/components/transfer_graphs/NftTransferGraph.vue";
 import NotificationBanner from "@/components/NotificationBanner.vue";
 import axios from "axios";
-import {SAMPLE_COINGECKO, SAMPLE_CONTRACTCALL_TRANSACTIONS, SAMPLE_FAILED_TRANSACTION, SAMPLE_FAILED_TRANSACTIONS, SAMPLE_TOKEN, SAMPLE_TRANSACTION, SAMPLE_TRANSACTIONS} from "../Mocks";
+import {
+    SAMPLE_COINGECKO,
+    SAMPLE_CONTRACTCALL_TRANSACTIONS,
+    SAMPLE_FAILED_TRANSACTION,
+    SAMPLE_FAILED_TRANSACTIONS,
+    SAMPLE_SYSTEM_CONTRACT_CALL_TRANSACTIONS,
+    SAMPLE_TOKEN,
+    SAMPLE_TRANSACTION,
+    SAMPLE_TRANSACTIONS
+} from "../Mocks";
 import MockAdapter from "axios-mock-adapter";
 import {HMSF} from "@/utils/HMSF";
 import {normalizeTransactionId} from "@/utils/TransactionID";
@@ -207,5 +216,34 @@ describe("TransactionDetails.vue", () => {
         // console.log(wrapper.text())
 
         expect(wrapper.get("#notificationBanner").text()).toBe("Invalid transaction ID: " + invalidTransactionId)
+    });
+
+    it("Should display the name of the system contract called", async () => {
+
+        await router.push("/") // To avoid "missing required param 'network'" error
+
+        const txnId = SAMPLE_SYSTEM_CONTRACT_CALL_TRANSACTIONS.transactions[0].transaction_id
+
+        const mock = new MockAdapter(axios);
+        const matcher1 = "/api/v1/transactions/" + txnId
+        mock.onGet(matcher1).reply(200, SAMPLE_SYSTEM_CONTRACT_CALL_TRANSACTIONS)
+        const matcher2 = "https://api.coingecko.com/api/v3/coins/hedera-hashgraph"
+        mock.onGet(matcher2).reply(200, SAMPLE_COINGECKO);
+
+        const wrapper = mount(TransactionDetails, {
+            global: {
+                plugins: [router]
+            },
+            props: {
+                transactionId: txnId
+            },
+        });
+        await flushPromises()
+        // console.log(wrapper.html())
+        // console.log(wrapper.text())
+
+        expect(wrapper.text()).toMatch(RegExp("^Transaction " + normalizeTransactionId(txnId, true)))
+        expect(wrapper.get("#transactionTypeValue").text()).toBe("CONTRACT CALL")
+        expect(wrapper.get("#entityId").text()).toBe("Contract IDHedera Token Service System Contract")
     });
 });
