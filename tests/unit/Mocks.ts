@@ -438,6 +438,30 @@ export const SAMPLE_CONTRACTCALL_TRANSACTIONS = {
     ]
 }
 
+export const SAMPLE_SYSTEM_CONTRACT_CALL_TRANSACTIONS = {
+    "transactions": [
+        {
+            "bytes": null,
+            "charged_tx_fee": 0,
+            "consensus_timestamp": "1662623752.949648610",
+            "entity_id": "0.0.359",
+            "max_fee": "0",
+            "memo_base64": "",
+            "name": "CONTRACTCALL",
+            "node": null,
+            "nonce": 2,
+            "parent_consensus_timestamp": "1662623752.949648608",
+            "result": "SUCCESS",
+            "scheduled": false,
+            "transaction_hash": "LC8tH/tqkOEndC3ERShZO7n6NSxhdhbkSZJX3hnbwKAWaQ2KLMsg1DgaXByxrUEY",
+            "transaction_id": "0.0.29511696-1662623740-379586211",
+            "transfers": [],
+            "valid_duration_seconds": null,
+            "valid_start_timestamp": "1662623740.379586211"
+        }
+    ]
+}
+
 // https://mainnet-public.mirrornode.hedera.com/api/v1/transactions?limit=2&transactiontype=CRYPTOTRANSFER
 
 export const SAMPLE_CRYPTO_TRANSACTIONS = {
