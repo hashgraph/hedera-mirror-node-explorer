@@ -89,19 +89,21 @@
       </template>
 
       <template v-slot:rightContent>
-        <Property v-if="transaction?.entity_id" id="entityId">
+        <Property v-if="systemContract" id="entityId">
+          <template v-slot:name>Contract ID</template>
+          <template v-slot:value>{{ systemContract }}</template>
+        </Property>
+        <Property v-else-if="transaction?.entity_id" id="entityId">
           <template v-slot:name>{{ entity?.label }}</template>
           <template v-slot:value>
-            <template v-if="entity?.routeName">
-              <EntityLink
-                  v-bind:entity-id="transaction?.entity_id"
-                  v-bind:route-name="routeName"
-                  v-bind:show-extra="true"
-              />
-            </template>
-            <template v-else>
-              {{ transaction?.entity_id }}
-            </template>
+            <EntityLink v-if="entity?.routeName"
+                        v-bind:entity-id="transaction?.entity_id"
+                        v-bind:route-name="routeName"
+                        v-bind:show-extra="true"
+            />
+            <span v-else>
+                  {{ transaction?.entity_id }}
+                </span>
           </template>
         </Property>
         <Property id="operatorAccount">
@@ -357,6 +359,7 @@ import {EntityDescriptor} from "@/utils/EntityDescriptor"
 import {normalizeTransactionId, TransactionID} from "@/utils/TransactionID";
 import {computeNetAmount, makeOperatorAccountLabel, makeTypeLabel} from "@/utils/TransactionTools";
 import {ContractResultDetailsLoader} from "@/components/contract/ContractResultDetailsLoader";
+import {systemContractRegistry} from "@/schemas/SystemContractRegistry";
 import AccountLink from "@/components/values/AccountLink.vue";
 import {base64DecToArr, byteToHex} from "@/utils/B64Utils";
 import HexaValue from "@/components/values/HexaValue.vue";
@@ -412,12 +415,21 @@ export default defineComponent({
     const invalidId = ref(false)
     const got404 = ref(false)
     const transaction = ref<Transaction|null>(null)
-    let netAmount = ref(0)
-    let entity = ref<EntityDescriptor | null>(null)
-    let scheduledTransaction = ref<Transaction | null>(null)
-    let schedulingTransaction = ref<Transaction | null>(null)
-    let parentTransaction = ref<Transaction | null>(null)
-    let childTransactions = ref<Array<Transaction>>([])
+    const netAmount = ref(0)
+    const entity = ref<EntityDescriptor | null>(null)
+    const systemContract = computed(() => {
+      let result
+      if (transaction.value?.name === TransactionType.CONTRACTCALL && transaction.value.entity_id) {
+        result = systemContractRegistry.lookup(transaction.value.entity_id)
+      } else {
+        result = null
+      }
+      return result
+    })
+    const scheduledTransaction = ref<Transaction | null>(null)
+    const schedulingTransaction = ref<Transaction | null>(null)
+    const parentTransaction = ref<Transaction | null>(null)
+    const childTransactions = ref<Array<Transaction>>([])
     const blockNumber = ref<number | null>(null)
     const logCursor = ref(0)
     const nbLogLines = ref(NB_LOG_LINES)
@@ -514,8 +526,13 @@ export default defineComponent({
                               .catch(() => entity.value = new EntityDescriptor("Entity ID", ""))
 
                         })
-                  } else {
+                  } else if(
+                      transaction.value.name !== TransactionType.CONTRACTCALL
+                      || !systemContract.value
+                  ) {
                     entity.value = EntityDescriptor.makeEntityDescriptor(transaction.value)
+                  } else {
+                    entity.value = null
                   }
 
                   if (r.data.transactions.length >= 2) {
@@ -536,7 +553,7 @@ export default defineComponent({
               }
             })
             .catch(reason => {
-              if (axios.isAxiosError(reason) && reason?.request?.status === 404) {
+              if(axios.isAxiosError(reason) && reason?.request?.status === 404) {
                 got404.value = true
               }
             })
@@ -573,6 +590,7 @@ export default defineComponent({
       transaction,
       netAmount,
       entity,
+      systemContract,
       notification,
       routeName,
       TRANSACTION_SUCCESS,

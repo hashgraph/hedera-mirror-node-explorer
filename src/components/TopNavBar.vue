@@ -92,11 +92,11 @@
            :class="{ 'is-rimmed': isAccountRoute}"
            @click="$router.push({name: 'Accounts'})">Accounts</a>
         <a class="button is-ghost h-is-navbar-item h-is-dense"
-           :class="{ 'is-rimmed': isNodeRoute, 'is-last': !isStakingEnabled}"
+           :class="{ 'is-rimmed': isNodeRoute, 'is-last': !isStakingEnabled && !isBlocksEnabled}"
            @click="$router.push({name: 'Nodes'})">Nodes</a>
         <a v-if="isStakingEnabled"
-           class="button is-ghost is-last h-is-navbar-item h-is-dense"
-           :class="{ 'is-rimmed': isStakingRoute}"
+           class="button is-ghost h-is-navbar-item h-is-dense"
+           :class="{ 'is-rimmed': isStakingRoute, 'is-last': !isBlocksEnabled}"
            @click="$router.push({name: 'Staking'})">Staking</a>
         <a v-if="isBlocksEnabled"
            class="button is-ghost is-last h-is-navbar-item h-is-dense"
