@@ -254,13 +254,21 @@ export default defineComponent({
     const invalidId = ref(false)
     const got404 = ref(false)
     const transaction = ref<Transaction|null>(null)
-    let netAmount = ref(0)
-    let entity = ref<EntityDescriptor | null>(null)
-    let systemContract = ref<string | null>(null)
-    let scheduledTransaction = ref<Transaction | null>(null)
-    let schedulingTransaction = ref<Transaction | null>(null)
-    let parentTransaction = ref<Transaction | null>(null)
-    let childTransactions = ref<Array<Transaction>>([])
+    const netAmount = ref(0)
+    const entity = ref<EntityDescriptor | null>(null)
+    const systemContract = computed(() => {
+      let result
+      if (transaction.value?.name === TransactionType.CONTRACTCALL && transaction.value.entity_id) {
+        result = systemContractRegistry.lookup(transaction.value.entity_id)
+      } else {
+        result = null
+      }
+      return result
+    })
+    const scheduledTransaction = ref<Transaction | null>(null)
+    const schedulingTransaction = ref<Transaction | null>(null)
+    const parentTransaction = ref<Transaction | null>(null)
+    const childTransactions = ref<Array<Transaction>>([])
 
     const showAllTransactionVisible = computed(() => {
       const count = response.value?.data.transactions?.length ?? 0
@@ -328,15 +336,13 @@ export default defineComponent({
                               .catch(() => entity.value = new EntityDescriptor("Entity ID", ""))
 
                         })
-                  } else if(transaction.value.name === TransactionType.CONTRACTCALL) {
-                    if (transaction.value.entity_id) {
-                      systemContract.value = systemContractRegistry.lookup(transaction.value.entity_id)
-                    }
-                    if(! systemContract.value) {
-                      entity.value = EntityDescriptor.makeEntityDescriptor(transaction.value)
-                    }
-                  } else {
+                  } else if(
+                      transaction.value.name !== TransactionType.CONTRACTCALL
+                      || !systemContract.value
+                  ) {
                     entity.value = EntityDescriptor.makeEntityDescriptor(transaction.value)
+                  } else {
+                    entity.value = null
                   }
 
                   if (r.data.transactions.length >= 2) {
