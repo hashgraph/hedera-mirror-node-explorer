@@ -74,7 +74,7 @@
 
 <script lang="ts">
 
-import {ComputedRef, defineComponent, inject, PropType, watch} from "vue";
+import {ComputedRef, defineComponent, inject, PropType, Ref} from "vue";
 import {Transaction} from "@/schemas/HederaSchemas";
 import TransactionSummary from "@/components/transaction/TransactionSummary.vue";
 import TimestampValue from "@/components/values/TimestampValue.vue";
@@ -100,17 +100,10 @@ export default defineComponent({
   setup(props) {
     const isTouchDevice = inject('isTouchDevice', false)
     const isMediumScreen = inject('isMediumScreen', true)
-    //
-    // const perPage = computed(() => isMediumScreen ? props.tableController.pageSize : 5)
 
     const handleClick = (t: Transaction) => {
       router.push({name: 'TransactionDetails', params: {transactionId: t.transaction_id}, query: {t: t.consensus_timestamp}})
     }
-
-    console.log("*totalRowCount=" + props.tableController.totalRowCount.value)
-    watch(props.tableController.totalRowCount, () => {
-      console.log("totalRowCount=" + props.tableController.totalRowCount.value)
-    })
 
     return {
       isTouchDevice,
@@ -118,7 +111,7 @@ export default defineComponent({
       transactions: props.tableController.rows as ComputedRef<Transaction[]>,
       loading: props.tableController.loading as ComputedRef<boolean>,
       total: props.tableController.totalRowCount as ComputedRef<number>,
-      currentPage: props.tableController.currentPage as ComputedRef<number>,
+      currentPage: props.tableController.currentPage as Ref<number>,
       onPageChange: props.tableController.onPageChange,
       perPage: props.tableController.pageSize as number,
       handleClick,

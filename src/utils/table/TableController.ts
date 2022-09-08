@@ -60,15 +60,13 @@ export abstract class TableController<E, R> {
     // Public (to be subclassed)
     //
 
-    public async loadLatest(previous: E|null): Promise<AxiosResponse<E>|null> {
-        throw new Error("To be subclassed (" + previous + ")")
+    public async load(): Promise<AxiosResponse<E>|null> {
+        throw new Error("To be subclassed")
     }
 
     public abstract nextURL(response: E): string|null
 
     public abstract fetchRows(response: E): R[]
-
-    public abstract mergeResponse(current: E, latest: E): E
 
     //
     // Protected
@@ -82,7 +80,6 @@ export abstract class TableController<E, R> {
         this.autoStopped = this.refreshController.autoStopped
 
         watch(this.autoRefresh, () => this.autoRefreshDidChange())
-        this.autoRefreshDidChange()
 
         watch(this.paginationController.currentIndex, () => {
             const newPage = this.paginationController.currentIndex.value + 1
@@ -112,7 +109,11 @@ export abstract class TableController<E, R> {
             this.paginationController.clear()
         } else {
             // this.refreshController stops automatically
-            this.paginationController.fetch(0)
+            if (this.refreshController.entity.value !== null) {
+                this.paginationController.fetch(this.refreshController.entity.value)
+            } else {
+                this.paginationController.fetch(0)
+            }
         }
     }
 

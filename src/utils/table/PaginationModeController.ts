@@ -61,11 +61,16 @@ export class PaginationModeController<E, R> {
         return result
     })
 
-    public fetch(i: number): void {
-        this.loadingRef.value = true
-        this.makeFetchPromise(i).finally(() => {
-            this.loadingRef.value = false
-        })
+    public fetch(indexOrEntity0: number|E): void {
+        if (typeof indexOrEntity0 == "number") {
+            this.loadingRef.value = true
+            this.makeFetchPromise(indexOrEntity0).finally(() => {
+                this.loadingRef.value = false
+            })
+        } else {
+            this.entities.value = [indexOrEntity0]
+            this.currentIndexRef.value = 0
+        }
     }
 
     public clear(): void {
@@ -101,7 +106,7 @@ export class PaginationModeController<E, R> {
                         cb(null)
                     }
                 } else {
-                    this.controller.loadLatest(null).then(cb)
+                    this.controller.load().then(cb)
                 }
             }
             result = new Promise<void>(executor)

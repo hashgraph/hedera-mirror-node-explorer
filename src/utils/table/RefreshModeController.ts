@@ -28,7 +28,7 @@ export class RefreshModeController<E, R> {
     private readonly presumedRowCount: number
     private readonly updatePeriod: number
     private readonly maxUpdateCount: number
-    private readonly entity: Ref<E|null> = ref(null)
+    private readonly entityRef: Ref<E|null> = ref(null)
     private readonly loadingRef = ref(false)
 
     private updateCount = 0
@@ -58,15 +58,17 @@ export class RefreshModeController<E, R> {
         return !this.started.value && this.updateCount >= this.maxUpdateCount
     })
 
+    public readonly entity = computed(() => this.entityRef.value)
+
     public readonly rows: ComputedRef<R[]> = computed(
-        () => this.entity.value !== null ? this.controller.fetchRows(this.entity.value) : [])
+        () => this.entityRef.value !== null ? this.controller.fetchRows(this.entityRef.value) : [])
 
     public readonly loading: ComputedRef<boolean> = computed(
         () => this.loadingRef.value)
 
     public readonly totalRowCount: ComputedRef<number> = computed(() => {
         let result: number
-        if (this.entity.value === null) {
+        if (this.entityRef.value === null) {
             result = this.presumedRowCount
         } else if (this.lastNextURL.value === null) { // All entities are buffered
             result = this.rows.value.length
@@ -78,7 +80,7 @@ export class RefreshModeController<E, R> {
     })
 
     public clear(): void {
-        this.entity.value = null
+        this.entityRef.value = null
         if (this.started.value) {
             this.stop()
             this.start()
@@ -90,7 +92,7 @@ export class RefreshModeController<E, R> {
     //
 
     private readonly lastNextURL = computed(
-        () => this.entity.value !== null ? this.controller.nextURL(this.entity.value) : null)
+        () => this.entityRef.value !== null ? this.controller.nextURL(this.entityRef.value) : null)
 
     private startedDidChange(): void {
         if (this.started.value) {
@@ -117,18 +119,14 @@ export class RefreshModeController<E, R> {
         const capturedSessionId = this.sessionId
         const resolve = (newResponse: AxiosResponse<E>|null) => this.loadDidComplete(newResponse, capturedSessionId)
         const reject = (/*reason: unknown*/) => this.loadDidComplete(null, capturedSessionId)
-        this.controller.loadLatest(this.entity.value).then(resolve, reject)
+        this.controller.load().then(resolve, reject)
     }
 
     private loadDidComplete(newResponse: AxiosResponse<E> | null, sessionId: number) {
         if (this.sessionId == sessionId) {
             this.timeoutID = -1
             if (newResponse != null) {
-                if (this.entity.value !== null) {
-                    this.entity.value = this.controller.mergeResponse(this.entity.value, newResponse.data)
-                } else {
-                    this.entity.value = newResponse.data
-                }
+                this.entityRef.value = newResponse.data
                 this.updateCount += 1
             } // else we keep this.entity, this.totalRowCount and this.updateCount unchanged
             if (this.updateCount < this.maxUpdateCount) {

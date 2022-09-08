@@ -32,7 +32,7 @@ export class TransactionTableController extends TableController<TransactionRespo
     // Public
     //
 
-    public constructor(accountId: Ref<string|null>, autoRefresh: Ref<boolean>, pageSize: number) {
+    public constructor(accountId: Ref<string|null>, pageSize: number) {
         super(pageSize, 10 * pageSize, 5000, 10);
         this.accountId = accountId
         this.watchAndReload([this.accountId])
@@ -42,25 +42,17 @@ export class TransactionTableController extends TableController<TransactionRespo
     // TableController
     //
 
-    public async loadLatest(previous: TransactionResponse|null): Promise<AxiosResponse<TransactionResponse>|null> {
+    public async load(): Promise<AxiosResponse<TransactionResponse>|null> {
 
         const params = {} as {
             limit: number
             "account.id": string | undefined
             // transactiontype: string | undefined
             // result: string | undefined
-            timestamp: string | undefined
         }
         params.limit = this.pageSize
         if (this.accountId.value !== null) {
             params["account.id"] = this.accountId.value
-        }
-        if (previous !== null) {
-            const transactions = previous?.transactions ?? []
-            const lastTimestamp = transactions.length >= 1 ? transactions[0].consensus_timestamp : null
-            if (lastTimestamp) {
-                params.timestamp = "gt:" + lastTimestamp
-            }
         }
         return axios
             .get<TransactionResponse>("api/v1/transactions", { params: params} )
@@ -72,16 +64,6 @@ export class TransactionTableController extends TableController<TransactionRespo
 
     public nextURL(entity: TransactionResponse): string|null {
         return entity.links?.next ?? null
-    }
-
-    public mergeResponse( current: TransactionResponse, latest: TransactionResponse) : TransactionResponse {
-
-        const currentTransactions = current.transactions ?? Array<Transaction>()
-        const latestTransactions = latest.transactions ?? Array<Transaction>()
-        const candidateTransactions = latestTransactions.concat(currentTransactions)
-        current.transactions = candidateTransactions.slice(0, this.pageSize) // We mutate current to preserve next link
-
-        return current
     }
 
 
