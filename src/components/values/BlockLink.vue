@@ -23,27 +23,11 @@
 <!-- --------------------------------------------------------------------------------------------------------------- -->
 
 <template>
-
-  <div v-if="!isSmallScreen" class="columns" :id="id">
-    <div class="column is-flex is-justify-content-space-between">
-      <div class="has-text-weight-light" :id="nameId">
-        <slot name="name"/>
-      </div>
-      <div :id="valueId" class="ml-4 has-text-right">
-        <slot name="value"/>
-      </div>
-    </div>
+  <div v-if="blockNumber" class="is-inline-block">
+    <router-link :to="{name: 'BlockDetails', params: {blockHon: blockNumber}}">
+      <span class="is-numeric">{{ blockNumber }}</span>
+    </router-link>
   </div>
-
-  <div v-else class="columns" :id="id" style="margin-bottom: -0.75rem;">
-    <div class="column is-one-third has-text-weight-light" :id="nameId">
-      <slot name="name"/>
-    </div>
-    <div class="column" :id="valueId">
-      <slot name="value"/>
-    </div>
-  </div>
-
 </template>
 
 <!-- --------------------------------------------------------------------------------------------------------------- -->
@@ -52,34 +36,21 @@
 
 <script lang="ts">
 
-import {defineComponent, inject} from "vue";
+import {defineComponent} from "vue";
 
 export default defineComponent({
-  name: "Property",
+  name: "BlockLink",
+
   props: {
-    id: String,
+    blockNumber: Number,
   },
-  setup(props){
-    const nameId = props.id + 'Name'
-    const valueId = props.id + 'Value'
-
-    const isSmallScreen = inject('isSmallScreen', true)
-    const isTouchDevice = inject('isTouchDevice', false)
-
-    return {
-      nameId,
-      valueId,
-      isSmallScreen,
-      isTouchDevice
-    }
-  }
-})
+});
 
 </script>
 
 <!-- --------------------------------------------------------------------------------------------------------------- -->
-<!--                                                      STYLE                                                      -->
+<!--                                                       STYLE                                                     -->
 <!-- --------------------------------------------------------------------------------------------------------------- -->
 
-<style>
-</style>
+<style/>
+

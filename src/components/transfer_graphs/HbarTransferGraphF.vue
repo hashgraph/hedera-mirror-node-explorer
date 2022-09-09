@@ -23,11 +23,10 @@
 <!-- --------------------------------------------------------------------------------------------------------------- -->
 
 <template>
+  <div>
+  <p class="h-is-tertiary-text mb-2">{{ title }}</p>
 
-  <div  v-if="hbarTransferLayout.rowCount >= 1" data-cy="hbarTransfers">
-
-    <br/>
-    <p class="h-is-tertiary-text mb-4">{{ title }}</p>
+  <div  v-if="hbarTransferLayout.rowCount >= 1">
 
     <div class="graph-container" v-bind:class="{'graph-container-8': dollarVisible }">
 
@@ -120,6 +119,9 @@
 
   </div>
 
+  <p v-else-if="showNone" class="has-text-grey">None</p>
+
+  </div>
 </template>
 
 <!-- --------------------------------------------------------------------------------------------------------------- -->
@@ -142,7 +144,11 @@ export default defineComponent({
   components: {HbarAmount, HbarExtra, ArrowSegment, AccountLink},
   props: {
     transaction: Object as PropType<Transaction>,
-    title: String
+    title: String,
+    showNone: {
+      type: Boolean,
+      default: false
+    }
   },
   setup(props) {
 

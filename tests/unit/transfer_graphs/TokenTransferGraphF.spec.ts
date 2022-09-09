@@ -52,7 +52,7 @@ describe("TokenTransferGraphF.vue", () => {
         // console.log(wrapper.html())
         // console.log(wrapper.text())
 
-        expect(wrapper.text()).toBe("")
+        expect(wrapper.text()).toBe("Token TransfersNone")
     })
 
     //

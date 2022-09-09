@@ -30,7 +30,7 @@
       <template v-slot:title>
         <span class="h-is-primary-title">Recent Topics</span>
       </template>
-      <template v-slot:table>
+      <template v-slot:content>
         <TopicTable v-bind:transactions="transactions"/>
       </template>
     </DashboardCard>

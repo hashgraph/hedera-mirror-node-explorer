@@ -33,12 +33,12 @@
       <div class="column">
         <DashboardCard data-cy="cryptoTransfers">
           <template v-slot:title>
-            <span class="h-is-primary-subtitle">Crypto Transfers</span>
+            <span class="h-is-secondary-title">Crypto Transfers</span>
           </template>
           <template v-slot:control>
             <PlayPauseButtonV2 v-model:state="cryptoTransactionCacheState"/>
           </template>
-          <template v-slot:table>
+          <template v-slot:content>
             <CryptoTransactionTable
                 v-bind:transactions="cryptoTransactions"
                 v-bind:nb-items="6"
@@ -54,12 +54,12 @@
       <div class="column" :class="{'is-full': !displaySideBySide}">
         <DashboardCard data-cy="smartContractCalls">
           <template v-slot:title>
-            <span class="h-is-primary-subtitle">Smart Contract Calls</span>
+            <span class="h-is-secondary-title">Smart Contract Calls</span>
           </template>
           <template v-slot:control>
             <PlayPauseButtonV2 v-model:state="contractCallTransactionCacheState"/>
           </template>
-          <template v-slot:table>
+          <template v-slot:content>
             <ContractCallTransactionTable
                 v-bind:transactions="contractCallTransactions"
                 v-bind:nb-items="6"
@@ -71,12 +71,12 @@
       <div class="column">
         <DashboardCard data-cy="hcsMessages">
           <template v-slot:title>
-            <span class="h-is-primary-subtitle">HCS Messages</span>
+            <span class="h-is-secondary-title">HCS Messages</span>
           </template>
           <template v-slot:control>
             <PlayPauseButtonV2 v-model:state="messageTransactionCacheState"/>
           </template>
-          <template v-slot:table>
+          <template v-slot:content>
             <MessageTransactionTable
                 v-bind:transactions="messageTransactions"
                 v-bind:nb-items="6"

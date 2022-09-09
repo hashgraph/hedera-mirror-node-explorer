@@ -36,7 +36,7 @@
           </router-link>
         </span>
       </template>
-      <template v-slot:table>
+      <template v-slot:content>
 
         <NotificationBanner v-if="notification" :message="notification"/>
 

@@ -35,7 +35,7 @@
           <PlayPauseButtonV2 v-model:state="cacheState"/>
         </div>
       </template>
-      <template v-slot:table>
+      <template v-slot:content>
         <BlockTable :blocks="blocks"/>
       </template>
     </DashboardCard>

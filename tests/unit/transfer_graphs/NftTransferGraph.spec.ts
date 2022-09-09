@@ -51,7 +51,7 @@ describe("NftTransferGraph.vue", () => {
         // console.log(wrapper.html())
         // console.log(wrapper.text())
 
-        expect(wrapper.text()).toBe("")
+        expect(wrapper.text()).toBe("NFT TransfersNone")
     })
 
     test("Two tokens, Transfer", async () => {

@@ -28,7 +28,7 @@
     <template v-slot:title>
       <p class="h-is-primary-title">Rewards Estimator</p>
     </template>
-    <template v-slot:table>
+    <template v-slot:content>
 
       <div class="columns">
         <div class="column is-three-fifths">

@@ -24,24 +24,34 @@
 
 <template>
 
-  <div v-if="!isSmallScreen" class="columns" :id="id">
-    <div class="column is-flex is-justify-content-space-between">
-      <div class="has-text-weight-light" :id="nameId">
-        <slot name="name"/>
-      </div>
-      <div :id="valueId" class="ml-4 has-text-right">
-        <slot name="value"/>
-      </div>
-    </div>
-  </div>
-
-  <div v-else class="columns" :id="id" style="margin-bottom: -0.75rem;">
-    <div class="column is-one-third has-text-weight-light" :id="nameId">
-      <slot name="name"/>
-    </div>
-    <div class="column" :id="valueId">
-      <slot name="value"/>
-    </div>
+  <div v-if="log">
+    <Property id="logIndex">
+      <template v-slot:name>Index</template>
+      <template v-slot:value>
+        <StringValue :string-value="log?.index.toString()"/>
+      </template>
+    </Property>
+    <Property id="logAddress">
+      <template v-slot:name>Address</template>
+      <template v-slot:value>
+        <HexaValue :show-none="true" v-bind:byteString="log.address"/>
+      </template>
+    </Property>
+    <Property id="logData">
+      <template v-slot:name>Data</template>
+      <template v-slot:value>
+        <HexaValue :show-none="true" v-bind:byteString="log.data"/>
+      </template>
+    </Property>
+    <Property v-for="(t, topicIndex) in log.topics" id="logTopics" :key="t">
+      <template v-slot:name>{{ topicIndex === 0 ? "Topics" : "" }}</template>
+      <template v-slot:value>
+        <div class="is-flex">
+          <HexaValue class="mr-2" v-bind:byteString="'(' + topicIndex + ') '"/>
+          <HexaValue :show-none="true" v-bind:byteString="t"/>
+        </div>
+      </template>
+    </Property>
   </div>
 
 </template>
@@ -52,27 +62,18 @@
 
 <script lang="ts">
 
-import {defineComponent, inject} from "vue";
+import {defineComponent, PropType} from "vue";
+import {ContractResultLog} from "@/schemas/HederaSchemas";
+import Property from "@/components/Property.vue";
+import StringValue from "@/components/values/StringValue.vue";
+import HexaValue from "@/components/values/HexaValue.vue";
 
 export default defineComponent({
-  name: "Property",
+  name: "ContractResultLog",
+  components: {HexaValue, StringValue, Property},
   props: {
-    id: String,
+    log: Object as PropType<ContractResultLog | undefined>
   },
-  setup(props){
-    const nameId = props.id + 'Name'
-    const valueId = props.id + 'Value'
-
-    const isSmallScreen = inject('isSmallScreen', true)
-    const isTouchDevice = inject('isTouchDevice', false)
-
-    return {
-      nameId,
-      valueId,
-      isSmallScreen,
-      isTouchDevice
-    }
-  }
 })
 
 </script>
@@ -81,5 +82,4 @@ export default defineComponent({
 <!--                                                      STYLE                                                      -->
 <!-- --------------------------------------------------------------------------------------------------------------- -->
 
-<style>
-</style>
+<style/>

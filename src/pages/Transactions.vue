@@ -36,7 +36,7 @@
           <TransactionFilterSelect v-model:filter="selectedTransactionFilter"/>
         </div>
       </template>
-      <template v-slot:table>
+      <template v-slot:content>
         <TransactionTableV2 v-bind:transactions="transactions"/>
       </template>
     </DashboardCard>
