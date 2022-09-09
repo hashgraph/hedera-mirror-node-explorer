@@ -23,7 +23,7 @@
 <!-- --------------------------------------------------------------------------------------------------------------- -->
 
 <template>
-  <div data-cy="hbarTransfers">
+  <div>
   <p class="h-is-tertiary-text mb-2">{{ title }}</p>
 
   <div  v-if="hbarTransferLayout.rowCount >= 1">

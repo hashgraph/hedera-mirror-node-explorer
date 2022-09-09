@@ -40,9 +40,9 @@
 
 <script lang="ts">
 
-import {defineComponent, ref, watch} from "vue";
-import {TransactionType} from "@/schemas/HederaSchemas";
-import {makeTypeLabel} from "@/utils/TransactionTools";
+import { defineComponent, ref, watch } from "vue";
+import { TransactionType } from "@/schemas/HederaSchemas";
+import { makeTypeLabel } from "@/utils/TransactionTools";
 
 export default defineComponent({
   name: "TransactionFilterSelect",
@@ -82,7 +82,11 @@ export default defineComponent({
 });
 
 export function makeFilterValues(): string[] {
-  const result = Object.keys(TransactionType)
+  const result = Object
+    .keys(TransactionType)
+    .sort((a, b) => {
+      return makeTypeLabel(a as TransactionType) < makeTypeLabel(b as TransactionType) ? -1 : 1;
+    })
   result.splice(0, 0, "")
   return result
 }
