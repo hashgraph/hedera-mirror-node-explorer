@@ -27,14 +27,16 @@ import axios, {AxiosResponse} from "axios";
 export class TransactionTableController extends TableController<TransactionResponse, Transaction> {
 
     private readonly accountId: Ref<string|null>
+    private readonly accountIdMandatory: boolean
 
     //
     // Public
     //
 
-    public constructor(accountId: Ref<string|null>, pageSize: number) {
+    public constructor(accountId: Ref<string|null>, pageSize: number, accountIdMandatory: boolean) {
         super(pageSize, 10 * pageSize, 5000, 10);
         this.accountId = accountId
+        this.accountIdMandatory = accountIdMandatory
         this.watchAndReload([this.accountId])
     }
 
@@ -43,19 +45,25 @@ export class TransactionTableController extends TableController<TransactionRespo
     //
 
     public async load(): Promise<AxiosResponse<TransactionResponse>|null> {
+        let result: Promise<AxiosResponse<TransactionResponse>|null>
 
-        const params = {} as {
-            limit: number
-            "account.id": string | undefined
-            // transactiontype: string | undefined
-            // result: string | undefined
+        if (this.accountIdMandatory && this.accountId.value === null) {
+            result = Promise.resolve(null)
+        } else {
+            const params = {} as {
+                limit: number
+                "account.id": string | undefined
+                // transactiontype: string | undefined
+                // result: string | undefined
+            }
+            params.limit = this.pageSize
+            if (this.accountId.value !== null) {
+                params["account.id"] = this.accountId.value
+            }
+            result = axios.get<TransactionResponse>("api/v1/transactions", { params: params} )
         }
-        params.limit = this.pageSize
-        if (this.accountId.value !== null) {
-            params["account.id"] = this.accountId.value
-        }
-        return axios
-            .get<TransactionResponse>("api/v1/transactions", { params: params} )
+
+        return result
     }
 
     public fetchRows(entity: TransactionResponse): Transaction[] {
