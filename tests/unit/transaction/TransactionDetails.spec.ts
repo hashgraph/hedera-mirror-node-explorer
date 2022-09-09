@@ -35,12 +35,13 @@ import {
     SAMPLE_FAILED_TRANSACTIONS,
     SAMPLE_TOKEN,
     SAMPLE_TRANSACTION,
-    SAMPLE_TRANSACTIONS
+    SAMPLE_TRANSACTIONS, SAMPLE_CONTRACT_RESULT_DETAILS
 } from "../Mocks";
 import MockAdapter from "axios-mock-adapter";
 import {HMSF} from "@/utils/HMSF";
 import {normalizeTransactionId} from "@/utils/TransactionID";
 import Oruga from "@oruga-ui/oruga-next";
+import ContractResultAndLogs from "@/components/transaction/ContractResultAndLogs.vue";
 
 /*
     Bookmarks
@@ -115,6 +116,56 @@ describe("TransactionDetails.vue", () => {
         expect(wrapper.findComponent(NftTransferGraph).text()).toBe(
             "NFT TransfersNone")
 
+    });
+
+    it("Should display the contract result and logs", async () => {
+
+        await router.push("/") // To avoid "missing required param 'network'" error
+
+        const mock = new MockAdapter(axios);
+
+        const transactionId = SAMPLE_CONTRACTCALL_TRANSACTIONS.transactions[0].transaction_id
+        const contractId = SAMPLE_CONTRACTCALL_TRANSACTIONS.transactions[0].entity_id
+
+        const matcher1 = "/api/v1/transactions/" + transactionId
+        mock.onGet(matcher1).reply(200, SAMPLE_CONTRACTCALL_TRANSACTIONS);
+        const matcher2 = "/api/v1/contracts/results/" + transactionId
+        mock.onGet(matcher2).reply(200, SAMPLE_CONTRACT_RESULT_DETAILS)
+        const matcher3 = "https://api.coingecko.com/api/v3/coins/hedera-hashgraph"
+        mock.onGet(matcher3).reply(200, SAMPLE_COINGECKO);
+        const matcher4 = "/api/v1/blocks"
+        mock.onGet(matcher4).reply(200, SAMPLE_BLOCKSRESPONSE);
+
+        const wrapper = mount(TransactionDetails, {
+            global: {
+                plugins: [router]
+            },
+            props: {
+                transactionId: transactionId
+            },
+        });
+
+        await flushPromises()
+        // console.log(wrapper.html())
+        // console.log(wrapper.text())
+
+        expect(wrapper.text()).toMatch(RegExp("^Transaction " + normalizeTransactionId(transactionId, true)))
+        expect(wrapper.get("#transactionTypeValue").text()).toBe("CONTRACT CALL")
+        expect(wrapper.get("#entityId").text()).toBe("Contract ID" + contractId)
+
+        expect(wrapper.findComponent(ContractResultAndLogs).exists()).toBe(true)
+        expect(wrapper.findComponent(ContractResultAndLogs).text()).toMatch(RegExp("^Contract Result"))
+        expect(wrapper.get("#resultValue").text()).toBe("SUCCESS")
+        expect(wrapper.get("#fromValue").text()).toBe("0000 0000 0000 0000 0000 0000 0000 0000 000c e9b4Copy to Clipboard")
+        expect(wrapper.get("#toValue").text()).toBe("0000 0000 0000 0000 0000 0000 0000 0000 0010 3783Copy to Clipboard")
+        expect(wrapper.get("#typeValue").text()).toBe("None")
+        expect(wrapper.get("#errorMessageValue").text()).toBe("None")
+        expect(wrapper.get("#gasLimitValue").text()).toBe("480,000")
+        expect(wrapper.get("#gasUsedValue").text()).toBe("384,000")
+        expect(wrapper.get("#maxFeePerGasValue").text()).toBe("None")
+        expect(wrapper.get("#maxPriorityFeePerGasValue").text()).toBe("None")
+        expect(wrapper.get("#gasPriceValue").text()).toBe("0.00000000$0.0000")
+        expect(wrapper.findAll("#logIndexValue").length).toBe(4)
     });
 
     it("Should update when transaction id changes", async () => {
