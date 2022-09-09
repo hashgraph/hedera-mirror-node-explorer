@@ -163,7 +163,6 @@ import HexaValue from "@/components/values/HexaValue.vue";
 import DashboardCard from "@/components/DashboardCard.vue";
 import HbarAmount from "@/components/values/HbarAmount.vue";
 import StringValue from "@/components/values/StringValue.vue";
-import TransferGraphSection from "@/components/transfer_graphs/TransferGraphSection.vue";
 import Property from "@/components/Property.vue";
 import PlainAmount from "@/components/values/PlainAmount.vue";
 import ContractResultLog from "@/components/contract/ContractResultLog.vue";
@@ -182,7 +181,6 @@ export default defineComponent({
     HbarAmount,
     DashboardCard,
     HexaValue,
-    TransferGraphSection,
     StringValue
   },
 
