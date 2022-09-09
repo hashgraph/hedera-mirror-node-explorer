@@ -120,6 +120,7 @@ export abstract class TableController<E, R> {
     private sourcesDidChange() {
         this.refreshController.clear()
         this.paginationController.clear()
+        this.autoRefresh.value = true
     }
 
 }
