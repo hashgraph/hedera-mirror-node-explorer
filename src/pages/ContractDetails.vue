@@ -37,12 +37,10 @@
         </span>
       </template>
       <template v-slot:content>
-
         <NotificationBanner v-if="notification" :message="notification"/>
+      </template>
 
-        <div class="columns h-is-property-text">
-
-          <div class="column">
+      <template v-slot:leftContent>
             <Property id="balance">
               <template v-slot:name>{{ tokens?.length ? 'Balances' : 'Balance' }}</template>
               <template v-slot:value>
@@ -97,9 +95,9 @@
                 <ByteCodeValue :byte-code="contract?.bytecode"/>
               </template>
             </Property>
-          </div>
+      </template>
 
-          <div class="column">
+      <template v-slot:rightContent>
             <Property id="obtainer">
               <template v-slot:name>Obtainer</template>
               <template v-slot:value>
@@ -136,19 +134,22 @@
                 <HexaValue :byte-string="contract?.evm_address" :show-none="true"/>
               </template>
             </Property>
-          </div>
+      </template>
+    </DashboardCard>
 
+    <DashboardCard>
+      <template v-slot:title>
+        <p class="h-is-secondary-title">Recent Transactions</p>
+      </template>
+
+      <template v-slot:control>
+        <div class="is-flex is-align-items-flex-end">
+          <PlayPauseButtonV2 v-model:state="cacheState"/>
+          <TransactionFilterSelect v-model:filter="selectedTransactionFilter"/>
         </div>
-        <br/>
+      </template>
 
-        <div class="is-flex is-justify-content-space-between is-align-items-baseline">
-          <p class="h-is-tertiary-text">Recent Transactions</p>
-          <div class="is-flex is-align-items-flex-end">
-            <PlayPauseButtonV2 v-model:state="cacheState"/>
-            <TransactionFilterSelect v-model:filter="selectedTransactionFilter"/>
-          </div>
-        </div>
-
+      <template v-slot:content>
         <ContractTransactionTable
             v-if="contract"
             v-bind:transactions="transactions"

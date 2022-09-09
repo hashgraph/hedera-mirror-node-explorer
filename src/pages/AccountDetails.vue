@@ -84,11 +84,9 @@
           </div>
           <div class="column"><!-- spacer--></div>
         </div>
-        <br/>
+      </template>
 
-        <div class="columns h-is-property-text">
-
-          <div class="column">
+      <template v-slot:leftContent>
               <Property v-if="account?.staked_account_id" id="stakedAccount">
                 <template v-slot:name>Staked to Account</template>
                 <template v-slot:value>
@@ -136,9 +134,9 @@
                 <DurationValue v-bind:number-value="account?.auto_renew_period"/>
               </template>
             </Property>
-          </div>
+      </template>
 
-          <div class="column">
+      <template v-slot:rightContent>
               <Property id="maxAutoAssociation">
                 <template v-slot:name>Max. Auto. Association</template>
                 <template v-slot:value>
@@ -165,19 +163,20 @@
                             :show-none="true"/>
               </template>
             </Property>
-          </div>
+      </template>
+    </DashboardCard>
 
+    <DashboardCard>
+      <template v-slot:title>
+          <p id="recentTransactions" class="h-is-secondary-title">Recent Transactions</p>
+      </template>
+      <template v-slot:control>
+        <div class="is-flex is-align-items-flex-end">
+          <PlayPauseButtonV2 v-model:state="transactionCacheState"/>
+          <TransactionFilterSelect v-model:filter="selectedTransactionFilter"/>
         </div>
-        <br/>
-
-        <div class="is-flex is-align-items-center is-justify-content-space-between" id="recentTransactions">
-          <p class="h-is-tertiary-text">Recent Transactions</p>
-          <div class="is-flex is-align-items-flex-end">
-            <PlayPauseButtonV2 v-model:state="transactionCacheState"/>
-            <TransactionFilterSelect v-model:filter="selectedTransactionFilter"/>
-          </div>
-        </div>
-
+      </template>
+      <template v-slot:content>
         <TransactionTableV2
             v-if="account"
             v-bind:narrowed="true"

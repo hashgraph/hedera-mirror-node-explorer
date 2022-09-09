@@ -27,6 +27,7 @@
   <section class="section" :class="{'h-mobile-background': isTouchDevice || !isSmallScreen}">
 
     <DashboardCard>
+
       <template v-slot:title>
         <span v-if="tokenInfo" class="h-is-primary-title">
           <span v-if="tokenInfo.type === 'NON_FUNGIBLE_UNIQUE'">Non Fungible</span>
@@ -35,13 +36,12 @@
         <span class="h-is-primary-title"> Token </span>
         <span class="h-is-secondary-text mr-2">{{ normalizedTokenId }}</span>
       </template>
+
       <template v-slot:content>
-
         <NotificationBanner v-if="notification" :message="notification"/>
+      </template>
 
-        <div class="columns h-is-property-text">
-
-          <div class="column">
+      <template v-slot:leftContent>
             <Property id="name">
               <template v-slot:name>Name</template>
               <template v-slot:value>
@@ -78,9 +78,9 @@
                 <DurationValue v-bind:string-value="tokenInfo?.auto_renew_period?.toString()"/>
               </template>
             </Property>
-          </div>
+      </template>
 
-          <div class="column">
+      <template v-slot:rightContent>
             <Property id="createdAt">
               <template v-slot:name>Created at</template>
               <template v-slot:value>
@@ -123,25 +123,22 @@
                             :show-none="true"/>
               </template>
             </Property>
-          </div>
-
-        </div>
-
-        <template v-if="tokenInfo">
-          <br/>
-          <div v-if="tokenInfo.type === 'NON_FUNGIBLE_UNIQUE'">
-            <p class="h-is-tertiary-text mb-2">NFT Holders</p>
-
-            <TokenNftTable v-bind:nb-items="10" v-bind:nfts="nfts"/>
-          </div>
-
-          <div v-else>
-            <p class="h-is-tertiary-text mb-2">Balances</p>
-
-            <TokenBalanceTable v-bind:nb-items="10" v-bind:token-id="tokenId" v-bind:token-balances="tokenBalances"/>
-          </div>
-        </template>
       </template>
+
+    </DashboardCard>
+
+    <DashboardCard v-if="tokenInfo">
+
+      <template v-slot:title>
+        <div v-if="tokenInfo.type === 'NON_FUNGIBLE_UNIQUE'" class="h-is-secondary-title mb-2">NFT Holders</div>
+        <div v-else class="h-is-secondary-title mb-2">Balances</div>
+      </template>
+
+      <template v-slot:content>
+        <TokenNftTable v-if="tokenInfo.type === 'NON_FUNGIBLE_UNIQUE'" v-bind:nb-items="10" v-bind:nfts="nfts"/>
+        <TokenBalanceTable v-else v-bind:nb-items="10" v-bind:token-id="tokenId" v-bind:token-balances="tokenBalances"/>
+      </template>
+
     </DashboardCard>
 
   </section>
