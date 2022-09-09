@@ -30,6 +30,7 @@ export class TransactionTableController extends TableController<TransactionRespo
     private readonly accountIdMandatory: boolean
 
     public readonly transactionType: Ref<string> = ref("");
+    public readonly transactionResult: Ref<string> = ref("");
 
     //
     // Public
@@ -55,8 +56,8 @@ export class TransactionTableController extends TableController<TransactionRespo
             const params = {} as {
                 limit: number
                 "account.id": string | undefined
-                // result: string | undefined
                 transactiontype: string | undefined
+                result: string | undefined
             }
             params.limit = this.pageSize
             if (this.accountId.value !== null) {
@@ -64,6 +65,9 @@ export class TransactionTableController extends TableController<TransactionRespo
             }
             if (this.transactionType.value != "") {
                 params.transactiontype = this.transactionType.value
+            }
+            if (this.transactionResult.value != "") {
+                params.result = this.transactionResult.value
             }
             result = axios.get<TransactionResponse>("api/v1/transactions", { params: params} )
         }
