@@ -20,7 +20,7 @@
 
 import {TableController} from "@/utils/table/TableController";
 import {Transaction, TransactionResponse} from "@/schemas/HederaSchemas";
-import {Ref} from "vue";
+import {ref, Ref} from "vue";
 import axios, {AxiosResponse} from "axios";
 
 
@@ -28,6 +28,8 @@ export class TransactionTableController extends TableController<TransactionRespo
 
     private readonly accountId: Ref<string|null>
     private readonly accountIdMandatory: boolean
+
+    public readonly transactionType: Ref<string> = ref("");
 
     //
     // Public
@@ -37,7 +39,7 @@ export class TransactionTableController extends TableController<TransactionRespo
         super(pageSize, 10 * pageSize, 5000, 10);
         this.accountId = accountId
         this.accountIdMandatory = accountIdMandatory
-        this.watchAndReload([this.accountId])
+        this.watchAndReload([this.accountId, this.transactionType])
     }
 
     //
@@ -53,12 +55,15 @@ export class TransactionTableController extends TableController<TransactionRespo
             const params = {} as {
                 limit: number
                 "account.id": string | undefined
-                // transactiontype: string | undefined
                 // result: string | undefined
+                transactiontype: string | undefined
             }
             params.limit = this.pageSize
             if (this.accountId.value !== null) {
                 params["account.id"] = this.accountId.value
+            }
+            if (this.transactionType.value != "") {
+                params.transactiontype = this.transactionType.value
             }
             result = axios.get<TransactionResponse>("api/v1/transactions", { params: params} )
         }
