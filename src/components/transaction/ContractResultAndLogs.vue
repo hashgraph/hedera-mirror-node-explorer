@@ -159,21 +159,13 @@
 
 import {computed, defineComponent, inject, onMounted, ref, watch} from 'vue';
 import {ContractResultDetailsLoader} from "@/components/contract/ContractResultDetailsLoader";
-import AccountLink from "@/components/values/AccountLink.vue";
 import HexaValue from "@/components/values/HexaValue.vue";
-import TimestampValue from "@/components/values/TimestampValue.vue";
-import EntityLink from "@/components/values/EntityLink.vue";
 import DashboardCard from "@/components/DashboardCard.vue";
 import HbarAmount from "@/components/values/HbarAmount.vue";
-import BlobValue from "@/components/values/BlobValue.vue";
 import StringValue from "@/components/values/StringValue.vue";
 import TransferGraphSection from "@/components/transfer_graphs/TransferGraphSection.vue";
-import Footer from "@/components/Footer.vue";
-import NotificationBanner from "@/components/NotificationBanner.vue";
 import Property from "@/components/Property.vue";
-import DurationValue from "@/components/values/DurationValue.vue";
 import PlainAmount from "@/components/values/PlainAmount.vue";
-import BlockLink from "@/components/values/BlockLink.vue";
 import ContractResultLog from "@/components/contract/ContractResultLog.vue";
 
 const NB_LOG_LINES = 2
@@ -185,15 +177,13 @@ export default defineComponent({
 
   components: {
     ContractResultLog,
-    BlockLink,
     PlainAmount,
     Property,
-    NotificationBanner,
-    Footer,
-    HbarAmount, BlobValue,
-    DashboardCard, EntityLink, AccountLink,
-    HexaValue, TimestampValue, TransferGraphSection,
-    StringValue, DurationValue
+    HbarAmount,
+    DashboardCard,
+    HexaValue,
+    TransferGraphSection,
+    StringValue
   },
 
   props: {
