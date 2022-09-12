@@ -58,9 +58,9 @@ export class TransactionLoader extends EntityLoader<TransactionByIdResponse> {
     public readonly transaction: ComputedRef<Transaction|null> = computed(
         () => this.entity.value?.transactions ? filter(this.transactions.value, this.consensusTimestamp.value) : null)
 
-    public readonly normalizedTransactionId: ComputedRef<string> = computed(() => {
-        const transaction_id = this.transactionLocator.value
-        return normalizeTransactionId(transaction_id ?? "", true)
+    public readonly formattedTransactionId: ComputedRef<string|null> = computed(() => {
+        const transaction_id = this.transaction.value?.transaction_id
+        return transaction_id ? normalizeTransactionId(transaction_id, true) : null
     })
 
     public readonly transactionType = computed(() => this.transaction.value?.name ?? null)

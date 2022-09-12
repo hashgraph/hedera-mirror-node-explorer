@@ -30,7 +30,7 @@
       <template v-slot:title>
         <div class="is-flex is-align-items-center">
           <span class="h-is-primary-title">Transaction </span>
-          <span class="h-is-secondary-text mr-3">{{ normalizedTransactionId ?? "" }}</span>
+          <span class="h-is-secondary-text mr-3">{{ formattedTransactionId ?? ""}}</span>
           <div v-if="transaction">
             <div v-if="transactionSucceeded"
                  class="h-has-pill has-background-success mr-3 h-is-text-size-2 mt-3">SUCCESS
@@ -38,7 +38,7 @@
             <div v-else class="h-has-pill has-background-danger mr-3 h-is-text-size-2 mt-3">FAILURE</div>
           </div>
           <span v-if="showAllTransactionVisible" class="is-inline-block mt-2" id="allTransactionsLink">
-          <router-link :to="{name: 'TransactionsById', params: {transactionId: normalizedTransactionId}}">
+          <router-link :to="{name: 'TransactionsById', params: {transactionId: transaction?.transaction_id}}">
             <span class="h-is-property-text has-text-grey">See all transactions with the same ID</span>
           </router-link>
         </span>
@@ -215,7 +215,7 @@
       </template>
     </DashboardCard>
 
-    <ContractResultAndLogs :transaction-id-or-hash="transactionId"/>
+    <ContractResultAndLogs :transaction-id-or-hash="transaction?.transaction_id"/>
 
   </section>
 
@@ -230,7 +230,7 @@
 <script lang="ts">
 
 import {computed, defineComponent, inject, onMounted, ref, watch} from 'vue';
-import {TransactionID} from "@/utils/TransactionID";
+import {PathParam} from "@/utils/PathParam";
 import {makeOperatorAccountLabel, makeTypeLabel} from "@/utils/TransactionTools";
 import {TransactionLoader} from "@/components/transaction/TransactionLoader";
 import AccountLink from "@/components/values/AccountLink.vue";
@@ -279,7 +279,8 @@ export default defineComponent({
     const isSmallScreen = inject('isSmallScreen', true)
     const isTouchDevice = inject('isTouchDevice', false)
 
-    const validId = computed(() => props.transactionId ? TransactionID.parse(props.transactionId) !== null : false)
+    const transactionLocator = computed(() => PathParam.parseTransactionIdOrHash(props.transactionId))
+
     const transactionLoader = new TransactionLoader(
         computed(() => props.transactionId ?? null),
         computed(() => props.consensusTimestamp ?? null))
@@ -299,10 +300,10 @@ export default defineComponent({
 
     const notification = computed(() => {
       let result
-      if (!validId.value) {
+      if (transactionLocator.value === null) {
         result = "Invalid transaction ID: " + props.transactionId
       } else if (transactionLoader.got404.value) {
-        result = "Transaction with ID " + transactionLoader.normalizedTransactionId.value + " was not found"
+        result = "Transaction with ID " + transactionLocator.value + " was not found"
       } else if (transactionLoader.hasSucceeded.value) {
         result = null
       } else {
@@ -321,7 +322,7 @@ export default defineComponent({
       isSmallScreen,
       isTouchDevice,
       transaction: transactionLoader.transaction,
-      normalizedTransactionId: transactionLoader.normalizedTransactionId,
+      formattedTransactionId: transactionLoader.formattedTransactionId,
       netAmount: transactionLoader.netAmount,
       entity: transactionLoader.entityDescriptor,
       systemContract: transactionLoader.systemContract,

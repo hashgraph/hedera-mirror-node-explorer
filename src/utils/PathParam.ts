@@ -20,6 +20,7 @@
 
 import {aliasToBase32, base32ToAlias, byteToHex, hexToByte} from "@/utils/B64Utils";
 import {EntityID} from "@/utils/EntityID";
+import {TransactionID} from "@/utils/TransactionID";
 
 export class PathParam { // Block Hash or Number
 
@@ -75,6 +76,24 @@ export class PathParam { // Block Hash or Number
         if (s) {
             const n = parseInt(s)
             result =  isNaN(n) || n < 0 ? null : n
+        } else {
+            result = null
+        }
+
+        return result
+    }
+
+    public static parseTransactionIdOrHash(s: string|undefined): string|null {
+        let result: string|null
+
+        if (s) {
+            const id = TransactionID.parse(s)
+            if (id !== null) {
+                result = id.toString()
+            } else {
+                const hash = hexToByte(s)
+                result = hash !== null && hash.length == 48 ? "0x" + byteToHex(hash) : null
+            }
         } else {
             result = null
         }
