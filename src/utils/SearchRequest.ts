@@ -60,6 +60,7 @@ export class SearchRequest {
         const normTransactionID = transactionID != null ? transactionID.toString(false) : null
         const hexBytes = hexToByte(this.searchedId)
         const evmAddress = (hexBytes !== null && hexBytes.length == 20) ? byteToHex(hexBytes) : null
+        const transactionHash = (hexBytes !== null && hexBytes.length == 48) ? byteToHex(hexBytes) : null
         const hexByteString32 = (hexBytes !== null && hexBytes.length >= 15) ? aliasToBase32(hexBytes) : null
 
         // 1) Searches accounts
@@ -83,9 +84,10 @@ export class SearchRequest {
         }
 
         // 2) Searches transactions
-        if (normTransactionID !== null) {
+        if (normTransactionID !== null || transactionHash !== null) {
+            const transactionPathParam = normTransactionID !== null ? normTransactionID : transactionHash
             axios
-                .get("api/v1/transactions/" + normTransactionID)
+                .get("api/v1/transactions/" + transactionPathParam)
                 .then(response => {
                     this.transactions = response.data.transactions
                 })

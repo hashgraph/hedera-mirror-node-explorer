@@ -30,15 +30,15 @@
       <template v-slot:title>
         <div class="is-flex is-align-items-center">
           <span class="h-is-primary-title">Transaction </span>
-          <span class="h-is-secondary-text mr-3">{{ transaction ? convertTransactionId(transactionId) : "" }}</span>
+          <span class="h-is-secondary-text mr-3">{{ formattedTransactionId ?? ""}}</span>
           <div v-if="transaction">
-            <div v-if="transaction?.result === TRANSACTION_SUCCESS"
+            <div v-if="transactionSucceeded"
                  class="h-has-pill has-background-success mr-3 h-is-text-size-2 mt-3">SUCCESS
             </div>
             <div v-else class="h-has-pill has-background-danger mr-3 h-is-text-size-2 mt-3">FAILURE</div>
           </div>
           <span v-if="showAllTransactionVisible" class="is-inline-block mt-2" id="allTransactionsLink">
-          <router-link :to="{name: 'TransactionsById', params: {transactionId: transactionId}}">
+          <router-link :to="{name: 'TransactionsById', params: {transactionId: transaction?.transaction_id}}">
             <span class="h-is-property-text has-text-grey">See all transactions with the same ID</span>
           </router-link>
         </span>
@@ -53,7 +53,7 @@
         <Property id="transactionType">
           <template v-slot:name>Type</template>
           <template v-slot:value>
-            <StringValue :string-value="transaction ? makeTypeLabel(transaction.name) : undefined"/>
+            <StringValue :string-value="transactionType ? makeTypeLabel(transactionType) : undefined"/>
           </template>
         </Property>
         <Property id="consensusAt">
@@ -65,7 +65,7 @@
         <Property id="transactionHash">
           <template v-slot:name>Transaction Hash</template>
           <template v-slot:value>
-            <HexaValue v-bind:byteString="transaction ? formatHash(transaction?.transaction_hash): undefined" v-bind:show-none="true"/>
+            <HexaValue v-bind:byteString="formattedHash ?? undefined" v-bind:show-none="true"/>
           </template>
         </Property>
         <Property id="blockNumber">
@@ -122,13 +122,13 @@
         <Property id="maxFee">
           <template v-slot:name>Max fee</template>
           <template v-slot:value>
-            <HbarAmount v-if="transaction" v-bind:amount="computeMaxFee(transaction)" v-bind:show-extra="true"/>
+            <HbarAmount v-if="transaction" v-bind:amount="maxFee" v-bind:show-extra="true"/>
           </template>
         </Property>
         <Property id="netAmount" v-if="false">
           <template v-slot:name>Net Amount</template>
           <template v-slot:value>
-            <HbarAmount v-if="transaction" v-bind:amount="computeNetAmount(transaction)" v-bind:show-extra="true"/>
+            <HbarAmount v-if="transaction" v-bind:amount="netAmount" v-bind:show-extra="true"/>
           </template>
         </Property>
         <Property id="duration">
@@ -215,7 +215,7 @@
       </template>
     </DashboardCard>
 
-    <ContractResultAndLogs :transaction-id-or-hash="transactionId"/>
+    <ContractResultAndLogs :transaction-id-or-hash="transaction?.transaction_id"/>
 
   </section>
 
@@ -229,22 +229,11 @@
 
 <script lang="ts">
 
-import {computed, defineComponent, inject, onBeforeMount, ref, watch} from 'vue';
-import axios, {AxiosResponse} from "axios";
-import {
-  AccountBalanceTransactions,
-  BlocksResponse,
-  ContractResponse,
-  Transaction,
-  TransactionByIdResponse,
-  TransactionType
-} from "@/schemas/HederaSchemas";
-import {EntityDescriptor} from "@/utils/EntityDescriptor"
-import {normalizeTransactionId, TransactionID} from "@/utils/TransactionID";
-import {computeNetAmount, makeOperatorAccountLabel, makeTypeLabel} from "@/utils/TransactionTools";
-import {systemContractRegistry} from "@/schemas/SystemContractRegistry";
+import {computed, defineComponent, inject, onMounted, ref, watch} from 'vue';
+import {PathParam} from "@/utils/PathParam";
+import {makeOperatorAccountLabel, makeTypeLabel} from "@/utils/TransactionTools";
+import {TransactionLoader} from "@/components/transaction/TransactionLoader";
 import AccountLink from "@/components/values/AccountLink.vue";
-import {base64DecToArr, byteToHex} from "@/utils/B64Utils";
 import HexaValue from "@/components/values/HexaValue.vue";
 import TimestampValue from "@/components/values/TimestampValue.vue";
 import EntityLink from "@/components/values/EntityLink.vue";
@@ -257,7 +246,6 @@ import Footer from "@/components/Footer.vue";
 import NotificationBanner from "@/components/NotificationBanner.vue";
 import Property from "@/components/Property.vue";
 import DurationValue from "@/components/values/DurationValue.vue";
-import {BlocksResponseCollector} from "@/utils/BlocksResponseCollector";
 import BlockLink from "@/components/values/BlockLink.vue";
 import ContractResultAndLogs from "@/components/transaction/ContractResultAndLogs.vue";
 
@@ -291,270 +279,74 @@ export default defineComponent({
     const isSmallScreen = inject('isSmallScreen', true)
     const isTouchDevice = inject('isTouchDevice', false)
 
-    const TRANSACTION_SUCCESS = 'SUCCESS'
-    const response = ref<AxiosResponse<TransactionByIdResponse>|null>(null)
-    const invalidId = ref(false)
-    const got404 = ref(false)
-    const transaction = ref<Transaction|null>(null)
-    const netAmount = ref(0)
-    const entity = ref<EntityDescriptor | null>(null)
-    const systemContract = computed(() => {
-      let result
-      if (transaction.value?.name === TransactionType.CONTRACTCALL && transaction.value.entity_id) {
-        result = systemContractRegistry.lookup(transaction.value.entity_id)
-      } else {
-        result = null
-      }
-      return result
-    })
-    const scheduledTransaction = ref<Transaction | null>(null)
-    const schedulingTransaction = ref<Transaction | null>(null)
-    const parentTransaction = ref<Transaction | null>(null)
-    const childTransactions = ref<Array<Transaction>>([])
-    const blockNumber = ref<number | null>(null)
+    const transactionLocator = computed(() => PathParam.parseTransactionIdOrHash(props.transactionId))
+
+    const transactionLoader = new TransactionLoader(
+        computed(() => props.transactionId ?? null),
+        computed(() => props.consensusTimestamp ?? null))
+    onMounted(() => transactionLoader.requestLoad())
+
     const logCursor = ref(0)
     const nbLogLines = ref(NB_LOG_LINES)
     watch(nbLogLines, () => logCursor.value = 0)
 
     const showAllTransactionVisible = computed(() => {
-      const count = response.value?.data.transactions?.length ?? 0
+      const count = transactionLoader.transactions.value?.length ?? 0
       return count >= 2
     })
-    const displayAllChildrenLinks = computed(() => childTransactions.value.length > MAX_INLINE_CHILDREN )
+
+    const displayAllChildrenLinks = computed(
+        () => transactionLoader.childTransactions.value.length > MAX_INLINE_CHILDREN )
 
     const notification = computed(() => {
       let result
-      if (invalidId.value) {
+      if (transactionLocator.value === null) {
         result = "Invalid transaction ID: " + props.transactionId
-      } else if (got404.value) {
-        result = "Transaction with ID " + normalizeTransactionId(props.transactionId ?? "", true) + " was not found"
-      } else if (transaction.value && transaction.value.result !== TRANSACTION_SUCCESS) {
-        result = transaction.value?.result
-      } else {
+      } else if (transactionLoader.got404.value) {
+        result = "Transaction with ID " + transactionLocator.value + " was not found"
+      } else if (transactionLoader.hasSucceeded.value) {
         result = null
+      } else {
+        result = transactionLoader.result.value
       }
       return result
     })
 
     const routeName = computed(() => {
-      return entity?.value?.routeName
+      return transactionLoader.entityDescriptor.value?.routeName
     })
-
-    onBeforeMount(() => {
-      fetchTransaction()
-    })
-
-    watch(() => props.transactionId, () => {
-      fetchTransaction()
-    });
-
-    watch(() => props.consensusTimestamp, () => {
-      fetchTransaction()
-    });
-
-    watch(transaction, () => {
-        if (transaction.value?.consensus_timestamp) {
-          BlocksResponseCollector.instance.fetch(transaction.value.consensus_timestamp)
-              .then((r: AxiosResponse<BlocksResponse>) => {
-                    blockNumber.value = r.data?.blocks ? (r.data?.blocks[0].number ?? null) : null
-                  }
-              , (reason: unknown) => {
-                console.warn("BlocksResponseCollector failed to find block with reason: " + reason)
-                    blockNumber.value = null
-              })
-        } else {
-          blockNumber.value = null
-        }
-    })
-
-    const fetchTransaction = () => {
-      got404.value = false
-      invalidId.value = false
-      response.value = null
-      transaction.value = null
-
-      if (props.transactionId && TransactionID.parse(props.transactionId)) {
-        axios
-            .get<TransactionByIdResponse>("api/v1/transactions/" + props.transactionId)
-            .then(r => {
-              response.value = r
-              transaction.value = null
-              scheduledTransaction.value = null
-              schedulingTransaction.value = null
-              parentTransaction.value = null
-              childTransactions.value = []
-              if (r.data.transactions) {
-                transaction.value = filter(r.data.transactions, props.consensusTimestamp)
-                if (transaction.value != null) {
-                  netAmount.value = computeNetAmount(transaction.value)
-
-                  if (transaction.value.entity_id && transaction.value.name === TransactionType.ETHEREUMTRANSACTION) {
-                    axios.get<ContractResponse>("api/v1/contracts/" + transaction.value.entity_id)
-                        .then(() => entity.value = new EntityDescriptor("Contract ID", "ContractDetails"))
-                        .catch(() => {
-                          axios.get<AccountBalanceTransactions>("api/v1/accounts/" + transaction.value?.entity_id)
-                              .then(() => entity.value = new EntityDescriptor("Account ID", "AccountDetails"))
-                              .catch(() => entity.value = new EntityDescriptor("Entity ID", ""))
-
-                        })
-                  } else if(
-                      transaction.value.name !== TransactionType.CONTRACTCALL
-                      || !systemContract.value
-                  ) {
-                    entity.value = EntityDescriptor.makeEntityDescriptor(transaction.value)
-                  } else {
-                    entity.value = null
-                  }
-
-                  if (r.data.transactions.length >= 2) {
-                    scheduledTransaction.value = (transaction.value.name === TransactionType.SCHEDULECREATE)
-                        ? lookupScheduledTransaction(r.data.transactions)
-                        : null
-                    schedulingTransaction.value = transaction.value.scheduled
-                        ? lookupSchedulingTransaction(r.data.transactions)
-                        : null
-                    const children = lookupChildTransactions(r.data.transactions)
-                    if (children.length && transaction.value.nonce && transaction.value.nonce > 0) {
-                      parentTransaction.value = lookupParentTransaction(r.data.transactions)
-                    } else {
-                      childTransactions.value = children
-                    }
-                  }
-                }
-              }
-            })
-            .catch(reason => {
-              if(axios.isAxiosError(reason) && reason?.request?.status === 404) {
-                got404.value = true
-              }
-            })
-      } else {
-        invalidId.value = true
-      }
-    }
-
-    const convertTransactionId = (id: string) => {
-      let result: string
-      if (id != null) {
-        const tid = TransactionID.parse(id)
-        result = tid != null ? tid.toString() : id
-      } else {
-        result = "?"
-      }
-      return result
-    }
-
-    const formatHash = (hash: string | undefined) => {
-      return hash != undefined ? byteToHex(base64DecToArr(hash)) : ""
-    }
-
-    const computeMaxFee = (t: Transaction) => {
-      const result = t.max_fee ? Number.parseFloat(t.max_fee) : 0
-      return isNaN(result) ? -9999 : result
-    }
 
     return {
       NB_LOG_LINES,
       MAX_LOG_LINES,
       isSmallScreen,
       isTouchDevice,
-      transaction,
-      netAmount,
-      entity,
-      systemContract,
+      transaction: transactionLoader.transaction,
+      formattedTransactionId: transactionLoader.formattedTransactionId,
+      netAmount: transactionLoader.netAmount,
+      entity: transactionLoader.entityDescriptor,
+      systemContract: transactionLoader.systemContract,
+      maxFee: transactionLoader.maxFee,
+      formattedHash: transactionLoader.formattedHash,
+      transactionType: transactionLoader.transactionType,
+      transactionSucceeded: transactionLoader.hasSucceeded,
+      scheduledTransaction: transactionLoader.scheduledTransaction,
+      schedulingTransaction: transactionLoader.schedulingTransaction,
+      parentTransaction: transactionLoader.parentTransaction,
+      childTransactions: transactionLoader.childTransactions,
+      blockNumber: transactionLoader.blockNumber,
       notification,
       routeName,
-      TRANSACTION_SUCCESS,
-      convertTransactionId,
-      formatHash,
-      computeMaxFee,
-      blockNumber,
       logCursor,
       nbLogLines,
       makeTypeLabel,
-      computeNetAmount,
+      // computeNetAmount,
       makeOperatorAccountLabel,
       showAllTransactionVisible,
       displayAllChildrenLinks,
-      scheduledTransaction,
-      schedulingTransaction,
-      parentTransaction,
-      childTransactions,
     }
   },
-});
-
-function filter(transactions: Transaction[], consensusTimestamp: string|undefined): Transaction|null {
-  let result: Transaction|null
-  if (transactions.length == 1) {
-    result = transactions[0]
-  } else if (transactions.length >= 2) {
-    if (consensusTimestamp) {
-      const t = lookupTransactionWithTimestamp(transactions, consensusTimestamp)
-      result = t !== null ? t : transactions[0]
-    } else {
-      const t = lookupScheduledTransaction(transactions)
-      result = t !== null ? t : transactions[0]
-    }
-  } else {
-    result = null
-  }
-  return result
-}
-
-function lookupTransactionWithTimestamp(transactions: Transaction[], consensusTimestamp: string): Transaction|null {
-  let result: Transaction | null = null
-  for (let t of transactions) {
-    if (t.consensus_timestamp == consensusTimestamp) {
-      result = t
-      break
-    }
-  }
-  return result
-}
-
-function lookupScheduledTransaction(transactions: Transaction[]): Transaction|null {
-  let result: Transaction | null = null
-  for (let t of transactions) {
-    if (t.scheduled) {
-      result = t
-      break
-    }
-  }
-  return result
-}
-
-function lookupSchedulingTransaction(transactions: Transaction[]): Transaction|null {
-  let result: Transaction | null = null
-  for (let t of transactions) {
-    if (t.name === TransactionType.SCHEDULECREATE) {
-      result = t
-      break
-    }
-  }
-  return result
-}
-
-function lookupParentTransaction(transactions: Transaction[]): Transaction|null {
-  let result: Transaction | null = null
-  for (let t of transactions) {
-    if (t.nonce === 0) {
-      result = t
-      break
-    }
-  }
-  return result
-}
-
-function lookupChildTransactions(transactions: Transaction[]): Transaction[] {
-  let result = new Array<Transaction>()
-  for (let t of transactions) {
-    if (t.nonce && t.nonce > 0) {
-      result.push(t)
-    }
-  }
-  return result
-}
+})
 
 </script>
 
