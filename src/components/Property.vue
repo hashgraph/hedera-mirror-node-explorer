@@ -36,7 +36,7 @@
   </div>
 
   <div v-else class="columns" :id="id" style="margin-bottom: -0.75rem;">
-    <div class="column is-one-third has-text-weight-light" :id="nameId">
+    <div :class="nbColClass" class="column has-text-weight-light" :id="nameId">
       <slot name="name"/>
     </div>
     <div class="column" :id="valueId">
@@ -52,12 +52,16 @@
 
 <script lang="ts">
 
-import {defineComponent, inject} from "vue";
+import {computed, defineComponent, inject} from "vue";
 
 export default defineComponent({
   name: "Property",
   props: {
     id: String,
+    fullWidth: {
+      type: Boolean,
+      default: false
+    }
   },
   setup(props){
     const nameId = props.id + 'Name'
@@ -65,12 +69,14 @@ export default defineComponent({
 
     const isSmallScreen = inject('isSmallScreen', true)
     const isTouchDevice = inject('isTouchDevice', false)
+    const nbColClass = computed(() => props.fullWidth ? 'is-2' : 'is-4')
 
     return {
       nameId,
       valueId,
       isSmallScreen,
-      isTouchDevice
+      isTouchDevice,
+      nbColClass
     }
   }
 })
