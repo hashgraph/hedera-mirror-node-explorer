@@ -19,72 +19,90 @@
  */
 
 import {computed, ComputedRef, ref, Ref, watch, WatchSource, WatchStopHandle} from "vue";
-import {AxiosResponse} from "axios";
-import {PaginationModeController} from "@/utils/table/PaginationModeController";
-import {RefreshModeController} from "@/utils/table/RefreshModeController";
+import {RowBuffer} from "@/utils/table/RowBuffer";
 
-export abstract class TableController<E, R> {
+export abstract class TableController<R, K> {
 
-    public readonly pageSize: number
+    private readonly presumedRowCount: number
+    private readonly updatePeriod: number
+    private readonly maxAutoUpdateCount: number
+    private readonly rowBuffer: RowBuffer<R,K>
+    private readonly loadingRef = ref(false)
+    private readonly autoUpdateCount = ref(0)
 
-    private readonly paginationController: PaginationModeController<E, R>
-    private readonly refreshController: RefreshModeController<E, R>
     private watchStopHandle: WatchStopHandle|null = null
+    private sessionId = 0
+    private timeoutID = -1
 
     //
     // Public
     //
 
-    public readonly autoRefresh: Ref<boolean>
+    public readonly pageSize: Ref<number>
 
-    public readonly autoStopped: ComputedRef<boolean>
+    public readonly autoRefresh: Ref<boolean> = ref(false)
+
+    public readonly autoStopped: ComputedRef<boolean> = computed(() => this.autoUpdateCount.value >= this.maxAutoUpdateCount)
 
     public readonly currentPage: Ref<number> = ref(1)
 
-    public readonly rows: ComputedRef<R[]> = computed(
-        () => this.autoRefresh.value ? this.refreshController.rows.value : this.paginationController.rows.value)
+    public readonly pageRows: ComputedRef<R[]> = computed(() => {
+        const rows = this.rowBuffer.rows.value
+        const startIndex = (this.currentPage.value - 1) * this.pageSize.value
+        const endIndex = Math.min(startIndex + this.pageSize.value, rows.length)
+        return rows.slice(startIndex, endIndex)
+    })
 
-    public readonly loading: ComputedRef<boolean> = computed(
-        () => this.autoRefresh.value ? this.refreshController.loading.value : this.paginationController.loading.value)
+    public readonly loading: ComputedRef<boolean> = computed(() => this.loadingRef.value)
 
-    public readonly totalRowCount: ComputedRef<number> = computed(
-        () => this.autoRefresh.value ? this.refreshController.totalRowCount.value : this.paginationController.totalRowCount.value)
+    public readonly totalRowCount: ComputedRef<number> = computed(() => {
+        let result: number
+        const bufferedRowCount = this.rowBuffer.rows.value.length
+        if (this.rowBuffer.drained.value) {
+            result = bufferedRowCount
+        } else {
+            const k = Math.ceil((bufferedRowCount +1) / this.presumedRowCount)
+            result = k * this.presumedRowCount
+        }
+        return result
+    })
 
     public readonly onPageChange = (page: number): void => {
-        console.log("onPageChange(" + page + ")")
-        this.autoRefresh.value = false
-        this.paginationController.fetch(page - 1) // First page number is 1
+        if (this.currentPage.value != page) {
+            this.autoRefresh.value = false
+            this.loadingRef.value = true
+            this.rowBuffer.load((page - 1) * this.pageSize.value, this.pageSize.value).finally(() => {
+                this.loadingRef.value = false
+            })
+        }
     }
 
     //
     // Public (to be subclassed)
     //
 
-    public async load(): Promise<AxiosResponse<E>|null> {
-        throw new Error("To be subclassed")
+    public async loadAfter(key: K|null, limit: number): Promise<R[]|null> {
+        throw new Error("To be subclassed: key=" + key + ", limit=" + limit)
     }
 
-    public abstract nextURL(response: E): string|null
+    public async loadBefore(key: K, limit: number): Promise<R[]|null> {
+        throw new Error("To be subclassed: key=" + key + ", limit=" + limit)
+    }
 
-    public abstract fetchRows(response: E): R[]
+    public abstract keyFor(row: R): K
 
     //
     // Protected
     //
 
-    protected constructor(pageSize: number, presumedRowCount: number, updatePeriod: number, maxUpdateCount: number) {
+    protected constructor(pageSize: Ref<number>, presumedRowCount: number, updatePeriod: number, maxUpdateCount: number, maxLimit: number) {
+        this.presumedRowCount = presumedRowCount
+        this.updatePeriod = updatePeriod
+        this.maxAutoUpdateCount = maxUpdateCount
         this.pageSize = pageSize
-        this.refreshController = new RefreshModeController<E, R>(this, presumedRowCount, updatePeriod, maxUpdateCount)
-        this.paginationController = new PaginationModeController<E, R>(this, presumedRowCount)
-        this.autoRefresh = this.refreshController.started
-        this.autoStopped = this.refreshController.autoStopped
+        this.rowBuffer = new RowBuffer<R, K>(this, maxLimit)
 
         watch(this.autoRefresh, () => this.autoRefreshDidChange())
-
-        watch(this.paginationController.currentIndex, () => {
-            const newPage = this.paginationController.currentIndex.value + 1
-            this.currentPage.value = Math.max(1, newPage)
-        })
     }
 
     protected watchAndReload(sources: WatchSource<unknown>[]): void {
@@ -105,21 +123,46 @@ export abstract class TableController<E, R> {
 
     private autoRefreshDidChange() {
         if (this.autoRefresh.value) {
-            // this.refreshController starts automatically
-            this.paginationController.clear()
+            this.startRefreshing()
         } else {
-            // this.refreshController stops automatically
-            if (this.refreshController.entity.value !== null) {
-                this.paginationController.fetch(this.refreshController.entity.value)
-            } else {
-                this.paginationController.fetch(0)
-            }
+            this.stopRefreshing()
         }
     }
 
+    private startRefreshing(): void {
+        this.currentPage.value = 1
+        this.autoUpdateCount.value = 0
+        this.refresh()
+    }
+
+    private stopRefreshing() {
+        if (this.timeoutID != -1) {
+            window.clearTimeout(this.timeoutID)
+            this.timeoutID = -1
+        }
+        this.sessionId += 1
+    }
+
+    private refresh() {
+        // this.loadingRef.value = true
+        const captureSessionId = this.sessionId
+        this.rowBuffer.refresh(this.pageSize.value).finally(() => {
+            if (this.sessionId == captureSessionId) {
+                this.timeoutID = -1
+                // this.loadingRef.value = false
+                if (this.autoUpdateCount.value < this.maxAutoUpdateCount) {
+                    this.timeoutID = window.setTimeout(() => {
+                        this.refresh()
+                    }, this.updatePeriod)
+                } else {
+                    this.autoRefresh.value = false
+                }
+
+            }
+        })
+    }
+
     private sourcesDidChange() {
-        this.refreshController.clear()
-        this.paginationController.clear()
         this.autoRefresh.value = true
     }
 

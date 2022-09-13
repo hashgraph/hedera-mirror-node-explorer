@@ -24,7 +24,7 @@ import {ref, Ref} from "vue";
 import axios, {AxiosResponse} from "axios";
 
 
-export class TransactionTableController extends TableController<TransactionResponse, Transaction> {
+export class TransactionTableController extends TableController<Transaction, string> {
 
     private readonly accountId: Ref<string|null>
     private readonly accountIdMandatory: boolean
@@ -36,8 +36,8 @@ export class TransactionTableController extends TableController<TransactionRespo
     // Public
     //
 
-    public constructor(accountId: Ref<string|null>, pageSize: number, accountIdMandatory: boolean) {
-        super(pageSize, 10 * pageSize, 5000, 10);
+    public constructor(accountId: Ref<string|null>, pageSize: Ref<number>, accountIdMandatory: boolean) {
+        super(pageSize, 10 * pageSize.value, 5000, 10, 30);
         this.accountId = accountId
         this.accountIdMandatory = accountIdMandatory
         this.watchAndReload([this.accountId, this.transactionType])
@@ -47,8 +47,8 @@ export class TransactionTableController extends TableController<TransactionRespo
     // TableController
     //
 
-    public async load(): Promise<AxiosResponse<TransactionResponse>|null> {
-        let result: Promise<AxiosResponse<TransactionResponse>|null>
+    public async loadAfter(consensusTimestamp: string|null, limit: number): Promise<Transaction[]|null> {
+        let result: Promise<Transaction[]|null>
 
         if (this.accountIdMandatory && this.accountId.value === null) {
             result = Promise.resolve(null)
@@ -58,8 +58,9 @@ export class TransactionTableController extends TableController<TransactionRespo
                 "account.id": string | undefined
                 transactiontype: string | undefined
                 result: string | undefined
+                timestamp: string | undefined
             }
-            params.limit = this.pageSize
+            params.limit = limit
             if (this.accountId.value !== null) {
                 params["account.id"] = this.accountId.value
             }
@@ -69,19 +70,55 @@ export class TransactionTableController extends TableController<TransactionRespo
             if (this.transactionResult.value != "") {
                 params.result = this.transactionResult.value
             }
-            result = axios.get<TransactionResponse>("api/v1/transactions", { params: params} )
+            if (consensusTimestamp !== null) {
+                params.timestamp = "lt:" + consensusTimestamp
+            }
+            const cb = (r: AxiosResponse<TransactionResponse>): Promise<Transaction[]|null> =>{
+                return Promise.resolve(r.data.transactions ?? [])
+            }
+            result = axios.get<TransactionResponse>("api/v1/transactions", { params: params} ).then(cb)
         }
 
         return result
     }
 
-    public fetchRows(entity: TransactionResponse): Transaction[] {
-        return entity.transactions ?? []
+    public async loadBefore(consensusTimestamp: string, limit: number): Promise<Transaction[]|null> {
+        let result: Promise<Transaction[]|null>
+
+        if (this.accountIdMandatory && this.accountId.value === null) {
+            result = Promise.resolve(null)
+        } else {
+            const params = {} as {
+                limit: number
+                "account.id": string | undefined
+                transactiontype: string | undefined
+                result: string | undefined
+                timestamp: string | undefined
+            }
+            params.limit = limit
+            if (this.accountId.value !== null) {
+                params["account.id"] = this.accountId.value
+            }
+            if (this.transactionType.value != "") {
+                params.transactiontype = this.transactionType.value
+            }
+            if (this.transactionResult.value != "") {
+                params.result = this.transactionResult.value
+            }
+            if (consensusTimestamp !== null) {
+                params.timestamp = "gte:" + consensusTimestamp
+            }
+            const cb = (r: AxiosResponse<TransactionResponse>): Promise<Transaction[]|null> =>{
+                return Promise.resolve(r.data.transactions ?? [])
+            }
+            result = axios.get<TransactionResponse>("api/v1/transactions", { params: params} ).then(cb)
+        }
+
+        return result
     }
 
-    public nextURL(entity: TransactionResponse): string|null {
-        return entity.links?.next ?? null
+    public keyFor(row: Transaction): string {
+        return row.consensus_timestamp ?? ""
     }
-
 
 }
