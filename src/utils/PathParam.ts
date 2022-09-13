@@ -62,7 +62,7 @@ export class PathParam { // Block Hash or Number
                     const hex = hexToByte(s)
                     if (hex !== null) {
                         if (hex.length == 20) {
-                            result = byteToHex(hex) // EVM address
+                            result = "0x" + byteToHex(hex) // EVM address
                         } else {
                             result = aliasToBase32(hex) // Account alias expressed in hex and reconverted in base32
                         }
