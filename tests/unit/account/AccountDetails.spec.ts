@@ -67,6 +67,9 @@ HMSF.forceUTC = true
 
 describe("AccountDetails.vue", () => {
 
+    const ALIAS_B32 = "CIQAAAH4AY2OFK2FL37TSPYEQGPPUJRP4XTKWHD62HKPQX543DTOFFQ"
+    const ALIAS_HEX = "0x12200000fc0634e2ab455eff393f04819efa262fe5e6ab1c7ed1d4f85fbcd8e6e296"
+
     it("Should display account details", async () => {
 
         await router.push("/") // To avoid "missing required param 'network'" error
@@ -112,7 +115,7 @@ describe("AccountDetails.vue", () => {
             "Copy to Clipboard" +
             "ED25519")
         expect(wrapper.get("#memoValue").text()).toBe("None")
-        expect(wrapper.get("#aliasValue").text()).toBe("CIQAAAH4AY2OFK2FL37TSPYEQGPPUJRP4XTKWHD62HKPQX543DTOFFQ")
+        expect(wrapper.get("#aliasValue").text()).toBe(ALIAS_B32 + ALIAS_HEX)
         expect(wrapper.get("#expiresAtValue").text()).toBe("None")
         expect(wrapper.get("#autoRenewPeriodValue").text()).toBe("90 days")
         expect(wrapper.get("#maxAutoAssociationValue").text()).toBe("0")

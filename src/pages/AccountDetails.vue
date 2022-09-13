@@ -75,14 +75,13 @@
         </div>
         <div class="columns h-is-property-text">
           <div class="column">
-            <Property id="alias">
+            <Property id="alias" :class="{'mb-0':account?.alias}" :full-width="true">
               <template v-slot:name>Alias</template>
               <template v-slot:value>
-                <StringValue :string-value="account?.alias"/>
+                <AliasValue :alias-value="account?.alias"/>
               </template>
             </Property>
           </div>
-          <div class="column"><!-- spacer--></div>
         </div>
       </template>
 
@@ -224,6 +223,7 @@ import AccountLink from "@/components/values/AccountLink.vue";
 import {AccountLoader} from "@/components/account/AccountLoader";
 import {ContractLoader} from "@/components/contract/ContractLoader";
 import {NodeLoader} from "@/components/node/NodeLoader";
+import AliasValue from "@/components/values/AliasValue.vue";
 
 const MAX_TOKEN_BALANCES = 10
 
@@ -232,6 +232,7 @@ export default defineComponent({
   name: 'AccountDetails',
 
   components: {
+    AliasValue,
     AccountLink,
     NotificationBanner,
     Property,

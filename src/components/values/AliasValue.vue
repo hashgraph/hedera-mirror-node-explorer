@@ -23,27 +23,14 @@
 <!-- --------------------------------------------------------------------------------------------------------------- -->
 
 <template>
+  <div class="should-wrap">
 
-  <div v-if="!isSmallScreen" class="columns" :id="id">
-    <div class="column is-flex is-justify-content-space-between">
-      <div class="has-text-weight-light" :id="nameId">
-        <slot name="name"/>
-      </div>
-      <div :id="valueId" class="ml-4 has-text-right">
-        <slot name="value"/>
-      </div>
+    <BlobValue :blob-value="aliasValue" :show-none="true"/>
+    <div v-if="hexValue" class="has-text-grey mt-1">
+      <BlobValue :blob-value="hexValue"/>
     </div>
+
   </div>
-
-  <div v-else class="columns" :id="id" style="margin-bottom: -0.75rem;">
-    <div :class="nbColClass" class="column has-text-weight-light" :id="nameId">
-      <slot name="name"/>
-    </div>
-    <div class="column" :id="valueId">
-      <slot name="value"/>
-    </div>
-  </div>
-
 </template>
 
 <!-- --------------------------------------------------------------------------------------------------------------- -->
@@ -52,31 +39,29 @@
 
 <script lang="ts">
 
-import {computed, defineComponent, inject} from "vue";
+import {computed, defineComponent} from "vue";
+import {base32ToAlias, byteToHex} from "@/utils/B64Utils";
+import BlobValue from "@/components/values/BlobValue.vue";
 
 export default defineComponent({
-  name: "Property",
+  name: "AliasValue",
+  components: {BlobValue},
   props: {
-    id: String,
-    fullWidth: {
-      type: Boolean,
-      default: false
-    }
+    aliasValue: String,
   },
-  setup(props){
-    const nameId = props.id + 'Name'
-    const valueId = props.id + 'Value'
-
-    const isSmallScreen = inject('isSmallScreen', true)
-    const isTouchDevice = inject('isTouchDevice', false)
-    const nbColClass = computed(() => props.fullWidth ? 'is-2' : 'is-4')
-
+  setup(props) {
+    const hexValue = computed(() => {
+      let result
+      if (props.aliasValue) {
+        const alias = base32ToAlias(props.aliasValue)
+        result = alias ? "0x" + byteToHex(alias) : null
+      } else {
+        result = null
+      }
+      return result
+    })
     return {
-      nameId,
-      valueId,
-      isSmallScreen,
-      isTouchDevice,
-      nbColClass
+      hexValue
     }
   }
 })
@@ -87,5 +72,7 @@ export default defineComponent({
 <!--                                                      STYLE                                                      -->
 <!-- --------------------------------------------------------------------------------------------------------------- -->
 
-<style>
+<style scoped>
+
+
 </style>
