@@ -20,7 +20,6 @@
 
 
 import {PathParam} from "@/utils/PathParam";
-import {base32ToAlias, byteToHex} from "@/utils/B64Utils";
 
 describe("PathParam", () => {
 
