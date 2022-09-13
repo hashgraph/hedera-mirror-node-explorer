@@ -59,8 +59,16 @@ export class PathParam { // Block Hash or Number
                 if (alias !== null) {
                     result = aliasToBase32(alias)
                 } else {
-                    const address = hexToByte(s)
-                    result = address !== null && address.length == 20 ? "0x" + byteToHex(address) : null
+                    const hex = hexToByte(s)
+                    if (hex !== null) {
+                        if (hex.length == 20) {
+                            result = "0x" + byteToHex(hex) // EVM address
+                        } else {
+                            result = aliasToBase32(hex) // Account alias expressed in hex and reconverted in base32
+                        }
+                    } else {
+                        result = null
+                    }
                 }
             }
         } else {

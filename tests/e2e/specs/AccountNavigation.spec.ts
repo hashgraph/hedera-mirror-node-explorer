@@ -135,11 +135,19 @@ describe('Account Navigation', () => {
         cy.contains('Account ' + accountID)
     })
 
-    it ('should display account details using account alias', () => {
+    it ('should display account details using account base32 alias', () => {
         const accountID = "0.0.46022656"
         const accountAlias = "HIQQGOGHZGVM3E7KT47Z6VQYY2TTYY3USZUDJGVSRLYRUR5J72ZD6PI4"
         cy.visit('#/testnet/account/' + accountAlias)
         cy.url().should('include', '/testnet/account/' + accountAlias)
+        cy.contains('Account ' + accountID)
+    })
+
+    it ('should display account details using account hex alias', () => {
+        const accountID = "0.0.46022656"
+        const accountAliasInHex = "0x3a210338c7c9aacd93ea9f3f9f5618c6a73c63749668349ab28af11a47a9feb23f3d1c"
+        cy.visit('#/testnet/account/' + accountAliasInHex)
+        cy.url().should('include', '/testnet/account/' + accountAliasInHex)
         cy.contains('Account ' + accountID)
     })
 

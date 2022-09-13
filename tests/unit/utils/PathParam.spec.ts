@@ -80,11 +80,20 @@ describe("PathParam", () => {
         expect(pp).toBe(accountId)
     })
 
-    test("PathParam.parseAccountIdOrAliasOrEvmAddress() with alias", () => {
+    test("PathParam.parseAccountIdOrAliasOrEvmAddress() with alias in base32", () => {
 
         const alias = "HIQQGOSRIF3EM35ICXWUQH722CIRBIWTIT3MTN4MDUKK7Q2RYOSRXYZ5"
 
         const pp = PathParam.parseAccountIdOrAliasOrEvmAddress(alias)
+        expect(pp).toBe(alias)
+    })
+
+    test("PathParam.parseAccountIdOrAliasOrEvmAddress() with alias in hex", () => {
+
+        const alias = "HIQQGOSRIF3EM35ICXWUQH722CIRBIWTIT3MTN4MDUKK7Q2RYOSRXYZ5"
+        const aliasInHex = "0x3a21033a514176466fa815ed481ffad09110a2d344f6c9b78c1d14afc351c3a51be33d"
+
+        const pp = PathParam.parseAccountIdOrAliasOrEvmAddress(aliasInHex)
         expect(pp).toBe(alias)
     })
 
