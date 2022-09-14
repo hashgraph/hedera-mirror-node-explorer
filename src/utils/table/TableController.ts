@@ -127,7 +127,12 @@ export abstract class TableController<R, K> {
     //
 
     private mountedDidChange() {
-        this.autoRefresh.value = this.mounted.value
+        if (this.mounted.value) {
+            this.autoRefresh.value = true
+        } else {
+            this.autoRefresh.value = false
+            this.rowBuffer.clear()
+        }
     }
 
     private autoRefreshDidChange() {
