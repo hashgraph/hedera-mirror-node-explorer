@@ -23,7 +23,7 @@
 <!-- --------------------------------------------------------------------------------------------------------------- -->
 
 <template>
-  <HexaValue v-bind:byte-string="keyBytes" v-bind:show-none="showNone"/>
+  <HexaValue :byte-string="keyBytes" :show-none="showNone" :none-label="noneLabel"/>
   <div v-if="keyBytes" class="h-is-extra-text h-is-text-size-3">{{ this.keyType }}</div>
 </template>
 
@@ -46,6 +46,10 @@ export default defineComponent({
       type: Boolean,
       default: false
     },
+    noneLabel: {
+      type: String,
+      default: "None"
+    }
   }
 })
 
