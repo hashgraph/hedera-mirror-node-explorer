@@ -94,7 +94,7 @@ export default defineComponent({
 
   props: {
     narrowed: Boolean,
-    tableController: {
+    controller: {
       type: Object as PropType<TransactionTableController>,
       required: true
     }
@@ -111,12 +111,12 @@ export default defineComponent({
     return {
       isTouchDevice,
       isMediumScreen,
-      transactions: props.tableController.pageRows as ComputedRef<Transaction[]>,
-      loading: props.tableController.loading as ComputedRef<boolean>,
-      total: props.tableController.totalRowCount as ComputedRef<number>,
-      currentPage: props.tableController.currentPage as Ref<number>,
-      onPageChange: props.tableController.onPageChange,
-      perPage: props.tableController.pageSize as Ref<number>,
+      transactions: props.controller.pageRows as ComputedRef<Transaction[]>,
+      loading: props.controller.loading as ComputedRef<boolean>,
+      total: props.controller.totalRowCount as ComputedRef<number>,
+      currentPage: props.controller.currentPage as Ref<number>,
+      onPageChange: props.controller.onPageChange,
+      perPage: props.controller.pageSize as Ref<number>,
       handleClick,
       makeTypeLabel,
       ORUGA_MOBILE_BREAKPOINT,
