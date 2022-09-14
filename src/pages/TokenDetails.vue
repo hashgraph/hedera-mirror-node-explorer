@@ -72,9 +72,35 @@
                 <DurationValue v-bind:string-value="tokenInfo?.auto_renew_period?.toString()"/>
               </template>
             </Property>
+            <Property id="autoRenewAccount">
+              <template v-slot:name>Auto Renew Account</template>
+              <template v-slot:value>
+                <AccountLink :account-id="tokenInfo?.auto_renew_account" :show-none="true"/>
+              </template>
+            </Property>
+            <Property id="freezeDefault">
+              <template v-slot:name>Freeze Default</template>
+              <template v-slot:value>
+                <StringValue :string-value="tokenInfo?.freeze_default?.toString()"/>
+              </template>
+            </Property>
+            <Property id="pauseStatus">
+              <template v-slot:name>Pause Status</template>
+              <template v-slot:value>
+                <StringValue :string-value="tokenInfo?.pause_status"
+                             :class="{'has-text-grey': tokenInfo?.pause_status === 'NOT_APPLICABLE'}"/>
+              </template>
+            </Property>
+
       </template>
 
       <template v-slot:rightContent>
+            <Property id="treasuryAccount">
+              <template v-slot:name>Treasury Account</template>
+              <template v-slot:value>
+                <AccountLink :account-id="tokenInfo?.treasury_account_id"/>
+              </template>
+            </Property>
             <Property id="createdAt">
               <template v-slot:name>Created at</template>
               <template v-slot:value>
@@ -243,12 +269,16 @@ import {EntityCacheStateV2} from "@/utils/EntityCacheV2";
 import {TokenNftCache} from "@/components/token/TokenNftCache";
 import {TokenBalanceCache} from "@/components/token/TokenBalanceCache";
 import {TokenInfoLoader} from "@/components/token/TokenInfoLoader";
+import AccountLink from "@/components/values/AccountLink.vue";
+import StringValue from "@/components/values/StringValue.vue";
 
 export default defineComponent({
 
   name: 'TokenDetails',
 
   components: {
+    StringValue,
+    AccountLink,
     NotificationBanner,
     Property,
     EthAddress,
