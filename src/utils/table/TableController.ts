@@ -77,6 +77,8 @@ export abstract class TableController<R, K> {
         }
     }
 
+    public readonly mounted: Ref<boolean> = ref(false)
+
     //
     // Public (to be subclassed)
     //
@@ -102,7 +104,8 @@ export abstract class TableController<R, K> {
         this.pageSize = pageSize
         this.rowBuffer = new RowBuffer<R, K>(this, maxLimit)
 
-        watch(this.autoRefresh, () => this.autoRefreshDidChange())
+        watch(this.mounted, () => this.mountedDidChange(), { flush: 'sync' })
+        watch(this.autoRefresh, () => this.autoRefreshDidChange(), { flush: 'sync' })
     }
 
     protected watchAndReload(sources: WatchSource<unknown>[]): void {
@@ -120,6 +123,10 @@ export abstract class TableController<R, K> {
     //
     // Private
     //
+
+    private mountedDidChange() {
+        this.autoRefresh.value = this.mounted.value
+    }
 
     private autoRefreshDidChange() {
         if (this.autoRefresh.value) {
