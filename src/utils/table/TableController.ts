@@ -71,9 +71,9 @@ export abstract class TableController<R, K> {
     public readonly onPageChange = (page: number): void => {
         if (this.currentPage.value != page) {
             this.autoRefresh.value = false
-            this.loadingRef.value = true
+            // this.loadingRef.value = true
             this.rowBuffer.load((page - 1) * this.pageSize.value, this.pageSize.value).finally(() => {
-                this.loadingRef.value = false
+                // this.loadingRef.value = false
                 this.lastPage.value = page
             })
         }
