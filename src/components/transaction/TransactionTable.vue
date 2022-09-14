@@ -47,7 +47,7 @@
       aria-previous-label="Previous page"
       customRowKey="consensus_timestamp"
   >
-    <o-table-column v-slot="props" field="transaction_id" label="ID">
+    <o-table-column v-slot="props" field="timestamp" label="ID">
       <TransactionLabel v-bind:transaction-id="props.row.transaction_id" v-bind:result="props.row.result"/>
     </o-table-column>
 
