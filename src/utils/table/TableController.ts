@@ -149,6 +149,7 @@ export abstract class TableController<R, K> {
         this.rowBuffer.refresh(this.pageSize.value).finally(() => {
             if (this.sessionId == captureSessionId) {
                 this.timeoutID = -1
+                this.autoUpdateCount.value += 1
                 // this.loadingRef.value = false
                 if (this.autoUpdateCount.value < this.maxAutoUpdateCount) {
                     this.timeoutID = window.setTimeout(() => {
