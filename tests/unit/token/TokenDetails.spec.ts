@@ -98,7 +98,7 @@ describe("TokenDetails.vue", () => {
         expect(wrapper.get("#autoRenewPeriodValue").text()).toBe("90 days")
         expect(wrapper.get("#autoRenewAccountValue").text()).toBe("0.0.29612329")
         expect(wrapper.get("#freezeDefaultValue").text()).toBe("false")
-        expect(wrapper.get("#pauseStatusValue").text()).toBe("NOT_APPLICABLE")
+        expect(wrapper.get("#pauseStatusValue").text()).toBe("Not applicable")
 
         expect(wrapper.get("#treasuryAccountValue").text()).toBe("0.0.29624024")
         expect(wrapper.get("#createdAtValue").text()).toBe("10:02:30.2333 AMFeb 12, 2022, UTC")

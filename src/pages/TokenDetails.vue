@@ -87,8 +87,9 @@
             <Property id="pauseStatus">
               <template v-slot:name>Pause Status</template>
               <template v-slot:value>
-                <StringValue :string-value="tokenInfo?.pause_status"
-                             :class="{'has-text-grey': tokenInfo?.pause_status === 'NOT_APPLICABLE'}"/>
+                <StringValue v-if="tokenInfo?.pause_status === 'NOT_APPLICABLE'"
+                             :string-value="'Not applicable'" class="has-text-grey"/>
+                <StringValue v-else :string-value="tokenInfo?.pause_status"/>
               </template>
             </Property>
 
