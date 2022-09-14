@@ -99,7 +99,7 @@ export class RowBuffer<R, K> {
         return result
     }
 
-    public clear() {
+    public clear(): void {
         this.rows.value = []
         this.drained.value = false
     }
