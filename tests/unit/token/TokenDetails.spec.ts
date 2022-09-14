@@ -96,7 +96,11 @@ describe("TokenDetails.vue", () => {
         expect(wrapper.get("#memoValue").text()).toBe("234234")
         expect(wrapper.get("#expiresAtValue").text()).toBe("None")
         expect(wrapper.get("#autoRenewPeriodValue").text()).toBe("90 days")
+        expect(wrapper.get("#autoRenewAccountValue").text()).toBe("0.0.29612329")
+        expect(wrapper.get("#freezeDefaultValue").text()).toBe("false")
+        expect(wrapper.get("#pauseStatusValue").text()).toBe("NOT_APPLICABLE")
 
+        expect(wrapper.get("#treasuryAccountValue").text()).toBe("0.0.29624024")
         expect(wrapper.get("#createdAtValue").text()).toBe("10:02:30.2333 AMFeb 12, 2022, UTC")
         expect(wrapper.get("#modifiedAtValue").text()).toBe("10:02:30.2333 AMFeb 12, 2022, UTC")
         expect(wrapper.get("#totalSupplyValue").text()).toBe("1")
@@ -327,6 +331,35 @@ describe("TokenDetails.vue", () => {
         expect(wrapper.find("#supplyKey").text()).toBe("Supply KeyToken cannot be minted or burnt")
         expect(wrapper.find("#feeScheduleKey").text()).toBe("Fee Schedule KeyCustom fee schedule is immutable")
         expect(wrapper.find("#pauseKey").text()).toBe("Pause KeyToken cannot be paused")
+
+        wrapper.unmount()
+        await flushPromises()
+    });
+
+    it("Should display 'Token deleted' banner", async () => {
+
+        await router.push("/") // To avoid "missing required param 'network'" error
+
+        const mock = new MockAdapter(axios);
+
+        const testTokenId = SAMPLE_TOKEN_WITHOUT_KEYS.token_id
+        const matcher1 = "/api/v1/tokens/" + testTokenId
+        mock.onGet(matcher1).reply(200, SAMPLE_TOKEN_WITHOUT_KEYS);
+        const matcher2 = "/api/v1/tokens/" + testTokenId + "/balances"
+        mock.onGet(matcher2).reply(200, SAMPLE_BALANCES);
+
+        const wrapper = mount(TokenDetails, {
+            global: {
+                plugins: [router, Oruga]
+            },
+            props: {
+                tokenId: testTokenId
+            },
+        });
+        await flushPromises()
+        // console.log(wrapper.text())
+
+        expect(wrapper.text()).toMatch(RegExp("^Non Fungible Token " + testTokenId + "Token is deleted"))
 
         wrapper.unmount()
         await flushPromises()
