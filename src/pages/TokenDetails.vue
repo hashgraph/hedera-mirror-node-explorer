@@ -54,12 +54,6 @@
                 <BlobValue v-bind:blob-value="tokenInfo?.symbol" v-bind:show-none="true" class="should-wrap"/>
               </template>
             </Property>
-            <Property id="adminKey">
-              <template v-slot:name>Admin Key</template>
-              <template v-slot:value>
-                <KeyValue :key-bytes="tokenInfo?.admin_key?.key" :key-type="tokenInfo?.admin_key?._type" :show-none="true"/>
-              </template>
-            </Property>
             <Property id="memo">
               <template v-slot:name>Memo</template>
               <template v-slot:value>
@@ -123,6 +117,83 @@
                             :show-none="true"/>
               </template>
             </Property>
+      </template>
+
+    </DashboardCard>
+
+    <DashboardCard v-if="tokenInfo">
+
+      <template v-slot:title>
+        <div class="h-is-secondary-title mb-2">Token Keys</div>
+      </template>
+
+      <template v-slot:leftContent>
+        <Property id="adminKey">
+          <template v-slot:name>Admin Key</template>
+          <template v-slot:value>
+            <KeyValue :key-bytes="tokenInfo?.admin_key?.key"
+                      :key-type="tokenInfo?.admin_key?._type"
+                      :show-none="true"
+                      :none-label="'Token is immutable'"/>
+          </template>
+        </Property>
+        <Property id="kycKey">
+          <template v-slot:name>KYC Key</template>
+          <template v-slot:value>
+            <KeyValue :key-bytes="tokenInfo?.kyc_key?.key"
+                      :key-type="tokenInfo?.kyc_key?._type"
+                      :show-none="true"
+                      :none-label="'KYC is not required'"/>
+          </template>
+        </Property>
+        <Property id="freezeKey">
+          <template v-slot:name>Freeze Key</template>
+          <template v-slot:value>
+            <KeyValue :key-bytes="tokenInfo?.freeze_key?.key"
+                      :key-type="tokenInfo?.freeze_key?._type"
+                      :show-none="true"
+                      :none-label="'Token cannot be frozen'"/>
+          </template>
+        </Property>
+        <Property id="wipeKey">
+          <template v-slot:name>Wipe Key</template>
+          <template v-slot:value>
+            <KeyValue :key-bytes="tokenInfo?.wipe_key?.key"
+                      :key-type="tokenInfo?.wipe_key?._type"
+                      :show-none="true"
+                      :none-label="'Token cannot be wiped'"/>
+          </template>
+        </Property>
+      </template>
+
+      <template v-slot:rightContent>
+        <Property id="supplyKey">
+          <template v-slot:name>Supply Key</template>
+          <template v-slot:value>
+            <KeyValue :key-bytes="tokenInfo?.supply_key?.key"
+                      :key-type="tokenInfo?.supply_key?._type"
+                      :show-none="true"
+                      :none-label="'Token cannot be minted or burnt'"/>
+          </template>
+        </Property>
+        <Property id="feeScheduleKey">
+          <template v-slot:name>Fee Schedule Key</template>
+          <template v-slot:value>
+            <KeyValue :key-bytes="tokenInfo?.fee_schedule_key?.key"
+                      :key-type="tokenInfo?.fee_schedule_key?._type"
+                      :show-none="true"
+                      :none-label="'Custom fee schedule is immutable'"/>
+          </template>
+        </Property>
+        <Property id="pauseKey">
+          <template v-slot:name>Pause Key</template>
+          <template v-slot:value>
+            <KeyValue :key-bytes="tokenInfo?.pause_key?.key"
+                      :key-type="tokenInfo?.pause_key?._type"
+                      :show-none="true"
+                      :none-label="'Token cannot be paused'"/>
+          </template>
+        </Property>
       </template>
 
     </DashboardCard>
