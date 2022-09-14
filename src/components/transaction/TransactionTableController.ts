@@ -37,7 +37,7 @@ export class TransactionTableController extends TableController<Transaction, str
     //
 
     public constructor(accountId: Ref<string|null>, pageSize: Ref<number>, accountIdMandatory: boolean) {
-        super(pageSize, 10 * pageSize.value, 5000, 10, 30);
+        super(pageSize, 10 * pageSize.value, 5000, 10, 100);
         this.accountId = accountId
         this.accountIdMandatory = accountIdMandatory
         this.watchAndReload([this.accountId, this.transactionType])
