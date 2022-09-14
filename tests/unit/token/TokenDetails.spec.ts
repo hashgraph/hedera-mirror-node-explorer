@@ -22,7 +22,14 @@ import {flushPromises, mount} from "@vue/test-utils"
 import router from "@/router";
 import TokenDetails from "@/pages/TokenDetails.vue";
 import axios from "axios";
-import {SAMPLE_BALANCES, SAMPLE_NFTS, SAMPLE_NONFUNGIBLE_DUDE, SAMPLE_TOKEN} from "../Mocks";
+import {
+    SAMPLE_BALANCES,
+    SAMPLE_NFTS,
+    SAMPLE_NONFUNGIBLE_DUDE,
+    SAMPLE_TOKEN,
+    SAMPLE_TOKEN_WITH_KEYS,
+    SAMPLE_TOKEN_WITHOUT_KEYS
+} from "../Mocks";
 import TokenNftTable from "@/components/token/TokenNftTable.vue";
 import TokenBalanceTable from "@/components/token/TokenBalanceTable.vue";
 import MockAdapter from "axios-mock-adapter";
@@ -241,5 +248,87 @@ describe("TokenDetails.vue", () => {
         // console.log(wrapper.text())
 
         expect(wrapper.get("#notificationBanner").text()).toBe("Invalid token ID: " + invalidTokenId)
+    });
+
+    it("Should display all token keys", async () => {
+
+        await router.push("/") // To avoid "missing required param 'network'" error
+
+        const mock = new MockAdapter(axios);
+
+        const testTokenId = SAMPLE_TOKEN_WITH_KEYS.token_id
+        const matcher1 = "/api/v1/tokens/" + testTokenId
+        mock.onGet(matcher1).reply(200, SAMPLE_TOKEN_WITH_KEYS);
+        const matcher2 = "/api/v1/tokens/" + testTokenId + "/balances"
+        mock.onGet(matcher2).reply(200, SAMPLE_BALANCES);
+
+        const wrapper = mount(TokenDetails, {
+            global: {
+                plugins: [router, Oruga]
+            },
+            props: {
+                tokenId: testTokenId
+            },
+        });
+        await flushPromises()
+        // console.log(wrapper.text())
+
+        expect(wrapper.vm.tokenBalanceCache.state.value).toBe(EntityCacheStateV2.Stopped)
+        expect(wrapper.vm.tokenNftCache.state.value).toBe(EntityCacheStateV2.Started)
+
+        expect(wrapper.text()).toMatch(RegExp("^Non Fungible Token " + testTokenId))
+
+        expect(wrapper.text()).toMatch("Token Keys")
+        expect(wrapper.find("#adminKey").text()).toBe("Admin Keyc539 536f 9599 daef eeb7 7767 7aa1 aeea 2242 dfc7 cca9 2348 c228 a518 7a0f af2bCopy to ClipboardED25519")
+        expect(wrapper.find("#kycKey").text()).toBe("KYC Keyc539 536f 9599 daef eeb7 7767 7aa1 aeea 2242 dfc7 cca9 2348 c228 a518 7a0f af2bCopy to ClipboardED25519")
+        expect(wrapper.find("#freezeKey").text()).toBe("Freeze Keyc539 536f 9599 daef eeb7 7767 7aa1 aeea 2242 dfc7 cca9 2348 c228 a518 7a0f af2bCopy to ClipboardED25519")
+        expect(wrapper.find("#wipeKey").text()).toBe("Wipe Keyc539 536f 9599 daef eeb7 7767 7aa1 aeea 2242 dfc7 cca9 2348 c228 a518 7a0f af2bCopy to ClipboardED25519")
+        expect(wrapper.find("#supplyKey").text()).toBe("Supply Keyc539 536f 9599 daef eeb7 7767 7aa1 aeea 2242 dfc7 cca9 2348 c228 a518 7a0f af2bCopy to ClipboardED25519")
+        expect(wrapper.find("#feeScheduleKey").text()).toBe("Fee Schedule Keyc539 536f 9599 daef eeb7 7767 7aa1 aeea 2242 dfc7 cca9 2348 c228 a518 7a0f af2bCopy to ClipboardED25519")
+        expect(wrapper.find("#pauseKey").text()).toBe("Pause Keyc539 536f 9599 daef eeb7 7767 7aa1 aeea 2242 dfc7 cca9 2348 c228 a518 7a0f af2bCopy to ClipboardED25519")
+
+        wrapper.unmount()
+        await flushPromises()
+    });
+
+    it("Should display no token keys", async () => {
+
+        await router.push("/") // To avoid "missing required param 'network'" error
+
+        const mock = new MockAdapter(axios);
+
+        const testTokenId = SAMPLE_TOKEN_WITHOUT_KEYS.token_id
+        const matcher1 = "/api/v1/tokens/" + testTokenId
+        mock.onGet(matcher1).reply(200, SAMPLE_TOKEN_WITHOUT_KEYS);
+        const matcher2 = "/api/v1/tokens/" + testTokenId + "/balances"
+        mock.onGet(matcher2).reply(200, SAMPLE_BALANCES);
+
+        const wrapper = mount(TokenDetails, {
+            global: {
+                plugins: [router, Oruga]
+            },
+            props: {
+                tokenId: testTokenId
+            },
+        });
+        await flushPromises()
+        // console.log(wrapper.text())
+
+        expect(wrapper.vm.tokenBalanceCache.state.value).toBe(EntityCacheStateV2.Stopped)
+        expect(wrapper.vm.tokenNftCache.state.value).toBe(EntityCacheStateV2.Started)
+
+        expect(wrapper.text()).toMatch(RegExp("^Non Fungible Token " + testTokenId))
+
+        expect(wrapper.text()).toMatch("Token Keys")
+        expect(wrapper.find("#adminKey").text()).toBe("Admin KeyToken is immutable")
+        expect(wrapper.find("#kycKey").text()).toBe("KYC KeyKYC is not required")
+        expect(wrapper.find("#freezeKey").text()).toBe("Freeze KeyToken cannot be frozen")
+        expect(wrapper.find("#wipeKey").text()).toBe("Wipe KeyToken cannot be wiped")
+        expect(wrapper.find("#supplyKey").text()).toBe("Supply KeyToken cannot be minted or burnt")
+        expect(wrapper.find("#feeScheduleKey").text()).toBe("Fee Schedule KeyCustom fee schedule is immutable")
+        expect(wrapper.find("#pauseKey").text()).toBe("Pause KeyToken cannot be paused")
+
+        wrapper.unmount()
+        await flushPromises()
     });
 });
