@@ -288,6 +288,8 @@ export default defineComponent({
         result = "Invalid token ID: " + props.tokenId
       } else if (tokenInfoLoader.got404.value) {
         result = "Token with ID " + props.tokenId + " was not found"
+      } else if (tokenInfoLoader.entity.value?.deleted) {
+        result = "Token is deleted"
       } else {
         result = null
       }
