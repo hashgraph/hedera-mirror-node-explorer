@@ -53,27 +53,14 @@ import {getNetworkEntryFromCurrentRoute} from "@/router";
 export class OperatorEntry {
     public readonly accountId: string
     public readonly network: string|null
-    public readonly name: string
-    public readonly location: string|null
+    public readonly description: string
     public readonly nodeId: number|null
 
-    constructor(accountId: string, network: string|null, name: string, location: string|null, nodeId: number|null) {
+    constructor(accountId: string, network: string|null, description: string, nodeId: number|null) {
         this.accountId = accountId
         this.network = network
-        this.name = name
-        this.location = location
+        this.description = description
         this.nodeId = nodeId
-    }
-
-    getDescription(): string {
-        let result = this.name
-        if (this.nodeId != null) {
-            result = "Node " + this.nodeId + " - " + result
-        }
-        if (this.location != null) {
-            result = result + " - " + this.location
-        }
-        return result
     }
 }
 
@@ -83,32 +70,32 @@ export class OperatorRegistry {
     private readonly networkEntries = new Map<string, Map<string, OperatorEntry>>()
 
     constructor() {
-        this.addEntry("0.0.3", "LG", "Seoul, South Korea", 0)
-        this.addEntry("0.0.4", "Swirlds", "North Carolina, USA", 1)
-        this.addEntry("0.0.5", "FIS", "Florida, USA", 2)
-        this.addEntry("0.0.6", "Wipro", "Mumbai, India", 3)
-        this.addEntry("0.0.7", "Nomura", "Tokyo, Japan", 4)
-        this.addEntry("0.0.8", "Google", "Helsinki, Finland", 5)
-        this.addEntry("0.0.9", "Zain Group", "Kuwait City, Kuwait", 6)
-        this.addEntry("0.0.10", "Magalu", "São Paulo, Brazil", 7)
-        this.addEntry("0.0.11", "Boeing", "Toronto, Canada", 8)
-        this.addEntry("0.0.12", "DLA Piper", "London, UK", 9)
-        this.addEntry("0.0.13", "Tata Communications", "California, USA", 10)
-        this.addEntry("0.0.14", "IBM", "Washington, USA", 11)
-        this.addEntry("0.0.15", "Deutsche Telekom", "Berlin, Germany", 12)
-        this.addEntry("0.0.16", "UCL", "Amsterdam, Netherlands", 13)
-        this.addEntry("0.0.17", "Avery Dennison", "Pennsylvania, USA", 14)
-        this.addEntry("0.0.18", "Dentons", "Frankfurt, DE", 15)
-        this.addEntry("0.0.19", "Standard Bank", "Warsaw, Poland", 16)
-        this.addEntry("0.0.20", "eftpos", "Oregon, USA", 17)
-        this.addEntry("0.0.21", "EDF", "Paris, France", 18)
-        this.addEntry("0.0.22", "Shinhan Bank", "Seoul, South Korea", 19)
-        this.addEntry("0.0.23", "Chainlink Labs", "Michigan, USA", 20)
-        this.addEntry("0.0.24", "LSE", "Virginia, USA", 21)
-        this.addEntry("0.0.25", "IIT Madras", "Georgia, USA", 22)
-        this.addEntry("0.0.26", "DBS", "Singapore, Republic of Singapore", 23)
-        this.addEntry("0.0.27", "ServiceNow", "Ogden, Utah", 24)
-        this.addEntry("0.0.28", "Ubisoft", "Singapore, Republic of Singapore", 25)
+        this.addEntry("0.0.3", "LG - Seoul, South Korea", 0)
+        this.addEntry("0.0.4", "Swirlds - North Carolina, USA", 1)
+        this.addEntry("0.0.5", "FIS - Florida, USA", 2)
+        this.addEntry("0.0.6", "Wipro - Mumbai, India", 3)
+        this.addEntry("0.0.7", "Nomura - Tokyo, Japan", 4)
+        this.addEntry("0.0.8", "Google - Helsinki, Finland", 5)
+        this.addEntry("0.0.9", "Zain Group - Kuwait City, Kuwait", 6)
+        this.addEntry("0.0.10", "Magalu - São Paulo, Brazil", 7)
+        this.addEntry("0.0.11", "Boeing - Toronto, Canada", 8)
+        this.addEntry("0.0.12", "DLA Piper - London, UK", 9)
+        this.addEntry("0.0.13", "Tata Communications - California, USA", 10)
+        this.addEntry("0.0.14", "IBM - Washington, USA", 11)
+        this.addEntry("0.0.15", "Deutsche Telekom - Berlin, Germany", 12)
+        this.addEntry("0.0.16", "UCL - Amsterdam, Netherlands", 13)
+        this.addEntry("0.0.17", "Avery Dennison - Pennsylvania, USA", 14)
+        this.addEntry("0.0.18", "Dentons - Frankfurt, DE", 15)
+        this.addEntry("0.0.19", "Standard Bank - Warsaw, Poland", 16)
+        this.addEntry("0.0.20", "eftpos - Oregon, USA", 17)
+        this.addEntry("0.0.21", "EDF - Paris, France", 18)
+        this.addEntry("0.0.22", "Shinhan Bank - Seoul, South Korea", 19)
+        this.addEntry("0.0.23", "Chainlink Labs - Michigan, USA", 20)
+        this.addEntry("0.0.24", "LSE - Virginia, USA", 21)
+        this.addEntry("0.0.25", "IIT Madras - Georgia, USA", 22)
+        this.addEntry("0.0.26", "DBS - Singapore, Republic of Singapore", 23)
+        this.addEntry("0.0.27", "ServiceNow - Ogden, Utah", 24)
+        this.addEntry("0.0.28", "Ubisoft - Singapore, Republic of Singapore", 25)
 
         this.addTestnetEntry("0.0.3", 0)
         this.addTestnetEntry("0.0.4", 1)
@@ -126,7 +113,7 @@ export class OperatorRegistry {
         this.addPreviewnetEntry("0.0.8", 5)
         this.addPreviewnetEntry("0.0.9", 6)
 
-        this.addEntry("0.0.98", "Hedera fee collection account", null, null, null)
+        this.addEntry("0.0.98", "Hedera fee collection account", null, null)
     }
 
     public lookup(accountId: string): OperatorEntry|null {
@@ -136,10 +123,10 @@ export class OperatorRegistry {
 
     public makeDescription(accountId: string): string | null {
         const registryEntry = operatorRegistry.lookup(accountId)
-        return registryEntry !== null ? registryEntry.getDescription() : null
+        return registryEntry !== null ? registryEntry.description : null
     }
 
-    private addEntry(accountId: string, name: string, location: string|null, nodeID: number|null, network: string|null = "mainnet") {
+    private addEntry(accountId: string, description: string, nodeID: number|null, network: string|null = "mainnet") {
         let targetEntries: Map<string, OperatorEntry>
         if (network != null) {
             const networkEntries = this.networkEntries.get(network);
@@ -152,15 +139,15 @@ export class OperatorRegistry {
         } else {
             targetEntries = this.entries
         }
-        targetEntries.set(accountId, new OperatorEntry(accountId, network, name, location, nodeID))
+        targetEntries.set(accountId, new OperatorEntry(accountId, network, description, nodeID))
     }
 
     private addTestnetEntry(accountId: string, nodeID: number|null) {
-        this.addEntry(accountId, "testnet", null, nodeID, "testnet")
+        this.addEntry(accountId, "Node " + nodeID + " - testnet", nodeID, "testnet")
     }
 
     private addPreviewnetEntry(accountId: string, nodeID: number|null) {
-        this.addEntry(accountId, "previewnet", null, nodeID, "previewnet")
+        this.addEntry(accountId, "Node " + nodeID + " - previewnet", nodeID, "previewnet")
     }
 
 }

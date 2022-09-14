@@ -288,7 +288,7 @@ export default defineComponent({
       if (node.description) {
         result = node.description
       } else {
-        result = node.node_account_id ? operatorRegistry.lookup(node.node_account_id)?.getDescription() : null
+        result = node.node_account_id ? operatorRegistry.makeDescription(node.node_account_id) : null
       }
       return result
     }
