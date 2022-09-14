@@ -57,7 +57,6 @@ export class RowBuffer<R, K> {
 
                 const cb = (r: R[]|null) => {
                     if (r !== null) {
-                        console.log("r.length=" + r.length + ", limitedCount=" + limitedCount)
                         this.rows.value = this.rows.value.concat(r)
                         this.drained.value = r.length < limitedCount
                         resolve(this.load(fromIndex + limitedCount, remainingCount))
