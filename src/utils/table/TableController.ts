@@ -29,6 +29,7 @@ export abstract class TableController<R, K> {
     private readonly rowBuffer: RowBuffer<R,K>
     private readonly loadingRef = ref(false)
     private readonly autoUpdateCount = ref(0)
+    private readonly lastPage = ref(0)
 
     private watchStopHandle: WatchStopHandle|null = null
     private sessionId = 0
@@ -48,7 +49,7 @@ export abstract class TableController<R, K> {
 
     public readonly pageRows: ComputedRef<R[]> = computed(() => {
         const rows = this.rowBuffer.rows.value
-        const startIndex = (this.currentPage.value - 1) * this.pageSize.value
+        const startIndex = (this.lastPage.value - 1) * this.pageSize.value
         const endIndex = Math.min(startIndex + this.pageSize.value, rows.length)
         return rows.slice(startIndex, endIndex)
     })
@@ -73,6 +74,7 @@ export abstract class TableController<R, K> {
             this.loadingRef.value = true
             this.rowBuffer.load((page - 1) * this.pageSize.value, this.pageSize.value).finally(() => {
                 this.loadingRef.value = false
+                this.lastPage.value = page
             })
         }
     }
@@ -138,6 +140,7 @@ export abstract class TableController<R, K> {
 
     private startRefreshing(): void {
         this.currentPage.value = 1
+        this.lastPage.value = 1
         this.autoUpdateCount.value = 0
         this.refresh()
     }
