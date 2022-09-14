@@ -171,6 +171,7 @@ export abstract class TableController<R, K> {
     }
 
     private sourcesDidChange() {
+        this.rowBuffer.clear()
         this.autoRefresh.value = true
     }
 

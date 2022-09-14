@@ -99,6 +99,11 @@ export class RowBuffer<R, K> {
         return result
     }
 
+    public clear() {
+        this.rows.value = []
+        this.drained.value = false
+    }
+
     //
     // Private
     //
