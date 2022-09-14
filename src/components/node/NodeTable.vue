@@ -46,15 +46,9 @@
         </div>
       </o-table-column>
 
-      <o-table-column v-slot="props" field="hosted_by" label="Hosted By">
+      <o-table-column v-slot="props" field="description" label="Description">
         <div class="should-wrap regular-node-column">
-          <BlobValue v-bind:blob-value="makeHost(props.row)" v-bind:show-none="true"/>
-        </div>
-      </o-table-column>
-
-      <o-table-column v-slot="props" field="location" label="Location">
-        <div class="should-wrap regular-node-column">
-          <BlobValue v-bind:blob-value="makeLocation(props.row)" v-bind:show-none="true"/>
+          <BlobValue v-bind:blob-value="makeDescription(props.row)" v-bind:show-none="true"/>
         </div>
       </o-table-column>
 
@@ -161,8 +155,17 @@ export default defineComponent({
     const isTouchDevice = inject('isTouchDevice', false)
     const isMediumScreen = inject('isMediumScreen', true)
 
-    const makeHost = (node: NetworkNode) => node.node_account_id ? operatorRegistry.lookup(node.node_account_id)?.name : null
-    const makeLocation = (node: NetworkNode) => node.node_account_id ? operatorRegistry.lookup(node.node_account_id)?.location : null
+    const makeDescription = (node: NetworkNode) => {
+      let result
+      if (node.description) {
+        result = node.description
+      } else if (node.node_account_id) {
+        result = operatorRegistry.makeDescription(node.node_account_id)
+      } else {
+        result = null
+      }
+      return result
+    }
     const makeUnclampedStake = (node: NetworkNode) => (node.stake_rewarded ?? 0) + (node.stake_not_rewarded ?? 0)
     const makeWeightPercentage = (node: NetworkNode) => {
       const formatter = new Intl.NumberFormat("en-US", {
@@ -226,8 +229,7 @@ export default defineComponent({
       tooltipRewardRate,
       isTouchDevice,
       isMediumScreen,
-      makeHost,
-      makeLocation,
+      makeDescription,
       makeUnclampedStake,
       makeWeightPercentage,
       makeApproxYearlyRate,
