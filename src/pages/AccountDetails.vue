@@ -196,7 +196,7 @@
 
 <script lang="ts">
 
-import {computed, defineComponent, inject, onBeforeUnmount, onMounted, ref, watch} from 'vue';
+import {computed, defineComponent, inject, onBeforeUnmount, onMounted, watch} from 'vue';
 import KeyValue from "@/components/values/KeyValue.vue";
 import PlayPauseButton from "@/utils/table/PlayPauseButton.vue";
 import TransactionTable from "@/components/transaction/TransactionTable.vue";
@@ -209,7 +209,7 @@ import TokenAmount from "@/components/values/TokenAmount.vue";
 import BlobValue from "@/components/values/BlobValue.vue";
 import {BalanceCache} from "@/components/account/BalanceCache";
 import Footer from "@/components/Footer.vue";
-import {useRouter} from "vue-router";
+import {useRoute, useRouter} from "vue-router";
 import {PathParam} from "@/utils/PathParam";
 import Property from "@/components/Property.vue";
 import NotificationBanner from "@/components/NotificationBanner.vue";
@@ -261,20 +261,7 @@ export default defineComponent({
     const isTouchDevice = inject('isTouchDevice', false)
 
     const router = useRouter()
-
-    //
-    // transaction filter selection
-    //
-
-    const selectedTransactionFilter = ref("")
-    const updateQuery = () => {
-      router.replace({
-        query: {type: selectedTransactionFilter.value.toLowerCase()}
-      })
-    }
-    watch(selectedTransactionFilter, () => {
-      updateQuery()
-    })
+    const route = useRoute()
 
     //
     // account
@@ -303,10 +290,30 @@ export default defineComponent({
     // TransactionTableController
     //
     const perPage = computed(() => isMediumScreen ? 10 : 5)
-    const accountId = computed(() => props.accountId ?? null)
+    const accountId = computed(() => accountLoader.entity.value?.account ?? null)
     const transactionTableController = new TransactionTableController(accountId, perPage, true)
     onMounted(() => transactionTableController.mounted.value = true)
     onBeforeUnmount(() => transactionTableController.mounted.value = false)
+
+    //
+    // transaction filter selection
+    //
+
+    const updateQuery = () => {
+      router.replace({
+        query: {type: transactionTableController.transactionType.value.toLowerCase()}
+      })
+    }
+    watch(transactionTableController.transactionType, () => {
+      updateQuery()
+    })
+    const transactionFilterFromRoute = computed(() => {
+      return (route.query?.type as string ?? "").toUpperCase()
+    })
+    watch(transactionFilterFromRoute, () => {
+      transactionTableController.transactionType.value = transactionFilterFromRoute.value
+    })
+    transactionTableController.transactionType.value = transactionFilterFromRoute.value
 
     //
     // balanceCache
@@ -373,7 +380,6 @@ export default defineComponent({
       isSmallScreen,
       isTouchDevice,
       transactionTableController,
-      selectedTransactionFilter,
       notification,
       account: accountLoader.entity,
       normalizedAccountI: accountLoader.accountId,
