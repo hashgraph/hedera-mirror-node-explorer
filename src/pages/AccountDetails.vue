@@ -97,7 +97,7 @@
                 <template v-slot:value>
                   <div v-if="account?.staked_node_id != null">
                     <router-link :to="{name: 'NodeDetails', params: {nodeId: account?.staked_node_id}}">
-                      {{ stakedNodeDescription ?? "Node " +  account.staked_node_id}}
+                      {{ stakedNodeDescription ?? "Node " +  account?.staked_node_id}}
                     </router-link>
                   </div>
                   <span v-else class="has-text-grey">None</span>
