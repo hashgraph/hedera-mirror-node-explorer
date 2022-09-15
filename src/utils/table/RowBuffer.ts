@@ -42,13 +42,13 @@ export class RowBuffer<R, K> {
     public load(startIndex: number, rowCount: number): Promise<void> {
         let result: Promise<void>
 
-        const fromIndex = Math.min(startIndex, this.rows.value.length)
         const toIndex = startIndex + rowCount
 
         if (toIndex <= this.rows.value.length || this.drained.value) {
             result = Promise.resolve()
         } else {
 
+            const fromIndex = this.rows.value.length
             const missingCount = toIndex - fromIndex
             const limitedCount = Math.min(this.maxLimit, missingCount)
             const remainingCount = missingCount - limitedCount
