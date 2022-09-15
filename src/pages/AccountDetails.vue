@@ -171,16 +171,15 @@
       </template>
       <template v-slot:control>
         <div class="is-flex is-align-items-flex-end">
-          <PlayPauseButtonV2 v-model:state="transactionCacheState"/>
-          <TransactionFilterSelect v-model:filter="selectedTransactionFilter"/>
+          <PlayPauseButton v-bind:controller="transactionTableController"/>
+          <TransactionFilterSelectV2 v-bind:controller="transactionTableController"/>
         </div>
       </template>
       <template v-slot:content>
-        <TransactionTableV2
+        <TransactionTable
             v-if="account"
             v-bind:narrowed="true"
-            v-bind:nb-items="10"
-            v-bind:transactions="transactions"
+            v-bind:controller="transactionTableController"
         />
       </template>
     </DashboardCard>
@@ -199,8 +198,8 @@
 
 import {computed, defineComponent, inject, onBeforeUnmount, onMounted, ref, watch} from 'vue';
 import KeyValue from "@/components/values/KeyValue.vue";
-import PlayPauseButtonV2 from "@/components/PlayPauseButtonV2.vue";
-import TransactionTableV2 from "@/components/transaction/TransactionTableV2.vue";
+import PlayPauseButton from "@/utils/table/PlayPauseButton.vue";
+import TransactionTable from "@/components/transaction/TransactionTable.vue";
 import {Duration} from "@/utils/Duration";
 import DurationValue from "@/components/values/DurationValue.vue";
 import TimestampValue from "@/components/values/TimestampValue.vue";
@@ -210,20 +209,20 @@ import TokenAmount from "@/components/values/TokenAmount.vue";
 import BlobValue from "@/components/values/BlobValue.vue";
 import {BalanceCache} from "@/components/account/BalanceCache";
 import Footer from "@/components/Footer.vue";
-import TransactionFilterSelect from "@/components/transaction/TransactionFilterSelect.vue";
-import {useRoute, useRouter} from "vue-router";
+import {useRouter} from "vue-router";
 import {PathParam} from "@/utils/PathParam";
 import Property from "@/components/Property.vue";
 import NotificationBanner from "@/components/NotificationBanner.vue";
 import EthAddress from "@/components/values/EthAddress.vue";
 import StringValue from "@/components/values/StringValue.vue";
-import {TransactionCacheV2} from "@/components/transaction/TransactionCacheV2";
+import {TransactionTableController} from "@/components/transaction/TransactionTableController";
 import {EntityCacheStateV2} from "@/utils/EntityCacheV2";
 import AccountLink from "@/components/values/AccountLink.vue";
 import {AccountLoader} from "@/components/account/AccountLoader";
 import {ContractLoader} from "@/components/contract/ContractLoader";
 import {NodeLoader} from "@/components/node/NodeLoader";
 import AliasValue from "@/components/values/AliasValue.vue";
+import TransactionFilterSelectV2 from "@/components/transaction/TransactionFilterSelectV2.vue";
 
 const MAX_TOKEN_BALANCES = 10
 
@@ -236,14 +235,14 @@ export default defineComponent({
     AccountLink,
     NotificationBanner,
     Property,
-    TransactionFilterSelect,
+    TransactionFilterSelectV2,
     Footer,
     BlobValue,
     TokenAmount,
     HbarAmount,
     DashboardCard,
-    TransactionTableV2,
-    PlayPauseButtonV2,
+    TransactionTable,
+    PlayPauseButton,
     TimestampValue,
     KeyValue,
     EthAddress,
@@ -258,10 +257,10 @@ export default defineComponent({
 
   setup(props) {
     const isSmallScreen = inject('isSmallScreen', true)
+    const isMediumScreen = inject('isMediumScreen', true)
     const isTouchDevice = inject('isTouchDevice', false)
 
     const router = useRouter()
-    const route = useRoute()
 
     //
     // transaction filter selection
@@ -301,32 +300,13 @@ export default defineComponent({
 
 
     //
-    // transactionCache
+    // TransactionTableController
     //
-
-    const transactionCache = new TransactionCacheV2();
-
-    const setupTransactionCache = () => {
-      transactionCache.state.value = EntityCacheStateV2.Stopped
-      transactionCache.accountId.value = accountLoader.accountId.value ?? ""
-      transactionCache.transactionType.value = transactionFilterFromRoute.value
-      transactionCache.state.value = EntityCacheStateV2.Started
-      selectedTransactionFilter.value = transactionFilterFromRoute.value
-    }
-
-    const transactionFilterFromRoute = computed(() => {
-      return (route.query?.type as string ?? "").toUpperCase()
-    })
-    watch([transactionFilterFromRoute, accountLoader.entity], () => {
-      setupTransactionCache()
-    })
-    onMounted(() => {
-      setupTransactionCache()
-    })
-    onBeforeUnmount(() => {
-      transactionCache.state.value = EntityCacheStateV2.Stopped
-    })
-
+    const perPage = computed(() => isMediumScreen ? 10 : 5)
+    const accountId = computed(() => props.accountId ?? null)
+    const transactionTableController = new TransactionTableController(accountId, perPage, true)
+    onMounted(() => transactionTableController.mounted.value = true)
+    onBeforeUnmount(() => transactionTableController.mounted.value = false)
 
     //
     // balanceCache
@@ -392,8 +372,7 @@ export default defineComponent({
     return {
       isSmallScreen,
       isTouchDevice,
-      transactions: transactionCache.transactions,
-      transactionCacheState: transactionCache.state,
+      transactionTableController,
       selectedTransactionFilter,
       notification,
       account: accountLoader.entity,

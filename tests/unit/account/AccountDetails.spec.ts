@@ -37,7 +37,7 @@ import {
 } from "../Mocks";
 import MockAdapter from "axios-mock-adapter";
 import Oruga from "@oruga-ui/oruga-next";
-import TransactionTableV2 from "@/components/transaction/TransactionTableV2.vue";
+import TransactionTable from "@/components/transaction/TransactionTable.vue";
 import {HMSF} from "@/utils/HMSF";
 import {EntityCacheStateV2} from "@/utils/EntityCacheV2";
 import NotificationBanner from "@/components/NotificationBanner.vue";
@@ -122,7 +122,7 @@ describe("AccountDetails.vue", () => {
         expect(wrapper.get("#receiverSigRequiredValue").text()).toBe("false")
 
         expect(wrapper.find("#recentTransactions").exists()).toBe(true)
-        expect(wrapper.findComponent(TransactionTableV2).exists()).toBe(true)
+        expect(wrapper.findComponent(TransactionTable).exists()).toBe(true)
     });
 
     it("Should update when account id changes", async () => {
