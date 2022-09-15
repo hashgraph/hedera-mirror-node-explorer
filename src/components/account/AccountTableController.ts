@@ -56,7 +56,6 @@ export class AccountTableController extends TableController<AccountInfo, string>
     //
 
     private load(accountId: string | null, operator: string, limit: number): Promise<AccountInfo[] | null> {
-        let result: Promise<AccountInfo[] | null>
 
         const params = {} as {
             limit: number
@@ -71,8 +70,7 @@ export class AccountTableController extends TableController<AccountInfo, string>
         const cb = (r: AxiosResponse<AccountsResponse>): Promise<AccountInfo[] | null> => {
             return Promise.resolve(r.data.accounts ?? [])
         }
-        result = axios.get<AccountsResponse>("api/v1/accounts", {params: params}).then(cb)
 
-        return result
+        return  axios.get<AccountsResponse>("api/v1/accounts", {params: params}).then(cb)
     }
 }
