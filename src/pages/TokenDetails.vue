@@ -161,7 +161,7 @@
             <KeyValue :key-bytes="tokenInfo?.admin_key?.key"
                       :key-type="tokenInfo?.admin_key?._type"
                       :show-none="true"
-                      :none-label="'Token is immutable'"/>
+                      :none-extra="'Token is immutable'"/>
           </template>
         </Property>
         <Property id="kycKey">
@@ -170,7 +170,7 @@
             <KeyValue :key-bytes="tokenInfo?.kyc_key?.key"
                       :key-type="tokenInfo?.kyc_key?._type"
                       :show-none="true"
-                      :none-label="'KYC is not required'"/>
+                      :none-extra="'KYC is not required'"/>
           </template>
         </Property>
         <Property id="freezeKey">
@@ -179,7 +179,7 @@
             <KeyValue :key-bytes="tokenInfo?.freeze_key?.key"
                       :key-type="tokenInfo?.freeze_key?._type"
                       :show-none="true"
-                      :none-label="'Token cannot be frozen'"/>
+                      :none-extra="'Token cannot be frozen'"/>
           </template>
         </Property>
         <Property id="wipeKey">
@@ -188,7 +188,7 @@
             <KeyValue :key-bytes="tokenInfo?.wipe_key?.key"
                       :key-type="tokenInfo?.wipe_key?._type"
                       :show-none="true"
-                      :none-label="'Token cannot be wiped'"/>
+                      :none-extra="'Token cannot be wiped'"/>
           </template>
         </Property>
       </template>
@@ -200,7 +200,7 @@
             <KeyValue :key-bytes="tokenInfo?.supply_key?.key"
                       :key-type="tokenInfo?.supply_key?._type"
                       :show-none="true"
-                      :none-label="'Token cannot be minted or burnt'"/>
+                      :none-extra="'Token cannot be minted or burnt'"/>
           </template>
         </Property>
         <Property id="feeScheduleKey">
@@ -209,7 +209,7 @@
             <KeyValue :key-bytes="tokenInfo?.fee_schedule_key?.key"
                       :key-type="tokenInfo?.fee_schedule_key?._type"
                       :show-none="true"
-                      :none-label="'Custom fee schedule is immutable'"/>
+                      :none-extra="'Custom fee schedule is immutable'"/>
           </template>
         </Property>
         <Property id="pauseKey">
@@ -218,7 +218,7 @@
             <KeyValue :key-bytes="tokenInfo?.pause_key?.key"
                       :key-type="tokenInfo?.pause_key?._type"
                       :show-none="true"
-                      :none-label="'Token cannot be paused'"/>
+                      :none-extra="'Token cannot be paused'"/>
           </template>
         </Property>
       </template>
