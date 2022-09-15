@@ -67,7 +67,7 @@ import {computed, defineComponent, PropType} from "vue";
 import {TableController} from "@/utils/table/TableController";
 
 export default defineComponent({
-  name: "PlayPauseButtonV2",
+  name: "PlayPauseButton",
 
   props: {
     controller: Object as PropType<TableController<unknown, unknown>>

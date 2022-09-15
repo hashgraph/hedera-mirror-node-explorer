@@ -26,7 +26,8 @@ import MockAdapter from "axios-mock-adapter";
 import Oruga from "@oruga-ui/oruga-next";
 import AccountTable from "@/components/account/AccountTable.vue";
 import {HMSF} from "@/utils/HMSF";
-import {AccountInfo} from "@/schemas/HederaSchemas";
+import {AccountTableController} from "@/components/account/AccountTableController";
+import {ref} from "vue";
 
 /*
     Bookmarks
@@ -53,25 +54,28 @@ HMSF.forceUTC = true
 
 describe("AccountTable.vue", () => {
 
-    test("all props", async () => {
+    test.skip("all props", async () => {
 
         await router.push("/") // To avoid "missing required param 'network'" error
 
         const mock = new MockAdapter(axios);
 
+        const matcher1 = "/api/v1/accounts"
+        mock.onGet(matcher1).reply(200, SAMPLE_ACCOUNTS)
+
         const matcher2 = "/api/v1/tokens/" + SAMPLE_TOKEN.token_id
         mock.onGet(matcher2).reply(200, SAMPLE_TOKEN)
 
+        const accountTableController = new AccountTableController(ref(42))
         const wrapper = mount(AccountTable, {
             global: {
                 plugins: [router, Oruga]
             },
             props: {
-                nbItems: 42,
-                accounts: SAMPLE_ACCOUNTS.accounts as AccountInfo[]
+                controller: accountTableController
             },
         });
-
+        accountTableController.mounted.value = true
         await flushPromises()
         // console.log(wrapper.find('thead').text())
         // console.log(wrapper.find('tbody').text())
