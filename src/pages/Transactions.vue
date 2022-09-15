@@ -32,12 +32,12 @@
       </template>
       <template v-slot:control>
         <div class="is-flex is-align-items-flex-end">
-          <PlayPauseButtonV2 v-model:state="transactionCacheState"/>
-          <TransactionFilterSelect v-model:filter="selectedTransactionFilter"/>
+          <PlayPauseButton v-bind:controller="transactionTableController"/>
+          <TransactionFilterSelectV2 v-bind:controller="transactionTableController"/>
         </div>
       </template>
       <template v-slot:content>
-        <TransactionTableV2 v-bind:transactions="transactions"/>
+        <TransactionTable v-bind:controller="transactionTableController"/>
       </template>
     </DashboardCard>
 
@@ -53,16 +53,15 @@
 
 <script lang="ts">
 
-import {computed, defineComponent, inject, onBeforeUnmount, onMounted, ref, watch} from 'vue';
+import {computed, defineComponent, inject, onBeforeUnmount, onMounted, Ref, ref, watch} from 'vue';
 
-import TransactionTableV2 from "@/components/transaction/TransactionTableV2.vue";
-import PlayPauseButtonV2 from "@/components/PlayPauseButtonV2.vue";
-import TransactionFilterSelect from "@/components/transaction/TransactionFilterSelect.vue";
+import TransactionTable from "@/components/transaction/TransactionTable.vue";
+import PlayPauseButton from "@/utils/table/PlayPauseButton.vue";
+import TransactionFilterSelectV2 from "@/components/transaction/TransactionFilterSelectV2.vue";
 import {useRoute, useRouter} from "vue-router";
 import DashboardCard from "@/components/DashboardCard.vue";
 import Footer from "@/components/Footer.vue";
-import {TransactionCacheV2} from "@/components/transaction/TransactionCacheV2";
-import {EntityCacheStateV2} from "@/utils/EntityCacheV2";
+import {TransactionTableController} from "@/components/transaction/TransactionTableController";
 
 export default defineComponent({
   name: 'Transactions',
@@ -74,9 +73,9 @@ export default defineComponent({
   components: {
     Footer,
     DashboardCard,
-    TransactionFilterSelect,
-    PlayPauseButtonV2,
-    TransactionTableV2,
+    TransactionFilterSelectV2,
+    PlayPauseButton,
+    TransactionTable,
   },
 
   setup() {
@@ -87,50 +86,39 @@ export default defineComponent({
     const route = useRoute()
 
     //
-    // transaction filter selection
+    // transactionTableController
     //
 
-    const selectedTransactionFilter = ref("")
+    const accountId: Ref<string|null> = ref(null)
+    const pageSize: Ref<number> = ref(10)
+    const transactionTableController = new TransactionTableController(accountId, pageSize, false)
+    onMounted(() => transactionTableController.mounted.value = true)
+    onBeforeUnmount(() => transactionTableController.mounted.value = false)
+
+    //
+    // transaction filter / route synchronization
+    //
+
     const updateQuery = () => {
       router.replace({
-        query: {type: selectedTransactionFilter.value.toLowerCase()}
+        query: {type: transactionTableController.transactionType.value.toLowerCase()}
       })
     }
-    watch(selectedTransactionFilter, () => {
+    watch(transactionTableController.transactionType, () => {
       updateQuery()
     })
-
-    //
-    // transactionCache
-    //
-
-    const transactionCache = new TransactionCacheV2();
-
-    const setupTransactionCache = () => {
-      transactionCache.transactionType.value = transactionFilterFromRoute.value
-      transactionCache.state.value = EntityCacheStateV2.Started
-      selectedTransactionFilter.value = transactionFilterFromRoute.value
-    }
-
     const transactionFilterFromRoute = computed(() => {
       return (route.query?.type as string ?? "").toUpperCase()
     })
     watch(transactionFilterFromRoute, () => {
-      setupTransactionCache()
+      transactionTableController.transactionType.value = transactionFilterFromRoute.value
     })
-    onMounted(() => {
-      setupTransactionCache()
-    })
-    onBeforeUnmount(() => {
-      transactionCache.state.value = EntityCacheStateV2.Stopped
-    })
+    transactionTableController.transactionType.value = transactionFilterFromRoute.value
 
     return {
       isSmallScreen,
       isTouchDevice,
-      transactions: transactionCache.transactions,
-      transactionCacheState: transactionCache.state,
-      selectedTransactionFilter,
+      transactionTableController,
     }
   }
 });
