@@ -96,6 +96,14 @@ export abstract class TableController<R, K> {
     public abstract keyFor(row: R): K
 
     //
+    // Public (for unit testing only)
+    //
+
+    public getBufferedRows(): R[] {
+        return this.rowBuffer.rows.value
+    }
+
+    //
     // Protected
     //
 
