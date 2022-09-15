@@ -28,7 +28,6 @@ import ContractTable from "@/components/contract/ContractTable.vue";
 import MockAdapter from "axios-mock-adapter";
 import Oruga from "@oruga-ui/oruga-next";
 import {HMSF} from "@/utils/HMSF";
-import {EntityCacheStateV2} from "@/utils/EntityCacheV2";
 
 /*
     Bookmarks
@@ -75,7 +74,7 @@ describe("Contracts.vue", () => {
         await flushPromises()
         // console.log(wrapper.text())
 
-        expect(wrapper.vm.contractCache.state.value).toBe(EntityCacheStateV2.Started)
+        expect(wrapper.vm.contractTableController.mounted.value).toBe(true)
 
         const card = wrapper.findComponent(DashboardCard)
         expect(card.exists()).toBe(true)
@@ -93,7 +92,7 @@ describe("Contracts.vue", () => {
         wrapper.unmount()
         await flushPromises()
 
-        expect(wrapper.vm.contractCache.state.value).toBe(EntityCacheStateV2.Stopped)
+        expect(wrapper.vm.contractTableController.mounted.value).toBe(false)
     });
 
 });

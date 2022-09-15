@@ -44,7 +44,7 @@
       aria-next-label="Next page"
       aria-page-label="Page"
       aria-previous-label="Previous page"
-      customRowKey="account_id"
+      customRowKey="account"
   >
     <o-table-column v-slot="props" field="account" label="Account">
       <div class="is-numeric">

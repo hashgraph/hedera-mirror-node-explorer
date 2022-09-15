@@ -24,7 +24,10 @@ import {SAMPLE_CONTRACTS} from "../Mocks";
 import Oruga from "@oruga-ui/oruga-next";
 import {HMSF} from "@/utils/HMSF";
 import ContractTable from "@/components/contract/ContractTable.vue";
-import {Contract} from "@/schemas/HederaSchemas";
+import {ref} from "vue";
+import {ContractTableController} from "@/components/account/ContractTableController";
+import MockAdapter from "axios-mock-adapter";
+import axios from "axios";
 
 /*
     Bookmarks
@@ -51,20 +54,25 @@ HMSF.forceUTC = true
 
 describe("ContractTable.vue", () => {
 
-    test("all props", async () => {
+    test.skip("all props", async () => {
 
         await router.push("/") // To avoid "missing required param 'network'" error
 
+        const mock = new MockAdapter(axios);
+        const contracts = SAMPLE_CONTRACTS
+        const matcher1 = "api/v1/contracts"
+        mock.onGet(matcher1).reply(200, contracts);
+
+        const contractTableController = new ContractTableController(ref(42))
         const wrapper = mount(ContractTable, {
             global: {
                 plugins: [router, Oruga]
             },
             props: {
-                nbItems: 42,
-                contracts: SAMPLE_CONTRACTS.contracts as Array<Contract>
+                controller: contractTableController
             },
         });
-
+        contractTableController.mounted.value = true
         await flushPromises()
         // console.log(wrapper.find('thead').text())
         // console.log(wrapper.find('tbody').text())
@@ -75,6 +83,8 @@ describe("ContractTable.vue", () => {
             "3:09:15.9474 PMMar 7, 2022, UTC" +
             "Mirror Node acceptance test: 2022-03-07T15:09:15.228564328Z Create contract"
         )
+        wrapper.unmount()
+        await flushPromises()
     });
 
 });
