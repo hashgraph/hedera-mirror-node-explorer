@@ -31,7 +31,7 @@
         <span class="h-is-primary-title">Recent Topics</span>
       </template>
       <template v-slot:content>
-        <TopicTable v-bind:transactions="transactions"/>
+        <TopicTable v-bind:controller="transactionTableController"/>
       </template>
     </DashboardCard>
 
@@ -47,13 +47,12 @@
 
 <script lang="ts">
 
-import {defineComponent, inject, onBeforeUnmount, onMounted, watch} from 'vue';
+import {computed, defineComponent, inject, onBeforeUnmount, onMounted, ref, watch} from 'vue';
 import TopicTable from "@/components/topic/TopicTable.vue";
 import DashboardCard from "@/components/DashboardCard.vue";
 import Footer from "@/components/Footer.vue";
-import {TransactionCacheV2} from "@/components/transaction/TransactionCacheV2";
+import {TransactionTableController} from "@/components/transaction/TransactionTableController";
 import {TransactionResult, TransactionType} from "@/schemas/HederaSchemas";
-import {EntityCacheStateV2} from "@/utils/EntityCacheV2";
 
 export default defineComponent({
   name: 'Topics',
@@ -70,26 +69,22 @@ export default defineComponent({
 
   setup(props) {
     const isSmallScreen = inject('isSmallScreen', true)
+    const isMediumScreen = inject('isMediumScreen', true)
     const isTouchDevice = inject('isTouchDevice', false)
 
-    const transactionCache = new TransactionCacheV2()
-    transactionCache.transactionType.value = TransactionType.CONSENSUSCREATETOPIC
-    transactionCache.transactionResult.value = TransactionResult.SUCCESS
-
-    onMounted(() => {
-      transactionCache.state.value = EntityCacheStateV2.Started
-    })
+    const pageSize = computed(() => isMediumScreen ? 15 : 5)
+    const transactionTableController = new TransactionTableController(ref(null), pageSize, false)
+    transactionTableController.transactionType.value = TransactionType.CONSENSUSCREATETOPIC
+    transactionTableController.transactionResult.value = TransactionResult.SUCCESS
+    onMounted(() => transactionTableController.mounted.value = true)
+    onBeforeUnmount(() => transactionTableController.mounted.value = false)
 
     watch(() => props.network, () => {
-      transactionCache.clear()
-    })
-
-    onBeforeUnmount(() => {
-      transactionCache.state.value = EntityCacheStateV2.Stopped
+      transactionTableController.reset()
     })
 
     return {
-      transactions: transactionCache.transactions,
+      transactionTableController,
       isSmallScreen,
       isTouchDevice,
     }
