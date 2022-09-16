@@ -22,7 +22,14 @@ import {flushPromises, mount} from "@vue/test-utils"
 import router from "@/router";
 import TokenDetails from "@/pages/TokenDetails.vue";
 import axios from "axios";
-import {SAMPLE_BALANCES, SAMPLE_NFTS, SAMPLE_NONFUNGIBLE_DUDE, SAMPLE_TOKEN} from "../Mocks";
+import {
+    SAMPLE_BALANCES,
+    SAMPLE_NFTS,
+    SAMPLE_NONFUNGIBLE_DUDE,
+    SAMPLE_TOKEN,
+    SAMPLE_TOKEN_WITH_KEYS,
+    SAMPLE_TOKEN_WITHOUT_KEYS
+} from "../Mocks";
 import TokenBalanceTable from "@/components/token/TokenBalanceTable.vue";
 import MockAdapter from "axios-mock-adapter";
 import {HMSF} from "@/utils/HMSF";
@@ -84,11 +91,15 @@ describe("TokenDetails.vue", () => {
 
         expect(wrapper.get("#nameValue").text()).toBe("23423")
         expect(wrapper.get("#symbolValue").text()).toBe("QmVGABnvpbPwLcfG4iuW2JSzY8MLkALhd54bdPAbJxoEkB")
-        expect(wrapper.find("#adminKey").text()).toBe("Admin KeyNone")
+        expect(wrapper.find("#adminKey").text()).toBe("Admin KeyNoneToken is immutable")
         expect(wrapper.get("#memoValue").text()).toBe("234234")
         expect(wrapper.get("#expiresAtValue").text()).toBe("None")
         expect(wrapper.get("#autoRenewPeriodValue").text()).toBe("90 days")
+        expect(wrapper.get("#autoRenewAccountValue").text()).toBe("0.0.29612329")
+        expect(wrapper.get("#freezeDefaultValue").text()).toBe("false")
+        expect(wrapper.get("#pauseStatusValue").text()).toBe("Not applicable")
 
+        expect(wrapper.get("#treasuryAccountValue").text()).toBe("0.0.29624024")
         expect(wrapper.get("#createdAtValue").text()).toBe("10:02:30.2333 AMFeb 12, 2022, UTC")
         expect(wrapper.get("#modifiedAtValue").text()).toBe("10:02:30.2333 AMFeb 12, 2022, UTC")
         expect(wrapper.get("#totalSupplyValue").text()).toBe("1")
@@ -240,5 +251,122 @@ describe("TokenDetails.vue", () => {
         // console.log(wrapper.text())
 
         expect(wrapper.get("#notificationBanner").text()).toBe("Invalid token ID: " + invalidTokenId)
+    });
+
+    it("Should display all token keys", async () => {
+
+        await router.push("/") // To avoid "missing required param 'network'" error
+
+        const mock = new MockAdapter(axios);
+
+        const testTokenId = SAMPLE_TOKEN_WITH_KEYS.token_id
+        const matcher1 = "/api/v1/tokens/" + testTokenId
+        mock.onGet(matcher1).reply(200, SAMPLE_TOKEN_WITH_KEYS);
+        const matcher2 = "/api/v1/tokens/" + testTokenId + "/balances"
+        mock.onGet(matcher2).reply(200, SAMPLE_BALANCES);
+
+        const wrapper = mount(TokenDetails, {
+            global: {
+                plugins: [router, Oruga]
+            },
+            props: {
+                tokenId: testTokenId
+            },
+        });
+        await flushPromises()
+        // console.log(wrapper.text())
+
+        expect(wrapper.vm.tokenBalanceTableController.mounted.value).toBe(true)
+        expect(wrapper.vm.nftHolderTableController.mounted.value).toBe(true)
+
+        expect(wrapper.text()).toMatch(RegExp("^Non Fungible Token " + testTokenId))
+
+        expect(wrapper.text()).toMatch("Token Keys")
+        expect(wrapper.find("#adminKey").text()).toBe("Admin Keyc539 536f 9599 daef eeb7 7767 7aa1 aeea 2242 dfc7 cca9 2348 c228 a518 7a0f af2bCopy to ClipboardED25519")
+        expect(wrapper.find("#kycKey").text()).toBe("KYC Keyc539 536f 9599 daef eeb7 7767 7aa1 aeea 2242 dfc7 cca9 2348 c228 a518 7a0f af2bCopy to ClipboardED25519")
+        expect(wrapper.find("#freezeKey").text()).toBe("Freeze Keyc539 536f 9599 daef eeb7 7767 7aa1 aeea 2242 dfc7 cca9 2348 c228 a518 7a0f af2bCopy to ClipboardED25519")
+        expect(wrapper.find("#wipeKey").text()).toBe("Wipe Keyc539 536f 9599 daef eeb7 7767 7aa1 aeea 2242 dfc7 cca9 2348 c228 a518 7a0f af2bCopy to ClipboardED25519")
+        expect(wrapper.find("#supplyKey").text()).toBe("Supply Keyc539 536f 9599 daef eeb7 7767 7aa1 aeea 2242 dfc7 cca9 2348 c228 a518 7a0f af2bCopy to ClipboardED25519")
+        expect(wrapper.find("#feeScheduleKey").text()).toBe("Fee Schedule Keyc539 536f 9599 daef eeb7 7767 7aa1 aeea 2242 dfc7 cca9 2348 c228 a518 7a0f af2bCopy to ClipboardED25519")
+        expect(wrapper.find("#pauseKey").text()).toBe("Pause Keyc539 536f 9599 daef eeb7 7767 7aa1 aeea 2242 dfc7 cca9 2348 c228 a518 7a0f af2bCopy to ClipboardED25519")
+
+        wrapper.unmount()
+        await flushPromises()
+
+        expect(wrapper.vm.tokenBalanceTableController.mounted.value).toBe(false)
+        expect(wrapper.vm.nftHolderTableController.mounted.value).toBe(false)
+    });
+
+    it("Should display no token keys", async () => {
+
+        await router.push("/") // To avoid "missing required param 'network'" error
+
+        const mock = new MockAdapter(axios);
+
+        const testTokenId = SAMPLE_TOKEN_WITHOUT_KEYS.token_id
+        const matcher1 = "/api/v1/tokens/" + testTokenId
+        mock.onGet(matcher1).reply(200, SAMPLE_TOKEN_WITHOUT_KEYS);
+        const matcher2 = "/api/v1/tokens/" + testTokenId + "/balances"
+        mock.onGet(matcher2).reply(200, SAMPLE_BALANCES);
+
+        const wrapper = mount(TokenDetails, {
+            global: {
+                plugins: [router, Oruga]
+            },
+            props: {
+                tokenId: testTokenId
+            },
+        });
+        await flushPromises()
+        // console.log(wrapper.text())
+
+        expect(wrapper.vm.tokenBalanceTableController.mounted.value).toBe(true)
+        expect(wrapper.vm.nftHolderTableController.mounted.value).toBe(true)
+
+        expect(wrapper.text()).toMatch(RegExp("^Non Fungible Token " + testTokenId))
+
+        expect(wrapper.text()).toMatch("Token Keys")
+        expect(wrapper.find("#adminKey").text()).toBe("Admin KeyNoneToken is immutable")
+        expect(wrapper.find("#kycKey").text()).toBe("KYC KeyNoneKYC is not required")
+        expect(wrapper.find("#freezeKey").text()).toBe("Freeze KeyNoneToken cannot be frozen")
+        expect(wrapper.find("#wipeKey").text()).toBe("Wipe KeyNoneToken cannot be wiped")
+        expect(wrapper.find("#supplyKey").text()).toBe("Supply KeyNoneToken cannot be minted or burnt")
+        expect(wrapper.find("#feeScheduleKey").text()).toBe("Fee Schedule KeyNoneCustom fee schedule is immutable")
+        expect(wrapper.find("#pauseKey").text()).toBe("Pause KeyNoneToken cannot be paused")
+
+        wrapper.unmount()
+        await flushPromises()
+
+        expect(wrapper.vm.tokenBalanceTableController.mounted.value).toBe(false)
+        expect(wrapper.vm.nftHolderTableController.mounted.value).toBe(false)
+    });
+
+    it("Should display 'Token deleted' banner", async () => {
+
+        await router.push("/") // To avoid "missing required param 'network'" error
+
+        const mock = new MockAdapter(axios);
+
+        const testTokenId = SAMPLE_TOKEN_WITHOUT_KEYS.token_id
+        const matcher1 = "/api/v1/tokens/" + testTokenId
+        mock.onGet(matcher1).reply(200, SAMPLE_TOKEN_WITHOUT_KEYS);
+        const matcher2 = "/api/v1/tokens/" + testTokenId + "/balances"
+        mock.onGet(matcher2).reply(200, SAMPLE_BALANCES);
+
+        const wrapper = mount(TokenDetails, {
+            global: {
+                plugins: [router, Oruga]
+            },
+            props: {
+                tokenId: testTokenId
+            },
+        });
+        await flushPromises()
+        // console.log(wrapper.text())
+
+        expect(wrapper.text()).toMatch(RegExp("^Non Fungible Token " + testTokenId + "Token is deleted"))
+
+        wrapper.unmount()
+        await flushPromises()
     });
 });

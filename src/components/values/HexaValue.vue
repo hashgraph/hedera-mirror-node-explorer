@@ -32,7 +32,10 @@
       </div>
     </div>
   </div>
-  <div v-else-if="showNone && !initialLoading" class="has-text-grey">None</div>
+  <div v-else-if="showNone && !initialLoading">
+    <div class="has-text-grey">None</div>
+    <div v-if="noneExtra" class="has-text-grey h-is-text-size-3">{{ noneExtra }}</div>
+  </div>
   <div v-else/>
 </template>
 
@@ -52,7 +55,8 @@ export default defineComponent({
     showNone: {
       type: Boolean,
       default: false
-    }
+    },
+    noneExtra: String,
   },
 
   setup(props) {

@@ -71,4 +71,21 @@ describe("KeyValue.vue", () => {
 
         expect(wrapper.text()).toBe("None")
     });
+
+    it("should display 'None' with a mention on the line below", async () => {
+
+        await router.push("/") // To avoid "missing required param 'network'" error
+
+        const wrapper = mount(KeyValue, {
+            global: {
+                plugins: [router]
+            },
+            props: {
+                showNone: true,
+                noneExtra: "This should be displayed below None"
+            },
+        });
+
+        expect(wrapper.text()).toBe("NoneThis should be displayed below None")
+    });
 });

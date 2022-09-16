@@ -54,12 +54,6 @@
                 <BlobValue v-bind:blob-value="tokenInfo?.symbol" v-bind:show-none="true" class="should-wrap"/>
               </template>
             </Property>
-            <Property id="adminKey">
-              <template v-slot:name>Admin Key</template>
-              <template v-slot:value>
-                <KeyValue :key-bytes="tokenInfo?.admin_key?.key" :key-type="tokenInfo?.admin_key?._type" :show-none="true"/>
-              </template>
-            </Property>
             <Property id="memo">
               <template v-slot:name>Memo</template>
               <template v-slot:value>
@@ -78,9 +72,36 @@
                 <DurationValue v-bind:string-value="tokenInfo?.auto_renew_period?.toString()"/>
               </template>
             </Property>
+            <Property id="autoRenewAccount">
+              <template v-slot:name>Auto Renew Account</template>
+              <template v-slot:value>
+                <AccountLink :account-id="tokenInfo?.auto_renew_account" :show-none="true"/>
+              </template>
+            </Property>
+            <Property id="freezeDefault">
+              <template v-slot:name>Freeze Default</template>
+              <template v-slot:value>
+                <StringValue :string-value="tokenInfo?.freeze_default?.toString()"/>
+              </template>
+            </Property>
+            <Property id="pauseStatus">
+              <template v-slot:name>Pause Status</template>
+              <template v-slot:value>
+                <StringValue v-if="tokenInfo?.pause_status === 'NOT_APPLICABLE'"
+                             :string-value="'Not applicable'" class="has-text-grey"/>
+                <StringValue v-else :string-value="tokenInfo?.pause_status"/>
+              </template>
+            </Property>
+
       </template>
 
       <template v-slot:rightContent>
+            <Property id="treasuryAccount">
+              <template v-slot:name>Treasury Account</template>
+              <template v-slot:value>
+                <AccountLink :account-id="tokenInfo?.treasury_account_id"/>
+              </template>
+            </Property>
             <Property id="createdAt">
               <template v-slot:name>Created at</template>
               <template v-slot:value>
@@ -123,6 +144,83 @@
                             :show-none="true"/>
               </template>
             </Property>
+      </template>
+
+    </DashboardCard>
+
+    <DashboardCard v-if="tokenInfo">
+
+      <template v-slot:title>
+        <div class="h-is-secondary-title mb-2">Token Keys</div>
+      </template>
+
+      <template v-slot:leftContent>
+        <Property id="adminKey">
+          <template v-slot:name>Admin Key</template>
+          <template v-slot:value>
+            <KeyValue :key-bytes="tokenInfo?.admin_key?.key"
+                      :key-type="tokenInfo?.admin_key?._type"
+                      :show-none="true"
+                      :none-extra="'Token is immutable'"/>
+          </template>
+        </Property>
+        <Property id="kycKey">
+          <template v-slot:name>KYC Key</template>
+          <template v-slot:value>
+            <KeyValue :key-bytes="tokenInfo?.kyc_key?.key"
+                      :key-type="tokenInfo?.kyc_key?._type"
+                      :show-none="true"
+                      :none-extra="'KYC is not required'"/>
+          </template>
+        </Property>
+        <Property id="freezeKey">
+          <template v-slot:name>Freeze Key</template>
+          <template v-slot:value>
+            <KeyValue :key-bytes="tokenInfo?.freeze_key?.key"
+                      :key-type="tokenInfo?.freeze_key?._type"
+                      :show-none="true"
+                      :none-extra="'Token cannot be frozen'"/>
+          </template>
+        </Property>
+        <Property id="wipeKey">
+          <template v-slot:name>Wipe Key</template>
+          <template v-slot:value>
+            <KeyValue :key-bytes="tokenInfo?.wipe_key?.key"
+                      :key-type="tokenInfo?.wipe_key?._type"
+                      :show-none="true"
+                      :none-extra="'Token cannot be wiped'"/>
+          </template>
+        </Property>
+      </template>
+
+      <template v-slot:rightContent>
+        <Property id="supplyKey">
+          <template v-slot:name>Supply Key</template>
+          <template v-slot:value>
+            <KeyValue :key-bytes="tokenInfo?.supply_key?.key"
+                      :key-type="tokenInfo?.supply_key?._type"
+                      :show-none="true"
+                      :none-extra="'Token cannot be minted or burnt'"/>
+          </template>
+        </Property>
+        <Property id="feeScheduleKey">
+          <template v-slot:name>Fee Schedule Key</template>
+          <template v-slot:value>
+            <KeyValue :key-bytes="tokenInfo?.fee_schedule_key?.key"
+                      :key-type="tokenInfo?.fee_schedule_key?._type"
+                      :show-none="true"
+                      :none-extra="'Custom fee schedule is immutable'"/>
+          </template>
+        </Property>
+        <Property id="pauseKey">
+          <template v-slot:name>Pause Key</template>
+          <template v-slot:value>
+            <KeyValue :key-bytes="tokenInfo?.pause_key?.key"
+                      :key-type="tokenInfo?.pause_key?._type"
+                      :show-none="true"
+                      :none-extra="'Token cannot be paused'"/>
+          </template>
+        </Property>
       </template>
 
     </DashboardCard>
@@ -177,6 +275,8 @@ import NftHolderTable from "@/components/token/NftHolderTable.vue";
 import PlayPauseButton from "@/utils/table/PlayPauseButton.vue";
 import {NftHolderTableController} from "@/components/token/NftHolderTableController";
 import {TokenBalanceTableController} from "@/components/token/TokenBalanceTableController";
+import AccountLink from "@/components/values/AccountLink.vue";
+import StringValue from "@/components/values/StringValue.vue";
 
 export default defineComponent({
 
@@ -185,6 +285,8 @@ export default defineComponent({
   components: {
     PlayPauseButton,
     NftHolderTable,
+    StringValue,
+    AccountLink,
     NotificationBanner,
     Property,
     EthAddress,
@@ -223,6 +325,8 @@ export default defineComponent({
         result = "Invalid token ID: " + props.tokenId
       } else if (tokenInfoLoader.got404.value) {
         result = "Token with ID " + props.tokenId + " was not found"
+      } else if (tokenInfoLoader.entity.value?.deleted) {
+        result = "Token is deleted"
       } else {
         result = null
       }
