@@ -115,7 +115,7 @@ const routes: Array<RouteRecordRaw> = [
     props: true
   },
   {
-    path: '/:network/tokens/:accountId?',
+    path: '/:network/tokens',
     name: 'Tokens',
     component: Tokens,
     props: true

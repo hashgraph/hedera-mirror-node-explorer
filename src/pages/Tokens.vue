@@ -24,18 +24,21 @@
 
 <template>
 
-  <section class="section" :class="{'h-mobile-background': isTouchDevice || !isSmallScreen}">
+  <section :class="{'h-mobile-background': isTouchDevice || !isSmallScreen}" class="section">
 
     <div class="columns is-multiline">
 
-      <div class="column has-text-left" :class="{'is-full': !displaySideBySide}">
+      <div :class="{'is-full': !displaySideBySide}" class="column has-text-left">
 
         <DashboardCard>
           <template v-slot:title>
             <span class="h-is-primary-title">Recent Non Fungible Tokens</span>
           </template>
+          <template v-slot:control>
+            <PlayPauseButton v-bind:controller="nftTableController"/>
+          </template>
           <template v-slot:content>
-            <TokenTable v-bind:tokens="nftTokens"/>
+            <TokenTable :controller="nftTableController"/>
           </template>
         </DashboardCard>
 
@@ -47,8 +50,11 @@
           <template v-slot:title>
             <span class="h-is-primary-title">Recent Fungible Tokens</span>
           </template>
+          <template v-slot:control>
+            <PlayPauseButton v-bind:controller="tokenTableController"/>
+          </template>
           <template v-slot:content>
-            <TokenTable v-bind:tokens="funTokens"/>
+            <TokenTable :controller="tokenTableController"/>
           </template>
         </DashboardCard>
 
@@ -68,22 +74,22 @@
 
 <script lang="ts">
 
-import {defineComponent, inject, onBeforeUnmount, onMounted} from 'vue';
+import {computed, defineComponent, inject, onBeforeUnmount, onMounted, ref} from 'vue';
 import TokenTable from "@/components/token/TokenTable.vue";
 import DashboardCard from "@/components/DashboardCard.vue";
 import Footer from "@/components/Footer.vue";
-import {TokenCache} from "@/components/token/TokenCache";
-import {EntityCacheStateV2} from "@/utils/EntityCacheV2";
+import PlayPauseButton from "@/utils/table/PlayPauseButton.vue";
+import {TokenTableController} from "@/components/token/TokenTableController";
 
 export default defineComponent({
   name: 'Tokens',
 
   props: {
-    accountId: String,
     network: String
   },
 
   components: {
+    PlayPauseButton,
     Footer,
     DashboardCard,
     TokenTable
@@ -91,6 +97,7 @@ export default defineComponent({
 
   setup() {
     const isSmallScreen = inject('isSmallScreen', true)
+    const isMediumScreen = inject('isMediumScreen', true)
     const isTouchDevice = inject('isTouchDevice', false)
     const displaySideBySide = inject('isLargeScreen', true)
 
@@ -98,37 +105,26 @@ export default defineComponent({
     const NONFUNGIBLE = "NON_FUNGIBLE_UNIQUE"
 
     //
-    // nfTokenCache
+    // NFT and TOKEN TableController
     //
-    const nfTokenCache = new TokenCache(isTouchDevice ? 15 : 100)
+    const perPage = computed(() => isMediumScreen ? 15 : 10)
+    const nftTableController = new TokenTableController(perPage, ref(NONFUNGIBLE))
+    const tokenTableController = new TokenTableController(perPage, ref(FUNGIBLE))
     onMounted(() => {
-      nfTokenCache.tokenType.value = NONFUNGIBLE
-      nfTokenCache.state.value = EntityCacheStateV2.Started
+      nftTableController.mounted.value = true
+      tokenTableController.mounted.value = true
     })
     onBeforeUnmount(() => {
-      nfTokenCache.state.value = EntityCacheStateV2.Stopped
-    })
-
-    //
-    // funTokenCache
-    //
-    const funTokenCache = new TokenCache(isTouchDevice ? 15 : 100)
-    onMounted(() => {
-      funTokenCache.tokenType.value = FUNGIBLE
-      funTokenCache.state.value = EntityCacheStateV2.Started
-    })
-    onBeforeUnmount(() => {
-      funTokenCache.state.value = EntityCacheStateV2.Stopped
+      nftTableController.mounted.value = false
+      tokenTableController.mounted.value = false
     })
 
     return {
       isSmallScreen,
       isTouchDevice,
       displaySideBySide,
-      nftTokens: nfTokenCache.tokens,
-      funTokens: funTokenCache.tokens,
-      nfTokenCache, // For testing purpose
-      funTokenCache, // For testing purpose
+      nftTableController,
+      tokenTableController
     }
 
   }

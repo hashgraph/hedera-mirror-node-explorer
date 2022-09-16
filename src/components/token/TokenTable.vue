@@ -26,21 +26,27 @@
 
   <o-table
       :data="tokens"
+      :loading="loading"
+      paginated
+      backend-pagination
+      :total="total"
+      v-model:current-page="currentPage"
+      :per-page="perPage"
+      @page-change="onPageChange"
+      @click="handleClick"
+
       :hoverable="true"
-      :paginated="!isTouchDevice"
-      :per-page="isMediumScreen ? pageSize : 5"
+      :narrowed="narrowed"
       :striped="true"
-      :v-model:current-page="currentPage"
       :mobile-breakpoint="ORUGA_MOBILE_BREAKPOINT"
+
       aria-current-label="Current page"
       aria-next-label="Next page"
       aria-page-label="Page"
       aria-previous-label="Previous page"
       customRowKey="token_id"
-      default-sort="token_id"
-      @click="handleClick"
   >
-    <o-table-column v-slot="props" field="token" label="Token">
+    <o-table-column v-slot="props" field="token_id" label="Token">
       <div class="is-numeric">
         {{ props.row.token_id }}
       </div>
@@ -62,11 +68,12 @@
 
 <script lang="ts">
 
-import {defineComponent, inject, PropType, ref} from 'vue';
+import {ComputedRef, defineComponent, inject, PropType, Ref} from 'vue';
 import router from "@/router";
 import {Token} from "@/schemas/HederaSchemas";
 import {ORUGA_MOBILE_BREAKPOINT} from '@/App.vue';
 import EmptyTable from "@/components/EmptyTable.vue";
+import {TokenTableController} from "@/components/token/TokenTableController";
 
 export default defineComponent({
   name: 'TokenTable',
@@ -74,34 +81,35 @@ export default defineComponent({
   components: {EmptyTable},
 
   props: {
-    nbItems: Number,
-    tokens: {
-      type: Array as PropType<Array<Token>>,
-      default: () => []
+    controller: {
+      type: Object as PropType<TokenTableController>,
+      required: true
+    },
+    narrowed:{
+      type: Boolean,
+      default: false
     }
   },
 
   setup(props) {
     const isTouchDevice = inject('isTouchDevice', false)
     const isMediumScreen = inject('isMediumScreen', true)
-    const DEFAULT_PAGE_SIZE = 15
-    const pageSize = props.nbItems ?? DEFAULT_PAGE_SIZE
 
-    // 3) handleClick
     const handleClick = (t: Token) => {
       router.push({name: 'TokenDetails', params: {tokenId: t.token_id}})
     }
 
-    // 4) currentPage
-    let currentPage = ref(1)
-
     return {
       isTouchDevice,
       isMediumScreen,
-      pageSize,
+      tokens: props.controller.pageRows as ComputedRef<Token[]>,
+      loading: props.controller.loading as ComputedRef<boolean>,
+      total: props.controller.totalRowCount as ComputedRef<number>,
+      currentPage: props.controller.currentPage as Ref<number>,
+      onPageChange: props.controller.onPageChange,
+      perPage: props.controller.pageSize as Ref<number>,
       handleClick,
-      currentPage,
-      ORUGA_MOBILE_BREAKPOINT
+      ORUGA_MOBILE_BREAKPOINT,
     }
   }
 });
