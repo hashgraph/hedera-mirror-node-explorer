@@ -81,6 +81,14 @@ export abstract class TableController<R, K> {
 
     public readonly mounted: Ref<boolean> = ref(false)
 
+    public reset(): void {
+        this.rowBuffer.clear()
+        if (this.mounted.value) {
+            this.autoRefresh.value = true
+        }
+    }
+
+
     //
     // Public (to be subclassed)
     //
@@ -124,9 +132,9 @@ export abstract class TableController<R, K> {
             this.watchStopHandle = null
         }
         if (sources.length >= 1) {
-            this.watchStopHandle = watch(sources, () => this.sourcesDidChange())
+            this.watchStopHandle = watch(sources, () => this.reset())
         }
-        this.sourcesDidChange()
+        this.reset()
     }
 
 
@@ -184,11 +192,6 @@ export abstract class TableController<R, K> {
 
             }
         })
-    }
-
-    private sourcesDidChange() {
-        this.rowBuffer.clear()
-        this.autoRefresh.value = true
     }
 
 }
