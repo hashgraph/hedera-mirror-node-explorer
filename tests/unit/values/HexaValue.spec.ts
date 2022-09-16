@@ -47,6 +47,19 @@ describe("HexaValue.vue", () => {
         expect(wrapper.text()).toBe("None")
     });
 
+    it("should display 'None' with a mention on the line below", async () => {
+
+        const wrapper = mount(HexaValue, {
+            props: {
+                showNone: true,
+                noneExtra: "This should be displayed below None"
+            }
+        });
+        await flushPromises()
+
+        expect(wrapper.text()).toBe("NoneThis should be displayed below None")
+    });
+
     //
     // byteString set
     //

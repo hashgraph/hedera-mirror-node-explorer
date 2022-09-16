@@ -104,6 +104,66 @@ export const SAMPLE_TOKEN_DUDE = {
     }
 }
 
+export const SAMPLE_TOKEN_WITH_KEYS = {
+    "admin_key": {"_type": "ED25519", "key": "c539536f9599daefeeb777677aa1aeea2242dfc7cca92348c228a5187a0faf2b"},
+    "auto_renew_account": "0.0.91918",
+    "auto_renew_period": 6999999,
+    "created_timestamp": "1663133692.386591752",
+    "custom_fees": {"created_timestamp": "1663133692.386591752", "fixed_fees": [], "royalty_fees": []},
+    "decimals": "0",
+    "deleted": true,
+    "expiry_timestamp": null,
+    "fee_schedule_key": {"_type": "ED25519", "key": "c539536f9599daefeeb777677aa1aeea2242dfc7cca92348c228a5187a0faf2b"},
+    "freeze_default": false,
+    "freeze_key": {"_type": "ED25519", "key": "c539536f9599daefeeb777677aa1aeea2242dfc7cca92348c228a5187a0faf2b"},
+    "initial_supply": "0",
+    "kyc_key": {"_type": "ED25519", "key": "c539536f9599daefeeb777677aa1aeea2242dfc7cca92348c228a5187a0faf2b"},
+    "max_supply": "0",
+    "memo": "Mirror Node acceptance test: 2022-09-14T05:35:30.365404855Z Update token",
+    "modified_timestamp": "1663133730.475752003",
+    "name": "QEYB_name",
+    "pause_key": {"_type": "ED25519", "key": "c539536f9599daefeeb777677aa1aeea2242dfc7cca92348c228a5187a0faf2b"},
+    "pause_status": "UNPAUSED",
+    "supply_key": {"_type": "ED25519", "key": "c539536f9599daefeeb777677aa1aeea2242dfc7cca92348c228a5187a0faf2b"},
+    "supply_type": "INFINITE",
+    "symbol": "QEYB",
+    "token_id": "0.0.91961",
+    "total_supply": "0",
+    "treasury_account_id": "0.0.91962",
+    "type": "NON_FUNGIBLE_UNIQUE",
+    "wipe_key": {"_type": "ED25519", "key": "c539536f9599daefeeb777677aa1aeea2242dfc7cca92348c228a5187a0faf2b"}
+}
+
+export const SAMPLE_TOKEN_WITHOUT_KEYS = {
+    "admin_key": null,
+    "auto_renew_account": "0.0.91918",
+    "auto_renew_period": 6999999,
+    "created_timestamp": "1663133692.386591752",
+    "custom_fees": {"created_timestamp": "1663133692.386591752", "fixed_fees": [], "royalty_fees": []},
+    "decimals": "0",
+    "deleted": true,
+    "expiry_timestamp": null,
+    "fee_schedule_key": null,
+    "freeze_default": false,
+    "freeze_key": null,
+    "initial_supply": "0",
+    "kyc_key": null,
+    "max_supply": "0",
+    "memo": "Mirror Node acceptance test: 2022-09-14T05:35:30.365404855Z Update token",
+    "modified_timestamp": "1663133730.475752003",
+    "name": "QEYB_name",
+    "pause_key": null,
+    "pause_status": "UNPAUSED",
+    "supply_key": null,
+    "supply_type": "INFINITE",
+    "symbol": "QEYB",
+    "token_id": "0.0.91961",
+    "total_supply": "0",
+    "treasury_account_id": "0.0.91962",
+    "type": "NON_FUNGIBLE_UNIQUE",
+    "wipe_key": null
+}
+
 //
 // NFT inspired from https://mainnet-public.mirrornode.hedera.com/api/v1/tokens/0.0.748383
 //
