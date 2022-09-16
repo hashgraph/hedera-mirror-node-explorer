@@ -85,7 +85,6 @@ import TimestampValue from "@/components/values/TimestampValue.vue";
 import TransactionLabel from "@/components/values/TransactionLabel.vue";
 import {ORUGA_MOBILE_BREAKPOINT} from '@/App.vue';
 import EmptyTable from "@/components/EmptyTable.vue";
-import {RewardsTransactionCache} from "@/components/staking/RewardsTransactionCache";
 import HbarAmount from "@/components/values/HbarAmount.vue";
 import {RewardsTransactionTableController} from "@/components/transaction/RewardsTransactionTableController";
 
@@ -112,7 +111,7 @@ export default defineComponent({
 
     const amountRewarded = (t: Transaction) => {
       const accountId = props.controller.accountId.value
-      return accountId !== null ? RewardsTransactionCache.getAmountRewarded(t, accountId) : 0
+      return accountId !== null ? RewardsTransactionTableController.getAmountRewarded(t, accountId) : 0
     }
 
     return {
