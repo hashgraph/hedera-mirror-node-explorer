@@ -68,6 +68,9 @@ export abstract class TableController<R, K> {
         return result
     })
 
+    public readonly paginated: ComputedRef<boolean> = computed(
+        () => this.rowBuffer.rows.value.length >= this.pageSize.value)
+
     public readonly onPageChange = (page: number): void => {
         if (this.currentPage.value != page) {
             this.autoRefresh.value = false
