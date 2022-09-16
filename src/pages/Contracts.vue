@@ -55,7 +55,7 @@ import ContractTable from "@/components/contract/ContractTable.vue";
 import DashboardCard from "@/components/DashboardCard.vue";
 import Footer from "@/components/Footer.vue";
 import PlayPauseButton from "@/utils/table/PlayPauseButton.vue";
-import {ContractTableController} from "@/components/account/ContractTableController";
+import {ContractTableController} from "@/components/contract/ContractTableController";
 
 export default defineComponent({
   name: 'Contracts',

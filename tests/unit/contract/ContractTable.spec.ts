@@ -25,7 +25,7 @@ import Oruga from "@oruga-ui/oruga-next";
 import {HMSF} from "@/utils/HMSF";
 import ContractTable from "@/components/contract/ContractTable.vue";
 import {ref} from "vue";
-import {ContractTableController} from "@/components/account/ContractTableController";
+import {ContractTableController} from "@/components/contract/ContractTableController";
 import MockAdapter from "axios-mock-adapter";
 import axios from "axios";
 

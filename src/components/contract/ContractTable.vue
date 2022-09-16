@@ -81,7 +81,7 @@ import BlobValue from "@/components/values/BlobValue.vue";
 import TimestampValue from "@/components/values/TimestampValue.vue";
 import { ORUGA_MOBILE_BREAKPOINT } from '@/App.vue';
 import EmptyTable from "@/components/EmptyTable.vue";
-import {ContractTableController} from "@/components/account/ContractTableController";
+import {ContractTableController} from "@/components/contract/ContractTableController";
 
 
 //
