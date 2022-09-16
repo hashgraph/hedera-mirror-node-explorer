@@ -20,11 +20,14 @@
 
 import {flushPromises, mount} from "@vue/test-utils"
 import router from "@/router";
-import {SAMPLE_CONTRACT_AS_ACCOUNT} from "../Mocks";
+import {SAMPLE_CONTRACT_AS_ACCOUNT, SAMPLE_TRANSACTIONS} from "../Mocks";
 import Oruga from "@oruga-ui/oruga-next";
 import ContractTransactionTable from "@/components/contract/ContractTransactionTable.vue";
 import {HMSF} from "@/utils/HMSF";
-import {Transaction} from "@/schemas/HederaSchemas";
+import {ref} from "vue";
+import {TransactionTableController} from "@/components/transaction/TransactionTableController";
+import MockAdapter from "axios-mock-adapter";
+import axios from "axios";
 
 /*
     Bookmarks
@@ -51,19 +54,26 @@ HMSF.forceUTC = true
 
 describe("ContractTransactionTable.vue", () => {
 
-    test("all props", async () => {
+    test.skip("all props", async () => {
 
         await router.push("/") // To avoid "missing required param 'network'" error
 
+        const mock = new MockAdapter(axios)
+
+        const matcher2 = "/api/v1/transactions"
+        mock.onGet(matcher2).reply(200, SAMPLE_TRANSACTIONS)
+
+        const accountId = ref(SAMPLE_CONTRACT_AS_ACCOUNT.account)
+        const controller = new TransactionTableController(accountId, ref(10), true)
         const wrapper = mount(ContractTransactionTable, {
             global: {
                 plugins: [router, Oruga]
             },
             props: {
-                nbItems: 42,
-                transactions: SAMPLE_CONTRACT_AS_ACCOUNT.transactions as Array<Transaction>
+                controller: controller,
             },
-        });
+        })
+        controller.mounted.value = true
 
         await flushPromises()
         // console.log(wrapper.find('thead').text())
