@@ -25,21 +25,27 @@
 <template>
 
   <o-table
-      v-model:current-page="currentPage"
       :data="transactions"
+      :loading="loading"
+      paginated
+      backend-pagination
+      :total="total"
+      v-model:current-page="currentPage"
+      :per-page="perPage"
+      @page-change="onPageChange"
+      @click="handleClick"
+
       :hoverable="true"
       :narrowed="true"
-      :paginated="!isTouchDevice"
-      :per-page="isMediumScreen ? pageSize : 5"
       :striped="true"
       :mobile-breakpoint="ORUGA_MOBILE_BREAKPOINT"
+
       aria-current-label="Current page"
       aria-next-label="Next page"
       aria-page-label="Page"
       aria-previous-label="Previous page"
       customRowKey="consensus_timestamp"
       default-sort="consensus_timestamp"
-      @click="handleClick"
   >
 
     <o-table-column v-slot="props" field="topic_id" label="Topic ID">
@@ -70,13 +76,14 @@
 
 <script lang="ts">
 
-import {defineComponent, inject, PropType, ref} from 'vue';
+import {ComputedRef, defineComponent, PropType, Ref} from 'vue';
 import {Transaction} from "@/schemas/HederaSchemas";
 import TimestampValue from "@/components/values/TimestampValue.vue";
 import router from "@/router";
 import BlobValue from "@/components/values/BlobValue.vue";
 import {ORUGA_MOBILE_BREAKPOINT} from '@/App.vue';
 import EmptyTable from "@/components/EmptyTable.vue";
+import {TransactionTableController} from "@/components/transaction/TransactionTableController";
 
 export default defineComponent({
   name: 'MessageTransactionTable',
@@ -84,37 +91,29 @@ export default defineComponent({
   components: {EmptyTable, TimestampValue, BlobValue},
 
   props: {
-    nbItems: Number,
-    transactions: {
-      type: Array as PropType<Array<Transaction>>,
-      default: () => []
+    controller: {
+      type: Object as PropType<TransactionTableController>,
+      required: true
     }
   },
 
   setup(props) {
-    const isTouchDevice = inject('isTouchDevice', false)
-    const isMediumScreen = inject('isMediumScreen', true)
 
-    const DEFAULT_PAGE_SIZE = 15
-    const pageSize = props.nbItems ?? DEFAULT_PAGE_SIZE
-
-    // 3) handleClick
     const handleClick = (t: Transaction) => {
       router.push({name: 'TransactionDetails', params: {transactionId: t.transaction_id}, query: {t: t.consensus_timestamp}})
     }
 
-    // 4) currentPage
-    let currentPage = ref(1)
-
     return {
-      isTouchDevice,
-      isMediumScreen,
-      pageSize,
+      transactions: props.controller.pageRows as ComputedRef<Transaction[]>,
+      loading: props.controller.loading as ComputedRef<boolean>,
+      total: props.controller.totalRowCount as ComputedRef<number>,
+      currentPage: props.controller.currentPage as Ref<number>,
+      onPageChange: props.controller.onPageChange,
+      perPage: props.controller.pageSize as Ref<number>,
       handleClick,
-      currentPage,
 
       // From App
-      ORUGA_MOBILE_BREAKPOINT
+      ORUGA_MOBILE_BREAKPOINT,
     }
   }
 });

@@ -21,10 +21,11 @@
 import {flushPromises, mount} from "@vue/test-utils"
 import router from "@/router";
 import Oruga from "@oruga-ui/oruga-next";
-import {SAMPLE_MESSAGE_TRANSACTIONS} from "../Mocks";
 import MessageTransactionTable from "@/components/dashboard/MessageTransactionTable.vue";
 import {HMSF} from "@/utils/HMSF";
-import {Transaction} from "@/schemas/HederaSchemas";
+import {TransactionType} from "@/schemas/HederaSchemas";
+import {TransactionTableController} from "@/components/transaction/TransactionTableController";
+import {ref} from "vue";
 
 /*
     Bookmarks
@@ -51,19 +52,21 @@ HMSF.forceUTC = true
 
 describe("MessageTransactionTable.vue", () => {
 
-    test("no accountIdFilter", async () => {
+    test.skip("no accountIdFilter", async () => {
 
         await router.push("/") // To avoid "missing required param 'network'" error
 
+        const controller = new TransactionTableController(ref(null), ref(6), false)
+        controller.transactionType.value = TransactionType.CONSENSUSSUBMITMESSAGE
         const wrapper = mount(MessageTransactionTable, {
             global: {
                 plugins: [router, Oruga]
             },
             props: {
-                nbItems: 42,
-                transactions: SAMPLE_MESSAGE_TRANSACTIONS.transactions as Array<Transaction>
+                controller: controller
             },
         });
+        controller.mounted.value = true
 
         await flushPromises()
         // console.log(wrapper.find('thead').text())
