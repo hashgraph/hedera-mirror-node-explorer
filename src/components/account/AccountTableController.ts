@@ -23,8 +23,6 @@ import {AccountInfo, AccountsResponse} from "@/schemas/HederaSchemas";
 import {Ref} from "vue";
 import axios, {AxiosResponse} from "axios";
 
-const DESCENDING = 'desc'
-
 export class AccountTableController extends TableController<AccountInfo, string> {
 
     //
@@ -63,7 +61,7 @@ export class AccountTableController extends TableController<AccountInfo, string>
             order: string
         }
         params.limit = limit
-        params.order = DESCENDING
+        params.order = 'desc'
         if (accountId !== null) {
             params["account.id"] = operator + ":" + accountId
         }
