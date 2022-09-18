@@ -54,6 +54,10 @@ export abstract class AutoRefreshLoader<E> extends EntityLoader<E> {
         watch(this.autoRefresh, () => this.autoRefreshDidChange(), { flush: 'sync' })
     }
 
+    //
+    // EntityLoader
+    //
+
     protected concludeLoad(): void {
         this.refreshCount.value += 1
         if (this.refreshCount.value < this.maxRefreshCount) {
@@ -63,6 +67,14 @@ export abstract class AutoRefreshLoader<E> extends EntityLoader<E> {
         } else {
             this.autoRefresh.value = false
         }
+    }
+
+    public requestLoad() {
+        if (this.timeoutID != -1) {
+            window.clearTimeout(this.timeoutID)
+            this.timeoutID = -1
+        }
+        super.requestLoad();
     }
 
     //
