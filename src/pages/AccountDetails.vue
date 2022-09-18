@@ -216,7 +216,6 @@ import NotificationBanner from "@/components/NotificationBanner.vue";
 import EthAddress from "@/components/values/EthAddress.vue";
 import StringValue from "@/components/values/StringValue.vue";
 import {TransactionTableController} from "@/components/transaction/TransactionTableController";
-import {EntityCacheStateV2} from "@/utils/EntityCacheV2";
 import AccountLink from "@/components/values/AccountLink.vue";
 import {AccountLoader} from "@/components/account/AccountLoader";
 import {ContractLoader} from "@/components/contract/ContractLoader";
@@ -319,7 +318,9 @@ export default defineComponent({
     // balanceCache
     //
 
-    const balanceCache = new BalanceCache(1, 60000)
+    const balanceCache = new BalanceCache(accountLoader.accountId, 10000)
+    onMounted(() => balanceCache.mounted.value = true)
+    onBeforeUnmount(() => balanceCache.mounted.value = false)
     const displayAllTokenLinks = computed(() => {
       const tokenCount = balanceCache.tokenBalances.value?.length ?? 0
       return tokenCount > MAX_TOKEN_BALANCES
@@ -341,25 +342,6 @@ export default defineComponent({
           return result
         }
     )
-
-    const setupBalanceCache = () => {
-      if (accountLoader.entity.value) {
-        balanceCache.accountId.value = accountLoader.accountId.value
-        balanceCache.state.value = EntityCacheStateV2.Started
-      } else {
-        balanceCache.state.value = EntityCacheStateV2.Stopped
-      }
-    }
-
-    watch(accountLoader.entity, () => {
-      setupBalanceCache()
-    });
-    onMounted(() => {
-      setupBalanceCache()
-    })
-    onBeforeUnmount(() => {
-      balanceCache.state.value = EntityCacheStateV2.Stopped
-    })
 
     //
     // contract

@@ -24,22 +24,24 @@ import axios from "axios";
 import AccountDetails from "@/pages/AccountDetails.vue";
 import {
     SAMPLE_ACCOUNT,
-    SAMPLE_ACCOUNT_BALANCES, SAMPLE_ACCOUNT_DUDE,
-    SAMPLE_COINGECKO,
+    SAMPLE_ACCOUNT_BALANCES,
+    SAMPLE_ACCOUNT_DELETED,
+    SAMPLE_ACCOUNT_DUDE,
     SAMPLE_ACCOUNT_HBAR_BALANCE,
     SAMPLE_ACCOUNT_STAKING_ACCOUNT,
     SAMPLE_ACCOUNT_STAKING_NODE,
+    SAMPLE_COINGECKO,
     SAMPLE_FAILED_TRANSACTIONS,
     SAMPLE_NETWORK_NODES,
     SAMPLE_NONFUNGIBLE,
-    SAMPLE_TOKEN, SAMPLE_TOKEN_DUDE,
-    SAMPLE_TRANSACTIONS, SAMPLE_ACCOUNT_DELETED,
+    SAMPLE_TOKEN,
+    SAMPLE_TOKEN_DUDE,
+    SAMPLE_TRANSACTIONS,
 } from "../Mocks";
 import MockAdapter from "axios-mock-adapter";
 import Oruga from "@oruga-ui/oruga-next";
 import TransactionTable from "@/components/transaction/TransactionTable.vue";
 import {HMSF} from "@/utils/HMSF";
-import {EntityCacheStateV2} from "@/utils/EntityCacheV2";
 import NotificationBanner from "@/components/NotificationBanner.vue";
 
 /*
@@ -200,7 +202,7 @@ describe("AccountDetails.vue", () => {
         wrapper.unmount()
         await flushPromises()
 
-        expect(wrapper.vm.balanceCache.state.value).toBe(EntityCacheStateV2.Stopped)
+        expect(wrapper.vm.balanceCache.autoRefresh.value).toBe(false)
     });
 
     it("Should detect invalid account ID", async () => {

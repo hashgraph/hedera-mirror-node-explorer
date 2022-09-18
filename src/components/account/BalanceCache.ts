@@ -18,24 +18,23 @@
  *
  */
 
-import {EntityCacheV2} from "@/utils/EntityCacheV2";
+import {AutoRefreshLoader} from "@/utils/AutoRefreshLoader"
 import {BalancesResponse, TokenBalance} from "@/schemas/HederaSchemas";
 import axios, {AxiosResponse} from "axios";
-import {computed, Ref, ref, watch} from "vue";
+import {computed, Ref, ref} from "vue";
 
-export class BalanceCache extends EntityCacheV2<BalancesResponse> {
+export class BalanceCache extends AutoRefreshLoader<BalancesResponse> {
 
     public readonly accountId = ref<string|null>(null)
-    private readonly limit: number
 
     //
     // Public
     //
 
-    public constructor(limit = 100, updatePeriod: number|null = null) {
-        super(updatePeriod)
-        this.limit = limit
-        watch(this.accountId, () => this.clear(), EntityCacheV2.WATCH_OPTIONS)
+    public constructor(accountId = ref<string|null>(null), updatePeriod: number) {
+        super(updatePeriod, AutoRefreshLoader.HUGE_COUNT)
+        this.accountId = accountId
+        this.watchAndReload([this.accountId])
     }
 
     public readonly hbarBalance: Ref<number|null> = computed(() => {
@@ -56,12 +55,17 @@ export class BalanceCache extends EntityCacheV2<BalancesResponse> {
     // EntityCache
     //
 
-    protected load(): Promise<AxiosResponse<BalancesResponse>> {
-        const params = {
-            'account.id': this.accountId.value,
-            limit: this.limit,
-            order: 'asc'
+    protected load(): Promise<AxiosResponse<BalancesResponse>|null> {
+        let result: Promise<AxiosResponse<BalancesResponse>|null>
+        if (this.accountId.value !== null) {
+            const params = {
+                'account.id': this.accountId.value,
+                limit: 1,
+            }
+            result = axios.get<BalancesResponse>("api/v1/balances", { params: params} )
+        } else {
+            result = Promise.resolve(null)
         }
-        return axios.get<BalancesResponse>("api/v1/balances", { params: params} )
+        return result
     }
 }
