@@ -79,7 +79,6 @@
 import {computed, defineComponent, inject, onBeforeUnmount, onMounted, ref} from 'vue';
 import axios from "axios";
 import {CoinGeckoCache} from "@/components/dashboard/CoinGeckoCache";
-import {EntityCacheStateV2} from "@/utils/EntityCacheV2";
 import {NetworkSupplyResponse} from "@/schemas/HederaSchemas";
 import DashboardItem from "@/components/dashboard/DashboardItem.vue";
 import {NetworkRegistry, networkRegistry} from "@/schemas/NetworkRegistry";
@@ -121,10 +120,10 @@ export default defineComponent({
     //
     const coinGeckoCache = new CoinGeckoCache()
     onMounted(() => {
-      coinGeckoCache.state.value = EntityCacheStateV2.Started
+      coinGeckoCache.mounted.value = true
     })
     onBeforeUnmount(() => {
-      coinGeckoCache.state.value = EntityCacheStateV2.Stopped
+      coinGeckoCache.mounted.value = false
     })
 
     //

@@ -23,6 +23,8 @@ import {computed, ComputedRef, ref, Ref, watch} from "vue";
 
 export abstract class AutoRefreshLoader<E> extends EntityLoader<E> {
 
+    public static readonly HUGE_COUNT = 9999999
+
     private readonly refreshPeriod: number
     private readonly maxRefreshCount: number
     private readonly refreshCount = ref(0)
