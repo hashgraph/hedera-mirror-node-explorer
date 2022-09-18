@@ -42,8 +42,9 @@ export abstract class EntityLoader<E> {
 
     public requestLoad(): void {
         this.sessionId += 1
-        const resolve = (newResponse: AxiosResponse<E>|null) => this.loadDidComplete(newResponse, this.sessionId)
-        const reject = (reason: unknown) => this.loadDidFail(reason, this.sessionId)
+        const capturedSessionId = this.sessionId
+        const resolve = (newResponse: AxiosResponse<E>|null) => this.loadDidComplete(newResponse, capturedSessionId)
+        const reject = (reason: unknown) => this.loadDidFail(reason, capturedSessionId)
         this.load().then(resolve, reject)
     }
 
