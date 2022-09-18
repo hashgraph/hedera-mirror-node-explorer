@@ -26,7 +26,7 @@ export abstract class EntityLoader<E> {
 
     private readonly responseRef: Ref<AxiosResponse<E> | null> = ref(null)
     private readonly errorRef: Ref<unknown> = ref(null)
-    private requestCounter = 0
+    private sessionId = 0
     private watchStopHandle: WatchStopHandle|null = null
 
     //
@@ -41,9 +41,9 @@ export abstract class EntityLoader<E> {
                                             && this.errorRef.value?.response?.status === 404)
 
     public requestLoad(): void {
-        this.requestCounter += 1
-        const resolve = (newResponse: AxiosResponse<E>|null) => this.loadDidComplete(newResponse, this.requestCounter)
-        const reject = (reason: unknown) => this.loadDidFail(reason, this.requestCounter)
+        this.sessionId += 1
+        const resolve = (newResponse: AxiosResponse<E>|null) => this.loadDidComplete(newResponse, this.sessionId)
+        const reject = (reason: unknown) => this.loadDidFail(reason, this.sessionId)
         this.load().then(resolve, reject)
     }
 
@@ -69,15 +69,15 @@ export abstract class EntityLoader<E> {
     // Private
     //
 
-    private loadDidComplete(newResponse: AxiosResponse<E>|null, requestCounter: number) {
-        if (this.requestCounter == requestCounter) {
+    private loadDidComplete(newResponse: AxiosResponse<E>|null, capturedSessionId: number) {
+        if (this.sessionId == capturedSessionId) {
             this.responseRef.value = newResponse
             this.errorRef.value = null
         }
     }
 
-    private loadDidFail(reason: unknown, requestCounter: number) {
-        if (this.requestCounter == requestCounter) {
+    private loadDidFail(reason: unknown, capturedSessionId: number) {
+        if (this.sessionId == capturedSessionId) {
             this.responseRef.value = null
             this.errorRef.value = reason
         }
