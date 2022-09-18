@@ -41,11 +41,16 @@ export abstract class EntityLoader<E> {
                                             && this.errorRef.value?.response?.status === 404)
 
     public requestLoad(): void {
-        this.sessionId += 1
+        this.incrementSessionId()
         const capturedSessionId = this.sessionId
         const resolve = (newResponse: AxiosResponse<E>|null) => this.loadDidComplete(newResponse, capturedSessionId)
         const reject = (reason: unknown) => this.loadDidFail(reason, capturedSessionId)
         this.load().then(resolve, reject)
+    }
+
+    public clear(): void {
+        this.responseRef.value = null
+        this.incrementSessionId()
     }
 
     //
@@ -66,6 +71,14 @@ export abstract class EntityLoader<E> {
         throw Error("must be subclassed")
     }
 
+    protected concludeLoad(): void {
+        // Will be used by subclasses
+    }
+
+    protected incrementSessionId(): void {
+        this.sessionId += 1
+    }
+
     //
     // Private
     //
@@ -74,6 +87,7 @@ export abstract class EntityLoader<E> {
         if (this.sessionId == capturedSessionId) {
             this.responseRef.value = newResponse
             this.errorRef.value = null
+            this.concludeLoad()
         }
     }
 
@@ -81,6 +95,7 @@ export abstract class EntityLoader<E> {
         if (this.sessionId == capturedSessionId) {
             this.responseRef.value = null
             this.errorRef.value = reason
+            this.concludeLoad()
         }
     }
 
