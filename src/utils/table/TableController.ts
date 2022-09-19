@@ -87,7 +87,12 @@ export abstract class TableController<R, K> {
     public reset(): void {
         this.rowBuffer.clear()
         if (this.mounted.value) {
-            this.autoRefresh.value = true
+            if (this.autoRefresh.value) {
+                this.stopRefreshing()
+                this.startRefreshing()
+            } else {
+                this.autoRefresh.value = true // Will invoke this.startRefreshing()
+            }
         }
     }
 
