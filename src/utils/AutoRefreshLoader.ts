@@ -69,7 +69,7 @@ export abstract class AutoRefreshLoader<E> extends EntityLoader<E> {
         }
     }
 
-    public requestLoad() {
+    public requestLoad(): void {
         if (this.timeoutID != -1) {
             window.clearTimeout(this.timeoutID)
             this.timeoutID = -1
