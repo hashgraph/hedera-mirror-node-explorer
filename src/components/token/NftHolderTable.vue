@@ -24,7 +24,7 @@
 
 <template>
 
- <div id="token-nft-table">
+ <div id="nft-holder-table">
   <o-table
       :data="nfts"
       :loading="loading"
@@ -34,7 +34,6 @@
       v-model:current-page="currentPage"
       :per-page="perPage"
       @page-change="onPageChange"
-      @click="handleClick"
 
       :hoverable="false"
       :narrowed="true"
@@ -129,7 +128,7 @@ export default defineComponent({
 <!-- --------------------------------------------------------------------------------------------------------------- -->
 
 <style>
-#token-nft-table table.o-table > tbody > tr {
+#nft-holder-table table.o-table > tbody > tr {
   cursor:default;
 }
 </style>
