@@ -134,8 +134,12 @@
         <div v-else class="h-is-secondary-title mb-2">Balances</div>
       </template>
 
+      <template v-slot:control>
+        <PlayPauseButton v-if="isNft" :controller="nftHolderTableController"/>
+      </template>
+
       <template v-slot:content>
-        <TokenNftTable v-if="tokenInfo.type === 'NON_FUNGIBLE_UNIQUE'" v-bind:nb-items="10" v-bind:nfts="nfts"/>
+        <NftHolderTable v-if="isNft" :controller="nftHolderTableController"/>
         <TokenBalanceTable v-else v-bind:nb-items="10" v-bind:token-id="tokenId" v-bind:token-balances="tokenBalances"/>
       </template>
 
@@ -153,11 +157,10 @@
 
 <script lang="ts">
 
-import {computed, defineComponent, inject, onBeforeUnmount, onMounted, watch} from 'vue';
+import {computed, defineComponent, inject, onBeforeUnmount, onMounted, ref, watch} from 'vue';
 import router from "@/router";
 import KeyValue from "@/components/values/KeyValue.vue";
 import TimestampValue from "@/components/values/TimestampValue.vue";
-import TokenNftTable from "@/components/token/TokenNftTable.vue";
 import TokenBalanceTable from "@/components/token/TokenBalanceTable.vue";
 import DurationValue from "@/components/values/DurationValue.vue";
 import DashboardCard from "@/components/DashboardCard.vue";
@@ -169,15 +172,19 @@ import {EntityID} from "@/utils/EntityID";
 import Property from "@/components/Property.vue";
 import NotificationBanner from "@/components/NotificationBanner.vue";
 import {EntityCacheStateV2} from "@/utils/EntityCacheV2";
-import {TokenNftCache} from "@/components/token/TokenNftCache";
 import {TokenBalanceCache} from "@/components/token/TokenBalanceCache";
 import {TokenInfoLoader} from "@/components/token/TokenInfoLoader";
+import NftHolderTable from "@/components/token/NftHolderTable.vue";
+import PlayPauseButton from "@/utils/table/PlayPauseButton.vue";
+import {NftHolderTableController} from "@/components/token/NftHolderTableController";
 
 export default defineComponent({
 
   name: 'TokenDetails',
 
   components: {
+    PlayPauseButton,
+    NftHolderTable,
     NotificationBanner,
     Property,
     EthAddress,
@@ -187,18 +194,21 @@ export default defineComponent({
     TimestampValue,
     DurationValue,
     TokenBalanceTable,
-    TokenNftTable,
     TokenAmount,
     KeyValue
   },
 
   props: {
-    tokenId: String,
+    tokenId: {
+      type: String,
+      required: true
+    },
     network: String
   },
 
   setup(props) {
     const isSmallScreen = inject('isSmallScreen', true)
+    const isMediumScreen = inject('isMediumScreen', true)
     const isTouchDevice = inject('isTouchDevice', false)
 
     const validEntityId = computed(() => {
@@ -254,35 +264,35 @@ export default defineComponent({
     //
     // tokenNftCache
     //
+    const perPage = computed(() => isMediumScreen ? 10 : 5)
 
-    const tokenNftCache = new TokenNftCache();
-    const isNFT = computed(() => {
-      return tokenInfoLoader.entity.value != null && tokenInfoLoader.entity.value.type == "NON_FUNGIBLE_UNIQUE"
-    })
-    const setupTransactionCache = () => {
-      if (isNFT.value) {
-        tokenNftCache.tokenId.value = props.tokenId ?? null
-        tokenNftCache.state.value = EntityCacheStateV2.Started
+    const nftHolderTableController = new NftHolderTableController(ref(props.tokenId), perPage)
+    const setupNftHolderTable = () => {
+      if (tokenInfoLoader.isNft.value) {
+        nftHolderTableController.tokenId.value = props.tokenId
+        nftHolderTableController.mounted.value = true
       }
       else {
-        tokenNftCache.state.value = EntityCacheStateV2.Stopped
+        nftHolderTableController.mounted.value = false
       }
     }
 
-    watch([() => props.tokenId, isNFT], () => {
-      setupTransactionCache()
+    watch([() => props.tokenId, tokenInfoLoader.isNft], () => {
+      setupNftHolderTable()
     })
     onMounted(() => {
-      setupTransactionCache()
+      setupNftHolderTable()
     })
     onBeforeUnmount(() => {
-      tokenNftCache.state.value = EntityCacheStateV2.Stopped
+      nftHolderTableController.mounted.value = false
     })
 
     return {
       isSmallScreen,
       isTouchDevice,
       tokenInfo: tokenInfoLoader.entity,
+      isNft: tokenInfoLoader.isNft,
+      isFungible: tokenInfoLoader.isFungible,
       validEntityId,
       normalizedTokenId,
       notification,
@@ -290,10 +300,9 @@ export default defineComponent({
       parseIntString,
       ethereumAddress: tokenInfoLoader.ethereumAddress,
       tokenSymbol: tokenInfoLoader.tokenSymbol,
-      nfts: tokenNftCache.nfts,
+      tokenBalanceCache,
+      nftHolderTableController,
       tokenBalances: tokenBalanceCache.balances,
-      tokenNftCache, // For test purpose
-      tokenBalanceCache, // For test purpose
     }
   },
 });

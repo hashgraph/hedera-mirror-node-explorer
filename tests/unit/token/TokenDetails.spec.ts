@@ -23,12 +23,12 @@ import router from "@/router";
 import TokenDetails from "@/pages/TokenDetails.vue";
 import axios from "axios";
 import {SAMPLE_BALANCES, SAMPLE_NFTS, SAMPLE_NONFUNGIBLE_DUDE, SAMPLE_TOKEN} from "../Mocks";
-import TokenNftTable from "@/components/token/TokenNftTable.vue";
 import TokenBalanceTable from "@/components/token/TokenBalanceTable.vue";
 import MockAdapter from "axios-mock-adapter";
 import {HMSF} from "@/utils/HMSF";
 import Oruga from "@oruga-ui/oruga-next";
 import {EntityCacheStateV2} from "@/utils/EntityCacheV2";
+import NftHolderTable from "@/components/token/NftHolderTable.vue";
 
 /*
     Bookmarks
@@ -79,7 +79,7 @@ describe("TokenDetails.vue", () => {
         // console.log(wrapper.text())
 
         expect(wrapper.vm.tokenBalanceCache.state.value).toBe(EntityCacheStateV2.Started)
-        expect(wrapper.vm.tokenNftCache.state.value).toBe(EntityCacheStateV2.Stopped)
+        expect(wrapper.vm.nftHolderTableController.mounted.value).toBe(false)
 
         expect(wrapper.text()).toMatch(RegExp("^Fungible Token " + testTokenId))
 
@@ -99,13 +99,13 @@ describe("TokenDetails.vue", () => {
 
         expect(wrapper.text()).toMatch("Balances")
         expect(wrapper.findComponent(TokenBalanceTable).exists()).toBe(true)
-        expect(wrapper.findComponent(TokenNftTable).exists()).toBe(false)
+        expect(wrapper.findComponent(NftHolderTable).exists()).toBe(false)
 
         wrapper.unmount()
         await flushPromises()
 
         expect(wrapper.vm.tokenBalanceCache.state.value).toBe(EntityCacheStateV2.Stopped)
-        expect(wrapper.vm.tokenNftCache.state.value).toBe(EntityCacheStateV2.Stopped)
+        expect(wrapper.vm.nftHolderTableController.mounted.value).toBe(false)
     });
 
     it("Should display details of non fungible token", async () => {
@@ -132,7 +132,7 @@ describe("TokenDetails.vue", () => {
         // console.log(wrapper.text())
 
         expect(wrapper.vm.tokenBalanceCache.state.value).toBe(EntityCacheStateV2.Stopped)
-        expect(wrapper.vm.tokenNftCache.state.value).toBe(EntityCacheStateV2.Started)
+        expect(wrapper.vm.nftHolderTableController.mounted.value).toBe(true)
 
         expect(wrapper.text()).toMatch(RegExp("^Non Fungible Token " + testTokenId))
 
@@ -152,14 +152,14 @@ describe("TokenDetails.vue", () => {
         expect(wrapper.get("#maxSupplyValue").text()).toBe("150")
 
         expect(wrapper.text()).toMatch("NFT Holders")
-        expect(wrapper.findComponent(TokenNftTable).exists()).toBe(true)
+        expect(wrapper.findComponent(NftHolderTable).exists()).toBe(true)
         expect(wrapper.findComponent(TokenBalanceTable).exists()).toBe(false)
 
         wrapper.unmount()
         await flushPromises()
 
         expect(wrapper.vm.tokenBalanceCache.state.value).toBe(EntityCacheStateV2.Stopped)
-        expect(wrapper.vm.tokenNftCache.state.value).toBe(EntityCacheStateV2.Stopped)
+        expect(wrapper.vm.nftHolderTableController.mounted.value).toBe(false)
     });
 
     it("Should update when token id changes", async () => {
@@ -186,13 +186,13 @@ describe("TokenDetails.vue", () => {
         // console.log(wrapper.text())
 
         expect(wrapper.vm.tokenBalanceCache.state.value).toBe(EntityCacheStateV2.Stopped)
-        expect(wrapper.vm.tokenNftCache.state.value).toBe(EntityCacheStateV2.Started)
+        expect(wrapper.vm.nftHolderTableController.mounted.value).toBe(true)
 
         expect(wrapper.text()).toMatch(RegExp("^Non Fungible Token " + testTokenId))
         expect(wrapper.get("#nameValue").text()).toBe("Ħ Frens Kingdom Dude")
         expect(wrapper.get("#symbolValue").text()).toBe("ĦFRENSKINGDOM")
         expect(wrapper.text()).toMatch("NFT Holders")
-        expect(wrapper.findComponent(TokenNftTable).exists()).toBe(true)
+        expect(wrapper.findComponent(NftHolderTable).exists()).toBe(true)
         expect(wrapper.findComponent(TokenBalanceTable).exists()).toBe(false)
 
         testTokenId = SAMPLE_TOKEN.token_id
@@ -213,14 +213,14 @@ describe("TokenDetails.vue", () => {
         expect(wrapper.get("#nameValue").text()).toBe("23423")
         expect(wrapper.get("#symbolValue").text()).toBe("QmVGABnvpbPwLcfG4iuW2JSzY8MLkALhd54bdPAbJxoEkB")
         expect(wrapper.text()).toMatch("Balances")
-        expect(wrapper.findComponent(TokenNftTable).exists()).toBe(false)
+        expect(wrapper.findComponent(NftHolderTable).exists()).toBe(false)
         expect(wrapper.findComponent(TokenBalanceTable).exists()).toBe(true)
 
         wrapper.unmount()
         await flushPromises()
 
         expect(wrapper.vm.tokenBalanceCache.state.value).toBe(EntityCacheStateV2.Stopped)
-        expect(wrapper.vm.tokenNftCache.state.value).toBe(EntityCacheStateV2.Stopped)
+        expect(wrapper.vm.nftHolderTableController.mounted.value).toBe(false)
     });
 
     it("Should detect invalid token ID", async () => {

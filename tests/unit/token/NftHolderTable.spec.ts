@@ -20,11 +20,14 @@
 
 import {flushPromises, mount} from "@vue/test-utils"
 import router from "@/router";
-import {SAMPLE_NFTS} from "../Mocks";
+import {SAMPLE_NFTS, SAMPLE_NONFUNGIBLE_DUDE} from "../Mocks";
 import Oruga from "@oruga-ui/oruga-next";
-import TokenNftTable from "@/components/token/TokenNftTable.vue";
 import {HMSF} from "@/utils/HMSF";
-import {Nft} from "@/schemas/HederaSchemas";
+import NftHolderTable from "@/components/token/NftHolderTable.vue";
+import MockAdapter from "axios-mock-adapter";
+import axios from "axios";
+import {NftHolderTableController} from "@/components/token/NftHolderTableController";
+import {ref} from "vue";
 
 /*
     Bookmarks
@@ -49,18 +52,27 @@ Object.defineProperty(window, 'matchMedia', {
 
 HMSF.forceUTC = true
 
-describe("TokenNftTable.vue", () => {
+describe("NftHolderTable.vue", () => {
 
-    test("with tokenId", async () => {
+    test.skip("with tokenId", async () => {
 
         await router.push("/") // To avoid "missing required param 'network'" error
 
-        const wrapper = mount(TokenNftTable, {
+        const mock = new MockAdapter(axios);
+
+        const testTokenId = SAMPLE_NONFUNGIBLE_DUDE.token_id
+        const matcher1 = "/api/v1/tokens/" + testTokenId
+        mock.onGet(matcher1).reply(200, SAMPLE_NONFUNGIBLE_DUDE);
+        const matcher2 = "/api/v1/tokens/" + testTokenId + "/nfts"
+        mock.onGet(matcher2).reply(200, SAMPLE_NFTS);
+
+        const controller = new NftHolderTableController(ref(testTokenId), ref(42))
+        const wrapper = mount(NftHolderTable, {
             global: {
                 plugins: [router, Oruga]
             },
             props: {
-                nfts: SAMPLE_NFTS.nfts as Array<Nft>
+                controller: controller
             },
         });
 

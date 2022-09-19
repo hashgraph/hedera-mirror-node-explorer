@@ -27,19 +27,25 @@
  <div id="token-nft-table">
   <o-table
       :data="nfts"
-      :narrowed="true"
+      :loading="loading"
+      paginated
+      backend-pagination
+      :total="total"
+      v-model:current-page="currentPage"
+      :per-page="perPage"
+      @page-change="onPageChange"
+      @click="handleClick"
+
       :hoverable="false"
-      :paginated="paginationNeeded && !isTouchDevice"
-      :per-page="isMediumScreen ? pageSize : 5"
+      :narrowed="true"
       :striped="true"
-      :v-model:current-page="currentPage"
       :mobile-breakpoint="ORUGA_MOBILE_BREAKPOINT"
+
       aria-current-label="Current page"
       aria-next-label="Next page"
       aria-page-label="Page"
       aria-previous-label="Previous page"
       customRowKey="serial_number"
-      default-sort="serial_number"
   >
     <o-table-column v-slot="props" field="serial_number" label="Serial #">
       <div class="is-numeric">
@@ -77,47 +83,40 @@
 
 <script lang="ts">
 
-import {computed, defineComponent, inject, PropType, ref} from 'vue';
+import {ComputedRef, defineComponent, inject, PropType, Ref} from 'vue';
 import {Nft} from "@/schemas/HederaSchemas";
 import TimestampValue from "@/components/values/TimestampValue.vue";
 import AccountLink from "@/components/values/AccountLink.vue";
 import BlobValue from "@/components/values/BlobValue.vue";
 import {ORUGA_MOBILE_BREAKPOINT} from '@/App.vue';
 import EmptyTable from "@/components/EmptyTable.vue";
+import {NftHolderTableController} from "@/components/token/NftHolderTableController";
 
 export default defineComponent({
-  name: 'TokenNftTable',
+  name: 'NftHolderTable',
 
   components: {EmptyTable, AccountLink, TimestampValue, BlobValue},
 
   props: {
-    nfts: {
-      type: Array as PropType<Array<Nft>>,
-      default: () => []
+    controller: {
+      type: Object as PropType<NftHolderTableController>,
+      required: true
     },
-    nbItems: Number,
   },
 
   setup(props) {
     const isTouchDevice = inject('isTouchDevice', false)
     const isMediumScreen = inject('isMediumScreen', true)
 
-    const DEFAULT_PAGE_SIZE = 15
-    const pageSize = props.nbItems ?? DEFAULT_PAGE_SIZE
-    const paginationNeeded = computed(() => {
-          return props.nfts.length > 5
-        }
-    )
-
-    // 3) currentPage
-    let currentPage = ref(1)
-
     return {
       isTouchDevice,
       isMediumScreen,
-      pageSize,
-      paginationNeeded,
-      currentPage,
+      nfts: props.controller.pageRows as ComputedRef<Nft[]>,
+      loading: props.controller.loading as ComputedRef<boolean>,
+      total: props.controller.totalRowCount as ComputedRef<number>,
+      currentPage: props.controller.currentPage as Ref<number>,
+      onPageChange: props.controller.onPageChange,
+      perPage: props.controller.pageSize as Ref<number>,
       ORUGA_MOBILE_BREAKPOINT
     }
   }
