@@ -250,7 +250,7 @@ export default defineComponent({
     const contractLoader = new ContractLoader(normalizedContractId)
     onMounted(() => contractLoader.requestLoad())
 
-    const accountLoader = new AccountLoader(contractLoader.contractId)
+    const accountLoader = new AccountLoader(normalizedContractId)
     onMounted(() => accountLoader.requestLoad())
 
     const displayAllTokenLinks = computed(() => accountLoader.tokens.value ? accountLoader.tokens.value.length > MAX_TOKEN_BALANCES : false)
@@ -280,7 +280,7 @@ export default defineComponent({
     //
 
     const pageSize: Ref<number> = ref(10)
-    const transactionTableController = new TransactionTableController(contractLoader.contractId, pageSize, true)
+    const transactionTableController = new TransactionTableController(normalizedContractId, pageSize, true)
     onMounted(() => transactionTableController.mounted.value = true)
     onBeforeUnmount(() => transactionTableController.mounted.value = false)
 
