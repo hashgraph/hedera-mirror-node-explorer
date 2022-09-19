@@ -31,10 +31,10 @@
         <span class="h-is-primary-title">Blocks</span>
       </template>
       <template v-slot:control>
-        <PlayPauseButtonV2 v-model:state="cacheState"/>
+        <PlayPauseButton v-bind:controller="blockTableController"/>
       </template>
       <template v-slot:content>
-        <BlockTable :blocks="blocks"/>
+        <BlockTable :controller="blockTableController"/>
       </template>
     </DashboardCard>
 
@@ -50,13 +50,12 @@
 
 <script lang="ts">
 
-import {defineComponent, inject, onBeforeUnmount, onMounted} from 'vue';
+import {computed, defineComponent, inject, onBeforeUnmount, onMounted} from 'vue';
 import DashboardCard from "@/components/DashboardCard.vue";
 import Footer from "@/components/Footer.vue";
 import BlockTable from "@/components/block/BlockTable.vue";
-import {BlockCache} from "@/components/block/BlockCache";
-import {EntityCacheStateV2} from "@/utils/EntityCacheV2";
-import PlayPauseButtonV2 from "@/components/PlayPauseButtonV2.vue";
+import PlayPauseButton from "@/utils/table/PlayPauseButton.vue";
+import {BlockTableController} from "@/components/block/BlockTableController";
 
 export default defineComponent({
   name: 'Blocks',
@@ -66,7 +65,7 @@ export default defineComponent({
   },
 
   components: {
-    PlayPauseButtonV2,
+    PlayPauseButton,
     BlockTable,
     Footer,
     DashboardCard
@@ -74,18 +73,19 @@ export default defineComponent({
 
   setup() {
     const isSmallScreen = inject('isSmallScreen', true)
+    const isMediumScreen = inject('isMediumScreen', true)
     const isTouchDevice = inject('isTouchDevice', false)
 
-    // BlockCache
-    const blockCache = new BlockCache()
-    onMounted(() => blockCache.state.value = EntityCacheStateV2.Started)
-    onBeforeUnmount(() => blockCache.state.value = EntityCacheStateV2.Stopped)
+    // BlockTableController
+    const pageSize = computed(() => isMediumScreen ? 15 : 5)
+    const blockTableController = new BlockTableController(pageSize)
+    onMounted(() => blockTableController.mounted.value = true)
+    onBeforeUnmount(() => blockTableController.mounted.value = false)
 
     return {
       isSmallScreen,
       isTouchDevice,
-      blocks: blockCache.blocks,
-      cacheState: blockCache.state
+      blockTableController
     }
   }
 });

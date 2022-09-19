@@ -47,20 +47,26 @@
 <template>
 
   <o-table
-      v-model:current-page="currentPage"
       :data="blocks"
+      :loading="loading"
+      paginated
+      backend-pagination
+      :total="total"
+      v-model:current-page="currentPage"
+      :per-page="perPage"
+      @page-change="onPageChange"
+      @click="handleClick"
+
       :hoverable="true"
       :narrowed="narrowed"
-      :paginated="!isTouchDevice && paginationNeeded"
-      :per-page="isMediumScreen ? pageSize : 5"
       :striped="true"
       :mobile-breakpoint="ORUGA_MOBILE_BREAKPOINT"
+
       aria-current-label="Current page"
       aria-next-label="Next page"
       aria-page-label="Page"
       aria-previous-label="Previous page"
       customRowKey="number"
-      @click="handleClick"
   >
     <o-table-column v-slot="props" field="number" label="Number">
       {{ props.row.number }}
@@ -89,13 +95,14 @@
 
 <script lang="ts">
 
-import {computed, defineComponent, inject, PropType, ref} from 'vue';
+import {ComputedRef, defineComponent, inject, PropType, Ref} from 'vue';
 import {Block} from '@/schemas/HederaSchemas';
 import router from "@/router";
 import TimestampValue from "@/components/values/TimestampValue.vue";
 import {ORUGA_MOBILE_BREAKPOINT} from '@/App.vue';
 import EmptyTable from "@/components/EmptyTable.vue";
 import PlainAmount from "@/components/values/PlainAmount.vue";
+import {BlockTableController} from "@/components/block/BlockTableController";
 
 export default defineComponent({
   name: 'BlockTable',
@@ -104,39 +111,30 @@ export default defineComponent({
 
   props: {
     narrowed: Boolean,
-    nbItems: Number,
-    blocks: {
-      type: Array as PropType<Array<Block>>,
-      default: () => []
-    }
+    controller: {
+      type: Object as PropType<BlockTableController>,
+      required: true
+    },
   },
 
   setup(props) {
     const isTouchDevice = inject('isTouchDevice', false)
     const isMediumScreen = inject('isMediumScreen', true)
 
-    const DEFAULT_PAGE_SIZE = 15
-    const pageSize = props.nbItems ?? DEFAULT_PAGE_SIZE
-    const paginationNeeded = computed(() => {
-          return props.blocks.length > 5
-        }
-    )
-
-    // 3) handleClick
     const handleClick = (t: Block) => {
       router.push({name: 'BlockDetails', params: {blockHon: t.number}})
     }
 
-    // 4) currentPage
-    let currentPage = ref(1)
-
     return {
       isTouchDevice,
       isMediumScreen,
-      pageSize,
-      paginationNeeded,
+      blocks: props.controller.pageRows as ComputedRef<Block[]>,
+      loading: props.controller.loading as ComputedRef<boolean>,
+      total: props.controller.totalRowCount as ComputedRef<number>,
+      currentPage: props.controller.currentPage as Ref<number>,
+      onPageChange: props.controller.onPageChange,
+      perPage: props.controller.pageSize as Ref<number>,
       handleClick,
-      currentPage,
 
       // From App
       ORUGA_MOBILE_BREAKPOINT,
