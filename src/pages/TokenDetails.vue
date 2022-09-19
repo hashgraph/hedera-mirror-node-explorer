@@ -136,11 +136,12 @@
 
       <template v-slot:control>
         <PlayPauseButton v-if="isNft" :controller="nftHolderTableController"/>
+        <PlayPauseButton v-else :controller="tokenBalanceTableController"/>
       </template>
 
       <template v-slot:content>
         <NftHolderTable v-if="isNft" :controller="nftHolderTableController"/>
-        <TokenBalanceTable v-else v-bind:nb-items="10" v-bind:token-id="tokenId" v-bind:token-balances="tokenBalances"/>
+        <TokenBalanceTable v-else :controller="tokenBalanceTableController"/>
       </template>
 
     </DashboardCard>
@@ -171,12 +172,11 @@ import EthAddress from "@/components/values/EthAddress.vue";
 import {EntityID} from "@/utils/EntityID";
 import Property from "@/components/Property.vue";
 import NotificationBanner from "@/components/NotificationBanner.vue";
-import {EntityCacheStateV2} from "@/utils/EntityCacheV2";
-import {TokenBalanceCache} from "@/components/token/TokenBalanceCache";
 import {TokenInfoLoader} from "@/components/token/TokenInfoLoader";
 import NftHolderTable from "@/components/token/NftHolderTable.vue";
 import PlayPauseButton from "@/utils/table/PlayPauseButton.vue";
 import {NftHolderTableController} from "@/components/token/NftHolderTableController";
+import {TokenBalanceTableController} from "@/components/token/TokenBalanceTableController";
 
 export default defineComponent({
 
@@ -214,9 +214,7 @@ export default defineComponent({
     const validEntityId = computed(() => {
       return props.tokenId ? EntityID.parse(props.tokenId, true) != null : false
     })
-    const normalizedTokenId = computed(() => {
-      return props.tokenId ? EntityID.normalize(props.tokenId) : null
-    })
+    const normalizedTokenId = computed(() => EntityID.normalize(props.tokenId))
 
     const tokenInfoLoader = new TokenInfoLoader(normalizedTokenId)
     onMounted(() => tokenInfoLoader.requestLoad())
@@ -237,45 +235,30 @@ export default defineComponent({
       router.push({name: 'TokenDetails', params: {tokenId: tokenId}})
     }
 
-    //
-    // tokenBalanceCache
-    //
-
-    const tokenBalanceCache = new TokenBalanceCache();
-    const setupTokenBalanceCache = () => {
-      if (tokenInfoLoader.isFungible.value) {
-        tokenBalanceCache.tokenId.value = props.tokenId ?? null
-        tokenBalanceCache.state.value = EntityCacheStateV2.Started
-      }
-      else {
-        tokenBalanceCache.state.value = EntityCacheStateV2.Stopped
-      }
-    }
-    watch([() => props.tokenId, tokenInfoLoader.isFungible], () => {
-      setupTokenBalanceCache()
-    })
-    onMounted(() => {
-      setupTokenBalanceCache()
-    })
-    onBeforeUnmount(() => {
-      tokenBalanceCache.state.value = EntityCacheStateV2.Stopped
-    })
-
-    //
-    // tokenNftCache
-    //
     const perPage = computed(() => isMediumScreen ? 10 : 5)
 
-    const nftHolderTableController = new NftHolderTableController(ref(props.tokenId), perPage)
-    const setupNftHolderTable = () => {
-      if (tokenInfoLoader.isNft.value) {
-        nftHolderTableController.tokenId.value = props.tokenId
-        nftHolderTableController.mounted.value = true
-      }
-      else {
-        nftHolderTableController.mounted.value = false
-      }
-    }
+    //
+    // TokenBalanceTableController
+    //
+    const tokenBalanceTableController = new TokenBalanceTableController(ref(normalizedTokenId), perPage);
+    const setupTokenBalanceTable = () => tokenBalanceTableController.mounted.value = !!tokenInfoLoader.isFungible.value
+
+    watch([() => props.tokenId, tokenInfoLoader.isFungible], () => {
+      setupTokenBalanceTable()
+    })
+    onMounted(() => {
+      setupTokenBalanceTable()
+    })
+    onBeforeUnmount(() => {
+      tokenBalanceTableController.mounted.value = false
+    })
+
+    //
+    // NftHolderTableController
+    //
+    const nftHolderTableController = new NftHolderTableController(ref(normalizedTokenId), perPage)
+    const setupNftHolderTable = () => nftHolderTableController.mounted.value = !!tokenInfoLoader.isNft.value
+
 
     watch([() => props.tokenId, tokenInfoLoader.isNft], () => {
       setupNftHolderTable()
@@ -300,9 +283,8 @@ export default defineComponent({
       parseIntString,
       ethereumAddress: tokenInfoLoader.ethereumAddress,
       tokenSymbol: tokenInfoLoader.tokenSymbol,
-      tokenBalanceCache,
+      tokenBalanceTableController,
       nftHolderTableController,
-      tokenBalances: tokenBalanceCache.balances,
     }
   },
 });

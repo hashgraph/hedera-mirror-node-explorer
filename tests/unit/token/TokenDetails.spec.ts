@@ -27,7 +27,6 @@ import TokenBalanceTable from "@/components/token/TokenBalanceTable.vue";
 import MockAdapter from "axios-mock-adapter";
 import {HMSF} from "@/utils/HMSF";
 import Oruga from "@oruga-ui/oruga-next";
-import {EntityCacheStateV2} from "@/utils/EntityCacheV2";
 import NftHolderTable from "@/components/token/NftHolderTable.vue";
 
 /*
@@ -78,7 +77,7 @@ describe("TokenDetails.vue", () => {
         await flushPromises()
         // console.log(wrapper.text())
 
-        expect(wrapper.vm.tokenBalanceCache.state.value).toBe(EntityCacheStateV2.Started)
+        expect(wrapper.vm.tokenBalanceTableController.mounted.value).toBe(true)
         expect(wrapper.vm.nftHolderTableController.mounted.value).toBe(false)
 
         expect(wrapper.text()).toMatch(RegExp("^Fungible Token " + testTokenId))
@@ -104,7 +103,7 @@ describe("TokenDetails.vue", () => {
         wrapper.unmount()
         await flushPromises()
 
-        expect(wrapper.vm.tokenBalanceCache.state.value).toBe(EntityCacheStateV2.Stopped)
+        expect(wrapper.vm.tokenBalanceTableController.mounted.value).toBe(false)
         expect(wrapper.vm.nftHolderTableController.mounted.value).toBe(false)
     });
 
@@ -131,7 +130,7 @@ describe("TokenDetails.vue", () => {
         await flushPromises()
         // console.log(wrapper.text())
 
-        expect(wrapper.vm.tokenBalanceCache.state.value).toBe(EntityCacheStateV2.Stopped)
+        expect(wrapper.vm.tokenBalanceTableController.mounted.value).toBe(false)
         expect(wrapper.vm.nftHolderTableController.mounted.value).toBe(true)
 
         expect(wrapper.text()).toMatch(RegExp("^Non Fungible Token " + testTokenId))
@@ -158,7 +157,7 @@ describe("TokenDetails.vue", () => {
         wrapper.unmount()
         await flushPromises()
 
-        expect(wrapper.vm.tokenBalanceCache.state.value).toBe(EntityCacheStateV2.Stopped)
+        expect(wrapper.vm.tokenBalanceTableController.mounted.value).toBe(false)
         expect(wrapper.vm.nftHolderTableController.mounted.value).toBe(false)
     });
 
@@ -185,7 +184,7 @@ describe("TokenDetails.vue", () => {
         await flushPromises()
         // console.log(wrapper.text())
 
-        expect(wrapper.vm.tokenBalanceCache.state.value).toBe(EntityCacheStateV2.Stopped)
+        expect(wrapper.vm.tokenBalanceTableController.mounted.value).toBe(false)
         expect(wrapper.vm.nftHolderTableController.mounted.value).toBe(true)
 
         expect(wrapper.text()).toMatch(RegExp("^Non Fungible Token " + testTokenId))
@@ -219,7 +218,7 @@ describe("TokenDetails.vue", () => {
         wrapper.unmount()
         await flushPromises()
 
-        expect(wrapper.vm.tokenBalanceCache.state.value).toBe(EntityCacheStateV2.Stopped)
+        expect(wrapper.vm.tokenBalanceTableController.mounted.value).toBe(false)
         expect(wrapper.vm.nftHolderTableController.mounted.value).toBe(false)
     });
 

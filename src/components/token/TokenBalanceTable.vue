@@ -26,20 +26,25 @@
 
   <o-table
       :data="tokenBalances"
-      :narrowed="true"
+      :loading="loading"
+      paginated
+      backend-pagination
+      :total="total"
+      v-model:current-page="currentPage"
+      :per-page="perPage"
+      @page-change="onPageChange"
+      @click="handleClick"
+
       :hoverable="true"
-      :paginated="!isTouchDevice && paginationNeeded"
-      :per-page="isMediumScreen ? pageSize : 5"
+      :narrowed="true"
       :striped="true"
-      :v-model:current-page="currentPage"
       :mobile-breakpoint="ORUGA_MOBILE_BREAKPOINT"
+
       aria-current-label="Current page"
       aria-next-label="Next page"
       aria-page-label="Page"
       aria-previous-label="Previous page"
       customRowKey="account"
-      default-sort="account"
-      @click="handleClick"
   >
     <o-table-column v-slot="props" field="account" label="Account ID">
       <div class="is-numeric">
@@ -63,12 +68,13 @@
 
 <script lang="ts">
 
-import {computed, defineComponent, inject, PropType, ref} from 'vue';
+import {ComputedRef, defineComponent, inject, PropType, Ref} from 'vue';
 import {TokenDistribution} from "@/schemas/HederaSchemas";
 import router from "@/router";
 import TokenAmount from "@/components/values/TokenAmount.vue";
 import {ORUGA_MOBILE_BREAKPOINT} from '@/App.vue';
 import EmptyTable from "@/components/EmptyTable.vue";
+import {TokenBalanceTableController} from "@/components/token/TokenBalanceTableController";
 
 export default defineComponent({
   name: 'TokenBalanceTable',
@@ -76,42 +82,30 @@ export default defineComponent({
   components: {EmptyTable, TokenAmount},
 
   props: {
-    tokenId: {
-      type: String,
+    controller: {
+      type: Object as PropType<TokenBalanceTableController>,
       required: true
     },
-    tokenBalances: {
-      type: Array as PropType<Array<TokenDistribution>>,
-      default: () => []
-    },
-    nbItems: Number,
   },
 
   setup(props) {
     const isTouchDevice = inject('isTouchDevice', false)
     const isMediumScreen = inject('isMediumScreen', true)
 
-    const DEFAULT_PAGE_SIZE = 15
-    const pageSize = props.nbItems ?? DEFAULT_PAGE_SIZE
-    const paginationNeeded = computed(() => {
-          return props.tokenBalances.length > 5
-        }
-    )
-
-    // 3) handleClick
     const handleClick = (t: TokenDistribution) => {
       router.push({name: 'AccountDetails', params: { accountId: t.account }})
     }
 
-    // 4) currentPage
-    let currentPage = ref(1)
-
     return {
       isTouchDevice,
       isMediumScreen,
-      pageSize,
-      paginationNeeded,
-      currentPage,
+      tokenId: props.controller.tokenId.value,
+      tokenBalances: props.controller.pageRows as ComputedRef<TokenDistribution[]>,
+      loading: props.controller.loading as ComputedRef<boolean>,
+      total: props.controller.totalRowCount as ComputedRef<number>,
+      currentPage: props.controller.currentPage as Ref<number>,
+      onPageChange: props.controller.onPageChange,
+      perPage: props.controller.pageSize as Ref<number>,
       handleClick,
       ORUGA_MOBILE_BREAKPOINT
     }
