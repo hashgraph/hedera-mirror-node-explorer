@@ -62,9 +62,9 @@ export class EntityID {
         return result
     }
 
-    public static normalize(s: string): string {
+    public static normalize(s: string): string|null {
         const id = EntityID.parse(s, true)
-        return id !== null ? id.toString() : s
+        return id !== null ? id.toString() : null
     }
 
     public toString(): string {
