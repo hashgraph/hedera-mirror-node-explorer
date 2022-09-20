@@ -25,13 +25,13 @@ import axios, {AxiosResponse} from "axios";
 
 export class TokenBalanceTableController extends TableController<TokenDistribution, string> {
 
-    public readonly tokenId: Ref<string>
+    public readonly tokenId: Ref<string | null>
 
     //
     // Public
     //
 
-    public constructor(tokenId: Ref<string>, pageSize: Ref<number>) {
+    public constructor(tokenId: Ref<string | null>, pageSize: Ref<number>) {
         super(pageSize, 10 * pageSize.value, 5000, 10, 100);
         this.tokenId = tokenId
         this.watchAndReload([this.tokenId])
@@ -41,7 +41,7 @@ export class TokenBalanceTableController extends TableController<TokenDistributi
     // TableController
     //
 
-    public async loadAfter(accountId: string|null, limit: number): Promise<TokenDistribution[] | null> {
+    public async loadAfter(accountId: string | null, limit: number): Promise<TokenDistribution[] | null> {
         return this.load(accountId, "gt", limit)
     }
 
@@ -57,21 +57,26 @@ export class TokenBalanceTableController extends TableController<TokenDistributi
     // Private
     //
 
-    private load(accountId: string|null, operator: string, limit: number): Promise<TokenDistribution[] | null> {
-
-        const params = {} as {
-            limit: number
-            order: string
-            'account.id': string | undefined
+    private load(accountId: string | null, operator: string, limit: number): Promise<TokenDistribution[] | null> {
+        let result
+        if (this.tokenId.value) {
+            const params = {} as {
+                limit: number
+                order: string
+                'account.id': string | undefined
+            }
+            params.limit = limit
+            params.order = 'asc'
+            if (accountId !== null) {
+                params['account.id'] = operator + ":" + accountId
+            }
+            const cb = (r: AxiosResponse<TokenBalancesResponse>): Promise<TokenDistribution[] | null> => {
+                return Promise.resolve(r.data.balances ?? [])
+            }
+            result = axios.get<TokenBalancesResponse>("api/v1/tokens/" + this.tokenId.value + "/balances", {params: params}).then(cb)
+        } else {
+            result = Promise.resolve(null)
         }
-        params.limit = limit
-        params.order = 'asc'
-        if (accountId !== null) {
-            params['account.id'] = operator + ":" + accountId
-        }
-        const cb = (r: AxiosResponse<TokenBalancesResponse>): Promise<TokenDistribution[] | null> => {
-            return Promise.resolve(r.data.balances ?? [])
-        }
-        return axios.get<TokenBalancesResponse>("api/v1/tokens/" + this.tokenId.value + "/balances", {params: params}).then(cb)
+        return result
     }
 }

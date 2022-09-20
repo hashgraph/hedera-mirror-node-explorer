@@ -78,7 +78,7 @@ describe("TokenDetails.vue", () => {
         // console.log(wrapper.text())
 
         expect(wrapper.vm.tokenBalanceTableController.mounted.value).toBe(true)
-        expect(wrapper.vm.nftHolderTableController.mounted.value).toBe(false)
+        expect(wrapper.vm.nftHolderTableController.mounted.value).toBe(true)
 
         expect(wrapper.text()).toMatch(RegExp("^Fungible Token " + testTokenId))
 
@@ -130,7 +130,7 @@ describe("TokenDetails.vue", () => {
         await flushPromises()
         // console.log(wrapper.text())
 
-        expect(wrapper.vm.tokenBalanceTableController.mounted.value).toBe(false)
+        expect(wrapper.vm.tokenBalanceTableController.mounted.value).toBe(true)
         expect(wrapper.vm.nftHolderTableController.mounted.value).toBe(true)
 
         expect(wrapper.text()).toMatch(RegExp("^Non Fungible Token " + testTokenId))
@@ -184,7 +184,7 @@ describe("TokenDetails.vue", () => {
         await flushPromises()
         // console.log(wrapper.text())
 
-        expect(wrapper.vm.tokenBalanceTableController.mounted.value).toBe(false)
+        expect(wrapper.vm.tokenBalanceTableController.mounted.value).toBe(true)
         expect(wrapper.vm.nftHolderTableController.mounted.value).toBe(true)
 
         expect(wrapper.text()).toMatch(RegExp("^Non Fungible Token " + testTokenId))

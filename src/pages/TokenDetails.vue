@@ -158,7 +158,7 @@
 
 <script lang="ts">
 
-import {computed, defineComponent, inject, onBeforeUnmount, onMounted, ref, watch} from 'vue';
+import {computed, defineComponent, inject, onBeforeUnmount, onMounted} from 'vue';
 import router from "@/router";
 import KeyValue from "@/components/values/KeyValue.vue";
 import TimestampValue from "@/components/values/TimestampValue.vue";
@@ -211,10 +211,8 @@ export default defineComponent({
     const isMediumScreen = inject('isMediumScreen', true)
     const isTouchDevice = inject('isTouchDevice', false)
 
-    const validEntityId = computed(() => {
-      return props.tokenId ? EntityID.parse(props.tokenId, true) != null : false
-    })
     const normalizedTokenId = computed(() => EntityID.normalize(props.tokenId))
+    const validEntityId = computed(() => normalizedTokenId.value != null)
 
     const tokenInfoLoader = new TokenInfoLoader(normalizedTokenId)
     onMounted(() => tokenInfoLoader.requestLoad())
@@ -240,35 +238,18 @@ export default defineComponent({
     //
     // TokenBalanceTableController
     //
-    const tokenBalanceTableController = new TokenBalanceTableController(ref(normalizedTokenId), perPage);
-    const setupTokenBalanceTable = () => tokenBalanceTableController.mounted.value = !!tokenInfoLoader.isFungible.value
-
-    watch([() => props.tokenId, tokenInfoLoader.isFungible], () => {
-      setupTokenBalanceTable()
-    })
-    onMounted(() => {
-      setupTokenBalanceTable()
-    })
-    onBeforeUnmount(() => {
-      tokenBalanceTableController.mounted.value = false
-    })
+    const fungibleTokenId = computed(() => tokenInfoLoader.isFungible.value ? tokenInfoLoader.tokenId.value : null)
+    const tokenBalanceTableController = new TokenBalanceTableController(fungibleTokenId, perPage);
+    onMounted(() => tokenBalanceTableController.mounted.value = true)
+    onBeforeUnmount(() => tokenBalanceTableController.mounted.value = false)
 
     //
     // NftHolderTableController
     //
-    const nftHolderTableController = new NftHolderTableController(ref(normalizedTokenId), perPage)
-    const setupNftHolderTable = () => nftHolderTableController.mounted.value = !!tokenInfoLoader.isNft.value
-
-
-    watch([() => props.tokenId, tokenInfoLoader.isNft], () => {
-      setupNftHolderTable()
-    })
-    onMounted(() => {
-      setupNftHolderTable()
-    })
-    onBeforeUnmount(() => {
-      nftHolderTableController.mounted.value = false
-    })
+    const nftTokenId = computed(() => tokenInfoLoader.isNft.value ? tokenInfoLoader.tokenId.value : null)
+    const nftHolderTableController = new NftHolderTableController(nftTokenId, perPage)
+    onMounted(() => nftHolderTableController.mounted.value = true)
+    onBeforeUnmount(() => nftHolderTableController.mounted.value = false)
 
     return {
       isSmallScreen,

@@ -25,13 +25,13 @@ import axios, {AxiosResponse} from "axios";
 
 export class NftHolderTableController extends TableController<Nft, string> {
 
-    public readonly tokenId: Ref<string>
+    public readonly tokenId: Ref<string | null>
 
     //
     // Public
     //
 
-    public constructor(tokenId: Ref<string>, pageSize: Ref<number>) {
+    public constructor(tokenId: Ref<string | null>, pageSize: Ref<number>) {
         super(pageSize, 10 * pageSize.value, 5000, 10, 100);
         this.tokenId = tokenId
         this.watchAndReload([this.tokenId])
@@ -41,7 +41,7 @@ export class NftHolderTableController extends TableController<Nft, string> {
     // TableController
     //
 
-    public async loadAfter(serialNumber: string|null, limit: number): Promise<Nft[] | null> {
+    public async loadAfter(serialNumber: string | null, limit: number): Promise<Nft[] | null> {
         return this.load(serialNumber, "gt", limit)
     }
 
@@ -57,21 +57,26 @@ export class NftHolderTableController extends TableController<Nft, string> {
     // Private
     //
 
-    private load(serialNumber: string|null, operator: string, limit: number): Promise<Nft[] | null> {
-
-        const params = {} as {
-            limit: number
-            order: string
-            serialnumber: string | undefined
+    private load(serialNumber: string | null, operator: string, limit: number): Promise<Nft[] | null> {
+        let result
+        if (this.tokenId.value) {
+            const params = {} as {
+                limit: number
+                order: string
+                serialnumber: string | undefined
+            }
+            params.limit = limit
+            params.order = 'asc'
+            if (serialNumber !== null) {
+                params.serialnumber = operator + ":" + serialNumber
+            }
+            const cb = (r: AxiosResponse<Nfts>): Promise<Nft[] | null> => {
+                return Promise.resolve(r.data.nfts ?? [])
+            }
+            result = axios.get<Nfts>("api/v1/tokens/" + this.tokenId.value + "/nfts", {params: params}).then(cb)
+        } else {
+            result = Promise.resolve(null)
         }
-        params.limit = limit
-        params.order = 'asc'
-        if (serialNumber !== null) {
-            params.serialnumber = operator + ":" + serialNumber
-        }
-        const cb = (r: AxiosResponse<Nfts>): Promise<Nft[] | null> => {
-            return Promise.resolve(r.data.nfts ?? [])
-        }
-        return axios.get<Nfts>("api/v1/tokens/" + this.tokenId.value + "/nfts", {params: params}).then(cb)
+        return result
     }
 }
