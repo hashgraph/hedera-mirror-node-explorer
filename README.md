@@ -100,7 +100,7 @@ The Staking page allows the user to connect a wallet to the Explorer and to choo
 to a selected network node or to another account.
 
 By default, the Staking page is disabled, and the corresponding menu item is absent from the top navigation bar.
-To enable the Staking page and menu item, set the following variable to *true*in the .env file:
+To enable the Staking page and menu item, set the following variable to *true* in the .env file:
 
 ```shell
 VUE_APP_ENABLE_STAKING=true
