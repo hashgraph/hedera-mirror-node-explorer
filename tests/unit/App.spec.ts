@@ -57,7 +57,6 @@ describe("App.vue", () => {
 
     beforeEach(() => {
         process.env = Object.assign(process.env, { VUE_APP_ENABLE_STAKING: false });
-        process.env = Object.assign(process.env, { VUE_APP_ENABLE_BLOCKS: false });
     })
 
     test("normal screen", async () => {
@@ -96,7 +95,7 @@ describe("App.vue", () => {
         const navBar = wrapper.findComponent(TopNavBar)
         expect(navBar.exists()).toBe(true)
         expect(navBar.text()).toBe(
-            "MAINNETTESTNETPREVIEWNETDashboardTransactionsTokensTopicsContractsAccountsNodes")
+            "MAINNETTESTNETPREVIEWNETDashboardTransactionsTokensTopicsContractsAccountsNodesBlocks")
 
         expect(wrapper.findComponent(HbarMarketDashboard).exists()).toBe(true)
 

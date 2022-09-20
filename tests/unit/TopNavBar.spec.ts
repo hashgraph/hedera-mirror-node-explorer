@@ -52,7 +52,6 @@ describe("TopNavBar.vue", () => {
 
     it("Should display page links without Staking and Blocks", async () => {
         process.env = Object.assign(process.env, { VUE_APP_ENABLE_STAKING: true });
-        process.env = Object.assign(process.env, { VUE_APP_ENABLE_BLOCKS: true });
 
         await router.push("/") // To avoid "missing required param 'network'" error
         Object.defineProperty(window, 'innerWidth', {writable: true, configurable: true, value: 1920})
@@ -76,7 +75,6 @@ describe("TopNavBar.vue", () => {
 
     it("Should display logos, page links and full search bar", async () => {
         process.env = Object.assign(process.env, { VUE_APP_ENABLE_STAKING: true });
-        process.env = Object.assign(process.env, { VUE_APP_ENABLE_BLOCKS: true });
 
         await router.push("/") // To avoid "missing required param 'network'" error
         Object.defineProperty(window, 'innerWidth', {writable: true, configurable: true, value: 1920})
