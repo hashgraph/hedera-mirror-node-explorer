@@ -69,7 +69,7 @@
             <Property id="expiresAt">
               <template v-slot:name>Expires at</template>
               <template v-slot:value>
-                <TimestampValue :timestamp="tokenInfo?.expiry_timestamp" :nano="true" :show-none="true"/>
+                <TimestampValue :timestamp="tokenInfo?.expiry_timestamp?.toString()" :nano="true" :show-none="true"/>
               </template>
             </Property>
             <Property id="autoRenewPeriod">
