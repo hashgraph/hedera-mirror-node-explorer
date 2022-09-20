@@ -92,14 +92,13 @@
            :class="{ 'is-rimmed': isAccountRoute}"
            @click="$router.push({name: 'Accounts'})">Accounts</a>
         <a class="button is-ghost h-is-navbar-item h-is-dense"
-           :class="{ 'is-rimmed': isNodeRoute, 'is-last': !isStakingEnabled && !isBlocksEnabled}"
+           :class="{ 'is-rimmed': isNodeRoute}"
            @click="$router.push({name: 'Nodes'})">Nodes</a>
         <a v-if="isStakingEnabled"
            class="button is-ghost h-is-navbar-item h-is-dense"
-           :class="{ 'is-rimmed': isStakingRoute, 'is-last': !isBlocksEnabled}"
+           :class="{ 'is-rimmed': isStakingRoute}"
            @click="$router.push({name: 'Staking'})">Staking</a>
-        <a v-if="isBlocksEnabled"
-           class="button is-ghost is-last h-is-navbar-item h-is-dense"
+        <a class="button is-ghost is-last h-is-navbar-item h-is-dense"
            :class="{ 'is-rimmed': isBlocksRoute}"
            @click="$router.push({name: 'Blocks'})">Blocks</a>
       </div>
@@ -135,7 +134,6 @@ export default defineComponent({
 
     const productName = process.env.VUE_APP_PRODUCT_NAME ?? "Hedera Mirror Node Explorer"
     const isStakingEnabled = process.env.VUE_APP_ENABLE_STAKING === 'true'
-    const isBlocksEnabled = process.env.VUE_APP_ENABLE_BLOCKS === 'true'
 
     const route = useRoute()
     const network = computed( () => { return route.params.network })
@@ -206,7 +204,6 @@ export default defineComponent({
       buildTime,
       productName,
       isStakingEnabled,
-      isBlocksEnabled,
       name,
       isMobileMenuOpen,
       networkRegistry,
