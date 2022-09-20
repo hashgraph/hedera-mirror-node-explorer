@@ -232,9 +232,6 @@ router.beforeEach((to) => {
   if (to.name === 'Staking' && process.env.VUE_APP_ENABLE_STAKING !== 'true') {
     // Staking page not enabled => re-route to PageNotFound
     result = "/page-not-found"
-  } else if (to.name === 'Blocks' && process.env.VUE_APP_ENABLE_BLOCKS !== 'true') {
-    // Blocks page not enabled => re-route to PageNotFound
-    result = "/page-not-found"
   } else {
     result = true
   }
