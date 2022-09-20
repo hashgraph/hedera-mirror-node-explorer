@@ -45,22 +45,14 @@ npm run test:e2e
 npm run test:e2e:headless
 ```
 
-### Run the Explorer with a local mirror node
-
-The Explorer can be used with a local mirror by means of a .env file located at the root 
-of the repository and containing the definition of the following variables to add a custom menu
-item in the network selector pull-down menu:
-
-- VUE_APP_LOCAL_MIRROR_NODE_URL=\<URL of the local mirror node\>
-- VUE_APP_LOCAL_MIRROR_NODE_MENU_NAME=\<label of the custom menu item\>
-
-The latter may be omitted and will default to 'LOCALNET'
-
 ### Run the Explorer locally in Docker
 
 ```shell
+# build the Docker image of the Explorer
 npm run build:docker
-docker-compose up -d
+# launch the Explorer
+docker compose up -d
+# then open http://localhost:9090 in your web browser
 ```
 
 ### Customize configuration
@@ -88,6 +80,33 @@ This directory should have the following structure:
   *./src/assets/styles/brand-theme.scss* and, if present, will supersede it.
 - Any file present in the *./public/* directory will be added to the content of the 
   *./public* directory, which allows to customize the favicon.
+
+#### Running the Explorer with a local mirror node
+
+The Explorer can be used with a local mirror by means of a .env file located at the root
+of the repository and containing the definition of the following variables to add a custom menu
+item in the network selector pull-down menu:
+
+```shell
+VUE_APP_LOCAL_MIRROR_NODE_URL=\<URL of the local mirror node\>
+VUE_APP_LOCAL_MIRROR_NODE_MENU_NAME=\<label of the custom menu item\>
+```
+
+The latter may be omitted and will default to 'LOCALNET'
+
+#### Enabling the Staking page
+
+The Staking page allows the user to connect a wallet to the Explorer and to choose to stake her account balance
+to a selected network node or to another account.
+
+By default, the Staking page is disabled, and the corresponding menu item is absent from the top navigation bar.
+To enable the Staking page and menu item, set the following variable to *true*in the .env file:
+
+```shell
+VUE_APP_ENABLE_STAKING=true
+```
+
+*Note the user wallet connection only works on Chrome.*
 
 #### Vue CLI
 
