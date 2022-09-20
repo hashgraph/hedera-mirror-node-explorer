@@ -106,8 +106,6 @@ To enable the Staking page and menu item, set the following variable to *true* i
 VUE_APP_ENABLE_STAKING=true
 ```
 
-*Note the user wallet connection only works on Chrome.*
-
 #### Vue CLI
 
 The Hedera Mirror Node Explorer is based on the Vue CLI framework.
