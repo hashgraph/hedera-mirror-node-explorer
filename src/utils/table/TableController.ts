@@ -77,10 +77,12 @@ export abstract class TableController<R, K> {
             // this.loadingRef.value = true
             this.rowBuffer.load((page - 1) * this.pageSize.value, this.pageSize.value).finally(() => {
                 // this.loadingRef.value = false
-                this.lastPage.value = page
+                this.lastPage.value = Math.min(page, this.maxPage.value)
             })
         }
     }
+
+    private maxPage = computed(() => Math.ceil(this.rowBuffer.rows.value.length / this.pageSize.value))
 
     public readonly mounted: Ref<boolean> = ref(false)
 
