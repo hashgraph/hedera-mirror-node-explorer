@@ -202,7 +202,7 @@ import {normalizeTransactionId} from "@/utils/TransactionID";
 import {NodeCursor} from "@/components/node/NodeCursor";
 import {AccountLoader} from "@/components/account/AccountLoader";
 import {NodesLoader} from "@/components/node/NodesLoader";
-import {RewardsTransactionTableController} from "@/components/transaction/RewardsTransactionTableController";
+import {RewardsTransactionTableController} from "@/components/staking/RewardsTransactionTableController";
 
 export default defineComponent({
   name: 'Staking',
