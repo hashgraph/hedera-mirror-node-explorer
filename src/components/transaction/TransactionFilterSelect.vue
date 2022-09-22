@@ -46,7 +46,7 @@ import {makeTypeLabel} from "@/utils/TransactionTools";
 import {TransactionTableController} from "@/components/transaction/TransactionTableController";
 
 export default defineComponent({
-  name: "TransactionFilterSelectV2",
+  name: "TransactionFilterSelect",
 
   props: {
     controller: {

@@ -86,7 +86,7 @@ import TransactionLabel from "@/components/values/TransactionLabel.vue";
 import {ORUGA_MOBILE_BREAKPOINT} from '@/App.vue';
 import EmptyTable from "@/components/EmptyTable.vue";
 import HbarAmount from "@/components/values/HbarAmount.vue";
-import {RewardsTransactionTableController} from "@/components/transaction/RewardsTransactionTableController";
+import {RewardsTransactionTableController} from "@/components/staking/RewardsTransactionTableController";
 
 export default defineComponent({
   name: 'RewardsTransactionTable',

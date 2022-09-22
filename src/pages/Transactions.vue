@@ -33,7 +33,7 @@
       <template v-slot:control>
         <div class="is-flex is-align-items-flex-end">
           <PlayPauseButton v-bind:controller="transactionTableController"/>
-          <TransactionFilterSelectV2 v-bind:controller="transactionTableController"/>
+          <TransactionFilterSelect v-bind:controller="transactionTableController"/>
         </div>
       </template>
       <template v-slot:content>
@@ -57,7 +57,7 @@ import {computed, defineComponent, inject, onBeforeUnmount, onMounted, Ref, ref,
 
 import TransactionTable from "@/components/transaction/TransactionTable.vue";
 import PlayPauseButton from "@/utils/table/PlayPauseButton.vue";
-import TransactionFilterSelectV2 from "@/components/transaction/TransactionFilterSelectV2.vue";
+import TransactionFilterSelect from "@/components/transaction/TransactionFilterSelect.vue";
 import {useRoute, useRouter} from "vue-router";
 import DashboardCard from "@/components/DashboardCard.vue";
 import Footer from "@/components/Footer.vue";
@@ -73,7 +73,7 @@ export default defineComponent({
   components: {
     Footer,
     DashboardCard,
-    TransactionFilterSelectV2,
+    TransactionFilterSelect,
     PlayPauseButton,
     TransactionTable,
   },

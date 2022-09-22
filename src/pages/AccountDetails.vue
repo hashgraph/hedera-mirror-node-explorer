@@ -172,7 +172,7 @@
       <template v-slot:control>
         <div class="is-flex is-align-items-flex-end">
           <PlayPauseButton v-bind:controller="transactionTableController"/>
-          <TransactionFilterSelectV2 v-bind:controller="transactionTableController"/>
+          <TransactionFilterSelect v-bind:controller="transactionTableController"/>
         </div>
       </template>
       <template v-slot:content>
@@ -221,7 +221,7 @@ import {AccountLoader} from "@/components/account/AccountLoader";
 import {ContractLoader} from "@/components/contract/ContractLoader";
 import {NodeLoader} from "@/components/node/NodeLoader";
 import AliasValue from "@/components/values/AliasValue.vue";
-import TransactionFilterSelectV2 from "@/components/transaction/TransactionFilterSelectV2.vue";
+import TransactionFilterSelect from "@/components/transaction/TransactionFilterSelect.vue";
 
 const MAX_TOKEN_BALANCES = 10
 
@@ -234,7 +234,7 @@ export default defineComponent({
     AccountLink,
     NotificationBanner,
     Property,
-    TransactionFilterSelectV2,
+    TransactionFilterSelect,
     Footer,
     BlobValue,
     TokenAmount,

@@ -121,7 +121,7 @@ import StringValue from "@/components/values/StringValue.vue";
 import KeyValue from "@/components/values/KeyValue.vue";
 import Footer from "@/components/Footer.vue";
 import PlainAmount from "@/components/values/PlainAmount.vue";
-import BlockTransactionTable from "@/components/blocks/BlockTransactionTable.vue";
+import BlockTransactionTable from "@/components/block/BlockTransactionTable.vue";
 import {BlockTransactionsLoader} from "@/components/block/BlockTransactionsLoader";
 import router from "@/router";
 
