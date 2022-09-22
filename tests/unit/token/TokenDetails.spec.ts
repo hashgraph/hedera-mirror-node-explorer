@@ -262,8 +262,8 @@ describe("TokenDetails.vue", () => {
         const testTokenId = SAMPLE_TOKEN_WITH_KEYS.token_id
         const matcher1 = "/api/v1/tokens/" + testTokenId
         mock.onGet(matcher1).reply(200, SAMPLE_TOKEN_WITH_KEYS);
-        const matcher2 = "/api/v1/tokens/" + testTokenId + "/balances"
-        mock.onGet(matcher2).reply(200, SAMPLE_BALANCES);
+        const matcher2 = "/api/v1/tokens/" + testTokenId + "/nfts"
+        mock.onGet(matcher2).reply(200, SAMPLE_NFTS);
 
         const wrapper = mount(TokenDetails, {
             global: {
@@ -306,8 +306,8 @@ describe("TokenDetails.vue", () => {
         const testTokenId = SAMPLE_TOKEN_WITHOUT_KEYS.token_id
         const matcher1 = "/api/v1/tokens/" + testTokenId
         mock.onGet(matcher1).reply(200, SAMPLE_TOKEN_WITHOUT_KEYS);
-        const matcher2 = "/api/v1/tokens/" + testTokenId + "/balances"
-        mock.onGet(matcher2).reply(200, SAMPLE_BALANCES);
+        const matcher2 = "/api/v1/tokens/" + testTokenId + "/nfts"
+        mock.onGet(matcher2).reply(200, SAMPLE_NFTS);
 
         const wrapper = mount(TokenDetails, {
             global: {
@@ -350,8 +350,8 @@ describe("TokenDetails.vue", () => {
         const testTokenId = SAMPLE_TOKEN_WITHOUT_KEYS.token_id
         const matcher1 = "/api/v1/tokens/" + testTokenId
         mock.onGet(matcher1).reply(200, SAMPLE_TOKEN_WITHOUT_KEYS);
-        const matcher2 = "/api/v1/tokens/" + testTokenId + "/balances"
-        mock.onGet(matcher2).reply(200, SAMPLE_BALANCES);
+        const matcher2 = "/api/v1/tokens/" + testTokenId + "/nfts"
+        mock.onGet(matcher2).reply(200, SAMPLE_NFTS);
 
         const wrapper = mount(TokenDetails, {
             global: {
