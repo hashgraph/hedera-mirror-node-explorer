@@ -24,9 +24,9 @@ import axios from "axios";
 import {SAMPLE_TOKEN, SAMPLE_TRANSACTIONS} from "../Mocks";
 import Transactions from "@/pages/Transactions.vue";
 import DashboardCard from "@/components/DashboardCard.vue";
-import PlayPauseButtonV2 from "@/components/PlayPauseButtonV2.vue";
-import TransactionFilterSelect from "@/components/transaction/TransactionFilterSelect.vue";
-import TransactionTableV2 from "@/components/transaction/TransactionTableV2.vue";
+import PlayPauseButton from "@/utils/table/PlayPauseButton.vue";
+import TransactionFilterSelectV2 from "@/components/transaction/TransactionFilterSelectV2.vue";
+import TransactionTable from "@/components/transaction/TransactionTable.vue";
 import MockAdapter from "axios-mock-adapter";
 import Oruga from "@oruga-ui/oruga-next";
 import {HMSF} from "@/utils/HMSF";
@@ -82,10 +82,10 @@ describe("Transactions.vue", () => {
         expect(card.exists()).toBe(true)
         expect(card.text()).toMatch(RegExp("^Recent Transactions"))
 
-        const playPause = card.findComponent(PlayPauseButtonV2)
+        const playPause = card.findComponent(PlayPauseButton)
         expect(playPause.exists()).toBe(true)
 
-        const select = card.findComponent(TransactionFilterSelect)
+        const select = card.findComponent(TransactionFilterSelectV2)
         expect(select.exists()).toBe(true)
         expect(select.text()).toBe(
             "TYPES: ALLCONTRACT CALLCONTRACT CREATECONTRACT DELETECONTRACT UPDATECRYPTO ADD LIVE " +
@@ -97,7 +97,7 @@ describe("Transactions.vue", () => {
             "KYC GRANTTOKEN KYC REVOKETOKEN MINTTOKEN PAUSETOKEN UNFREEZETOKEN UNPAUSETOKEN " +
             "UPDATETOKEN WIPEUNCHECKED SUBMIT")
 
-        const table = card.findComponent(TransactionTableV2)
+        const table = card.findComponent(TransactionTable)
         expect(table.exists()).toBe(true)
         expect(table.get('thead').text()).toBe("ID Type Content Time")
         expect(table.get('tbody').text()).toBe(

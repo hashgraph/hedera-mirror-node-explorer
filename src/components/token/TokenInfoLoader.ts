@@ -45,7 +45,10 @@ export class TokenInfoLoader extends EntityLoader<TokenInfo> {
         () => makeTokenSymbol(this.entity.value, 11))
 
     public readonly isFungible = computed(
-        () => this.entity.value != null ? this.entity.value.type != "NON_FUNGIBLE_UNIQUE" : null)
+        () => this.entity.value != null ? this.entity.value.type == "FUNGIBLE_COMMON" : null)
+
+    public readonly isNft = computed(
+        () => this.entity.value != null ? this.entity.value.type == "NON_FUNGIBLE_UNIQUE" : null)
 
     //
     // EntityLoader

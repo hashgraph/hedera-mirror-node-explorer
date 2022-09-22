@@ -26,18 +26,25 @@
 
   <o-table
       :data="contracts"
-      :paginated="!isTouchDevice"
-      :per-page="isMediumScreen ? pageSize : 5"
-      :striped="true"
-      :hoverable="true"
-      :v-model:current-page="currentPage"
-      :mobile-breakpoint="ORUGA_MOBILE_BREAKPOINT"
-      default-sort="contract_id"
-      aria-next-label="Next page"
-      aria-previous-label="Previous page"
-      aria-page-label="Page"
-      aria-current-label="Current page"
+      :loading="loading"
+      paginated
+      backend-pagination
+      :total="total"
+      v-model:current-page="currentPage"
+      :per-page="perPage"
+      @page-change="onPageChange"
       @click="handleClick"
+
+      :hoverable="true"
+      :narrowed="narrowed"
+      :striped="true"
+      :mobile-breakpoint="ORUGA_MOBILE_BREAKPOINT"
+
+      aria-current-label="Current page"
+      aria-next-label="Next page"
+      aria-page-label="Page"
+      aria-previous-label="Previous page"
+      customRowKey="contract_id"
   >
     <o-table-column field="contract_id" label="Contract" v-slot="props">
       <div class="is-numeric">
@@ -67,13 +74,14 @@
 
 <script lang="ts">
 
-import {defineComponent, inject, PropType, ref} from 'vue';
+import {ComputedRef, defineComponent, inject, PropType, Ref} from 'vue';
 import {Contract} from "@/schemas/HederaSchemas";
 import router from "@/router";
 import BlobValue from "@/components/values/BlobValue.vue";
 import TimestampValue from "@/components/values/TimestampValue.vue";
 import { ORUGA_MOBILE_BREAKPOINT } from '@/App.vue';
 import EmptyTable from "@/components/EmptyTable.vue";
+import {ContractTableController} from "@/components/contract/ContractTableController";
 
 
 //
@@ -86,34 +94,35 @@ export default defineComponent({
   components: {EmptyTable, BlobValue, TimestampValue},
 
   props: {
-    nbItems: Number,
-    contracts: {
-      type: Array as PropType<Array<Contract>>,
-      default: () => []
+    controller: {
+      type: Object as PropType<ContractTableController>,
+      required: true
+    },
+    narrowed:{
+      type: Boolean,
+      default: false
     }
   },
 
   setup(props) {
     const isTouchDevice = inject('isTouchDevice', false)
     const isMediumScreen = inject('isMediumScreen', true)
-    const DEFAULT_PAGE_SIZE = 15
-    const pageSize = props.nbItems ?? DEFAULT_PAGE_SIZE
 
-    // 3) handleClick
     const handleClick = (c: Contract) => {
       router.push({name: 'ContractDetails', params: { contractId: c.contract_id}})
     }
 
-    // 4) currentPage
-    let currentPage = ref(1)
-
     return {
       isTouchDevice,
       isMediumScreen,
-      pageSize,
+      contracts: props.controller.pageRows as ComputedRef<Contract[]>,
+      loading: props.controller.loading as ComputedRef<boolean>,
+      total: props.controller.totalRowCount as ComputedRef<number>,
+      currentPage: props.controller.currentPage as Ref<number>,
+      onPageChange: props.controller.onPageChange,
+      perPage: props.controller.pageSize as Ref<number>,
       handleClick,
-      currentPage,
-      ORUGA_MOBILE_BREAKPOINT
+      ORUGA_MOBILE_BREAKPOINT,
     }
   }
 });

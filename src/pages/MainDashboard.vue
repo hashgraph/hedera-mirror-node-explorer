@@ -36,13 +36,10 @@
             <span class="h-is-secondary-title">Crypto Transfers</span>
           </template>
           <template v-slot:control>
-            <PlayPauseButtonV2 v-model:state="cryptoTransactionCacheState"/>
+            <PlayPauseButton v-bind:controller="cryptoTableController"/>
           </template>
           <template v-slot:content>
-            <CryptoTransactionTable
-                v-bind:transactions="cryptoTransactions"
-                v-bind:nb-items="6"
-            />
+            <CryptoTransactionTable v-bind:controller="cryptoTableController"/>
           </template>
         </DashboardCard>
       </div>
@@ -57,13 +54,10 @@
             <span class="h-is-secondary-title">Smart Contract Calls</span>
           </template>
           <template v-slot:control>
-            <PlayPauseButtonV2 v-model:state="contractCallTransactionCacheState"/>
+            <PlayPauseButton v-bind:controller="contractTableController"/>
           </template>
           <template v-slot:content>
-            <ContractCallTransactionTable
-                v-bind:transactions="contractCallTransactions"
-                v-bind:nb-items="6"
-            />
+            <ContractCallTransactionTable v-bind:controller="contractTableController"/>
           </template>
         </DashboardCard>
       </div>
@@ -74,13 +68,10 @@
             <span class="h-is-secondary-title">HCS Messages</span>
           </template>
           <template v-slot:control>
-            <PlayPauseButtonV2 v-model:state="messageTransactionCacheState"/>
+            <PlayPauseButton v-bind:controller="messageTableController"/>
           </template>
           <template v-slot:content>
-            <MessageTransactionTable
-                v-bind:transactions="messageTransactions"
-                v-bind:nb-items="6"
-            />
+            <MessageTransactionTable v-bind:controller="messageTableController" />
           </template>
         </DashboardCard>
       </div>
@@ -99,25 +90,24 @@
 
 <script lang="ts">
 
-import {defineComponent, inject, onBeforeUnmount, onMounted, watch} from 'vue';
+import {computed, defineComponent, inject, onBeforeUnmount, onMounted, ref, watch} from 'vue';
 
 import HbarMarketDashboard from "../components/dashboard/HbarMarketDashboard.vue";
 import DashboardCard from "@/components/DashboardCard.vue";
-import PlayPauseButtonV2 from "@/components/PlayPauseButtonV2.vue";
+import PlayPauseButton from "@/utils/table/PlayPauseButton.vue";
 import CryptoTransactionTable from "@/components/dashboard/CryptoTransactionTable.vue";
 import MessageTransactionTable from "@/components/dashboard/MessageTransactionTable.vue";
 import ContractCallTransactionTable from "@/components/dashboard/ContractCallTransactionTable.vue";
 import {TransactionType} from "@/schemas/HederaSchemas";
 import Footer from "@/components/Footer.vue";
-import {TransactionCacheV2} from "@/components/transaction/TransactionCacheV2";
-import {EntityCacheStateV2} from "@/utils/EntityCacheV2";
+import {TransactionTableController} from "@/components/transaction/TransactionTableController";
 
 export default defineComponent({
   name: 'MainDashboard',
 
   components: {
     Footer,
-    PlayPauseButtonV2,
+    PlayPauseButton,
     DashboardCard,
     CryptoTransactionTable,
     MessageTransactionTable,
@@ -131,49 +121,46 @@ export default defineComponent({
 
   setup(props) {
     const isSmallScreen = inject('isSmallScreen', true)
+    const isMediumScreen = inject('isMediumScreen', true)
     const isTouchDevice = inject('isTouchDevice', false)
     const displaySideBySide = inject('isLargeScreen', true)
 
-    const cryptoTransactionCache = new TransactionCacheV2()
-    cryptoTransactionCache.transactionType.value = TransactionType.CRYPTOTRANSFER
+    const pageSize = computed(() => isMediumScreen ? 5 : 6)
 
-    const messageTransactionCache = new TransactionCacheV2()
-    messageTransactionCache.transactionType.value = TransactionType.CONSENSUSSUBMITMESSAGE
+    const cryptoTableController = new TransactionTableController(ref(null), pageSize, false)
+    cryptoTableController.transactionType.value = TransactionType.CRYPTOTRANSFER
 
-    const contractCallTransactionCache = new TransactionCacheV2()
-    contractCallTransactionCache.transactionType.value = TransactionType.CONTRACTCALL
+    const messageTableController = new TransactionTableController(ref(null), pageSize, false)
+    messageTableController.transactionType.value = TransactionType.CONSENSUSSUBMITMESSAGE
+
+    const contractTableController = new TransactionTableController(ref(null), pageSize, false)
+    contractTableController.transactionType.value = TransactionType.CONTRACTCALL
 
     onMounted(() => {
-      cryptoTransactionCache.state.value = EntityCacheStateV2.Started
-      messageTransactionCache.state.value = EntityCacheStateV2.Started
-      contractCallTransactionCache.state.value = EntityCacheStateV2.Started
+      cryptoTableController.mounted.value = true
+      messageTableController.mounted.value = true
+      contractTableController.mounted.value = true
     })
 
     onBeforeUnmount(() => {
-      cryptoTransactionCache.state.value = EntityCacheStateV2.Stopped
-      messageTransactionCache.state.value = EntityCacheStateV2.Stopped
-      contractCallTransactionCache.state.value = EntityCacheStateV2.Stopped
+      cryptoTableController.mounted.value = false
+      messageTableController.mounted.value = false
+      contractTableController.mounted.value = false
     })
 
     watch(() => props.network, () => {
-      cryptoTransactionCache.clear()
-      messageTransactionCache.clear()
-      contractCallTransactionCache.clear()
-      cryptoTransactionCache.state.value = EntityCacheStateV2.Started
-      messageTransactionCache.state.value = EntityCacheStateV2.Started
-      contractCallTransactionCache.state.value = EntityCacheStateV2.Started
+      cryptoTableController.reset()
+      messageTableController.reset()
+      contractTableController.reset()
     })
 
     return {
       isSmallScreen,
       isTouchDevice,
       displaySideBySide,
-      cryptoTransactions: cryptoTransactionCache.transactions,
-      cryptoTransactionCacheState: cryptoTransactionCache.state,
-      messageTransactions: messageTransactionCache.transactions,
-      messageTransactionCacheState: messageTransactionCache.state,
-      contractCallTransactions: contractCallTransactionCache.transactions,
-      contractCallTransactionCacheState: contractCallTransactionCache.state,
+      cryptoTableController,
+      messageTableController,
+      contractTableController,
       TransactionType}
   }
 

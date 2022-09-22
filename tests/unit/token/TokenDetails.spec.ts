@@ -30,12 +30,11 @@ import {
     SAMPLE_TOKEN_WITH_KEYS,
     SAMPLE_TOKEN_WITHOUT_KEYS
 } from "../Mocks";
-import TokenNftTable from "@/components/token/TokenNftTable.vue";
 import TokenBalanceTable from "@/components/token/TokenBalanceTable.vue";
 import MockAdapter from "axios-mock-adapter";
 import {HMSF} from "@/utils/HMSF";
 import Oruga from "@oruga-ui/oruga-next";
-import {EntityCacheStateV2} from "@/utils/EntityCacheV2";
+import NftHolderTable from "@/components/token/NftHolderTable.vue";
 
 /*
     Bookmarks
@@ -85,8 +84,8 @@ describe("TokenDetails.vue", () => {
         await flushPromises()
         // console.log(wrapper.text())
 
-        expect(wrapper.vm.tokenBalanceCache.state.value).toBe(EntityCacheStateV2.Started)
-        expect(wrapper.vm.tokenNftCache.state.value).toBe(EntityCacheStateV2.Stopped)
+        expect(wrapper.vm.tokenBalanceTableController.mounted.value).toBe(true)
+        expect(wrapper.vm.nftHolderTableController.mounted.value).toBe(true)
 
         expect(wrapper.text()).toMatch(RegExp("^Fungible Token " + testTokenId))
 
@@ -110,13 +109,13 @@ describe("TokenDetails.vue", () => {
 
         expect(wrapper.text()).toMatch("Balances")
         expect(wrapper.findComponent(TokenBalanceTable).exists()).toBe(true)
-        expect(wrapper.findComponent(TokenNftTable).exists()).toBe(false)
+        expect(wrapper.findComponent(NftHolderTable).exists()).toBe(false)
 
         wrapper.unmount()
         await flushPromises()
 
-        expect(wrapper.vm.tokenBalanceCache.state.value).toBe(EntityCacheStateV2.Stopped)
-        expect(wrapper.vm.tokenNftCache.state.value).toBe(EntityCacheStateV2.Stopped)
+        expect(wrapper.vm.tokenBalanceTableController.mounted.value).toBe(false)
+        expect(wrapper.vm.nftHolderTableController.mounted.value).toBe(false)
     });
 
     it("Should display details of non fungible token", async () => {
@@ -142,8 +141,8 @@ describe("TokenDetails.vue", () => {
         await flushPromises()
         // console.log(wrapper.text())
 
-        expect(wrapper.vm.tokenBalanceCache.state.value).toBe(EntityCacheStateV2.Stopped)
-        expect(wrapper.vm.tokenNftCache.state.value).toBe(EntityCacheStateV2.Started)
+        expect(wrapper.vm.tokenBalanceTableController.mounted.value).toBe(true)
+        expect(wrapper.vm.nftHolderTableController.mounted.value).toBe(true)
 
         expect(wrapper.text()).toMatch(RegExp("^Non Fungible Token " + testTokenId))
 
@@ -163,14 +162,14 @@ describe("TokenDetails.vue", () => {
         expect(wrapper.get("#maxSupplyValue").text()).toBe("150")
 
         expect(wrapper.text()).toMatch("NFT Holders")
-        expect(wrapper.findComponent(TokenNftTable).exists()).toBe(true)
+        expect(wrapper.findComponent(NftHolderTable).exists()).toBe(true)
         expect(wrapper.findComponent(TokenBalanceTable).exists()).toBe(false)
 
         wrapper.unmount()
         await flushPromises()
 
-        expect(wrapper.vm.tokenBalanceCache.state.value).toBe(EntityCacheStateV2.Stopped)
-        expect(wrapper.vm.tokenNftCache.state.value).toBe(EntityCacheStateV2.Stopped)
+        expect(wrapper.vm.tokenBalanceTableController.mounted.value).toBe(false)
+        expect(wrapper.vm.nftHolderTableController.mounted.value).toBe(false)
     });
 
     it("Should update when token id changes", async () => {
@@ -196,14 +195,14 @@ describe("TokenDetails.vue", () => {
         await flushPromises()
         // console.log(wrapper.text())
 
-        expect(wrapper.vm.tokenBalanceCache.state.value).toBe(EntityCacheStateV2.Stopped)
-        expect(wrapper.vm.tokenNftCache.state.value).toBe(EntityCacheStateV2.Started)
+        expect(wrapper.vm.tokenBalanceTableController.mounted.value).toBe(true)
+        expect(wrapper.vm.nftHolderTableController.mounted.value).toBe(true)
 
         expect(wrapper.text()).toMatch(RegExp("^Non Fungible Token " + testTokenId))
         expect(wrapper.get("#nameValue").text()).toBe("Ħ Frens Kingdom Dude")
         expect(wrapper.get("#symbolValue").text()).toBe("ĦFRENSKINGDOM")
         expect(wrapper.text()).toMatch("NFT Holders")
-        expect(wrapper.findComponent(TokenNftTable).exists()).toBe(true)
+        expect(wrapper.findComponent(NftHolderTable).exists()).toBe(true)
         expect(wrapper.findComponent(TokenBalanceTable).exists()).toBe(false)
 
         testTokenId = SAMPLE_TOKEN.token_id
@@ -224,14 +223,14 @@ describe("TokenDetails.vue", () => {
         expect(wrapper.get("#nameValue").text()).toBe("23423")
         expect(wrapper.get("#symbolValue").text()).toBe("QmVGABnvpbPwLcfG4iuW2JSzY8MLkALhd54bdPAbJxoEkB")
         expect(wrapper.text()).toMatch("Balances")
-        expect(wrapper.findComponent(TokenNftTable).exists()).toBe(false)
+        expect(wrapper.findComponent(NftHolderTable).exists()).toBe(false)
         expect(wrapper.findComponent(TokenBalanceTable).exists()).toBe(true)
 
         wrapper.unmount()
         await flushPromises()
 
-        expect(wrapper.vm.tokenBalanceCache.state.value).toBe(EntityCacheStateV2.Stopped)
-        expect(wrapper.vm.tokenNftCache.state.value).toBe(EntityCacheStateV2.Stopped)
+        expect(wrapper.vm.tokenBalanceTableController.mounted.value).toBe(false)
+        expect(wrapper.vm.nftHolderTableController.mounted.value).toBe(false)
     });
 
     it("Should detect invalid token ID", async () => {
@@ -263,8 +262,8 @@ describe("TokenDetails.vue", () => {
         const testTokenId = SAMPLE_TOKEN_WITH_KEYS.token_id
         const matcher1 = "/api/v1/tokens/" + testTokenId
         mock.onGet(matcher1).reply(200, SAMPLE_TOKEN_WITH_KEYS);
-        const matcher2 = "/api/v1/tokens/" + testTokenId + "/balances"
-        mock.onGet(matcher2).reply(200, SAMPLE_BALANCES);
+        const matcher2 = "/api/v1/tokens/" + testTokenId + "/nfts"
+        mock.onGet(matcher2).reply(200, SAMPLE_NFTS);
 
         const wrapper = mount(TokenDetails, {
             global: {
@@ -277,8 +276,8 @@ describe("TokenDetails.vue", () => {
         await flushPromises()
         // console.log(wrapper.text())
 
-        expect(wrapper.vm.tokenBalanceCache.state.value).toBe(EntityCacheStateV2.Stopped)
-        expect(wrapper.vm.tokenNftCache.state.value).toBe(EntityCacheStateV2.Started)
+        expect(wrapper.vm.tokenBalanceTableController.mounted.value).toBe(true)
+        expect(wrapper.vm.nftHolderTableController.mounted.value).toBe(true)
 
         expect(wrapper.text()).toMatch(RegExp("^Non Fungible Token " + testTokenId))
 
@@ -293,6 +292,9 @@ describe("TokenDetails.vue", () => {
 
         wrapper.unmount()
         await flushPromises()
+
+        expect(wrapper.vm.tokenBalanceTableController.mounted.value).toBe(false)
+        expect(wrapper.vm.nftHolderTableController.mounted.value).toBe(false)
     });
 
     it("Should display no token keys", async () => {
@@ -304,8 +306,8 @@ describe("TokenDetails.vue", () => {
         const testTokenId = SAMPLE_TOKEN_WITHOUT_KEYS.token_id
         const matcher1 = "/api/v1/tokens/" + testTokenId
         mock.onGet(matcher1).reply(200, SAMPLE_TOKEN_WITHOUT_KEYS);
-        const matcher2 = "/api/v1/tokens/" + testTokenId + "/balances"
-        mock.onGet(matcher2).reply(200, SAMPLE_BALANCES);
+        const matcher2 = "/api/v1/tokens/" + testTokenId + "/nfts"
+        mock.onGet(matcher2).reply(200, SAMPLE_NFTS);
 
         const wrapper = mount(TokenDetails, {
             global: {
@@ -318,8 +320,8 @@ describe("TokenDetails.vue", () => {
         await flushPromises()
         // console.log(wrapper.text())
 
-        expect(wrapper.vm.tokenBalanceCache.state.value).toBe(EntityCacheStateV2.Stopped)
-        expect(wrapper.vm.tokenNftCache.state.value).toBe(EntityCacheStateV2.Started)
+        expect(wrapper.vm.tokenBalanceTableController.mounted.value).toBe(true)
+        expect(wrapper.vm.nftHolderTableController.mounted.value).toBe(true)
 
         expect(wrapper.text()).toMatch(RegExp("^Non Fungible Token " + testTokenId))
 
@@ -334,6 +336,9 @@ describe("TokenDetails.vue", () => {
 
         wrapper.unmount()
         await flushPromises()
+
+        expect(wrapper.vm.tokenBalanceTableController.mounted.value).toBe(false)
+        expect(wrapper.vm.nftHolderTableController.mounted.value).toBe(false)
     });
 
     it("Should display 'Token deleted' banner", async () => {
@@ -345,8 +350,8 @@ describe("TokenDetails.vue", () => {
         const testTokenId = SAMPLE_TOKEN_WITHOUT_KEYS.token_id
         const matcher1 = "/api/v1/tokens/" + testTokenId
         mock.onGet(matcher1).reply(200, SAMPLE_TOKEN_WITHOUT_KEYS);
-        const matcher2 = "/api/v1/tokens/" + testTokenId + "/balances"
-        mock.onGet(matcher2).reply(200, SAMPLE_BALANCES);
+        const matcher2 = "/api/v1/tokens/" + testTokenId + "/nfts"
+        mock.onGet(matcher2).reply(200, SAMPLE_NFTS);
 
         const wrapper = mount(TokenDetails, {
             global: {

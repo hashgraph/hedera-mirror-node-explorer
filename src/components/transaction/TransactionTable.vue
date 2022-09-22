@@ -18,6 +18,7 @@
   -
   -->
 
+
 <!-- --------------------------------------------------------------------------------------------------------------- -->
 <!--                                                     TEMPLATE                                                    -->
 <!-- --------------------------------------------------------------------------------------------------------------- -->
@@ -27,6 +28,7 @@
   <o-table
       :data="transactions"
       :loading="loading"
+      paginated
       backend-pagination
       :total="total"
       v-model:current-page="currentPage"
@@ -35,7 +37,7 @@
       @click="handleClick"
 
       :hoverable="true"
-      :paginated="!isTouchDevice"
+      :narrowed="narrowed"
       :striped="true"
       :mobile-breakpoint="ORUGA_MOBILE_BREAKPOINT"
 
@@ -45,23 +47,26 @@
       aria-previous-label="Previous page"
       customRowKey="consensus_timestamp"
   >
-    <o-table-column v-slot="props" field="topic_id" label="Topic">
-      <div class="is-numeric">
-        {{ props.row.entity_id }}
+    <o-table-column v-slot="props" field="timestamp" label="ID">
+      <TransactionLabel v-bind:transaction-id="props.row.transaction_id" v-bind:result="props.row.result"/>
+    </o-table-column>
+
+    <o-table-column v-slot="props" field="name" label="Type">
+      <div class="h-has-pill" style="display: inline-block">
+        <div class="h-is-text-size-2">{{ makeTypeLabel(props.row.name) }}</div>
       </div>
     </o-table-column>
 
-    <o-table-column v-slot="props" field="created" label="Created">
-      <TimestampValue v-bind:timestamp="props.row.valid_start_timestamp"/>
+    <o-table-column v-slot="props" label="Content">
+      <TransactionSummary v-bind:transaction="props.row"/>
     </o-table-column>
 
-    <o-table-column v-slot="props" field="memo" label="Memo">
-        <BlobValue :blob-value="props.row.memo_base64" :base64="true" :show-none="true"/>
+    <o-table-column v-slot="props" field="consensus_timestamp" label="Time">
+      <TimestampValue v-bind:timestamp="props.row.consensus_timestamp"/>
     </o-table-column>
-
   </o-table>
 
-  <EmptyTable v-if="!transactions.length"/>
+  <EmptyTable v-if="transactions.length === 0"/>
 
 </template>
 
@@ -71,21 +76,24 @@
 
 <script lang="ts">
 
-import {ComputedRef, defineComponent, inject, PropType, Ref} from 'vue';
+import {ComputedRef, defineComponent, inject, PropType, Ref} from "vue";
 import {Transaction} from "@/schemas/HederaSchemas";
+import TransactionSummary from "@/components/transaction/TransactionSummary.vue";
 import TimestampValue from "@/components/values/TimestampValue.vue";
+import TransactionLabel from "@/components/values/TransactionLabel.vue";
+import {makeTypeLabel} from "@/utils/TransactionTools";
 import router from "@/router";
-import BlobValue from "@/components/values/BlobValue.vue";
-import {ORUGA_MOBILE_BREAKPOINT} from '@/App.vue';
-import EmptyTable from "@/components/EmptyTable.vue";
+import {ORUGA_MOBILE_BREAKPOINT} from "@/App.vue";
 import {TransactionTableController} from "@/components/transaction/TransactionTableController";
+import EmptyTable from "@/components/EmptyTable.vue";
 
 export default defineComponent({
-  name: 'TopicTable',
+  name: "TransactionTable",
 
-  components: {EmptyTable, BlobValue, TimestampValue},
+  components: {TransactionSummary, TimestampValue, TransactionLabel, EmptyTable },
 
   props: {
+    narrowed: Boolean,
     controller: {
       type: Object as PropType<TransactionTableController>,
       required: true
@@ -94,13 +102,15 @@ export default defineComponent({
 
   setup(props) {
     const isTouchDevice = inject('isTouchDevice', false)
+    const isMediumScreen = inject('isMediumScreen', true)
 
     const handleClick = (t: Transaction) => {
-      router.push({name: 'TopicDetails', params: {topicId: t.entity_id}})
+      router.push({name: 'TransactionDetails', params: {transactionId: t.transaction_id}, query: {t: t.consensus_timestamp}})
     }
 
     return {
       isTouchDevice,
+      isMediumScreen,
       transactions: props.controller.pageRows as ComputedRef<Transaction[]>,
       loading: props.controller.loading as ComputedRef<boolean>,
       total: props.controller.totalRowCount as ComputedRef<number>,
@@ -108,12 +118,11 @@ export default defineComponent({
       onPageChange: props.controller.onPageChange,
       perPage: props.controller.pageSize as Ref<number>,
       handleClick,
-
-      // From App
-      ORUGA_MOBILE_BREAKPOINT
+      makeTypeLabel,
+      ORUGA_MOBILE_BREAKPOINT,
     }
   }
-});
+})
 
 </script>
 
@@ -121,6 +130,4 @@ export default defineComponent({
 <!--                                                       STYLE                                                     -->
 <!-- --------------------------------------------------------------------------------------------------------------- -->
 
-<style scoped>
-
-</style>
+<style scoped/>

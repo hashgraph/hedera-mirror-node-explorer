@@ -48,12 +48,12 @@
 
 <script lang="ts">
 
-import {defineComponent, inject, onBeforeUnmount, onMounted, watch} from 'vue';
+import {computed, defineComponent, inject, onBeforeUnmount, onMounted} from 'vue';
 import BalanceTable from "@/components/account/BalanceTable.vue";
 import DashboardCard from "@/components/DashboardCard.vue";
 import Footer from "@/components/Footer.vue";
 import {BalanceCache} from "@/components/account/BalanceCache";
-import {EntityCacheStateV2} from "@/utils/EntityCacheV2";
+import {AutoRefreshLoader} from "@/utils/AutoRefreshLoader";
 
 export default defineComponent({
 
@@ -77,26 +77,14 @@ export default defineComponent({
     //
     // balanceCache
     //
-    const balanceCache = new BalanceCache()
-    const setupBalanceCache = () => {
-      balanceCache.accountId.value = props.accountId ?? null
-      balanceCache.state.value = EntityCacheStateV2.Started
-    }
-    watch(() => props.accountId, () => {
-      setupBalanceCache()
-    })
-    onMounted(() => {
-      setupBalanceCache()
-    })
-    onBeforeUnmount(() => {
-      balanceCache.state.value = EntityCacheStateV2.Stopped
-    })
+    const balanceCache = new BalanceCache(computed(() => props.accountId ?? null), AutoRefreshLoader.HUGE_COUNT)
+    onMounted(() => balanceCache.autoRefresh.value = true)
+    onBeforeUnmount(() => balanceCache.autoRefresh.value = false)
 
     return {
       isSmallScreen,
       isTouchDevice,
       tokenBalances: balanceCache.tokenBalances,
-      balanceCacheState: balanceCache.state,
     }
   }
 });

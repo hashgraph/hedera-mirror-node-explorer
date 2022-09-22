@@ -26,7 +26,8 @@ import {
     SAMPLE_CONTRACT,
     SAMPLE_CONTRACT_AS_ACCOUNT,
     SAMPLE_CONTRACT_DELETED,
-    SAMPLE_CONTRACT_DUDE
+    SAMPLE_CONTRACT_DUDE,
+    SAMPLE_TRANSACTIONS
 } from "../Mocks";
 import MockAdapter from "axios-mock-adapter";
 import Oruga from "@oruga-ui/oruga-next";
@@ -71,6 +72,9 @@ describe("ContractDetails.vue", () => {
         const matcher2 = "/api/v1/accounts/" + SAMPLE_CONTRACT.contract_id
         mock.onGet(matcher2).reply(200, SAMPLE_CONTRACT_AS_ACCOUNT);
 
+        const matcher3 = "/api/v1/transactions"
+        mock.onGet(matcher3).reply(200, SAMPLE_TRANSACTIONS);
+
         const matcher4 = "https://api.coingecko.com/api/v3/coins/hedera-hashgraph"
         mock.onGet(matcher4).reply(200, SAMPLE_COINGECKO);
 
@@ -114,6 +118,9 @@ describe("ContractDetails.vue", () => {
 
         let matcher2 = "/api/v1/accounts/" + contract1.contract_id
         mock.onGet(matcher2).reply(200, SAMPLE_CONTRACT_AS_ACCOUNT);
+
+        const matcher3 = "/api/v1/transactions"
+        mock.onGet(matcher3).reply(200, SAMPLE_TRANSACTIONS);
 
         const matcher4 = "https://api.coingecko.com/api/v3/coins/hedera-hashgraph"
         mock.onGet(matcher4).reply(200, SAMPLE_COINGECKO);
@@ -175,6 +182,9 @@ describe("ContractDetails.vue", () => {
         const matcher2 = "/api/v1/accounts/" + contract.contract_id
         mock.onGet(matcher2).reply(200, SAMPLE_CONTRACT_AS_ACCOUNT);
 
+        const matcher3 = "/api/v1/transactions"
+        mock.onGet(matcher3).reply(200, SAMPLE_TRANSACTIONS);
+
         const matcher4 = "https://api.coingecko.com/api/v3/coins/hedera-hashgraph"
         mock.onGet(matcher4).reply(200, SAMPLE_COINGECKO);
 
@@ -209,6 +219,9 @@ describe("ContractDetails.vue", () => {
 
         const matcher2 = "/api/v1/accounts/" + contract.contract_id
         mock.onGet(matcher2).reply(200, SAMPLE_CONTRACT_AS_ACCOUNT);
+
+        const matcher3 = "/api/v1/transactions"
+        mock.onGet(matcher3).reply(200, SAMPLE_TRANSACTIONS);
 
         const matcher4 = "https://api.coingecko.com/api/v3/coins/hedera-hashgraph"
         mock.onGet(matcher4).reply(200, SAMPLE_COINGECKO);

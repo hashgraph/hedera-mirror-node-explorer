@@ -18,20 +18,43 @@
   -
   -->
 
+<!--
+
+  USAGE NOTES
+
+  <template>
+    ...
+    <PlayPauseButton v-bind:controller="tableController"/>
+    ...
+  </template>
+
+  <script>
+    ...
+    const xxxTableController = new XXXTableController()
+    ...
+
+    return {
+      tableController: xxxTableController
+    }
+  </script>
+
+  -->
+
 <!-- --------------------------------------------------------------------------------------------------------------- -->
-<!--                                                     TEMPLATE                                                    -->
+<!--                                                     TEMPLATE   v-on:click="clicked"                                                  -->
 <!-- --------------------------------------------------------------------------------------------------------------- -->
 
 <template>
-
-  <o-field>
-    <o-select v-model="selectedFilter" class="ml-2 h-is-text-size-1">
-      <option v-for="f in filterValues" v-bind:key="f" v-bind:value="f">
-        {{ makeFilterLabel(f) }}
-      </option>
-    </o-select>
-  </o-field>
-
+  <div class="is-flex is-align-items-center">
+    <span v-if="isAutoStopped" class="h-is-text-size-1 h-is-dense">REFRESH PAUSED</span>
+    <button
+        class="button is-small has-text-white ml-2"
+        data-cy="playPauseButton"
+        style="background-color: #202532; width: 26px; height: 26px; border:1px solid white; border-radius: 0"
+        v-on:click="handleClick()">
+      <i :class="{ 'fa-play': !isPlaying, 'fa-pause': isPlaying}" class="fas" style="background-color: #202532"/>
+    </button>
+  </div>
 </template>
 
 <!-- --------------------------------------------------------------------------------------------------------------- -->
@@ -40,56 +63,42 @@
 
 <script lang="ts">
 
-import { defineComponent, ref, watch } from "vue";
-import { TransactionType } from "@/schemas/HederaSchemas";
-import { makeTypeLabel } from "@/utils/TransactionTools";
+import {computed, defineComponent, PropType} from "vue";
+import {TableController} from "@/utils/table/TableController";
 
 export default defineComponent({
-  name: "TransactionFilterSelect",
+  name: "PlayPauseButton",
 
   props: {
-    filter: {
-      type: String,
-      default: ""
-    }
+    controller: Object as PropType<TableController<unknown, unknown>>
   },
 
-  setup(props, context) {
+  setup(props) {
 
-    // 1) filterValues
-    const filterValues = makeFilterValues()
-
-    // 2) selectedFilter
-    const selectedFilter = ref<string>(props.filter)
-    watch(selectedFilter, () => {
-      context.emit('update:filter', selectedFilter.value)
+    const isPlaying = computed(() => {
+      return props.controller && props.controller.autoRefresh.value
     })
-    watch(() => props.filter, () => {
-      selectedFilter.value = props.filter
+    const isAutoStopped = computed(() => {
+      return props.controller && props.controller.autoStopped.value
     })
 
-    // 3) makeFilterLabel
-    const makeFilterLabel = (filterValue: string): string => {
-      return filterValue == "" ? "TYPES: ALL" : makeTypeLabel(filterValue as TransactionType)
+    const handleClick = () => {
+      if (props.controller) {
+        const controller = props.controller
+        controller.autoRefresh.value = ! controller.autoRefresh.value
+      } else {
+        console.log("Ignoring click because props.controller is undefined")
+      }
     }
 
+
     return {
-      filterValues,
-      selectedFilter,
-      makeFilterLabel,
+      isPlaying,
+      isAutoStopped,
+      handleClick
     }
   }
 });
-
-export function makeFilterValues(): string[] {
-  const result = Object
-    .keys(TransactionType)
-    .sort((a, b) => {
-      return makeTypeLabel(a as TransactionType) < makeTypeLabel(b as TransactionType) ? -1 : 1;
-    })
-  result.splice(0, 0, "")
-  return result
-}
 
 </script>
 

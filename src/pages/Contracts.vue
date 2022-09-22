@@ -30,8 +30,11 @@
       <template v-slot:title>
         <span class="h-is-primary-title">Recent Contracts</span>
       </template>
+      <template v-slot:control>
+        <PlayPauseButton :controller="contractTableController"/>
+      </template>
       <template v-slot:content>
-        <ContractTable v-bind:contracts="contracts"/>
+        <ContractTable :controller="contractTableController"/>
       </template>
     </DashboardCard>
 
@@ -47,12 +50,12 @@
 
 <script lang="ts">
 
-import {defineComponent, inject, onBeforeUnmount, onMounted} from 'vue';
+import {computed, defineComponent, inject, onBeforeUnmount, onMounted} from 'vue';
 import ContractTable from "@/components/contract/ContractTable.vue";
 import DashboardCard from "@/components/DashboardCard.vue";
 import Footer from "@/components/Footer.vue";
-import {ContractCache} from "@/components/contract/ContractCache";
-import {EntityCacheStateV2} from "@/utils/EntityCacheV2";
+import PlayPauseButton from "@/utils/table/PlayPauseButton.vue";
+import {ContractTableController} from "@/components/contract/ContractTableController";
 
 export default defineComponent({
   name: 'Contracts',
@@ -62,6 +65,7 @@ export default defineComponent({
   },
 
   components: {
+    PlayPauseButton,
     Footer,
     DashboardCard,
     ContractTable
@@ -69,27 +73,24 @@ export default defineComponent({
 
   setup() {
     const isSmallScreen = inject('isSmallScreen', true)
+    const isMediumScreen = inject('isMediumScreen', true)
     const isTouchDevice = inject('isTouchDevice', false)
 
     //
-    // contractCache
+    // ContractTableController
     //
-    const contractCache = new ContractCache(isTouchDevice ? 15 : 100)
-    onMounted(() => {
-      contractCache.state.value = EntityCacheStateV2.Started
-    })
-    onBeforeUnmount(() => {
-      contractCache.state.value = EntityCacheStateV2.Stopped
-    })
+    const perPage = computed(() => isMediumScreen ? 15 : 10)
+    const contractTableController = new ContractTableController(perPage)
+    onMounted(() => contractTableController.mounted.value = true)
+    onBeforeUnmount(() => contractTableController.mounted.value = false)
 
     return {
       isSmallScreen,
       isTouchDevice,
-      contracts: contractCache.contracts,
-      contractCache: contractCache, // For testing purpose
+      contractTableController,
     }
   }
-  });
+});
 
 </script>
 

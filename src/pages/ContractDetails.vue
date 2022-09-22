@@ -144,16 +144,15 @@
 
       <template v-slot:control>
         <div class="is-flex is-align-items-flex-end">
-          <PlayPauseButtonV2 v-model:state="cacheState"/>
-          <TransactionFilterSelect v-model:filter="selectedTransactionFilter"/>
+          <PlayPauseButton v-bind:controller="transactionTableController"/>
+          <TransactionFilterSelectV2 v-model:controller="transactionTableController"/>
         </div>
       </template>
 
       <template v-slot:content>
         <ContractTransactionTable
             v-if="contract"
-            v-bind:transactions="transactions"
-            v-bind:nb-items="10"
+            v-bind:controller="transactionTableController"
         />
       </template>
     </DashboardCard>
@@ -170,11 +169,11 @@
 
 <script lang="ts">
 
-import {computed, defineComponent, inject, onBeforeUnmount, onMounted, ref, watch} from 'vue';
+import {computed, defineComponent, inject, onBeforeUnmount, onMounted, Ref, ref, watch} from 'vue';
 import KeyValue from "@/components/values/KeyValue.vue";
 import HexaValue from "@/components/values/HexaValue.vue";
 import ContractTransactionTable from "@/components/contract/ContractTransactionTable.vue";
-import PlayPauseButtonV2 from "@/components/PlayPauseButtonV2.vue";
+import PlayPauseButton from "@/utils/table/PlayPauseButton.vue";
 import AccountLink from "@/components/values/AccountLink.vue";
 import TimestampValue from "@/components/values/TimestampValue.vue";
 import DurationValue from "@/components/values/DurationValue.vue";
@@ -190,10 +189,9 @@ import {EntityID} from "@/utils/EntityID";
 import Property from "@/components/Property.vue";
 import {ContractLoader} from "@/components/contract/ContractLoader";
 import {AccountLoader} from "@/components/account/AccountLoader";
-import {TransactionCacheV2} from "@/components/transaction/TransactionCacheV2";
-import {EntityCacheStateV2} from "@/utils/EntityCacheV2";
+import {TransactionTableController} from "@/components/transaction/TransactionTableController";
 import {useRoute, useRouter} from "vue-router";
-import TransactionFilterSelect from "@/components/transaction/TransactionFilterSelect.vue";
+import TransactionFilterSelectV2 from "@/components/transaction/TransactionFilterSelectV2.vue";
 
 const MAX_TOKEN_BALANCES = 3
 
@@ -202,7 +200,7 @@ export default defineComponent({
   name: 'ContractDetails',
 
   components: {
-    TransactionFilterSelect,
+    TransactionFilterSelectV2,
     ByteCodeValue,
     Property,
     NotificationBanner,
@@ -214,7 +212,7 @@ export default defineComponent({
     AccountLink,
     TimestampValue,
     DurationValue,
-    PlayPauseButtonV2,
+    PlayPauseButton,
     ContractTransactionTable,
     KeyValue,
     HexaValue,
@@ -246,27 +244,13 @@ export default defineComponent({
     })
 
     //
-    // transaction filter selection
-    //
-
-    const selectedTransactionFilter = ref("")
-    const updateQuery = () => {
-      router.replace({
-        query: {type: selectedTransactionFilter.value.toLowerCase()}
-      })
-    }
-    watch(selectedTransactionFilter, () => {
-      updateQuery()
-    })
-
-    //
     // contract
     //
 
     const contractLoader = new ContractLoader(normalizedContractId)
     onMounted(() => contractLoader.requestLoad())
 
-    const accountLoader = new AccountLoader(contractLoader.contractId)
+    const accountLoader = new AccountLoader(normalizedContractId)
     onMounted(() => accountLoader.requestLoad())
 
     const displayAllTokenLinks = computed(() => accountLoader.tokens.value ? accountLoader.tokens.value.length > MAX_TOKEN_BALANCES : false)
@@ -289,32 +273,36 @@ export default defineComponent({
       return result
     })
 
+
+
     //
-    // transactionCache
+    // transactionTableController
     //
 
-    const transactionCache = new TransactionCacheV2();
+    const pageSize: Ref<number> = ref(10)
+    const transactionTableController = new TransactionTableController(normalizedContractId, pageSize, true)
+    onMounted(() => transactionTableController.mounted.value = true)
+    onBeforeUnmount(() => transactionTableController.mounted.value = false)
 
-    const setupTransactionCache = () => {
-      transactionCache.state.value = EntityCacheStateV2.Stopped
-      transactionCache.accountId.value = normalizedContractId.value ?? ""
-      transactionCache.transactionType.value = transactionFilterFromRoute.value
-      transactionCache.state.value = EntityCacheStateV2.Started
-      selectedTransactionFilter.value = transactionFilterFromRoute.value
+    //
+    // transaction filter / route synchronization
+    //
+
+    const updateQuery = () => {
+      router.replace({
+        query: {type: transactionTableController.transactionType.value.toLowerCase()}
+      })
     }
-
+    watch(transactionTableController.transactionType, () => {
+      updateQuery()
+    })
     const transactionFilterFromRoute = computed(() => {
       return (route.query?.type as string ?? "").toUpperCase()
     })
-    watch([transactionFilterFromRoute, normalizedContractId], () => {
-      setupTransactionCache()
+    watch(transactionFilterFromRoute, () => {
+      transactionTableController.transactionType.value = transactionFilterFromRoute.value
     })
-    onMounted(() => {
-      setupTransactionCache()
-    })
-    onBeforeUnmount(() => {
-      transactionCache.state.value = EntityCacheStateV2.Stopped
-    })
+    transactionTableController.transactionType.value = transactionFilterFromRoute.value
 
     return {
       isSmallScreen,
@@ -324,9 +312,7 @@ export default defineComponent({
       balance: accountLoader.balance,
       tokens: accountLoader.tokens,
       displayAllTokenLinks,
-      transactions: transactionCache.transactions,
-      cacheState: transactionCache.state,
-      selectedTransactionFilter,
+      transactionTableController,
       notification,
       obtainerId: contractLoader.obtainerId,
       proxyAccountId: contractLoader.proxyAccountId,

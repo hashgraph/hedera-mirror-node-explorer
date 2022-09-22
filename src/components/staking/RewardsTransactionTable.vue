@@ -26,20 +26,26 @@
 <template>
 
   <o-table
-      v-model:current-page="currentPage"
       :data="transactions"
+      :loading="loading"
+      :paginated="paginated"
+      backend-pagination
+      :total="total"
+      v-model:current-page="currentPage"
+      :per-page="perPage"
+      @page-change="onPageChange"
+      @click="handleClick"
+
       :hoverable="true"
       :narrowed="narrowed"
-      :paginated="!isTouchDevice && paginationNeeded"
-      :per-page="isMediumScreen ? pageSize : 5"
       :striped="true"
       :mobile-breakpoint="ORUGA_MOBILE_BREAKPOINT"
+
       aria-current-label="Current page"
       aria-next-label="Next page"
       aria-page-label="Page"
       aria-previous-label="Previous page"
       customRowKey="consensus_timestamp"
-      @click="handleClick"
   >
     <o-table-column v-slot="props" field="consensus_timestamp" label="Time">
       <TimestampValue v-bind:timestamp="props.row.consensus_timestamp"/>
@@ -56,7 +62,7 @@
     </o-table-column>
 
     <o-table-column v-slot="props" field="amount" label="Amount Rewarded" position="right">
-      <HbarAmount v-bind:amount="getAmountRewarded(props.row, accountId)"/>
+      <HbarAmount v-bind:amount="amountRewarded(props.row)"/>
     </o-table-column>
 
   </o-table>
@@ -71,7 +77,7 @@
 
 <script lang="ts">
 
-import {computed, defineComponent, inject, PropType, ref} from 'vue';
+import {ComputedRef, defineComponent, inject, PropType, Ref} from 'vue';
 import {Transaction} from '@/schemas/HederaSchemas';
 import {makeTypeLabel} from "@/utils/TransactionTools";
 import router from "@/router";
@@ -79,8 +85,8 @@ import TimestampValue from "@/components/values/TimestampValue.vue";
 import TransactionLabel from "@/components/values/TransactionLabel.vue";
 import {ORUGA_MOBILE_BREAKPOINT} from '@/App.vue';
 import EmptyTable from "@/components/EmptyTable.vue";
-import {RewardsTransactionCache} from "@/components/staking/RewardsTransactionCache";
 import HbarAmount from "@/components/values/HbarAmount.vue";
+import {RewardsTransactionTableController} from "@/components/transaction/RewardsTransactionTableController";
 
 export default defineComponent({
   name: 'RewardsTransactionTable',
@@ -89,41 +95,38 @@ export default defineComponent({
 
   props: {
     narrowed: Boolean,
-    nbItems: Number,
-    transactions: {
-      type: Array as PropType<Array<Transaction>>,
-      default: () => []
+    controller: {
+      type: Object as PropType<RewardsTransactionTableController>,
+      required: true
     },
-    accountId: String
   },
 
   setup(props) {
     const isTouchDevice = inject('isTouchDevice', false)
     const isMediumScreen = inject('isMediumScreen', true)
 
-    const DEFAULT_PAGE_SIZE = 15
-    const pageSize = props.nbItems ?? DEFAULT_PAGE_SIZE
-    const paginationNeeded = computed(() => {
-          return props.transactions.length > 5
-        }
-    )
-
-    // 3) handleClick
     const handleClick = (t: Transaction) => {
       router.push({name: 'TransactionDetails', params: {transactionId: t.transaction_id}, query: {t: t.consensus_timestamp}})
     }
 
-    // 4) currentPage
-    let currentPage = ref(1)
+    const amountRewarded = (t: Transaction) => {
+      const accountId = props.controller.accountId.value
+      return accountId !== null ? RewardsTransactionTableController.getAmountRewarded(t, accountId) : 0
+    }
 
     return {
       isTouchDevice,
       isMediumScreen,
-      pageSize,
-      paginationNeeded,
+      transactions: props.controller.pageRows as ComputedRef<Transaction[]>,
+      loading: props.controller.loading as ComputedRef<boolean>,
+      total: props.controller.totalRowCount as ComputedRef<number>,
+      currentPage: props.controller.currentPage as Ref<number>,
+      onPageChange: props.controller.onPageChange,
+      perPage: props.controller.pageSize as Ref<number>,
+      paginated: props.controller.paginated as Ref<boolean>,
+      accountId: props.controller.accountId as Ref<string>,
       handleClick,
-      currentPage,
-      getAmountRewarded:RewardsTransactionCache.getAmountRewarded,
+      amountRewarded,
 
       // From App
       ORUGA_MOBILE_BREAKPOINT,

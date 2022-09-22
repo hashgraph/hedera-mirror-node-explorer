@@ -40,7 +40,6 @@ import ProgressDialog from "@/components/staking/ProgressDialog.vue";
 import {waitFor} from "@/utils/TimerUtils";
 import StakingDialog from "@/components/staking/StakingDialog.vue";
 import {nextTick} from "vue";
-import OptOutDialog from "@/components/staking/OptOutDialog.vue";
 
 /*
     Bookmarks
@@ -102,6 +101,8 @@ describe("Staking.vue", () => {
         mock.onGet(matcher3).reply(200, SAMPLE_COINGECKO);
         const matcher4 = "/api/v1/transactions/" + STAKE_UPDATE_TRANSACTION_ID
         mock.onGet(matcher4).reply(200, STAKE_UPDATE_TRANSACTIONS)
+        const matcher5 = "/api/v1/transactions"
+        mock.onGet(matcher5).reply(200, SAMPLE_TRANSACTIONS)
 
         const wrapper = mount(Staking, {
             global: {

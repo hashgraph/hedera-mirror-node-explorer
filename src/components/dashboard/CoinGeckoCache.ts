@@ -18,19 +18,19 @@
  *
  */
 
-import {EntityCacheV2} from "@/utils/EntityCacheV2";
+import {AutoRefreshLoader} from "@/utils/AutoRefreshLoader";
 import {CoinGeckoResponse} from "@/schemas/CoinGeckoMarketData";
 import axios, {AxiosResponse} from "axios";
 import {computed} from "vue";
 
-export class CoinGeckoCache extends EntityCacheV2<CoinGeckoResponse> {
+export class CoinGeckoCache extends AutoRefreshLoader<CoinGeckoResponse> {
 
     //
     // Public
     //
 
     public constructor() {
-        super(60000, null)
+        super(60000, AutoRefreshLoader.HUGE_COUNT)
     }
 
     public readonly marketData = computed(() => {

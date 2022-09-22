@@ -153,15 +153,13 @@
       </template>
       <template v-slot:control>
         <div class="is-flex is-align-items-flex-end">
-          <PlayPauseButtonV2 v-model:state="transactionCacheState"/>
+          <PlayPauseButton v-bind:controller="transactionTableController"/>
         </div>
       </template>
       <template v-slot:content>
         <RewardsTransactionTable
             :narrowed="true"
-            :nb-items="10"
-            :transactions="transactions"
-            :account-id="accountId"
+            :controller="transactionTableController"
         />
       </template>
     </DashboardCard>
@@ -181,7 +179,7 @@
 
 <script lang="ts">
 
-import {computed, defineComponent, inject, onBeforeUnmount, onMounted, ref, watch} from 'vue';
+import {computed, defineComponent, inject, onBeforeUnmount, onMounted, ref} from 'vue';
 import Footer from "@/components/Footer.vue";
 import {walletManager} from "@/router";
 import NetworkDashboardItem from "@/components/node/NetworkDashboardItem.vue";
@@ -195,17 +193,16 @@ import DashboardCard from "@/components/DashboardCard.vue";
 import ConfirmDialog from "@/components/ConfirmDialog.vue";
 import ProgressDialog, {Mode} from "@/components/staking/ProgressDialog.vue";
 import AccountLink from "@/components/values/AccountLink.vue";
-import {EntityCacheStateV2} from "@/utils/EntityCacheV2";
-import PlayPauseButtonV2 from "@/components/PlayPauseButtonV2.vue";
+import PlayPauseButton from "@/utils/table/PlayPauseButton.vue";
 import RewardsCalculator from "@/components/staking/RewardsCalculator.vue";
 import WalletChooser from "@/components/staking/WalletChooser.vue";
 import {WalletDriver} from "@/utils/wallet/WalletDriver";
 import {WalletDriverError} from "@/utils/wallet/WalletDriverError";
-import {RewardsTransactionCache} from '@/components/staking/RewardsTransactionCache';
 import {normalizeTransactionId} from "@/utils/TransactionID";
 import {NodeCursor} from "@/components/node/NodeCursor";
 import {AccountLoader} from "@/components/account/AccountLoader";
 import {NodesLoader} from "@/components/node/NodesLoader";
+import {RewardsTransactionTableController} from "@/components/transaction/RewardsTransactionTableController";
 
 export default defineComponent({
   name: 'Staking',
@@ -221,7 +218,7 @@ export default defineComponent({
   components: {
     WalletChooser,
     RewardsCalculator,
-    PlayPauseButtonV2,
+    PlayPauseButton,
     AccountLink,
     ConfirmDialog,
     ProgressDialog,
@@ -234,6 +231,7 @@ export default defineComponent({
 
   setup(props) {
     const isSmallScreen = inject('isSmallScreen', true)
+    const isMediumScreen = inject('isMediumScreen', true)
     const isTouchDevice = inject('isTouchDevice', false)
 
     const showStakingDialog = ref(false)
@@ -448,20 +446,12 @@ export default defineComponent({
     }
 
     //
-    // Rewards Transactions Cache
+    // Rewards Transactions Table Controller
     //
-    const transactionCache = new RewardsTransactionCache()
-    const setupTransactionCache = () => {
-      if(walletManager.accountId.value) {
-        transactionCache.accountId.value = walletManager.accountId.value
-        transactionCache.state.value = EntityCacheStateV2.Started
-      }
-    }
-    onMounted(() => setupTransactionCache())
-    watch(walletManager.accountId, () => setupTransactionCache())
-    onBeforeUnmount(() => {
-      transactionCache.state.value = EntityCacheStateV2.Stopped
-    })
+    const pageSize = computed(() => isMediumScreen ? 10 : 5)
+    const transactionTableController = new RewardsTransactionTableController(walletManager.accountId, pageSize)
+    onMounted(() => transactionTableController.mounted.value = true)
+    onBeforeUnmount(() => transactionTableController.mounted.value = false)
 
     return {
       isSmallScreen,
@@ -497,8 +487,7 @@ export default defineComponent({
       progressExtraMessage,
       progressExtraTransaction,
       showProgressSpinner,
-      transactions: transactionCache.filteredTransactions,
-      transactionCacheState: transactionCache.state,
+      transactionTableController,
     }
   }
 });

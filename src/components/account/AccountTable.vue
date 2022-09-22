@@ -26,19 +26,25 @@
 
   <o-table
       :data="accounts"
+      :loading="loading"
+      paginated
+      backend-pagination
+      :total="total"
+      v-model:current-page="currentPage"
+      :per-page="perPage"
+      @page-change="onPageChange"
+      @click="handleClick"
+
       :hoverable="true"
-      :paginated="!isTouchDevice"
-      :per-page="isMediumScreen ? pageSize : 5"
+      :narrowed="narrowed"
       :striped="true"
-      :v-model:current-page="currentPage"
       :mobile-breakpoint="ORUGA_MOBILE_BREAKPOINT"
+
       aria-current-label="Current page"
       aria-next-label="Next page"
       aria-page-label="Page"
       aria-previous-label="Previous page"
-      customRowKey="account_id"
-      default-sort="account_id"
-      @click="handleClick"
+      customRowKey="account"
   >
     <o-table-column v-slot="props" field="account" label="Account">
       <div class="is-numeric">
@@ -88,7 +94,7 @@
 
 <script lang="ts">
 
-import {defineComponent, inject, PropType, ref} from 'vue';
+import {ComputedRef, defineComponent, inject, PropType, Ref} from 'vue';
 import {AccountInfo} from "@/schemas/HederaSchemas";
 import router from "@/router";
 import HbarAmount from "@/components/values/HbarAmount.vue";
@@ -97,6 +103,7 @@ import TimestampValue from "@/components/values/TimestampValue.vue";
 import TokenAmount from "@/components/values/TokenAmount.vue";
 import {ORUGA_MOBILE_BREAKPOINT} from '@/App.vue';
 import EmptyTable from "@/components/EmptyTable.vue";
+import {AccountTableController} from "@/components/account/AccountTableController";
 
 export default defineComponent({
   name: 'AccountTable',
@@ -104,34 +111,35 @@ export default defineComponent({
   components: {EmptyTable, BlobValue, HbarAmount, TimestampValue, TokenAmount},
 
   props: {
-    nbItems: Number,
-    accounts: {
-      type: Array as PropType<Array<AccountInfo>>,
-      default: () => [],
+    controller: {
+      type: Object as PropType<AccountTableController>,
+      required: true
     },
+    narrowed:{
+      type: Boolean,
+      default: false
+    }
   },
 
   setup(props) {
     const isTouchDevice = inject('isTouchDevice', false)
     const isMediumScreen = inject('isMediumScreen', true)
-    const DEFAULT_PAGE_SIZE = 15
-    const pageSize = props.nbItems ?? DEFAULT_PAGE_SIZE
 
-    // 3) handleClick
     const handleClick = (a: AccountInfo) => {
       router.push({name: 'AccountDetails', params: {accountId: a.account}})
     }
 
-    // 4) currentPage
-    let currentPage = ref(1)
-
     return {
       isTouchDevice,
       isMediumScreen,
-      pageSize,
+      accounts: props.controller.pageRows as ComputedRef<AccountInfo[]>,
+      loading: props.controller.loading as ComputedRef<boolean>,
+      total: props.controller.totalRowCount as ComputedRef<number>,
+      currentPage: props.controller.currentPage as Ref<number>,
+      onPageChange: props.controller.onPageChange,
+      perPage: props.controller.pageSize as Ref<number>,
       handleClick,
-      currentPage,
-      ORUGA_MOBILE_BREAKPOINT
+      ORUGA_MOBILE_BREAKPOINT,
     }
   }
 });

@@ -31,11 +31,6 @@
         <span class="h-is-primary-title">Transactions with ID </span>
         <span class="h-is-secondary-text">{{ normalizedTransactionId }}</span>
       </template>
-      <template v-slot:control>
-        <div class="is-flex is-align-items-flex-end">
-          <PlayPauseButtonV2 v-model:state="transactionCacheState"/>
-        </div>
-      </template>
       <template v-slot:content>
         <TransactionByIdTable v-bind:transactions="transactions"/>
       </template>
@@ -53,14 +48,12 @@
 
 <script lang="ts">
 
-import {computed, defineComponent, inject, onBeforeUnmount, onMounted, watch} from 'vue';
-import PlayPauseButtonV2 from "@/components/PlayPauseButtonV2.vue";
+import {computed, defineComponent, inject, onMounted} from 'vue';
 import DashboardCard from "@/components/DashboardCard.vue";
 import TransactionByIdTable from "@/components/transaction/TransactionByIdTable.vue";
 import {normalizeTransactionId} from "@/utils/TransactionID";
 import Footer from "@/components/Footer.vue";
-import {EntityCacheStateV2} from "@/utils/EntityCacheV2";
-import {TransactionByIdCache} from "@/components/transaction/TransactionByIdCache";
+import {TransactionByIdLoader} from "@/components/transaction/TransactionByIdLoader";
 
 export default defineComponent({
   name: 'TransactionsById',
@@ -73,7 +66,6 @@ export default defineComponent({
   components: {
     Footer,
     DashboardCard,
-    PlayPauseButtonV2,
     TransactionByIdTable,
   },
 
@@ -85,32 +77,17 @@ export default defineComponent({
       return props.transactionId ? normalizeTransactionId(props.transactionId, true) : "?";
     })
 
-    //
-    // transactionCache
-    //
-
-    const transactionCache = new TransactionByIdCache();
-
-    const setupTransactionCache = () => {
-      transactionCache.transactionId.value = props.transactionId ?? null
-      transactionCache.state.value = EntityCacheStateV2.Started
-    }
-
-    watch(() => props.transactionId, () => {
-      setupTransactionCache()
+    const paramTransactionId = computed(() => {
+      return props.transactionId ? normalizeTransactionId(props.transactionId, false) : null
     })
-    onMounted(() => {
-      setupTransactionCache()
-    })
-    onBeforeUnmount(() => {
-      transactionCache.state.value = EntityCacheStateV2.Stopped
-    })
+
+    const transactionLoader = new TransactionByIdLoader(paramTransactionId)
+    onMounted(() => transactionLoader.requestLoad())
 
     return {
       isSmallScreen,
       isTouchDevice,
-      transactions: transactionCache.transactions,
-      transactionCacheState: transactionCache.state,
+      transactions: transactionLoader.transactions,
       normalizedTransactionId
     }
   }

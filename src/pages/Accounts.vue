@@ -24,14 +24,17 @@
 
 <template>
 
-  <section class="section" :class="{'h-mobile-background': isTouchDevice || !isSmallScreen}">
+  <section :class="{'h-mobile-background': isTouchDevice || !isSmallScreen}" class="section">
 
     <DashboardCard>
       <template v-slot:title>
         <span class="h-is-primary-title">Recent Accounts</span>
       </template>
+      <template v-slot:control>
+        <PlayPauseButton v-bind:controller="accountTableController"/>
+      </template>
       <template v-slot:content>
-        <AccountTable v-bind:accounts="accounts"/>
+        <AccountTable :controller="accountTableController"/>
       </template>
     </DashboardCard>
 
@@ -47,12 +50,12 @@
 
 <script lang="ts">
 
-import {defineComponent, inject, onBeforeUnmount, onMounted} from 'vue';
+import {computed, defineComponent, inject, onBeforeUnmount, onMounted} from 'vue';
 import AccountTable from "@/components/account/AccountTable.vue";
 import DashboardCard from "@/components/DashboardCard.vue";
 import Footer from "@/components/Footer.vue";
-import {AccountCache} from "@/components/account/AccountCache";
-import {EntityCacheStateV2} from "@/utils/EntityCacheV2";
+import {AccountTableController} from "@/components/account/AccountTableController";
+import PlayPauseButton from "@/utils/table/PlayPauseButton.vue";
 
 export default defineComponent({
   name: 'Accounts',
@@ -62,6 +65,7 @@ export default defineComponent({
   },
 
   components: {
+    PlayPauseButton,
     Footer,
     DashboardCard,
     AccountTable
@@ -69,21 +73,21 @@ export default defineComponent({
 
   setup() {
     const isSmallScreen = inject('isSmallScreen', true)
+    const isMediumScreen = inject('isMediumScreen', true)
     const isTouchDevice = inject('isTouchDevice', false)
 
-    const accountCache = new AccountCache()
-    onMounted(() => {
-      accountCache.state.value = EntityCacheStateV2.Started
-    })
-    onBeforeUnmount(() => {
-      accountCache.state.value = EntityCacheStateV2.Stopped
-    })
+    //
+    // AccountTableController
+    //
+    const perPage = computed(() => isMediumScreen ? 15 : 10)
+    const accountTableController = new AccountTableController(perPage)
+    onMounted(() => accountTableController.mounted.value = true)
+    onBeforeUnmount(() => accountTableController.mounted.value = false)
 
     return {
       isSmallScreen,
       isTouchDevice,
-      accounts: accountCache.accounts,
-      accountCache, // For testing purpose
+      accountTableController,
     }
   }
 });

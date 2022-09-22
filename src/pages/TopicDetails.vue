@@ -34,12 +34,12 @@
       </template>
 
       <template v-slot:control>
-        <PlayPauseButtonV2 v-model:state="cacheState"/>
+        <PlayPauseButton v-bind:controller="messageTableController"/>
       </template>
 
       <template v-slot:content>
         <NotificationBanner v-if="notification" :message="notification"/>
-        <TopicMessageTable v-if="validEntityId" v-bind:messages="messages"/>
+        <TopicMessageTable v-if="validEntityId" v-bind:controller="messageTableController"/>
       </template>
 
     </DashboardCard>
@@ -56,15 +56,14 @@
 
 <script lang="ts">
 
-import {computed, defineComponent, inject, onBeforeUnmount, onMounted, watch} from 'vue';
-import PlayPauseButtonV2 from "@/components/PlayPauseButtonV2.vue";
+import {computed, defineComponent, inject, onBeforeUnmount, onMounted} from 'vue';
+import PlayPauseButton from "@/utils/table/PlayPauseButton.vue";
 import TopicMessageTable from "@/components/topic/TopicMessageTable.vue";
 import DashboardCard from "@/components/DashboardCard.vue";
 import Footer from "@/components/Footer.vue";
 import NotificationBanner from "@/components/NotificationBanner.vue";
 import {EntityID} from "@/utils/EntityID";
-import {TopicMessageCache} from "@/components/topic/TopicMessageCache";
-import {EntityCacheStateV2} from "@/utils/EntityCacheV2";
+import {TopicMessageTableController} from "@/components/topic/TopicMessageTableController";
 
 export default defineComponent({
 
@@ -83,11 +82,12 @@ export default defineComponent({
     Footer,
     DashboardCard,
     TopicMessageTable,
-    PlayPauseButtonV2
+    PlayPauseButton
   },
 
   setup(props) {
     const isSmallScreen = inject('isSmallScreen', true)
+    const isMediumScreen = inject('isMediumScreen', true)
     const isTouchDevice = inject('isTouchDevice', false)
 
     const validEntityId = computed(() => {
@@ -108,30 +108,18 @@ export default defineComponent({
     })
 
     //
-    // messageCache
+    // messageTableController
     //
 
-    const messageCache = new TopicMessageCache()
-
-    const setupMessageCache = () => {
-      messageCache.topicId.value = props.topicId
-      messageCache.state.value = EntityCacheStateV2.Started
-    }
-    watch(() => props.topicId, () => {
-      setupMessageCache()
-    })
-    onMounted(() => {
-      setupMessageCache()
-    })
-    onBeforeUnmount(() => {
-      messageCache.state.value = EntityCacheStateV2.Stopped
-    })
+    const pageSize = computed(() => isMediumScreen ? 15 : 5)
+    const messageTableController = new TopicMessageTableController(normalizedTopicId, pageSize)
+    onMounted(() => messageTableController.mounted.value = true)
+    onBeforeUnmount(() => messageTableController.mounted.value = false)
 
     return {
       isSmallScreen,
       isTouchDevice,
-      messages: messageCache.messages,
-      cacheState: messageCache.state,
+      messageTableController,
       validEntityId,
       normalizedTopicId,
       notification

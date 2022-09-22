@@ -25,10 +25,9 @@
 <template>
 
   <o-field>
-    <o-select v-model="selectedType" class="ml-2 h-is-text-size-1">
-      <option value="">TYPES: ALL</option>
-      <option v-for="t in types" v-bind:key="t" v-bind:value="t">
-        {{ makeTypeLabel(TransactionType[t]) }}
+    <o-select v-model="selectedFilter" class="ml-2 h-is-text-size-1">
+      <option v-for="f in filterValues" v-bind:key="f" v-bind:value="f">
+        {{ makeFilterLabel(f) }}
       </option>
     </o-select>
   </o-field>
@@ -41,45 +40,44 @@
 
 <script lang="ts">
 
-import {defineComponent, PropType, ref, watch} from "vue";
+import {defineComponent, PropType} from "vue";
 import {TransactionType} from "@/schemas/HederaSchemas";
 import {makeTypeLabel} from "@/utils/TransactionTools";
+import {TransactionTableController} from "@/components/transaction/TransactionTableController";
 
 export default defineComponent({
-  name: "TransactionTypeSelect",
+  name: "TransactionFilterSelectV2",
 
   props: {
-    modelValue: String as PropType<TransactionOption>
+    controller: {
+      type: Object as PropType<TransactionTableController>,
+      required: true
+    }
   },
 
-  setup(props, context) {
+  setup(props) {
 
-    const selectedOption = ref("all")
-    watch(selectedOption, () => {
-      console.log('update:modelValue', selectedOption.value)
-    })
-
-    // 1) types
-    const types = Object.keys(TransactionType)
-
-    // 2) selectedType
-    const selectedType = ref<TransactionOption>(props.modelValue ?? "")
-    watch(selectedType, () => {
-      context.emit('update:modelValue', selectedType.value)
-    })
+    const makeFilterLabel = (filterValue: string): string => {
+      return filterValue == "" ? "TYPES: ALL" : makeTypeLabel(filterValue as TransactionType)
+    }
 
     return {
-      types,
-      selectedType,
-      selectedOption,
-
-      makeTypeLabel,
-      TransactionType
+      filterValues: makeFilterValues(),
+      selectedFilter: props.controller.transactionType,
+      makeFilterLabel,
     }
   }
 });
 
-export type TransactionOption = TransactionType | ""
+export function makeFilterValues(): string[] {
+  const result = Object
+    .keys(TransactionType)
+    .sort((a, b) => {
+      return makeTypeLabel(a as TransactionType) < makeTypeLabel(b as TransactionType) ? -1 : 1;
+    })
+  result.splice(0, 0, "")
+  return result
+}
 
 </script>
 
