@@ -109,7 +109,7 @@ export class RewardsTransactionTableController extends TableController<Transacti
         } else {
             const params = "limit=" + limit
                 + "&account.id=" + accountId
-                + "&gteTimestamp=lt:" + ltTimestamp
+                + "&timestamp=gte:" + gteTimestamp
                 + (ltTimestamp !== null ? "&timestamp=lt:" + ltTimestamp : "")
             const cb = (r: AxiosResponse<TransactionResponse>): Promise<Transaction[]|null> =>{
                 let result: Promise<Transaction[]|null>
