@@ -180,8 +180,8 @@ export default defineComponent({
     const disablePreviousButton = ref(true)
     const disableNextButton = ref(true)
     watch(blockLoader.entity, () => {
-      disablePreviousButton.value = blockLoader.entity.value?.previous_hash === nullHash
-      disableNextButton.value = false
+      disablePreviousButton.value = (notification.value != null) || (blockLoader.entity.value?.previous_hash === nullHash)
+      disableNextButton.value = notification.value != null
     })
     const handlePreviousBlock = () => {
       router.push({
