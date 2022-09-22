@@ -59,10 +59,10 @@
       </div>
 
       <div class="is-flex is-justify-content-space-between">
-        <NetworkDashboardItem :name="'HBAR'" :title="'Current 24h Period Reward'" :value="currentReward.toString()"/>
-        <NetworkDashboardItem :name="'HBAR'" :title="'Approx Monthly Reward'" :value="monthlyReward.toString()"/>
-        <NetworkDashboardItem :name="'HBAR'" :title="'Approx Yearly Reward'" :value="yearlyReward.toString()"/>
-        <NetworkDashboardItem :title="'Approx Yearly Reward Rate'" :value="yearlyRate*100 + '%'"/>
+        <NetworkDashboardItem id="currentReward" :name="'HBAR'" :title="'Current 24h Period Reward'" :value="currentReward.toString()"/>
+        <NetworkDashboardItem id="monthlyReward" :name="'HBAR'" :title="'Approx Monthly Reward'" :value="monthlyReward.toString()"/>
+        <NetworkDashboardItem id="yearlyReward" :name="'HBAR'" :title="'Approx Yearly Reward'" :value="yearlyReward.toString()"/>
+        <NetworkDashboardItem id="yearlyRate" :title="'Approx Yearly Reward Rate'" :value="yearlyRate"/>
       </div>
 
       <div v-html="htmlNotice"/>
@@ -78,13 +78,13 @@
 
 <script lang="ts">
 
-import {computed, defineComponent, inject, onBeforeMount, onMounted, PropType, ref, watch} from 'vue';
+import {computed, defineComponent, inject, onBeforeMount, onMounted, ref, watch} from 'vue';
 import NetworkDashboardItem from "@/components/node/NetworkDashboardItem.vue";
 import DashboardCard from "@/components/DashboardCard.vue";
 import {NetworkNode} from "@/schemas/HederaSchemas";
 import {operatorRegistry} from "@/schemas/OperatorRegistry";
 import {NodesLoader} from "@/components/node/NodesLoader";
-import nodes from "@/pages/Nodes.vue";
+import {NodeCursor} from "@/components/node/NodeCursor";
 
 export default defineComponent({
   name: 'RewardsCalculator',
@@ -92,7 +92,7 @@ export default defineComponent({
   props: {
     network: String,
     amountInHbar: Number,
-    nodeId: Number as PropType<number|null>
+    nodeId: Number,
   },
 
   components: {
@@ -107,15 +107,15 @@ export default defineComponent({
     const isMediumScreen = inject('isMediumScreen', true)
     const isTouchDevice = inject('isTouchDevice', false)
 
-    // const selectedNodeId = ref<number | null>(props.nodeId ?? null)
-    // watch(() => props.nodeId, () => selectedNodeId.value = props.nodeId ?? null)
+    const selectedNodeId = ref<number | null>(props.nodeId ?? null)
+    watch(() => props.nodeId, () => selectedNodeId.value = props.nodeId ?? null)
+
     //
-    const selectedNodeId = computed(() => props.nodeId ?? null)
-    const selectedNode = computed(() => {
-      const nodeNb = selectedNodeId.value
-      const nodes = nodesLoader.nodes.value
-      return nodeNb != null && nodeNb < nodes.length ? nodes[nodeNb] : null
-    })
+    // Nodes
+    //
+    const nodesLoader = new NodesLoader()
+    onMounted(() => nodesLoader.requestLoad())
+    const nodeCursor = computed(() => new NodeCursor(selectedNodeId, nodesLoader))
 
     const amountStaked = ref<number>( 100)
     const updateAmountStaked = () => {
@@ -124,26 +124,10 @@ export default defineComponent({
     watch(() => props.amountInHbar, updateAmountStaked)
     onBeforeMount(updateAmountStaked)
 
-    const rewardRate = computed(() => {
-      let result: number
-      if (selectedNode.value) {
-        const node = selectedNode.value
-        result = node.reward_rate_start && node.stake_rewarded ? node.reward_rate_start / node.stake_rewarded : 0
-      } else {
-        result = 0
-      }
-      return result
-    })
+    const rewardRate = computed(() => nodeCursor.value.rewardRate.value)
     const currentReward = computed(() => rewardRate.value && amountStaked.value ? Math.round(amountStaked.value * rewardRate.value * 10000) / 10000 : 0)
     const monthlyReward = computed(() => currentReward.value ? Math.round(currentReward.value * 30 * 100) / 100 : 0)
     const yearlyReward = computed(() => currentReward.value ? Math.round(currentReward.value * 365 * 10) / 10 : 0)
-    const yearlyRate = computed(() => rewardRate.value ? Math.round(rewardRate.value * 365 * 10000) / 10000  : 0)
-
-    //
-    // Nodes
-    //
-    const nodesLoader = new NodesLoader()
-    onMounted(() => nodesLoader.requestLoad())
 
     const makeNodeDescription = (node: NetworkNode) => {
       let result
@@ -198,8 +182,8 @@ export default defineComponent({
       currentReward,
       monthlyReward,
       yearlyReward,
-      yearlyRate,
-      nodes,
+      yearlyRate: nodeCursor.value.approxYearlyRate,
+      nodes: nodesLoader.nodes,
       makeNodeDescription,
       makeNodeStake,
       handleInput
