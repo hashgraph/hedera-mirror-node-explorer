@@ -145,7 +145,7 @@
       <template v-slot:control>
         <div class="is-flex is-align-items-flex-end">
           <PlayPauseButton v-bind:controller="transactionTableController"/>
-          <TransactionFilterSelectV2 v-model:controller="transactionTableController"/>
+          <TransactionFilterSelect v-model:controller="transactionTableController"/>
         </div>
       </template>
 
@@ -191,7 +191,7 @@ import {ContractLoader} from "@/components/contract/ContractLoader";
 import {AccountLoader} from "@/components/account/AccountLoader";
 import {TransactionTableController} from "@/components/transaction/TransactionTableController";
 import {useRoute, useRouter} from "vue-router";
-import TransactionFilterSelectV2 from "@/components/transaction/TransactionFilterSelectV2.vue";
+import TransactionFilterSelect from "@/components/transaction/TransactionFilterSelect.vue";
 
 const MAX_TOKEN_BALANCES = 3
 
@@ -200,7 +200,7 @@ export default defineComponent({
   name: 'ContractDetails',
 
   components: {
-    TransactionFilterSelectV2,
+    TransactionFilterSelect,
     ByteCodeValue,
     Property,
     NotificationBanner,

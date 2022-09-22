@@ -25,7 +25,7 @@ import {SAMPLE_TOKEN, SAMPLE_TRANSACTIONS} from "../Mocks";
 import Transactions from "@/pages/Transactions.vue";
 import DashboardCard from "@/components/DashboardCard.vue";
 import PlayPauseButton from "@/utils/table/PlayPauseButton.vue";
-import TransactionFilterSelectV2 from "@/components/transaction/TransactionFilterSelectV2.vue";
+import TransactionFilterSelect from "@/components/transaction/TransactionFilterSelect.vue";
 import TransactionTable from "@/components/transaction/TransactionTable.vue";
 import MockAdapter from "axios-mock-adapter";
 import Oruga from "@oruga-ui/oruga-next";
@@ -85,7 +85,7 @@ describe("Transactions.vue", () => {
         const playPause = card.findComponent(PlayPauseButton)
         expect(playPause.exists()).toBe(true)
 
-        const select = card.findComponent(TransactionFilterSelectV2)
+        const select = card.findComponent(TransactionFilterSelect)
         expect(select.exists()).toBe(true)
         expect(select.text()).toBe(
             "TYPES: ALLCONTRACT CALLCONTRACT CREATECONTRACT DELETECONTRACT UPDATECRYPTO ADD LIVE " +
