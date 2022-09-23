@@ -89,7 +89,7 @@
       </template>
     </DashboardCard>
 
-    <DashboardCard>
+    <DashboardCard id="blockTransactions">
       <template v-slot:title>
         <span class="h-is-secondary-title">Block Transactions</span>
       </template>
