@@ -170,6 +170,7 @@ const VALID_ACCOUNT_MESSAGE = "Rewards will now be paid to that account"
 const UNKNOWN_ACCOUNT_MESSAGE = "This account does not exist"
 const INVALID_ACCOUNTID_MESSAGE = "Invalid account ID"
 const INVALID_CHECKSUM_MESSAGE = "Invalid checksum"
+const CANT_STAKE_SAME_ACCOUNT_MESSAGE = "Cannot stake to one's own account"
 
 export default defineComponent({
   name: "StakingDialog",
@@ -345,11 +346,13 @@ export default defineComponent({
       }
     }
 
-    const validateAccount = (accountId: string) => {
-      const entityID = EntityID.stripChecksum(accountId)
-      const checksum = EntityID.extractChecksum(accountId)
+    const validateAccount = (stakedAccountId: string) => {
+      const entityID = EntityID.stripChecksum(stakedAccountId)
+      const checksum = EntityID.extractChecksum(stakedAccountId)
 
-      if (EntityID.isValid(entityID ?? "", checksum)) {
+      if (entityID == accountId.value) {
+        inputFeedbackMessage.value = CANT_STAKE_SAME_ACCOUNT_MESSAGE
+      } else if (EntityID.isValid(entityID ?? "", checksum)) {
         const params = {} as {
           limit: 1
         }
