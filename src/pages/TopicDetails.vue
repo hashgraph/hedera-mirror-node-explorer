@@ -35,7 +35,7 @@
       </template>
 
       <template v-slot:control>
-        <PlayPauseButton v-bind:controller="messageTableController"/>
+        <PlayPauseButtonV3 v-bind:controller="messageTableController"/>
       </template>
 
       <template v-slot:content>
@@ -58,7 +58,8 @@
 <script lang="ts">
 
 import {computed, defineComponent, inject, onBeforeUnmount, onMounted} from 'vue';
-import PlayPauseButton from "@/utils/table/PlayPauseButton.vue";
+import {useRouter} from "vue-router";
+import PlayPauseButtonV3 from "@/utils/table/PlayPauseButtonV3.vue";
 import TopicMessageTable from "@/components/topic/TopicMessageTable.vue";
 import DashboardCard from "@/components/DashboardCard.vue";
 import Footer from "@/components/Footer.vue";
@@ -85,7 +86,7 @@ export default defineComponent({
     Footer,
     DashboardCard,
     TopicMessageTable,
-    PlayPauseButton
+    PlayPauseButtonV3
   },
 
   setup(props) {
@@ -121,7 +122,7 @@ export default defineComponent({
     //
 
     const pageSize = computed(() => isMediumScreen ? 15 : 5)
-    const messageTableController = new TopicMessageTableController(normalizedTopicId, pageSize)
+    const messageTableController = new TopicMessageTableController(useRouter(), normalizedTopicId, pageSize)
     onMounted(() => messageTableController.mounted.value = true)
     onBeforeUnmount(() => messageTableController.mounted.value = false)
 
