@@ -28,7 +28,7 @@ export abstract class EntityBatchLoader<E> extends EntityLoader<E> {
     //
 
     protected async loadNext(nextURL: string|null): Promise<AxiosResponse<E>|null> {
-        throw "To be subclassed"
+        throw "To be subclassed (nextURL=" + nextURL + ")"
     }
 
     protected abstract nextURL(entity: E): string|null
