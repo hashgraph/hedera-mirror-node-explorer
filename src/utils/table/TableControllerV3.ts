@@ -211,7 +211,6 @@ export abstract class TableControllerV3<R, K> {
 
             const pageParam = this.getPageParam()
             const keyParam = this.getKeyParam()
-            console.log("TableControllerV3.mountedDidChange: keyParam=" + keyParam + ", pageParam=" + pageParam)
             this.autoRefresh.value = pageParam == null || keyParam == null
             this.subController = this.autoRefresh.value ? new AutoRefreshController(this) : new PaginationController(this)
             this.subController.mount()
