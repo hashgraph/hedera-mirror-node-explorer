@@ -312,26 +312,32 @@ export default defineComponent({
 
     const handleInput = (value: string) => {
       const previousValue = selectedAccount.value
-      let isValid = true
-      let pastDash = false
+      let isValidInput = true
+      let isValidID = false
+      let isPastDash = false
 
       for (const c of value) {
-        if ((c < '0' || c > '9') && c !== '.') {
-          if (c === '-') {
-            if (pastDash) {
-              isValid = false
-              break
-            } else {
-              pastDash = true
-            }
-          } else if (c < 'a' || c > 'z' || !pastDash) {
-            isValid = false
+        if ((c >= '0' && c <= '9') || c === '.') {
+          if (isPastDash) {
+            isValidInput = false
             break
+          } else {
+            isValidID = EntityID.isValid(EntityID.stripChecksum(value))
           }
+        } else if (c === '-') {
+          if (! isValidID || isPastDash) {
+            isValidInput = false
+            break
+          } else {
+            isPastDash = true
+          }
+        } else if (c < 'a' || c > 'z' || !isPastDash) {
+          isValidInput = false
+          break
         }
       }
 
-      if (isValid) {
+      if (isValidInput) {
         selectedAccount.value = value
       } else {
         selectedAccount.value = ""
@@ -342,9 +348,6 @@ export default defineComponent({
     const validateAccount = (accountId: string) => {
       const entityID = EntityID.stripChecksum(accountId)
       const checksum = EntityID.extractChecksum(accountId)
-
-      console.log("validateAccount - entityID: " + entityID)
-      console.log("validateAccount - checksum: " + checksum)
 
       if (EntityID.isValid(entityID ?? "", checksum)) {
         const params = {} as {
