@@ -101,25 +101,18 @@
               </div>
               <div class="column pt-0">
                 <div class="is-flex is-align-items-center">
-                  <input class="input is-small has-text-right has-text-white" type="text" placeholder="0.0.1234"
+                  <input class="input is-small has-text-right has-text-white" type="text" placeholder="0.0.1234-vwxyz"
                          :class="{'has-text-grey': !isAccountSelected}"
                          :value="selectedAccount"
                          @focus="stakeChoice='account'"
                          @input="event => handleInput(event.target.value)"
-                         style="width: 9rem; height:26px; margin-top: 1px; border-radius: 4px; border-width: 1px;
+                         style="min-width: 13rem; max-width: 13rem; height:26px; margin-top: 1px; border-radius: 4px; border-width: 1px;
                          background-color: var(--h-theme-box-background-color)">
 
-                  <div v-if="isAccountSelected && showUnknownAccountMessage"
-                       class="is-inline-block h-is-text-size-2 has-text-danger ml-3">
-                    This account does not exist
-                  </div>
-                  <div v-else-if="isAccountSelected && showInvalidAccountIDMessage"
-                       class="is-inline-block h-is-text-size-2 has-text-danger ml-3">
-                    Invalid account ID
-                  </div>
-                  <div v-else-if="isAccountSelected && isSelectedAccountValidated"
-                       class="is-inline-block h-is-text-size-2 is-italic has-text-grey ml-3">
-                    Rewards will now be paid to that account.
+                  <div v-if="isAccountSelected"
+                       :class="{'has-text-grey': isSelectedAccountValidated, 'has-text-danger': !isSelectedAccountValidated}"
+                       class="is-inline-block h-is-text-size-2 ml-3">
+                    {{ inputFeedbackMessage }}
                   </div>
                 </div>
               </div>
@@ -173,6 +166,11 @@ import {operatorRegistry} from "@/schemas/OperatorRegistry";
 import {EntityID} from "@/utils/EntityID";
 import ConfirmDialog from "@/components/ConfirmDialog.vue";
 
+const VALID_ACCOUNT_MESSAGE = "Rewards will now be paid to that account"
+const UNKNOWN_ACCOUNT_MESSAGE = "This account does not exist"
+const INVALID_ACCOUNTID_MESSAGE = "Invalid account ID"
+const INVALID_CHECKSUM_MESSAGE = "Invalid checksum"
+
 export default defineComponent({
   name: "StakingDialog",
   components: {ConfirmDialog, StringValue, HbarAmount, Property},
@@ -211,6 +209,7 @@ export default defineComponent({
     const isSelectedAccountValidated = ref(false)
     const showUnknownAccountMessage = ref(false)
     const showInvalidAccountIDMessage = ref(false)
+    const inputFeedbackMessage = ref<string | null>(null)
 
     let validationTimerId = -1
 
@@ -218,6 +217,7 @@ export default defineComponent({
       showUnknownAccountMessage.value = false
       showInvalidAccountIDMessage.value = false
       isSelectedAccountValidated.value = false
+      inputFeedbackMessage.value = null
 
       if (validationTimerId != -1) {
         window.clearTimeout(validationTimerId)
@@ -267,13 +267,9 @@ export default defineComponent({
 
     const handleConfirmChange = () => {
       const stakedNode = isNodeSelected.value ? selectedNode.value : null
-      const stakedAccount = isAccountSelected.value ? selectedAccount.value : null
+      const stakedAccount = isAccountSelected.value ? EntityID.stripChecksum(selectedAccount.value ?? "") : null
       const declineReward = declineChoice.value != props.account?.decline_reward ? declineChoice.value : null;
       context.emit("changeStaking", stakedNode, stakedAccount, declineReward)
-    }
-
-    const isValidEntityId = (entity: string) => {
-      return EntityID.parse(entity, true) != null
     }
 
     //
@@ -317,12 +313,24 @@ export default defineComponent({
     const handleInput = (value: string) => {
       const previousValue = selectedAccount.value
       let isValid = true
+      let pastDash = false
+
       for (const c of value) {
         if ((c < '0' || c > '9') && c !== '.') {
-          isValid = false
-          break
+          if (c === '-') {
+            if (pastDash) {
+              isValid = false
+              break
+            } else {
+              pastDash = true
+            }
+          } else if (c < 'a' || c > 'z' || !pastDash) {
+            isValid = false
+            break
+          }
         }
       }
+
       if (isValid) {
         selectedAccount.value = value
       } else {
@@ -332,18 +340,27 @@ export default defineComponent({
     }
 
     const validateAccount = (accountId: string) => {
-      if (isValidEntityId(accountId ?? "")) {
+      const entityID = EntityID.stripChecksum(accountId)
+      const checksum = EntityID.extractChecksum(accountId)
+
+      console.log("validateAccount - entityID: " + entityID)
+      console.log("validateAccount - checksum: " + checksum)
+
+      if (EntityID.isValid(entityID ?? "", checksum)) {
         const params = {} as {
           limit: 1
         }
-        if (accountId) {
-          axios
-              .get<AccountBalanceTransactions>("api/v1/accounts/" + accountId, {params: params})
-              .then(() => isSelectedAccountValidated.value = true)
-              .catch(() => showUnknownAccountMessage.value = true)
-        }
+        axios
+            .get<AccountBalanceTransactions>("api/v1/accounts/" + entityID, {params: params})
+            .then(() => {
+              isSelectedAccountValidated.value = true
+              inputFeedbackMessage.value = VALID_ACCOUNT_MESSAGE
+            })
+            .catch(() => inputFeedbackMessage.value = UNKNOWN_ACCOUNT_MESSAGE)
+      } else if (! EntityID.isValid(entityID)) {
+        inputFeedbackMessage.value = INVALID_ACCOUNTID_MESSAGE
       } else {
-        showInvalidAccountIDMessage.value = true
+        inputFeedbackMessage.value = INVALID_CHECKSUM_MESSAGE
       }
     }
 
@@ -357,6 +374,7 @@ export default defineComponent({
       showUnknownAccountMessage,
       showInvalidAccountIDMessage,
       isSelectedAccountValidated,
+      inputFeedbackMessage,
       selectedAccount,
       selectedNode,
       selectedNodeDescription,

@@ -29,8 +29,9 @@
     <DashboardCard>
       <template v-slot:title>
         <span class="h-is-primary-title">Account </span>
-        <span class="h-is-secondary-text mr-3">{{ account?.account ?? "" }}</span>
-        <span v-if="showContractVisible" class="is-inline-block" id="showContractLink">
+        <span class="h-is-secondary-text">{{ account?.account ?? "" }}</span>
+<!--        <span v-if="accountChecksum" class="has-text-grey" style="font-size: 28px">-{{ accountChecksum }}</span>-->
+        <span v-if="showContractVisible" class="is-inline-block ml-3" id="showContractLink">
           <router-link :to="{name: 'ContractDetails', params: {contractId: accountId}}">
             <span class="h-is-property-text">Show associated contract</span>
           </router-link>
@@ -86,6 +87,13 @@
       </template>
 
       <template v-slot:leftContent>
+              <Property id="idAndChecksum">
+                <template v-slot:name>Account ID with checksum</template>
+                <template v-slot:value v-if="account?.account">
+                  <span>{{ account?.account }}</span>
+                  <span class="has-text-grey">-{{ accountChecksum }}</span>
+                </template>
+              </Property>
               <Property v-if="account?.staked_account_id" id="stakedAccount">
                 <template v-slot:name>Staked to Account</template>
                 <template v-slot:value>
@@ -222,6 +230,7 @@ import {ContractLoader} from "@/components/contract/ContractLoader";
 import {NodeLoader} from "@/components/node/NodeLoader";
 import AliasValue from "@/components/values/AliasValue.vue";
 import TransactionFilterSelect from "@/components/transaction/TransactionFilterSelect.vue";
+import {EntityID} from "@/utils/EntityID";
 
 const MAX_TOKEN_BALANCES = 10
 
@@ -269,6 +278,9 @@ export default defineComponent({
     const accountLocator = computed(() => PathParam.parseAccountIdOrAliasOrEvmAddress(props.accountId))
     const accountLoader = new AccountLoader(accountLocator)
     onMounted(() => accountLoader.requestLoad())
+
+    const accountChecksum = computed(() =>
+        accountLoader.accountId.value ? EntityID.parse(accountLoader.accountId.value)?.makeChecksum() : null)
 
     const notification = computed(() => {
       let result
@@ -365,6 +377,7 @@ export default defineComponent({
       notification,
       account: accountLoader.entity,
       normalizedAccountI: accountLoader.accountId,
+      accountChecksum,
       accountInfo: accountLoader.accountInfo,
       nodeId: accountLoader.nodeId,
       ethereumAddress: accountLoader.ethereumAddress,
