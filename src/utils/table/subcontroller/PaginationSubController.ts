@@ -69,7 +69,7 @@ export class PaginationController<R,K> extends TableSubController<R, K> {
                     if (newRows !== null) {
                         this.tableController.buffer.value = this.tableController.buffer.value.concat(newRows)
                         this.tableController.drained.value = newRows.length < rowCount
-                        this.tableController.startIndex.value = Math.min(nextStartIndex - shadowRowCount, this.tableController.buffer.value.length)
+                        this.tableController.startIndex.value = Math.min(nextStartIndex - shadowRowCount, this.tableController.getMaxStartIndex())
                         // this.tableController.shadowRowCount.value unchanged
                         this.updateCurrentPage()
                         this.updateKeyAndPageParams()
@@ -136,9 +136,7 @@ export class PaginationController<R,K> extends TableSubController<R, K> {
 
     private updateCurrentPage(): void {
         const i = this.tableController.shadowRowCount.value + this.tableController.startIndex.value
-        const newPage = Math.floor(i / this.tableController.pageSize.value) + 1
-        console.log("newPage = " + newPage)
-        this.tableController.currentPage.value = newPage
+        this.tableController.currentPage.value = Math.floor(i / this.tableController.pageSize.value) + 1
     }
 
     private updateKeyAndPageParams() {

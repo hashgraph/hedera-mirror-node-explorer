@@ -127,6 +127,11 @@ export abstract class TableControllerV3<R, K> {
         return firstRow !== null ? this.keyFor(firstRow) : null
     }
 
+    public getMaxStartIndex(): number {
+        const pageCount = Math.floor((this.shadowRowCount.value + this.buffer.value.length) / this.pageSize.value) + 1
+        return Math.max(0, (pageCount - 1) * this.pageSize.value)
+    }
+
     public getKeyParam(): K|null {
         let result: K|null
         const v = this.router.currentRoute.value.query.k
