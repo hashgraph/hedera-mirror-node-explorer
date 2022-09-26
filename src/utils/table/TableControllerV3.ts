@@ -57,11 +57,11 @@ export abstract class TableControllerV3<R, K> {
 
     public readonly totalRowCount: ComputedRef<number> = computed(() => {
         let result: number
-        const bufferLength = this.buffer.value.length
+        const allRowCount = this.shadowRowCount.value + this.buffer.value.length
         if (this.drained.value) {
-            result = this.shadowRowCount.value + bufferLength
+            result = + allRowCount
         } else {
-            const k = Math.ceil((bufferLength +1) / this.presumedRowCount)
+            const k = Math.ceil((allRowCount +1) / this.presumedRowCount)
             result = k * this.presumedRowCount
         }
         return result
