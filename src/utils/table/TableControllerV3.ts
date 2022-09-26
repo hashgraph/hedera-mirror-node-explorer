@@ -121,6 +121,12 @@ export abstract class TableControllerV3<R, K> {
         return headRow !== null ? this.keyFor(headRow) : null
     }
 
+    public getFirstVisibleKey(): K|null {
+        const bufferLength = this.buffer.value.length
+        const firstRow = this.startIndex.value < bufferLength ? this.buffer.value[this.startIndex.value] : null
+        return firstRow !== null ? this.keyFor(firstRow) : null
+    }
+
     public getKeyParam(): K|null {
         let result: K|null
         const v = this.router.currentRoute.value.query.k
@@ -205,6 +211,7 @@ export abstract class TableControllerV3<R, K> {
 
             const pageParam = this.getPageParam()
             const keyParam = this.getKeyParam()
+            console.log("TableControllerV3.mountedDidChange: keyParam=" + keyParam + ", pageParam=" + pageParam)
             this.autoRefresh.value = pageParam == null || keyParam == null
             this.subController = this.autoRefresh.value ? new AutoRefreshController(this) : new PaginationController(this)
             this.subController.mount()
@@ -234,7 +241,9 @@ export abstract class TableControllerV3<R, K> {
     }
 
     private routeDidChange(): void {
-        console.log("Route did change")
+        const pageParam = this.getPageParam()
+        const keyParam = this.getKeyParam()
+        console.log("TableControllerV3.routeDidChange: keyParam=" + keyParam + ", pageParam=" + pageParam)
     }
 
     private remountSubController() {

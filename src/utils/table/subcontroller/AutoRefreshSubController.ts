@@ -61,7 +61,7 @@ export class AutoRefreshController<R,K> extends TableSubController<R, K> {
                 }
             })
         } else {
-            this.tailLoad(null, this.tableController.pageSize.value).then((newRows: R[] | null) => {
+            this.tailLoad(null, this.tableController.pageSize.value, false).then((newRows: R[] | null) => {
                 if (newRows !== null && this.sessionId == captureSessionId) {
                     this.tailLoadDidComplete(newRows)
                 }

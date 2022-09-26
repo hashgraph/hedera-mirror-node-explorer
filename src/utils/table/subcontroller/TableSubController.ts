@@ -55,8 +55,8 @@ export abstract class TableSubController<R, K> {
                     if (r.length < limitedCount) {
                         result = Promise.resolve(current)
                     } else {
-                        const key = this.tableController.keyFor(r[0])
-                        result = this.headLoad(key, remainingCount, current)
+                        const headKey = this.tableController.keyFor(r[0])
+                        result = this.headLoad(headKey, remainingCount, current)
                     }
                 } else {
                     result = Promise.resolve(current)
@@ -70,14 +70,14 @@ export abstract class TableSubController<R, K> {
 
         } else {
 
-            result = Promise.resolve(null)
+            result = Promise.resolve(current)
 
         }
 
         return result
     }
 
-    protected tailLoad(key: K|null, rowCount: number, current: R[] = []): Promise<R[] | null> {
+    protected tailLoad(key: K|null, rowCount: number, lte: boolean, current: R[] = []): Promise<R[] | null> {
         let result: Promise<R[] | null>
 
         if (rowCount >= 1) {
@@ -89,7 +89,9 @@ export abstract class TableSubController<R, K> {
                     if (r.length < limitedCount) {
                         result = Promise.resolve(current)
                     } else {
-                        result = this.tailLoad(key, remainingCount, current)
+                        const tailRow = r[r.length - 1]
+                        const tailKey = this.tableController.keyFor(tailRow)
+                        result = this.tailLoad(tailKey, remainingCount, false, current)
                     }
                 } else {
                     result = Promise.resolve(null)
@@ -99,7 +101,8 @@ export abstract class TableSubController<R, K> {
 
             const limitedCount = Math.min(this.tableController.maxLimit, rowCount)
             const remainingCount = rowCount - limitedCount
-            result = this.tableController.load(key, KeyOperator.lt, SortOrder.DESC, limitedCount).then(cb)
+            const operator = lte ? KeyOperator.lte : KeyOperator.lt
+            result = this.tableController.load(key, operator, SortOrder.DESC, limitedCount).then(cb)
 
         } else {
             result = Promise.resolve(current)
@@ -136,7 +139,7 @@ export abstract class TableSubController<R, K> {
 
         } else {
 
-            result = Promise.resolve(null)
+            result = Promise.resolve(current)
 
         }
 
