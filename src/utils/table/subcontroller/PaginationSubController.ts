@@ -44,7 +44,7 @@ export class PaginationController<R,K> extends TableSubController<R, K> {
                     if (newRows !== null) {
                         this.tableController.buffer.value = newRows.concat(this.tableController.buffer.value)
                         this.tableController.startIndex.value = 0
-                        this.tableController.shadowRowCount.value -= newRows.length
+                        this.tableController.shadowRowCount.value -= rowCount
                         // this.tableController.drained.value unchanged
                         this.updateCurrentPage()
                         this.updateKeyAndPageParams()
