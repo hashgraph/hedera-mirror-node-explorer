@@ -31,6 +31,8 @@ export abstract class TableControllerV3<R, K> {
     public readonly updatePeriod: number
     public readonly maxAutoUpdateCount: number
     public readonly maxLimit: number
+    public readonly pageParamName: string
+    public readonly keyParamName: string
 
     private subController: TableSubController<R,K>|null = null
     private sources: WatchSource[] = []
@@ -134,7 +136,7 @@ export abstract class TableControllerV3<R, K> {
 
     public getKeyParam(): K|null {
         let result: K|null
-        const v = this.router.currentRoute.value.query.k
+        const v = this.router.currentRoute.value.query[this.keyParamName]
         if (typeof v == "string") {
             result = this.keyFromString(v)
         } else {
@@ -145,7 +147,7 @@ export abstract class TableControllerV3<R, K> {
 
     public getPageParam(): number|null {
         let result: number|null
-        const v = this.router.currentRoute.value.query.p
+        const v = this.router.currentRoute.value.query[this.pageParamName]
         if (typeof v == "string") {
             const i = parseInt(v)
             result = isNaN(i) || i < 1 ? null : i
@@ -161,14 +163,14 @@ export abstract class TableControllerV3<R, K> {
         const pageParam = page !== null ? page.toString() : null
         const keyParam = key !== null ? this.stringFromKey(key) : null
         if (pageParam !== null) {
-            newQuery.p = pageParam
+            newQuery[this.pageParamName] = pageParam
         } else {
-            delete newQuery.p
+            delete newQuery[this.pageParamName]
         }
         if (keyParam !== null) {
-            newQuery.k = keyParam
+            newQuery[this.keyParamName] = keyParam
         } else {
-            delete newQuery.k
+            delete newQuery[this.keyParamName]
         }
         return this.router.replace({ query: newQuery })
     }
@@ -179,13 +181,16 @@ export abstract class TableControllerV3<R, K> {
 
     protected constructor(router: Router, pageSize: ComputedRef<number>,
                           presumedRowCount: number, updatePeriod: number,
-                          maxUpdateCount: number, maxLimit: number) {
+                          maxUpdateCount: number, maxLimit: number,
+                          pageParamName = "p", keyParamName= "k") {
         this.router = router
         this.presumedRowCount = presumedRowCount
         this.updatePeriod = updatePeriod
         this.maxAutoUpdateCount = maxUpdateCount
         this.pageSize = pageSize
         this.maxLimit = maxLimit
+        this.pageParamName = pageParamName
+        this.keyParamName = keyParamName
 
         watch(this.mounted, () => this.mountedDidChange(), { flush: 'sync' })
         //
