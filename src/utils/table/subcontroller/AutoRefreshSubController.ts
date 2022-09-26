@@ -75,6 +75,7 @@ export class AutoRefreshController<R,K> extends TableSubController<R, K> {
         this.tableController.startIndex.value = 0
         // this.tableController.drained.value unchanged
         this.tableController.shadowRowCount.value = 0
+        this.tableController.currentPage.value = 1
 
         this.scheduleNextRefresh()
     }
@@ -84,6 +85,7 @@ export class AutoRefreshController<R,K> extends TableSubController<R, K> {
         this.tableController.startIndex.value = 0
         this.tableController.drained.value = newRows.length < this.tableController.pageSize.value
         this.tableController.shadowRowCount.value = 0
+        this.tableController.currentPage.value = 1
         this.scheduleNextRefresh()
     }
 
