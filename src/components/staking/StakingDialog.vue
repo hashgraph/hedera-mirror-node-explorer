@@ -101,7 +101,7 @@
               </div>
               <div class="column pt-0">
                 <div class="is-flex is-align-items-center">
-                  <input class="input is-small has-text-right has-text-white" type="text" placeholder="0.0.1234-vwxyz"
+                  <input class="input is-small has-text-right has-text-white" type="text" placeholder="0.0.1234"
                          :class="{'has-text-grey': !isAccountSelected}"
                          :value="selectedAccount"
                          @focus="stakeChoice='account'"
