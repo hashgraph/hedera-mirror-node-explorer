@@ -278,6 +278,7 @@ import {NftHolderTableController} from "@/components/token/NftHolderTableControl
 import {TokenBalanceTableController} from "@/components/token/TokenBalanceTableController";
 import AccountLink from "@/components/values/AccountLink.vue";
 import StringValue from "@/components/values/StringValue.vue";
+import {networkRegistry} from "@/schemas/NetworkRegistry";
 
 export default defineComponent({
 
@@ -320,8 +321,9 @@ export default defineComponent({
     const tokenInfoLoader = new TokenInfoLoader(normalizedTokenId)
     onMounted(() => tokenInfoLoader.requestLoad())
 
+    const network = router.currentRoute.value.params.network as string
     const tokenChecksum = computed(() =>
-        tokenInfoLoader.tokenId.value ? EntityID.parse(tokenInfoLoader.tokenId.value)?.makeChecksum() : null)
+        tokenInfoLoader.tokenId.value ? networkRegistry.computeChecksum(tokenInfoLoader.tokenId.value, network) : null)
 
     const notification = computed(() => {
       let result

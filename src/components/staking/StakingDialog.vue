@@ -165,6 +165,8 @@ import axios from "axios";
 import {operatorRegistry} from "@/schemas/OperatorRegistry";
 import {EntityID} from "@/utils/EntityID";
 import ConfirmDialog from "@/components/ConfirmDialog.vue";
+import {networkRegistry} from "@/schemas/NetworkRegistry";
+import router from "@/router";
 
 const VALID_ACCOUNT_MESSAGE = "Rewards will now be paid to that account"
 const UNKNOWN_ACCOUNT_MESSAGE = "This account does not exist"
@@ -186,6 +188,7 @@ export default defineComponent({
   emits: [ "changeStaking", "update:showDialog"],
   setup(props, context) {
     const accountId = computed(() => props.account?.account)
+    const network = router.currentRoute.value.params.network as string
 
     const showConfirmDialog = ref(false)
     const confirmMessage = computed(() => {
@@ -197,7 +200,9 @@ export default defineComponent({
               result = declineChoice.value ? "Do you want to decline rewards?" : "Do you want to accept rewards?"
             }
           } else {
-            result = "Do you want to stake to account " + EntityID.normalize(selectedAccount.value ?? "", true) + " ?"
+            result = "Do you want to stake to account "
+                + (selectedAccount.value ? EntityID.normalize(selectedAccount.value, networkRegistry.computeChecksum(selectedAccount.value, network)) : "")
+                + " ?"
           }
           return result
         })
@@ -323,7 +328,7 @@ export default defineComponent({
             isValidInput = false
             break
           } else {
-            isValidID = EntityID.isValid(EntityID.stripChecksum(value))
+            isValidID = EntityID.parse(EntityID.stripChecksum(value)) !== null
           }
         } else if (c === '-') {
           if (! isValidID || isPastDash) {
@@ -349,21 +354,26 @@ export default defineComponent({
     const validateAccount = (stakedAccountId: string) => {
       const entityID = EntityID.stripChecksum(stakedAccountId)
       const checksum = EntityID.extractChecksum(stakedAccountId)
+      const network = router.currentRoute.value.params.network as string
 
-      if (entityID == accountId.value) {
-        inputFeedbackMessage.value = CANT_STAKE_SAME_ACCOUNT_MESSAGE
-      } else if (EntityID.isValid(entityID ?? "", checksum)) {
-        const params = {} as {
-          limit: 1
+      if (EntityID.parse(entityID, true)
+          && (checksum === null || networkRegistry.isValidChecksum(entityID, checksum, network))) {
+
+        if (entityID == accountId.value) {
+          inputFeedbackMessage.value = CANT_STAKE_SAME_ACCOUNT_MESSAGE
+        } else {
+          const params = {} as {
+            limit: 1
+          }
+          axios
+              .get<AccountBalanceTransactions>("api/v1/accounts/" + entityID, {params: params})
+              .then(() => {
+                isSelectedAccountValidated.value = true
+                inputFeedbackMessage.value = VALID_ACCOUNT_MESSAGE
+              })
+              .catch(() => inputFeedbackMessage.value = UNKNOWN_ACCOUNT_MESSAGE)
         }
-        axios
-            .get<AccountBalanceTransactions>("api/v1/accounts/" + entityID, {params: params})
-            .then(() => {
-              isSelectedAccountValidated.value = true
-              inputFeedbackMessage.value = VALID_ACCOUNT_MESSAGE
-            })
-            .catch(() => inputFeedbackMessage.value = UNKNOWN_ACCOUNT_MESSAGE)
-      } else if (! EntityID.isValid(entityID)) {
+      } else if (!EntityID.parse(entityID)) {
         inputFeedbackMessage.value = INVALID_ACCOUNTID_MESSAGE
       } else {
         inputFeedbackMessage.value = INVALID_CHECKSUM_MESSAGE

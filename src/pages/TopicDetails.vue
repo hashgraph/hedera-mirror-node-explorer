@@ -65,6 +65,8 @@ import Footer from "@/components/Footer.vue";
 import NotificationBanner from "@/components/NotificationBanner.vue";
 import {EntityID} from "@/utils/EntityID";
 import {TopicMessageTableController} from "@/components/topic/TopicMessageTableController";
+import {networkRegistry} from "@/schemas/NetworkRegistry";
+import router from "@/router";
 
 export default defineComponent({
 
@@ -98,8 +100,9 @@ export default defineComponent({
       return props.topicId ? EntityID.normalize(props.topicId) : props.topicId
     })
 
+    const network = router.currentRoute.value.params.network as string
     const topicChecksum = computed(() =>
-        normalizedTopicId.value ? EntityID.parse(normalizedTopicId.value)?.makeChecksum() : null)
+        normalizedTopicId.value ? networkRegistry.computeChecksum(normalizedTopicId.value, network) : null)
 
     const notification = computed(() => {
       let result

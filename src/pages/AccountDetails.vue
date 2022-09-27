@@ -210,7 +210,6 @@ import TokenAmount from "@/components/values/TokenAmount.vue";
 import BlobValue from "@/components/values/BlobValue.vue";
 import {BalanceCache} from "@/components/account/BalanceCache";
 import Footer from "@/components/Footer.vue";
-import {useRoute, useRouter} from "vue-router";
 import {PathParam} from "@/utils/PathParam";
 import Property from "@/components/Property.vue";
 import NotificationBanner from "@/components/NotificationBanner.vue";
@@ -223,7 +222,8 @@ import {ContractLoader} from "@/components/contract/ContractLoader";
 import {NodeLoader} from "@/components/node/NodeLoader";
 import AliasValue from "@/components/values/AliasValue.vue";
 import TransactionFilterSelect from "@/components/transaction/TransactionFilterSelect.vue";
-import {EntityID} from "@/utils/EntityID";
+import {networkRegistry} from "@/schemas/NetworkRegistry";
+import router from "@/router";
 
 const MAX_TOKEN_BALANCES = 10
 
@@ -261,8 +261,8 @@ export default defineComponent({
     const isMediumScreen = inject('isMediumScreen', true)
     const isTouchDevice = inject('isTouchDevice', false)
 
-    const router = useRouter()
-    const route = useRoute()
+    const route = router.currentRoute.value
+    const network = route.params.network as string
 
     //
     // account
@@ -273,7 +273,7 @@ export default defineComponent({
     onMounted(() => accountLoader.requestLoad())
 
     const accountChecksum = computed(() =>
-        accountLoader.accountId.value ? EntityID.parse(accountLoader.accountId.value)?.makeChecksum() : null)
+        accountLoader.accountId.value ? networkRegistry.computeChecksum(accountLoader.accountId.value, network) : null)
 
     const notification = computed(() => {
       let result

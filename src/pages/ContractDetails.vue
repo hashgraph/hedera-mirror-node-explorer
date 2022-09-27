@@ -191,8 +191,9 @@ import Property from "@/components/Property.vue";
 import {ContractLoader} from "@/components/contract/ContractLoader";
 import {AccountLoader} from "@/components/account/AccountLoader";
 import {TransactionTableController} from "@/components/transaction/TransactionTableController";
-import {useRoute, useRouter} from "vue-router";
 import TransactionFilterSelect from "@/components/transaction/TransactionFilterSelect.vue";
+import {networkRegistry} from "@/schemas/NetworkRegistry";
+import router from "@/router";
 
 const MAX_TOKEN_BALANCES = 3
 
@@ -229,9 +230,8 @@ export default defineComponent({
     const isSmallScreen = inject('isSmallScreen', true)
     const isTouchDevice = inject('isTouchDevice', false)
 
-    const router = useRouter()
-    const route = useRoute()
-
+    const route = router.currentRoute.value
+    const network = route.params.network as string
 
     //
     // basic computed's
@@ -255,7 +255,7 @@ export default defineComponent({
     onMounted(() => accountLoader.requestLoad())
 
     const accountChecksum = computed(() =>
-        accountLoader.accountId.value ? EntityID.parse(accountLoader.accountId.value)?.makeChecksum() : null)
+        accountLoader.accountId.value ? networkRegistry.computeChecksum(accountLoader.accountId.value, network) : null)
 
     const displayAllTokenLinks = computed(() => accountLoader.tokens.value ? accountLoader.tokens.value.length > MAX_TOKEN_BALANCES : false)
 
