@@ -30,7 +30,7 @@
       <template v-slot:title>
         <span class="h-is-primary-title">Account </span>
         <span class="h-is-secondary-text">{{ account?.account ?? "" }}</span>
-<!--        <span v-if="accountChecksum" class="has-text-grey" style="font-size: 28px">-{{ accountChecksum }}</span>-->
+        <span v-if="accountChecksum" class="has-text-grey" style="font-size: 28px">-{{ accountChecksum }}</span>
         <span v-if="showContractVisible" class="is-inline-block ml-3" id="showContractLink">
           <router-link :to="{name: 'ContractDetails', params: {contractId: accountId}}">
             <span class="h-is-property-text">Show associated contract</span>
@@ -87,13 +87,6 @@
       </template>
 
       <template v-slot:leftContent>
-              <Property id="idAndChecksum">
-                <template v-slot:name>Account ID with checksum</template>
-                <template v-slot:value v-if="account?.account">
-                  <span>{{ account?.account }}</span>
-                  <span class="has-text-grey">-{{ accountChecksum }}</span>
-                </template>
-              </Property>
               <Property v-if="account?.staked_account_id" id="stakedAccount">
                 <template v-slot:name>Staked to Account</template>
                 <template v-slot:value>

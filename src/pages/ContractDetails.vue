@@ -29,8 +29,9 @@
     <DashboardCard>
       <template v-slot:title>
         <span class="h-is-primary-title">Contract </span>
-        <span class="h-is-secondary-text is-numeric mr-3">{{ contract ? normalizedContractId : "" }}</span>
-        <span v-if="contract" class="is-inline-block">
+        <span class="h-is-secondary-text">{{ contract ? normalizedContractId : "" }}</span>
+        <span v-if="accountChecksum" class="has-text-grey" style="font-size: 28px">-{{ accountChecksum }}</span>
+        <span v-if="contract" class="is-inline-block ml-3">
           <router-link :to="{name: 'AccountDetails', params: {accountId: normalizedContractId}}">
             <span class="h-is-property-text">Show associated account</span>
           </router-link>
@@ -253,6 +254,9 @@ export default defineComponent({
     const accountLoader = new AccountLoader(normalizedContractId)
     onMounted(() => accountLoader.requestLoad())
 
+    const accountChecksum = computed(() =>
+        accountLoader.accountId.value ? EntityID.parse(accountLoader.accountId.value)?.makeChecksum() : null)
+
     const displayAllTokenLinks = computed(() => accountLoader.tokens.value ? accountLoader.tokens.value.length > MAX_TOKEN_BALANCES : false)
 
     const notification = computed(() => {
@@ -311,6 +315,7 @@ export default defineComponent({
       account: accountLoader.entity,
       balance: accountLoader.balance,
       tokens: accountLoader.tokens,
+      accountChecksum,
       displayAllTokenLinks,
       transactionTableController,
       notification,

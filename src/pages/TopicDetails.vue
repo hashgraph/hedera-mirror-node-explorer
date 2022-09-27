@@ -31,6 +31,7 @@
       <template v-slot:title>
         <span class="h-is-primary-title">Messages for Topic </span>
         <span v-if="validEntityId" class="h-is-secondary-text">{{ normalizedTopicId }}</span>
+        <span v-if="topicChecksum" class="has-text-grey" style="font-size: 28px">-{{ topicChecksum }}</span>
       </template>
 
       <template v-slot:control>
@@ -97,6 +98,9 @@ export default defineComponent({
       return props.topicId ? EntityID.normalize(props.topicId) : props.topicId
     })
 
+    const topicChecksum = computed(() =>
+        normalizedTopicId.value ? EntityID.parse(normalizedTopicId.value)?.makeChecksum() : null)
+
     const notification = computed(() => {
       let result
       if (!validEntityId.value) {
@@ -122,6 +126,7 @@ export default defineComponent({
       messageTableController,
       validEntityId,
       normalizedTopicId,
+      topicChecksum,
       notification
     }
   }
