@@ -197,7 +197,7 @@ export default defineComponent({
               result = declineChoice.value ? "Do you want to decline rewards?" : "Do you want to accept rewards?"
             }
           } else {
-            result = "Do you want to stake to account " + selectedAccount.value
+            result = "Do you want to stake to account " + EntityID.normalize(selectedAccount.value ?? "", true) + " ?"
           }
           return result
         })
