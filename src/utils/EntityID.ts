@@ -64,9 +64,9 @@ export class EntityID {
         return result
     }
 
-    public static normalize(s: string): string|null {
+    public static normalize(s: string, withChecksum: boolean=false): string|null {
         const id = EntityID.parse(s, true)
-        return id !== null ? id.toString() : null
+        return id !== null ? id.toString() + (withChecksum ? "-" + id.makeChecksum() : "") : null
     }
 
     public static isValid(id: string, checksum: string | null = null): boolean {
