@@ -20,7 +20,7 @@
  *
  */
 
-import {computed} from "vue";
+import {computed, ComputedRef, ref} from "vue";
 import {Router} from "vue-router";
 import router from "@/router";
 import {flushPromises} from "@vue/test-utils";
@@ -236,6 +236,45 @@ describe("TableController.ts", () => {
         expect(tc.autoUpdateCount.value).toBe(4)
 
     })
+
+
+    test("source watch and reload", async () => {
+        const scale = ref(1)
+        const tc = new TestTableController(0, 50, 10, router, computed(() => scale.value))
+
+        // Mount
+        tc.mounted.value = true
+        await flushPromises()
+        expect(tc.autoRefresh.value).toBe(true)
+        expect(tc.autoStopped.value).toBe(false)
+        expect(tc.rows.value).toStrictEqual([49,48,47,46,45,44,43,42,41,40])
+        expect(tc.autoUpdateCount.value).toBe(1)
+
+        // Refresh #2
+        jest.runOnlyPendingTimers()
+        await flushPromises()
+        expect(tc.autoRefresh.value).toBe(true)
+        expect(tc.autoStopped.value).toBe(false)
+        expect(tc.rows.value).toStrictEqual([49,48,47,46,45,44,43,42,41,40])
+        expect(tc.autoUpdateCount.value).toBe(2)
+
+        // Updates scale value
+        scale.value = 2
+        await flushPromises()
+        expect(tc.autoRefresh.value).toBe(true)
+        expect(tc.autoStopped.value).toBe(false)
+        expect(tc.rows.value).toStrictEqual([98,96,94,92,90,88,86,84,82,80])
+        expect(tc.autoUpdateCount.value).toBe(1)
+
+        // Unmount
+        tc.mounted.value = false
+        await flushPromises()
+        expect(tc.autoRefresh.value).toBe(true)
+        expect(tc.autoStopped.value).toBe(false)
+        expect(tc.rows.value).toStrictEqual([98,96,94,92,90,88,86,84,82,80])
+        expect(tc.autoUpdateCount.value).toBe(1)
+
+    })
 })
 
 class TestTableController extends TableControllerV3<number, number> {
@@ -248,7 +287,9 @@ class TestTableController extends TableControllerV3<number, number> {
     public startKey: number
     public endKey: number
 
-    constructor(startKey: number, endKey: number, pageSize: number, router: Router) {
+    private readonly scale: ComputedRef<number>
+
+    constructor(startKey: number, endKey: number, pageSize: number, router: Router, scale = computed(() => 1)) {
         super(router, computed(() => pageSize),
             TestTableController.PRESUMED_ROW_COUNT,
             TestTableController.UPDATED_PERIOD,
@@ -256,6 +297,8 @@ class TestTableController extends TableControllerV3<number, number> {
             TestTableController.MAX_LIMIT)
         this.startKey = startKey
         this.endKey = endKey
+        this.scale = scale
+        this.watchAndReload([scale])
     }
 
     //
@@ -380,7 +423,7 @@ class TestTableController extends TableControllerV3<number, number> {
             }
         }
         for (let k = fromKey; k < toKey; k += 1) {
-            result.push(k)
+            result.push(k * this.scale.value)
         }
         if (order == SortOrder.DESC) {
             result.reverse()

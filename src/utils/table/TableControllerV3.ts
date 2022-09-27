@@ -227,7 +227,7 @@ export abstract class TableControllerV3<R, K> {
 
             this.watchAutoRefreshHandle = watch(this.autoRefresh, () => this.remountSubController(), { flush: 'sync' })
             this.watchRouteHandle = watch(this.router.currentRoute, () => this.routeDidChange(), { flush: 'sync' })
-            this.watchSourcesHandle = watch(this.sources, () => this.remountSubController())
+            this.watchSourcesHandle = watch(this.sources, () => this.sourcesDidChange())
 
         } else {
 
@@ -253,6 +253,18 @@ export abstract class TableControllerV3<R, K> {
         const pageParam = this.getPageParam()
         const keyParam = this.getKeyParam()
         console.log("TableControllerV3.routeDidChange: keyParam=" + keyParam + ", pageParam=" + pageParam)
+    }
+
+    private sourcesDidChange(): void {
+
+        // Clears buffer
+        this.buffer.value = []
+        this.startIndex.value = 0
+        this.drained.value = false
+        this.autoUpdateCount.value = 0
+        this.shadowRowCount.value = 0
+
+        this.remountSubController()
     }
 
     private remountSubController() {
