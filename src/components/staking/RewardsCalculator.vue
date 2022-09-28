@@ -33,8 +33,8 @@
       <div class="columns">
         <div class="column is-three-fifths">
           <div class="is-flex is-flex-direction-column is-align-items-flex-start">
-            <p v-if="isMediumScreen" class="h-is-property-text mb-3">Choose node staked to</p>
-            <p v-else class="h-is-text-size-3 mb-1">Choose node staked to</p>
+            <p v-if="isMediumScreen" class="h-is-property-text mb-3">Choose a node to stake to</p>
+            <p v-else class="h-is-text-size-3 mb-1">Choose a node to stake to</p>
             <o-field style="width: 100%">
               <o-select v-model="selectedNodeId" class="h-is-text-size-1" style="border-radius: 4px">
                 <option v-for="n in nodes" :key="n.node_id" :value="n.node_id"
@@ -47,8 +47,8 @@
         </div>
         <div class="column">
           <div class="is-flex is-flex-direction-column is-align-items-flex-start">
-            <p v-if="isMediumScreen" class="h-is-property-text mb-3">Enter HBAR amount staked</p>
-            <p v-else class="h-is-text-size-3 mb-1">Enter HBAR amount staked</p>
+            <p v-if="isMediumScreen" class="h-is-property-text mb-3">Enter the number of hbars you want to stake</p>
+            <p v-else class="h-is-text-size-3 mb-1">Enter number of hbars you want to stake</p>
               <input class="input is-small has-text-right" type="text" placeholder="0"
                      :value="amountStaked"
                      @input="event => handleInput(event.target.value)"
