@@ -252,7 +252,7 @@ export default defineComponent({
 
     const enableChangeButton = computed(() => {
       return (
-          isAccountSelected.value && isSelectedAccountValid.value && props.account?.staked_account_id != selectedAccount.value)
+          isAccountSelected.value && isSelectedAccountValid.value && props.account?.staked_account_id != selectedAccountEntity.value)
           || (isNodeSelected.value  && selectedNode.value && props.account?.staked_node_id != selectedNode.value)
           || (props.account?.decline_reward != declineChoice.value)
     })
@@ -370,7 +370,9 @@ export default defineComponent({
                 const accounts = response.data.accounts
                 if (accounts && accounts.length > 0) {
                   isSelectedAccountValid.value = true
-                  inputFeedbackMessage.value = VALID_ACCOUNT_MESSAGE
+                  if (props.account?.staked_account_id != selectedAccountEntity.value) {
+                    inputFeedbackMessage.value = VALID_ACCOUNT_MESSAGE
+                  }
                 } else {
                   inputFeedbackMessage.value = UNKNOWN_ACCOUNT_MESSAGE
                 }
