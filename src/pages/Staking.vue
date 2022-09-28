@@ -180,6 +180,7 @@
 <script lang="ts">
 
 import {computed, defineComponent, inject, onBeforeUnmount, onMounted, ref} from 'vue';
+import {useRouter} from "vue-router";
 import Footer from "@/components/Footer.vue";
 import {walletManager} from "@/router";
 import NetworkDashboardItem from "@/components/node/NetworkDashboardItem.vue";
@@ -233,6 +234,8 @@ export default defineComponent({
     const isSmallScreen = inject('isSmallScreen', true)
     const isMediumScreen = inject('isMediumScreen', true)
     const isTouchDevice = inject('isTouchDevice', false)
+
+    const router = useRouter()
 
     const showStakingDialog = ref(false)
     const showStopConfirmDialog = ref(false)
@@ -449,7 +452,7 @@ export default defineComponent({
     // Rewards Transactions Table Controller
     //
     const pageSize = computed(() => isMediumScreen ? 10 : 5)
-    const transactionTableController = new RewardsTransactionTableController(walletManager.accountId, pageSize)
+    const transactionTableController = new RewardsTransactionTableController(router, walletManager.accountId, pageSize)
     onMounted(() => transactionTableController.mounted.value = true)
     onBeforeUnmount(() => transactionTableController.mounted.value = false)
 
