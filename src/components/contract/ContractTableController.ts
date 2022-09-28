@@ -21,10 +21,10 @@
 import {Contract, ContractsResponse} from "@/schemas/HederaSchemas";
 import {ComputedRef} from "vue";
 import axios, {AxiosResponse} from "axios";
-import {KeyOperator, SortOrder, TableControllerV3} from "@/utils/table/TableControllerV3";
+import {KeyOperator, SortOrder, TableController} from "@/utils/table/TableController";
 import {Router} from "vue-router";
 
-export class ContractTableController extends TableControllerV3<Contract, string> {
+export class ContractTableController extends TableController<Contract, string> {
 
     //
     // Public

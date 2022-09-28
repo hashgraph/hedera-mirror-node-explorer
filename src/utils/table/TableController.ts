@@ -24,7 +24,7 @@ import {TableSubController} from "@/utils/table/subcontroller/TableSubController
 import {AutoRefreshController} from "@/utils/table/subcontroller/AutoRefreshSubController";
 import {PaginationController} from "@/utils/table/subcontroller/PaginationSubController";
 
-export abstract class TableControllerV3<R, K> {
+export abstract class TableController<R, K> {
 
     public readonly router: Router
     public readonly presumedRowCount: number

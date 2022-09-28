@@ -21,10 +21,10 @@
 import {Nft, Nfts} from "@/schemas/HederaSchemas";
 import {ComputedRef, Ref} from "vue";
 import axios, {AxiosResponse} from "axios";
-import {KeyOperator, SortOrder, TableControllerV3} from "@/utils/table/TableControllerV3";
+import {KeyOperator, SortOrder, TableController} from "@/utils/table/TableController";
 import {Router} from "vue-router";
 
-export class NftHolderTableController extends TableControllerV3<Nft, string> {
+export class NftHolderTableController extends TableController<Nft, string> {
 
     public readonly tokenId: Ref<string | null>
 

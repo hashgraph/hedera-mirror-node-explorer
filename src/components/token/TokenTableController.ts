@@ -21,10 +21,10 @@
 import {Token, TokensResponse} from "@/schemas/HederaSchemas";
 import {ComputedRef, Ref} from "vue";
 import axios, {AxiosResponse} from "axios";
-import {KeyOperator, SortOrder, TableControllerV3} from "@/utils/table/TableControllerV3";
+import {KeyOperator, SortOrder, TableController} from "@/utils/table/TableController";
 import {Router} from "vue-router";
 
-export class TokenTableController extends TableControllerV3<Token, string> {
+export class TokenTableController extends TableController<Token, string> {
 
     private readonly tokenType: Ref<string | null>
 

@@ -24,7 +24,7 @@ import {computed, ComputedRef, ref} from "vue";
 import {Router} from "vue-router";
 import router from "@/router";
 import {flushPromises} from "@vue/test-utils";
-import {KeyOperator, SortOrder, TableControllerV3} from "@/utils/table/TableControllerV3";
+import {KeyOperator, SortOrder, TableController} from "@/utils/table/TableController";
 
 jest.useFakeTimers()
 
@@ -403,7 +403,7 @@ describe("TableController.ts", () => {
     })
 })
 
-class TestTableController extends TableControllerV3<number, number> {
+class TestTableController extends TableController<number, number> {
 
     public static readonly PRESUMED_ROW_COUNT = 100
     public static readonly UPDATED_PERIOD = 5000

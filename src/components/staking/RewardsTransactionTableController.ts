@@ -18,14 +18,14 @@
  *
  */
 
-import {KeyOperator, SortOrder, TableControllerV3} from "@/utils/table/TableControllerV3";
+import {KeyOperator, SortOrder, TableController} from "@/utils/table/TableController";
 import {Transaction, TransactionResponse} from "@/schemas/HederaSchemas";
 import {ComputedRef, Ref} from "vue";
 import axios, {AxiosResponse} from "axios";
 import {Router} from "vue-router";
 
 
-export class RewardsTransactionTableController extends TableControllerV3<Transaction, string> {
+export class RewardsTransactionTableController extends TableController<Transaction, string> {
 
     public readonly accountId: Ref<string|null>
 

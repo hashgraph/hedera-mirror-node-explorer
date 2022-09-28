@@ -64,13 +64,13 @@
 <script lang="ts">
 
 import {computed, defineComponent, PropType} from "vue";
-import {TableControllerV3} from "@/utils/table/TableControllerV3";
+import {TableController} from "@/utils/table/TableController";
 
 export default defineComponent({
   name: "PlayPauseButtonV3",
 
   props: {
-    controller: Object as PropType<TableControllerV3<unknown, unknown>>
+    controller: Object as PropType<TableController<unknown, unknown>>
   },
 
   setup(props) {

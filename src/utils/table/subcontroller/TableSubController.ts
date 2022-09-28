@@ -18,17 +18,17 @@
  *
  */
 
-import {KeyOperator, SortOrder, TableControllerV3} from "@/utils/table/TableControllerV3";
+import {KeyOperator, SortOrder, TableController} from "@/utils/table/TableController";
 
 export abstract class TableSubController<R, K> {
 
-    protected readonly tableController: TableControllerV3<R, K>
+    protected readonly tableController: TableController<R, K>
 
     //
     // Public
     //
 
-    public constructor(tableController: TableControllerV3<R, K>) {
+    public constructor(tableController: TableController<R, K>) {
         this.tableController = tableController
     }
 

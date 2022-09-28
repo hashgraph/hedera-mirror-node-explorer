@@ -18,13 +18,13 @@
  *
  */
 
-import {KeyOperator, SortOrder, TableControllerV3} from "@/utils/table/TableControllerV3"
+import {KeyOperator, SortOrder, TableController} from "@/utils/table/TableController"
 import {TopicMessage, TopicMessagesResponse} from "@/schemas/HederaSchemas"
 import axios, {AxiosResponse} from "axios"
 import {ComputedRef} from "vue"
 import {Router} from "vue-router";
 
-export class TopicMessageTableController extends TableControllerV3<TopicMessage, string> {
+export class TopicMessageTableController extends TableController<TopicMessage, string> {
 
     public readonly topicId: ComputedRef<string|null>
 
