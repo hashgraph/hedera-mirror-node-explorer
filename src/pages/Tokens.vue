@@ -80,6 +80,7 @@ import DashboardCard from "@/components/DashboardCard.vue";
 import Footer from "@/components/Footer.vue";
 import PlayPauseButton from "@/utils/table/PlayPauseButton.vue";
 import {TokenTableController} from "@/components/token/TokenTableController";
+import {useRouter} from "vue-router";
 
 export default defineComponent({
   name: 'Tokens',
@@ -108,8 +109,8 @@ export default defineComponent({
     // NFT and TOKEN TableController
     //
     const perPage = computed(() => isMediumScreen ? 15 : 10)
-    const nftTableController = new TokenTableController(perPage, ref(NONFUNGIBLE))
-    const tokenTableController = new TokenTableController(perPage, ref(FUNGIBLE))
+    const nftTableController = new TokenTableController(useRouter(), perPage, ref(NONFUNGIBLE), "p1", "k1")
+    const tokenTableController = new TokenTableController(useRouter(), perPage, ref(FUNGIBLE), "p2", "k2")
     onMounted(() => {
       nftTableController.mounted.value = true
       tokenTableController.mounted.value = true

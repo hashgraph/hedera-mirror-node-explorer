@@ -102,7 +102,7 @@ export default defineComponent({
     return {
       isTouchDevice,
       isMediumScreen,
-      tokens: props.controller.pageRows as ComputedRef<Token[]>,
+      tokens: props.controller.rows as ComputedRef<Token[]>,
       loading: props.controller.loading as ComputedRef<boolean>,
       total: props.controller.totalRowCount as ComputedRef<number>,
       currentPage: props.controller.currentPage as Ref<number>,

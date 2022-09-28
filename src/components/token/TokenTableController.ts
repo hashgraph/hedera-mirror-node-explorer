@@ -18,12 +18,13 @@
  *
  */
 
-import {TableController} from "@/utils/table/TableController";
 import {Token, TokensResponse} from "@/schemas/HederaSchemas";
-import {Ref} from "vue";
+import {ComputedRef, Ref} from "vue";
 import axios, {AxiosResponse} from "axios";
+import {KeyOperator, SortOrder, TableControllerV3} from "@/utils/table/TableControllerV3";
+import {Router} from "vue-router";
 
-export class TokenTableController extends TableController<Token, string> {
+export class TokenTableController extends TableControllerV3<Token, string> {
 
     private readonly tokenType: Ref<string | null>
 
@@ -31,8 +32,10 @@ export class TokenTableController extends TableController<Token, string> {
     // Public
     //
 
-    public constructor(pageSize: Ref<number>, tokenType: Ref<string | null>) {
-        super(pageSize, 10 * pageSize.value, 5000, 10, 100);
+    public constructor(router: Router, pageSize: ComputedRef<number>, tokenType: Ref<string | null>,
+                       pageParamName: string, keyParamName: string) {
+        super(router, pageSize, 10 * pageSize.value, 5000, 10, 100,
+            pageParamName, keyParamName);
         this.tokenType = tokenType
         this.watchAndReload([this.tokenType])
     }
@@ -41,23 +44,7 @@ export class TokenTableController extends TableController<Token, string> {
     // TableController
     //
 
-    public async loadAfter(tokenId: string | null, limit: number): Promise<Token[] | null> {
-        return this.load(tokenId, "lt", limit)
-    }
-
-    public async loadBefore(tokenId: string, limit: number): Promise<Token[] | null> {
-        return this.load(tokenId, "gte", limit)
-    }
-
-    public keyFor(row: Token): string {
-        return row.token_id ?? ""
-    }
-
-    //
-    // Private
-    //
-
-    private load(tokenId: string | null, operator: string, limit: number): Promise<Token[] | null> {
+    public async load(tokenId: string | null, operator: KeyOperator, order: SortOrder, limit: number): Promise<Token[] | null> {
 
         const params = {} as {
             limit: number
@@ -69,7 +56,7 @@ export class TokenTableController extends TableController<Token, string> {
         if (tokenId !== null) {
             params["token.id"] = operator + ":" + tokenId
         }
-        params.order = 'desc'
+        params.order = order
         if (this.tokenType.value !== null) {
             params.type = this.tokenType.value
         }
@@ -77,5 +64,17 @@ export class TokenTableController extends TableController<Token, string> {
             return Promise.resolve(r.data.tokens ?? [])
         }
         return axios.get<TokensResponse>("api/v1/tokens", {params: params}).then(cb)
+    }
+
+    public keyFor(row: Token): string {
+        return row.token_id ?? ""
+    }
+
+    public stringFromKey(key: string): string {
+        return key;
+    }
+
+    public keyFromString(s: string): string | null {
+        return s;
     }
 }
