@@ -25,7 +25,7 @@ import MockAdapter from "axios-mock-adapter";
 import axios from "axios";
 import {
     SAMPLE_ACCOUNT,
-    SAMPLE_ACCOUNT_STAKING_ACCOUNT,
+    SAMPLE_ACCOUNT_STAKING_ACCOUNT, SAMPLE_ACCOUNTS,
     SAMPLE_COINGECKO,
     SAMPLE_NETWORK_NODES,
 } from "../Mocks";
@@ -102,8 +102,9 @@ describe("StakingDialog.vue", () => {
         mock.onGet(matcher2).reply(200, SAMPLE_NETWORK_NODES)
         const matcher3 = "https://api.coingecko.com/api/v3/coins/hedera-hashgraph"
         mock.onGet(matcher3).reply(200, SAMPLE_COINGECKO);
-        const matcher4 = "/api/v1/accounts/0.0.7"
-        mock.onGet(matcher4).reply(200, SAMPLE_ACCOUNT)
+        const matcher4 = "/api/v1/accounts"
+        const body = {params: {"account.id": "0.0.7", balance: false}}
+        mock.onGet(matcher4, body).reply(200, SAMPLE_ACCOUNTS)
 
         const wrapper = mount(StakingDialog, {
             global: {
@@ -203,8 +204,9 @@ describe("StakingDialog.vue", () => {
         mock.onGet(matcher2).reply(200, SAMPLE_NETWORK_NODES)
         const matcher3 = "https://api.coingecko.com/api/v3/coins/hedera-hashgraph"
         mock.onGet(matcher3).reply(200, SAMPLE_COINGECKO);
-        const matcher4 = "/api/v1/accounts/0.0.7"
-        mock.onGet(matcher4).reply(200, SAMPLE_ACCOUNT)
+        const matcher4 = "/api/v1/accounts"
+        const body = {params: {"account.id": "0.0.7", balance: false}}
+        mock.onGet(matcher4, body).reply(200, SAMPLE_ACCOUNTS)
 
         const wrapper = mount(StakingDialog, {
             global: {

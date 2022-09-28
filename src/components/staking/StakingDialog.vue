@@ -156,7 +156,7 @@
 <script lang="ts">
 
 import {computed, defineComponent, onMounted, PropType, ref, watch} from "vue";
-import {AccountBalanceTransactions, NetworkNode} from "@/schemas/HederaSchemas";
+import {AccountBalanceTransactions, AccountsResponse, NetworkNode} from "@/schemas/HederaSchemas";
 import {NodesLoader} from "@/components/node/NodesLoader";
 import Property from "@/components/Property.vue";
 import HbarAmount from "@/components/values/HbarAmount.vue";
@@ -361,13 +361,24 @@ export default defineComponent({
         if (selectedAccountEntity.value == accountId.value) {
           inputFeedbackMessage.value = CANT_STAKE_SAME_ACCOUNT_MESSAGE
         } else {
+
+          const params = {
+            'account.id': selectedAccountEntity.value,
+            balance: false
+          }
           axios
-              .get<AccountBalanceTransactions>("api/v1/accounts/" + selectedAccountEntity.value)
-              .then(() => {
-                isSelectedAccountValid.value = true
-                inputFeedbackMessage.value = VALID_ACCOUNT_MESSAGE
+              .get<AccountsResponse>("api/v1/accounts", { params: params } )
+              .then((response) => {
+                const accounts = response.data.accounts
+                if (accounts && accounts.length > 0) {
+                  isSelectedAccountValid.value = true
+                  inputFeedbackMessage.value = VALID_ACCOUNT_MESSAGE
+                } else {
+                  inputFeedbackMessage.value = UNKNOWN_ACCOUNT_MESSAGE
+                }
               })
               .catch(() => inputFeedbackMessage.value = UNKNOWN_ACCOUNT_MESSAGE)
+
         }
       } else {
         inputFeedbackMessage.value = INVALID_CHECKSUM_MESSAGE
