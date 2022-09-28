@@ -56,6 +56,7 @@ import DashboardCard from "@/components/DashboardCard.vue";
 import Footer from "@/components/Footer.vue";
 import PlayPauseButton from "@/utils/table/PlayPauseButton.vue";
 import {ContractTableController} from "@/components/contract/ContractTableController";
+import {useRouter} from "vue-router";
 
 export default defineComponent({
   name: 'Contracts',
@@ -80,7 +81,7 @@ export default defineComponent({
     // ContractTableController
     //
     const perPage = computed(() => isMediumScreen ? 15 : 10)
-    const contractTableController = new ContractTableController(perPage)
+    const contractTableController = new ContractTableController(useRouter(), perPage)
     onMounted(() => contractTableController.mounted.value = true)
     onBeforeUnmount(() => contractTableController.mounted.value = false)
 

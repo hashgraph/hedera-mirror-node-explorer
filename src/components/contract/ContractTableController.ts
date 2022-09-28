@@ -18,42 +18,27 @@
  *
  */
 
-import {TableController} from "@/utils/table/TableController";
 import {Contract, ContractsResponse} from "@/schemas/HederaSchemas";
-import {Ref} from "vue";
+import {ComputedRef} from "vue";
 import axios, {AxiosResponse} from "axios";
+import {KeyOperator, SortOrder, TableControllerV3} from "@/utils/table/TableControllerV3";
+import {Router} from "vue-router";
 
-export class ContractTableController extends TableController<Contract, string> {
+export class ContractTableController extends TableControllerV3<Contract, string> {
 
     //
     // Public
     //
 
-    public constructor(pageSize: Ref<number>) {
-        super(pageSize, 10 * pageSize.value, 5000, 10, 100);
+    public constructor(router: Router, pageSize: ComputedRef<number>) {
+        super(router, pageSize, 10 * pageSize.value, 5000, 10, 100);
     }
 
     //
     // TableController
     //
 
-    public async loadAfter(contractId: string | null, limit: number): Promise<Contract[] | null> {
-        return this.load(contractId, "lt", limit)
-    }
-
-    public async loadBefore(contractId: string, limit: number): Promise<Contract[] | null> {
-        return this.load(contractId, "gte", limit)
-    }
-
-    public keyFor(row: Contract): string {
-        return row.contract_id ?? ""
-    }
-
-    //
-    // Private
-    //
-
-    private load(contractId: string | null, operator: string, limit: number): Promise<Contract[] | null> {
+    public async load(contractId: string | null, operator: KeyOperator, order: SortOrder, limit: number): Promise<Contract[] | null> {
 
         const params = {} as {
             limit: number
@@ -61,7 +46,7 @@ export class ContractTableController extends TableController<Contract, string> {
             order: string
         }
         params.limit = limit
-        params.order = 'desc'
+        params.order = order
         if (contractId !== null) {
             params["contract.id"] = operator + ":" + contractId
         }
@@ -70,5 +55,17 @@ export class ContractTableController extends TableController<Contract, string> {
         }
 
         return  axios.get<ContractsResponse>("api/v1/contracts", {params: params}).then(cb)
+    }
+
+    public keyFor(row: Contract): string {
+        return row.contract_id ?? ""
+    }
+
+    public stringFromKey(key: string): string {
+        return key;
+    }
+
+    public keyFromString(s: string): string | null {
+        return s;
     }
 }
