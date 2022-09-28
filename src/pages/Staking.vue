@@ -137,7 +137,7 @@
         <template v-else>
           <section class="section has-text-centered pt-0" :class="{'pb-0': isSmallScreen}">
             <p class="h-is-tertiary-text" style="font-weight: 300">
-              To view or change your staking you first need to connect your wallet.
+              To view or change your staking options first connect your wallet.
             </p>
             <br/>
             <button id="connectWalletButton" class="button is-white is-small" @click="chooseWallet">CONNECT WALLET…</button>
