@@ -71,8 +71,6 @@ export abstract class TableControllerV3<R, K> {
 
     public readonly mounted: Ref<boolean> = ref(false)
 
-
-
     public readonly onPageChange = (page: number): void => {
         this.autoRefresh.value = false // => this.subController becomes a PaginationSubController instance
         if (this.subController instanceof PaginationController) {
@@ -80,6 +78,18 @@ export abstract class TableControllerV3<R, K> {
         } else {
             console.warn("Page change ignored because sub controller is not the expected one")
         }
+    }
+
+    public reset(): void {
+
+        // Clears buffer
+        this.buffer.value = []
+        this.startIndex.value = 0
+        this.drained.value = false
+        this.autoUpdateCount.value = 0
+        this.shadowRowCount.value = 0
+
+        this.remountSubController()
     }
 
 
@@ -227,7 +237,7 @@ export abstract class TableControllerV3<R, K> {
 
             this.watchAutoRefreshHandle = watch(this.autoRefresh, () => this.remountSubController(), { flush: 'sync' })
             this.watchRouteHandle = watch(this.router.currentRoute, () => this.routeDidChange(), { flush: 'sync' })
-            this.watchSourcesHandle = watch(this.sources, () => this.sourcesDidChange())
+            this.watchSourcesHandle = watch(this.sources, () => this.reset())
 
         } else {
 
@@ -253,18 +263,6 @@ export abstract class TableControllerV3<R, K> {
         const pageParam = this.getPageParam()
         const keyParam = this.getKeyParam()
         console.log("TableControllerV3.routeDidChange: keyParam=" + keyParam + ", pageParam=" + pageParam)
-    }
-
-    private sourcesDidChange(): void {
-
-        // Clears buffer
-        this.buffer.value = []
-        this.startIndex.value = 0
-        this.drained.value = false
-        this.autoUpdateCount.value = 0
-        this.shadowRowCount.value = 0
-
-        this.remountSubController()
     }
 
     private remountSubController() {
