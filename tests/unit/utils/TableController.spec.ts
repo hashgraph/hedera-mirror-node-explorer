@@ -316,6 +316,91 @@ describe("TableController.ts", () => {
         expect(tc.autoUpdateCount.value).toBe(2)
         expect(tc.currentPage.value).toBe(4)
     })
+
+
+    test("shadow pages", async() => {
+
+        const tc = new TestTableController(0, 50, 10, router)
+
+        // Preset page and key query params
+        await tc.updateKeyAndPageParams(4, 19)
+        await flushPromises()
+
+        // Mount => page 4 is loaded
+        tc.mounted.value = true
+        await flushPromises()
+        expect(tc.autoRefresh.value).toBe(false)
+        expect(tc.autoStopped.value).toBe(false)
+        expect(tc.rows.value).toStrictEqual([19,18,17,16,15,14,13,12,11,10])
+        expect(tc.autoUpdateCount.value).toBe(0)
+        expect(tc.currentPage.value).toBe(4)
+
+        // Goto page #2
+        tc.onPageChange(2)
+        await flushPromises()
+        expect(tc.autoRefresh.value).toBe(false)
+        expect(tc.autoStopped.value).toBe(false)
+        expect(tc.rows.value).toStrictEqual([39,38,37,36,35,34,33,32,31,30])
+        expect(tc.autoUpdateCount.value).toBe(0)
+        expect(tc.currentPage.value).toBe(2)
+
+        // Goto page #3
+        tc.onPageChange(3)
+        await flushPromises()
+        expect(tc.autoRefresh.value).toBe(false)
+        expect(tc.autoStopped.value).toBe(false)
+        expect(tc.rows.value).toStrictEqual([29,28,27,26,25,24,23,22,21,20])
+        expect(tc.autoUpdateCount.value).toBe(0)
+        expect(tc.currentPage.value).toBe(3)
+
+        // Goto page #1
+        tc.onPageChange(1)
+        await flushPromises()
+        expect(tc.autoRefresh.value).toBe(false)
+        expect(tc.autoStopped.value).toBe(false)
+        expect(tc.rows.value).toStrictEqual([49,48,47,46,45,44,43,42,41,40])
+        expect(tc.autoUpdateCount.value).toBe(0)
+        expect(tc.currentPage.value).toBe(1)
+
+    })
+
+
+    test("shadow pages (inconsistent)", async() => {
+
+        const tc = new TestTableController(0, 50, 10, router)
+
+        // Preset page and key query params
+        await tc.updateKeyAndPageParams(40, 21)
+        await flushPromises()
+
+        // Mount => page 40 is loaded
+        tc.mounted.value = true
+        await flushPromises()
+        expect(tc.autoRefresh.value).toBe(false)
+        expect(tc.autoStopped.value).toBe(false)
+        expect(tc.rows.value).toStrictEqual([21,20,19,18,17,16,15,14,13,12])
+        expect(tc.autoUpdateCount.value).toBe(0)
+        expect(tc.currentPage.value).toBe(40)
+
+        // Goto page #38
+        tc.onPageChange(38)
+        await flushPromises()
+        expect(tc.autoRefresh.value).toBe(false)
+        expect(tc.autoStopped.value).toBe(false)
+        expect(tc.rows.value).toStrictEqual([41,40,39,38,37,36,35,34,33,32])
+        expect(tc.autoUpdateCount.value).toBe(0)
+        expect(tc.currentPage.value).toBe(38)
+
+        // Goto page #1
+        tc.onPageChange(1)
+        await flushPromises()
+        expect(tc.autoRefresh.value).toBe(false)
+        expect(tc.autoStopped.value).toBe(false)
+        expect(tc.rows.value).toStrictEqual([49,48,47,46,45,44,43,42,41,40])
+        expect(tc.autoUpdateCount.value).toBe(0)
+        expect(tc.currentPage.value).toBe(1)
+
+    })
 })
 
 class TestTableController extends TableControllerV3<number, number> {
