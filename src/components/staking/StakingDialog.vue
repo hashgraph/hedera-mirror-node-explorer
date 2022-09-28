@@ -109,8 +109,8 @@
                          style="min-width: 13rem; max-width: 13rem; height:26px; margin-top: 1px; border-radius: 4px; border-width: 1px;
                          background-color: var(--h-theme-box-background-color)">
 
-                  <div v-if="isAccountSelected"
-                       :class="{'has-text-grey': isSelectedAccountValidated, 'has-text-danger': !isSelectedAccountValidated}"
+                  <div v-if="isAccountSelected" id="feedbackMessage"
+                       :class="{'has-text-grey': isSelectedAccountValid, 'has-text-danger': !isSelectedAccountValid}"
                        class="is-inline-block h-is-text-size-2 ml-3">
                     {{ inputFeedbackMessage }}
                   </div>
@@ -200,9 +200,7 @@ export default defineComponent({
               result = declineChoice.value ? "Do you want to decline rewards?" : "Do you want to accept rewards?"
             }
           } else {
-            result = "Do you want to stake to account "
-                + (selectedAccount.value ? EntityID.normalize(selectedAccount.value, networkRegistry.computeChecksum(selectedAccount.value, network)) : "")
-                + " ?"
+            result = "Do you want to stake to account " + selectedAccountWithChecksum.value + " ?"
           }
           return result
         })
@@ -212,17 +210,24 @@ export default defineComponent({
     const isAccountSelected = computed(() => stakeChoice.value === 'account')
 
     const selectedAccount = ref<string | null>(null)
-    const isSelectedAccountValidated = ref(false)
-    const showUnknownAccountMessage = ref(false)
-    const showInvalidAccountIDMessage = ref(false)
+    const selectedAccountEntity = computed(
+        () => EntityID.normalize(EntityID.stripChecksum(selectedAccount.value??"")))
+    const selectedAccountChecksum = computed(
+        () => EntityID.extractChecksum(selectedAccount.value??""))
+    const isSelectedAccountChecksumValid = computed(
+        () => selectedAccountChecksum.value === null
+            || networkRegistry.isValidChecksum(selectedAccountEntity.value??"", selectedAccountChecksum.value, network)
+    )
+    const selectedAccountWithChecksum = computed(
+        () => EntityID.normalize(selectedAccountEntity.value??"",
+            networkRegistry.computeChecksum(selectedAccountEntity.value??"", network)))
+    const isSelectedAccountValid = ref(false)
     const inputFeedbackMessage = ref<string | null>(null)
 
     let validationTimerId = -1
 
     watch(selectedAccount, () => {
-      showUnknownAccountMessage.value = false
-      showInvalidAccountIDMessage.value = false
-      isSelectedAccountValidated.value = false
+      isSelectedAccountValid.value = false
       inputFeedbackMessage.value = null
 
       if (validationTimerId != -1) {
@@ -230,9 +235,7 @@ export default defineComponent({
         validationTimerId = -1
       }
       if (selectedAccount.value?.length) {
-        validationTimerId = window.setTimeout(
-            () => validateAccount(selectedAccount.value ?? ""),
-            500)
+        validationTimerId = window.setTimeout(() => validateAccount(), 500)
       } else {
         selectedAccount.value = null
       }
@@ -253,7 +256,7 @@ export default defineComponent({
 
     const enableChangeButton = computed(() => {
       return (
-          isAccountSelected.value && isSelectedAccountValidated.value && props.account?.staked_account_id != selectedAccount.value)
+          isAccountSelected.value && isSelectedAccountValid.value && props.account?.staked_account_id != selectedAccount.value)
           || (isNodeSelected.value  && selectedNode.value && props.account?.staked_node_id != selectedNode.value)
           || (props.account?.decline_reward != declineChoice.value)
     })
@@ -351,30 +354,21 @@ export default defineComponent({
       }
     }
 
-    const validateAccount = (stakedAccountId: string) => {
-      const entityID = EntityID.stripChecksum(stakedAccountId)
-      const checksum = EntityID.extractChecksum(stakedAccountId)
-      const network = router.currentRoute.value.params.network as string
-
-      if (EntityID.parse(entityID, true)
-          && (checksum === null || networkRegistry.isValidChecksum(entityID, checksum, network))) {
-
-        if (entityID == accountId.value) {
+    const validateAccount = () => {
+      if (selectedAccountEntity.value === null) {
+        inputFeedbackMessage.value = INVALID_ACCOUNTID_MESSAGE
+      } else if (isSelectedAccountChecksumValid.value) {
+        if (selectedAccountEntity.value == accountId.value) {
           inputFeedbackMessage.value = CANT_STAKE_SAME_ACCOUNT_MESSAGE
         } else {
-          const params = {} as {
-            limit: 1
-          }
           axios
-              .get<AccountBalanceTransactions>("api/v1/accounts/" + entityID, {params: params})
+              .get<AccountBalanceTransactions>("api/v1/accounts/" + selectedAccountEntity.value)
               .then(() => {
-                isSelectedAccountValidated.value = true
+                isSelectedAccountValid.value = true
                 inputFeedbackMessage.value = VALID_ACCOUNT_MESSAGE
               })
               .catch(() => inputFeedbackMessage.value = UNKNOWN_ACCOUNT_MESSAGE)
         }
-      } else if (!EntityID.parse(entityID)) {
-        inputFeedbackMessage.value = INVALID_ACCOUNTID_MESSAGE
       } else {
         inputFeedbackMessage.value = INVALID_CHECKSUM_MESSAGE
       }
@@ -387,9 +381,7 @@ export default defineComponent({
       stakeChoice,
       isNodeSelected,
       isAccountSelected,
-      showUnknownAccountMessage,
-      showInvalidAccountIDMessage,
-      isSelectedAccountValidated,
+      isSelectedAccountValid,
       inputFeedbackMessage,
       selectedAccount,
       selectedNode,
