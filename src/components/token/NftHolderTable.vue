@@ -110,7 +110,7 @@ export default defineComponent({
     return {
       isTouchDevice,
       isMediumScreen,
-      nfts: props.controller.pageRows as ComputedRef<Nft[]>,
+      nfts: props.controller.rows as ComputedRef<Nft[]>,
       loading: props.controller.loading as ComputedRef<boolean>,
       total: props.controller.totalRowCount as ComputedRef<number>,
       currentPage: props.controller.currentPage as Ref<number>,

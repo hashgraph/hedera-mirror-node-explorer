@@ -18,12 +18,13 @@
  *
  */
 
-import {TableController} from "@/utils/table/TableController";
 import {Nft, Nfts} from "@/schemas/HederaSchemas";
-import {Ref} from "vue";
+import {ComputedRef, Ref} from "vue";
 import axios, {AxiosResponse} from "axios";
+import {KeyOperator, SortOrder, TableControllerV3} from "@/utils/table/TableControllerV3";
+import {Router} from "vue-router";
 
-export class NftHolderTableController extends TableController<Nft, string> {
+export class NftHolderTableController extends TableControllerV3<Nft, string> {
 
     public readonly tokenId: Ref<string | null>
 
@@ -31,8 +32,8 @@ export class NftHolderTableController extends TableController<Nft, string> {
     // Public
     //
 
-    public constructor(tokenId: Ref<string | null>, pageSize: Ref<number>) {
-        super(pageSize, 10 * pageSize.value, 5000, 10, 100);
+    public constructor(router: Router, tokenId: ComputedRef<string | null>, pageSize: ComputedRef<number>) {
+        super(router, pageSize, 10 * pageSize.value, 5000, 10, 100);
         this.tokenId = tokenId
         this.watchAndReload([this.tokenId])
     }
@@ -41,23 +42,7 @@ export class NftHolderTableController extends TableController<Nft, string> {
     // TableController
     //
 
-    public async loadAfter(serialNumber: string | null, limit: number): Promise<Nft[] | null> {
-        return this.load(serialNumber, "gt", limit)
-    }
-
-    public async loadBefore(serialNumber: string, limit: number): Promise<Nft[] | null> {
-        return this.load(serialNumber, "lte", limit)
-    }
-
-    public keyFor(row: Nft): string {
-        return row.serial_number?.toString() ?? ""
-    }
-
-    //
-    // Private
-    //
-
-    private load(serialNumber: string | null, operator: string, limit: number): Promise<Nft[] | null> {
+    public async load(serialNumber: string | null, operator: KeyOperator, order: SortOrder, limit: number): Promise<Nft[] | null> {
         let result
         if (this.tokenId.value) {
             const params = {} as {
@@ -66,7 +51,7 @@ export class NftHolderTableController extends TableController<Nft, string> {
                 serialnumber: string | undefined
             }
             params.limit = limit
-            params.order = 'asc'
+            params.order = order
             if (serialNumber !== null) {
                 params.serialnumber = operator + ":" + serialNumber
             }
@@ -78,5 +63,17 @@ export class NftHolderTableController extends TableController<Nft, string> {
             result = Promise.resolve(null)
         }
         return result
+    }
+
+    public keyFor(row: Nft): string {
+        return row.serial_number?.toString() ?? ""
+    }
+
+    public stringFromKey(key: string): string {
+        return key;
+    }
+
+    public keyFromString(s: string): string | null {
+        return s;
     }
 }
