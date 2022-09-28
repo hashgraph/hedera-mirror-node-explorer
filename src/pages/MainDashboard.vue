@@ -36,7 +36,7 @@
             <span class="h-is-secondary-title">Crypto Transfers</span>
           </template>
           <template v-slot:control>
-            <PlayPauseButtonV3 v-bind:controller="cryptoTableController"/>
+            <PlayPauseButton v-bind:controller="cryptoTableController"/>
           </template>
           <template v-slot:content>
             <CryptoTransactionTable v-bind:controller="cryptoTableController"/>
@@ -54,7 +54,7 @@
             <span class="h-is-secondary-title">Smart Contract Calls</span>
           </template>
           <template v-slot:control>
-            <PlayPauseButtonV3 v-bind:controller="contractTableController"/>
+            <PlayPauseButton v-bind:controller="contractTableController"/>
           </template>
           <template v-slot:content>
             <ContractCallTransactionTable v-bind:controller="contractTableController"/>
@@ -68,7 +68,7 @@
             <span class="h-is-secondary-title">HCS Messages</span>
           </template>
           <template v-slot:control>
-            <PlayPauseButtonV3 v-bind:controller="messageTableController"/>
+            <PlayPauseButton v-bind:controller="messageTableController"/>
           </template>
           <template v-slot:content>
             <MessageTransactionTable v-bind:controller="messageTableController" />
@@ -94,7 +94,7 @@ import {computed, defineComponent, inject, onBeforeUnmount, onMounted, ref, watc
 
 import HbarMarketDashboard from "../components/dashboard/HbarMarketDashboard.vue";
 import DashboardCard from "@/components/DashboardCard.vue";
-import PlayPauseButtonV3 from "@/utils/table/PlayPauseButtonV3.vue";
+import PlayPauseButton from "@/utils/table/PlayPauseButton.vue";
 import CryptoTransactionTable from "@/components/dashboard/CryptoTransactionTable.vue";
 import MessageTransactionTable from "@/components/dashboard/MessageTransactionTable.vue";
 import ContractCallTransactionTable from "@/components/dashboard/ContractCallTransactionTable.vue";
@@ -108,7 +108,7 @@ export default defineComponent({
 
   components: {
     Footer,
-    PlayPauseButtonV3,
+    PlayPauseButton,
     DashboardCard,
     CryptoTransactionTable,
     MessageTransactionTable,

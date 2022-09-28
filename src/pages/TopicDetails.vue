@@ -35,7 +35,7 @@
       </template>
 
       <template v-slot:control>
-        <PlayPauseButtonV3 v-bind:controller="messageTableController"/>
+        <PlayPauseButton v-bind:controller="messageTableController"/>
       </template>
 
       <template v-slot:content>
@@ -59,7 +59,7 @@
 
 import {computed, defineComponent, inject, onBeforeUnmount, onMounted} from 'vue';
 import {useRouter} from "vue-router";
-import PlayPauseButtonV3 from "@/utils/table/PlayPauseButtonV3.vue";
+import PlayPauseButton from "@/utils/table/PlayPauseButton.vue";
 import TopicMessageTable from "@/components/topic/TopicMessageTable.vue";
 import DashboardCard from "@/components/DashboardCard.vue";
 import Footer from "@/components/Footer.vue";
@@ -86,7 +86,7 @@ export default defineComponent({
     Footer,
     DashboardCard,
     TopicMessageTable,
-    PlayPauseButtonV3
+    PlayPauseButton
   },
 
   setup(props) {

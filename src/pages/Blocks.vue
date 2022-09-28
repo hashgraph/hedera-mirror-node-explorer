@@ -31,7 +31,7 @@
         <span class="h-is-primary-title">Blocks</span>
       </template>
       <template v-slot:control>
-        <PlayPauseButtonV3 v-bind:controller="blockTableController"/>
+        <PlayPauseButton v-bind:controller="blockTableController"/>
       </template>
       <template v-slot:content>
         <BlockTable :controller="blockTableController"/>
@@ -54,7 +54,7 @@ import {computed, defineComponent, inject, onBeforeUnmount, onMounted} from 'vue
 import DashboardCard from "@/components/DashboardCard.vue";
 import Footer from "@/components/Footer.vue";
 import BlockTable from "@/components/block/BlockTable.vue";
-import PlayPauseButtonV3 from "@/utils/table/PlayPauseButtonV3.vue";
+import PlayPauseButton from "@/utils/table/PlayPauseButton.vue";
 import {BlockTableController} from "@/components/block/BlockTableController";
 import {useRouter} from "vue-router";
 
@@ -66,7 +66,7 @@ export default defineComponent({
   },
 
   components: {
-    PlayPauseButtonV3,
+    PlayPauseButton,
     BlockTable,
     Footer,
     DashboardCard

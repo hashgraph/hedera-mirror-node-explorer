@@ -153,7 +153,7 @@
       </template>
       <template v-slot:control>
         <div class="is-flex is-align-items-flex-end">
-          <PlayPauseButtonV3 v-bind:controller="transactionTableController"/>
+          <PlayPauseButton v-bind:controller="transactionTableController"/>
         </div>
       </template>
       <template v-slot:content>
@@ -194,7 +194,7 @@ import DashboardCard from "@/components/DashboardCard.vue";
 import ConfirmDialog from "@/components/ConfirmDialog.vue";
 import ProgressDialog, {Mode} from "@/components/staking/ProgressDialog.vue";
 import AccountLink from "@/components/values/AccountLink.vue";
-import PlayPauseButtonV3 from "@/utils/table/PlayPauseButtonV3.vue";
+import PlayPauseButton from "@/utils/table/PlayPauseButton.vue";
 import RewardsCalculator from "@/components/staking/RewardsCalculator.vue";
 import WalletChooser from "@/components/staking/WalletChooser.vue";
 import {WalletDriver} from "@/utils/wallet/WalletDriver";
@@ -219,7 +219,7 @@ export default defineComponent({
   components: {
     WalletChooser,
     RewardsCalculator,
-    PlayPauseButtonV3,
+    PlayPauseButton,
     AccountLink,
     ConfirmDialog,
     ProgressDialog,

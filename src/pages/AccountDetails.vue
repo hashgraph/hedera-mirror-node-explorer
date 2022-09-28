@@ -180,7 +180,7 @@
       </template>
       <template v-slot:control>
         <div class="is-flex is-align-items-flex-end">
-          <PlayPauseButtonV3 v-bind:controller="transactionTableController"/>
+          <PlayPauseButton v-bind:controller="transactionTableController"/>
           <TransactionFilterSelect v-bind:controller="transactionTableController"/>
         </div>
       </template>
@@ -207,7 +207,7 @@
 
 import {computed, ComputedRef, defineComponent, inject, onBeforeUnmount, onMounted, watch} from 'vue';
 import KeyValue from "@/components/values/KeyValue.vue";
-import PlayPauseButtonV3 from "@/utils/table/PlayPauseButtonV3.vue";
+import PlayPauseButton from "@/utils/table/PlayPauseButton.vue";
 import TransactionTable from "@/components/transaction/TransactionTable.vue";
 import {Duration} from "@/utils/Duration";
 import DurationValue from "@/components/values/DurationValue.vue";
@@ -254,7 +254,7 @@ export default defineComponent({
     HbarAmount,
     DashboardCard,
     TransactionTable,
-    PlayPauseButtonV3,
+    PlayPauseButton,
     TimestampValue,
     KeyValue,
     EthAddress,

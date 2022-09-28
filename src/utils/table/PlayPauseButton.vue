@@ -24,7 +24,7 @@
 
   <template>
     ...
-    <PlayPauseButtonV3 v-bind:controller="TableControllerV3"/>
+    <PlayPauseButton v-bind:controller="TableControllerV3"/>
     ...
   </template>
 
@@ -67,7 +67,7 @@ import {computed, defineComponent, PropType} from "vue";
 import {TableController} from "@/utils/table/TableController";
 
 export default defineComponent({
-  name: "PlayPauseButtonV3",
+  name: "PlayPauseButton",
 
   props: {
     controller: Object as PropType<TableController<unknown, unknown>>

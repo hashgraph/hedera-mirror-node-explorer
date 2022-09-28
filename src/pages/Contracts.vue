@@ -31,7 +31,7 @@
         <span class="h-is-primary-title">Recent Contracts</span>
       </template>
       <template v-slot:control>
-        <PlayPauseButtonV3 :controller="contractTableController"/>
+        <PlayPauseButton :controller="contractTableController"/>
       </template>
       <template v-slot:content>
         <ContractTable :controller="contractTableController"/>
@@ -54,7 +54,7 @@ import {computed, defineComponent, inject, onBeforeUnmount, onMounted} from 'vue
 import ContractTable from "@/components/contract/ContractTable.vue";
 import DashboardCard from "@/components/DashboardCard.vue";
 import Footer from "@/components/Footer.vue";
-import PlayPauseButtonV3 from "@/utils/table/PlayPauseButtonV3.vue";
+import PlayPauseButton from "@/utils/table/PlayPauseButton.vue";
 import {ContractTableController} from "@/components/contract/ContractTableController";
 import {useRouter} from "vue-router";
 
@@ -66,7 +66,7 @@ export default defineComponent({
   },
 
   components: {
-    PlayPauseButtonV3,
+    PlayPauseButton,
     Footer,
     DashboardCard,
     ContractTable

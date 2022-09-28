@@ -24,7 +24,7 @@ import axios from "axios";
 import {SAMPLE_TOKEN, SAMPLE_TRANSACTIONS} from "../Mocks";
 import Transactions from "@/pages/Transactions.vue";
 import DashboardCard from "@/components/DashboardCard.vue";
-import PlayPauseButtonV3 from "@/utils/table/PlayPauseButtonV3.vue";
+import PlayPauseButton from "@/utils/table/PlayPauseButton.vue";
 import TransactionFilterSelect from "@/components/transaction/TransactionFilterSelect.vue";
 import TransactionTable from "@/components/transaction/TransactionTable.vue";
 import MockAdapter from "axios-mock-adapter";
@@ -82,7 +82,7 @@ describe("Transactions.vue", () => {
         expect(card.exists()).toBe(true)
         expect(card.text()).toMatch(RegExp("^Recent Transactions"))
 
-        const playPause = card.findComponent(PlayPauseButtonV3)
+        const playPause = card.findComponent(PlayPauseButton)
         expect(playPause.exists()).toBe(true)
 
         const select = card.findComponent(TransactionFilterSelect)

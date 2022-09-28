@@ -31,7 +31,7 @@
         <span class="h-is-primary-title">Recent Accounts</span>
       </template>
       <template v-slot:control>
-        <PlayPauseButtonV3 v-bind:controller="accountTableController"/>
+        <PlayPauseButton v-bind:controller="accountTableController"/>
       </template>
       <template v-slot:content>
         <AccountTable :controller="accountTableController"/>
@@ -55,7 +55,7 @@ import AccountTable from "@/components/account/AccountTable.vue";
 import DashboardCard from "@/components/DashboardCard.vue";
 import Footer from "@/components/Footer.vue";
 import {AccountTableController} from "@/components/account/AccountTableController";
-import PlayPauseButtonV3 from "@/utils/table/PlayPauseButtonV3.vue";
+import PlayPauseButton from "@/utils/table/PlayPauseButton.vue";
 import {useRouter} from "vue-router";
 
 export default defineComponent({
@@ -66,7 +66,7 @@ export default defineComponent({
   },
 
   components: {
-    PlayPauseButtonV3,
+    PlayPauseButton,
     Footer,
     DashboardCard,
     AccountTable

@@ -145,7 +145,7 @@
 
       <template v-slot:control>
         <div class="is-flex is-align-items-flex-end">
-          <PlayPauseButtonV3 v-bind:controller="transactionTableController"/>
+          <PlayPauseButton v-bind:controller="transactionTableController"/>
           <TransactionFilterSelect v-model:controller="transactionTableController"/>
         </div>
       </template>
@@ -174,7 +174,7 @@ import {computed, defineComponent, inject, onBeforeUnmount, onMounted, watch} fr
 import KeyValue from "@/components/values/KeyValue.vue";
 import HexaValue from "@/components/values/HexaValue.vue";
 import ContractTransactionTable from "@/components/contract/ContractTransactionTable.vue";
-import PlayPauseButtonV3 from "@/utils/table/PlayPauseButtonV3.vue";
+import PlayPauseButton from "@/utils/table/PlayPauseButton.vue";
 import AccountLink from "@/components/values/AccountLink.vue";
 import TimestampValue from "@/components/values/TimestampValue.vue";
 import DurationValue from "@/components/values/DurationValue.vue";
@@ -214,7 +214,7 @@ export default defineComponent({
     AccountLink,
     TimestampValue,
     DurationValue,
-    PlayPauseButtonV3,
+    PlayPauseButton,
     ContractTransactionTable,
     KeyValue,
     HexaValue,
