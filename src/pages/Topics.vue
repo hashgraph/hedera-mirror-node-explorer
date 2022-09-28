@@ -53,6 +53,7 @@ import DashboardCard from "@/components/DashboardCard.vue";
 import Footer from "@/components/Footer.vue";
 import {TransactionTableController} from "@/components/transaction/TransactionTableController";
 import {TransactionResult, TransactionType} from "@/schemas/HederaSchemas";
+import {useRouter} from "vue-router";
 
 export default defineComponent({
   name: 'Topics',
@@ -72,8 +73,10 @@ export default defineComponent({
     const isMediumScreen = inject('isMediumScreen', true)
     const isTouchDevice = inject('isTouchDevice', false)
 
+
+    const router = useRouter()
     const pageSize = computed(() => isMediumScreen ? 15 : 5)
-    const transactionTableController = new TransactionTableController(ref(null), pageSize, false)
+    const transactionTableController = new TransactionTableController(router, ref(null), pageSize, false)
     transactionTableController.transactionType.value = TransactionType.CONSENSUSCREATETOPIC
     transactionTableController.transactionResult.value = TransactionResult.SUCCESS
     onMounted(() => transactionTableController.mounted.value = true)

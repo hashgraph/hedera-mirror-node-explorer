@@ -145,7 +145,7 @@
 
       <template v-slot:control>
         <div class="is-flex is-align-items-flex-end">
-          <PlayPauseButton v-bind:controller="transactionTableController"/>
+          <PlayPauseButtonV3 v-bind:controller="transactionTableController"/>
           <TransactionFilterSelect v-model:controller="transactionTableController"/>
         </div>
       </template>
@@ -170,11 +170,11 @@
 
 <script lang="ts">
 
-import {computed, defineComponent, inject, onBeforeUnmount, onMounted, Ref, ref, watch} from 'vue';
+import {computed, defineComponent, inject, onBeforeUnmount, onMounted, watch} from 'vue';
 import KeyValue from "@/components/values/KeyValue.vue";
 import HexaValue from "@/components/values/HexaValue.vue";
 import ContractTransactionTable from "@/components/contract/ContractTransactionTable.vue";
-import PlayPauseButton from "@/utils/table/PlayPauseButton.vue";
+import PlayPauseButtonV3 from "@/utils/table/PlayPauseButtonV3.vue";
 import AccountLink from "@/components/values/AccountLink.vue";
 import TimestampValue from "@/components/values/TimestampValue.vue";
 import DurationValue from "@/components/values/DurationValue.vue";
@@ -214,7 +214,7 @@ export default defineComponent({
     AccountLink,
     TimestampValue,
     DurationValue,
-    PlayPauseButton,
+    PlayPauseButtonV3,
     ContractTransactionTable,
     KeyValue,
     HexaValue,
@@ -283,8 +283,8 @@ export default defineComponent({
     // transactionTableController
     //
 
-    const pageSize: Ref<number> = ref(10)
-    const transactionTableController = new TransactionTableController(normalizedContractId, pageSize, true)
+    const pageSize = computed(() => 10)
+    const transactionTableController = new TransactionTableController(router, normalizedContractId, pageSize, true)
     onMounted(() => transactionTableController.mounted.value = true)
     onBeforeUnmount(() => transactionTableController.mounted.value = false)
 

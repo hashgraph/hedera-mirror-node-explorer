@@ -18,15 +18,16 @@
  *
  */
 
-import {TableController} from "@/utils/table/TableController";
+import {KeyOperator, SortOrder, TableControllerV3} from "@/utils/table/TableControllerV3";
 import {Transaction, TransactionResponse} from "@/schemas/HederaSchemas";
-import {ref, Ref} from "vue";
+import {ComputedRef, ref, Ref} from "vue";
 import axios, {AxiosResponse} from "axios";
+import {Router} from "vue-router";
 
 
-export class TransactionTableController extends TableController<Transaction, string> {
+export class TransactionTableController extends TableControllerV3<Transaction, string> {
 
-    private readonly accountId: Ref<string|null>
+    private readonly accountId: Ref<string | null>
     private readonly accountIdMandatory: boolean
 
     public readonly transactionType: Ref<string> = ref("");
@@ -36,47 +37,37 @@ export class TransactionTableController extends TableController<Transaction, str
     // Public
     //
 
-    public constructor(accountId: Ref<string|null>, pageSize: Ref<number>, accountIdMandatory: boolean) {
-        super(pageSize, 10 * pageSize.value, 5000, 10, 100);
+    public constructor(router: Router, accountId: Ref<string | null>, pageSize: ComputedRef<number>,
+                       accountIdMandatory: boolean,
+                       pageParamName = "p", keyParamName= "k") {
+        super(router, pageSize, 10 * pageSize.value, 5000, 10, 100,
+            pageParamName, keyParamName);
         this.accountId = accountId
         this.accountIdMandatory = accountIdMandatory
-        this.watchAndReload([this.accountId, this.transactionType])
+        this.watchAndReload([this.accountId, this.transactionType, this.transactionResult])
     }
 
     //
     // TableController
     //
 
-    public async loadAfter(consensusTimestamp: string|null, limit: number): Promise<Transaction[]|null> {
-        return this.load(consensusTimestamp, "lt", limit)
-    }
-
-    public async loadBefore(consensusTimestamp: string, limit: number): Promise<Transaction[]|null> {
-        return this.load(consensusTimestamp, "gte", limit)
-    }
-
-    public keyFor(row: Transaction): string {
-        return row.consensus_timestamp ?? ""
-    }
-
-    //
-    // Private
-    //
-
-    private load(consensusTimestamp: string|null, operator: string, limit: number) : Promise<Transaction[]|null> {
-        let result: Promise<Transaction[]|null>
+    public async load(consensusTimestamp: string | null, operator: KeyOperator,
+                      order: SortOrder, limit: number): Promise<Transaction[] | null> {
+        let result: Promise<Transaction[] | null>
 
         if (this.accountIdMandatory && this.accountId.value === null) {
             result = Promise.resolve(null)
         } else {
             const params = {} as {
                 limit: number
+                order: string
                 "account.id": string | undefined
                 transactiontype: string | undefined
                 result: string | undefined
                 timestamp: string | undefined
             }
             params.limit = limit
+            params.order = order
             if (this.accountId.value !== null) {
                 params["account.id"] = this.accountId.value
             }
@@ -89,12 +80,24 @@ export class TransactionTableController extends TableController<Transaction, str
             if (consensusTimestamp !== null) {
                 params.timestamp = operator + ":" + consensusTimestamp
             }
-            const cb = (r: AxiosResponse<TransactionResponse>): Promise<Transaction[]|null> =>{
+            const cb = (r: AxiosResponse<TransactionResponse>): Promise<Transaction[] | null> => {
                 return Promise.resolve(r.data.transactions ?? [])
             }
-            result = axios.get<TransactionResponse>("api/v1/transactions", { params: params} ).then(cb)
+            result = axios.get<TransactionResponse>("api/v1/transactions", {params: params}).then(cb)
         }
 
         return result
+    }
+
+    public keyFor(row: Transaction): string {
+        return row.consensus_timestamp ?? ""
+    }
+
+    public keyFromString(s: string): string | null {
+        return s
+    }
+
+    public stringFromKey(key: string): string {
+        return key
     }
 }

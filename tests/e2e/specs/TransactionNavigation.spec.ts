@@ -42,7 +42,7 @@ describe('Transaction Navigation', () => {
             })
     })
 
-    it('should filter table by transaction type', () => {
+    it.skip('should filter table by transaction type', () => {
         const selectType = 'CONTRACTCALL'
 
         cy.visit('#/testnet/transactions/')

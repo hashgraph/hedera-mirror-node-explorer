@@ -101,6 +101,7 @@ import ContractCallTransactionTable from "@/components/dashboard/ContractCallTra
 import {TransactionType} from "@/schemas/HederaSchemas";
 import Footer from "@/components/Footer.vue";
 import {TransactionTableController} from "@/components/transaction/TransactionTableController";
+import {useRouter} from "vue-router";
 
 export default defineComponent({
   name: 'MainDashboard',
@@ -125,15 +126,19 @@ export default defineComponent({
     const isTouchDevice = inject('isTouchDevice', false)
     const displaySideBySide = inject('isLargeScreen', true)
 
+    const router = useRouter()
     const pageSize = computed(() => isMediumScreen ? 5 : 6)
 
-    const cryptoTableController = new TransactionTableController(ref(null), pageSize, false)
+    const cryptoTableController = new TransactionTableController(
+        router, ref(null), pageSize, false, "p1", "k1")
     cryptoTableController.transactionType.value = TransactionType.CRYPTOTRANSFER
 
-    const messageTableController = new TransactionTableController(ref(null), pageSize, false)
+    const messageTableController = new TransactionTableController(
+        router, ref(null), pageSize, false, "p2", "k2")
     messageTableController.transactionType.value = TransactionType.CONSENSUSSUBMITMESSAGE
 
-    const contractTableController = new TransactionTableController(ref(null), pageSize, false)
+    const contractTableController = new TransactionTableController(
+        router, ref(null), pageSize, false, "p3", "k3")
     contractTableController.transactionType.value = TransactionType.CONTRACTCALL
 
     onMounted(() => {

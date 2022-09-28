@@ -180,7 +180,7 @@
       </template>
       <template v-slot:control>
         <div class="is-flex is-align-items-flex-end">
-          <PlayPauseButton v-bind:controller="transactionTableController"/>
+          <PlayPauseButtonV3 v-bind:controller="transactionTableController"/>
           <TransactionFilterSelect v-bind:controller="transactionTableController"/>
         </div>
       </template>
@@ -207,7 +207,7 @@
 
 import {computed, ComputedRef, defineComponent, inject, onBeforeUnmount, onMounted, watch} from 'vue';
 import KeyValue from "@/components/values/KeyValue.vue";
-import PlayPauseButton from "@/utils/table/PlayPauseButton.vue";
+import PlayPauseButtonV3 from "@/utils/table/PlayPauseButtonV3.vue";
 import TransactionTable from "@/components/transaction/TransactionTable.vue";
 import {Duration} from "@/utils/Duration";
 import DurationValue from "@/components/values/DurationValue.vue";
@@ -254,7 +254,7 @@ export default defineComponent({
     HbarAmount,
     DashboardCard,
     TransactionTable,
-    PlayPauseButton,
+    PlayPauseButtonV3,
     TimestampValue,
     KeyValue,
     EthAddress,
@@ -306,7 +306,7 @@ export default defineComponent({
     //
     const perPage = computed(() => isMediumScreen ? 10 : 5)
     const accountId = computed(() => accountLoader.entity.value?.account ?? null)
-    const transactionTableController = new TransactionTableController(accountId, perPage, true)
+    const transactionTableController = new TransactionTableController(router, accountId, perPage, true)
     onMounted(() => transactionTableController.mounted.value = true)
     onBeforeUnmount(() => transactionTableController.mounted.value = false)
 
