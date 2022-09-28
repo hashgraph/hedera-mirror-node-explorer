@@ -101,7 +101,7 @@ export class PaginationController<R,K> extends TableSubController<R, K> {
             }
         } else {
             // We have all the rows already loaded      :)
-            this.tableController.startIndex.value = nextStartIndex
+            this.tableController.startIndex.value = nextStartIndex - shadowRowCount
             // this.tableController.buffer.value unchanged
             // this.tableController.drained.value unchanged
             // this.tableController.shadowRowCount.value unchanged
