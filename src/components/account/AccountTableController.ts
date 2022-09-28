@@ -18,42 +18,27 @@
  *
  */
 
-import {TableController} from "@/utils/table/TableController";
 import {AccountInfo, AccountsResponse} from "@/schemas/HederaSchemas";
-import {Ref} from "vue";
+import {ComputedRef} from "vue";
 import axios, {AxiosResponse} from "axios";
+import {KeyOperator, SortOrder, TableControllerV3} from "@/utils/table/TableControllerV3";
+import {Router} from "vue-router";
 
-export class AccountTableController extends TableController<AccountInfo, string> {
+export class AccountTableController extends TableControllerV3<AccountInfo, string> {
 
     //
     // Public
     //
 
-    public constructor(pageSize: Ref<number>) {
-        super(pageSize, 10 * pageSize.value, 5000, 10, 100);
+    public constructor(router: Router, pageSize: ComputedRef<number>) {
+        super(router, pageSize, 10 * pageSize.value, 5000, 10, 100);
     }
 
     //
     // TableController
     //
 
-    public async loadAfter(accountId: string | null, limit: number): Promise<AccountInfo[] | null> {
-        return this.load(accountId, "lt", limit)
-    }
-
-    public async loadBefore(accountId: string, limit: number): Promise<AccountInfo[] | null> {
-        return this.load(accountId, "gte", limit)
-    }
-
-    public keyFor(row: AccountInfo): string {
-        return row.account ?? ""
-    }
-
-    //
-    // Private
-    //
-
-    private load(accountId: string | null, operator: string, limit: number): Promise<AccountInfo[] | null> {
+    public async load(accountId: string | null, operator: KeyOperator, order: SortOrder, limit: number): Promise<AccountInfo[] | null> {
 
         const params = {} as {
             limit: number
@@ -61,7 +46,7 @@ export class AccountTableController extends TableController<AccountInfo, string>
             order: string
         }
         params.limit = limit
-        params.order = 'desc'
+        params.order = order
         if (accountId !== null) {
             params["account.id"] = operator + ":" + accountId
         }
@@ -70,5 +55,17 @@ export class AccountTableController extends TableController<AccountInfo, string>
         }
 
         return  axios.get<AccountsResponse>("api/v1/accounts", {params: params}).then(cb)
+    }
+
+    public keyFor(row: AccountInfo): string {
+        return row.account ?? ""
+    }
+
+    public stringFromKey(account: string): string {
+        return account
+    }
+
+    public keyFromString(s: string): string|null {
+        return s
     }
 }
