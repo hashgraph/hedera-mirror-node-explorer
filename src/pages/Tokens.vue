@@ -35,7 +35,7 @@
             <span class="h-is-primary-title">Recent Non Fungible Tokens</span>
           </template>
           <template v-slot:control>
-            <PlayPauseButton v-bind:controller="nftTableController"/>
+            <PlayPauseButtonV3 v-bind:controller="nftTableController"/>
           </template>
           <template v-slot:content>
             <TokenTable :controller="nftTableController"/>
@@ -51,7 +51,7 @@
             <span class="h-is-primary-title">Recent Fungible Tokens</span>
           </template>
           <template v-slot:control>
-            <PlayPauseButton v-bind:controller="tokenTableController"/>
+            PlayPauseButtonV3 v-bind:controller="tokenTableController"/>
           </template>
           <template v-slot:content>
             <TokenTable :controller="tokenTableController"/>
@@ -78,7 +78,7 @@ import {computed, defineComponent, inject, onBeforeUnmount, onMounted, ref} from
 import TokenTable from "@/components/token/TokenTable.vue";
 import DashboardCard from "@/components/DashboardCard.vue";
 import Footer from "@/components/Footer.vue";
-import PlayPauseButton from "@/utils/table/PlayPauseButton.vue";
+import PlayPauseButtonV3 from "@/utils/table/PlayPauseButtonV3.vue";
 import {TokenTableController} from "@/components/token/TokenTableController";
 import {useRouter} from "vue-router";
 
@@ -90,7 +90,7 @@ export default defineComponent({
   },
 
   components: {
-    PlayPauseButton,
+    PlayPauseButtonV3,
     Footer,
     DashboardCard,
     TokenTable

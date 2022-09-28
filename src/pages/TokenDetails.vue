@@ -234,8 +234,8 @@
       </template>
 
       <template v-slot:control>
-        <PlayPauseButton v-if="isNft" :controller="nftHolderTableController"/>
-        <PlayPauseButton v-else :controller="tokenBalanceTableController"/>
+        <PlayPauseButtonV3 v-if="isNft" :controller="nftHolderTableController"/>
+        <PlayPauseButtonV3 v-else :controller="tokenBalanceTableController"/>
       </template>
 
       <template v-slot:content>
@@ -273,7 +273,7 @@ import Property from "@/components/Property.vue";
 import NotificationBanner from "@/components/NotificationBanner.vue";
 import {TokenInfoLoader} from "@/components/token/TokenInfoLoader";
 import NftHolderTable from "@/components/token/NftHolderTable.vue";
-import PlayPauseButton from "@/utils/table/PlayPauseButton.vue";
+import PlayPauseButtonV3 from "@/utils/table/PlayPauseButtonV3.vue";
 import {NftHolderTableController} from "@/components/token/NftHolderTableController";
 import {TokenBalanceTableController} from "@/components/token/TokenBalanceTableController";
 import AccountLink from "@/components/values/AccountLink.vue";
@@ -285,7 +285,7 @@ export default defineComponent({
   name: 'TokenDetails',
 
   components: {
-    PlayPauseButton,
+    PlayPauseButtonV3,
     NftHolderTable,
     StringValue,
     AccountLink,

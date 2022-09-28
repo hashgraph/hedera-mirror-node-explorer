@@ -24,7 +24,7 @@
 
   <template>
     ...
-    <PlayPauseButton v-bind:controller="TableControllerV3"/>
+    <PlayPauseButtonV3 v-bind:controller="TableControllerV3"/>
     ...
   </template>
 
