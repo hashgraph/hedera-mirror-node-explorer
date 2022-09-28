@@ -351,7 +351,7 @@ export default defineComponent({
     // TokenBalanceTableController
     //
     const fungibleTokenId = computed(() => tokenInfoLoader.isFungible.value ? tokenInfoLoader.tokenId.value : null)
-    const tokenBalanceTableController = new TokenBalanceTableController(fungibleTokenId, perPage);
+    const tokenBalanceTableController = new TokenBalanceTableController(useRouter(), fungibleTokenId, perPage);
     onMounted(() => tokenBalanceTableController.mounted.value = true)
     onBeforeUnmount(() => tokenBalanceTableController.mounted.value = false)
 
