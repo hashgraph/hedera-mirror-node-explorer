@@ -189,6 +189,7 @@ export default defineComponent({
   setup(props, context) {
     const accountId = computed(() => props.account?.account)
     const network = router.currentRoute.value.params.network as string
+    const nr = networkRegistry
 
     const showConfirmDialog = ref(false)
     const confirmMessage = computed(() => {
@@ -200,7 +201,9 @@ export default defineComponent({
               result = declineChoice.value ? "Do you want to decline rewards?" : "Do you want to accept rewards?"
             }
           } else {
-            result = "Do you want to stake to account " + selectedAccountWithChecksum.value + " ?"
+            result = "Do you want to stake to account "
+                + nr.makeAddressWithChecksum(selectedAccountEntity.value??"", network)
+                + " ?"
           }
           return result
         })
@@ -211,16 +214,9 @@ export default defineComponent({
 
     const selectedAccount = ref<string | null>(null)
     const selectedAccountEntity = computed(
-        () => EntityID.normalize(EntityID.stripChecksum(selectedAccount.value??"")))
+        () => EntityID.normalize(nr.stripChecksum(selectedAccount.value??"")))
     const selectedAccountChecksum = computed(
-        () => EntityID.extractChecksum(selectedAccount.value??""))
-    const isSelectedAccountChecksumValid = computed(
-        () => selectedAccountChecksum.value === null
-            || networkRegistry.isValidChecksum(selectedAccountEntity.value??"", selectedAccountChecksum.value, network)
-    )
-    const selectedAccountWithChecksum = computed(
-        () => EntityID.normalize(selectedAccountEntity.value??"",
-            networkRegistry.computeChecksum(selectedAccountEntity.value??"", network)))
+        () => nr.extractChecksum(selectedAccount.value??""))
     const isSelectedAccountValid = ref(false)
     const inputFeedbackMessage = ref<string | null>(null)
 
@@ -276,7 +272,7 @@ export default defineComponent({
 
     const handleConfirmChange = () => {
       const stakedNode = isNodeSelected.value ? selectedNode.value : null
-      const stakedAccount = isAccountSelected.value ? EntityID.stripChecksum(selectedAccount.value ?? "") : null
+      const stakedAccount = isAccountSelected.value ? nr.stripChecksum(selectedAccount.value ?? "") : null
       const declineReward = declineChoice.value != props.account?.decline_reward ? declineChoice.value : null;
       context.emit("changeStaking", stakedNode, stakedAccount, declineReward)
     }
@@ -331,7 +327,7 @@ export default defineComponent({
             isValidInput = false
             break
           } else {
-            isValidID = EntityID.parse(EntityID.stripChecksum(value)) !== null
+            isValidID = EntityID.parse(nr.stripChecksum(value)) !== null
           }
         } else if (c === '-') {
           if (! isValidID || isPastDash) {
@@ -357,7 +353,9 @@ export default defineComponent({
     const validateAccount = () => {
       if (selectedAccountEntity.value === null) {
         inputFeedbackMessage.value = INVALID_ACCOUNTID_MESSAGE
-      } else if (isSelectedAccountChecksumValid.value) {
+      } else if (selectedAccountChecksum.value === null
+          || nr.isValidChecksum(selectedAccountEntity.value??"", selectedAccountChecksum.value, network)) {
+
         if (selectedAccountEntity.value == accountId.value) {
           inputFeedbackMessage.value = CANT_STAKE_SAME_ACCOUNT_MESSAGE
         } else {

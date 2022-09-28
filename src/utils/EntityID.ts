@@ -27,6 +27,8 @@ export class EntityID {
     public readonly num: number
 
 
+
+
     //
     // Public
     //
@@ -62,9 +64,9 @@ export class EntityID {
         return result
     }
 
-    public static normalize(s: string, checksum: string|null = null): string|null {
+    public static normalize(s: string): string|null {
         const id = EntityID.parse(s, true)
-        return id !== null ? id.toString() + (checksum ? "-" + checksum : "") : null
+        return id !== null ? id.toString() : null
     }
 
     public toString(): string {
@@ -112,16 +114,6 @@ export class EntityID {
     public static parsePositiveInt(s: string): number|null {
         const n = s.length >= 1 ? Number(s) : -1
         return (isNaN(n) || Math.floor(n) != n || n < 0 || n >= EntityID.MAX_INT) ? null : n
-    }
-
-    public static stripChecksum(address: string): string {
-        const dash = address.indexOf('-')
-        return dash != -1 ? address.substring(0, dash) : address
-    }
-
-    public static extractChecksum(address: string): string | null {
-        const dash = address.indexOf('-')
-        return dash != -1 ? address.substring(dash + 1) : null
     }
 
     //

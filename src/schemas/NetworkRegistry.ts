@@ -18,6 +18,8 @@
  *
  */
 
+import {EntityID} from "@/utils/EntityID";
+
 export class NetworkEntry {
 
     public readonly name: string
@@ -89,12 +91,27 @@ export class NetworkRegistry {
     }
 
     public isValidChecksum(id: string, checksum: string, network: string): boolean {
-        return this.computeChecksum(id, network) == checksum
+        return checksum===null || this.computeChecksum(id, network) == checksum
     }
 
     public computeChecksum(id: string, network: string): string {
         const ledgerID = this.lookup(network)?.ledgerID
         return NetworkRegistry.checksum(ledgerID ?? 'FF', id)
+    }
+
+    public stripChecksum(address: string): string {
+        const dash = address.indexOf('-')
+        return dash != -1 ? address.substring(0, dash) : address
+    }
+
+    public extractChecksum(address: string): string | null {
+        const dash = address.indexOf('-')
+        return dash != -1 ? address.substring(dash + 1) : null
+    }
+
+    public makeAddressWithChecksum(address: string, network: string): string | null {
+        const entity = EntityID.normalize(address)
+        return entity ? (entity + '-' + this.computeChecksum(entity, network)) : null
     }
 
     //
