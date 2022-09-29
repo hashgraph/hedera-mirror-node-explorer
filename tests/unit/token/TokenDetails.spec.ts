@@ -347,7 +347,8 @@ describe("TokenDetails.vue", () => {
 
         const mock = new MockAdapter(axios);
 
-        const testTokenId = SAMPLE_TOKEN_WITHOUT_KEYS.token_id
+        const testTokenId = "0.0.91961"
+        const testTokenIdWithChecksum = "0.0.91961-vxwbj"
         const matcher1 = "/api/v1/tokens/" + testTokenId
         mock.onGet(matcher1).reply(200, SAMPLE_TOKEN_WITHOUT_KEYS);
         const matcher2 = "/api/v1/tokens/" + testTokenId + "/nfts"
@@ -364,7 +365,7 @@ describe("TokenDetails.vue", () => {
         await flushPromises()
         // console.log(wrapper.text())
 
-        expect(wrapper.text()).toMatch(RegExp("^Non Fungible Token " + testTokenId + "Token is deleted"))
+        expect(wrapper.text()).toMatch(RegExp("^Non Fungible Token " + testTokenIdWithChecksum + "Token is deleted"))
 
         wrapper.unmount()
         await flushPromises()

@@ -34,7 +34,8 @@
           <span v-else>Fungible</span>
         </span>
         <span class="h-is-primary-title"> Token </span>
-        <span class="h-is-secondary-text mr-2">{{ normalizedTokenId }}</span>
+        <span class="h-is-secondary-text">{{ normalizedTokenId }}</span>
+        <span v-if="tokenChecksum" class="has-text-grey" style="font-size: 28px">-{{ tokenChecksum }}</span>
       </template>
 
       <template v-slot:content>
@@ -277,6 +278,7 @@ import {NftHolderTableController} from "@/components/token/NftHolderTableControl
 import {TokenBalanceTableController} from "@/components/token/TokenBalanceTableController";
 import AccountLink from "@/components/values/AccountLink.vue";
 import StringValue from "@/components/values/StringValue.vue";
+import {networkRegistry} from "@/schemas/NetworkRegistry";
 
 export default defineComponent({
 
@@ -318,6 +320,12 @@ export default defineComponent({
 
     const tokenInfoLoader = new TokenInfoLoader(normalizedTokenId)
     onMounted(() => tokenInfoLoader.requestLoad())
+
+    const tokenChecksum = computed(() =>
+        tokenInfoLoader.tokenId.value ? networkRegistry.computeChecksum(
+            tokenInfoLoader.tokenId.value,
+            router.currentRoute.value.params.network as string
+        ) : null)
 
     const notification = computed(() => {
       let result
@@ -361,6 +369,7 @@ export default defineComponent({
       tokenInfo: tokenInfoLoader.entity,
       isNft: tokenInfoLoader.isNft,
       isFungible: tokenInfoLoader.isFungible,
+      tokenChecksum,
       validEntityId,
       normalizedTokenId,
       notification,

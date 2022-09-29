@@ -31,6 +31,7 @@
       <template v-slot:title>
         <span class="h-is-primary-title">Messages for Topic </span>
         <span v-if="validEntityId" class="h-is-secondary-text">{{ normalizedTopicId }}</span>
+        <span v-if="topicChecksum" class="has-text-grey" style="font-size: 28px">-{{ topicChecksum }}</span>
       </template>
 
       <template v-slot:control>
@@ -64,6 +65,8 @@ import Footer from "@/components/Footer.vue";
 import NotificationBanner from "@/components/NotificationBanner.vue";
 import {EntityID} from "@/utils/EntityID";
 import {TopicMessageTableController} from "@/components/topic/TopicMessageTableController";
+import {networkRegistry} from "@/schemas/NetworkRegistry";
+import router from "@/router";
 
 export default defineComponent({
 
@@ -97,6 +100,12 @@ export default defineComponent({
       return props.topicId ? EntityID.normalize(props.topicId) : props.topicId
     })
 
+    const topicChecksum = computed(() =>
+        normalizedTopicId.value ? networkRegistry.computeChecksum(
+            normalizedTopicId.value,
+            router.currentRoute.value.params.network as string
+        ) : null)
+
     const notification = computed(() => {
       let result
       if (!validEntityId.value) {
@@ -122,6 +131,7 @@ export default defineComponent({
       messageTableController,
       validEntityId,
       normalizedTopicId,
+      topicChecksum,
       notification
     }
   }

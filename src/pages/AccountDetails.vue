@@ -29,8 +29,9 @@
     <DashboardCard>
       <template v-slot:title>
         <span class="h-is-primary-title">Account </span>
-        <span class="h-is-secondary-text mr-3">{{ account?.account ?? "" }}</span>
-        <span v-if="showContractVisible" class="is-inline-block" id="showContractLink">
+        <span class="h-is-secondary-text">{{ account?.account ?? "" }}</span>
+        <span v-if="accountChecksum" class="has-text-grey" style="font-size: 28px">-{{ accountChecksum }}</span>
+        <span v-if="showContractVisible" class="is-inline-block ml-3" id="showContractLink">
           <router-link :to="{name: 'ContractDetails', params: {contractId: accountId}}">
             <span class="h-is-property-text">Show associated contract</span>
           </router-link>
@@ -209,7 +210,6 @@ import TokenAmount from "@/components/values/TokenAmount.vue";
 import BlobValue from "@/components/values/BlobValue.vue";
 import {BalanceCache} from "@/components/account/BalanceCache";
 import Footer from "@/components/Footer.vue";
-import {useRoute, useRouter} from "vue-router";
 import {PathParam} from "@/utils/PathParam";
 import Property from "@/components/Property.vue";
 import NotificationBanner from "@/components/NotificationBanner.vue";
@@ -222,6 +222,8 @@ import {ContractLoader} from "@/components/contract/ContractLoader";
 import {NodeLoader} from "@/components/node/NodeLoader";
 import AliasValue from "@/components/values/AliasValue.vue";
 import TransactionFilterSelect from "@/components/transaction/TransactionFilterSelect.vue";
+import {networkRegistry} from "@/schemas/NetworkRegistry";
+import router from "@/router";
 
 const MAX_TOKEN_BALANCES = 10
 
@@ -259,9 +261,6 @@ export default defineComponent({
     const isMediumScreen = inject('isMediumScreen', true)
     const isTouchDevice = inject('isTouchDevice', false)
 
-    const router = useRouter()
-    const route = useRoute()
-
     //
     // account
     //
@@ -269,6 +268,12 @@ export default defineComponent({
     const accountLocator = computed(() => PathParam.parseAccountIdOrAliasOrEvmAddress(props.accountId))
     const accountLoader = new AccountLoader(accountLocator)
     onMounted(() => accountLoader.requestLoad())
+
+    const accountChecksum = computed(() =>
+        accountLoader.accountId.value ? networkRegistry.computeChecksum(
+            accountLoader.accountId.value,
+            router.currentRoute.value.params.network as string
+        ) : null)
 
     const notification = computed(() => {
       let result
@@ -307,7 +312,7 @@ export default defineComponent({
       updateQuery()
     })
     const transactionFilterFromRoute = computed(() => {
-      return (route.query?.type as string ?? "").toUpperCase()
+      return (router.currentRoute.value.query?.type as string ?? "").toUpperCase()
     })
     watch(transactionFilterFromRoute, () => {
       transactionTableController.transactionType.value = transactionFilterFromRoute.value
@@ -365,6 +370,7 @@ export default defineComponent({
       notification,
       account: accountLoader.entity,
       normalizedAccountI: accountLoader.accountId,
+      accountChecksum,
       accountInfo: accountLoader.accountInfo,
       nodeId: accountLoader.nodeId,
       ethereumAddress: accountLoader.ethereumAddress,

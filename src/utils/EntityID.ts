@@ -27,6 +27,8 @@ export class EntityID {
     public readonly num: number
 
 
+
+
     //
     // Public
     //
@@ -114,7 +116,6 @@ export class EntityID {
         return (isNaN(n) || Math.floor(n) != n || n < 0 || n >= EntityID.MAX_INT) ? null : n
     }
 
-
     //
     // Private
     //
@@ -124,7 +125,6 @@ export class EntityID {
         this.realm = realm
         this.num = num
     }
-
 }
 
 
