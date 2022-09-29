@@ -260,9 +260,9 @@ export abstract class TableController<R, K> {
     }
 
     private routeDidChange(): void {
-        const pageParam = this.getPageParam()
-        const keyParam = this.getKeyParam()
-        console.log("TableControllerV3.routeDidChange: keyParam=" + keyParam + ", pageParam=" + pageParam)
+        // const pageParam = this.getPageParam()
+        // const keyParam = this.getKeyParam()
+        // console.log("TableControllerV3.routeDidChange: keyParam=" + keyParam + ", pageParam=" + pageParam)
     }
 
     private remountSubController() {
