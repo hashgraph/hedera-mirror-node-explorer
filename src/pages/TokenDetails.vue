@@ -258,6 +258,7 @@
 <script lang="ts">
 
 import {computed, defineComponent, inject, onBeforeUnmount, onMounted} from 'vue';
+import {useRouter} from "vue-router";
 import router from "@/router";
 import KeyValue from "@/components/values/KeyValue.vue";
 import TimestampValue from "@/components/values/TimestampValue.vue";
@@ -359,7 +360,7 @@ export default defineComponent({
     // NftHolderTableController
     //
     const nftTokenId = computed(() => tokenInfoLoader.isNft.value ? tokenInfoLoader.tokenId.value : null)
-    const nftHolderTableController = new NftHolderTableController(nftTokenId, perPage)
+    const nftHolderTableController = new NftHolderTableController(useRouter(), nftTokenId, perPage)
     onMounted(() => nftHolderTableController.mounted.value = true)
     onBeforeUnmount(() => nftHolderTableController.mounted.value = false)
 
