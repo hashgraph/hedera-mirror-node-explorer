@@ -261,9 +261,6 @@ export default defineComponent({
     const isMediumScreen = inject('isMediumScreen', true)
     const isTouchDevice = inject('isTouchDevice', false)
 
-    const route = router.currentRoute.value
-    const network = route.params.network as string
-
     //
     // account
     //
@@ -273,7 +270,10 @@ export default defineComponent({
     onMounted(() => accountLoader.requestLoad())
 
     const accountChecksum = computed(() =>
-        accountLoader.accountId.value ? networkRegistry.computeChecksum(accountLoader.accountId.value, network) : null)
+        accountLoader.accountId.value ? networkRegistry.computeChecksum(
+            accountLoader.accountId.value,
+            router.currentRoute.value.params.network as string
+        ) : null)
 
     const notification = computed(() => {
       let result
@@ -312,7 +312,7 @@ export default defineComponent({
       updateQuery()
     })
     const transactionFilterFromRoute = computed(() => {
-      return (route.query?.type as string ?? "").toUpperCase()
+      return (router.currentRoute.value.query?.type as string ?? "").toUpperCase()
     })
     watch(transactionFilterFromRoute, () => {
       transactionTableController.transactionType.value = transactionFilterFromRoute.value

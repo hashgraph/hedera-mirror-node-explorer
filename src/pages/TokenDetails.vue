@@ -321,9 +321,11 @@ export default defineComponent({
     const tokenInfoLoader = new TokenInfoLoader(normalizedTokenId)
     onMounted(() => tokenInfoLoader.requestLoad())
 
-    const network = router.currentRoute.value.params.network as string
     const tokenChecksum = computed(() =>
-        tokenInfoLoader.tokenId.value ? networkRegistry.computeChecksum(tokenInfoLoader.tokenId.value, network) : null)
+        tokenInfoLoader.tokenId.value ? networkRegistry.computeChecksum(
+            tokenInfoLoader.tokenId.value,
+            router.currentRoute.value.params.network as string
+        ) : null)
 
     const notification = computed(() => {
       let result

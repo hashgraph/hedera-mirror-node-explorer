@@ -100,9 +100,11 @@ export default defineComponent({
       return props.topicId ? EntityID.normalize(props.topicId) : props.topicId
     })
 
-    const network = router.currentRoute.value.params.network as string
     const topicChecksum = computed(() =>
-        normalizedTopicId.value ? networkRegistry.computeChecksum(normalizedTopicId.value, network) : null)
+        normalizedTopicId.value ? networkRegistry.computeChecksum(
+            normalizedTopicId.value,
+            router.currentRoute.value.params.network as string
+        ) : null)
 
     const notification = computed(() => {
       let result

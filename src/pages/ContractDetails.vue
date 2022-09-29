@@ -230,9 +230,6 @@ export default defineComponent({
     const isSmallScreen = inject('isSmallScreen', true)
     const isTouchDevice = inject('isTouchDevice', false)
 
-    const route = router.currentRoute.value
-    const network = route.params.network as string
-
     //
     // basic computed's
     //
@@ -255,7 +252,10 @@ export default defineComponent({
     onMounted(() => accountLoader.requestLoad())
 
     const accountChecksum = computed(() =>
-        accountLoader.accountId.value ? networkRegistry.computeChecksum(accountLoader.accountId.value, network) : null)
+        accountLoader.accountId.value ? networkRegistry.computeChecksum(
+            accountLoader.accountId.value,
+            router.currentRoute.value.params.network as string
+        ) : null)
 
     const displayAllTokenLinks = computed(() => accountLoader.tokens.value ? accountLoader.tokens.value.length > MAX_TOKEN_BALANCES : false)
 
@@ -301,7 +301,7 @@ export default defineComponent({
       updateQuery()
     })
     const transactionFilterFromRoute = computed(() => {
-      return (route.query?.type as string ?? "").toUpperCase()
+      return (router.currentRoute.value.query?.type as string ?? "").toUpperCase()
     })
     watch(transactionFilterFromRoute, () => {
       transactionTableController.transactionType.value = transactionFilterFromRoute.value

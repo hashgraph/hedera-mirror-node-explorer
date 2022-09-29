@@ -91,7 +91,7 @@ export class NetworkRegistry {
     }
 
     public isValidChecksum(id: string, checksum: string, network: string): boolean {
-        return checksum===null || this.computeChecksum(id, network) == checksum
+        return this.computeChecksum(id, network) == checksum
     }
 
     public computeChecksum(id: string, network: string): string {
