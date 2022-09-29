@@ -31,10 +31,8 @@ export class AutoRefreshController<R,K> extends TableSubController<R, K> {
     //
 
     public mount(): void {
-        this.tableController.updateKeyAndPageParams(null, null).finally(() => {
-            this.tableController.autoUpdateCount.value = 0
-            this.refresh()
-        })
+        this.tableController.autoUpdateCount.value = 0
+        this.refresh()
     }
 
     public unmount(): void {
@@ -98,7 +96,7 @@ export class AutoRefreshController<R,K> extends TableSubController<R, K> {
                 this.refresh()
             }, this.tableController.updatePeriod)
         } else {
-            this.tableController.autoRefresh.value = false
+            this.tableController.stopAutoRefresh().then()
         }
     }
 }

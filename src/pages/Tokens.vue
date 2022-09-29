@@ -112,12 +112,12 @@ export default defineComponent({
     const nftTableController = new TokenTableController(useRouter(), perPage, ref(NONFUNGIBLE), "p1", "k1")
     const tokenTableController = new TokenTableController(useRouter(), perPage, ref(FUNGIBLE), "p2", "k2")
     onMounted(() => {
-      nftTableController.mounted.value = true
-      tokenTableController.mounted.value = true
+      nftTableController.mount()
+      tokenTableController.mount()
     })
     onBeforeUnmount(() => {
-      nftTableController.mounted.value = false
-      tokenTableController.mounted.value = false
+      nftTableController.unmount()
+      tokenTableController.unmount()
     })
 
     return {

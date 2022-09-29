@@ -85,7 +85,11 @@ export default defineComponent({
     const handleClick = () => {
       if (props.controller) {
         const controller = props.controller
-        controller.autoRefresh.value = ! controller.autoRefresh.value
+        if (controller.autoRefresh.value) {
+          controller.stopAutoRefresh()
+        } else {
+          controller.startAutoRefresh()
+        }
       } else {
         console.log("Ignoring click because props.controller is undefined")
       }

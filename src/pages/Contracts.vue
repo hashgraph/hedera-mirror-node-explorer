@@ -82,8 +82,8 @@ export default defineComponent({
     //
     const perPage = computed(() => isMediumScreen ? 15 : 10)
     const contractTableController = new ContractTableController(useRouter(), perPage)
-    onMounted(() => contractTableController.mounted.value = true)
-    onBeforeUnmount(() => contractTableController.mounted.value = false)
+    onMounted(() => contractTableController.mount())
+    onBeforeUnmount(() => contractTableController.unmount())
 
     return {
       isSmallScreen,

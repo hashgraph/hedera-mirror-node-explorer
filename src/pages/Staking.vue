@@ -453,8 +453,8 @@ export default defineComponent({
     //
     const pageSize = computed(() => isMediumScreen ? 10 : 5)
     const transactionTableController = new RewardsTransactionTableController(router, walletManager.accountId, pageSize)
-    onMounted(() => transactionTableController.mounted.value = true)
-    onBeforeUnmount(() => transactionTableController.mounted.value = false)
+    onMounted(() => transactionTableController.mount())
+    onBeforeUnmount(() => transactionTableController.unmount())
 
     return {
       isSmallScreen,

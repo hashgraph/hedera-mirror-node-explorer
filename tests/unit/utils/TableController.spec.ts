@@ -21,8 +21,7 @@
  */
 
 import {computed, ComputedRef, ref} from "vue";
-import {Router} from "vue-router";
-import router from "@/router";
+import {makeRouter} from "@/router";
 import {flushPromises} from "@vue/test-utils";
 import {KeyOperator, SortOrder, TableController} from "@/utils/table/TableController";
 
@@ -31,7 +30,7 @@ jest.useFakeTimers()
 describe("TableController.ts", () => {
 
     test("load() sanity check", async () => {
-        const tc = new TestTableController(0, 50, 10, router)
+        const tc = new TestTableController(0, 50, 10)
 
         const dummyOp = KeyOperator.lt
 
@@ -80,7 +79,7 @@ describe("TableController.ts", () => {
 
 
     test("mount / unmount", async () => {
-        const tc = new TestTableController(0, 50, 10, router)
+        const tc = new TestTableController(0, 50, 10)
 
         expect(tc.pageSize.value).toBe(10)
         expect(tc.autoRefresh.value).toBe(false)
@@ -104,7 +103,7 @@ describe("TableController.ts", () => {
 
         // 1) mount
 
-        tc.mounted.value = true
+        tc.mount()
         await flushPromises()
 
         expect(tc.pageSize.value).toBe(10)
@@ -117,7 +116,7 @@ describe("TableController.ts", () => {
         expect(tc.mounted.value).toBe(true)
 
         // 2) unmount
-        tc.mounted.value = false
+        tc.unmount()
         await flushPromises()
 
         expect(tc.pageSize.value).toBe(10)
@@ -133,10 +132,10 @@ describe("TableController.ts", () => {
 
 
     test("autoRefresh & autoStopped", async () => {
-        const tc = new TestTableController(0, 50, 10, router)
+        const tc = new TestTableController(0, 50, 10)
 
         // Mount
-        tc.mounted.value = true
+        tc.mount()
         await flushPromises()
         expect(tc.autoRefresh.value).toBe(true)
         expect(tc.autoStopped.value).toBe(false)
@@ -176,7 +175,7 @@ describe("TableController.ts", () => {
         expect(tc.autoUpdateCount.value).toBe(5)
 
         // Unmount
-        tc.mounted.value = false
+        tc.unmount()
         await flushPromises()
         expect(tc.autoRefresh.value).toBe(false)
         expect(tc.autoStopped.value).toBe(true)
@@ -187,10 +186,10 @@ describe("TableController.ts", () => {
 
 
     test("autoRefresh & new entries", async () => {
-        const tc = new TestTableController(0, 50, 10, router)
+        const tc = new TestTableController(0, 50, 10)
 
         // Mount
-        tc.mounted.value = true
+        tc.mount()
         await flushPromises()
         expect(tc.autoRefresh.value).toBe(true)
         expect(tc.autoStopped.value).toBe(false)
@@ -228,7 +227,7 @@ describe("TableController.ts", () => {
         expect(tc.autoUpdateCount.value).toBe(4)
 
         // Unmount
-        tc.mounted.value = false
+        tc.unmount()
         await flushPromises()
         expect(tc.autoRefresh.value).toBe(true)
         expect(tc.autoStopped.value).toBe(false)
@@ -240,10 +239,10 @@ describe("TableController.ts", () => {
 
     test("source watch and reload", async () => {
         const scale = ref(1)
-        const tc = new TestTableController(0, 50, 10, router, computed(() => scale.value))
+        const tc = new TestTableController(0, 50, 10, computed(() => scale.value))
 
         // Mount
-        tc.mounted.value = true
+        tc.mount()
         await flushPromises()
         expect(tc.autoRefresh.value).toBe(true)
         expect(tc.autoStopped.value).toBe(false)
@@ -267,7 +266,7 @@ describe("TableController.ts", () => {
         expect(tc.autoUpdateCount.value).toBe(1)
 
         // Unmount
-        tc.mounted.value = false
+        tc.unmount()
         await flushPromises()
         expect(tc.autoRefresh.value).toBe(true)
         expect(tc.autoStopped.value).toBe(false)
@@ -278,10 +277,10 @@ describe("TableController.ts", () => {
 
 
     test("paging", async () => {
-        const tc = new TestTableController(0, 50, 10, router)
+        const tc = new TestTableController(0, 50, 10)
 
         // Mount
-        tc.mounted.value = true
+        tc.mount()
         await flushPromises()
         expect(tc.autoRefresh.value).toBe(true)
         expect(tc.autoStopped.value).toBe(false)
@@ -320,14 +319,14 @@ describe("TableController.ts", () => {
 
     test("shadow pages", async() => {
 
-        const tc = new TestTableController(0, 50, 10, router)
+        const tc = new TestTableController(0, 50, 10)
 
         // Preset page and key query params
         await tc.updateKeyAndPageParams(4, 19)
         await flushPromises()
 
         // Mount => page 4 is loaded
-        tc.mounted.value = true
+        tc.mount()
         await flushPromises()
         expect(tc.autoRefresh.value).toBe(false)
         expect(tc.autoStopped.value).toBe(false)
@@ -367,14 +366,14 @@ describe("TableController.ts", () => {
 
     test("shadow pages (inconsistent)", async() => {
 
-        const tc = new TestTableController(0, 50, 10, router)
+        const tc = new TestTableController(0, 50, 10)
 
         // Preset page and key query params
         await tc.updateKeyAndPageParams(40, 21)
         await flushPromises()
 
         // Mount => page 40 is loaded
-        tc.mounted.value = true
+        tc.mount()
         await flushPromises()
         expect(tc.autoRefresh.value).toBe(false)
         expect(tc.autoStopped.value).toBe(false)
@@ -415,8 +414,8 @@ class TestTableController extends TableController<number, number> {
 
     private readonly scale: ComputedRef<number>
 
-    constructor(startKey: number, endKey: number, pageSize: number, router: Router, scale = computed(() => 1)) {
-        super(router, computed(() => pageSize),
+    constructor(startKey: number, endKey: number, pageSize: number, scale = computed(() => 1)) {
+        super(makeRouter(), computed(() => pageSize),
             TestTableController.PRESUMED_ROW_COUNT,
             TestTableController.UPDATED_PERIOD,
             TestTableController.MAX_UPDATE_COUNT,

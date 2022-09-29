@@ -353,16 +353,16 @@ export default defineComponent({
     //
     const fungibleTokenId = computed(() => tokenInfoLoader.isFungible.value ? tokenInfoLoader.tokenId.value : null)
     const tokenBalanceTableController = new TokenBalanceTableController(useRouter(), fungibleTokenId, perPage);
-    onMounted(() => tokenBalanceTableController.mounted.value = true)
-    onBeforeUnmount(() => tokenBalanceTableController.mounted.value = false)
+    onMounted(() => tokenBalanceTableController.mount())
+    onBeforeUnmount(() => tokenBalanceTableController.unmount())
 
     //
     // NftHolderTableController
     //
     const nftTokenId = computed(() => tokenInfoLoader.isNft.value ? tokenInfoLoader.tokenId.value : null)
     const nftHolderTableController = new NftHolderTableController(useRouter(), nftTokenId, perPage)
-    onMounted(() => nftHolderTableController.mounted.value = true)
-    onBeforeUnmount(() => nftHolderTableController.mounted.value = false)
+    onMounted(() => nftHolderTableController.mount())
+    onBeforeUnmount(() => nftHolderTableController.unmount())
 
     return {
       isSmallScreen,

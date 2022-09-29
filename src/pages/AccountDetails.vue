@@ -307,8 +307,8 @@ export default defineComponent({
     const perPage = computed(() => isMediumScreen ? 10 : 5)
     const accountId = computed(() => accountLoader.entity.value?.account ?? null)
     const transactionTableController = new TransactionTableController(router, accountId, perPage, true)
-    onMounted(() => transactionTableController.mounted.value = true)
-    onBeforeUnmount(() => transactionTableController.mounted.value = false)
+    onMounted(() => transactionTableController.mount())
+    onBeforeUnmount(() => transactionTableController.unmount())
 
     //
     // transaction filter selection

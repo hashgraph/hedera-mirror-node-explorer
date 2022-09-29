@@ -285,8 +285,8 @@ export default defineComponent({
 
     const pageSize = computed(() => 10)
     const transactionTableController = new TransactionTableController(router, normalizedContractId, pageSize, true)
-    onMounted(() => transactionTableController.mounted.value = true)
-    onBeforeUnmount(() => transactionTableController.mounted.value = false)
+    onMounted(() => transactionTableController.mount())
+    onBeforeUnmount(() => transactionTableController.unmount())
 
     //
     // transaction filter / route synchronization

@@ -142,15 +142,15 @@ export default defineComponent({
     contractTableController.transactionType.value = TransactionType.CONTRACTCALL
 
     onMounted(() => {
-      cryptoTableController.mounted.value = true
-      messageTableController.mounted.value = true
-      contractTableController.mounted.value = true
+      cryptoTableController.mount()
+      messageTableController.mount()
+      contractTableController.mount()
     })
 
     onBeforeUnmount(() => {
-      cryptoTableController.mounted.value = false
-      messageTableController.mounted.value = false
-      contractTableController.mounted.value = false
+      cryptoTableController.unmount()
+      messageTableController.unmount()
+      contractTableController.unmount()
     })
 
     watch(() => props.network, () => {

@@ -79,8 +79,8 @@ export default defineComponent({
     const transactionTableController = new TransactionTableController(router, ref(null), pageSize, false)
     transactionTableController.transactionType.value = TransactionType.CONSENSUSCREATETOPIC
     transactionTableController.transactionResult.value = TransactionResult.SUCCESS
-    onMounted(() => transactionTableController.mounted.value = true)
-    onBeforeUnmount(() => transactionTableController.mounted.value = false)
+    onMounted(() => transactionTableController.mount())
+    onBeforeUnmount(() => transactionTableController.unmount())
 
     watch(() => props.network, () => {
       transactionTableController.reset()

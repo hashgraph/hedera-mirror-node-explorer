@@ -82,8 +82,8 @@ export default defineComponent({
     //
     const perPage = computed(() => isMediumScreen ? 15 : 10)
     const accountTableController = new AccountTableController(useRouter(), perPage)
-    onMounted(() => accountTableController.mounted.value = true)
-    onBeforeUnmount(() => accountTableController.mounted.value = false)
+    onMounted(() => accountTableController.mount())
+    onBeforeUnmount(() => accountTableController.unmount())
 
     return {
       isSmallScreen,

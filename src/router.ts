@@ -18,7 +18,7 @@
  *
  */
 
-import {createRouter, createWebHashHistory, RouteLocationNormalized, RouteRecordRaw} from 'vue-router'
+import {createRouter, createWebHashHistory, RouteLocationNormalized, Router, RouteRecordRaw} from 'vue-router'
 import MainDashboard from "@/pages/MainDashboard.vue";
 import Transactions from "@/pages/Transactions.vue";
 import TransactionDetails from "@/pages/TransactionDetails.vue";
@@ -221,10 +221,14 @@ const routes: Array<RouteRecordRaw> = [
   },
 ]
 
-const router = createRouter({
-  history: createWebHashHistory(process.env.BASE_URL),
-  routes
-})
+export function makeRouter(): Router {
+  return createRouter({
+    history: createWebHashHistory(process.env.BASE_URL),
+    routes
+  })
+}
+
+const router = makeRouter()
 
 router.beforeEach((to) => {
   let result: boolean | string

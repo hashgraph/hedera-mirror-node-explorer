@@ -80,8 +80,8 @@ export default defineComponent({
     // BlockTableController
     const pageSize = computed(() => isMediumScreen ? 15 : 5)
     const blockTableController = new BlockTableController(useRouter(), pageSize)
-    onMounted(() => blockTableController.mounted.value = true)
-    onBeforeUnmount(() => blockTableController.mounted.value = false)
+    onMounted(() => blockTableController.mount())
+    onBeforeUnmount(() => blockTableController.unmount())
 
     return {
       isSmallScreen,
