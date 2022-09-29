@@ -54,6 +54,7 @@ export class PaginationController<R,K> extends TableSubController<R, K> {
     }
 
     unmount(): void {
+        /* Nothing right now */
     }
 
     //
