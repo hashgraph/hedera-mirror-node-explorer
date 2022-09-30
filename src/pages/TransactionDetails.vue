@@ -29,7 +29,7 @@
     <DashboardCard class="h-card">
       <template v-slot:title>
         <div class="is-flex is-align-items-center">
-          <span class="h-is-primary-title">Transaction </span>
+          <span class="h-is-primary-title mr-1">Transaction </span>
           <span class="h-is-secondary-text mr-3">{{ formattedTransactionId ?? ""}}</span>
           <div v-if="transaction">
             <div v-if="transactionSucceeded"

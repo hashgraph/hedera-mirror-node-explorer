@@ -58,7 +58,7 @@ describe('Block Navigation', () => {
         cy.contains('Block ' + blockNumber)
     })
 
-    it('should navigate from the list of Block Transactions to TransactionDetails', () => {
+    it('should navigate from the list of Block Transactions to TransactionDetails and back', () => {
         const blockNumber = "24073523"
         cy.visit('#/testnet/block/' + blockNumber)
         cy.url().should('include', '/testnet/block/' + blockNumber)
@@ -70,6 +70,11 @@ describe('Block Navigation', () => {
                 // cy.log('Selected transaction ID: ' + $id.text())
                 cy.url().should('include', '/testnet/transaction/')
                 cy.contains('Transaction ' + $id.text())
+                cy.get('#blockNumberValue')
+                    .contains(blockNumber)
+                    .click()
+                    .url().should('include', '/testnet/block/' + blockNumber)
+                cy.contains('Block ' + blockNumber)
             })
     })
 

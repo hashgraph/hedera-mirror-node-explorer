@@ -163,6 +163,35 @@ describe('Transaction Navigation', () => {
             })
     })
 
+    it.only('should follow link "See all transations with same ID"', () => {
+        const transactionId = "0.0.33956525@1663935863.559975910"
+
+        cy.visit('#/testnet/transaction/' + normalizeTransactionId(transactionId))
+        cy.url().should('include', '/testnet/transaction/' + normalizeTransactionId(transactionId))
+
+        cy.get('#allTransactionsLink')
+            .contains('See all transactions with the same ID')
+            .click()
+            .then(() => {
+                cy.url().should('include',
+                    '/testnet/transactionsById/' + normalizeTransactionId(transactionId))
+                cy.contains('Transactions with ID ' + transactionId)
+                cy.get('table')
+                    .find('tbody tr')
+                    .eq(0)
+                    .contains('2:24:32.7606 PMSep 23, 2022, GMT+2CONTRACT CALLContract ID: 0.0.48323737Parent0')
+                cy.get('table')
+                    .find('tbody tr')
+                    .eq(1)
+                    .contains('2:24:32.7606 PMSep 23, 2022, GMT+2CONTRACT CALLContract ID: 0.0.359Child1')
+                    .click()
+                    .then(() => {
+                        cy.url().should('include', '/testnet/transaction/' + normalizeTransactionId(transactionId))
+                        cy.contains('Transaction ' + transactionId)
+                    })
+            })
+    })
+
     it('should handle ETHEREUMTRANSACTION type', () => {
         const transactionId = "0.0.34912635@1653499859.000000336"
         const parentConsensusTimestamp = "1653499919.290794746"
