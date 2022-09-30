@@ -23,6 +23,7 @@ import {Transaction, TransactionResponse} from "@/schemas/HederaSchemas";
 import {ComputedRef, ref, Ref} from "vue";
 import axios, {AxiosResponse} from "axios";
 import {Router} from "vue-router";
+import {fetchStringQueryParam} from "@/utils/RouteManager";
 
 
 export class TransactionTableController extends TableController<Transaction, string> {

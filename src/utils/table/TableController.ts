@@ -19,10 +19,11 @@
  */
 
 import {computed, ComputedRef, ref, Ref, watch, WatchSource, WatchStopHandle} from "vue";
-import {NavigationFailure, RouteLocationNormalizedLoaded, Router} from "vue-router";
+import {NavigationFailure, Router} from "vue-router";
 import {TableSubController} from "@/utils/table/subcontroller/TableSubController";
 import {AutoRefreshController} from "@/utils/table/subcontroller/AutoRefreshSubController";
 import {PaginationController} from "@/utils/table/subcontroller/PaginationSubController";
+import {fetchNumberQueryParam, fetchStringQueryParam} from "@/utils/RouteManager";
 
 export abstract class TableController<R, K> {
 
@@ -264,26 +265,3 @@ export abstract class TableController<R, K> {
 
 export enum KeyOperator { gt= "gt", gte = "gte", lt= "lt", lte="lte" }
 export enum SortOrder { ASC = "asc", DESC = "desc" }
-
-function fetchStringQueryParam(paramName: string, route: RouteLocationNormalizedLoaded): string|null {
-    let result: string|null
-    const v = route.query[paramName]
-    if (typeof v == "string") {
-        result = v
-    } else {
-        result = null
-    }
-    return result
-}
-
-function fetchNumberQueryParam(paramName: string, route: RouteLocationNormalizedLoaded): number|null {
-    let result: number|null
-    const v = route.query[paramName]
-    if (typeof v == "string") {
-        const i = parseInt(v)
-        result = isNaN(i) || i < 1 ? null : i
-    } else {
-        result = null
-    }
-    return result
-}
