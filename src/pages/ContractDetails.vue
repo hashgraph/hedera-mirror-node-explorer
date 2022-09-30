@@ -190,7 +190,7 @@ import {EntityID} from "@/utils/EntityID";
 import Property from "@/components/Property.vue";
 import {ContractLoader} from "@/components/contract/ContractLoader";
 import {AccountLoader} from "@/components/account/AccountLoader";
-import {TransactionTableController} from "@/components/transaction/TransactionTableController";
+import {TransactionTableControllerXL} from "@/components/transaction/TransactionTableControllerXL";
 import TransactionFilterSelect from "@/components/transaction/TransactionFilterSelect.vue";
 import {networkRegistry} from "@/schemas/NetworkRegistry";
 import router from "@/router";
@@ -284,7 +284,7 @@ export default defineComponent({
     //
 
     const pageSize = computed(() => 10)
-    const transactionTableController = new TransactionTableController(router, normalizedContractId, pageSize, true)
+    const transactionTableController = new TransactionTableControllerXL(router, normalizedContractId, pageSize, true)
     onMounted(() => transactionTableController.mount())
     onBeforeUnmount(() => transactionTableController.unmount())
 

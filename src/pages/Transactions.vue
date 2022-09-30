@@ -61,7 +61,7 @@ import TransactionFilterSelect from "@/components/transaction/TransactionFilterS
 import {useRouter} from "vue-router";
 import DashboardCard from "@/components/DashboardCard.vue";
 import Footer from "@/components/Footer.vue";
-import {TransactionTableController} from "@/components/transaction/TransactionTableController";
+import {TransactionTableControllerXL} from "@/components/transaction/TransactionTableControllerXL";
 
 export default defineComponent({
   name: 'Transactions',
@@ -90,7 +90,7 @@ export default defineComponent({
 
     const accountId: Ref<string|null> = ref(null)
     const pageSize = computed(() => 10)
-    const transactionTableController = new TransactionTableController(router, accountId, pageSize, false)
+    const transactionTableController = new TransactionTableControllerXL(router, accountId, pageSize, false)
     onMounted(() => transactionTableController.mount())
     onBeforeUnmount(() => transactionTableController.unmount())
 

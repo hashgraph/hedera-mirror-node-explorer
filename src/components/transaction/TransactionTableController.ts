@@ -20,51 +20,29 @@
 
 import {KeyOperator, SortOrder, TableController} from "@/utils/table/TableController";
 import {Transaction, TransactionResponse} from "@/schemas/HederaSchemas";
-import {computed, ComputedRef, Ref} from "vue";
+import {ComputedRef} from "vue";
 import axios, {AxiosResponse} from "axios";
 import {Router} from "vue-router";
-import {fetchStringQueryParam} from "@/utils/RouteManager";
 
 
 export class TransactionTableController extends TableController<Transaction, string> {
 
-    private readonly accountId: Ref<string | null>
-    private readonly accountIdMandatory: boolean
-    private readonly transactionTypeFallback: string
-    private readonly transactionResultFallback: string
+    private readonly transactionType: string
+    private readonly transactionResult: string
 
     //
     // Public
     //
 
-    public constructor(router: Router, accountId: Ref<string | null>, pageSize: ComputedRef<number>,
-                       accountIdMandatory: boolean,
-                       transactionTypeFallback = "", transactionResultFallback = "",
+    public constructor(router: Router, pageSize: ComputedRef<number>,
+                       transactionType = "",
+                       transactionResult= "",
                        pageParamName = "p", keyParamName= "k") {
         super(router, pageSize, 10 * pageSize.value, 5000, 10, 100,
             pageParamName, keyParamName);
-        this.accountId = accountId
-        this.accountIdMandatory = accountIdMandatory
-        this.transactionTypeFallback = transactionTypeFallback
-        this.transactionResultFallback = transactionResultFallback
-        this.watchAndReload([this.accountId, this.transactionTypeParam])
+        this.transactionType = transactionType
+        this.transactionResult = transactionResult
     }
-
-    private readonly typeParamName = "type"
-
-    public async changeTransactionType(newValue: string): Promise<void> {
-        const newQuery = { ...this.router.currentRoute.value.query}
-        if (newValue != "") {
-            newQuery[this.typeParamName] = newValue.toLowerCase()
-        } else {
-            delete newQuery[this.typeParamName]
-        }
-        await this.router.replace({ query: newQuery })
-    }
-
-    public readonly transactionTypeParam = computed(() => {
-        return fetchStringQueryParam(this.typeParamName, this.router.currentRoute.value)?.toUpperCase() ?? ""
-    })
 
     //
     // TableController
@@ -72,42 +50,30 @@ export class TransactionTableController extends TableController<Transaction, str
 
     public async load(consensusTimestamp: string | null, operator: KeyOperator,
                       order: SortOrder, limit: number): Promise<Transaction[] | null> {
-        let result: Promise<Transaction[] | null>
 
-        if (this.accountIdMandatory && this.accountId.value === null) {
-            result = Promise.resolve(null)
-        } else {
-            const params = {} as {
-                limit: number
-                order: string
-                "account.id": string | undefined
-                transactiontype: string | undefined
-                result: string | undefined
-                timestamp: string | undefined
-            }
-            params.limit = limit
-            params.order = order
-            if (this.accountId.value !== null) {
-                params["account.id"] = this.accountId.value
-            }
-            if (this.transactionTypeParam.value != "") {
-                params.transactiontype = this.transactionTypeParam.value
-            } else if (this.transactionTypeFallback != "") {
-                params.transactiontype = this.transactionTypeFallback
-            }
-            if (this.transactionResultFallback != "") {
-                params.result = this.transactionResultFallback
-            }
-            if (consensusTimestamp !== null) {
-                params.timestamp = operator + ":" + consensusTimestamp
-            }
-            const cb = (r: AxiosResponse<TransactionResponse>): Promise<Transaction[] | null> => {
-                return Promise.resolve(r.data.transactions ?? [])
-            }
-            result = axios.get<TransactionResponse>("api/v1/transactions", {params: params}).then(cb)
+        const params = {} as {
+            limit: number
+            order: string
+            transactiontype: string | undefined
+            result: string | undefined
+            timestamp: string | undefined
+        }
+        params.limit = limit
+        params.order = order
+        if (this.transactionType != "") {
+            params.transactiontype = this.transactionType
+        }
+        if (this.transactionResult != "") {
+            params.result = this.transactionResult
+        }
+        if (consensusTimestamp !== null) {
+            params.timestamp = operator + ":" + consensusTimestamp
+        }
+        const cb = (r: AxiosResponse<TransactionResponse>): Promise<Transaction[] | null> => {
+            return Promise.resolve(r.data.transactions ?? [])
         }
 
-        return result
+        return axios.get<TransactionResponse>("api/v1/transactions", {params: params}).then(cb)
     }
 
     public keyFor(row: Transaction): string {

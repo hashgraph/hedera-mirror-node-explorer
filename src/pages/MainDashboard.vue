@@ -90,7 +90,7 @@
 
 <script lang="ts">
 
-import {computed, defineComponent, inject, onBeforeUnmount, onMounted, ref, watch} from 'vue';
+import {computed, defineComponent, inject, onBeforeUnmount, onMounted, watch} from 'vue';
 
 import HbarMarketDashboard from "../components/dashboard/HbarMarketDashboard.vue";
 import DashboardCard from "@/components/DashboardCard.vue";
@@ -130,16 +130,13 @@ export default defineComponent({
     const pageSize = computed(() => isMediumScreen ? 5 : 6)
 
     const cryptoTableController = new TransactionTableController(
-        router, ref(null), pageSize, false,
-        TransactionType.CRYPTOTRANSFER, "", "p1", "k1")
+        router, pageSize, TransactionType.CRYPTOTRANSFER, "", "p1", "k1")
 
     const messageTableController = new TransactionTableController(
-        router, ref(null), pageSize, false,
-        TransactionType.CONSENSUSSUBMITMESSAGE, "", "p2", "k2")
+        router, pageSize, TransactionType.CONSENSUSSUBMITMESSAGE, "", "p2", "k2")
 
     const contractTableController = new TransactionTableController(
-        router, ref(null), pageSize, false,
-        TransactionType.CONTRACTCALL, "", "p3", "k3")
+        router, pageSize, TransactionType.CONTRACTCALL, "", "p3", "k3")
 
     onMounted(() => {
       cryptoTableController.mount()

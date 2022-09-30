@@ -84,7 +84,7 @@ import TransactionLabel from "@/components/values/TransactionLabel.vue";
 import {makeTypeLabel} from "@/utils/TransactionTools";
 import router from "@/router";
 import {ORUGA_MOBILE_BREAKPOINT} from "@/App.vue";
-import {TransactionTableController} from "@/components/transaction/TransactionTableController";
+import {TransactionTableControllerXL} from "@/components/transaction/TransactionTableControllerXL";
 import EmptyTable from "@/components/EmptyTable.vue";
 
 export default defineComponent({
@@ -95,7 +95,7 @@ export default defineComponent({
   props: {
     narrowed: Boolean,
     controller: {
-      type: Object as PropType<TransactionTableController>,
+      type: Object as PropType<TransactionTableControllerXL>,
       required: true
     }
   },

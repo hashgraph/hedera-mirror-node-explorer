@@ -43,14 +43,14 @@
 import {defineComponent, PropType, ref, watch} from "vue";
 import {TransactionType} from "@/schemas/HederaSchemas";
 import {makeTypeLabel} from "@/utils/TransactionTools";
-import {TransactionTableController} from "@/components/transaction/TransactionTableController";
+import {TransactionTableControllerXL} from "@/components/transaction/TransactionTableControllerXL";
 
 export default defineComponent({
   name: "TransactionFilterSelect",
 
   props: {
     controller: {
-      type: Object as PropType<TransactionTableController>,
+      type: Object as PropType<TransactionTableControllerXL>,
       required: true
     }
   },
