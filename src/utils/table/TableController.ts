@@ -120,6 +120,8 @@ export abstract class TableController<R, K> {
         this.drained.value = false
         this.autoUpdateCount.value = 0
         this.shadowRowCount.value = 0
+        this.currentPage.value = 1
+        this.startAutoRefresh().then()
 
         this.remountSubController()
     }
