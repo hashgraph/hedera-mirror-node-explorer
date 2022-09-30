@@ -53,12 +53,12 @@
 
 <script lang="ts">
 
-import {computed, defineComponent, inject, onBeforeUnmount, onMounted, Ref, ref, watch} from 'vue';
+import {computed, defineComponent, inject, onBeforeUnmount, onMounted, Ref, ref} from 'vue';
 
 import TransactionTable from "@/components/transaction/TransactionTable.vue";
 import PlayPauseButton from "@/utils/table/PlayPauseButton.vue";
 import TransactionFilterSelect from "@/components/transaction/TransactionFilterSelect.vue";
-import {useRoute, useRouter} from "vue-router";
+import {useRouter} from "vue-router";
 import DashboardCard from "@/components/DashboardCard.vue";
 import Footer from "@/components/Footer.vue";
 import {TransactionTableController} from "@/components/transaction/TransactionTableController";
@@ -83,7 +83,6 @@ export default defineComponent({
     const isTouchDevice = inject('isTouchDevice', false)
 
     const router = useRouter()
-    const route = useRoute()
 
     //
     // transactionTableController
@@ -94,26 +93,6 @@ export default defineComponent({
     const transactionTableController = new TransactionTableController(router, accountId, pageSize, false)
     onMounted(() => transactionTableController.mount())
     onBeforeUnmount(() => transactionTableController.unmount())
-
-    //
-    // transaction filter / route synchronization
-    //
-
-    const updateQuery = () => {
-      router.replace({
-        query: {type: transactionTableController.transactionType.value.toLowerCase()}
-      })
-    }
-    watch(transactionTableController.transactionType, () => {
-      updateQuery()
-    })
-    const transactionFilterFromRoute = computed(() => {
-      return (route.query?.type as string ?? "").toUpperCase()
-    })
-    watch(transactionFilterFromRoute, () => {
-      transactionTableController.transactionType.value = transactionFilterFromRoute.value
-    })
-    transactionTableController.transactionType.value = transactionFilterFromRoute.value
 
     return {
       isSmallScreen,

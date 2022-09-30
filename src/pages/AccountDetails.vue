@@ -130,7 +130,7 @@
               </template>
             </Property>
 
-        <Property id="expiresAt">
+            <Property id="expiresAt">
               <template v-slot:name>Expires at</template>
               <template v-slot:value>
                 <TimestampValue v-bind:timestamp="account?.expiry_timestamp" v-bind:show-none="true" />
@@ -309,26 +309,6 @@ export default defineComponent({
     const transactionTableController = new TransactionTableController(router, accountId, perPage, true)
     onMounted(() => transactionTableController.mount())
     onBeforeUnmount(() => transactionTableController.unmount())
-
-    //
-    // transaction filter selection
-    //
-
-    const updateQuery = () => {
-      router.replace({
-        query: {type: transactionTableController.transactionType.value.toLowerCase()}
-      })
-    }
-    watch(transactionTableController.transactionType, () => {
-      updateQuery()
-    })
-    const transactionFilterFromRoute = computed(() => {
-      return (router.currentRoute.value.query?.type as string ?? "").toUpperCase()
-    })
-    watch(transactionFilterFromRoute, () => {
-      transactionTableController.transactionType.value = transactionFilterFromRoute.value
-    })
-    transactionTableController.transactionType.value = transactionFilterFromRoute.value
 
     //
     // balanceCache

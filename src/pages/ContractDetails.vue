@@ -170,7 +170,7 @@
 
 <script lang="ts">
 
-import {computed, defineComponent, inject, onBeforeUnmount, onMounted, watch} from 'vue';
+import {computed, defineComponent, inject, onBeforeUnmount, onMounted} from 'vue';
 import KeyValue from "@/components/values/KeyValue.vue";
 import HexaValue from "@/components/values/HexaValue.vue";
 import ContractTransactionTable from "@/components/contract/ContractTransactionTable.vue";
@@ -287,26 +287,6 @@ export default defineComponent({
     const transactionTableController = new TransactionTableController(router, normalizedContractId, pageSize, true)
     onMounted(() => transactionTableController.mount())
     onBeforeUnmount(() => transactionTableController.unmount())
-
-    //
-    // transaction filter / route synchronization
-    //
-
-    const updateQuery = () => {
-      router.replace({
-        query: {type: transactionTableController.transactionType.value.toLowerCase()}
-      })
-    }
-    watch(transactionTableController.transactionType, () => {
-      updateQuery()
-    })
-    const transactionFilterFromRoute = computed(() => {
-      return (router.currentRoute.value.query?.type as string ?? "").toUpperCase()
-    })
-    watch(transactionFilterFromRoute, () => {
-      transactionTableController.transactionType.value = transactionFilterFromRoute.value
-    })
-    transactionTableController.transactionType.value = transactionFilterFromRoute.value
 
     return {
       isSmallScreen,

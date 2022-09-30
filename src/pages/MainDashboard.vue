@@ -130,16 +130,16 @@ export default defineComponent({
     const pageSize = computed(() => isMediumScreen ? 5 : 6)
 
     const cryptoTableController = new TransactionTableController(
-        router, ref(null), pageSize, false, "p1", "k1")
-    cryptoTableController.transactionType.value = TransactionType.CRYPTOTRANSFER
+        router, ref(null), pageSize, false,
+        TransactionType.CRYPTOTRANSFER, "", "p1", "k1")
 
     const messageTableController = new TransactionTableController(
-        router, ref(null), pageSize, false, "p2", "k2")
-    messageTableController.transactionType.value = TransactionType.CONSENSUSSUBMITMESSAGE
+        router, ref(null), pageSize, false,
+        TransactionType.CONSENSUSSUBMITMESSAGE, "", "p2", "k2")
 
     const contractTableController = new TransactionTableController(
-        router, ref(null), pageSize, false, "p3", "k3")
-    contractTableController.transactionType.value = TransactionType.CONTRACTCALL
+        router, ref(null), pageSize, false,
+        TransactionType.CONTRACTCALL, "", "p3", "k3")
 
     onMounted(() => {
       cryptoTableController.mount()
