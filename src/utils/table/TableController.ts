@@ -174,12 +174,6 @@ export abstract class TableController<R, K> {
         return headRow !== null ? this.keyFor(headRow) : null
     }
 
-    public getFirstVisibleKey(): K|null {
-        const bufferLength = this.buffer.value.length
-        const firstRow = this.startIndex.value < bufferLength ? this.buffer.value[this.startIndex.value] : null
-        return firstRow !== null ? this.keyFor(firstRow) : null
-    }
-
     public getMaxStartIndex(): number {
         const pageCount = Math.floor((this.shadowRowCount.value + this.buffer.value.length) / this.pageSize.value) + 1
         return Math.max(0, (pageCount - 1) * this.pageSize.value)
@@ -200,6 +194,17 @@ export abstract class TableController<R, K> {
             delete newQuery[this.keyParamName]
         }
         return this.router.replace({ query: newQuery })
+    }
+
+    public updateCurrentPage(): void {
+        const i = this.shadowRowCount.value + this.startIndex.value
+        this.currentPage.value = Math.floor(i / this.pageSize.value) + 1
+
+        const newKeyParam = this.getFirstVisibleKey()
+        if (newKeyParam !== null) {
+            const newPageParam = this.currentPage.value
+            this.updateKeyAndPageParams(newPageParam, newKeyParam).then()
+        }
     }
 
     //
@@ -261,6 +266,13 @@ export abstract class TableController<R, K> {
         this.subController?.unmount()
         this.subController?.mount()
     }
+
+    private getFirstVisibleKey(): K|null {
+        const bufferLength = this.buffer.value.length
+        const firstRow = this.startIndex.value < bufferLength ? this.buffer.value[this.startIndex.value] : null
+        return firstRow !== null ? this.keyFor(firstRow) : null
+    }
+
 }
 
 export enum KeyOperator { gt= "gt", gte = "gte", lt= "lt", lte="lte" }

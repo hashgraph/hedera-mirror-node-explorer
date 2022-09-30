@@ -61,23 +61,6 @@ export class PaginationController<R,K> extends TableSubController<R, K> {
     // Private
     //
 
-    private updateCurrentPage(): void {
-        const i = this.tableController.shadowRowCount.value + this.tableController.startIndex.value
-        this.tableController.currentPage.value = Math.floor(i / this.tableController.pageSize.value) + 1
-    }
-
-    private updateKeyAndPageParams() {
-        const newKeyParam = this.tableController.getFirstVisibleKey()
-        if (newKeyParam !== null) {
-            const newPageParam = this.tableController.currentPage.value
-            this.tableController.updateKeyAndPageParams(newPageParam, newKeyParam).then()
-        }
-    }
-
-    //
-    // Private
-    //
-
     private gotoPageWithKey(page: number, key: K): void {
         const pageSize = this.tableController.pageSize.value
         this.tailLoad(key, pageSize, true).then((newRows: R[] | null) => {
@@ -86,8 +69,7 @@ export class PaginationController<R,K> extends TableSubController<R, K> {
                 this.tableController.drained.value = newRows.length < pageSize
                 this.tableController.startIndex.value = 0
                 this.tableController.shadowRowCount.value = (page - 1) * pageSize
-                this.updateCurrentPage()
-                this.updateKeyAndPageParams()
+                this.tableController.updateCurrentPage()
             }
         })
     }
@@ -112,8 +94,7 @@ export class PaginationController<R,K> extends TableSubController<R, K> {
                     this.tableController.drained.value = newRows.length < pageSize
                     this.tableController.startIndex.value = Math.min(nextStartIndex - shadowRowCount, this.tableController.getMaxStartIndex())
                     // this.tableController.shadowRowCount.value unchanged
-                    this.updateCurrentPage()
-                    this.updateKeyAndPageParams()
+                    this.tableController.updateCurrentPage()
                 }
             })
 
@@ -127,8 +108,7 @@ export class PaginationController<R,K> extends TableSubController<R, K> {
                     this.tableController.startIndex.value = 0
                     this.tableController.shadowRowCount.value -= rowCount
                     // this.tableController.drained.value unchanged
-                    this.updateCurrentPage()
-                    this.updateKeyAndPageParams()
+                    this.tableController.updateCurrentPage()
                 }
             })
 
@@ -142,8 +122,7 @@ export class PaginationController<R,K> extends TableSubController<R, K> {
                     this.tableController.drained.value = newRows.length < rowCount
                     this.tableController.startIndex.value = Math.min(nextStartIndex - shadowRowCount, this.tableController.getMaxStartIndex())
                     // this.tableController.shadowRowCount.value unchanged
-                    this.updateCurrentPage()
-                    this.updateKeyAndPageParams()
+                    this.tableController.updateCurrentPage()
                 }
             })
 
@@ -153,8 +132,7 @@ export class PaginationController<R,K> extends TableSubController<R, K> {
             // this.tableController.buffer.value unchanged
             // this.tableController.drained.value unchanged
             // this.tableController.shadowRowCount.value unchanged
-            this.updateCurrentPage()
-            this.updateKeyAndPageParams()
+            this.tableController.updateCurrentPage()
         }
 
     }
