@@ -35,7 +35,7 @@ import {
     SAMPLE_NETWORK_NODES,
     SAMPLE_NONFUNGIBLE,
     SAMPLE_TOKEN,
-    SAMPLE_TOKEN_DUDE,
+    SAMPLE_TOKEN_DUDE, SAMPLE_TRANSACTION,
     SAMPLE_TRANSACTIONS,
 } from "../Mocks";
 import MockAdapter from "axios-mock-adapter";
@@ -43,6 +43,7 @@ import Oruga from "@oruga-ui/oruga-next";
 import TransactionTable from "@/components/transaction/TransactionTable.vue";
 import {HMSF} from "@/utils/HMSF";
 import NotificationBanner from "@/components/NotificationBanner.vue";
+import {TransactionID} from "@/utils/TransactionID";
 
 /*
     Bookmarks
@@ -98,6 +99,9 @@ describe("AccountDetails.vue", () => {
         const matcher6 = "https://api.coingecko.com/api/v3/coins/hedera-hashgraph"
         mock.onGet(matcher6).reply(200, SAMPLE_COINGECKO);
 
+        const matcher7 = "/api/v1/transactions?timestamp=" + SAMPLE_ACCOUNT.created_timestamp
+        mock.onGet(matcher7).reply(200, SAMPLE_TRANSACTIONS);
+
         const wrapper = mount(AccountDetails, {
             global: {
                 plugins: [router, Oruga]
@@ -118,6 +122,8 @@ describe("AccountDetails.vue", () => {
             "ED25519")
         expect(wrapper.get("#memoValue").text()).toBe("None")
         expect(wrapper.get("#aliasValue").text()).toBe(ALIAS_B32 + ALIAS_HEX)
+        expect(wrapper.get("#createTransactionValue").text()).toBe(TransactionID.normalize(SAMPLE_TRANSACTION.transaction_id))
+
         expect(wrapper.get("#expiresAtValue").text()).toBe("None")
         expect(wrapper.get("#autoRenewPeriodValue").text()).toBe("90 days")
         expect(wrapper.get("#maxAutoAssociationValue").text()).toBe("0")
