@@ -163,7 +163,7 @@ describe('Transaction Navigation', () => {
             })
     })
 
-    it('should follow link "See all transations with same ID"', () => {
+    it.skip('should follow link "See all transations with same ID"', () => {
         const transactionId = "0.0.33956525@1663935863.559975910"
 
         cy.visit('#/testnet/transaction/' + normalizeTransactionId(transactionId))
