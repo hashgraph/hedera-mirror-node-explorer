@@ -122,6 +122,12 @@
                 <BlobValue v-bind:blob-value="account?.memo" v-bind:show-none="true" v-bind:base64="true" class="should-wrap"/>
               </template>
             </Property>
+            <Property id="createdAt">
+              <template v-slot:name>Created at</template>
+              <template v-slot:value>
+                <TimestampValue v-bind:timestamp="account?.created_timestamp" v-bind:show-none="true" />
+              </template>
+            </Property>
             <Property id="expiresAt">
               <template v-slot:name>Expires at</template>
               <template v-slot:value>
