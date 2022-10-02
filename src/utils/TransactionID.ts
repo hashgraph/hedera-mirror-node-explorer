@@ -98,6 +98,11 @@ export class TransactionID {
         return tid != null ? tid.toString(useArobas) : transactionID
     }
 
+    public static makePayerID(transactionID: string): string | null {
+        const tid = TransactionID.parse(transactionID)
+        return tid != null ? tid.entityID.toString(): null
+    }
+
     //
     // Private
     //
