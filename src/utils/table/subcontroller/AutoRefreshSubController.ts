@@ -19,6 +19,7 @@
  */
 
 import {TableSubController} from "@/utils/table/subcontroller/TableSubController";
+import {LocationQuery} from "vue-router";
 
 
 export class AutoRefreshController<R,K> extends TableSubController<R, K> {
@@ -41,6 +42,10 @@ export class AutoRefreshController<R,K> extends TableSubController<R, K> {
             this.timeoutID = -1
         }
         this.sessionId += 1
+    }
+
+    public makeRouteQuery(): LocationQuery {
+        return {}
     }
 
     //

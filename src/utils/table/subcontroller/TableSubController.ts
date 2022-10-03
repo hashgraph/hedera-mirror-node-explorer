@@ -19,6 +19,7 @@
  */
 
 import {KeyOperator, SortOrder, TableController} from "@/utils/table/TableController";
+import {LocationQuery} from "vue-router";
 
 export abstract class TableSubController<R, K> {
 
@@ -32,12 +33,14 @@ export abstract class TableSubController<R, K> {
         this.tableController = tableController
     }
 
+
     //
     // Public (to be subclassed)
     //
 
     public abstract mount(): void
     public abstract unmount(): void
+    public abstract makeRouteQuery(): LocationQuery;
 
     //
     // Protected

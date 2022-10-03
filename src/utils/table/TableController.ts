@@ -19,7 +19,7 @@
  */
 
 import {computed, ComputedRef, ref, Ref, watch, WatchSource, WatchStopHandle} from "vue";
-import {NavigationFailure, Router} from "vue-router";
+import {LocationQuery, Router} from "vue-router";
 import {TableSubController} from "@/utils/table/subcontroller/TableSubController";
 import {AutoRefreshController} from "@/utils/table/subcontroller/AutoRefreshSubController";
 import {PaginationController} from "@/utils/table/subcontroller/PaginationSubController";
@@ -73,43 +73,54 @@ export abstract class TableController<R, K> {
     public readonly mounted: ComputedRef<boolean> = computed(() => this.mountedRef.value)
 
     public mount(): void {
-        if (this.subController === null) {
-            this.updateSubController()
-            this.watchPageKeyHandle = watch([this.pageParam, this.keyParam], () => this.updateSubController())
-            this.watchSourcesHandle = watch(this.sources, () => this.reset())
-            this.mountedRef.value = true
+        const pageParam = this.getPageParam()
+        const keyParam = this.getKeyParam()
+        if (pageParam !== null) {
+            this.subController = new PaginationController(this, pageParam, keyParam)
+            this.subController.mount()
+        } else {
+            this.subController = new AutoRefreshController(this)
+            this.subController.mount()
         }
+        this.autoRefreshRef.value = this.subController instanceof AutoRefreshController
+        this.mountedRef.value = true
+        this.watchSourcesHandle = watch(this.sources, () => this.reset())
     }
 
     public unmount(): void {
-        if (this.subController !== null) {
-            if (this.watchPageKeyHandle !== null) {
-                this.watchPageKeyHandle()
-                this.watchPageKeyHandle = null
-            }
-            if (this.watchSourcesHandle !== null) {
-                this.watchSourcesHandle()
-                this.watchSourcesHandle = null
-            }
-            this.subController.unmount()
-            this.subController = null
-            this.mountedRef.value = false
+        if (this.watchSourcesHandle !== null) {
+            this.watchSourcesHandle()
+            this.watchSourcesHandle = null
         }
+        this.subController?.unmount()
+        this.subController = null
+        this.mountedRef.value = false
+        this.autoRefreshRef.value = false
     }
 
     public async startAutoRefresh(): Promise<void> {
-        // Removes page and key params from route
-        this.updateKeyAndPageParams(null, null).then(() => Promise.resolve())
+        this.autoRefreshRef.value = true
+        this.subController?.unmount()
+        this.subController = new AutoRefreshController(this)
+        this.subController.mount()
     }
 
-    public async stopAutoRefresh(): Promise<void> {
-        // Sets page param to #1
-        this.updateKeyAndPageParams(1, null).then(() => Promise.resolve())
+    public async stopAutoRefresh(): Promise<void>  {
+        this.autoRefreshRef.value = false
+        this.subController?.unmount()
+        this.subController = new PaginationController(this, 1, null)
+        this.subController.mount()
     }
 
     public readonly onPageChange = (page: number): void => {
-        // Sets page param to #page
-        this.updateKeyAndPageParams(page, null).then()
+        if (this.subController instanceof PaginationController) {
+            this.subController.gotoPage(page)
+        } else {
+            this.subController?.unmount()
+            this.subController = new PaginationController(this, page, null)
+            this.subController.mount()
+            this.autoRefreshRef.value = false
+        }
     }
 
     public reset(): void {
@@ -121,9 +132,8 @@ export abstract class TableController<R, K> {
         this.autoUpdateCount.value = 0
         this.shadowRowCount.value = 0
         this.currentPage.value = 1
-        this.startAutoRefresh().then()
 
-        this.remountSubController()
+        this.startAutoRefresh().then()
     }
 
 
@@ -154,15 +164,24 @@ export abstract class TableController<R, K> {
     public readonly autoUpdateCount: Ref<number> = ref(0)
 
     public readonly shadowRowCount: Ref<number> = ref(0)
+    //
+    // public readonly pageParam = computed(() => {
+    //     return fetchNumberQueryParam(this.pageParamName, this.router.currentRoute.value)
+    // })
+    //
+    // public readonly keyParam = computed(() => {
+    //     const v = fetchStringQueryParam(this.keyParamName, this.router.currentRoute.value)
+    //     return v !== null ? this.keyFromString(v) : null
+    // })
 
-    public readonly pageParam = computed(() => {
+    public getPageParam(): number|null {
         return fetchNumberQueryParam(this.pageParamName, this.router.currentRoute.value)
-    })
+    }
 
-    public readonly keyParam = computed(() => {
+    public getKeyParam(): K|null {
         const v = fetchStringQueryParam(this.keyParamName, this.router.currentRoute.value)
         return v !== null ? this.keyFromString(v) : null
-    })
+    }
 
     public getTailKey(): K|null {
         const bufferLength = this.buffer.value.length
@@ -181,32 +200,16 @@ export abstract class TableController<R, K> {
         return Math.max(0, (pageCount - 1) * this.pageSize.value)
     }
 
-    public async updateKeyAndPageParams(page: number|null, key: K|null): Promise<void | NavigationFailure | undefined> {
-        const newQuery = { ...this.router.currentRoute.value.query}
-        const pageParam = page !== null ? page.toString() : null
-        const keyParam = key !== null ? this.stringFromKey(key) : null
-        if (pageParam !== null) {
-            newQuery[this.pageParamName] = pageParam
-        } else {
-            delete newQuery[this.pageParamName]
-        }
-        if (keyParam !== null) {
-            newQuery[this.keyParamName] = keyParam
-        } else {
-            delete newQuery[this.keyParamName]
-        }
-        return this.router.replace({ query: newQuery })
-    }
-
     public updateCurrentPage(): void {
         const i = this.shadowRowCount.value + this.startIndex.value
         this.currentPage.value = Math.floor(i / this.pageSize.value) + 1
+        this.updateRouteQuery()
+    }
 
-        const newKeyParam = this.getFirstVisibleKey()
-        if (newKeyParam !== null) {
-            const newPageParam = this.currentPage.value
-            this.updateKeyAndPageParams(newPageParam, newKeyParam).then()
-        }
+    public getFirstVisibleKey(): K|null {
+        const bufferLength = this.buffer.value.length
+        const firstRow = this.startIndex.value < bufferLength ? this.buffer.value[this.startIndex.value] : null
+        return firstRow !== null ? this.keyFor(firstRow) : null
     }
 
     //
@@ -230,50 +233,29 @@ export abstract class TableController<R, K> {
     protected watchAndReload(sources: WatchSource<unknown>[]): void {
         this.sources = sources
         if (this.mounted.value) {
-            this.remountSubController()
+            if (this.watchSourcesHandle !== null) {
+                this.watchSourcesHandle()
+            }
+            this.watchSourcesHandle = watch(this.sources, () => this.reset())
         }
     }
 
+    protected updateRouteQuery(): void {
+        this.router.replace({ query: this.makeRouteQuery() }).then()
+    }
+
+    protected makeRouteQuery(): LocationQuery {
+        return this.subController !== null ? this.subController.makeRouteQuery() : {}
+    }
 
     //
     // Private
     //
 
-    private watchPageKeyHandle: WatchStopHandle|null = null
     private watchSourcesHandle: WatchStopHandle|null = null
 
     private readonly autoRefreshRef: Ref<boolean> = ref(false)
     private readonly mountedRef: Ref<boolean> = ref(false)
-
-    private updateSubController(): void {
-        if (this.pageParam.value !== null) {
-            // Pagination mode
-            if (this.subController instanceof PaginationController) {
-                this.subController.gotoPage(this.pageParam.value, this.keyParam.value)
-            } else {
-                this.subController?.unmount()
-                this.subController = new PaginationController(this, this.pageParam.value, this.keyParam.value)
-                this.subController.mount()
-            }
-        } else {
-            // Auto refresh mode
-            this.subController?.unmount()
-            this.subController = new AutoRefreshController(this)
-            this.subController.mount()
-        }
-        this.autoRefreshRef.value = this.subController instanceof AutoRefreshController
-    }
-
-    private remountSubController() {
-        this.subController?.unmount()
-        this.subController?.mount()
-    }
-
-    private getFirstVisibleKey(): K|null {
-        const bufferLength = this.buffer.value.length
-        const firstRow = this.startIndex.value < bufferLength ? this.buffer.value[this.startIndex.value] : null
-        return firstRow !== null ? this.keyFor(firstRow) : null
-    }
 
 }
 

@@ -40,7 +40,7 @@
 
 <script lang="ts">
 
-import {defineComponent, PropType, ref, watch} from "vue";
+import {defineComponent, PropType} from "vue";
 import {TransactionType} from "@/schemas/HederaSchemas";
 import {makeTypeLabel} from "@/utils/TransactionTools";
 import {TransactionTableControllerXL} from "@/components/transaction/TransactionTableControllerXL";
@@ -61,14 +61,9 @@ export default defineComponent({
       return filterValue == "" ? "TYPES: ALL" : makeTypeLabel(filterValue as TransactionType)
     }
 
-    const selectedFilter = ref(props.controller.transactionTypeParam.value)
-    watch(selectedFilter, () => {
-      props.controller.changeTransactionType(selectedFilter.value)
-    })
-
     return {
       filterValues: makeFilterValues(),
-      selectedFilter,
+      selectedFilter: props.controller.transactionType,
       makeFilterLabel,
     }
   }

@@ -120,7 +120,7 @@ describe("TableController.ts", () => {
         await flushPromises()
 
         expect(tc.pageSize.value).toBe(10)
-        expect(tc.autoRefresh.value).toBe(true)
+        expect(tc.autoRefresh.value).toBe(false)
         expect(tc.autoStopped.value).toBe(false)
         expect(tc.currentPage.value).toBe(1)
         expect(tc.loading.value).toBe(false)
@@ -229,7 +229,7 @@ describe("TableController.ts", () => {
         // Unmount
         tc.unmount()
         await flushPromises()
-        expect(tc.autoRefresh.value).toBe(true)
+        expect(tc.autoRefresh.value).toBe(false)
         expect(tc.autoStopped.value).toBe(false)
         expect(tc.rows.value).toStrictEqual([61,60,59,58,57,56,55,54,53,52])
         expect(tc.autoUpdateCount.value).toBe(4)
@@ -268,7 +268,7 @@ describe("TableController.ts", () => {
         // Unmount
         tc.unmount()
         await flushPromises()
-        expect(tc.autoRefresh.value).toBe(true)
+        expect(tc.autoRefresh.value).toBe(false)
         expect(tc.autoStopped.value).toBe(false)
         expect(tc.rows.value).toStrictEqual([98,96,94,92,90,88,86,84,82,80])
         expect(tc.autoUpdateCount.value).toBe(1)
@@ -322,7 +322,7 @@ describe("TableController.ts", () => {
         const tc = new TestTableController(0, 50, 10)
 
         // Preset page and key query params
-        await tc.updateKeyAndPageParams(4, 19)
+        await tc.router.replace({query: {p: 4, k: 19}})
         await flushPromises()
 
         // Mount => page 4 is loaded
@@ -369,7 +369,7 @@ describe("TableController.ts", () => {
         const tc = new TestTableController(0, 50, 10)
 
         // Preset page and key query params
-        await tc.updateKeyAndPageParams(40, 21)
+        await tc.router.replace({query: {p: 40, k: 21}})
         await flushPromises()
 
         // Mount => page 40 is loaded

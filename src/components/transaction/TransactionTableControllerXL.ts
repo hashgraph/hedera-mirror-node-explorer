@@ -20,9 +20,9 @@
 
 import {KeyOperator, SortOrder, TableController} from "@/utils/table/TableController";
 import {Transaction, TransactionResponse} from "@/schemas/HederaSchemas";
-import {computed, ComputedRef, Ref} from "vue";
+import {ComputedRef, ref, Ref, watch, WatchStopHandle} from "vue";
 import axios, {AxiosResponse} from "axios";
-import {Router} from "vue-router";
+import {LocationQuery, Router} from "vue-router";
 import {fetchStringQueryParam} from "@/utils/RouteManager";
 
 
@@ -35,31 +35,19 @@ export class TransactionTableControllerXL extends TableController<Transaction, s
     // Public
     //
 
-    public constructor(router: Router, accountId: Ref<string | null>, pageSize: ComputedRef<number>,
+    public constructor(router: Router,
+                       accountId: Ref<string | null>,
+                       pageSize: ComputedRef<number>,
                        accountIdMandatory: boolean,
                        pageParamName = "p", keyParamName= "k") {
         super(router, pageSize, 10 * pageSize.value, 5000, 10, 100,
             pageParamName, keyParamName);
         this.accountId = accountId
         this.accountIdMandatory = accountIdMandatory
-        this.watchAndReload([this.accountId, this.transactionTypeParam])
+        this.watchAndReload([this.accountId, this.transactionType])
     }
 
-    private readonly typeParamName = "type"
-
-    public async changeTransactionType(newValue: string): Promise<void> {
-        const newQuery = { ...this.router.currentRoute.value.query}
-        if (newValue != "") {
-            newQuery[this.typeParamName] = newValue.toLowerCase()
-        } else {
-            delete newQuery[this.typeParamName]
-        }
-        await this.router.replace({ query: newQuery })
-    }
-
-    public readonly transactionTypeParam = computed(() => {
-        return fetchStringQueryParam(this.typeParamName, this.router.currentRoute.value)?.toUpperCase() ?? ""
-    })
+    public readonly transactionType: Ref<string> = ref("")
 
     //
     // TableController
@@ -84,8 +72,8 @@ export class TransactionTableControllerXL extends TableController<Transaction, s
             if (this.accountId.value !== null) {
                 params["account.id"] = this.accountId.value
             }
-            if (this.transactionTypeParam.value != "") {
-                params.transactiontype = this.transactionTypeParam.value
+            if (this.transactionType.value != "") {
+                params.transactiontype = this.transactionType.value
             }
             if (consensusTimestamp !== null) {
                 params.timestamp = operator + ":" + consensusTimestamp
@@ -110,4 +98,36 @@ export class TransactionTableControllerXL extends TableController<Transaction, s
     public stringFromKey(key: string): string {
         return key
     }
+
+    public mount(): void {
+        this.transactionType.value = this.fetchTransactionTypeParam() // Must be done before calling mount()
+        super.mount()
+        this.watchTransactionTypeHandle = watch(this.transactionType, () => this.updateRouteQuery())
+    }
+
+    public unmount(): void {
+        if (this.watchTransactionTypeHandle !== null) {
+            this.watchTransactionTypeHandle()
+        }
+        this.watchTransactionTypeHandle = null;
+        super.unmount()
+    }
+
+    public makeRouteQuery(): LocationQuery {
+        const result = super.makeRouteQuery()
+        result[this.typeParamName] = this.transactionType.value.toLowerCase()
+        return result
+    }
+
+    //
+    // Private
+    //
+
+    private readonly typeParamName = "type"
+    private watchTransactionTypeHandle: WatchStopHandle|null = null
+
+    public fetchTransactionTypeParam(): string {
+        return fetchStringQueryParam(this.typeParamName, this.router.currentRoute.value)?.toUpperCase() ?? ""
+    }
+
 }

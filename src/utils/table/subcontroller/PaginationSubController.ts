@@ -21,6 +21,7 @@
 
 import {TableSubController} from "@/utils/table/subcontroller/TableSubController";
 import {TableController} from "@/utils/table/TableController";
+import {LocationQuery, LocationQueryValue} from "vue-router";
 
 export class PaginationController<R,K> extends TableSubController<R, K> {
 
@@ -37,12 +38,8 @@ export class PaginationController<R,K> extends TableSubController<R, K> {
         this.initialKey = key
     }
 
-    public gotoPage(page: number, key: K|null): void {
-        if (key !== null) {
-            this.gotoPageWithKey(page, key)
-        } else {
-            this.gotoPageWithoutKey(page)
-        }
+    public gotoPage(page: number): void {
+        this.gotoPageWithoutKey(page)
     }
 
     //
@@ -50,11 +47,29 @@ export class PaginationController<R,K> extends TableSubController<R, K> {
     //
 
     mount(): void {
-        this.gotoPage(this.initialPage, this.initialKey)
+        if (this.initialKey !== null) {
+            this.gotoPageWithKey(this.initialPage, this.initialKey)
+        } else {
+            this.gotoPageWithoutKey(this.initialPage)
+        }
     }
 
     unmount(): void {
         /* Nothing right now */
+    }
+
+    public makeRouteQuery(): LocationQuery {
+        const newKeyParam = this.tableController.getFirstVisibleKey()
+        const newPageParam = this.tableController.currentPage.value
+
+        const result = {} as Record<string, LocationQueryValue>
+        if (newPageParam !== null) {
+            result[this.tableController.pageParamName] = newPageParam.toString()
+        }
+        if (newKeyParam !== null) {
+            result[this.tableController.keyParamName] = this.tableController.stringFromKey(newKeyParam)
+        }
+        return result
     }
 
     //
