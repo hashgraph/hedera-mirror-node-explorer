@@ -1122,6 +1122,7 @@ export const SAMPLE_ACCOUNT = {
             }
         ]
     },
+    "created_timestamp": "1646025151.667604000",
     "deleted": false,
     "expiry_timestamp": null,
     "key":

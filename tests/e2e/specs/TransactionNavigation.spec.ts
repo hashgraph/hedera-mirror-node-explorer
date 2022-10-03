@@ -163,7 +163,7 @@ describe('Transaction Navigation', () => {
             })
     })
 
-    it.only('should follow link "See all transations with same ID"', () => {
+    it.skip('should follow link "See all transations with same ID"', () => {
         const transactionId = "0.0.33956525@1663935863.559975910"
 
         cy.visit('#/testnet/transaction/' + normalizeTransactionId(transactionId))
@@ -177,12 +177,8 @@ describe('Transaction Navigation', () => {
                     '/testnet/transactionsById/' + normalizeTransactionId(transactionId))
                 cy.contains('Transactions with ID ' + transactionId)
                 cy.get('table')
-                    .find('tbody tr')
-                    .eq(0)
                     .contains('2:24:32.7606 PMSep 23, 2022, GMT+2CONTRACT CALLContract ID: 0.0.48323737Parent0')
                 cy.get('table')
-                    .find('tbody tr')
-                    .eq(1)
                     .contains('2:24:32.7606 PMSep 23, 2022, GMT+2CONTRACT CALLContract ID: 0.0.359Child1')
                     .click()
                     .then(() => {

@@ -122,7 +122,15 @@
                 <BlobValue v-bind:blob-value="account?.memo" v-bind:show-none="true" v-bind:base64="true" class="should-wrap"/>
               </template>
             </Property>
-            <Property id="expiresAt">
+
+            <Property id="createTransaction">
+              <template v-slot:name>Create Transaction</template>
+              <template v-slot:value>
+                <TransactionLink :transaction-id="accountCreateTransactionId"/>
+              </template>
+            </Property>
+
+        <Property id="expiresAt">
               <template v-slot:name>Expires at</template>
               <template v-slot:value>
                 <TimestampValue v-bind:timestamp="account?.expiry_timestamp" v-bind:show-none="true" />
@@ -197,7 +205,7 @@
 
 <script lang="ts">
 
-import {computed, defineComponent, inject, onBeforeUnmount, onMounted, watch} from 'vue';
+import {computed, ComputedRef, defineComponent, inject, onBeforeUnmount, onMounted, watch} from 'vue';
 import KeyValue from "@/components/values/KeyValue.vue";
 import PlayPauseButton from "@/utils/table/PlayPauseButton.vue";
 import TransactionTable from "@/components/transaction/TransactionTable.vue";
@@ -224,6 +232,8 @@ import AliasValue from "@/components/values/AliasValue.vue";
 import TransactionFilterSelect from "@/components/transaction/TransactionFilterSelect.vue";
 import {networkRegistry} from "@/schemas/NetworkRegistry";
 import router from "@/router";
+import {TransactionByTimestampLoader} from "@/components/transaction/TransactionByTimestampLoader";
+import TransactionLink from "@/components/values/TransactionLink.vue";
 
 const MAX_TOKEN_BALANCES = 10
 
@@ -232,6 +242,7 @@ export default defineComponent({
   name: 'AccountDetails',
 
   components: {
+    TransactionLink,
     AliasValue,
     AccountLink,
     NotificationBanner,
@@ -363,6 +374,12 @@ export default defineComponent({
     //
     const stakeNodeLoader = new NodeLoader(accountLoader.stakedNodeId)
 
+    //
+    // account create transaction
+    //
+    const accountCreateTransaction = new TransactionByTimestampLoader(accountLoader.createdTimestamp as ComputedRef)
+    onMounted(() => accountCreateTransaction.requestLoad())
+
     return {
       isSmallScreen,
       isTouchDevice,
@@ -381,7 +398,9 @@ export default defineComponent({
       displayAllTokenLinks,
       elapsed,
       showContractVisible,
-      stakedNodeDescription: stakeNodeLoader.nodeDescription
+      stakedNodeDescription: stakeNodeLoader.nodeDescription,
+      accountCreateTransactionId: accountCreateTransaction.transactionId,
+      accountCreatorId: accountCreateTransaction.payerAccountId
     }
   }
 });

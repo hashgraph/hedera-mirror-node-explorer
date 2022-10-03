@@ -33,6 +33,7 @@ export interface AccountInfo {
     account: string | null | undefined // Network entity ID in the format of shard.realm.num
     auto_renew_period: number | null | undefined
     balance: Balance | null | undefined
+    created_timestamp: string | null | undefined
     deleted: boolean
     expiry_timestamp: string | null | undefined
     key : Key | null | undefined
