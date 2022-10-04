@@ -32,7 +32,9 @@
         :paginated="false"
         :striped="true"
         default-sort="node_id"
-        @click="handleClick"
+
+        detailed
+        custom-detail-row
     >
 
       <o-table-column v-slot="props" field="call_type" label="Call Type">
@@ -72,6 +74,15 @@
           {{ props.row.gas }}
         </div>
       </o-table-column>
+
+      <template v-slot:detail="props">
+        <tr>
+          <td/>
+          <td colspan="5">
+            <div>{{ JSON.stringify(props.row, null, 2) }}</div>
+          </td>
+        </tr>
+      </template>
 
     </o-table>
   </div>
