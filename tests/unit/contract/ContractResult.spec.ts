@@ -25,6 +25,7 @@ import {SAMPLE_COINGECKO, SAMPLE_CONTRACT_RESULT_DETAILS} from "../Mocks";
 import MockAdapter from "axios-mock-adapter";
 import {HMSF} from "@/utils/HMSF";
 import ContractResult from "@/components/contract/ContractResult.vue";
+import Oruga from "@oruga-ui/oruga-next";
 
 /*
     Bookmarks
@@ -32,6 +33,20 @@ import ContractResult from "@/components/contract/ContractResult.vue";
         https://test-utils.vuejs.org/api/
 
  */
+
+Object.defineProperty(window, 'matchMedia', {
+    writable: true,
+    value: jest.fn().mockImplementation(query => ({
+        matches: false,
+        media: query,
+        onchange: null,
+        addListener: jest.fn(), // deprecated
+        removeListener: jest.fn(), // deprecated
+        addEventListener: jest.fn(),
+        removeEventListener: jest.fn(),
+        dispatchEvent: jest.fn(),
+    })),
+});
 
 HMSF.forceUTC = true
 
@@ -52,7 +67,7 @@ describe("ContractResult.vue", () => {
 
         const wrapper = mount(ContractResult, {
             global: {
-                plugins: [router]
+                plugins: [router, Oruga]
             },
             props: {
                 contractId: contractId,
@@ -95,7 +110,7 @@ describe("ContractResult.vue", () => {
 
         const wrapper = mount(ContractResult, {
             global: {
-                plugins: [router]
+                plugins: [router, Oruga]
             },
             props: {
                 transactionIdOrHash: transactionId,
