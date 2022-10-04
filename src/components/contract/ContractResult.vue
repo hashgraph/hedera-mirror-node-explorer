@@ -104,6 +104,8 @@
 
     <ContractResultTrace :transaction-id-or-hash="transactionIdOrHash"/>
 
+    <ContractResultStates :state-changes="contractResult?.state_changes" />
+
     <DashboardCard v-if="contractResult?.logs?.length" class="h-card">
       <template v-slot:title>
         <span class="h-is-secondary-title">Logs</span>
@@ -169,6 +171,7 @@ import Property from "@/components/Property.vue";
 import PlainAmount from "@/components/values/PlainAmount.vue";
 import ContractResultLog from "@/components/contract/ContractResultLog.vue";
 import ContractResultTrace from "@/components/contract/ContractResultTrace.vue";
+import ContractResultStates from "@/components/contract/ContractResultStates.vue";
 
 const NB_LOG_LINES = 2
 const MAX_LOG_LINES = 10
@@ -178,6 +181,7 @@ export default defineComponent({
   name: 'ContractResult',
 
   components: {
+    ContractResultStates,
     ContractResultTrace,
     ContractResultLog,
     PlainAmount,
