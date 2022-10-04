@@ -79,7 +79,7 @@
         <tr>
           <td/>
           <td colspan="5">
-            <div>{{ JSON.stringify(props.row, null, 2) }}</div>
+            <ContractActionDetails :action="props.row"/>
           </td>
         </tr>
       </template>
@@ -101,6 +101,7 @@ import {defineComponent, inject, PropType} from 'vue';
 import {ContractAction} from "@/schemas/HederaSchemas";
 import {ORUGA_MOBILE_BREAKPOINT} from '@/App.vue';
 import EmptyTable from "@/components/EmptyTable.vue";
+import ContractActionDetails from "@/components/contract/ContractActionDetails.vue";
 
 //
 // defineComponent
@@ -109,7 +110,7 @@ import EmptyTable from "@/components/EmptyTable.vue";
 export default defineComponent({
   name: 'ContractActionsTable',
 
-  components: {EmptyTable},
+  components: {ContractActionDetails, EmptyTable},
 
   props: {
     actions: Object as PropType<Array<ContractAction> | undefined>,
