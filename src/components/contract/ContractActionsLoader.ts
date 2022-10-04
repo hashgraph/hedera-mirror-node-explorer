@@ -19,11 +19,11 @@
  */
 
 import {ContractActionsResponse} from "@/schemas/HederaSchemas";
-import {EntityLoader} from "@/utils/EntityLoader";
 import axios, {AxiosResponse} from "axios";
 import {computed, Ref} from "vue";
+import {EntityBatchLoader} from "@/utils/EntityBatchLoader";
 
-export class ContractActionsLoader extends EntityLoader<ContractActionsResponse> {
+export class ContractActionsLoader extends EntityBatchLoader<ContractActionsResponse> {
 
     public readonly transactionIdOrHash: Ref<string | null>
 
@@ -40,17 +40,30 @@ export class ContractActionsLoader extends EntityLoader<ContractActionsResponse>
     public readonly actions = computed(() => this.entity.value?.actions ?? null)
 
     //
-    // EntityLoader
+    // EntityBatchLoader
     //
 
-    protected async load(): Promise<AxiosResponse<ContractActionsResponse> | null> {
+    protected async loadNext(nextURL:string | null): Promise<AxiosResponse<ContractActionsResponse> | null> {
         let result: Promise<AxiosResponse<ContractActionsResponse> | null>
         if (this.transactionIdOrHash.value !== null) {
-            result = axios.get<ContractActionsResponse>("api/v1/contracts/results/"
-                + this.transactionIdOrHash.value + "/actions");
+            result = axios.get<ContractActionsResponse>(
+                nextURL ?? "api/v1/contracts/results/" + this.transactionIdOrHash.value + "/actions"
+            );
         } else {
             result = Promise.resolve(null)
         }
         return result
     }
+
+    protected nextURL(entity: ContractActionsResponse): string | null {
+        return entity.links?.next ?? null;
+    }
+
+    protected mergeResponses(last: AxiosResponse<ContractActionsResponse>, next: AxiosResponse<ContractActionsResponse>): AxiosResponse<ContractActionsResponse> {
+        const lastActions = last.data.actions ?? []
+        const nextActions = next.data.actions ?? []
+        last.data.actions = lastActions.concat(nextActions)
+        return last
+    }
+
 }
