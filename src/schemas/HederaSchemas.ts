@@ -471,6 +471,31 @@ export interface ContractResultStateChanges {
     value_written: string | null | undefined
 }
 
+export interface ContractActionsResponse {
+    actions: Array<ContractAction> | undefined
+    links: Links | undefined
+}
+
+export interface ContractAction {
+    call_depth: number | undefined,
+    call_operation_type: string | undefined,
+    call_type: string | undefined,
+    caller: string | null | undefined, // Network entity ID in the format of shard.realm.num
+    caller_type: string | undefined,
+    from: string | undefined,
+    gas: number | undefined,
+    gas_used: number | undefined,
+    index: number | undefined,
+    input: string | null | undefined,
+    recipient: string | null | undefined,
+    recipient_type: string | null | undefined,
+    result_data: string | null | undefined,
+    result_data_type: string | undefined,
+    timestamp: string | undefined,
+    to: string | null | undefined,
+    value: number | undefined
+}
+
 // ---------------------------------------------------------------------------------------------------------------------
 //                                                      Node
 // ---------------------------------------------------------------------------------------------------------------------
