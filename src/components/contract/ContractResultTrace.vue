@@ -24,7 +24,7 @@
 
 <template>
 
-  <DashboardCard class="h-card">
+  <DashboardCard v-if="actions?.length" class="h-card">
     <template v-slot:title>
       <span class="h-is-secondary-title">Call Trace</span>
     </template>
@@ -47,8 +47,9 @@
 
 <script lang="ts">
 
-import {defineComponent, inject} from 'vue';
+import {computed, defineComponent, inject, onMounted} from 'vue';
 import DashboardCard from "@/components/DashboardCard.vue";
+import {ContractActionsLoader} from "@/components/contract/ContractActionsLoader";
 
 export default defineComponent({
 
@@ -62,11 +63,16 @@ export default defineComponent({
     transactionIdOrHash: String
   },
 
-  setup() {
+  setup(props) {
     const isSmallScreen = inject('isSmallScreen', true)
     const isTouchDevice = inject('isTouchDevice', false)
 
-    return {}
+    const contractActionsLoader = new ContractActionsLoader(computed(() => props.transactionIdOrHash ?? null))
+    onMounted(() => contractActionsLoader.requestLoad())
+
+    return {
+      actions:contractActionsLoader.actions
+    }
   },
 });
 
