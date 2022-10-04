@@ -39,14 +39,13 @@
 //
 
 import {computed, defineComponent, inject, PropType} from "vue";
-import EmptyTable from "@/components/EmptyTable.vue";
 import {ContractAction} from "@/schemas/HederaSchemas";
 import {ORUGA_MOBILE_BREAKPOINT} from "@/App.vue";
 
 export default defineComponent({
   name: 'ContractActionDetails',
 
-  components: {EmptyTable},
+  components: {},
 
   props: {
     action: Object as PropType<ContractAction | undefined>,
