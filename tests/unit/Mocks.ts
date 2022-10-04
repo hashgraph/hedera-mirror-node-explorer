@@ -1453,7 +1453,7 @@ export const SAMPLE_CONTRACT_ACTIONS = {
     "actions": [
         {
             "call_depth": 1,
-            "call_operation_type": "CALL",
+            "call_operation_type": null,
             "call_type": "CALL",
             "caller": "0.1.2",
             "caller_type": "ACCOUNT",
@@ -1472,7 +1472,7 @@ export const SAMPLE_CONTRACT_ACTIONS = {
         },
         {
             "call_depth": 2,
-            "call_operation_type": "CALL",
+            "call_operation_type": "DELEGATE CALL",
             "call_type": "CALL",
             "caller": "0.1.2",
             "caller_type": "ACCOUNT",
@@ -1484,14 +1484,14 @@ export const SAMPLE_CONTRACT_ACTIONS = {
             "recipient": "0.1.2",
             "recipient_type": "ACCOUNT",
             "result_data": "0x123456",
-            "result_data_type": "OUTPUT",
+            "result_data_type": "ERROR",
             "timestamp": "1586567700.453054000",
             "to": "0x0000000000000000000000000000000000001f41",
             "value": 50000
         },
         {
             "call_depth": 2,
-            "call_operation_type": "CALL",
+            "call_operation_type": "STATIC CALL",
             "call_type": "CALL",
             "caller": "0.1.2",
             "caller_type": "ACCOUNT",

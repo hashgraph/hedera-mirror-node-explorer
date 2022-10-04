@@ -40,9 +40,11 @@
           <span class="is-numeric has-text-grey">
             {{ makeActionDepth(props.row.call_depth) }}
           </span>
-          <span :class="{'has-background-success': isSuccessful, 'has-background-danger': !isSuccessful}"
-                class="ml-2 h-has-pill h-is-text-size-2 ">
-            {{ props.row.call_operation_type }}
+          <span v-if="isSuccessful(props.row)" class="ml-2 h-has-pill h-is-text-size-2 has-background-success">
+            {{ makeOperationType(props.row) }}
+          </span>
+          <span v-else class="ml-2 h-has-pill h-is-text-size-2 has-background-danger">
+            {{ '! ' + makeOperationType(props.row) }}
           </span>
         </div>
       </o-table-column>
@@ -120,12 +122,15 @@ export default defineComponent({
 
     const isSuccessful = (action: ContractAction) => action.result_data_type == "OUTPUT"
 
+    const makeOperationType = (action: ContractAction) => action.call_operation_type ?? action.call_type
+
     return {
       isTouchDevice,
       isMediumScreen,
       handleClick,
       makeActionDepth,
       isSuccessful,
+      makeOperationType,
       ORUGA_MOBILE_BREAKPOINT,
     }
   }
