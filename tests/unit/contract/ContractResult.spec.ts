@@ -94,7 +94,7 @@ describe("ContractResult.vue", () => {
         expect(wrapper.findAll("#logIndexValue").length).toBe(4)
     });
 
-    it.skip("Should display the contract result and logs, given transaction ID", async () => {
+    it("Should display the contract result and logs, given transaction ID", async () => {
 
         await router.push("/") // To avoid "missing required param 'network'" error
 
