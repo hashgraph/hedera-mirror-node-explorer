@@ -1449,6 +1449,67 @@ export const SAMPLE_CONTRACT_AS_ACCOUNT = {
     ],
 }
 
+export const SAMPLE_CONTRACT_ACTIONS = {
+    "actions": [
+        {
+            "call_depth": 1,
+            "call_operation_type": "CALL",
+            "call_type": "CALL",
+            "caller": "0.1.2",
+            "caller_type": "ACCOUNT",
+            "from": "0x0000000000000000000000000000000000000065",
+            "gas": 50000,
+            "gas_used": 50000,
+            "index": 0,
+            "input": "0x123456",
+            "recipient": "0.1.2",
+            "recipient_type": "ACCOUNT",
+            "result_data": "0x123456",
+            "result_data_type": "OUTPUT",
+            "timestamp": "1586567700.453054000",
+            "to": "0x0000000000000000000000000000000000001f41",
+            "value": 50000
+        },
+        {
+            "call_depth": 2,
+            "call_operation_type": "CALL",
+            "call_type": "CALL",
+            "caller": "0.1.2",
+            "caller_type": "ACCOUNT",
+            "from": "0x0000000000000000000000000000000000000065",
+            "gas": 50000,
+            "gas_used": 50000,
+            "index": 1,
+            "input": "0x123456",
+            "recipient": "0.1.2",
+            "recipient_type": "ACCOUNT",
+            "result_data": "0x123456",
+            "result_data_type": "OUTPUT",
+            "timestamp": "1586567700.453054000",
+            "to": "0x0000000000000000000000000000000000001f41",
+            "value": 50000
+        },
+        {
+            "call_depth": 2,
+            "call_operation_type": "CALL",
+            "call_type": "CALL",
+            "caller": "0.1.2",
+            "caller_type": "ACCOUNT",
+            "from": "0x0000000000000000000000000000000000000065",
+            "gas": 50000,
+            "gas_used": 50000,
+            "index": 2,
+            "input": "0x123456",
+            "recipient": "0.1.2",
+            "recipient_type": "ACCOUNT",
+            "result_data": "0x123456",
+            "result_data_type": "OUTPUT",
+            "timestamp": "1586567700.453054000",
+            "to": "0x0000000000000000000000000000000000001f41",
+            "value": 50000
+        }
+    ]
+}
 
 //
 // https://mainnet-public.mirrornode.hedera.com/api/v1/topics/0.0.642394/messages

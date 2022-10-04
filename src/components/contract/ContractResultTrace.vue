@@ -37,6 +37,9 @@
       </div>
     </template>
 
+    <template v-slot:content>
+      <ContractActionsTable :actions="actions"/>
+    </template>
   </DashboardCard>
 
 </template>
@@ -50,12 +53,14 @@
 import {computed, defineComponent, inject, onMounted} from 'vue';
 import DashboardCard from "@/components/DashboardCard.vue";
 import {ContractActionsLoader} from "@/components/contract/ContractActionsLoader";
+import ContractActionsTable from "@/components/contract/ContractActionsTable.vue";
 
 export default defineComponent({
 
   name: 'ContractResultTrace',
 
   components: {
+    ContractActionsTable,
     DashboardCard
   },
 
@@ -71,7 +76,7 @@ export default defineComponent({
     onMounted(() => contractActionsLoader.requestLoad())
 
     return {
-      actions:contractActionsLoader.actions
+      actions: contractActionsLoader.actions
     }
   },
 });
