@@ -172,7 +172,7 @@ const MAX_LOG_LINES = 10
 
 export default defineComponent({
 
-  name: 'ContractResultAndLogs',
+  name: 'ContractResult',
 
   components: {
     ContractResultLog,

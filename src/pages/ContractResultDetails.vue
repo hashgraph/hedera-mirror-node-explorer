@@ -26,7 +26,7 @@
 
   <section class="section" :class="{'h-mobile-background': isTouchDevice || !isSmallScreen}">
 
-    <ContractResultAndLogs
+    <ContractResult
         :contract-id="contractId"
         :timestamp="timestamp"
         :transaction-id-or-hash="transactionIdOrHash"
@@ -47,14 +47,14 @@
 
 import {defineComponent, inject} from 'vue';
 import Footer from "@/components/Footer.vue";
-import ContractResultAndLogs from "@/components/transaction/ContractResultAndLogs.vue";
+import ContractResult from "@/components/contract/ContractResult.vue";
 
 export default defineComponent({
 
   name: 'ContractResultDetails',
 
   components: {
-    ContractResultAndLogs,
+    ContractResult,
     Footer,
   },
 

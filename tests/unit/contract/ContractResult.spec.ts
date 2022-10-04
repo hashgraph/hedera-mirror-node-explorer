@@ -24,7 +24,7 @@ import axios from "axios";
 import {SAMPLE_COINGECKO, SAMPLE_CONTRACT_RESULT_DETAILS} from "../Mocks";
 import MockAdapter from "axios-mock-adapter";
 import {HMSF} from "@/utils/HMSF";
-import ContractResultAndLogs from "@/components/transaction/ContractResultAndLogs.vue";
+import ContractResult from "@/components/contract/ContractResult.vue";
 
 /*
     Bookmarks
@@ -35,7 +35,7 @@ import ContractResultAndLogs from "@/components/transaction/ContractResultAndLog
 
 HMSF.forceUTC = true
 
-describe("ContractResultAndLogs.vue", () => {
+describe("ContractResult.vue", () => {
 
     it("Should display the contract result and logs, given contract ID and timestamp", async () => {
 
@@ -50,7 +50,7 @@ describe("ContractResultAndLogs.vue", () => {
         const matcher2 = "https://api.coingecko.com/api/v3/coins/hedera-hashgraph"
         mock.onGet(matcher2).reply(200, SAMPLE_COINGECKO);
 
-        const wrapper = mount(ContractResultAndLogs, {
+        const wrapper = mount(ContractResult, {
             global: {
                 plugins: [router]
             },
@@ -93,7 +93,7 @@ describe("ContractResultAndLogs.vue", () => {
         const matcher2 = "https://api.coingecko.com/api/v3/coins/hedera-hashgraph"
         mock.onGet(matcher2).reply(200, SAMPLE_COINGECKO);
 
-        const wrapper = mount(ContractResultAndLogs, {
+        const wrapper = mount(ContractResult, {
             global: {
                 plugins: [router]
             },

@@ -41,7 +41,7 @@ import MockAdapter from "axios-mock-adapter";
 import {HMSF} from "@/utils/HMSF";
 import {normalizeTransactionId} from "@/utils/TransactionID";
 import Oruga from "@oruga-ui/oruga-next";
-import ContractResultAndLogs from "@/components/transaction/ContractResultAndLogs.vue";
+import ContractResult from "@/components/contract/ContractResult.vue";
 
 /*
     Bookmarks
@@ -153,8 +153,8 @@ describe("TransactionDetails.vue", () => {
         expect(wrapper.get("#transactionTypeValue").text()).toBe("CONTRACT CALL")
         expect(wrapper.get("#entityId").text()).toBe("Contract ID" + contractId)
 
-        expect(wrapper.findComponent(ContractResultAndLogs).exists()).toBe(true)
-        expect(wrapper.findComponent(ContractResultAndLogs).text()).toMatch(RegExp("^Contract Result"))
+        expect(wrapper.findComponent(ContractResult).exists()).toBe(true)
+        expect(wrapper.findComponent(ContractResult).text()).toMatch(RegExp("^Contract Result"))
         expect(wrapper.get("#resultValue").text()).toBe("SUCCESS")
         expect(wrapper.get("#fromValue").text()).toBe("0000 0000 0000 0000 0000 0000 0000 0000 000c e9b4Copy to Clipboard")
         expect(wrapper.get("#toValue").text()).toBe("0000 0000 0000 0000 0000 0000 0000 0000 0010 3783Copy to Clipboard")
@@ -204,8 +204,8 @@ describe("TransactionDetails.vue", () => {
         expect(wrapper.get("#transactionTypeValue").text()).toBe("CONTRACT CALL")
         expect(wrapper.get("#entityId").text()).toBe("Contract ID" + contractId)
 
-        expect(wrapper.findComponent(ContractResultAndLogs).exists()).toBe(true)
-        expect(wrapper.findComponent(ContractResultAndLogs).text()).toMatch(RegExp("^Contract Result"))
+        expect(wrapper.findComponent(ContractResult).exists()).toBe(true)
+        expect(wrapper.findComponent(ContractResult).text()).toMatch(RegExp("^Contract Result"))
         expect(wrapper.get("#resultValue").text()).toBe("SUCCESS")
         expect(wrapper.get("#fromValue").text()).toBe("0000 0000 0000 0000 0000 0000 0000 0000 000c e9b4Copy to Clipboard")
         expect(wrapper.get("#toValue").text()).toBe("0000 0000 0000 0000 0000 0000 0000 0000 0010 3783Copy to Clipboard")
