@@ -34,21 +34,16 @@
         default-sort="node_id"
         @click="handleClick"
     >
-      <o-table-column v-slot="props" field="index" label="Index">
-        <div class="is-numeric regular-node-column">
-          {{ props.row.index }}
-        </div>
-      </o-table-column>
-
-      <o-table-column v-slot="props" field="call_depth" label="Call Depth">
-        <div class="is-numeric regular-node-column">
-          {{ props.row.call_depth }}
-        </div>
-      </o-table-column>
 
       <o-table-column v-slot="props" field="call_type" label="Call Type">
         <div class="regular-node-column">
-          {{ props.row.call_operation_type }}
+          <span class="is-numeric has-text-grey">
+            {{ makeActionDepth(props.row.call_depth) }}
+          </span>
+          <span :class="{'has-background-success': isSuccessful, 'has-background-danger': !isSuccessful}"
+                class="ml-2 h-has-pill h-is-text-size-2 ">
+            {{ props.row.call_operation_type }}
+          </span>
         </div>
       </o-table-column>
 
@@ -115,10 +110,22 @@ export default defineComponent({
       console.log("Should show details of action:" + action.index)
     }
 
+    const makeActionDepth = (depth: number): string => {
+      let result = ""
+      for (let i = 0; i <= depth; i++) {
+        result += "_" + i
+      }
+      return result
+    }
+
+    const isSuccessful = (action: ContractAction) => action.result_data_type == "OUTPUT"
+
     return {
       isTouchDevice,
       isMediumScreen,
       handleClick,
+      makeActionDepth,
+      isSuccessful,
       ORUGA_MOBILE_BREAKPOINT,
     }
   }
