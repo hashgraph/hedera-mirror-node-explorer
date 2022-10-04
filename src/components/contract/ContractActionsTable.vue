@@ -120,10 +120,6 @@ export default defineComponent({
     const isTouchDevice = inject('isTouchDevice', false)
     const isMediumScreen = inject('isMediumScreen', true)
 
-    const handleClick = (action: ContractAction) => {
-      console.log("Should show details of action:" + action.index)
-    }
-
     const makeActionDepth = (depth: number): string => {
       let result = ""
       for (let i = 0; i <= depth; i++) {
@@ -139,7 +135,6 @@ export default defineComponent({
     return {
       isTouchDevice,
       isMediumScreen,
-      handleClick,
       makeActionDepth,
       isSuccessful,
       makeOperationType,
