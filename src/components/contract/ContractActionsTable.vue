@@ -34,6 +34,8 @@
         detailed
         custom-detail-row
         narrowed="narrowed"
+        :openedDetailed="expandedActions"
+        @update:openedDetailed="onOpenedDetailedChange"
     >
 
       <o-table-column v-slot="props" field="call_type" label="Call Type">
@@ -109,10 +111,14 @@ export default defineComponent({
   components: {HbarAmount, ContractActionDetails, EmptyTable},
 
   props: {
-    actions: Object as PropType<Array<ContractAction> | undefined>,
+    actions: Array as PropType<Array<ContractAction> | undefined>,
+    expandedActions:  {
+      type: Array as PropType<Array<ContractAction>>,
+      default: () => []
+    }
   },
 
-  setup() {
+  setup(props, context) {
     const isTouchDevice = inject('isTouchDevice', false)
     const isMediumScreen = inject('isMediumScreen', true)
 
@@ -128,12 +134,17 @@ export default defineComponent({
 
     const makeOperationType = (action: ContractAction) => action.call_operation_type ?? action.call_type
 
+    const onOpenedDetailedChange = (newValue: ContractAction[]) => {
+      context.emit("update:expandedActions", newValue)
+    }
+
     return {
       isTouchDevice,
       isMediumScreen,
       makeActionDepth,
       isSuccessful,
       makeOperationType,
+      onOpenedDetailedChange,
       ORUGA_MOBILE_BREAKPOINT,
     }
   }

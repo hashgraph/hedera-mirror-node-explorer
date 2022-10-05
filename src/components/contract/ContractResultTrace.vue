@@ -31,14 +31,14 @@
 
     <template v-slot:control>
       <div class="is-flex is-justify-content-flex-end is-align-items-baseline">
-        <button id="collapseAllButton" :disabled="true"
-                class="button is-white is-small ml-4" @click="alert('collapse all')">COLLAPSE ALL
+        <button id="collapseAllButton" :disabled="collapseAllDisabled"
+                class="button is-white is-small ml-4" @click="collapseAll">COLLAPSE ALL
         </button>
       </div>
     </template>
 
     <template v-slot:content>
-      <ContractActionsTable :actions="actions"/>
+      <ContractActionsTable :actions="actions" v-model:expandedActions="expandedActions"/>
     </template>
   </DashboardCard>
 
@@ -50,10 +50,11 @@
 
 <script lang="ts">
 
-import {computed, defineComponent, inject, onMounted} from 'vue';
+import {computed, defineComponent, onMounted, Ref, ref} from 'vue';
 import DashboardCard from "@/components/DashboardCard.vue";
 import {ContractActionsLoader} from "@/components/contract/ContractActionsLoader";
 import ContractActionsTable from "@/components/contract/ContractActionsTable.vue";
+import {ContractAction} from "@/schemas/HederaSchemas";
 
 export default defineComponent({
 
@@ -69,14 +70,25 @@ export default defineComponent({
   },
 
   setup(props) {
-    const isSmallScreen = inject('isSmallScreen', true)
-    const isTouchDevice = inject('isTouchDevice', false)
+    // const isSmallScreen = inject('isSmallScreen', true)
+    // const isTouchDevice = inject('isTouchDevice', false)
 
     const contractActionsLoader = new ContractActionsLoader(computed(() => props.transactionIdOrHash ?? null))
     onMounted(() => contractActionsLoader.requestLoad())
 
+    const expandedActions: Ref<ContractAction[]> = ref([])
+    const collapseAllDisabled = computed(() => {
+      return expandedActions.value.length == 0
+    })
+    const collapseAll = (): void => {
+      expandedActions.value = []
+    }
+
     return {
-      actions: contractActionsLoader.actions
+      actions: contractActionsLoader.actions,
+      expandedActions,
+      collapseAll,
+      collapseAllDisabled,
     }
   },
 });
