@@ -27,50 +27,44 @@
   <div id="contractActionsTable">
     <o-table
         :data="actions"
-        :hoverable="true"
+        :hoverable="false"
         :mobile-breakpoint="ORUGA_MOBILE_BREAKPOINT"
         :paginated="false"
         :striped="true"
-        default-sort="node_id"
-
         detailed
         custom-detail-row
     >
 
       <o-table-column v-slot="props" field="call_type" label="Call Type">
-        <div class="regular-node-column">
           <span class="is-numeric has-text-grey">
             {{ makeActionDepth(props.row.call_depth) }}
           </span>
-          <span v-if="isSuccessful(props.row)" class="ml-2 h-has-pill h-is-text-size-2 has-background-success">
+        <span v-if="isSuccessful(props.row)" class="ml-2 h-has-pill h-is-text-size-2 has-background-success">
             {{ makeOperationType(props.row) }}
           </span>
-          <span v-else class="ml-2 h-has-pill h-is-text-size-2 has-background-danger">
+        <span v-else class="ml-2 h-has-pill h-is-text-size-2 has-background-danger">
             {{ '! ' + makeOperationType(props.row) }}
           </span>
-        </div>
       </o-table-column>
 
       <o-table-column v-slot="props" field="from" label="From">
-        <div class="regular-node-column">
-          {{ props.row.from }}
-        </div>
+          {{ props.row.caller }}
       </o-table-column>
 
       <o-table-column v-slot="props" field="amount" label="Amount">
-        <div class="is-numeric regular-node-column">
-          {{ props.row.value }}
+        <div class="is-flex is-align-items-end is-align-content-end is-numeric">
+         <span style="font-size: 13px; margin-right: 2px">&#8594;</span>
+          <HbarAmount :amount="props.row.value" :show-extra="true"/>
+          <span style="font-size: 13px; margin-left: 2px;: 2px">&#8594;</span>
         </div>
       </o-table-column>
 
       <o-table-column v-slot="props" field="to" label="To">
-        <div class="regular-node-column">
-          {{ props.row.to }}
-        </div>
+          {{ props.row.recipient }}
       </o-table-column>
 
       <o-table-column v-slot="props" field="gas_limit" label="Gas Limit">
-        <div class="is-numeric regular-node-column">
+        <div class="is-numeric">
           {{ props.row.gas }}
         </div>
       </o-table-column>
@@ -101,6 +95,7 @@ import {defineComponent, inject, PropType} from 'vue';
 import {ContractAction} from "@/schemas/HederaSchemas";
 import {ORUGA_MOBILE_BREAKPOINT} from '@/App.vue';
 import EmptyTable from "@/components/EmptyTable.vue";
+import HbarAmount from "@/components/values/HbarAmount.vue";
 import ContractActionDetails from "@/components/contract/ContractActionDetails.vue";
 
 //
@@ -110,7 +105,7 @@ import ContractActionDetails from "@/components/contract/ContractActionDetails.v
 export default defineComponent({
   name: 'ContractActionsTable',
 
-  components: {ContractActionDetails, EmptyTable},
+  components: {HbarAmount, ContractActionDetails, EmptyTable},
 
   props: {
     actions: Object as PropType<Array<ContractAction> | undefined>,
