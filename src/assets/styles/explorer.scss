@@ -345,10 +345,22 @@ a.button.is-ghost.is-last {
 .h-has-column-separator {
     padding-left: 1rem;
     padding-top: 12px;
-    border-left: 1px solid grey;
+    border-left: 1px grey solid;
 }
 @media (max-width: 767px) {
     .h-has-column-separator {
+        padding-left: 12px;
+        padding-top: 1rem;
+        border-left: initial;
+    }
+}
+.h-has-column-dotted-separator {
+    padding-left: 1rem;
+    padding-top: 12px;
+    border-left: 1px dimgrey dotted;
+}
+@media (max-width: 767px) {
+    .h-has-column-dotted-separator {
         padding-left: 12px;
         padding-top: 1rem;
         border-left: initial;

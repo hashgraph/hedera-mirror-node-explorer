@@ -33,6 +33,7 @@
         :striped="true"
         detailed
         custom-detail-row
+        narrowed="narrowed"
     >
 
       <o-table-column v-slot="props" field="call_type" label="Call Type">

@@ -23,9 +23,50 @@
 <!-- --------------------------------------------------------------------------------------------------------------- -->
 
 <template>
-
-  <div>{{ jsonText }}</div>
-
+  <div class="columns pt-2 pb-2">
+    <div class="column">
+      <Property id="actionDetailFrom" custom-nb-col-class="is-one-fifth">
+        <template v-slot:name>From</template>
+        <template v-slot:value>
+          <HexaValue :byte-string="action.from"/>
+          <StringValue :string-value="' (' + action.caller + ')'"/>
+        </template>
+      </Property>
+      <Property id="actionDetailTo" custom-nb-col-class="is-one-fifth">
+        <template v-slot:name>To</template>
+        <template v-slot:value>
+          <HexaValue :byte-string="action.to"/>
+          <StringValue :string-value="' (' + action.recipient + ')'"/>
+        </template>
+      </Property>
+      <Property id="actionDetailFunction" custom-nb-col-class="is-one-fifth">
+        <template v-slot:name>Function</template>
+        <template v-slot:value>
+          <HexaValue :byte-string="action.input"/>
+        </template>
+      </Property>
+    </div>
+    <div class="column h-has-column-dotted-separator">
+      <Property id="actionDetailGasLimit" custom-nb-col-class="is-one-fifth">
+        <template v-slot:name>Gas Limit</template>
+        <template v-slot:value>
+          <PlainAmount :amount="action.gas"/>
+        </template>
+      </Property>
+      <Property id="actionDetailGasUsed" custom-nb-col-class="is-one-fifth">
+        <template v-slot:name>Gas Used</template>
+        <template v-slot:value>
+          <PlainAmount :amount="action.gas_used"/>
+        </template>
+      </Property>
+      <Property id="actionDetailError" custom-nb-col-class="is-one-fifth">
+        <template v-slot:name>Error Message</template>
+        <template v-slot:value>
+          <StringValue :string-value="action.result_data"/>
+        </template>
+      </Property>
+    </div>
+  </div>
 </template>
 
 <!-- --------------------------------------------------------------------------------------------------------------- -->
@@ -41,11 +82,15 @@
 import {computed, defineComponent, inject, PropType} from "vue";
 import {ContractAction} from "@/schemas/HederaSchemas";
 import {ORUGA_MOBILE_BREAKPOINT} from "@/App.vue";
+import Property from "@/components/Property.vue";
+import StringValue from "@/components/values/StringValue.vue";
+import HexaValue from "@/components/values/HexaValue.vue";
+import PlainAmount from "@/components/values/PlainAmount.vue";
 
 export default defineComponent({
   name: 'ContractActionDetails',
 
-  components: {},
+  components: {PlainAmount, HexaValue, StringValue, Property},
 
   props: {
     action: Object as PropType<ContractAction | undefined>,
