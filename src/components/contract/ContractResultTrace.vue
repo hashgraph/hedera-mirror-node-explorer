@@ -31,8 +31,11 @@
 
     <template v-slot:control>
       <div class="is-flex is-justify-content-flex-end is-align-items-baseline">
-        <button id="collapseAllButton" :disabled="collapseAllDisabled"
+        <button v-if="collapseAllVisible" id="collapseAllButton" :disabled="collapseAllDisabled"
                 class="button is-white is-small ml-4" @click="collapseAll">COLLAPSE ALL
+        </button>
+        <button v-else id="expandAllButton"
+                class="button is-white is-small ml-4" @click="expandAll">EXPAND ALL
         </button>
       </div>
     </template>
@@ -77,17 +80,26 @@ export default defineComponent({
     onMounted(() => contractActionsLoader.requestLoad())
 
     const expandedActions: Ref<ContractAction[]> = ref([])
+    const collapseAllVisible = computed(() => {
+      const actionCount = contractActionsLoader.actions.value?.length ?? 0
+      return expandedActions.value.length >= 1 || actionCount == 0
+    })
     const collapseAllDisabled = computed(() => {
       return expandedActions.value.length == 0
     })
     const collapseAll = (): void => {
       expandedActions.value = []
     }
+    const expandAll = (): void => {
+      expandedActions.value = contractActionsLoader.actions.value ?? []
+    }
 
     return {
       actions: contractActionsLoader.actions,
       expandedActions,
       collapseAll,
+      expandAll,
+      collapseAllVisible,
       collapseAllDisabled,
     }
   },
