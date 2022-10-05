@@ -56,6 +56,7 @@ import Footer from "@/components/Footer.vue";
 import BlockTable from "@/components/block/BlockTable.vue";
 import PlayPauseButton from "@/utils/table/PlayPauseButton.vue";
 import {BlockTableController} from "@/components/block/BlockTableController";
+import {useRouter} from "vue-router";
 
 export default defineComponent({
   name: 'Blocks',
@@ -78,9 +79,9 @@ export default defineComponent({
 
     // BlockTableController
     const pageSize = computed(() => isMediumScreen ? 15 : 5)
-    const blockTableController = new BlockTableController(pageSize)
-    onMounted(() => blockTableController.mounted.value = true)
-    onBeforeUnmount(() => blockTableController.mounted.value = false)
+    const blockTableController = new BlockTableController(useRouter(), pageSize)
+    onMounted(() => blockTableController.mount())
+    onBeforeUnmount(() => blockTableController.unmount())
 
     return {
       isSmallScreen,

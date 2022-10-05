@@ -18,10 +18,11 @@
  *
  */
 
-import {TableController} from "@/utils/table/TableController";
+import {KeyOperator, SortOrder, TableController} from "@/utils/table/TableController";
 import {Transaction, TransactionResponse} from "@/schemas/HederaSchemas";
-import {Ref} from "vue";
+import {ComputedRef, Ref} from "vue";
 import axios, {AxiosResponse} from "axios";
+import {Router} from "vue-router";
 
 
 export class RewardsTransactionTableController extends TableController<Transaction, string> {
@@ -32,8 +33,8 @@ export class RewardsTransactionTableController extends TableController<Transacti
     // Public
     //
 
-    public constructor(accountId: Ref<string|null>, pageSize: Ref<number>) {
-        super(pageSize, 10 * pageSize.value, 5000, 10, 100);
+    public constructor(router: Router, accountId: Ref<string|null>, pageSize: ComputedRef<number>) {
+        super(router, pageSize, 10 * pageSize.value, 5000, 10, 100);
         this.accountId = accountId
         this.watchAndReload([this.accountId])
     }
@@ -42,101 +43,51 @@ export class RewardsTransactionTableController extends TableController<Transacti
     // TableController
     //
 
-    public async loadAfter(consensusTimestamp: string|null, limit: number): Promise<Transaction[]|null> {
-        return this.safeLoadAfter(consensusTimestamp, limit, 10)
-    }
-
-    public async loadBefore(consensusTimestamp: string, limit: number): Promise<Transaction[]|null> {
-        return this.loadBetween(null, consensusTimestamp, limit)
-    }
-
-    public keyFor(row: Transaction): string {
-        return row.consensus_timestamp ?? ""
-    }
-
-    //
-    // Private
-    //
-
-    private safeLoadAfter(consensusTimestamp: string|null, limit: number, countDown: number): Promise<Transaction[]|null> {
-        let result: Promise<Transaction[]|null>
+    public async load(consensusTimestamp: string | null, operator: KeyOperator,
+                      order: SortOrder, limit: number): Promise<Transaction[] | null> {
+        let result: Promise<Transaction[] | null>
 
         const accountId = this.accountId.value
         if (accountId === null) {
             result = Promise.resolve(null)
-        } else if (countDown == 0) {
-            result = Promise.resolve([])
         } else {
             const params = {} as {
                 limit: number
                 "account.id": string | undefined
                 timestamp: string | undefined
             }
-            params.limit = limit
+            params.limit = this.maxLimit // Note : we ask maximum because we are going to filter result
             params["account.id"] = accountId
             if (consensusTimestamp !== null) {
                 params.timestamp = "lt:" + consensusTimestamp
             }
-            const cb = (r: AxiosResponse<TransactionResponse>): Promise<Transaction[]|null> =>{
-                let result: Promise<Transaction[]|null>
+            const cb = (r: AxiosResponse<TransactionResponse>): Promise<Transaction[] | null> => {
                 const loadedTxs = r.data.transactions ?? []
-                const drained = loadedTxs.length < limit
                 const matchingTxs = RewardsTransactionTableController.filterTransactions(loadedTxs, accountId)
-                const nextLimit = limit - matchingTxs.length
-                if (drained || loadedTxs.length == matchingTxs.length || nextLimit == 0) {
-                    result = Promise.resolve(matchingTxs)
-                } else {
-                    const lastTimestamp = this.keyFor(loadedTxs[loadedTxs.length - 1])
-                    const resolve = (r: Transaction[]|null) =>  {
-                        return Promise.resolve(r !== null ? matchingTxs.concat(r) : null)
-                    }
-                    result = this.safeLoadAfter(lastTimestamp, nextLimit, countDown - 1).then(resolve)
-                }
-                return result
+                const resultTxs = matchingTxs.slice(0, limit)
+                return Promise.resolve(resultTxs)
             }
-            result = axios.get<TransactionResponse>("api/v1/transactions", { params: params} ).then(cb)
+            result = axios.get<TransactionResponse>("api/v1/transactions", {params: params}).then(cb)
         }
 
         return result
     }
 
-    private loadBetween(ltTimestamp: string|null, gteTimestamp: string, limit: number): Promise<Transaction[]|null> {
-        let result: Promise<Transaction[]|null>
-
-        const accountId = this.accountId.value
-        if (accountId === null) {
-            result = Promise.resolve(null)
-        } else {
-            const params = "limit=" + limit
-                + "&account.id=" + accountId
-                + "&timestamp=gte:" + gteTimestamp
-                + (ltTimestamp !== null ? "&timestamp=lt:" + ltTimestamp : "")
-            const cb = (r: AxiosResponse<TransactionResponse>): Promise<Transaction[]|null> =>{
-                let result: Promise<Transaction[]|null>
-                const loadedTxs = r.data.transactions ?? []
-                const drained = loadedTxs.length < limit
-                const matchingTxs = RewardsTransactionTableController.filterTransactions(loadedTxs, accountId)
-                const nextLimit = limit - matchingTxs.length
-                if (drained || loadedTxs.length == matchingTxs.length || nextLimit == 0) {
-                    result = Promise.resolve(matchingTxs)
-                } else {
-                    const lastTimestamp = this.keyFor(loadedTxs[loadedTxs.length - 1])
-                    if (lastTimestamp != gteTimestamp) {
-                        const resolve = (r: Transaction[]|null) =>  {
-                            return Promise.resolve(r !== null ? matchingTxs.concat(r) : null)
-                        }
-                        result = this.loadBetween(lastTimestamp, gteTimestamp, nextLimit).then(resolve)
-                    } else {
-                        result = Promise.resolve(matchingTxs)
-                    }
-                }
-                return result
-            }
-            result = axios.get<TransactionResponse>("api/v1/transactions?" + params ).then(cb)
-        }
-
-        return result
+    public keyFor(row: Transaction): string {
+        return row.consensus_timestamp ?? ""
     }
+
+    public keyFromString(s: string): string | null {
+        return s
+    }
+
+    public stringFromKey(key: string): string {
+        return key
+    }
+
+    //
+    // Private
+    //
 
     private static rewardAccountId = "0.0.800"
 

@@ -90,7 +90,7 @@
 
 <script lang="ts">
 
-import {computed, defineComponent, inject, onBeforeUnmount, onMounted, ref, watch} from 'vue';
+import {computed, defineComponent, inject, onBeforeUnmount, onMounted, watch} from 'vue';
 
 import HbarMarketDashboard from "../components/dashboard/HbarMarketDashboard.vue";
 import DashboardCard from "@/components/DashboardCard.vue";
@@ -101,6 +101,7 @@ import ContractCallTransactionTable from "@/components/dashboard/ContractCallTra
 import {TransactionType} from "@/schemas/HederaSchemas";
 import Footer from "@/components/Footer.vue";
 import {TransactionTableController} from "@/components/transaction/TransactionTableController";
+import {useRouter} from "vue-router";
 
 export default defineComponent({
   name: 'MainDashboard',
@@ -125,27 +126,28 @@ export default defineComponent({
     const isTouchDevice = inject('isTouchDevice', false)
     const displaySideBySide = inject('isLargeScreen', true)
 
+    const router = useRouter()
     const pageSize = computed(() => isMediumScreen ? 5 : 6)
 
-    const cryptoTableController = new TransactionTableController(ref(null), pageSize, false)
-    cryptoTableController.transactionType.value = TransactionType.CRYPTOTRANSFER
+    const cryptoTableController = new TransactionTableController(
+        router, pageSize, TransactionType.CRYPTOTRANSFER, "", "p1", "k1")
 
-    const messageTableController = new TransactionTableController(ref(null), pageSize, false)
-    messageTableController.transactionType.value = TransactionType.CONSENSUSSUBMITMESSAGE
+    const messageTableController = new TransactionTableController(
+        router, pageSize, TransactionType.CONSENSUSSUBMITMESSAGE, "", "p2", "k2")
 
-    const contractTableController = new TransactionTableController(ref(null), pageSize, false)
-    contractTableController.transactionType.value = TransactionType.CONTRACTCALL
+    const contractTableController = new TransactionTableController(
+        router, pageSize, TransactionType.CONTRACTCALL, "", "p3", "k3")
 
     onMounted(() => {
-      cryptoTableController.mounted.value = true
-      messageTableController.mounted.value = true
-      contractTableController.mounted.value = true
+      cryptoTableController.mount()
+      messageTableController.mount()
+      contractTableController.mount()
     })
 
     onBeforeUnmount(() => {
-      cryptoTableController.mounted.value = false
-      messageTableController.mounted.value = false
-      contractTableController.mounted.value = false
+      cryptoTableController.unmount()
+      messageTableController.unmount()
+      contractTableController.unmount()
     })
 
     watch(() => props.network, () => {

@@ -93,7 +93,7 @@ import TransactionLabel from "@/components/values/TransactionLabel.vue";
 import HbarAmount from "@/components/values/HbarAmount.vue";
 import {ORUGA_MOBILE_BREAKPOINT} from '@/App.vue';
 import EmptyTable from "@/components/EmptyTable.vue";
-import {TransactionTableController} from "@/components/transaction/TransactionTableController";
+import {TransactionTableControllerXL} from "@/components/transaction/TransactionTableControllerXL";
 
 export default defineComponent({
   name: 'ContractTransactionTable',
@@ -102,7 +102,7 @@ export default defineComponent({
 
   props: {
     controller: {
-      type: Object as PropType<TransactionTableController>,
+      type: Object as PropType<TransactionTableControllerXL>,
       required: true
     }
   },
@@ -118,7 +118,7 @@ export default defineComponent({
     return {
       isTouchDevice,
       isMediumScreen,
-      transactions: props.controller.pageRows as ComputedRef<Transaction[]>,
+      transactions: props.controller.rows as ComputedRef<Transaction[]>,
       loading: props.controller.loading as ComputedRef<boolean>,
       total: props.controller.totalRowCount as ComputedRef<number>,
       currentPage: props.controller.currentPage as Ref<number>,

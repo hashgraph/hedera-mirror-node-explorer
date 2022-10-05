@@ -130,7 +130,7 @@
               </template>
             </Property>
 
-        <Property id="expiresAt">
+            <Property id="expiresAt">
               <template v-slot:name>Expires at</template>
               <template v-slot:value>
                 <TimestampValue v-bind:timestamp="account?.expiry_timestamp" v-bind:show-none="true" />
@@ -223,7 +223,7 @@ import Property from "@/components/Property.vue";
 import NotificationBanner from "@/components/NotificationBanner.vue";
 import EthAddress from "@/components/values/EthAddress.vue";
 import StringValue from "@/components/values/StringValue.vue";
-import {TransactionTableController} from "@/components/transaction/TransactionTableController";
+import {TransactionTableControllerXL} from "@/components/transaction/TransactionTableControllerXL";
 import AccountLink from "@/components/values/AccountLink.vue";
 import {AccountLoader} from "@/components/account/AccountLoader";
 import {ContractLoader} from "@/components/contract/ContractLoader";
@@ -306,29 +306,9 @@ export default defineComponent({
     //
     const perPage = computed(() => isMediumScreen ? 10 : 5)
     const accountId = computed(() => accountLoader.entity.value?.account ?? null)
-    const transactionTableController = new TransactionTableController(accountId, perPage, true)
-    onMounted(() => transactionTableController.mounted.value = true)
-    onBeforeUnmount(() => transactionTableController.mounted.value = false)
-
-    //
-    // transaction filter selection
-    //
-
-    const updateQuery = () => {
-      router.replace({
-        query: {type: transactionTableController.transactionType.value.toLowerCase()}
-      })
-    }
-    watch(transactionTableController.transactionType, () => {
-      updateQuery()
-    })
-    const transactionFilterFromRoute = computed(() => {
-      return (router.currentRoute.value.query?.type as string ?? "").toUpperCase()
-    })
-    watch(transactionFilterFromRoute, () => {
-      transactionTableController.transactionType.value = transactionFilterFromRoute.value
-    })
-    transactionTableController.transactionType.value = transactionFilterFromRoute.value
+    const transactionTableController = new TransactionTableControllerXL(router, accountId, perPage, true)
+    onMounted(() => transactionTableController.mount())
+    onBeforeUnmount(() => transactionTableController.unmount())
 
     //
     // balanceCache

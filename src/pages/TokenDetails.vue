@@ -258,6 +258,7 @@
 <script lang="ts">
 
 import {computed, defineComponent, inject, onBeforeUnmount, onMounted} from 'vue';
+import {useRouter} from "vue-router";
 import router from "@/router";
 import KeyValue from "@/components/values/KeyValue.vue";
 import TimestampValue from "@/components/values/TimestampValue.vue";
@@ -351,17 +352,17 @@ export default defineComponent({
     // TokenBalanceTableController
     //
     const fungibleTokenId = computed(() => tokenInfoLoader.isFungible.value ? tokenInfoLoader.tokenId.value : null)
-    const tokenBalanceTableController = new TokenBalanceTableController(fungibleTokenId, perPage);
-    onMounted(() => tokenBalanceTableController.mounted.value = true)
-    onBeforeUnmount(() => tokenBalanceTableController.mounted.value = false)
+    const tokenBalanceTableController = new TokenBalanceTableController(useRouter(), fungibleTokenId, perPage);
+    onMounted(() => tokenBalanceTableController.mount())
+    onBeforeUnmount(() => tokenBalanceTableController.unmount())
 
     //
     // NftHolderTableController
     //
     const nftTokenId = computed(() => tokenInfoLoader.isNft.value ? tokenInfoLoader.tokenId.value : null)
-    const nftHolderTableController = new NftHolderTableController(nftTokenId, perPage)
-    onMounted(() => nftHolderTableController.mounted.value = true)
-    onBeforeUnmount(() => nftHolderTableController.mounted.value = false)
+    const nftHolderTableController = new NftHolderTableController(useRouter(), nftTokenId, perPage)
+    onMounted(() => nftHolderTableController.mount())
+    onBeforeUnmount(() => nftHolderTableController.unmount())
 
     return {
       isSmallScreen,

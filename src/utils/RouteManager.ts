@@ -18,7 +18,7 @@
  *
  */
 
-import {Router} from "vue-router";
+import {RouteLocationNormalizedLoaded, Router} from "vue-router";
 import {networkRegistry} from "@/schemas/NetworkRegistry";
 import {computed} from "vue";
 
@@ -55,3 +55,26 @@ export class RouteManager {
 }
 
 
+
+export function fetchStringQueryParam(paramName: string, route: RouteLocationNormalizedLoaded): string|null {
+    let result: string|null
+    const v = route.query[paramName]
+    if (typeof v == "string") {
+        result = v
+    } else {
+        result = null
+    }
+    return result
+}
+
+export function fetchNumberQueryParam(paramName: string, route: RouteLocationNormalizedLoaded): number|null {
+    let result: number|null
+    const v = route.query[paramName]
+    if (typeof v == "string") {
+        const i = parseInt(v)
+        result = isNaN(i) || i < 1 ? null : i
+    } else {
+        result = null
+    }
+    return result
+}

@@ -24,7 +24,7 @@
 
   <template>
     ...
-    <PlayPauseButton v-bind:controller="tableController"/>
+    <PlayPauseButton v-bind:controller="TableControllerV3"/>
     ...
   </template>
 
@@ -34,7 +34,7 @@
     ...
 
     return {
-      tableController: xxxTableController
+      TableControllerV3: xxxTableController
     }
   </script>
 
@@ -85,7 +85,11 @@ export default defineComponent({
     const handleClick = () => {
       if (props.controller) {
         const controller = props.controller
-        controller.autoRefresh.value = ! controller.autoRefresh.value
+        if (controller.autoRefresh.value) {
+          controller.stopAutoRefresh()
+        } else {
+          controller.startAutoRefresh()
+        }
       } else {
         console.log("Ignoring click because props.controller is undefined")
       }

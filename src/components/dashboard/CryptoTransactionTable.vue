@@ -100,7 +100,7 @@ export default defineComponent({
     }
 
     return {
-      transactions: props.controller.pageRows as ComputedRef<Transaction[]>,
+      transactions: props.controller.rows as ComputedRef<Transaction[]>,
       loading: props.controller.loading as ComputedRef<boolean>,
       total: props.controller.totalRowCount as ComputedRef<number>,
       currentPage: props.controller.currentPage as Ref<number>,

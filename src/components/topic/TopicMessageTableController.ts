@@ -18,10 +18,11 @@
  *
  */
 
-import {TableController} from "@/utils/table/TableController"
+import {KeyOperator, SortOrder, TableController} from "@/utils/table/TableController"
 import {TopicMessage, TopicMessagesResponse} from "@/schemas/HederaSchemas"
 import axios, {AxiosResponse} from "axios"
-import {ComputedRef, Ref} from "vue"
+import {ComputedRef} from "vue"
+import {Router} from "vue-router";
 
 export class TopicMessageTableController extends TableController<TopicMessage, string> {
 
@@ -31,8 +32,8 @@ export class TopicMessageTableController extends TableController<TopicMessage, s
     // Public
     //
 
-    public constructor(topicId: ComputedRef<string|null>, pageSize: Ref<number>) {
-        super(pageSize, 10 * pageSize.value, 5000, 10, 100);
+    public constructor(router: Router, topicId: ComputedRef<string|null>, pageSize: ComputedRef<number>) {
+        super(router, pageSize, 10 * pageSize.value, 5000, 10, 100);
         this.topicId = topicId
         this.watchAndReload([this.topicId])
     }
@@ -41,23 +42,7 @@ export class TopicMessageTableController extends TableController<TopicMessage, s
     // TableController
     //
 
-    public async loadAfter(consensusTimestamp: string|null, limit: number): Promise<TopicMessage[]|null> {
-        return this.load(consensusTimestamp, "lt", limit)
-    }
-
-    public async loadBefore(consensusTimestamp: string, limit: number): Promise<TopicMessage[]|null> {
-        return this.load(consensusTimestamp, "gte", limit)
-    }
-
-    public keyFor(row: TopicMessage): string {
-        return row.consensus_timestamp ?? ""
-    }
-
-    //
-    // Private
-    //
-
-    private load(consensusTimestamp: string|null, operator: string, limit: number) : Promise<TopicMessage[]|null> {
+    public async load(consensusTimestamp: string|null, operator: KeyOperator, order: SortOrder, limit: number): Promise<TopicMessage[]|null> {
         let result: Promise<TopicMessage[]|null>
         if (this.topicId.value !== null) {
             const params = {} as {
@@ -66,7 +51,7 @@ export class TopicMessageTableController extends TableController<TopicMessage, s
                 order: string
             }
             params.limit = limit
-            params.order = 'desc'
+            params.order = order
             if (consensusTimestamp != null) {
                 params.timestamp = operator + ":" + consensusTimestamp
             }
@@ -80,6 +65,18 @@ export class TopicMessageTableController extends TableController<TopicMessage, s
         }
 
         return result
+    }
+
+    public keyFor(row: TopicMessage): string {
+        return row.consensus_timestamp ?? ""
+    }
+
+    public stringFromKey(timestamp: string): string {
+        return timestamp
+    }
+
+    public keyFromString(s: string): string|null {
+        return s
     }
 
 }

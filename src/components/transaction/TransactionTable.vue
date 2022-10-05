@@ -84,7 +84,7 @@ import TransactionLabel from "@/components/values/TransactionLabel.vue";
 import {makeTypeLabel} from "@/utils/TransactionTools";
 import router from "@/router";
 import {ORUGA_MOBILE_BREAKPOINT} from "@/App.vue";
-import {TransactionTableController} from "@/components/transaction/TransactionTableController";
+import {TransactionTableControllerXL} from "@/components/transaction/TransactionTableControllerXL";
 import EmptyTable from "@/components/EmptyTable.vue";
 
 export default defineComponent({
@@ -95,7 +95,7 @@ export default defineComponent({
   props: {
     narrowed: Boolean,
     controller: {
-      type: Object as PropType<TransactionTableController>,
+      type: Object as PropType<TransactionTableControllerXL>,
       required: true
     }
   },
@@ -111,7 +111,7 @@ export default defineComponent({
     return {
       isTouchDevice,
       isMediumScreen,
-      transactions: props.controller.pageRows as ComputedRef<Transaction[]>,
+      transactions: props.controller.rows as ComputedRef<Transaction[]>,
       loading: props.controller.loading as ComputedRef<boolean>,
       total: props.controller.totalRowCount as ComputedRef<number>,
       currentPage: props.controller.currentPage as Ref<number>,

@@ -58,6 +58,7 @@
 <script lang="ts">
 
 import {computed, defineComponent, inject, onBeforeUnmount, onMounted} from 'vue';
+import {useRouter} from "vue-router";
 import PlayPauseButton from "@/utils/table/PlayPauseButton.vue";
 import TopicMessageTable from "@/components/topic/TopicMessageTable.vue";
 import DashboardCard from "@/components/DashboardCard.vue";
@@ -121,9 +122,9 @@ export default defineComponent({
     //
 
     const pageSize = computed(() => isMediumScreen ? 15 : 5)
-    const messageTableController = new TopicMessageTableController(normalizedTopicId, pageSize)
-    onMounted(() => messageTableController.mounted.value = true)
-    onBeforeUnmount(() => messageTableController.mounted.value = false)
+    const messageTableController = new TopicMessageTableController(useRouter(), normalizedTopicId, pageSize)
+    onMounted(() => messageTableController.mount())
+    onBeforeUnmount(() => messageTableController.unmount())
 
     return {
       isSmallScreen,

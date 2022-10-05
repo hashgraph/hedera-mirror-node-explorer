@@ -56,6 +56,7 @@ import DashboardCard from "@/components/DashboardCard.vue";
 import Footer from "@/components/Footer.vue";
 import {AccountTableController} from "@/components/account/AccountTableController";
 import PlayPauseButton from "@/utils/table/PlayPauseButton.vue";
+import {useRouter} from "vue-router";
 
 export default defineComponent({
   name: 'Accounts',
@@ -80,9 +81,9 @@ export default defineComponent({
     // AccountTableController
     //
     const perPage = computed(() => isMediumScreen ? 15 : 10)
-    const accountTableController = new AccountTableController(perPage)
-    onMounted(() => accountTableController.mounted.value = true)
-    onBeforeUnmount(() => accountTableController.mounted.value = false)
+    const accountTableController = new AccountTableController(useRouter(), perPage)
+    onMounted(() => accountTableController.mount())
+    onBeforeUnmount(() => accountTableController.unmount())
 
     return {
       isSmallScreen,

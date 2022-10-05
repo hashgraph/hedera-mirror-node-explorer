@@ -47,12 +47,13 @@
 
 <script lang="ts">
 
-import {computed, defineComponent, inject, onBeforeUnmount, onMounted, ref, watch} from 'vue';
+import {computed, defineComponent, inject, onBeforeUnmount, onMounted, watch} from 'vue';
 import TopicTable from "@/components/topic/TopicTable.vue";
 import DashboardCard from "@/components/DashboardCard.vue";
 import Footer from "@/components/Footer.vue";
 import {TransactionTableController} from "@/components/transaction/TransactionTableController";
 import {TransactionResult, TransactionType} from "@/schemas/HederaSchemas";
+import {useRouter} from "vue-router";
 
 export default defineComponent({
   name: 'Topics',
@@ -72,12 +73,13 @@ export default defineComponent({
     const isMediumScreen = inject('isMediumScreen', true)
     const isTouchDevice = inject('isTouchDevice', false)
 
+
+    const router = useRouter()
     const pageSize = computed(() => isMediumScreen ? 15 : 5)
-    const transactionTableController = new TransactionTableController(ref(null), pageSize, false)
-    transactionTableController.transactionType.value = TransactionType.CONSENSUSCREATETOPIC
-    transactionTableController.transactionResult.value = TransactionResult.SUCCESS
-    onMounted(() => transactionTableController.mounted.value = true)
-    onBeforeUnmount(() => transactionTableController.mounted.value = false)
+    const transactionTableController = new TransactionTableController(
+        router, pageSize, TransactionType.CONSENSUSCREATETOPIC,  TransactionResult.SUCCESS)
+    onMounted(() => transactionTableController.mount())
+    onBeforeUnmount(() => transactionTableController.unmount())
 
     watch(() => props.network, () => {
       transactionTableController.reset()

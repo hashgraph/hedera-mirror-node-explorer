@@ -53,15 +53,15 @@
 
 <script lang="ts">
 
-import {computed, defineComponent, inject, onBeforeUnmount, onMounted, Ref, ref, watch} from 'vue';
+import {computed, defineComponent, inject, onBeforeUnmount, onMounted, Ref, ref} from 'vue';
 
 import TransactionTable from "@/components/transaction/TransactionTable.vue";
 import PlayPauseButton from "@/utils/table/PlayPauseButton.vue";
 import TransactionFilterSelect from "@/components/transaction/TransactionFilterSelect.vue";
-import {useRoute, useRouter} from "vue-router";
+import {useRouter} from "vue-router";
 import DashboardCard from "@/components/DashboardCard.vue";
 import Footer from "@/components/Footer.vue";
-import {TransactionTableController} from "@/components/transaction/TransactionTableController";
+import {TransactionTableControllerXL} from "@/components/transaction/TransactionTableControllerXL";
 
 export default defineComponent({
   name: 'Transactions',
@@ -83,37 +83,16 @@ export default defineComponent({
     const isTouchDevice = inject('isTouchDevice', false)
 
     const router = useRouter()
-    const route = useRoute()
 
     //
     // transactionTableController
     //
 
     const accountId: Ref<string|null> = ref(null)
-    const pageSize: Ref<number> = ref(10)
-    const transactionTableController = new TransactionTableController(accountId, pageSize, false)
-    onMounted(() => transactionTableController.mounted.value = true)
-    onBeforeUnmount(() => transactionTableController.mounted.value = false)
-
-    //
-    // transaction filter / route synchronization
-    //
-
-    const updateQuery = () => {
-      router.replace({
-        query: {type: transactionTableController.transactionType.value.toLowerCase()}
-      })
-    }
-    watch(transactionTableController.transactionType, () => {
-      updateQuery()
-    })
-    const transactionFilterFromRoute = computed(() => {
-      return (route.query?.type as string ?? "").toUpperCase()
-    })
-    watch(transactionFilterFromRoute, () => {
-      transactionTableController.transactionType.value = transactionFilterFromRoute.value
-    })
-    transactionTableController.transactionType.value = transactionFilterFromRoute.value
+    const pageSize = computed(() => 10)
+    const transactionTableController = new TransactionTableControllerXL(router, accountId, pageSize, false)
+    onMounted(() => transactionTableController.mount())
+    onBeforeUnmount(() => transactionTableController.unmount())
 
     return {
       isSmallScreen,
