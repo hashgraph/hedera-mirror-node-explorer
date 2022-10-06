@@ -20,6 +20,7 @@
 
 import {AxiosResponse} from "axios";
 import {DeferredPromise} from "@/utils/DeferredPromise";
+import {Ref, ref, watch} from "vue";
 
 /*
     Bookmars
@@ -46,6 +47,25 @@ export abstract class Collector<E, K> {
         }
 
         return entry
+    }
+
+    public ref(key: Ref<K|null>): Ref<E|null> {
+        const result: Ref<E|null> = ref(null)
+        const updateResult = () => {
+            if (key.value !== null) {
+                const fullfill = (r: AxiosResponse<E>) => {
+                    result.value = r.data
+                }
+                const reject = (/*reason: unknown*/) => {
+                    result.value = null
+                }
+                this.fetch(key.value).then(fullfill, reject)
+            } else {
+                result.value = null
+            }
+        }
+        watch(key, updateResult, { immediate: true})
+        return result
     }
 
     //
