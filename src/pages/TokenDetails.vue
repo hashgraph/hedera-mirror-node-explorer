@@ -226,7 +226,7 @@
 
     </DashboardCard>
 
-    <TokenCustomFees v-if="tokenInfo?.custom_fees" :fees="tokenInfo?.custom_fees"/>
+    <TokenCustomFees v-if="hasCustomFees" :token-info-loader="tokenInfoLoader"/>
 
     <DashboardCard v-if="tokenInfo">
 
@@ -371,9 +371,11 @@ export default defineComponent({
     return {
       isSmallScreen,
       isTouchDevice,
+      tokenInfoLoader,
       tokenInfo: tokenInfoLoader.entity,
       isNft: tokenInfoLoader.isNft,
       isFungible: tokenInfoLoader.isFungible,
+      hasCustomFees: tokenInfoLoader.hasCustomFees,
       tokenChecksum,
       validEntityId,
       normalizedTokenId,

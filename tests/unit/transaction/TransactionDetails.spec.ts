@@ -293,7 +293,7 @@ describe("TransactionDetails.vue", () => {
 
         const wrapper = mount(TransactionDetails, {
             global: {
-                plugins: [router]
+                plugins: [router, Oruga],
             },
             props: {
                 transactionId: SAMPLE_FAILED_TRANSACTION.transaction_id
