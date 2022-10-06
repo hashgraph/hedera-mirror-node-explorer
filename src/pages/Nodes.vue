@@ -51,7 +51,7 @@
           </div>
           <div v-else>
             <div class="is-flex-direction-column">
-              <NetworkDashboardItem :title="'Total Nodes'" :value="totalNodes"/>
+              <NetworkDashboardItem :title="'Total Nodes'" :value="totalNodes.toString()"/>
               <div class="mt-4"/>
               <NetworkDashboardItem :title="'Last Staked'" :value="formatSeconds(elapsedMin*60) + 'ago'"/>
               <div class="mt-4"/>
