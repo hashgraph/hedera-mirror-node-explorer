@@ -27,15 +27,23 @@
   <div id="contractActionsTable">
     <o-table
         :data="actions"
-        :hoverable="false"
-        :mobile-breakpoint="ORUGA_MOBILE_BREAKPOINT"
-        :paginated="false"
-        :striped="true"
+        :paginated="isPaginated"
+        :per-page="NB_ACTIONS_PER_PAGE"
+
         detailed
         custom-detail-row
-        narrowed="narrowed"
         :openedDetailed="expandedActions"
         @update:openedDetailed="onOpenedDetailedChange"
+
+        :hoverable="false"
+        :narrowed="true"
+        :striped="false"
+        :mobile-breakpoint="ORUGA_MOBILE_BREAKPOINT"
+
+        aria-current-label="Current page"
+        aria-next-label="Next page"
+        aria-page-label="Page"
+        aria-previous-label="Previous page"
     >
 
       <o-table-column v-slot="props" field="call_type" label="Call Type">
@@ -94,7 +102,7 @@
 
 <script lang="ts">
 
-import {defineComponent, inject, PropType} from 'vue';
+import {computed, defineComponent, inject, PropType} from 'vue';
 import {ContractAction} from "@/schemas/HederaSchemas";
 import {ORUGA_MOBILE_BREAKPOINT} from '@/App.vue';
 import EmptyTable from "@/components/EmptyTable.vue";
@@ -104,6 +112,8 @@ import ContractActionDetails from "@/components/contract/ContractActionDetails.v
 //
 // defineComponent
 //
+
+const NB_ACTIONS_PER_PAGE = 2
 
 export default defineComponent({
   name: 'ContractActionsTable',
@@ -121,6 +131,8 @@ export default defineComponent({
   setup(props, context) {
     const isTouchDevice = inject('isTouchDevice', false)
     const isMediumScreen = inject('isMediumScreen', true)
+
+    const isPaginated = computed(() => (props.actions?.length??0) > NB_ACTIONS_PER_PAGE)
 
     const makeActionDepth = (depth: number): string => {
       let result = ""
@@ -141,6 +153,8 @@ export default defineComponent({
     return {
       isTouchDevice,
       isMediumScreen,
+      NB_ACTIONS_PER_PAGE,
+      isPaginated,
       makeActionDepth,
       isSuccessful,
       makeOperationType,
