@@ -42,7 +42,7 @@
       <Property id="actionDetailFunction" custom-nb-col-class="is-one-fifth">
         <template v-slot:name>Function</template>
         <template v-slot:value>
-          <HexaValue :byte-string="action.input"/>
+          <SignatureValue :input="action.input"/>
         </template>
       </Property>
     </div>
@@ -104,11 +104,12 @@ import StringValue from "@/components/values/StringValue.vue";
 import HexaValue from "@/components/values/HexaValue.vue";
 import PlainAmount from "@/components/values/PlainAmount.vue";
 import ByteCodeValue from "@/components/values/ByteCodeValue.vue";
+import SignatureValue from "@/components/values/SignatureValue.vue";
 
 export default defineComponent({
   name: 'ContractActionDetails',
 
-  components: {ByteCodeValue, PlainAmount, HexaValue, StringValue, Property},
+  components: {SignatureValue, ByteCodeValue, PlainAmount, HexaValue, StringValue, Property},
 
   props: {
     action: Object as PropType<ContractAction | undefined>,
