@@ -497,7 +497,6 @@ export interface NetworkNode {
     stake_rewarded: number | null // The sum (balance + staked) for all accounts staked to the node that are not declining rewards at the beginning of the staking period
     staking_period: TimestampRange | null
     reward_rate_start: number | null
-    stake_total: number | null
 }
 
 export interface ServiceEndPoint {

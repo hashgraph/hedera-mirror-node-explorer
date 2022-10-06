@@ -25,7 +25,7 @@ import AccountDetails from "@/pages/AccountDetails.vue";
 import {
     SAMPLE_ACCOUNT,
     SAMPLE_ACCOUNT_BALANCES, SAMPLE_ACCOUNT_DUDE,
-    SAMPLE_COINGECKO, SAMPLE_NETWORK_NODES,
+    SAMPLE_COINGECKO, SAMPLE_NETWORK_NODES, SAMPLE_NETWORK_STAKE,
     SAMPLE_NONFUNGIBLE,
     SAMPLE_TOKEN, SAMPLE_TOKEN_DUDE,
     SAMPLE_TRANSACTIONS
@@ -69,6 +69,8 @@ describe("NodeDetails.vue", () => {
         const node = 0
         const matcher1 = "api/v1/network/nodes"
         mock.onGet(matcher1).reply(200, SAMPLE_NETWORK_NODES);
+        const matcher2 = "api/v1/network/stake"
+        mock.onGet(matcher2).reply(200, SAMPLE_NETWORK_STAKE);
 
         const wrapper = mount(NodeDetails, {
             global: {
