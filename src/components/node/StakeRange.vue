@@ -31,9 +31,9 @@
     </progress>
     <div class="is-flex">
       <img alt="Minimum staking mark" src="@/assets/min-mark.png"
-           class="image min-offset" style="max-height: 8px">
+           class="image" style="max-height: 8px" :style="{'margin-left': minStakePix}">
       <img alt="Maximum staking mark" src="@/assets/max-mark.png"
-           class="image max-offset" style="max-height: 8px">
+           class="image" style="max-height: 8px" :style="{'margin-left': maxStakePix}">
     </div>
   </div>
 </template>
@@ -125,12 +125,6 @@ export default defineComponent({
 
 <style>
 
-.min-offset {
-  margin-left: v-bind(minStakePix);
-}
-.max-offset {
-  margin-left: v-bind(maxStakePix);
-}
 .stake-range-column {
   padding-bottom: 2px;
   padding-top: 12px;
