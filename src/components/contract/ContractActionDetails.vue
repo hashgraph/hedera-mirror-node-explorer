@@ -62,7 +62,7 @@
       <Property id="actionDetailError" custom-nb-col-class="is-one-fifth">
         <template v-slot:name>Error Message</template>
         <template v-slot:value>
-          <StringValue :string-value="action.result_data"/>
+          <StringValue :string-value="errorMessage"/>
         </template>
       </Property>
     </div>
@@ -97,7 +97,7 @@
 //
 
 import {computed, defineComponent, inject, PropType} from "vue";
-import {ContractAction} from "@/schemas/HederaSchemas";
+import {ContractAction, ResultDataType} from "@/schemas/HederaSchemas";
 import {ORUGA_MOBILE_BREAKPOINT} from "@/App.vue";
 import Property from "@/components/Property.vue";
 import StringValue from "@/components/values/StringValue.vue";
@@ -118,13 +118,21 @@ export default defineComponent({
     const isTouchDevice = inject('isTouchDevice', false)
     const isMediumScreen = inject('isMediumScreen', true)
 
-    const jsonText = computed(() => JSON.stringify(props.action, null, 2))
+    const errorMessage = computed(() => {
+      let result
+      if (props.action?.result_data_type != ResultDataType.OUTPUT) {
+        result = props.action?.result_data
+      } else {
+        result = null
+      }
+      return result
+    })
 
     return {
       isTouchDevice,
       isMediumScreen,
       ORUGA_MOBILE_BREAKPOINT,
-      jsonText,
+      errorMessage,
     }
   }
 });
