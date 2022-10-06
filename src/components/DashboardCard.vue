@@ -35,21 +35,17 @@
 
     <hr class="h-card-separator mb-5"/>
 
-    <div>
+    <div class="h-is-property-text">
       <slot name="content"></slot>
     </div>
 
     <div class="columns h-is-property-text">
 
       <div class="column">
-        <div>
           <slot name="leftContent"></slot>
-        </div>
       </div>
       <div class="column" :class="{'h-has-column-separator':slots.rightContent}">
-        <div>
           <slot name="rightContent"></slot>
-        </div>
       </div>
 
     </div>
