@@ -88,7 +88,7 @@
       </o-table-column>
 
       <o-table-column id="stake-range-column" v-slot="props" field="stake-range" label="Stake Range" style="  padding-bottom: 2px; padding-top: 12px;">
-        <stake-range :node="props.row"/>
+        <StakeRange :node="props.row"/>
       </o-table-column>
 
     </o-table>
