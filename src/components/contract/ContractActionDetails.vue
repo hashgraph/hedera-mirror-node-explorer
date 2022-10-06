@@ -23,7 +23,7 @@
 <!-- --------------------------------------------------------------------------------------------------------------- -->
 
 <template>
-  <div class="columns pt-2 pb-2">
+  <div class="columns pt-2 pb-0 mb-0">
     <div class="column">
       <Property id="actionDetailFrom" custom-nb-col-class="is-one-fifth">
         <template v-slot:name>From</template>
@@ -46,7 +46,7 @@
         </template>
       </Property>
     </div>
-    <div class="column h-has-column-dotted-separator">
+    <div class="column h-has-column-dashed-separator">
       <Property id="actionDetailGasLimit" custom-nb-col-class="is-one-fifth">
         <template v-slot:name>Gas Limit</template>
         <template v-slot:value>
@@ -65,6 +65,23 @@
           <StringValue :string-value="action.result_data"/>
         </template>
       </Property>
+    </div>
+  </div>
+
+  <hr class="dotted"/>
+
+  <div class="columns pt-0 mt-0 pb-2">
+    <div class="column">
+      <div class="has-text-weight-light mb-3">
+        Input - Function & Parameters
+      </div>
+      <ByteCodeValue :byte-code="action.input"/>
+    </div>
+    <div class="column h-has-column-dashed-separator">
+      <div class="has-text-weight-light mb-3">
+        Output Result
+      </div>
+      <ByteCodeValue :byte-code="action.result_data"/>
     </div>
   </div>
 </template>
@@ -86,11 +103,12 @@ import Property from "@/components/Property.vue";
 import StringValue from "@/components/values/StringValue.vue";
 import HexaValue from "@/components/values/HexaValue.vue";
 import PlainAmount from "@/components/values/PlainAmount.vue";
+import ByteCodeValue from "@/components/values/ByteCodeValue.vue";
 
 export default defineComponent({
   name: 'ContractActionDetails',
 
-  components: {PlainAmount, HexaValue, StringValue, Property},
+  components: {ByteCodeValue, PlainAmount, HexaValue, StringValue, Property},
 
   props: {
     action: Object as PropType<ContractAction | undefined>,

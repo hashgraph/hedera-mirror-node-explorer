@@ -342,6 +342,7 @@ a.button.is-ghost.is-last {
         margin: 10px 0;
     }
 }
+/* Solid vertical separator */
 .h-has-column-separator {
     padding-left: 1rem;
     padding-top: 12px;
@@ -354,17 +355,26 @@ a.button.is-ghost.is-last {
         border-left: initial;
     }
 }
-.h-has-column-dotted-separator {
+/* Dashed vertical separator */
+.h-has-column-dashed-separator {
     padding-left: 1rem;
     padding-top: 12px;
-    border-left: 1px dimgrey dotted;
+    border-left: 1px dimgrey dashed;
 }
 @media (max-width: 767px) {
-    .h-has-column-dotted-separator {
+    .h-has-column-dashed-separator {
         padding-left: 12px;
         padding-top: 1rem;
         border-left: initial;
     }
+}
+/* Dashed horizontal separator */
+hr.dotted {
+    border-top: 1px dashed dimgrey;
+    height: 0;
+    background-color: initial;
+    margin: 0;
+    padding: 0;
 }
 
 //
