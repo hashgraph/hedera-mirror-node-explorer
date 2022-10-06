@@ -182,15 +182,7 @@ export default defineComponent({
     const nodeCursor = new NodeCursor(computed(() => PathParam.parseNodeId(props.nodeId)), nodesLoader)
     const stakeLoader = new StakeLoader()
 
-    const stakeTotal = computed(() => {
-      let result
-      if (stakeLoader.got404.value) {
-        result = (nodeCursor.node.value?.stake_total ?? 0)
-      } else {
-        result = (stakeLoader.entity.value?.stake_total ?? 0)
-      }
-      return result
-    })
+    const stakeTotal = computed(() => stakeLoader.entity.value?.stake_total ?? 0)
     const stakePercentage = computed(() =>
         stakeTotal.value ? Math.round(nodeCursor.stake.value / stakeTotal.value * 10000) / 100 : 0)
 

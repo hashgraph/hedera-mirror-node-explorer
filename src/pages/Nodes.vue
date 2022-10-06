@@ -125,15 +125,7 @@ export default defineComponent({
 
     const stakeLoader = new StakeLoader()
 
-    const stakeTotal = computed(() => {
-      let result
-      if (stakeLoader.got404.value) {
-        result = nodesLoader.stakeTotal.value ?? 0
-      } else {
-        result = (stakeLoader.entity.value?.stake_total ?? 0)
-      }
-      return result
-    })
+    const stakeTotal = computed(() => stakeLoader.entity.value?.stake_total ?? 0)
 
     const stakingPeriod = ref<StakingPeriod | null>(null)
 
