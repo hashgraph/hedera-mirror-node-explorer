@@ -226,6 +226,8 @@
 
     </DashboardCard>
 
+    <TokenCustomFees v-if="tokenInfo?.custom_fees" :fees="tokenInfo?.custom_fees"/>
+
     <DashboardCard v-if="tokenInfo">
 
       <template v-slot:title>
@@ -280,12 +282,14 @@ import {TokenBalanceTableController} from "@/components/token/TokenBalanceTableC
 import AccountLink from "@/components/values/AccountLink.vue";
 import StringValue from "@/components/values/StringValue.vue";
 import {networkRegistry} from "@/schemas/NetworkRegistry";
+import TokenCustomFees from "@/components/token/TokenCustomFees.vue";
 
 export default defineComponent({
 
   name: 'TokenDetails',
 
   components: {
+    TokenCustomFees,
     PlayPauseButton,
     NftHolderTable,
     StringValue,
