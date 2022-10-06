@@ -205,7 +205,7 @@
 
 <script lang="ts">
 
-import {computed, ComputedRef, defineComponent, inject, onBeforeUnmount, onMounted, watch} from 'vue';
+import {computed, ComputedRef, defineComponent, inject, onBeforeUnmount, onMounted} from 'vue';
 import KeyValue from "@/components/values/KeyValue.vue";
 import PlayPauseButton from "@/utils/table/PlayPauseButton.vue";
 import TransactionTable from "@/components/transaction/TransactionTable.vue";
