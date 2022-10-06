@@ -76,9 +76,7 @@
       <template v-slot:content>
         <NodeTable :nodes="nodes"
                    :unclamped-stake-total="unclampedStakeTotal"
-                   :stake-total="stakeTotal"
-                   :min-stake="minStake"
-                   :max-stake="maxStake"/>
+                   :stake-total="stakeTotal"/>
       </template>
     </DashboardCard>
 
@@ -126,9 +124,6 @@ export default defineComponent({
     onMounted(() => nodesLoader.requestLoad())
 
     const stakeLoader = new StakeLoader()
-
-    const minStake = computed(() => nodesLoader.node0.value?.min_stake ?? 0)
-    const maxStake = computed(() => nodesLoader.node0.value?.max_stake ?? 0)
 
     const stakeTotal = computed(() => {
       let result
@@ -180,8 +175,6 @@ export default defineComponent({
       totalNodes: nodesLoader.nodeCount,
       stakeTotal,
       unclampedStakeTotal: nodesLoader.unclampedStakeTotal,
-      minStake,
-      maxStake,
       totalRewarded: nodesLoader.totalRewarded,
       durationMin,
       elapsedMin,
