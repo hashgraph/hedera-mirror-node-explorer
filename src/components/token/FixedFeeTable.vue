@@ -60,9 +60,6 @@
 <script lang="ts">
 
 import {defineComponent, PropType} from 'vue';
-import TimestampValue from "@/components/values/TimestampValue.vue";
-import DashboardCard from "@/components/DashboardCard.vue";
-import Property from "@/components/Property.vue";
 import AccountLink from "@/components/values/AccountLink.vue";
 import PlainAmount from "@/components/values/PlainAmount.vue";
 import TokenLink from "@/components/values/TokenLink.vue";
@@ -77,9 +74,6 @@ export default defineComponent({
     TokenLink,
     PlainAmount,
     AccountLink,
-    TimestampValue,
-    Property,
-    DashboardCard
   },
 
   props: {
