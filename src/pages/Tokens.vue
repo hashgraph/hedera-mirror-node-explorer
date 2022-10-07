@@ -51,7 +51,7 @@
             <span class="h-is-primary-title">Recent Fungible Tokens</span>
           </template>
           <template v-slot:control>
-            PlayPauseButton v-bind:controller="tokenTableController"/>
+            <PlayPauseButton v-bind:controller="tokenTableController"/>
           </template>
           <template v-slot:content>
             <TokenTable :controller="tokenTableController"/>
