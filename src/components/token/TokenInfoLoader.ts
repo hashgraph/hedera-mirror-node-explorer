@@ -66,6 +66,15 @@ export class TokenInfoLoader extends EntityLoader<TokenInfo> {
         () => this.hasFixedFees || this.hasFractionalFees || this.hasRoyaltyFees
     )
 
+    public readonly fixedFees = computed(
+        () => this.hasFixedFees ? this.entity.value?.custom_fees?.fixed_fees : null)
+
+    public readonly fractionalFees = computed(
+        () => this.hasFractionalFees ? this.entity.value?.custom_fees?.fractional_fees : null)
+
+    public readonly royaltyFees = computed(
+        () => this.hasRoyaltyFees ? this.entity.value?.custom_fees?.royalty_fees : null)
+
     public readonly customFees = computed(() => this.entity.value?.custom_fees)
 
     //

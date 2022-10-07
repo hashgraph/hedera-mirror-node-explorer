@@ -76,8 +76,9 @@ import AccountLink from "@/components/values/AccountLink.vue";
 import PlainAmount from "@/components/values/PlainAmount.vue";
 import TokenLink from "@/components/values/TokenLink.vue";
 import {ORUGA_MOBILE_BREAKPOINT} from "@/App.vue";
-import {FractionalFee, FractionAmount} from "@/schemas/HederaSchemas";
+import {FractionAmount} from "@/schemas/HederaSchemas";
 import StringValue from "@/components/values/StringValue.vue";
+import {TokenInfoLoader} from "@/components/token/TokenInfoLoader";
 
 export default defineComponent({
 
@@ -91,18 +92,19 @@ export default defineComponent({
   },
 
   props: {
-    fees: {
-      type: Object as PropType<Array<FractionalFee>>,
+    tokenInfoLoader: {
+      type: Object as PropType<TokenInfoLoader>,
       required: true
     }
   },
 
-  setup() {
+  setup(props) {
     const makeAmount = (fraction: FractionAmount): string => {
       return fraction.numerator + '/' + fraction.denominator
     }
 
     return {
+      fees: props.tokenInfoLoader.fractionalFees,
       makeAmount,
       ORUGA_MOBILE_BREAKPOINT
     }

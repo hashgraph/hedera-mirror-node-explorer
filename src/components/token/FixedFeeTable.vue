@@ -67,7 +67,7 @@ import AccountLink from "@/components/values/AccountLink.vue";
 import PlainAmount from "@/components/values/PlainAmount.vue";
 import TokenLink from "@/components/values/TokenLink.vue";
 import {ORUGA_MOBILE_BREAKPOINT} from "@/App.vue";
-import {FixedFee} from "@/schemas/HederaSchemas";
+import {TokenInfoLoader} from "@/components/token/TokenInfoLoader";
 
 export default defineComponent({
 
@@ -83,14 +83,15 @@ export default defineComponent({
   },
 
   props: {
-    fees: {
-      type: Object as PropType<Array<FixedFee>>,
+    tokenInfoLoader: {
+      type: Object as PropType<TokenInfoLoader>,
       required: true
     }
   },
 
-  setup() {
+  setup(props) {
     return {
+      fees: props.tokenInfoLoader.fixedFees,
       ORUGA_MOBILE_BREAKPOINT
     }
   },

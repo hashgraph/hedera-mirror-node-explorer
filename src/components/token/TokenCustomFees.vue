@@ -43,7 +43,7 @@
     <template v-slot:leftContent>
       <div v-if="hasFixedFees">
         <div class="h-is-tertiary-text">Fixed Fees</div>
-        <FixedFeeTable :fees="fees?.fixed_fees"/>
+        <FixedFeeTable :token-info-loader="tokenInfoLoader"/>
       </div>
       <div v-else class="columns">
         <div class="column is-one-third h-is-tertiary-text">Fixed Fees</div>
@@ -55,7 +55,7 @@
       <template v-if="isFungible">
         <div v-if="hasFractionalFees">
           <div class="h-is-tertiary-text">Fractional Fees</div>
-          <FractionalFeeTable :fees="fees?.fractional_fees"/>
+          <FractionalFeeTable :token-info-loader="tokenInfoLoader"/>
         </div>
         <div v-else class="columns">
           <div class="column is-one-third h-is-tertiary-text">Fractional Fees</div>
@@ -65,7 +65,7 @@
       <template v-else>
         <div v-if="hasRoyaltyFees">
           <div class="h-is-tertiary-text">Royalty Fees</div>
-          <RoyaltyFeeTable :fees="fees?.royalty_fees"/>
+          <RoyaltyFeeTable :token-info-loader="tokenInfoLoader"/>
         </div>
         <div v-else class="columns">
           <div class="column is-one-third h-is-tertiary-text">Royalty Fees</div>

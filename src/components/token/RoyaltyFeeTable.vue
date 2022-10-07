@@ -46,11 +46,11 @@
     </o-table-column>
 
     <o-table-column v-slot="props" field="fallbackAmount" label="Fallback Amount">
-      <PlainAmount :amount="props.row.fallback_fee.amount"/>
+      <PlainAmount :amount="props.row.fallback_fee?.amount"/>
     </o-table-column>
 
     <o-table-column v-slot="props" field="fallbackToken" label="Fallback Token">
-      <AccountLink :amount="props.row.fallback_fee.denominating_token_id"/>
+      <AccountLink :amount="props.row.fallback_fee?.denominating_token_id"/>
     </o-table-column>
 
   </o-table>
@@ -67,8 +67,9 @@ import {defineComponent, PropType} from 'vue';
 import AccountLink from "@/components/values/AccountLink.vue";
 import PlainAmount from "@/components/values/PlainAmount.vue";
 import {ORUGA_MOBILE_BREAKPOINT} from "@/App.vue";
-import {FractionAmount, RoyaltyFee} from "@/schemas/HederaSchemas";
+import {FractionAmount} from "@/schemas/HederaSchemas";
 import StringValue from "@/components/values/StringValue.vue";
+import {TokenInfoLoader} from "@/components/token/TokenInfoLoader";
 
 export default defineComponent({
 
@@ -81,18 +82,19 @@ export default defineComponent({
   },
 
   props: {
-    fees: {
-      type: Object as PropType<Array<RoyaltyFee>>,
+    tokenInfoLoader: {
+      type: Object as PropType<TokenInfoLoader>,
       required: true
     }
   },
 
-  setup() {
+  setup(props) {
     const makeAmount = (fraction: FractionAmount): string => {
       return fraction.numerator + '/' + fraction.denominator
     }
 
     return {
+      fees: props.tokenInfoLoader.royaltyFees,
       makeAmount,
       ORUGA_MOBILE_BREAKPOINT
     }
