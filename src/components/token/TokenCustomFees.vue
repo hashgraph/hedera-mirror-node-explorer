@@ -38,37 +38,39 @@
         </template>
       </Property>
       <br/>
-    </template>
-
-    <template v-slot:leftContent>
-      <div v-if="hasFixedFees">
-        <div class="h-is-tertiary-text">Fixed Fees</div>
-        <FixedFeeTable :token-info-loader="tokenInfoLoader"/>
+      <div v-if="hasFixedFees" class="columns h-is-property-text">
+        <div class="column is-2">Fixed Fees</div>
+        <div class="column">
+          <FixedFeeTable :token-info-loader="tokenInfoLoader"/>
+        </div>
       </div>
-      <div v-else class="columns">
-        <div class="column is-one-third h-is-tertiary-text">Fixed Fees</div>
+      <div v-else class="columns h-is-property-text">
+        <div class="column is-2">Fixed Fees</div>
         <div class="column has-text-grey">None</div>
       </div>
-    </template>
 
-    <template v-slot:rightContent>
       <template v-if="isFungible">
-        <div v-if="hasFractionalFees">
-          <div class="h-is-tertiary-text">Fractional Fees</div>
-          <FractionalFeeTable :token-info-loader="tokenInfoLoader"/>
+        <div v-if="hasFractionalFees" class="columns h-is-property-text">
+          <div class="column is-2">Fractional Fees</div>
+          <div class="column">
+            <FractionalFeeTable :token-info-loader="tokenInfoLoader"/>
+          </div>
         </div>
-        <div v-else class="columns">
-          <div class="column is-one-third h-is-tertiary-text">Fractional Fees</div>
+        <div v-else class="columns h-is-property-text">
+          <div class="column is-2">Fractional Fees</div>
           <div class="column has-text-grey">None</div>
         </div>
       </template>
+
       <template v-else>
-        <div v-if="hasRoyaltyFees">
-          <div class="h-is-tertiary-text">Royalty Fees</div>
-          <RoyaltyFeeTable :token-info-loader="tokenInfoLoader"/>
+        <div v-if="hasRoyaltyFees" class="columns h-is-property-text">
+          <div class="column is-2">Royalty Fees</div>
+          <div class="column">
+            <RoyaltyFeeTable :token-info-loader="tokenInfoLoader"/>
+          </div>
         </div>
-        <div v-else class="columns">
-          <div class="column is-one-third h-is-tertiary-text">Royalty Fees</div>
+        <div v-else class="columns h-is-property-text">
+          <div class="column is-2">Royalty Fees</div>
           <div class="column has-text-grey">None</div>
         </div>
       </template>
@@ -139,4 +141,5 @@ export default defineComponent({
 <!--                                                       STYLE                                                     -->
 <!-- --------------------------------------------------------------------------------------------------------------- -->
 
-<style/>
+<style>
+</style>
