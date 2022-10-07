@@ -24,7 +24,7 @@
 
 <template>
   <div v-if="signature">
-    <div class="is-family-monospace has-text-grey">{{ signature }}</div>
+    <HexaValue :byte-string="signature" show-none/>
     <div v-if="signatureInfo" class="h-is-extra-text h-is-text-size-3">{{ signatureInfo.text_signature }}</div>
   </div>
   <div v-else-if="initialLoading"/>
@@ -41,9 +41,11 @@ import {computed, defineComponent, inject, ref} from "vue";
 import {byteToHex, hexToByte} from "@/utils/B64Utils";
 import {SignatureCollector} from "@/utils/SignatureCollector";
 import {initialLoadingKey} from "@/AppKeys";
+import HexaValue from "@/components/values/HexaValue.vue";
 
 export default defineComponent({
   name: "SignatureValue",
+  components: {HexaValue},
   props: {
     input: String
   },
