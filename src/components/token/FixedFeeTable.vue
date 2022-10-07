@@ -23,33 +23,34 @@
 <!-- --------------------------------------------------------------------------------------------------------------- -->
 
 <template>
-  <div :class="{'box': !isTouchDevice && isSmallScreen, 'h-box-border': !isTouchDevice && isSmallScreen}" style="height: 100%">
-    <div class="is-flex is-align-items-center is-justify-content-space-between">
-      <div>
-        <slot name="title"></slot>
-      </div>
-      <div>
-        <slot name="control"></slot>
-      </div>
-    </div>
 
-    <hr class="h-card-separator mb-5"/>
+  <o-table
+      :data="fees"
+      :hoverable="false"
+      :mobile-breakpoint="ORUGA_MOBILE_BREAKPOINT"
+      :narrowed="true"
+      :striped="false"
 
-    <div class="h-is-property-text">
-      <slot name="content"></slot>
-    </div>
+      aria-current-label="Current page"
+      aria-next-label="Next page"
+      aria-page-label="Page"
+      aria-previous-label="Previous page"
+  >
 
-    <div class="columns h-is-property-text">
+    <o-table-column v-slot="props" field="amount" label="Amount">
+      <PlainAmount :amount="props.row.amount"/>
+    </o-table-column>
 
-      <div class="column">
-          <slot name="leftContent"></slot>
-      </div>
-      <div class="column" :class="{'h-has-column-separator':slots.rightContent}">
-          <slot name="rightContent"></slot>
-      </div>
+    <o-table-column v-slot="props" field="amount" label="Token">
+      <TokenLink :show-extra="true" :token-id="props.row.denominating_token_id"/>
+    </o-table-column>
 
-    </div>
-  </div>
+    <o-table-column v-slot="props" field="account_id" label="Collector Account">
+      <AccountLink :account-id="props.row.collector_account_id"/>
+    </o-table-column>
+
+  </o-table>
+
 </template>
 
 <!-- --------------------------------------------------------------------------------------------------------------- -->
@@ -58,33 +59,42 @@
 
 <script lang="ts">
 
-import {defineComponent, inject, useSlots} from "vue";
+import {defineComponent, PropType} from 'vue';
+import AccountLink from "@/components/values/AccountLink.vue";
+import PlainAmount from "@/components/values/PlainAmount.vue";
+import TokenLink from "@/components/values/TokenLink.vue";
+import {ORUGA_MOBILE_BREAKPOINT} from "@/App.vue";
+import {TokenInfoLoader} from "@/components/token/TokenInfoLoader";
 
 export default defineComponent({
-  name: "DashboardCard",
 
-  props: {
-    subtitle: Boolean
+  name: 'FixedFeeTable',
+
+  components: {
+    TokenLink,
+    PlainAmount,
+    AccountLink,
   },
 
-  setup() {
-    const isSmallScreen = inject('isSmallScreen', true)
-    const isTouchDevice = inject('isTouchDevice', false)
-    const slots = useSlots()
-    return { isSmallScreen, isTouchDevice, slots }
-  }
-})
+  props: {
+    tokenInfoLoader: {
+      type: Object as PropType<TokenInfoLoader>,
+      required: true
+    }
+  },
+
+  setup(props) {
+    return {
+      fees: props.tokenInfoLoader.fixedFees,
+      ORUGA_MOBILE_BREAKPOINT
+    }
+  },
+});
 
 </script>
 
 <!-- --------------------------------------------------------------------------------------------------------------- -->
-<!--                                                      STYLE                                                      -->
+<!--                                                       STYLE                                                     -->
 <!-- --------------------------------------------------------------------------------------------------------------- -->
 
-<style>
-
-td {
-  border: black
-}
-
-</style>
+<style/>

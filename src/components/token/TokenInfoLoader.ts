@@ -50,6 +50,33 @@ export class TokenInfoLoader extends EntityLoader<TokenInfo> {
     public readonly isNft = computed(
         () => this.entity.value != null ? this.entity.value.type == "NON_FUNGIBLE_UNIQUE" : null)
 
+    public readonly hasFixedFees = computed(
+        () => this.entity.value?.custom_fees?.fixed_fees && this.entity.value.custom_fees.fixed_fees.length > 0
+    )
+
+    public readonly hasFractionalFees = computed(
+        () => this.entity.value?.custom_fees?.fractional_fees && this.entity.value.custom_fees.fractional_fees.length > 0
+    )
+
+    public readonly hasRoyaltyFees = computed(
+        () => this.entity.value?.custom_fees?.royalty_fees && this.entity.value.custom_fees.royalty_fees.length > 0
+    )
+
+    public readonly hasCustomFees = computed(
+        () => this.hasFixedFees || this.hasFractionalFees || this.hasRoyaltyFees
+    )
+
+    public readonly fixedFees = computed(
+        () => this.hasFixedFees ? this.entity.value?.custom_fees?.fixed_fees : null)
+
+    public readonly fractionalFees = computed(
+        () => this.hasFractionalFees ? this.entity.value?.custom_fees?.fractional_fees : null)
+
+    public readonly royaltyFees = computed(
+        () => this.hasRoyaltyFees ? this.entity.value?.custom_fees?.royalty_fees : null)
+
+    public readonly customFees = computed(() => this.entity.value?.custom_fees)
+
     //
     // EntityLoader
     //
