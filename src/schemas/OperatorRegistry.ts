@@ -54,7 +54,7 @@ export class OperatorRegistry {
         this.addEntry("0.0.8", "Google - Helsinki, Finland", 5)
         this.addEntry("0.0.9", "Zain Group - Kuwait City, Kuwait", 6)
         this.addEntry("0.0.10", "Magalu - São Paulo, Brazil", 7)
-        this.addEntry("0.0.11", "Boeing - Toronto, Canada", 8)
+        this.addEntry("0.0.11", "Boeing - Washington, USA", 8)
         this.addEntry("0.0.12", "DLA Piper - London, UK", 9)
         this.addEntry("0.0.13", "Tata Communications - California, USA", 10)
         this.addEntry("0.0.14", "IBM - Washington, USA", 11)
