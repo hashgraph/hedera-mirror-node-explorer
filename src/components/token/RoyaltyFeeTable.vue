@@ -46,11 +46,11 @@
     </o-table-column>
 
     <o-table-column v-slot="props" field="fallbackAmount" label="Fallback Amount">
-      <PlainAmount :amount="props.row.fallback_fee?.amount"/>
+      <PlainAmount :amount="props.row.fallback_fee?.amount" none-label="None"/>
     </o-table-column>
 
     <o-table-column v-slot="props" field="fallbackToken" label="Fallback Token">
-      <AccountLink :amount="props.row.fallback_fee?.denominating_token_id"/>
+      <TokenLink :token-id="props.row.fallback_fee?.denominating_token_id" :show-extra="true" :show-none="true"/>
     </o-table-column>
 
   </o-table>
@@ -70,12 +70,14 @@ import {ORUGA_MOBILE_BREAKPOINT} from "@/App.vue";
 import {FractionAmount} from "@/schemas/HederaSchemas";
 import StringValue from "@/components/values/StringValue.vue";
 import {TokenInfoLoader} from "@/components/token/TokenInfoLoader";
+import TokenLink from "@/components/values/TokenLink.vue";
 
 export default defineComponent({
 
   name: 'RoyaltyFeeTable',
 
   components: {
+    TokenLink,
     StringValue,
     PlainAmount,
     AccountLink,

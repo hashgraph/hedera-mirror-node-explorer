@@ -23,9 +23,9 @@
 <!-- --------------------------------------------------------------------------------------------------------------- -->
 
 <template>
-  <span v-if="formattedAmount !== '0'">{{ formattedAmount }}</span>
+  <span v-if="formattedAmount !== noneLabel">{{ formattedAmount }}</span>
   <span v-else-if="initialLoading"/>
-  <span v-else class="has-text-grey">0</span>
+  <span v-else class="has-text-grey">{{ noneLabel }}</span>
 </template>
 
 <!-- --------------------------------------------------------------------------------------------------------------- -->
@@ -42,6 +42,10 @@ export default defineComponent({
 
   props: {
     amount: Number,
+    noneLabel: {
+      type: String,
+      default: "0"
+    }
   },
 
   setup(props) {
@@ -50,7 +54,7 @@ export default defineComponent({
         if (props.amount) {
           result = props.amount.toLocaleString()
         } else {
-          result = "0"
+          result = props.noneLabel
         }
       return result
     })

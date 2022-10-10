@@ -63,7 +63,7 @@ export class TokenInfoLoader extends EntityLoader<TokenInfo> {
     )
 
     public readonly hasCustomFees = computed(
-        () => this.hasFixedFees || this.hasFractionalFees || this.hasRoyaltyFees
+        () => this.hasFixedFees.value || this.hasFractionalFees.value || this.hasRoyaltyFees.value
     )
 
     public readonly fixedFees = computed(

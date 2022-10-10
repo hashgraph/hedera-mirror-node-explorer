@@ -92,7 +92,7 @@ describe("TokenLink.vue", () => {
         expect(wrapper.get(".h-is-extra-text").text()).toBe(SAMPLE_TOKEN_DUDE.name)
     });
 
-    it("props.topicId unset", async () => {
+    it("props.topicId unset and showNone", async () => {
 
         await router.push("/mainnet/dashboard") // To avoid "missing required param 'network'" error
 
@@ -101,10 +101,11 @@ describe("TokenLink.vue", () => {
                 plugins: [router]
             },
             props: {
+                showNone: true
             },
         });
 
-        expect(wrapper.text()).toBe("?")
+        expect(wrapper.text()).toBe("None")
         expect(wrapper.find("a").exists()).toBe(false)
     });
 });
