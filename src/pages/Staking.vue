@@ -84,7 +84,7 @@
             </div>
             <div class="mt-5 h-is-text-size-2 is-italic has-text-grey has-text-centered">
               <span class="has-text-grey-light">Please Note: </span>
-              Staking is in Phase 1 and will not pay out rewards until Phase 3.<br/>
+              Staking is in Phase 2 and will not pay out rewards until Phase 3.<br/>
               Your full balance is automatically staked.<br/>
               Your funds are fully available for use while staked.<br/>
               You can unstake or switch nodes freely.
@@ -109,7 +109,7 @@
             </div>
             <div class="mt-5 h-is-text-size-2 is-italic has-text-grey has-text-centered">
               <span class="has-text-grey-light">Please Note: </span>
-              Staking is in Phase 1 and will not pay out rewards until Phase 3.<br/>
+              Staking is in Phase 2 and will not pay out rewards until Phase 3.<br/>
               Your full balance is automatically staked.<br/>
               Your funds are fully available for use while staked.<br/>
               You can unstake or switch nodes freely.
