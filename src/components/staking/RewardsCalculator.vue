@@ -59,10 +59,10 @@
       </div>
 
       <div class="is-flex is-justify-content-space-between">
-        <NetworkDashboardItem id="currentReward" :name="'HBAR'" :title="'Current 24h Period Reward'" :value="currentReward.toString()"/>
-        <NetworkDashboardItem id="monthlyReward" :name="'HBAR'" :title="'Approx Monthly Reward'" :value="monthlyReward.toString()"/>
-        <NetworkDashboardItem id="yearlyReward" :name="'HBAR'" :title="'Approx Yearly Reward'" :value="yearlyReward.toString()"/>
-        <NetworkDashboardItem id="yearlyRate" :title="'Approx Yearly Reward Rate'" :value="yearlyRate"/>
+        <NetworkDashboardItem id="currentReward" name="HBAR" title="Current 24h Period Reward" :value="currentReward.toString()"/>
+        <NetworkDashboardItem id="monthlyReward" name="HBAR" title="Approx Monthly Reward" :value="monthlyReward.toString()"/>
+        <NetworkDashboardItem id="yearlyReward" name="HBAR" title="Approx Yearly Reward" :value="yearlyReward.toString()"/>
+        <NetworkDashboardItem id="yearlyRate" title="Approx Yearly Reward Rate" :value="yearlyRate"/>
       </div>
 
       <div v-html="htmlNotice"/>
