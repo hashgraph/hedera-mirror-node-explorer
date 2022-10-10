@@ -37,43 +37,43 @@
           <TimestampValue :nano="true" :show-none="true" :timestamp="fees?.created_timestamp.toString()"/>
         </template>
       </Property>
-      <br/>
-      <div v-if="hasFixedFees" class="columns h-is-property-text">
-        <div class="column is-2">Fixed Fees</div>
-        <div class="column">
-          <FixedFeeTable :token-info-loader="tokenInfoLoader"/>
-        </div>
-      </div>
-      <div v-else class="columns h-is-property-text">
-        <div class="column is-2">Fixed Fees</div>
-        <div class="column has-text-grey">None</div>
-      </div>
 
-      <template v-if="isFungible">
-        <div v-if="hasFractionalFees" class="columns h-is-property-text">
-          <div class="column is-2">Fractional Fees</div>
-          <div class="column">
+      <Property id="fixedFees" :full-width="true">
+        <template v-slot:name>Fixed Fees</template>
+        <template v-if="hasFixedFees" v-slot:value>
+          <div class="h-is-table-compact">
+            <FixedFeeTable :token-info-loader="tokenInfoLoader"/>
+          </div>
+        </template>
+        <template v-else v-slot:value>
+          <span class="has-text-grey">None</span>
+        </template>
+      </Property>
+
+      <Property v-if="isFungible" id="fractionalFees" :full-width="true">
+        <template v-slot:name>Fractional Fees</template>
+        <template v-if="hasFractionalFees" v-slot:value>
+          <div class="h-is-table-compact">
             <FractionalFeeTable :token-info-loader="tokenInfoLoader"/>
           </div>
-        </div>
-        <div v-else class="columns h-is-property-text">
-          <div class="column is-2">Fractional Fees</div>
-          <div class="column has-text-grey">None</div>
-        </div>
-      </template>
+        </template>
+        <template v-else v-slot:value>
+          <span class="has-text-grey">None</span>
+        </template>
+      </Property>
 
-      <template v-else>
-        <div v-if="hasRoyaltyFees" class="columns h-is-property-text">
-          <div class="column is-2">Royalty Fees</div>
-          <div class="column">
-            <RoyaltyFeeTable :token-info-loader="tokenInfoLoader"/>
+      <Property v-else id="royalteeFees" :full-width="true">
+        <template v-slot:name>Royalty Fees</template>
+        <template v-if="hasRoyaltyFees" v-slot:value>
+          <div class="h-is-table-compact">
+            <RoyaltyFeeTable class="h-is-table-compact" :token-info-loader="tokenInfoLoader"/>
           </div>
-        </div>
-        <div v-else class="columns h-is-property-text">
-          <div class="column is-2">Royalty Fees</div>
-          <div class="column has-text-grey">None</div>
-        </div>
-      </template>
+        </template>
+        <template v-else v-slot:value>
+          <span class="has-text-grey">None</span>
+        </template>
+      </Property>
+
     </template>
 
   </DashboardCard>
