@@ -50,6 +50,20 @@ import ContractResultAndLogs from "@/components/transaction/ContractResultAndLog
 
  */
 
+Object.defineProperty(window, 'matchMedia', {
+    writable: true,
+    value: jest.fn().mockImplementation(query => ({
+        matches: false,
+        media: query,
+        onchange: null,
+        addListener: jest.fn(), // deprecated
+        removeListener: jest.fn(), // deprecated
+        addEventListener: jest.fn(),
+        removeEventListener: jest.fn(),
+        dispatchEvent: jest.fn(),
+    })),
+});
+
 HMSF.forceUTC = true
 
 describe("TransactionDetails.vue", () => {
@@ -74,7 +88,7 @@ describe("TransactionDetails.vue", () => {
 
         const wrapper = mount(TransactionDetails, {
             global: {
-                plugins: [router]
+                plugins: [router, Oruga]
             },
             props: {
                 transactionId: SAMPLE_TRANSACTION.transaction_id
@@ -138,7 +152,7 @@ describe("TransactionDetails.vue", () => {
 
         const wrapper = mount(TransactionDetails, {
             global: {
-                plugins: [router]
+                plugins: [router, Oruga]
             },
             props: {
                 transactionId: transactionId
@@ -190,7 +204,7 @@ describe("TransactionDetails.vue", () => {
 
         const wrapper = mount(TransactionDetails, {
             global: {
-                plugins: [router]
+                plugins: [router, Oruga]
             },
             props: {
                 transactionId: transactionHash
@@ -241,7 +255,7 @@ describe("TransactionDetails.vue", () => {
 
         const wrapper = mount(TransactionDetails, {
             global: {
-                plugins: [router]
+                plugins: [router, Oruga]
             },
             props: {
                 transactionId: SAMPLE_TRANSACTION.transaction_id
@@ -348,7 +362,7 @@ describe("TransactionDetails.vue", () => {
 
         const wrapper = mount(TransactionDetails, {
             global: {
-                plugins: [router]
+                plugins: [router, Oruga]
             },
             props: {
                 transactionId: txnId
