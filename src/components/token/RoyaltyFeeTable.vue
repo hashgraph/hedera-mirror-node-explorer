@@ -46,7 +46,7 @@
     </o-table-column>
 
     <o-table-column v-slot="props" field="fallbackAmount" label="Fallback Amount">
-      <PlainAmount :amount="props.row.fallback_fee?.amount" :none-label="'None'"/>
+      <PlainAmount :amount="props.row.fallback_fee?.amount" none-label="None"/>
     </o-table-column>
 
     <o-table-column v-slot="props" field="fallbackToken" label="Fallback Token">

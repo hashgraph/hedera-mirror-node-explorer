@@ -50,11 +50,11 @@
     </o-table-column>
 
     <o-table-column v-slot="props" field="min" label="Min">
-      <PlainAmount :amount="props.row.minimum" :none-label="'None'"/>
+      <PlainAmount :amount="props.row.minimum" none-label="None"/>
     </o-table-column>
 
     <o-table-column v-slot="props" field="max" label="Max">
-      <PlainAmount :amount="props.row.maximum" :none-label="'None'"/>
+      <PlainAmount :amount="props.row.maximum" none-label="None"/>
     </o-table-column>
 
     <o-table-column v-slot="props" field="net" label="Net">
