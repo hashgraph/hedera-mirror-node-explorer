@@ -37,25 +37,26 @@
 
 <script lang="ts">
 
-import {computed, defineComponent, inject, ref} from "vue";
+import {computed, defineComponent, inject, PropType, ref} from "vue";
 import {byteToHex, hexToByte} from "@/utils/B64Utils";
 import {SignatureCollector} from "@/utils/SignatureCollector";
 import {initialLoadingKey} from "@/AppKeys";
 import HexaValue from "@/components/values/HexaValue.vue";
+import {ContractAction} from "@/schemas/HederaSchemas";
 
 export default defineComponent({
   name: "SignatureValue",
   components: {HexaValue},
   props: {
-    input: String
+    action: Object as PropType<ContractAction>
   },
 
   setup(props) {
 
     const signature = computed(() => {
       let result: string|null
-      if (props.input) {
-        const bytes = hexToByte(props.input)?.slice(0, 4)
+      if (props.action?.input) {
+        const bytes = hexToByte(props.action.input)?.slice(0, 4)
         result = bytes ? "0x" + byteToHex(bytes) : null
       } else {
         result = null

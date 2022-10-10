@@ -42,7 +42,7 @@
       <Property id="actionDetailFunction" custom-nb-col-class="is-one-fifth">
         <template v-slot:name>Function</template>
         <template v-slot:value>
-          <SignatureValue :input="action.input"/>
+          <SignatureValue :action="action"/>
         </template>
       </Property>
     </div>
