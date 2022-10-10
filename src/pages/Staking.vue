@@ -69,8 +69,8 @@
         <template v-if="accountId">
           <div v-if="isSmallScreen">
             <div class="is-flex is-justify-content-space-between">
-              <NetworkDashboardItem :name="stakedSince" :title="'Staked to'" :value="stakedTo"/>
-              <NetworkDashboardItem :name="stakedAmount ? 'HBAR' : ''" :title="'My Stake'" :value="stakedAmount"/>
+              <NetworkDashboardItem :name="stakedSince" title="Staked to" :value="stakedTo"/>
+              <NetworkDashboardItem :name="stakedAmount ? 'HBAR' : ''" title="My Stake" :value="stakedAmount"/>
               <NetworkDashboardItem :title="'Rewards'" :value="declineReward" :class="{'h-has-opacity-40': ignoreReward}"/>
             </div>
             <br/>
@@ -92,11 +92,11 @@
           </div>
           <div v-else>
             <div class="is-flex-direction-column">
-              <NetworkDashboardItem :name="stakedSince" :title="'Staked to'" :value="stakedTo"/>
+              <NetworkDashboardItem :name="stakedSince" title="Staked to" :value="stakedTo"/>
               <div class="mt-4"/>
-              <NetworkDashboardItem :name="stakedAmount ? 'HBAR' : ''" :title="'My Stake'" :value="stakedAmount"/>
+              <NetworkDashboardItem :name="stakedAmount ? 'HBAR' : ''" title="My Stake" :value="stakedAmount"/>
               <div class="mt-4"/>
-              <NetworkDashboardItem :title="'Rewards'" :value="declineReward" :class="{'h-has-opacity-40': ignoreReward}"/>
+              <NetworkDashboardItem title="Rewards" :value="declineReward" :class="{'h-has-opacity-40': ignoreReward}"/>
               <div class="mt-4"/>
             </div>
               <div class="is-flex is-justify-content-center">
