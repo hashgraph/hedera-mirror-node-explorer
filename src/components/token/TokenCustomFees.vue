@@ -31,14 +31,14 @@
     </template>
 
     <template v-slot:content>
-      <Property id="customFeesCreatedAt" :full-width="true">
+      <Property id="customFeeCreatedAt" :full-width="true">
         <template v-slot:name>Created at</template>
         <template v-slot:value>
           <TimestampValue :nano="true" :show-none="true" :timestamp="fees?.created_timestamp.toString()"/>
         </template>
       </Property>
 
-      <Property id="fixedFees" :full-width="true">
+      <Property id="fixedFee" :full-width="true">
         <template v-slot:name>Fixed Fees</template>
         <template v-if="hasFixedFees" v-slot:value>
           <div class="h-is-table-compact">
@@ -50,7 +50,7 @@
         </template>
       </Property>
 
-      <Property v-if="isFungible" id="fractionalFees" :full-width="true">
+      <Property v-if="isFungible" id="fractionalFee" :full-width="true">
         <template v-slot:name>Fractional Fees</template>
         <template v-if="hasFractionalFees" v-slot:value>
           <div class="h-is-table-compact">
@@ -62,7 +62,7 @@
         </template>
       </Property>
 
-      <Property v-else id="royalteeFees" :full-width="true">
+      <Property v-else id="royalteeFee" :full-width="true">
         <template v-slot:name>Royalty Fees</template>
         <template v-if="hasRoyaltyFees" v-slot:value>
           <div class="h-is-table-compact">
