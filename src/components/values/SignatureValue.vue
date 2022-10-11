@@ -25,7 +25,7 @@
 <template>
   <div v-if="signature">
     <HexaValue :byte-string="signature" show-none/>
-    <div v-if="signatureInfo" class="h-is-extra-text h-is-text-size-3">{{ signatureInfo.text_signature }}</div>
+    <div v-if="signatureInfo" class="h-is-extra-text h-is-text-size-3">{{ signatureInfo }}</div>
   </div>
   <div v-else-if="initialLoading"/>
   <div v-else class="has-text-grey">None</div>
@@ -37,45 +37,31 @@
 
 <script lang="ts">
 
-import {computed, defineComponent, inject, PropType, ref} from "vue";
-import {byteToHex, hexToByte} from "@/utils/B64Utils";
-import {SignatureCollector} from "@/utils/SignatureCollector";
+import {computed, defineComponent, inject, onBeforeUnmount, onMounted, PropType, ref} from "vue";
 import {initialLoadingKey} from "@/AppKeys";
 import HexaValue from "@/components/values/HexaValue.vue";
 import {ContractAction} from "@/schemas/HederaSchemas";
+import {SignatureAnalyzer} from "@/utils/SignatureAnalyzer";
 
 export default defineComponent({
   name: "SignatureValue",
   components: {HexaValue},
   props: {
-    action: Object as PropType<ContractAction>
+    action: Object as PropType<ContractAction|undefined>
   },
 
   setup(props) {
 
-    const signature = computed(() => {
-      let result: string|null
-      if (props.action?.input) {
-        const bytes = hexToByte(props.action.input)?.slice(0, 4)
-        result = bytes ? "0x" + byteToHex(bytes) : null
-      } else {
-        result = null
-      }
-      return result
-    })
-
-    const signature4 = computed(() => signature.value && signature.value.length >= 6 ? signature.value : null )
-
-    const signatureResponse = SignatureCollector.instance.ref(signature4)
-
-    const signatureInfo = computed(() => {
-      const results = signatureResponse.value?.results
-      return results && results.length >= 1 ? results[0] : null
-    })
-
+    const signatureAnalyzer = new SignatureAnalyzer(computed(() => props.action ?? null))
+    onMounted(() => signatureAnalyzer.mount())
+    onBeforeUnmount(() => signatureAnalyzer.unmount())
     const initialLoading = inject(initialLoadingKey, ref(false))
 
-    return { signature, signatureInfo, initialLoading }
+    return {
+      signature: signatureAnalyzer.functionHash,
+      signatureInfo: signatureAnalyzer.signature,
+      initialLoading
+    }
   }
 })
 

@@ -84,6 +84,10 @@ export class EntityID {
         return byteToHex(buffer)
     }
 
+    public isEthereumPrecompiledContract(): boolean {
+        return this.shard == 0 && this.realm == 0 && 1 <= this.num && this.num < 256
+    }
+
     /*
      * Compare two account ID.
      * Accounts are sorted in ascending but account ids < 100 are put at the end.
