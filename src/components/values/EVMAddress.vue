@@ -27,9 +27,14 @@
     <span class="is-family-monospace h-is-text-size-3">
       <span class="has-text-grey">{{ nonSignificantPart }}</span>
       <span>{{ significantPart }}</span>
-      <span v-if="id" class="ml-1">{{ '(' + id + ')' }}</span>
+      <span v-if="id" class="ml-1">
+        <span>(</span>
+        <router-link v-if="isContract" :to="{name: 'ContractDetails', params: {contractId: id}}">{{ id }}</router-link>
+        <router-link v-else :to="{name: 'AccountDetails', params: {accountId: id}}">{{ id }}</router-link>
+        <span>)</span>
+      </span>
     </span>
-    <div v-if="extra" class="h-is-extra-text h-is-text-size-2">{{ extra }}</div>
+    <div v-if="showType" class="h-is-extra-text h-is-text-size-2">{{ idType }}</div>
   </div>
   <div v-else-if="initialLoading"/>
   <div v-else class="has-text-grey">None</div>
@@ -49,7 +54,11 @@ export default defineComponent({
   props: {
     address: String,
     id: String,
-    extra: String,
+    idType: String,
+    showType: {
+      type: Boolean,
+      default: false
+    },
     bytesKept: {
       type: Number,
       default: -1
@@ -58,6 +67,8 @@ export default defineComponent({
 
   setup(props) {
     const initialLoading = inject(initialLoadingKey, ref(false))
+
+    const isContract = computed(() => props.idType === 'CONTRACT')
 
     const displayAddress = computed(() => {
       let result: string
@@ -87,6 +98,7 @@ export default defineComponent({
         () => displayAddress.value?.slice(nonSignificantSize.value))
 
     return {
+      isContract,
       initialLoading,
       nonSignificantPart,
       significantPart
