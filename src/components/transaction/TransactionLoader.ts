@@ -98,9 +98,9 @@ export class TransactionLoader extends EntityLoader<TransactionByIdResponse> {
     })
 
     public readonly systemContract: ComputedRef<string|null> = computed(() => {
-        let result
+        let result: string|null
         if (this.transaction.value?.name === TransactionType.CONTRACTCALL && this.transaction.value.entity_id) {
-            result = systemContractRegistry.lookup(this.transaction.value.entity_id)
+            result = systemContractRegistry.lookup(this.transaction.value.entity_id)?.description ?? null
         } else {
             result = null
         }
