@@ -59,7 +59,7 @@
       </o-table-column>
 
       <o-table-column v-slot="props" field="from" label="From">
-        <EVMAddress :address="props.row.from" :id="props.row.caller" bytes-kept="6"/>
+        <EVMAddress :address="props.row.from" :id="props.row.caller" :bytes-kept="6"/>
       </o-table-column>
 
       <o-table-column v-slot="props" field="amount" label="Amount">
@@ -71,7 +71,7 @@
       </o-table-column>
 
       <o-table-column v-slot="props" field="to" label="To">
-        <EVMAddress :address="props.row.to" :id="props.row.recipient" bytes-kept="6"/>
+        <EVMAddress :address="props.row.to" :id="props.row.recipient" :bytes-kept="6"/>
       </o-table-column>
 
       <o-table-column v-slot="props" field="gas_limit" label="Gas Limit">

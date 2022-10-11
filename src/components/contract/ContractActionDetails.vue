@@ -99,7 +99,6 @@ import {ContractAction, ResultDataType} from "@/schemas/HederaSchemas";
 import {ORUGA_MOBILE_BREAKPOINT} from "@/App.vue";
 import Property from "@/components/Property.vue";
 import StringValue from "@/components/values/StringValue.vue";
-import HexaValue from "@/components/values/HexaValue.vue";
 import PlainAmount from "@/components/values/PlainAmount.vue";
 import ByteCodeValue from "@/components/values/ByteCodeValue.vue";
 import SignatureValue from "@/components/values/SignatureValue.vue";
@@ -108,7 +107,7 @@ import EVMAddress from "@/components/values/EVMAddress.vue";
 export default defineComponent({
   name: 'ContractActionDetails',
 
-  components: {EVMAddress, SignatureValue, ByteCodeValue, PlainAmount, HexaValue, StringValue, Property},
+  components: {EVMAddress, SignatureValue, ByteCodeValue, PlainAmount, StringValue, Property},
 
   props: {
     action: Object as PropType<ContractAction | undefined>,
