@@ -51,6 +51,8 @@ export class SignatureAnalyzer {
             this.watchHandle()
             this.watchHandle = null
         }
+        this.functionHashRef.value = null
+        this.signatureRef.value = null
     }
 
     public readonly functionHash: ComputedRef<string|null> = computed(() => {
@@ -96,9 +98,8 @@ export class SignatureAnalyzer {
                     if (this.functionHashRef.value !== null) {
                         const contractID = this.action.value.recipient ? EntityID.parse(this.action.value.recipient) : null
                         const contractEntry = contractID !== null ? systemContractRegistry.lookup(contractID.toString()) : null
-                        const description = contractEntry?.description ?? null
-                        if (contractID !== null && description !== null) {
-                            this.functionHashRef.value = "Prototype for " + this.functionHashRef.value
+                        if (contractEntry !== null) {
+                            this.signatureRef.value = contractEntry.signatures.get(this.functionHashRef.value) ?? null
                         }
                     }
                 }
