@@ -41,12 +41,9 @@
 
 import {computed, defineComponent, inject, ref} from "vue";
 import {initialLoadingKey} from "@/AppKeys";
-import HexaValue from "@/components/values/HexaValue.vue";
-import StringValue from "@/components/values/StringValue.vue";
 
 export default defineComponent({
   name: "EVMAddress",
-  components: {StringValue, HexaValue},
   props: {
     address: String,
     id: String,
