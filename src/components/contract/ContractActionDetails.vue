@@ -28,15 +28,13 @@
       <Property id="actionDetailFrom" custom-nb-col-class="is-one-fifth">
         <template v-slot:name>From</template>
         <template v-slot:value>
-          <HexaValue :byte-string="action.from"/>
-          <StringValue :string-value="' (' + action.caller + ')'"/>
+          <EVMAddress :address="action.from" :id="action.caller" :extra="action.caller_type"/>
         </template>
       </Property>
       <Property id="actionDetailTo" custom-nb-col-class="is-one-fifth">
         <template v-slot:name>To</template>
         <template v-slot:value>
-          <HexaValue :byte-string="action.to"/>
-          <StringValue :string-value="' (' + action.recipient + ')'"/>
+          <EVMAddress :address="action.to" :id="action.recipient" :extra="action.recipient_type"/>
         </template>
       </Property>
       <Property id="actionDetailFunction" custom-nb-col-class="is-one-fifth">
@@ -105,11 +103,12 @@ import HexaValue from "@/components/values/HexaValue.vue";
 import PlainAmount from "@/components/values/PlainAmount.vue";
 import ByteCodeValue from "@/components/values/ByteCodeValue.vue";
 import SignatureValue from "@/components/values/SignatureValue.vue";
+import EVMAddress from "@/components/values/EVMAddress.vue";
 
 export default defineComponent({
   name: 'ContractActionDetails',
 
-  components: {SignatureValue, ByteCodeValue, PlainAmount, HexaValue, StringValue, Property},
+  components: {EVMAddress, SignatureValue, ByteCodeValue, PlainAmount, HexaValue, StringValue, Property},
 
   props: {
     action: Object as PropType<ContractAction | undefined>,

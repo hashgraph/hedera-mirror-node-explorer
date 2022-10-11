@@ -44,13 +44,13 @@
         <Property id="from">
           <template v-slot:name>From</template>
           <template v-slot:value>
-            <HexaValue :byte-string="contractResult?.from" v-bind:show-none="true"/>
+            <EVMAddress :address="contractResult?.from"/>
           </template>
         </Property>
         <Property id="to">
           <template v-slot:name>To</template>
           <template v-slot:value>
-            <HexaValue :byte-string="contractResult?.to" v-bind:show-none="true"/>
+            <EVMAddress :address="contractResult?.to"/>
           </template>
         </Property>
         <Property id="type">
@@ -178,6 +178,7 @@ import PlainAmount from "@/components/values/PlainAmount.vue";
 import ContractResultLog from "@/components/contract/ContractResultLog.vue";
 import ContractResultTrace from "@/components/contract/ContractResultTrace.vue";
 import ContractResultStates from "@/components/contract/ContractResultStates.vue";
+import EVMAddress from "@/components/values/EVMAddress.vue";
 
 const NB_LOG_LINES = 2
 const MAX_LOG_LINES = 10
@@ -187,6 +188,7 @@ export default defineComponent({
   name: 'ContractResult',
 
   components: {
+    EVMAddress,
     ContractResultStates,
     ContractResultTrace,
     ContractResultLog,

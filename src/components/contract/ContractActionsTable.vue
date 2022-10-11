@@ -59,7 +59,7 @@
       </o-table-column>
 
       <o-table-column v-slot="props" field="from" label="From">
-          {{ props.row.caller }}
+        <EVMAddress :address="props.row.from" :id="props.row.caller" />
       </o-table-column>
 
       <o-table-column v-slot="props" field="amount" label="Amount">
@@ -71,7 +71,7 @@
       </o-table-column>
 
       <o-table-column v-slot="props" field="to" label="To">
-          {{ props.row.recipient }}
+        <EVMAddress :address="props.row.to" :id="props.row.recipient" />
       </o-table-column>
 
       <o-table-column v-slot="props" field="gas_limit" label="Gas Limit">
@@ -108,17 +108,18 @@ import {ORUGA_MOBILE_BREAKPOINT} from '@/App.vue';
 import EmptyTable from "@/components/EmptyTable.vue";
 import HbarAmount from "@/components/values/HbarAmount.vue";
 import ContractActionDetails from "@/components/contract/ContractActionDetails.vue";
+import EVMAddress from "@/components/values/EVMAddress.vue";
 
 //
 // defineComponent
 //
 
-const NB_ACTIONS_PER_PAGE = 2
+const NB_ACTIONS_PER_PAGE = 8
 
 export default defineComponent({
   name: 'ContractActionsTable',
 
-  components: {HbarAmount, ContractActionDetails, EmptyTable},
+  components: {EVMAddress, HbarAmount, ContractActionDetails, EmptyTable},
 
   props: {
     actions: Array as PropType<Array<ContractAction> | undefined>,
