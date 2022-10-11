@@ -25,14 +25,12 @@ import {flushPromises} from "@vue/test-utils";
 describe("Collector.ts", () => {
 
 
-    test("resolve", () => {
+    test("sequential", () => {
         const c = new TestCollector()
 
-        for (let k = 0; k < 100; k += 1) {
+        for (let k = 0; k < 10; k += 1) {
             c.fetch(k).then((value: AxiosResponse<TestData>) => {
                 expect(value.data.key).toBe(value.data.seq)
-            }, (reason: unknown) => {
-                throw new Error("Unexpected reject with reason " + reason)
             })
         }
 
@@ -41,6 +39,30 @@ describe("Collector.ts", () => {
     })
 
 
+    test("concurrent", async () => {
+        const c = new TestCollector()
+
+        const promises = new Array<Promise<AxiosResponse<TestData>>>()
+
+        const count = 10
+        for (let k = 0; k < count; k += 1) {
+            promises.push(c.fetch(k))
+        }
+
+        const responses = new Array<AxiosResponse<TestData>>()
+        for (const p of promises) {
+            p.then((r: AxiosResponse<TestData>) => {
+                responses.push(r)
+            })
+        }
+
+        await flushPromises()
+
+        for (const response of responses) {
+            expect(response.data.seq).toBe(response.data.key)
+        }
+
+    })
 })
 
 class TestCollector extends Collector<TestData, number> {
