@@ -1607,6 +1607,25 @@ export const SAMPLE_CONTRACT_ACTIONS = {
             "timestamp": "1586567700.453054000",
             "to": "0x0000000000000000000000000000000000001f41",
             "value": 50000
+        },
+        {
+            "call_depth": 2,
+            "call_operation_type": "STATIC CALL",
+            "call_type": "SYSTEM",
+            "caller": "0.1.2",
+            "caller_type": "ACCOUNT",
+            "from": "0x0000000000000000000000000000000000000065",
+            "gas": 50000,
+            "gas_used": 50000,
+            "index": 2,
+            "input": "0x189a554c",
+            "recipient": "0.0.359",
+            "recipient_type": "CONTRACT",
+            "result_data": "0x123456",
+            "result_data_type": "OUTPUT",
+            "timestamp": "1586567700.453054000",
+            "to": "0x0000000000000000000000000000000000000167",
+            "value": 50000
         }
     ]
 }
@@ -1858,5 +1877,27 @@ export const SAMPLE_COINGECKO = {
         "price_change_percentage_24h": 8.41776,
         "market_cap_change_percentage_24h": 8.42424
     }
+
+}
+
+
+//
+// https://www.4byte.directory/api/v1/signatures/?hex_signature=0xb01ef608
+//
+
+export const SAMPLE_4BYTE_0xB01EF608 = {
+
+    "count":1,
+    "next":null,
+    "previous":null,
+    "results":[
+        {
+            "id":842814,
+            "created_at":"2022-07-03T20:24:54.756716Z",
+            "text_signature":"buyV2(address,uint256,uint256,address)",
+            "hex_signature":"0xb01ef608",
+            "bytes_signature":"°\u001eö\b"
+        },
+    ]
 
 }
