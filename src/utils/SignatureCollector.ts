@@ -37,7 +37,6 @@ export class SignatureCollector extends Collector<SignatureResponse, string> {
             hex_signature: hexSignature
         }
 
-        console.log("params=" + JSON.stringify(params))
         return axios.get<SignatureResponse>(signatureURL, {params})
     }
 
