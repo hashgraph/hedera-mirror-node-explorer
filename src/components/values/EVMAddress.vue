@@ -24,8 +24,9 @@
 
 <template>
   <div v-if="address">
-    <HexaValue :byte-string="address"/>
-    <StringValue v-if="id" :string-value="'(' + id + ')'" class="ml-1"/>
+    <span class="is-family-monospace has-text-grey">{{ nonSignificantPart }}</span>
+    <span class="is-family-monospace">{{ significantPart }}</span>
+    <span v-if="id" class="is-family-monospace ml-1">{{ '(' + id + ')'}}</span>
     <div v-if="extra" class="h-is-extra-text h-is-text-size-3">{{ extra }}</div>
   </div>
   <div v-else-if="initialLoading"/>
@@ -38,7 +39,7 @@
 
 <script lang="ts">
 
-import {defineComponent, inject, ref} from "vue";
+import {computed, defineComponent, inject, ref} from "vue";
 import {initialLoadingKey} from "@/AppKeys";
 import HexaValue from "@/components/values/HexaValue.vue";
 import StringValue from "@/components/values/StringValue.vue";
@@ -50,12 +51,47 @@ export default defineComponent({
     address: String,
     id: String,
     extra: String,
+    bytesKept: {
+      type: Number,
+      default: -1
+    }
   },
 
-  setup() {
+  setup(props) {
     const initialLoading = inject(initialLoadingKey, ref(false))
 
-    return { initialLoading }
+    const displayAddress = computed(() => {
+      let result: string
+      if (props.bytesKept !== -1  && props.address?.slice(0, 2) === "0x" && props.address.length === 42) {
+        result = "0x…" + props.address.slice(-props.bytesKept)
+      } else {
+        result = props.address ?? ""
+      }
+      return result
+    })
+
+    const nonSignificantSize = computed(() => {
+      let i: number
+      for (i = 0; i < displayAddress.value.length; i++) {
+        const c = displayAddress.value[i]
+        if (c !== '0' && c !== 'x' && c !== '…') {
+          break
+        }
+      }
+      return i
+    })
+
+    const nonSignificantPart = computed(
+        () => displayAddress.value?.slice(0, nonSignificantSize.value))
+
+    const significantPart = computed(
+        () => displayAddress.value?.slice(nonSignificantSize.value))
+
+    return {
+      initialLoading,
+      nonSignificantPart,
+      significantPart
+    }
   }
 })
 
