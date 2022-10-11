@@ -23,9 +23,34 @@
 <!-- --------------------------------------------------------------------------------------------------------------- -->
 
 <template>
-  <span v-if="formattedAmount !== noneLabel">{{ formattedAmount }}</span>
-  <span v-else-if="initialLoading"/>
-  <span v-else class="has-text-grey">{{ noneLabel }}</span>
+
+  <o-table
+      :data="fees"
+      :hoverable="false"
+      :mobile-breakpoint="ORUGA_MOBILE_BREAKPOINT"
+      :narrowed="true"
+      :striped="false"
+
+      aria-current-label="Current page"
+      aria-next-label="Next page"
+      aria-page-label="Page"
+      aria-previous-label="Previous page"
+  >
+
+    <o-table-column v-slot="props" field="amount" label="Amount">
+      <PlainAmount :amount="props.row.amount"/>
+    </o-table-column>
+
+    <o-table-column v-slot="props" field="amount" label="Token">
+      <TokenLink :show-extra="true" :token-id="props.row.denominating_token_id"/>
+    </o-table-column>
+
+    <o-table-column v-slot="props" field="account_id" label="Collector Account">
+      <AccountLink :account-id="props.row.collector_account_id"/>
+    </o-table-column>
+
+  </o-table>
+
 </template>
 
 <!-- --------------------------------------------------------------------------------------------------------------- -->
@@ -34,38 +59,36 @@
 
 <script lang="ts">
 
-import {computed, defineComponent, inject, ref} from "vue";
-import {initialLoadingKey} from "@/AppKeys";
+import {defineComponent, PropType} from 'vue';
+import AccountLink from "@/components/values/AccountLink.vue";
+import PlainAmount from "@/components/values/PlainAmount.vue";
+import TokenLink from "@/components/values/TokenLink.vue";
+import {ORUGA_MOBILE_BREAKPOINT} from "@/App.vue";
+import {TokenInfoLoader} from "@/components/token/TokenInfoLoader";
 
 export default defineComponent({
-  name: "PlainAmount",
+
+  name: 'FixedFeeTable',
+
+  components: {
+    TokenLink,
+    PlainAmount,
+    AccountLink,
+  },
 
   props: {
-    amount: Number,
-    noneLabel: {
-      type: String,
-      default: "0"
+    tokenInfoLoader: {
+      type: Object as PropType<TokenInfoLoader>,
+      required: true
     }
   },
 
   setup(props) {
-    const formattedAmount = computed(() => {
-      let result: string
-        if (props.amount) {
-          result = props.amount.toLocaleString()
-        } else {
-          result = props.noneLabel
-        }
-      return result
-    })
-
-    const initialLoading = inject(initialLoadingKey, ref(false))
-
     return {
-      formattedAmount,
-      initialLoading
+      fees: props.tokenInfoLoader.fixedFees,
+      ORUGA_MOBILE_BREAKPOINT
     }
-  }
+  },
 });
 
 </script>
@@ -75,4 +98,3 @@ export default defineComponent({
 <!-- --------------------------------------------------------------------------------------------------------------- -->
 
 <style/>
-

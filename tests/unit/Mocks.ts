@@ -31,8 +31,58 @@ export const SAMPLE_TOKEN = {
     "created_timestamp": "1644660150.233378000",
     "custom_fees": {
         "created_timestamp": "1644660150.233378000",
-        "fixed_fees": [],
-        "fractional_fees": []
+        "fixed_fees": [
+            {
+                "amount": 5,
+                "collector_account_id": "0.0.617888",
+                "denominating_token_id": "0.0.29662956"
+            },
+            {
+                "amount": 1,
+                "collector_account_id": "0.0.617889",
+                "denominating_token_id": "0.0.29662956"
+            },
+            {
+                "amount": 2,
+                "collector_account_id": "0.0.617890",
+                "denominating_token_id": "0.0.29662956"
+            }
+        ],
+        "fractional_fees": [
+            {
+                "amount":
+                    {
+                        "numerator": 50,
+                        "denominator": 10000
+                    },
+                "collector_account_id": "0.0.617888",
+                "denominating_token_id": "0.0.29662956",
+                "minimum": 0.01,
+                "maximum": 2,
+                "net_of_transfers": true
+            },
+            {
+                "amount":
+                    {
+                        "numerator": 1,
+                        "denominator": 1000
+                    },
+                "collector_account_id": "0.0.617889",
+                "denominating_token_id": "0.0.29662956",
+                "minimum": 0.01,
+                "maximum": 2,
+                "net_of_transfers": false
+            },
+            {
+                "amount":
+                    {
+                        "numerator": 1,
+                        "denominator": 500
+                    },
+                "collector_account_id": "0.0.617890",
+                "denominating_token_id": "0.0.29662956"
+            }
+        ]
     },
     "decimals": "0",
     "deleted": false,
@@ -71,7 +121,13 @@ export const SAMPLE_TOKEN_DUDE = {
     "created_timestamp": "1644660150.233378000",
     "custom_fees": {
         "created_timestamp": "1644660150.233378000",
-        "fixed_fees": [],
+        "fixed_fees": [
+            {
+                "amount": 5,
+                "collector_account_id": "0.0.61788",
+                "denominating_token_id": "0.0.29662957"
+            }
+        ],
         "fractional_fees": []
     },
     "decimals": "2",
@@ -178,15 +234,59 @@ export const SAMPLE_NONFUNGIBLE = {
     "created_timestamp": "1646580567.712861636",
     "custom_fees": {
         "created_timestamp": "1646580567.712861636",
-        "fixed_fees": [],
+        "fixed_fees": [
+            {
+                "amount": 5,
+                "collector_account_id": "0.0.617888",
+                "denominating_token_id": "0.0.748383"
+            },
+            {
+                "amount": 1,
+                "collector_account_id": "0.0.617889",
+                "denominating_token_id": "0.0.748383"
+            },
+            {
+                "amount": 2,
+                "collector_account_id": "0.0.617890",
+                "denominating_token_id": "0.0.748383"
+            }
+        ],
         "royalty_fees": [
             {
                 "amount":
                     {
-                        "numerator": 500,
+                        "numerator": 50,
                         "denominator": 10000
                     },
-                "collector_account_id": "0.0.617888"
+                "collector_account_id": "0.0.617888",
+                "fallback_fee": {
+                    "amount": 500,
+                    "denominating_token_id": "0.0.748383"
+                }
+            },
+            {
+                "amount":
+                    {
+                        "numerator": 1,
+                        "denominator": 1000
+                    },
+                "collector_account_id": "0.0.617889",
+                "fallback_fee": {
+                    "amount": 100,
+                    "denominating_token_id": "0.0.748383"
+                }
+            },
+            {
+                "amount":
+                    {
+                        "numerator": 1,
+                        "denominator": 500
+                    },
+                "collector_account_id": "0.0.617890",
+                "fallback_fee": {
+                    "amount": 200,
+                    "denominating_token_id": "0.0.748383"
+                }
             }
         ]
     },
@@ -1614,7 +1714,6 @@ export const SAMPLE_NETWORK_NODES = {
             },
             "max_stake":         3000000000000000,
             "min_stake":          100000000000000,
-            "stake_total":       2400000000000000,
             "stake":              600000000000000,
             "stake_not_rewarded": 100000000000000,
             "stake_rewarded":     500000000000000,
@@ -1644,7 +1743,6 @@ export const SAMPLE_NETWORK_NODES = {
             },
             "max_stake":         3000000000000000,
             "min_stake":          100000000000000,
-            "stake_total":       2400000000000000,
             "stake":              900000000000000,
             "stake_not_rewarded": 200000000000000,
             "stake_rewarded":     700000000000000,
@@ -1674,7 +1772,6 @@ export const SAMPLE_NETWORK_NODES = {
             },
             "max_stake":         3000000000000000,
             "min_stake":          100000000000000,
-            "stake_total":       2400000000000000,
             "stake":              900000000000000,
             "stake_not_rewarded": 200000000000000,
             "stake_rewarded":     700000000000000,

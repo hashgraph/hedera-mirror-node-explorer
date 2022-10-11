@@ -34,34 +34,34 @@
 
           <div v-if="isSmallScreen" class="is-flex is-justify-content-space-between">
             <div class="is-flex-direction-column">
-              <NetworkDashboardItem :title="'Total Nodes'" :value="totalNodes.toString()"/>
+              <NetworkDashboardItem title="Total Nodes" :value="totalNodes.toString()"/>
               <div class="mt-4"/>
-              <NetworkDashboardItem :title="'Last Staked'" :value="formatSeconds(elapsedMin*60) + ' ago'"/>
+              <NetworkDashboardItem title="Last Staked" :value="formatSeconds(elapsedMin*60) + ' ago'"/>
             </div>
             <div class="is-flex-direction-column">
-              <NetworkDashboardItem :name="'HBAR'" :title="'Total Staked'" :value="makeFloorHbarAmount(unclampedStakeTotal)"/>
+              <NetworkDashboardItem name="HBAR" title="Total Staked" :value="makeFloorHbarAmount(unclampedStakeTotal)"/>
               <div class="mt-4"/>
-              <NetworkDashboardItem :title="'Next Staking Period'" :value="'in ' + formatSeconds(remainingMin*60)"/>
+              <NetworkDashboardItem title="Next Staking Period" :value="'in ' + formatSeconds(remainingMin*60)"/>
             </div>
             <div class="is-flex-direction-column">
-              <NetworkDashboardItem :name="'HBAR'" :title="'Last Period Reward'" :value="makeFloorHbarAmount(totalRewarded)"/>
+              <NetworkDashboardItem name="HBAR" title="Last Period Reward" :value="makeFloorHbarAmount(totalRewarded)"/>
               <div class="mt-4"/>
-              <NetworkDashboardItem :title="'Staking Period'" :value="formatSeconds(durationMin*60)"/>
+              <NetworkDashboardItem title="Staking Period" :value="formatSeconds(durationMin*60)"/>
             </div>
           </div>
           <div v-else>
             <div class="is-flex-direction-column">
-              <NetworkDashboardItem :title="'Total Nodes'" :value="totalNodes"/>
+              <NetworkDashboardItem title="Total Nodes" :value="totalNodes.toString()"/>
               <div class="mt-4"/>
-              <NetworkDashboardItem :title="'Last Staked'" :value="formatSeconds(elapsedMin*60) + 'ago'"/>
+              <NetworkDashboardItem title="Last Staked" :value="formatSeconds(elapsedMin*60) + ' ago'"/>
               <div class="mt-4"/>
-              <NetworkDashboardItem :name="'HBAR'" :title="'Total Staked'" :value="makeFloorHbarAmount(unclampedStakeTotal)"/>
+              <NetworkDashboardItem name="HBAR" title="Total Staked" :value="makeFloorHbarAmount(unclampedStakeTotal)"/>
               <div class="mt-4"/>
-              <NetworkDashboardItem :title="'Next Staking Period'" :value="'in' + formatSeconds(remainingMin*60)"/>
+              <NetworkDashboardItem title="Next Staking Period" :value="'in ' + formatSeconds(remainingMin*60)"/>
               <div class="mt-4"/>
-              <NetworkDashboardItem :name="'HBAR'" :title="'Last Period Reward'" :value="makeFloorHbarAmount(totalRewarded)"/>
+              <NetworkDashboardItem name="HBAR" title="Last Period Reward" :value="makeFloorHbarAmount(totalRewarded)"/>
               <div class="mt-4"/>
-              <NetworkDashboardItem :title="'Staking Period'" :value="formatSeconds(durationMin*60)"/>
+              <NetworkDashboardItem title="Staking Period" :value="formatSeconds(durationMin*60)"/>
               <div class="mt-6"/>
             </div>
           </div>
@@ -76,9 +76,7 @@
       <template v-slot:content>
         <NodeTable :nodes="nodes"
                    :unclamped-stake-total="unclampedStakeTotal"
-                   :stake-total="stakeTotal"
-                   :min-stake="minStake"
-                   :max-stake="maxStake"/>
+                   :stake-total="stakeTotal"/>
       </template>
     </DashboardCard>
 
@@ -127,18 +125,7 @@ export default defineComponent({
 
     const stakeLoader = new StakeLoader()
 
-    const minStake = computed(() => nodesLoader.node0.value?.min_stake ?? 0)
-    const maxStake = computed(() => nodesLoader.node0.value?.max_stake ?? 0)
-
-    const stakeTotal = computed(() => {
-      let result
-      if (stakeLoader.got404.value) {
-        result = nodesLoader.stakeTotal.value ?? 0
-      } else {
-        result = (stakeLoader.entity.value?.stake_total ?? 0)
-      }
-      return result
-    })
+    const stakeTotal = computed(() => stakeLoader.entity.value?.stake_total ?? 0)
 
     const stakingPeriod = ref<StakingPeriod | null>(null)
 
@@ -180,8 +167,6 @@ export default defineComponent({
       totalNodes: nodesLoader.nodeCount,
       stakeTotal,
       unclampedStakeTotal: nodesLoader.unclampedStakeTotal,
-      minStake,
-      maxStake,
       totalRewarded: nodesLoader.totalRewarded,
       durationMin,
       elapsedMin,

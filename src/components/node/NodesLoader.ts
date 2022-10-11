@@ -50,9 +50,6 @@ export class NodesLoader extends EntityBatchLoader<NetworkNodesResponse> {
     })
 
     public readonly node0 = computed(() => this.nodes.value.length >= 1 ? this.nodes.value[0] : null)
-    public readonly stakeTotal = computed(() => this.node0.value?.stake_total ?? 0)
-    public readonly minStake = computed(() => this.node0.value?.min_stake ?? 0)
-    public readonly maxStake = computed(() => this.node0.value?.max_stake ?? 0)
 
     public readonly stakeRewardedTotal: ComputedRef<number> = computed(() => {
         let result = 0

@@ -59,6 +59,12 @@
             <StringValue :string-value="contractResult?.type?.toString()"/>
           </template>
         </Property>
+        <Property id="functionParameters">
+          <template v-slot:name>Function Parameters</template>
+          <template v-slot:value>
+            <HexaValue :byte-string ="contractResult?.function_parameters" v-bind:show-none="true"/>
+          </template>
+        </Property>
         <Property id="errorMessage">
           <template v-slot:name>Error Message</template>
           <template v-slot:value>

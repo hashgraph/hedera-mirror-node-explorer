@@ -24,7 +24,7 @@ import TokenDetails from "@/pages/TokenDetails.vue";
 import axios from "axios";
 import {
     SAMPLE_BALANCES,
-    SAMPLE_NFTS,
+    SAMPLE_NFTS, SAMPLE_NONFUNGIBLE,
     SAMPLE_NONFUNGIBLE_DUDE,
     SAMPLE_TOKEN,
     SAMPLE_TOKEN_WITH_KEYS,
@@ -35,6 +35,10 @@ import MockAdapter from "axios-mock-adapter";
 import {HMSF} from "@/utils/HMSF";
 import Oruga from "@oruga-ui/oruga-next";
 import NftHolderTable from "@/components/token/NftHolderTable.vue";
+import TokenCustomFees from "@/components/token/TokenCustomFees.vue";
+import FixedFeeTable from "@/components/token/FixedFeeTable.vue";
+import FractionalFeeTable from "@/components/token/FractionalFeeTable.vue";
+import RoyaltyFeeTable from "@/components/token/RoyaltyFeeTable.vue";
 
 /*
     Bookmarks
@@ -369,5 +373,128 @@ describe("TokenDetails.vue", () => {
 
         wrapper.unmount()
         await flushPromises()
+    });
+
+    it("Should display fixed fees and fractional fee of token", async () => {
+
+        await router.push("/") // To avoid "missing required param 'network'" error
+
+        const mock = new MockAdapter(axios);
+
+        const testTokenId = SAMPLE_TOKEN.token_id
+        const matcher1 = "/api/v1/tokens/" + testTokenId
+        mock.onGet(matcher1).reply(200, SAMPLE_TOKEN);
+        const matcher2 = "/api/v1/tokens/" + testTokenId + "/balances"
+        mock.onGet(matcher2).reply(200, SAMPLE_BALANCES);
+
+        const wrapper = mount(TokenDetails, {
+            global: {
+                plugins: [router, Oruga]
+            },
+            props: {
+                tokenId: testTokenId
+            },
+        });
+        await flushPromises()
+        // console.log(wrapper.text())
+
+        expect(wrapper.text()).toMatch(RegExp("^Fungible Token " + testTokenId))
+
+        const customFees = wrapper.findComponent(TokenCustomFees)
+        expect(customFees.exists()).toBe(true)
+
+        const fixedFee = customFees.findComponent(FixedFeeTable)
+        expect(fixedFee.exists()).toBe(true)
+        expect(fixedFee.get('thead').text()).toBe("Amount Token Collector Account")
+        expect(fixedFee.get('tbody').text()).toBe(
+            "5" + "0.0.2966295623423" + "0.0.617888" +
+            "1" + "0.0.2966295623423" + "0.0.617889" +
+            "2" + "0.0.2966295623423" + "0.0.617890")
+
+        const fractionalFee = customFees.findComponent(FractionalFeeTable)
+        expect(fractionalFee.exists()).toBe(true)
+        expect(fractionalFee.get('thead').text()).toBe("Amount Token Collector Account Min Max Net")
+        expect(fractionalFee.get('tbody').text()).toBe(
+            "50/10000" + "0.0.2966295623423" + "0.0.617888" + "0.01" + "2" + "✓" +
+            "1/1000" + "0.0.2966295623423" + "0.0.617889" + "0.01" + "2" +
+            "1/500" + "0.0.2966295623423" + "0.0.617890" + "None" + "None")
+
+        expect(customFees.findComponent(RoyaltyFeeTable).exists()).toBe(false)
+    });
+
+    it("Should display fixed fees and royaltee fee of token", async () => {
+
+        await router.push("/") // To avoid "missing required param 'network'" error
+
+        const mock = new MockAdapter(axios);
+
+        const testTokenId = SAMPLE_NONFUNGIBLE.token_id
+        const matcher1 = "/api/v1/tokens/" + testTokenId
+        mock.onGet(matcher1).reply(200, SAMPLE_NONFUNGIBLE);
+        const matcher2 = "/api/v1/tokens/" + testTokenId + "/nfts"
+        mock.onGet(matcher2).reply(200, SAMPLE_NFTS);
+
+        const wrapper = mount(TokenDetails, {
+            global: {
+                plugins: [router, Oruga]
+            },
+            props: {
+                tokenId: testTokenId
+            },
+        });
+        await flushPromises()
+        // console.log(wrapper.text())
+
+        expect(wrapper.text()).toMatch(RegExp("^Non Fungible Token " + testTokenId))
+
+        const customFees = wrapper.findComponent(TokenCustomFees)
+        expect(customFees.exists()).toBe(true)
+
+        const fixedFee = customFees.findComponent(FixedFeeTable)
+        expect(fixedFee.exists()).toBe(true)
+        expect(fixedFee.get('thead').text()).toBe("Amount Token Collector Account")
+        expect(fixedFee.get('tbody').text()).toBe(
+            "5" + "0.0.748383" + "Ħ Frens Kingdom" + "0.0.617888" +
+            "1" + "0.0.748383" + "Ħ Frens Kingdom" + "0.0.617889" +
+            "2" + "0.0.748383" + "Ħ Frens Kingdom" + "0.0.617890")
+
+        expect(customFees.findComponent(FractionalFeeTable).exists()).toBe(false)
+
+        const royalteeFee = customFees.findComponent(RoyaltyFeeTable)
+        expect(royalteeFee.exists()).toBe(true)
+        expect(royalteeFee.get('thead').text()).toBe("Amount Collector Account Fallback Amount Fallback Token")
+        expect(royalteeFee.get('tbody').text()).toBe(
+            "50/10000" + "0.0.617888" + "500" + "0.0.748383" + "Ħ Frens Kingdom" +
+            "1/1000" + "0.0.617889" + "100" + "0.0.748383" + "Ħ Frens Kingdom" +
+            "1/500" + "0.0.617890" + "200" + "0.0.748383" + "Ħ Frens Kingdom")
+    });
+
+    it("Should not display the 'Custom Fees card'", async () => {
+
+        await router.push("/") // To avoid "missing required param 'network'" error
+
+        const mock = new MockAdapter(axios);
+
+        const testTokenId = SAMPLE_TOKEN_WITHOUT_KEYS.token_id
+        const matcher1 = "/api/v1/tokens/" + testTokenId
+        mock.onGet(matcher1).reply(200, SAMPLE_TOKEN_WITHOUT_KEYS);
+        const matcher2 = "/api/v1/tokens/" + testTokenId + "/nfts"
+        mock.onGet(matcher2).reply(200, SAMPLE_NFTS);
+
+        const wrapper = mount(TokenDetails, {
+            global: {
+                plugins: [router, Oruga]
+            },
+            props: {
+                tokenId: testTokenId
+            },
+        });
+        await flushPromises()
+        // console.log(wrapper.text())
+
+        expect(wrapper.text()).toMatch(RegExp("^Non Fungible Token " + testTokenId))
+
+        const customFees = wrapper.findComponent(TokenCustomFees)
+        expect(customFees.exists()).toBe(false)
     });
 });

@@ -40,7 +40,10 @@
     </template>
   </div>
 
-  <span v-else>?</span>
+  <span v-else-if="showNone && !initialLoading" class="has-text-grey">None</span>
+
+  <span v-else/>
+
 
 </template>
 
@@ -50,8 +53,9 @@
 
 <script lang="ts">
 
-import {defineComponent} from "vue";
+import {defineComponent, inject, ref} from "vue";
 import TokenExtra from "@/components/values/TokenExtra.vue";
+import {initialLoadingKey} from "@/AppKeys";
 
 export default defineComponent({
   name: "TokenLink",
@@ -62,10 +66,18 @@ export default defineComponent({
       type: Boolean,
       default: false
     },
+    showNone: {
+      type: Boolean,
+      default: false
+    },
     noAnchor: {
       type: Boolean,
       default: false
     }
+  },
+  setup() {
+    const initialLoading = inject(initialLoadingKey, ref(false))
+    return { initialLoading }
   }
 });
 

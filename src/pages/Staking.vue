@@ -69,8 +69,8 @@
         <template v-if="accountId">
           <div v-if="isSmallScreen">
             <div class="is-flex is-justify-content-space-between">
-              <NetworkDashboardItem :name="stakedSince" :title="'Staked to'" :value="stakedTo"/>
-              <NetworkDashboardItem :name="stakedAmount ? 'HBAR' : ''" :title="'My Stake'" :value="stakedAmount"/>
+              <NetworkDashboardItem :name="stakedSince" title="Staked to" :value="stakedTo"/>
+              <NetworkDashboardItem :name="stakedAmount ? 'HBAR' : ''" title="My Stake" :value="stakedAmount"/>
               <NetworkDashboardItem :title="'Rewards'" :value="declineReward" :class="{'h-has-opacity-40': ignoreReward}"/>
             </div>
             <br/>
@@ -84,7 +84,7 @@
             </div>
             <div class="mt-5 h-is-text-size-2 is-italic has-text-grey has-text-centered">
               <span class="has-text-grey-light">Please Note: </span>
-              Staking is in Phase 1 and will not pay out rewards until Phase 3.<br/>
+              Staking is in Phase 2 and will not pay out rewards until Phase 3.<br/>
               Your full balance is automatically staked.<br/>
               Your funds are fully available for use while staked.<br/>
               You can unstake or switch nodes freely.
@@ -92,11 +92,11 @@
           </div>
           <div v-else>
             <div class="is-flex-direction-column">
-              <NetworkDashboardItem :name="stakedSince" :title="'Staked to'" :value="stakedTo"/>
+              <NetworkDashboardItem :name="stakedSince" title="Staked to" :value="stakedTo"/>
               <div class="mt-4"/>
-              <NetworkDashboardItem :name="stakedAmount ? 'HBAR' : ''" :title="'My Stake'" :value="stakedAmount"/>
+              <NetworkDashboardItem :name="stakedAmount ? 'HBAR' : ''" title="My Stake" :value="stakedAmount"/>
               <div class="mt-4"/>
-              <NetworkDashboardItem :title="'Rewards'" :value="declineReward" :class="{'h-has-opacity-40': ignoreReward}"/>
+              <NetworkDashboardItem title="Rewards" :value="declineReward" :class="{'h-has-opacity-40': ignoreReward}"/>
               <div class="mt-4"/>
             </div>
               <div class="is-flex is-justify-content-center">
@@ -109,14 +109,7 @@
             </div>
             <div class="mt-5 h-is-text-size-2 is-italic has-text-grey has-text-centered">
               <span class="has-text-grey-light">Please Note: </span>
-              Staking is in Phase 1 and will not pay out rewards until Phase 3.<br/>
-              Your full balance is automatically staked.<br/>
-              Your funds are fully available for use while staked.<br/>
-              You can unstake or switch nodes freely.
-            </div>
-            <div class="mt-5 h-is-text-size-2 is-italic has-text-grey has-text-centered">
-              <span class="has-text-grey-light">Please Note: </span>
-              Staking is in Phase 1 and will not pay out rewards until Phase 3.<br/>
+              Staking is in Phase 2 and will not pay out rewards until Phase 3.<br/>
               Your full balance is automatically staked.<br/>
               Your funds are fully available for use while staked.<br/>
               You can unstake or switch nodes freely.

@@ -442,6 +442,9 @@ table.o-table > tbody > tr {
 table.o-table {
     margin: 1rem 0
 }
+.h-is-table-compact table.o-table {
+    margin: 0
+}
 div.o-table__pagination {
     padding: 4px
 }

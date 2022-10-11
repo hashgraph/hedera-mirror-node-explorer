@@ -76,7 +76,7 @@
             <Property id="publicKey">
               <template v-slot:name>Public Key</template>
               <template v-slot:value>
-                <KeyValue :key-bytes="node?.public_key" :key-type="'RSA'" :show-none="true"/>
+                <KeyValue :key-bytes="node?.public_key" key-type="RSA" :show-none="true"/>
               </template>
             </Property>
             <Property id="nodeCertHash">
@@ -89,24 +89,24 @@
       </template>
 
       <template v-slot:rightContent>
-              <NetworkDashboardItem id="yearlyRate" :name="'APPROX ANNUAL EQUIVALENT'" :title="'Last Period Reward Rate'"
+              <NetworkDashboardItem id="yearlyRate" name="APPROX ANNUAL EQUIVALENT" title="Last Period Reward Rate"
                                     :value="approxYearlyRate.toString()"/>
               <br/><br/>
-              <NetworkDashboardItem id="consensusStake" :name="'HBAR'" :title="'Stake for Consensus'" :value="makeFloorHbarAmount(stake)"/>
+              <NetworkDashboardItem id="consensusStake" name="HBAR" title="Stake for Consensus" :value="makeFloorHbarAmount(stake)"/>
                 <p id="consensusStakePercent" v-if="stake" class="h-is-property-text h-is-extra-text mt-1">{{ stakePercentage }}% of total</p>
                 <p v-else class="h-is-property-text h-is-extra-text mt-1">(&lt;Min)</p>
               <br/><br/>
-              <NetworkDashboardItem id="minStake" :name="'HBAR'" :title="'Min Stake'" :value="makeFloorHbarAmount(minStake)"/>
+              <NetworkDashboardItem id="minStake" name="HBAR" title="Min Stake" :value="makeFloorHbarAmount(minStake)"/>
               <br/><br/>
-              <NetworkDashboardItem id="maxStake" :name="'HBAR'" :title="'Max Stake'" :value="makeFloorHbarAmount(maxStake)"/>
+              <NetworkDashboardItem id="maxStake" name="HBAR" title="Max Stake" :value="makeFloorHbarAmount(maxStake)"/>
               <br/><br/>
-              <NetworkDashboardItem id="rewarded" :name="'HBAR'" :title="'Stake Rewarded'" :value="makeFloorHbarAmount(stakeRewarded)"/>
+              <NetworkDashboardItem id="rewarded" name="HBAR" title="Stake Rewarded" :value="makeFloorHbarAmount(stakeRewarded)"/>
               <p id="rewardedPercent" class="h-is-property-text h-is-extra-text mt-1">{{ stakeRewardedPercentage }}% of total</p>
               <br/><br/>
-              <NetworkDashboardItem id="notRewarded" :name="'HBAR'" :title="'Stake Not Rewarded'" :value="makeFloorHbarAmount(stakeUnrewarded)"/>
+              <NetworkDashboardItem id="notRewarded" name="HBAR" title="Stake Not Rewarded" :value="makeFloorHbarAmount(stakeUnrewarded)"/>
               <p id="notRewardedPercent" class="h-is-property-text h-is-extra-text mt-1">{{ stakeUnrewardedPercentage }}% of total</p>
               <br/><br/>
-              <NetworkDashboardItem id="stakingPeriod" :name="'HOURS'" :title="'Current Staking Period'" :value="'24'"/>
+              <NetworkDashboardItem id="stakingPeriod" name="HOURS" title="Current Staking Period" value="24"/>
               <p class="h-is-property-text h-is-extra-text mt-1">from 00:00 am today to 11:59 pm today UTC</p>
               <div class="mt-6"/>
               <br/>
@@ -182,15 +182,7 @@ export default defineComponent({
     const nodeCursor = new NodeCursor(computed(() => PathParam.parseNodeId(props.nodeId)), nodesLoader)
     const stakeLoader = new StakeLoader()
 
-    const stakeTotal = computed(() => {
-      let result
-      if (stakeLoader.got404.value) {
-        result = (nodeCursor.node.value?.stake_total ?? 0)
-      } else {
-        result = (stakeLoader.entity.value?.stake_total ?? 0)
-      }
-      return result
-    })
+    const stakeTotal = computed(() => stakeLoader.entity.value?.stake_total ?? 0)
     const stakePercentage = computed(() =>
         stakeTotal.value ? Math.round(nodeCursor.stake.value / stakeTotal.value * 10000) / 100 : 0)
 
