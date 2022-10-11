@@ -24,10 +24,12 @@
 
 <template>
   <div v-if="address">
-    <span class="is-family-monospace has-text-grey">{{ nonSignificantPart }}</span>
-    <span class="is-family-monospace">{{ significantPart }}</span>
-    <span v-if="id" class="is-family-monospace ml-1">{{ '(' + id + ')'}}</span>
-    <div v-if="extra" class="h-is-extra-text h-is-text-size-3">{{ extra }}</div>
+    <span class="is-family-monospace h-is-text-size-3">
+      <span class="has-text-grey">{{ nonSignificantPart }}</span>
+      <span>{{ significantPart }}</span>
+      <span v-if="id" class="ml-1">{{ '(' + id + ')' }}</span>
+    </span>
+    <div v-if="extra" class="h-is-extra-text h-is-text-size-2">{{ extra }}</div>
   </div>
   <div v-else-if="initialLoading"/>
   <div v-else class="has-text-grey">None</div>
