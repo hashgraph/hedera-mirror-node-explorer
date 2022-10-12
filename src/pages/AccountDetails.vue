@@ -353,6 +353,7 @@ export default defineComponent({
     // staking
     //
     const stakeNodeLoader = new NodeLoader(accountLoader.stakedNodeId)
+    onMounted(() => stakeNodeLoader.requestLoad())
 
     //
     // account create transaction
