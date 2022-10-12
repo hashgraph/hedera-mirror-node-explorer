@@ -22,7 +22,6 @@ import {ContractActionsResponse} from "@/schemas/HederaSchemas";
 import axios, {AxiosResponse} from "axios";
 import {computed, Ref} from "vue";
 import {EntityBatchLoader} from "@/utils/EntityBatchLoader";
-import {SAMPLE_CONTRACT_ACTIONS} from "../../../tests/unit/Mocks";
 
 export class ContractActionsLoader extends EntityBatchLoader<ContractActionsResponse> {
 
@@ -47,18 +46,18 @@ export class ContractActionsLoader extends EntityBatchLoader<ContractActionsResp
     protected async loadNext(nextURL:string | null): Promise<AxiosResponse<ContractActionsResponse> | null> {
         let result: Promise<AxiosResponse<ContractActionsResponse> | null>
         if (this.transactionIdOrHash.value !== null) {
-            const sampleActions: AxiosResponse<ContractActionsResponse> = {
-                data: SAMPLE_CONTRACT_ACTIONS as ContractActionsResponse,
-                status: 200,
-                statusText: "",
-                headers: {},
-                config: {}
-            }
-            result = Promise.resolve(sampleActions)
+            // const sampleActions: AxiosResponse<ContractActionsResponse> = {
+            //     data: SAMPLE_CONTRACT_ACTIONS as ContractActionsResponse,
+            //     status: 200,
+            //     statusText: "",
+            //     headers: {},
+            //     config: {}
+            // }
+            // result = Promise.resolve(sampleActions)
 
-            // result = axios.get<ContractActionsResponse>(
-            //     nextURL ?? "api/v1/contracts/results/" + this.transactionIdOrHash.value + "/actions"
-            // )
+            result = axios.get<ContractActionsResponse>(
+                nextURL ?? "api/v1/contracts/results/" + this.transactionIdOrHash.value + "/actions"
+            )
 
         } else {
             result = Promise.resolve(null)
