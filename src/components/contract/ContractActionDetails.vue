@@ -69,18 +69,37 @@
   <hr class="dotted"/>
 
   <div class="columns pt-0 mt-0 pb-2">
+
     <div class="column">
-      <div class="has-text-weight-light mb-3">
-        Input - Function & Parameters
+      <div v-if="isNullByteCodeValue(action.input)">
+        <Property custom-nb-col-class="is-one-fifth">
+          <template v-slot:name>Input - Function & Parameters</template>
+          <template v-slot:value><span class="has-text-grey">None</span></template>
+        </Property>
       </div>
-      <ByteCodeValue :byte-code="action.input"/>
+      <div v-else>
+        <div class="has-text-weight-light mb-3">
+          Input - Function & Parameters
+        </div>
+        <ByteCodeValue :byte-code="action.input"/>
+      </div>
     </div>
+
     <div class="column h-has-column-dashed-separator">
-      <div class="has-text-weight-light mb-3">
-        Output Result
+      <div v-if="isNullByteCodeValue(action.result_data)">
+        <Property custom-nb-col-class="is-one-fifth">
+          <template v-slot:name>Output Result</template>
+          <template v-slot:value><span class="has-text-grey">None</span></template>
+        </Property>
       </div>
-      <ByteCodeValue :byte-code="action.result_data"/>
+      <div v-else>
+        <div class="has-text-weight-light mb-3">
+          Output Result
+        </div>
+        <ByteCodeValue :byte-code="action.result_data"/>
+      </div>
     </div>
+
   </div>
 </template>
 
@@ -127,11 +146,14 @@ export default defineComponent({
       return result
     })
 
+    const isNullByteCodeValue = (value: string|null) => value == null || value == "0x"
+
     return {
       isTouchDevice,
       isMediumScreen,
       ORUGA_MOBILE_BREAKPOINT,
       errorMessage,
+      isNullByteCodeValue
     }
   }
 });
