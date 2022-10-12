@@ -290,8 +290,11 @@ describe("AccountDetails.vue", () => {
         const matcher2 = "/api/v1/transactions"
         mock.onGet(matcher2).reply(200, SAMPLE_FAILED_TRANSACTIONS);
 
+        const stakedNodeID = SAMPLE_ACCOUNT_STAKING_NODE.staked_node_id
         const matcher3 = "/api/v1/network/nodes"
-        mock.onGet(matcher3).reply(200, SAMPLE_NETWORK_NODES);
+        const body = { params: { "node.id": stakedNodeID }}
+        const response = { nodes: [ SAMPLE_NETWORK_NODES.nodes[stakedNodeID] ]}
+        mock.onGet(matcher3, body).reply(200, response);
 
         const matcher4 = "/api/v1/balances"
         mock.onGet(matcher4).reply(200, SAMPLE_ACCOUNT_HBAR_BALANCE);
@@ -311,7 +314,7 @@ describe("AccountDetails.vue", () => {
         await flushPromises()
         // console.log(wrapper.html())
 
-        expect(wrapper.get("#stakedNodeValue").text()).toBe("Node 0 - testnet")
+        expect(wrapper.get("#stakedNodeValue").text()).toBe("Node " + stakedNodeID + " - testnet")
         expect(wrapper.find("#stakedAccount").exists()).toBe(false)
         expect(wrapper.get("#stakePeriodStartValue").text()).toBe("6:45:00.3568 PMMar 3, 2022, UTC")
         expect(wrapper.get("#declineRewardValue").text()).toBe("Accepted")
@@ -329,9 +332,6 @@ describe("AccountDetails.vue", () => {
 
         const matcher2 = "/api/v1/transactions"
         mock.onGet(matcher2).reply(200, SAMPLE_FAILED_TRANSACTIONS);
-
-        const matcher3 = "/api/v1/network/nodes"
-        mock.onGet(matcher3).reply(200, SAMPLE_NETWORK_NODES);
 
         const matcher4 = "/api/v1/balances"
         mock.onGet(matcher4).reply(200, SAMPLE_ACCOUNT_HBAR_BALANCE);
