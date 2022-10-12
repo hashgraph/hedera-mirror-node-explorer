@@ -93,7 +93,7 @@ describe("StakingDialog.vue", () => {
         const mock = new MockAdapter(axios);
         const matcher1 = "/api/v1/accounts/" + SAMPLE_ACCOUNT.account
         mock.onGet(matcher1).reply(200, SAMPLE_ACCOUNT)
-        const matcher2 = "/api/v1/network/nodes"
+        const matcher2 = "/api/v1/network/nodes?file.id=101"
         for (const node of SAMPLE_NETWORK_NODES.nodes) {
             const body = { params: { "node.id": node.node_id }}
             const response = { nodes: [ node ]}
@@ -195,7 +195,7 @@ describe("StakingDialog.vue", () => {
         const mock = new MockAdapter(axios);
         const matcher1 = "/api/v1/accounts/" + SAMPLE_ACCOUNT.account
         mock.onGet(matcher1).reply(200, SAMPLE_ACCOUNT)
-        const matcher2 = "/api/v1/network/nodes"
+        const matcher2 = "/api/v1/network/nodes?file.id=101"
         for (const node of SAMPLE_NETWORK_NODES.nodes) {
             const body = { params: { "node.id": node.node_id }}
             const response = { nodes: [ node ]}

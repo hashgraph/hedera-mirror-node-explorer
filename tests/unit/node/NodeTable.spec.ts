@@ -86,9 +86,9 @@ describe("NodeTable.vue", () => {
         expect(wrapper.get('thead').text()).toBe("Node Account Description Stake Stake Not Rewarded Last Reward Rate Stake Range")
         expect(wrapper.get('tbody').findAll('tr').length).toBe(3)
         expect(wrapper.get('tbody').text()).toBe(
-            "0" + "0.0.3" + "Node 0 - testnet" + tooltipStake + "6,000,000(25%)" + tooltipNotRewarded + "1,000,000" + tooltipRewardRate + "1%" +
-            "1" + "0.0.4" + "Node 1 - testnet" + tooltipStake + "9,000,000(37.5%)" + tooltipNotRewarded + "2,000,000" + tooltipRewardRate + "2%" +
-            "2" + "0.0.5" + "Node 2 - testnet" + tooltipStake + "9,000,000(37.5%)" + tooltipNotRewarded + "2,000,000" + tooltipRewardRate + "3%"
+            "0" + "0.0.3" + "Sample Network Node ID:0" + tooltipStake + "6,000,000(25%)" + tooltipNotRewarded + "1,000,000" + tooltipRewardRate + "1%" +
+            "1" + "0.0.4" + "Sample Network Node ID:1" + tooltipStake + "9,000,000(37.5%)" + tooltipNotRewarded + "2,000,000" + tooltipRewardRate + "2%" +
+            "2" + "0.0.5" + "Sample Network Node ID:2" + tooltipStake + "9,000,000(37.5%)" + tooltipNotRewarded + "2,000,000" + tooltipRewardRate + "3%"
         )
 
         wrapper.unmount()

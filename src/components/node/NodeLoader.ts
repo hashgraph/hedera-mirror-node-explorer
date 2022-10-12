@@ -67,7 +67,7 @@ export class NodeLoader extends EntityLoader<NetworkNodesResponse> {
         let result: Promise<AxiosResponse<NetworkNodesResponse>|null>
         if (this.nodeId.value != null) {
             const url = "api/v1/network/nodes"
-            const queryParams = {params: {'node.id': this.nodeId.value}}
+            const queryParams = {params: {'node.id': this.nodeId.value, 'file.id': '101'}}
             result = axios.get<NetworkNodesResponse>(url, queryParams)
         } else {
             result = Promise.resolve(null)

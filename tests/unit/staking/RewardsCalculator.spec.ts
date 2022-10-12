@@ -62,7 +62,7 @@ describe("Staking.vue", () => {
         const mock = new MockAdapter(axios);
         const matcher1 = "/api/v1/accounts/" + TEST_ACCOUNT.account
         mock.onGet(matcher1).reply(200, TEST_ACCOUNT)
-        const matcher2 = "/api/v1/network/nodes"
+        const matcher2 = "/api/v1/network/nodes?file.id=101"
         for (const node of SAMPLE_NETWORK_NODES.nodes) {
             const body = {params: {"node.id": node.node_id}}
             const response = {nodes: [node]}
@@ -85,9 +85,9 @@ describe("Staking.vue", () => {
 
         const options = wrapper.find('select').findAll('option')
         expect(options.length).toBe(3)
-        expect(options.at(0)?.element.text).toBe('Node 0 - testnet - 6,000,000ℏ staked (20% of Max)')
-        expect(options.at(1)?.element.text).toBe('Node 1 - testnet - 9,000,000ℏ staked (30% of Max)')
-        expect(options.at(2)?.element.text).toBe('Node 2 - testnet - 9,000,000ℏ staked (30% of Max)')
+        expect(options.at(0)?.element.text).toBe('Sample Network Node ID:0 - 6,000,000ℏ staked (20% of Max)')
+        expect(options.at(1)?.element.text).toBe('Sample Network Node ID:1 - 9,000,000ℏ staked (30% of Max)')
+        expect(options.at(2)?.element.text).toBe('Sample Network Node ID:2 - 9,000,000ℏ staked (30% of Max)')
 
         expect(options.at(0)?.element.selected).toBe(false)
         expect(options.at(1)?.element.selected).toBe(false)
@@ -109,7 +109,7 @@ describe("Staking.vue", () => {
         const mock = new MockAdapter(axios);
         const matcher1 = "/api/v1/accounts/" + TEST_ACCOUNT.account
         mock.onGet(matcher1).reply(200, TEST_ACCOUNT)
-        const matcher2 = "/api/v1/network/nodes"
+        const matcher2 = "/api/v1/network/nodes?file.id=101"
         for (const node of SAMPLE_NETWORK_NODES.nodes) {
             const body = {params: {"node.id": node.node_id}}
             const response = {nodes: [node]}
@@ -135,9 +135,9 @@ describe("Staking.vue", () => {
 
         const options = wrapper.find('select').findAll('option')
         expect(options.length).toBe(3)
-        expect(options.at(0)?.element.text).toBe('Node 0 - testnet - 6,000,000ℏ staked (20% of Max)')
-        expect(options.at(1)?.element.text).toBe('Node 1 - testnet - 9,000,000ℏ staked (30% of Max)')
-        expect(options.at(2)?.element.text).toBe('Node 2 - testnet - 9,000,000ℏ staked (30% of Max)')
+        expect(options.at(0)?.element.text).toBe('Sample Network Node ID:0 - 6,000,000ℏ staked (20% of Max)')
+        expect(options.at(1)?.element.text).toBe('Sample Network Node ID:1 - 9,000,000ℏ staked (30% of Max)')
+        expect(options.at(2)?.element.text).toBe('Sample Network Node ID:2 - 9,000,000ℏ staked (30% of Max)')
 
         expect(options.at(0)?.element.selected).toBe(false)
         expect(options.at(1)?.element.selected).toBe(true)
@@ -159,7 +159,7 @@ describe("Staking.vue", () => {
         const mock = new MockAdapter(axios);
         const matcher1 = "/api/v1/accounts/" + TEST_ACCOUNT.account
         mock.onGet(matcher1).reply(200, TEST_ACCOUNT)
-        const matcher2 = "/api/v1/network/nodes"
+        const matcher2 = "/api/v1/network/nodes?file.id=101"
         for (const node of SAMPLE_NETWORK_NODES.nodes) {
             const body = {params: {"node.id": node.node_id}}
             const response = {nodes: [node]}
@@ -182,9 +182,9 @@ describe("Staking.vue", () => {
 
         const options = wrapper.find('select').findAll('option')
         expect(options.length).toBe(3)
-        expect(options.at(0)?.element.text).toBe('Node 0 - testnet - 6,000,000ℏ staked (20% of Max)')
-        expect(options.at(1)?.element.text).toBe('Node 1 - testnet - 9,000,000ℏ staked (30% of Max)')
-        expect(options.at(2)?.element.text).toBe('Node 2 - testnet - 9,000,000ℏ staked (30% of Max)')
+        expect(options.at(0)?.element.text).toBe('Sample Network Node ID:0 - 6,000,000ℏ staked (20% of Max)')
+        expect(options.at(1)?.element.text).toBe('Sample Network Node ID:1 - 9,000,000ℏ staked (30% of Max)')
+        expect(options.at(2)?.element.text).toBe('Sample Network Node ID:2 - 9,000,000ℏ staked (30% of Max)')
 
         expect(options.at(0)?.element.selected).toBe(false)
         expect(options.at(1)?.element.selected).toBe(false)

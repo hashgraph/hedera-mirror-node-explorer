@@ -67,7 +67,7 @@ describe("NodeDetails.vue", () => {
         const mock = new MockAdapter(axios);
 
         const node = 0
-        const matcher1 = "api/v1/network/nodes"
+        const matcher1 = "api/v1/network/nodes?file.id=101"
         mock.onGet(matcher1).reply(200, SAMPLE_NETWORK_NODES);
         const matcher2 = "api/v1/network/stake"
         mock.onGet(matcher2).reply(200, SAMPLE_NETWORK_STAKE);
@@ -87,7 +87,7 @@ describe("NodeDetails.vue", () => {
 
         expect(wrapper.text()).toMatch(RegExp("^Node " + node))
         expect(wrapper.get("#nodeAccountValue").text()).toBe("0.0.3")
-        expect(wrapper.get("#descriptionValue").text()).toBe("Node 0 - testnet")
+        expect(wrapper.get("#descriptionValue").text()).toBe("Sample Network Node ID:0")
         expect(wrapper.get("#publicKeyValue").text()).toBe("3082 01a2 300d 0609Copy to ClipboardRSA")
         expect(wrapper.get("#fileValue").text()).toBe("0.0.102")
         expect(wrapper.get("#rangeFromValue").text()).toBe("4:10:06.0411 PMJun 6, 2022, UTC")

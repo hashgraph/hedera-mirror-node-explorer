@@ -72,7 +72,7 @@ export class NodesLoader extends EntityBatchLoader<NetworkNodesResponse> {
     //
 
     protected async loadNext(nextURL: string|null): Promise<AxiosResponse<NetworkNodesResponse>|null> {
-        return axios.get<NetworkNodesResponse>(nextURL ?? "api/v1/network/nodes")
+        return axios.get<NetworkNodesResponse>(nextURL ?? "api/v1/network/nodes?file.id=101")
     }
 
     protected nextURL(entity: NetworkNodesResponse): string | null {
