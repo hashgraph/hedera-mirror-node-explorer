@@ -113,7 +113,7 @@ export class SignatureAnalyzer {
         let result: string|null
         if (this.action.value?.input) {
             const bytes = hexToByte(this.action.value.input)?.slice(0, 4)
-            result = bytes ? "0x" + byteToHex(bytes) : null
+            result = bytes && bytes.length >= 1 ? "0x" + byteToHex(bytes) : null
         } else {
             result = null
         }
