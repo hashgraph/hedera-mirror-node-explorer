@@ -59,9 +59,13 @@ export default defineComponent({
       type: Boolean,
       default: false
     },
+    compact: {
+      type: Boolean,
+      default: false
+    },
     bytesKept: {
       type: Number,
-      default: -1
+      default: 6
     }
   },
 
@@ -72,8 +76,8 @@ export default defineComponent({
 
     const displayAddress = computed(() => {
       let result: string
-      if (props.bytesKept !== -1  && props.address?.slice(0, 2) === "0x" && props.address.length === 42) {
-        result = "0x0…" + props.address.slice(-props.bytesKept)
+      if (props.compact  && props.address?.slice(0, 2) === "0x" && props.address.length === 42) {
+        result = "0x" + props.address[2] + "…" + props.address.slice(-props.bytesKept)
       } else {
         result = props.address ?? ""
       }

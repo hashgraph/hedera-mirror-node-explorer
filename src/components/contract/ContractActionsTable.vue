@@ -59,7 +59,7 @@
       </o-table-column>
 
       <o-table-column v-slot="props" field="from" label="From">
-        <EVMAddress :address="props.row.from" :id="props.row.caller" :bytes-kept="6"/>
+        <EVMAddress :address="props.row.from" :id="props.row.caller" :compact="!isLargeScreen && isMediumScreen"/>
       </o-table-column>
 
       <o-table-column v-slot="props" field="amount" label="Amount">
@@ -71,7 +71,7 @@
       </o-table-column>
 
       <o-table-column v-slot="props" field="to" label="To">
-        <EVMAddress :address="props.row.to" :id="props.row.recipient" :bytes-kept="6"/>
+        <EVMAddress :address="props.row.to" :id="props.row.recipient" :compact="!isLargeScreen && isMediumScreen"/>
       </o-table-column>
 
       <o-table-column v-slot="props" field="gas_limit" label="Gas Limit">
@@ -131,7 +131,9 @@ export default defineComponent({
 
   setup(props, context) {
     const isTouchDevice = inject('isTouchDevice', false)
+    const isSmallScreen = inject('isSmallScreen', true)
     const isMediumScreen = inject('isMediumScreen', true)
+    const isLargeScreen = inject('isLargeScreen', true)
 
     const isPaginated = computed(() => (props.actions?.length??0) > NB_ACTIONS_PER_PAGE)
 
@@ -153,7 +155,9 @@ export default defineComponent({
 
     return {
       isTouchDevice,
+      isSmallScreen,
       isMediumScreen,
+      isLargeScreen,
       NB_ACTIONS_PER_PAGE,
       isPaginated,
       makeActionDepth,
