@@ -18,10 +18,15 @@
  *
  */
 
-import {ContractActionsResponse} from "@/schemas/HederaSchemas";
+import {ContractAction, ContractActionsResponse} from "@/schemas/HederaSchemas";
 import axios, {AxiosResponse} from "axios";
-import {computed, Ref} from "vue";
+import {computed, ref, Ref, watch} from "vue";
 import {EntityBatchLoader} from "@/utils/EntityBatchLoader";
+
+export interface ContractActionWithPath {
+    action: ContractAction,
+    depthPath: string
+}
 
 export class ContractActionsLoader extends EntityBatchLoader<ContractActionsResponse> {
 
@@ -35,8 +40,34 @@ export class ContractActionsLoader extends EntityBatchLoader<ContractActionsResp
         super()
         this.transactionIdOrHash = transactionIdOrHash
         this.watchAndReload([this.transactionIdOrHash])
+
+        watch([this.actions], () => this.addPathtoActions())
     }
 
+    private depthVector: Array<number> = []
+
+    private addPathtoActions() {
+        if (this.actions.value) {
+            for (const a of this.actions.value) {
+                this.actionsWithPath.value.push({
+                    action: a,
+                    depthPath: this.buildDepthPath(a)
+                } as ContractActionWithPath)
+            }
+        }
+    }
+
+    private buildDepthPath(a: ContractAction) {
+            let result = ""
+        if (a.call_depth != undefined) {
+            for (let i = 0; i <= a.call_depth + 1; i++) {
+                result += "_" + i
+            }
+        }
+        return result
+    }
+
+    public readonly actionsWithPath: Ref<Array<ContractActionWithPath>> = ref([])
     public readonly actions = computed(() => this.entity.value?.actions ?? null)
 
     //
@@ -75,5 +106,4 @@ export class ContractActionsLoader extends EntityBatchLoader<ContractActionsResp
         last.data.actions = lastActions.concat(nextActions)
         return last
     }
-
 }

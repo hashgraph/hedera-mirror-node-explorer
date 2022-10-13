@@ -55,9 +55,8 @@
 
 import {computed, defineComponent, onMounted, Ref, ref} from 'vue';
 import DashboardCard from "@/components/DashboardCard.vue";
-import {ContractActionsLoader} from "@/components/contract/ContractActionsLoader";
+import {ContractActionsLoader, ContractActionWithPath} from "@/components/contract/ContractActionsLoader";
 import ContractActionsTable from "@/components/contract/ContractActionsTable.vue";
-import {ContractAction} from "@/schemas/HederaSchemas";
 
 export default defineComponent({
 
@@ -79,7 +78,7 @@ export default defineComponent({
     const contractActionsLoader = new ContractActionsLoader(computed(() => props.transactionIdOrHash ?? null))
     onMounted(() => contractActionsLoader.requestLoad())
 
-    const expandedActions: Ref<ContractAction[]> = ref([])
+    const expandedActions: Ref<ContractActionWithPath[]> = ref([])
     const collapseAllVisible = computed(() => {
       const actionCount = contractActionsLoader.actions.value?.length ?? 0
       return expandedActions.value.length >= 1 || actionCount == 0
@@ -91,11 +90,11 @@ export default defineComponent({
       expandedActions.value = []
     }
     const expandAll = (): void => {
-      expandedActions.value = contractActionsLoader.actions.value ?? []
+      expandedActions.value = contractActionsLoader.actionsWithPath.value ?? []
     }
 
     return {
-      actions: contractActionsLoader.actions,
+      actions: contractActionsLoader.actionsWithPath,
       expandedActions,
       collapseAll,
       expandAll,
