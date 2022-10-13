@@ -117,7 +117,7 @@ import {ContractActionWithPath} from "@/components/contract/ContractActionsLoade
 // defineComponent
 //
 
-const NB_ACTIONS_PER_PAGE = 8
+const NB_ACTIONS_PER_PAGE = 10
 
 export default defineComponent({
   name: 'ContractActionsTable',

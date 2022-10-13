@@ -40,31 +40,7 @@ export class ContractActionsLoader extends EntityBatchLoader<ContractActionsResp
         super()
         this.transactionIdOrHash = transactionIdOrHash
         this.watchAndReload([this.transactionIdOrHash])
-
         watch([this.actions], () => this.addPathtoActions())
-    }
-
-    private depthVector: Array<number> = []
-
-    private addPathtoActions() {
-        if (this.actions.value) {
-            for (const a of this.actions.value) {
-                this.actionsWithPath.value.push({
-                    action: a,
-                    depthPath: this.buildDepthPath(a)
-                } as ContractActionWithPath)
-            }
-        }
-    }
-
-    private buildDepthPath(a: ContractAction) {
-            let result = ""
-        if (a.call_depth != undefined) {
-            for (let i = 0; i <= a.call_depth + 1; i++) {
-                result += "_" + i
-            }
-        }
-        return result
     }
 
     public readonly actionsWithPath: Ref<Array<ContractActionWithPath>> = ref([])
@@ -100,10 +76,42 @@ export class ContractActionsLoader extends EntityBatchLoader<ContractActionsResp
         return entity.links?.next ?? null;
     }
 
-    protected mergeResponses(last: AxiosResponse<ContractActionsResponse>, next: AxiosResponse<ContractActionsResponse>): AxiosResponse<ContractActionsResponse> {
+    protected mergeResponses(last: AxiosResponse<ContractActionsResponse>,
+                             next: AxiosResponse<ContractActionsResponse>): AxiosResponse<ContractActionsResponse> {
         const lastActions = last.data.actions ?? []
         const nextActions = next.data.actions ?? []
         last.data.actions = lastActions.concat(nextActions)
         return last
+    }
+
+    private depthVector: Array<number> = []
+
+    private addPathtoActions() {
+        if (this.actions.value) {
+            this.depthVector = []
+            for (const a of this.actions.value) {
+                this.actionsWithPath.value.push({
+                    action: a,
+                    depthPath: this.buildDepthPath(a.call_depth ?? 0)
+                } as ContractActionWithPath)
+            }
+        }
+    }
+
+    private buildDepthPath(depth: number) {
+        let result = ""
+
+        if (this.depthVector.length >= depth + 1) {
+            this.depthVector[depth]++
+            this.depthVector.splice(depth + 1)
+        } else {
+            this.depthVector.push(1)
+        }
+
+        for (let i = 0; i < this.depthVector.length; i++) {
+            result += (i === 0) ? this.depthVector[i] : "_" + this.depthVector[i]
+        }
+
+        return result
     }
 }
