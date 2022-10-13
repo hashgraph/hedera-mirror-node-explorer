@@ -48,10 +48,10 @@
 
       <o-table-column v-slot="props" field="call_type" label="Call Type">
         <div class="is-flex is-align-items-baseline">
-          <span class="is-numeric has-text-grey">
+          <span class="is-family-monospace h-is-text-size-3 has-text-grey">
             {{ makeActionDepth(props.row.call_depth) }}
           </span>
-          <span v-if="isSuccessful(props.row)" class="ml-2 h-has-pill h-is-text-size-2 has-background-success">
+          <span v-if="isSuccessful(props.row)" class="ml-2 h-has-pill h-is-text-size-1 has-background-success">
             {{ makeOperationType(props.row) }}
           </span>
           <span v-else class="ml-2 h-has-pill h-is-text-size-2 has-background-danger">
@@ -141,7 +141,7 @@ export default defineComponent({
 
     const makeActionDepth = (depth: number): string => {
       let result = ""
-      for (let i = 0; i <= depth; i++) {
+      for (let i = 0; i <= depth + 1; i++) {
         result += "_" + i
       }
       return result
