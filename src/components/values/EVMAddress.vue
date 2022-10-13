@@ -73,7 +73,7 @@ export default defineComponent({
     const displayAddress = computed(() => {
       let result: string
       if (props.bytesKept !== -1  && props.address?.slice(0, 2) === "0x" && props.address.length === 42) {
-        result = "0x…" + props.address.slice(-props.bytesKept)
+        result = "0x0…" + props.address.slice(-props.bytesKept)
       } else {
         result = props.address ?? ""
       }
