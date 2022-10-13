@@ -40,11 +40,11 @@ import {useRoute} from "vue-router";
 
 export const XLARGE_BREAKPOINT = 1450
 export const LARGE_BREAKPOINT = 1280
-export const MEDIUM_BREAKPOINT = 1140
+export const MEDIUM_BREAKPOINT = 1080
 export const SMALL_BREAKPOINT = 768
 export const FINAL_BREAKPOINT = 640
 
-export const ORUGA_MOBILE_BREAKPOINT = "1140px"
+export const ORUGA_MOBILE_BREAKPOINT = "1080px"
 
 export default defineComponent({
   name: 'App',
