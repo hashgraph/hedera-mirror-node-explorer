@@ -47,15 +47,17 @@
     >
 
       <o-table-column v-slot="props" field="call_type" label="Call Type">
+        <div class="is-flex is-align-items-baseline">
           <span class="is-numeric has-text-grey">
             {{ makeActionDepth(props.row.call_depth) }}
           </span>
-        <span v-if="isSuccessful(props.row)" class="ml-2 h-has-pill h-is-text-size-2 has-background-success">
+          <span v-if="isSuccessful(props.row)" class="ml-2 h-has-pill h-is-text-size-2 has-background-success">
             {{ makeOperationType(props.row) }}
           </span>
-        <span v-else class="ml-2 h-has-pill h-is-text-size-2 has-background-danger">
+          <span v-else class="ml-2 h-has-pill h-is-text-size-2 has-background-danger">
             {{ '! ' + makeOperationType(props.row) }}
           </span>
+        </div>
       </o-table-column>
 
       <o-table-column v-slot="props" field="from" label="From">
