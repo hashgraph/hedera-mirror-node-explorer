@@ -121,8 +121,8 @@ export class TransactionTableControllerXL extends TableController<Transaction, s
         super.unmount()
     }
 
-    public makeRouteQuery(): LocationQuery {
-        const result = super.makeRouteQuery()
+    public makeRouteQuery(currentQuery: LocationQuery): LocationQuery {
+        const result = super.makeRouteQuery(currentQuery)
         result[this.typeParamName] = this.transactionType.value.toLowerCase()
         return result
     }
