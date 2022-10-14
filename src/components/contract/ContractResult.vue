@@ -110,7 +110,7 @@
 
     <ContractResultTrace :transaction-id-or-hash="transactionIdOrHash"/>
 
-    <ContractResultStates v-if="false" :state-changes="contractResult?.state_changes" />
+    <ContractResultStates :state-changes="contractResult?.state_changes" :time-stamp="contractResult?.timestamp"/>
 
     <DashboardCard v-if="contractResult?.logs?.length" class="h-card">
       <template v-slot:title>

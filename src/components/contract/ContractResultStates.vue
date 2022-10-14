@@ -28,6 +28,44 @@
     <template v-slot:title>
       <span class="h-is-secondary-title">Contract States Accessed & Changed</span>
     </template>
+
+    <template v-slot:content>
+
+      <o-table
+          :data="stateChanges"
+          :paginated="false"
+
+          :hoverable="false"
+          :narrowed="true"
+          :striped="false"
+          :mobile-breakpoint="ORUGA_MOBILE_BREAKPOINT"
+
+          aria-current-label="Current page"
+          aria-next-label="Next page"
+          aria-page-label="Page"
+          aria-previous-label="Previous page"
+      >
+
+        <o-table-column v-slot="props" field="contract" label="Contract">
+          <EVMAddress :address="props.row.address" :id="props.row.contract_id" :compact="false"/>
+        </o-table-column>
+
+        <o-table-column v-slot="props" field="slot" label="Address">
+          <HexaValue :byte-string="props.row.slot"/>
+        </o-table-column>
+
+        <o-table-column v-slot="props" field="value_read" label="Value Read">
+          <HexaValue :byte-string="props.row.value_read" :show-none="true"/>
+        </o-table-column>
+
+        <o-table-column v-slot="props" field="value_written" label="Value Written">
+          <HexaValue :byte-string="props.row.value_written" :show-none="true"/>
+        </o-table-column>
+
+      </o-table>
+
+    </template>
+
   </DashboardCard>
 
 </template>
@@ -41,24 +79,32 @@
 import {defineComponent, inject, PropType} from 'vue';
 import DashboardCard from "@/components/DashboardCard.vue";
 import {ContractResultStateChanges} from "@/schemas/HederaSchemas";
+import EVMAddress from "@/components/values/EVMAddress.vue";
+import {ORUGA_MOBILE_BREAKPOINT} from '@/App.vue';
+import HexaValue from "@/components/values/HexaValue.vue";
 
 export default defineComponent({
 
   name: 'ContractResultStates',
 
   components: {
+    HexaValue,
+    EVMAddress,
     DashboardCard
   },
 
   props: {
-    stateChanges: Object as PropType<Array<ContractResultStateChanges> | undefined>
+    stateChanges: Object as PropType<Array<ContractResultStateChanges> | undefined>,
+    timeStamp: String
   },
 
   setup() {
-    const isSmallScreen = inject('isSmallScreen', true)
-    const isTouchDevice = inject('isTouchDevice', false)
+    const isLargeScreen = inject('isLargeScreen', true)
 
-    return {}
+    return {
+      isLargeScreen,
+      ORUGA_MOBILE_BREAKPOINT
+    }
   },
 });
 
