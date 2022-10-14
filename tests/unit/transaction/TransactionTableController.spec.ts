@@ -221,4 +221,93 @@ describe("TransactionTableController.ts", () => {
         expect(tc.mounted.value).toBe(false)
     })
 
+    test("mount + transactionType setup + unmount [accountMandatory=false]", async () => {
+        const PAGE_SIZE = 5
+
+        const mock = new MockAdapter(axios)
+
+        const matcher1 = "/api/v1/transactions"
+        const params1 = { limit: 5, order: "desc"}
+        mock.onGet(matcher1, { params: params1 }).reply(200, SAMPLE_CONTRACTCALL_TRANSACTIONS)
+
+        const matcher2 = "/api/v1/transactions"
+        const params2 = { limit: 5, order: "desc", transactiontype: "CONTRACTCALL"}
+        mock.onGet(matcher2, { params: params2 }).reply(200, SAMPLE_CONTRACTCALL_TRANSACTIONS)
+
+        const matcher3 = "/api/v1/transactions"
+        const params3 = { limit: 5, order: "desc", transactiontype: "CRYPTOTRANSFER"}
+        mock.onGet(matcher3, { params: params3 }).reply(200, [])
+
+        const router = makeRouter()
+        const accountId = ref<string|null>(null)
+        const pageSize = computed(() => PAGE_SIZE)
+        const tc = new TransactionTableControllerXL(router, accountId, pageSize, false)
+        const currentRoute = tc.router.currentRoute
+
+        // Mount
+        tc.mount()
+        await flushPromises()
+        expect(tc.pageSize.value).toBe(PAGE_SIZE)
+        expect(tc.autoRefresh.value).toBe(true)
+        expect(tc.autoStopped.value).toBe(false)
+        expect(tc.currentPage.value).toBe(1)
+        expect(tc.loading.value).toBe(false)
+        expect(tc.totalRowCount.value).toBe(2)
+        expect(tc.rows.value).toStrictEqual(SAMPLE_CONTRACTCALL_TRANSACTIONS.transactions)
+        expect(tc.mounted.value).toBe(true)
+        expect(currentRoute.value.query).toStrictEqual({})
+
+        // Filter CRYPTOTRANSFER
+        tc.transactionType.value = "CRYPTOTRANSFER"
+        await flushPromises()
+        expect(tc.pageSize.value).toBe(PAGE_SIZE)
+        expect(tc.autoRefresh.value).toBe(true)
+        expect(tc.autoStopped.value).toBe(false)
+        expect(tc.currentPage.value).toBe(1)
+        expect(tc.loading.value).toBe(false)
+        expect(tc.totalRowCount.value).toBe(0)
+        expect(tc.rows.value).toStrictEqual([])
+        expect(tc.mounted.value).toBe(true)
+        expect(currentRoute.value.query).toStrictEqual({type: "cryptotransfer"})
+
+        // Filter CONTRACTCALL
+        tc.transactionType.value = "CONTRACTCALL"
+        await flushPromises()
+        expect(tc.pageSize.value).toBe(PAGE_SIZE)
+        expect(tc.autoRefresh.value).toBe(true)
+        expect(tc.autoStopped.value).toBe(false)
+        expect(tc.currentPage.value).toBe(1)
+        expect(tc.loading.value).toBe(false)
+        expect(tc.totalRowCount.value).toBe(2)
+        expect(tc.rows.value).toStrictEqual(SAMPLE_CONTRACTCALL_TRANSACTIONS.transactions)
+        expect(tc.mounted.value).toBe(true)
+        expect(currentRoute.value.query).toStrictEqual({type: "contractcall"})
+
+        // All transaction types
+        tc.transactionType.value = ""
+        await flushPromises()
+        expect(tc.pageSize.value).toBe(PAGE_SIZE)
+        expect(tc.autoRefresh.value).toBe(true)
+        expect(tc.autoStopped.value).toBe(false)
+        expect(tc.totalRowCount.value).toBe(2)
+        expect(tc.loading.value).toBe(false)
+        expect(tc.totalRowCount.value).toBe(2)
+        expect(tc.rows.value).toStrictEqual(SAMPLE_CONTRACTCALL_TRANSACTIONS.transactions)
+        expect(tc.mounted.value).toBe(true)
+        expect(currentRoute.value.query).toStrictEqual({})
+
+
+        // After unmount()
+        tc.unmount()
+        await flushPromises()
+        expect(tc.pageSize.value).toBe(PAGE_SIZE)
+        expect(tc.autoRefresh.value).toBe(false)
+        expect(tc.autoStopped.value).toBe(false)
+        expect(tc.currentPage.value).toBe(1)
+        expect(tc.loading.value).toBe(false)
+        expect(tc.totalRowCount.value).toBe(50)
+        expect(tc.rows.value).toStrictEqual([])
+        expect(tc.mounted.value).toBe(false)
+        expect(currentRoute.value.query).toStrictEqual({})
+    })
 })
