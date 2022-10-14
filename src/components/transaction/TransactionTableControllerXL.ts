@@ -123,7 +123,11 @@ export class TransactionTableControllerXL extends TableController<Transaction, s
 
     public makeRouteQuery(currentQuery: LocationQuery): LocationQuery {
         const result = super.makeRouteQuery(currentQuery)
-        result[this.typeParamName] = this.transactionType.value.toLowerCase()
+        if (this.transactionType.value != "") {
+            result[this.typeParamName] = this.transactionType.value.toLowerCase()
+        } else {
+            delete(result[this.typeParamName])
+        }
         return result
     }
 
