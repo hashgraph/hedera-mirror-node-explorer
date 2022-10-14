@@ -26,12 +26,7 @@
 
   <section class="section" :class="{'h-mobile-background': isTouchDevice || !isSmallScreen}">
 
-    <ContractResult
-        :contract-id="contractId"
-        :timestamp="timestamp"
-        :transaction-id-or-hash="transactionIdOrHash"
-        :top-level="true"
-    />
+    <ContractResult :transaction-id-or-hash="transactionIdOrHash" :top-level="true"/>
 
   </section>
 
@@ -59,8 +54,6 @@ export default defineComponent({
   },
 
   props: {
-    contractId: String,
-    timestamp: String,
     transactionIdOrHash: String,
     network: String
   },

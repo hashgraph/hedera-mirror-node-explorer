@@ -201,8 +201,6 @@ export default defineComponent({
   },
 
   props: {
-    contractId: String,
-    timestamp: String,
     transactionIdOrHash: String,
     topLevel: {
       type: Boolean,
@@ -219,8 +217,8 @@ export default defineComponent({
     watch(nbLogLines, () => logCursor.value = 0)
 
     const contractResultDetailsLoader = new ContractResultDetailsLoader(
-        computed(() => props.contractId ?? null),
-        computed(() => props.timestamp ?? null),
+        ref(null),
+        ref(null),
         computed(() => props.transactionIdOrHash ?? null))
     onMounted(() => contractResultDetailsLoader.requestLoad())
 
