@@ -242,11 +242,11 @@ export abstract class TableController<R, K> {
     }
 
     protected updateRouteQuery(): void {
-        this.router.replace({ query: this.makeRouteQuery() }).then()
+        this.router.replace({ query: this.makeRouteQuery(this.router.currentRoute.value.query) }).then()
     }
 
-    protected makeRouteQuery(): LocationQuery {
-        return this.subController !== null ? this.subController.makeRouteQuery() : {}
+    protected makeRouteQuery(currentQuery: LocationQuery): LocationQuery {
+        return this.subController !== null ? this.subController.makeRouteQuery(currentQuery) : currentQuery
     }
 
     //

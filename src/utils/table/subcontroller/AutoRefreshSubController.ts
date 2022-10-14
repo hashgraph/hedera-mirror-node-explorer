@@ -44,8 +44,8 @@ export class AutoRefreshController<R,K> extends TableSubController<R, K> {
         this.sessionId += 1
     }
 
-    public makeRouteQuery(): LocationQuery {
-        return {}
+    public makeRouteQuery(currentQuery: LocationQuery): LocationQuery {
+        return currentQuery
     }
 
     //

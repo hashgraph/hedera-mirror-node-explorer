@@ -40,7 +40,7 @@ export abstract class TableSubController<R, K> {
 
     public abstract mount(): void
     public abstract unmount(): void
-    public abstract makeRouteQuery(): LocationQuery;
+    public abstract makeRouteQuery(currentQuery: LocationQuery): LocationQuery;
 
     //
     // Protected

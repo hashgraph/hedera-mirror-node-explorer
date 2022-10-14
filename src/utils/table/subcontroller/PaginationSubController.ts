@@ -21,7 +21,7 @@
 
 import {TableSubController} from "@/utils/table/subcontroller/TableSubController";
 import {TableController} from "@/utils/table/TableController";
-import {LocationQuery, LocationQueryValue} from "vue-router";
+import {LocationQuery} from "vue-router";
 
 export class PaginationController<R,K> extends TableSubController<R, K> {
 
@@ -58,16 +58,20 @@ export class PaginationController<R,K> extends TableSubController<R, K> {
         /* Nothing right now */
     }
 
-    public makeRouteQuery(): LocationQuery {
+    public makeRouteQuery(currentQuery: LocationQuery): LocationQuery {
         const newKeyParam = this.tableController.getFirstVisibleKey()
         const newPageParam = this.tableController.currentPage.value
 
-        const result = {} as Record<string, LocationQueryValue>
+        const result = {...currentQuery}
         if (newPageParam !== null) {
             result[this.tableController.pageParamName] = newPageParam.toString()
+        } else {
+            delete(result[this.tableController.pageParamName])
         }
         if (newKeyParam !== null) {
             result[this.tableController.keyParamName] = this.tableController.stringFromKey(newKeyParam)
+        } else {
+            delete(result[this.tableController.keyParamName])
         }
         return result
     }
