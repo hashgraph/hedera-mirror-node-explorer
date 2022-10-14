@@ -91,6 +91,13 @@ export abstract class TableController<R, K> {
         this.stopWatchingSources()
         this.subController?.unmount()
         this.subController = null
+        this.buffer.value = []
+        this.startIndex.value = 0
+        this.drained.value = false
+        this.autoUpdateCount.value = 0
+        this.shadowRowCount.value = 0
+        this.currentPage.value = 1
+
         this.mountedRef.value = false
         this.autoRefreshRef.value = false
     }
