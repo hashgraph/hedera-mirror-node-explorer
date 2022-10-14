@@ -415,7 +415,6 @@ describe("TableController.ts", () => {
         expect(tc.autoUpdateCount.value).toBe(0)
         expect(tc.currentPage.value).toBe(40)
         expect(currentRoute.value.query).toStrictEqual({ p: "40", k: "21" })
-        expect(currentRoute.value.query).toStrictEqual({})
 
         // Goto page #38
         tc.onPageChange(38)
@@ -426,7 +425,6 @@ describe("TableController.ts", () => {
         expect(tc.autoUpdateCount.value).toBe(0)
         expect(tc.currentPage.value).toBe(38)
         expect(currentRoute.value.query).toStrictEqual({ p: "38", k: "41" })
-        expect(currentRoute.value.query).toStrictEqual({})
 
         // Goto page #1
         tc.onPageChange(1)
@@ -442,11 +440,12 @@ describe("TableController.ts", () => {
 
     test("multiple controllers (sharing same router)", async() => {
 
-        const currentRoute = TestTableController.router.currentRoute
+        const router = makeRouter()
+        const currentRoute = router.currentRoute
 
         const scale = computed(() => 1)
-        const tc1 = new TestTableController(0, 50, 10, scale, "p1", "k1")
-        const tc2 = new TestTableController(100, 200, 10, scale, "p2", "k2")
+        const tc1 = new TestTableController(0, 50, 10, scale, "p1", "k1", router)
+        const tc2 = new TestTableController(100, 200, 10, scale, "p2", "k2", router)
 
         // Mount tc1 and tc2
         tc1.mount()
@@ -494,8 +493,6 @@ describe("TableController.ts", () => {
 
 class TestTableController extends TableController<number, number> {
 
-    public static router = makeRouter()
-
     public static readonly PRESUMED_ROW_COUNT = 100
     public static readonly UPDATED_PERIOD = 5000
     public static readonly MAX_UPDATE_COUNT = 5
@@ -508,8 +505,9 @@ class TestTableController extends TableController<number, number> {
 
     constructor(startKey: number, endKey: number, pageSize: number,
                 scale = computed(() => 1),
-                pageParamName = "p", keyParamName= "k") {
-        super(TestTableController.router, computed(() => pageSize),
+                pageParamName = "p", keyParamName= "k",
+                router = makeRouter()) {
+        super(router, computed(() => pageSize),
             TestTableController.PRESUMED_ROW_COUNT,
             TestTableController.UPDATED_PERIOD,
             TestTableController.MAX_UPDATE_COUNT,
