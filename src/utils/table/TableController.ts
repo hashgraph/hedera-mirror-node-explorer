@@ -84,16 +84,20 @@ export abstract class TableController<R, K> {
         }
         this.autoRefreshRef.value = this.subController instanceof AutoRefreshController
         this.mountedRef.value = true
-        this.watchSourcesHandle = watch(this.sources, () => this.reset())
+        this.startWatchingSources()
     }
 
     public unmount(): void {
-        if (this.watchSourcesHandle !== null) {
-            this.watchSourcesHandle()
-            this.watchSourcesHandle = null
-        }
+        this.stopWatchingSources()
         this.subController?.unmount()
         this.subController = null
+        this.buffer.value = []
+        this.startIndex.value = 0
+        this.drained.value = false
+        this.autoUpdateCount.value = 0
+        this.shadowRowCount.value = 0
+        this.currentPage.value = 1
+
         this.mountedRef.value = false
         this.autoRefreshRef.value = false
     }
@@ -233,10 +237,7 @@ export abstract class TableController<R, K> {
     protected watchAndReload(sources: WatchSource<unknown>[]): void {
         this.sources = sources
         if (this.mounted.value) {
-            if (this.watchSourcesHandle !== null) {
-                this.watchSourcesHandle()
-            }
-            this.watchSourcesHandle = watch(this.sources, () => this.reset())
+            this.startWatchingSources()
         }
     }
 
@@ -257,6 +258,17 @@ export abstract class TableController<R, K> {
     private readonly autoRefreshRef: Ref<boolean> = ref(false)
     private readonly mountedRef: Ref<boolean> = ref(false)
 
+    private startWatchingSources(): void {
+        this.stopWatchingSources()
+        this.watchSourcesHandle = watch(this.sources, () => this.reset())
+    }
+
+    private stopWatchingSources(): void {
+        if (this.watchSourcesHandle !== null) {
+            this.watchSourcesHandle()
+            this.watchSourcesHandle = null
+        }
+    }
 }
 
 export enum KeyOperator { gt= "gt", gte = "gte", lt= "lt", lte="lte" }
