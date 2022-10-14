@@ -40,7 +40,7 @@ export class ContractActionsLoader extends EntityBatchLoader<ContractActionsResp
         super()
         this.transactionIdOrHash = transactionIdOrHash
         this.watchAndReload([this.transactionIdOrHash])
-        watch([this.actions], () => this.addPathtoActions())
+        watch(this.actions, () => this.makeActionsWithPath())
     }
 
     public readonly actionsWithPath: Ref<Array<ContractActionWithPath>> = ref([])
@@ -84,32 +84,36 @@ export class ContractActionsLoader extends EntityBatchLoader<ContractActionsResp
         return last
     }
 
-    private depthVector: Array<number> = []
+    private makeActionsWithPath() {
+        let depthVector: Array<number> = []
+        const actionsWithPath: Array<ContractActionWithPath> = []
 
-    private addPathtoActions() {
         if (this.actions.value) {
-            this.depthVector = []
+            depthVector = []
             for (const a of this.actions.value) {
-                this.actionsWithPath.value.push({
+                actionsWithPath.push({
                     action: a,
-                    depthPath: this.buildDepthPath(a.call_depth ?? 0)
+                    depthPath: ContractActionsLoader.buildDepthPath(a.call_depth ?? 0, depthVector)
                 } as ContractActionWithPath)
             }
+            this.actionsWithPath.value = actionsWithPath
+        } else {
+            this.actionsWithPath.value = []
         }
     }
 
-    private buildDepthPath(depth: number) {
+    private static buildDepthPath(depth: number, depthVector: Array<number>) {
         let result = ""
 
-        if (this.depthVector.length >= depth + 1) {
-            this.depthVector[depth]++
-            this.depthVector.splice(depth + 1)
+        if (depthVector.length >= depth + 1) {
+            depthVector[depth]++
+            depthVector.splice(depth + 1)
         } else {
-            this.depthVector.push(1)
+            depthVector.push(1)
         }
 
-        for (let i = 0; i < this.depthVector.length; i++) {
-            result += (i === 0) ? this.depthVector[i] : "_" + this.depthVector[i]
+        for (let i = 0; i < depthVector.length; i++) {
+            result += (i === 0) ? depthVector[i] : "_" + depthVector[i]
         }
 
         return result
