@@ -48,6 +48,19 @@ export class TransactionByTimestampLoader extends EntityLoader<TransactionRespon
 
     public readonly payerAccountId = computed(() => TransactionID.makePayerID(this.transaction.value?.transaction_id ?? ""))
 
+    public lookupTransfer(contractID: string): number|null {
+        let result = null
+        if (this.transaction.value?.transfers){
+            for (const t of this.transaction.value?.transfers) {
+                if (t.account === contractID) {
+                    result = t.amount
+                    break
+                }
+            }
+        }
+        return result
+    }
+
     //
     // EntityLoader
     //
