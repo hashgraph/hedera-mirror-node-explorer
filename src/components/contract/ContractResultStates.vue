@@ -78,10 +78,10 @@
 
 import {defineComponent, inject, PropType} from 'vue';
 import DashboardCard from "@/components/DashboardCard.vue";
-import {ContractResultStateChanges} from "@/schemas/HederaSchemas";
 import EVMAddress from "@/components/values/EVMAddress.vue";
 import {ORUGA_MOBILE_BREAKPOINT} from '@/App.vue';
 import HexaValue from "@/components/values/HexaValue.vue";
+import {ContractResultStateChange} from "@/schemas/HederaSchemas";
 
 export default defineComponent({
 
@@ -94,7 +94,7 @@ export default defineComponent({
   },
 
   props: {
-    stateChanges: Object as PropType<Array<ContractResultStateChanges> | undefined>,
+    stateChanges: Object as PropType<Array<ContractResultStateChange> | undefined>,
     timeStamp: String
   },
 

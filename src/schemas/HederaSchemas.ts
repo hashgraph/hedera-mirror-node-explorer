@@ -448,7 +448,7 @@ export interface ContractResultDetails extends ContractResult {
     nonce: number | null | undefined // integer
     r: string | null | undefined
     s: string | null | undefined
-    state_changes: ContractResultStateChanges[] | undefined
+    state_changes: ContractResultStateChange[] | undefined
     transaction_index: number | null | undefined // integer
     type: number | null | undefined // The type of the wrapped ethereum transaction, 0 (Pre-Eip1559) or 2 (Post-Eip1559)
     v: number | null | undefined
@@ -463,7 +463,7 @@ export interface ContractResultLog {
     topics: string[] | undefined
 }
 
-export interface ContractResultStateChanges {
+export interface ContractResultStateChange {
     address: string | undefined
     contract_id: string | null | undefined
     slot: string | undefined
