@@ -32,7 +32,7 @@
     <template v-slot:content>
 
       <o-table
-          :data="stateChanges"
+          :data="displayStateChanges"
           :paginated="false"
 
           :hoverable="false"
@@ -47,19 +47,19 @@
       >
 
         <o-table-column v-slot="props" field="contract" label="Contract">
-          <EVMAddress :address="props.row.address" :id="props.row.contract_id" :compact="false"/>
+          <EVMAddress :id="props.row.changes.contract_id" :address="props.row.changes.address" :compact="false"/>
         </o-table-column>
 
         <o-table-column v-slot="props" field="slot" label="Address">
-          <HexaValue :byte-string="props.row.slot"/>
+          <HexaValue :byte-string="props.row.changes.slot"/>
         </o-table-column>
 
         <o-table-column v-slot="props" field="value_read" label="Value Read">
-          <HexaValue :byte-string="props.row.value_read" :show-none="true"/>
+          <HexaValue :byte-string="props.row.changes.value_read" :show-none="true"/>
         </o-table-column>
 
         <o-table-column v-slot="props" field="value_written" label="Value Written">
-          <HexaValue :byte-string="props.row.value_written" :show-none="true"/>
+          <HexaValue :byte-string="props.row.changes.value_written" :show-none="true"/>
         </o-table-column>
 
       </o-table>
@@ -76,12 +76,21 @@
 
 <script lang="ts">
 
-import {defineComponent, inject, PropType} from 'vue';
+import {defineComponent, inject, onMounted, PropType, ref, Ref, watch} from 'vue';
 import DashboardCard from "@/components/DashboardCard.vue";
+import {ContractResultStateChange} from "@/schemas/HederaSchemas";
 import EVMAddress from "@/components/values/EVMAddress.vue";
 import {ORUGA_MOBILE_BREAKPOINT} from '@/App.vue';
 import HexaValue from "@/components/values/HexaValue.vue";
-import {ContractResultStateChange} from "@/schemas/HederaSchemas";
+
+
+export interface DisplayStateChange {
+  changes: ContractResultStateChange,
+  addressType: string,
+  valueReadType: string,
+  valueWrittenType: string,
+  valueChange: number | null
+}
 
 export default defineComponent({
 
@@ -98,11 +107,43 @@ export default defineComponent({
     timeStamp: String
   },
 
-  setup() {
+  setup(props) {
     const isLargeScreen = inject('isLargeScreen', true)
+
+    // const transactionLoader = new TransactionByTimestampLoader(
+    //     computed(() => props.timeStamp ?? null)
+    // )
+    // onMounted(() => transactionLoader.requestLoad())
+
+    const displayStateChanges: Ref<Array<DisplayStateChange>> = ref([])
+    onMounted(() => displayStateChanges.value = makeDisplayStateChanges())
+    watch(() => props.stateChanges, () => makeDisplayStateChanges())
+
+    const makeDisplayStateChanges = () => {
+      const result: Array<DisplayStateChange> = []
+      let previousContract: string|null = null
+
+      if (props.stateChanges) {
+        for (const s of props.stateChanges) {
+          result.push({
+            changes: s,
+            addressType: 'DECIMAL',
+            valueReadType: 'DECIMAL',
+            valueWrittenType: 'DECIMAL',
+            valueChange: null
+          })
+          if (previousContract && previousContract === s.contract_id) {
+            result[result.length - 1].changes.contract_id = null
+          }
+          previousContract = s.contract_id ?? null
+        }
+      }
+      return result
+    }
 
     return {
       isLargeScreen,
+      displayStateChanges,
       ORUGA_MOBILE_BREAKPOINT
     }
   },
