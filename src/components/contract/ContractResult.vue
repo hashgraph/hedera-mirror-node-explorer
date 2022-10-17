@@ -223,7 +223,7 @@ export default defineComponent({
     onMounted(() => contractResultDetailsLoader.requestLoad())
 
     watch(contractResultDetailsLoader.entity, () => {
-      const nbLinesForAll = Math.ceil(contractResultDetailsLoader.entity.value?.logs?.length ?? 0 / 2)
+      const nbLinesForAll = Math.ceil((contractResultDetailsLoader.entity.value?.logs?.length ?? 0) / 2)
       nbLogLines.value = Math.min(nbLogLines.value, nbLinesForAll)
     })
 
