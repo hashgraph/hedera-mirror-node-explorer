@@ -31,55 +31,56 @@
 
     <template v-slot:content>
 
-      <o-table
-          :data="displayStateChanges"
-          :paginated="isPaginated"
-          :per-page="NB_STATES_PER_PAGE"
+      <div class="columns" style="margin-bottom:0; font-size: 11px; font-weight: 700;">
+        <div class="column is-2">Contract</div>
+        <div class="column">Address</div>
+        <div class="column">Value Read</div>
+        <div class="column">Value Written</div>
+      </div>
+      <hr class="h-card-separator" style="margin-top: 0; margin-bottom: 20px; height: 1px"/>
 
-          :hoverable="false"
-          :narrowed="true"
-          :striped="false"
-          :mobile-breakpoint="ORUGA_MOBILE_BREAKPOINT"
+      <div v-for="s in displayStateChanges" :key="s.changes.contract_id">
+        <div class="is-flex is-align-items-baseline">
+          <ContractLink :contract-id="s.changes.contract_id"></ContractLink>
+          <EVMAddress :address="s.changes.address" :compact="false" class="ml-3"/>
+          <span class="mb-2 h-is-text-size-3">
+            <span class="ml-4 mr-2">Contract HBar Balance Difference:</span>
+            <HbarAmount :amount="s.balanceChange" :colored="true" :show-extra="true"/>
+          </span>
+        </div>
+        <hr class="h-card-separator" style="margin-bottom: 12px; margin-top: 0"/>
 
-          aria-current-label="Current page"
-          aria-next-label="Next page"
-          aria-page-label="Page"
-          aria-previous-label="Previous page"
-      >
+        <div class="columns" style="margin-bottom:0">
 
-        <o-table-column v-slot="props" field="contract" label="Contract">
-          <EVMAddress :id="props.row.changes.contract_id" :address="props.row.changes.address" :compact="false"/>
-          <div class="h-is-text-size-2">
-            <span class="h-is-extra-text mr-2">Contract Balance Variation:</span>
-            <HbarAmount :amount="props.row.balanceChange" :colored="true" :show-extra="true"/>
+          <div class="column is-2 py-1"></div>
+
+          <div class="column py-1">
+            <HexaValue :byte-string="s.changes.slot"/>
+            <div class="h-is-extra-text h-is-text-size-2">
+              {{ 'Decimal: ' + Number(s.changes.slot) }}
+            </div>
           </div>
-        </o-table-column>
 
-        <o-table-column v-slot="props" field="slot" label="Address">
-          <HexaValue :byte-string="props.row.changes.slot"/>
-          <div class="h-is-extra-text h-is-text-size-2">
-            {{ 'Decimal: ' + Number(props.row.changes.slot) }}
+          <div class="column py-1">
+            <HexaValue :byte-string="s.changes.value_read" :show-none="true"/>
+            <div :class="{'is-invisible': isNaN(Number(s.changes.value_read))}"
+                 class="h-is-extra-text h-is-text-size-2">
+              {{ 'Decimal: ' + Number(s.changes.value_read) }}
+            </div>
           </div>
-        </o-table-column>
 
-        <o-table-column v-slot="props" field="value_read" label="Value Read">
-          <HexaValue :byte-string="props.row.changes.value_read" :show-none="true"/>
-          <div class="h-is-extra-text h-is-text-size-2"
-          :class="{'is-invisible': isNaN(Number(props.row.changes.value_read))}">
-            {{ 'Decimal: ' + Number(props.row.changes.value_read) }}
+          <div class="column py-1">
+            <HexaValue :byte-string="s.changes.value_written" :show-none="true"/>
+            <div :class="{'is-invisible': isNaN(Number(s.changes.value_written))}"
+                 class="h-is-extra-text h-is-text-size-2">
+              <span>{{ 'Decimal: ' + Number(s.changes.value_written) }}</span>
+              <span v-if="s.valueChange" class="ml-2">{{ '(Difference: ' + s.valueChange + ')' }}</span>
+            </div>
           </div>
-        </o-table-column>
 
-        <o-table-column v-slot="props" field="value_written" label="Value Written">
-          <HexaValue :byte-string="props.row.changes.value_written" :show-none="true"/>
-          <div class="h-is-extra-text h-is-text-size-2"
-               :class="{'is-invisible': isNaN(Number(props.row.changes.value_written))}">
-            <span>{{ 'Decimal: ' + Number(props.row.changes.value_written) }}</span>
-            <span v-if="props.row.valueChange" class="ml-2">{{ '(Difference: ' + props.row.valueChange + ')' }}</span>
-          </div>
-        </o-table-column>
-
-      </o-table>
+        </div>
+        <hr class="h-card-separator" style="margin-top: 0; margin-bottom: 8px; height: 0.5px"/>
+      </div>
 
     </template>
 
@@ -101,6 +102,7 @@ import {ORUGA_MOBILE_BREAKPOINT} from '@/App.vue';
 import HexaValue from "@/components/values/HexaValue.vue";
 import HbarAmount from "@/components/values/HbarAmount.vue";
 import {TransactionByTimestampLoader} from "@/components/transaction/TransactionByTimestampLoader";
+import ContractLink from "@/components/values/ContractLink.vue";
 
 
 export interface DisplayStateChange {
@@ -119,6 +121,7 @@ export default defineComponent({
   name: 'ContractResultStates',
 
   components: {
+    ContractLink,
     HbarAmount,
     HexaValue,
     EVMAddress,
