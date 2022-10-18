@@ -1,0 +1,224 @@
+// noinspection DuplicatedCode
+
+/*-
+ *
+ * Hedera Mirror Node Explorer
+ *
+ * Copyright (C) 2021 - 2022 Hedera Hashgraph, LLC
+ *
+ * Licensed under the Apache License, Version 2.0 (the "License");
+ * you may not use this file except in compliance with the License.
+ * You may obtain a copy of the License at
+ *
+ *      http://www.apache.org/licenses/LICENSE-2.0
+ *
+ * Unless required by applicable law or agreed to in writing, software
+ * distributed under the License is distributed on an "AS IS" BASIS,
+ * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+ * See the License for the specific language governing permissions and
+ * limitations under the License.
+ *
+ */
+
+import {makeRouter} from "@/router";
+import {computed, ref} from "vue";
+import {TransactionTableControllerXL} from "@/components/transaction/TransactionTableControllerXL";
+import {flushPromises} from "@vue/test-utils";
+import MockAdapter from "axios-mock-adapter";
+import axios from "axios";
+import {SAMPLE_CONTRACTCALL_TRANSACTIONS} from "../Mocks";
+
+describe("TransactionTableController.ts", () => {
+
+    test("mount + unmount", async () => {
+        const PAGE_SIZE = 5
+        //
+        // const mock = new MockAdapter(axios)
+
+        const router = makeRouter()
+        const accountId = ref<string|null>(null)
+        const pageSize = computed(() => PAGE_SIZE)
+
+        const tc = new TransactionTableControllerXL(router, accountId, pageSize, true)
+
+        // Just after construction
+        expect(tc.pageSize.value).toBe(PAGE_SIZE)
+        expect(tc.autoRefresh.value).toBe(false)
+        expect(tc.autoStopped.value).toBe(false)
+        expect(tc.currentPage.value).toBe(1)
+        expect(tc.loading.value).toBe(false)
+        expect(tc.totalRowCount.value).toBe(50)
+        expect(tc.rows.value).toStrictEqual([])
+        expect(tc.mounted.value).toBe(false)
+
+        // After any promise execution (none are expected so nothing should change)
+        await flushPromises()
+        expect(tc.pageSize.value).toBe(PAGE_SIZE)
+        expect(tc.autoRefresh.value).toBe(false)
+        expect(tc.autoStopped.value).toBe(false)
+        expect(tc.currentPage.value).toBe(1)
+        expect(tc.loading.value).toBe(false)
+        expect(tc.totalRowCount.value).toBe(50)
+        expect(tc.rows.value).toStrictEqual([])
+        expect(tc.mounted.value).toBe(false)
+
+        // After mount()
+        // tc.accountId is null
+        //      => rows array is empty
+        //      => auto refresh is active
+        tc.mount()
+        await flushPromises()
+        expect(tc.pageSize.value).toBe(PAGE_SIZE)
+        expect(tc.autoRefresh.value).toBe(true)
+        expect(tc.autoStopped.value).toBe(false)
+        expect(tc.currentPage.value).toBe(1)
+        expect(tc.loading.value).toBe(false)
+        expect(tc.totalRowCount.value).toBe(50)
+        expect(tc.rows.value).toStrictEqual([])
+        expect(tc.mounted.value).toBe(true)
+
+        // After unmount()
+        tc.unmount()
+        await flushPromises()
+        expect(tc.pageSize.value).toBe(PAGE_SIZE)
+        expect(tc.autoRefresh.value).toBe(false)
+        expect(tc.autoStopped.value).toBe(false)
+        expect(tc.currentPage.value).toBe(1)
+        expect(tc.loading.value).toBe(false)
+        expect(tc.totalRowCount.value).toBe(50)
+        expect(tc.rows.value).toStrictEqual([])
+        expect(tc.mounted.value).toBe(false)
+    })
+
+    test("route with p/k + mount + accountId setup + unmount", async () => {
+        const PAGE_SIZE = 5
+
+        const mock = new MockAdapter(axios)
+
+        const matcher1 = "/api/v1/transactions"
+        mock.onGet(matcher1).reply(200, SAMPLE_CONTRACTCALL_TRANSACTIONS)
+
+        const router = makeRouter()
+        const accountId = ref<string|null>(null)
+        const pageSize = computed(() => PAGE_SIZE)
+
+        const tc = new TransactionTableControllerXL(router, accountId, pageSize, true)
+
+        // Preset p and k params in current route
+        const TIMESTAMP0 = SAMPLE_CONTRACTCALL_TRANSACTIONS.transactions[0].consensus_timestamp
+        await tc.router.replace({query: { p: 10, k: TIMESTAMP0}})
+        await flushPromises()
+
+        // Mount
+        // After mount:
+        //      - auto-refresh is disabled because p/k is set
+        //      - row array is empty because accountId is null
+        tc.mount()
+        await flushPromises()
+        expect(tc.pageSize.value).toBe(PAGE_SIZE)
+        expect(tc.autoRefresh.value).toBe(false)
+        expect(tc.autoStopped.value).toBe(false)
+        expect(tc.currentPage.value).toBe(1)
+        expect(tc.loading.value).toBe(false)
+        expect(tc.totalRowCount.value).toBe(50)
+        expect(tc.rows.value).toStrictEqual([])
+        expect(tc.mounted.value).toBe(true)
+
+        // Setup account id
+        // After setup:
+        //      - auto-refresh remains disabled
+        //      - row array contains transactions from SAMPLE_CONTRACTCALL_TRANSACTIONS
+        accountId.value = "0.0.4" // Value is unimportant
+        await flushPromises()
+        expect(tc.pageSize.value).toBe(PAGE_SIZE)
+        expect(tc.autoRefresh.value).toBe(false)
+        expect(tc.autoStopped.value).toBe(false)
+        expect(tc.currentPage.value).toBe(10)
+        expect(tc.loading.value).toBe(false)
+        expect(tc.totalRowCount.value).toBe(47) // 9 * 5 shadow rows + 2 real rows
+        expect(tc.rows.value).toStrictEqual(SAMPLE_CONTRACTCALL_TRANSACTIONS.transactions)
+        expect(tc.mounted.value).toBe(true)
+
+
+        // After unmount()
+        tc.unmount()
+        await flushPromises()
+        expect(tc.pageSize.value).toBe(PAGE_SIZE)
+        expect(tc.autoRefresh.value).toBe(false)
+        expect(tc.autoStopped.value).toBe(false)
+        expect(tc.currentPage.value).toBe(1)
+        expect(tc.loading.value).toBe(false)
+        expect(tc.totalRowCount.value).toBe(50)
+        expect(tc.rows.value).toStrictEqual([])
+        expect(tc.mounted.value).toBe(false)
+    })
+
+    test("route with p/k + accountId setup + mount + unmount", async () => {
+        const PAGE_SIZE = 5
+
+        const ACCOUNT_ID = "0.0.4"
+        const TIMESTAMP0 = SAMPLE_CONTRACTCALL_TRANSACTIONS.transactions[0].consensus_timestamp
+
+        const mock = new MockAdapter(axios)
+        const matcher1 = "/api/v1/transactions"
+        const param1 = {
+            limit: PAGE_SIZE,
+            order: "desc",
+            "account.id": ACCOUNT_ID,
+            "timestamp": "lte:" + TIMESTAMP0
+        }
+        mock.onGet(matcher1, param1).reply(200, SAMPLE_CONTRACTCALL_TRANSACTIONS)
+
+        // Setup controller
+        const router = makeRouter()
+        const accountId = ref<string|null>(null)
+        const pageSize = computed(() => PAGE_SIZE)
+        const tc = new TransactionTableControllerXL(router, accountId, pageSize, true)
+
+        // Preset p and k params in current route
+        await tc.router.replace({query: { p: 10, k: TIMESTAMP0}})
+        await flushPromises()
+
+        // Setup account id
+        accountId.value = "0.0.4" // Value is unimportant
+        await flushPromises()
+        expect(tc.pageSize.value).toBe(PAGE_SIZE)
+        expect(tc.autoRefresh.value).toBe(false)
+        expect(tc.autoStopped.value).toBe(false)
+        expect(tc.currentPage.value).toBe(1)
+        expect(tc.loading.value).toBe(false)
+        expect(tc.totalRowCount.value).toBe(50)
+        expect(tc.rows.value).toStrictEqual([])
+        expect(tc.mounted.value).toBe(false)
+
+        // Mount
+        // After mount:
+        //      - auto-refresh is disabled because p/k is set
+        //      - current page is 10
+        //      - row array contains SAMPLE_CONTRACTCALL_TRANSACTIONS
+        tc.mount()
+        await flushPromises()
+        expect(tc.pageSize.value).toBe(PAGE_SIZE)
+        expect(tc.autoRefresh.value).toBe(false)
+        expect(tc.autoStopped.value).toBe(false)
+        expect(tc.currentPage.value).toBe(10)
+        expect(tc.loading.value).toBe(false)
+        expect(tc.totalRowCount.value).toBe(47)
+        expect(tc.rows.value).toStrictEqual(SAMPLE_CONTRACTCALL_TRANSACTIONS.transactions)
+        expect(tc.mounted.value).toBe(true)
+
+
+        // After unmount()
+        tc.unmount()
+        await flushPromises()
+        expect(tc.pageSize.value).toBe(PAGE_SIZE)
+        expect(tc.autoRefresh.value).toBe(false)
+        expect(tc.autoStopped.value).toBe(false)
+        expect(tc.currentPage.value).toBe(1)
+        expect(tc.loading.value).toBe(false)
+        expect(tc.totalRowCount.value).toBe(50)
+        expect(tc.rows.value).toStrictEqual([])
+        expect(tc.mounted.value).toBe(false)
+    })
+
+})

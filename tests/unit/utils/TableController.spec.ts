@@ -125,7 +125,7 @@ describe("TableController.ts", () => {
         expect(tc.currentPage.value).toBe(1)
         expect(tc.loading.value).toBe(false)
         expect(tc.totalRowCount.value).toBe(TestTableController.PRESUMED_ROW_COUNT)
-        expect(tc.rows.value).toStrictEqual([49,48,47,46,45,44,43,42,41,40])
+        expect(tc.rows.value).toStrictEqual([])
         expect(tc.mounted.value).toBe(false)
 
     })
@@ -178,9 +178,9 @@ describe("TableController.ts", () => {
         tc.unmount()
         await flushPromises()
         expect(tc.autoRefresh.value).toBe(false)
-        expect(tc.autoStopped.value).toBe(true)
-        expect(tc.rows.value).toStrictEqual([49,48,47,46,45,44,43,42,41,40])
-        expect(tc.autoUpdateCount.value).toBe(5)
+        expect(tc.autoStopped.value).toBe(false)
+        expect(tc.rows.value).toStrictEqual([])
+        expect(tc.autoUpdateCount.value).toBe(0)
 
     })
 
@@ -231,8 +231,8 @@ describe("TableController.ts", () => {
         await flushPromises()
         expect(tc.autoRefresh.value).toBe(false)
         expect(tc.autoStopped.value).toBe(false)
-        expect(tc.rows.value).toStrictEqual([61,60,59,58,57,56,55,54,53,52])
-        expect(tc.autoUpdateCount.value).toBe(4)
+        expect(tc.rows.value).toStrictEqual([])
+        expect(tc.autoUpdateCount.value).toBe(0)
 
     })
 
@@ -270,8 +270,8 @@ describe("TableController.ts", () => {
         await flushPromises()
         expect(tc.autoRefresh.value).toBe(false)
         expect(tc.autoStopped.value).toBe(false)
-        expect(tc.rows.value).toStrictEqual([98,96,94,92,90,88,86,84,82,80])
-        expect(tc.autoUpdateCount.value).toBe(1)
+        expect(tc.rows.value).toStrictEqual([])
+        expect(tc.autoUpdateCount.value).toBe(0)
 
     })
 
