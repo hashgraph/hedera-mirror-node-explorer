@@ -34,7 +34,7 @@ describe('Search Bar', () => {
         const searchAccount = "0.0.3"
         testBody(searchAccount, '/testnet/account/' + searchAccount, 'Account ', true)
 
-        cy.visit('#/testnet/account/0.0.4')
+        cy.visit('testnet/account/0.0.4')
         cy.url().should('include', '/testnet/account/0.0.4')
         testBody(searchAccount, '/testnet/account/' + searchAccount, 'Account ', true)
     })
@@ -114,7 +114,7 @@ describe('Search Bar', () => {
         const searchNFT = "0.0.30961728"
         testBody(searchNFT, '/testnet/token/' + searchNFT, 'Token ', true)
 
-        cy.visit('#/testnet/token/0.0.45960942')
+        cy.visit('testnet/token/0.0.45960942')
         cy.url().should('include', '/testnet/token/0.0.45960942')
         testBody(searchNFT, '/testnet/token/' + searchNFT, 'Token ', true)
     })
@@ -123,7 +123,7 @@ describe('Search Bar', () => {
         const searchToken = "0.0.45960539"
         testBody(searchToken, '/testnet/token/' + searchToken, 'Token ', true)
 
-        cy.visit('#/testnet/token/0.0.30960947')
+        cy.visit('testnet/token/0.0.30960947')
         cy.url().should('include', '/testnet/token/0.0.30960947')
         testBody(searchToken, '/testnet/token/' + searchToken, 'Token ', true)
     })
@@ -132,7 +132,7 @@ describe('Search Bar', () => {
         const searchTopic = "0.0.45960950"
         testBody(searchTopic, '/testnet/topic/' + searchTopic, 'Messages for Topic ', true)
 
-        cy.visit('#/testnet/topic/0.0.45960954')
+        cy.visit('testnet/topic/0.0.45960954')
         cy.url().should('include', '/testnet/topic/0.0.45960954')
         testBody(searchTopic, '/testnet/topic/' + searchTopic, 'Messages for Topic ', true)
     })
@@ -141,7 +141,7 @@ describe('Search Bar', () => {
         const searchContract = "0.0.45960092"
         testBody(searchContract, '/testnet/contract/' + searchContract, 'Contract ', true)
 
-        cy.visit('#/testnet/contract/0.0.30962023')
+        cy.visit('testnet/contract/0.0.30962023')
         cy.url().should('include', '/testnet/contract/0.0.30962023')
         testBody(searchContract, '/testnet/contract/' + searchContract, 'Contract ', true)
     })

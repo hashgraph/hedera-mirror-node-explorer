@@ -25,7 +25,7 @@ import {normalizeTransactionId} from "../../../src/utils/TransactionID";
 describe('Account Navigation', () => {
 
     it('should navigate from table to account details', () => {
-        cy.visit('#/testnet/accounts/')
+        cy.visit('testnet/accounts/')
         cy.url().should('include', '/testnet/accounts')
         cy.contains('Recent Accounts')
 
@@ -46,7 +46,7 @@ describe('Account Navigation', () => {
     it('should follow links from account with many tokens', () => {
         const accountId1 = "0.0.29627434"
 
-        cy.visit('#/testnet/account/' + accountId1)
+        cy.visit('testnet/account/' + accountId1)
         cy.url().should('include', '/testnet/account/')
         cy.contains('Account ' + accountId1)
 
@@ -92,7 +92,7 @@ describe('Account Navigation', () => {
     it('should follow links from account with few tokens', () => {
         const accountId2 = "0.0.30974874"
 
-        cy.visit('#/testnet/account/' + accountId2)
+        cy.visit('testnet/account/' + accountId2)
         cy.url().should('include', '/testnet/account/')
         cy.contains('Account ' + accountId2)
 
@@ -130,7 +130,7 @@ describe('Account Navigation', () => {
 
     it ('should display account details using account ID', () => {
         const accountID = "0.0.46022656"
-        cy.visit('#/testnet/account/' + accountID)
+        cy.visit('testnet/account/' + accountID)
         cy.url().should('include', '/testnet/account/' + accountID)
         cy.contains('Account ' + accountID)
     })
@@ -138,7 +138,7 @@ describe('Account Navigation', () => {
     it ('should display account details using account base32 alias', () => {
         const accountID = "0.0.46022656"
         const accountAlias = "HIQQGOGHZGVM3E7KT47Z6VQYY2TTYY3USZUDJGVSRLYRUR5J72ZD6PI4"
-        cy.visit('#/testnet/account/' + accountAlias)
+        cy.visit('testnet/account/' + accountAlias)
         cy.url().should('include', '/testnet/account/' + accountAlias)
         cy.contains('Account ' + accountID)
     })
@@ -146,7 +146,7 @@ describe('Account Navigation', () => {
     it ('should display account details using account hex alias', () => {
         const accountID = "0.0.46022656"
         const accountAliasInHex = "0x3a210338c7c9aacd93ea9f3f9f5618c6a73c63749668349ab28af11a47a9feb23f3d1c"
-        cy.visit('#/testnet/account/' + accountAliasInHex)
+        cy.visit('testnet/account/' + accountAliasInHex)
         cy.url().should('include', '/testnet/account/' + accountAliasInHex)
         cy.contains('Account ' + accountID)
     })
@@ -155,19 +155,19 @@ describe('Account Navigation', () => {
         const accountID = "0.0.46022656"
         const evmAddress = "0x43cb701defe8fc6ed04d7bddf949618e3c575fe1"
 
-        cy.visit('#/testnet/account/' + evmAddress)
+        cy.visit('testnet/account/' + evmAddress)
         cy.url().should('include', '/testnet/account/' + evmAddress)
         cy.contains('Account ' + accountID)
 
         // EIP 3091
-        cy.visit('#/testnet/address/' + evmAddress)
+        cy.visit('testnet/address/' + evmAddress)
         cy.url().should('include', '/testnet/address/' + evmAddress)
         cy.contains('Account ' + accountID)
     })
 
     it('should detect navigation to unknown account ID', () => {
         const unknownID = '9.9.9'
-        cy.visit('#/testnet/account/' + unknownID)
+        cy.visit('testnet/account/' + unknownID)
         cy.url().should('include', '/testnet/account/' + unknownID)
         cy.contains('Account')
 
@@ -178,7 +178,7 @@ describe('Account Navigation', () => {
 
     it('should follow link to associated contract and back', () => {
         const accountId = '0.0.47981544'
-        cy.visit('#/testnet/account/' + accountId)
+        cy.visit('testnet/account/' + accountId)
         cy.url().should('include', '/testnet/account/' + accountId)
         cy.contains('Account ' + accountId)
         cy.contains('a', "Show associated contract")
@@ -196,7 +196,7 @@ describe('Account Navigation', () => {
     it('should not show a link to associated contract', () => {
         const accountId = '0.0.47981544'
         const searchId = '0.0.3'
-        cy.visit('#/testnet/account/' + accountId)
+        cy.visit('testnet/account/' + accountId)
         cy.url().should('include', '/testnet/account/' + accountId)
         cy.contains('Account ' + accountId)
         cy.contains('a', "Show associated contract")

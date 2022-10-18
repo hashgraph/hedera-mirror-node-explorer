@@ -23,7 +23,7 @@
 describe('Topic Navigation', () => {
 
     it('should navigate from topic table to topic messages', () => {
-        cy.visit('#/testnet/topics/')
+        cy.visit('testnet/topics/')
         cy.url().should('include', '/testnet/topics')
         cy.contains('Recent Topics')
 
