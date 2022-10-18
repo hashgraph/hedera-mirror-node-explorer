@@ -161,7 +161,7 @@ describe('Account Navigation', () => {
 
         // EIP 3091
         cy.visit('testnet/address/' + evmAddress)
-        cy.url().should('include', '/testnet/address/' + evmAddress)
+        cy.url().should('include', '/testnet/account/' + evmAddress)
         cy.contains('Account ' + accountID)
     })
 
