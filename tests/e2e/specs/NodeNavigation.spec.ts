@@ -23,7 +23,7 @@
 describe('Node Navigation', () => {
 
     it('should navigate from node table to node details', () => {
-        cy.visit('#/testnet/nodes/')
+        cy.visit('testnet/nodes/')
         cy.url().should('include', '/testnet/nodes')
         cy.contains('Network')
         cy.contains('Nodes')
@@ -46,7 +46,7 @@ describe('Node Navigation', () => {
         const nodeId = "3"
         const nodeAccount = "0.0.6"
 
-        cy.visit('#/testnet/node/' + nodeId)
+        cy.visit('testnet/node/' + nodeId)
         cy.url().should('include', '/testnet/node/')
         cy.contains('Node ' + nodeId)
 

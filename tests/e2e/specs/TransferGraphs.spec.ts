@@ -27,8 +27,8 @@ describe('Transfer Graphs Navigation', () => {
     it('should follow links from Hbar transfer graph', () => {
         const transactionId = "0.0.690356@1645611941.817662784"
 
-        cy.visit('#/mainnet/transaction/' + normalizeTransactionId(transactionId))
-        cy.url().should('include', '#/mainnet/transaction/' + normalizeTransactionId(transactionId))
+        cy.visit('mainnet/transaction/' + normalizeTransactionId(transactionId))
+        cy.url().should('include', '/mainnet/transaction/' + normalizeTransactionId(transactionId))
 
         cy.get('[data-cy=hbarTransfers]')
             .find('[data-cy=sourceAccount]')
@@ -36,7 +36,7 @@ describe('Transfer Graphs Navigation', () => {
                 cy.wrap($account)
                     .find('a')
                     .click()
-                cy.url().should('include', '#/mainnet/account/' + $account.text())
+                cy.url().should('include', '/mainnet/account/' + $account.text())
                 cy.contains('Account ' + $account.text())
             })
 
@@ -49,7 +49,7 @@ describe('Transfer Graphs Navigation', () => {
                 cy.wrap($account)
                     .find('a')
                     .click()
-                cy.url().should('include', '#/mainnet/account/' + $account.text())
+                cy.url().should('include', '/mainnet/account/' + $account.text())
                 cy.contains('Account ' + $account.text())
             })
 
@@ -62,7 +62,7 @@ describe('Transfer Graphs Navigation', () => {
                 cy.wrap($account)
                     .find('a')
                     .click()
-                cy.url().should('include', '#/mainnet/account/' + $account.text())
+                cy.url().should('include', '/mainnet/account/' + $account.text())
                 cy.contains('Account ' + $account.text())
             })
 
@@ -71,8 +71,8 @@ describe('Transfer Graphs Navigation', () => {
     it('should follow links from NFT transfer graph', () => {
         const transactionId = "0.0.690356@1645611941.817662784"
 
-        cy.visit('#/mainnet/transaction/' + normalizeTransactionId(transactionId))
-        cy.url().should('include', '#/mainnet/transaction/' + normalizeTransactionId(transactionId))
+        cy.visit('mainnet/transaction/' + normalizeTransactionId(transactionId))
+        cy.url().should('include', '/mainnet/transaction/' + normalizeTransactionId(transactionId))
 
         cy.get('[data-cy=nftTransfers]')
             .find('[data-cy=sourceAccount]')
@@ -80,7 +80,7 @@ describe('Transfer Graphs Navigation', () => {
                 cy.wrap($account)
                     .find('a')
                     .click()
-                cy.url().should('include', '#/mainnet/account/' + $account.text())
+                cy.url().should('include', '/mainnet/account/' + $account.text())
                 cy.contains('Account ' + $account.text())
             })
 
@@ -92,7 +92,7 @@ describe('Transfer Graphs Navigation', () => {
                 cy.wrap(nft)
                     .find('a')
                     .click()
-                cy.url().should('include', '#/mainnet/token/')
+                cy.url().should('include', '/mainnet/token/')
                 cy.contains('Token ')
             })
 
@@ -104,7 +104,7 @@ describe('Transfer Graphs Navigation', () => {
                 cy.wrap($account)
                     .find('a')
                     .click()
-                cy.url().should('include', '#/mainnet/account/' + $account.text())
+                cy.url().should('include', '/mainnet/account/' + $account.text())
                 cy.contains('Account ' + $account.text())
             })
 
@@ -113,8 +113,8 @@ describe('Transfer Graphs Navigation', () => {
     it('should follow links from Token transfer graph', () => {
         const transactionId = "0.0.196756@1644275559.734822737"
 
-        cy.visit('#/mainnet/transaction/' + normalizeTransactionId(transactionId))
-        cy.url().should('include', '#/mainnet/transaction/' + normalizeTransactionId(transactionId))
+        cy.visit('mainnet/transaction/' + normalizeTransactionId(transactionId))
+        cy.url().should('include', '/mainnet/transaction/' + normalizeTransactionId(transactionId))
 
         cy.get('[data-cy=tokenTransfers]')
             .find('[data-cy=sourceAccount]')
@@ -122,7 +122,7 @@ describe('Transfer Graphs Navigation', () => {
                 cy.wrap($account)
                     .find('a')
                     .click()
-                cy.url().should('include', '#/mainnet/account/' + $account.text())
+                cy.url().should('include', '/mainnet/account/' + $account.text())
                 cy.contains('Account ' + $account.text())
             })
 
@@ -136,7 +136,7 @@ describe('Transfer Graphs Navigation', () => {
                     .find('a')
                     .click()
                     .then(($name) => {
-                        cy.url().should('include', '#/mainnet/token/')
+                        cy.url().should('include', '/mainnet/token/')
                         cy.contains('Token ')
                         cy.contains($name.text())
                     })
@@ -152,7 +152,7 @@ describe('Transfer Graphs Navigation', () => {
                     .find('a')
                     .click()
                     .then(($name) => {
-                        cy.url().should('include', '#/mainnet/token/')
+                        cy.url().should('include', '/mainnet/token/')
                         cy.contains('Token ')
                         cy.contains($name.text())
                     })
@@ -166,7 +166,7 @@ describe('Transfer Graphs Navigation', () => {
                 cy.wrap($account)
                     .find('a')
                     .click()
-                cy.url().should('include', '#/mainnet/account/' + $account.text())
+                cy.url().should('include', '/mainnet/account/' + $account.text())
                 cy.contains('Account ' + $account.text())
             })
 

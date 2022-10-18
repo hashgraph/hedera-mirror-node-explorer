@@ -26,14 +26,14 @@ describe('BlocksResponseCollector', () => {
     const lastTxnInBlock = "0.0.59-1598572589-275875990"
 
     it('should display block 12 for first transaction in block', () => {
-        cy.visit('#/testnet/transaction/' + firstTxnInBlock)
+        cy.visit('testnet/transaction/' + firstTxnInBlock)
         cy.url().should('include', '/testnet/transaction/' + firstTxnInBlock)
 
         cy.get('#blockNumberValue').contains("12")
     })
 
     it('should display block 12 for last transaction in block', () => {
-        cy.visit('#/testnet/transaction/' + lastTxnInBlock)
+        cy.visit('testnet/transaction/' + lastTxnInBlock)
         cy.url().should('include', '/testnet/transaction/' + lastTxnInBlock)
 
         cy.get('#blockNumberValue').contains("12")

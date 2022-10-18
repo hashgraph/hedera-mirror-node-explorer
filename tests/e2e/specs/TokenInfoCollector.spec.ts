@@ -25,7 +25,7 @@ describe('TokenInfoCollector', () => {
     const transactionId = "0.0.88-1647364797-037128951"
 
     it('should display token name', () => {
-        cy.visit('#/testnet/transaction/' + transactionId)
+        cy.visit('testnet/transaction/' + transactionId)
         cy.url().should('include', '/testnet/transaction/')
 
         cy.get('#entityId')
