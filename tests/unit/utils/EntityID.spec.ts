@@ -128,6 +128,11 @@ describe("EntityID.ts", () => {
         expect(obj).toBeNull()
     })
 
+    test("0x000000444", () => {
+        const obj = EntityID.parse("0x000000444", true)
+        expect(obj).toBeNull()
+    })
+
     test("Too Big Number", () => {
         const tooBigNum = Math.pow(2, 32)
         const obj = EntityID.parse(tooBigNum.toString())
