@@ -93,11 +93,14 @@ export class AutoRefreshController<R,K> extends TableSubController<R, K> {
     }
 
     private scheduleNextRefresh() {
-        this.timeoutID = -1
-        this.tableController.autoUpdateCount.value += 1
+        if (this.timeoutID != -1) {
+            window.clearTimeout(this.timeoutID)
+            this.timeoutID = -1
+        }
         // this.loadingRef.value = false
         if (this.tableController.autoUpdateCount.value < this.tableController.maxAutoUpdateCount) {
             this.timeoutID = window.setTimeout(() => {
+                this.tableController.autoUpdateCount.value += 1
                 this.refresh()
             }, this.tableController.updatePeriod)
         } else {
