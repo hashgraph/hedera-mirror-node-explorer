@@ -32,7 +32,7 @@ export class AutoRefreshController<R,K> extends TableSubController<R, K> {
     //
 
     public mount(): void {
-        this.tableController.autoUpdateCount.value = 0
+        this.tableController.buffer.autoUpdateCount.value = 0
         this.refresh()
     }
 
@@ -54,17 +54,19 @@ export class AutoRefreshController<R,K> extends TableSubController<R, K> {
 
     private refresh() {
 
-        const headKey = this.tableController.getHeadKey()
+        const pageSize = this.tableController.pageSize.value
+        const rowBuffer = this.tableController.buffer
+        const headKey = rowBuffer.headKey.value
         const captureSessionId = this.sessionId
         // const currentPage = this.tableController.currentPage.value
-        if (/*currentPage == 1 && */headKey !== null) {
-            this.lastLoad(headKey, this.tableController.pageSize.value).then((newRows: R[] | null) => {
+        if (headKey !== null) {
+            rowBuffer.lastLoad(headKey, pageSize).then((newRows: R[] | null) => {
                 if (newRows !== null && this.sessionId == captureSessionId) {
                     this.lastLoadDidComplete(newRows)
                 }
             })
         } else {
-            this.tailLoad(null, this.tableController.pageSize.value, false).then((newRows: R[] | null) => {
+            rowBuffer.tailLoad(null, pageSize, false).then((newRows: R[] | null) => {
                 if (newRows !== null && this.sessionId == captureSessionId) {
                     this.tailLoadDidComplete(newRows)
                 }
@@ -74,20 +76,22 @@ export class AutoRefreshController<R,K> extends TableSubController<R, K> {
 
     private lastLoadDidComplete(newRows: R[]): void {
 
-        this.tableController.buffer.value = this.concatOrReplace(newRows, this.tableController.buffer.value)
-        this.tableController.startIndex.value = 0
-        // this.tableController.drained.value unchanged
-        this.tableController.shadowRowCount.value = 0
+        const rowBuffer = this.tableController.buffer
+        rowBuffer.rows.value = rowBuffer.concatOrReplace(newRows, rowBuffer.rows.value)
+        rowBuffer.startIndex.value = 0
+        // rowBuffer.drained.value unchanged
+        rowBuffer.shadowRowCount.value = 0
         this.tableController.currentPage.value = 1
 
         this.scheduleNextRefresh()
     }
 
     private tailLoadDidComplete(newRows: R[]): void {
-        this.tableController.buffer.value = newRows
-        this.tableController.startIndex.value = 0
-        this.tableController.drained.value = newRows.length < this.tableController.pageSize.value
-        this.tableController.shadowRowCount.value = 0
+        const rowBuffer = this.tableController.buffer
+        rowBuffer.rows.value = newRows
+        rowBuffer.startIndex.value = 0
+        rowBuffer.drained.value = newRows.length < this.tableController.pageSize.value
+        rowBuffer.shadowRowCount.value = 0
         this.tableController.currentPage.value = 1
         this.scheduleNextRefresh()
     }
@@ -97,10 +101,11 @@ export class AutoRefreshController<R,K> extends TableSubController<R, K> {
             window.clearTimeout(this.timeoutID)
             this.timeoutID = -1
         }
+        const rowBuffer = this.tableController.buffer
         // this.loadingRef.value = false
-        if (this.tableController.autoUpdateCount.value < this.tableController.maxAutoUpdateCount) {
+        if (rowBuffer.autoUpdateCount.value < this.tableController.maxAutoUpdateCount) {
             this.timeoutID = window.setTimeout(() => {
-                this.tableController.autoUpdateCount.value += 1
+                rowBuffer.autoUpdateCount.value += 1
                 this.refresh()
             }, this.tableController.updatePeriod)
         } else {

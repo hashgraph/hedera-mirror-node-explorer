@@ -59,7 +59,7 @@ export class PaginationController<R,K> extends TableSubController<R, K> {
     }
 
     public makeRouteQuery(currentQuery: LocationQuery): LocationQuery {
-        const newKeyParam = this.tableController.getFirstVisibleKey()
+        const newKeyParam = this.tableController.buffer.computeFirstVisibleKey()
         const newPageParam = this.tableController.currentPage.value
 
         const result = {...currentQuery}
@@ -82,12 +82,13 @@ export class PaginationController<R,K> extends TableSubController<R, K> {
 
     private gotoPageWithKey(page: number, key: K): void {
         const pageSize = this.tableController.pageSize.value
-        this.tailLoad(key, pageSize, true).then((newRows: R[] | null) => {
+        const rowBuffer = this.tableController.buffer
+        rowBuffer.tailLoad(key, pageSize, true).then((newRows: R[] | null) => {
             if (newRows !== null) {
-                this.tableController.buffer.value = newRows
-                this.tableController.drained.value = newRows.length < pageSize
-                this.tableController.startIndex.value = 0
-                this.tableController.shadowRowCount.value = (page - 1) * pageSize
+                rowBuffer.rows.value = newRows
+                rowBuffer.drained.value = newRows.length < pageSize
+                rowBuffer.startIndex.value = 0
+                rowBuffer.shadowRowCount.value = (page - 1) * pageSize
                 this.tableController.updateCurrentPage()
             }
         })
@@ -96,23 +97,25 @@ export class PaginationController<R,K> extends TableSubController<R, K> {
     private gotoPageWithoutKey(page: number): void {
 
         const pageSize = this.tableController.pageSize.value
+        const rowBuffer = this.tableController.buffer
+
         const nextStartIndex = (page - 1) * pageSize
         const nextEndIndex = nextStartIndex + pageSize
-        const shadowRowCount = this.tableController.shadowRowCount.value
-        const bufferLength = this.tableController.buffer.value.length
+        const shadowRowCount = rowBuffer.shadowRowCount.value
+        const bufferLength = rowBuffer.rows.value.length
 
-        const headKey = this.tableController.getHeadKey()
-        const tailKey = this.tableController.getTailKey()
+        const headKey = rowBuffer.headKey.value
+        const tailKey = rowBuffer.tailKey.value
 
         if (headKey === null || tailKey === null) {
 
             // Buffer is empty
-            this.tailLoad(null, pageSize, false).then((newRows: R[] | null) => {
+            rowBuffer.tailLoad(null, pageSize, false).then((newRows: R[] | null) => {
                 if (newRows !== null) {
-                    this.tableController.buffer.value = this.tableController.buffer.value.concat(newRows)
-                    this.tableController.drained.value = newRows.length < pageSize
-                    this.tableController.startIndex.value = Math.min(nextStartIndex - shadowRowCount, this.tableController.getMaxStartIndex())
-                    // this.tableController.shadowRowCount.value unchanged
+                    rowBuffer.rows.value = rowBuffer.rows.value.concat(newRows)
+                    rowBuffer.drained.value = newRows.length < pageSize
+                    rowBuffer.startIndex.value = Math.min(nextStartIndex - shadowRowCount, rowBuffer.maxStartIndex.value)
+                    // rowBuffer.shadowRowCount.value unchanged
                     this.tableController.updateCurrentPage()
                 }
             })
@@ -121,12 +124,12 @@ export class PaginationController<R,K> extends TableSubController<R, K> {
 
             // We need to load rows at buffer head      :/
             const rowCount = shadowRowCount - nextStartIndex
-            this.headLoad(headKey, rowCount).then((newRows: R[] | null) => {
+            rowBuffer.headLoad(headKey, rowCount).then((newRows: R[] | null) => {
                 if (newRows !== null) {
-                    this.tableController.buffer.value = newRows.concat(this.tableController.buffer.value)
-                    this.tableController.startIndex.value = 0
-                    this.tableController.shadowRowCount.value -= rowCount
-                    // this.tableController.drained.value unchanged
+                    rowBuffer.rows.value = newRows.concat(rowBuffer.rows.value)
+                    rowBuffer.startIndex.value = 0
+                    rowBuffer.shadowRowCount.value -= rowCount
+                    // rowBuffer.drained.value unchanged
                     this.tableController.updateCurrentPage()
                 }
             })
@@ -135,22 +138,22 @@ export class PaginationController<R,K> extends TableSubController<R, K> {
 
             // We need to load rows at buffer tail      :\
             const rowCount = nextEndIndex - bufferLength - shadowRowCount
-            this.tailLoad(tailKey, rowCount, false).then((newRows: R[] | null) => {
+            rowBuffer.tailLoad(tailKey, rowCount, false).then((newRows: R[] | null) => {
                 if (newRows !== null) {
-                    this.tableController.buffer.value = this.tableController.buffer.value.concat(newRows)
-                    this.tableController.drained.value = newRows.length < rowCount
-                    this.tableController.startIndex.value = Math.min(nextStartIndex - shadowRowCount, this.tableController.getMaxStartIndex())
-                    // this.tableController.shadowRowCount.value unchanged
+                    rowBuffer.rows.value = rowBuffer.rows.value.concat(newRows)
+                    rowBuffer.drained.value = newRows.length < rowCount
+                    rowBuffer.startIndex.value = Math.min(nextStartIndex - shadowRowCount, rowBuffer.maxStartIndex.value)
+                    // rowBuffer.shadowRowCount.value unchanged
                     this.tableController.updateCurrentPage()
                 }
             })
 
         } else {
             // We have all the rows already loaded      :)
-            this.tableController.startIndex.value = nextStartIndex - shadowRowCount
-            // this.tableController.buffer.value unchanged
-            // this.tableController.drained.value unchanged
-            // this.tableController.shadowRowCount.value unchanged
+            rowBuffer.startIndex.value = nextStartIndex - shadowRowCount
+            // rowBuffer.buffer.value unchanged
+            // rowBuffer.drained.value unchanged
+            // rowBuffer.shadowRowCount.value unchanged
             this.tableController.updateCurrentPage()
         }
 
