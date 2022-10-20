@@ -229,7 +229,7 @@
 
 <script lang="ts">
 
-import {computed, defineComponent, inject, onMounted, ref, watch} from 'vue';
+import {computed, defineComponent, inject, onMounted} from 'vue';
 import {PathParam} from "@/utils/PathParam";
 import {makeOperatorAccountLabel, makeTypeLabel} from "@/utils/TransactionTools";
 import {TransactionLoader} from "@/components/transaction/TransactionLoader";
@@ -250,8 +250,6 @@ import BlockLink from "@/components/values/BlockLink.vue";
 import ContractResult from "@/components/contract/ContractResult.vue";
 
 const MAX_INLINE_CHILDREN = 3
-const NB_LOG_LINES = 2
-const MAX_LOG_LINES = 10
 
 export default defineComponent({
 
@@ -286,10 +284,6 @@ export default defineComponent({
         computed(() => props.consensusTimestamp ?? null))
     onMounted(() => transactionLoader.requestLoad())
 
-    const logCursor = ref(0)
-    const nbLogLines = ref(NB_LOG_LINES)
-    watch(nbLogLines, () => logCursor.value = 0)
-
     const showAllTransactionVisible = computed(() => {
       const count = transactionLoader.transactions.value?.length ?? 0
       return count >= 2
@@ -317,8 +311,6 @@ export default defineComponent({
     })
 
     return {
-      NB_LOG_LINES,
-      MAX_LOG_LINES,
       isSmallScreen,
       isTouchDevice,
       transaction: transactionLoader.transaction,
@@ -337,10 +329,7 @@ export default defineComponent({
       blockNumber: transactionLoader.blockNumber,
       notification,
       routeName,
-      logCursor,
-      nbLogLines,
       makeTypeLabel,
-      // computeNetAmount,
       makeOperatorAccountLabel,
       showAllTransactionVisible,
       displayAllChildrenLinks,
