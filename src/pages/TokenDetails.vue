@@ -320,7 +320,10 @@ export default defineComponent({
     const isMediumScreen = inject('isMediumScreen', true)
     const isTouchDevice = inject('isTouchDevice', false)
 
-    const normalizedTokenId = computed(() => EntityID.normalize(props.tokenId))
+    const normalizedTokenId = computed(() => {
+      const result = EntityID.parse(props.tokenId) ?? EntityID.fromAddress(props.tokenId)
+      return result !== null ? result.toString() : null
+    })
     const validEntityId = computed(() => normalizedTokenId.value != null)
 
     const tokenInfoLoader = new TokenInfoLoader(normalizedTokenId)
