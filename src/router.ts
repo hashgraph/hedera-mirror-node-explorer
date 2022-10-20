@@ -18,7 +18,13 @@
  *
  */
 
-import {createRouter, createWebHashHistory, RouteLocationNormalized, Router, RouteRecordRaw} from 'vue-router'
+import {
+  createRouter,
+  createWebHistory,
+  RouteLocationNormalized,
+  Router,
+  RouteRecordRaw
+} from 'vue-router'
 import MainDashboard from "@/pages/MainDashboard.vue";
 import Transactions from "@/pages/Transactions.vue";
 import TransactionDetails from "@/pages/TransactionDetails.vue";
@@ -223,7 +229,7 @@ const routes: Array<RouteRecordRaw> = [
 
 export function makeRouter(): Router {
   return createRouter({
-    history: createWebHashHistory(process.env.BASE_URL),
+    history: createWebHistory(),
     routes
   })
 }
@@ -245,48 +251,54 @@ router.beforeEach((to) => {
 router.beforeEach((to, from) => {
   let result: boolean | string
 
-  const toEntry = getNetworkEntryFromRoute(to)
-  const fromEntry = getNetworkEntryFromRoute(from)
-  if (toEntry !== null) {
-    // Network is valid
-    AppStorage.setLastNetwork(toEntry)
-    axios.defaults.baseURL = toEntry.url
-
-    if (toEntry.name == NetworkRegistry.TEST_NETWORK) {
-      document.documentElement.style.setProperty('--h-theme-background-color', 'var(--h-testnet-background-color)')
-      document.documentElement.style.setProperty('--h-theme-highlight-color', 'var(--h-testnet-highlight-color)')
-      document.documentElement.style.setProperty('--h-theme-pagination-background-color', 'var(--h-testnet-pagination-background-color)')
-      document.documentElement.style.setProperty('--h-theme-box-shadow-color', 'var(--h-testnet-box-shadow-color)')
-      document.documentElement.style.setProperty('--h-theme-dropdown-arrow', 'var(--h-testnet-dropdown-arrow)')
-    } else if (toEntry.name == NetworkRegistry.PREVIEW_NETWORK) {
-      document.documentElement.style.setProperty('--h-theme-background-color', 'var(--h-previewnet-background-color)')
-      document.documentElement.style.setProperty('--h-theme-highlight-color', 'var(--h-previewnet-highlight-color)')
-      document.documentElement.style.setProperty('--h-theme-pagination-background-color', 'var(--h-previewnet-pagination-background-color)')
-      document.documentElement.style.setProperty('--h-theme-box-shadow-color', 'var(--h-previewnet-box-shadow-color)')
-      document.documentElement.style.setProperty('--h-theme-dropdown-arrow', 'var(--h-previewnet-dropdown-arrow)')
-    } else {
-      document.documentElement.style.setProperty('--h-theme-background-color', 'var(--h-mainnet-background-color)')
-      document.documentElement.style.setProperty('--h-theme-highlight-color', 'var(--h-mainnet-highlight-color)')
-      document.documentElement.style.setProperty('--h-theme-pagination-background-color', 'var(--h-mainnet-pagination-background-color)')
-      document.documentElement.style.setProperty('--h-theme-box-shadow-color', 'var(--h-mainnet-box-shadow-color)')
-      document.documentElement.style.setProperty('--h-theme-dropdown-arrow', 'var(--h-mainnet-dropdown-arrow)')
-    }
-
-    if (fromEntry != null && fromEntry != toEntry) {
-      // Network is changing => updates AppStorage and axios
-      if (to.name != "MainDashboard" && to.name != "PageNotFound") {
-        // We re-route on MainDashboard
-        result = "/" + toEntry.name + "/dashboard"
-      }
-      else {
-        result = true
-      }
-    } else (
-        result = true
-    )
+  const hash = window.location.hash
+  if (hash?.length > 1 && hash[0] === '#') {
+    result = hash.slice(1)
+    window.location.hash = ""
   } else {
-    // Network is invalid => page not found
-    result = '/page-not-found'
+
+    const toEntry = getNetworkEntryFromRoute(to)
+    const fromEntry = getNetworkEntryFromRoute(from)
+    if (toEntry !== null) {
+      // Network is valid
+      AppStorage.setLastNetwork(toEntry)
+      axios.defaults.baseURL = toEntry.url
+
+      if (toEntry.name == NetworkRegistry.TEST_NETWORK) {
+        document.documentElement.style.setProperty('--h-theme-background-color', 'var(--h-testnet-background-color)')
+        document.documentElement.style.setProperty('--h-theme-highlight-color', 'var(--h-testnet-highlight-color)')
+        document.documentElement.style.setProperty('--h-theme-pagination-background-color', 'var(--h-testnet-pagination-background-color)')
+        document.documentElement.style.setProperty('--h-theme-box-shadow-color', 'var(--h-testnet-box-shadow-color)')
+        document.documentElement.style.setProperty('--h-theme-dropdown-arrow', 'var(--h-testnet-dropdown-arrow)')
+      } else if (toEntry.name == NetworkRegistry.PREVIEW_NETWORK) {
+        document.documentElement.style.setProperty('--h-theme-background-color', 'var(--h-previewnet-background-color)')
+        document.documentElement.style.setProperty('--h-theme-highlight-color', 'var(--h-previewnet-highlight-color)')
+        document.documentElement.style.setProperty('--h-theme-pagination-background-color', 'var(--h-previewnet-pagination-background-color)')
+        document.documentElement.style.setProperty('--h-theme-box-shadow-color', 'var(--h-previewnet-box-shadow-color)')
+        document.documentElement.style.setProperty('--h-theme-dropdown-arrow', 'var(--h-previewnet-dropdown-arrow)')
+      } else {
+        document.documentElement.style.setProperty('--h-theme-background-color', 'var(--h-mainnet-background-color)')
+        document.documentElement.style.setProperty('--h-theme-highlight-color', 'var(--h-mainnet-highlight-color)')
+        document.documentElement.style.setProperty('--h-theme-pagination-background-color', 'var(--h-mainnet-pagination-background-color)')
+        document.documentElement.style.setProperty('--h-theme-box-shadow-color', 'var(--h-mainnet-box-shadow-color)')
+        document.documentElement.style.setProperty('--h-theme-dropdown-arrow', 'var(--h-mainnet-dropdown-arrow)')
+      }
+
+      if (fromEntry != null && fromEntry != toEntry) {
+        // Network is changing => updates AppStorage and axios
+        if (to.name != "MainDashboard" && to.name != "PageNotFound") {
+          // We re-route on MainDashboard
+          result = "/" + toEntry.name + "/dashboard"
+        } else {
+          result = true
+        }
+      } else (
+          result = true
+      )
+    } else {
+      // Network is invalid => page not found
+      result = '/page-not-found'
+    }
   }
   return result
 })

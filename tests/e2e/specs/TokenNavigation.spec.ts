@@ -23,7 +23,7 @@
 describe('Token Navigation', () => {
 
     it('should navigate from table to token details', () => {
-        cy.visit('#/testnet/tokens/')
+        cy.visit('testnet/tokens/')
         cy.url().should('include', '/testnet/tokens')
 
         cy.get('.box.h-box-border')
@@ -63,7 +63,7 @@ describe('Token Navigation', () => {
 
     const nftId = "0.0.33957315"
     it('should follow links from NFT details', () => {
-        cy.visit('#/testnet/token/' + nftId)
+        cy.visit('testnet/token/' + nftId)
         cy.url().should('include', '/testnet/token/' + nftId)
         cy.contains('Non Fungible Token ' + nftId)
 
@@ -84,7 +84,7 @@ describe('Token Navigation', () => {
 
     const tokenId = "0.0.33958222"
     it('should follow links from token details', () => {
-        cy.visit('#/testnet/token/' + tokenId)
+        cy.visit('testnet/token/' + tokenId)
         cy.url().should('include', '/testnet/token/' + tokenId)
         cy.contains('Fungible Token ' + tokenId)
 
@@ -104,7 +104,7 @@ describe('Token Navigation', () => {
 
     it('should detect navigation to unknown token ID', () => {
         const unknownID = '9.9.9'
-        cy.visit('#/testnet/token/' + unknownID)
+        cy.visit('testnet/token/' + unknownID)
         cy.url().should('include', '/testnet/token/' + unknownID)
         cy.contains('Token')
 

@@ -35,20 +35,20 @@ describe('Hedera Explorer page not found', () => {
   //
 
   it('/#/page-not-found (last used network is undefined)', () => {
-    cy.visit('/#/page-not-found')
-    cy.url().should('include', '/#/testnet/page-not-found')
+    cy.visit('page-not-found')
+    cy.url().should('include', '/testnet/page-not-found')
     cy.contains(target)
   })
 
   it('/#/testnet/page-not-found (last used network is undefined)', () => {
-    cy.visit('/#/testnet/page-not-found')
-    cy.url().should('include', '/#/testnet/page-not-found')
+    cy.visit('testnet/page-not-found')
+    cy.url().should('include', '/testnet/page-not-found')
     cy.contains(target)
   })
 
   it('/#/mainnet/page-not-found (last used network is undefined)', () => {
-    cy.visit('/#/mainnet/page-not-found')
-    cy.url().should('include', '/#/mainnet/page-not-found')
+    cy.visit('mainnet/page-not-found')
+    cy.url().should('include', '/mainnet/page-not-found')
     cy.contains(target)
   })
 
@@ -56,24 +56,24 @@ describe('Hedera Explorer page not found', () => {
   // last used network is testnet
   //
 
-  it('/#/page-not-found (last used network is tesnet)', () => {
-    localStorage.setItem("network", "tesnet")
-    cy.visit('/#/page-not-found')
-    cy.url().should('include', '/#/testnet/page-not-found')
+  it('/#/page-not-found (last used network is testnet)', () => {
+    localStorage.setItem("network", "testnet")
+    cy.visit('page-not-found')
+    cy.url().should('include', '/testnet/page-not-found')
     cy.contains(target)
   })
 
-  it('/#/testnet/page-not-found (last used network is tesnet)', () => {
-    localStorage.setItem("network", "tesnet")
-    cy.visit('/#/testnet/page-not-found')
-    cy.url().should('include', '/#/testnet/page-not-found')
+  it('/#/testnet/page-not-found (last used network is testnet)', () => {
+    localStorage.setItem("network", "testnet")
+    cy.visit('testnet/page-not-found')
+    cy.url().should('include', '/testnet/page-not-found')
     cy.contains(target)
   })
 
-  it('/#/mainnet/page-not-found (last used network is tesnet)', () => {
-    localStorage.setItem("network", "tesnet")
-    cy.visit('/#/mainnet/page-not-found')
-    cy.url().should('include', '/#/mainnet/page-not-found')
+  it('/#/mainnet/page-not-found (last used network is testnet)', () => {
+    localStorage.setItem("network", "testnet")
+    cy.visit('mainnet/page-not-found')
+    cy.url().should('include', '/mainnet/page-not-found')
     cy.contains(target)
   })
 
@@ -83,22 +83,22 @@ describe('Hedera Explorer page not found', () => {
 
   it('/#/page-not-found (last used network is mainnet)', () => {
     localStorage.setItem("network", "mainnet")
-    cy.visit('/#/page-not-found')
-    cy.url().should('include', '/#/testnet/page-not-found')
+    cy.visit('page-not-found')
+    cy.url().should('include', '/testnet/page-not-found')
     cy.contains(target)
   })
 
   it('/#/testnet/page-not-found (last used network is mainnet)', () => {
     localStorage.setItem("network", "mainnet")
-    cy.visit('/#/testnet/page-not-found')
-    cy.url().should('include', '/#/testnet/page-not-found')
+    cy.visit('testnet/page-not-found')
+    cy.url().should('include', '/testnet/page-not-found')
     cy.contains(target)
   })
 
   it('/#/testnet/page-not-found (last used network is mainnet)', () => {
     localStorage.setItem("network", "mainnet")
-    cy.visit('/#/mainnet/page-not-found')
-    cy.url().should('include', '/#/mainnet/page-not-found')
+    cy.visit('mainnet/page-not-found')
+    cy.url().should('include', '/mainnet/page-not-found')
     cy.contains(target)
   })
 

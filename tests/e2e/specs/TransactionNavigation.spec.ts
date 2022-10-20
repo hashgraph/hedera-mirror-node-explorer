@@ -25,7 +25,7 @@ import {normalizeTransactionId} from "../../../src/utils/TransactionID";
 describe('Transaction Navigation', () => {
 
     it('should navigate from table to transaction details', () => {
-        cy.visit('#/testnet/transactions/')
+        cy.visit('testnet/transactions/')
         cy.url().should('include', '/testnet/transactions')
 
         cy.get('table')
@@ -45,7 +45,7 @@ describe('Transaction Navigation', () => {
     it('should filter table by transaction type', () => {
         const selectType = 'CONTRACTCALL'
 
-        cy.visit('#/testnet/transactions/')
+        cy.visit('testnet/transactions/')
         cy.url().should('include', '/testnet/transactions')
 
         cy.get('.box')
@@ -65,7 +65,7 @@ describe('Transaction Navigation', () => {
         const transactionId = "0.0.11495@1650446896.868427600"
         const consensusTimestamp = "1650446903.332120989"
 
-        cy.visit('#/testnet/transaction/' + normalizeTransactionId(transactionId) + "?t=" + consensusTimestamp)
+        cy.visit('testnet/transaction/' + normalizeTransactionId(transactionId) + "?t=" + consensusTimestamp)
         cy.url().should('include', '/testnet/transaction/')
         cy.url().should('include', normalizeTransactionId(transactionId))
         cy.url().should('include', consensusTimestamp)
@@ -104,7 +104,7 @@ describe('Transaction Navigation', () => {
         const schedulingConsensusTimestamp = "1650446903.332120989"
         const scheduledConsensusTimestamp = "1650446904.595635000"
 
-        cy.visit('#/testnet/transaction/' + normalizeTransactionId(transactionId) + "?t=" + schedulingConsensusTimestamp)
+        cy.visit('testnet/transaction/' + normalizeTransactionId(transactionId) + "?t=" + schedulingConsensusTimestamp)
         cy.url().should('include', '/testnet/transaction/')
         cy.url().should('include', normalizeTransactionId(transactionId))
         cy.url().should('include', schedulingConsensusTimestamp)
@@ -135,7 +135,7 @@ describe('Transaction Navigation', () => {
         const parentConsensusTimestamp = "1652787861.365127000"
         const childConsensusTimestamp = "1652787861.365127001"
 
-        cy.visit('#/testnet/transaction/' + normalizeTransactionId(transactionId) + "?t=" + parentConsensusTimestamp)
+        cy.visit('testnet/transaction/' + normalizeTransactionId(transactionId) + "?t=" + parentConsensusTimestamp)
         cy.url().should('include', '/testnet/transaction/')
         cy.url().should('include', normalizeTransactionId(transactionId))
         cy.url().should('include', parentConsensusTimestamp)
@@ -166,7 +166,7 @@ describe('Transaction Navigation', () => {
     it.skip('should follow link "See all transations with same ID"', () => {
         const transactionId = "0.0.33956525@1663935863.559975910"
 
-        cy.visit('#/testnet/transaction/' + normalizeTransactionId(transactionId))
+        cy.visit('testnet/transaction/' + normalizeTransactionId(transactionId))
         cy.url().should('include', '/testnet/transaction/' + normalizeTransactionId(transactionId))
 
         cy.get('#allTransactionsLink')
@@ -194,7 +194,7 @@ describe('Transaction Navigation', () => {
         const childConsensusTimestamp = "1653499919.290794747"
         const contractId = "0.0.34912638"
 
-        cy.visit('#/testnet/transaction/' + normalizeTransactionId(transactionId) + "?t=" + parentConsensusTimestamp)
+        cy.visit('testnet/transaction/' + normalizeTransactionId(transactionId) + "?t=" + parentConsensusTimestamp)
         cy.url().should('include', '/testnet/transaction/')
         cy.url().should('include', normalizeTransactionId(transactionId))
         cy.url().should('include', parentConsensusTimestamp)
@@ -242,7 +242,7 @@ describe('Transaction Navigation', () => {
 
     it('should detect navigation to unknown transaction ID', () => {
         const unknownID = '9.9.9@1650446896.868427600'
-        cy.visit('#/testnet/transaction/' + normalizeTransactionId(unknownID))
+        cy.visit('testnet/transaction/' + normalizeTransactionId(unknownID))
         cy.url().should('include', '/testnet/transaction/' + normalizeTransactionId(unknownID))
         cy.contains('Transaction')
 

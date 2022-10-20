@@ -25,7 +25,7 @@ import {normalizeTransactionId} from "../../../src/utils/TransactionID";
 describe('Contract Navigation', () => {
 
     it('should navigate from table to contract details', () => {
-        cy.visit('#/testnet/contracts/')
+        cy.visit('testnet/contracts/')
         cy.url().should('include', '/testnet/contracts')
         cy.contains('Recent Contracts')
 
@@ -46,7 +46,7 @@ describe('Contract Navigation', () => {
     it('should follow links from contract details', () => {
         const contractId = "0.0.33958067"
 
-        cy.visit('#/testnet/contract/' + contractId)
+        cy.visit('testnet/contract/' + contractId)
         cy.url().should('include', '/testnet/contract/' + contractId)
         cy.contains('Contract ' + contractId)
 
@@ -64,7 +64,7 @@ describe('Contract Navigation', () => {
 
     it('should detect navigation to unknown contract ID', () => {
         const unknownID = '9.9.9'
-        cy.visit('#/testnet/contract/' + unknownID)
+        cy.visit('testnet/contract/' + unknownID)
         cy.url().should('include', '/testnet/contract/' + unknownID)
         cy.contains('Contract')
 
