@@ -30,28 +30,36 @@
     </template>
 
     <template v-slot:control v-if="logs.length > 2">
-      <div class="is-flex is-justify-content-flex-end is-align-items-baseline">
-        <o-field>
-          <o-select v-model="pageSize" class="h-is-text-size-1">
-            <option v-for="n in Math.min(MAX_PAGE_SIZE, logs?.length)" :key="n" :value="n">
-              {{ (n === logs?.length) ? 'Show all' : 'Show ' + n + (n === 1 ? ' line' :' lines') }}
-            </option>
-          </o-select>
-        </o-field>
-        <button id="prev-block-button" :disabled="logCursor===0"
-                class="button is-white is-small ml-4" @click="logCursor -= pageSize">&lt; PREVIOUS
-        </button>
-        <button id="next-block-button" :disabled="logCursor >= logs.length - pageSize"
-                class="button is-white is-small ml-4" @click="logCursor += pageSize">NEXT &gt;
-        </button>
-      </div>
+      <o-field>
+        <o-select v-model="pageSize" class="h-is-text-size-1">
+          <option v-for="n in Math.min(MAX_PAGE_SIZE, logs?.length)" :key="n" :value="n">
+            {{ (n === logs?.length) ? 'Show all items' : 'Show ' + n + (n === 1 ? ' item' :' items') }}
+          </option>
+        </o-select>
+      </o-field>
     </template>
 
     <template v-slot:content>
       <template v-for="l in nbLogDisplayed" :key="l">
-        <hr v-if="l !== 1" class="h-card-separator" style="height: 1px; background: grey"/>
         <ContractResultLogEntry :log="logs[logCursor + l - 1]"/>
+        <hr class="h-card-separator" style="height: 1px; background: grey"/>
       </template>
+
+      <div v-if="isPaginated" class="is-flex is-justify-content-flex-end">
+        <o-pagination
+            :total="logs.length"
+            v-model:current="currentPage"
+            :range-before="1"
+            :range-after="1"
+            :per-page="pageSize"
+            aria-next-label="Next page"
+            aria-previous-label="Previous page"
+            aria-page-label="Page"
+            aria-current-label="Current page"
+        >
+        </o-pagination>
+      </div>
+
     </template>
 
   </DashboardCard>
@@ -79,9 +87,10 @@ export default defineComponent({
     logs: Object as PropType<Array<ContractResultLog> | undefined>
   },
   setup(props) {
-    const logCursor = ref(0)
+    const currentPage = ref(1)
+
     const pageSize = ref(DEFAULT_PAGE_SIZE)
-    watch(pageSize, () => logCursor.value = 0)
+    watch(pageSize, () => currentPage.value = 1)
 
     onMounted(() => updatePageSize())
     watch(() => props.logs, () => updatePageSize())
@@ -89,12 +98,16 @@ export default defineComponent({
       pageSize.value = Math.min(pageSize.value, props.logs?.length ?? 0)
     }
 
+    const isPaginated = computed(() => props.logs?.length && props.logs?.length > pageSize.value)
+    const logCursor = computed(() => (currentPage.value - 1) * pageSize.value)
     const nbLogDisplayed = computed(() => {
       return props.logs?.length ? Math.min(pageSize.value, props.logs?.length - logCursor.value) : 0
     })
 
     return {
       MAX_PAGE_SIZE,
+      currentPage,
+      isPaginated,
       logCursor,
       pageSize,
       nbLogDisplayed
@@ -109,12 +122,4 @@ export default defineComponent({
 <!-- --------------------------------------------------------------------------------------------------------------- -->
 
 <style scoped>
-
-.columns button{
-  vertical-align: initial;
-}
-.button.is-small {
-  font-size: 0.65rem;
-}
-
 </style>
