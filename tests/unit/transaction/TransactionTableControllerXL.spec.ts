@@ -126,16 +126,16 @@ describe("TransactionTableController.ts", () => {
 
         // Setup account id
         // After setup:
-        //      - auto-refresh remains disabled
+        //      - auto-refresh is disabled
         //      - row array contains transactions from SAMPLE_CONTRACTCALL_TRANSACTIONS
         accountId.value = "0.0.4" // Value is unimportant
         await flushPromises()
         expect(tc.pageSize.value).toBe(PAGE_SIZE)
-        expect(tc.autoRefresh.value).toBe(false)
+        expect(tc.autoRefresh.value).toBe(true)
         expect(tc.autoStopped.value).toBe(false)
-        expect(tc.currentPage.value).toBe(10)
+        expect(tc.currentPage.value).toBe(1)
         expect(tc.loading.value).toBe(false)
-        expect(tc.totalRowCount.value).toBe(47) // 9 * 5 shadow rows + 2 real rows
+        expect(tc.totalRowCount.value).toBe(2)
         expect(tc.rows.value).toStrictEqual(SAMPLE_CONTRACTCALL_TRANSACTIONS.transactions)
         expect(tc.mounted.value).toBe(true)
 
@@ -214,7 +214,7 @@ describe("TransactionTableController.ts", () => {
         expect(tc.pageSize.value).toBe(PAGE_SIZE)
         expect(tc.autoRefresh.value).toBe(false)
         expect(tc.autoStopped.value).toBe(false)
-        expect(tc.currentPage.value).toBe(1)
+        expect(tc.currentPage.value).toBe(10)
         expect(tc.loading.value).toBe(false)
         expect(tc.totalRowCount.value).toBe(50)
         expect(tc.rows.value).toStrictEqual([])

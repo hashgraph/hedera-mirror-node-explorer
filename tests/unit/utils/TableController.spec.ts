@@ -146,7 +146,7 @@ describe("TableController.ts", () => {
         expect(tc.autoRefresh.value).toBe(true)
         expect(tc.autoStopped.value).toBe(false)
         expect(tc.rows.value).toStrictEqual([49,48,47,46,45,44,43,42,41,40])
-        expect(tc.autoUpdateCount.value).toBe(0)
+        expect(tc.refreshCount.value).toBe(0)
         expect(currentRoute.value.query).toStrictEqual({})
 
         // Refresh #1
@@ -155,7 +155,7 @@ describe("TableController.ts", () => {
         expect(tc.autoRefresh.value).toBe(true)
         expect(tc.autoStopped.value).toBe(false)
         expect(tc.rows.value).toStrictEqual([49,48,47,46,45,44,43,42,41,40])
-        expect(tc.autoUpdateCount.value).toBe(1)
+        expect(tc.refreshCount.value).toBe(1)
         expect(currentRoute.value.query).toStrictEqual({})
 
         // Refresh #2
@@ -164,7 +164,7 @@ describe("TableController.ts", () => {
         expect(tc.autoRefresh.value).toBe(true)
         expect(tc.autoStopped.value).toBe(false)
         expect(tc.rows.value).toStrictEqual([49,48,47,46,45,44,43,42,41,40])
-        expect(tc.autoUpdateCount.value).toBe(2)
+        expect(tc.refreshCount.value).toBe(2)
         expect(currentRoute.value.query).toStrictEqual({})
 
         // Refresh #3
@@ -173,7 +173,7 @@ describe("TableController.ts", () => {
         expect(tc.autoRefresh.value).toBe(true)
         expect(tc.autoStopped.value).toBe(false)
         expect(tc.rows.value).toStrictEqual([49,48,47,46,45,44,43,42,41,40])
-        expect(tc.autoUpdateCount.value).toBe(3)
+        expect(tc.refreshCount.value).toBe(3)
         expect(currentRoute.value.query).toStrictEqual({})
 
         // Refresh #4
@@ -182,7 +182,7 @@ describe("TableController.ts", () => {
         expect(tc.autoRefresh.value).toBe(true)
         expect(tc.autoStopped.value).toBe(false)
         expect(tc.rows.value).toStrictEqual([49,48,47,46,45,44,43,42,41,40])
-        expect(tc.autoUpdateCount.value).toBe(4)
+        expect(tc.refreshCount.value).toBe(4)
         expect(currentRoute.value.query).toStrictEqual({})
 
         // Refresh #5
@@ -191,16 +191,16 @@ describe("TableController.ts", () => {
         expect(tc.autoRefresh.value).toBe(false)
         expect(tc.autoStopped.value).toBe(true)
         expect(tc.rows.value).toStrictEqual([49,48,47,46,45,44,43,42,41,40])
-        expect(tc.autoUpdateCount.value).toBe(5)
+        expect(tc.refreshCount.value).toBe(5)
         expect(currentRoute.value.query).toStrictEqual({k: "49", p: "1"})
 
         // Unmount
         tc.unmount()
         await flushPromises()
         expect(tc.autoRefresh.value).toBe(false)
-        expect(tc.autoStopped.value).toBe(false)
+        expect(tc.autoStopped.value).toBe(true)
         expect(tc.rows.value).toStrictEqual([])
-        expect(tc.autoUpdateCount.value).toBe(0)
+        expect(tc.refreshCount.value).toBe(5)
         expect(currentRoute.value.query).toStrictEqual({k: "49", p: "1"})
 
     })
@@ -216,7 +216,7 @@ describe("TableController.ts", () => {
         expect(tc.autoRefresh.value).toBe(true)
         expect(tc.autoStopped.value).toBe(false)
         expect(tc.rows.value).toStrictEqual([49,48,47,46,45,44,43,42,41,40])
-        expect(tc.autoUpdateCount.value).toBe(0)
+        expect(tc.refreshCount.value).toBe(0)
         expect(currentRoute.value.query).toStrictEqual({})
 
         // Refresh #1
@@ -225,7 +225,7 @@ describe("TableController.ts", () => {
         expect(tc.autoRefresh.value).toBe(true)
         expect(tc.autoStopped.value).toBe(false)
         expect(tc.rows.value).toStrictEqual([49,48,47,46,45,44,43,42,41,40])
-        expect(tc.autoUpdateCount.value).toBe(1)
+        expect(tc.refreshCount.value).toBe(1)
         expect(currentRoute.value.query).toStrictEqual({})
 
         // Generates 2 new entries in tc
@@ -237,7 +237,7 @@ describe("TableController.ts", () => {
         expect(tc.autoRefresh.value).toBe(true)
         expect(tc.autoStopped.value).toBe(false)
         expect(tc.rows.value).toStrictEqual([51,50,49,48,47,46,45,44,43,42])
-        expect(tc.autoUpdateCount.value).toBe(2)
+        expect(tc.refreshCount.value).toBe(2)
         expect(currentRoute.value.query).toStrictEqual({})
 
         // Generates one page of entries => tc will trash buffer tail
@@ -249,7 +249,7 @@ describe("TableController.ts", () => {
         expect(tc.autoRefresh.value).toBe(true)
         expect(tc.autoStopped.value).toBe(false)
         expect(tc.rows.value).toStrictEqual([61,60,59,58,57,56,55,54,53,52])
-        expect(tc.autoUpdateCount.value).toBe(3)
+        expect(tc.refreshCount.value).toBe(3)
         expect(currentRoute.value.query).toStrictEqual({})
 
         // Unmount
@@ -258,7 +258,7 @@ describe("TableController.ts", () => {
         expect(tc.autoRefresh.value).toBe(false)
         expect(tc.autoStopped.value).toBe(false)
         expect(tc.rows.value).toStrictEqual([])
-        expect(tc.autoUpdateCount.value).toBe(0)
+        expect(tc.refreshCount.value).toBe(3)
         expect(currentRoute.value.query).toStrictEqual({})
 
     })
@@ -275,7 +275,7 @@ describe("TableController.ts", () => {
         expect(tc.autoRefresh.value).toBe(true)
         expect(tc.autoStopped.value).toBe(false)
         expect(tc.rows.value).toStrictEqual([49,48,47,46,45,44,43,42,41,40])
-        expect(tc.autoUpdateCount.value).toBe(0)
+        expect(tc.refreshCount.value).toBe(0)
         expect(currentRoute.value.query).toStrictEqual({})
 
         // Refresh #1
@@ -284,7 +284,7 @@ describe("TableController.ts", () => {
         expect(tc.autoRefresh.value).toBe(true)
         expect(tc.autoStopped.value).toBe(false)
         expect(tc.rows.value).toStrictEqual([49,48,47,46,45,44,43,42,41,40])
-        expect(tc.autoUpdateCount.value).toBe(1)
+        expect(tc.refreshCount.value).toBe(1)
         expect(currentRoute.value.query).toStrictEqual({})
 
         // Updates scale value
@@ -294,7 +294,7 @@ describe("TableController.ts", () => {
         expect(tc.autoRefresh.value).toBe(true)
         expect(tc.autoStopped.value).toBe(false)
         expect(tc.rows.value).toStrictEqual([98,96,94,92,90,88,86,84,82,80])
-        expect(tc.autoUpdateCount.value).toBe(0)
+        expect(tc.refreshCount.value).toBe(1)
         expect(currentRoute.value.query).toStrictEqual({})
 
         // Unmount
@@ -303,7 +303,7 @@ describe("TableController.ts", () => {
         expect(tc.autoRefresh.value).toBe(false)
         expect(tc.autoStopped.value).toBe(false)
         expect(tc.rows.value).toStrictEqual([])
-        expect(tc.autoUpdateCount.value).toBe(0)
+        expect(tc.refreshCount.value).toBe(1)
         expect(currentRoute.value.query).toStrictEqual({})
 
     })
@@ -319,7 +319,7 @@ describe("TableController.ts", () => {
         expect(tc.autoRefresh.value).toBe(true)
         expect(tc.autoStopped.value).toBe(false)
         expect(tc.rows.value).toStrictEqual([49,48,47,46,45,44,43,42,41,40])
-        expect(tc.autoUpdateCount.value).toBe(0)
+        expect(tc.refreshCount.value).toBe(0)
         expect(tc.currentPage.value).toBe(1)
         expect(currentRoute.value.query).toStrictEqual({})
 
@@ -329,7 +329,7 @@ describe("TableController.ts", () => {
         expect(tc.autoRefresh.value).toBe(true)
         expect(tc.autoStopped.value).toBe(false)
         expect(tc.rows.value).toStrictEqual([49,48,47,46,45,44,43,42,41,40])
-        expect(tc.autoUpdateCount.value).toBe(1)
+        expect(tc.refreshCount.value).toBe(1)
         expect(tc.currentPage.value).toBe(1)
         expect(currentRoute.value.query).toStrictEqual({})
 
@@ -339,7 +339,7 @@ describe("TableController.ts", () => {
         expect(tc.autoRefresh.value).toBe(false)
         expect(tc.autoStopped.value).toBe(false)
         expect(tc.rows.value).toStrictEqual([39,38,37,36,35,34,33,32,31,30])
-        expect(tc.autoUpdateCount.value).toBe(1)
+        expect(tc.refreshCount.value).toBe(1)
         expect(tc.currentPage.value).toBe(2)
         expect(currentRoute.value.query).toStrictEqual({ p:"2", k:"39"})
 
@@ -349,7 +349,7 @@ describe("TableController.ts", () => {
         expect(tc.autoRefresh.value).toBe(false)
         expect(tc.autoStopped.value).toBe(false)
         expect(tc.rows.value).toStrictEqual([19,18,17,16,15,14,13,12,11,10])
-        expect(tc.autoUpdateCount.value).toBe(1)
+        expect(tc.refreshCount.value).toBe(1)
         expect(tc.currentPage.value).toBe(4)
         expect(currentRoute.value.query).toStrictEqual({ p:"4", k:"19"})
     })
@@ -370,7 +370,7 @@ describe("TableController.ts", () => {
         expect(tc.autoRefresh.value).toBe(false)
         expect(tc.autoStopped.value).toBe(false)
         expect(tc.rows.value).toStrictEqual([19,18,17,16,15,14,13,12,11,10])
-        expect(tc.autoUpdateCount.value).toBe(0)
+        expect(tc.refreshCount.value).toBe(0)
         expect(tc.currentPage.value).toBe(4)
         expect(currentRoute.value.query).toStrictEqual({p: "4", k: "19"})
 
@@ -380,7 +380,7 @@ describe("TableController.ts", () => {
         expect(tc.autoRefresh.value).toBe(false)
         expect(tc.autoStopped.value).toBe(false)
         expect(tc.rows.value).toStrictEqual([39,38,37,36,35,34,33,32,31,30])
-        expect(tc.autoUpdateCount.value).toBe(0)
+        expect(tc.refreshCount.value).toBe(0)
         expect(tc.currentPage.value).toBe(2)
         expect(currentRoute.value.query).toStrictEqual({ p:"2", k:"39"})
 
@@ -390,7 +390,7 @@ describe("TableController.ts", () => {
         expect(tc.autoRefresh.value).toBe(false)
         expect(tc.autoStopped.value).toBe(false)
         expect(tc.rows.value).toStrictEqual([29,28,27,26,25,24,23,22,21,20])
-        expect(tc.autoUpdateCount.value).toBe(0)
+        expect(tc.refreshCount.value).toBe(0)
         expect(tc.currentPage.value).toBe(3)
         expect(currentRoute.value.query).toStrictEqual({ p:"3", k:"29"})
 
@@ -400,7 +400,7 @@ describe("TableController.ts", () => {
         expect(tc.autoRefresh.value).toBe(false)
         expect(tc.autoStopped.value).toBe(false)
         expect(tc.rows.value).toStrictEqual([49,48,47,46,45,44,43,42,41,40])
-        expect(tc.autoUpdateCount.value).toBe(0)
+        expect(tc.refreshCount.value).toBe(0)
         expect(tc.currentPage.value).toBe(1)
         expect(currentRoute.value.query).toStrictEqual({ p:"1", k:"49"})
 
@@ -422,7 +422,7 @@ describe("TableController.ts", () => {
         expect(tc.autoRefresh.value).toBe(false)
         expect(tc.autoStopped.value).toBe(false)
         expect(tc.rows.value).toStrictEqual([21,20,19,18,17,16,15,14,13,12])
-        expect(tc.autoUpdateCount.value).toBe(0)
+        expect(tc.refreshCount.value).toBe(0)
         expect(tc.currentPage.value).toBe(40)
         expect(currentRoute.value.query).toStrictEqual({ p: "40", k: "21" })
 
@@ -432,7 +432,7 @@ describe("TableController.ts", () => {
         expect(tc.autoRefresh.value).toBe(false)
         expect(tc.autoStopped.value).toBe(false)
         expect(tc.rows.value).toStrictEqual([41,40,39,38,37,36,35,34,33,32])
-        expect(tc.autoUpdateCount.value).toBe(0)
+        expect(tc.refreshCount.value).toBe(0)
         expect(tc.currentPage.value).toBe(38)
         expect(currentRoute.value.query).toStrictEqual({ p: "38", k: "41" })
 
@@ -442,7 +442,7 @@ describe("TableController.ts", () => {
         expect(tc.autoRefresh.value).toBe(false)
         expect(tc.autoStopped.value).toBe(false)
         expect(tc.rows.value).toStrictEqual([49,48,47,46,45,44,43,42,41,40])
-        expect(tc.autoUpdateCount.value).toBe(0)
+        expect(tc.refreshCount.value).toBe(0)
         expect(tc.currentPage.value).toBe(1)
         expect(currentRoute.value.query).toStrictEqual({ p: "1", k: "49" })
 
@@ -466,14 +466,14 @@ describe("TableController.ts", () => {
         expect(tc1.autoStopped.value).toBe(false)
         expect(tc1.totalRowCount.value).toBe(TestTableController.PRESUMED_ROW_COUNT)
         expect(tc1.rows.value).toStrictEqual([49,48,47,46,45,44,43,42,41,40])
-        expect(tc1.autoUpdateCount.value).toBe(0)
+        expect(tc1.refreshCount.value).toBe(0)
         expect(tc1.currentPage.value).toBe(1)
         expect(currentRoute.value.query).toStrictEqual({})
 
         expect(tc2.autoRefresh.value).toBe(true)
         expect(tc2.autoStopped.value).toBe(false)
         expect(tc2.rows.value).toStrictEqual([199,198,197,196,195,194,193,192,191,190])
-        expect(tc2.autoUpdateCount.value).toBe(0)
+        expect(tc2.refreshCount.value).toBe(0)
         expect(tc2.currentPage.value).toBe(1)
         expect(currentRoute.value.query).toStrictEqual({})
 
@@ -483,7 +483,7 @@ describe("TableController.ts", () => {
         expect(tc1.autoRefresh.value).toBe(false)
         expect(tc1.autoStopped.value).toBe(false)
         expect(tc1.rows.value).toStrictEqual([19,18,17,16,15,14,13,12,11,10])
-        expect(tc1.autoUpdateCount.value).toBe(0)
+        expect(tc1.refreshCount.value).toBe(0)
         expect(tc1.currentPage.value).toBe(4)
         expect(currentRoute.value.query).toStrictEqual({p1: "4", k1: "19"})
 
@@ -493,7 +493,7 @@ describe("TableController.ts", () => {
         expect(tc2.autoRefresh.value).toBe(false)
         expect(tc2.autoStopped.value).toBe(false)
         expect(tc2.rows.value).toStrictEqual([189,188,187,186,185,184,183,182,181,180])
-        expect(tc2.autoUpdateCount.value).toBe(0)
+        expect(tc2.refreshCount.value).toBe(0)
         expect(tc2.currentPage.value).toBe(2)
         expect(currentRoute.value.query).toStrictEqual({p1: "4", k1: "19", p2: "2", k2: "189"})
 
