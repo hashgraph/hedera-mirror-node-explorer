@@ -25,28 +25,28 @@
 <template>
 
   <div v-if="log">
-    <Property id="logIndex">
-      <template v-slot:name>Index</template>
-      <template v-slot:value>
-        <StringValue :string-value="log?.index.toString()"/>
-      </template>
-    </Property>
-    <Property id="logAddress">
+    <Property id="logAddress" :full-width="true">
       <template v-slot:name>Address</template>
       <template v-slot:value>
-        <HexaValue :show-none="true" v-bind:byteString="log.address"/>
+        <EVMAddress :address="log.address" :id="log.contract_id"/>
       </template>
     </Property>
-    <Property id="logData">
+    <Property id="logData" :full-width="true">
       <template v-slot:name>Data</template>
       <template v-slot:value>
         <HexaValue :show-none="true" v-bind:byteString="log.data"/>
       </template>
     </Property>
-    <Property v-for="(t, topicIndex) in log.topics" id="logTopics" :key="t">
-      <template v-slot:name>{{ topicIndex === 0 ? "Topics" : "" }}</template>
+    <Property id="logIndex" :full-width="true">>
+      <template v-slot:name>Index</template>
       <template v-slot:value>
-        <div class="is-flex">
+        <StringValue :string-value="log?.index.toString()"/>
+      </template>
+    </Property>
+    <Property id="logTopics" :full-width="true">>
+      <template v-slot:name>Topics</template>
+      <template v-slot:value>
+        <div v-for="(t, topicIndex) in log.topics" :key="t" class="is-flex">
           <HexaValue class="mr-2" v-bind:byteString="'(' + topicIndex + ') '"/>
           <HexaValue :show-none="true" v-bind:byteString="t"/>
         </div>
@@ -67,10 +67,11 @@ import {ContractResultLog} from "@/schemas/HederaSchemas";
 import Property from "@/components/Property.vue";
 import StringValue from "@/components/values/StringValue.vue";
 import HexaValue from "@/components/values/HexaValue.vue";
+import EVMAddress from "@/components/values/EVMAddress.vue";
 
 export default defineComponent({
   name: "ContractResultLogEntry",
-  components: {HexaValue, StringValue, Property},
+  components: {EVMAddress, HexaValue, StringValue, Property},
   props: {
     log: Object as PropType<ContractResultLog | undefined>
   },
