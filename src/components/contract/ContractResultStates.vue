@@ -166,9 +166,7 @@ export default defineComponent({
           if (previousContract && previousContract === s.contract_id) {
             result[result.length - 1].changes.contract_id = null
           } else {
-            const amount =  transactionLoader.lookupTransfer(s.contract_id ?? "")
-            console.log("got amount: " + amount + " for contract: " + s.contract_id)
-            result[result.length - 1].balanceChange = amount
+            result[result.length - 1].balanceChange = transactionLoader.lookupTransfer(s.contract_id ?? "")
           }
           previousContract = s.contract_id ?? null
         }

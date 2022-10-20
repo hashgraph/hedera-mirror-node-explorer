@@ -69,7 +69,7 @@ import StringValue from "@/components/values/StringValue.vue";
 import HexaValue from "@/components/values/HexaValue.vue";
 
 export default defineComponent({
-  name: "ContractResultLog",
+  name: "ContractResultLogEntry",
   components: {HexaValue, StringValue, Property},
   props: {
     log: Object as PropType<ContractResultLog | undefined>
