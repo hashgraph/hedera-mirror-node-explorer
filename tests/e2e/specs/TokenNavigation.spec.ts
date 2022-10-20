@@ -1,3 +1,5 @@
+// noinspection DuplicatedCode
+
 /*-
  *
  * Hedera Mirror Node Explorer
@@ -111,5 +113,25 @@ describe('Token Navigation', () => {
         cy.get('[id=notificationBanner]')
             .find('span')
             .contains('Token with ID ' + unknownID + ' was not found')
+    })
+
+    const tokenAddress = "0x000000000000000000000000000000000206294e"
+    it('should follow links from token details using ERC20 address', () => {
+        cy.visit('testnet/token/' + tokenAddress)
+        cy.url().should('include', '/testnet/token/' + tokenAddress)
+        cy.contains('Fungible Token ' + tokenId)
+
+        cy.get('table')
+            .find('tbody tr')
+            .should('have.length.at.least', 2)
+            .eq(0)
+            .find('td')
+            .eq(0)
+            .click()
+            .then(($id) => {
+                // cy.log('Selected account Id: ' + $id.text())
+                cy.url().should('include', '/testnet/account/' + $id.text())
+                cy.contains('Account ' + $id.text())
+            })
     })
 })
