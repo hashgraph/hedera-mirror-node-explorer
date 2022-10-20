@@ -18,7 +18,7 @@
  *
  */
 
-import {byteToHex} from "./B64Utils";
+import {byteToHex, hexToByte} from "./B64Utils";
 
 export class EntityID {
 
@@ -84,6 +84,26 @@ export class EntityID {
         return byteToHex(buffer)
     }
 
+    public static fromAddress(address: string|undefined): EntityID|null {
+        let result: EntityID|null
+
+        if (address) {
+            const buffer = hexToByte(address)
+            if (buffer !== null && buffer.length == 20) {
+                const view = new DataView(buffer.buffer)
+                const bigNum = view.getBigInt64(12)
+                const num = bigNum < EntityID.MAX_INT ? Number(bigNum) : null
+                result = num != null ? new EntityID(0, 0, num) : null
+            } else {
+                result = null
+            }
+        } else {
+            result = null
+        }
+
+        return result
+    }
+
     /*
      * Compare two account ID.
      * Accounts are sorted in ascending but account ids < 100 are put at the end.
@@ -109,11 +129,11 @@ export class EntityID {
 
     // Utility
 
-    private static readonly MAX_INT = Math.pow(2, 32) // Max supported by mirror node rest api on May 30, 2022
+    public static readonly MAX_INT = Math.pow(2, 32) // Max supported by mirror node rest api on May 30, 2022
 
     public static parsePositiveInt(s: string): number|null {
-        const n = s.length >= 1 ? Number(s) : -1
-        return (isNaN(n) || Math.floor(n) != n || n < 0 || n >= EntityID.MAX_INT) ? null : n
+        const n = s.match(/^[0-9]+$/) !== null ? parseInt(s) : EntityID.MAX_INT
+        return (isNaN(n) || n >= EntityID.MAX_INT) ? null : n
     }
 
     //
