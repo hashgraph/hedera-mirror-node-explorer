@@ -128,6 +128,11 @@ describe("EntityID.ts", () => {
         expect(obj).toBeNull()
     })
 
+    test("0x000000444", () => {
+        const obj = EntityID.parse("0x000000444", true)
+        expect(obj).toBeNull()
+    })
+
     test("Too Big Number", () => {
         const tooBigNum = Math.pow(2, 32)
         const obj = EntityID.parse(tooBigNum.toString())
@@ -135,6 +140,44 @@ describe("EntityID.ts", () => {
         const obj2 = EntityID.parse(tooBigNum.toString(), true)
         expect(obj2).toBeNull()
     })
+
+    //
+    // EntityID.fromAddress()
+    //
+
+    test("0x0000000000000000000000000000000000000000", () => {
+        const a = "0x0000000000000000000000000000000000000000"
+        const obj = EntityID.fromAddress(a)
+        expect(obj?.shard).toBe(0)
+        expect(obj?.realm).toBe(0)
+        expect(obj?.num).toBe(0)
+        expect(obj?.toString()).toBe("0.0.0")
+    })
+
+    test("0x00000000000000000000000000000000000000ff", () => {
+        const a = "0x00000000000000000000000000000000000000ff"
+        const obj = EntityID.fromAddress(a)
+        expect(obj?.shard).toBe(0)
+        expect(obj?.realm).toBe(0)
+        expect(obj?.num).toBe(255)
+        expect(obj?.toString()).toBe("0.0.255")
+    })
+
+    test("0x00000000000000000000000000000000ffffffff", () => {
+        const a = "0x00000000000000000000000000000000ffffffff"
+        const obj = EntityID.fromAddress(a)
+        expect(obj?.shard).toBe(0)
+        expect(obj?.realm).toBe(0)
+        expect(obj?.num).toBe(EntityID.MAX_INT -1)
+        expect(obj?.toString()).toBe("0.0.4294967295")
+    })
+
+    test("0x0000000000000000000000000000000100000000", () => {
+        const a = "0x0000000000000000000000000000000100000000"
+        const obj = EntityID.fromAddress(a)
+        expect(obj).toBeNull()
+    })
+
 
     //
     // EntityID.compareAccountID()
