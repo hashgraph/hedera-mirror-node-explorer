@@ -368,7 +368,7 @@ export default defineComponent({
       let result: string | null
       if (accountLoader.stakePeriodStart.value) {
         const seconds = Number.parseFloat(accountLoader.stakePeriodStart.value);
-        result = "since " + dateFormat.format(seconds * 1000)
+        result = "Period Started " + dateFormat.format(seconds * 1000)
       } else {
         result = null
       }
