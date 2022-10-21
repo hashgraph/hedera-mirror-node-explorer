@@ -107,7 +107,7 @@
               <Property id="pendingReward">
                 <template v-slot:name>Pending Reward</template>
                 <template v-slot:value>
-                  <HbarAmount :amount="account?.pending_reward" :show-extra="true" :show-none="true"/>
+                  <HbarAmount :amount="account?.pending_reward" :show-extra="true"/>
                   <div class="h-is-extra-text h-is-text-size-2">{{ stakedSince }}</div>
                 </template>
               </Property>
