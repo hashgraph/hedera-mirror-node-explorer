@@ -30,19 +30,19 @@ export interface AccountsResponse {
 }
 
 export interface AccountInfo {
-    account: string | null | undefined // Network entity ID in the format of shard.realm.num
-    auto_renew_period: number | null | undefined
-    balance: Balance | null | undefined
-    created_timestamp: string | null | undefined
-    deleted: boolean
-    expiry_timestamp: string | null | undefined
-    key : Key | null | undefined
-    max_automatic_token_associations: number | undefined
-    memo: string | undefined
-    receiver_sig_required: boolean
-    alias: string | null | undefined  // RFC4648 no-padding base32 encoded account alias
+    account: string | null              // Network entity ID in the format of shard.realm.num
+    auto_renew_period: number | null
+    balance: Balance | null
+    created_timestamp: string | null
+    deleted: boolean | null
+    expiry_timestamp: string | null
+    key : Key | null
+    max_automatic_token_associations: number | null
+    memo: string | null
+    receiver_sig_required: boolean | null
+    alias: string | null                // RFC4648 no-padding base32 encoded account alias
     ethereum_nonce: number | null
-    evm_address: string | null // A network entity encoded as an EVM address in hex.
+    evm_address: string | null          // A network entity encoded as an EVM address in hex.
     decline_reward: boolean | null      // Whether the account declines receiving a staking reward
     staked_account_id: string | null    // The account to which this account is staking
     staked_node_id: number | null       // The id of the node to which this account is staking
@@ -50,6 +50,9 @@ export interface AccountInfo {
                                         // changed (such as starting staking or changing stakedNode) or the most recent
                                         // reward was earned, whichever is later. If this account is not currently
                                         // staked to a node, then the value is null
+    pending_reward: number | undefined  // The pending reward in tinybars the account will receive in the next
+                                        // reward payout. Note the value is updated at the end of each staking period
+                                        // and there may be delay to reflect the changes in the past staking period.
 }
 
 export interface AccountBalanceTransactions extends AccountInfo {
