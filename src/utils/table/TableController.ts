@@ -100,6 +100,7 @@ export abstract class TableController<R, K> {
         if (this.mountedRef.value && !this.autoRefreshRef.value) {
             this.autoRefreshRef.value = true
             this.refreshCountRef.value = 0
+            // this.currentPage.value = 1 // This prevents o-table to invoke onPageChange() (and stops auto refresh !)
             this.abortMoveBufferToPage()
             this.refreshBuffer().catch(this.errorHandler)
         }
