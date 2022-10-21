@@ -335,6 +335,8 @@ export default defineComponent({
     }
     const dateFormat = new Intl.DateTimeFormat(locale, dateOptions)
 
+    const pendingReward = computed(() => isStaked.value ? accountLoader.pendingReward : null)
+
     const stakedSince = computed(() => {
       let result: string | null
       if (isStaked.value && accountLoader.stakePeriodStart.value) {
@@ -468,6 +470,7 @@ export default defineComponent({
       stakedNode: stakedNodeLoader.node,
       balanceInHbar,
       stakedAmount,
+      pendingReward,
       stakedSince,
       declineReward,
       ignoreReward,
