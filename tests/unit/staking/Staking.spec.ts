@@ -75,6 +75,7 @@ describe("Staking.vue", () => {
         // Account for which we want to update staking
         // => we clone existing mocked account because we're going to mute this mock
         const TARGET_ACCOUNT = JSON.parse(JSON.stringify(SAMPLE_ACCOUNT_STAKING_ACCOUNT))
+        TARGET_ACCOUNT.pending_reward = undefined
         const TARGET_ACCOUNT_ID = TARGET_ACCOUNT.account
 
         // Transaction used to represent stake update operation
@@ -138,7 +139,7 @@ describe("Staking.vue", () => {
         expect(ndis.length).toBeGreaterThanOrEqual(3)
         expect(ndis[0].text()).toBe("Staked toAccount 0.0.5since Mar 3, 2022")
         expect(ndis[1].text()).toBe("My Stake0.31669471HBAR")
-        expect(ndis[2].text()).toBe("RewardsDeclined")
+        expect(ndis[2].text()).toBe("Pending RewardNone")
 
         // 1.4) Checks disconnect button
         expect(wrapper.get("#disconnectWalletButton").text()).toBe("DISCONNECT WALLETMOCK")
@@ -214,7 +215,7 @@ describe("Staking.vue", () => {
         // 2.8) Checks staking information
         expect(ndis[0].text()).toBe("Staked toAccount 0.0.7since Mar 3, 2022")
         expect(ndis[1].text()).toBe("My Stake0.31669471HBAR")
-        expect(ndis[2].text()).toBe("RewardsDeclined")
+        expect(ndis[2].text()).toBe("Pending RewardNone")
 
         // 2.9) Checks driver
         expect(testDriver.updateAccountCounter).toBe(1)
@@ -271,7 +272,7 @@ describe("Staking.vue", () => {
         // 3.8) Checks staking information
         expect(ndis[0].text()).toBe("Staked toNode 2 - testnetsince Mar 3, 2022")
         expect(ndis[1].text()).toBe("My Stake0.31669471HBAR")
-        expect(ndis[2].text()).toBe("RewardsDeclined")
+        expect(ndis[2].text()).toBe("Pending RewardNone")
 
 
         //
@@ -315,7 +316,7 @@ describe("Staking.vue", () => {
         // 4.8) Checks staking information
         expect(ndis[0].text()).toBe("Staked toNode 2 - testnetsince Mar 3, 2022")
         expect(ndis[1].text()).toBe("My Stake0.31669471HBAR")
-        expect(ndis[2].text()).toBe("RewardsAccepted")
+        expect(ndis[2].text()).toBe("Pending RewardNone")
 
 
         //
@@ -350,7 +351,7 @@ describe("Staking.vue", () => {
         // 5.5) Checks staking information
         expect(ndis[0].text()).toBe("Staked toNone")
         expect(ndis[1].text()).toBe("My StakeNone")
-        expect(ndis[2].text()).toBe("RewardsAccepted")
+        expect(ndis[2].text()).toBe("Pending RewardNone")
 
         //
         // 6) Disconnection
