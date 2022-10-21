@@ -71,10 +71,17 @@
             <div class="is-flex is-justify-content-space-between">
               <NetworkDashboardItem :name="stakedSince" title="Staked to" :value="stakedTo"/>
               <NetworkDashboardItem :name="stakedAmount ? 'HBAR' : ''" title="My Stake" :value="stakedAmount"/>
-              <NetworkDashboardItem :title="'Rewards'" :value="declineReward" :class="{'h-has-opacity-40': ignoreReward}"/>
+
+              <NetworkDashboardItem v-if="!ignoreReward && declineReward && !pendingReward"
+                                    :title="'Rewards'"
+                                    :value="'Declined'"/>
+              <NetworkDashboardItem v-else
+                                    :title="'Pending Reward'"
+                                    :name="pendingReward ? 'HBAR' : ''"
+                                    :value="pendingReward"
+                                    :class="{'h-has-opacity-40': ignoreReward && !pendingReward}"/>
             </div>
-            <br/>
-            <div class="is-flex is-justify-content-space-between">
+            <div class="is-flex is-justify-content-space-between mt-5">
               <div class="is-flex is-justify-content-flex-start">
                 <button id="stopStakingButton" class="button is-white is-small"
                         :disabled="!stakedTo" @click="showStopConfirmDialog = true">STOP STAKING</button>
@@ -96,7 +103,16 @@
               <div class="mt-4"/>
               <NetworkDashboardItem :name="stakedAmount ? 'HBAR' : ''" title="My Stake" :value="stakedAmount"/>
               <div class="mt-4"/>
-              <NetworkDashboardItem title="Rewards" :value="declineReward" :class="{'h-has-opacity-40': ignoreReward}"/>
+
+              <NetworkDashboardItem v-if="!ignoreReward && declineReward && !pendingReward"
+                                    :title="'Rewards'"
+                                    :value="'Declined'"/>
+              <NetworkDashboardItem v-else
+                                    :title="'Pending Reward'"
+                                    :name="'HBAR'"
+                                    :value="null"
+                                    :class="{'h-has-opacity-40': ignoreReward && !pendingReward}"/>
+
               <div class="mt-4"/>
             </div>
               <div class="is-flex is-justify-content-center">
@@ -311,19 +327,19 @@ export default defineComponent({
       return balance / 100000000
     })
 
-    const stakedAmount = computed(() => {
+    const stakedAmount = computed(() => isStaked.value ? formatHbarAmount(accountLoader.balance.value) : null)
+
+    const formatHbarAmount = (amount: number | null) => {
       let result
-      if ( isStaked.value && accountLoader.balance.value != null) {
-        const amountFormatter = new Intl.NumberFormat("en-US", {
-          maximumFractionDigits: 8
-        })
-        result = amountFormatter.format(accountLoader.balance.value / 100000000)
+      if (amount) {
+        const amountFormatter = new Intl.NumberFormat("en-US", {maximumFractionDigits: 8})
+        result = amountFormatter.format(amount / 100000000)
       }
       else {
         result = null
       }
       return result
-    })
+    }
 
     const locale = "en-US"
     const dateOptions = {
@@ -335,7 +351,7 @@ export default defineComponent({
     }
     const dateFormat = new Intl.DateTimeFormat(locale, dateOptions)
 
-    const pendingReward = computed(() => isStaked.value ? accountLoader.pendingReward : null)
+    const pendingReward = computed(() => formatHbarAmount(accountLoader.pendingReward.value ?? null))
 
     const stakedSince = computed(() => {
       let result: string | null
@@ -348,18 +364,8 @@ export default defineComponent({
       return result
     })
 
-    const declineReward = computed(() => {
-      let result: string | null
-      if (accountLoader.entity.value && accountLoader.entity.value.decline_reward !== null) {
-        result = accountLoader.entity.value.decline_reward === true ? 'Declined' : 'Accepted'
-      } else {
-        result = null
-      }
-      return result
-    })
-
+    const declineReward = computed(() => accountLoader.entity.value?.decline_reward ?? false)
     const ignoreReward = computed(() => accountLoader.stakedNodeId.value === null)
-
 
     //
     // stakedNode
