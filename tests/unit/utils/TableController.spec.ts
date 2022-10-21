@@ -535,6 +535,128 @@ describe("TableController.ts", () => {
 
 
     })
+
+    test("mount + immediate stop auto refresh + unmount", async () => {
+        const tc = new TestTableController(0, 50, 10)
+        const currentRoute = tc.router.currentRoute
+
+        // Mount + brutal stop
+        tc.mount()
+        tc.stopAutoRefresh()
+        await flushPromises()
+        expect(tc.autoRefresh.value).toBe(false)
+        expect(tc.autoStopped.value).toBe(false)
+        expect(tc.rows.value).toStrictEqual([49,48,47,46,45,44,43,42,41,40])
+        expect(tc.refreshCount.value).toBe(0)
+        expect(tc.currentPage.value).toBe(1)
+        expect(tc.loadCounter).toBe(2)
+        expect(currentRoute.value.query).toStrictEqual({ p: "1", k: "49" })
+        expect(tc.getAbortedRefreshCounter()).toBe(1)
+        expect(tc.getAbortedMoveToPageCounter()).toBe(0)
+
+        // Unmount
+        tc.unmount()
+        await flushPromises()
+        expect(tc.autoRefresh.value).toBe(false)
+        expect(tc.autoStopped.value).toBe(false)
+        expect(tc.rows.value).toStrictEqual([])
+        expect(tc.refreshCount.value).toBe(0)
+        expect(tc.loadCounter).toBe(2)
+        expect(currentRoute.value.query).toStrictEqual({ p: "1", k: "49" })
+        expect(tc.getAbortedRefreshCounter()).toBe(1)
+        expect(tc.getAbortedMoveToPageCounter()).toBe(0)
+    })
+
+    test("mount + stop + immediate start auto refresh", async () => {
+        const tc = new TestTableController(0, 50, 10)
+        const currentRoute = tc.router.currentRoute
+
+        // Mount
+        tc.mount()
+        await flushPromises()
+        expect(tc.autoRefresh.value).toBe(true)
+        expect(tc.autoStopped.value).toBe(false)
+        expect(tc.rows.value).toStrictEqual([49,48,47,46,45,44,43,42,41,40])
+        expect(tc.refreshCount.value).toBe(0)
+        expect(tc.currentPage.value).toBe(1)
+        expect(tc.loadCounter).toBe(1) // +1 "refresh" operation
+        expect(currentRoute.value.query).toStrictEqual({})
+        expect(tc.getAbortedRefreshCounter()).toBe(0)
+        expect(tc.getAbortedMoveToPageCounter()).toBe(0)
+
+        // Stop + immediate start auto refresh
+        tc.stopAutoRefresh() // Starts "move to page" operation : all rows are loaded => completes instantaneously
+        tc.startAutoRefresh() // Starts a "refresh" operation
+        await flushPromises()
+        expect(tc.autoRefresh.value).toBe(true)
+        expect(tc.autoStopped.value).toBe(false)
+        expect(tc.rows.value).toStrictEqual([49,48,47,46,45,44,43,42,41,40])
+        expect(tc.refreshCount.value).toBe(0)
+        expect(tc.currentPage.value).toBe(1)
+        expect(tc.loadCounter).toBe(2) // +1 "refresh"
+        expect(currentRoute.value.query).toStrictEqual({})
+        expect(tc.getAbortedRefreshCounter()).toBe(0)
+        expect(tc.getAbortedMoveToPageCounter()).toBe(0)
+
+        // Unmount
+        tc.unmount()
+        await flushPromises()
+        expect(tc.autoRefresh.value).toBe(false)
+        expect(tc.autoStopped.value).toBe(false)
+        expect(tc.rows.value).toStrictEqual([])
+        expect(tc.refreshCount.value).toBe(0)
+        expect(tc.loadCounter).toBe(2)
+        expect(currentRoute.value.query).toStrictEqual({})
+        expect(tc.getAbortedRefreshCounter()).toBe(0)
+        expect(tc.getAbortedMoveToPageCounter()).toBe(0)
+    })
+
+    test("brutal", async () => {
+
+        const tc = new TestTableController(0, 500, 10)
+        const currentRoute = tc.router.currentRoute
+
+        // Mount
+        tc.mount()
+        await flushPromises()
+        expect(tc.autoRefresh.value).toBe(true)
+        expect(tc.autoStopped.value).toBe(false)
+        expect(tc.rows.value).toStrictEqual([499,498,497,496,495,494,493,492,491,490])
+        expect(tc.refreshCount.value).toBe(0)
+        expect(tc.currentPage.value).toBe(1)
+        expect(tc.loadCounter).toBe(1) // +1 "refresh" operation
+        expect(currentRoute.value.query).toStrictEqual({})
+        expect(tc.getAbortedRefreshCounter()).toBe(0)
+        expect(tc.getAbortedMoveToPageCounter()).toBe(0)
+
+        // Goto page 10, 20, 30 + play
+        tc.onPageChange(10)
+        tc.onPageChange(20)
+        tc.onPageChange(30)
+        tc.startAutoRefresh()
+        await flushPromises()
+        expect(tc.autoRefresh.value).toBe(true)
+        expect(tc.autoStopped.value).toBe(false)
+        expect(tc.rows.value).toStrictEqual([499,498,497,496,495,494,493,492,491,490])
+        expect(tc.refreshCount.value).toBe(0)
+        expect(tc.currentPage.value).toBe(1)
+        expect(tc.loadCounter).toBe(51) // +10 +20 +30 (aborted) "move to page" + 1 refresh
+        expect(currentRoute.value.query).toStrictEqual({})
+        expect(tc.getAbortedRefreshCounter()).toBe(0)
+        expect(tc.getAbortedMoveToPageCounter()).toBe(3)
+
+        // Unmount
+        tc.unmount()
+        await flushPromises()
+        expect(tc.autoRefresh.value).toBe(false)
+        expect(tc.autoStopped.value).toBe(false)
+        expect(tc.rows.value).toStrictEqual([])
+        expect(tc.refreshCount.value).toBe(0)
+        expect(tc.loadCounter).toBe(51)
+        expect(currentRoute.value.query).toStrictEqual({})
+        expect(tc.getAbortedRefreshCounter()).toBe(0)
+        expect(tc.getAbortedMoveToPageCounter()).toBe(3)
+    })
 })
 
 class TestTableController extends TableController<number, number> {
