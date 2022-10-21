@@ -244,6 +244,18 @@ describe("TransactionTableController.ts", () => {
         const tc = new TransactionTableControllerXL(router, accountId, pageSize, false)
         const currentRoute = tc.router.currentRoute
 
+        // Sanity checks
+        expect(tc.pageSize.value).toBe(PAGE_SIZE)
+        expect(tc.autoRefresh.value).toBe(false)
+        expect(tc.autoStopped.value).toBe(false)
+        expect(tc.currentPage.value).toBe(1)
+        expect(tc.loading.value).toBe(false)
+        expect(tc.totalRowCount.value).toBe(50)
+        expect(tc.rows.value).toStrictEqual([])
+        expect(tc.mounted.value).toBe(false)
+        expect(currentRoute.value.query).toStrictEqual({})
+        expect(mock.history.get.length).toBe(0)
+
         // Mount
         tc.mount()
         await flushPromises()
@@ -256,6 +268,7 @@ describe("TransactionTableController.ts", () => {
         expect(tc.rows.value).toStrictEqual(SAMPLE_CONTRACTCALL_TRANSACTIONS.transactions)
         expect(tc.mounted.value).toBe(true)
         expect(currentRoute.value.query).toStrictEqual({})
+        expect(mock.history.get.length).toBe(1)
 
         // Filter CRYPTOTRANSFER
         tc.transactionType.value = "CRYPTOTRANSFER"
@@ -269,6 +282,7 @@ describe("TransactionTableController.ts", () => {
         expect(tc.rows.value).toStrictEqual([])
         expect(tc.mounted.value).toBe(true)
         expect(currentRoute.value.query).toStrictEqual({type: "cryptotransfer"})
+        expect(mock.history.get.length).toBe(2)
 
         // Filter CONTRACTCALL
         tc.transactionType.value = "CONTRACTCALL"
@@ -282,6 +296,7 @@ describe("TransactionTableController.ts", () => {
         expect(tc.rows.value).toStrictEqual(SAMPLE_CONTRACTCALL_TRANSACTIONS.transactions)
         expect(tc.mounted.value).toBe(true)
         expect(currentRoute.value.query).toStrictEqual({type: "contractcall"})
+        expect(mock.history.get.length).toBe(3)
 
         // All transaction types
         tc.transactionType.value = ""
@@ -295,6 +310,7 @@ describe("TransactionTableController.ts", () => {
         expect(tc.rows.value).toStrictEqual(SAMPLE_CONTRACTCALL_TRANSACTIONS.transactions)
         expect(tc.mounted.value).toBe(true)
         expect(currentRoute.value.query).toStrictEqual({})
+        expect(mock.history.get.length).toBe(4)
 
 
         // After unmount()
@@ -309,5 +325,7 @@ describe("TransactionTableController.ts", () => {
         expect(tc.rows.value).toStrictEqual([])
         expect(tc.mounted.value).toBe(false)
         expect(currentRoute.value.query).toStrictEqual({})
+        expect(mock.history.get.length).toBe(4)
+
     })
 })
