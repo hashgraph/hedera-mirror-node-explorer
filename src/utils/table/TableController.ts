@@ -142,6 +142,17 @@ export abstract class TableController<R, K> {
         throw new Error("To be subclassed: key=" + key + ", operator=" + operator + ", limit=" + limit)
     }
 
+    //
+    // Public (for testing purpose)
+    //
+
+    public getAbortedRefreshCounter(): number {
+        return this.buffer.getAbortedRefreshCounter()
+    }
+
+    public getAbortedMoveToPageCounter(): number {
+        return this.buffer.getAbortedMoveToPageCounter()
+    }
 
 
     //
