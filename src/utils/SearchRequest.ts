@@ -86,39 +86,6 @@ export class SearchRequest {
         base32                               | Account Alias    | api/v1/accounts/{searchId}
         -------------------------------------+------------------+------------------------------------------------------
 
-
-
-
-
-            searchId syntax                         | Tentative searches
-            ========================================+===============================================
-            shard.realm.num                         | api/v1/tokens/{searchId}
-            (ie EntityID)                           | api/v1/topics/{searchId}/messages
-                                                    | api/v1/contracts/{searchId}
-            ----------------------------------------+-----------------------------------------------
-            num                                     | api/v1/tokens/0.0.{searchId}
-            (ie incomplete EntityID)                | api/v1/topics/0.0.{searchId}/messages
-                                                    | api/v1/contracts/0.0.{searchId}
-            ========================================+===============================================
-            shard.realm.num@seconds.nanoseconds     | api/v1/transactions/{normalized-search-id}
-            (ie Transaction ID)                     |
-            ----------------------------------------+-----------------------------------------------
-            shard.realm.num-seconds-nanoseconds     | api/v1/transactions/{searchId}
-            (ie normalized Transaction ID)          |
-            ========================================+===============================================
-            hexadecimal 48 bytes                    | api/v1/transactions/{searchId}
-            (ie transaction hash)                   |
-            ----------------------------------------+-----------------------------------------------
-            hexadecimal 20 bytes                    | api/v1/accounts/{searchId}
-            (evm address)                           | api/v1/contracts/{searchId}
-            ----------------------------------------+-----------------------------------------------
-            hexadecimal >= 15 bytes                 | api/v1/accounts/{searchId-converted-to-base32}
-            (account alias)                         |
-            ========================================+===============================================
-            base32                                  | api/v1/accounts/{searchId}
-            (account alias)                         |
-            ----------------------------------------+-----------------------------------------------
-
          */
 
         const entityID = EntityID.parse(this.searchedId, true)?.toString() ?? null
