@@ -18,7 +18,7 @@
  *
  */
 
-import {NetworkNode} from "@/schemas/HederaSchemas";
+import {makeShortNodeDescription, NetworkNode} from "@/schemas/HederaSchemas";
 import {operatorRegistry} from "@/schemas/OperatorRegistry";
 import {NodesLoader} from "@/components/node/NodesLoader";
 import {computed, ComputedRef, Ref} from "vue";
@@ -65,6 +65,10 @@ export class NodeCursor {
             result = null
         }
         return result
+    })
+
+    public readonly shortNodeDescription: ComputedRef<string|null> = computed(() => {
+        return this.nodeDescription.value ? makeShortNodeDescription(this.nodeDescription.value) : null
     })
 
     //

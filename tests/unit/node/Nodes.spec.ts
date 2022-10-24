@@ -102,9 +102,9 @@ describe("Nodes.vue", () => {
         expect(table.exists()).toBe(true)
         expect(table.get('thead').text()).toBe("Node Account Description Stake Stake Not Rewarded Last Reward Rate Stake Range")
         expect(wrapper.get('tbody').text()).toBe(
-            "0" + "0.0.3" + "Node 0 - testnet" + tooltipStake + "6,000,000(25%)" + tooltipNotRewarded + "1,000,000" + tooltipRewardRate + "1%" +
-            "1" + "0.0.4" + "Node 1 - testnet" + tooltipStake + "9,000,000(37.5%)" + tooltipNotRewarded + "2,000,000" + tooltipRewardRate + "2%" +
-            "2" + "0.0.5" + "Node 2 - testnet" + tooltipStake + "9,000,000(37.5%)" + tooltipNotRewarded + "2,000,000" + tooltipRewardRate + "3%"
+            "0" + "0.0.3" + "Hosted by Hedera | East Coast, USA" + tooltipStake + "6,000,000(25%)" + tooltipNotRewarded + "1,000,000" + tooltipRewardRate + "1%" +
+            "1" + "0.0.4" + "Hosted by Hedera | East Coast, USA" + tooltipStake + "9,000,000(37.5%)" + tooltipNotRewarded + "2,000,000" + tooltipRewardRate + "2%" +
+            "2" + "0.0.5" + "Hosted by Hedera | Central, USA" + tooltipStake + "9,000,000(37.5%)" + tooltipNotRewarded + "2,000,000" + tooltipRewardRate + "3%"
         )
     });
 

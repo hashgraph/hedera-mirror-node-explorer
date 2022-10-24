@@ -20,10 +20,8 @@
 
 import {computed, ComputedRef, ref, Ref, watch, WatchSource, WatchStopHandle} from "vue";
 import {LocationQuery, Router} from "vue-router";
-import {TableSubController} from "@/utils/table/subcontroller/TableSubController";
-import {AutoRefreshController} from "@/utils/table/subcontroller/AutoRefreshSubController";
-import {PaginationController} from "@/utils/table/subcontroller/PaginationSubController";
 import {fetchNumberQueryParam, fetchStringQueryParam} from "@/utils/RouteManager";
+import {RowBuffer} from "@/utils/table/RowBuffer";
 
 export abstract class TableController<R, K> {
 
@@ -35,7 +33,7 @@ export abstract class TableController<R, K> {
     public readonly pageParamName: string
     public readonly keyParamName: string
 
-    private subController: TableSubController<R,K>|null = null
+    private readonly buffer: RowBuffer<R,K>
     private sources: WatchSource[] = []
 
     //
@@ -44,100 +42,90 @@ export abstract class TableController<R, K> {
 
     public readonly pageSize: ComputedRef<number>
 
-    public readonly autoRefresh: ComputedRef<boolean> = computed(() => this.autoRefreshRef.value)
+    public readonly autoRefresh: ComputedRef<boolean> = computed(
+        () => this.autoRefreshRef.value)
 
-    public readonly autoStopped: ComputedRef<boolean> = computed(() => this.autoUpdateCount.value >= this.maxAutoUpdateCount)
+    public readonly autoStopped: ComputedRef<boolean> = computed(
+        () => this.refreshCountRef.value >= this.maxAutoUpdateCount)
 
     public readonly currentPage: Ref<number> = ref(1)
 
-    public readonly rows: ComputedRef<R[]> = computed(
-        () => this.buffer.value.slice(this.startIndex.value, this.startIndex.value + this.pageSize.value))
+    public readonly rows: ComputedRef<R[]> = computed(() => {
+        const startIndex = this.buffer.startIndex.value
+        const endIndex = startIndex + this.pageSize.value
+        return this.buffer.rows.value.slice(startIndex, endIndex)
+    })
+
+    public readonly refreshCount: ComputedRef<number> = computed(
+        () => this.refreshCountRef.value)
+
+    public readonly totalRowCount: ComputedRef<number> = computed(
+        () => this.buffer.totalRowCount.value)
 
     public readonly loading: Ref<boolean> = ref(false)
 
     public readonly paginated: ComputedRef<boolean> = computed(
-        () => this.totalRowCount.value >= this.pageSize.value)
-
-    public readonly totalRowCount: ComputedRef<number> = computed(() => {
-        let result: number
-        const allRowCount = this.shadowRowCount.value + this.buffer.value.length
-        if (this.drained.value) {
-            result = + allRowCount
-        } else {
-            const k = Math.ceil((allRowCount +1) / this.presumedRowCount)
-            result = k * this.presumedRowCount
-        }
-        return result
-    })
+        () => this.buffer.totalRowCount.value >= this.pageSize.value)
 
     public readonly mounted: ComputedRef<boolean> = computed(() => this.mountedRef.value)
 
+    //
+    // Public (mount / unmount)
+    //
+
     public mount(): void {
-        const pageParam = this.getPageParam()
-        const keyParam = this.getKeyParam()
-        if (pageParam !== null) {
-            this.subController = new PaginationController(this, pageParam, keyParam)
-            this.subController.mount()
-        } else {
-            this.subController = new AutoRefreshController(this)
-            this.subController.mount()
-        }
-        this.autoRefreshRef.value = this.subController instanceof AutoRefreshController
         this.mountedRef.value = true
         this.startWatchingSources()
+        const pageParam = this.getPageParam()
+        if (pageParam !== null) {
+            this.moveBufferToPage(pageParam, this.getKeyParam()).catch(this.errorHandler)
+        } else {
+            this.refreshBuffer().catch(this.errorHandler)
+        }
     }
 
     public unmount(): void {
-        this.stopWatchingSources()
-        this.subController?.unmount()
-        this.subController = null
-        this.buffer.value = []
-        this.startIndex.value = 0
-        this.drained.value = false
-        this.autoUpdateCount.value = 0
-        this.shadowRowCount.value = 0
-        this.currentPage.value = 1
-
         this.mountedRef.value = false
-        this.autoRefreshRef.value = false
+        this.stopWatchingSources()
+        if (this.autoRefreshRef.value) {
+            this.abortRefreshBuffer()
+        } else {
+            this.abortMoveBufferToPage()
+        }
+        this.buffer.clear()
+        // No call to this.bufferDidChange() to keep route query untouched
     }
 
-    public async startAutoRefresh(): Promise<void> {
-        this.autoRefreshRef.value = true
-        this.subController?.unmount()
-        this.subController = new AutoRefreshController(this)
-        this.subController.mount()
+    public startAutoRefresh(): void {
+        if (this.mountedRef.value && !this.autoRefreshRef.value) {
+            this.autoRefreshRef.value = true
+            this.refreshCountRef.value = 0
+            this.currentPage.value = 1 // This prevents o-table to invoke onPageChange() (and stops auto refresh !)
+            this.abortMoveBufferToPage()
+            this.refreshBuffer().catch(this.errorHandler)
+        }
     }
 
-    public async stopAutoRefresh(): Promise<void>  {
-        this.autoRefreshRef.value = false
-        this.subController?.unmount()
-        this.subController = new PaginationController(this, 1, null)
-        this.subController.mount()
+    public stopAutoRefresh(page = 1): void  {
+        if (this.mountedRef.value && this.autoRefreshRef.value) {
+            this.abortRefreshBuffer()
+            this.moveBufferToPage(page, null).catch(this.errorHandler)
+        }
     }
 
     public readonly onPageChange = (page: number): void => {
-        if (this.subController instanceof PaginationController) {
-            this.subController.gotoPage(page)
-        } else {
-            this.subController?.unmount()
-            this.subController = new PaginationController(this, page, null)
-            this.subController.mount()
-            this.autoRefreshRef.value = false
+        if (this.mountedRef.value) {
+            if (this.autoRefresh.value) {
+                this.stopAutoRefresh(page)
+            } else {
+                this.moveBufferToPage(page, null).catch(this.errorHandler)
+            }
         }
     }
 
     public reset(): void {
-
-        // Clears buffer
-        this.buffer.value = []
-        this.startIndex.value = 0
-        this.drained.value = false
-        this.autoUpdateCount.value = 0
-        this.shadowRowCount.value = 0
-        this.currentPage.value = 1
-
-        this.startAutoRefresh().then()
+        this.buffer.clear()
+        this.bufferDidChange().catch(this.errorHandler)
     }
 
 
@@ -156,65 +144,17 @@ export abstract class TableController<R, K> {
     }
 
     //
-    // Public (for SubController)
+    // Public (for testing purpose)
     //
 
-    public readonly buffer: Ref<R[]> = ref([])
-
-    public readonly startIndex: Ref<number> = ref(0)
-
-    public readonly drained: Ref<boolean> = ref(false)
-
-    public readonly autoUpdateCount: Ref<number> = ref(0)
-
-    public readonly shadowRowCount: Ref<number> = ref(0)
-    //
-    // public readonly pageParam = computed(() => {
-    //     return fetchNumberQueryParam(this.pageParamName, this.router.currentRoute.value)
-    // })
-    //
-    // public readonly keyParam = computed(() => {
-    //     const v = fetchStringQueryParam(this.keyParamName, this.router.currentRoute.value)
-    //     return v !== null ? this.keyFromString(v) : null
-    // })
-
-    public getPageParam(): number|null {
-        return fetchNumberQueryParam(this.pageParamName, this.router.currentRoute.value)
+    public getAbortedRefreshCounter(): number {
+        return this.buffer.getAbortedRefreshCounter()
     }
 
-    public getKeyParam(): K|null {
-        const v = fetchStringQueryParam(this.keyParamName, this.router.currentRoute.value)
-        return v !== null ? this.keyFromString(v) : null
+    public getAbortedMoveToPageCounter(): number {
+        return this.buffer.getAbortedMoveToPageCounter()
     }
 
-    public getTailKey(): K|null {
-        const bufferLength = this.buffer.value.length
-        const tailRow = bufferLength >= 1 ? this.buffer.value[bufferLength-1] : null
-        return tailRow !== null ? this.keyFor(tailRow) : null
-    }
-
-    public getHeadKey(): K|null {
-        const bufferLength = this.buffer.value.length
-        const headRow = bufferLength >= 1 ? this.buffer.value[0] : null
-        return headRow !== null ? this.keyFor(headRow) : null
-    }
-
-    public getMaxStartIndex(): number {
-        const pageCount = Math.floor((this.shadowRowCount.value + this.buffer.value.length) / this.pageSize.value) + 1
-        return Math.max(0, (pageCount - 1) * this.pageSize.value)
-    }
-
-    public updateCurrentPage(): void {
-        const i = this.shadowRowCount.value + this.startIndex.value
-        this.currentPage.value = Math.floor(i / this.pageSize.value) + 1
-        this.updateRouteQuery()
-    }
-
-    public getFirstVisibleKey(): K|null {
-        const bufferLength = this.buffer.value.length
-        const firstRow = this.startIndex.value < bufferLength ? this.buffer.value[this.startIndex.value] : null
-        return firstRow !== null ? this.keyFor(firstRow) : null
-    }
 
     //
     // Protected
@@ -232,6 +172,7 @@ export abstract class TableController<R, K> {
         this.maxLimit = maxLimit
         this.pageParamName = pageParamName
         this.keyParamName = keyParamName
+        this.buffer = new RowBuffer<R,K>(this, presumedRowCount);
     }
 
     protected watchAndReload(sources: WatchSource<unknown>[]): void {
@@ -241,26 +182,64 @@ export abstract class TableController<R, K> {
         }
     }
 
-    protected updateRouteQuery(): void {
-        this.router.replace({ query: this.makeRouteQuery() }).then()
+    protected makeRouteQuery(): LocationQuery {
+
+        const newPageParam = this.autoRefresh.value ? null : this.buffer.computePage()
+        const newKeyParam = this.autoRefresh.value ? null : this.buffer.computeFirstVisibleKey()
+
+        const result = {...this.router.currentRoute.value.query}
+        if (newPageParam !== null) {
+            result[this.pageParamName] = newPageParam.toString()
+        } else {
+            delete(result[this.pageParamName])
+        }
+        if (newKeyParam !== null) {
+            result[this.keyParamName] = this.stringFromKey(newKeyParam)
+        } else {
+            delete(result[this.keyParamName])
+        }
+        return result
     }
 
-    protected makeRouteQuery(): LocationQuery {
-        return this.subController !== null ? this.subController.makeRouteQuery() : {}
+    protected async updateRouteQuery(): Promise<void> {
+        const failure = await this.router.replace({ query: this.makeRouteQuery() })
+        if (failure && failure.type != 8 && failure.type != 16) {
+            console.warn(failure.message)
+        }
+        return Promise.resolve()
     }
 
     //
     // Private
     //
 
-    private watchSourcesHandle: WatchStopHandle|null = null
-
     private readonly autoRefreshRef: Ref<boolean> = ref(false)
     private readonly mountedRef: Ref<boolean> = ref(false)
 
+
+    private readonly errorHandler = (reason: unknown): void => {
+        console.log("reason=" + reason)
+    }
+
+    private getPageParam(): number|null {
+        return fetchNumberQueryParam(this.pageParamName, this.router.currentRoute.value)
+    }
+
+    private getKeyParam(): K|null {
+        const v = fetchStringQueryParam(this.keyParamName, this.router.currentRoute.value)
+        return v !== null ? this.keyFromString(v) : null
+    }
+
+
+    //
+    // Private (xxxWatchingSources)
+    //
+
+    private watchSourcesHandle: WatchStopHandle|null = null
+
     private startWatchingSources(): void {
         this.stopWatchingSources()
-        this.watchSourcesHandle = watch(this.sources, () => this.reset())
+        this.watchSourcesHandle = watch(this.sources, () => this.sourcesDidChange())
     }
 
     private stopWatchingSources(): void {
@@ -268,6 +247,74 @@ export abstract class TableController<R, K> {
             this.watchSourcesHandle()
             this.watchSourcesHandle = null
         }
+    }
+
+    private sourcesDidChange(): void {
+        if (this.mountedRef.value) {
+            this.buffer.clear()
+            this.bufferDidChange().finally(() => {
+                if (this.autoRefreshRef.value) {
+                    this.refreshBuffer().catch(this.errorHandler)
+                } else {
+                    this.startAutoRefresh()
+                }
+            })
+        }
+    }
+
+    //
+    // Private (refreshBuffer)
+    //
+
+    private readonly refreshCountRef: Ref<number> = ref(0)
+    private timeoutID = -1
+
+    private async refreshBuffer(): Promise<void> {
+        this.autoRefreshRef.value = true
+        await this.buffer.refresh()
+        await this.bufferDidChange()
+        if (this.refreshCountRef.value < this.maxAutoUpdateCount) {
+            this.timeoutID = window.setTimeout(() => {
+                this.refreshCountRef.value += 1
+                this.refreshBuffer().catch(this.errorHandler)
+            }, this.updatePeriod)
+        } else {
+            this.stopAutoRefresh()
+        }
+    }
+
+    private abortRefreshBuffer(): void {
+        this.autoRefreshRef.value = false
+        if (this.timeoutID != -1) {
+            window.clearTimeout(this.timeoutID)
+            this.timeoutID = -1
+        }
+        this.buffer.abortRefresh()
+    }
+
+    //
+    // Private (moveBufferToPage)
+    //
+
+    private async moveBufferToPage(page: number, key: K|null): Promise<void> {
+        this.autoRefreshRef.value = false
+        await this.buffer.moveToPage(page, key)
+        await this.bufferDidChange()
+        return Promise.resolve()
+    }
+
+    private abortMoveBufferToPage(): void {
+        this.buffer.abortMoveBufferToPage()
+    }
+
+    //
+    // Private (bufferDidChange)
+    //
+
+    private async bufferDidChange(): Promise<void> {
+        this.currentPage.value = this.buffer.computePage()
+        await this.updateRouteQuery()
+        return Promise.resolve()
     }
 }
 

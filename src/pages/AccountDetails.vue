@@ -36,7 +36,7 @@
             <span class="h-is-property-text">Show associated contract</span>
           </router-link>
         </span>
-        <template v-if="accountInfo">
+        <template v-if="false">
           <router-link v-if="nodeId" :to="{name: 'NodeDetails', params: {nodeId: nodeId}}">
             <p class="h-is-tertiary-text"> {{ accountInfo }} </p>
           </router-link>
@@ -94,20 +94,21 @@
                 </template>
               </Property>
               <Property v-else id="stakedNode">
-                <template v-slot:name>Staked to</template>
+                <template v-slot:name>Staked to Node</template>
                 <template v-slot:value>
                   <div v-if="account?.staked_node_id != null">
                     <router-link :to="{name: 'NodeDetails', params: {nodeId: account?.staked_node_id}}">
-                      {{ stakedNodeDescription ?? "Node " +  account?.staked_node_id}}
+                      {{ account?.staked_node_id }} - {{ stakedNodeDescription }}
                     </router-link>
                   </div>
                   <span v-else class="has-text-grey">None</span>
                 </template>
               </Property>
-              <Property id="stakePeriodStart">
-                <template v-slot:name>Stake Period Started</template>
+              <Property id="pendingReward">
+                <template v-slot:name>Pending Reward</template>
                 <template v-slot:value>
-                  <TimestampValue :timestamp="account?.stake_period_start" :show-none="true"/>
+                  <HbarAmount :amount="account?.pending_reward" :show-extra="true"/>
+                  <div class="h-is-extra-text h-is-text-size-2">{{ stakedSince }}</div>
                 </template>
               </Property>
               <Property id="declineReward" v-if="account?.staked_node_id != null">
@@ -234,6 +235,7 @@ import {networkRegistry} from "@/schemas/NetworkRegistry";
 import router from "@/router";
 import {TransactionByTimestampLoader} from "@/components/transaction/TransactionByTimestampLoader";
 import TransactionLink from "@/components/values/TransactionLink.vue";
+import {HMSF} from "@/utils/HMSF";
 
 const MAX_TOKEN_BALANCES = 10
 
@@ -353,6 +355,25 @@ export default defineComponent({
     // staking
     //
     const stakeNodeLoader = new NodeLoader(accountLoader.stakedNodeId)
+    const locale = "en-US"
+    const dateOptions = {
+      weekDay: "short",
+      day: "numeric",
+      month: "short",
+      year: "numeric",
+      timeZone: HMSF.forceUTC ? "UTC" : undefined
+    }
+    const stakedSince = computed(() => {
+      const dateFormat = new Intl.DateTimeFormat(locale, dateOptions)
+      let result: string | null
+      if (accountLoader.stakePeriodStart.value) {
+        const seconds = Number.parseFloat(accountLoader.stakePeriodStart.value);
+        result = "Period Started " + dateFormat.format(seconds * 1000)
+      } else {
+        result = null
+      }
+      return result
+    })
 
     //
     // account create transaction
@@ -378,6 +399,7 @@ export default defineComponent({
       displayAllTokenLinks,
       elapsed,
       showContractVisible,
+      stakedSince,
       stakedNodeDescription: stakeNodeLoader.nodeDescription,
       accountCreateTransactionId: accountCreateTransaction.transactionId,
       accountCreatorId: accountCreateTransaction.payerAccountId

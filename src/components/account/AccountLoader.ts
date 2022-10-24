@@ -54,6 +54,8 @@ export class AccountLoader extends EntityLoader<AccountBalanceTransactions> {
 
     public readonly stakePeriodStart: Ref<string|null> = computed(() => this.entity.value?.stake_period_start ?? null)
 
+    public readonly pendingReward: Ref<number|null> = computed(() => this.entity.value?.pending_reward ?? null)
+
     public readonly accountInfo: Ref<string|null> = computed(() => {
         return this.accountId.value !== null ? operatorRegistry.makeDescription(this.accountId.value) : null
     })

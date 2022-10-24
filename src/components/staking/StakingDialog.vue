@@ -156,7 +156,12 @@
 <script lang="ts">
 
 import {computed, defineComponent, onMounted, PropType, ref, watch} from "vue";
-import {AccountBalanceTransactions, AccountsResponse, NetworkNode} from "@/schemas/HederaSchemas";
+import {
+  AccountBalanceTransactions,
+  AccountsResponse,
+  makeShortNodeDescription,
+  NetworkNode
+} from "@/schemas/HederaSchemas";
 import {NodesLoader} from "@/components/node/NodesLoader";
 import Property from "@/components/Property.vue";
 import HbarAmount from "@/components/values/HbarAmount.vue";
@@ -196,7 +201,7 @@ export default defineComponent({
           let result: string
           if (isNodeSelected.value) {
             if (selectedNode.value !== props.account?.staked_node_id) {
-              result = "Do you want to stake to " + selectedNodeDescription.value + "?"
+              result = "Do you want to stake to Node " + selectedNodeDescription.value + "?"
             } else {
               result = declineChoice.value ? "Do you want to decline rewards?" : "Do you want to accept rewards?"
             }
@@ -287,7 +292,7 @@ export default defineComponent({
     const makeNodeDescription = (node: NetworkNode) => {
       let result
       if (node.description) {
-        result = node.description
+        result = node.node_id + ' - ' + makeShortNodeDescription(node.description)
       } else {
         result = node.node_account_id ? operatorRegistry.makeDescription(node.node_account_id) : null
       }

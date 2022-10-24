@@ -79,6 +79,13 @@ export function byteToHex(bytes: Uint8Array): string {
     return result
 }
 
+export function paddedBytes(bytes: Uint8Array, length: number): Uint8Array {
+    const result = new Uint8Array(length)
+    const paddingLength = Math.max(0, length - bytes.length)
+    result.set(bytes, paddingLength)
+    return result
+}
+
 const HEXSET = "0123456789ABCDEF"
 
 export function hexToByte(hex: string): Uint8Array|null {
