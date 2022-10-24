@@ -1344,7 +1344,8 @@ export const SAMPLE_ACCOUNT_STAKING_ACCOUNT = {
     "decline_reward": true,
     "staked_node_id": null,
     "staked_account_id": "0.0.5",
-    "stake_period_start" : "1646333100.356842286"
+    "stake_period_start": "1646333100.356842286",
+    "pending_reward": 12345678
 }
 
 export const SAMPLE_ACCOUNTS = {
@@ -1617,7 +1618,7 @@ export const SAMPLE_TOPIC_DUDE_MESSAGES = {
 export const SAMPLE_NETWORK_NODES = {
     "nodes": [
         {
-            "description": "",
+            "description": "Hosted by Hedera | East Coast, USA",
             "file_id": "0.0.102",
             "memo": "0.0.3",
             "node_id": 0,
@@ -1659,7 +1660,7 @@ export const SAMPLE_NETWORK_NODES = {
             "staking_period": null
         },
         {
-            "description": "",
+            "description": "Hosted by Hedera | East Coast, USA",
             "file_id": "0.0.102",
             "memo": "0.0.4",
             "node_id": 1,
@@ -1688,7 +1689,7 @@ export const SAMPLE_NETWORK_NODES = {
             "staking_period": null
         },
         {
-            "description": "",
+            "description": "Hosted by Hedera | Central, USA",
             "file_id": "0.0.102",
             "memo": "0.0.5",
             "node_id": 2,

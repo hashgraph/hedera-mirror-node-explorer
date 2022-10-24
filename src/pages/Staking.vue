@@ -71,10 +71,17 @@
             <div class="is-flex is-justify-content-space-between">
               <NetworkDashboardItem :name="stakedSince" title="Staked to" :value="stakedTo"/>
               <NetworkDashboardItem :name="stakedAmount ? 'HBAR' : ''" title="My Stake" :value="stakedAmount"/>
-              <NetworkDashboardItem :title="'Rewards'" :value="declineReward" :class="{'h-has-opacity-40': ignoreReward}"/>
+
+              <NetworkDashboardItem v-if="!ignoreReward && declineReward && !pendingReward"
+                                    :title="'Rewards'"
+                                    :value="'Declined'"/>
+              <NetworkDashboardItem v-else
+                                    :title="'Pending Reward'"
+                                    :name="pendingReward ? 'HBAR' : ''"
+                                    :value="pendingReward"
+                                    :class="{'h-has-opacity-40': ignoreReward && !pendingReward}"/>
             </div>
-            <br/>
-            <div class="is-flex is-justify-content-space-between">
+            <div class="is-flex is-justify-content-space-between mt-5">
               <div class="is-flex is-justify-content-flex-start">
                 <button id="stopStakingButton" class="button is-white is-small"
                         :disabled="!stakedTo" @click="showStopConfirmDialog = true">STOP STAKING</button>
@@ -84,7 +91,6 @@
             </div>
             <div class="mt-5 h-is-text-size-2 is-italic has-text-grey has-text-centered">
               <span class="has-text-grey-light">Please Note: </span>
-              Staking is in Phase 2 and will not pay out rewards until Phase 3.<br/>
               Your full balance is automatically staked.<br/>
               Your funds are fully available for use while staked.<br/>
               You can unstake or switch nodes freely.
@@ -96,7 +102,16 @@
               <div class="mt-4"/>
               <NetworkDashboardItem :name="stakedAmount ? 'HBAR' : ''" title="My Stake" :value="stakedAmount"/>
               <div class="mt-4"/>
-              <NetworkDashboardItem title="Rewards" :value="declineReward" :class="{'h-has-opacity-40': ignoreReward}"/>
+
+              <NetworkDashboardItem v-if="!ignoreReward && declineReward && !pendingReward"
+                                    :title="'Rewards'"
+                                    :value="'Declined'"/>
+              <NetworkDashboardItem v-else
+                                    :title="'Pending Reward'"
+                                    :name="'HBAR'"
+                                    :value="null"
+                                    :class="{'h-has-opacity-40': ignoreReward && !pendingReward}"/>
+
               <div class="mt-4"/>
             </div>
               <div class="is-flex is-justify-content-center">
@@ -109,12 +124,11 @@
             </div>
             <div class="mt-5 h-is-text-size-2 is-italic has-text-grey has-text-centered">
               <span class="has-text-grey-light">Please Note: </span>
-              Staking is in Phase 2 and will not pay out rewards until Phase 3.<br/>
               Your full balance is automatically staked.<br/>
               Your funds are fully available for use while staked.<br/>
               You can unstake or switch nodes freely.
             </div>
-            <div class="mt-6"/>
+            <div class="mt-4"/>
           </div>
         </template>
 
@@ -298,8 +312,8 @@ export default defineComponent({
       let result: string|null
       if (accountLoader.stakedAccountId.value) {
         result = "Account " + accountLoader.stakedAccountId.value
-      } else if (accountLoader.stakedNodeId) {
-        result = stakedNodeLoader.nodeDescription.value
+      } else if (accountLoader.stakedNodeId.value) {
+        result = "Node " + accountLoader.stakedNodeId.value + " - " + stakedNodeLoader.shortNodeDescription.value
       } else {
         result = null
       }
@@ -311,19 +325,19 @@ export default defineComponent({
       return balance / 100000000
     })
 
-    const stakedAmount = computed(() => {
+    const stakedAmount = computed(() => isStaked.value ? formatHbarAmount(accountLoader.balance.value) : null)
+
+    const formatHbarAmount = (amount: number | null) => {
       let result
-      if ( isStaked.value && accountLoader.balance.value != null) {
-        const amountFormatter = new Intl.NumberFormat("en-US", {
-          maximumFractionDigits: 8
-        })
-        result = amountFormatter.format(accountLoader.balance.value / 100000000)
+      if (amount) {
+        const amountFormatter = new Intl.NumberFormat("en-US", {maximumFractionDigits: 8})
+        result = amountFormatter.format(amount / 100000000)
       }
       else {
         result = null
       }
       return result
-    })
+    }
 
     const locale = "en-US"
     const dateOptions = {
@@ -334,6 +348,8 @@ export default defineComponent({
       timeZone: HMSF.forceUTC ? "UTC" : undefined
     }
     const dateFormat = new Intl.DateTimeFormat(locale, dateOptions)
+
+    const pendingReward = computed(() => formatHbarAmount(accountLoader.pendingReward.value ?? null))
 
     const stakedSince = computed(() => {
       let result: string | null
@@ -346,18 +362,8 @@ export default defineComponent({
       return result
     })
 
-    const declineReward = computed(() => {
-      let result: string | null
-      if (accountLoader.entity.value && accountLoader.entity.value.decline_reward !== null) {
-        result = accountLoader.entity.value.decline_reward === true ? 'Declined' : 'Accepted'
-      } else {
-        result = null
-      }
-      return result
-    })
-
+    const declineReward = computed(() => accountLoader.entity.value?.decline_reward ?? false)
     const ignoreReward = computed(() => accountLoader.stakedNodeId.value === null)
-
 
     //
     // stakedNode
@@ -468,6 +474,7 @@ export default defineComponent({
       stakedNode: stakedNodeLoader.node,
       balanceInHbar,
       stakedAmount,
+      pendingReward,
       stakedSince,
       declineReward,
       ignoreReward,

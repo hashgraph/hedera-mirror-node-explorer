@@ -39,7 +39,7 @@
               <o-select v-model="selectedNodeId" class="h-is-text-size-1" style="border-radius: 4px">
                 <option v-for="n in nodes" :key="n.node_id" :value="n.node_id"
                         style="background-color: var(--h-theme-box-background-color)">
-                  {{ makeNodeDescription(n) }} - {{ makeNodeStake(n) }}
+                  {{ n.node_id }} - {{ makeNodeDescription(n) }} - {{ makeNodeStake(n) }}
                 </option>
               </o-select>
             </o-field>
@@ -81,7 +81,7 @@
 import {computed, defineComponent, inject, onBeforeMount, onMounted, ref, watch} from 'vue';
 import NetworkDashboardItem from "@/components/node/NetworkDashboardItem.vue";
 import DashboardCard from "@/components/DashboardCard.vue";
-import {NetworkNode} from "@/schemas/HederaSchemas";
+import {makeShortNodeDescription, NetworkNode} from "@/schemas/HederaSchemas";
 import {operatorRegistry} from "@/schemas/OperatorRegistry";
 import {NodesLoader} from "@/components/node/NodesLoader";
 import {NodeCursor} from "@/components/node/NodeCursor";
@@ -132,7 +132,7 @@ export default defineComponent({
     const makeNodeDescription = (node: NetworkNode) => {
       let result
       if (node.description) {
-        result = node.description
+        result = makeShortNodeDescription(node.description)
       } else {
         result = node.node_account_id ? operatorRegistry.makeDescription(node.node_account_id) : null
       }
