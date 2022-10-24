@@ -73,10 +73,10 @@
               <NetworkDashboardItem :name="stakedAmount ? 'HBAR' : ''" title="My Stake" :value="stakedAmount"/>
 
               <NetworkDashboardItem v-if="!ignoreReward && declineReward && !pendingReward"
-                                    :title="'Rewards'"
-                                    :value="'Declined'"/>
+                                    title="Rewards"
+                                    value="Declined"/>
               <NetworkDashboardItem v-else
-                                    :title="'Pending Reward'"
+                                    title="Pending Reward"
                                     :name="pendingReward ? 'HBAR' : ''"
                                     :value="pendingReward"
                                     :class="{'h-has-opacity-40': ignoreReward && !pendingReward}"/>
@@ -104,11 +104,11 @@
               <div class="mt-4"/>
 
               <NetworkDashboardItem v-if="!ignoreReward && declineReward && !pendingReward"
-                                    :title="'Rewards'"
-                                    :value="'Declined'"/>
+                                    title="Rewards"
+                                    value="Declined"/>
               <NetworkDashboardItem v-else
-                                    :title="'Pending Reward'"
-                                    :name="'HBAR'"
+                                    title="Pending Reward"
+                                    name="HBAR"
                                     :value="null"
                                     :class="{'h-has-opacity-40': ignoreReward && !pendingReward}"/>
 
