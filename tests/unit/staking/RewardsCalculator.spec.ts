@@ -85,9 +85,9 @@ describe("Staking.vue", () => {
 
         const options = wrapper.find('select').findAll('option')
         expect(options.length).toBe(3)
-        expect(options.at(0)?.element.text).toBe('Node 0 - testnet - 6,000,000ℏ staked (20% of Max)')
-        expect(options.at(1)?.element.text).toBe('Node 1 - testnet - 9,000,000ℏ staked (30% of Max)')
-        expect(options.at(2)?.element.text).toBe('Node 2 - testnet - 9,000,000ℏ staked (30% of Max)')
+        expect(options.at(0)?.element.text).toBe('0 - Hosted by Hedera - 6,000,000ℏ staked (20% of Max)')
+        expect(options.at(1)?.element.text).toBe('1 - Hosted by Hedera - 9,000,000ℏ staked (30% of Max)')
+        expect(options.at(2)?.element.text).toBe('2 - Hosted by Hedera - 9,000,000ℏ staked (30% of Max)')
 
         expect(options.at(0)?.element.selected).toBe(false)
         expect(options.at(1)?.element.selected).toBe(false)
@@ -135,9 +135,9 @@ describe("Staking.vue", () => {
 
         const options = wrapper.find('select').findAll('option')
         expect(options.length).toBe(3)
-        expect(options.at(0)?.element.text).toBe('Node 0 - testnet - 6,000,000ℏ staked (20% of Max)')
-        expect(options.at(1)?.element.text).toBe('Node 1 - testnet - 9,000,000ℏ staked (30% of Max)')
-        expect(options.at(2)?.element.text).toBe('Node 2 - testnet - 9,000,000ℏ staked (30% of Max)')
+        expect(options.at(0)?.element.text).toBe('0 - Hosted by Hedera - 6,000,000ℏ staked (20% of Max)')
+        expect(options.at(1)?.element.text).toBe('1 - Hosted by Hedera - 9,000,000ℏ staked (30% of Max)')
+        expect(options.at(2)?.element.text).toBe('2 - Hosted by Hedera - 9,000,000ℏ staked (30% of Max)')
 
         expect(options.at(0)?.element.selected).toBe(false)
         expect(options.at(1)?.element.selected).toBe(true)
@@ -182,9 +182,9 @@ describe("Staking.vue", () => {
 
         const options = wrapper.find('select').findAll('option')
         expect(options.length).toBe(3)
-        expect(options.at(0)?.element.text).toBe('Node 0 - testnet - 6,000,000ℏ staked (20% of Max)')
-        expect(options.at(1)?.element.text).toBe('Node 1 - testnet - 9,000,000ℏ staked (30% of Max)')
-        expect(options.at(2)?.element.text).toBe('Node 2 - testnet - 9,000,000ℏ staked (30% of Max)')
+        expect(options.at(0)?.element.text).toBe('0 - Hosted by Hedera - 6,000,000ℏ staked (20% of Max)')
+        expect(options.at(1)?.element.text).toBe('1 - Hosted by Hedera - 9,000,000ℏ staked (30% of Max)')
+        expect(options.at(2)?.element.text).toBe('2 - Hosted by Hedera - 9,000,000ℏ staked (30% of Max)')
 
         expect(options.at(0)?.element.selected).toBe(false)
         expect(options.at(1)?.element.selected).toBe(false)

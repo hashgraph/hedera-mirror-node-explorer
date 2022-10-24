@@ -36,7 +36,7 @@
             <span class="h-is-property-text">Show associated contract</span>
           </router-link>
         </span>
-        <template v-if="accountInfo">
+        <template v-if="false">
           <router-link v-if="nodeId" :to="{name: 'NodeDetails', params: {nodeId: nodeId}}">
             <p class="h-is-tertiary-text"> {{ accountInfo }} </p>
           </router-link>
@@ -94,11 +94,11 @@
                 </template>
               </Property>
               <Property v-else id="stakedNode">
-                <template v-slot:name>Staked to</template>
+                <template v-slot:name>Staked to Node</template>
                 <template v-slot:value>
                   <div v-if="account?.staked_node_id != null">
                     <router-link :to="{name: 'NodeDetails', params: {nodeId: account?.staked_node_id}}">
-                      {{ stakedNodeDescription ?? "Node " +  account?.staked_node_id}}
+                      {{ account?.staked_node_id }} - {{ stakedNodeDescription }}
                     </router-link>
                   </div>
                   <span v-else class="has-text-grey">None</span>

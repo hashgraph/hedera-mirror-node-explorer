@@ -312,8 +312,8 @@ export default defineComponent({
       let result: string|null
       if (accountLoader.stakedAccountId.value) {
         result = "Account " + accountLoader.stakedAccountId.value
-      } else if (accountLoader.stakedNodeId) {
-        result = stakedNodeLoader.nodeDescription.value
+      } else if (accountLoader.stakedNodeId.value) {
+        result = "Node " + accountLoader.stakedNodeId.value + " - " + stakedNodeLoader.shortNodeDescription.value
       } else {
         result = null
       }

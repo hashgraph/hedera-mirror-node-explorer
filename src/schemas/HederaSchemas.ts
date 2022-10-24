@@ -506,6 +506,12 @@ export interface ServiceEndPoint {
     ip_address_v4: string
     port: number
 }
+
+export function makeShortNodeDescription(description: string): string {
+    const separator = description.indexOf('|') ?? -1
+    return (separator !== -1) ? (description.slice(0, separator) ?? null) : description
+}
+
 // ---------------------------------------------------------------------------------------------------------------------
 //                                                      Network
 // ---------------------------------------------------------------------------------------------------------------------

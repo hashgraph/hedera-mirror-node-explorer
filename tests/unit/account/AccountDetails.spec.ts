@@ -311,7 +311,7 @@ describe("AccountDetails.vue", () => {
         await flushPromises()
         // console.log(wrapper.html())
 
-        expect(wrapper.get("#stakedNodeValue").text()).toBe("Node 0 - testnet")
+        expect(wrapper.get("#stakedNodeValue").text()).toBe("1 - Hosted by Hedera | East Coast, USA")
         expect(wrapper.find("#stakedAccount").exists()).toBe(false)
         expect(wrapper.get("#pendingRewardValue").text()).toBe("0.00000000$0.0000Period Started Mar 3, 2022")
         expect(wrapper.get("#declineRewardValue").text()).toBe("Accepted")

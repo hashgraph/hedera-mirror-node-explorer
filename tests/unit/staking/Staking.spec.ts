@@ -257,7 +257,7 @@ describe("Staking.vue", () => {
         await nextTick()
 
         // 3.6) Confirms
-        await confirmChangeStaking("Change Staking  for account 0.0.730632Do you want to stake to Node 2 - testnet?FillerCANCELCONFIRM")
+        await confirmChangeStaking("Change Staking  for account 0.0.730632Do you want to stake to Node 2 - Hosted by Hedera ?FillerCANCELCONFIRM")
 
         // 3.7) Waits for progress dialog and closes ...
         await waitAndClose("Updating stakingConnecting to Hedera Network using your wallet…Check your wallet for any approval requestCLOSE",
@@ -270,7 +270,7 @@ describe("Staking.vue", () => {
         expect(testDriver.account.decline_reward).toBeTruthy()
 
         // 3.8) Checks staking information
-        expect(ndis[0].text()).toBe("Staked toNode 2 - testnetsince Mar 3, 2022")
+        expect(ndis[0].text()).toBe("Staked toNode 2 - Hosted by Hedera since Mar 3, 2022")
         expect(ndis[1].text()).toBe("My Stake0.31669471HBAR")
         expect(ndis[2].text()).toBe("Pending RewardNone")
 
@@ -286,7 +286,7 @@ describe("Staking.vue", () => {
         // 4.2) Checks StakingDialog content
         expect(stakingModal.element.classList.contains("is-active")).toBeTruthy()
         expect(stakingModal.get("#amountStakedValue").text()).toBe("0.31669471$0.0779")
-        expect(stakingModal.get("#currentlyStakedToValue").text()).toBe("Node 2 - testnet")
+        expect(stakingModal.get("#currentlyStakedToValue").text()).toBe("Node 2 - Hosted by Hedera")
         expect(changeButton.text()).toBe("CHANGE")
         // expect(changeButton.attributes("disabled")).toBeDefined()
 
@@ -314,7 +314,7 @@ describe("Staking.vue", () => {
         expect(testDriver.account.decline_reward).toBeFalsy()
 
         // 4.8) Checks staking information
-        expect(ndis[0].text()).toBe("Staked toNode 2 - testnetsince Mar 3, 2022")
+        expect(ndis[0].text()).toBe("Staked toNode 2 - Hosted by Hedera since Mar 3, 2022")
         expect(ndis[1].text()).toBe("My Stake0.31669471HBAR")
         expect(ndis[2].text()).toBe("Pending RewardNone")
 
@@ -336,7 +336,7 @@ describe("Staking.vue", () => {
             await confirmButtons[1].trigger("click")
             await flushPromises()
         }
-        await confirm("My Staking  for account 0.0.730632Do you want to stop staking to Node 2 - testnet?FillerCANCELCONFIRM")
+        await confirm("My Staking  for account 0.0.730632Do you want to stop staking to Node 2 - Hosted by Hedera ?FillerCANCELCONFIRM")
 
         // 5.3) Waits for progress dialog and closes ...
         await waitAndClose("Stopping stakingCompleting operation…This may take a few secondsCLOSE",
