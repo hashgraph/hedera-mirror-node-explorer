@@ -132,7 +132,7 @@ export class SearchRequest {
 
         const accountParam = entityID ?? ethereumAddress ?? accountAlias
         const transactionParam = transactionID ?? transactionHash
-        const tokenParam = entityID ?? ethereumAddress
+        const tokenParam = entityID ?? EntityID.fromAddress(ethereumAddress ?? undefined)
         const contractParam = entityID ?? ethereumAddress
 
         // 1) Searches accounts

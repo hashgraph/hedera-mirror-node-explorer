@@ -61,10 +61,7 @@ mock.onGet(matcher_transaction_with_hash).reply(200, SAMPLE_TRANSACTIONS)
 
 const matcher_token = "/api/v1/tokens/" + SAMPLE_TOKEN.token_id
 mock.onGet(matcher_token).reply(200, SAMPLE_TOKEN)
-
 const SAMPLE_TOKEN_ADDRESS = EntityID.parse(SAMPLE_TOKEN.token_id)!.toAddress()
-const matcher_token_with_address = "/api/v1/tokens/" + SAMPLE_TOKEN_ADDRESS
-mock.onGet(matcher_token_with_address).reply(200, SAMPLE_TOKEN)
 
 const SAMPLE_TOPIC_ID = SAMPLE_TOPIC_MESSAGES.messages[0].topic_id
 const matcher_topic = "/api/v1/topics/" + SAMPLE_TOPIC_ID + "/messages"
