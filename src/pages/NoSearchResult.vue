@@ -47,7 +47,12 @@
           <span style="font-weight: 400">{{ this.searchedId }}</span>
           <span >".</span>
           <br/><br/>
-          Make sure you enter either an entity ID (0.0.x), a transaction ID (0.0.x@seconds.nanoseconds)<br/>or an account alias using hexadecimal notation.
+          Make sure you enter one of the expressions below:<br/><br/>
+          an entity ID (0.0.x),<br/>
+          a transaction ID (0.0.x@seconds.nanoseconds),<br/>
+          a transaction hash (48 bytes in hexadecimal notation),<br/>
+          an ethereum address (20 bytes in hexadecimal notation),<br/>
+          an account alias (string in base 32 notation).<br/>
         </template>
       </p>
     </div>
