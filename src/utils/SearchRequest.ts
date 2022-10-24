@@ -29,7 +29,7 @@ import axios from "axios";
 import {TransactionID} from "@/utils/TransactionID";
 import {DeferredPromise} from "@/utils/DeferredPromise";
 import {EntityID} from "@/utils/EntityID";
-import {aliasToBase32, byteToHex, hexToByte} from "@/utils/B64Utils";
+import {base32ToAlias, byteToHex, hexToByte, paddedBytes} from "@/utils/B64Utils";
 
 
 export class SearchRequest {
@@ -54,20 +54,91 @@ export class SearchRequest {
         this.countdown = 5
         this.errorCount = 0
 
-        const entityID = EntityID.parse(this.searchedId, true)
-        const normEntityID = entityID !== null ? entityID.toString() : null
-        const transactionID = TransactionID.parse(this.searchedId)
-        const normTransactionID = transactionID != null ? transactionID.toString(false) : null
+        /*
+
+        searchId syntax                      | Description      | Tentative searches
+        =====================================+==================+======================================================
+        shard.realm.num                      | Entity ID        | api/v1/accounts/{searchId}
+                                             |                  | api/v1/contracts/{searchId}
+                                             |                  | api/v1/tokens/{searchId}
+                                             |                  | api/v1/topics/{searchId}/messages
+        -------------------------------------+------------------+------------------------------------------------------
+        integer (decimal notation)           | Incomplete       | api/v1/accounts/0.0.{searchId}
+                                             | Entity ID        | api/v1/contracts/0.0.{searchId}
+                                             |                  | api/v1/tokens/0.0.{searchId}
+                                             |                  | api/v1/topics/0.0.{searchId}/messages
+        -------------------------------------+------------------+------------------------------------------------------
+        shard.realm.num@seconds.nanoseconds  | Transaction ID   | api/v1/transactions/normalize({searchId}
+        -------------------------------------+------------------+------------------------------------------------------
+        shard.realm.num-seconds-nanoseconds  | Transaction ID   | api/v1/transactions/{searchId}
+                                             | (normalized)     |
+        -------------------------------------+------------------+------------------------------------------------------
+        hexadecimal 48 bytes                 | Transaction Hash | api/v1/transactions/{searchId}
+        -------------------------------------+------------------+------------------------------------------------------
+        hexadecimal 20 bytes                 | Ethereum Address | api/v1/accounts/{searchId}
+                                             |                  | api/v1/contracts/{searchId}
+                                             |                  | api/v1/token/ethereumToEntityID({searchId})
+        -------------------------------------+------------------+------------------------------------------------------
+        hexadecimal < 20 bytes               | Ethereum Address | api/v1/accounts/padded({searchId})
+                                             |                  | api/v1/contracts/padded({searchId})
+                                             |                  | api/v1/token/ethereumToEntityID(padded({searchId}))
+        -------------------------------------+------------------+------------------------------------------------------
+        base32                               | Account Alias    | api/v1/accounts/{searchId}
+        -------------------------------------+------------------+------------------------------------------------------
+
+
+
+
+
+            searchId syntax                         | Tentative searches
+            ========================================+===============================================
+            shard.realm.num                         | api/v1/tokens/{searchId}
+            (ie EntityID)                           | api/v1/topics/{searchId}/messages
+                                                    | api/v1/contracts/{searchId}
+            ----------------------------------------+-----------------------------------------------
+            num                                     | api/v1/tokens/0.0.{searchId}
+            (ie incomplete EntityID)                | api/v1/topics/0.0.{searchId}/messages
+                                                    | api/v1/contracts/0.0.{searchId}
+            ========================================+===============================================
+            shard.realm.num@seconds.nanoseconds     | api/v1/transactions/{normalized-search-id}
+            (ie Transaction ID)                     |
+            ----------------------------------------+-----------------------------------------------
+            shard.realm.num-seconds-nanoseconds     | api/v1/transactions/{searchId}
+            (ie normalized Transaction ID)          |
+            ========================================+===============================================
+            hexadecimal 48 bytes                    | api/v1/transactions/{searchId}
+            (ie transaction hash)                   |
+            ----------------------------------------+-----------------------------------------------
+            hexadecimal 20 bytes                    | api/v1/accounts/{searchId}
+            (evm address)                           | api/v1/contracts/{searchId}
+            ----------------------------------------+-----------------------------------------------
+            hexadecimal >= 15 bytes                 | api/v1/accounts/{searchId-converted-to-base32}
+            (account alias)                         |
+            ========================================+===============================================
+            base32                                  | api/v1/accounts/{searchId}
+            (account alias)                         |
+            ----------------------------------------+-----------------------------------------------
+
+         */
+
+        const entityID = EntityID.parse(this.searchedId, true)?.toString() ?? null
+        const transactionID = TransactionID.parse(this.searchedId)?.toString(false) ?? null
         const hexBytes = hexToByte(this.searchedId)
-        const evmAddress = (hexBytes !== null && hexBytes.length == 20) ? byteToHex(hexBytes) : null
-        const transactionHash = (hexBytes !== null && hexBytes.length == 48) ? byteToHex(hexBytes) : null
-        const hexByteString32 = (hexBytes !== null && hexBytes.length >= 15) ? aliasToBase32(hexBytes) : null
+        const transactionHash = hexBytes !== null && hexBytes.length == 48 ? byteToHex(hexBytes) : null
+        const ethereumAddress = hexBytes !== null && (1 <= hexBytes.length && hexBytes.length <= 20)
+                                ? byteToHex(paddedBytes(hexBytes, 20)) : null
+        const accountAlias = base32ToAlias(this.searchedId) !== null ? this.searchedId : null
+
+
+        const accountParam = entityID ?? ethereumAddress ?? accountAlias
+        const transactionParam = transactionID ?? transactionHash
+        const tokenParam = entityID ?? ethereumAddress
+        const contractParam = entityID ?? ethereumAddress
 
         // 1) Searches accounts
-        if (normEntityID !== null || hexByteString32 !== null) {
-            const entityOrAlias = hexByteString32 ? hexByteString32 : normEntityID
+        if (accountParam !== null) {
             axios
-                .get("api/v1/accounts/" + entityOrAlias)
+                .get("api/v1/accounts/" + accountParam)
                 .then(response => {
                     this.account = response.data
                 })
@@ -84,10 +155,9 @@ export class SearchRequest {
         }
 
         // 2) Searches transactions
-        if (normTransactionID !== null || transactionHash !== null) {
-            const transactionPathParam = normTransactionID !== null ? normTransactionID : transactionHash
+        if (transactionParam !== null) {
             axios
-                .get("api/v1/transactions/" + transactionPathParam)
+                .get("api/v1/transactions/" + transactionParam)
                 .then(response => {
                     this.transactions = response.data.transactions
                 })
@@ -104,9 +174,9 @@ export class SearchRequest {
         }
 
         // 3) Searches tokens
-        if (normEntityID !== null) {
+        if (tokenParam !== null) {
             axios
-                .get("api/v1/tokens/" + normEntityID)
+                .get("api/v1/tokens/" + tokenParam)
                 .then(response => {
                     this.tokenInfo = response.data
                 })
@@ -123,13 +193,13 @@ export class SearchRequest {
         }
 
         // 4) Searches topics
-        if (normEntityID !== null) {
+        if (entityID !== null) {
             const params = {
                 order: "desc",
                 limit: "1"
             }
             axios
-                .get("api/v1/topics/" + normEntityID + "/messages", {params})
+                .get("api/v1/topics/" + entityID + "/messages", {params})
                 .then(response => {
                     this.topicMessages = response.data.messages
                 })
@@ -146,10 +216,9 @@ export class SearchRequest {
         }
 
         // 5) Searches contracts
-        if (normEntityID !== null || evmAddress !== null) {
-            const entityOrAddress = evmAddress ? evmAddress : normEntityID
+        if (contractParam) {
             axios
-                .get<ContractResponse>("api/v1/contracts/" + entityOrAddress)
+                .get<ContractResponse>("api/v1/contracts/" + contractParam)
                 .then(response => {
                     this.contract = response.data
                 })

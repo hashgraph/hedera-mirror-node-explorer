@@ -1,3 +1,5 @@
+// noinspection DuplicatedCode
+
 /*-
  *
  * Hedera Mirror Node Explorer
@@ -29,15 +31,24 @@ import {
     SAMPLE_TRANSACTIONS
 } from "../Mocks";
 import {SearchRequest} from "@/utils/SearchRequest";
-import {base32ToAlias, base64DecToArr, byteToHex} from "@/utils/B64Utils";
+import {base64DecToArr, byteToHex} from "@/utils/B64Utils";
+import {EntityID} from "@/utils/EntityID";
 
 const mock = new MockAdapter(axios)
+
+// Account
 
 const matcher_account = "/api/v1/accounts/" + SAMPLE_ACCOUNT.account
 mock.onGet(matcher_account).reply(200, SAMPLE_ACCOUNT)
 
 const matcher_account_with_alias = "/api/v1/accounts/" + SAMPLE_ACCOUNT.alias
 mock.onGet(matcher_account_with_alias).reply(200, SAMPLE_ACCOUNT)
+
+const SAMPLE_ACCOUNT_ADDRESS = EntityID.parse(SAMPLE_ACCOUNT.account)!.toAddress()
+const matcher_account_with_address = "/api/v1/accounts/" + SAMPLE_ACCOUNT_ADDRESS
+mock.onGet(matcher_account_with_address).reply(200, SAMPLE_ACCOUNT)
+
+// Transaction
 
 const matcher_transaction = "/api/v1/transactions/" + SAMPLE_TRANSACTION.transaction_id
 mock.onGet(matcher_transaction).reply(200, SAMPLE_TRANSACTIONS)
@@ -46,8 +57,14 @@ const TRANSACTION_HASH = byteToHex(base64DecToArr(SAMPLE_TRANSACTION.transaction
 const matcher_transaction_with_hash = "/api/v1/transactions/" + TRANSACTION_HASH
 mock.onGet(matcher_transaction_with_hash).reply(200, SAMPLE_TRANSACTIONS)
 
+// Token
+
 const matcher_token = "/api/v1/tokens/" + SAMPLE_TOKEN.token_id
 mock.onGet(matcher_token).reply(200, SAMPLE_TOKEN)
+
+const SAMPLE_TOKEN_ADDRESS = EntityID.parse(SAMPLE_TOKEN.token_id)!.toAddress()
+const matcher_token_with_address = "/api/v1/tokens/" + SAMPLE_TOKEN_ADDRESS
+mock.onGet(matcher_token_with_address).reply(200, SAMPLE_TOKEN)
 
 const SAMPLE_TOPIC_ID = SAMPLE_TOPIC_MESSAGES.messages[0].topic_id
 const matcher_topic = "/api/v1/topics/" + SAMPLE_TOPIC_ID + "/messages"
@@ -66,6 +83,10 @@ mock.onGet(matcher_contracts_with_invalid_evm_address).reply(400)
 
 describe("SearchRequest.ts", () => {
 
+    //
+    // Account
+    //
+
     test("account", async () => {
         const r = new SearchRequest(SAMPLE_ACCOUNT.account ?? "")
         await r.run()
@@ -80,12 +101,11 @@ describe("SearchRequest.ts", () => {
 
     })
 
-    test("account (with alias)", async () => {
-        const aliasHex = byteToHex(base32ToAlias(SAMPLE_ACCOUNT.alias)!)
-        const r = new SearchRequest(aliasHex)
+    test("account (with eth address)", async () => {
+        const r = new SearchRequest(SAMPLE_ACCOUNT_ADDRESS)
         await r.run()
 
-        expect(r.searchedId).toBe(aliasHex)
+        expect(r.searchedId).toBe(SAMPLE_ACCOUNT_ADDRESS)
         expect(r.account).toStrictEqual(SAMPLE_ACCOUNT)
         expect(r.transactions).toStrictEqual([])
         expect(r.tokenInfo).toBeNull()
@@ -93,19 +113,25 @@ describe("SearchRequest.ts", () => {
         expect(r.contract).toBeNull()
         expect(r.getErrorCount()).toBe(0)
 
-        const aliasHex2 = "0x" + aliasHex
-        const r2 = new SearchRequest(aliasHex2)
-        await r2.run()
+    })
 
-        expect(r2.searchedId).toBe(aliasHex2)
-        expect(r2.account).toStrictEqual(SAMPLE_ACCOUNT)
-        expect(r2.transactions).toStrictEqual([])
-        expect(r2.tokenInfo).toBeNull()
-        expect(r2.topicMessages).toStrictEqual([])
-        expect(r2.contract).toBeNull()
+    test("account (with alias)", async () => {
+        const r = new SearchRequest(SAMPLE_ACCOUNT.alias)
+        await r.run()
+
+        expect(r.searchedId).toBe(SAMPLE_ACCOUNT.alias)
+        expect(r.account).toStrictEqual(SAMPLE_ACCOUNT)
+        expect(r.transactions).toStrictEqual([])
+        expect(r.tokenInfo).toBeNull()
+        expect(r.topicMessages).toStrictEqual([])
+        expect(r.contract).toBeNull()
         expect(r.getErrorCount()).toBe(0)
 
     })
+
+    //
+    // Transaction
+    //
 
     test("transaction", async () => {
         const r = new SearchRequest(SAMPLE_TRANSACTION.transaction_id ?? "")
@@ -135,6 +161,10 @@ describe("SearchRequest.ts", () => {
 
     })
 
+    //
+    // Token
+    //
+
     test("token", async () => {
         const r = new SearchRequest(SAMPLE_TOKEN.token_id)
         await r.run()
@@ -149,6 +179,24 @@ describe("SearchRequest.ts", () => {
 
     })
 
+    test("token (with ethereum address)", async () => {
+        const r = new SearchRequest(SAMPLE_TOKEN_ADDRESS)
+        await r.run()
+
+        expect(r.searchedId).toBe(SAMPLE_TOKEN_ADDRESS)
+        expect(r.account).toBeNull()
+        expect(r.transactions).toStrictEqual([])
+        expect(r.tokenInfo).toStrictEqual(SAMPLE_TOKEN)
+        expect(r.topicMessages).toStrictEqual([])
+        expect(r.contract).toBeNull()
+        expect(r.getErrorCount()).toBe(0)
+
+    })
+
+    //
+    // Topic
+    //
+
     test("topic", async () => {
         const r = new SearchRequest(SAMPLE_TOPIC_ID)
         await r.run()
@@ -162,6 +210,10 @@ describe("SearchRequest.ts", () => {
         expect(r.getErrorCount()).toBe(0)
 
     })
+
+    //
+    // Contract
+    //
 
     test("contract", async () => {
         const r = new SearchRequest(SAMPLE_CONTRACT.contract_id)
