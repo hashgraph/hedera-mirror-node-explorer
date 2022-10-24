@@ -44,15 +44,9 @@ export class TransactionTableControllerXL extends TableController<Transaction, s
             pageParamName, keyParamName);
         this.accountId = accountId
         this.accountIdMandatory = accountIdMandatory
-        this.watchAndReload([this.transactionType])
+        this.watchAndReload([this.transactionType, this.accountId])
         // this.accountId cannot be treated as this.transactionType :
         // when this.accountId changes, we don't want to move to auto-refresh mode.
-        watch(this.accountId, () => {
-            if (this.mounted.value) {
-                this.unmount()
-                this.mount()
-            }
-        })
     }
 
     public readonly transactionType: Ref<string> = ref("")
@@ -121,9 +115,13 @@ export class TransactionTableControllerXL extends TableController<Transaction, s
         super.unmount()
     }
 
-    public makeRouteQuery(): LocationQuery {
+    protected makeRouteQuery(): LocationQuery {
         const result = super.makeRouteQuery()
-        result[this.typeParamName] = this.transactionType.value.toLowerCase()
+        if (this.transactionType.value != "") {
+            result[this.typeParamName] = this.transactionType.value.toLowerCase()
+        } else {
+            delete(result[this.typeParamName])
+        }
         return result
     }
 
