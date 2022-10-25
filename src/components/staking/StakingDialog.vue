@@ -84,7 +84,7 @@
                           class="h-is-text-size-1" style="border-radius: 4px"  @focus="stakeChoice='node'">
                   <option v-for="n in nodes" :key="n.node_id" :value="n.node_id"
                           style="background-color: var(--h-theme-box-background-color)">
-                    {{ makeNodeDescription(n) }} - {{ makeNodeStake(n) }}
+                    {{ makeNodeDescription(n) }} - {{ makeNodeStakeDescription(n) }}
                   </option>
                 </o-select>
               </o-field>
@@ -131,7 +131,7 @@
           </div>
         </div>
 
-        <Property id="changeCost">
+        <Property v-if="false" id="changeCost">
           <template v-slot:name>Change Transaction Cost</template>
           <template v-slot:value>
             <HbarAmount v-if="account" :amount="10000000" :show-extra="true" :decimals="1"/>
@@ -158,7 +158,7 @@
 import {computed, defineComponent, onMounted, PropType, ref, watch} from "vue";
 import {
   AccountBalanceTransactions,
-  AccountsResponse,
+  AccountsResponse, makeNodeStakeDescription,
   makeShortNodeDescription,
   NetworkNode
 } from "@/schemas/HederaSchemas";
@@ -244,7 +244,9 @@ export default defineComponent({
 
     const selectedNode = ref<number|null>(null)
     const selectedNodeDescription = computed(() => {
-      return (selectedNode.value && nodesLoader.nodes.value) ? makeNodeDescription(nodesLoader.nodes.value[selectedNode.value]) : null
+      return (selectedNode.value !== null && nodesLoader.nodes.value)
+          ? makeNodeDescription(nodesLoader.nodes.value[selectedNode.value])
+          : null
     })
     watch(accountId, () => {
       if ( isNodeSelected.value && selectedNode.value == null) {
@@ -256,9 +258,18 @@ export default defineComponent({
     watch(accountId, () => declineChoice.value = props.account?.decline_reward ?? false)
 
     const enableChangeButton = computed(() => {
+      console.log("isAccountSelected.value: " + isAccountSelected.value)
+      console.log("isSelectedAccountValid.value: " + isSelectedAccountValid.value)
+      console.log("props.account?.staked_account_id: " + props.account?.staked_account_id)
+      console.log("selectedAccountEntity.value: " + selectedAccountEntity.value)
+      console.log("isNodeSelected.value: " + isNodeSelected.value)
+      console.log("selectedNode.value: " + selectedNode.value)
+      console.log("props.account?.staked_node_id: " + props.account?.staked_node_id)
+      console.log("props.account?.decline_reward: " + props.account?.decline_reward)
+      console.log("declineChoice.value: " + declineChoice.value)
       return (
           isAccountSelected.value && isSelectedAccountValid.value && props.account?.staked_account_id != selectedAccountEntity.value)
-          || (isNodeSelected.value  && selectedNode.value && props.account?.staked_node_id != selectedNode.value)
+          || (isNodeSelected.value  && selectedNode.value !== null && props.account?.staked_node_id != selectedNode.value)
           || (props.account?.decline_reward != declineChoice.value)
     })
 
@@ -267,6 +278,15 @@ export default defineComponent({
     }
 
     const handleChange = () => {
+      console.log("handleChange - isAccountSelected.value: " + isAccountSelected.value)
+      console.log("isSelectedAccountValid.value: " + isSelectedAccountValid.value)
+      console.log("props.account?.staked_account_id: " + props.account?.staked_account_id)
+      console.log("selectedAccountEntity.value: " + selectedAccountEntity.value)
+      console.log("isNodeSelected.value: " + isNodeSelected.value)
+      console.log("selectedNode.value: " + selectedNode.value)
+      console.log("props.account?.staked_node_id: " + props.account?.staked_node_id)
+      console.log("props.account?.decline_reward: " + props.account?.decline_reward)
+      console.log("declineChoice.value: " + declineChoice.value)
       context.emit('update:showDialog', false)
       showConfirmDialog.value = true
     }
@@ -295,27 +315,6 @@ export default defineComponent({
         result = node.node_id + ' - ' + makeShortNodeDescription(node.description)
       } else {
         result = node.node_account_id ? operatorRegistry.makeDescription(node.node_account_id) : null
-      }
-      return result
-    }
-
-    const makeNodeStake = (node: NetworkNode) => {
-      const amountFormatter = new Intl.NumberFormat("en-US", {
-        maximumFractionDigits: 0
-      })
-      const percentFormatter = new Intl.NumberFormat("en-US", {
-        style: 'percent',
-        maximumFractionDigits: 1
-      })
-      const unclampedStakeAmount = ((node.stake_rewarded ?? 0) + (node.stake_not_rewarded ?? 0))/100000000
-      const percentMin = node.min_stake ? unclampedStakeAmount / (node.min_stake / 100000000) : 0
-      const percentMax = node.max_stake ? unclampedStakeAmount / (node.max_stake / 100000000) : 0
-
-      let result = amountFormatter.format(unclampedStakeAmount) + "ℏ staked"
-      if (percentMin != 0 && percentMin < 1) {
-        result += " (" + percentFormatter.format(percentMin) + " of Min)"
-      } else if (percentMax !== 0) {
-        result += " (" + percentFormatter.format(percentMax) + " of Max)"
       }
       return result
     }
@@ -410,7 +409,7 @@ export default defineComponent({
       handleCancelChange,
       handleConfirmChange,
       makeNodeDescription,
-      makeNodeStake,
+      makeNodeStakeDescription,
       handleInput
     }
   }
