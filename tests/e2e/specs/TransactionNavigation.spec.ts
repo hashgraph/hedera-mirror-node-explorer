@@ -109,7 +109,7 @@ describe('Transaction Navigation', () => {
         cy.url().should('include', normalizeTransactionId(transactionId))
         cy.url().should('include', schedulingConsensusTimestamp)
 
-        cy.get('#scheduledTransactionValue')
+        cy.get('#scheduledValue')
             .find('a')
             .click()
             .then(() => {
@@ -119,7 +119,7 @@ describe('Transaction Navigation', () => {
                 cy.contains('Transaction ' + transactionId)
             })
 
-        cy.get('#schedulingTransactionValue')
+        cy.get('#scheduledValue')
             .find('a')
             .click()
             .then(() => {
