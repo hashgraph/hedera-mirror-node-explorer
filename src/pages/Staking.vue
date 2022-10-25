@@ -158,11 +158,6 @@
       <template v-slot:title>
         <span class="h-is-primary-title">Recent Staking Rewards Transactions</span>
       </template>
-      <template v-slot:control>
-        <div class="is-flex is-align-items-flex-end">
-          <PlayPauseButton v-bind:controller="transactionTableController"/>
-        </div>
-      </template>
       <template v-slot:content>
         <RewardsTransactionTable
             :narrowed="true"
