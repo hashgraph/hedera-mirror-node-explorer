@@ -143,31 +143,31 @@
             {{ transaction?.nonce }}
           </template>
         </Property>
-        <Property v-if="schedulingTransaction" id="schedulingTransaction">
-          <template v-slot:name>Scheduling</template>
-          <template v-slot:value>
-            <router-link :to="{
+        <Property id="scheduled">
+          <template v-slot:name>Scheduled</template>
+          <template v-if="transaction?.scheduled===true" v-slot:value>
+            True
+            <div v-if="schedulingTransaction" class="h-is-extra-text h-is-text-size-2">
+              <router-link :to="{
                   name: 'TransactionDetails',
                   params: { transactionId: schedulingTransaction.transaction_id },
                   query: { t: schedulingTransaction.consensus_timestamp }
-                }">Show transaction
-            </router-link>
+                }">Show scheduling transaction
+              </router-link>
+            </div>
           </template>
-        </Property>
-        <Property v-else-if="scheduledTransaction" id="scheduledTransaction">
-          <template v-slot:name>Scheduled</template>
-          <template v-slot:value>
-            <router-link :to="{
+          <template v-else-if="scheduledTransaction!==null" v-slot:value>
+            False
+            <div class="h-is-extra-text h-is-text-size-2">
+              <router-link :to="{
                   name: 'TransactionDetails',
                   params: { transactionId: scheduledTransaction.transaction_id },
                   query: { t: scheduledTransaction.consensus_timestamp }
-                }">Show transaction
-            </router-link>
+                }">Show scheduled transaction
+              </router-link>
+            </div>
           </template>
-        </Property>
-        <Property v-else>
-          <template v-slot:name>Scheduled</template>
-          <template v-slot:value>
+          <template v-else v-slot:value>
             <span class="has-text-grey">False</span>
           </template>
         </Property>
