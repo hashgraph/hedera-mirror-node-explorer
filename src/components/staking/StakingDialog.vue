@@ -131,7 +131,7 @@
           </div>
         </div>
 
-        <Property id="changeCost">
+        <Property v-if="false" id="changeCost">
           <template v-slot:name>Change Transaction Cost</template>
           <template v-slot:value>
             <HbarAmount v-if="account" :amount="10000000" :show-extra="true" :decimals="1"/>
