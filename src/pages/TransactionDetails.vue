@@ -172,7 +172,7 @@
           </template>
         </Property>
         <Property v-if="parentTransaction" id="parentTransaction">
-          <template v-slot:name>Parent</template>
+          <template v-slot:name>Parent Transaction</template>
           <template v-slot:value>
             <router-link :to="{
                   name: 'TransactionDetails',
@@ -183,11 +183,11 @@
           </template>
         </Property>
         <Property v-if="childTransactions.length" id="children">
-          <template v-slot:name>Children</template>
+          <template v-slot:name>Child Transactions</template>
           <template v-slot:value>
             <router-link v-if="displayAllChildrenLinks"
                          :to="{name: 'TransactionsById', params: {transactionId: transactionId}}">
-              {{ 'Show all ' + childTransactions.length + ' child transactions' }}
+              {{ 'Show all ' + childTransactions.length + ' transactions' }}
             </router-link>
             <div v-else>
               <router-link v-for="tx in childTransactions" :key="tx.nonce" :to="{
@@ -249,7 +249,7 @@ import DurationValue from "@/components/values/DurationValue.vue";
 import BlockLink from "@/components/values/BlockLink.vue";
 import ContractResultAndLogs from "@/components/transaction/ContractResultAndLogs.vue";
 
-const MAX_INLINE_CHILDREN = 3
+const MAX_INLINE_CHILDREN = 10
 const NB_LOG_LINES = 2
 const MAX_LOG_LINES = 10
 
