@@ -305,14 +305,14 @@ export default defineComponent({
     const accountLoader = new AccountLoader(walletManager.accountId)
     onMounted(() => accountLoader.requestLoad())
 
-    const isStaked = computed(() => accountLoader.stakedNodeId.value || accountLoader.stakedAccountId.value)
+    const isStaked = computed(() => accountLoader.stakedNodeId.value !== null || accountLoader.stakedAccountId.value)
     const isIndirectStaking = computed(() => accountLoader.stakedAccountId.value)
 
     const stakedTo = computed(() => {
       let result: string|null
       if (accountLoader.stakedAccountId.value) {
         result = "Account " + accountLoader.stakedAccountId.value
-      } else if (accountLoader.stakedNodeId.value) {
+      } else if (accountLoader.stakedNodeId.value !== null) {
         result = "Node " + accountLoader.stakedNodeId.value + " - " + stakedNodeLoader.shortNodeDescription.value
       } else {
         result = null

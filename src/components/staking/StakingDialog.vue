@@ -244,7 +244,9 @@ export default defineComponent({
 
     const selectedNode = ref<number|null>(null)
     const selectedNodeDescription = computed(() => {
-      return (selectedNode.value && nodesLoader.nodes.value) ? makeNodeDescription(nodesLoader.nodes.value[selectedNode.value]) : null
+      return (selectedNode.value !== null && nodesLoader.nodes.value)
+          ? makeNodeDescription(nodesLoader.nodes.value[selectedNode.value])
+          : null
     })
     watch(accountId, () => {
       if ( isNodeSelected.value && selectedNode.value == null) {
@@ -256,9 +258,18 @@ export default defineComponent({
     watch(accountId, () => declineChoice.value = props.account?.decline_reward ?? false)
 
     const enableChangeButton = computed(() => {
+      console.log("isAccountSelected.value: " + isAccountSelected.value)
+      console.log("isSelectedAccountValid.value: " + isSelectedAccountValid.value)
+      console.log("props.account?.staked_account_id: " + props.account?.staked_account_id)
+      console.log("selectedAccountEntity.value: " + selectedAccountEntity.value)
+      console.log("isNodeSelected.value: " + isNodeSelected.value)
+      console.log("selectedNode.value: " + selectedNode.value)
+      console.log("props.account?.staked_node_id: " + props.account?.staked_node_id)
+      console.log("props.account?.decline_reward: " + props.account?.decline_reward)
+      console.log("declineChoice.value: " + declineChoice.value)
       return (
           isAccountSelected.value && isSelectedAccountValid.value && props.account?.staked_account_id != selectedAccountEntity.value)
-          || (isNodeSelected.value  && selectedNode.value && props.account?.staked_node_id != selectedNode.value)
+          || (isNodeSelected.value  && selectedNode.value !== null && props.account?.staked_node_id != selectedNode.value)
           || (props.account?.decline_reward != declineChoice.value)
     })
 
@@ -267,6 +278,15 @@ export default defineComponent({
     }
 
     const handleChange = () => {
+      console.log("handleChange - isAccountSelected.value: " + isAccountSelected.value)
+      console.log("isSelectedAccountValid.value: " + isSelectedAccountValid.value)
+      console.log("props.account?.staked_account_id: " + props.account?.staked_account_id)
+      console.log("selectedAccountEntity.value: " + selectedAccountEntity.value)
+      console.log("isNodeSelected.value: " + isNodeSelected.value)
+      console.log("selectedNode.value: " + selectedNode.value)
+      console.log("props.account?.staked_node_id: " + props.account?.staked_node_id)
+      console.log("props.account?.decline_reward: " + props.account?.decline_reward)
+      console.log("declineChoice.value: " + declineChoice.value)
       context.emit('update:showDialog', false)
       showConfirmDialog.value = true
     }
