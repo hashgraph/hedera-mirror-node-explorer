@@ -266,7 +266,7 @@ function lookupParentTransaction(transactions: Transaction[]): Transaction|null 
 function lookupChildTransactions(transactions: Transaction[]): Transaction[] {
   const result = new Array<Transaction>()
   for (const t of transactions) {
-    if (t.nonce && t.nonce > 0) {
+    if (t.parent_consensus_timestamp) {
       result.push(t)
     }
   }
