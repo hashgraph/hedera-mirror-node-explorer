@@ -25,7 +25,7 @@
 import {EntityID} from "@/utils/EntityID";
 
 export interface AccountsResponse {
-    accounts: [AccountInfo] | undefined
+    accounts: AccountInfo[] | undefined
     links: Links | undefined
 }
 
