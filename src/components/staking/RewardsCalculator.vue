@@ -39,7 +39,7 @@
               <o-select v-model="selectedNodeId" class="h-is-text-size-1" style="border-radius: 4px">
                 <option v-for="n in nodes" :key="n.node_id" :value="n.node_id"
                         style="background-color: var(--h-theme-box-background-color)">
-                  {{ n.node_id }} - {{ makeNodeDescription(n) }} - {{ makeNodeStake(n) }}
+                  {{ n.node_id }} - {{ makeNodeDescription(n) }} - {{ makeNodeStakeDescription(n) }}
                 </option>
               </o-select>
             </o-field>
@@ -81,7 +81,7 @@
 import {computed, defineComponent, inject, onBeforeMount, onMounted, ref, watch} from 'vue';
 import NetworkDashboardItem from "@/components/node/NetworkDashboardItem.vue";
 import DashboardCard from "@/components/DashboardCard.vue";
-import {makeShortNodeDescription, NetworkNode} from "@/schemas/HederaSchemas";
+import {makeNodeStakeDescription, makeShortNodeDescription, NetworkNode} from "@/schemas/HederaSchemas";
 import {operatorRegistry} from "@/schemas/OperatorRegistry";
 import {NodesLoader} from "@/components/node/NodesLoader";
 import {NodeCursor} from "@/components/node/NodeCursor";
@@ -139,27 +139,6 @@ export default defineComponent({
       return result
     }
 
-    const makeNodeStake = (node: NetworkNode) => {
-      const amountFormatter = new Intl.NumberFormat("en-US", {
-        maximumFractionDigits: 0
-      })
-      const percentFormatter = new Intl.NumberFormat("en-US", {
-        style: 'percent',
-        maximumFractionDigits: 1
-      })
-      const unclampedStakeAmount = ((node.stake_rewarded ?? 0) + (node.stake_not_rewarded ?? 0))/100000000
-      const percentMin = node.min_stake ? unclampedStakeAmount / (node.min_stake / 100000000) : 0
-      const percentMax = node.max_stake ? unclampedStakeAmount / (node.max_stake / 100000000) : 0
-
-      let result = amountFormatter.format(unclampedStakeAmount) + "ℏ staked"
-      if (percentMin != 0 && percentMin < 1) {
-        result += " (" + percentFormatter.format(percentMin) + " of Min)"
-      } else if (percentMax !== 0) {
-        result += " (" + percentFormatter.format(percentMax) + " of Max)"
-      }
-      return result
-    }
-
     const handleInput = (value: string) => {
       const previousAmount = amountStaked.value
       const newAmount = Number(value)
@@ -185,7 +164,7 @@ export default defineComponent({
       yearlyRate: nodeCursor.value.approxYearlyRate,
       nodes: nodesLoader.nodes,
       makeNodeDescription,
-      makeNodeStake,
+      makeNodeStakeDescription,
       handleInput
     }
   }

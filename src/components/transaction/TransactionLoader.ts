@@ -65,6 +65,11 @@ export class TransactionLoader extends EntityLoader<TransactionByIdResponse> {
 
     public readonly transactionType = computed(() => this.transaction.value?.name ?? null)
 
+    public readonly hasContractResult = computed(
+        () => this.transactionType.value === TransactionType.CONTRACTCREATEINSTANCE
+            || this.transactionType.value === TransactionType.CONTRACTCALL
+            || this.transactionType.value === TransactionType.ETHEREUMTRANSACTION)
+
     public readonly result: ComputedRef<string|null> = computed(
         () => this.transaction.value?.result ?? null)
 

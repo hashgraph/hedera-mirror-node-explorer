@@ -34,7 +34,7 @@ export class RewardsTransactionTableController extends TableController<Transacti
     //
 
     public constructor(router: Router, accountId: Ref<string|null>, pageSize: ComputedRef<number>) {
-        super(router, pageSize, 10 * pageSize.value, 5000, 10, 100);
+        super(router, pageSize, 10 * pageSize.value, 5000, 0, 100);
         this.accountId = accountId
         this.watchAndReload([this.accountId])
     }

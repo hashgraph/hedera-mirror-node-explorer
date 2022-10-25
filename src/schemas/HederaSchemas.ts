@@ -548,6 +548,29 @@ export function makeShortNodeDescription(description: string): string {
     return (separator !== -1) ? (description.slice(0, separator) ?? null) : description
 }
 
+export function makeNodeStakeDescription(node: NetworkNode): string {
+    const amountFormatter = new Intl.NumberFormat("en-US", {
+        maximumFractionDigits: 0
+    })
+    const percentFormatter = new Intl.NumberFormat("en-US", {
+        style: 'percent',
+        maximumFractionDigits: 1
+    })
+    const unclampedStakeAmount = ((node.stake_rewarded ?? 0) + (node.stake_not_rewarded ?? 0))/100000000
+    const unrewardedAmount = (node.stake_not_rewarded ?? 0)/100000000
+    const percentMin = node.min_stake ? unclampedStakeAmount / (node.min_stake / 100000000) : 0
+    const percentMax = node.max_stake ? unclampedStakeAmount / (node.max_stake / 100000000) : 0
+
+    let result = amountFormatter.format(unclampedStakeAmount) + "ℏ staked"
+    if (percentMin != 0 && percentMin < 1) {
+        result += " (" + percentFormatter.format(percentMin) + " of Min)"
+    } else if (percentMax !== 0) {
+        result += " (" + percentFormatter.format(percentMax) + " of Max)"
+    }
+    result += ", of which " + amountFormatter.format(unrewardedAmount) + "ℏ declined reward"
+    return result
+}
+
 // ---------------------------------------------------------------------------------------------------------------------
 //                                                      Network
 // ---------------------------------------------------------------------------------------------------------------------

@@ -215,7 +215,7 @@
       </template>
     </DashboardCard>
 
-    <ContractResult :transaction-id-or-hash="transaction?.transaction_id"/>
+    <ContractResult v-if="hasContractResult" :transaction-id-or-hash="transaction?.transaction_id"/>
 
   </section>
 
@@ -317,6 +317,7 @@ export default defineComponent({
       formattedTransactionId: transactionLoader.formattedTransactionId,
       netAmount: transactionLoader.netAmount,
       entity: transactionLoader.entityDescriptor,
+      hasContractResult: transactionLoader.hasContractResult,
       systemContract: transactionLoader.systemContract,
       maxFee: transactionLoader.maxFee,
       formattedHash: transactionLoader.formattedHash,
