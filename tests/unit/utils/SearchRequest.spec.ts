@@ -24,6 +24,7 @@ import MockAdapter from "axios-mock-adapter";
 import axios from "axios";
 import {
     SAMPLE_ACCOUNT,
+    SAMPLE_ACCOUNTS,
     SAMPLE_CONTRACT,
     SAMPLE_TOKEN,
     SAMPLE_TOPIC_MESSAGES,
@@ -47,6 +48,10 @@ mock.onGet(matcher_account_with_alias).reply(200, SAMPLE_ACCOUNT)
 const SAMPLE_ACCOUNT_ADDRESS = EntityID.parse(SAMPLE_ACCOUNT.account)!.toAddress()
 const matcher_account_with_address = "/api/v1/accounts/" + SAMPLE_ACCOUNT_ADDRESS
 mock.onGet(matcher_account_with_address).reply(200, SAMPLE_ACCOUNT)
+
+const matcher_account_with_public_key = "/api/v1/accounts/?account.publickey=" + SAMPLE_ACCOUNTS.accounts[0].key.key
+mock.onGet(matcher_account_with_public_key).reply(200, SAMPLE_ACCOUNTS)
+
 
 // Transaction
 
@@ -103,6 +108,20 @@ describe("SearchRequest.ts", () => {
         await r.run()
 
         expect(r.searchedId).toBe(SAMPLE_ACCOUNT_ADDRESS)
+        expect(r.account).toStrictEqual(SAMPLE_ACCOUNT)
+        expect(r.transactions).toStrictEqual([])
+        expect(r.tokenInfo).toBeNull()
+        expect(r.topicMessages).toStrictEqual([])
+        expect(r.contract).toBeNull()
+        expect(r.getErrorCount()).toBe(0)
+
+    })
+
+    test("account (with public key)", async () => {
+        const r = new SearchRequest(SAMPLE_ACCOUNT.key.key)
+        await r.run()
+
+        expect(r.searchedId).toBe(SAMPLE_ACCOUNT.key.key)
         expect(r.account).toStrictEqual(SAMPLE_ACCOUNT)
         expect(r.transactions).toStrictEqual([])
         expect(r.tokenInfo).toBeNull()
