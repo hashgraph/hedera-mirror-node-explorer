@@ -109,7 +109,7 @@ describe('Transaction Navigation', () => {
         cy.url().should('include', normalizeTransactionId(transactionId))
         cy.url().should('include', schedulingConsensusTimestamp)
 
-        cy.get('#scheduledTransactionValue')
+        cy.get('#transactionTypeValue')
             .find('a')
             .click()
             .then(() => {
@@ -119,7 +119,7 @@ describe('Transaction Navigation', () => {
                 cy.contains('Transaction ' + transactionId)
             })
 
-        cy.get('#schedulingTransactionValue')
+        cy.get('#scheduledValue')
             .find('a')
             .click()
             .then(() => {
@@ -140,7 +140,7 @@ describe('Transaction Navigation', () => {
         cy.url().should('include', normalizeTransactionId(transactionId))
         cy.url().should('include', parentConsensusTimestamp)
 
-        cy.get('#childrenValue')
+        cy.get('#childTransactionsValue')
             .find('a')
             .should('have.length', 2)
             .eq(0)
@@ -217,7 +217,7 @@ describe('Transaction Navigation', () => {
             })
         cy.go('back')
 
-        cy.get('#childrenValue')
+        cy.get('#childTransactionsValue')
             .find('a')
             .should('have.length', 1)
             .eq(0)

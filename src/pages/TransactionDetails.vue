@@ -37,12 +37,17 @@
             </div>
             <div v-else class="h-has-pill has-background-danger mr-3 h-is-text-size-2 mt-3">FAILURE</div>
           </div>
-          <span v-if="showAllTransactionVisible" class="is-inline-block mt-2" id="allTransactionsLink">
+          <span v-if="showAllTransactionVisible && isLargeScreen" class="is-inline-block mt-2" id="allTransactionsLink">
           <router-link :to="{name: 'TransactionsById', params: {transactionId: transaction?.transaction_id}}">
-            <span class="h-is-property-text has-text-grey">See all transactions with the same ID</span>
+            <span class="h-is-property-text has-text-grey">Show all transactions with the same ID</span>
           </router-link>
         </span>
         </div>
+        <span v-if="showAllTransactionVisible && !isLargeScreen">
+          <router-link :to="{name: 'TransactionsById', params: {transactionId: transaction?.transaction_id}}">
+            <span class="h-is-property-text has-text-grey">Show all transactions with the same ID</span>
+          </router-link>
+        </span>
       </template>
 
       <template v-slot:content>
@@ -54,6 +59,15 @@
           <template v-slot:name>Type</template>
           <template v-slot:value>
             <StringValue :string-value="transactionType ? makeTypeLabel(transactionType) : undefined"/>
+            <div v-if="scheduledTransaction" id="scheduledLink">
+              <router-link :to="{
+                  name: 'TransactionDetails',
+                  params: { transactionId: scheduledTransaction.transaction_id },
+                  query: { t: scheduledTransaction.consensus_timestamp }
+                }">
+                <span class="h-is-text-size-3 has-text-grey">Show scheduled transaction</span>
+              </router-link>
+            </div>
           </template>
         </Property>
         <Property id="consensusAt">
@@ -143,36 +157,28 @@
             {{ transaction?.nonce }}
           </template>
         </Property>
-        <Property v-if="schedulingTransaction" id="schedulingTransaction">
-          <template v-slot:name>Scheduling</template>
-          <template v-slot:value>
-            <router-link :to="{
+        <Property id="scheduled">
+          <template v-slot:name>Scheduled</template>
+          <template v-if="transaction?.scheduled===true" v-slot:value>
+            True
+            <div id="schedulingLink" v-if="schedulingTransaction">
+              <router-link :to="{
                   name: 'TransactionDetails',
                   params: { transactionId: schedulingTransaction.transaction_id },
                   query: { t: schedulingTransaction.consensus_timestamp }
-                }">Show transaction
-            </router-link>
+                }"><span class="has-text-grey h-is-text-size-3">Show schedule create transaction</span>
+              </router-link>
+            </div>
           </template>
-        </Property>
-        <Property v-else-if="scheduledTransaction" id="scheduledTransaction">
-          <template v-slot:name>Scheduled</template>
-          <template v-slot:value>
-            <router-link :to="{
-                  name: 'TransactionDetails',
-                  params: { transactionId: scheduledTransaction.transaction_id },
-                  query: { t: scheduledTransaction.consensus_timestamp }
-                }">Show transaction
-            </router-link>
+          <template v-else-if="scheduledTransaction!==null" v-slot:value>
+            False
           </template>
-        </Property>
-        <Property v-else>
-          <template v-slot:name>Scheduled</template>
-          <template v-slot:value>
+          <template v-else v-slot:value>
             <span class="has-text-grey">False</span>
           </template>
         </Property>
         <Property v-if="parentTransaction" id="parentTransaction">
-          <template v-slot:name>Parent</template>
+          <template v-slot:name>Parent Transaction</template>
           <template v-slot:value>
             <router-link :to="{
                   name: 'TransactionDetails',
@@ -182,12 +188,12 @@
             </router-link>
           </template>
         </Property>
-        <Property v-if="childTransactions.length" id="children">
-          <template v-slot:name>Children</template>
+        <Property v-if="childTransactions.length" id="childTransactions">
+          <template v-slot:name>Child Transactions</template>
           <template v-slot:value>
             <router-link v-if="displayAllChildrenLinks"
                          :to="{name: 'TransactionsById', params: {transactionId: transactionId}}">
-              {{ 'Show all ' + childTransactions.length + ' child transactions' }}
+              {{ 'Show all ' + childTransactions.length + ' transactions' }}
             </router-link>
             <div v-else>
               <router-link v-for="tx in childTransactions" :key="tx.nonce" :to="{
@@ -195,7 +201,7 @@
                     params: { transactionId: tx.transaction_id },
                     query: { t: tx.consensus_timestamp }
                   }">
-                <span class="mr-2">{{ '#' + tx.nonce }}</span>
+                <span class="mr-2 is-numeric">{{ '#' + tx.nonce }}</span>
                 <span>{{ makeTypeLabel(tx.name) }}</span>
                 <br/></router-link>
             </div>
@@ -249,7 +255,7 @@ import DurationValue from "@/components/values/DurationValue.vue";
 import BlockLink from "@/components/values/BlockLink.vue";
 import ContractResult from "@/components/contract/ContractResult.vue";
 
-const MAX_INLINE_CHILDREN = 3
+const MAX_INLINE_CHILDREN = 9
 
 export default defineComponent({
 
@@ -275,6 +281,7 @@ export default defineComponent({
 
   setup(props) {
     const isSmallScreen = inject('isSmallScreen', true)
+    const isLargeScreen = inject('isLargeScreen', true)
     const isTouchDevice = inject('isTouchDevice', false)
 
     const transactionLocator = computed(() => PathParam.parseTransactionIdOrHash(props.transactionId))
@@ -312,6 +319,7 @@ export default defineComponent({
 
     return {
       isSmallScreen,
+      isLargeScreen,
       isTouchDevice,
       transaction: transactionLoader.transaction,
       formattedTransactionId: transactionLoader.formattedTransactionId,

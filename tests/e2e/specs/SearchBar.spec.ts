@@ -61,7 +61,7 @@ describe('Search Bar', () => {
             .eq(0)
             .find('td')
             .eq(3)
-            .should('contain', 'Scheduling')  // criteria to check
+            .should('contain', 'Schedule Create')  // criteria to check
         cy.get('table')
             .find('tbody tr')
             .eq(1)

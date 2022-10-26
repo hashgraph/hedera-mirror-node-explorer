@@ -20,10 +20,14 @@
 
 import {
     AccountBalanceTransactions,
+    AccountInfo,
+    AccountsResponse,
     ContractResponse,
     TokenInfo,
     TopicMessage,
-    Transaction
+    TopicMessagesResponse,
+    Transaction,
+    TransactionByIdResponse
 } from "@/schemas/HederaSchemas";
 import axios from "axios";
 import {TransactionID} from "@/utils/TransactionID";
@@ -35,7 +39,7 @@ import {base32ToAlias, byteToHex, hexToByte, paddedBytes} from "@/utils/B64Utils
 export class SearchRequest {
 
     public readonly searchedId: string
-    public account: AccountBalanceTransactions|null = null
+    public account: AccountInfo|null = null
     public transactions = Array<Transaction>()
     public tokenInfo: TokenInfo|null = null
     public topicMessages = Array<TopicMessage>()
@@ -79,9 +83,11 @@ export class SearchRequest {
                                              |                  | api/v1/contracts/{searchId}
                                              |                  | api/v1/token/ethereumToEntityID({searchId})
         -------------------------------------+------------------+------------------------------------------------------
-        hexadecimal < 20 bytes               | Ethereum Address | api/v1/accounts/padded({searchId})
-                                             |                  | api/v1/contracts/padded({searchId})
+        hexadecimal < 20 bytes               | Incomplete       | api/v1/accounts/padded({searchId})
+                                             | Ethereum Address | api/v1/contracts/padded({searchId})
                                              |                  | api/v1/token/ethereumToEntityID(padded({searchId}))
+        -------------------------------------+------------------+------------------------------------------------------
+        hexadecimal 32/33 bytes              | Public Key       | api/v1/accounts/?account.publickey={searchId}
         -------------------------------------+------------------+------------------------------------------------------
         base32                               | Account Alias    | api/v1/accounts/{searchId}
         -------------------------------------+------------------+------------------------------------------------------
@@ -94,6 +100,7 @@ export class SearchRequest {
         const transactionHash = hexBytes !== null && hexBytes.length == 48 ? byteToHex(hexBytes) : null
         const ethereumAddress = hexBytes !== null && (1 <= hexBytes.length && hexBytes.length <= 20)
                                 ? byteToHex(paddedBytes(hexBytes, 20)) : null
+        const publicKey = hexBytes !== null && (hexBytes.length == 32 || hexBytes.length == 33) ? byteToHex(hexBytes) : null
         const accountAlias = base32ToAlias(this.searchedId) !== null ? this.searchedId : null
 
 
@@ -105,7 +112,7 @@ export class SearchRequest {
         // 1) Searches accounts
         if (accountParam !== null) {
             axios
-                .get("api/v1/accounts/" + accountParam)
+                .get<AccountBalanceTransactions>("api/v1/accounts/" + accountParam)
                 .then(response => {
                     this.account = response.data
                 })
@@ -115,7 +122,21 @@ export class SearchRequest {
                 })
                 .finally(() => {
                     this.updatePromise()
-                });
+                })
+        } else if (publicKey !== null) {
+            axios
+                .get<AccountsResponse>("api/v1/accounts/?account.publickey=" + publicKey)
+                .then(response => {
+                    const accounts = response.data.accounts ?? []
+                    this.account = accounts.length >= 1 ? accounts[0] : null
+                })
+                .catch((reason: unknown) => {
+                    this.updateErrorCount(reason)
+                    return null // To avoid console pollution
+                })
+                .finally(() => {
+                    this.updatePromise()
+                })
         } else {
             // No account will match => no need to call server
             this.updatePromise()
@@ -124,9 +145,9 @@ export class SearchRequest {
         // 2) Searches transactions
         if (transactionParam !== null) {
             axios
-                .get("api/v1/transactions/" + transactionParam)
+                .get<TransactionByIdResponse>("api/v1/transactions/" + transactionParam)
                 .then(response => {
-                    this.transactions = response.data.transactions
+                    this.transactions = response.data.transactions ?? []
                 })
                 .catch((reason: unknown) => {
                     this.updateErrorCount(reason)
@@ -143,7 +164,7 @@ export class SearchRequest {
         // 3) Searches tokens
         if (tokenParam !== null) {
             axios
-                .get("api/v1/tokens/" + tokenParam)
+                .get<TokenInfo>("api/v1/tokens/" + tokenParam)
                 .then(response => {
                     this.tokenInfo = response.data
                 })
@@ -166,9 +187,9 @@ export class SearchRequest {
                 limit: "1"
             }
             axios
-                .get("api/v1/topics/" + entityID + "/messages", {params})
+                .get<TopicMessagesResponse>("api/v1/topics/" + entityID + "/messages", {params})
                 .then(response => {
-                    this.topicMessages = response.data.messages
+                    this.topicMessages = response.data.messages ?? []
                 })
                 .catch((reason: unknown) => {
                     this.updateErrorCount(reason)

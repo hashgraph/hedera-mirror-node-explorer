@@ -20,7 +20,11 @@
 
 import {flushPromises, mount} from "@vue/test-utils"
 import router from "@/router";
-import {SAMPLE_PARENT_CHILD_TRANSACTIONS} from "../Mocks";
+import {
+    SAMPLE_PARENT_CHILD_TRANSACTIONS,
+    SAMPLE_SAME_ID_NOT_PARENT_TRANSACTIONS,
+    SAMPLE_SCHEDULING_SCHEDULED_TRANSACTIONS
+} from "../Mocks";
 import Oruga from "@oruga-ui/oruga-next";
 import {HMSF} from "@/utils/HMSF";
 import {Transaction} from "@/schemas/HederaSchemas";
@@ -51,7 +55,7 @@ HMSF.forceUTC = true
 
 describe("TransactionByIdTable.vue", () => {
 
-    test("all props", async () => {
+    it("Should list transactions as parent and child", async () => {
 
         await router.push("/") // To avoid "missing required param 'network'" error
 
@@ -77,4 +81,72 @@ describe("TransactionByIdTable.vue", () => {
         )
     });
 
+    it("Should list transactions as scheduling and scheduled", async () => {
+
+        await router.push("/") // To avoid "missing required param 'network'" error
+
+        const wrapper = mount(TransactionByIdTable, {
+            global: {
+                plugins: [router, Oruga]
+            },
+            props: {
+                narrowed: true,
+                nbItems: 42,
+                transactions: SAMPLE_SCHEDULING_SCHEDULED_TRANSACTIONS.transactions as Array<Transaction>,
+            },
+        });
+
+        await flushPromises()
+        // console.log(wrapper.text())
+
+        expect(wrapper.find('thead').text()).toBe("Time Type Content Relationship Nonce")
+        const rows = wrapper.find('tbody').findAll('tr')
+
+        let cells = rows[0].findAll('td')
+        expect(cells[1].text()).toBe("SCHEDULE CREATE")
+        expect(cells[3].text()).toBe("Schedule Create")
+        expect(cells[4].text()).toBe("0")
+
+        cells = rows[1].findAll('td')
+        expect(cells[1].text()).toBe("TOKEN MINT")
+        expect(cells[3].text()).toBe("Scheduled")
+        expect(cells[4].text()).toBe("0")
+    });
+
+    it("Should list transactions as unrelated", async () => {
+
+        await router.push("/") // To avoid "missing required param 'network'" error
+
+        const wrapper = mount(TransactionByIdTable, {
+            global: {
+                plugins: [router, Oruga]
+            },
+            props: {
+                narrowed: true,
+                nbItems: 42,
+                transactions: SAMPLE_SAME_ID_NOT_PARENT_TRANSACTIONS.transactions as Array<Transaction>,
+            },
+        });
+
+        await flushPromises()
+        // console.log(wrapper.text())
+
+        expect(wrapper.find('thead').text()).toBe("Time Type Content Relationship Nonce")
+        const rows = wrapper.find('tbody').findAll('tr')
+
+        let cells = rows[0].findAll('td')
+        expect(cells[1].text()).toBe("CRYPTO DELETE ALLOWANCE")
+        expect(cells[3].text()).toBe("")
+        expect(cells[4].text()).toBe("0")
+
+        cells = rows[1].findAll('td')
+        expect(cells[1].text()).toBe("CONTRACT DELETE")
+        expect(cells[3].text()).toBe("")
+        expect(cells[4].text()).toBe("1")
+
+        cells = rows[2].findAll('td')
+        expect(cells[1].text()).toBe("CONTRACT DELETE")
+        expect(cells[3].text()).toBe("")
+        expect(cells[4].text()).toBe("2")
+    });
 });

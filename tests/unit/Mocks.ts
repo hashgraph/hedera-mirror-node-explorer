@@ -1076,7 +1076,7 @@ export const SAMPLE_REWARDS_TRANSACTIONS = {
 }
 
 //
-// https://testnet.mirrornode.hedera.com/api/v1/transactions/0.0.48113503-1662470948-432078184
+// https://mainnet-public.mirrornode.hedera.com/api/v1/transactions/0.0.48113503-1662470948-432078184
 //
 
 export const SAMPLE_PARENT_CHILD_TRANSACTIONS = {
@@ -1202,6 +1202,130 @@ export const SAMPLE_PARENT_CHILD_TRANSACTIONS = {
             "valid_duration_seconds": null,
             "valid_start_timestamp": "1662470948.432078184"
         }]
+}
+
+//
+// https://mainnet-public.mirrornode.hedera.com/api/v1/transactions/0.0.503733-1666754898-238965661
+//
+
+export const SAMPLE_SCHEDULING_SCHEDULED_TRANSACTIONS = {
+    "transactions": [{
+        "bytes": null,
+        "charged_tx_fee": 10222951,
+        "consensus_timestamp": "1666754908.576858590",
+        "entity_id": "0.0.1382775",
+        "max_fee": "500000000",
+        "memo_base64": "",
+        "name": "SCHEDULECREATE",
+        "node": "0.0.22",
+        "nonce": 0,
+        "parent_consensus_timestamp": null,
+        "result": "SUCCESS",
+        "scheduled": false,
+        "transaction_hash": "kf0Uakt9YM0AztfHZanJXU9Rk5nmX0ZFjiyvGGHPPeZI/gdSTy+ThDAsLT1p7yfx",
+        "transaction_id": "0.0.503733-1666754898-238965661",
+        "transfers": [{"account": "0.0.22", "amount": 513563, "is_approval": false}, {
+            "account": "0.0.98",
+            "amount": 9709388,
+            "is_approval": false
+        }, {"account": "0.0.503733", "amount": -10222951, "is_approval": false}],
+        "valid_duration_seconds": "120",
+        "valid_start_timestamp": "1666754898.238965661"
+    }, {
+        "bytes": null,
+        "charged_tx_fee": 250757,
+        "consensus_timestamp": "1666754925.508764007",
+        "entity_id": "0.0.1304757",
+        "max_fee": "3000000000",
+        "memo_base64": "",
+        "name": "TOKENMINT",
+        "node": null,
+        "nonce": 0,
+        "parent_consensus_timestamp": null,
+        "result": "SUCCESS",
+        "scheduled": true,
+        "token_transfers": [{
+            "token_id": "0.0.1304757",
+            "account": "0.0.540219",
+            "amount": 404955647,
+            "is_approval": false
+        }],
+        "transaction_hash": "88cs2fTZgAV2fh+n7zWhZjPs24NDyq6icaP/CR64SR5vruiiKoHB3Ip6oid5DMfa",
+        "transaction_id": "0.0.503733-1666754898-238965661",
+        "transfers": [{"account": "0.0.98", "amount": 250757, "is_approval": false}, {
+            "account": "0.0.540286",
+            "amount": -250757,
+            "is_approval": false
+        }],
+        "valid_duration_seconds": null,
+        "valid_start_timestamp": "1666754898.238965661"
+    }]
+}
+
+//
+// http://testnet.mirrornode.hedera.com/api/v1/transactions/0.0.2520793-1665085799-890453831
+//
+
+export const SAMPLE_SAME_ID_NOT_PARENT_TRANSACTIONS = {
+    "transactions": [{
+        "bytes": null,
+        "charged_tx_fee": 141509235,
+        "consensus_timestamp": "1665085808.019403093",
+        "entity_id": null,
+        "max_fee": "10000000000",
+        "memo_base64": "",
+        "name": "CRYPTODELETEALLOWANCE",
+        "node": "0.0.4",
+        "nonce": 0,
+        "parent_consensus_timestamp": null,
+        "result": "SUCCESS",
+        "scheduled": false,
+        "transaction_hash": "KuwQ5qibGSidcXJKP62s3aBPA+xIcN+EnH/GDXnN2+2hS5UlRRKtY+TlIurY9Vyo",
+        "transaction_id": "0.0.2520793-1665085799-890453831",
+        "transfers": [{"account": "0.0.4", "amount": 3630931, "is_approval": false}, {
+            "account": "0.0.98",
+            "amount": 137878304,
+            "is_approval": false
+        }, {"account": "0.0.2520793", "amount": -141509235, "is_approval": false}],
+        "valid_duration_seconds": "120",
+        "valid_start_timestamp": "1665085799.890453831"
+    }, {
+        "bytes": null,
+        "charged_tx_fee": 0,
+        "consensus_timestamp": "1665085808.019403094",
+        "entity_id": "0.0.534101",
+        "max_fee": "0",
+        "memo_base64": "",
+        "name": "CONTRACTDELETEINSTANCE",
+        "node": null,
+        "nonce": 1,
+        "parent_consensus_timestamp": null,
+        "result": "SUCCESS",
+        "scheduled": false,
+        "transaction_hash": "QCcVBlDByJ9a+GbYmTwoSzBt8teJmS4r5j2IF0SidtfmkNAjDNnoIcWFnWm/wCQk",
+        "transaction_id": "0.0.2520793-1665085799-890453831",
+        "transfers": [],
+        "valid_duration_seconds": null,
+        "valid_start_timestamp": "1665085799.890453831"
+    }, {
+        "bytes": null,
+        "charged_tx_fee": 0,
+        "consensus_timestamp": "1665085808.019403095",
+        "entity_id": "0.0.534103",
+        "max_fee": "0",
+        "memo_base64": "",
+        "name": "CONTRACTDELETEINSTANCE",
+        "node": null,
+        "nonce": 2,
+        "parent_consensus_timestamp": null,
+        "result": "SUCCESS",
+        "scheduled": false,
+        "transaction_hash": "tJWvi9tJwnT3Wnmi6wBj8qo8kItCzdBSdHnISaJfRxB+kyKmHa81Pak3VwjCxh8P",
+        "transaction_id": "0.0.2520793-1665085799-890453831",
+        "transfers": [],
+        "valid_duration_seconds": null,
+        "valid_start_timestamp": "1665085799.890453831"
+    }]
 }
 
 //
