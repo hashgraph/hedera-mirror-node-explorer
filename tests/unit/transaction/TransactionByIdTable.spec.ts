@@ -104,7 +104,7 @@ describe("TransactionByIdTable.vue", () => {
 
         let cells = rows[0].findAll('td')
         expect(cells[1].text()).toBe("SCHEDULE CREATE")
-        expect(cells[3].text()).toBe("Scheduling")
+        expect(cells[3].text()).toBe("Schedule Create")
         expect(cells[4].text()).toBe("0")
 
         cells = rows[1].findAll('td')

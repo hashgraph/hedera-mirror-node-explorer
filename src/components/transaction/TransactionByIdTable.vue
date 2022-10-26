@@ -135,7 +135,7 @@ export default defineComponent({
     const makeRelationshipLabel = (row: Transaction): string => {
       let result: string
       if (row.name === TransactionType.SCHEDULECREATE) {
-        result = "Scheduling"
+        result = "Schedule Create"
       } else if (row.scheduled) {
         result = "Scheduled"
       } else if (hasChild.value) {

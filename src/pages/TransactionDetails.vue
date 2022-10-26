@@ -54,6 +54,15 @@
           <template v-slot:name>Type</template>
           <template v-slot:value>
             <StringValue :string-value="transactionType ? makeTypeLabel(transactionType) : undefined"/>
+            <div v-if="scheduledTransaction" id="scheduledLink">
+              <router-link :to="{
+                  name: 'TransactionDetails',
+                  params: { transactionId: scheduledTransaction.transaction_id },
+                  query: { t: scheduledTransaction.consensus_timestamp }
+                }">
+                <span class="h-is-text-size-2 has-text-grey">Show scheduled transaction</span>
+              </router-link>
+            </div>
           </template>
         </Property>
         <Property id="consensusAt">
@@ -147,25 +156,17 @@
           <template v-slot:name>Scheduled</template>
           <template v-if="transaction?.scheduled===true" v-slot:value>
             True
-            <div id="schedulingLink" v-if="schedulingTransaction" class="h-is-extra-text h-is-text-size-2">
+            <div id="schedulingLink" v-if="schedulingTransaction">
               <router-link :to="{
                   name: 'TransactionDetails',
                   params: { transactionId: schedulingTransaction.transaction_id },
                   query: { t: schedulingTransaction.consensus_timestamp }
-                }">Show scheduling transaction
+                }"><span class="has-text-grey h-is-text-size-2">Show schedule create transaction</span>
               </router-link>
             </div>
           </template>
           <template v-else-if="scheduledTransaction!==null" v-slot:value>
             False
-            <div id="scheduledLink" class="h-is-extra-text h-is-text-size-2">
-              <router-link :to="{
-                  name: 'TransactionDetails',
-                  params: { transactionId: scheduledTransaction.transaction_id },
-                  query: { t: scheduledTransaction.consensus_timestamp }
-                }">Show scheduled transaction
-              </router-link>
-            </div>
           </template>
           <template v-else v-slot:value>
             <span class="has-text-grey">False</span>

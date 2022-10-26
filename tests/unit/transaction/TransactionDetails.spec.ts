@@ -457,7 +457,7 @@ describe("TransactionDetails.vue", () => {
         expect(wrapper.text()).toMatch(RegExp("^Transaction " + normalizeTransactionId(SCHEDULED.transaction_id, true)))
 
         const link = wrapper.get("#schedulingLink")
-        expect(link.text()).toBe("Show scheduling transaction")
+        expect(link.text()).toBe("Show schedule create transaction")
         expect(link.get('a').attributes("href")).toBe(
             "/testnet/transaction/" + SCHEDULING.transaction_id + "?t=" + SCHEDULING.consensus_timestamp
         )
