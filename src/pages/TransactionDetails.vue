@@ -147,7 +147,7 @@
           <template v-slot:name>Scheduled</template>
           <template v-if="transaction?.scheduled===true" v-slot:value>
             True
-            <div v-if="schedulingTransaction" class="h-is-extra-text h-is-text-size-2">
+            <div id="schedulingLink" v-if="schedulingTransaction" class="h-is-extra-text h-is-text-size-2">
               <router-link :to="{
                   name: 'TransactionDetails',
                   params: { transactionId: schedulingTransaction.transaction_id },
@@ -158,7 +158,7 @@
           </template>
           <template v-else-if="scheduledTransaction!==null" v-slot:value>
             False
-            <div class="h-is-extra-text h-is-text-size-2">
+            <div id="scheduledLink" class="h-is-extra-text h-is-text-size-2">
               <router-link :to="{
                   name: 'TransactionDetails',
                   params: { transactionId: scheduledTransaction.transaction_id },
@@ -182,7 +182,7 @@
             </router-link>
           </template>
         </Property>
-        <Property v-if="childTransactions.length" id="children">
+        <Property v-if="childTransactions.length" id="childTransactions">
           <template v-slot:name>Child Transactions</template>
           <template v-slot:value>
             <router-link v-if="displayAllChildrenLinks"
