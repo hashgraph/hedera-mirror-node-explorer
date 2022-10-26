@@ -65,7 +65,7 @@
                   params: { transactionId: scheduledTransaction.transaction_id },
                   query: { t: scheduledTransaction.consensus_timestamp }
                 }">
-                <span class="h-is-text-size-2 has-text-grey">Show scheduled transaction</span>
+                <span class="h-is-text-size-3 has-text-grey">Show scheduled transaction</span>
               </router-link>
             </div>
           </template>
@@ -166,7 +166,7 @@
                   name: 'TransactionDetails',
                   params: { transactionId: schedulingTransaction.transaction_id },
                   query: { t: schedulingTransaction.consensus_timestamp }
-                }"><span class="has-text-grey h-is-text-size-2">Show schedule create transaction</span>
+                }"><span class="has-text-grey h-is-text-size-3">Show schedule create transaction</span>
               </router-link>
             </div>
           </template>
