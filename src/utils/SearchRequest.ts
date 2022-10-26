@@ -19,12 +19,15 @@
  */
 
 import {
+    AccountBalanceTransactions,
     AccountInfo,
     AccountsResponse,
     ContractResponse,
     TokenInfo,
     TopicMessage,
-    Transaction
+    TopicMessagesResponse,
+    Transaction,
+    TransactionByIdResponse
 } from "@/schemas/HederaSchemas";
 import axios from "axios";
 import {TransactionID} from "@/utils/TransactionID";
@@ -109,7 +112,7 @@ export class SearchRequest {
         // 1) Searches accounts
         if (accountParam !== null) {
             axios
-                .get("api/v1/accounts/" + accountParam)
+                .get<AccountBalanceTransactions>("api/v1/accounts/" + accountParam)
                 .then(response => {
                     this.account = response.data
                 })
@@ -142,9 +145,9 @@ export class SearchRequest {
         // 2) Searches transactions
         if (transactionParam !== null) {
             axios
-                .get("api/v1/transactions/" + transactionParam)
+                .get<TransactionByIdResponse>("api/v1/transactions/" + transactionParam)
                 .then(response => {
-                    this.transactions = response.data.transactions
+                    this.transactions = response.data.transactions ?? []
                 })
                 .catch((reason: unknown) => {
                     this.updateErrorCount(reason)
@@ -161,7 +164,7 @@ export class SearchRequest {
         // 3) Searches tokens
         if (tokenParam !== null) {
             axios
-                .get("api/v1/tokens/" + tokenParam)
+                .get<TokenInfo>("api/v1/tokens/" + tokenParam)
                 .then(response => {
                     this.tokenInfo = response.data
                 })
@@ -184,9 +187,9 @@ export class SearchRequest {
                 limit: "1"
             }
             axios
-                .get("api/v1/topics/" + entityID + "/messages", {params})
+                .get<TopicMessagesResponse>("api/v1/topics/" + entityID + "/messages", {params})
                 .then(response => {
-                    this.topicMessages = response.data.messages
+                    this.topicMessages = response.data.messages ?? []
                 })
                 .catch((reason: unknown) => {
                     this.updateErrorCount(reason)
