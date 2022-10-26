@@ -37,12 +37,17 @@
             </div>
             <div v-else class="h-has-pill has-background-danger mr-3 h-is-text-size-2 mt-3">FAILURE</div>
           </div>
-          <span v-if="showAllTransactionVisible" class="is-inline-block mt-2" id="allTransactionsLink">
+          <span v-if="showAllTransactionVisible && isLargeScreen" class="is-inline-block mt-2" id="allTransactionsLink">
           <router-link :to="{name: 'TransactionsById', params: {transactionId: transaction?.transaction_id}}">
-            <span class="h-is-property-text has-text-grey">See all transactions with the same ID</span>
+            <span class="h-is-property-text has-text-grey">Show all transactions with the same ID</span>
           </router-link>
         </span>
         </div>
+        <span v-if="showAllTransactionVisible && !isLargeScreen">
+          <router-link :to="{name: 'TransactionsById', params: {transactionId: transaction?.transaction_id}}">
+            <span class="h-is-property-text has-text-grey">Show all transactions with the same ID</span>
+          </router-link>
+        </span>
       </template>
 
       <template v-slot:content>
@@ -278,6 +283,7 @@ export default defineComponent({
 
   setup(props) {
     const isSmallScreen = inject('isSmallScreen', true)
+    const isLargeScreen = inject('isLargeScreen', true)
     const isTouchDevice = inject('isTouchDevice', false)
 
     const transactionLocator = computed(() => PathParam.parseTransactionIdOrHash(props.transactionId))
@@ -321,6 +327,7 @@ export default defineComponent({
       NB_LOG_LINES,
       MAX_LOG_LINES,
       isSmallScreen,
+      isLargeScreen,
       isTouchDevice,
       transaction: transactionLoader.transaction,
       formattedTransactionId: transactionLoader.formattedTransactionId,
