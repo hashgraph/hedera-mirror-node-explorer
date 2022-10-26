@@ -80,8 +80,8 @@
 <script lang="ts">
 
 import {computed, defineComponent, inject, PropType, ref} from 'vue';
-import {Transaction} from '@/schemas/HederaSchemas';
-import {makeRelationshipLabel, makeTypeLabel} from "@/utils/TransactionTools";
+import {Transaction, TransactionType} from '@/schemas/HederaSchemas';
+import {makeTypeLabel} from "@/utils/TransactionTools";
 import router from "@/router";
 import TimestampValue from "@/components/values/TimestampValue.vue";
 import TransactionSummary from "@/components/transaction/TransactionSummary.vue";
@@ -113,15 +113,42 @@ export default defineComponent({
         }
     )
 
-    // 3) handleClick
     const handleClick = (t: Transaction) => {
       router.push({name: 'TransactionDetails',
         params: {transactionId: t.transaction_id},
         query: {t: t.consensus_timestamp}})
     }
 
-    // 4) currentPage
     let currentPage = ref(1)
+
+    const hasChild = computed(() => {
+      let result = false
+      for (const tx of props.transactions) {
+        if (tx.parent_consensus_timestamp) {
+          result = true
+          break
+        }
+      }
+      return result
+    })
+
+    const makeRelationshipLabel = (row: Transaction): string => {
+      let result: string
+      if (row.name === TransactionType.SCHEDULECREATE) {
+        result = "Schedule Create"
+      } else if (row.scheduled) {
+        result = "Scheduled"
+      } else if (hasChild.value) {
+        if (row.nonce && row.nonce > 0) {
+          result = "Child"
+        } else {
+          result = "Parent"
+        }
+      } else {
+        result = ""
+      }
+      return result
+    }
 
     return {
       isTouchDevice,

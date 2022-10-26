@@ -29,13 +29,15 @@ import axios from "axios";
 import {
     SAMPLE_BLOCKSRESPONSE,
     SAMPLE_COINGECKO,
+    SAMPLE_CONTRACT_RESULT_DETAILS,
     SAMPLE_CONTRACTCALL_TRANSACTIONS,
-    SAMPLE_SYSTEM_CONTRACT_CALL_TRANSACTIONS,
     SAMPLE_FAILED_TRANSACTION,
-    SAMPLE_FAILED_TRANSACTIONS,
+    SAMPLE_FAILED_TRANSACTIONS, SAMPLE_PARENT_CHILD_TRANSACTIONS,
+    SAMPLE_SCHEDULING_SCHEDULED_TRANSACTIONS,
+    SAMPLE_SYSTEM_CONTRACT_CALL_TRANSACTIONS,
     SAMPLE_TOKEN,
     SAMPLE_TRANSACTION,
-    SAMPLE_TRANSACTIONS, SAMPLE_CONTRACT_RESULT_DETAILS
+    SAMPLE_TRANSACTIONS
 } from "../Mocks";
 import MockAdapter from "axios-mock-adapter";
 import {HMSF} from "@/utils/HMSF";
@@ -375,5 +377,179 @@ describe("TransactionDetails.vue", () => {
         expect(wrapper.text()).toMatch(RegExp("^Transaction " + normalizeTransactionId(txnId, true)))
         expect(wrapper.get("#transactionTypeValue").text()).toBe("CONTRACT CALL")
         expect(wrapper.get("#entityId").text()).toBe("Contract IDHedera Token Service System Contract")
+    });
+
+    it("Should display a link to the scheduled transaction", async () => {
+
+        await router.push("/") // To avoid "missing required param 'network'" error
+
+        const mock = new MockAdapter(axios);
+
+        const SCHEDULING = SAMPLE_SCHEDULING_SCHEDULED_TRANSACTIONS.transactions[0]
+        const SCHEDULED = SAMPLE_SCHEDULING_SCHEDULED_TRANSACTIONS.transactions[1]
+        const matcher1 = "/api/v1/transactions/" + SCHEDULING.transaction_id
+        mock.onGet(matcher1).reply(200, SAMPLE_SCHEDULING_SCHEDULED_TRANSACTIONS);
+
+        const matcher3 = "https://api.coingecko.com/api/v3/coins/hedera-hashgraph"
+        mock.onGet(matcher3).reply(200, SAMPLE_COINGECKO);
+
+        const matcher4 = "/api/v1/blocks"
+        mock.onGet(matcher4).reply(200, SAMPLE_BLOCKSRESPONSE);
+
+        const wrapper = mount(TransactionDetails, {
+            global: {
+                plugins: [router, Oruga]
+            },
+            props: {
+                transactionId: SCHEDULING.transaction_id,
+                consensusTimestamp: SCHEDULING.consensus_timestamp
+            },
+        });
+
+        await flushPromises()
+        // console.log(wrapper.html())
+        // console.log(wrapper.text())
+
+        expect(wrapper.text()).toMatch(RegExp("^Transaction " + normalizeTransactionId(SCHEDULING.transaction_id, true)))
+
+        const link = wrapper.get("#scheduledLink")
+        expect(link.text()).toBe("Show scheduled transaction")
+        expect(link.get('a').attributes("href")).toBe(
+            "/testnet/transaction/" + SCHEDULED.transaction_id + "?t=" + SCHEDULED.consensus_timestamp
+        )
+    });
+
+    it("Should display a link to the scheduling transaction", async () => {
+
+        await router.push("/") // To avoid "missing required param 'network'" error
+
+        const mock = new MockAdapter(axios);
+
+        const SCHEDULING = SAMPLE_SCHEDULING_SCHEDULED_TRANSACTIONS.transactions[0]
+        const SCHEDULED = SAMPLE_SCHEDULING_SCHEDULED_TRANSACTIONS.transactions[1]
+        const TOKEN_ID = SCHEDULED.token_transfers ? SCHEDULED.token_transfers[0].token_id : "0.0.1304757"
+        const matcher1 = "/api/v1/transactions/" + SCHEDULED.transaction_id
+        mock.onGet(matcher1).reply(200, SAMPLE_SCHEDULING_SCHEDULED_TRANSACTIONS);
+
+        const matcher2 = "/api/v1/tokens/" + TOKEN_ID
+        mock.onGet(matcher2).reply(200, SAMPLE_TOKEN);
+
+        const matcher3 = "https://api.coingecko.com/api/v3/coins/hedera-hashgraph"
+        mock.onGet(matcher3).reply(200, SAMPLE_COINGECKO);
+
+        const matcher4 = "/api/v1/blocks"
+        mock.onGet(matcher4).reply(200, SAMPLE_BLOCKSRESPONSE);
+
+        const wrapper = mount(TransactionDetails, {
+            global: {
+                plugins: [router, Oruga]
+            },
+            props: {
+                transactionId: SCHEDULED.transaction_id,
+                consensusTimestamp: SCHEDULED.consensus_timestamp
+            },
+        });
+
+        await flushPromises()
+        // console.log(wrapper.html())
+        // console.log(wrapper.text())
+
+        expect(wrapper.text()).toMatch(RegExp("^Transaction " + normalizeTransactionId(SCHEDULED.transaction_id, true)))
+
+        const link = wrapper.get("#schedulingLink")
+        expect(link.text()).toBe("Show schedule create transaction")
+        expect(link.get('a').attributes("href")).toBe(
+            "/testnet/transaction/" + SCHEDULING.transaction_id + "?t=" + SCHEDULING.consensus_timestamp
+        )
+    });
+
+    it("Should display a link to the parent transaction", async () => {
+
+        await router.push("/") // To avoid "missing required param 'network'" error
+
+        const mock = new MockAdapter(axios);
+
+        const PARENT = SAMPLE_PARENT_CHILD_TRANSACTIONS.transactions[0]
+        const CHILD = SAMPLE_PARENT_CHILD_TRANSACTIONS.transactions[1]
+        const TOKEN_ID = CHILD.nft_transfers ? CHILD.nft_transfers[0].token_id : "0.0.48193741"
+        const matcher1 = "/api/v1/transactions/" + CHILD.transaction_id
+        mock.onGet(matcher1).reply(200, SAMPLE_PARENT_CHILD_TRANSACTIONS);
+
+        const matcher2 = "/api/v1/tokens/" + TOKEN_ID
+        mock.onGet(matcher2).reply(200, SAMPLE_TOKEN);
+
+        const matcher3 = "https://api.coingecko.com/api/v3/coins/hedera-hashgraph"
+        mock.onGet(matcher3).reply(200, SAMPLE_COINGECKO);
+
+        const matcher4 = "/api/v1/blocks"
+        mock.onGet(matcher4).reply(200, SAMPLE_BLOCKSRESPONSE);
+
+        const wrapper = mount(TransactionDetails, {
+            global: {
+                plugins: [router, Oruga]
+            },
+            props: {
+                transactionId: CHILD.transaction_id,
+                consensusTimestamp: CHILD.consensus_timestamp
+            },
+        });
+
+        await flushPromises()
+        // console.log(wrapper.html())
+        // console.log(wrapper.text())
+
+        expect(wrapper.text()).toMatch(RegExp("^Transaction " + normalizeTransactionId(CHILD.transaction_id, true)))
+
+        const link = wrapper.get("#parentTransactionValue")
+        expect(link.text()).toBe("CONTRACT CALL")
+        expect(link.get('a').attributes("href")).toBe(
+            "/testnet/transaction/" + PARENT.transaction_id + "?t=" + PARENT.consensus_timestamp
+        )
+    });
+
+    it("Should display link to the child transactions", async () => {
+
+        await router.push("/") // To avoid "missing required param 'network'" error
+
+        const mock = new MockAdapter(axios);
+
+        const PARENT = SAMPLE_PARENT_CHILD_TRANSACTIONS.transactions[0]
+        const CHILD1 = SAMPLE_PARENT_CHILD_TRANSACTIONS.transactions[1]
+        const CHILD2 = SAMPLE_PARENT_CHILD_TRANSACTIONS.transactions[2]
+        const matcher1 = "/api/v1/transactions/" + PARENT.transaction_id
+        mock.onGet(matcher1).reply(200, SAMPLE_PARENT_CHILD_TRANSACTIONS);
+
+        const matcher3 = "https://api.coingecko.com/api/v3/coins/hedera-hashgraph"
+        mock.onGet(matcher3).reply(200, SAMPLE_COINGECKO);
+
+        const matcher4 = "/api/v1/blocks"
+        mock.onGet(matcher4).reply(200, SAMPLE_BLOCKSRESPONSE);
+
+        const wrapper = mount(TransactionDetails, {
+            global: {
+                plugins: [router, Oruga]
+            },
+            props: {
+                transactionId: PARENT.transaction_id,
+                consensusTimestamp: PARENT.consensus_timestamp
+            },
+        });
+
+        await flushPromises()
+        // console.log(wrapper.html())
+        // console.log(wrapper.text())
+
+        expect(wrapper.text()).toMatch(RegExp("^Transaction " + normalizeTransactionId(PARENT.transaction_id, true)))
+
+        const children = wrapper.get("#childTransactionsValue")
+        expect(children.text()).toBe("#1TOKEN MINT#2CRYPTO TRANSFER")
+
+        const links = children.findAll('a')
+        expect(links[0].attributes("href")).toBe(
+            "/testnet/transaction/" + CHILD1.transaction_id + "?t=" + CHILD1.consensus_timestamp
+        )
+        expect(links[1].attributes("href")).toBe(
+            "/testnet/transaction/" + CHILD2.transaction_id + "?t=" + CHILD2.consensus_timestamp
+        )
     });
 });
