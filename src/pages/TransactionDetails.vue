@@ -201,7 +201,7 @@
                     params: { transactionId: tx.transaction_id },
                     query: { t: tx.consensus_timestamp }
                   }">
-                <span class="mr-2">{{ '#' + tx.nonce }}</span>
+                <span class="mr-2 is-numeric">{{ '#' + tx.nonce }}</span>
                 <span>{{ makeTypeLabel(tx.name) }}</span>
                 <br/></router-link>
             </div>
@@ -235,7 +235,7 @@
 
 <script lang="ts">
 
-import {computed, defineComponent, inject, onMounted, ref, watch} from 'vue';
+import {computed, defineComponent, inject, onMounted} from 'vue';
 import {PathParam} from "@/utils/PathParam";
 import {makeOperatorAccountLabel, makeTypeLabel} from "@/utils/TransactionTools";
 import {TransactionLoader} from "@/components/transaction/TransactionLoader";
@@ -255,9 +255,7 @@ import DurationValue from "@/components/values/DurationValue.vue";
 import BlockLink from "@/components/values/BlockLink.vue";
 import ContractResultAndLogs from "@/components/transaction/ContractResultAndLogs.vue";
 
-const MAX_INLINE_CHILDREN = 10
-const NB_LOG_LINES = 2
-const MAX_LOG_LINES = 10
+const MAX_INLINE_CHILDREN = 9
 
 export default defineComponent({
 
@@ -293,10 +291,6 @@ export default defineComponent({
         computed(() => props.consensusTimestamp ?? null))
     onMounted(() => transactionLoader.requestLoad())
 
-    const logCursor = ref(0)
-    const nbLogLines = ref(NB_LOG_LINES)
-    watch(nbLogLines, () => logCursor.value = 0)
-
     const showAllTransactionVisible = computed(() => {
       const count = transactionLoader.transactions.value?.length ?? 0
       return count >= 2
@@ -324,8 +318,6 @@ export default defineComponent({
     })
 
     return {
-      NB_LOG_LINES,
-      MAX_LOG_LINES,
       isSmallScreen,
       isLargeScreen,
       isTouchDevice,
@@ -346,8 +338,6 @@ export default defineComponent({
       blockNumber: transactionLoader.blockNumber,
       notification,
       routeName,
-      logCursor,
-      nbLogLines,
       makeTypeLabel,
       // computeNetAmount,
       makeOperatorAccountLabel,
