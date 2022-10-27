@@ -39,16 +39,19 @@
       </div>
       <hr class="h-card-separator" style="margin-top: 0; margin-bottom: 20px; height: 1px"/>
 
-      <div v-for="s in displayStateChanges" :key="s.changes.contract_id">
-        <div class="is-flex is-align-items-baseline">
-          <ContractLink :contract-id="s.changes.contract_id"></ContractLink>
-          <EVMAddress :address="s.changes.address" :compact="false" class="ml-3"/>
-          <span class="mb-2 h-is-text-size-3">
+      <div v-for="s in displayStateChanges" :key="s.index">
+
+        <template v-if="s.header===true">
+          <div class="is-flex is-align-items-baseline">
+            <ContractLink :contract-id="s.changes.contract_id"></ContractLink>
+            <EVMAddress :address="s.changes.address" :compact="!isMediumScreen" class="ml-3"/>
+            <span class="mb-2 h-is-text-size-3">
             <span class="ml-4 mr-2">Contract HBar Balance Difference:</span>
             <HbarAmount :amount="s.balanceChange" :colored="true" :show-extra="true"/>
           </span>
-        </div>
-        <hr class="h-card-separator" style="margin-bottom: 12px; margin-top: 0"/>
+          </div>
+          <hr class="h-card-separator" style="margin-bottom: 12px; margin-top: 0"/>
+        </template>
 
         <div class="columns" style="margin-bottom:0">
 
@@ -107,11 +110,13 @@ import ContractLink from "@/components/values/ContractLink.vue";
 
 export interface DisplayStateChange {
   changes: ContractResultStateChange,
+  header: boolean,
   balanceChange: number | null,
   addressType: string,
   valueReadType: string,
   valueWrittenType: string,
-  valueChange: number | null
+  valueChange: number | null,
+  index: number
 }
 
 const NB_STATES_PER_PAGE = 10
@@ -134,6 +139,7 @@ export default defineComponent({
   },
 
   setup(props) {
+    const isMediumScreen = inject('isMediumScreen', true)
     const isLargeScreen = inject('isLargeScreen', true)
     const isPaginated = computed(() => (props.stateChanges?.length??0) > NB_STATES_PER_PAGE)
 
@@ -149,32 +155,35 @@ export default defineComponent({
 
     const makeDisplayStateChanges = () => {
       const result: Array<DisplayStateChange> = []
-      let previousContract: string|null = null
 
       if (props.stateChanges) {
         for (const s of props.stateChanges) {
           const valueRead = Number(s.value_read)
           const valueWritten = Number(s.value_written)
-          result.push({
-            changes: s,
+          let newItem: DisplayStateChange = {
+            changes: {...s},
+            header: true,
             balanceChange: null,
             addressType: 'DECIMAL',
             valueReadType: 'DECIMAL',
             valueWrittenType: 'DECIMAL',
-            valueChange: !isNaN(valueRead) && !isNaN(valueWritten) ? valueWritten - valueRead : null
-          })
-          if (previousContract && previousContract === s.contract_id) {
-            result[result.length - 1].changes.contract_id = null
-          } else {
-            result[result.length - 1].balanceChange = transactionLoader.lookupTransfer(s.contract_id ?? "")
+            valueChange: !isNaN(valueRead) && !isNaN(valueWritten) ? valueWritten - valueRead : null,
+            index: result.length
           }
-          previousContract = s.contract_id ?? null
+
+          if (result.length > 0 && s.address === (result[result.length - 1].changes.address)) {
+            newItem.header = false
+          } else {
+            newItem.balanceChange = transactionLoader.lookupTransfer(s.contract_id ?? "")
+          }
+          result.push(newItem)
         }
       }
       return result
     }
 
     return {
+      isMediumScreen,
       isLargeScreen,
       isPaginated,
       displayStateChanges,
