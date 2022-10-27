@@ -29,7 +29,7 @@
 
     <div  v-if="nftTransferLayout.length >= 1">
 
-    <div class="graph-container" v-bind:class="{'graph-container-6': descriptionVisible}">
+    <div class="graph-container" v-bind:class="{'graph-container-6': !compact && descriptionVisible}">
 
       <template v-if="!compact">
 
