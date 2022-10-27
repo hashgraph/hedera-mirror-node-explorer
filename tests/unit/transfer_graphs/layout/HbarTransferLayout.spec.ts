@@ -497,4 +497,81 @@ describe("HbarTransferLayout.vue", () => {
         expect(cd1.payload).toBe(true)
     })
 
+    //
+    // Positive net amount with only fee collectors
+    //
+
+    test("Positive net amount with only fee collectors", async () => {
+
+        const transaction = {
+            "charged_tx_fee": 8,
+            "transfers": [
+                { "account": "0.0.7",   "amount":  +3 },
+                { "account": "0.0.98",  "amount":  +7 },
+                { "account": "0.0.100", "amount": -10 }
+            ],
+        }
+
+        //
+        // FULL
+        //
+
+        const fullLayout = new HbarTransferLayout(transaction as Transaction)
+
+        expect(fullLayout.transaction).toBe(transaction)
+        expect(fullLayout.netAmount).toBe(2)
+        expect(fullLayout.rowCount).toBe(3)
+        expect(fullLayout.sources.length).toBe(1)
+        expect(fullLayout.destinations.length).toBe(3)
+
+        const s0 = fullLayout.sources[0]
+        expect(s0.transfer.account).toBe("0.0.100")
+        expect(s0.transfer.amount).toBe(-10)
+        expect(s0.description).toBe(null)
+        expect(s0.payload).toBe(true)
+
+        const d0 = fullLayout.destinations[0]
+        expect(d0.transfer.account).toBe("0.0.7")
+        expect(d0.transfer.amount).toBe(+2)
+        expect(d0.description).toBe("Node 4 - testnet")
+        expect(d0.payload).toBe(true)
+
+        const d1 = fullLayout.destinations[1]
+        expect(d1.transfer.account).toBe("0.0.7")
+        expect(d1.transfer.amount).toBe(+1)
+        expect(d1.description).toBe("Node 4 - testnet")
+        expect(d1.payload).toBe(false)
+
+        const d2 = fullLayout.destinations[2]
+        expect(d2.transfer.account).toBe("0.0.98")
+        expect(d2.transfer.amount).toBe(+7)
+        expect(d2.description).toBe("Hedera fee collection account")
+        expect(d2.payload).toBe(false)
+
+        //
+        // COMPACT
+        //
+
+        const compactLayout = new HbarTransferLayout(transaction as Transaction, false)
+
+        expect(compactLayout.transaction).toBe(transaction)
+        expect(compactLayout.netAmount).toBe(2)
+        expect(compactLayout.rowCount).toBe(1)
+        expect(compactLayout.sources.length).toBe(1)
+        expect(compactLayout.destinations.length).toBe(1)
+
+        const cs0 = fullLayout.sources[0]
+        expect(cs0.transfer.account).toBe("0.0.100")
+        expect(cs0.transfer.amount).toBe(-10)
+        expect(cs0.description).toBe(null)
+        expect(cs0.payload).toBe(true)
+
+        const cd0 = fullLayout.destinations[0]
+        expect(cd0.transfer.account).toBe("0.0.7")
+        expect(cd0.transfer.amount).toBe(+2)
+        expect(cd0.description).toBe("Node 4 - testnet")
+        expect(cd0.payload).toBe(true)
+
+    })
+
 })
