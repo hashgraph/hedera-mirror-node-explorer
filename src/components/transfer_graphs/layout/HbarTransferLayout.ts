@@ -62,6 +62,41 @@ export class HbarTransferLayout {
             }
         }
 
+        // Makes sure net amount is distributed across payload transfers
+        let remaining = this.netAmount
+        // First we remove amount from payload transfers
+        for (const r of this.destinations) {
+            if (r.payload) {
+                remaining -= r.transfer.amount
+            }
+        }
+        // If remaining > 0 then we distribute the amount across non payload transfers
+        if (remaining > 0) {
+            for (const r of this.destinations.slice()) {
+                if (!r.payload) {
+                    const payloadAmount = Math.min(r.transfer.amount, remaining)
+                    const feeAmount = r.transfer.amount - payloadAmount
+                    // Removes existing transfer
+                    const i = this.destinations.indexOf(r)
+                    // assert(i != -1)
+                    const replacedTransfer = this.destinations[i]
+                    this.destinations.splice(i, 1)
+                    // Inserts two new transfers
+                    const payloadTransfer = { ... r.transfer } ; payloadTransfer.amount = payloadAmount
+                    const payloadRow = new HbarTransferRow(payloadTransfer, replacedTransfer.description, true)
+                    this.destinations.splice(i, 0, payloadRow)
+                    if (feeAmount > 0) {
+                        const feeTransfer = { ... r.transfer } ; feeTransfer.amount = feeAmount
+                        const feeRow = new HbarTransferRow(feeTransfer, replacedTransfer.description, false)
+                        this.destinations.splice(i+1, 0, feeRow)
+                    }
+                    remaining -= payloadAmount
+                    if (remaining <= 0) break
+                }
+            }
+        }
+
+
         if (!full) {
             // We remove "fee" rows (ie rows with payload == false)
             const sRemovalCount = HbarTransferLayout.removeFeeRows(this.sources)
