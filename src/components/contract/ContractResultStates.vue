@@ -24,7 +24,7 @@
 
 <template>
 
-  <DashboardCard v-if="stateChanges?.length" class="h-card">
+  <DashboardCard v-if="stateChanges?.length && isSmallScreen" class="h-card">
     <template v-slot:title>
       <span class="h-is-secondary-title">Contract States Accessed & Changed</span>
     </template>
@@ -71,6 +71,18 @@
 
     </template>
 
+  </DashboardCard>
+
+  <DashboardCard v-else-if="stateChanges?.length" class="h-card">
+    <template v-slot:title>
+      <div class="h-is-secondary-title">Contract States Accessed & Changed</div>
+    </template>
+
+    <template v-slot:content>
+      <div class="h-is-tertiary-text-text has-text-grey">
+        <span>Not available on this screen size</span>
+      </div>
+    </template>
   </DashboardCard>
 
 </template>
@@ -121,9 +133,7 @@ export default defineComponent({
   },
 
   setup(props) {
-    const isMediumScreen = inject('isMediumScreen', true)
-    const isLargeScreen = inject('isLargeScreen', true)
-
+    const isSmallScreen = inject('isSmallScreen', true)
     const sizeOptions:Array<number> = [5, 10, 15, 20, 30, 50, 100]
     const actualSizeOptions: Ref<Array<number>> = ref([])
 
@@ -223,8 +233,7 @@ export default defineComponent({
     }
 
     return {
-      isMediumScreen,
-      isLargeScreen,
+      isSmallScreen,
       displayStateChanges,
       actualSizeOptions,
       currentPage,
