@@ -39,10 +39,25 @@
       </div>
       <hr class="h-card-separator" style="margin-top: 0; margin-bottom: 20px; height: 1px"/>
 
-      <template v-for="s in displayStateChanges" :key="s.index">
-        <ContractResultStateChangeEntry :change="s"/>
+      <div v-for="s in nbChangeDisplayed" :key="s">
+        <ContractResultStateChangeEntry :change="displayStateChanges[changeCursor + s - 1]"/>
         <hr class="h-card-separator" style="margin-top: 0; margin-bottom: 12px; height: 0.5px"/>
-      </template>
+      </div>
+
+      <div v-if="isPaginated" class="is-flex is-justify-content-flex-end">
+        <o-pagination
+            :total="stateChanges.length"
+            v-model:current="currentPage"
+            :range-before="1"
+            :range-after="1"
+            :per-page="pageSize"
+            aria-next-label="Next page"
+            aria-previous-label="Previous page"
+            aria-page-label="Page"
+            aria-current-label="Current page"
+        >
+        </o-pagination>
+      </div>
 
     </template>
 
@@ -79,7 +94,8 @@ export interface DisplayStateChange {
   index: number
 }
 
-const NB_STATES_PER_PAGE = 3
+const DEFAULT_PAGE_SIZE = 15
+const MAX_PAGE_SIZE = 50
 
 export default defineComponent({
 
@@ -98,7 +114,26 @@ export default defineComponent({
   setup(props) {
     const isMediumScreen = inject('isMediumScreen', true)
     const isLargeScreen = inject('isLargeScreen', true)
-    const isPaginated = computed(() => (props.stateChanges?.length??0) > NB_STATES_PER_PAGE)
+
+    const currentPage = ref(1)
+    const pageSize = ref(DEFAULT_PAGE_SIZE)
+    watch(pageSize, () => currentPage.value = 1)
+
+    onMounted(() => updatePageSize())
+    watch(() => props.stateChanges, () => updatePageSize())
+    const updatePageSize = () => {
+      pageSize.value = Math.min(pageSize.value, props.stateChanges?.length ?? 0)
+    }
+
+    const isPaginated = computed(
+        () => displayStateChanges?.value.length && displayStateChanges?.value.length > pageSize.value)
+    const changeCursor = computed(() => (currentPage.value - 1) * pageSize.value)
+    watch(changeCursor, () => displayStateChanges.value[changeCursor.value].header = true)
+    const nbChangeDisplayed = computed(() => {
+      return displayStateChanges?.value.length
+          ? Math.min(pageSize.value, displayStateChanges?.value.length - changeCursor.value)
+          : 0
+    })
 
     const transactionLoader = new TransactionByTimestampLoader(
         computed(() => props.timeStamp ?? null)
@@ -167,9 +202,13 @@ export default defineComponent({
     return {
       isMediumScreen,
       isLargeScreen,
-      isPaginated,
       displayStateChanges,
-      NB_STATES_PER_PAGE,
+      MAX_PAGE_SIZE,
+      currentPage,
+      isPaginated,
+      changeCursor,
+      pageSize,
+      nbChangeDisplayed,
       ORUGA_MOBILE_BREAKPOINT
     }
   },
