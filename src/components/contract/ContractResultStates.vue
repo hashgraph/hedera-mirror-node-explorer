@@ -58,31 +58,32 @@
           <div class="column is-2 py-1"></div>
 
           <div class="column py-1">
-            <HexaValue :byte-string="s.changes.slot"/>
+            <HexaValue :byte-string="s.changes.slot" :low-contrast="false"/>
             <div class="h-is-extra-text h-is-text-size-2">
-              {{ 'Decimal: ' + Number(s.changes.slot) }}
+              {{ 'Decimal: ' + (s.slotDecimal??'not available') }}
             </div>
           </div>
 
           <div class="column py-1">
-            <HexaValue :byte-string="s.changes.value_read" :show-none="true"/>
-            <div :class="{'is-invisible': isNaN(Number(s.changes.value_read))}"
-                 class="h-is-extra-text h-is-text-size-2">
-              {{ 'Decimal: ' + Number(s.changes.value_read) }}
+            <HexaValue :byte-string="s.changes.value_read" :show-none="true" :low-contrast="s.valueReadDecimal === 0"/>
+            <div class="h-is-extra-text h-is-text-size-2">
+              {{ 'Decimal: ' + (s.valueReadDecimal??'not available') }}
             </div>
           </div>
 
           <div class="column py-1">
-            <HexaValue :byte-string="s.changes.value_written" :show-none="true"/>
-            <div :class="{'is-invisible': isNaN(Number(s.changes.value_written))}"
-                 class="h-is-extra-text h-is-text-size-2">
-              <span>{{ 'Decimal: ' + Number(s.changes.value_written) }}</span>
+            <HexaValue :byte-string="s.changes.value_written"
+                       :show-none="true" :low-contrast="s.valueWrittenDecimal === 0"/>
+            <div class="h-is-extra-text h-is-text-size-2">
+              <span v-if="s.changes.value_written">
+                {{ 'Decimal: ' + (s.valueWrittenDecimal??'not available') }}
+              </span>
               <span v-if="s.valueChange" class="ml-2">{{ '(Difference: ' + s.valueChange + ')' }}</span>
             </div>
           </div>
 
         </div>
-        <hr class="h-card-separator" style="margin-top: 0; margin-bottom: 8px; height: 0.5px"/>
+        <hr class="h-card-separator" style="margin-top: 0; margin-bottom: 12px; height: 0.5px"/>
       </div>
 
     </template>
@@ -112,14 +113,19 @@ export interface DisplayStateChange {
   changes: ContractResultStateChange,
   header: boolean,
   balanceChange: number | null,
-  addressType: string,
+  slotType: string,
+  slotDecimal: number | null
   valueReadType: string,
+  valueReadDecimal: number | null
+  valueReadString: string | null
   valueWrittenType: string,
+  valueWrittenDecimal: number | null
+  valueWrittenString: string | null
   valueChange: number | null,
   index: number
 }
 
-const NB_STATES_PER_PAGE = 10
+const NB_STATES_PER_PAGE = 3
 
 export default defineComponent({
 
@@ -158,28 +164,49 @@ export default defineComponent({
 
       if (props.stateChanges) {
         for (const s of props.stateChanges) {
-          const valueRead = Number(s.value_read)
-          const valueWritten = Number(s.value_written)
+
           let newItem: DisplayStateChange = {
             changes: {...s},
             header: true,
             balanceChange: null,
-            addressType: 'DECIMAL',
+            slotType: 'DECIMAL',
+            slotDecimal: makeDecimal(s.slot??""),
             valueReadType: 'DECIMAL',
+            valueReadDecimal: makeDecimal(s.value_read??""),
+            valueReadString: null,
             valueWrittenType: 'DECIMAL',
-            valueChange: !isNaN(valueRead) && !isNaN(valueWritten) ? valueWritten - valueRead : null,
+            valueWrittenDecimal: makeDecimal(s.value_written??""),
+            valueWrittenString: null,
+            valueChange: null,
             index: result.length
           }
 
+          if (newItem.changes.value_written === '0x') {
+            newItem.changes.value_written = null
+            newItem.valueWrittenDecimal = null
+          }
+          if (newItem.changes.slot === '0x') {
+            newItem.changes.slot = '0x0000000000000000000000000000000000000000000000000000000000000000'
+            newItem.slotDecimal = 0
+          }
           if (result.length > 0 && s.address === (result[result.length - 1].changes.address)) {
             newItem.header = false
           } else {
             newItem.balanceChange = transactionLoader.lookupTransfer(s.contract_id ?? "")
           }
+          newItem.valueChange = newItem.valueReadDecimal && newItem.valueWrittenDecimal
+              ? newItem.valueWrittenDecimal - newItem.valueReadDecimal
+              : null
+
           result.push(newItem)
         }
       }
       return result
+    }
+
+    const makeDecimal = (hexa: string): number|null => {
+      hexa = hexa.replace(/^0x0+/, '');
+      return (hexa.length <= 8) ? Number("0x"+ hexa) : null
     }
 
     return {
