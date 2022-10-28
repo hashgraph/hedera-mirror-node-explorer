@@ -137,7 +137,6 @@ import HbarAmount from "@/components/values/HbarAmount.vue";
 import HbarExtra from "@/components/values/HbarExtra.vue";
 import {HbarTransferLayout} from "@/components/transfer_graphs/layout/HbarTransferLayout";
 import {Transaction} from "@/schemas/HederaSchemas";
-import {operatorRegistry} from "@/schemas/OperatorRegistry";
 
 export default defineComponent({
   name: "HbarTransferGraphF",
@@ -156,8 +155,8 @@ export default defineComponent({
 
     function hasLowContrast(i: number): boolean {
       const destinations = hbarTransferLayout.value.destinations
-      const accountId = i < destinations.length ? destinations[i].transfer.account : null
-      return accountId != null && operatorRegistry.lookup(accountId) != null;
+      const destination = i < destinations.length ? destinations[i] : null
+      return destination === null || !destination.payload
     }
 
     watch(() => props.transaction, () => {
