@@ -1,0 +1,77 @@
+/*-
+ *
+ * Hedera Mirror Node Explorer
+ *
+ * Copyright (C) 2021 - 2022 Hedera Hashgraph, LLC
+ *
+ * Licensed under the Apache License, Version 2.0 (the "License");
+ * you may not use this file except in compliance with the License.
+ * You may obtain a copy of the License at
+ *
+ *      http://www.apache.org/licenses/LICENSE-2.0
+ *
+ * Unless required by applicable law or agreed to in writing, software
+ * distributed under the License is distributed on an "AS IS" BASIS,
+ * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+ * See the License for the specific language governing permissions and
+ * limitations under the License.
+ *
+ */
+
+
+import router from "@/router";
+import {mount} from "@vue/test-utils";
+import ComplexKeyValue from "@/components/values/ComplexKeyValue.vue";
+
+describe("ComplexKeyValue.vue", () => {
+
+    const COMPLEX_KEY = "0x2a880208021283020a562a54080112500a2632240a221220ef2d877b88b7464d9253560b8851316f5c2f6ddf935eb4eec0761a3262b0a48c0a2632240a221220a95d54cf49c1d08cd16d8908f37dfad95637134ffaf528a1d96da7f28d45f1390aa8012aa501080212a0010a2632240a221220c44c911fa45166e356b498463184459dd9ee760bacc083de348691d6357e06340a2632240a221220ef2d877b88b7464d9253560b8851316f5c2f6ddf935eb4eec0761a3262b0a48c0a2632240a221220a95d54cf49c1d08cd16d8908f37dfad95637134ffaf528a1d96da7f28d45f1390a2632240a221220daa5da866bf4e990c14eff4336f5ab4b416c85a31289c8cb8ae1b4a54ce8c111"
+
+    it("props.keyBytes set", async () => {
+
+        await router.push("/") // To avoid "missing required param 'network'" error
+
+        const wrapper = mount(ComplexKeyValue, {
+            global: {
+                plugins: [router]
+            },
+            props: {
+                keyBytes: COMPLEX_KEY
+            },
+        });
+
+        expect(wrapper.text()).toBe("thresholdKey(2 of 2)thresholdKey(1 of 2)ef2d 877b 88b7 464d 9253 560b 8851 316f 5c2f 6ddf 935e b4ee c076 1a32 62b0 a48cCopy to ClipboardED25519a95d 54cf 49c1 d08c d16d 8908 f37d fad9 5637 134f faf5 28a1 d96d a7f2 8d45 f139Copy to ClipboardED25519thresholdKey(2 of 4)c44c 911f a451 66e3 56b4 9846 3184 459d d9ee 760b acc0 83de 3486 91d6 357e 0634Copy to ClipboardED25519ef2d 877b 88b7 464d 9253 560b 8851 316f 5c2f 6ddf 935e b4ee c076 1a32 62b0 a48cCopy to ClipboardED25519a95d 54cf 49c1 d08c d16d 8908 f37d fad9 5637 134f faf5 28a1 d96d a7f2 8d45 f139Copy to ClipboardED25519daa5 da86 6bf4 e990 c14e ff43 36f5 ab4b 416c 85a3 1289 c8cb 8ae1 b4a5 4ce8 c111Copy to ClipboardED25519")
+    });
+
+    it("props.keyBytes unset, showNone=false", async () => {
+
+        await router.push("/") // To avoid "missing required param 'network'" error
+
+        const wrapper = mount(ComplexKeyValue, {
+            global: {
+                plugins: [router]
+            },
+            props: {
+            },
+        });
+
+        expect(wrapper.text()).toBe("")
+    });
+
+    it("props.keyBytes unset, showNone=true", async () => {
+
+        await router.push("/") // To avoid "missing required param 'network'" error
+
+        const wrapper = mount(ComplexKeyValue, {
+            global: {
+                plugins: [router]
+            },
+            props: {
+                showNone: true
+            },
+        });
+
+        expect(wrapper.text()).toBe("None")
+    });
+
+})
