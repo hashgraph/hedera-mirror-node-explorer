@@ -34,7 +34,7 @@
     <Property id="logData" :full-width="true">
       <template v-slot:name>Data</template>
       <template v-slot:value>
-        <HexaValue :show-none="true" v-bind:byteString="log.data"/>
+        <HexaValue :show-none="true" v-bind:byteString="log.data" :low-contrast="false"/>
       </template>
     </Property>
     <Property id="logIndex" :full-width="true">>
@@ -47,8 +47,8 @@
       <template v-slot:name>Topics</template>
       <template v-slot:value>
         <div v-for="(t, topicIndex) in log.topics" :key="t" class="is-flex">
-          <HexaValue class="mr-2" v-bind:byteString="'(' + topicIndex + ') '"/>
-          <HexaValue :show-none="true" v-bind:byteString="t"/>
+          <HexaValue class="mr-2" v-bind:byteString="'(' + topicIndex + ') '" :low-contrast="false"/>
+          <HexaValue :show-none="true" v-bind:byteString="t" :low-contrast="false"/>
         </div>
       </template>
     </Property>
