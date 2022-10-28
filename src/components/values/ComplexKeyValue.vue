@@ -23,19 +23,26 @@
 <!-- --------------------------------------------------------------------------------------------------------------- -->
 
 <template>
-  <div :style="containerStyle()">
-    <template v-for="line in lines" :key="line.seqNb">
-      <div :style="lineStyle(line)">
-        <template v-if="line.innerKeyBytes() !== null">
-          <HexaValue :byte-string="line.innerKeyBytes()"/>
-          <div class="h-is-extra-text h-is-text-size-3">{{ line.innerKeyType() }}</div>
-        </template>
-        <template v-else>
-          <div>{{ lineText(line) }}</div>
-        </template>
-      </div>
-    </template>
+  <div v-if="key !== null">
+    <div :style="containerStyle()">
+      <template v-for="line in lines" :key="line.seqNb">
+        <div :style="lineStyle(line)">
+          <template v-if="line.innerKeyBytes() !== null">
+            <HexaValue :byte-string="line.innerKeyBytes()"/>
+            <div class="h-is-extra-text h-is-text-size-3">{{ line.innerKeyType() }}</div>
+          </template>
+          <template v-else>
+            <div>{{ lineText(line) }}</div>
+          </template>
+        </div>
+      </template>
+    </div>
   </div>
+  <div v-else-if="showNone && !initialLoading">
+    <div class="has-text-grey">None</div>
+  </div>
+  <div v-else/>
+
 </template>
 
 
@@ -45,11 +52,12 @@
 
 <script lang="ts">
 
-import {computed, defineComponent} from "vue";
+import {computed, defineComponent, inject, ref} from "vue";
 import {ComplexKeyLine} from "@/utils/ComplexKeyLine";
 import {hexToByte} from "@/utils/B64Utils";
 import hashgraph from "@hashgraph/proto/lib/proto";
 import HexaValue from "@/components/values/HexaValue.vue";
+import {initialLoadingKey} from "@/AppKeys";
 
 export default defineComponent({
   name: "ComplexKeyValue",
@@ -125,11 +133,15 @@ export default defineComponent({
       return result
     }
 
+    const initialLoading = inject(initialLoadingKey, ref(false))
+
     return {
+      key,
       lines,
       containerStyle,
       lineStyle,
-      lineText
+      lineText,
+      initialLoading
     }
   }
 })
