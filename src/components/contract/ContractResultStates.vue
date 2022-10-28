@@ -39,52 +39,10 @@
       </div>
       <hr class="h-card-separator" style="margin-top: 0; margin-bottom: 20px; height: 1px"/>
 
-      <div v-for="s in displayStateChanges" :key="s.index">
-
-        <template v-if="s.header===true">
-          <div class="is-flex is-align-items-baseline">
-            <ContractLink :contract-id="s.changes.contract_id"></ContractLink>
-            <EVMAddress :address="s.changes.address" :compact="!isMediumScreen" class="ml-3"/>
-            <span class="mb-2 h-is-text-size-3">
-            <span class="ml-4 mr-2">Contract HBar Balance Difference:</span>
-            <HbarAmount :amount="s.balanceChange" :colored="true" :show-extra="true"/>
-          </span>
-          </div>
-          <hr class="h-card-separator" style="margin-bottom: 12px; margin-top: 0"/>
-        </template>
-
-        <div class="columns" style="margin-bottom:0">
-
-          <div class="column is-2 py-1"></div>
-
-          <div class="column py-1">
-            <HexaValue :byte-string="s.changes.slot" :low-contrast="false"/>
-            <div class="h-is-extra-text h-is-text-size-2">
-              {{ 'Decimal: ' + (s.slotDecimal??'not available') }}
-            </div>
-          </div>
-
-          <div class="column py-1">
-            <HexaValue :byte-string="s.changes.value_read" :show-none="true" :low-contrast="s.valueReadDecimal === 0"/>
-            <div class="h-is-extra-text h-is-text-size-2">
-              {{ 'Decimal: ' + (s.valueReadDecimal??'not available') }}
-            </div>
-          </div>
-
-          <div class="column py-1">
-            <HexaValue :byte-string="s.changes.value_written"
-                       :show-none="true" :low-contrast="s.valueWrittenDecimal === 0"/>
-            <div class="h-is-extra-text h-is-text-size-2">
-              <span v-if="s.changes.value_written">
-                {{ 'Decimal: ' + (s.valueWrittenDecimal??'not available') }}
-              </span>
-              <span v-if="s.valueChange" class="ml-2">{{ '(Difference: ' + s.valueChange + ')' }}</span>
-            </div>
-          </div>
-
-        </div>
+      <template v-for="s in displayStateChanges" :key="s.index">
+        <ContractResultStateChangeEntry :change="s"/>
         <hr class="h-card-separator" style="margin-top: 0; margin-bottom: 12px; height: 0.5px"/>
-      </div>
+      </template>
 
     </template>
 
@@ -101,13 +59,9 @@
 import {computed, defineComponent, inject, onMounted, PropType, ref, Ref, watch} from 'vue';
 import DashboardCard from "@/components/DashboardCard.vue";
 import {ContractResultStateChange} from "@/schemas/HederaSchemas";
-import EVMAddress from "@/components/values/EVMAddress.vue";
 import {ORUGA_MOBILE_BREAKPOINT} from '@/App.vue';
-import HexaValue from "@/components/values/HexaValue.vue";
-import HbarAmount from "@/components/values/HbarAmount.vue";
 import {TransactionByTimestampLoader} from "@/components/transaction/TransactionByTimestampLoader";
-import ContractLink from "@/components/values/ContractLink.vue";
-
+import ContractResultStateChangeEntry from "@/components/contract/ContractResultStateChangeEntry.vue";
 
 export interface DisplayStateChange {
   changes: ContractResultStateChange,
@@ -132,10 +86,7 @@ export default defineComponent({
   name: 'ContractResultStates',
 
   components: {
-    ContractLink,
-    HbarAmount,
-    HexaValue,
-    EVMAddress,
+    ContractResultStateChangeEntry,
     DashboardCard
   },
 
@@ -181,6 +132,10 @@ export default defineComponent({
             index: result.length
           }
 
+          if (newItem.changes.value_read === '0x') {
+            newItem.changes.value_read = '0x0000000000000000000000000000000000000000000000000000000000000000'
+            newItem.valueReadDecimal = 0
+          }
           if (newItem.changes.value_written === '0x') {
             newItem.changes.value_written = null
             newItem.valueWrittenDecimal = null
