@@ -24,7 +24,9 @@
 
 <template>
   <div v-if="normByteString" class="shy-scope" style="display: inline-block; position: relative">
-    <div class="is-family-monospace h-is-text-size-3 has-text-grey">{{ flow() }}</div>
+    <div class="is-family-monospace h-is-text-size-3" :class="{'has-text-grey': lowContrast}">
+      {{ flow() }}
+    </div>
     <div v-if="isCopyEnabled" id="shyCopyButton" class="shy" style="position: absolute; left: 0; top: 0; width: 100%; height: 100%">
       <div style="position: absolute; left: 0; top: 0; width: 100%; height: 100%; background: rgba(0, 0, 0, 0.50)"></div>
       <div style="position: absolute; display: inline-block; left: 50%; top: 50%; transform: translate(-50%, -50%);">
@@ -57,6 +59,10 @@ export default defineComponent({
       default: false
     },
     noneExtra: String,
+    lowContrast: {
+      type: Boolean,
+      default: true
+    }
   },
 
   setup(props) {
