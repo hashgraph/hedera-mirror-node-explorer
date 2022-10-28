@@ -29,6 +29,16 @@
       <span class="h-is-secondary-title">Contract States Accessed & Changed</span>
     </template>
 
+    <template v-slot:control v-if="displayStateChanges.length > 5">
+      <o-field>
+        <o-select v-model="pageSize" class="h-is-text-size-1">
+          <option v-for="n of actualSizeOptions" :key="n" :value="n">
+            {{ (n >= displayStateChanges?.length) ? 'Show all items' : 'Show ' + n + ' items' }}
+          </option>
+        </o-select>
+      </o-field>
+    </template>
+
     <template v-slot:content>
 
       <div class="columns" style="margin-bottom:0; font-size: 11px; font-weight: 700;">
@@ -94,8 +104,7 @@ export interface DisplayStateChange {
   index: number
 }
 
-const DEFAULT_PAGE_SIZE = 15
-const MAX_PAGE_SIZE = 50
+const DEFAULT_PAGE_SIZE = 5
 
 export default defineComponent({
 
@@ -115,6 +124,9 @@ export default defineComponent({
     const isMediumScreen = inject('isMediumScreen', true)
     const isLargeScreen = inject('isLargeScreen', true)
 
+    const sizeOptions:Array<number> = [5, 10, 15, 20, 30, 50, 100]
+    const actualSizeOptions: Ref<Array<number>> = ref([])
+
     const currentPage = ref(1)
     const pageSize = ref(DEFAULT_PAGE_SIZE)
     watch(pageSize, () => currentPage.value = 1)
@@ -123,6 +135,17 @@ export default defineComponent({
     watch(() => props.stateChanges, () => updatePageSize())
     const updatePageSize = () => {
       pageSize.value = Math.min(pageSize.value, props.stateChanges?.length ?? 0)
+      let options: Array<number> = sizeOptions
+      console.log("props.stateChanges?.length: " + props.stateChanges?.length)
+      for (let i = 0; i < options.length - 1; i++) {
+        if (options[i] > (props.stateChanges?.length ?? 0)) {
+          console.log("options[i]: " + options[i])
+          options = options.slice(0, i + 1)
+          break
+        }
+      }
+      actualSizeOptions.value = options
+      console.log("actualSizeOptions: " + actualSizeOptions.value)
     }
 
     const isPaginated = computed(
@@ -203,7 +226,7 @@ export default defineComponent({
       isMediumScreen,
       isLargeScreen,
       displayStateChanges,
-      MAX_PAGE_SIZE,
+      actualSizeOptions,
       currentPage,
       isPaginated,
       changeCursor,
