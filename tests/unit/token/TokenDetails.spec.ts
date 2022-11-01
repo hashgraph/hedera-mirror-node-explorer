@@ -23,7 +23,7 @@ import router from "@/router";
 import TokenDetails from "@/pages/TokenDetails.vue";
 import axios from "axios";
 import {
-    SAMPLE_BALANCES,
+    SAMPLE_BALANCES, SAMPLE_COINGECKO,
     SAMPLE_NFTS, SAMPLE_NONFUNGIBLE,
     SAMPLE_NONFUNGIBLE_DUDE,
     SAMPLE_TOKEN,
@@ -386,6 +386,8 @@ describe("TokenDetails.vue", () => {
         mock.onGet(matcher1).reply(200, SAMPLE_TOKEN);
         const matcher2 = "/api/v1/tokens/" + testTokenId + "/balances"
         mock.onGet(matcher2).reply(200, SAMPLE_BALANCES);
+        const matcher3 = "https://api.coingecko.com/api/v3/coins/hedera-hashgraph"
+        mock.onGet(matcher3).reply(200, SAMPLE_COINGECKO);
 
         const wrapper = mount(TokenDetails, {
             global: {
@@ -409,7 +411,8 @@ describe("TokenDetails.vue", () => {
         expect(fixedFee.get('tbody').text()).toBe(
             "5" + "0.0.2966295623423" + "0.0.617888" +
             "1" + "0.0.2966295623423" + "0.0.617889" +
-            "2" + "0.0.2966295623423" + "0.0.617890")
+            "2" + "0.0.2966295623423" + "0.0.617890" +
+            "1.00000000" + "$0.2460" + "0.0.617888")
 
         const fractionalFee = customFees.findComponent(FractionalFeeTable)
         expect(fractionalFee.exists()).toBe(true)
@@ -433,6 +436,8 @@ describe("TokenDetails.vue", () => {
         mock.onGet(matcher1).reply(200, SAMPLE_NONFUNGIBLE);
         const matcher2 = "/api/v1/tokens/" + testTokenId + "/nfts"
         mock.onGet(matcher2).reply(200, SAMPLE_NFTS);
+        const matcher3 = "https://api.coingecko.com/api/v3/coins/hedera-hashgraph"
+        mock.onGet(matcher3).reply(200, SAMPLE_COINGECKO);
 
         const wrapper = mount(TokenDetails, {
             global: {
@@ -456,7 +461,8 @@ describe("TokenDetails.vue", () => {
         expect(fixedFee.get('tbody').text()).toBe(
             "5" + "0.0.748383" + "Ħ Frens Kingdom" + "0.0.617888" +
             "1" + "0.0.748383" + "Ħ Frens Kingdom" + "0.0.617889" +
-            "2" + "0.0.748383" + "Ħ Frens Kingdom" + "0.0.617890")
+            "2" + "0.0.748383" + "Ħ Frens Kingdom" + "0.0.617890" +
+            "1.00000000" + "$0.2460" + "0.0.617888")
 
         expect(customFees.findComponent(FractionalFeeTable).exists()).toBe(false)
 
