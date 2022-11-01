@@ -76,6 +76,8 @@ describe("TokenDetails.vue", () => {
         mock.onGet(matcher1).reply(200, SAMPLE_TOKEN);
         const matcher2 = "/api/v1/tokens/" + testTokenId + "/balances"
         mock.onGet(matcher2).reply(200, SAMPLE_BALANCES);
+        const matcher3 = "https://api.coingecko.com/api/v3/coins/hedera-hashgraph"
+        mock.onGet(matcher3).reply(200, SAMPLE_COINGECKO);
 
         const wrapper = mount(TokenDetails, {
             global: {
