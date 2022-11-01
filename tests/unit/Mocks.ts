@@ -46,7 +46,12 @@ export const SAMPLE_TOKEN = {
                 "amount": 2,
                 "collector_account_id": "0.0.617890",
                 "denominating_token_id": "0.0.29662956"
-            }
+            },
+            {
+                "amount": 100000000,
+                "collector_account_id": "0.0.617888",
+                "denominating_token_id": null
+            },
         ],
         "fractional_fees": [
             {
@@ -249,7 +254,12 @@ export const SAMPLE_NONFUNGIBLE = {
                 "amount": 2,
                 "collector_account_id": "0.0.617890",
                 "denominating_token_id": "0.0.748383"
-            }
+            },
+            {
+                "amount": 100000000,
+                "collector_account_id": "0.0.617888",
+                "denominating_token_id": null
+            },
         ],
         "royalty_fees": [
             {

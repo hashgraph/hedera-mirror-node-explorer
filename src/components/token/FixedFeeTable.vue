@@ -38,7 +38,8 @@
   >
 
     <o-table-column v-slot="props" field="amount" label="Amount">
-      <PlainAmount :amount="props.row.amount"/>
+      <PlainAmount v-if="props.row.denominating_token_id" :amount="props.row.amount"/>
+      <HbarAmount v-else :amount="props.row.amount" :show-extra="true"/>
     </o-table-column>
 
     <o-table-column v-slot="props" field="amount" label="Token">
@@ -61,18 +62,20 @@
 
 import {defineComponent, PropType} from 'vue';
 import AccountLink from "@/components/values/AccountLink.vue";
-import PlainAmount from "@/components/values/PlainAmount.vue";
 import TokenLink from "@/components/values/TokenLink.vue";
 import {ORUGA_MOBILE_BREAKPOINT} from "@/App.vue";
 import {TokenInfoLoader} from "@/components/token/TokenInfoLoader";
+import HbarAmount from "@/components/values/HbarAmount.vue";
+import PlainAmount from "@/components/values/PlainAmount.vue";
 
 export default defineComponent({
 
   name: 'FixedFeeTable',
 
   components: {
-    TokenLink,
     PlainAmount,
+    HbarAmount,
+    TokenLink,
     AccountLink,
   },
 
