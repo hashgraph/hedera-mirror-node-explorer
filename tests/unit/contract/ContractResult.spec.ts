@@ -92,6 +92,6 @@ describe("ContractResult.vue", () => {
         expect(wrapper.get("#maxPriorityFeePerGasValue").text()).toBe("None")
         expect(wrapper.get("#gasPriceValue").text()).toBe("0.00000000$0.0000")
 
-        expect(wrapper.findAll("#logIndexValue").length).toBe(2)
+        expect(wrapper.findAll("#logIndexValue").length).toBe(3)
     });
 });

@@ -185,7 +185,7 @@ describe("TransactionDetails.vue", () => {
         expect(wrapper.get("#maxFeePerGasValue").text()).toBe("None")
         expect(wrapper.get("#maxPriorityFeePerGasValue").text()).toBe("None")
         expect(wrapper.get("#gasPriceValue").text()).toBe("0.00000000$0.0000")
-        expect(wrapper.findAll("#logIndexValue").length).toBe(2)
+        expect(wrapper.findAll("#logIndexValue").length).toBe(3)
     });
 
     it("Should display the contract result and logs (using transaction hash)", async () => {
@@ -240,7 +240,7 @@ describe("TransactionDetails.vue", () => {
         expect(wrapper.get("#maxFeePerGasValue").text()).toBe("None")
         expect(wrapper.get("#maxPriorityFeePerGasValue").text()).toBe("None")
         expect(wrapper.get("#gasPriceValue").text()).toBe("0.00000000$0.0000")
-        expect(wrapper.findAll("#logIndexValue").length).toBe(2)
+        expect(wrapper.findAll("#logIndexValue").length).toBe(3)
     });
 
     it("Should update when transaction id changes", async () => {

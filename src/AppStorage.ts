@@ -56,20 +56,33 @@ export class AppStorage {
     }
 
     //
-    // contract state table page size
+    // contract logs table page size
     //
 
-    private static readonly CONTRACT_STATE_TABLE_PAGE_SIZE_KEY = 'statePageSize'
+    private static readonly CONTRACT_LOGS_TABLE_PAGE_SIZE_KEY = 'logsPageSize'
 
-    public static getStateTablePageSize(): number | null {
-        const size = this.getLocalStorageItem(this.CONTRACT_STATE_TABLE_PAGE_SIZE_KEY)
-        const result = size ? Number(size) : null
-        console.log("getStateTablePageSize: " + result)
-        return result
+    public static getLogsTablePageSize(): number | null {
+        const size = this.getLocalStorageItem(this.CONTRACT_LOGS_TABLE_PAGE_SIZE_KEY)
+        return size ? Number(size) : null
     }
 
-    public static setStateTablePageSize(newValue: number | null ): void {
-        this.setLocalStorageItem(this.CONTRACT_STATE_TABLE_PAGE_SIZE_KEY, newValue ? newValue?.toString() : null)
+    public static setLogsTablePageSize(newValue: number | null ): void {
+        this.setLocalStorageItem(this.CONTRACT_LOGS_TABLE_PAGE_SIZE_KEY, newValue ? newValue?.toString() : null)
+    }
+
+    //
+    // contract states table page size
+    //
+
+    private static readonly CONTRACT_STATES_TABLE_PAGE_SIZE_KEY = 'statesPageSize'
+
+    public static getStatesTablePageSize(): number | null {
+        const size = this.getLocalStorageItem(this.CONTRACT_STATES_TABLE_PAGE_SIZE_KEY)
+        return size ? Number(size) : null
+    }
+
+    public static setStatesTablePageSize(newValue: number | null ): void {
+        this.setLocalStorageItem(this.CONTRACT_STATES_TABLE_PAGE_SIZE_KEY, newValue ? newValue?.toString() : null)
     }
 
     //

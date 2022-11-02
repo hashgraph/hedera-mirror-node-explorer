@@ -139,9 +139,9 @@ export default defineComponent({
     const actualSizeOptions: Ref<Array<number>> = ref([])
 
     const currentPage = ref(1)
-    const pageSize = ref(AppStorage.getStateTablePageSize() ??  DEFAULT_PAGE_SIZE)
+    const pageSize = ref(AppStorage.getStatesTablePageSize() ??  DEFAULT_PAGE_SIZE)
     watch(pageSize, () => {
-      AppStorage.setStateTablePageSize(pageSize.value)
+      AppStorage.setStatesTablePageSize(pageSize.value)
       currentPage.value = 1
     })
 

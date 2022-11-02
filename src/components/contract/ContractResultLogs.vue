@@ -32,8 +32,8 @@
     <template v-slot:control v-if="logs.length > 2">
       <o-field>
         <o-select v-model="pageSize" class="h-is-text-size-1">
-          <option v-for="n in Math.min(MAX_PAGE_SIZE, logs?.length)" :key="n" :value="n">
-            {{ (n === logs?.length) ? 'Show all items' : 'Show ' + n + (n === 1 ? ' item' :' items') }}
+          <option v-for="n of actualSizeOptions" :key="n" :value="n">
+            {{ (n >= logs?.length) ? 'Show all items' : 'Show ' + n + ' items' }}
           </option>
         </o-select>
       </o-field>
@@ -72,30 +72,50 @@
 
 <script lang="ts">
 
-import {computed, defineComponent, onMounted, PropType, ref, watch} from "vue";
+import {computed, defineComponent, onMounted, PropType, Ref, ref, watch} from "vue";
 import DashboardCard from "@/components/DashboardCard.vue";
 import ContractResultLogEntry from "@/components/contract/ContractResultLogEntry.vue";
 import {ContractResultLog} from "@/schemas/HederaSchemas";
+import {AppStorage} from "@/AppStorage";
 
-const DEFAULT_PAGE_SIZE = 2
-const MAX_PAGE_SIZE = 5
+const DEFAULT_PAGE_SIZE = 3
 
 export default defineComponent({
+
   name: "ContractResultLogs",
-  components: {ContractResultLogEntry, DashboardCard},
+
+  components: {
+    ContractResultLogEntry,
+    DashboardCard
+  },
+
   props: {
     logs: Object as PropType<Array<ContractResultLog> | undefined>
   },
-  setup(props) {
-    const currentPage = ref(1)
 
-    const pageSize = ref(DEFAULT_PAGE_SIZE)
-    watch(pageSize, () => currentPage.value = 1)
+  setup(props) {
+    const sizeOptions:Array<number> = [3, 5, 10, 15, 20, 30]
+    const actualSizeOptions: Ref<Array<number>> = ref([])
+
+    const currentPage = ref(1)
+    const pageSize = ref(AppStorage.getLogsTablePageSize() ??  DEFAULT_PAGE_SIZE)
+    watch(pageSize, () => {
+      AppStorage.setLogsTablePageSize(pageSize.value)
+      currentPage.value = 1
+    })
 
     onMounted(() => updatePageSize())
     watch(() => props.logs, () => updatePageSize())
     const updatePageSize = () => {
-      pageSize.value = Math.min(pageSize.value, props.logs?.length ?? 0)
+      let options: Array<number> = sizeOptions
+      for (let i = 0; i < options.length - 1; i++) {
+        if (options[i] > (props.logs?.length ?? 0)) {
+          options = options.slice(0, i + 1)
+          pageSize.value = Math.min(pageSize.value, options[i])
+          break
+        }
+      }
+      actualSizeOptions.value = options
     }
 
     const isPaginated = computed(() => props.logs?.length && props.logs?.length > pageSize.value)
@@ -105,7 +125,7 @@ export default defineComponent({
     })
 
     return {
-      MAX_PAGE_SIZE,
+      actualSizeOptions,
       currentPage,
       isPaginated,
       logCursor,
