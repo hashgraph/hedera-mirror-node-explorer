@@ -251,6 +251,11 @@ export abstract class TableController<R, K> {
 
     private sourcesDidChange(): void {
         if (this.mountedRef.value) {
+            if (this.autoRefreshRef.value) {
+                this.abortRefreshBuffer()
+            } else {
+                this.abortMoveBufferToPage()
+            }
             this.buffer.clear()
             this.bufferDidChange().finally(() => {
                 if (this.autoRefreshRef.value) {

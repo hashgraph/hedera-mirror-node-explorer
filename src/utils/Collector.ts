@@ -52,6 +52,7 @@ export abstract class Collector<E, K> {
             }
             this.tailKey = key
             this.tailEntry = result
+            this.entries.set(this.tailKey, this.tailEntry)
         }
 
         return result
