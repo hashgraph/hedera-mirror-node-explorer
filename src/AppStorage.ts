@@ -56,6 +56,23 @@ export class AppStorage {
     }
 
     //
+    // contract state table page size
+    //
+
+    private static readonly CONTRACT_STATE_TABLE_PAGE_SIZE_KEY = 'statePageSize'
+
+    public static getStateTablePageSize(): number | null {
+        const size = this.getLocalStorageItem(this.CONTRACT_STATE_TABLE_PAGE_SIZE_KEY)
+        const result = size ? Number(size) : null
+        console.log("getStateTablePageSize: " + result)
+        return result
+    }
+
+    public static setStateTablePageSize(newValue: number | null ): void {
+        this.setLocalStorageItem(this.CONTRACT_STATE_TABLE_PAGE_SIZE_KEY, newValue ? newValue?.toString() : null)
+    }
+
+    //
     // Private
     //
 

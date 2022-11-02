@@ -99,6 +99,7 @@ import {ContractResultStateChange} from "@/schemas/HederaSchemas";
 import {ORUGA_MOBILE_BREAKPOINT} from '@/App.vue';
 import {TransactionByTimestampLoader} from "@/components/transaction/TransactionByTimestampLoader";
 import ContractResultStateChangeEntry from "@/components/contract/ContractResultStateChangeEntry.vue";
+import {AppStorage} from "@/AppStorage";
 
 export interface DisplayStateChange {
   changes: ContractResultStateChange,
@@ -116,7 +117,7 @@ export interface DisplayStateChange {
   index: number
 }
 
-const DEFAULT_PAGE_SIZE = 5
+const DEFAULT_PAGE_SIZE = 10
 
 export default defineComponent({
 
@@ -138,24 +139,24 @@ export default defineComponent({
     const actualSizeOptions: Ref<Array<number>> = ref([])
 
     const currentPage = ref(1)
-    const pageSize = ref(DEFAULT_PAGE_SIZE)
-    watch(pageSize, () => currentPage.value = 1)
+    const pageSize = ref(AppStorage.getStateTablePageSize() ??  DEFAULT_PAGE_SIZE)
+    watch(pageSize, () => {
+      AppStorage.setStateTablePageSize(pageSize.value)
+      currentPage.value = 1
+    })
 
     onMounted(() => updatePageSize())
     watch(() => props.stateChanges, () => updatePageSize())
     const updatePageSize = () => {
-      pageSize.value = Math.min(pageSize.value, props.stateChanges?.length ?? 0)
       let options: Array<number> = sizeOptions
-      console.log("props.stateChanges?.length: " + props.stateChanges?.length)
       for (let i = 0; i < options.length - 1; i++) {
         if (options[i] > (props.stateChanges?.length ?? 0)) {
-          console.log("options[i]: " + options[i])
           options = options.slice(0, i + 1)
+          pageSize.value = Math.min(pageSize.value, options[i])
           break
         }
       }
       actualSizeOptions.value = options
-      console.log("actualSizeOptions: " + actualSizeOptions.value)
     }
 
     const isPaginated = computed(
