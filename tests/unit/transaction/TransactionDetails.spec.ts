@@ -1,3 +1,5 @@
+// noinspection DuplicatedCode
+
 /*-
  *
  * Hedera Mirror Node Explorer
@@ -393,6 +395,8 @@ describe("TransactionDetails.vue", () => {
 
         const SCHEDULING = SAMPLE_SCHEDULING_SCHEDULED_TRANSACTIONS.transactions[0]
         const SCHEDULED = SAMPLE_SCHEDULING_SCHEDULED_TRANSACTIONS.transactions[1]
+        const TOKEN_ID = SCHEDULED.token_transfers ? SCHEDULED.token_transfers[0].token_id : "0.0.1304757"
+
         const matcher1 = "/api/v1/transactions/" + SCHEDULING.transaction_id
         mock.onGet(matcher1).reply(200, SAMPLE_SCHEDULING_SCHEDULED_TRANSACTIONS);
 
@@ -401,6 +405,9 @@ describe("TransactionDetails.vue", () => {
 
         const matcher4 = "/api/v1/blocks"
         mock.onGet(matcher4).reply(200, SAMPLE_BLOCKSRESPONSE);
+
+        const matcher5 = "/api/v1/tokens/" + TOKEN_ID
+        mock.onGet(matcher5).reply(200, SAMPLE_TOKEN)
 
         const wrapper = mount(TransactionDetails, {
             global: {

@@ -23,12 +23,15 @@ import router from "@/router";
 import {
     SAMPLE_PARENT_CHILD_TRANSACTIONS,
     SAMPLE_SAME_ID_NOT_PARENT_TRANSACTIONS,
-    SAMPLE_SCHEDULING_SCHEDULED_TRANSACTIONS
+    SAMPLE_SCHEDULING_SCHEDULED_TRANSACTIONS,
+    SAMPLE_TOKEN
 } from "../Mocks";
 import Oruga from "@oruga-ui/oruga-next";
 import {HMSF} from "@/utils/HMSF";
 import {Transaction} from "@/schemas/HederaSchemas";
 import TransactionByIdTable from "@/components/transaction/TransactionByIdTable.vue";
+import MockAdapter from "axios-mock-adapter";
+import axios from "axios";
 
 /*
     Bookmarks
@@ -84,6 +87,12 @@ describe("TransactionByIdTable.vue", () => {
     it("Should list transactions as scheduling and scheduled", async () => {
 
         await router.push("/") // To avoid "missing required param 'network'" error
+
+        const SCHEDULED = SAMPLE_SCHEDULING_SCHEDULED_TRANSACTIONS.transactions[1]
+        const TOKEN_ID = SCHEDULED.token_transfers ? SCHEDULED.token_transfers[0].token_id : "0.0.1304757"
+        const mock = new MockAdapter(axios);
+        const matcher5 = "/api/v1/tokens/" + TOKEN_ID
+        mock.onGet(matcher5).reply(200, SAMPLE_TOKEN)
 
         const wrapper = mount(TransactionByIdTable, {
             global: {
