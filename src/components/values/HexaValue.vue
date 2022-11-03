@@ -24,8 +24,8 @@
 
 <template>
   <div v-if="normByteString" class="shy-scope" style="display: inline-block; position: relative">
-    <div class="is-family-monospace h-is-text-size-3" :class="{'has-text-grey': lowContrast}">
-      {{ flow(isMediumScreen ? 8 : 4) }}
+    <div class="is-family-monospace h-is-text-size-3 mt-1" :class="{'has-text-grey': lowContrast}">
+      {{ flow(isMediumScreen ? wordWrapMedium : wordWrapSmall) }}
     </div>
     <div v-if="isCopyEnabled" id="shyCopyButton" class="shy" style="position: absolute; left: 0; top: 0; width: 100%; height: 100%">
       <div style="position: absolute; left: 0; top: 0; width: 100%; height: 100%; background: rgba(0, 0, 0, 0.50)"></div>
@@ -63,9 +63,13 @@ export default defineComponent({
       type: Boolean,
       default: true
     },
-    wordWrap: {
-      type: Boolean,
-      default: true
+    wordWrapMedium: {
+      type: Number,
+      default: null
+    },
+    wordWrapSmall: {
+      type: Number,
+      default: null
     }
   },
 
@@ -85,8 +89,8 @@ export default defineComponent({
     })
 
     // 1)
-    const flow = (nbWords:number): string => {
-      return normByteString.value ? makeByteLine(normByteString.value, props.wordWrap ? null : nbWords) : ""
+    const flow = (nbWords: number|null): string => {
+      return normByteString.value ? makeByteLine(normByteString.value, nbWords) : ""
     }
 
     // 2)

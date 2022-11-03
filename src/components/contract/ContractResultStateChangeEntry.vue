@@ -41,14 +41,14 @@
     <div class="column is-1 py-1"></div>
 
     <div class="column py-1">
-      <HexaValue :byte-string="change.changes.slot" :word-wrap="false" :low-contrast="false"/>
+      <HexaValue :byte-string="change.changes.slot" :low-contrast="false" :word-wrap-small="4" :word-wrap-medium="8"/>
       <div class="h-is-extra-text h-is-text-size-2">
         {{ 'Decimal: ' + (change.slotDecimal??'not available') }}
       </div>
     </div>
 
     <div class="column py-1">
-      <HexaValue :byte-string="change.changes.value_read" :word-wrap="false"
+      <HexaValue :byte-string="change.changes.value_read" :word-wrap-small="4" :word-wrap-medium="8"
                  :show-none="true" :low-contrast="change.valueReadDecimal === 0"/>
       <div class="h-is-extra-text h-is-text-size-2">
         {{ 'Decimal: ' + (change.valueReadDecimal??'not available') }}
@@ -56,7 +56,7 @@
     </div>
 
     <div class="column py-1">
-      <HexaValue :byte-string="change.changes.value_written" :word-wrap="false"
+      <HexaValue :byte-string="change.changes.value_written" :word-wrap-small="4" :word-wrap-medium="8"
                  :show-none="true" :low-contrast="change.valueWrittenDecimal === 0"/>
       <div class="h-is-extra-text h-is-text-size-2">
               <span v-if="change.changes.value_written">

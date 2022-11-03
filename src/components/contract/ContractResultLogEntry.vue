@@ -47,8 +47,9 @@
       <template v-slot:name>Topics</template>
       <template v-slot:value>
         <div v-for="(t, topicIndex) in log.topics" :key="t" class="is-flex">
-          <HexaValue class="mr-2" v-bind:byteString="'(' + topicIndex + ') '" :low-contrast="false"/>
-          <HexaValue :show-none="true" v-bind:byteString="t" :low-contrast="false"/>
+          <span class="is-family-monospace h-is-text-size-3 mt-1 mr-2">{{ '(' + topicIndex + ') ' }}</span>
+          <HexaValue :show-none="true" v-bind:byteString="t" :low-contrast="false"
+                     :word-wrap-small="8" :word-wrap-medium="8" />
         </div>
       </template>
     </Property>
