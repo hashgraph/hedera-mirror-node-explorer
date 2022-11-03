@@ -42,7 +42,7 @@
     <template v-slot:content>
 
       <div class="columns" style="margin-bottom:0; font-size: 11px; font-weight: 700;">
-        <div class="column is-2">Contract</div>
+        <div class="column is-1">Contract</div>
         <div class="column">Address</div>
         <div class="column">Value Read</div>
         <div class="column">Value Written</div>

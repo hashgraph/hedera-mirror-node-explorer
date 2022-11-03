@@ -25,7 +25,7 @@
 <template>
   <div v-if="normByteString" class="shy-scope" style="display: inline-block; position: relative">
     <div class="is-family-monospace h-is-text-size-3" :class="{'has-text-grey': lowContrast}">
-      {{ flow() }}
+      {{ flow(isMediumScreen ? 8 : 4) }}
     </div>
     <div v-if="isCopyEnabled" id="shyCopyButton" class="shy" style="position: absolute; left: 0; top: 0; width: 100%; height: 100%">
       <div style="position: absolute; left: 0; top: 0; width: 100%; height: 100%; background: rgba(0, 0, 0, 0.50)"></div>
@@ -62,11 +62,16 @@ export default defineComponent({
     lowContrast: {
       type: Boolean,
       default: true
+    },
+    wordWrap: {
+      type: Boolean,
+      default: true
     }
   },
 
   setup(props) {
     const isSmallScreen = inject('isSmallScreen', true)
+    const isMediumScreen = inject('isMediumScreen', true)
 
     // 0)
     const normByteString = computed((): string|undefined => {
@@ -80,8 +85,8 @@ export default defineComponent({
     })
 
     // 1)
-    const flow = (): string => {
-      return normByteString.value ? makeByteLine(normByteString.value) : ""
+    const flow = (nbWords:number): string => {
+      return normByteString.value ? makeByteLine(normByteString.value, props.wordWrap ? null : nbWords) : ""
     }
 
     // 2)
@@ -102,6 +107,7 @@ export default defineComponent({
     return {
       normByteString,
       isSmallScreen,
+      isMediumScreen,
       flow,
       copyToClipboard,
       isCopyEnabled,
@@ -110,13 +116,17 @@ export default defineComponent({
   }
 })
 
-function makeByteLine(byteString: string): string {
+function makeByteLine(byteString: string, nbWords: number|null): string {
   let result = ""
 
-  const  byteCount = byteString.length / 4
-  for (let i = 0; i < byteCount; i += 1) {
+  const  wordCount = byteString.length / 4
+  for (let i = 0; i < wordCount; i += 1) {
     if (result != "") {
-      result += " "
+      if (nbWords && i % nbWords != 0) {
+        result += "\u00A0"
+      } else {
+        result += " "
+      }
     }
     result += byteString.substring(4 * i, 4 * (i + 1))
   }
