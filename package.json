@@ -35,7 +35,8 @@
     "vue-router": "^4.0.0-0",
     "hashconnect": "^0.1.9",
     "@bladelabs/blade-web3.js": "^0.9.11",
-    "@hashgraph/sdk": "^2.18.0"
+    "@hashgraph/sdk": "^2.18.0",
+    "@hashgraph/proto": "^2.11.0"
   },
   "devDependencies": {
     "@cypress/code-coverage": "^3.9.12",
