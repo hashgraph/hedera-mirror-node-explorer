@@ -23,8 +23,15 @@
 <!-- --------------------------------------------------------------------------------------------------------------- -->
 
 <template>
-  <HexaValue :byte-string="keyBytes" :show-none="showNone" :none-extra="noneExtra"/>
-  <div v-if="keyBytes" class="h-is-extra-text h-is-text-size-3">{{ this.keyType }}</div>
+  <template v-if="isComplexKey">
+    <ComplexKeyValue :key-bytes="keyBytes" :show-none="showNone"/>
+  </template>
+  <template v-else>
+    <div>
+      <HexaValue :byte-string="keyBytes" :show-none="showNone" :none-extra="noneExtra"/>
+      <div v-if="keyBytes" class="h-is-extra-text h-is-text-size-3">{{ this.keyType }}</div>
+    </div>
+  </template>
 </template>
 
 <!-- --------------------------------------------------------------------------------------------------------------- -->
@@ -33,12 +40,13 @@
 
 <script lang="ts">
 
-import {defineComponent} from "vue";
+import {computed, defineComponent} from "vue";
 import HexaValue from "@/components/values/HexaValue.vue";
+import ComplexKeyValue from "@/components/values/ComplexKeyValue.vue";
 
 export default defineComponent({
   name: "KeyValue",
-  components: {HexaValue},
+  components: {ComplexKeyValue, HexaValue},
   props: {
     keyBytes: String,
     keyType: String,
@@ -47,6 +55,13 @@ export default defineComponent({
       default: false
     },
     noneExtra: String
+  },
+  setup(props) {
+
+    const isComplexKey = computed(() => props.keyType == "ProtobufEncoded")
+    return {
+      isComplexKey,
+    }
   }
 })
 
