@@ -23,27 +23,12 @@
 <!-- --------------------------------------------------------------------------------------------------------------- -->
 
 <template>
-
-  <div v-if="!isSmallScreen" class="columns" :id="id">
-    <div class="column is-flex is-justify-content-space-between">
-      <div class="has-text-weight-light" :id="nameId">
-        <slot name="name"/>
-      </div>
-      <div :id="valueId" class="ml-4 has-text-right">
-        <slot name="value"/>
-      </div>
-    </div>
+  <div v-if="signature">
+    <HexaValue :byte-string="signature" show-none/>
+    <div v-if="signatureInfo" class="h-is-extra-text h-is-text-size-3">{{ signatureInfo }}</div>
   </div>
-
-  <div v-else class="columns" :id="id" style="margin-bottom: -0.75rem;">
-    <div :class="nbColClass" class="column has-text-weight-light" :id="nameId">
-      <slot name="name"/>
-    </div>
-    <div class="column" :id="valueId">
-      <slot name="value"/>
-    </div>
-  </div>
-
+  <div v-else-if="initialLoading"/>
+  <div v-else class="has-text-grey">None</div>
 </template>
 
 <!-- --------------------------------------------------------------------------------------------------------------- -->
@@ -52,32 +37,30 @@
 
 <script lang="ts">
 
-import {computed, defineComponent, inject} from "vue";
+import {computed, defineComponent, inject, onBeforeUnmount, onMounted, PropType, ref} from "vue";
+import {initialLoadingKey} from "@/AppKeys";
+import HexaValue from "@/components/values/HexaValue.vue";
+import {ContractAction} from "@/schemas/HederaSchemas";
+import {SignatureAnalyzer} from "@/utils/SignatureAnalyzer";
 
 export default defineComponent({
-  name: "Property",
+  name: "SignatureValue",
+  components: {HexaValue},
   props: {
-    id: String,
-    fullWidth: {
-      type: Boolean,
-      default: false
-    },
-    customNbColClass: String
+    action: Object as PropType<ContractAction|undefined>
   },
-  setup(props){
-    const nameId = props.id + 'Name'
-    const valueId = props.id + 'Value'
 
-    const isSmallScreen = inject('isSmallScreen', true)
-    const isTouchDevice = inject('isTouchDevice', false)
-    const nbColClass = computed(() => props.customNbColClass ?? (props.fullWidth ? 'is-2' : 'is-one-third'))
+  setup(props) {
+
+    const signatureAnalyzer = new SignatureAnalyzer(computed(() => props.action ?? null))
+    onMounted(() => signatureAnalyzer.mount())
+    onBeforeUnmount(() => signatureAnalyzer.unmount())
+    const initialLoading = inject(initialLoadingKey, ref(false))
 
     return {
-      nameId,
-      valueId,
-      isSmallScreen,
-      isTouchDevice,
-      nbColClass
+      signature: signatureAnalyzer.functionHash,
+      signatureInfo: signatureAnalyzer.signature,
+      initialLoading
     }
   }
 })
@@ -85,8 +68,7 @@ export default defineComponent({
 </script>
 
 <!-- --------------------------------------------------------------------------------------------------------------- -->
-<!--                                                      STYLE                                                      -->
+<!--                                                       STYLE                                                     -->
 <!-- --------------------------------------------------------------------------------------------------------------- -->
 
-<style>
-</style>
+<style/>

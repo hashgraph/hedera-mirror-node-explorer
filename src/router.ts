@@ -181,15 +181,9 @@ const routes: Array<RouteRecordRaw> = [
     props: true
   },
   {
-    path: '/:network/contracts/:contractId/results/:timestamp',
-    name: 'ContractResultDetails',
-    component: ContractResultDetails,
-    props: true
-  },
-  {
     // EIP 3091 Support
     path: '/:network/tx/:transactionIdOrHash',
-    name: 'ContractResultDetails3091',
+    name: 'ContractResultDetails',
     component: ContractResultDetails,
     props: true
   },

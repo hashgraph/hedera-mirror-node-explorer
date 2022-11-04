@@ -25,30 +25,31 @@
 <template>
 
   <div v-if="log">
-    <Property id="logIndex">
+    <Property id="logAddress" :full-width="true">
+      <template v-slot:name>Address</template>
+      <template v-slot:value>
+        <EVMAddress :address="log.address" :id="log.contract_id"/>
+      </template>
+    </Property>
+    <Property id="logData" :full-width="true">
+      <template v-slot:name>Data</template>
+      <template v-slot:value>
+        <HexaValue :show-none="true" v-bind:byteString="log.data" :low-contrast="false"/>
+      </template>
+    </Property>
+    <Property id="logIndex" :full-width="true">>
       <template v-slot:name>Index</template>
       <template v-slot:value>
         <StringValue :string-value="log?.index.toString()"/>
       </template>
     </Property>
-    <Property id="logAddress">
-      <template v-slot:name>Address</template>
+    <Property id="logTopics" :full-width="true">>
+      <template v-slot:name>Topics</template>
       <template v-slot:value>
-        <HexaValue :show-none="true" v-bind:byteString="log.address"/>
-      </template>
-    </Property>
-    <Property id="logData">
-      <template v-slot:name>Data</template>
-      <template v-slot:value>
-        <HexaValue :show-none="true" v-bind:byteString="log.data"/>
-      </template>
-    </Property>
-    <Property v-for="(t, topicIndex) in log.topics" id="logTopics" :key="t">
-      <template v-slot:name>{{ topicIndex === 0 ? "Topics" : "" }}</template>
-      <template v-slot:value>
-        <div class="is-flex">
-          <HexaValue class="mr-2" v-bind:byteString="'(' + topicIndex + ') '"/>
-          <HexaValue :show-none="true" v-bind:byteString="t"/>
+        <div v-for="(t, topicIndex) in log.topics" :key="t" class="is-flex">
+          <span class="is-family-monospace h-is-text-size-3 mt-1 mr-2">{{ '(' + topicIndex + ') ' }}</span>
+          <HexaValue :show-none="true" v-bind:byteString="t" :low-contrast="false"
+                     :word-wrap-small="8" :word-wrap-medium="8" />
         </div>
       </template>
     </Property>
@@ -67,10 +68,11 @@ import {ContractResultLog} from "@/schemas/HederaSchemas";
 import Property from "@/components/Property.vue";
 import StringValue from "@/components/values/StringValue.vue";
 import HexaValue from "@/components/values/HexaValue.vue";
+import EVMAddress from "@/components/values/EVMAddress.vue";
 
 export default defineComponent({
-  name: "ContractResultLog",
-  components: {HexaValue, StringValue, Property},
+  name: "ContractResultLogEntry",
+  components: {EVMAddress, HexaValue, StringValue, Property},
   props: {
     log: Object as PropType<ContractResultLog | undefined>
   },

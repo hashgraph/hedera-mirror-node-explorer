@@ -24,7 +24,7 @@ import axios from "axios";
 import {SAMPLE_COINGECKO, SAMPLE_CONTRACT_RESULT_DETAILS} from "../Mocks";
 import MockAdapter from "axios-mock-adapter";
 import {HMSF} from "@/utils/HMSF";
-import ContractResultAndLogs from "@/components/transaction/ContractResultAndLogs.vue";
+import ContractResult from "@/components/contract/ContractResult.vue";
 import Oruga from "@oruga-ui/oruga-next";
 
 /*
@@ -50,50 +50,7 @@ Object.defineProperty(window, 'matchMedia', {
 
 HMSF.forceUTC = true
 
-describe("ContractResultAndLogs.vue", () => {
-
-    it("Should display the contract result and logs, given contract ID and timestamp", async () => {
-
-        await router.push("/") // To avoid "missing required param 'network'" error
-
-        const contractId = SAMPLE_CONTRACT_RESULT_DETAILS.contract_id
-        const timestamp = SAMPLE_CONTRACT_RESULT_DETAILS.timestamp
-
-        const mock = new MockAdapter(axios);
-        const matcher1 = "/api/v1/contracts/" + contractId + "/results/" + timestamp
-        mock.onGet(matcher1).reply(200, SAMPLE_CONTRACT_RESULT_DETAILS)
-        const matcher2 = "https://api.coingecko.com/api/v3/coins/hedera-hashgraph"
-        mock.onGet(matcher2).reply(200, SAMPLE_COINGECKO);
-
-        const wrapper = mount(ContractResultAndLogs, {
-            global: {
-                plugins: [router, Oruga]
-            },
-            props: {
-                contractId: contractId,
-                timestamp: timestamp,
-                topLevel: true
-            },
-        });
-        await flushPromises()
-        // console.log(wrapper.html())
-        // console.log(wrapper.text())
-
-        expect(wrapper.text()).toMatch(RegExp("^Contract Result for " + contractId + " at " + timestamp))
-        expect(wrapper.get("#resultValue").text()).toBe("SUCCESS")
-        expect(wrapper.get("#fromValue").text()).toBe("0000 0000 0000 0000 0000 0000 0000 0000 000c e9b4Copy to Clipboard")
-        expect(wrapper.get("#toValue").text()).toBe("0000 0000 0000 0000 0000 0000 0000 0000 0010 3783Copy to Clipboard")
-        expect(wrapper.get("#typeValue").text()).toBe("None")
-        expect(wrapper.get("#functionParametersValue").text()).toBe("18cb afe5 0000 0000 0000 0000 0000 0000 0000 0000 0000 0000 0000 0000 0000 0017 4876 e800 0000 0000 0000 0000 0000 0000 0000 0000 0000 0000 0000 0000 0000 001b 2702 b2a0 0000 0000 0000 0000 0000 0000 0000 0000 0000 0000 0000 0000 0000 0000 0000 00a0 0000 0000 0000 0000 0000 0000 0000 0000 0000 0000 0000 0000 0000 0000 000c e9b4 0000 0000 0000 0000 0000 0000 0000 0000 0000 0000 0000 0000 0000 0183 1e10 602d 0000 0000 0000 0000 0000 0000 0000 0000 0000 0000 0000 0000 0000 0000 0000 0003 0000 0000 0000 0000 0000 0000 0000 0000 0000 0000 0000 0000 0000 0000 000c ba44 0000 0000 0000 0000 0000 0000 0000 0000 0000 0000 0000 0000 0000 0000 000d 1ea6 0000 0000 0000 0000 0000 0000 0000 0000 0000 0000 0000 0000 0000 0000 0010 3708Copy to Clipboard")
-        expect(wrapper.get("#errorMessageValue").text()).toBe("None")
-        expect(wrapper.get("#gasLimitValue").text()).toBe("480,000")
-        expect(wrapper.get("#gasUsedValue").text()).toBe("384,000")
-        expect(wrapper.get("#maxFeePerGasValue").text()).toBe("None")
-        expect(wrapper.get("#maxPriorityFeePerGasValue").text()).toBe("None")
-        expect(wrapper.get("#gasPriceValue").text()).toBe("0.00000000$0.0000")
-
-        expect(wrapper.findAll("#logIndexValue").length).toBe(4)
-    });
+describe("ContractResult.vue", () => {
 
     it("Should display the contract result and logs, given transaction ID", async () => {
 
@@ -109,7 +66,7 @@ describe("ContractResultAndLogs.vue", () => {
         const matcher2 = "https://api.coingecko.com/api/v3/coins/hedera-hashgraph"
         mock.onGet(matcher2).reply(200, SAMPLE_COINGECKO);
 
-        const wrapper = mount(ContractResultAndLogs, {
+        const wrapper = mount(ContractResult, {
             global: {
                 plugins: [router, Oruga]
             },
@@ -124,8 +81,8 @@ describe("ContractResultAndLogs.vue", () => {
 
         expect(wrapper.text()).toMatch(RegExp("^Contract Result for " + contractId + " at " + timestamp))
         expect(wrapper.get("#resultValue").text()).toBe("SUCCESS")
-        expect(wrapper.get("#fromValue").text()).toBe("0000 0000 0000 0000 0000 0000 0000 0000 000c e9b4Copy to Clipboard")
-        expect(wrapper.get("#toValue").text()).toBe("0000 0000 0000 0000 0000 0000 0000 0000 0010 3783Copy to Clipboard")
+        expect(wrapper.get("#fromValue").text()).toBe("0x00000000000000000000000000000000000ce9b4")
+        expect(wrapper.get("#toValue").text()).toBe("0x0000000000000000000000000000000000103783")
         expect(wrapper.get("#typeValue").text()).toBe("None")
         expect(wrapper.get("#functionParametersValue").text()).toBe("18cb afe5 0000 0000 0000 0000 0000 0000 0000 0000 0000 0000 0000 0000 0000 0017 4876 e800 0000 0000 0000 0000 0000 0000 0000 0000 0000 0000 0000 0000 0000 001b 2702 b2a0 0000 0000 0000 0000 0000 0000 0000 0000 0000 0000 0000 0000 0000 0000 0000 00a0 0000 0000 0000 0000 0000 0000 0000 0000 0000 0000 0000 0000 0000 0000 000c e9b4 0000 0000 0000 0000 0000 0000 0000 0000 0000 0000 0000 0000 0000 0183 1e10 602d 0000 0000 0000 0000 0000 0000 0000 0000 0000 0000 0000 0000 0000 0000 0000 0003 0000 0000 0000 0000 0000 0000 0000 0000 0000 0000 0000 0000 0000 0000 000c ba44 0000 0000 0000 0000 0000 0000 0000 0000 0000 0000 0000 0000 0000 0000 000d 1ea6 0000 0000 0000 0000 0000 0000 0000 0000 0000 0000 0000 0000 0000 0000 0010 3708Copy to Clipboard")
         expect(wrapper.get("#errorMessageValue").text()).toBe("None")
@@ -135,6 +92,6 @@ describe("ContractResultAndLogs.vue", () => {
         expect(wrapper.get("#maxPriorityFeePerGasValue").text()).toBe("None")
         expect(wrapper.get("#gasPriceValue").text()).toBe("0.00000000$0.0000")
 
-        expect(wrapper.findAll("#logIndexValue").length).toBe(4)
+        expect(wrapper.findAll("#logIndexValue").length).toBe(3)
     });
 });

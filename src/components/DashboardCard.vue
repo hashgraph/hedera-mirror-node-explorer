@@ -33,7 +33,7 @@
       </div>
     </div>
 
-    <hr class="h-card-separator mb-5"/>
+    <hr class="h-card-separator mb-3"/>
 
     <div class="h-is-property-text">
       <slot name="content"></slot>

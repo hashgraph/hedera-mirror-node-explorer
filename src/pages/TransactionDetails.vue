@@ -221,7 +221,7 @@
       </template>
     </DashboardCard>
 
-    <ContractResultAndLogs v-if="hasContractResult" :transaction-id-or-hash="transaction?.transaction_id"/>
+    <ContractResult v-if="hasContractResult" :transaction-id-or-hash="transaction?.transaction_id"/>
 
   </section>
 
@@ -253,7 +253,7 @@ import NotificationBanner from "@/components/NotificationBanner.vue";
 import Property from "@/components/Property.vue";
 import DurationValue from "@/components/values/DurationValue.vue";
 import BlockLink from "@/components/values/BlockLink.vue";
-import ContractResultAndLogs from "@/components/transaction/ContractResultAndLogs.vue";
+import ContractResult from "@/components/contract/ContractResult.vue";
 
 const MAX_INLINE_CHILDREN = 9
 
@@ -262,7 +262,7 @@ export default defineComponent({
   name: 'TransactionDetails',
 
   components: {
-    ContractResultAndLogs,
+    ContractResult,
     BlockLink,
     Property,
     NotificationBanner,
@@ -339,7 +339,6 @@ export default defineComponent({
       notification,
       routeName,
       makeTypeLabel,
-      // computeNetAmount,
       makeOperatorAccountLabel,
       showAllTransactionVisible,
       displayAllChildrenLinks,

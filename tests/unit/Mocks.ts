@@ -1684,6 +1684,184 @@ export const SAMPLE_CONTRACT_AS_ACCOUNT = {
     ],
 }
 
+export const SAMPLE_CONTRACT_ACTIONS = {
+    "actions": [
+        {
+            "call_depth": 0,
+            "call_operation_type": "CALL",
+            "call_type": "CALL",
+            "caller": "0.0.88037",
+            "caller_type": "ACCOUNT",
+            "from": "0x00000000000000000000000000000000000157e5",
+            "gas": 15000,
+            "gas_used": 13279,
+            "index": 0,
+            "input": "0xb01ef608",
+            "recipient": "0.0.96039",
+            "recipient_type": "CONTRACT",
+            "result_data": "0x0000000000000000000000000000000000000000000000000000000005a995c0",
+            "result_data_type": "OUTPUT",
+            "timestamp": "1665660662.058072633",
+            "to": "0x0000000000000000000000000000000000017727",
+            "value": 0
+        },
+        {
+            "call_depth": 1,
+            "call_operation_type": "DELEGATECALL",
+            "call_type": "CALL",
+            "caller": "0.0.96039",
+            "caller_type": "CONTRACT",
+            "from": "0x0000000000000000000000000000000000017727",
+            "gas": 9924,
+            "gas_used": 8319,
+            "index": 1,
+            "input": "0x70a082310000000000000000000000008529228f3391cf8d79a0286050cc066a1d5235fb",
+            "recipient": "0.0.96037",
+            "recipient_type": "CONTRACT",
+            "result_data": "0x0000000000000000000000000000000000000000000000000000000005a995c0",
+            "result_data_type": "OUTPUT",
+            "timestamp": "1665660662.058072633",
+            "to": "0x0000000000000000000000000000000000017725",
+            "value": 0
+        },
+        {
+            "call_depth": 2,
+            "call_operation_type": "STATICCALL",
+            "call_type": "CALL",
+            "caller": "0.0.96037",
+            "caller_type": "CONTRACT",
+            "from": "0x0000000000000000000000000000000000017725",
+            "gas": 4516,
+            "gas_used": 2751,
+            "index": 2,
+            "input": "0x70a082310000000000000000000000008529228f3391cf8d79a0286050cc066a1d5235fb",
+            "recipient": "0.0.96042",
+            "recipient_type": "CONTRACT",
+            "result_data": "0x0000000000000000000000000000000000000000000000000000000005a995c0",
+            "result_data_type": "OUTPUT",
+            "timestamp": "1665660662.058072633",
+            "to": "0x000000000000000000000000000000000001772a",
+            "value": 0
+        },
+        {
+            "call_depth": 2,
+            "call_operation_type": "STATICCALL",
+            "call_type": "SYSTEM",
+            "caller": "0.0.96037",
+            "caller_type": "CONTRACT",
+            "from": "0x0000000000000000000000000000000000017725",
+            "gas": 4516,
+            "gas_used": 2751,
+            "index": 3,
+            "input": "0x189a554c",
+            "recipient": "0.0.359",
+            "recipient_type": "CONTRACT",
+            "result_data": "0x0000000000000000000000000000000000000000000000000000000005a995c0",
+            "result_data_type": "OUTPUT",
+            "timestamp": "1665660662.058072633",
+            "to": "0x0000000000000000000000000000000000000167",
+            "value": 0
+        },
+        {
+            "call_depth": 1,
+            "call_operation_type": "DELEGATECALL",
+            "call_type": "CALL",
+            "caller": "0.0.96039",
+            "caller_type": "CONTRACT",
+            "from": "0x0000000000000000000000000000000000017727",
+            "gas": 9924,
+            "gas_used": 8319,
+            "index": 4,
+            "input": "0x70a082310000000000000000000000008529228f3391cf8d79a0286050cc066a1d5235fb",
+            "recipient": "0.0.96037",
+            "recipient_type": "CONTRACT",
+            "result_data": "0x0000000000000000000000000000000000000000000000000000000005a995c0",
+            "result_data_type": "OUTPUT",
+            "timestamp": "1665660662.058072633",
+            "to": "0x0000000000000000000000000000000000017725",
+            "value": 0
+        },
+        {
+            "call_depth": 1,
+            "call_operation_type": "DELEGATECALL",
+            "call_type": "CALL",
+            "caller": "0.0.96039",
+            "caller_type": "CONTRACT",
+            "from": "0x0000000000000000000000000000000000017727",
+            "gas": 9924,
+            "gas_used": 8319,
+            "index": 5,
+            "input": "0x70a082310000000000000000000000008529228f3391cf8d79a0286050cc066a1d5235fb",
+            "recipient": "0.0.96037",
+            "recipient_type": "CONTRACT",
+            "result_data": "0x0000000000000000000000000000000000000000000000000000000005a995c0",
+            "result_data_type": "OUTPUT",
+            "timestamp": "1665660662.058072633",
+            "to": "0x0000000000000000000000000000000000017725",
+            "value": 0
+        },
+        {
+            "call_depth": 2,
+            "call_operation_type": "STATICCALL",
+            "call_type": "CALL",
+            "caller": "0.0.96037",
+            "caller_type": "CONTRACT",
+            "from": "0x0000000000000000000000000000000000017725",
+            "gas": 4516,
+            "gas_used": 2751,
+            "index": 6,
+            "input": "0x70a082310000000000000000000000008529228f3391cf8d79a0286050cc066a1d5235fb",
+            "recipient": "0.0.96042",
+            "recipient_type": "CONTRACT",
+            "result_data": "0x0000000000000000000000000000000000000000000000000000000005a995c0",
+            "result_data_type": "OUTPUT",
+            "timestamp": "1665660662.058072633",
+            "to": "0x000000000000000000000000000000000001772a",
+            "value": 0
+        },
+        {
+            "call_depth": 3,
+            "call_operation_type": "DELEGATECALL",
+            "call_type": "SYSTEM",
+            "caller": "0.0.96042",
+            "caller_type": "CONTRACT",
+            "from": "0x000000000000000000000000000000000001772a",
+            "gas": 1787,
+            "gas_used": 2,
+            "index": 7,
+            "input": "0x618dc65e000000000000000000000000000000000001772a70a082310000000000000000000000008529228f3391cf8d79a0286050cc066a1d5235fb",
+            "recipient": "0.0.359",
+            "recipient_type": "CONTRACT",
+            "result_data": "0x0000000000000000000000000000000000000000000000000000000005a995c0",
+            "result_data_type": "OUTPUT",
+            "timestamp": "1665660662.058072633",
+            "to": "0x0000000000000000000000000000000000000167",
+            "value": 0
+        },
+        {
+            "call_depth": 1,
+            "call_operation_type": "DELEGATECALL",
+            "call_type": "CALL",
+            "caller": "0.0.96039",
+            "caller_type": "CONTRACT",
+            "from": "0x0000000000000000000000000000000000017727",
+            "gas": 9924,
+            "gas_used": 8319,
+            "index": 8,
+            "input": "0x70a082310000000000000000000000008529228f3391cf8d79a0286050cc066a1d5235fb",
+            "recipient": "0.0.96037",
+            "recipient_type": "CONTRACT",
+            "result_data": "0x0000000000000000000000000000000000000000000000000000000005a995c0",
+            "result_data_type": "OUTPUT",
+            "timestamp": "1665660662.058072633",
+            "to": "0x0000000000000000000000000000000000017725",
+            "value": 0
+        },
+    ],
+    "links": {
+        "next": null
+    }
+}
 
 //
 // https://mainnet-public.mirrornode.hedera.com/api/v1/topics/0.0.642394/messages
@@ -1932,5 +2110,27 @@ export const SAMPLE_COINGECKO = {
         "price_change_percentage_24h": 8.41776,
         "market_cap_change_percentage_24h": 8.42424
     }
+
+}
+
+
+//
+// https://www.4byte.directory/api/v1/signatures/?hex_signature=0xb01ef608
+//
+
+export const SAMPLE_4BYTE_0xB01EF608 = {
+
+    "count":1,
+    "next":null,
+    "previous":null,
+    "results":[
+        {
+            "id":842814,
+            "created_at":"2022-07-03T20:24:54.756716Z",
+            "text_signature":"buyV2(address,uint256,uint256,address)",
+            "hex_signature":"0xb01ef608",
+            "bytes_signature":"°\u001eö\b"
+        },
+    ]
 
 }

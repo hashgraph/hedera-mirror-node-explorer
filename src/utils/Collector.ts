@@ -19,7 +19,7 @@
  */
 
 import {AxiosResponse} from "axios";
-import {DeferredPromise} from "@/utils/DeferredPromise";
+import {Ref, ref, watch} from "vue";
 
 /*
     Bookmars
@@ -28,9 +28,9 @@ import {DeferredPromise} from "@/utils/DeferredPromise";
 
 export abstract class Collector<E, K> {
 
-    private readonly entries = new Map<K, DeferredPromise<AxiosResponse<E>>>()
-    private readonly queue = new Array<K>()
-    private loading = false
+    private readonly entries = new Map<K, Promise<AxiosResponse<E>>>()
+    private tailKey: K|null = null
+    private tailEntry: Promise<AxiosResponse<E>>|null = null
 
     //
     // Public
@@ -38,14 +38,43 @@ export abstract class Collector<E, K> {
 
     public fetch(key: K): Promise<AxiosResponse<E>> {
 
-        let entry = this.entries.get(key)
-        if (entry == undefined) {
-            entry = new DeferredPromise<AxiosResponse<E>>()
-            this.entries.set(key, entry)
-            this.enqueueKey(key)
+        let result = this.entries.get(key)
+        if (result == undefined) {
+            if (this.tailKey === null) {
+                result = this.loadAndUpdateTail(key)
+            } else if (this.tailEntry !== null) {
+                // Naively I wrote the line below but it does not work ... it's the reverse ... strange.
+                // result = this.tailEntry.finally(() => this.loadAndUpdateTail(key))
+                result = this.loadAndUpdateTail(key).finally(() => this.tailEntry)
+            } else {
+                // Emergency code
+                result = this.load(key)
+            }
+            this.tailKey = key
+            this.tailEntry = result
+            this.entries.set(this.tailKey, this.tailEntry)
         }
 
-        return entry
+        return result
+    }
+
+    public ref(key: Ref<K|null>): Ref<E|null> {
+        const result: Ref<E|null> = ref(null)
+        const updateResult = () => {
+            if (key.value !== null) {
+                const fullfill = (r: AxiosResponse<E>) => {
+                    result.value = r.data
+                }
+                const reject = (/*reason: unknown*/) => {
+                    result.value = null
+                }
+                this.fetch(key.value).then(fullfill, reject)
+            } else {
+                result.value = null
+            }
+        }
+        watch(key, updateResult, { immediate: true})
+        return result
     }
 
     //
@@ -54,29 +83,26 @@ export abstract class Collector<E, K> {
 
     protected abstract load(key: K): Promise<AxiosResponse<E>>
 
+
     //
     // Private
     //
 
-    private enqueueKey(key: K): void {
-        this.queue.push(key)
-        if (!this.loading) {
-            this.loadNextKey()
+    private loadAndUpdateTail(key: K): Promise<AxiosResponse<E>> {
+        const fullfill = (r: AxiosResponse<E>) => {
+            if (this.tailKey == key) {
+                this.tailKey = null
+                this.tailEntry = null
+            }
+            return Promise.resolve(r)
         }
-    }
-
-    private loadNextKey(): void {
-        const nextKey = this.queue.shift()
-        if (nextKey !== undefined) {
-            const entry = this.entries.get(nextKey)
-            this.loading = true
-            this.load(nextKey)
-                .then(value => entry?.resolveNow(value), reason => entry?.rejectNow(reason))
-                .finally(() => {
-                    this.loading = false
-                    this.loadNextKey()
-                })
+        const reject = (reason: unknown) => {
+            if (this.tailKey == key) {
+                this.tailKey = null
+                this.tailEntry = null
+            }
+            return Promise.reject(reason)
         }
+        return this.load(key).then(fullfill, reject)
     }
-
 }
