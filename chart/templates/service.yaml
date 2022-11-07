@@ -1,0 +1,15 @@
+apiVersion: v1
+kind: Service
+metadata:
+  annotations: {{ toYaml .Values.service.annotations | nindent 4 }}
+  labels: {{ include "hedera-explorer.labels" . | nindent 4 }}
+  name: {{ include "hedera-explorer.fullname" . }}
+  namespace: {{ include "hedera-explorer.namespace" . }}
+spec:
+  ports:
+    - port: {{ .Values.service.port }}
+      targetPort: http
+      protocol: TCP
+      name: http
+  selector: {{ include "hedera-explorer.selectorLabels" . | nindent 4 }}
+  type: {{ .Values.service.type }}

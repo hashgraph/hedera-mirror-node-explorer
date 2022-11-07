@@ -1,0 +1,148 @@
+affinity:
+  podAntiAffinity:
+    preferredDuringSchedulingIgnoredDuringExecution:
+      - weight: 100
+        podAffinityTerm:
+          topologyKey: kubernetes.io/hostname
+          labelSelector:
+            matchLabels:
+              app.kubernetes.io/component: hedera-explorer
+
+annotations: {}
+
+autoscaling:
+  behavior: {}
+  enabled: false
+  maxReplicas: 3
+  metrics:
+    - type: Resource
+      resource:
+        name: cpu
+        target:
+          type: Utilization
+          averageUtilization: 80
+  minReplicas: 1
+
+# Environment variables to add to the container. The value can either be a string or an EnvVarSource. Evaluated as a template.
+env:
+  VUE_APP_LOCAL_MIRROR_NODE_URL: "https://mainnet-public.mirrornode.hedera.com"
+  # BAR:
+  #   valueFrom:
+  #     secretKeyRef:
+  #       name: '{{ .Release.Name }}-custom'
+  #       key: BAZ
+
+# Add config maps or secrets as environment variables. Evaluated as a template.
+envFrom: []
+# - secretRef:
+#     name: '{{ .Release.Name }}-env'
+
+fullnameOverride: ""
+
+global:
+  namespaceOverride: ""
+
+image:
+  pullPolicy: IfNotPresent
+  pullSecrets: []
+  registry: docker.io
+  repository: ssheehy/hedera-explorer
+  tag: latest  # Defaults to the chart's app version
+
+ingress:
+  annotations: {}
+  className: ""
+  enabled: false
+  hosts:
+    - host: chart-example.local
+      paths:
+        - path: /
+          pathType: ImplementationSpecific
+  tls: []
+  #  - secretName: chart-example-tls
+  #    hosts:
+  #      - chart-example.local
+
+labels: {}
+
+livenessProbe:
+  httpGet:
+    path: /
+    port: http
+  initialDelaySeconds: 25
+  timeoutSeconds: 2
+
+nodeSelector: {}
+
+podAnnotations: {}
+
+podDisruptionBudget:
+  enabled: false
+  # maxUnavailable: 0
+  minAvailable: 50%
+
+podSecurityContext:
+  fsGroup: 1000
+  runAsGroup: 1000
+  runAsNonRoot: true
+  runAsUser: 1000
+  seccompProfile:
+    type: RuntimeDefault
+
+priorityClassName: ""
+
+readinessProbe:
+  httpGet:
+    path: /
+    port: http
+  initialDelaySeconds: 30
+  timeoutSeconds: 2
+
+replicas: 1
+
+resources:
+  limits:
+    cpu: 500m
+    memory: 250Mi
+  requests:
+    cpu: 200m
+    memory: 100Mi
+
+revisionHistoryLimit: 3
+
+securityContext:
+  allowPrivilegeEscalation: false
+  capabilities:
+    drop: [ALL]
+  readOnlyRootFilesystem: true
+
+service:
+  annotations: {}
+  port: 80
+  type: ClusterIP
+
+serviceAccount:
+  create: true
+  # The name of the service account to use. If not set and create is true, a name is generated using the fullname template
+  name:
+
+terminationGracePeriodSeconds: 30
+
+tolerations: []
+
+updateStrategy:
+  type: RollingUpdate
+  rollingUpdate:
+    maxSurge: 10%
+    maxUnavailable: 25%
+
+# Volumes to add to the container. The key is the volume name and the value is the volume mount definition. The same keys should also appear in volumes below.
+volumeMounts:
+  cache:
+    mountPath: /var/cache/nginx
+
+# Volume mounts to add to the container. The key is the volume name and the value is the volume definition. Evaluated as a template.
+volumes:
+  cache:
+    emptyDir: {}
+

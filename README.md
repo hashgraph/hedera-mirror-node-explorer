@@ -55,6 +55,16 @@ docker compose up -d
 # then open http://localhost:9090 in your web browser
 ```
 
+### Run in Kubernetes
+
+To run in [Kubernetes](https://kubernetes.io) the hedera-explorer [Helm](https://helm.sh) chart can be used. First,
+obtain access to a Kubernetes cluster running version 1.23 or greater. [Minikube](https://minikube.sigs.k8s.io/docs/)
+can be used for a local Kubernetes cluster.
+
+```shell
+helm upgrade --install hedera-explorer chart/
+```
+
 ### Customize configuration
 
 #### Branding
