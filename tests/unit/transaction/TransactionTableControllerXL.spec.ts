@@ -131,7 +131,7 @@ describe("TransactionTableController.ts", () => {
         accountId.value = "0.0.4" // Value is unimportant
         await flushPromises()
         expect(tc.pageSize.value).toBe(PAGE_SIZE)
-        expect(tc.autoRefresh.value).toBe(true)
+        expect(tc.autoRefresh.value).toBe(false)
         expect(tc.autoStopped.value).toBe(false)
         expect(tc.currentPage.value).toBe(1)
         expect(tc.loading.value).toBe(false)
