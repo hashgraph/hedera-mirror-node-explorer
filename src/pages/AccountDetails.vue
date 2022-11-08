@@ -206,7 +206,7 @@
 
 <script lang="ts">
 
-import {computed, ComputedRef, defineComponent, inject, onBeforeUnmount, onMounted} from 'vue';
+import {computed, ComputedRef, defineComponent, inject, onBeforeUnmount, onMounted, watch} from 'vue';
 import KeyValue from "@/components/values/KeyValue.vue";
 import PlayPauseButton from "@/utils/table/PlayPauseButton.vue";
 import TransactionTable from "@/components/transaction/TransactionTable.vue";
@@ -309,8 +309,39 @@ export default defineComponent({
     const perPage = computed(() => isMediumScreen ? 10 : 5)
     const accountId = computed(() => accountLoader.entity.value?.account ?? null)
     const transactionTableController = new TransactionTableControllerXL(router, accountId, perPage, true)
-    onMounted(() => transactionTableController.mount())
-    onBeforeUnmount(() => transactionTableController.unmount())
+
+    /*
+          vue   \   accountId |       null       |      not null     |
+          state  \            |                  |                   |
+          --------------------+------------------+-------------------+
+          unmounted           |   ttc unmounted  |   ttc unmounted   |
+          --------------------+------------------+-------------------+
+          mounted             |   ttc unmounted  |    ttc mounted    |
+          --------------------+------------------+-------------------+
+     */
+
+    let mounted = false
+    onMounted(() => {
+      mounted = true
+      if (accountId.value !== null) {
+        transactionTableController.mount()
+      }
+    })
+    onBeforeUnmount(() => {
+      mounted = false
+      if (accountId.value !== null) {
+        transactionTableController.unmount()
+      }
+    })
+    watch(accountId, () => {
+      if (mounted) {
+        if (accountId.value !== null) {
+          transactionTableController.mount()
+        } else {
+          transactionTableController.unmount()
+        }
+      }
+    })
 
     //
     // balanceCache
