@@ -342,24 +342,37 @@ export function addMetaTags(): void {
       ?? "Hedera Mirror Node Explorer is a ledger explorer for the Hedera network"
   const url = process.env.VUE_APP_META_URL
 
-  const header = document.getElementsByTagName('head')[0]
-
-  const metaDescription = document.createElement('meta');
-  metaDescription.name = 'description';
-  metaDescription.setAttribute('content', description);
-  header.appendChild(metaDescription);
-
-  const metaTitle = document.createElement('meta');
-  metaTitle.setAttribute('property', 'og:title')
-  metaTitle.setAttribute('content', title)
-  header.appendChild(metaTitle);
-
+  createOrUpdateTagName('description', description)
+  createOrUpdateTagProperty('og:title', title)
   if (url) {
-    const metaUrl = document.createElement('meta');
-    metaUrl.setAttribute('property', 'og:url')
-    metaUrl.setAttribute('content', url)
-    header.appendChild(metaUrl);
+    createOrUpdateTagProperty('og:url', url)
   }
+}
+
+export function createOrUpdateTagName(name: string, content: string): void {
+  const header = document.getElementsByTagName('head')[0]
+  for (const tag of document.getElementsByTagName('meta')) {
+    if (tag.getAttribute('name') === name) {
+      header.removeChild(tag)
+    }
+  }
+  const newTag = document.createElement('meta')
+  newTag.name = name
+  newTag.setAttribute('content', content)
+  header.appendChild(newTag)
+}
+
+export function createOrUpdateTagProperty(property: string, content: string): void {
+  const header = document.getElementsByTagName('head')[0]
+  for (const tag of document.getElementsByTagName('meta')) {
+    if (tag.getAttribute('property') === property) {
+      header.removeChild(tag)
+    }
+  }
+  const newTag = document.createElement('meta')
+  newTag.setAttribute('property', property)
+  newTag.setAttribute('content', content)
+  header.appendChild(newTag)
 }
 
 export function getNetworkEntryFromRoute(r: RouteLocationNormalized): NetworkEntry | null {
