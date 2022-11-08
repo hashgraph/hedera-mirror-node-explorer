@@ -44,15 +44,7 @@ export class TransactionTableControllerXL extends TableController<Transaction, s
             pageParamName, keyParamName);
         this.accountId = accountId
         this.accountIdMandatory = accountIdMandatory
-        this.watchAndReload([this.transactionType])
-        // this.accountId cannot be treated as this.transactionType :
-        // when this.accountId changes, we don't want to move to auto-refresh mode.
-        watch(this.accountId, () => {
-            if (this.mounted.value) {
-                this.unmount()
-                this.mount()
-            }
-        })
+        this.watchAndReload([this.transactionType, this.accountId])
     }
 
     public readonly transactionType: Ref<string> = ref("")
