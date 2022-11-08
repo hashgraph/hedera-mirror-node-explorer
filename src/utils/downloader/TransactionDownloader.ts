@@ -22,12 +22,14 @@ import {Transaction, TransactionResponse} from "@/schemas/HederaSchemas";
 import axios, {AxiosResponse} from "axios";
 import {CSVEncoder} from "@/utils/CSVEncoder";
 import {EntityDownloader} from "@/utils/downloader/EntityDownloader";
+import {computed, ComputedRef} from "vue";
 
 export class TransactionDownloader extends EntityDownloader<Transaction, TransactionResponse> {
 
     private readonly accountId: string
     private readonly startDate: Date
     private readonly endDate: Date|null
+    private readonly now = new Date()
 
     //
     // Public
@@ -45,6 +47,25 @@ export class TransactionDownloader extends EntityDownloader<Transaction, Transac
         const encoder = new TransactionEncoder(this.getEntities())
         return encoder.encode()
     }
+
+    public progress: ComputedRef<number> = computed(() => {
+
+        const startTime = this.startDate.getTime()
+        const endTime = this.endDate != null ? this.endDate.getTime() : this.now.getTime()
+
+        const lastEntity = this.lastDownloadedEntity.value
+        const lastTimestamp = lastEntity?.consensus_timestamp ?? null
+        const lastTime = lastTimestamp !== null ? timestampToMillis(lastTimestamp) : endTime
+
+        /*
+
+                       |        remaining      |            done               |
+               --------+-----------------------+-------------------------------+--------> now
+                    startTime               lastTime                        endTime
+         */
+
+        return lastTime !== null ? (endTime - lastTime) / (endTime - startTime) : 0
+    })
 
     //
     // EntityDownloader
@@ -92,6 +113,11 @@ export class TransactionDownloader extends EntityDownloader<Transaction, Transac
 function dateToTimestamp(date: Date): string {
     const seconds = date.getTime() / 1000.0
     return seconds.toFixed(9)
+}
+
+function timestampToMillis(value: string): number|null {
+    const seconds = Number.parseFloat(value);
+    return isNaN(seconds) ? null : seconds * 1000
 }
 
 class TransactionEncoder extends CSVEncoder<Transaction> {
