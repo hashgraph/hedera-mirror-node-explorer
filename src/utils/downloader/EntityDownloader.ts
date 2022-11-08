@@ -18,7 +18,7 @@
  *
  */
 
-import {Ref, ref} from "vue";
+import {computed, ComputedRef, Ref, ref} from "vue";
 import {AxiosResponse} from "axios";
 
 export abstract class EntityDownloader<E, R> {
@@ -63,6 +63,17 @@ export abstract class EntityDownloader<E, R> {
         this.abortRequested = true
     }
 
+    public downloadedCount: ComputedRef<number>
+        = computed(() => this.downloadedCountRef.value)
+    public lastDownloadedEntity: ComputedRef<E|null>
+        = computed(() => this.lastDownloadedEntityRef.value)
+    public drained: ComputedRef<boolean>
+        = computed(() => this.drained.value)
+    public state: ComputedRef<DownloaderState>
+        = computed(() => this.stateRef.value)
+    public failureReason: ComputedRef<unknown|null>
+        = computed(() => this.failureReasonRef.value)
+
 
     //
     // Protected (to be subclassed)
@@ -76,7 +87,7 @@ export abstract class EntityDownloader<E, R> {
         throw "To be subclassed (nextURL=" + nextURL + ")"
     }
 
-    protected abstract entitiesFromResponse(response: R): E[]
+    protected abstract fetchEntities(response: R): E[]
 
     protected abstract nextURL(response: R): string|null
 
@@ -95,7 +106,7 @@ export abstract class EntityDownloader<E, R> {
             const newResponse
                 = await this.loadNext(nextURL)
             const newEntities
-                = this.entitiesFromResponse(newResponse.data)
+                = this.fetchEntities(newResponse.data)
             this.entities
                 = this.entities.concat(newEntities)
             this.downloadedCountRef.value

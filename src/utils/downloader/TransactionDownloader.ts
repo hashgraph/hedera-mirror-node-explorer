@@ -26,18 +26,18 @@ import {EntityDownloader} from "@/utils/downloader/EntityDownloader";
 export class TransactionDownloader extends EntityDownloader<Transaction, TransactionResponse> {
 
     private readonly accountId: string
-    private readonly monthCount: number
-    private readonly now: Date
+    private readonly startDate: Date
+    private readonly endDate: Date|null
 
     //
     // Public
     //
 
-    public constructor(accountId: string, monthCount: number, maxTransactionCount: number, now: Date) {
+    public constructor(accountId: string, startDate: Date, endDate: Date|null, maxTransactionCount: number) {
         super(maxTransactionCount)
         this.accountId = accountId
-        this.monthCount = monthCount
-        this.now = now
+        this.startDate = startDate
+        this.endDate = endDate
     }
 
 
@@ -51,20 +51,24 @@ export class TransactionDownloader extends EntityDownloader<Transaction, Transac
     //
 
     protected async loadNext(nextURL: string|null): Promise<AxiosResponse<TransactionResponse>> {
-        const startDate = this.computeStartDate()
-        const startTimestamp = dateToTimestamp(startDate)
 
         if (nextURL == null) {
+            const startTimestamp = dateToTimestamp(this.startDate)
+            const endTimestamp = this.endDate !== null ? dateToTimestamp(this.endDate) : null
+
             nextURL = "api/v1/transactions"
                 + "?account.id=" + this.accountId
                 + "&timestamp=gte:" + startTimestamp
-                + "&limit=100"
+            if (endTimestamp !== null) {
+                nextURL += "&timestamp=lt:" + endTimestamp
+            }
+            nextURL += "&limit=100"
         }
 
         return axios.get<TransactionResponse>(nextURL)
     }
 
-    protected entitiesFromResponse(response: TransactionResponse): Transaction[] {
+    protected fetchEntities(response: TransactionResponse): Transaction[] {
         return response.transactions ?? []
     }
 
@@ -76,13 +80,13 @@ export class TransactionDownloader extends EntityDownloader<Transaction, Transac
     // Private
     //
 
-    private computeStartDate(): Date {
-        const currentMonthIndex = this.now.getFullYear() * 12 + this.now.getMonth() - 1
-        const startMonthIndex = currentMonthIndex - this.monthCount
-        const startYear = Math.floor(startMonthIndex / 12)
-        const startMonth = startMonthIndex % 12 + 1
-        return new Date(startYear, startMonth, 1, 0, 0, 0, 0)
-    }
+    // private computeStartDate(): Date {
+    //     const currentMonthIndex = this.now.getFullYear() * 12 + this.now.getMonth() - 1
+    //     const startMonthIndex = currentMonthIndex - this.monthCount
+    //     const startYear = Math.floor(startMonthIndex / 12)
+    //     const startMonth = startMonthIndex % 12 + 1
+    //     return new Date(startYear, startMonth, 1, 0, 0, 0, 0)
+    // }
 }
 
 function dateToTimestamp(date: Date): string {
