@@ -24,6 +24,8 @@
 
 <template>
 
+  <CSVDownloadDialog v-model:show-dialog="showDownloadDialog" :account-id="accountId"/>
+
   <section class="section" :class="{'h-mobile-background': isTouchDevice || !isSmallScreen}">
 
     <DashboardCard>
@@ -182,6 +184,13 @@
       <template v-slot:control>
         <div class="is-flex is-align-items-flex-end">
           <PlayPauseButton v-bind:controller="transactionTableController"/>
+          <button
+              class="button is-small has-text-white ml-2"
+              data-cy="downloadButton"
+              style="background-color: #202532; width: 26px; height: 26px; border:1px solid white; border-radius: 0"
+              v-on:click="showDownloadDialog = true">
+            <i class="fas fa-download"></i>
+          </button>
           <TransactionFilterSelect v-bind:controller="transactionTableController"/>
         </div>
       </template>
@@ -206,7 +215,7 @@
 
 <script lang="ts">
 
-import {computed, ComputedRef, defineComponent, inject, onBeforeUnmount, onMounted, watch} from 'vue';
+import {computed, ComputedRef, defineComponent, inject, onBeforeUnmount, onMounted, ref, watch} from 'vue';
 import KeyValue from "@/components/values/KeyValue.vue";
 import PlayPauseButton from "@/utils/table/PlayPauseButton.vue";
 import TransactionTable from "@/components/transaction/TransactionTable.vue";
@@ -236,6 +245,7 @@ import router from "@/router";
 import {TransactionByTimestampLoader} from "@/components/transaction/TransactionByTimestampLoader";
 import TransactionLink from "@/components/values/TransactionLink.vue";
 import {HMSF} from "@/utils/HMSF";
+import CSVDownloadDialog from "@/components/CSVDownloadDialog.vue";
 
 const MAX_TOKEN_BALANCES = 10
 
@@ -244,6 +254,7 @@ export default defineComponent({
   name: 'AccountDetails',
 
   components: {
+    CSVDownloadDialog,
     TransactionLink,
     AliasValue,
     AccountLink,
@@ -273,6 +284,8 @@ export default defineComponent({
     const isSmallScreen = inject('isSmallScreen', true)
     const isMediumScreen = inject('isMediumScreen', true)
     const isTouchDevice = inject('isTouchDevice', false)
+
+    const showDownloadDialog = ref(false)
 
     //
     // account
@@ -415,6 +428,7 @@ export default defineComponent({
     return {
       isSmallScreen,
       isTouchDevice,
+      showDownloadDialog,
       transactionTableController,
       notification,
       account: accountLoader.entity,
