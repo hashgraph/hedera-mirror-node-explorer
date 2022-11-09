@@ -86,7 +86,7 @@
         <div class="is-flex is-justify-content-flex-end">
           <button class="button is-white is-small" @click="handleAbort">CANCEL</button>
           <button class="button is-info is-small ml-4"
-                  :disabled="!enableSaveButton" @click="handleDownload">SAVE</button>
+                  :disabled="!enableSaveButton" @click="handleSave">SAVE</button>
         </div>
 
       </div>
@@ -125,8 +125,8 @@ export default defineComponent({
     const enableDownloadButton = computed(() => downloader.state.value === DownloaderState.Fresh)
     const enableSaveButton = computed(() => downloader.csvBlob.value != null)
 
-    const startDate = new Date(22, 10, 1)
-    const endDate = new Date(22, 11, 1)
+    const startDate = new Date(2022, 10, 1)
+    const endDate = new Date(2022, 11, 1)
     const maxTransactionCount = 10000
     const downloader = new TransactionDownloader(props.accountId, startDate, endDate, maxTransactionCount)
 
