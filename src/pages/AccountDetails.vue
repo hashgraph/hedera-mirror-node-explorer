@@ -24,7 +24,7 @@
 
 <template>
 
-  <CSVDownloadDialog v-model:show-dialog="showDownloadDialog" :account-id="accountId"/>
+  <CSVDownloadDialog v-if="accountId" v-model:show-dialog="showDownloadDialog" :account-id="accountId"/>
 
   <section class="section" :class="{'h-mobile-background': isTouchDevice || !isSmallScreen}">
 

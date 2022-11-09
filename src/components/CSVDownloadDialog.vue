@@ -113,17 +113,14 @@ export default defineComponent({
       type: Boolean,
       default: false
     },
-    accountId: {
-      type: String,
-      required: true
-    }
+    accountId: String
   },
   emits: [ "update:showDialog"],
   setup(props, context) {
 
     const showProgressDialog = ref(false)
-    const enableDownloadButton = computed(() => downloader.state.value === DownloaderState.Fresh)
-    const enableSaveButton = computed(() => downloader.csvBlob.value != null)
+    const enableDownloadButton = computed(() => props.accountId !== undefined)
+    const enableSaveButton = computed(() => downloader && downloader.csvBlob.value !== null)
 
     const startDate = new Date(2022, 10, 1)
     const endDate = new Date(2022, 11, 1)
@@ -135,6 +132,7 @@ export default defineComponent({
         maxTransactionCount)
 
     const handleCancel = () => {
+      downloader = null
       context.emit('update:showDialog', false)
     }
 
@@ -142,6 +140,11 @@ export default defineComponent({
       downloader.run()
           .then(() => {
             console.log("Download completed")
+            console.log("state: " + downloader.state.value)
+            console.log("csvBlob: " + downloader.csvBlob.value)
+            console.log("failureReason: " + downloader.failureReason.value)
+            console.log("downloadedCount: " + downloader.downloadedCount.value)
+            console.log("drained: " + downloader.drained.value)
           })
       showProgressDialog.value = true
     }
@@ -155,6 +158,11 @@ export default defineComponent({
     }
 
     const handleSave = () => {
+      downloader.csvBlob.value?.text()
+          .then(blob => {
+            console.log("handleSave: " + blob)
+          })
+
       const url = window.URL.createObjectURL(downloader.csvBlob.value)
       const a = document.createElement('a')
       a.setAttribute('href', url)

@@ -50,6 +50,8 @@
     </template>
   </ProgressDialog>
 
+  <CSVDownloadDialog v-if="accountId" v-model:show-dialog="showDownloadDialog" :account-id="accountId"/>
+
   <WalletChooser v-model:show-dialog="showWalletChooser"
                  v-on:choose-wallet="handleChooseWallet"/>
 
@@ -158,6 +160,9 @@
       <template v-slot:title>
         <span class="h-is-primary-title">Recent Staking Rewards Transactions</span>
       </template>
+      <template v-slot:control>
+        <DownloadButton @click="showDownloadDialog = true"/>
+      </template>
       <template v-slot:content>
         <RewardsTransactionTable
             :narrowed="true"
@@ -205,6 +210,8 @@ import {NodeCursor} from "@/components/node/NodeCursor";
 import {AccountLoader} from "@/components/account/AccountLoader";
 import {NodesLoader} from "@/components/node/NodesLoader";
 import {RewardsTransactionTableController} from "@/components/staking/RewardsTransactionTableController";
+import DownloadButton from "@/components/DownloadButton.vue";
+import CSVDownloadDialog from "@/components/CSVDownloadDialog.vue";
 
 export default defineComponent({
   name: 'Staking',
@@ -218,6 +225,8 @@ export default defineComponent({
   },
 
   components: {
+    CSVDownloadDialog,
+    DownloadButton,
     WalletChooser,
     RewardsCalculator,
     AccountLink,
@@ -248,6 +257,7 @@ export default defineComponent({
     const progressExtraMessage = ref<string|null>(null)
     const progressExtraTransaction = ref<string|null>(null)
     const showProgressSpinner = ref(false)
+    const showDownloadDialog = ref(false)
 
     const connecting = ref(false)
 
@@ -462,6 +472,7 @@ export default defineComponent({
       showStopConfirmDialog,
       showWalletChooser,
       showErrorDialog,
+      showDownloadDialog,
       isIndirectStaking,
       stakedTo,
       stakedNode: stakedNodeLoader.node,
