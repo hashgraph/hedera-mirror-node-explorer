@@ -21,7 +21,7 @@
 import {Transaction, TransactionResponse} from "@/schemas/HederaSchemas";
 import axios, {AxiosResponse} from "axios";
 import {CSVEncoder} from "@/utils/CSVEncoder";
-import {EntityDownloader} from "@/utils/downloader/EntityDownloader";
+import {DownloaderState, EntityDownloader} from "@/utils/downloader/EntityDownloader";
 import {computed, ComputedRef} from "vue";
 
 export class TransactionDownloader extends EntityDownloader<Transaction, TransactionResponse> {
@@ -43,22 +43,30 @@ export class TransactionDownloader extends EntityDownloader<Transaction, Transac
     }
 
     public progress: ComputedRef<number> = computed(() => {
+        let result: number
 
-        const startTime = this.startDate.getTime()
-        const endTime = this.endDate != null ? this.endDate.getTime() : this.now.getTime()
+        if (this.state.value == DownloaderState.Completed) {
+            result = 1.0
+        } else {
+            const startTime = this.startDate.getTime()
+            const endTime = this.endDate != null ? this.endDate.getTime() : this.now.getTime()
 
-        const lastEntity = this.lastDownloadedEntity.value
-        const lastTimestamp = lastEntity?.consensus_timestamp ?? null
-        const lastTime = lastTimestamp !== null ? timestampToMillis(lastTimestamp) : endTime
+            const lastEntity = this.lastDownloadedEntity.value
+            const lastTimestamp = lastEntity?.consensus_timestamp ?? null
+            const lastTime = lastTimestamp !== null ? timestampToMillis(lastTimestamp) : endTime
 
-        /*
+            /*
 
-                       |        remaining      |            done               |
-               --------+-----------------------+-------------------------------+--------> now
-                    startTime               lastTime                        endTime
-         */
+                           |        remaining      |            done               |
+                   --------+-----------------------+-------------------------------+--------> now
+                        startTime               lastTime                        endTime
+             */
 
-        return lastTime !== null ? (endTime - lastTime) / (endTime - startTime) : 0
+            const progress = lastTime !== null ? (endTime - lastTime) / (endTime - startTime) : 0
+            result = Math.round(progress * 100) / 100
+        }
+
+        return result
     })
 
     public makeOutputName(prefix: string): string {
