@@ -29,6 +29,7 @@ export class TransactionDownloader extends EntityDownloader<Transaction, Transac
     public readonly accountId: string
     public readonly startDate: Date
     public readonly endDate: Date|null
+    public readonly dateFormat = TransactionDownloader.makeDateFormat()
     private readonly now = new Date()
 
     //
@@ -109,12 +110,26 @@ export class TransactionDownloader extends EntityDownloader<Transaction, Transac
     }
 
     protected makeCSVEncoder(): CSVEncoder<Transaction> {
-        return new TransactionEncoder(this.getEntities())
+        return new TransactionEncoder(this.getEntities(), this.dateFormat)
     }
 
     //
     // Private
     //
+
+    private static makeDateFormat(): Intl.DateTimeFormat {
+        const locale = "en-US"
+        const dateOptions: Intl.DateTimeFormatOptions = {
+            day: "2-digit",
+            month: "2-digit",
+            year: "numeric",
+            hour: "2-digit",
+            minute: "2-digit",
+            second: "2-digit",
+            timeZoneName: "short"
+        }
+        return new Intl.DateTimeFormat(locale, dateOptions)
+    }
 
     // private computeStartDate(): Date {
     //     const currentMonthIndex = this.now.getFullYear() * 12 + this.now.getMonth() - 1
@@ -170,20 +185,6 @@ export class TransactionEncoder extends CSVEncoder<Transaction> {
     //
     // Private
     //
-
-    private readonly locale = "en-US"
-
-    private readonly dateOptions: Intl.DateTimeFormatOptions = {
-        day: "2-digit",
-        month: "2-digit",
-        year: "numeric",
-        hour: "2-digit",
-        minute: "2-digit",
-        second: "2-digit",
-        timeZoneName: "short"
-    }
-
-    private readonly dateFormat = new Intl.DateTimeFormat(this.locale, this.dateOptions)
 
     private readonly amountFormatter = new Intl.NumberFormat('en-US', {
         minimumFractionDigits: 8,

@@ -21,14 +21,16 @@
 export abstract class CSVEncoder<E> {
 
     private readonly entities: E[]
+    public readonly dateFormat: Intl.DateTimeFormat
 
 
     //
     // Public
     //
 
-    public constructor(entities: E[]) {
+    public constructor(entities: E[], dateFormat: Intl.DateTimeFormat) {
         this.entities = entities
+        this.dateFormat = dateFormat
     }
 
     public encode(): string {

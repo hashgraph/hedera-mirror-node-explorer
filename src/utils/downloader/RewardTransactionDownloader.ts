@@ -47,7 +47,7 @@ export class RewardTransactionDownloader extends TransactionDownloader {
     //
 
     protected makeCSVEncoder(): CSVEncoder<Transaction> {
-        return new TransactionRewardEncoder(this.getEntities(), this.accountId)
+        return new TransactionRewardEncoder(this.getEntities(), this.accountId, this.dateFormat)
     }
 }
 
@@ -60,8 +60,8 @@ class TransactionRewardEncoder extends TransactionEncoder {
     // Public
     //
 
-    constructor(transactions: Transaction[], accountId: string) {
-        super(transactions)
+    constructor(transactions: Transaction[], accountId: string, dateFormat: Intl.DateTimeFormat) {
+        super(transactions, dateFormat)
         this.accountId = accountId
     }
 
