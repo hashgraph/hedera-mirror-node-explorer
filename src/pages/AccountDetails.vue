@@ -184,13 +184,7 @@
       <template v-slot:control>
         <div class="is-flex is-align-items-flex-end">
           <PlayPauseButton v-bind:controller="transactionTableController"/>
-          <button
-              class="button is-small has-text-white ml-2"
-              data-cy="downloadButton"
-              style="background-color: #202532; width: 26px; height: 26px; border:1px solid white; border-radius: 0"
-              v-on:click="showDownloadDialog = true">
-            <i class="fas fa-download"></i>
-          </button>
+          <DownloadButton @click="showDownloadDialog = true"/>
           <TransactionFilterSelect v-bind:controller="transactionTableController"/>
         </div>
       </template>
@@ -246,6 +240,7 @@ import {TransactionByTimestampLoader} from "@/components/transaction/Transaction
 import TransactionLink from "@/components/values/TransactionLink.vue";
 import {HMSF} from "@/utils/HMSF";
 import CSVDownloadDialog from "@/components/CSVDownloadDialog.vue";
+import DownloadButton from "@/components/DownloadButton.vue";
 
 const MAX_TOKEN_BALANCES = 10
 
@@ -254,6 +249,7 @@ export default defineComponent({
   name: 'AccountDetails',
 
   components: {
+    DownloadButton,
     CSVDownloadDialog,
     TransactionLink,
     AliasValue,
