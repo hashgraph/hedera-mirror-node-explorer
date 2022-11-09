@@ -91,6 +91,10 @@ export abstract class EntityDownloader<E, R> {
 
     protected abstract nextURL(response: R): string|null
 
+    protected filter(entities: E[]): E[] {
+        return entities
+    }
+
     //
     // Private
     //
@@ -106,7 +110,7 @@ export abstract class EntityDownloader<E, R> {
             const newResponse
                 = await this.loadNext(nextURL)
             const newEntities
-                = this.fetchEntities(newResponse.data)
+                = this.filter(this.fetchEntities(newResponse.data))
             this.entities
                 = this.entities.concat(newEntities)
             this.downloadedCountRef.value
