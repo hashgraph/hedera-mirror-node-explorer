@@ -26,9 +26,9 @@ import {computed, ComputedRef} from "vue";
 
 export class TransactionDownloader extends EntityDownloader<Transaction, TransactionResponse> {
 
-    private readonly accountId: string
-    private readonly startDate: Date
-    private readonly endDate: Date|null
+    public readonly accountId: string
+    public readonly startDate: Date
+    public readonly endDate: Date|null
     private readonly now = new Date()
 
     //
@@ -120,7 +120,7 @@ function timestampToMillis(value: string): number|null {
     return isNaN(seconds) ? null : seconds * 1000
 }
 
-class TransactionEncoder extends CSVEncoder<Transaction> {
+export class TransactionEncoder extends CSVEncoder<Transaction> {
 
     //
     // CSVEncoder
@@ -140,6 +140,19 @@ class TransactionEncoder extends CSVEncoder<Transaction> {
 
 
     //
+    // Protected
+    //
+
+    protected formatTimestamp(t: string): string {
+        const seconds = Number.parseFloat(t);
+        return isNaN(seconds) ? t : this.dateFormat.format(seconds * 1000)
+    }
+
+    protected formatAmount(tbarValue: number): string {
+        return this.amountFormatter.format(tbarValue / 100000000)
+    }
+
+    //
     // Private
     //
 
@@ -157,17 +170,8 @@ class TransactionEncoder extends CSVEncoder<Transaction> {
 
     private readonly dateFormat = new Intl.DateTimeFormat(this.locale, this.dateOptions)
 
-    private formatTimestamp(t: string): string {
-        const seconds = Number.parseFloat(t);
-        return isNaN(seconds) ? t : this.dateFormat.format(seconds * 1000)
-    }
-
     private readonly amountFormatter = new Intl.NumberFormat('en-US', {
         minimumFractionDigits: 8,
         maximumFractionDigits: 8
     })
-
-    private formatAmount(tbarValue: number): string {
-        return this.amountFormatter.format(tbarValue / 100000000)
-    }
 }
