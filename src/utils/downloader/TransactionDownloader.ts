@@ -129,14 +129,6 @@ export class TransactionDownloader extends EntityDownloader<Transaction, Transac
         }
         return new Intl.DateTimeFormat(locale, dateOptions)
     }
-
-    // private computeStartDate(): Date {
-    //     const currentMonthIndex = this.now.getFullYear() * 12 + this.now.getMonth() - 1
-    //     const startMonthIndex = currentMonthIndex - this.monthCount
-    //     const startYear = Math.floor(startMonthIndex / 12)
-    //     const startMonth = startMonthIndex % 12 + 1
-    //     return new Date(startYear, startMonth, 1, 0, 0, 0, 0)
-    // }
 }
 
 function dateToTimestamp(date: Date): string {
@@ -158,11 +150,12 @@ export class TransactionEncoder extends CSVEncoder<Transaction> {
     protected encodeEntity(t: Transaction): string[][] {
         const result: string[][] = []
         const timestamp = t.consensus_timestamp ? this.formatTimestamp(t.consensus_timestamp) : ""
+        const transactionID = t.transaction_id ?? ""
         const type = t.name ?? ""
         for (const transfer of t.transfers ?? []) {
             const amount = transfer.amount ? this.formatAmount(transfer.amount) : ""
             const accountId = transfer.account ?? ""
-            result.push([timestamp, type, amount, accountId])
+            result.push([timestamp, transactionID, type, amount, accountId])
         }
         return result
     }
