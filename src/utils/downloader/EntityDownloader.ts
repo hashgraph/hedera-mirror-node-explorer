@@ -20,6 +20,7 @@
 
 import {computed, ComputedRef, Ref, ref} from "vue";
 import {AxiosResponse} from "axios";
+import {CSVEncoder} from "@/utils/CSVEncoder";
 
 export abstract class EntityDownloader<E, R> {
 
@@ -74,6 +75,16 @@ export abstract class EntityDownloader<E, R> {
     public failureReason: ComputedRef<unknown|null>
         = computed(() => this.failureReasonRef.value)
 
+    public csvBlob: ComputedRef<Blob|null> = computed(() => {
+        let result: Blob|null
+        if (this.stateRef.value == DownloaderState.Completed) {
+            const encoder = this.makeCSVEncoder()
+            result = new Blob([encoder.encode()], { type: "text/csv" })
+        } else {
+            result = null
+        }
+        return result
+    })
 
     //
     // Protected (to be subclassed)
@@ -90,6 +101,8 @@ export abstract class EntityDownloader<E, R> {
     protected abstract fetchEntities(response: R): E[]
 
     protected abstract nextURL(response: R): string|null
+
+    protected abstract makeCSVEncoder(): CSVEncoder<E>
 
     protected filter(entities: E[]): E[] {
         return entities

@@ -42,12 +42,6 @@ export class TransactionDownloader extends EntityDownloader<Transaction, Transac
         this.endDate = endDate
     }
 
-
-    public getCSV(): string {
-        const encoder = new TransactionEncoder(this.getEntities())
-        return encoder.encode()
-    }
-
     public progress: ComputedRef<number> = computed(() => {
 
         const startTime = this.startDate.getTime()
@@ -66,6 +60,10 @@ export class TransactionDownloader extends EntityDownloader<Transaction, Transac
 
         return lastTime !== null ? (endTime - lastTime) / (endTime - startTime) : 0
     })
+
+    public makeOutputName(prefix: string): string {
+        return prefix + " " + this.accountId + ".csv"
+    }
 
     //
     // EntityDownloader
@@ -95,6 +93,10 @@ export class TransactionDownloader extends EntityDownloader<Transaction, Transac
 
     protected nextURL(response: TransactionResponse): string | null {
         return response.links?.next ?? null
+    }
+
+    protected makeCSVEncoder(): CSVEncoder<Transaction> {
+        return new TransactionEncoder(this.getEntities())
     }
 
     //

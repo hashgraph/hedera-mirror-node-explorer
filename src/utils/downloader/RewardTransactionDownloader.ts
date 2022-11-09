@@ -21,17 +21,10 @@
 import {TransactionDownloader, TransactionEncoder} from "@/utils/downloader/TransactionDownloader";
 import {Transaction} from "@/schemas/HederaSchemas";
 import {RewardsTransactionTableController} from "@/components/staking/RewardsTransactionTableController";
+import {CSVEncoder} from "@/utils/CSVEncoder";
 
 export class RewardTransactionDownloader extends TransactionDownloader {
 
-    //
-    // TransactionDownloader
-    //
-
-    public getCSV(): string {
-        const encoder = new TransactionRewardEncoder(this.getEntities(), this.accountId)
-        return encoder.encode()
-    }
 
     //
     // EntityDownloader
@@ -47,6 +40,14 @@ export class RewardTransactionDownloader extends TransactionDownloader {
         }
 
         return result
+    }
+
+    //
+    // TransactionDownloader
+    //
+
+    protected makeCSVEncoder(): CSVEncoder<Transaction> {
+        return new TransactionRewardEncoder(this.getEntities(), this.accountId)
     }
 }
 
