@@ -51,19 +51,24 @@ export class TransactionDownloader extends EntityDownloader<Transaction, Transac
             const startTime = this.startDate.getTime()
             const endTime = this.endDate != null ? this.endDate.getTime() : this.now.getTime()
 
+            const firstEntity = this.firstDownloadedEntity.value
+            const firstTimestamp = firstEntity?.consensus_timestamp ?? null
+            const firstTime = firstTimestamp !== null ? timestampToMillis(firstTimestamp) : endTime
             const lastEntity = this.lastDownloadedEntity.value
             const lastTimestamp = lastEntity?.consensus_timestamp ?? null
             const lastTime = lastTimestamp !== null ? timestampToMillis(lastTimestamp) : endTime
 
             /*
 
-                           |        remaining      |            done               |
-                   --------+-----------------------+-------------------------------+--------> now
-                        startTime               lastTime                        endTime
+                           |        remaining      |        already         | nothing |
+                           |       to download     |       downloaded       |   here  |
+                   --------+-----------------------+------------------------+---------+--------> now
+                        startTime               lastTime                firstTime   endTime
              */
 
-            const progress = lastTime !== null ? (endTime - lastTime) / (endTime - startTime) : 0
-            result = Math.round(progress * 100) / 100
+            const progress = firstTime !== null && lastTime !== null
+                                ? (firstTime - lastTime) / (firstTime - startTime) : 0
+            result = Math.round(progress * 1000) / 1000
         }
 
         return result

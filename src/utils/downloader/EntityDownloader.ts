@@ -28,6 +28,7 @@ export abstract class EntityDownloader<E, R> {
     private entities: E[] = []
 
     private readonly downloadedCountRef = ref(0)
+    private readonly firstDownloadedEntityRef: Ref<E|null> = ref(null)
     private readonly lastDownloadedEntityRef: Ref<E|null> = ref(null)
     private readonly drainedRef = ref(false)
     private readonly stateRef: Ref<DownloaderState> = ref(DownloaderState.Fresh)
@@ -66,6 +67,8 @@ export abstract class EntityDownloader<E, R> {
 
     public downloadedCount: ComputedRef<number>
         = computed(() => this.downloadedCountRef.value)
+    public firstDownloadedEntity: ComputedRef<E|null>
+        = computed(() => this.firstDownloadedEntityRef.value)
     public lastDownloadedEntity: ComputedRef<E|null>
         = computed(() => this.lastDownloadedEntityRef.value)
     public drained: ComputedRef<boolean>
@@ -128,6 +131,8 @@ export abstract class EntityDownloader<E, R> {
                 = this.entities.concat(newEntities)
             this.downloadedCountRef.value
                 = this.entities.length
+            this.firstDownloadedEntityRef.value
+                = this.entities.length >= 1 ? this.entities[0] : null
             this.lastDownloadedEntityRef.value
                 = this.entities.length >= 1 ? this.entities[this.entities.length - 1] : null
 
