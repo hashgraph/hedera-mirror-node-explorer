@@ -49,6 +49,13 @@ export class RewardTransactionDownloader extends TransactionDownloader {
     protected makeCSVEncoder(): CSVEncoder<Transaction> {
         return new TransactionRewardEncoder(this.getEntities(), this.accountId, this.dateFormat)
     }
+
+    public getOutputName(): string {
+        return "Hedera Staking " + this.accountId
+            + " " + this.dateFormat.format(this.startDate)
+            + " to " + this.dateFormat.format(this.endDate ?? this.now)
+            + ".csv"
+    }
 }
 
 

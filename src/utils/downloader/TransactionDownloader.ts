@@ -30,7 +30,7 @@ export class TransactionDownloader extends EntityDownloader<Transaction, Transac
     public readonly startDate: Date
     public readonly endDate: Date|null
     public readonly dateFormat = TransactionDownloader.makeDateFormat()
-    private readonly now = new Date()
+    public readonly now = new Date()
 
     //
     // Public
@@ -75,8 +75,11 @@ export class TransactionDownloader extends EntityDownloader<Transaction, Transac
         return result
     })
 
-    public makeOutputName(prefix: string): string {
-        return prefix + " " + this.accountId + ".csv"
+    public getOutputName(): string {
+        return "Hedera Transactions " + this.accountId
+            + " " + this.dateFormat.format(this.startDate)
+            + " to " + this.dateFormat.format(this.endDate ?? this.now)
+            + ".csv"
     }
 
     //
@@ -123,10 +126,6 @@ export class TransactionDownloader extends EntityDownloader<Transaction, Transac
             day: "2-digit",
             month: "2-digit",
             year: "numeric",
-            hour: "2-digit",
-            minute: "2-digit",
-            second: "2-digit",
-            timeZoneName: "short"
         }
         return new Intl.DateTimeFormat(locale, dateOptions)
     }
