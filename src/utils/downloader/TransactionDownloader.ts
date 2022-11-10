@@ -18,7 +18,7 @@
  *
  */
 
-import {Transaction, TransactionResponse} from "@/schemas/HederaSchemas";
+import {compareTransferByAccount, Transaction, TransactionResponse} from "@/schemas/HederaSchemas";
 import axios, {AxiosResponse} from "axios";
 import {CSVEncoder} from "@/utils/CSVEncoder";
 import {DownloaderState, EntityDownloader} from "@/utils/downloader/EntityDownloader";
@@ -172,7 +172,9 @@ export class TransactionEncoder extends CSVEncoder<Transaction> {
         const timestamp = t.consensus_timestamp ? this.formatTimestamp(t.consensus_timestamp) : ""
         const transactionID = t.transaction_id ?? ""
         const type = t.name ?? ""
-        for (const transfer of t.transfers ?? []) {
+        const sortedTransfers = t.transfers?.slice() ?? []
+        sortedTransfers.sort(compareTransferByAccount)
+        for (const transfer of sortedTransfers) {
             const amount = transfer.amount ? this.formatAmount(transfer.amount) : ""
             const accountId = transfer.account ?? ""
             result.push([timestamp, transactionID, type, amount, accountId])
