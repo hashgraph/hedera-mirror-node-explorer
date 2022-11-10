@@ -31,11 +31,11 @@ export abstract class EntityDownloader<E, R> {
     private readonly firstDownloadedEntityRef: Ref<E|null> = ref(null)
     private readonly lastDownloadedEntityRef: Ref<E|null> = ref(null)
     private readonly drainedRef = ref(false)
-    private readonly runPromise: Ref<Promise<void>|null> = ref(null)
+    private readonly stateRef = ref(DownloaderState.Fresh)
     private readonly failureReasonRef: Ref<unknown|null> = ref(null)
 
+    private runPromise: Promise<void>|null = null
     private abortRequested = false
-    private runCounter = 0
 
     //
     // Public
@@ -45,24 +45,28 @@ export abstract class EntityDownloader<E, R> {
         await this.abort()
 
         this.failureReasonRef.value = null
-        this.runPromise.value = this.download()
+        this.stateRef.value = DownloaderState.Running
+        this.runPromise = this.download()
         try {
-            await this.runPromise.value
-            this.runCounter += 1
+            await this.runPromise
+            this.stateRef.value = this.abortRequested ? DownloaderState.Aborted : DownloaderState.Completed
         } catch(error) {
             this.failureReasonRef.value = error
+            this.stateRef.value = DownloaderState.Failure
         } finally {
-            this.runPromise.value = null        // (1)
+            this.runPromise = null          // (1)
+            this.abortRequested = false     // (2)
         }
 
         return Promise.resolve()
     }
 
     public async abort(): Promise<void> {
-        if (this.runPromise.value !== null) {
+        if (this.runPromise !== null) {
             this.abortRequested = true
-            await this.runPromise.value
-            // assert(this.runPromise.value == null) because of (1)
+            await this.runPromise
+            // assert(this.runPromise == null) because of (1)
+            // assert(this.abortRequested == false) because of (2)
         }
         return Promise.resolve()
     }
@@ -71,6 +75,8 @@ export abstract class EntityDownloader<E, R> {
         return this.entities
     }
 
+    public state: ComputedRef<DownloaderState>
+        = computed(() => this.stateRef.value)
     public downloadedCount: ComputedRef<number>
         = computed(() => this.downloadedCountRef.value)
     public firstDownloadedEntity: ComputedRef<E|null>
@@ -83,22 +89,9 @@ export abstract class EntityDownloader<E, R> {
         = computed(() => this.failureReasonRef.value)
 
 
-    public state: ComputedRef<DownloaderState> = computed(() => {
-        let result: DownloaderState
-        if (this.runPromise.value !== null) {
-            result = DownloaderState.Running
-        } else if (this.runCounter == 0) {
-            result = DownloaderState.Fresh
-        } else {
-            result = DownloaderState.Completed
-        }
-        return result
-    })
-
-
     public csvBlob: ComputedRef<Blob|null> = computed(() => {
         let result: Blob|null
-        if (this.state.value == DownloaderState.Completed && this.failureReasonRef.value == null) {
+        if (this.state.value == DownloaderState.Completed) {
             const encoder = this.makeCSVEncoder()
             result = new Blob([encoder.encode()], { type: "text/csv" })
         } else {
@@ -165,5 +158,5 @@ export abstract class EntityDownloader<E, R> {
 
 
 export enum DownloaderState {
-    Fresh, Running, Completed
+    Fresh, Running, Completed, Failure, Aborted
 }
