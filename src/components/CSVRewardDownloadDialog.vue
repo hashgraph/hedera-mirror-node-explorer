@@ -47,21 +47,11 @@
           <div class="column">
             <o-field>
               <o-select v-model="periodOption" class="h-is-text-size-1" style="border-radius: 4px">
-                <option :key="Period.Day" :value="Period.Day"
-                        style="background-color: var(--h-theme-box-background-color)">
-                  Last 24 Hours
+                <option :key="Period.ThisYear" :value="Period.ThisYear" style="background-color: var(--h-theme-box-background-color)">
+                  This calendar year
                 </option>
-                <option :key="Period.Week" :value="Period.Week"
-                        style="background-color: var(--h-theme-box-background-color)">
-                  Last 7 days
-                </option>
-                <option :key="Period.Month" :value="Period.Month"
-                        style="background-color: var(--h-theme-box-background-color)">
-                  Last 30 days
-                </option>
-                <option :key="Period.Year" :value="Period.Year"
-                        style="background-color: var(--h-theme-box-background-color)">
-                  Last 365 days
+                <option :key="Period.ThisMonth" :value="Period.ThisMonth" style="background-color: var(--h-theme-box-background-color)">
+                  This month
                 </option>
               </o-select>
             </o-field>
@@ -90,11 +80,11 @@
 <script lang="ts">
 
 import {computed, defineComponent, ref} from "vue";
-import {TransactionDownloader} from "@/utils/downloader/TransactionDownloader";
 import CSVDownloadProgressDialog from "@/components/CSVDownloadProgressDialog.vue";
+import {RewardTransactionDownloader} from "@/utils/downloader/RewardTransactionDownloader";
 
 export default defineComponent({
-  name: "CSVDownloadDialog",
+  name: "CSVRewardDownloadDialog",
   components: {CSVDownloadProgressDialog},
   props: {
     showDialog: {
@@ -108,20 +98,28 @@ export default defineComponent({
   },
   emits: ["update:showDialog"],
   setup(props, context) {
-    enum Period { Day = 1, Week = 7, Month = 30, Year = 365 }
+    enum Period { ThisYear = 1, ThisMonth = 2 }
 
     const showProgressDialog = ref(false)
     const enableDownloadButton = computed(() => downloader.accountId.value != null)
     const periodOption = ref(1)
     const startDate = computed(() => {
+      let result
       const now = new Date()
-      const daysAgo = new Date(now.getTime());
-      daysAgo.setDate(now.getDate() - periodOption.value);
-      return daysAgo
+      switch (periodOption.value) {
+        case Period.ThisYear:
+          result = new Date(now.getFullYear(), 0, 1)
+          break
+        case Period.ThisMonth:
+        default:
+          result = new Date(now.getFullYear(), now.getMonth(), 1)
+          break
+      }
+      return result
     })
     const endDate = computed(() => null)
 
-    const downloader = new TransactionDownloader(
+    const downloader = new RewardTransactionDownloader(
         computed(() => props.accountId),
         startDate,
         endDate,

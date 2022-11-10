@@ -82,15 +82,12 @@ export default defineComponent({
 
   setup(props, context) {
 
-    const enableSaveButton = computed(() => props.downloader && props.downloader.csvBlob.value !== null)
-
-    props.downloader.startDate.value = new Date(2022, 10, 1)
-    props.downloader.endDate.value = new Date(2022, 11, 1)
+    const enableSaveButton = computed(() => props.downloader.csvBlob.value !== null)
 
     const handleAbort = () => {
       props.downloader.abort()
           .then(() => {
-            console.log("Download aborted")
+            context.emit('update:showProgressDialog', false)
           })
     }
 

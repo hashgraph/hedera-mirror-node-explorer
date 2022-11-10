@@ -50,7 +50,7 @@
     </template>
   </ProgressDialog>
 
-  <CSVDownloadDialog v-if="accountId" v-model:show-dialog="showDownloadDialog" :account-id="accountId"/>
+  <CSVRewardDownloadDialog v-if="accountId" v-model:show-dialog="showDownloadDialog" :account-id="accountId"/>
 
   <WalletChooser v-model:show-dialog="showWalletChooser"
                  v-on:choose-wallet="handleChooseWallet"/>
@@ -211,7 +211,7 @@ import {AccountLoader} from "@/components/account/AccountLoader";
 import {NodesLoader} from "@/components/node/NodesLoader";
 import {RewardsTransactionTableController} from "@/components/staking/RewardsTransactionTableController";
 import DownloadButton from "@/components/DownloadButton.vue";
-import CSVDownloadDialog from "@/components/CSVDownloadDialog.vue";
+import CSVRewardDownloadDialog from "@/components/CSVRewardDownloadDialog.vue";
 
 export default defineComponent({
   name: 'Staking',
@@ -225,7 +225,7 @@ export default defineComponent({
   },
 
   components: {
-    CSVDownloadDialog,
+    CSVRewardDownloadDialog,
     DownloadButton,
     WalletChooser,
     RewardsCalculator,
