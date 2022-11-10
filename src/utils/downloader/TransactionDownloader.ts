@@ -200,6 +200,7 @@ export class TransactionEncoder extends CSVEncoder<Transaction> {
 
     private readonly amountFormatter = new Intl.NumberFormat('en-US', {
         minimumFractionDigits: 8,
-        maximumFractionDigits: 8
+        maximumFractionDigits: 8,
+        signDisplay: "exceptZero"
     })
 }
