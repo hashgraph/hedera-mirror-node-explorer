@@ -160,6 +160,7 @@ export default defineComponent({
       a.setAttribute('href', url)
       a.setAttribute('download', downloader.getOutputName());
       a.click()
+      showProgressDialog.value = false
     }
 
     return {
