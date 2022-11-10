@@ -31,38 +31,44 @@ export abstract class EntityDownloader<E, R> {
     private readonly firstDownloadedEntityRef: Ref<E|null> = ref(null)
     private readonly lastDownloadedEntityRef: Ref<E|null> = ref(null)
     private readonly drainedRef = ref(false)
-    private readonly stateRef: Ref<DownloaderState> = ref(DownloaderState.Fresh)
+    private readonly runPromise: Ref<Promise<void>|null> = ref(null)
     private readonly failureReasonRef: Ref<unknown|null> = ref(null)
 
     private abortRequested = false
+    private runCounter = 0
 
     //
     // Public
     //
 
     public async run(): Promise<void> {
-        if (this.stateRef.value != DownloaderState.Running) {
-            this.stateRef.value = DownloaderState.Running
-            this.failureReasonRef.value = null
-            try {
-                await this.download()
-            } catch(error) {
-                this.failureReasonRef.value = error
-            } finally {
-                this.stateRef.value = DownloaderState.Completed
-            }
-        } else {
-            console.warn("aborting because downloader is already running")
+        await this.abort()
+
+        this.failureReasonRef.value = null
+        this.runPromise.value = this.download()
+        try {
+            await this.runPromise.value
+            this.runCounter += 1
+        } catch(error) {
+            this.failureReasonRef.value = error
+        } finally {
+            this.runPromise.value = null        // (1)
+        }
+
+        return Promise.resolve()
+    }
+
+    public async abort(): Promise<void> {
+        if (this.runPromise.value !== null) {
+            this.abortRequested = true
+            await this.runPromise.value
+            // assert(this.runPromise.value == null) because of (1)
         }
         return Promise.resolve()
     }
 
     public getEntities(): E[] {
         return this.entities
-    }
-
-    public requestAbort(): void {
-        this.abortRequested = true
     }
 
     public downloadedCount: ComputedRef<number>
@@ -73,14 +79,26 @@ export abstract class EntityDownloader<E, R> {
         = computed(() => this.lastDownloadedEntityRef.value)
     public drained: ComputedRef<boolean>
         = computed(() => this.drained.value)
-    public state: ComputedRef<DownloaderState>
-        = computed(() => this.stateRef.value)
     public failureReason: ComputedRef<unknown|null>
         = computed(() => this.failureReasonRef.value)
 
+
+    public state: ComputedRef<DownloaderState> = computed(() => {
+        let result: DownloaderState
+        if (this.runPromise.value !== null) {
+            result = DownloaderState.Running
+        } else if (this.runCounter == 0) {
+            result = DownloaderState.Fresh
+        } else {
+            result = DownloaderState.Completed
+        }
+        return result
+    })
+
+
     public csvBlob: ComputedRef<Blob|null> = computed(() => {
         let result: Blob|null
-        if (this.stateRef.value == DownloaderState.Completed && this.failureReasonRef.value == null) {
+        if (this.state.value == DownloaderState.Completed && this.failureReasonRef.value == null) {
             const encoder = this.makeCSVEncoder()
             result = new Blob([encoder.encode()], { type: "text/csv" })
         } else {
@@ -122,7 +140,7 @@ export abstract class EntityDownloader<E, R> {
 
         this.drainedRef.value = false
         let nextURL = null
-        while (this.entities.length < this.maxEntityCount && !this.drainedRef.value) {
+        while (this.entities.length < this.maxEntityCount && !this.drainedRef.value && !this.abortRequested) {
             const newResponse
                 = await this.loadNext(nextURL)
             const newEntities

@@ -143,7 +143,10 @@ export default defineComponent({
     }
 
     const handleAbort = () => {
-      downloader.requestAbort()
+      downloader.abort()
+          .then(() => {
+            console.log("Download aborted")
+          })
       showProgressDialog.value = false
     }
 
