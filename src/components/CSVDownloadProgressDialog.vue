@@ -24,7 +24,7 @@
 
 <template>
 
-  <div :class="{'is-active': showDialog}" class="modal has-text-white">
+  <div :class="{'is-active': showProgressDialog}" class="modal has-text-white">
     <div class="modal-background"/>
     <div class="modal-content" style="width: 768px; border-radius: 16px">
       <div class="box">
@@ -33,40 +33,25 @@
             <span class="h-is-primary-title">Download transactions</span>
             <span v-if="accountId" class="h-is-tertiary-text"> for account {{ accountId }}</span>
           </span>
-          <a @click="handleCancel">
-            <img alt="" src="@/assets/close-icon.png" style="max-height: 20px;">
+          <a @click="handleAbort">
+            <img alt="Search bar" src="@/assets/close-icon.png" style="max-height: 20px;">
           </a>
         </div>
 
         <hr class="h-card-separator"/>
 
-        <div class="columns">
-          <div class="column is-one-third has-text-weight-light">
-            Select period
-          </div>
-          <div class="column">
-            <o-field>
-              <o-select class="h-is-text-size-1" style="border-radius: 4px">
-                <option style="background-color: var(--h-theme-box-background-color)" value="1">
-                  1 month
-                </option>
-              </o-select>
-            </o-field>
-          </div>
-        </div>
+        <progress id="progress" :value="progress" class="progress is-large is-info mt-5"></progress>
 
         <div class="is-flex is-justify-content-flex-end">
-          <button class="button is-white is-small" @click="handleCancel">CANCEL</button>
-          <button :disabled="!enableDownloadButton"
-                  class="button is-info is-small ml-4" @click="handleDownload">DOWNLOAD
+          <button class="button is-white is-small" @click="handleAbort">CANCEL</button>
+          <button :disabled="!enableSaveButton"
+                  class="button is-info is-small ml-4" @click="handleSave">SAVE
           </button>
         </div>
 
       </div>
     </div>
   </div>
-
-  <CSVDownloadProgressDialog v-model:show-progress-dialog="showProgressDialog" :downloader="downloader"/>
 
 </template>
 
@@ -76,60 +61,59 @@
 
 <script lang="ts">
 
-import {computed, defineComponent, ref} from "vue";
+import {computed, defineComponent, PropType} from "vue";
 import {TransactionDownloader} from "@/utils/downloader/TransactionDownloader";
-import CSVDownloadProgressDialog from "@/components/CSVDownloadProgressDialog.vue";
-import {DownloaderState} from "@/utils/downloader/EntityDownloader";
 
 export default defineComponent({
-  name: "CSVDownloadDialog",
-  components: {CSVDownloadProgressDialog},
+  name: "CSVDownloadProgressDialog",
+
   props: {
-    showDialog: {
+    showProgressDialog: {
       type: Boolean,
       default: false
     },
-    accountId: {
-      type: String,
+    downloader: {
+      type: Object as PropType<TransactionDownloader>,
       required: true
     }
   },
-  emits: ["update:showDialog"],
+
+  emits: ["update:showProgressDialog"],
+
   setup(props, context) {
 
-    const showProgressDialog = ref(false)
-    const enableDownloadButton = computed(() => downloader.state.value === DownloaderState.Fresh)
+    const enableSaveButton = computed(() => props.downloader && props.downloader.csvBlob.value !== null)
 
-    const downloader = new TransactionDownloader(
-        computed(() => props.accountId),
-        ref(null),
-        ref(null),
-        10000)
+    props.downloader.startDate.value = new Date(2022, 10, 1)
+    props.downloader.endDate.value = new Date(2022, 11, 1)
 
-    const handleCancel = () => {
-      context.emit('update:showDialog', false)
+    const handleAbort = () => {
+      props.downloader.abort()
+          .then(() => {
+            console.log("Download aborted")
+          })
     }
 
-    const handleDownload = () => {
-      downloader.run()
-          .then(() => {
-            console.log("Download completed")
-            console.log("state: " + downloader.state.value)
-            console.log("csvBlob: " + downloader.csvBlob.value)
-            console.log("failureReason: " + downloader.failureReason.value)
-            console.log("downloadedCount: " + downloader.downloadedCount.value)
-            console.log("drained: " + downloader.drained.value)
+    const handleSave = () => {
+      props.downloader.csvBlob.value?.text()
+          .then(blob => {
+            console.log("handleSave: " + blob)
           })
-      showProgressDialog.value = true
+
+      const url = window.URL.createObjectURL(props.downloader.csvBlob.value)
+      const a = document.createElement('a')
+      a.setAttribute('href', url)
+      a.setAttribute('download', props.downloader.getOutputName());
+      a.click()
+      context.emit('update:showProgressDialog', false)
     }
 
     return {
-      showProgressDialog,
-      enableDownloadButton,
-      downloader,
-      progress: downloader.progress,
-      handleCancel,
-      handleDownload,
+      enableSaveButton,
+      accountId: props.downloader.accountId,
+      progress: props.downloader.progress,
+      handleAbort,
+      handleSave
     }
   }
 });
