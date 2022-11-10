@@ -128,7 +128,11 @@ export default defineComponent({
     const startDate = new Date(2022, 10, 1)
     const endDate = new Date(2022, 11, 1)
     const maxTransactionCount = 10000
-    const downloader = new TransactionDownloader(props.accountId, startDate, endDate, maxTransactionCount)
+    const downloader = new TransactionDownloader(
+        computed(() => props.accountId),
+        computed(() => startDate),
+        computed(() => endDate),
+        maxTransactionCount)
 
     const handleCancel = () => {
       context.emit('update:showDialog', false)
@@ -151,7 +155,11 @@ export default defineComponent({
     }
 
     const handleSave = () => {
-      console.log("handleSave: " + downloader.csvBlob.value)
+      const url = window.URL.createObjectURL(downloader.csvBlob.value)
+      const a = document.createElement('a')
+      a.setAttribute('href', url)
+      a.setAttribute('download', downloader.getOutputName());
+      a.click()
     }
 
     return {

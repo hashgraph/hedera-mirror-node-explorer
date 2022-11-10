@@ -33,10 +33,14 @@ export class RewardTransactionDownloader extends TransactionDownloader {
     protected filter(transactions: Transaction[]): Transaction[] {
         const result: Transaction[] = []
 
-        for (const t of transactions) {
-            if (RewardsTransactionTableController.getAmountRewarded(t, this.accountId) > 0) {
-                result.push(t)
+        if (this.accountId.value !== null) {
+            for (const t of transactions) {
+                if (RewardsTransactionTableController.getAmountRewarded(t, this.accountId.value) > 0) {
+                    result.push(t)
+                }
             }
+        } else {
+            throw this.wrongSetupError
         }
 
         return result
@@ -47,14 +51,26 @@ export class RewardTransactionDownloader extends TransactionDownloader {
     //
 
     protected makeCSVEncoder(): CSVEncoder<Transaction> {
-        return new TransactionRewardEncoder(this.getEntities(), this.accountId, this.dateFormat)
+        let result: CSVEncoder<Transaction>
+        if (this.accountId.value !== null) {
+            result = new TransactionRewardEncoder(this.getEntities(), this.accountId.value, this.dateFormat)
+        } else {
+            throw this.wrongSetupError
+        }
+        return result
     }
 
     public getOutputName(): string {
-        return "Hedera Staking " + this.accountId
-            + " " + this.dateFormat.format(this.startDate)
-            + " to " + this.dateFormat.format(this.endDate ?? this.now)
-            + ".csv"
+        let result: string
+        if (this.accountId.value !== null && this.startDate.value !== null) {
+            result = "Hedera Staking " + this.accountId.value
+                + " " + this.dateFormat.format(this.startDate.value)
+                + " to " + this.dateFormat.format(this.endDate.value ?? this.now)
+                + ".csv"
+        } else {
+            result = ""
+        }
+        return result
     }
 }
 

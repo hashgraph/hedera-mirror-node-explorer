@@ -22,25 +22,33 @@ import {Transaction, TransactionResponse} from "@/schemas/HederaSchemas";
 import axios, {AxiosResponse} from "axios";
 import {CSVEncoder} from "@/utils/CSVEncoder";
 import {DownloaderState, EntityDownloader} from "@/utils/downloader/EntityDownloader";
-import {computed, ComputedRef} from "vue";
+import {computed, ComputedRef, Ref, watch} from "vue";
 
 export class TransactionDownloader extends EntityDownloader<Transaction, TransactionResponse> {
 
-    public readonly accountId: string
-    public readonly startDate: Date
-    public readonly endDate: Date|null
+    public readonly accountId: Ref<string|null>
+    public readonly startDate: Ref<Date|null>
+    public readonly endDate: Ref<Date|null>
     public readonly dateFormat = TransactionDownloader.makeDateFormat()
     public readonly now = new Date()
+
+    protected readonly wrongSetupError = new Error("this.accountId or this.startDate not set")
 
     //
     // Public
     //
 
-    public constructor(accountId: string, startDate: Date, endDate: Date|null, maxTransactionCount: number) {
+    public constructor(accountId: Ref<string|null>,
+                       startDate: Ref<Date|null>,
+                       endDate: Ref<Date|null>,
+                       maxTransactionCount: number) {
         super(maxTransactionCount)
         this.accountId = accountId
         this.startDate = startDate
         this.endDate = endDate
+        watch([this.accountId, this.startDate, this.endDate], () => {
+            this.abort().then()
+        })
     }
 
     public progress: ComputedRef<number> = computed(() => {
@@ -48,9 +56,9 @@ export class TransactionDownloader extends EntityDownloader<Transaction, Transac
 
         if (this.state.value == DownloaderState.Completed) {
             result = 1.0
-        } else {
-            const startTime = this.startDate.getTime()
-            const endTime = this.endDate != null ? this.endDate.getTime() : this.now.getTime()
+        } else if (this.accountId.value !== null && this.startDate.value !== null) {
+            const startTime = this.startDate.value.getTime()
+            const endTime = this.endDate.value != null ? this.endDate.value.getTime() : this.now.getTime()
 
             const firstEntity = this.firstDownloadedEntity.value
             const firstTimestamp = firstEntity?.consensus_timestamp ?? null
@@ -70,16 +78,24 @@ export class TransactionDownloader extends EntityDownloader<Transaction, Transac
             const progress = firstTime !== null && lastTime !== null
                                 ? (firstTime - lastTime) / (firstTime - startTime) : 0
             result = Math.round(progress * 1000) / 1000
+        } else {
+            result = 0
         }
 
         return result
     })
 
     public getOutputName(): string {
-        return "Hedera Transactions " + this.accountId
-            + " " + this.dateFormat.format(this.startDate)
-            + " to " + this.dateFormat.format(this.endDate ?? this.now)
-            + ".csv"
+        let result: string
+        if (this.accountId.value !== null && this.startDate.value !== null) {
+            result = "Hedera Transactions " + this.accountId.value
+                + " " + this.dateFormat.format(this.startDate.value)
+                + " to " + this.dateFormat.format(this.endDate.value ?? this.now)
+                + ".csv"
+        } else {
+            result = ""
+        }
+        return result
     }
 
     //
@@ -89,16 +105,20 @@ export class TransactionDownloader extends EntityDownloader<Transaction, Transac
     protected async loadNext(nextURL: string|null): Promise<AxiosResponse<TransactionResponse>> {
 
         if (nextURL == null) {
-            const startTimestamp = dateToTimestamp(this.startDate)
-            const endTimestamp = this.endDate !== null ? dateToTimestamp(this.endDate) : null
+            if (this.accountId.value !== null && this.startDate.value !== null){
+                const startTimestamp = dateToTimestamp(this.startDate.value)
+                const endTimestamp = this.endDate.value !== null ? dateToTimestamp(this.endDate.value) : null
 
-            nextURL = "api/v1/transactions"
-                + "?account.id=" + this.accountId
-                + "&timestamp=gte:" + startTimestamp
-            if (endTimestamp !== null) {
-                nextURL += "&timestamp=lt:" + endTimestamp
+                nextURL = "api/v1/transactions"
+                    + "?account.id=" + this.accountId.value
+                    + "&timestamp=gte:" + startTimestamp
+                if (endTimestamp !== null) {
+                    nextURL += "&timestamp=lt:" + endTimestamp
+                }
+                nextURL += "&limit=100"
+            } else {
+                throw this.wrongSetupError
             }
-            nextURL += "&limit=100"
         }
 
         return axios.get<TransactionResponse>(nextURL)
