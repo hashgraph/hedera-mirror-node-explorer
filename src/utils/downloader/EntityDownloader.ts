@@ -91,7 +91,7 @@ export abstract class EntityDownloader<E, R> {
 
     public csvBlob: ComputedRef<Blob|null> = computed(() => {
         let result: Blob|null
-        if (this.state.value == DownloaderState.Completed) {
+        if (this.state.value == DownloaderState.Completed && this.downloadedCount.value >= 1) {
             const encoder = this.makeCSVEncoder()
             result = new Blob([encoder.encode()], { type: "text/csv" })
         } else {
