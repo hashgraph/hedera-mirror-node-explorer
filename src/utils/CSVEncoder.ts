@@ -35,6 +35,10 @@ export abstract class CSVEncoder<E> {
 
     public encode(): string {
         let result = ""
+        const headerRow = this.encodeHeaderRow()
+        if (headerRow !== null) {
+            result += this.makeLine(headerRow)
+        }
         for (const e of this.entities) {
             for (const r of this.encodeEntity(e)) {
                 if (result.length >= 1) {
@@ -52,6 +56,7 @@ export abstract class CSVEncoder<E> {
     //
 
     protected abstract encodeEntity(entity: E): string[][]
+    protected abstract encodeHeaderRow(): string[] | null
 
     //
     // Private

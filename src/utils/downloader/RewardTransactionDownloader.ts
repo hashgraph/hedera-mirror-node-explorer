@@ -94,9 +94,11 @@ class TransactionRewardEncoder extends TransactionEncoder {
 
     protected encodeEntity(t: Transaction): string[][] {
         const timestamp = t.consensus_timestamp ? this.formatTimestamp(t.consensus_timestamp) : ""
-        const transactionID = t.transaction_id ?? ""
-        const type = t.name ?? ""
         const reward = this.formatAmount(RewardsTransactionTableController.getAmountRewarded(t, this.accountId))
-        return [[timestamp, transactionID, type, reward]]
+        return [[timestamp, reward]]
+    }
+
+    protected encodeHeaderRow(): string[] | null {
+        return ["#date","#reward_amount"]
     }
 }

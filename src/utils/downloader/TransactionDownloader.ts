@@ -182,6 +182,9 @@ export class TransactionEncoder extends CSVEncoder<Transaction> {
         return result
     }
 
+    protected encodeHeaderRow(): string[] | null {
+        return ["#date","#transaction_id","#transaction_type","#amount","#account_id"]
+    }
 
     //
     // Protected
