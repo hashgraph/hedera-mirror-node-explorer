@@ -24,9 +24,9 @@ import {CSVEncoder} from "@/utils/CSVEncoder";
 
 export abstract class EntityDownloader<E, R> {
 
-    protected readonly startDate: Ref<Date|null>
-    protected readonly endDate: Ref<Date|null>
-    protected readonly maxEntityCount: number
+    public readonly startDate: Ref<Date|null>
+    public readonly endDate: Ref<Date|null>
+    public readonly maxEntityCount: number
     private entities: E[] = []
 
     private readonly downloadedCountRef = ref(0)
