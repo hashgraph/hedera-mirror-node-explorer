@@ -75,17 +75,17 @@ export abstract class EntityDownloader<E, R> {
         return this.entities
     }
 
-    public state: ComputedRef<DownloaderState>
+    public readonly state: ComputedRef<DownloaderState>
         = computed(() => this.stateRef.value)
-    public downloadedCount: ComputedRef<number>
+    public readonly downloadedCount: ComputedRef<number>
         = computed(() => this.downloadedCountRef.value)
-    public firstDownloadedEntity: ComputedRef<E|null>
+    public readonly firstDownloadedEntity: ComputedRef<E|null>
         = computed(() => this.firstDownloadedEntityRef.value)
-    public lastDownloadedEntity: ComputedRef<E|null>
+    public readonly lastDownloadedEntity: ComputedRef<E|null>
         = computed(() => this.lastDownloadedEntityRef.value)
-    public drained: ComputedRef<boolean>
+    public readonly drained: ComputedRef<boolean>
         = computed(() => this.drained.value)
-    public failureReason: ComputedRef<unknown|null>
+    public readonly failureReason: ComputedRef<unknown|null>
         = computed(() => this.failureReasonRef.value)
 
 
