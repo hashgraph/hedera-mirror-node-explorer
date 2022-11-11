@@ -27,14 +27,14 @@
   <CSVDownloadDialog v-if="accountId"
                      v-model:show-dialog="showDownloadDialog"
                      :downloader="downloader"
-                     :account-id="accountId"/>
+                     :account-id="normalizedAccountId"/>
 
   <section class="section" :class="{'h-mobile-background': isTouchDevice || !isSmallScreen}">
 
     <DashboardCard>
       <template v-slot:title>
         <span class="h-is-primary-title">Account </span>
-        <span class="h-is-secondary-text">{{ account?.account ?? "" }}</span>
+        <span class="h-is-secondary-text">{{ normalizedAccountId ?? "" }}</span>
         <span v-if="accountChecksum" class="has-text-grey" style="font-size: 28px">-{{ accountChecksum }}</span>
         <span v-if="showContractVisible" class="is-inline-block ml-3" id="showContractLink">
           <router-link :to="{name: 'ContractDetails', params: {contractId: accountId}}">
@@ -437,7 +437,7 @@ export default defineComponent({
       transactionTableController,
       notification,
       account: accountLoader.entity,
-      accountId: accountLoader.accountId,
+      normalizedAccountId: accountLoader.accountId,
       accountChecksum,
       accountInfo: accountLoader.accountInfo,
       nodeId: accountLoader.nodeId,
