@@ -21,7 +21,7 @@
 import {compareTransferByAccount, Transaction, TransactionResponse} from "@/schemas/HederaSchemas";
 import axios, {AxiosResponse} from "axios";
 import {CSVEncoder} from "@/utils/CSVEncoder";
-import {EntityDownloader} from "@/utils/downloader/EntityDownloader";
+import {dateToTimestamp, EntityDownloader} from "@/utils/downloader/EntityDownloader";
 import {Ref, watch} from "vue";
 
 export class TransactionDownloader extends EntityDownloader<Transaction, TransactionResponse> {
@@ -92,11 +92,6 @@ export class TransactionDownloader extends EntityDownloader<Transaction, Transac
     }
 }
 
-function dateToTimestamp(date: Date): string {
-    const seconds = date.getTime() / 1000.0
-    return seconds.toFixed(9)
-}
-
 export class TransactionEncoder extends CSVEncoder<Transaction> {
 
     //
@@ -121,27 +116,4 @@ export class TransactionEncoder extends CSVEncoder<Transaction> {
     protected encodeHeaderRow(): string[] | null {
         return ["#date","#transaction_id","#transaction_type","#amount","#account_id"]
     }
-
-    //
-    // Protected
-    //
-
-    protected formatTimestamp(t: string): string {
-        const seconds = Number.parseFloat(t);
-        return isNaN(seconds) ? t : this.dateFormat.format(seconds * 1000)
-    }
-
-    protected formatAmount(tbarValue: number): string {
-        return this.amountFormatter.format(tbarValue / 100000000)
-    }
-
-    //
-    // Private
-    //
-
-    private readonly amountFormatter = new Intl.NumberFormat('en-US', {
-        minimumFractionDigits: 8,
-        maximumFractionDigits: 8,
-        signDisplay: "exceptZero"
-    })
 }

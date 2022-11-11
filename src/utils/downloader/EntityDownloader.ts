@@ -233,7 +233,12 @@ export enum DownloaderState {
     Fresh, Running, Completed, Failure, Aborted
 }
 
-function timestampToMillis(value: string): number|null {
+export function timestampToMillis(value: string): number|null {
     const seconds = Number.parseFloat(value);
     return isNaN(seconds) ? null : seconds * 1000
+}
+
+export function dateToTimestamp(date: Date): string {
+    const seconds = date.getTime() / 1000.0
+    return seconds.toFixed(9)
 }
