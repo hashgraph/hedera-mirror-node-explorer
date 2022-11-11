@@ -50,27 +50,18 @@ export class RewardTransactionDownloader extends TransactionDownloader {
     // TransactionDownloader
     //
 
-    protected makeCSVEncoder(): CSVEncoder<Transaction> {
+    protected makeCSVEncoder(dateFormat: Intl.DateTimeFormat): CSVEncoder<Transaction> {
         let result: CSVEncoder<Transaction>
         if (this.accountId.value !== null) {
-            result = new TransactionRewardEncoder(this.getEntities(), this.accountId.value, this.dateFormat)
+            result = new TransactionRewardEncoder(this.getEntities(), this.accountId.value, dateFormat)
         } else {
             throw this.wrongSetupError
         }
         return result
     }
 
-    public getOutputName(): string {
-        let result: string
-        if (this.accountId.value !== null && this.startDate.value !== null) {
-            result = "Hedera Staking " + this.accountId.value
-                + " " + this.dateFormat.format(this.startDate.value)
-                + " to " + this.dateFormat.format(this.endDate.value ?? this.now)
-                + ".csv"
-        } else {
-            result = ""
-        }
-        return result
+    protected makeOutputPrefix(): string {
+        return this.accountId.value !== null ? "Hedera Reward " + this.accountId : ""
     }
 }
 

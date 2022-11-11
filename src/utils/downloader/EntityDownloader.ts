@@ -18,13 +18,15 @@
  *
  */
 
-import {computed, ComputedRef, Ref, ref} from "vue";
+import {computed, ComputedRef, Ref, ref, watch} from "vue";
 import {AxiosResponse} from "axios";
 import {CSVEncoder} from "@/utils/CSVEncoder";
 
 export abstract class EntityDownloader<E, R> {
 
-    private readonly maxEntityCount: number
+    protected readonly startDate: Ref<Date|null>
+    protected readonly endDate: Ref<Date|null>
+    protected readonly maxEntityCount: number
     private entities: E[] = []
 
     private readonly downloadedCountRef = ref(0)
@@ -36,6 +38,8 @@ export abstract class EntityDownloader<E, R> {
 
     private runPromise: Promise<void>|null = null
     private abortRequested = false
+    private readonly dateFormat = EntityDownloader.makeDateFormat()
+    private readonly now = new Date()
 
     //
     // Public
@@ -88,11 +92,58 @@ export abstract class EntityDownloader<E, R> {
     public readonly failureReason: ComputedRef<unknown|null>
         = computed(() => this.failureReasonRef.value)
 
+    public progress: ComputedRef<number> = computed(() => {
+        let result: number
+
+        if (this.state.value == DownloaderState.Completed) {
+            result = 1.0
+        } else if (this.startDate.value !== null) {
+            const startTime = this.startDate.value.getTime()
+            const endTime = this.endDate.value != null ? this.endDate.value.getTime() : this.now.getTime()
+
+            const firstEntity = this.firstDownloadedEntity.value
+            const firstTimestamp = firstEntity ? this.entityTimestamp(firstEntity) : null
+            const firstTime = firstTimestamp !== null ? timestampToMillis(firstTimestamp) : endTime
+            const lastEntity = this.lastDownloadedEntity.value
+            const lastTimestamp = lastEntity ? this.entityTimestamp(lastEntity) : null
+            const lastTime = lastTimestamp !== null ? timestampToMillis(lastTimestamp) : endTime
+
+            /*
+
+                           |        remaining      |        already         | nothing |
+                           |       to download     |       downloaded       |   here  |
+                   --------+-----------------------+------------------------+---------+--------> now
+                        startTime               lastTime                firstTime   endTime
+             */
+
+            const progress = firstTime !== null && lastTime !== null
+                ? (firstTime - lastTime) / (firstTime - startTime) : 0
+            result = Math.round(progress * 1000) / 1000
+        } else {
+            result = 0
+        }
+
+        return result
+    })
+
+    public getOutputName(): string {
+        let result: string
+        if (this.startDate.value !== null) {
+            result = this.makeOutputPrefix()
+                + " " + this.dateFormat.format(this.startDate.value)
+                + " to " + this.dateFormat.format(this.endDate.value ?? this.now)
+                + ".csv"
+        } else {
+            result = ""
+        }
+        return result
+    }
+
 
     public csvBlob: ComputedRef<Blob|null> = computed(() => {
         let result: Blob|null
         if (this.state.value == DownloaderState.Completed && this.downloadedCount.value >= 1) {
-            const encoder = this.makeCSVEncoder()
+            const encoder = this.makeCSVEncoder(this.dateFormat)
             result = new Blob([encoder.encode()], { type: "text/csv" })
         } else {
             result = null
@@ -104,8 +155,15 @@ export abstract class EntityDownloader<E, R> {
     // Protected (to be subclassed)
     //
 
-    protected constructor(maxEntityCount: number) {
+    protected constructor(startDate: Ref<Date|null>,
+                          endDate: Ref<Date|null>,
+                          maxEntityCount: number) {
+        this.startDate = startDate
+        this.endDate = endDate
         this.maxEntityCount = maxEntityCount
+        watch([this.startDate, this.endDate], () => {
+            this.abort().then()
+        })
     }
 
     protected async loadNext(nextURL: string|null): Promise<AxiosResponse<R>> {
@@ -116,7 +174,11 @@ export abstract class EntityDownloader<E, R> {
 
     protected abstract nextURL(response: R): string|null
 
-    protected abstract makeCSVEncoder(): CSVEncoder<E>
+    protected abstract entityTimestamp(entity: E): string|null
+
+    protected abstract makeCSVEncoder(dateFormat: Intl.DateTimeFormat): CSVEncoder<E>
+
+    protected abstract makeOutputPrefix(): string
 
     protected filter(entities: E[]): E[] {
         return entities
@@ -154,9 +216,24 @@ export abstract class EntityDownloader<E, R> {
         return Promise.resolve()
     }
 
+    private static makeDateFormat(): Intl.DateTimeFormat {
+        const locale = "en-US"
+        const dateOptions: Intl.DateTimeFormatOptions = {
+            day: "2-digit",
+            month: "2-digit",
+            year: "numeric",
+        }
+        return new Intl.DateTimeFormat(locale, dateOptions)
+    }
+
 }
 
 
 export enum DownloaderState {
     Fresh, Running, Completed, Failure, Aborted
+}
+
+function timestampToMillis(value: string): number|null {
+    const seconds = Number.parseFloat(value);
+    return isNaN(seconds) ? null : seconds * 1000
 }
