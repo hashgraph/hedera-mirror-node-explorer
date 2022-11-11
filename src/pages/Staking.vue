@@ -50,7 +50,7 @@
     </template>
   </ProgressDialog>
 
-  <CSVRewardDownloadDialog v-if="accountId" v-model:show-dialog="showDownloadDialog" :account-id="accountId"/>
+  <CSVDownloadDialog v-if="accountId" v-model:show-dialog="showDownloadDialog" :downloader="downloader"/>
 
   <WalletChooser v-model:show-dialog="showWalletChooser"
                  v-on:choose-wallet="handleChooseWallet"/>
@@ -211,7 +211,8 @@ import {AccountLoader} from "@/components/account/AccountLoader";
 import {NodesLoader} from "@/components/node/NodesLoader";
 import {RewardsTransactionTableController} from "@/components/staking/RewardsTransactionTableController";
 import DownloadButton from "@/components/DownloadButton.vue";
-import CSVRewardDownloadDialog from "@/components/CSVRewardDownloadDialog.vue";
+import {RewardTransactionDownloader} from "@/utils/downloader/RewardTransactionDownloader";
+import CSVDownloadDialog from "@/components/CSVDownloadDialog.vue";
 
 export default defineComponent({
   name: 'Staking',
@@ -225,7 +226,7 @@ export default defineComponent({
   },
 
   components: {
-    CSVRewardDownloadDialog,
+    CSVDownloadDialog,
     DownloadButton,
     WalletChooser,
     RewardsCalculator,
@@ -458,6 +459,15 @@ export default defineComponent({
     onMounted(() => transactionTableController.mount())
     onBeforeUnmount(() => transactionTableController.unmount())
 
+    //
+    // Rewards transaction downloader
+    //
+    const downloader = new RewardTransactionDownloader(
+        walletManager.accountId,
+        ref(null),
+        ref(null),
+        10000)
+
     return {
       isSmallScreen,
       isTouchDevice,
@@ -495,6 +505,7 @@ export default defineComponent({
       progressExtraTransaction,
       showProgressSpinner,
       transactionTableController,
+      downloader
     }
   }
 });

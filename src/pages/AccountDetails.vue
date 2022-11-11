@@ -24,7 +24,7 @@
 
 <template>
 
-  <CSVDownloadDialog v-if="accountId" v-model:show-dialog="showDownloadDialog" :account-id="accountId"/>
+  <CSVDownloadDialog v-if="accountId" v-model:show-dialog="showDownloadDialog" :downloader="downloader"/>
 
   <section class="section" :class="{'h-mobile-background': isTouchDevice || !isSmallScreen}">
 
@@ -241,6 +241,7 @@ import TransactionLink from "@/components/values/TransactionLink.vue";
 import {HMSF} from "@/utils/HMSF";
 import CSVDownloadDialog from "@/components/CSVDownloadDialog.vue";
 import DownloadButton from "@/components/DownloadButton.vue";
+import {TransactionDownloader} from "@/utils/downloader/TransactionDownloader";
 
 const MAX_TOKEN_BALANCES = 10
 
@@ -421,6 +422,11 @@ export default defineComponent({
     const accountCreateTransaction = new TransactionByTimestampLoader(accountLoader.createdTimestamp as ComputedRef)
     onMounted(() => accountCreateTransaction.requestLoad())
 
+    //
+    // Transaction downloader
+    //
+    const downloader = new TransactionDownloader(accountId, ref(null), ref(null), 10000)
+
     return {
       isSmallScreen,
       isTouchDevice,
@@ -443,7 +449,8 @@ export default defineComponent({
       stakedSince,
       stakedNodeDescription: stakeNodeLoader.nodeDescription,
       accountCreateTransactionId: accountCreateTransaction.transactionId,
-      accountCreatorId: accountCreateTransaction.payerAccountId
+      accountCreatorId: accountCreateTransaction.payerAccountId,
+      downloader
     }
   }
 });

@@ -31,7 +31,7 @@
         <div class="is-flex is-justify-content-space-between is-align-items-self-end">
           <span>
             <span class="h-is-primary-title">Download transactions</span>
-            <span v-if="accountId" class="h-is-tertiary-text"> for account {{ accountId }}</span>
+            <span v-if="downloader.accountId" class="h-is-tertiary-text"> for account {{ downloader.accountId }}</span>
           </span>
           <a @click="handleCancel">
             <img alt="" src="@/assets/close-icon.png" style="max-height: 20px;">
@@ -89,7 +89,7 @@
 
 <script lang="ts">
 
-import {computed, defineComponent, ref} from "vue";
+import {computed, defineComponent, onMounted, PropType, ref, watch} from "vue";
 import {TransactionDownloader} from "@/utils/downloader/TransactionDownloader";
 import CSVDownloadProgressDialog from "@/components/CSVDownloadProgressDialog.vue";
 
@@ -101,8 +101,8 @@ export default defineComponent({
       type: Boolean,
       default: false
     },
-    accountId: {
-      type: String,
+    downloader: {
+      type: Object as PropType<TransactionDownloader>,
       required: true
     }
   },
@@ -111,35 +111,34 @@ export default defineComponent({
     enum Period { Day = 1, Week = 7, Month = 30, Year = 365 }
 
     const showProgressDialog = ref(false)
-    const enableDownloadButton = computed(() => downloader.accountId.value != null)
+    const enableDownloadButton = computed(() => props.downloader.accountId.value != null)
+
     const periodOption = ref(1)
-    const startDate = computed(() => {
+    onMounted(() => adjustDates())
+    watch(periodOption, () => adjustDates())
+    const adjustDates = () => {
+      const start = props.downloader.startDate
+      const stop = props.downloader.endDate
       const now = new Date()
       const daysAgo = new Date(now.getTime());
       daysAgo.setDate(now.getDate() - periodOption.value);
-      return daysAgo
-    })
-    const endDate = computed(() => null)
-
-    const downloader = new TransactionDownloader(
-        computed(() => props.accountId),
-        startDate,
-        endDate,
-        10000)
+      start.value = daysAgo
+      stop.value = null
+    }
 
     const handleCancel = () => {
       context.emit('update:showDialog', false)
     }
 
     const handleDownload = () => {
-      downloader.run()
+      props.downloader.run()
           .then(() => {
             console.log("Download completed")
-            console.log("state: " + downloader.state.value)
-            console.log("csvBlob: " + downloader.csvBlob.value)
-            console.log("failureReason: " + downloader.failureReason.value)
-            console.log("downloadedCount: " + downloader.downloadedCount.value)
-            console.log("drained: " + downloader.drained.value)
+            console.log("state: " + props.downloader.state.value)
+            console.log("csvBlob: " + props.downloader.csvBlob.value)
+            console.log("failureReason: " + props.downloader.failureReason.value)
+            console.log("downloadedCount: " + props.downloader.downloadedCount.value)
+            console.log("drained: " + props.downloader.drained.value)
           })
       showProgressDialog.value = true
       context.emit('update:showDialog', false)
@@ -148,9 +147,8 @@ export default defineComponent({
     return {
       showProgressDialog,
       enableDownloadButton,
-      downloader,
       periodOption,
-      progress: downloader.progress,
+      progress: props.downloader.progress,
       handleCancel,
       handleDownload,
       Period
