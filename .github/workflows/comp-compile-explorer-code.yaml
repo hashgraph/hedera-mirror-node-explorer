@@ -84,7 +84,7 @@ jobs:
           spec: tests/e2e/specs/*
 
       - name: Sonar Analysis
-        uses: SonarSource/sonarcloud-github-action@v1
+        uses: SonarSource/sonarcloud-github-action@v1.7
         if: ${{ inputs.enable-sonar-analysis && !cancelled() }}
         env:
           GITHUB_TOKEN: ${{ secrets.access-token }}
