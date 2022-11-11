@@ -24,7 +24,10 @@
 
 <template>
 
-  <CSVDownloadDialog v-if="accountId" v-model:show-dialog="showDownloadDialog" :downloader="downloader"/>
+  <CSVDownloadDialog v-if="accountId"
+                     v-model:show-dialog="showDownloadDialog"
+                     :downloader="downloader"
+                     :account-id="accountId"/>
 
   <section class="section" :class="{'h-mobile-background': isTouchDevice || !isSmallScreen}">
 
@@ -434,7 +437,7 @@ export default defineComponent({
       transactionTableController,
       notification,
       account: accountLoader.entity,
-      normalizedAccountI: accountLoader.accountId,
+      accountId: accountLoader.accountId,
       accountChecksum,
       accountInfo: accountLoader.accountInfo,
       nodeId: accountLoader.nodeId,

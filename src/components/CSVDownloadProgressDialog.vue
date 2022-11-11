@@ -62,7 +62,7 @@
 <script lang="ts">
 
 import {computed, defineComponent, PropType} from "vue";
-import {TransactionDownloader} from "@/utils/downloader/TransactionDownloader";
+import {EntityDownloader} from "@/utils/downloader/EntityDownloader";
 
 export default defineComponent({
   name: "CSVDownloadProgressDialog",
@@ -73,7 +73,11 @@ export default defineComponent({
       default: false
     },
     downloader: {
-      type: Object as PropType<TransactionDownloader>,
+      type: Object as PropType<EntityDownloader<unknown, unknown>>,
+      required: true
+    },
+    accountId: {
+      type: String,
       required: true
     }
   },
@@ -107,7 +111,6 @@ export default defineComponent({
 
     return {
       enableSaveButton,
-      accountId: props.downloader.accountId,
       progress: props.downloader.progress,
       handleAbort,
       handleSave

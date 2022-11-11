@@ -31,7 +31,7 @@
         <div class="is-flex is-justify-content-space-between is-align-items-self-end">
           <span>
             <span class="h-is-primary-title">Download transactions</span>
-            <span v-if="downloader.accountId" class="h-is-tertiary-text"> for account {{ downloader.accountId }}</span>
+            <span v-if="accountId" class="h-is-tertiary-text"> for account {{ accountId }}</span>
           </span>
           <a @click="handleCancel">
             <img alt="" src="@/assets/close-icon.png" style="max-height: 20px;">
@@ -79,7 +79,10 @@
     </div>
   </div>
 
-  <CSVDownloadProgressDialog v-model:show-progress-dialog="showProgressDialog" :downloader="downloader"/>
+  <CSVDownloadProgressDialog
+      v-model:show-progress-dialog="showProgressDialog"
+      :downloader="downloader"
+      :account-id="accountId"/>
 
 </template>
 
@@ -90,8 +93,8 @@
 <script lang="ts">
 
 import {computed, defineComponent, onMounted, PropType, ref, watch} from "vue";
-import {TransactionDownloader} from "@/utils/downloader/TransactionDownloader";
 import CSVDownloadProgressDialog from "@/components/CSVDownloadProgressDialog.vue";
+import {EntityDownloader} from "@/utils/downloader/EntityDownloader";
 
 export default defineComponent({
   name: "CSVDownloadDialog",
@@ -102,7 +105,11 @@ export default defineComponent({
       default: false
     },
     downloader: {
-      type: Object as PropType<TransactionDownloader>,
+      type: Object as PropType<EntityDownloader<unknown, unknown>>,
+      required: true
+    },
+    accountId: {
+      type: String,
       required: true
     }
   },
@@ -111,19 +118,18 @@ export default defineComponent({
     enum Period { Day = 1, Week = 7, Month = 30, Year = 365 }
 
     const showProgressDialog = ref(false)
-    const enableDownloadButton = computed(() => props.downloader.accountId.value != null)
+    const enableDownloadButton = computed(() => props.accountId != null)
 
     const periodOption = ref(1)
     onMounted(() => adjustDates())
     watch(periodOption, () => adjustDates())
     const adjustDates = () => {
-      const start = props.downloader.startDate
-      const stop = props.downloader.endDate
+      const downloader = props.downloader
       const now = new Date()
       const daysAgo = new Date(now.getTime());
       daysAgo.setDate(now.getDate() - periodOption.value);
-      start.value = daysAgo
-      stop.value = null
+      downloader.startDate.value = daysAgo
+      downloader.endDate.value = null
     }
 
     const handleCancel = () => {
