@@ -35,6 +35,10 @@ export abstract class CSVEncoder<E> {
 
     public encode(): string {
         let result = ""
+        const headerRow = this.encodeHeaderRow()
+        if (headerRow !== null) {
+            result += this.makeLine(headerRow)
+        }
         for (const e of this.entities) {
             for (const r of this.encodeEntity(e)) {
                 if (result.length >= 1) {
@@ -48,10 +52,24 @@ export abstract class CSVEncoder<E> {
 
 
     //
-    // Protected
+    // Protected (to be subclassed)
     //
 
     protected abstract encodeEntity(entity: E): string[][]
+    protected abstract encodeHeaderRow(): string[] | null
+
+    //
+    // Protected
+    //
+
+    protected formatTimestamp(t: string): string {
+        const seconds = Number.parseFloat(t);
+        return isNaN(seconds) ? t : this.dateFormat.format(seconds * 1000)
+    }
+
+    protected formatAmount(tbarValue: number): string {
+        return this.amountFormatter.format(tbarValue / 100000000)
+    }
 
     //
     // Private
@@ -92,4 +110,10 @@ export abstract class CSVEncoder<E> {
 
         return result
     }
+
+    private readonly amountFormatter = new Intl.NumberFormat('en-US', {
+        minimumFractionDigits: 8,
+        maximumFractionDigits: 8,
+        signDisplay: "exceptZero"
+    })
 }
