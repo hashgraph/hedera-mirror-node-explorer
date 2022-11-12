@@ -140,7 +140,7 @@ jobs:
         with:
           push: true
           file: CI.Dockerfile
-          context: ${{ github.workspace }}
+          context: .
           platforms: |
             linux/arm64
             linux/amd64
