@@ -21,6 +21,7 @@ permissions:
 
 env:
   LC_ALL: C.UTF-8
+
 jobs:
   prepare-release:
     name: Release / Prepare
@@ -103,6 +104,12 @@ jobs:
             jq --arg version "${{ needs.prepare-release.outputs.version }}" '.version = $version' | \
             tee package.json
 
+      - name: Setup NodeJS
+        uses: actions/setup-node@v3
+        with:
+          node-version: 16
+          cache: npm
+
       - name: Authenticate to Google Cloud
         id: google-auth
         uses: google-github-actions/auth@v0
@@ -122,10 +129,18 @@ jobs:
       - name: Authorize Docker for Google Cloud
         run: gcloud auth configure-docker -q
 
+      - name: Install Dependencies
+        run: npm ci
+
+      - name: Compile Code
+        run: npm run build
+
       - name: Build and Push Image
         uses: docker/build-push-action@v3
         with:
           push: true
+          file: CI.Dockerfile
+          context: ${{ github.workspace }}
           platforms: |
             linux/arm64
             linux/amd64
