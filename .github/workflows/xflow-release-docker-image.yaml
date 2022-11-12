@@ -70,36 +70,28 @@ jobs:
         uses: actions/checkout@v3
 
       - name: Install JSON Tools
-        run: |
-          echo "::group::Setup JSON5 Command"
-          sudo npm install -g json5
-          echo "::endgroup::"
-          
+        run: |         
           if ! command -v jq >/dev/null 2>&1; then
-          echo "::group::Setup JQ Command"
-          sudo apt update
-          sudo apt install -y jq
-          echo "::endgroup::"
+            echo "::group::Setup JQ Command"
+            sudo apt update
+            sudo apt install -y jq
+            echo "::endgroup::"
           fi
           
           JQ_VERSION="$(jq --version)"
           if [[ "${JQ_VERSION}" != "jq-1.6" ]]; then
-          echo "::group::Updating JQ Version"
-          sudo apt update
-          sudo apt upgrade -y jq
-          echo "::endgroup::"
+            echo "::group::Updating JQ Version"
+            sudo apt update
+            sudo apt upgrade -y jq
+            echo "::endgroup::"
           fi
           
           if ! command -v tee >/dev/null 2>&1; then
-          echo "::group::Setup Tee Command"
-          sudo apt update
-          sudo apt install -y coreutils
-          echo "::endgroup::"
+            echo "::group::Setup Tee Command"
+            sudo apt update
+            sudo apt install -y coreutils
+            echo "::endgroup::"
           fi
-          
-          echo "::group::Show JSON5 Version"
-          json5 --version
-          echo "::endgroup::"
           
           echo "::group::Show JQ Version"
           jq --version
