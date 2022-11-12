@@ -147,8 +147,8 @@ jobs:
             linux/arm64
             linux/amd64
           tags: |
-            gcr.io/hedera-regsitry/hedera-mirror-node-explorer:${{ needs.prepare-release.outputs.version }}
-            gcr.io/hedera-regsitry/hedera-mirror-node-explorer:latest
+            gcr.io/hedera-registry/hedera-mirror-node-explorer:${{ needs.prepare-release.outputs.version }}
+            gcr.io/hedera-registry/hedera-mirror-node-explorer:latest
 
       - name: Render Job Summary
         run: |
