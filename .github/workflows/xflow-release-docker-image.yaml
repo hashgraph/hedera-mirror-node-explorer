@@ -135,6 +135,9 @@ jobs:
       - name: Compile Code
         run: npm run build
 
+      - name: Tree Debug
+        run: tree -L 1
+
       - name: Build and Push Image
         uses: docker/build-push-action@v3
         with:
