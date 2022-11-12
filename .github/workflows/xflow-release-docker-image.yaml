@@ -127,6 +127,7 @@ jobs:
         with:
           workload_identity_provider: 'projects/101730247931/locations/global/workloadIdentityPools/hedera-registry-pool/providers/hedera-registry-gh-actions'
           service_account: 'swirlds-automation@hedera-registry.iam.gserviceaccount.com'
+          export_default_credentials: true
 
       - name: Setup Google Cloud SDK
         uses: google-github-actions/setup-gcloud@v0
