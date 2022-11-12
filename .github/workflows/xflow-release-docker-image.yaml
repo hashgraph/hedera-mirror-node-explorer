@@ -125,6 +125,7 @@ jobs:
       - name: Build and Push Image
         uses: docker/build-push-action@v3
         with:
+          push: true
           platforms: |
             linux/arm64
             linux/amd64
@@ -143,7 +144,7 @@ jobs:
             "[GCP Console URL](https://console.cloud.google.com/gcr/images/hedera-registry/global/hedera-mirror-node-explorer?project=hedera-registry)" \
             "linux/amd64, linux/arm64" >> "${GITHUB_STEP_SUMMARY}"
           
-          printf "| %s | %s | %s |\n" \
+          printf "| %s | %s | %s | %s |\n" \
             "gcr.io/hedera-regsitry/hedera-mirror-node-explorer" \
             "latest" \
             "[GCP Console](https://console.cloud.google.com/gcr/images/hedera-registry/global/hedera-mirror-node-explorer?project=hedera-registry)" \
