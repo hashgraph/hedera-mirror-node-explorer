@@ -42,7 +42,7 @@ jobs:
 
       - name: Validate Version
         run: |
-          VALID_VERSION="$(semver validate "${{ inputs.new_version || github.ref_name }}")"
+          VALID_VERSION="$(semver validate "${{ inputs.new-version || github.ref_name }}")"
           
           if [[ "${VALID_VERSION}" != "valid" ]]; then 
             echo "::error title=Version Error::The supplied new-version parameter of '${{ inputs.new_version || github.ref_name }}' is invalid and does not conform to the semantic versioning specifications."
@@ -52,8 +52,8 @@ jobs:
       - name: Extract Version
         id: extract
         run: |
-          RELEASE_VERSION="$(semver get release "${{ inputs.new_version || github.ref_name }}")"
-          PRERELEASE_VERSION="$(semver get prerel "${{ inputs.new_version || github.ref_name }}")"
+          RELEASE_VERSION="$(semver get release "${{ inputs.new-version || github.ref_name }}")"
+          PRERELEASE_VERSION="$(semver get prerel "${{ inputs.new-version || github.ref_name }}")"
 
           FINAL_VERSION="${RELEASE_VERSION}"
           [[ -n "${PRERELEASE_VERSION}" ]] && FINAL_VERSION="${RELEASE_VERSION}-${PRERELEASE_VERSION}"
