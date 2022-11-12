@@ -41,17 +41,6 @@ jobs:
           semver --version
           echo "::endgroup::"
 
-      - name: Install Tree Command
-        run: |
-          if ! command -v tree >/dev/null 2>&1; then
-            echo "::group::Updating Aptitude Cache"
-              sudo apt update
-            echo "::endgroup::"
-            echo "::group::Installing Tree"
-              sudo apt install -y tree
-            echo "::endgroup::"
-          fi
-
       - name: Validate Version
         run: |
           VALID_VERSION="$(semver validate "${{ inputs.new-version || github.ref_name }}")"
@@ -80,6 +69,17 @@ jobs:
     steps:
       - name: Checkout Code
         uses: actions/checkout@v3
+
+      - name: Install Tree Command
+        run: |
+          if ! command -v tree >/dev/null 2>&1; then
+            echo "::group::Updating Aptitude Cache"
+              sudo apt update
+            echo "::endgroup::"
+            echo "::group::Installing Tree"
+              sudo apt install -y tree
+            echo "::endgroup::"
+          fi
 
       - name: Install JSON Tools
         run: |         
