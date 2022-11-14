@@ -109,7 +109,7 @@ export default defineComponent({
       required: true
     },
     accountId: {
-      type: String,
+      type: String as PropType<string|null>,
       required: true
     }
   },

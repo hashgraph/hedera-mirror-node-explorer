@@ -42,6 +42,9 @@
 
         <progress id="progress" :value="progress" class="progress is-large is-info mt-5"></progress>
 
+        <div class="has-text-centered">{{ feedbackMessage }}</div>
+        <br/>
+
         <div class="is-flex is-justify-content-flex-end">
           <button class="button is-white is-small" @click="handleAbort">CANCEL</button>
           <button :disabled="!enableSaveButton"
@@ -61,8 +64,8 @@
 
 <script lang="ts">
 
-import {computed, defineComponent, PropType} from "vue";
-import {EntityDownloader} from "@/utils/downloader/EntityDownloader";
+import {computed, defineComponent, PropType, ref, watch} from "vue";
+import {DownloaderState, EntityDownloader} from "@/utils/downloader/EntityDownloader";
 
 export default defineComponent({
   name: "CSVDownloadProgressDialog",
@@ -88,6 +91,34 @@ export default defineComponent({
 
     const enableSaveButton = computed(() => props.downloader.csvBlob.value !== null)
 
+    const feedbackMessage = ref("Starting download...")
+
+    watch (props.downloader.downloadedCount, () => {
+      if (props.downloader.state.value === DownloaderState.Running) {
+        feedbackMessage.value = props.downloader.downloadedCount.value + " items downloaded"
+      }
+    })
+
+    watch(props.downloader.state, () => {
+      let message
+      if (props.downloader.state.value === DownloaderState.Completed) {
+        if (props.downloader.downloadedCount.value === 0) {
+          message = "Completed: No item to download"
+        } else if (props.downloader.downloadedCount.value >= props.downloader.maxEntityCount) {
+          message = "The maximum of " + props.downloader.maxEntityCount + " downloaded items was hit"
+        } else {
+          message = "Completed: " + feedbackMessage.value
+        }
+      } else if (props.downloader.state.value === DownloaderState.Failure) {
+          message = "Download failed: " + props.downloader.failureReason.value
+      } else {
+        message = null
+      }
+      if (message) {
+        feedbackMessage.value = message
+      }
+    })
+
     const handleAbort = () => {
       props.downloader.abort()
           .then(() => {
@@ -111,6 +142,7 @@ export default defineComponent({
 
     return {
       enableSaveButton,
+      feedbackMessage,
       progress: props.downloader.progress,
       handleAbort,
       handleSave
