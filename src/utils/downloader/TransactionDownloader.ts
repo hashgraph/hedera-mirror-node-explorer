@@ -108,12 +108,14 @@ export class TransactionEncoder extends CSVEncoder<Transaction> {
         for (const transfer of sortedTransfers) {
             const amount = transfer.amount ? this.formatAmount(transfer.amount) : ""
             const accountId = transfer.account ?? ""
-            result.push([timestamp, transactionID, type, amount, accountId])
+            const fromAccountId = transfer.amount < 0 ? accountId : ""
+            const toAccountId = transfer.amount >= 0 ? accountId : ""
+            result.push([timestamp, transactionID, type, amount, fromAccountId, toAccountId])
         }
         return result
     }
 
     protected encodeHeaderRow(): string[] | null {
-        return ["#date","#transaction_id","#transaction_type","#amount","#account_id"]
+        return ["#date","#transaction_id","#transaction_type","#amount","#from_account_id","#to_account_id"]
     }
 }
