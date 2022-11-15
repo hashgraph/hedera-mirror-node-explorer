@@ -82,10 +82,7 @@ export default defineComponent({
       type: Object as PropType<EntityDownloader<unknown, unknown>>,
       required: true
     },
-    accountId: {
-      type: String,
-      required: true
-    }
+    accountId: String as PropType<string|undefined>
   },
 
   emits: ["update:showProgressDialog"],
