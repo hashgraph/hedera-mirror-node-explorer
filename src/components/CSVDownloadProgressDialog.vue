@@ -42,7 +42,10 @@
 
         <progress id="progress" :value="progress" class="progress is-large is-info mt-5"></progress>
 
-        <div>{{ feedbackMessage }}</div>
+        <div>
+          <span>{{ statusMessage }}</span>
+          <span class="has-text-grey ml-2">{{ feedbackMessage }}</span>
+        </div>
         <br/>
 
         <div class="is-flex is-justify-content-flex-end">
@@ -64,7 +67,7 @@
 
 <script lang="ts">
 
-import {computed, defineComponent, PropType, ref, watch} from "vue";
+import {computed, defineComponent, PropType} from "vue";
 import {DownloaderState, EntityDownloader} from "@/utils/downloader/EntityDownloader";
 
 export default defineComponent({
@@ -91,32 +94,33 @@ export default defineComponent({
 
     const enableSaveButton = computed(() => props.downloader.csvBlob.value !== null)
 
-    const feedbackMessage = ref("Starting download...")
-
-    watch (props.downloader.downloadedCount, () => {
-      if (props.downloader.state.value === DownloaderState.Running) {
-        feedbackMessage.value = props.downloader.downloadedCount.value + " items downloaded"
-      }
+    const statusMessage = computed(() => {
+      const state = props.downloader.state.value
+      return state === DownloaderState.Completed ? "Download completed:"
+          : state === DownloaderState.Failure ? "Download failed:"
+              : "Downloading:"
     })
 
-    watch(props.downloader.state, () => {
+    const feedbackMessage = computed(() => {
+      const state = props.downloader.state.value
+      const items = props.downloader.downloadedCount.value
       let message
-      if (props.downloader.state.value === DownloaderState.Completed) {
-        if (props.downloader.downloadedCount.value === 0) {
-          message = "Completed: No item to download"
+      if (state === DownloaderState.Completed) {
+        if (items === 0) {
+          message = "No item to download"
         } else if (!props.downloader.drained.value) {
           message = "The maximum of " + props.downloader.maxEntityCount + " downloaded items was hit"
         } else {
-          message = "Completed: " + feedbackMessage.value
+          message = items + " " + (items > 1 ? "items" : "item")
         }
-      } else if (props.downloader.state.value === DownloaderState.Failure) {
-          message = "Download failed: " + props.downloader.failureReason.value
+      } else if (state === DownloaderState.Failure) {
+        message = props.downloader.failureReason.value
+      } else if (items > 0) {
+        message = items + " " + (items > 1 ? "items" : "item")
       } else {
-        message = null
+        message = ""
       }
-      if (message) {
-        feedbackMessage.value = message
-      }
+      return message
     })
 
     const handleAbort = () => {
@@ -142,6 +146,7 @@ export default defineComponent({
 
     return {
       enableSaveButton,
+      statusMessage,
       feedbackMessage,
       progress: props.downloader.progress,
       handleAbort,
