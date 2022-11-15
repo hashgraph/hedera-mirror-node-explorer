@@ -88,7 +88,7 @@ export abstract class EntityDownloader<E, R> {
     public readonly lastDownloadedEntity: ComputedRef<E|null>
         = computed(() => this.lastDownloadedEntityRef.value)
     public readonly drained: ComputedRef<boolean>
-        = computed(() => this.drained.value)
+        = computed(() => this.drainedRef.value)
     public readonly failureReason: ComputedRef<unknown|null>
         = computed(() => this.failureReasonRef.value)
 
