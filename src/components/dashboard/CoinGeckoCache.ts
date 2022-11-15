@@ -18,7 +18,7 @@
  *
  */
 
-import {AutoRefreshLoader} from "@/utils/AutoRefreshLoader";
+import {AutoRefreshLoader} from "@/utils/loader/AutoRefreshLoader";
 import {CoinGeckoResponse} from "@/schemas/CoinGeckoMarketData";
 import axios, {AxiosResponse} from "axios";
 import {computed} from "vue";

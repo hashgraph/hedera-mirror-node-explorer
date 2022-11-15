@@ -18,31 +18,21 @@
  *
  */
 
-import {BlocksResponse} from "@/schemas/HederaSchemas";
-import {Collector} from "@/utils/Collector";
+import {TokenInfo} from "@/schemas/HederaSchemas";
+import {Collector} from "@/utils/collector/Collector";
 import axios, {AxiosResponse} from "axios";
 
-export class BlocksResponseCollector extends Collector<BlocksResponse, string> {
+export class TokenInfoCollector extends Collector<TokenInfo, string> {
 
-    public static readonly instance = new BlocksResponseCollector()
+    public static readonly instance = new TokenInfoCollector()
 
     //
     // Collector
     //
 
-    protected load(timestamp: string): Promise<AxiosResponse<BlocksResponse>> {
-
-        // timestamp=gte:1598572646.192587000&order=asc&limit=1
-
-        const params = {} as {
-            timestamp: string
-            limit: number
-            order: string
-        }
-        params.timestamp = 'gte:' + timestamp
-        params.limit = 1
-        params.order = 'asc'
-
-        return axios.get<BlocksResponse>("api/v1/blocks", { params: params} )
+    protected load(tokenId: string): Promise<AxiosResponse<TokenInfo>> {
+        return axios.get<TokenInfo>("api/v1/tokens/" + tokenId)
     }
+
+
 }
