@@ -54,7 +54,7 @@ import {computed, defineComponent, inject, onBeforeUnmount, onMounted} from 'vue
 import DashboardCard from "@/components/DashboardCard.vue";
 import Footer from "@/components/Footer.vue";
 import BlockTable from "@/components/block/BlockTable.vue";
-import PlayPauseButton from "@/utils/table/PlayPauseButton.vue";
+import PlayPauseButton from "@/components/PlayPauseButton.vue";
 import {BlockTableController} from "@/components/block/BlockTableController";
 import {useRouter} from "vue-router";
 
