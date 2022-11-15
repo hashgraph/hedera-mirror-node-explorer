@@ -18,27 +18,31 @@
  *
  */
 
+import {BlocksResponse} from "@/schemas/HederaSchemas";
+import {Collector} from "@/utils/collector/Collector";
 import axios, {AxiosResponse} from "axios";
-import {Collector} from "@/utils/Collector";
-import {SignatureResponse} from "@/schemas/SignatureResponse";
 
-export class SignatureCollector extends Collector<SignatureResponse, string> {
+export class BlocksResponseCollector extends Collector<BlocksResponse, string> {
 
-    public static readonly instance = new SignatureCollector()
+    public static readonly instance = new BlocksResponseCollector()
 
     //
     // Collector
     //
 
-    protected load(hexSignature: string): Promise<AxiosResponse<SignatureResponse>> {
-        const signatureURL = "https://www.4byte.directory/api/v1/signatures/"
+    protected load(timestamp: string): Promise<AxiosResponse<BlocksResponse>> {
 
-        const params = {
-            hex_signature: hexSignature
+        // timestamp=gte:1598572646.192587000&order=asc&limit=1
+
+        const params = {} as {
+            timestamp: string
+            limit: number
+            order: string
         }
+        params.timestamp = 'gte:' + timestamp
+        params.limit = 1
+        params.order = 'asc'
 
-        return axios.get<SignatureResponse>(signatureURL, {params})
+        return axios.get<BlocksResponse>("api/v1/blocks", { params: params} )
     }
-
-
 }

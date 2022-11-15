@@ -21,7 +21,7 @@
 import {ContractAction, ContractActionsResponse} from "@/schemas/HederaSchemas";
 import axios, {AxiosResponse} from "axios";
 import {computed, ref, Ref, watch} from "vue";
-import {EntityBatchLoader} from "@/utils/EntityBatchLoader";
+import {EntityBatchLoader} from "@/utils/loader/EntityBatchLoader";
 
 export interface ContractActionWithPath {
     action: ContractAction,

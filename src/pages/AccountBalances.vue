@@ -53,7 +53,7 @@ import BalanceTable from "@/components/account/BalanceTable.vue";
 import DashboardCard from "@/components/DashboardCard.vue";
 import Footer from "@/components/Footer.vue";
 import {BalanceCache} from "@/components/account/BalanceCache";
-import {AutoRefreshLoader} from "@/utils/AutoRefreshLoader";
+import {AutoRefreshLoader} from "@/utils/loader/AutoRefreshLoader";
 
 export default defineComponent({
 

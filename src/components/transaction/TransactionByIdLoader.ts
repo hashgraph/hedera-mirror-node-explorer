@@ -19,7 +19,7 @@
  */
 
 import {Transaction, TransactionByIdResponse} from "@/schemas/HederaSchemas";
-import {EntityLoader} from "@/utils/EntityLoader";
+import {EntityLoader} from "@/utils/loader/EntityLoader";
 import {computed, ComputedRef, Ref} from "vue";
 import axios, {AxiosResponse} from "axios";
 
