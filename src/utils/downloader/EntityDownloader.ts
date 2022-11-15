@@ -118,7 +118,9 @@ export abstract class EntityDownloader<E, R> {
 
             const progress = firstTime !== null && lastTime !== null
                 ? (firstTime - lastTime) / (firstTime - startTime) : 0
-            result = Math.round(progress * 1000) / 1000
+            const result1 = Math.round(progress * 1000) / 1000
+            const result2 = this.entities.length / this.maxEntityCount
+            result = Math.max(result1, result2)
         } else {
             result = 0
         }
