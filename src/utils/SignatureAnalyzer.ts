@@ -22,7 +22,7 @@ import {computed, ComputedRef, ref, Ref, watch, WatchStopHandle} from "vue";
 import {AxiosResponse} from "axios";
 import {ContractAction} from "@/schemas/HederaSchemas";
 import {SignatureResponse} from "@/schemas/SignatureResponse";
-import {SignatureCollector} from "@/utils/SignatureCollector";
+import {SignatureCollector} from "@/utils/collector/SignatureCollector";
 import {byteToHex, hexToByte} from "@/utils/B64Utils";
 import {EntityID} from "@/utils/EntityID";
 import {systemContractRegistry} from "@/schemas/SystemContractRegistry";

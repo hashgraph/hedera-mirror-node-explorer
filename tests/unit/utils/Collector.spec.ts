@@ -18,10 +18,10 @@
  *
  */
 
-import {Collector} from "@/utils/Collector";
+import {Collector} from "@/utils/collector/Collector";
 import axios, {AxiosResponse} from "axios";
 import {flushPromises} from "@vue/test-utils";
-import {CoinGeckoCollector} from "@/utils/CoinGeckoCollector";
+import {CoinGeckoCollector} from "@/utils/collector/CoinGeckoCollector";
 import {SAMPLE_COINGECKO} from "../Mocks";
 import MockAdapter from "axios-mock-adapter";
 

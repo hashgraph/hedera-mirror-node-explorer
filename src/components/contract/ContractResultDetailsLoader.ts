@@ -19,7 +19,7 @@
  */
 
 import {ContractResultDetails} from "@/schemas/HederaSchemas";
-import {EntityLoader} from "@/utils/EntityLoader";
+import {EntityLoader} from "@/utils/loader/EntityLoader";
 import axios, {AxiosResponse} from "axios";
 import {Ref} from "vue";
 
