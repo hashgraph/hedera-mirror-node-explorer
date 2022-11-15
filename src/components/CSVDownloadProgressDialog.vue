@@ -42,7 +42,7 @@
 
         <progress id="progress" :value="progress" class="progress is-large is-info mt-5"></progress>
 
-        <div class="has-text-centered">{{ feedbackMessage }}</div>
+        <div>{{ feedbackMessage }}</div>
         <br/>
 
         <div class="is-flex is-justify-content-flex-end">
@@ -104,7 +104,7 @@ export default defineComponent({
       if (props.downloader.state.value === DownloaderState.Completed) {
         if (props.downloader.downloadedCount.value === 0) {
           message = "Completed: No item to download"
-        } else if (props.downloader.downloadedCount.value >= props.downloader.maxEntityCount) {
+        } else if (!props.downloader.drained.value) {
           message = "The maximum of " + props.downloader.maxEntityCount + " downloaded items was hit"
         } else {
           message = "Completed: " + feedbackMessage.value
