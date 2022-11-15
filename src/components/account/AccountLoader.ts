@@ -18,7 +18,7 @@
  *
  */
 
-import {EntityLoader} from "@/utils/EntityLoader";
+import {EntityLoader} from "@/utils/loader/EntityLoader";
 import {AccountBalanceTransactions, TokenBalance} from "@/schemas/HederaSchemas";
 import {makeEthAddressForAccount} from "@/schemas/HederaUtils";
 import {operatorRegistry} from "@/schemas/OperatorRegistry";

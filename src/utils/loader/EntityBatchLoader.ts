@@ -18,7 +18,7 @@
  *
  */
 
-import {EntityLoader} from "@/utils/EntityLoader";
+import {EntityLoader} from "@/utils/loader/EntityLoader";
 import {AxiosResponse} from "axios";
 
 export abstract class EntityBatchLoader<E> extends EntityLoader<E> {
