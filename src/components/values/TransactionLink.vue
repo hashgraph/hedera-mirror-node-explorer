@@ -26,7 +26,7 @@
 
   <div v-if="transactionId">
     <router-link :to="{name: 'TransactionDetails', params: {transactionId: transactionId}}">
-      <span class="is-numeric">{{ normalizedId }}</span>
+      <span class="is-numeric should-wrap">{{ normalizedId }}</span>
     </router-link>
   </div>
 

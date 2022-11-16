@@ -233,7 +233,6 @@ import {networkRegistry} from "@/schemas/NetworkRegistry";
 import router from "@/router";
 import {TransactionByTimestampLoader} from "@/components/transaction/TransactionByTimestampLoader";
 import TransactionLink from "@/components/values/TransactionLink.vue";
-import {HMSF} from "@/utils/HMSF";
 
 const MAX_TOKEN_BALANCES = 10
 
@@ -390,7 +389,10 @@ export default defineComponent({
       day: "numeric",
       month: "short",
       year: "numeric",
-      timeZone: HMSF.forceUTC ? "UTC" : undefined
+      minute: "numeric",
+      second: "numeric",
+      timeZoneName: "short",
+      timeZone: "UTC"
     }
     const stakedSince = computed(() => {
       const dateFormat = new Intl.DateTimeFormat(locale, dateOptions)

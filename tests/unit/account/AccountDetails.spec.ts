@@ -316,7 +316,7 @@ describe("AccountDetails.vue", () => {
 
         expect(wrapper.get("#stakedToName").text()).toBe("Staked to Node")
         expect(wrapper.get("#stakedToValue").text()).toBe("1 - Hosted by Hedera | East Coast, USA")
-        expect(wrapper.get("#pendingRewardValue").text()).toBe("0.00000000$0.0000Period Started Mar 3, 2022")
+        expect(wrapper.get("#pendingRewardValue").text()).toBe("0.00000000$0.0000Period Started Nov 11, 2022, 00:00 UTC")
         expect(wrapper.get("#declineRewardValue").text()).toBe("Accepted")
     });
 
@@ -356,7 +356,7 @@ describe("AccountDetails.vue", () => {
 
         expect(wrapper.get("#stakedToName").text()).toBe("Staked to Account")
         expect(wrapper.get("#stakedToValue").text()).toBe("0.0.5Node 2 - testnet")
-        expect(wrapper.get("#pendingRewardValue").text()).toBe("0.12345678$0.0304Period Started Mar 3, 2022")
+        expect(wrapper.get("#pendingRewardValue").text()).toBe("0.12345678$0.0304Period Started Nov 11, 2022, 00:00 UTC")
         expect(wrapper.find("#declineRewardValue").exists()).toBe(false)
     });
 });
