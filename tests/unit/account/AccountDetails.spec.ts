@@ -129,6 +129,9 @@ describe("AccountDetails.vue", () => {
         expect(wrapper.get("#maxAutoAssociationValue").text()).toBe("0")
         expect(wrapper.get("#receiverSigRequiredValue").text()).toBe("false")
 
+        expect(wrapper.get("#stakedToName").text()).toBe("Staked to")
+        expect(wrapper.get("#stakedToValue").text()).toBe("None")
+
         expect(wrapper.find("#recentTransactions").exists()).toBe(true)
         expect(wrapper.findComponent(TransactionTable).exists()).toBe(true)
     });
@@ -311,8 +314,8 @@ describe("AccountDetails.vue", () => {
         await flushPromises()
         // console.log(wrapper.html())
 
-        expect(wrapper.get("#stakedNodeValue").text()).toBe("1 - Hosted by Hedera | East Coast, USA")
-        expect(wrapper.find("#stakedAccount").exists()).toBe(false)
+        expect(wrapper.get("#stakedToName").text()).toBe("Staked to Node")
+        expect(wrapper.get("#stakedToValue").text()).toBe("1 - Hosted by Hedera | East Coast, USA")
         expect(wrapper.get("#pendingRewardValue").text()).toBe("0.00000000$0.0000Period Started Mar 3, 2022")
         expect(wrapper.get("#declineRewardValue").text()).toBe("Accepted")
     });
@@ -351,8 +354,8 @@ describe("AccountDetails.vue", () => {
         await flushPromises()
         // console.log(wrapper.html())
 
-        expect(wrapper.get("#stakedAccountValue").text()).toBe("0.0.5Node 2 - testnet")
-        expect(wrapper.find("#stakedNodeValue").exists()).toBe(false)
+        expect(wrapper.get("#stakedToName").text()).toBe("Staked to Account")
+        expect(wrapper.get("#stakedToValue").text()).toBe("0.0.5Node 2 - testnet")
         expect(wrapper.get("#pendingRewardValue").text()).toBe("0.12345678$0.0304Period Started Mar 3, 2022")
         expect(wrapper.find("#declineRewardValue").exists()).toBe(false)
     });
