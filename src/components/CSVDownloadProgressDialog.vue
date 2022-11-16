@@ -44,7 +44,7 @@
 
         <div>
           <span>{{ statusMessage }}</span>
-          <span class="has-text-grey ml-2">{{ feedbackMessage }}</span>
+          <span class="has-text-grey is-numeric ml-2">{{ feedbackMessage }}</span>
         </div>
         <br/>
 
