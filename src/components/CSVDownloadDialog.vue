@@ -108,10 +108,7 @@ export default defineComponent({
       type: Object as PropType<EntityDownloader<unknown, unknown>>,
       required: true
     },
-    accountId: {
-      type: String as PropType<string|null>,
-      required: true
-    }
+    accountId: String as PropType<string|undefined>
   },
   emits: ["update:showDialog"],
   setup(props, context) {
