@@ -1,3 +1,5 @@
+// noinspection DuplicatedCode
+
 /*-
  *
  * Hedera Mirror Node Explorer
@@ -43,7 +45,7 @@ import MockAdapter from "axios-mock-adapter";
 import {HMSF} from "@/utils/HMSF";
 import {normalizeTransactionId} from "@/utils/TransactionID";
 import Oruga from "@oruga-ui/oruga-next";
-import ContractResultAndLogs from "@/components/transaction/ContractResultAndLogs.vue";
+import ContractResult from "@/components/contract/ContractResult.vue";
 
 /*
     Bookmarks
@@ -152,6 +154,9 @@ describe("TransactionDetails.vue", () => {
         const matcher4 = "/api/v1/blocks"
         mock.onGet(matcher4).reply(200, SAMPLE_BLOCKSRESPONSE);
 
+        const matcher5 = "/api/v1/contracts/results/" + transactionId + "/actions"
+        mock.onGet(matcher5).reply(200, "[]")
+
         const wrapper = mount(TransactionDetails, {
             global: {
                 plugins: [router, Oruga]
@@ -169,11 +174,11 @@ describe("TransactionDetails.vue", () => {
         expect(wrapper.get("#transactionTypeValue").text()).toBe("CONTRACT CALL")
         expect(wrapper.get("#entityId").text()).toBe("Contract ID" + contractId)
 
-        expect(wrapper.findComponent(ContractResultAndLogs).exists()).toBe(true)
-        expect(wrapper.findComponent(ContractResultAndLogs).text()).toMatch(RegExp("^Contract Result"))
+        expect(wrapper.findComponent(ContractResult).exists()).toBe(true)
+        expect(wrapper.findComponent(ContractResult).text()).toMatch(RegExp("^Contract Result"))
         expect(wrapper.get("#resultValue").text()).toBe("SUCCESS")
-        expect(wrapper.get("#fromValue").text()).toBe("0000 0000 0000 0000 0000 0000 0000 0000 000c e9b4Copy to Clipboard")
-        expect(wrapper.get("#toValue").text()).toBe("0000 0000 0000 0000 0000 0000 0000 0000 0010 3783Copy to Clipboard")
+        expect(wrapper.get("#fromValue").text()).toBe("0x00000000000000000000000000000000000ce9b4")
+        expect(wrapper.get("#toValue").text()).toBe("0x0000000000000000000000000000000000103783")
         expect(wrapper.get("#typeValue").text()).toBe("None")
         expect(wrapper.get("#functionParametersValue").text()).toBe("18cb afe5 0000 0000 0000 0000 0000 0000 0000 0000 0000 0000 0000 0000 0000 0017 4876 e800 0000 0000 0000 0000 0000 0000 0000 0000 0000 0000 0000 0000 0000 001b 2702 b2a0 0000 0000 0000 0000 0000 0000 0000 0000 0000 0000 0000 0000 0000 0000 0000 00a0 0000 0000 0000 0000 0000 0000 0000 0000 0000 0000 0000 0000 0000 0000 000c e9b4 0000 0000 0000 0000 0000 0000 0000 0000 0000 0000 0000 0000 0000 0183 1e10 602d 0000 0000 0000 0000 0000 0000 0000 0000 0000 0000 0000 0000 0000 0000 0000 0003 0000 0000 0000 0000 0000 0000 0000 0000 0000 0000 0000 0000 0000 0000 000c ba44 0000 0000 0000 0000 0000 0000 0000 0000 0000 0000 0000 0000 0000 0000 000d 1ea6 0000 0000 0000 0000 0000 0000 0000 0000 0000 0000 0000 0000 0000 0000 0010 3708Copy to Clipboard")
         expect(wrapper.get("#errorMessageValue").text()).toBe("None")
@@ -182,7 +187,7 @@ describe("TransactionDetails.vue", () => {
         expect(wrapper.get("#maxFeePerGasValue").text()).toBe("None")
         expect(wrapper.get("#maxPriorityFeePerGasValue").text()).toBe("None")
         expect(wrapper.get("#gasPriceValue").text()).toBe("0.00000000$0.0000")
-        expect(wrapper.findAll("#logIndexValue").length).toBe(4)
+        expect(wrapper.findAll("#logIndexValue").length).toBe(3)
     });
 
     it("Should display the contract result and logs (using transaction hash)", async () => {
@@ -204,6 +209,9 @@ describe("TransactionDetails.vue", () => {
         const matcher4 = "/api/v1/blocks"
         mock.onGet(matcher4).reply(200, SAMPLE_BLOCKSRESPONSE);
 
+        const matcher5 = "/api/v1/contracts/results/" + transactionId + "/actions"
+        mock.onGet(matcher5).reply(200, "[]")
+
         const wrapper = mount(TransactionDetails, {
             global: {
                 plugins: [router, Oruga]
@@ -221,11 +229,11 @@ describe("TransactionDetails.vue", () => {
         expect(wrapper.get("#transactionTypeValue").text()).toBe("CONTRACT CALL")
         expect(wrapper.get("#entityId").text()).toBe("Contract ID" + contractId)
 
-        expect(wrapper.findComponent(ContractResultAndLogs).exists()).toBe(true)
-        expect(wrapper.findComponent(ContractResultAndLogs).text()).toMatch(RegExp("^Contract Result"))
+        expect(wrapper.findComponent(ContractResult).exists()).toBe(true)
+        expect(wrapper.findComponent(ContractResult).text()).toMatch(RegExp("^Contract Result"))
         expect(wrapper.get("#resultValue").text()).toBe("SUCCESS")
-        expect(wrapper.get("#fromValue").text()).toBe("0000 0000 0000 0000 0000 0000 0000 0000 000c e9b4Copy to Clipboard")
-        expect(wrapper.get("#toValue").text()).toBe("0000 0000 0000 0000 0000 0000 0000 0000 0010 3783Copy to Clipboard")
+        expect(wrapper.get("#fromValue").text()).toBe("0x00000000000000000000000000000000000ce9b4")
+        expect(wrapper.get("#toValue").text()).toBe("0x0000000000000000000000000000000000103783")
         expect(wrapper.get("#typeValue").text()).toBe("None")
         expect(wrapper.get("#functionParametersValue").text()).toBe("18cb afe5 0000 0000 0000 0000 0000 0000 0000 0000 0000 0000 0000 0000 0000 0017 4876 e800 0000 0000 0000 0000 0000 0000 0000 0000 0000 0000 0000 0000 0000 001b 2702 b2a0 0000 0000 0000 0000 0000 0000 0000 0000 0000 0000 0000 0000 0000 0000 0000 00a0 0000 0000 0000 0000 0000 0000 0000 0000 0000 0000 0000 0000 0000 0000 000c e9b4 0000 0000 0000 0000 0000 0000 0000 0000 0000 0000 0000 0000 0000 0183 1e10 602d 0000 0000 0000 0000 0000 0000 0000 0000 0000 0000 0000 0000 0000 0000 0000 0003 0000 0000 0000 0000 0000 0000 0000 0000 0000 0000 0000 0000 0000 0000 000c ba44 0000 0000 0000 0000 0000 0000 0000 0000 0000 0000 0000 0000 0000 0000 000d 1ea6 0000 0000 0000 0000 0000 0000 0000 0000 0000 0000 0000 0000 0000 0000 0010 3708Copy to Clipboard")
         expect(wrapper.get("#errorMessageValue").text()).toBe("None")
@@ -234,7 +242,7 @@ describe("TransactionDetails.vue", () => {
         expect(wrapper.get("#maxFeePerGasValue").text()).toBe("None")
         expect(wrapper.get("#maxPriorityFeePerGasValue").text()).toBe("None")
         expect(wrapper.get("#gasPriceValue").text()).toBe("0.00000000$0.0000")
-        expect(wrapper.findAll("#logIndexValue").length).toBe(4)
+        expect(wrapper.findAll("#logIndexValue").length).toBe(3)
     });
 
     it("Should update when transaction id changes", async () => {
@@ -311,7 +319,7 @@ describe("TransactionDetails.vue", () => {
 
         const wrapper = mount(TransactionDetails, {
             global: {
-                plugins: [router, Oruga],
+                plugins: [router, Oruga]
             },
             props: {
                 transactionId: SAMPLE_FAILED_TRANSACTION.transaction_id
@@ -387,6 +395,8 @@ describe("TransactionDetails.vue", () => {
 
         const SCHEDULING = SAMPLE_SCHEDULING_SCHEDULED_TRANSACTIONS.transactions[0]
         const SCHEDULED = SAMPLE_SCHEDULING_SCHEDULED_TRANSACTIONS.transactions[1]
+        const TOKEN_ID = SCHEDULED.token_transfers ? SCHEDULED.token_transfers[0].token_id : "0.0.1304757"
+
         const matcher1 = "/api/v1/transactions/" + SCHEDULING.transaction_id
         mock.onGet(matcher1).reply(200, SAMPLE_SCHEDULING_SCHEDULED_TRANSACTIONS);
 
@@ -395,6 +405,9 @@ describe("TransactionDetails.vue", () => {
 
         const matcher4 = "/api/v1/blocks"
         mock.onGet(matcher4).reply(200, SAMPLE_BLOCKSRESPONSE);
+
+        const matcher5 = "/api/v1/tokens/" + TOKEN_ID
+        mock.onGet(matcher5).reply(200, SAMPLE_TOKEN)
 
         const wrapper = mount(TransactionDetails, {
             global: {

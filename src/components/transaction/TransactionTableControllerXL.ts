@@ -45,8 +45,6 @@ export class TransactionTableControllerXL extends TableController<Transaction, s
         this.accountId = accountId
         this.accountIdMandatory = accountIdMandatory
         this.watchAndReload([this.transactionType, this.accountId])
-        // this.accountId cannot be treated as this.transactionType :
-        // when this.accountId changes, we don't want to move to auto-refresh mode.
     }
 
     public readonly transactionType: Ref<string> = ref("")

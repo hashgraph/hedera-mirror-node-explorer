@@ -174,7 +174,7 @@ import {computed, defineComponent, inject, onBeforeUnmount, onMounted} from 'vue
 import KeyValue from "@/components/values/KeyValue.vue";
 import HexaValue from "@/components/values/HexaValue.vue";
 import ContractTransactionTable from "@/components/contract/ContractTransactionTable.vue";
-import PlayPauseButton from "@/utils/table/PlayPauseButton.vue";
+import PlayPauseButton from "@/components/PlayPauseButton.vue";
 import AccountLink from "@/components/values/AccountLink.vue";
 import TimestampValue from "@/components/values/TimestampValue.vue";
 import DurationValue from "@/components/values/DurationValue.vue";
