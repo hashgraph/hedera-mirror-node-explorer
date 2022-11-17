@@ -161,7 +161,7 @@
 
     <DashboardCard v-if="accountId" :class="{'h-has-opacity-40': isIndirectStaking}">
       <template v-slot:title>
-        <span class="h-is-primary-title">Recent Staking Rewards Transactions</span>
+        <span class="h-is-secondary-title">Recent Staking Rewards</span>
       </template>
       <template v-slot:control>
         <DownloadButton @click="showDownloadDialog = true"/>
