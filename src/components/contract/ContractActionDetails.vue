@@ -1,0 +1,168 @@
+<!--
+  -
+  - Hedera Mirror Node Explorer
+  -
+  - Copyright (C) 2021 - 2022 Hedera Hashgraph, LLC
+  -
+  - Licensed under the Apache License, Version 2.0 (the "License");
+  - you may not use this file except in compliance with the License.
+  - You may obtain a copy of the License at
+  -
+  -      http://www.apache.org/licenses/LICENSE-2.0
+  -
+  - Unless required by applicable law or agreed to in writing, software
+  - distributed under the License is distributed on an "AS IS" BASIS,
+  - WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+  - See the License for the specific language governing permissions and
+  - limitations under the License.
+  -
+  -->
+
+<!-- --------------------------------------------------------------------------------------------------------------- -->
+<!--                                                     TEMPLATE                                                    -->
+<!-- --------------------------------------------------------------------------------------------------------------- -->
+
+<template>
+  <div class="columns pt-2 pb-0 mb-0">
+    <div class="column">
+      <Property id="actionDetailFrom" custom-nb-col-class="is-one-fifth">
+        <template v-slot:name>From</template>
+        <template v-slot:value>
+          <EVMAddress :address="action.from" :id="action.caller" :id-type="action.caller_type" :show-type="true"/>
+        </template>
+      </Property>
+      <Property id="actionDetailTo" custom-nb-col-class="is-one-fifth">
+        <template v-slot:name>To</template>
+        <template v-slot:value>
+          <EVMAddress :address="action.to" :id="action.recipient" :id-type="action.recipient_type" :show-type="true"/>
+        </template>
+      </Property>
+      <Property id="actionDetailFunction" custom-nb-col-class="is-one-fifth">
+        <template v-slot:name>Function</template>
+        <template v-slot:value>
+          <SignatureValue :action="action"/>
+        </template>
+      </Property>
+    </div>
+    <div class="column h-has-column-dashed-separator">
+      <Property id="actionDetailGasLimit" custom-nb-col-class="is-one-fifth">
+        <template v-slot:name>Gas Limit</template>
+        <template v-slot:value>
+          <PlainAmount :amount="action.gas"/>
+        </template>
+      </Property>
+      <Property id="actionDetailGasUsed" custom-nb-col-class="is-one-fifth">
+        <template v-slot:name>Gas Used</template>
+        <template v-slot:value>
+          <PlainAmount :amount="action.gas_used"/>
+        </template>
+      </Property>
+      <Property id="actionDetailError" custom-nb-col-class="is-one-fifth">
+        <template v-slot:name>Error Message</template>
+        <template v-slot:value>
+          <StringValue :string-value="errorMessage"/>
+        </template>
+      </Property>
+    </div>
+  </div>
+
+  <hr class="dotted"/>
+
+  <div class="columns pt-0 mt-0 pb-2">
+
+    <div class="column">
+      <div v-if="isNullByteCodeValue(action.input)">
+        <Property custom-nb-col-class="is-one-fifth">
+          <template v-slot:name>Input - Function & Parameters</template>
+          <template v-slot:value><span class="has-text-grey">None</span></template>
+        </Property>
+      </div>
+      <div v-else>
+        <div class="has-text-weight-light mb-3">
+          Input - Function & Parameters
+        </div>
+        <ByteCodeValue :byte-code="action.input"/>
+      </div>
+    </div>
+
+    <div class="column h-has-column-dashed-separator">
+      <div v-if="isNullByteCodeValue(action.result_data)">
+        <Property custom-nb-col-class="is-one-fifth">
+          <template v-slot:name>Output Result</template>
+          <template v-slot:value><span class="has-text-grey">None</span></template>
+        </Property>
+      </div>
+      <div v-else>
+        <div class="has-text-weight-light mb-3">
+          Output Result
+        </div>
+        <ByteCodeValue :byte-code="action.result_data"/>
+      </div>
+    </div>
+
+  </div>
+</template>
+
+<!-- --------------------------------------------------------------------------------------------------------------- -->
+<!--                                                      SCRIPT                                                     -->
+<!-- --------------------------------------------------------------------------------------------------------------- -->
+
+<script lang="ts">
+
+//
+// defineComponent
+//
+
+import {computed, defineComponent, inject, PropType} from "vue";
+import {ContractAction, ResultDataType} from "@/schemas/HederaSchemas";
+import {ORUGA_MOBILE_BREAKPOINT} from "@/App.vue";
+import Property from "@/components/Property.vue";
+import StringValue from "@/components/values/StringValue.vue";
+import PlainAmount from "@/components/values/PlainAmount.vue";
+import ByteCodeValue from "@/components/values/ByteCodeValue.vue";
+import SignatureValue from "@/components/values/SignatureValue.vue";
+import EVMAddress from "@/components/values/EVMAddress.vue";
+
+export default defineComponent({
+  name: 'ContractActionDetails',
+
+  components: {EVMAddress, SignatureValue, ByteCodeValue, PlainAmount, StringValue, Property},
+
+  props: {
+    action: Object as PropType<ContractAction | undefined>,
+  },
+
+  setup(props) {
+    const isTouchDevice = inject('isTouchDevice', false)
+    const isMediumScreen = inject('isMediumScreen', true)
+
+    const errorMessage = computed(() => {
+      let result
+      if (props.action?.result_data_type != ResultDataType.OUTPUT) {
+        result = props.action?.result_data
+      } else {
+        result = null
+      }
+      return result
+    })
+
+    const isNullByteCodeValue = (value: string|null) => value == null || value == "0x"
+
+    return {
+      isTouchDevice,
+      isMediumScreen,
+      ORUGA_MOBILE_BREAKPOINT,
+      errorMessage,
+      isNullByteCodeValue
+    }
+  }
+});
+
+</script>
+
+<!-- --------------------------------------------------------------------------------------------------------------- -->
+<!--                                                       STYLE                                                     -->
+<!-- --------------------------------------------------------------------------------------------------------------- -->
+
+<style>
+</style>

@@ -38,7 +38,7 @@
 
 import {computed, defineComponent, ref} from "vue";
 import {AxiosResponse} from "axios";
-import {CoinGeckoCollector} from "@/utils/CoinGeckoCollector";
+import {CoinGeckoCollector} from "@/utils/collector/CoinGeckoCollector";
 import {CoinGeckoResponse} from "@/schemas/CoinGeckoMarketData";
 
 export default defineComponent({

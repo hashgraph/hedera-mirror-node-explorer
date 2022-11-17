@@ -19,7 +19,7 @@
  */
 
 import axios, {AxiosResponse} from "axios";
-import {Collector} from "@/utils/Collector";
+import {Collector} from "@/utils/collector/Collector";
 import {CoinGeckoResponse} from "@/schemas/CoinGeckoMarketData";
 
 export class CoinGeckoCollector extends Collector<CoinGeckoResponse, null> {

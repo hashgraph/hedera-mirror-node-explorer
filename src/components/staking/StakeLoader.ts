@@ -18,7 +18,7 @@
  *
  */
 
-import {EntityLoader} from "@/utils/EntityLoader";
+import {EntityLoader} from "@/utils/loader/EntityLoader";
 import {NetworkStake} from "@/schemas/HederaSchemas";
 import axios, {AxiosResponse} from "axios";
 

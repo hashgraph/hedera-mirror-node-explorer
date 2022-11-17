@@ -78,7 +78,7 @@ import {computed, defineComponent, inject, onBeforeUnmount, onMounted, ref} from
 import TokenTable from "@/components/token/TokenTable.vue";
 import DashboardCard from "@/components/DashboardCard.vue";
 import Footer from "@/components/Footer.vue";
-import PlayPauseButton from "@/utils/table/PlayPauseButton.vue";
+import PlayPauseButton from "@/components/PlayPauseButton.vue";
 import {TokenTableController} from "@/components/token/TokenTableController";
 import {useRouter} from "vue-router";
 

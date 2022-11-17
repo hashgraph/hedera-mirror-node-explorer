@@ -61,7 +61,8 @@ export default defineComponent({
     fullWidth: {
       type: Boolean,
       default: false
-    }
+    },
+    customNbColClass: String
   },
   setup(props){
     const nameId = props.id + 'Name'
@@ -69,7 +70,7 @@ export default defineComponent({
 
     const isSmallScreen = inject('isSmallScreen', true)
     const isTouchDevice = inject('isTouchDevice', false)
-    const nbColClass = computed(() => props.fullWidth ? 'is-2' : 'is-4')
+    const nbColClass = computed(() => props.customNbColClass ?? (props.fullWidth ? 'is-2' : 'is-one-third'))
 
     return {
       nameId,

@@ -21,7 +21,7 @@
 import {NetworkNode, NetworkNodesResponse} from "@/schemas/HederaSchemas";
 import axios, {AxiosResponse} from "axios";
 import {computed, ComputedRef} from "vue";
-import {EntityBatchLoader} from "@/utils/EntityBatchLoader";
+import {EntityBatchLoader} from "@/utils/loader/EntityBatchLoader";
 
 export class NodesLoader extends EntityBatchLoader<NetworkNodesResponse> {
 

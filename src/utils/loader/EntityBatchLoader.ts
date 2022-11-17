@@ -18,7 +18,7 @@
  *
  */
 
-import {EntityLoader} from "@/utils/EntityLoader";
+import {EntityLoader} from "@/utils/loader/EntityLoader";
 import {AxiosResponse} from "axios";
 
 export abstract class EntityBatchLoader<E> extends EntityLoader<E> {
@@ -55,7 +55,8 @@ export abstract class EntityBatchLoader<E> extends EntityLoader<E> {
             result = Promise.resolve(previous)
         } else {
             const executor = (
-                resolve: (response: AxiosResponse<E>|null|Promise<AxiosResponse<E>|null>) => void) => {
+                resolve: (response: AxiosResponse<E>|null|Promise<AxiosResponse<E>|null>) => void,
+                reject: (reason: unknown) => void) => {
 
                 this.loadNext(nextURL).then(
                     (response: AxiosResponse<E>|null) => {
@@ -70,7 +71,7 @@ export abstract class EntityBatchLoader<E> extends EntityLoader<E> {
                         } else {
                             resolve(null)
                         }
-                    })
+                    }, reject)
             }
             result = new Promise<AxiosResponse<E>|null>(executor)
         }
