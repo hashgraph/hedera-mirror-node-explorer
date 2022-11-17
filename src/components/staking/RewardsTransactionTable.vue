@@ -51,16 +51,6 @@
       <TimestampValue v-bind:timestamp="props.row.consensus_timestamp"/>
     </o-table-column>
 
-    <o-table-column v-slot="props" field="transaction_id" label="ID">
-      <TransactionLabel v-bind:transaction-id="props.row.transaction_id" v-bind:result="props.row.result"/>
-    </o-table-column>
-
-    <o-table-column v-slot="props" field="name" label="Type">
-      <div class="h-has-pill" style="display: inline-block">
-        <div class="h-is-text-size-2">{{ makeTypeLabel(props.row.name) }}</div>
-      </div>
-    </o-table-column>
-
     <o-table-column v-slot="props" field="amount" label="Amount Rewarded" position="right">
       <HbarAmount v-bind:amount="amountRewarded(props.row)"/>
     </o-table-column>
