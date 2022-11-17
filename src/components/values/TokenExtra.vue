@@ -44,7 +44,7 @@
 import {defineComponent, onMounted, ref, watch} from "vue";
 import {AxiosResponse} from "axios";
 import {TokenInfo} from "@/schemas/HederaSchemas";
-import {TokenInfoCollector} from "@/utils/TokenInfoCollector";
+import {TokenInfoCollector} from "@/utils/collector/TokenInfoCollector";
 import {makeTokenSymbol} from "@/schemas/HederaUtils";
 
 export default defineComponent({

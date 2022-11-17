@@ -20,7 +20,7 @@
  *
  */
 
-import {computed, ComputedRef, nextTick, ref} from "vue";
+import {computed, nextTick, Ref, ref} from "vue";
 import {makeRouter} from "@/router";
 import {flushPromises} from "@vue/test-utils";
 import {KeyOperator, SortOrder, TableController} from "@/utils/table/TableController";
@@ -313,7 +313,7 @@ describe("TableController.ts", () => {
         expect(tc.autoRefresh.value).toBe(true)
         expect(tc.autoStopped.value).toBe(false)
         expect(tc.rows.value).toStrictEqual([98,96,94,92,90,88,86,84,82,80])
-        expect(tc.refreshCount.value).toBe(1)
+        expect(tc.refreshCount.value).toBe(0)
         expect(tc.loadCounter).toBe(3)
         expect(currentRoute.value.query).toStrictEqual({})
 
@@ -323,7 +323,7 @@ describe("TableController.ts", () => {
         expect(tc.autoRefresh.value).toBe(false)
         expect(tc.autoStopped.value).toBe(false)
         expect(tc.rows.value).toStrictEqual([])
-        expect(tc.refreshCount.value).toBe(1)
+        expect(tc.refreshCount.value).toBe(0)
         expect(tc.loadCounter).toBe(3)
         expect(currentRoute.value.query).toStrictEqual({})
 
@@ -657,6 +657,71 @@ describe("TableController.ts", () => {
         expect(tc.getAbortedRefreshCounter()).toBe(0)
         expect(tc.getAbortedMoveToPageCounter()).toBe(3)
     })
+
+    test("updating sources between mount / unmount", async () => {
+
+        const scale = ref(1)
+        const tc = new TestTableController(0, 50, 10, scale)
+        const currentRoute = tc.router.currentRoute
+
+        // Mount
+        tc.mount()
+        await flushPromises()
+        expect(tc.autoRefresh.value).toBe(true)
+        expect(tc.autoStopped.value).toBe(false)
+        expect(tc.rows.value).toStrictEqual([49,48,47,46,45,44,43,42,41,40])
+        expect(tc.refreshCount.value).toBe(0)
+        expect(tc.currentPage.value).toBe(1)
+        expect(tc.loadCounter).toBe(1) // +1 "refresh" operation
+        expect(currentRoute.value.query).toStrictEqual({})
+        expect(tc.getAbortedRefreshCounter()).toBe(0)
+        expect(tc.getAbortedMoveToPageCounter()).toBe(0)
+
+        // Refresh #1
+        jest.runOnlyPendingTimers()
+        await flushPromises()
+        expect(tc.autoRefresh.value).toBe(true)
+        expect(tc.autoStopped.value).toBe(false)
+        expect(tc.rows.value).toStrictEqual([49,48,47,46,45,44,43,42,41,40])
+        expect(tc.refreshCount.value).toBe(1)
+        expect(tc.currentPage.value).toBe(1)
+        expect(tc.loadCounter).toBe(2)
+        expect(currentRoute.value.query).toStrictEqual({})
+
+        // Update scale => this cancels scheduled refresh and starts another one
+        scale.value = 2
+        await nextTick()
+        jest.runOnlyPendingTimers()
+        await flushPromises()
+        expect(tc.autoRefresh.value).toBe(true)
+        expect(tc.autoStopped.value).toBe(false)
+        expect(tc.rows.value).toStrictEqual([98,96,94,92,90,88,86,84,82,80])
+        expect(tc.refreshCount.value).toBe(0)
+        expect(tc.currentPage.value).toBe(1)
+        expect(tc.loadCounter).toBe(3)
+        expect(currentRoute.value.query).toStrictEqual({})
+
+        // Refresh #2
+        jest.runOnlyPendingTimers()
+        await flushPromises()
+        expect(tc.autoRefresh.value).toBe(true)
+        expect(tc.autoStopped.value).toBe(false)
+        expect(tc.rows.value).toStrictEqual([98,96,94,92,90,88,86,84,82,80])
+        expect(tc.refreshCount.value).toBe(1)
+        expect(tc.currentPage.value).toBe(1)
+        expect(tc.loadCounter).toBe(4)
+        expect(currentRoute.value.query).toStrictEqual({})
+
+        // Unmount
+        tc.unmount()
+        await flushPromises()
+        expect(tc.autoRefresh.value).toBe(false)
+        expect(tc.autoStopped.value).toBe(false)
+        expect(tc.rows.value).toStrictEqual([])
+        expect(tc.refreshCount.value).toBe(1)
+        expect(tc.loadCounter).toBe(4)
+        expect(currentRoute.value.query).toStrictEqual({})
+    })
 })
 
 class TestTableController extends TableController<number, number> {
@@ -671,10 +736,10 @@ class TestTableController extends TableController<number, number> {
 
     public loadCounter = 0
 
-    private readonly scale: ComputedRef<number>
+    private readonly scale: Ref<number>
 
     constructor(startKey: number, endKey: number, pageSize: number,
-                scale = computed(() => 1),
+                scale: Ref<number> = computed(() => 1),
                 pageParamName = "p", keyParamName= "k",
                 router = makeRouter()) {
         super(router, computed(() => pageSize),
@@ -715,6 +780,7 @@ class TestTableController extends TableController<number, number> {
         let fromKey: number
         let toKey: number
         if (key !== null) {
+            key = key / this.scale.value
             key = Math.max(Math.min(key, this.endKey), this.startKey)
             switch(operator) {
                 case KeyOperator.gt:

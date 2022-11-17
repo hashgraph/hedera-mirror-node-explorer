@@ -44,13 +44,13 @@
         <Property id="from">
           <template v-slot:name>From</template>
           <template v-slot:value>
-            <HexaValue :byte-string="contractResult?.from" v-bind:show-none="true"/>
+            <EVMAddress :address="contractResult?.from"/>
           </template>
         </Property>
         <Property id="to">
           <template v-slot:name>To</template>
           <template v-slot:value>
-            <HexaValue :byte-string="contractResult?.to" v-bind:show-none="true"/>
+            <EVMAddress :address="contractResult?.to"/>
           </template>
         </Property>
         <Property id="type">
@@ -108,50 +108,11 @@
 
     </DashboardCard>
 
-    <DashboardCard v-if="contractResult?.logs?.length" class="h-card">
-      <template v-slot:title>
-        <span class="h-is-secondary-title">Logs</span>
-      </template>
+    <ContractResultTrace :transaction-id-or-hash="transactionIdOrHash"/>
 
-      <template v-slot:control v-if="contractResult?.logs.length > 2">
-        <div class="is-flex is-justify-content-flex-end is-align-items-baseline">
-          <o-field>
-            <o-select v-model="nbLogLines" class="h-is-text-size-1">
-              <option v-for="n in Math.min(MAX_LOG_LINES, Math.ceil(contractResult?.logs?.length / 2))" :key="n" :value="n">
-                {{ (n === Math.ceil(contractResult?.logs?.length / 2)) ? 'Show all' : 'Show ' + n + (n === 1 ? ' line' :' lines') }}
-              </option>
-            </o-select>
-          </o-field>
-          <button id="prev-block-button" :disabled="logCursor===0"
-                  class="button is-white is-small ml-4" @click="logCursor -= 1">&lt; PREVIOUS
-          </button>
-          <button id="next-block-button" :disabled="logCursor >= contractResult?.logs.length - 2 * nbLogLines"
-                  class="button is-white is-small ml-4" @click="logCursor += 1">NEXT &gt;
-          </button>
-        </div>
-      </template>
+    <ContractResultStates :state-changes="contractResult?.state_changes" :time-stamp="contractResult?.timestamp"/>
 
-      <template v-slot:leftContent>
-
-        <template v-for="l in nbLogLines" :key="l">
-          <ContractResultLog :log="contractResult?.logs[logCursor + l - 1]"/>
-          <hr v-if="l < nbLogLines" class="h-card-separator" style="height: 1px; background: grey"/>
-        </template>
-
-      </template>
-
-      <template v-slot:rightContent>
-
-        <template v-for="l in nbLogLines" :key="l">
-          <ContractResultLog v-if="logCursor + nbLogLines + l - 1 < contractResult?.logs.length"
-                             :log="contractResult?.logs[logCursor + nbLogLines + l - 1]"/>
-          <hr v-if="logCursor + nbLogLines + l - 1 < contractResult?.logs.length - 1 && l < nbLogLines"
-              class="h-card-separator" style="height: 1px; background: grey"/>
-        </template>
-
-      </template>
-
-    </DashboardCard>
+    <ContractResultLogs :logs="contractResult?.logs"/>
 
   </div>
 
@@ -163,7 +124,7 @@
 
 <script lang="ts">
 
-import {computed, defineComponent, inject, onMounted, ref, watch} from 'vue';
+import {computed, defineComponent, inject, onMounted, ref} from 'vue';
 import {ContractResultDetailsLoader} from "@/components/contract/ContractResultDetailsLoader";
 import HexaValue from "@/components/values/HexaValue.vue";
 import DashboardCard from "@/components/DashboardCard.vue";
@@ -171,17 +132,20 @@ import HbarAmount from "@/components/values/HbarAmount.vue";
 import StringValue from "@/components/values/StringValue.vue";
 import Property from "@/components/Property.vue";
 import PlainAmount from "@/components/values/PlainAmount.vue";
-import ContractResultLog from "@/components/contract/ContractResultLog.vue";
-
-const NB_LOG_LINES = 2
-const MAX_LOG_LINES = 10
+import ContractResultTrace from "@/components/contract/ContractResultTrace.vue";
+import ContractResultStates from "@/components/contract/ContractResultStates.vue";
+import EVMAddress from "@/components/values/EVMAddress.vue";
+import ContractResultLogs from "@/components/contract/ContractResultLogs.vue";
 
 export default defineComponent({
 
-  name: 'ContractResultAndLogs',
+  name: 'ContractResult',
 
   components: {
-    ContractResultLog,
+    ContractResultLogs,
+    EVMAddress,
+    ContractResultStates,
+    ContractResultTrace,
     PlainAmount,
     Property,
     HbarAmount,
@@ -191,8 +155,6 @@ export default defineComponent({
   },
 
   props: {
-    contractId: String,
-    timestamp: String,
     transactionIdOrHash: String,
     topLevel: {
       type: Boolean,
@@ -204,28 +166,15 @@ export default defineComponent({
     const isSmallScreen = inject('isSmallScreen', true)
     const isTouchDevice = inject('isTouchDevice', false)
 
-    const logCursor = ref(0)
-    const nbLogLines = ref(NB_LOG_LINES)
-    watch(nbLogLines, () => logCursor.value = 0)
-
     const contractResultDetailsLoader = new ContractResultDetailsLoader(
-        computed(() => props.contractId ?? null),
-        computed(() => props.timestamp ?? null),
+        ref(null),
+        ref(null),
         computed(() => props.transactionIdOrHash ?? null))
     onMounted(() => contractResultDetailsLoader.requestLoad())
 
-    watch(contractResultDetailsLoader.entity, () => {
-      const nbLinesForAll = Math.ceil(contractResultDetailsLoader.entity.value?.logs?.length ?? 0 / 2)
-      nbLogLines.value = Math.min(nbLogLines.value, nbLinesForAll)
-    })
-
     return {
-      NB_LOG_LINES,
-      MAX_LOG_LINES,
       isSmallScreen,
       isTouchDevice,
-      logCursor,
-      nbLogLines,
       contractResult: contractResultDetailsLoader.entity
     }
   },
@@ -237,13 +186,4 @@ export default defineComponent({
 <!--                                                       STYLE                                                     -->
 <!-- --------------------------------------------------------------------------------------------------------------- -->
 
-<style scoped>
-
-.columns button{
-  vertical-align: initial;
-}
-.button.is-small {
-  font-size: 0.65rem;
-}
-
-</style>
+<style/>

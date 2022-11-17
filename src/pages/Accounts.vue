@@ -55,7 +55,7 @@ import AccountTable from "@/components/account/AccountTable.vue";
 import DashboardCard from "@/components/DashboardCard.vue";
 import Footer from "@/components/Footer.vue";
 import {AccountTableController} from "@/components/account/AccountTableController";
-import PlayPauseButton from "@/utils/table/PlayPauseButton.vue";
+import PlayPauseButton from "@/components/PlayPauseButton.vue";
 import {useRouter} from "vue-router";
 
 export default defineComponent({

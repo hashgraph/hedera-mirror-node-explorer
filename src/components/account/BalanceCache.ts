@@ -18,7 +18,7 @@
  *
  */
 
-import {AutoRefreshLoader} from "@/utils/AutoRefreshLoader"
+import {AutoRefreshLoader} from "@/utils/loader/AutoRefreshLoader"
 import {BalancesResponse, TokenBalance} from "@/schemas/HederaSchemas";
 import axios, {AxiosResponse} from "axios";
 import {computed, Ref, ref} from "vue";

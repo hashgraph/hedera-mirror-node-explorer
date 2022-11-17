@@ -56,6 +56,36 @@ export class AppStorage {
     }
 
     //
+    // contract logs table page size
+    //
+
+    private static readonly CONTRACT_LOGS_TABLE_PAGE_SIZE_KEY = 'logsPageSize'
+
+    public static getLogsTablePageSize(): number | null {
+        const size = this.getLocalStorageItem(this.CONTRACT_LOGS_TABLE_PAGE_SIZE_KEY)
+        return size ? Number(size) : null
+    }
+
+    public static setLogsTablePageSize(newValue: number | null ): void {
+        this.setLocalStorageItem(this.CONTRACT_LOGS_TABLE_PAGE_SIZE_KEY, newValue ? newValue?.toString() : null)
+    }
+
+    //
+    // contract states table page size
+    //
+
+    private static readonly CONTRACT_STATES_TABLE_PAGE_SIZE_KEY = 'statesPageSize'
+
+    public static getStatesTablePageSize(): number | null {
+        const size = this.getLocalStorageItem(this.CONTRACT_STATES_TABLE_PAGE_SIZE_KEY)
+        return size ? Number(size) : null
+    }
+
+    public static setStatesTablePageSize(newValue: number | null ): void {
+        this.setLocalStorageItem(this.CONTRACT_STATES_TABLE_PAGE_SIZE_KEY, newValue ? newValue?.toString() : null)
+    }
+
+    //
     // Private
     //
 

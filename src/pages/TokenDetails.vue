@@ -276,7 +276,7 @@ import Property from "@/components/Property.vue";
 import NotificationBanner from "@/components/NotificationBanner.vue";
 import {TokenInfoLoader} from "@/components/token/TokenInfoLoader";
 import NftHolderTable from "@/components/token/NftHolderTable.vue";
-import PlayPauseButton from "@/utils/table/PlayPauseButton.vue";
+import PlayPauseButton from "@/components/PlayPauseButton.vue";
 import {NftHolderTableController} from "@/components/token/NftHolderTableController";
 import {TokenBalanceTableController} from "@/components/token/TokenBalanceTableController";
 import AccountLink from "@/components/values/AccountLink.vue";

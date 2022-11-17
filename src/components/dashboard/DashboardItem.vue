@@ -88,7 +88,7 @@ export default defineComponent({
   letter-spacing: -0.05em;
 }
 
-@media (min-width: 1140px) {
+@media (min-width: 1080px) {
   .dashboard-value {
     font-style: normal;
     font-weight: 300;

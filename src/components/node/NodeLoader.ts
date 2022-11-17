@@ -20,7 +20,7 @@
 
 import {NetworkNode, NetworkNodesResponse} from "@/schemas/HederaSchemas";
 import {operatorRegistry} from "@/schemas/OperatorRegistry";
-import {EntityLoader} from "@/utils/EntityLoader";
+import {EntityLoader} from "@/utils/loader/EntityLoader";
 import axios, {AxiosResponse} from "axios";
 import {computed, ComputedRef, Ref} from "vue";
 

@@ -18,20 +18,26 @@
  *
  */
 
-import {TokenInfo} from "@/schemas/HederaSchemas";
-import {Collector} from "@/utils/Collector";
 import axios, {AxiosResponse} from "axios";
+import {Collector} from "@/utils/collector/Collector";
+import {SignatureResponse} from "@/schemas/SignatureResponse";
 
-export class TokenInfoCollector extends Collector<TokenInfo, string> {
+export class SignatureCollector extends Collector<SignatureResponse, string> {
 
-    public static readonly instance = new TokenInfoCollector()
+    public static readonly instance = new SignatureCollector()
 
     //
     // Collector
     //
 
-    protected load(tokenId: string): Promise<AxiosResponse<TokenInfo>> {
-        return axios.get<TokenInfo>("api/v1/tokens/" + tokenId)
+    protected load(hexSignature: string): Promise<AxiosResponse<SignatureResponse>> {
+        const signatureURL = "https://www.4byte.directory/api/v1/signatures/"
+
+        const params = {
+            hex_signature: hexSignature
+        }
+
+        return axios.get<SignatureResponse>(signatureURL, {params})
     }
 
 

@@ -18,7 +18,7 @@
  *
  */
 
-import {EntityLoader} from "@/utils/EntityLoader";
+import {EntityLoader} from "@/utils/loader/EntityLoader";
 import {BlocksResponse, Transaction, TransactionByIdResponse, TransactionType} from "@/schemas/HederaSchemas";
 import {computed, ComputedRef, Ref, ref, watch} from "vue";
 import axios, {AxiosResponse} from "axios";
@@ -29,7 +29,7 @@ import {AccountLoader} from "@/components/account/AccountLoader";
 import {systemContractRegistry} from "@/schemas/SystemContractRegistry";
 import {normalizeTransactionId} from "@/utils/TransactionID";
 import {base64DecToArr, byteToHex} from "@/utils/B64Utils";
-import {BlocksResponseCollector} from "@/utils/BlocksResponseCollector";
+import {BlocksResponseCollector} from "@/utils/collector/BlocksResponseCollector";
 
 export class TransactionLoader extends EntityLoader<TransactionByIdResponse> {
 
@@ -103,9 +103,9 @@ export class TransactionLoader extends EntityLoader<TransactionByIdResponse> {
     })
 
     public readonly systemContract: ComputedRef<string|null> = computed(() => {
-        let result
+        let result: string|null
         if (this.transaction.value?.name === TransactionType.CONTRACTCALL && this.transaction.value.entity_id) {
-            result = systemContractRegistry.lookup(this.transaction.value.entity_id)
+            result = systemContractRegistry.lookup(this.transaction.value.entity_id)?.description ?? null
         } else {
             result = null
         }

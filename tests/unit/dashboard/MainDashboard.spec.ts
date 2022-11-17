@@ -25,7 +25,7 @@ import {SAMPLE_COINGECKO, SAMPLE_NETWORK_SUPPLY, SAMPLE_TOKEN, SAMPLE_TRANSACTIO
 import MainDashboard from "@/pages/MainDashboard.vue";
 import HbarMarketDashboard from "@/components/dashboard/HbarMarketDashboard.vue";
 import DashboardCard from "@/components/DashboardCard.vue";
-import PlayPauseButton from "@/utils/table/PlayPauseButton.vue";
+import PlayPauseButton from "@/components/PlayPauseButton.vue";
 import CryptoTransactionTable from "@/components/dashboard/CryptoTransactionTable.vue";
 import ContractCallTransactionTable from "@/components/dashboard/ContractCallTransactionTable.vue";
 import MessageTransactionTable from "@/components/dashboard/MessageTransactionTable.vue";
