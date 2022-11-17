@@ -26,7 +26,7 @@
 
   <DashboardCard>
     <template v-slot:title>
-      <p class="h-is-primary-title">Rewards Estimator</p>
+      <p class="h-is-secondary-title">Rewards Estimator</p>
     </template>
     <template v-slot:content>
 
