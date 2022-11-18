@@ -24,11 +24,6 @@
 
 <template>
 
-  <CSVDownloadDialog v-if="accountId"
-                     v-model:show-dialog="showDownloadDialog"
-                     :downloader="downloader"
-                     :account-id="normalizedAccountId"/>
-
   <section class="section" :class="{'h-mobile-background': isTouchDevice || !isSmallScreen}">
 
     <DashboardCard>
@@ -187,7 +182,6 @@
       <template v-slot:control>
         <div class="is-flex is-align-items-flex-end">
           <PlayPauseButton v-bind:controller="transactionTableController"/>
-          <DownloadButton @click="showDownloadDialog = true"/>
           <TransactionFilterSelect v-bind:controller="transactionTableController"/>
         </div>
       </template>
@@ -212,7 +206,7 @@
 
 <script lang="ts">
 
-import {computed, ComputedRef, defineComponent, inject, onBeforeUnmount, onMounted, ref, watch} from 'vue';
+import {computed, ComputedRef, defineComponent, inject, onBeforeUnmount, onMounted, watch} from 'vue';
 import KeyValue from "@/components/values/KeyValue.vue";
 import PlayPauseButton from "@/components/PlayPauseButton.vue";
 import TransactionTable from "@/components/transaction/TransactionTable.vue";
@@ -244,7 +238,6 @@ import TransactionLink from "@/components/values/TransactionLink.vue";
 import {HMSF} from "@/utils/HMSF";
 import CSVDownloadDialog from "@/components/CSVDownloadDialog.vue";
 import DownloadButton from "@/components/DownloadButton.vue";
-import {TransactionDownloader} from "@/utils/downloader/TransactionDownloader";
 
 const MAX_TOKEN_BALANCES = 10
 
@@ -284,8 +277,6 @@ export default defineComponent({
     const isSmallScreen = inject('isSmallScreen', true)
     const isMediumScreen = inject('isMediumScreen', true)
     const isTouchDevice = inject('isTouchDevice', false)
-
-    const showDownloadDialog = ref(false)
 
     //
     // account
@@ -425,15 +416,9 @@ export default defineComponent({
     const accountCreateTransaction = new TransactionByTimestampLoader(accountLoader.createdTimestamp as ComputedRef)
     onMounted(() => accountCreateTransaction.requestLoad())
 
-    //
-    // Transaction downloader
-    //
-    const downloader = new TransactionDownloader(accountId, ref(null), ref(null), 10000)
-
     return {
       isSmallScreen,
       isTouchDevice,
-      showDownloadDialog,
       transactionTableController,
       notification,
       account: accountLoader.entity,
@@ -453,7 +438,6 @@ export default defineComponent({
       stakedNodeDescription: stakeNodeLoader.nodeDescription,
       accountCreateTransactionId: accountCreateTransaction.transactionId,
       accountCreatorId: accountCreateTransaction.payerAccountId,
-      downloader
     }
   }
 });
