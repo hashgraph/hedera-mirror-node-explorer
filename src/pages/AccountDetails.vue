@@ -29,7 +29,7 @@
     <DashboardCard>
       <template v-slot:title>
         <span class="h-is-primary-title">Account </span>
-        <span class="h-is-secondary-text">{{ account?.account ?? "" }}</span>
+        <span class="h-is-secondary-text">{{ normalizedAccountId ?? "" }}</span>
         <span v-if="accountChecksum" class="has-text-grey" style="font-size: 28px">-{{ accountChecksum }}</span>
         <span v-if="showContractVisible" class="is-inline-block ml-3" id="showContractLink">
           <router-link :to="{name: 'ContractDetails', params: {contractId: accountId}}">
@@ -418,7 +418,7 @@ export default defineComponent({
       transactionTableController,
       notification,
       account: accountLoader.entity,
-      normalizedAccountI: accountLoader.accountId,
+      normalizedAccountId: accountLoader.accountId,
       accountChecksum,
       accountInfo: accountLoader.accountInfo,
       nodeId: accountLoader.nodeId,
@@ -433,7 +433,7 @@ export default defineComponent({
       stakedSince,
       stakedNodeDescription: stakeNodeLoader.nodeDescription,
       accountCreateTransactionId: accountCreateTransaction.transactionId,
-      accountCreatorId: accountCreateTransaction.payerAccountId
+      accountCreatorId: accountCreateTransaction.payerAccountId,
     }
   }
 });
