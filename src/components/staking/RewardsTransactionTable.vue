@@ -72,7 +72,6 @@ import {Transaction} from '@/schemas/HederaSchemas';
 import {makeTypeLabel} from "@/utils/TransactionTools";
 import router from "@/router";
 import TimestampValue from "@/components/values/TimestampValue.vue";
-import TransactionLabel from "@/components/values/TransactionLabel.vue";
 import {ORUGA_MOBILE_BREAKPOINT} from '@/App.vue';
 import EmptyTable from "@/components/EmptyTable.vue";
 import HbarAmount from "@/components/values/HbarAmount.vue";
@@ -81,7 +80,7 @@ import {RewardsTransactionTableController} from "@/components/staking/RewardsTra
 export default defineComponent({
   name: 'RewardsTransactionTable',
 
-  components: {HbarAmount, EmptyTable, TimestampValue, TransactionLabel },
+  components: {HbarAmount, EmptyTable, TimestampValue},
 
   props: {
     narrowed: Boolean,

@@ -236,8 +236,6 @@ import router from "@/router";
 import {TransactionByTimestampLoader} from "@/components/transaction/TransactionByTimestampLoader";
 import TransactionLink from "@/components/values/TransactionLink.vue";
 import {HMSF} from "@/utils/HMSF";
-import CSVDownloadDialog from "@/components/CSVDownloadDialog.vue";
-import DownloadButton from "@/components/DownloadButton.vue";
 
 const MAX_TOKEN_BALANCES = 10
 
@@ -246,8 +244,6 @@ export default defineComponent({
   name: 'AccountDetails',
 
   components: {
-    DownloadButton,
-    CSVDownloadDialog,
     TransactionLink,
     AliasValue,
     AccountLink,
