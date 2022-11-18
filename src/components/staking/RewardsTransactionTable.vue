@@ -51,16 +51,6 @@
       <TimestampValue v-bind:timestamp="props.row.consensus_timestamp"/>
     </o-table-column>
 
-    <o-table-column v-slot="props" field="transaction_id" label="ID">
-      <TransactionLabel v-bind:transaction-id="props.row.transaction_id" v-bind:result="props.row.result"/>
-    </o-table-column>
-
-    <o-table-column v-slot="props" field="name" label="Type">
-      <div class="h-has-pill" style="display: inline-block">
-        <div class="h-is-text-size-2">{{ makeTypeLabel(props.row.name) }}</div>
-      </div>
-    </o-table-column>
-
     <o-table-column v-slot="props" field="amount" label="Amount Rewarded" position="right">
       <HbarAmount v-bind:amount="amountRewarded(props.row)"/>
     </o-table-column>
@@ -82,7 +72,6 @@ import {Transaction} from '@/schemas/HederaSchemas';
 import {makeTypeLabel} from "@/utils/TransactionTools";
 import router from "@/router";
 import TimestampValue from "@/components/values/TimestampValue.vue";
-import TransactionLabel from "@/components/values/TransactionLabel.vue";
 import {ORUGA_MOBILE_BREAKPOINT} from '@/App.vue';
 import EmptyTable from "@/components/EmptyTable.vue";
 import HbarAmount from "@/components/values/HbarAmount.vue";
@@ -91,7 +80,7 @@ import {RewardsTransactionTableController} from "@/components/staking/RewardsTra
 export default defineComponent({
   name: 'RewardsTransactionTable',
 
-  components: {HbarAmount, EmptyTable, TimestampValue, TransactionLabel },
+  components: {HbarAmount, EmptyTable, TimestampValue},
 
   props: {
     narrowed: Boolean,

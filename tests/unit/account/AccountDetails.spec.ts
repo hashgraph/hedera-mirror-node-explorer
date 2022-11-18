@@ -114,7 +114,7 @@ describe("AccountDetails.vue", () => {
         await flushPromises()
         // console.log(wrapper.html())
 
-        expect(wrapper.text()).toMatch(RegExp("^Account " + SAMPLE_ACCOUNT.account))
+        expect(wrapper.text()).toMatch("Account " + SAMPLE_ACCOUNT.account)
         expect(wrapper.get("#balanceValue").text()).toBe("23.42647909$5.7637998234231ĦFRENSKINGDOM")
         expect(wrapper.get("#keyValue").text()).toBe(
             "aa2f 7b3e 759f 4531 ec2e 7941 afa4 49e6 a6e6 10ef b52a dae8 9e9c d8e9 d40d dcbf" +
@@ -128,6 +128,9 @@ describe("AccountDetails.vue", () => {
         expect(wrapper.get("#autoRenewPeriodValue").text()).toBe("90 days")
         expect(wrapper.get("#maxAutoAssociationValue").text()).toBe("0")
         expect(wrapper.get("#receiverSigRequiredValue").text()).toBe("false")
+
+        expect(wrapper.get("#stakedToName").text()).toBe("Staked to")
+        expect(wrapper.get("#stakedToValue").text()).toBe("None")
 
         expect(wrapper.find("#recentTransactions").exists()).toBe(true)
         expect(wrapper.findComponent(TransactionTable).exists()).toBe(true)
@@ -172,7 +175,7 @@ describe("AccountDetails.vue", () => {
         // console.log(wrapper.html())
         // console.log(wrapper.text())
 
-        expect(wrapper.text()).toMatch(RegExp("^Account " + SAMPLE_ACCOUNT.account))
+        expect(wrapper.text()).toMatch("Account " + SAMPLE_ACCOUNT.account)
         expect(wrapper.get("#keyValue").text()).toBe(
             "aa2f 7b3e 759f 4531 ec2e 7941 afa4 49e6 a6e6 10ef b52a dae8 9e9c d8e9 d40d dcbf" +
             "Copy to Clipboard" +
@@ -193,7 +196,7 @@ describe("AccountDetails.vue", () => {
         // console.log(wrapper.html())
         // console.log(wrapper.text())
 
-        expect(wrapper.text()).toMatch(RegExp("^Account " + SAMPLE_ACCOUNT_DUDE.account))
+        expect(wrapper.text()).toMatch("Account " + SAMPLE_ACCOUNT_DUDE.account)
         expect(wrapper.get("#keyValue").text()).toBe(
             "38f1 ea46 0e95 d97e ea13 aefa c760 eaf9 9015 4b80 a360 8ab0 1d4a 2649 44d6 8746" +
             "Copy to Clipboard" +
@@ -270,7 +273,7 @@ describe("AccountDetails.vue", () => {
         await flushPromises()
         // console.log(wrapper.text())
 
-            expect(wrapper.text()).toMatch(RegExp("^Account " + deletedAccount.account))
+            expect(wrapper.text()).toMatch(RegExp("Account " + deletedAccount.account))
 
         const banner = wrapper.findComponent(NotificationBanner)
         expect(banner.exists()).toBe(true)
@@ -311,9 +314,9 @@ describe("AccountDetails.vue", () => {
         await flushPromises()
         // console.log(wrapper.html())
 
-        expect(wrapper.get("#stakedNodeValue").text()).toBe("1 - Hosted by Hedera | East Coast, USA")
-        expect(wrapper.find("#stakedAccount").exists()).toBe(false)
-        expect(wrapper.get("#pendingRewardValue").text()).toBe("0.00000000$0.0000Period Started Mar 3, 2022")
+        expect(wrapper.get("#stakedToName").text()).toBe("Staked to Node")
+        expect(wrapper.get("#stakedToValue").text()).toBe("1 - Hosted by Hedera | East Coast, USA")
+        expect(wrapper.get("#pendingRewardValue").text()).toBe("0.00000000$0.0000Period Started Nov 11, 2022, 00:00 UTC")
         expect(wrapper.get("#declineRewardValue").text()).toBe("Accepted")
     });
 
@@ -351,9 +354,9 @@ describe("AccountDetails.vue", () => {
         await flushPromises()
         // console.log(wrapper.html())
 
-        expect(wrapper.get("#stakedAccountValue").text()).toBe("0.0.5Node 2 - testnet")
-        expect(wrapper.find("#stakedNodeValue").exists()).toBe(false)
-        expect(wrapper.get("#pendingRewardValue").text()).toBe("0.12345678$0.0304Period Started Mar 3, 2022")
+        expect(wrapper.get("#stakedToName").text()).toBe("Staked to Account")
+        expect(wrapper.get("#stakedToValue").text()).toBe("0.0.5Node 2 - testnet")
+        expect(wrapper.get("#pendingRewardValue").text()).toBe("0.12345678$0.0304Period Started Nov 11, 2022, 00:00 UTC")
         expect(wrapper.find("#declineRewardValue").exists()).toBe(false)
     });
 });

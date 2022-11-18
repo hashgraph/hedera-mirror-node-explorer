@@ -50,6 +50,11 @@
     </template>
   </ProgressDialog>
 
+  <CSVDownloadDialog v-if="accountId"
+                     v-model:show-dialog="showDownloadDialog"
+                     :downloader="downloader"
+                     :account-id="accountId"/>
+
   <WalletChooser v-model:show-dialog="showWalletChooser"
                  v-on:choose-wallet="handleChooseWallet"/>
 
@@ -69,13 +74,21 @@
         <template v-if="accountId">
           <div v-if="isSmallScreen">
             <div class="is-flex is-justify-content-space-between">
-              <NetworkDashboardItem :name="stakedSince" title="Staked to" :value="stakedTo"/>
-              <NetworkDashboardItem :name="stakedAmount ? 'HBAR' : ''" title="My Stake" :value="stakedAmount"/>
+              <NetworkDashboardItem :name="stakedSince"
+                                    title="Staked to"
+                                    :value="stakedTo"/>
+
+              <NetworkDashboardItem class="ml-4"
+                                    :name="stakedAmount ? 'HBAR' : ''"
+                                    title="My Stake"
+                                    :value="stakedAmount"/>
 
               <NetworkDashboardItem v-if="!ignoreReward && declineReward && !pendingReward"
+                                    class="ml-4"
                                     title="Rewards"
                                     value="Declined"/>
               <NetworkDashboardItem v-else
+                                    class="ml-4"
                                     title="Pending Reward"
                                     :name="pendingReward ? 'HBAR' : ''"
                                     :value="pendingReward"
@@ -156,7 +169,10 @@
 
     <DashboardCard v-if="accountId" :class="{'h-has-opacity-40': isIndirectStaking}">
       <template v-slot:title>
-        <span class="h-is-primary-title">Recent Staking Rewards Transactions</span>
+        <span class="h-is-secondary-title">Recent Staking Rewards</span>
+      </template>
+      <template v-slot:control>
+        <DownloadButton @click="showDownloadDialog = true"/>
       </template>
       <template v-slot:content>
         <RewardsTransactionTable
@@ -188,7 +204,6 @@ import {walletManager} from "@/router";
 import NetworkDashboardItem from "@/components/node/NetworkDashboardItem.vue";
 import axios from "axios";
 import {Transaction, TransactionByIdResponse} from "@/schemas/HederaSchemas";
-import {HMSF} from "@/utils/HMSF";
 import {waitFor} from "@/utils/TimerUtils";
 import RewardsTransactionTable from "@/components/staking/RewardsTransactionTable.vue";
 import StakingDialog from "@/components/staking/StakingDialog.vue";
@@ -205,6 +220,9 @@ import {NodeCursor} from "@/components/node/NodeCursor";
 import {AccountLoader} from "@/components/account/AccountLoader";
 import {NodesLoader} from "@/components/node/NodesLoader";
 import {RewardsTransactionTableController} from "@/components/staking/RewardsTransactionTableController";
+import DownloadButton from "@/components/DownloadButton.vue";
+import CSVDownloadDialog from "@/components/CSVDownloadDialog.vue";
+import {RewardDownloader} from "@/utils/downloader/RewardDownloader";
 
 export default defineComponent({
   name: 'Staking',
@@ -218,6 +236,8 @@ export default defineComponent({
   },
 
   components: {
+    CSVDownloadDialog,
+    DownloadButton,
     WalletChooser,
     RewardsCalculator,
     AccountLink,
@@ -248,6 +268,7 @@ export default defineComponent({
     const progressExtraMessage = ref<string|null>(null)
     const progressExtraTransaction = ref<string|null>(null)
     const showProgressSpinner = ref(false)
+    const showDownloadDialog = ref(false)
 
     const connecting = ref(false)
 
@@ -338,7 +359,10 @@ export default defineComponent({
       day: "numeric",
       month: "short",
       year: "numeric",
-      timeZone: HMSF.forceUTC ? "UTC" : undefined
+      minute: "numeric",
+      second: "numeric",
+      timeZoneName: "short",
+      timeZone: "UTC"
     }
     const dateFormat = new Intl.DateTimeFormat(locale, dateOptions)
 
@@ -448,6 +472,15 @@ export default defineComponent({
     onMounted(() => transactionTableController.mount())
     onBeforeUnmount(() => transactionTableController.unmount())
 
+    //
+    // Rewards transaction downloader
+    //
+    const downloader = new RewardDownloader(
+        walletManager.accountId,
+        ref(null),
+        ref(null),
+        1000)
+
     return {
       isSmallScreen,
       isTouchDevice,
@@ -462,6 +495,7 @@ export default defineComponent({
       showStopConfirmDialog,
       showWalletChooser,
       showErrorDialog,
+      showDownloadDialog,
       isIndirectStaking,
       stakedTo,
       stakedNode: stakedNodeLoader.node,
@@ -484,6 +518,7 @@ export default defineComponent({
       progressExtraTransaction,
       showProgressSpinner,
       transactionTableController,
+      downloader
     }
   }
 });

@@ -24,15 +24,12 @@
 
 <template>
 
-  <div v-if="transactionId">
-    <router-link :to="{name: 'TransactionDetails', params: {transactionId: transactionId}}">
-      <span class="is-numeric should-wrap">{{ normalizedId }}</span>
-    </router-link>
-  </div>
-
-  <span v-else-if="showNone" class="has-text-grey">None</span>
-
-  <span v-else/>
+  <button
+      class="button is-small has-text-white ml-2"
+      data-cy="downloadButton"
+      style="background-color: #202532; width: 26px; height: 26px; border:1px solid white; border-radius: 0">
+    <i class="fas fa-download"></i>
+  </button>
 
 </template>
 
@@ -42,24 +39,10 @@
 
 <script lang="ts">
 
-import {computed, defineComponent, PropType} from "vue";
-import {TransactionID} from "@/utils/TransactionID";
+import {defineComponent} from "vue";
 
 export default defineComponent({
-  name: "TransactionLink",
-
-  props: {
-    transactionId: String as PropType<string|null>,
-    showNone: {
-      type: Boolean,
-      default: true
-    },
-  },
-
-  setup(props) {
-    const normalizedId = computed(() => TransactionID.normalize(props.transactionId ?? "?"))
-    return { normalizedId }
-  }
+  name: "DownloadButton",
 });
 
 </script>

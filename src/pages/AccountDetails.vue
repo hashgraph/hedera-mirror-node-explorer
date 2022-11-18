@@ -29,7 +29,7 @@
     <DashboardCard>
       <template v-slot:title>
         <span class="h-is-primary-title">Account </span>
-        <span class="h-is-secondary-text">{{ account?.account ?? "" }}</span>
+        <span class="h-is-secondary-text">{{ normalizedAccountId ?? "" }}</span>
         <span v-if="accountChecksum" class="has-text-grey" style="font-size: 28px">-{{ accountChecksum }}</span>
         <span v-if="showContractVisible" class="is-inline-block ml-3" id="showContractLink">
           <router-link :to="{name: 'ContractDetails', params: {contractId: accountId}}">
@@ -87,23 +87,21 @@
       </template>
 
       <template v-slot:leftContent>
-              <Property v-if="account?.staked_account_id" id="stakedAccount">
-                <template v-slot:name>Staked to Account</template>
-                <template v-slot:value>
-                  <AccountLink :accountId="account.staked_account_id" v-bind:show-extra="true"/>
+              <Property id="stakedTo">
+                <template v-slot:name>
+                  <span v-if="stakedAccountId">Staked to Account</span>
+                  <span v-else-if="stakedNodeId">Staked to Node</span>
+                  <span v-else>Staked to</span>
                 </template>
-              </Property>
-              <Property v-else id="stakedNode">
-                <template v-slot:name>Staked to Node</template>
                 <template v-slot:value>
-                  <div v-if="account?.staked_node_id != null">
-                    <router-link :to="{name: 'NodeDetails', params: {nodeId: account?.staked_node_id}}">
-                      {{ account?.staked_node_id }} - {{ stakedNodeDescription }}
-                    </router-link>
-                  </div>
+                  <AccountLink v-if="stakedAccountId" :accountId="account.staked_account_id" v-bind:show-extra="true"/>
+                  <router-link v-else-if="stakedNodeId" :to="{name: 'NodeDetails', params: {nodeId: account?.staked_node_id}}">
+                    {{ account?.staked_node_id }} - {{ stakedNodeDescription }}
+                  </router-link>
                   <span v-else class="has-text-grey">None</span>
                 </template>
               </Property>
+
               <Property id="pendingReward">
                 <template v-slot:name>Pending Reward</template>
                 <template v-slot:value>
@@ -235,7 +233,6 @@ import {networkRegistry} from "@/schemas/NetworkRegistry";
 import router from "@/router";
 import {TransactionByTimestampLoader} from "@/components/transaction/TransactionByTimestampLoader";
 import TransactionLink from "@/components/values/TransactionLink.vue";
-import {HMSF} from "@/utils/HMSF";
 
 const MAX_TOKEN_BALANCES = 10
 
@@ -392,7 +389,10 @@ export default defineComponent({
       day: "numeric",
       month: "short",
       year: "numeric",
-      timeZone: HMSF.forceUTC ? "UTC" : undefined
+      minute: "numeric",
+      second: "numeric",
+      timeZoneName: "short",
+      timeZone: "UTC"
     }
     const stakedSince = computed(() => {
       const dateFormat = new Intl.DateTimeFormat(locale, dateOptions)
@@ -418,7 +418,7 @@ export default defineComponent({
       transactionTableController,
       notification,
       account: accountLoader.entity,
-      normalizedAccountI: accountLoader.accountId,
+      normalizedAccountId: accountLoader.accountId,
       accountChecksum,
       accountInfo: accountLoader.accountInfo,
       nodeId: accountLoader.nodeId,
@@ -431,9 +431,11 @@ export default defineComponent({
       elapsed,
       showContractVisible,
       stakedSince,
+      stakedNodeId: accountLoader.stakedNodeId,
+      stakedAccountId: accountLoader.stakedAccountId,
       stakedNodeDescription: stakeNodeLoader.nodeDescription,
       accountCreateTransactionId: accountCreateTransaction.transactionId,
-      accountCreatorId: accountCreateTransaction.payerAccountId
+      accountCreatorId: accountCreateTransaction.payerAccountId,
     }
   }
 });
