@@ -74,13 +74,21 @@
         <template v-if="accountId">
           <div v-if="isSmallScreen">
             <div class="is-flex is-justify-content-space-between">
-              <NetworkDashboardItem :name="stakedSince" title="Staked to" :value="stakedTo"/>
-              <NetworkDashboardItem :name="stakedAmount ? 'HBAR' : ''" title="My Stake" :value="stakedAmount"/>
+              <NetworkDashboardItem :name="stakedSince"
+                                    title="Staked to"
+                                    :value="stakedTo"/>
+
+              <NetworkDashboardItem class="ml-4"
+                                    :name="stakedAmount ? 'HBAR' : ''"
+                                    title="My Stake"
+                                    :value="stakedAmount"/>
 
               <NetworkDashboardItem v-if="!ignoreReward && declineReward && !pendingReward"
+                                    class="ml-4"
                                     title="Rewards"
                                     value="Declined"/>
               <NetworkDashboardItem v-else
+                                    class="ml-4"
                                     title="Pending Reward"
                                     :name="pendingReward ? 'HBAR' : ''"
                                     :value="pendingReward"
@@ -196,7 +204,6 @@ import {walletManager} from "@/router";
 import NetworkDashboardItem from "@/components/node/NetworkDashboardItem.vue";
 import axios from "axios";
 import {Transaction, TransactionByIdResponse} from "@/schemas/HederaSchemas";
-import {HMSF} from "@/utils/HMSF";
 import {waitFor} from "@/utils/TimerUtils";
 import RewardsTransactionTable from "@/components/staking/RewardsTransactionTable.vue";
 import StakingDialog from "@/components/staking/StakingDialog.vue";
@@ -352,7 +359,10 @@ export default defineComponent({
       day: "numeric",
       month: "short",
       year: "numeric",
-      timeZone: HMSF.forceUTC ? "UTC" : undefined
+      minute: "numeric",
+      second: "numeric",
+      timeZoneName: "short",
+      timeZone: "UTC"
     }
     const dateFormat = new Intl.DateTimeFormat(locale, dateOptions)
 
