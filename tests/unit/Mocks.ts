@@ -2062,6 +2062,24 @@ export const SAMPLE_NETWORK_SUPPLY = {
 }
 
 //
+// https://mainnet-public.mirrornode.hedera.com/api/v1/network/exchangerate
+//
+
+export const SAMPLE_NETWORK_EXCHANGERATE = {
+    "current_rate": {
+        "cent_equivalent": 152368,
+        "expiration_time": 1668679200,
+        "hbar_equivalent": 30000
+    },
+    "next_rate": {
+        "cent_equivalent": 150818,
+        "expiration_time": 1668682800,
+        "hbar_equivalent": 30000
+    },
+    "timestamp": "1668675657.744650810"
+}
+
+//
 // https://testnet.mirrornode.hedera.com/api/v1/blocks?timestamp=gte:1662111646.528325857&limit=2
 //
 
