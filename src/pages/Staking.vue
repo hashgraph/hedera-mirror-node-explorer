@@ -469,7 +469,7 @@ export default defineComponent({
         walletManager.accountId,
         ref(null),
         ref(null),
-        10000)
+        1000)
 
     return {
       isSmallScreen,
