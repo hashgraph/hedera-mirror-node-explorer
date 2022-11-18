@@ -77,7 +77,7 @@ export default defineComponent({
       if (props.blobValue) {
         if (props.base64 && base64regex.test(props.blobValue)) {
           try {
-            result = atob(props.blobValue)
+            result = Buffer.from(props.blobValue, 'base64').toString()
           } catch {
             result = props.blobValue
           }
