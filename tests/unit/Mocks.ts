@@ -1455,7 +1455,7 @@ export const SAMPLE_ACCOUNT_STAKING_NODE = {
     "decline_reward": false,
     "staked_node_id": 1,
     "staked_account_id": null,
-    "stake_period_start" : "1646333100.356842286"
+    "stake_period_start" : "1668124800.000000000"
 }
 
 export const SAMPLE_ACCOUNT_STAKING_ACCOUNT = {
@@ -1478,7 +1478,7 @@ export const SAMPLE_ACCOUNT_STAKING_ACCOUNT = {
     "decline_reward": true,
     "staked_node_id": null,
     "staked_account_id": "0.0.5",
-    "stake_period_start": "1646333100.356842286",
+    "stake_period_start": "1668124800.000000000",
     "pending_reward": 12345678
 }
 
