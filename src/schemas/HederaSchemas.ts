@@ -451,7 +451,7 @@ export interface ContractResultDetails extends ContractResult {
     nonce: number | null | undefined // integer
     r: string | null | undefined
     s: string | null | undefined
-    state_changes: ContractResultStateChanges[] | undefined
+    state_changes: ContractResultStateChange[] | undefined
     transaction_index: number | null | undefined // integer
     type: number | null | undefined // The type of the wrapped ethereum transaction, 0 (Pre-Eip1559) or 2 (Post-Eip1559)
     v: number | null | undefined
@@ -466,12 +466,48 @@ export interface ContractResultLog {
     topics: string[] | undefined
 }
 
-export interface ContractResultStateChanges {
+export interface ContractResultStateChange {
     address: string | undefined
     contract_id: string | null | undefined
     slot: string | undefined
     value_read: string | undefined
     value_written: string | null | undefined
+}
+
+export interface ContractActionsResponse {
+    actions: Array<ContractAction> | undefined
+    links: Links | undefined
+}
+
+export interface ContractAction {
+    call_depth: number | undefined,
+    call_operation_type: string | undefined,
+    call_type: string | undefined,
+    caller: string | null | undefined, // Network entity ID in the format of shard.realm.num
+    caller_type: string | undefined,   // enum EntityType
+    from: string | undefined,
+    gas: number | undefined,
+    gas_used: number | undefined,
+    index: number | undefined,
+    input: string | null | undefined,
+    recipient: string | null | undefined,
+    recipient_type: string | null | undefined, // enum EntityType
+    result_data: string | null | undefined,
+    result_data_type: string | undefined,      // enum ResultDataType
+    timestamp: string | undefined,
+    to: string | null | undefined,
+    value: number | undefined
+}
+
+export enum EntityType {
+    ACCOUNT = "ACCOUNT",
+    CONTRACT = "CONTRACT"
+}
+
+export enum ResultDataType {
+    OUTPUT = "OUTPUT",
+    REVERT_REASON = "REVERT_REASON",
+    ERROR = "ERROR"
 }
 
 // ---------------------------------------------------------------------------------------------------------------------
@@ -538,6 +574,18 @@ export function makeNodeStakeDescription(node: NetworkNode): string {
 // ---------------------------------------------------------------------------------------------------------------------
 //                                                      Network
 // ---------------------------------------------------------------------------------------------------------------------
+
+export interface NetworkExchangeRateSetResponse{
+    current_rate: ExchangeRate,
+    next_rate: ExchangeRate,
+    timestamp:	string
+}
+
+export interface ExchangeRate {
+    cent_equivalent: number,
+    expiration_time: number,
+    hbar_equivalent: number
+}
 
 export interface NetworkSupplyResponse {
     released_supply:	string | undefined  // The network's released supply of hbars in tinybars

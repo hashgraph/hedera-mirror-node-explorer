@@ -18,7 +18,7 @@
  *
  */
 
-import {EntityLoader} from "@/utils/EntityLoader";
+import {EntityLoader} from "@/utils/loader/EntityLoader";
 import {ContractResponse} from "@/schemas/HederaSchemas";
 import {computed, Ref} from "vue";
 import axios, {AxiosResponse} from "axios";

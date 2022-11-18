@@ -19,7 +19,7 @@
  */
 
 import {TokenInfo} from "@/schemas/HederaSchemas";
-import {EntityLoader} from "@/utils/EntityLoader";
+import {EntityLoader} from "@/utils/loader/EntityLoader";
 import axios, {AxiosResponse} from "axios";
 import {computed, Ref} from "vue";
 import {makeEthAddressForToken, makeTokenSymbol} from "@/schemas/HederaUtils";

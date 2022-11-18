@@ -18,28 +18,52 @@
  *
  */
 
-import {Collector} from "@/utils/Collector";
+import {Collector} from "@/utils/collector/Collector";
 import axios, {AxiosResponse} from "axios";
 import {flushPromises} from "@vue/test-utils";
-import {CoinGeckoCollector} from "@/utils/CoinGeckoCollector";
+import {CoinGeckoCollector} from "@/utils/collector/CoinGeckoCollector";
 import {SAMPLE_COINGECKO} from "../Mocks";
 import MockAdapter from "axios-mock-adapter";
 
 describe("Collector.ts", () => {
 
 
-    test("resolve", () => {
+    test("sequential", () => {
         const c = new TestCollector()
 
-        for (let k = 0; k < 100; k += 1) {
+        for (let k = 0; k < 10; k += 1) {
             c.fetch(k).then((value: AxiosResponse<TestData>) => {
                 expect(value.data.key).toBe(value.data.seq)
-            }, (reason: unknown) => {
-                throw new Error("Unexpected reject with reason " + reason)
             })
         }
 
         flushPromises()
+
+    })
+
+
+    test("concurrent", async () => {
+        const c = new TestCollector()
+
+        const promises = new Array<Promise<AxiosResponse<TestData>>>()
+
+        const count = 10
+        for (let k = 0; k < count; k += 1) {
+            promises.push(c.fetch(k))
+        }
+
+        const responses = new Array<AxiosResponse<TestData>>()
+        for (const p of promises) {
+            p.then((r: AxiosResponse<TestData>) => {
+                responses.push(r)
+            })
+        }
+
+        await flushPromises()
+
+        for (const response of responses) {
+            expect(response.data.seq).toBe(response.data.key)
+        }
 
     })
 
@@ -51,10 +75,10 @@ describe("Collector.ts", () => {
 
         const r1 = await CoinGeckoCollector.instance.fetch(null)
         const r2 = await CoinGeckoCollector.instance.fetch(null)
-        expect(r2.data).toBe(r1.data)
+        expect(r2.data).toStrictEqual(r1.data)
         expect(mock.history.get.length).toBe(1)
-
     })
+
 })
 
 class TestCollector extends Collector<TestData, number> {

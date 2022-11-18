@@ -18,7 +18,7 @@
  *
  */
 
-import {EntityLoader} from "@/utils/EntityLoader";
+import {EntityLoader} from "@/utils/loader/EntityLoader";
 import {computed, ComputedRef, ref, Ref, watch} from "vue";
 
 export abstract class AutoRefreshLoader<E> extends EntityLoader<E> {

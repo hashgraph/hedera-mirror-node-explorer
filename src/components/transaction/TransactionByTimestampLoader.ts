@@ -19,7 +19,7 @@
  */
 
 import {Transaction, TransactionResponse} from "@/schemas/HederaSchemas";
-import {EntityLoader} from "@/utils/EntityLoader";
+import {EntityLoader} from "@/utils/loader/EntityLoader";
 import {computed, ComputedRef, Ref} from "vue";
 import axios, {AxiosResponse} from "axios";
 import {TransactionID} from "@/utils/TransactionID";
@@ -47,6 +47,19 @@ export class TransactionByTimestampLoader extends EntityLoader<TransactionRespon
     public readonly transactionId = computed(() => this.transaction.value?.transaction_id ?? null)
 
     public readonly payerAccountId = computed(() => TransactionID.makePayerID(this.transaction.value?.transaction_id ?? ""))
+
+    public lookupTransfer(contractID: string): number|null {
+        let result = null
+        if (this.transaction.value?.transfers){
+            for (const t of this.transaction.value?.transfers) {
+                if (t.account === contractID) {
+                    result = t.amount
+                    break
+                }
+            }
+        }
+        return result
+    }
 
     //
     // EntityLoader
