@@ -60,7 +60,26 @@ export class AccountLoader extends EntityLoader<AccountBalanceTransactions> {
 
     public readonly stakedAccountId: Ref<string|null> = computed(() => this.entity.value?.staked_account_id ?? null)
 
-    public readonly stakePeriodStart: Ref<string|null> = computed(() => this.entity.value?.stake_period_start ?? null)
+    public readonly stakePeriodStart: Ref<string|null> = computed(() => {
+        const dateOptions = {
+            weekDay: "short",
+            day: "numeric",
+            month: "short",
+            year: "numeric",
+            minute: "numeric",
+            second: "numeric",
+            timeZoneName: "short",
+            timeZone: "UTC"
+        }
+        const dateFormat = new Intl.DateTimeFormat("en-US", dateOptions)
+        let result: string | null
+        if (this.entity.value?.stake_period_start) {
+            result = dateFormat.format(Number.parseFloat(this.entity.value.stake_period_start) * 1000)
+        } else {
+            result = null
+        }
+        return result
+    })
 
     public readonly pendingReward: Ref<number|null> = computed(() => this.entity.value?.pending_reward ?? null)
 

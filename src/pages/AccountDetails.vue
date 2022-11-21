@@ -106,7 +106,9 @@
                 <template v-slot:name>Pending Reward</template>
                 <template v-slot:value>
                   <HbarAmount :amount="account?.pending_reward" :show-extra="true"/>
-                  <div class="h-is-extra-text h-is-text-size-2">{{ stakedSince }}</div>
+                  <div class="h-is-extra-text h-is-text-size-2">
+                    {{ "Period Started " + stakePeriodStart }}
+                  </div>
                 </template>
               </Property>
               <Property id="declineReward" v-if="account?.staked_node_id != null">
@@ -292,7 +294,6 @@ export default defineComponent({
       return result
     })
 
-
     //
     // TransactionTableController
     //
@@ -371,33 +372,10 @@ export default defineComponent({
       return contractLoader.entity.value != null
     })
 
-
     //
     // staking
     //
     const stakeNodeLoader = new NodeLoader(accountLoader.stakedNodeId)
-    const locale = "en-US"
-    const dateOptions = {
-      weekDay: "short",
-      day: "numeric",
-      month: "short",
-      year: "numeric",
-      minute: "numeric",
-      second: "numeric",
-      timeZoneName: "short",
-      timeZone: "UTC"
-    }
-    const stakedSince = computed(() => {
-      const dateFormat = new Intl.DateTimeFormat(locale, dateOptions)
-      let result: string | null
-      if (accountLoader.stakePeriodStart.value) {
-        const seconds = Number.parseFloat(accountLoader.stakePeriodStart.value);
-        result = "Period Started " + dateFormat.format(seconds * 1000)
-      } else {
-        result = null
-      }
-      return result
-    })
 
     //
     // account create transaction
@@ -423,7 +401,7 @@ export default defineComponent({
       displayAllTokenLinks,
       elapsed,
       showContractVisible,
-      stakedSince,
+      stakePeriodStart: accountLoader.stakePeriodStart,
       stakedNodeId: accountLoader.stakedNodeId,
       stakedAccountId: accountLoader.stakedAccountId,
       stakedNodeDescription: stakeNodeLoader.nodeDescription,
