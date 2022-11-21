@@ -25,6 +25,8 @@ import {operatorRegistry} from "@/schemas/OperatorRegistry";
 import {computed, Ref} from "vue";
 import axios, {AxiosResponse} from "axios";
 import {base32ToAlias, byteToHex} from "@/utils/B64Utils";
+import {networkRegistry} from "@/schemas/NetworkRegistry";
+import router from "@/router";
 
 export class AccountLoader extends EntityLoader<AccountBalanceTransactions> {
 
@@ -41,6 +43,12 @@ export class AccountLoader extends EntityLoader<AccountBalanceTransactions> {
     public readonly accountLocator: Ref<string|null> // Entity Id or Alias or EVM Address
 
     public readonly accountId: Ref<string|null> = computed(() => this.entity.value?.account ?? null)
+
+    public readonly accountChecksum: Ref<string|null> = computed(() =>
+        this.accountId.value ? networkRegistry.computeChecksum(
+            this.accountId.value,
+            router.currentRoute.value.params.network as string
+        ) : null)
 
     public readonly balance: Ref<number|null> = computed(() => this.entity.value?.balance?.balance ?? null)
 

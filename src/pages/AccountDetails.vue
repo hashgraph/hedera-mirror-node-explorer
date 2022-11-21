@@ -229,7 +229,6 @@ import {ContractLoader} from "@/components/contract/ContractLoader";
 import {NodeLoader} from "@/components/node/NodeLoader";
 import AliasValue from "@/components/values/AliasValue.vue";
 import TransactionFilterSelect from "@/components/transaction/TransactionFilterSelect.vue";
-import {networkRegistry} from "@/schemas/NetworkRegistry";
 import router from "@/router";
 import {TransactionByTimestampLoader} from "@/components/transaction/TransactionByTimestampLoader";
 import TransactionLink from "@/components/values/TransactionLink.vue";
@@ -278,12 +277,6 @@ export default defineComponent({
     const accountLocator = computed(() => PathParam.parseAccountIdOrAliasOrEvmAddress(props.accountId))
     const accountLoader = new AccountLoader(accountLocator)
     onMounted(() => accountLoader.requestLoad())
-
-    const accountChecksum = computed(() =>
-        accountLoader.accountId.value ? networkRegistry.computeChecksum(
-            accountLoader.accountId.value,
-            router.currentRoute.value.params.network as string
-        ) : null)
 
     const notification = computed(() => {
       let result
@@ -419,7 +412,7 @@ export default defineComponent({
       notification,
       account: accountLoader.entity,
       normalizedAccountId: accountLoader.accountId,
-      accountChecksum,
+      accountChecksum: accountLoader.accountChecksum,
       accountInfo: accountLoader.accountInfo,
       nodeId: accountLoader.nodeId,
       ethereumAddress: accountLoader.ethereumAddress,
