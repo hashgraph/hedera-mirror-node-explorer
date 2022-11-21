@@ -29,8 +29,6 @@ export class RewardDownloader extends EntityDownloader<Reward, RewardResponse> {
 
     public readonly accountId: Ref<string|null>
 
-    private readonly wrongSetupError = new Error("this.accountId or this.startDate not set")
-
     //
     // Public
     //
@@ -79,40 +77,40 @@ export class RewardDownloader extends EntityDownloader<Reward, RewardResponse> {
     }
 
     protected makeCSVEncoder(dateFormat: Intl.DateTimeFormat): CSVEncoder<Reward> {
-        let result: CSVEncoder<Reward>
-        if (this.accountId.value !== null) {
-            result = new RewardEncoder(this.getEntities(), this.accountId.value, dateFormat)
-        } else {
-            throw this.wrongSetupError
-        }
-        return result
+        return new RewardEncoder(this.getEntities(), this.checkAccountId(), dateFormat)
     }
 
     protected makeOutputPrefix(): string {
-        return this.accountId.value !== null ? "Hedera Rewards " + this.accountId.value : ""
+        return "Hedera Rewards " + this.checkAccountId()
     }
 
     //
     // Private
     //
 
+    private checkAccountId(): string {
+        let result: string
+        if (this.accountId.value !== null) {
+            result = this.accountId.value
+        } else {
+            throw new Error("this.accountId is null")
+        }
+        return result
+    }
 
     private async loadNextReal(nextURL: string|null): Promise<AxiosResponse<RewardResponse>> {
 
         if (nextURL == null) {
-            if (this.accountId.value !== null && this.startDate.value !== null){
-                const startTimestamp = dateToTimestamp(this.startDate.value)
-                const endTimestamp = this.endDate.value !== null ? dateToTimestamp(this.endDate.value) : null
 
-                nextURL = "api/v1/accounts/" + this.accountId.value + "/rewards"
-                    + "?timestamp=gte:" + startTimestamp
-                if (endTimestamp !== null) {
-                    nextURL += "&timestamp=lt:" + endTimestamp
-                }
-                nextURL += "&limit=100"
-            } else {
-                throw this.wrongSetupError
+            const startTimestamp = dateToTimestamp(this.checkStartDate())
+            const endTimestamp = this.endDate.value !== null ? dateToTimestamp(this.endDate.value) : null
+
+            nextURL = "api/v1/accounts/" + this.checkAccountId() + "/rewards"
+                + "?timestamp=gte:" + startTimestamp
+            if (endTimestamp !== null) {
+                nextURL += "&timestamp=lt:" + endTimestamp
             }
+            nextURL += "&limit=100"
         }
 
         return axios.get<RewardResponse>(nextURL)
@@ -122,20 +120,16 @@ export class RewardDownloader extends EntityDownloader<Reward, RewardResponse> {
     private async loadNextEmulated(nextURL: string|null): Promise<AxiosResponse<RewardResponse>> {
 
         if (nextURL == null) {
-            if (this.accountId.value !== null && this.startDate.value !== null){
-                const startTimestamp = dateToTimestamp(this.startDate.value)
-                const endTimestamp = this.endDate.value !== null ? dateToTimestamp(this.endDate.value) : null
+            const startTimestamp = dateToTimestamp(this.checkStartDate())
+            const endTimestamp = this.endDate.value !== null ? dateToTimestamp(this.endDate.value) : null
 
-                nextURL = "api/v1/transactions"
-                    + "?account.id=" + this.accountId.value
-                    + "&timestamp=gte:" + startTimestamp
-                if (endTimestamp !== null) {
-                    nextURL += "&timestamp=lt:" + endTimestamp
-                }
-                nextURL += "&limit=100"
-            } else {
-                throw this.wrongSetupError
+            nextURL = "api/v1/transactions"
+                + "?account.id=" + this.checkAccountId()
+                + "&timestamp=gte:" + startTimestamp
+            if (endTimestamp !== null) {
+                nextURL += "&timestamp=lt:" + endTimestamp
             }
+            nextURL += "&limit=100"
         }
         const transactionResponse = await axios.get<TransactionResponse>(nextURL)
 
@@ -144,12 +138,12 @@ export class RewardDownloader extends EntityDownloader<Reward, RewardResponse> {
 
     private makeRewardResponse(transactionResponse: AxiosResponse<TransactionResponse>): AxiosResponse<RewardResponse> {
         const rewards: Reward[] = []
-        const accountId = this.accountId.value!
+        const accountId = this.checkAccountId()
         for (const t of transactionResponse.data.transactions ?? []) {
             const amount = RewardsTransactionTableController.getAmountRewarded(t, accountId)
             if (amount > 0) {
                 const newReward: Reward = {
-                    account_id: this.accountId.value!,
+                    account_id: accountId,
                     amount: amount,
                     timestamp: t.consensus_timestamp ?? "0"
                 }

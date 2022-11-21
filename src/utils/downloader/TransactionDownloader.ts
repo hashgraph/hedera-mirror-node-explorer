@@ -28,8 +28,6 @@ export class TransactionDownloader extends EntityDownloader<Transaction, Transac
 
     public readonly accountId: Ref<string|null>
 
-    protected readonly wrongSetupError = new Error("this.accountId or this.startDate not set")
-
     //
     // Public
     //
@@ -52,20 +50,16 @@ export class TransactionDownloader extends EntityDownloader<Transaction, Transac
     protected async loadNext(nextURL: string|null): Promise<AxiosResponse<TransactionResponse>> {
 
         if (nextURL == null) {
-            if (this.accountId.value !== null && this.startDate.value !== null){
-                const startTimestamp = dateToTimestamp(this.startDate.value)
-                const endTimestamp = this.endDate.value !== null ? dateToTimestamp(this.endDate.value) : null
+            const startTimestamp = dateToTimestamp(this.checkStartDate())
+            const endTimestamp = this.endDate.value !== null ? dateToTimestamp(this.endDate.value) : null
 
-                nextURL = "api/v1/transactions"
-                    + "?account.id=" + this.accountId.value
-                    + "&timestamp=gte:" + startTimestamp
-                if (endTimestamp !== null) {
-                    nextURL += "&timestamp=lt:" + endTimestamp
-                }
-                nextURL += "&limit=100"
-            } else {
-                throw this.wrongSetupError
+            nextURL = "api/v1/transactions"
+                + "?account.id=" + this.checkAccountId()
+                + "&timestamp=gte:" + startTimestamp
+            if (endTimestamp !== null) {
+                nextURL += "&timestamp=lt:" + endTimestamp
             }
+            nextURL += "&limit=100"
         }
 
         return axios.get<TransactionResponse>(nextURL)
@@ -89,6 +83,20 @@ export class TransactionDownloader extends EntityDownloader<Transaction, Transac
 
     protected makeOutputPrefix(): string {
         return this.accountId.value !== null ? "Hedera Transactions " + this.accountId.value : ""
+    }
+
+    //
+    // Private
+    //
+
+    private checkAccountId(): string {
+        let result: string
+        if (this.accountId.value !== null) {
+            result = this.accountId.value
+        } else {
+            throw new Error("this.accountId is null")
+        }
+        return result
     }
 }
 
