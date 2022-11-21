@@ -67,6 +67,7 @@
           <div v-if="accountId" class="h-is-secondary-text has-text-weight-light mr-3 is-inline-block">
             <AccountLink :account-id="accountId">{{ accountId }}</AccountLink>
           </div>
+          <span v-if="accountChecksum" class="has-text-grey" style="font-size: 28px">-{{ accountChecksum }}</span>
       </template>
 
       <template v-slot:content>
@@ -489,6 +490,7 @@ export default defineComponent({
       walletName: walletManager.walletName,
       walletIconURL: walletManager.getActiveDriver().iconURL,
       accountId: walletManager.accountId,
+      accountChecksum: accountLoader.accountChecksum,
       account: accountLoader.entity,
       isStaked,
       showStakingDialog,
