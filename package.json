@@ -14,7 +14,7 @@
     "lint": "vue-cli-service lint",
     "install:branding": ". ./src/assets/branding/install-branding.sh",
     "build:docker": "docker build . -t ${npm_package_name}",
-    "docker": "docker run --name hedera-explorer -d -p 9090:80 ${npm_package_name}:latest"
+    "docker": "docker run -it --rm -p 8080:8080 --name hedera-explorer ${npm_package_name}:latest"
   },
   "dependencies": {
     "@fortawesome/fontawesome-svg-core": "^6.1.2",

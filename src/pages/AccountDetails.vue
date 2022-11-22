@@ -106,7 +106,9 @@
                 <template v-slot:name>Pending Reward</template>
                 <template v-slot:value>
                   <HbarAmount :amount="account?.pending_reward" :show-extra="true"/>
-                  <div class="h-is-extra-text h-is-text-size-2">{{ stakedSince }}</div>
+                  <div v-if="stakePeriodStart" class="h-is-extra-text h-is-text-size-2">
+                    {{ "Period Started " + stakePeriodStart }}
+                  </div>
                 </template>
               </Property>
               <Property id="declineReward" v-if="account?.staked_node_id != null">
@@ -229,7 +231,6 @@ import {ContractLoader} from "@/components/contract/ContractLoader";
 import {NodeLoader} from "@/components/node/NodeLoader";
 import AliasValue from "@/components/values/AliasValue.vue";
 import TransactionFilterSelect from "@/components/transaction/TransactionFilterSelect.vue";
-import {networkRegistry} from "@/schemas/NetworkRegistry";
 import router from "@/router";
 import {TransactionByTimestampLoader} from "@/components/transaction/TransactionByTimestampLoader";
 import TransactionLink from "@/components/values/TransactionLink.vue";
@@ -279,12 +280,6 @@ export default defineComponent({
     const accountLoader = new AccountLoader(accountLocator)
     onMounted(() => accountLoader.requestLoad())
 
-    const accountChecksum = computed(() =>
-        accountLoader.accountId.value ? networkRegistry.computeChecksum(
-            accountLoader.accountId.value,
-            router.currentRoute.value.params.network as string
-        ) : null)
-
     const notification = computed(() => {
       let result
       if (accountLoader.accountLocator.value === null) {
@@ -298,7 +293,6 @@ export default defineComponent({
       }
       return result
     })
-
 
     //
     // TransactionTableController
@@ -378,33 +372,10 @@ export default defineComponent({
       return contractLoader.entity.value != null
     })
 
-
     //
     // staking
     //
     const stakeNodeLoader = new NodeLoader(accountLoader.stakedNodeId)
-    const locale = "en-US"
-    const dateOptions = {
-      weekDay: "short",
-      day: "numeric",
-      month: "short",
-      year: "numeric",
-      minute: "numeric",
-      second: "numeric",
-      timeZoneName: "short",
-      timeZone: "UTC"
-    }
-    const stakedSince = computed(() => {
-      const dateFormat = new Intl.DateTimeFormat(locale, dateOptions)
-      let result: string | null
-      if (accountLoader.stakePeriodStart.value) {
-        const seconds = Number.parseFloat(accountLoader.stakePeriodStart.value);
-        result = "Period Started " + dateFormat.format(seconds * 1000)
-      } else {
-        result = null
-      }
-      return result
-    })
 
     //
     // account create transaction
@@ -419,7 +390,7 @@ export default defineComponent({
       notification,
       account: accountLoader.entity,
       normalizedAccountId: accountLoader.accountId,
-      accountChecksum,
+      accountChecksum: accountLoader.accountChecksum,
       accountInfo: accountLoader.accountInfo,
       nodeId: accountLoader.nodeId,
       ethereumAddress: accountLoader.ethereumAddress,
@@ -430,7 +401,7 @@ export default defineComponent({
       displayAllTokenLinks,
       elapsed,
       showContractVisible,
-      stakedSince,
+      stakePeriodStart: accountLoader.stakePeriodStart,
       stakedNodeId: accountLoader.stakedNodeId,
       stakedAccountId: accountLoader.stakedAccountId,
       stakedNodeDescription: stakeNodeLoader.nodeDescription,

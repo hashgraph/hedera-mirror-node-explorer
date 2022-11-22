@@ -137,7 +137,7 @@ describe("Staking.vue", () => {
         // 1.3) Checks staking information
         const ndis = wrapper.findAllComponents(NetworkDashboardItem)
         expect(ndis.length).toBeGreaterThanOrEqual(3)
-        expect(ndis[0].text()).toBe("Staked toAccount 0.0.5since Nov 11, 2022, 00:00 UTC")
+        expect(ndis[0].text()).toBe("Staked toAccount 0.0.5")
         expect(ndis[1].text()).toBe("My Stake0.31669471HBAR")
         expect(ndis[2].text()).toBe("Pending RewardNone")
 
@@ -213,7 +213,7 @@ describe("Staking.vue", () => {
             "Updating stakingOperation completedwith transaction ID:0.0.29624024@1646025139.152901498CLOSE")
 
         // 2.8) Checks staking information
-        expect(ndis[0].text()).toBe("Staked toAccount 0.0.7since Nov 11, 2022, 00:00 UTC")
+        expect(ndis[0].text()).toBe("Staked toAccount 0.0.7")
         expect(ndis[1].text()).toBe("My Stake0.31669471HBAR")
         expect(ndis[2].text()).toBe("Pending RewardNone")
 
