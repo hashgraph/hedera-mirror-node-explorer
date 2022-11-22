@@ -64,9 +64,10 @@
       <template v-slot:title>
           <span class="h-is-primary-title">My Staking </span>
           <span v-if="accountId" class="h-is-tertiary-text"> for account </span>
-          <div v-if="accountId" class="h-is-secondary-text has-text-weight-light mr-3 is-inline-block">
+          <div v-if="accountId" class="h-is-secondary-text has-text-weight-light is-inline-block">
             <AccountLink :account-id="accountId">{{ accountId }}</AccountLink>
           </div>
+          <span v-if="accountChecksum" class="has-text-grey mr-3" style="font-size: 28px">-{{ accountChecksum }}</span>
       </template>
 
       <template v-slot:content>
@@ -74,7 +75,7 @@
         <template v-if="accountId">
           <div v-if="isSmallScreen">
             <div class="is-flex is-justify-content-space-between">
-              <NetworkDashboardItem :name="stakedSince"
+              <NetworkDashboardItem :name="stakePeriodStart ? ('since ' + stakePeriodStart) : null"
                                     title="Staked to"
                                     :value="stakedTo"/>
 
@@ -111,7 +112,8 @@
           </div>
           <div v-else>
             <div class="is-flex-direction-column">
-              <NetworkDashboardItem :name="stakedSince" title="Staked to" :value="stakedTo"/>
+              <NetworkDashboardItem :name="stakePeriodStart ? ('since ' + stakePeriodStart) : null"
+                                    title="Staked to" :value="stakedTo"/>
               <div class="mt-4"/>
               <NetworkDashboardItem :name="stakedAmount ? 'HBAR' : ''" title="My Stake" :value="stakedAmount"/>
               <div class="mt-4"/>
@@ -353,32 +355,7 @@ export default defineComponent({
       return result
     }
 
-    const locale = "en-US"
-    const dateOptions = {
-      weekDay: "short",
-      day: "numeric",
-      month: "short",
-      year: "numeric",
-      minute: "numeric",
-      second: "numeric",
-      timeZoneName: "short",
-      timeZone: "UTC"
-    }
-    const dateFormat = new Intl.DateTimeFormat(locale, dateOptions)
-
     const pendingReward = computed(() => formatHbarAmount(accountLoader.pendingReward.value ?? null))
-
-    const stakedSince = computed(() => {
-      let result: string | null
-      if (isStaked.value && accountLoader.stakePeriodStart.value) {
-        const seconds = Number.parseFloat(accountLoader.stakePeriodStart.value);
-        result = "since " + dateFormat.format(seconds * 1000)
-      } else {
-        result = null
-      }
-      return result
-    })
-
     const declineReward = computed(() => accountLoader.entity.value?.decline_reward ?? false)
     const ignoreReward = computed(() => accountLoader.stakedNodeId.value === null)
 
@@ -489,8 +466,9 @@ export default defineComponent({
       walletName: walletManager.walletName,
       walletIconURL: walletManager.getActiveDriver().iconURL,
       accountId: walletManager.accountId,
+      accountChecksum: accountLoader.accountChecksum,
       account: accountLoader.entity,
-      isStaked,
+      stakePeriodStart: accountLoader.stakePeriodStart,
       showStakingDialog,
       showStopConfirmDialog,
       showWalletChooser,
@@ -502,7 +480,6 @@ export default defineComponent({
       balanceInHbar,
       stakedAmount,
       pendingReward,
-      stakedSince,
       declineReward,
       ignoreReward,
       chooseWallet,
