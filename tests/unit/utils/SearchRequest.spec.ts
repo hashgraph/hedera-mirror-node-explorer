@@ -32,7 +32,7 @@ import {
     SAMPLE_TRANSACTIONS
 } from "../Mocks";
 import {SearchRequest} from "@/utils/SearchRequest";
-import {base64DecToArr, byteToHex} from "@/utils/B64Utils";
+import {base32ToAlias, base64DecToArr, byteToHex} from "@/utils/B64Utils";
 import {EntityID} from "@/utils/EntityID";
 
 const mock = new MockAdapter(axios)
@@ -95,6 +95,7 @@ describe("SearchRequest.ts", () => {
 
         expect(r.searchedId).toBe(SAMPLE_ACCOUNT.account)
         expect(r.account).toStrictEqual(SAMPLE_ACCOUNT)
+        expect(r.accountWithKey).toBeNull()
         expect(r.transactions).toStrictEqual([])
         expect(r.tokenInfo).toBeNull()
         expect(r.topicMessages).toStrictEqual([])
@@ -109,6 +110,7 @@ describe("SearchRequest.ts", () => {
 
         expect(r.searchedId).toBe(SAMPLE_ACCOUNT_ADDRESS)
         expect(r.account).toStrictEqual(SAMPLE_ACCOUNT)
+        expect(r.accountWithKey).toBeNull()
         expect(r.transactions).toStrictEqual([])
         expect(r.tokenInfo).toBeNull()
         expect(r.topicMessages).toStrictEqual([])
@@ -122,7 +124,8 @@ describe("SearchRequest.ts", () => {
         await r.run()
 
         expect(r.searchedId).toBe(SAMPLE_ACCOUNT.key.key)
-        expect(r.account).toStrictEqual(SAMPLE_ACCOUNT)
+        expect(r.account).toBeNull()
+        expect(r.accountWithKey).toStrictEqual(SAMPLE_ACCOUNT)
         expect(r.transactions).toStrictEqual([])
         expect(r.tokenInfo).toBeNull()
         expect(r.topicMessages).toStrictEqual([])
@@ -137,6 +140,23 @@ describe("SearchRequest.ts", () => {
 
         expect(r.searchedId).toBe(SAMPLE_ACCOUNT.alias)
         expect(r.account).toStrictEqual(SAMPLE_ACCOUNT)
+        expect(r.accountWithKey).toBeNull()
+        expect(r.transactions).toStrictEqual([])
+        expect(r.tokenInfo).toBeNull()
+        expect(r.topicMessages).toStrictEqual([])
+        expect(r.contract).toBeNull()
+        expect(r.getErrorCount()).toBe(0)
+
+    })
+
+    test("account (with alias expressed in hex)", async () => {
+        const SAMPLE_ALIAS_HEX = byteToHex(base32ToAlias(SAMPLE_ACCOUNT.alias)!)
+        const r = new SearchRequest(SAMPLE_ALIAS_HEX)
+        await r.run()
+
+        expect(r.searchedId).toBe(SAMPLE_ALIAS_HEX)
+        expect(r.account).toStrictEqual(SAMPLE_ACCOUNT)
+        expect(r.accountWithKey).toBeNull()
         expect(r.transactions).toStrictEqual([])
         expect(r.tokenInfo).toBeNull()
         expect(r.topicMessages).toStrictEqual([])
@@ -155,6 +175,7 @@ describe("SearchRequest.ts", () => {
 
         expect(r.searchedId).toBe(SAMPLE_TRANSACTION.transaction_id)
         expect(r.account).toBeNull()
+        expect(r.accountWithKey).toBeNull()
         expect(r.transactions).toStrictEqual([SAMPLE_TRANSACTION])
         expect(r.tokenInfo).toBeNull()
         expect(r.topicMessages).toStrictEqual([])
@@ -169,6 +190,7 @@ describe("SearchRequest.ts", () => {
 
         expect(r.searchedId).toBe(TRANSACTION_HASH)
         expect(r.account).toBeNull()
+        expect(r.accountWithKey).toBeNull()
         expect(r.transactions).toStrictEqual([SAMPLE_TRANSACTION])
         expect(r.tokenInfo).toBeNull()
         expect(r.topicMessages).toStrictEqual([])
@@ -187,6 +209,7 @@ describe("SearchRequest.ts", () => {
 
         expect(r.searchedId).toBe(SAMPLE_TOKEN.token_id)
         expect(r.account).toBeNull()
+        expect(r.accountWithKey).toBeNull()
         expect(r.transactions).toStrictEqual([])
         expect(r.tokenInfo).toStrictEqual(SAMPLE_TOKEN)
         expect(r.topicMessages).toStrictEqual([])
@@ -201,6 +224,7 @@ describe("SearchRequest.ts", () => {
 
         expect(r.searchedId).toBe(SAMPLE_TOKEN_ADDRESS)
         expect(r.account).toBeNull()
+        expect(r.accountWithKey).toBeNull()
         expect(r.transactions).toStrictEqual([])
         expect(r.tokenInfo).toStrictEqual(SAMPLE_TOKEN)
         expect(r.topicMessages).toStrictEqual([])
@@ -219,6 +243,7 @@ describe("SearchRequest.ts", () => {
 
         expect(r.searchedId).toBe(SAMPLE_TOPIC_ID)
         expect(r.account).toBeNull()
+        expect(r.accountWithKey).toBeNull()
         expect(r.transactions).toStrictEqual([])
         expect(r.tokenInfo).toBeNull()
         expect(r.topicMessages).toStrictEqual(SAMPLE_TOPIC_MESSAGES.messages)
@@ -237,6 +262,7 @@ describe("SearchRequest.ts", () => {
 
         expect(r.searchedId).toBe(SAMPLE_CONTRACT.contract_id)
         expect(r.account).toBeNull()
+        expect(r.accountWithKey).toBeNull()
         expect(r.transactions).toStrictEqual([])
         expect(r.tokenInfo).toBeNull()
         expect(r.topicMessages).toStrictEqual([])
@@ -251,6 +277,7 @@ describe("SearchRequest.ts", () => {
 
         expect(r.searchedId).toBe(SAMPLE_CONTRACT.evm_address)
         expect(r.account).toBeNull()
+        expect(r.accountWithKey).toBeNull()
         expect(r.transactions).toStrictEqual([])
         expect(r.tokenInfo).toBeNull()
         expect(r.topicMessages).toStrictEqual([])
@@ -266,6 +293,7 @@ describe("SearchRequest.ts", () => {
 
         expect(r.searchedId).toBe(UNKNOWN_ID)
         expect(r.account).toBeNull()
+        expect(r.accountWithKey).toBeNull()
         expect(r.transactions).toStrictEqual([])
         expect(r.tokenInfo).toBeNull()
         expect(r.topicMessages).toStrictEqual([])
@@ -280,6 +308,7 @@ describe("SearchRequest.ts", () => {
 
         expect(r.searchedId).toBe(INVALID_EVM_ADDRESS)
         expect(r.account).toBeNull()
+        expect(r.accountWithKey).toBeNull()
         expect(r.transactions).toStrictEqual([])
         expect(r.tokenInfo).toBeNull()
         expect(r.topicMessages).toStrictEqual([])
@@ -291,7 +320,8 @@ describe("SearchRequest.ts", () => {
         await r2.run()
 
         expect(r2.searchedId).toBe(aliasHex2)
-        expect(r.account).toBeNull()
+        expect(r2.account).toBeNull()
+        expect(r2.accountWithKey).toBeNull()
         expect(r2.transactions).toStrictEqual([])
         expect(r2.tokenInfo).toBeNull()
         expect(r2.topicMessages).toStrictEqual([])
@@ -307,6 +337,7 @@ describe("SearchRequest.ts", () => {
 
         expect(r.searchedId).toBe(INVAlID_ID)
         expect(r.account).toBeNull()
+        expect(r.accountWithKey).toBeNull()
         expect(r.transactions).toStrictEqual([])
         expect(r.tokenInfo).toBeNull()
         expect(r.topicMessages).toStrictEqual([])
