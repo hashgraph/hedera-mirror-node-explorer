@@ -53,7 +53,7 @@
           a transaction hash (48 bytes in hexadecimal notation),<br/>
           an ethereum address (20 bytes in hexadecimal notation),<br/>
           an account public key (32 or 33 bytes in hexadecimal notation),<br/>
-          an account alias (string in base 32 notation).<br/>
+          an account alias (string in base 32 or hexadecimal notation).<br/>
         </template>
       </p>
     </div>
