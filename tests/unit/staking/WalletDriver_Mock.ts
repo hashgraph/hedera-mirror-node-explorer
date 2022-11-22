@@ -74,10 +74,15 @@ export class WalletDriver_Mock extends WalletDriver {
                     const stakeNodeId = request.stakedNodeId.toNumber()
                     this.account.staked_node_id = stakeNodeId != -1 ? stakeNodeId : null
                     this.account.staked_account_id = null
+                    this.account.stake_period_start = "1668124800.000000000"
                 } else if (request.stakedAccountId !== null) {
                     const stakedAccountId = request.stakedAccountId.toString()
                     this.account.staked_node_id = null
                     this.account.staked_account_id = stakedAccountId != "0.0.0" ? stakedAccountId : null
+                    this.account.stake_period_start = null
+                }
+                if (!this.account.staked_node_id && !this.account.staked_account_id) {
+                    this.account.stake_period_start = null
                 }
                 if (request.declineStakingRewards !== null) {
                     this.account.decline_reward = request.declineStakingRewards
