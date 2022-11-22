@@ -64,10 +64,10 @@
       <template v-slot:title>
           <span class="h-is-primary-title">My Staking </span>
           <span v-if="accountId" class="h-is-tertiary-text"> for account </span>
-          <div v-if="accountId" class="h-is-secondary-text has-text-weight-light mr-3 is-inline-block">
+          <div v-if="accountId" class="h-is-secondary-text has-text-weight-light is-inline-block">
             <AccountLink :account-id="accountId">{{ accountId }}</AccountLink>
           </div>
-          <span v-if="accountChecksum" class="has-text-grey" style="font-size: 28px">-{{ accountChecksum }}</span>
+          <span v-if="accountChecksum" class="has-text-grey mr-3" style="font-size: 28px">-{{ accountChecksum }}</span>
       </template>
 
       <template v-slot:content>
