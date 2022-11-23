@@ -111,6 +111,18 @@ describe('Search Bar', () => {
         )
     })
 
+    it('should find the transaction by timestamp', () => {
+        const searchTimestamp = "1669195027.532177053"
+        const transactionId = "0.0.282498@1669195016.605846807"
+        testBody(
+            transactionId,
+            '/testnet/transaction/' + normalizeTransactionId(transactionId),
+            'Transaction ',
+            false,
+            searchTimestamp
+        )
+    })
+
     it('should find the NFT ID', () => {
         const searchNFT = "0.0.30961728"
         testBody(searchNFT, '/testnet/token/' + searchNFT, 'Token ', true)
