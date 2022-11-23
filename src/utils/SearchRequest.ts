@@ -27,14 +27,13 @@ import {
     TopicMessage,
     TopicMessagesResponse,
     Transaction,
-    TransactionByIdResponse
+    TransactionByIdResponse, TransactionResponse
 } from "@/schemas/HederaSchemas";
 import axios from "axios";
 import {TransactionID} from "@/utils/TransactionID";
 import {DeferredPromise} from "@/utils/DeferredPromise";
 import {EntityID} from "@/utils/EntityID";
 import {aliasToBase32, base32ToAlias, byteToHex, hexToByte, paddedBytes} from "@/utils/B64Utils";
-
 
 export class SearchRequest {
 
@@ -104,6 +103,7 @@ export class SearchRequest {
         const base32 = base32ToAlias(this.searchedId)
 
         const transactionHash = hexBytes !== null && hexBytes.length == 48 ? byteToHex(hexBytes) : null
+        const transactionTimestamp = this.searchedId.match(/^\d{1,10}(\.\d{1,9})?$/) ? this.searchedId : null
         const ethereumAddress = hexBytes !== null && (1 <= hexBytes.length && hexBytes.length <= 20)
                                 ? byteToHex(paddedBytes(hexBytes, 20)) : null
         const publicKey = hexBytes !== null && (hexBytes.length == 32 || hexBytes.length == 33) ? byteToHex(hexBytes) : null
@@ -157,6 +157,19 @@ export class SearchRequest {
         if (transactionParam !== null) {
             axios
                 .get<TransactionByIdResponse>("api/v1/transactions/" + transactionParam)
+                .then(response => {
+                    this.transactions = response.data.transactions ?? []
+                })
+                .catch((reason: unknown) => {
+                    this.updateErrorCount(reason)
+                    return null // To avoid console pollution
+                })
+                .finally(() => {
+                    this.updatePromise()
+                });
+        } else if (transactionTimestamp !== null) {
+            axios
+                .get<TransactionResponse>("api/v1/transactions?timestamp=" + transactionTimestamp)
                 .then(response => {
                     this.transactions = response.data.transactions ?? []
                 })
