@@ -98,17 +98,18 @@ describe('Search Bar', () => {
             .should('contain', 'Child')  // criteria to check
     })
 
-    //
-    // To be uncommented when api/v1/transactions accepts transaction hash
-    //
-    // it('should find the transaction by hash', () => {
-    //     const searchTransaction = "0x1dc948b993ec66c161f83d8c686b641152d5a6f49b79550db9a22dd0d44cb60cd814c50c3b8abdabb8bc3d457adbfc38"
-    //     testBody(
-    //         searchTransaction,
-    //         '/testnet/transaction/' + searchTransaction,
-    //         'Transaction '
-    //     )
-    // })
+    it('should find the transaction by hash', () => {
+        cy.visit('/mainnet/dashboard')
+        const searchHash = "0xe4c9408e65d41bb0b3a417065e0cd98c1fedc98663db7c06909cb63e0236f39848d80fd006da39326800cb896898a85a"
+        const transactionId = "0.0.19789@1669194618.004968459"
+        testBody(
+            transactionId,
+            '/mainnet/transaction/' + normalizeTransactionId(transactionId),
+            'Transaction ',
+            false,
+            searchHash
+        )
+    })
 
     it('should find the NFT ID', () => {
         const searchNFT = "0.0.30961728"
@@ -160,9 +161,17 @@ describe('Search Bar', () => {
 
 })
 
-const testBody = (searchID: string, expectedPath: string, expectedTitle: string = null, expectTable = false) => {
+const testBody = (searchID: string,
+                  expectedPath: string,
+                  expectedTitle: string = null,
+                  expectTable = false,
+                  searchString: string = null) => {
     cy.get('[data-cy=searchBar]').within(() => {
-        cy.get('input').type(searchID)
+        if (searchString !== null) {
+            cy.get('input').type(searchString )
+        } else {
+            cy.get('input').type(searchID)
+        }
     }).submit()
 
     cy.url({timeout: 5000}).should('include', expectedPath)
