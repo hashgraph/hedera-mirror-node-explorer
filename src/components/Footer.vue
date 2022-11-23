@@ -42,7 +42,7 @@
         <span class="h-is-text-size-1" style="font-weight:300; color: #DBDBDB">
           Built {{ buildTime }}
         </span>
-        <a v-if="termsOfUseURL" :href="termsOfUseURL" style="line-height: 1rem">
+        <a data-cy="termsOfUse" v-if="termsOfUseURL" :href="termsOfUseURL" style="line-height: 1rem">
           <span class="h-is-text-size-3" style="font-weight:300">
            See Terms of Use
           </span>
