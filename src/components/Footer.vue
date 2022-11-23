@@ -90,7 +90,7 @@ export default defineComponent({
 
     const productName = process.env.VUE_APP_PRODUCT_NAME ?? "Hedera Mirror Node Explorer"
     const sponsorURL = process.env.VUE_APP_SPONSOR_URL ?? ""
-    const termsOfUseURL = process.env.VUE_APP_TERMS_OF_USE_URL ?? ""
+    const termsOfUseURL = process.env.VUE_APP_TERMS_OF_USE_URL ? '/' + process.env.VUE_APP_TERMS_OF_USE_URL : ""
 
     return {
       buildTime,
