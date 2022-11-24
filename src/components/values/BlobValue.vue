@@ -25,7 +25,13 @@
 <template>
   <a v-if="isURL" v-bind:href="blobValue">{{ blobValue }}</a>
   <span v-else-if="jsonValue" class="h-is-json is-family-monospace h-is-text-size-3">{{ jsonValue }}</span>
-  <span v-else-if="blobValue">{{ decodedValue }}</span>
+  <template v-else-if="blobValue">
+    <div v-if="limitingFactor && isMediumScreen" class="h-is-one-line is-inline-block"
+         :style="{'max-width': windowWidth-limitingFactor + 'px'}">{{ decodedValue }}</div>
+    <div v-else-if="limitingFactor" class="h-is-one-line is-inline-block"
+         :style="{'max-width': windowWidth-limitingFactor+200 + 'px'}">{{ decodedValue }}</div>
+    <div v-else>{{ decodedValue }}</div>
+  </template>
   <span v-else-if="showNone && !initialLoading" class="has-text-grey">None</span>
   <span v-else/>
 </template>
@@ -55,12 +61,13 @@ export default defineComponent({
     pretty: {
       type: Boolean,
       default: false
-    }
+    },
+    limitingFactor: Number
   },
 
   setup(props) {
-    const isSmallScreen = inject('isSmallScreen', true)
-
+    const isMediumScreen = inject('isMediumScreen', true)
+    const windowWidth = inject('windowWidth')
     const isURL = computed(() => {
       let result: boolean
       if (props.blobValue) {
@@ -117,7 +124,8 @@ export default defineComponent({
     const initialLoading = inject(initialLoadingKey, ref(false))
 
     return {
-      isSmallScreen,
+      isMediumScreen,
+      windowWidth,
       isURL,
       jsonValue,
       decodedValue,
@@ -140,5 +148,11 @@ export default defineComponent({
   .h-is-json {
     white-space: normal;
   }
+}
+
+.h-is-one-line {
+  overflow: hidden;
+  white-space: nowrap;
+  text-overflow: ellipsis;
 }
 </style>

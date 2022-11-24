@@ -57,7 +57,7 @@
 
       <o-table-column v-slot="props" field="message" label="Message">
         <div class="should-wrap">
-          <BlobValue v-bind:blob-value="props.row.message" v-bind:base64="true" v-bind:show-none="true"/>
+          <BlobValue :blob-value="props.row.message" :base64="true" :limiting-factor="520" :show-none="true"/>
         </div>
       </o-table-column>
 
