@@ -24,7 +24,8 @@
 
 <template>
   <a v-if="isURL" v-bind:href="blobValue">{{ blobValue }}</a>
-  <span v-else-if="jsonValue" class="h-is-json is-family-monospace h-is-text-size-3">{{ jsonValue }}</span>
+  <div v-else-if="jsonValue"
+       class="h-is-json is-inline-block has-text-left is-family-monospace h-is-text-size-3">{{ jsonValue }}</div>
   <template v-else-if="blobValue">
     <div v-if="limitingFactor && isMediumScreen" class="h-is-one-line is-inline-block"
          :style="{'max-width': windowWidth-limitingFactor + 'px'}">{{ decodedValue }}</div>
@@ -140,19 +141,4 @@ export default defineComponent({
 <!--                                                      STYLE                                                      -->
 <!-- --------------------------------------------------------------------------------------------------------------- -->
 
-<style>
-.h-is-json {
-  white-space: pre-wrap;
-}
-@media (max-width: 767px) {
-  .h-is-json {
-    white-space: normal;
-  }
-}
-
-.h-is-one-line {
-  overflow: hidden;
-  white-space: nowrap;
-  text-overflow: ellipsis;
-}
-</style>
+<style/>
