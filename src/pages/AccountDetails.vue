@@ -159,7 +159,7 @@
                 </template>
               </Property>
             <Property id="key">
-              <template v-slot:name>Key</template>
+              <template v-slot:name>Admin Key</template>
               <template v-slot:value>
                 <KeyValue :key-bytes="account?.key?.key" :key-type="account?.key?._type" :show-none="true"/>
               </template>
