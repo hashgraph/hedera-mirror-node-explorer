@@ -371,6 +371,7 @@ export interface TopicMessagesResponse {
 }
 
 export interface TopicMessage {
+    chunk_info: ChunkInfo | null,
     consensus_timestamp: string,
     topic_id: string | null,
     message: string,
@@ -379,6 +380,18 @@ export interface TopicMessage {
     sequence_number: number
 }
 
+export interface ChunkInfo {
+    initial_transaction_id: TransactionId,
+    number: number,
+    total: number
+}
+
+export interface TransactionId {
+    account_id: string | null,
+    nonce: number | null,
+    scheduled: boolean | null,
+    transaction_valid_start: string
+}
 
 // ---------------------------------------------------------------------------------------------------------------------
 //                                                      Contract
