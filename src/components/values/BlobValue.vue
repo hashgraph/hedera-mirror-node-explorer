@@ -24,6 +24,7 @@
 
 <template>
   <a v-if="isURL" v-bind:href="blobValue">{{ blobValue }}</a>
+  <span v-else-if="jsonValue" class="h-is-json is-family-monospace h-is-text-size-3">{{ jsonValue }}</span>
   <span v-else-if="blobValue">{{ decodedValue }}</span>
   <span v-else-if="showNone && !initialLoading" class="has-text-grey">None</span>
   <span v-else/>
@@ -50,10 +51,16 @@ export default defineComponent({
     base64: {
       type: Boolean,
       default: false
+    },
+    pretty: {
+      type: Boolean,
+      default: false
     }
   },
 
   setup(props) {
+    const isSmallScreen = inject('isSmallScreen', true)
+
     const isURL = computed(() => {
       let result: boolean
       if (props.blobValue) {
@@ -65,6 +72,23 @@ export default defineComponent({
         }
       } else {
         result = false
+      }
+      return result
+    })
+
+    const jsonValue = computed(() => {
+      let result
+      if (decodedValue.value && props.pretty) {
+        try {
+          result = JSON.parse(decodedValue.value)
+          const sValue = Buffer.from(result.s, 'base64').toString()
+          console.log("s: " + result.s)
+          console.log("sValue: " + sValue)
+        } catch (e) {
+          result = null
+        }
+      } else {
+        result = null
       }
       return result
     })
@@ -93,7 +117,9 @@ export default defineComponent({
     const initialLoading = inject(initialLoadingKey, ref(false))
 
     return {
+      isSmallScreen,
       isURL,
+      jsonValue,
       decodedValue,
       initialLoading
     }
@@ -106,4 +132,13 @@ export default defineComponent({
 <!--                                                      STYLE                                                      -->
 <!-- --------------------------------------------------------------------------------------------------------------- -->
 
-<style/>
+<style>
+.h-is-json {
+  white-space: pre-wrap;
+}
+@media (max-width: 767px) {
+  .h-is-json {
+    white-space: normal;
+  }
+}
+</style>
