@@ -61,6 +61,7 @@ export default defineComponent({
     provide('isTouchDevice', isTouchDevice)
 
     const windowWidth = ref(window.screen.width)
+    provide('windowWidth', windowWidth)
 
     const isSmallScreen = computed(() => {
       return windowWidth.value > SMALL_BREAKPOINT
