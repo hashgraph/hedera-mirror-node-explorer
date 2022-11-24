@@ -32,7 +32,7 @@
         <span class="h-is-secondary-text">{{ normalizedAccountId ?? "" }}</span>
         <span v-if="accountChecksum" class="has-text-grey" style="font-size: 28px">-{{ accountChecksum }}</span>
         <span v-if="showContractVisible" class="is-inline-block ml-3" id="showContractLink">
-          <router-link :to="{name: 'ContractDetails', params: {contractId: accountId}}">
+          <router-link :to="{name: 'ContractDetails', params: {contractId: normalizedAccountId}}">
             <span class="h-is-property-text">Show associated contract</span>
           </router-link>
         </span>
