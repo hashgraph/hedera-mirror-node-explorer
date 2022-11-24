@@ -193,6 +193,25 @@ describe('Account Navigation', () => {
         cy.contains('Account ' + accountId)
     })
 
+    it('should follow link to associated contract and back using evm address', () => {
+        const accountID = "0.0.48949369"
+        const evmAddress = "0x0000000000000000000000000000000002eAE879"
+
+        cy.visit('testnet/account/' + evmAddress)
+        cy.url().should('include', '/testnet/account/' + evmAddress)
+        cy.contains('Account ' + accountID)
+        cy.contains('a', "Show associated contract")
+            .click()
+
+        cy.url().should('include', '/testnet/contract/' + accountID)
+        cy.contains('Contract ' + accountID)
+        cy.contains('a', "Show associated account")
+            .click()
+
+        cy.url().should('include', '/testnet/account/' + accountID)
+        cy.contains('Account ' + accountID)
+    })
+
     it('should not show a link to associated contract', () => {
         const accountId = '0.0.47981544'
         const searchId = '0.0.3'
