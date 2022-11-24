@@ -20,6 +20,8 @@
 
 // https://docs.cypress.io/api/introduction/api.html
 
+import {normalizeTransactionId} from "../../../src/utils/TransactionID";
+
 describe('Topic Navigation', () => {
 
     it('should navigate from topic table to topic messages', () => {
@@ -41,4 +43,32 @@ describe('Topic Navigation', () => {
             })
     })
 
+    it('should navigate from transaction details to topic message table back to transaction', () => {
+        let transactionId = "0.0.48961401@1669313485.710762293"
+        cy.visit('/testnet/transaction/' + normalizeTransactionId(transactionId))
+        cy.url().should('include', '/testnet/transaction/' + normalizeTransactionId(transactionId))
+        cy.contains('Transaction ' + transactionId)
+
+        cy.get('#entityId')
+            .find('a')
+            .click()
+            .then(($topicId) => {
+                cy.url().should('include', '/testnet/topic/' + $topicId.text())
+                cy.contains('Messages for Topic ' + $topicId.text())
+
+                cy.get('table')
+                    .find('tbody tr')
+                    .should('have.length.at.least', 2)
+                    .eq(0)
+                    .find('td')
+                    .eq(0)
+                    .click()
+                    .then(($seqNumber) => {
+                        cy.url().should('include', '/testnet/transaction/')
+                        cy.contains('Topic ID' + $topicId.text())
+                        cy.contains('Message Submitted')
+                        cy.contains('Sequence Number' + $seqNumber.text())
+                    })
+            })
+    })
 })
