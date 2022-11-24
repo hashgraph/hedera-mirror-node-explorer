@@ -229,7 +229,7 @@
         <Property id="sequenceNumber" :full-width="true">
           <template v-slot:name>Sequence Number</template>
           <template v-slot:value>
-            <PlainAmount :amount="sequence_number"/>
+            {{ sequence_number }}
           </template>
         </Property>
         <Property id="message" :full-width="true">
