@@ -221,6 +221,8 @@
       </template>
     </DashboardCard>
 
+    <TopicMessage :message-loader="topicMessageLoader"/>
+
     <ContractResult v-if="hasContractResult" :transaction-id-or-hash="transaction?.transaction_id"/>
 
   </section>
@@ -254,6 +256,9 @@ import Property from "@/components/Property.vue";
 import DurationValue from "@/components/values/DurationValue.vue";
 import BlockLink from "@/components/values/BlockLink.vue";
 import ContractResult from "@/components/contract/ContractResult.vue";
+import {TransactionType} from "@/schemas/HederaSchemas";
+import TopicMessage from "@/components/topic/TopicMessage.vue";
+import {TopicMessageLoader} from "@/components/topic/TopicMessageLoader";
 
 const MAX_INLINE_CHILDREN = 9
 
@@ -262,6 +267,7 @@ export default defineComponent({
   name: 'TransactionDetails',
 
   components: {
+    TopicMessage,
     ContractResult,
     BlockLink,
     Property,
@@ -279,7 +285,7 @@ export default defineComponent({
     network: String
   },
 
-  setup(props) {
+  setup: function (props) {
     const isSmallScreen = inject('isSmallScreen', true)
     const isLargeScreen = inject('isLargeScreen', true)
     const isTouchDevice = inject('isTouchDevice', false)
@@ -297,7 +303,7 @@ export default defineComponent({
     })
 
     const displayAllChildrenLinks = computed(
-        () => transactionLoader.childTransactions.value.length > MAX_INLINE_CHILDREN )
+        () => transactionLoader.childTransactions.value.length > MAX_INLINE_CHILDREN)
 
     const notification = computed(() => {
       let result
@@ -316,6 +322,13 @@ export default defineComponent({
     const routeName = computed(() => {
       return transactionLoader.entityDescriptor.value?.routeName
     })
+
+    const messageTimestamp = computed(() =>
+        (transactionLoader.transactionType.value === TransactionType.CONSENSUSSUBMITMESSAGE)
+            ? transactionLoader.consensusTimestamp.value ?? ""
+            : ""
+    )
+    const topicMessageLoader = new TopicMessageLoader(messageTimestamp)
 
     return {
       isSmallScreen,
@@ -342,6 +355,7 @@ export default defineComponent({
       makeOperatorAccountLabel,
       showAllTransactionVisible,
       displayAllChildrenLinks,
+      topicMessageLoader
     }
   },
 })

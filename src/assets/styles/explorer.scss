@@ -191,6 +191,15 @@ body {
     content: "\210F";
     font-weight: lighter;
 }
+.h-is-json {
+    white-space: pre-wrap;
+}
+.h-is-one-line {
+    overflow: hidden;
+    white-space: nowrap;
+    text-overflow: ellipsis;
+}
+
 .w200 {
     max-width: 200px;
     overflow: hidden;
