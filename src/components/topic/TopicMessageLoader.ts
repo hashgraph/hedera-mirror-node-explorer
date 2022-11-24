@@ -25,13 +25,13 @@ import {computed, ComputedRef, Ref} from "vue";
 
 export class TopicMessageLoader extends EntityLoader<TopicMessage> {
 
-    public readonly timestamp: Ref<string|null>
+    public readonly timestamp: Ref<string>
 
     //
     // Public
     //
 
-    public constructor(timestamp: Ref<string|null>) {
+    public constructor(timestamp: Ref<string>) {
         super()
         this.timestamp = timestamp
         this.watchAndReload([this.timestamp])
@@ -52,7 +52,8 @@ export class TopicMessageLoader extends EntityLoader<TopicMessage> {
     protected async load(): Promise<AxiosResponse<TopicMessage>|null> {
         console.log("load - timestamp: " + this.timestamp.value)
         let result: Promise<AxiosResponse<TopicMessage>|null>
-        if (this.timestamp.value != null) {
+
+        if (this.timestamp.value) {
             result = axios.get<TopicMessage>("api/v1/topics/messages/" + this.timestamp.value)
         } else {
             result = Promise.resolve(null)

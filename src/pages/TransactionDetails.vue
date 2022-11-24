@@ -221,37 +221,7 @@
       </template>
     </DashboardCard>
 
-    <DashboardCard class="h-card">
-      <template v-slot:title>
-        <span class="h-is-secondary-title">Message Submitted</span>
-      </template>
-      <template v-slot:content>
-        <Property id="sequenceNumber" :full-width="true">
-          <template v-slot:name>Sequence Number</template>
-          <template v-slot:value>
-            {{ sequence_number }}
-          </template>
-        </Property>
-        <Property id="message" :full-width="true">
-          <template v-slot:name>Message</template>
-          <template v-slot:value>
-            <BlobValue :blob-value="message" :show-none="true" :base64="true" :pretty="true" class="should-wrap is-numeric"/>
-          </template>
-        </Property>
-        <Property id="runningHashVersion" :full-width="true">
-          <template v-slot:name>Running Hash Version</template>
-          <template v-slot:value>
-            <PlainAmount :amount="running_hash_version"/>
-          </template>
-        </Property>
-        <Property id="runningHash" :full-width="true">
-          <template v-slot:name>Running Hash</template>
-          <template v-slot:value>
-            <BlobValue :blob-value="running_hash" :show-none="true" class="should-wrap is-numeric"/>
-          </template>
-        </Property>
-      </template>
-    </DashboardCard>
+    <TopicMessage :message-loader="topicMessageLoader"/>
 
     <ContractResult v-if="hasContractResult" :transaction-id-or-hash="transaction?.transaction_id"/>
 
@@ -287,8 +257,8 @@ import DurationValue from "@/components/values/DurationValue.vue";
 import BlockLink from "@/components/values/BlockLink.vue";
 import ContractResult from "@/components/contract/ContractResult.vue";
 import {TransactionType} from "@/schemas/HederaSchemas";
+import TopicMessage from "@/components/topic/TopicMessage.vue";
 import {TopicMessageLoader} from "@/components/topic/TopicMessageLoader";
-import PlainAmount from "@/components/values/PlainAmount.vue";
 
 const MAX_INLINE_CHILDREN = 9
 
@@ -297,7 +267,7 @@ export default defineComponent({
   name: 'TransactionDetails',
 
   components: {
-    PlainAmount,
+    TopicMessage,
     ContractResult,
     BlockLink,
     Property,
@@ -355,10 +325,9 @@ export default defineComponent({
 
     const messageTimestamp = computed(() =>
         (transactionLoader.transactionType.value === TransactionType.CONSENSUSSUBMITMESSAGE)
-            ? transactionLoader.consensusTimestamp.value
-            : null
+            ? transactionLoader.consensusTimestamp.value ?? ""
+            : ""
     )
-
     const topicMessageLoader = new TopicMessageLoader(messageTimestamp)
 
     return {
@@ -386,10 +355,7 @@ export default defineComponent({
       makeOperatorAccountLabel,
       showAllTransactionVisible,
       displayAllChildrenLinks,
-      sequence_number: topicMessageLoader.sequence_number,
-      message: topicMessageLoader.message,
-      running_hash_version: topicMessageLoader.running_hash_version,
-      running_hash: topicMessageLoader.running_hash
+      topicMessageLoader
     }
   },
 })
