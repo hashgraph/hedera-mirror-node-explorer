@@ -68,7 +68,7 @@ export default defineComponent({
 
   setup(props) {
     const isMediumScreen = inject('isMediumScreen', true)
-    const windowWidth = inject('windowWidth')
+    const windowWidth = inject('windowWidth', 1280)
     const isURL = computed(() => {
       let result: boolean
       if (props.blobValue) {
