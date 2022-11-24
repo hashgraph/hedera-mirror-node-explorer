@@ -89,9 +89,6 @@ export default defineComponent({
       if (decodedValue.value && props.pretty) {
         try {
           result = JSON.parse(decodedValue.value)
-          const sValue = Buffer.from(result.s, 'base64').toString()
-          console.log("s: " + result.s)
-          console.log("sValue: " + sValue)
         } catch (e) {
           result = null
         }
