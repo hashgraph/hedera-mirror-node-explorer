@@ -44,13 +44,13 @@
         <Property id="from">
           <template v-slot:name>From</template>
           <template v-slot:value>
-            <EVMAddress :address="contractResult?.from"/>
+            <EVMAddress :address="contractResult?.from" :id="fromId"/>
           </template>
         </Property>
         <Property id="to">
           <template v-slot:name>To</template>
           <template v-slot:value>
-            <EVMAddress :address="contractResult?.to"/>
+            <EVMAddress :address="contractResult?.to" :id="toId"/>
           </template>
         </Property>
         <Property id="type">
@@ -145,6 +145,7 @@ import ContractResultLogs from "@/components/contract/ContractResultLogs.vue";
 import FunctionInputValue from "@/components/values/FunctionInputValue.vue";
 import FunctionResultValue from "@/components/values/FunctionResultValue.vue";
 import {FunctionCallAnalyzer} from "@/utils/FunctionCallAnalyzer";
+import {EntityID} from "@/utils/EntityID";
 
 export default defineComponent({
 
@@ -177,6 +178,29 @@ export default defineComponent({
     const isSmallScreen = inject('isSmallScreen', true)
     const isTouchDevice = inject('isTouchDevice', false)
 
+    const fromId = computed(() => {
+      let result
+      if (contractResultDetailsLoader.entity.value?.from) {
+        const entity = EntityID.fromAddress(contractResultDetailsLoader.entity.value?.from)
+        result = entity ? entity.toString() : null
+      } else {
+        result = null
+      }
+      return result
+    })
+
+    const toId = computed(() => {
+      let result
+      if (contractResultDetailsLoader.entity.value?.from) {
+        const entity = EntityID.fromAddress(contractResultDetailsLoader.entity.value?.to)
+        result = entity ? entity.toString() : null
+      } else {
+        result = null
+      }
+      return result
+    })
+
+
     const maxFeePerGas = computed(() => {
       return (contractResultDetailsLoader.entity.value?.max_fee_per_gas !== null)
           ? Number(filter0x(contractResultDetailsLoader.entity.value?.max_fee_per_gas))
@@ -207,6 +231,8 @@ export default defineComponent({
     return {
       isSmallScreen,
       isTouchDevice,
+      fromId,
+      toId,
       maxFeePerGas,
       maxPriorityFeePerGas,
       contractResult: contractResultDetailsLoader.entity,
