@@ -21,7 +21,8 @@
 import {ContractResultDetails} from "@/schemas/HederaSchemas";
 import {EntityLoader} from "@/utils/loader/EntityLoader";
 import axios, {AxiosResponse} from "axios";
-import {Ref} from "vue";
+import {computed, Ref} from "vue";
+import {EntityID} from "@/utils/EntityID";
 
 export class ContractResultDetailsLoader extends EntityLoader<ContractResultDetails> {
 
@@ -43,6 +44,16 @@ export class ContractResultDetailsLoader extends EntityLoader<ContractResultDeta
         this.watchAndReload([this.contractId, this.timestamp, this.transactionIdOrHash])
     }
 
+    public readonly actualContractId = computed(() => {
+        let result: string|null
+        if (this.entity.value !== null) {
+            const entityID = EntityID.fromAddress(this.entity.value?.to)
+            result = entityID !== null ? entityID.toString() : null
+        } else {
+            result = null
+        }
+        return result
+    })
 
     //
     // EntityLoader

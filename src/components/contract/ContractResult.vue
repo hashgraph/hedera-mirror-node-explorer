@@ -62,7 +62,7 @@
         <Property id="functionParameters">
           <template v-slot:name>Function Parameters</template>
           <template v-slot:value>
-            <HexaValue :byte-string ="contractResult?.function_parameters" v-bind:show-none="true"/>
+            <FunctionInputValue :byte-string="contractResult?.function_parameters" :contract-id="contractId"/>
           </template>
         </Property>
         <Property id="errorMessage">
@@ -136,12 +136,14 @@ import ContractResultTrace from "@/components/contract/ContractResultTrace.vue";
 import ContractResultStates from "@/components/contract/ContractResultStates.vue";
 import EVMAddress from "@/components/values/EVMAddress.vue";
 import ContractResultLogs from "@/components/contract/ContractResultLogs.vue";
+import FunctionInputValue from "@/components/values/FunctionInputValue.vue";
 
 export default defineComponent({
 
   name: 'ContractResult',
 
   components: {
+    FunctionInputValue,
     ContractResultLogs,
     EVMAddress,
     ContractResultStates,
@@ -175,7 +177,8 @@ export default defineComponent({
     return {
       isSmallScreen,
       isTouchDevice,
-      contractResult: contractResultDetailsLoader.entity
+      contractResult: contractResultDetailsLoader.entity,
+      contractId: contractResultDetailsLoader.actualContractId
     }
   },
 });

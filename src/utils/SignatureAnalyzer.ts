@@ -95,11 +95,13 @@ export class SignatureAnalyzer {
                 }
                 case "SYSTEM": {
                     this.functionHashRef.value = this.makeInputPrefix()
-                    if (this.functionHashRef.value !== null) {
+                    if (this.action.value.input) {
                         const contractID = this.action.value.recipient ? EntityID.parse(this.action.value.recipient) : null
                         const contractEntry = contractID !== null ? systemContractRegistry.lookup(contractID.toString()) : null
                         if (contractEntry !== null) {
-                            this.signatureRef.value = contractEntry.signatures.get(this.functionHashRef.value) ?? null
+                            contractEntry.getSignature(this.action.value.input).then((signature: string|null) => {
+                                this.signatureRef.value = signature
+                            })
                         }
                     }
                 }

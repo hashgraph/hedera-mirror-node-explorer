@@ -1,3 +1,5 @@
+// noinspection DuplicatedCode
+
 /*-
  *
  * Hedera Mirror Node Explorer
@@ -63,6 +65,11 @@ describe("SignatureAnalyzer.spec.ts", () => {
 
     test("call_type: SYSTEM", async () => {
 
+        const abi = require('../../../public/abi/IHederaTokenService.json')
+        const mock = new MockAdapter(axios);
+        const matcher1 = "http://localhost/abi/IHederaTokenService.json"
+        mock.onGet(matcher1).reply(200, abi)
+
         const action: Ref<ContractAction|null> = ref(null)
 
         const analyzer = new SignatureAnalyzer(action)
@@ -75,8 +82,8 @@ describe("SignatureAnalyzer.spec.ts", () => {
 
         action.value = SAMPLE_CONTRACT_ACTIONS.actions[3] as ContractAction
         await flushPromises()
-        expect(analyzer.functionHash.value).toBe("0x189a554c")
-        expect(analyzer.signature.value).toBe("cryptoTransfer((address,(address,int64)[],(address,address,int64)[])[]) -> (int)")
+        expect(analyzer.functionHash.value).toBe("0x49146bde")
+        expect(analyzer.signature.value).toBe("associateToken(address,address)")
 
         action.value = null
         await nextTick()
