@@ -77,25 +77,25 @@
         <Property id="gasLimit">
           <template v-slot:name>Gas Limit</template>
           <template v-slot:value>
-            <PlainAmount :amount="contractResult?.gas_limit"/>
+            <PlainAmount :amount="contractResult?.gas_limit" none-label="None"/>
           </template>
         </Property>
         <Property id="gasUsed">
           <template v-slot:name>Gas Used</template>
           <template v-slot:value>
-            <PlainAmount :amount="contractResult?.gas_used"/>
+            <PlainAmount :amount="contractResult?.gas_used" none-label="None"/>
           </template>
         </Property>
         <Property id="maxFeePerGas">
           <template v-slot:name>Max Fee Per Gas</template>
           <template v-slot:value>
-            <StringValue :string-value="contractResult?.max_fee_per_gas"/>
+            <PlainAmount :amount="maxFeePerGas" none-label="None"/>
           </template>
         </Property>
         <Property id="maxPriorityFeePerGas">
           <template v-slot:name>Max Priority Fee Per Gas</template>
           <template v-slot:value>
-            <StringValue :string-value="contractResult?.max_priority_fee_per_gas"/>
+            <PlainAmount :amount="maxPriorityFeePerGas" none-label="None"/>
           </template>
         </Property>
         <Property id="gasPrice">
@@ -168,15 +168,31 @@ export default defineComponent({
     const isSmallScreen = inject('isSmallScreen', true)
     const isTouchDevice = inject('isTouchDevice', false)
 
+    const maxFeePerGas = computed(() => {
+      return (contractResultDetailsLoader.entity.value?.max_fee_per_gas !== null)
+          ? Number(filter0x(contractResultDetailsLoader.entity.value?.max_fee_per_gas))
+          : null
+    })
+
+    const maxPriorityFeePerGas = computed(() => {
+      return (contractResultDetailsLoader.entity.value?.max_priority_fee_per_gas !== null)
+          ? Number(filter0x(contractResultDetailsLoader.entity.value?.max_priority_fee_per_gas))
+          : null
+    })
+
     const contractResultDetailsLoader = new ContractResultDetailsLoader(
         ref(null),
         ref(null),
         computed(() => props.transactionIdOrHash ?? null))
     onMounted(() => contractResultDetailsLoader.requestLoad())
 
+    const filter0x = (value: string|null|undefined) => value === '0x' ? '0' : value
+
     return {
       isSmallScreen,
       isTouchDevice,
+      maxFeePerGas,
+      maxPriorityFeePerGas,
       contractResult: contractResultDetailsLoader.entity,
       contractId: contractResultDetailsLoader.actualContractId
     }
