@@ -58,21 +58,33 @@ export class SystemContractEntry {
         if (this.interface === null) {
             this.interface = await SystemContractEntry.loadInterface(this.abiFileName)
         }
+        const result = this.interface?.parseTransaction({data: data}) ?? null
+        return Promise.resolve(result)
+    }
 
-        return this.interface?.parseTransaction({data: data}) ?? null
+    async decodeFunctionResult(functionFragment: ethers.utils.FunctionFragment, resultData: string): Promise<ethers.utils.Result|null> {
+        if (this.interface === null) {
+            this.interface = await SystemContractEntry.loadInterface(this.abiFileName)
+        }
+        const result = this.interface?.decodeFunctionResult(functionFragment, resultData) ?? null
+        return Promise.resolve(result)
     }
 
     async getSignature(data: string): Promise<string|null> {
         if (this.interface === null) {
             this.interface = await SystemContractEntry.loadInterface(this.abiFileName)
         }
-
-        return this.interface?.parseTransaction({data: data})?.signature ?? null
+        const result = this.interface?.parseTransaction({data: data})?.signature ?? null
+        return Promise.resolve(result)
     }
 
     //
     // Private
     //
+
+    /*
+        https://docs.ethers.io/v5/api/utils/abi/interface/
+     */
 
     private static async loadInterface(abiFileName: string): Promise<ethers.utils.Interface|null> {
         let result: ethers.utils.Interface|null
