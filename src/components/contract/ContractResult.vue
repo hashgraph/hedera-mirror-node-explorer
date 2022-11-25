@@ -65,6 +65,12 @@
             <FunctionInputValue :byte-string="contractResult?.function_parameters" :contract-id="contractId"/>
           </template>
         </Property>
+        <Property id="callResult">
+          <template v-slot:name>Call Result</template>
+          <template v-slot:value>
+            <HexaValue :byte-string="contractResult?.call_result"/>
+          </template>
+        </Property>
         <Property id="errorMessage">
           <template v-slot:name>Error Message</template>
           <template v-slot:value>
