@@ -28,6 +28,16 @@
     <HexaValue :byte-string="byteString"/>
     <div v-if="signature">
       <div class="has-text-grey h-is-text-size-3">{{ signature }}</div>
+      <table class="has-text-grey h-is-text-size-3">
+        <tbody>
+          <template v-for="kv in parameters" :key="kv">
+            <tr>
+              <td>{{ kv[0] }}</td>
+              <td style="padding-left: 10px">{{ kv[1] }}</td>
+            </tr>
+          </template>
+        </tbody>
+      </table>
     </div>
   </div>
   <div v-else-if="initialLoading"/>
@@ -47,6 +57,7 @@ import {computed, defineComponent, inject, onMounted, ref, watch} from 'vue';
 import {initialLoadingKey} from "@/AppKeys";
 import {systemContractRegistry} from "@/schemas/SystemContractRegistry";
 import HexaValue from "@/components/values/HexaValue.vue";
+import {ethers} from "ethers";
 
 export default defineComponent({
   name: 'FunctionInputValue',
@@ -62,24 +73,41 @@ export default defineComponent({
       return props.contractId ? systemContractRegistry.lookup(props.contractId) : null
     })
 
-    const signature = ref<string|null>(null)
-    const updateSignature = () => {
+    const transactionDescription = ref<ethers.utils.TransactionDescription|null>(null)
+    const updateTransactionDescription = () => {
       if (systemContractEntry.value !== null && props.byteString) {
-        systemContractEntry.value?.getSignature(props.byteString)
-            .then((s: string|null) => {
-              signature.value = s
+        systemContractEntry.value?.parseTransaction(props.byteString)
+            .then((td: ethers.utils.TransactionDescription|null) => {
+              transactionDescription.value = td
             })
-            .catch(() => { signature.value = null })
+            .catch(() => { transactionDescription.value = null })
       } else {
-        signature.value = null
+        transactionDescription.value = null
       }
     }
-    watch([systemContractEntry, () => props.byteString], () => updateSignature())
-    onMounted(() => updateSignature())
+    watch([systemContractEntry, () => props.byteString], () => updateTransactionDescription())
+    onMounted(() => updateTransactionDescription())
+
+    const signature = computed(() => {
+      return transactionDescription.value?.signature ?? null
+    })
+
+    const parameters = computed(() => {
+      const result: [string,string][] = []
+      const args = transactionDescription.value?.args as Array<unknown> ?? []
+      const inputs = transactionDescription.value?.functionFragment.inputs as Array<ethers.utils.ParamType>?? []
+      for (let i = 0; i < args.length; i += 1) {
+        const key = i < inputs.length ? inputs[i].name : "?"
+        const value = JSON.stringify(args[i])
+        result.push([key, value])
+      }
+      return result
+    })
 
     const initialLoading = inject(initialLoadingKey, ref(false))
     return {
       signature,
+      parameters,
       initialLoading
     }
   }

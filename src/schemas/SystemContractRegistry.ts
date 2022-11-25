@@ -53,14 +53,14 @@ export class SystemContractEntry {
         this.description = description
         this.abiFileName = abiFileName
     }
-    //
-    // async parseTransaction(data: string): Promise<unknown|null> {
-    //     if (this.interface === null) {
-    //         this.interface = await SystemContractEntry.loadInterface(this.abiFileName)
-    //     }
-    //
-    //     return this.interface?.parseTransaction({data})
-    // }
+
+    async parseTransaction(data: string): Promise<ethers.utils.TransactionDescription|null> {
+        if (this.interface === null) {
+            this.interface = await SystemContractEntry.loadInterface(this.abiFileName)
+        }
+
+        return this.interface?.parseTransaction({data: data}) ?? null
+    }
 
     async getSignature(data: string): Promise<string|null> {
         if (this.interface === null) {
