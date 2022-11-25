@@ -62,13 +62,13 @@
         <Property id="functionParameters">
           <template v-slot:name>Function Parameters</template>
           <template v-slot:value>
-            <FunctionInputValue :byte-string="contractResult?.function_parameters" :contract-id="contractId"/>
+            <FunctionInputValue :analyzer="functionCallAnalyzer"/>
           </template>
         </Property>
         <Property id="callResult">
           <template v-slot:name>Call Result</template>
           <template v-slot:value>
-            <HexaValue :byte-string="contractResult?.call_result"/>
+            <FunctionResultValue :analyzer="functionCallAnalyzer"/>
           </template>
         </Property>
         <Property id="errorMessage">
@@ -130,7 +130,7 @@
 
 <script lang="ts">
 
-import {computed, defineComponent, inject, onMounted, ref} from 'vue';
+import {computed, defineComponent, inject, onBeforeUnmount, onMounted, ref} from 'vue';
 import {ContractResultDetailsLoader} from "@/components/contract/ContractResultDetailsLoader";
 import HexaValue from "@/components/values/HexaValue.vue";
 import DashboardCard from "@/components/DashboardCard.vue";
@@ -143,6 +143,8 @@ import ContractResultStates from "@/components/contract/ContractResultStates.vue
 import EVMAddress from "@/components/values/EVMAddress.vue";
 import ContractResultLogs from "@/components/contract/ContractResultLogs.vue";
 import FunctionInputValue from "@/components/values/FunctionInputValue.vue";
+import FunctionResultValue from "@/components/values/FunctionResultValue.vue";
+import {FunctionCallAnalyzer} from "@/utils/FunctionCallAnalyzer";
 
 export default defineComponent({
 
@@ -150,6 +152,7 @@ export default defineComponent({
 
   components: {
     FunctionInputValue,
+    FunctionResultValue,
     ContractResultLogs,
     EVMAddress,
     ContractResultStates,
@@ -194,13 +197,20 @@ export default defineComponent({
 
     const filter0x = (value: string|null|undefined) => value === '0x' ? '0' : value
 
+    const functionCallAnalyzer = new FunctionCallAnalyzer(
+        contractResultDetailsLoader.functionParameters,
+        contractResultDetailsLoader.callResult,
+        contractResultDetailsLoader.actualContractId)
+    onMounted(() => functionCallAnalyzer.mount())
+    onBeforeUnmount(() => functionCallAnalyzer.unmount())
+
     return {
       isSmallScreen,
       isTouchDevice,
       maxFeePerGas,
       maxPriorityFeePerGas,
       contractResult: contractResultDetailsLoader.entity,
-      contractId: contractResultDetailsLoader.actualContractId
+      functionCallAnalyzer: functionCallAnalyzer,
     }
   },
 });
