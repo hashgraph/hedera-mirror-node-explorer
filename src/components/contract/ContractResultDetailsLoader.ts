@@ -55,6 +55,14 @@ export class ContractResultDetailsLoader extends EntityLoader<ContractResultDeta
         return result
     })
 
+    public functionParameters = computed(() => {
+        return this.entity.value?.function_parameters ?? null
+    })
+
+    public callResult = computed(() => {
+        return this.entity.value?.call_result ?? null
+    })
+
     //
     // EntityLoader
     //

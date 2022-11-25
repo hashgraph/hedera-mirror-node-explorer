@@ -24,22 +24,19 @@
 
 <template>
 
-  <div v-if="input">
-    <HexaValue :byte-string="input"/>
-    <div v-if="signature">
-      <div class="has-text-grey h-is-text-size-3">{{ signature }}</div>
-      <table class="has-text-grey h-is-text-size-3">
-        <tbody>
-          <template v-for="(v,i) in inputValues" :key="v">
-            <tr>
-              <td>{{ inputNames[i] }}</td>
-              <td style="padding-left: 10px">{{ inputTypes[i] }}</td>
-              <td style="padding-left: 10px">{{ v }}</td>
-            </tr>
-          </template>
-        </tbody>
-      </table>
-    </div>
+  <div v-if="output">
+    <HexaValue :byte-string="output"/>
+    <table class="has-text-grey h-is-text-size-3">
+      <tbody>
+      <template v-for="(v,i) in outputValues" :key="v">
+        <tr>
+          <td>{{ outputNames[i] }}</td>
+          <td style="padding-left: 10px">{{ outputTypes[i] }}</td>
+          <td style="padding-left: 10px">{{ v }}</td>
+        </tr>
+      </template>
+      </tbody>
+    </table>
   </div>
   <div v-else-if="initialLoading"/>
   <div v-else>
@@ -60,7 +57,7 @@ import HexaValue from "@/components/values/HexaValue.vue";
 import {FunctionCallAnalyzer} from "@/utils/FunctionCallAnalyzer";
 
 export default defineComponent({
-  name: 'FunctionInputValue',
+  name: 'FunctionResultValue',
   components: {HexaValue},
   props: {
     analyzer: {
@@ -73,11 +70,10 @@ export default defineComponent({
 
     const initialLoading = inject(initialLoadingKey, ref(false))
     return {
-      input: props.analyzer.input,
-      signature: props.analyzer.signature,
-      inputValues: props.analyzer.inputValues,
-      inputNames: props.analyzer.inputNames,
-      inputTypes: props.analyzer.inputTypes,
+      output: props.analyzer.output,
+      outputValues: props.analyzer.outputValues,
+      outputNames: props.analyzer.outputNames,
+      outputTypes: props.analyzer.outputTypes,
       initialLoading
     }
   }
