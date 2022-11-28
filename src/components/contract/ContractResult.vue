@@ -97,7 +97,7 @@
         <Property id="gasPrice">
           <template v-slot:name>Gas Price</template>
           <template v-slot:value>
-            <HbarAmount :amount="contractResult?.gas_price ?? 0" :show-extra="true"/>
+            <HbarAmount :amount="gasPrice" :show-extra="true"/>
           </template>
         </Property>
       </template>
@@ -191,6 +191,11 @@ export default defineComponent({
       return result
     })
 
+    const gasPrice = computed(() => {
+      return (contractResultDetailsLoader.entity.value?.gas_price !== null)
+          ? Number(filter0x(contractResultDetailsLoader.entity.value?.gas_price))
+          : null
+    })
 
     const maxFeePerGas = computed(() => {
       return (contractResultDetailsLoader.entity.value?.max_fee_per_gas !== null)
@@ -225,6 +230,7 @@ export default defineComponent({
       isTouchDevice,
       fromId,
       toId,
+      gasPrice,
       maxFeePerGas,
       maxPriorityFeePerGas,
       contractResult: contractResultDetailsLoader.entity,
