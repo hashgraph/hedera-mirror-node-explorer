@@ -28,7 +28,7 @@
     <Property id="function">
       <template v-slot:name>Function</template>
       <template v-slot:value>
-        <div class="is-family-monospace h-is-text-size-3">0x01234567</div>
+        <div class="is-family-monospace h-is-text-size-3">{{ functionHash }}</div>
         <div class="h-is-extra-text h-is-text-size-3">{{ signature }}</div>
       </template>
     </Property>
@@ -85,6 +85,7 @@ export default defineComponent({
     return {
       input: props.analyzer.input,
       signature: props.analyzer.signature,
+      functionHash: props.analyzer.functionHash,
       inputValues: props.analyzer.inputValues,
       inputNames: props.analyzer.inputNames,
       inputTypes: props.analyzer.inputTypes,
