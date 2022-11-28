@@ -24,23 +24,34 @@
 
 <template>
 
-  <div v-if="output">
-    <HexaValue :byte-string="output"/>
-    <table class="has-text-grey h-is-text-size-3">
-      <tbody>
-      <template v-for="(v,i) in outputValues" :key="v">
-        <tr>
-          <td>{{ outputNames[i] }}</td>
-          <td style="padding-left: 10px">{{ outputTypes[i] }}</td>
-          <td style="padding-left: 10px">{{ v }}</td>
-        </tr>
+  <div v-if="signature">
+    <Property id="function">
+      <template v-slot:name>Function</template>
+      <template v-slot:value>
+        <div class="is-family-monospace h-is-text-size-3">0x01234567</div>
+        <div class="h-is-extra-text h-is-text-size-3">{{ signature }}</div>
       </template>
-      </tbody>
-    </table>
+    </Property>
+
+    <div class="h-is-tertiary-text my-2">Arguments</div>
+
+    <template v-for="(v,i) in inputValues" :key="v">
+      <Property>
+        <template v-slot:name>{{ inputNames[i] }}</template>
+        <template v-slot:value>
+          <FunctionValue :value="v" :type="inputTypes[i]"/>
+        </template>
+      </Property>
+    </template>
+
   </div>
-  <div v-else-if="initialLoading"/>
   <div v-else>
-    <div class="has-text-grey">None</div>
+    <Property id="functionInput">
+      <template v-slot:name>Input - Function & Args</template>
+      <template v-slot:value>
+        <HexaValue :byte-string="input"/>
+      </template>
+    </Property>
   </div>
 
 </template>
@@ -55,10 +66,12 @@ import {defineComponent, inject, PropType, ref} from 'vue';
 import {initialLoadingKey} from "@/AppKeys";
 import HexaValue from "@/components/values/HexaValue.vue";
 import {FunctionCallAnalyzer} from "@/utils/FunctionCallAnalyzer";
+import Property from "@/components/Property.vue";
+import FunctionValue from "@/components/values/FunctionValue.vue";
 
 export default defineComponent({
-  name: 'FunctionResultValue',
-  components: {HexaValue},
+  name: 'FunctionInput',
+  components: {FunctionValue, Property, HexaValue},
   props: {
     analyzer: {
       type: Object as PropType<FunctionCallAnalyzer>,
@@ -70,10 +83,11 @@ export default defineComponent({
 
     const initialLoading = inject(initialLoadingKey, ref(false))
     return {
-      output: props.analyzer.output,
-      outputValues: props.analyzer.outputValues,
-      outputNames: props.analyzer.outputNames,
-      outputTypes: props.analyzer.outputTypes,
+      input: props.analyzer.input,
+      signature: props.analyzer.signature,
+      inputValues: props.analyzer.inputValues,
+      inputNames: props.analyzer.inputNames,
+      inputTypes: props.analyzer.inputTypes,
       initialLoading
     }
   }

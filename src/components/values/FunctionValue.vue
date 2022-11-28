@@ -23,21 +23,14 @@
 <!-- --------------------------------------------------------------------------------------------------------------- -->
 
 <template>
-  <div v-if="address">
-    <div class="is-flex is-flex-wrap-wrap is-family-monospace h-is-text-size-3">
-      <span class="has-text-grey">{{ nonSignificantPart }}</span>
-      <span class="mr-1">{{ significantPart }}</span>
-      <span v-if="id">
-        <span>(</span>
-        <router-link v-if="isContract" :to="{name: 'ContractDetails', params: {contractId: id}}">{{ id }}</router-link>
-        <router-link v-else :to="{name: 'AccountDetails', params: {accountId: id}}">{{ id }}</router-link>
-        <span>)</span>
-      </span>
-    </div>
-    <div v-if="showType" class="h-is-extra-text h-is-text-size-2">{{ idType }}</div>
+
+  <div v-if="value">
+    <div class="is-family-monospace h-is-text-size-3 should-wrap">{{ value }}</div>
+    <div class="h-is-extra-text h-is-text-size-3">{{ type }}</div>
   </div>
   <div v-else-if="initialLoading"/>
   <div v-else class="has-text-grey">None</div>
+
 </template>
 
 <!-- --------------------------------------------------------------------------------------------------------------- -->
@@ -46,69 +39,23 @@
 
 <script lang="ts">
 
-import {computed, defineComponent, inject, ref} from "vue";
+import {defineComponent, inject, PropType, ref} from 'vue';
 import {initialLoadingKey} from "@/AppKeys";
 
 export default defineComponent({
-  name: "EVMAddress",
+  name: 'FunctionValue',
   props: {
-    address: String,
-    id: String,
-    idType: String,
-    showType: {
-      type: Boolean,
-      default: false
-    },
-    compact: {
-      type: Boolean,
-      default: false
-    },
-    bytesKept: {
-      type: Number,
-      default: 6
-    }
+    value: Object as PropType<unknown>,
+    type: String
   },
 
-  setup(props) {
+  setup() {
     const initialLoading = inject(initialLoadingKey, ref(false))
-
-    const isContract = computed(() => props.idType === 'CONTRACT')
-
-    const displayAddress = computed(() => {
-      let result: string
-      if (props.compact  && props.address?.slice(0, 2) === "0x" && props.address.length === 42) {
-        result = "0x" + props.address[2] + "…" + props.address.slice(-props.bytesKept)
-      } else {
-        result = props.address ?? ""
-      }
-      return result
-    })
-
-    const nonSignificantSize = computed(() => {
-      let i: number
-      for (i = 0; i < displayAddress.value.length; i++) {
-        const c = displayAddress.value[i]
-        if (c !== '0' && c !== 'x' && c !== '…') {
-          break
-        }
-      }
-      return i
-    })
-
-    const nonSignificantPart = computed(
-        () => displayAddress.value?.slice(0, nonSignificantSize.value))
-
-    const significantPart = computed(
-        () => displayAddress.value?.slice(nonSignificantSize.value))
-
     return {
-      isContract,
-      initialLoading,
-      nonSignificantPart,
-      significantPart
+      initialLoading
     }
   }
-})
+});
 
 </script>
 

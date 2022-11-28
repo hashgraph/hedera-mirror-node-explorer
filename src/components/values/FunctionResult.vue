@@ -24,29 +24,46 @@
 
 <template>
 
-  <div v-if="input">
-    <HexaValue :byte-string="input"/>
-    <div v-if="signature">
-      <div class="has-text-grey h-is-text-size-3">{{ signature }}</div>
-      <table class="has-text-grey h-is-text-size-3">
-        <tbody>
-          <template v-for="(v,i) in inputValues" :key="v">
-            <tr>
-              <td>{{ inputNames[i] }}</td>
-              <td style="padding-left: 10px">{{ inputTypes[i] }}</td>
-              <td style="padding-left: 10px">{{ v }}</td>
-            </tr>
-          </template>
-        </tbody>
-      </table>
-    </div>
+  <div v-if="signature">
+    <div class="h-is-tertiary-text my-2">Output Result</div>
+
+    <template v-for="(v,i) in outputValues" :key="v">
+      <Property>
+        <template v-slot:name>{{ outputNames[i] }}</template>
+        <template v-slot:value>
+          <FunctionValue :value="v" :type="outputTypes[i]"/>
+        </template>
+      </Property>
+    </template>
+
   </div>
-  <div v-else-if="initialLoading"/>
   <div v-else>
-    <div class="has-text-grey">None</div>
+    <Property id="FunctionResult">
+      <template v-slot:name>Output Result</template>
+      <template v-slot:value>
+        <HexaValue :byte-string="output"/>
+      </template>
+    </Property>
   </div>
 
 </template>
+
+
+
+<table class="has-text-grey h-is-text-size-3">
+<tbody>
+<template v-for="(v,i) in outputValues" :key="v">
+  <tr>
+    <td>{{ outputNames[i] }}</td>
+    <td style="padding-left: 10px">{{ outputTypes[i] }}</td>
+    <td style="padding-left: 10px">{{ v }}</td>
+  </tr>
+</template>
+</tbody>
+</table>
+
+
+
 
 <!-- --------------------------------------------------------------------------------------------------------------- -->
 <!--                                                      SCRIPT                                                     -->
@@ -58,10 +75,12 @@ import {defineComponent, inject, PropType, ref} from 'vue';
 import {initialLoadingKey} from "@/AppKeys";
 import HexaValue from "@/components/values/HexaValue.vue";
 import {FunctionCallAnalyzer} from "@/utils/FunctionCallAnalyzer";
+import Property from "@/components/Property.vue";
+import FunctionValue from "@/components/values/FunctionValue.vue";
 
 export default defineComponent({
-  name: 'FunctionInputValue',
-  components: {HexaValue},
+  name: 'FunctionResult',
+  components: {FunctionValue, Property, HexaValue},
   props: {
     analyzer: {
       type: Object as PropType<FunctionCallAnalyzer>,
@@ -73,11 +92,11 @@ export default defineComponent({
 
     const initialLoading = inject(initialLoadingKey, ref(false))
     return {
-      input: props.analyzer.input,
+      output: props.analyzer.output,
       signature: props.analyzer.signature,
-      inputValues: props.analyzer.inputValues,
-      inputNames: props.analyzer.inputNames,
-      inputTypes: props.analyzer.inputTypes,
+      outputValues: props.analyzer.outputValues,
+      outputNames: props.analyzer.outputNames,
+      outputTypes: props.analyzer.outputTypes,
       initialLoading
     }
   }

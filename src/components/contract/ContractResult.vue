@@ -41,45 +41,35 @@
             <StringValue :string-value="contractResult?.result"/>
           </template>
         </Property>
-        <Property id="from">
-          <template v-slot:name>From</template>
-          <template v-slot:value>
-            <EVMAddress :address="contractResult?.from" :id="fromId"/>
-          </template>
-        </Property>
-        <Property id="to">
-          <template v-slot:name>To</template>
-          <template v-slot:value>
-            <EVMAddress :address="contractResult?.to" :id="toId"/>
-          </template>
-        </Property>
-        <Property id="type">
-          <template v-slot:name>Type</template>
-          <template v-slot:value>
-            <StringValue :string-value="contractResult?.type?.toString()"/>
-          </template>
-        </Property>
-        <Property id="functionParameters">
-          <template v-slot:name>Function Parameters</template>
-          <template v-slot:value>
-            <FunctionInputValue :analyzer="functionCallAnalyzer"/>
-          </template>
-        </Property>
-        <Property id="callResult">
-          <template v-slot:name>Call Result</template>
-          <template v-slot:value>
-            <FunctionResultValue :analyzer="functionCallAnalyzer"/>
-          </template>
-        </Property>
         <Property id="errorMessage">
           <template v-slot:name>Error Message</template>
           <template v-slot:value>
             <HexaValue :byte-string ="contractResult?.error_message" v-bind:show-none="true"/>
           </template>
         </Property>
+        <Property id="from">
+          <template v-slot:name>From</template>
+          <template v-slot:value>
+            <EVMAddress :address="contractResult?.from" :id="fromId" :compact="isSmallScreen && !isMediumScreen"/>
+          </template>
+        </Property>
+        <Property id="to">
+          <template v-slot:name>To</template>
+          <template v-slot:value>
+            <EVMAddress :address="contractResult?.to" :id="toId" :compact="isSmallScreen && !isMediumScreen"/>
+          </template>
+        </Property>
+        <FunctionInput :analyzer="functionCallAnalyzer"/>
+        <FunctionResult :analyzer="functionCallAnalyzer"/>
       </template>
 
       <template v-slot:rightContent>
+        <Property id="type">
+          <template v-slot:name>Type</template>
+          <template v-slot:value>
+            <StringValue :string-value="contractResult?.type?.toString()"/>
+          </template>
+        </Property>
         <Property id="gasLimit">
           <template v-slot:name>Gas Limit</template>
           <template v-slot:value>
@@ -142,18 +132,20 @@ import ContractResultTrace from "@/components/contract/ContractResultTrace.vue";
 import ContractResultStates from "@/components/contract/ContractResultStates.vue";
 import EVMAddress from "@/components/values/EVMAddress.vue";
 import ContractResultLogs from "@/components/contract/ContractResultLogs.vue";
-import FunctionInputValue from "@/components/values/FunctionInputValue.vue";
-import FunctionResultValue from "@/components/values/FunctionResultValue.vue";
+import FunctionValue from "@/components/values/FunctionValue.vue";
 import {FunctionCallAnalyzer} from "@/utils/FunctionCallAnalyzer";
 import {EntityID} from "@/utils/EntityID";
+import FunctionInput from "@/components/values/FunctionInput.vue";
+import FunctionResult from "@/components/values/FunctionResult.vue";
 
 export default defineComponent({
 
   name: 'ContractResult',
 
   components: {
-    FunctionInputValue,
-    FunctionResultValue,
+    FunctionResult,
+    FunctionInput,
+    FunctionValue,
     ContractResultLogs,
     EVMAddress,
     ContractResultStates,
@@ -176,6 +168,7 @@ export default defineComponent({
 
   setup(props) {
     const isSmallScreen = inject('isSmallScreen', true)
+    const isMediumScreen = inject('isMediumScreen', true)
     const isTouchDevice = inject('isTouchDevice', false)
 
     const fromId = computed(() => {
@@ -230,6 +223,7 @@ export default defineComponent({
 
     return {
       isSmallScreen,
+      isMediumScreen,
       isTouchDevice,
       fromId,
       toId,
