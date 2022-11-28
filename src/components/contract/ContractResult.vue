@@ -132,7 +132,6 @@ import ContractResultTrace from "@/components/contract/ContractResultTrace.vue";
 import ContractResultStates from "@/components/contract/ContractResultStates.vue";
 import EVMAddress from "@/components/values/EVMAddress.vue";
 import ContractResultLogs from "@/components/contract/ContractResultLogs.vue";
-import FunctionValue from "@/components/values/FunctionValue.vue";
 import {FunctionCallAnalyzer} from "@/utils/FunctionCallAnalyzer";
 import {EntityID} from "@/utils/EntityID";
 import FunctionInput from "@/components/values/FunctionInput.vue";
@@ -145,7 +144,6 @@ export default defineComponent({
   components: {
     FunctionResult,
     FunctionInput,
-    FunctionValue,
     ContractResultLogs,
     EVMAddress,
     ContractResultStates,
