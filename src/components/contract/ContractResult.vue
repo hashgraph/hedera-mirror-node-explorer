@@ -67,7 +67,7 @@
         <Property id="type">
           <template v-slot:name>Type</template>
           <template v-slot:value>
-            <StringValue :string-value="contractResult?.type?.toString()"/>
+            <StringValue :string-value="contractType(contractResult?.type)"/>
           </template>
         </Property>
         <Property id="gasLimit">
@@ -224,6 +224,16 @@ export default defineComponent({
     onMounted(() => functionCallAnalyzer.mount())
     onBeforeUnmount(() => functionCallAnalyzer.unmount())
 
+    const contractType = (typeValue: number | null): String | null => {
+      let result
+      if (typeValue !== null) {
+        result =  typeValue === 0 ? "Pre-Eip1559" : typeValue === 2 ? "Post-Eip1559" : typeValue.toString()
+      } else {
+        result = null
+      }
+      return result
+    }
+
     return {
       isSmallScreen,
       isMediumScreen,
@@ -235,6 +245,7 @@ export default defineComponent({
       maxPriorityFeePerGas,
       contractResult: contractResultDetailsLoader.entity,
       functionCallAnalyzer: functionCallAnalyzer,
+      contractType
     }
   },
 });
