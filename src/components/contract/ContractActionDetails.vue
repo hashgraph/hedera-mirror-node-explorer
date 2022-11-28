@@ -40,7 +40,7 @@
       <Property id="actionDetailFunction" custom-nb-col-class="is-one-fifth">
         <template v-slot:name>Function</template>
         <template v-slot:value>
-          <SignatureValue :action="action"/>
+          <SignatureValue :analyzer="functionCallAnalyzer"/>
         </template>
       </Property>
     </div>
@@ -113,7 +113,7 @@
 // defineComponent
 //
 
-import {computed, defineComponent, inject, PropType} from "vue";
+import {computed, defineComponent, inject, onBeforeUnmount, onMounted, PropType} from "vue";
 import {ContractAction, ResultDataType} from "@/schemas/HederaSchemas";
 import {ORUGA_MOBILE_BREAKPOINT} from "@/App.vue";
 import Property from "@/components/Property.vue";
@@ -122,6 +122,7 @@ import PlainAmount from "@/components/values/PlainAmount.vue";
 import ByteCodeValue from "@/components/values/ByteCodeValue.vue";
 import SignatureValue from "@/components/values/SignatureValue.vue";
 import EVMAddress from "@/components/values/EVMAddress.vue";
+import {FunctionCallAnalyzer} from "@/utils/FunctionCallAnalyzer";
 
 export default defineComponent({
   name: 'ContractActionDetails',
@@ -148,12 +149,20 @@ export default defineComponent({
 
     const isNullByteCodeValue = (value: string|null) => value == null || value == "0x"
 
+    const input = computed(() => props.action?.input ?? null)
+    const output = computed(() => null)
+    const contractId = computed(() => props.action?.recipient ?? null)
+    const functionCallAnalyzer = new FunctionCallAnalyzer(input, output, contractId)
+    onMounted(() => functionCallAnalyzer.mount())
+    onBeforeUnmount(() => functionCallAnalyzer.unmount())
+
     return {
       isTouchDevice,
       isMediumScreen,
       ORUGA_MOBILE_BREAKPOINT,
       errorMessage,
-      isNullByteCodeValue
+      isNullByteCodeValue,
+      functionCallAnalyzer
     }
   }
 });

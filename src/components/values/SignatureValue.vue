@@ -37,29 +37,27 @@
 
 <script lang="ts">
 
-import {computed, defineComponent, inject, onBeforeUnmount, onMounted, PropType, ref} from "vue";
+import {defineComponent, inject, PropType, ref} from "vue";
 import {initialLoadingKey} from "@/AppKeys";
 import HexaValue from "@/components/values/HexaValue.vue";
-import {ContractAction} from "@/schemas/HederaSchemas";
-import {SignatureAnalyzer} from "@/utils/SignatureAnalyzer";
+import {FunctionCallAnalyzer} from "@/utils/FunctionCallAnalyzer";
 
 export default defineComponent({
   name: "SignatureValue",
   components: {HexaValue},
   props: {
-    action: Object as PropType<ContractAction|undefined>
+    analyzer: {
+      type: Object as PropType<FunctionCallAnalyzer>,
+      required: true
+    }
   },
 
   setup(props) {
-
-    const signatureAnalyzer = new SignatureAnalyzer(computed(() => props.action ?? null))
-    onMounted(() => signatureAnalyzer.mount())
-    onBeforeUnmount(() => signatureAnalyzer.unmount())
     const initialLoading = inject(initialLoadingKey, ref(false))
 
     return {
-      signature: signatureAnalyzer.functionHash,
-      signatureInfo: signatureAnalyzer.signature,
+      signature: props.analyzer.functionHash,
+      signatureInfo: props.analyzer.signature,
       initialLoading
     }
   }
