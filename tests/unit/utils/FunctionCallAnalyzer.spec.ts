@@ -1,0 +1,96 @@
+// noinspection DuplicatedCode
+
+/*-
+ *
+ * Hedera Mirror Node Explorer
+ *
+ * Copyright (C) 2021 - 2022 Hedera Hashgraph, LLC
+ *
+ * Licensed under the Apache License, Version 2.0 (the "License");
+ * you may not use this file except in compliance with the License.
+ * You may obtain a copy of the License at
+ *
+ *      http://www.apache.org/licenses/LICENSE-2.0
+ *
+ * Unless required by applicable law or agreed to in writing, software
+ * distributed under the License is distributed on an "AS IS" BASIS,
+ * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+ * See the License for the specific language governing permissions and
+ * limitations under the License.
+ *
+ */
+
+import {FunctionCallAnalyzer} from "@/utils/FunctionCallAnalyzer";
+import {Ref, ref} from "vue";
+import {flushPromises} from "@vue/test-utils";
+import MockAdapter from "axios-mock-adapter";
+import axios from "axios";
+import {BigNumber} from "ethers";
+
+describe("FunctionCallAnalyzer.spec.ts", () => {
+
+    test("basic flow", async () => {
+
+        const abi = require('../../../public/abi/IHederaTokenService.json')
+        const mock = new MockAdapter(axios);
+        const matcher1 = "http://localhost/abi/IHederaTokenService.json"
+        mock.onGet(matcher1).reply(200, abi)
+
+        // 1) new
+        const input: Ref<string|null> = ref(null)
+        const output: Ref<string|null> = ref(null)
+        const contractId: Ref<string|null> = ref(null)
+        const analyzer = new FunctionCallAnalyzer(input, output, contractId)
+        expect(analyzer.functionHash.value).toBeNull()
+        expect(analyzer.signature.value).toBeNull()
+        expect(analyzer.inputValues.value).toStrictEqual([])
+        expect(analyzer.inputNames.value).toStrictEqual([])
+        expect(analyzer.inputTypes.value).toStrictEqual([])
+        expect(analyzer.outputValues.value).toStrictEqual([])
+        expect(analyzer.outputNames.value).toStrictEqual([])
+        expect(analyzer.outputTypes.value).toStrictEqual([])
+
+        // 2) mount
+        analyzer.mount()
+        await flushPromises()
+        expect(analyzer.functionHash.value).toBeNull()
+        expect(analyzer.signature.value).toBeNull()
+        expect(analyzer.inputValues.value).toStrictEqual([])
+        expect(analyzer.inputNames.value).toStrictEqual([])
+        expect(analyzer.inputTypes.value).toStrictEqual([])
+        expect(analyzer.outputValues.value).toStrictEqual([])
+        expect(analyzer.outputNames.value).toStrictEqual([])
+        expect(analyzer.outputTypes.value).toStrictEqual([])
+
+        // 3) input setup
+        input.value = "0x49146bde000000000000000000000000845b706151aed537b1fd81c1ea4ea03920097abd0000000000000000000000000000000000000000000000000000000002e6ae09"
+        output.value = "0x0000000000000000000000000000000000000000000000000000000005a995c0"
+        contractId.value = "0.0.359"
+        await flushPromises()
+        expect(analyzer.functionHash.value).toBe("0x49146bde")
+        expect(analyzer.signature.value).toBe("associateToken(address,address)")
+        expect(analyzer.inputValues.value).toStrictEqual([
+            "0x845b706151aEd537b1FD81c1Ea4EA03920097ABD",
+            "0x0000000000000000000000000000000002E6Ae09",
+        ])
+        expect(analyzer.inputNames.value).toStrictEqual(["account", "token"])
+        expect(analyzer.inputTypes.value).toStrictEqual(["address", "address"])
+        expect(analyzer.outputValues.value).toStrictEqual([BigNumber.from("0x05a995c0")])
+        expect(analyzer.outputNames.value).toStrictEqual(["responseCode"])
+        expect(analyzer.outputTypes.value).toStrictEqual(["int64"])
+
+        // 4) unmount
+        analyzer.unmount()
+        await flushPromises()
+        expect(analyzer.functionHash.value).toBeNull()
+        expect(analyzer.signature.value).toBeNull()
+        expect(analyzer.inputValues.value).toStrictEqual([])
+        expect(analyzer.inputNames.value).toStrictEqual([])
+        expect(analyzer.inputTypes.value).toStrictEqual([])
+        expect(analyzer.outputValues.value).toStrictEqual([])
+        expect(analyzer.outputNames.value).toStrictEqual([])
+        expect(analyzer.outputTypes.value).toStrictEqual([])
+
+    })
+
+})
