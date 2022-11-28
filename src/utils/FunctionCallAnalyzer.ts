@@ -65,11 +65,11 @@ export class FunctionCallAnalyzer {
         return this.transactionDescription.value?.signature ?? null
     })
 
-    public readonly inputValues: ComputedRef<string[]> = computed(() => {
+    public readonly inputValues: ComputedRef<unknown[]> = computed(() => {
         const result: string[] = []
         if (this.transactionDescription.value) {
             for (const a of this.transactionDescription.value.args.values()) {
-                result.push(JSON.stringify(a))
+                result.push(a)
             }
         }
         return result
@@ -95,11 +95,11 @@ export class FunctionCallAnalyzer {
         return result
     })
 
-    public readonly outputValues: ComputedRef<string[]> = computed(() => {
+    public readonly outputValues: ComputedRef<unknown[]> = computed(() => {
         const result: string[] = []
         if (this.decodedFunctionResult.value) {
             for (const a of this.decodedFunctionResult.value.values()) {
-                result.push(JSON.stringify(a))
+                result.push(a)
             }
         }
         return result
@@ -142,8 +142,7 @@ export class FunctionCallAnalyzer {
                 .then((d: ethers.utils.TransactionDescription|null) => {
                     this.transactionDescription.value = d
                 })
-                .catch((error) => {
-                    console.log("error=" + error)
+                .catch(() => {
                     this.transactionDescription.value = null
                 })
         } else {
