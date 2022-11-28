@@ -127,6 +127,36 @@ export class FunctionCallAnalyzer {
         return result
     })
 
+    public readonly inputs: ComputedRef<NameTypeValue[]> = computed(() => {
+        const result: NameTypeValue[] = []
+        if (this.transactionDescription.value) {
+            const args = this.transactionDescription.value.args
+            const fragmentInputs = this.transactionDescription.value.functionFragment.inputs
+            for (let i = 0, count = args.length; i < count; i += 1) {
+                const value = args[i]
+                const name = i < fragmentInputs.length ? fragmentInputs[i].name : "?"
+                const type = i < fragmentInputs.length ? fragmentInputs[i].type : "?"
+                result.push(new NameTypeValue(name, type, value))
+            }
+        }
+        return result
+    })
+
+    public readonly outputs: ComputedRef<NameTypeValue[]> = computed(() => {
+        const result: NameTypeValue[] = []
+        if (this.decodedFunctionResult.value) {
+            const results = this.decodedFunctionResult.value
+            const fragmentOutputs = this.transactionDescription.value?.functionFragment.outputs ?? []
+            for (let i = 0, count = results.length; i < count; i += 1) {
+                const value = results[i]
+                const name = i < fragmentOutputs.length ? fragmentOutputs[i].name : "?"
+                const type = i < fragmentOutputs.length ? fragmentOutputs[i].type : "?"
+                result.push(new NameTypeValue(name, type, value))
+            }
+        }
+        return result
+    })
+
 
     //
     // Private
@@ -165,4 +195,15 @@ export class FunctionCallAnalyzer {
         }
     }
 
+}
+
+export class NameTypeValue {
+    public readonly name: string
+    public readonly type: string
+    public readonly value: unknown
+    public constructor(name: string, type: string, value: unknown) {
+        this.name = name
+        this.type = type
+        this.value = value
+    }
 }
