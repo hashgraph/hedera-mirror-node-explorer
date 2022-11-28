@@ -224,7 +224,7 @@ export default defineComponent({
     onMounted(() => functionCallAnalyzer.mount())
     onBeforeUnmount(() => functionCallAnalyzer.unmount())
 
-    const contractType = (typeValue: number | null): String | null => {
+    const contractType = (typeValue: number | null): string | null => {
       let result
       if (typeValue !== null) {
         result =  typeValue === 0 ? "Pre-Eip1559" : typeValue === 2 ? "Post-Eip1559" : typeValue.toString()
