@@ -27,11 +27,11 @@
   <div v-if="signature">
     <div class="h-is-tertiary-text my-2">Output Result</div>
 
-    <template v-for="(v,i) in outputValues" :key="v">
+    <template v-for="result in outputs" :key="result.name">
       <Property>
-        <template v-slot:name>{{ outputNames[i] }}</template>
+        <template v-slot:name>{{ result.name }}</template>
         <template v-slot:value>
-          <FunctionValue :value="v" :type="outputTypes[i]"/>
+          <FunctionValue :value="result.value" :type="result.type"/>
         </template>
       </Property>
     </template>
@@ -47,23 +47,6 @@
   </div>
 
 </template>
-
-
-
-<table class="has-text-grey h-is-text-size-3">
-<tbody>
-<template v-for="(v,i) in outputValues" :key="v">
-  <tr>
-    <td>{{ outputNames[i] }}</td>
-    <td style="padding-left: 10px">{{ outputTypes[i] }}</td>
-    <td style="padding-left: 10px">{{ v }}</td>
-  </tr>
-</template>
-</tbody>
-</table>
-
-
-
 
 <!-- --------------------------------------------------------------------------------------------------------------- -->
 <!--                                                      SCRIPT                                                     -->
@@ -94,9 +77,7 @@ export default defineComponent({
     return {
       output: props.analyzer.output,
       signature: props.analyzer.signature,
-      outputValues: props.analyzer.outputValues,
-      outputNames: props.analyzer.outputNames,
-      outputTypes: props.analyzer.outputTypes,
+      outputs: props.analyzer.outputs,
       initialLoading
     }
   }

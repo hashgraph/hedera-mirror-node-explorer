@@ -35,11 +35,11 @@
 
     <div class="h-is-tertiary-text my-2">Arguments</div>
 
-    <template v-for="(v,i) in inputValues" :key="v">
+    <template v-for="arg in inputs" :key="arg.name">
       <Property>
-        <template v-slot:name>{{ inputNames[i] }}</template>
+        <template v-slot:name>{{ arg.name }}</template>
         <template v-slot:value>
-          <FunctionValue :value="v" :type="inputTypes[i]"/>
+          <FunctionValue :value="arg.value" :type="arg.type"/>
         </template>
       </Property>
     </template>
@@ -86,9 +86,7 @@ export default defineComponent({
       input: props.analyzer.input,
       signature: props.analyzer.signature,
       functionHash: props.analyzer.functionHash,
-      inputValues: props.analyzer.inputValues,
-      inputNames: props.analyzer.inputNames,
-      inputTypes: props.analyzer.inputTypes,
+      inputs: props.analyzer.inputs,
       initialLoading
     }
   }
