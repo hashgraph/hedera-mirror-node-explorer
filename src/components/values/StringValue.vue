@@ -24,7 +24,7 @@
 
 <template>
 
-  <span v-if="stringValue">{{ stringValue }}</span>
+  <span v-if="stringValue" class="should-wrap">{{ stringValue }}</span>
 
   <span v-else-if="initialLoading"/>
 
