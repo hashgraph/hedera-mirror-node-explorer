@@ -44,7 +44,7 @@
         <Property id="errorMessage">
           <template v-slot:name>Error Message</template>
           <template v-slot:value>
-            <HexaValue :byte-string ="contractResult?.error_message" v-bind:show-none="true"/>
+            <StringValue :string-value ="contractResult?.error_message"/>
           </template>
         </Property>
         <Property id="from">
@@ -122,7 +122,6 @@
 
 import {computed, defineComponent, inject, onBeforeUnmount, onMounted, ref} from 'vue';
 import {ContractResultDetailsLoader} from "@/components/contract/ContractResultDetailsLoader";
-import HexaValue from "@/components/values/HexaValue.vue";
 import DashboardCard from "@/components/DashboardCard.vue";
 import HbarAmount from "@/components/values/HbarAmount.vue";
 import StringValue from "@/components/values/StringValue.vue";
@@ -152,7 +151,6 @@ export default defineComponent({
     Property,
     HbarAmount,
     DashboardCard,
-    HexaValue,
     StringValue
   },
 
