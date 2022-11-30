@@ -65,68 +65,6 @@ export class FunctionCallAnalyzer {
         return this.transactionDescription.value?.signature ?? null
     })
 
-    public readonly inputValues: ComputedRef<unknown[]> = computed(() => {
-        const result: string[] = []
-        if (this.transactionDescription.value) {
-            for (const a of this.transactionDescription.value.args.values()) {
-                result.push(a)
-            }
-        }
-        return result
-    })
-
-    public readonly inputNames: ComputedRef<string[]> = computed(() => {
-        const result: string[] = []
-        if (this.transactionDescription.value) {
-            for (const i of this.transactionDescription.value.functionFragment.inputs.values()) {
-                result.push(i.name)
-            }
-        }
-        return result
-    })
-
-    public readonly inputTypes: ComputedRef<string[]> = computed(() => {
-        const result: string[] = []
-        if (this.transactionDescription.value) {
-            for (const i of this.transactionDescription.value.functionFragment.inputs.values()) {
-                result.push(i.type)
-            }
-        }
-        return result
-    })
-
-    public readonly outputValues: ComputedRef<unknown[]> = computed(() => {
-        const result: string[] = []
-        if (this.decodedFunctionResult.value) {
-            for (const a of this.decodedFunctionResult.value.values()) {
-                result.push(a)
-            }
-        }
-        return result
-    })
-
-    public readonly outputNames: ComputedRef<string[]> = computed(() => {
-        const result: string[] = []
-        const fragmentOutputs = this.transactionDescription.value?.functionFragment.outputs
-        if (fragmentOutputs) {
-            for (const o of fragmentOutputs.values()) {
-                result.push(o.name)
-            }
-        }
-        return result
-    })
-
-    public readonly outputTypes: ComputedRef<string[]> = computed(() => {
-        const result: string[] = []
-        const fragmentOutputs = this.transactionDescription.value?.functionFragment.outputs
-        if (fragmentOutputs) {
-            for (const o of fragmentOutputs.values()) {
-                result.push(o.type)
-            }
-        }
-        return result
-    })
-
     public readonly inputs: ComputedRef<NameTypeValue[]> = computed(() => {
         const result: NameTypeValue[] = []
         if (this.transactionDescription.value) {
