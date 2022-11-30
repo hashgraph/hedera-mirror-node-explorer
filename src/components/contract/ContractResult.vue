@@ -155,6 +155,8 @@ export default defineComponent({
   },
 
   props: {
+    timestamp: String,
+    contractId: String,
     transactionIdOrHash: String,
     topLevel: {
       type: Boolean,
@@ -208,8 +210,8 @@ export default defineComponent({
     })
 
     const contractResultDetailsLoader = new ContractResultDetailsLoader(
-        ref(null),
-        ref(null),
+        computed(() => props.contractId ?? null),
+        computed(() => props.timestamp ?? null),
         computed(() => props.transactionIdOrHash ?? null))
     onMounted(() => contractResultDetailsLoader.requestLoad())
 
