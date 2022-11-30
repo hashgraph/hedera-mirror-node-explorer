@@ -65,10 +65,16 @@ export class TransactionLoader extends EntityLoader<TransactionByIdResponse> {
 
     public readonly transactionType = computed(() => this.transaction.value?.name ?? null)
 
-    public readonly hasContractResult = computed(
-        () => this.transactionType.value === TransactionType.CONTRACTCREATEINSTANCE
-            || this.transactionType.value === TransactionType.CONTRACTCALL
-            || this.transactionType.value === TransactionType.ETHEREUMTRANSACTION)
+    public readonly contractId = computed(() => {
+        return (this.transactionType.value === TransactionType.ETHEREUMTRANSACTION)
+            ? this.contractLoader.contractId.value ?? null
+            : (this.transactionType.value === TransactionType.CONTRACTCREATEINSTANCE
+                || this.transactionType.value === TransactionType.CONTRACTCALL
+                || this.transactionType.value === TransactionType.CONTRACTUPDATEINSTANCE
+                || this.transactionType.value === TransactionType.CONTRACTDELETEINSTANCE)
+                ? this.transaction.value?.entity_id
+                : null
+    })
 
     public readonly result: ComputedRef<string|null> = computed(
         () => this.transaction.value?.result ?? null)

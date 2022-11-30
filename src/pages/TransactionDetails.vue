@@ -223,7 +223,7 @@
 
     <TopicMessage :message-loader="topicMessageLoader"/>
 
-    <ContractResult v-if="hasContractResult" :transaction-id-or-hash="transaction?.transaction_id"/>
+    <ContractResult :timestamp="transaction?.consensus_timestamp" :contract-id="contractId"/>
 
   </section>
 
@@ -338,7 +338,7 @@ export default defineComponent({
       formattedTransactionId: transactionLoader.formattedTransactionId,
       netAmount: transactionLoader.netAmount,
       entity: transactionLoader.entityDescriptor,
-      hasContractResult: transactionLoader.hasContractResult,
+      contractId: transactionLoader.contractId,
       systemContract: transactionLoader.systemContract,
       maxFee: transactionLoader.maxFee,
       formattedHash: transactionLoader.formattedHash,
