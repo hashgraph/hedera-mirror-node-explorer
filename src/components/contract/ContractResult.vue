@@ -124,7 +124,7 @@
 
 <script lang="ts">
 
-import {computed, defineComponent, inject, onMounted, ref} from 'vue';
+import {computed, defineComponent, inject, onMounted} from 'vue';
 import {ContractResultDetailsLoader} from "@/components/contract/ContractResultDetailsLoader";
 import HexaValue from "@/components/values/HexaValue.vue";
 import DashboardCard from "@/components/DashboardCard.vue";
@@ -155,6 +155,8 @@ export default defineComponent({
   },
 
   props: {
+    timestamp: String,
+    contractId: String,
     transactionIdOrHash: String,
     topLevel: {
       type: Boolean,
@@ -167,8 +169,8 @@ export default defineComponent({
     const isTouchDevice = inject('isTouchDevice', false)
 
     const contractResultDetailsLoader = new ContractResultDetailsLoader(
-        ref(null),
-        ref(null),
+        computed(() => props.contractId ?? null),
+        computed(() => props.timestamp ?? null),
         computed(() => props.transactionIdOrHash ?? null))
     onMounted(() => contractResultDetailsLoader.requestLoad())
 
