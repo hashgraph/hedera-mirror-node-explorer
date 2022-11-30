@@ -144,10 +144,11 @@ describe("TransactionDetails.vue", () => {
 
         const transactionId = SAMPLE_CONTRACTCALL_TRANSACTIONS.transactions[0].transaction_id
         const contractId = SAMPLE_CONTRACTCALL_TRANSACTIONS.transactions[0].entity_id
+        const timestamp = SAMPLE_CONTRACTCALL_TRANSACTIONS.transactions[0].consensus_timestamp
 
         const matcher1 = "/api/v1/transactions/" + transactionId
         mock.onGet(matcher1).reply(200, SAMPLE_CONTRACTCALL_TRANSACTIONS);
-        const matcher2 = "/api/v1/contracts/results/" + transactionId
+        const matcher2 = "/api/v1/contracts/" + contractId + "/results/" + timestamp
         mock.onGet(matcher2).reply(200, SAMPLE_CONTRACT_RESULT_DETAILS)
         const matcher3 = "https://api.coingecko.com/api/v3/coins/hedera-hashgraph"
         mock.onGet(matcher3).reply(200, SAMPLE_COINGECKO);
@@ -199,10 +200,11 @@ describe("TransactionDetails.vue", () => {
         const transactionId = SAMPLE_CONTRACTCALL_TRANSACTIONS.transactions[0].transaction_id
         const transactionHash = SAMPLE_CONTRACTCALL_TRANSACTIONS.transactions[0].transaction_hash
         const contractId = SAMPLE_CONTRACTCALL_TRANSACTIONS.transactions[0].entity_id
+        const timestamp = SAMPLE_CONTRACTCALL_TRANSACTIONS.transactions[0].consensus_timestamp
 
         const matcher1 = "/api/v1/transactions/" + transactionHash
         mock.onGet(matcher1).reply(200, SAMPLE_CONTRACTCALL_TRANSACTIONS);
-        const matcher2 = "/api/v1/contracts/results/" + transactionId
+        const matcher2 = "/api/v1/contracts/" + contractId  + "/results/" + timestamp
         mock.onGet(matcher2).reply(200, SAMPLE_CONTRACT_RESULT_DETAILS)
         const matcher3 = "https://api.coingecko.com/api/v3/coins/hedera-hashgraph"
         mock.onGet(matcher3).reply(200, SAMPLE_COINGECKO);

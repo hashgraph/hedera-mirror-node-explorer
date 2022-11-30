@@ -18,7 +18,7 @@
  *
  */
 
-import {ContractResultDetails} from "@/schemas/HederaSchemas";
+import {ContractResultDetails, ContractResultsResponse} from "@/schemas/HederaSchemas";
 import {EntityLoader} from "@/utils/loader/EntityLoader";
 import axios, {AxiosResponse} from "axios";
 import {Ref} from "vue";
@@ -48,11 +48,25 @@ export class ContractResultDetailsLoader extends EntityLoader<ContractResultDeta
     // EntityLoader
     //
 
-    protected async load(): Promise<AxiosResponse<ContractResultDetails>|null> {
-        let result: Promise<AxiosResponse<ContractResultDetails>|null>
-        if (this.contractId.value !== null && this.timestamp.value !== null) {
-            result = axios.get<ContractResultDetails>("api/v1/contracts/"
-                + this.contractId.value + "/results/" + this.timestamp.value);
+    protected async load(): Promise<AxiosResponse<ContractResultDetails> | null> {
+        let result: Promise<AxiosResponse<ContractResultDetails> | null>
+        if (this.timestamp.value !== null) {
+            if (this.contractId.value !== null) {
+                result = axios.get<ContractResultDetails>(
+                    "api/v1/contracts/" + this.contractId.value + "/results/" + this.timestamp.value);
+            } else {
+                const parameters = {
+                    timestamp: this.timestamp.value,
+                    internal: true
+                }
+                const response = await axios.get<ContractResultsResponse>("api/v1/contracts/results", {params: parameters});
+                if (response.data.results) {
+                    result = axios.get<ContractResultDetails>(
+                        "api/v1/contracts/" + response.data.results[0].contract_id + "/results/" + this.timestamp.value);
+                } else {
+                    result = Promise.resolve(null)
+                }
+            }
         } else if (this.transactionIdOrHash.value !== null) {
             result = axios.get<ContractResultDetails>("api/v1/contracts/results/"
                 + this.transactionIdOrHash.value);
