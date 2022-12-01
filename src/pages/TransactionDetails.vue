@@ -223,7 +223,9 @@
 
     <TopicMessage :message-loader="topicMessageLoader"/>
 
-    <ContractResult :timestamp="transaction?.consensus_timestamp" :contract-id="contractId"/>
+    <ContractResult :timestamp="transaction?.consensus_timestamp"
+                    :contract-id="contractId"
+                    :transaction-id-or-hash="transaction?.transaction_id"/>
 
   </section>
 
