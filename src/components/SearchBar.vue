@@ -121,10 +121,14 @@ export default defineComponent({
               router.push({name: 'ContractDetails', params: { contractId: r.contract.contract_id}})
               searchDidEnd(true)
             } else if (r.account != null) {
-              router.push({name: 'AccountDetails', params: { accountId: r.account.account}})
+              if (r.account.account) {
+                routeManager.routeToAccount(r.account.account)
+              }
               searchDidEnd(true)
             } else if (r.accountWithKey != null) {
-              router.push({name: 'AccountDetails', params: { accountId: r.accountWithKey.account}})
+              if (r.accountWithKey.account) {
+                routeManager.routeToAccount(r.accountWithKey.account)
+              }
               searchDidEnd(true)
             } else if (r.transactions.length >= 1) {
               const transaction = r.transactions[0]

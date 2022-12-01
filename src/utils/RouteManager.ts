@@ -53,6 +53,10 @@ export class RouteManager {
         return networkEntry != null ? networkEntry : networkRegistry.getDefaultEntry()
     })
 
+    //
+    // Transaction
+    //
+
     public routeToTransaction(t: Transaction): Promise<NavigationFailure | void | undefined> {
         return this.router.push(this.makeRouteToTransaction(t))
     }
@@ -68,6 +72,20 @@ export class RouteManager {
             params: { transactionId: t.transaction_id },
             query: { t: t.consensus_timestamp }
         }
+    }
+
+    //
+    // Account
+    //
+
+    public makeRouteToAccount(accountId: string): RouteLocationRaw {
+        return {
+            name: 'AccountDetails', params: {accountId: accountId}
+        }
+    }
+
+    public routeToAccount(accountId: string): Promise<NavigationFailure | void | undefined> {
+        return this.router.push(this.makeRouteToAccount(accountId))
     }
 }
 

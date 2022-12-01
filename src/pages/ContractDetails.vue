@@ -32,7 +32,7 @@
         <span class="h-is-secondary-text">{{ contract ? normalizedContractId : "" }}</span>
         <span v-if="accountChecksum" class="has-text-grey" style="font-size: 28px">-{{ accountChecksum }}</span>
         <span v-if="contract" class="is-inline-block ml-3">
-          <router-link :to="{name: 'AccountDetails', params: {accountId: normalizedContractId}}">
+          <router-link :to="accountRoute">
             <span class="h-is-property-text">Show associated account</span>
           </router-link>
         </span>
@@ -193,7 +193,7 @@ import {AccountLoader} from "@/components/account/AccountLoader";
 import {TransactionTableControllerXL} from "@/components/transaction/TransactionTableControllerXL";
 import TransactionFilterSelect from "@/components/transaction/TransactionFilterSelect.vue";
 import {networkRegistry} from "@/schemas/NetworkRegistry";
-import router from "@/router";
+import router, {routeManager} from "@/router";
 
 const MAX_TOKEN_BALANCES = 3
 
@@ -277,8 +277,6 @@ export default defineComponent({
       return result
     })
 
-
-
     //
     // transactionTableController
     //
@@ -287,6 +285,10 @@ export default defineComponent({
     const transactionTableController = new TransactionTableControllerXL(router, normalizedContractId, pageSize, true)
     onMounted(() => transactionTableController.mount())
     onBeforeUnmount(() => transactionTableController.unmount())
+
+    const accountRoute = computed(() => {
+      return normalizedContractId.value !== null ?  routeManager.makeRouteToAccount(normalizedContractId.value) : null
+    })
 
     return {
       isSmallScreen,
@@ -302,7 +304,8 @@ export default defineComponent({
       obtainerId: contractLoader.obtainerId,
       proxyAccountId: contractLoader.proxyAccountId,
       normalizedContractId,
-      aliasByteString: accountLoader.aliasByteString
+      aliasByteString: accountLoader.aliasByteString,
+      accountRoute
     }
   },
 });
