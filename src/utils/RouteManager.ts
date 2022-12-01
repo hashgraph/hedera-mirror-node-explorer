@@ -123,6 +123,18 @@ export class RouteManager {
     public routeToTopic(topicId: string): Promise<NavigationFailure | void | undefined> {
         return this.router.push(this.makeRouteToTopic(topicId))
     }
+
+    //
+    // Block
+    //
+
+    public makeRouteToBlock(blockHon: string|number): RouteLocationRaw {
+        return {name: 'BlockDetails', params: {blockHon: blockHon}}
+    }
+
+    public routeToBlock(blockHon: string|number): Promise<NavigationFailure | void | undefined> {
+        return this.router.push(this.makeRouteToBlock(blockHon))
+    }
 }
 
 
