@@ -112,6 +112,17 @@ export class RouteManager {
         return this.router.push(this.makeRouteToContract(contractId))
     }
 
+    //
+    // Topic
+    //
+
+    public makeRouteToTopic(topicId: string): RouteLocationRaw {
+        return {name: 'TopicDetails', params: {topicId: topicId}}
+    }
+
+    public routeToTopic(topicId: string): Promise<NavigationFailure | void | undefined> {
+        return this.router.push(this.makeRouteToTopic(topicId))
+    }
 }
 
 

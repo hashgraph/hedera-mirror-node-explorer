@@ -146,7 +146,10 @@ export default defineComponent({
               }
               searchDidEnd(true)
             } else if (r.topicMessages.length >= 1) {
-              router.push({name: 'TopicDetails', params: { topicId: r.topicMessages[0].topic_id}})
+              const topicId = r.topicMessages[0].topic_id
+              if (topicId) {
+                routeManager.routeToTopic(topicId)
+              }
               searchDidEnd(true)
             } else {
               router.push({name: 'NoSearchResult', params: { searchedId: searchedId.value}, query: { errorCount: r.getErrorCount()}})
