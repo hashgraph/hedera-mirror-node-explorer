@@ -24,9 +24,10 @@
 
 <template>
   <div v-if="address">
-    <div class="is-flex is-flex-wrap-wrap is-family-monospace h-is-text-size-3">
+    <div :class="{'is-flex': isSmallScreen}" class="is-flex-wrap-wrap is-family-monospace h-is-text-size-3">
       <span class="has-text-grey">{{ nonSignificantPart }}</span>
       <span class="mr-1">{{ significantPart }}</span>
+      <br/>
       <span v-if="entityId">
         <span>(</span>
         <router-link v-if="isContract" :to="{name: 'ContractDetails', params: {contractId: entityId}}">{{ entityId }}</router-link>
@@ -74,6 +75,7 @@ export default defineComponent({
 
   setup(props) {
     const initialLoading = inject(initialLoadingKey, ref(false))
+    const isSmallScreen = inject('isSmallScreen', ref(false))
 
     const isContract = computed(() => props.entityType === 'CONTRACT')
     const isAccount = computed(() => props.entityType === 'ACCOUNT')
@@ -122,6 +124,7 @@ export default defineComponent({
     })
 
     return {
+      isSmallScreen,
       isContract,
       isAccount,
       initialLoading,

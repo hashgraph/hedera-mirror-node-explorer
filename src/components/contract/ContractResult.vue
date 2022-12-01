@@ -50,13 +50,13 @@
         <Property id="from">
           <template v-slot:name>From</template>
           <template v-slot:value>
-            <EVMAddress :address="contractResult?.from" :id="fromId" :compact="!isMediumScreen"/>
+            <EVMAddress :address="contractResult?.from" :id="fromId" :compact="isSmallScreen && !isMediumScreen"/>
           </template>
         </Property>
         <Property id="to">
           <template v-slot:name>To</template>
           <template v-slot:value>
-            <EVMAddress :address="contractResult?.to" :id="toId" :compact="!isMediumScreen"/>
+            <EVMAddress :address="contractResult?.to" :id="toId" :compact="isSmallScreen && !isMediumScreen"/>
           </template>
         </Property>
         <FunctionInput :analyzer="functionCallAnalyzer"/>

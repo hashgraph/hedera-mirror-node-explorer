@@ -25,7 +25,7 @@
 <template>
 
   <div v-if="value">
-    <EVMAddress v-if="addressValue" :address="addressValue" :compact="!isMediumScreen"/>
+    <EVMAddress v-if="addressValue" :address="addressValue" :compact="isSmallScreen && !isMediumScreen"/>
     <div v-else class="is-family-monospace h-is-text-size-3 should-wrap">{{ value }}</div>
     <div class="h-is-extra-text h-is-text-size-3">{{ type }}</div>
   </div>
