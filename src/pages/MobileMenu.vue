@@ -41,7 +41,7 @@
         <a id="dashboard-menu-item"
            :class="{'is-rimmed': isDashboardRoute}"
            class="button is-ghost h-is-mobile-navbar-item h-is-dense"
-           @click="$router.replace({name: 'MainDashboard'})">Dashboard</a>
+           @click="$router.replace(routeManager.makeRouteToDashboard())">Dashboard</a>
         <a :class="{ 'is-rimmed': isTransactionRoute}"
            class="button is-ghost h-is-mobile-navbar-item h-is-dense"
            @click="$router.replace({name: 'Transactions'})">Transactions</a>
@@ -85,7 +85,7 @@
 
 import {computed, defineComponent, inject, onBeforeUnmount, onMounted, ref, watch} from 'vue';
 import {useRoute} from "vue-router";
-import router from "@/router";
+import router, {routeManager} from "@/router";
 import {MEDIUM_BREAKPOINT} from "@/App.vue";
 import Footer from "@/components/Footer.vue";
 import {networkRegistry} from "@/schemas/NetworkRegistry";
@@ -166,7 +166,8 @@ export default defineComponent({
       isNodeRoute,
       isStakingRoute,
       isBlocksRoute,
-      networkRegistry
+      networkRegistry,
+      routeManager
     }
   }
 })

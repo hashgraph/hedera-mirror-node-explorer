@@ -159,6 +159,18 @@ export class RouteManager {
     public routeToNode(nodeId: number): Promise<NavigationFailure | void | undefined> {
         return this.router.push(this.makeRouteToNode(nodeId))
     }
+
+    //
+    // Dashboard
+    //
+
+    public makeRouteToDashboard(): RouteLocationRaw {
+        return {name: 'MainDashboard'}
+    }
+
+    public routeToMainDashboard(): Promise<NavigationFailure | void | undefined> {
+        return this.router.push(this.makeRouteToDashboard())
+    }
 }
 
 

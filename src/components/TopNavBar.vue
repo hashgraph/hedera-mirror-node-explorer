@@ -28,7 +28,7 @@
        class="is-flex is-align-items-center is-justify-content-space-between pt-3 pb-4">
 
     <span class="is-inline-flex is-align-items-center is-flex-grow-0 is-flex-shrink-0">
-      <a class="mr-3" @click="$router.push({name: 'MainDashboard'})">
+      <a class="mr-3" @click="routeManager.routeToMainDashboard()">
         <img alt="Product Logo" class="image" src="@/assets/branding/brand-product-logo.png" style="max-width: 165px;">
       </a>
       <AxiosStatus/>
@@ -53,7 +53,7 @@
 
   <div v-else class="is-flex is-justify-content-space-between is-align-items-flex-end">
     <span class="is-inline-flex is-align-items-center is-flex-grow-0 is-flex-shrink-0">
-      <a id="product-logo" @click="$router.push({name: 'MainDashboard'})" class="mr-3">
+      <a id="product-logo" @click="routeManager.routeToMainDashboard()" class="mr-3">
         <img alt="Product Logo" class="image" src="@/assets/branding/brand-product-logo.png">
       </a>
       <AxiosStatus/>
@@ -75,7 +75,7 @@
         <div class="is-flex-grow-1 px-2"/>
         <a id="dashboard-menu-item" class="button is-ghost is-first h-is-navbar-item h-is-dense"
            :class="{'is-rimmed': isDashboardRoute}"
-           @click="$router.push({name: 'MainDashboard'})">Dashboard</a>
+           @click="routeManager.routeToMainDashboard()">Dashboard</a>
         <a class="button is-ghost h-is-navbar-item h-is-dense"
            :class="{ 'is-rimmed': isTransactionRoute}"
            @click="$router.push({name: 'Transactions'})">Transactions</a>
@@ -117,7 +117,7 @@
 
 import {computed, defineComponent, inject, ref, watch, WatchStopHandle} from "vue";
 import {useRoute} from "vue-router";
-import router from "@/router";
+import router, {routeManager} from "@/router";
 import SearchBar from "@/components/SearchBar.vue";
 import AxiosStatus from "@/components/AxiosStatus.vue";
 import {networkRegistry} from "@/schemas/NetworkRegistry";
@@ -216,7 +216,8 @@ export default defineComponent({
       isAccountRoute,
       isNodeRoute,
       isStakingRoute,
-      isBlocksRoute
+      isBlocksRoute,
+      routeManager,
     }
   },
 })
