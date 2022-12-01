@@ -29,7 +29,7 @@
       <template v-slot:name>Function</template>
       <template v-slot:value>
         <div class="is-family-monospace h-is-text-size-3">{{ functionHash }}</div>
-        <div class="h-is-extra-text h-is-text-size-3">{{ signature }}</div>
+        <div class="h-is-extra-text h-is-text-size-3 should-wrap">{{ signature }}</div>
       </template>
     </Property>
 
