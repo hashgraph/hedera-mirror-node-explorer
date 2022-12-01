@@ -75,6 +75,18 @@ export class RouteManager {
     }
 
     //
+    // TransactionsById
+    //
+
+    public routeToTransactionsById(transactionId: string): Promise<NavigationFailure | void | undefined> {
+        return this.router.push(this.makeRouteToTransactionsById(transactionId))
+    }
+
+    public makeRouteToTransactionsById(transactionId: string): RouteLocationRaw {
+        return {name: 'TransactionsById', params: { transactionId: transactionId}}
+    }
+
+    //
     // Account
     //
 

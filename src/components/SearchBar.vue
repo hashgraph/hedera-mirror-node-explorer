@@ -137,7 +137,7 @@ export default defineComponent({
               if (r.transactions.length == 1) {
                 routeManager.routeToTransaction(transaction)
               } else {
-                router.push({name: 'TransactionsById', params: { transactionId: transaction.transaction_id}})
+                routeManager.routeToTransactionsById(transaction.transaction_id ?? "")
               }
               searchDidEnd(true)
             } else if (r.tokenInfo != null) {

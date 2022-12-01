@@ -38,13 +38,13 @@
             <div v-else class="h-has-pill has-background-danger mr-3 h-is-text-size-2 mt-3">FAILURE</div>
           </div>
           <span v-if="showAllTransactionVisible && isLargeScreen" class="is-inline-block mt-2" id="allTransactionsLink">
-          <router-link :to="{name: 'TransactionsById', params: {transactionId: transaction?.transaction_id}}">
+          <router-link :to="routeManager.makeRouteToTransactionsById(transaction?.transaction_id)">
             <span class="h-is-property-text has-text-grey">Show all transactions with the same ID</span>
           </router-link>
         </span>
         </div>
         <span v-if="showAllTransactionVisible && !isLargeScreen">
-          <router-link :to="{name: 'TransactionsById', params: {transactionId: transaction?.transaction_id}}">
+          <router-link :to="routeManager.makeRouteToTransactionsById(transaction?.transaction_id)">
             <span class="h-is-property-text has-text-grey">Show all transactions with the same ID</span>
           </router-link>
         </span>
@@ -182,7 +182,7 @@
           <template v-slot:name>Child Transactions</template>
           <template v-slot:value>
             <router-link v-if="displayAllChildrenLinks"
-                         :to="{name: 'TransactionsById', params: {transactionId: transactionId}}">
+                         :to="routeManager.makeRouteToTransactionsById(transactionId)">
               {{ 'Show all ' + childTransactions.length + ' transactions' }}
             </router-link>
             <div v-else>
