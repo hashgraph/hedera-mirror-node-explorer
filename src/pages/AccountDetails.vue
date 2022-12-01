@@ -32,7 +32,7 @@
         <span class="h-is-secondary-text">{{ normalizedAccountId ?? "" }}</span>
         <span v-if="accountChecksum" class="has-text-grey" style="font-size: 28px">-{{ accountChecksum }}</span>
         <span v-if="showContractVisible" class="is-inline-block ml-3" id="showContractLink">
-          <router-link :to="{name: 'ContractDetails', params: {contractId: normalizedAccountId}}">
+          <router-link :to="contractRoute">
             <span class="h-is-property-text">Show associated contract</span>
           </router-link>
         </span>
@@ -231,7 +231,7 @@ import {ContractLoader} from "@/components/contract/ContractLoader";
 import {NodeLoader} from "@/components/node/NodeLoader";
 import AliasValue from "@/components/values/AliasValue.vue";
 import TransactionFilterSelect from "@/components/transaction/TransactionFilterSelect.vue";
-import router from "@/router";
+import router, {routeManager} from "@/router";
 import {TransactionByTimestampLoader} from "@/components/transaction/TransactionByTimestampLoader";
 import TransactionLink from "@/components/values/TransactionLink.vue";
 
@@ -383,6 +383,11 @@ export default defineComponent({
     const accountCreateTransaction = new TransactionByTimestampLoader(accountLoader.createdTimestamp as ComputedRef)
     onMounted(() => accountCreateTransaction.requestLoad())
 
+    const contractRoute = computed(() => {
+      const accountId = accountLoader.accountId.value
+      return accountId ? routeManager.makeRouteToContract(accountId) : null
+    })
+
     return {
       isSmallScreen,
       isTouchDevice,
@@ -407,6 +412,7 @@ export default defineComponent({
       stakedNodeDescription: stakeNodeLoader.nodeDescription,
       accountCreateTransactionId: accountCreateTransaction.transactionId,
       accountCreatorId: accountCreateTransaction.payerAccountId,
+      contractRoute,
     }
   }
 });

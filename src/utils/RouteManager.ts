@@ -99,6 +99,19 @@ export class RouteManager {
     public routeToToken(tokenId: string): Promise<NavigationFailure | void | undefined> {
         return this.router.push(this.makeRouteToToken(tokenId))
     }
+
+    //
+    // Contract
+    //
+
+    public makeRouteToContract(contractId: string): RouteLocationRaw {
+        return {name: 'ContractDetails', params: { contractId: contractId}}
+    }
+
+    public routeToContract(contractId: string): Promise<NavigationFailure | void | undefined> {
+        return this.router.push(this.makeRouteToContract(contractId))
+    }
+
 }
 
 

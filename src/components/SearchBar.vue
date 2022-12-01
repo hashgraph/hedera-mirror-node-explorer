@@ -118,7 +118,9 @@ export default defineComponent({
         r.run().then(() => {
           try {
             if (r.contract != null) {
-              router.push({name: 'ContractDetails', params: { contractId: r.contract.contract_id}})
+              if (r.contract.contract_id) {
+                routeManager.routeToContract(r.contract.contract_id)
+              }
               searchDidEnd(true)
             } else if (r.account != null) {
               if (r.account.account) {
