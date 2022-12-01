@@ -80,7 +80,7 @@ import BlobValue from "@/components/values/BlobValue.vue";
 import {ORUGA_MOBILE_BREAKPOINT} from '@/App.vue';
 import EmptyTable from "@/components/EmptyTable.vue";
 import {TopicMessage} from "@/schemas/HederaSchemas";
-import router from "@/router";
+import {routeManager} from "@/router";
 import {TransactionID} from "@/utils/TransactionID";
 
 export default defineComponent({
@@ -106,10 +106,7 @@ export default defineComponent({
       if (entityId && timestamp) {
         const transactionId = TransactionID.parse(entityId + '@' + timestamp)
         if (transactionId) {
-          router.push({
-            name: 'TransactionDetails',
-            params: {transactionId: transactionId.toString(false)},
-            query: {t: t.consensus_timestamp}})
+          routeManager.routeToTransactionId(transactionId.toString(false), t.consensus_timestamp)
         }
       }
     }

@@ -63,7 +63,7 @@
 
 import {defineComponent, inject, onMounted, ref, watch} from "vue";
 import {SearchRequest} from "@/utils/SearchRequest";
-import router from "@/router";
+import router, {routeManager} from "@/router";
 
 
 const STYLE_SEARCH_ICON = "fa fa-search"
@@ -129,9 +129,7 @@ export default defineComponent({
             } else if (r.transactions.length >= 1) {
               const transaction = r.transactions[0]
               if (r.transactions.length == 1) {
-                router.push({name: 'TransactionDetails',
-                  params: { transactionId: transaction.transaction_id},
-                  query: { t: transaction.consensus_timestamp }})
+                routeManager.routeToTransaction(transaction)
               } else {
                 router.push({name: 'TransactionsById', params: { transactionId: transaction.transaction_id}})
               }

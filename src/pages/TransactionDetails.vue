@@ -60,11 +60,7 @@
           <template v-slot:value>
             <StringValue :string-value="transactionType ? makeTypeLabel(transactionType) : undefined"/>
             <div v-if="scheduledTransaction" id="scheduledLink">
-              <router-link :to="{
-                  name: 'TransactionDetails',
-                  params: { transactionId: scheduledTransaction.transaction_id },
-                  query: { t: scheduledTransaction.consensus_timestamp }
-                }">
+              <router-link :to="routeManager.makeRouteToTransaction(scheduledTransaction)">
                 <span class="h-is-text-size-3 has-text-grey">Show scheduled transaction</span>
               </router-link>
             </div>
@@ -162,11 +158,8 @@
           <template v-if="transaction?.scheduled===true" v-slot:value>
             True
             <div id="schedulingLink" v-if="schedulingTransaction">
-              <router-link :to="{
-                  name: 'TransactionDetails',
-                  params: { transactionId: schedulingTransaction.transaction_id },
-                  query: { t: schedulingTransaction.consensus_timestamp }
-                }"><span class="has-text-grey h-is-text-size-3">Show schedule create transaction</span>
+              <router-link :to="routeManager.makeRouteToTransaction(schedulingTransaction)">
+                <span class="has-text-grey h-is-text-size-3">Show schedule create transaction</span>
               </router-link>
             </div>
           </template>
@@ -180,11 +173,8 @@
         <Property v-if="parentTransaction" id="parentTransaction">
           <template v-slot:name>Parent Transaction</template>
           <template v-slot:value>
-            <router-link :to="{
-                  name: 'TransactionDetails',
-                  params: { transactionId: parentTransaction.transaction_id },
-                  query: { t: parentTransaction.consensus_timestamp }
-                }">{{ makeTypeLabel(parentTransaction.name) }}
+            <router-link :to="routeManager.makeRouteToTransaction(parentTransaction)">
+              {{ makeTypeLabel(parentTransaction.name) }}
             </router-link>
           </template>
         </Property>
@@ -196,11 +186,7 @@
               {{ 'Show all ' + childTransactions.length + ' transactions' }}
             </router-link>
             <div v-else>
-              <router-link v-for="tx in childTransactions" :key="tx.nonce" :to="{
-                    name: 'TransactionDetails',
-                    params: { transactionId: tx.transaction_id },
-                    query: { t: tx.consensus_timestamp }
-                  }">
+              <router-link v-for="tx in childTransactions" :key="tx.nonce" :to="routeManager.makeRouteToTransaction(tx)">
                 <span class="mr-2 is-numeric">{{ '#' + tx.nonce }}</span>
                 <span>{{ makeTypeLabel(tx.name) }}</span>
                 <br/></router-link>
@@ -262,6 +248,7 @@ import ContractResult from "@/components/contract/ContractResult.vue";
 import {TransactionType} from "@/schemas/HederaSchemas";
 import TopicMessage from "@/components/topic/TopicMessage.vue";
 import {TopicMessageLoader} from "@/components/topic/TopicMessageLoader";
+import {routeManager} from "@/router"
 
 const MAX_INLINE_CHILDREN = 9
 
@@ -354,6 +341,7 @@ export default defineComponent({
       blockNumber: transactionLoader.blockNumber,
       notification,
       routeName,
+      routeManager,
       makeTypeLabel,
       makeOperatorAccountLabel,
       showAllTransactionVisible,

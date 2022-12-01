@@ -18,7 +18,8 @@
  *
  */
 
-import {RouteLocationNormalizedLoaded, Router} from "vue-router";
+import {NavigationFailure, RouteLocationNormalizedLoaded, RouteLocationRaw, Router} from "vue-router";
+import {Transaction} from "@/schemas/HederaSchemas";
 import {networkRegistry} from "@/schemas/NetworkRegistry";
 import {computed} from "vue";
 
@@ -52,6 +53,22 @@ export class RouteManager {
         return networkEntry != null ? networkEntry : networkRegistry.getDefaultEntry()
     })
 
+    public routeToTransaction(t: Transaction): Promise<NavigationFailure | void | undefined> {
+        return this.router.push(this.makeRouteToTransaction(t))
+    }
+
+    public routeToTransactionId(transactionId: string|undefined, consensusTimestamp: string|undefined): Promise<NavigationFailure | void | undefined> {
+        return this.router.push({name: 'TransactionDetails',
+            params: {transactionId: transactionId}, query: {t: consensusTimestamp}})
+    }
+
+    public makeRouteToTransaction(t: Transaction): RouteLocationRaw {
+        return {
+            name: 'TransactionDetails',
+            params: { transactionId: t.transaction_id },
+            query: { t: t.consensus_timestamp }
+        }
+    }
 }
 
 
