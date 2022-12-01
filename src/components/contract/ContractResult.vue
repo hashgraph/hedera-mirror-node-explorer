@@ -50,13 +50,13 @@
         <Property id="from">
           <template v-slot:name>From</template>
           <template v-slot:value>
-            <EVMAddress :address="contractResult?.from" :id="fromId" :compact="isSmallScreen && !isMediumScreen"/>
+            <EVMAddress :address="contractResult?.from" :id="fromId" :compact="!isMediumScreen"/>
           </template>
         </Property>
         <Property id="to">
           <template v-slot:name>To</template>
           <template v-slot:value>
-            <EVMAddress :address="contractResult?.to" :id="toId" :compact="isSmallScreen && !isMediumScreen"/>
+            <EVMAddress :address="contractResult?.to" :id="toId" :compact="!isMediumScreen"/>
           </template>
         </Property>
         <FunctionInput :analyzer="functionCallAnalyzer"/>
@@ -120,7 +120,7 @@
 
 <script lang="ts">
 
-import {computed, defineComponent, inject, onBeforeUnmount, onMounted, ref} from 'vue';
+import {computed, defineComponent, inject, onBeforeUnmount, onMounted} from 'vue';
 import {ContractResultDetailsLoader} from "@/components/contract/ContractResultDetailsLoader";
 import DashboardCard from "@/components/DashboardCard.vue";
 import HbarAmount from "@/components/values/HbarAmount.vue";
