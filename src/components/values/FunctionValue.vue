@@ -25,7 +25,8 @@
 <template>
 
   <div v-if="value">
-    <div class="is-family-monospace h-is-text-size-3 should-wrap">{{ value }}</div>
+    <EVMAddress v-if="addressValue" :address="addressValue" :compact="!isMediumScreen"/>
+    <div v-else class="is-family-monospace h-is-text-size-3 should-wrap">{{ value }}</div>
     <div class="h-is-extra-text h-is-text-size-3">{{ type }}</div>
   </div>
   <div v-else-if="initialLoading"/>
@@ -39,20 +40,32 @@
 
 <script lang="ts">
 
-import {defineComponent, inject, PropType, ref} from 'vue';
+import {computed, defineComponent, inject, PropType, ref} from 'vue';
 import {initialLoadingKey} from "@/AppKeys";
+import EVMAddress from "@/components/values/EVMAddress.vue";
 
 export default defineComponent({
   name: 'FunctionValue',
+  components: {EVMAddress},
   props: {
     value: Object as PropType<unknown>,
     type: String
   },
 
-  setup() {
+  setup(props) {
+    const isSmallScreen = inject('isSmallScreen', true)
+    const isMediumScreen = inject('isMediumScreen', true)
     const initialLoading = inject(initialLoadingKey, ref(false))
+
+    const addressValue = computed(() => {
+      return props.type === 'address' ? props.value as string : null
+    })
+
     return {
-      initialLoading
+      isSmallScreen,
+      isMediumScreen,
+      initialLoading,
+      addressValue,
     }
   }
 });
