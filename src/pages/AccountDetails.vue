@@ -37,7 +37,7 @@
           </router-link>
         </span>
         <template v-if="false">
-          <router-link v-if="nodeId" :to="{name: 'NodeDetails', params: {nodeId: nodeId}}">
+          <router-link v-if="operatorNodeRoute" :to="operatorNodeRoute">
             <p class="h-is-tertiary-text"> {{ accountInfo }} </p>
           </router-link>
           <p v-else class="h-is-tertiary-text"> {{ accountInfo }} </p>
@@ -95,7 +95,7 @@
                 </template>
                 <template v-slot:value>
                   <AccountLink v-if="stakedAccountId" :accountId="account.staked_account_id" v-bind:show-extra="true"/>
-                  <router-link v-else-if="stakedNodeId" :to="{name: 'NodeDetails', params: {nodeId: account?.staked_node_id}}">
+                  <router-link v-else-if="stakedNodeRoute" :to="stakedNodeRoute">
                     {{ account?.staked_node_id }} - {{ stakedNodeDescription }}
                   </router-link>
                   <span v-else class="has-text-grey">None</span>
@@ -388,6 +388,16 @@ export default defineComponent({
       return accountId ? routeManager.makeRouteToContract(accountId) : null
     })
 
+    const stakedNodeRoute = computed(() => {
+      const stakedNodeId = accountLoader.stakedNodeId.value
+      return stakedNodeId !== null ? routeManager.makeRouteToNode(stakedNodeId) : null
+    })
+
+    const operatorNodeRoute = computed(() => {
+      const operatorNodeId = accountLoader.nodeId.value
+      return operatorNodeId ? routeManager.makeRouteToNode(operatorNodeId) : null
+    })
+
     return {
       isSmallScreen,
       isTouchDevice,
@@ -413,6 +423,8 @@ export default defineComponent({
       accountCreateTransactionId: accountCreateTransaction.transactionId,
       accountCreatorId: accountCreateTransaction.payerAccountId,
       contractRoute,
+      stakedNodeRoute,
+      operatorNodeRoute,
     }
   }
 });

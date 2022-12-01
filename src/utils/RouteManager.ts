@@ -147,6 +147,18 @@ export class RouteManager {
     public routeToBlock(blockHon: string|number): Promise<NavigationFailure | void | undefined> {
         return this.router.push(this.makeRouteToBlock(blockHon))
     }
+
+    //
+    // Node
+    //
+
+    public makeRouteToNode(nodeId: number): RouteLocationRaw {
+        return {name: 'NodeDetails', params: {nodeId: nodeId}}
+    }
+
+    public routeToNode(nodeId: number): Promise<NavigationFailure | void | undefined> {
+        return this.router.push(this.makeRouteToNode(nodeId))
+    }
 }
 
 

@@ -112,7 +112,7 @@ import EmptyTable from "@/components/EmptyTable.vue";
 import {operatorRegistry} from "@/schemas/OperatorRegistry";
 import HbarAmount from "@/components/values/HbarAmount.vue";
 import StakeRange from "@/components/node/StakeRange.vue";
-import router from "@/router";
+import {routeManager} from "@/router";
 
 
 //
@@ -174,7 +174,7 @@ export default defineComponent({
     }
 
     const handleClick = (node: NetworkNode) => {
-      router.push({name: 'NodeDetails', params: {nodeId: node.node_id}})
+      routeManager.routeToNode(node.node_id ?? 0)
     }
 
     return {
