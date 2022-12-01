@@ -29,7 +29,7 @@
       <span class="is-numeric">{{ tokenId }}</span>
     </template>
     <template v-else>
-      <router-link :to="{name: 'TokenDetails', params: {tokenId: tokenId}}">
+      <router-link :to="tokenRoute">
         <span class="is-numeric">{{ tokenId }}</span>
       </router-link>
     </template>
@@ -53,9 +53,10 @@
 
 <script lang="ts">
 
-import {defineComponent, inject, ref} from "vue";
+import {computed, defineComponent, inject, ref} from "vue";
 import TokenExtra from "@/components/values/TokenExtra.vue";
 import {initialLoadingKey} from "@/AppKeys";
+import {routeManager} from "@/router";
 
 export default defineComponent({
   name: "TokenLink",
@@ -75,9 +76,10 @@ export default defineComponent({
       default: false
     }
   },
-  setup() {
+  setup(props) {
+    const tokenRoute = computed(() => props.tokenId ? routeManager.makeRouteToToken(props.tokenId) : null)
     const initialLoading = inject(initialLoadingKey, ref(false))
-    return { initialLoading }
+    return { tokenRoute, initialLoading }
   }
 });
 

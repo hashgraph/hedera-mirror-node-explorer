@@ -261,7 +261,7 @@
 
 import {computed, defineComponent, inject, onBeforeUnmount, onMounted} from 'vue';
 import {useRouter} from "vue-router";
-import router from "@/router";
+import router, {routeManager} from "@/router";
 import KeyValue from "@/components/values/KeyValue.vue";
 import TimestampValue from "@/components/values/TimestampValue.vue";
 import TokenBalanceTable from "@/components/token/TokenBalanceTable.vue";
@@ -350,7 +350,7 @@ export default defineComponent({
     })
 
     const showTokenDetails = (tokenId: string) => {
-      router.push({name: 'TokenDetails', params: {tokenId: tokenId}})
+      routeManager.routeToToken(tokenId)
     }
 
     const perPage = computed(() => isMediumScreen ? 10 : 5)

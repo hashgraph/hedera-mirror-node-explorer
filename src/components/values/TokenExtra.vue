@@ -25,7 +25,7 @@
 <template>
   <template v-if="tokenId != null">
     <template v-if="useAnchor">
-      <router-link :to="{name: 'TokenDetails', params: {tokenId: tokenId}}">
+      <router-link :to="tokenRoute">
         <span class="h-is-smaller h-is-extra-text should-wrap">{{ extra }}</span>
       </router-link>
     </template>
@@ -41,11 +41,12 @@
 
 <script lang="ts">
 
-import {defineComponent, onMounted, ref, watch} from "vue";
+import {computed, defineComponent, onMounted, ref, watch} from "vue";
 import {AxiosResponse} from "axios";
 import {TokenInfo} from "@/schemas/HederaSchemas";
 import {TokenInfoCollector} from "@/utils/collector/TokenInfoCollector";
 import {makeTokenSymbol} from "@/schemas/HederaUtils";
+import {routeManager} from "@/router";
 
 export default defineComponent({
   name: "TokenExtra",
@@ -87,7 +88,9 @@ export default defineComponent({
       updateExtra()
     })
 
-    return { extra }
+    const tokenRoute = computed(() => props.tokenId ? routeManager.makeRouteToToken(props.tokenId) : null)
+
+    return { extra, tokenRoute }
   }
 });
 

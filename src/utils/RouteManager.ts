@@ -87,6 +87,18 @@ export class RouteManager {
     public routeToAccount(accountId: string): Promise<NavigationFailure | void | undefined> {
         return this.router.push(this.makeRouteToAccount(accountId))
     }
+
+    //
+    // Token
+    //
+
+    public makeRouteToToken(tokenId: string): RouteLocationRaw {
+        return { name: 'TokenDetails', params: { tokenId: tokenId}}
+    }
+
+    public routeToToken(tokenId: string): Promise<NavigationFailure | void | undefined> {
+        return this.router.push(this.makeRouteToToken(tokenId))
+    }
 }
 
 

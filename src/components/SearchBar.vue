@@ -139,7 +139,9 @@ export default defineComponent({
               }
               searchDidEnd(true)
             } else if (r.tokenInfo != null) {
-              router.push({name: 'TokenDetails', params: { tokenId: r.tokenInfo.token_id}})
+              if (r.tokenInfo.token_id) {
+                routeManager.routeToToken(r.tokenInfo.token_id)
+              }
               searchDidEnd(true)
             } else if (r.topicMessages.length >= 1) {
               router.push({name: 'TopicDetails', params: { topicId: r.topicMessages[0].topic_id}})
