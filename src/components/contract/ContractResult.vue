@@ -104,7 +104,7 @@
 
     </DashboardCard>
 
-    <ContractResultTrace :transaction-id-or-hash="transactionIdOrHash"/>
+    <ContractResultTrace v-if="isParent" :transaction-id-or-hash="transactionIdOrHash"/>
 
     <ContractResultStates :state-changes="contractResult?.state_changes" :time-stamp="contractResult?.timestamp"/>
 
@@ -159,6 +159,10 @@ export default defineComponent({
     contractId: String,
     transactionIdOrHash: String,
     topLevel: {
+      type: Boolean,
+      default: false
+    },
+    isParent: {
       type: Boolean,
       default: false
     }

@@ -225,7 +225,8 @@
 
     <ContractResult :timestamp="transaction?.consensus_timestamp"
                     :contract-id="contractId"
-                    :transaction-id-or-hash="transaction?.transaction_id"/>
+                    :transaction-id-or-hash="transaction?.transaction_id"
+                    :is-parent="transaction?.parent_consensus_timestamp === null"/>
 
   </section>
 
