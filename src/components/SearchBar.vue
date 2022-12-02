@@ -63,7 +63,7 @@
 
 import {defineComponent, inject, onMounted, ref, watch} from "vue";
 import {SearchRequest} from "@/utils/SearchRequest";
-import router, {routeManager} from "@/router";
+import {routeManager} from "@/router";
 
 
 const STYLE_SEARCH_ICON = "fa fa-search"
@@ -152,7 +152,7 @@ export default defineComponent({
               }
               searchDidEnd(true)
             } else {
-              router.push({name: 'NoSearchResult', params: { searchedId: searchedId.value}, query: { errorCount: r.getErrorCount()}})
+              routeManager.routeToNoSearchResult(searchedId.value, r.getErrorCount())
               searchDidEnd(false)
             }
           } catch {

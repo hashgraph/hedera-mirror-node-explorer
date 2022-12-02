@@ -36,11 +36,11 @@
 
     <div class="is-flex is-align-items-center pt-2">
       <a v-if="name !== 'MobileMenu' && name !== 'MobileSearch'"
-         @click="$router.push({name: 'MobileSearch'})">
+         @click="$router.push(routeManager.mobileSearchRoute)">
         <img alt="Search bar" src="@/assets/search-icon.png" style="max-height: 20px;">
       </a>
       <a v-if="name !== 'MobileMenu' && name !== 'MobileSearch'" class="ml-5"
-         @click="$router.push({name: 'MobileMenu', query: {from: name}})">
+         @click="$router.push(routeManager.makeRouteToMobileMenu(name))">
         <img alt="Search bar" src="@/assets/hamburger.png" style="max-height: 32px;">
       </a>
       <a v-else class="ml-5 mr-2"
@@ -75,32 +75,32 @@
         <div class="is-flex-grow-1 px-2"/>
         <a id="dashboard-menu-item" class="button is-ghost is-first h-is-navbar-item h-is-dense"
            :class="{'is-rimmed': isDashboardRoute}"
-           @click="routeManager.routeToMainDashboard()">Dashboard</a>
+           @click="$router.push(routeManager.mainDashboardRoute)">Dashboard</a>
         <a class="button is-ghost h-is-navbar-item h-is-dense"
            :class="{ 'is-rimmed': isTransactionRoute}"
-           @click="$router.push({name: 'Transactions'})">Transactions</a>
+           @click="$router.push(routeManager.transactionsRoute)">Transactions</a>
         <a class="button is-ghost h-is-navbar-item h-is-dense"
            :class="{ 'is-rimmed': isTokenRoute}"
-           @click="$router.push({name: 'Tokens'})">Tokens</a>
+           @click="$router.push(routeManager.tokensRoute)">Tokens</a>
         <a class="button is-ghost h-is-navbar-item h-is-dense"
            :class="{ 'is-rimmed': isTopicRoute}"
-           @click="$router.push({name: 'Topics'})">Topics</a>
+           @click="$router.push(routeManager.topicsRoute)">Topics</a>
         <a class="button is-ghost h-is-navbar-item h-is-dense"
            :class="{ 'is-rimmed': isContractRoute}"
-           @click="$router.push({name: 'Contracts'})">Contracts</a>
+           @click="$router.push(routeManager.contractsRoute)">Contracts</a>
         <a class="button is-ghost h-is-navbar-item h-is-dense"
            :class="{ 'is-rimmed': isAccountRoute}"
-           @click="$router.push({name: 'Accounts'})">Accounts</a>
+           @click="$router.push(routeManager.accountsRoute)">Accounts</a>
         <a class="button is-ghost h-is-navbar-item h-is-dense"
            :class="{ 'is-rimmed': isNodeRoute}"
-           @click="$router.push({name: 'Nodes'})">Nodes</a>
+           @click="$router.push(routeManager.nodesRoute)">Nodes</a>
         <a v-if="isStakingEnabled"
            class="button is-ghost h-is-navbar-item h-is-dense"
            :class="{ 'is-rimmed': isStakingRoute}"
-           @click="$router.push({name: 'Staking'})">Staking</a>
+           @click="$router.push(routeManager.stakingRoute)">Staking</a>
         <a class="button is-ghost is-last h-is-navbar-item h-is-dense"
            :class="{ 'is-rimmed': isBlocksRoute}"
-           @click="$router.push({name: 'Blocks'})">Blocks</a>
+           @click="$router.push(routeManager.blocksRoute)">Blocks</a>
       </div>
       <SearchBar style="margin-top: 4px"/>
     </div>

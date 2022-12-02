@@ -62,8 +62,8 @@ export class RouteManager {
     }
 
     public routeToTransactionId(transactionId: string|undefined, consensusTimestamp: string|undefined): Promise<NavigationFailure | void | undefined> {
-        return this.router.push({name: 'TransactionDetails',
-            params: {transactionId: transactionId}, query: {t: consensusTimestamp}})
+        const route = {name: 'TransactionDetails', params: {transactionId: transactionId}, query: {t: consensusTimestamp}}
+        return this.router.push(route)
     }
 
     public makeRouteToTransaction(t: Transaction): RouteLocationRaw {
@@ -161,15 +161,38 @@ export class RouteManager {
     }
 
     //
-    // Dashboard
+    // NoSearchResult
     //
 
-    public makeRouteToDashboard(): RouteLocationRaw {
-        return {name: 'MainDashboard'}
+    public makeRouteToNoSearchResult(searchedId: string, errorCount: number): RouteLocationRaw {
+        return {name: 'NoSearchResult', params: { searchedId: searchedId}, query: { errorCount: errorCount}}
+    }
+
+    public routeToNoSearchResult(searchedId: string, errorCount: number): Promise<NavigationFailure | void | undefined> {
+        return this.router.push(this.makeRouteToNoSearchResult(searchedId, errorCount))
+    }
+
+    //
+    // Pages
+    //is
+
+    public readonly mainDashboardRoute: RouteLocationRaw = {name: 'MainDashboard'}
+    public readonly transactionsRoute:  RouteLocationRaw = {name: 'Transactions'}
+    public readonly tokensRoute:        RouteLocationRaw = {name: 'Tokens'}
+    public readonly topicsRoute:        RouteLocationRaw = {name: 'Topics'}
+    public readonly contractsRoute:     RouteLocationRaw = {name: 'Contracts'}
+    public readonly accountsRoute:      RouteLocationRaw = {name: 'Accounts'}
+    public readonly nodesRoute:         RouteLocationRaw = {name: 'Nodes'}
+    public readonly stakingRoute:       RouteLocationRaw = {name: 'Staking'}
+    public readonly blocksRoute:        RouteLocationRaw = {name: 'Blocks'}
+    public readonly mobileSearchRoute:  RouteLocationRaw = {name: 'MobileSearch'}
+
+    public makeRouteToMobileMenu(name: unknown): RouteLocationRaw {
+        return {name: 'MobileMenu', query: {from: name as string}}
     }
 
     public routeToMainDashboard(): Promise<NavigationFailure | void | undefined> {
-        return this.router.push(this.makeRouteToDashboard())
+        return this.router.push(this.mainDashboardRoute)
     }
 }
 
