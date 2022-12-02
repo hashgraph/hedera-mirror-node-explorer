@@ -28,13 +28,13 @@
       <Property id="actionDetailFrom" custom-nb-col-class="is-one-fifth">
         <template v-slot:name>From</template>
         <template v-slot:value>
-          <EVMAddress :address="action.from" :id="action.caller" :id-type="action.caller_type" :show-type="true"/>
+          <EVMAddress :address="action.from" :id="action.caller" :entity-type="action.caller_type" :show-type="true"/>
         </template>
       </Property>
       <Property id="actionDetailTo" custom-nb-col-class="is-one-fifth">
         <template v-slot:name>To</template>
         <template v-slot:value>
-          <EVMAddress :address="action.to" :id="action.recipient" :id-type="action.recipient_type" :show-type="true"/>
+          <EVMAddress :address="action.to" :id="action.recipient" :entity-type="action.recipient_type" :show-type="true"/>
         </template>
       </Property>
       <Property id="actionDetailFunction" custom-nb-col-class="is-one-fifth">

@@ -61,7 +61,10 @@
       </o-table-column>
 
       <o-table-column v-slot="props" field="from" label="From">
-        <EVMAddress :address="props.row.action.from" :id="props.row.action.caller" :compact="!isLargeScreen && isMediumScreen"/>
+        <EVMAddress :address="props.row.action.from"
+                    :id="props.row.action.caller"
+                    :entity-type="props.row.action.caller_type"
+                    :compact="!isLargeScreen && isMediumScreen"/>
       </o-table-column>
 
       <o-table-column v-slot="props" field="amount" label="Amount">
@@ -73,7 +76,10 @@
       </o-table-column>
 
       <o-table-column v-slot="props" field="to" label="To">
-        <EVMAddress :address="props.row.action.to" :id="props.row.action.recipient" :compact="!isLargeScreen && isMediumScreen"/>
+        <EVMAddress :address="props.row.action.to"
+                    :id="props.row.action.recipient??''"
+                    :entity-type="props.row.action.recipient_type"
+                    :compact="!isLargeScreen && isMediumScreen"/>
       </o-table-column>
 
       <o-table-column v-slot="props" field="gas_limit" label="Gas Limit">
