@@ -60,7 +60,7 @@
           <template v-slot:value>
             <StringValue :string-value="transactionType ? makeTypeLabel(transactionType) : undefined"/>
             <div v-if="scheduledTransaction" id="scheduledLink">
-              <router-link :to="routeManager.makeRouteToTransaction(scheduledTransaction)">
+              <router-link :to="routeManager.makeRouteToTransactionObj(scheduledTransaction)">
                 <span class="h-is-text-size-3 has-text-grey">Show scheduled transaction</span>
               </router-link>
             </div>
@@ -158,7 +158,7 @@
           <template v-if="transaction?.scheduled===true" v-slot:value>
             True
             <div id="schedulingLink" v-if="schedulingTransaction">
-              <router-link :to="routeManager.makeRouteToTransaction(schedulingTransaction)">
+              <router-link :to="routeManager.makeRouteToTransactionObj(schedulingTransaction)">
                 <span class="has-text-grey h-is-text-size-3">Show schedule create transaction</span>
               </router-link>
             </div>
@@ -173,7 +173,7 @@
         <Property v-if="parentTransaction" id="parentTransaction">
           <template v-slot:name>Parent Transaction</template>
           <template v-slot:value>
-            <router-link :to="routeManager.makeRouteToTransaction(parentTransaction)">
+            <router-link :to="routeManager.makeRouteToTransactionObj(parentTransaction)">
               {{ makeTypeLabel(parentTransaction.name) }}
             </router-link>
           </template>
@@ -186,7 +186,7 @@
               {{ 'Show all ' + childTransactions.length + ' transactions' }}
             </router-link>
             <div v-else>
-              <router-link v-for="tx in childTransactions" :key="tx.nonce" :to="routeManager.makeRouteToTransaction(tx)">
+              <router-link v-for="tx in childTransactions" :key="tx.nonce" :to="routeManager.makeRouteToTransactionObj(tx)">
                 <span class="mr-2 is-numeric">{{ '#' + tx.nonce }}</span>
                 <span>{{ makeTypeLabel(tx.name) }}</span>
                 <br/></router-link>

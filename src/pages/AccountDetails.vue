@@ -127,7 +127,7 @@
             <Property id="createTransaction">
               <template v-slot:name>Create Transaction</template>
               <template v-slot:value>
-                <TransactionLink :transaction-id="accountCreateTransactionId"/>
+                <TransactionLink :transactionLoc="account?.created_timestamp"/>
               </template>
             </Property>
 
@@ -206,7 +206,7 @@
 
 <script lang="ts">
 
-import {computed, ComputedRef, defineComponent, inject, onBeforeUnmount, onMounted, watch} from 'vue';
+import {computed, defineComponent, inject, onBeforeUnmount, onMounted, watch} from 'vue';
 import KeyValue from "@/components/values/KeyValue.vue";
 import PlayPauseButton from "@/components/PlayPauseButton.vue";
 import TransactionTable from "@/components/transaction/TransactionTable.vue";
@@ -232,7 +232,6 @@ import {NodeLoader} from "@/components/node/NodeLoader";
 import AliasValue from "@/components/values/AliasValue.vue";
 import TransactionFilterSelect from "@/components/transaction/TransactionFilterSelect.vue";
 import router, {routeManager} from "@/router";
-import {TransactionByTimestampLoader} from "@/components/transaction/TransactionByTimestampLoader";
 import TransactionLink from "@/components/values/TransactionLink.vue";
 
 const MAX_TOKEN_BALANCES = 10
@@ -380,9 +379,6 @@ export default defineComponent({
     //
     // account create transaction
     //
-    const accountCreateTransaction = new TransactionByTimestampLoader(accountLoader.createdTimestamp as ComputedRef)
-    onMounted(() => accountCreateTransaction.requestLoad())
-
     const contractRoute = computed(() => {
       const accountId = accountLoader.accountId.value
       return accountId ? routeManager.makeRouteToContract(accountId) : null
@@ -420,8 +416,6 @@ export default defineComponent({
       stakedNodeId: accountLoader.stakedNodeId,
       stakedAccountId: accountLoader.stakedAccountId,
       stakedNodeDescription: stakeNodeLoader.nodeDescription,
-      accountCreateTransactionId: accountCreateTransaction.transactionId,
-      accountCreatorId: accountCreateTransaction.payerAccountId,
       contractRoute,
       stakedNodeRoute,
       operatorNodeRoute,

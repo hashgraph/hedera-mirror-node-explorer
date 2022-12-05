@@ -52,7 +52,7 @@
         <div class="is-flex is-align-items-baseline mt-4" style="line-height: 21px">
           <span v-if="extraMessage" class="h-is-property-text"> {{ extraMessage }} </span>
           <span v-else class="h-is-property-text" style="visibility: hidden">Filler</span>
-          <TransactionLink v-if="extraTransaction" :transaction-id="extraTransaction" class="ml-2"/>
+          <TransactionLink v-if="extraTransactionHash" :transaction-loc="extraTransactionHash" class="ml-2"/>
         </div>
 
         <div class="is-flex is-justify-content-flex-end">
@@ -89,7 +89,7 @@ export default defineComponent({
     },
     mainMessage: String,
     extraMessage: String,
-    extraTransaction: String,
+    extraTransactionHash: String,
     showSpinner: Boolean
   },
 
