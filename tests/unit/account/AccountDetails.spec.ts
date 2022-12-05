@@ -44,6 +44,7 @@ import TransactionTable from "@/components/transaction/TransactionTable.vue";
 import {HMSF} from "@/utils/HMSF";
 import NotificationBanner from "@/components/NotificationBanner.vue";
 import {TransactionID} from "@/utils/TransactionID";
+import TransactionFilterSelect from "@/components/transaction/TransactionFilterSelect.vue";
 
 /*
     Bookmarks
@@ -131,6 +132,18 @@ describe("AccountDetails.vue", () => {
 
         expect(wrapper.get("#stakedToName").text()).toBe("Staked to")
         expect(wrapper.get("#stakedToValue").text()).toBe("None")
+
+        const select = wrapper.findComponent(TransactionFilterSelect)
+        expect(select.exists()).toBe(true)
+        expect(select.text()).toBe(
+            "TYPES: ALLCONTRACT CALLCONTRACT CREATECONTRACT DELETECONTRACT UPDATECRYPTO ADD LIVE " +
+            "HASHCRYPTO APPROVE ALLOWANCECRYPTO CREATE ACCOUNTCRYPTO DELETE ACCOUNTCRYPTO DELETE ALLOWANCECRYPTO " +
+            "DELETE LIVE HASHCRYPTO TRANSFERCRYPTO UPDATE ACCOUNTETHEREUM TRANSACTIONFILE " +
+            "APPENDFILE CREATEFILE DELETEFILE UPDATEFREEZEHCS CREATE TOPICHCS DELETE TOPICHCS SUBMIT MESSAGEHCS " +
+            "UPDATE TOPICNODE STAKE UPDATEPSEUDORANDOM NUMBER GENERATESCHEDULE CREATESCHEDULE DELETESCHEDULE SIGNSYSTEM DELETESYSTEM UNDELETETOKEN " +
+            "ASSOCIATETOKEN BURNTOKEN CREATETOKEN DELETETOKEN DISSOCIATETOKEN FEE SCHEDULE UPDATETOKEN FREEZETOKEN " +
+            "KYC GRANTTOKEN KYC REVOKETOKEN MINTTOKEN PAUSETOKEN UNFREEZETOKEN UNPAUSETOKEN " +
+            "UPDATETOKEN WIPEUNCHECKED SUBMIT")
 
         expect(wrapper.find("#recentTransactions").exists()).toBe(true)
         expect(wrapper.findComponent(TransactionTable).exists()).toBe(true)
