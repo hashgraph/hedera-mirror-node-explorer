@@ -23,9 +23,9 @@
 <!-- --------------------------------------------------------------------------------------------------------------- -->
 
 <template>
-  <div v-if="signature">
-    <HexaValue :byte-string="signature" show-none/>
-    <div v-if="signatureInfo" class="h-is-extra-text h-is-text-size-3">{{ signatureInfo }}</div>
+  <div v-if="functionHash">
+    <HexaValue :byte-string="functionHash" show-none/>
+    <div class="h-is-extra-text h-is-text-size-3 should-wrap">{{ signature }}</div>
   </div>
   <div v-else-if="initialLoading"/>
   <div v-else class="has-text-grey">None</div>
@@ -56,8 +56,8 @@ export default defineComponent({
     const initialLoading = inject(initialLoadingKey, ref(false))
 
     return {
-      signature: props.analyzer.functionHash,
-      signatureInfo: props.analyzer.signature,
+      functionHash: props.analyzer.functionHash,
+      signature: props.analyzer.signature,
       initialLoading
     }
   }

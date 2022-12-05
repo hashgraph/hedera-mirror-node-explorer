@@ -25,19 +25,19 @@
 <template>
   <div class="columns pt-2 pb-0 mb-0">
     <div class="column">
-      <Property id="actionDetailFrom" custom-nb-col-class="is-one-fifth">
+      <Property id="actionDetailFrom" :custom-nb-col-class="propertySizeClass">
         <template v-slot:name>From</template>
         <template v-slot:value>
           <EVMAddress :address="action.from" :id="action.caller" :entity-type="action.caller_type" :show-type="true"/>
         </template>
       </Property>
-      <Property id="actionDetailTo" custom-nb-col-class="is-one-fifth">
+      <Property id="actionDetailTo" :custom-nb-col-class="propertySizeClass">
         <template v-slot:name>To</template>
         <template v-slot:value>
           <EVMAddress :address="action.to" :id="action.recipient" :entity-type="action.recipient_type" :show-type="true"/>
         </template>
       </Property>
-      <Property id="actionDetailFunction" custom-nb-col-class="is-one-fifth">
+      <Property v-if="signature" id="function" :custom-nb-col-class="propertySizeClass">
         <template v-slot:name>Function</template>
         <template v-slot:value>
           <SignatureValue :analyzer="functionCallAnalyzer"/>
@@ -45,19 +45,19 @@
       </Property>
     </div>
     <div class="column h-has-column-dashed-separator">
-      <Property id="actionDetailGasLimit" custom-nb-col-class="is-one-fifth">
+      <Property id="actionDetailGasLimit" :custom-nb-col-class="propertySizeClass">
         <template v-slot:name>Gas Limit</template>
         <template v-slot:value>
           <PlainAmount :amount="action.gas"/>
         </template>
       </Property>
-      <Property id="actionDetailGasUsed" custom-nb-col-class="is-one-fifth">
+      <Property id="actionDetailGasUsed" :custom-nb-col-class="propertySizeClass">
         <template v-slot:name>Gas Used</template>
         <template v-slot:value>
           <PlainAmount :amount="action.gas_used"/>
         </template>
       </Property>
-      <Property id="actionDetailError" custom-nb-col-class="is-one-fifth">
+      <Property id="actionDetailError" :custom-nb-col-class="propertySizeClass">
         <template v-slot:name>Error Message</template>
         <template v-slot:value>
           <StringValue :string-value="errorMessage"/>
@@ -71,33 +71,10 @@
   <div class="columns pt-0 mt-0 pb-2">
 
     <div class="column">
-      <div v-if="isNullByteCodeValue(action.input)">
-        <Property custom-nb-col-class="is-one-fifth">
-          <template v-slot:name>Input - Function & Parameters</template>
-          <template v-slot:value><span class="has-text-grey">None</span></template>
-        </Property>
-      </div>
-      <div v-else>
-        <div class="has-text-weight-light mb-3">
-          Input - Function & Parameters
-        </div>
-        <ByteCodeValue :byte-code="action.input"/>
-      </div>
+      <FunctionInput :analyzer="analyzer" :custom-nb-col-class="propertySizeClass"/>
     </div>
-
     <div class="column h-has-column-dashed-separator">
-      <div v-if="isNullByteCodeValue(action.result_data)">
-        <Property custom-nb-col-class="is-one-fifth">
-          <template v-slot:name>Output Result</template>
-          <template v-slot:value><span class="has-text-grey">None</span></template>
-        </Property>
-      </div>
-      <div v-else>
-        <div class="has-text-weight-light mb-3">
-          Output Result
-        </div>
-        <ByteCodeValue :byte-code="action.result_data"/>
-      </div>
+      <FunctionResult :analyzer="analyzer" :custom-nb-col-class="propertySizeClass"/>
     </div>
 
   </div>
@@ -123,19 +100,28 @@ import ByteCodeValue from "@/components/values/ByteCodeValue.vue";
 import SignatureValue from "@/components/values/SignatureValue.vue";
 import EVMAddress from "@/components/values/EVMAddress.vue";
 import {FunctionCallAnalyzer} from "@/utils/FunctionCallAnalyzer";
+import FunctionInput from "@/components/values/FunctionInput.vue";
+import FunctionResult from "@/components/values/FunctionResult.vue";
 
 export default defineComponent({
   name: 'ContractActionDetails',
 
-  components: {EVMAddress, SignatureValue, ByteCodeValue, PlainAmount, StringValue, Property},
+  components: {
+    FunctionResult,
+    FunctionInput, EVMAddress, SignatureValue, ByteCodeValue, PlainAmount, StringValue, Property},
 
   props: {
     action: Object as PropType<ContractAction | undefined>,
+    analyzer: {
+      type: Object as PropType<FunctionCallAnalyzer>,
+      required: true
+    }
   },
 
   setup(props) {
     const isTouchDevice = inject('isTouchDevice', false)
     const isMediumScreen = inject('isMediumScreen', true)
+    const propertySizeClass = 'is-one-fifth'
 
     const errorMessage = computed(() => {
       let result
@@ -159,10 +145,13 @@ export default defineComponent({
     return {
       isTouchDevice,
       isMediumScreen,
+      propertySizeClass,
       ORUGA_MOBILE_BREAKPOINT,
       errorMessage,
       isNullByteCodeValue,
-      functionCallAnalyzer
+      functionCallAnalyzer,
+      functionHash: functionCallAnalyzer.functionHash,
+      signature: functionCallAnalyzer.signature,
     }
   }
 });

@@ -92,7 +92,7 @@
         <tr>
           <td/>
           <td colspan="5">
-            <ContractActionDetails :action="props.row.action"/>
+            <ContractActionDetails :action="props.row.action" :analyzer="analyzer"/>
           </td>
         </tr>
       </template>
@@ -118,6 +118,7 @@ import HbarAmount from "@/components/values/HbarAmount.vue";
 import ContractActionDetails from "@/components/contract/ContractActionDetails.vue";
 import EVMAddress from "@/components/values/EVMAddress.vue";
 import {ContractActionWithPath} from "@/components/contract/ContractActionsLoader";
+import {FunctionCallAnalyzer} from "@/utils/FunctionCallAnalyzer";
 
 //
 // defineComponent
@@ -135,6 +136,10 @@ export default defineComponent({
     expandedActions:  {
       type: Array as PropType<Array<ContractActionWithPath>>,
       default: () => []
+    },
+    analyzer: {
+      type: Object as PropType<FunctionCallAnalyzer>,
+      required: true
     }
   },
 

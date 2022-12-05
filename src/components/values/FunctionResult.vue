@@ -28,7 +28,7 @@
     <div class="h-is-tertiary-text my-2">Output Result</div>
 
     <template v-for="result in outputs" :key="result.name">
-      <Property>
+      <Property :custom-nb-col-class="customNbColClass">
         <template v-slot:name>{{ result.name }}</template>
         <template v-slot:value>
           <FunctionValue :value="result.value" :type="result.type"/>
@@ -38,10 +38,10 @@
 
   </div>
   <div v-else>
-    <Property id="FunctionResult">
+    <Property :custom-nb-col-class="customNbColClass" id="FunctionResult">
       <template v-slot:name>Output Result</template>
       <template v-slot:value>
-        <HexaValue :byte-string="output"/>
+        <HexaValue :byte-string="output" :show-none="true"/>
       </template>
     </Property>
   </div>
@@ -68,7 +68,8 @@ export default defineComponent({
     analyzer: {
       type: Object as PropType<FunctionCallAnalyzer>,
       required: true
-    }
+    },
+    customNbColClass: String
   },
 
   setup(props) {

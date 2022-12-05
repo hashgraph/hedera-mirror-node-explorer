@@ -25,18 +25,10 @@
 <template>
 
   <div v-if="signature">
-    <Property id="function">
-      <template v-slot:name>Function</template>
-      <template v-slot:value>
-        <div class="is-family-monospace h-is-text-size-3">{{ functionHash }}</div>
-        <div class="h-is-extra-text h-is-text-size-3 should-wrap">{{ signature }}</div>
-      </template>
-    </Property>
-
     <div class="h-is-tertiary-text my-2">Arguments</div>
 
     <template v-for="arg in inputs" :key="arg.name">
-      <Property>
+      <Property :custom-nb-col-class="customNbColClass">
         <template v-slot:name>{{ arg.name }}</template>
         <template v-slot:value>
           <FunctionValue :value="arg.value" :type="arg.type"/>
@@ -46,10 +38,10 @@
 
   </div>
   <div v-else>
-    <Property id="functionInput">
+    <Property :custom-nb-col-class="customNbColClass" id="functionInput">
       <template v-slot:name>Input - Function & Args</template>
       <template v-slot:value>
-        <HexaValue :byte-string="input"/>
+        <HexaValue :byte-string="input" :show-none="true"/>
       </template>
     </Property>
   </div>
@@ -76,7 +68,8 @@ export default defineComponent({
     analyzer: {
       type: Object as PropType<FunctionCallAnalyzer>,
       required: true
-    }
+    },
+    customNbColClass: String
   },
 
   setup(props) {

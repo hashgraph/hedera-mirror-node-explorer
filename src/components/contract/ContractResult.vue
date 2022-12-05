@@ -59,8 +59,15 @@
             <EVMAddress :address="contractResult?.to" :id="toId" :compact="isSmallScreen && !isMediumScreen"/>
           </template>
         </Property>
-        <FunctionInput :analyzer="functionCallAnalyzer"/>
-        <FunctionResult :analyzer="functionCallAnalyzer"/>
+
+        <Property v-if="signature" id="function">
+          <template v-slot:name>Function</template>
+          <template v-slot:value>
+            <SignatureValue :analyzer="analyzer" />
+          </template>
+        </Property>
+        <FunctionInput :analyzer="analyzer"/>
+        <FunctionResult :analyzer="analyzer"/>
       </template>
 
       <template v-slot:rightContent>
@@ -104,7 +111,7 @@
 
     </DashboardCard>
 
-    <ContractResultTrace v-if="isParent" :transaction-id-or-hash="transactionIdOrHash"/>
+    <ContractResultTrace v-if="isParent" :transaction-id-or-hash="transactionIdOrHash" :analyzer="analyzer"/>
 
     <ContractResultStates :state-changes="contractResult?.state_changes" :time-stamp="contractResult?.timestamp"/>
 
@@ -135,12 +142,14 @@ import {FunctionCallAnalyzer} from "@/utils/FunctionCallAnalyzer";
 import {EntityID} from "@/utils/EntityID";
 import FunctionInput from "@/components/values/FunctionInput.vue";
 import FunctionResult from "@/components/values/FunctionResult.vue";
+import SignatureValue from "@/components/values/SignatureValue.vue";
 
 export default defineComponent({
 
   name: 'ContractResult',
 
   components: {
+    SignatureValue,
     FunctionResult,
     FunctionInput,
     ContractResultLogs,
@@ -248,7 +257,9 @@ export default defineComponent({
       maxFeePerGas,
       maxPriorityFeePerGas,
       contractResult: contractResultDetailsLoader.entity,
-      functionCallAnalyzer: functionCallAnalyzer,
+      analyzer: functionCallAnalyzer,
+      functionHash: functionCallAnalyzer.functionHash,
+      signature: functionCallAnalyzer.signature,
       contractType
     }
   },
