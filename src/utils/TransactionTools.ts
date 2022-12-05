@@ -18,7 +18,7 @@
  *
  */
 
-import { Transaction, TransactionType } from "@/schemas/HederaSchemas";
+import {Transaction, TransactionType} from "@/schemas/HederaSchemas";
 
 export function makeSummaryLabel(row: Transaction): string {
     let result: string
@@ -280,6 +280,14 @@ export function makeTypeLabel(type: TransactionType | undefined): string {
 
         case TransactionType.ETHEREUMTRANSACTION:
             result = "Ethereum Transaction";
+            break;
+
+        case TransactionType.NODESTAKEUPDATE:
+            result = "Node Stake Update";
+            break;
+
+        case TransactionType.UTILPRNG:
+            result = "Pseudorandom Number Generate";
             break;
 
         default:
