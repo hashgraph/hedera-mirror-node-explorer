@@ -23,32 +23,82 @@
 <!-- --------------------------------------------------------------------------------------------------------------- -->
 
 <template>
-  <div class="columns pt-2 pb-0 mb-0">
-    <div class="column">
+  <template v-if="isMediumScreen">
+    <div class="columns pt-2 pb-0 mb-0">
+      <div class="column">
+        <Property id="actionDetailFrom" :custom-nb-col-class="propertySizeClass">
+          <template v-slot:name>From</template>
+          <template v-slot:value>
+            <EVMAddress :id="action.caller" :address="action.from" :entity-type="action.caller_type" :show-type="true"/>
+          </template>
+        </Property>
+        <Property id="actionDetailTo" :custom-nb-col-class="propertySizeClass">
+          <template v-slot:name>To</template>
+          <template v-slot:value>
+            <EVMAddress :id="action.recipient" :address="action.to" :entity-type="action.recipient_type"
+                        :show-type="true"/>
+          </template>
+        </Property>
+        <Property v-if="signature" id="function" :custom-nb-col-class="propertySizeClass">
+          <template v-slot:name>Function</template>
+          <template v-slot:value>
+            <SignatureValue :analyzer="functionCallAnalyzer"/>
+          </template>
+        </Property>
+      </div>
+      <div class="column h-has-column-dashed-separator">
+        <Property id="actionDetailGasLimit" :custom-nb-col-class="propertySizeClass">
+          <template v-slot:name>Gas Limit</template>
+          <template v-slot:value>
+            <PlainAmount :amount="action.gas"/>
+          </template>
+        </Property>
+        <Property id="actionDetailGasUsed" :custom-nb-col-class="propertySizeClass">
+          <template v-slot:name>Gas Used</template>
+          <template v-slot:value>
+            <PlainAmount :amount="action.gas_used"/>
+          </template>
+        </Property>
+        <Property id="actionDetailError" :custom-nb-col-class="propertySizeClass">
+          <template v-slot:name>Error Message</template>
+          <template v-slot:value>
+            <StringValue :string-value="errorMessage"/>
+          </template>
+        </Property>
+      </div>
+    </div>
+
+    <hr class="dotted"/>
+
+    <div class="columns pt-0 mt-0 pb-2">
+      <div class="column">
+        <FunctionInput :analyzer="analyzer" :custom-nb-col-class="propertySizeClass"/>
+      </div>
+      <div class="column h-has-column-dashed-separator">
+        <FunctionResult :analyzer="analyzer" :custom-nb-col-class="propertySizeClass"/>
+      </div>
+    </div>
+  </template>
+
+  <template v-else>
+    <div class="pt-2 pb-0 mb-0">
       <Property id="actionDetailFrom" :custom-nb-col-class="propertySizeClass">
         <template v-slot:name>From</template>
         <template v-slot:value>
-          <EVMAddress :address="action.from" :id="action.caller" :entity-type="action.caller_type" :show-type="true"/>
+          <EVMAddress :id="action.caller" :address="action.from" :entity-type="action.caller_type" :show-type="true"/>
         </template>
       </Property>
       <Property id="actionDetailTo" :custom-nb-col-class="propertySizeClass">
         <template v-slot:name>To</template>
         <template v-slot:value>
-          <EVMAddress :address="action.to" :id="action.recipient" :entity-type="action.recipient_type" :show-type="true"/>
+          <EVMAddress :id="action.recipient" :address="action.to" :entity-type="action.recipient_type"
+                      :show-type="true"/>
         </template>
       </Property>
       <Property v-if="signature" id="function" :custom-nb-col-class="propertySizeClass">
         <template v-slot:name>Function</template>
         <template v-slot:value>
           <SignatureValue :analyzer="functionCallAnalyzer"/>
-        </template>
-      </Property>
-    </div>
-    <div class="column h-has-column-dashed-separator">
-      <Property id="actionDetailGasLimit" :custom-nb-col-class="propertySizeClass">
-        <template v-slot:name>Gas Limit</template>
-        <template v-slot:value>
-          <PlainAmount :amount="action.gas"/>
         </template>
       </Property>
       <Property id="actionDetailGasUsed" :custom-nb-col-class="propertySizeClass">
@@ -63,21 +113,10 @@
           <StringValue :string-value="errorMessage"/>
         </template>
       </Property>
-    </div>
-  </div>
-
-  <hr class="dotted"/>
-
-  <div class="columns pt-0 mt-0 pb-2">
-
-    <div class="column">
       <FunctionInput :analyzer="analyzer" :custom-nb-col-class="propertySizeClass"/>
-    </div>
-    <div class="column h-has-column-dashed-separator">
       <FunctionResult :analyzer="analyzer" :custom-nb-col-class="propertySizeClass"/>
     </div>
-
-  </div>
+  </template>
 </template>
 
 <!-- --------------------------------------------------------------------------------------------------------------- -->
@@ -90,7 +129,7 @@
 // defineComponent
 //
 
-import {computed, defineComponent, inject, onBeforeUnmount, onMounted, PropType} from "vue";
+import {computed, defineComponent, inject, onBeforeUnmount, onMounted, PropType, ref} from "vue";
 import {ContractAction, ResultDataType} from "@/schemas/HederaSchemas";
 import {ORUGA_MOBILE_BREAKPOINT} from "@/App.vue";
 import Property from "@/components/Property.vue";
@@ -107,7 +146,8 @@ export default defineComponent({
 
   components: {
     FunctionResult,
-    FunctionInput, EVMAddress, SignatureValue, PlainAmount, StringValue, Property},
+    FunctionInput, EVMAddress, SignatureValue, PlainAmount, StringValue, Property
+  },
 
   props: {
     action: Object as PropType<ContractAction | undefined>,
@@ -118,8 +158,9 @@ export default defineComponent({
   },
 
   setup(props) {
-    const isTouchDevice = inject('isTouchDevice', false)
-    const isMediumScreen = inject('isMediumScreen', true)
+    const isTouchDevice = inject('isTouchDevice', ref(false))
+    const isSmallScreen = inject('isSmallScreen', ref(false))
+    const isMediumScreen = inject('isMediumScreen', ref(false))
     const propertySizeClass = 'is-one-fifth'
 
     const errorMessage = computed(() => {
@@ -132,7 +173,7 @@ export default defineComponent({
       return result
     })
 
-    const isNullByteCodeValue = (value: string|null) => value == null || value == "0x"
+    const isNullByteCodeValue = (value: string | null) => value == null || value == "0x"
 
     const input = computed(() => props.action?.input ?? null)
     const output = computed(() => null)
@@ -143,6 +184,7 @@ export default defineComponent({
 
     return {
       isTouchDevice,
+      isSmallScreen,
       isMediumScreen,
       propertySizeClass,
       ORUGA_MOBILE_BREAKPOINT,

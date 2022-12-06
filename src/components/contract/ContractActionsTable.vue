@@ -91,7 +91,7 @@
       <template v-slot:detail="props">
         <tr>
           <td/>
-          <td colspan="5">
+          <td colspan="4">
             <ContractActionDetails :action="props.row.action" :analyzer="analyzer"/>
           </td>
         </tr>
