@@ -297,7 +297,7 @@ export class TransactionLoader extends EntityLoader<Transaction> {
     }
 
     private static async findTimestampForEthereumHash(tloc: EthereumHash): Promise<Timestamp|null> {
-        const response = await axios.get<ContractResultDetails>("api/v1/contract/results/" + tloc.toString())
+        const response = await axios.get<ContractResultDetails>("api/v1/contracts/results/" + tloc.toString())
         const timestamp = response?.data.timestamp ?? null
         const result = timestamp !== null ? Timestamp.parse(timestamp) : null
         return Promise.resolve(result)
