@@ -31,9 +31,9 @@ export class Timestamp {
         let result: Timestamp|null
 
         const i = timestamp.indexOf(".")
-        const s = timestamp.slice(0, i)
-        const n = timestamp.slice(i+1)
-        if (n.indexOf(".") == -1) {
+        const s = i != -1 ? timestamp.slice(0, i) : null
+        const n = i != -1 ? timestamp.slice(i+1) : null
+        if (s !== null && n !== null && n.indexOf(".") == -1) {
             const seconds = parseInt(s)
             const nanoseconds = parseInt(n)
             if (isNaN(seconds) || isNaN(nanoseconds)) {
