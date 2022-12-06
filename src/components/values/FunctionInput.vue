@@ -23,9 +23,29 @@
 <!-- --------------------------------------------------------------------------------------------------------------- -->
 
 <template>
-  <span v-if="formattedAmount !== null">{{ formattedAmount }}</span>
-  <span v-else-if="initialLoading"/>
-  <span v-else class="has-text-grey">{{ noneLabel }}</span>
+
+  <div v-if="signature">
+    <div class="h-is-tertiary-text my-2">Arguments</div>
+
+    <template v-for="arg in inputs" :key="arg.name">
+      <Property :custom-nb-col-class="customNbColClass">
+        <template v-slot:name>{{ arg.name }}</template>
+        <template v-slot:value>
+          <FunctionValue :value="arg.value" :type="arg.type"/>
+        </template>
+      </Property>
+    </template>
+
+  </div>
+  <div v-else>
+    <Property :custom-nb-col-class="customNbColClass" id="functionInput">
+      <template v-slot:name>Input - Function & Args</template>
+      <template v-slot:value>
+        <HexaValue :byte-string="input" :show-none="true"/>
+      </template>
+    </Property>
+  </div>
+
 </template>
 
 <!-- --------------------------------------------------------------------------------------------------------------- -->
@@ -34,38 +54,32 @@
 
 <script lang="ts">
 
-import {computed, defineComponent, inject, PropType, ref} from "vue";
+import {defineComponent, inject, PropType, ref} from 'vue';
 import {initialLoadingKey} from "@/AppKeys";
+import HexaValue from "@/components/values/HexaValue.vue";
+import {FunctionCallAnalyzer} from "@/utils/FunctionCallAnalyzer";
+import Property from "@/components/Property.vue";
+import FunctionValue from "@/components/values/FunctionValue.vue";
 
 export default defineComponent({
-  name: "PlainAmount",
-
+  name: 'FunctionInput',
+  components: {FunctionValue, Property, HexaValue},
   props: {
-    amount: {
-      type: Number as PropType<number|null>,
-      default: null
+    analyzer: {
+      type: Object as PropType<FunctionCallAnalyzer>,
+      required: true
     },
-    noneLabel: {
-      type: String,
-      default: "None"
-    }
+    customNbColClass: String
   },
 
   setup(props) {
-    const formattedAmount = computed(() => {
-      let result: string|null
-        if (props.amount !== null && !isNaN(props.amount)) {
-          result = props.amount.toLocaleString()
-        } else {
-          result = null
-        }
-      return result
-    })
 
     const initialLoading = inject(initialLoadingKey, ref(false))
-
     return {
-      formattedAmount,
+      input: props.analyzer.input,
+      signature: props.analyzer.signature,
+      functionHash: props.analyzer.functionHash,
+      inputs: props.analyzer.inputs,
       initialLoading
     }
   }
@@ -78,4 +92,3 @@ export default defineComponent({
 <!-- --------------------------------------------------------------------------------------------------------------- -->
 
 <style/>
-

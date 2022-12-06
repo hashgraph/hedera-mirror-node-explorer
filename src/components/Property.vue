@@ -39,7 +39,7 @@
     <div :class="nbColClass" class="column has-text-weight-light" :id="nameId">
       <slot name="name"/>
     </div>
-    <div class="column" :id="valueId">
+    <div class="column has-text-left" :id="valueId">
       <slot name="value"/>
     </div>
   </div>

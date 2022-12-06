@@ -61,7 +61,10 @@
       </o-table-column>
 
       <o-table-column v-slot="props" field="from" label="From">
-        <EVMAddress :address="props.row.action.from" :id="props.row.action.caller" :compact="!isLargeScreen && isMediumScreen"/>
+        <EVMAddress :address="props.row.action.from"
+                    :id="props.row.action.caller"
+                    :entity-type="props.row.action.caller_type"
+                    :compact="!isLargeScreen && isMediumScreen"/>
       </o-table-column>
 
       <o-table-column v-slot="props" field="amount" label="Amount">
@@ -73,7 +76,10 @@
       </o-table-column>
 
       <o-table-column v-slot="props" field="to" label="To">
-        <EVMAddress :address="props.row.action.to" :id="props.row.action.recipient" :compact="!isLargeScreen && isMediumScreen"/>
+        <EVMAddress :address="props.row.action.to"
+                    :id="props.row.action.recipient??''"
+                    :entity-type="props.row.action.recipient_type"
+                    :compact="!isLargeScreen && isMediumScreen"/>
       </o-table-column>
 
       <o-table-column v-slot="props" field="gas_limit" label="Gas Limit">
@@ -85,8 +91,8 @@
       <template v-slot:detail="props">
         <tr>
           <td/>
-          <td colspan="5">
-            <ContractActionDetails :action="props.row.action"/>
+          <td colspan="4">
+            <ContractActionDetails :action="props.row.action" :analyzer="analyzer"/>
           </td>
         </tr>
       </template>
@@ -112,6 +118,7 @@ import HbarAmount from "@/components/values/HbarAmount.vue";
 import ContractActionDetails from "@/components/contract/ContractActionDetails.vue";
 import EVMAddress from "@/components/values/EVMAddress.vue";
 import {ContractActionWithPath} from "@/components/contract/ContractActionsLoader";
+import {FunctionCallAnalyzer} from "@/utils/FunctionCallAnalyzer";
 
 //
 // defineComponent
@@ -129,6 +136,10 @@ export default defineComponent({
     expandedActions:  {
       type: Array as PropType<Array<ContractActionWithPath>>,
       default: () => []
+    },
+    analyzer: {
+      type: Object as PropType<FunctionCallAnalyzer>,
+      required: true
     }
   },
 

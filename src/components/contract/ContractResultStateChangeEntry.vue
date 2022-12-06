@@ -27,7 +27,7 @@
   <template v-if="change.header===true">
     <div class="is-flex is-align-items-baseline">
       <ContractLink :contract-id="change.changes.contract_id"></ContractLink>
-      <EVMAddress :address="change.changes.address" :compact="!isMediumScreen" class="ml-3"/>
+      <EVMAddress :address="change.changes.address" :compact="isSmallScreen && !isMediumScreen" class="ml-3"/>
       <span class="mb-2 h-is-text-size-3">
             <span class="ml-4 mr-2">Contract HBar Balance Difference:</span>
             <HbarAmount :amount="change.balanceChange" :colored="true" :show-extra="true"/>
@@ -92,8 +92,10 @@ export default defineComponent({
     change: Object as PropType<DisplayStateChange | undefined>
   },
   setup() {
+    const isSmallScreen = inject('isSmallScreen', true)
     const isMediumScreen = inject('isMediumScreen', true)
     return {
+      isSmallScreen,
       isMediumScreen
     }
   }
