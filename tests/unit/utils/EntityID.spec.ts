@@ -1,3 +1,5 @@
+// noinspection DuplicatedCode
+
 /*-
  *
  * Hedera Mirror Node Explorer
@@ -217,5 +219,21 @@ describe("EntityID.ts", () => {
             expect(id1.compareAccountID(id1) == 0).toBe(true)
             expect(id2.compareAccountID(id2) == 0).toBe(true)
         }
+    })
+
+    //
+    // EntityID.fromAddress()
+    //
+
+    test("fromAddress(0x00000000000000000000000000000000000000ff)", () => {
+        const evmAddress = "0x00000000000000000000000000000000000000ff"
+        const id = EntityID.fromAddress(evmAddress)
+        expect(id?.toString()).toBe("0.0.255")
+    })
+
+    test("fromAddress(0x6482571dbbE4E68CbcDC6207f82d701804b8664a)", () => {
+        const evmAddress = "0x6482571dbbE4E68CbcDC6207f82d701804b8664a"
+        const id = EntityID.fromAddress(evmAddress)
+        expect(id).toBeNull()
     })
 })

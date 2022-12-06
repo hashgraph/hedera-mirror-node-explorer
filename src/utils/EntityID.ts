@@ -92,7 +92,7 @@ export class EntityID {
             if (buffer !== null && buffer.length == 20) {
                 const view = new DataView(buffer.buffer)
                 const bigNum = view.getBigInt64(12)
-                const num = bigNum < EntityID.MAX_INT ? Number(bigNum) : null
+                const num = 0 <= bigNum && bigNum < EntityID.MAX_INT ? Number(bigNum) : null
                 result = num != null ? new EntityID(0, 0, num) : null
             } else {
                 result = null
