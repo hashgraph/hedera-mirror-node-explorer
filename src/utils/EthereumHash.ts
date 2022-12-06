@@ -34,7 +34,7 @@ export class EthereumHash {
     }
 
     public toString(): string {
-        return byteToHex(this.bytes)
+        return "0x" + byteToHex(this.bytes)
     }
 
     //
