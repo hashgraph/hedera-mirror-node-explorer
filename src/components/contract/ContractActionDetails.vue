@@ -96,7 +96,6 @@ import {ORUGA_MOBILE_BREAKPOINT} from "@/App.vue";
 import Property from "@/components/Property.vue";
 import StringValue from "@/components/values/StringValue.vue";
 import PlainAmount from "@/components/values/PlainAmount.vue";
-import ByteCodeValue from "@/components/values/ByteCodeValue.vue";
 import SignatureValue from "@/components/values/SignatureValue.vue";
 import EVMAddress from "@/components/values/EVMAddress.vue";
 import {FunctionCallAnalyzer} from "@/utils/FunctionCallAnalyzer";
@@ -108,7 +107,7 @@ export default defineComponent({
 
   components: {
     FunctionResult,
-    FunctionInput, EVMAddress, SignatureValue, ByteCodeValue, PlainAmount, StringValue, Property},
+    FunctionInput, EVMAddress, SignatureValue, PlainAmount, StringValue, Property},
 
   props: {
     action: Object as PropType<ContractAction | undefined>,
