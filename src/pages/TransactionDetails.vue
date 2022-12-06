@@ -37,14 +37,14 @@
             </div>
             <div v-else class="h-has-pill has-background-danger mr-3 h-is-text-size-2 mt-3">FAILURE</div>
           </div>
-          <span v-if="showAllTransactionVisible && isLargeScreen" class="is-inline-block mt-2" id="allTransactionsLink">
-          <router-link :to="routeManager.makeRouteToTransactionsById(transaction?.transaction_id)">
+          <span v-if="routeToAllTransactions && isLargeScreen" class="is-inline-block mt-2" id="allTransactionsLink">
+          <router-link :to="routeToAllTransactions">
             <span class="h-is-property-text has-text-grey">Show all transactions with the same ID</span>
           </router-link>
         </span>
         </div>
-        <span v-if="showAllTransactionVisible && !isLargeScreen">
-          <router-link :to="routeManager.makeRouteToTransactionsById(transaction?.transaction_id)">
+        <span v-if="routeToAllTransactions && !isLargeScreen">
+          <router-link :to="routeToAllTransactions">
             <span class="h-is-property-text has-text-grey">Show all transactions with the same ID</span>
           </router-link>
         </span>
@@ -229,7 +229,7 @@
 import {computed, defineComponent, inject, onMounted} from 'vue';
 import {PathParam} from "@/utils/PathParam";
 import {makeOperatorAccountLabel, makeTypeLabel} from "@/utils/TransactionTools";
-import {TransactionLoader} from "@/components/transaction/TransactionLoader";
+import {TransactionLoaderV2} from "@/components/transaction/TransactionLoaderV2";
 import AccountLink from "@/components/values/AccountLink.vue";
 import HexaValue from "@/components/values/HexaValue.vue";
 import TimestampValue from "@/components/values/TimestampValue.vue";
@@ -249,6 +249,8 @@ import {TransactionType} from "@/schemas/HederaSchemas";
 import TopicMessage from "@/components/topic/TopicMessage.vue";
 import {TopicMessageLoader} from "@/components/topic/TopicMessageLoader";
 import {routeManager} from "@/router"
+import {Timestamp} from "@/utils/Timestamp";
+import {TransactionHash} from "@/utils/TransactionHash";
 
 const MAX_INLINE_CHILDREN = 9
 
@@ -270,8 +272,8 @@ export default defineComponent({
   },
 
   props: {
+    transactionLoc: String,
     transactionId: String,
-    consensusTimestamp: String,
     network: String
   },
 
@@ -280,16 +282,18 @@ export default defineComponent({
     const isLargeScreen = inject('isLargeScreen', true)
     const isTouchDevice = inject('isTouchDevice', false)
 
-    const transactionLocator = computed(() => PathParam.parseTransactionIdOrHash(props.transactionId))
+    const transactionLocator = computed(
+        () => props.transactionLoc ? PathParam.parseTransactionLoc(props.transactionLoc) : null)
 
-    const transactionLoader = new TransactionLoader(
-        computed(() => props.transactionId ?? null),
-        computed(() => props.consensusTimestamp ?? null))
+    const transactionLoader = new TransactionLoaderV2(
+        computed(() => props.transactionLoc ?? null),
+        computed(() => props.transactionId ?? null))
     onMounted(() => transactionLoader.requestLoad())
 
-    const showAllTransactionVisible = computed(() => {
+    const routeToAllTransactions = computed(() => {
       const count = transactionLoader.transactions.value?.length ?? 0
-      return count >= 2
+      const transactionId = transactionLoader.transaction.value?.transaction_id ?? null
+      return count >= 2 && transactionId !== null ? routeManager.makeRouteToTransactionsById(transactionId) : null
     })
 
     const displayAllChildrenLinks = computed(
@@ -298,9 +302,15 @@ export default defineComponent({
     const notification = computed(() => {
       let result
       if (transactionLocator.value === null) {
-        result = "Invalid transaction ID: " + props.transactionId
+        result = "Invalid transaction timestamp or hash: " + props.transactionLoc
       } else if (transactionLoader.got404.value) {
-        result = "Transaction with ID " + transactionLocator.value + " was not found"
+        if (transactionLocator.value instanceof Timestamp) {
+          result = "Transaction with timestamp " + transactionLocator.value + " was not found"
+        } else if (transactionLocator.value instanceof TransactionHash) {
+          result = "Transaction with hash " + transactionLocator.value + " was not found"
+        } else {
+          result = "Transaction with ethereum hash " + transactionLocator.value + " was not found"
+        }
       } else if (transactionLoader.hasSucceeded.value) {
         result = null
       } else {
@@ -344,7 +354,7 @@ export default defineComponent({
       routeManager,
       makeTypeLabel,
       makeOperatorAccountLabel,
-      showAllTransactionVisible,
+      routeToAllTransactions,
       displayAllChildrenLinks,
       topicMessageLoader
     }

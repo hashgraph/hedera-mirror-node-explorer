@@ -22,10 +22,10 @@
 
 describe('TokenInfoCollector', () => {
 
-    const transactionId = "0.0.88-1647364797-037128951"
+    const timestamp = "1647364809.508728186"
 
     it('should display token name', () => {
-        cy.visit('testnet/transaction/' + transactionId)
+        cy.visit('testnet/transaction/' + timestamp)
         cy.url().should('include', '/testnet/transaction/')
 
         cy.get('#entityId')

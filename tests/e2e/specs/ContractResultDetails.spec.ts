@@ -1,3 +1,5 @@
+// noinspection DuplicatedCode
+
 /*-
  *
  * Hedera Mirror Node Explorer
@@ -28,7 +30,7 @@ describe('ContractResultDetails', () => {
         const transactionId = "0.0.47818344@1669816707.173720575"
         const consensusTimestamp = "1669816716.094396003"
 
-        cy.visit('testnet/transaction/' + normalizeTransactionId(transactionId) + "?t=" + consensusTimestamp)
+        cy.visit('testnet/transaction/' + consensusTimestamp + "?tid=" + normalizeTransactionId(transactionId))
         cy.url().should('include', '/testnet/transaction/')
         cy.url().should('include', normalizeTransactionId(transactionId))
         cy.url().should('include', consensusTimestamp)
@@ -45,7 +47,7 @@ describe('ContractResultDetails', () => {
         const transactionId = "0.0.47818344@1669816707.173720575"
         const consensusTimestamp = "1669816716.094396005"
 
-        cy.visit('testnet/transaction/' + normalizeTransactionId(transactionId) + "?t=" + consensusTimestamp)
+        cy.visit('testnet/transaction/' + consensusTimestamp + "?tid=" + normalizeTransactionId(transactionId))
         cy.url().should('include', '/testnet/transaction/')
         cy.url().should('include', normalizeTransactionId(transactionId))
         cy.url().should('include', consensusTimestamp)
@@ -62,7 +64,7 @@ describe('ContractResultDetails', () => {
         const transactionId = "0.0.47818344@1669816707.173720575"
         const consensusTimestamp = "1669816716.094396009"
 
-        cy.visit('testnet/transaction/' + normalizeTransactionId(transactionId) + "?t=" + consensusTimestamp)
+        cy.visit('testnet/transaction/' + consensusTimestamp + "?tid=" + normalizeTransactionId(transactionId))
         cy.url().should('include', '/testnet/transaction/')
         cy.url().should('include', normalizeTransactionId(transactionId))
         cy.url().should('include', consensusTimestamp)
@@ -79,7 +81,7 @@ describe('ContractResultDetails', () => {
         const transactionId = "0.0.47818344@1669816707.173720575"
         const consensusTimestamp = "1669816716.094396011"
 
-        cy.visit('testnet/transaction/' + normalizeTransactionId(transactionId) + "?t=" + consensusTimestamp)
+        cy.visit('testnet/transaction/' + consensusTimestamp + "?tid=" + normalizeTransactionId(transactionId))
         cy.url().should('include', '/testnet/transaction/')
         cy.url().should('include', normalizeTransactionId(transactionId))
         cy.url().should('include', consensusTimestamp)

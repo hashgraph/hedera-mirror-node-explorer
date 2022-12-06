@@ -44,9 +44,11 @@ describe('Topic Navigation', () => {
     })
 
     it('should navigate from transaction details to topic message table back to transaction', () => {
-        let transactionId = "0.0.48961401@1669313485.710762293"
-        cy.visit('/testnet/transaction/' + normalizeTransactionId(transactionId))
-        cy.url().should('include', '/testnet/transaction/' + normalizeTransactionId(transactionId))
+        const timestamp = "1669313498.634056003"
+        const transactionId = "0.0.48961401@1669313485.710762293"
+        const targetURL = '/testnet/transaction/' + timestamp + "?tid=" + normalizeTransactionId(transactionId)
+        cy.visit(targetURL)
+        cy.url().should('include', targetURL)
         cy.contains('Transaction ' + transactionId)
 
         cy.get('#entityId')

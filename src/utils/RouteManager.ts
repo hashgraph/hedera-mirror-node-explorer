@@ -61,7 +61,8 @@ export class RouteManager {
         return this.router.push(this.makeRouteToTransaction(t.consensus_timestamp, t.transaction_id))
     }
 
-    public routeToTransactionId(transactionId: string|undefined, consensusTimestamp: string|undefined): Promise<NavigationFailure | void | undefined> {
+    public routeToTransactionId(transactionId: string|undefined,
+                                consensusTimestamp: string|undefined): Promise<NavigationFailure | void | undefined> {
         return this.router.push(this.makeRouteToTransaction(consensusTimestamp, transactionId))
     }
 
@@ -72,8 +73,8 @@ export class RouteManager {
     public makeRouteToTransaction(transactionLoc: string|undefined, transactionId: string|undefined): RouteLocationRaw {
         return {
             name: 'TransactionDetails',
-            params: { transactionId: transactionId },
-            query: { t: transactionLoc }
+            params: { transactionLoc: transactionLoc },
+            query: { tid: transactionId }
         }
     }
 

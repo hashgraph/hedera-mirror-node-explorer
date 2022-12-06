@@ -22,8 +22,8 @@
 
 describe('BlocksResponseCollector', () => {
 
-    const firstTxnInBlock = "0.0.2-1598572586-012342998"
-    const lastTxnInBlock = "0.0.59-1598572589-275875990"
+    const firstTxnInBlock = "1598572649.383706000"
+    const lastTxnInBlock = "1598572646.192587000"
 
     it('should display block 12 for first transaction in block', () => {
         cy.visit('testnet/transaction/' + firstTxnInBlock)

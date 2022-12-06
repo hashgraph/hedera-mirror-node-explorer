@@ -46,6 +46,7 @@ import {HMSF} from "@/utils/HMSF";
 import {normalizeTransactionId} from "@/utils/TransactionID";
 import Oruga from "@oruga-ui/oruga-next";
 import ContractResult from "@/components/contract/ContractResult.vue";
+import {base64DecToArr, byteToHex} from "@/utils/B64Utils";
 
 /*
     Bookmarks
@@ -95,6 +96,7 @@ describe("TransactionDetails.vue", () => {
                 plugins: [router, Oruga]
             },
             props: {
+                transactionLoc: SAMPLE_TRANSACTION.consensus_timestamp,
                 transactionId: SAMPLE_TRANSACTION.transaction_id
             },
         });
@@ -136,7 +138,7 @@ describe("TransactionDetails.vue", () => {
 
     });
 
-    it("Should display the contract result and logs (using transaction id)", async () => {
+    it("Should display the contract result and logs (using consensus timestamp)", async () => {
 
         await router.push("/") // To avoid "missing required param 'network'" error
 
@@ -163,6 +165,7 @@ describe("TransactionDetails.vue", () => {
                 plugins: [router, Oruga]
             },
             props: {
+                transactionLoc: timestamp,
                 transactionId: transactionId
             },
         });
@@ -197,13 +200,17 @@ describe("TransactionDetails.vue", () => {
 
         const mock = new MockAdapter(axios);
 
-        const transactionId = SAMPLE_CONTRACTCALL_TRANSACTIONS.transactions[0].transaction_id
-        const transactionHash = SAMPLE_CONTRACTCALL_TRANSACTIONS.transactions[0].transaction_hash
-        const contractId = SAMPLE_CONTRACTCALL_TRANSACTIONS.transactions[0].entity_id
-        const timestamp = SAMPLE_CONTRACTCALL_TRANSACTIONS.transactions[0].consensus_timestamp
+        const SAMPLE_TRANSACTION = SAMPLE_CONTRACTCALL_TRANSACTIONS.transactions[0]
+        const transactionId = SAMPLE_TRANSACTION.transaction_id
+        const transactionHashBase64 = SAMPLE_TRANSACTION.transaction_hash
+        const transactionHash = byteToHex(base64DecToArr(transactionHashBase64))
+        const contractId = SAMPLE_TRANSACTION.entity_id
+        const timestamp = SAMPLE_TRANSACTION.consensus_timestamp
 
         const matcher1 = "/api/v1/transactions/" + transactionHash
-        mock.onGet(matcher1).reply(200, SAMPLE_CONTRACTCALL_TRANSACTIONS);
+        mock.onGet(matcher1).reply(200, { transactions: [SAMPLE_TRANSACTION]});
+        const matcher11 = "/api/v1/transactions/" + transactionId
+        mock.onGet(matcher11).reply(200, SAMPLE_CONTRACTCALL_TRANSACTIONS);
         const matcher2 = "/api/v1/contracts/" + contractId  + "/results/" + timestamp
         mock.onGet(matcher2).reply(200, SAMPLE_CONTRACT_RESULT_DETAILS)
         const matcher3 = "https://api.coingecko.com/api/v3/coins/hedera-hashgraph"
@@ -219,7 +226,7 @@ describe("TransactionDetails.vue", () => {
                 plugins: [router, Oruga]
             },
             props: {
-                transactionId: transactionHash
+                transactionLoc: transactionHash
             },
         });
 
@@ -247,14 +254,17 @@ describe("TransactionDetails.vue", () => {
         expect(wrapper.findAll("#logIndexValue").length).toBe(3)
     });
 
-    it("Should update when transaction id changes", async () => {
+    it("Should update when consensus timestamp changes", async () => {
 
         await router.push("/") // To avoid "missing required param 'network'" error
 
         const mock = new MockAdapter(axios);
 
-        let matcher1 = "/api/v1/transactions/" + SAMPLE_TRANSACTION.transaction_id
-        mock.onGet(matcher1).reply(200, SAMPLE_TRANSACTIONS);
+        let matcher1 = "/api/v1/transactions?timestamp=" + SAMPLE_TRANSACTION.consensus_timestamp
+        mock.onGet(matcher1).reply(200, { transactions: [SAMPLE_TRANSACTION]})
+
+        let matcher11 = "/api/v1/transactions/" + SAMPLE_TRANSACTION.transaction_id
+        mock.onGet(matcher11).reply(200, SAMPLE_TRANSACTIONS)
 
         const matcher2 = "/api/v1/tokens/" + SAMPLE_TOKEN.token_id
         mock.onGet(matcher2).reply(200, SAMPLE_TOKEN);
@@ -270,7 +280,7 @@ describe("TransactionDetails.vue", () => {
                 plugins: [router, Oruga]
             },
             props: {
-                transactionId: SAMPLE_TRANSACTION.transaction_id
+                transactionLoc: SAMPLE_TRANSACTION.consensus_timestamp
             },
         });
 
@@ -285,11 +295,13 @@ describe("TransactionDetails.vue", () => {
         expect(wrapper.findComponent(NftTransferGraph).text()).toContain("NFT TransfersNone")
 
         const transaction = SAMPLE_CONTRACTCALL_TRANSACTIONS.transactions[0]
-        matcher1 = "/api/v1/transactions/" + transaction.transaction_id
-        mock.onGet(matcher1).reply(200, SAMPLE_CONTRACTCALL_TRANSACTIONS);
+        matcher1 = "/api/v1/transactions?timestamp=" + transaction.consensus_timestamp
+        mock.onGet(matcher1).reply(200, { transactions: [transaction]})
+        matcher11 = "/api/v1/transactions/" + transaction.transaction_id
+        mock.onGet(matcher11).reply(200, SAMPLE_CONTRACTCALL_TRANSACTIONS)
 
         await wrapper.setProps({
-            transactionId: transaction.transaction_id
+            transactionLoc: transaction.consensus_timestamp
         })
         await flushPromises()
         // console.log(wrapper.text())
@@ -310,8 +322,11 @@ describe("TransactionDetails.vue", () => {
 
         const mock = new MockAdapter(axios);
 
-        const matcher1 = "/api/v1/transactions/" + SAMPLE_FAILED_TRANSACTION.transaction_id
+        const matcher1 = "/api/v1/transactions?timestamp=" + SAMPLE_FAILED_TRANSACTION.consensus_timestamp
         mock.onGet(matcher1).reply(200, SAMPLE_FAILED_TRANSACTIONS);
+
+        const matcher11 = "/api/v1/transactions/" + SAMPLE_FAILED_TRANSACTION.transaction_id
+        mock.onGet(matcher11).reply(200, SAMPLE_FAILED_TRANSACTIONS);
 
         const matcher2 = "https://api.coingecko.com/api/v3/coins/hedera-hashgraph"
         mock.onGet(matcher2).reply(200, SAMPLE_COINGECKO);
@@ -324,7 +339,7 @@ describe("TransactionDetails.vue", () => {
                 plugins: [router, Oruga]
             },
             props: {
-                transactionId: SAMPLE_FAILED_TRANSACTION.transaction_id
+                transactionLoc: SAMPLE_FAILED_TRANSACTION.consensus_timestamp
             },
         });
 
@@ -338,35 +353,37 @@ describe("TransactionDetails.vue", () => {
         expect(banner.text()).toBe("CONTRACT_REVERT_EXECUTED")
     });
 
-    it("Should detect invalid transaction ID", async () => {
+    it("Should detect invalid transaction timestamp", async () => {
 
         await router.push("/") // To avoid "missing required param 'network'" error
 
-        const invalidTransactionId = "0.0.0.1000-1646025139-152901498"
+        const invalidTimestamp = "1600000000.000000000"
         const wrapper = mount(TransactionDetails, {
             global: {
                 plugins: [router, Oruga]
             },
             props: {
-                transactionId: invalidTransactionId
+                transactionLoc: invalidTimestamp
             },
         });
         await flushPromises()
         // console.log(wrapper.html())
         // console.log(wrapper.text())
 
-        expect(wrapper.get("#notificationBanner").text()).toBe("Invalid transaction ID: " + invalidTransactionId)
+        expect(wrapper.get("#notificationBanner").text()).toBe("Transaction with timestamp " + invalidTimestamp + " was not found")
     });
 
     it("Should display the name of the system contract called", async () => {
 
         await router.push("/") // To avoid "missing required param 'network'" error
 
-        const txnId = SAMPLE_SYSTEM_CONTRACT_CALL_TRANSACTIONS.transactions[0].transaction_id
+        const transaction = SAMPLE_SYSTEM_CONTRACT_CALL_TRANSACTIONS.transactions[0]
 
         const mock = new MockAdapter(axios);
-        const matcher1 = "/api/v1/transactions/" + txnId
-        mock.onGet(matcher1).reply(200, SAMPLE_SYSTEM_CONTRACT_CALL_TRANSACTIONS)
+        const matcher1 = "/api/v1/transactions?timestamp=" + transaction.consensus_timestamp
+        mock.onGet(matcher1).reply(200, { transactions: [transaction]})
+        const matcher11 = "/api/v1/transactions/" + transaction.transaction_id
+        mock.onGet(matcher11).reply(200, SAMPLE_SYSTEM_CONTRACT_CALL_TRANSACTIONS)
         const matcher2 = "https://api.coingecko.com/api/v3/coins/hedera-hashgraph"
         mock.onGet(matcher2).reply(200, SAMPLE_COINGECKO);
         const matcher3 = "/api/v1/blocks"
@@ -377,14 +394,14 @@ describe("TransactionDetails.vue", () => {
                 plugins: [router, Oruga]
             },
             props: {
-                transactionId: txnId
+                transactionLoc: transaction.consensus_timestamp
             },
         });
         await flushPromises()
         // console.log(wrapper.html())
         // console.log(wrapper.text())
 
-        expect(wrapper.text()).toMatch(RegExp("^Transaction " + normalizeTransactionId(txnId, true)))
+        expect(wrapper.text()).toMatch(RegExp("^Transaction " + normalizeTransactionId(transaction.transaction_id, true)))
         expect(wrapper.get("#transactionTypeValue").text()).toBe("CONTRACT CALL")
         expect(wrapper.get("#entityId").text()).toBe("Contract IDHedera Token Service System Contract")
     });
@@ -398,9 +415,10 @@ describe("TransactionDetails.vue", () => {
         const SCHEDULING = SAMPLE_SCHEDULING_SCHEDULED_TRANSACTIONS.transactions[0]
         const SCHEDULED = SAMPLE_SCHEDULING_SCHEDULED_TRANSACTIONS.transactions[1]
         const TOKEN_ID = SCHEDULED.token_transfers ? SCHEDULED.token_transfers[0].token_id : "0.0.1304757"
-
-        const matcher1 = "/api/v1/transactions/" + SCHEDULING.transaction_id
-        mock.onGet(matcher1).reply(200, SAMPLE_SCHEDULING_SCHEDULED_TRANSACTIONS);
+        const matcher1 = "/api/v1/transactions?timestamp=" + SCHEDULING.consensus_timestamp
+        mock.onGet(matcher1).reply(200, { transactions: [SCHEDULING]});
+        const matcher11 = "/api/v1/transactions/" + SCHEDULING.transaction_id
+        mock.onGet(matcher11).reply(200, SAMPLE_SCHEDULING_SCHEDULED_TRANSACTIONS);
 
         const matcher3 = "https://api.coingecko.com/api/v3/coins/hedera-hashgraph"
         mock.onGet(matcher3).reply(200, SAMPLE_COINGECKO);
@@ -416,8 +434,7 @@ describe("TransactionDetails.vue", () => {
                 plugins: [router, Oruga]
             },
             props: {
-                transactionId: SCHEDULING.transaction_id,
-                consensusTimestamp: SCHEDULING.consensus_timestamp
+                transactionLoc: SCHEDULING.consensus_timestamp
             },
         });
 
@@ -430,7 +447,7 @@ describe("TransactionDetails.vue", () => {
         const link = wrapper.get("#scheduledLink")
         expect(link.text()).toBe("Show scheduled transaction")
         expect(link.get('a').attributes("href")).toBe(
-            "/testnet/transaction/" + SCHEDULED.transaction_id + "?t=" + SCHEDULED.consensus_timestamp
+            "/testnet/transaction/" + SCHEDULED.consensus_timestamp + "?tid=" + SCHEDULED.transaction_id
         )
     });
 
@@ -443,8 +460,10 @@ describe("TransactionDetails.vue", () => {
         const SCHEDULING = SAMPLE_SCHEDULING_SCHEDULED_TRANSACTIONS.transactions[0]
         const SCHEDULED = SAMPLE_SCHEDULING_SCHEDULED_TRANSACTIONS.transactions[1]
         const TOKEN_ID = SCHEDULED.token_transfers ? SCHEDULED.token_transfers[0].token_id : "0.0.1304757"
-        const matcher1 = "/api/v1/transactions/" + SCHEDULED.transaction_id
-        mock.onGet(matcher1).reply(200, SAMPLE_SCHEDULING_SCHEDULED_TRANSACTIONS);
+        const matcher1 = "/api/v1/transactions?timestamp=" + SCHEDULED.consensus_timestamp
+        mock.onGet(matcher1).reply(200, { transactions: [SCHEDULED]});
+        const matcher11 = "/api/v1/transactions/" + SCHEDULED.transaction_id
+        mock.onGet(matcher11).reply(200, SAMPLE_SCHEDULING_SCHEDULED_TRANSACTIONS);
 
         const matcher2 = "/api/v1/tokens/" + TOKEN_ID
         mock.onGet(matcher2).reply(200, SAMPLE_TOKEN);
@@ -460,8 +479,7 @@ describe("TransactionDetails.vue", () => {
                 plugins: [router, Oruga]
             },
             props: {
-                transactionId: SCHEDULED.transaction_id,
-                consensusTimestamp: SCHEDULED.consensus_timestamp
+                transactionLoc: SCHEDULED.consensus_timestamp
             },
         });
 
@@ -474,7 +492,7 @@ describe("TransactionDetails.vue", () => {
         const link = wrapper.get("#schedulingLink")
         expect(link.text()).toBe("Show schedule create transaction")
         expect(link.get('a').attributes("href")).toBe(
-            "/testnet/transaction/" + SCHEDULING.transaction_id + "?t=" + SCHEDULING.consensus_timestamp
+            "/testnet/transaction/" + SCHEDULING.consensus_timestamp + "?tid=" + SCHEDULING.transaction_id
         )
     });
 
@@ -487,8 +505,10 @@ describe("TransactionDetails.vue", () => {
         const PARENT = SAMPLE_PARENT_CHILD_TRANSACTIONS.transactions[0]
         const CHILD = SAMPLE_PARENT_CHILD_TRANSACTIONS.transactions[1]
         const TOKEN_ID = CHILD.nft_transfers ? CHILD.nft_transfers[0].token_id : "0.0.48193741"
-        const matcher1 = "/api/v1/transactions/" + CHILD.transaction_id
-        mock.onGet(matcher1).reply(200, SAMPLE_PARENT_CHILD_TRANSACTIONS);
+        const matcher1 = "/api/v1/transactions?timestamp=" + CHILD.consensus_timestamp
+        mock.onGet(matcher1).reply(200, { transactions: [CHILD]});
+        const matcher11 = "/api/v1/transactions/" + CHILD.transaction_id
+        mock.onGet(matcher11).reply(200, SAMPLE_PARENT_CHILD_TRANSACTIONS);
 
         const matcher2 = "/api/v1/tokens/" + TOKEN_ID
         mock.onGet(matcher2).reply(200, SAMPLE_TOKEN);
@@ -504,8 +524,7 @@ describe("TransactionDetails.vue", () => {
                 plugins: [router, Oruga]
             },
             props: {
-                transactionId: CHILD.transaction_id,
-                consensusTimestamp: CHILD.consensus_timestamp
+                transactionLoc: CHILD.consensus_timestamp,
             },
         });
 
@@ -518,7 +537,7 @@ describe("TransactionDetails.vue", () => {
         const link = wrapper.get("#parentTransactionValue")
         expect(link.text()).toBe("CONTRACT CALL")
         expect(link.get('a').attributes("href")).toBe(
-            "/testnet/transaction/" + PARENT.transaction_id + "?t=" + PARENT.consensus_timestamp
+            "/testnet/transaction/" + PARENT.consensus_timestamp + "?tid=" + PARENT.transaction_id
         )
     });
 
@@ -531,8 +550,10 @@ describe("TransactionDetails.vue", () => {
         const PARENT = SAMPLE_PARENT_CHILD_TRANSACTIONS.transactions[0]
         const CHILD1 = SAMPLE_PARENT_CHILD_TRANSACTIONS.transactions[1]
         const CHILD2 = SAMPLE_PARENT_CHILD_TRANSACTIONS.transactions[2]
-        const matcher1 = "/api/v1/transactions/" + PARENT.transaction_id
-        mock.onGet(matcher1).reply(200, SAMPLE_PARENT_CHILD_TRANSACTIONS);
+        const matcher1 = "/api/v1/transactions?timestamp=" + PARENT.consensus_timestamp
+        mock.onGet(matcher1).reply(200, {transactions: [PARENT]});
+        const matcher11 = "/api/v1/transactions/" + PARENT.transaction_id
+        mock.onGet(matcher11).reply(200, SAMPLE_PARENT_CHILD_TRANSACTIONS);
 
         const matcher3 = "https://api.coingecko.com/api/v3/coins/hedera-hashgraph"
         mock.onGet(matcher3).reply(200, SAMPLE_COINGECKO);
@@ -545,8 +566,7 @@ describe("TransactionDetails.vue", () => {
                 plugins: [router, Oruga]
             },
             props: {
-                transactionId: PARENT.transaction_id,
-                consensusTimestamp: PARENT.consensus_timestamp
+                transactionLoc: PARENT.consensus_timestamp
             },
         });
 
@@ -561,10 +581,10 @@ describe("TransactionDetails.vue", () => {
 
         const links = children.findAll('a')
         expect(links[0].attributes("href")).toBe(
-            "/testnet/transaction/" + CHILD1.transaction_id + "?t=" + CHILD1.consensus_timestamp
+            "/testnet/transaction/" + CHILD1.consensus_timestamp + "?tid=" + CHILD1.transaction_id
         )
         expect(links[1].attributes("href")).toBe(
-            "/testnet/transaction/" + CHILD2.transaction_id + "?t=" + CHILD2.consensus_timestamp
+            "/testnet/transaction/" + CHILD2.consensus_timestamp + "?tid=" + CHILD2.transaction_id
         )
     });
 });

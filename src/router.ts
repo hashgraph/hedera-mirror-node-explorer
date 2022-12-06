@@ -82,13 +82,13 @@ const routes: Array<RouteRecordRaw> = [
     props: true
   },
   {
-    path: '/:network/transaction/:transactionId',
+    path: '/:network/transaction/:transactionLoc',
     name: 'TransactionDetails',
     component: TransactionDetails,
     props: route => ({
       network: route.params.network as string|undefined,
-      transactionId: route.params.transactionId as string|undefined,
-      consensusTimestamp: route.query.t as string|undefined
+      transactionLoc: route.params.transactionLoc as string|undefined,
+      transactionId: route.query.tid as string|undefined
     })
   },
   {
