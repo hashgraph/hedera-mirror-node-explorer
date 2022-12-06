@@ -20,7 +20,7 @@
  *
  */
 
-import {TransactionLoaderV2} from "@/components/transaction/TransactionLoaderV2";
+import {TransactionLoader} from "@/components/transaction/TransactionLoader";
 import {computed} from "vue";
 import {flushPromises} from "@vue/test-utils";
 import MockAdapter from "axios-mock-adapter";
@@ -34,7 +34,7 @@ describe("TransactionLoaderV2.ts", () => {
 
         const transactionLoc = computed(() => null)
         const transactionId = computed(() => null)
-        const loader = new TransactionLoaderV2(transactionLoc, transactionId)
+        const loader = new TransactionLoader(transactionLoc, transactionId)
 
         loader.requestLoad()
         await flushPromises()
@@ -79,7 +79,7 @@ describe("TransactionLoaderV2.ts", () => {
 
         const transactionLoc = computed(() => SAMPLE_CONTRACTCALL_TRANSACTION.consensus_timestamp)
         const transactionId = computed(() => null)
-        const loader = new TransactionLoaderV2(transactionLoc, transactionId)
+        const loader = new TransactionLoader(transactionLoc, transactionId)
 
         loader.requestLoad()
         await flushPromises()
@@ -102,7 +102,7 @@ describe("TransactionLoaderV2.ts", () => {
 
         const transactionLoc = computed(() => SAMPLE_CONTRACTCALL_TRANSACTION.consensus_timestamp)
         const transactionId = computed(() => SAMPLE_CONTRACTCALL_TRANSACTION.transaction_id)
-        const loader = new TransactionLoaderV2(transactionLoc, transactionId)
+        const loader = new TransactionLoader(transactionLoc, transactionId)
 
         loader.requestLoad()
         await flushPromises()
@@ -121,7 +121,7 @@ describe("TransactionLoaderV2.ts", () => {
 
         const transactionLoc = computed(() => SAMPLE_CONTRACTCALL_TRANSACTION.consensus_timestamp)
         const transactionId = computed(() => null)
-        const loader = new TransactionLoaderV2(transactionLoc, transactionId)
+        const loader = new TransactionLoader(transactionLoc, transactionId)
 
         loader.requestLoad()
         await flushPromises()
@@ -149,7 +149,7 @@ describe("TransactionLoaderV2.ts", () => {
 
         const transactionLoc = computed(() => SAMPLE_CONTRACTCALL_TRANSACTION_HASH)
         const transactionId = computed(() => null)
-        const loader = new TransactionLoaderV2(transactionLoc, transactionId)
+        const loader = new TransactionLoader(transactionLoc, transactionId)
 
         loader.requestLoad()
         await flushPromises()
@@ -174,7 +174,7 @@ describe("TransactionLoaderV2.ts", () => {
 
         const transactionLoc = computed(() => SAMPLE_CONTRACTCALL_TRANSACTION_HASH)
         const transactionId = computed(() => SAMPLE_CONTRACTCALL_TRANSACTION.transaction_id)
-        const loader = new TransactionLoaderV2(transactionLoc, transactionId)
+        const loader = new TransactionLoader(transactionLoc, transactionId)
 
         loader.requestLoad()
         await flushPromises()
@@ -194,7 +194,7 @@ describe("TransactionLoaderV2.ts", () => {
 
         const transactionLoc = computed(() => SAMPLE_CONTRACTCALL_TRANSACTION_HASH)
         const transactionId = computed(() => null)
-        const loader = new TransactionLoaderV2(transactionLoc, transactionId)
+        const loader = new TransactionLoader(transactionLoc, transactionId)
 
         loader.requestLoad()
         await flushPromises()

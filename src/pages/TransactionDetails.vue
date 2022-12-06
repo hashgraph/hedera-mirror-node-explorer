@@ -229,7 +229,7 @@
 import {computed, defineComponent, inject, onMounted} from 'vue';
 import {PathParam} from "@/utils/PathParam";
 import {makeOperatorAccountLabel, makeTypeLabel} from "@/utils/TransactionTools";
-import {TransactionLoaderV2} from "@/components/transaction/TransactionLoaderV2";
+import {TransactionLoader} from "@/components/transaction/TransactionLoader";
 import AccountLink from "@/components/values/AccountLink.vue";
 import HexaValue from "@/components/values/HexaValue.vue";
 import TimestampValue from "@/components/values/TimestampValue.vue";
@@ -285,7 +285,7 @@ export default defineComponent({
     const transactionLocator = computed(
         () => props.transactionLoc ? PathParam.parseTransactionLoc(props.transactionLoc) : null)
 
-    const transactionLoader = new TransactionLoaderV2(
+    const transactionLoader = new TransactionLoader(
         computed(() => props.transactionLoc ?? null),
         computed(() => props.transactionId ?? null))
     onMounted(() => transactionLoader.requestLoad())

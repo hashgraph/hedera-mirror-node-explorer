@@ -19,22 +19,33 @@
  */
 
 import {EntityLoader} from "@/utils/loader/EntityLoader";
-import {BlocksResponse, Transaction, TransactionByIdResponse, TransactionType} from "@/schemas/HederaSchemas";
-import {computed, ComputedRef, Ref, ref, watch} from "vue";
-import axios, {AxiosResponse} from "axios";
+import {
+    ContractResultDetails,
+    Transaction,
+    TransactionByIdResponse,
+    TransactionResponse, TransactionType
+} from "@/schemas/HederaSchemas";
+import {computed, ComputedRef, ref, Ref} from "vue";
+import axios, {AxiosError, AxiosResponse} from "axios";
 import {computeNetAmount} from "@/utils/TransactionTools";
-import {EntityDescriptor} from "@/utils/EntityDescriptor";
-import {ContractLoader} from "@/components/contract/ContractLoader";
-import {AccountLoader} from "@/components/account/AccountLoader";
-import {systemContractRegistry} from "@/schemas/SystemContractRegistry";
 import {normalizeTransactionId} from "@/utils/TransactionID";
 import {base64DecToArr, byteToHex} from "@/utils/B64Utils";
+import {PathParam} from "@/utils/PathParam";
+import {Timestamp} from "@/utils/Timestamp";
+import {TransactionHash} from "@/utils/TransactionHash";
+import {EthereumHash} from "@/utils/EthereumHash";
+import {ContractLoader} from "@/components/contract/ContractLoader";
+import {AccountLoader} from "@/components/account/AccountLoader";
+import {EntityDescriptor} from "@/utils/EntityDescriptor";
+import {systemContractRegistry} from "@/schemas/SystemContractRegistry";
 import {BlocksResponseCollector} from "@/utils/collector/BlocksResponseCollector";
 
-export class TransactionLoader extends EntityLoader<TransactionByIdResponse> {
+export class TransactionLoader extends EntityLoader<Transaction> {
 
-    public readonly transactionLocator: ComputedRef<string|null>
-    public readonly consensusTimestamp: ComputedRef<string|null>
+    public readonly transactionLoc: ComputedRef<string|null> // transaction timestamp, hash or ethereum hash
+    public readonly transactionId: ComputedRef<string|null>
+
+    private readonly transactionsRef: Ref<Transaction[]> = ref([])
     private readonly contractLoader: ContractLoader
     private readonly accountLoader: AccountLoader
 
@@ -42,26 +53,27 @@ export class TransactionLoader extends EntityLoader<TransactionByIdResponse> {
     // Public
     //
 
-    public constructor(transactionLocator: ComputedRef<string|null>, consensusTimestamp: ComputedRef<string|null>) {
+    public constructor(transactionLoc: ComputedRef<string|null>, transactionId: ComputedRef<string|null>) {
         super()
-        this.transactionLocator = transactionLocator
-        this.consensusTimestamp = consensusTimestamp
+        this.transactionLoc = transactionLoc
+        this.transactionId = transactionId
         this.contractLoader = new ContractLoader(this.ethereumContractId)
         this.accountLoader = new AccountLoader(this.ethereumContractId)
-        this.watchAndReload([this.transactionLocator])
-        watch(this.transaction, () => this.updateBlockNumber())
+        this.watchAndReload([this.transactionLoc, this.transactionId])
     }
 
     public readonly transactions: ComputedRef<Transaction[]> = computed(
-        () => this.entity.value?.transactions ?? [])
+        () => this.transactionsRef.value)
 
-    public readonly transaction: ComputedRef<Transaction|null> = computed(
-        () => this.entity.value?.transactions ? filter(this.transactions.value, this.consensusTimestamp.value) : null)
+    public readonly transaction: ComputedRef<Transaction|null> = computed(() => this.entity.value)
 
     public readonly formattedTransactionId: ComputedRef<string|null> = computed(() => {
         const transaction_id = this.transaction.value?.transaction_id
         return transaction_id ? normalizeTransactionId(transaction_id, true) : null
     })
+
+    public readonly consensusTimestamp: ComputedRef<string|null> = computed(
+        () => this.transaction.value?.consensus_timestamp ?? null)
 
     public readonly transactionType = computed(() => this.transaction.value?.name ?? null)
 
@@ -164,20 +176,81 @@ export class TransactionLoader extends EntityLoader<TransactionByIdResponse> {
         return result
     })
 
-    public readonly blockNumber: Ref<number|null> = ref(null)
+    public readonly blockNumber: ComputedRef<number|null> = computed(() => {
+        const blocks = this.blockResponses.value?.blocks ?? []
+        return blocks.length >= 1 ? blocks[0].number ?? null : null
+    })
 
     //
     // EntityLoader
     //
+    //
+    // public requestLoad() {
+    //     super.requestLoad();
+    //     this.contractLoader.requestLoad()
+    //     this.accountLoader.requestLoad()
+    // }
 
-    protected async load(): Promise<AxiosResponse<TransactionByIdResponse>|null> {
-        let result: Promise<AxiosResponse<TransactionByIdResponse>|null>
-        if (this.transactionLocator.value != null) {
-            result = axios.get<TransactionByIdResponse>("api/v1/transactions/" + this.transactionLocator.value)
+    protected async load(): Promise<AxiosResponse<Transaction>|null> {
+        let result: AxiosResponse<Transaction>|null
+
+        /*
+                  \ transactionId  |                null                  |               !null
+            transactionLoc         |                                      |
+            -----------------------+--------------------------------------+--------------------------------------
+            timestamp              | api/v1/transactions?timestamp={t}    | api/v1/transactions/{transactionId}
+                                   | api/v1/transactions/{transactionId}  |
+            -----------------------+--------------------------------------+--------------------------------------
+            hash                   | api/v1/transactions/{transactionHash}| api/v1/transactions/{transactionId}
+                                   | api/v1/transactions/{transactionId}  |
+            -----------------------+--------------------------------------+--------------------------------------
+            ethereum hash          | api/v1/contracts/results/{eth}       | api/v1/contracts/results/{eth}
+                                   | api/v1/transactions?timestamp={t}    | api/v1/transactions/{transactionId}
+                                   | api/v1/transactions/{transactionId}  |
+            -----------------------+--------------------------------------+--------------------------------------
+
+         */
+
+        const tloc = this.transactionLoc.value !== null ? PathParam.parseTransactionLoc(this.transactionLoc.value) : null
+        const tth = tloc instanceof EthereumHash ? await TransactionLoader.findTimestampForEthereumHash(tloc) : tloc
+
+        if (tth !== null) {
+
+            // 1) Finds transaction id
+            let transactionId: string|null
+            if (this.transactionId.value !== null) { // We have the transaction id  :)
+                transactionId = this.transactionId.value
+            } else { // We need to find the transaction id using timestamp or hash    :(
+                transactionId = await TransactionLoader.findTransactionId(tth)
+            }
+
+            // 2) Loads transactions with transaction id
+            let transaction: Transaction|null
+            if (transactionId !== null) {
+                const response = await axios.get<TransactionResponse>("api/v1/transactions/" + transactionId)
+                this.transactionsRef.value = response.data.transactions ?? []
+                transaction = TransactionLoader.lookupTransaction(this.transactionsRef.value, tth)
+            } else {
+                this.transactionsRef.value = []
+                transaction = null
+            }
+
+            if (transaction !== null) {
+                result = {
+                    data: transaction,
+                    status: 200,
+                    statusText: "",
+                    headers: {},
+                    config: {}
+                }
+            } else {
+                result = null
+            }
         } else {
-            result = Promise.resolve(null)
+            result = null
         }
-        return result
+
+        return Promise.resolve(result)
     }
 
     //
@@ -190,50 +263,72 @@ export class TransactionLoader extends EntityLoader<TransactionByIdResponse> {
         return entityId && name == TransactionType.ETHEREUMTRANSACTION ? entityId : null
     })
 
-    private updateBlockNumber() {
-        const cts = this.transaction.value?.consensus_timestamp
-        if (cts) {
-            BlocksResponseCollector.instance.fetch(cts)
-                .then((r: AxiosResponse<BlocksResponse>) => {
-                        this.blockNumber.value = r.data?.blocks ? (r.data?.blocks[0].number ?? null) : null
-                    }
-                    , (reason: unknown) => {
-                        console.warn("BlocksResponseCollector failed to find block with reason: " + reason)
-                        this.blockNumber.value = null
-                    })
-        } else {
-            this.blockNumber.value = null
-        }
-    }
-}
+    private readonly blockResponses = BlocksResponseCollector.instance.ref(this.consensusTimestamp)
 
-function filter(transactions: Transaction[], consensusTimestamp: string|null): Transaction|null {
-    let result: Transaction|null
-    if (transactions.length == 1) {
-        result = transactions[0]
-    } else if (transactions.length >= 2) {
-        if (consensusTimestamp) {
-            const t = lookupTransactionWithTimestamp(transactions, consensusTimestamp)
-            result = t !== null ? t : transactions[0]
-        } else {
-            const t = lookupScheduledTransaction(transactions)
-            result = t !== null ? t : transactions[0]
-        }
-    } else {
-        result = null
-    }
-    return result
-}
+    //
+    // Private (findTransactionId)
+    //
 
-function lookupTransactionWithTimestamp(transactions: Transaction[], consensusTimestamp: string): Transaction|null {
-    let result: Transaction | null = null
-    for (const t of transactions) {
-        if (t.consensus_timestamp == consensusTimestamp) {
-            result = t
-            break
+    private static async findTransactionId(tloc: Timestamp | TransactionHash): Promise<string|null> {
+        let result: string|null
+        if (tloc instanceof Timestamp) {
+            const response = await axios.get<TransactionResponse>("api/v1/transactions?timestamp=" + tloc.toString())
+            const transactions = response.data.transactions ?? []
+            const transactions0 = transactions.length >= 1 ? transactions[0] : null
+            result = transactions0?.transaction_id ?? null
+            if (result === null) {
+                const r: AxiosResponse = {
+                    data: {},
+                    status: 404,
+                    statusText: "",
+                    headers: response.headers,
+                    config: response.config
+                }
+                throw new AxiosError("", "", response.config, response.request, r)
+            }
+        } else {
+            const url = "api/v1/transactions/" + tloc.toString()
+            const response = await axios.get<TransactionByIdResponse>(url)
+            const transactions = response.data.transactions ?? []
+            const transactions0 = transactions.length >= 1 ? transactions[0] : null
+            result = transactions0?.transaction_id ?? null
         }
+        return Promise.resolve(result)
     }
-    return result
+
+    private static async findTimestampForEthereumHash(tloc: EthereumHash): Promise<Timestamp|null> {
+        const response = await axios.get<ContractResultDetails>("api/v1/contract/results/" + tloc.toString())
+        const timestamp = response?.data.timestamp ?? null
+        const result = timestamp !== null ? Timestamp.parse(timestamp) : null
+        return Promise.resolve(result)
+    }
+
+
+    //
+    // Private (lookupTransaction)
+    //
+
+    private static lookupTransaction(candidates: Transaction[], tth: Timestamp|TransactionHash): Transaction|null {
+        let result: Transaction|null = null
+        if (tth instanceof Timestamp) {
+            const tt = tth.toString()
+            for (const t of candidates) {
+                if (t.consensus_timestamp == tt) {
+                    result = t
+                    break
+                }
+            }
+        } else {
+            const h = tth.toBase64()
+            for (const t of candidates) {
+                if (t.transaction_hash == h) {
+                    result = t
+                    break
+                }
+            }
+        }
+        return result
+    }
 }
 
 function lookupScheduledTransaction(transactions: Transaction[]): Transaction|null {
@@ -259,23 +354,22 @@ function lookupSchedulingTransaction(transactions: Transaction[]): Transaction|n
 }
 
 function lookupParentTransaction(transactions: Transaction[]): Transaction|null {
-  let result: Transaction | null = null
-  for (const t of transactions) {
-    if (t.nonce === 0) {
-      result = t
-      break
+    let result: Transaction | null = null
+    for (const t of transactions) {
+        if (t.nonce === 0) {
+            result = t
+            break
+        }
     }
-  }
-  return result
+    return result
 }
 
 function lookupChildTransactions(transactions: Transaction[]): Transaction[] {
-  const result = new Array<Transaction>()
-  for (const t of transactions) {
-    if (t.parent_consensus_timestamp) {
-      result.push(t)
+    const result = new Array<Transaction>()
+    for (const t of transactions) {
+        if (t.parent_consensus_timestamp) {
+            result.push(t)
+        }
     }
-  }
-  return result
+    return result
 }
-
