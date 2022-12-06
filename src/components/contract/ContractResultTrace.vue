@@ -41,7 +41,7 @@
     </template>
 
     <template v-slot:content>
-      <ContractActionsTable :actions="actions" v-model:expandedActions="expandedActions"/>
+      <ContractActionsTable :actions="actions" v-model:expandedActions="expandedActions" :analyzer="analyzer"/>
     </template>
   </DashboardCard>
 
@@ -53,10 +53,11 @@
 
 <script lang="ts">
 
-import {computed, defineComponent, onMounted, Ref, ref} from 'vue';
+import {computed, defineComponent, onMounted, PropType, Ref, ref} from 'vue';
 import DashboardCard from "@/components/DashboardCard.vue";
 import {ContractActionsLoader, ContractActionWithPath} from "@/components/contract/ContractActionsLoader";
 import ContractActionsTable from "@/components/contract/ContractActionsTable.vue";
+import {FunctionCallAnalyzer} from "@/utils/FunctionCallAnalyzer";
 
 export default defineComponent({
 
@@ -68,7 +69,11 @@ export default defineComponent({
   },
 
   props: {
-    transactionIdOrHash: String
+    transactionIdOrHash: String,
+    analyzer: {
+      type: Object as PropType<FunctionCallAnalyzer>,
+      required: true
+    }
   },
 
   setup(props) {

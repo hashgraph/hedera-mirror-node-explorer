@@ -231,7 +231,7 @@ body {
     text-overflow: ellipsis;
 }
 .should-wrap {
-    word-break: break-all;
+    word-break: break-word;
 }
 // Transfer Graphs
 .h-is-debit {

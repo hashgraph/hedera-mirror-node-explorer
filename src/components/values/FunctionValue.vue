@@ -23,9 +23,15 @@
 <!-- --------------------------------------------------------------------------------------------------------------- -->
 
 <template>
-  <span v-if="formattedAmount !== null">{{ formattedAmount }}</span>
-  <span v-else-if="initialLoading"/>
-  <span v-else class="has-text-grey">{{ noneLabel }}</span>
+
+  <div v-if="value">
+    <EVMAddress v-if="addressValue" :address="addressValue" :compact="isSmallScreen && !isMediumScreen"/>
+    <div v-else class="is-family-monospace h-is-text-size-3 should-wrap">{{ value }}</div>
+    <div class="h-is-extra-text h-is-text-size-3">{{ type }}</div>
+  </div>
+  <div v-else-if="initialLoading"/>
+  <div v-else class="has-text-grey">None</div>
+
 </template>
 
 <!-- --------------------------------------------------------------------------------------------------------------- -->
@@ -34,39 +40,32 @@
 
 <script lang="ts">
 
-import {computed, defineComponent, inject, PropType, ref} from "vue";
+import {computed, defineComponent, inject, PropType, ref} from 'vue';
 import {initialLoadingKey} from "@/AppKeys";
+import EVMAddress from "@/components/values/EVMAddress.vue";
 
 export default defineComponent({
-  name: "PlainAmount",
-
+  name: 'FunctionValue',
+  components: {EVMAddress},
   props: {
-    amount: {
-      type: Number as PropType<number|null>,
-      default: null
-    },
-    noneLabel: {
-      type: String,
-      default: "None"
-    }
+    value: Object as PropType<unknown>,
+    type: String
   },
 
   setup(props) {
-    const formattedAmount = computed(() => {
-      let result: string|null
-        if (props.amount !== null && !isNaN(props.amount)) {
-          result = props.amount.toLocaleString()
-        } else {
-          result = null
-        }
-      return result
-    })
-
+    const isSmallScreen = inject('isSmallScreen', true)
+    const isMediumScreen = inject('isMediumScreen', true)
     const initialLoading = inject(initialLoadingKey, ref(false))
 
+    const addressValue = computed(() => {
+      return props.type === 'address' ? props.value as string : null
+    })
+
     return {
-      formattedAmount,
-      initialLoading
+      isSmallScreen,
+      isMediumScreen,
+      initialLoading,
+      addressValue,
     }
   }
 });
@@ -78,4 +77,3 @@ export default defineComponent({
 <!-- --------------------------------------------------------------------------------------------------------------- -->
 
 <style/>
-

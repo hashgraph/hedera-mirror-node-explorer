@@ -24,17 +24,19 @@
 
 <template>
   <div v-if="address">
-    <span class="is-family-monospace h-is-text-size-3">
+    <div :class="{'is-flex': isSmallScreen}" class="is-flex-wrap-wrap is-family-monospace h-is-text-size-3">
       <span class="has-text-grey">{{ nonSignificantPart }}</span>
-      <span>{{ significantPart }}</span>
-      <span v-if="id" class="ml-1">
+      <span class="mr-1">{{ significantPart }}</span>
+      <br/>
+      <span v-if="entityId">
         <span>(</span>
-        <router-link v-if="isContract" :to="{name: 'ContractDetails', params: {contractId: id}}">{{ id }}</router-link>
-        <router-link v-else :to="{name: 'AccountDetails', params: {accountId: id}}">{{ id }}</router-link>
+        <router-link v-if="isContract" :to="{name: 'ContractDetails', params: {contractId: entityId}}">{{ entityId }}</router-link>
+        <router-link v-else-if="isAccount" :to="{name: 'AccountDetails', params: {accountId: entityId}}">{{ entityId }}</router-link>
+        <span v-else>{{ entityId }}</span>
         <span>)</span>
       </span>
-    </span>
-    <div v-if="showType" class="h-is-extra-text h-is-text-size-2">{{ idType }}</div>
+    </div>
+    <div v-if="showType" class="h-is-extra-text h-is-text-size-2">{{ entityType }}</div>
   </div>
   <div v-else-if="initialLoading"/>
   <div v-else class="has-text-grey">None</div>
@@ -48,13 +50,15 @@
 
 import {computed, defineComponent, inject, ref} from "vue";
 import {initialLoadingKey} from "@/AppKeys";
+import {EntityID} from "@/utils/EntityID";
+import {systemContractRegistry} from "@/schemas/SystemContractRegistry";
 
 export default defineComponent({
   name: "EVMAddress",
   props: {
     address: String,
     id: String,
-    idType: String,
+    entityType: String,
     showType: {
       type: Boolean,
       default: false
@@ -71,8 +75,10 @@ export default defineComponent({
 
   setup(props) {
     const initialLoading = inject(initialLoadingKey, ref(false))
+    const isSmallScreen = inject('isSmallScreen', ref(false))
 
-    const isContract = computed(() => props.idType === 'CONTRACT')
+    const isContract = computed(() => props.entityType === 'CONTRACT')
+    const isAccount = computed(() => props.entityType === 'ACCOUNT')
 
     const displayAddress = computed(() => {
       let result: string
@@ -101,11 +107,30 @@ export default defineComponent({
     const significantPart = computed(
         () => displayAddress.value?.slice(nonSignificantSize.value))
 
+    const entityId = computed(() => {
+      let result
+      if (props.id) {
+        result = props.id
+      } else if (props.address) {
+        const entity = EntityID.fromAddress(props.address)
+        result = entity ? entity.toString() : null
+      } else {
+        result = null
+      }
+      if (result) {
+        result = systemContractRegistry.lookup(result)?.description ?? result
+      }
+      return result
+    })
+
     return {
+      isSmallScreen,
       isContract,
+      isAccount,
       initialLoading,
       nonSignificantPart,
-      significantPart
+      significantPart,
+      entityId
     }
   }
 })

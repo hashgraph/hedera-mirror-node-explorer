@@ -1754,7 +1754,7 @@ export const SAMPLE_CONTRACT_ACTIONS = {
             "gas": 4516,
             "gas_used": 2751,
             "index": 3,
-            "input": "0x189a554c",
+            "input": "0x49146bde000000000000000000000000845b706151aed537b1fd81c1ea4ea03920097abd0000000000000000000000000000000000000000000000000000000002e6ae09",
             "recipient": "0.0.359",
             "recipient_type": "CONTRACT",
             "result_data": "0x0000000000000000000000000000000000000000000000000000000005a995c0",
