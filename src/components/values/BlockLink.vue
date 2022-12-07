@@ -24,7 +24,7 @@
 
 <template>
   <div v-if="blockNumber" class="is-inline-block">
-    <router-link :to="{name: 'BlockDetails', params: {blockHon: blockNumber}}">
+    <router-link :to="blockRoute">
       <span class="is-numeric">{{ blockNumber }}</span>
     </router-link>
   </div>
@@ -36,7 +36,8 @@
 
 <script lang="ts">
 
-import {defineComponent} from "vue";
+import {computed, defineComponent} from "vue";
+import {routeManager} from "@/router";
 
 export default defineComponent({
   name: "BlockLink",
@@ -44,6 +45,11 @@ export default defineComponent({
   props: {
     blockNumber: Number,
   },
+
+  setup(props) {
+    const blockRoute = computed(() => props.blockNumber ? routeManager.makeRouteToBlock(props.blockNumber) : null)
+    return { blockRoute }
+  }
 });
 
 </script>

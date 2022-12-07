@@ -42,7 +42,7 @@
                   :mode="progressDialogMode"
                   :main-message="progressMainMessage"
                   :extra-message="progressExtraMessage"
-                  :extra-transaction="progressExtraTransaction"
+                  :extra-transaction-hash="progressExtraTransactionHash"
                   :show-spinner="showProgressSpinner"
   >
     <template v-slot:dialogTitle>
@@ -268,7 +268,7 @@ export default defineComponent({
     const progressDialogTitle = ref<string|null>(null)
     const progressMainMessage = ref<string|null>(null)
     const progressExtraMessage = ref<string|null>(null)
-    const progressExtraTransaction = ref<string|null>(null)
+    const progressExtraTransactionHash = ref<string|null>(null)
     const showProgressSpinner = ref(false)
     const showDownloadDialog = ref(false)
 
@@ -292,7 +292,7 @@ export default defineComponent({
             progressDialogMode.value = Mode.Error
             progressDialogTitle.value = "Could not connect wallet"
             showProgressSpinner.value = false
-            progressExtraTransaction.value = null
+            progressExtraTransactionHash.value = null
 
             if (reason instanceof WalletDriverError) {
               progressMainMessage.value = reason.message
@@ -388,19 +388,19 @@ export default defineComponent({
         progressDialogTitle.value = (nodeId == null && accountId == null && !declineReward) ? "Stopping staking" : "Updating staking"
         progressMainMessage.value = "Connecting to Hedera Network using your wallet…"
         progressExtraMessage.value = "Check your wallet for any approval request"
-        progressExtraTransaction.value = null
+        progressExtraTransactionHash.value = null
         showProgressSpinner.value = false
-        const transactionID = normalizeTransactionId(await walletManager.changeStaking(nodeId, accountId, declineReward))
+        const transactionHash = normalizeTransactionId(await walletManager.changeStaking(nodeId, accountId, declineReward))
         progressMainMessage.value = "Completing operation…"
         progressExtraMessage.value = "This may take a few seconds"
         showProgressSpinner.value = true
-        await waitForTransactionRefresh(transactionID, 10)
+        await waitForTransactionRefresh(transactionHash, 10)
 
         progressDialogMode.value = Mode.Success
         progressMainMessage.value = "Operation completed"
         showProgressSpinner.value = false
         progressExtraMessage.value = "with transaction ID:"
-        progressExtraTransaction.value = transactionID
+        progressExtraTransactionHash.value = transactionHash
 
       } catch(error) {
 
@@ -412,7 +412,7 @@ export default defineComponent({
           progressMainMessage.value = "Operation did not complete"
           progressExtraMessage.value = JSON.stringify(error.message)
         }
-        progressExtraTransaction.value = null
+        progressExtraTransactionHash.value = null
         showProgressSpinner.value = false
 
       } finally {
@@ -422,20 +422,20 @@ export default defineComponent({
 
     }
 
-    const waitForTransactionRefresh = async (transactionID: string, attemptIndex: number) => {
+    const waitForTransactionRefresh = async (transactionHash: string, attemptIndex: number) => {
       let result: Promise<Transaction | string>
 
       if (attemptIndex >= 0) {
         await waitFor(props.polling)
         try {
-          const response = await axios.get<TransactionByIdResponse>("api/v1/transactions/" + transactionID )
+          const response = await axios.get<TransactionByIdResponse>("api/v1/transactions/" + transactionHash )
           const transactions = response.data.transactions ?? []
-          result = Promise.resolve(transactions.length >= 1 ? transactions[0] : transactionID)
+          result = Promise.resolve(transactions.length >= 1 ? transactions[0] : transactionHash)
         } catch {
-          result = waitForTransactionRefresh(transactionID, attemptIndex - 1)
+          result = waitForTransactionRefresh(transactionHash, attemptIndex - 1)
         }
       } else {
-        result = Promise.resolve(transactionID)
+        result = Promise.resolve(transactionHash)
       }
 
       return result
@@ -492,7 +492,7 @@ export default defineComponent({
       progressDialogTitle,
       progressMainMessage,
       progressExtraMessage,
-      progressExtraTransaction,
+      progressExtraTransactionHash,
       showProgressSpinner,
       transactionTableController,
       downloader

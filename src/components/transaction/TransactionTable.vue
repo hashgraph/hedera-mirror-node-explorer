@@ -82,7 +82,7 @@ import TransactionSummary from "@/components/transaction/TransactionSummary.vue"
 import TimestampValue from "@/components/values/TimestampValue.vue";
 import TransactionLabel from "@/components/values/TransactionLabel.vue";
 import {makeTypeLabel} from "@/utils/TransactionTools";
-import router from "@/router";
+import {routeManager} from "@/router";
 import {ORUGA_MOBILE_BREAKPOINT} from "@/App.vue";
 import {TransactionTableControllerXL} from "@/components/transaction/TransactionTableControllerXL";
 import EmptyTable from "@/components/EmptyTable.vue";
@@ -105,7 +105,7 @@ export default defineComponent({
     const isMediumScreen = inject('isMediumScreen', true)
 
     const handleClick = (t: Transaction) => {
-      router.push({name: 'TransactionDetails', params: {transactionId: t.transaction_id}, query: {t: t.consensus_timestamp}})
+      routeManager.routeToTransaction(t)
     }
 
     return {

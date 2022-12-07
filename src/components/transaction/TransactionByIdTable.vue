@@ -82,7 +82,7 @@
 import {computed, defineComponent, inject, PropType, ref} from 'vue';
 import {Transaction, TransactionType} from '@/schemas/HederaSchemas';
 import {makeTypeLabel} from "@/utils/TransactionTools";
-import router from "@/router";
+import {routeManager} from "@/router";
 import TimestampValue from "@/components/values/TimestampValue.vue";
 import TransactionSummary from "@/components/transaction/TransactionSummary.vue";
 import {ORUGA_MOBILE_BREAKPOINT} from '@/App.vue';
@@ -114,9 +114,7 @@ export default defineComponent({
     )
 
     const handleClick = (t: Transaction) => {
-      router.push({name: 'TransactionDetails',
-        params: {transactionId: t.transaction_id},
-        query: {t: t.consensus_timestamp}})
+      routeManager.routeToTransaction(t)
     }
 
     let currentPage = ref(1)

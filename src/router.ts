@@ -47,7 +47,6 @@ import {RouteManager} from "@/utils/RouteManager";
 import {WalletManager} from "@/utils/wallet/WalletManager";
 import BlockDetails from "@/pages/BlockDetails.vue";
 import Blocks from "@/pages/Blocks.vue";
-import ContractResultDetails from "@/pages/ContractResultDetails.vue";
 
 const routes: Array<RouteRecordRaw> = [
   {
@@ -82,13 +81,13 @@ const routes: Array<RouteRecordRaw> = [
     props: true
   },
   {
-    path: '/:network/transaction/:transactionId',
+    path: '/:network/transaction/:transactionLoc',
     name: 'TransactionDetails',
     component: TransactionDetails,
     props: route => ({
       network: route.params.network as string|undefined,
-      transactionId: route.params.transactionId as string|undefined,
-      consensusTimestamp: route.query.t as string|undefined
+      transactionLoc: route.params.transactionLoc as string|undefined,
+      transactionId: route.query.tid as string|undefined
     })
   },
   {
@@ -182,9 +181,9 @@ const routes: Array<RouteRecordRaw> = [
   },
   {
     // EIP 3091 Support
-    path: '/:network/tx/:transactionIdOrHash',
-    name: 'ContractResultDetails',
-    component: ContractResultDetails,
+    path: '/:network/tx/:transactionLoc',
+    name: 'TransactionDetails3091',
+    component: TransactionDetails,
     props: true
   },
   {
@@ -293,7 +292,10 @@ router.beforeEach((to) => {
       document.title = "Hedera Dashboard" + titleSuffix
       break;
     case "TransactionDetails":
-      document.title = "Hedera Transaction " + to.params.transactionId + titleSuffix
+      document.title = "Hedera Transaction " + (to.query.tid ?? to.params.transactionLoc) + titleSuffix
+      break;
+    case "TransactionDetails3091":
+      document.title = "Hedera Transaction " + to.params.transactionLoc + titleSuffix
       break;
     case "TokenDetails":
       document.title = "Hedera Token " + to.params.tokenId + titleSuffix

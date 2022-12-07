@@ -123,7 +123,7 @@ import Footer from "@/components/Footer.vue";
 import PlainAmount from "@/components/values/PlainAmount.vue";
 import BlockTransactionTable from "@/components/block/BlockTransactionTable.vue";
 import {BlockTransactionsLoader} from "@/components/block/BlockTransactionsLoader";
-import router from "@/router";
+import {routeManager} from "@/router";
 
 export default defineComponent({
 
@@ -184,15 +184,12 @@ export default defineComponent({
       disableNextButton.value = notification.value != null
     })
     const handlePreviousBlock = () => {
-      router.push({
-        // params: { blockHon: blockLoader.entity.value?.previous_hash }
-        params: { blockHon: (blockLoader.entity.value?.number??0) - 1 }
-      })
+      const currentBlockNumber = blockLoader.entity.value?.number ?? 0
+      routeManager.routeToBlock(currentBlockNumber - 1)
     }
     const handleNextBlock = () => {
-      router.push({
-        params: { blockHon: (blockLoader.entity.value?.number??0) + 1 }
-      })
+      const currentBlockNumber = blockLoader.entity.value?.number ?? 0
+      routeManager.routeToBlock(currentBlockNumber + 1)
     }
 
     return {

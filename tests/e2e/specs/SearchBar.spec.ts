@@ -41,9 +41,10 @@ describe('Search Bar', () => {
 
     it('should find the transaction ID', () => {
         const searchTransaction = "0.0.88@1647261503.217669000"
+        const timestamp = "1647261513.856431000"
         testBody(
             searchTransaction,
-            '/testnet/transaction/' + normalizeTransactionId(searchTransaction),
+            '/testnet/transaction/' + timestamp + "?tid=" + normalizeTransactionId(searchTransaction),
             'Transaction '
         )
     })
@@ -101,10 +102,11 @@ describe('Search Bar', () => {
     it('should find the transaction by hash', () => {
         cy.visit('/mainnet/dashboard')
         const searchHash = "0xe4c9408e65d41bb0b3a417065e0cd98c1fedc98663db7c06909cb63e0236f39848d80fd006da39326800cb896898a85a"
+        const timestamp = "1669194629.950871003"
         const transactionId = "0.0.19789@1669194618.004968459"
         testBody(
             transactionId,
-            '/mainnet/transaction/' + normalizeTransactionId(transactionId),
+            '/mainnet/transaction/' + timestamp + "?tid=" + normalizeTransactionId(transactionId),
             'Transaction ',
             false,
             searchHash
@@ -116,7 +118,7 @@ describe('Search Bar', () => {
         const transactionId = "0.0.282498@1669195016.605846807"
         testBody(
             transactionId,
-            '/testnet/transaction/' + normalizeTransactionId(transactionId),
+            '/testnet/transaction/' + searchTimestamp + "?tid=" + normalizeTransactionId(transactionId),
             'Transaction ',
             false,
             searchTimestamp

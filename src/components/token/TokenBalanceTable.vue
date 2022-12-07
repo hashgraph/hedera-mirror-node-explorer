@@ -70,7 +70,7 @@
 
 import {ComputedRef, defineComponent, inject, PropType, Ref} from 'vue';
 import {TokenDistribution} from "@/schemas/HederaSchemas";
-import router from "@/router";
+import {routeManager} from "@/router";
 import TokenAmount from "@/components/values/TokenAmount.vue";
 import {ORUGA_MOBILE_BREAKPOINT} from '@/App.vue';
 import EmptyTable from "@/components/EmptyTable.vue";
@@ -93,7 +93,9 @@ export default defineComponent({
     const isMediumScreen = inject('isMediumScreen', true)
 
     const handleClick = (t: TokenDistribution) => {
-      router.push({name: 'AccountDetails', params: { accountId: t.account }})
+      if (t.account) {
+        routeManager.routeToAccount(t.account)
+      }
     }
 
     return {

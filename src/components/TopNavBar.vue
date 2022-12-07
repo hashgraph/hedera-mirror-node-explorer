@@ -28,7 +28,7 @@
        class="is-flex is-align-items-center is-justify-content-space-between pt-3 pb-4">
 
     <span class="is-inline-flex is-align-items-center is-flex-grow-0 is-flex-shrink-0">
-      <a class="mr-3" @click="$router.push({name: 'MainDashboard'})">
+      <a class="mr-3" @click="routeManager.routeToMainDashboard()">
         <img alt="Product Logo" class="image" src="@/assets/branding/brand-product-logo.png" style="max-width: 165px;">
       </a>
       <AxiosStatus/>
@@ -36,11 +36,11 @@
 
     <div class="is-flex is-align-items-center pt-2">
       <a v-if="name !== 'MobileMenu' && name !== 'MobileSearch'"
-         @click="$router.push({name: 'MobileSearch'})">
+         @click="$router.push(routeManager.mobileSearchRoute)">
         <img alt="Search bar" src="@/assets/search-icon.png" style="max-height: 20px;">
       </a>
       <a v-if="name !== 'MobileMenu' && name !== 'MobileSearch'" class="ml-5"
-         @click="$router.push({name: 'MobileMenu', query: {from: name}})">
+         @click="$router.push(routeManager.makeRouteToMobileMenu(name))">
         <img alt="Search bar" src="@/assets/hamburger.png" style="max-height: 32px;">
       </a>
       <a v-else class="ml-5 mr-2"
@@ -53,7 +53,7 @@
 
   <div v-else class="is-flex is-justify-content-space-between is-align-items-flex-end">
     <span class="is-inline-flex is-align-items-center is-flex-grow-0 is-flex-shrink-0">
-      <a id="product-logo" @click="$router.push({name: 'MainDashboard'})" class="mr-3">
+      <a id="product-logo" @click="routeManager.routeToMainDashboard()" class="mr-3">
         <img alt="Product Logo" class="image" src="@/assets/branding/brand-product-logo.png">
       </a>
       <AxiosStatus/>
@@ -75,32 +75,32 @@
         <div class="is-flex-grow-1 px-2"/>
         <a id="dashboard-menu-item" class="button is-ghost is-first h-is-navbar-item h-is-dense"
            :class="{'is-rimmed': isDashboardRoute}"
-           @click="$router.push({name: 'MainDashboard'})">Dashboard</a>
+           @click="$router.push(routeManager.mainDashboardRoute)">Dashboard</a>
         <a class="button is-ghost h-is-navbar-item h-is-dense"
            :class="{ 'is-rimmed': isTransactionRoute}"
-           @click="$router.push({name: 'Transactions'})">Transactions</a>
+           @click="$router.push(routeManager.transactionsRoute)">Transactions</a>
         <a class="button is-ghost h-is-navbar-item h-is-dense"
            :class="{ 'is-rimmed': isTokenRoute}"
-           @click="$router.push({name: 'Tokens'})">Tokens</a>
+           @click="$router.push(routeManager.tokensRoute)">Tokens</a>
         <a class="button is-ghost h-is-navbar-item h-is-dense"
            :class="{ 'is-rimmed': isTopicRoute}"
-           @click="$router.push({name: 'Topics'})">Topics</a>
+           @click="$router.push(routeManager.topicsRoute)">Topics</a>
         <a class="button is-ghost h-is-navbar-item h-is-dense"
            :class="{ 'is-rimmed': isContractRoute}"
-           @click="$router.push({name: 'Contracts'})">Contracts</a>
+           @click="$router.push(routeManager.contractsRoute)">Contracts</a>
         <a class="button is-ghost h-is-navbar-item h-is-dense"
            :class="{ 'is-rimmed': isAccountRoute}"
-           @click="$router.push({name: 'Accounts'})">Accounts</a>
+           @click="$router.push(routeManager.accountsRoute)">Accounts</a>
         <a class="button is-ghost h-is-navbar-item h-is-dense"
            :class="{ 'is-rimmed': isNodeRoute}"
-           @click="$router.push({name: 'Nodes'})">Nodes</a>
+           @click="$router.push(routeManager.nodesRoute)">Nodes</a>
         <a v-if="isStakingEnabled"
            class="button is-ghost h-is-navbar-item h-is-dense"
            :class="{ 'is-rimmed': isStakingRoute}"
-           @click="$router.push({name: 'Staking'})">Staking</a>
+           @click="$router.push(routeManager.stakingRoute)">Staking</a>
         <a class="button is-ghost is-last h-is-navbar-item h-is-dense"
            :class="{ 'is-rimmed': isBlocksRoute}"
-           @click="$router.push({name: 'Blocks'})">Blocks</a>
+           @click="$router.push(routeManager.blocksRoute)">Blocks</a>
       </div>
       <SearchBar style="margin-top: 4px"/>
     </div>
@@ -117,7 +117,7 @@
 
 import {computed, defineComponent, inject, ref, watch, WatchStopHandle} from "vue";
 import {useRoute} from "vue-router";
-import router from "@/router";
+import router, {routeManager} from "@/router";
 import SearchBar from "@/components/SearchBar.vue";
 import AxiosStatus from "@/components/AxiosStatus.vue";
 import {networkRegistry} from "@/schemas/NetworkRegistry";
@@ -216,7 +216,8 @@ export default defineComponent({
       isAccountRoute,
       isNodeRoute,
       isStakingRoute,
-      isBlocksRoute
+      isBlocksRoute,
+      routeManager,
     }
   },
 })

@@ -63,7 +63,7 @@
 
 import {defineComponent, inject, onMounted, ref, watch} from "vue";
 import {SearchRequest} from "@/utils/SearchRequest";
-import router from "@/router";
+import {routeManager} from "@/router";
 
 
 const STYLE_SEARCH_ICON = "fa fa-search"
@@ -118,32 +118,41 @@ export default defineComponent({
         r.run().then(() => {
           try {
             if (r.contract != null) {
-              router.push({name: 'ContractDetails', params: { contractId: r.contract.contract_id}})
+              if (r.contract.contract_id) {
+                routeManager.routeToContract(r.contract.contract_id)
+              }
               searchDidEnd(true)
             } else if (r.account != null) {
-              router.push({name: 'AccountDetails', params: { accountId: r.account.account}})
+              if (r.account.account) {
+                routeManager.routeToAccount(r.account.account)
+              }
               searchDidEnd(true)
             } else if (r.accountWithKey != null) {
-              router.push({name: 'AccountDetails', params: { accountId: r.accountWithKey.account}})
+              if (r.accountWithKey.account) {
+                routeManager.routeToAccount(r.accountWithKey.account)
+              }
               searchDidEnd(true)
             } else if (r.transactions.length >= 1) {
               const transaction = r.transactions[0]
               if (r.transactions.length == 1) {
-                router.push({name: 'TransactionDetails',
-                  params: { transactionId: transaction.transaction_id},
-                  query: { t: transaction.consensus_timestamp }})
+                routeManager.routeToTransaction(transaction)
               } else {
-                router.push({name: 'TransactionsById', params: { transactionId: transaction.transaction_id}})
+                routeManager.routeToTransactionsById(transaction.transaction_id ?? "")
               }
               searchDidEnd(true)
             } else if (r.tokenInfo != null) {
-              router.push({name: 'TokenDetails', params: { tokenId: r.tokenInfo.token_id}})
+              if (r.tokenInfo.token_id) {
+                routeManager.routeToToken(r.tokenInfo.token_id)
+              }
               searchDidEnd(true)
             } else if (r.topicMessages.length >= 1) {
-              router.push({name: 'TopicDetails', params: { topicId: r.topicMessages[0].topic_id}})
+              const topicId = r.topicMessages[0].topic_id
+              if (topicId) {
+                routeManager.routeToTopic(topicId)
+              }
               searchDidEnd(true)
             } else {
-              router.push({name: 'NoSearchResult', params: { searchedId: searchedId.value}, query: { errorCount: r.getErrorCount()}})
+              routeManager.routeToNoSearchResult(searchedId.value, r.getErrorCount())
               searchDidEnd(false)
             }
           } catch {
