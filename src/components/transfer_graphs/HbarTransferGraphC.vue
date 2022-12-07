@@ -98,7 +98,7 @@ export default defineComponent({
     const hbarTransferLayout = ref(new HbarTransferLayout(props.transaction, false))
 
     watch(() => props.transaction, () => {
-      hbarTransferLayout.value = new HbarTransferLayout(props.transaction)
+      hbarTransferLayout.value = new HbarTransferLayout(props.transaction, false)
     })
 
     return {
