@@ -95,7 +95,7 @@ export default defineComponent({
     const isMediumScreen = inject('isMediumScreen', true)
 
     const handleClick = (t: Reward) => {
-      routeManager.routeToTransaction(t.timestamp, undefined)
+      routeManager.routeToTransactionId(undefined, t.timestamp)
     }
 
     return {
