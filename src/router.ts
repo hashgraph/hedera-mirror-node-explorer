@@ -292,7 +292,10 @@ router.beforeEach((to) => {
       document.title = "Hedera Dashboard" + titleSuffix
       break;
     case "TransactionDetails":
-      document.title = "Hedera Transaction " + to.params.transactionId + titleSuffix
+      document.title = "Hedera Transaction " + (to.query.tid ?? to.params.transactionLoc) + titleSuffix
+      break;
+    case "TransactionDetails3091":
+      document.title = "Hedera Transaction " + to.params.transactionLoc + titleSuffix
       break;
     case "TokenDetails":
       document.title = "Hedera Token " + to.params.tokenId + titleSuffix
