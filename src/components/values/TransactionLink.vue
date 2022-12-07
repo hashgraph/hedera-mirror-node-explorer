@@ -24,9 +24,9 @@
 
 <template>
 
-  <div v-if="transactionId">
-    <router-link :to="{name: 'TransactionDetails', params: {transactionId: transactionId}}">
-      <span class="is-numeric should-wrap">{{ normalizedId }}</span>
+  <div v-if="formattedId && routeToTransaction">
+    <router-link :to="routeToTransaction">
+      <span class="is-numeric should-wrap">{{ formattedId }}</span>
     </router-link>
   </div>
 
@@ -42,14 +42,23 @@
 
 <script lang="ts">
 
-import {computed, defineComponent, PropType} from "vue";
+import {computed, defineComponent, onMounted, PropType, ref, watch} from "vue";
 import {TransactionID} from "@/utils/TransactionID";
+import {routeManager} from "@/router";
+import {TransactionCollector} from "@/utils/collector/TransactionCollector";
+import {TransactionByIdResponse, TransactionResponse} from "@/schemas/HederaSchemas";
+import {AxiosResponse} from "axios";
+import {PathParam} from "@/utils/PathParam";
+import {Timestamp} from "@/utils/Timestamp";
+import {TransactionHash} from "@/utils/TransactionHash";
+import {TransactionByHashCollector} from "@/utils/collector/TransactionByHashCollector";
 
 export default defineComponent({
   name: "TransactionLink",
 
   props: {
-    transactionId: String as PropType<string|null>,
+    transactionLoc: String as PropType<string|undefined>,
+    transactionId: String as PropType<string|undefined>,
     showNone: {
       type: Boolean,
       default: true
@@ -57,8 +66,44 @@ export default defineComponent({
   },
 
   setup(props) {
-    const normalizedId = computed(() => TransactionID.normalize(props.transactionId ?? "?"))
-    return { normalizedId }
+
+    const normalizedId = ref<string|null>(null)
+    const updateNormalizedId = () => {
+      if (props.transactionId) {
+        normalizedId.value = props.transactionId
+      } else if (props.transactionLoc) {
+        const tloc = PathParam.parseTransactionLoc(props.transactionLoc)
+        if (tloc instanceof Timestamp) {
+          TransactionCollector.instance.fetch(props.transactionLoc).then((r: AxiosResponse<TransactionResponse>) => {
+            const transactions = r.data.transactions ?? []
+            const transaction0 = transactions.length >= 1 ? transactions[0] : null
+            normalizedId.value = transaction0?.transaction_id ?? null
+          })
+        } else if (tloc instanceof TransactionHash) {
+          TransactionByHashCollector.instance.fetch(props.transactionLoc).then((r: AxiosResponse<TransactionByIdResponse>) => {
+            const transactions = r.data.transactions ?? []
+            const transaction0 = transactions.length >= 1 ? transactions[0] : null
+            normalizedId.value = transaction0?.transaction_id ?? null
+          })
+        } else {
+          normalizedId.value = null
+        }
+      } else {
+        normalizedId.value = null
+      }
+    }
+    watch([computed(() => props.transactionLoc), computed(() => props.transactionId)], () => updateNormalizedId())
+    onMounted(() => updateNormalizedId())
+
+    const formattedId = computed(() => {
+      return normalizedId.value !== null ? TransactionID.normalize(normalizedId.value) : null
+    })
+
+    const routeToTransaction = computed(() => {
+      return props.transactionLoc ? routeManager.makeRouteToTransaction(props.transactionLoc, normalizedId.value ?? undefined) : null
+    })
+
+    return { formattedId, routeToTransaction }
   }
 });
 

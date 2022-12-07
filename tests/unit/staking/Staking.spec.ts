@@ -40,6 +40,7 @@ import ProgressDialog from "@/components/staking/ProgressDialog.vue";
 import {waitFor} from "@/utils/TimerUtils";
 import StakingDialog from "@/components/staking/StakingDialog.vue";
 import {nextTick} from "vue";
+import {TransactionHash} from "@/utils/TransactionHash";
 
 /*
     Bookmarks
@@ -81,10 +82,10 @@ describe("Staking.vue", () => {
         // Transaction used to represent stake update operation
         const STAKE_UPDATE_TRANSACTION = SAMPLE_TRANSACTION
         const STAKE_UPDATE_TRANSACTIONS = SAMPLE_TRANSACTIONS
-        const STAKE_UPDATE_TRANSACTION_ID = STAKE_UPDATE_TRANSACTION.transaction_id
+        const STAKE_UPDATE_TRANSACTION_HASH = TransactionHash.parseBase64(STAKE_UPDATE_TRANSACTION.transaction_hash)!.toString()
 
         // Adds test driver to WalletManager
-        const testDriver = new WalletDriver_Mock(TARGET_ACCOUNT, STAKE_UPDATE_TRANSACTION_ID)
+        const testDriver = new WalletDriver_Mock(TARGET_ACCOUNT, STAKE_UPDATE_TRANSACTION_HASH)
         walletManager.getDrivers().push(testDriver)
 
         // Mocks axios
@@ -100,7 +101,7 @@ describe("Staking.vue", () => {
         mock.onGet(matcher2).reply(200, SAMPLE_NETWORK_NODES)
         const matcher3 = "https://api.coingecko.com/api/v3/coins/hedera-hashgraph"
         mock.onGet(matcher3).reply(200, SAMPLE_COINGECKO);
-        const matcher4 = "/api/v1/transactions/" + STAKE_UPDATE_TRANSACTION_ID
+        const matcher4 = "/api/v1/transactions/" + STAKE_UPDATE_TRANSACTION_HASH
         mock.onGet(matcher4).reply(200, STAKE_UPDATE_TRANSACTIONS)
         const matcher5 = "/api/v1/transactions"
         mock.onGet(matcher5).reply(200, SAMPLE_TRANSACTIONS)

@@ -18,19 +18,20 @@
  *
  */
 
-// https://docs.cypress.io/api/table-of-contents
+import {TransactionByIdResponse} from "@/schemas/HederaSchemas";
+import {Collector} from "@/utils/collector/Collector";
+import axios, {AxiosResponse} from "axios";
 
-describe('TokenInfoCollector', () => {
+export class TransactionByHashCollector extends Collector<TransactionByIdResponse, string> {
 
-    const timestamp = "1647364809.508728186"
+    public static readonly instance = new TransactionByHashCollector()
 
-    it('should display token name', () => {
-        cy.visit('testnet/transaction/' + timestamp)
-        cy.url().should('include', '/testnet/transaction/')
+    //
+    // Collector
+    //
 
-        cy.get('#entityId')
-            .find('span')
-            .contains("NXUV_name")
-    })
+    protected async load(transactionHash: string): Promise<AxiosResponse<TransactionByIdResponse>> {
+        return axios.get<TransactionByIdResponse>("api/v1/transactions/" + transactionHash)
+    }
 
-})
+}

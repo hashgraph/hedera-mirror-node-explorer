@@ -37,14 +37,14 @@
             </div>
             <div v-else class="h-has-pill has-background-danger mr-3 h-is-text-size-2 mt-3">FAILURE</div>
           </div>
-          <span v-if="showAllTransactionVisible && isLargeScreen" class="is-inline-block mt-2" id="allTransactionsLink">
-          <router-link :to="{name: 'TransactionsById', params: {transactionId: transaction?.transaction_id}}">
+          <span v-if="routeToAllTransactions && isLargeScreen" class="is-inline-block mt-2" id="allTransactionsLink">
+          <router-link :to="routeToAllTransactions">
             <span class="h-is-property-text has-text-grey">Show all transactions with the same ID</span>
           </router-link>
         </span>
         </div>
-        <span v-if="showAllTransactionVisible && !isLargeScreen">
-          <router-link :to="{name: 'TransactionsById', params: {transactionId: transaction?.transaction_id}}">
+        <span v-if="routeToAllTransactions && !isLargeScreen">
+          <router-link :to="routeToAllTransactions">
             <span class="h-is-property-text has-text-grey">Show all transactions with the same ID</span>
           </router-link>
         </span>
@@ -60,11 +60,7 @@
           <template v-slot:value>
             <StringValue :string-value="transactionType ? makeTypeLabel(transactionType) : undefined"/>
             <div v-if="scheduledTransaction" id="scheduledLink">
-              <router-link :to="{
-                  name: 'TransactionDetails',
-                  params: { transactionId: scheduledTransaction.transaction_id },
-                  query: { t: scheduledTransaction.consensus_timestamp }
-                }">
+              <router-link :to="routeManager.makeRouteToTransactionObj(scheduledTransaction)">
                 <span class="h-is-text-size-3 has-text-grey">Show scheduled transaction</span>
               </router-link>
             </div>
@@ -162,11 +158,8 @@
           <template v-if="transaction?.scheduled===true" v-slot:value>
             True
             <div id="schedulingLink" v-if="schedulingTransaction">
-              <router-link :to="{
-                  name: 'TransactionDetails',
-                  params: { transactionId: schedulingTransaction.transaction_id },
-                  query: { t: schedulingTransaction.consensus_timestamp }
-                }"><span class="has-text-grey h-is-text-size-3">Show schedule create transaction</span>
+              <router-link :to="routeManager.makeRouteToTransactionObj(schedulingTransaction)">
+                <span class="has-text-grey h-is-text-size-3">Show schedule create transaction</span>
               </router-link>
             </div>
           </template>
@@ -180,11 +173,8 @@
         <Property v-if="parentTransaction" id="parentTransaction">
           <template v-slot:name>Parent Transaction</template>
           <template v-slot:value>
-            <router-link :to="{
-                  name: 'TransactionDetails',
-                  params: { transactionId: parentTransaction.transaction_id },
-                  query: { t: parentTransaction.consensus_timestamp }
-                }">{{ makeTypeLabel(parentTransaction.name) }}
+            <router-link :to="routeManager.makeRouteToTransactionObj(parentTransaction)">
+              {{ makeTypeLabel(parentTransaction.name) }}
             </router-link>
           </template>
         </Property>
@@ -192,15 +182,11 @@
           <template v-slot:name>Child Transactions</template>
           <template v-slot:value>
             <router-link v-if="displayAllChildrenLinks"
-                         :to="{name: 'TransactionsById', params: {transactionId: transactionId}}">
+                         :to="routeManager.makeRouteToTransactionsById(transactionId)">
               {{ 'Show all ' + childTransactions.length + ' transactions' }}
             </router-link>
             <div v-else>
-              <router-link v-for="tx in childTransactions" :key="tx.nonce" :to="{
-                    name: 'TransactionDetails',
-                    params: { transactionId: tx.transaction_id },
-                    query: { t: tx.consensus_timestamp }
-                  }">
+              <router-link v-for="tx in childTransactions" :key="tx.nonce" :to="routeManager.makeRouteToTransactionObj(tx)">
                 <span class="mr-2 is-numeric">{{ '#' + tx.nonce }}</span>
                 <span>{{ makeTypeLabel(tx.name) }}</span>
                 <br/></router-link>
@@ -262,6 +248,9 @@ import ContractResult from "@/components/contract/ContractResult.vue";
 import {TransactionType} from "@/schemas/HederaSchemas";
 import TopicMessage from "@/components/topic/TopicMessage.vue";
 import {TopicMessageLoader} from "@/components/topic/TopicMessageLoader";
+import {routeManager} from "@/router"
+import {Timestamp} from "@/utils/Timestamp";
+import {TransactionHash} from "@/utils/TransactionHash";
 
 const MAX_INLINE_CHILDREN = 9
 
@@ -283,8 +272,8 @@ export default defineComponent({
   },
 
   props: {
+    transactionLoc: String,
     transactionId: String,
-    consensusTimestamp: String,
     network: String
   },
 
@@ -293,16 +282,18 @@ export default defineComponent({
     const isLargeScreen = inject('isLargeScreen', true)
     const isTouchDevice = inject('isTouchDevice', false)
 
-    const transactionLocator = computed(() => PathParam.parseTransactionIdOrHash(props.transactionId))
+    const transactionLocator = computed(
+        () => props.transactionLoc ? PathParam.parseTransactionLoc(props.transactionLoc) : null)
 
     const transactionLoader = new TransactionLoader(
-        computed(() => props.transactionId ?? null),
-        computed(() => props.consensusTimestamp ?? null))
+        computed(() => props.transactionLoc ?? null),
+        computed(() => props.transactionId ?? null))
     onMounted(() => transactionLoader.requestLoad())
 
-    const showAllTransactionVisible = computed(() => {
+    const routeToAllTransactions = computed(() => {
       const count = transactionLoader.transactions.value?.length ?? 0
-      return count >= 2
+      const transactionId = transactionLoader.transaction.value?.transaction_id ?? null
+      return count >= 2 && transactionId !== null ? routeManager.makeRouteToTransactionsById(transactionId) : null
     })
 
     const displayAllChildrenLinks = computed(
@@ -311,9 +302,15 @@ export default defineComponent({
     const notification = computed(() => {
       let result
       if (transactionLocator.value === null) {
-        result = "Invalid transaction ID: " + props.transactionId
+        result = "Invalid transaction timestamp or hash: " + props.transactionLoc
       } else if (transactionLoader.got404.value) {
-        result = "Transaction with ID " + transactionLocator.value + " was not found"
+        if (transactionLocator.value instanceof Timestamp) {
+          result = "Transaction with timestamp " + transactionLocator.value + " was not found"
+        } else if (transactionLocator.value instanceof TransactionHash) {
+          result = "Transaction with hash " + transactionLocator.value + " was not found"
+        } else {
+          result = "Transaction with ethereum hash " + transactionLocator.value + " was not found"
+        }
       } else if (transactionLoader.hasSucceeded.value) {
         result = null
       } else {
@@ -354,9 +351,10 @@ export default defineComponent({
       blockNumber: transactionLoader.blockNumber,
       notification,
       routeName,
+      routeManager,
       makeTypeLabel,
       makeOperatorAccountLabel,
-      showAllTransactionVisible,
+      routeToAllTransactions,
       displayAllChildrenLinks,
       topicMessageLoader
     }

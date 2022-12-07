@@ -32,12 +32,12 @@
         <span class="h-is-secondary-text">{{ normalizedAccountId ?? "" }}</span>
         <span v-if="accountChecksum" class="has-text-grey" style="font-size: 28px">-{{ accountChecksum }}</span>
         <span v-if="showContractVisible" class="is-inline-block ml-3" id="showContractLink">
-          <router-link :to="{name: 'ContractDetails', params: {contractId: normalizedAccountId}}">
+          <router-link :to="contractRoute">
             <span class="h-is-property-text">Show associated contract</span>
           </router-link>
         </span>
         <template v-if="false">
-          <router-link v-if="nodeId" :to="{name: 'NodeDetails', params: {nodeId: nodeId}}">
+          <router-link v-if="operatorNodeRoute" :to="operatorNodeRoute">
             <p class="h-is-tertiary-text"> {{ accountInfo }} </p>
           </router-link>
           <p v-else class="h-is-tertiary-text"> {{ accountInfo }} </p>
@@ -95,7 +95,7 @@
                 </template>
                 <template v-slot:value>
                   <AccountLink v-if="stakedAccountId" :accountId="account.staked_account_id" v-bind:show-extra="true"/>
-                  <router-link v-else-if="stakedNodeId" :to="{name: 'NodeDetails', params: {nodeId: account?.staked_node_id}}">
+                  <router-link v-else-if="stakedNodeRoute" :to="stakedNodeRoute">
                     {{ account?.staked_node_id }} - {{ stakedNodeDescription }}
                   </router-link>
                   <span v-else class="has-text-grey">None</span>
@@ -127,7 +127,7 @@
             <Property id="createTransaction">
               <template v-slot:name>Create Transaction</template>
               <template v-slot:value>
-                <TransactionLink :transaction-id="accountCreateTransactionId"/>
+                <TransactionLink :transactionLoc="account?.created_timestamp"/>
               </template>
             </Property>
 
@@ -206,7 +206,7 @@
 
 <script lang="ts">
 
-import {computed, ComputedRef, defineComponent, inject, onBeforeUnmount, onMounted, watch} from 'vue';
+import {computed, defineComponent, inject, onBeforeUnmount, onMounted, watch} from 'vue';
 import KeyValue from "@/components/values/KeyValue.vue";
 import PlayPauseButton from "@/components/PlayPauseButton.vue";
 import TransactionTable from "@/components/transaction/TransactionTable.vue";
@@ -231,8 +231,7 @@ import {ContractLoader} from "@/components/contract/ContractLoader";
 import {NodeLoader} from "@/components/node/NodeLoader";
 import AliasValue from "@/components/values/AliasValue.vue";
 import TransactionFilterSelect from "@/components/transaction/TransactionFilterSelect.vue";
-import router from "@/router";
-import {TransactionByTimestampLoader} from "@/components/transaction/TransactionByTimestampLoader";
+import router, {routeManager} from "@/router";
 import TransactionLink from "@/components/values/TransactionLink.vue";
 
 const MAX_TOKEN_BALANCES = 10
@@ -380,8 +379,20 @@ export default defineComponent({
     //
     // account create transaction
     //
-    const accountCreateTransaction = new TransactionByTimestampLoader(accountLoader.createdTimestamp as ComputedRef)
-    onMounted(() => accountCreateTransaction.requestLoad())
+    const contractRoute = computed(() => {
+      const accountId = accountLoader.accountId.value
+      return accountId ? routeManager.makeRouteToContract(accountId) : null
+    })
+
+    const stakedNodeRoute = computed(() => {
+      const stakedNodeId = accountLoader.stakedNodeId.value
+      return stakedNodeId !== null ? routeManager.makeRouteToNode(stakedNodeId) : null
+    })
+
+    const operatorNodeRoute = computed(() => {
+      const operatorNodeId = accountLoader.nodeId.value
+      return operatorNodeId ? routeManager.makeRouteToNode(operatorNodeId) : null
+    })
 
     return {
       isSmallScreen,
@@ -405,8 +416,9 @@ export default defineComponent({
       stakedNodeId: accountLoader.stakedNodeId,
       stakedAccountId: accountLoader.stakedAccountId,
       stakedNodeDescription: stakeNodeLoader.nodeDescription,
-      accountCreateTransactionId: accountCreateTransaction.transactionId,
-      accountCreatorId: accountCreateTransaction.payerAccountId,
+      contractRoute,
+      stakedNodeRoute,
+      operatorNodeRoute,
     }
   }
 });

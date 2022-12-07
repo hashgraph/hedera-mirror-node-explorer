@@ -41,32 +41,32 @@
         <a id="dashboard-menu-item"
            :class="{'is-rimmed': isDashboardRoute}"
            class="button is-ghost h-is-mobile-navbar-item h-is-dense"
-           @click="$router.replace({name: 'MainDashboard'})">Dashboard</a>
+           @click="$router.replace(routeManager.mainDashboardRoute)">Dashboard</a>
         <a :class="{ 'is-rimmed': isTransactionRoute}"
            class="button is-ghost h-is-mobile-navbar-item h-is-dense"
-           @click="$router.replace({name: 'Transactions'})">Transactions</a>
+           @click="$router.replace(routeManager.transactionsRoute)">Transactions</a>
         <a :class="{ 'is-rimmed': isTokenRoute}"
            class="button is-ghost h-is-mobile-navbar-item h-is-dense"
-           @click="$router.replace({name: 'Tokens'})">Tokens</a>
+           @click="$router.replace(routeManager.tokensRoute)">Tokens</a>
         <a :class="{ 'is-rimmed': isTopicRoute}"
            class="button is-ghost h-is-mobile-navbar-item h-is-dense"
-           @click="$router.replace({name: 'Topics'})">Topics</a>
+           @click="$router.replace(routeManager.topicsRoute)">Topics</a>
         <a :class="{ 'is-rimmed': isContractRoute}"
            class="button is-ghost h-is-mobile-navbar-item h-is-dense"
-           @click="$router.replace({name: 'Contracts'})">Contracts</a>
+           @click="$router.replace(routeManager.contractsRoute)">Contracts</a>
         <a :class="{ 'is-rimmed': isAccountRoute}"
            class="button is-ghost h-is-mobile-navbar-item h-is-dense"
-           @click="$router.replace({name: 'Accounts'})">Accounts</a>
+           @click="$router.replace(routeManager.accountsRoute)">Accounts</a>
         <a :class="{ 'is-rimmed': isNodeRoute}"
            class="button is-ghost h-is-mobile-navbar-item h-is-dense"
-           @click="$router.replace({name: 'Nodes'})">Nodes</a>
+           @click="$router.replace(routeManager.nodesRoute)">Nodes</a>
         <a v-if="isStakingEnabled"
            :class="{ 'is-rimmed': isStakingRoute}"
            class="button is-ghost h-is-mobile-navbar-item h-is-dense"
-           @click="$router.replace({name: 'Staking'})">Staking</a>
+           @click="$router.replace(routeManager.stakingRoute)">Staking</a>
         <a :class="{ 'is-rimmed': isBlocksRoute}"
            class="button is-ghost h-is-mobile-navbar-item h-is-dense"
-           @click="$router.replace({name: 'Blocks'})">Blocks</a>
+           @click="$router.replace(routeManager.blocksRoute)">Blocks</a>
       </div>
 
     </div>
@@ -85,7 +85,7 @@
 
 import {computed, defineComponent, inject, onBeforeUnmount, onMounted, ref, watch} from 'vue';
 import {useRoute} from "vue-router";
-import router from "@/router";
+import router, {routeManager} from "@/router";
 import {MEDIUM_BREAKPOINT} from "@/App.vue";
 import Footer from "@/components/Footer.vue";
 import {networkRegistry} from "@/schemas/NetworkRegistry";
@@ -166,7 +166,8 @@ export default defineComponent({
       isNodeRoute,
       isStakingRoute,
       isBlocksRoute,
-      networkRegistry
+      networkRegistry,
+      routeManager
     }
   }
 })

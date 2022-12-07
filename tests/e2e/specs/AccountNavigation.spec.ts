@@ -59,7 +59,8 @@ describe('Account Navigation', () => {
             .click()
             .then(($id) => {
                 // cy.log('Selected transaction Id: ' + $id.text())
-                cy.url().should('include', '/testnet/transaction/' + normalizeTransactionId($id.text()))
+                cy.url().should('include', '/testnet/transaction/')
+                cy.url().should('include', 'tid=' + normalizeTransactionId($id.text()))
                 cy.contains('Transaction ' + $id.text())
             })
 
@@ -105,7 +106,8 @@ describe('Account Navigation', () => {
             .click()
             .then(($id) => {
                 // cy.log('Selected transaction Id: ' + $id.text())
-                cy.url().should('include', '/testnet/transaction/' + normalizeTransactionId($id.text()))
+                cy.url().should('include', '/testnet/transaction/')
+                cy.url().should('include', 'tid=' + normalizeTransactionId($id.text()))
                 cy.contains('Transaction ' + $id.text())
             })
 

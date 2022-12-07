@@ -24,6 +24,7 @@ import {HederaNetwork} from "@bladelabs/blade-web3.js/lib/src/models/blade";
 import {WalletDriver} from "@/utils/wallet/WalletDriver";
 import {WalletDriverError} from "@/utils/wallet/WalletDriverError";
 import {AccountUpdateTransaction} from "@hashgraph/sdk";
+import {byteToHex} from "@/utils/B64Utils";
 
 export class WalletDriver_Blade extends WalletDriver {
 
@@ -75,7 +76,8 @@ export class WalletDriver_Blade extends WalletDriver {
         if (this.signer !== null) {
             try {
                 const response = await this.signer.call(request)
-                result = Promise.resolve(response.transactionId.toString())
+                const transactionHash = "0x" + byteToHex(response.transactionHash)
+                result = Promise.resolve(transactionHash)
             } catch(reason) {
                 throw this.callFailure(reason.message)
             }

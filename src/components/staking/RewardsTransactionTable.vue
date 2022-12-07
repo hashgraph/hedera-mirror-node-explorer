@@ -70,7 +70,7 @@
 import {ComputedRef, defineComponent, inject, PropType, Ref} from 'vue';
 import {Transaction} from '@/schemas/HederaSchemas';
 import {makeTypeLabel} from "@/utils/TransactionTools";
-import router from "@/router";
+import {routeManager} from "@/router";
 import TimestampValue from "@/components/values/TimestampValue.vue";
 import {ORUGA_MOBILE_BREAKPOINT} from '@/App.vue';
 import EmptyTable from "@/components/EmptyTable.vue";
@@ -95,7 +95,7 @@ export default defineComponent({
     const isMediumScreen = inject('isMediumScreen', true)
 
     const handleClick = (t: Transaction) => {
-      router.push({name: 'TransactionDetails', params: {transactionId: t.transaction_id}, query: {t: t.consensus_timestamp}})
+      routeManager.routeToTransaction(t)
     }
 
     const amountRewarded = (t: Transaction) => {

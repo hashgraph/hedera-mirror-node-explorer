@@ -25,10 +25,12 @@ import {normalizeTransactionId} from "../../../src/utils/TransactionID";
 describe('Transfer Graphs Navigation', () => {
 
     it('should follow links from Hbar transfer graph', () => {
+        const timestamp = "1645611953.351954692"
         const transactionId = "0.0.690356@1645611941.817662784"
 
-        cy.visit('mainnet/transaction/' + normalizeTransactionId(transactionId))
-        cy.url().should('include', '/mainnet/transaction/' + normalizeTransactionId(transactionId))
+        const targetURL = 'mainnet/transaction/' + timestamp + "?tid=" + normalizeTransactionId(transactionId)
+        cy.visit(targetURL)
+        cy.url().should('include', targetURL)
 
         cy.get('[data-cy=hbarTransfers]')
             .find('[data-cy=sourceAccount]')
@@ -69,10 +71,12 @@ describe('Transfer Graphs Navigation', () => {
     })
 
     it('should follow links from NFT transfer graph', () => {
+        const timestamp = "1645611953.351954692"
         const transactionId = "0.0.690356@1645611941.817662784"
 
-        cy.visit('mainnet/transaction/' + normalizeTransactionId(transactionId))
-        cy.url().should('include', '/mainnet/transaction/' + normalizeTransactionId(transactionId))
+        const targetURL = 'mainnet/transaction/' + timestamp + "?tid=" + normalizeTransactionId(transactionId)
+        cy.visit(targetURL)
+        cy.url().should('include', targetURL)
 
         cy.get('[data-cy=nftTransfers]')
             .find('[data-cy=sourceAccount]')
@@ -111,10 +115,12 @@ describe('Transfer Graphs Navigation', () => {
     })
 
     it('should follow links from Token transfer graph', () => {
+        const timestamp = "1644275573.359523416"
         const transactionId = "0.0.196756@1644275559.734822737"
 
-        cy.visit('mainnet/transaction/' + normalizeTransactionId(transactionId))
-        cy.url().should('include', '/mainnet/transaction/' + normalizeTransactionId(transactionId))
+        const targetURL = 'mainnet/transaction/' + timestamp + "?tid=" + normalizeTransactionId(transactionId)
+        cy.visit(targetURL)
+        cy.url().should('include', targetURL)
 
         cy.get('[data-cy=tokenTransfers]')
             .find('[data-cy=sourceAccount]')

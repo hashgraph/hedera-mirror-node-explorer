@@ -21,6 +21,9 @@
 import {aliasToBase32, base32ToAlias, byteToHex, hexToByte} from "@/utils/B64Utils";
 import {EntityID} from "@/utils/EntityID";
 import {TransactionID} from "@/utils/TransactionID";
+import {TransactionHash} from "@/utils/TransactionHash";
+import {EthereumHash} from "@/utils/EthereumHash";
+import {Timestamp} from "@/utils/Timestamp";
 
 export class PathParam { // Block Hash or Number
 
@@ -107,5 +110,9 @@ export class PathParam { // Block Hash or Number
         }
 
         return result
+    }
+
+    public static parseTransactionLoc(s: string): Timestamp | TransactionHash | EthereumHash | null {
+        return Timestamp.parse(s) ?? TransactionHash.parse(s) ?? EthereumHash.parse(s)
     }
 }

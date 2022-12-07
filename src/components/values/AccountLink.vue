@@ -31,7 +31,7 @@
       <span class="is-numeric">{{ accountId }}</span>
     </template>
     <template v-else>
-      <router-link :to="{name: 'AccountDetails', params: {accountId: accountId}}">
+      <router-link :to="accountRoute">
         <span class="is-numeric">{{ accountId }}</span>
       </router-link>
     </template>
@@ -55,6 +55,7 @@
 import {computed, defineComponent, inject, PropType, ref} from "vue";
 import {operatorRegistry} from "@/schemas/OperatorRegistry";
 import {initialLoadingKey} from "@/AppKeys";
+import {routeManager} from "@/router";
 
 export default defineComponent({
   name: "AccountLink",
@@ -84,9 +85,13 @@ export default defineComponent({
       return (props.accountId ? operatorRegistry.makeDescription(props.accountId) : null) ?? ""
     })
 
+    const accountRoute = computed(() => {
+      return props.accountId ?  routeManager.makeRouteToAccount(props.accountId) : null
+    })
+
     const initialLoading = inject(initialLoadingKey, ref(false))
 
-    return { extra, initialLoading }
+    return { extra, accountRoute, initialLoading }
   }
 });
 

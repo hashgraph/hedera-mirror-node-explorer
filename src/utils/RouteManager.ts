@@ -18,7 +18,8 @@
  *
  */
 
-import {RouteLocationNormalizedLoaded, Router} from "vue-router";
+import {NavigationFailure, RouteLocationNormalizedLoaded, RouteLocationRaw, Router} from "vue-router";
+import {Transaction} from "@/schemas/HederaSchemas";
 import {networkRegistry} from "@/schemas/NetworkRegistry";
 import {computed} from "vue";
 
@@ -52,6 +53,151 @@ export class RouteManager {
         return networkEntry != null ? networkEntry : networkRegistry.getDefaultEntry()
     })
 
+    //
+    // Transaction
+    //
+
+    public routeToTransaction(t: Transaction): Promise<NavigationFailure | void | undefined> {
+        return this.router.push(this.makeRouteToTransaction(t.consensus_timestamp, t.transaction_id))
+    }
+
+    public routeToTransactionId(transactionId: string|undefined,
+                                consensusTimestamp: string|undefined): Promise<NavigationFailure | void | undefined> {
+        return this.router.push(this.makeRouteToTransaction(consensusTimestamp, transactionId))
+    }
+
+    public makeRouteToTransactionObj(transaction: Transaction): RouteLocationRaw {
+        return this.makeRouteToTransaction(transaction.consensus_timestamp, transaction.transaction_id)
+    }
+
+    public makeRouteToTransaction(transactionLoc: string|undefined, transactionId: string|undefined): RouteLocationRaw {
+        return {
+            name: 'TransactionDetails',
+            params: { transactionLoc: transactionLoc },
+            query: { tid: transactionId }
+        }
+    }
+
+    //
+    // TransactionsById
+    //
+
+    public routeToTransactionsById(transactionId: string): Promise<NavigationFailure | void | undefined> {
+        return this.router.push(this.makeRouteToTransactionsById(transactionId))
+    }
+
+    public makeRouteToTransactionsById(transactionId: string): RouteLocationRaw {
+        return {name: 'TransactionsById', params: { transactionId: transactionId}}
+    }
+
+    //
+    // Account
+    //
+
+    public makeRouteToAccount(accountId: string): RouteLocationRaw {
+        return {
+            name: 'AccountDetails', params: {accountId: accountId}
+        }
+    }
+
+    public routeToAccount(accountId: string): Promise<NavigationFailure | void | undefined> {
+        return this.router.push(this.makeRouteToAccount(accountId))
+    }
+
+    //
+    // Token
+    //
+
+    public makeRouteToToken(tokenId: string): RouteLocationRaw {
+        return { name: 'TokenDetails', params: { tokenId: tokenId}}
+    }
+
+    public routeToToken(tokenId: string): Promise<NavigationFailure | void | undefined> {
+        return this.router.push(this.makeRouteToToken(tokenId))
+    }
+
+    //
+    // Contract
+    //
+
+    public makeRouteToContract(contractId: string): RouteLocationRaw {
+        return {name: 'ContractDetails', params: { contractId: contractId}}
+    }
+
+    public routeToContract(contractId: string): Promise<NavigationFailure | void | undefined> {
+        return this.router.push(this.makeRouteToContract(contractId))
+    }
+
+    //
+    // Topic
+    //
+
+    public makeRouteToTopic(topicId: string): RouteLocationRaw {
+        return {name: 'TopicDetails', params: {topicId: topicId}}
+    }
+
+    public routeToTopic(topicId: string): Promise<NavigationFailure | void | undefined> {
+        return this.router.push(this.makeRouteToTopic(topicId))
+    }
+
+    //
+    // Block
+    //
+
+    public makeRouteToBlock(blockHon: string|number): RouteLocationRaw {
+        return {name: 'BlockDetails', params: {blockHon: blockHon}}
+    }
+
+    public routeToBlock(blockHon: string|number): Promise<NavigationFailure | void | undefined> {
+        return this.router.push(this.makeRouteToBlock(blockHon))
+    }
+
+    //
+    // Node
+    //
+
+    public makeRouteToNode(nodeId: number): RouteLocationRaw {
+        return {name: 'NodeDetails', params: {nodeId: nodeId}}
+    }
+
+    public routeToNode(nodeId: number): Promise<NavigationFailure | void | undefined> {
+        return this.router.push(this.makeRouteToNode(nodeId))
+    }
+
+    //
+    // NoSearchResult
+    //
+
+    public makeRouteToNoSearchResult(searchedId: string, errorCount: number): RouteLocationRaw {
+        return {name: 'NoSearchResult', params: { searchedId: searchedId}, query: { errorCount: errorCount}}
+    }
+
+    public routeToNoSearchResult(searchedId: string, errorCount: number): Promise<NavigationFailure | void | undefined> {
+        return this.router.push(this.makeRouteToNoSearchResult(searchedId, errorCount))
+    }
+
+    //
+    // Pages
+    //is
+
+    public readonly mainDashboardRoute: RouteLocationRaw = {name: 'MainDashboard'}
+    public readonly transactionsRoute:  RouteLocationRaw = {name: 'Transactions'}
+    public readonly tokensRoute:        RouteLocationRaw = {name: 'Tokens'}
+    public readonly topicsRoute:        RouteLocationRaw = {name: 'Topics'}
+    public readonly contractsRoute:     RouteLocationRaw = {name: 'Contracts'}
+    public readonly accountsRoute:      RouteLocationRaw = {name: 'Accounts'}
+    public readonly nodesRoute:         RouteLocationRaw = {name: 'Nodes'}
+    public readonly stakingRoute:       RouteLocationRaw = {name: 'Staking'}
+    public readonly blocksRoute:        RouteLocationRaw = {name: 'Blocks'}
+    public readonly mobileSearchRoute:  RouteLocationRaw = {name: 'MobileSearch'}
+
+    public makeRouteToMobileMenu(name: unknown): RouteLocationRaw {
+        return {name: 'MobileMenu', query: {from: name as string}}
+    }
+
+    public routeToMainDashboard(): Promise<NavigationFailure | void | undefined> {
+        return this.router.push(this.mainDashboardRoute)
+    }
 }
 
 

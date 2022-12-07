@@ -18,19 +18,30 @@
  *
  */
 
-// https://docs.cypress.io/api/table-of-contents
+import {byteToHex, hexToByte} from "@/utils/B64Utils";
 
-describe('TokenInfoCollector', () => {
+export class EthereumHash {
 
-    const timestamp = "1647364809.508728186"
+    public readonly bytes: Uint8Array
 
-    it('should display token name', () => {
-        cy.visit('testnet/transaction/' + timestamp)
-        cy.url().should('include', '/testnet/transaction/')
+    //
+    // Public
+    //
 
-        cy.get('#entityId')
-            .find('span')
-            .contains("NXUV_name")
-    })
+    public static parse(byteString: string): EthereumHash|null {
+        const bytes = hexToByte(byteString)
+        return bytes !== null && bytes.length == 32 ? new EthereumHash(bytes) : null
+    }
 
-})
+    public toString(): string {
+        return "0x" + byteToHex(this.bytes)
+    }
+
+    //
+    // Private
+    //
+
+    private constructor(bytes: Uint8Array) {
+        this.bytes = bytes
+    }
+}

@@ -97,7 +97,7 @@
 
 import {ComputedRef, defineComponent, inject, PropType, Ref} from 'vue';
 import {Block} from '@/schemas/HederaSchemas';
-import router from "@/router";
+import {routeManager} from "@/router";
 import TimestampValue from "@/components/values/TimestampValue.vue";
 import {ORUGA_MOBILE_BREAKPOINT} from '@/App.vue';
 import EmptyTable from "@/components/EmptyTable.vue";
@@ -122,7 +122,9 @@ export default defineComponent({
     const isMediumScreen = inject('isMediumScreen', true)
 
     const handleClick = (t: Block) => {
-      router.push({name: 'BlockDetails', params: {blockHon: t.number}})
+      if (t.number) {
+        routeManager.routeToBlock(t.number)
+      }
     }
 
     return {

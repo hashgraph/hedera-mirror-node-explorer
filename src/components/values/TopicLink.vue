@@ -24,7 +24,7 @@
 
 <template>
   <div class="is-inline-block">
-    <router-link v-if="topicId" :to="{name: 'TopicDetails', params: {topicId: topicId}}">
+    <router-link v-if="topicId" :to="topicRoute">
       <span class="is-numeric">{{ topicId }}</span>
     </router-link>
     <div v-else>?</div>
@@ -37,7 +37,8 @@
 
 <script lang="ts">
 
-import {defineComponent} from "vue";
+import {computed, defineComponent} from "vue";
+import {routeManager} from "@/router";
 
 export default defineComponent({
   name: "TopicLink",
@@ -49,6 +50,11 @@ export default defineComponent({
       default: false
     }
   },
+
+  setup(props) {
+    const topicRoute = computed(() => props.topicId ? routeManager.makeRouteToTopic(props.topicId) : null)
+    return { topicRoute }
+  }
 });
 
 </script>
