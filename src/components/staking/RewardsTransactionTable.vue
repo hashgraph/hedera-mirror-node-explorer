@@ -52,7 +52,7 @@
     </o-table-column>
 
     <o-table-column v-slot="props" field="amount" label="Amount Rewarded" position="right">
-      <HbarAmount v-bind:amount="props.raw.amount"/>
+      <HbarAmount v-bind:amount="props.row.amount"/>
     </o-table-column>
 
   </o-table>
