@@ -68,7 +68,7 @@
 <script lang="ts">
 
 import {ComputedRef, defineComponent, inject, PropType, Ref} from 'vue';
-import {Reward} from '@/schemas/HederaSchemas';
+import {StakingReward} from '@/schemas/HederaSchemas';
 import {makeTypeLabel} from "@/utils/TransactionTools";
 import {routeManager} from "@/router";
 import TimestampValue from "@/components/values/TimestampValue.vue";
@@ -94,14 +94,14 @@ export default defineComponent({
     const isTouchDevice = inject('isTouchDevice', false)
     const isMediumScreen = inject('isMediumScreen', true)
 
-    const handleClick = (t: Reward) => {
+    const handleClick = (t: StakingReward) => {
       routeManager.routeToTransactionId(undefined, t.timestamp)
     }
 
     return {
       isTouchDevice,
       isMediumScreen,
-      rewards: props.controller.rows as ComputedRef<Reward[]>,
+      rewards: props.controller.rows as ComputedRef<StakingReward[]>,
       loading: props.controller.loading as ComputedRef<boolean>,
       total: props.controller.totalRowCount as ComputedRef<number>,
       currentPage: props.controller.currentPage as Ref<number>,

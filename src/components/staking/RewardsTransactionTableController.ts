@@ -19,13 +19,13 @@
  */
 
 import {KeyOperator, SortOrder, TableController} from "@/utils/table/TableController";
-import {Reward, RewardResponse, Transaction, TransactionResponse} from "@/schemas/HederaSchemas";
+import {StakingReward, StakingRewardsResponse, Transaction, TransactionResponse} from "@/schemas/HederaSchemas";
 import {ComputedRef, Ref} from "vue";
 import axios from "axios";
 import {Router} from "vue-router";
 
 
-export class RewardsTransactionTableController extends TableController<Reward, string> {
+export class RewardsTransactionTableController extends TableController<StakingReward, string> {
 
     public readonly accountId: Ref<string|null>
 
@@ -46,8 +46,8 @@ export class RewardsTransactionTableController extends TableController<Reward, s
     private mode = Mode.Unknown
 
     public async load(consensusTimestamp: string | null, operator: KeyOperator,
-                      order: SortOrder, limit: number): Promise<Reward[] | null> {
-        let result: Reward[] | null
+                      order: SortOrder, limit: number): Promise<StakingReward[] | null> {
+        let result: StakingReward[] | null
 
         if (this.mode == Mode.Real || this.mode == Mode.Unknown) {
             try {
@@ -70,7 +70,7 @@ export class RewardsTransactionTableController extends TableController<Reward, s
         return Promise.resolve(result)
     }
 
-    public keyFor(row: Reward): string {
+    public keyFor(row: StakingReward): string {
         return row.timestamp ?? ""
     }
 
@@ -87,8 +87,8 @@ export class RewardsTransactionTableController extends TableController<Reward, s
     //
 
     private async loadNextReal(consensusTimestamp: string | null, operator: KeyOperator,
-                         order: SortOrder, limit: number): Promise<Reward[] | null> {
-        let result: Reward[] | null
+                         order: SortOrder, limit: number): Promise<StakingReward[] | null> {
+        let result: StakingReward[] | null
 
         const accountId = this.accountId.value
         if (accountId === null) {
@@ -105,7 +105,7 @@ export class RewardsTransactionTableController extends TableController<Reward, s
                 params.timestamp =  operator + ":" + consensusTimestamp
             }
             const url = "api/v1/accounts/" + accountId + "/rewards"
-            const response = await axios.get<RewardResponse>(url, {params: params})
+            const response = await axios.get<StakingRewardsResponse>(url, {params: params})
             result = response.data.rewards ?? []
         }
 
@@ -113,8 +113,8 @@ export class RewardsTransactionTableController extends TableController<Reward, s
     }
 
     private async loadNextEmulated(consensusTimestamp: string | null, operator: KeyOperator,
-                             order: SortOrder, limit: number): Promise<Reward[] | null> {
-        let result: Reward[] | null
+                             order: SortOrder, limit: number): Promise<StakingReward[] | null> {
+        let result: StakingReward[] | null
 
         const accountId = this.accountId.value
         if (accountId === null) {
@@ -147,12 +147,12 @@ export class RewardsTransactionTableController extends TableController<Reward, s
 
     private static rewardAccountId = "0.0.800"
 
-    private static filterTransactions(input: Array<Transaction>, accountId: string): Array<Reward> {
-        const result: Array<Reward> = []
+    private static filterTransactions(input: Array<Transaction>, accountId: string): Array<StakingReward> {
+        const result: Array<StakingReward> = []
         for (const t of input) {
             const amountRewarded = RewardsTransactionTableController.getAmountRewarded(t, accountId)
             if (amountRewarded > 0) {
-                const newReward: Reward = {
+                const newReward: StakingReward = {
                     account_id: accountId,
                     timestamp: t.consensus_timestamp ?? "0",
                     amount: amountRewarded
