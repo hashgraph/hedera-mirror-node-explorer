@@ -194,6 +194,15 @@
       </template>
     </DashboardCard>
 
+    <DashboardCard v-if="normalizedAccountId">
+      <template v-slot:title>
+        <span class="h-is-secondary-title">Recent Staking Rewards</span>
+      </template>
+      <template v-slot:content>
+        <StakingRewardsTable :controller="rewardsTableController"/>
+      </template>
+    </DashboardCard>
+
   </section>
 
   <Footer/>
@@ -233,6 +242,8 @@ import AliasValue from "@/components/values/AliasValue.vue";
 import TransactionFilterSelect from "@/components/transaction/TransactionFilterSelect.vue";
 import router, {routeManager} from "@/router";
 import TransactionLink from "@/components/values/TransactionLink.vue";
+import {StakingRewardsTableController} from "@/components/staking/StakingRewardsTableController";
+import StakingRewardsTable from "@/components/staking/StakingRewardsTable.vue";
 
 const MAX_TOKEN_BALANCES = 10
 
@@ -258,7 +269,8 @@ export default defineComponent({
     KeyValue,
     EthAddress,
     DurationValue,
-    StringValue
+    StringValue,
+    StakingRewardsTable
   },
 
   props: {
@@ -377,8 +389,12 @@ export default defineComponent({
     const stakeNodeLoader = new NodeLoader(accountLoader.stakedNodeId)
 
     //
-    // account create transaction
+    // Rewards Table Controller
     //
+    const rewardsTableController = new StakingRewardsTableController(router, accountLoader.accountId, perPage)
+    onMounted(() => rewardsTableController.mount())
+    onBeforeUnmount(() => rewardsTableController.unmount())
+
     const contractRoute = computed(() => {
       const accountId = accountLoader.accountId.value
       return accountId ? routeManager.makeRouteToContract(accountId) : null
@@ -416,6 +432,7 @@ export default defineComponent({
       stakedNodeId: accountLoader.stakedNodeId,
       stakedAccountId: accountLoader.stakedAccountId,
       stakedNodeDescription: stakeNodeLoader.nodeDescription,
+      rewardsTableController,
       contractRoute,
       stakedNodeRoute,
       operatorNodeRoute,
