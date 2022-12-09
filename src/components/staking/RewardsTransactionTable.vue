@@ -26,7 +26,7 @@
 <template>
 
   <o-table
-      :data="transactions"
+      :data="rewards"
       :loading="loading"
       :paginated="paginated"
       backend-pagination
@@ -47,17 +47,17 @@
       aria-previous-label="Previous page"
       customRowKey="consensus_timestamp"
   >
-    <o-table-column v-slot="props" field="consensus_timestamp" label="Time">
-      <TimestampValue v-bind:timestamp="props.row.consensus_timestamp"/>
+    <o-table-column v-slot="props" field="timestamp" label="Time">
+      <TimestampValue v-bind:timestamp="props.row.timestamp"/>
     </o-table-column>
 
     <o-table-column v-slot="props" field="amount" label="Amount Rewarded" position="right">
-      <HbarAmount v-bind:amount="amountRewarded(props.row)"/>
+      <HbarAmount v-bind:amount="props.row.amount"/>
     </o-table-column>
 
   </o-table>
 
-  <EmptyTable v-if="!transactions.length"/>
+  <EmptyTable v-if="!rewards.length"/>
 
 </template>
 
@@ -68,7 +68,7 @@
 <script lang="ts">
 
 import {ComputedRef, defineComponent, inject, PropType, Ref} from 'vue';
-import {Transaction} from '@/schemas/HederaSchemas';
+import {StakingReward} from '@/schemas/HederaSchemas';
 import {makeTypeLabel} from "@/utils/TransactionTools";
 import {routeManager} from "@/router";
 import TimestampValue from "@/components/values/TimestampValue.vue";
@@ -94,19 +94,14 @@ export default defineComponent({
     const isTouchDevice = inject('isTouchDevice', false)
     const isMediumScreen = inject('isMediumScreen', true)
 
-    const handleClick = (t: Transaction) => {
-      routeManager.routeToTransaction(t)
-    }
-
-    const amountRewarded = (t: Transaction) => {
-      const accountId = props.controller.accountId.value
-      return accountId !== null ? RewardsTransactionTableController.getAmountRewarded(t, accountId) : 0
+    const handleClick = (t: StakingReward) => {
+      routeManager.routeToTransactionId(undefined, t.timestamp)
     }
 
     return {
       isTouchDevice,
       isMediumScreen,
-      transactions: props.controller.rows as ComputedRef<Transaction[]>,
+      rewards: props.controller.rows as ComputedRef<StakingReward[]>,
       loading: props.controller.loading as ComputedRef<boolean>,
       total: props.controller.totalRowCount as ComputedRef<number>,
       currentPage: props.controller.currentPage as Ref<number>,
@@ -115,7 +110,6 @@ export default defineComponent({
       paginated: props.controller.paginated as Ref<boolean>,
       accountId: props.controller.accountId as Ref<string>,
       handleClick,
-      amountRewarded,
 
       // From App
       ORUGA_MOBILE_BREAKPOINT,
