@@ -85,6 +85,7 @@ import {makeNodeStakeDescription, makeShortNodeDescription, NetworkNode} from "@
 import {operatorRegistry} from "@/schemas/OperatorRegistry";
 import {NodesLoader} from "@/components/node/NodesLoader";
 import {NodeCursor} from "@/components/node/NodeCursor";
+import {getEnv} from "@/utils/getEnv";
 
 export default defineComponent({
   name: 'RewardsCalculator',
@@ -101,7 +102,7 @@ export default defineComponent({
   },
 
   setup(props) {
-    const htmlNotice = process.env.VUE_APP_ESTIMATOR_NOTICE ?? ""
+    const htmlNotice = getEnv('VUE_APP_ESTIMATOR_NOTICE') ?? ""
 
     const isSmallScreen = inject('isSmallScreen', true)
     const isMediumScreen = inject('isMediumScreen', true)

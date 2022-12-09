@@ -70,6 +70,7 @@
 <script lang="ts">
 
 import {defineComponent, inject} from "vue";
+import {getEnv} from "@/utils/getEnv";
 
 export default defineComponent({
   name: "Footer",
@@ -88,9 +89,9 @@ export default defineComponent({
     const isSmallScreen = inject('isSmallScreen', true)
     const isTouchDevice = inject('isTouchDevice', false)
 
-    const productName = process.env.VUE_APP_PRODUCT_NAME ?? "Hedera Mirror Node Explorer"
-    const sponsorURL = process.env.VUE_APP_SPONSOR_URL ?? ""
-    const termsOfUseURL = process.env.VUE_APP_TERMS_OF_USE_URL ? '/' + process.env.VUE_APP_TERMS_OF_USE_URL : ""
+    const productName = getEnv('VUE_APP_PRODUCT_NAME') ?? "Hedera Mirror Node Explorer"
+    const sponsorURL = getEnv('VUE_APP_SPONSOR_URL') ?? ""
+    const termsOfUseURL = getEnv('VUE_APP_TERMS_OF_USE_URL') ? '/' + getEnv('VUE_APP_TERMS_OF_USE_URL') : ""
 
     return {
       buildTime,
