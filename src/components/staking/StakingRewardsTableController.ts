@@ -25,7 +25,7 @@ import axios from "axios";
 import {Router} from "vue-router";
 
 
-export class RewardsTransactionTableController extends TableController<StakingReward, string> {
+export class StakingRewardsTableController extends TableController<StakingReward, string> {
 
     public readonly accountId: Ref<string|null>
 
@@ -134,7 +134,7 @@ export class RewardsTransactionTableController extends TableController<StakingRe
             }
             const response = await axios.get<TransactionResponse>("api/v1/transactions", {params: params})
             const loadedTxs = response.data.transactions ?? []
-            const matchingTxs = RewardsTransactionTableController.filterTransactions(loadedTxs, accountId)
+            const matchingTxs = StakingRewardsTableController.filterTransactions(loadedTxs, accountId)
             result = matchingTxs.slice(0, limit)
         }
 
@@ -150,7 +150,7 @@ export class RewardsTransactionTableController extends TableController<StakingRe
     private static filterTransactions(input: Array<Transaction>, accountId: string): Array<StakingReward> {
         const result: Array<StakingReward> = []
         for (const t of input) {
-            const amountRewarded = RewardsTransactionTableController.getAmountRewarded(t, accountId)
+            const amountRewarded = StakingRewardsTableController.getAmountRewarded(t, accountId)
             if (amountRewarded > 0) {
                 const newReward: StakingReward = {
                     account_id: accountId,
@@ -169,7 +169,7 @@ export class RewardsTransactionTableController extends TableController<StakingRe
         let rewardCandidate = null
         if (transaction.transfers) {
             for (const t of transaction.transfers) {
-                if (t.account === RewardsTransactionTableController.rewardAccountId && t.amount < 0) {
+                if (t.account === StakingRewardsTableController.rewardAccountId && t.amount < 0) {
                     rewardCandidate = Math.abs(t.amount)
                     break
                 }
