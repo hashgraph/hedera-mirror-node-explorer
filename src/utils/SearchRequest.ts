@@ -34,6 +34,7 @@ import {TransactionID} from "@/utils/TransactionID";
 import {DeferredPromise} from "@/utils/DeferredPromise";
 import {EntityID} from "@/utils/EntityID";
 import {aliasToBase32, base32ToAlias, byteToHex, hexToByte, paddedBytes} from "@/utils/B64Utils";
+import {nameServiceResolve} from "@/utils/NameService";
 
 export class SearchRequest {
 
@@ -55,7 +56,7 @@ export class SearchRequest {
 
     run(): Promise<void> {
 
-        this.countdown = 6
+        this.countdown = 7
         this.errorCount = 0
 
         /*
@@ -243,6 +244,26 @@ export class SearchRequest {
         } else {
             // No contract will match => no need to call server
             this.updatePromise()
+        }
+
+        // 7) Domain (via kabuto name service)
+        if (/\.[a-z]+$/.test(this.searchedId)) {
+          nameServiceResolve(this.searchedId)
+            .then(accountInfo => {
+              if (accountInfo != null) {
+                this.account = accountInfo;
+              }
+            })
+            .catch((reason: unknown) => {
+                this.updateErrorCount(reason)
+                return null // To avoid console pollution
+            })
+            .finally(() => {
+                this.updatePromise()
+            })
+        } else {
+          // no domain will match without at least a `.`
+          this.updatePromise();
         }
 
         return this.promise
