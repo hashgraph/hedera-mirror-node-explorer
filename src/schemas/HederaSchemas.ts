@@ -651,12 +651,12 @@ export interface TimestampRange {
 //                                               StakingRewardTransfer
 // ---------------------------------------------------------------------------------------------------------------------
 
-export interface RewardResponse {
-    rewards: Array<Reward> | undefined
+export interface StakingRewardsResponse {
+    rewards: Array<StakingReward> | undefined
     links: Links | undefined
 }
 
-export interface Reward {
+export interface StakingReward {
     account_id: string|null
     amount: number
     timestamp: string

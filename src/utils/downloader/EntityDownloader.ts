@@ -186,6 +186,18 @@ export abstract class EntityDownloader<E, R> {
         return entities
     }
 
+
+    protected checkStartDate(): Date {
+        let result: Date
+        if (this.startDate.value !== null) {
+            result = this.startDate.value
+        } else {
+            throw new Error("this.startDate is null")
+        }
+        return result
+    }
+
+
     //
     // Private
     //
