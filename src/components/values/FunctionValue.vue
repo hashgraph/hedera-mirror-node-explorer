@@ -43,13 +43,13 @@
 import {computed, defineComponent, inject, PropType, ref} from 'vue';
 import {initialLoadingKey} from "@/AppKeys";
 import EVMAddress from "@/components/values/EVMAddress.vue";
+import {NameTypeValue} from "@/utils/FunctionCallAnalyzer";
 
 export default defineComponent({
   name: 'FunctionValue',
   components: {EVMAddress},
   props: {
-    value: Object as PropType<unknown>,
-    type: String
+    ntv: Object as PropType<NameTypeValue>
   },
 
   setup(props) {
@@ -58,13 +58,15 @@ export default defineComponent({
     const initialLoading = inject(initialLoadingKey, ref(false))
 
     const addressValue = computed(() => {
-      return props.type === 'address' ? props.value as string : null
+      return props.ntv?.type === 'address' ? props.ntv.value as string : null
     })
 
     return {
       isSmallScreen,
       isMediumScreen,
       initialLoading,
+      type: props.ntv?.type,
+      value: props.ntv?.value,
       addressValue,
     }
   }
