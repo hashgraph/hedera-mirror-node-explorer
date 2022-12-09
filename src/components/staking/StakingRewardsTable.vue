@@ -75,17 +75,17 @@ import TimestampValue from "@/components/values/TimestampValue.vue";
 import {ORUGA_MOBILE_BREAKPOINT} from '@/App.vue';
 import EmptyTable from "@/components/EmptyTable.vue";
 import HbarAmount from "@/components/values/HbarAmount.vue";
-import {RewardsTransactionTableController} from "@/components/staking/RewardsTransactionTableController";
+import {StakingRewardsTableController} from "@/components/staking/StakingRewardsTableController";
 
 export default defineComponent({
-  name: 'RewardsTransactionTable',
+  name: 'StakingRewardsTable',
 
   components: {HbarAmount, EmptyTable, TimestampValue},
 
   props: {
     narrowed: Boolean,
     controller: {
-      type: Object as PropType<RewardsTransactionTableController>,
+      type: Object as PropType<StakingRewardsTableController>,
       required: true
     },
   },

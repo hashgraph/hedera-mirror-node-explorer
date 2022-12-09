@@ -23,7 +23,7 @@ import {Ref, watch} from "vue";
 import {dateToTimestamp, EntityDownloader} from "@/utils/downloader/EntityDownloader";
 import axios, {AxiosResponse} from "axios";
 import {CSVEncoder} from "@/utils/CSVEncoder";
-import {RewardsTransactionTableController} from "@/components/staking/RewardsTransactionTableController";
+import {StakingRewardsTableController} from "@/components/staking/StakingRewardsTableController";
 
 export class RewardDownloader extends EntityDownloader<StakingReward, StakingRewardsResponse> {
 
@@ -140,7 +140,7 @@ export class RewardDownloader extends EntityDownloader<StakingReward, StakingRew
         const rewards: StakingReward[] = []
         const accountId = this.checkAccountId()
         for (const t of transactionResponse.data.transactions ?? []) {
-            const amount = RewardsTransactionTableController.getAmountRewarded(t, accountId)
+            const amount = StakingRewardsTableController.getAmountRewarded(t, accountId)
             if (amount > 0) {
                 const newReward: StakingReward = {
                     account_id: accountId,
