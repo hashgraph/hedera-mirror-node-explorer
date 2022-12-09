@@ -29,6 +29,7 @@ import {TransactionByHashCollector} from "@/utils/collector/TransactionByHashCol
 import {TransactionCollector} from "@/utils/collector/TransactionCollector";
 import {NodeRegistry} from "@/components/node/NodeRegistry";
 import {AppStorage} from "@/AppStorage";
+import {nameServiceSetNetwork} from '@/utils/NameService';
 import axios from "axios";
 
 export class RouteManager {
@@ -42,6 +43,7 @@ export class RouteManager {
     public constructor(router: Router) {
         this.router = router
         watch(this.currentNetwork, () => {
+            nameServiceSetNetwork(this.currentNetworkEntry.value.name)
             AppStorage.setLastNetwork(this.currentNetworkEntry.value)
             axios.defaults.baseURL = this.currentNetworkEntry.value.url
             this.updateSelectedNetworkSilently()
