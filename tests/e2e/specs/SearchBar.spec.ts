@@ -26,7 +26,7 @@ import {normalizeTransactionId} from "../../../src/utils/TransactionID";
 describe('Search Bar', () => {
 
     beforeEach( () => {
-        cy.visit('/')
+        cy.visit('/testnet/dashboard')
         cy.url().should('include', '/testnet/dashboard')
     })
 
