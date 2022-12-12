@@ -368,7 +368,7 @@ describe("AccountDetails.vue", () => {
         // console.log(wrapper.html())
 
         expect(wrapper.get("#stakedToName").text()).toBe("Staked to Account")
-        expect(wrapper.get("#stakedToValue").text()).toBe("0.0.5Node 2 - testnet")
+        expect(wrapper.get("#stakedToValue").text()).toBe("0.0.5FIS - Florida, USA")
         expect(wrapper.get("#pendingRewardValue").text()).toBe("0.00000000$0.0000")
         expect(wrapper.find("#declineRewardValue").exists()).toBe(false)
     });

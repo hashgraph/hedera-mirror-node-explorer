@@ -354,7 +354,7 @@ describe("TokenDetails.vue", () => {
         const mock = new MockAdapter(axios);
 
         const testTokenId = "0.0.91961"
-        const testTokenIdWithChecksum = "0.0.91961-vxwbj"
+        const testTokenIdWithChecksum = "0.0.91961-mkkua"
         const matcher1 = "/api/v1/tokens/" + testTokenId
         mock.onGet(matcher1).reply(200, SAMPLE_TOKEN_WITHOUT_KEYS);
         const matcher2 = "/api/v1/tokens/" + testTokenId + "/nfts"

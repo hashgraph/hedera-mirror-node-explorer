@@ -41,7 +41,7 @@ export class NetworkRegistry {
     public static readonly TEST_NETWORK = 'testnet'
     public static readonly PREVIEW_NETWORK = 'previewnet'
 
-    private static readonly DEFAULT_NETWORK = NetworkRegistry.TEST_NETWORK
+    private static readonly DEFAULT_NETWORK = NetworkRegistry.MAIN_NETWORK
     private readonly defaultEntry: NetworkEntry
 
     private readonly entries: NetworkEntry[] = [
