@@ -153,7 +153,7 @@ describe("StakingDialog.vue", () => {
         // Clicks "CANCEL"
         await changeButton.trigger("click")
         await nextTick()
-        await cancelChangeStaking("Change Staking  for account 0.0.730632Do you want to stake to account 0.0.7-lafyy ?FillerCANCELCONFIRM")
+        await cancelChangeStaking("Change Staking  for account 0.0.730632Do you want to stake to account 0.0.7-bmurp ?FillerCANCELCONFIRM")
 
         //
         // Valid EntityID:  "0.0.7"
@@ -167,13 +167,13 @@ describe("StakingDialog.vue", () => {
         // Clicks "CANCEL"
         await changeButton.trigger("click")
         await nextTick()
-        await cancelChangeStaking("Change Staking  for account 0.0.730632Do you want to stake to account 0.0.7-lafyy ?FillerCANCELCONFIRM")
+        await cancelChangeStaking("Change Staking  for account 0.0.730632Do you want to stake to account 0.0.7-bmurp ?FillerCANCELCONFIRM")
 
         //
-        // Valid EntityID:  "0.0.7-lafyy"
+        // Valid EntityID:  "0.0.7-bmurp"
         //
-        await newStakeToAccountInput.setValue("0.0.7-lafyy")
-        expect(newStakeToAccountInput.element.value).toBe("0.0.7-lafyy")
+        await newStakeToAccountInput.setValue("0.0.7-bmurp")
+        expect(newStakeToAccountInput.element.value).toBe("0.0.7-bmurp")
         await waitFor(1000)
         await flushPromises()
         expect(feedbackMessage.text()).toBe("Rewards will now be paid to that account")
@@ -181,7 +181,7 @@ describe("StakingDialog.vue", () => {
         // Clicks "CHANGE"
         await changeButton.trigger("click")
         await nextTick()
-        await confirmChangeStaking("Change Staking  for account 0.0.730632Do you want to stake to account 0.0.7-lafyy ?FillerCANCELCONFIRM")
+        await confirmChangeStaking("Change Staking  for account 0.0.730632Do you want to stake to account 0.0.7-bmurp ?FillerCANCELCONFIRM")
     })
 
     it("provides invalid values for account to stake to", async () => {
