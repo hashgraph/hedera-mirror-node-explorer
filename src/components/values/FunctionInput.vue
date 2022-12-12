@@ -31,7 +31,7 @@
       <Property :custom-nb-col-class="customNbColClass">
         <template v-slot:name>{{ arg.name }}</template>
         <template v-slot:value>
-          <FunctionValue :value="arg.value" :type="arg.type"/>
+          <FunctionValue :ntv="arg"/>
         </template>
       </Property>
     </template>

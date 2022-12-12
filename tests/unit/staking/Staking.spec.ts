@@ -194,7 +194,7 @@ describe("Staking.vue", () => {
             await changeConfirmButtons[1].trigger("click")
             await nextTick()
         }
-        await confirmChangeStaking("Change Staking  for account 0.0.730632Do you want to stake to account 0.0.7-lafyy ?FillerCANCELCONFIRM")
+        await confirmChangeStaking("Change Staking  for account 0.0.730632Do you want to stake to account 0.0.7-bmurp ?FillerCANCELCONFIRM")
 
         // 2.7) Waits for progress dialog and closes ...
         const waitAndClose = async(busyText: string, completeText: string) => {

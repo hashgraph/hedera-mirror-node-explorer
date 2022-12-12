@@ -61,7 +61,7 @@ describe("HbarTransferLayout.vue", () => {
         const d0 = fullLayout.destinations[0]
         expect(d0.transfer.account).toBe("0.0.7")
         expect(d0.transfer.amount).toBe(+3)
-        expect(d0.description).toBe("Node 4 - testnet")
+        expect(d0.description).toBe("Nomura - Tokyo, Japan")
         expect(d0.payload).toBe(false)
 
         const d1 = fullLayout.destinations[1]
@@ -123,7 +123,7 @@ describe("HbarTransferLayout.vue", () => {
         const fd1 = fullLayout.destinations[1]
         expect(fd1.transfer.account).toBe("0.0.7")
         expect(fd1.transfer.amount).toBe(+3)
-        expect(fd1.description).toBe("Node 4 - testnet")
+        expect(fd1.description).toBe("Nomura - Tokyo, Japan")
         expect(fd1.payload).toBe(false)
 
         const fd2 = fullLayout.destinations[2]
@@ -203,7 +203,7 @@ describe("HbarTransferLayout.vue", () => {
         const d2 = fullLayout.destinations[2]
         expect(d2.transfer.account).toBe("0.0.7")
         expect(d2.transfer.amount).toBe(+3)
-        expect(d2.description).toBe("Node 4 - testnet")
+        expect(d2.description).toBe("Nomura - Tokyo, Japan")
         expect(d2.payload).toBe(false)
 
         const d3 = fullLayout.destinations[3]
@@ -287,7 +287,7 @@ describe("HbarTransferLayout.vue", () => {
         const d0 = fullLayout.destinations[0]
         expect(d0.transfer.account).toBe("0.0.7")
         expect(d0.transfer.amount).toBe(+3)
-        expect(d0.description).toBe("Node 4 - testnet")
+        expect(d0.description).toBe("Nomura - Tokyo, Japan")
         expect(d0.payload).toBe(false)
 
         const d1 = fullLayout.destinations[1]
@@ -357,7 +357,7 @@ describe("HbarTransferLayout.vue", () => {
         const d1 = fullLayout.destinations[1]
         expect(d1.transfer.account).toBe("0.0.7")
         expect(d1.transfer.amount).toBe(+3)
-        expect(d1.description).toBe("Node 4 - testnet")
+        expect(d1.description).toBe("Nomura - Tokyo, Japan")
         expect(d1.payload).toBe(false)
 
         const d2 = fullLayout.destinations[2]
@@ -450,7 +450,7 @@ describe("HbarTransferLayout.vue", () => {
         const d2 = fullLayout.destinations[2]
         expect(d2.transfer.account).toBe("0.0.7")
         expect(d2.transfer.amount).toBe(+3)
-        expect(d2.description).toBe("Node 4 - testnet")
+        expect(d2.description).toBe("Nomura - Tokyo, Japan")
         expect(d2.payload).toBe(false)
 
         const d3 = fullLayout.destinations[3]
@@ -533,13 +533,13 @@ describe("HbarTransferLayout.vue", () => {
         const d0 = fullLayout.destinations[0]
         expect(d0.transfer.account).toBe("0.0.7")
         expect(d0.transfer.amount).toBe(+2)
-        expect(d0.description).toBe("Node 4 - testnet")
+        expect(d0.description).toBe("Nomura - Tokyo, Japan")
         expect(d0.payload).toBe(true)
 
         const d1 = fullLayout.destinations[1]
         expect(d1.transfer.account).toBe("0.0.7")
         expect(d1.transfer.amount).toBe(+1)
-        expect(d1.description).toBe("Node 4 - testnet")
+        expect(d1.description).toBe("Nomura - Tokyo, Japan")
         expect(d1.payload).toBe(false)
 
         const d2 = fullLayout.destinations[2]
@@ -569,7 +569,7 @@ describe("HbarTransferLayout.vue", () => {
         const cd0 = fullLayout.destinations[0]
         expect(cd0.transfer.account).toBe("0.0.7")
         expect(cd0.transfer.amount).toBe(+2)
-        expect(cd0.description).toBe("Node 4 - testnet")
+        expect(cd0.description).toBe("Nomura - Tokyo, Japan")
         expect(cd0.payload).toBe(true)
 
     })

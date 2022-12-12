@@ -45,9 +45,6 @@ export abstract class TableController<R, K> {
     public readonly autoRefresh: ComputedRef<boolean> = computed(
         () => this.autoRefreshRef.value)
 
-    public readonly autoStopped: ComputedRef<boolean> = computed(
-        () => this.refreshCountRef.value >= this.maxAutoUpdateCount)
-
     public readonly currentPage: Ref<number> = ref(1)
 
     public readonly rows: ComputedRef<R[]> = computed(() => {
