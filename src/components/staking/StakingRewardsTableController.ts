@@ -20,23 +20,24 @@
 
 import {KeyOperator, SortOrder, TableController} from "@/utils/table/TableController";
 import {StakingReward, StakingRewardsResponse} from "@/schemas/HederaSchemas";
-import {ComputedRef, Ref} from "vue";
+import {ComputedRef, ref, Ref, watch} from "vue";
 import axios from "axios";
 import {Router} from "vue-router";
 
 
 export class StakingRewardsTableController extends TableController<StakingReward, string> {
 
-    public readonly accountId: Ref<string|null>
+    public readonly accountId: Ref<string | null>
 
     //
     // Public
     //
 
-    public constructor(router: Router, accountId: Ref<string|null>, pageSize: ComputedRef<number>) {
+    public constructor(router: Router, accountId: Ref<string | null>, pageSize: ComputedRef<number>) {
         super(router, pageSize, 10 * pageSize.value, 5000, 0, 100);
         this.accountId = accountId
         this.watchAndReload([this.accountId])
+        watch(this.accountId, this.updateAvailableAPI)
     }
 
     //
@@ -59,7 +60,7 @@ export class StakingRewardsTableController extends TableController<StakingReward
             params.limit = limit
             params.order = order
             if (consensusTimestamp !== null) {
-                params.timestamp =  operator + ":" + consensusTimestamp
+                params.timestamp = operator + ":" + consensusTimestamp
             }
             const url = "api/v1/accounts/" + accountId + "/rewards"
             const response = await axios.get<StakingRewardsResponse>(url, {params: params})
@@ -79,5 +80,23 @@ export class StakingRewardsTableController extends TableController<StakingReward
 
     public stringFromKey(key: string): string {
         return key
+    }
+
+
+    //
+    // To be removed when mainnet supports api/v1/accounts/{accountId}/rewards
+    //
+
+    public availableAPI: Ref<boolean> = ref(false)
+
+    private readonly updateAvailableAPI = () => {
+        if (this.accountId.value !== null) {
+            const url = "api/v1/accounts/" + this.accountId.value + "/rewards?limit=1"
+            axios.get<StakingRewardsResponse>(url)
+                .then(() => this.availableAPI.value = true)
+                .catch(() => this.availableAPI.value = false)
+        } else {
+            this.availableAPI.value = true
+        }
     }
 }
