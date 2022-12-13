@@ -47,6 +47,7 @@ import {RouteManager} from "@/utils/RouteManager";
 import {WalletManager} from "@/utils/wallet/WalletManager";
 import BlockDetails from "@/pages/BlockDetails.vue";
 import Blocks from "@/pages/Blocks.vue";
+import {getEnv} from "@/utils/getEnv";
 
 const routes: Array<RouteRecordRaw> = [
   {
@@ -226,7 +227,7 @@ const router = makeRouter()
 router.beforeEach((to) => {
   let result: boolean | string
 
-  if (to.name === 'Staking' && process.env.VUE_APP_ENABLE_STAKING !== 'true') {
+  if (to.name === 'Staking' && getEnv('VUE_APP_ENABLE_STAKING') !== 'true') {
     // Staking page not enabled => re-route to PageNotFound
     result = "/page-not-found"
   } else {
@@ -285,7 +286,9 @@ router.beforeEach((to, from) => {
 })
 
 router.beforeEach((to) => {
-  const titleSuffix = process.env.VUE_APP_DOCUMENT_TITLE_SUFFIX ? " | " + process.env.VUE_APP_DOCUMENT_TITLE_SUFFIX : ""
+  const titleSuffix = getEnv('VUE_APP_DOCUMENT_TITLE_SUFFIX')
+      ? " | " + getEnv('VUE_APP_DOCUMENT_TITLE_SUFFIX')
+      : ""
 
   switch (to.name as string) {
     case "MainDashboard":
@@ -340,9 +343,9 @@ export default router
 export function addMetaTags(): void {
 
   const title = document.title
-  const description = process.env.VUE_APP_META_DESCRIPTION
-      ?? "Hedera Mirror Node Explorer is a ledger explorer for the Hedera network"
-  const url = process.env.VUE_APP_META_URL
+  const description =
+      getEnv('VUE_APP_META_DESCRIPTION') ?? "Hedera Mirror Node Explorer is a ledger explorer for the Hedera network"
+  const url = getEnv('VUE_APP_META_URL')
 
   createOrUpdateTagName('description', description)
   createOrUpdateTagProperty('og:title', title)

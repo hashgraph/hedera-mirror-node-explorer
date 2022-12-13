@@ -13,8 +13,8 @@
     "test:e2e:headless": "vue-cli-service test:e2e --headless --browser chrome --url http://localhost:38920",
     "lint": "vue-cli-service lint",
     "install:branding": ". ./src/assets/branding/install-branding.sh",
-    "build:docker": "docker build . -t ${npm_package_name}",
-    "docker": "docker run -it --rm -p 8080:8080 --name hedera-explorer ${npm_package_name}:latest"
+    "build:docker": "npm run build && docker build . --tag ${npm_package_name} --file ./CI.Dockerfile",
+    "docker": "docker run --env-file ./.env.docker -it --rm -p 8080:8080 --name hedera-explorer ${npm_package_name}:latest"
   },
   "dependencies": {
     "@fortawesome/fontawesome-svg-core": "^6.1.2",

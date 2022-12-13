@@ -62,9 +62,40 @@ npm run docker
 
 ### Customize configuration
 
+- Variables defined in the *.env* file (located at the root of the repository) will be taken
+  into account at build time. 
+- Variables defined in the *.env.docker* file will be taken into account at start time of 
+  the docker container. Any variable documented in the *.env* file can be overridden in
+  the *.env.docker* file. The variables in *.env.docker* are passed to the container either:
+  - via the *--env-file* option of the *docker run* command, or
+  - via the *env_file:* clause of the *docker-compose.yml* file.
+
+#### Running the Explorer with a local mirror node
+
+Defining the following variables will add a custom menu item to the network selector of 
+the top navigation bar. For instance:
+
+```shell
+VUE_APP_LOCAL_MIRROR_NODE_URL=http://localhost:5551/
+VUE_APP_LOCAL_MIRROR_NODE_MENU_NAME=LOCALNET
+```
+
+#### Enabling the Staking page
+
+The Staking page allows the user to connect a wallet to the Explorer and to choose to stake her account balance
+to a selected network node or to another account.
+
+By default, the Staking page is disabled, and the corresponding menu item is absent from the top navigation bar.
+To enable the Staking page and menu item, set the following variable to *true* in the .env file:
+
+```shell
+VUE_APP_ENABLE_STAKING=true
+```
+
 #### Branding
 
-The Hedera Mirror Node Explorer UI can be customized by adding a branding
+In addition to the configuration variables above,
+the Hedera Mirror Node Explorer UI can be customized by adding a branding
 directory which path can be provided by the environment variable *$BRANDING_LOCATION*.
 If this variable is not defined a directory *./branding* will be looked for
 at the root of the repository.
@@ -85,31 +116,6 @@ This directory should have the following structure:
   *./src/assets/styles/brand-theme.scss* and, if present, will supersede it.
 - Any file present in the *./public/* directory will be added to the content of the 
   *./public* directory, which allows to customize the favicon.
-
-#### Running the Explorer with a local mirror node
-
-The Explorer can be used with a local mirror by means of a .env file located at the root
-of the repository and containing the definition of the following variables to add a custom menu
-item in the network selector pull-down menu:
-
-```shell
-VUE_APP_LOCAL_MIRROR_NODE_URL=\<URL of the local mirror node\>
-VUE_APP_LOCAL_MIRROR_NODE_MENU_NAME=\<label of the custom menu item\>
-```
-
-The latter may be omitted and will default to 'LOCALNET'
-
-#### Enabling the Staking page
-
-The Staking page allows the user to connect a wallet to the Explorer and to choose to stake her account balance
-to a selected network node or to another account.
-
-By default, the Staking page is disabled, and the corresponding menu item is absent from the top navigation bar.
-To enable the Staking page and menu item, set the following variable to *true* in the .env file:
-
-```shell
-VUE_APP_ENABLE_STAKING=true
-```
 
 #### Vue CLI
 
