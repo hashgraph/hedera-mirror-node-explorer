@@ -194,7 +194,7 @@
       </template>
     </DashboardCard>
 
-    <DashboardCard v-if="normalizedAccountId">
+    <DashboardCard v-if="normalizedAccountId && availableAPI">
       <template v-slot:title>
         <span class="h-is-secondary-title">Recent Staking Rewards</span>
       </template>
@@ -436,6 +436,7 @@ export default defineComponent({
       contractRoute,
       stakedNodeRoute,
       operatorNodeRoute,
+      availableAPI: rewardsTableController.availableAPI
     }
   }
 });
