@@ -21,7 +21,8 @@
 import {NavigationFailure, RouteLocationNormalizedLoaded, RouteLocationRaw, Router} from "vue-router";
 import {Transaction} from "@/schemas/HederaSchemas";
 import {networkRegistry} from "@/schemas/NetworkRegistry";
-import {computed} from "vue";
+import {computed, ref, watch, WatchStopHandle} from "vue";
+import router, {routeManager} from "@/router";
 
 export class RouteManager {
 
@@ -33,7 +34,12 @@ export class RouteManager {
 
     public constructor(router: Router) {
         this.router = router
+        watch(this.currentNetwork, () => {
+            this.updateSelectedNetworkSilently()
+        })
     }
+
+    public readonly currentRoute = computed(() => this.router?.currentRoute.value?.name)
 
     public readonly currentNetwork = computed(() => {
         return this.currentNetworkEntry.value.name
@@ -42,7 +48,7 @@ export class RouteManager {
     public readonly currentNetworkEntry = computed(() => {
 
         let networkName: string|null
-        const networkParam = this.router.currentRoute.value.params.network
+        const networkParam = this.router?.currentRoute.value?.params?.network
         if (Array.isArray(networkParam)) {
             networkName = networkParam.length >= 1 ? networkParam[0] : null
         } else {
@@ -52,6 +58,55 @@ export class RouteManager {
 
         return networkEntry != null ? networkEntry : networkRegistry.getDefaultEntry()
     })
+
+    public selectedNetwork = ref(routeManager?.currentNetwork.value)
+
+    public selectedNetworkWatchHandle: WatchStopHandle|undefined
+
+    public updateSelectedNetworkSilently(): void {
+        if (routeManager.selectedNetworkWatchHandle) {
+            routeManager.selectedNetworkWatchHandle()
+        }
+        this.selectedNetwork.value = this.currentNetwork.value
+        routeManager.selectedNetworkWatchHandle = watch(this.selectedNetwork, (selection) => {
+            router.push({
+                name: "MainDashboard",
+                params: { network: selection }
+            })
+        })
+    }
+
+    public readonly isDashboardRoute = computed(() => this.currentRoute.value === 'MainDashboard')
+
+    public readonly isTransactionRoute = computed(
+        () => this.currentRoute.value === 'Transactions'
+            || this.currentRoute.value === 'TransactionsById'
+            || this.currentRoute.value === 'TransactionDetails')
+
+    public readonly isTokenRoute = computed(
+        () => this.currentRoute.value === 'Tokens'
+            || this.currentRoute.value === 'TokenDetails')
+
+    public readonly isTopicRoute = computed(
+        () => this.currentRoute.value === 'Topics'
+            || this.currentRoute.value === 'TopicDetails')
+
+    public readonly isContractRoute = computed(
+        () => this.currentRoute.value === 'Contracts'
+            || this.currentRoute.value === 'ContractDetails')
+
+    public readonly isAccountRoute = computed(
+        () => this.currentRoute.value === 'Accounts'
+            || this.currentRoute.value === 'AccountDetails'
+            || this.currentRoute.value === 'AccountBalances')
+
+    public readonly isNodeRoute = computed(
+        () => this.currentRoute.value === 'Nodes'
+            || this.currentRoute.value === 'NodeDetails')
+
+    public readonly isStakingRoute = computed(() => this.currentRoute.value === 'Staking')
+
+    public readonly isBlocksRoute = computed(() => this.currentRoute.value === 'Blocks')
 
     //
     // Transaction
@@ -178,7 +233,7 @@ export class RouteManager {
 
     //
     // Pages
-    //is
+    //
 
     public readonly mainDashboardRoute: RouteLocationRaw = {name: 'MainDashboard'}
     public readonly transactionsRoute:  RouteLocationRaw = {name: 'Transactions'}
@@ -199,8 +254,6 @@ export class RouteManager {
         return this.router.push(this.mainDashboardRoute)
     }
 }
-
-
 
 export function fetchStringQueryParam(paramName: string, route: RouteLocationNormalizedLoaded): string|null {
     let result: string|null
