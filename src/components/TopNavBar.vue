@@ -121,6 +121,7 @@ import router, {routeManager} from "@/router";
 import SearchBar from "@/components/SearchBar.vue";
 import AxiosStatus from "@/components/AxiosStatus.vue";
 import {networkRegistry} from "@/schemas/NetworkRegistry";
+import {getEnv} from "@/utils/getEnv";
 
 export default defineComponent({
   name: "TopNavBar",
@@ -132,8 +133,8 @@ export default defineComponent({
     const isTouchDevice = inject('isTouchDevice', false)
     const buildTime = inject('buildTime', "not available")
 
-    const productName = process.env.VUE_APP_PRODUCT_NAME ?? "Hedera Mirror Node Explorer"
-    const isStakingEnabled = process.env.VUE_APP_ENABLE_STAKING === 'true'
+    const productName = getEnv('VUE_APP_PRODUCT_NAME') ?? "Hedera Mirror Node Explorer"
+    const isStakingEnabled = getEnv('VUE_APP_ENABLE_STAKING') === 'true'
 
     const route = useRoute()
     const network = computed( () => { return route.params.network })
