@@ -76,37 +76,62 @@ export class RouteManager {
         })
     }
 
-    public readonly isDashboardRoute = computed(() => this.currentRoute.value === 'MainDashboard')
+    public readonly previousRoute = computed(() => (this.router?.currentRoute.value?.query.from as string))
 
-    public readonly isTransactionRoute = computed(
-        () => this.currentRoute.value === 'Transactions'
-            || this.currentRoute.value === 'TransactionsById'
-            || this.currentRoute.value === 'TransactionDetails')
+    public readonly isDashboardRoute = computed(() => this.testDashboardRoute())
+    public readonly isTransactionRoute = computed(() => this.testTransactionRoute())
+    public readonly isTokenRoute = computed(() => this.testTokenRoute())
+    public readonly isTopicRoute = computed(() => this.testTopicRoute())
+    public readonly isContractRoute = computed(() => this.testContractRoute())
+    public readonly isAccountRoute = computed(() => this.testAccountRoute())
+    public readonly isNodeRoute = computed(() => this.testNodeRoute())
+    public readonly isStakingRoute = computed(() => this.testStakingRoute())
+    public readonly isBlocksRoute = computed(() => this.testBlocksRoute())
 
-    public readonly isTokenRoute = computed(
-        () => this.currentRoute.value === 'Tokens'
-            || this.currentRoute.value === 'TokenDetails')
+    public testDashboardRoute(route: string|null = null): boolean {
+        const r = route ?? this.currentRoute.value
+        return r === 'MainDashboard'
+    }
 
-    public readonly isTopicRoute = computed(
-        () => this.currentRoute.value === 'Topics'
-            || this.currentRoute.value === 'TopicDetails')
+    public testTransactionRoute(route: string|null = null): boolean {
+        const r = route ?? this.currentRoute.value
+        return r === 'Transactions' || r === 'TransactionsById' || r === 'TransactionDetails'
+    }
 
-    public readonly isContractRoute = computed(
-        () => this.currentRoute.value === 'Contracts'
-            || this.currentRoute.value === 'ContractDetails')
+    public testTokenRoute(route: string|null = null): boolean {
+        const r = route ?? this.currentRoute.value
+        return r === 'Tokens' || r === 'TokenDetails'
+    }
 
-    public readonly isAccountRoute = computed(
-        () => this.currentRoute.value === 'Accounts'
-            || this.currentRoute.value === 'AccountDetails'
-            || this.currentRoute.value === 'AccountBalances')
+    public testTopicRoute(route: string|null = null): boolean {
+        const r = route ?? this.currentRoute.value
+        return r === 'Topics' || r === 'TopicDetails'
+    }
 
-    public readonly isNodeRoute = computed(
-        () => this.currentRoute.value === 'Nodes'
-            || this.currentRoute.value === 'NodeDetails')
+    public testContractRoute(route: string|null = null): boolean {
+        const r = route ?? this.currentRoute.value
+        return r === 'Contracts' || r === 'ContractDetails'
+    }
 
-    public readonly isStakingRoute = computed(() => this.currentRoute.value === 'Staking')
+    public testAccountRoute(route: string|null = null): boolean {
+        const r = route ?? this.currentRoute.value
+        return r === 'Accounts' || r === 'AccountDetails' || r === 'AccountBalances'
+    }
 
-    public readonly isBlocksRoute = computed(() => this.currentRoute.value === 'Blocks')
+    public testNodeRoute(route: string|null = null): boolean {
+        const r = route ?? this.currentRoute.value
+        return r === 'Nodes' || r === 'NodeDetails'
+    }
+
+    public testStakingRoute(route: string|null = null): boolean {
+        const r = route ?? this.currentRoute.value
+        return r === 'Staking'
+    }
+
+    public testBlocksRoute(route: string|null = null): boolean {
+        const r = route ?? this.currentRoute.value
+        return r === 'Blocks' || r === 'BlockDetails'
+    }
 
     //
     // Transaction

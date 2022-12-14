@@ -39,32 +39,32 @@
           </o-field>
         </div>
         <a id="dashboard-menu-item"
-           :class="{'is-rimmed': isDashboardRoute}"
+           :class="{'is-rimmed': isDashboardRoute(previousRoute)}"
            class="button is-ghost h-is-mobile-navbar-item h-is-dense"
            @click="$router.replace(routeManager.mainDashboardRoute)">Dashboard</a>
-        <a :class="{ 'is-rimmed': isTransactionRoute}"
+        <a :class="{ 'is-rimmed': isTransactionRoute(previousRoute)}"
            class="button is-ghost h-is-mobile-navbar-item h-is-dense"
            @click="$router.replace(routeManager.transactionsRoute)">Transactions</a>
-        <a :class="{ 'is-rimmed': isTokenRoute}"
+        <a :class="{ 'is-rimmed': isTokenRoute(previousRoute)}"
            class="button is-ghost h-is-mobile-navbar-item h-is-dense"
            @click="$router.replace(routeManager.tokensRoute)">Tokens</a>
-        <a :class="{ 'is-rimmed': isTopicRoute}"
+        <a :class="{ 'is-rimmed': isTopicRoute(previousRoute)}"
            class="button is-ghost h-is-mobile-navbar-item h-is-dense"
            @click="$router.replace(routeManager.topicsRoute)">Topics</a>
-        <a :class="{ 'is-rimmed': isContractRoute}"
+        <a :class="{ 'is-rimmed': isContractRoute(previousRoute)}"
            class="button is-ghost h-is-mobile-navbar-item h-is-dense"
            @click="$router.replace(routeManager.contractsRoute)">Contracts</a>
-        <a :class="{ 'is-rimmed': isAccountRoute}"
+        <a :class="{ 'is-rimmed': isAccountRoute(previousRoute)}"
            class="button is-ghost h-is-mobile-navbar-item h-is-dense"
            @click="$router.replace(routeManager.accountsRoute)">Accounts</a>
-        <a :class="{ 'is-rimmed': isNodeRoute}"
+        <a :class="{ 'is-rimmed': isNodeRoute(previousRoute)}"
            class="button is-ghost h-is-mobile-navbar-item h-is-dense"
            @click="$router.replace(routeManager.nodesRoute)">Nodes</a>
         <a v-if="isStakingEnabled"
-           :class="{ 'is-rimmed': isStakingRoute}"
+           :class="{ 'is-rimmed': isStakingRoute(previousRoute)}"
            class="button is-ghost h-is-mobile-navbar-item h-is-dense"
            @click="$router.replace(routeManager.stakingRoute)">Staking</a>
-        <a :class="{ 'is-rimmed': isBlocksRoute}"
+        <a :class="{ 'is-rimmed': isBlocksRoute(previousRoute)}"
            class="button is-ghost h-is-mobile-navbar-item h-is-dense"
            @click="$router.replace(routeManager.blocksRoute)">Blocks</a>
       </div>
@@ -83,8 +83,7 @@
 
 <script lang="ts">
 
-import {computed, defineComponent, inject, onBeforeUnmount, onMounted, ref, watch} from 'vue';
-import {useRoute} from "vue-router";
+import {defineComponent, inject, onBeforeUnmount, onMounted, ref} from 'vue';
 import router, {routeManager} from "@/router";
 import {MEDIUM_BREAKPOINT} from "@/App.vue";
 import Footer from "@/components/Footer.vue";
@@ -103,42 +102,10 @@ export default defineComponent({
     const isTouchDevice = inject('isTouchDevice', false)
     const isStakingEnabled = getEnv('VUE_APP_ENABLE_STAKING') === 'true'
 
-    const route = useRoute()
-    const network = computed(() => { return route.params.network })
-    const name = computed(() => { return route.query.from })
-    const selectedNetwork = ref(network.value)
-    watch(selectedNetwork, (selection) => {
-      router.replace({
-        params: {network: selection}
-      })
-    })
-
-    const isDashboardRoute = computed(() => {
-      return name.value === 'MainDashboard'
-    })
-    const isTransactionRoute = computed(() => {
-      return name.value === 'Transactions' || name.value === 'TransactionsById' || name.value === 'TransactionDetails'
-    })
-    const isTokenRoute = computed(() => {
-      return name.value === 'Tokens' || name.value === 'TokenDetails'
-    })
-    const isTopicRoute = computed(() => {
-      return name.value === 'Topics' || name.value === 'TopicDetails'
-    })
-    const isContractRoute = computed(() => {
-      return name.value === 'Contracts' || name.value === 'ContractDetails'
-    })
-    const isAccountRoute = computed(() => {
-      return name.value === 'Accounts' || name.value === 'AccountDetails' || name.value === 'AccountBalances'
-    })
-    const isNodeRoute = computed(() => {
-      return name.value === 'Nodes' || name.value === 'NodeDetails'
-    })
-    const isStakingRoute = computed(() => {
-      return name.value === 'Staking'
-    })
-    const isBlocksRoute = computed(() => {
-      return name.value === 'Blocks'
+    const selectedNetwork = ref(routeManager.currentNetwork.value)
+    onMounted(() => {
+      routeManager.selectedNetwork = selectedNetwork
+      routeManager.updateSelectedNetworkSilently()
     })
 
     const  onResizeHandler = () => {
@@ -158,15 +125,16 @@ export default defineComponent({
       isTouchDevice,
       isStakingEnabled,
       selectedNetwork,
-      isDashboardRoute,
-      isTransactionRoute,
-      isTokenRoute,
-      isTopicRoute,
-      isContractRoute,
-      isAccountRoute,
-      isNodeRoute,
-      isStakingRoute,
-      isBlocksRoute,
+      previousRoute: routeManager.previousRoute,
+      isDashboardRoute: routeManager.testDashboardRoute,
+      isTransactionRoute: routeManager.testTransactionRoute,
+      isTokenRoute: routeManager.testTokenRoute,
+      isTopicRoute: routeManager.testTopicRoute,
+      isContractRoute: routeManager.testContractRoute,
+      isAccountRoute: routeManager.testAccountRoute,
+      isNodeRoute: routeManager.testNodeRoute,
+      isStakingRoute: routeManager.testStakingRoute,
+      isBlocksRoute: routeManager.testBlocksRoute,
       networkRegistry,
       routeManager
     }
