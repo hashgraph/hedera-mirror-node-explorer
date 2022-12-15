@@ -21,7 +21,8 @@
 import {NavigationFailure, RouteLocationNormalizedLoaded, RouteLocationRaw, Router} from "vue-router";
 import {Transaction} from "@/schemas/HederaSchemas";
 import {networkRegistry} from "@/schemas/NetworkRegistry";
-import {computed} from "vue";
+import {computed, ref, watch, WatchStopHandle} from "vue";
+import router, {routeManager} from "@/router";
 
 export class RouteManager {
 
@@ -33,7 +34,12 @@ export class RouteManager {
 
     public constructor(router: Router) {
         this.router = router
+        watch(this.currentNetwork, () => {
+            this.updateSelectedNetworkSilently()
+        })
     }
+
+    public readonly currentRoute = computed(() => this.router?.currentRoute.value?.name)
 
     public readonly currentNetwork = computed(() => {
         return this.currentNetworkEntry.value.name
@@ -42,7 +48,7 @@ export class RouteManager {
     public readonly currentNetworkEntry = computed(() => {
 
         let networkName: string|null
-        const networkParam = this.router.currentRoute.value.params.network
+        const networkParam = this.router?.currentRoute.value?.params?.network
         if (Array.isArray(networkParam)) {
             networkName = networkParam.length >= 1 ? networkParam[0] : null
         } else {
@@ -52,6 +58,80 @@ export class RouteManager {
 
         return networkEntry != null ? networkEntry : networkRegistry.getDefaultEntry()
     })
+
+    public selectedNetwork = ref(routeManager?.currentNetwork.value)
+
+    public selectedNetworkWatchHandle: WatchStopHandle|undefined
+
+    public updateSelectedNetworkSilently(): void {
+        if (routeManager.selectedNetworkWatchHandle) {
+            routeManager.selectedNetworkWatchHandle()
+        }
+        this.selectedNetwork.value = this.currentNetwork.value
+        routeManager.selectedNetworkWatchHandle = watch(this.selectedNetwork, (selection) => {
+            router.push({
+                name: "MainDashboard",
+                params: { network: selection }
+            })
+        })
+    }
+
+    public readonly previousRoute = computed(() => (this.router?.currentRoute.value?.query.from as string))
+
+    public readonly isDashboardRoute = computed(() => this.testDashboardRoute())
+    public readonly isTransactionRoute = computed(() => this.testTransactionRoute())
+    public readonly isTokenRoute = computed(() => this.testTokenRoute())
+    public readonly isTopicRoute = computed(() => this.testTopicRoute())
+    public readonly isContractRoute = computed(() => this.testContractRoute())
+    public readonly isAccountRoute = computed(() => this.testAccountRoute())
+    public readonly isNodeRoute = computed(() => this.testNodeRoute())
+    public readonly isStakingRoute = computed(() => this.testStakingRoute())
+    public readonly isBlocksRoute = computed(() => this.testBlocksRoute())
+
+    public testDashboardRoute(route: string|null = null): boolean {
+        const r = route ?? this.currentRoute.value
+        return r === 'MainDashboard'
+    }
+
+    public testTransactionRoute(route: string|null = null): boolean {
+        const r = route ?? this.currentRoute.value
+        return r === 'Transactions' || r === 'TransactionsById' || r === 'TransactionDetails'
+    }
+
+    public testTokenRoute(route: string|null = null): boolean {
+        const r = route ?? this.currentRoute.value
+        return r === 'Tokens' || r === 'TokenDetails'
+    }
+
+    public testTopicRoute(route: string|null = null): boolean {
+        const r = route ?? this.currentRoute.value
+        return r === 'Topics' || r === 'TopicDetails'
+    }
+
+    public testContractRoute(route: string|null = null): boolean {
+        const r = route ?? this.currentRoute.value
+        return r === 'Contracts' || r === 'ContractDetails'
+    }
+
+    public testAccountRoute(route: string|null = null): boolean {
+        const r = route ?? this.currentRoute.value
+        return r === 'Accounts' || r === 'AccountDetails' || r === 'AccountBalances'
+    }
+
+    public testNodeRoute(route: string|null = null): boolean {
+        const r = route ?? this.currentRoute.value
+        return r === 'Nodes' || r === 'NodeDetails'
+    }
+
+    public testStakingRoute(route: string|null = null): boolean {
+        const r = route ?? this.currentRoute.value
+        return r === 'Staking'
+    }
+
+    public testBlocksRoute(route: string|null = null): boolean {
+        const r = route ?? this.currentRoute.value
+        return r === 'Blocks' || r === 'BlockDetails'
+    }
 
     //
     // Transaction
@@ -178,7 +258,7 @@ export class RouteManager {
 
     //
     // Pages
-    //is
+    //
 
     public readonly mainDashboardRoute: RouteLocationRaw = {name: 'MainDashboard'}
     public readonly transactionsRoute:  RouteLocationRaw = {name: 'Transactions'}
@@ -199,8 +279,6 @@ export class RouteManager {
         return this.router.push(this.mainDashboardRoute)
     }
 }
-
-
 
 export function fetchStringQueryParam(paramName: string, route: RouteLocationNormalizedLoaded): string|null {
     let result: string|null
