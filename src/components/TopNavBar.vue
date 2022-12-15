@@ -115,9 +115,8 @@
 
 <script lang="ts">
 
-import {computed, defineComponent, inject, ref, watch, WatchStopHandle} from "vue";
-import {useRoute} from "vue-router";
-import router, {routeManager} from "@/router";
+import {defineComponent, inject, onMounted, ref} from "vue";
+import {routeManager} from "@/router";
 import SearchBar from "@/components/SearchBar.vue";
 import AxiosStatus from "@/components/AxiosStatus.vue";
 import {networkRegistry} from "@/schemas/NetworkRegistry";
@@ -136,66 +135,12 @@ export default defineComponent({
     const productName = getEnv('VUE_APP_PRODUCT_NAME') ?? "Hedera Mirror Node Explorer"
     const isStakingEnabled = getEnv('VUE_APP_ENABLE_STAKING') === 'true'
 
-    const route = useRoute()
-    const network = computed( () => { return route.params.network })
-    const name = computed( () => { return route.name })
-
     const isMobileMenuOpen = ref(false)
 
-    watch(network, (value) => {
-      updateSelectedNetworkSilently(value)
-    })
-
-    const selectedNetwork = ref(network.value)
-    
-    let selectedNetworkWatchHandle: WatchStopHandle|undefined
-    const updateSelectedNetworkSilently = (newValue: string|string[]) => {
-      if (selectedNetworkWatchHandle) {
-        selectedNetworkWatchHandle()
-      }
-      selectedNetwork.value = newValue as string
-      selectedNetworkWatchHandle = watch(selectedNetwork, (selection) => {
-        router.push({
-          name: "MainDashboard",
-          params: { network: selection }
-        })
-      })
-    }
-
-    const isDashboardRoute = computed(() => {
-      return name.value === 'MainDashboard'
-    })
-
-    const isTransactionRoute = computed(() => {
-      return name.value === 'Transactions' || name.value === 'TransactionsById' || name.value === 'TransactionDetails'
-    })
-
-    const isTokenRoute = computed(() => {
-      return name.value === 'Tokens' || name.value === 'TokenDetails'
-    })
-
-    const isTopicRoute = computed(() => {
-      return name.value === 'Topics' || name.value === 'TopicDetails'
-    })
-
-    const isContractRoute = computed(() => {
-      return name.value === 'Contracts' || name.value === 'ContractDetails'
-    })
-
-    const isAccountRoute = computed(() => {
-      return name.value === 'Accounts' || name.value === 'AccountDetails' || name.value === 'AccountBalances'
-    })
-
-    const isNodeRoute = computed(() => {
-      return name.value === 'Nodes' || name.value === 'NodeDetails'
-    })
-
-    const isStakingRoute = computed(() => {
-      return name.value === 'Staking'
-    })
-
-    const isBlocksRoute = computed(() => {
-      return name.value === 'Blocks'
+    const selectedNetwork = ref(routeManager.currentNetwork.value)
+    onMounted(() => {
+      routeManager.selectedNetwork = selectedNetwork
+      routeManager.updateSelectedNetworkSilently()
     })
 
     return {
@@ -205,19 +150,19 @@ export default defineComponent({
       buildTime,
       productName,
       isStakingEnabled,
-      name,
       isMobileMenuOpen,
       networkRegistry,
       selectedNetwork,
-      isDashboardRoute,
-      isTransactionRoute,
-      isTokenRoute,
-      isTopicRoute,
-      isContractRoute,
-      isAccountRoute,
-      isNodeRoute,
-      isStakingRoute,
-      isBlocksRoute,
+      name: routeManager.currentRoute,
+      isDashboardRoute: routeManager.isDashboardRoute,
+      isTransactionRoute: routeManager.isTransactionRoute,
+      isTokenRoute: routeManager.isTokenRoute,
+      isTopicRoute: routeManager.isTopicRoute,
+      isContractRoute: routeManager.isContractRoute,
+      isAccountRoute: routeManager.isAccountRoute,
+      isNodeRoute: routeManager.isNodeRoute,
+      isStakingRoute: routeManager.isStakingRoute,
+      isBlocksRoute: routeManager.isBlocksRoute,
       routeManager,
     }
   },
