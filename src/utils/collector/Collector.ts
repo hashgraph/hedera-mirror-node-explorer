@@ -77,6 +77,10 @@ export abstract class Collector<E, K> {
         return result
     }
 
+    public clear(): void {
+        this.entries.clear()
+    }
+
     //
     // Protected
     //
