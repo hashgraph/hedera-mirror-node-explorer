@@ -137,11 +137,7 @@ export default defineComponent({
 
     const isMobileMenuOpen = ref(false)
 
-    const selectedNetwork = ref(routeManager.currentNetwork.value)
-    onMounted(() => {
-      routeManager.selectedNetwork = selectedNetwork
-      routeManager.updateSelectedNetworkSilently()
-    })
+    onMounted(() => routeManager.updateSelectedNetworkSilently())
 
     return {
       isSmallScreen,
@@ -152,7 +148,7 @@ export default defineComponent({
       isStakingEnabled,
       isMobileMenuOpen,
       networkRegistry,
-      selectedNetwork,
+      selectedNetwork: routeManager.selectedNetwork,
       name: routeManager.currentRoute,
       isDashboardRoute: routeManager.isDashboardRoute,
       isTransactionRoute: routeManager.isTransactionRoute,

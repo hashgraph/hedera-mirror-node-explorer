@@ -83,7 +83,7 @@
 
 <script lang="ts">
 
-import {defineComponent, inject, onBeforeUnmount, onMounted, ref} from 'vue';
+import {defineComponent, inject, onBeforeUnmount, onMounted} from 'vue';
 import router, {routeManager} from "@/router";
 import {MEDIUM_BREAKPOINT} from "@/App.vue";
 import Footer from "@/components/Footer.vue";
@@ -102,11 +102,7 @@ export default defineComponent({
     const isTouchDevice = inject('isTouchDevice', false)
     const isStakingEnabled = getEnv('VUE_APP_ENABLE_STAKING') === 'true'
 
-    const selectedNetwork = ref(routeManager.currentNetwork.value)
-    onMounted(() => {
-      routeManager.selectedNetwork = selectedNetwork
-      routeManager.updateSelectedNetworkSilently()
-    })
+    onMounted(() => routeManager.updateSelectedNetworkSilently())
 
     const  onResizeHandler = () => {
       if (window.innerWidth >= MEDIUM_BREAKPOINT) {
@@ -124,7 +120,7 @@ export default defineComponent({
       isSmallScreen,
       isTouchDevice,
       isStakingEnabled,
-      selectedNetwork,
+      selectedNetwork: routeManager.selectedNetwork,
       previousRoute: routeManager.previousRoute,
       isDashboardRoute: routeManager.testDashboardRoute,
       isTransactionRoute: routeManager.testTransactionRoute,
