@@ -115,7 +115,7 @@
 
 <script lang="ts">
 
-import {defineComponent, inject, onMounted, ref} from "vue";
+import {defineComponent, inject, ref} from "vue";
 import {routeManager} from "@/router";
 import SearchBar from "@/components/SearchBar.vue";
 import AxiosStatus from "@/components/AxiosStatus.vue";
@@ -136,8 +136,6 @@ export default defineComponent({
     const isStakingEnabled = getEnv('VUE_APP_ENABLE_STAKING') === 'true'
 
     const isMobileMenuOpen = ref(false)
-
-    onMounted(() => routeManager.updateSelectedNetworkSilently())
 
     return {
       isSmallScreen,

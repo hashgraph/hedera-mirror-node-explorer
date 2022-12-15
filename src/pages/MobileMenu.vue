@@ -102,8 +102,6 @@ export default defineComponent({
     const isTouchDevice = inject('isTouchDevice', false)
     const isStakingEnabled = getEnv('VUE_APP_ENABLE_STAKING') === 'true'
 
-    onMounted(() => routeManager.updateSelectedNetworkSilently())
-
     const  onResizeHandler = () => {
       if (window.innerWidth >= MEDIUM_BREAKPOINT) {
         router.back()

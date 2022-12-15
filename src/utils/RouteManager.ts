@@ -41,7 +41,7 @@ export class RouteManager {
         watch(this.currentNetwork, () => {
             this.updateSelectedNetworkSilently()
             RouteManager.resetSingletons()
-        })
+        }, { immediate: true})
     }
 
     public readonly currentRoute = computed(() => this.router?.currentRoute.value?.name)
@@ -69,11 +69,11 @@ export class RouteManager {
     public selectedNetworkWatchHandle: WatchStopHandle|undefined
 
     public updateSelectedNetworkSilently(): void {
-        if (routeManager.selectedNetworkWatchHandle) {
-            routeManager.selectedNetworkWatchHandle()
+        if (this.selectedNetworkWatchHandle) {
+            this.selectedNetworkWatchHandle()
         }
         this.selectedNetwork.value = this.currentNetwork.value
-        routeManager.selectedNetworkWatchHandle = watch(this.selectedNetwork, (selection) => {
+        this.selectedNetworkWatchHandle = watch(this.selectedNetwork, (selection) => {
             router.push({
                 name: "MainDashboard",
                 params: { network: selection }
