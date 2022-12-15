@@ -23,6 +23,10 @@ import {Transaction} from "@/schemas/HederaSchemas";
 import {networkRegistry} from "@/schemas/NetworkRegistry";
 import {computed, ref, watch, WatchStopHandle} from "vue";
 import router, {routeManager} from "@/router";
+import {BlocksResponseCollector} from "@/utils/collector/BlocksResponseCollector";
+import {TokenInfoCollector} from "@/utils/collector/TokenInfoCollector";
+import {TransactionByHashCollector} from "@/utils/collector/TransactionByHashCollector";
+import {TransactionCollector} from "@/utils/collector/TransactionCollector";
 
 export class RouteManager {
 
@@ -36,7 +40,8 @@ export class RouteManager {
         this.router = router
         watch(this.currentNetwork, () => {
             this.updateSelectedNetworkSilently()
-        })
+            RouteManager.resetSingletons()
+        }, { immediate: true})
     }
 
     public readonly currentRoute = computed(() => this.router?.currentRoute.value?.name)
@@ -64,11 +69,11 @@ export class RouteManager {
     public selectedNetworkWatchHandle: WatchStopHandle|undefined
 
     public updateSelectedNetworkSilently(): void {
-        if (routeManager.selectedNetworkWatchHandle) {
-            routeManager.selectedNetworkWatchHandle()
+        if (this.selectedNetworkWatchHandle) {
+            this.selectedNetworkWatchHandle()
         }
         this.selectedNetwork.value = this.currentNetwork.value
-        routeManager.selectedNetworkWatchHandle = watch(this.selectedNetwork, (selection) => {
+        this.selectedNetworkWatchHandle = watch(this.selectedNetwork, (selection) => {
             router.push({
                 name: "MainDashboard",
                 params: { network: selection }
@@ -277,6 +282,17 @@ export class RouteManager {
 
     public routeToMainDashboard(): Promise<NavigationFailure | void | undefined> {
         return this.router.push(this.mainDashboardRoute)
+    }
+
+    //
+    // Private
+    //
+
+    private static resetSingletons() {
+        BlocksResponseCollector.instance.clear()
+        TokenInfoCollector.instance.clear()
+        TransactionByHashCollector.instance.clear()
+        TransactionCollector.instance.clear()
     }
 }
 

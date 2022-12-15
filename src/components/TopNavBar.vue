@@ -115,7 +115,7 @@
 
 <script lang="ts">
 
-import {defineComponent, inject, onMounted, ref} from "vue";
+import {defineComponent, inject, ref} from "vue";
 import {routeManager} from "@/router";
 import SearchBar from "@/components/SearchBar.vue";
 import AxiosStatus from "@/components/AxiosStatus.vue";
@@ -137,12 +137,6 @@ export default defineComponent({
 
     const isMobileMenuOpen = ref(false)
 
-    const selectedNetwork = ref(routeManager.currentNetwork.value)
-    onMounted(() => {
-      routeManager.selectedNetwork = selectedNetwork
-      routeManager.updateSelectedNetworkSilently()
-    })
-
     return {
       isSmallScreen,
       isMediumScreen,
@@ -152,7 +146,7 @@ export default defineComponent({
       isStakingEnabled,
       isMobileMenuOpen,
       networkRegistry,
-      selectedNetwork,
+      selectedNetwork: routeManager.selectedNetwork,
       name: routeManager.currentRoute,
       isDashboardRoute: routeManager.isDashboardRoute,
       isTransactionRoute: routeManager.isTransactionRoute,
