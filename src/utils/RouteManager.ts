@@ -27,6 +27,7 @@ import {BlocksResponseCollector} from "@/utils/collector/BlocksResponseCollector
 import {TokenInfoCollector} from "@/utils/collector/TokenInfoCollector";
 import {TransactionByHashCollector} from "@/utils/collector/TransactionByHashCollector";
 import {TransactionCollector} from "@/utils/collector/TransactionCollector";
+import {NodeRegistry} from "@/components/node/NodeRegistry";
 
 export class RouteManager {
 
@@ -293,6 +294,7 @@ export class RouteManager {
         TokenInfoCollector.instance.clear()
         TransactionByHashCollector.instance.clear()
         TransactionCollector.instance.clear()
+        NodeRegistry.instance.reload()
     }
 }
 
