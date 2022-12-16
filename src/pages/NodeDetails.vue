@@ -126,7 +126,7 @@
 
 <script lang="ts">
 
-import {computed, defineComponent, inject, onMounted, ref} from 'vue';
+import {computed, defineComponent, inject, ref} from 'vue';
 import KeyValue from "@/components/values/KeyValue.vue";
 import AccountLink from "@/components/values/AccountLink.vue";
 import TimestampValue from "@/components/values/TimestampValue.vue";
@@ -141,9 +141,8 @@ import HexaValue from "@/components/values/HexaValue.vue";
 import Endpoints from "@/components/values/Endpoints.vue";
 import NetworkDashboardItem from "@/components/node/NetworkDashboardItem.vue";
 import {StakeLoader} from "@/components/staking/StakeLoader";
-import {NodeCursor} from "@/components/node/NodeCursor";
-import {NodesLoader} from "@/components/node/NodesLoader";
 import {PathParam} from "@/utils/PathParam";
+import {NodeRegistry} from "@/components/node/NodeRegistry";
 
 export default defineComponent({
 
@@ -176,10 +175,7 @@ export default defineComponent({
     const isSmallScreen = inject('isSmallScreen', true)
     const isTouchDevice = inject('isTouchDevice', false)
 
-    const nodesLoader = new NodesLoader()
-    onMounted(() => nodesLoader.requestLoad())
-
-    const nodeCursor = new NodeCursor(computed(() => PathParam.parseNodeId(props.nodeId)), nodesLoader)
+    const nodeCursor = NodeRegistry.instance.getCursor(computed(() => PathParam.parseNodeId(props.nodeId)))
     const stakeLoader = new StakeLoader()
 
     const stakeTotal = computed(() => stakeLoader.entity.value?.stake_total ?? 0)
@@ -187,10 +183,10 @@ export default defineComponent({
         stakeTotal.value ? Math.round(nodeCursor.stake.value / stakeTotal.value * 10000) / 100 : 0)
 
     const stakeRewardedPercentage = computed(() =>
-        nodesLoader.stakeRewardedTotal.value != 0 ? Math.round(nodeCursor.stakeRewarded.value / nodesLoader.stakeRewardedTotal.value * 10000) / 100 : 0)
+        NodeRegistry.instance.stakeRewardedTotal.value != 0 ? Math.round(nodeCursor.stakeRewarded.value / NodeRegistry.instance.stakeRewardedTotal.value * 10000) / 100 : 0)
 
     const stakeUnrewardedPercentage = computed(() =>
-        nodesLoader.stakeUnrewardedTotal.value != 0 ? Math.round(nodeCursor.stakeUnrewarded.value / nodesLoader.stakeUnrewardedTotal.value * 10000) / 100 : 0)
+        NodeRegistry.instance.stakeUnrewardedTotal.value != 0 ? Math.round(nodeCursor.stakeUnrewarded.value / NodeRegistry.instance.stakeUnrewardedTotal.value * 10000) / 100 : 0)
 
     const unknownNodeId = ref(false)
     const notification = computed(() => {

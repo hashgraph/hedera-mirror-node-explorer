@@ -49,6 +49,10 @@ export class NodeRegistry {
 
     public readonly totalRewarded = computed(() => this.getLoader().totalRewarded.value)
 
+    public readonly stakeRewardedTotal = computed(() => this.getLoader().stakeRewardedTotal.value)
+
+    public readonly stakeUnrewardedTotal = computed(() => this.getLoader().stakeUnrewardedTotal.value)
+
     public reload(): void {
         if (this.isLoaded) {
             this.loader.clear()
