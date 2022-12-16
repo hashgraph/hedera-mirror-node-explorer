@@ -39,19 +39,43 @@ export class NodeRegistry {
         this.isLoaded = false
     }
 
-    public readonly nodes: ComputedRef<NetworkNode[]> = computed(() => this.getLoader().nodes.value)
+    public readonly nodes: ComputedRef<NetworkNode[]> = computed(() => this.getLoader().entity.value?.nodes ?? [])
 
-    public readonly node0 = computed(() => this.getLoader().node0.value)
+    public readonly nodeCount = computed(() => this.nodes.value?.length ?? 0)
 
-    public readonly nodeCount = computed(() => this.getLoader().nodeCount.value)
+    public readonly node0 = computed(() => this.nodes.value.length >= 1 ? this.nodes.value[0] : null)
 
-    public readonly unclampedStakeTotal = computed(() => this.getLoader().unclampedStakeTotal.value)
+    public readonly totalRewarded: ComputedRef<number> = computed(() => {
+        let result = 0
+        for (const n of this.nodes.value) {
+            result += (n.reward_rate_start ?? 0) * (n.stake_rewarded ?? 0) / 100000000
+        }
+        return result
+    })
 
-    public readonly totalRewarded = computed(() => this.getLoader().totalRewarded.value)
+    public readonly unclampedStakeTotal: ComputedRef<number> = computed(() => {
+        let result = 0
+        for (const n of this.nodes.value) {
+            result += (n.stake_rewarded ?? 0) + (n.stake_not_rewarded ?? 0)
+        }
+        return result
+    })
 
-    public readonly stakeRewardedTotal = computed(() => this.getLoader().stakeRewardedTotal.value)
+    public readonly stakeRewardedTotal: ComputedRef<number> = computed(() => {
+        let result = 0
+        for (const n of this.nodes.value) {
+            result += n.stake_rewarded ?? 0
+        }
+        return result
+    })
 
-    public readonly stakeUnrewardedTotal = computed(() => this.getLoader().stakeUnrewardedTotal.value)
+    public readonly stakeUnrewardedTotal: ComputedRef<number> = computed(() => {
+        let result = 0
+        for (const n of this.nodes.value) {
+            result += n.stake_not_rewarded ?? 0
+        }
+        return result
+    })
 
     public reload(): void {
         if (this.isLoaded) {
@@ -69,7 +93,7 @@ export class NodeRegistry {
     }
 
     public getCursor(nodeId: Ref<number|null>): NodeCursor {
-        return new NodeCursor(nodeId, this.getLoader())
+        return new NodeCursor(nodeId)
     }
 
     public getDescription(nodeId: Ref<number|null>): string|null {
