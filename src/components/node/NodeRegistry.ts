@@ -39,7 +39,7 @@ export class NodeRegistry {
         this.isLoaded = false
     }
 
-    public readonly nodes: ComputedRef<NetworkNode[]> = computed(() => this.getLoader().entity.value?.nodes ?? [])
+    public readonly nodes: ComputedRef<NetworkNode[]> = computed(() => this.loader.entity.value?.nodes ?? [])
 
     public readonly nodeCount = computed(() => this.nodes.value?.length ?? 0)
 
@@ -78,18 +78,8 @@ export class NodeRegistry {
     })
 
     public reload(): void {
-        if (this.isLoaded) {
-            this.loader.clear()
-        }
+        this.loader.clear()
         this.loader.requestLoad()
-    }
-
-    public getLoader(): NodesLoader {
-        if (! this.isLoaded) {
-            this.loader.requestLoad()
-            this.isLoaded = true
-        }
-        return this.loader
     }
 
     public getCursor(nodeId: Ref<number|null>): NodeCursor {

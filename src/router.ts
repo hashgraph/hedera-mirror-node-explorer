@@ -41,7 +41,6 @@ import Nodes from "@/pages/Nodes.vue";
 import NodeDetails from "@/pages/NodeDetails.vue";
 import {NetworkEntry, NetworkRegistry, networkRegistry} from "@/schemas/NetworkRegistry";
 import {AppStorage} from "@/AppStorage";
-import axios from "axios";
 import Staking from "@/pages/Staking.vue";
 import {RouteManager} from "@/utils/RouteManager";
 import {WalletManager} from "@/utils/wallet/WalletManager";
@@ -244,8 +243,6 @@ router.beforeEach((to, from) => {
 
   if (toEntry !== null) {
     // Network is valid
-    AppStorage.setLastNetwork(toEntry)
-    axios.defaults.baseURL = toEntry.url
 
     if (toEntry.name == NetworkRegistry.TEST_NETWORK) {
       document.documentElement.style.setProperty('--h-theme-background-color', 'var(--h-testnet-background-color)')

@@ -28,6 +28,8 @@ import {TokenInfoCollector} from "@/utils/collector/TokenInfoCollector";
 import {TransactionByHashCollector} from "@/utils/collector/TransactionByHashCollector";
 import {TransactionCollector} from "@/utils/collector/TransactionCollector";
 import {NodeRegistry} from "@/components/node/NodeRegistry";
+import {AppStorage} from "@/AppStorage";
+import axios from "axios";
 
 export class RouteManager {
 
@@ -40,6 +42,8 @@ export class RouteManager {
     public constructor(router: Router) {
         this.router = router
         watch(this.currentNetwork, () => {
+            AppStorage.setLastNetwork(this.currentNetworkEntry.value)
+            axios.defaults.baseURL = this.currentNetworkEntry.value.url
             this.updateSelectedNetworkSilently()
             RouteManager.resetSingletons()
         }, { immediate: true})
