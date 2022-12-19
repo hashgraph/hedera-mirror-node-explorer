@@ -20,28 +20,25 @@
 
 import {makeShortNodeDescription, NetworkNode} from "@/schemas/HederaSchemas";
 import {operatorRegistry} from "@/schemas/OperatorRegistry";
-import {NodesLoader} from "@/components/node/NodesLoader";
 import {computed, ComputedRef, Ref} from "vue";
+import {NodeRegistry} from "@/components/node/NodeRegistry";
 
 export class NodeCursor {
 
     public readonly nodeId: Ref<number|null>
-    public readonly nodesLoader: NodesLoader
-
 
     //
     // Public
     //
 
-    public constructor(nodeId: Ref<number|null>, nodesLoader: NodesLoader) {
+    public constructor(nodeId: Ref<number|null>) {
         this.nodeId = nodeId
-        this.nodesLoader = nodesLoader
     }
 
     public readonly node: ComputedRef<NetworkNode|null> = computed(() => {
         let result: NetworkNode|null = null
         if (this.nodeId.value !== null) {
-            for (const n of this.nodesLoader.nodes.value) {
+            for (const n of NodeRegistry.instance.nodes.value) {
                 if (n.node_id == this.nodeId.value) {
                     result = n
                     break
