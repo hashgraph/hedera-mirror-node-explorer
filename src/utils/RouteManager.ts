@@ -20,13 +20,16 @@
 
 import {NavigationFailure, RouteLocationNormalizedLoaded, RouteLocationRaw, Router} from "vue-router";
 import {Transaction} from "@/schemas/HederaSchemas";
-import {networkRegistry} from "@/schemas/NetworkRegistry";
+import {NetworkRegistry, networkRegistry} from "@/schemas/NetworkRegistry";
 import {computed, ref, watch, WatchStopHandle} from "vue";
 import router, {routeManager} from "@/router";
 import {BlocksResponseCollector} from "@/utils/collector/BlocksResponseCollector";
 import {TokenInfoCollector} from "@/utils/collector/TokenInfoCollector";
 import {TransactionByHashCollector} from "@/utils/collector/TransactionByHashCollector";
 import {TransactionCollector} from "@/utils/collector/TransactionCollector";
+import {NodeRegistry} from "@/components/node/NodeRegistry";
+import {AppStorage} from "@/AppStorage";
+import axios from "axios";
 
 export class RouteManager {
 
@@ -39,7 +42,10 @@ export class RouteManager {
     public constructor(router: Router) {
         this.router = router
         watch(this.currentNetwork, () => {
+            AppStorage.setLastNetwork(this.currentNetworkEntry.value)
+            axios.defaults.baseURL = this.currentNetworkEntry.value.url
             this.updateSelectedNetworkSilently()
+            this.switchThemes()
             RouteManager.resetSingletons()
         }, { immediate: true})
     }
@@ -288,11 +294,34 @@ export class RouteManager {
     // Private
     //
 
+    private switchThemes() {
+        if (this.currentNetworkEntry.value.name == NetworkRegistry.TEST_NETWORK) {
+            document.documentElement.style.setProperty('--h-theme-background-color', 'var(--h-testnet-background-color)')
+            document.documentElement.style.setProperty('--h-theme-highlight-color', 'var(--h-testnet-highlight-color)')
+            document.documentElement.style.setProperty('--h-theme-pagination-background-color', 'var(--h-testnet-pagination-background-color)')
+            document.documentElement.style.setProperty('--h-theme-box-shadow-color', 'var(--h-testnet-box-shadow-color)')
+            document.documentElement.style.setProperty('--h-theme-dropdown-arrow', 'var(--h-testnet-dropdown-arrow)')
+        } else if (this.currentNetworkEntry.value.name == NetworkRegistry.PREVIEW_NETWORK) {
+            document.documentElement.style.setProperty('--h-theme-background-color', 'var(--h-previewnet-background-color)')
+            document.documentElement.style.setProperty('--h-theme-highlight-color', 'var(--h-previewnet-highlight-color)')
+            document.documentElement.style.setProperty('--h-theme-pagination-background-color', 'var(--h-previewnet-pagination-background-color)')
+            document.documentElement.style.setProperty('--h-theme-box-shadow-color', 'var(--h-previewnet-box-shadow-color)')
+            document.documentElement.style.setProperty('--h-theme-dropdown-arrow', 'var(--h-previewnet-dropdown-arrow)')
+        } else {
+            document.documentElement.style.setProperty('--h-theme-background-color', 'var(--h-mainnet-background-color)')
+            document.documentElement.style.setProperty('--h-theme-highlight-color', 'var(--h-mainnet-highlight-color)')
+            document.documentElement.style.setProperty('--h-theme-pagination-background-color', 'var(--h-mainnet-pagination-background-color)')
+            document.documentElement.style.setProperty('--h-theme-box-shadow-color', 'var(--h-mainnet-box-shadow-color)')
+            document.documentElement.style.setProperty('--h-theme-dropdown-arrow', 'var(--h-mainnet-dropdown-arrow)')
+        }
+    }
+
     private static resetSingletons() {
         BlocksResponseCollector.instance.clear()
         TokenInfoCollector.instance.clear()
         TransactionByHashCollector.instance.clear()
         TransactionCollector.instance.clear()
+        NodeRegistry.instance.reload()
     }
 }
 
