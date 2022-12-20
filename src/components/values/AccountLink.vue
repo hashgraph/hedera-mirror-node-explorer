@@ -53,9 +53,9 @@
 <script lang="ts">
 
 import {computed, defineComponent, inject, PropType, ref} from "vue";
-import {operatorRegistry} from "@/schemas/OperatorRegistry";
 import {initialLoadingKey} from "@/AppKeys";
 import {routeManager} from "@/router";
+import {NodeRegistry} from "@/components/node/NodeRegistry";
 
 export default defineComponent({
   name: "AccountLink",
@@ -82,7 +82,7 @@ export default defineComponent({
 
   setup(props) {
     const extra = computed(() => {
-      return (props.accountId ? operatorRegistry.makeDescription(props.accountId) : null) ?? ""
+      return NodeRegistry.getDescription(ref(null), ref(props.accountId??null)) ?? ""
     })
 
     const accountRoute = computed(() => {

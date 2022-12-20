@@ -1,3 +1,5 @@
+// noinspection DuplicatedCode
+
 /*-
  *
  * Hedera Mirror Node Explorer
@@ -45,6 +47,7 @@ import {HMSF} from "@/utils/HMSF";
 import NotificationBanner from "@/components/NotificationBanner.vue";
 import {TransactionID} from "@/utils/TransactionID";
 import TransactionFilterSelect from "@/components/transaction/TransactionFilterSelect.vue";
+import {NodeRegistry} from "@/components/node/NodeRegistry";
 
 /*
     Bookmarks
@@ -102,6 +105,9 @@ describe("AccountDetails.vue", () => {
 
         const matcher7 = "/api/v1/transactions?timestamp=" + SAMPLE_ACCOUNT.created_timestamp
         mock.onGet(matcher7).reply(200, SAMPLE_TRANSACTIONS);
+
+        const matcher8 = "/api/v1/accounts/" + SAMPLE_ACCOUNT.account + "/rewards"
+        mock.onGet(matcher8).reply(200, { rewards: [] })
 
         const wrapper = mount(AccountDetails, {
             global: {
@@ -176,6 +182,9 @@ describe("AccountDetails.vue", () => {
         const matcher6 = "https://api.coingecko.com/api/v3/coins/hedera-hashgraph"
         mock.onGet(matcher6).reply(200, SAMPLE_COINGECKO);
 
+        let matcher8 = "/api/v1/accounts/" + SAMPLE_ACCOUNT.account + "/rewards"
+        mock.onGet(matcher8).reply(200, { rewards: [] })
+
         const wrapper = mount(AccountDetails, {
             global: {
                 plugins: [router, Oruga]
@@ -201,6 +210,9 @@ describe("AccountDetails.vue", () => {
         const token2 = SAMPLE_TOKEN_DUDE
         matcher3 = "/api/v1/tokens/" + token2.token_id
         mock.onGet(matcher3).reply(200, token2);
+
+        matcher8 = "/api/v1/accounts/" + SAMPLE_ACCOUNT_DUDE.account + "/rewards"
+        mock.onGet(matcher8).reply(200, { rewards: [] })
 
         await wrapper.setProps({
             accountId: SAMPLE_ACCOUNT_DUDE.account ?? undefined
@@ -274,6 +286,9 @@ describe("AccountDetails.vue", () => {
         const matcher6 = "https://api.coingecko.com/api/v3/coins/hedera-hashgraph"
         mock.onGet(matcher6).reply(200, SAMPLE_COINGECKO);
 
+        const matcher8 = "/api/v1/accounts/" + SAMPLE_ACCOUNT_DELETED.account + "/rewards"
+        mock.onGet(matcher8).reply(200, { rewards: [] })
+
         const wrapper = mount(AccountDetails, {
             global: {
                 plugins: [router, Oruga]
@@ -308,12 +323,16 @@ describe("AccountDetails.vue", () => {
 
         const matcher3 = "/api/v1/network/nodes"
         mock.onGet(matcher3).reply(200, SAMPLE_NETWORK_NODES);
+        NodeRegistry.instance.reload()
 
         const matcher4 = "/api/v1/balances"
         mock.onGet(matcher4).reply(200, SAMPLE_ACCOUNT_HBAR_BALANCE);
 
         const matcher5 = "https://api.coingecko.com/api/v3/coins/hedera-hashgraph"
         mock.onGet(matcher5).reply(200, SAMPLE_COINGECKO);
+
+        const matcher8 = "/api/v1/accounts/" + SAMPLE_ACCOUNT_STAKING_NODE.account + "/rewards"
+        mock.onGet(matcher8).reply(200, { rewards: [] })
 
         const wrapper = mount(AccountDetails, {
             global: {
@@ -348,12 +367,16 @@ describe("AccountDetails.vue", () => {
 
         const matcher3 = "/api/v1/network/nodes"
         mock.onGet(matcher3).reply(200, SAMPLE_NETWORK_NODES);
+        NodeRegistry.instance.reload()
 
         const matcher4 = "/api/v1/balances"
         mock.onGet(matcher4).reply(200, SAMPLE_ACCOUNT_HBAR_BALANCE);
 
         const matcher5 = "https://api.coingecko.com/api/v3/coins/hedera-hashgraph"
         mock.onGet(matcher5).reply(200, SAMPLE_COINGECKO);
+
+        const matcher8 = "/api/v1/accounts/" + SAMPLE_ACCOUNT_STAKING_ACCOUNT.account + "/rewards"
+        mock.onGet(matcher8).reply(200, { rewards: [] })
 
         const wrapper = mount(AccountDetails, {
             global: {
@@ -368,7 +391,7 @@ describe("AccountDetails.vue", () => {
         // console.log(wrapper.html())
 
         expect(wrapper.get("#stakedToName").text()).toBe("Staked to Account")
-        expect(wrapper.get("#stakedToValue").text()).toBe("0.0.5FIS - Florida, USA")
+        expect(wrapper.get("#stakedToValue").text()).toBe("0.0.5Hosted by Hedera | Central, USA")
         expect(wrapper.get("#pendingRewardValue").text()).toBe("0.00000000$0.0000")
         expect(wrapper.find("#declineRewardValue").exists()).toBe(false)
     });

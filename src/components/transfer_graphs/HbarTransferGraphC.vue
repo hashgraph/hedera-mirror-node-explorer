@@ -86,6 +86,7 @@ import ArrowSegment from "@/components/transfer_graphs/ArrowSegment.vue";
 import HbarAmount from "@/components/values/HbarAmount.vue";
 import {Transaction} from "@/schemas/HederaSchemas";
 import {HbarTransferLayout} from "@/components/transfer_graphs/layout/HbarTransferLayout";
+import {NodeRegistry} from "@/components/node/NodeRegistry";
 
 export default defineComponent({
   name: "HbarTransferOutline",
@@ -97,7 +98,7 @@ export default defineComponent({
 
     const hbarTransferLayout = ref(new HbarTransferLayout(props.transaction, false))
 
-    watch(() => props.transaction, () => {
+    watch([() => props.transaction, NodeRegistry.instance.nodes], () => {
       hbarTransferLayout.value = new HbarTransferLayout(props.transaction, false)
     })
 

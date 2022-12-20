@@ -34,7 +34,7 @@ import {
     SAMPLE_CONTRACT_RESULT_DETAILS,
     SAMPLE_CONTRACTCALL_TRANSACTIONS,
     SAMPLE_FAILED_TRANSACTION,
-    SAMPLE_FAILED_TRANSACTIONS, SAMPLE_PARENT_CHILD_TRANSACTIONS,
+    SAMPLE_FAILED_TRANSACTIONS, SAMPLE_NETWORK_NODES, SAMPLE_PARENT_CHILD_TRANSACTIONS,
     SAMPLE_SCHEDULING_SCHEDULED_TRANSACTIONS,
     SAMPLE_SYSTEM_CONTRACT_CALL_TRANSACTIONS,
     SAMPLE_TOKEN,
@@ -47,6 +47,7 @@ import {normalizeTransactionId} from "@/utils/TransactionID";
 import Oruga from "@oruga-ui/oruga-next";
 import ContractResult from "@/components/contract/ContractResult.vue";
 import {base64DecToArr, byteToHex} from "@/utils/B64Utils";
+import {NodeRegistry} from "@/components/node/NodeRegistry";
 
 /*
     Bookmarks
@@ -91,6 +92,10 @@ describe("TransactionDetails.vue", () => {
         const matcher4 = "/api/v1/blocks"
         mock.onGet(matcher4).reply(200, SAMPLE_BLOCKSRESPONSE);
 
+        const matcher5 = "api/v1/network/nodes"
+        mock.onGet(matcher5).reply(200, SAMPLE_NETWORK_NODES);
+        NodeRegistry.instance.reload()
+
         const wrapper = mount(TransactionDetails, {
             global: {
                 plugins: [router, Oruga]
@@ -116,7 +121,7 @@ describe("TransactionDetails.vue", () => {
 
         expect(wrapper.get("#memoValue").text()).toBe("None")
         expect(wrapper.get("#operatorAccountValue").text()).toBe("0.0.29624024")
-        expect(wrapper.get("#nodeAccountValue").text()).toBe("0.0.7Nomura - Tokyo, Japan")
+        expect(wrapper.get("#nodeAccountValue").text()).toBe("0.0.5Hosted by Hedera | Central, USA")
         expect(wrapper.get("#durationValue").text()).toBe("2min")
         expect(wrapper.get("#entityId").text()).toBe("Account ID0.0.29662956")
 
@@ -126,7 +131,7 @@ describe("TransactionDetails.vue", () => {
 
         expect(wrapper.findComponent(HbarTransferGraphF).text()).toBe(
             "Fee TransfersAccountHbar AmountAccountHbar Amount0.0.29624024-0.00470065-$0.0012\n\n" +
-            "0.0.70.00022028$0.0001Nomura - Tokyo, Japan\n\n" +
+            "0.0.40.00022028$0.0001Hosted by Hedera | East Coast, USA\n\n" +
             "0.0.980.00448037$0.0011Hedera fee collection account")
 
         expect(wrapper.findComponent(TokenTransferGraph).text()).toBe(
