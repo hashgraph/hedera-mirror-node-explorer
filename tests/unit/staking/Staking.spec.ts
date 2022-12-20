@@ -41,6 +41,7 @@ import {waitFor} from "@/utils/TimerUtils";
 import StakingDialog from "@/components/staking/StakingDialog.vue";
 import {nextTick} from "vue";
 import {TransactionHash} from "@/utils/TransactionHash";
+import {NodeRegistry} from "@/components/node/NodeRegistry";
 
 /*
     Bookmarks
@@ -98,7 +99,10 @@ describe("Staking.vue", () => {
             const response = { nodes: [ node ]}
             mock.onGet(matcher2, body).reply(200, response)
         }
+        NodeRegistry.instance.reload()
+
         mock.onGet(matcher2).reply(200, SAMPLE_NETWORK_NODES)
+        NodeRegistry.instance.reload()
         const matcher3 = "https://api.coingecko.com/api/v3/coins/hedera-hashgraph"
         mock.onGet(matcher3).reply(200, SAMPLE_COINGECKO);
         const matcher4 = "/api/v1/transactions/" + STAKE_UPDATE_TRANSACTION_HASH
@@ -194,7 +198,7 @@ describe("Staking.vue", () => {
             await changeConfirmButtons[1].trigger("click")
             await nextTick()
         }
-        await confirmChangeStaking("Change Staking  for account 0.0.730632Do you want to stake to account 0.0.7-lafyy ?FillerCANCELCONFIRM")
+        await confirmChangeStaking("Change Staking  for account 0.0.730632Do you want to stake to account 0.0.7-bmurp ?FillerCANCELCONFIRM")
 
         // 2.7) Waits for progress dialog and closes ...
         const waitAndClose = async(busyText: string, completeText: string) => {

@@ -21,6 +21,7 @@
 import {flushPromises, mount} from "@vue/test-utils"
 import router from "@/router";
 import {
+    SAMPLE_DUDE_WITH_KEYS,
     SAMPLE_PARENT_CHILD_TRANSACTIONS,
     SAMPLE_SAME_ID_NOT_PARENT_TRANSACTIONS,
     SAMPLE_SCHEDULING_SCHEDULED_TRANSACTIONS,
@@ -62,6 +63,10 @@ describe("TransactionByIdTable.vue", () => {
 
         await router.push("/") // To avoid "missing required param 'network'" error
 
+        const mock = new MockAdapter(axios);
+        const matcher1 = "/api/v1/tokens/" + "0.0.48193741"
+        mock.onGet(matcher1).reply(200, SAMPLE_DUDE_WITH_KEYS)
+
         const wrapper = mount(TransactionByIdTable, {
             global: {
                 plugins: [router, Oruga]
@@ -79,8 +84,8 @@ describe("TransactionByIdTable.vue", () => {
         expect(wrapper.find('thead').text()).toBe("Time Type Content Relationship Nonce")
         expect(wrapper.find('tbody').text()).toBe(
             "1:29:17.0144 PMSep 6, 2022, UTCCONTRACT CALLContract ID: 0.0.48193749Parent0" +
-            "1:29:17.0144 PMSep 6, 2022, UTCTOKEN MINTMINT\n\n0.0.48193741\n\n0.0.48113503Child1" +
-            "1:29:17.0144 PMSep 6, 2022, UTCCRYPTO TRANSFER0.0.48113503\n\n0.0.48193741\n\n0.0.48193739Child2"
+            "1:29:17.0144 PMSep 6, 2022, UTCTOKEN MINTMINT\n\n0.0.48193741Reptilian Egg NFT\n\n0.0.48113503Child1" +
+            "1:29:17.0144 PMSep 6, 2022, UTCCRYPTO TRANSFER0.0.48113503\n\n0.0.48193741Reptilian Egg NFT\n\n0.0.48193739Child2"
         )
     });
 
@@ -93,6 +98,8 @@ describe("TransactionByIdTable.vue", () => {
         const mock = new MockAdapter(axios);
         const matcher5 = "/api/v1/tokens/" + TOKEN_ID
         mock.onGet(matcher5).reply(200, SAMPLE_TOKEN)
+        const matcher1 = "/api/v1/tokens/" + "0.0.48193741"
+        mock.onGet(matcher1).reply(200, SAMPLE_DUDE_WITH_KEYS)
 
         const wrapper = mount(TransactionByIdTable, {
             global: {
@@ -125,6 +132,9 @@ describe("TransactionByIdTable.vue", () => {
     it("Should list transactions as unrelated", async () => {
 
         await router.push("/") // To avoid "missing required param 'network'" error
+        const mock = new MockAdapter(axios);
+        const matcher1 = "/api/v1/tokens/" + "0.0.48193741"
+        mock.onGet(matcher1).reply(200, SAMPLE_DUDE_WITH_KEYS)
 
         const wrapper = mount(TransactionByIdTable, {
             global: {

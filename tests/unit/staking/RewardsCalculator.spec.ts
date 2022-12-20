@@ -26,6 +26,7 @@ import MockAdapter from "axios-mock-adapter";
 import axios from "axios";
 import {SAMPLE_ACCOUNT_STAKING_ACCOUNT, SAMPLE_NETWORK_NODES} from "../Mocks";
 import RewardsCalculator from "@/components/staking/RewardsCalculator.vue";
+import {NodeRegistry} from "@/components/node/NodeRegistry";
 
 /*
     Bookmarks
@@ -69,6 +70,7 @@ describe("Staking.vue", () => {
             mock.onGet(matcher2, body).reply(200, response)
         }
         mock.onGet(matcher2).reply(200, SAMPLE_NETWORK_NODES)
+        NodeRegistry.instance.reload()
 
         const wrapper = mount(RewardsCalculator, {
             global: {
@@ -166,6 +168,7 @@ describe("Staking.vue", () => {
             mock.onGet(matcher2, body).reply(200, response)
         }
         mock.onGet(matcher2).reply(200, SAMPLE_NETWORK_NODES)
+        NodeRegistry.instance.reload()
 
         const wrapper = mount(RewardsCalculator, {
             global: {

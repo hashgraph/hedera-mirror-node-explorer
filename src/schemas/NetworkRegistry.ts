@@ -19,6 +19,7 @@
  */
 
 import {EntityID} from "@/utils/EntityID";
+import {getEnv} from "@/utils/getEnv";
 
 export class NetworkEntry {
 
@@ -41,7 +42,7 @@ export class NetworkRegistry {
     public static readonly TEST_NETWORK = 'testnet'
     public static readonly PREVIEW_NETWORK = 'previewnet'
 
-    private static readonly DEFAULT_NETWORK = NetworkRegistry.TEST_NETWORK
+    private static readonly DEFAULT_NETWORK = NetworkRegistry.MAIN_NETWORK
     private readonly defaultEntry: NetworkEntry
 
     private readonly entries: NetworkEntry[] = [
@@ -68,11 +69,13 @@ export class NetworkRegistry {
     constructor() {
         this.defaultEntry = this.lookup(NetworkRegistry.DEFAULT_NETWORK) ?? this.entries[0]
 
-        if (process.env.VUE_APP_LOCAL_MIRROR_NODE_URL) {
+        const localNodeURL = getEnv('VUE_APP_LOCAL_MIRROR_NODE_URL')
+        const localNodeMenuName = getEnv('VUE_APP_LOCAL_MIRROR_NODE_MENU_NAME')
+        if (localNodeURL) {
             this.entries.push(new NetworkEntry(
                 'devnet',
-                process.env.VUE_APP_LOCAL_MIRROR_NODE_MENU_NAME ?? "DEVNET",
-                process.env.VUE_APP_LOCAL_MIRROR_NODE_URL,
+                localNodeMenuName ?? "DEVNET",
+                localNodeURL,
                 'FF'
             ))
         }

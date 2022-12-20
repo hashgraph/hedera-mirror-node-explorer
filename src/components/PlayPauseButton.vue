@@ -63,7 +63,7 @@
 
 <script lang="ts">
 
-import {computed, defineComponent, PropType} from "vue";
+import {computed, defineComponent, onMounted, PropType, ref} from "vue";
 import {TableController} from "@/utils/table/TableController";
 
 export default defineComponent({
@@ -79,16 +79,20 @@ export default defineComponent({
       return props.controller && props.controller.autoRefresh.value
     })
     const isAutoStopped = computed(() => {
-      return props.controller && props.controller.autoStopped.value
+      return !isPlaying.value && !userRequestedStop.value
     })
 
+    const userRequestedStop = ref(false)
+    onMounted(() => userRequestedStop.value = false)
     const handleClick = () => {
       if (props.controller) {
         const controller = props.controller
         if (controller.autoRefresh.value) {
           controller.stopAutoRefresh()
+          userRequestedStop.value = true
         } else {
           controller.startAutoRefresh()
+          userRequestedStop.value = false
         }
       } else {
         console.log("Ignoring click because props.controller is undefined")

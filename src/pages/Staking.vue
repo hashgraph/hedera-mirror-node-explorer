@@ -177,7 +177,7 @@
         <DownloadButton @click="showDownloadDialog = true"/>
       </template>
       <template v-slot:content>
-        <RewardsTransactionTable
+        <StakingRewardsTable
             :narrowed="true"
             :controller="transactionTableController"
         />
@@ -207,7 +207,7 @@ import NetworkDashboardItem from "@/components/node/NetworkDashboardItem.vue";
 import axios from "axios";
 import {Transaction, TransactionByIdResponse} from "@/schemas/HederaSchemas";
 import {waitFor} from "@/utils/TimerUtils";
-import RewardsTransactionTable from "@/components/staking/RewardsTransactionTable.vue";
+import StakingRewardsTable from "@/components/staking/StakingRewardsTable.vue";
 import StakingDialog from "@/components/staking/StakingDialog.vue";
 import DashboardCard from "@/components/DashboardCard.vue";
 import ConfirmDialog from "@/components/ConfirmDialog.vue";
@@ -218,13 +218,12 @@ import WalletChooser from "@/components/staking/WalletChooser.vue";
 import {WalletDriver} from "@/utils/wallet/WalletDriver";
 import {WalletDriverError} from "@/utils/wallet/WalletDriverError";
 import {normalizeTransactionId} from "@/utils/TransactionID";
-import {NodeCursor} from "@/components/node/NodeCursor";
 import {AccountLoader} from "@/components/account/AccountLoader";
-import {NodesLoader} from "@/components/node/NodesLoader";
-import {RewardsTransactionTableController} from "@/components/staking/RewardsTransactionTableController";
+import {StakingRewardsTableController} from "@/components/staking/StakingRewardsTableController";
 import DownloadButton from "@/components/DownloadButton.vue";
 import CSVDownloadDialog from "@/components/CSVDownloadDialog.vue";
 import {RewardDownloader} from "@/utils/downloader/RewardDownloader";
+import {NodeRegistry} from "@/components/node/NodeRegistry";
 
 export default defineComponent({
   name: 'Staking',
@@ -247,7 +246,7 @@ export default defineComponent({
     ProgressDialog,
     DashboardCard,
     StakingDialog,
-    RewardsTransactionTable,
+    StakingRewardsTable,
     NetworkDashboardItem,
     Footer,
   },
@@ -363,9 +362,7 @@ export default defineComponent({
     // stakedNode
     //
 
-    const nodesLoader = new NodesLoader()
-    onMounted(() => nodesLoader.requestLoad())
-    const stakedNodeLoader = new NodeCursor(accountLoader.stakedNodeId, nodesLoader)
+    const stakedNodeLoader = NodeRegistry.instance.getCursor(accountLoader.stakedNodeId)
 
     //
     // handleStopStaking / handleChangeStaking
@@ -445,7 +442,7 @@ export default defineComponent({
     // Rewards Transactions Table Controller
     //
     const pageSize = computed(() => isMediumScreen ? 10 : 5)
-    const transactionTableController = new RewardsTransactionTableController(router, walletManager.accountId, pageSize)
+    const transactionTableController = new StakingRewardsTableController(router, walletManager.accountId, pageSize)
     onMounted(() => transactionTableController.mount())
     onBeforeUnmount(() => transactionTableController.unmount())
 

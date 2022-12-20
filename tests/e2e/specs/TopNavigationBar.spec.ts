@@ -22,9 +22,11 @@
 
 describe('Top Navigation Bar', () => {
 
+  const defaultNetwork = 'mainnet'
+
   beforeEach( () => {
     cy.visit('/')
-    cy.url().should('include', '/testnet/dashboard')
+    cy.url().should('include', '/' + defaultNetwork + '/dashboard')
   })
 
   it('should switch networks', () => {

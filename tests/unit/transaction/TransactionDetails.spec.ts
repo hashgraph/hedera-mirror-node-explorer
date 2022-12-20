@@ -116,7 +116,7 @@ describe("TransactionDetails.vue", () => {
 
         expect(wrapper.get("#memoValue").text()).toBe("None")
         expect(wrapper.get("#operatorAccountValue").text()).toBe("0.0.29624024")
-        expect(wrapper.get("#nodeAccountValue").text()).toBe("0.0.7Node 4 - testnet")
+        expect(wrapper.get("#nodeAccountValue").text()).toBe("0.0.7Nomura - Tokyo, Japan")
         expect(wrapper.get("#durationValue").text()).toBe("2min")
         expect(wrapper.get("#entityId").text()).toBe("Account ID0.0.29662956")
 
@@ -126,7 +126,7 @@ describe("TransactionDetails.vue", () => {
 
         expect(wrapper.findComponent(HbarTransferGraphF).text()).toBe(
             "Fee TransfersAccountHbar AmountAccountHbar Amount0.0.29624024-0.00470065-$0.0012\n\n" +
-            "0.0.70.00022028$0.0001Node 4 - testnet\n\n" +
+            "0.0.70.00022028$0.0001Nomura - Tokyo, Japan\n\n" +
             "0.0.980.00448037$0.0011Hedera fee collection account")
 
         expect(wrapper.findComponent(TokenTransferGraph).text()).toBe(
@@ -447,7 +447,7 @@ describe("TransactionDetails.vue", () => {
         const link = wrapper.get("#scheduledLink")
         expect(link.text()).toBe("Show scheduled transaction")
         expect(link.get('a').attributes("href")).toBe(
-            "/testnet/transaction/" + SCHEDULED.consensus_timestamp + "?tid=" + SCHEDULED.transaction_id
+            "/mainnet/transaction/" + SCHEDULED.consensus_timestamp + "?tid=" + SCHEDULED.transaction_id
         )
     });
 
@@ -492,7 +492,7 @@ describe("TransactionDetails.vue", () => {
         const link = wrapper.get("#schedulingLink")
         expect(link.text()).toBe("Show schedule create transaction")
         expect(link.get('a').attributes("href")).toBe(
-            "/testnet/transaction/" + SCHEDULING.consensus_timestamp + "?tid=" + SCHEDULING.transaction_id
+            "/mainnet/transaction/" + SCHEDULING.consensus_timestamp + "?tid=" + SCHEDULING.transaction_id
         )
     });
 
@@ -537,7 +537,7 @@ describe("TransactionDetails.vue", () => {
         const link = wrapper.get("#parentTransactionValue")
         expect(link.text()).toBe("CONTRACT CALL")
         expect(link.get('a').attributes("href")).toBe(
-            "/testnet/transaction/" + PARENT.consensus_timestamp + "?tid=" + PARENT.transaction_id
+            "/mainnet/transaction/" + PARENT.consensus_timestamp + "?tid=" + PARENT.transaction_id
         )
     });
 
@@ -581,10 +581,10 @@ describe("TransactionDetails.vue", () => {
 
         const links = children.findAll('a')
         expect(links[0].attributes("href")).toBe(
-            "/testnet/transaction/" + CHILD1.consensus_timestamp + "?tid=" + CHILD1.transaction_id
+            "/mainnet/transaction/" + CHILD1.consensus_timestamp + "?tid=" + CHILD1.transaction_id
         )
         expect(links[1].attributes("href")).toBe(
-            "/testnet/transaction/" + CHILD2.consensus_timestamp + "?tid=" + CHILD2.transaction_id
+            "/mainnet/transaction/" + CHILD2.consensus_timestamp + "?tid=" + CHILD2.transaction_id
         )
     });
 });
