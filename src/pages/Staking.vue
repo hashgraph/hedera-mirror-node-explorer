@@ -218,13 +218,12 @@ import WalletChooser from "@/components/staking/WalletChooser.vue";
 import {WalletDriver} from "@/utils/wallet/WalletDriver";
 import {WalletDriverError} from "@/utils/wallet/WalletDriverError";
 import {normalizeTransactionId} from "@/utils/TransactionID";
-import {NodeCursor} from "@/components/node/NodeCursor";
 import {AccountLoader} from "@/components/account/AccountLoader";
-import {NodesLoader} from "@/components/node/NodesLoader";
 import {StakingRewardsTableController} from "@/components/staking/StakingRewardsTableController";
 import DownloadButton from "@/components/DownloadButton.vue";
 import CSVDownloadDialog from "@/components/CSVDownloadDialog.vue";
 import {RewardDownloader} from "@/utils/downloader/RewardDownloader";
+import {NodeRegistry} from "@/components/node/NodeRegistry";
 
 export default defineComponent({
   name: 'Staking',
@@ -363,9 +362,7 @@ export default defineComponent({
     // stakedNode
     //
 
-    const nodesLoader = new NodesLoader()
-    onMounted(() => nodesLoader.requestLoad())
-    const stakedNodeLoader = new NodeCursor(accountLoader.stakedNodeId, nodesLoader)
+    const stakedNodeLoader = NodeRegistry.getCursor(accountLoader.stakedNodeId)
 
     //
     // handleStopStaking / handleChangeStaking

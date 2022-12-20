@@ -50,7 +50,6 @@ export class TopicMessageLoader extends EntityLoader<TopicMessage> {
     //
 
     protected async load(): Promise<AxiosResponse<TopicMessage>|null> {
-        console.log("load - timestamp: " + this.timestamp.value)
         let result: Promise<AxiosResponse<TopicMessage>|null>
 
         if (this.timestamp.value) {

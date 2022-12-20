@@ -155,23 +155,23 @@
 
 <script lang="ts">
 
-import {computed, defineComponent, onMounted, PropType, ref, watch} from "vue";
+import {computed, defineComponent, PropType, ref, watch} from "vue";
 import {
   AccountBalanceTransactions,
   AccountsResponse, makeNodeStakeDescription,
   makeShortNodeDescription,
   NetworkNode
 } from "@/schemas/HederaSchemas";
-import {NodesLoader} from "@/components/node/NodesLoader";
 import Property from "@/components/Property.vue";
 import HbarAmount from "@/components/values/HbarAmount.vue";
 import StringValue from "@/components/values/StringValue.vue";
 import axios from "axios";
-import {operatorRegistry} from "@/schemas/OperatorRegistry";
 import {EntityID} from "@/utils/EntityID";
 import ConfirmDialog from "@/components/ConfirmDialog.vue";
 import {networkRegistry} from "@/schemas/NetworkRegistry";
 import router from "@/router";
+import {NodeRegistry} from "@/components/node/NodeRegistry";
+import {makeDefaultNodeDescription} from "@/schemas/HederaUtils";
 
 const VALID_ACCOUNT_MESSAGE = "Rewards will now be paid to that account"
 const UNKNOWN_ACCOUNT_MESSAGE = "This account does not exist"
@@ -244,8 +244,8 @@ export default defineComponent({
 
     const selectedNode = ref<number|null>(null)
     const selectedNodeDescription = computed(() => {
-      return (selectedNode.value !== null && nodesLoader.nodes.value)
-          ? makeNodeDescription(nodesLoader.nodes.value[selectedNode.value])
+      return (selectedNode.value !== null && NodeRegistry.instance.nodes.value)
+          ? makeNodeDescription(NodeRegistry.instance.nodes.value[selectedNode.value])
           : null
     })
     watch(accountId, () => {
@@ -288,17 +288,9 @@ export default defineComponent({
     // Nodes
     //
 
-    const nodesLoader = new NodesLoader()
-    onMounted(() => nodesLoader.requestLoad())
-
     const makeNodeDescription = (node: NetworkNode) => {
-      let result
-      if (node.description) {
-        result = node.node_id + ' - ' + makeShortNodeDescription(node.description)
-      } else {
-        result = node.node_account_id ? operatorRegistry.makeDescription(node.node_account_id) : null
-      }
-      return result
+      let description = node.description ?? makeDefaultNodeDescription(node.node_id ?? null)
+      return description ? (node.node_id + " - " + makeShortNodeDescription(description)) : null
     }
 
     const handleInput = (value: string) => {
@@ -385,7 +377,7 @@ export default defineComponent({
       selectedNodeDescription,
       declineChoice,
       enableChangeButton,
-      nodes: nodesLoader.nodes,
+      nodes: NodeRegistry.instance.nodes,
       handleCancel,
       handleChange,
       handleCancelChange,

@@ -78,14 +78,12 @@
 
 <script lang="ts">
 
-import {computed, defineComponent, inject, onBeforeMount, onMounted, ref, watch} from 'vue';
+import {computed, defineComponent, inject, onBeforeMount, ref, watch} from 'vue';
 import NetworkDashboardItem from "@/components/node/NetworkDashboardItem.vue";
 import DashboardCard from "@/components/DashboardCard.vue";
 import {makeNodeStakeDescription, makeShortNodeDescription, NetworkNode} from "@/schemas/HederaSchemas";
-import {operatorRegistry} from "@/schemas/OperatorRegistry";
-import {NodesLoader} from "@/components/node/NodesLoader";
-import {NodeCursor} from "@/components/node/NodeCursor";
 import {getEnv} from "@/utils/getEnv";
+import {NodeRegistry} from "@/components/node/NodeRegistry";
 
 export default defineComponent({
   name: 'RewardsCalculator',
@@ -112,11 +110,9 @@ export default defineComponent({
     watch(() => props.nodeId, () => selectedNodeId.value = props.nodeId ?? null)
 
     //
-    // Nodes
+    // Node
     //
-    const nodesLoader = new NodesLoader()
-    onMounted(() => nodesLoader.requestLoad())
-    const nodeCursor = computed(() => new NodeCursor(selectedNodeId, nodesLoader))
+    const nodeCursor = computed(() => NodeRegistry.getCursor(selectedNodeId))
 
     const amountStaked = ref<number>( 100)
     const updateAmountStaked = () => {
@@ -131,13 +127,8 @@ export default defineComponent({
     const yearlyReward = computed(() => currentReward.value ? Math.round(currentReward.value * 365 * 10) / 10 : 0)
 
     const makeNodeDescription = (node: NetworkNode) => {
-      let result
-      if (node.description) {
-        result = makeShortNodeDescription(node.description)
-      } else {
-        result = node.node_account_id ? operatorRegistry.makeDescription(node.node_account_id) : null
-      }
-      return result
+      let description = node.description ?? NodeRegistry.getDescription(ref(node.node_id??null))
+      return description ? makeShortNodeDescription(description) : null
     }
 
     const handleInput = (value: string) => {
@@ -163,7 +154,7 @@ export default defineComponent({
       monthlyReward,
       yearlyReward,
       yearlyRate: nodeCursor.value.approxYearlyRate,
-      nodes: nodesLoader.nodes,
+      nodes: NodeRegistry.instance.nodes,
       makeNodeDescription,
       makeNodeStakeDescription,
       handleInput

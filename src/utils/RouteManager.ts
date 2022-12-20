@@ -20,8 +20,16 @@
 
 import {NavigationFailure, RouteLocationNormalizedLoaded, RouteLocationRaw, Router} from "vue-router";
 import {Transaction} from "@/schemas/HederaSchemas";
-import {networkRegistry} from "@/schemas/NetworkRegistry";
-import {computed} from "vue";
+import {NetworkRegistry, networkRegistry} from "@/schemas/NetworkRegistry";
+import {computed, ref, watch, WatchStopHandle} from "vue";
+import router, {routeManager} from "@/router";
+import {BlocksResponseCollector} from "@/utils/collector/BlocksResponseCollector";
+import {TokenInfoCollector} from "@/utils/collector/TokenInfoCollector";
+import {TransactionByHashCollector} from "@/utils/collector/TransactionByHashCollector";
+import {TransactionCollector} from "@/utils/collector/TransactionCollector";
+import {NodeRegistry} from "@/components/node/NodeRegistry";
+import {AppStorage} from "@/AppStorage";
+import axios from "axios";
 
 export class RouteManager {
 
@@ -33,7 +41,16 @@ export class RouteManager {
 
     public constructor(router: Router) {
         this.router = router
+        watch(this.currentNetwork, () => {
+            AppStorage.setLastNetwork(this.currentNetworkEntry.value)
+            axios.defaults.baseURL = this.currentNetworkEntry.value.url
+            this.updateSelectedNetworkSilently()
+            this.switchThemes()
+            RouteManager.resetSingletons()
+        }, { immediate: true})
     }
+
+    public readonly currentRoute = computed(() => this.router?.currentRoute.value?.name)
 
     public readonly currentNetwork = computed(() => {
         return this.currentNetworkEntry.value.name
@@ -42,7 +59,7 @@ export class RouteManager {
     public readonly currentNetworkEntry = computed(() => {
 
         let networkName: string|null
-        const networkParam = this.router.currentRoute.value.params.network
+        const networkParam = this.router?.currentRoute.value?.params?.network
         if (Array.isArray(networkParam)) {
             networkName = networkParam.length >= 1 ? networkParam[0] : null
         } else {
@@ -52,6 +69,80 @@ export class RouteManager {
 
         return networkEntry != null ? networkEntry : networkRegistry.getDefaultEntry()
     })
+
+    public selectedNetwork = ref(routeManager?.currentNetwork.value)
+
+    public selectedNetworkWatchHandle: WatchStopHandle|undefined
+
+    public updateSelectedNetworkSilently(): void {
+        if (this.selectedNetworkWatchHandle) {
+            this.selectedNetworkWatchHandle()
+        }
+        this.selectedNetwork.value = this.currentNetwork.value
+        this.selectedNetworkWatchHandle = watch(this.selectedNetwork, (selection) => {
+            router.push({
+                name: "MainDashboard",
+                params: { network: selection }
+            })
+        })
+    }
+
+    public readonly previousRoute = computed(() => (this.router?.currentRoute.value?.query.from as string))
+
+    public readonly isDashboardRoute = computed(() => this.testDashboardRoute())
+    public readonly isTransactionRoute = computed(() => this.testTransactionRoute())
+    public readonly isTokenRoute = computed(() => this.testTokenRoute())
+    public readonly isTopicRoute = computed(() => this.testTopicRoute())
+    public readonly isContractRoute = computed(() => this.testContractRoute())
+    public readonly isAccountRoute = computed(() => this.testAccountRoute())
+    public readonly isNodeRoute = computed(() => this.testNodeRoute())
+    public readonly isStakingRoute = computed(() => this.testStakingRoute())
+    public readonly isBlocksRoute = computed(() => this.testBlocksRoute())
+
+    public testDashboardRoute(route: string|null = null): boolean {
+        const r = route ?? this.currentRoute.value
+        return r === 'MainDashboard'
+    }
+
+    public testTransactionRoute(route: string|null = null): boolean {
+        const r = route ?? this.currentRoute.value
+        return r === 'Transactions' || r === 'TransactionsById' || r === 'TransactionDetails'
+    }
+
+    public testTokenRoute(route: string|null = null): boolean {
+        const r = route ?? this.currentRoute.value
+        return r === 'Tokens' || r === 'TokenDetails'
+    }
+
+    public testTopicRoute(route: string|null = null): boolean {
+        const r = route ?? this.currentRoute.value
+        return r === 'Topics' || r === 'TopicDetails'
+    }
+
+    public testContractRoute(route: string|null = null): boolean {
+        const r = route ?? this.currentRoute.value
+        return r === 'Contracts' || r === 'ContractDetails'
+    }
+
+    public testAccountRoute(route: string|null = null): boolean {
+        const r = route ?? this.currentRoute.value
+        return r === 'Accounts' || r === 'AccountDetails' || r === 'AccountBalances'
+    }
+
+    public testNodeRoute(route: string|null = null): boolean {
+        const r = route ?? this.currentRoute.value
+        return r === 'Nodes' || r === 'NodeDetails'
+    }
+
+    public testStakingRoute(route: string|null = null): boolean {
+        const r = route ?? this.currentRoute.value
+        return r === 'Staking'
+    }
+
+    public testBlocksRoute(route: string|null = null): boolean {
+        const r = route ?? this.currentRoute.value
+        return r === 'Blocks' || r === 'BlockDetails'
+    }
 
     //
     // Transaction
@@ -178,7 +269,7 @@ export class RouteManager {
 
     //
     // Pages
-    //is
+    //
 
     public readonly mainDashboardRoute: RouteLocationRaw = {name: 'MainDashboard'}
     public readonly transactionsRoute:  RouteLocationRaw = {name: 'Transactions'}
@@ -198,9 +289,41 @@ export class RouteManager {
     public routeToMainDashboard(): Promise<NavigationFailure | void | undefined> {
         return this.router.push(this.mainDashboardRoute)
     }
+
+    //
+    // Private
+    //
+
+    private switchThemes() {
+        if (this.currentNetworkEntry.value.name == NetworkRegistry.TEST_NETWORK) {
+            document.documentElement.style.setProperty('--h-theme-background-color', 'var(--h-testnet-background-color)')
+            document.documentElement.style.setProperty('--h-theme-highlight-color', 'var(--h-testnet-highlight-color)')
+            document.documentElement.style.setProperty('--h-theme-pagination-background-color', 'var(--h-testnet-pagination-background-color)')
+            document.documentElement.style.setProperty('--h-theme-box-shadow-color', 'var(--h-testnet-box-shadow-color)')
+            document.documentElement.style.setProperty('--h-theme-dropdown-arrow', 'var(--h-testnet-dropdown-arrow)')
+        } else if (this.currentNetworkEntry.value.name == NetworkRegistry.PREVIEW_NETWORK) {
+            document.documentElement.style.setProperty('--h-theme-background-color', 'var(--h-previewnet-background-color)')
+            document.documentElement.style.setProperty('--h-theme-highlight-color', 'var(--h-previewnet-highlight-color)')
+            document.documentElement.style.setProperty('--h-theme-pagination-background-color', 'var(--h-previewnet-pagination-background-color)')
+            document.documentElement.style.setProperty('--h-theme-box-shadow-color', 'var(--h-previewnet-box-shadow-color)')
+            document.documentElement.style.setProperty('--h-theme-dropdown-arrow', 'var(--h-previewnet-dropdown-arrow)')
+        } else {
+            document.documentElement.style.setProperty('--h-theme-background-color', 'var(--h-mainnet-background-color)')
+            document.documentElement.style.setProperty('--h-theme-highlight-color', 'var(--h-mainnet-highlight-color)')
+            document.documentElement.style.setProperty('--h-theme-pagination-background-color', 'var(--h-mainnet-pagination-background-color)')
+            document.documentElement.style.setProperty('--h-theme-box-shadow-color', 'var(--h-mainnet-box-shadow-color)')
+            document.documentElement.style.setProperty('--h-theme-dropdown-arrow', 'var(--h-mainnet-dropdown-arrow)')
+        }
+    }
+
+    private static resetSingletons() {
+        BlocksResponseCollector.instance.clear()
+        TokenInfoCollector.instance.clear()
+        TransactionByHashCollector.instance.clear()
+        TransactionCollector.instance.clear()
+        NodeRegistry?.instance.reload()
+    }
 }
-
-
 
 export function fetchStringQueryParam(paramName: string, route: RouteLocationNormalizedLoaded): string|null {
     let result: string|null

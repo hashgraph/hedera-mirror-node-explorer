@@ -20,7 +20,10 @@
 
 import {AccountInfo, KeyType, TokenInfo} from "@/schemas/HederaSchemas";
 import {EntityID} from "@/utils/EntityID";
-import { ethers } from "ethers";
+import {ethers} from "ethers";
+import {routeManager} from "@/router";
+import {NodeRegistry} from "@/components/node/NodeRegistry";
+import {ref} from "vue";
 
 export function makeEthAddressForAccount(account: AccountInfo): string|null {
     if (account.evm_address) return account.evm_address;
@@ -60,3 +63,14 @@ export function makeTokenSymbol(token: TokenInfo | null, maxLength: number): str
 
     return candidate1 ?? candidate2 ?? candidate3 ?? candidate4 ?? token?.token_id ?? "?"
 }
+
+export function makeDefaultNodeDescription(nodeId: number | null): string {
+    return "Node " + nodeId ?? "?" + " | " + routeManager.currentNetwork.value
+}
+
+export function makeOperatorDescription(accountId: string): string | null {
+    return accountId === '0.0.98'
+        ? "Hedera fee collection account"
+        : NodeRegistry.getDescription(ref(null), ref(accountId))
+}
+

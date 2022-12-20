@@ -195,6 +195,36 @@ export const SAMPLE_TOKEN_WITH_KEYS = {
     "wipe_key": {"_type": "ED25519", "key": "c539536f9599daefeeb777677aa1aeea2242dfc7cca92348c228a5187a0faf2b"}
 }
 
+export const SAMPLE_DUDE_WITH_KEYS = {
+    "admin_key": {"_type": "ED25519", "key": "583dcbbb561b50d0a7c4434b9da398394a2f426584ced4d4c891715685bd5919"},
+    "auto_renew_account": "0.0.48113503",
+    "auto_renew_period": 7776000,
+    "created_timestamp": "1662470903.466156472",
+    "custom_fees": {"created_timestamp": "1662470903.466156472", "fixed_fees": [], "royalty_fees": []},
+    "decimals": "0",
+    "deleted": false,
+    "expiry_timestamp": "1670246903.466156472",
+    "fee_schedule_key": {"_type": "ED25519", "key": "583dcbbb561b50d0a7c4434b9da398394a2f426584ced4d4c891715685bd5919"},
+    "freeze_default": false,
+    "freeze_key": {"_type": "ED25519", "key": "583dcbbb561b50d0a7c4434b9da398394a2f426584ced4d4c891715685bd5919"},
+    "initial_supply": "0",
+    "kyc_key": null,
+    "max_supply": "1033",
+    "memo": "",
+    "modified_timestamp": "1662470957.014478706",
+    "name": "Reptilian Egg NFT",
+    "pause_key": {"_type": "ED25519", "key": "583dcbbb561b50d0a7c4434b9da398394a2f426584ced4d4c891715685bd5919"},
+    "pause_status": "UNPAUSED",
+    "supply_key": {"_type": "ProtobufEncoded", "key": "0a0518d5c1fd16"},
+    "supply_type": "FINITE",
+    "symbol": "RSSE",
+    "token_id": "0.0.48193741",
+    "total_supply": "5",
+    "treasury_account_id": "0.0.48113503",
+    "type": "NON_FUNGIBLE_UNIQUE",
+    "wipe_key": {"_type": "ED25519", "key": "583dcbbb561b50d0a7c4434b9da398394a2f426584ced4d4c891715685bd5919"}
+}
+
 export const SAMPLE_TOKEN_WITHOUT_KEYS = {
     "admin_key": null,
     "auto_renew_account": "0.0.91918",
@@ -452,7 +482,7 @@ export const SAMPLE_TRANSACTION = {
     "max_fee": "100000000",
     "memo_base64": "",
     "name": "CRYPTOTRANSFER",
-    "node": "0.0.7",
+    "node": "0.0.5",
     "nonce": 0,
     "parent_consensus_timestamp": null,
     "result": "SUCCESS",
@@ -473,7 +503,7 @@ export const SAMPLE_TRANSACTION = {
     "transaction_id": "0.0.29624024-1646025139-152901498",
     "transfers": [
         {
-            "account": "0.0.7",
+            "account": "0.0.4",
             "amount": 22028
         },
         {

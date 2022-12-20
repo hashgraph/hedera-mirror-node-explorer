@@ -1,3 +1,5 @@
+// noinspection DuplicatedCode
+
 /*-
  *
  * Hedera Mirror Node Explorer
@@ -34,6 +36,7 @@ import MockAdapter from "axios-mock-adapter";
 import Oruga from "@oruga-ui/oruga-next";
 import {HMSF} from "@/utils/HMSF";
 import NodeDetails from "@/pages/NodeDetails.vue";
+import {NodeRegistry} from "@/components/node/NodeRegistry";
 
 /*
     Bookmarks
@@ -69,6 +72,8 @@ describe("NodeDetails.vue", () => {
         const node = 0
         const matcher1 = "api/v1/network/nodes"
         mock.onGet(matcher1).reply(200, SAMPLE_NETWORK_NODES);
+        NodeRegistry.instance.reload()
+
         const matcher2 = "api/v1/network/stake"
         mock.onGet(matcher2).reply(200, SAMPLE_NETWORK_STAKE);
 
@@ -135,6 +140,9 @@ describe("NodeDetails.vue", () => {
         const matcher6 = "https://api.coingecko.com/api/v3/coins/hedera-hashgraph"
         mock.onGet(matcher6).reply(200, SAMPLE_COINGECKO);
 
+        let matcher8 = "/api/v1/accounts/" + account1.account + "/rewards"
+        mock.onGet(matcher8).reply(200, { rewards: [] })
+
         const wrapper = mount(AccountDetails, {
             global: {
                 plugins: [router, Oruga]
@@ -160,6 +168,9 @@ describe("NodeDetails.vue", () => {
         const token2 = SAMPLE_TOKEN_DUDE
         matcher3 = "/api/v1/tokens/" + token2.token_id
         mock.onGet(matcher3).reply(200, token2);
+
+        matcher8 = "/api/v1/accounts/" + account2.account + "/rewards"
+        mock.onGet(matcher8).reply(200, { rewards: [] })
 
         await wrapper.setProps({
             accountId: SAMPLE_ACCOUNT_DUDE.account ?? undefined

@@ -41,6 +41,7 @@ import {waitFor} from "@/utils/TimerUtils";
 import StakingDialog from "@/components/staking/StakingDialog.vue";
 import {nextTick} from "vue";
 import {TransactionHash} from "@/utils/TransactionHash";
+import {NodeRegistry} from "@/components/node/NodeRegistry";
 
 /*
     Bookmarks
@@ -98,13 +99,18 @@ describe("Staking.vue", () => {
             const response = { nodes: [ node ]}
             mock.onGet(matcher2, body).reply(200, response)
         }
+        NodeRegistry.instance.reload()
+
         mock.onGet(matcher2).reply(200, SAMPLE_NETWORK_NODES)
+        NodeRegistry.instance.reload()
         const matcher3 = "https://api.coingecko.com/api/v3/coins/hedera-hashgraph"
         mock.onGet(matcher3).reply(200, SAMPLE_COINGECKO);
         const matcher4 = "/api/v1/transactions/" + STAKE_UPDATE_TRANSACTION_HASH
         mock.onGet(matcher4).reply(200, STAKE_UPDATE_TRANSACTIONS)
         const matcher5 = "/api/v1/transactions"
         mock.onGet(matcher5).reply(200, SAMPLE_TRANSACTIONS)
+        const matcher8 = "/api/v1/accounts/" + testDriver.account.account + "/rewards"
+        mock.onGet(matcher8).reply(200, { rewards: [] })
 
         const wrapper = mount(Staking, {
             global: {
