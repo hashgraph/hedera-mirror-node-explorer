@@ -21,9 +21,19 @@
  */
 
 import {Transaction} from "@/schemas/HederaSchemas";
+import MockAdapter from "axios-mock-adapter";
+import axios from "axios";
+import {SAMPLE_NETWORK_NODES} from "../../Mocks";
+import {NodeRegistry} from "@/components/node/NodeRegistry";
 import {HbarTransferLayout} from "@/components/transfer_graphs/layout/HbarTransferLayout";
+import {flushPromises} from "@vue/test-utils";
 
 describe("HbarTransferLayout.vue", () => {
+
+    const mock = new MockAdapter(axios);
+    const matcher1 = "/api/v1/network/nodes"
+    mock.onGet(matcher1).reply(200, SAMPLE_NETWORK_NODES);
+    NodeRegistry.instance.reload()
 
     //
     // Single source
@@ -31,14 +41,18 @@ describe("HbarTransferLayout.vue", () => {
 
     test("Single source, only fees", async () => {
 
+        await flushPromises()
+
         const transaction = {
             "charged_tx_fee": 10,
             "transfers": [
-                { "account": "0.0.7",   "amount":  +3 },
+                { "account": "0.0.5",   "amount":  +3 },
                 { "account": "0.0.98",  "amount":  +7 },
                 { "account": "0.0.100", "amount": -10 }
             ],
         }
+
+        await flushPromises()
 
         //
         // FULL
@@ -59,9 +73,9 @@ describe("HbarTransferLayout.vue", () => {
         expect(s0.payload).toBe(true)
 
         const d0 = fullLayout.destinations[0]
-        expect(d0.transfer.account).toBe("0.0.7")
+        expect(d0.transfer.account).toBe("0.0.5")
         expect(d0.transfer.amount).toBe(+3)
-        expect(d0.description).toBe("Nomura - Tokyo, Japan")
+        expect(d0.description).toBe("Hosted by Hedera | Central, USA")
         expect(d0.payload).toBe(false)
 
         const d1 = fullLayout.destinations[1]
@@ -90,7 +104,7 @@ describe("HbarTransferLayout.vue", () => {
             "charged_tx_fee": 10,
             "transfers": [
                 { "account": "0.0.100", "amount": -100 },
-                { "account": "0.0.7",   "amount":   +3 },
+                { "account": "0.0.5",   "amount":   +3 },
                 { "account": "0.0.98",  "amount":   +7 },
                 { "account": "0.0.120", "amount":  +90 },
             ],
@@ -121,9 +135,9 @@ describe("HbarTransferLayout.vue", () => {
         expect(fd0.payload).toBe(true)
 
         const fd1 = fullLayout.destinations[1]
-        expect(fd1.transfer.account).toBe("0.0.7")
+        expect(fd1.transfer.account).toBe("0.0.5")
         expect(fd1.transfer.amount).toBe(+3)
-        expect(fd1.description).toBe("Nomura - Tokyo, Japan")
+        expect(fd1.description).toBe("Hosted by Hedera | Central, USA")
         expect(fd1.payload).toBe(false)
 
         const fd2 = fullLayout.destinations[2]
@@ -163,7 +177,7 @@ describe("HbarTransferLayout.vue", () => {
             "charged_tx_fee": 10,
             "transfers": [
                 { "account": "0.0.100", "amount": -100 },
-                { "account": "0.0.7",   "amount":   +3 },
+                { "account": "0.0.5",   "amount":   +3 },
                 { "account": "0.0.98",  "amount":   +7 },
                 { "account": "0.0.120", "amount":  +30 },
                 { "account": "0.0.121", "amount":  +60 },
@@ -201,9 +215,9 @@ describe("HbarTransferLayout.vue", () => {
         expect(d1.payload).toBe(true)
 
         const d2 = fullLayout.destinations[2]
-        expect(d2.transfer.account).toBe("0.0.7")
+        expect(d2.transfer.account).toBe("0.0.5")
         expect(d2.transfer.amount).toBe(+3)
-        expect(d2.description).toBe("Nomura - Tokyo, Japan")
+        expect(d2.description).toBe("Hosted by Hedera | Central, USA")
         expect(d2.payload).toBe(false)
 
         const d3 = fullLayout.destinations[3]
@@ -255,7 +269,7 @@ describe("HbarTransferLayout.vue", () => {
             "transfers": [
                 { "account": "0.0.100", "amount":  -2 },
                 { "account": "0.0.101", "amount":  -8 },
-                { "account": "0.0.7",   "amount":  +3 },
+                { "account": "0.0.5",   "amount":  +3 },
                 { "account": "0.0.98",  "amount":  +7 },
             ],
         }
@@ -285,9 +299,9 @@ describe("HbarTransferLayout.vue", () => {
         expect(s1.payload).toBe(true)
 
         const d0 = fullLayout.destinations[0]
-        expect(d0.transfer.account).toBe("0.0.7")
+        expect(d0.transfer.account).toBe("0.0.5")
         expect(d0.transfer.amount).toBe(+3)
-        expect(d0.description).toBe("Nomura - Tokyo, Japan")
+        expect(d0.description).toBe("Hosted by Hedera | Central, USA")
         expect(d0.payload).toBe(false)
 
         const d1 = fullLayout.destinations[1]
@@ -318,7 +332,7 @@ describe("HbarTransferLayout.vue", () => {
             "transfers": [
                 { "account": "0.0.100", "amount":  -20 },
                 { "account": "0.0.101", "amount":  -80 },
-                { "account": "0.0.7",   "amount":   +3 },
+                { "account": "0.0.5",   "amount":   +3 },
                 { "account": "0.0.98",  "amount":   +7 },
                 { "account": "0.0.120", "amount":  +90 },
             ],
@@ -355,9 +369,9 @@ describe("HbarTransferLayout.vue", () => {
         expect(d0.payload).toBe(true)
 
         const d1 = fullLayout.destinations[1]
-        expect(d1.transfer.account).toBe("0.0.7")
+        expect(d1.transfer.account).toBe("0.0.5")
         expect(d1.transfer.amount).toBe(+3)
-        expect(d1.description).toBe("Nomura - Tokyo, Japan")
+        expect(d1.description).toBe("Hosted by Hedera | Central, USA")
         expect(d1.payload).toBe(false)
 
         const d2 = fullLayout.destinations[2]
@@ -404,7 +418,7 @@ describe("HbarTransferLayout.vue", () => {
             "transfers": [
                 { "account": "0.0.100", "amount":  -20 },
                 { "account": "0.0.101", "amount":  -80 },
-                { "account": "0.0.7",   "amount":   +3 },
+                { "account": "0.0.5",   "amount":   +3 },
                 { "account": "0.0.98",  "amount":   +7 },
                 { "account": "0.0.120", "amount":  +30 },
                 { "account": "0.0.121", "amount":  +60 },
@@ -448,9 +462,9 @@ describe("HbarTransferLayout.vue", () => {
         expect(d1.payload).toBe(true)
 
         const d2 = fullLayout.destinations[2]
-        expect(d2.transfer.account).toBe("0.0.7")
+        expect(d2.transfer.account).toBe("0.0.5")
         expect(d2.transfer.amount).toBe(+3)
-        expect(d2.description).toBe("Nomura - Tokyo, Japan")
+        expect(d2.description).toBe("Hosted by Hedera | Central, USA")
         expect(d2.payload).toBe(false)
 
         const d3 = fullLayout.destinations[3]
@@ -506,7 +520,7 @@ describe("HbarTransferLayout.vue", () => {
         const transaction = {
             "charged_tx_fee": 8,
             "transfers": [
-                { "account": "0.0.7",   "amount":  +3 },
+                { "account": "0.0.5",   "amount":  +3 },
                 { "account": "0.0.98",  "amount":  +7 },
                 { "account": "0.0.100", "amount": -10 }
             ],
@@ -531,15 +545,15 @@ describe("HbarTransferLayout.vue", () => {
         expect(s0.payload).toBe(true)
 
         const d0 = fullLayout.destinations[0]
-        expect(d0.transfer.account).toBe("0.0.7")
+        expect(d0.transfer.account).toBe("0.0.5")
         expect(d0.transfer.amount).toBe(+2)
-        expect(d0.description).toBe("Nomura - Tokyo, Japan")
+        expect(d0.description).toBe("Hosted by Hedera | Central, USA")
         expect(d0.payload).toBe(true)
 
         const d1 = fullLayout.destinations[1]
-        expect(d1.transfer.account).toBe("0.0.7")
+        expect(d1.transfer.account).toBe("0.0.5")
         expect(d1.transfer.amount).toBe(+1)
-        expect(d1.description).toBe("Nomura - Tokyo, Japan")
+        expect(d1.description).toBe("Hosted by Hedera | Central, USA")
         expect(d1.payload).toBe(false)
 
         const d2 = fullLayout.destinations[2]
@@ -567,9 +581,9 @@ describe("HbarTransferLayout.vue", () => {
         expect(cs0.payload).toBe(true)
 
         const cd0 = fullLayout.destinations[0]
-        expect(cd0.transfer.account).toBe("0.0.7")
+        expect(cd0.transfer.account).toBe("0.0.5")
         expect(cd0.transfer.amount).toBe(+2)
-        expect(cd0.description).toBe("Nomura - Tokyo, Japan")
+        expect(cd0.description).toBe("Hosted by Hedera | Central, USA")
         expect(cd0.payload).toBe(true)
 
     })

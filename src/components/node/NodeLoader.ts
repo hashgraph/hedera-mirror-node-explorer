@@ -19,10 +19,10 @@
  */
 
 import {NetworkNode, NetworkNodesResponse} from "@/schemas/HederaSchemas";
-import {operatorRegistry} from "@/schemas/OperatorRegistry";
 import {EntityLoader} from "@/utils/loader/EntityLoader";
 import axios, {AxiosResponse} from "axios";
 import {computed, ComputedRef, Ref} from "vue";
+import {makeDefaultNodeDescription} from "@/schemas/HederaUtils";
 
 export class NodeLoader extends EntityLoader<NetworkNodesResponse> {
 
@@ -49,7 +49,7 @@ export class NodeLoader extends EntityLoader<NetworkNodesResponse> {
             if (this.node.value.description) {
                 result = this.node.value.description
             } else if (this.node.value.node_account_id) {
-                result = operatorRegistry.makeDescription(this.node.value.node_account_id)
+                result = makeDefaultNodeDescription(this.node.value?.node_id ?? null)
             } else {
                 result = null
             }

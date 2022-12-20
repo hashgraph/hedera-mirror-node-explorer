@@ -21,12 +21,12 @@
 import {EntityLoader} from "@/utils/loader/EntityLoader";
 import {AccountBalanceTransactions, TokenBalance} from "@/schemas/HederaSchemas";
 import {makeEthAddressForAccount} from "@/schemas/HederaUtils";
-import {operatorRegistry} from "@/schemas/OperatorRegistry";
-import {computed, Ref} from "vue";
+import {computed, ref, Ref} from "vue";
 import axios, {AxiosResponse} from "axios";
 import {base32ToAlias, byteToHex} from "@/utils/B64Utils";
 import {networkRegistry} from "@/schemas/NetworkRegistry";
 import router from "@/router";
+import {NodeRegistry} from "@/components/node/NodeRegistry";
 
 export class AccountLoader extends EntityLoader<AccountBalanceTransactions> {
 
@@ -84,11 +84,11 @@ export class AccountLoader extends EntityLoader<AccountBalanceTransactions> {
     public readonly pendingReward: Ref<number|null> = computed(() => this.entity.value?.pending_reward ?? null)
 
     public readonly accountInfo: Ref<string|null> = computed(() => {
-        return this.accountId.value !== null ? operatorRegistry.makeDescription(this.accountId.value) : null
+        return NodeRegistry.getDescription(ref(null), this.accountId)
     })
 
     public readonly nodeId: Ref<number|null> = computed(() => {
-        return this.accountId.value !== null ? operatorRegistry.lookup(this.accountId.value)?.nodeId ?? null : null
+        return NodeRegistry.getCursor(ref(null), this.accountId).node.value?.node_id ?? null
     })
 
     public readonly ethereumAddress = computed(() => {

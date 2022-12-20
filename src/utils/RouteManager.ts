@@ -321,7 +321,7 @@ export class RouteManager {
         TokenInfoCollector.instance.clear()
         TransactionByHashCollector.instance.clear()
         TransactionCollector.instance.clear()
-        NodeRegistry.instance.reload()
+        NodeRegistry?.instance.reload()
     }
 }
 

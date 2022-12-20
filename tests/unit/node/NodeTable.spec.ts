@@ -25,6 +25,9 @@ import Oruga from "@oruga-ui/oruga-next";
 import {HMSF} from "@/utils/HMSF";
 import NodeTable from "@/components/node/NodeTable.vue";
 import {NetworkNode} from "@/schemas/HederaSchemas";
+import MockAdapter from "axios-mock-adapter";
+import axios from "axios";
+import {NodeRegistry} from "@/components/node/NodeRegistry";
 
 /*
     Bookmarks
@@ -57,6 +60,11 @@ describe("NodeTable.vue", () => {
         "to decline rewards (and all accounts staked to those accounts)."
     const tooltipRewardRate = "This is an approximate annual reward rate based on the reward earned during the " +
         "last 24h period."
+
+    const mock = new MockAdapter(axios);
+    const matcher1 = "/api/v1/network/nodes"
+    mock.onGet(matcher1).reply(200, SAMPLE_NETWORK_NODES);
+    NodeRegistry.instance.reload()
 
     it("should list the 3 nodes in the table", async () => {
 
