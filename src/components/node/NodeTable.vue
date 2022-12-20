@@ -104,15 +104,15 @@
 
 <script lang="ts">
 
-import {defineComponent, inject, PropType} from 'vue';
+import {defineComponent, inject, PropType, ref} from 'vue';
 import {NetworkNode} from "@/schemas/HederaSchemas";
 import BlobValue from "@/components/values/BlobValue.vue";
 import {ORUGA_MOBILE_BREAKPOINT} from '@/App.vue';
 import EmptyTable from "@/components/EmptyTable.vue";
-import {operatorRegistry} from "@/schemas/OperatorRegistry";
 import HbarAmount from "@/components/values/HbarAmount.vue";
 import StakeRange from "@/components/node/StakeRange.vue";
 import {routeManager} from "@/router";
+import {NodeRegistry} from "@/components/node/NodeRegistry";
 
 
 //
@@ -142,17 +142,7 @@ export default defineComponent({
     const isTouchDevice = inject('isTouchDevice', false)
     const isMediumScreen = inject('isMediumScreen', true)
 
-    const makeDescription = (node: NetworkNode) => {
-      let result
-      if (node.description) {
-        result = node.description
-      } else if (node.node_account_id) {
-        result = operatorRegistry.makeDescription(node.node_account_id)
-      } else {
-        result = null
-      }
-      return result
-    }
+    const makeDescription = (node: NetworkNode) => NodeRegistry.getDescription(ref(node.node_id ?? null), ref(null))
     const makeUnclampedStake = (node: NetworkNode) => (node.stake_rewarded ?? 0) + (node.stake_not_rewarded ?? 0)
     const makeWeightPercentage = (node: NetworkNode) => {
       const formatter = new Intl.NumberFormat("en-US", {

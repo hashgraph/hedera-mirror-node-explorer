@@ -19,27 +19,29 @@
  */
 
 import {makeShortNodeDescription, NetworkNode} from "@/schemas/HederaSchemas";
-import {operatorRegistry} from "@/schemas/OperatorRegistry";
-import {computed, ComputedRef, Ref} from "vue";
+import {computed, ComputedRef, ref, Ref} from "vue";
 import {NodeRegistry} from "@/components/node/NodeRegistry";
+import {makeDefaultNodeDescription} from "@/schemas/HederaUtils";
 
 export class NodeCursor {
 
-    public readonly nodeId: Ref<number|null>
+    private readonly nodeId: Ref<number|null>
+    private readonly nodeAccountId: Ref<string|null>
 
     //
     // Public
     //
 
-    public constructor(nodeId: Ref<number|null>) {
+    public constructor(nodeId: Ref<number|null> = ref(null), nodeAccountId: Ref<string|null> = ref(null)) {
         this.nodeId = nodeId
+        this.nodeAccountId = nodeAccountId
     }
 
     public readonly node: ComputedRef<NetworkNode|null> = computed(() => {
         let result: NetworkNode|null = null
-        if (this.nodeId.value !== null) {
+        if (this.nodeId.value !== null || this.nodeAccountId.value !== null) {
             for (const n of NodeRegistry.instance.nodes.value) {
-                if (n.node_id == this.nodeId.value) {
+                if (n.node_id == this.nodeId.value || n.node_account_id == this.nodeAccountId.value) {
                     result = n
                     break
                 }
@@ -53,10 +55,8 @@ export class NodeCursor {
         if (this.node.value !== null) {
             if (this.node.value.description) {
                 result = this.node.value.description
-            } else if (this.node.value.node_account_id) {
-                result = operatorRegistry.makeDescription(this.node.value.node_account_id)
             } else {
-                result = null
+                result = makeDefaultNodeDescription(this.node.value?.node_id ?? null)
             }
         } else {
             result = null
@@ -90,6 +90,4 @@ export class NodeCursor {
     public readonly maxStake = computed(() => this.node.value?.max_stake ?? 0)
     public readonly stakeRewarded = computed(() => this.node.value?.stake_rewarded ?? 0)
     public readonly stakeUnrewarded = computed(() => this.node.value?.stake_not_rewarded ?? 0)
-
-
 }

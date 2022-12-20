@@ -82,7 +82,6 @@ import {computed, defineComponent, inject, onBeforeMount, ref, watch} from 'vue'
 import NetworkDashboardItem from "@/components/node/NetworkDashboardItem.vue";
 import DashboardCard from "@/components/DashboardCard.vue";
 import {makeNodeStakeDescription, makeShortNodeDescription, NetworkNode} from "@/schemas/HederaSchemas";
-import {operatorRegistry} from "@/schemas/OperatorRegistry";
 import {getEnv} from "@/utils/getEnv";
 import {NodeRegistry} from "@/components/node/NodeRegistry";
 
@@ -113,7 +112,7 @@ export default defineComponent({
     //
     // Node
     //
-    const nodeCursor = computed(() => NodeRegistry.instance.getCursor(selectedNodeId))
+    const nodeCursor = computed(() => NodeRegistry.getCursor(selectedNodeId))
 
     const amountStaked = ref<number>( 100)
     const updateAmountStaked = () => {
@@ -128,13 +127,8 @@ export default defineComponent({
     const yearlyReward = computed(() => currentReward.value ? Math.round(currentReward.value * 365 * 10) / 10 : 0)
 
     const makeNodeDescription = (node: NetworkNode) => {
-      let result
-      if (node.description) {
-        result = makeShortNodeDescription(node.description)
-      } else {
-        result = node.node_account_id ? operatorRegistry.makeDescription(node.node_account_id) : null
-      }
-      return result
+      let description = node.description ?? NodeRegistry.getDescription(ref(node.node_id??null))
+      return description ? makeShortNodeDescription(description) : null
     }
 
     const handleInput = (value: string) => {

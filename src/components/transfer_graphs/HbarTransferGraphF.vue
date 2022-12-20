@@ -137,6 +137,7 @@ import HbarAmount from "@/components/values/HbarAmount.vue";
 import HbarExtra from "@/components/values/HbarExtra.vue";
 import {HbarTransferLayout} from "@/components/transfer_graphs/layout/HbarTransferLayout";
 import {Transaction} from "@/schemas/HederaSchemas";
+import {NodeRegistry} from "@/components/node/NodeRegistry";
 
 export default defineComponent({
   name: "HbarTransferGraphF",
@@ -159,7 +160,7 @@ export default defineComponent({
       return destination === null || !destination.payload
     }
 
-    watch(() => props.transaction, () => {
+    watch([() => props.transaction, NodeRegistry.instance.nodes], () => {
       hbarTransferLayout.value = new HbarTransferLayout(props.transaction)
     })
 
