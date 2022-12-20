@@ -19,7 +19,7 @@
  */
 
 import {NetworkNode} from "@/schemas/HederaSchemas";
-import {computed, ComputedRef, Ref} from "vue";
+import {computed, ComputedRef, ref, Ref} from "vue";
 import {NodesLoader} from "@/components/node/NodesLoader";
 import {NodeCursor} from "@/components/node/NodeCursor";
 
@@ -82,11 +82,13 @@ export class NodeRegistry {
         this.loader.requestLoad()
     }
 
-    public getCursor(nodeId: Ref<number|null>): NodeCursor {
-        return new NodeCursor(nodeId)
+    public static getCursor(nodeId: Ref<number|null> = ref(null),
+                     nodeAccountId: Ref<string|null> = ref(null)): NodeCursor {
+        return new NodeCursor(nodeId, nodeAccountId)
     }
 
-    public getDescription(nodeId: Ref<number|null>): string|null {
-        return this.getCursor(nodeId).nodeDescription.value
+    public static getDescription(nodeId: Ref<number|null> = ref(null),
+                          nodeAccountId: Ref<string|null> = ref(null)): string|null {
+        return NodeRegistry.getCursor(nodeId, nodeAccountId).nodeDescription.value
     }
 }

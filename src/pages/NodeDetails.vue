@@ -175,7 +175,7 @@ export default defineComponent({
     const isSmallScreen = inject('isSmallScreen', true)
     const isTouchDevice = inject('isTouchDevice', false)
 
-    const nodeCursor = NodeRegistry.instance.getCursor(computed(() => PathParam.parseNodeId(props.nodeId)))
+    const nodeCursor = NodeRegistry.getCursor(computed(() => PathParam.parseNodeId(props.nodeId)))
     const stakeLoader = new StakeLoader()
 
     const stakeTotal = computed(() => stakeLoader.entity.value?.stake_total ?? 0)

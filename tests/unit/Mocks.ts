@@ -482,7 +482,7 @@ export const SAMPLE_TRANSACTION = {
     "max_fee": "100000000",
     "memo_base64": "",
     "name": "CRYPTOTRANSFER",
-    "node": "0.0.7",
+    "node": "0.0.5",
     "nonce": 0,
     "parent_consensus_timestamp": null,
     "result": "SUCCESS",
@@ -503,7 +503,7 @@ export const SAMPLE_TRANSACTION = {
     "transaction_id": "0.0.29624024-1646025139-152901498",
     "transfers": [
         {
-            "account": "0.0.7",
+            "account": "0.0.4",
             "amount": 22028
         },
         {

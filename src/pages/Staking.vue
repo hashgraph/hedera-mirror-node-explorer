@@ -362,7 +362,7 @@ export default defineComponent({
     // stakedNode
     //
 
-    const stakedNodeLoader = NodeRegistry.instance.getCursor(accountLoader.stakedNodeId)
+    const stakedNodeLoader = NodeRegistry.getCursor(accountLoader.stakedNodeId)
 
     //
     // handleStopStaking / handleChangeStaking
