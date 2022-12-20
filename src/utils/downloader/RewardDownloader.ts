@@ -18,12 +18,11 @@
  *
  */
 
-import {StakingReward, StakingRewardsResponse, TransactionResponse} from "@/schemas/HederaSchemas";
+import {StakingReward, StakingRewardsResponse} from "@/schemas/HederaSchemas";
 import {Ref, watch} from "vue";
 import {dateToTimestamp, EntityDownloader} from "@/utils/downloader/EntityDownloader";
 import axios, {AxiosResponse} from "axios";
 import {CSVEncoder} from "@/utils/CSVEncoder";
-import {StakingRewardsTableController} from "@/components/staking/StakingRewardsTableController";
 
 export class RewardDownloader extends EntityDownloader<StakingReward, StakingRewardsResponse> {
 
@@ -49,19 +48,21 @@ export class RewardDownloader extends EntityDownloader<StakingReward, StakingRew
     //
 
     protected async loadNext(nextURL: string|null): Promise<AxiosResponse<StakingRewardsResponse>> {
-        let result: AxiosResponse<StakingRewardsResponse>
 
-        try {
-            result = await this.loadNextReal(nextURL)
-        } catch (error) {
-            if (axios.isAxiosError(error) && error?.response?.status == 404) {
-                result = await this.loadNextEmulated(nextURL)
-            } else {
-                throw error
+        if (nextURL == null) {
+
+            const startTimestamp = dateToTimestamp(this.checkStartDate())
+            const endTimestamp = this.endDate.value !== null ? dateToTimestamp(this.endDate.value) : null
+
+            nextURL = "api/v1/accounts/" + this.checkAccountId() + "/rewards"
+                + "?timestamp=gte:" + startTimestamp
+            if (endTimestamp !== null) {
+                nextURL += "&timestamp=lt:" + endTimestamp
             }
+            nextURL += "&limit=100"
         }
 
-        return Promise.resolve(result)
+        return axios.get<StakingRewardsResponse>(nextURL)
     }
 
     protected fetchEntities(response: StakingRewardsResponse): StakingReward[] {
@@ -96,72 +97,6 @@ export class RewardDownloader extends EntityDownloader<StakingReward, StakingRew
             throw new Error("this.accountId is null")
         }
         return result
-    }
-
-    private async loadNextReal(nextURL: string|null): Promise<AxiosResponse<StakingRewardsResponse>> {
-
-        if (nextURL == null) {
-
-            const startTimestamp = dateToTimestamp(this.checkStartDate())
-            const endTimestamp = this.endDate.value !== null ? dateToTimestamp(this.endDate.value) : null
-
-            nextURL = "api/v1/accounts/" + this.checkAccountId() + "/rewards"
-                + "?timestamp=gte:" + startTimestamp
-            if (endTimestamp !== null) {
-                nextURL += "&timestamp=lt:" + endTimestamp
-            }
-            nextURL += "&limit=100"
-        }
-
-        return axios.get<StakingRewardsResponse>(nextURL)
-    }
-
-
-    private async loadNextEmulated(nextURL: string|null): Promise<AxiosResponse<StakingRewardsResponse>> {
-
-        if (nextURL == null) {
-            const startTimestamp = dateToTimestamp(this.checkStartDate())
-            const endTimestamp = this.endDate.value !== null ? dateToTimestamp(this.endDate.value) : null
-
-            nextURL = "api/v1/transactions"
-                + "?account.id=" + this.checkAccountId()
-                + "&timestamp=gte:" + startTimestamp
-            if (endTimestamp !== null) {
-                nextURL += "&timestamp=lt:" + endTimestamp
-            }
-            nextURL += "&limit=100"
-        }
-        const transactionResponse = await axios.get<TransactionResponse>(nextURL)
-
-        return Promise.resolve(this.makeRewardResponse(transactionResponse))
-    }
-
-    private makeRewardResponse(transactionResponse: AxiosResponse<TransactionResponse>): AxiosResponse<StakingRewardsResponse> {
-        const rewards: StakingReward[] = []
-        const accountId = this.checkAccountId()
-        for (const t of transactionResponse.data.transactions ?? []) {
-            const amount = StakingRewardsTableController.getAmountRewarded(t, accountId)
-            if (amount > 0) {
-                const newReward: StakingReward = {
-                    account_id: accountId,
-                    amount: amount,
-                    timestamp: t.consensus_timestamp ?? "0"
-                }
-                rewards.push(newReward)
-            }
-        }
-        const rewardResponse: StakingRewardsResponse = {
-            rewards: rewards,
-            links: transactionResponse.data.links
-        }
-        return {
-            data: rewardResponse,
-            status: transactionResponse.status,
-            statusText: transactionResponse.statusText,
-            headers: transactionResponse.headers,
-            config: transactionResponse.config,
-            request: transactionResponse.request
-        }
     }
 }
 
