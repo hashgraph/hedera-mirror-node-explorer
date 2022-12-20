@@ -1,3 +1,5 @@
+// noinspection DuplicatedCode
+
 /*-
  *
  * Hedera Mirror Node Explorer
@@ -103,6 +105,9 @@ describe("AccountDetails.vue", () => {
         const matcher7 = "/api/v1/transactions?timestamp=" + SAMPLE_ACCOUNT.created_timestamp
         mock.onGet(matcher7).reply(200, SAMPLE_TRANSACTIONS);
 
+        const matcher8 = "/api/v1/accounts/" + SAMPLE_ACCOUNT.account + "/rewards"
+        mock.onGet(matcher8).reply(200, { rewards: [] })
+
         const wrapper = mount(AccountDetails, {
             global: {
                 plugins: [router, Oruga]
@@ -176,6 +181,9 @@ describe("AccountDetails.vue", () => {
         const matcher6 = "https://api.coingecko.com/api/v3/coins/hedera-hashgraph"
         mock.onGet(matcher6).reply(200, SAMPLE_COINGECKO);
 
+        let matcher8 = "/api/v1/accounts/" + SAMPLE_ACCOUNT.account + "/rewards"
+        mock.onGet(matcher8).reply(200, { rewards: [] })
+
         const wrapper = mount(AccountDetails, {
             global: {
                 plugins: [router, Oruga]
@@ -201,6 +209,9 @@ describe("AccountDetails.vue", () => {
         const token2 = SAMPLE_TOKEN_DUDE
         matcher3 = "/api/v1/tokens/" + token2.token_id
         mock.onGet(matcher3).reply(200, token2);
+
+        matcher8 = "/api/v1/accounts/" + SAMPLE_ACCOUNT_DUDE.account + "/rewards"
+        mock.onGet(matcher8).reply(200, { rewards: [] })
 
         await wrapper.setProps({
             accountId: SAMPLE_ACCOUNT_DUDE.account ?? undefined
@@ -274,6 +285,9 @@ describe("AccountDetails.vue", () => {
         const matcher6 = "https://api.coingecko.com/api/v3/coins/hedera-hashgraph"
         mock.onGet(matcher6).reply(200, SAMPLE_COINGECKO);
 
+        const matcher8 = "/api/v1/accounts/" + SAMPLE_ACCOUNT_DELETED.account + "/rewards"
+        mock.onGet(matcher8).reply(200, { rewards: [] })
+
         const wrapper = mount(AccountDetails, {
             global: {
                 plugins: [router, Oruga]
@@ -315,6 +329,9 @@ describe("AccountDetails.vue", () => {
         const matcher5 = "https://api.coingecko.com/api/v3/coins/hedera-hashgraph"
         mock.onGet(matcher5).reply(200, SAMPLE_COINGECKO);
 
+        const matcher8 = "/api/v1/accounts/" + SAMPLE_ACCOUNT_STAKING_NODE.account + "/rewards"
+        mock.onGet(matcher8).reply(200, { rewards: [] })
+
         const wrapper = mount(AccountDetails, {
             global: {
                 plugins: [router, Oruga]
@@ -354,6 +371,9 @@ describe("AccountDetails.vue", () => {
 
         const matcher5 = "https://api.coingecko.com/api/v3/coins/hedera-hashgraph"
         mock.onGet(matcher5).reply(200, SAMPLE_COINGECKO);
+
+        const matcher8 = "/api/v1/accounts/" + SAMPLE_ACCOUNT_STAKING_ACCOUNT.account + "/rewards"
+        mock.onGet(matcher8).reply(200, { rewards: [] })
 
         const wrapper = mount(AccountDetails, {
             global: {

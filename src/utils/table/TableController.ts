@@ -22,6 +22,7 @@ import {computed, ComputedRef, ref, Ref, watch, WatchSource, WatchStopHandle} fr
 import {LocationQuery, Router} from "vue-router";
 import {fetchNumberQueryParam, fetchStringQueryParam} from "@/utils/RouteManager";
 import {RowBuffer} from "@/utils/table/RowBuffer";
+import axios, {AxiosError} from "axios";
 
 export abstract class TableController<R, K> {
 
@@ -216,6 +217,10 @@ export abstract class TableController<R, K> {
 
     private readonly errorHandler = (reason: unknown): void => {
         console.log("reason=" + reason)
+        if (axios.isAxiosError(reason)) {
+            const axiosError = reason as AxiosError
+            console.log("url=" + axiosError.config.url)
+        }
     }
 
     private getPageParam(): number|null {

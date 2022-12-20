@@ -109,6 +109,8 @@ describe("Staking.vue", () => {
         mock.onGet(matcher4).reply(200, STAKE_UPDATE_TRANSACTIONS)
         const matcher5 = "/api/v1/transactions"
         mock.onGet(matcher5).reply(200, SAMPLE_TRANSACTIONS)
+        const matcher8 = "/api/v1/accounts/" + testDriver.account.account + "/rewards"
+        mock.onGet(matcher8).reply(200, { rewards: [] })
 
         const wrapper = mount(Staking, {
             global: {
