@@ -54,7 +54,7 @@ export class AccountLoader extends EntityLoader<AccountBalanceTransactions> {
 
     public readonly createdTimestamp: Ref<string|null> = computed(() => this.entity.value?.created_timestamp ?? null)
 
-    public readonly tokens: Ref<[TokenBalance]|null> = computed(() => this.entity.value?.balance?.tokens ?? null)
+    public readonly tokens: Ref<TokenBalance[]|null> = computed(() => this.entity.value?.balance?.tokens ?? null)
 
     public readonly stakedNodeId: Ref<number|null> = computed(() => this.entity.value?.staked_node_id ?? null)
 
