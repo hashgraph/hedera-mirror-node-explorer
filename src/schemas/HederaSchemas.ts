@@ -63,12 +63,26 @@ export interface AccountBalanceTransactions extends AccountInfo {
 export interface Balance {
     timestamp: string | null
     balance: number | null
-    tokens: [TokenBalance]
+    tokens: TokenBalance[]
 }
 
 export interface TokenBalance {
     token_id: string | null // Network entity ID in the format of shard.realm.num
     balance: number
+}
+
+export interface TokenRelationshipResponse {
+    tokens: Array<TokenRelationship>,
+    links: Links
+}
+
+export interface TokenRelationship {
+    automatic_association: boolean,
+    balance: number,
+    created_timestamp: string,
+    freeze_status: string, // [ NOT_APPLICABLE, FROZEN, UNFROZEN ]
+    kyc_status: string,    // [ NOT_APPLICABLE, GRANTED, REVOKED ]
+    token_id: string | null,
 }
 
 // ---------------------------------------------------------------------------------------------------------------------
@@ -164,7 +178,7 @@ export interface TokenTransfer extends Transfer {
 export interface CustomFee {
     amount: number | undefined
     collector_account_id: string | undefined        // Network entity ID in the format of shard.realm.num
-    effective_payer_account_ids: [string] | undefined
+    effective_payer_account_ids: string[] | undefined
     token_id: string | null | undefined             // Network entity ID in the format of shard.realm.num
 }
 
@@ -253,7 +267,7 @@ export function compareTokenTransferByTokenId(t1: TokenTransfer, t2: TokenTransf
 // ---------------------------------------------------------------------------------------------------------------------
 
 export interface TokensResponse {
-    tokens: [Token] | undefined
+    tokens: Token[] | undefined
     links: Links | undefined
 }
 
@@ -297,9 +311,9 @@ export interface TokenInfo {
 
 export interface CustomFees {
     created_timestamp: string | undefined
-    fixed_fees: [FixedFee] | undefined                    // Network entity ID in the format of shard.realm.num
-    fractional_fees: [FractionalFee] | undefined
-    royalty_fees: [RoyaltyFee] | null | undefined             // Network entity ID in the format of shard.realm.num
+    fixed_fees: FixedFee[] | undefined                    // Network entity ID in the format of shard.realm.num
+    fractional_fees: FractionalFee[] | undefined
+    royalty_fees: RoyaltyFee[] | null | undefined             // Network entity ID in the format of shard.realm.num
 }
 
 export interface FixedFee {
@@ -335,7 +349,7 @@ export interface FractionAmount {
 
 export interface TokenBalancesResponse {
     timestamp: string | null | undefined
-    balances: [TokenDistribution] | undefined
+    balances: TokenDistribution[] | undefined
     links: Links | undefined
 }
 
@@ -349,7 +363,7 @@ export interface TokenDistribution {
 // ---------------------------------------------------------------------------------------------------------------------
 
 export interface Nfts {
-    nfts: [Nft] | undefined
+    nfts: Nft[] | undefined
     links: Links | undefined
 }
 
@@ -400,7 +414,7 @@ export interface TransactionId {
 // ---------------------------------------------------------------------------------------------------------------------
 
 export interface ContractsResponse {
-    contracts: [Contract] | undefined
+    contracts: Contract[] | undefined
     links: Links | undefined
 }
 
@@ -542,7 +556,7 @@ export interface NetworkNode {
     node_account_id: string | null | undefined   // Network entity ID in the format of shard.realm.num
     node_cert_hash: string | null | undefined
     public_key: string | null | undefined   // hex encoded X509 RSA public key used to sign stream files
-    service_endpoints: [ServiceEndPoint] | undefined
+    service_endpoints: ServiceEndPoint[] | undefined
     timestamp: TimestampRange | undefined
     max_stake: number | null // The maximum stake (rewarded or not rewarded) this node can have as consensus weight
     min_stake: number | null // The minimum stake (rewarded or not rewarded) this node must reach before having non-zero consensus weight
