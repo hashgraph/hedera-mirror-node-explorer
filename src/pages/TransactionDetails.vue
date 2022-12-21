@@ -99,6 +99,12 @@
       </template>
 
       <template v-slot:rightContent>
+        <Property v-if="isTokenAssociation" id="associatedTokenId">
+          <template v-slot:name>Associated Token</template>
+          <template v-slot:value>
+            <TokenLink :token-id="associatedToken" :show-extra="true"/>
+          </template>
+        </Property>
         <Property v-if="systemContract" id="entityId">
           <template v-slot:name>Contract ID</template>
           <template v-slot:value>{{ systemContract }}</template>
@@ -253,6 +259,7 @@ import {routeManager} from "@/router"
 import {Timestamp} from "@/utils/Timestamp";
 import {TransactionHash} from "@/utils/TransactionHash";
 import {TokenRelationshipLoader} from "@/components/token/TokenRelationshipLoader";
+import TokenLink from "@/components/values/TokenLink.vue";
 
 const MAX_INLINE_CHILDREN = 9
 
@@ -261,6 +268,7 @@ export default defineComponent({
   name: 'TransactionDetails',
 
   components: {
+    TokenLink,
     TopicMessage,
     ContractResult,
     BlockLink,
@@ -332,10 +340,11 @@ export default defineComponent({
     )
     const topicMessageLoader = new TopicMessageLoader(messageTimestamp)
 
-    const associatedAccount = computed(() =>
-        (transactionLoader.transactionType.value === TransactionType.TOKENASSOCIATE)
-            ? transactionLoader.entity.value?.entity_id ?? null
-            : null
+    const isTokenAssociation = computed(
+        () => transactionLoader.transactionType.value === TransactionType.TOKENASSOCIATE)
+
+    const associatedAccount = computed(
+        () => isTokenAssociation.value ? transactionLoader.entity.value?.entity_id ?? null : null
     )
     const tokenRelationships = new TokenRelationshipLoader(associatedAccount)
 
@@ -372,6 +381,7 @@ export default defineComponent({
       routeToAllTransactions,
       displayAllChildrenLinks,
       topicMessageLoader,
+      isTokenAssociation,
       associatedToken
     }
   },
