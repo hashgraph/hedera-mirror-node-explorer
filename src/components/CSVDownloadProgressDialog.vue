@@ -129,9 +129,6 @@ export default defineComponent({
 
     const handleSave = () => {
       props.downloader.csvBlob.value?.text()
-          .then(blob => {
-            console.log("handleSave: " + blob)
-          })
 
       const url = window.URL.createObjectURL(props.downloader.csvBlob.value)
       const a = document.createElement('a')
