@@ -252,6 +252,7 @@ import {TopicMessageLoader} from "@/components/topic/TopicMessageLoader";
 import {routeManager} from "@/router"
 import {Timestamp} from "@/utils/Timestamp";
 import {TransactionHash} from "@/utils/TransactionHash";
+import {TokenRelationshipLoader} from "@/components/token/TokenRelationshipLoader";
 
 const MAX_INLINE_CHILDREN = 9
 
@@ -331,6 +332,19 @@ export default defineComponent({
     )
     const topicMessageLoader = new TopicMessageLoader(messageTimestamp)
 
+    const associatedAccount = computed(() =>
+        (transactionLoader.transactionType.value === TransactionType.TOKENASSOCIATE)
+            ? transactionLoader.entity.value?.entity_id ?? null
+            : null
+    )
+    const tokenRelationships = new TokenRelationshipLoader(associatedAccount)
+
+    const associatedToken = computed(() =>
+        transactionLoader.consensusTimestamp.value
+            ? tokenRelationships.lookupToken(transactionLoader.consensusTimestamp.value )
+            : null
+    )
+
     return {
       isSmallScreen,
       isLargeScreen,
@@ -357,7 +371,8 @@ export default defineComponent({
       makeOperatorAccountLabel,
       routeToAllTransactions,
       displayAllChildrenLinks,
-      topicMessageLoader
+      topicMessageLoader,
+      associatedToken
     }
   },
 })
