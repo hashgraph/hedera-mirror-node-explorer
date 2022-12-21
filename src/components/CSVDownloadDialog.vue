@@ -135,14 +135,6 @@ export default defineComponent({
 
     const handleDownload = () => {
       props.downloader.run()
-          .then(() => {
-            console.log("Download completed")
-            console.log("state: " + props.downloader.state.value)
-            console.log("csvBlob: " + props.downloader.csvBlob.value)
-            console.log("failureReason: " + props.downloader.failureReason.value)
-            console.log("downloadedCount: " + props.downloader.downloadedCount.value)
-            console.log("drained: " + props.downloader.drained.value)
-          })
       showProgressDialog.value = true
       context.emit('update:showDialog', false)
     }
