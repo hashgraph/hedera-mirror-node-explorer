@@ -79,8 +79,6 @@ export function makeSummaryLabel(row: Transaction): string {
             result = ""
             break
     }
-    console.log("makeSummaryLabel - row.name: " + row.name)
-    console.log("makeSummaryLabel - result: " + result)
     return result
 }
 
