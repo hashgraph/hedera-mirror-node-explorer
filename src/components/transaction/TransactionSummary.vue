@@ -34,7 +34,10 @@
         <TokenExtra :token-id="token" :show-name="true"/>
       </span>
     </div>
-    <div v-else class="w250">
+    <div v-else-if="isEthereumTransaction">
+      {{ ethereumSummary }}
+    </div>
+    <div v-else class="should-wrap">
       {{ makeSummaryLabel(transaction) }}
     </div>
   </template>
@@ -53,6 +56,7 @@ import {makeSummaryLabel} from "@/utils/TransactionTools";
 import TransferGraphSection from "@/components/transfer_graphs/TransferGraphSection.vue";
 import {TokenRelationshipLoader} from "@/components/token/TokenRelationshipLoader";
 import TokenExtra from "@/components/values/TokenExtra.vue";
+import {ContractLoader} from "@/components/contract/ContractLoader";
 
 const GRAPH_TRANSACTION_TYPES = [
   TransactionType.CRYPTOTRANSFER,
@@ -81,10 +85,29 @@ export default defineComponent({
     const token = computed(
         () => tokenRelationships.lookupToken(props.transaction?.consensus_timestamp ?? ""))
 
+    const isEthereumTransaction = computed(() => props.transaction?.name == TransactionType.ETHEREUMTRANSACTION)
+
+    const contractLoader = new ContractLoader(ref(props.transaction?.entity_id ?? null))
+    onMounted(() => contractLoader.requestLoad())
+
+    const ethereumSummary = computed(() => {
+      let result
+      if (props.transaction?.entity_id) {
+        result = contractLoader.contractId.value
+            ? 'Contract ID: ' + contractLoader.contractId.value
+            : 'Account ID: ' + props.transaction?.entity_id
+      } else {
+        result = ""
+      }
+      return result
+    })
+
     return {
       shouldGraph,
       isTokenAssociation,
       token,
+      isEthereumTransaction,
+      ethereumSummary,
       // From TransactionTools
       makeSummaryLabel,
       TransactionType
