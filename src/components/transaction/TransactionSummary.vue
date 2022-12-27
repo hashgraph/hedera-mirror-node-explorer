@@ -24,10 +24,16 @@
 
 <template>
   <template v-if="transaction">
-    <TransferGraphSection
-        v-if="shouldGraph"
+    <TransferGraphSection v-if="shouldGraph"
         v-bind:transaction="transaction"
         v-bind:compact="true"/>
+    <div v-else-if="isTokenAssociation">
+      {{ transaction?.entity_id }}
+      <span v-if="token">
+        <i class="fas fa-link mr-1 has-text-grey"></i>
+        <TokenExtra :token-id="token" :show-name="true"/>
+      </span>
+    </div>
     <div v-else class="w250">
       {{ makeSummaryLabel(transaction) }}
     </div>
@@ -41,23 +47,24 @@
 
 <script lang="ts">
 
-import {computed, defineComponent, PropType} from "vue";
+import {computed, defineComponent, onMounted, PropType, ref} from "vue";
 import {Transaction, TransactionType} from "@/schemas/HederaSchemas";
 import {makeSummaryLabel} from "@/utils/TransactionTools";
 import TransferGraphSection from "@/components/transfer_graphs/TransferGraphSection.vue";
+import {TokenRelationshipLoader} from "@/components/token/TokenRelationshipLoader";
+import TokenExtra from "@/components/values/TokenExtra.vue";
 
 const GRAPH_TRANSACTION_TYPES = [
   TransactionType.CRYPTOTRANSFER,
-  TransactionType.TOKENCREATION,
   TransactionType.TOKENBURN,
   TransactionType.TOKENMINT
 ]
 
 export default defineComponent({
   name: "TransactionSummary",
-  components: {TransferGraphSection},
+  components: {TokenExtra, TransferGraphSection},
   props: {
-    transaction: Object as PropType<Transaction|undefined>
+    transaction: Object as PropType<Transaction | undefined>
   },
 
   setup(props) {
@@ -65,9 +72,19 @@ export default defineComponent({
     const shouldGraph = computed(() => {
       return props.transaction?.name && GRAPH_TRANSACTION_TYPES.indexOf(props.transaction.name) != -1
     })
+
+    const isTokenAssociation = computed(() => props.transaction?.name === TransactionType.TOKENASSOCIATE)
+
+    const tokenRelationships = new TokenRelationshipLoader(ref(props.transaction?.entity_id ?? null))
+    onMounted(() => tokenRelationships.requestLoad())
+
+    const token = computed(
+        () => tokenRelationships.lookupToken(props.transaction?.consensus_timestamp ?? ""))
+
     return {
       shouldGraph,
-
+      isTokenAssociation,
+      token,
       // From TransactionTools
       makeSummaryLabel,
       TransactionType
