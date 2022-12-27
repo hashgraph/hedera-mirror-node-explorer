@@ -347,6 +347,7 @@ export default defineComponent({
         () => isTokenAssociation.value ? transactionLoader.entity.value?.entity_id ?? null : null
     )
     const tokenRelationships = new TokenRelationshipLoader(associatedAccount)
+    onMounted(() => tokenRelationships.requestLoad())
 
     const associatedToken = computed(() =>
         transactionLoader.consensusTimestamp.value
