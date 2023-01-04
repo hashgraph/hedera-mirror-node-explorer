@@ -25,23 +25,18 @@
 <template>
 
   <template v-if="isNone">
-    <span class="has-text-grey">None</span>
+    <span v-if="initialLoading"/>
+    <span v-else class="has-text-grey">None</span>
   </template>
-  <template v-else>
-    <template v-if="amount !== 0 || !hideZero">
-    <span class="has-hbar is-numeric"
-          :class="{ 'has-text-grey': isGrey, 'h-is-debit': isRed, 'h-is-credit': isGreen }">
+  <template v-else-if="amount !== 0 || !hideZero">
+    <span class="has-hbar is-numeric" :class="{ 'has-text-grey': isGrey, 'h-is-debit': isRed, 'h-is-credit': isGreen }">
       {{ formattedAmount }}
     </span>
-    </template>
-
-    <template v-if="showExtra">
-    <span class="ml-2">
+    <span v-if="showExtra" class="ml-2">
       <HbarExtra v-bind:tbar-amount="amount" v-bind:small-extra="smallExtra" v-bind:hide-zero="hideZero"/>
     </span>
-    </template>
   </template>
-
+  <span v-else/>
 
 </template>
 
@@ -51,8 +46,9 @@
 
 <script lang="ts">
 
-import {computed, defineComponent} from "vue";
+import {computed, defineComponent, inject, ref} from "vue";
 import HbarExtra from "@/components/values/HbarExtra.vue";
+import {initialLoadingKey} from "@/AppKeys";
 
 export default defineComponent({
   name: "HbarAmount",
@@ -84,6 +80,8 @@ export default defineComponent({
   },
 
   setup(props) {
+    const initialLoading = inject(initialLoadingKey, ref(false))
+
     const hbarAmount = computed(() => {
       return (props.amount??0) / 100000000
     })
@@ -110,7 +108,7 @@ export default defineComponent({
       return hbarAmount.value > 0 && props.colored
     })
 
-    return { isNone, formattedAmount, isGrey, isRed, isGreen }
+    return { initialLoading, isNone, formattedAmount, isGrey, isRed, isGreen }
   }
 });
 
