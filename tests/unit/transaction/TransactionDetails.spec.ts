@@ -195,7 +195,7 @@ describe("TransactionDetails.vue", () => {
         expect(wrapper.get("#gasUsedValue").text()).toBe("384,000")
         expect(wrapper.get("#maxFeePerGasValue").text()).toBe("None")
         expect(wrapper.get("#maxPriorityFeePerGasValue").text()).toBe("None")
-        expect(wrapper.get("#gasPriceValue").text()).toBe("0.00000000$0.0000")
+        expect(wrapper.get("#gasPriceValue").text()).toBe("None")
         expect(wrapper.findAll("#logIndexValue").length).toBe(3)
     });
 
@@ -255,7 +255,7 @@ describe("TransactionDetails.vue", () => {
         expect(wrapper.get("#gasUsedValue").text()).toBe("384,000")
         expect(wrapper.get("#maxFeePerGasValue").text()).toBe("None")
         expect(wrapper.get("#maxPriorityFeePerGasValue").text()).toBe("None")
-        expect(wrapper.get("#gasPriceValue").text()).toBe("0.00000000$0.0000")
+        expect(wrapper.get("#gasPriceValue").text()).toBe("None")
         expect(wrapper.findAll("#logIndexValue").length).toBe(3)
     });
 
