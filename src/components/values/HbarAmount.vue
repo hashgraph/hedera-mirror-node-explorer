@@ -24,18 +24,24 @@
 
 <template>
 
-  <template v-if="amount !== 0 || !hideZero">
+  <template v-if="isNone">
+    <span class="has-text-grey">None</span>
+  </template>
+  <template v-else>
+    <template v-if="amount !== 0 || !hideZero">
     <span class="has-hbar is-numeric"
           :class="{ 'has-text-grey': isGrey, 'h-is-debit': isRed, 'h-is-credit': isGreen }">
       {{ formattedAmount }}
     </span>
-  </template>
+    </template>
 
-  <template v-if="showExtra">
+    <template v-if="showExtra">
     <span class="ml-2">
       <HbarExtra v-bind:tbar-amount="amount" v-bind:small-extra="smallExtra" v-bind:hide-zero="hideZero"/>
     </span>
+    </template>
   </template>
+
 
 </template>
 
@@ -54,7 +60,6 @@ export default defineComponent({
   props: {
     amount: {
       type: Number,
-      default: 0
     },
     decimals: {
       type: Number,
@@ -80,16 +85,17 @@ export default defineComponent({
 
   setup(props) {
     const hbarAmount = computed(() => {
-      return props.amount / 100000000
+      return (props.amount??0) / 100000000
     })
+
+    const isNone = computed(() => props.amount == null)
+
     const formattedAmount = computed(() => {
       const amountFormatter = new Intl.NumberFormat('en-US', {
         minimumFractionDigits: props.decimals,
         maximumFractionDigits: 8
       })
       return amountFormatter.format(hbarAmount.value)
-
-      // return hbarAmount.value.toFixed(props.decimals)
     })
 
     const isGrey = computed(() => {
@@ -97,14 +103,14 @@ export default defineComponent({
     })
 
     const isRed = computed(() => {
-      return props.amount < 0 && props.colored
+      return hbarAmount.value < 0 && props.colored
     })
 
     const isGreen = computed(() => {
-      return props.amount > 0 && props.colored
+      return hbarAmount.value > 0 && props.colored
     })
 
-    return { formattedAmount, isGrey, isRed, isGreen }
+    return { isNone, formattedAmount, isGrey, isRed, isGreen }
   }
 });
 

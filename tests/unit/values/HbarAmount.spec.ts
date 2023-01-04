@@ -94,7 +94,7 @@ describe("HbarAmount.vue ", () => {
 
     test("with amount unset", async () => {
 
-        const expectedHbarAmount = "0.00000000"
+        const expectedHbarAmount = "None"
 
         const wrapper = mount(HbarAmount, {
             props: {
@@ -102,7 +102,7 @@ describe("HbarAmount.vue ", () => {
         });
 
         expect(wrapper.text()).toBe(expectedHbarAmount)
-        expect(wrapper.get('.has-hbar').classes('has-text-grey')).toBe(true)
+        expect(wrapper.find('.has-hbar').exists()).toBe(false)
     });
 
     test("with hideZero and showExtra", async () => {
