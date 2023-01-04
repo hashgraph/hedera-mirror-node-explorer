@@ -164,12 +164,18 @@
                 <KeyValue :key-bytes="account?.key?.key" :key-type="account?.key?._type" :show-none="true"/>
               </template>
             </Property>
-            <Property id="ethereumAddress">
-              <template v-slot:name>Ethereum Address</template>
+            <Property id="evmAddress">
+              <template v-slot:name>EVM Address</template>
               <template v-slot:value>
                 <EthAddress v-if="ethereumAddress"
                             :address="ethereumAddress"
                             :show-none="true"/>
+              </template>
+            </Property>
+            <Property id="ethereumNonce">
+              <template v-slot:name>Ethereum Nonce</template>
+              <template v-slot:value>
+                <StringValue :string-value="account?.ethereum_nonce?.toString()"/>
               </template>
             </Property>
       </template>
