@@ -172,6 +172,12 @@
                             :show-none="true"/>
               </template>
             </Property>
+            <Property>
+              <template v-slot:name>Ethereum Nonce</template>
+              <template v-slot:value>
+                <StringValue :string-value="account?.ethereum_nonce?.toString()"/>
+              </template>
+            </Property>
       </template>
     </DashboardCard>
 
