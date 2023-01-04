@@ -134,8 +134,8 @@
                 <TokenAmount v-else :amount="parseIntString(tokenInfo?.max_supply)" :show-extra="false" :token-id="normalizedTokenId"/>
               </template>
             </Property>
-            <Property id="ethereumAddress">
-              <template v-slot:name>ERC20 Address</template>
+            <Property id="evmAddress">
+              <template v-slot:name>EVM Address</template>
               <template v-slot:value>
                 <EthAddress v-if="ethereumAddress"
                             :address="ethereumAddress"

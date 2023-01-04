@@ -1398,7 +1398,7 @@ export const SAMPLE_ACCOUNT = {
     "memo": "",
     "receiver_sig_required": false,
     "evm_address": null,
-    "ethereum_nonce": null,
+    "ethereum_nonce": 0,
     "decline_reward": null,
     "staked_node_id": null,
     "staked_account_id": null,
