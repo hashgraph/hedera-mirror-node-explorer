@@ -165,7 +165,7 @@
               </template>
             </Property>
             <Property id="ethereumAddress">
-              <template v-slot:name>Ethereum Address</template>
+              <template v-slot:name>EVM Address</template>
               <template v-slot:value>
                 <EthAddress v-if="ethereumAddress"
                             :address="ethereumAddress"
