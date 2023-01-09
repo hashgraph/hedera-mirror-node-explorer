@@ -49,7 +49,8 @@ const SAMPLE_ACCOUNT_ADDRESS = EntityID.parse(SAMPLE_ACCOUNT.account)!.toAddress
 const matcher_account_with_address = "/api/v1/accounts/" + SAMPLE_ACCOUNT_ADDRESS
 mock.onGet(matcher_account_with_address).reply(200, SAMPLE_ACCOUNT)
 
-const matcher_account_with_public_key = "/api/v1/accounts/?account.publickey=" + SAMPLE_ACCOUNTS.accounts[0].key.key
+const matcher_account_with_public_key = "/api/v1/accounts/?account.publickey="
+    + SAMPLE_ACCOUNTS.accounts[0].key.key + "&limit=2"
 mock.onGet(matcher_account_with_public_key).reply(200, SAMPLE_ACCOUNTS)
 
 
@@ -95,7 +96,7 @@ describe("SearchRequest.ts", () => {
 
         expect(r.searchedId).toBe(SAMPLE_ACCOUNT.account)
         expect(r.account).toStrictEqual(SAMPLE_ACCOUNT)
-        expect(r.accountWithKey).toBeNull()
+        expect(r.accountsWithKey).toStrictEqual([])
         expect(r.transactions).toStrictEqual([])
         expect(r.tokenInfo).toBeNull()
         expect(r.topicMessages).toStrictEqual([])
@@ -110,7 +111,7 @@ describe("SearchRequest.ts", () => {
 
         expect(r.searchedId).toBe(SAMPLE_ACCOUNT_ADDRESS)
         expect(r.account).toStrictEqual(SAMPLE_ACCOUNT)
-        expect(r.accountWithKey).toBeNull()
+        expect(r.accountsWithKey).toStrictEqual([])
         expect(r.transactions).toStrictEqual([])
         expect(r.tokenInfo).toBeNull()
         expect(r.topicMessages).toStrictEqual([])
@@ -125,7 +126,7 @@ describe("SearchRequest.ts", () => {
 
         expect(r.searchedId).toBe(SAMPLE_ACCOUNT.key.key)
         expect(r.account).toBeNull()
-        expect(r.accountWithKey).toStrictEqual(SAMPLE_ACCOUNT)
+        expect(r.accountsWithKey).toStrictEqual([SAMPLE_ACCOUNT])
         expect(r.transactions).toStrictEqual([])
         expect(r.tokenInfo).toBeNull()
         expect(r.topicMessages).toStrictEqual([])
@@ -140,7 +141,7 @@ describe("SearchRequest.ts", () => {
 
         expect(r.searchedId).toBe(SAMPLE_ACCOUNT.alias)
         expect(r.account).toStrictEqual(SAMPLE_ACCOUNT)
-        expect(r.accountWithKey).toBeNull()
+        expect(r.accountsWithKey).toStrictEqual([])
         expect(r.transactions).toStrictEqual([])
         expect(r.tokenInfo).toBeNull()
         expect(r.topicMessages).toStrictEqual([])
@@ -156,7 +157,7 @@ describe("SearchRequest.ts", () => {
 
         expect(r.searchedId).toBe(SAMPLE_ALIAS_HEX)
         expect(r.account).toStrictEqual(SAMPLE_ACCOUNT)
-        expect(r.accountWithKey).toBeNull()
+        expect(r.accountsWithKey).toStrictEqual([])
         expect(r.transactions).toStrictEqual([])
         expect(r.tokenInfo).toBeNull()
         expect(r.topicMessages).toStrictEqual([])
@@ -175,7 +176,7 @@ describe("SearchRequest.ts", () => {
 
         expect(r.searchedId).toBe(SAMPLE_TRANSACTION.transaction_id)
         expect(r.account).toBeNull()
-        expect(r.accountWithKey).toBeNull()
+        expect(r.accountsWithKey).toStrictEqual([])
         expect(r.transactions).toStrictEqual([SAMPLE_TRANSACTION])
         expect(r.tokenInfo).toBeNull()
         expect(r.topicMessages).toStrictEqual([])
@@ -190,7 +191,7 @@ describe("SearchRequest.ts", () => {
 
         expect(r.searchedId).toBe(TRANSACTION_HASH)
         expect(r.account).toBeNull()
-        expect(r.accountWithKey).toBeNull()
+        expect(r.accountsWithKey).toStrictEqual([])
         expect(r.transactions).toStrictEqual([SAMPLE_TRANSACTION])
         expect(r.tokenInfo).toBeNull()
         expect(r.topicMessages).toStrictEqual([])
@@ -209,7 +210,7 @@ describe("SearchRequest.ts", () => {
 
         expect(r.searchedId).toBe(SAMPLE_TOKEN.token_id)
         expect(r.account).toBeNull()
-        expect(r.accountWithKey).toBeNull()
+        expect(r.accountsWithKey).toStrictEqual([])
         expect(r.transactions).toStrictEqual([])
         expect(r.tokenInfo).toStrictEqual(SAMPLE_TOKEN)
         expect(r.topicMessages).toStrictEqual([])
@@ -224,7 +225,7 @@ describe("SearchRequest.ts", () => {
 
         expect(r.searchedId).toBe(SAMPLE_TOKEN_ADDRESS)
         expect(r.account).toBeNull()
-        expect(r.accountWithKey).toBeNull()
+        expect(r.accountsWithKey).toStrictEqual([])
         expect(r.transactions).toStrictEqual([])
         expect(r.tokenInfo).toStrictEqual(SAMPLE_TOKEN)
         expect(r.topicMessages).toStrictEqual([])
@@ -243,7 +244,7 @@ describe("SearchRequest.ts", () => {
 
         expect(r.searchedId).toBe(SAMPLE_TOPIC_ID)
         expect(r.account).toBeNull()
-        expect(r.accountWithKey).toBeNull()
+        expect(r.accountsWithKey).toStrictEqual([])
         expect(r.transactions).toStrictEqual([])
         expect(r.tokenInfo).toBeNull()
         expect(r.topicMessages).toStrictEqual(SAMPLE_TOPIC_MESSAGES.messages)
@@ -262,7 +263,7 @@ describe("SearchRequest.ts", () => {
 
         expect(r.searchedId).toBe(SAMPLE_CONTRACT.contract_id)
         expect(r.account).toBeNull()
-        expect(r.accountWithKey).toBeNull()
+        expect(r.accountsWithKey).toStrictEqual([])
         expect(r.transactions).toStrictEqual([])
         expect(r.tokenInfo).toBeNull()
         expect(r.topicMessages).toStrictEqual([])
@@ -277,7 +278,7 @@ describe("SearchRequest.ts", () => {
 
         expect(r.searchedId).toBe(SAMPLE_CONTRACT.evm_address)
         expect(r.account).toBeNull()
-        expect(r.accountWithKey).toBeNull()
+        expect(r.accountsWithKey).toStrictEqual([])
         expect(r.transactions).toStrictEqual([])
         expect(r.tokenInfo).toBeNull()
         expect(r.topicMessages).toStrictEqual([])
@@ -293,7 +294,7 @@ describe("SearchRequest.ts", () => {
 
         expect(r.searchedId).toBe(UNKNOWN_ID)
         expect(r.account).toBeNull()
-        expect(r.accountWithKey).toBeNull()
+        expect(r.accountsWithKey).toStrictEqual([])
         expect(r.transactions).toStrictEqual([])
         expect(r.tokenInfo).toBeNull()
         expect(r.topicMessages).toStrictEqual([])
@@ -308,7 +309,7 @@ describe("SearchRequest.ts", () => {
 
         expect(r.searchedId).toBe(INVALID_EVM_ADDRESS)
         expect(r.account).toBeNull()
-        expect(r.accountWithKey).toBeNull()
+        expect(r.accountsWithKey).toStrictEqual([])
         expect(r.transactions).toStrictEqual([])
         expect(r.tokenInfo).toBeNull()
         expect(r.topicMessages).toStrictEqual([])
@@ -321,7 +322,7 @@ describe("SearchRequest.ts", () => {
 
         expect(r2.searchedId).toBe(aliasHex2)
         expect(r2.account).toBeNull()
-        expect(r2.accountWithKey).toBeNull()
+        expect(r.accountsWithKey).toStrictEqual([])
         expect(r2.transactions).toStrictEqual([])
         expect(r2.tokenInfo).toBeNull()
         expect(r2.topicMessages).toStrictEqual([])
@@ -337,7 +338,7 @@ describe("SearchRequest.ts", () => {
 
         expect(r.searchedId).toBe(INVAlID_ID)
         expect(r.account).toBeNull()
-        expect(r.accountWithKey).toBeNull()
+        expect(r.accountsWithKey).toStrictEqual([])
         expect(r.transactions).toStrictEqual([])
         expect(r.tokenInfo).toBeNull()
         expect(r.topicMessages).toStrictEqual([])

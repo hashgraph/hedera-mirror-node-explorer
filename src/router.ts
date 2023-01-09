@@ -47,6 +47,7 @@ import {WalletManager} from "@/utils/wallet/WalletManager";
 import BlockDetails from "@/pages/BlockDetails.vue";
 import Blocks from "@/pages/Blocks.vue";
 import {getEnv} from "@/utils/getEnv";
+import AccountsWithKey from "@/pages/AccountsWithKey.vue";
 
 const routes: Array<RouteRecordRaw> = [
   {
@@ -94,6 +95,12 @@ const routes: Array<RouteRecordRaw> = [
     path: '/:network/accounts',
     name: 'Accounts',
     component: Accounts,
+    props: true
+  },
+  {
+    path: '/:network/accountsWithKey/:pubKey',
+    name: 'AccountsWithKey',
+    component: AccountsWithKey,
     props: true
   },
   {

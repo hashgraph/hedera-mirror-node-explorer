@@ -127,9 +127,14 @@ export default defineComponent({
                 routeManager.routeToAccount(r.account.account)
               }
               searchDidEnd(true)
-            } else if (r.accountWithKey != null) {
-              if (r.accountWithKey.account) {
-                routeManager.routeToAccount(r.accountWithKey.account)
+            } else if (r.accountsWithKey.length >= 1) {
+              if (r.accountsWithKey.length >= 2) {
+                routeManager.routeToAccountsWithKey(r.searchedId)
+              } else {
+                const accountId = r.accountsWithKey[0].account
+                if (accountId) {
+                  routeManager.routeToAccount(accountId)
+                }
               }
               searchDidEnd(true)
             } else if (r.transactions.length >= 1) {
