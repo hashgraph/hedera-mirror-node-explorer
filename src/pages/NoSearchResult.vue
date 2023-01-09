@@ -36,8 +36,7 @@
     </p>
     <br/>
 
-    <div class="block">
-      <p class="h-is-tertiary-text" style="font-weight: 300">
+    <div class="block h-is-tertiary-text" style="font-weight: 300">
         <template v-if="errorCount >= 1">
           Server reported errors during the search execution.<br/>
           This might be transient. Try to search again in a few moments.
@@ -47,16 +46,56 @@
           <span style="font-weight: 400">{{ this.searchedId }}</span>
           <span >".</span>
           <br/><br/>
-          Make sure you enter one of the expressions below:<br/><br/>
-          an entity ID (0.0.x),<br/>
-          a transaction ID (0.0.x@seconds.nanoseconds),<br/>
-          a transaction hash (48 bytes in hexadecimal notation),<br/>
-          a transaction timestamp (seconds.nanoseconds),<br/>
-          an ethereum address (20 bytes in hexadecimal notation),<br/>
-          an account public key (32 or 33 bytes in hexadecimal notation),<br/>
-          an account alias (string in base 32 or hexadecimal notation).<br/>
+          <hr style="height: 1px" />
+          <br/>
+
+          <div class="has-text-centered">
+            <ul class="has-text-left" style="display: inline-block; max-width: 1024px">
+              <span style="display: inline-block">Make sure you enter one of the expressions below:</span>
+              <br/><br/>
+              <li>
+                &bull; an entity ID (0.0.x)<br/>
+              </li>
+              <li>
+                &bull; a transaction ID (0.0.x@seconds.nanoseconds)<br/>
+                <span class="should-wrap" style="display: inline-block; margin-left: 15px; font-weight: 200; font-size: 14px">
+                  Example:&nbsp;0.0.1484550@1672860351.268707677
+                </span>
+              </li>
+              <li>
+                &bull; a transaction hash (96 characters in hexadecimal notation)<br/>
+                <span class="should-wrap" style="display: inline-block; margin-left: 15px; font-weight: 200; font-size: 14px">
+                  Example:&nbsp;0x7b35c2dba2199cea846d96b58d8786132831a3522650bb369899e6fac01933a8ca3d79da0db93cd2bf816c1b97819afa
+                </span>
+              </li>
+              <li>
+                &bull; a transaction timestamp (seconds.nanoseconds)<br/>
+                <span class="should-wrap" style="display: inline-block; margin-left: 15px; font-weight: 200; font-size: 14px">
+                  Example:&nbsp;1672860351.268707677
+                </span>
+              </li>
+              <li>
+                &bull; an account public key (64 or 66 characters in hexadecimal notation)<br/>
+                <span class="should-wrap" style="display: inline-block; margin-left: 15px; font-weight: 200; font-size: 14px">
+                  Example:&nbsp;0xe3cc1bffc8668948721a6fe1816d282137222ab3a8e83dc1f45d3199a395e0f5
+                </span>
+              </li>
+              <li>
+                &bull; a public-key-format alias (string in base 32 or hexadecimal notation)<br/>
+                <span class="should-wrap" style="display: inline-block; margin-left: 15px; font-weight: 200; font-size: 14px">
+                  Example:&nbsp;0x1220e3cc1bffc8668948721a6fe1816d282137222ab3a8e83dc1f45d3199a395e0f5
+                </span>
+              </li>
+              <li>
+                &bull; an Ethereum-format alias (40 characters in hexadecimal notation)<br/>
+                <span class="should-wrap" style="display: inline-block; margin-left: 15px; font-weight: 200; font-size: 14px">
+                  Example:&nbsp;0x0000000000000000000000000000000000000455
+                </span>
+              </li>
+            </ul>
+          </div>
+
         </template>
-      </p>
     </div>
 
   </section>
