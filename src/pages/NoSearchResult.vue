@@ -46,7 +46,7 @@
           <span style="font-weight: 400">{{ this.searchedId }}</span>
           <span >".</span>
           <br/><br/>
-          <hr style="height: 1px" />
+          <hr style="height: 0.5px" />
           <br/>
 
           <div class="has-text-centered">
@@ -55,6 +55,9 @@
               <br/><br/>
               <li>
                 &bull; an entity ID (0.0.x)<br/>
+                <span class="should-wrap" style="display: inline-block; margin-left: 15px; font-weight: 200; font-size: 14px">
+                  Example:&nbsp;0.0.1484550
+                </span>
               </li>
               <li>
                 &bull; a transaction ID (0.0.x@seconds.nanoseconds)<br/>
