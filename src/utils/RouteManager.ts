@@ -126,7 +126,7 @@ export class RouteManager {
 
     public testAccountRoute(route: string|null = null): boolean {
         const r = route ?? this.currentRoute.value
-        return r === 'Accounts' || r === 'AccountDetails' || r === 'AccountBalances'
+        return r === 'Accounts' || r === 'AccountDetails' || r === 'AccountBalances' || r === 'AccountsWithKey'
     }
 
     public testNodeRoute(route: string|null = null): boolean {
@@ -193,6 +193,20 @@ export class RouteManager {
 
     public routeToAccount(accountId: string): Promise<NavigationFailure | void | undefined> {
         return this.router.push(this.makeRouteToAccount(accountId))
+    }
+
+    //
+    // Accounts with key
+    //
+
+    public makeRouteToAccountsWithKey(pubKey: string): RouteLocationRaw {
+        return {
+            name: 'AccountsWithKey', params: {pubKey: pubKey}
+        }
+    }
+
+    public routeToAccountsWithKey(pubKey: string): Promise<NavigationFailure | void | undefined> {
+        return this.router.push(this.makeRouteToAccountsWithKey(pubKey))
     }
 
     //
