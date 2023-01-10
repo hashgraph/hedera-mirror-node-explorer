@@ -29,7 +29,7 @@
     <DashboardCard>
       <template v-slot:title>
         <span class="h-is-primary-title">Node </span>
-        <span class="h-is-secondary-text is-numeric mr-3">{{ nodeId }}</span>
+        <span class="h-is-secondary-text is-numeric mr-3">{{ nodeIdNb }}</span>
       </template>
 
       <template v-slot:content>
@@ -175,7 +175,8 @@ export default defineComponent({
     const isSmallScreen = inject('isSmallScreen', true)
     const isTouchDevice = inject('isTouchDevice', false)
 
-    const nodeCursor = NodeRegistry.getCursor(computed(() => PathParam.parseNodeId(props.nodeId)))
+    const nodeIdNb = computed(() => PathParam.parseNodeId(props.nodeId))
+    const nodeCursor = NodeRegistry.getCursor(nodeIdNb)
     const stakeLoader = new StakeLoader()
 
     const stakeTotal = computed(() => stakeLoader.entity.value?.stake_total ?? 0)
@@ -208,6 +209,7 @@ export default defineComponent({
     return {
       isSmallScreen,
       isTouchDevice,
+      nodeIdNb,
       node: nodeCursor.node,
       approxYearlyRate: nodeCursor.approxYearlyRate,
       stake: nodeCursor.stake,
