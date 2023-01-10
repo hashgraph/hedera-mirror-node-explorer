@@ -54,45 +54,48 @@
               <br/><br/>
               <div>
                 &bull; an entity ID (0.0.x)<br/>
-                <span class="should-wrap h-help-item">
+                <div class="should-wrap h-help-item">
                   Example:&nbsp;0.0.1484550
-                </span>
+                </div>
               </div>
               <div>
                 &bull; a transaction ID (0.0.x@seconds.nanoseconds)<br/>
-                <span class="should-wrap h-help-item">
+                <div class="should-wrap h-help-item">
                   Example:&nbsp;0.0.1484550@1672860351.268707677
-                </span>
+                </div>
               </div>
               <div>
                 &bull; a transaction hash (96 characters in hexadecimal notation)<br/>
-                <span class="should-wrap h-help-item">
+                <div class="should-wrap h-help-item">
                   Example:&nbsp;0x7b35c2dba2199cea846d96b58d8786132831a3522650bb369899e6fac01933a8ca3d79da0db93cd2bf816c1b97819afa
-                </span>
+                </div>
               </div>
               <div>
                 &bull; a transaction timestamp (seconds.nanoseconds)<br/>
-                <span class="should-wrap h-help-item">
+                <div class="should-wrap h-help-item">
                   Example:&nbsp;1672860361.726937910
-                </span>
+                </div>
               </div>
               <div>
                 &bull; an account public key (64 or 66 characters in hexadecimal notation)<br/>
-                <span class="should-wrap h-help-item">
+                <div class="should-wrap h-help-item">
                   Example:&nbsp;0x0000fc0634e2ab455eff393f04819efa262fe5e6ab1c7ed1d4f85fbcd8e6e296
-                </span>
+                </div>
               </div>
               <div>
                 &bull; a public-key-format alias (string in base 32 or hexadecimal notation)<br/>
-                <span class="should-wrap h-help-item">
-                  Example:&nbsp;0x12200000fc0634e2ab455eff393f04819efa262fe5e6ab1c7ed1d4f85fbcd8e6e296
-                </span>
+                <div class="should-wrap h-help-item">
+                  Example:&nbsp;CIQAAAH4AY2OFK2FL37TSPYEQGPPUJRP4XTKWHD62HKPQX543DTOFFQ
+                </div>
+                <div class="should-wrap h-help-item">
+                  or:&nbsp;0x12200000fc0634e2ab455eff393f04819efa262fe5e6ab1c7ed1d4f85fbcd8e6e296
+                </div>
               </div>
               <div>
                 &bull; an Ethereum-format alias (40 characters in hexadecimal notation)<br/>
-                <span class="should-wrap h-help-item">
+                <div class="should-wrap h-help-item">
                   Example:&nbsp;0x00000000000000000000000000000000000b03ae
-                </span>
+                </div>
               </div>
             </div>
           </div>
@@ -135,7 +138,6 @@ export default defineComponent({
 <style scoped>
 
 .h-help-item {
-  display: inline-block;
   margin-left: 15px;
   font-weight: 200;
   font-size: 14px;
