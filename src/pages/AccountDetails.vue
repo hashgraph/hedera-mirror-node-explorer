@@ -161,7 +161,7 @@
         <Property id="alias" :class="{'mb-0':account?.alias}">
           <template v-slot:name>Public-key-format Alias</template>
           <template v-slot:value>
-            <AliasValuev2 :alias-value="account?.alias"/>
+            <AliasValue :alias-value="account?.alias"/>
           </template>
         </Property>
 
@@ -250,7 +250,7 @@ import router, {routeManager} from "@/router";
 import TransactionLink from "@/components/values/TransactionLink.vue";
 import {StakingRewardsTableController} from "@/components/staking/StakingRewardsTableController";
 import StakingRewardsTable from "@/components/staking/StakingRewardsTable.vue";
-import AliasValuev2 from "@/components/values/AliasValuev2.vue";
+import AliasValue from "@/components/values/AliasValue.vue";
 
 const MAX_TOKEN_BALANCES = 10
 
@@ -259,7 +259,7 @@ export default defineComponent({
   name: 'AccountDetails',
 
   components: {
-    AliasValuev2,
+    AliasValue,
     TransactionLink,
     AccountLink,
     NotificationBanner,
