@@ -43,59 +43,58 @@
         </template>
         <template v-else>
           <span >No account, transaction, contract, token or topic matches "</span>
-          <span style="font-weight: 400">{{ this.searchedId }}</span>
+          <span style="font-weight: 400">{{ searchedId }}</span>
           <span >".</span>
           <br/><br/>
           <hr style="height: 0.5px" />
           <br/>
-
           <div class="has-text-centered">
-            <ul class="has-text-left" style="display: inline-block; max-width: 1024px">
+            <div class="has-text-left" style="display: inline-block; max-width: 1024px">
               <span style="display: inline-block">Make sure you enter one of the expressions below:</span>
               <br/><br/>
-              <li>
+              <div>
                 &bull; an entity ID (0.0.x)<br/>
-                <span class="should-wrap" style="display: inline-block; margin-left: 15px; font-weight: 200; font-size: 14px">
+                <span class="should-wrap h-help-item">
                   Example:&nbsp;0.0.1484550
                 </span>
-              </li>
-              <li>
+              </div>
+              <div>
                 &bull; a transaction ID (0.0.x@seconds.nanoseconds)<br/>
-                <span class="should-wrap" style="display: inline-block; margin-left: 15px; font-weight: 200; font-size: 14px">
+                <span class="should-wrap h-help-item">
                   Example:&nbsp;0.0.1484550@1672860351.268707677
                 </span>
-              </li>
-              <li>
+              </div>
+              <div>
                 &bull; a transaction hash (96 characters in hexadecimal notation)<br/>
-                <span class="should-wrap" style="display: inline-block; margin-left: 15px; font-weight: 200; font-size: 14px">
+                <span class="should-wrap h-help-item">
                   Example:&nbsp;0x7b35c2dba2199cea846d96b58d8786132831a3522650bb369899e6fac01933a8ca3d79da0db93cd2bf816c1b97819afa
                 </span>
-              </li>
-              <li>
+              </div>
+              <div>
                 &bull; a transaction timestamp (seconds.nanoseconds)<br/>
-                <span class="should-wrap" style="display: inline-block; margin-left: 15px; font-weight: 200; font-size: 14px">
-                  Example:&nbsp;1672860351.268707677
+                <span class="should-wrap h-help-item">
+                  Example:&nbsp;1672860361.726937910
                 </span>
-              </li>
-              <li>
+              </div>
+              <div>
                 &bull; an account public key (64 or 66 characters in hexadecimal notation)<br/>
-                <span class="should-wrap" style="display: inline-block; margin-left: 15px; font-weight: 200; font-size: 14px">
-                  Example:&nbsp;0xe3cc1bffc8668948721a6fe1816d282137222ab3a8e83dc1f45d3199a395e0f5
+                <span class="should-wrap h-help-item">
+                  Example:&nbsp;0x0000fc0634e2ab455eff393f04819efa262fe5e6ab1c7ed1d4f85fbcd8e6e296
                 </span>
-              </li>
-              <li>
+              </div>
+              <div>
                 &bull; a public-key-format alias (string in base 32 or hexadecimal notation)<br/>
-                <span class="should-wrap" style="display: inline-block; margin-left: 15px; font-weight: 200; font-size: 14px">
-                  Example:&nbsp;0x1220e3cc1bffc8668948721a6fe1816d282137222ab3a8e83dc1f45d3199a395e0f5
+                <span class="should-wrap h-help-item">
+                  Example:&nbsp;0x12200000fc0634e2ab455eff393f04819efa262fe5e6ab1c7ed1d4f85fbcd8e6e296
                 </span>
-              </li>
-              <li>
+              </div>
+              <div>
                 &bull; an Ethereum-format alias (40 characters in hexadecimal notation)<br/>
-                <span class="should-wrap" style="display: inline-block; margin-left: 15px; font-weight: 200; font-size: 14px">
-                  Example:&nbsp;0x0000000000000000000000000000000000000455
+                <span class="should-wrap h-help-item">
+                  Example:&nbsp;0x00000000000000000000000000000000000b03ae
                 </span>
-              </li>
-            </ul>
+              </div>
+            </div>
           </div>
 
         </template>
@@ -134,5 +133,12 @@ export default defineComponent({
 <!-- --------------------------------------------------------------------------------------------------------------- -->
 
 <style scoped>
+
+.h-help-item {
+  display: inline-block;
+  margin-left: 15px;
+  font-weight: 200;
+  font-size: 14px;
+}
 
 </style>
