@@ -133,21 +133,21 @@
                 <DurationValue v-bind:number-value="account?.auto_renew_period"/>
               </template>
             </Property>
+            <Property id="maxAutoAssociation">
+              <template v-slot:name>Max. Auto. Association</template>
+              <template v-slot:value>
+                <StringValue :string-value="account?.max_automatic_token_associations?.toString()"/>
+              </template>
+            </Property>
+            <Property id="receiverSigRequired">
+              <template v-slot:name>Receiver Sig. Required</template>
+              <template v-slot:value>
+                <StringValue :string-value="account?.receiver_sig_required?.toString()"/>
+              </template>
+            </Property>
       </template>
 
       <template v-slot:rightContent>
-              <Property id="maxAutoAssociation">
-                <template v-slot:name>Max. Auto. Association</template>
-                <template v-slot:value>
-                  <StringValue :string-value="account?.max_automatic_token_associations?.toString()"/>
-                </template>
-              </Property>
-              <Property id="receiverSigRequired">
-                <template v-slot:name>Receiver Sig. Required</template>
-                <template v-slot:value>
-                  <StringValue :string-value="account?.receiver_sig_required?.toString()"/>
-                </template>
-              </Property>
             <Property id="key">
               <template v-slot:name>Admin Key</template>
               <template v-slot:value>
