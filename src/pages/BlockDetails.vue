@@ -24,7 +24,7 @@
 
 <template>
 
-  <section class="section" :class="{'h-mobile-background': isTouchDevice || !isSmallScreen}">
+  <section :class="{'h-mobile-background': isTouchDevice || !isSmallScreen}" class="section">
 
     <DashboardCard>
       <template v-slot:title>
@@ -57,19 +57,19 @@
             <Property id="blockHash">
               <template v-slot:name>Hash</template>
               <template v-slot:value>
-                <KeyValue :key-bytes="block?.hash" key-type="SHA384" :show-none="true"/>
+                <KeyValue :key-bytes="block?.hash" :show-none="true" key-type="SHA384"/>
               </template>
             </Property>
             <Property id="fromTimestamp">
               <template v-slot:name>From Timestamp</template>
               <template v-slot:value>
-                <TimestampValue :timestamp="block?.timestamp?.from" :show-none="true"/>
+                <TimestampValue :show-none="true" :timestamp="block?.timestamp?.from"/>
               </template>
             </Property>
             <Property id="toTimestamp">
               <template v-slot:name>To Timestamp</template>
               <template v-slot:value>
-                <TimestampValue :timestamp="block?.timestamp?.to" :show-none="true"/>
+                <TimestampValue :show-none="true" :timestamp="block?.timestamp?.to"/>
               </template>
             </Property>
             <Property id="gasUsed">
@@ -162,9 +162,9 @@ export default defineComponent({
     const notification = computed(() => {
       let result
       if (blockLoader.blockLocator.value === null) {
-        result =  "Invalid block number or hash: " + props.blockHon
+        result = "Invalid block number or hash: " + props.blockHon
       } else if (blockLoader.got404.value) {
-        result =  "Block " + blockLoader.blockLocator.value + " was not found"
+        result = "Block " + blockLoader.blockLocator.value + " was not found"
       } else {
         result = null
       }

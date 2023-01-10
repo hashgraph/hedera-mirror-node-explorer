@@ -24,20 +24,20 @@
 
 <template>
 
-  <section class="section" :class="{'h-mobile-background': isTouchDevice || !isSmallScreen}">
+  <section :class="{'h-mobile-background': isTouchDevice || !isSmallScreen}" class="section">
 
     <DashboardCard class="h-card">
       <template v-slot:title>
         <div class="is-flex is-align-items-center">
           <span class="h-is-primary-title mr-1">Transaction </span>
-          <span class="h-is-secondary-text mr-3">{{ formattedTransactionId ?? ""}}</span>
+          <span class="h-is-secondary-text mr-3">{{ formattedTransactionId ?? "" }}</span>
           <div v-if="transaction">
             <div v-if="transactionSucceeded"
                  class="h-has-pill has-background-success mr-3 h-is-text-size-2 mt-3">SUCCESS
             </div>
             <div v-else class="h-has-pill has-background-danger mr-3 h-is-text-size-2 mt-3">FAILURE</div>
           </div>
-          <span v-if="routeToAllTransactions && isLargeScreen" class="is-inline-block mt-2" id="allTransactionsLink">
+          <span v-if="routeToAllTransactions && isLargeScreen" id="allTransactionsLink" class="is-inline-block mt-2">
           <router-link :to="routeToAllTransactions">
             <span class="h-is-property-text has-text-grey">Show all transactions with the same ID</span>
           </router-link>
@@ -69,7 +69,7 @@
         <Property id="consensusAt">
           <template v-slot:name>Consensus at</template>
           <template v-slot:value>
-            <TimestampValue v-bind:timestamp="transaction?.consensus_timestamp" v-bind:show-none="true" />
+            <TimestampValue v-bind:show-none="true" v-bind:timestamp="transaction?.consensus_timestamp"/>
           </template>
         </Property>
         <Property id="transactionHash">
@@ -93,7 +93,7 @@
         <Property id="memo">
           <template v-slot:name>Memo</template>
           <template v-slot:value>
-            <BlobValue :blob-value="transaction?.memo_base64" :show-none="true" :base64="true" class="should-wrap"/>
+            <BlobValue :base64="true" :blob-value="transaction?.memo_base64" :show-none="true" class="should-wrap"/>
           </template>
         </Property>
       </template>
@@ -141,7 +141,7 @@
             <HbarAmount v-if="transaction" v-bind:amount="maxFee" v-bind:show-extra="true"/>
           </template>
         </Property>
-        <Property id="netAmount" v-if="false">
+        <Property v-if="false" id="netAmount">
           <template v-slot:name>Net Amount</template>
           <template v-slot:value>
             <HbarAmount v-if="transaction" v-bind:amount="netAmount" v-bind:show-extra="true"/>
@@ -163,7 +163,7 @@
           <template v-slot:name>Scheduled</template>
           <template v-if="transaction?.scheduled===true" v-slot:value>
             True
-            <div id="schedulingLink" v-if="schedulingTransaction">
+            <div v-if="schedulingTransaction" id="schedulingLink">
               <router-link :to="routeManager.makeRouteToTransactionObj(schedulingTransaction)">
                 <span class="has-text-grey h-is-text-size-3">Show schedule create transaction</span>
               </router-link>
@@ -192,7 +192,8 @@
               {{ 'Show all ' + childTransactions.length + ' transactions' }}
             </router-link>
             <div v-else>
-              <router-link v-for="tx in childTransactions" :key="tx.nonce" :to="routeManager.makeRouteToTransactionObj(tx)">
+              <router-link v-for="tx in childTransactions" :key="tx.nonce"
+                           :to="routeManager.makeRouteToTransactionObj(tx)">
                 <span class="mr-2 is-numeric">{{ '#' + tx.nonce }}</span>
                 <span>{{ makeTypeLabel(tx.name) }}</span>
                 <br/></router-link>
@@ -215,10 +216,10 @@
 
     <TopicMessage :message-loader="topicMessageLoader"/>
 
-    <ContractResult :timestamp="transaction?.consensus_timestamp"
-                    :contract-id="contractId"
-                    :transaction-id-or-hash="transaction?.transaction_id"
-                    :is-parent="transaction?.parent_consensus_timestamp === null"/>
+    <ContractResult :contract-id="contractId"
+                    :is-parent="transaction?.parent_consensus_timestamp === null"
+                    :timestamp="transaction?.consensus_timestamp"
+                    :transaction-id-or-hash="transaction?.transaction_id"/>
 
   </section>
 
