@@ -7,7 +7,7 @@
     </scripts>
     <node-interpreter value="project" />
     <envs>
-      <env name="BRANDING_LOCATION" value="../branding" />
+      <env name="BRANDING_LOCATION" value="../hashscan.io" />
     </envs>
     <method v="2" />
   </configuration>

@@ -74,16 +74,6 @@
             </div>
           </div>
         </div>
-        <div class="columns h-is-property-text">
-          <div class="column">
-            <Property id="alias" :class="{'mb-0':account?.alias}" :full-width="true">
-              <template v-slot:name>Alias</template>
-              <template v-slot:value>
-                <AliasValue :alias-value="account?.alias"/>
-              </template>
-            </Property>
-          </div>
-        </div>
       </template>
 
       <template v-slot:leftContent>
@@ -143,29 +133,37 @@
                 <DurationValue v-bind:number-value="account?.auto_renew_period"/>
               </template>
             </Property>
+            <Property id="maxAutoAssociation">
+              <template v-slot:name>Max. Auto. Association</template>
+              <template v-slot:value>
+                <StringValue :string-value="account?.max_automatic_token_associations?.toString()"/>
+              </template>
+            </Property>
+            <Property id="receiverSigRequired">
+              <template v-slot:name>Receiver Sig. Required</template>
+              <template v-slot:value>
+                <StringValue :string-value="account?.receiver_sig_required?.toString()"/>
+              </template>
+            </Property>
       </template>
 
       <template v-slot:rightContent>
-              <Property id="maxAutoAssociation">
-                <template v-slot:name>Max. Auto. Association</template>
-                <template v-slot:value>
-                  <StringValue :string-value="account?.max_automatic_token_associations?.toString()"/>
-                </template>
-              </Property>
-              <Property id="receiverSigRequired">
-                <template v-slot:name>Receiver Sig. Required</template>
-                <template v-slot:value>
-                  <StringValue :string-value="account?.receiver_sig_required?.toString()"/>
-                </template>
-              </Property>
             <Property id="key">
               <template v-slot:name>Admin Key</template>
               <template v-slot:value>
                 <KeyValue :key-bytes="account?.key?.key" :key-type="account?.key?._type" :show-none="true"/>
               </template>
             </Property>
+
+            <Property id="alias" :class="{'mb-0':account?.alias}">
+              <template v-slot:name>public-key-format Alias</template>
+              <template v-slot:value>
+                <AliasValuev2 :alias-value="account?.alias"/>
+              </template>
+            </Property>
+
             <Property id="evmAddress">
-              <template v-slot:name>EVM Address</template>
+              <template v-slot:name>Ethereum-format Alias</template>
               <template v-slot:value>
                 <EthAddress v-if="ethereumAddress"
                             :address="ethereumAddress"
@@ -244,12 +242,12 @@ import AccountLink from "@/components/values/AccountLink.vue";
 import {AccountLoader} from "@/components/account/AccountLoader";
 import {ContractLoader} from "@/components/contract/ContractLoader";
 import {NodeLoader} from "@/components/node/NodeLoader";
-import AliasValue from "@/components/values/AliasValue.vue";
 import TransactionFilterSelect from "@/components/transaction/TransactionFilterSelect.vue";
 import router, {routeManager} from "@/router";
 import TransactionLink from "@/components/values/TransactionLink.vue";
 import {StakingRewardsTableController} from "@/components/staking/StakingRewardsTableController";
 import StakingRewardsTable from "@/components/staking/StakingRewardsTable.vue";
+import AliasValuev2 from "@/components/values/AliasValuev2.vue";
 
 const MAX_TOKEN_BALANCES = 10
 
@@ -258,8 +256,8 @@ export default defineComponent({
   name: 'AccountDetails',
 
   components: {
+    AliasValuev2,
     TransactionLink,
-    AliasValue,
     AccountLink,
     NotificationBanner,
     Property,
