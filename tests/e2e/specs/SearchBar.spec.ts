@@ -161,6 +161,54 @@ describe('Search Bar', () => {
         testBody(searchContract, '/testnet/contract/' + searchContract, 'Contract ', true)
     })
 
+    it('should find the account by public key', () => {
+        cy.visit('/testnet/dashboard')
+        const searchKey = "0xe88d731ad218447874d7470b797cac989d23107b4da129441665625cd5269ab0"
+        const searchAccount = "0.0.15818224"
+        testBody(
+            searchAccount,
+            '/testnet/account/' + searchAccount,
+            'Account ',
+            false,
+            searchKey
+        )
+    })
+
+    it('should find the account by public-key-format alias', () => {
+        const searchBase32Alias = "CIQAAAH4AY2OFK2FL37TSPYEQGPPUJRP4XTKWHD62HKPQX543DTOFFQ"
+        const searchHexaAlias = "0x12200000fc0634e2ab455eff393f04819efa262fe5e6ab1c7ed1d4f85fbcd8e6e296"
+        const searchAccount = "0.0.721838"
+        cy.visit('/mainnet/dashboard')
+        testBody(
+            searchAccount,
+            '/mainnet/account/' + searchAccount,
+            'Account ',
+            false,
+            searchBase32Alias
+        )
+        cy.visit('/mainnet/dashboard')
+        testBody(
+            searchAccount,
+            '/mainnet/account/' + searchAccount,
+            'Account ',
+            false,
+            searchHexaAlias
+        )
+    })
+
+    it('should find the account by Ethereum-format alias', () => {
+        cy.visit('/testnet/dashboard')
+        const searchAlias = "0x0000000000000000000000000000000000f15df0"
+        const searchAccount = "0.0.15818224"
+        testBody(
+            searchAccount,
+            '/testnet/account/' + searchAccount,
+            'Account ',
+            false,
+            searchAlias
+        )
+    })
+
     it('should not fail with empty search string', () => {
         cy.get('[data-cy=searchBar]').submit()
 

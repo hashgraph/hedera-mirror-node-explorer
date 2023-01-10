@@ -24,7 +24,7 @@
 
 <template>
 
-  <section class="section" :class="{'h-mobile-background': isTouchDevice || !isSmallScreen}">
+  <section :class="{'h-mobile-background': isTouchDevice || !isSmallScreen}" class="section">
 
     <DashboardCard>
 
@@ -43,108 +43,111 @@
       </template>
 
       <template v-slot:leftContent>
-            <Property id="name">
-              <template v-slot:name>Name</template>
-              <template v-slot:value>
-                <BlobValue v-bind:blob-value="tokenInfo?.name" v-bind:show-none="true" class="should-wrap"/>
-              </template>
-            </Property>
-            <Property id="symbol">
-              <template v-slot:name>Symbol</template>
-              <template v-slot:value>
-                <BlobValue v-bind:blob-value="tokenInfo?.symbol" v-bind:show-none="true" class="should-wrap"/>
-              </template>
-            </Property>
-            <Property id="memo">
-              <template v-slot:name>Memo</template>
-              <template v-slot:value>
-                <BlobValue :blob-value="tokenInfo?.memo" :show-none="true" :base64="true" class="should-wrap"/>
-              </template>
-            </Property>
-            <Property id="expiresAt">
-              <template v-slot:name>Expires at</template>
-              <template v-slot:value>
-                <TimestampValue :timestamp="tokenInfo?.expiry_timestamp?.toString()" :nano="true" :show-none="true"/>
-              </template>
-            </Property>
-            <Property id="autoRenewPeriod">
-              <template v-slot:name>Auto Renew Period</template>
-              <template v-slot:value>
-                <DurationValue v-bind:string-value="tokenInfo?.auto_renew_period?.toString()"/>
-              </template>
-            </Property>
-            <Property id="autoRenewAccount">
-              <template v-slot:name>Auto Renew Account</template>
-              <template v-slot:value>
-                <AccountLink :account-id="tokenInfo?.auto_renew_account" :show-none="true"/>
-              </template>
-            </Property>
-            <Property id="freezeDefault">
-              <template v-slot:name>Freeze Default</template>
-              <template v-slot:value>
-                <StringValue :string-value="tokenInfo?.freeze_default?.toString()"/>
-              </template>
-            </Property>
-            <Property id="pauseStatus">
-              <template v-slot:name>Pause Status</template>
-              <template v-slot:value>
-                <StringValue v-if="tokenInfo?.pause_status === 'NOT_APPLICABLE'"
-                             string-value="Not applicable" class="has-text-grey"/>
-                <StringValue v-else :string-value="tokenInfo?.pause_status"/>
-              </template>
-            </Property>
+        <Property id="name">
+          <template v-slot:name>Name</template>
+          <template v-slot:value>
+            <BlobValue class="should-wrap" v-bind:blob-value="tokenInfo?.name" v-bind:show-none="true"/>
+          </template>
+        </Property>
+        <Property id="symbol">
+          <template v-slot:name>Symbol</template>
+          <template v-slot:value>
+            <BlobValue class="should-wrap" v-bind:blob-value="tokenInfo?.symbol" v-bind:show-none="true"/>
+          </template>
+        </Property>
+        <Property id="memo">
+          <template v-slot:name>Memo</template>
+          <template v-slot:value>
+            <BlobValue :base64="true" :blob-value="tokenInfo?.memo" :show-none="true" class="should-wrap"/>
+          </template>
+        </Property>
+        <Property id="expiresAt">
+          <template v-slot:name>Expires at</template>
+          <template v-slot:value>
+            <TimestampValue :nano="true" :show-none="true" :timestamp="tokenInfo?.expiry_timestamp?.toString()"/>
+          </template>
+        </Property>
+        <Property id="autoRenewPeriod">
+          <template v-slot:name>Auto Renew Period</template>
+          <template v-slot:value>
+            <DurationValue v-bind:string-value="tokenInfo?.auto_renew_period?.toString()"/>
+          </template>
+        </Property>
+        <Property id="autoRenewAccount">
+          <template v-slot:name>Auto Renew Account</template>
+          <template v-slot:value>
+            <AccountLink :account-id="tokenInfo?.auto_renew_account" :show-none="true"/>
+          </template>
+        </Property>
+        <Property id="freezeDefault">
+          <template v-slot:name>Freeze Default</template>
+          <template v-slot:value>
+            <StringValue :string-value="tokenInfo?.freeze_default?.toString()"/>
+          </template>
+        </Property>
+        <Property id="pauseStatus">
+          <template v-slot:name>Pause Status</template>
+          <template v-slot:value>
+            <StringValue v-if="tokenInfo?.pause_status === 'NOT_APPLICABLE'"
+                         class="has-text-grey" string-value="Not applicable"/>
+            <StringValue v-else :string-value="tokenInfo?.pause_status"/>
+          </template>
+        </Property>
 
       </template>
 
       <template v-slot:rightContent>
-            <Property id="treasuryAccount">
-              <template v-slot:name>Treasury Account</template>
-              <template v-slot:value>
-                <AccountLink :account-id="tokenInfo?.treasury_account_id"/>
-              </template>
-            </Property>
-            <Property id="createdAt">
-              <template v-slot:name>Created at</template>
-              <template v-slot:value>
-                <TimestampValue :timestamp="tokenInfo?.created_timestamp" :show-none="true"/>
-              </template>
-            </Property>
-            <Property id="modifiedAt">
-              <template v-slot:name>Modified at</template>
-              <template v-slot:value>
-                <TimestampValue :timestamp="tokenInfo?.modified_timestamp" :show-none="true"/>
-              </template>
-            </Property>
-            <Property id="totalSupply">
-              <template v-slot:name>Total Supply</template>
-              <template v-slot:value v-if="validEntityId">
-                <TokenAmount :amount="parseIntString(tokenInfo?.total_supply)" :token-id="normalizedTokenId" :show-extra="false"/>
-              </template>
-            </Property>
-            <Property id="initialSupply">
-              <template v-slot:name>Initial Supply</template>
-              <template v-slot:value v-if="validEntityId">
-                <TokenAmount :amount="parseIntString(tokenInfo?.initial_supply)" :token-id="normalizedTokenId" :show-extra="false"/>
-              </template>
-            </Property>
-            <Property id="maxSupply">
-              <template v-slot:name>Max Supply</template>
-              <template v-slot:value v-if="validEntityId">
-                <div v-if="tokenInfo?.supply_type === 'INFINITE'" class="has-text-grey">Infinite</div>
-                <TokenAmount v-else :amount="parseIntString(tokenInfo?.max_supply)" :show-extra="false" :token-id="normalizedTokenId"/>
-              </template>
-            </Property>
-            <Property id="evmAddress">
-              <template v-slot:name>EVM Address</template>
-              <template v-slot:value>
-                <EthAddress v-if="ethereumAddress"
-                            :address="ethereumAddress"
-                            :symbol="tokenSymbol"
-                            :decimals="tokenInfo?.decimals"
-                            :show-import="true"
-                            :show-none="true"/>
-              </template>
-            </Property>
+        <Property id="treasuryAccount">
+          <template v-slot:name>Treasury Account</template>
+          <template v-slot:value>
+            <AccountLink :account-id="tokenInfo?.treasury_account_id"/>
+          </template>
+        </Property>
+        <Property id="createdAt">
+          <template v-slot:name>Created at</template>
+          <template v-slot:value>
+            <TimestampValue :show-none="true" :timestamp="tokenInfo?.created_timestamp"/>
+          </template>
+        </Property>
+        <Property id="modifiedAt">
+          <template v-slot:name>Modified at</template>
+          <template v-slot:value>
+            <TimestampValue :show-none="true" :timestamp="tokenInfo?.modified_timestamp"/>
+          </template>
+        </Property>
+        <Property id="totalSupply">
+          <template v-slot:name>Total Supply</template>
+          <template v-if="validEntityId" v-slot:value>
+            <TokenAmount :amount="parseIntString(tokenInfo?.total_supply)" :show-extra="false"
+                         :token-id="normalizedTokenId"/>
+          </template>
+        </Property>
+        <Property id="initialSupply">
+          <template v-slot:name>Initial Supply</template>
+          <template v-if="validEntityId" v-slot:value>
+            <TokenAmount :amount="parseIntString(tokenInfo?.initial_supply)" :show-extra="false"
+                         :token-id="normalizedTokenId"/>
+          </template>
+        </Property>
+        <Property id="maxSupply">
+          <template v-slot:name>Max Supply</template>
+          <template v-if="validEntityId" v-slot:value>
+            <div v-if="tokenInfo?.supply_type === 'INFINITE'" class="has-text-grey">Infinite</div>
+            <TokenAmount v-else :amount="parseIntString(tokenInfo?.max_supply)" :show-extra="false"
+                         :token-id="normalizedTokenId"/>
+          </template>
+        </Property>
+        <Property id="evmAddress">
+          <template v-slot:name>EVM Address</template>
+          <template v-slot:value>
+            <EthAddress v-if="ethereumAddress"
+                        :address="ethereumAddress"
+                        :decimals="tokenInfo?.decimals"
+                        :show-import="true"
+                        :show-none="true"
+                        :symbol="tokenSymbol"/>
+          </template>
+        </Property>
       </template>
 
     </DashboardCard>
@@ -393,7 +396,7 @@ export default defineComponent({
   },
 });
 
-function parseIntString(s: string|undefined): number|undefined {
+function parseIntString(s: string | undefined): number | undefined {
   const result = Number(s)
   return isNaN(result) ? undefined : result
 }
