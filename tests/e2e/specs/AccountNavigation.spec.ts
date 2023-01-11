@@ -214,6 +214,24 @@ describe('Account Navigation', () => {
         cy.contains('Account ' + accountID)
     })
 
+    it('should follow link to corresponding node and back', () => {
+        const accountId = '0.0.3'
+        const nodeId = '0'
+        cy.visit('testnet/account/' + accountId)
+        cy.url().should('include', '/testnet/account/' + accountId)
+        cy.contains('Account ' + accountId)
+        cy.contains('a', "Node " + nodeId)
+            .click()
+
+        cy.url().should('include', '/testnet/node/' + nodeId)
+        cy.contains('Node ' + nodeId)
+        cy.contains('a', accountId)
+            .click()
+
+        cy.url().should('include', '/testnet/account/' + accountId)
+        cy.contains('Account ' + accountId)
+    })
+
     it('should not show a link to associated contract', () => {
         const accountId = '0.0.47981544'
         const searchId = '0.0.3'
