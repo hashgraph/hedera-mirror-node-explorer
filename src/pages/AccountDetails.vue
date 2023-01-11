@@ -36,12 +36,12 @@
             <span class="h-is-property-text">Show associated contract</span>
           </router-link>
         </span>
-        <template v-if="false">
+        <div>
           <router-link v-if="operatorNodeRoute" :to="operatorNodeRoute">
-            <p class="h-is-tertiary-text"> {{ accountInfo }} </p>
+            <span class="h-is-tertiary-text"> {{ 'Node ' + nodeId }} </span>
+            <span class="h-is-tertiary-text has-text-grey"> {{ ' (' + accountInfo + ')' }} </span>
           </router-link>
-          <p v-else class="h-is-tertiary-text"> {{ accountInfo }} </p>
-        </template>
+        </div>
       </template>
 
       <template v-slot:content>
