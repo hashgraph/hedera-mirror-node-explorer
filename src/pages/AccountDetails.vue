@@ -36,8 +36,8 @@
             <span class="h-is-property-text">Show associated contract</span>
           </router-link>
         </span>
-        <div>
-          <router-link v-if="operatorNodeRoute" :to="operatorNodeRoute">
+        <div v-if="operatorNodeRoute" id="nodeLink" >
+          <router-link :to="operatorNodeRoute">
             <span class="h-is-tertiary-text"> {{ 'Node ' + nodeId }} </span>
             <span class="h-is-tertiary-text has-text-grey"> {{ ' (' + accountInfo + ')' }} </span>
           </router-link>
@@ -414,7 +414,7 @@ export default defineComponent({
 
     const operatorNodeRoute = computed(() => {
       const operatorNodeId = accountLoader.nodeId.value
-      return operatorNodeId ? routeManager.makeRouteToNode(operatorNodeId) : null
+      return operatorNodeId != null ? routeManager.makeRouteToNode(operatorNodeId) : null
     })
 
     return {
