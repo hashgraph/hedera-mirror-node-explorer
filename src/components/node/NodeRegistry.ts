@@ -91,4 +91,9 @@ export class NodeRegistry {
                           nodeAccountId: Ref<string|null> = ref(null)): string|null {
         return NodeRegistry.getCursor(nodeId, nodeAccountId).nodeDescription.value
     }
+
+    public static getShortDescription(nodeId: Ref<number | null> = ref(null),
+                                      nodeAccountId: Ref<string | null> = ref(null)): string | null {
+        return NodeRegistry.getCursor(nodeId, nodeAccountId).shortNodeDescription.value
+    }
 }

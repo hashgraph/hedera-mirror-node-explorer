@@ -36,12 +36,12 @@
             <span class="h-is-property-text">Show associated contract</span>
           </router-link>
         </span>
-        <template v-if="false">
-          <router-link v-if="operatorNodeRoute" :to="operatorNodeRoute">
-            <p class="h-is-tertiary-text"> {{ accountInfo }} </p>
+        <div v-if="operatorNodeRoute" id="nodeLink" >
+          <router-link :to="operatorNodeRoute">
+            <span class="h-is-tertiary-text"> {{ 'Node ' + nodeId }} </span>
+            <span class="h-is-tertiary-text has-text-grey"> {{ ' (' + accountInfo + ')' }} </span>
           </router-link>
-          <p v-else class="h-is-tertiary-text"> {{ accountInfo }} </p>
-        </template>
+        </div>
       </template>
 
       <template v-slot:content>
@@ -244,13 +244,13 @@ import {TransactionTableControllerXL} from "@/components/transaction/Transaction
 import AccountLink from "@/components/values/AccountLink.vue";
 import {AccountLoader} from "@/components/account/AccountLoader";
 import {ContractLoader} from "@/components/contract/ContractLoader";
-import {NodeLoader} from "@/components/node/NodeLoader";
 import TransactionFilterSelect from "@/components/transaction/TransactionFilterSelect.vue";
 import router, {routeManager} from "@/router";
 import TransactionLink from "@/components/values/TransactionLink.vue";
 import {StakingRewardsTableController} from "@/components/staking/StakingRewardsTableController";
 import StakingRewardsTable from "@/components/staking/StakingRewardsTable.vue";
 import AliasValue from "@/components/values/AliasValue.vue";
+import {NodeRegistry} from "@/components/node/NodeRegistry";
 
 const MAX_TOKEN_BALANCES = 10
 
@@ -393,7 +393,7 @@ export default defineComponent({
     //
     // staking
     //
-    const stakeNodeLoader = new NodeLoader(accountLoader.stakedNodeId)
+    const stakedNodeDescription = computed(() => NodeRegistry.getDescription(accountLoader.stakedNodeId))
 
     //
     // Rewards Table Controller
@@ -414,7 +414,7 @@ export default defineComponent({
 
     const operatorNodeRoute = computed(() => {
       const operatorNodeId = accountLoader.nodeId.value
-      return operatorNodeId ? routeManager.makeRouteToNode(operatorNodeId) : null
+      return operatorNodeId != null ? routeManager.makeRouteToNode(operatorNodeId) : null
     })
 
     return {
@@ -438,7 +438,7 @@ export default defineComponent({
       stakePeriodStart: accountLoader.stakePeriodStart,
       stakedNodeId: accountLoader.stakedNodeId,
       stakedAccountId: accountLoader.stakedAccountId,
-      stakedNodeDescription: stakeNodeLoader.nodeDescription,
+      stakedNodeDescription,
       rewardsTableController,
       contractRoute,
       stakedNodeRoute,
