@@ -27,7 +27,7 @@ export abstract class EntityBatchLoader<E> extends EntityLoader<E> {
     // Public
     //
 
-    public constructor(recursionLimit: number = 100) {
+    public constructor(recursionLimit = 100) {
         super()
         this.recursionLimit = recursionLimit
     }
