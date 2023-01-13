@@ -84,7 +84,7 @@ export class AccountLoader extends EntityLoader<AccountBalanceTransactions> {
     public readonly pendingReward: Ref<number|null> = computed(() => this.entity.value?.pending_reward ?? null)
 
     public readonly accountInfo: Ref<string|null> = computed(() => {
-        return NodeRegistry.getDescription(ref(null), this.accountId)
+        return NodeRegistry.getShortDescription(ref(null), this.accountId)
     })
 
     public readonly nodeId: Ref<number|null> = computed(() => {

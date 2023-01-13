@@ -39,7 +39,7 @@ export class SearchRequest {
 
     public readonly searchedId: string
     public account: AccountInfo|null = null
-    public accountWithKey: AccountInfo|null = null
+    public accountsWithKey = Array<AccountInfo>()
     public transactions = Array<Transaction>()
     public tokenInfo: TokenInfo|null = null
     public topicMessages = Array<TopicMessage>()
@@ -136,10 +136,9 @@ export class SearchRequest {
         // 2) Searches accounts with public key
         if (publicKey !== null) {
             axios
-                .get<AccountsResponse>("api/v1/accounts/?account.publickey=" + publicKey)
+                .get<AccountsResponse>("api/v1/accounts/?account.publickey=" + publicKey + "&limit=2")
                 .then(response => {
-                    const accounts = response.data.accounts ?? []
-                    this.accountWithKey = accounts.length >= 1 ? accounts[0] : null
+                    this.accountsWithKey = response.data.accounts ?? []
                 })
                 .catch((reason: unknown) => {
                     this.updateErrorCount(reason)

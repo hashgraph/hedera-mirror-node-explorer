@@ -25,10 +25,7 @@
 <template>
   <div class="should-wrap">
 
-    <BlobValue :blob-value="aliasValue" :show-none="true"/>
-    <div v-if="hexValue" class="has-text-grey mt-1">
-      <BlobValue :blob-value="hexValue"/>
-    </div>
+    <HexaValue :byte-string="hexValue" :show-none="true"/>
 
   </div>
 </template>
@@ -41,11 +38,11 @@
 
 import {computed, defineComponent} from "vue";
 import {base32ToAlias, byteToHex} from "@/utils/B64Utils";
-import BlobValue from "@/components/values/BlobValue.vue";
+import HexaValue from "@/components/values/HexaValue.vue";
 
 export default defineComponent({
   name: "AliasValue",
-  components: {BlobValue},
+  components: {HexaValue},
   props: {
     aliasValue: String,
   },

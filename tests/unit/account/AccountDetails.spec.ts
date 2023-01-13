@@ -74,8 +74,7 @@ HMSF.forceUTC = true
 
 describe("AccountDetails.vue", () => {
 
-    const ALIAS_B32 = "CIQAAAH4AY2OFK2FL37TSPYEQGPPUJRP4XTKWHD62HKPQX543DTOFFQ"
-    const ALIAS_HEX = "0x12200000fc0634e2ab455eff393f04819efa262fe5e6ab1c7ed1d4f85fbcd8e6e296"
+    const ALIAS_HEX = "1220 0000 fc06 34e2 ab45 5eff 393f 0481 9efa 262f e5e6 ab1c 7ed1 d4f8 5fbc d8e6 e296"
 
     it("Should display account details", async () => {
 
@@ -128,13 +127,18 @@ describe("AccountDetails.vue", () => {
             "Copy to Clipboard" +
             "ED25519")
         expect(wrapper.get("#memoValue").text()).toBe("None")
-        expect(wrapper.get("#aliasValue").text()).toBe(ALIAS_B32 + ALIAS_HEX)
+        expect(wrapper.get("#aliasValue").text()).toBe(ALIAS_HEX + "Copy to Clipboard")
         expect(wrapper.get("#createTransactionValue").text()).toBe(TransactionID.normalize(SAMPLE_TRANSACTION.transaction_id))
 
         expect(wrapper.get("#expiresAtValue").text()).toBe("None")
         expect(wrapper.get("#autoRenewPeriodValue").text()).toBe("90 days")
         expect(wrapper.get("#maxAutoAssociationValue").text()).toBe("0")
         expect(wrapper.get("#receiverSigRequiredValue").text()).toBe("false")
+
+        expect(wrapper.get("#evmAddressValue").text()).toBe(
+            "0000 0000 0000 0000 0000 0000 0000 0000 000b 2607" +
+            "Copy to Clipboard")
+        expect(wrapper.get("#ethereumNonceValue").text()).toBe("0")
 
         expect(wrapper.get("#stakedToName").text()).toBe("Staked to")
         expect(wrapper.get("#stakedToValue").text()).toBe("None")
