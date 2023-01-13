@@ -29,7 +29,7 @@ import NftTransferGraph from "@/components/transfer_graphs/NftTransferGraph.vue"
 import NotificationBanner from "@/components/NotificationBanner.vue";
 import axios from "axios";
 import {
-    SAMPLE_ASSOCIATED_TOKEN,
+    SAMPLE_ASSOCIATED_TOKEN, SAMPLE_ASSOCIATED_TOKEN_2,
     SAMPLE_BLOCKSRESPONSE,
     SAMPLE_COINGECKO,
     SAMPLE_CONTRACT_RESULT_DETAILS,
@@ -528,14 +528,17 @@ describe("TransactionDetails.vue", () => {
         await router.push("/") // To avoid "missing required param 'network'" error
 
         const transaction = SAMPLE_TOKEN_ASSOCIATE_TRANSACTION
-        const token = SAMPLE_ASSOCIATED_TOKEN
+        const token1 = SAMPLE_ASSOCIATED_TOKEN
+        const token2 = SAMPLE_ASSOCIATED_TOKEN_2
 
         const matcher1 = "/api/v1/transactions/" + transaction.transaction_id
         mock.onGet(matcher1).reply(200, { transactions: [transaction]});
         const matcher3 = "/api/v1/accounts/" + transaction.entity_id + "/tokens"
         mock.onGet(matcher3).reply(200, SAMPLE_TOKEN_ASSOCIATIONS);
-        const matcher5 = "/api/v1/tokens/" + token.token_id
-        mock.onGet(matcher5).reply(200, token);
+        const matcher4 = "/api/v1/tokens/" + token1.token_id
+        mock.onGet(matcher4).reply(200, token1);
+        const matcher5 = "/api/v1/tokens/" + token2.token_id
+        mock.onGet(matcher5).reply(200, token2);
 
         const wrapper = mount(TransactionDetails, {
             global: {
@@ -557,7 +560,7 @@ describe("TransactionDetails.vue", () => {
         expect(wrapper.get("#consensusAtValue").text()).toBe("6:51:52.1505 PMDec 21, 2022, UTC") // UTC because of HMSF.forceUTC
         expect(wrapper.get("#transactionHashValue").text()).toBe("4786 0799 99df 169a 3834 9249 d3c9 a548 9a83 f1c7 c51b 6b1e deb8 1347 a496 d931 83e2 4a43 ad03 372e bc50 1528 a603 2debCopy to Clipboard")
 
-        expect(wrapper.get("#associatedTokenIdValue").text()).toBe("0.0.34332104HSuite")
+        expect(wrapper.get("#associatedTokenIdValue").text()).toBe("0.0.34332104HSuite0.0.49292859TokenA7")
         expect(wrapper.get("#entityIdValue").text()).toBe("0.0.642949")
 
         expect(wrapper.findComponent(HbarTransferGraphF).exists()).toBe(true)

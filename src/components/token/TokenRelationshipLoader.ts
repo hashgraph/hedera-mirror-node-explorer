@@ -30,7 +30,7 @@ export class TokenRelationshipLoader extends EntityBatchLoader<TokenRelationship
     //
 
     public constructor(accountLocator: Ref<string|null>) {
-        super()
+        super(10) // so we get a max of 10 * 100 associated tokens
         this.accountLocator = accountLocator
         this.watchAndReload([this.accountLocator])
     }
@@ -39,12 +39,11 @@ export class TokenRelationshipLoader extends EntityBatchLoader<TokenRelationship
 
     public readonly tokens = computed(() => this.entity.value?.tokens ?? null)
 
-    public lookupToken(createdTimestamp: string): string|null {
-        let result = null
+    public lookupTokens(createdTimestamp: string): Array<string> {
+        let result = Array<string>()
         for (const t of this.tokens.value ?? []) {
-            if (t.created_timestamp === createdTimestamp) {
-                result = t.token_id
-                break
+            if (t.created_timestamp === createdTimestamp && t.token_id) {
+                result.push(t.token_id)
             }
         }
         return result
@@ -57,8 +56,12 @@ export class TokenRelationshipLoader extends EntityBatchLoader<TokenRelationship
     protected async loadNext(nextURL:string | null): Promise<AxiosResponse<TokenRelationshipResponse> | null> {
         let result: Promise<AxiosResponse<TokenRelationshipResponse> | null>
         if (this.accountLocator.value !== null) {
+            const params = {
+                limit: 100,
+            }
             result = axios.get<TokenRelationshipResponse>(
-                nextURL ?? "api/v1/accounts/" + this.accountLocator.value + "/tokens"
+                nextURL ?? "api/v1/accounts/" + this.accountLocator.value + "/tokens",
+                {params: params}
             )
 
         } else {

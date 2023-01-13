@@ -99,10 +99,12 @@
       </template>
 
       <template v-slot:rightContent>
-        <Property v-if="isTokenAssociation" id="associatedTokenId">
-          <template v-slot:name>Associated Token</template>
+        <Property v-if="isTokenAssociation && associatedTokens.length" id="associatedTokenId">
+          <template v-slot:name>
+            Associated Token<span v-if="associatedTokens.length > 1">s</span>
+          </template>
           <template v-slot:value>
-            <TokenLink :token-id="associatedToken" :show-extra="true"/>
+            <TokenLink v-for="t of associatedTokens" :key="t" :token-id="t" :show-extra="true"/>
           </template>
         </Property>
         <Property v-if="systemContract" id="entityId">
@@ -349,10 +351,8 @@ export default defineComponent({
     const tokenRelationships = new TokenRelationshipLoader(associatedAccount)
     onMounted(() => tokenRelationships.requestLoad())
 
-    const associatedToken = computed(() =>
-        transactionLoader.consensusTimestamp.value
-            ? tokenRelationships.lookupToken(transactionLoader.consensusTimestamp.value )
-            : null
+    const associatedTokens = computed(
+        () =>  tokenRelationships.lookupTokens(transactionLoader.consensusTimestamp.value ?? "")
     )
 
     return {
@@ -383,7 +383,7 @@ export default defineComponent({
       displayAllChildrenLinks,
       topicMessageLoader,
       isTokenAssociation,
-      associatedToken
+      associatedTokens
     }
   },
 })
