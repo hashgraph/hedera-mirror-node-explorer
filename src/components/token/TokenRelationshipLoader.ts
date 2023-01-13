@@ -40,7 +40,7 @@ export class TokenRelationshipLoader extends EntityBatchLoader<TokenRelationship
     public readonly tokens = computed(() => this.entity.value?.tokens ?? null)
 
     public lookupTokens(createdTimestamp: string): Array<string> {
-        let result = Array<string>()
+        const result = Array<string>()
         for (const t of this.tokens.value ?? []) {
             if (t.created_timestamp === createdTimestamp && t.token_id) {
                 result.push(t.token_id)
