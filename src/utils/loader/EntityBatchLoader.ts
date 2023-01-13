@@ -24,6 +24,15 @@ import {AxiosResponse} from "axios";
 export abstract class EntityBatchLoader<E> extends EntityLoader<E> {
 
     //
+    // Public
+    //
+
+    public constructor(recursionLimit: number = 100) {
+        super()
+        this.recursionLimit = recursionLimit
+    }
+
+    //
     // Protected
     //
 
@@ -40,12 +49,14 @@ export abstract class EntityBatchLoader<E> extends EntityLoader<E> {
     //
 
     protected async load(): Promise<AxiosResponse<E>|null> {
-        return this.recurseLoad(null, null, 100)
+        return this.recurseLoad(null, null, this.recursionLimit)
     }
 
     //
     // Private
     //
+
+    private readonly recursionLimit: number
 
     private async recurseLoad(nextURL: string|null, previous: AxiosResponse<E>|null, recursionCount: number): Promise<AxiosResponse<E>|null> {
         let result: Promise<AxiosResponse<E>|null>
