@@ -99,6 +99,14 @@
       </template>
 
       <template v-slot:rightContent>
+        <Property v-if="isTokenAssociation && associatedTokens.length" id="associatedTokenId">
+          <template v-slot:name>
+            Associated Token<span v-if="associatedTokens.length > 1">s</span>
+          </template>
+          <template v-slot:value>
+            <TokenLink v-for="t of associatedTokens" :key="t" :token-id="t" :show-extra="true"/>
+          </template>
+        </Property>
         <Property v-if="systemContract" id="entityId">
           <template v-slot:name>Contract ID</template>
           <template v-slot:value>{{ systemContract }}</template>
@@ -252,6 +260,8 @@ import {TopicMessageLoader} from "@/components/topic/TopicMessageLoader";
 import {routeManager} from "@/router"
 import {Timestamp} from "@/utils/Timestamp";
 import {TransactionHash} from "@/utils/TransactionHash";
+import {TokenRelationshipLoader} from "@/components/token/TokenRelationshipLoader";
+import TokenLink from "@/components/values/TokenLink.vue";
 
 const MAX_INLINE_CHILDREN = 9
 
@@ -260,6 +270,7 @@ export default defineComponent({
   name: 'TransactionDetails',
 
   components: {
+    TokenLink,
     TopicMessage,
     ContractResult,
     BlockLink,
@@ -331,6 +342,19 @@ export default defineComponent({
     )
     const topicMessageLoader = new TopicMessageLoader(messageTimestamp)
 
+    const isTokenAssociation = computed(
+        () => transactionLoader.transactionType.value === TransactionType.TOKENASSOCIATE)
+
+    const associatedAccount = computed(
+        () => isTokenAssociation.value ? transactionLoader.entity.value?.entity_id ?? null : null
+    )
+    const tokenRelationships = new TokenRelationshipLoader(associatedAccount)
+    onMounted(() => tokenRelationships.requestLoad())
+
+    const associatedTokens = computed(
+        () =>  tokenRelationships.lookupTokens(transactionLoader.consensusTimestamp.value ?? "")
+    )
+
     return {
       isSmallScreen,
       isLargeScreen,
@@ -357,7 +381,9 @@ export default defineComponent({
       makeOperatorAccountLabel,
       routeToAllTransactions,
       displayAllChildrenLinks,
-      topicMessageLoader
+      topicMessageLoader,
+      isTokenAssociation,
+      associatedTokens
     }
   },
 })

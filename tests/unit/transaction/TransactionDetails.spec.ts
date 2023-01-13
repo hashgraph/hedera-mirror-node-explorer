@@ -29,6 +29,7 @@ import NftTransferGraph from "@/components/transfer_graphs/NftTransferGraph.vue"
 import NotificationBanner from "@/components/NotificationBanner.vue";
 import axios from "axios";
 import {
+    SAMPLE_ASSOCIATED_TOKEN, SAMPLE_ASSOCIATED_TOKEN_2,
     SAMPLE_BLOCKSRESPONSE,
     SAMPLE_COINGECKO,
     SAMPLE_CONTRACT_RESULT_DETAILS,
@@ -37,7 +38,7 @@ import {
     SAMPLE_FAILED_TRANSACTIONS, SAMPLE_NETWORK_NODES, SAMPLE_PARENT_CHILD_TRANSACTIONS,
     SAMPLE_SCHEDULING_SCHEDULED_TRANSACTIONS,
     SAMPLE_SYSTEM_CONTRACT_CALL_TRANSACTIONS,
-    SAMPLE_TOKEN,
+    SAMPLE_TOKEN, SAMPLE_TOKEN_ASSOCIATE_TRANSACTION, SAMPLE_TOKEN_ASSOCIATIONS,
     SAMPLE_TRANSACTION,
     SAMPLE_TRANSACTIONS
 } from "../Mocks";
@@ -74,27 +75,25 @@ HMSF.forceUTC = true
 
 describe("TransactionDetails.vue", () => {
 
+    const mock = new MockAdapter(axios);
+    const matcher1 = "https://api.coingecko.com/api/v3/coins/hedera-hashgraph"
+    mock.onGet(matcher1).reply(200, SAMPLE_COINGECKO);
+    const matcher2 = "/api/v1/blocks"
+    mock.onGet(matcher2).reply(200, SAMPLE_BLOCKSRESPONSE);
+    const matcher3 = "api/v1/network/nodes"
+    mock.onGet(matcher3).reply(200, SAMPLE_NETWORK_NODES);
+    NodeRegistry.instance.reload()
+
+
     it("Should display transaction details with token transfers and fee transfers", async () => {
 
         await router.push("/") // To avoid "missing required param 'network'" error
-
-        const mock = new MockAdapter(axios);
 
         const matcher1 = "/api/v1/transactions/" + SAMPLE_TRANSACTION.transaction_id
         mock.onGet(matcher1).reply(200, SAMPLE_TRANSACTIONS);
 
         const matcher2 = "/api/v1/tokens/" + SAMPLE_TOKEN.token_id
         mock.onGet(matcher2).reply(200, SAMPLE_TOKEN);
-
-        const matcher3 = "https://api.coingecko.com/api/v3/coins/hedera-hashgraph"
-        mock.onGet(matcher3).reply(200, SAMPLE_COINGECKO);
-
-        const matcher4 = "/api/v1/blocks"
-        mock.onGet(matcher4).reply(200, SAMPLE_BLOCKSRESPONSE);
-
-        const matcher5 = "api/v1/network/nodes"
-        mock.onGet(matcher5).reply(200, SAMPLE_NETWORK_NODES);
-        NodeRegistry.instance.reload()
 
         const wrapper = mount(TransactionDetails, {
             global: {
@@ -123,7 +122,8 @@ describe("TransactionDetails.vue", () => {
         expect(wrapper.get("#operatorAccountValue").text()).toBe("0.0.29624024")
         expect(wrapper.get("#nodeAccountValue").text()).toBe("0.0.5Hosted by Hedera | Central, USA")
         expect(wrapper.get("#durationValue").text()).toBe("2min")
-        expect(wrapper.get("#entityId").text()).toBe("Account ID0.0.29662956")
+        expect(() => wrapper.get("#associatedTokenId")).toThrowError()
+        expect(() => wrapper.get("#entityId")).toThrowError()
 
         expect(wrapper.findComponent(HbarTransferGraphF).exists()).toBe(true)
         expect(wrapper.findComponent(TokenTransferGraph).exists()).toBe(true)
@@ -147,8 +147,6 @@ describe("TransactionDetails.vue", () => {
 
         await router.push("/") // To avoid "missing required param 'network'" error
 
-        const mock = new MockAdapter(axios);
-
         const transactionId = SAMPLE_CONTRACTCALL_TRANSACTIONS.transactions[0].transaction_id
         const contractId = SAMPLE_CONTRACTCALL_TRANSACTIONS.transactions[0].entity_id
         const timestamp = SAMPLE_CONTRACTCALL_TRANSACTIONS.transactions[0].consensus_timestamp
@@ -157,11 +155,6 @@ describe("TransactionDetails.vue", () => {
         mock.onGet(matcher1).reply(200, SAMPLE_CONTRACTCALL_TRANSACTIONS);
         const matcher2 = "/api/v1/contracts/" + contractId + "/results/" + timestamp
         mock.onGet(matcher2).reply(200, SAMPLE_CONTRACT_RESULT_DETAILS)
-        const matcher3 = "https://api.coingecko.com/api/v3/coins/hedera-hashgraph"
-        mock.onGet(matcher3).reply(200, SAMPLE_COINGECKO);
-        const matcher4 = "/api/v1/blocks"
-        mock.onGet(matcher4).reply(200, SAMPLE_BLOCKSRESPONSE);
-
         const matcher5 = "/api/v1/contracts/results/" + transactionId + "/actions"
         mock.onGet(matcher5).reply(200, "[]")
 
@@ -203,8 +196,6 @@ describe("TransactionDetails.vue", () => {
 
         await router.push("/") // To avoid "missing required param 'network'" error
 
-        const mock = new MockAdapter(axios);
-
         const SAMPLE_TRANSACTION = SAMPLE_CONTRACTCALL_TRANSACTIONS.transactions[0]
         const transactionId = SAMPLE_TRANSACTION.transaction_id
         const transactionHashBase64 = SAMPLE_TRANSACTION.transaction_hash
@@ -218,11 +209,6 @@ describe("TransactionDetails.vue", () => {
         mock.onGet(matcher11).reply(200, SAMPLE_CONTRACTCALL_TRANSACTIONS);
         const matcher2 = "/api/v1/contracts/" + contractId  + "/results/" + timestamp
         mock.onGet(matcher2).reply(200, SAMPLE_CONTRACT_RESULT_DETAILS)
-        const matcher3 = "https://api.coingecko.com/api/v3/coins/hedera-hashgraph"
-        mock.onGet(matcher3).reply(200, SAMPLE_COINGECKO);
-        const matcher4 = "/api/v1/blocks"
-        mock.onGet(matcher4).reply(200, SAMPLE_BLOCKSRESPONSE);
-
         const matcher5 = "/api/v1/contracts/results/" + transactionId + "/actions"
         mock.onGet(matcher5).reply(200, "[]")
 
@@ -263,8 +249,6 @@ describe("TransactionDetails.vue", () => {
 
         await router.push("/") // To avoid "missing required param 'network'" error
 
-        const mock = new MockAdapter(axios);
-
         let matcher1 = "/api/v1/transactions?timestamp=" + SAMPLE_TRANSACTION.consensus_timestamp
         mock.onGet(matcher1).reply(200, { transactions: [SAMPLE_TRANSACTION]})
 
@@ -273,12 +257,6 @@ describe("TransactionDetails.vue", () => {
 
         const matcher2 = "/api/v1/tokens/" + SAMPLE_TOKEN.token_id
         mock.onGet(matcher2).reply(200, SAMPLE_TOKEN);
-
-        const matcher3 = "https://api.coingecko.com/api/v3/coins/hedera-hashgraph"
-        mock.onGet(matcher3).reply(200, SAMPLE_COINGECKO);
-
-        const matcher4 = "/api/v1/blocks"
-        mock.onGet(matcher4).reply(200, SAMPLE_BLOCKSRESPONSE);
 
         const wrapper = mount(TransactionDetails, {
             global: {
@@ -325,19 +303,11 @@ describe("TransactionDetails.vue", () => {
 
         await router.push("/") // To avoid "missing required param 'network'" error
 
-        const mock = new MockAdapter(axios);
-
         const matcher1 = "/api/v1/transactions?timestamp=" + SAMPLE_FAILED_TRANSACTION.consensus_timestamp
         mock.onGet(matcher1).reply(200, SAMPLE_FAILED_TRANSACTIONS);
 
         const matcher11 = "/api/v1/transactions/" + SAMPLE_FAILED_TRANSACTION.transaction_id
         mock.onGet(matcher11).reply(200, SAMPLE_FAILED_TRANSACTIONS);
-
-        const matcher2 = "https://api.coingecko.com/api/v3/coins/hedera-hashgraph"
-        mock.onGet(matcher2).reply(200, SAMPLE_COINGECKO);
-
-        const matcher3 = "/api/v1/blocks"
-        mock.onGet(matcher3).reply(200, SAMPLE_BLOCKSRESPONSE);
 
         const wrapper = mount(TransactionDetails, {
             global: {
@@ -384,15 +354,10 @@ describe("TransactionDetails.vue", () => {
 
         const transaction = SAMPLE_SYSTEM_CONTRACT_CALL_TRANSACTIONS.transactions[0]
 
-        const mock = new MockAdapter(axios);
         const matcher1 = "/api/v1/transactions?timestamp=" + transaction.consensus_timestamp
         mock.onGet(matcher1).reply(200, { transactions: [transaction]})
         const matcher11 = "/api/v1/transactions/" + transaction.transaction_id
         mock.onGet(matcher11).reply(200, SAMPLE_SYSTEM_CONTRACT_CALL_TRANSACTIONS)
-        const matcher2 = "https://api.coingecko.com/api/v3/coins/hedera-hashgraph"
-        mock.onGet(matcher2).reply(200, SAMPLE_COINGECKO);
-        const matcher3 = "/api/v1/blocks"
-        mock.onGet(matcher3).reply(200, SAMPLE_BLOCKSRESPONSE);
 
         const wrapper = mount(TransactionDetails, {
             global: {
@@ -415,8 +380,6 @@ describe("TransactionDetails.vue", () => {
 
         await router.push("/") // To avoid "missing required param 'network'" error
 
-        const mock = new MockAdapter(axios);
-
         const SCHEDULING = SAMPLE_SCHEDULING_SCHEDULED_TRANSACTIONS.transactions[0]
         const SCHEDULED = SAMPLE_SCHEDULING_SCHEDULED_TRANSACTIONS.transactions[1]
         const TOKEN_ID = SCHEDULED.token_transfers ? SCHEDULED.token_transfers[0].token_id : "0.0.1304757"
@@ -424,13 +387,6 @@ describe("TransactionDetails.vue", () => {
         mock.onGet(matcher1).reply(200, { transactions: [SCHEDULING]});
         const matcher11 = "/api/v1/transactions/" + SCHEDULING.transaction_id
         mock.onGet(matcher11).reply(200, SAMPLE_SCHEDULING_SCHEDULED_TRANSACTIONS);
-
-        const matcher3 = "https://api.coingecko.com/api/v3/coins/hedera-hashgraph"
-        mock.onGet(matcher3).reply(200, SAMPLE_COINGECKO);
-
-        const matcher4 = "/api/v1/blocks"
-        mock.onGet(matcher4).reply(200, SAMPLE_BLOCKSRESPONSE);
-
         const matcher5 = "/api/v1/tokens/" + TOKEN_ID
         mock.onGet(matcher5).reply(200, SAMPLE_TOKEN)
 
@@ -460,8 +416,6 @@ describe("TransactionDetails.vue", () => {
 
         await router.push("/") // To avoid "missing required param 'network'" error
 
-        const mock = new MockAdapter(axios);
-
         const SCHEDULING = SAMPLE_SCHEDULING_SCHEDULED_TRANSACTIONS.transactions[0]
         const SCHEDULED = SAMPLE_SCHEDULING_SCHEDULED_TRANSACTIONS.transactions[1]
         const TOKEN_ID = SCHEDULED.token_transfers ? SCHEDULED.token_transfers[0].token_id : "0.0.1304757"
@@ -469,15 +423,8 @@ describe("TransactionDetails.vue", () => {
         mock.onGet(matcher1).reply(200, { transactions: [SCHEDULED]});
         const matcher11 = "/api/v1/transactions/" + SCHEDULED.transaction_id
         mock.onGet(matcher11).reply(200, SAMPLE_SCHEDULING_SCHEDULED_TRANSACTIONS);
-
         const matcher2 = "/api/v1/tokens/" + TOKEN_ID
         mock.onGet(matcher2).reply(200, SAMPLE_TOKEN);
-
-        const matcher3 = "https://api.coingecko.com/api/v3/coins/hedera-hashgraph"
-        mock.onGet(matcher3).reply(200, SAMPLE_COINGECKO);
-
-        const matcher4 = "/api/v1/blocks"
-        mock.onGet(matcher4).reply(200, SAMPLE_BLOCKSRESPONSE);
 
         const wrapper = mount(TransactionDetails, {
             global: {
@@ -505,8 +452,6 @@ describe("TransactionDetails.vue", () => {
 
         await router.push("/") // To avoid "missing required param 'network'" error
 
-        const mock = new MockAdapter(axios);
-
         const PARENT = SAMPLE_PARENT_CHILD_TRANSACTIONS.transactions[0]
         const CHILD = SAMPLE_PARENT_CHILD_TRANSACTIONS.transactions[1]
         const TOKEN_ID = CHILD.nft_transfers ? CHILD.nft_transfers[0].token_id : "0.0.48193741"
@@ -514,15 +459,8 @@ describe("TransactionDetails.vue", () => {
         mock.onGet(matcher1).reply(200, { transactions: [CHILD]});
         const matcher11 = "/api/v1/transactions/" + CHILD.transaction_id
         mock.onGet(matcher11).reply(200, SAMPLE_PARENT_CHILD_TRANSACTIONS);
-
         const matcher2 = "/api/v1/tokens/" + TOKEN_ID
         mock.onGet(matcher2).reply(200, SAMPLE_TOKEN);
-
-        const matcher3 = "https://api.coingecko.com/api/v3/coins/hedera-hashgraph"
-        mock.onGet(matcher3).reply(200, SAMPLE_COINGECKO);
-
-        const matcher4 = "/api/v1/blocks"
-        mock.onGet(matcher4).reply(200, SAMPLE_BLOCKSRESPONSE);
 
         const wrapper = mount(TransactionDetails, {
             global: {
@@ -550,8 +488,6 @@ describe("TransactionDetails.vue", () => {
 
         await router.push("/") // To avoid "missing required param 'network'" error
 
-        const mock = new MockAdapter(axios);
-
         const PARENT = SAMPLE_PARENT_CHILD_TRANSACTIONS.transactions[0]
         const CHILD1 = SAMPLE_PARENT_CHILD_TRANSACTIONS.transactions[1]
         const CHILD2 = SAMPLE_PARENT_CHILD_TRANSACTIONS.transactions[2]
@@ -559,12 +495,6 @@ describe("TransactionDetails.vue", () => {
         mock.onGet(matcher1).reply(200, {transactions: [PARENT]});
         const matcher11 = "/api/v1/transactions/" + PARENT.transaction_id
         mock.onGet(matcher11).reply(200, SAMPLE_PARENT_CHILD_TRANSACTIONS);
-
-        const matcher3 = "https://api.coingecko.com/api/v3/coins/hedera-hashgraph"
-        mock.onGet(matcher3).reply(200, SAMPLE_COINGECKO);
-
-        const matcher4 = "/api/v1/blocks"
-        mock.onGet(matcher4).reply(200, SAMPLE_BLOCKSRESPONSE);
 
         const wrapper = mount(TransactionDetails, {
             global: {
@@ -591,5 +521,57 @@ describe("TransactionDetails.vue", () => {
         expect(links[1].attributes("href")).toBe(
             "/mainnet/transaction/" + CHILD2.consensus_timestamp + "?tid=" + CHILD2.transaction_id
         )
+    });
+
+    it("Should display transaction details with account/token association", async () => {
+
+        await router.push("/") // To avoid "missing required param 'network'" error
+
+        const transaction = SAMPLE_TOKEN_ASSOCIATE_TRANSACTION
+        const token1 = SAMPLE_ASSOCIATED_TOKEN
+        const token2 = SAMPLE_ASSOCIATED_TOKEN_2
+
+        const matcher1 = "/api/v1/transactions/" + transaction.transaction_id
+        mock.onGet(matcher1).reply(200, { transactions: [transaction]});
+        const matcher3 = "/api/v1/accounts/" + transaction.entity_id + "/tokens"
+        mock.onGet(matcher3).reply(200, SAMPLE_TOKEN_ASSOCIATIONS);
+        const matcher4 = "/api/v1/tokens/" + token1.token_id
+        mock.onGet(matcher4).reply(200, token1);
+        const matcher5 = "/api/v1/tokens/" + token2.token_id
+        mock.onGet(matcher5).reply(200, token2);
+
+        const wrapper = mount(TransactionDetails, {
+            global: {
+                plugins: [router, Oruga]
+            },
+            props: {
+                transactionLoc: transaction.consensus_timestamp,
+                transactionId: transaction.transaction_id
+            },
+        });
+
+        await flushPromises()
+        // console.log(wrapper.html())
+        // console.log(wrapper.text())
+
+        expect(wrapper.text()).toMatch(RegExp("^Transaction " + normalizeTransactionId(transaction.transaction_id, true)))
+
+        expect(wrapper.get("#transactionTypeValue").text()).toBe("TOKEN ASSOCIATE")
+        expect(wrapper.get("#consensusAtValue").text()).toBe("6:51:52.1505 PMDec 21, 2022, UTC") // UTC because of HMSF.forceUTC
+        expect(wrapper.get("#transactionHashValue").text()).toBe("4786 0799 99df 169a 3834 9249 d3c9 a548 9a83 f1c7 c51b 6b1e deb8 1347 a496 d931 83e2 4a43 ad03 372e bc50 1528 a603 2debCopy to Clipboard")
+
+        expect(wrapper.get("#associatedTokenIdValue").text()).toBe("0.0.34332104HSuite0.0.49292859TokenA7")
+        expect(wrapper.get("#entityIdValue").text()).toBe("0.0.642949")
+
+        expect(wrapper.findComponent(HbarTransferGraphF).exists()).toBe(true)
+        expect(wrapper.findComponent(TokenTransferGraph).exists()).toBe(true)
+        expect(wrapper.findComponent(NftTransferGraph).exists()).toBe(true)
+
+        expect(wrapper.findComponent(HbarTransferGraphF).text()).toBe("Fee TransfersAccountHbar AmountAccountHbar Amount0.0.642949-1.15905210-$0.2852\n\n" +
+            "0.0.30.05805847$0.0143Hosted by Hedera | East Coast, USA\n\n" +
+            "0.0.981.10099363$0.2709Hedera fee collection account")
+        expect(wrapper.findComponent(TokenTransferGraph).text()).toBe("Token TransfersNone")
+        expect(wrapper.findComponent(NftTransferGraph).text()).toBe("NFT TransfersNone")
+
     });
 });

@@ -19,7 +19,6 @@
  */
 
 
-
 //
 // Fungible token inspired from https://testnet.mirrornode.hedera.com/api/v1/tokens/0.0.29662956
 //
@@ -478,7 +477,7 @@ export const SAMPLE_TRANSACTION = {
     "bytes": null,
     "charged_tx_fee": 470065,
     "consensus_timestamp": "1646025151.667604000",
-    "entity_id": SAMPLE_TOKEN.token_id,
+    "entity_id": null,
     "max_fee": "100000000",
     "memo_base64": "",
     "name": "CRYPTOTRANSFER",
@@ -1365,6 +1364,123 @@ export const SAMPLE_SAME_ID_NOT_PARENT_TRANSACTIONS = {
         "transfers": [],
         "valid_duration_seconds": null,
         "valid_start_timestamp": "1665085799.890453831"
+    }]
+}
+//
+// TOKEN ASSOCIATE Transaction inspired from https://hashscan-latest.hedera-devops.com/testnet/transaction/1671648712.150557003
+//
+
+export const SAMPLE_TOKEN_ASSOCIATE_TRANSACTION = {
+    "bytes": null,
+    "charged_tx_fee": 115905210,
+    "consensus_timestamp": "1671648712.150557003",
+    "entity_id": "0.0.642949",
+    "max_fee": "500000000",
+    "memo_base64": "",
+    "name": "TOKENASSOCIATE",
+    "node": "0.0.3",
+    "nonce": 0,
+    "parent_consensus_timestamp": null,
+    "result": "SUCCESS",
+    "scheduled": false,
+    "staking_reward_transfers": [],
+    "transaction_hash": "R4YHmZnfFpo4NJJJ08mlSJqD8cfFG2se3rgTR6SW2TGD4kpDrQM3LrxQFSimAy3r",
+    "transaction_id": "0.0.642949-1671648699-088023490",
+    "transfers": [{"account": "0.0.3", "amount": 5805847, "is_approval": false}, {
+        "account": "0.0.98",
+        "amount": 110099363,
+        "is_approval": false
+    }, {"account": "0.0.642949", "amount": -115905210, "is_approval": false}],
+    "valid_duration_seconds": "120",
+    "valid_start_timestamp": "1671648699.088023490"
+}
+
+export const SAMPLE_ASSOCIATED_TOKEN = {
+    "admin_key": {"_type": "ED25519", "key": "c350fb04dc8b75e0f2bae193f42f6d08c337bd627f731b19a67231cffe325ebe"},
+    "auto_renew_account": "0.0.1856648",
+    "auto_renew_period": 7776000,
+    "created_timestamp": "1651133913.387572000",
+    "custom_fees": {"created_timestamp": "1651133913.387572000", "fixed_fees": [], "fractional_fees": []},
+    "decimals": "4",
+    "deleted": false,
+    "expiry_timestamp": "1658909913.387572000",
+    "fee_schedule_key": {"_type": "ED25519", "key": "d0475f0732bd44a9e0a817c8e670e5372b3bf2631f71fb6966d71e8a56e71845"},
+    "freeze_default": false,
+    "freeze_key": {"_type": "ED25519", "key": "e46e5f2c3ca46d68c814ee2d645ad59c8b5441c99fc193321659f620e6468a7d"},
+    "initial_supply": "500000000000000",
+    "kyc_key": null,
+    "max_supply": "500000000000000",
+    "memo": "",
+    "modified_timestamp": "1664459798.418712003",
+    "name": "HSuite",
+    "pause_key": {"_type": "ED25519", "key": "8d2e8b0cc2518eb79d4ab07188387fe6f297ca230bd2f9b1faf31f889bf65f40"},
+    "pause_status": "UNPAUSED",
+    "supply_key": {"_type": "ED25519", "key": "f53f56ca2a83399aff9163c15a3868135a6d0589ce011e4eb2e98166148039d2"},
+    "supply_type": "FINITE",
+    "symbol": "HSUITE",
+    "token_id": "0.0.34332104",
+    "total_supply": "500000000000000",
+    "treasury_account_id": "0.0.34332092",
+    "type": "FUNGIBLE_COMMON",
+    "wipe_key": {"_type": "ED25519", "key": "fd5f6414ae9437854b31c81251b5e4be7b56a435dd749473da6feeecd85d6eaf"}
+}
+
+export const SAMPLE_ASSOCIATED_TOKEN_2 = {
+    "admin_key": null,
+    "auto_renew_account": "0.0.49288723",
+    "auto_renew_period": 7776000,
+    "created_timestamp": "1673613321.257283003",
+    "custom_fees": {"created_timestamp": "1673613321.257283003", "fixed_fees": [], "fractional_fees": []},
+    "decimals": "8",
+    "deleted": false,
+    "expiry_timestamp": 1681389321257283003,
+    "fee_schedule_key": null,
+    "freeze_default": false,
+    "freeze_key": null,
+    "initial_supply": "20000000000000",
+    "kyc_key": null,
+    "max_supply": "0",
+    "memo": "",
+    "modified_timestamp": "1673613321.257283003",
+    "name": "TokenA7",
+    "pause_key": null,
+    "pause_status": "NOT_APPLICABLE",
+    "supply_key": {"_type": "ED25519", "key": "2e61deb649eee47b0693d878fc5b2d8baa733f5e7b625314519064616ead62fe"},
+    "supply_type": "INFINITE",
+    "symbol": "Token SymbolA7",
+    "token_id": "0.0.49292859",
+    "total_supply": "20000000000000",
+    "treasury_account_id": "0.0.49288723",
+    "type": "FUNGIBLE_COMMON",
+    "wipe_key": null
+}
+
+//
+// Inspired from https://testnet.mirrornode.hedera.com/api/v1/accounts/0.0.642949/tokens
+//
+
+export const SAMPLE_TOKEN_ASSOCIATIONS = {
+    "tokens": [{
+        "automatic_association": false,
+        "balance": 0,
+        "created_timestamp": "1647994323.478512577",
+        "freeze_status": "NOT_APPLICABLE",
+        "kyc_status": "NOT_APPLICABLE",
+        "token_id": "0.0.26568643"
+    }, {
+        "automatic_association": false,
+        "balance": 0,
+        "created_timestamp": SAMPLE_TOKEN_ASSOCIATE_TRANSACTION.consensus_timestamp,
+        "freeze_status": "UNFROZEN",
+        "kyc_status": "NOT_APPLICABLE",
+        "token_id": SAMPLE_ASSOCIATED_TOKEN.token_id
+    }, {
+        "automatic_association": false,
+        "balance": 0,
+        "created_timestamp": "1671648712.150557003",
+        "freeze_status": "UNFROZEN",
+        "kyc_status": "NOT_APPLICABLE",
+        "token_id": SAMPLE_ASSOCIATED_TOKEN_2.token_id
     }]
 }
 
