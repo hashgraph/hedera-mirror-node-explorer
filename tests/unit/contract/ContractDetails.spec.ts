@@ -100,6 +100,7 @@ describe("ContractDetails.vue", () => {
         expect(wrapper.get("#expiresAtValue").text()).toBe("None")
         expect(wrapper.get("#autoRenewPeriodValue").text()).toBe("90 days")
         expect(wrapper.get("#autoRenewAccountValue").text()).toBe("0.0.730632")
+        expect(wrapper.get("#maxAutoAssociationValue").text()).toBe("0")
         expect(wrapper.get("#obtainerValue").text()).toBe("None")
         expect(wrapper.get("#proxyAccountValue").text()).toBe("None")
         expect(wrapper.get("#validFromValue").text()).toBe("3:09:15.9474 PMMar 7, 2022, UTC")
@@ -165,6 +166,7 @@ describe("ContractDetails.vue", () => {
 
         expect(wrapper.text()).toMatch(RegExp("^Contract " + SAMPLE_CONTRACT_DUDE.contract_id))
         expect(wrapper.get("#keyValue").text()).toBe("None")
+        expect(wrapper.get("#maxAutoAssociationValue").text()).toBe("None")
         expect(wrapper.get("#memoValue").text()).toBe("None")
         expect(wrapper.get("#fileValue").text()).toBe("0.0.803267")
         expect(wrapper.get("#evmAddress").text()).toBe("EVM Address0000 0000 0000 0000 0000 0000 0000 0000 000c 41dfCopy to Clipboard")

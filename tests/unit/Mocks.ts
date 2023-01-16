@@ -1684,6 +1684,7 @@ export const SAMPLE_CONTRACT = {
     "evm_address": "0x00000000000000000000000000000000000b70cf",
     "expiration_timestamp": null,
     "file_id": "0.0.749773",
+    "max_automatic_token_associations": 0,
     "memo": "Mirror Node acceptance test: 2022-03-07T15:09:15.228564328Z Create contract",
     "obtainer_id": null,
     "proxy_account_id": null,

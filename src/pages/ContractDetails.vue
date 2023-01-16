@@ -96,6 +96,12 @@
                 <AccountLink :account-id="autoRenewAccount" :show-none="true" null-label="None"/>
               </template>
             </Property>
+            <Property id="maxAutoAssociation">
+              <template v-slot:name>Max. Auto. Association</template>
+              <template v-slot:value>
+                <StringValue :string-value="contract?.max_automatic_token_associations?.toString()"/>
+              </template>
+            </Property>
             <Property id="code">
               <template v-slot:name>Initcode</template>
               <template v-slot:value>
