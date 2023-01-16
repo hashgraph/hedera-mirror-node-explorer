@@ -72,6 +72,12 @@
                 <BlobValue :blob-value="contract?.memo" :show-none="true" :base64="true" class="should-wrap"/>
               </template>
             </Property>
+            <Property id="createTransaction">
+              <template v-slot:name>Create Transaction</template>
+              <template v-slot:value>
+                <TransactionLink :transactionLoc="contract?.created_timestamp"/>
+              </template>
+            </Property>
             <Property id="expiresAt">
               <template v-slot:name>Expires at</template>
               <template v-slot:value>
@@ -194,6 +200,7 @@ import {TransactionTableControllerXL} from "@/components/transaction/Transaction
 import TransactionFilterSelect from "@/components/transaction/TransactionFilterSelect.vue";
 import {networkRegistry} from "@/schemas/NetworkRegistry";
 import router, {routeManager} from "@/router";
+import TransactionLink from "@/components/values/TransactionLink.vue";
 
 const MAX_TOKEN_BALANCES = 3
 
@@ -202,6 +209,7 @@ export default defineComponent({
   name: 'ContractDetails',
 
   components: {
+    TransactionLink,
     TransactionFilterSelect,
     ByteCodeValue,
     Property,
