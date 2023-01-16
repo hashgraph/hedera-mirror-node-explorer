@@ -72,12 +72,6 @@
                 <BlobValue :blob-value="contract?.memo" :show-none="true" :base64="true" class="should-wrap"/>
               </template>
             </Property>
-            <Property id="alias">
-              <template v-slot:name>Alias</template>
-              <template v-slot:value>
-                <HexaValue v-bind:byte-string="aliasByteString" v-bind:show-none="true"/>
-              </template>
-            </Property>
             <Property id="expiresAt">
               <template v-slot:name>Expires at</template>
               <template v-slot:value>
@@ -311,7 +305,6 @@ export default defineComponent({
       obtainerId: contractLoader.obtainerId,
       proxyAccountId: contractLoader.proxyAccountId,
       normalizedContractId,
-      aliasByteString: accountLoader.aliasByteString,
       accountRoute
     }
   },
