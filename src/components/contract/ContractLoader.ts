@@ -37,6 +37,10 @@ export class ContractLoader extends EntityLoader<ContractResponse> {
         this.watchAndReload([this.contractLocator])
     }
 
+    public readonly autoRenewAccount = computed(() => {
+        return this.entity.value?.auto_renew_account ?? null
+    })
+
     public readonly contractId = computed(() => {
         return this.entity.value?.contract_id ?? null
     })

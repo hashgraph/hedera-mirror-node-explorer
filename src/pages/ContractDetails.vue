@@ -90,6 +90,12 @@
                 <DurationValue v-bind:number-value="contract?.auto_renew_period"/>
               </template>
             </Property>
+            <Property id="autoRenewAccount">
+              <template v-slot:name>Auto Renew Account</template>
+              <template v-slot:value>
+                <AccountLink :account-id="autoRenewAccount" :show-none="true" null-label="None"/>
+              </template>
+            </Property>
             <Property id="code">
               <template v-slot:name>Initcode</template>
               <template v-slot:value>
@@ -301,6 +307,7 @@ export default defineComponent({
       displayAllTokenLinks,
       transactionTableController,
       notification,
+      autoRenewAccount: contractLoader.autoRenewAccount,
       obtainerId: contractLoader.obtainerId,
       proxyAccountId: contractLoader.proxyAccountId,
       normalizedContractId,
