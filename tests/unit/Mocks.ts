@@ -1676,6 +1676,7 @@ export const SAMPLE_CONTRACT = {
         "_type": "ED25519",
         "key": "421050820e1485acdd59726088e0e4a2130ebbbb70009f640ad95c78dd5a7b38"
     },
+    "auto_renew_account": "0.0.730632",
     "auto_renew_period": 7776000,
     "contract_id": "0.0.749775",
     "created_timestamp": "1646665755.947488266",
@@ -1683,6 +1684,7 @@ export const SAMPLE_CONTRACT = {
     "evm_address": "0x00000000000000000000000000000000000b70cf",
     "expiration_timestamp": null,
     "file_id": "0.0.749773",
+    "max_automatic_token_associations": 0,
     "memo": "Mirror Node acceptance test: 2022-03-07T15:09:15.228564328Z Create contract",
     "obtainer_id": null,
     "proxy_account_id": null,
