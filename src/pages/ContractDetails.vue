@@ -72,10 +72,10 @@
                 <BlobValue :blob-value="contract?.memo" :show-none="true" :base64="true" class="should-wrap"/>
               </template>
             </Property>
-            <Property id="alias">
-              <template v-slot:name>Alias</template>
+            <Property id="createTransaction">
+              <template v-slot:name>Create Transaction</template>
               <template v-slot:value>
-                <HexaValue v-bind:byte-string="aliasByteString" v-bind:show-none="true"/>
+                <TransactionLink :transactionLoc="contract?.created_timestamp"/>
               </template>
             </Property>
             <Property id="expiresAt">
@@ -88,6 +88,18 @@
               <template v-slot:name>Auto Renew Period</template>
               <template v-slot:value>
                 <DurationValue v-bind:number-value="contract?.auto_renew_period"/>
+              </template>
+            </Property>
+            <Property id="autoRenewAccount">
+              <template v-slot:name>Auto Renew Account</template>
+              <template v-slot:value>
+                <AccountLink :account-id="autoRenewAccount" :show-none="true" null-label="None"/>
+              </template>
+            </Property>
+            <Property id="maxAutoAssociation">
+              <template v-slot:name>Max. Auto. Association</template>
+              <template v-slot:value>
+                <StringValue :string-value="contract?.max_automatic_token_associations?.toString()"/>
               </template>
             </Property>
             <Property id="code">
@@ -194,6 +206,7 @@ import {TransactionTableControllerXL} from "@/components/transaction/Transaction
 import TransactionFilterSelect from "@/components/transaction/TransactionFilterSelect.vue";
 import {networkRegistry} from "@/schemas/NetworkRegistry";
 import router, {routeManager} from "@/router";
+import TransactionLink from "@/components/values/TransactionLink.vue";
 
 const MAX_TOKEN_BALANCES = 3
 
@@ -202,6 +215,7 @@ export default defineComponent({
   name: 'ContractDetails',
 
   components: {
+    TransactionLink,
     TransactionFilterSelect,
     ByteCodeValue,
     Property,
@@ -301,10 +315,10 @@ export default defineComponent({
       displayAllTokenLinks,
       transactionTableController,
       notification,
+      autoRenewAccount: contractLoader.autoRenewAccount,
       obtainerId: contractLoader.obtainerId,
       proxyAccountId: contractLoader.proxyAccountId,
       normalizedContractId,
-      aliasByteString: accountLoader.aliasByteString,
       accountRoute
     }
   },

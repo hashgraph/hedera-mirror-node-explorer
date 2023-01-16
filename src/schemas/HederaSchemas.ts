@@ -421,6 +421,7 @@ export interface ContractsResponse {
 export interface Contract {
 
     admin_key: Key | null | undefined
+    auto_renew_account: string | null | undefined   // Network entity ID in the format of shard.realm.num
     auto_renew_period: number | null | undefined
     contract_id: string | null | undefined   // Network entity ID in the format of shard.realm.num
     created_timestamp: string | null | undefined
@@ -428,15 +429,17 @@ export interface Contract {
     evm_address: string | undefined
     expiration_timestamp: string | null | undefined
     file_id: string | null | undefined   // Network entity ID in the format of shard.realm.num
+    max_automatic_token_associations: number | null | undefined
     memo: string | undefined
     obtainer_id: string | null | undefined   // Network entity ID in the format of shard.realm.num
+    permanent_removal: boolean | null | undefined
     proxy_account_id: string | null | undefined   // Network entity ID in the format of shard.realm.num
     timestamp: TimestampRange | undefined   // timestamp range the entity is valid for
-
 }
 
 export interface ContractResponse extends Contract {
     bytecode: string | null | undefined
+    runtime_bytecode: string | null | undefined
 }
 
 export interface TimestampRange {
