@@ -317,7 +317,8 @@ export default defineComponent({
     //
     const perPage = computed(() => isMediumScreen ? 10 : 5)
     const accountId = computed(() => accountLoader.entity.value?.account ?? null)
-    const transactionTableController = new TransactionTableControllerXL(router, accountId, perPage, true)
+    const transactionTableController = new TransactionTableControllerXL(
+      router, accountId, perPage, true, "p1", "k1")
 
     /*
           vue   \   accountId |       null       |      not null     |
@@ -398,7 +399,8 @@ export default defineComponent({
     //
     // Rewards Table Controller
     //
-    const rewardsTableController = new StakingRewardsTableController(router, accountLoader.accountId, perPage)
+    const rewardsTableController = new StakingRewardsTableController(
+        router, accountLoader.accountId, perPage, "p2", "k2")
     onMounted(() => rewardsTableController.mount())
     onBeforeUnmount(() => rewardsTableController.unmount())
 

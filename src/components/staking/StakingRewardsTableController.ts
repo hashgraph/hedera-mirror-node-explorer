@@ -33,8 +33,10 @@ export class StakingRewardsTableController extends TableController<StakingReward
     // Public
     //
 
-    public constructor(router: Router, accountId: Ref<string | null>, pageSize: ComputedRef<number>) {
-        super(router, pageSize, 10 * pageSize.value, 5000, 0, 100);
+    public constructor(router: Router, accountId: Ref<string | null>, pageSize: ComputedRef<number>,
+                       pageParamName = "p", keyParamName= "k") {
+        super(router, pageSize, 10 * pageSize.value, 5000, 0, 100,
+            pageParamName, keyParamName);
         this.accountId = accountId
         this.watchAndReload([this.accountId])
         watch(this.accountId, this.updateAvailableAPI)
