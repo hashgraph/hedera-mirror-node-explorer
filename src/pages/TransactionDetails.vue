@@ -152,7 +152,7 @@
         <Property id="duration">
           <template v-slot:name>Valid Duration</template>
           <template v-slot:value>
-            <DurationValue v-bind:string-value="transaction?.valid_duration_seconds"/>
+            <DurationValue v-bind:string-value="transaction?.valid_duration_seconds" :show-none="true"/>
           </template>
         </Property>
         <Property id="nonce">

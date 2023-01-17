@@ -599,7 +599,7 @@ export const SAMPLE_CONTRACTCALL_TRANSACTIONS = {
                     "amount": -95515604
                 }
             ],
-            "valid_duration_seconds": "120",
+            "valid_duration_seconds": null,
             "valid_start_timestamp": "1646665756.235554077"
         },
         {

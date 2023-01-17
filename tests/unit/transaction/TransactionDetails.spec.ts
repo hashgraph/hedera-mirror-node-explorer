@@ -175,6 +175,7 @@ describe("TransactionDetails.vue", () => {
         expect(wrapper.text()).toMatch(RegExp("^Transaction " + normalizeTransactionId(transactionId, true)))
         expect(wrapper.get("#transactionTypeValue").text()).toBe("CONTRACT CALL")
         expect(wrapper.get("#entityId").text()).toBe("Contract ID" + contractId)
+        expect(wrapper.get("#durationValue").text()).toBe("None")
 
         expect(wrapper.findComponent(ContractResult).exists()).toBe(true)
         expect(wrapper.findComponent(ContractResult).text()).toMatch(RegExp("^Contract Result"))
