@@ -599,7 +599,7 @@ export const SAMPLE_CONTRACTCALL_TRANSACTIONS = {
                     "amount": -95515604
                 }
             ],
-            "valid_duration_seconds": "120",
+            "valid_duration_seconds": null,
             "valid_start_timestamp": "1646665756.235554077"
         },
         {
@@ -1395,28 +1395,6 @@ export const SAMPLE_TOKEN_ASSOCIATE_TRANSACTION = {
     "valid_start_timestamp": "1671648699.088023490"
 }
 
-//
-// Inspired from https://testnet.mirrornode.hedera.com/api/v1/accounts/0.0.642949/tokens
-//
-
-export const SAMPLE_TOKEN_ASSOCIATIONS = {
-    "tokens": [{
-        "automatic_association": false,
-        "balance": 0,
-        "created_timestamp": "1647994323.478512577",
-        "freeze_status": "NOT_APPLICABLE",
-        "kyc_status": "NOT_APPLICABLE",
-        "token_id": "0.0.26568643"
-    }, {
-        "automatic_association": false,
-        "balance": 0,
-        "created_timestamp": "1671648712.150557003",
-        "freeze_status": "UNFROZEN",
-        "kyc_status": "NOT_APPLICABLE",
-        "token_id": "0.0.34332104"
-    }], "links": {"next": null}
-}
-
 export const SAMPLE_ASSOCIATED_TOKEN = {
     "admin_key": {"_type": "ED25519", "key": "c350fb04dc8b75e0f2bae193f42f6d08c337bd627f731b19a67231cffe325ebe"},
     "auto_renew_account": "0.0.1856648",
@@ -1445,6 +1423,65 @@ export const SAMPLE_ASSOCIATED_TOKEN = {
     "treasury_account_id": "0.0.34332092",
     "type": "FUNGIBLE_COMMON",
     "wipe_key": {"_type": "ED25519", "key": "fd5f6414ae9437854b31c81251b5e4be7b56a435dd749473da6feeecd85d6eaf"}
+}
+
+export const SAMPLE_ASSOCIATED_TOKEN_2 = {
+    "admin_key": null,
+    "auto_renew_account": "0.0.49288723",
+    "auto_renew_period": 7776000,
+    "created_timestamp": "1673613321.257283003",
+    "custom_fees": {"created_timestamp": "1673613321.257283003", "fixed_fees": [], "fractional_fees": []},
+    "decimals": "8",
+    "deleted": false,
+    "expiry_timestamp": 1681389321257283003,
+    "fee_schedule_key": null,
+    "freeze_default": false,
+    "freeze_key": null,
+    "initial_supply": "20000000000000",
+    "kyc_key": null,
+    "max_supply": "0",
+    "memo": "",
+    "modified_timestamp": "1673613321.257283003",
+    "name": "TokenA7",
+    "pause_key": null,
+    "pause_status": "NOT_APPLICABLE",
+    "supply_key": {"_type": "ED25519", "key": "2e61deb649eee47b0693d878fc5b2d8baa733f5e7b625314519064616ead62fe"},
+    "supply_type": "INFINITE",
+    "symbol": "Token SymbolA7",
+    "token_id": "0.0.49292859",
+    "total_supply": "20000000000000",
+    "treasury_account_id": "0.0.49288723",
+    "type": "FUNGIBLE_COMMON",
+    "wipe_key": null
+}
+
+//
+// Inspired from https://testnet.mirrornode.hedera.com/api/v1/accounts/0.0.642949/tokens
+//
+
+export const SAMPLE_TOKEN_ASSOCIATIONS = {
+    "tokens": [{
+        "automatic_association": false,
+        "balance": 0,
+        "created_timestamp": "1647994323.478512577",
+        "freeze_status": "NOT_APPLICABLE",
+        "kyc_status": "NOT_APPLICABLE",
+        "token_id": "0.0.26568643"
+    }, {
+        "automatic_association": false,
+        "balance": 0,
+        "created_timestamp": SAMPLE_TOKEN_ASSOCIATE_TRANSACTION.consensus_timestamp,
+        "freeze_status": "UNFROZEN",
+        "kyc_status": "NOT_APPLICABLE",
+        "token_id": SAMPLE_ASSOCIATED_TOKEN.token_id
+    }, {
+        "automatic_association": false,
+        "balance": 0,
+        "created_timestamp": "1671648712.150557003",
+        "freeze_status": "UNFROZEN",
+        "kyc_status": "NOT_APPLICABLE",
+        "token_id": SAMPLE_ASSOCIATED_TOKEN_2.token_id
+    }]
 }
 
 //
@@ -1639,6 +1676,7 @@ export const SAMPLE_CONTRACT = {
         "_type": "ED25519",
         "key": "421050820e1485acdd59726088e0e4a2130ebbbb70009f640ad95c78dd5a7b38"
     },
+    "auto_renew_account": "0.0.730632",
     "auto_renew_period": 7776000,
     "contract_id": "0.0.749775",
     "created_timestamp": "1646665755.947488266",
@@ -1646,6 +1684,7 @@ export const SAMPLE_CONTRACT = {
     "evm_address": "0x00000000000000000000000000000000000b70cf",
     "expiration_timestamp": null,
     "file_id": "0.0.749773",
+    "max_automatic_token_associations": 0,
     "memo": "Mirror Node acceptance test: 2022-03-07T15:09:15.228564328Z Create contract",
     "obtainer_id": null,
     "proxy_account_id": null,

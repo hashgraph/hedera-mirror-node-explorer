@@ -201,23 +201,17 @@ export default defineComponent({
             index: result.length
           }
 
-          if (newItem.changes.value_read === '0x') {
-            newItem.changes.value_read = '0x0000000000000000000000000000000000000000000000000000000000000000'
-            newItem.valueReadDecimal = 0
-          }
           if (newItem.changes.value_written === '0x') {
             newItem.changes.value_written = null
             newItem.valueWrittenDecimal = null
           }
-          if (newItem.changes.slot === '0x') {
-            newItem.changes.slot = '0x0000000000000000000000000000000000000000000000000000000000000000'
-            newItem.slotDecimal = 0
-          }
+
           if (result.length > 0 && s.address === (result[result.length - 1].changes.address)) {
             newItem.header = false
           } else {
             newItem.balanceChange = transactionLoader.lookupTransfer(s.contract_id ?? "")
           }
+
           newItem.valueChange = newItem.valueReadDecimal && newItem.valueWrittenDecimal
               ? newItem.valueWrittenDecimal - newItem.valueReadDecimal
               : null
@@ -228,9 +222,15 @@ export default defineComponent({
       return result
     }
 
-    const makeDecimal = (hexa: string): number|null => {
-      hexa = hexa.replace(/^0x0+/, '');
-      return (hexa.length <= 8) ? Number("0x"+ hexa) : null
+    const makeDecimal = (hexa: string): number | null => {
+      let result
+      if (hexa) {
+        hexa = hexa.replace(/^0x0+/, '');
+        result = (hexa.length === 0) ? 0 : (hexa.length <= 13) ? Number("0x" + hexa) : null
+      } else {
+        result = null
+      }
+      return result
     }
 
     return {

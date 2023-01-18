@@ -27,6 +27,7 @@ import {
     SAMPLE_CONTRACT_AS_ACCOUNT,
     SAMPLE_CONTRACT_DELETED,
     SAMPLE_CONTRACT_DUDE,
+    SAMPLE_TRANSACTION,
     SAMPLE_TRANSACTIONS
 } from "../Mocks";
 import MockAdapter from "axios-mock-adapter";
@@ -34,6 +35,7 @@ import Oruga from "@oruga-ui/oruga-next";
 import ContractDetails from "@/pages/ContractDetails.vue";
 import {HMSF} from "@/utils/HMSF";
 import NotificationBanner from "@/components/NotificationBanner.vue";
+import {TransactionID} from "@/utils/TransactionID";
 
 /*
     Bookmarks
@@ -94,9 +96,11 @@ describe("ContractDetails.vue", () => {
         expect(wrapper.get("#balanceValue").text()).toBe("2.00000000$0.4921")
         expect(wrapper.get("#keyValue").text()).toBe("4210 5082 0e14 85ac dd59 7260 88e0 e4a2 130e bbbb 7000 9f64 0ad9 5c78 dd5a 7b38Copy to ClipboardED25519")
         expect(wrapper.get("#memoValue").text()).toBe("Mirror Node acceptance test: 2022-03-07T15:09:15.228564328Z Create contract")
-        expect(wrapper.get("#aliasValue").text()).toBe("1220 0000 fc06 34e2 ab45 5eff 393f 0481 9efa 262f e5e6 ab1c 7ed1 d4f8 5fbc d8e6 e296Copy to Clipboard")
+        expect(wrapper.get("#createTransactionValue").text()).toBe(TransactionID.normalize(SAMPLE_TRANSACTION.transaction_id))
         expect(wrapper.get("#expiresAtValue").text()).toBe("None")
         expect(wrapper.get("#autoRenewPeriodValue").text()).toBe("90 days")
+        expect(wrapper.get("#autoRenewAccountValue").text()).toBe("0.0.730632")
+        expect(wrapper.get("#maxAutoAssociationValue").text()).toBe("0")
         expect(wrapper.get("#obtainerValue").text()).toBe("None")
         expect(wrapper.get("#proxyAccountValue").text()).toBe("None")
         expect(wrapper.get("#validFromValue").text()).toBe("3:09:15.9474 PMMar 7, 2022, UTC")
@@ -143,7 +147,7 @@ describe("ContractDetails.vue", () => {
 
         expect(wrapper.get("#keyValue").text()).toBe("4210 5082 0e14 85ac dd59 7260 88e0 e4a2 130e bbbb 7000 9f64 0ad9 5c78 dd5a 7b38Copy to ClipboardED25519")
         expect(wrapper.get("#memoValue").text()).toBe("Mirror Node acceptance test: 2022-03-07T15:09:15.228564328Z Create contract")
-        expect(wrapper.get("#aliasValue").text()).toBe("1220 0000 fc06 34e2 ab45 5eff 393f 0481 9efa 262f e5e6 ab1c 7ed1 d4f8 5fbc d8e6 e296Copy to Clipboard")
+        expect(wrapper.get("#autoRenewAccountValue").text()).toBe("0.0.730632")
         expect(wrapper.get("#fileValue").text()).toBe("0.0.749773")
         expect(wrapper.get("#evmAddress").text()).toBe("EVM Address0000 0000 0000 0000 0000 0000 0000 0000 000b 70cfCopy to Clipboard")
 
@@ -162,8 +166,8 @@ describe("ContractDetails.vue", () => {
 
         expect(wrapper.text()).toMatch(RegExp("^Contract " + SAMPLE_CONTRACT_DUDE.contract_id))
         expect(wrapper.get("#keyValue").text()).toBe("None")
+        expect(wrapper.get("#maxAutoAssociationValue").text()).toBe("None")
         expect(wrapper.get("#memoValue").text()).toBe("None")
-        expect(wrapper.get("#aliasValue").text()).toBe("1220 0000 fc06 34e2 ab45 5eff 393f 0481 9efa 262f e5e6 ab1c 7ed1 d4f8 5fbc d8e6 e296Copy to Clipboard")
         expect(wrapper.get("#fileValue").text()).toBe("0.0.803267")
         expect(wrapper.get("#evmAddress").text()).toBe("EVM Address0000 0000 0000 0000 0000 0000 0000 0000 000c 41dfCopy to Clipboard")
 

@@ -29,9 +29,12 @@
         v-bind:compact="true"/>
     <div v-else-if="isTokenAssociation">
       {{ transaction?.entity_id }}
-      <span v-if="token">
+      <span v-if="tokens.length">
         <i class="fas fa-link mr-1 has-text-grey"></i>
-        <TokenExtra :token-id="token" :show-name="true"/>
+        <TokenExtra :token-id="tokens[0]" :show-name="true"/>
+        <span v-if="additionalTokensNumber" class="h-is-smaller h-is-extra-text should-wrap">
+          {{ ' ( + ' + additionalTokensNumber + ' more )' }}
+        </span>
       </span>
     </div>
     <div v-else-if="isEthereumTransaction">
@@ -82,8 +85,10 @@ export default defineComponent({
     const tokenRelationships = new TokenRelationshipLoader(ref(props.transaction?.entity_id ?? null))
     onMounted(() => tokenRelationships.requestLoad())
 
-    const token = computed(
-        () => tokenRelationships.lookupToken(props.transaction?.consensus_timestamp ?? ""))
+    const tokens = computed(
+        () => tokenRelationships.lookupTokens(props.transaction?.consensus_timestamp ?? ""))
+
+    const additionalTokensNumber = computed(() => tokens.value.length ?  tokens.value.length - 1 : 0)
 
     const isEthereumTransaction = computed(() => props.transaction?.name == TransactionType.ETHEREUMTRANSACTION)
 
@@ -105,7 +110,8 @@ export default defineComponent({
     return {
       shouldGraph,
       isTokenAssociation,
-      token,
+      tokens,
+      additionalTokensNumber,
       isEthereumTransaction,
       ethereumSummary,
       // From TransactionTools
