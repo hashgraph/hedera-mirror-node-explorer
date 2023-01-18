@@ -31,6 +31,12 @@
             <HexaValue :byte-string="line.innerKeyBytes()"/>
             <div class="h-is-extra-text h-is-text-size-3">{{ line.innerKeyType() }}</div>
           </template>
+          <template v-else-if="line.contractId() !== null">
+            Contract: <ContractLink :contract-id="line.contractId()"/>
+          </template>
+          <template v-else-if="line.delegatableContractId() !== null">
+            Delegatable Contract: <ContractLink :contract-id="line.delegatableContractId()"/>
+          </template>
           <template v-else>
             <div>{{ lineText(line) }}</div>
           </template>
@@ -57,11 +63,12 @@ import {ComplexKeyLine} from "@/utils/ComplexKeyLine";
 import {hexToByte} from "@/utils/B64Utils";
 import hashgraph from "@hashgraph/proto/lib/proto";
 import HexaValue from "@/components/values/HexaValue.vue";
+import ContractLink from "@/components/values/ContractLink.vue";
 import {initialLoadingKey} from "@/AppKeys";
 
 export default defineComponent({
   name: "ComplexKeyValue",
-  components: {HexaValue},
+  components: {ContractLink, HexaValue},
   props: {
     keyBytes: String,
     showNone: {

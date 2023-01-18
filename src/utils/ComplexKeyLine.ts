@@ -20,6 +20,8 @@
 
 import hashgraph from "@hashgraph/proto/lib/proto";
 import {byteToHex} from "@/utils/B64Utils";
+import IContractID = hashgraph.proto.IContractID;
+import {EntityID} from "@/utils/EntityID";
 
 export class ComplexKeyLine {
 
@@ -67,6 +69,14 @@ export class ComplexKeyLine {
         return result
     }
 
+    public contractId(): string|null {
+        return this.key.contractID ? ComplexKeyLine.makeContractId(this.key.contractID) : null
+    }
+
+    public delegatableContractId(): string|null {
+        return this.key.delegatableContractId ? ComplexKeyLine.makeContractId(this.key.delegatableContractId) : null
+    }
+
     public toString(): string {
         return "" + this.level + " " + this.key.key
     }
@@ -83,7 +93,7 @@ export class ComplexKeyLine {
     // Private
     //
 
-    public static flattenComplexKeyRec(key: hashgraph.proto.Key, level: number, result: ComplexKeyLine[]): void {
+    private static flattenComplexKeyRec(key: hashgraph.proto.Key, level: number, result: ComplexKeyLine[]): void {
 
         let newLine: ComplexKeyLine
         let childKeys: hashgraph.proto.Key[]
@@ -110,5 +120,13 @@ export class ComplexKeyLine {
         for (const childKey of childKeys) {
             this.flattenComplexKeyRec(childKey, level + 1, result)
         }
+    }
+
+    private static makeContractId(iContractID: IContractID): string {
+        const shard = Number(iContractID.shardNum ?? 0)
+        const realm = Number(iContractID.realmNum ?? 0)
+        const num = Number(iContractID.contractNum ?? 0)
+        const entityId = new EntityID(shard, realm, num)
+        return entityId.toString()
     }
 }
