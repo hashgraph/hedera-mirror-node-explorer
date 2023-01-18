@@ -69,30 +69,28 @@ export class ContractResultDetailsLoader extends EntityLoader<ContractResultDeta
 
     protected async load(): Promise<AxiosResponse<ContractResultDetails> | null> {
         let result: Promise<AxiosResponse<ContractResultDetails> | null>
-        if (this.timestamp.value !== null) {
-            if (this.contractId.value !== null) {
-                result = axios.get<ContractResultDetails>(
-                    "api/v1/contracts/" + this.contractId.value + "/results/" + this.timestamp.value);
-            } else {
-                const parameters = {
-                    timestamp: this.timestamp.value,
-                    internal: true
-                }
-                const response = await axios.get<ContractResultsResponse>("api/v1/contracts/results", {params: parameters});
-                if (response.data.results) {
-                    result = axios.get<ContractResultDetails>(
-                        "api/v1/contracts/" + response.data.results[0].contract_id + "/results/" + this.timestamp.value);
-                } else {
-                    result = Promise.resolve(null)
-                }
+        let contractId = this.contractId.value
+
+        if (contractId === null && this.timestamp.value !== null) {
+            const parameters = {
+                timestamp: this.timestamp.value,
+                internal: true
             }
+            const response = await axios.get<ContractResultsResponse>("api/v1/contracts/results", {params: parameters});
+            if (response.data.results) {
+                contractId = response.data.results[0].contract_id ?? null
+            }
+        }
+
+        if (contractId !== null && this.timestamp.value !== null) {
+            result = axios.get<ContractResultDetails>(
+                "api/v1/contracts/" + contractId + "/results/" + this.timestamp.value);
+
         } else if (this.transactionIdOrHash.value !== null) {
-            result = axios.get<ContractResultDetails>("api/v1/contracts/results/"
-                + this.transactionIdOrHash.value);
+            result = axios.get<ContractResultDetails>("api/v1/contracts/results/" + this.transactionIdOrHash.value);
         } else {
             result = Promise.resolve(null)
         }
         return result
     }
-
 }
