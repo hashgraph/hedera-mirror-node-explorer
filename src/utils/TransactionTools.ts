@@ -46,6 +46,8 @@ export function makeSummaryLabel(row: Transaction): string {
         case TransactionType.TOKENREVOKEKYC:
         case TransactionType.TOKENFREEZE:
         case TransactionType.TOKENUNFREEZE:
+        case TransactionType.CRYPTOADDLIVEHASH:
+        case TransactionType.CRYPTODELETELIVEHASH:
             result = row.entity_id ? "Account ID: " + row.entity_id : ""
             break
         case TransactionType.TOKENBURN:
@@ -56,6 +58,7 @@ export function makeSummaryLabel(row: Transaction): string {
         case TransactionType.TOKENPAUSE:
         case TransactionType.TOKENUNPAUSE:
         case TransactionType.TOKENUPDATE:
+        case TransactionType.TOKENWIPE:
             result = row.entity_id ? "Token ID: " + row.entity_id : ""
             break
         case TransactionType.CONTRACTCREATEINSTANCE:
@@ -74,6 +77,10 @@ export function makeSummaryLabel(row: Transaction): string {
         case TransactionType.SCHEDULEDELETE:
         case TransactionType.SCHEDULESIGN:
             result = row.entity_id ? "Schedule ID: " + row.entity_id : ""
+            break
+        case TransactionType.CRYPTOAPPROVEALLOWANCE:
+        case TransactionType.CRYPTODELETEALLOWANCE:
+            result = formatMemo(row.memo_base64 ?? "")
             break
         default:
             result = ""
