@@ -33,6 +33,12 @@ export class EntityID {
     // Public
     //
 
+    public constructor(shard: number, realm: number, num: number) {
+        this.shard = shard
+        this.realm = realm
+        this.num = num
+    }
+
     public static parse(s: string, autoComplete = false): EntityID|null {
         let result: EntityID|null
 
@@ -138,16 +144,6 @@ export class EntityID {
     public static parsePositiveInt(s: string): number|null {
         const n = s.match(/^[0-9]+$/) !== null ? parseInt(s) : EntityID.MAX_INT
         return (isNaN(n) || n >= EntityID.MAX_INT) ? null : n
-    }
-
-    //
-    // Private
-    //
-
-    private constructor(shard: number, realm: number, num: number) {
-        this.shard = shard
-        this.realm = realm
-        this.num = num
     }
 }
 
