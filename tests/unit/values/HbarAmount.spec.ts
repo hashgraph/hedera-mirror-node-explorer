@@ -61,7 +61,8 @@ describe("HbarAmount.vue ", () => {
         const wrapper = mount(HbarAmount, {
             props: {
                 amount: testTinybarAmount,
-                showExtra: true
+                showExtra: true,
+                timestamp: "0"
             },
         });
 
@@ -82,7 +83,8 @@ describe("HbarAmount.vue ", () => {
             props: {
                 amount: testTinybarAmount,
                 showExtra: true,
-                smallExtra: false
+                smallExtra: false,
+                timestamp: "0"
             },
         });
 
