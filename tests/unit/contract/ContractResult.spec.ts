@@ -21,7 +21,7 @@
 import {flushPromises, mount} from "@vue/test-utils"
 import router from "@/router";
 import axios from "axios";
-import {SAMPLE_COINGECKO, SAMPLE_CONTRACT_RESULT_DETAILS} from "../Mocks";
+import {SAMPLE_CONTRACT_RESULT_DETAILS} from "../Mocks";
 import MockAdapter from "axios-mock-adapter";
 import {HMSF} from "@/utils/HMSF";
 import ContractResult from "@/components/contract/ContractResult.vue";
@@ -63,8 +63,6 @@ describe("ContractResult.vue", () => {
         const mock = new MockAdapter(axios);
         const matcher1 = "/api/v1/contracts/results/" + transactionId
         mock.onGet(matcher1).reply(200, SAMPLE_CONTRACT_RESULT_DETAILS)
-        const matcher2 = "https://api.coingecko.com/api/v3/coins/hedera-hashgraph"
-        mock.onGet(matcher2).reply(200, SAMPLE_COINGECKO);
 
         const wrapper = mount(ContractResult, {
             global: {

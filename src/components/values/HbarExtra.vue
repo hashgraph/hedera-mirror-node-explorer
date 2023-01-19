@@ -36,10 +36,8 @@
 
 <script lang="ts">
 
-import {computed, defineComponent, ref} from "vue";
-import {AxiosResponse} from "axios";
-import {CoinGeckoCollector} from "@/utils/collector/CoinGeckoCollector";
-import {CoinGeckoResponse} from "@/schemas/CoinGeckoMarketData";
+import {computed, defineComponent, onMounted} from "vue";
+import {HbarPriceLoader} from "@/utils/loader/HbarPriceLoader";
 
 export default defineComponent({
   name: "HbarExtra",
@@ -48,6 +46,10 @@ export default defineComponent({
     tbarAmount: {
       type: Number,
       default: 0
+    },
+    timestamp: {
+      type: String,
+      default: null
     },
     smallExtra: {
       type: Boolean,
@@ -60,16 +62,14 @@ export default defineComponent({
   },
 
   setup(props) {
-    const response = ref<AxiosResponse<CoinGeckoResponse>|null>(null)
-
     const hbarAmount = computed(() => {
       return props.tbarAmount / 100000000
     })
     const dollarAmount = computed(() => {
       let result: string
-      if (response.value !== null && response.value.status == 200) {
+      if (hbarPriceLoader.hbarPrice.value !== null) {
         const resolution = Math.pow(10, -fractionDigits)
-        let usdAmount = response.value.data.market_data.current_price.usd * hbarAmount.value
+        let usdAmount = hbarAmount.value * hbarPriceLoader.hbarPrice.value
         if (0 < usdAmount && usdAmount < +resolution) {
           usdAmount = resolution
         } else if (-resolution < usdAmount && usdAmount < 0) {
@@ -82,13 +82,8 @@ export default defineComponent({
       return result
     })
 
-    CoinGeckoCollector.instance.fetch(null)
-        .then((r: AxiosResponse<CoinGeckoResponse>) => {
-          response.value = r
-        }, (reason: unknown) => {
-          console.warn("CoinGeckoCollector did fail to fetch with reason: " + reason)
-          response.value = null
-        })
+    const hbarPriceLoader = new HbarPriceLoader(computed(() => props.timestamp))
+    onMounted(() => hbarPriceLoader.requestLoad())
 
     return { dollarAmount }
   }

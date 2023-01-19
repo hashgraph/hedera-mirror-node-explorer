@@ -39,7 +39,7 @@
 
     <o-table-column v-slot="props" field="amount" label="Amount">
       <PlainAmount v-if="props.row.denominating_token_id" :amount="props.row.amount"/>
-      <HbarAmount v-else :amount="props.row.amount" :show-extra="true"/>
+      <HbarAmount v-else :amount="props.row.amount" :timestamp="'0'" :show-extra="true"/>
     </o-table-column>
 
     <o-table-column v-slot="props" field="amount" label="Token">

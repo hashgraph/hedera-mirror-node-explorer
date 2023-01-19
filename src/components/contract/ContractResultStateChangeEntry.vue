@@ -30,7 +30,7 @@
       <EVMAddress :address="change.changes.address" :compact="isSmallScreen && !isMediumScreen" class="ml-3"/>
       <span class="mb-2 h-is-text-size-3">
             <span class="ml-4 mr-2">Contract HBar Balance Difference:</span>
-            <HbarAmount :amount="change.balanceChange" :colored="true" :show-extra="true"/>
+            <HbarAmount :amount="change.balanceChange" :timestamp="timestamp" :colored="true" :show-extra="true"/>
           </span>
     </div>
     <hr class="h-card-separator" style="margin-bottom: 12px; margin-top: 0"/>
@@ -89,7 +89,11 @@ export default defineComponent({
   name: "ContractResultStateChangeEntry",
   components: {HexaValue, HbarAmount, EVMAddress, ContractLink},
   props: {
-    change: Object as PropType<DisplayStateChange | undefined>
+    change: Object as PropType<DisplayStateChange | undefined>,
+    timestamp: {
+      type: String,
+      default: null
+    }
   },
   setup() {
     const isSmallScreen = inject('isSmallScreen', true)

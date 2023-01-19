@@ -54,7 +54,7 @@
               <template v-slot:name>{{ tokenBalances?.length ? 'Balances' : 'Balance' }}</template>
               <template v-slot:value>
                 <div v-if="account" class="h-is-tertiary-text">
-                  <HbarAmount v-bind:amount="hbarBalance" v-bind:show-extra="true"/>
+                  <HbarAmount v-bind:amount="hbarBalance" v-bind:show-extra="true" v-bind:timestamp="'0'"/>
                 </div>
                 <div v-if="displayAllTokenLinks">
                   <router-link :to="{name: 'AccountBalances', params: {accountId: accountId}}">
@@ -97,7 +97,7 @@
         <Property id="pendingReward">
           <template v-slot:name>Pending Reward</template>
           <template v-slot:value>
-            <HbarAmount :amount="account?.pending_reward" :show-extra="true"/>
+            <HbarAmount :amount="account?.pending_reward" :show-extra="true" :timestamp="'0'"/>
             <div v-if="stakePeriodStart" class="h-is-extra-text h-is-text-size-2">
               {{ "Period Started " + stakePeriodStart }}
             </div>

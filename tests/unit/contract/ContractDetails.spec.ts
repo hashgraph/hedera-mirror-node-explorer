@@ -22,11 +22,11 @@ import {flushPromises, mount} from "@vue/test-utils"
 import router from "@/router";
 import axios from "axios";
 import {
-    SAMPLE_COINGECKO,
     SAMPLE_CONTRACT,
     SAMPLE_CONTRACT_AS_ACCOUNT,
     SAMPLE_CONTRACT_DELETED,
     SAMPLE_CONTRACT_DUDE,
+    SAMPLE_NETWORK_EXCHANGERATE,
     SAMPLE_TRANSACTION,
     SAMPLE_TRANSACTIONS
 } from "../Mocks";
@@ -77,8 +77,8 @@ describe("ContractDetails.vue", () => {
         const matcher3 = "/api/v1/transactions"
         mock.onGet(matcher3).reply(200, SAMPLE_TRANSACTIONS);
 
-        const matcher4 = "https://api.coingecko.com/api/v3/coins/hedera-hashgraph"
-        mock.onGet(matcher4).reply(200, SAMPLE_COINGECKO);
+        const matcher4 = "/api/v1/network/exchangerate"
+        mock.onGet(matcher4).reply(200, SAMPLE_NETWORK_EXCHANGERATE);
 
         const wrapper = mount(ContractDetails, {
             global: {
@@ -125,9 +125,6 @@ describe("ContractDetails.vue", () => {
 
         const matcher3 = "/api/v1/transactions"
         mock.onGet(matcher3).reply(200, SAMPLE_TRANSACTIONS);
-
-        const matcher4 = "https://api.coingecko.com/api/v3/coins/hedera-hashgraph"
-        mock.onGet(matcher4).reply(200, SAMPLE_COINGECKO);
 
         const wrapper = mount(ContractDetails, {
             global: {
@@ -189,9 +186,6 @@ describe("ContractDetails.vue", () => {
         const matcher3 = "/api/v1/transactions"
         mock.onGet(matcher3).reply(200, SAMPLE_TRANSACTIONS);
 
-        const matcher4 = "https://api.coingecko.com/api/v3/coins/hedera-hashgraph"
-        mock.onGet(matcher4).reply(200, SAMPLE_COINGECKO);
-
         const wrapper = mount(ContractDetails, {
             global: {
                 plugins: [router, Oruga]
@@ -226,9 +220,6 @@ describe("ContractDetails.vue", () => {
 
         const matcher3 = "/api/v1/transactions"
         mock.onGet(matcher3).reply(200, SAMPLE_TRANSACTIONS);
-
-        const matcher4 = "https://api.coingecko.com/api/v3/coins/hedera-hashgraph"
-        mock.onGet(matcher4).reply(200, SAMPLE_COINGECKO);
 
         const wrapper = mount(ContractDetails, {
             global: {

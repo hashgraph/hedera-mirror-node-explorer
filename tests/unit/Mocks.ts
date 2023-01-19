@@ -2216,12 +2216,12 @@ export const SAMPLE_NETWORK_SUPPLY = {
 
 export const SAMPLE_NETWORK_EXCHANGERATE = {
     "current_rate": {
-        "cent_equivalent": 152368,
+        "cent_equivalent": 738099,
         "expiration_time": 1668679200,
         "hbar_equivalent": 30000
     },
     "next_rate": {
-        "cent_equivalent": 150818,
+        "cent_equivalent": 739000,
         "expiration_time": 1668682800,
         "hbar_equivalent": 30000
     },
@@ -2260,26 +2260,6 @@ export const SAMPLE_BLOCKSRESPONSE = {
         }
     ], "links": {"next": "/api/v1/blocks?timestamp=gte:1662111646.528325857&limit=2&block.number=lt:25175997"}
 }
-
-//
-// https://api.coingecko.com/api/v3/coins/hedera-hashgraph
-//
-
-export const SAMPLE_COINGECKO = {
-
-    "market_data": {
-        "current_price": {
-            "usd": 0.246033,
-        },
-        "market_cap": {
-            "usd": 4486259941,
-        },
-        "price_change_percentage_24h": 8.41776,
-        "market_cap_change_percentage_24h": 8.42424
-    }
-
-}
-
 
 //
 // https://www.4byte.directory/api/v1/signatures/?hex_signature=0xb01ef608

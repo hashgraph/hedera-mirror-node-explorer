@@ -19,11 +19,8 @@
  */
 
 import {Collector} from "@/utils/collector/Collector";
-import axios, {AxiosResponse} from "axios";
+import {AxiosResponse} from "axios";
 import {flushPromises} from "@vue/test-utils";
-import {CoinGeckoCollector} from "@/utils/collector/CoinGeckoCollector";
-import {SAMPLE_COINGECKO} from "../Mocks";
-import MockAdapter from "axios-mock-adapter";
 
 describe("Collector.ts", () => {
 
@@ -66,19 +63,6 @@ describe("Collector.ts", () => {
         }
 
     })
-
-    test("CoinGeckoCollector", async () => {
-
-        const mock = new MockAdapter(axios);
-        const matcher = "https://api.coingecko.com/api/v3/coins/hedera-hashgraph"
-        mock.onGet(matcher).reply(200, SAMPLE_COINGECKO);
-
-        const r1 = await CoinGeckoCollector.instance.fetch(null)
-        const r2 = await CoinGeckoCollector.instance.fetch(null)
-        expect(r2.data).toStrictEqual(r1.data)
-        expect(mock.history.get.length).toBe(1)
-    })
-
 })
 
 class TestCollector extends Collector<TestData, number> {
