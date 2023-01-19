@@ -42,14 +42,22 @@ export class HbarPriceLoader extends EntityLoader<NetworkExchangeRateSetResponse
     //
 
     protected async load(): Promise<AxiosResponse<NetworkExchangeRateSetResponse> | null> {
+
+        console.log("HbarPriceLoader::load() - timestamp: " + this.timestamp.value)
+
+        let result
         const parameters = {} as {
             timestamp: string
         }
         if (this.timestamp.value) {
-            parameters.timestamp = this.timestamp.value
+            if (this.timestamp.value !== "0") {
+                parameters.timestamp = this.timestamp.value
+            }
+            result = axios.get<NetworkExchangeRateSetResponse>(
+                'api/v1/network/exchangerate', {params: parameters})
+        } else {
+            result = Promise.resolve(null)
         }
-
-        return axios.get<NetworkExchangeRateSetResponse>(
-            'api/v1/network/exchangerate', {params: parameters})
+        return result
     }
 }
