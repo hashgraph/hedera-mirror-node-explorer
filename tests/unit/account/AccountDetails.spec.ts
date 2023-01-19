@@ -32,7 +32,6 @@ import {
     SAMPLE_ACCOUNT_HBAR_BALANCE,
     SAMPLE_ACCOUNT_STAKING_ACCOUNT,
     SAMPLE_ACCOUNT_STAKING_NODE,
-    SAMPLE_COINGECKO,
     SAMPLE_FAILED_TRANSACTIONS, SAMPLE_NETWORK_EXCHANGERATE,
     SAMPLE_NETWORK_NODES,
     SAMPLE_NONFUNGIBLE,
@@ -183,9 +182,6 @@ describe("AccountDetails.vue", () => {
         const matcher5 = "/api/v1/balances"
         mock.onGet(matcher5).reply(200, SAMPLE_ACCOUNT_BALANCES);
 
-        const matcher6 = "https://api.coingecko.com/api/v3/coins/hedera-hashgraph"
-        mock.onGet(matcher6).reply(200, SAMPLE_COINGECKO);
-
         let matcher8 = "/api/v1/accounts/" + SAMPLE_ACCOUNT.account + "/rewards"
         mock.onGet(matcher8).reply(200, { rewards: [] })
 
@@ -286,9 +282,6 @@ describe("AccountDetails.vue", () => {
 
         const matcher5 = "/api/v1/balances"
         mock.onGet(matcher5).reply(200, SAMPLE_ACCOUNT_BALANCES);
-
-        const matcher6 = "https://api.coingecko.com/api/v3/coins/hedera-hashgraph"
-        mock.onGet(matcher6).reply(200, SAMPLE_COINGECKO);
 
         const matcher8 = "/api/v1/accounts/" + SAMPLE_ACCOUNT_DELETED.account + "/rewards"
         mock.onGet(matcher8).reply(200, { rewards: [] })

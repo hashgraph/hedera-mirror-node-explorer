@@ -27,7 +27,7 @@ import AccountDetails from "@/pages/AccountDetails.vue";
 import {
     SAMPLE_ACCOUNT,
     SAMPLE_ACCOUNT_BALANCES, SAMPLE_ACCOUNT_DUDE,
-    SAMPLE_COINGECKO, SAMPLE_NETWORK_NODES, SAMPLE_NETWORK_STAKE,
+    SAMPLE_NETWORK_NODES, SAMPLE_NETWORK_STAKE,
     SAMPLE_NONFUNGIBLE,
     SAMPLE_TOKEN, SAMPLE_TOKEN_DUDE,
     SAMPLE_TRANSACTIONS
@@ -136,9 +136,6 @@ describe("NodeDetails.vue", () => {
 
         const matcher5 = "/api/v1/balances"
         mock.onGet(matcher5).reply(200, SAMPLE_ACCOUNT_BALANCES);
-
-        const matcher6 = "https://api.coingecko.com/api/v3/coins/hedera-hashgraph"
-        mock.onGet(matcher6).reply(200, SAMPLE_COINGECKO);
 
         let matcher8 = "/api/v1/accounts/" + account1.account + "/rewards"
         mock.onGet(matcher8).reply(200, { rewards: [] })

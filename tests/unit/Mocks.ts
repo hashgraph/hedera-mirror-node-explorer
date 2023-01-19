@@ -2262,26 +2262,6 @@ export const SAMPLE_BLOCKSRESPONSE = {
 }
 
 //
-// https://api.coingecko.com/api/v3/coins/hedera-hashgraph
-//
-
-export const SAMPLE_COINGECKO = {
-
-    "market_data": {
-        "current_price": {
-            "usd": 0.246033,
-        },
-        "market_cap": {
-            "usd": 4486259941,
-        },
-        "price_change_percentage_24h": 8.41776,
-        "market_cap_change_percentage_24h": 8.42424
-    }
-
-}
-
-
-//
 // https://www.4byte.directory/api/v1/signatures/?hex_signature=0xb01ef608
 //
 

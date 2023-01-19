@@ -23,7 +23,7 @@ import router from "@/router";
 import TokenDetails from "@/pages/TokenDetails.vue";
 import axios from "axios";
 import {
-    SAMPLE_BALANCES, SAMPLE_COINGECKO, SAMPLE_NETWORK_EXCHANGERATE,
+    SAMPLE_BALANCES, SAMPLE_NETWORK_EXCHANGERATE,
     SAMPLE_NFTS, SAMPLE_NONFUNGIBLE,
     SAMPLE_NONFUNGIBLE_DUDE,
     SAMPLE_TOKEN,
@@ -76,8 +76,6 @@ describe("TokenDetails.vue", () => {
         mock.onGet(matcher1).reply(200, SAMPLE_TOKEN);
         const matcher2 = "/api/v1/tokens/" + testTokenId + "/balances"
         mock.onGet(matcher2).reply(200, SAMPLE_BALANCES);
-        const matcher3 = "https://api.coingecko.com/api/v3/coins/hedera-hashgraph"
-        mock.onGet(matcher3).reply(200, SAMPLE_COINGECKO);
 
         const wrapper = mount(TokenDetails, {
             global: {
