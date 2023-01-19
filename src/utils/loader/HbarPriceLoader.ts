@@ -28,7 +28,7 @@ export class HbarPriceLoader extends EntityLoader<NetworkExchangeRateSetResponse
     public readonly timestamp: Ref<string | null>
     public readonly hbarPrice = computed(() => {
         const rate = this.response.value?.data.current_rate
-        return rate ? (Math.round(rate.cent_equivalent / rate.hbar_equivalent * 100) / 10000) : null
+        return rate ? (rate.cent_equivalent / rate.hbar_equivalent / 100) : null
     })
 
     public constructor(timestamp: Ref<string | null>) {

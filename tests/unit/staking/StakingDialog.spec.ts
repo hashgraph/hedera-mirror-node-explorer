@@ -26,7 +26,7 @@ import axios from "axios";
 import {
     SAMPLE_ACCOUNT,
     SAMPLE_ACCOUNT_STAKING_ACCOUNT, SAMPLE_ACCOUNTS,
-    SAMPLE_COINGECKO,
+    SAMPLE_NETWORK_EXCHANGERATE,
     SAMPLE_NETWORK_NODES,
 } from "../Mocks";
 import ConfirmDialog from "@/components/ConfirmDialog.vue";
@@ -100,8 +100,8 @@ describe("StakingDialog.vue", () => {
             mock.onGet(matcher2, body).reply(200, response)
         }
         mock.onGet(matcher2).reply(200, SAMPLE_NETWORK_NODES)
-        const matcher3 = "https://api.coingecko.com/api/v3/coins/hedera-hashgraph"
-        mock.onGet(matcher3).reply(200, SAMPLE_COINGECKO);
+        const matcher3 = "api/v1/network/exchangerate"
+        mock.onGet(matcher3).reply(200, SAMPLE_NETWORK_EXCHANGERATE);
         const matcher4 = "/api/v1/accounts"
         const body = {params: {"account.id": "0.0.7", balance: false}}
         mock.onGet(matcher4, body).reply(200, SAMPLE_ACCOUNTS)
@@ -202,8 +202,8 @@ describe("StakingDialog.vue", () => {
             mock.onGet(matcher2, body).reply(200, response)
         }
         mock.onGet(matcher2).reply(200, SAMPLE_NETWORK_NODES)
-        const matcher3 = "https://api.coingecko.com/api/v3/coins/hedera-hashgraph"
-        mock.onGet(matcher3).reply(200, SAMPLE_COINGECKO);
+        const matcher3 = "api/v1/network/exchangerate"
+        mock.onGet(matcher3).reply(200, SAMPLE_NETWORK_EXCHANGERATE);
         const matcher4 = "/api/v1/accounts"
         const body = {params: {"account.id": "0.0.7", balance: false}}
         mock.onGet(matcher4, body).reply(200, SAMPLE_ACCOUNTS)

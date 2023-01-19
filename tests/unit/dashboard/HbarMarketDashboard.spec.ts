@@ -57,10 +57,10 @@ describe("HbarMarketDashboard.vue ", () => {
         expect(wrapper.vm.marketDataCache.hbarSupply24hCache.autoRefresh.value).toBe(true)
 
         expect(wrapper.text()).toBe(
-            "$0.0508" +
+            "$0.2460" +
             "0.00%" +
             "HBAR PRICE" +
-            "$1,071,098,741" +
+            "$5,186,816,738" +
             "0.00%" +
             "HBAR MARKET CAP" +
             "21,084,620,884.43" +

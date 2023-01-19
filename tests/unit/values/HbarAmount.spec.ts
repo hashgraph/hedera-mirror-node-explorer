@@ -27,13 +27,13 @@
 
 import {flushPromises, mount} from "@vue/test-utils";
 import HbarAmount from "@/components/values/HbarAmount.vue";
-import {SAMPLE_COINGECKO} from "../Mocks";
+import {SAMPLE_NETWORK_EXCHANGERATE} from "../Mocks";
 import MockAdapter from "axios-mock-adapter";
 import axios from "axios";
 
 const mock = new MockAdapter(axios);
-const matcher = "https://api.coingecko.com/api/v3/coins/hedera-hashgraph"
-mock.onGet(matcher).reply(200, SAMPLE_COINGECKO);
+const matcher = "api/v1/network/exchangerate"
+mock.onGet(matcher).reply(200, SAMPLE_NETWORK_EXCHANGERATE);
 
 describe("HbarAmount.vue ", () => {
 

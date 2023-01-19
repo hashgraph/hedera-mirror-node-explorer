@@ -2216,12 +2216,12 @@ export const SAMPLE_NETWORK_SUPPLY = {
 
 export const SAMPLE_NETWORK_EXCHANGERATE = {
     "current_rate": {
-        "cent_equivalent": 152368,
+        "cent_equivalent": 738099,
         "expiration_time": 1668679200,
         "hbar_equivalent": 30000
     },
     "next_rate": {
-        "cent_equivalent": 150818,
+        "cent_equivalent": 739000,
         "expiration_time": 1668682800,
         "hbar_equivalent": 30000
     },

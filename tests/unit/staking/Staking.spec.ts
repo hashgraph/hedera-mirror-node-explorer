@@ -29,7 +29,7 @@ import MockAdapter from "axios-mock-adapter";
 import axios from "axios";
 import {
     SAMPLE_ACCOUNT_STAKING_ACCOUNT,
-    SAMPLE_COINGECKO,
+    SAMPLE_NETWORK_EXCHANGERATE,
     SAMPLE_NETWORK_NODES,
     SAMPLE_TRANSACTION,
     SAMPLE_TRANSACTIONS
@@ -103,8 +103,8 @@ describe("Staking.vue", () => {
 
         mock.onGet(matcher2).reply(200, SAMPLE_NETWORK_NODES)
         NodeRegistry.instance.reload()
-        const matcher3 = "https://api.coingecko.com/api/v3/coins/hedera-hashgraph"
-        mock.onGet(matcher3).reply(200, SAMPLE_COINGECKO);
+        const matcher3 = "/api/v1/network/exchangerate"
+        mock.onGet(matcher3).reply(200, SAMPLE_NETWORK_EXCHANGERATE);
         const matcher4 = "/api/v1/transactions/" + STAKE_UPDATE_TRANSACTION_HASH
         mock.onGet(matcher4).reply(200, STAKE_UPDATE_TRANSACTIONS)
         const matcher5 = "/api/v1/transactions"
