@@ -104,7 +104,7 @@
         <Property id="gasPrice">
           <template v-slot:name>Gas Price</template>
           <template v-slot:value>
-            <HbarAmount :amount="gasPrice" :show-extra="true"/>
+            <HbarAmount :amount="gasPrice" :timestamp="timestamp" :show-extra="true"/>
           </template>
         </Property>
       </template>
@@ -195,7 +195,7 @@ export default defineComponent({
 
     const toId = computed(() => {
       let result
-      if (contractResultDetailsLoader.entity.value?.from) {
+      if (contractResultDetailsLoader.entity.value?.to) {
         const entity = EntityID.fromAddress(contractResultDetailsLoader.entity.value?.to)
         result = entity ? entity.toString() : null
       } else {

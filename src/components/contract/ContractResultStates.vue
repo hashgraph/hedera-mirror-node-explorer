@@ -50,7 +50,7 @@
       <hr class="h-card-separator" style="margin-top: 0; margin-bottom: 20px; height: 1px"/>
 
       <div v-for="s in nbChangeDisplayed" :key="s">
-        <ContractResultStateChangeEntry :change="displayStateChanges[changeCursor + s - 1]"/>
+        <ContractResultStateChangeEntry :change="displayStateChanges[changeCursor + s - 1]" :timestamp="timeStamp"/>
         <hr class="h-card-separator" style="margin-top: 0; margin-bottom: 12px; height: 0.5px"/>
       </div>
 

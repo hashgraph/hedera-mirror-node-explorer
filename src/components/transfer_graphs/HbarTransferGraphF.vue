@@ -68,7 +68,8 @@
           <!-- #2 : dollar amount -->
           <div class="justify-end">
             <HbarExtra v-if="i <= hbarTransferLayout.sources.length"
-                       v-bind:tbarAmount="hbarTransferLayout.sources[i-1].transfer.amount"/>
+                       v-bind:tbarAmount="hbarTransferLayout.sources[i-1].transfer.amount"
+                       v-bind:timestamp="transaction.consensus_timestamp"/>
           </div>
 
         </template>
@@ -101,7 +102,8 @@
           <!-- #6 : dollar amount -->
           <div class="justify-end" v-bind:class="{'h-has-low-contrast': hasLowContrast(i-1)}">
             <HbarExtra v-if="i <= hbarTransferLayout.destinations.length"
-                       v-bind:tbarAmount="hbarTransferLayout.destinations[i-1].transfer.amount"/>
+                       v-bind:tbarAmount="hbarTransferLayout.destinations[i-1].transfer.amount"
+                       v-bind:timestamp="transaction.consensus_timestamp"/>
           </div>
 
           <!-- #7 : description -->

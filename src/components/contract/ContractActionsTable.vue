@@ -70,7 +70,7 @@
       <o-table-column v-slot="props" field="amount" label="Amount">
         <div class="is-flex is-align-items-end is-align-content-end is-numeric">
          <span style="font-size: 13px; margin-right: 2px">&#8594;</span>
-          <HbarAmount :amount="props.row.action.value" :show-extra="true"/>
+          <HbarAmount :amount="props.row.action.value" :timestamp="props.row.action.timestamp" :show-extra="true"/>
           <span style="font-size: 13px; margin-left: 2px;: 2px">&#8594;</span>
         </div>
       </o-table-column>

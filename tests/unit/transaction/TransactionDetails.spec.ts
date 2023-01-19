@@ -31,11 +31,10 @@ import axios from "axios";
 import {
     SAMPLE_ASSOCIATED_TOKEN, SAMPLE_ASSOCIATED_TOKEN_2,
     SAMPLE_BLOCKSRESPONSE,
-    SAMPLE_COINGECKO,
     SAMPLE_CONTRACT_RESULT_DETAILS,
     SAMPLE_CONTRACTCALL_TRANSACTIONS,
     SAMPLE_FAILED_TRANSACTION,
-    SAMPLE_FAILED_TRANSACTIONS, SAMPLE_NETWORK_NODES, SAMPLE_PARENT_CHILD_TRANSACTIONS,
+    SAMPLE_FAILED_TRANSACTIONS, SAMPLE_NETWORK_EXCHANGERATE, SAMPLE_NETWORK_NODES, SAMPLE_PARENT_CHILD_TRANSACTIONS,
     SAMPLE_SCHEDULING_SCHEDULED_TRANSACTIONS,
     SAMPLE_SYSTEM_CONTRACT_CALL_TRANSACTIONS,
     SAMPLE_TOKEN, SAMPLE_TOKEN_ASSOCIATE_TRANSACTION, SAMPLE_TOKEN_ASSOCIATIONS,
@@ -76,8 +75,8 @@ HMSF.forceUTC = true
 describe("TransactionDetails.vue", () => {
 
     const mock = new MockAdapter(axios);
-    const matcher1 = "https://api.coingecko.com/api/v3/coins/hedera-hashgraph"
-    mock.onGet(matcher1).reply(200, SAMPLE_COINGECKO);
+    const matcher1 = "/api/v1/network/exchangerate"
+    mock.onGet(matcher1).reply(200, SAMPLE_NETWORK_EXCHANGERATE);
     const matcher2 = "/api/v1/blocks"
     mock.onGet(matcher2).reply(200, SAMPLE_BLOCKSRESPONSE);
     const matcher3 = "api/v1/network/nodes"

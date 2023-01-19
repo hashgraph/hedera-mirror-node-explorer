@@ -134,19 +134,22 @@
         <Property id="chargedFee">
           <template v-slot:name>Charged Fee</template>
           <template v-slot:value>
-            <HbarAmount v-if="transaction" v-bind:amount="transaction.charged_tx_fee" v-bind:show-extra="true"/>
+            <HbarAmount v-if="transaction" :amount="transaction.charged_tx_fee"
+                        :show-extra="true" :timestamp="transaction.consensus_timestamp"/>
           </template>
         </Property>
         <Property id="maxFee">
           <template v-slot:name>Max fee</template>
           <template v-slot:value>
-            <HbarAmount v-if="transaction" v-bind:amount="maxFee" v-bind:show-extra="true"/>
+            <HbarAmount v-if="transaction" :amount="maxFee" :show-extra="true"
+                        :timestamp="transaction.consensus_timestamp"/>
           </template>
         </Property>
         <Property v-if="false" id="netAmount">
           <template v-slot:name>Net Amount</template>
           <template v-slot:value>
-            <HbarAmount v-if="transaction" v-bind:amount="netAmount" v-bind:show-extra="true"/>
+            <HbarAmount v-if="transaction" :amount="netAmount" :show-extra="true"
+                        :timestamp="transaction.consensus_timestamp"/>
           </template>
         </Property>
         <Property id="duration">

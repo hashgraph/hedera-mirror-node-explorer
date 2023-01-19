@@ -46,7 +46,7 @@
               <template v-slot:name>{{ tokens?.length ? 'Balances' : 'Balance' }}</template>
               <template v-slot:value>
                 <div class="has-flex-direction-column">
-                  <HbarAmount v-if="contract" :amount="balance" :show-extra="true"/>
+                  <HbarAmount v-if="contract" :amount="balance" :show-extra="true" :timestamp="'0'"/>
                   <div v-if="displayAllTokenLinks">
                     <router-link :to="{name: 'AccountBalances', params: {accountId: contractId}}">
                       See all token balances
@@ -54,7 +54,7 @@
                   </div>
                   <div v-else>
                     <div v-for="t in tokens" :key="t.token_id">
-                      <TokenAmount :amount="t.balance" :token-id="t.token_id" :show-extra="true"/>
+                      <TokenAmount :amount="t.balance" :show-extra="true" :token-id="t.token_id"/>
                     </div>
                   </div>
                 </div>
