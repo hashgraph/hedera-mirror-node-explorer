@@ -33,7 +33,7 @@
       {{ formattedAmount }}
     </span>
     <span v-if="showExtra" class="ml-2">
-      <HbarExtra v-bind:tbar-amount="amount" v-bind:small-extra="smallExtra" v-bind:hide-zero="hideZero"/>
+      <HbarExtra :hide-zero="hideZero" :small-extra="smallExtra" :tbar-amount="amount" :timestamp="timestamp"/>
     </span>
   </template>
   <span v-else/>
@@ -56,6 +56,10 @@ export default defineComponent({
   props: {
     amount: {
       type: Number,
+    },
+    timestamp: {
+      type: String,
+      default: null
     },
     decimals: {
       type: Number,
