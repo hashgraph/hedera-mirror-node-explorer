@@ -42,9 +42,6 @@ export class HbarPriceLoader extends EntityLoader<NetworkExchangeRateSetResponse
     //
 
     protected async load(): Promise<AxiosResponse<NetworkExchangeRateSetResponse> | null> {
-
-        console.log("HbarPriceLoader::load() - timestamp: " + this.timestamp.value)
-
         let result
         const parameters = {} as {
             timestamp: string
