@@ -53,7 +53,7 @@
         <Property id="amountStaked">
           <template v-slot:name>Amount Staked</template>
           <template v-slot:value>
-            <HbarAmount v-if="account" :amount="account.balance.balance" :timestamp="'0'" :show-extra="true"/>
+            <HbarAmount v-if="account" :amount="account.balance.balance" timestamp="0" :show-extra="true"/>
           </template>
         </Property>
 
@@ -134,7 +134,7 @@
         <Property v-if="false" id="changeCost">
           <template v-slot:name>Change Transaction Cost</template>
           <template v-slot:value>
-            <HbarAmount v-if="account" :amount="10000000" :timestamp="'0'" :show-extra="true" :decimals="1"/>
+            <HbarAmount v-if="account" :amount="10000000" timestamp="0" :show-extra="true" :decimals="1"/>
           </template>
         </Property>
 
