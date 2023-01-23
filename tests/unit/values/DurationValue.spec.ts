@@ -82,6 +82,8 @@ describe("DurationValue.vue", () => {
 
         await testBody(wrapper, 12, "12s")
         await testBody(wrapper, 1, "1s")
+
+        await testBody(wrapper, 31556888202959784, "Infinite")
     })
 
     test("stringValue defined", async () => {
