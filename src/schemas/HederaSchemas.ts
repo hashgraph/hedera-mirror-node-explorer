@@ -698,6 +698,7 @@ export interface Links {
     next: string | null | undefined
 }
 
+export const infiniteDuration = 31556888202959784
 
 // ---------------------------------------------------------------------------------------------------------------------
 //                                                      Private

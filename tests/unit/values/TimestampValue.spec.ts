@@ -31,7 +31,7 @@ describe("TimestampValue.vue", () => {
     // timestamp undefined
     //
 
-    it("blobValue undefined, showNone == false", async () => {
+    test("timestamp undefined, showNone == false", async () => {
 
         const wrapper = mount(TimestampValue, {
             global: {
@@ -46,7 +46,7 @@ describe("TimestampValue.vue", () => {
         expect(wrapper.text()).toBe("")
     })
 
-    it("blobValue undefined, showNone == true", async () => {
+    test("timestamp undefined, showNone == true", async () => {
 
         const wrapper = mount(TimestampValue, {
             global: {
@@ -72,7 +72,7 @@ describe("TimestampValue.vue", () => {
 
     const TIMESTAMP_STRING = "12:44:13.1650 AMFeb 22, 2021, UTC"
 
-    it("blobValue undefined, nano == false", async () => {
+    test("timestamp expressed in seconds", async () => {
 
         const wrapper = mount(TimestampValue, {
             global: {
@@ -94,7 +94,7 @@ describe("TimestampValue.vue", () => {
 
     const TIMESTAMP_NANOS = "1613954653165071000"
 
-    it("blobValue undefined, nano == true", async () => {
+    test("timestamp expressed in nanoseconds", async () => {
 
         const wrapper = mount(TimestampValue, {
             global: {
@@ -111,6 +111,27 @@ describe("TimestampValue.vue", () => {
         expect(wrapper.text()).toBe(TIMESTAMP_STRING)
     })
 
+    //
+    // 'Infinite' timestamp
+    //
 
+    const INFINITE_TIMESTAMP = "31556889864403199.196946953"
+    const INFINITE_STRING = "Never"
+
+    test("infinite timestamp", async () => {
+
+        const wrapper = mount(TimestampValue, {
+            global: {
+                plugins: [router]
+            },
+            props: {
+                timestamp: INFINITE_TIMESTAMP
+            },
+        });
+
+        await flushPromises()
+
+        expect(wrapper.text()).toBe(INFINITE_STRING)
+    })
 })
 
