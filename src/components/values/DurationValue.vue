@@ -24,7 +24,10 @@
 
 <template>
 
-  <template v-if="formattedValue">
+  <template v-if="isInfinite">
+    <span class="has-text-grey">Infinite</span>
+  </template>
+  <template v-else-if="formattedValue">
     <span>{{ formattedValue }}</span>
   </template>
   <template v-else-if="showNone && !initialLoading">
@@ -72,10 +75,15 @@ export default defineComponent({
       return result
     })
 
+    const isInfinite = computed(() => {
+      const duration = props.numberValue ?? Number.parseInt(props.stringValue ?? "")
+      return duration >= 31556888202959784
+    })
+
     const initialLoading = inject(initialLoadingKey, ref(false))
 
     return {
-      formattedValue, initialLoading,
+      isInfinite, formattedValue, initialLoading,
     }
   }
 });
