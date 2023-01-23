@@ -48,6 +48,7 @@
 import {computed, defineComponent, inject, ref} from "vue";
 import {formatSeconds} from "@/utils/Duration";
 import {initialLoadingKey} from "@/AppKeys";
+import {infiniteDuration} from "@/schemas/HederaSchemas";
 
 export default defineComponent({
   name: "DurationValue",
@@ -77,7 +78,7 @@ export default defineComponent({
 
     const isInfinite = computed(() => {
       const duration = props.numberValue ?? Number.parseInt(props.stringValue ?? "")
-      return duration >= 31556888202959784
+      return duration >= infiniteDuration
     })
 
     const initialLoading = inject(initialLoadingKey, ref(false))

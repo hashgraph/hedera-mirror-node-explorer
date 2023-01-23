@@ -62,6 +62,7 @@
 import {computed, defineComponent, inject, ref} from "vue";
 import {HMSF} from "@/utils/HMSF";
 import {initialLoadingKey} from "@/AppKeys";
+import {infiniteDuration} from "@/schemas/HederaSchemas";
 
 export default defineComponent({
   name: "TimestampValue",
@@ -86,7 +87,7 @@ export default defineComponent({
       return props.timestamp ? parseSeconds(normalizedTimestamp(props.timestamp, props.nano)) : null
     })
 
-    const isNever = computed( () => seconds.value && seconds.value >= 31556888202959784)
+    const isNever = computed( () => seconds.value && seconds.value >= infiniteDuration)
 
     const dateOptions = {
       weekDay: "short",
