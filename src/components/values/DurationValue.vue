@@ -24,7 +24,10 @@
 
 <template>
 
-  <template v-if="formattedValue">
+  <template v-if="isInfinite">
+    <span class="has-text-grey">Infinite</span>
+  </template>
+  <template v-else-if="formattedValue">
     <span>{{ formattedValue }}</span>
   </template>
   <template v-else-if="showNone && !initialLoading">
@@ -45,6 +48,7 @@
 import {computed, defineComponent, inject, ref} from "vue";
 import {formatSeconds} from "@/utils/Duration";
 import {initialLoadingKey} from "@/AppKeys";
+import {infiniteDuration} from "@/schemas/HederaSchemas";
 
 export default defineComponent({
   name: "DurationValue",
@@ -72,10 +76,15 @@ export default defineComponent({
       return result
     })
 
+    const isInfinite = computed(() => {
+      const duration = props.numberValue ?? Number.parseInt(props.stringValue ?? "")
+      return duration >= infiniteDuration
+    })
+
     const initialLoading = inject(initialLoadingKey, ref(false))
 
     return {
-      formattedValue, initialLoading,
+      isInfinite, formattedValue, initialLoading,
     }
   }
 });

@@ -20,12 +20,14 @@
 
 export class Duration {
 
+    public readonly years: number
     public readonly days: number
     public readonly hours: number
     public readonly minutes: number
     public readonly seconds: number
 
-    public constructor(days: number, hours: number, minutes: number, seconds: number) {
+    public constructor(years: number, days: number, hours: number, minutes: number, seconds: number) {
+        this.years = years
         this.days = days
         this.hours = hours
         this.minutes = minutes
@@ -33,6 +35,9 @@ export class Duration {
     }
 
     public static decompose(seconds: number): Duration {
+
+        const years = Math.floor(seconds / 31536000)
+        seconds -= years * 31536000
 
         const days = Math.floor(seconds / 86400)
         seconds -= days * 86400
@@ -43,7 +48,7 @@ export class Duration {
         const minutes = Math.floor(seconds / 60)
         seconds -= minutes * 60
 
-        return new Duration(days, hours, minutes, seconds)
+        return new Duration(years, days, hours, minutes, seconds)
     }
 }
 
@@ -57,26 +62,26 @@ export function formatSeconds(secondCount: number|string|undefined): string {
         } else {
             const duration = Duration.decompose(seconds)
             result = ""
+            if (duration.years >= 2) {
+                const yearUnit = (!duration.days && !duration.hours && !duration.minutes && !duration.seconds) ? " years" : "y "
+                result = duration.years + yearUnit
+            } else if (duration.years == 1) {
+                result = (!duration.days && !duration.hours && !duration.minutes && !duration.seconds) ? "365 days" : "1y "
+            }
             if (duration.days >= 2) {
-                const dayUnit = (!duration.hours && !duration.minutes && !duration.seconds) ? " days" : "d "
+                const dayUnit = (!duration.years && !duration.hours && !duration.minutes && !duration.seconds) ? " days" : "d "
                 result += duration.days + dayUnit
             } else if (duration.days == 1) {
-                result = (!duration.hours && !duration.minutes && !duration.seconds) ? "24h" : "1d "
+                result = (!duration.years && !duration.hours && !duration.minutes && !duration.seconds) ? "24h" : "1d "
             }
-            if (duration.hours >= 2) {
+            if (duration.hours) {
                 result += duration.hours + "h "
-            } else if (duration.hours == 1) {
-                result += "1h "
             }
-            if (duration.minutes >= 2) {
+            if (duration.minutes) {
                 result += duration.minutes + "min "
-            } else if (duration.minutes == 1) {
-                result += "1min "
             }
-            if (duration.seconds >= 2) {
+            if (duration.seconds) {
                 result += duration.seconds + "s "
-            } else if (duration.seconds == 1) {
-                result += "1s "
             }
             result = result.trim()
         }
