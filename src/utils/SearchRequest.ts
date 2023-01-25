@@ -247,7 +247,7 @@ export class SearchRequest {
         }
 
         // 7) Domain (via kabuto name service)
-        if (/\.[a-z]+$/.test(this.searchedId)) {
+        if (/\.[a-z|ℏ]+$/.test(this.searchedId)) {
           nameServiceResolve(this.searchedId)
             .then(accountInfo => {
               if (accountInfo != null) {

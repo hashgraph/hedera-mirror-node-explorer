@@ -23,15 +23,25 @@
 <!-- --------------------------------------------------------------------------------------------------------------- -->
 
 <template>
-  <template v-if="isComplexKey">
-    <ComplexKeyValue :account-id="accountId" :key-bytes="keyBytes" :show-none="showNone"/>
-  </template>
-  <template v-else>
-    <div>
-      <HexaValue :byte-string="keyBytes" :show-none="showNone" :none-extra="noneExtra"/>
-      <div v-if="keyBytes" class="h-is-extra-text h-is-text-size-3">{{ this.keyType }}</div>
-    </div>
-  </template>
+
+  <section :class="{'h-mobile-background': isTouchDevice || !isSmallScreen}" class="section">
+
+    <DashboardCard>
+      <template v-slot:title>
+        <span class="h-is-primary-title">Admin Key for Account </span>
+        <span class="h-is-secondary-text">{{ normalizedAccountId ?? "" }}</span>
+        <span v-if="accountChecksum" class="has-text-grey" style="font-size: 28px">-{{ accountChecksum }}</span>
+      </template>
+
+      <template v-slot:content>
+        <ComplexKeyValue :details="true" :key-bytes="key?.key"/>
+      </template>
+    </DashboardCard>
+
+  </section>
+
+  <Footer/>
+
 </template>
 
 <!-- --------------------------------------------------------------------------------------------------------------- -->
@@ -40,39 +50,51 @@
 
 <script lang="ts">
 
-import {computed, defineComponent} from "vue";
-import HexaValue from "@/components/values/HexaValue.vue";
+import {computed, defineComponent, inject, onMounted} from 'vue';
+import DashboardCard from "@/components/DashboardCard.vue";
+import Footer from "@/components/Footer.vue";
+import {PathParam} from "@/utils/PathParam";
+import {AccountLoader} from "@/components/account/AccountLoader";
 import ComplexKeyValue from "@/components/values/ComplexKeyValue.vue";
 
 export default defineComponent({
-  name: "KeyValue",
-  components: {ComplexKeyValue, HexaValue},
-  props: {
-    keyBytes: String,
-    keyType: String,
-    accountId: String,
-    showNone: {
-      type: Boolean,
-      default: false
-    },
-    noneExtra: String
-  },
-  setup(props) {
 
-    const isComplexKey = computed(() => props.keyType == "ProtobufEncoded")
+  name: 'AdminKeyDetails',
+
+  components: {
+    ComplexKeyValue,
+    Footer,
+    DashboardCard,
+  },
+
+  props: {
+    accountId: String,
+    network: String
+  },
+
+  setup(props) {
+    const isSmallScreen = inject('isSmallScreen', true)
+    const isTouchDevice = inject('isTouchDevice', false)
+
+    //
+    // account
+    //
+
+    const accountLocator = computed(() => PathParam.parseAccountIdOrAliasOrEvmAddress(props.accountId))
+    const accountLoader = new AccountLoader(accountLocator)
+    onMounted(() => accountLoader.requestLoad())
+
     return {
-      isComplexKey,
+      isSmallScreen,
+      isTouchDevice,
+      account: accountLoader.entity,
+      normalizedAccountId: accountLoader.accountId,
+      accountChecksum: accountLoader.accountChecksum,
+      key: accountLoader.key,
     }
   }
-})
+});
 
 </script>
 
-<!-- --------------------------------------------------------------------------------------------------------------- -->
-<!--                                                      STYLE                                                      -->
-<!-- --------------------------------------------------------------------------------------------------------------- -->
-
-<style scoped>
-
-
-</style>
+<style/>

@@ -19,7 +19,7 @@
  */
 
 import {EntityLoader} from "@/utils/loader/EntityLoader";
-import {AccountBalanceTransactions, TokenBalance} from "@/schemas/HederaSchemas";
+import {AccountBalanceTransactions, Key, TokenBalance} from "@/schemas/HederaSchemas";
 import {makeEthAddressForAccount} from "@/schemas/HederaUtils";
 import {computed, ref, Ref} from "vue";
 import axios, {AxiosResponse} from "axios";
@@ -53,6 +53,8 @@ export class AccountLoader extends EntityLoader<AccountBalanceTransactions> {
     public readonly balance: Ref<number|null> = computed(() => this.entity.value?.balance?.balance ?? null)
 
     public readonly createdTimestamp: Ref<string|null> = computed(() => this.entity.value?.created_timestamp ?? null)
+
+    public readonly key: Ref<Key|null> = computed(() => this.entity.value?.key ?? null)
 
     public readonly tokens: Ref<TokenBalance[]|null> = computed(() => this.entity.value?.balance?.tokens ?? null)
 
