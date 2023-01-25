@@ -95,13 +95,13 @@ export class ComplexKeyLine {
 
     private static flattenComplexKeyRec(key: hashgraph.proto.Key, level: number, result: ComplexKeyLine[]): void {
 
-        let newLine: ComplexKeyLine
+        let newLine: ComplexKeyLine|null
         let childKeys: hashgraph.proto.Key[]
         if (key.keyList) {
             if (key.keyList.keys && key.keyList.keys.length == 1) {
                 // Collapses singleton KeyList
-                newLine = new ComplexKeyLine(key.keyList.keys[0], level)
-                childKeys = []
+                newLine = null
+                childKeys = [key.keyList.keys[0]]
             } else {
                 newLine = new ComplexKeyLine(key, level)
                 childKeys = key.keyList?.keys ?? []
@@ -109,16 +109,27 @@ export class ComplexKeyLine {
             // newLine = new ComplexKeyLine(key, level)
             // childKeys = key.keyList?.keys ?? []
         } else if (key.thresholdKey) {
-            newLine = new ComplexKeyLine(key, level)
-            childKeys = key.thresholdKey?.keys?.keys ?? []
+            if (key.thresholdKey.keys?.keys && key.thresholdKey.keys?.keys.length == 1) {
+                // Collapses singleton ThresholdKey
+                newLine = null
+                childKeys = [key.thresholdKey.keys?.keys[0]]
+            } else {
+                newLine = new ComplexKeyLine(key, level)
+                childKeys = key.thresholdKey?.keys?.keys ?? []
+            }
+            // newLine = new ComplexKeyLine(key, level)
+            // childKeys = key.thresholdKey?.keys?.keys ?? []
         } else {
             newLine = new ComplexKeyLine(key, level)
             childKeys = []
         }
-        result.push(newLine)
+        if (newLine !== null) {
+            result.push(newLine)
+        }
 
+        const nextLevel = newLine !== null ? level + 1 : level
         for (const childKey of childKeys) {
-            this.flattenComplexKeyRec(childKey, level + 1, result)
+            this.flattenComplexKeyRec(childKey, nextLevel, result)
         }
     }
 
