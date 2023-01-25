@@ -24,7 +24,7 @@
 
 <template>
   <template v-if="isComplexKey">
-    <ComplexKeyValue :key-bytes="keyBytes" :show-none="showNone"/>
+    <ComplexKeyValue :account-id="accountId" :key-bytes="keyBytes" :show-none="showNone"/>
   </template>
   <template v-else>
     <div>
@@ -50,6 +50,7 @@ export default defineComponent({
   props: {
     keyBytes: String,
     keyType: String,
+    accountId: String,
     showNone: {
       type: Boolean,
       default: false

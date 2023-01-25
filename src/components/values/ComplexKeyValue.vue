@@ -23,8 +23,16 @@
 <!-- --------------------------------------------------------------------------------------------------------------- -->
 
 <template>
-  <div v-if="key !== null">
-    <div :style="containerStyle()">
+  <div v-if="key">
+    <div v-if="maxLevel >= MAX_INLINE_LEVEL && adminKeyRoute">
+      <span>{{ 'Complex Key (' + maxLevel + ' levels)' }}</span>
+      <router-link v-if="adminKeyRoute"  :to="adminKeyRoute">
+        <span class="ml-2 has-text-grey h-is-text-size-3">
+          See details
+        </span>
+      </router-link>
+    </div>
+    <div v-else :style="containerStyle()">
       <template v-for="line in lines" :key="line.seqNb">
         <div :style="lineStyle(line)">
           <template v-if="line.innerKeyBytes() !== null">
@@ -65,12 +73,16 @@ import hashgraph from "@hashgraph/proto/lib/proto";
 import HexaValue from "@/components/values/HexaValue.vue";
 import ContractLink from "@/components/values/ContractLink.vue";
 import {initialLoadingKey} from "@/AppKeys";
+import {routeManager} from "@/router";
+
+const MAX_INLINE_LEVEL = 1
 
 export default defineComponent({
   name: "ComplexKeyValue",
   components: {ContractLink, HexaValue},
   props: {
     keyBytes: String,
+    accountId: String,
     showNone: {
       type: Boolean,
       default: false
@@ -140,14 +152,21 @@ export default defineComponent({
       return result
     }
 
+    const adminKeyRoute = computed(() => {
+      return props.accountId ? routeManager.makeRouteToAdminKey(props.accountId) : null
+    })
+
     const initialLoading = inject(initialLoadingKey, ref(false))
 
     return {
       key,
       lines,
+      maxLevel,
+      MAX_INLINE_LEVEL,
       containerStyle,
       lineStyle,
       lineText,
+      adminKeyRoute,
       initialLoading
     }
   }
