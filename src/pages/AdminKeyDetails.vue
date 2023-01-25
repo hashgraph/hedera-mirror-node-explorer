@@ -28,9 +28,12 @@
 
     <DashboardCard>
       <template v-slot:title>
-        <span class="h-is-primary-title">Admin Key for Account </span>
-        <span class="h-is-secondary-text">{{ normalizedAccountId ?? "" }}</span>
-        <span v-if="accountChecksum" class="has-text-grey" style="font-size: 28px">-{{ accountChecksum }}</span>
+        <span class="h-is-primary-title">Admin Key </span>
+        <span v-if="normalizedAccountId" class="h-is-tertiary-text"> for account </span>
+        <div v-if="normalizedAccountId" class="h-is-secondary-text has-text-weight-light is-inline-block">
+          <AccountLink :account-id="normalizedAccountId">{{ normalizedAccountId }}</AccountLink>
+        </div>
+        <span v-if="accountChecksum" class="has-text-grey mr-3" style="font-size: 28px">-{{ accountChecksum }}</span>
       </template>
 
       <template v-slot:content>
@@ -56,12 +59,14 @@ import Footer from "@/components/Footer.vue";
 import {PathParam} from "@/utils/PathParam";
 import {AccountLoader} from "@/components/account/AccountLoader";
 import ComplexKeyValue from "@/components/values/ComplexKeyValue.vue";
+import AccountLink from "@/components/values/AccountLink.vue";
 
 export default defineComponent({
 
   name: 'AdminKeyDetails',
 
   components: {
+    AccountLink,
     ComplexKeyValue,
     Footer,
     DashboardCard,
