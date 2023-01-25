@@ -34,7 +34,33 @@
       </template>
 
       <template v-slot:content>
-        TO BE PROVIDED
+        <div v-if="key !== null">
+          <div :style="containerStyle()" class="h-is-property-text">
+            <template v-for="line in lines" :key="line.seqNb">
+              <div :style="lineStyle(line)">
+                <template v-if="line.innerKeyBytes() !== null">
+                  <div :class="lineClass(line)">
+                    <span class="h-is-extra-text">{{ line.innerKeyType() }}</span>
+                    <span class="is-family-monospace has-text-grey">{{ ':&#8239;' + line.innerKeyBytes() }}</span>
+                  </div>
+                </template>
+                <template v-else-if="line.contractId() !== null">
+                  Contract:
+                  <ContractLink :contract-id="line.contractId()"/>
+                </template>
+                <template v-else-if="line.delegatableContractId() !== null">
+                  Delegatable Contract:
+                  <ContractLink :contract-id="line.delegatableContractId()"/>
+                </template>
+                <template v-else>
+                  <div :class="lineClass(line)">
+                    {{ lineText(line) }}
+                  </div>
+                </template>
+              </div>
+            </template>
+          </div>
+        </div>
       </template>
     </DashboardCard>
 
@@ -51,52 +77,30 @@
 <script lang="ts">
 
 import {computed, defineComponent, inject, onMounted} from 'vue';
-import KeyValue from "@/components/values/KeyValue.vue";
-import PlayPauseButton from "@/components/PlayPauseButton.vue";
-import TransactionTable from "@/components/transaction/TransactionTable.vue";
-import DurationValue from "@/components/values/DurationValue.vue";
-import TimestampValue from "@/components/values/TimestampValue.vue";
 import DashboardCard from "@/components/DashboardCard.vue";
-import HbarAmount from "@/components/values/HbarAmount.vue";
-import TokenAmount from "@/components/values/TokenAmount.vue";
-import BlobValue from "@/components/values/BlobValue.vue";
 import Footer from "@/components/Footer.vue";
 import {PathParam} from "@/utils/PathParam";
-import Property from "@/components/Property.vue";
-import NotificationBanner from "@/components/NotificationBanner.vue";
-import EthAddress from "@/components/values/EthAddress.vue";
-import StringValue from "@/components/values/StringValue.vue";
-import AccountLink from "@/components/values/AccountLink.vue";
 import {AccountLoader} from "@/components/account/AccountLoader";
-import TransactionFilterSelect from "@/components/transaction/TransactionFilterSelect.vue";
-import TransactionLink from "@/components/values/TransactionLink.vue";
-import StakingRewardsTable from "@/components/staking/StakingRewardsTable.vue";
-import AliasValue from "@/components/values/AliasValue.vue";
+import hashgraph from "@hashgraph/proto/lib/proto";
+import {hexToByte} from "@/utils/B64Utils";
+import {ComplexKeyLine} from "@/utils/ComplexKeyLine";
+import ContractLink from "@/components/values/ContractLink.vue";
+
+const lineClasses: Array<string> = [
+  "has-bullet",
+  "has-dash",
+  "has-circle",
+  "has-plus",
+]
 
 export default defineComponent({
 
   name: 'AdminKeyDetails',
 
   components: {
-    AliasValue,
-    TransactionLink,
-    AccountLink,
-    NotificationBanner,
-    Property,
-    TransactionFilterSelect,
+    ContractLink,
     Footer,
-    BlobValue,
-    TokenAmount,
-    HbarAmount,
     DashboardCard,
-    TransactionTable,
-    PlayPauseButton,
-    TimestampValue,
-    KeyValue,
-    EthAddress,
-    DurationValue,
-    StringValue,
-    StakingRewardsTable
   },
 
   props: {
@@ -106,7 +110,6 @@ export default defineComponent({
 
   setup(props) {
     const isSmallScreen = inject('isSmallScreen', true)
-    const isMediumScreen = inject('isMediumScreen', true)
     const isTouchDevice = inject('isTouchDevice', false)
 
     //
@@ -117,16 +120,113 @@ export default defineComponent({
     const accountLoader = new AccountLoader(accountLocator)
     onMounted(() => accountLoader.requestLoad())
 
+    const key = computed(() => {
+      let result: hashgraph.proto.Key | null
+      if (accountLoader.key.value?.key) {
+        const keyByteArray = hexToByte(accountLoader.key.value?.key)
+        try {
+          result = keyByteArray !== null ? hashgraph.proto.Key.decode(keyByteArray) : null
+        } catch (reason) {
+          console.warn("Failed to decode key:" + reason)
+          result = null
+        }
+      } else {
+        result = null
+      }
+      return result
+    })
+
+    const lines = computed(() => {
+      return key.value !== null ? ComplexKeyLine.flattenComplexKey(key.value) : []
+    })
+
+    const maxLevel = computed(() => {
+      let result = 0
+      for (const line of lines.value) {
+        result = Math.max(result, line.level)
+      }
+      return result
+    })
+
+    const containerStyle = (): Record<string, string> => {
+      const n = maxLevel.value + 1
+      const offset = 30
+      return {
+        display: "grid",
+        gridTemplateColumns: "repeat(" + n + ", " + offset + "px) auto repeat(" + n + ", " + offset + "px)",
+        rowGap: "0.50rem"
+      }
+    }
+
+    const lineClass = (line: ComplexKeyLine) => {
+      const index = line.level % lineClasses.length
+      return lineClasses[index]
+    }
+
+    const lineStyle = (line: ComplexKeyLine): Record<string, string> => {
+      const n = maxLevel.value + 1
+      const start = line.level + 1
+      const end = start + n + 1
+      return {
+        'grid-column-start': start.toString(),
+        'grid-column-end': end.toString(),
+      }
+    }
+
+    const lineText = (line: ComplexKeyLine): string => {
+      let result: string
+      if (line.key.thresholdKey) {
+        const childCount = line.key.thresholdKey.keys?.keys?.length ?? 0
+        result = "THRESHOLD (" + line.key.thresholdKey.threshold + " of " + childCount + ")"
+      } else if (line.key.keyList) {
+        const childCount = line.key.keyList.keys?.length ?? 0
+        result = "LIST (all of " + childCount + ')'
+      } else {
+        result = line.key.key ?? "?"
+      }
+      return result
+    }
+
     return {
       isSmallScreen,
       isTouchDevice,
       account: accountLoader.entity,
       normalizedAccountId: accountLoader.accountId,
       accountChecksum: accountLoader.accountChecksum,
+      key,
+      lines,
+      containerStyle,
+      lineClass,
+      lineStyle,
+      lineText,
     }
   }
 });
 
 </script>
 
-<style/>
+<style scoped>
+.has-bullet:before {
+  content: "\2022\202F";
+  font-weight: lighter;
+  color: grey;
+}
+
+.has-dash:before {
+  content: "\2043\202F";
+  font-weight: lighter;
+  color: grey;
+}
+
+.has-plus:before {
+  content: "\002B\202F";
+  font-weight: lighter;
+  color: grey;
+}
+
+.has-circle:before {
+  content: "\25E6\202F";
+  font-weight: lighter;
+  color: grey;
+}
+</style>
