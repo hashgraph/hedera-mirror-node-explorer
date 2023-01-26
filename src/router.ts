@@ -48,6 +48,7 @@ import BlockDetails from "@/pages/BlockDetails.vue";
 import Blocks from "@/pages/Blocks.vue";
 import {getEnv} from "@/utils/getEnv";
 import AccountsWithKey from "@/pages/AccountsWithKey.vue";
+import AdminKeyDetails from "@/pages/AdminKeyDetails.vue";
 
 const routes: Array<RouteRecordRaw> = [
   {
@@ -107,6 +108,12 @@ const routes: Array<RouteRecordRaw> = [
     path: '/:network/account/:accountId',
     name: 'AccountDetails',
     component: AccountDetails,
+    props: true
+  },
+  {
+    path: '/:network/adminKey/:accountId',
+    name: 'AdminKeyDetails',
+    component: AdminKeyDetails,
     props: true
   },
   {
@@ -269,6 +276,9 @@ router.beforeEach((to) => {
       break;
     case "AccountDetails":
       document.title = "Hedera Account " + to.params.accountId + titleSuffix
+      break;
+    case "AdminKeyDetails":
+      document.title = "Hedera Admin Key for Account " + to.params.accountId + titleSuffix
       break;
     case "AccountBalances":
       document.title = "Balances for Hedera Account " + to.params.accountId + titleSuffix

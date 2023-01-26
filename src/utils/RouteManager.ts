@@ -128,7 +128,11 @@ export class RouteManager {
 
     public testAccountRoute(route: string|null = null): boolean {
         const r = route ?? this.currentRoute.value
-        return r === 'Accounts' || r === 'AccountDetails' || r === 'AccountBalances' || r === 'AccountsWithKey'
+        return r === 'Accounts'
+            || r === 'AccountDetails'
+            || r === 'AccountBalances'
+            || r === 'AccountsWithKey'
+            || r === 'AdminKeyDetails'
     }
 
     public testNodeRoute(route: string|null = null): boolean {
@@ -209,6 +213,16 @@ export class RouteManager {
 
     public routeToAccountsWithKey(pubKey: string): Promise<NavigationFailure | void | undefined> {
         return this.router.push(this.makeRouteToAccountsWithKey(pubKey))
+    }
+
+    //
+    // Admin Key
+    //
+
+    public makeRouteToAdminKey(accountId: string): RouteLocationRaw {
+        return {
+            name: 'AdminKeyDetails', params: {accountId: accountId}
+        }
     }
 
     //
