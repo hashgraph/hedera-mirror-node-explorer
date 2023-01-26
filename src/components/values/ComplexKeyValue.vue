@@ -52,7 +52,7 @@
             Delegatable Contract: <ContractLink :contract-id="line.delegatableContractId()"/>
           </template>
           <template v-else>
-            <div v-if="details" :class="lineClass(line)">{{ lineText(line) }}</div>
+            <div v-if="details && line.level" :class="lineClass(line)">{{ lineText(line) }}</div>
             <div v-else>{{ lineText(line) }}</div>
           </template>
         </div>
