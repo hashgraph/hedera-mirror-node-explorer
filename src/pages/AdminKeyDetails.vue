@@ -28,8 +28,7 @@
 
     <DashboardCard>
       <template v-slot:title>
-        <span class="h-is-primary-title">Admin Key </span>
-        <span v-if="normalizedAccountId" class="h-is-tertiary-text"> for account </span>
+        <span class="h-is-primary-title">Admin Key for Account </span>
         <div v-if="normalizedAccountId" class="h-is-secondary-text has-text-weight-light is-inline-block">
           <AccountLink :account-id="normalizedAccountId">{{ normalizedAccountId }}</AccountLink>
         </div>
@@ -37,7 +36,10 @@
       </template>
 
       <template v-slot:content>
-        <KeyValue :details="true" :key-bytes="key?.key" :key-type="key?._type" :show-none="true"/>
+        <NotificationBanner v-if="notification" :message="notification"/>
+
+        <KeyValue v-if="normalizedAccountId" :details="true" :key-bytes="key?.key" :key-type="key?._type"
+                  :show-none="true"/>
       </template>
     </DashboardCard>
 
@@ -60,12 +62,14 @@ import {PathParam} from "@/utils/PathParam";
 import {AccountLoader} from "@/components/account/AccountLoader";
 import AccountLink from "@/components/values/AccountLink.vue";
 import KeyValue from "@/components/values/KeyValue.vue";
+import NotificationBanner from "@/components/NotificationBanner.vue";
 
 export default defineComponent({
 
   name: 'AdminKeyDetails',
 
   components: {
+    NotificationBanner,
     KeyValue,
     AccountLink,
     Footer,
@@ -81,6 +85,20 @@ export default defineComponent({
     const isSmallScreen = inject('isSmallScreen', true)
     const isTouchDevice = inject('isTouchDevice', false)
 
+    const notification = computed(() => {
+      let result
+      if (accountLoader.accountLocator.value === null) {
+        result = "Invalid account ID: " + props.accountId
+      } else if (accountLoader.got404.value) {
+        result = "Account with ID " + accountLoader.accountLocator.value + " was not found"
+      } else if (accountLoader.entity.value?.deleted === true) {
+        result = "Account is deleted"
+      } else {
+        result = null
+      }
+      return result
+    })
+
     //
     // account
     //
@@ -92,6 +110,7 @@ export default defineComponent({
     return {
       isSmallScreen,
       isTouchDevice,
+      notification,
       account: accountLoader.entity,
       normalizedAccountId: accountLoader.accountId,
       accountChecksum: accountLoader.accountChecksum,
