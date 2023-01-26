@@ -283,8 +283,9 @@ export default defineComponent({
         result = "Contract with ID " + props.contractId + " was not found"
       } else if (contractLoader.entity.value?.deleted === true) {
         result = "Contract is deleted"
-      } else if (expiration && Number.parseFloat(expiration) <= new Date().getTime() / 1000) {
-        result = "Contract has expired and is in grace period"
+      // to be re-activated after Feb 9th
+      // } else if (expiration && Number.parseFloat(expiration) <= new Date().getTime() / 1000) {
+      //   result = "Contract has expired and is in grace period"
       } else {
         result = null
       }
