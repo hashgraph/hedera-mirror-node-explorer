@@ -37,7 +37,7 @@
       </template>
 
       <template v-slot:content>
-        <ComplexKeyValue :details="true" :key-bytes="key?.key"/>
+        <KeyValue :details="true" :key-bytes="key?.key" :key-type="key?._type" :show-none="true"/>
       </template>
     </DashboardCard>
 
@@ -58,16 +58,16 @@ import DashboardCard from "@/components/DashboardCard.vue";
 import Footer from "@/components/Footer.vue";
 import {PathParam} from "@/utils/PathParam";
 import {AccountLoader} from "@/components/account/AccountLoader";
-import ComplexKeyValue from "@/components/values/ComplexKeyValue.vue";
 import AccountLink from "@/components/values/AccountLink.vue";
+import KeyValue from "@/components/values/KeyValue.vue";
 
 export default defineComponent({
 
   name: 'AdminKeyDetails',
 
   components: {
+    KeyValue,
     AccountLink,
-    ComplexKeyValue,
     Footer,
     DashboardCard,
   },
