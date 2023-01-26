@@ -85,10 +85,10 @@ import {routeManager} from "@/router";
 const MAX_INLINE_LEVEL = 1
 
 const lineClasses: Array<string> = [
+  "has-plus",
   "has-bullet",
   "has-dash",
   "has-circle",
-  "has-plus",
 ]
 
 export default defineComponent({
