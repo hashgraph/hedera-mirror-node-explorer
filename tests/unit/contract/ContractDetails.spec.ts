@@ -170,7 +170,8 @@ describe("ContractDetails.vue", () => {
 
     });
 
-    it("Should display notification of grace period", async () => {
+    // TODO: re-enable after Feb 9th
+    it.skip("Should display notification of grace period", async () => {
 
         await router.push("/") // To avoid "missing required param 'network'" error
 
@@ -203,6 +204,41 @@ describe("ContractDetails.vue", () => {
         const banner = wrapper.findComponent(NotificationBanner)
         expect(banner.exists()).toBe(true)
         expect(banner.text()).toBe("Contract has expired and is in grace period")
+    });
+
+    // TODO: remove after Feb 9th
+    it("Should NOT display notification of grace period", async () => {
+
+        await router.push("/") // To avoid "missing required param 'network'" error
+
+        const mock = new MockAdapter(axios);
+
+        const contract = SAMPLE_CONTRACT_DUDE
+        const matcher1 = "/api/v1/contracts/" + contract.contract_id
+        mock.onGet(matcher1).reply(200, contract);
+
+        const matcher2 = "/api/v1/accounts/" + contract.contract_id
+        mock.onGet(matcher2).reply(200, SAMPLE_CONTRACT_AS_ACCOUNT);
+
+        const matcher3 = "/api/v1/transactions"
+        mock.onGet(matcher3).reply(200, SAMPLE_TRANSACTIONS);
+
+        const wrapper = mount(ContractDetails, {
+            global: {
+                plugins: [router, Oruga]
+            },
+            props: {
+                contractId: contract.contract_id
+            },
+        });
+
+        await flushPromises()
+        // console.log(wrapper.text())
+
+        expect(wrapper.text()).toMatch(RegExp("^Contract " + SAMPLE_CONTRACT_DUDE.contract_id))
+
+        const banner = wrapper.findComponent(NotificationBanner)
+        expect(banner.exists()).toBe(false)
     });
 
     it("Should display notification of deleted contract", async () => {
