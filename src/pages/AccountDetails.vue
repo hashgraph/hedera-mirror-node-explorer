@@ -124,7 +124,7 @@
           </template>
         </Property>
 
-        <Property id="expiresAt">
+        <Property v-if="currentNetwork !== 'mainnet'" id="expiresAt">
           <template v-slot:name>Expires at</template>
           <template v-slot:value>
             <TimestampValue v-bind:show-none="true" v-bind:timestamp="account?.expiry_timestamp"/>
@@ -446,7 +446,8 @@ export default defineComponent({
       contractRoute,
       stakedNodeRoute,
       operatorNodeRoute,
-      availableAPI: rewardsTableController.availableAPI
+      availableAPI: rewardsTableController.availableAPI,
+      currentNetwork: routeManager.currentNetwork
     }
   }
 });

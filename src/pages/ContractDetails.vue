@@ -78,7 +78,7 @@
                 <TransactionLink :transactionLoc="contract?.created_timestamp"/>
               </template>
             </Property>
-            <Property id="expiresAt">
+            <Property v-if="currentNetwork !== 'mainnet'" id="expiresAt">
               <template v-slot:name>Expires at</template>
               <template v-slot:value>
                 <TimestampValue v-bind:timestamp="contract?.expiration_timestamp" v-bind:show-none="true"/>
@@ -320,7 +320,8 @@ export default defineComponent({
       obtainerId: contractLoader.obtainerId,
       proxyAccountId: contractLoader.proxyAccountId,
       normalizedContractId,
-      accountRoute
+      accountRoute,
+      currentNetwork: routeManager.currentNetwork
     }
   },
 });
