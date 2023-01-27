@@ -63,10 +63,10 @@ describe('Token Navigation', () => {
             })
     })
 
-    const nftId = "0.0.33957315"
+    const nftId = "0.0.1752721"
     it('should follow links from NFT details', () => {
-        cy.visit('testnet/token/' + nftId)
-        cy.url().should('include', '/testnet/token/' + nftId)
+        cy.visit('mainnet/token/' + nftId)
+        cy.url().should('include', '/mainnet/token/' + nftId)
         cy.contains('Non Fungible Token ' + nftId)
 
         cy.get('table')
@@ -79,15 +79,15 @@ describe('Token Navigation', () => {
             .click()
             .then(($id) => {
                 // cy.log('Selected account Id: ' + $id.text())
-                cy.url().should('include', '/testnet/account/' + $id.text())
+                cy.url().should('include', '/mainnet/account/' + $id.text())
                 cy.contains('Account ' + $id.text())
             })
     })
 
-    const tokenId = "0.0.33958222"
+    const tokenId = "0.0.1738807"
     it('should follow links from token details', () => {
-        cy.visit('testnet/token/' + tokenId)
-        cy.url().should('include', '/testnet/token/' + tokenId)
+        cy.visit('mainnet/token/' + tokenId)
+        cy.url().should('include', '/mainnet/token/' + tokenId)
         cy.contains('Fungible Token ' + tokenId)
 
         cy.get('table')
@@ -99,7 +99,7 @@ describe('Token Navigation', () => {
             .click()
             .then(($id) => {
                 // cy.log('Selected account Id: ' + $id.text())
-                cy.url().should('include', '/testnet/account/' + $id.text())
+                cy.url().should('include', '/mainnet/account/' + $id.text())
                 cy.contains('Account ' + $id.text())
             })
     })
@@ -115,10 +115,10 @@ describe('Token Navigation', () => {
             .contains('Token with ID ' + unknownID + ' was not found')
     })
 
-    const tokenAddress = "0x000000000000000000000000000000000206294e"
+    const tokenAddress = "0x00000000000000000000000000000000001a8837"
     it('should follow links from token details using ERC20 address', () => {
-        cy.visit('testnet/token/' + tokenAddress)
-        cy.url().should('include', '/testnet/token/' + tokenAddress)
+        cy.visit('mainnet/token/' + tokenAddress)
+        cy.url().should('include', '/mainnet/token/' + tokenAddress)
         cy.contains('Fungible Token ' + tokenId)
 
         cy.get('table')
@@ -130,7 +130,7 @@ describe('Token Navigation', () => {
             .click()
             .then(($id) => {
                 // cy.log('Selected account Id: ' + $id.text())
-                cy.url().should('include', '/testnet/account/' + $id.text())
+                cy.url().should('include', '/mainnet/account/' + $id.text())
                 cy.contains('Account ' + $id.text())
             })
     })
