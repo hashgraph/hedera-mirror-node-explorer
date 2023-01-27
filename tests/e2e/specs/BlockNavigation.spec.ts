@@ -42,7 +42,7 @@ describe('Block Navigation', () => {
     })
 
     it('should navigate from block details to previous block details', () => {
-        const blockNumber = "24073523"
+        const blockNumber = "3"
         cy.visit('testnet/block/' + blockNumber)
         cy.url().should('include', '/testnet/block/' + blockNumber)
         cy.contains('Block ' + blockNumber)
@@ -59,7 +59,7 @@ describe('Block Navigation', () => {
     })
 
     it('should navigate from the list of Block Transactions to TransactionDetails and back', () => {
-        const blockNumber = "24073523"
+        const blockNumber = "3"
         cy.visit('testnet/block/' + blockNumber)
         cy.url().should('include', '/testnet/block/' + blockNumber)
         cy.contains('Block ' + blockNumber)
