@@ -23,24 +23,24 @@
 describe('AdminKeyDetails Navigation', () => {
 
     it('should follow link from account to admin key details and back', () => {
-        const accountId = "0.0.49058639"
+        const accountId = "0.0.2"
 
-        cy.visit('testnet/account/' + accountId)
-        cy.url().should('include', '/testnet/account/' + accountId)
+        cy.visit('mainnet/account/' + accountId)
+        cy.url().should('include', '/mainnet/account/' + accountId)
         cy.contains('Account ' + accountId)
 
         cy.get('#keyValue')
             .find('a')
             .click()
 
-        cy.url().should('include', '/testnet/adminKey/' + accountId)
+        cy.url().should('include', '/mainnet/adminKey/' + accountId)
         cy.contains('Admin Key for Account ' + accountId)
 
         cy.get('#accountId')
             .find('a')
             .click()
 
-        cy.url().should('include', '/testnet/account/' + accountId)
+        cy.url().should('include', '/mainnet/account/' + accountId)
         cy.contains('Account ' + accountId)
     })
 
