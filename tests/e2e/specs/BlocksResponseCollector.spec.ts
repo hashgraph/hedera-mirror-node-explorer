@@ -22,20 +22,20 @@
 
 describe('BlocksResponseCollector', () => {
 
-    const firstTxnInBlock = "1598572649.383706000"
-    const lastTxnInBlock = "1598572646.192587000"
+    const firstTxnInBlock = "1568412925.355652000"
+    const lastTxnInBlock = "1568412929.861487000"
 
-    it('should display block 12 for first transaction in block', () => {
-        cy.visit('testnet/transaction/' + firstTxnInBlock)
-        cy.url().should('include', '/testnet/transaction/' + firstTxnInBlock)
+    it('should display block 5 for first transaction in block', () => {
+        cy.visit('mainnet/transaction/' + firstTxnInBlock)
+        cy.url().should('include', '/mainnet/transaction/' + firstTxnInBlock)
 
-        cy.get('#blockNumberValue').contains("12")
+        cy.get('#blockNumberValue').contains("5")
     })
 
     it('should display block 12 for last transaction in block', () => {
-        cy.visit('testnet/transaction/' + lastTxnInBlock)
-        cy.url().should('include', '/testnet/transaction/' + lastTxnInBlock)
+        cy.visit('mainnet/transaction/' + lastTxnInBlock)
+        cy.url().should('include', '/mainnet/transaction/' + lastTxnInBlock)
 
-        cy.get('#blockNumberValue').contains("12")
+        cy.get('#blockNumberValue').contains("5")
     })
 })

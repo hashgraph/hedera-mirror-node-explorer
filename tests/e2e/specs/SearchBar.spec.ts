@@ -26,34 +26,34 @@ import {normalizeTransactionId} from "../../../src/utils/TransactionID";
 describe('Search Bar', () => {
 
     beforeEach( () => {
-        cy.visit('/testnet/dashboard')
-        cy.url().should('include', '/testnet/dashboard')
+        cy.visit('/mainnet/dashboard')
+        cy.url().should('include', '/mainnet/dashboard')
     })
 
     it('should find the account ID', () => {
         const searchAccount = "0.0.3"
-        testBody(searchAccount, '/testnet/account/' + searchAccount, 'Account ', true)
+        testBody(searchAccount, '/mainnet/account/' + searchAccount, 'Account ', true)
 
-        cy.visit('testnet/account/0.0.4')
-        cy.url().should('include', '/testnet/account/0.0.4')
-        testBody(searchAccount, '/testnet/account/' + searchAccount, 'Account ', true)
+        cy.visit('mainnet/account/0.0.4')
+        cy.url().should('include', '/mainnet/account/0.0.4')
+        testBody(searchAccount, '/mainnet/account/' + searchAccount, 'Account ', true)
     })
 
     it('should find the transaction ID', () => {
-        const searchTransaction = "0.0.88@1647261503.217669000"
-        const timestamp = "1647261513.856431000"
+        const searchTransaction = "0.0.2@1627434000.000000000"
+        const timestamp = "1627434006.848027000"
         testBody(
             searchTransaction,
-            '/testnet/transaction/' + timestamp + "?tid=" + normalizeTransactionId(searchTransaction),
+            '/mainnet/transaction/' + timestamp + "?tid=" + normalizeTransactionId(searchTransaction),
             'Transaction '
         )
     })
 
     it('should find and list the scheduling/scheduled transactions', () => {
-        const searchTransaction = "0.0.11852473@1650382121.542685062"
+        const searchTransaction = "0.0.1407723@1674820202.780744468"
         testBody(
             searchTransaction,
-            '/testnet/transactionsById/' + normalizeTransactionId(searchTransaction),
+            '/mainnet/transactionsById/' + normalizeTransactionId(searchTransaction),
             'Transactions with ID '
         )
         cy.get('table')
@@ -72,15 +72,15 @@ describe('Search Bar', () => {
     })
 
     it('should find and list the parent/child transactions', () => {
-        const searchTransaction = "0.0.6036@1652787852.826165451"
+        const searchTransaction = "0.0.445590@1674821543.265349407"
         testBody(
             searchTransaction,
-            '/testnet/transactionsById/' + normalizeTransactionId(searchTransaction),
+            '/mainnet/transactionsById/' + normalizeTransactionId(searchTransaction),
             'Transactions with ID '
         )
         cy.get('table')
             .find('tbody tr')
-            .should('have.length', 3)
+            .should('have.length', 7)
             .eq(0)
             .find('td')
             .eq(3)
@@ -101,9 +101,9 @@ describe('Search Bar', () => {
 
     it('should find the transaction by hash', () => {
         cy.visit('/mainnet/dashboard')
-        const searchHash = "0xe4c9408e65d41bb0b3a417065e0cd98c1fedc98663db7c06909cb63e0236f39848d80fd006da39326800cb896898a85a"
-        const timestamp = "1669194629.950871003"
-        const transactionId = "0.0.19789@1669194618.004968459"
+        const searchHash = "0x08e62c0531e603fa6d29930195682e937978d542bd404d490546717bb128da4ec4ed586e6d516735f24049b2c3eb7b20"
+        const timestamp = "1674821555.935799283"
+        const transactionId = "0.0.445590@1674821543.265349407"
         testBody(
             transactionId,
             '/mainnet/transaction/' + timestamp + "?tid=" + normalizeTransactionId(transactionId),
@@ -114,11 +114,11 @@ describe('Search Bar', () => {
     })
 
     it('should find the transaction by timestamp', () => {
-        const searchTimestamp = "1669195027.532177053"
-        const transactionId = "0.0.282498@1669195016.605846807"
+        const searchTimestamp = "1674821555.935799283"
+        const transactionId = "0.0.445590@1674821543.265349407"
         testBody(
             transactionId,
-            '/testnet/transaction/' + searchTimestamp + "?tid=" + normalizeTransactionId(transactionId),
+            '/mainnet/transaction/' + searchTimestamp + "?tid=" + normalizeTransactionId(transactionId),
             'Transaction ',
             false,
             searchTimestamp
@@ -126,48 +126,48 @@ describe('Search Bar', () => {
     })
 
     it('should find the NFT ID', () => {
-        const searchNFT = "0.0.30961728"
-        testBody(searchNFT, '/testnet/token/' + searchNFT, 'Token ', true)
+        const searchNFT = "0.0.1752721"
+        testBody(searchNFT, '/mainnet/token/' + searchNFT, 'Token ', true)
 
-        cy.visit('testnet/token/0.0.45960942')
-        cy.url().should('include', '/testnet/token/0.0.45960942')
-        testBody(searchNFT, '/testnet/token/' + searchNFT, 'Token ', true)
+        cy.visit('mainnet/token/0.0.1751171')
+        cy.url().should('include', '/mainnet/token/0.0.1751171')
+        testBody(searchNFT, '/mainnet/token/' + searchNFT, 'Token ', true)
     })
 
     it('should find the token ID', () => {
-        const searchToken = "0.0.45960539"
-        testBody(searchToken, '/testnet/token/' + searchToken, 'Token ', true)
+        const searchToken = "0.0.1738816"
+        testBody(searchToken, '/mainnet/token/' + searchToken, 'Token ', true)
 
-        cy.visit('testnet/token/0.0.30960947')
-        cy.url().should('include', '/testnet/token/0.0.30960947')
-        testBody(searchToken, '/testnet/token/' + searchToken, 'Token ', true)
+        cy.visit('mainnet/token/0.0.1738807')
+        cy.url().should('include', '/mainnet/token/0.0.1738807')
+        testBody(searchToken, '/mainnet/token/' + searchToken, 'Token ', true)
     })
 
     it('should find the topic ID', () => {
-        const searchTopic = "0.0.45960950"
-        testBody(searchTopic, '/testnet/topic/' + searchTopic, 'Messages for Topic ', true)
+        const searchTopic = "0.0.1750326"
+        testBody(searchTopic, '/mainnet/topic/' + searchTopic, 'Messages for Topic ', true)
 
-        cy.visit('testnet/topic/0.0.45960954')
-        cy.url().should('include', '/testnet/topic/0.0.45960954')
-        testBody(searchTopic, '/testnet/topic/' + searchTopic, 'Messages for Topic ', true)
+        cy.visit('mainnet/topic/0.0.1744769')
+        cy.url().should('include', '/mainnet/topic/0.0.1744769')
+        testBody(searchTopic, '/mainnet/topic/' + searchTopic, 'Messages for Topic ', true)
     })
 
     it('should find the contract ID', () => {
-        const searchContract = "0.0.45960092"
-        testBody(searchContract, '/testnet/contract/' + searchContract, 'Contract ', true)
+        const searchContract = "0.0.1077627"
+        testBody(searchContract, '/mainnet/contract/' + searchContract, 'Contract ', true)
 
-        cy.visit('testnet/contract/0.0.30962023')
-        cy.url().should('include', '/testnet/contract/0.0.30962023')
-        testBody(searchContract, '/testnet/contract/' + searchContract, 'Contract ', true)
+        cy.visit('mainnet/contract/0.0.1742018')
+        cy.url().should('include', '/mainnet/contract/0.0.1742018')
+        testBody(searchContract, '/mainnet/contract/' + searchContract, 'Contract ', true)
     })
 
     it('should find the account by public key', () => {
-        cy.visit('/testnet/dashboard')
-        const searchKey = "0xe88d731ad218447874d7470b797cac989d23107b4da129441665625cd5269ab0"
-        const searchAccount = "0.0.15818224"
+        cy.visit('/mainnet/dashboard')
+        const searchKey = "0x03f92218fc51554417ef78bc84bd7a60d57844b9556f67df54d17c7b951de69c7e"
+        const searchAccount = "0.0.1753997"
         testBody(
             searchAccount,
-            '/testnet/account/' + searchAccount,
+            '/mainnet/account/' + searchAccount,
             'Account ',
             false,
             searchKey
@@ -197,12 +197,12 @@ describe('Search Bar', () => {
     })
 
     it('should find the account by Ethereum-format alias', () => {
-        cy.visit('/testnet/dashboard')
-        const searchAlias = "0x0000000000000000000000000000000000f15df0"
-        const searchAccount = "0.0.15818224"
+        cy.visit('/mainnet/dashboard')
+        const searchAlias = "0x00000000000000000000000000000000000b03ae"
+        const searchAccount = "0.0.721838"
         testBody(
             searchAccount,
-            '/testnet/account/' + searchAccount,
+            '/mainnet/account/' + searchAccount,
             'Account ',
             false,
             searchAlias
@@ -210,6 +210,8 @@ describe('Search Bar', () => {
     })
 
     it('should not fail with empty search string', () => {
+        cy.visit('/testnet/dashboard')
+
         cy.get('[data-cy=searchBar]').submit()
 
         cy.url().should('include', '/testnet/dashboard')
@@ -218,6 +220,7 @@ describe('Search Bar', () => {
 
     it('should bring "No result" with unknown ID', () => {
         const unknownID = "42.42.42"
+        cy.visit('/testnet/dashboard')
         testBody(unknownID, '/testnet/search-result/' + unknownID)
     })
 
