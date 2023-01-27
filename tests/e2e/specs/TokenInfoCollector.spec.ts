@@ -22,15 +22,15 @@
 
 describe('TokenInfoCollector', () => {
 
-    const timestamp = "1647364809.508728186"
+    const timestamp = "1673974382.950855003"
 
     it('should display token name', () => {
-        cy.visit('testnet/transaction/' + timestamp)
-        cy.url().should('include', '/testnet/transaction/')
+        cy.visit('mainnet/transaction/' + timestamp)
+        cy.url().should('include', '/mainnet/transaction/')
 
         cy.get('#entityId')
             .find('span')
-            .contains("NXUV_name")
+            .contains("Apollo Dog Test")
     })
 
 })

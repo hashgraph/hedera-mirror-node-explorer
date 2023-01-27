@@ -44,23 +44,23 @@ describe('Contract Navigation', () => {
     })
 
     it('should follow links from contract details', () => {
-        const contractId = "0.0.33958067"
+        const contractId = "0.0.1744776"
 
-        cy.visit('testnet/contract/' + contractId)
-        cy.url().should('include', '/testnet/contract/' + contractId)
+        cy.visit('mainnet/contract/' + contractId)
+        cy.url().should('include', '/mainnet/contract/' + contractId)
         cy.contains('Contract ' + contractId)
 
         cy.get('table').contains('td', '@')
             .click()
             .then(($id) => {
                 cy.log('Selected transaction Id: ' + $id.text())
-                cy.url().should('include', '/testnet/transaction/')
+                cy.url().should('include', '/mainnet/transaction/')
                 cy.url().should('include', 'tid=' + normalizeTransactionId($id.text()))
                 cy.contains('Transaction ' + $id.text())
             })
 
         cy.go('back')
-        cy.url().should('include', '/testnet/contract/' + contractId)
+        cy.url().should('include', '/mainnet/contract/' + contractId)
     })
 
     it('should detect navigation to unknown contract ID', () => {

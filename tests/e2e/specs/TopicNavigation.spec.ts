@@ -44,9 +44,9 @@ describe('Topic Navigation', () => {
     })
 
     it('should navigate from transaction details to topic message table back to transaction', () => {
-        const timestamp = "1669313498.634056003"
-        const transactionId = "0.0.48961401@1669313485.710762293"
-        const targetURL = '/testnet/transaction/' + timestamp + "?tid=" + normalizeTransactionId(transactionId)
+        const timestamp = "1673267377.484637167"
+        const transactionId = "0.0.1259116@1673267363.615392477"
+        const targetURL = '/mainnet/transaction/' + timestamp + "?tid=" + normalizeTransactionId(transactionId)
         cy.visit(targetURL)
         cy.url().should('include', targetURL)
         cy.contains('Transaction ' + transactionId)
@@ -55,7 +55,7 @@ describe('Topic Navigation', () => {
             .find('a')
             .click()
             .then(($topicId) => {
-                cy.url().should('include', '/testnet/topic/' + $topicId.text())
+                cy.url().should('include', '/mainnet/topic/' + $topicId.text())
                 cy.contains('Messages for Topic ' + $topicId.text())
 
                 cy.get('table')
@@ -66,7 +66,7 @@ describe('Topic Navigation', () => {
                     .eq(0)
                     .click()
                     .then(($seqNumber) => {
-                        cy.url().should('include', '/testnet/transaction/')
+                        cy.url().should('include', '/mainnet/transaction/')
                         cy.contains('Topic ID' + $topicId.text())
                         cy.contains('Message Submitted')
                         cy.contains('Sequence Number' + $seqNumber.text())
