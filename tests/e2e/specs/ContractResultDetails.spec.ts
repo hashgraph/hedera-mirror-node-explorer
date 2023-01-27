@@ -27,28 +27,28 @@ import {normalizeTransactionId} from "../../../src/utils/TransactionID";
 describe('ContractResultDetails', () => {
 
     it('should display contract result of contract call transaction', () => {
-        const transactionId = "0.0.47818344@1669816707.173720575"
-        const consensusTimestamp = "1669816716.094396003"
+        const transactionId = "0.0.849013@1674816312.786087545"
+        const consensusTimestamp = "1674816325.275978041"
 
-        cy.visit('testnet/transaction/' + consensusTimestamp + "?tid=" + normalizeTransactionId(transactionId))
-        cy.url().should('include', '/testnet/transaction/')
+        cy.visit('mainnet/transaction/' + consensusTimestamp + "?tid=" + normalizeTransactionId(transactionId))
+        cy.url().should('include', '/mainnet/transaction/')
         cy.url().should('include', normalizeTransactionId(transactionId))
         cy.url().should('include', consensusTimestamp)
 
         cy.get('#transactionTypeValue').should('have.text', 'CONTRACT CALL')
-        cy.get('#entityIdValue').should('have.text', '0.0.48997098')
+        cy.get('#entityIdValue').should('have.text', '0.0.1186129')
         cy.contains('Contract Result')
         cy.get('#resultValue').should('have.text', 'SUCCESS')
-        cy.get('#fromValue').should('have.text', '0x0000000000000000000000000000000002d9a668(0.0.47818344)')
-        cy.get('#toValue').should('have.text', '0x0000000000000000000000000000000002eba2ea(0.0.48997098)')
+        cy.get('#fromValue').should('have.text', '0x00000000000000000000000000000000000cf475(0.0.849013)')
+        cy.get('#toValue').should('have.text', '0x0000000000000000000000000000000000121951(0.0.1186129)')
     })
 
     it('should display contract result of child (contract call) transaction', () => {
-        const transactionId = "0.0.47818344@1669816707.173720575"
-        const consensusTimestamp = "1669816716.094396005"
+        const transactionId = "0.0.1753656@1674816661.856939387"
+        const consensusTimestamp = "1674816673.923476354"
 
-        cy.visit('testnet/transaction/' + consensusTimestamp + "?tid=" + normalizeTransactionId(transactionId))
-        cy.url().should('include', '/testnet/transaction/')
+        cy.visit('mainnet/transaction/' + consensusTimestamp + "?tid=" + normalizeTransactionId(transactionId))
+        cy.url().should('include', '/mainnet/transaction/')
         cy.url().should('include', normalizeTransactionId(transactionId))
         cy.url().should('include', consensusTimestamp)
 
@@ -56,33 +56,33 @@ describe('ContractResultDetails', () => {
         cy.get('#entityIdValue').should('have.text', 'Hedera Token Service System Contract')
         cy.contains('Contract Result')
         cy.get('#resultValue').should('have.text', 'SUCCESS')
-        cy.get('#fromValue').should('have.text', '0x0000000000000000000000000000000002d9a668(0.0.47818344)')
+        cy.get('#fromValue').should('have.text', '0x00000000000000000000000000000000001ac238(0.0.1753656)')
         cy.get('#toValue').should('have.text', '0x0000000000000000000000000000000000000167(Hedera Token Service System Contract)')
     })
 
     it('should display contract result of child (token burn) transaction', () => {
-        const transactionId = "0.0.47818344@1669816707.173720575"
-        const consensusTimestamp = "1669816716.094396009"
+        const transactionId = "0.0.1123011@1674816563.776883593"
+        const consensusTimestamp = "1674816577.015074957"
 
-        cy.visit('testnet/transaction/' + consensusTimestamp + "?tid=" + normalizeTransactionId(transactionId))
-        cy.url().should('include', '/testnet/transaction/')
+        cy.visit('mainnet/transaction/' + consensusTimestamp + "?tid=" + normalizeTransactionId(transactionId))
+        cy.url().should('include', '/mainnet/transaction/')
         cy.url().should('include', normalizeTransactionId(transactionId))
         cy.url().should('include', consensusTimestamp)
 
         cy.get('#transactionTypeValue').should('have.text', 'TOKEN BURN')
-        cy.get('#entityIdValue').should('have.text', '0.0.47879696')
+        cy.get('#entityIdValue').should('have.text', '0.0.1456986')
         cy.contains('Contract Result')
         cy.get('#resultValue').should('have.text', 'SUCCESS')
-        cy.get('#fromValue').should('have.text', '0x0000000000000000000000000000000002d9a668(0.0.47818344)')
+        cy.get('#fromValue').should('have.text', '0x00000000000000000000000000000000001122c3(0.0.1123011)')
         cy.get('#toValue').should('have.text', '0x0000000000000000000000000000000000000167(Hedera Token Service System Contract)')
     })
 
     it('should display contract result of child (crypto transfer) transaction', () => {
-        const transactionId = "0.0.47818344@1669816707.173720575"
-        const consensusTimestamp = "1669816716.094396011"
+        const transactionId = "0.0.1123011@1674816563.776883593"
+        const consensusTimestamp = "1674816577.015074956"
 
-        cy.visit('testnet/transaction/' + consensusTimestamp + "?tid=" + normalizeTransactionId(transactionId))
-        cy.url().should('include', '/testnet/transaction/')
+        cy.visit('mainnet/transaction/' + consensusTimestamp + "?tid=" + normalizeTransactionId(transactionId))
+        cy.url().should('include', '/mainnet/transaction/')
         cy.url().should('include', normalizeTransactionId(transactionId))
         cy.url().should('include', consensusTimestamp)
 
@@ -90,7 +90,7 @@ describe('ContractResultDetails', () => {
         cy.get('#entityIdValue').should('not.exist')
         cy.contains('Contract Result')
         cy.get('#resultValue').should('have.text', 'SUCCESS')
-        cy.get('#fromValue').should('have.text', '0x0000000000000000000000000000000002d9a668(0.0.47818344)')
+        cy.get('#fromValue').should('have.text', '0x00000000000000000000000000000000001122c3(0.0.1123011)')
         cy.get('#toValue').should('have.text', '0x0000000000000000000000000000000000000167(Hedera Token Service System Contract)')
     })
 })
