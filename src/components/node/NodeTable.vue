@@ -34,6 +34,14 @@
         default-sort="node_id"
         @click="handleClick"
     >
+
+      <o-table-column v-slot="props" field="nature" label="">
+        <span class="icon has-text-info" style="font-size: 16px">
+          <i v-if="isCouncilNode(props.row)" class="fas fa-building"></i>
+          <i v-else class="fas fa-users"></i>
+        </span>
+      </o-table-column>
+
       <o-table-column v-slot="props" field="node_id" label="Node">
         <div class="is-numeric regular-node-column">
           {{ props.row.node_id }}
@@ -46,9 +54,9 @@
         </div>
       </o-table-column>
 
-      <o-table-column v-slot="props" field="description" label="Description">
-        <div class="should-wrap regular-node-column">
-          <BlobValue v-bind:blob-value="makeDescription(props.row)" v-bind:show-none="true"/>
+      <o-table-column v-slot="props" field="description" label="     Description">
+        <div class="should-wrap regular-node-column is-inline-block">
+          <StringValue :string-value="makeDescription(props.row)"/>
         </div>
       </o-table-column>
 
@@ -106,13 +114,13 @@
 
 import {defineComponent, inject, PropType, ref} from 'vue';
 import {NetworkNode} from "@/schemas/HederaSchemas";
-import BlobValue from "@/components/values/BlobValue.vue";
 import {ORUGA_MOBILE_BREAKPOINT} from '@/App.vue';
 import EmptyTable from "@/components/EmptyTable.vue";
 import HbarAmount from "@/components/values/HbarAmount.vue";
 import StakeRange from "@/components/node/StakeRange.vue";
 import {routeManager} from "@/router";
 import {NodeRegistry} from "@/components/node/NodeRegistry";
+import StringValue from "@/components/values/StringValue.vue";
 
 
 //
@@ -122,7 +130,7 @@ import {NodeRegistry} from "@/components/node/NodeRegistry";
 export default defineComponent({
   name: 'NodeTable',
 
-  components: {StakeRange, HbarAmount, EmptyTable, BlobValue},
+  components: {StringValue, StakeRange, HbarAmount, EmptyTable},
 
   props: {
     nodes: Object as PropType<Array<NetworkNode> | undefined>,
@@ -142,6 +150,7 @@ export default defineComponent({
     const isTouchDevice = inject('isTouchDevice', false)
     const isMediumScreen = inject('isMediumScreen', true)
 
+    const isCouncilNode = (node: NetworkNode) => NodeRegistry.isCouncilNode(ref(node.node_id ?? null), ref(null))
     const makeDescription = (node: NetworkNode) => NodeRegistry.getDescription(ref(node.node_id ?? null), ref(null))
     const makeUnclampedStake = (node: NetworkNode) => (node.stake_rewarded ?? 0) + (node.stake_not_rewarded ?? 0)
     const makeWeightPercentage = (node: NetworkNode) => {
@@ -174,6 +183,7 @@ export default defineComponent({
       tooltipRewardRate,
       isTouchDevice,
       isMediumScreen,
+      isCouncilNode,
       makeDescription,
       makeUnclampedStake,
       makeWeightPercentage,
