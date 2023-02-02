@@ -28,8 +28,18 @@
 
     <DashboardCard>
       <template v-slot:title>
-        <span class="h-is-primary-title">Node </span>
-        <span class="h-is-secondary-text is-numeric mr-3">{{ nodeIdNb }}</span>
+        <div class="is-flex is-align-items-center">
+          <span class="h-is-primary-title mr-2">Node </span>
+          <span class="h-is-secondary-text is-numeric mr-3">{{ nodeIdNb }}</span>
+        </div>
+        <div v-if="isCouncilNode">
+          <span class="icon has-text-info mr-2"><i class="fas fa-building"></i></span>
+          <span class="h-is-tertiary-text has-text-grey">Hedera Council Node</span>
+        </div>
+        <div v-else>
+          <span class="icon has-text-info mr-2"><i class="fas fa-users"></i></span>
+          <span class="h-is-tertiary-text has-text-grey">Community Node</span>
+        </div>
       </template>
 
       <template v-slot:content>
@@ -228,6 +238,7 @@ export default defineComponent({
       stakeUnrewarded: nodeCursor.stakeUnrewarded,
       stakeUnrewardedPercentage,
       notification,
+      isCouncilNode: nodeCursor.isCouncilNode,
       nodeDescription: nodeCursor.nodeDescription,
       formatHash,
       makeFloorHbarAmount
