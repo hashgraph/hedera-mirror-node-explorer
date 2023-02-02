@@ -64,7 +64,7 @@
                   Example:&nbsp;0.0.1484550@1672860351.268707677
                 </div>
               </div>
-              <div>
+              <div v-if="false">
                 &bull; a transaction hash (96 characters in hexadecimal notation)<br/>
                 <div class="should-wrap h-help-item">
                   Example:&nbsp;0x7b35c2dba2199cea846d96b58d8786132831a3522650bb369899e6fac01933a8ca3d79da0db93cd2bf816c1b97819afa
