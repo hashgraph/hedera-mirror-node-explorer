@@ -87,6 +87,11 @@ export class NodeRegistry {
         return new NodeCursor(nodeId, nodeAccountId)
     }
 
+    public static isCouncilNode(nodeId: Ref<number|null> = ref(null),
+                                nodeAccountId: Ref<string|null> = ref(null)): boolean {
+        return NodeRegistry.getCursor(nodeId, nodeAccountId).isCouncilNode.value
+    }
+
     public static getDescription(nodeId: Ref<number|null> = ref(null),
                           nodeAccountId: Ref<string|null> = ref(null)): string|null {
         return NodeRegistry.getCursor(nodeId, nodeAccountId).nodeDescription.value
