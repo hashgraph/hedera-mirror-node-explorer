@@ -173,18 +173,21 @@ describe('Transaction Navigation', () => {
         cy.get('#allTransactionsLink')
             .contains('Show all transactions with the same ID')
             .click()
-            .then(() => {
-                cy.url().should('include',
-                    '/mainnet/transactionsById/' + normalizeTransactionId(transactionId))
-                cy.contains('Transactions with ID ' + transactionId)
-                cy.get('table')
-                    .click()
-                    .then(() => {
-                        cy.url().should('include', '/mainnet/transaction/')
-                        cy.url().should('include', normalizeTransactionId(transactionId))
-                        cy.contains('Transaction ' + transactionId)
-                    })
-            })
+
+        cy.url().should('include', '/mainnet/transactionsById/' + normalizeTransactionId(transactionId))
+        cy.contains('Transactions with ID ' + transactionId)
+
+        cy.get('table')
+            .find('tbody tr')
+            .should('have.length.at.least', 2)
+            .eq(0)
+            .find('td')
+            .eq(0)
+            .click()
+
+        cy.url().should('include', '/mainnet/transaction/')
+        cy.url().should('include', normalizeTransactionId(transactionId))
+        cy.contains('Transaction ' + transactionId)
     })
 
     it('should handle ETHEREUMTRANSACTION type', () => {
