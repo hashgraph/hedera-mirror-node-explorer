@@ -20,6 +20,8 @@
 
 import {EntityID} from "@/utils/EntityID";
 import {getEnv} from "@/utils/getEnv";
+import axios from "axios";
+import {ref, Ref} from "vue";
 
 export class NetworkEntry {
 
@@ -30,7 +32,7 @@ export class NetworkEntry {
 
     constructor(name: string, displayName: string, url: string, ledgerID: string) {
         this.name = name
-        this.displayName = displayName
+        this.displayName = displayName ?? name.toUpperCase()
         this.url = url
         this.ledgerID = ledgerID
     }
@@ -38,14 +40,18 @@ export class NetworkEntry {
 
 export class NetworkRegistry {
 
+    public static readonly NETWORKS_CONFIG_PATH = '/networks-config.json'
+    public static readonly MAX_NETWORK_NUMBER = 15
+    public static readonly NETWORK_NAME_MAX_LENGTH = 15
+
     public static readonly MAIN_NETWORK = 'mainnet'
     public static readonly TEST_NETWORK = 'testnet'
     public static readonly PREVIEW_NETWORK = 'previewnet'
 
     private static readonly DEFAULT_NETWORK = NetworkRegistry.MAIN_NETWORK
-    private readonly defaultEntry: NetworkEntry
+    private defaultEntry: NetworkEntry
 
-    private readonly entries: NetworkEntry[] = [
+    public readonly entries: Ref<Array<NetworkEntry>> = ref ([
         {
             name: 'mainnet',
             displayName: 'MAINNET',
@@ -64,25 +70,56 @@ export class NetworkRegistry {
             url: "https://previewnet.mirrornode.hedera.com/",
             ledgerID: '02'
         }
-    ]
+    ])
 
     constructor() {
-        this.defaultEntry = this.lookup(NetworkRegistry.DEFAULT_NETWORK) ?? this.entries[0]
+        this.defaultEntry = this.lookup(NetworkRegistry.DEFAULT_NETWORK) ?? this.entries.value[0]
 
-        const localNodeURL = getEnv('VUE_APP_LOCAL_MIRROR_NODE_URL')
-        const localNodeMenuName = getEnv('VUE_APP_LOCAL_MIRROR_NODE_MENU_NAME')
-        if (localNodeURL) {
-            this.entries.push(new NetworkEntry(
-                'devnet',
-                localNodeMenuName ?? "DEVNET",
-                localNodeURL,
-                'FF'
-            ))
-        }
-    }
+        axios.get<Array<NetworkEntry>>(NetworkRegistry.NETWORKS_CONFIG_PATH)
+            .then((response) => {
+                const jsonContent = JSON.parse(JSON.stringify(response.data))
 
-    public getEntries(): Array<NetworkEntry> {
-        return this.entries
+                // Network menu fully built from JSON configuration file
+                const customEntries: Array<NetworkEntry> = []
+                if (response.data && jsonContent instanceof Array && response.data.length) {
+                    for (const n of response.data) {
+                        if (customEntries.length < NetworkRegistry.MAX_NETWORK_NUMBER) {
+                            if (!customEntries.find(element => element.name === n.name)) {
+                                let displayName = n.displayName ?? n.name.toUpperCase()
+                                console.log("displayName: " + displayName)
+                                if (displayName.length > NetworkRegistry.NETWORK_NAME_MAX_LENGTH) {
+                                    displayName = displayName.slice(0,NetworkRegistry.NETWORK_NAME_MAX_LENGTH) + '…'
+                                    console.log("displayName: " + displayName)
+                                }
+                                customEntries.push(
+                                    new NetworkEntry(
+                                        n.name, displayName, n.url, n.ledgerID))
+                            } else {
+                                console.warn("Dropping network with duplicate name: " + n.name)
+                            }
+                        } else {
+                            console.warn("Dropping network entries beyond " + NetworkRegistry.MAX_NETWORK_NUMBER)
+                            break
+                        }
+                    }
+
+                    if (customEntries.length) {
+                        this.entries.value = customEntries
+                        this.defaultEntry = this.lookup(NetworkRegistry.DEFAULT_NETWORK) ?? this.entries.value[0]
+                    }
+                } else {
+                    console.warn("Invalid networks-config.json configuration file")
+                }
+
+                // Keep compatibility with previous ENV VARIABLE configuration
+                const localNodeURL = getEnv('VUE_APP_LOCAL_MIRROR_NODE_URL')
+                const localNodeMenuName = getEnv('VUE_APP_LOCAL_MIRROR_NODE_MENU_NAME')
+                if (localNodeURL) {
+                    this.entries.value.push(new NetworkEntry(
+                        'devnet', localNodeMenuName ?? "DEVNET", localNodeURL, 'FF'
+                    ))
+                }
+            })
     }
 
     public getDefaultEntry(): NetworkEntry {
@@ -90,7 +127,7 @@ export class NetworkRegistry {
     }
 
     public lookup(name: string): NetworkEntry | null {
-        return this.entries.find(element => element.name === name) ?? null
+        return this.entries.value.find(element => element.name === name) ?? null
     }
 
     public isValidChecksum(id: string, checksum: string, network: string): boolean {
