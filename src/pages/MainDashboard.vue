@@ -154,6 +154,9 @@ export default defineComponent({
       cryptoTableController.reset()
       messageTableController.reset()
       contractTableController.reset()
+      cryptoTableController.startAutoRefresh()
+      messageTableController.startAutoRefresh()
+      contractTableController.startAutoRefresh()
     })
 
     return {
