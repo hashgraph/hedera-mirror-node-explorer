@@ -40,7 +40,7 @@ export class NetworkEntry {
 
 export class NetworkRegistry {
 
-    public static readonly NETWORKS_CONFIG_PATH = '/networks-config.json'
+    public static readonly NETWORKS_CONFIG_URL = window.location.origin + '/networks-config.json'
     public static readonly MAX_NETWORK_NUMBER = 15
     public static readonly NETWORK_NAME_MAX_LENGTH = 15
 
@@ -74,8 +74,10 @@ export class NetworkRegistry {
 
     constructor() {
         this.defaultEntry = this.lookup(NetworkRegistry.DEFAULT_NETWORK) ?? this.entries.value[0]
+    }
 
-        axios.get<Array<NetworkEntry>>(NetworkRegistry.NETWORKS_CONFIG_PATH)
+    public readCustomConfig(): void {
+        axios.get<Array<NetworkEntry>>(NetworkRegistry.NETWORKS_CONFIG_URL)
             .then((response) => {
                 const jsonContent = JSON.parse(JSON.stringify(response.data))
 
@@ -86,10 +88,8 @@ export class NetworkRegistry {
                         if (customEntries.length < NetworkRegistry.MAX_NETWORK_NUMBER) {
                             if (!customEntries.find(element => element.name === n.name)) {
                                 let displayName = n.displayName ?? n.name.toUpperCase()
-                                console.log("displayName: " + displayName)
                                 if (displayName.length > NetworkRegistry.NETWORK_NAME_MAX_LENGTH) {
                                     displayName = displayName.slice(0,NetworkRegistry.NETWORK_NAME_MAX_LENGTH) + '…'
-                                    console.log("displayName: " + displayName)
                                 }
                                 customEntries.push(
                                     new NetworkEntry(
@@ -120,6 +120,7 @@ export class NetworkRegistry {
                     ))
                 }
             })
+            .catch((reason) => console.warn(`Failed to get ${NetworkRegistry.NETWORKS_CONFIG_URL}: ${reason}`))
     }
 
     public getDefaultEntry(): NetworkEntry {
