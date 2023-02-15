@@ -45,18 +45,19 @@ npm run test:e2e
 npm run test:e2e:headless
 ```
 
-### Run the Explorer from a pre-built Docker image
+### Run the Explorer in Docker
 
 ```shell
-docker compose up -d
-# then open http://localhost:8080 in your web browser
-```
+# Build the Docker image locally
+npm run docker:build
 
-### Run the Explorer in Docker from an image built locally
+# Start the Docker container
+# (if not built locally, this will get a pre-built image from Google Container Registry)
+npm run docker:start
 
-```shell
-npm run build:docker
-npm run docker
+# Stop the Docker container
+npm run docker:stop
+
 # then open http://localhost:8080 in your web browser
 ```
 
