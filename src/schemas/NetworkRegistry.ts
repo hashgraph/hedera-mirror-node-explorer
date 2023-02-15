@@ -77,38 +77,13 @@ export class NetworkRegistry {
     }
 
     public readCustomConfig(): void {
-        axios.get<Array<NetworkEntry>>(NetworkRegistry.NETWORKS_CONFIG_URL)
+        axios.get<unknown>(NetworkRegistry.NETWORKS_CONFIG_URL)
             .then((response) => {
-                const jsonContent = JSON.parse(JSON.stringify(response.data))
 
-                // Network menu fully built from JSON configuration file
-                const customEntries: Array<NetworkEntry> = []
-                if (response.data && jsonContent instanceof Array && response.data.length) {
-                    for (const n of response.data) {
-                        if (customEntries.length < NetworkRegistry.MAX_NETWORK_NUMBER) {
-                            if (!customEntries.find(element => element.name === n.name)) {
-                                let displayName = n.displayName ?? n.name.toUpperCase()
-                                if (displayName.length > NetworkRegistry.NETWORK_NAME_MAX_LENGTH) {
-                                    displayName = displayName.slice(0,NetworkRegistry.NETWORK_NAME_MAX_LENGTH) + '…'
-                                }
-                                customEntries.push(
-                                    new NetworkEntry(
-                                        n.name, displayName, n.url, n.ledgerID))
-                            } else {
-                                console.warn("Dropping network with duplicate name: " + n.name)
-                            }
-                        } else {
-                            console.warn("Dropping network entries beyond " + NetworkRegistry.MAX_NETWORK_NUMBER)
-                            break
-                        }
-                    }
-
-                    if (customEntries.length) {
-                        this.entries.value = customEntries
-                        this.defaultEntry = this.lookup(NetworkRegistry.DEFAULT_NETWORK) ?? this.entries.value[0]
-                    }
-                } else {
-                    console.warn("Invalid networks-config.json configuration file")
+                const customEntries = NetworkRegistry.parseNetworkConfig(response.data)
+                if (customEntries !== null) {
+                    this.entries.value = customEntries
+                    this.defaultEntry = this.lookup(NetworkRegistry.DEFAULT_NETWORK) ?? this.entries.value[0]
                 }
 
                 // Keep compatibility with previous ENV VARIABLE configuration
@@ -157,6 +132,60 @@ export class NetworkRegistry {
     public makeAddressWithChecksum(address: string, network: string): string | null {
         const entity = EntityID.normalize(address)
         return entity ? (entity + '-' + this.computeChecksum(entity, network)) : null
+    }
+
+    private static parseNetworkConfig(config: unknown): Array<NetworkEntry> | null {
+
+        const entries: Array<NetworkEntry> = []
+        let isValid = true
+
+        const jsonContent = JSON.parse(JSON.stringify(config))
+
+        if (jsonContent instanceof Array) {
+            for (const n of jsonContent as Array<any>) {
+                if (entries.length >= this.MAX_NETWORK_NUMBER) {
+                    console.warn(`Dropping networks beyond ${this.MAX_NETWORK_NUMBER} entries`)
+                    break
+                }
+
+                if (typeof n === 'object'
+                    && typeof n.name === 'string'
+                    && typeof n.url === 'string'
+                    && typeof n.ledgerID === 'string')
+                {
+                    if (!entries.find(entry => entry.name === n.name)) {
+                        let displayName
+                        if (typeof n.displayName === 'undefined') {
+                            displayName = n.name
+                        } else if (typeof n.displayName === 'string') {
+                            displayName = n.displayName
+                        } else {
+                            console.warn("Invalid displayName " + n.displayName)
+                            isValid = false
+                            break
+                        }
+                        if (displayName.length > this.NETWORK_NAME_MAX_LENGTH) {
+                            displayName = displayName.slice(0, this.NETWORK_NAME_MAX_LENGTH) + '…'
+                        }
+                        entries.push(new NetworkEntry(
+                            n.name,
+                            displayName.toUpperCase(),
+                            n.url,
+                            n.ledgerID))
+                    } else {
+                        console.warn("Dropping network with duplicate name: " + n.name)
+                    }
+                } else {
+                    console.warn("Invalid networks-config.json configuration file")
+                    isValid = false
+                    break
+                }
+            }
+        } else {
+            console.warn("Invalid networks-config.json configuration file")
+        }
+
+        return (isValid && entries.length) ? entries : null
     }
 
     //
