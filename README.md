@@ -45,23 +45,60 @@ npm run test:e2e
 npm run test:e2e:headless
 ```
 
-### Run the Explorer from a pre-built Docker image
+### Run the Explorer in Docker
 
 ```shell
-docker compose up -d
+# Build the Docker image locally
+npm run docker:build
+
+# Start the Docker container
+# (if not built locally, this will get a pre-built image from Google Container Registry)
+npm run docker:start
+
+# Stop the Docker container
+npm run docker:stop
+
 # then open http://localhost:8080 in your web browser
 ```
 
-### Run the Explorer in Docker from an image built locally
+### Configure the Explorer
+
+#### Customize the available networks
+
+The list of networks available in the network selector (top navigation bar)
+can be configured in the file `/public/networks-config.json`.
+This JSON file contains an array of entries with the following syntax:
 
 ```shell
-npm run build:docker
-npm run docker
-# then open http://localhost:8080 in your web browser
+[
+  ...
+  {
+    "name": "mainnet",
+    "displayName": "MAINNET",
+    "url": "https://mainnet-public.mirrornode.hedera.com/",
+    "ledgerID": "00"
+  },
+  ...
+]
 ```
 
-### Customize configuration
+This file initially contains the configuration allowing to connect to the
+_mainnet/testnet/previewnet_ networks. This configuration may be augmented, altered or
+replaced as needed.
+Note:
+- When this file is missing, is empty, or does not have the expected syntax, 
+  the configuration falls back to _mainnet/testnet/previewnet_.
+- The `name` of the network has to be unique
+- The `displayName` is the string inserted in the network selector. 
+  It will default to the network `name` in uppercase. A `displayName`
+  exceeding 15 characters will be truncated.
+- The `ledgerID` is required to process the ID checksums shown in the UI.
+- The maximum number of networks taken into account is 15. The rest will be ignored.
 
+#### Customize the UI
+
+A few aspects of the Explorer UI, such as the product name displayed at the bottom of the pages,
+are controlled by environment variables, as follows:
 - Variables defined in the *.env* file (located at the root of the repository) will be taken
   into account at build time. 
 - Variables defined in the *.env.docker* file will be taken into account at start time of 
@@ -69,16 +106,6 @@ npm run docker
   the *.env.docker* file. The variables in *.env.docker* are passed to the container either:
   - via the *--env-file* option of the *docker run* command, or
   - via the *env_file:* clause of the *docker-compose.yml* file.
-
-#### Running the Explorer with a local mirror node
-
-Defining the following variables will add a custom menu item to the network selector of 
-the top navigation bar. For instance:
-
-```shell
-VUE_APP_LOCAL_MIRROR_NODE_URL=http://localhost:5551/
-VUE_APP_LOCAL_MIRROR_NODE_MENU_NAME=LOCALNET
-```
 
 #### Enabling the Staking page
 
@@ -94,7 +121,7 @@ VUE_APP_ENABLE_STAKING=true
 
 #### Branding
 
-In addition to the configuration variables above,
+In addition to the configuration variables described above,
 the Hedera Mirror Node Explorer UI can be customized by adding a branding
 directory which path can be provided by the environment variable *$BRANDING_LOCATION*.
 If this variable is not defined a directory *./branding* will be looked for
