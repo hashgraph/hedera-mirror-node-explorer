@@ -128,7 +128,8 @@ export default defineComponent({
 
     const makeNodeDescription = (node: NetworkNode) => {
       let description = node.description ?? NodeRegistry.getDescription(ref(node.node_id??null))
-      return description ? makeShortNodeDescription(description) : null
+      let councilNode = NodeRegistry.isCouncilNode(ref(node.node_id ?? null)) ? " (Council node)" : ""
+      return description ? makeShortNodeDescription(description) + councilNode : null
     }
 
     const handleInput = (value: string) => {
