@@ -109,6 +109,11 @@
           }}% of total</p>
         <p v-else class="h-is-property-text h-is-extra-text mt-1">(&lt;Min)</p>
         <br/><br/>
+        <div v-if="stake === 0">
+          <NetworkDashboardItem id="currentStake" :value="makeFloorHbarAmount(unclampedStake)"
+                                name="HBAR" title="Current Stake"/>
+          <br/><br/>
+        </div>
         <NetworkDashboardItem id="minStake" :value="makeFloorHbarAmount(minStake)" name="HBAR" title="Min Stake"/>
         <br/><br/>
         <NetworkDashboardItem id="maxStake" :value="makeFloorHbarAmount(maxStake)" name="HBAR" title="Max Stake"/>
@@ -233,6 +238,7 @@ export default defineComponent({
       minStake: nodeCursor.minStake,
       maxStake: nodeCursor.maxStake,
       stakePercentage,
+      unclampedStake: nodeCursor.unclampedStake,
       stakeRewarded: nodeCursor.stakeRewarded,
       stakeRewardedPercentage,
       stakeUnrewarded: nodeCursor.stakeUnrewarded,
