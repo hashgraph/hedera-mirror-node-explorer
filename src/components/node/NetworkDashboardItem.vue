@@ -54,11 +54,10 @@
 <script lang="ts">
 
 import {defineComponent, inject} from 'vue';
-import DashboardItem from "@/components/dashboard/DashboardItem.vue";
 
 export default defineComponent({
   name: 'NetworkDashboardItem',
-  components: {DashboardItem},
+  components: {},
   props: {
     title: String,
     name: String,
