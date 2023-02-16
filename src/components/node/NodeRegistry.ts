@@ -77,6 +77,15 @@ export class NodeRegistry {
         return result
     })
 
+    public readonly stakeScaleEnd: ComputedRef<number> = computed(() => {
+        let result = 0
+        for (const n of this.nodes.value) {
+            const thisMax = Math.max(n.max_stake ?? 0, n.stake ?? 0)
+            result = Math.max(result, thisMax)
+        }
+        return result
+    })
+
     public reload(): void {
         this.loader.clear()
         this.loader.requestLoad()
