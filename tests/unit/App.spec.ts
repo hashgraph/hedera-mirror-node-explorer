@@ -83,6 +83,13 @@ describe("App.vue", () => {
         const matcher4 = "/api/v1/network/exchangerate"
         mock.onGet(matcher4).reply(200, SAMPLE_NETWORK_EXCHANGERATE);
 
+        const matcher10 = window.location.origin + '/networks-config.json'
+        mock.onGet(matcher10).reply(200, [
+            {name: "customnet1", url: "/testurl1", ledgerID: "01"},
+            {name: "customnet2", url: "/testurl2", ledgerID: "02"},
+            {name: "customnet3", url: "/testurl3", ledgerID: "03"}
+        ]);
+
         const wrapper = mount(App, {
             global: {
                 plugins: [router, Oruga]
@@ -100,7 +107,7 @@ describe("App.vue", () => {
         const navBar = wrapper.findComponent(TopNavBar)
         expect(navBar.exists()).toBe(true)
         expect(navBar.text()).toBe(
-            "MAINNETTESTNETPREVIEWNETDashboardTransactionsTokensTopicsContractsAccountsNodesBlocks")
+            "CUSTOMNET1CUSTOMNET2CUSTOMNET3DashboardTransactionsTokensTopicsContractsAccountsNodesBlocks")
 
         expect(wrapper.findComponent(HbarMarketDashboard).exists()).toBe(true)
 

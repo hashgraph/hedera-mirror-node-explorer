@@ -37,6 +37,7 @@ import TopNavBar from "@/components/TopNavBar.vue";
 import {errorKey, explanationKey, initialLoadingKey, loadingKey, suggestionKey} from "@/AppKeys"
 import {AxiosMonitor} from "@/utils/AxiosMonitor"
 import {useRoute} from "vue-router";
+import {networkRegistry} from "@/schemas/NetworkRegistry";
 
 export const XLARGE_BREAKPOINT = 1450
 export const LARGE_BREAKPOINT = 1280
@@ -91,6 +92,7 @@ export default defineComponent({
     onMounted(() => {
       windowWidth.value = window.innerWidth
       window.addEventListener('resize', onResizeHandler);
+      networkRegistry.readCustomConfig()
     })
 
     onBeforeUnmount(() => {

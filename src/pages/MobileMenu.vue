@@ -32,7 +32,7 @@
         <div id="mobile-drop-down-menu" class="ml-1 mb-5 ">
           <o-field>
             <o-select v-model="selectedNetwork" class="h-is-navbar-item">
-              <option v-for="network in networkRegistry.getEntries()" :key="network.name" :value="network.name">
+              <option v-for="network in networkEntries" :key="network.name" :value="network.name">
                 {{ network.displayName }}
               </option>
             </o-select>
@@ -129,7 +129,7 @@ export default defineComponent({
       isNodeRoute: routeManager.testNodeRoute,
       isStakingRoute: routeManager.testStakingRoute,
       isBlocksRoute: routeManager.testBlocksRoute,
-      networkRegistry,
+      networkEntries: networkRegistry.entries,
       routeManager
     }
   }
