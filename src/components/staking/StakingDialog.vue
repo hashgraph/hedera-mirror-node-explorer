@@ -80,14 +80,14 @@
               </div>
               <div class="column">
                 <o-field>
-                <o-select v-model="selectedNode" :class="{'has-text-grey': !isNodeSelected}"
-                          class="h-is-text-size-1" style="border-radius: 4px"  @focus="stakeChoice='node'">
-                  <option v-for="n in nodes" :key="n.node_id" :value="n.node_id"
-                          style="background-color: var(--h-theme-box-background-color)">
-                    {{ makeNodeDescription(n) }} - {{ makeNodeStakeDescription(n) }}
-                  </option>
-                </o-select>
-              </o-field>
+                  <o-select v-model="selectedNode" :class="{'has-text-grey': !isNodeSelected}"
+                            class="h-is-text-size-1" style="border-radius: 4px" @focus="stakeChoice='node'">
+                    <option v-for="n in nodes" :key="n.node_id" :value="n.node_id"
+                            style="background-color: var(--h-theme-box-background-color)">
+                       {{ makeNodeDescription(n) }} - {{ makeNodeStakeDescription(n) }}
+                    </option>
+                  </o-select>
+                </o-field>
               </div>
             </div>
             <div class="columns">
@@ -290,7 +290,8 @@ export default defineComponent({
 
     const makeNodeDescription = (node: NetworkNode) => {
       let description = node.description ?? makeDefaultNodeDescription(node.node_id ?? null)
-      return description ? (node.node_id + " - " + makeShortNodeDescription(description)) : null
+      let councilNode = NodeRegistry.isCouncilNode(ref(node.node_id ?? null)) ? " (Council node)" : ""
+      return description ? (node.node_id + " - " + makeShortNodeDescription(description)) + councilNode : null
     }
 
     const handleInput = (value: string) => {
