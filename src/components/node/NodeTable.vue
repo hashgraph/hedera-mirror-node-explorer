@@ -48,13 +48,13 @@
         </div>
       </o-table-column>
 
-      <o-table-column v-slot="props" field="node_account_id" label="Account">
+      <o-table-column v-if="false" v-slot="props" field="node_account_id" label="Account">
         <div class="is-numeric regular-node-column">
           {{ props.row.node_account_id }}
         </div>
       </o-table-column>
 
-      <o-table-column v-slot="props" field="description" label="     Description">
+      <o-table-column v-slot="props" field="description" label="Description">
         <div class="should-wrap regular-node-column is-inline-block">
           <StringValue :string-value="makeDescription(props.row)"/>
         </div>
@@ -73,16 +73,28 @@
         </o-tooltip>
       </o-table-column>
 
-       <o-table-column v-slot="props" field="stake_not_rewarded" label="Stake Not Rewarded" position="right">
-         <o-tooltip :label="tooltipNotRewarded"
-                    multiline
-                    :delay="tooltipDelay"
-                    class="h-tooltip">
+      <o-table-column v-slot="props" field="stake_not_rewarded" label="Stake Not Rewarded" position="right">
+        <o-tooltip :delay="tooltipDelay"
+                   :label="tooltipNotRewarded"
+                   class="h-tooltip"
+                   multiline>
            <span class="regular-node-column">
              <HbarAmount :amount="props.row.stake_not_rewarded ?? 0" :decimals="0"/>
           </span>
-         </o-tooltip>
-       </o-table-column>
+        </o-tooltip>
+      </o-table-column>
+
+      <o-table-column v-slot="props" field="min_stake" label="Min Stake" position="right">
+           <span class="regular-node-column">
+             <HbarAmount :amount="props.row.min_stake ?? 0" :decimals="0"/>
+          </span>
+      </o-table-column>
+
+      <o-table-column v-slot="props" field="max_stake" label="Max Stake" position="right">
+           <span class="regular-node-column">
+             <HbarAmount :amount="props.row.max_stake ?? 0" :decimals="0"/>
+          </span>
+      </o-table-column>
 
       <o-table-column v-slot="props" field="last_reward_rate" label="Last Reward Rate" position="right">
         <o-tooltip :label="tooltipRewardRate"
