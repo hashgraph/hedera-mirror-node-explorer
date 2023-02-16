@@ -92,6 +92,7 @@ export class NodeCursor {
     public readonly stake = computed(() => this.node.value?.stake ?? 0)
     public readonly minStake = computed(() => this.node.value?.min_stake ?? 0)
     public readonly maxStake = computed(() => this.node.value?.max_stake ?? 0)
+    public readonly unclampedStake = computed(() => this.stakeRewarded.value + this.stakeUnrewarded.value)
     public readonly stakeRewarded = computed(() => this.node.value?.stake_rewarded ?? 0)
     public readonly stakeUnrewarded = computed(() => this.node.value?.stake_not_rewarded ?? 0)
 }
