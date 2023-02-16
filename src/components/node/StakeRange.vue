@@ -51,6 +51,7 @@
 
 import {computed, defineComponent, PropType} from "vue";
 import {NetworkNode} from "@/schemas/HederaSchemas";
+import {NodeRegistry} from "@/components/node/NodeRegistry";
 
 export default defineComponent({
   name: 'StakeRange',
@@ -74,7 +75,7 @@ export default defineComponent({
         () => (props.node?.stake_rewarded ?? 0) + (props.node?.stake_not_rewarded ?? 0))
 
     const progressScale = computed(
-        () => maxStake.value ? maxStake.value * 1.2 : 0)
+        () => NodeRegistry.instance.stakeScaleEnd.value)
 
     const stakeProgress = computed(
         () => progressScale.value ? unclampedStake.value  / progressScale.value * 100 : 0)
