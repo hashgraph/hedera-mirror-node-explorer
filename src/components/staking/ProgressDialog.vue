@@ -52,7 +52,7 @@
         <div class="is-flex is-align-items-baseline mt-4" style="line-height: 21px">
           <span v-if="extraMessage" class="h-is-property-text"> {{ extraMessage }} </span>
           <span v-else class="h-is-property-text" style="visibility: hidden">Filler</span>
-          <TransactionLink v-if="extraTransactionHash" :transaction-loc="extraTransactionHash" class="ml-2"/>
+          <div v-if="formattedTransactionId" class="ml-2">{{ formattedTransactionId }}</div>
         </div>
 
         <div class="is-flex is-justify-content-flex-end">
@@ -71,13 +71,12 @@
 <script lang="ts">
 
 import {computed, defineComponent, PropType} from "vue";
-import TransactionLink from "@/components/values/TransactionLink.vue";
+import {TransactionID} from "@/utils/TransactionID";
 
 export enum Mode { Busy = 1, Success = 2, Error = 3 }
 
 export default defineComponent({
   name: "ProgressDialog",
-  components: {TransactionLink},
   props: {
     showDialog: {
       type: Boolean,
@@ -89,7 +88,7 @@ export default defineComponent({
     },
     mainMessage: String,
     extraMessage: String,
-    extraTransactionHash: String,
+    extraTransactionId: String,
     showSpinner: Boolean
   },
 
@@ -101,9 +100,13 @@ export default defineComponent({
 
     const closeDisabled = computed(() => props.mode == Mode.Busy)
 
+    const formattedTransactionId = computed(
+        () => props.extraTransactionId ? TransactionID.normalize(props.extraTransactionId, true) : null)
+
     return {
       handleClose,
       closeDisabled,
+      formattedTransactionId,
       Mode,
     }
   }
