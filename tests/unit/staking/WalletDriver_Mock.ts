@@ -27,7 +27,7 @@ export class WalletDriver_Mock extends WalletDriver {
     private static WALLET_NAME = "WalletMock"
 
     public readonly account: AccountBalanceTransactions
-    public readonly transactionHash: string
+    public readonly transactionId: string
 
     private connected = false
     private network: string|null = null
@@ -38,10 +38,10 @@ export class WalletDriver_Mock extends WalletDriver {
     // Public
     //
 
-    public constructor(account: AccountBalanceTransactions, transactionHash: string) {
+    public constructor(account: AccountBalanceTransactions, transactionId: string) {
         super(WalletDriver_Mock.WALLET_NAME, null)
         this.account = account
-        this.transactionHash = transactionHash
+        this.transactionId = transactionId
     }
 
 
@@ -87,7 +87,7 @@ export class WalletDriver_Mock extends WalletDriver {
                 if (request.declineStakingRewards !== null) {
                     this.account.decline_reward = request.declineStakingRewards
                 }
-                result = this.transactionHash
+                result = this.transactionId
             } else {
                 throw this.callFailure("Unexpected account id: " + targetAccountID)
             }
