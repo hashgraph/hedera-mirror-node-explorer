@@ -86,7 +86,7 @@ describe("Staking.vue", () => {
         expect(wrapper.text()).toMatch(RegExp("^Rewards Estimator"))
 
         const options = wrapper.find('select').findAll('option')
-        expect(options.length).toBe(3)
+        expect(options.length).toBe(SAMPLE_NETWORK_NODES.nodes.length * 2)
         expect(options.at(0)?.element.text).toBe('0 - Hosted by Hedera - 6,000,000ℏ staked (20% of Max), of which 1,000,000ℏ declined reward')
         expect(options.at(1)?.element.text).toBe('1 - Hosted by Hedera - 9,000,000ℏ staked (30% of Max), of which 2,000,000ℏ declined reward')
         expect(options.at(2)?.element.text).toBe('2 - Hosted by Hedera - 9,000,000ℏ staked (30% of Max), of which 2,000,000ℏ declined reward')
@@ -136,7 +136,7 @@ describe("Staking.vue", () => {
         expect(wrapper.text()).toMatch(RegExp("^Rewards Estimator"))
 
         const options = wrapper.find('select').findAll('option')
-        expect(options.length).toBe(3)
+        expect(options.length).toBe(SAMPLE_NETWORK_NODES.nodes.length * 2)
         expect(options.at(0)?.element.text).toBe('0 - Hosted by Hedera - 6,000,000ℏ staked (20% of Max), of which 1,000,000ℏ declined reward')
         expect(options.at(1)?.element.text).toBe('1 - Hosted by Hedera - 9,000,000ℏ staked (30% of Max), of which 2,000,000ℏ declined reward')
         expect(options.at(2)?.element.text).toBe('2 - Hosted by Hedera - 9,000,000ℏ staked (30% of Max), of which 2,000,000ℏ declined reward')
@@ -184,7 +184,7 @@ describe("Staking.vue", () => {
         expect(wrapper.text()).toMatch(RegExp("^Rewards Estimator"))
 
         const options = wrapper.find('select').findAll('option')
-        expect(options.length).toBe(3)
+        expect(options.length).toBe(SAMPLE_NETWORK_NODES.nodes.length * 2)
         expect(options.at(0)?.element.text).toBe('0 - Hosted by Hedera - 6,000,000ℏ staked (20% of Max), of which 1,000,000ℏ declined reward')
         expect(options.at(1)?.element.text).toBe('1 - Hosted by Hedera - 9,000,000ℏ staked (30% of Max), of which 2,000,000ℏ declined reward')
         expect(options.at(2)?.element.text).toBe('2 - Hosted by Hedera - 9,000,000ℏ staked (30% of Max), of which 2,000,000ℏ declined reward')
