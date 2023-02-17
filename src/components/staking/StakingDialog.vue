@@ -60,6 +60,10 @@
         <Property id="currentlyStakedTo">
           <template v-slot:name>Currently Staked To</template>
           <template v-slot:value>
+            <span v-if="account?.staked_node_id !== null" class="icon has-text-info mr-1" style="font-size: 16px">
+              <i v-if="isCouncilNode" class="fas fa-building"></i>
+              <i v-else class="fas fa-users"></i>
+            </span>
             <StringValue v-if="account" :string-value="currentlyStakedTo"/>
           </template>
         </Property>
@@ -81,11 +85,22 @@
               <div class="column">
                 <o-field>
                   <o-select v-model="selectedNode" :class="{'has-text-grey': !isNodeSelected}"
-                            class="h-is-text-size-1" style="border-radius: 4px" @focus="stakeChoice='node'">
-                    <option v-for="n in nodes" :key="n.node_id" :value="n.node_id"
-                            style="background-color: var(--h-theme-box-background-color)">
-                       {{ makeNodeDescription(n) }} - {{ makeNodeStakeDescription(n) }}
-                    </option>
+                            class="h-is-text-size-1" style="border-radius: 4px" @focus="stakeChoice='node'"
+                            :icon="selectedNodeIcon">
+                    <optgroup label="Hedera council nodes">
+                      <option v-for="n in nodes" :key="n.node_id" :value="n.node_id"
+                              style="background-color: var(--h-theme-box-background-color)"
+                              v-show="isCouncilNode(n)">
+                        {{ makeNodeDescription(n) }} - {{ makeNodeStakeDescription(n) }}
+                      </option>
+                    </optgroup>
+                    <optgroup label="Community nodes">
+                      <option v-for="n in nodes" :key="n.node_id" :value="n.node_id"
+                              style="background-color: var(--h-theme-box-background-color)"
+                              v-show="!isCouncilNode(n)">
+                        {{ makeNodeDescription(n) }} - {{ makeNodeStakeDescription(n) }}
+                      </option>
+                    </optgroup>
                   </o-select>
                 </o-field>
               </div>
@@ -243,6 +258,13 @@ export default defineComponent({
     })
 
     const selectedNode = ref<number|null>(null)
+
+    const selectedNodeIcon = computed(() => {
+      return selectedNode.value
+          ? NodeRegistry.isCouncilNode(selectedNode) ? "building" : "users"
+          : ""
+    })
+
     const selectedNodeDescription = computed(() => {
       return (selectedNode.value !== null && NodeRegistry.instance.nodes.value)
           ? makeNodeDescription(NodeRegistry.instance.nodes.value[selectedNode.value])
@@ -290,9 +312,10 @@ export default defineComponent({
 
     const makeNodeDescription = (node: NetworkNode) => {
       let description = node.description ?? makeDefaultNodeDescription(node.node_id ?? null)
-      let councilNode = NodeRegistry.isCouncilNode(ref(node.node_id ?? null)) ? " (Council node)" : ""
-      return description ? (node.node_id + " - " + makeShortNodeDescription(description)) + councilNode : null
+      return description ? (node.node_id + " - " + makeShortNodeDescription(description)) : null
     }
+
+    const isCouncilNode = (node: NetworkNode) => NodeRegistry.isCouncilNode(ref(node.node_id ?? 0))
 
     const handleInput = (value: string) => {
       const previousValue = selectedAccount.value
@@ -375,6 +398,7 @@ export default defineComponent({
       inputFeedbackMessage,
       selectedAccount,
       selectedNode,
+      selectedNodeIcon,
       selectedNodeDescription,
       declineChoice,
       enableChangeButton,
@@ -384,6 +408,7 @@ export default defineComponent({
       handleCancelChange,
       handleConfirmChange,
       makeNodeDescription,
+      isCouncilNode,
       makeNodeStakeDescription,
       handleInput
     }
