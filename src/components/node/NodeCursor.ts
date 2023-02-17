@@ -51,7 +51,7 @@ export class NodeCursor {
     })
 
     public readonly isCouncilNode:  ComputedRef<boolean> = computed(() => {
-        return this.nodeDescription.value?.includes("Hosted by") ?? false
+        return true
     })
 
     public readonly nodeDescription: ComputedRef<string|null> = computed(() => {
