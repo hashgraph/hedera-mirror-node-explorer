@@ -36,11 +36,21 @@
             <p v-if="isMediumScreen" class="h-is-property-text mb-3">Choose a node to stake to</p>
             <p v-else class="h-is-text-size-3 mb-1">Choose a node to stake to</p>
             <o-field style="width: 100%">
-              <o-select v-model="selectedNodeId" class="h-is-text-size-1" style="border-radius: 4px">
-                <option v-for="n in nodes" :key="n.node_id" :value="n.node_id"
-                        style="background-color: var(--h-theme-box-background-color)">
+              <o-select v-model="selectedNodeId" class="h-is-text-size-1" style="border-radius: 4px" :icon="nodeIcon">
+                <optgroup label="Hedera council nodes">
+                  <option v-for="n in nodes" :key="n.node_id" :value="n.node_id"
+                          style="background-color: var(--h-theme-box-background-color)"
+                          v-show="isCouncilNode(n)">
                   {{ n.node_id }} - {{ makeNodeDescription(n) }} - {{ makeNodeStakeDescription(n) }}
-                </option>
+                  </option>
+                </optgroup>
+                <optgroup label="Community nodes">
+                    <option v-for="n in nodes" :key="n.node_id" :value="n.node_id"
+                            style="background-color: var(--h-theme-box-background-color)"
+                            v-show="!isCouncilNode(n)">
+                        {{ n.node_id }} - {{ makeNodeDescription(n) }} - {{ makeNodeStakeDescription(n) }}
+                    </option>
+                </optgroup>
               </o-select>
             </o-field>
           </div>
@@ -113,6 +123,9 @@ export default defineComponent({
     // Node
     //
     const nodeCursor = computed(() => NodeRegistry.getCursor(selectedNodeId))
+    const nodeIcon = computed(() => {
+      return NodeRegistry.isCouncilNode(selectedNodeId) ? "building" : "users"
+    })
 
     const amountStaked = ref<number>( 100)
     const updateAmountStaked = () => {
@@ -128,9 +141,10 @@ export default defineComponent({
 
     const makeNodeDescription = (node: NetworkNode) => {
       let description = node.description ?? NodeRegistry.getDescription(ref(node.node_id??null))
-      let councilNode = NodeRegistry.isCouncilNode(ref(node.node_id ?? null)) ? " (Council node)" : ""
-      return description ? makeShortNodeDescription(description) + councilNode : null
+      return description ? makeShortNodeDescription(description) : null
     }
+
+    const isCouncilNode = (node: NetworkNode) => NodeRegistry.isCouncilNode(ref(node.node_id ?? 0))
 
     const handleInput = (value: string) => {
       const previousAmount = amountStaked.value
@@ -149,6 +163,7 @@ export default defineComponent({
       isMediumScreen,
       isTouchDevice,
       selectedNodeId,
+      nodeIcon,
       amountStaked,
       rewardRate,
       currentReward,
@@ -158,6 +173,7 @@ export default defineComponent({
       nodes: NodeRegistry.instance.nodes,
       makeNodeDescription,
       makeNodeStakeDescription,
+      isCouncilNode,
       handleInput
     }
   }
