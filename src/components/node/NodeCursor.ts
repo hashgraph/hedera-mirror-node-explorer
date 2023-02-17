@@ -22,6 +22,7 @@ import {makeShortNodeDescription, NetworkNode} from "@/schemas/HederaSchemas";
 import {computed, ComputedRef, ref, Ref} from "vue";
 import {NodeRegistry} from "@/components/node/NodeRegistry";
 import {makeDefaultNodeDescription} from "@/schemas/HederaUtils";
+import {EntityID} from "@/utils/EntityID";
 
 export class NodeCursor {
 
@@ -51,7 +52,10 @@ export class NodeCursor {
     })
 
     public readonly isCouncilNode:  ComputedRef<boolean> = computed(() => {
-        return true
+        // TEMPORARY IMPLEMENTATION
+        // This will need to rely on a new specific flag to be provided by REST API
+        const accountNum = EntityID.parse(this.node.value?.node_account_id ?? "")?.num
+        return accountNum ? accountNum < 1000 : true
     })
 
     public readonly nodeDescription: ComputedRef<string|null> = computed(() => {
