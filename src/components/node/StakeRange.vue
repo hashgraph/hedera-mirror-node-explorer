@@ -51,7 +51,6 @@
 
 import {computed, defineComponent, PropType} from "vue";
 import {NetworkNode} from "@/schemas/HederaSchemas";
-import {NodeRegistry} from "@/components/node/NodeRegistry";
 
 export default defineComponent({
   name: 'StakeRange',
@@ -64,8 +63,6 @@ export default defineComponent({
 
   setup(props) {
 
-    const stake = computed(
-        () => props.node?.stake ?? null)
     const minStake = computed(
         () => props.node?.min_stake ?? null)
     const maxStake = computed(
@@ -74,16 +71,20 @@ export default defineComponent({
     const unclampedStake = computed(
         () => (props.node?.stake_rewarded ?? 0) + (props.node?.stake_not_rewarded ?? 0))
 
+    // Alternative implementation for absolute stake range
+    // const progressScale = computed(
+    //     () => NodeRegistry.instance.stakeScaleEnd.value)
+
     const progressScale = computed(
-        () => NodeRegistry.instance.stakeScaleEnd.value)
+        () => maxStake.value ? maxStake.value * 1.2 : 0)
 
     const stakeProgress = computed(
         () => progressScale.value ? unclampedStake.value  / progressScale.value * 100 : 0)
 
     const isStakeInRange = computed(() => {
       let result: boolean
-      if (stake.value && minStake.value && maxStake.value) {
-        result = stake.value >= minStake.value && stake.value < maxStake.value
+      if (unclampedStake.value && minStake.value && maxStake.value) {
+        result = unclampedStake.value >= minStake.value && unclampedStake.value < maxStake.value
       }
       else {
         result = false
