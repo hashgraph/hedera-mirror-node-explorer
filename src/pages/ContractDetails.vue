@@ -193,7 +193,6 @@
 
 import {computed, defineComponent, inject, onBeforeUnmount, onMounted} from 'vue';
 import KeyValue from "@/components/values/KeyValue.vue";
-import HexaValue from "@/components/values/HexaValue.vue";
 import ContractTransactionTable from "@/components/contract/ContractTransactionTable.vue";
 import PlayPauseButton from "@/components/PlayPauseButton.vue";
 import AccountLink from "@/components/values/AccountLink.vue";
@@ -242,7 +241,6 @@ export default defineComponent({
     PlayPauseButton,
     ContractTransactionTable,
     KeyValue,
-    HexaValue,
     StringValue
   },
 
