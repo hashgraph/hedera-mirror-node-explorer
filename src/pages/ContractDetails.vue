@@ -31,14 +31,17 @@
         <span class="h-is-primary-title">Contract </span>
         <span class="h-is-secondary-text">{{ contract ? normalizedContractId : "" }}</span>
         <span v-if="accountChecksum" class="has-text-grey" style="font-size: 28px">-{{ accountChecksum }}</span>
+        <div v-if="ethereumAddress">
+          <span class="has-text-grey h-is-tertiary-text"> {{ ethereumAddress }} </span>
+        </div>
+      </template>
+
+      <template v-slot:control>
         <span v-if="contract" class="is-inline-block ml-3">
           <router-link :to="accountRoute">
             <span class="h-is-property-text">Show associated account</span>
           </router-link>
         </span>
-        <div v-if="ethereumAddress">
-          <span class="has-text-grey h-is-tertiary-text"> {{ ethereumAddress }} </span>
-        </div>
       </template>
       <template v-slot:content>
         <NotificationBanner v-if="notification" :message="notification"/>

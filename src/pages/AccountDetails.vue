@@ -31,11 +31,6 @@
         <span class="h-is-primary-title">Account </span>
         <span class="h-is-secondary-text">{{ normalizedAccountId ?? "" }}</span>
         <span v-if="accountChecksum" class="has-text-grey" style="font-size: 28px">-{{ accountChecksum }}</span>
-        <span v-if="showContractVisible" id="showContractLink" class="is-inline-block ml-3">
-          <router-link :to="contractRoute">
-            <span class="h-is-property-text">Show associated contract</span>
-          </router-link>
-        </span>
         <div v-if="operatorNodeRoute" id="nodeLink" >
           <router-link :to="operatorNodeRoute">
             <span class="h-is-tertiary-text"> {{ 'Node ' + nodeId }} </span>
@@ -45,6 +40,14 @@
         <div v-else-if="ethereumAddress">
           <span class="has-text-grey h-is-tertiary-text"> {{ ethereumAddress }} </span>
         </div>
+      </template>
+
+      <template v-slot:control>
+        <span v-if="showContractVisible" id="showContractLink" class="is-inline-block ml-3">
+          <router-link :to="contractRoute">
+            <span class="h-is-property-text">Show associated contract</span>
+          </router-link>
+        </span>
       </template>
 
       <template v-slot:content>
