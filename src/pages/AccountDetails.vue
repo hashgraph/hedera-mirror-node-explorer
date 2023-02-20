@@ -165,7 +165,7 @@
           </template>
         </Property>
 
-        <Property id="alias" :class="{'mb-0':account?.alias}">
+        <Property v-if="account?.alias" id="alias" :class="{'mb-0':account?.alias}">
           <template v-slot:name>Public-key-format Alias</template>
           <template v-slot:value>
             <AliasValue :alias-value="account?.alias"/>
