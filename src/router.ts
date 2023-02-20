@@ -49,6 +49,7 @@ import Blocks from "@/pages/Blocks.vue";
 import {getEnv} from "@/utils/getEnv";
 import AccountsWithKey from "@/pages/AccountsWithKey.vue";
 import AdminKeyDetails from "@/pages/AdminKeyDetails.vue";
+import AddressDetails from "@/pages/AddressDetails.vue";
 
 const routes: Array<RouteRecordRaw> = [
   {
@@ -119,7 +120,9 @@ const routes: Array<RouteRecordRaw> = [
   {
     // EIP 3091 Support
     path: '/:network/address/:accountAddress',
-    redirect: to => '/' + to.params.network + '/account/' + to.params.accountAddress
+    name: 'AddressDetails',
+    component: AddressDetails,
+    props: true
   },
   {
     path: '/:network/accountbalances/:accountId',
