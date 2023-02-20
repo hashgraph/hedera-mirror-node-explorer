@@ -23,9 +23,8 @@
 <!-- --------------------------------------------------------------------------------------------------------------- -->
 
 <template>
-  <HexaValue v-bind:byte-string="address" v-bind:show-none="showNone"/>
-  <template v-if="showImport">
-    <br/>
+  <EVMAddress :show-id="false" :address="address" :show-type="false"/>
+  <template v-if="showImport" class="">
     <ActionLink title="Import in MetaMask"
                 :enabled="address !== undefined"
                 :running="executing"
@@ -39,7 +38,7 @@
         </div>
       </template>
     </ModalDialog>
-  </span>
+    </span>
   </template>
 </template>
 
@@ -50,14 +49,14 @@
 <script lang="ts">
 
 import {computed, defineComponent, ref} from "vue";
-import HexaValue from "@/components/values/HexaValue.vue";
 import ModalDialog from "@/components/ModalDialog.vue";
 import ActionLink from "@/components/ActionLink.vue";
 import {MetaMask_Status, MetaMask_watchAsset} from "@/utils/MetaMask";
+import EVMAddress from "@/components/values/EVMAddress.vue";
 
 export default defineComponent({
   name: "EthAddress",
-  components: {HexaValue, ModalDialog, ActionLink},
+  components: {EVMAddress, ModalDialog, ActionLink},
   props: {
     address: String,
     symbol: String,
