@@ -33,10 +33,11 @@
 <script lang="ts">
 
 import {defineComponent, onMounted} from 'vue';
-import axios, {AxiosResponse} from "axios";
+import axios from "axios";
 import router, {routeManager} from "@/router";
 import {PathParam} from "@/utils/PathParam";
-import {ContractResponse} from "@/schemas/HederaSchemas";
+import {AccountBalanceTransactions, ContractResponse} from "@/schemas/HederaSchemas";
+import {RouteLocationRaw} from "vue-router";
 
 export default defineComponent({
 
@@ -51,23 +52,57 @@ export default defineComponent({
 
   setup(props) {
 
-    const dispatch = () => {
-      const evmAddress = PathParam.parseEvmAddress(props.accountAddress)
-      if (evmAddress !== null) {
-        axios.get<ContractResponse>("api/v1/contracts/" + evmAddress)
-            .then((r: AxiosResponse<ContractResponse>) => {
-              const contractId = r.data.contract_id ?? "0.0.0"
-              router.replace(routeManager.makeRouteToContract(contractId))
-            })
-            .catch(() => {
-              router.replace(routeManager.makeRouteToAccount(evmAddress))
-            })
-      } else {
-        router.replace(routeManager.pageNotFoundRoute)
+
+    const getContractId = async (evmAddress: string): Promise<string|null> => {
+      let result: string|null
+      try {
+        const response = await axios.get<ContractResponse>("api/v1/contracts/" + evmAddress)
+        result = response.data.contract_id ?? null
+      } catch {
+        result = null
       }
+      return Promise.resolve(result)
     }
 
-    onMounted(dispatch)
+    const getAccountId = async (evmAddress: string): Promise<string|null> => {
+      let result: string|null
+      try {
+        const response = await axios.get<AccountBalanceTransactions>("api/v1/accounts/" + evmAddress)
+        result = response.data.account ?? null
+      } catch {
+        result = null
+      }
+      return Promise.resolve(result)
+    }
+
+    const selectRoute = async () => {
+      let result: RouteLocationRaw
+
+      const evmAddress = PathParam.parseEvmAddress(props.accountAddress)
+      if (evmAddress !== null) {
+
+        const contractId = await getContractId(evmAddress)
+        if (contractId !== null) {
+          result = routeManager.makeRouteToContract(contractId)
+        } else {
+          const accountId = await getAccountId(evmAddress)
+          if (accountId !== null) {
+            result = routeManager.makeRouteToAccount(accountId)
+          } else {
+            result = routeManager.pageNotFoundRoute
+          }
+        }
+
+      } else {
+        result = routeManager.pageNotFoundRoute
+      }
+
+      return Promise.resolve(result)
+    }
+
+    onMounted(() => {
+      selectRoute().then((route: RouteLocationRaw) => router.replace(route))
+    })
   }
 })
 
