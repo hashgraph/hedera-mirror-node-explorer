@@ -85,7 +85,9 @@ export default defineComponent({
       if (props.compact  && props.address?.slice(0, 2) === "0x" && props.address.length === 42) {
         result = "0x" + props.address[2] + "…" + props.address.slice(-props.bytesKept)
       } else {
-        result = props.address ?? ""
+        result = props.address?.slice(0, 2) === "0x"
+            ? props.address
+            : props.address ? "0x" + props.address : ""
       }
       return result
     })
