@@ -36,6 +36,9 @@
         <span class="h-is-primary-title"> Token </span>
         <span class="h-is-secondary-text">{{ normalizedTokenId }}</span>
         <span v-if="tokenChecksum" class="has-text-grey" style="font-size: 28px">-{{ tokenChecksum }}</span>
+        <div v-if="ethereumAddress">
+          <span class="has-text-grey h-is-tertiary-text"> {{ ethereumAddress }} </span>
+        </div>
       </template>
 
       <template v-slot:content>

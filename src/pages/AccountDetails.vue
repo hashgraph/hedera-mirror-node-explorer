@@ -42,6 +42,9 @@
             <span class="h-is-tertiary-text has-text-grey"> {{ ' (' + accountInfo + ')' }} </span>
           </router-link>
         </div>
+        <div v-else-if="ethereumAddress">
+          <span class="has-text-grey h-is-tertiary-text"> {{ ethereumAddress }} </span>
+        </div>
       </template>
 
       <template v-slot:content>

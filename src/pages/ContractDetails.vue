@@ -36,6 +36,9 @@
             <span class="h-is-property-text">Show associated account</span>
           </router-link>
         </span>
+        <div v-if="ethereumAddress">
+          <span class="has-text-grey h-is-tertiary-text"> {{ ethereumAddress }} </span>
+        </div>
       </template>
       <template v-slot:content>
         <NotificationBanner v-if="notification" :message="notification"/>
@@ -312,6 +315,7 @@ export default defineComponent({
       account: accountLoader.entity,
       balance: accountLoader.balance,
       tokens: accountLoader.tokens,
+      ethereumAddress: accountLoader.ethereumAddress,
       accountChecksum,
       displayAllTokenLinks,
       transactionTableController,
