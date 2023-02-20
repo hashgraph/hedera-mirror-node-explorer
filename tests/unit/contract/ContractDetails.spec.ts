@@ -106,7 +106,7 @@ describe("ContractDetails.vue", () => {
         expect(wrapper.get("#validFromValue").text()).toBe("3:09:15.9474 PMMar 7, 2022, UTC")
         expect(wrapper.get("#validUntilValue").text()).toBe("None")
         expect(wrapper.get("#fileValue").text()).toBe("0.0.749773")
-        expect(wrapper.get("#evmAddress").text()).toBe("EVM Address0000 0000 0000 0000 0000 0000 0000 0000 000b 70cfCopy to Clipboard")
+        expect(wrapper.get("#evmAddress").text()).toBe("Ethereum-format Alias0x00000000000000000000000000000000000b70cf")
 
     });
 
@@ -146,7 +146,7 @@ describe("ContractDetails.vue", () => {
         expect(wrapper.get("#memoValue").text()).toBe("Mirror Node acceptance test: 2022-03-07T15:09:15.228564328Z Create contract")
         expect(wrapper.get("#autoRenewAccountValue").text()).toBe("0.0.730632")
         expect(wrapper.get("#fileValue").text()).toBe("0.0.749773")
-        expect(wrapper.get("#evmAddress").text()).toBe("EVM Address0000 0000 0000 0000 0000 0000 0000 0000 000b 70cfCopy to Clipboard")
+        expect(wrapper.get("#evmAddress").text()).toBe("Ethereum-format Alias0x00000000000000000000000000000000000b70cf")
 
         const contract2 = SAMPLE_CONTRACT_DUDE
         matcher1 = "/api/v1/contracts/" + contract2.contract_id
@@ -166,7 +166,7 @@ describe("ContractDetails.vue", () => {
         expect(wrapper.get("#maxAutoAssociationValue").text()).toBe("None")
         expect(wrapper.get("#memoValue").text()).toBe("None")
         expect(wrapper.get("#fileValue").text()).toBe("0.0.803267")
-        expect(wrapper.get("#evmAddress").text()).toBe("EVM Address0000 0000 0000 0000 0000 0000 0000 0000 000c 41dfCopy to Clipboard")
+        expect(wrapper.get("#evmAddress").text()).toBe("Ethereum-format Alias0x00000000000000000000000000000000000b70cf")
 
     });
 

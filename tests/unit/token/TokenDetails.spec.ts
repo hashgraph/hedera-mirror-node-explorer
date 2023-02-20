@@ -109,7 +109,7 @@ describe("TokenDetails.vue", () => {
         expect(wrapper.get("#totalSupplyValue").text()).toBe("1")
         expect(wrapper.get("#initialSupplyValue").text()).toBe("1")
         expect(wrapper.get("#maxSupplyValue").text()).toBe("Infinite")
-        expect(wrapper.get("#evmAddressValue").text()).toBe("0000 0000 0000 0000 0000 0000 0000 0000 01c4 9eecCopy to ClipboardImport in MetaMaskPlease install MetaMask! To watch this asset with MetaMask, you must download and install MetaMask extension for your browser.")
+        expect(wrapper.get("#evmAddressValue").text()).toBe("0x0000000000000000000000000000000001c49eecImport in MetaMaskPlease install MetaMask! To watch this asset with MetaMask, you must download and install MetaMask extension for your browser.")
 
         expect(wrapper.text()).toMatch("Balances")
         expect(wrapper.findComponent(TokenBalanceTable).exists()).toBe(true)
@@ -353,6 +353,7 @@ describe("TokenDetails.vue", () => {
 
         const testTokenId = "0.0.91961"
         const testTokenIdWithChecksum = "0.0.91961-mkkua"
+        const testTokenEVMAddress = "0x0000000000000000000000000000000000016739"
         const matcher1 = "/api/v1/tokens/" + testTokenId
         mock.onGet(matcher1).reply(200, SAMPLE_TOKEN_WITHOUT_KEYS);
         const matcher2 = "/api/v1/tokens/" + testTokenId + "/nfts"
@@ -369,7 +370,7 @@ describe("TokenDetails.vue", () => {
         await flushPromises()
         // console.log(wrapper.text())
 
-        expect(wrapper.text()).toMatch(RegExp("^Non Fungible Token " + testTokenIdWithChecksum + "Token is deleted"))
+        expect(wrapper.text()).toMatch(RegExp("^Non Fungible Token " + testTokenIdWithChecksum + testTokenEVMAddress + "Token is deleted"))
 
         wrapper.unmount()
         await flushPromises()
