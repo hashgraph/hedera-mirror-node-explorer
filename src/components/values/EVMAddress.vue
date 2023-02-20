@@ -28,7 +28,7 @@
       <span class="has-text-grey">{{ nonSignificantPart }}</span>
       <span class="mr-1">{{ significantPart }}</span>
       <br/>
-      <span v-if="entityId">
+      <span v-if="entityId && showId">
         <span>(</span>
         <router-link v-if="isContract" :to="{name: 'ContractDetails', params: {contractId: entityId}}">{{ entityId }}</router-link>
         <router-link v-else-if="isAccount" :to="{name: 'AccountDetails', params: {accountId: entityId}}">{{ entityId }}</router-link>
@@ -59,6 +59,10 @@ export default defineComponent({
     address: String,
     id: String,
     entityType: String,
+    showId: {
+      type: Boolean,
+      default: true
+    },
     showType: {
       type: Boolean,
       default: false
