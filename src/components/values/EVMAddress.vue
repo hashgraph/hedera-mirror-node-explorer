@@ -24,7 +24,7 @@
 
 <template>
   <div v-if="address">
-    <div :class="{'is-flex': isSmallScreen}" class="is-flex-wrap-wrap is-family-monospace h-is-text-size-3"
+    <div :class="{'is-flex': isSmallScreen}" class="is-inline-block is-family-monospace h-is-text-size-3"
          style="line-height: 20px">
       <span class="has-text-grey">{{ nonSignificantPart }}</span>
       <span class="mr-1">{{ significantPart }}</span>
