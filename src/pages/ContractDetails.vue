@@ -276,7 +276,7 @@ export default defineComponent({
     const notification = computed(() => {
       let result: string|null
 
-      const expiration = contractLoader.entity.value?.expiration_timestamp
+      // const expiration = contractLoader.entity.value?.expiration_timestamp
       if (!validEntityId.value) {
         result = "Invalid contract ID: " + props.contractId
       } else if (contractLoader.got404.value) {

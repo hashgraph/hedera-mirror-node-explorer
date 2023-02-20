@@ -311,6 +311,7 @@ export class RouteManager {
     public readonly stakingRoute:       RouteLocationRaw = {name: 'Staking'}
     public readonly blocksRoute:        RouteLocationRaw = {name: 'Blocks'}
     public readonly mobileSearchRoute:  RouteLocationRaw = {name: 'MobileSearch'}
+    public readonly pageNotFoundRoute:  RouteLocationRaw = {name: 'PageNotFound'}
 
     public makeRouteToMobileMenu(name: unknown): RouteLocationRaw {
         return {name: 'MobileMenu', query: {from: name as string}}
