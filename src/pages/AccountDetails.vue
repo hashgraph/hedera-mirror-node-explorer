@@ -42,12 +42,6 @@
         </div>
         <div v-else-if="ethereumAddress" id="evmAddress" class="h-is-tertiary-text mt-2" style="word-break: keep-all">
           <div class="is-inline-block h-is-property-text has-text-weight-light" style="min-width: 115px">EVM Address:</div>
-          <div class="is-inline-block is-family-monospace">
-            <EVMAddress :show-id="false" :has-custom-font="true" :address="ethereumAddress"/>
-          </div>
-        </div>
-        <div v-if="false" id="evmAddress" class="h-is-tertiary-text" style="word-break: keep-all">
-          <div class="is-inline-block h-is-property-text has-text-weight-light" style="min-width: 115px">EVM Address:</div>
           <div class="is-inline-block">
             <EVMAddress :show-id="false" :has-custom-font="true" :address="ethereumAddress"/>
           </div>
