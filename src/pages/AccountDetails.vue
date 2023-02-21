@@ -29,25 +29,43 @@
     <DashboardCard>
       <template v-slot:title>
         <span class="h-is-primary-title">Account </span>
-        <span class="h-is-secondary-text">{{ normalizedAccountId ?? "" }}</span>
-        <span v-if="accountChecksum" class="has-text-grey" style="font-size: 28px">-{{ accountChecksum }}</span>
-        <div v-if="operatorNodeRoute" id="nodeLink" >
+        <div class="h-is-tertiary-text mt-2" id="entityId">
+          <div class="is-inline-block h-is-property-text has-text-weight-light" style="min-width: 115px">Entity ID:</div>
+          <span>{{ normalizedAccountId ?? "" }}</span>
+          <span v-if="accountChecksum" class="has-text-grey">-{{ accountChecksum }}</span>
+        </div>
+        <div v-if="operatorNodeRoute" id="nodeLink" class="h-is-tertiary-text mt-2">
           <router-link :to="operatorNodeRoute">
-            <span class="h-is-tertiary-text"> {{ 'Node ' + nodeId }} </span>
-            <span class="h-is-tertiary-text has-text-grey"> {{ ' (' + accountInfo + ')' }} </span>
+            <div class="is-inline-block h-is-property-text has-text-weight-light" style="min-width: 115px">{{ 'Node ' + nodeId }}:</div>
+            <span>{{ accountInfo }}</span>
           </router-link>
         </div>
-        <div v-else-if="ethereumAddress">
-          <span class="has-text-grey h-is-tertiary-text"> {{ ethereumAddress }} </span>
+        <div v-else-if="ethereumAddress" id="evmAddress" class="h-is-tertiary-text mt-2" style="word-break: keep-all">
+          <div class="is-inline-block h-is-property-text has-text-weight-light" style="min-width: 115px">EVM Address:</div>
+          <div class="is-inline-block is-family-monospace">
+            <EVMAddress :show-id="false" :has-custom-font="true" :address="ethereumAddress"/>
+          </div>
         </div>
-      </template>
+        <div v-if="false" id="evmAddress" class="h-is-tertiary-text" style="word-break: keep-all">
+          <div class="is-inline-block h-is-property-text has-text-weight-light" style="min-width: 115px">EVM Address:</div>
+          <div class="is-inline-block">
+            <EVMAddress :show-id="false" :has-custom-font="true" :address="ethereumAddress"/>
+          </div>
+        </div>
 
-      <template v-slot:control>
-        <span v-if="showContractVisible" id="showContractLink" class="is-inline-block ml-3">
+        <div v-if="!isMediumScreen && showContractVisible" id="showContractLink" class="is-inline-block mt-2">
           <router-link :to="contractRoute">
             <span class="h-is-property-text">Show associated contract</span>
           </router-link>
-        </span>
+        </div>
+      </template>
+
+      <template v-slot:control v-if="isMediumScreen">
+        <div v-if="showContractVisible" id="showContractLink" class="is-inline-block ml-3">
+          <router-link :to="contractRoute">
+            <span class="h-is-property-text">Show associated contract</span>
+          </router-link>
+        </div>
       </template>
 
       <template v-slot:content>
@@ -258,6 +276,7 @@ import {StakingRewardsTableController} from "@/components/staking/StakingRewards
 import StakingRewardsTable from "@/components/staking/StakingRewardsTable.vue";
 import AliasValue from "@/components/values/AliasValue.vue";
 import {NodeRegistry} from "@/components/node/NodeRegistry";
+import EVMAddress from "@/components/values/EVMAddress.vue";
 
 const MAX_TOKEN_BALANCES = 10
 
@@ -266,6 +285,7 @@ export default defineComponent({
   name: 'AccountDetails',
 
   components: {
+    EVMAddress,
     AliasValue,
     TransactionLink,
     AccountLink,
@@ -428,6 +448,7 @@ export default defineComponent({
 
     return {
       isSmallScreen,
+      isMediumScreen,
       isTouchDevice,
       transactionTableController,
       notification,
