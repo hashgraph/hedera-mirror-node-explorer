@@ -35,9 +35,9 @@
           <span v-if="accountChecksum" class="has-text-grey">-{{ accountChecksum }}</span>
         </div>
         <div v-if="operatorNodeRoute" id="nodeLink" class="h-is-tertiary-text mt-2">
+          <div class="is-inline-block h-is-property-text has-text-weight-light" style="min-width: 115px">Node:</div>
           <router-link :to="operatorNodeRoute">
-            <div class="is-inline-block h-is-property-text has-text-weight-light" style="min-width: 115px">{{ 'Node ' + nodeId }}:</div>
-            <span>{{ accountInfo }}</span>
+            <span>{{ nodeId }} - {{ accountInfo }}</span>
           </router-link>
         </div>
         <div v-else-if="ethereumAddress" id="evmAddress" class="h-is-tertiary-text mt-2" style="word-break: keep-all">
