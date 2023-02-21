@@ -10,6 +10,10 @@ Visual Explorer for the Hedera Hashgraph DLT.
 npm install
 ```
 
+### Prerequisite
+
+Install Node.js 16.19.x
+
 ### Compiles and hot-reloads for development
 
 ```shell
