@@ -12,7 +12,7 @@ npm install
 
 ### Prerequisite
 
-Install Node.js 16.19.x
+Install Node.js 16.19.x. Versions 17 and later won't work.
 
 ### Compiles and hot-reloads for development
 
