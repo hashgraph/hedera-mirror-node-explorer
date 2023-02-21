@@ -29,20 +29,33 @@
     <DashboardCard>
       <template v-slot:title>
         <span class="h-is-primary-title">Contract </span>
-        <span class="h-is-secondary-text">{{ contract ? normalizedContractId : "" }}</span>
-        <span v-if="accountChecksum" class="has-text-grey" style="font-size: 28px">-{{ accountChecksum }}</span>
-        <div v-if="ethereumAddress">
-          <span class="has-text-grey h-is-tertiary-text"> {{ ethereumAddress }} </span>
+        <div class="h-is-tertiary-text mt-2" id="entityId">
+          <div class="is-inline-block h-is-property-text has-text-weight-light" style="min-width: 115px">Entity ID:</div>
+          <span>{{ normalizedContractId ?? "" }}</span>
+          <span v-if="accountChecksum" class="has-text-grey">-{{ accountChecksum }}</span>
         </div>
-      </template>
+        <div v-if="ethereumAddress" id="evmAddress" class="h-is-tertiary-text mt-2" style="word-break: keep-all">
+          <div class="is-inline-block h-is-property-text has-text-weight-light" style="min-width: 115px">EVM Address:</div>
+          <div class="is-inline-block">
+            <EVMAddress :show-id="false" :has-custom-font="true" :address="ethereumAddress"/>
+          </div>
+        </div>
 
-      <template v-slot:control>
-        <span v-if="contract" class="is-inline-block ml-3">
+        <div v-if="!isMediumScreen && contract" id="showAccountLink" class="is-inline-block mt-2">
           <router-link :to="accountRoute">
             <span class="h-is-property-text">Show associated account</span>
           </router-link>
-        </span>
+        </div>
       </template>
+
+      <template v-slot:control v-if="isMediumScreen">
+        <div v-if="contract" id="showAccountLink" class="is-inline-block ml-3">
+          <router-link :to="accountRoute">
+            <span class="h-is-property-text">Show associated account</span>
+          </router-link>
+        </div>
+      </template>
+
       <template v-slot:content>
         <NotificationBanner v-if="notification" :message="notification"/>
       </template>
@@ -216,6 +229,7 @@ import {networkRegistry} from "@/schemas/NetworkRegistry";
 import router, {routeManager} from "@/router";
 import TransactionLink from "@/components/values/TransactionLink.vue";
 import EthAddress from "@/components/values/EthAddress.vue";
+import EVMAddress from "@/components/values/EVMAddress.vue";
 
 const MAX_TOKEN_BALANCES = 3
 
@@ -224,6 +238,7 @@ export default defineComponent({
   name: 'ContractDetails',
 
   components: {
+    EVMAddress,
     EthAddress,
     TransactionLink,
     TransactionFilterSelect,
@@ -251,6 +266,7 @@ export default defineComponent({
 
   setup(props) {
     const isSmallScreen = inject('isSmallScreen', true)
+    const isMediumScreen = inject('isMediumScreen', true)
     const isTouchDevice = inject('isTouchDevice', false)
 
     //
@@ -316,6 +332,7 @@ export default defineComponent({
 
     return {
       isSmallScreen,
+      isMediumScreen,
       isTouchDevice,
       contract: contractLoader.entity,
       account: accountLoader.entity,
