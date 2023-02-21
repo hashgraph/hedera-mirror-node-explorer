@@ -249,7 +249,6 @@ import Footer from "@/components/Footer.vue";
 import {PathParam} from "@/utils/PathParam";
 import Property from "@/components/Property.vue";
 import NotificationBanner from "@/components/NotificationBanner.vue";
-import EthAddress from "@/components/values/EthAddress.vue";
 import StringValue from "@/components/values/StringValue.vue";
 import {TransactionTableControllerXL} from "@/components/transaction/TransactionTableControllerXL";
 import AccountLink from "@/components/values/AccountLink.vue";
@@ -287,7 +286,6 @@ export default defineComponent({
     PlayPauseButton,
     TimestampValue,
     KeyValue,
-    EthAddress,
     DurationValue,
     StringValue,
     StakingRewardsTable
