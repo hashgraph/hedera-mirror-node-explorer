@@ -24,13 +24,22 @@
 
 <template>
   <div v-if="address">
-    <div :class="{'is-flex': isSmallScreen}" class="is-inline-block is-family-monospace h-is-text-size-3"
-         style="line-height: 20px">
-      <span class="has-text-grey">{{ nonSignificantPart }}</span>
-      <span class="mr-1">{{ significantPart }}</span>
-      <br/>
+    <div :class="{'is-flex': isSmallScreen, 'h-is-text-size-3': !hasCustomFont, 'is-family-monospace': !hasCustomFont}"
+         class="is-inline-block" style="line-height: 20px">
+      <div class="shy-scope" style="display: inline-block; position: relative;">
+        <span class="has-text-grey">{{ nonSignificantPart }}</span>
+        <span>{{ significantPart }}</span>
+        <div v-if="address" id="shyCopyButton" class="shy"
+             style="position: absolute; left: 0; top: 0; width: 100%; height: 100%">
+          <div style="position: absolute; left: 0; top: 0; width: 100%; height: 100%; background: rgba(0, 0, 0, 0.50)"></div>
+          <div style="position: absolute; display: inline-block; left: 50%; top: 50%; transform: translate(-50%, -50%);">
+            <button class="button is-dark h-is-text-size-3"
+                    v-on:click="copyToClipboard">Copy to Clipboard</button>
+          </div>
+        </div>
+      </div>
       <span v-if="entityId && showId">
-        <span>(</span>
+        <span class="ml-1">(</span>
         <router-link v-if="isContract" :to="{name: 'ContractDetails', params: {contractId: entityId}}">{{ entityId }}</router-link>
         <router-link v-else-if="isAccount" :to="{name: 'AccountDetails', params: {accountId: entityId}}">{{ entityId }}</router-link>
         <span v-else>{{ entityId }}</span>
@@ -75,6 +84,10 @@ export default defineComponent({
     bytesKept: {
       type: Number,
       default: 6
+    },
+    hasCustomFont: {
+      type: Boolean,
+      default: false
     }
   },
 
@@ -130,6 +143,12 @@ export default defineComponent({
       return result
     })
 
+    const copyToClipboard = (): void => {
+      if (displayAddress.value) {
+        navigator.clipboard.writeText(displayAddress.value)
+      }
+    }
+
     return {
       isSmallScreen,
       isContract,
@@ -137,7 +156,8 @@ export default defineComponent({
       initialLoading,
       nonSignificantPart,
       significantPart,
-      entityId
+      entityId,
+      copyToClipboard
     }
   }
 })
@@ -148,4 +168,14 @@ export default defineComponent({
 <!--                                                       STYLE                                                     -->
 <!-- --------------------------------------------------------------------------------------------------------------- -->
 
-<style/>
+<style scoped>
+
+.shy {
+  display: none
+}
+
+.shy-scope:hover > .shy {
+  display: block;
+}
+
+</style>
