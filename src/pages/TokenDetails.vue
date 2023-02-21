@@ -27,17 +27,22 @@
   <section :class="{'h-mobile-background': isTouchDevice || !isSmallScreen}" class="section">
 
     <DashboardCard>
-
       <template v-slot:title>
         <span v-if="tokenInfo" class="h-is-primary-title">
           <span v-if="tokenInfo.type === 'NON_FUNGIBLE_UNIQUE'">Non Fungible</span>
           <span v-else>Fungible</span>
         </span>
         <span class="h-is-primary-title"> Token </span>
-        <span class="h-is-secondary-text">{{ normalizedTokenId }}</span>
-        <span v-if="tokenChecksum" class="has-text-grey" style="font-size: 28px">-{{ tokenChecksum }}</span>
-        <div v-if="ethereumAddress">
-          <span class="has-text-grey h-is-tertiary-text"> {{ ethereumAddress }} </span>
+        <div class="h-is-tertiary-text mt-2" id="entityId">
+          <div class="is-inline-block h-is-property-text has-text-weight-light" style="min-width: 115px">Entity ID:</div>
+          <span>{{ normalizedTokenId ?? "" }}</span>
+          <span v-if="tokenChecksum" class="has-text-grey">-{{ tokenChecksum }}</span>
+        </div>
+        <div v-if="ethereumAddress" id="evmAddress" class="h-is-tertiary-text mt-2" style="word-break: keep-all">
+          <div class="is-inline-block h-is-property-text has-text-weight-light" style="min-width: 115px">EVM Address:</div>
+          <div class="is-inline-block">
+            <EVMAddress :show-id="false" :has-custom-font="true" :address="ethereumAddress"/>
+          </div>
         </div>
       </template>
 
@@ -289,12 +294,14 @@ import AccountLink from "@/components/values/AccountLink.vue";
 import StringValue from "@/components/values/StringValue.vue";
 import {networkRegistry} from "@/schemas/NetworkRegistry";
 import TokenCustomFees from "@/components/token/TokenCustomFees.vue";
+import EVMAddress from "@/components/values/EVMAddress.vue";
 
 export default defineComponent({
 
   name: 'TokenDetails',
 
   components: {
+    EVMAddress,
     TokenCustomFees,
     PlayPauseButton,
     NftHolderTable,
@@ -379,6 +386,7 @@ export default defineComponent({
 
     return {
       isSmallScreen,
+      isMediumScreen,
       isTouchDevice,
       tokenInfoLoader,
       tokenInfo: tokenInfoLoader.entity,
