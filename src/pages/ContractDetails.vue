@@ -161,14 +161,6 @@
               </template>
             </Property>
 
-            <Property id="evmAddress">
-              <template v-slot:name>Ethereum-format Alias</template>
-              <template v-slot:value>
-                <EthAddress v-if="ethereumAddress"
-                            :address="ethereumAddress"
-                            :show-none="true"/>
-              </template>
-            </Property>
       </template>
     </DashboardCard>
 
@@ -228,7 +220,6 @@ import TransactionFilterSelect from "@/components/transaction/TransactionFilterS
 import {networkRegistry} from "@/schemas/NetworkRegistry";
 import router, {routeManager} from "@/router";
 import TransactionLink from "@/components/values/TransactionLink.vue";
-import EthAddress from "@/components/values/EthAddress.vue";
 import EVMAddress from "@/components/values/EVMAddress.vue";
 
 const MAX_TOKEN_BALANCES = 3
@@ -239,7 +230,6 @@ export default defineComponent({
 
   components: {
     EVMAddress,
-    EthAddress,
     TransactionLink,
     TransactionFilterSelect,
     ByteCodeValue,

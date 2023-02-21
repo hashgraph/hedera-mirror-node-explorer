@@ -184,14 +184,6 @@
           </template>
         </Property>
 
-        <Property id="evmAddress">
-          <template v-slot:name>Ethereum-format Alias</template>
-          <template v-slot:value>
-            <EthAddress v-if="ethereumAddress"
-                        :address="ethereumAddress"
-                        :show-none="true"/>
-          </template>
-        </Property>
         <Property id="ethereumNonce">
           <template v-slot:name>Ethereum Nonce</template>
           <template v-slot:value>
