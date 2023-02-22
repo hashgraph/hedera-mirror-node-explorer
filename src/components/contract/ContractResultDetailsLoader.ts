@@ -65,10 +65,10 @@ export class ContractResultDetailsLoader extends EntityLoader<ContractResultDeta
     })
 
     public errorMessage = computed(() => {
-        const stringTypePrefix = '0x08c379a'
+        const errorStringSelector = '0x08c379a0'
         let message = this.entity.value?.error_message ?? null
 
-        if (message && message.startsWith(stringTypePrefix)) {
+        if (message && message.startsWith(errorStringSelector)) {
             const reason = ethers.utils.defaultAbiCoder.decode(
                 ['string'],
                 ethers.utils.hexDataSlice(message, 4)
