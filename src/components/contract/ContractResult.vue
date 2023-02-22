@@ -44,7 +44,7 @@
         <Property id="errorMessage">
           <template v-slot:name>Error Message</template>
           <template v-slot:value>
-            <StringValue :string-value ="contractResult?.error_message"/>
+            <StringValue :string-value ="errorMessage"/>
           </template>
         </Property>
         <Property id="from">
@@ -257,6 +257,7 @@ export default defineComponent({
       maxFeePerGas,
       maxPriorityFeePerGas,
       contractResult: contractResultDetailsLoader.entity,
+      errorMessage: contractResultDetailsLoader.errorMessage,
       analyzer: functionCallAnalyzer,
       functionHash: functionCallAnalyzer.functionHash,
       signature: functionCallAnalyzer.signature,

@@ -23,6 +23,7 @@ import {EntityLoader} from "@/utils/loader/EntityLoader";
 import axios, {AxiosResponse} from "axios";
 import {computed, Ref} from "vue";
 import {EntityID} from "@/utils/EntityID";
+import {ethers} from "ethers";
 
 export class ContractResultDetailsLoader extends EntityLoader<ContractResultDetails> {
 
@@ -61,6 +62,20 @@ export class ContractResultDetailsLoader extends EntityLoader<ContractResultDeta
 
     public callResult = computed(() => {
         return this.entity.value?.call_result ?? null
+    })
+
+    public errorMessage = computed(() => {
+        const stringTypePrefix = '0x08c379a'
+        let message = this.entity.value?.error_message ?? null
+
+        if (message && message.startsWith(stringTypePrefix)) {
+            const reason = ethers.utils.defaultAbiCoder.decode(
+                ['string'],
+                ethers.utils.hexDataSlice(message, 4)
+            )
+            message = reason.toString() ?? message
+        }
+        return message
     })
 
     //
