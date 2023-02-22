@@ -25,6 +25,7 @@ import axios from "axios";
 import {
     SAMPLE_ACCOUNT,
     SAMPLE_ACCOUNTS,
+    SAMPLE_BLOCKSRESPONSE,
     SAMPLE_CONTRACT,
     SAMPLE_TOKEN,
     SAMPLE_TOPIC_MESSAGES,
@@ -32,7 +33,7 @@ import {
     SAMPLE_TRANSACTIONS
 } from "../Mocks";
 import {SearchRequest} from "@/utils/SearchRequest";
-import {base32ToAlias, base64DecToArr, byteToHex} from "@/utils/B64Utils";
+import {base32ToAlias, base64DecToArr, byteToHex, hexToByte} from "@/utils/B64Utils";
 import {EntityID} from "@/utils/EntityID";
 
 const mock = new MockAdapter(axios)
@@ -62,6 +63,15 @@ mock.onGet(matcher_transaction).reply(200, SAMPLE_TRANSACTIONS)
 const TRANSACTION_HASH = byteToHex(base64DecToArr(SAMPLE_TRANSACTION.transaction_hash))
 const matcher_transaction_with_hash = "/api/v1/transactions/" + TRANSACTION_HASH
 mock.onGet(matcher_transaction_with_hash).reply(200, SAMPLE_TRANSACTIONS)
+
+// Block
+
+const BLOCK_HASH = byteToHex(hexToByte(SAMPLE_BLOCKSRESPONSE.blocks[0].hash) ?? new Uint8Array(0))
+const matcher_block_with_hash = "/api/v1/blocks/" + BLOCK_HASH
+mock.onGet(matcher_block_with_hash).reply(200, SAMPLE_BLOCKSRESPONSE.blocks[0])
+const BLOCK_HASH_PREFIX = byteToHex(hexToByte(SAMPLE_BLOCKSRESPONSE.blocks[0].hash)?.slice(0, 32) ?? new Uint8Array(0))
+const matcher_block_with_hash_prefix = "/api/v1/blocks/" + BLOCK_HASH_PREFIX
+mock.onGet(matcher_block_with_hash_prefix).reply(200, SAMPLE_BLOCKSRESPONSE.blocks[0])
 
 // Token
 
@@ -101,6 +111,7 @@ describe("SearchRequest.ts", () => {
         expect(r.tokenInfo).toBeNull()
         expect(r.topicMessages).toStrictEqual([])
         expect(r.contract).toBeNull()
+        expect(r.block).toBeNull()
         expect(r.getErrorCount()).toBe(0)
 
     })
@@ -116,6 +127,7 @@ describe("SearchRequest.ts", () => {
         expect(r.tokenInfo).toBeNull()
         expect(r.topicMessages).toStrictEqual([])
         expect(r.contract).toBeNull()
+        expect(r.block).toBeNull()
         expect(r.getErrorCount()).toBe(0)
 
     })
@@ -131,6 +143,7 @@ describe("SearchRequest.ts", () => {
         expect(r.tokenInfo).toBeNull()
         expect(r.topicMessages).toStrictEqual([])
         expect(r.contract).toBeNull()
+        expect(r.block).toBeNull()
         expect(r.getErrorCount()).toBe(0)
 
     })
@@ -146,6 +159,7 @@ describe("SearchRequest.ts", () => {
         expect(r.tokenInfo).toBeNull()
         expect(r.topicMessages).toStrictEqual([])
         expect(r.contract).toBeNull()
+        expect(r.block).toBeNull()
         expect(r.getErrorCount()).toBe(0)
 
     })
@@ -162,6 +176,7 @@ describe("SearchRequest.ts", () => {
         expect(r.tokenInfo).toBeNull()
         expect(r.topicMessages).toStrictEqual([])
         expect(r.contract).toBeNull()
+        expect(r.block).toBeNull()
         expect(r.getErrorCount()).toBe(0)
 
     })
@@ -181,6 +196,7 @@ describe("SearchRequest.ts", () => {
         expect(r.tokenInfo).toBeNull()
         expect(r.topicMessages).toStrictEqual([])
         expect(r.contract).toBeNull()
+        expect(r.block).toBeNull()
         expect(r.getErrorCount()).toBe(0)
 
     })
@@ -196,6 +212,43 @@ describe("SearchRequest.ts", () => {
         expect(r.tokenInfo).toBeNull()
         expect(r.topicMessages).toStrictEqual([])
         expect(r.contract).toBeNull()
+        expect(r.block).toBeNull()
+        expect(r.getErrorCount()).toBe(0)
+
+    })
+
+    //
+    // Block
+    //
+
+    test("block (with hash)", async () => {
+        const r = new SearchRequest(BLOCK_HASH)
+        await r.run()
+
+        expect(r.searchedId).toBe(BLOCK_HASH)
+        expect(r.account).toBeNull()
+        expect(r.accountsWithKey).toStrictEqual([])
+        expect(r.transactions).toStrictEqual([])
+        expect(r.tokenInfo).toBeNull()
+        expect(r.topicMessages).toStrictEqual([])
+        expect(r.contract).toBeNull()
+        expect(r.block).toStrictEqual(SAMPLE_BLOCKSRESPONSE.blocks[0])
+        expect(r.getErrorCount()).toBe(0)
+
+    })
+
+    test("block (with hash prefix)", async () => {
+        const r = new SearchRequest(BLOCK_HASH_PREFIX)
+        await r.run()
+
+        expect(r.searchedId).toBe(BLOCK_HASH_PREFIX)
+        expect(r.account).toBeNull()
+        expect(r.accountsWithKey).toStrictEqual([])
+        expect(r.transactions).toStrictEqual([])
+        expect(r.tokenInfo).toBeNull()
+        expect(r.topicMessages).toStrictEqual([])
+        expect(r.contract).toBeNull()
+        expect(r.block).toStrictEqual(SAMPLE_BLOCKSRESPONSE.blocks[0])
         expect(r.getErrorCount()).toBe(0)
 
     })
@@ -215,6 +268,7 @@ describe("SearchRequest.ts", () => {
         expect(r.tokenInfo).toStrictEqual(SAMPLE_TOKEN)
         expect(r.topicMessages).toStrictEqual([])
         expect(r.contract).toBeNull()
+        expect(r.block).toBeNull()
         expect(r.getErrorCount()).toBe(0)
 
     })
@@ -230,6 +284,7 @@ describe("SearchRequest.ts", () => {
         expect(r.tokenInfo).toStrictEqual(SAMPLE_TOKEN)
         expect(r.topicMessages).toStrictEqual([])
         expect(r.contract).toBeNull()
+        expect(r.block).toBeNull()
         expect(r.getErrorCount()).toBe(0)
 
     })
@@ -249,6 +304,7 @@ describe("SearchRequest.ts", () => {
         expect(r.tokenInfo).toBeNull()
         expect(r.topicMessages).toStrictEqual(SAMPLE_TOPIC_MESSAGES.messages)
         expect(r.contract).toBeNull()
+        expect(r.block).toBeNull()
         expect(r.getErrorCount()).toBe(0)
 
     })
@@ -268,6 +324,7 @@ describe("SearchRequest.ts", () => {
         expect(r.tokenInfo).toBeNull()
         expect(r.topicMessages).toStrictEqual([])
         expect(r.contract).toStrictEqual(SAMPLE_CONTRACT)
+        expect(r.block).toBeNull()
         expect(r.getErrorCount()).toBe(0)
 
     })
@@ -283,6 +340,7 @@ describe("SearchRequest.ts", () => {
         expect(r.tokenInfo).toBeNull()
         expect(r.topicMessages).toStrictEqual([])
         expect(r.contract).toStrictEqual(SAMPLE_CONTRACT)
+        expect(r.block).toBeNull()
         expect(r.getErrorCount()).toBe(0)
 
     })
@@ -299,6 +357,7 @@ describe("SearchRequest.ts", () => {
         expect(r.tokenInfo).toBeNull()
         expect(r.topicMessages).toStrictEqual([])
         expect(r.contract).toBeNull()
+        expect(r.block).toBeNull()
         expect(r.getErrorCount()).toBe(0)
 
     })
@@ -314,6 +373,7 @@ describe("SearchRequest.ts", () => {
         expect(r.tokenInfo).toBeNull()
         expect(r.topicMessages).toStrictEqual([])
         expect(r.contract).toBeNull()
+        expect(r.block).toBeNull()
         expect(r.getErrorCount()).toBe(0)
 
         const aliasHex2 = "0x" + INVALID_EVM_ADDRESS
@@ -327,6 +387,7 @@ describe("SearchRequest.ts", () => {
         expect(r2.tokenInfo).toBeNull()
         expect(r2.topicMessages).toStrictEqual([])
         expect(r2.contract).toBeNull()
+        expect(r.block).toBeNull()
         expect(r.getErrorCount()).toBe(0)
 
     })
@@ -343,6 +404,7 @@ describe("SearchRequest.ts", () => {
         expect(r.tokenInfo).toBeNull()
         expect(r.topicMessages).toStrictEqual([])
         expect(r.contract).toBeNull()
+        expect(r.block).toBeNull()
         expect(r.getErrorCount()).toBe(0)
 
     })

@@ -83,7 +83,7 @@
                 </div>
               </div>
               <div>
-                &bull; a public-key-format alias (string in base 32 or hexadecimal notation)<br/>
+                &bull; a key alias (string in base 32 or hexadecimal notation)<br/>
                 <div class="should-wrap h-help-item">
                   Example:&nbsp;CIQAAAH4AY2OFK2FL37TSPYEQGPPUJRP4XTKWHD62HKPQX543DTOFFQ
                 </div>
@@ -92,9 +92,18 @@
                 </div>
               </div>
               <div>
-                &bull; an Ethereum-format alias (40 characters in hexadecimal notation)<br/>
+                &bull; an evm address alias or account num alias (40 characters in hexadecimal notation)<br/>
                 <div class="should-wrap h-help-item">
                   Example:&nbsp;0x00000000000000000000000000000000000b03ae
+                </div>
+              </div>
+              <div>
+                &bull; a block hash or hash prefix (resp. 96 or 64 characters in hexadecimal notation)<br/>
+                <div class="should-wrap h-help-item">
+                  Example:&nbsp;0xd84193b8a421cee8035fccbce280c89f79509aa86969c1a425337b7218e9474121254ce71aa3952fc909ac240bec2e5f
+                </div>
+                <div class="should-wrap h-help-item">
+                  or: 0xd84193b8a421cee8035fccbce280c89f79509aa86969c1a425337b7218e94741
                 </div>
               </div>
             </div>
