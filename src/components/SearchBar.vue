@@ -150,6 +150,11 @@ export default defineComponent({
                 routeManager.routeToToken(r.tokenInfo.token_id)
               }
               searchDidEnd(true)
+            } else if (r.block != null) {
+              if (r.block.number) {
+                routeManager.routeToBlock(r.block.number)
+              }
+              searchDidEnd(true)
             } else if (r.topicMessages.length >= 1) {
               const topicId = r.topicMessages[0].topic_id
               if (topicId) {

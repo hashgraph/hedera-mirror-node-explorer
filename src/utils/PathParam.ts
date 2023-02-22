@@ -32,7 +32,7 @@ export class PathParam { // Block Hash or Number
 
         if (s) {
             const bytes = hexToByte(s)
-            if (bytes != null && bytes.length == 48 ) { // SHA384 byte count
+            if (bytes != null && (bytes.length == 48 || bytes.length == 32) ) { // SHA384 byte count
                 result = byteToHex(bytes)
             } else {
                 const n = parseInt(s)
