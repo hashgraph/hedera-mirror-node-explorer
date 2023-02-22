@@ -46,6 +46,15 @@
         </div>
       </template>
 
+      <template v-slot:control>
+        <MetaMaskImport v-if="ethereumAddress"
+                    :address="ethereumAddress"
+                    :decimals="tokenInfo?.decimals"
+                    :show-import="true"
+                    :show-none="true"
+                    :symbol="tokenSymbol"/>
+      </template>
+
       <template v-slot:content>
         <NotificationBanner v-if="notification" :message="notification"/>
       </template>
@@ -143,17 +152,6 @@
             <div v-if="tokenInfo?.supply_type === 'INFINITE'" class="has-text-grey">Infinite</div>
             <TokenAmount v-else :amount="parseIntString(tokenInfo?.max_supply)" :show-extra="false"
                          :token-id="normalizedTokenId"/>
-          </template>
-        </Property>
-        <Property id="evmAddress">
-          <template v-slot:name>EVM Address</template>
-          <template v-slot:value>
-            <EthAddress v-if="ethereumAddress"
-                        :address="ethereumAddress"
-                        :decimals="tokenInfo?.decimals"
-                        :show-import="true"
-                        :show-none="true"
-                        :symbol="tokenSymbol"/>
           </template>
         </Property>
       </template>
@@ -281,7 +279,7 @@ import DashboardCard from "@/components/DashboardCard.vue";
 import BlobValue from "@/components/values/BlobValue.vue";
 import TokenAmount from "@/components/values/TokenAmount.vue";
 import Footer from "@/components/Footer.vue";
-import EthAddress from "@/components/values/EthAddress.vue";
+import MetaMaskImport from "@/components/token/MetaMaskImport.vue";
 import {EntityID} from "@/utils/EntityID";
 import Property from "@/components/Property.vue";
 import NotificationBanner from "@/components/NotificationBanner.vue";
@@ -309,7 +307,7 @@ export default defineComponent({
     AccountLink,
     NotificationBanner,
     Property,
-    EthAddress,
+    MetaMaskImport,
     Footer,
     BlobValue,
     DashboardCard,

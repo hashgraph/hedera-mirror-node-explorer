@@ -22,14 +22,12 @@
 <!--                                                     TEMPLATE                                                    -->
 <!-- --------------------------------------------------------------------------------------------------------------- -->
 
-<template>
-  <EVMAddress :show-id="false" :address="address" :show-type="false"/>
-  <template v-if="showImport" class="">
-    <ActionLink title="Import in MetaMask"
-                :enabled="address !== undefined"
-                :running="executing"
-                @action="handleAction"/>
-    <span style="display: inline-block">
+<template v-if="showImport" class="">
+  <ActionLink :enabled="address !== undefined"
+              :running="executing"
+              title="Import in MetaMask"
+              @action="handleAction"/>
+  <span style="display: inline-block">
     <ModalDialog v-model:show-dialog="showErrorDialog">
       <template v-slot:dialogMessage>Please install MetaMask!</template>
       <template v-slot:dialogDetails>
@@ -39,7 +37,6 @@
       </template>
     </ModalDialog>
     </span>
-  </template>
 </template>
 
 <!-- --------------------------------------------------------------------------------------------------------------- -->
@@ -52,11 +49,10 @@ import {computed, defineComponent, ref} from "vue";
 import ModalDialog from "@/components/ModalDialog.vue";
 import ActionLink from "@/components/ActionLink.vue";
 import {MetaMask_Status, MetaMask_watchAsset} from "@/utils/MetaMask";
-import EVMAddress from "@/components/values/EVMAddress.vue";
 
 export default defineComponent({
-  name: "EthAddress",
-  components: {EVMAddress, ModalDialog, ActionLink},
+  name: "MetaMaskImport",
+  components: {ModalDialog, ActionLink},
   props: {
     address: String,
     symbol: String,
