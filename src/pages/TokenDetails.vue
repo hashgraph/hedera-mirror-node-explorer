@@ -33,8 +33,10 @@
           <span v-else>Fungible</span>
         </span>
         <span class="h-is-primary-title mr-1"> Token </span>
-        <span class="h-is-tertiary-text h-is-extra-text should-wrap">{{ displaySymbol }}</span>
-        <div class="h-is-tertiary-text mt-2" id="entityId">
+        <div class="is-inline-block h-is-tertiary-text h-is-extra-text should-wrap" style="word-break: break-all">
+          {{ displaySymbol }}
+        </div>
+        <div class="h-is-tertiary-text mt-3" id="entityId">
           <div class="is-inline-block h-is-property-text has-text-weight-light" style="min-width: 115px">Token ID:</div>
           <span>{{ normalizedTokenId ?? "" }}</span>
           <span v-if="tokenChecksum" class="has-text-grey">-{{ tokenChecksum }}</span>
@@ -56,11 +58,13 @@
       </template>
 
       <template v-if="isMediumScreen && ethereumAddress" v-slot:control>
-        <MetaMaskImport :address="ethereumAddress"
-                        :decimals="tokenInfo?.decimals"
-                        :show-import="true"
-                        :show-none="true"
-                        :symbol="tokenSymbol"/>
+        <div class="ml-6">
+          <MetaMaskImport :address="ethereumAddress"
+                          :decimals="tokenInfo?.decimals"
+                          :show-import="true"
+                          :show-none="true"
+                          :symbol="tokenSymbol"/>
+        </div>
       </template>
 
       <template v-slot:content>
@@ -355,7 +359,7 @@ export default defineComponent({
             router.currentRoute.value.params.network as string
         ) : null)
 
-    const displaySymbol = computed(() => makeTokenSymbol(tokenInfoLoader.entity.value, 30))
+    const displaySymbol = computed(() => makeTokenSymbol(tokenInfoLoader.entity.value, 256))
 
     const notification = computed(() => {
       let result
