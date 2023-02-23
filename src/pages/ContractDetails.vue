@@ -29,8 +29,8 @@
     <DashboardCard>
       <template v-slot:title>
         <span class="h-is-primary-title">Contract </span>
-        <div class="h-is-tertiary-text mt-2" id="entityId">
-          <div class="is-inline-block h-is-property-text has-text-weight-light" style="min-width: 115px">Entity ID:</div>
+        <div class="h-is-tertiary-text mt-3" id="entityId">
+          <div class="is-inline-block h-is-property-text has-text-weight-light" style="min-width: 115px">Contract ID:</div>
           <span>{{ normalizedContractId ?? "" }}</span>
           <span v-if="accountChecksum" class="has-text-grey">-{{ accountChecksum }}</span>
         </div>

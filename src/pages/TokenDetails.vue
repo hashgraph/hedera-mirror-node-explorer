@@ -35,7 +35,7 @@
         <span class="h-is-primary-title mr-1"> Token </span>
         <span class="h-is-tertiary-text h-is-extra-text should-wrap">{{ displaySymbol }}</span>
         <div class="h-is-tertiary-text mt-2" id="entityId">
-          <div class="is-inline-block h-is-property-text has-text-weight-light" style="min-width: 115px">Entity ID:</div>
+          <div class="is-inline-block h-is-property-text has-text-weight-light" style="min-width: 115px">Token ID:</div>
           <span>{{ normalizedTokenId ?? "" }}</span>
           <span v-if="tokenChecksum" class="has-text-grey">-{{ tokenChecksum }}</span>
         </div>
