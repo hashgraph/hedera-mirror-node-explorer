@@ -123,8 +123,15 @@ export default defineComponent({
     // Node
     //
     const nodeCursor = computed(() => NodeRegistry.getCursor(selectedNodeId))
+
     const nodeIcon = computed(() => {
-      return NodeRegistry.isCouncilNode(selectedNodeId) ? "building" : "users"
+      let result
+      if (selectedNodeId.value !== null) {
+        result = NodeRegistry.isCouncilNode(selectedNodeId) ? "building" : "users"
+      } else {
+        result = ""
+      }
+      return result
     })
 
     const amountStaked = ref<number>( 100)

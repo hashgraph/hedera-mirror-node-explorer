@@ -260,9 +260,13 @@ export default defineComponent({
     const selectedNode = ref<number|null>(null)
 
     const selectedNodeIcon = computed(() => {
-      return selectedNode.value
-          ? NodeRegistry.isCouncilNode(selectedNode) ? "building" : "users"
-          : ""
+      let result
+      if (selectedNode.value !== null) {
+        result = NodeRegistry.isCouncilNode(selectedNode) ? "building" : "users"
+      } else {
+        result = ""
+      }
+      return result
     })
 
     const selectedNodeDescription = computed(() => {
