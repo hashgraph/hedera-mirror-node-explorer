@@ -77,7 +77,7 @@ describe('Transaction Navigation', () => {
             .then(($id) => {
                 // cy.log('Selected operator Id: ' + $id.text())
                 cy.url().should('include', '/mainnet/account/' + $id.text())
-                cy.contains('Account ' + $id.text())
+                cy.contains('Account ID:' + $id.text())
             })
 
         cy.go('back')
@@ -91,7 +91,7 @@ describe('Transaction Navigation', () => {
             .then(($id) => {
                 // cy.log('Selected operator Id: ' + $id.text())
                 cy.url().should('include', '/mainnet/account/' + $id.text())
-                cy.contains('Account ' + $id.text())
+                cy.contains('Account ID:' + $id.text())
             })
 
         cy.go('back')
@@ -214,7 +214,7 @@ describe('Transaction Navigation', () => {
                 // cy.log('Selected operator Id: ' + $id.text())
                 cy.url().should('include', '/mainnet/contract/')
                 cy.url().should('include', contractId)
-                cy.contains('Contract ' + contractId)
+                cy.contains('Contract ID:' + contractId)
             })
         cy.go('back')
 
