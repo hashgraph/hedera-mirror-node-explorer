@@ -1872,6 +1872,7 @@ export const SAMPLE_CONTRACT_AS_ACCOUNT = {
     },
     "deleted": false,
     "expiry_timestamp": null,
+    "evm_address": "0x00000000000000000000000000000000000b70cf",
     "key": {
         "_type": "ED25519",
         "key": "f6628ec23113678f60cb6e7e3972ac0bfdec0c43c787c25fd626a05627700ba5"

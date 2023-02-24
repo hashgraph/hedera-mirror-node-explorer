@@ -27,7 +27,7 @@ describe('AdminKeyDetails Navigation', () => {
 
         cy.visit('mainnet/account/' + accountId)
         cy.url().should('include', '/mainnet/account/' + accountId)
-        cy.contains('Account ' + accountId)
+        cy.contains('Account ID:' + accountId)
 
         cy.get('#keyValue')
             .find('a')
@@ -41,7 +41,7 @@ describe('AdminKeyDetails Navigation', () => {
             .click()
 
         cy.url().should('include', '/mainnet/account/' + accountId)
-        cy.contains('Account ' + accountId)
+        cy.contains('Account ID:' + accountId)
     })
 
     it('should detect navigation to unknown account ID', () => {

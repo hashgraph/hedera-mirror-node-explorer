@@ -25,7 +25,7 @@
 <template>
   <div class="should-wrap">
 
-    <HexaValue :byte-string="hexValue" :show-none="true"/>
+    <EVMAddress :address="hexValue" :show-id="false"/>
 
   </div>
 </template>
@@ -38,11 +38,11 @@
 
 import {computed, defineComponent} from "vue";
 import {base32ToAlias, byteToHex} from "@/utils/B64Utils";
-import HexaValue from "@/components/values/HexaValue.vue";
+import EVMAddress from "@/components/values/EVMAddress.vue";
 
-export default defineComponent({
+export default defineComponent( {
   name: "AliasValue",
-  components: {HexaValue},
+  components: {EVMAddress},
   props: {
     aliasValue: String,
   },

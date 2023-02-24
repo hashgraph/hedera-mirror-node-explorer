@@ -92,7 +92,7 @@ describe("ContractDetails.vue", () => {
         await flushPromises()
         // console.log(wrapper.html())
 
-        expect(wrapper.text()).toMatch(RegExp("^Contract " + SAMPLE_CONTRACT.contract_id))
+        expect(wrapper.text()).toMatch(RegExp("^Contract Contract ID:" + SAMPLE_CONTRACT.contract_id))
         expect(wrapper.get("#balanceValue").text()).toBe("2.00000000$0.4921")
         expect(wrapper.get("#keyValue").text()).toBe("4210 5082 0e14 85ac dd59 7260 88e0 e4a2 130e bbbb 7000 9f64 0ad9 5c78 dd5a 7b38Copy to ClipboardED25519")
         expect(wrapper.get("#memoValue").text()).toBe("Mirror Node acceptance test: 2022-03-07T15:09:15.228564328Z Create contract")
@@ -106,7 +106,7 @@ describe("ContractDetails.vue", () => {
         expect(wrapper.get("#validFromValue").text()).toBe("3:09:15.9474 PMMar 7, 2022, UTC")
         expect(wrapper.get("#validUntilValue").text()).toBe("None")
         expect(wrapper.get("#fileValue").text()).toBe("0.0.749773")
-        expect(wrapper.get("#evmAddress").text()).toBe("EVM Address0000 0000 0000 0000 0000 0000 0000 0000 000b 70cfCopy to Clipboard")
+        expect(wrapper.get("#evmAddress").text()).toBe("EVM Address:0x00000000000000000000000000000000000b70cfCopy to Clipboard")
 
     });
 
@@ -138,7 +138,7 @@ describe("ContractDetails.vue", () => {
         await flushPromises()
         // console.log(wrapper.text())
 
-        expect(wrapper.text()).toMatch(RegExp("^Contract " + SAMPLE_CONTRACT.contract_id))
+        expect(wrapper.text()).toMatch(RegExp("^Contract Contract ID:" + SAMPLE_CONTRACT.contract_id))
 
         expect(wrapper.findComponent(NotificationBanner).exists()).toBe(false)
 
@@ -146,7 +146,7 @@ describe("ContractDetails.vue", () => {
         expect(wrapper.get("#memoValue").text()).toBe("Mirror Node acceptance test: 2022-03-07T15:09:15.228564328Z Create contract")
         expect(wrapper.get("#autoRenewAccountValue").text()).toBe("0.0.730632")
         expect(wrapper.get("#fileValue").text()).toBe("0.0.749773")
-        expect(wrapper.get("#evmAddress").text()).toBe("EVM Address0000 0000 0000 0000 0000 0000 0000 0000 000b 70cfCopy to Clipboard")
+        expect(wrapper.get("#evmAddress").text()).toBe("EVM Address:0x00000000000000000000000000000000000b70cfCopy to Clipboard")
 
         const contract2 = SAMPLE_CONTRACT_DUDE
         matcher1 = "/api/v1/contracts/" + contract2.contract_id
@@ -161,12 +161,12 @@ describe("ContractDetails.vue", () => {
         await flushPromises()
         // console.log(wrapper.text())
 
-        expect(wrapper.text()).toMatch(RegExp("^Contract " + SAMPLE_CONTRACT_DUDE.contract_id))
+        expect(wrapper.text()).toMatch(RegExp("Contract Contract ID:" + SAMPLE_CONTRACT_DUDE.contract_id))
         expect(wrapper.get("#keyValue").text()).toBe("None")
         expect(wrapper.get("#maxAutoAssociationValue").text()).toBe("None")
         expect(wrapper.get("#memoValue").text()).toBe("None")
         expect(wrapper.get("#fileValue").text()).toBe("0.0.803267")
-        expect(wrapper.get("#evmAddress").text()).toBe("EVM Address0000 0000 0000 0000 0000 0000 0000 0000 000c 41dfCopy to Clipboard")
+        expect(wrapper.get("#evmAddress").text()).toBe("EVM Address:0x00000000000000000000000000000000000b70cfCopy to Clipboard")
 
     });
 
@@ -235,7 +235,7 @@ describe("ContractDetails.vue", () => {
         await flushPromises()
         // console.log(wrapper.text())
 
-        expect(wrapper.text()).toMatch(RegExp("^Contract " + SAMPLE_CONTRACT_DUDE.contract_id))
+        expect(wrapper.text()).toMatch(RegExp("^Contract Contract ID:" + SAMPLE_CONTRACT_DUDE.contract_id))
 
         const banner = wrapper.findComponent(NotificationBanner)
         expect(banner.exists()).toBe(false)
@@ -269,7 +269,7 @@ describe("ContractDetails.vue", () => {
         await flushPromises()
         // console.log(wrapper.text())
 
-        expect(wrapper.text()).toMatch(RegExp("^Contract " + contract.contract_id))
+        expect(wrapper.text()).toMatch(RegExp("^Contract Contract ID:" + contract.contract_id))
 
         const banner = wrapper.findComponent(NotificationBanner)
         expect(banner.exists()).toBe(true)
