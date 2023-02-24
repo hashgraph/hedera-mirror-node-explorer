@@ -44,7 +44,7 @@
                   {{ n.node_id }} - {{ makeNodeDescription(n) }} - {{ makeNodeStakeDescription(n) }}
                   </option>
                 </optgroup>
-                <optgroup label="Community nodes">
+                <optgroup v-if="hasCommunityNode" label="Community nodes">
                     <option v-for="n in nodes" :key="n.node_id" :value="n.node_id"
                             style="background-color: var(--h-theme-box-background-color)"
                             v-show="!isCouncilNode(n)">
@@ -181,6 +181,7 @@ export default defineComponent({
       makeNodeDescription,
       makeNodeStakeDescription,
       isCouncilNode,
+      hasCommunityNode: NodeRegistry.instance.hasCommunityNode,
       handleInput
     }
   }

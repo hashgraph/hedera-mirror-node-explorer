@@ -86,6 +86,15 @@ export class NodeRegistry {
         return result
     })
 
+    public readonly hasCommunityNode: ComputedRef<boolean> = computed(() => {
+        for (const n of this.nodes.value) {
+            if (! NodeRegistry.isCouncilNode(ref(n.node_id ?? 0))) {
+                return true
+            }
+        }
+        return false
+    })
+
     public reload(): void {
         this.loader.clear()
         this.loader.requestLoad()
