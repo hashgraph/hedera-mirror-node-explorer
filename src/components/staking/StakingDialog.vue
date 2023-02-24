@@ -60,9 +60,8 @@
         <Property id="currentlyStakedTo">
           <template v-slot:name>Currently Staked To</template>
           <template v-slot:value>
-            <span v-if="account?.staked_node_id !== null" class="icon has-text-info mr-1" style="font-size: 16px">
-              <i v-if="isCouncilNode" class="fas fa-building"></i>
-              <i v-else class="fas fa-users"></i>
+            <span v-if="account?.staked_node_id !== null" class="icon is-small has-text-info mr-2" style="font-size: 16px">
+              <i v-if="isCouncilNode" :class="currentStakedNodeIcon"></i>
             </span>
             <StringValue v-if="account" :string-value="currentlyStakedTo"/>
           </template>
@@ -227,6 +226,18 @@ export default defineComponent({
           }
           return result
         })
+
+    const currentStakedNodeIcon = computed(() => {
+      let result
+      if (props.account?.staked_node_id !== null) {
+        result = NodeRegistry.isCouncilNode(ref(props.account?.staked_node_id ?? 0))
+            ? "fas fa-building"
+            : "fas fa-users"
+      } else {
+        result = ""
+      }
+      return result
+    })
 
     const stakeChoice = ref("node")
     const isNodeSelected = computed(() => stakeChoice.value === 'node')
@@ -395,6 +406,7 @@ export default defineComponent({
       accountId,
       showConfirmDialog,
       confirmMessage,
+      currentStakedNodeIcon,
       stakeChoice,
       isNodeSelected,
       isAccountSelected,
