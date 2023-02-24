@@ -39,7 +39,7 @@ describe("AliasValue.vue", () => {
     })
 
     const ALIAS_B32 = "CIQEN25ORE2F73TRYSYMMBVPR2HU4PPFGTQENJTIGVLLELP4PZ2M76A"
-    const ALIAS_HEX = "0x122046ebae89345fee71c4b0c606af8e8f4e3de534e046a6683556b22dfc7e74cff8"
+    const ALIAS_HEX = "0x122046ebae89345fee71c4b0c606af8e8f4e3de534e046a6683556b22dfc7e74cff8Copy to Clipboard"
 
     it("should display both base32 and hexa forms of provided alias", async () => {
 

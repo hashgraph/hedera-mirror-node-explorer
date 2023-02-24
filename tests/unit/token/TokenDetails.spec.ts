@@ -72,6 +72,7 @@ describe("TokenDetails.vue", () => {
         const mock = new MockAdapter(axios);
 
         const testTokenId = SAMPLE_TOKEN.token_id
+        const testTokenSymbol = SAMPLE_TOKEN.symbol
         const matcher1 = "/api/v1/tokens/" + testTokenId
         mock.onGet(matcher1).reply(200, SAMPLE_TOKEN);
         const matcher2 = "/api/v1/tokens/" + testTokenId + "/balances"
@@ -91,7 +92,7 @@ describe("TokenDetails.vue", () => {
         expect(wrapper.vm.tokenBalanceTableController.mounted.value).toBe(true)
         expect(wrapper.vm.nftHolderTableController.mounted.value).toBe(true)
 
-        expect(wrapper.text()).toMatch(RegExp("^Fungible Token " + testTokenId))
+        expect(wrapper.text()).toMatch(RegExp("^Fungible Token " + testTokenSymbol + 'Token ID:' + testTokenId))
 
         expect(wrapper.get("#nameValue").text()).toBe("23423")
         expect(wrapper.get("#symbolValue").text()).toBe("QmVGABnvpbPwLcfG4iuW2JSzY8MLkALhd54bdPAbJxoEkB")
@@ -109,7 +110,8 @@ describe("TokenDetails.vue", () => {
         expect(wrapper.get("#totalSupplyValue").text()).toBe("1")
         expect(wrapper.get("#initialSupplyValue").text()).toBe("1")
         expect(wrapper.get("#maxSupplyValue").text()).toBe("Infinite")
-        expect(wrapper.get("#evmAddressValue").text()).toBe("0x0000000000000000000000000000000001c49eecImport in MetaMaskPlease install MetaMask! To watch this asset with MetaMask, you must download and install MetaMask extension for your browser.")
+        expect(wrapper.get("#evmAddress").text()).toBe(
+            "EVM Address:0x0000000000000000000000000000000001c49eecCopy to Clipboard")
 
         expect(wrapper.text()).toMatch("Balances")
         expect(wrapper.findComponent(TokenBalanceTable).exists()).toBe(true)
@@ -129,6 +131,7 @@ describe("TokenDetails.vue", () => {
         const mock = new MockAdapter(axios);
 
         const testTokenId = SAMPLE_NONFUNGIBLE_DUDE.token_id
+        let testTokenSymbol = SAMPLE_NONFUNGIBLE_DUDE.symbol
         const matcher1 = "/api/v1/tokens/" + testTokenId
         mock.onGet(matcher1).reply(200, SAMPLE_NONFUNGIBLE_DUDE);
         const matcher2 = "/api/v1/tokens/" + testTokenId + "/nfts"
@@ -148,7 +151,7 @@ describe("TokenDetails.vue", () => {
         expect(wrapper.vm.tokenBalanceTableController.mounted.value).toBe(true)
         expect(wrapper.vm.nftHolderTableController.mounted.value).toBe(true)
 
-        expect(wrapper.text()).toMatch(RegExp("^Non Fungible Token " + testTokenId))
+        expect(wrapper.text()).toMatch(RegExp("^Non Fungible Token " + testTokenSymbol + 'Token ID:' + testTokenId))
 
         expect(wrapper.get("#nameValue").text()).toBe("Ħ Frens Kingdom Dude")
         expect(wrapper.get("#symbolValue").text()).toBe("ĦFRENSKINGDOM")
@@ -183,6 +186,7 @@ describe("TokenDetails.vue", () => {
         const mock = new MockAdapter(axios);
 
         let testTokenId = SAMPLE_NONFUNGIBLE_DUDE.token_id
+        let testTokenSymbol = SAMPLE_NONFUNGIBLE_DUDE.symbol
         let matcher1 = "/api/v1/tokens/" + testTokenId
         mock.onGet(matcher1).reply(200, SAMPLE_NONFUNGIBLE_DUDE);
         let matcher2 = "/api/v1/tokens/" + testTokenId + "/nfts"
@@ -202,7 +206,7 @@ describe("TokenDetails.vue", () => {
         expect(wrapper.vm.tokenBalanceTableController.mounted.value).toBe(true)
         expect(wrapper.vm.nftHolderTableController.mounted.value).toBe(true)
 
-        expect(wrapper.text()).toMatch(RegExp("^Non Fungible Token " + testTokenId))
+        expect(wrapper.text()).toMatch(RegExp("^Non Fungible Token " + testTokenSymbol + 'Token ID:' + testTokenId))
         expect(wrapper.get("#nameValue").text()).toBe("Ħ Frens Kingdom Dude")
         expect(wrapper.get("#symbolValue").text()).toBe("ĦFRENSKINGDOM")
         expect(wrapper.text()).toMatch("NFT Holders")
@@ -210,6 +214,7 @@ describe("TokenDetails.vue", () => {
         expect(wrapper.findComponent(TokenBalanceTable).exists()).toBe(false)
 
         testTokenId = SAMPLE_TOKEN.token_id
+        testTokenSymbol = SAMPLE_TOKEN.symbol
         matcher1 = "/api/v1/tokens/" + testTokenId
         mock.onGet(matcher1).reply(200, SAMPLE_TOKEN);
         matcher2 = "/api/v1/tokens/" + testTokenId + "/balances"
@@ -223,7 +228,7 @@ describe("TokenDetails.vue", () => {
         await flushPromises()
         // console.log(wrapper.text())
 
-        expect(wrapper.text()).toMatch(RegExp("^Fungible Token " + testTokenId))
+        expect(wrapper.text()).toMatch(RegExp("^Fungible Token " + testTokenSymbol + 'Token ID:' + testTokenId))
         expect(wrapper.get("#nameValue").text()).toBe("23423")
         expect(wrapper.get("#symbolValue").text()).toBe("QmVGABnvpbPwLcfG4iuW2JSzY8MLkALhd54bdPAbJxoEkB")
         expect(wrapper.text()).toMatch("Balances")
@@ -264,6 +269,7 @@ describe("TokenDetails.vue", () => {
         const mock = new MockAdapter(axios);
 
         const testTokenId = SAMPLE_TOKEN_WITH_KEYS.token_id
+        const testTokenSymbol = SAMPLE_TOKEN_WITH_KEYS.symbol
         const matcher1 = "/api/v1/tokens/" + testTokenId
         mock.onGet(matcher1).reply(200, SAMPLE_TOKEN_WITH_KEYS);
         const matcher2 = "/api/v1/tokens/" + testTokenId + "/nfts"
@@ -283,7 +289,7 @@ describe("TokenDetails.vue", () => {
         expect(wrapper.vm.tokenBalanceTableController.mounted.value).toBe(true)
         expect(wrapper.vm.nftHolderTableController.mounted.value).toBe(true)
 
-        expect(wrapper.text()).toMatch(RegExp("^Non Fungible Token " + testTokenId))
+        expect(wrapper.text()).toMatch(RegExp("^Non Fungible Token " + testTokenSymbol + 'Token ID:' + testTokenId))
 
         expect(wrapper.text()).toMatch("Token Keys")
         expect(wrapper.find("#adminKey").text()).toBe("Admin Keyc539 536f 9599 daef eeb7 7767 7aa1 aeea 2242 dfc7 cca9 2348 c228 a518 7a0f af2bCopy to ClipboardED25519")
@@ -308,6 +314,7 @@ describe("TokenDetails.vue", () => {
         const mock = new MockAdapter(axios);
 
         const testTokenId = SAMPLE_TOKEN_WITHOUT_KEYS.token_id
+        const testTokenSymbol = SAMPLE_TOKEN_WITHOUT_KEYS.symbol
         const matcher1 = "/api/v1/tokens/" + testTokenId
         mock.onGet(matcher1).reply(200, SAMPLE_TOKEN_WITHOUT_KEYS);
         const matcher2 = "/api/v1/tokens/" + testTokenId + "/nfts"
@@ -327,7 +334,7 @@ describe("TokenDetails.vue", () => {
         expect(wrapper.vm.tokenBalanceTableController.mounted.value).toBe(true)
         expect(wrapper.vm.nftHolderTableController.mounted.value).toBe(true)
 
-        expect(wrapper.text()).toMatch(RegExp("^Non Fungible Token " + testTokenId))
+        expect(wrapper.text()).toMatch(RegExp("^Non Fungible Token " + testTokenSymbol + 'Token ID:' + testTokenId))
 
         expect(wrapper.text()).toMatch("Token Keys")
         expect(wrapper.find("#adminKey").text()).toBe("Admin KeyNoneToken is immutable")
@@ -352,6 +359,7 @@ describe("TokenDetails.vue", () => {
         const mock = new MockAdapter(axios);
 
         const testTokenId = "0.0.91961"
+        const testTokenSymbol = SAMPLE_TOKEN_WITHOUT_KEYS.symbol
         const testTokenIdWithChecksum = "0.0.91961-mkkua"
         const testTokenEVMAddress = "0x0000000000000000000000000000000000016739"
         const matcher1 = "/api/v1/tokens/" + testTokenId
@@ -370,7 +378,10 @@ describe("TokenDetails.vue", () => {
         await flushPromises()
         // console.log(wrapper.text())
 
-        expect(wrapper.text()).toMatch(RegExp("^Non Fungible Token " + testTokenIdWithChecksum + testTokenEVMAddress + "Token is deleted"))
+        expect(wrapper.text()).toMatch(
+            RegExp("^Non Fungible Token " + testTokenSymbol + 'Token ID:' + testTokenIdWithChecksum
+                + 'EVM Address:' + testTokenEVMAddress + "Copy to Clipboard"))
+        expect(wrapper.text()).toMatch("Token is deleted")
 
         wrapper.unmount()
         await flushPromises()
@@ -383,6 +394,7 @@ describe("TokenDetails.vue", () => {
         const mock = new MockAdapter(axios);
 
         const testTokenId = SAMPLE_TOKEN.token_id
+        const testTokenSymbol = SAMPLE_TOKEN.symbol
         const matcher1 = "/api/v1/tokens/" + testTokenId
         mock.onGet(matcher1).reply(200, SAMPLE_TOKEN);
         const matcher2 = "/api/v1/tokens/" + testTokenId + "/balances"
@@ -401,7 +413,7 @@ describe("TokenDetails.vue", () => {
         await flushPromises()
         // console.log(wrapper.text())
 
-        expect(wrapper.text()).toMatch(RegExp("^Fungible Token " + testTokenId))
+        expect(wrapper.text()).toMatch(RegExp("^Fungible Token " + testTokenSymbol + 'Token ID:' + testTokenId))
 
         const customFees = wrapper.findComponent(TokenCustomFees)
         expect(customFees.exists()).toBe(true)
@@ -433,6 +445,7 @@ describe("TokenDetails.vue", () => {
         const mock = new MockAdapter(axios);
 
         const testTokenId = SAMPLE_NONFUNGIBLE.token_id
+        const testTokenSymbol = SAMPLE_NONFUNGIBLE.symbol
         const matcher1 = "/api/v1/tokens/" + testTokenId
         mock.onGet(matcher1).reply(200, SAMPLE_NONFUNGIBLE);
         const matcher2 = "/api/v1/tokens/" + testTokenId + "/nfts"
@@ -451,7 +464,7 @@ describe("TokenDetails.vue", () => {
         await flushPromises()
         // console.log(wrapper.text())
 
-        expect(wrapper.text()).toMatch(RegExp("^Non Fungible Token " + testTokenId))
+        expect(wrapper.text()).toMatch(RegExp("^Non Fungible Token " + testTokenSymbol + 'Token ID:' + testTokenId))
 
         const customFees = wrapper.findComponent(TokenCustomFees)
         expect(customFees.exists()).toBe(true)
@@ -483,6 +496,7 @@ describe("TokenDetails.vue", () => {
         const mock = new MockAdapter(axios);
 
         const testTokenId = SAMPLE_TOKEN_WITHOUT_KEYS.token_id
+        const testTokenSymbol = SAMPLE_TOKEN_WITHOUT_KEYS.symbol
         const matcher1 = "/api/v1/tokens/" + testTokenId
         mock.onGet(matcher1).reply(200, SAMPLE_TOKEN_WITHOUT_KEYS);
         const matcher2 = "/api/v1/tokens/" + testTokenId + "/nfts"
@@ -499,7 +513,7 @@ describe("TokenDetails.vue", () => {
         await flushPromises()
         // console.log(wrapper.text())
 
-        expect(wrapper.text()).toMatch(RegExp("^Non Fungible Token " + testTokenId))
+        expect(wrapper.text()).toMatch(RegExp("^Non Fungible Token " + testTokenSymbol + 'Token ID:' + testTokenId))
 
         const customFees = wrapper.findComponent(TokenCustomFees)
         expect(customFees.exists()).toBe(false)

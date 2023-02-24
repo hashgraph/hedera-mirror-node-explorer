@@ -119,14 +119,14 @@ describe("AccountDetails.vue", () => {
         await flushPromises()
         // console.log(wrapper.html())
 
-        expect(wrapper.text()).toMatch("Account " + SAMPLE_ACCOUNT.account)
+        expect(wrapper.text()).toMatch("Account Account ID:" + SAMPLE_ACCOUNT.account)
         expect(wrapper.get("#balanceValue").text()).toBe("23.42647909$5.7637998234231ĦFRENSKINGDOM")
         expect(wrapper.get("#keyValue").text()).toBe(
             "aa2f 7b3e 759f 4531 ec2e 7941 afa4 49e6 a6e6 10ef b52a dae8 9e9c d8e9 d40d dcbf" +
             "Copy to Clipboard" +
             "ED25519")
         expect(wrapper.get("#memoValue").text()).toBe("None")
-        expect(wrapper.get("#aliasValue").text()).toBe(ALIAS_HEX)
+        expect(wrapper.get("#aliasValue").text()).toBe(ALIAS_HEX + 'Copy to Clipboard')
         expect(wrapper.get("#createTransactionValue").text()).toBe(TransactionID.normalize(SAMPLE_TRANSACTION.transaction_id))
 
         expect(wrapper.get("#expiresAtValue").text()).toBe("None")
@@ -134,8 +134,8 @@ describe("AccountDetails.vue", () => {
         expect(wrapper.get("#maxAutoAssociationValue").text()).toBe("0")
         expect(wrapper.get("#receiverSigRequiredValue").text()).toBe("false")
 
-        expect(wrapper.get("#evmAddressValue").text()).toBe(
-            "0x00000000000000000000000000000000000b2607")
+        expect(wrapper.get("#evmAddress").text()).toBe(
+            "EVM Address:0x00000000000000000000000000000000000b2607Copy to Clipboard")
         expect(wrapper.get("#ethereumNonceValue").text()).toBe("0")
 
         expect(wrapper.get("#stakedToName").text()).toBe("Staked to")
@@ -196,7 +196,7 @@ describe("AccountDetails.vue", () => {
         // console.log(wrapper.html())
         // console.log(wrapper.text())
 
-        expect(wrapper.text()).toMatch("Account " + SAMPLE_ACCOUNT.account)
+        expect(wrapper.text()).toMatch("Account Account ID:" + SAMPLE_ACCOUNT.account)
         expect(wrapper.get("#keyValue").text()).toBe(
             "aa2f 7b3e 759f 4531 ec2e 7941 afa4 49e6 a6e6 10ef b52a dae8 9e9c d8e9 d40d dcbf" +
             "Copy to Clipboard" +
@@ -220,7 +220,7 @@ describe("AccountDetails.vue", () => {
         // console.log(wrapper.html())
         // console.log(wrapper.text())
 
-        expect(wrapper.text()).toMatch("Account " + SAMPLE_ACCOUNT_DUDE.account)
+        expect(wrapper.text()).toMatch("Account Account ID:" + SAMPLE_ACCOUNT_DUDE.account)
         expect(wrapper.get("#keyValue").text()).toBe(
             "38f1 ea46 0e95 d97e ea13 aefa c760 eaf9 9015 4b80 a360 8ab0 1d4a 2649 44d6 8746" +
             "Copy to Clipboard" +
@@ -297,7 +297,7 @@ describe("AccountDetails.vue", () => {
         await flushPromises()
         // console.log(wrapper.text())
 
-            expect(wrapper.text()).toMatch(RegExp("Account " + deletedAccount.account))
+            expect(wrapper.text()).toMatch(RegExp("Account Account ID:" + deletedAccount.account))
 
         const banner = wrapper.findComponent(NotificationBanner)
         expect(banner.exists()).toBe(true)
