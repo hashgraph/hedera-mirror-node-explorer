@@ -39,7 +39,7 @@ describe('Contract Navigation', () => {
             .then(($id) => {
                 // cy.log('Selected account Id: ' + $id.text())
                 cy.url().should('include', '/testnet/contract/' + $id.text())
-                cy.contains('Contract ' + $id.text())
+                cy.contains('Contract ID:' + $id.text())
             })
     })
 
@@ -48,7 +48,7 @@ describe('Contract Navigation', () => {
 
         cy.visit('mainnet/contract/' + contractId)
         cy.url().should('include', '/mainnet/contract/' + contractId)
-        cy.contains('Contract ' + contractId)
+        cy.contains('Contract ID:' + contractId)
 
         cy.get('table').contains('td', '@')
             .click()

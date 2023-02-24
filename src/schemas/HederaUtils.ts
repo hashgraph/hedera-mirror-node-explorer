@@ -34,7 +34,7 @@ export function makeEthAddressForAccount(account: AccountInfo): string|null {
     if (account.account) {
         // Generates Ethereum address from account id
         const entityID = EntityID.parse(account.account, true)
-        return entityID != null ? entityID.toAddress() : null
+        return entityID != null ? ('0x' + entityID.toAddress()) : null
     }
     return null;
 }
@@ -43,7 +43,7 @@ export function makeEthAddressForToken(token: TokenInfo): string|null {
     let result: string|null
     if (token.token_id) {
         const entityID = EntityID.parse(token.token_id, true)
-        result = entityID != null ? entityID.toAddress() : null
+        result = entityID != null ? ('0x' + entityID.toAddress()) : null
     } else {
         result = null
     }

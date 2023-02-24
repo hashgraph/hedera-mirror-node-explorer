@@ -41,7 +41,8 @@ describe('Token Navigation', () => {
             .then(($id) => {
                 // cy.log('Selected transaction Id: ' + $id.text())
                 cy.url().should('include', '/testnet/token/' + $id.text())
-                cy.contains('Non Fungible Token ' + $id.text())
+                cy.contains('Non Fungible Token')
+                cy.contains('Token ID:' + $id.text())
             })
 
         cy.go('back')
@@ -59,7 +60,8 @@ describe('Token Navigation', () => {
             .then(($id) => {
                 // cy.log('Selected transaction Id: ' + $id.text())
                 cy.url().should('include', '/testnet/token/' + $id.text())
-                cy.contains('Fungible Token ' + $id.text())
+                cy.contains('Fungible Token')
+                cy.contains('Token ID:' + $id.text())
             })
     })
 
@@ -67,7 +69,8 @@ describe('Token Navigation', () => {
     it('should follow links from NFT details', () => {
         cy.visit('mainnet/token/' + nftId)
         cy.url().should('include', '/mainnet/token/' + nftId)
-        cy.contains('Non Fungible Token ' + nftId)
+        cy.contains('Non Fungible Token')
+        cy.contains('Token ID:' + nftId)
 
         cy.get('table')
             .find('tbody tr')
@@ -80,7 +83,7 @@ describe('Token Navigation', () => {
             .then(($id) => {
                 // cy.log('Selected account Id: ' + $id.text())
                 cy.url().should('include', '/mainnet/account/' + $id.text())
-                cy.contains('Account ' + $id.text())
+                cy.contains('Account ID:' + $id.text())
             })
     })
 
@@ -88,7 +91,8 @@ describe('Token Navigation', () => {
     it('should follow links from token details', () => {
         cy.visit('mainnet/token/' + tokenId)
         cy.url().should('include', '/mainnet/token/' + tokenId)
-        cy.contains('Fungible Token ' + tokenId)
+        cy.contains('Fungible Token')
+        cy.contains('Token ID:' + tokenId)
 
         cy.get('table')
             .find('tbody tr')
@@ -100,7 +104,7 @@ describe('Token Navigation', () => {
             .then(($id) => {
                 // cy.log('Selected account Id: ' + $id.text())
                 cy.url().should('include', '/mainnet/account/' + $id.text())
-                cy.contains('Account ' + $id.text())
+                cy.contains('Account ID:' + $id.text())
             })
     })
 
@@ -119,7 +123,8 @@ describe('Token Navigation', () => {
     it('should follow links from token details using ERC20 address', () => {
         cy.visit('mainnet/token/' + tokenAddress)
         cy.url().should('include', '/mainnet/token/' + tokenAddress)
-        cy.contains('Fungible Token ' + tokenId)
+        cy.contains('Fungible Token')
+        cy.contains('Token ID:' + tokenId)
 
         cy.get('table')
             .find('tbody tr')
@@ -131,7 +136,7 @@ describe('Token Navigation', () => {
             .then(($id) => {
                 // cy.log('Selected account Id: ' + $id.text())
                 cy.url().should('include', '/mainnet/account/' + $id.text())
-                cy.contains('Account ' + $id.text())
+                cy.contains('Account ID:' + $id.text())
             })
     })
 })
