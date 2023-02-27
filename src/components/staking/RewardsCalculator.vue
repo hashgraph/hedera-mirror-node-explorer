@@ -36,11 +36,21 @@
             <p v-if="isMediumScreen" class="h-is-property-text mb-3">Choose a node to stake to</p>
             <p v-else class="h-is-text-size-3 mb-1">Choose a node to stake to</p>
             <o-field style="width: 100%">
-              <o-select v-model="selectedNodeId" class="h-is-text-size-1" style="border-radius: 4px">
-                <option v-for="n in nodes" :key="n.node_id" :value="n.node_id"
-                        style="background-color: var(--h-theme-box-background-color)">
-                  {{ n.node_id }} - {{ makeNodeDescription(n) }} - {{ makeNodeStakeDescription(n) }}
-                </option>
+              <o-select v-model="selectedNodeId" class="h-is-text-size-1" style="border-radius: 4px" :icon="nodeIcon">
+                <optgroup label="Hedera council nodes">
+                  <option v-for="n in nodes" :key="n.node_id" :value="n.node_id"
+                          style="background-color: var(--h-theme-box-background-color)"
+                          v-show="isCouncilNode(n)">
+                    {{ makeNodeSelectorDescription(n) }}
+                  </option>
+                </optgroup>
+                <optgroup v-if="hasCommunityNode" label="Community nodes">
+                    <option v-for="n in nodes" :key="n.node_id" :value="n.node_id"
+                            style="background-color: var(--h-theme-box-background-color)"
+                            v-show="!isCouncilNode(n)">
+                      {{ makeNodeSelectorDescription(n) }}
+                    </option>
+                </optgroup>
               </o-select>
             </o-field>
           </div>
@@ -81,7 +91,7 @@
 import {computed, defineComponent, inject, onBeforeMount, ref, watch} from 'vue';
 import NetworkDashboardItem from "@/components/node/NetworkDashboardItem.vue";
 import DashboardCard from "@/components/DashboardCard.vue";
-import {makeNodeStakeDescription, makeShortNodeDescription, NetworkNode} from "@/schemas/HederaSchemas";
+import {makeNodeSelectorDescription, makeShortNodeDescription, NetworkNode} from "@/schemas/HederaSchemas";
 import {getEnv} from "@/utils/getEnv";
 import {NodeRegistry} from "@/components/node/NodeRegistry";
 
@@ -114,6 +124,16 @@ export default defineComponent({
     //
     const nodeCursor = computed(() => NodeRegistry.getCursor(selectedNodeId))
 
+    const nodeIcon = computed(() => {
+      let result
+      if (selectedNodeId.value !== null) {
+        result = NodeRegistry.isCouncilNode(selectedNodeId) ? "building" : "users"
+      } else {
+        result = ""
+      }
+      return result
+    })
+
     const amountStaked = ref<number>( 100)
     const updateAmountStaked = () => {
       amountStaked.value = props.amountInHbar ?? 100
@@ -130,6 +150,8 @@ export default defineComponent({
       let description = node.description ?? NodeRegistry.getDescription(ref(node.node_id??null))
       return description ? makeShortNodeDescription(description) : null
     }
+
+    const isCouncilNode = (node: NetworkNode) => NodeRegistry.isCouncilNode(ref(node.node_id ?? 0))
 
     const handleInput = (value: string) => {
       const previousAmount = amountStaked.value
@@ -148,6 +170,7 @@ export default defineComponent({
       isMediumScreen,
       isTouchDevice,
       selectedNodeId,
+      nodeIcon,
       amountStaked,
       rewardRate,
       currentReward,
@@ -156,7 +179,9 @@ export default defineComponent({
       yearlyRate: nodeCursor.value.approxYearlyRate,
       nodes: NodeRegistry.instance.nodes,
       makeNodeDescription,
-      makeNodeStakeDescription,
+      makeNodeSelectorDescription:makeNodeSelectorDescription,
+      isCouncilNode,
+      hasCommunityNode: NodeRegistry.instance.hasCommunityNode,
       handleInput
     }
   }

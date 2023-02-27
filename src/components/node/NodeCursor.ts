@@ -22,6 +22,7 @@ import {makeShortNodeDescription, NetworkNode} from "@/schemas/HederaSchemas";
 import {computed, ComputedRef, ref, Ref} from "vue";
 import {NodeRegistry} from "@/components/node/NodeRegistry";
 import {makeDefaultNodeDescription} from "@/schemas/HederaUtils";
+import {EntityID} from "@/utils/EntityID";
 
 export class NodeCursor {
 
@@ -48,6 +49,13 @@ export class NodeCursor {
             }
         }
         return result
+    })
+
+    public readonly isCouncilNode:  ComputedRef<boolean> = computed(() => {
+        // TEMPORARY IMPLEMENTATION
+        // This will need to rely on a new specific flag to be provided by REST API
+        const accountNum = EntityID.parse(this.node.value?.node_account_id ?? "")?.num
+        return accountNum ? accountNum < 1000 : true
     })
 
     public readonly nodeDescription: ComputedRef<string|null> = computed(() => {
@@ -88,6 +96,7 @@ export class NodeCursor {
     public readonly stake = computed(() => this.node.value?.stake ?? 0)
     public readonly minStake = computed(() => this.node.value?.min_stake ?? 0)
     public readonly maxStake = computed(() => this.node.value?.max_stake ?? 0)
+    public readonly unclampedStake = computed(() => this.stakeRewarded.value + this.stakeUnrewarded.value)
     public readonly stakeRewarded = computed(() => this.node.value?.stake_rewarded ?? 0)
     public readonly stakeUnrewarded = computed(() => this.node.value?.stake_not_rewarded ?? 0)
 }

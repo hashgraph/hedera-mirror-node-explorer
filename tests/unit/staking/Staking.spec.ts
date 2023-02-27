@@ -253,7 +253,7 @@ describe("Staking.vue", () => {
         // 3.4) Choose node #2
         const stakeToNodeSelect = stakingModal.get<HTMLSelectElement>("select")
         const stakeToNodeOptions = stakeToNodeSelect.findAll("option")
-        expect(stakeToNodeOptions.length).toBe(3)
+        expect(stakeToNodeOptions.length).toBe(SAMPLE_NETWORK_NODES.nodes.length)
         for (let i = 0; i < 3; i += 1) {
             expect(stakeToNodeOptions[i].element.value).toBe(i.toString())
         }

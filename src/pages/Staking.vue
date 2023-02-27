@@ -75,9 +75,18 @@
         <template v-if="accountId">
           <div v-if="isSmallScreen">
             <div class="is-flex is-justify-content-space-between">
-              <NetworkDashboardItem :name="stakePeriodStart ? ('since ' + stakePeriodStart) : null"
-                                    title="Staked to"
-                                    :value="stakedTo"/>
+              <NetworkDashboardItem :name="stakePeriodStart ? ('since ' + stakePeriodStart) : null" title="Staked to">
+                <template v-slot:value>
+                  <div class="is-inline-block">
+                    <span v-if="isStakedToNode"  class="icon has-text-info mr-2" style="font-size: 20px">
+                      <i v-if="isCouncilNode" class="fas fa-building"></i>
+                      <i v-else class="fas fa-users"></i>
+                    </span>
+                    <span v-if="stakedTo">{{ stakedTo }}</span>
+                    <span v-else class="has-text-grey">None</span>
+                  </div>
+                </template>
+              </NetworkDashboardItem>
 
               <NetworkDashboardItem class="ml-4"
                                     :name="stakedAmount ? 'HBAR' : ''"
@@ -169,7 +178,7 @@
       </template>
     </DashboardCard>
 
-    <DashboardCard v-if="accountId" :class="{'h-has-opacity-40': isIndirectStaking}">
+    <DashboardCard v-if="accountId" :class="{'h-has-opacity-40': !isStakedToNode}">
       <template v-slot:title>
         <span class="h-is-secondary-title">Recent Staking Rewards</span>
       </template>
@@ -320,14 +329,15 @@ export default defineComponent({
     const accountLoader = new AccountLoader(walletManager.accountId)
     onMounted(() => accountLoader.requestLoad())
 
-    const isStaked = computed(() => accountLoader.stakedNodeId.value !== null || accountLoader.stakedAccountId.value)
-    const isIndirectStaking = computed(() => accountLoader.stakedAccountId.value)
+    const isStakedToNode = computed(() => accountLoader.stakedNodeId.value !== null)
+    const isStakedToAccount = computed(() => accountLoader.stakedAccountId.value)
+    const isStaked = computed(() => isStakedToNode.value || isStakedToAccount.value)
 
     const stakedTo = computed(() => {
       let result: string|null
-      if (accountLoader.stakedAccountId.value) {
+      if (isStakedToAccount.value) {
         result = "Account " + accountLoader.stakedAccountId.value
-      } else if (accountLoader.stakedNodeId.value !== null) {
+      } else if (isStakedToNode.value) {
         result = "Node " + accountLoader.stakedNodeId.value + " - " + stakedNodeLoader.shortNodeDescription.value
       } else {
         result = null
@@ -471,9 +481,11 @@ export default defineComponent({
       showWalletChooser,
       showErrorDialog,
       showDownloadDialog,
-      isIndirectStaking,
+      isStakedToNode,
+      isStakedToAccount,
       stakedTo,
       stakedNode: stakedNodeLoader.node,
+      isCouncilNode: stakedNodeLoader.isCouncilNode,
       balanceInHbar,
       stakedAmount,
       pendingReward,
