@@ -23,6 +23,7 @@
 // ---------------------------------------------------------------------------------------------------------------------
 
 import {EntityID} from "@/utils/EntityID";
+import {makeDefaultNodeDescription} from "@/schemas/HederaUtils";
 
 export interface AccountsResponse {
     accounts: AccountInfo[] | undefined
@@ -580,7 +581,7 @@ export function makeShortNodeDescription(description: string): string {
     return (separator !== -1) ? (description.slice(0, separator) ?? null) : description
 }
 
-export function makeNodeStakeDescription(node: NetworkNode): string {
+export function makeNodeSelectorDescription(node: NetworkNode): string {
     const amountFormatter = new Intl.NumberFormat("en-US", {
         maximumFractionDigits: 0
     })
@@ -593,7 +594,12 @@ export function makeNodeStakeDescription(node: NetworkNode): string {
     const percentMin = node.min_stake ? unclampedStakeAmount / (node.min_stake / 100000000) : 0
     const percentMax = node.max_stake ? unclampedStakeAmount / (node.max_stake / 100000000) : 0
 
-    let result = amountFormatter.format(unclampedStakeAmount) + "ℏ staked"
+    let result = node.node_id
+        + ' - '
+        + makeShortNodeDescription(node.description ?? makeDefaultNodeDescription(node.node_id ?? null))
+        + ' - '
+
+    result += amountFormatter.format(unclampedStakeAmount) + "ℏ staked"
     if (percentMin != 0 && percentMin < 1) {
         result += " (" + percentFormatter.format(percentMin) + " of Min)"
     } else if (percentMax !== 0) {

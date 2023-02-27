@@ -41,14 +41,14 @@
                   <option v-for="n in nodes" :key="n.node_id" :value="n.node_id"
                           style="background-color: var(--h-theme-box-background-color)"
                           v-show="isCouncilNode(n)">
-                  {{ n.node_id }} - {{ makeNodeDescription(n) }} - {{ makeNodeStakeDescription(n) }}
+                    {{ makeNodeSelectorDescription(n) }}
                   </option>
                 </optgroup>
                 <optgroup v-if="hasCommunityNode" label="Community nodes">
                     <option v-for="n in nodes" :key="n.node_id" :value="n.node_id"
                             style="background-color: var(--h-theme-box-background-color)"
                             v-show="!isCouncilNode(n)">
-                        {{ n.node_id }} - {{ makeNodeDescription(n) }} - {{ makeNodeStakeDescription(n) }}
+                      {{ makeNodeSelectorDescription(n) }}
                     </option>
                 </optgroup>
               </o-select>
@@ -91,7 +91,7 @@
 import {computed, defineComponent, inject, onBeforeMount, ref, watch} from 'vue';
 import NetworkDashboardItem from "@/components/node/NetworkDashboardItem.vue";
 import DashboardCard from "@/components/DashboardCard.vue";
-import {makeNodeStakeDescription, makeShortNodeDescription, NetworkNode} from "@/schemas/HederaSchemas";
+import {makeNodeSelectorDescription, makeShortNodeDescription, NetworkNode} from "@/schemas/HederaSchemas";
 import {getEnv} from "@/utils/getEnv";
 import {NodeRegistry} from "@/components/node/NodeRegistry";
 
@@ -179,7 +179,7 @@ export default defineComponent({
       yearlyRate: nodeCursor.value.approxYearlyRate,
       nodes: NodeRegistry.instance.nodes,
       makeNodeDescription,
-      makeNodeStakeDescription,
+      makeNodeSelectorDescription:makeNodeSelectorDescription,
       isCouncilNode,
       hasCommunityNode: NodeRegistry.instance.hasCommunityNode,
       handleInput

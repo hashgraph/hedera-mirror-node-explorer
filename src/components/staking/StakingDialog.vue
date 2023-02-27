@@ -90,14 +90,14 @@
                       <option v-for="n in nodes" :key="n.node_id" :value="n.node_id"
                               style="background-color: var(--h-theme-box-background-color)"
                               v-show="isCouncilNode(n)">
-                        {{ makeNodeDescription(n) }} - {{ makeNodeStakeDescription(n) }}
+                        {{ makeNodeSelectorDescription(n) }}
                       </option>
                     </optgroup>
                     <optgroup v-if="hasCommunityNode" label="Community nodes">
                       <option v-for="n in nodes" :key="n.node_id" :value="n.node_id"
                               style="background-color: var(--h-theme-box-background-color)"
                               v-show="!isCouncilNode(n)">
-                        {{ makeNodeDescription(n) }} - {{ makeNodeStakeDescription(n) }}
+                        {{ makeNodeSelectorDescription(n) }}
                       </option>
                     </optgroup>
                   </o-select>
@@ -172,7 +172,7 @@
 import {computed, defineComponent, PropType, ref, watch} from "vue";
 import {
   AccountBalanceTransactions,
-  AccountsResponse, makeNodeStakeDescription,
+  AccountsResponse, makeNodeSelectorDescription,
   makeShortNodeDescription,
   NetworkNode
 } from "@/schemas/HederaSchemas";
@@ -426,7 +426,7 @@ export default defineComponent({
       makeNodeDescription,
       isCouncilNode,
       hasCommunityNode: NodeRegistry.instance.hasCommunityNode,
-      makeNodeStakeDescription,
+      makeNodeSelectorDescription: makeNodeSelectorDescription,
       handleInput
     }
   }
