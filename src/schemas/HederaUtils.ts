@@ -21,7 +21,6 @@
 import {AccountInfo, KeyType, TokenInfo} from "@/schemas/HederaSchemas";
 import {EntityID} from "@/utils/EntityID";
 import {ethers} from "ethers";
-import {routeManager} from "@/router";
 import {NodeRegistry} from "@/components/node/NodeRegistry";
 import {ref} from "vue";
 
@@ -65,7 +64,7 @@ export function makeTokenSymbol(token: TokenInfo | null, maxLength: number): str
 }
 
 export function makeDefaultNodeDescription(nodeId: number | null): string {
-    return "Node " + nodeId ?? "?" + " | " + routeManager.currentNetwork.value
+    return "Node " + nodeId ?? "?"
 }
 
 export function makeOperatorDescription(accountId: string): string | null {
