@@ -99,15 +99,24 @@
       <template v-slot:leftContent>
         <Property id="stakedTo">
           <template v-slot:name>
-            <span v-if="stakedAccountId">Staked to Account</span>
-            <span v-else-if="stakedNodeId">Staked to Node</span>
-            <span v-else>Staked to</span>
+            Staked to
           </template>
           <template v-slot:value>
-            <AccountLink v-if="stakedAccountId" :accountId="account.staked_account_id" v-bind:show-extra="true"/>
-            <router-link v-else-if="stakedNodeRoute" :to="stakedNodeRoute">
-              {{ account?.staked_node_id }} - {{ stakedNodeDescription }}
-            </router-link>
+            <div v-if="stakedAccountId">
+              Account
+              <div class="is-inline-block">
+                <AccountLink :accountId="account.staked_account_id" v-bind:show-extra="true"/>
+              </div>
+            </div>
+            <div v-else-if="stakedNodeRoute">
+              <span class="icon is-small has-text-info mr-1">
+                <i :class="stakedNodeIcon"></i>
+              </span>
+              Node
+              <router-link :to="stakedNodeRoute">
+                {{ account?.staked_node_id }} - {{ stakedNodeDescription }}
+              </router-link>
+            </div>
             <span v-else class="has-text-grey">None</span>
           </template>
         </Property>
@@ -407,6 +416,16 @@ export default defineComponent({
     //
     const stakedNodeDescription = computed(() => NodeRegistry.getDescription(accountLoader.stakedNodeId))
 
+    const stakedNodeIcon = computed(() => {
+      let result
+      if (accountLoader.stakedNodeId.value !== null) {
+        result = NodeRegistry.isCouncilNode(accountLoader.stakedNodeId) ? "fas fa-building" : "fas fa-users"
+      } else {
+        result = ""
+      }
+      return result
+    })
+
     //
     // Rewards Table Controller
     //
@@ -453,6 +472,7 @@ export default defineComponent({
       stakedNodeId: accountLoader.stakedNodeId,
       stakedAccountId: accountLoader.stakedAccountId,
       stakedNodeDescription,
+      stakedNodeIcon,
       rewardsTableController,
       contractRoute,
       stakedNodeRoute,

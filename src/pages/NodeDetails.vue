@@ -28,8 +28,18 @@
 
     <DashboardCard>
       <template v-slot:title>
-        <span class="h-is-primary-title">Node </span>
-        <span class="h-is-secondary-text is-numeric mr-3">{{ nodeIdNb }}</span>
+        <div class="is-flex is-align-items-center">
+          <span class="h-is-primary-title mr-2">Node </span>
+          <span class="h-is-secondary-text is-numeric mr-3">{{ nodeIdNb }}</span>
+        </div>
+        <div v-if="isCouncilNode">
+          <span class="icon has-text-info mr-2"><i class="fas fa-building"></i></span>
+          <span class="h-is-tertiary-text has-text-grey">Hedera Council Node</span>
+        </div>
+        <div v-else>
+          <span class="icon has-text-info mr-2"><i class="fas fa-users"></i></span>
+          <span class="h-is-tertiary-text has-text-grey">Community Node</span>
+        </div>
       </template>
 
       <template v-slot:content>
@@ -99,6 +109,11 @@
           }}% of total</p>
         <p v-else class="h-is-property-text h-is-extra-text mt-1">(&lt;Min)</p>
         <br/><br/>
+        <div v-if="stake === 0">
+          <NetworkDashboardItem id="currentStake" :value="makeFloorHbarAmount(unclampedStake)"
+                                name="HBAR" title="Current Stake"/>
+          <br/><br/>
+        </div>
         <NetworkDashboardItem id="minStake" :value="makeFloorHbarAmount(minStake)" name="HBAR" title="Min Stake"/>
         <br/><br/>
         <NetworkDashboardItem id="maxStake" :value="makeFloorHbarAmount(maxStake)" name="HBAR" title="Max Stake"/>
@@ -223,11 +238,13 @@ export default defineComponent({
       minStake: nodeCursor.minStake,
       maxStake: nodeCursor.maxStake,
       stakePercentage,
+      unclampedStake: nodeCursor.unclampedStake,
       stakeRewarded: nodeCursor.stakeRewarded,
       stakeRewardedPercentage,
       stakeUnrewarded: nodeCursor.stakeUnrewarded,
       stakeUnrewardedPercentage,
       notification,
+      isCouncilNode: nodeCursor.isCouncilNode,
       nodeDescription: nodeCursor.nodeDescription,
       formatHash,
       makeFloorHbarAmount

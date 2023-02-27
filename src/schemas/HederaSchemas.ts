@@ -23,6 +23,7 @@
 // ---------------------------------------------------------------------------------------------------------------------
 
 import {EntityID} from "@/utils/EntityID";
+import {makeDefaultNodeDescription} from "@/schemas/HederaUtils";
 
 export interface AccountsResponse {
     accounts: AccountInfo[] | undefined
@@ -580,26 +581,24 @@ export function makeShortNodeDescription(description: string): string {
     return (separator !== -1) ? (description.slice(0, separator) ?? null) : description
 }
 
-export function makeNodeStakeDescription(node: NetworkNode): string {
-    const amountFormatter = new Intl.NumberFormat("en-US", {
-        maximumFractionDigits: 0
-    })
+export function makeNodeSelectorDescription(node: NetworkNode): string {
     const percentFormatter = new Intl.NumberFormat("en-US", {
         style: 'percent',
         maximumFractionDigits: 1
     })
     const unclampedStakeAmount = ((node.stake_rewarded ?? 0) + (node.stake_not_rewarded ?? 0))/100000000
-    const unrewardedAmount = (node.stake_not_rewarded ?? 0)/100000000
     const percentMin = node.min_stake ? unclampedStakeAmount / (node.min_stake / 100000000) : 0
     const percentMax = node.max_stake ? unclampedStakeAmount / (node.max_stake / 100000000) : 0
 
-    let result = amountFormatter.format(unclampedStakeAmount) + "ℏ staked"
+    let result = node.node_id
+        + ' - '
+        + (node.description ?? makeDefaultNodeDescription(node.node_id ?? null))
+
     if (percentMin != 0 && percentMin < 1) {
-        result += " (" + percentFormatter.format(percentMin) + " of Min)"
+        result += " (" + percentFormatter.format(percentMin) + " of Min Stake)"
     } else if (percentMax !== 0) {
-        result += " (" + percentFormatter.format(percentMax) + " of Max)"
+        result += " (" + percentFormatter.format(percentMax) + " of Max Stake)"
     }
-    result += ", of which " + amountFormatter.format(unrewardedAmount) + "ℏ declined reward"
     return result
 }
 
