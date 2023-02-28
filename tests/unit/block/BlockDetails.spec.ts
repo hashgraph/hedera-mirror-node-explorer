@@ -105,7 +105,7 @@ describe("BlockDetails.vue", () => {
         expect(table.exists()).toBe(true)
         expect(table.get('thead').text()).toBe("ID Type Content Time & Date")
         expect(table.get('tbody').text()).toBe("0.0.29624024@1646025139.152901498CRYPTO TRANSFER0.0.29624024\n" + "\n" +
-            "1\n" + "\n" +
+            "123423\n" + "\n" +
             "0.0.296939115:12:31.6676 AMFeb 28, 2022, UTC")
     });
 
@@ -154,7 +154,7 @@ describe("BlockDetails.vue", () => {
         expect(table.exists()).toBe(true)
         expect(table.get('thead').text()).toBe("ID Type Content Time & Date")
         expect(table.get('tbody').text()).toBe("0.0.29624024@1646025139.152901498CRYPTO TRANSFER0.0.29624024\n" + "\n" +
-            "1\n" + "\n" +
+            "123423\n" + "\n" +
             "0.0.296939115:12:31.6676 AMFeb 28, 2022, UTC")
     });
 
@@ -204,7 +204,7 @@ describe("BlockDetails.vue", () => {
         expect(table.exists()).toBe(true)
         expect(table.get('thead').text()).toBe("ID Type Content Time & Date")
         expect(table.get('tbody').text()).toBe("0.0.29624024@1646025139.152901498CRYPTO TRANSFER0.0.29624024\n" + "\n" +
-            "1\n" + "\n" +
+            "123423\n" + "\n" +
             "0.0.296939115:12:31.6676 AMFeb 28, 2022, UTC")
 
         // Change Block Number
