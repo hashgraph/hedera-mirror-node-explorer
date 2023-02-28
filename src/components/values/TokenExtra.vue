@@ -26,11 +26,11 @@
   <template v-if="tokenId != null">
     <template v-if="useAnchor">
       <router-link :to="tokenRoute">
-        <span class="h-is-smaller h-is-extra-text should-wrap">{{ extra }}</span>
+        <span class="h-is-smaller h-is-extra-text should-wrap" style="word-break: break-all">{{ extra }}</span>
       </router-link>
     </template>
     <template v-else>
-      <span class="h-is-smaller h-is-extra-text should-wrap">{{ extra }}</span>
+      <span class="h-is-smaller h-is-extra-text should-wrap" style="word-break: break-all">{{ extra }}</span>
     </template>
   </template>
 </template>
