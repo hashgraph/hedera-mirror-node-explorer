@@ -72,10 +72,10 @@
 
     <div class="columns pt-0 mt-0 pb-2">
       <div class="column">
-        <FunctionInput :analyzer="analyzer" :custom-nb-col-class="propertySizeClass"/>
+        <FunctionInput :analyzer="functionCallAnalyzer" :custom-nb-col-class="propertySizeClass"/>
       </div>
       <div class="column h-has-column-dashed-separator">
-        <FunctionResult :analyzer="analyzer" :custom-nb-col-class="propertySizeClass"/>
+        <FunctionResult :analyzer="functionCallAnalyzer" :custom-nb-col-class="propertySizeClass"/>
       </div>
     </div>
   </template>
@@ -113,8 +113,8 @@
           <StringValue :string-value="errorMessage"/>
         </template>
       </Property>
-      <FunctionInput :analyzer="analyzer" :custom-nb-col-class="propertySizeClass"/>
-      <FunctionResult :analyzer="analyzer" :custom-nb-col-class="propertySizeClass"/>
+      <FunctionInput :analyzer="functionCallAnalyzer" :custom-nb-col-class="propertySizeClass"/>
+      <FunctionResult :analyzer="functionCallAnalyzer" :custom-nb-col-class="propertySizeClass"/>
     </div>
   </template>
 </template>
