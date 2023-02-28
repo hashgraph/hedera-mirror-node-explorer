@@ -124,7 +124,7 @@ describe("MainDashboard.vue", () => {
         expect(t0.get('thead').text()).toBe("ID Content Time")
         expect(t0.get('tbody').text()).toBe(
             "0.0.29624024@1646025139.1529014980.0.29624024\n\n" +
-            "1\n\n" +
+            "123423\n\n" +
             "0.0.296939115:12:31.6676 AMFeb 28, 2022, UTC"
         )
 

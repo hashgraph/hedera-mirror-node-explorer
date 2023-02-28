@@ -23,12 +23,10 @@
 <!-- --------------------------------------------------------------------------------------------------------------- -->
 
 <template>
-  <span class="is-numeric">{{ formattedAmount }}</span>
-  <template v-if="showExtra && tokenId != null">
-    <span class="ml-2">
-      <TokenExtra v-bind:token-id="tokenId" v-bind:use-anchor="useAnchor"/>
-    </span>
-  </template>
+  <span class="is-numeric" :class="{'mr-2': showExtra && tokenId}">{{ formattedAmount }}</span>
+  <span v-if="showExtra && tokenId != null">
+    <TokenExtra v-bind:token-id="tokenId" v-bind:use-anchor="useAnchor"/>
+  </span>
 </template>
 
 <!-- --------------------------------------------------------------------------------------------------------------- -->
