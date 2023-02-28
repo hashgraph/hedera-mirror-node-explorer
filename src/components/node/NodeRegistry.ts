@@ -77,6 +77,24 @@ export class NodeRegistry {
         return result
     })
 
+    public readonly stakeScaleEnd: ComputedRef<number> = computed(() => {
+        let result = 0
+        for (const n of this.nodes.value) {
+            const thisMax = Math.max(n.max_stake ?? 0, n.stake ?? 0)
+            result = Math.max(result, thisMax)
+        }
+        return result
+    })
+
+    public readonly hasCommunityNode: ComputedRef<boolean> = computed(() => {
+        for (const n of this.nodes.value) {
+            if (! NodeRegistry.isCouncilNode(ref(n.node_id ?? 0))) {
+                return true
+            }
+        }
+        return false
+    })
+
     public reload(): void {
         this.loader.clear()
         this.loader.requestLoad()
@@ -85,6 +103,11 @@ export class NodeRegistry {
     public static getCursor(nodeId: Ref<number|null> = ref(null),
                      nodeAccountId: Ref<string|null> = ref(null)): NodeCursor {
         return new NodeCursor(nodeId, nodeAccountId)
+    }
+
+    public static isCouncilNode(nodeId: Ref<number|null> = ref(null),
+                                nodeAccountId: Ref<string|null> = ref(null)): boolean {
+        return NodeRegistry.getCursor(nodeId, nodeAccountId).isCouncilNode.value
     }
 
     public static getDescription(nodeId: Ref<number|null> = ref(null),

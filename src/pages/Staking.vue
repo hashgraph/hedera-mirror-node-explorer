@@ -42,7 +42,7 @@
                   :mode="progressDialogMode"
                   :main-message="progressMainMessage"
                   :extra-message="progressExtraMessage"
-                  :extra-transaction-hash="progressExtraTransactionHash"
+                  :extra-transaction-id="progressExtraTransactionId"
                   :show-spinner="showProgressSpinner"
   >
     <template v-slot:dialogTitle>
@@ -75,9 +75,18 @@
         <template v-if="accountId">
           <div v-if="isSmallScreen">
             <div class="is-flex is-justify-content-space-between">
-              <NetworkDashboardItem :name="stakePeriodStart ? ('since ' + stakePeriodStart) : null"
-                                    title="Staked to"
-                                    :value="stakedTo"/>
+              <NetworkDashboardItem :name="stakePeriodStart ? ('since ' + stakePeriodStart) : null" title="Staked to">
+                <template v-slot:value>
+                  <div class="is-inline-block">
+                    <span v-if="isStakedToNode"  class="icon has-text-info mr-2" style="font-size: 20px">
+                      <i v-if="isCouncilNode" class="fas fa-building"></i>
+                      <i v-else class="fas fa-users"></i>
+                    </span>
+                    <span v-if="stakedTo">{{ stakedTo }}</span>
+                    <span v-else class="has-text-grey">None</span>
+                  </div>
+                </template>
+              </NetworkDashboardItem>
 
               <NetworkDashboardItem class="ml-4"
                                     :name="stakedAmount ? 'HBAR' : ''"
@@ -169,7 +178,7 @@
       </template>
     </DashboardCard>
 
-    <DashboardCard v-if="accountId" :class="{'h-has-opacity-40': isIndirectStaking}">
+    <DashboardCard v-if="accountId" :class="{'h-has-opacity-40': !isStakedToNode}">
       <template v-slot:title>
         <span class="h-is-secondary-title">Recent Staking Rewards</span>
       </template>
@@ -267,7 +276,7 @@ export default defineComponent({
     const progressDialogTitle = ref<string|null>(null)
     const progressMainMessage = ref<string|null>(null)
     const progressExtraMessage = ref<string|null>(null)
-    const progressExtraTransactionHash = ref<string|null>(null)
+    const progressExtraTransactionId = ref<string|null>(null)
     const showProgressSpinner = ref(false)
     const showDownloadDialog = ref(false)
 
@@ -291,7 +300,7 @@ export default defineComponent({
             progressDialogMode.value = Mode.Error
             progressDialogTitle.value = "Could not connect wallet"
             showProgressSpinner.value = false
-            progressExtraTransactionHash.value = null
+            progressExtraTransactionId.value = null
 
             if (reason instanceof WalletDriverError) {
               progressMainMessage.value = reason.message
@@ -320,14 +329,15 @@ export default defineComponent({
     const accountLoader = new AccountLoader(walletManager.accountId)
     onMounted(() => accountLoader.requestLoad())
 
-    const isStaked = computed(() => accountLoader.stakedNodeId.value !== null || accountLoader.stakedAccountId.value)
-    const isIndirectStaking = computed(() => accountLoader.stakedAccountId.value)
+    const isStakedToNode = computed(() => accountLoader.stakedNodeId.value !== null)
+    const isStakedToAccount = computed(() => accountLoader.stakedAccountId.value)
+    const isStaked = computed(() => isStakedToNode.value || isStakedToAccount.value)
 
     const stakedTo = computed(() => {
       let result: string|null
-      if (accountLoader.stakedAccountId.value) {
+      if (isStakedToAccount.value) {
         result = "Account " + accountLoader.stakedAccountId.value
-      } else if (accountLoader.stakedNodeId.value !== null) {
+      } else if (isStakedToNode.value) {
         result = "Node " + accountLoader.stakedNodeId.value + " - " + stakedNodeLoader.shortNodeDescription.value
       } else {
         result = null
@@ -385,19 +395,19 @@ export default defineComponent({
         progressDialogTitle.value = (nodeId == null && accountId == null && !declineReward) ? "Stopping staking" : "Updating staking"
         progressMainMessage.value = "Connecting to Hedera Network using your wallet…"
         progressExtraMessage.value = "Check your wallet for any approval request"
-        progressExtraTransactionHash.value = null
+        progressExtraTransactionId.value = null
         showProgressSpinner.value = false
-        const transactionHash = normalizeTransactionId(await walletManager.changeStaking(nodeId, accountId, declineReward))
+        const transactionId = normalizeTransactionId(await walletManager.changeStaking(nodeId, accountId, declineReward))
         progressMainMessage.value = "Completing operation…"
         progressExtraMessage.value = "This may take a few seconds"
         showProgressSpinner.value = true
-        await waitForTransactionRefresh(transactionHash, 10)
+        await waitForTransactionRefresh(transactionId, 10)
 
         progressDialogMode.value = Mode.Success
         progressMainMessage.value = "Operation completed"
         showProgressSpinner.value = false
         progressExtraMessage.value = "with transaction ID:"
-        progressExtraTransactionHash.value = transactionHash
+        progressExtraTransactionId.value = transactionId
 
       } catch(error) {
 
@@ -409,7 +419,7 @@ export default defineComponent({
           progressMainMessage.value = "Operation did not complete"
           progressExtraMessage.value = JSON.stringify(error.message)
         }
-        progressExtraTransactionHash.value = null
+        progressExtraTransactionId.value = null
         showProgressSpinner.value = false
 
       } finally {
@@ -419,20 +429,20 @@ export default defineComponent({
 
     }
 
-    const waitForTransactionRefresh = async (transactionHash: string, attemptIndex: number) => {
+    const waitForTransactionRefresh = async (transactionId: string, attemptIndex: number) => {
       let result: Promise<Transaction | string>
 
       if (attemptIndex >= 0) {
         await waitFor(props.polling)
         try {
-          const response = await axios.get<TransactionByIdResponse>("api/v1/transactions/" + transactionHash )
+          const response = await axios.get<TransactionByIdResponse>("api/v1/transactions/" + transactionId )
           const transactions = response.data.transactions ?? []
-          result = Promise.resolve(transactions.length >= 1 ? transactions[0] : transactionHash)
+          result = Promise.resolve(transactions.length >= 1 ? transactions[0] : transactionId)
         } catch {
-          result = waitForTransactionRefresh(transactionHash, attemptIndex - 1)
+          result = waitForTransactionRefresh(transactionId, attemptIndex - 1)
         }
       } else {
-        result = Promise.resolve(transactionHash)
+        result = Promise.resolve(transactionId)
       }
 
       return result
@@ -471,9 +481,11 @@ export default defineComponent({
       showWalletChooser,
       showErrorDialog,
       showDownloadDialog,
-      isIndirectStaking,
+      isStakedToNode,
+      isStakedToAccount,
       stakedTo,
       stakedNode: stakedNodeLoader.node,
+      isCouncilNode: stakedNodeLoader.isCouncilNode,
       balanceInHbar,
       stakedAmount,
       pendingReward,
@@ -489,7 +501,7 @@ export default defineComponent({
       progressDialogTitle,
       progressMainMessage,
       progressExtraMessage,
-      progressExtraTransactionHash,
+      progressExtraTransactionId,
       showProgressSpinner,
       transactionTableController,
       downloader

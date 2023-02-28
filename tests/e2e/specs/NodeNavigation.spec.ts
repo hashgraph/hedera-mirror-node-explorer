@@ -55,7 +55,7 @@ describe('Node Navigation', () => {
             .click()
 
         cy.url().should('include', '/testnet/account/' + nodeAccount)
-        cy.contains('Account ' + nodeAccount)
+        cy.contains('Account ID:' + nodeAccount)
         // cy.contains('Node ' + nodeId)
     })
 

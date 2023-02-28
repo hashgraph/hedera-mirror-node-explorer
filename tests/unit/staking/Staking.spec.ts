@@ -1,3 +1,5 @@
+// noinspection DuplicatedCode
+
 /*-
  *
  * Hedera Mirror Node Explorer
@@ -40,7 +42,6 @@ import ProgressDialog from "@/components/staking/ProgressDialog.vue";
 import {waitFor} from "@/utils/TimerUtils";
 import StakingDialog from "@/components/staking/StakingDialog.vue";
 import {nextTick} from "vue";
-import {TransactionHash} from "@/utils/TransactionHash";
 import {NodeRegistry} from "@/components/node/NodeRegistry";
 
 /*
@@ -83,10 +84,10 @@ describe("Staking.vue", () => {
         // Transaction used to represent stake update operation
         const STAKE_UPDATE_TRANSACTION = SAMPLE_TRANSACTION
         const STAKE_UPDATE_TRANSACTIONS = SAMPLE_TRANSACTIONS
-        const STAKE_UPDATE_TRANSACTION_HASH = TransactionHash.parseBase64(STAKE_UPDATE_TRANSACTION.transaction_hash)!.toString()
+        const STAKE_UPDATE_TRANSACTION_ID = STAKE_UPDATE_TRANSACTION.transaction_id
 
         // Adds test driver to WalletManager
-        const testDriver = new WalletDriver_Mock(TARGET_ACCOUNT, STAKE_UPDATE_TRANSACTION_HASH)
+        const testDriver = new WalletDriver_Mock(TARGET_ACCOUNT, STAKE_UPDATE_TRANSACTION_ID)
         walletManager.getDrivers().push(testDriver)
 
         // Mocks axios
@@ -105,7 +106,7 @@ describe("Staking.vue", () => {
         NodeRegistry.instance.reload()
         const matcher3 = "/api/v1/network/exchangerate"
         mock.onGet(matcher3).reply(200, SAMPLE_NETWORK_EXCHANGERATE);
-        const matcher4 = "/api/v1/transactions/" + STAKE_UPDATE_TRANSACTION_HASH
+        const matcher4 = "/api/v1/transactions/" + STAKE_UPDATE_TRANSACTION_ID
         mock.onGet(matcher4).reply(200, STAKE_UPDATE_TRANSACTIONS)
         const matcher5 = "/api/v1/transactions"
         mock.onGet(matcher5).reply(200, SAMPLE_TRANSACTIONS)
@@ -252,7 +253,7 @@ describe("Staking.vue", () => {
         // 3.4) Choose node #2
         const stakeToNodeSelect = stakingModal.get<HTMLSelectElement>("select")
         const stakeToNodeOptions = stakeToNodeSelect.findAll("option")
-        expect(stakeToNodeOptions.length).toBe(3)
+        expect(stakeToNodeOptions.length).toBe(SAMPLE_NETWORK_NODES.nodes.length)
         for (let i = 0; i < 3; i += 1) {
             expect(stakeToNodeOptions[i].element.value).toBe(i.toString())
         }

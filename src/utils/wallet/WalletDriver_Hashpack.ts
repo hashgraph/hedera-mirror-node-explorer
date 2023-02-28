@@ -26,7 +26,7 @@ import {WalletDriverError} from "@/utils/wallet/WalletDriverError";
 import {HashConnectSigner} from "hashconnect/dist/provider/signer";
 import {AccountUpdateTransaction, Executable, Transaction} from "@hashgraph/sdk";
 import {timeGuard, TimeGuardError} from "@/utils/TimerUtils";
-import {byteToHex} from "@/utils/B64Utils";
+import {TransactionID} from "@/utils/TransactionID";
 
 export class WalletDriver_Hashpack extends WalletDriver {
 
@@ -63,7 +63,7 @@ export class WalletDriver_Hashpack extends WalletDriver {
     public async updateAccount(request: AccountUpdateTransaction): Promise<string> {
         try {
             const response = await this.performCall(request)
-            return "0x" + byteToHex(response.transactionHash)
+            return TransactionID.normalize(response.transactionId.toString(), false);
         } catch(error) {
             if (error instanceof WalletDriverError) {
                 throw error

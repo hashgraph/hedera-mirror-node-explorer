@@ -22,15 +22,12 @@
 <!--                                                     TEMPLATE                                                    -->
 <!-- --------------------------------------------------------------------------------------------------------------- -->
 
-<template>
-  <HexaValue v-bind:byte-string="address" v-bind:show-none="showNone"/>
-  <template v-if="showImport">
-    <br/>
-    <ActionLink title="Import in MetaMask"
-                :enabled="address !== undefined"
-                :running="executing"
-                @action="handleAction"/>
-    <span style="display: inline-block">
+<template v-if="showImport" class="">
+  <ActionLink :enabled="address !== undefined"
+              :running="executing"
+              title="Import in MetaMask"
+              @action="handleAction"/>
+  <span style="display: inline-block">
     <ModalDialog v-model:show-dialog="showErrorDialog">
       <template v-slot:dialogMessage>Please install MetaMask!</template>
       <template v-slot:dialogDetails>
@@ -39,8 +36,7 @@
         </div>
       </template>
     </ModalDialog>
-  </span>
-  </template>
+    </span>
 </template>
 
 <!-- --------------------------------------------------------------------------------------------------------------- -->
@@ -50,14 +46,13 @@
 <script lang="ts">
 
 import {computed, defineComponent, ref} from "vue";
-import HexaValue from "@/components/values/HexaValue.vue";
 import ModalDialog from "@/components/ModalDialog.vue";
 import ActionLink from "@/components/ActionLink.vue";
 import {MetaMask_Status, MetaMask_watchAsset} from "@/utils/MetaMask";
 
 export default defineComponent({
-  name: "EthAddress",
-  components: {HexaValue, ModalDialog, ActionLink},
+  name: "MetaMaskImport",
+  components: {ModalDialog, ActionLink},
   props: {
     address: String,
     symbol: String,

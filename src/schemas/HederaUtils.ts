@@ -21,7 +21,6 @@
 import {AccountInfo, KeyType, TokenInfo} from "@/schemas/HederaSchemas";
 import {EntityID} from "@/utils/EntityID";
 import {ethers} from "ethers";
-import {routeManager} from "@/router";
 import {NodeRegistry} from "@/components/node/NodeRegistry";
 import {ref} from "vue";
 
@@ -34,7 +33,7 @@ export function makeEthAddressForAccount(account: AccountInfo): string|null {
     if (account.account) {
         // Generates Ethereum address from account id
         const entityID = EntityID.parse(account.account, true)
-        return entityID != null ? entityID.toAddress() : null
+        return entityID != null ? ('0x' + entityID.toAddress()) : null
     }
     return null;
 }
@@ -43,7 +42,7 @@ export function makeEthAddressForToken(token: TokenInfo): string|null {
     let result: string|null
     if (token.token_id) {
         const entityID = EntityID.parse(token.token_id, true)
-        result = entityID != null ? entityID.toAddress() : null
+        result = entityID != null ? ('0x' + entityID.toAddress()) : null
     } else {
         result = null
     }
@@ -65,7 +64,7 @@ export function makeTokenSymbol(token: TokenInfo | null, maxLength: number): str
 }
 
 export function makeDefaultNodeDescription(nodeId: number | null): string {
-    return "Node " + nodeId ?? "?" + " | " + routeManager.currentNetwork.value
+    return "Node " + nodeId ?? "?"
 }
 
 export function makeOperatorDescription(accountId: string): string | null {

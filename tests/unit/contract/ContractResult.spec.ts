@@ -21,7 +21,7 @@
 import {flushPromises, mount} from "@vue/test-utils"
 import router from "@/router";
 import axios from "axios";
-import {SAMPLE_CONTRACT_RESULT_DETAILS} from "../Mocks";
+import {SAMPLE_CONTRACT_RESULT_DETAILS, SAMPLE_REVERT_CONTRACT_RESULT_DETAILS} from "../Mocks";
 import MockAdapter from "axios-mock-adapter";
 import {HMSF} from "@/utils/HMSF";
 import ContractResult from "@/components/contract/ContractResult.vue";
@@ -79,8 +79,8 @@ describe("ContractResult.vue", () => {
 
         expect(wrapper.text()).toMatch(RegExp("^Contract Result for " + contractId + " at " + timestamp))
         expect(wrapper.get("#resultValue").text()).toBe("SUCCESS")
-        expect(wrapper.get("#fromValue").text()).toBe("0x00000000000000000000000000000000000ce9b4(0.0.846260)")
-        expect(wrapper.get("#toValue").text()).toBe("0x0000000000000000000000000000000000103783(0.0.1062787)")
+        expect(wrapper.get("#fromValue").text()).toBe("0x00000000000000000000000000000000000ce9b4Copy to Clipboard(0.0.846260)")
+        expect(wrapper.get("#toValue").text()).toBe("0x0000000000000000000000000000000000103783Copy to Clipboard(0.0.1062787)")
         expect(wrapper.get("#typeValue").text()).toBe("None")
         // expect(wrapper.get("#functionParametersValue").text()).toBe("18cb afe5 0000 0000 0000 0000 0000 0000 0000 0000 0000 0000 0000 0000 0000 0017 4876 e800 0000 0000 0000 0000 0000 0000 0000 0000 0000 0000 0000 0000 0000 001b 2702 b2a0 0000 0000 0000 0000 0000 0000 0000 0000 0000 0000 0000 0000 0000 0000 0000 00a0 0000 0000 0000 0000 0000 0000 0000 0000 0000 0000 0000 0000 0000 0000 000c e9b4 0000 0000 0000 0000 0000 0000 0000 0000 0000 0000 0000 0000 0000 0183 1e10 602d 0000 0000 0000 0000 0000 0000 0000 0000 0000 0000 0000 0000 0000 0000 0000 0003 0000 0000 0000 0000 0000 0000 0000 0000 0000 0000 0000 0000 0000 0000 000c ba44 0000 0000 0000 0000 0000 0000 0000 0000 0000 0000 0000 0000 0000 0000 000d 1ea6 0000 0000 0000 0000 0000 0000 0000 0000 0000 0000 0000 0000 0000 0000 0010 3708Copy to Clipboard")
         expect(wrapper.get("#errorMessageValue").text()).toBe("None")
@@ -92,4 +92,37 @@ describe("ContractResult.vue", () => {
 
         expect(wrapper.findAll("#logIndexValue").length).toBe(3)
     });
+
+    it("Should display the reverted contract result and decode the error message", async () => {
+
+        await router.push("/") // To avoid "missing required param 'network'" error
+
+        const transactionId = "0.0.1466-1677085130-338772063"
+        const contractId = SAMPLE_REVERT_CONTRACT_RESULT_DETAILS.contract_id
+        const timestamp = SAMPLE_REVERT_CONTRACT_RESULT_DETAILS.timestamp
+
+        const mock = new MockAdapter(axios);
+        const matcher1 = "/api/v1/contracts/results/" + transactionId
+        mock.onGet(matcher1).reply(200, SAMPLE_REVERT_CONTRACT_RESULT_DETAILS)
+
+        const wrapper = mount(ContractResult, {
+            global: {
+                plugins: [router, Oruga]
+            },
+            props: {
+                transactionIdOrHash: transactionId,
+                topLevel: true
+            },
+        });
+        await flushPromises()
+        // console.log(wrapper.html())
+        // console.log(wrapper.text())
+
+        expect(wrapper.text()).toMatch(RegExp("^Contract Result for " + contractId + " at " + timestamp))
+        expect(wrapper.get("#resultValue").text()).toBe("CONTRACT_REVERT_EXECUTED")
+        expect(wrapper.get("#errorMessageValue").text()).toBe("Insufficient token balance for wiped")
+
+        expect(wrapper.findAll("#logIndexValue").length).toBe(0)
+    });
+
 });

@@ -22,6 +22,7 @@ import {
     AccountBalanceTransactions,
     AccountInfo,
     AccountsResponse,
+    Block,
     ContractResponse,
     TokenInfo,
     TopicMessage,
@@ -45,6 +46,7 @@ export class SearchRequest {
     public tokenInfo: TokenInfo|null = null
     public topicMessages = Array<TopicMessage>()
     public contract: ContractResponse|null = null
+    public block: Block|null = null
 
     private promise = new DeferredPromise<void>()
     private countdown = 0
@@ -56,7 +58,7 @@ export class SearchRequest {
 
     run(): Promise<void> {
 
-        this.countdown = 7
+        this.countdown = 8
         this.errorCount = 0
 
         /*
@@ -79,6 +81,8 @@ export class SearchRequest {
                                              | (normalized)     |
         -------------------------------------+------------------+------------------------------------------------------
         hexadecimal 48 bytes                 | Transaction Hash | api/v1/transactions/{searchId}
+        -------------------------------------+------------------+------------------------------------------------------
+        hexadecimal 32/48 bytes              | Block Hash       | api/v1/blocks/{searchId}
         -------------------------------------+------------------+------------------------------------------------------
         hexadecimal 20 bytes                 | Ethereum Address | api/v1/accounts/{searchId}
                                              |                  | api/v1/contracts/{searchId}
@@ -103,6 +107,7 @@ export class SearchRequest {
         const hexBytes = hexToByte(this.searchedId)
         const base32 = base32ToAlias(this.searchedId)
 
+        const blockHash = hexBytes !== null && (hexBytes.length === 48 || hexBytes.length === 32) ? byteToHex(hexBytes) : null
         const transactionHash = hexBytes !== null && hexBytes.length == 48 ? byteToHex(hexBytes) : null
         const transactionTimestamp = this.searchedId.match(/^\d{1,10}(\.\d{1,9})?$/) ? this.searchedId : null
         const ethereumAddress = hexBytes !== null && (1 <= hexBytes.length && hexBytes.length <= 20)
@@ -246,7 +251,26 @@ export class SearchRequest {
             this.updatePromise()
         }
 
-        // 7) Domain (via kabuto name service)
+        // 7) Searches blocks
+        if (blockHash) {
+            axios
+                .get<Block>("api/v1/blocks/" + blockHash)
+                .then(response => {
+                    this.block = response.data
+                })
+                .catch((reason: unknown) => {
+                    this.updateErrorCount(reason)
+                    return null // To avoid console pollution
+                })
+                .finally(() => {
+                    this.updatePromise()
+                });
+        } else {
+            // No block will match => no need to call server
+            this.updatePromise()
+        }
+
+        // 8) Domain (via kabuto name service)
         if (/\.[a-z|ℏ]+$/.test(this.searchedId)) {
           nameServiceResolve(this.searchedId)
             .then(accountInfo => {

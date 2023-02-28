@@ -94,8 +94,8 @@ export default defineComponent({
 
     const formattedAmount = computed(() => {
       const amountFormatter = new Intl.NumberFormat('en-US', {
-        minimumFractionDigits: props.decimals,
-        maximumFractionDigits: 8
+        minimumFractionDigits: props.decimals ?? 0,
+        maximumFractionDigits: props.decimals ?? 8
       })
       return amountFormatter.format(hbarAmount.value)
     })

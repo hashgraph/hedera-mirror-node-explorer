@@ -29,17 +29,35 @@
     <DashboardCard>
       <template v-slot:title>
         <span class="h-is-primary-title">Account </span>
-        <span class="h-is-secondary-text">{{ normalizedAccountId ?? "" }}</span>
-        <span v-if="accountChecksum" class="has-text-grey" style="font-size: 28px">-{{ accountChecksum }}</span>
-        <span v-if="showContractVisible" id="showContractLink" class="is-inline-block ml-3">
+        <div class="h-is-tertiary-text mt-3" id="entityId">
+          <div class="is-inline-block h-is-property-text has-text-weight-light" style="min-width: 115px">Account ID:</div>
+          <span>{{ normalizedAccountId ?? "" }}</span>
+          <span v-if="accountChecksum" class="has-text-grey">-{{ accountChecksum }}</span>
+        </div>
+        <div v-if="operatorNodeRoute" id="nodeLink" class="h-is-tertiary-text mt-2">
+          <div class="is-inline-block h-is-property-text has-text-weight-light" style="min-width: 115px">Node:</div>
+          <router-link :to="operatorNodeRoute">
+            <span>{{ nodeId }} - {{ accountInfo }}</span>
+          </router-link>
+        </div>
+        <div v-else-if="ethereumAddress" id="evmAddress" class="h-is-tertiary-text mt-2" style="word-break: keep-all">
+          <div class="is-inline-block h-is-property-text has-text-weight-light" style="min-width: 115px">EVM Address:</div>
+          <div class="is-inline-block">
+            <EVMAddress :show-id="false" :has-custom-font="true" :address="ethereumAddress"/>
+          </div>
+        </div>
+
+        <div v-if="!isMediumScreen && showContractVisible" id="showContractLink" class="is-inline-block mt-2">
           <router-link :to="contractRoute">
             <span class="h-is-property-text">Show associated contract</span>
           </router-link>
-        </span>
-        <div v-if="operatorNodeRoute" id="nodeLink" >
-          <router-link :to="operatorNodeRoute">
-            <span class="h-is-tertiary-text"> {{ 'Node ' + nodeId }} </span>
-            <span class="h-is-tertiary-text has-text-grey"> {{ ' (' + accountInfo + ')' }} </span>
+        </div>
+      </template>
+
+      <template v-slot:control v-if="isMediumScreen">
+        <div v-if="showContractVisible" id="showContractLink" class="is-inline-block ml-3">
+          <router-link :to="contractRoute">
+            <span class="h-is-property-text">Show associated contract</span>
           </router-link>
         </div>
       </template>
@@ -81,15 +99,24 @@
       <template v-slot:leftContent>
         <Property id="stakedTo">
           <template v-slot:name>
-            <span v-if="stakedAccountId">Staked to Account</span>
-            <span v-else-if="stakedNodeId">Staked to Node</span>
-            <span v-else>Staked to</span>
+            Staked to
           </template>
           <template v-slot:value>
-            <AccountLink v-if="stakedAccountId" :accountId="account.staked_account_id" v-bind:show-extra="true"/>
-            <router-link v-else-if="stakedNodeRoute" :to="stakedNodeRoute">
-              {{ account?.staked_node_id }} - {{ stakedNodeDescription }}
-            </router-link>
+            <div v-if="stakedAccountId">
+              Account
+              <div class="is-inline-block">
+                <AccountLink :accountId="account.staked_account_id" v-bind:show-extra="true"/>
+              </div>
+            </div>
+            <div v-else-if="stakedNodeRoute">
+              <span class="icon is-small has-text-info mr-1">
+                <i :class="stakedNodeIcon"></i>
+              </span>
+              Node
+              <router-link :to="stakedNodeRoute">
+                {{ account?.staked_node_id }} - {{ stakedNodeDescription }}
+              </router-link>
+            </div>
             <span v-else class="has-text-grey">None</span>
           </template>
         </Property>
@@ -159,21 +186,13 @@
           </template>
         </Property>
 
-        <Property id="alias" :class="{'mb-0':account?.alias}">
-          <template v-slot:name>Public-key-format Alias</template>
+        <Property v-if="account?.alias" id="alias" :class="{'mb-0':account?.alias}">
+          <template v-slot:name>Key Alias</template>
           <template v-slot:value>
             <AliasValue :alias-value="account?.alias"/>
           </template>
         </Property>
 
-        <Property id="evmAddress">
-          <template v-slot:name>Ethereum-format Alias</template>
-          <template v-slot:value>
-            <EthAddress v-if="ethereumAddress"
-                        :address="ethereumAddress"
-                        :show-none="true"/>
-          </template>
-        </Property>
         <Property id="ethereumNonce">
           <template v-slot:name>Ethereum Nonce</template>
           <template v-slot:value>
@@ -239,7 +258,6 @@ import Footer from "@/components/Footer.vue";
 import {PathParam} from "@/utils/PathParam";
 import Property from "@/components/Property.vue";
 import NotificationBanner from "@/components/NotificationBanner.vue";
-import EthAddress from "@/components/values/EthAddress.vue";
 import StringValue from "@/components/values/StringValue.vue";
 import {TransactionTableControllerXL} from "@/components/transaction/TransactionTableControllerXL";
 import AccountLink from "@/components/values/AccountLink.vue";
@@ -252,6 +270,7 @@ import {StakingRewardsTableController} from "@/components/staking/StakingRewards
 import StakingRewardsTable from "@/components/staking/StakingRewardsTable.vue";
 import AliasValue from "@/components/values/AliasValue.vue";
 import {NodeRegistry} from "@/components/node/NodeRegistry";
+import EVMAddress from "@/components/values/EVMAddress.vue";
 
 const MAX_TOKEN_BALANCES = 10
 
@@ -260,6 +279,7 @@ export default defineComponent({
   name: 'AccountDetails',
 
   components: {
+    EVMAddress,
     AliasValue,
     TransactionLink,
     AccountLink,
@@ -275,7 +295,6 @@ export default defineComponent({
     PlayPauseButton,
     TimestampValue,
     KeyValue,
-    EthAddress,
     DurationValue,
     StringValue,
     StakingRewardsTable
@@ -397,6 +416,16 @@ export default defineComponent({
     //
     const stakedNodeDescription = computed(() => NodeRegistry.getDescription(accountLoader.stakedNodeId))
 
+    const stakedNodeIcon = computed(() => {
+      let result
+      if (accountLoader.stakedNodeId.value !== null) {
+        result = NodeRegistry.isCouncilNode(accountLoader.stakedNodeId) ? "fas fa-building" : "fas fa-users"
+      } else {
+        result = ""
+      }
+      return result
+    })
+
     //
     // Rewards Table Controller
     //
@@ -422,6 +451,7 @@ export default defineComponent({
 
     return {
       isSmallScreen,
+      isMediumScreen,
       isTouchDevice,
       transactionTableController,
       notification,
@@ -442,6 +472,7 @@ export default defineComponent({
       stakedNodeId: accountLoader.stakedNodeId,
       stakedAccountId: accountLoader.stakedAccountId,
       stakedNodeDescription,
+      stakedNodeIcon,
       rewardsTableController,
       contractRoute,
       stakedNodeRoute,

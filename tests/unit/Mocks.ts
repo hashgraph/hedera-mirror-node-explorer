@@ -777,6 +777,80 @@ export const SAMPLE_CONTRACT_RESULT_DETAILS = {
     "nonce": null
 }
 
+export const SAMPLE_REVERT_CONTRACT_RESULT_DETAILS = {
+    "address": "0x0000000000000000000000000000000000362667",
+    "amount": 0,
+    "bloom": "0x",
+    "call_result": "0x",
+    "contract_id": "0.0.3548775",
+    "created_contract_ids": [],
+    "error_message": "0x08c379a000000000000000000000000000000000000000000000000000000000000000200000000000000000000000000000000000000000000000000000000000000024496e73756666696369656e7420746f6b656e2062616c616e636520666f7220776970656400000000000000000000000000000000000000000000000000000000",
+    "from": "0x00000000000000000000000000000000000005ba",
+    "function_parameters": "0x49257b42000000000000000000000000b7ba29e0554025e632d7db18d65d80c130f5ee940000000000000000000000000000000000000000000000000000000000007531",
+    "gas_limit": 4000000,
+    "gas_used": 3200000,
+    "timestamp": "1677085141.263832358",
+    "to": "0x0000000000000000000000000000000000362667",
+    "hash": "0xcbfcdad696696893d15eefa3ea71e889cabe8e652e54f611543b5035386bc675",
+    "block_hash": "0x16725d87e23dae63b20234861ccfe66874aa7e91bdd6bb8bc8e53b87d88c7499954dadce9b05c5032bcc239a31474708",
+    "block_number": 1224584,
+    "logs": [],
+    "result": "CONTRACT_REVERT_EXECUTED",
+    "transaction_index": 10,
+    "state_changes": [
+        {
+            "address": "0x0000000000000000000000000000000000362667",
+            "contract_id": "0.0.3548775",
+            "slot": "0x0000000000000000000000000000000000000000000000000000000000000000",
+            "value_read": "0x0000000000000000000000000000000000000000000000000000003626680001",
+            "value_written": null
+        }, {
+            "address": "0x0000000000000000000000000000000000362667",
+            "contract_id": "0.0.3548775",
+            "slot": "0x360894a13ba1a3210667c828492db98dca3e2076cc3735a920a3ca505d382bbc",
+            "value_read": "0x00000000000000000000000000000000000000000000000000000000002f9ff9",
+            "value_written": null
+        }, {
+            "address": "0x0000000000000000000000000000000000362667",
+            "contract_id": "0.0.3548775",
+            "slot": "0x6e6aaf3664af5268422aafc6f282e31102cd3653bc26111cdbbe2430cc92130f",
+            "value_read": "0x0000000000000000000000000000000000000000000000000000000000000001",
+            "value_written": null
+        }, {
+            "address": "0x0000000000000000000000000000000000362667",
+            "contract_id": "0.0.3548775",
+            "slot": "0xb53127684a568b3173ae13b9f8a6016e243e63b6e8ee1178d6a717850b5d6103",
+            "value_read": "0x0000000000000000000000000000000000000000000000000000000000362666",
+            "value_written": null
+        }, {
+            "address": "0x0000000000000000000000000000000000362667",
+            "contract_id": "0.0.3548775",
+            "slot": "0x00000000000000000000000000000000000000000000000000000000000000c8",
+            "value_read": "0x0000000000000000000000000000000000000000000000000000000000000009",
+            "value_written": null
+        }, {
+            "address": "0x0000000000000000000000000000000000362667",
+            "contract_id": "0.0.3548775",
+            "slot": "0xe71fac6fb785942cc6c6404a423f94f32a28ae66d69ff41494c38bfd4788b2fb",
+            "value_read": "0x515f99f4e5a381c770462a8d9879a01f0fd4a414a168a2404dab62a62e1af0c3",
+            "value_written": null
+        }
+    ],
+    "status": "0x0",
+    "failed_initcode": null,
+    "access_list": null,
+    "block_gas_used": 3248000,
+    "chain_id": null,
+    "gas_price": null,
+    "max_fee_per_gas": null,
+    "max_priority_fee_per_gas": null,
+    "r": null,
+    "s": null,
+    "type": null,
+    "v": null,
+    "nonce": null
+}
+
 // https://mainnet-public.mirrornode.hedera.com/api/v1/transactions?limit=2&transactiontype=CRYPTOTRANSFER
 
 export const SAMPLE_CRYPTO_TRANSACTIONS = {
@@ -1798,6 +1872,7 @@ export const SAMPLE_CONTRACT_AS_ACCOUNT = {
     },
     "deleted": false,
     "expiry_timestamp": null,
+    "evm_address": "0x00000000000000000000000000000000000b70cf",
     "key": {
         "_type": "ED25519",
         "key": "f6628ec23113678f60cb6e7e3972ac0bfdec0c43c787c25fd626a05627700ba5"

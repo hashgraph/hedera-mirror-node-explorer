@@ -32,7 +32,7 @@ export class PathParam { // Block Hash or Number
 
         if (s) {
             const bytes = hexToByte(s)
-            if (bytes != null && bytes.length == 48 ) { // SHA384 byte count
+            if (bytes != null && (bytes.length == 48 || bytes.length == 32) ) { // SHA384 byte count
                 result = byteToHex(bytes)
             } else {
                 const n = parseInt(s)
@@ -114,5 +114,20 @@ export class PathParam { // Block Hash or Number
 
     public static parseTransactionLoc(s: string): Timestamp | TransactionHash | EthereumHash | null {
         return Timestamp.parse(s) ?? TransactionHash.parse(s) ?? EthereumHash.parse(s)
+    }
+
+    public static parseEvmAddress(s: string|undefined): string|null {
+        let result: string|null
+        if (s) {
+            const hex = hexToByte(s)
+            if (hex !== null && hex.length == 20) {
+                result = "0x" + byteToHex(hex)
+            } else {
+                result = null
+            }
+        } else {
+            result = null
+        }
+        return result
     }
 }

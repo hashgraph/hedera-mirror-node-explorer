@@ -27,15 +27,44 @@
   <section :class="{'h-mobile-background': isTouchDevice || !isSmallScreen}" class="section">
 
     <DashboardCard>
-
       <template v-slot:title>
         <span v-if="tokenInfo" class="h-is-primary-title">
           <span v-if="tokenInfo.type === 'NON_FUNGIBLE_UNIQUE'">Non Fungible</span>
           <span v-else>Fungible</span>
         </span>
-        <span class="h-is-primary-title"> Token </span>
-        <span class="h-is-secondary-text">{{ normalizedTokenId }}</span>
-        <span v-if="tokenChecksum" class="has-text-grey" style="font-size: 28px">-{{ tokenChecksum }}</span>
+        <span class="h-is-primary-title mr-1"> Token </span>
+        <div class="is-inline-block h-is-tertiary-text h-is-extra-text should-wrap" style="word-break: break-all">
+          {{ displaySymbol }}
+        </div>
+        <div class="h-is-tertiary-text mt-3" id="entityId">
+          <div class="is-inline-block h-is-property-text has-text-weight-light" style="min-width: 115px">Token ID:</div>
+          <span>{{ normalizedTokenId ?? "" }}</span>
+          <span v-if="tokenChecksum" class="has-text-grey">-{{ tokenChecksum }}</span>
+        </div>
+        <div v-if="ethereumAddress" id="evmAddress" class="h-is-tertiary-text mt-2" style="word-break: keep-all">
+          <div class="is-inline-block h-is-property-text has-text-weight-light" style="min-width: 115px">EVM Address:</div>
+          <div class="is-inline-block">
+            <EVMAddress :show-id="false" :has-custom-font="true" :address="ethereumAddress"/>
+          </div>
+        </div>
+        <div class="mt-2">
+          <MetaMaskImport v-if="!isMediumScreen && ethereumAddress"
+                          :address="ethereumAddress"
+                          :decimals="tokenInfo?.decimals"
+                          :show-import="true"
+                          :show-none="true"
+                          :symbol="tokenSymbol"/>
+        </div>
+      </template>
+
+      <template v-if="isMediumScreen && ethereumAddress" v-slot:control>
+        <div class="ml-6">
+          <MetaMaskImport :address="ethereumAddress"
+                          :decimals="tokenInfo?.decimals"
+                          :show-import="true"
+                          :show-none="true"
+                          :symbol="tokenSymbol"/>
+        </div>
       </template>
 
       <template v-slot:content>
@@ -135,17 +164,6 @@
             <div v-if="tokenInfo?.supply_type === 'INFINITE'" class="has-text-grey">Infinite</div>
             <TokenAmount v-else :amount="parseIntString(tokenInfo?.max_supply)" :show-extra="false"
                          :token-id="normalizedTokenId"/>
-          </template>
-        </Property>
-        <Property id="evmAddress">
-          <template v-slot:name>EVM Address</template>
-          <template v-slot:value>
-            <EthAddress v-if="ethereumAddress"
-                        :address="ethereumAddress"
-                        :decimals="tokenInfo?.decimals"
-                        :show-import="true"
-                        :show-none="true"
-                        :symbol="tokenSymbol"/>
           </template>
         </Property>
       </template>
@@ -273,7 +291,7 @@ import DashboardCard from "@/components/DashboardCard.vue";
 import BlobValue from "@/components/values/BlobValue.vue";
 import TokenAmount from "@/components/values/TokenAmount.vue";
 import Footer from "@/components/Footer.vue";
-import EthAddress from "@/components/values/EthAddress.vue";
+import MetaMaskImport from "@/components/token/MetaMaskImport.vue";
 import {EntityID} from "@/utils/EntityID";
 import Property from "@/components/Property.vue";
 import NotificationBanner from "@/components/NotificationBanner.vue";
@@ -286,12 +304,15 @@ import AccountLink from "@/components/values/AccountLink.vue";
 import StringValue from "@/components/values/StringValue.vue";
 import {networkRegistry} from "@/schemas/NetworkRegistry";
 import TokenCustomFees from "@/components/token/TokenCustomFees.vue";
+import EVMAddress from "@/components/values/EVMAddress.vue";
+import {makeTokenSymbol} from "@/schemas/HederaUtils";
 
 export default defineComponent({
 
   name: 'TokenDetails',
 
   components: {
+    EVMAddress,
     TokenCustomFees,
     PlayPauseButton,
     NftHolderTable,
@@ -299,7 +320,7 @@ export default defineComponent({
     AccountLink,
     NotificationBanner,
     Property,
-    EthAddress,
+    MetaMaskImport,
     Footer,
     BlobValue,
     DashboardCard,
@@ -337,6 +358,8 @@ export default defineComponent({
             tokenInfoLoader.tokenId.value,
             router.currentRoute.value.params.network as string
         ) : null)
+
+    const displaySymbol = computed(() => makeTokenSymbol(tokenInfoLoader.entity.value, 256))
 
     const notification = computed(() => {
       let result
@@ -376,7 +399,9 @@ export default defineComponent({
 
     return {
       isSmallScreen,
+      isMediumScreen,
       isTouchDevice,
+      displaySymbol,
       tokenInfoLoader,
       tokenInfo: tokenInfoLoader.entity,
       isNft: tokenInfoLoader.isNft,
