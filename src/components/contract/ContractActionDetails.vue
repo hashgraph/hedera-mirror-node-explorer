@@ -150,11 +150,7 @@ export default defineComponent({
   },
 
   props: {
-    action: Object as PropType<ContractAction | undefined>,
-    analyzer: {
-      type: Object as PropType<FunctionCallAnalyzer>,
-      required: true
-    }
+    action: Object as PropType<ContractAction | undefined>
   },
 
   setup(props) {
