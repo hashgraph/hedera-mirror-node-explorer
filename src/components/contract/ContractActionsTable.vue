@@ -92,7 +92,7 @@
         <tr>
           <td/>
           <td colspan="4">
-            <ContractActionDetails :action="props.row.action" :analyzer="analyzer"/>
+            <ContractActionDetails :action="props.row.action"/>
           </td>
         </tr>
       </template>

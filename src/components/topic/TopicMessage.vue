@@ -40,7 +40,7 @@
         <Property id="message" :full-width="true">
           <template v-slot:name>Message</template>
           <template v-slot:value>
-            <BlobValue :blob-value="message" :show-none="true" :base64="true" :pretty="true" class="should-wrap is-numeric"/>
+            <BlobValue :blob-value="message" :show-none="true" :base64="true" :pretty="true"/>
           </template>
         </Property>
         <Property id="runningHashVersion" :full-width="true">
@@ -52,7 +52,7 @@
         <Property id="runningHash" :full-width="true">
           <template v-slot:name>Running Hash</template>
           <template v-slot:value>
-            <BlobValue :blob-value="running_hash" :show-none="true" class="should-wrap is-numeric"/>
+            <BlobValue :blob-value="running_hash" :show-none="true"/>
           </template>
         </Property>
       </template>
