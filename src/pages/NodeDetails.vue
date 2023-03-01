@@ -56,7 +56,7 @@
         <Property id="description">
           <template v-slot:name>Description</template>
           <template v-slot:value>
-            <BlobValue :base64="false" :blob-value="nodeDescription" :show-none="true" class="should-wrap"/>
+            <BlobValue :base64="false" :blob-value="nodeDescription" :show-none="true"/>
           </template>
         </Property>
         <Property id="file">

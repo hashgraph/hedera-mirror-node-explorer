@@ -88,7 +88,7 @@
             <Property id="memo">
               <template v-slot:name>Memo</template>
               <template v-slot:value>
-                <BlobValue :blob-value="contract?.memo" :show-none="true" :base64="true" class="should-wrap"/>
+                <BlobValue :blob-value="contract?.memo" :show-none="true" :base64="true"/>
               </template>
             </Property>
             <Property id="createTransaction">
