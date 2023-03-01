@@ -75,19 +75,19 @@
         <Property id="name">
           <template v-slot:name>Name</template>
           <template v-slot:value>
-            <BlobValue class="should-wrap" v-bind:blob-value="tokenInfo?.name" v-bind:show-none="true"/>
+            <BlobValue v-bind:blob-value="tokenInfo?.name" v-bind:show-none="true"/>
           </template>
         </Property>
         <Property id="symbol">
           <template v-slot:name>Symbol</template>
           <template v-slot:value>
-            <BlobValue class="should-wrap" v-bind:blob-value="tokenInfo?.symbol" v-bind:show-none="true"/>
+            <BlobValue v-bind:blob-value="tokenInfo?.symbol" v-bind:show-none="true"/>
           </template>
         </Property>
         <Property id="memo">
           <template v-slot:name>Memo</template>
           <template v-slot:value>
-            <BlobValue :base64="true" :blob-value="tokenInfo?.memo" :show-none="true" class="should-wrap"/>
+            <BlobValue :base64="true" :blob-value="tokenInfo?.memo" :show-none="true"/>
           </template>
         </Property>
         <Property id="expiresAt">
