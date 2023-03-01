@@ -18,7 +18,7 @@
  *
  */
 
-import {AccountInfo, KeyType, TokenInfo} from "@/schemas/HederaSchemas";
+import {AccountInfo, KeyType, NetworkNode, TokenInfo} from "@/schemas/HederaSchemas";
 import {EntityID} from "@/utils/EntityID";
 import {ethers} from "ethers";
 import {NodeRegistry} from "@/components/node/NodeRegistry";
@@ -105,3 +105,26 @@ export function decodeSolidityErrorMessage(message: string | null): string | nul
     return result
 }
 
+export function makeUnclampedStake(node: NetworkNode): number {
+    return (node.stake_rewarded ?? 0) + (node.stake_not_rewarded ?? 0)
+}
+
+export function makeStakePercentage(node: NetworkNode, stakeTotal: number): string {
+    const formatter = new Intl.NumberFormat("en-US", {
+        style: 'percent',
+        maximumFractionDigits: 1
+    })
+    return formatter.format(node.stake ? node.stake / stakeTotal : 0)
+}
+
+export function makeRewardRate(node: NetworkNode): number {
+    return (node.reward_rate_start ?? 0) / 100000000
+}
+
+export function makeAnnualizedRate(node: NetworkNode): string {
+    const formatter = new Intl.NumberFormat("en-US", {
+        style: 'percent',
+        maximumFractionDigits: 2
+    })
+    return formatter.format(makeRewardRate(node) * 365);
+}

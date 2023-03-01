@@ -102,7 +102,7 @@
                    :delay="tooltipDelay"
                    class="h-tooltip">
           <span class="regular-node-column">
-            {{ makeApproxYearlyRate(props.row) }}
+            {{ makeAnnualizedRate(props.row) }}
           </span>
         </o-tooltip>
       </o-table-column>
@@ -133,6 +133,7 @@ import StakeRange from "@/components/node/StakeRange.vue";
 import {routeManager} from "@/router";
 import {NodeRegistry} from "@/components/node/NodeRegistry";
 import StringValue from "@/components/values/StringValue.vue";
+import {makeAnnualizedRate, makeStakePercentage, makeUnclampedStake} from "@/schemas/HederaUtils";
 
 
 //
@@ -164,24 +165,8 @@ export default defineComponent({
 
     const isCouncilNode = (node: NetworkNode) => NodeRegistry.isCouncilNode(ref(node.node_id ?? null), ref(null))
     const makeDescription = (node: NetworkNode) => NodeRegistry.getDescription(ref(node.node_id ?? null), ref(null))
-    const makeUnclampedStake = (node: NetworkNode) => (node.stake_rewarded ?? 0) + (node.stake_not_rewarded ?? 0)
     const makeWeightPercentage = (node: NetworkNode) => {
-      const formatter = new Intl.NumberFormat("en-US", {
-        style: 'percent',
-        maximumFractionDigits: 1
-      })
-      return formatter.format(node.stake && props.stakeTotal ? node.stake / props.stakeTotal : 0);
-    }
-
-    const rewardRate = (node: NetworkNode) => {
-      return (node.reward_rate_start ?? 0) / 100000000
-    }
-    const makeApproxYearlyRate = (node: NetworkNode) => {
-      const formatter = new Intl.NumberFormat("en-US", {
-        style: 'percent',
-        maximumFractionDigits: 2
-      })
-      return formatter.format(rewardRate(node) * 365);
+      return node.stake && props.stakeTotal ? makeStakePercentage(node, props.stakeTotal) : 0
     }
 
     const handleClick = (node: NetworkNode) => {
@@ -199,7 +184,7 @@ export default defineComponent({
       makeDescription,
       makeUnclampedStake,
       makeWeightPercentage,
-      makeApproxYearlyRate,
+      makeAnnualizedRate,
       handleClick,
       ORUGA_MOBILE_BREAKPOINT,
     }
