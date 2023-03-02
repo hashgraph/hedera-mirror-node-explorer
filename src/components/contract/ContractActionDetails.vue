@@ -140,6 +140,7 @@ import EVMAddress from "@/components/values/EVMAddress.vue";
 import {FunctionCallAnalyzer} from "@/utils/FunctionCallAnalyzer";
 import FunctionInput from "@/components/values/FunctionInput.vue";
 import FunctionResult from "@/components/values/FunctionResult.vue";
+import {decodeSolidityErrorMessage} from "@/schemas/HederaUtils";
 
 export default defineComponent({
   name: 'ContractActionDetails',
@@ -162,7 +163,7 @@ export default defineComponent({
     const errorMessage = computed(() => {
       let result
       if (props.action?.result_data_type != ResultDataType.OUTPUT) {
-        result = props.action?.result_data
+        result = decodeSolidityErrorMessage(props.action?.result_data ?? null)
       } else {
         result = null
       }

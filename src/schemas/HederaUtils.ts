@@ -73,3 +73,35 @@ export function makeOperatorDescription(accountId: string): string | null {
         : NodeRegistry.getDescription(ref(null), ref(accountId))
 }
 
+const errorStringSelector = '0x08c379a0'
+const panicUint256Selector = '0x4e487b71'
+
+export function isSolidityError(message: string | null): boolean {
+    return (message !== null && message.startsWith(errorStringSelector))
+}
+
+export function isSolidityPanic(message: string | null): boolean {
+    return (message !== null && message.startsWith(panicUint256Selector))
+}
+
+export function decodeSolidityErrorMessage(message: string | null): string | null {
+
+    let result = message
+
+    if (isSolidityError(result)) {
+        const reason = ethers.utils.defaultAbiCoder.decode(
+            ['string'],
+            ethers.utils.hexDataSlice(result ?? "", 4)
+        )
+        result = reason.toString() ?? result
+    } else if (isSolidityPanic(result)) {
+        const code = ethers.utils.defaultAbiCoder.decode(
+            ['uint256'],
+            ethers.utils.hexDataSlice(result ?? "", 4)
+        )
+        result = 'Panic(0x' + parseInt(code.toString()).toString(16) + ')'  ?? result
+    }
+
+    return result
+}
+
