@@ -118,7 +118,14 @@ export function makeStakePercentage(node: NetworkNode, stakeTotal: number): stri
 }
 
 export function makeRewardRate(node: NetworkNode): number {
-    return (node.reward_rate_start ?? 0) / 100000000
+    let result
+    const nodeTotalStake = makeUnclampedStake(node)
+    if (nodeTotalStake <= (node.max_stake ?? 0)) {
+        result = (node.reward_rate_start ?? 0) / 100000000
+    } else {
+        result = (node.reward_rate_start ?? 0) * (node.max_stake ?? 0) / nodeTotalStake / 100000000
+    }
+    return result
 }
 
 export function makeAnnualizedRate(node: NetworkNode): string {
