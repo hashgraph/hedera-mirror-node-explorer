@@ -99,7 +99,7 @@
       </template>
 
       <template v-slot:rightContent>
-        <NetworkDashboardItem id="yearlyRate" :value="approxYearlyRate.toString()" name="APPROX ANNUAL EQUIVALENT"
+        <NetworkDashboardItem id="yearlyRate" :value="annualizedRate.toString()" name="APPROX ANNUAL EQUIVALENT"
                               title="Last Period Reward Rate"/>
         <br/><br/>
         <NetworkDashboardItem id="consensusStake" :value="makeFloorHbarAmount(stake)" name="HBAR"
@@ -233,7 +233,7 @@ export default defineComponent({
       isTouchDevice,
       nodeIdNb,
       node: nodeCursor.node,
-      approxYearlyRate: nodeCursor.approxYearlyRate,
+      annualizedRate: nodeCursor.annualizedRate,
       stake: nodeCursor.stake,
       minStake: nodeCursor.minStake,
       maxStake: nodeCursor.maxStake,

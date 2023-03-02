@@ -91,5 +91,5 @@ export class NodeCursor {
     public readonly stakeRewarded = computed(() => this.node.value?.stake_rewarded ?? 0)
     public readonly stakeUnrewarded = computed(() => this.node.value?.stake_not_rewarded ?? 0)
     public readonly rewardRate = computed(() => this.node.value ? makeRewardRate(this.node.value) : 0)
-    public readonly approxYearlyRate = computed(() => this.node.value ? makeAnnualizedRate(this.node.value) : '0%')
+    public readonly annualizedRate = computed(() => this.node.value ? makeAnnualizedRate(this.node.value) : '0%')
 }
