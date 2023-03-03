@@ -38,7 +38,7 @@
     "hashconnect": "^0.1.9",
     "vue": "^3.2.47",
     "vue-axios": "^3.4.0",
-    "vue-router": "^4.0.0-0"
+    "vue-router": "^4.1.6"
   },
   "devDependencies": {
     "@cypress/code-coverage": "^3.9.12",
