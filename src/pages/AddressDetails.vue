@@ -89,7 +89,7 @@ export default defineComponent({
           if (accountId !== null) {
             result = routeManager.makeRouteToAccount(accountId)
           } else {
-            result = routeManager.pageNotFoundRoute
+            result = routeManager.makeRouteToAccount(evmAddress)
           }
         }
 
