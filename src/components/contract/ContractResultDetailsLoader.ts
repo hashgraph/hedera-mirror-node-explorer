@@ -23,7 +23,7 @@ import {EntityLoader} from "@/utils/loader/EntityLoader";
 import axios, {AxiosResponse} from "axios";
 import {computed, Ref} from "vue";
 import {EntityID} from "@/utils/EntityID";
-import {ethers} from "ethers";
+import {decodeSolidityErrorMessage} from "@/schemas/HederaUtils";
 
 export class ContractResultDetailsLoader extends EntityLoader<ContractResultDetails> {
 
@@ -64,19 +64,8 @@ export class ContractResultDetailsLoader extends EntityLoader<ContractResultDeta
         return this.entity.value?.call_result ?? null
     })
 
-    public errorMessage = computed(() => {
-        const errorStringSelector = '0x08c379a0'
-        let message = this.entity.value?.error_message ?? null
-
-        if (message && message.startsWith(errorStringSelector)) {
-            const reason = ethers.utils.defaultAbiCoder.decode(
-                ['string'],
-                ethers.utils.hexDataSlice(message, 4)
-            )
-            message = reason.toString() ?? message
-        }
-        return message
-    })
+    public errorMessage = computed(
+        () => decodeSolidityErrorMessage(this.entity.value?.error_message ?? null))
 
     //
     // EntityLoader
