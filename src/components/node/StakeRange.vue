@@ -174,7 +174,6 @@ export default defineComponent({
   height: 0.5rem;
   border: 1px solid grey;
   position: relative;
-  margin-right: 0.5rem;
   margin-bottom: 1px;
 }
 
