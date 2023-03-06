@@ -86,7 +86,7 @@
 
       <o-table-column id="stake-range-column" v-slot="props" field="stake-range" label="Stake Range" style="  padding-bottom: 2px; padding-top: 12px;">
         <o-tooltip multiline
-                   delay="500"
+                   :delay="tooltipDelay"
                    class="h-tooltip">
           <StakeRange :node="props.row"/>
           <template #content>
