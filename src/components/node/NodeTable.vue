@@ -84,19 +84,41 @@
         </o-tooltip>
       </o-table-column>
 
-      <o-table-column v-slot="props" field="min_stake" label="Min Stake" position="right">
-           <span class="regular-node-column">
-             <HbarAmount :amount="props.row.min_stake ?? 0" :decimals="0"/>
-          </span>
+      <o-table-column id="stake-range-column" v-slot="props" field="stake-range" label="Stake Range" style="  padding-bottom: 2px; padding-top: 12px;">
+        <o-tooltip multiline
+                   delay="500"
+                   class="h-tooltip">
+          <StakeRange :node="props.row"/>
+          <template #content>
+            <div class="is-flex is-justify-content-space-between" style="width: 200px">
+              <p>Rewarded:</p>
+              <div class="has-text-weight-normal">
+                <HbarAmount :amount="props.row.stake_rewarded ?? 0" :decimals="0"/>
+              </div>
+            </div>
+            <div class="is-flex is-justify-content-space-between" style="width: 200px">
+              <p>Not Rewarded:</p>
+              <div class="has-text-weight-normal">
+                <HbarAmount :amount="props.row.stake_not_rewarded ?? 0" :decimals="0"/>
+              </div>
+            </div>
+            <div class="is-flex is-justify-content-space-between" style="width: 200px">
+              <p>Min:</p>
+              <div class="has-text-weight-normal">
+                <HbarAmount :amount="props.row.min_stake ?? 0" :decimals="0"/>
+              </div>
+            </div>
+            <div class="is-flex is-justify-content-space-between" style="width: 200px">
+              <p>Max:</p>
+              <div class="has-text-weight-normal">
+                <HbarAmount :amount="props.row.max_stake ?? 0" :decimals="0"/>
+              </div>
+            </div>
+          </template>
+        </o-tooltip>
       </o-table-column>
 
-      <o-table-column v-slot="props" field="max_stake" label="Max Stake" position="right">
-           <span class="regular-node-column">
-             <HbarAmount :amount="props.row.max_stake ?? 0" :decimals="0"/>
-          </span>
-      </o-table-column>
-
-      <o-table-column v-slot="props" field="last_reward_rate" label="Last Reward Rate" position="right">
+      <o-table-column v-slot="props" field="last_reward_rate" label="Last Reward Rate" position="left">
         <o-tooltip :label="tooltipRewardRate"
                    multiline
                    :delay="tooltipDelay"
@@ -105,10 +127,6 @@
             {{ makeAnnualizedRate(props.row) }}
           </span>
         </o-tooltip>
-      </o-table-column>
-
-      <o-table-column id="stake-range-column" v-slot="props" field="stake-range" label="Stake Range" style="  padding-bottom: 2px; padding-top: 12px;">
-        <StakeRange :node="props.row"/>
       </o-table-column>
 
     </o-table>
