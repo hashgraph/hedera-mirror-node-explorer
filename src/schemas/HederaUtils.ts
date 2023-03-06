@@ -118,14 +118,9 @@ export function makeStakePercentage(node: NetworkNode, stakeTotal: number): stri
 }
 
 export function makeRewardRate(node: NetworkNode): number {
-    let result
-    const nodeTotalStake = makeUnclampedStake(node)
-    if (nodeTotalStake <= (node.max_stake ?? 0)) {
-        result = (node.reward_rate_start ?? 0) / 100000000
-    } else {
-        result = (node.reward_rate_start ?? 0) * (node.max_stake ?? 0) / nodeTotalStake / 100000000
-    }
-    return result
+    // rely on mirror node to provide the actual reward rate (tiny bars rewarded per hbar staked)
+    // here we simply convert to hbars
+    return (node.reward_rate_start ?? 0) / 100000000
 }
 
 export function makeAnnualizedRate(node: NetworkNode): string {
