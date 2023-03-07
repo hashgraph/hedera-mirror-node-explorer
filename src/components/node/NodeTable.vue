@@ -84,7 +84,8 @@
         </o-tooltip>
       </o-table-column>
 
-      <o-table-column id="stake-range-column" v-slot="props" field="stake-range" label="Stake Range" style="  padding-bottom: 2px; padding-top: 12px;">
+      <o-table-column id="stake-range-column" v-slot="props" field="stake-range" label="Stake Range" position="right"
+                      style="padding-bottom: 2px; padding-top: 12px;">
         <o-tooltip multiline
                    :delay="tooltipDelay"
                    class="h-tooltip">
@@ -118,7 +119,7 @@
         </o-tooltip>
       </o-table-column>
 
-      <o-table-column v-slot="props" field="last_reward_rate" label="Last Reward Rate" position="left">
+      <o-table-column v-slot="props" field="last_reward_rate" label="Reward Rate" position="right">
         <o-tooltip :label="tooltipRewardRate"
                    multiline
                    :delay="tooltipDelay"
