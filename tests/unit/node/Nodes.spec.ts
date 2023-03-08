@@ -103,11 +103,26 @@ describe("Nodes.vue", () => {
         expect(cards[1].text()).toMatch(RegExp("^Nodes"))
         const table = cards[1].findComponent(NodeTable)
         expect(table.exists()).toBe(true)
-        expect(table.get('thead').text()).toBe("Node Description Stake Stake Not Rewarded Min Stake Max Stake Last Reward Rate Stake Range")
+        expect(table.get('thead').text()).toBe("Node Description Stake Stake Not Rewarded Stake Range Reward Rate")
         expect(wrapper.get('tbody').text()).toBe(
-            "0" + "Hosted by Hedera | East Coast, USA" + tooltipStake + "6,000,000(25%)" + tooltipNotRewarded + "1,000,000" + "1,000,000" + "30,000,000" + tooltipRewardRate + "1%" +
-            "1" + "Hosted by Hedera | East Coast, USA" + tooltipStake + "9,000,000(37.5%)" + tooltipNotRewarded + "2,000,000" + "1,000,000" + "30,000,000" + tooltipRewardRate + "2%" +
-            "2" + "Hosted by Hedera | Central, USA" + tooltipStake + "9,000,000(37.5%)" + tooltipNotRewarded + "2,000,000" + "1,000,000" + "30,000,000" + tooltipRewardRate + "3%"
+            "0" +
+            "Hosted by Hedera | East Coast, USA" +
+            tooltipStake + "6,000,000(25%)" +
+            tooltipNotRewarded + "1,000,000" +
+            "Rewarded:5,000,000Not Rewarded:1,000,000Min:1,000,000Max:30,000,000" +
+            tooltipRewardRate + "1%" +
+            "1" +
+            "Hosted by Hedera | East Coast, USA" +
+            tooltipStake + "9,000,000(37.5%)" +
+            tooltipNotRewarded + "2,000,000" +
+            "Rewarded:7,000,000Not Rewarded:2,000,000Min:1,000,000Max:30,000,000" +
+            tooltipRewardRate + "2%" +
+            "2" +
+            "Hosted by Hedera | Central, USA" +
+            tooltipStake + "9,000,000(37.5%)" +
+            tooltipNotRewarded + "2,000,000" +
+            "Rewarded:7,000,000Not Rewarded:2,000,000Min:1,000,000Max:30,000,000" +
+            tooltipRewardRate + "3%"
         )
     });
 
