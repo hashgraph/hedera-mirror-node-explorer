@@ -725,7 +725,7 @@ class TestTableController extends TableController<number, number> {
     }
 
     public async load(key: number|null, operator: KeyOperator, order: SortOrder, limit: number): Promise<number[]|null> {
-        let result = new Array<number>()
+        const result = new Array<number>()
 
         this.loadCounter += 1
 

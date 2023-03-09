@@ -131,7 +131,7 @@ describe("TokenDetails.vue", () => {
         const mock = new MockAdapter(axios);
 
         const testTokenId = SAMPLE_NONFUNGIBLE_DUDE.token_id
-        let testTokenSymbol = SAMPLE_NONFUNGIBLE_DUDE.symbol
+        const testTokenSymbol = SAMPLE_NONFUNGIBLE_DUDE.symbol
         const matcher1 = "/api/v1/tokens/" + testTokenId
         mock.onGet(matcher1).reply(200, SAMPLE_NONFUNGIBLE_DUDE);
         const matcher2 = "/api/v1/tokens/" + testTokenId + "/nfts"
