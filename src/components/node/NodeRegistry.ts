@@ -79,9 +79,16 @@ export class NodeRegistry {
 
     public readonly stakeScaleEnd: ComputedRef<number> = computed(() => {
         let result = 0
+        let nbNodes = 0
         for (const n of this.nodes.value) {
-            const thisMax = Math.max(n.max_stake ?? 0, n.stake ?? 0)
-            result = Math.max(result, thisMax)
+            if (NodeRegistry.isCouncilNode(ref(n.node_id??0))) {
+                const thisMax = Math.max(n.max_stake ?? 0, (n.stake_rewarded ?? 0) + (n.stake_not_rewarded ?? 0))
+                result += thisMax
+                nbNodes++
+            }
+        }
+        if (nbNodes) {
+            result = result / nbNodes * 1.3
         }
         return result
     })
