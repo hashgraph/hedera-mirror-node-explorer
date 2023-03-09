@@ -72,7 +72,7 @@
         <NetworkDashboardItem id="currentReward" name="HBAR" title="Current 24h Period Reward" :value="currentReward.toString()"/>
         <NetworkDashboardItem id="monthlyReward" name="HBAR" title="Approx Monthly Reward" :value="monthlyReward.toString()"/>
         <NetworkDashboardItem id="yearlyReward" name="HBAR" title="Approx Yearly Reward" :value="yearlyReward.toString()"/>
-        <NetworkDashboardItem id="yearlyRate" title="Approx Yearly Reward Rate" :value="yearlyRate"/>
+        <NetworkDashboardItem id="yearlyRate" title="Approx Yearly Reward Rate" :value="annualizedRate"/>
       </div>
 
       <div v-html="htmlNotice"/>
@@ -176,7 +176,7 @@ export default defineComponent({
       currentReward,
       monthlyReward,
       yearlyReward,
-      yearlyRate: nodeCursor.value.approxYearlyRate,
+      annualizedRate: nodeCursor.value.annualizedRate,
       nodes: NodeRegistry.instance.nodes,
       makeNodeDescription,
       makeNodeSelectorDescription:makeNodeSelectorDescription,
