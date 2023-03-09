@@ -73,7 +73,7 @@ describe("NodeTable.vue", () => {
         await router.push("/") // To avoid "missing required param 'network'" error
 
         let testTotalStaked = 0
-        for (let node of SAMPLE_NETWORK_NODES.nodes) {
+        for (const node of SAMPLE_NETWORK_NODES.nodes) {
             testTotalStaked += node.stake
         }
         const wrapper = mount(NodeTable, {
