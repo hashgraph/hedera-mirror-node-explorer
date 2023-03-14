@@ -159,7 +159,8 @@
         <Property id="autoRenewPeriod">
           <template v-slot:name>Auto Renew Period</template>
           <template v-slot:value>
-            <DurationValue v-bind:number-value="account?.auto_renew_period"/>
+            <DurationValue v-if="false" v-bind:number-value="account?.auto_renew_period"/>
+            <span v-else class="has-text-grey">Not yet enabled</span>
           </template>
         </Property>
         <Property id="maxAutoAssociation">
