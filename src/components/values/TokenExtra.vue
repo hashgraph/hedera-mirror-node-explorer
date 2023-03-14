@@ -2,7 +2,7 @@
   -
   - Hedera Mirror Node Explorer
   -
-  - Copyright (C) 2021 - 2022 Hedera Hashgraph, LLC
+  - Copyright (C) 2021 - 2023 Hedera Hashgraph, LLC
   -
   - Licensed under the Apache License, Version 2.0 (the "License");
   - you may not use this file except in compliance with the License.
@@ -25,12 +25,12 @@
 <template>
   <template v-if="tokenId != null">
     <template v-if="useAnchor">
-      <router-link :to="{name: 'TokenDetails', params: {tokenId: tokenId}}">
-        <span class="h-is-smaller h-is-extra-text should-wrap">{{ extra }}</span>
+      <router-link :to="tokenRoute">
+        <span class="h-is-smaller h-is-extra-text should-wrap" style="word-break: break-all">{{ extra }}</span>
       </router-link>
     </template>
     <template v-else>
-      <span class="h-is-smaller h-is-extra-text should-wrap">{{ extra }}</span>
+      <span class="h-is-smaller h-is-extra-text should-wrap" style="word-break: break-all">{{ extra }}</span>
     </template>
   </template>
 </template>
@@ -41,11 +41,12 @@
 
 <script lang="ts">
 
-import {defineComponent, onMounted, ref, watch} from "vue";
+import {computed, defineComponent, onMounted, ref, watch} from "vue";
 import {AxiosResponse} from "axios";
 import {TokenInfo} from "@/schemas/HederaSchemas";
-import {TokenInfoCollector} from "@/utils/TokenInfoCollector";
+import {TokenInfoCollector} from "@/utils/collector/TokenInfoCollector";
 import {makeTokenSymbol} from "@/schemas/HederaUtils";
+import {routeManager} from "@/router";
 
 export default defineComponent({
   name: "TokenExtra",
@@ -87,7 +88,9 @@ export default defineComponent({
       updateExtra()
     })
 
-    return { extra }
+    const tokenRoute = computed(() => props.tokenId ? routeManager.makeRouteToToken(props.tokenId) : null)
+
+    return { extra, tokenRoute }
   }
 });
 

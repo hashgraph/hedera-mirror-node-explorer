@@ -4,7 +4,7 @@
  *
  * Hedera Mirror Node Explorer
  *
- * Copyright (C) 2021 - 2022 Hedera Hashgraph, LLC
+ * Copyright (C) 2021 - 2023 Hedera Hashgraph, LLC
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -44,7 +44,6 @@ describe("TransactionTableController.ts", () => {
         // Just after construction
         expect(tc.pageSize.value).toBe(PAGE_SIZE)
         expect(tc.autoRefresh.value).toBe(false)
-        expect(tc.autoStopped.value).toBe(false)
         expect(tc.currentPage.value).toBe(1)
         expect(tc.loading.value).toBe(false)
         expect(tc.totalRowCount.value).toBe(50)
@@ -55,7 +54,6 @@ describe("TransactionTableController.ts", () => {
         await flushPromises()
         expect(tc.pageSize.value).toBe(PAGE_SIZE)
         expect(tc.autoRefresh.value).toBe(false)
-        expect(tc.autoStopped.value).toBe(false)
         expect(tc.currentPage.value).toBe(1)
         expect(tc.loading.value).toBe(false)
         expect(tc.totalRowCount.value).toBe(50)
@@ -70,7 +68,6 @@ describe("TransactionTableController.ts", () => {
         await flushPromises()
         expect(tc.pageSize.value).toBe(PAGE_SIZE)
         expect(tc.autoRefresh.value).toBe(true)
-        expect(tc.autoStopped.value).toBe(false)
         expect(tc.currentPage.value).toBe(1)
         expect(tc.loading.value).toBe(false)
         expect(tc.totalRowCount.value).toBe(50)
@@ -82,7 +79,6 @@ describe("TransactionTableController.ts", () => {
         await flushPromises()
         expect(tc.pageSize.value).toBe(PAGE_SIZE)
         expect(tc.autoRefresh.value).toBe(false)
-        expect(tc.autoStopped.value).toBe(false)
         expect(tc.currentPage.value).toBe(1)
         expect(tc.loading.value).toBe(false)
         expect(tc.totalRowCount.value).toBe(50)
@@ -117,7 +113,6 @@ describe("TransactionTableController.ts", () => {
         await flushPromises()
         expect(tc.pageSize.value).toBe(PAGE_SIZE)
         expect(tc.autoRefresh.value).toBe(false)
-        expect(tc.autoStopped.value).toBe(false)
         expect(tc.currentPage.value).toBe(1)
         expect(tc.loading.value).toBe(false)
         expect(tc.totalRowCount.value).toBe(50)
@@ -126,13 +121,12 @@ describe("TransactionTableController.ts", () => {
 
         // Setup account id
         // After setup:
-        //      - auto-refresh is disabled
+        //      - auto-refresh is enabled
         //      - row array contains transactions from SAMPLE_CONTRACTCALL_TRANSACTIONS
         accountId.value = "0.0.4" // Value is unimportant
         await flushPromises()
         expect(tc.pageSize.value).toBe(PAGE_SIZE)
         expect(tc.autoRefresh.value).toBe(true)
-        expect(tc.autoStopped.value).toBe(false)
         expect(tc.currentPage.value).toBe(1)
         expect(tc.loading.value).toBe(false)
         expect(tc.totalRowCount.value).toBe(2)
@@ -145,7 +139,6 @@ describe("TransactionTableController.ts", () => {
         await flushPromises()
         expect(tc.pageSize.value).toBe(PAGE_SIZE)
         expect(tc.autoRefresh.value).toBe(false)
-        expect(tc.autoStopped.value).toBe(false)
         expect(tc.currentPage.value).toBe(1)
         expect(tc.loading.value).toBe(false)
         expect(tc.totalRowCount.value).toBe(50)
@@ -184,7 +177,6 @@ describe("TransactionTableController.ts", () => {
         await flushPromises()
         expect(tc.pageSize.value).toBe(PAGE_SIZE)
         expect(tc.autoRefresh.value).toBe(false)
-        expect(tc.autoStopped.value).toBe(false)
         expect(tc.currentPage.value).toBe(1)
         expect(tc.loading.value).toBe(false)
         expect(tc.totalRowCount.value).toBe(50)
@@ -200,7 +192,6 @@ describe("TransactionTableController.ts", () => {
         await flushPromises()
         expect(tc.pageSize.value).toBe(PAGE_SIZE)
         expect(tc.autoRefresh.value).toBe(false)
-        expect(tc.autoStopped.value).toBe(false)
         expect(tc.currentPage.value).toBe(10)
         expect(tc.loading.value).toBe(false)
         expect(tc.totalRowCount.value).toBe(47)
@@ -213,7 +204,6 @@ describe("TransactionTableController.ts", () => {
         await flushPromises()
         expect(tc.pageSize.value).toBe(PAGE_SIZE)
         expect(tc.autoRefresh.value).toBe(false)
-        expect(tc.autoStopped.value).toBe(false)
         expect(tc.currentPage.value).toBe(10)
         expect(tc.loading.value).toBe(false)
         expect(tc.totalRowCount.value).toBe(50)
@@ -247,7 +237,6 @@ describe("TransactionTableController.ts", () => {
         // Sanity checks
         expect(tc.pageSize.value).toBe(PAGE_SIZE)
         expect(tc.autoRefresh.value).toBe(false)
-        expect(tc.autoStopped.value).toBe(false)
         expect(tc.currentPage.value).toBe(1)
         expect(tc.loading.value).toBe(false)
         expect(tc.totalRowCount.value).toBe(50)
@@ -261,7 +250,6 @@ describe("TransactionTableController.ts", () => {
         await flushPromises()
         expect(tc.pageSize.value).toBe(PAGE_SIZE)
         expect(tc.autoRefresh.value).toBe(true)
-        expect(tc.autoStopped.value).toBe(false)
         expect(tc.currentPage.value).toBe(1)
         expect(tc.loading.value).toBe(false)
         expect(tc.totalRowCount.value).toBe(2)
@@ -275,7 +263,6 @@ describe("TransactionTableController.ts", () => {
         await flushPromises()
         expect(tc.pageSize.value).toBe(PAGE_SIZE)
         expect(tc.autoRefresh.value).toBe(true)
-        expect(tc.autoStopped.value).toBe(false)
         expect(tc.currentPage.value).toBe(1)
         expect(tc.loading.value).toBe(false)
         expect(tc.totalRowCount.value).toBe(0)
@@ -289,7 +276,6 @@ describe("TransactionTableController.ts", () => {
         await flushPromises()
         expect(tc.pageSize.value).toBe(PAGE_SIZE)
         expect(tc.autoRefresh.value).toBe(true)
-        expect(tc.autoStopped.value).toBe(false)
         expect(tc.currentPage.value).toBe(1)
         expect(tc.loading.value).toBe(false)
         expect(tc.totalRowCount.value).toBe(2)
@@ -303,7 +289,6 @@ describe("TransactionTableController.ts", () => {
         await flushPromises()
         expect(tc.pageSize.value).toBe(PAGE_SIZE)
         expect(tc.autoRefresh.value).toBe(true)
-        expect(tc.autoStopped.value).toBe(false)
         expect(tc.totalRowCount.value).toBe(2)
         expect(tc.loading.value).toBe(false)
         expect(tc.totalRowCount.value).toBe(2)
@@ -318,7 +303,6 @@ describe("TransactionTableController.ts", () => {
         await flushPromises()
         expect(tc.pageSize.value).toBe(PAGE_SIZE)
         expect(tc.autoRefresh.value).toBe(false)
-        expect(tc.autoStopped.value).toBe(false)
         expect(tc.currentPage.value).toBe(1)
         expect(tc.loading.value).toBe(false)
         expect(tc.totalRowCount.value).toBe(50)

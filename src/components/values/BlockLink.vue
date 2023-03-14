@@ -2,7 +2,7 @@
   -
   - Hedera Mirror Node Explorer
   -
-  - Copyright (C) 2021 - 2022 Hedera Hashgraph, LLC
+  - Copyright (C) 2021 - 2023 Hedera Hashgraph, LLC
   -
   - Licensed under the Apache License, Version 2.0 (the "License");
   - you may not use this file except in compliance with the License.
@@ -24,7 +24,7 @@
 
 <template>
   <div v-if="blockNumber" class="is-inline-block">
-    <router-link :to="{name: 'BlockDetails', params: {blockHon: blockNumber}}">
+    <router-link :to="blockRoute">
       <span class="is-numeric">{{ blockNumber }}</span>
     </router-link>
   </div>
@@ -36,7 +36,8 @@
 
 <script lang="ts">
 
-import {defineComponent} from "vue";
+import {computed, defineComponent} from "vue";
+import {routeManager} from "@/router";
 
 export default defineComponent({
   name: "BlockLink",
@@ -44,6 +45,11 @@ export default defineComponent({
   props: {
     blockNumber: Number,
   },
+
+  setup(props) {
+    const blockRoute = computed(() => props.blockNumber ? routeManager.makeRouteToBlock(props.blockNumber) : null)
+    return { blockRoute }
+  }
 });
 
 </script>

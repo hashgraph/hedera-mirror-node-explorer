@@ -2,7 +2,7 @@
   -
   - Hedera Mirror Node Explorer
   -
-  - Copyright (C) 2021 - 2022 Hedera Hashgraph, LLC
+  - Copyright (C) 2021 - 2023 Hedera Hashgraph, LLC
   -
   - Licensed under the Apache License, Version 2.0 (the "License");
   - you may not use this file except in compliance with the License.
@@ -74,7 +74,7 @@
 import {ComputedRef, defineComponent, inject, PropType, Ref} from 'vue';
 import {Transaction} from "@/schemas/HederaSchemas";
 import TimestampValue from "@/components/values/TimestampValue.vue";
-import router from "@/router";
+import {routeManager} from "@/router";
 import BlobValue from "@/components/values/BlobValue.vue";
 import {ORUGA_MOBILE_BREAKPOINT} from '@/App.vue';
 import EmptyTable from "@/components/EmptyTable.vue";
@@ -96,7 +96,9 @@ export default defineComponent({
     const isTouchDevice = inject('isTouchDevice', false)
 
     const handleClick = (t: Transaction) => {
-      router.push({name: 'TopicDetails', params: {topicId: t.entity_id}})
+      if (t.entity_id) {
+        routeManager.routeToTopic(t.entity_id)
+      }
     }
 
     return {

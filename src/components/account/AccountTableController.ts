@@ -2,7 +2,7 @@
  *
  * Hedera Mirror Node Explorer
  *
- * Copyright (C) 2021 - 2022 Hedera Hashgraph, LLC
+ * Copyright (C) 2021 - 2023 Hedera Hashgraph, LLC
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -26,12 +26,15 @@ import {Router} from "vue-router";
 
 export class AccountTableController extends TableController<AccountInfo, string> {
 
+    private readonly pubKey: string|null
+
     //
     // Public
     //
 
-    public constructor(router: Router, pageSize: ComputedRef<number>) {
-        super(router, pageSize, 10 * pageSize.value, 5000, 10, 100);
+    public constructor(router: Router, pageSize: ComputedRef<number>, pubKey: string|null = null) {
+        super(router, pageSize, 10 * pageSize.value, 5000, 10, 100)
+        this.pubKey = pubKey
     }
 
     //
@@ -42,13 +45,17 @@ export class AccountTableController extends TableController<AccountInfo, string>
 
         const params = {} as {
             limit: number
-            "account.id": string | undefined
+            "account.id": string | undefined,
+            "account.publickey": string | undefined,
             order: string
         }
         params.limit = limit
         params.order = order
         if (accountId !== null) {
             params["account.id"] = operator + ":" + accountId
+        }
+        if (this.pubKey !== null) {
+            params["account.publickey"] = this.pubKey
         }
         const cb = (r: AxiosResponse<AccountsResponse>): Promise<AccountInfo[] | null> => {
             return Promise.resolve(r.data.accounts ?? [])

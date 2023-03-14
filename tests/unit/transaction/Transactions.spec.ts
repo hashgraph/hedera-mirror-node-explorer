@@ -2,7 +2,7 @@
  *
  * Hedera Mirror Node Explorer
  *
- * Copyright (C) 2021 - 2022 Hedera Hashgraph, LLC
+ * Copyright (C) 2021 - 2023 Hedera Hashgraph, LLC
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -24,7 +24,7 @@ import axios from "axios";
 import {SAMPLE_TOKEN, SAMPLE_TRANSACTIONS} from "../Mocks";
 import Transactions from "@/pages/Transactions.vue";
 import DashboardCard from "@/components/DashboardCard.vue";
-import PlayPauseButton from "@/utils/table/PlayPauseButton.vue";
+import PlayPauseButton from "@/components/PlayPauseButton.vue";
 import TransactionFilterSelect from "@/components/transaction/TransactionFilterSelect.vue";
 import TransactionTable from "@/components/transaction/TransactionTable.vue";
 import MockAdapter from "axios-mock-adapter";
@@ -92,7 +92,7 @@ describe("Transactions.vue", () => {
             "HASHCRYPTO APPROVE ALLOWANCECRYPTO CREATE ACCOUNTCRYPTO DELETE ACCOUNTCRYPTO DELETE ALLOWANCECRYPTO " +
             "DELETE LIVE HASHCRYPTO TRANSFERCRYPTO UPDATE ACCOUNTETHEREUM TRANSACTIONFILE " +
             "APPENDFILE CREATEFILE DELETEFILE UPDATEFREEZEHCS CREATE TOPICHCS DELETE TOPICHCS SUBMIT MESSAGEHCS " +
-            "UPDATE TOPICSCHEDULE CREATESCHEDULE DELETESCHEDULE SIGNSYSTEM DELETESYSTEM UNDELETETOKEN " +
+            "UPDATE TOPICNODE STAKE UPDATEPSEUDORANDOM NUMBER GENERATESCHEDULE CREATESCHEDULE DELETESCHEDULE SIGNSYSTEM DELETESYSTEM UNDELETETOKEN " +
             "ASSOCIATETOKEN BURNTOKEN CREATETOKEN DELETETOKEN DISSOCIATETOKEN FEE SCHEDULE UPDATETOKEN FREEZETOKEN " +
             "KYC GRANTTOKEN KYC REVOKETOKEN MINTTOKEN PAUSETOKEN UNFREEZETOKEN UNPAUSETOKEN " +
             "UPDATETOKEN WIPEUNCHECKED SUBMIT")
@@ -102,7 +102,7 @@ describe("Transactions.vue", () => {
         expect(table.get('thead').text()).toBe("ID Type Content Time")
         expect(table.get('tbody').text()).toBe(
             "0.0.29624024@1646025139.152901498CRYPTO TRANSFER0.0.29624024\n\n" +
-            "1\n\n" +
+            "123423\n\n" +
             "0.0.296939115:12:31.6676 AMFeb 28, 2022, UTC"
         )
     });

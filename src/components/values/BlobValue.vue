@@ -2,7 +2,7 @@
   -
   - Hedera Mirror Node Explorer
   -
-  - Copyright (C) 2021 - 2022 Hedera Hashgraph, LLC
+  - Copyright (C) 2021 - 2023 Hedera Hashgraph, LLC
   -
   - Licensed under the Apache License, Version 2.0 (the "License");
   - you may not use this file except in compliance with the License.
@@ -24,7 +24,15 @@
 
 <template>
   <a v-if="isURL" v-bind:href="blobValue">{{ blobValue }}</a>
-  <span v-else-if="blobValue">{{ decodedValue }}</span>
+  <div v-else-if="jsonValue"
+       class="h-is-json is-inline-block has-text-left is-family-monospace h-is-text-size-3">{{ jsonValue }}</div>
+  <template v-else-if="blobValue">
+    <div v-if="limitingFactor && isMediumScreen" class="h-is-one-line is-inline-block"
+         :style="{'max-width': windowWidth-limitingFactor + 'px'}">{{ decodedValue }}</div>
+    <div v-else-if="limitingFactor" class="h-is-one-line is-inline-block"
+         :style="{'max-width': windowWidth-limitingFactor+200 + 'px'}">{{ decodedValue }}</div>
+    <div v-else>{{ decodedValue }}</div>
+  </template>
   <span v-else-if="showNone && !initialLoading" class="has-text-grey">None</span>
   <span v-else/>
 </template>
@@ -50,10 +58,17 @@ export default defineComponent({
     base64: {
       type: Boolean,
       default: false
-    }
+    },
+    pretty: {
+      type: Boolean,
+      default: false
+    },
+    limitingFactor: Number
   },
 
   setup(props) {
+    const isMediumScreen = inject('isMediumScreen', true)
+    const windowWidth = inject('windowWidth', 1280)
     const isURL = computed(() => {
       let result: boolean
       if (props.blobValue) {
@@ -69,6 +84,20 @@ export default defineComponent({
       return result
     })
 
+    const jsonValue = computed(() => {
+      let result
+      if (decodedValue.value && props.pretty) {
+        try {
+          result = JSON.parse(decodedValue.value)
+        } catch (e) {
+          result = null
+        }
+      } else {
+        result = null
+      }
+      return result
+    })
+
     const decodedValue = computed(() => {
 
       const base64regex = /^([0-9a-zA-Z+/]{4})*(([0-9a-zA-Z+/]{2}==)|([0-9a-zA-Z+/]{3}=))?$/;
@@ -77,7 +106,7 @@ export default defineComponent({
       if (props.blobValue) {
         if (props.base64 && base64regex.test(props.blobValue)) {
           try {
-            result = atob(props.blobValue)
+            result = Buffer.from(props.blobValue, 'base64').toString()
           } catch {
             result = props.blobValue
           }
@@ -93,7 +122,10 @@ export default defineComponent({
     const initialLoading = inject(initialLoadingKey, ref(false))
 
     return {
+      isMediumScreen,
+      windowWidth,
       isURL,
+      jsonValue,
       decodedValue,
       initialLoading
     }

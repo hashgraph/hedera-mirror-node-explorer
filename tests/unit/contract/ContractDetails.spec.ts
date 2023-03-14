@@ -2,7 +2,7 @@
  *
  * Hedera Mirror Node Explorer
  *
- * Copyright (C) 2021 - 2022 Hedera Hashgraph, LLC
+ * Copyright (C) 2021 - 2023 Hedera Hashgraph, LLC
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -22,11 +22,12 @@ import {flushPromises, mount} from "@vue/test-utils"
 import router from "@/router";
 import axios from "axios";
 import {
-    SAMPLE_COINGECKO,
     SAMPLE_CONTRACT,
     SAMPLE_CONTRACT_AS_ACCOUNT,
     SAMPLE_CONTRACT_DELETED,
     SAMPLE_CONTRACT_DUDE,
+    SAMPLE_NETWORK_EXCHANGERATE,
+    SAMPLE_TRANSACTION,
     SAMPLE_TRANSACTIONS
 } from "../Mocks";
 import MockAdapter from "axios-mock-adapter";
@@ -34,6 +35,7 @@ import Oruga from "@oruga-ui/oruga-next";
 import ContractDetails from "@/pages/ContractDetails.vue";
 import {HMSF} from "@/utils/HMSF";
 import NotificationBanner from "@/components/NotificationBanner.vue";
+import {TransactionID} from "@/utils/TransactionID";
 
 /*
     Bookmarks
@@ -75,8 +77,8 @@ describe("ContractDetails.vue", () => {
         const matcher3 = "/api/v1/transactions"
         mock.onGet(matcher3).reply(200, SAMPLE_TRANSACTIONS);
 
-        const matcher4 = "https://api.coingecko.com/api/v3/coins/hedera-hashgraph"
-        mock.onGet(matcher4).reply(200, SAMPLE_COINGECKO);
+        const matcher4 = "/api/v1/network/exchangerate"
+        mock.onGet(matcher4).reply(200, SAMPLE_NETWORK_EXCHANGERATE);
 
         const wrapper = mount(ContractDetails, {
             global: {
@@ -90,19 +92,21 @@ describe("ContractDetails.vue", () => {
         await flushPromises()
         // console.log(wrapper.html())
 
-        expect(wrapper.text()).toMatch(RegExp("^Contract " + SAMPLE_CONTRACT.contract_id))
+        expect(wrapper.text()).toMatch(RegExp("^Contract Contract ID:" + SAMPLE_CONTRACT.contract_id))
         expect(wrapper.get("#balanceValue").text()).toBe("2.00000000$0.4921")
         expect(wrapper.get("#keyValue").text()).toBe("4210 5082 0e14 85ac dd59 7260 88e0 e4a2 130e bbbb 7000 9f64 0ad9 5c78 dd5a 7b38Copy to ClipboardED25519")
         expect(wrapper.get("#memoValue").text()).toBe("Mirror Node acceptance test: 2022-03-07T15:09:15.228564328Z Create contract")
-        expect(wrapper.get("#aliasValue").text()).toBe("1220 0000 fc06 34e2 ab45 5eff 393f 0481 9efa 262f e5e6 ab1c 7ed1 d4f8 5fbc d8e6 e296Copy to Clipboard")
+        expect(wrapper.get("#createTransactionValue").text()).toBe(TransactionID.normalize(SAMPLE_TRANSACTION.transaction_id))
         expect(wrapper.get("#expiresAtValue").text()).toBe("None")
         expect(wrapper.get("#autoRenewPeriodValue").text()).toBe("90 days")
+        expect(wrapper.get("#autoRenewAccountValue").text()).toBe("0.0.730632")
+        expect(wrapper.get("#maxAutoAssociationValue").text()).toBe("0")
         expect(wrapper.get("#obtainerValue").text()).toBe("None")
         expect(wrapper.get("#proxyAccountValue").text()).toBe("None")
         expect(wrapper.get("#validFromValue").text()).toBe("3:09:15.9474 PMMar 7, 2022, UTC")
         expect(wrapper.get("#validUntilValue").text()).toBe("None")
         expect(wrapper.get("#fileValue").text()).toBe("0.0.749773")
-        expect(wrapper.get("#evmAddress").text()).toBe("EVM Address0000 0000 0000 0000 0000 0000 0000 0000 000b 70cfCopy to Clipboard")
+        expect(wrapper.get("#evmAddress").text()).toBe("EVM Address:0x00000000000000000000000000000000000b70cfCopy to Clipboard")
 
     });
 
@@ -122,9 +126,6 @@ describe("ContractDetails.vue", () => {
         const matcher3 = "/api/v1/transactions"
         mock.onGet(matcher3).reply(200, SAMPLE_TRANSACTIONS);
 
-        const matcher4 = "https://api.coingecko.com/api/v3/coins/hedera-hashgraph"
-        mock.onGet(matcher4).reply(200, SAMPLE_COINGECKO);
-
         const wrapper = mount(ContractDetails, {
             global: {
                 plugins: [router, Oruga]
@@ -137,15 +138,15 @@ describe("ContractDetails.vue", () => {
         await flushPromises()
         // console.log(wrapper.text())
 
-        expect(wrapper.text()).toMatch(RegExp("^Contract " + SAMPLE_CONTRACT.contract_id))
+        expect(wrapper.text()).toMatch(RegExp("^Contract Contract ID:" + SAMPLE_CONTRACT.contract_id))
 
         expect(wrapper.findComponent(NotificationBanner).exists()).toBe(false)
 
         expect(wrapper.get("#keyValue").text()).toBe("4210 5082 0e14 85ac dd59 7260 88e0 e4a2 130e bbbb 7000 9f64 0ad9 5c78 dd5a 7b38Copy to ClipboardED25519")
         expect(wrapper.get("#memoValue").text()).toBe("Mirror Node acceptance test: 2022-03-07T15:09:15.228564328Z Create contract")
-        expect(wrapper.get("#aliasValue").text()).toBe("1220 0000 fc06 34e2 ab45 5eff 393f 0481 9efa 262f e5e6 ab1c 7ed1 d4f8 5fbc d8e6 e296Copy to Clipboard")
+        expect(wrapper.get("#autoRenewAccountValue").text()).toBe("0.0.730632")
         expect(wrapper.get("#fileValue").text()).toBe("0.0.749773")
-        expect(wrapper.get("#evmAddress").text()).toBe("EVM Address0000 0000 0000 0000 0000 0000 0000 0000 000b 70cfCopy to Clipboard")
+        expect(wrapper.get("#evmAddress").text()).toBe("EVM Address:0x00000000000000000000000000000000000b70cfCopy to Clipboard")
 
         const contract2 = SAMPLE_CONTRACT_DUDE
         matcher1 = "/api/v1/contracts/" + contract2.contract_id
@@ -160,16 +161,17 @@ describe("ContractDetails.vue", () => {
         await flushPromises()
         // console.log(wrapper.text())
 
-        expect(wrapper.text()).toMatch(RegExp("^Contract " + SAMPLE_CONTRACT_DUDE.contract_id))
+        expect(wrapper.text()).toMatch(RegExp("Contract Contract ID:" + SAMPLE_CONTRACT_DUDE.contract_id))
         expect(wrapper.get("#keyValue").text()).toBe("None")
+        expect(wrapper.get("#maxAutoAssociationValue").text()).toBe("None")
         expect(wrapper.get("#memoValue").text()).toBe("None")
-        expect(wrapper.get("#aliasValue").text()).toBe("1220 0000 fc06 34e2 ab45 5eff 393f 0481 9efa 262f e5e6 ab1c 7ed1 d4f8 5fbc d8e6 e296Copy to Clipboard")
         expect(wrapper.get("#fileValue").text()).toBe("0.0.803267")
-        expect(wrapper.get("#evmAddress").text()).toBe("EVM Address0000 0000 0000 0000 0000 0000 0000 0000 000c 41dfCopy to Clipboard")
+        expect(wrapper.get("#evmAddress").text()).toBe("EVM Address:0x00000000000000000000000000000000000b70cfCopy to Clipboard")
 
     });
 
-    it("Should display notification of grace period", async () => {
+    // TODO: re-enable after Feb 9th
+    it.skip("Should display notification of grace period", async () => {
 
         await router.push("/") // To avoid "missing required param 'network'" error
 
@@ -184,9 +186,6 @@ describe("ContractDetails.vue", () => {
 
         const matcher3 = "/api/v1/transactions"
         mock.onGet(matcher3).reply(200, SAMPLE_TRANSACTIONS);
-
-        const matcher4 = "https://api.coingecko.com/api/v3/coins/hedera-hashgraph"
-        mock.onGet(matcher4).reply(200, SAMPLE_COINGECKO);
 
         const wrapper = mount(ContractDetails, {
             global: {
@@ -207,6 +206,41 @@ describe("ContractDetails.vue", () => {
         expect(banner.text()).toBe("Contract has expired and is in grace period")
     });
 
+    // TODO: remove after Feb 9th
+    it("Should NOT display notification of grace period", async () => {
+
+        await router.push("/") // To avoid "missing required param 'network'" error
+
+        const mock = new MockAdapter(axios);
+
+        const contract = SAMPLE_CONTRACT_DUDE
+        const matcher1 = "/api/v1/contracts/" + contract.contract_id
+        mock.onGet(matcher1).reply(200, contract);
+
+        const matcher2 = "/api/v1/accounts/" + contract.contract_id
+        mock.onGet(matcher2).reply(200, SAMPLE_CONTRACT_AS_ACCOUNT);
+
+        const matcher3 = "/api/v1/transactions"
+        mock.onGet(matcher3).reply(200, SAMPLE_TRANSACTIONS);
+
+        const wrapper = mount(ContractDetails, {
+            global: {
+                plugins: [router, Oruga]
+            },
+            props: {
+                contractId: contract.contract_id
+            },
+        });
+
+        await flushPromises()
+        // console.log(wrapper.text())
+
+        expect(wrapper.text()).toMatch(RegExp("^Contract Contract ID:" + SAMPLE_CONTRACT_DUDE.contract_id))
+
+        const banner = wrapper.findComponent(NotificationBanner)
+        expect(banner.exists()).toBe(false)
+    });
+
     it("Should display notification of deleted contract", async () => {
 
         await router.push("/") // To avoid "missing required param 'network'" error
@@ -223,9 +257,6 @@ describe("ContractDetails.vue", () => {
         const matcher3 = "/api/v1/transactions"
         mock.onGet(matcher3).reply(200, SAMPLE_TRANSACTIONS);
 
-        const matcher4 = "https://api.coingecko.com/api/v3/coins/hedera-hashgraph"
-        mock.onGet(matcher4).reply(200, SAMPLE_COINGECKO);
-
         const wrapper = mount(ContractDetails, {
             global: {
                 plugins: [router, Oruga]
@@ -238,7 +269,7 @@ describe("ContractDetails.vue", () => {
         await flushPromises()
         // console.log(wrapper.text())
 
-        expect(wrapper.text()).toMatch(RegExp("^Contract " + contract.contract_id))
+        expect(wrapper.text()).toMatch(RegExp("^Contract Contract ID:" + contract.contract_id))
 
         const banner = wrapper.findComponent(NotificationBanner)
         expect(banner.exists()).toBe(true)

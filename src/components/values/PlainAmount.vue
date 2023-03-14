@@ -2,7 +2,7 @@
   -
   - Hedera Mirror Node Explorer
   -
-  - Copyright (C) 2021 - 2022 Hedera Hashgraph, LLC
+  - Copyright (C) 2021 - 2023 Hedera Hashgraph, LLC
   -
   - Licensed under the Apache License, Version 2.0 (the "License");
   - you may not use this file except in compliance with the License.
@@ -23,7 +23,7 @@
 <!-- --------------------------------------------------------------------------------------------------------------- -->
 
 <template>
-  <span v-if="formattedAmount !== noneLabel">{{ formattedAmount }}</span>
+  <span v-if="formattedAmount !== null">{{ formattedAmount }}</span>
   <span v-else-if="initialLoading"/>
   <span v-else class="has-text-grey">{{ noneLabel }}</span>
 </template>
@@ -34,27 +34,30 @@
 
 <script lang="ts">
 
-import {computed, defineComponent, inject, ref} from "vue";
+import {computed, defineComponent, inject, PropType, ref} from "vue";
 import {initialLoadingKey} from "@/AppKeys";
 
 export default defineComponent({
   name: "PlainAmount",
 
   props: {
-    amount: Number,
+    amount: {
+      type: Number as PropType<number|null>,
+      default: null
+    },
     noneLabel: {
       type: String,
-      default: "0"
+      default: "None"
     }
   },
 
   setup(props) {
     const formattedAmount = computed(() => {
-      let result: string
-        if (props.amount) {
+      let result: string|null
+        if (props.amount !== null && !isNaN(props.amount)) {
           result = props.amount.toLocaleString()
         } else {
-          result = props.noneLabel
+          result = null
         }
       return result
     })

@@ -2,7 +2,7 @@
  *
  * Hedera Mirror Node Explorer
  *
- * Copyright (C) 2021 - 2022 Hedera Hashgraph, LLC
+ * Copyright (C) 2021 - 2023 Hedera Hashgraph, LLC
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -191,6 +191,15 @@ body {
     content: "\210F";
     font-weight: lighter;
 }
+.h-is-json {
+    white-space: pre-wrap;
+}
+.h-is-one-line {
+    overflow: hidden;
+    white-space: nowrap;
+    text-overflow: ellipsis;
+}
+
 .w200 {
     max-width: 200px;
     overflow: hidden;
@@ -222,7 +231,7 @@ body {
     text-overflow: ellipsis;
 }
 .should-wrap {
-    word-break: break-all;
+    word-break: break-word;
 }
 // Transfer Graphs
 .h-is-debit {

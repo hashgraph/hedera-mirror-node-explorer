@@ -4,7 +4,7 @@
  *
  * Hedera Mirror Node Explorer
  *
- * Copyright (C) 2021 - 2022 Hedera Hashgraph, LLC
+ * Copyright (C) 2021 - 2023 Hedera Hashgraph, LLC
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -85,7 +85,9 @@ describe("TokenTransferGraphC.vue", () => {
         // console.log(wrapper.html())
         // console.log(wrapper.text())
 
-        expect(wrapper.text()).toBe("MINT\n\n10\n\n0.0.200")
+        expect(wrapper.text()).toBe("MINT\n\n" +
+            "1023423\n\n" +
+            "0.0.200")
     })
 
     test("Single token, single source, single dest", async () => {
@@ -115,7 +117,7 @@ describe("TokenTransferGraphC.vue", () => {
 
         expect(wrapper.text()).toBe(
             "0.0.100\n\n" +
-            "10\n\n" +
+            "1023423\n\n" +
             "0.0.200")
     })
 
@@ -147,7 +149,7 @@ describe("TokenTransferGraphC.vue", () => {
 
         expect(wrapper.text()).toBe(
             "0.0.100\n\n" +
-            "10\n\n" +
+            "1023423\n\n" +
             "0.0.200\n\n\n\n" +
             "0.0.201")
     })
@@ -177,7 +179,9 @@ describe("TokenTransferGraphC.vue", () => {
         // console.log(wrapper.html())
         // console.log(wrapper.text())
 
-        expect(wrapper.text()).toBe("0.0.100\n\n10\n\nBURN0.0.101")
+        expect(wrapper.text()).toBe("0.0.100\n\n" +
+            "1023423\n\n" +
+            "BURN0.0.101")
     })
 
     test("Single token, two sources, single dest", async () => {
@@ -208,7 +212,7 @@ describe("TokenTransferGraphC.vue", () => {
 
         expect(wrapper.text()).toBe(
             "0.0.100\n\n" +
-            "10\n\n" +
+            "1023423\n\n" +
             "0.0.2000.0.101")
     })
 
@@ -241,7 +245,7 @@ describe("TokenTransferGraphC.vue", () => {
 
         expect(wrapper.text()).toBe(
             "0.0.100\n\n" +
-            "10\n\n" +
+            "1023423\n\n" +
             "0.0.2000.0.101\n\n\n\n" +
             "0.0.201")
     })
@@ -282,10 +286,10 @@ describe("TokenTransferGraphC.vue", () => {
         // console.log(wrapper.text())
 
         expect(wrapper.text()).toBe("0.0.100\n\n" +
-            "10\n\n" +
+            "1023423\n\n" +
             "0.0.2000.0.101\n\n\n\n" +
             "0.0.2010.0.100\n\n" +
-            "0.06\n\n" +
+            "0.0623423 DUDE\n\n" +
             "0.0.200")
     })
 

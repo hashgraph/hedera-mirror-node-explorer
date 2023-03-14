@@ -2,7 +2,7 @@
   -
   - Hedera Mirror Node Explorer
   -
-  - Copyright (C) 2021 - 2022 Hedera Hashgraph, LLC
+  - Copyright (C) 2021 - 2023 Hedera Hashgraph, LLC
   -
   - Licensed under the Apache License, Version 2.0 (the "License");
   - you may not use this file except in compliance with the License.
@@ -86,6 +86,7 @@ import ArrowSegment from "@/components/transfer_graphs/ArrowSegment.vue";
 import HbarAmount from "@/components/values/HbarAmount.vue";
 import {Transaction} from "@/schemas/HederaSchemas";
 import {HbarTransferLayout} from "@/components/transfer_graphs/layout/HbarTransferLayout";
+import {NodeRegistry} from "@/components/node/NodeRegistry";
 
 export default defineComponent({
   name: "HbarTransferOutline",
@@ -97,8 +98,8 @@ export default defineComponent({
 
     const hbarTransferLayout = ref(new HbarTransferLayout(props.transaction, false))
 
-    watch(() => props.transaction, () => {
-      hbarTransferLayout.value = new HbarTransferLayout(props.transaction)
+    watch([() => props.transaction, NodeRegistry.instance.nodes], () => {
+      hbarTransferLayout.value = new HbarTransferLayout(props.transaction, false)
     })
 
     return {

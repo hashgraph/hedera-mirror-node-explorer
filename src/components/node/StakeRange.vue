@@ -2,7 +2,7 @@
   -
   - Hedera Mirror Node Explorer
   -
-  - Copyright (C) 2021 - 2022 Hedera Hashgraph, LLC
+  - Copyright (C) 2021 - 2023 Hedera Hashgraph, LLC
   -
   - Licensed under the Apache License, Version 2.0 (the "License");
   - you may not use this file except in compliance with the License.
@@ -24,13 +24,17 @@
 
 <template>
   <div class="is-flex-direction-column stake-range-column">
-    <progress id="range" class="progress is-large stake-progress"
-              :class="{'is-info': !isStakeInRange, 'is-success': isStakeInRange}"
-              style="width: 120px; max-height: 8px; margin-bottom: 1px;"
-              max="100" v-bind:value="stakeProgress">
-    </progress>
+    <div class="miniBar" :style="{'width': progressSize+'px'}">
+      <div class="miniBarProgress" :class="stakeRewardedColorClass"
+           :style="{'left': 0, 'width': stakeRewardedProgress+'%'}"></div>
+      <div class="miniBarProgress has-background-info"
+           :style="{'left': stakeRewardedProgress+'%', 'width': stakeNotRewardedProgress+'%'}"></div>
+      <div class="miniBarProgress"
+           :style="{'left': stakeProgress+'%', 'width': (100-stakeProgress)+'%'}"></div>
+    </div>
+
     <div class="is-flex">
-      <img alt="Minimum staking mark" src="@/assets/min-mark.png"
+        <img alt="Minimum staking mark" src="@/assets/min-mark.png"
            class="image" style="max-height: 8px" :style="{'margin-left': minStakePix}">
       <img alt="Maximum staking mark" src="@/assets/max-mark.png"
            class="image" style="max-height: 8px" :style="{'margin-left': maxStakePix}">
@@ -51,6 +55,9 @@
 
 import {computed, defineComponent, PropType} from "vue";
 import {NetworkNode} from "@/schemas/HederaSchemas";
+import {NodeRegistry} from "@/components/node/NodeRegistry";
+
+const progressSize = 250 // size (width) of progress in pixels
 
 export default defineComponent({
   name: 'StakeRange',
@@ -63,8 +70,6 @@ export default defineComponent({
 
   setup(props) {
 
-    const stake = computed(
-        () => props.node?.stake ?? null)
     const minStake = computed(
         () => props.node?.min_stake ?? null)
     const maxStake = computed(
@@ -73,25 +78,51 @@ export default defineComponent({
     const unclampedStake = computed(
         () => (props.node?.stake_rewarded ?? 0) + (props.node?.stake_not_rewarded ?? 0))
 
+    // Alternative implementation for absolute stake range
     const progressScale = computed(
-        () => maxStake.value ? maxStake.value * 1.2 : 0)
+        () => NodeRegistry.instance.stakeScaleEnd.value)
 
-    const stakeProgress = computed(
-        () => progressScale.value ? unclampedStake.value  / progressScale.value * 100 : 0)
+    // Alternative implementation for relative stake range
+    // const progressScale = computed(
+    //     () => maxStake.value ? maxStake.value * 1.2 : 0)
 
-    const isStakeInRange = computed(() => {
-      let result: boolean
-      if (stake.value && minStake.value && maxStake.value) {
-        result = stake.value >= minStake.value && stake.value < maxStake.value
+    const stakeRewardedProgress = computed(() => {
+      let result
+      if (progressScale.value) {
+        if ((props.node?.stake_rewarded ?? 0) < progressScale.value) {
+          result = (props.node?.stake_rewarded ?? 0) / progressScale.value * 100
+        } else {
+          result = 100
+        }
+      } else {
+        result = 0
       }
-      else {
-        result = false
-      }
-
       return result
     })
 
-    const progressSize = 120 // size (width) of progress in pixels
+    const stakeNotRewardedProgress = computed(() => {
+      let result
+      if (progressScale.value) {
+        if (unclampedStake.value < progressScale.value) {
+          result = (props.node?.stake_not_rewarded ?? 0) / progressScale.value * 100
+        } else {
+          result = 100 - stakeRewardedProgress.value
+        }
+      } else {
+        result = 0
+      }
+      return result
+    })
+
+    const stakeProgress = computed(() => stakeRewardedProgress.value + stakeNotRewardedProgress.value)
+
+    const stakeRewardedColorClass = computed(
+        () => unclampedStake.value && minStake.value && unclampedStake.value < minStake.value
+            ? 'has-background-success'
+            : props.node?.stake_rewarded && maxStake.value && props.node.stake_rewarded <= maxStake.value
+                ? 'has-background-success'
+                : 'has-background-success'
+    )
 
     const minStakePercent = computed(() =>
         minStake.value && progressScale.value ? minStake.value / progressScale.value * 100 : 0)
@@ -109,8 +140,11 @@ export default defineComponent({
 
 
     return {
+      stakeRewardedProgress,
+      stakeNotRewardedProgress,
       stakeProgress,
-      isStakeInRange,
+      stakeRewardedColorClass,
+      progressSize,
       minStakePix,
       maxStakePix,
     }
@@ -128,6 +162,19 @@ export default defineComponent({
 .stake-range-column {
   padding-bottom: 2px;
   padding-top: 12px;
+}
+
+.miniBarProgress {
+  height: 100%;
+  position: absolute;
+  top: 0rem;
+  left: 0rem;
+}
+.miniBar {
+  height: 0.5rem;
+  border: 1px solid grey;
+  position: relative;
+  margin-bottom: 1px;
 }
 
 </style>

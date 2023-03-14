@@ -4,7 +4,7 @@
  *
  * Hedera Mirror Node Explorer
  *
- * Copyright (C) 2021 - 2022 Hedera Hashgraph, LLC
+ * Copyright (C) 2021 - 2023 Hedera Hashgraph, LLC
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -41,7 +41,8 @@ describe('Token Navigation', () => {
             .then(($id) => {
                 // cy.log('Selected transaction Id: ' + $id.text())
                 cy.url().should('include', '/testnet/token/' + $id.text())
-                cy.contains('Non Fungible Token ' + $id.text())
+                cy.contains('Non Fungible Token')
+                cy.contains('Token ID:' + $id.text())
             })
 
         cy.go('back')
@@ -59,15 +60,17 @@ describe('Token Navigation', () => {
             .then(($id) => {
                 // cy.log('Selected transaction Id: ' + $id.text())
                 cy.url().should('include', '/testnet/token/' + $id.text())
-                cy.contains('Fungible Token ' + $id.text())
+                cy.contains('Fungible Token')
+                cy.contains('Token ID:' + $id.text())
             })
     })
 
-    const nftId = "0.0.33957315"
+    const nftId = "0.0.1752721"
     it('should follow links from NFT details', () => {
-        cy.visit('testnet/token/' + nftId)
-        cy.url().should('include', '/testnet/token/' + nftId)
-        cy.contains('Non Fungible Token ' + nftId)
+        cy.visit('mainnet/token/' + nftId)
+        cy.url().should('include', '/mainnet/token/' + nftId)
+        cy.contains('Non Fungible Token')
+        cy.contains('Token ID:' + nftId)
 
         cy.get('table')
             .find('tbody tr')
@@ -79,16 +82,17 @@ describe('Token Navigation', () => {
             .click()
             .then(($id) => {
                 // cy.log('Selected account Id: ' + $id.text())
-                cy.url().should('include', '/testnet/account/' + $id.text())
-                cy.contains('Account ' + $id.text())
+                cy.url().should('include', '/mainnet/account/' + $id.text())
+                cy.contains('Account ID:' + $id.text())
             })
     })
 
-    const tokenId = "0.0.33958222"
+    const tokenId = "0.0.1738807"
     it('should follow links from token details', () => {
-        cy.visit('testnet/token/' + tokenId)
-        cy.url().should('include', '/testnet/token/' + tokenId)
-        cy.contains('Fungible Token ' + tokenId)
+        cy.visit('mainnet/token/' + tokenId)
+        cy.url().should('include', '/mainnet/token/' + tokenId)
+        cy.contains('Fungible Token')
+        cy.contains('Token ID:' + tokenId)
 
         cy.get('table')
             .find('tbody tr')
@@ -99,8 +103,8 @@ describe('Token Navigation', () => {
             .click()
             .then(($id) => {
                 // cy.log('Selected account Id: ' + $id.text())
-                cy.url().should('include', '/testnet/account/' + $id.text())
-                cy.contains('Account ' + $id.text())
+                cy.url().should('include', '/mainnet/account/' + $id.text())
+                cy.contains('Account ID:' + $id.text())
             })
     })
 
@@ -115,11 +119,12 @@ describe('Token Navigation', () => {
             .contains('Token with ID ' + unknownID + ' was not found')
     })
 
-    const tokenAddress = "0x000000000000000000000000000000000206294e"
+    const tokenAddress = "0x00000000000000000000000000000000001a8837"
     it('should follow links from token details using ERC20 address', () => {
-        cy.visit('testnet/token/' + tokenAddress)
-        cy.url().should('include', '/testnet/token/' + tokenAddress)
-        cy.contains('Fungible Token ' + tokenId)
+        cy.visit('mainnet/token/' + tokenAddress)
+        cy.url().should('include', '/mainnet/token/' + tokenAddress)
+        cy.contains('Fungible Token')
+        cy.contains('Token ID:' + tokenId)
 
         cy.get('table')
             .find('tbody tr')
@@ -130,8 +135,8 @@ describe('Token Navigation', () => {
             .click()
             .then(($id) => {
                 // cy.log('Selected account Id: ' + $id.text())
-                cy.url().should('include', '/testnet/account/' + $id.text())
-                cy.contains('Account ' + $id.text())
+                cy.url().should('include', '/mainnet/account/' + $id.text())
+                cy.contains('Account ID:' + $id.text())
             })
     })
 })

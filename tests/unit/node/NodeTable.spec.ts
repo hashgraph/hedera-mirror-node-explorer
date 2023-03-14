@@ -2,7 +2,7 @@
  *
  * Hedera Mirror Node Explorer
  *
- * Copyright (C) 2021 - 2022 Hedera Hashgraph, LLC
+ * Copyright (C) 2021 - 2023 Hedera Hashgraph, LLC
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -25,6 +25,9 @@ import Oruga from "@oruga-ui/oruga-next";
 import {HMSF} from "@/utils/HMSF";
 import NodeTable from "@/components/node/NodeTable.vue";
 import {NetworkNode} from "@/schemas/HederaSchemas";
+import MockAdapter from "axios-mock-adapter";
+import axios from "axios";
+import {NodeRegistry} from "@/components/node/NodeRegistry";
 
 /*
     Bookmarks
@@ -58,6 +61,11 @@ describe("NodeTable.vue", () => {
     const tooltipRewardRate = "This is an approximate annual reward rate based on the reward earned during the " +
         "last 24h period."
 
+    const mock = new MockAdapter(axios);
+    const matcher1 = "/api/v1/network/nodes"
+    mock.onGet(matcher1).reply(200, SAMPLE_NETWORK_NODES);
+    NodeRegistry.instance.reload()
+
     it("should list the 3 nodes in the table", async () => {
 
         process.env = Object.assign(process.env, { VUE_APP_ENABLE_STAKING: true });
@@ -65,7 +73,7 @@ describe("NodeTable.vue", () => {
         await router.push("/") // To avoid "missing required param 'network'" error
 
         let testTotalStaked = 0
-        for (let node of SAMPLE_NETWORK_NODES.nodes) {
+        for (const node of SAMPLE_NETWORK_NODES.nodes) {
             testTotalStaked += node.stake
         }
         const wrapper = mount(NodeTable, {
@@ -83,12 +91,27 @@ describe("NodeTable.vue", () => {
         // console.log(wrapper.text())
         // console.log(wrapper.html())
 
-        expect(wrapper.get('thead').text()).toBe("Node Account Description Stake Stake Not Rewarded Last Reward Rate Stake Range")
+        expect(wrapper.get('thead').text()).toBe("Node Description Stake Stake Not Rewarded Stake Range Reward Rate")
         expect(wrapper.get('tbody').findAll('tr').length).toBe(3)
         expect(wrapper.get('tbody').text()).toBe(
-            "0" + "0.0.3" + "Hosted by Hedera | East Coast, USA" + tooltipStake + "6,000,000(25%)" + tooltipNotRewarded + "1,000,000" + tooltipRewardRate + "1%" +
-            "1" + "0.0.4" + "Hosted by Hedera | East Coast, USA" + tooltipStake + "9,000,000(37.5%)" + tooltipNotRewarded + "2,000,000" + tooltipRewardRate + "2%" +
-            "2" + "0.0.5" + "Hosted by Hedera | Central, USA" + tooltipStake + "9,000,000(37.5%)" + tooltipNotRewarded + "2,000,000" + tooltipRewardRate + "3%"
+            "0" +
+            "Hosted by Hedera | East Coast, USA" +
+            tooltipStake + "6,000,000(25%)" +
+            tooltipNotRewarded + "1,000,000" +
+            "Rewarded:5,000,000Not Rewarded:1,000,000Min:1,000,000Max:30,000,000" +
+            tooltipRewardRate + "1%" +
+            "1" +
+            "Hosted by Hedera | East Coast, USA" +
+            tooltipStake + "9,000,000(37.5%)" +
+            tooltipNotRewarded + "2,000,000" +
+            "Rewarded:7,000,000Not Rewarded:2,000,000Min:1,000,000Max:30,000,000" +
+            tooltipRewardRate + "2%" +
+            "2" +
+            "Hosted by Hedera | Central, USA" +
+            tooltipStake + "9,000,000(37.5%)" +
+            tooltipNotRewarded + "2,000,000" +
+            "Rewarded:7,000,000Not Rewarded:2,000,000Min:1,000,000Max:30,000,000" +
+            tooltipRewardRate + "3%"
         )
 
         wrapper.unmount()

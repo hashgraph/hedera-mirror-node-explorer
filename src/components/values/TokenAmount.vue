@@ -2,7 +2,7 @@
   -
   - Hedera Mirror Node Explorer
   -
-  - Copyright (C) 2021 - 2022 Hedera Hashgraph, LLC
+  - Copyright (C) 2021 - 2023 Hedera Hashgraph, LLC
   -
   - Licensed under the Apache License, Version 2.0 (the "License");
   - you may not use this file except in compliance with the License.
@@ -23,12 +23,10 @@
 <!-- --------------------------------------------------------------------------------------------------------------- -->
 
 <template>
-  <span class="is-numeric">{{ formattedAmount }}</span>
-  <template v-if="showExtra && tokenId != null">
-    <span class="ml-2">
-      <TokenExtra v-bind:token-id="tokenId" v-bind:use-anchor="useAnchor"/>
-    </span>
-  </template>
+  <span class="is-numeric" :class="{'mr-2': showExtra && tokenId}">{{ formattedAmount }}</span>
+  <span v-if="showExtra && tokenId != null">
+    <TokenExtra v-bind:token-id="tokenId" v-bind:use-anchor="useAnchor"/>
+  </span>
 </template>
 
 <!-- --------------------------------------------------------------------------------------------------------------- -->
@@ -40,7 +38,7 @@
 import {computed, defineComponent, inject, onMounted, ref, watch} from "vue";
 import {AxiosResponse} from "axios";
 import {TokenInfo} from "@/schemas/HederaSchemas";
-import {TokenInfoCollector} from "@/utils/TokenInfoCollector";
+import {TokenInfoCollector} from "@/utils/collector/TokenInfoCollector";
 import TokenExtra from "@/components/values/TokenExtra.vue";
 import {initialLoadingKey} from "@/AppKeys";
 

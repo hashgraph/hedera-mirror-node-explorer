@@ -1,8 +1,10 @@
+// noinspection DuplicatedCode
+
 /*-
  *
  * Hedera Mirror Node Explorer
  *
- * Copyright (C) 2021 - 2022 Hedera Hashgraph, LLC
+ * Copyright (C) 2021 - 2023 Hedera Hashgraph, LLC
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -30,8 +32,7 @@ import {
     SAMPLE_ACCOUNT_HBAR_BALANCE,
     SAMPLE_ACCOUNT_STAKING_ACCOUNT,
     SAMPLE_ACCOUNT_STAKING_NODE,
-    SAMPLE_COINGECKO,
-    SAMPLE_FAILED_TRANSACTIONS,
+    SAMPLE_FAILED_TRANSACTIONS, SAMPLE_NETWORK_EXCHANGERATE,
     SAMPLE_NETWORK_NODES,
     SAMPLE_NONFUNGIBLE,
     SAMPLE_TOKEN,
@@ -44,6 +45,8 @@ import TransactionTable from "@/components/transaction/TransactionTable.vue";
 import {HMSF} from "@/utils/HMSF";
 import NotificationBanner from "@/components/NotificationBanner.vue";
 import {TransactionID} from "@/utils/TransactionID";
+import TransactionFilterSelect from "@/components/transaction/TransactionFilterSelect.vue";
+import {NodeRegistry} from "@/components/node/NodeRegistry";
 
 /*
     Bookmarks
@@ -70,7 +73,6 @@ HMSF.forceUTC = true
 
 describe("AccountDetails.vue", () => {
 
-    const ALIAS_B32 = "CIQAAAH4AY2OFK2FL37TSPYEQGPPUJRP4XTKWHD62HKPQX543DTOFFQ"
     const ALIAS_HEX = "0x12200000fc0634e2ab455eff393f04819efa262fe5e6ab1c7ed1d4f85fbcd8e6e296"
 
     it("Should display account details", async () => {
@@ -96,11 +98,14 @@ describe("AccountDetails.vue", () => {
         const matcher5 = "/api/v1/balances"
         mock.onGet(matcher5).reply(200, SAMPLE_ACCOUNT_BALANCES);
 
-        const matcher6 = "https://api.coingecko.com/api/v3/coins/hedera-hashgraph"
-        mock.onGet(matcher6).reply(200, SAMPLE_COINGECKO);
+        const matcher6 = "/api/v1/network/exchangerate"
+        mock.onGet(matcher6).reply(200, SAMPLE_NETWORK_EXCHANGERATE);
 
         const matcher7 = "/api/v1/transactions?timestamp=" + SAMPLE_ACCOUNT.created_timestamp
         mock.onGet(matcher7).reply(200, SAMPLE_TRANSACTIONS);
+
+        const matcher8 = "/api/v1/accounts/" + SAMPLE_ACCOUNT.account + "/rewards"
+        mock.onGet(matcher8).reply(200, { rewards: [] })
 
         const wrapper = mount(AccountDetails, {
             global: {
@@ -114,20 +119,39 @@ describe("AccountDetails.vue", () => {
         await flushPromises()
         // console.log(wrapper.html())
 
-        expect(wrapper.text()).toMatch(RegExp("^Account " + SAMPLE_ACCOUNT.account))
+        expect(wrapper.text()).toMatch("Account Account ID:" + SAMPLE_ACCOUNT.account)
         expect(wrapper.get("#balanceValue").text()).toBe("23.42647909$5.7637998234231ĦFRENSKINGDOM")
         expect(wrapper.get("#keyValue").text()).toBe(
             "aa2f 7b3e 759f 4531 ec2e 7941 afa4 49e6 a6e6 10ef b52a dae8 9e9c d8e9 d40d dcbf" +
             "Copy to Clipboard" +
             "ED25519")
         expect(wrapper.get("#memoValue").text()).toBe("None")
-        expect(wrapper.get("#aliasValue").text()).toBe(ALIAS_B32 + ALIAS_HEX)
+        expect(wrapper.get("#aliasValue").text()).toBe(ALIAS_HEX + 'Copy to Clipboard')
         expect(wrapper.get("#createTransactionValue").text()).toBe(TransactionID.normalize(SAMPLE_TRANSACTION.transaction_id))
 
         expect(wrapper.get("#expiresAtValue").text()).toBe("None")
         expect(wrapper.get("#autoRenewPeriodValue").text()).toBe("90 days")
         expect(wrapper.get("#maxAutoAssociationValue").text()).toBe("0")
         expect(wrapper.get("#receiverSigRequiredValue").text()).toBe("false")
+
+        expect(wrapper.get("#evmAddress").text()).toBe(
+            "EVM Address:0x00000000000000000000000000000000000b2607Copy to Clipboard")
+        expect(wrapper.get("#ethereumNonceValue").text()).toBe("0")
+
+        expect(wrapper.get("#stakedToName").text()).toBe("Staked to")
+        expect(wrapper.get("#stakedToValue").text()).toBe("None")
+
+        const select = wrapper.findComponent(TransactionFilterSelect)
+        expect(select.exists()).toBe(true)
+        expect(select.text()).toBe(
+            "TYPES: ALLCONTRACT CALLCONTRACT CREATECONTRACT DELETECONTRACT UPDATECRYPTO ADD LIVE " +
+            "HASHCRYPTO APPROVE ALLOWANCECRYPTO CREATE ACCOUNTCRYPTO DELETE ACCOUNTCRYPTO DELETE ALLOWANCECRYPTO " +
+            "DELETE LIVE HASHCRYPTO TRANSFERCRYPTO UPDATE ACCOUNTETHEREUM TRANSACTIONFILE " +
+            "APPENDFILE CREATEFILE DELETEFILE UPDATEFREEZEHCS CREATE TOPICHCS DELETE TOPICHCS SUBMIT MESSAGEHCS " +
+            "UPDATE TOPICNODE STAKE UPDATEPSEUDORANDOM NUMBER GENERATESCHEDULE CREATESCHEDULE DELETESCHEDULE SIGNSYSTEM DELETESYSTEM UNDELETETOKEN " +
+            "ASSOCIATETOKEN BURNTOKEN CREATETOKEN DELETETOKEN DISSOCIATETOKEN FEE SCHEDULE UPDATETOKEN FREEZETOKEN " +
+            "KYC GRANTTOKEN KYC REVOKETOKEN MINTTOKEN PAUSETOKEN UNFREEZETOKEN UNPAUSETOKEN " +
+            "UPDATETOKEN WIPEUNCHECKED SUBMIT")
 
         expect(wrapper.find("#recentTransactions").exists()).toBe(true)
         expect(wrapper.findComponent(TransactionTable).exists()).toBe(true)
@@ -157,8 +181,8 @@ describe("AccountDetails.vue", () => {
         const matcher5 = "/api/v1/balances"
         mock.onGet(matcher5).reply(200, SAMPLE_ACCOUNT_BALANCES);
 
-        const matcher6 = "https://api.coingecko.com/api/v3/coins/hedera-hashgraph"
-        mock.onGet(matcher6).reply(200, SAMPLE_COINGECKO);
+        let matcher8 = "/api/v1/accounts/" + SAMPLE_ACCOUNT.account + "/rewards"
+        mock.onGet(matcher8).reply(200, { rewards: [] })
 
         const wrapper = mount(AccountDetails, {
             global: {
@@ -172,7 +196,7 @@ describe("AccountDetails.vue", () => {
         // console.log(wrapper.html())
         // console.log(wrapper.text())
 
-        expect(wrapper.text()).toMatch(RegExp("^Account " + SAMPLE_ACCOUNT.account))
+        expect(wrapper.text()).toMatch("Account Account ID:" + SAMPLE_ACCOUNT.account)
         expect(wrapper.get("#keyValue").text()).toBe(
             "aa2f 7b3e 759f 4531 ec2e 7941 afa4 49e6 a6e6 10ef b52a dae8 9e9c d8e9 d40d dcbf" +
             "Copy to Clipboard" +
@@ -186,6 +210,9 @@ describe("AccountDetails.vue", () => {
         matcher3 = "/api/v1/tokens/" + token2.token_id
         mock.onGet(matcher3).reply(200, token2);
 
+        matcher8 = "/api/v1/accounts/" + SAMPLE_ACCOUNT_DUDE.account + "/rewards"
+        mock.onGet(matcher8).reply(200, { rewards: [] })
+
         await wrapper.setProps({
             accountId: SAMPLE_ACCOUNT_DUDE.account ?? undefined
         })
@@ -193,13 +220,13 @@ describe("AccountDetails.vue", () => {
         // console.log(wrapper.html())
         // console.log(wrapper.text())
 
-        expect(wrapper.text()).toMatch(RegExp("^Account " + SAMPLE_ACCOUNT_DUDE.account))
+        expect(wrapper.text()).toMatch("Account Account ID:" + SAMPLE_ACCOUNT_DUDE.account)
         expect(wrapper.get("#keyValue").text()).toBe(
             "38f1 ea46 0e95 d97e ea13 aefa c760 eaf9 9015 4b80 a360 8ab0 1d4a 2649 44d6 8746" +
             "Copy to Clipboard" +
             "ED25519")
         expect(wrapper.get("#memoValue").text()).toBe("Account Dude Memo in clear")
-        expect(wrapper.get("#aliasValue").text()).toBe("None")
+        expect(wrapper.find("#aliasValue").exists()).toBe(false)
         expect(wrapper.get("#expiresAtValue").text()).toBe("3:33:21.4109 AMApr 11, 2022, UTC")
         expect(wrapper.get("#autoRenewPeriodValue").text()).toBe("77d 3h 40min")
         expect(wrapper.get("#maxAutoAssociationValue").text()).toBe("10")
@@ -255,8 +282,8 @@ describe("AccountDetails.vue", () => {
         const matcher5 = "/api/v1/balances"
         mock.onGet(matcher5).reply(200, SAMPLE_ACCOUNT_BALANCES);
 
-        const matcher6 = "https://api.coingecko.com/api/v3/coins/hedera-hashgraph"
-        mock.onGet(matcher6).reply(200, SAMPLE_COINGECKO);
+        const matcher8 = "/api/v1/accounts/" + SAMPLE_ACCOUNT_DELETED.account + "/rewards"
+        mock.onGet(matcher8).reply(200, { rewards: [] })
 
         const wrapper = mount(AccountDetails, {
             global: {
@@ -270,7 +297,7 @@ describe("AccountDetails.vue", () => {
         await flushPromises()
         // console.log(wrapper.text())
 
-            expect(wrapper.text()).toMatch(RegExp("^Account " + deletedAccount.account))
+            expect(wrapper.text()).toMatch(RegExp("Account Account ID:" + deletedAccount.account))
 
         const banner = wrapper.findComponent(NotificationBanner)
         expect(banner.exists()).toBe(true)
@@ -292,12 +319,16 @@ describe("AccountDetails.vue", () => {
 
         const matcher3 = "/api/v1/network/nodes"
         mock.onGet(matcher3).reply(200, SAMPLE_NETWORK_NODES);
+        NodeRegistry.instance.reload()
 
         const matcher4 = "/api/v1/balances"
         mock.onGet(matcher4).reply(200, SAMPLE_ACCOUNT_HBAR_BALANCE);
 
-        const matcher5 = "https://api.coingecko.com/api/v3/coins/hedera-hashgraph"
-        mock.onGet(matcher5).reply(200, SAMPLE_COINGECKO);
+        const matcher5 = "/api/v1/network/exchangerate"
+        mock.onGet(matcher5).reply(200, SAMPLE_NETWORK_EXCHANGERATE);
+
+        const matcher8 = "/api/v1/accounts/" + SAMPLE_ACCOUNT_STAKING_NODE.account + "/rewards"
+        mock.onGet(matcher8).reply(200, { rewards: [] })
 
         const wrapper = mount(AccountDetails, {
             global: {
@@ -311,9 +342,9 @@ describe("AccountDetails.vue", () => {
         await flushPromises()
         // console.log(wrapper.html())
 
-        expect(wrapper.get("#stakedNodeValue").text()).toBe("1 - Hosted by Hedera | East Coast, USA")
-        expect(wrapper.find("#stakedAccount").exists()).toBe(false)
-        expect(wrapper.get("#pendingRewardValue").text()).toBe("0.00000000$0.0000Period Started Mar 3, 2022")
+        expect(wrapper.get("#stakedToName").text()).toBe("Staked to")
+        expect(wrapper.get("#stakedToValue").text()).toBe("Node 1 - Hosted by Hedera | East Coast, USA")
+        expect(wrapper.get("#pendingRewardValue").text()).toBe("0.12345678$0.0304Period Started Nov 11, 2022, 00:00 UTC")
         expect(wrapper.get("#declineRewardValue").text()).toBe("Accepted")
     });
 
@@ -332,12 +363,16 @@ describe("AccountDetails.vue", () => {
 
         const matcher3 = "/api/v1/network/nodes"
         mock.onGet(matcher3).reply(200, SAMPLE_NETWORK_NODES);
+        NodeRegistry.instance.reload()
 
         const matcher4 = "/api/v1/balances"
         mock.onGet(matcher4).reply(200, SAMPLE_ACCOUNT_HBAR_BALANCE);
 
-        const matcher5 = "https://api.coingecko.com/api/v3/coins/hedera-hashgraph"
-        mock.onGet(matcher5).reply(200, SAMPLE_COINGECKO);
+        const matcher5 = "/api/v1/network/exchangerate"
+        mock.onGet(matcher5).reply(200, SAMPLE_NETWORK_EXCHANGERATE);
+
+        const matcher8 = "/api/v1/accounts/" + SAMPLE_ACCOUNT_STAKING_ACCOUNT.account + "/rewards"
+        mock.onGet(matcher8).reply(200, { rewards: [] })
 
         const wrapper = mount(AccountDetails, {
             global: {
@@ -351,9 +386,9 @@ describe("AccountDetails.vue", () => {
         await flushPromises()
         // console.log(wrapper.html())
 
-        expect(wrapper.get("#stakedAccountValue").text()).toBe("0.0.5Node 2 - testnet")
-        expect(wrapper.find("#stakedNodeValue").exists()).toBe(false)
-        expect(wrapper.get("#pendingRewardValue").text()).toBe("0.12345678$0.0304Period Started Mar 3, 2022")
+        expect(wrapper.get("#stakedToName").text()).toBe("Staked to")
+        expect(wrapper.get("#stakedToValue").text()).toBe("Account 0.0.5Hosted by Hedera | Central, USA")
+        expect(wrapper.get("#pendingRewardValue").text()).toBe("0.00000000$0.0000")
         expect(wrapper.find("#declineRewardValue").exists()).toBe(false)
     });
 });

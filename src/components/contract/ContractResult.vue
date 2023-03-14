@@ -2,7 +2,7 @@
   -
   - Hedera Mirror Node Explorer
   -
-  - Copyright (C) 2021 - 2022 Hedera Hashgraph, LLC
+  - Copyright (C) 2021 - 2023 Hedera Hashgraph, LLC
   -
   - Licensed under the Apache License, Version 2.0 (the "License");
   - you may not use this file except in compliance with the License.
@@ -41,74 +41,77 @@
             <StringValue :string-value="contractResult?.result"/>
           </template>
         </Property>
+        <Property id="errorMessage">
+          <template v-slot:name>Error Message</template>
+          <template v-slot:value>
+            <StringValue :string-value ="errorMessage"/>
+          </template>
+        </Property>
         <Property id="from">
           <template v-slot:name>From</template>
           <template v-slot:value>
-            <EVMAddress :address="contractResult?.from"/>
+            <EVMAddress :address="contractResult?.from" :id="fromId" :compact="isSmallScreen && !isMediumScreen"/>
           </template>
         </Property>
         <Property id="to">
           <template v-slot:name>To</template>
           <template v-slot:value>
-            <EVMAddress :address="contractResult?.to"/>
+            <EVMAddress :address="contractResult?.to" :id="toId" :compact="isSmallScreen && !isMediumScreen"/>
           </template>
         </Property>
-        <Property id="type">
-          <template v-slot:name>Type</template>
+
+        <Property v-if="signature" id="function">
+          <template v-slot:name>Function</template>
           <template v-slot:value>
-            <StringValue :string-value="contractResult?.type?.toString()"/>
+            <SignatureValue :analyzer="analyzer" />
           </template>
         </Property>
-        <Property id="functionParameters">
-          <template v-slot:name>Function Parameters</template>
-          <template v-slot:value>
-            <HexaValue :byte-string ="contractResult?.function_parameters" v-bind:show-none="true"/>
-          </template>
-        </Property>
-        <Property id="errorMessage">
-          <template v-slot:name>Error Message</template>
-          <template v-slot:value>
-            <HexaValue :byte-string ="contractResult?.error_message" v-bind:show-none="true"/>
-          </template>
-        </Property>
+        <FunctionInput :analyzer="analyzer"/>
+        <FunctionResult :analyzer="analyzer"/>
       </template>
 
       <template v-slot:rightContent>
+        <Property id="type">
+          <template v-slot:name>Type</template>
+          <template v-slot:value>
+            <StringValue :string-value="contractType(contractResult?.type)"/>
+          </template>
+        </Property>
         <Property id="gasLimit">
           <template v-slot:name>Gas Limit</template>
           <template v-slot:value>
-            <PlainAmount :amount="contractResult?.gas_limit"/>
+            <PlainAmount :amount="contractResult?.gas_limit" none-label="None"/>
           </template>
         </Property>
         <Property id="gasUsed">
           <template v-slot:name>Gas Used</template>
           <template v-slot:value>
-            <PlainAmount :amount="contractResult?.gas_used"/>
+            <PlainAmount :amount="contractResult?.gas_used" none-label="None"/>
           </template>
         </Property>
         <Property id="maxFeePerGas">
           <template v-slot:name>Max Fee Per Gas</template>
           <template v-slot:value>
-            <StringValue :string-value="contractResult?.max_fee_per_gas"/>
+            <PlainAmount :amount="maxFeePerGas" none-label="None"/>
           </template>
         </Property>
         <Property id="maxPriorityFeePerGas">
           <template v-slot:name>Max Priority Fee Per Gas</template>
           <template v-slot:value>
-            <StringValue :string-value="contractResult?.max_priority_fee_per_gas"/>
+            <PlainAmount :amount="maxPriorityFeePerGas" none-label="None"/>
           </template>
         </Property>
         <Property id="gasPrice">
           <template v-slot:name>Gas Price</template>
           <template v-slot:value>
-            <HbarAmount :amount="contractResult?.gas_price ?? 0" :show-extra="true"/>
+            <HbarAmount :amount="gasPrice" :timestamp="timestamp" :show-extra="true"/>
           </template>
         </Property>
       </template>
 
     </DashboardCard>
 
-    <ContractResultTrace :transaction-id-or-hash="transactionIdOrHash"/>
+    <ContractResultTrace v-if="isParent" :transaction-id-or-hash="transactionIdOrHash" :analyzer="analyzer"/>
 
     <ContractResultStates :state-changes="contractResult?.state_changes" :time-stamp="contractResult?.timestamp"/>
 
@@ -124,9 +127,8 @@
 
 <script lang="ts">
 
-import {computed, defineComponent, inject, onMounted, ref} from 'vue';
+import {computed, defineComponent, inject, onBeforeUnmount, onMounted} from 'vue';
 import {ContractResultDetailsLoader} from "@/components/contract/ContractResultDetailsLoader";
-import HexaValue from "@/components/values/HexaValue.vue";
 import DashboardCard from "@/components/DashboardCard.vue";
 import HbarAmount from "@/components/values/HbarAmount.vue";
 import StringValue from "@/components/values/StringValue.vue";
@@ -136,12 +138,20 @@ import ContractResultTrace from "@/components/contract/ContractResultTrace.vue";
 import ContractResultStates from "@/components/contract/ContractResultStates.vue";
 import EVMAddress from "@/components/values/EVMAddress.vue";
 import ContractResultLogs from "@/components/contract/ContractResultLogs.vue";
+import {FunctionCallAnalyzer} from "@/utils/FunctionCallAnalyzer";
+import {EntityID} from "@/utils/EntityID";
+import FunctionInput from "@/components/values/FunctionInput.vue";
+import FunctionResult from "@/components/values/FunctionResult.vue";
+import SignatureValue from "@/components/values/SignatureValue.vue";
 
 export default defineComponent({
 
   name: 'ContractResult',
 
   components: {
+    SignatureValue,
+    FunctionResult,
+    FunctionInput,
     ContractResultLogs,
     EVMAddress,
     ContractResultStates,
@@ -150,13 +160,18 @@ export default defineComponent({
     Property,
     HbarAmount,
     DashboardCard,
-    HexaValue,
     StringValue
   },
 
   props: {
+    timestamp: String,
+    contractId: String,
     transactionIdOrHash: String,
     topLevel: {
+      type: Boolean,
+      default: false
+    },
+    isParent: {
       type: Boolean,
       default: false
     }
@@ -164,18 +179,89 @@ export default defineComponent({
 
   setup(props) {
     const isSmallScreen = inject('isSmallScreen', true)
+    const isMediumScreen = inject('isMediumScreen', true)
     const isTouchDevice = inject('isTouchDevice', false)
 
+    const fromId = computed(() => {
+      let result
+      if (contractResultDetailsLoader.entity.value?.from) {
+        const entity = EntityID.fromAddress(contractResultDetailsLoader.entity.value?.from)
+        result = entity ? entity.toString() : null
+      } else {
+        result = null
+      }
+      return result
+    })
+
+    const toId = computed(() => {
+      let result
+      if (contractResultDetailsLoader.entity.value?.to) {
+        const entity = EntityID.fromAddress(contractResultDetailsLoader.entity.value?.to)
+        result = entity ? entity.toString() : null
+      } else {
+        result = null
+      }
+      return result
+    })
+
+    const gasPrice = computed(() => {
+      return (contractResultDetailsLoader.entity.value?.gas_price !== null)
+          ? Number(filter0x(contractResultDetailsLoader.entity.value?.gas_price))
+          : null
+    })
+
+    const maxFeePerGas = computed(() => {
+      return (contractResultDetailsLoader.entity.value?.max_fee_per_gas !== null)
+          ? Number(filter0x(contractResultDetailsLoader.entity.value?.max_fee_per_gas))
+          : null
+    })
+
+    const maxPriorityFeePerGas = computed(() => {
+      return (contractResultDetailsLoader.entity.value?.max_priority_fee_per_gas !== null)
+          ? Number(filter0x(contractResultDetailsLoader.entity.value?.max_priority_fee_per_gas))
+          : null
+    })
+
     const contractResultDetailsLoader = new ContractResultDetailsLoader(
-        ref(null),
-        ref(null),
+        computed(() => props.contractId ?? null),
+        computed(() => props.timestamp ?? null),
         computed(() => props.transactionIdOrHash ?? null))
     onMounted(() => contractResultDetailsLoader.requestLoad())
 
+    const filter0x = (value: string|null|undefined) => value === '0x' ? '0' : value
+
+    const functionCallAnalyzer = new FunctionCallAnalyzer(
+        contractResultDetailsLoader.functionParameters,
+        contractResultDetailsLoader.callResult,
+        contractResultDetailsLoader.actualContractId)
+    onMounted(() => functionCallAnalyzer.mount())
+    onBeforeUnmount(() => functionCallAnalyzer.unmount())
+
+    const contractType = (typeValue: number | null): string | null => {
+      let result
+      if (typeValue !== null) {
+        result =  typeValue === 0 ? "Pre-Eip1559" : typeValue === 2 ? "Post-Eip1559" : typeValue.toString()
+      } else {
+        result = null
+      }
+      return result
+    }
+
     return {
       isSmallScreen,
+      isMediumScreen,
       isTouchDevice,
-      contractResult: contractResultDetailsLoader.entity
+      fromId,
+      toId,
+      gasPrice,
+      maxFeePerGas,
+      maxPriorityFeePerGas,
+      contractResult: contractResultDetailsLoader.entity,
+      errorMessage: contractResultDetailsLoader.errorMessage,
+      analyzer: functionCallAnalyzer,
+      functionHash: functionCallAnalyzer.functionHash,
+      signature: functionCallAnalyzer.signature,
+      contractType
     }
   },
 });

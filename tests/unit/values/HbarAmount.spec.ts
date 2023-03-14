@@ -2,7 +2,7 @@
  *
  * Hedera Mirror Node Explorer
  *
- * Copyright (C) 2021 - 2022 Hedera Hashgraph, LLC
+ * Copyright (C) 2021 - 2023 Hedera Hashgraph, LLC
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -27,13 +27,13 @@
 
 import {flushPromises, mount} from "@vue/test-utils";
 import HbarAmount from "@/components/values/HbarAmount.vue";
-import {SAMPLE_COINGECKO} from "../Mocks";
+import {SAMPLE_NETWORK_EXCHANGERATE} from "../Mocks";
 import MockAdapter from "axios-mock-adapter";
 import axios from "axios";
 
 const mock = new MockAdapter(axios);
-const matcher = "https://api.coingecko.com/api/v3/coins/hedera-hashgraph"
-mock.onGet(matcher).reply(200, SAMPLE_COINGECKO);
+const matcher = "api/v1/network/exchangerate"
+mock.onGet(matcher).reply(200, SAMPLE_NETWORK_EXCHANGERATE);
 
 describe("HbarAmount.vue ", () => {
 
@@ -61,7 +61,8 @@ describe("HbarAmount.vue ", () => {
         const wrapper = mount(HbarAmount, {
             props: {
                 amount: testTinybarAmount,
-                showExtra: true
+                showExtra: true,
+                timestamp: "0"
             },
         });
 
@@ -82,7 +83,8 @@ describe("HbarAmount.vue ", () => {
             props: {
                 amount: testTinybarAmount,
                 showExtra: true,
-                smallExtra: false
+                smallExtra: false,
+                timestamp: "0"
             },
         });
 
@@ -94,7 +96,7 @@ describe("HbarAmount.vue ", () => {
 
     test("with amount unset", async () => {
 
-        const expectedHbarAmount = "0.00000000"
+        const expectedHbarAmount = "None"
 
         const wrapper = mount(HbarAmount, {
             props: {
@@ -102,7 +104,7 @@ describe("HbarAmount.vue ", () => {
         });
 
         expect(wrapper.text()).toBe(expectedHbarAmount)
-        expect(wrapper.get('.has-hbar').classes('has-text-grey')).toBe(true)
+        expect(wrapper.find('.has-hbar').exists()).toBe(false)
     });
 
     test("with hideZero and showExtra", async () => {

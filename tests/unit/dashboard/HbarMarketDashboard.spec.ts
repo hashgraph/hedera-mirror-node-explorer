@@ -2,7 +2,7 @@
  *
  * Hedera Mirror Node Explorer
  *
- * Copyright (C) 2021 - 2022 Hedera Hashgraph, LLC
+ * Copyright (C) 2021 - 2023 Hedera Hashgraph, LLC
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -27,7 +27,7 @@
 
 import {flushPromises, mount} from "@vue/test-utils";
 import HbarMarketDashboard from "@/components/dashboard/HbarMarketDashboard.vue";
-import {SAMPLE_COINGECKO, SAMPLE_NETWORK_SUPPLY} from "../Mocks";
+import {SAMPLE_NETWORK_EXCHANGERATE, SAMPLE_NETWORK_SUPPLY} from "../Mocks";
 import MockAdapter from "axios-mock-adapter";
 import axios from "axios";
 import router from "@/router";
@@ -40,25 +40,28 @@ describe("HbarMarketDashboard.vue ", () => {
 
         const mock = new MockAdapter(axios);
 
-        const matcher1 = "https://api.coingecko.com/api/v3/coins/hedera-hashgraph"
-        mock.onGet(matcher1).reply(200, SAMPLE_COINGECKO);
+        const matcher1 = "/api/v1/network/supply"
+        mock.onGet(matcher1).reply(200, SAMPLE_NETWORK_SUPPLY);
 
-        const matcher2 = "/api/v1/network/supply/"
-        mock.onGet(matcher2).reply(200, SAMPLE_NETWORK_SUPPLY);
+        const matcher2 = "/api/v1/network/exchangerate"
+        mock.onGet(matcher2).reply(200, SAMPLE_NETWORK_EXCHANGERATE);
 
         const wrapper = mount(HbarMarketDashboard);
 
         await flushPromises()
         // console.log(wrapper.text())
 
-        expect(wrapper.vm.coinGeckoCache.autoRefresh.value).toBe(true)
+        expect(wrapper.vm.marketDataCache.hbarPriceCache.autoRefresh.value).toBe(true)
+        expect(wrapper.vm.marketDataCache.hbarPrice24hCache.autoRefresh.value).toBe(true)
+        expect(wrapper.vm.marketDataCache.hbarSupplyCache.autoRefresh.value).toBe(true)
+        expect(wrapper.vm.marketDataCache.hbarSupply24hCache.autoRefresh.value).toBe(true)
 
         expect(wrapper.text()).toBe(
             "$0.2460" +
-            "8.42%" +
+            "0.00%" +
             "HBAR PRICE" +
-            "$4,486,259,941" +
-            "8.42%" +
+            "$5,186,816,738" +
+            "0.00%" +
             "HBAR MARKET CAP" +
             "21,084,620,884.43" +
             "HBAR RELEASED" +
@@ -75,7 +78,10 @@ describe("HbarMarketDashboard.vue ", () => {
         wrapper.unmount()
         await flushPromises()
 
-        expect(wrapper.vm.coinGeckoCache.autoRefresh.value).toBe(false)
+        expect(wrapper.vm.marketDataCache.hbarPriceCache.autoRefresh.value).toBe(false)
+        expect(wrapper.vm.marketDataCache.hbarPrice24hCache.autoRefresh.value).toBe(false)
+        expect(wrapper.vm.marketDataCache.hbarSupplyCache.autoRefresh.value).toBe(false)
+        expect(wrapper.vm.marketDataCache.hbarSupply24hCache.autoRefresh.value).toBe(false)
     });
 
     it("should display the testnet banner", async () => {

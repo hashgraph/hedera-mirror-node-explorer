@@ -2,7 +2,7 @@
  *
  * Hedera Mirror Node Explorer
  *
- * Copyright (C) 2021 - 2022 Hedera Hashgraph, LLC
+ * Copyright (C) 2021 - 2023 Hedera Hashgraph, LLC
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -22,28 +22,31 @@ import {
     AccountBalanceTransactions,
     AccountInfo,
     AccountsResponse,
+    Block,
     ContractResponse,
     TokenInfo,
     TopicMessage,
     TopicMessagesResponse,
     Transaction,
-    TransactionByIdResponse
+    TransactionByIdResponse, TransactionResponse
 } from "@/schemas/HederaSchemas";
 import axios from "axios";
 import {TransactionID} from "@/utils/TransactionID";
 import {DeferredPromise} from "@/utils/DeferredPromise";
 import {EntityID} from "@/utils/EntityID";
-import {base32ToAlias, byteToHex, hexToByte, paddedBytes} from "@/utils/B64Utils";
-
+import {aliasToBase32, base32ToAlias, byteToHex, hexToByte, paddedBytes} from "@/utils/B64Utils";
+import {nameServiceResolve} from "@/utils/NameService";
 
 export class SearchRequest {
 
     public readonly searchedId: string
     public account: AccountInfo|null = null
+    public accountsWithKey = Array<AccountInfo>()
     public transactions = Array<Transaction>()
     public tokenInfo: TokenInfo|null = null
     public topicMessages = Array<TopicMessage>()
     public contract: ContractResponse|null = null
+    public block: Block|null = null
 
     private promise = new DeferredPromise<void>()
     private countdown = 0
@@ -55,7 +58,7 @@ export class SearchRequest {
 
     run(): Promise<void> {
 
-        this.countdown = 5
+        this.countdown = 8
         this.errorCount = 0
 
         /*
@@ -79,6 +82,8 @@ export class SearchRequest {
         -------------------------------------+------------------+------------------------------------------------------
         hexadecimal 48 bytes                 | Transaction Hash | api/v1/transactions/{searchId}
         -------------------------------------+------------------+------------------------------------------------------
+        hexadecimal 32/48 bytes              | Block Hash       | api/v1/blocks/{searchId}
+        -------------------------------------+------------------+------------------------------------------------------
         hexadecimal 20 bytes                 | Ethereum Address | api/v1/accounts/{searchId}
                                              |                  | api/v1/contracts/{searchId}
                                              |                  | api/v1/token/ethereumToEntityID({searchId})
@@ -89,6 +94,9 @@ export class SearchRequest {
         -------------------------------------+------------------+------------------------------------------------------
         hexadecimal 32/33 bytes              | Public Key       | api/v1/accounts/?account.publickey={searchId}
         -------------------------------------+------------------+------------------------------------------------------
+        hexadecimal n bytes                  | Account Alias    | api/v1/accounts/base32({searchId})
+                                             | in hex form      |
+        -------------------------------------+------------------+------------------------------------------------------
         base32                               | Account Alias    | api/v1/accounts/{searchId}
         -------------------------------------+------------------+------------------------------------------------------
 
@@ -97,12 +105,15 @@ export class SearchRequest {
         const entityID = EntityID.parse(this.searchedId, true)?.toString() ?? null
         const transactionID = TransactionID.parse(this.searchedId)?.toString(false) ?? null
         const hexBytes = hexToByte(this.searchedId)
+        const base32 = base32ToAlias(this.searchedId)
+
+        const blockHash = hexBytes !== null && (hexBytes.length === 48 || hexBytes.length === 32) ? byteToHex(hexBytes) : null
         const transactionHash = hexBytes !== null && hexBytes.length == 48 ? byteToHex(hexBytes) : null
+        const transactionTimestamp = this.searchedId.match(/^\d{1,10}(\.\d{1,9})?$/) ? this.searchedId : null
         const ethereumAddress = hexBytes !== null && (1 <= hexBytes.length && hexBytes.length <= 20)
                                 ? byteToHex(paddedBytes(hexBytes, 20)) : null
         const publicKey = hexBytes !== null && (hexBytes.length == 32 || hexBytes.length == 33) ? byteToHex(hexBytes) : null
-        const accountAlias = base32ToAlias(this.searchedId) !== null ? this.searchedId : null
-
+        const accountAlias = base32 !== null ? aliasToBase32(base32) : (hexBytes !== null ? aliasToBase32(hexBytes) : null)
 
         const accountParam = entityID ?? ethereumAddress ?? accountAlias
         const transactionParam = transactionID ?? transactionHash
@@ -123,12 +134,17 @@ export class SearchRequest {
                 .finally(() => {
                     this.updatePromise()
                 })
-        } else if (publicKey !== null) {
+        } else {
+            // No account will match => no need to call server
+            this.updatePromise()
+        }
+
+        // 2) Searches accounts with public key
+        if (publicKey !== null) {
             axios
-                .get<AccountsResponse>("api/v1/accounts/?account.publickey=" + publicKey)
+                .get<AccountsResponse>("api/v1/accounts/?account.publickey=" + publicKey + "&limit=2")
                 .then(response => {
-                    const accounts = response.data.accounts ?? []
-                    this.account = accounts.length >= 1 ? accounts[0] : null
+                    this.accountsWithKey = response.data.accounts ?? []
                 })
                 .catch((reason: unknown) => {
                     this.updateErrorCount(reason)
@@ -142,10 +158,23 @@ export class SearchRequest {
             this.updatePromise()
         }
 
-        // 2) Searches transactions
+        // 3) Searches transactions
         if (transactionParam !== null) {
             axios
                 .get<TransactionByIdResponse>("api/v1/transactions/" + transactionParam)
+                .then(response => {
+                    this.transactions = response.data.transactions ?? []
+                })
+                .catch((reason: unknown) => {
+                    this.updateErrorCount(reason)
+                    return null // To avoid console pollution
+                })
+                .finally(() => {
+                    this.updatePromise()
+                });
+        } else if (transactionTimestamp !== null) {
+            axios
+                .get<TransactionResponse>("api/v1/transactions?timestamp=" + transactionTimestamp)
                 .then(response => {
                     this.transactions = response.data.transactions ?? []
                 })
@@ -161,7 +190,7 @@ export class SearchRequest {
             this.updatePromise()
         }
 
-        // 3) Searches tokens
+        // 4) Searches tokens
         if (tokenParam !== null) {
             axios
                 .get<TokenInfo>("api/v1/tokens/" + tokenParam)
@@ -180,7 +209,7 @@ export class SearchRequest {
             this.updatePromise()
         }
 
-        // 4) Searches topics
+        // 5) Searches topics
         if (entityID !== null) {
             const params = {
                 order: "desc",
@@ -203,7 +232,7 @@ export class SearchRequest {
             this.updatePromise()
         }
 
-        // 5) Searches contracts
+        // 6) Searches contracts
         if (contractParam) {
             axios
                 .get<ContractResponse>("api/v1/contracts/" + contractParam)
@@ -220,6 +249,45 @@ export class SearchRequest {
         } else {
             // No contract will match => no need to call server
             this.updatePromise()
+        }
+
+        // 7) Searches blocks
+        if (blockHash) {
+            axios
+                .get<Block>("api/v1/blocks/" + blockHash)
+                .then(response => {
+                    this.block = response.data
+                })
+                .catch((reason: unknown) => {
+                    this.updateErrorCount(reason)
+                    return null // To avoid console pollution
+                })
+                .finally(() => {
+                    this.updatePromise()
+                });
+        } else {
+            // No block will match => no need to call server
+            this.updatePromise()
+        }
+
+        // 8) Domain (via kabuto name service)
+        if (/\.[a-z|ℏ]+$/.test(this.searchedId)) {
+          nameServiceResolve(this.searchedId)
+            .then(accountInfo => {
+              if (accountInfo != null) {
+                this.account = accountInfo;
+              }
+            })
+            .catch((reason: unknown) => {
+                this.updateErrorCount(reason)
+                return null // To avoid console pollution
+            })
+            .finally(() => {
+                this.updatePromise()
+            })
+        } else {
+          // no domain will match without at least a `.`
+          this.updatePromise();
         }
 
         return this.promise

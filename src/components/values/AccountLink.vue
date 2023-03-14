@@ -2,7 +2,7 @@
   -
   - Hedera Mirror Node Explorer
   -
-  - Copyright (C) 2021 - 2022 Hedera Hashgraph, LLC
+  - Copyright (C) 2021 - 2023 Hedera Hashgraph, LLC
   -
   - Licensed under the Apache License, Version 2.0 (the "License");
   - you may not use this file except in compliance with the License.
@@ -31,7 +31,7 @@
       <span class="is-numeric">{{ accountId }}</span>
     </template>
     <template v-else>
-      <router-link :to="{name: 'AccountDetails', params: {accountId: accountId}}">
+      <router-link :to="accountRoute">
         <span class="is-numeric">{{ accountId }}</span>
       </router-link>
     </template>
@@ -53,8 +53,9 @@
 <script lang="ts">
 
 import {computed, defineComponent, inject, PropType, ref} from "vue";
-import {operatorRegistry} from "@/schemas/OperatorRegistry";
 import {initialLoadingKey} from "@/AppKeys";
+import {routeManager} from "@/router";
+import {NodeRegistry} from "@/components/node/NodeRegistry";
 
 export default defineComponent({
   name: "AccountLink",
@@ -81,12 +82,16 @@ export default defineComponent({
 
   setup(props) {
     const extra = computed(() => {
-      return (props.accountId ? operatorRegistry.makeDescription(props.accountId) : null) ?? ""
+      return NodeRegistry.getDescription(ref(null), ref(props.accountId??null)) ?? ""
+    })
+
+    const accountRoute = computed(() => {
+      return props.accountId ?  routeManager.makeRouteToAccount(props.accountId) : null
     })
 
     const initialLoading = inject(initialLoadingKey, ref(false))
 
-    return { extra, initialLoading }
+    return { extra, accountRoute, initialLoading }
   }
 });
 

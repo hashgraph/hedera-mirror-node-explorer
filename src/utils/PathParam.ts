@@ -2,7 +2,7 @@
  *
  * Hedera Mirror Node Explorer
  *
- * Copyright (C) 2021 - 2022 Hedera Hashgraph, LLC
+ * Copyright (C) 2021 - 2023 Hedera Hashgraph, LLC
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -21,6 +21,9 @@
 import {aliasToBase32, base32ToAlias, byteToHex, hexToByte} from "@/utils/B64Utils";
 import {EntityID} from "@/utils/EntityID";
 import {TransactionID} from "@/utils/TransactionID";
+import {TransactionHash} from "@/utils/TransactionHash";
+import {EthereumHash} from "@/utils/EthereumHash";
+import {Timestamp} from "@/utils/Timestamp";
 
 export class PathParam { // Block Hash or Number
 
@@ -29,7 +32,7 @@ export class PathParam { // Block Hash or Number
 
         if (s) {
             const bytes = hexToByte(s)
-            if (bytes != null && bytes.length == 48 ) { // SHA384 byte count
+            if (bytes != null && (bytes.length == 48 || bytes.length == 32) ) { // SHA384 byte count
                 result = byteToHex(bytes)
             } else {
                 const n = parseInt(s)
@@ -106,6 +109,25 @@ export class PathParam { // Block Hash or Number
             result = null
         }
 
+        return result
+    }
+
+    public static parseTransactionLoc(s: string): Timestamp | TransactionHash | EthereumHash | null {
+        return Timestamp.parse(s) ?? TransactionHash.parse(s) ?? EthereumHash.parse(s)
+    }
+
+    public static parseEvmAddress(s: string|undefined): string|null {
+        let result: string|null
+        if (s) {
+            const hex = hexToByte(s)
+            if (hex !== null && hex.length == 20) {
+                result = "0x" + byteToHex(hex)
+            } else {
+                result = null
+            }
+        } else {
+            result = null
+        }
         return result
     }
 }

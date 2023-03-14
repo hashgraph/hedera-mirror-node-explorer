@@ -2,7 +2,7 @@
  *
  * Hedera Mirror Node Explorer
  *
- * Copyright (C) 2021 - 2022 Hedera Hashgraph, LLC
+ * Copyright (C) 2021 - 2023 Hedera Hashgraph, LLC
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -18,54 +18,11 @@
  *
  */
 
-import {NetworkNode, NetworkNodesResponse} from "@/schemas/HederaSchemas";
+import {NetworkNodesResponse} from "@/schemas/HederaSchemas";
 import axios, {AxiosResponse} from "axios";
-import {computed, ComputedRef} from "vue";
-import {EntityBatchLoader} from "@/utils/EntityBatchLoader";
+import {EntityBatchLoader} from "@/utils/loader/EntityBatchLoader";
 
 export class NodesLoader extends EntityBatchLoader<NetworkNodesResponse> {
-
-    //
-    // Public
-    //
-
-    public readonly nodes: ComputedRef<NetworkNode[]> = computed(() => this.entity.value?.nodes ?? [])
-
-    public readonly nodeCount = computed(() => this.nodes.value?.length ?? 0)
-
-    public readonly totalRewarded: ComputedRef<number> = computed(() => {
-        let result = 0
-        for (const n of this.nodes.value) {
-            result += (n.reward_rate_start ?? 0) * (n.stake_rewarded ?? 0) / 100000000
-        }
-        return result
-    })
-
-    public readonly unclampedStakeTotal: ComputedRef<number> = computed(() => {
-        let result = 0
-        for (const n of this.nodes.value) {
-            result += (n.stake_rewarded ?? 0) + (n.stake_not_rewarded ?? 0)
-        }
-        return result
-    })
-
-    public readonly node0 = computed(() => this.nodes.value.length >= 1 ? this.nodes.value[0] : null)
-
-    public readonly stakeRewardedTotal: ComputedRef<number> = computed(() => {
-        let result = 0
-        for (const n of this.nodes.value) {
-            result += n.stake_rewarded ?? 0
-        }
-        return result
-    })
-
-    public readonly stakeUnrewardedTotal: ComputedRef<number> = computed(() => {
-        let result = 0
-        for (const n of this.nodes.value) {
-            result += n.stake_not_rewarded ?? 0
-        }
-        return result
-    })
 
     //
     // EntityBatchLoader

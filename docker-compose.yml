@@ -2,7 +2,8 @@ version: "3.7"
 services:
   explorer:
     container_name:  hedera-explorer
-    image: "hedera-explorer:latest"
-    restart: "unless-stopped"
+    image: "gcr.io/hedera-registry/hedera-mirror-node-explorer:latest"
+    env_file: ./.env.docker
+    restart: "always"
     ports:
-      - "9090:80"
+      - "8080:8080"

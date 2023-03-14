@@ -2,7 +2,7 @@
   -
   - Hedera Mirror Node Explorer
   -
-  - Copyright (C) 2021 - 2022 Hedera Hashgraph, LLC
+  - Copyright (C) 2021 - 2023 Hedera Hashgraph, LLC
   -
   - Licensed under the Apache License, Version 2.0 (the "License");
   - you may not use this file except in compliance with the License.
@@ -53,13 +53,16 @@
         <Property id="amountStaked">
           <template v-slot:name>Amount Staked</template>
           <template v-slot:value>
-            <HbarAmount v-if="account" :amount="account.balance.balance" :show-extra="true"/>
+            <HbarAmount v-if="account" :amount="account.balance.balance" timestamp="0" :show-extra="true"/>
           </template>
         </Property>
 
         <Property id="currentlyStakedTo">
           <template v-slot:name>Currently Staked To</template>
           <template v-slot:value>
+            <span v-if="account?.staked_node_id !== null" class="icon is-small has-text-info mr-2" style="font-size: 16px">
+              <i v-if="isCouncilNode" :class="currentStakedNodeIcon"></i>
+            </span>
             <StringValue v-if="account" :string-value="currentlyStakedTo"/>
           </template>
         </Property>
@@ -80,14 +83,25 @@
               </div>
               <div class="column">
                 <o-field>
-                <o-select v-model="selectedNode" :class="{'has-text-grey': !isNodeSelected}"
-                          class="h-is-text-size-1" style="border-radius: 4px"  @focus="stakeChoice='node'">
-                  <option v-for="n in nodes" :key="n.node_id" :value="n.node_id"
-                          style="background-color: var(--h-theme-box-background-color)">
-                    {{ makeNodeDescription(n) }} - {{ makeNodeStakeDescription(n) }}
-                  </option>
-                </o-select>
-              </o-field>
+                  <o-select v-model="selectedNode" :class="{'has-text-grey': !isNodeSelected}"
+                            class="h-is-text-size-1" style="border-radius: 4px" @focus="stakeChoice='node'"
+                            :icon="selectedNodeIcon">
+                    <optgroup label="Hedera council nodes">
+                      <option v-for="n in nodes" :key="n.node_id" :value="n.node_id"
+                              style="background-color: var(--h-theme-box-background-color)"
+                              v-show="isCouncilNode(n)">
+                        {{ makeNodeSelectorDescription(n) }}
+                      </option>
+                    </optgroup>
+                    <optgroup v-if="hasCommunityNode" label="Community nodes">
+                      <option v-for="n in nodes" :key="n.node_id" :value="n.node_id"
+                              style="background-color: var(--h-theme-box-background-color)"
+                              v-show="!isCouncilNode(n)">
+                        {{ makeNodeSelectorDescription(n) }}
+                      </option>
+                    </optgroup>
+                  </o-select>
+                </o-field>
               </div>
             </div>
             <div class="columns">
@@ -134,7 +148,7 @@
         <Property v-if="false" id="changeCost">
           <template v-slot:name>Change Transaction Cost</template>
           <template v-slot:value>
-            <HbarAmount v-if="account" :amount="10000000" :show-extra="true" :decimals="1"/>
+            <HbarAmount v-if="account" :amount="10000000" timestamp="0" :show-extra="true" :decimals="1"/>
           </template>
         </Property>
 
@@ -155,23 +169,23 @@
 
 <script lang="ts">
 
-import {computed, defineComponent, onMounted, PropType, ref, watch} from "vue";
+import {computed, defineComponent, PropType, ref, watch} from "vue";
 import {
   AccountBalanceTransactions,
-  AccountsResponse, makeNodeStakeDescription,
+  AccountsResponse, makeNodeSelectorDescription,
   makeShortNodeDescription,
   NetworkNode
 } from "@/schemas/HederaSchemas";
-import {NodesLoader} from "@/components/node/NodesLoader";
 import Property from "@/components/Property.vue";
 import HbarAmount from "@/components/values/HbarAmount.vue";
 import StringValue from "@/components/values/StringValue.vue";
 import axios from "axios";
-import {operatorRegistry} from "@/schemas/OperatorRegistry";
 import {EntityID} from "@/utils/EntityID";
 import ConfirmDialog from "@/components/ConfirmDialog.vue";
 import {networkRegistry} from "@/schemas/NetworkRegistry";
 import router from "@/router";
+import {NodeRegistry} from "@/components/node/NodeRegistry";
+import {makeDefaultNodeDescription} from "@/schemas/HederaUtils";
 
 const VALID_ACCOUNT_MESSAGE = "Rewards will now be paid to that account"
 const UNKNOWN_ACCOUNT_MESSAGE = "This account does not exist"
@@ -213,6 +227,18 @@ export default defineComponent({
           return result
         })
 
+    const currentStakedNodeIcon = computed(() => {
+      let result
+      if (props.account?.staked_node_id !== null) {
+        result = NodeRegistry.isCouncilNode(ref(props.account?.staked_node_id ?? 0))
+            ? "fas fa-building"
+            : "fas fa-users"
+      } else {
+        result = ""
+      }
+      return result
+    })
+
     const stakeChoice = ref("node")
     const isNodeSelected = computed(() => stakeChoice.value === 'node')
     const isAccountSelected = computed(() => stakeChoice.value === 'account')
@@ -243,9 +269,20 @@ export default defineComponent({
     })
 
     const selectedNode = ref<number|null>(null)
+
+    const selectedNodeIcon = computed(() => {
+      let result
+      if (selectedNode.value !== null) {
+        result = NodeRegistry.isCouncilNode(selectedNode) ? "building" : "users"
+      } else {
+        result = ""
+      }
+      return result
+    })
+
     const selectedNodeDescription = computed(() => {
-      return (selectedNode.value !== null && nodesLoader.nodes.value)
-          ? makeNodeDescription(nodesLoader.nodes.value[selectedNode.value])
+      return (selectedNode.value !== null && NodeRegistry.instance.nodes.value)
+          ? makeNodeDescription(NodeRegistry.instance.nodes.value[selectedNode.value])
           : null
     })
     watch(accountId, () => {
@@ -288,18 +325,12 @@ export default defineComponent({
     // Nodes
     //
 
-    const nodesLoader = new NodesLoader()
-    onMounted(() => nodesLoader.requestLoad())
-
     const makeNodeDescription = (node: NetworkNode) => {
-      let result
-      if (node.description) {
-        result = node.node_id + ' - ' + makeShortNodeDescription(node.description)
-      } else {
-        result = node.node_account_id ? operatorRegistry.makeDescription(node.node_account_id) : null
-      }
-      return result
+      let description = node.description ?? makeDefaultNodeDescription(node.node_id ?? null)
+      return description ? (node.node_id + " - " + makeShortNodeDescription(description)) : null
     }
+
+    const isCouncilNode = (node: NetworkNode) => NodeRegistry.isCouncilNode(ref(node.node_id ?? 0))
 
     const handleInput = (value: string) => {
       const previousValue = selectedAccount.value
@@ -375,6 +406,7 @@ export default defineComponent({
       accountId,
       showConfirmDialog,
       confirmMessage,
+      currentStakedNodeIcon,
       stakeChoice,
       isNodeSelected,
       isAccountSelected,
@@ -382,16 +414,19 @@ export default defineComponent({
       inputFeedbackMessage,
       selectedAccount,
       selectedNode,
+      selectedNodeIcon,
       selectedNodeDescription,
       declineChoice,
       enableChangeButton,
-      nodes: nodesLoader.nodes,
+      nodes: NodeRegistry.instance.nodes,
       handleCancel,
       handleChange,
       handleCancelChange,
       handleConfirmChange,
       makeNodeDescription,
-      makeNodeStakeDescription,
+      isCouncilNode,
+      hasCommunityNode: NodeRegistry.instance.hasCommunityNode,
+      makeNodeSelectorDescription: makeNodeSelectorDescription,
       handleInput
     }
   }

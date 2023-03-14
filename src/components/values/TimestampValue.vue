@@ -2,7 +2,7 @@
   -
   - Hedera Mirror Node Explorer
   -
-  - Copyright (C) 2021 - 2022 Hedera Hashgraph, LLC
+  - Copyright (C) 2021 - 2023 Hedera Hashgraph, LLC
   -
   - Licensed under the Apache License, Version 2.0 (the "License");
   - you may not use this file except in compliance with the License.
@@ -25,9 +25,12 @@
 <template>
 
   <template v-if="timestamp">
-    <template v-if="seconds != null">
+    <template v-if="isNever">
+      <span class="has-text-grey">Never</span>
+    </template>
+    <template v-else-if="seconds != null">
       <span>
-        <span class="mr-3 is-numeric">
+        <span v-if="timePart" class="mr-3 is-numeric">
           <span>{{ timePart.hour }}:{{ timePart.minute }}</span>
           <span class="h-is-text-size-3 has-text-grey">:{{ timePart.second }}.{{ timePart.fractionalSecond }}&nbsp;{{ timePart.dayPeriod }}</span>
         </span>
@@ -59,6 +62,7 @@
 import {computed, defineComponent, inject, ref} from "vue";
 import {HMSF} from "@/utils/HMSF";
 import {initialLoadingKey} from "@/AppKeys";
+import {infiniteDuration} from "@/schemas/HederaSchemas";
 
 export default defineComponent({
   name: "TimestampValue",
@@ -83,6 +87,8 @@ export default defineComponent({
       return props.timestamp ? parseSeconds(normalizedTimestamp(props.timestamp, props.nano)) : null
     })
 
+    const isNever = computed( () => seconds.value && seconds.value >= infiniteDuration)
+
     const dateOptions = {
       weekDay: "short",
       day: "numeric",
@@ -93,16 +99,17 @@ export default defineComponent({
     }
     const dateFormat = new Intl.DateTimeFormat(locale, dateOptions)
     const datePart = computed(() => {
-      return seconds.value != null ? dateFormat.format(seconds.value * 1000) : "?"
+      return (seconds.value != null && !isNever.value) ? dateFormat.format(seconds.value * 1000) : "?"
     })
 
     const timePart = computed(() => {
-      return seconds.value ? HMSF.extract(seconds.value, locale) : null
+      return (seconds.value && !isNever.value) ? HMSF.extract(seconds.value, locale) : null
     })
 
     const initialLoading = inject(initialLoadingKey, ref(false))
 
     return {
+      isNever,
       seconds,
       datePart,
       timePart,

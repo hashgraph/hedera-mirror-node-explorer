@@ -2,7 +2,7 @@
  *
  * Hedera Mirror Node Explorer
  *
- * Copyright (C) 2021 - 2022 Hedera Hashgraph, LLC
+ * Copyright (C) 2021 - 2023 Hedera Hashgraph, LLC
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -19,6 +19,8 @@
  */
 
 // https://docs.cypress.io/api/introduction/api.html
+
+import {normalizeTransactionId} from "../../../src/utils/TransactionID";
 
 describe('Topic Navigation', () => {
 
@@ -41,4 +43,34 @@ describe('Topic Navigation', () => {
             })
     })
 
+    it('should navigate from transaction details to topic message table back to transaction', () => {
+        const timestamp = "1673267377.484637167"
+        const transactionId = "0.0.1259116@1673267363.615392477"
+        const targetURL = '/mainnet/transaction/' + timestamp + "?tid=" + normalizeTransactionId(transactionId)
+        cy.visit(targetURL)
+        cy.url().should('include', targetURL)
+        cy.contains('Transaction ' + transactionId)
+
+        cy.get('#entityId')
+            .find('a')
+            .click()
+            .then(($topicId) => {
+                cy.url().should('include', '/mainnet/topic/' + $topicId.text())
+                cy.contains('Messages for Topic ' + $topicId.text())
+
+                cy.get('table')
+                    .find('tbody tr')
+                    .should('have.length.at.least', 2)
+                    .eq(0)
+                    .find('td')
+                    .eq(0)
+                    .click()
+                    .then(($seqNumber) => {
+                        cy.url().should('include', '/mainnet/transaction/')
+                        cy.contains('Topic ID' + $topicId.text())
+                        cy.contains('Message Submitted')
+                        cy.contains('Sequence Number' + $seqNumber.text())
+                    })
+            })
+    })
 })

@@ -2,7 +2,7 @@
   -
   - Hedera Mirror Node Explorer
   -
-  - Copyright (C) 2021 - 2022 Hedera Hashgraph, LLC
+  - Copyright (C) 2021 - 2023 Hedera Hashgraph, LLC
   -
   - Licensed under the Apache License, Version 2.0 (the "License");
   - you may not use this file except in compliance with the License.
@@ -23,16 +23,37 @@
 <!-- --------------------------------------------------------------------------------------------------------------- -->
 
 <template>
-  <div v-if="key !== null">
-    <div :style="containerStyle()">
+  <div v-if="key">
+    <div v-if=" !details && maxLevel >= MAX_INLINE_LEVEL && adminKeyRoute">
+      <span>{{ 'Complex Key (' + (maxLevel+1) + ' levels)' }}</span>
+      <router-link v-if="adminKeyRoute"  :to="adminKeyRoute">
+        <span class="ml-2 has-text-grey h-is-text-size-3">
+          See details
+        </span>
+      </router-link>
+    </div>
+    <div v-else :style="containerStyle(details ? 30 : 20)" class="h-is-property-text">
       <template v-for="line in lines" :key="line.seqNb">
         <div :style="lineStyle(line)">
           <template v-if="line.innerKeyBytes() !== null">
-            <HexaValue :byte-string="line.innerKeyBytes()"/>
-            <div class="h-is-extra-text h-is-text-size-3">{{ line.innerKeyType() }}</div>
+            <div v-if="details" :class="lineClass(line)">
+              <span class="h-is-extra-text">{{ line.innerKeyType() }}</span>
+              <span class="is-family-monospace has-text-grey">{{ ':&#8239;' + line.innerKeyBytes() }}</span>
+            </div>
+            <div v-else>
+              <HexaValue :byte-string="line.innerKeyBytes()"/>
+              <div class="h-is-extra-text h-is-text-size-3">{{ line.innerKeyType() }}</div>
+            </div>
+          </template>
+          <template v-else-if="line.contractId() !== null">
+            Contract: <ContractLink :contract-id="line.contractId()"/>
+          </template>
+          <template v-else-if="line.delegatableContractId() !== null">
+            Delegatable Contract: <ContractLink :contract-id="line.delegatableContractId()"/>
           </template>
           <template v-else>
-            <div>{{ lineText(line) }}</div>
+            <div v-if="details && line.level" :class="lineClass(line)">{{ lineText(line) }}</div>
+            <div v-else>{{ lineText(line) }}</div>
           </template>
         </div>
       </template>
@@ -57,13 +78,29 @@ import {ComplexKeyLine} from "@/utils/ComplexKeyLine";
 import {hexToByte} from "@/utils/B64Utils";
 import hashgraph from "@hashgraph/proto/lib/proto";
 import HexaValue from "@/components/values/HexaValue.vue";
+import ContractLink from "@/components/values/ContractLink.vue";
 import {initialLoadingKey} from "@/AppKeys";
+import {routeManager} from "@/router";
+
+const MAX_INLINE_LEVEL = 1
+
+const lineClasses: Array<string> = [
+  "has-plus",
+  "has-bullet",
+  "has-dash",
+  "has-circle",
+]
 
 export default defineComponent({
   name: "ComplexKeyValue",
-  components: {HexaValue},
+  components: {ContractLink, HexaValue},
   props: {
     keyBytes: String,
+    accountId: String,
+    details: {
+      type: Boolean,
+      default: false
+    },
     showNone: {
       type: Boolean,
       default: false
@@ -99,14 +136,17 @@ export default defineComponent({
       return result
     })
 
-    const containerStyle = (): Record<string, string> => {
+    const containerStyle = (offset: number): Record<string, string> => {
       const n = maxLevel.value + 1
-      const offset = 20
       return {
         display: "grid",
         gridTemplateColumns: "repeat(" + n + ", " + offset + "px) auto repeat(" + n + ", " + offset + "px)",
         rowGap: "0.50rem"
       }
+    }
+
+    const lineClass = (line: ComplexKeyLine) => {
+      return lineClasses[line.level % lineClasses.length]
     }
 
     const lineStyle = (line: ComplexKeyLine): Record<string, string> => {
@@ -123,24 +163,32 @@ export default defineComponent({
       let result: string
       if (line.key.thresholdKey) {
         const childCount = line.key.thresholdKey.keys?.keys?.length ?? 0
-        result = line.key.key + "(" + line.key.thresholdKey.threshold + " of " + childCount + ")"
+        result = "THRESHOLD (" + line.key.thresholdKey.threshold + " of " + childCount + ")"
       } else if (line.key.keyList) {
         const childCount = line.key.keyList.keys?.length ?? 0
-        result = line.key.key + "(" + childCount + ")"
+        result = "LIST (all of " + childCount + ')'
       } else {
         result = line.key.key ?? "?"
       }
       return result
     }
 
+    const adminKeyRoute = computed(() => {
+      return props.accountId ? routeManager.makeRouteToAdminKey(props.accountId) : null
+    })
+
     const initialLoading = inject(initialLoadingKey, ref(false))
 
     return {
       key,
       lines,
+      maxLevel,
+      MAX_INLINE_LEVEL,
       containerStyle,
+      lineClass,
       lineStyle,
       lineText,
+      adminKeyRoute,
       initialLoading
     }
   }
@@ -152,4 +200,28 @@ export default defineComponent({
 <!--                                                      STYLE                                                      -->
 <!-- --------------------------------------------------------------------------------------------------------------- -->
 
-<style scoped/>
+<style scoped>
+.has-bullet:before {
+  content: "\2022\202F";
+  font-weight: lighter;
+  color: grey;
+}
+
+.has-dash:before {
+  content: "\2043\202F";
+  font-weight: lighter;
+  color: grey;
+}
+
+.has-plus:before {
+  content: "\002B\202F";
+  font-weight: lighter;
+  color: grey;
+}
+
+.has-circle:before {
+  content: "\25E6\202F";
+  font-weight: lighter;
+  color: grey;
+}
+</style>

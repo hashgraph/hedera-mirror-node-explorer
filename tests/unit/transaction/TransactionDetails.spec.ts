@@ -4,7 +4,7 @@
  *
  * Hedera Mirror Node Explorer
  *
- * Copyright (C) 2021 - 2022 Hedera Hashgraph, LLC
+ * Copyright (C) 2021 - 2023 Hedera Hashgraph, LLC
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -29,15 +29,15 @@ import NftTransferGraph from "@/components/transfer_graphs/NftTransferGraph.vue"
 import NotificationBanner from "@/components/NotificationBanner.vue";
 import axios from "axios";
 import {
+    SAMPLE_ASSOCIATED_TOKEN, SAMPLE_ASSOCIATED_TOKEN_2,
     SAMPLE_BLOCKSRESPONSE,
-    SAMPLE_COINGECKO,
     SAMPLE_CONTRACT_RESULT_DETAILS,
     SAMPLE_CONTRACTCALL_TRANSACTIONS,
     SAMPLE_FAILED_TRANSACTION,
-    SAMPLE_FAILED_TRANSACTIONS, SAMPLE_PARENT_CHILD_TRANSACTIONS,
+    SAMPLE_FAILED_TRANSACTIONS, SAMPLE_NETWORK_EXCHANGERATE, SAMPLE_NETWORK_NODES, SAMPLE_PARENT_CHILD_TRANSACTIONS,
     SAMPLE_SCHEDULING_SCHEDULED_TRANSACTIONS,
     SAMPLE_SYSTEM_CONTRACT_CALL_TRANSACTIONS,
-    SAMPLE_TOKEN,
+    SAMPLE_TOKEN, SAMPLE_TOKEN_ASSOCIATE_TRANSACTION, SAMPLE_TOKEN_ASSOCIATIONS,
     SAMPLE_TRANSACTION,
     SAMPLE_TRANSACTIONS
 } from "../Mocks";
@@ -46,6 +46,8 @@ import {HMSF} from "@/utils/HMSF";
 import {normalizeTransactionId} from "@/utils/TransactionID";
 import Oruga from "@oruga-ui/oruga-next";
 import ContractResult from "@/components/contract/ContractResult.vue";
+import {base64DecToArr, byteToHex} from "@/utils/B64Utils";
+import {NodeRegistry} from "@/components/node/NodeRegistry";
 
 /*
     Bookmarks
@@ -72,11 +74,19 @@ HMSF.forceUTC = true
 
 describe("TransactionDetails.vue", () => {
 
+    const mock = new MockAdapter(axios);
+    const matcher1 = "/api/v1/network/exchangerate"
+    mock.onGet(matcher1).reply(200, SAMPLE_NETWORK_EXCHANGERATE);
+    const matcher2 = "/api/v1/blocks"
+    mock.onGet(matcher2).reply(200, SAMPLE_BLOCKSRESPONSE);
+    const matcher3 = "api/v1/network/nodes"
+    mock.onGet(matcher3).reply(200, SAMPLE_NETWORK_NODES);
+    NodeRegistry.instance.reload()
+
+
     it("Should display transaction details with token transfers and fee transfers", async () => {
 
         await router.push("/") // To avoid "missing required param 'network'" error
-
-        const mock = new MockAdapter(axios);
 
         const matcher1 = "/api/v1/transactions/" + SAMPLE_TRANSACTION.transaction_id
         mock.onGet(matcher1).reply(200, SAMPLE_TRANSACTIONS);
@@ -84,17 +94,12 @@ describe("TransactionDetails.vue", () => {
         const matcher2 = "/api/v1/tokens/" + SAMPLE_TOKEN.token_id
         mock.onGet(matcher2).reply(200, SAMPLE_TOKEN);
 
-        const matcher3 = "https://api.coingecko.com/api/v3/coins/hedera-hashgraph"
-        mock.onGet(matcher3).reply(200, SAMPLE_COINGECKO);
-
-        const matcher4 = "/api/v1/blocks"
-        mock.onGet(matcher4).reply(200, SAMPLE_BLOCKSRESPONSE);
-
         const wrapper = mount(TransactionDetails, {
             global: {
                 plugins: [router, Oruga]
             },
             props: {
+                transactionLoc: SAMPLE_TRANSACTION.consensus_timestamp,
                 transactionId: SAMPLE_TRANSACTION.transaction_id
             },
         });
@@ -114,9 +119,10 @@ describe("TransactionDetails.vue", () => {
 
         expect(wrapper.get("#memoValue").text()).toBe("None")
         expect(wrapper.get("#operatorAccountValue").text()).toBe("0.0.29624024")
-        expect(wrapper.get("#nodeAccountValue").text()).toBe("0.0.7Node 4 - testnet")
+        expect(wrapper.get("#nodeAccountValue").text()).toBe("0.0.5Hosted by Hedera | Central, USA")
         expect(wrapper.get("#durationValue").text()).toBe("2min")
-        expect(wrapper.get("#entityId").text()).toBe("Account ID0.0.29662956")
+        expect(() => wrapper.get("#associatedTokenId")).toThrowError()
+        expect(() => wrapper.get("#entityId")).toThrowError()
 
         expect(wrapper.findComponent(HbarTransferGraphF).exists()).toBe(true)
         expect(wrapper.findComponent(TokenTransferGraph).exists()).toBe(true)
@@ -124,7 +130,7 @@ describe("TransactionDetails.vue", () => {
 
         expect(wrapper.findComponent(HbarTransferGraphF).text()).toBe(
             "Fee TransfersAccountHbar AmountAccountHbar Amount0.0.29624024-0.00470065-$0.0012\n\n" +
-            "0.0.70.00022028$0.0001Node 4 - testnet\n\n" +
+            "0.0.40.00022028$0.0001Hosted by Hedera | East Coast, USA\n\n" +
             "0.0.980.00448037$0.0011Hedera fee collection account")
 
         expect(wrapper.findComponent(TokenTransferGraph).text()).toBe(
@@ -136,24 +142,18 @@ describe("TransactionDetails.vue", () => {
 
     });
 
-    it("Should display the contract result and logs (using transaction id)", async () => {
+    it("Should display the contract result and logs (using consensus timestamp)", async () => {
 
         await router.push("/") // To avoid "missing required param 'network'" error
 
-        const mock = new MockAdapter(axios);
-
         const transactionId = SAMPLE_CONTRACTCALL_TRANSACTIONS.transactions[0].transaction_id
         const contractId = SAMPLE_CONTRACTCALL_TRANSACTIONS.transactions[0].entity_id
+        const timestamp = SAMPLE_CONTRACTCALL_TRANSACTIONS.transactions[0].consensus_timestamp
 
         const matcher1 = "/api/v1/transactions/" + transactionId
         mock.onGet(matcher1).reply(200, SAMPLE_CONTRACTCALL_TRANSACTIONS);
-        const matcher2 = "/api/v1/contracts/results/" + transactionId
+        const matcher2 = "/api/v1/contracts/" + contractId + "/results/" + timestamp
         mock.onGet(matcher2).reply(200, SAMPLE_CONTRACT_RESULT_DETAILS)
-        const matcher3 = "https://api.coingecko.com/api/v3/coins/hedera-hashgraph"
-        mock.onGet(matcher3).reply(200, SAMPLE_COINGECKO);
-        const matcher4 = "/api/v1/blocks"
-        mock.onGet(matcher4).reply(200, SAMPLE_BLOCKSRESPONSE);
-
         const matcher5 = "/api/v1/contracts/results/" + transactionId + "/actions"
         mock.onGet(matcher5).reply(200, "[]")
 
@@ -162,6 +162,7 @@ describe("TransactionDetails.vue", () => {
                 plugins: [router, Oruga]
             },
             props: {
+                transactionLoc: timestamp,
                 transactionId: transactionId
             },
         });
@@ -173,20 +174,21 @@ describe("TransactionDetails.vue", () => {
         expect(wrapper.text()).toMatch(RegExp("^Transaction " + normalizeTransactionId(transactionId, true)))
         expect(wrapper.get("#transactionTypeValue").text()).toBe("CONTRACT CALL")
         expect(wrapper.get("#entityId").text()).toBe("Contract ID" + contractId)
+        expect(wrapper.get("#durationValue").text()).toBe("None")
 
         expect(wrapper.findComponent(ContractResult).exists()).toBe(true)
         expect(wrapper.findComponent(ContractResult).text()).toMatch(RegExp("^Contract Result"))
         expect(wrapper.get("#resultValue").text()).toBe("SUCCESS")
-        expect(wrapper.get("#fromValue").text()).toBe("0x00000000000000000000000000000000000ce9b4")
-        expect(wrapper.get("#toValue").text()).toBe("0x0000000000000000000000000000000000103783")
+        expect(wrapper.get("#fromValue").text()).toBe("0x00000000000000000000000000000000000ce9b4Copy to Clipboard(0.0.846260)")
+        expect(wrapper.get("#toValue").text()).toBe("0x0000000000000000000000000000000000103783Copy to Clipboard(0.0.1062787)")
         expect(wrapper.get("#typeValue").text()).toBe("None")
-        expect(wrapper.get("#functionParametersValue").text()).toBe("18cb afe5 0000 0000 0000 0000 0000 0000 0000 0000 0000 0000 0000 0000 0000 0017 4876 e800 0000 0000 0000 0000 0000 0000 0000 0000 0000 0000 0000 0000 0000 001b 2702 b2a0 0000 0000 0000 0000 0000 0000 0000 0000 0000 0000 0000 0000 0000 0000 0000 00a0 0000 0000 0000 0000 0000 0000 0000 0000 0000 0000 0000 0000 0000 0000 000c e9b4 0000 0000 0000 0000 0000 0000 0000 0000 0000 0000 0000 0000 0000 0183 1e10 602d 0000 0000 0000 0000 0000 0000 0000 0000 0000 0000 0000 0000 0000 0000 0000 0003 0000 0000 0000 0000 0000 0000 0000 0000 0000 0000 0000 0000 0000 0000 000c ba44 0000 0000 0000 0000 0000 0000 0000 0000 0000 0000 0000 0000 0000 0000 000d 1ea6 0000 0000 0000 0000 0000 0000 0000 0000 0000 0000 0000 0000 0000 0000 0010 3708Copy to Clipboard")
+        // expect(wrapper.get("#functionParametersValue").text()).toBe("18cb afe5 0000 0000 0000 0000 0000 0000 0000 0000 0000 0000 0000 0000 0000 0017 4876 e800 0000 0000 0000 0000 0000 0000 0000 0000 0000 0000 0000 0000 0000 001b 2702 b2a0 0000 0000 0000 0000 0000 0000 0000 0000 0000 0000 0000 0000 0000 0000 0000 00a0 0000 0000 0000 0000 0000 0000 0000 0000 0000 0000 0000 0000 0000 0000 000c e9b4 0000 0000 0000 0000 0000 0000 0000 0000 0000 0000 0000 0000 0000 0183 1e10 602d 0000 0000 0000 0000 0000 0000 0000 0000 0000 0000 0000 0000 0000 0000 0000 0003 0000 0000 0000 0000 0000 0000 0000 0000 0000 0000 0000 0000 0000 0000 000c ba44 0000 0000 0000 0000 0000 0000 0000 0000 0000 0000 0000 0000 0000 0000 000d 1ea6 0000 0000 0000 0000 0000 0000 0000 0000 0000 0000 0000 0000 0000 0000 0010 3708Copy to Clipboard")
         expect(wrapper.get("#errorMessageValue").text()).toBe("None")
         expect(wrapper.get("#gasLimitValue").text()).toBe("480,000")
         expect(wrapper.get("#gasUsedValue").text()).toBe("384,000")
         expect(wrapper.get("#maxFeePerGasValue").text()).toBe("None")
         expect(wrapper.get("#maxPriorityFeePerGasValue").text()).toBe("None")
-        expect(wrapper.get("#gasPriceValue").text()).toBe("0.00000000$0.0000")
+        expect(wrapper.get("#gasPriceValue").text()).toBe("None")
         expect(wrapper.findAll("#logIndexValue").length).toBe(3)
     });
 
@@ -194,21 +196,19 @@ describe("TransactionDetails.vue", () => {
 
         await router.push("/") // To avoid "missing required param 'network'" error
 
-        const mock = new MockAdapter(axios);
-
-        const transactionId = SAMPLE_CONTRACTCALL_TRANSACTIONS.transactions[0].transaction_id
-        const transactionHash = SAMPLE_CONTRACTCALL_TRANSACTIONS.transactions[0].transaction_hash
-        const contractId = SAMPLE_CONTRACTCALL_TRANSACTIONS.transactions[0].entity_id
+        const SAMPLE_TRANSACTION = SAMPLE_CONTRACTCALL_TRANSACTIONS.transactions[0]
+        const transactionId = SAMPLE_TRANSACTION.transaction_id
+        const transactionHashBase64 = SAMPLE_TRANSACTION.transaction_hash
+        const transactionHash = byteToHex(base64DecToArr(transactionHashBase64))
+        const contractId = SAMPLE_TRANSACTION.entity_id
+        const timestamp = SAMPLE_TRANSACTION.consensus_timestamp
 
         const matcher1 = "/api/v1/transactions/" + transactionHash
-        mock.onGet(matcher1).reply(200, SAMPLE_CONTRACTCALL_TRANSACTIONS);
-        const matcher2 = "/api/v1/contracts/results/" + transactionId
+        mock.onGet(matcher1).reply(200, { transactions: [SAMPLE_TRANSACTION]});
+        const matcher11 = "/api/v1/transactions/" + transactionId
+        mock.onGet(matcher11).reply(200, SAMPLE_CONTRACTCALL_TRANSACTIONS);
+        const matcher2 = "/api/v1/contracts/" + contractId  + "/results/" + timestamp
         mock.onGet(matcher2).reply(200, SAMPLE_CONTRACT_RESULT_DETAILS)
-        const matcher3 = "https://api.coingecko.com/api/v3/coins/hedera-hashgraph"
-        mock.onGet(matcher3).reply(200, SAMPLE_COINGECKO);
-        const matcher4 = "/api/v1/blocks"
-        mock.onGet(matcher4).reply(200, SAMPLE_BLOCKSRESPONSE);
-
         const matcher5 = "/api/v1/contracts/results/" + transactionId + "/actions"
         mock.onGet(matcher5).reply(200, "[]")
 
@@ -217,7 +217,7 @@ describe("TransactionDetails.vue", () => {
                 plugins: [router, Oruga]
             },
             props: {
-                transactionId: transactionHash
+                transactionLoc: transactionHash
             },
         });
 
@@ -232,43 +232,38 @@ describe("TransactionDetails.vue", () => {
         expect(wrapper.findComponent(ContractResult).exists()).toBe(true)
         expect(wrapper.findComponent(ContractResult).text()).toMatch(RegExp("^Contract Result"))
         expect(wrapper.get("#resultValue").text()).toBe("SUCCESS")
-        expect(wrapper.get("#fromValue").text()).toBe("0x00000000000000000000000000000000000ce9b4")
-        expect(wrapper.get("#toValue").text()).toBe("0x0000000000000000000000000000000000103783")
+        expect(wrapper.get("#fromValue").text()).toBe("0x00000000000000000000000000000000000ce9b4Copy to Clipboard(0.0.846260)")
+        expect(wrapper.get("#toValue").text()).toBe("0x0000000000000000000000000000000000103783Copy to Clipboard(0.0.1062787)")
         expect(wrapper.get("#typeValue").text()).toBe("None")
-        expect(wrapper.get("#functionParametersValue").text()).toBe("18cb afe5 0000 0000 0000 0000 0000 0000 0000 0000 0000 0000 0000 0000 0000 0017 4876 e800 0000 0000 0000 0000 0000 0000 0000 0000 0000 0000 0000 0000 0000 001b 2702 b2a0 0000 0000 0000 0000 0000 0000 0000 0000 0000 0000 0000 0000 0000 0000 0000 00a0 0000 0000 0000 0000 0000 0000 0000 0000 0000 0000 0000 0000 0000 0000 000c e9b4 0000 0000 0000 0000 0000 0000 0000 0000 0000 0000 0000 0000 0000 0183 1e10 602d 0000 0000 0000 0000 0000 0000 0000 0000 0000 0000 0000 0000 0000 0000 0000 0003 0000 0000 0000 0000 0000 0000 0000 0000 0000 0000 0000 0000 0000 0000 000c ba44 0000 0000 0000 0000 0000 0000 0000 0000 0000 0000 0000 0000 0000 0000 000d 1ea6 0000 0000 0000 0000 0000 0000 0000 0000 0000 0000 0000 0000 0000 0000 0010 3708Copy to Clipboard")
+        // expect(wrapper.get("#functionParametersValue").text()).toBe("18cb afe5 0000 0000 0000 0000 0000 0000 0000 0000 0000 0000 0000 0000 0000 0017 4876 e800 0000 0000 0000 0000 0000 0000 0000 0000 0000 0000 0000 0000 0000 001b 2702 b2a0 0000 0000 0000 0000 0000 0000 0000 0000 0000 0000 0000 0000 0000 0000 0000 00a0 0000 0000 0000 0000 0000 0000 0000 0000 0000 0000 0000 0000 0000 0000 000c e9b4 0000 0000 0000 0000 0000 0000 0000 0000 0000 0000 0000 0000 0000 0183 1e10 602d 0000 0000 0000 0000 0000 0000 0000 0000 0000 0000 0000 0000 0000 0000 0000 0003 0000 0000 0000 0000 0000 0000 0000 0000 0000 0000 0000 0000 0000 0000 000c ba44 0000 0000 0000 0000 0000 0000 0000 0000 0000 0000 0000 0000 0000 0000 000d 1ea6 0000 0000 0000 0000 0000 0000 0000 0000 0000 0000 0000 0000 0000 0000 0010 3708Copy to Clipboard")
         expect(wrapper.get("#errorMessageValue").text()).toBe("None")
         expect(wrapper.get("#gasLimitValue").text()).toBe("480,000")
         expect(wrapper.get("#gasUsedValue").text()).toBe("384,000")
         expect(wrapper.get("#maxFeePerGasValue").text()).toBe("None")
         expect(wrapper.get("#maxPriorityFeePerGasValue").text()).toBe("None")
-        expect(wrapper.get("#gasPriceValue").text()).toBe("0.00000000$0.0000")
+        expect(wrapper.get("#gasPriceValue").text()).toBe("None")
         expect(wrapper.findAll("#logIndexValue").length).toBe(3)
     });
 
-    it("Should update when transaction id changes", async () => {
+    it("Should update when consensus timestamp changes", async () => {
 
         await router.push("/") // To avoid "missing required param 'network'" error
 
-        const mock = new MockAdapter(axios);
+        let matcher1 = "/api/v1/transactions?timestamp=" + SAMPLE_TRANSACTION.consensus_timestamp
+        mock.onGet(matcher1).reply(200, { transactions: [SAMPLE_TRANSACTION]})
 
-        let matcher1 = "/api/v1/transactions/" + SAMPLE_TRANSACTION.transaction_id
-        mock.onGet(matcher1).reply(200, SAMPLE_TRANSACTIONS);
+        let matcher11 = "/api/v1/transactions/" + SAMPLE_TRANSACTION.transaction_id
+        mock.onGet(matcher11).reply(200, SAMPLE_TRANSACTIONS)
 
         const matcher2 = "/api/v1/tokens/" + SAMPLE_TOKEN.token_id
         mock.onGet(matcher2).reply(200, SAMPLE_TOKEN);
-
-        const matcher3 = "https://api.coingecko.com/api/v3/coins/hedera-hashgraph"
-        mock.onGet(matcher3).reply(200, SAMPLE_COINGECKO);
-
-        const matcher4 = "/api/v1/blocks"
-        mock.onGet(matcher4).reply(200, SAMPLE_BLOCKSRESPONSE);
 
         const wrapper = mount(TransactionDetails, {
             global: {
                 plugins: [router, Oruga]
             },
             props: {
-                transactionId: SAMPLE_TRANSACTION.transaction_id
+                transactionLoc: SAMPLE_TRANSACTION.consensus_timestamp
             },
         });
 
@@ -283,11 +278,13 @@ describe("TransactionDetails.vue", () => {
         expect(wrapper.findComponent(NftTransferGraph).text()).toContain("NFT TransfersNone")
 
         const transaction = SAMPLE_CONTRACTCALL_TRANSACTIONS.transactions[0]
-        matcher1 = "/api/v1/transactions/" + transaction.transaction_id
-        mock.onGet(matcher1).reply(200, SAMPLE_CONTRACTCALL_TRANSACTIONS);
+        matcher1 = "/api/v1/transactions?timestamp=" + transaction.consensus_timestamp
+        mock.onGet(matcher1).reply(200, { transactions: [transaction]})
+        matcher11 = "/api/v1/transactions/" + transaction.transaction_id
+        mock.onGet(matcher11).reply(200, SAMPLE_CONTRACTCALL_TRANSACTIONS)
 
         await wrapper.setProps({
-            transactionId: transaction.transaction_id
+            transactionLoc: transaction.consensus_timestamp
         })
         await flushPromises()
         // console.log(wrapper.text())
@@ -306,23 +303,18 @@ describe("TransactionDetails.vue", () => {
 
         await router.push("/") // To avoid "missing required param 'network'" error
 
-        const mock = new MockAdapter(axios);
-
-        const matcher1 = "/api/v1/transactions/" + SAMPLE_FAILED_TRANSACTION.transaction_id
+        const matcher1 = "/api/v1/transactions?timestamp=" + SAMPLE_FAILED_TRANSACTION.consensus_timestamp
         mock.onGet(matcher1).reply(200, SAMPLE_FAILED_TRANSACTIONS);
 
-        const matcher2 = "https://api.coingecko.com/api/v3/coins/hedera-hashgraph"
-        mock.onGet(matcher2).reply(200, SAMPLE_COINGECKO);
-
-        const matcher3 = "/api/v1/blocks"
-        mock.onGet(matcher3).reply(200, SAMPLE_BLOCKSRESPONSE);
+        const matcher11 = "/api/v1/transactions/" + SAMPLE_FAILED_TRANSACTION.transaction_id
+        mock.onGet(matcher11).reply(200, SAMPLE_FAILED_TRANSACTIONS);
 
         const wrapper = mount(TransactionDetails, {
             global: {
                 plugins: [router, Oruga]
             },
             props: {
-                transactionId: SAMPLE_FAILED_TRANSACTION.transaction_id
+                transactionLoc: SAMPLE_FAILED_TRANSACTION.consensus_timestamp
             },
         });
 
@@ -336,53 +328,50 @@ describe("TransactionDetails.vue", () => {
         expect(banner.text()).toBe("CONTRACT_REVERT_EXECUTED")
     });
 
-    it("Should detect invalid transaction ID", async () => {
+    it("Should detect invalid transaction timestamp", async () => {
 
         await router.push("/") // To avoid "missing required param 'network'" error
 
-        const invalidTransactionId = "0.0.0.1000-1646025139-152901498"
+        const invalidTimestamp = "1600000000.000000000"
         const wrapper = mount(TransactionDetails, {
             global: {
                 plugins: [router, Oruga]
             },
             props: {
-                transactionId: invalidTransactionId
+                transactionLoc: invalidTimestamp
             },
         });
         await flushPromises()
         // console.log(wrapper.html())
         // console.log(wrapper.text())
 
-        expect(wrapper.get("#notificationBanner").text()).toBe("Invalid transaction ID: " + invalidTransactionId)
+        expect(wrapper.get("#notificationBanner").text()).toBe("Transaction with timestamp " + invalidTimestamp + " was not found")
     });
 
     it("Should display the name of the system contract called", async () => {
 
         await router.push("/") // To avoid "missing required param 'network'" error
 
-        const txnId = SAMPLE_SYSTEM_CONTRACT_CALL_TRANSACTIONS.transactions[0].transaction_id
+        const transaction = SAMPLE_SYSTEM_CONTRACT_CALL_TRANSACTIONS.transactions[0]
 
-        const mock = new MockAdapter(axios);
-        const matcher1 = "/api/v1/transactions/" + txnId
-        mock.onGet(matcher1).reply(200, SAMPLE_SYSTEM_CONTRACT_CALL_TRANSACTIONS)
-        const matcher2 = "https://api.coingecko.com/api/v3/coins/hedera-hashgraph"
-        mock.onGet(matcher2).reply(200, SAMPLE_COINGECKO);
-        const matcher3 = "/api/v1/blocks"
-        mock.onGet(matcher3).reply(200, SAMPLE_BLOCKSRESPONSE);
+        const matcher1 = "/api/v1/transactions?timestamp=" + transaction.consensus_timestamp
+        mock.onGet(matcher1).reply(200, { transactions: [transaction]})
+        const matcher11 = "/api/v1/transactions/" + transaction.transaction_id
+        mock.onGet(matcher11).reply(200, SAMPLE_SYSTEM_CONTRACT_CALL_TRANSACTIONS)
 
         const wrapper = mount(TransactionDetails, {
             global: {
                 plugins: [router, Oruga]
             },
             props: {
-                transactionId: txnId
+                transactionLoc: transaction.consensus_timestamp
             },
         });
         await flushPromises()
         // console.log(wrapper.html())
         // console.log(wrapper.text())
 
-        expect(wrapper.text()).toMatch(RegExp("^Transaction " + normalizeTransactionId(txnId, true)))
+        expect(wrapper.text()).toMatch(RegExp("^Transaction " + normalizeTransactionId(transaction.transaction_id, true)))
         expect(wrapper.get("#transactionTypeValue").text()).toBe("CONTRACT CALL")
         expect(wrapper.get("#entityId").text()).toBe("Contract IDHedera Token Service System Contract")
     });
@@ -391,21 +380,13 @@ describe("TransactionDetails.vue", () => {
 
         await router.push("/") // To avoid "missing required param 'network'" error
 
-        const mock = new MockAdapter(axios);
-
         const SCHEDULING = SAMPLE_SCHEDULING_SCHEDULED_TRANSACTIONS.transactions[0]
         const SCHEDULED = SAMPLE_SCHEDULING_SCHEDULED_TRANSACTIONS.transactions[1]
         const TOKEN_ID = SCHEDULED.token_transfers ? SCHEDULED.token_transfers[0].token_id : "0.0.1304757"
-
-        const matcher1 = "/api/v1/transactions/" + SCHEDULING.transaction_id
-        mock.onGet(matcher1).reply(200, SAMPLE_SCHEDULING_SCHEDULED_TRANSACTIONS);
-
-        const matcher3 = "https://api.coingecko.com/api/v3/coins/hedera-hashgraph"
-        mock.onGet(matcher3).reply(200, SAMPLE_COINGECKO);
-
-        const matcher4 = "/api/v1/blocks"
-        mock.onGet(matcher4).reply(200, SAMPLE_BLOCKSRESPONSE);
-
+        const matcher1 = "/api/v1/transactions?timestamp=" + SCHEDULING.consensus_timestamp
+        mock.onGet(matcher1).reply(200, { transactions: [SCHEDULING]});
+        const matcher11 = "/api/v1/transactions/" + SCHEDULING.transaction_id
+        mock.onGet(matcher11).reply(200, SAMPLE_SCHEDULING_SCHEDULED_TRANSACTIONS);
         const matcher5 = "/api/v1/tokens/" + TOKEN_ID
         mock.onGet(matcher5).reply(200, SAMPLE_TOKEN)
 
@@ -414,8 +395,7 @@ describe("TransactionDetails.vue", () => {
                 plugins: [router, Oruga]
             },
             props: {
-                transactionId: SCHEDULING.transaction_id,
-                consensusTimestamp: SCHEDULING.consensus_timestamp
+                transactionLoc: SCHEDULING.consensus_timestamp
             },
         });
 
@@ -428,7 +408,7 @@ describe("TransactionDetails.vue", () => {
         const link = wrapper.get("#scheduledLink")
         expect(link.text()).toBe("Show scheduled transaction")
         expect(link.get('a').attributes("href")).toBe(
-            "/testnet/transaction/" + SCHEDULED.transaction_id + "?t=" + SCHEDULED.consensus_timestamp
+            "/mainnet/transaction/" + SCHEDULED.consensus_timestamp + "?tid=" + SCHEDULED.transaction_id
         )
     });
 
@@ -436,30 +416,22 @@ describe("TransactionDetails.vue", () => {
 
         await router.push("/") // To avoid "missing required param 'network'" error
 
-        const mock = new MockAdapter(axios);
-
         const SCHEDULING = SAMPLE_SCHEDULING_SCHEDULED_TRANSACTIONS.transactions[0]
         const SCHEDULED = SAMPLE_SCHEDULING_SCHEDULED_TRANSACTIONS.transactions[1]
         const TOKEN_ID = SCHEDULED.token_transfers ? SCHEDULED.token_transfers[0].token_id : "0.0.1304757"
-        const matcher1 = "/api/v1/transactions/" + SCHEDULED.transaction_id
-        mock.onGet(matcher1).reply(200, SAMPLE_SCHEDULING_SCHEDULED_TRANSACTIONS);
-
+        const matcher1 = "/api/v1/transactions?timestamp=" + SCHEDULED.consensus_timestamp
+        mock.onGet(matcher1).reply(200, { transactions: [SCHEDULED]});
+        const matcher11 = "/api/v1/transactions/" + SCHEDULED.transaction_id
+        mock.onGet(matcher11).reply(200, SAMPLE_SCHEDULING_SCHEDULED_TRANSACTIONS);
         const matcher2 = "/api/v1/tokens/" + TOKEN_ID
         mock.onGet(matcher2).reply(200, SAMPLE_TOKEN);
-
-        const matcher3 = "https://api.coingecko.com/api/v3/coins/hedera-hashgraph"
-        mock.onGet(matcher3).reply(200, SAMPLE_COINGECKO);
-
-        const matcher4 = "/api/v1/blocks"
-        mock.onGet(matcher4).reply(200, SAMPLE_BLOCKSRESPONSE);
 
         const wrapper = mount(TransactionDetails, {
             global: {
                 plugins: [router, Oruga]
             },
             props: {
-                transactionId: SCHEDULED.transaction_id,
-                consensusTimestamp: SCHEDULED.consensus_timestamp
+                transactionLoc: SCHEDULED.consensus_timestamp
             },
         });
 
@@ -472,7 +444,7 @@ describe("TransactionDetails.vue", () => {
         const link = wrapper.get("#schedulingLink")
         expect(link.text()).toBe("Show schedule create transaction")
         expect(link.get('a').attributes("href")).toBe(
-            "/testnet/transaction/" + SCHEDULING.transaction_id + "?t=" + SCHEDULING.consensus_timestamp
+            "/mainnet/transaction/" + SCHEDULING.consensus_timestamp + "?tid=" + SCHEDULING.transaction_id
         )
     });
 
@@ -480,30 +452,22 @@ describe("TransactionDetails.vue", () => {
 
         await router.push("/") // To avoid "missing required param 'network'" error
 
-        const mock = new MockAdapter(axios);
-
         const PARENT = SAMPLE_PARENT_CHILD_TRANSACTIONS.transactions[0]
         const CHILD = SAMPLE_PARENT_CHILD_TRANSACTIONS.transactions[1]
         const TOKEN_ID = CHILD.nft_transfers ? CHILD.nft_transfers[0].token_id : "0.0.48193741"
-        const matcher1 = "/api/v1/transactions/" + CHILD.transaction_id
-        mock.onGet(matcher1).reply(200, SAMPLE_PARENT_CHILD_TRANSACTIONS);
-
+        const matcher1 = "/api/v1/transactions?timestamp=" + CHILD.consensus_timestamp
+        mock.onGet(matcher1).reply(200, { transactions: [CHILD]});
+        const matcher11 = "/api/v1/transactions/" + CHILD.transaction_id
+        mock.onGet(matcher11).reply(200, SAMPLE_PARENT_CHILD_TRANSACTIONS);
         const matcher2 = "/api/v1/tokens/" + TOKEN_ID
         mock.onGet(matcher2).reply(200, SAMPLE_TOKEN);
-
-        const matcher3 = "https://api.coingecko.com/api/v3/coins/hedera-hashgraph"
-        mock.onGet(matcher3).reply(200, SAMPLE_COINGECKO);
-
-        const matcher4 = "/api/v1/blocks"
-        mock.onGet(matcher4).reply(200, SAMPLE_BLOCKSRESPONSE);
 
         const wrapper = mount(TransactionDetails, {
             global: {
                 plugins: [router, Oruga]
             },
             props: {
-                transactionId: CHILD.transaction_id,
-                consensusTimestamp: CHILD.consensus_timestamp
+                transactionLoc: CHILD.consensus_timestamp,
             },
         });
 
@@ -516,7 +480,7 @@ describe("TransactionDetails.vue", () => {
         const link = wrapper.get("#parentTransactionValue")
         expect(link.text()).toBe("CONTRACT CALL")
         expect(link.get('a').attributes("href")).toBe(
-            "/testnet/transaction/" + PARENT.transaction_id + "?t=" + PARENT.consensus_timestamp
+            "/mainnet/transaction/" + PARENT.consensus_timestamp + "?tid=" + PARENT.transaction_id
         )
     });
 
@@ -524,27 +488,20 @@ describe("TransactionDetails.vue", () => {
 
         await router.push("/") // To avoid "missing required param 'network'" error
 
-        const mock = new MockAdapter(axios);
-
         const PARENT = SAMPLE_PARENT_CHILD_TRANSACTIONS.transactions[0]
         const CHILD1 = SAMPLE_PARENT_CHILD_TRANSACTIONS.transactions[1]
         const CHILD2 = SAMPLE_PARENT_CHILD_TRANSACTIONS.transactions[2]
-        const matcher1 = "/api/v1/transactions/" + PARENT.transaction_id
-        mock.onGet(matcher1).reply(200, SAMPLE_PARENT_CHILD_TRANSACTIONS);
-
-        const matcher3 = "https://api.coingecko.com/api/v3/coins/hedera-hashgraph"
-        mock.onGet(matcher3).reply(200, SAMPLE_COINGECKO);
-
-        const matcher4 = "/api/v1/blocks"
-        mock.onGet(matcher4).reply(200, SAMPLE_BLOCKSRESPONSE);
+        const matcher1 = "/api/v1/transactions?timestamp=" + PARENT.consensus_timestamp
+        mock.onGet(matcher1).reply(200, {transactions: [PARENT]});
+        const matcher11 = "/api/v1/transactions/" + PARENT.transaction_id
+        mock.onGet(matcher11).reply(200, SAMPLE_PARENT_CHILD_TRANSACTIONS);
 
         const wrapper = mount(TransactionDetails, {
             global: {
                 plugins: [router, Oruga]
             },
             props: {
-                transactionId: PARENT.transaction_id,
-                consensusTimestamp: PARENT.consensus_timestamp
+                transactionLoc: PARENT.consensus_timestamp
             },
         });
 
@@ -559,10 +516,62 @@ describe("TransactionDetails.vue", () => {
 
         const links = children.findAll('a')
         expect(links[0].attributes("href")).toBe(
-            "/testnet/transaction/" + CHILD1.transaction_id + "?t=" + CHILD1.consensus_timestamp
+            "/mainnet/transaction/" + CHILD1.consensus_timestamp + "?tid=" + CHILD1.transaction_id
         )
         expect(links[1].attributes("href")).toBe(
-            "/testnet/transaction/" + CHILD2.transaction_id + "?t=" + CHILD2.consensus_timestamp
+            "/mainnet/transaction/" + CHILD2.consensus_timestamp + "?tid=" + CHILD2.transaction_id
         )
+    });
+
+    it("Should display transaction details with account/token association", async () => {
+
+        await router.push("/") // To avoid "missing required param 'network'" error
+
+        const transaction = SAMPLE_TOKEN_ASSOCIATE_TRANSACTION
+        const token1 = SAMPLE_ASSOCIATED_TOKEN
+        const token2 = SAMPLE_ASSOCIATED_TOKEN_2
+
+        const matcher1 = "/api/v1/transactions/" + transaction.transaction_id
+        mock.onGet(matcher1).reply(200, { transactions: [transaction]});
+        const matcher3 = "/api/v1/accounts/" + transaction.entity_id + "/tokens"
+        mock.onGet(matcher3).reply(200, SAMPLE_TOKEN_ASSOCIATIONS);
+        const matcher4 = "/api/v1/tokens/" + token1.token_id
+        mock.onGet(matcher4).reply(200, token1);
+        const matcher5 = "/api/v1/tokens/" + token2.token_id
+        mock.onGet(matcher5).reply(200, token2);
+
+        const wrapper = mount(TransactionDetails, {
+            global: {
+                plugins: [router, Oruga]
+            },
+            props: {
+                transactionLoc: transaction.consensus_timestamp,
+                transactionId: transaction.transaction_id
+            },
+        });
+
+        await flushPromises()
+        // console.log(wrapper.html())
+        // console.log(wrapper.text())
+
+        expect(wrapper.text()).toMatch(RegExp("^Transaction " + normalizeTransactionId(transaction.transaction_id, true)))
+
+        expect(wrapper.get("#transactionTypeValue").text()).toBe("TOKEN ASSOCIATE")
+        expect(wrapper.get("#consensusAtValue").text()).toBe("6:51:52.1505 PMDec 21, 2022, UTC") // UTC because of HMSF.forceUTC
+        expect(wrapper.get("#transactionHashValue").text()).toBe("4786 0799 99df 169a 3834 9249 d3c9 a548 9a83 f1c7 c51b 6b1e deb8 1347 a496 d931 83e2 4a43 ad03 372e bc50 1528 a603 2debCopy to Clipboard")
+
+        expect(wrapper.get("#associatedTokenIdValue").text()).toBe("0.0.34332104HSuite0.0.49292859TokenA7")
+        expect(wrapper.get("#entityIdValue").text()).toBe("0.0.642949")
+
+        expect(wrapper.findComponent(HbarTransferGraphF).exists()).toBe(true)
+        expect(wrapper.findComponent(TokenTransferGraph).exists()).toBe(true)
+        expect(wrapper.findComponent(NftTransferGraph).exists()).toBe(true)
+
+        expect(wrapper.findComponent(HbarTransferGraphF).text()).toBe("Fee TransfersAccountHbar AmountAccountHbar Amount0.0.642949-1.15905210-$0.2852\n\n" +
+            "0.0.30.05805847$0.0143Hosted by Hedera | East Coast, USA\n\n" +
+            "0.0.981.10099363$0.2709Hedera fee collection account")
+        expect(wrapper.findComponent(TokenTransferGraph).text()).toBe("Token TransfersNone")
+        expect(wrapper.findComponent(NftTransferGraph).text()).toBe("NFT TransfersNone")
+
     });
 });

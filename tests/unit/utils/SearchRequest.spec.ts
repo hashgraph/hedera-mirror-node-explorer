@@ -4,7 +4,7 @@
  *
  * Hedera Mirror Node Explorer
  *
- * Copyright (C) 2021 - 2022 Hedera Hashgraph, LLC
+ * Copyright (C) 2021 - 2023 Hedera Hashgraph, LLC
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -25,6 +25,7 @@ import axios from "axios";
 import {
     SAMPLE_ACCOUNT,
     SAMPLE_ACCOUNTS,
+    SAMPLE_BLOCKSRESPONSE,
     SAMPLE_CONTRACT,
     SAMPLE_TOKEN,
     SAMPLE_TOPIC_MESSAGES,
@@ -32,7 +33,7 @@ import {
     SAMPLE_TRANSACTIONS
 } from "../Mocks";
 import {SearchRequest} from "@/utils/SearchRequest";
-import {base64DecToArr, byteToHex} from "@/utils/B64Utils";
+import {base32ToAlias, base64DecToArr, byteToHex, hexToByte} from "@/utils/B64Utils";
 import {EntityID} from "@/utils/EntityID";
 
 const mock = new MockAdapter(axios)
@@ -49,7 +50,8 @@ const SAMPLE_ACCOUNT_ADDRESS = EntityID.parse(SAMPLE_ACCOUNT.account)!.toAddress
 const matcher_account_with_address = "/api/v1/accounts/" + SAMPLE_ACCOUNT_ADDRESS
 mock.onGet(matcher_account_with_address).reply(200, SAMPLE_ACCOUNT)
 
-const matcher_account_with_public_key = "/api/v1/accounts/?account.publickey=" + SAMPLE_ACCOUNTS.accounts[0].key.key
+const matcher_account_with_public_key = "/api/v1/accounts/?account.publickey="
+    + SAMPLE_ACCOUNTS.accounts[0].key.key + "&limit=2"
 mock.onGet(matcher_account_with_public_key).reply(200, SAMPLE_ACCOUNTS)
 
 
@@ -61,6 +63,15 @@ mock.onGet(matcher_transaction).reply(200, SAMPLE_TRANSACTIONS)
 const TRANSACTION_HASH = byteToHex(base64DecToArr(SAMPLE_TRANSACTION.transaction_hash))
 const matcher_transaction_with_hash = "/api/v1/transactions/" + TRANSACTION_HASH
 mock.onGet(matcher_transaction_with_hash).reply(200, SAMPLE_TRANSACTIONS)
+
+// Block
+
+const BLOCK_HASH = byteToHex(hexToByte(SAMPLE_BLOCKSRESPONSE.blocks[0].hash) ?? new Uint8Array(0))
+const matcher_block_with_hash = "/api/v1/blocks/" + BLOCK_HASH
+mock.onGet(matcher_block_with_hash).reply(200, SAMPLE_BLOCKSRESPONSE.blocks[0])
+const BLOCK_HASH_PREFIX = byteToHex(hexToByte(SAMPLE_BLOCKSRESPONSE.blocks[0].hash)?.slice(0, 32) ?? new Uint8Array(0))
+const matcher_block_with_hash_prefix = "/api/v1/blocks/" + BLOCK_HASH_PREFIX
+mock.onGet(matcher_block_with_hash_prefix).reply(200, SAMPLE_BLOCKSRESPONSE.blocks[0])
 
 // Token
 
@@ -95,10 +106,12 @@ describe("SearchRequest.ts", () => {
 
         expect(r.searchedId).toBe(SAMPLE_ACCOUNT.account)
         expect(r.account).toStrictEqual(SAMPLE_ACCOUNT)
+        expect(r.accountsWithKey).toStrictEqual([])
         expect(r.transactions).toStrictEqual([])
         expect(r.tokenInfo).toBeNull()
         expect(r.topicMessages).toStrictEqual([])
         expect(r.contract).toBeNull()
+        expect(r.block).toBeNull()
         expect(r.getErrorCount()).toBe(0)
 
     })
@@ -109,10 +122,12 @@ describe("SearchRequest.ts", () => {
 
         expect(r.searchedId).toBe(SAMPLE_ACCOUNT_ADDRESS)
         expect(r.account).toStrictEqual(SAMPLE_ACCOUNT)
+        expect(r.accountsWithKey).toStrictEqual([])
         expect(r.transactions).toStrictEqual([])
         expect(r.tokenInfo).toBeNull()
         expect(r.topicMessages).toStrictEqual([])
         expect(r.contract).toBeNull()
+        expect(r.block).toBeNull()
         expect(r.getErrorCount()).toBe(0)
 
     })
@@ -122,11 +137,13 @@ describe("SearchRequest.ts", () => {
         await r.run()
 
         expect(r.searchedId).toBe(SAMPLE_ACCOUNT.key.key)
-        expect(r.account).toStrictEqual(SAMPLE_ACCOUNT)
+        expect(r.account).toBeNull()
+        expect(r.accountsWithKey).toStrictEqual([SAMPLE_ACCOUNT])
         expect(r.transactions).toStrictEqual([])
         expect(r.tokenInfo).toBeNull()
         expect(r.topicMessages).toStrictEqual([])
         expect(r.contract).toBeNull()
+        expect(r.block).toBeNull()
         expect(r.getErrorCount()).toBe(0)
 
     })
@@ -137,10 +154,29 @@ describe("SearchRequest.ts", () => {
 
         expect(r.searchedId).toBe(SAMPLE_ACCOUNT.alias)
         expect(r.account).toStrictEqual(SAMPLE_ACCOUNT)
+        expect(r.accountsWithKey).toStrictEqual([])
         expect(r.transactions).toStrictEqual([])
         expect(r.tokenInfo).toBeNull()
         expect(r.topicMessages).toStrictEqual([])
         expect(r.contract).toBeNull()
+        expect(r.block).toBeNull()
+        expect(r.getErrorCount()).toBe(0)
+
+    })
+
+    test("account (with alias expressed in hex)", async () => {
+        const SAMPLE_ALIAS_HEX = byteToHex(base32ToAlias(SAMPLE_ACCOUNT.alias)!)
+        const r = new SearchRequest(SAMPLE_ALIAS_HEX)
+        await r.run()
+
+        expect(r.searchedId).toBe(SAMPLE_ALIAS_HEX)
+        expect(r.account).toStrictEqual(SAMPLE_ACCOUNT)
+        expect(r.accountsWithKey).toStrictEqual([])
+        expect(r.transactions).toStrictEqual([])
+        expect(r.tokenInfo).toBeNull()
+        expect(r.topicMessages).toStrictEqual([])
+        expect(r.contract).toBeNull()
+        expect(r.block).toBeNull()
         expect(r.getErrorCount()).toBe(0)
 
     })
@@ -155,10 +191,12 @@ describe("SearchRequest.ts", () => {
 
         expect(r.searchedId).toBe(SAMPLE_TRANSACTION.transaction_id)
         expect(r.account).toBeNull()
+        expect(r.accountsWithKey).toStrictEqual([])
         expect(r.transactions).toStrictEqual([SAMPLE_TRANSACTION])
         expect(r.tokenInfo).toBeNull()
         expect(r.topicMessages).toStrictEqual([])
         expect(r.contract).toBeNull()
+        expect(r.block).toBeNull()
         expect(r.getErrorCount()).toBe(0)
 
     })
@@ -169,10 +207,48 @@ describe("SearchRequest.ts", () => {
 
         expect(r.searchedId).toBe(TRANSACTION_HASH)
         expect(r.account).toBeNull()
+        expect(r.accountsWithKey).toStrictEqual([])
         expect(r.transactions).toStrictEqual([SAMPLE_TRANSACTION])
         expect(r.tokenInfo).toBeNull()
         expect(r.topicMessages).toStrictEqual([])
         expect(r.contract).toBeNull()
+        expect(r.block).toBeNull()
+        expect(r.getErrorCount()).toBe(0)
+
+    })
+
+    //
+    // Block
+    //
+
+    test("block (with hash)", async () => {
+        const r = new SearchRequest(BLOCK_HASH)
+        await r.run()
+
+        expect(r.searchedId).toBe(BLOCK_HASH)
+        expect(r.account).toBeNull()
+        expect(r.accountsWithKey).toStrictEqual([])
+        expect(r.transactions).toStrictEqual([])
+        expect(r.tokenInfo).toBeNull()
+        expect(r.topicMessages).toStrictEqual([])
+        expect(r.contract).toBeNull()
+        expect(r.block).toStrictEqual(SAMPLE_BLOCKSRESPONSE.blocks[0])
+        expect(r.getErrorCount()).toBe(0)
+
+    })
+
+    test("block (with hash prefix)", async () => {
+        const r = new SearchRequest(BLOCK_HASH_PREFIX)
+        await r.run()
+
+        expect(r.searchedId).toBe(BLOCK_HASH_PREFIX)
+        expect(r.account).toBeNull()
+        expect(r.accountsWithKey).toStrictEqual([])
+        expect(r.transactions).toStrictEqual([])
+        expect(r.tokenInfo).toBeNull()
+        expect(r.topicMessages).toStrictEqual([])
+        expect(r.contract).toBeNull()
+        expect(r.block).toStrictEqual(SAMPLE_BLOCKSRESPONSE.blocks[0])
         expect(r.getErrorCount()).toBe(0)
 
     })
@@ -187,10 +263,12 @@ describe("SearchRequest.ts", () => {
 
         expect(r.searchedId).toBe(SAMPLE_TOKEN.token_id)
         expect(r.account).toBeNull()
+        expect(r.accountsWithKey).toStrictEqual([])
         expect(r.transactions).toStrictEqual([])
         expect(r.tokenInfo).toStrictEqual(SAMPLE_TOKEN)
         expect(r.topicMessages).toStrictEqual([])
         expect(r.contract).toBeNull()
+        expect(r.block).toBeNull()
         expect(r.getErrorCount()).toBe(0)
 
     })
@@ -201,10 +279,12 @@ describe("SearchRequest.ts", () => {
 
         expect(r.searchedId).toBe(SAMPLE_TOKEN_ADDRESS)
         expect(r.account).toBeNull()
+        expect(r.accountsWithKey).toStrictEqual([])
         expect(r.transactions).toStrictEqual([])
         expect(r.tokenInfo).toStrictEqual(SAMPLE_TOKEN)
         expect(r.topicMessages).toStrictEqual([])
         expect(r.contract).toBeNull()
+        expect(r.block).toBeNull()
         expect(r.getErrorCount()).toBe(0)
 
     })
@@ -219,10 +299,12 @@ describe("SearchRequest.ts", () => {
 
         expect(r.searchedId).toBe(SAMPLE_TOPIC_ID)
         expect(r.account).toBeNull()
+        expect(r.accountsWithKey).toStrictEqual([])
         expect(r.transactions).toStrictEqual([])
         expect(r.tokenInfo).toBeNull()
         expect(r.topicMessages).toStrictEqual(SAMPLE_TOPIC_MESSAGES.messages)
         expect(r.contract).toBeNull()
+        expect(r.block).toBeNull()
         expect(r.getErrorCount()).toBe(0)
 
     })
@@ -237,10 +319,12 @@ describe("SearchRequest.ts", () => {
 
         expect(r.searchedId).toBe(SAMPLE_CONTRACT.contract_id)
         expect(r.account).toBeNull()
+        expect(r.accountsWithKey).toStrictEqual([])
         expect(r.transactions).toStrictEqual([])
         expect(r.tokenInfo).toBeNull()
         expect(r.topicMessages).toStrictEqual([])
         expect(r.contract).toStrictEqual(SAMPLE_CONTRACT)
+        expect(r.block).toBeNull()
         expect(r.getErrorCount()).toBe(0)
 
     })
@@ -251,10 +335,12 @@ describe("SearchRequest.ts", () => {
 
         expect(r.searchedId).toBe(SAMPLE_CONTRACT.evm_address)
         expect(r.account).toBeNull()
+        expect(r.accountsWithKey).toStrictEqual([])
         expect(r.transactions).toStrictEqual([])
         expect(r.tokenInfo).toBeNull()
         expect(r.topicMessages).toStrictEqual([])
         expect(r.contract).toStrictEqual(SAMPLE_CONTRACT)
+        expect(r.block).toBeNull()
         expect(r.getErrorCount()).toBe(0)
 
     })
@@ -266,10 +352,12 @@ describe("SearchRequest.ts", () => {
 
         expect(r.searchedId).toBe(UNKNOWN_ID)
         expect(r.account).toBeNull()
+        expect(r.accountsWithKey).toStrictEqual([])
         expect(r.transactions).toStrictEqual([])
         expect(r.tokenInfo).toBeNull()
         expect(r.topicMessages).toStrictEqual([])
         expect(r.contract).toBeNull()
+        expect(r.block).toBeNull()
         expect(r.getErrorCount()).toBe(0)
 
     })
@@ -280,10 +368,12 @@ describe("SearchRequest.ts", () => {
 
         expect(r.searchedId).toBe(INVALID_EVM_ADDRESS)
         expect(r.account).toBeNull()
+        expect(r.accountsWithKey).toStrictEqual([])
         expect(r.transactions).toStrictEqual([])
         expect(r.tokenInfo).toBeNull()
         expect(r.topicMessages).toStrictEqual([])
         expect(r.contract).toBeNull()
+        expect(r.block).toBeNull()
         expect(r.getErrorCount()).toBe(0)
 
         const aliasHex2 = "0x" + INVALID_EVM_ADDRESS
@@ -291,11 +381,13 @@ describe("SearchRequest.ts", () => {
         await r2.run()
 
         expect(r2.searchedId).toBe(aliasHex2)
-        expect(r.account).toBeNull()
+        expect(r2.account).toBeNull()
+        expect(r.accountsWithKey).toStrictEqual([])
         expect(r2.transactions).toStrictEqual([])
         expect(r2.tokenInfo).toBeNull()
         expect(r2.topicMessages).toStrictEqual([])
         expect(r2.contract).toBeNull()
+        expect(r.block).toBeNull()
         expect(r.getErrorCount()).toBe(0)
 
     })
@@ -307,10 +399,12 @@ describe("SearchRequest.ts", () => {
 
         expect(r.searchedId).toBe(INVAlID_ID)
         expect(r.account).toBeNull()
+        expect(r.accountsWithKey).toStrictEqual([])
         expect(r.transactions).toStrictEqual([])
         expect(r.tokenInfo).toBeNull()
         expect(r.topicMessages).toStrictEqual([])
         expect(r.contract).toBeNull()
+        expect(r.block).toBeNull()
         expect(r.getErrorCount()).toBe(0)
 
     })

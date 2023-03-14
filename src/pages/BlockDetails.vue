@@ -2,7 +2,7 @@
   -
   - Hedera Mirror Node Explorer
   -
-  - Copyright (C) 2021 - 2022 Hedera Hashgraph, LLC
+  - Copyright (C) 2021 - 2023 Hedera Hashgraph, LLC
   -
   - Licensed under the Apache License, Version 2.0 (the "License");
   - you may not use this file except in compliance with the License.
@@ -24,7 +24,7 @@
 
 <template>
 
-  <section class="section" :class="{'h-mobile-background': isTouchDevice || !isSmallScreen}">
+  <section :class="{'h-mobile-background': isTouchDevice || !isSmallScreen}" class="section">
 
     <DashboardCard>
       <template v-slot:title>
@@ -57,19 +57,19 @@
             <Property id="blockHash">
               <template v-slot:name>Hash</template>
               <template v-slot:value>
-                <KeyValue :key-bytes="block?.hash" key-type="SHA384" :show-none="true"/>
+                <KeyValue :key-bytes="block?.hash" :show-none="true" key-type="SHA384"/>
               </template>
             </Property>
             <Property id="fromTimestamp">
               <template v-slot:name>From Timestamp</template>
               <template v-slot:value>
-                <TimestampValue :timestamp="block?.timestamp?.from" :show-none="true"/>
+                <TimestampValue :show-none="true" :timestamp="block?.timestamp?.from"/>
               </template>
             </Property>
             <Property id="toTimestamp">
               <template v-slot:name>To Timestamp</template>
               <template v-slot:value>
-                <TimestampValue :timestamp="block?.timestamp?.to" :show-none="true"/>
+                <TimestampValue :show-none="true" :timestamp="block?.timestamp?.to"/>
               </template>
             </Property>
             <Property id="gasUsed">
@@ -123,7 +123,7 @@ import Footer from "@/components/Footer.vue";
 import PlainAmount from "@/components/values/PlainAmount.vue";
 import BlockTransactionTable from "@/components/block/BlockTransactionTable.vue";
 import {BlockTransactionsLoader} from "@/components/block/BlockTransactionsLoader";
-import router from "@/router";
+import {routeManager} from "@/router";
 
 export default defineComponent({
 
@@ -162,9 +162,9 @@ export default defineComponent({
     const notification = computed(() => {
       let result
       if (blockLoader.blockLocator.value === null) {
-        result =  "Invalid block number or hash: " + props.blockHon
+        result = "Invalid block number or hash: " + props.blockHon
       } else if (blockLoader.got404.value) {
-        result =  "Block " + blockLoader.blockLocator.value + " was not found"
+        result = "Block " + blockLoader.blockLocator.value + " was not found"
       } else {
         result = null
       }
@@ -184,15 +184,12 @@ export default defineComponent({
       disableNextButton.value = notification.value != null
     })
     const handlePreviousBlock = () => {
-      router.push({
-        // params: { blockHon: blockLoader.entity.value?.previous_hash }
-        params: { blockHon: (blockLoader.entity.value?.number??0) - 1 }
-      })
+      const currentBlockNumber = blockLoader.entity.value?.number ?? 0
+      routeManager.routeToBlock(currentBlockNumber - 1)
     }
     const handleNextBlock = () => {
-      router.push({
-        params: { blockHon: (blockLoader.entity.value?.number??0) + 1 }
-      })
+      const currentBlockNumber = blockLoader.entity.value?.number ?? 0
+      routeManager.routeToBlock(currentBlockNumber + 1)
     }
 
     return {

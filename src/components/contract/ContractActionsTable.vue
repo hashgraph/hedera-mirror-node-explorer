@@ -2,7 +2,7 @@
   -
   - Hedera Mirror Node Explorer
   -
-  - Copyright (C) 2021 - 2022 Hedera Hashgraph, LLC
+  - Copyright (C) 2021 - 2023 Hedera Hashgraph, LLC
   -
   - Licensed under the Apache License, Version 2.0 (the "License");
   - you may not use this file except in compliance with the License.
@@ -61,19 +61,25 @@
       </o-table-column>
 
       <o-table-column v-slot="props" field="from" label="From">
-        <EVMAddress :address="props.row.action.from" :id="props.row.action.caller" :compact="!isLargeScreen && isMediumScreen"/>
+        <EVMAddress :address="props.row.action.from"
+                    :id="props.row.action.caller"
+                    :entity-type="props.row.action.caller_type"
+                    :compact="!isLargeScreen && isMediumScreen"/>
       </o-table-column>
 
       <o-table-column v-slot="props" field="amount" label="Amount">
         <div class="is-flex is-align-items-end is-align-content-end is-numeric">
          <span style="font-size: 13px; margin-right: 2px">&#8594;</span>
-          <HbarAmount :amount="props.row.action.value" :show-extra="true"/>
+          <HbarAmount :amount="props.row.action.value" :timestamp="props.row.action.timestamp" :show-extra="true"/>
           <span style="font-size: 13px; margin-left: 2px;: 2px">&#8594;</span>
         </div>
       </o-table-column>
 
       <o-table-column v-slot="props" field="to" label="To">
-        <EVMAddress :address="props.row.action.to" :id="props.row.action.recipient" :compact="!isLargeScreen && isMediumScreen"/>
+        <EVMAddress :address="props.row.action.to"
+                    :id="props.row.action.recipient??''"
+                    :entity-type="props.row.action.recipient_type"
+                    :compact="!isLargeScreen && isMediumScreen"/>
       </o-table-column>
 
       <o-table-column v-slot="props" field="gas_limit" label="Gas Limit">
@@ -85,7 +91,7 @@
       <template v-slot:detail="props">
         <tr>
           <td/>
-          <td colspan="5">
+          <td colspan="4">
             <ContractActionDetails :action="props.row.action"/>
           </td>
         </tr>
@@ -112,6 +118,7 @@ import HbarAmount from "@/components/values/HbarAmount.vue";
 import ContractActionDetails from "@/components/contract/ContractActionDetails.vue";
 import EVMAddress from "@/components/values/EVMAddress.vue";
 import {ContractActionWithPath} from "@/components/contract/ContractActionsLoader";
+import {FunctionCallAnalyzer} from "@/utils/FunctionCallAnalyzer";
 
 //
 // defineComponent
@@ -129,6 +136,10 @@ export default defineComponent({
     expandedActions:  {
       type: Array as PropType<Array<ContractActionWithPath>>,
       default: () => []
+    },
+    analyzer: {
+      type: Object as PropType<FunctionCallAnalyzer>,
+      required: true
     }
   },
 

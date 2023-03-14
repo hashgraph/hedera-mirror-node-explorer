@@ -2,7 +2,7 @@
  *
  * Hedera Mirror Node Explorer
  *
- * Copyright (C) 2021 - 2022 Hedera Hashgraph, LLC
+ * Copyright (C) 2021 - 2023 Hedera Hashgraph, LLC
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -21,17 +21,25 @@
 import {flushPromises, mount} from "@vue/test-utils"
 import router from "@/router";
 import axios from "axios";
-import {SAMPLE_COINGECKO, SAMPLE_NETWORK_SUPPLY, SAMPLE_TOKEN, SAMPLE_TRANSACTIONS} from "../Mocks";
+import {
+    SAMPLE_CONTRACTCALL_TRANSACTIONS,
+    SAMPLE_MESSAGE_TRANSACTIONS,
+    SAMPLE_NETWORK_EXCHANGERATE,
+    SAMPLE_NETWORK_SUPPLY,
+    SAMPLE_TOKEN,
+    SAMPLE_TRANSACTIONS
+} from "../Mocks";
 import MainDashboard from "@/pages/MainDashboard.vue";
 import HbarMarketDashboard from "@/components/dashboard/HbarMarketDashboard.vue";
 import DashboardCard from "@/components/DashboardCard.vue";
-import PlayPauseButton from "@/utils/table/PlayPauseButton.vue";
+import PlayPauseButton from "@/components/PlayPauseButton.vue";
 import CryptoTransactionTable from "@/components/dashboard/CryptoTransactionTable.vue";
 import ContractCallTransactionTable from "@/components/dashboard/ContractCallTransactionTable.vue";
 import MessageTransactionTable from "@/components/dashboard/MessageTransactionTable.vue";
 import MockAdapter from "axios-mock-adapter";
 import Oruga from "@oruga-ui/oruga-next";
 import {HMSF} from "@/utils/HMSF";
+import {TransactionType} from "@/schemas/HederaSchemas";
 
 /*
     Bookmarks
@@ -65,16 +73,22 @@ describe("MainDashboard.vue", () => {
         const mock = new MockAdapter(axios)
 
         const matcher1 = "/api/v1/transactions"
-        mock.onGet(matcher1).reply(200, SAMPLE_TRANSACTIONS)
+        let body = {params: {limit: 5, order: 'desc', transactiontype: TransactionType.CRYPTOTRANSFER,}}
+        mock.onGet(matcher1, body).reply(200, SAMPLE_TRANSACTIONS)
+        body = {params: {limit: 5, order: 'desc', transactiontype: TransactionType.CONSENSUSSUBMITMESSAGE,}}
+        mock.onGet(matcher1, body).reply(200, SAMPLE_MESSAGE_TRANSACTIONS)
+        body = {params: {limit: 5, order: 'desc', transactiontype: TransactionType.CONTRACTCALL,}}
+        mock.onGet(matcher1, body).reply(200, SAMPLE_CONTRACTCALL_TRANSACTIONS)
 
         const matcher2 = "/api/v1/tokens/" + SAMPLE_TOKEN.token_id
         mock.onGet(matcher2).reply(200, SAMPLE_TOKEN)
 
-        const matcher3 = "https://api.coingecko.com/api/v3/coins/hedera-hashgraph"
-        mock.onGet(matcher3).reply(200, SAMPLE_COINGECKO);
+        const matcher3 = "/api/v1/network/supply"
+        mock.onGet(matcher3).reply(200, SAMPLE_NETWORK_SUPPLY);
 
-        const matcher4 = "/api/v1/network/supply/"
-        mock.onGet(matcher4).reply(200, SAMPLE_NETWORK_SUPPLY);
+        const matcher4 = "/api/v1/network/exchangerate"
+        mock.onGet(matcher4).reply(200, SAMPLE_NETWORK_EXCHANGERATE);
+
 
         const wrapper = mount(MainDashboard, {
             global: {
@@ -89,10 +103,16 @@ describe("MainDashboard.vue", () => {
         const dash = wrapper.findComponent(HbarMarketDashboard)
         expect(dash.exists()).toBe(true)
         expect(dash.text()).toBe(
-            "$0.24608.42%HBAR PRICE" +
-            "$4,486,259,9418.42%HBAR MARKET CAP" +
-            "21,084,620,884.43HBAR RELEASED" +
-            "50,000,000,000HBAR TOTAL")
+            "$0.2460" +
+            "0.00%" +
+            "HBAR PRICE" +
+            "$5,186,816,738" +
+            "0.00%" +
+            "HBAR MARKET CAP" +
+            "21,084,620,884.43" +
+            "HBAR RELEASED" +
+            "50,000,000,000" +
+            "HBAR TOTAL")
 
         const cards = wrapper.findAllComponents(DashboardCard)
         expect(cards.length).toBe(3)
@@ -104,7 +124,7 @@ describe("MainDashboard.vue", () => {
         expect(t0.get('thead').text()).toBe("ID Content Time")
         expect(t0.get('tbody').text()).toBe(
             "0.0.29624024@1646025139.1529014980.0.29624024\n\n" +
-            "1\n\n" +
+            "123423\n\n" +
             "0.0.296939115:12:31.6676 AMFeb 28, 2022, UTC"
         )
 
@@ -114,9 +134,8 @@ describe("MainDashboard.vue", () => {
         expect(t1.exists()).toBe(true)
         expect(t1.get('thead').text()).toBe("ID Content Time")
         expect(t1.get('tbody').text()).toBe(
-            "0.0.29624024@1646025139.1529014980.0.29624024\n\n" +
-            "1\n\n" +
-            "0.0.296939115:12:31.6676 AMFeb 28, 2022, UTC"
+            "0.0.950@1646665756.235554077" + "Contract ID: 0.0.749774" + "3:09:26.5747 PMMar 7, 2022, UTC" +
+            "0.0.950@1646664143.028737238" + "Contract ID: 0.0.749723" + "2:42:34.8669 PMMar 7, 2022, UTC"
         )
 
         expect(cards[2].text()).toMatch(RegExp("^HCS Messages"))
@@ -125,11 +144,8 @@ describe("MainDashboard.vue", () => {
         expect(t2.exists()).toBe(true)
         expect(t2.get('thead').text()).toBe("Topic ID Memo Time")
         expect(t2.get('tbody').text()).toBe(
-            "0.0.29662956" +
-            "None" +
-            "5:12:31.6676 AMFeb 28, 2022, UTC"
+            "0.0.120438" + "None" + "1:59:03.9969 PMMar 8, 2022, UTC" +
+            "0.0.120438" + "None" + "1:59:03.9622 PMMar 8, 2022, UTC"
         )
-
     });
-
 });

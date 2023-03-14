@@ -2,7 +2,7 @@
  *
  * Hedera Mirror Node Explorer
  *
- * Copyright (C) 2021 - 2022 Hedera Hashgraph, LLC
+ * Copyright (C) 2021 - 2023 Hedera Hashgraph, LLC
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -23,6 +23,7 @@
 // ---------------------------------------------------------------------------------------------------------------------
 
 import {EntityID} from "@/utils/EntityID";
+import {makeDefaultNodeDescription} from "@/schemas/HederaUtils";
 
 export interface AccountsResponse {
     accounts: AccountInfo[] | undefined
@@ -63,12 +64,26 @@ export interface AccountBalanceTransactions extends AccountInfo {
 export interface Balance {
     timestamp: string | null
     balance: number | null
-    tokens: [TokenBalance]
+    tokens: TokenBalance[]
 }
 
 export interface TokenBalance {
     token_id: string | null // Network entity ID in the format of shard.realm.num
     balance: number
+}
+
+export interface TokenRelationshipResponse {
+    tokens: Array<TokenRelationship>,
+    links: Links
+}
+
+export interface TokenRelationship {
+    automatic_association: boolean,
+    balance: number,
+    created_timestamp: string,
+    freeze_status: string, // [ NOT_APPLICABLE, FROZEN, UNFROZEN ]
+    kyc_status: string,    // [ NOT_APPLICABLE, GRANTED, REVOKED ]
+    token_id: string | null,
 }
 
 // ---------------------------------------------------------------------------------------------------------------------
@@ -164,7 +179,7 @@ export interface TokenTransfer extends Transfer {
 export interface CustomFee {
     amount: number | undefined
     collector_account_id: string | undefined        // Network entity ID in the format of shard.realm.num
-    effective_payer_account_ids: [string] | undefined
+    effective_payer_account_ids: string[] | undefined
     token_id: string | null | undefined             // Network entity ID in the format of shard.realm.num
 }
 
@@ -212,6 +227,8 @@ export enum TransactionType {
     TOKENWIPE = "TOKENWIPE",
     UNCHECKEDSUBMIT = "UNCHECKEDSUBMIT",
     ETHEREUMTRANSACTION = "ETHEREUMTRANSACTION",
+    NODESTAKEUPDATE = "NODESTAKEUPDATE",
+    UTILPRNG = "UTILPRNG"
 }
 
 export enum TransactionResult {
@@ -251,7 +268,7 @@ export function compareTokenTransferByTokenId(t1: TokenTransfer, t2: TokenTransf
 // ---------------------------------------------------------------------------------------------------------------------
 
 export interface TokensResponse {
-    tokens: [Token] | undefined
+    tokens: Token[] | undefined
     links: Links | undefined
 }
 
@@ -295,9 +312,9 @@ export interface TokenInfo {
 
 export interface CustomFees {
     created_timestamp: string | undefined
-    fixed_fees: [FixedFee] | undefined                    // Network entity ID in the format of shard.realm.num
-    fractional_fees: [FractionalFee] | undefined
-    royalty_fees: [RoyaltyFee] | null | undefined             // Network entity ID in the format of shard.realm.num
+    fixed_fees: FixedFee[] | undefined                    // Network entity ID in the format of shard.realm.num
+    fractional_fees: FractionalFee[] | undefined
+    royalty_fees: RoyaltyFee[] | null | undefined             // Network entity ID in the format of shard.realm.num
 }
 
 export interface FixedFee {
@@ -333,7 +350,7 @@ export interface FractionAmount {
 
 export interface TokenBalancesResponse {
     timestamp: string | null | undefined
-    balances: [TokenDistribution] | undefined
+    balances: TokenDistribution[] | undefined
     links: Links | undefined
 }
 
@@ -347,7 +364,7 @@ export interface TokenDistribution {
 // ---------------------------------------------------------------------------------------------------------------------
 
 export interface Nfts {
-    nfts: [Nft] | undefined
+    nfts: Nft[] | undefined
     links: Links | undefined
 }
 
@@ -371,6 +388,7 @@ export interface TopicMessagesResponse {
 }
 
 export interface TopicMessage {
+    chunk_info: ChunkInfo | null,
     consensus_timestamp: string,
     topic_id: string | null,
     message: string,
@@ -379,19 +397,32 @@ export interface TopicMessage {
     sequence_number: number
 }
 
+export interface ChunkInfo {
+    initial_transaction_id: TransactionId,
+    number: number,
+    total: number
+}
+
+export interface TransactionId {
+    account_id: string | null,
+    nonce: number | null,
+    scheduled: boolean | null,
+    transaction_valid_start: string
+}
 
 // ---------------------------------------------------------------------------------------------------------------------
 //                                                      Contract
 // ---------------------------------------------------------------------------------------------------------------------
 
 export interface ContractsResponse {
-    contracts: [Contract] | undefined
+    contracts: Contract[] | undefined
     links: Links | undefined
 }
 
 export interface Contract {
 
     admin_key: Key | null | undefined
+    auto_renew_account: string | null | undefined   // Network entity ID in the format of shard.realm.num
     auto_renew_period: number | null | undefined
     contract_id: string | null | undefined   // Network entity ID in the format of shard.realm.num
     created_timestamp: string | null | undefined
@@ -399,15 +430,17 @@ export interface Contract {
     evm_address: string | undefined
     expiration_timestamp: string | null | undefined
     file_id: string | null | undefined   // Network entity ID in the format of shard.realm.num
+    max_automatic_token_associations: number | null | undefined
     memo: string | undefined
     obtainer_id: string | null | undefined   // Network entity ID in the format of shard.realm.num
+    permanent_removal: boolean | null | undefined
     proxy_account_id: string | null | undefined   // Network entity ID in the format of shard.realm.num
     timestamp: TimestampRange | undefined   // timestamp range the entity is valid for
-
 }
 
 export interface ContractResponse extends Contract {
     bytecode: string | null | undefined
+    runtime_bytecode: string | null | undefined
 }
 
 export interface TimestampRange {
@@ -527,7 +560,7 @@ export interface NetworkNode {
     node_account_id: string | null | undefined   // Network entity ID in the format of shard.realm.num
     node_cert_hash: string | null | undefined
     public_key: string | null | undefined   // hex encoded X509 RSA public key used to sign stream files
-    service_endpoints: [ServiceEndPoint] | undefined
+    service_endpoints: ServiceEndPoint[] | undefined
     timestamp: TimestampRange | undefined
     max_stake: number | null // The maximum stake (rewarded or not rewarded) this node can have as consensus weight
     min_stake: number | null // The minimum stake (rewarded or not rewarded) this node must reach before having non-zero consensus weight
@@ -548,32 +581,42 @@ export function makeShortNodeDescription(description: string): string {
     return (separator !== -1) ? (description.slice(0, separator) ?? null) : description
 }
 
-export function makeNodeStakeDescription(node: NetworkNode): string {
-    const amountFormatter = new Intl.NumberFormat("en-US", {
-        maximumFractionDigits: 0
-    })
+export function makeNodeSelectorDescription(node: NetworkNode): string {
     const percentFormatter = new Intl.NumberFormat("en-US", {
         style: 'percent',
         maximumFractionDigits: 1
     })
     const unclampedStakeAmount = ((node.stake_rewarded ?? 0) + (node.stake_not_rewarded ?? 0))/100000000
-    const unrewardedAmount = (node.stake_not_rewarded ?? 0)/100000000
     const percentMin = node.min_stake ? unclampedStakeAmount / (node.min_stake / 100000000) : 0
     const percentMax = node.max_stake ? unclampedStakeAmount / (node.max_stake / 100000000) : 0
 
-    let result = amountFormatter.format(unclampedStakeAmount) + "ℏ staked"
+    let result = node.node_id
+        + ' - '
+        + (node.description ?? makeDefaultNodeDescription(node.node_id ?? null))
+
     if (percentMin != 0 && percentMin < 1) {
-        result += " (" + percentFormatter.format(percentMin) + " of Min)"
+        result += " (" + percentFormatter.format(percentMin) + " of Min Stake)"
     } else if (percentMax !== 0) {
-        result += " (" + percentFormatter.format(percentMax) + " of Max)"
+        result += " (" + percentFormatter.format(percentMax) + " of Max Stake)"
     }
-    result += ", of which " + amountFormatter.format(unrewardedAmount) + "ℏ declined reward"
     return result
 }
 
 // ---------------------------------------------------------------------------------------------------------------------
 //                                                      Network
 // ---------------------------------------------------------------------------------------------------------------------
+
+export interface NetworkExchangeRateSetResponse{
+    current_rate: ExchangeRate,
+    next_rate: ExchangeRate,
+    timestamp:	string
+}
+
+export interface ExchangeRate {
+    cent_equivalent: number,
+    expiration_time: number,
+    hbar_equivalent: number
+}
 
 export interface NetworkSupplyResponse {
     released_supply:	string | undefined  // The network's released supply of hbars in tinybars
@@ -621,6 +664,21 @@ export interface TimestampRange {
 }
 
 // ---------------------------------------------------------------------------------------------------------------------
+//                                               StakingRewardTransfer
+// ---------------------------------------------------------------------------------------------------------------------
+
+export interface StakingRewardsResponse {
+    rewards: Array<StakingReward> | undefined
+    links: Links | undefined
+}
+
+export interface StakingReward {
+    account_id: string|null
+    amount: number
+    timestamp: string
+}
+
+// ---------------------------------------------------------------------------------------------------------------------
 //                                                      Misc
 // ---------------------------------------------------------------------------------------------------------------------
 
@@ -639,6 +697,7 @@ export interface Links {
     next: string | null | undefined
 }
 
+export const infiniteDuration = 31556888202959784
 
 // ---------------------------------------------------------------------------------------------------------------------
 //                                                      Private

@@ -2,7 +2,7 @@
   -
   - Hedera Mirror Node Explorer
   -
-  - Copyright (C) 2021 - 2022 Hedera Hashgraph, LLC
+  - Copyright (C) 2021 - 2023 Hedera Hashgraph, LLC
   -
   - Licensed under the Apache License, Version 2.0 (the "License");
   - you may not use this file except in compliance with the License.
@@ -32,41 +32,41 @@
         <div id="mobile-drop-down-menu" class="ml-1 mb-5 ">
           <o-field>
             <o-select v-model="selectedNetwork" class="h-is-navbar-item">
-              <option v-for="network in networkRegistry.getEntries()" :key="network.name" :value="network.name">
+              <option v-for="network in networkEntries" :key="network.name" :value="network.name">
                 {{ network.displayName }}
               </option>
             </o-select>
           </o-field>
         </div>
         <a id="dashboard-menu-item"
-           :class="{'is-rimmed': isDashboardRoute}"
+           :class="{'is-rimmed': isDashboardRoute(previousRoute)}"
            class="button is-ghost h-is-mobile-navbar-item h-is-dense"
-           @click="$router.replace({name: 'MainDashboard'})">Dashboard</a>
-        <a :class="{ 'is-rimmed': isTransactionRoute}"
+           @click="$router.replace(routeManager.mainDashboardRoute)">Dashboard</a>
+        <a :class="{ 'is-rimmed': isTransactionRoute(previousRoute)}"
            class="button is-ghost h-is-mobile-navbar-item h-is-dense"
-           @click="$router.replace({name: 'Transactions'})">Transactions</a>
-        <a :class="{ 'is-rimmed': isTokenRoute}"
+           @click="$router.replace(routeManager.transactionsRoute)">Transactions</a>
+        <a :class="{ 'is-rimmed': isTokenRoute(previousRoute)}"
            class="button is-ghost h-is-mobile-navbar-item h-is-dense"
-           @click="$router.replace({name: 'Tokens'})">Tokens</a>
-        <a :class="{ 'is-rimmed': isTopicRoute}"
+           @click="$router.replace(routeManager.tokensRoute)">Tokens</a>
+        <a :class="{ 'is-rimmed': isTopicRoute(previousRoute)}"
            class="button is-ghost h-is-mobile-navbar-item h-is-dense"
-           @click="$router.replace({name: 'Topics'})">Topics</a>
-        <a :class="{ 'is-rimmed': isContractRoute}"
+           @click="$router.replace(routeManager.topicsRoute)">Topics</a>
+        <a :class="{ 'is-rimmed': isContractRoute(previousRoute)}"
            class="button is-ghost h-is-mobile-navbar-item h-is-dense"
-           @click="$router.replace({name: 'Contracts'})">Contracts</a>
-        <a :class="{ 'is-rimmed': isAccountRoute}"
+           @click="$router.replace(routeManager.contractsRoute)">Contracts</a>
+        <a :class="{ 'is-rimmed': isAccountRoute(previousRoute)}"
            class="button is-ghost h-is-mobile-navbar-item h-is-dense"
-           @click="$router.replace({name: 'Accounts'})">Accounts</a>
-        <a :class="{ 'is-rimmed': isNodeRoute}"
+           @click="$router.replace(routeManager.accountsRoute)">Accounts</a>
+        <a :class="{ 'is-rimmed': isNodeRoute(previousRoute)}"
            class="button is-ghost h-is-mobile-navbar-item h-is-dense"
-           @click="$router.replace({name: 'Nodes'})">Nodes</a>
+           @click="$router.replace(routeManager.nodesRoute)">Nodes</a>
         <a v-if="isStakingEnabled"
-           :class="{ 'is-rimmed': isStakingRoute}"
+           :class="{ 'is-rimmed': isStakingRoute(previousRoute)}"
            class="button is-ghost h-is-mobile-navbar-item h-is-dense"
-           @click="$router.replace({name: 'Staking'})">Staking</a>
-        <a :class="{ 'is-rimmed': isBlocksRoute}"
+           @click="$router.replace(routeManager.stakingRoute)">Staking</a>
+        <a :class="{ 'is-rimmed': isBlocksRoute(previousRoute)}"
            class="button is-ghost h-is-mobile-navbar-item h-is-dense"
-           @click="$router.replace({name: 'Blocks'})">Blocks</a>
+           @click="$router.replace(routeManager.blocksRoute)">Blocks</a>
       </div>
 
     </div>
@@ -83,12 +83,12 @@
 
 <script lang="ts">
 
-import {computed, defineComponent, inject, onBeforeUnmount, onMounted, ref, watch} from 'vue';
-import {useRoute} from "vue-router";
-import router from "@/router";
+import {defineComponent, inject, onBeforeUnmount, onMounted} from 'vue';
+import router, {routeManager} from "@/router";
 import {MEDIUM_BREAKPOINT} from "@/App.vue";
 import Footer from "@/components/Footer.vue";
 import {networkRegistry} from "@/schemas/NetworkRegistry";
+import {getEnv} from "@/utils/getEnv";
 
 export default defineComponent({
   name: 'MobileMenu',
@@ -100,45 +100,7 @@ export default defineComponent({
   setup() {
     const isSmallScreen = inject('isSmallScreen', true)
     const isTouchDevice = inject('isTouchDevice', false)
-    const isStakingEnabled = process.env.VUE_APP_ENABLE_STAKING === 'true'
-
-    const route = useRoute()
-    const network = computed(() => { return route.params.network })
-    const name = computed(() => { return route.query.from })
-    const selectedNetwork = ref(network.value)
-    watch(selectedNetwork, (selection) => {
-      router.replace({
-        params: {network: selection}
-      })
-    })
-
-    const isDashboardRoute = computed(() => {
-      return name.value === 'MainDashboard'
-    })
-    const isTransactionRoute = computed(() => {
-      return name.value === 'Transactions' || name.value === 'TransactionsById' || name.value === 'TransactionDetails'
-    })
-    const isTokenRoute = computed(() => {
-      return name.value === 'Tokens' || name.value === 'TokenDetails'
-    })
-    const isTopicRoute = computed(() => {
-      return name.value === 'Topics' || name.value === 'TopicDetails'
-    })
-    const isContractRoute = computed(() => {
-      return name.value === 'Contracts' || name.value === 'ContractDetails'
-    })
-    const isAccountRoute = computed(() => {
-      return name.value === 'Accounts' || name.value === 'AccountDetails' || name.value === 'AccountBalances'
-    })
-    const isNodeRoute = computed(() => {
-      return name.value === 'Nodes' || name.value === 'NodeDetails'
-    })
-    const isStakingRoute = computed(() => {
-      return name.value === 'Staking'
-    })
-    const isBlocksRoute = computed(() => {
-      return name.value === 'Blocks'
-    })
+    const isStakingEnabled = getEnv('VUE_APP_ENABLE_STAKING') === 'true'
 
     const  onResizeHandler = () => {
       if (window.innerWidth >= MEDIUM_BREAKPOINT) {
@@ -156,17 +118,19 @@ export default defineComponent({
       isSmallScreen,
       isTouchDevice,
       isStakingEnabled,
-      selectedNetwork,
-      isDashboardRoute,
-      isTransactionRoute,
-      isTokenRoute,
-      isTopicRoute,
-      isContractRoute,
-      isAccountRoute,
-      isNodeRoute,
-      isStakingRoute,
-      isBlocksRoute,
-      networkRegistry
+      selectedNetwork: routeManager.selectedNetwork,
+      previousRoute: routeManager.previousRoute,
+      isDashboardRoute: routeManager.testDashboardRoute,
+      isTransactionRoute: routeManager.testTransactionRoute,
+      isTokenRoute: routeManager.testTokenRoute,
+      isTopicRoute: routeManager.testTopicRoute,
+      isContractRoute: routeManager.testContractRoute,
+      isAccountRoute: routeManager.testAccountRoute,
+      isNodeRoute: routeManager.testNodeRoute,
+      isStakingRoute: routeManager.testStakingRoute,
+      isBlocksRoute: routeManager.testBlocksRoute,
+      networkEntries: networkRegistry.entries,
+      routeManager
     }
   }
 })

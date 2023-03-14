@@ -2,7 +2,7 @@
  *
  * Hedera Mirror Node Explorer
  *
- * Copyright (C) 2021 - 2022 Hedera Hashgraph, LLC
+ * Copyright (C) 2021 - 2023 Hedera Hashgraph, LLC
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -42,7 +42,7 @@ describe('Block Navigation', () => {
     })
 
     it('should navigate from block details to previous block details', () => {
-        const blockNumber = "24073523"
+        const blockNumber = "3"
         cy.visit('testnet/block/' + blockNumber)
         cy.url().should('include', '/testnet/block/' + blockNumber)
         cy.contains('Block ' + blockNumber)
@@ -59,7 +59,7 @@ describe('Block Navigation', () => {
     })
 
     it('should navigate from the list of Block Transactions to TransactionDetails and back', () => {
-        const blockNumber = "24073523"
+        const blockNumber = "3"
         cy.visit('testnet/block/' + blockNumber)
         cy.url().should('include', '/testnet/block/' + blockNumber)
         cy.contains('Block ' + blockNumber)

@@ -2,7 +2,7 @@
  *
  * Hedera Mirror Node Explorer
  *
- * Copyright (C) 2021 - 2022 Hedera Hashgraph, LLC
+ * Copyright (C) 2021 - 2023 Hedera Hashgraph, LLC
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -19,30 +19,35 @@
  */
 
 import {makeShortNodeDescription, NetworkNode} from "@/schemas/HederaSchemas";
-import {operatorRegistry} from "@/schemas/OperatorRegistry";
-import {NodesLoader} from "@/components/node/NodesLoader";
-import {computed, ComputedRef, Ref} from "vue";
+import {computed, ComputedRef, ref, Ref} from "vue";
+import {NodeRegistry} from "@/components/node/NodeRegistry";
+import {
+    makeAnnualizedRate,
+    makeDefaultNodeDescription,
+    makeRewardRate,
+    makeUnclampedStake
+} from "@/schemas/HederaUtils";
+import {EntityID} from "@/utils/EntityID";
 
 export class NodeCursor {
 
-    public readonly nodeId: Ref<number|null>
-    public readonly nodesLoader: NodesLoader
-
+    private readonly nodeId: Ref<number|null>
+    private readonly nodeAccountId: Ref<string|null>
 
     //
     // Public
     //
 
-    public constructor(nodeId: Ref<number|null>, nodesLoader: NodesLoader) {
+    public constructor(nodeId: Ref<number|null> = ref(null), nodeAccountId: Ref<string|null> = ref(null)) {
         this.nodeId = nodeId
-        this.nodesLoader = nodesLoader
+        this.nodeAccountId = nodeAccountId
     }
 
     public readonly node: ComputedRef<NetworkNode|null> = computed(() => {
         let result: NetworkNode|null = null
-        if (this.nodeId.value !== null) {
-            for (const n of this.nodesLoader.nodes.value) {
-                if (n.node_id == this.nodeId.value) {
+        if (this.nodeId.value !== null || this.nodeAccountId.value !== null) {
+            for (const n of NodeRegistry.instance.nodes.value) {
+                if (n.node_id == this.nodeId.value || n.node_account_id == this.nodeAccountId.value) {
                     result = n
                     break
                 }
@@ -51,15 +56,20 @@ export class NodeCursor {
         return result
     })
 
+    public readonly isCouncilNode:  ComputedRef<boolean> = computed(() => {
+        // TEMPORARY IMPLEMENTATION
+        // This will need to rely on a new specific flag to be provided by REST API
+        const accountNum = EntityID.parse(this.node.value?.node_account_id ?? "")?.num
+        return accountNum ? accountNum < 1000 : true
+    })
+
     public readonly nodeDescription: ComputedRef<string|null> = computed(() => {
         let result: string|null
         if (this.node.value !== null) {
             if (this.node.value.description) {
                 result = this.node.value.description
-            } else if (this.node.value.node_account_id) {
-                result = operatorRegistry.makeDescription(this.node.value.node_account_id)
             } else {
-                result = null
+                result = makeDefaultNodeDescription(this.node.value?.node_id ?? null)
             }
         } else {
             result = null
@@ -67,32 +77,19 @@ export class NodeCursor {
         return result
     })
 
-    public readonly shortNodeDescription: ComputedRef<string|null> = computed(() => {
-        return this.nodeDescription.value ? makeShortNodeDescription(this.nodeDescription.value) : null
-    })
+    public readonly shortNodeDescription: ComputedRef<string|null> = computed(
+        () => this.nodeDescription.value ? makeShortNodeDescription(this.nodeDescription.value) : null)
 
     //
     // Public (staking)
     //
 
-    public readonly rewardRate = computed(() =>
-        this.node.value?.reward_rate_start
-            ? this.node.value.reward_rate_start / 100000000
-            : 0)
-
-    public readonly approxYearlyRate = computed(() => {
-        const formatter = new Intl.NumberFormat("en-US", {
-            style: 'percent',
-            maximumFractionDigits: 2
-        })
-        return formatter.format(this.rewardRate.value * 365);
-    })
-
     public readonly stake = computed(() => this.node.value?.stake ?? 0)
     public readonly minStake = computed(() => this.node.value?.min_stake ?? 0)
     public readonly maxStake = computed(() => this.node.value?.max_stake ?? 0)
+    public readonly unclampedStake = computed(() => this.node.value ? makeUnclampedStake(this.node.value) : 0)
     public readonly stakeRewarded = computed(() => this.node.value?.stake_rewarded ?? 0)
     public readonly stakeUnrewarded = computed(() => this.node.value?.stake_not_rewarded ?? 0)
-
-
+    public readonly rewardRate = computed(() => this.node.value ? makeRewardRate(this.node.value) : 0)
+    public readonly annualizedRate = computed(() => this.node.value ? makeAnnualizedRate(this.node.value) : '0%')
 }

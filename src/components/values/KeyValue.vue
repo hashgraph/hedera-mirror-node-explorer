@@ -2,7 +2,7 @@
   -
   - Hedera Mirror Node Explorer
   -
-  - Copyright (C) 2021 - 2022 Hedera Hashgraph, LLC
+  - Copyright (C) 2021 - 2023 Hedera Hashgraph, LLC
   -
   - Licensed under the Apache License, Version 2.0 (the "License");
   - you may not use this file except in compliance with the License.
@@ -24,11 +24,15 @@
 
 <template>
   <template v-if="isComplexKey">
-    <ComplexKeyValue :key-bytes="keyBytes" :show-none="showNone"/>
+    <ComplexKeyValue :account-id="accountId" :details="details" :key-bytes="keyBytes" :show-none="showNone"/>
   </template>
   <template v-else>
-    <div>
-      <HexaValue :byte-string="keyBytes" :show-none="showNone" :none-extra="noneExtra"/>
+    <div v-if="details" class="h-is-property-text">
+      <span class="h-is-extra-text">{{ this.keyType }}</span>
+      <span class="is-family-monospace has-text-grey">{{ ':&#8239;' + keyBytes }}</span>
+    </div>
+    <div v-else>
+      <HexaValue :byte-string="keyBytes" :none-extra="noneExtra" :show-none="showNone"/>
       <div v-if="keyBytes" class="h-is-extra-text h-is-text-size-3">{{ this.keyType }}</div>
     </div>
   </template>
@@ -50,6 +54,11 @@ export default defineComponent({
   props: {
     keyBytes: String,
     keyType: String,
+    accountId: String,
+    details: {
+      type: Boolean,
+      default: false
+    },
     showNone: {
       type: Boolean,
       default: false

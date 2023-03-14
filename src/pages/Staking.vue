@@ -2,7 +2,7 @@
   -
   - Hedera Mirror Node Explorer
   -
-  - Copyright (C) 2021 - 2022 Hedera Hashgraph, LLC
+  - Copyright (C) 2021 - 2023 Hedera Hashgraph, LLC
   -
   - Licensed under the Apache License, Version 2.0 (the "License");
   - you may not use this file except in compliance with the License.
@@ -42,13 +42,18 @@
                   :mode="progressDialogMode"
                   :main-message="progressMainMessage"
                   :extra-message="progressExtraMessage"
-                  :extra-transaction="progressExtraTransaction"
+                  :extra-transaction-id="progressExtraTransactionId"
                   :show-spinner="showProgressSpinner"
   >
     <template v-slot:dialogTitle>
       <span class="h-is-primary-title">{{ progressDialogTitle }}</span>
     </template>
   </ProgressDialog>
+
+  <CSVDownloadDialog v-if="accountId"
+                     v-model:show-dialog="showDownloadDialog"
+                     :downloader="downloader"
+                     :account-id="accountId"/>
 
   <WalletChooser v-model:show-dialog="showWalletChooser"
                  v-on:choose-wallet="handleChooseWallet"/>
@@ -59,9 +64,10 @@
       <template v-slot:title>
           <span class="h-is-primary-title">My Staking </span>
           <span v-if="accountId" class="h-is-tertiary-text"> for account </span>
-          <div v-if="accountId" class="h-is-secondary-text has-text-weight-light mr-3 is-inline-block">
+          <div v-if="accountId" class="h-is-secondary-text has-text-weight-light is-inline-block">
             <AccountLink :account-id="accountId">{{ accountId }}</AccountLink>
           </div>
+          <span v-if="accountChecksum" class="has-text-grey mr-3" style="font-size: 28px">-{{ accountChecksum }}</span>
       </template>
 
       <template v-slot:content>
@@ -69,13 +75,30 @@
         <template v-if="accountId">
           <div v-if="isSmallScreen">
             <div class="is-flex is-justify-content-space-between">
-              <NetworkDashboardItem :name="stakedSince" title="Staked to" :value="stakedTo"/>
-              <NetworkDashboardItem :name="stakedAmount ? 'HBAR' : ''" title="My Stake" :value="stakedAmount"/>
+              <NetworkDashboardItem :name="stakePeriodStart ? ('since ' + stakePeriodStart) : null" title="Staked to">
+                <template v-slot:value>
+                  <div class="is-inline-block">
+                    <span v-if="isStakedToNode"  class="icon has-text-info mr-2" style="font-size: 20px">
+                      <i v-if="isCouncilNode" class="fas fa-building"></i>
+                      <i v-else class="fas fa-users"></i>
+                    </span>
+                    <span v-if="stakedTo">{{ stakedTo }}</span>
+                    <span v-else class="has-text-grey">None</span>
+                  </div>
+                </template>
+              </NetworkDashboardItem>
+
+              <NetworkDashboardItem class="ml-4"
+                                    :name="stakedAmount ? 'HBAR' : ''"
+                                    title="My Stake"
+                                    :value="stakedAmount"/>
 
               <NetworkDashboardItem v-if="!ignoreReward && declineReward && !pendingReward"
+                                    class="ml-4"
                                     title="Rewards"
                                     value="Declined"/>
               <NetworkDashboardItem v-else
+                                    class="ml-4"
                                     title="Pending Reward"
                                     :name="pendingReward ? 'HBAR' : ''"
                                     :value="pendingReward"
@@ -98,7 +121,8 @@
           </div>
           <div v-else>
             <div class="is-flex-direction-column">
-              <NetworkDashboardItem :name="stakedSince" title="Staked to" :value="stakedTo"/>
+              <NetworkDashboardItem :name="stakePeriodStart ? ('since ' + stakePeriodStart) : null"
+                                    title="Staked to" :value="stakedTo"/>
               <div class="mt-4"/>
               <NetworkDashboardItem :name="stakedAmount ? 'HBAR' : ''" title="My Stake" :value="stakedAmount"/>
               <div class="mt-4"/>
@@ -154,12 +178,15 @@
       </template>
     </DashboardCard>
 
-    <DashboardCard v-if="accountId" :class="{'h-has-opacity-40': isIndirectStaking}">
+    <DashboardCard v-if="accountId" :class="{'h-has-opacity-40': !isStakedToNode}">
       <template v-slot:title>
-        <span class="h-is-primary-title">Recent Staking Rewards Transactions</span>
+        <span class="h-is-secondary-title">Recent Staking Rewards</span>
+      </template>
+      <template v-slot:control>
+        <DownloadButton @click="showDownloadDialog = true"/>
       </template>
       <template v-slot:content>
-        <RewardsTransactionTable
+        <StakingRewardsTable
             :narrowed="true"
             :controller="transactionTableController"
         />
@@ -188,9 +215,8 @@ import {walletManager} from "@/router";
 import NetworkDashboardItem from "@/components/node/NetworkDashboardItem.vue";
 import axios from "axios";
 import {Transaction, TransactionByIdResponse} from "@/schemas/HederaSchemas";
-import {HMSF} from "@/utils/HMSF";
 import {waitFor} from "@/utils/TimerUtils";
-import RewardsTransactionTable from "@/components/staking/RewardsTransactionTable.vue";
+import StakingRewardsTable from "@/components/staking/StakingRewardsTable.vue";
 import StakingDialog from "@/components/staking/StakingDialog.vue";
 import DashboardCard from "@/components/DashboardCard.vue";
 import ConfirmDialog from "@/components/ConfirmDialog.vue";
@@ -201,10 +227,12 @@ import WalletChooser from "@/components/staking/WalletChooser.vue";
 import {WalletDriver} from "@/utils/wallet/WalletDriver";
 import {WalletDriverError} from "@/utils/wallet/WalletDriverError";
 import {normalizeTransactionId} from "@/utils/TransactionID";
-import {NodeCursor} from "@/components/node/NodeCursor";
 import {AccountLoader} from "@/components/account/AccountLoader";
-import {NodesLoader} from "@/components/node/NodesLoader";
-import {RewardsTransactionTableController} from "@/components/staking/RewardsTransactionTableController";
+import {StakingRewardsTableController} from "@/components/staking/StakingRewardsTableController";
+import DownloadButton from "@/components/DownloadButton.vue";
+import CSVDownloadDialog from "@/components/CSVDownloadDialog.vue";
+import {RewardDownloader} from "@/utils/downloader/RewardDownloader";
+import {NodeRegistry} from "@/components/node/NodeRegistry";
 
 export default defineComponent({
   name: 'Staking',
@@ -218,6 +246,8 @@ export default defineComponent({
   },
 
   components: {
+    CSVDownloadDialog,
+    DownloadButton,
     WalletChooser,
     RewardsCalculator,
     AccountLink,
@@ -225,7 +255,7 @@ export default defineComponent({
     ProgressDialog,
     DashboardCard,
     StakingDialog,
-    RewardsTransactionTable,
+    StakingRewardsTable,
     NetworkDashboardItem,
     Footer,
   },
@@ -246,8 +276,9 @@ export default defineComponent({
     const progressDialogTitle = ref<string|null>(null)
     const progressMainMessage = ref<string|null>(null)
     const progressExtraMessage = ref<string|null>(null)
-    const progressExtraTransaction = ref<string|null>(null)
+    const progressExtraTransactionId = ref<string|null>(null)
     const showProgressSpinner = ref(false)
+    const showDownloadDialog = ref(false)
 
     const connecting = ref(false)
 
@@ -269,7 +300,7 @@ export default defineComponent({
             progressDialogMode.value = Mode.Error
             progressDialogTitle.value = "Could not connect wallet"
             showProgressSpinner.value = false
-            progressExtraTransaction.value = null
+            progressExtraTransactionId.value = null
 
             if (reason instanceof WalletDriverError) {
               progressMainMessage.value = reason.message
@@ -298,14 +329,15 @@ export default defineComponent({
     const accountLoader = new AccountLoader(walletManager.accountId)
     onMounted(() => accountLoader.requestLoad())
 
-    const isStaked = computed(() => accountLoader.stakedNodeId.value !== null || accountLoader.stakedAccountId.value)
-    const isIndirectStaking = computed(() => accountLoader.stakedAccountId.value)
+    const isStakedToNode = computed(() => accountLoader.stakedNodeId.value !== null)
+    const isStakedToAccount = computed(() => accountLoader.stakedAccountId.value)
+    const isStaked = computed(() => isStakedToNode.value || isStakedToAccount.value)
 
     const stakedTo = computed(() => {
       let result: string|null
-      if (accountLoader.stakedAccountId.value) {
+      if (isStakedToAccount.value) {
         result = "Account " + accountLoader.stakedAccountId.value
-      } else if (accountLoader.stakedNodeId.value !== null) {
+      } else if (isStakedToNode.value) {
         result = "Node " + accountLoader.stakedNodeId.value + " - " + stakedNodeLoader.shortNodeDescription.value
       } else {
         result = null
@@ -332,29 +364,7 @@ export default defineComponent({
       return result
     }
 
-    const locale = "en-US"
-    const dateOptions = {
-      weekDay: "short",
-      day: "numeric",
-      month: "short",
-      year: "numeric",
-      timeZone: HMSF.forceUTC ? "UTC" : undefined
-    }
-    const dateFormat = new Intl.DateTimeFormat(locale, dateOptions)
-
     const pendingReward = computed(() => formatHbarAmount(accountLoader.pendingReward.value ?? null))
-
-    const stakedSince = computed(() => {
-      let result: string | null
-      if (isStaked.value && accountLoader.stakePeriodStart.value) {
-        const seconds = Number.parseFloat(accountLoader.stakePeriodStart.value);
-        result = "since " + dateFormat.format(seconds * 1000)
-      } else {
-        result = null
-      }
-      return result
-    })
-
     const declineReward = computed(() => accountLoader.entity.value?.decline_reward ?? false)
     const ignoreReward = computed(() => accountLoader.stakedNodeId.value === null)
 
@@ -362,9 +372,7 @@ export default defineComponent({
     // stakedNode
     //
 
-    const nodesLoader = new NodesLoader()
-    onMounted(() => nodesLoader.requestLoad())
-    const stakedNodeLoader = new NodeCursor(accountLoader.stakedNodeId, nodesLoader)
+    const stakedNodeLoader = NodeRegistry.getCursor(accountLoader.stakedNodeId)
 
     //
     // handleStopStaking / handleChangeStaking
@@ -387,19 +395,19 @@ export default defineComponent({
         progressDialogTitle.value = (nodeId == null && accountId == null && !declineReward) ? "Stopping staking" : "Updating staking"
         progressMainMessage.value = "Connecting to Hedera Network using your wallet…"
         progressExtraMessage.value = "Check your wallet for any approval request"
-        progressExtraTransaction.value = null
+        progressExtraTransactionId.value = null
         showProgressSpinner.value = false
-        const transactionID = normalizeTransactionId(await walletManager.changeStaking(nodeId, accountId, declineReward))
+        const transactionId = normalizeTransactionId(await walletManager.changeStaking(nodeId, accountId, declineReward))
         progressMainMessage.value = "Completing operation…"
         progressExtraMessage.value = "This may take a few seconds"
         showProgressSpinner.value = true
-        await waitForTransactionRefresh(transactionID, 10)
+        await waitForTransactionRefresh(transactionId, 10)
 
         progressDialogMode.value = Mode.Success
         progressMainMessage.value = "Operation completed"
         showProgressSpinner.value = false
         progressExtraMessage.value = "with transaction ID:"
-        progressExtraTransaction.value = transactionID
+        progressExtraTransactionId.value = transactionId
 
       } catch(error) {
 
@@ -411,7 +419,7 @@ export default defineComponent({
           progressMainMessage.value = "Operation did not complete"
           progressExtraMessage.value = JSON.stringify(error.message)
         }
-        progressExtraTransaction.value = null
+        progressExtraTransactionId.value = null
         showProgressSpinner.value = false
 
       } finally {
@@ -421,20 +429,20 @@ export default defineComponent({
 
     }
 
-    const waitForTransactionRefresh = async (transactionID: string, attemptIndex: number) => {
+    const waitForTransactionRefresh = async (transactionId: string, attemptIndex: number) => {
       let result: Promise<Transaction | string>
 
       if (attemptIndex >= 0) {
         await waitFor(props.polling)
         try {
-          const response = await axios.get<TransactionByIdResponse>("api/v1/transactions/" + transactionID )
+          const response = await axios.get<TransactionByIdResponse>("api/v1/transactions/" + transactionId )
           const transactions = response.data.transactions ?? []
-          result = Promise.resolve(transactions.length >= 1 ? transactions[0] : transactionID)
+          result = Promise.resolve(transactions.length >= 1 ? transactions[0] : transactionId)
         } catch {
-          result = waitForTransactionRefresh(transactionID, attemptIndex - 1)
+          result = waitForTransactionRefresh(transactionId, attemptIndex - 1)
         }
       } else {
-        result = Promise.resolve(transactionID)
+        result = Promise.resolve(transactionId)
       }
 
       return result
@@ -444,9 +452,18 @@ export default defineComponent({
     // Rewards Transactions Table Controller
     //
     const pageSize = computed(() => isMediumScreen ? 10 : 5)
-    const transactionTableController = new RewardsTransactionTableController(router, walletManager.accountId, pageSize)
+    const transactionTableController = new StakingRewardsTableController(router, walletManager.accountId, pageSize)
     onMounted(() => transactionTableController.mount())
     onBeforeUnmount(() => transactionTableController.unmount())
+
+    //
+    // Rewards transaction downloader
+    //
+    const downloader = new RewardDownloader(
+        walletManager.accountId,
+        ref(null),
+        ref(null),
+        1000)
 
     return {
       isSmallScreen,
@@ -456,19 +473,22 @@ export default defineComponent({
       walletName: walletManager.walletName,
       walletIconURL: walletManager.getActiveDriver().iconURL,
       accountId: walletManager.accountId,
+      accountChecksum: accountLoader.accountChecksum,
       account: accountLoader.entity,
-      isStaked,
+      stakePeriodStart: accountLoader.stakePeriodStart,
       showStakingDialog,
       showStopConfirmDialog,
       showWalletChooser,
       showErrorDialog,
-      isIndirectStaking,
+      showDownloadDialog,
+      isStakedToNode,
+      isStakedToAccount,
       stakedTo,
       stakedNode: stakedNodeLoader.node,
+      isCouncilNode: stakedNodeLoader.isCouncilNode,
       balanceInHbar,
       stakedAmount,
       pendingReward,
-      stakedSince,
       declineReward,
       ignoreReward,
       chooseWallet,
@@ -481,9 +501,10 @@ export default defineComponent({
       progressDialogTitle,
       progressMainMessage,
       progressExtraMessage,
-      progressExtraTransaction,
+      progressExtraTransactionId,
       showProgressSpinner,
       transactionTableController,
+      downloader
     }
   }
 });

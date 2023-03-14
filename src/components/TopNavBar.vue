@@ -2,7 +2,7 @@
   -
   - Hedera Mirror Node Explorer
   -
-  - Copyright (C) 2021 - 2022 Hedera Hashgraph, LLC
+  - Copyright (C) 2021 - 2023 Hedera Hashgraph, LLC
   -
   - Licensed under the Apache License, Version 2.0 (the "License");
   - you may not use this file except in compliance with the License.
@@ -28,7 +28,7 @@
        class="is-flex is-align-items-center is-justify-content-space-between pt-3 pb-4">
 
     <span class="is-inline-flex is-align-items-center is-flex-grow-0 is-flex-shrink-0">
-      <a class="mr-3" @click="$router.push({name: 'MainDashboard'})">
+      <a class="mr-3" @click="routeManager.routeToMainDashboard()">
         <img alt="Product Logo" class="image" src="@/assets/branding/brand-product-logo.png" style="max-width: 165px;">
       </a>
       <AxiosStatus/>
@@ -36,11 +36,11 @@
 
     <div class="is-flex is-align-items-center pt-2">
       <a v-if="name !== 'MobileMenu' && name !== 'MobileSearch'"
-         @click="$router.push({name: 'MobileSearch'})">
+         @click="$router.push(routeManager.mobileSearchRoute)">
         <img alt="Search bar" src="@/assets/search-icon.png" style="max-height: 20px;">
       </a>
       <a v-if="name !== 'MobileMenu' && name !== 'MobileSearch'" class="ml-5"
-         @click="$router.push({name: 'MobileMenu', query: {from: name}})">
+         @click="$router.push(routeManager.makeRouteToMobileMenu(name))">
         <img alt="Search bar" src="@/assets/hamburger.png" style="max-height: 32px;">
       </a>
       <a v-else class="ml-5 mr-2"
@@ -53,7 +53,7 @@
 
   <div v-else class="is-flex is-justify-content-space-between is-align-items-flex-end">
     <span class="is-inline-flex is-align-items-center is-flex-grow-0 is-flex-shrink-0">
-      <a id="product-logo" @click="$router.push({name: 'MainDashboard'})" class="mr-3">
+      <a id="product-logo" @click="routeManager.routeToMainDashboard()" class="mr-3">
         <img alt="Product Logo" class="image" src="@/assets/branding/brand-product-logo.png">
       </a>
       <AxiosStatus/>
@@ -64,7 +64,7 @@
         <div id="drop-down-menu">
           <o-field>
             <o-select v-model="selectedNetwork" class="h-is-navbar-item">
-              <option v-for="network in networkRegistry.getEntries()" :key="network.name" :value="network.name">
+              <option v-for="network in networkEntries" :key="network.name" :value="network.name">
                 {{ network.displayName }}
               </option>
 
@@ -75,32 +75,32 @@
         <div class="is-flex-grow-1 px-2"/>
         <a id="dashboard-menu-item" class="button is-ghost is-first h-is-navbar-item h-is-dense"
            :class="{'is-rimmed': isDashboardRoute}"
-           @click="$router.push({name: 'MainDashboard'})">Dashboard</a>
+           @click="$router.push(routeManager.mainDashboardRoute)">Dashboard</a>
         <a class="button is-ghost h-is-navbar-item h-is-dense"
            :class="{ 'is-rimmed': isTransactionRoute}"
-           @click="$router.push({name: 'Transactions'})">Transactions</a>
+           @click="$router.push(routeManager.transactionsRoute)">Transactions</a>
         <a class="button is-ghost h-is-navbar-item h-is-dense"
            :class="{ 'is-rimmed': isTokenRoute}"
-           @click="$router.push({name: 'Tokens'})">Tokens</a>
+           @click="$router.push(routeManager.tokensRoute)">Tokens</a>
         <a class="button is-ghost h-is-navbar-item h-is-dense"
            :class="{ 'is-rimmed': isTopicRoute}"
-           @click="$router.push({name: 'Topics'})">Topics</a>
+           @click="$router.push(routeManager.topicsRoute)">Topics</a>
         <a class="button is-ghost h-is-navbar-item h-is-dense"
            :class="{ 'is-rimmed': isContractRoute}"
-           @click="$router.push({name: 'Contracts'})">Contracts</a>
+           @click="$router.push(routeManager.contractsRoute)">Contracts</a>
         <a class="button is-ghost h-is-navbar-item h-is-dense"
            :class="{ 'is-rimmed': isAccountRoute}"
-           @click="$router.push({name: 'Accounts'})">Accounts</a>
+           @click="$router.push(routeManager.accountsRoute)">Accounts</a>
         <a class="button is-ghost h-is-navbar-item h-is-dense"
            :class="{ 'is-rimmed': isNodeRoute}"
-           @click="$router.push({name: 'Nodes'})">Nodes</a>
+           @click="$router.push(routeManager.nodesRoute)">Nodes</a>
         <a v-if="isStakingEnabled"
            class="button is-ghost h-is-navbar-item h-is-dense"
            :class="{ 'is-rimmed': isStakingRoute}"
-           @click="$router.push({name: 'Staking'})">Staking</a>
+           @click="$router.push(routeManager.stakingRoute)">Staking</a>
         <a class="button is-ghost is-last h-is-navbar-item h-is-dense"
            :class="{ 'is-rimmed': isBlocksRoute}"
-           @click="$router.push({name: 'Blocks'})">Blocks</a>
+           @click="$router.push(routeManager.blocksRoute)">Blocks</a>
       </div>
       <SearchBar style="margin-top: 4px"/>
     </div>
@@ -115,12 +115,12 @@
 
 <script lang="ts">
 
-import {computed, defineComponent, inject, ref, watch, WatchStopHandle} from "vue";
-import {useRoute} from "vue-router";
-import router from "@/router";
+import {defineComponent, inject, ref} from "vue";
+import {routeManager} from "@/router";
 import SearchBar from "@/components/SearchBar.vue";
 import AxiosStatus from "@/components/AxiosStatus.vue";
 import {networkRegistry} from "@/schemas/NetworkRegistry";
+import {getEnv} from "@/utils/getEnv";
 
 export default defineComponent({
   name: "TopNavBar",
@@ -132,70 +132,10 @@ export default defineComponent({
     const isTouchDevice = inject('isTouchDevice', false)
     const buildTime = inject('buildTime', "not available")
 
-    const productName = process.env.VUE_APP_PRODUCT_NAME ?? "Hedera Mirror Node Explorer"
-    const isStakingEnabled = process.env.VUE_APP_ENABLE_STAKING === 'true'
-
-    const route = useRoute()
-    const network = computed( () => { return route.params.network })
-    const name = computed( () => { return route.name })
+    const productName = getEnv('VUE_APP_PRODUCT_NAME') ?? "Hedera Mirror Node Explorer"
+    const isStakingEnabled = getEnv('VUE_APP_ENABLE_STAKING') === 'true'
 
     const isMobileMenuOpen = ref(false)
-
-    watch(network, (value) => {
-      updateSelectedNetworkSilently(value)
-    })
-
-    const selectedNetwork = ref(network.value)
-    
-    let selectedNetworkWatchHandle: WatchStopHandle|undefined
-    const updateSelectedNetworkSilently = (newValue: string|string[]) => {
-      if (selectedNetworkWatchHandle) {
-        selectedNetworkWatchHandle()
-      }
-      selectedNetwork.value = newValue as string
-      selectedNetworkWatchHandle = watch(selectedNetwork, (selection) => {
-        router.push({
-          name: "MainDashboard",
-          params: { network: selection }
-        })
-      })
-    }
-
-    const isDashboardRoute = computed(() => {
-      return name.value === 'MainDashboard'
-    })
-
-    const isTransactionRoute = computed(() => {
-      return name.value === 'Transactions' || name.value === 'TransactionsById' || name.value === 'TransactionDetails'
-    })
-
-    const isTokenRoute = computed(() => {
-      return name.value === 'Tokens' || name.value === 'TokenDetails'
-    })
-
-    const isTopicRoute = computed(() => {
-      return name.value === 'Topics' || name.value === 'TopicDetails'
-    })
-
-    const isContractRoute = computed(() => {
-      return name.value === 'Contracts' || name.value === 'ContractDetails'
-    })
-
-    const isAccountRoute = computed(() => {
-      return name.value === 'Accounts' || name.value === 'AccountDetails' || name.value === 'AccountBalances'
-    })
-
-    const isNodeRoute = computed(() => {
-      return name.value === 'Nodes' || name.value === 'NodeDetails'
-    })
-
-    const isStakingRoute = computed(() => {
-      return name.value === 'Staking'
-    })
-
-    const isBlocksRoute = computed(() => {
-      return name.value === 'Blocks'
-    })
 
     return {
       isSmallScreen,
@@ -204,19 +144,20 @@ export default defineComponent({
       buildTime,
       productName,
       isStakingEnabled,
-      name,
       isMobileMenuOpen,
-      networkRegistry,
-      selectedNetwork,
-      isDashboardRoute,
-      isTransactionRoute,
-      isTokenRoute,
-      isTopicRoute,
-      isContractRoute,
-      isAccountRoute,
-      isNodeRoute,
-      isStakingRoute,
-      isBlocksRoute
+      networkEntries: networkRegistry.entries,
+      selectedNetwork: routeManager.selectedNetwork,
+      name: routeManager.currentRoute,
+      isDashboardRoute: routeManager.isDashboardRoute,
+      isTransactionRoute: routeManager.isTransactionRoute,
+      isTokenRoute: routeManager.isTokenRoute,
+      isTopicRoute: routeManager.isTopicRoute,
+      isContractRoute: routeManager.isContractRoute,
+      isAccountRoute: routeManager.isAccountRoute,
+      isNodeRoute: routeManager.isNodeRoute,
+      isStakingRoute: routeManager.isStakingRoute,
+      isBlocksRoute: routeManager.isBlocksRoute,
+      routeManager,
     }
   },
 })

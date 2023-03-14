@@ -2,7 +2,7 @@
   -
   - Hedera Mirror Node Explorer
   -
-  - Copyright (C) 2021 - 2022 Hedera Hashgraph, LLC
+  - Copyright (C) 2021 - 2023 Hedera Hashgraph, LLC
   -
   - Licensed under the Apache License, Version 2.0 (the "License");
   - you may not use this file except in compliance with the License.
@@ -37,6 +37,7 @@ import TopNavBar from "@/components/TopNavBar.vue";
 import {errorKey, explanationKey, initialLoadingKey, loadingKey, suggestionKey} from "@/AppKeys"
 import {AxiosMonitor} from "@/utils/AxiosMonitor"
 import {useRoute} from "vue-router";
+import {networkRegistry} from "@/schemas/NetworkRegistry";
 
 export const XLARGE_BREAKPOINT = 1450
 export const LARGE_BREAKPOINT = 1280
@@ -61,6 +62,7 @@ export default defineComponent({
     provide('isTouchDevice', isTouchDevice)
 
     const windowWidth = ref(window.screen.width)
+    provide('windowWidth', windowWidth)
 
     const isSmallScreen = computed(() => {
       return windowWidth.value > SMALL_BREAKPOINT
@@ -90,6 +92,7 @@ export default defineComponent({
     onMounted(() => {
       windowWidth.value = window.innerWidth
       window.addEventListener('resize', onResizeHandler);
+      networkRegistry.readCustomConfig()
     })
 
     onBeforeUnmount(() => {

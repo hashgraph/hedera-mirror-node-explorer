@@ -2,7 +2,7 @@
  *
  * Hedera Mirror Node Explorer
  *
- * Copyright (C) 2021 - 2022 Hedera Hashgraph, LLC
+ * Copyright (C) 2021 - 2023 Hedera Hashgraph, LLC
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -24,6 +24,7 @@ import {HederaNetwork} from "@bladelabs/blade-web3.js/lib/src/models/blade";
 import {WalletDriver} from "@/utils/wallet/WalletDriver";
 import {WalletDriverError} from "@/utils/wallet/WalletDriverError";
 import {AccountUpdateTransaction} from "@hashgraph/sdk";
+import {TransactionID} from "@/utils/TransactionID";
 
 export class WalletDriver_Blade extends WalletDriver {
 
@@ -75,7 +76,8 @@ export class WalletDriver_Blade extends WalletDriver {
         if (this.signer !== null) {
             try {
                 const response = await this.signer.call(request)
-                result = Promise.resolve(response.transactionId.toString())
+                const transactionId = TransactionID.normalize(response.transactionId.toString(), false);
+                result = Promise.resolve(transactionId)
             } catch(reason) {
                 throw this.callFailure(reason.message)
             }

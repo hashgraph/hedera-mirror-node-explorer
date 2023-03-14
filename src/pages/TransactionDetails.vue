@@ -2,7 +2,7 @@
   -
   - Hedera Mirror Node Explorer
   -
-  - Copyright (C) 2021 - 2022 Hedera Hashgraph, LLC
+  - Copyright (C) 2021 - 2023 Hedera Hashgraph, LLC
   -
   - Licensed under the Apache License, Version 2.0 (the "License");
   - you may not use this file except in compliance with the License.
@@ -24,27 +24,27 @@
 
 <template>
 
-  <section class="section" :class="{'h-mobile-background': isTouchDevice || !isSmallScreen}">
+  <section :class="{'h-mobile-background': isTouchDevice || !isSmallScreen}" class="section">
 
     <DashboardCard class="h-card">
       <template v-slot:title>
         <div class="is-flex is-align-items-center">
           <span class="h-is-primary-title mr-1">Transaction </span>
-          <span class="h-is-secondary-text mr-3">{{ formattedTransactionId ?? ""}}</span>
+          <span class="h-is-secondary-text mr-3">{{ formattedTransactionId ?? "" }}</span>
           <div v-if="transaction">
             <div v-if="transactionSucceeded"
                  class="h-has-pill has-background-success mr-3 h-is-text-size-2 mt-3">SUCCESS
             </div>
             <div v-else class="h-has-pill has-background-danger mr-3 h-is-text-size-2 mt-3">FAILURE</div>
           </div>
-          <span v-if="showAllTransactionVisible && isLargeScreen" class="is-inline-block mt-2" id="allTransactionsLink">
-          <router-link :to="{name: 'TransactionsById', params: {transactionId: transaction?.transaction_id}}">
+          <span v-if="routeToAllTransactions && isLargeScreen" id="allTransactionsLink" class="is-inline-block mt-2">
+          <router-link :to="routeToAllTransactions">
             <span class="h-is-property-text has-text-grey">Show all transactions with the same ID</span>
           </router-link>
         </span>
         </div>
-        <span v-if="showAllTransactionVisible && !isLargeScreen">
-          <router-link :to="{name: 'TransactionsById', params: {transactionId: transaction?.transaction_id}}">
+        <span v-if="routeToAllTransactions && !isLargeScreen">
+          <router-link :to="routeToAllTransactions">
             <span class="h-is-property-text has-text-grey">Show all transactions with the same ID</span>
           </router-link>
         </span>
@@ -60,11 +60,7 @@
           <template v-slot:value>
             <StringValue :string-value="transactionType ? makeTypeLabel(transactionType) : undefined"/>
             <div v-if="scheduledTransaction" id="scheduledLink">
-              <router-link :to="{
-                  name: 'TransactionDetails',
-                  params: { transactionId: scheduledTransaction.transaction_id },
-                  query: { t: scheduledTransaction.consensus_timestamp }
-                }">
+              <router-link :to="routeManager.makeRouteToTransactionObj(scheduledTransaction)">
                 <span class="h-is-text-size-3 has-text-grey">Show scheduled transaction</span>
               </router-link>
             </div>
@@ -73,7 +69,7 @@
         <Property id="consensusAt">
           <template v-slot:name>Consensus at</template>
           <template v-slot:value>
-            <TimestampValue v-bind:timestamp="transaction?.consensus_timestamp" v-bind:show-none="true" />
+            <TimestampValue v-bind:show-none="true" v-bind:timestamp="transaction?.consensus_timestamp"/>
           </template>
         </Property>
         <Property id="transactionHash">
@@ -97,12 +93,20 @@
         <Property id="memo">
           <template v-slot:name>Memo</template>
           <template v-slot:value>
-            <BlobValue :blob-value="transaction?.memo_base64" :show-none="true" :base64="true" class="should-wrap"/>
+            <BlobValue :base64="true" :blob-value="transaction?.memo_base64" :show-none="true"/>
           </template>
         </Property>
       </template>
 
       <template v-slot:rightContent>
+        <Property v-if="isTokenAssociation && associatedTokens.length" id="associatedTokenId">
+          <template v-slot:name>
+            Associated Token<span v-if="associatedTokens.length > 1">s</span>
+          </template>
+          <template v-slot:value>
+            <TokenLink v-for="t of associatedTokens" :key="t" :token-id="t" :show-extra="true"/>
+          </template>
+        </Property>
         <Property v-if="systemContract" id="entityId">
           <template v-slot:name>Contract ID</template>
           <template v-slot:value>{{ systemContract }}</template>
@@ -130,25 +134,28 @@
         <Property id="chargedFee">
           <template v-slot:name>Charged Fee</template>
           <template v-slot:value>
-            <HbarAmount v-if="transaction" v-bind:amount="transaction.charged_tx_fee" v-bind:show-extra="true"/>
+            <HbarAmount v-if="transaction" :amount="transaction.charged_tx_fee"
+                        :show-extra="true" :timestamp="transaction.consensus_timestamp"/>
           </template>
         </Property>
         <Property id="maxFee">
           <template v-slot:name>Max fee</template>
           <template v-slot:value>
-            <HbarAmount v-if="transaction" v-bind:amount="maxFee" v-bind:show-extra="true"/>
+            <HbarAmount v-if="transaction" :amount="maxFee" :show-extra="true"
+                        :timestamp="transaction.consensus_timestamp"/>
           </template>
         </Property>
-        <Property id="netAmount" v-if="false">
+        <Property v-if="false" id="netAmount">
           <template v-slot:name>Net Amount</template>
           <template v-slot:value>
-            <HbarAmount v-if="transaction" v-bind:amount="netAmount" v-bind:show-extra="true"/>
+            <HbarAmount v-if="transaction" :amount="netAmount" :show-extra="true"
+                        :timestamp="transaction.consensus_timestamp"/>
           </template>
         </Property>
         <Property id="duration">
           <template v-slot:name>Valid Duration</template>
           <template v-slot:value>
-            <DurationValue v-bind:string-value="transaction?.valid_duration_seconds"/>
+            <DurationValue v-bind:string-value="transaction?.valid_duration_seconds" :show-none="true"/>
           </template>
         </Property>
         <Property id="nonce">
@@ -161,12 +168,9 @@
           <template v-slot:name>Scheduled</template>
           <template v-if="transaction?.scheduled===true" v-slot:value>
             True
-            <div id="schedulingLink" v-if="schedulingTransaction">
-              <router-link :to="{
-                  name: 'TransactionDetails',
-                  params: { transactionId: schedulingTransaction.transaction_id },
-                  query: { t: schedulingTransaction.consensus_timestamp }
-                }"><span class="has-text-grey h-is-text-size-3">Show schedule create transaction</span>
+            <div v-if="schedulingTransaction" id="schedulingLink">
+              <router-link :to="routeManager.makeRouteToTransactionObj(schedulingTransaction)">
+                <span class="has-text-grey h-is-text-size-3">Show schedule create transaction</span>
               </router-link>
             </div>
           </template>
@@ -180,11 +184,8 @@
         <Property v-if="parentTransaction" id="parentTransaction">
           <template v-slot:name>Parent Transaction</template>
           <template v-slot:value>
-            <router-link :to="{
-                  name: 'TransactionDetails',
-                  params: { transactionId: parentTransaction.transaction_id },
-                  query: { t: parentTransaction.consensus_timestamp }
-                }">{{ makeTypeLabel(parentTransaction.name) }}
+            <router-link :to="routeManager.makeRouteToTransactionObj(parentTransaction)">
+              {{ makeTypeLabel(parentTransaction.name) }}
             </router-link>
           </template>
         </Property>
@@ -192,15 +193,12 @@
           <template v-slot:name>Child Transactions</template>
           <template v-slot:value>
             <router-link v-if="displayAllChildrenLinks"
-                         :to="{name: 'TransactionsById', params: {transactionId: transactionId}}">
+                         :to="routeManager.makeRouteToTransactionsById(transactionId)">
               {{ 'Show all ' + childTransactions.length + ' transactions' }}
             </router-link>
             <div v-else>
-              <router-link v-for="tx in childTransactions" :key="tx.nonce" :to="{
-                    name: 'TransactionDetails',
-                    params: { transactionId: tx.transaction_id },
-                    query: { t: tx.consensus_timestamp }
-                  }">
+              <router-link v-for="tx in childTransactions" :key="tx.nonce"
+                           :to="routeManager.makeRouteToTransactionObj(tx)">
                 <span class="mr-2 is-numeric">{{ '#' + tx.nonce }}</span>
                 <span>{{ makeTypeLabel(tx.name) }}</span>
                 <br/></router-link>
@@ -221,7 +219,12 @@
       </template>
     </DashboardCard>
 
-    <ContractResult v-if="hasContractResult" :transaction-id-or-hash="transaction?.transaction_id"/>
+    <TopicMessage :message-loader="topicMessageLoader"/>
+
+    <ContractResult :contract-id="contractId"
+                    :is-parent="transaction?.parent_consensus_timestamp === null"
+                    :timestamp="transaction?.consensus_timestamp"
+                    :transaction-id-or-hash="transaction?.transaction_id"/>
 
   </section>
 
@@ -254,6 +257,14 @@ import Property from "@/components/Property.vue";
 import DurationValue from "@/components/values/DurationValue.vue";
 import BlockLink from "@/components/values/BlockLink.vue";
 import ContractResult from "@/components/contract/ContractResult.vue";
+import {TransactionType} from "@/schemas/HederaSchemas";
+import TopicMessage from "@/components/topic/TopicMessage.vue";
+import {TopicMessageLoader} from "@/components/topic/TopicMessageLoader";
+import {routeManager} from "@/router"
+import {Timestamp} from "@/utils/Timestamp";
+import {TransactionHash} from "@/utils/TransactionHash";
+import {TokenRelationshipLoader} from "@/components/token/TokenRelationshipLoader";
+import TokenLink from "@/components/values/TokenLink.vue";
 
 const MAX_INLINE_CHILDREN = 9
 
@@ -262,6 +273,8 @@ export default defineComponent({
   name: 'TransactionDetails',
 
   components: {
+    TokenLink,
+    TopicMessage,
     ContractResult,
     BlockLink,
     Property,
@@ -274,37 +287,45 @@ export default defineComponent({
   },
 
   props: {
+    transactionLoc: String,
     transactionId: String,
-    consensusTimestamp: String,
     network: String
   },
 
-  setup(props) {
+  setup: function (props) {
     const isSmallScreen = inject('isSmallScreen', true)
     const isLargeScreen = inject('isLargeScreen', true)
     const isTouchDevice = inject('isTouchDevice', false)
 
-    const transactionLocator = computed(() => PathParam.parseTransactionIdOrHash(props.transactionId))
+    const transactionLocator = computed(
+        () => props.transactionLoc ? PathParam.parseTransactionLoc(props.transactionLoc) : null)
 
     const transactionLoader = new TransactionLoader(
-        computed(() => props.transactionId ?? null),
-        computed(() => props.consensusTimestamp ?? null))
+        computed(() => props.transactionLoc ?? null),
+        computed(() => props.transactionId ?? null))
     onMounted(() => transactionLoader.requestLoad())
 
-    const showAllTransactionVisible = computed(() => {
+    const routeToAllTransactions = computed(() => {
       const count = transactionLoader.transactions.value?.length ?? 0
-      return count >= 2
+      const transactionId = transactionLoader.transaction.value?.transaction_id ?? null
+      return count >= 2 && transactionId !== null ? routeManager.makeRouteToTransactionsById(transactionId) : null
     })
 
     const displayAllChildrenLinks = computed(
-        () => transactionLoader.childTransactions.value.length > MAX_INLINE_CHILDREN )
+        () => transactionLoader.childTransactions.value.length > MAX_INLINE_CHILDREN)
 
     const notification = computed(() => {
       let result
       if (transactionLocator.value === null) {
-        result = "Invalid transaction ID: " + props.transactionId
+        result = "Invalid transaction timestamp or hash: " + props.transactionLoc
       } else if (transactionLoader.got404.value) {
-        result = "Transaction with ID " + transactionLocator.value + " was not found"
+        if (transactionLocator.value instanceof Timestamp) {
+          result = "Transaction with timestamp " + transactionLocator.value + " was not found"
+        } else if (transactionLocator.value instanceof TransactionHash) {
+          result = "Transaction with hash " + transactionLocator.value + " was not found"
+        } else {
+          result = "Transaction with ethereum hash " + transactionLocator.value + " was not found"
+        }
       } else if (transactionLoader.hasSucceeded.value) {
         result = null
       } else {
@@ -317,6 +338,26 @@ export default defineComponent({
       return transactionLoader.entityDescriptor.value?.routeName
     })
 
+    const messageTimestamp = computed(() =>
+        (transactionLoader.transactionType.value === TransactionType.CONSENSUSSUBMITMESSAGE)
+            ? transactionLoader.consensusTimestamp.value ?? ""
+            : ""
+    )
+    const topicMessageLoader = new TopicMessageLoader(messageTimestamp)
+
+    const isTokenAssociation = computed(
+        () => transactionLoader.transactionType.value === TransactionType.TOKENASSOCIATE)
+
+    const associatedAccount = computed(
+        () => isTokenAssociation.value ? transactionLoader.entity.value?.entity_id ?? null : null
+    )
+    const tokenRelationships = new TokenRelationshipLoader(associatedAccount)
+    onMounted(() => tokenRelationships.requestLoad())
+
+    const associatedTokens = computed(
+        () =>  tokenRelationships.lookupTokens(transactionLoader.consensusTimestamp.value ?? "")
+    )
+
     return {
       isSmallScreen,
       isLargeScreen,
@@ -325,7 +366,7 @@ export default defineComponent({
       formattedTransactionId: transactionLoader.formattedTransactionId,
       netAmount: transactionLoader.netAmount,
       entity: transactionLoader.entityDescriptor,
-      hasContractResult: transactionLoader.hasContractResult,
+      contractId: transactionLoader.contractId,
       systemContract: transactionLoader.systemContract,
       maxFee: transactionLoader.maxFee,
       formattedHash: transactionLoader.formattedHash,
@@ -338,10 +379,14 @@ export default defineComponent({
       blockNumber: transactionLoader.blockNumber,
       notification,
       routeName,
+      routeManager,
       makeTypeLabel,
       makeOperatorAccountLabel,
-      showAllTransactionVisible,
+      routeToAllTransactions,
       displayAllChildrenLinks,
+      topicMessageLoader,
+      isTokenAssociation,
+      associatedTokens
     }
   },
 })

@@ -2,7 +2,7 @@
   -
   - Hedera Mirror Node Explorer
   -
-  - Copyright (C) 2021 - 2022 Hedera Hashgraph, LLC
+  - Copyright (C) 2021 - 2023 Hedera Hashgraph, LLC
   -
   - Licensed under the Apache License, Version 2.0 (the "License");
   - you may not use this file except in compliance with the License.
@@ -26,7 +26,7 @@
 
   <DashboardCard>
     <template v-slot:title>
-      <p class="h-is-primary-title">Rewards Estimator</p>
+      <p class="h-is-secondary-title">Rewards Estimator</p>
     </template>
     <template v-slot:content>
 
@@ -36,11 +36,21 @@
             <p v-if="isMediumScreen" class="h-is-property-text mb-3">Choose a node to stake to</p>
             <p v-else class="h-is-text-size-3 mb-1">Choose a node to stake to</p>
             <o-field style="width: 100%">
-              <o-select v-model="selectedNodeId" class="h-is-text-size-1" style="border-radius: 4px">
-                <option v-for="n in nodes" :key="n.node_id" :value="n.node_id"
-                        style="background-color: var(--h-theme-box-background-color)">
-                  {{ n.node_id }} - {{ makeNodeDescription(n) }} - {{ makeNodeStakeDescription(n) }}
-                </option>
+              <o-select v-model="selectedNodeId" class="h-is-text-size-1" style="border-radius: 4px" :icon="nodeIcon">
+                <optgroup label="Hedera council nodes">
+                  <option v-for="n in nodes" :key="n.node_id" :value="n.node_id"
+                          style="background-color: var(--h-theme-box-background-color)"
+                          v-show="isCouncilNode(n)">
+                    {{ makeNodeSelectorDescription(n) }}
+                  </option>
+                </optgroup>
+                <optgroup v-if="hasCommunityNode" label="Community nodes">
+                    <option v-for="n in nodes" :key="n.node_id" :value="n.node_id"
+                            style="background-color: var(--h-theme-box-background-color)"
+                            v-show="!isCouncilNode(n)">
+                      {{ makeNodeSelectorDescription(n) }}
+                    </option>
+                </optgroup>
               </o-select>
             </o-field>
           </div>
@@ -62,7 +72,7 @@
         <NetworkDashboardItem id="currentReward" name="HBAR" title="Current 24h Period Reward" :value="currentReward.toString()"/>
         <NetworkDashboardItem id="monthlyReward" name="HBAR" title="Approx Monthly Reward" :value="monthlyReward.toString()"/>
         <NetworkDashboardItem id="yearlyReward" name="HBAR" title="Approx Yearly Reward" :value="yearlyReward.toString()"/>
-        <NetworkDashboardItem id="yearlyRate" title="Approx Yearly Reward Rate" :value="yearlyRate"/>
+        <NetworkDashboardItem id="yearlyRate" title="Approx Yearly Reward Rate" :value="annualizedRate"/>
       </div>
 
       <div v-html="htmlNotice"/>
@@ -78,13 +88,12 @@
 
 <script lang="ts">
 
-import {computed, defineComponent, inject, onBeforeMount, onMounted, ref, watch} from 'vue';
+import {computed, defineComponent, inject, onBeforeMount, ref, watch} from 'vue';
 import NetworkDashboardItem from "@/components/node/NetworkDashboardItem.vue";
 import DashboardCard from "@/components/DashboardCard.vue";
-import {makeNodeStakeDescription, makeShortNodeDescription, NetworkNode} from "@/schemas/HederaSchemas";
-import {operatorRegistry} from "@/schemas/OperatorRegistry";
-import {NodesLoader} from "@/components/node/NodesLoader";
-import {NodeCursor} from "@/components/node/NodeCursor";
+import {makeNodeSelectorDescription, makeShortNodeDescription, NetworkNode} from "@/schemas/HederaSchemas";
+import {getEnv} from "@/utils/getEnv";
+import {NodeRegistry} from "@/components/node/NodeRegistry";
 
 export default defineComponent({
   name: 'RewardsCalculator',
@@ -101,7 +110,7 @@ export default defineComponent({
   },
 
   setup(props) {
-    const htmlNotice = process.env.VUE_APP_ESTIMATOR_NOTICE ?? ""
+    const htmlNotice = getEnv('VUE_APP_ESTIMATOR_NOTICE') ?? ""
 
     const isSmallScreen = inject('isSmallScreen', true)
     const isMediumScreen = inject('isMediumScreen', true)
@@ -111,11 +120,19 @@ export default defineComponent({
     watch(() => props.nodeId, () => selectedNodeId.value = props.nodeId ?? null)
 
     //
-    // Nodes
+    // Node
     //
-    const nodesLoader = new NodesLoader()
-    onMounted(() => nodesLoader.requestLoad())
-    const nodeCursor = computed(() => new NodeCursor(selectedNodeId, nodesLoader))
+    const nodeCursor = computed(() => NodeRegistry.getCursor(selectedNodeId))
+
+    const nodeIcon = computed(() => {
+      let result
+      if (selectedNodeId.value !== null) {
+        result = NodeRegistry.isCouncilNode(selectedNodeId) ? "building" : "users"
+      } else {
+        result = ""
+      }
+      return result
+    })
 
     const amountStaked = ref<number>( 100)
     const updateAmountStaked = () => {
@@ -130,14 +147,11 @@ export default defineComponent({
     const yearlyReward = computed(() => currentReward.value ? Math.round(currentReward.value * 365 * 10) / 10 : 0)
 
     const makeNodeDescription = (node: NetworkNode) => {
-      let result
-      if (node.description) {
-        result = makeShortNodeDescription(node.description)
-      } else {
-        result = node.node_account_id ? operatorRegistry.makeDescription(node.node_account_id) : null
-      }
-      return result
+      let description = node.description ?? NodeRegistry.getDescription(ref(node.node_id??null))
+      return description ? makeShortNodeDescription(description) : null
     }
+
+    const isCouncilNode = (node: NetworkNode) => NodeRegistry.isCouncilNode(ref(node.node_id ?? 0))
 
     const handleInput = (value: string) => {
       const previousAmount = amountStaked.value
@@ -156,15 +170,18 @@ export default defineComponent({
       isMediumScreen,
       isTouchDevice,
       selectedNodeId,
+      nodeIcon,
       amountStaked,
       rewardRate,
       currentReward,
       monthlyReward,
       yearlyReward,
-      yearlyRate: nodeCursor.value.approxYearlyRate,
-      nodes: nodesLoader.nodes,
+      annualizedRate: nodeCursor.value.annualizedRate,
+      nodes: NodeRegistry.instance.nodes,
       makeNodeDescription,
-      makeNodeStakeDescription,
+      makeNodeSelectorDescription:makeNodeSelectorDescription,
+      isCouncilNode,
+      hasCommunityNode: NodeRegistry.instance.hasCommunityNode,
       handleInput
     }
   }

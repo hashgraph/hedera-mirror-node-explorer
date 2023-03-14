@@ -2,7 +2,7 @@
  *
  * Hedera Mirror Node Explorer
  *
- * Copyright (C) 2021 - 2022 Hedera Hashgraph, LLC
+ * Copyright (C) 2021 - 2023 Hedera Hashgraph, LLC
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -26,7 +26,7 @@ import axios from "axios";
 import {
     SAMPLE_ACCOUNT,
     SAMPLE_ACCOUNT_STAKING_ACCOUNT, SAMPLE_ACCOUNTS,
-    SAMPLE_COINGECKO,
+    SAMPLE_NETWORK_EXCHANGERATE,
     SAMPLE_NETWORK_NODES,
 } from "../Mocks";
 import ConfirmDialog from "@/components/ConfirmDialog.vue";
@@ -100,8 +100,8 @@ describe("StakingDialog.vue", () => {
             mock.onGet(matcher2, body).reply(200, response)
         }
         mock.onGet(matcher2).reply(200, SAMPLE_NETWORK_NODES)
-        const matcher3 = "https://api.coingecko.com/api/v3/coins/hedera-hashgraph"
-        mock.onGet(matcher3).reply(200, SAMPLE_COINGECKO);
+        const matcher3 = "api/v1/network/exchangerate"
+        mock.onGet(matcher3).reply(200, SAMPLE_NETWORK_EXCHANGERATE);
         const matcher4 = "/api/v1/accounts"
         const body = {params: {"account.id": "0.0.7", balance: false}}
         mock.onGet(matcher4, body).reply(200, SAMPLE_ACCOUNTS)
@@ -153,7 +153,7 @@ describe("StakingDialog.vue", () => {
         // Clicks "CANCEL"
         await changeButton.trigger("click")
         await nextTick()
-        await cancelChangeStaking("Change Staking  for account 0.0.730632Do you want to stake to account 0.0.7-lafyy ?FillerCANCELCONFIRM")
+        await cancelChangeStaking("Change Staking  for account 0.0.730632Do you want to stake to account 0.0.7-bmurp ?FillerCANCELCONFIRM")
 
         //
         // Valid EntityID:  "0.0.7"
@@ -167,13 +167,13 @@ describe("StakingDialog.vue", () => {
         // Clicks "CANCEL"
         await changeButton.trigger("click")
         await nextTick()
-        await cancelChangeStaking("Change Staking  for account 0.0.730632Do you want to stake to account 0.0.7-lafyy ?FillerCANCELCONFIRM")
+        await cancelChangeStaking("Change Staking  for account 0.0.730632Do you want to stake to account 0.0.7-bmurp ?FillerCANCELCONFIRM")
 
         //
-        // Valid EntityID:  "0.0.7-lafyy"
+        // Valid EntityID:  "0.0.7-bmurp"
         //
-        await newStakeToAccountInput.setValue("0.0.7-lafyy")
-        expect(newStakeToAccountInput.element.value).toBe("0.0.7-lafyy")
+        await newStakeToAccountInput.setValue("0.0.7-bmurp")
+        expect(newStakeToAccountInput.element.value).toBe("0.0.7-bmurp")
         await waitFor(1000)
         await flushPromises()
         expect(feedbackMessage.text()).toBe("Rewards will now be paid to that account")
@@ -181,7 +181,7 @@ describe("StakingDialog.vue", () => {
         // Clicks "CHANGE"
         await changeButton.trigger("click")
         await nextTick()
-        await confirmChangeStaking("Change Staking  for account 0.0.730632Do you want to stake to account 0.0.7-lafyy ?FillerCANCELCONFIRM")
+        await confirmChangeStaking("Change Staking  for account 0.0.730632Do you want to stake to account 0.0.7-bmurp ?FillerCANCELCONFIRM")
     })
 
     it("provides invalid values for account to stake to", async () => {
@@ -202,8 +202,8 @@ describe("StakingDialog.vue", () => {
             mock.onGet(matcher2, body).reply(200, response)
         }
         mock.onGet(matcher2).reply(200, SAMPLE_NETWORK_NODES)
-        const matcher3 = "https://api.coingecko.com/api/v3/coins/hedera-hashgraph"
-        mock.onGet(matcher3).reply(200, SAMPLE_COINGECKO);
+        const matcher3 = "api/v1/network/exchangerate"
+        mock.onGet(matcher3).reply(200, SAMPLE_NETWORK_EXCHANGERATE);
         const matcher4 = "/api/v1/accounts"
         const body = {params: {"account.id": "0.0.7", balance: false}}
         mock.onGet(matcher4, body).reply(200, SAMPLE_ACCOUNTS)

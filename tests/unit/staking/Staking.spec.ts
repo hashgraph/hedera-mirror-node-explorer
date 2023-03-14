@@ -1,8 +1,10 @@
+// noinspection DuplicatedCode
+
 /*-
  *
  * Hedera Mirror Node Explorer
  *
- * Copyright (C) 2021 - 2022 Hedera Hashgraph, LLC
+ * Copyright (C) 2021 - 2023 Hedera Hashgraph, LLC
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -29,7 +31,7 @@ import MockAdapter from "axios-mock-adapter";
 import axios from "axios";
 import {
     SAMPLE_ACCOUNT_STAKING_ACCOUNT,
-    SAMPLE_COINGECKO,
+    SAMPLE_NETWORK_EXCHANGERATE,
     SAMPLE_NETWORK_NODES,
     SAMPLE_TRANSACTION,
     SAMPLE_TRANSACTIONS
@@ -40,6 +42,7 @@ import ProgressDialog from "@/components/staking/ProgressDialog.vue";
 import {waitFor} from "@/utils/TimerUtils";
 import StakingDialog from "@/components/staking/StakingDialog.vue";
 import {nextTick} from "vue";
+import {NodeRegistry} from "@/components/node/NodeRegistry";
 
 /*
     Bookmarks
@@ -97,13 +100,18 @@ describe("Staking.vue", () => {
             const response = { nodes: [ node ]}
             mock.onGet(matcher2, body).reply(200, response)
         }
+        NodeRegistry.instance.reload()
+
         mock.onGet(matcher2).reply(200, SAMPLE_NETWORK_NODES)
-        const matcher3 = "https://api.coingecko.com/api/v3/coins/hedera-hashgraph"
-        mock.onGet(matcher3).reply(200, SAMPLE_COINGECKO);
+        NodeRegistry.instance.reload()
+        const matcher3 = "/api/v1/network/exchangerate"
+        mock.onGet(matcher3).reply(200, SAMPLE_NETWORK_EXCHANGERATE);
         const matcher4 = "/api/v1/transactions/" + STAKE_UPDATE_TRANSACTION_ID
         mock.onGet(matcher4).reply(200, STAKE_UPDATE_TRANSACTIONS)
         const matcher5 = "/api/v1/transactions"
         mock.onGet(matcher5).reply(200, SAMPLE_TRANSACTIONS)
+        const matcher8 = "/api/v1/accounts/" + testDriver.account.account + "/rewards"
+        mock.onGet(matcher8).reply(200, { rewards: [] })
 
         const wrapper = mount(Staking, {
             global: {
@@ -137,7 +145,7 @@ describe("Staking.vue", () => {
         // 1.3) Checks staking information
         const ndis = wrapper.findAllComponents(NetworkDashboardItem)
         expect(ndis.length).toBeGreaterThanOrEqual(3)
-        expect(ndis[0].text()).toBe("Staked toAccount 0.0.5since Mar 3, 2022")
+        expect(ndis[0].text()).toBe("Staked toAccount 0.0.5")
         expect(ndis[1].text()).toBe("My Stake0.31669471HBAR")
         expect(ndis[2].text()).toBe("Pending RewardNone")
 
@@ -193,7 +201,7 @@ describe("Staking.vue", () => {
             await changeConfirmButtons[1].trigger("click")
             await nextTick()
         }
-        await confirmChangeStaking("Change Staking  for account 0.0.730632Do you want to stake to account 0.0.7-lafyy ?FillerCANCELCONFIRM")
+        await confirmChangeStaking("Change Staking  for account 0.0.730632Do you want to stake to account 0.0.7-bmurp ?FillerCANCELCONFIRM")
 
         // 2.7) Waits for progress dialog and closes ...
         const waitAndClose = async(busyText: string, completeText: string) => {
@@ -213,7 +221,7 @@ describe("Staking.vue", () => {
             "Updating stakingOperation completedwith transaction ID:0.0.29624024@1646025139.152901498CLOSE")
 
         // 2.8) Checks staking information
-        expect(ndis[0].text()).toBe("Staked toAccount 0.0.7since Mar 3, 2022")
+        expect(ndis[0].text()).toBe("Staked toAccount 0.0.7")
         expect(ndis[1].text()).toBe("My Stake0.31669471HBAR")
         expect(ndis[2].text()).toBe("Pending RewardNone")
 
@@ -245,7 +253,7 @@ describe("Staking.vue", () => {
         // 3.4) Choose node #2
         const stakeToNodeSelect = stakingModal.get<HTMLSelectElement>("select")
         const stakeToNodeOptions = stakeToNodeSelect.findAll("option")
-        expect(stakeToNodeOptions.length).toBe(3)
+        expect(stakeToNodeOptions.length).toBe(SAMPLE_NETWORK_NODES.nodes.length)
         for (let i = 0; i < 3; i += 1) {
             expect(stakeToNodeOptions[i].element.value).toBe(i.toString())
         }
@@ -270,7 +278,7 @@ describe("Staking.vue", () => {
         expect(testDriver.account.decline_reward).toBeTruthy()
 
         // 3.8) Checks staking information
-        expect(ndis[0].text()).toBe("Staked toNode 2 - Hosted by Hedera since Mar 3, 2022")
+        expect(ndis[0].text()).toBe("Staked toNode 2 - Hosted by Hedera since Nov 11, 2022, 00:00 UTC")
         expect(ndis[1].text()).toBe("My Stake0.31669471HBAR")
         expect(ndis[2].text()).toBe("Pending RewardNone")
 
@@ -314,7 +322,7 @@ describe("Staking.vue", () => {
         expect(testDriver.account.decline_reward).toBeFalsy()
 
         // 4.8) Checks staking information
-        expect(ndis[0].text()).toBe("Staked toNode 2 - Hosted by Hedera since Mar 3, 2022")
+        expect(ndis[0].text()).toBe("Staked toNode 2 - Hosted by Hedera since Nov 11, 2022, 00:00 UTC")
         expect(ndis[1].text()).toBe("My Stake0.31669471HBAR")
         expect(ndis[2].text()).toBe("Pending RewardNone")
 

@@ -2,7 +2,7 @@
   -
   - Hedera Mirror Node Explorer
   -
-  - Copyright (C) 2021 - 2022 Hedera Hashgraph, LLC
+  - Copyright (C) 2021 - 2023 Hedera Hashgraph, LLC
   -
   - Licensed under the Apache License, Version 2.0 (the "License");
   - you may not use this file except in compliance with the License.
@@ -24,11 +24,23 @@
 
 <template>
   <template v-if="transaction">
-    <TransferGraphSection
-        v-if="shouldGraph"
+    <TransferGraphSection v-if="shouldGraph"
         v-bind:transaction="transaction"
         v-bind:compact="true"/>
-    <div v-else class="w250">
+    <div v-else-if="isTokenAssociation">
+      {{ transaction?.entity_id }}
+      <span v-if="tokens.length">
+        <i class="fas fa-link mr-1 has-text-grey"></i>
+        <TokenExtra :token-id="tokens[0]" :show-name="true"/>
+        <span v-if="additionalTokensNumber" class="h-is-smaller h-is-extra-text should-wrap">
+          {{ ' ( + ' + additionalTokensNumber + ' more )' }}
+        </span>
+      </span>
+    </div>
+    <div v-else-if="isEthereumTransaction">
+      {{ ethereumSummary }}
+    </div>
+    <div v-else class="should-wrap">
       {{ makeSummaryLabel(transaction) }}
     </div>
   </template>
@@ -41,23 +53,25 @@
 
 <script lang="ts">
 
-import {computed, defineComponent, PropType} from "vue";
+import {computed, defineComponent, onMounted, PropType, ref} from "vue";
 import {Transaction, TransactionType} from "@/schemas/HederaSchemas";
 import {makeSummaryLabel} from "@/utils/TransactionTools";
 import TransferGraphSection from "@/components/transfer_graphs/TransferGraphSection.vue";
+import {TokenRelationshipLoader} from "@/components/token/TokenRelationshipLoader";
+import TokenExtra from "@/components/values/TokenExtra.vue";
+import {ContractLoader} from "@/components/contract/ContractLoader";
 
 const GRAPH_TRANSACTION_TYPES = [
   TransactionType.CRYPTOTRANSFER,
-  TransactionType.TOKENCREATION,
   TransactionType.TOKENBURN,
   TransactionType.TOKENMINT
 ]
 
 export default defineComponent({
   name: "TransactionSummary",
-  components: {TransferGraphSection},
+  components: {TokenExtra, TransferGraphSection},
   props: {
-    transaction: Object as PropType<Transaction|undefined>
+    transaction: Object as PropType<Transaction | undefined>
   },
 
   setup(props) {
@@ -65,9 +79,41 @@ export default defineComponent({
     const shouldGraph = computed(() => {
       return props.transaction?.name && GRAPH_TRANSACTION_TYPES.indexOf(props.transaction.name) != -1
     })
+
+    const isTokenAssociation = computed(() => props.transaction?.name === TransactionType.TOKENASSOCIATE)
+
+    const tokenRelationships = new TokenRelationshipLoader(ref(props.transaction?.entity_id ?? null))
+    onMounted(() => tokenRelationships.requestLoad())
+
+    const tokens = computed(
+        () => tokenRelationships.lookupTokens(props.transaction?.consensus_timestamp ?? ""))
+
+    const additionalTokensNumber = computed(() => tokens.value.length ?  tokens.value.length - 1 : 0)
+
+    const isEthereumTransaction = computed(() => props.transaction?.name == TransactionType.ETHEREUMTRANSACTION)
+
+    const contractLoader = new ContractLoader(ref(props.transaction?.entity_id ?? null))
+    onMounted(() => contractLoader.requestLoad())
+
+    const ethereumSummary = computed(() => {
+      let result
+      if (props.transaction?.entity_id) {
+        result = contractLoader.contractId.value
+            ? 'Contract ID: ' + contractLoader.contractId.value
+            : 'Account ID: ' + props.transaction?.entity_id
+      } else {
+        result = ""
+      }
+      return result
+    })
+
     return {
       shouldGraph,
-
+      isTokenAssociation,
+      tokens,
+      additionalTokensNumber,
+      isEthereumTransaction,
+      ethereumSummary,
       // From TransactionTools
       makeSummaryLabel,
       TransactionType

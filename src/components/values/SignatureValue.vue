@@ -2,7 +2,7 @@
   -
   - Hedera Mirror Node Explorer
   -
-  - Copyright (C) 2021 - 2022 Hedera Hashgraph, LLC
+  - Copyright (C) 2021 - 2023 Hedera Hashgraph, LLC
   -
   - Licensed under the Apache License, Version 2.0 (the "License");
   - you may not use this file except in compliance with the License.
@@ -23,9 +23,9 @@
 <!-- --------------------------------------------------------------------------------------------------------------- -->
 
 <template>
-  <div v-if="signature">
-    <HexaValue :byte-string="signature" show-none/>
-    <div v-if="signatureInfo" class="h-is-extra-text h-is-text-size-3">{{ signatureInfo }}</div>
+  <div v-if="functionHash">
+    <HexaValue :byte-string="functionHash" show-none/>
+    <div class="h-is-extra-text h-is-text-size-3 should-wrap">{{ signature }}</div>
   </div>
   <div v-else-if="initialLoading"/>
   <div v-else class="has-text-grey">None</div>
@@ -37,29 +37,27 @@
 
 <script lang="ts">
 
-import {computed, defineComponent, inject, onBeforeUnmount, onMounted, PropType, ref} from "vue";
+import {defineComponent, inject, PropType, ref} from "vue";
 import {initialLoadingKey} from "@/AppKeys";
 import HexaValue from "@/components/values/HexaValue.vue";
-import {ContractAction} from "@/schemas/HederaSchemas";
-import {SignatureAnalyzer} from "@/utils/SignatureAnalyzer";
+import {FunctionCallAnalyzer} from "@/utils/FunctionCallAnalyzer";
 
 export default defineComponent({
   name: "SignatureValue",
   components: {HexaValue},
   props: {
-    action: Object as PropType<ContractAction|undefined>
+    analyzer: {
+      type: Object as PropType<FunctionCallAnalyzer>,
+      required: true
+    }
   },
 
   setup(props) {
-
-    const signatureAnalyzer = new SignatureAnalyzer(computed(() => props.action ?? null))
-    onMounted(() => signatureAnalyzer.mount())
-    onBeforeUnmount(() => signatureAnalyzer.unmount())
     const initialLoading = inject(initialLoadingKey, ref(false))
 
     return {
-      signature: signatureAnalyzer.functionHash,
-      signatureInfo: signatureAnalyzer.signature,
+      functionHash: props.analyzer.functionHash,
+      signature: props.analyzer.signature,
       initialLoading
     }
   }

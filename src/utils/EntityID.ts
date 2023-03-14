@@ -2,7 +2,7 @@
  *
  * Hedera Mirror Node Explorer
  *
- * Copyright (C) 2021 - 2022 Hedera Hashgraph, LLC
+ * Copyright (C) 2021 - 2023 Hedera Hashgraph, LLC
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -32,6 +32,12 @@ export class EntityID {
     //
     // Public
     //
+
+    public constructor(shard: number, realm: number, num: number) {
+        this.shard = shard
+        this.realm = realm
+        this.num = num
+    }
 
     public static parse(s: string, autoComplete = false): EntityID|null {
         let result: EntityID|null
@@ -92,7 +98,7 @@ export class EntityID {
             if (buffer !== null && buffer.length == 20) {
                 const view = new DataView(buffer.buffer)
                 const bigNum = view.getBigInt64(12)
-                const num = bigNum < EntityID.MAX_INT ? Number(bigNum) : null
+                const num = 0 <= bigNum && bigNum < EntityID.MAX_INT ? Number(bigNum) : null
                 result = num != null ? new EntityID(0, 0, num) : null
             } else {
                 result = null
@@ -138,16 +144,6 @@ export class EntityID {
     public static parsePositiveInt(s: string): number|null {
         const n = s.match(/^[0-9]+$/) !== null ? parseInt(s) : EntityID.MAX_INT
         return (isNaN(n) || n >= EntityID.MAX_INT) ? null : n
-    }
-
-    //
-    // Private
-    //
-
-    private constructor(shard: number, realm: number, num: number) {
-        this.shard = shard
-        this.realm = realm
-        this.num = num
     }
 }
 

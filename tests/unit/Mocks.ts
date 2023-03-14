@@ -2,7 +2,7 @@
  *
  * Hedera Mirror Node Explorer
  *
- * Copyright (C) 2021 - 2022 Hedera Hashgraph, LLC
+ * Copyright (C) 2021 - 2023 Hedera Hashgraph, LLC
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -17,7 +17,6 @@
  * limitations under the License.
  *
  */
-
 
 
 //
@@ -193,6 +192,36 @@ export const SAMPLE_TOKEN_WITH_KEYS = {
     "treasury_account_id": "0.0.91962",
     "type": "NON_FUNGIBLE_UNIQUE",
     "wipe_key": {"_type": "ED25519", "key": "c539536f9599daefeeb777677aa1aeea2242dfc7cca92348c228a5187a0faf2b"}
+}
+
+export const SAMPLE_DUDE_WITH_KEYS = {
+    "admin_key": {"_type": "ED25519", "key": "583dcbbb561b50d0a7c4434b9da398394a2f426584ced4d4c891715685bd5919"},
+    "auto_renew_account": "0.0.48113503",
+    "auto_renew_period": 7776000,
+    "created_timestamp": "1662470903.466156472",
+    "custom_fees": {"created_timestamp": "1662470903.466156472", "fixed_fees": [], "royalty_fees": []},
+    "decimals": "0",
+    "deleted": false,
+    "expiry_timestamp": "1670246903.466156472",
+    "fee_schedule_key": {"_type": "ED25519", "key": "583dcbbb561b50d0a7c4434b9da398394a2f426584ced4d4c891715685bd5919"},
+    "freeze_default": false,
+    "freeze_key": {"_type": "ED25519", "key": "583dcbbb561b50d0a7c4434b9da398394a2f426584ced4d4c891715685bd5919"},
+    "initial_supply": "0",
+    "kyc_key": null,
+    "max_supply": "1033",
+    "memo": "",
+    "modified_timestamp": "1662470957.014478706",
+    "name": "Reptilian Egg NFT",
+    "pause_key": {"_type": "ED25519", "key": "583dcbbb561b50d0a7c4434b9da398394a2f426584ced4d4c891715685bd5919"},
+    "pause_status": "UNPAUSED",
+    "supply_key": {"_type": "ProtobufEncoded", "key": "0a0518d5c1fd16"},
+    "supply_type": "FINITE",
+    "symbol": "RSSE",
+    "token_id": "0.0.48193741",
+    "total_supply": "5",
+    "treasury_account_id": "0.0.48113503",
+    "type": "NON_FUNGIBLE_UNIQUE",
+    "wipe_key": {"_type": "ED25519", "key": "583dcbbb561b50d0a7c4434b9da398394a2f426584ced4d4c891715685bd5919"}
 }
 
 export const SAMPLE_TOKEN_WITHOUT_KEYS = {
@@ -448,11 +477,11 @@ export const SAMPLE_TRANSACTION = {
     "bytes": null,
     "charged_tx_fee": 470065,
     "consensus_timestamp": "1646025151.667604000",
-    "entity_id": SAMPLE_TOKEN.token_id,
+    "entity_id": null,
     "max_fee": "100000000",
     "memo_base64": "",
     "name": "CRYPTOTRANSFER",
-    "node": "0.0.7",
+    "node": "0.0.5",
     "nonce": 0,
     "parent_consensus_timestamp": null,
     "result": "SUCCESS",
@@ -473,7 +502,7 @@ export const SAMPLE_TRANSACTION = {
     "transaction_id": "0.0.29624024-1646025139-152901498",
     "transfers": [
         {
-            "account": "0.0.7",
+            "account": "0.0.4",
             "amount": 22028
         },
         {
@@ -570,7 +599,7 @@ export const SAMPLE_CONTRACTCALL_TRANSACTIONS = {
                     "amount": -95515604
                 }
             ],
-            "valid_duration_seconds": "120",
+            "valid_duration_seconds": null,
             "valid_start_timestamp": "1646665756.235554077"
         },
         {
@@ -746,6 +775,284 @@ export const SAMPLE_CONTRACT_RESULT_DETAILS = {
     "type": null,
     "v": null,
     "nonce": null
+}
+
+export const SAMPLE_REVERT_CONTRACT_RESULT_DETAILS = {
+    "address": "0x0000000000000000000000000000000000362667",
+    "amount": 0,
+    "bloom": "0x",
+    "call_result": "0x",
+    "contract_id": "0.0.3548775",
+    "created_contract_ids": [],
+    "error_message": "0x08c379a000000000000000000000000000000000000000000000000000000000000000200000000000000000000000000000000000000000000000000000000000000024496e73756666696369656e7420746f6b656e2062616c616e636520666f7220776970656400000000000000000000000000000000000000000000000000000000",
+    "from": "0x00000000000000000000000000000000000005ba",
+    "function_parameters": "0x49257b42000000000000000000000000b7ba29e0554025e632d7db18d65d80c130f5ee940000000000000000000000000000000000000000000000000000000000007531",
+    "gas_limit": 4000000,
+    "gas_used": 3200000,
+    "timestamp": "1677085141.263832358",
+    "to": "0x0000000000000000000000000000000000362667",
+    "hash": "0xcbfcdad696696893d15eefa3ea71e889cabe8e652e54f611543b5035386bc675",
+    "block_hash": "0x16725d87e23dae63b20234861ccfe66874aa7e91bdd6bb8bc8e53b87d88c7499954dadce9b05c5032bcc239a31474708",
+    "block_number": 1224584,
+    "logs": [],
+    "result": "CONTRACT_REVERT_EXECUTED",
+    "transaction_index": 10,
+    "state_changes": [
+        {
+            "address": "0x0000000000000000000000000000000000362667",
+            "contract_id": "0.0.3548775",
+            "slot": "0x0000000000000000000000000000000000000000000000000000000000000000",
+            "value_read": "0x0000000000000000000000000000000000000000000000000000003626680001",
+            "value_written": null
+        }, {
+            "address": "0x0000000000000000000000000000000000362667",
+            "contract_id": "0.0.3548775",
+            "slot": "0x360894a13ba1a3210667c828492db98dca3e2076cc3735a920a3ca505d382bbc",
+            "value_read": "0x00000000000000000000000000000000000000000000000000000000002f9ff9",
+            "value_written": null
+        }, {
+            "address": "0x0000000000000000000000000000000000362667",
+            "contract_id": "0.0.3548775",
+            "slot": "0x6e6aaf3664af5268422aafc6f282e31102cd3653bc26111cdbbe2430cc92130f",
+            "value_read": "0x0000000000000000000000000000000000000000000000000000000000000001",
+            "value_written": null
+        }, {
+            "address": "0x0000000000000000000000000000000000362667",
+            "contract_id": "0.0.3548775",
+            "slot": "0xb53127684a568b3173ae13b9f8a6016e243e63b6e8ee1178d6a717850b5d6103",
+            "value_read": "0x0000000000000000000000000000000000000000000000000000000000362666",
+            "value_written": null
+        }, {
+            "address": "0x0000000000000000000000000000000000362667",
+            "contract_id": "0.0.3548775",
+            "slot": "0x00000000000000000000000000000000000000000000000000000000000000c8",
+            "value_read": "0x0000000000000000000000000000000000000000000000000000000000000009",
+            "value_written": null
+        }, {
+            "address": "0x0000000000000000000000000000000000362667",
+            "contract_id": "0.0.3548775",
+            "slot": "0xe71fac6fb785942cc6c6404a423f94f32a28ae66d69ff41494c38bfd4788b2fb",
+            "value_read": "0x515f99f4e5a381c770462a8d9879a01f0fd4a414a168a2404dab62a62e1af0c3",
+            "value_written": null
+        }
+    ],
+    "status": "0x0",
+    "failed_initcode": null,
+    "access_list": null,
+    "block_gas_used": 3248000,
+    "chain_id": null,
+    "gas_price": null,
+    "max_fee_per_gas": null,
+    "max_priority_fee_per_gas": null,
+    "r": null,
+    "s": null,
+    "type": null,
+    "v": null,
+    "nonce": null
+}
+
+export const SAMPLE_REVERT_CONTRACT_RESULT_DETAILS_WITH_TRACES = {
+    "address": null,
+    "amount": 0,
+    "bloom": "0x",
+    "call_result": "0x",
+    "contract_id": null,
+    "created_contract_ids": [],
+    "error_message": "0x08c379a00000000000000000000000000000000000000000000000000000000000000020000000000000000000000000000000000000000000000000000000000000003670617957697468436172644e4654202d206661696c656420746f2063616c6c2061636365707420636f6e7472616374206d6574686f6400000000000000000000",
+    "from": "0x00000000000000000000000000000000000022ee",
+    "function_parameters": "0x7d1ee005000000000000000000000000e05a5852b58e13c0f039b4450192dc5cac1d88e700000000000000000000000020a269221c216afce16a83d0401af060a0d39b19000000000000000000000000000000000000000000000000000000000000000200000000000000000000000000000000000000000000000000000000000000a0000000000000000000000000000000000000000000000000000000000000ddd400000000000000000000000091ba8ffb0d623d1faf3335b967e7a030d625faae00000000000000000000000000000000000000000000000000000000000000600000000000000000000000000000000000000000000000000000000000003039000000000000000000000000000000000000000000000000000000000000008467a47215000000000000000000000000e05a5852b58e13c0f039b4450192dc5cac1d88e700000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000005f5e100000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000",
+    "gas_limit": 0,
+    "gas_used": 6400000,
+    "timestamp": "1677504382.107973330",
+    "to": null,
+    "hash": "0x92cc800bdc94936c524bac0cbfdc15f58d9a44b53b612463c93a37a3bfccda11",
+    "block_hash": "0x016839aad7c5b37220f180c90bbffcb94940dada5f0b95bc038e74e985f5005c71f160a74d0f9bdc492a9c1a3e7dd5e8",
+    "block_number": 242669,
+    "logs": [],
+    "result": "CONTRACT_REVERT_EXECUTED",
+    "transaction_index": 2,
+    "state_changes": [
+        {
+            "address": "0x20a269221c216afce16a83d0401af060a0d39b19",
+            "contract_id": "0.0.10410",
+            "slot": "0x10a81eed9d63d16face5e76357905348e6253d3394086026bb2bf2145d7cc249",
+            "value_read": "0x0000000000000000000000000000000000000000000000000000000000000001",
+            "value_written": null
+        }, {
+            "address": "0x20a269221c216afce16a83d0401af060a0d39b19",
+            "contract_id": "0.0.10410",
+            "slot": "0x10a81eed9d63d16face5e76357905348e6253d3394086026bb2bf2145d7cc24a",
+            "value_read": "0x41ba50576c59ba82f08485ca644dd627db89235fb6e216355ebb2aa88cceb961",
+            "value_written": null
+        }, {
+            "address": "0x20a269221c216afce16a83d0401af060a0d39b19",
+            "contract_id": "0.0.10410",
+            "slot": "0x679795a0195a1b76cdebb7c51d74e058aee92919b8c3389af86ef24535e8a28c",
+            "value_read": "0x000000000000000000000000e05a5852b58e13c0f039b4450192dc5cac1d88e7",
+            "value_written": null
+        }, {
+            "address": "0x91ba8ffb0d623d1faf3335b967e7a030d625faae",
+            "contract_id": "0.0.33481",
+            "slot": "0x0000000000000000000000000000000000000000000000000000000000000000",
+            "value_read": "0x0000000000000000000000000d51f49fda00caa1d6d80fa874593392cdd6d642",
+            "value_written": null
+        }, {
+            "address": "0x91ba8ffb0d623d1faf3335b967e7a030d625faae",
+            "contract_id": "0.0.33481",
+            "slot": "0x0000000000000000000000000000000000000000000000000000000000000001",
+            "value_read": "0x0000000000000000000000000e14ce7dfb228ef3c75eda834b93d2b459f2f87b",
+            "value_written": null
+        }, {
+            "address": "0x91ba8ffb0d623d1faf3335b967e7a030d625faae",
+            "contract_id": "0.0.33481",
+            "slot": "0x3617319a054d772f909f7c479a2cebe5066e836a939412e32403c99029b92f00",
+            "value_read": "0x0000000000000000000000000000000000000000000000000000000000000001",
+            "value_written": null
+        }, {
+            "address": "0x91ba8ffb0d623d1faf3335b967e7a030d625faae",
+            "contract_id": "0.0.33481",
+            "slot": "0x3617319a054d772f909f7c479a2cebe5066e836a939412e32403c99029b92f02",
+            "value_read": "0x0000000000000000000000000000000000000000000000000000000005f5e100",
+            "value_written": null
+        }, {
+            "address": "0x91ba8ffb0d623d1faf3335b967e7a030d625faae",
+            "contract_id": "0.0.33481",
+            "slot": "0x3617319a054d772f909f7c479a2cebe5066e836a939412e32403c99029b92f03",
+            "value_read": "0x0000000000000000000001013951c8972739d158dd344be2bbffd83c433ded98",
+            "value_written": null
+        }, {
+            "address": "0x91ba8ffb0d623d1faf3335b967e7a030d625faae",
+            "contract_id": "0.0.33481",
+            "slot": "0x3617319a054d772f909f7c479a2cebe5066e836a939412e32403c99029b92f04",
+            "value_read": "0x0000000000000000000000000000000000000000000000000000000000000000",
+            "value_written": null
+        }, {
+            "address": "0x0d51f49fda00caa1d6d80fa874593392cdd6d642",
+            "contract_id": "0.0.33483",
+            "slot": "0x000000000000000000000000000000000000000000000000000000000000000e",
+            "value_read": "0x00000000000000000000000020a269221c216afce16a83d0401af060a0d39b19",
+            "value_written": null
+        }, {
+            "address": "0x0d51f49fda00caa1d6d80fa874593392cdd6d642",
+            "contract_id": "0.0.33483",
+            "slot": "0x3f937f941661313de1d036b096a7bb3c1f721fb80d6eb05b207eaa435e37435f",
+            "value_read": "0x0000000000000000000000000000000000000000000000000000000000000000",
+            "value_written": null
+        }, {
+            "address": "0x0d51f49fda00caa1d6d80fa874593392cdd6d642",
+            "contract_id": "0.0.33483",
+            "slot": "0x821c3c5d2dd65b021126d6e9e0e0c89e21605c2758f4ce1819f953167cc6047d",
+            "value_read": "0x0000000000000000000000000000000000000000000000000000000000000000",
+            "value_written": null
+        }, {
+            "address": "0x0d51f49fda00caa1d6d80fa874593392cdd6d642",
+            "contract_id": "0.0.33483",
+            "slot": "0xabd6e7cb50984ff9c2f3e18a2660c3353dadf4e3291deeb275dae2cd1e44fe05",
+            "value_read": "0x00000000000000000000000091ba8ffb0d623d1faf3335b967e7a030d625faae",
+            "value_written": null
+        }, {
+            "address": "0x0d51f49fda00caa1d6d80fa874593392cdd6d642",
+            "contract_id": "0.0.33483",
+            "slot": "0xad67d757c34507f157cacfa2e3153e9f260a2244f30428821be7be64587ac55f",
+            "value_read": "0x0000000000000000000000000000000000000000000000000000000000000000",
+            "value_written": null
+        }, {
+            "address": "0x0d51f49fda00caa1d6d80fa874593392cdd6d642",
+            "contract_id": "0.0.33483",
+            "slot": "0xd010d0b4ddf8a9cea49b42cfcc56c4a5e2dbb4acbd764c4ecdcc5993002fc772",
+            "value_read": "0x0000000000000000000000000000000000000000000000000000000000000001",
+            "value_written": null
+        }, {
+            "address": "0x0d51f49fda00caa1d6d80fa874593392cdd6d642",
+            "contract_id": "0.0.33483",
+            "slot": "0xd9f4ee184bd0c4b0fa610180a94b9e485cced08c68a2029cb4bb0f00575754eb",
+            "value_read": "0x0000000000000000000000000000000000000000000000000000000000000001",
+            "value_written": null
+        }, {
+            "address": "0x0d51f49fda00caa1d6d80fa874593392cdd6d642",
+            "contract_id": "0.0.33483",
+            "slot": "0xdcd5868f590fd217eb555c80fe5093cc2c8aa2c4763b091b8d7fe943f044f9b9",
+            "value_read": "0x0000000000000000000000000000000000000000000000000000000000000000",
+            "value_written": null
+        }, {
+            "address": "0x0d51f49fda00caa1d6d80fa874593392cdd6d642",
+            "contract_id": "0.0.33483",
+            "slot": "0xe90b7bceb6e7df5418fb78d8ee546e97c83a08bbccc01a0644d599ccd2a7c2e0",
+            "value_read": "0x0000000000000000000000003951c8972739d158dd344be2bbffd83c433ded98",
+            "value_written": null
+        }],
+    "status": "0x0",
+    "failed_initcode": "0x7d1ee005000000000000000000000000e05a5852b58e13c0f039b4450192dc5cac1d88e700000000000000000000000020a269221c216afce16a83d0401af060a0d39b19000000000000000000000000000000000000000000000000000000000000000200000000000000000000000000000000000000000000000000000000000000a0000000000000000000000000000000000000000000000000000000000000ddd400000000000000000000000091ba8ffb0d623d1faf3335b967e7a030d625faae00000000000000000000000000000000000000000000000000000000000000600000000000000000000000000000000000000000000000000000000000003039000000000000000000000000000000000000000000000000000000000000008467a47215000000000000000000000000e05a5852b58e13c0f039b4450192dc5cac1d88e700000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000005f5e100000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000",
+    "access_list": "0x",
+    "block_gas_used": 6400000,
+    "chain_id": "0x129",
+    "gas_price": "0x08e",
+    "max_fee_per_gas": "0x",
+    "max_priority_fee_per_gas": "0x",
+    "r": "0xe8e47814b38c05b3d19ceb722cb8617340de036e6ad6b4973d772f8f72d28c91",
+    "s": "0x6db5fcc6bb7be158dab671b04e4f805d11ac389d3438fcbb530d37f0be781a49",
+    "type": 0,
+    "v": 0,
+    "nonce": 42
+}
+
+export const SAMPLE_REVERT_CONTRACT_RESULT_ACTIONS = {
+    "actions": [
+        {
+            "call_depth": 0,
+            "call_operation_type": "CALL",
+            "call_type": "CALL",
+            "caller": "0.0.8942",
+            "caller_type": "ACCOUNT",
+            "from": "0x00000000000000000000000000000000000022ee",
+            "gas": 7979000,
+            "gas_used": 121944,
+            "index": 0,
+            "input": "0x7d1ee005000000000000000000000000e05a5852b58e13c0f039b4450192dc5cac1d88e700000000000000000000000020a269221c216afce16a83d0401af060a0d39b19000000000000000000000000000000000000000000000000000000000000000200000000000000000000000000000000000000000000000000000000000000a0000000000000000000000000000000000000000000000000000000000000ddd400000000000000000000000091ba8ffb0d623d1faf3335b967e7a030d625faae00000000000000000000000000000000000000000000000000000000000000600000000000000000000000000000000000000000000000000000000000003039000000000000000000000000000000000000000000000000000000000000008467a47215000000000000000000000000e05a5852b58e13c0f039b4450192dc5cac1d88e700000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000005f5e100000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000",
+            "recipient": "0.0.10410",
+            "recipient_type": "CONTRACT",
+            "result_data": "0x08c379a00000000000000000000000000000000000000000000000000000000000000020000000000000000000000000000000000000000000000000000000000000003670617957697468436172644e4654202d206661696c656420746f2063616c6c2061636365707420636f6e7472616374206d6574686f6400000000000000000000",
+            "result_data_type": "REVERT_REASON",
+            "timestamp": "1677504382.107973330",
+            "to": "0x00000000000000000000000000000000000028aa",
+            "value": 0
+        }, {
+            "call_depth": 1,
+            "call_operation_type": "CALL",
+            "call_type": "CALL",
+            "caller": "0.0.10410",
+            "caller_type": "CONTRACT",
+            "from": "0x00000000000000000000000000000000000028aa",
+            "gas": 7840814,
+            "gas_used": 107842,
+            "index": 1,
+            "input": "0x67a47215000000000000000000000000e05a5852b58e13c0f039b4450192dc5cac1d88e700000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000005f5e1000000000000000000000000000000000000000000000000000000000000000000",
+            "recipient": "0.0.33481",
+            "recipient_type": "CONTRACT",
+            "result_data": "0x",
+            "result_data_type": "REVERT_REASON",
+            "timestamp": "1677504382.107973330",
+            "to": "0x00000000000000000000000000000000000082c9",
+            "value": 0
+        }, {
+            "call_depth": 2,
+            "call_operation_type": "CALL",
+            "call_type": "CALL",
+            "caller": "0.0.33481",
+            "caller_type": "CONTRACT",
+            "from": "0x00000000000000000000000000000000000082c9",
+            "gas": 7700872,
+            "gas_used": 78338,
+            "index": 2,
+            "input": "0x23b872dd0000000000000000000000003951c8972739d158dd344be2bbffd83c433ded98000000000000000000000000e05a5852b58e13c0f039b4450192dc5cac1d88e70000000000000000000000000000000000000000000000000000000000000001",
+            "recipient": "0.0.33483",
+            "recipient_type": "CONTRACT",
+            "result_data": "0x",
+            "result_data_type": "OUTPUT",
+            "timestamp": "1677504382.107973330",
+            "to": "0x00000000000000000000000000000000000082cb",
+            "value": 0
+        }], "links": {"next": null}
 }
 
 // https://mainnet-public.mirrornode.hedera.com/api/v1/transactions?limit=2&transactiontype=CRYPTOTRANSFER
@@ -1337,6 +1644,123 @@ export const SAMPLE_SAME_ID_NOT_PARENT_TRANSACTIONS = {
         "valid_start_timestamp": "1665085799.890453831"
     }]
 }
+//
+// TOKEN ASSOCIATE Transaction inspired from https://hashscan-latest.hedera-devops.com/testnet/transaction/1671648712.150557003
+//
+
+export const SAMPLE_TOKEN_ASSOCIATE_TRANSACTION = {
+    "bytes": null,
+    "charged_tx_fee": 115905210,
+    "consensus_timestamp": "1671648712.150557003",
+    "entity_id": "0.0.642949",
+    "max_fee": "500000000",
+    "memo_base64": "",
+    "name": "TOKENASSOCIATE",
+    "node": "0.0.3",
+    "nonce": 0,
+    "parent_consensus_timestamp": null,
+    "result": "SUCCESS",
+    "scheduled": false,
+    "staking_reward_transfers": [],
+    "transaction_hash": "R4YHmZnfFpo4NJJJ08mlSJqD8cfFG2se3rgTR6SW2TGD4kpDrQM3LrxQFSimAy3r",
+    "transaction_id": "0.0.642949-1671648699-088023490",
+    "transfers": [{"account": "0.0.3", "amount": 5805847, "is_approval": false}, {
+        "account": "0.0.98",
+        "amount": 110099363,
+        "is_approval": false
+    }, {"account": "0.0.642949", "amount": -115905210, "is_approval": false}],
+    "valid_duration_seconds": "120",
+    "valid_start_timestamp": "1671648699.088023490"
+}
+
+export const SAMPLE_ASSOCIATED_TOKEN = {
+    "admin_key": {"_type": "ED25519", "key": "c350fb04dc8b75e0f2bae193f42f6d08c337bd627f731b19a67231cffe325ebe"},
+    "auto_renew_account": "0.0.1856648",
+    "auto_renew_period": 7776000,
+    "created_timestamp": "1651133913.387572000",
+    "custom_fees": {"created_timestamp": "1651133913.387572000", "fixed_fees": [], "fractional_fees": []},
+    "decimals": "4",
+    "deleted": false,
+    "expiry_timestamp": "1658909913.387572000",
+    "fee_schedule_key": {"_type": "ED25519", "key": "d0475f0732bd44a9e0a817c8e670e5372b3bf2631f71fb6966d71e8a56e71845"},
+    "freeze_default": false,
+    "freeze_key": {"_type": "ED25519", "key": "e46e5f2c3ca46d68c814ee2d645ad59c8b5441c99fc193321659f620e6468a7d"},
+    "initial_supply": "500000000000000",
+    "kyc_key": null,
+    "max_supply": "500000000000000",
+    "memo": "",
+    "modified_timestamp": "1664459798.418712003",
+    "name": "HSuite",
+    "pause_key": {"_type": "ED25519", "key": "8d2e8b0cc2518eb79d4ab07188387fe6f297ca230bd2f9b1faf31f889bf65f40"},
+    "pause_status": "UNPAUSED",
+    "supply_key": {"_type": "ED25519", "key": "f53f56ca2a83399aff9163c15a3868135a6d0589ce011e4eb2e98166148039d2"},
+    "supply_type": "FINITE",
+    "symbol": "HSUITE",
+    "token_id": "0.0.34332104",
+    "total_supply": "500000000000000",
+    "treasury_account_id": "0.0.34332092",
+    "type": "FUNGIBLE_COMMON",
+    "wipe_key": {"_type": "ED25519", "key": "fd5f6414ae9437854b31c81251b5e4be7b56a435dd749473da6feeecd85d6eaf"}
+}
+
+export const SAMPLE_ASSOCIATED_TOKEN_2 = {
+    "admin_key": null,
+    "auto_renew_account": "0.0.49288723",
+    "auto_renew_period": 7776000,
+    "created_timestamp": "1673613321.257283003",
+    "custom_fees": {"created_timestamp": "1673613321.257283003", "fixed_fees": [], "fractional_fees": []},
+    "decimals": "8",
+    "deleted": false,
+    "expiry_timestamp": 1681389321257283003,
+    "fee_schedule_key": null,
+    "freeze_default": false,
+    "freeze_key": null,
+    "initial_supply": "20000000000000",
+    "kyc_key": null,
+    "max_supply": "0",
+    "memo": "",
+    "modified_timestamp": "1673613321.257283003",
+    "name": "TokenA7",
+    "pause_key": null,
+    "pause_status": "NOT_APPLICABLE",
+    "supply_key": {"_type": "ED25519", "key": "2e61deb649eee47b0693d878fc5b2d8baa733f5e7b625314519064616ead62fe"},
+    "supply_type": "INFINITE",
+    "symbol": "Token SymbolA7",
+    "token_id": "0.0.49292859",
+    "total_supply": "20000000000000",
+    "treasury_account_id": "0.0.49288723",
+    "type": "FUNGIBLE_COMMON",
+    "wipe_key": null
+}
+
+//
+// Inspired from https://testnet.mirrornode.hedera.com/api/v1/accounts/0.0.642949/tokens
+//
+
+export const SAMPLE_TOKEN_ASSOCIATIONS = {
+    "tokens": [{
+        "automatic_association": false,
+        "balance": 0,
+        "created_timestamp": "1647994323.478512577",
+        "freeze_status": "NOT_APPLICABLE",
+        "kyc_status": "NOT_APPLICABLE",
+        "token_id": "0.0.26568643"
+    }, {
+        "automatic_association": false,
+        "balance": 0,
+        "created_timestamp": SAMPLE_TOKEN_ASSOCIATE_TRANSACTION.consensus_timestamp,
+        "freeze_status": "UNFROZEN",
+        "kyc_status": "NOT_APPLICABLE",
+        "token_id": SAMPLE_ASSOCIATED_TOKEN.token_id
+    }, {
+        "automatic_association": false,
+        "balance": 0,
+        "created_timestamp": "1671648712.150557003",
+        "freeze_status": "UNFROZEN",
+        "kyc_status": "NOT_APPLICABLE",
+        "token_id": SAMPLE_ASSOCIATED_TOKEN_2.token_id
+    }]
+}
 
 //
 // Account inspired from: https://mainnet-public.mirrornode.hedera.com/api/v1/accounts/0.0.730631
@@ -1368,7 +1792,7 @@ export const SAMPLE_ACCOUNT = {
     "memo": "",
     "receiver_sig_required": false,
     "evm_address": null,
-    "ethereum_nonce": null,
+    "ethereum_nonce": 0,
     "decline_reward": null,
     "staked_node_id": null,
     "staked_account_id": null,
@@ -1448,14 +1872,15 @@ export const SAMPLE_ACCOUNT_STAKING_NODE = {
     "expiry_timestamp": "1649648001.410978000",
     "key": {"_type": "ED25519", "key": "38f1ea460e95d97eea13aefac760eaf990154b80a3608ab01d4a264944d68746"},
     "max_automatic_token_associations": 10,
-    "memo": "Account staking to account",
+    "memo": "Account staking to node",
     "receiver_sig_required": true,
     "evm_address": null,
     "ethereum_nonce": null,
     "decline_reward": false,
     "staked_node_id": 1,
     "staked_account_id": null,
-    "stake_period_start" : "1646333100.356842286"
+    "stake_period_start" : "1668124800.000000000",
+    "pending_reward": 12345678
 }
 
 export const SAMPLE_ACCOUNT_STAKING_ACCOUNT = {
@@ -1478,8 +1903,8 @@ export const SAMPLE_ACCOUNT_STAKING_ACCOUNT = {
     "decline_reward": true,
     "staked_node_id": null,
     "staked_account_id": "0.0.5",
-    "stake_period_start": "1646333100.356842286",
-    "pending_reward": 12345678
+    "stake_period_start" : null,
+    "pending_reward": 0
 }
 
 export const SAMPLE_ACCOUNTS = {
@@ -1519,6 +1944,57 @@ export const SAMPLE_ACCOUNT_HBAR_BALANCE = {
     ]
 }
 
+// Inspired from https://testnet.mirrornode.hedera.com/api/v1/accounts/0.0.49058639?limit=1
+
+export const SAMPLE_ACCOUNT_PROTOBUF_KEY = {
+    "account": "0.0.49058639",
+    "alias": null,
+    "auto_renew_period": 7800000,
+    "balance": {"balance": 49981802457, "timestamp": "1674730033.376862693", "tokens": []},
+    "created_timestamp": "1670544262.122458003",
+    "decline_reward": false,
+    "deleted": false,
+    "ethereum_nonce": 0,
+    "evm_address": null,
+    "expiry_timestamp": "1678344262.122458003",
+    "key": {
+        "_type": "ProtobufEncoded",
+        "key": "2aa2040802129d040a221220d40d60cfe24c1e6e63eddbbbb857c6540759e02514b1a151d8147f07d4e3eaee0ad2032acf03080112ca030a221220775334a1a5d250c3bfc75b8b81fa2d5fc8fed7d5dab4b2a5ec272aa952aa377c0a2212205b18a5aa454e99759a2e5d9c4f3239dbc3584f69ab26383470446874bb7f79d10a2212203aa16f6f6cf5b95057ba1854cf5822a446d082b37212a3f1c164babadb713f870a93023290020a221220b3a3e302a74198085e0752495528a6bc475b6bc1f4ba9ae246d9235e5a45e43c0a221220b31d0cfc76ea431928330adfc3094780985876c87864bfe094f956dee4e05d9a0a221220c5b759fee0f23620330deea250bd1a66602f8d847bc181482e268d63e16ae16a0aa101329e010a9b013298010a722a700801126c0a221220b5d243760381ec28f8df73ca2707761720482612071fead9a8a14ff1e0c2f36a0a2212202f170df8b57ee630c42e408a6fc749e4ee62174fce66b9e03c9d9b4e68d35d400a221220bce139f0d9e6d69076f8915fcc32209ade6debaca3f05ee5a713e652b65e73290a221220a4c8bfd29c164be686c18d9ddbb09c3a47a375a57f32f6df6aec9ccef80f817c0a221220c5040cb52c20d2ab9496893fca0b690cb13855e6e55231e63360c3976e64a25c0a22122078b769551a81d0fd10c3b5390abb3de92ed4878977a119c2be2039247d8182da0a2212205b18a5aa454e99759a2e5d9c4f3239dbc3584f69ab26383470446874bb7f79d1"
+    },
+    "max_automatic_token_associations": 0,
+    "memo": "",
+    "pending_reward": 0,
+    "receiver_sig_required": false,
+    "staked_account_id": null,
+    "staked_node_id": null,
+    "stake_period_start": null,
+    "transactions": [
+        {
+            "bytes": null,
+            "charged_tx_fee": 971936,
+            "consensus_timestamp": "1670947193.071052939",
+            "entity_id": "0.0.49058639",
+            "max_fee": "500000000",
+            "memo_base64": "",
+            "name": "CRYPTOUPDATEACCOUNT",
+            "node": "0.0.3",
+            "nonce": 0,
+            "parent_consensus_timestamp": null,
+            "result": "SUCCESS",
+            "scheduled": false,
+            "staking_reward_transfers": [],
+            "transaction_hash": "A/brQJF7Fx5BW/u6556mOOrcEZib5icD4sgBlII7hXhnqGJiQ6MrJezJ/FFCUdZ8",
+            "transaction_id": "0.0.49058639-1670947192-898000000",
+            "transfers": [{"account": "0.0.3", "amount": 210956, "is_approval": false}, {
+                "account": "0.0.98",
+                "amount": 760980,
+                "is_approval": false
+            }, {"account": "0.0.49058639", "amount": -971936, "is_approval": false}],
+            "valid_duration_seconds": "180",
+            "valid_start_timestamp": "1670947192.898000000"
+        }],
+    "links": {"next": "/api/v1/accounts/0.0.49058639?limit=1&timestamp=lt:1670947193.071052939"}
+}
 
 //
 // Contract inspired from: https://mainnet-public.mirrornode.hedera.com/api/v1/contracts/0.0.749775
@@ -1529,6 +2005,7 @@ export const SAMPLE_CONTRACT = {
         "_type": "ED25519",
         "key": "421050820e1485acdd59726088e0e4a2130ebbbb70009f640ad95c78dd5a7b38"
     },
+    "auto_renew_account": "0.0.730632",
     "auto_renew_period": 7776000,
     "contract_id": "0.0.749775",
     "created_timestamp": "1646665755.947488266",
@@ -1536,6 +2013,7 @@ export const SAMPLE_CONTRACT = {
     "evm_address": "0x00000000000000000000000000000000000b70cf",
     "expiration_timestamp": null,
     "file_id": "0.0.749773",
+    "max_automatic_token_associations": 0,
     "memo": "Mirror Node acceptance test: 2022-03-07T15:09:15.228564328Z Create contract",
     "obtainer_id": null,
     "proxy_account_id": null,
@@ -1598,6 +2076,7 @@ export const SAMPLE_CONTRACT_AS_ACCOUNT = {
     },
     "deleted": false,
     "expiry_timestamp": null,
+    "evm_address": "0x00000000000000000000000000000000000b70cf",
     "key": {
         "_type": "ED25519",
         "key": "f6628ec23113678f60cb6e7e3972ac0bfdec0c43c787c25fd626a05627700ba5"
@@ -1753,7 +2232,7 @@ export const SAMPLE_CONTRACT_ACTIONS = {
             "gas": 4516,
             "gas_used": 2751,
             "index": 3,
-            "input": "0x189a554c",
+            "input": "0x49146bde000000000000000000000000845b706151aed537b1fd81c1ea4ea03920097abd0000000000000000000000000000000000000000000000000000000002e6ae09",
             "recipient": "0.0.359",
             "recipient_type": "CONTRACT",
             "result_data": "0x0000000000000000000000000000000000000000000000000000000005a995c0",
@@ -2062,6 +2541,24 @@ export const SAMPLE_NETWORK_SUPPLY = {
 }
 
 //
+// https://mainnet-public.mirrornode.hedera.com/api/v1/network/exchangerate
+//
+
+export const SAMPLE_NETWORK_EXCHANGERATE = {
+    "current_rate": {
+        "cent_equivalent": 738099,
+        "expiration_time": 1668679200,
+        "hbar_equivalent": 30000
+    },
+    "next_rate": {
+        "cent_equivalent": 739000,
+        "expiration_time": 1668682800,
+        "hbar_equivalent": 30000
+    },
+    "timestamp": "1668675657.744650810"
+}
+
+//
 // https://testnet.mirrornode.hedera.com/api/v1/blocks?timestamp=gte:1662111646.528325857&limit=2
 //
 
@@ -2093,26 +2590,6 @@ export const SAMPLE_BLOCKSRESPONSE = {
         }
     ], "links": {"next": "/api/v1/blocks?timestamp=gte:1662111646.528325857&limit=2&block.number=lt:25175997"}
 }
-
-//
-// https://api.coingecko.com/api/v3/coins/hedera-hashgraph
-//
-
-export const SAMPLE_COINGECKO = {
-
-    "market_data": {
-        "current_price": {
-            "usd": 0.246033,
-        },
-        "market_cap": {
-            "usd": 4486259941,
-        },
-        "price_change_percentage_24h": 8.41776,
-        "market_cap_change_percentage_24h": 8.42424
-    }
-
-}
-
 
 //
 // https://www.4byte.directory/api/v1/signatures/?hex_signature=0xb01ef608

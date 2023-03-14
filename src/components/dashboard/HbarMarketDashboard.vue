@@ -2,7 +2,7 @@
   -
   - Hedera Mirror Node Explorer
   -
-  - Copyright (C) 2021 - 2022 Hedera Hashgraph, LLC
+  - Copyright (C) 2021 - 2023 Hedera Hashgraph, LLC
   -
   - Licensed under the Apache License, Version 2.0 (the "License");
   - you may not use this file except in compliance with the License.
@@ -76,13 +76,11 @@
 
 <script lang="ts">
 
-import {computed, defineComponent, inject, onBeforeUnmount, onMounted, ref} from 'vue';
-import axios from "axios";
-import {CoinGeckoCache} from "@/components/dashboard/CoinGeckoCache";
-import {NetworkSupplyResponse} from "@/schemas/HederaSchemas";
+import {computed, defineComponent, inject, onBeforeUnmount, onMounted} from 'vue';
 import DashboardItem from "@/components/dashboard/DashboardItem.vue";
 import {NetworkRegistry, networkRegistry} from "@/schemas/NetworkRegistry";
 import router from "@/router";
+import {MarketDataCache} from "@/components/dashboard/MarketDataCache";
 
 export default defineComponent({
 
@@ -115,39 +113,10 @@ export default defineComponent({
     const hbarReleasedLabel = 'HBAR RELEASED'
     const hbarTotalLabel = 'HBAR TOTAL'
 
-    //
-    // coinGeckoCache
-    //
-    const coinGeckoCache = new CoinGeckoCache()
-    onMounted(() => {
-      coinGeckoCache.mounted.value = true
-    })
-    onBeforeUnmount(() => {
-      coinGeckoCache.mounted.value = false
-    })
-
-    //
-    // hbarReleased / hbarTotal
-    //
-
-    let hbarReleased = ref("")
-    let hbarTotal = ref("")
-    onMounted(() => {
-      fetchNetworkSupply()
-    })
-
-    const fetchNetworkSupply = () => {
-      axios
-          .get<NetworkSupplyResponse>("api/v1/network/supply/")
-          .then(result => {
-            if (result.data.released_supply) {
-              hbarReleased.value = (Number(result.data.released_supply)/100000000).toLocaleString('en-US')
-            }
-            if (result.data.total_supply) {
-              hbarTotal.value = (Number(result.data.total_supply)/100000000).toLocaleString('en-US')
-            }
-          })
-    }
+    // marketDataCache
+    const marketDataCache = new MarketDataCache()
+    onMounted(() => marketDataCache.mount())
+    onBeforeUnmount(() => marketDataCache.unmount())
 
     return {
       isMainNetwork,
@@ -158,14 +127,13 @@ export default defineComponent({
       hbarMarketCapLabel,
       hbarReleasedLabel,
       hbarTotalLabel,
-      marketData: coinGeckoCache.marketData,
-      hbarPrice: coinGeckoCache.hbarPrice,
-      hbarPriceVariation: coinGeckoCache.hbarPriceVariation,
-      hbarMarketCap: coinGeckoCache.hbarMarketCap,
-      hbarMarketCapVariation: coinGeckoCache.hbarMarketCapVariation,
-      coinGeckoCache, // For testing purpose
-      hbarReleased,
-      hbarTotal
+      marketDataCache, // For testing purpose
+      hbarReleased: marketDataCache.hbarReleased,
+      hbarTotal: marketDataCache.hbarTotal,
+      hbarPrice: marketDataCache.hbarPrice,
+      hbarPriceVariation: marketDataCache.hbarPriceVariation,
+      hbarMarketCap: marketDataCache.hbarMarketCap,
+      hbarMarketCapVariation: marketDataCache.hbarMarketCapVariation,
     }
   },
 });

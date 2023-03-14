@@ -2,7 +2,7 @@
   -
   - Hedera Mirror Node Explorer
   -
-  - Copyright (C) 2021 - 2022 Hedera Hashgraph, LLC
+  - Copyright (C) 2021 - 2023 Hedera Hashgraph, LLC
   -
   - Licensed under the Apache License, Version 2.0 (the "License");
   - you may not use this file except in compliance with the License.
@@ -68,7 +68,8 @@
           <!-- #2 : dollar amount -->
           <div class="justify-end">
             <HbarExtra v-if="i <= hbarTransferLayout.sources.length"
-                       v-bind:tbarAmount="hbarTransferLayout.sources[i-1].transfer.amount"/>
+                       v-bind:tbarAmount="hbarTransferLayout.sources[i-1].transfer.amount"
+                       v-bind:timestamp="transaction.consensus_timestamp"/>
           </div>
 
         </template>
@@ -101,7 +102,8 @@
           <!-- #6 : dollar amount -->
           <div class="justify-end" v-bind:class="{'h-has-low-contrast': hasLowContrast(i-1)}">
             <HbarExtra v-if="i <= hbarTransferLayout.destinations.length"
-                       v-bind:tbarAmount="hbarTransferLayout.destinations[i-1].transfer.amount"/>
+                       v-bind:tbarAmount="hbarTransferLayout.destinations[i-1].transfer.amount"
+                       v-bind:timestamp="transaction.consensus_timestamp"/>
           </div>
 
           <!-- #7 : description -->
@@ -137,6 +139,7 @@ import HbarAmount from "@/components/values/HbarAmount.vue";
 import HbarExtra from "@/components/values/HbarExtra.vue";
 import {HbarTransferLayout} from "@/components/transfer_graphs/layout/HbarTransferLayout";
 import {Transaction} from "@/schemas/HederaSchemas";
+import {NodeRegistry} from "@/components/node/NodeRegistry";
 
 export default defineComponent({
   name: "HbarTransferGraphF",
@@ -159,7 +162,7 @@ export default defineComponent({
       return destination === null || !destination.payload
     }
 
-    watch(() => props.transaction, () => {
+    watch([() => props.transaction, NodeRegistry.instance.nodes], () => {
       hbarTransferLayout.value = new HbarTransferLayout(props.transaction)
     })
 

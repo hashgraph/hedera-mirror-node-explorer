@@ -2,7 +2,7 @@
   -
   - Hedera Mirror Node Explorer
   -
-  - Copyright (C) 2021 - 2022 Hedera Hashgraph, LLC
+  - Copyright (C) 2021 - 2023 Hedera Hashgraph, LLC
   -
   - Licensed under the Apache License, Version 2.0 (the "License");
   - you may not use this file except in compliance with the License.
@@ -100,7 +100,7 @@ import NetworkDashboardItem from "@/components/node/NetworkDashboardItem.vue";
 import {formatSeconds} from "@/utils/Duration";
 import {StakingPeriod} from "@/utils/StakingPeriod";
 import {StakeLoader} from "@/components/staking/StakeLoader";
-import {NodesLoader} from "@/components/node/NodesLoader";
+import {NodeRegistry} from "@/components/node/NodeRegistry";
 
 export default defineComponent({
   name: 'Nodes',
@@ -119,9 +119,6 @@ export default defineComponent({
   setup() {
     const isSmallScreen = inject('isSmallScreen', true)
     const isTouchDevice = inject('isTouchDevice', false)
-
-    const nodesLoader = new NodesLoader()
-    onMounted(() => nodesLoader.requestLoad())
 
     const stakeLoader = new StakeLoader()
 
@@ -147,7 +144,7 @@ export default defineComponent({
 
     const updateStakingPeriod = () => {
       let startTimeInSec, endTimeInSec
-      const node0 = nodesLoader.node0.value
+      const node0 = NodeRegistry.instance.node0.value
       if (node0) {
         startTimeInSec = node0.staking_period?.from ? Number.parseInt(node0.staking_period?.from) : null
         endTimeInSec = node0.staking_period?.to ? Number.parseInt(node0.staking_period?.to) : null
@@ -163,11 +160,11 @@ export default defineComponent({
     return {
       isSmallScreen,
       isTouchDevice,
-      nodes: nodesLoader.nodes,
-      totalNodes: nodesLoader.nodeCount,
+      nodes: NodeRegistry.instance.nodes,
+      totalNodes: NodeRegistry.instance.nodeCount,
       stakeTotal,
-      unclampedStakeTotal: nodesLoader.unclampedStakeTotal,
-      totalRewarded: nodesLoader.totalRewarded,
+      unclampedStakeTotal: NodeRegistry.instance.unclampedStakeTotal,
+      totalRewarded: NodeRegistry.instance.totalRewarded,
       durationMin,
       elapsedMin,
       remainingMin,

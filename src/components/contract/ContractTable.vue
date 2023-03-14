@@ -2,7 +2,7 @@
   -
   - Hedera Mirror Node Explorer
   -
-  - Copyright (C) 2021 - 2022 Hedera Hashgraph, LLC
+  - Copyright (C) 2021 - 2023 Hedera Hashgraph, LLC
   -
   - Licensed under the Apache License, Version 2.0 (the "License");
   - you may not use this file except in compliance with the License.
@@ -76,10 +76,10 @@
 
 import {ComputedRef, defineComponent, inject, PropType, Ref} from 'vue';
 import {Contract} from "@/schemas/HederaSchemas";
-import router from "@/router";
+import {routeManager} from "@/router";
 import BlobValue from "@/components/values/BlobValue.vue";
 import TimestampValue from "@/components/values/TimestampValue.vue";
-import { ORUGA_MOBILE_BREAKPOINT } from '@/App.vue';
+import {ORUGA_MOBILE_BREAKPOINT} from '@/App.vue';
 import EmptyTable from "@/components/EmptyTable.vue";
 import {ContractTableController} from "@/components/contract/ContractTableController";
 
@@ -109,7 +109,9 @@ export default defineComponent({
     const isMediumScreen = inject('isMediumScreen', true)
 
     const handleClick = (c: Contract) => {
-      router.push({name: 'ContractDetails', params: { contractId: c.contract_id}})
+      if (c.contract_id) {
+        routeManager.routeToContract(c.contract_id)
+      }
     }
 
     return {

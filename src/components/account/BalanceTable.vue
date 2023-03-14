@@ -2,7 +2,7 @@
   -
   - Hedera Mirror Node Explorer
   -
-  - Copyright (C) 2021 - 2022 Hedera Hashgraph, LLC
+  - Copyright (C) 2021 - 2023 Hedera Hashgraph, LLC
   -
   - Licensed under the Apache License, Version 2.0 (the "License");
   - you may not use this file except in compliance with the License.
@@ -67,10 +67,10 @@
 import {defineComponent, inject, PropType, ref} from 'vue';
 import {TokenBalance} from "@/schemas/HederaSchemas";
 import TokenLink from "@/components/values/TokenLink.vue";
-import {useRouter} from "vue-router";
 import TokenAmount from "@/components/values/TokenAmount.vue";
 import {ORUGA_MOBILE_BREAKPOINT} from '@/App.vue';
 import EmptyTable from "@/components/EmptyTable.vue";
+import {routeManager} from "@/router";
 
 export default defineComponent({
   name: 'BalanceTable',
@@ -95,11 +95,11 @@ export default defineComponent({
     const DEFAULT_PAGE_SIZE = 15
     const pageSize = props.nbItems ?? DEFAULT_PAGE_SIZE
 
-    const router = useRouter()
-
     // 3) handleClick
     const handleClick = (balance: TokenBalance) => {
-      router.push({name: 'TokenDetails', params: {tokenId: balance.token_id}});
+      if (balance.token_id) {
+        routeManager.routeToToken(balance.token_id)
+      }
     }
 
     // 4) currentPage

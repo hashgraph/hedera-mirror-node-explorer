@@ -2,7 +2,7 @@
  *
  * Hedera Mirror Node Explorer
  *
- * Copyright (C) 2021 - 2022 Hedera Hashgraph, LLC
+ * Copyright (C) 2021 - 2023 Hedera Hashgraph, LLC
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -45,8 +45,6 @@ export class TransactionTableControllerXL extends TableController<Transaction, s
         this.accountId = accountId
         this.accountIdMandatory = accountIdMandatory
         this.watchAndReload([this.transactionType, this.accountId])
-        // this.accountId cannot be treated as this.transactionType :
-        // when this.accountId changes, we don't want to move to auto-refresh mode.
     }
 
     public readonly transactionType: Ref<string> = ref("")

@@ -2,7 +2,7 @@
  *
  * Hedera Mirror Node Explorer
  *
- * Copyright (C) 2021 - 2022 Hedera Hashgraph, LLC
+ * Copyright (C) 2021 - 2023 Hedera Hashgraph, LLC
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -18,13 +18,15 @@
  *
  */
 
-import {EntityLoader} from "@/utils/EntityLoader";
-import {AccountBalanceTransactions, TokenBalance} from "@/schemas/HederaSchemas";
+import {EntityLoader} from "@/utils/loader/EntityLoader";
+import {AccountBalanceTransactions, Key, TokenBalance} from "@/schemas/HederaSchemas";
 import {makeEthAddressForAccount} from "@/schemas/HederaUtils";
-import {operatorRegistry} from "@/schemas/OperatorRegistry";
-import {computed, Ref} from "vue";
+import {computed, ref, Ref} from "vue";
 import axios, {AxiosResponse} from "axios";
 import {base32ToAlias, byteToHex} from "@/utils/B64Utils";
+import {networkRegistry} from "@/schemas/NetworkRegistry";
+import router from "@/router";
+import {NodeRegistry} from "@/components/node/NodeRegistry";
 
 export class AccountLoader extends EntityLoader<AccountBalanceTransactions> {
 
@@ -42,26 +44,53 @@ export class AccountLoader extends EntityLoader<AccountBalanceTransactions> {
 
     public readonly accountId: Ref<string|null> = computed(() => this.entity.value?.account ?? null)
 
+    public readonly accountChecksum: Ref<string|null> = computed(() =>
+        this.accountId.value ? networkRegistry.computeChecksum(
+            this.accountId.value,
+            router.currentRoute.value.params.network as string
+        ) : null)
+
     public readonly balance: Ref<number|null> = computed(() => this.entity.value?.balance?.balance ?? null)
 
     public readonly createdTimestamp: Ref<string|null> = computed(() => this.entity.value?.created_timestamp ?? null)
 
-    public readonly tokens: Ref<[TokenBalance]|null> = computed(() => this.entity.value?.balance?.tokens ?? null)
+    public readonly key: Ref<Key|null> = computed(() => this.entity.value?.key ?? null)
+
+    public readonly tokens: Ref<TokenBalance[]|null> = computed(() => this.entity.value?.balance?.tokens ?? null)
 
     public readonly stakedNodeId: Ref<number|null> = computed(() => this.entity.value?.staked_node_id ?? null)
 
     public readonly stakedAccountId: Ref<string|null> = computed(() => this.entity.value?.staked_account_id ?? null)
 
-    public readonly stakePeriodStart: Ref<string|null> = computed(() => this.entity.value?.stake_period_start ?? null)
+    public readonly stakePeriodStart: Ref<string|null> = computed(() => {
+        const dateOptions = {
+            weekDay: "short",
+            day: "numeric",
+            month: "short",
+            year: "numeric",
+            minute: "numeric",
+            second: "numeric",
+            timeZoneName: "short",
+            timeZone: "UTC"
+        }
+        const dateFormat = new Intl.DateTimeFormat("en-US", dateOptions)
+        let result: string | null
+        if (this.entity.value?.stake_period_start) {
+            result = dateFormat.format(Number.parseFloat(this.entity.value.stake_period_start) * 1000)
+        } else {
+            result = null
+        }
+        return result
+    })
 
     public readonly pendingReward: Ref<number|null> = computed(() => this.entity.value?.pending_reward ?? null)
 
     public readonly accountInfo: Ref<string|null> = computed(() => {
-        return this.accountId.value !== null ? operatorRegistry.makeDescription(this.accountId.value) : null
+        return NodeRegistry.getShortDescription(ref(null), this.accountId)
     })
 
     public readonly nodeId: Ref<number|null> = computed(() => {
-        return this.accountId.value !== null ? operatorRegistry.lookup(this.accountId.value)?.nodeId ?? null : null
+        return NodeRegistry.getCursor(ref(null), this.accountId).node.value?.node_id ?? null
     })
 
     public readonly ethereumAddress = computed(() => {

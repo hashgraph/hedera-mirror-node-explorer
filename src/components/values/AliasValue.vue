@@ -2,7 +2,7 @@
   -
   - Hedera Mirror Node Explorer
   -
-  - Copyright (C) 2021 - 2022 Hedera Hashgraph, LLC
+  - Copyright (C) 2021 - 2023 Hedera Hashgraph, LLC
   -
   - Licensed under the Apache License, Version 2.0 (the "License");
   - you may not use this file except in compliance with the License.
@@ -25,10 +25,7 @@
 <template>
   <div class="should-wrap">
 
-    <BlobValue :blob-value="aliasValue" :show-none="true"/>
-    <div v-if="hexValue" class="has-text-grey mt-1">
-      <BlobValue :blob-value="hexValue"/>
-    </div>
+    <EVMAddress :address="hexValue" :show-id="false"/>
 
   </div>
 </template>
@@ -41,11 +38,11 @@
 
 import {computed, defineComponent} from "vue";
 import {base32ToAlias, byteToHex} from "@/utils/B64Utils";
-import BlobValue from "@/components/values/BlobValue.vue";
+import EVMAddress from "@/components/values/EVMAddress.vue";
 
-export default defineComponent({
+export default defineComponent( {
   name: "AliasValue",
-  components: {BlobValue},
+  components: {EVMAddress},
   props: {
     aliasValue: String,
   },

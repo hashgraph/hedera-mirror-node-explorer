@@ -2,7 +2,7 @@
   -
   - Hedera Mirror Node Explorer
   -
-  - Copyright (C) 2021 - 2022 Hedera Hashgraph, LLC
+  - Copyright (C) 2021 - 2023 Hedera Hashgraph, LLC
   -
   - Licensed under the Apache License, Version 2.0 (the "License");
   - you may not use this file except in compliance with the License.
@@ -42,7 +42,7 @@
         <span class="h-is-text-size-1" style="font-weight:300; color: #DBDBDB">
           Built {{ buildTime }}
         </span>
-        <a v-if="termsOfUseURL" :href="termsOfUseURL" style="line-height: 1rem">
+        <a data-cy="termsOfUse" v-if="termsOfUseURL" :href="termsOfUseURL" style="line-height: 1rem">
           <span class="h-is-text-size-3" style="font-weight:300">
            See Terms of Use
           </span>
@@ -70,6 +70,7 @@
 <script lang="ts">
 
 import {defineComponent, inject} from "vue";
+import {getEnv} from "@/utils/getEnv";
 
 export default defineComponent({
   name: "Footer",
@@ -88,9 +89,9 @@ export default defineComponent({
     const isSmallScreen = inject('isSmallScreen', true)
     const isTouchDevice = inject('isTouchDevice', false)
 
-    const productName = process.env.VUE_APP_PRODUCT_NAME ?? "Hedera Mirror Node Explorer"
-    const sponsorURL = process.env.VUE_APP_SPONSOR_URL ?? ""
-    const termsOfUseURL = process.env.VUE_APP_TERMS_OF_USE_URL ?? ""
+    const productName = getEnv('VUE_APP_PRODUCT_NAME') ?? "Hedera Mirror Node Explorer"
+    const sponsorURL = getEnv('VUE_APP_SPONSOR_URL') ?? ""
+    const termsOfUseURL = getEnv('VUE_APP_TERMS_OF_USE_URL') ? '/' + getEnv('VUE_APP_TERMS_OF_USE_URL') : ""
 
     return {
       buildTime,

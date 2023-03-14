@@ -2,7 +2,7 @@
  *
  * Hedera Mirror Node Explorer
  *
- * Copyright (C) 2021 - 2022 Hedera Hashgraph, LLC
+ * Copyright (C) 2021 - 2023 Hedera Hashgraph, LLC
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -29,6 +29,7 @@ import {HMSF} from "@/utils/HMSF";
 import Nodes from "@/pages/Nodes.vue";
 import NodeTable from "@/components/node/NodeTable.vue";
 import NetworkDashboardItem from "@/components/node/NetworkDashboardItem.vue";
+import {NodeRegistry} from "@/components/node/NodeRegistry";
 
 /*
     Bookmarks
@@ -72,6 +73,8 @@ describe("Nodes.vue", () => {
 
         const matcher1 = "/api/v1/network/nodes"
         mock.onGet(matcher1).reply(200, SAMPLE_NETWORK_NODES);
+        NodeRegistry.instance.reload()
+
         const matcher2 = "/api/v1/network/stake"
         mock.onGet(matcher2).reply(200, SAMPLE_NETWORK_STAKE);
 
@@ -100,11 +103,26 @@ describe("Nodes.vue", () => {
         expect(cards[1].text()).toMatch(RegExp("^Nodes"))
         const table = cards[1].findComponent(NodeTable)
         expect(table.exists()).toBe(true)
-        expect(table.get('thead').text()).toBe("Node Account Description Stake Stake Not Rewarded Last Reward Rate Stake Range")
+        expect(table.get('thead').text()).toBe("Node Description Stake Stake Not Rewarded Stake Range Reward Rate")
         expect(wrapper.get('tbody').text()).toBe(
-            "0" + "0.0.3" + "Hosted by Hedera | East Coast, USA" + tooltipStake + "6,000,000(25%)" + tooltipNotRewarded + "1,000,000" + tooltipRewardRate + "1%" +
-            "1" + "0.0.4" + "Hosted by Hedera | East Coast, USA" + tooltipStake + "9,000,000(37.5%)" + tooltipNotRewarded + "2,000,000" + tooltipRewardRate + "2%" +
-            "2" + "0.0.5" + "Hosted by Hedera | Central, USA" + tooltipStake + "9,000,000(37.5%)" + tooltipNotRewarded + "2,000,000" + tooltipRewardRate + "3%"
+            "0" +
+            "Hosted by Hedera | East Coast, USA" +
+            tooltipStake + "6,000,000(25%)" +
+            tooltipNotRewarded + "1,000,000" +
+            "Rewarded:5,000,000Not Rewarded:1,000,000Min:1,000,000Max:30,000,000" +
+            tooltipRewardRate + "1%" +
+            "1" +
+            "Hosted by Hedera | East Coast, USA" +
+            tooltipStake + "9,000,000(37.5%)" +
+            tooltipNotRewarded + "2,000,000" +
+            "Rewarded:7,000,000Not Rewarded:2,000,000Min:1,000,000Max:30,000,000" +
+            tooltipRewardRate + "2%" +
+            "2" +
+            "Hosted by Hedera | Central, USA" +
+            tooltipStake + "9,000,000(37.5%)" +
+            tooltipNotRewarded + "2,000,000" +
+            "Rewarded:7,000,000Not Rewarded:2,000,000Min:1,000,000Max:30,000,000" +
+            tooltipRewardRate + "3%"
         )
     });
 

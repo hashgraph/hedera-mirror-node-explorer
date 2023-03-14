@@ -2,7 +2,7 @@
  *
  * Hedera Mirror Node Explorer
  *
- * Copyright (C) 2021 - 2022 Hedera Hashgraph, LLC
+ * Copyright (C) 2021 - 2023 Hedera Hashgraph, LLC
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -20,7 +20,7 @@
 
 import {compareTransferByAccount, Transaction, Transfer} from "@/schemas/HederaSchemas";
 import {computeNetAmount} from "@/utils/TransactionTools";
-import {operatorRegistry} from "@/schemas/OperatorRegistry";
+import {makeOperatorDescription} from "@/schemas/HederaUtils";
 
 export class HbarTransferLayout {
 
@@ -53,12 +53,13 @@ export class HbarTransferLayout {
             positiveTransfers.sort(compareTransferByAccount)
 
             for (const t of negativeTransfers) {
-                const payload = t.account === null || operatorRegistry.lookup(t.account) === null
+                const payload = t.account === null || makeOperatorDescription(t.account) === null
                 this.sources.push(new HbarTransferRow(t, null, payload))
             }
             for (const t of positiveTransfers) {
-                const payload = t.account === null || operatorRegistry.lookup(t.account) === null
-                this.destinations.push(new HbarTransferRow(t, HbarTransferLayout.makeDescription(t), payload))
+                const operator = makeOperatorDescription(t.account ?? "")
+                const payload = t.account === null || operator === null
+                this.destinations.push(new HbarTransferRow(t, operator ?? "Transfer", payload))
             }
         }
 
@@ -116,10 +117,6 @@ export class HbarTransferLayout {
     //
     // Private
     //
-
-    private static makeDescription(t: Transfer): string {
-        return (t.account !== null ? operatorRegistry.makeDescription(t.account) : null) ?? "Transfer"
-    }
 
     private static removeFeeRows(rows: HbarTransferRow[]): number {
         let result = 0

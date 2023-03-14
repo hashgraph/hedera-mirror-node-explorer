@@ -2,7 +2,7 @@
  *
  * Hedera Mirror Node Explorer
  *
- * Copyright (C) 2021 - 2022 Hedera Hashgraph, LLC
+ * Copyright (C) 2021 - 2023 Hedera Hashgraph, LLC
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -39,27 +39,28 @@ describe('Contract Navigation', () => {
             .then(($id) => {
                 // cy.log('Selected account Id: ' + $id.text())
                 cy.url().should('include', '/testnet/contract/' + $id.text())
-                cy.contains('Contract ' + $id.text())
+                cy.contains('Contract ID:' + $id.text())
             })
     })
 
     it('should follow links from contract details', () => {
-        const contractId = "0.0.33958067"
+        const contractId = "0.0.1744776"
 
-        cy.visit('testnet/contract/' + contractId)
-        cy.url().should('include', '/testnet/contract/' + contractId)
-        cy.contains('Contract ' + contractId)
+        cy.visit('mainnet/contract/' + contractId)
+        cy.url().should('include', '/mainnet/contract/' + contractId)
+        cy.contains('Contract ID:' + contractId)
 
         cy.get('table').contains('td', '@')
             .click()
             .then(($id) => {
                 cy.log('Selected transaction Id: ' + $id.text())
-                cy.url().should('include', '/testnet/transaction/' + normalizeTransactionId($id.text()))
+                cy.url().should('include', '/mainnet/transaction/')
+                cy.url().should('include', 'tid=' + normalizeTransactionId($id.text()))
                 cy.contains('Transaction ' + $id.text())
             })
 
         cy.go('back')
-        cy.url().should('include', '/testnet/contract/' + contractId)
+        cy.url().should('include', '/mainnet/contract/' + contractId)
     })
 
     it('should detect navigation to unknown contract ID', () => {

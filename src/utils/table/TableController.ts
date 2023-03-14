@@ -2,7 +2,7 @@
  *
  * Hedera Mirror Node Explorer
  *
- * Copyright (C) 2021 - 2022 Hedera Hashgraph, LLC
+ * Copyright (C) 2021 - 2023 Hedera Hashgraph, LLC
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -22,6 +22,7 @@ import {computed, ComputedRef, ref, Ref, watch, WatchSource, WatchStopHandle} fr
 import {LocationQuery, Router} from "vue-router";
 import {fetchNumberQueryParam, fetchStringQueryParam} from "@/utils/RouteManager";
 import {RowBuffer} from "@/utils/table/RowBuffer";
+import axios, {AxiosError} from "axios";
 
 export abstract class TableController<R, K> {
 
@@ -44,9 +45,6 @@ export abstract class TableController<R, K> {
 
     public readonly autoRefresh: ComputedRef<boolean> = computed(
         () => this.autoRefreshRef.value)
-
-    public readonly autoStopped: ComputedRef<boolean> = computed(
-        () => this.refreshCountRef.value >= this.maxAutoUpdateCount)
 
     public readonly currentPage: Ref<number> = ref(1)
 
@@ -219,6 +217,10 @@ export abstract class TableController<R, K> {
 
     private readonly errorHandler = (reason: unknown): void => {
         console.log("reason=" + reason)
+        if (axios.isAxiosError(reason)) {
+            const axiosError = reason as AxiosError
+            console.log("url=" + axiosError.config.url)
+        }
     }
 
     private getPageParam(): number|null {

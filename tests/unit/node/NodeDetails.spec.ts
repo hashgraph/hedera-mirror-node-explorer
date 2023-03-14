@@ -1,8 +1,10 @@
+// noinspection DuplicatedCode
+
 /*-
  *
  * Hedera Mirror Node Explorer
  *
- * Copyright (C) 2021 - 2022 Hedera Hashgraph, LLC
+ * Copyright (C) 2021 - 2023 Hedera Hashgraph, LLC
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -25,7 +27,7 @@ import AccountDetails from "@/pages/AccountDetails.vue";
 import {
     SAMPLE_ACCOUNT,
     SAMPLE_ACCOUNT_BALANCES, SAMPLE_ACCOUNT_DUDE,
-    SAMPLE_COINGECKO, SAMPLE_NETWORK_NODES, SAMPLE_NETWORK_STAKE,
+    SAMPLE_NETWORK_NODES, SAMPLE_NETWORK_STAKE,
     SAMPLE_NONFUNGIBLE,
     SAMPLE_TOKEN, SAMPLE_TOKEN_DUDE,
     SAMPLE_TRANSACTIONS
@@ -34,6 +36,7 @@ import MockAdapter from "axios-mock-adapter";
 import Oruga from "@oruga-ui/oruga-next";
 import {HMSF} from "@/utils/HMSF";
 import NodeDetails from "@/pages/NodeDetails.vue";
+import {NodeRegistry} from "@/components/node/NodeRegistry";
 
 /*
     Bookmarks
@@ -69,6 +72,8 @@ describe("NodeDetails.vue", () => {
         const node = 0
         const matcher1 = "api/v1/network/nodes"
         mock.onGet(matcher1).reply(200, SAMPLE_NETWORK_NODES);
+        NodeRegistry.instance.reload()
+
         const matcher2 = "api/v1/network/stake"
         mock.onGet(matcher2).reply(200, SAMPLE_NETWORK_STAKE);
 
@@ -132,8 +137,8 @@ describe("NodeDetails.vue", () => {
         const matcher5 = "/api/v1/balances"
         mock.onGet(matcher5).reply(200, SAMPLE_ACCOUNT_BALANCES);
 
-        const matcher6 = "https://api.coingecko.com/api/v3/coins/hedera-hashgraph"
-        mock.onGet(matcher6).reply(200, SAMPLE_COINGECKO);
+        let matcher8 = "/api/v1/accounts/" + account1.account + "/rewards"
+        mock.onGet(matcher8).reply(200, { rewards: [] })
 
         const wrapper = mount(AccountDetails, {
             global: {
@@ -147,7 +152,7 @@ describe("NodeDetails.vue", () => {
         // console.log(wrapper.html())
         // console.log(wrapper.text())
 
-        expect(wrapper.text()).toMatch(RegExp("^Account " + SAMPLE_ACCOUNT.account))
+        expect(wrapper.text()).toMatch("Account Account ID:" + SAMPLE_ACCOUNT.account)
         expect(wrapper.get("#keyValue").text()).toBe(
             "aa2f 7b3e 759f 4531 ec2e 7941 afa4 49e6 a6e6 10ef b52a dae8 9e9c d8e9 d40d dcbf" +
             "Copy to Clipboard" +
@@ -161,6 +166,9 @@ describe("NodeDetails.vue", () => {
         matcher3 = "/api/v1/tokens/" + token2.token_id
         mock.onGet(matcher3).reply(200, token2);
 
+        matcher8 = "/api/v1/accounts/" + account2.account + "/rewards"
+        mock.onGet(matcher8).reply(200, { rewards: [] })
+
         await wrapper.setProps({
             accountId: SAMPLE_ACCOUNT_DUDE.account ?? undefined
         })
@@ -168,13 +176,13 @@ describe("NodeDetails.vue", () => {
         // console.log(wrapper.html())
         // console.log(wrapper.text())
 
-        expect(wrapper.text()).toMatch(RegExp("^Account " + SAMPLE_ACCOUNT_DUDE.account))
+        expect(wrapper.text()).toMatch("Account Account ID:" + SAMPLE_ACCOUNT_DUDE.account)
         expect(wrapper.get("#keyValue").text()).toBe(
             "38f1 ea46 0e95 d97e ea13 aefa c760 eaf9 9015 4b80 a360 8ab0 1d4a 2649 44d6 8746" +
             "Copy to Clipboard" +
             "ED25519")
         expect(wrapper.get("#memoValue").text()).toBe("Account Dude Memo in clear")
-        expect(wrapper.get("#aliasValue").text()).toBe("None")
+        expect(wrapper.find("#aliasValue").exists()).toBe(false)
         expect(wrapper.get("#expiresAtValue").text()).toBe("3:33:21.4109 AMApr 11, 2022, UTC")
         expect(wrapper.get("#autoRenewPeriodValue").text()).toBe("77d 3h 40min")
         expect(wrapper.get("#maxAutoAssociationValue").text()).toBe("10")

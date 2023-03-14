@@ -2,7 +2,7 @@
  *
  * Hedera Mirror Node Explorer
  *
- * Copyright (C) 2021 - 2022 Hedera Hashgraph, LLC
+ * Copyright (C) 2021 - 2023 Hedera Hashgraph, LLC
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -18,7 +18,7 @@
  *
  */
 
-import { Transaction, TransactionType } from "@/schemas/HederaSchemas";
+import {Transaction, TransactionType} from "@/schemas/HederaSchemas";
 
 export function makeSummaryLabel(row: Transaction): string {
     let result: string
@@ -46,6 +46,8 @@ export function makeSummaryLabel(row: Transaction): string {
         case TransactionType.TOKENREVOKEKYC:
         case TransactionType.TOKENFREEZE:
         case TransactionType.TOKENUNFREEZE:
+        case TransactionType.CRYPTOADDLIVEHASH:
+        case TransactionType.CRYPTODELETELIVEHASH:
             result = row.entity_id ? "Account ID: " + row.entity_id : ""
             break
         case TransactionType.TOKENBURN:
@@ -56,6 +58,7 @@ export function makeSummaryLabel(row: Transaction): string {
         case TransactionType.TOKENPAUSE:
         case TransactionType.TOKENUNPAUSE:
         case TransactionType.TOKENUPDATE:
+        case TransactionType.TOKENWIPE:
             result = row.entity_id ? "Token ID: " + row.entity_id : ""
             break
         case TransactionType.CONTRACTCREATEINSTANCE:
@@ -74,6 +77,10 @@ export function makeSummaryLabel(row: Transaction): string {
         case TransactionType.SCHEDULEDELETE:
         case TransactionType.SCHEDULESIGN:
             result = row.entity_id ? "Schedule ID: " + row.entity_id : ""
+            break
+        case TransactionType.CRYPTOAPPROVEALLOWANCE:
+        case TransactionType.CRYPTODELETEALLOWANCE:
+            result = formatMemo(row.memo_base64 ?? "")
             break
         default:
             result = ""
@@ -280,6 +287,14 @@ export function makeTypeLabel(type: TransactionType | undefined): string {
 
         case TransactionType.ETHEREUMTRANSACTION:
             result = "Ethereum Transaction";
+            break;
+
+        case TransactionType.NODESTAKEUPDATE:
+            result = "Node Stake Update";
+            break;
+
+        case TransactionType.UTILPRNG:
+            result = "Pseudorandom Number Generate";
             break;
 
         default:

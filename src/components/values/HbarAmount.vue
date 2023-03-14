@@ -2,7 +2,7 @@
   -
   - Hedera Mirror Node Explorer
   -
-  - Copyright (C) 2021 - 2022 Hedera Hashgraph, LLC
+  - Copyright (C) 2021 - 2023 Hedera Hashgraph, LLC
   -
   - Licensed under the Apache License, Version 2.0 (the "License");
   - you may not use this file except in compliance with the License.
@@ -24,18 +24,19 @@
 
 <template>
 
-  <template v-if="amount !== 0 || !hideZero">
-    <span class="has-hbar is-numeric"
-          :class="{ 'has-text-grey': isGrey, 'h-is-debit': isRed, 'h-is-credit': isGreen }">
+  <template v-if="isNone">
+    <span v-if="initialLoading"/>
+    <span v-else class="has-text-grey">None</span>
+  </template>
+  <template v-else-if="amount !== 0 || !hideZero">
+    <span class="has-hbar is-numeric" :class="{ 'has-text-grey': isGrey, 'h-is-debit': isRed, 'h-is-credit': isGreen }">
       {{ formattedAmount }}
     </span>
-  </template>
-
-  <template v-if="showExtra">
-    <span class="ml-2">
-      <HbarExtra v-bind:tbar-amount="amount" v-bind:small-extra="smallExtra" v-bind:hide-zero="hideZero"/>
+    <span v-if="showExtra" class="ml-2">
+      <HbarExtra :hide-zero="hideZero" :small-extra="smallExtra" :tbar-amount="amount" :timestamp="timestamp"/>
     </span>
   </template>
+  <span v-else/>
 
 </template>
 
@@ -45,8 +46,9 @@
 
 <script lang="ts">
 
-import {computed, defineComponent} from "vue";
+import {computed, defineComponent, inject, ref} from "vue";
 import HbarExtra from "@/components/values/HbarExtra.vue";
+import {initialLoadingKey} from "@/AppKeys";
 
 export default defineComponent({
   name: "HbarAmount",
@@ -54,7 +56,10 @@ export default defineComponent({
   props: {
     amount: {
       type: Number,
-      default: 0
+    },
+    timestamp: {
+      type: String,
+      default: null
     },
     decimals: {
       type: Number,
@@ -79,17 +84,20 @@ export default defineComponent({
   },
 
   setup(props) {
+    const initialLoading = inject(initialLoadingKey, ref(false))
+
     const hbarAmount = computed(() => {
-      return props.amount / 100000000
+      return (props.amount??0) / 100000000
     })
+
+    const isNone = computed(() => props.amount == null)
+
     const formattedAmount = computed(() => {
       const amountFormatter = new Intl.NumberFormat('en-US', {
-        minimumFractionDigits: props.decimals,
-        maximumFractionDigits: 8
+        minimumFractionDigits: props.decimals ?? 0,
+        maximumFractionDigits: props.decimals ?? 8
       })
       return amountFormatter.format(hbarAmount.value)
-
-      // return hbarAmount.value.toFixed(props.decimals)
     })
 
     const isGrey = computed(() => {
@@ -97,14 +105,14 @@ export default defineComponent({
     })
 
     const isRed = computed(() => {
-      return props.amount < 0 && props.colored
+      return hbarAmount.value < 0 && props.colored
     })
 
     const isGreen = computed(() => {
-      return props.amount > 0 && props.colored
+      return hbarAmount.value > 0 && props.colored
     })
 
-    return { formattedAmount, isGrey, isRed, isGreen }
+    return { initialLoading, isNone, formattedAmount, isGrey, isRed, isGreen }
   }
 });
 

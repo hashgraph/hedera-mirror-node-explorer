@@ -2,7 +2,7 @@
  *
  * Hedera Mirror Node Explorer
  *
- * Copyright (C) 2021 - 2022 Hedera Hashgraph, LLC
+ * Copyright (C) 2021 - 2023 Hedera Hashgraph, LLC
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -18,11 +18,20 @@
  *
  */
 
-import {mount} from "@vue/test-utils"
+import {flushPromises, mount} from "@vue/test-utils"
 import router from "@/router";
 import EntityLink from "@/components/values/EntityLink.vue";
+import MockAdapter from "axios-mock-adapter";
+import axios from "axios";
+import {SAMPLE_NETWORK_NODES} from "../Mocks";
+import {NodeRegistry} from "@/components/node/NodeRegistry";
 
 describe("EntityLink.vue", () => {
+
+    const mock = new MockAdapter(axios);
+    const matcher1 = "/api/v1/network/nodes"
+    mock.onGet(matcher1).reply(200, SAMPLE_NETWORK_NODES);
+    NodeRegistry.instance.reload()
 
     test("AccountLink; no extra", async () => {
         const testEntityId = "0.0.4"
@@ -94,6 +103,7 @@ const testBody = async (testEntityId: string, testRouteName: string, testShowExt
             showExtra: testShowExtra
         },
     });
+    await flushPromises()
 
     expect(wrapper.text()).toMatch(RegExp("^" + testEntityId))
     if (testEntityId) {

@@ -2,7 +2,7 @@
  *
  * Hedera Mirror Node Explorer
  *
- * Copyright (C) 2021 - 2022 Hedera Hashgraph, LLC
+ * Copyright (C) 2021 - 2023 Hedera Hashgraph, LLC
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -39,15 +39,17 @@ import MobileMenu from "@/pages/MobileMenu.vue";
 import MobileSearch from "@/pages/MobileSearch.vue";
 import Nodes from "@/pages/Nodes.vue";
 import NodeDetails from "@/pages/NodeDetails.vue";
-import {NetworkEntry, NetworkRegistry, networkRegistry} from "@/schemas/NetworkRegistry";
+import {NetworkEntry, networkRegistry} from "@/schemas/NetworkRegistry";
 import {AppStorage} from "@/AppStorage";
-import axios from "axios";
 import Staking from "@/pages/Staking.vue";
 import {RouteManager} from "@/utils/RouteManager";
 import {WalletManager} from "@/utils/wallet/WalletManager";
 import BlockDetails from "@/pages/BlockDetails.vue";
 import Blocks from "@/pages/Blocks.vue";
-import ContractResultDetails from "@/pages/ContractResultDetails.vue";
+import {getEnv} from "@/utils/getEnv";
+import AccountsWithKey from "@/pages/AccountsWithKey.vue";
+import AdminKeyDetails from "@/pages/AdminKeyDetails.vue";
+import AddressDetails from "@/pages/AddressDetails.vue";
 
 const routes: Array<RouteRecordRaw> = [
   {
@@ -82,13 +84,13 @@ const routes: Array<RouteRecordRaw> = [
     props: true
   },
   {
-    path: '/:network/transaction/:transactionId',
+    path: '/:network/transaction/:transactionLoc',
     name: 'TransactionDetails',
     component: TransactionDetails,
     props: route => ({
       network: route.params.network as string|undefined,
-      transactionId: route.params.transactionId as string|undefined,
-      consensusTimestamp: route.query.t as string|undefined
+      transactionLoc: route.params.transactionLoc as string|undefined,
+      transactionId: route.query.tid as string|undefined
     })
   },
   {
@@ -98,15 +100,29 @@ const routes: Array<RouteRecordRaw> = [
     props: true
   },
   {
+    path: '/:network/accountsWithKey/:pubKey',
+    name: 'AccountsWithKey',
+    component: AccountsWithKey,
+    props: true
+  },
+  {
     path: '/:network/account/:accountId',
     name: 'AccountDetails',
     component: AccountDetails,
     props: true
   },
   {
+    path: '/:network/adminKey/:accountId',
+    name: 'AdminKeyDetails',
+    component: AdminKeyDetails,
+    props: true
+  },
+  {
     // EIP 3091 Support
     path: '/:network/address/:accountAddress',
-    redirect: to => '/' + to.params.network + '/account/' + to.params.accountAddress
+    name: 'AddressDetails',
+    component: AddressDetails,
+    props: true
   },
   {
     path: '/:network/accountbalances/:accountId',
@@ -182,9 +198,9 @@ const routes: Array<RouteRecordRaw> = [
   },
   {
     // EIP 3091 Support
-    path: '/:network/tx/:transactionIdOrHash',
-    name: 'ContractResultDetails',
-    component: ContractResultDetails,
+    path: '/:network/tx/:transactionLoc',
+    name: 'TransactionDetails3091',
+    component: TransactionDetails,
     props: true
   },
   {
@@ -227,8 +243,9 @@ const router = makeRouter()
 router.beforeEach((to) => {
   let result: boolean | string
 
-  if (to.name === 'Staking' && process.env.VUE_APP_ENABLE_STAKING !== 'true') {
-    // Staking page not enabled => re-route to PageNotFound
+  if (getNetworkEntryFromRoute(to) === null // Unknown network
+    || (to.name === 'Staking' && getEnv('VUE_APP_ENABLE_STAKING') !== 'true') // Staking page not enabled
+  ) {
     result = "/page-not-found"
   } else {
     result = true
@@ -236,89 +253,56 @@ router.beforeEach((to) => {
   return result
 })
 
-router.beforeEach((to, from) => {
-  let result: boolean | string
-
-  const toEntry = getNetworkEntryFromRoute(to)
-  const fromEntry = getNetworkEntryFromRoute(from)
-
-  if (toEntry !== null) {
-    // Network is valid
-    AppStorage.setLastNetwork(toEntry)
-    axios.defaults.baseURL = toEntry.url
-
-    if (toEntry.name == NetworkRegistry.TEST_NETWORK) {
-      document.documentElement.style.setProperty('--h-theme-background-color', 'var(--h-testnet-background-color)')
-      document.documentElement.style.setProperty('--h-theme-highlight-color', 'var(--h-testnet-highlight-color)')
-      document.documentElement.style.setProperty('--h-theme-pagination-background-color', 'var(--h-testnet-pagination-background-color)')
-      document.documentElement.style.setProperty('--h-theme-box-shadow-color', 'var(--h-testnet-box-shadow-color)')
-      document.documentElement.style.setProperty('--h-theme-dropdown-arrow', 'var(--h-testnet-dropdown-arrow)')
-    } else if (toEntry.name == NetworkRegistry.PREVIEW_NETWORK) {
-      document.documentElement.style.setProperty('--h-theme-background-color', 'var(--h-previewnet-background-color)')
-      document.documentElement.style.setProperty('--h-theme-highlight-color', 'var(--h-previewnet-highlight-color)')
-      document.documentElement.style.setProperty('--h-theme-pagination-background-color', 'var(--h-previewnet-pagination-background-color)')
-      document.documentElement.style.setProperty('--h-theme-box-shadow-color', 'var(--h-previewnet-box-shadow-color)')
-      document.documentElement.style.setProperty('--h-theme-dropdown-arrow', 'var(--h-previewnet-dropdown-arrow)')
-    } else {
-      document.documentElement.style.setProperty('--h-theme-background-color', 'var(--h-mainnet-background-color)')
-      document.documentElement.style.setProperty('--h-theme-highlight-color', 'var(--h-mainnet-highlight-color)')
-      document.documentElement.style.setProperty('--h-theme-pagination-background-color', 'var(--h-mainnet-pagination-background-color)')
-      document.documentElement.style.setProperty('--h-theme-box-shadow-color', 'var(--h-mainnet-box-shadow-color)')
-      document.documentElement.style.setProperty('--h-theme-dropdown-arrow', 'var(--h-mainnet-dropdown-arrow)')
-    }
-
-    if (fromEntry != null && fromEntry != toEntry) {
-      // Network is changing => updates AppStorage and axios
-      if (to.name != "MainDashboard" && to.name != "PageNotFound") {
-        // We re-route on MainDashboard
-        result = "/" + toEntry.name + "/dashboard"
-      } else {
-        result = true
-      }
-    } else (
-        result = true
-    )
-  } else {
-    // Network is invalid => page not found
-    result = '/page-not-found'
-  }
-  return result
-})
-
 router.beforeEach((to) => {
-  const titlePrefix = process.env.VUE_APP_DOCUMENT_TITLE_PREFIX ?? "Hedera"
+  const titleSuffix = getEnv('VUE_APP_DOCUMENT_TITLE_SUFFIX')
+      ? " | " + getEnv('VUE_APP_DOCUMENT_TITLE_SUFFIX')
+      : ""
 
   switch (to.name as string) {
     case "MainDashboard":
-      document.title = titlePrefix + " | Dashboard";
+      document.title = "Hedera Dashboard" + titleSuffix
       break;
     case "TransactionDetails":
-      document.title = titlePrefix + " | Transaction " + to.params.transactionId;
+      document.title = "Hedera Transaction " + (to.query.tid ?? to.params.transactionLoc) + titleSuffix
+      break;
+    case "TransactionDetails3091":
+      document.title = "Hedera Transaction " + to.params.transactionLoc + titleSuffix
       break;
     case "TokenDetails":
-      document.title = titlePrefix + " | Token " + to.params.tokenId;
+      document.title = "Hedera Token " + to.params.tokenId + titleSuffix
       break;
     case "TopicDetails":
-      document.title = titlePrefix + " | Topic " + to.params.topicId;
+      document.title = "Hedera Topic " + to.params.topicId + titleSuffix
       break;
     case "ContractDetails":
-      document.title = titlePrefix + " | Contract " + to.params.contractId;
+      document.title = "Hedera Contract " + to.params.contractId + titleSuffix
       break;
     case "AccountDetails":
-      document.title = titlePrefix + " | Account " + to.params.accountId;
+      document.title = "Hedera Account " + to.params.accountId + titleSuffix
+      break;
+    case "AdminKeyDetails":
+      document.title = "Hedera Admin Key for Account " + to.params.accountId + titleSuffix
       break;
     case "AccountBalances":
-      document.title = titlePrefix + " | Balances for Account " + to.params.accountId;
+      document.title = "Balances for Hedera Account " + to.params.accountId + titleSuffix
+      break;
+    case "NodeDetails":
+      document.title = "Hedera Node " + to.params.nodeId + titleSuffix
+      break;
+    case "BlockDetails":
+      document.title = "Hedera Block " + to.params.blockHon + titleSuffix
       break;
     case "NoSearchResult":
-      document.title = titlePrefix + " | Search Results";
+      document.title = "Search Results" + titleSuffix
       break;
     case "PageNotFound":
-      document.title = titlePrefix + " | Page Not Found";
+      document.title = "Page Not Found" + titleSuffix
       break;
     default:
-      document.title = titlePrefix + " | " + (to.name as string);
+      document.title = "Hedera " + (to.name as string) + titleSuffix
   }
+
+  addMetaTags()
 });
 
 router.beforeEach(() => {
@@ -326,6 +310,46 @@ router.beforeEach(() => {
 })
 
 export default router
+
+export function addMetaTags(): void {
+
+  const title = document.title
+  const description =
+      getEnv('VUE_APP_META_DESCRIPTION') ?? "Hedera Mirror Node Explorer is a ledger explorer for the Hedera network"
+  const url = getEnv('VUE_APP_META_URL')
+
+  createOrUpdateTagName('description', description)
+  createOrUpdateTagProperty('og:title', title)
+  if (url) {
+    createOrUpdateTagProperty('og:url', url)
+  }
+}
+
+export function createOrUpdateTagName(name: string, content: string): void {
+  const header = document.getElementsByTagName('head')[0]
+  for (const tag of document.getElementsByTagName('meta')) {
+    if (tag.getAttribute('name') === name) {
+      header.removeChild(tag)
+    }
+  }
+  const newTag = document.createElement('meta')
+  newTag.name = name
+  newTag.setAttribute('content', content)
+  header.appendChild(newTag)
+}
+
+export function createOrUpdateTagProperty(property: string, content: string): void {
+  const header = document.getElementsByTagName('head')[0]
+  for (const tag of document.getElementsByTagName('meta')) {
+    if (tag.getAttribute('property') === property) {
+      header.removeChild(tag)
+    }
+  }
+  const newTag = document.createElement('meta')
+  newTag.setAttribute('property', property)
+  newTag.setAttribute('content', content)
+  header.appendChild(newTag)
+}
 
 export function getNetworkEntryFromRoute(r: RouteLocationNormalized): NetworkEntry | null {
 

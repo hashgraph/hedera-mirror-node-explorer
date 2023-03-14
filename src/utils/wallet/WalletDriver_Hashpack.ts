@@ -2,7 +2,7 @@
  *
  * Hedera Mirror Node Explorer
  *
- * Copyright (C) 2021 - 2022 Hedera Hashgraph, LLC
+ * Copyright (C) 2021 - 2023 Hedera Hashgraph, LLC
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -26,6 +26,7 @@ import {WalletDriverError} from "@/utils/wallet/WalletDriverError";
 import {HashConnectSigner} from "hashconnect/dist/provider/signer";
 import {AccountUpdateTransaction, Executable, Transaction} from "@hashgraph/sdk";
 import {timeGuard, TimeGuardError} from "@/utils/TimerUtils";
+import {TransactionID} from "@/utils/TransactionID";
 
 export class WalletDriver_Hashpack extends WalletDriver {
 
@@ -62,7 +63,7 @@ export class WalletDriver_Hashpack extends WalletDriver {
     public async updateAccount(request: AccountUpdateTransaction): Promise<string> {
         try {
             const response = await this.performCall(request)
-            return response.transactionId.toString()
+            return TransactionID.normalize(response.transactionId.toString(), false);
         } catch(error) {
             if (error instanceof WalletDriverError) {
                 throw error

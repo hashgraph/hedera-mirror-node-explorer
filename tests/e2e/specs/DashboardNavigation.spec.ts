@@ -2,7 +2,7 @@
  *
  * Hedera Mirror Node Explorer
  *
- * Copyright (C) 2021 - 2022 Hedera Hashgraph, LLC
+ * Copyright (C) 2021 - 2023 Hedera Hashgraph, LLC
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -20,30 +20,33 @@
 
 // https://docs.cypress.io/api/introduction/api.html
 
+
 describe('Main Dashboard Navigation', () => {
+
+    const defaultNetwork = 'mainnet'
 
     beforeEach( () => {
         cy.visit('/')
-        cy.url().should('include', '/testnet/dashboard')
+        cy.url().should('include', '/' + defaultNetwork + '/dashboard')
     })
 
     it('should navigate to Crypto Transfer transaction details', () => {
         cy.get('[data-cy=cryptoTransfers]').find('table').contains('td', '@').click()
-        cy.url().should('include', '/testnet/transaction/')
+        cy.url().should('include', '/' + defaultNetwork + '/transaction/')
         cy.contains('Transaction ')
         cy.get('#transactionTypeValue').should('have.text', 'CRYPTO TRANSFER')
     })
 
     it('should navigate to Smart Contract Call transaction details', () => {
         cy.get('[data-cy=smartContractCalls]').find('table').contains('td', '@').click()
-        cy.url().should('include', '/testnet/transaction/')
+        cy.url().should('include', '/' + defaultNetwork + '/transaction/')
         cy.contains('Transaction ')
         cy.get('#transactionTypeValue').should('have.text', 'CONTRACT CALL')
     })
 
     it('should navigate to HCS Message transaction details', () => {
         cy.get('[data-cy=hcsMessages]').find('table').contains('td', '0.0.').click()
-        cy.url().should('include', '/testnet/transaction/')
+        cy.url().should('include', '/' + defaultNetwork + '/transaction/')
         cy.contains('Transaction ')
         cy.get('#transactionTypeValue').should('have.text', 'HCS SUBMIT MESSAGE')
     })

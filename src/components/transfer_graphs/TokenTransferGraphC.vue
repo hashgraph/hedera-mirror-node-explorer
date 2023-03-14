@@ -2,7 +2,7 @@
   -
   - Hedera Mirror Node Explorer
   -
-  - Copyright (C) 2021 - 2022 Hedera Hashgraph, LLC
+  - Copyright (C) 2021 - 2023 Hedera Hashgraph, LLC
   -
   - Licensed under the Apache License, Version 2.0 (the "License");
   - you may not use this file except in compliance with the License.
@@ -54,7 +54,8 @@
           <div class="justify-end">
             <TokenAmount v-if="i === 1"
                          v-bind:amount="tokenTransferLayout[s-1].netAmount"
-                         v-bind:token-id="tokenTransferLayout[s-1].tokenId"/>
+                         v-bind:token-id="tokenTransferLayout[s-1].tokenId"
+                         v-bind:show-extra="true"/>
           </div>
 
           <!-- #3 : arrow -->
@@ -133,7 +134,7 @@ export default defineComponent({
   column-gap: 1em
 }
 
-div.graph-container > div.justify-end {
+div.justify-end {
   justify-self: end;
 }
 

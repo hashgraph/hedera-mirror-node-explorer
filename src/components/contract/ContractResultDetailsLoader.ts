@@ -2,7 +2,7 @@
  *
  * Hedera Mirror Node Explorer
  *
- * Copyright (C) 2021 - 2022 Hedera Hashgraph, LLC
+ * Copyright (C) 2021 - 2023 Hedera Hashgraph, LLC
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -18,10 +18,12 @@
  *
  */
 
-import {ContractResultDetails} from "@/schemas/HederaSchemas";
-import {EntityLoader} from "@/utils/EntityLoader";
+import {ContractResultDetails, ContractResultsResponse} from "@/schemas/HederaSchemas";
+import {EntityLoader} from "@/utils/loader/EntityLoader";
 import axios, {AxiosResponse} from "axios";
-import {Ref} from "vue";
+import {computed, Ref} from "vue";
+import {EntityID} from "@/utils/EntityID";
+import {decodeSolidityErrorMessage} from "@/schemas/HederaUtils";
 
 export class ContractResultDetailsLoader extends EntityLoader<ContractResultDetails> {
 
@@ -43,23 +45,56 @@ export class ContractResultDetailsLoader extends EntityLoader<ContractResultDeta
         this.watchAndReload([this.contractId, this.timestamp, this.transactionIdOrHash])
     }
 
+    public readonly actualContractId = computed(() => {
+        let result: string|null
+        if (this.entity.value !== null) {
+            const entityID = EntityID.fromAddress(this.entity.value?.to)
+            result = entityID !== null ? entityID.toString() : null
+        } else {
+            result = null
+        }
+        return result
+    })
+
+    public functionParameters = computed(() => {
+        return this.entity.value?.function_parameters ?? null
+    })
+
+    public callResult = computed(() => {
+        return this.entity.value?.call_result ?? null
+    })
+
+    public errorMessage = computed(
+        () => decodeSolidityErrorMessage(this.entity.value?.error_message ?? null))
 
     //
     // EntityLoader
     //
 
-    protected async load(): Promise<AxiosResponse<ContractResultDetails>|null> {
-        let result: Promise<AxiosResponse<ContractResultDetails>|null>
-        if (this.contractId.value !== null && this.timestamp.value !== null) {
-            result = axios.get<ContractResultDetails>("api/v1/contracts/"
-                + this.contractId.value + "/results/" + this.timestamp.value);
+    protected async load(): Promise<AxiosResponse<ContractResultDetails> | null> {
+        let result: Promise<AxiosResponse<ContractResultDetails> | null>
+        let contractId = this.contractId.value
+
+        if (contractId === null && this.timestamp.value !== null) {
+            const parameters = {
+                timestamp: this.timestamp.value,
+                internal: true
+            }
+            const response = await axios.get<ContractResultsResponse>("api/v1/contracts/results", {params: parameters});
+            if (response.data.results) {
+                contractId = response.data.results[0].contract_id ?? null
+            }
+        }
+
+        if (contractId !== null && this.timestamp.value !== null) {
+            result = axios.get<ContractResultDetails>(
+                "api/v1/contracts/" + contractId + "/results/" + this.timestamp.value);
+
         } else if (this.transactionIdOrHash.value !== null) {
-            result = axios.get<ContractResultDetails>("api/v1/contracts/results/"
-                + this.transactionIdOrHash.value);
+            result = axios.get<ContractResultDetails>("api/v1/contracts/results/" + this.transactionIdOrHash.value);
         } else {
             result = Promise.resolve(null)
         }
         return result
     }
-
 }

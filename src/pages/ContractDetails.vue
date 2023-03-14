@@ -2,7 +2,7 @@
   -
   - Hedera Mirror Node Explorer
   -
-  - Copyright (C) 2021 - 2022 Hedera Hashgraph, LLC
+  - Copyright (C) 2021 - 2023 Hedera Hashgraph, LLC
   -
   - Licensed under the Apache License, Version 2.0 (the "License");
   - you may not use this file except in compliance with the License.
@@ -29,14 +29,33 @@
     <DashboardCard>
       <template v-slot:title>
         <span class="h-is-primary-title">Contract </span>
-        <span class="h-is-secondary-text">{{ contract ? normalizedContractId : "" }}</span>
-        <span v-if="accountChecksum" class="has-text-grey" style="font-size: 28px">-{{ accountChecksum }}</span>
-        <span v-if="contract" class="is-inline-block ml-3">
-          <router-link :to="{name: 'AccountDetails', params: {accountId: normalizedContractId}}">
+        <div class="h-is-tertiary-text mt-3" id="entityId">
+          <div class="is-inline-block h-is-property-text has-text-weight-light" style="min-width: 115px">Contract ID:</div>
+          <span>{{ normalizedContractId ?? "" }}</span>
+          <span v-if="accountChecksum" class="has-text-grey">-{{ accountChecksum }}</span>
+        </div>
+        <div v-if="ethereumAddress" id="evmAddress" class="h-is-tertiary-text mt-2" style="word-break: keep-all">
+          <div class="is-inline-block h-is-property-text has-text-weight-light" style="min-width: 115px">EVM Address:</div>
+          <div class="is-inline-block">
+            <EVMAddress :show-id="false" :has-custom-font="true" :address="ethereumAddress"/>
+          </div>
+        </div>
+
+        <div v-if="!isMediumScreen && contract" id="showAccountLink" class="is-inline-block mt-2">
+          <router-link :to="accountRoute">
             <span class="h-is-property-text">Show associated account</span>
           </router-link>
-        </span>
+        </div>
       </template>
+
+      <template v-slot:control v-if="isMediumScreen">
+        <div v-if="contract" id="showAccountLink" class="is-inline-block ml-3">
+          <router-link :to="accountRoute">
+            <span class="h-is-property-text">Show associated account</span>
+          </router-link>
+        </div>
+      </template>
+
       <template v-slot:content>
         <NotificationBanner v-if="notification" :message="notification"/>
       </template>
@@ -46,7 +65,7 @@
               <template v-slot:name>{{ tokens?.length ? 'Balances' : 'Balance' }}</template>
               <template v-slot:value>
                 <div class="has-flex-direction-column">
-                  <HbarAmount v-if="contract" :amount="balance" :show-extra="true"/>
+                  <HbarAmount v-if="contract" :amount="balance" :show-extra="true" timestamp="0"/>
                   <div v-if="displayAllTokenLinks">
                     <router-link :to="{name: 'AccountBalances', params: {accountId: contractId}}">
                       See all token balances
@@ -54,7 +73,7 @@
                   </div>
                   <div v-else>
                     <div v-for="t in tokens" :key="t.token_id">
-                      <TokenAmount :amount="t.balance" :token-id="t.token_id" :show-extra="true"/>
+                      <TokenAmount :amount="t.balance" :show-extra="true" :token-id="t.token_id"/>
                     </div>
                   </div>
                 </div>
@@ -69,13 +88,13 @@
             <Property id="memo">
               <template v-slot:name>Memo</template>
               <template v-slot:value>
-                <BlobValue :blob-value="contract?.memo" :show-none="true" :base64="true" class="should-wrap"/>
+                <BlobValue :blob-value="contract?.memo" :show-none="true" :base64="true"/>
               </template>
             </Property>
-            <Property id="alias">
-              <template v-slot:name>Alias</template>
+            <Property id="createTransaction">
+              <template v-slot:name>Create Transaction</template>
               <template v-slot:value>
-                <HexaValue v-bind:byte-string="aliasByteString" v-bind:show-none="true"/>
+                <TransactionLink :transactionLoc="contract?.created_timestamp"/>
               </template>
             </Property>
             <Property id="expiresAt">
@@ -88,6 +107,18 @@
               <template v-slot:name>Auto Renew Period</template>
               <template v-slot:value>
                 <DurationValue v-bind:number-value="contract?.auto_renew_period"/>
+              </template>
+            </Property>
+            <Property id="autoRenewAccount">
+              <template v-slot:name>Auto Renew Account</template>
+              <template v-slot:value>
+                <AccountLink :account-id="autoRenewAccount" :show-none="true" null-label="None"/>
+              </template>
+            </Property>
+            <Property id="maxAutoAssociation">
+              <template v-slot:name>Max. Auto. Association</template>
+              <template v-slot:value>
+                <StringValue :string-value="contract?.max_automatic_token_associations?.toString()"/>
               </template>
             </Property>
             <Property id="code">
@@ -129,12 +160,7 @@
                 <StringValue :string-value="contract?.file_id"/>
               </template>
             </Property>
-            <Property id="evmAddress">
-              <template v-slot:name>EVM Address</template>
-              <template v-slot:value>
-                <HexaValue :byte-string="contract?.evm_address" :show-none="true"/>
-              </template>
-            </Property>
+
       </template>
     </DashboardCard>
 
@@ -172,9 +198,8 @@
 
 import {computed, defineComponent, inject, onBeforeUnmount, onMounted} from 'vue';
 import KeyValue from "@/components/values/KeyValue.vue";
-import HexaValue from "@/components/values/HexaValue.vue";
 import ContractTransactionTable from "@/components/contract/ContractTransactionTable.vue";
-import PlayPauseButton from "@/utils/table/PlayPauseButton.vue";
+import PlayPauseButton from "@/components/PlayPauseButton.vue";
 import AccountLink from "@/components/values/AccountLink.vue";
 import TimestampValue from "@/components/values/TimestampValue.vue";
 import DurationValue from "@/components/values/DurationValue.vue";
@@ -193,7 +218,9 @@ import {AccountLoader} from "@/components/account/AccountLoader";
 import {TransactionTableControllerXL} from "@/components/transaction/TransactionTableControllerXL";
 import TransactionFilterSelect from "@/components/transaction/TransactionFilterSelect.vue";
 import {networkRegistry} from "@/schemas/NetworkRegistry";
-import router from "@/router";
+import router, {routeManager} from "@/router";
+import TransactionLink from "@/components/values/TransactionLink.vue";
+import EVMAddress from "@/components/values/EVMAddress.vue";
 
 const MAX_TOKEN_BALANCES = 3
 
@@ -202,6 +229,8 @@ export default defineComponent({
   name: 'ContractDetails',
 
   components: {
+    EVMAddress,
+    TransactionLink,
     TransactionFilterSelect,
     ByteCodeValue,
     Property,
@@ -217,7 +246,6 @@ export default defineComponent({
     PlayPauseButton,
     ContractTransactionTable,
     KeyValue,
-    HexaValue,
     StringValue
   },
 
@@ -228,6 +256,7 @@ export default defineComponent({
 
   setup(props) {
     const isSmallScreen = inject('isSmallScreen', true)
+    const isMediumScreen = inject('isMediumScreen', true)
     const isTouchDevice = inject('isTouchDevice', false)
 
     //
@@ -262,22 +291,21 @@ export default defineComponent({
     const notification = computed(() => {
       let result: string|null
 
-      const expiration = contractLoader.entity.value?.expiration_timestamp
+      // const expiration = contractLoader.entity.value?.expiration_timestamp
       if (!validEntityId.value) {
         result = "Invalid contract ID: " + props.contractId
       } else if (contractLoader.got404.value) {
         result = "Contract with ID " + props.contractId + " was not found"
       } else if (contractLoader.entity.value?.deleted === true) {
         result = "Contract is deleted"
-      } else if (expiration && Number.parseFloat(expiration) <= new Date().getTime() / 1000) {
-        result = "Contract has expired and is in grace period"
+      // to be re-activated after Feb 9th
+      // } else if (expiration && Number.parseFloat(expiration) <= new Date().getTime() / 1000) {
+      //   result = "Contract has expired and is in grace period"
       } else {
         result = null
       }
       return result
     })
-
-
 
     //
     // transactionTableController
@@ -288,21 +316,28 @@ export default defineComponent({
     onMounted(() => transactionTableController.mount())
     onBeforeUnmount(() => transactionTableController.unmount())
 
+    const accountRoute = computed(() => {
+      return normalizedContractId.value !== null ?  routeManager.makeRouteToAccount(normalizedContractId.value) : null
+    })
+
     return {
       isSmallScreen,
+      isMediumScreen,
       isTouchDevice,
       contract: contractLoader.entity,
       account: accountLoader.entity,
       balance: accountLoader.balance,
       tokens: accountLoader.tokens,
+      ethereumAddress: accountLoader.ethereumAddress,
       accountChecksum,
       displayAllTokenLinks,
       transactionTableController,
       notification,
+      autoRenewAccount: contractLoader.autoRenewAccount,
       obtainerId: contractLoader.obtainerId,
       proxyAccountId: contractLoader.proxyAccountId,
       normalizedContractId,
-      aliasByteString: accountLoader.aliasByteString
+      accountRoute
     }
   },
 });

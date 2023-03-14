@@ -45,14 +45,20 @@ npm run test:e2e
 npm run test:e2e:headless
 ```
 
-### Run the Explorer locally in Docker
+### Run the Explorer in Docker
 
 ```shell
-# build the Docker image of the Explorer
-npm run build:docker
-# launch the Explorer
-docker compose up -d
-# then open http://localhost:9090 in your web browser
+# Build the Docker image locally
+npm run docker:build
+
+# Start the Docker container
+# (if not built locally, this will get a pre-built image from Google Container Registry)
+npm run docker:start
+
+# Stop the Docker container
+npm run docker:stop
+
+# then open http://localhost:8080 in your web browser
 ```
 
 ### Run in Kubernetes
@@ -65,11 +71,70 @@ can be used for a local Kubernetes cluster.
 helm upgrade --install hedera-explorer chart/
 ```
 
+### Configure the Explorer
+
+#### Customize the available networks
+
+The list of networks available in the network selector (top navigation bar)
+can be configured in the file `/public/networks-config.json`.
+This JSON file contains an array of entries with the following syntax:
+
+```shell
+[
+  ...
+  {
+    "name": "mainnet",
+    "displayName": "MAINNET",
+    "url": "https://mainnet-public.mirrornode.hedera.com/",
+    "ledgerID": "00"
+  },
+  ...
+]
+```
+
+This file initially contains the configuration allowing to connect to the
+_mainnet/testnet/previewnet_ networks. This configuration may be augmented, altered or
+replaced as needed.
+Note:
+- When this file is missing, is empty, or does not have the expected syntax, 
+  the configuration falls back to _mainnet/testnet/previewnet_.
+- The `name` of the network has to be unique
+- The `displayName` is the string inserted in the network selector. 
+  It will default to the network `name` in uppercase. A `displayName`
+  exceeding 15 characters will be truncated.
+- The `ledgerID` is required to process the ID checksums shown in the UI.
+- The maximum number of networks taken into account is 15. The rest will be ignored.
+
+#### Customize the UI
+
+A few aspects of the Explorer UI, such as the product name displayed at the bottom of the pages,
+are controlled by environment variables, as follows:
+- Variables defined in the *.env* file (located at the root of the repository) will be taken
+  into account at build time. 
+- Variables defined in the *.env.docker* file will be taken into account at start time of 
+  the docker container. Any variable documented in the *.env* file can be overridden in
+  the *.env.docker* file. The variables in *.env.docker* are passed to the container either:
+  - via the *--env-file* option of the *docker run* command, or
+  - via the *env_file:* clause of the *docker-compose.yml* file.
+
+#### Enabling the Staking page
+
+The Staking page allows the user to connect a wallet to the Explorer and to choose to stake her account balance
+to a selected network node or to another account.
+
+By default, the Staking page is disabled, and the corresponding menu item is absent from the top navigation bar.
+To enable the Staking page and menu item, set the following variable to *true* in the .env file:
+
+```shell
+VUE_APP_ENABLE_STAKING=true
+```
+
 ### Customize configuration
 
 #### Branding
 
-The Hedera Mirror Node Explorer UI can be customized by adding a branding
+In addition to the configuration variables described above,
+the Hedera Mirror Node Explorer UI can be customized by adding a branding
 directory which path can be provided by the environment variable *$BRANDING_LOCATION*.
 If this variable is not defined a directory *./branding* will be looked for
 at the root of the repository.
@@ -90,31 +155,6 @@ This directory should have the following structure:
   *./src/assets/styles/brand-theme.scss* and, if present, will supersede it.
 - Any file present in the *./public/* directory will be added to the content of the 
   *./public* directory, which allows to customize the favicon.
-
-#### Running the Explorer with a local mirror node
-
-The Explorer can be used with a local mirror by means of a .env file located at the root
-of the repository and containing the definition of the following variables to add a custom menu
-item in the network selector pull-down menu:
-
-```shell
-VUE_APP_LOCAL_MIRROR_NODE_URL=\<URL of the local mirror node\>
-VUE_APP_LOCAL_MIRROR_NODE_MENU_NAME=\<label of the custom menu item\>
-```
-
-The latter may be omitted and will default to 'LOCALNET'
-
-#### Enabling the Staking page
-
-The Staking page allows the user to connect a wallet to the Explorer and to choose to stake her account balance
-to a selected network node or to another account.
-
-By default, the Staking page is disabled, and the corresponding menu item is absent from the top navigation bar.
-To enable the Staking page and menu item, set the following variable to *true* in the .env file:
-
-```shell
-VUE_APP_ENABLE_STAKING=true
-```
 
 #### Vue CLI
 

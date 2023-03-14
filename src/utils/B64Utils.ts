@@ -2,7 +2,7 @@
  *
  * Hedera Mirror Node Explorer
  *
- * Copyright (C) 2021 - 2022 Hedera Hashgraph, LLC
+ * Copyright (C) 2021 - 2023 Hedera Hashgraph, LLC
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -62,6 +62,50 @@ export function b64ToUint6 (nChr: number): number {
     :
       0;
 
+}
+
+
+export function base64EncArr(aBytes: Uint8Array): string {
+    let nMod3 = 2;
+    let sB64Enc = "";
+
+    const nLen = aBytes.length;
+    let nUint24 = 0;
+    for (let nIdx = 0; nIdx < nLen; nIdx++) {
+        nMod3 = nIdx % 3;
+        if (nIdx > 0 && ((nIdx * 4) / 3) % 76 === 0) {
+            sB64Enc += "\r\n";
+        }
+
+        nUint24 |= aBytes[nIdx] << ((16 >>> nMod3) & 24);
+        if (nMod3 === 2 || aBytes.length - nIdx === 1) {
+            sB64Enc += String.fromCodePoint(
+                uint6ToB64((nUint24 >>> 18) & 63),
+                uint6ToB64((nUint24 >>> 12) & 63),
+                uint6ToB64((nUint24 >>> 6) & 63),
+                uint6ToB64(nUint24 & 63)
+            );
+            nUint24 = 0;
+        }
+    }
+    return (
+        sB64Enc.substr(0, sB64Enc.length - 2 + nMod3) +
+        (nMod3 === 2 ? "" : nMod3 === 1 ? "=" : "==")
+    );
+}
+
+function uint6ToB64(nUint6: number) {
+  return nUint6 < 26
+    ? nUint6 + 65
+    : nUint6 < 52
+    ? nUint6 + 71
+    : nUint6 < 62
+    ? nUint6 - 4
+    : nUint6 === 62
+    ? 43
+    : nUint6 === 63
+    ? 47
+    : 65;
 }
 
 

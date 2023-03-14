@@ -2,7 +2,7 @@
   -
   - Hedera Mirror Node Explorer
   -
-  - Copyright (C) 2021 - 2022 Hedera Hashgraph, LLC
+  - Copyright (C) 2021 - 2023 Hedera Hashgraph, LLC
   -
   - Licensed under the Apache License, Version 2.0 (the "License");
   - you may not use this file except in compliance with the License.
@@ -39,7 +39,7 @@
 
     <o-table-column v-slot="props" field="amount" label="Amount">
       <PlainAmount v-if="props.row.denominating_token_id" :amount="props.row.amount"/>
-      <HbarAmount v-else :amount="props.row.amount" :show-extra="true"/>
+      <HbarAmount v-else :amount="props.row.amount" timestamp="0" :show-extra="true"/>
     </o-table-column>
 
     <o-table-column v-slot="props" field="amount" label="Token">

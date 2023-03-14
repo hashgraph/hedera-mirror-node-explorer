@@ -2,7 +2,7 @@
   -
   - Hedera Mirror Node Explorer
   -
-  - Copyright (C) 2021 - 2022 Hedera Hashgraph, LLC
+  - Copyright (C) 2021 - 2023 Hedera Hashgraph, LLC
   -
   - Licensed under the Apache License, Version 2.0 (the "License");
   - you may not use this file except in compliance with the License.
@@ -69,7 +69,7 @@
 <script lang="ts">
 
 import {ComputedRef, defineComponent, inject, PropType, Ref} from 'vue';
-import router from "@/router";
+import {routeManager} from "@/router";
 import {Token} from "@/schemas/HederaSchemas";
 import {ORUGA_MOBILE_BREAKPOINT} from '@/App.vue';
 import EmptyTable from "@/components/EmptyTable.vue";
@@ -96,7 +96,9 @@ export default defineComponent({
     const isMediumScreen = inject('isMediumScreen', true)
 
     const handleClick = (t: Token) => {
-      router.push({name: 'TokenDetails', params: {tokenId: t.token_id}})
+      if (t.token_id) {
+        routeManager.routeToToken(t.token_id)
+      }
     }
 
     return {

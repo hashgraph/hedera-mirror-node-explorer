@@ -2,7 +2,7 @@
   -
   - Hedera Mirror Node Explorer
   -
-  - Copyright (C) 2021 - 2022 Hedera Hashgraph, LLC
+  - Copyright (C) 2021 - 2023 Hedera Hashgraph, LLC
   -
   - Licensed under the Apache License, Version 2.0 (the "License");
   - you may not use this file except in compliance with the License.
@@ -24,18 +24,47 @@
 
 <template>
 
-  <section class="section" :class="{'h-mobile-background': isTouchDevice || !isSmallScreen}">
+  <section :class="{'h-mobile-background': isTouchDevice || !isSmallScreen}" class="section">
 
     <DashboardCard>
-
       <template v-slot:title>
         <span v-if="tokenInfo" class="h-is-primary-title">
           <span v-if="tokenInfo.type === 'NON_FUNGIBLE_UNIQUE'">Non Fungible</span>
           <span v-else>Fungible</span>
         </span>
-        <span class="h-is-primary-title"> Token </span>
-        <span class="h-is-secondary-text">{{ normalizedTokenId }}</span>
-        <span v-if="tokenChecksum" class="has-text-grey" style="font-size: 28px">-{{ tokenChecksum }}</span>
+        <span class="h-is-primary-title mr-1"> Token </span>
+        <div class="is-inline-block h-is-tertiary-text h-is-extra-text should-wrap" style="word-break: break-all">
+          {{ displaySymbol }}
+        </div>
+        <div class="h-is-tertiary-text mt-3" id="entityId">
+          <div class="is-inline-block h-is-property-text has-text-weight-light" style="min-width: 115px">Token ID:</div>
+          <span>{{ normalizedTokenId ?? "" }}</span>
+          <span v-if="tokenChecksum" class="has-text-grey">-{{ tokenChecksum }}</span>
+        </div>
+        <div v-if="ethereumAddress" id="evmAddress" class="h-is-tertiary-text mt-2" style="word-break: keep-all">
+          <div class="is-inline-block h-is-property-text has-text-weight-light" style="min-width: 115px">EVM Address:</div>
+          <div class="is-inline-block">
+            <EVMAddress :show-id="false" :has-custom-font="true" :address="ethereumAddress"/>
+          </div>
+        </div>
+        <div class="mt-2">
+          <MetaMaskImport v-if="!isMediumScreen && ethereumAddress"
+                          :address="ethereumAddress"
+                          :decimals="tokenInfo?.decimals"
+                          :show-import="true"
+                          :show-none="true"
+                          :symbol="tokenSymbol"/>
+        </div>
+      </template>
+
+      <template v-if="isMediumScreen && ethereumAddress" v-slot:control>
+        <div class="ml-6">
+          <MetaMaskImport :address="ethereumAddress"
+                          :decimals="tokenInfo?.decimals"
+                          :show-import="true"
+                          :show-none="true"
+                          :symbol="tokenSymbol"/>
+        </div>
       </template>
 
       <template v-slot:content>
@@ -43,108 +72,100 @@
       </template>
 
       <template v-slot:leftContent>
-            <Property id="name">
-              <template v-slot:name>Name</template>
-              <template v-slot:value>
-                <BlobValue v-bind:blob-value="tokenInfo?.name" v-bind:show-none="true" class="should-wrap"/>
-              </template>
-            </Property>
-            <Property id="symbol">
-              <template v-slot:name>Symbol</template>
-              <template v-slot:value>
-                <BlobValue v-bind:blob-value="tokenInfo?.symbol" v-bind:show-none="true" class="should-wrap"/>
-              </template>
-            </Property>
-            <Property id="memo">
-              <template v-slot:name>Memo</template>
-              <template v-slot:value>
-                <BlobValue :blob-value="tokenInfo?.memo" :show-none="true" :base64="true" class="should-wrap"/>
-              </template>
-            </Property>
-            <Property id="expiresAt">
-              <template v-slot:name>Expires at</template>
-              <template v-slot:value>
-                <TimestampValue :timestamp="tokenInfo?.expiry_timestamp?.toString()" :nano="true" :show-none="true"/>
-              </template>
-            </Property>
-            <Property id="autoRenewPeriod">
-              <template v-slot:name>Auto Renew Period</template>
-              <template v-slot:value>
-                <DurationValue v-bind:string-value="tokenInfo?.auto_renew_period?.toString()"/>
-              </template>
-            </Property>
-            <Property id="autoRenewAccount">
-              <template v-slot:name>Auto Renew Account</template>
-              <template v-slot:value>
-                <AccountLink :account-id="tokenInfo?.auto_renew_account" :show-none="true"/>
-              </template>
-            </Property>
-            <Property id="freezeDefault">
-              <template v-slot:name>Freeze Default</template>
-              <template v-slot:value>
-                <StringValue :string-value="tokenInfo?.freeze_default?.toString()"/>
-              </template>
-            </Property>
-            <Property id="pauseStatus">
-              <template v-slot:name>Pause Status</template>
-              <template v-slot:value>
-                <StringValue v-if="tokenInfo?.pause_status === 'NOT_APPLICABLE'"
-                             string-value="Not applicable" class="has-text-grey"/>
-                <StringValue v-else :string-value="tokenInfo?.pause_status"/>
-              </template>
-            </Property>
+        <Property id="name">
+          <template v-slot:name>Name</template>
+          <template v-slot:value>
+            <BlobValue v-bind:blob-value="tokenInfo?.name" v-bind:show-none="true"/>
+          </template>
+        </Property>
+        <Property id="symbol">
+          <template v-slot:name>Symbol</template>
+          <template v-slot:value>
+            <BlobValue v-bind:blob-value="tokenInfo?.symbol" v-bind:show-none="true"/>
+          </template>
+        </Property>
+        <Property id="memo">
+          <template v-slot:name>Memo</template>
+          <template v-slot:value>
+            <BlobValue :base64="true" :blob-value="tokenInfo?.memo" :show-none="true"/>
+          </template>
+        </Property>
+        <Property id="expiresAt">
+          <template v-slot:name>Expires at</template>
+          <template v-slot:value>
+            <TimestampValue :nano="true" :show-none="true" :timestamp="tokenInfo?.expiry_timestamp?.toString()"/>
+          </template>
+        </Property>
+        <Property id="autoRenewPeriod">
+          <template v-slot:name>Auto Renew Period</template>
+          <template v-slot:value>
+            <DurationValue v-bind:string-value="tokenInfo?.auto_renew_period?.toString()"/>
+          </template>
+        </Property>
+        <Property id="autoRenewAccount">
+          <template v-slot:name>Auto Renew Account</template>
+          <template v-slot:value>
+            <AccountLink :account-id="tokenInfo?.auto_renew_account" :show-none="true"/>
+          </template>
+        </Property>
+        <Property id="freezeDefault">
+          <template v-slot:name>Freeze Default</template>
+          <template v-slot:value>
+            <StringValue :string-value="tokenInfo?.freeze_default?.toString()"/>
+          </template>
+        </Property>
+        <Property id="pauseStatus">
+          <template v-slot:name>Pause Status</template>
+          <template v-slot:value>
+            <StringValue v-if="tokenInfo?.pause_status === 'NOT_APPLICABLE'"
+                         class="has-text-grey" string-value="Not applicable"/>
+            <StringValue v-else :string-value="tokenInfo?.pause_status"/>
+          </template>
+        </Property>
 
       </template>
 
       <template v-slot:rightContent>
-            <Property id="treasuryAccount">
-              <template v-slot:name>Treasury Account</template>
-              <template v-slot:value>
-                <AccountLink :account-id="tokenInfo?.treasury_account_id"/>
-              </template>
-            </Property>
-            <Property id="createdAt">
-              <template v-slot:name>Created at</template>
-              <template v-slot:value>
-                <TimestampValue :timestamp="tokenInfo?.created_timestamp" :show-none="true"/>
-              </template>
-            </Property>
-            <Property id="modifiedAt">
-              <template v-slot:name>Modified at</template>
-              <template v-slot:value>
-                <TimestampValue :timestamp="tokenInfo?.modified_timestamp" :show-none="true"/>
-              </template>
-            </Property>
-            <Property id="totalSupply">
-              <template v-slot:name>Total Supply</template>
-              <template v-slot:value v-if="validEntityId">
-                <TokenAmount :amount="parseIntString(tokenInfo?.total_supply)" :token-id="normalizedTokenId" :show-extra="false"/>
-              </template>
-            </Property>
-            <Property id="initialSupply">
-              <template v-slot:name>Initial Supply</template>
-              <template v-slot:value v-if="validEntityId">
-                <TokenAmount :amount="parseIntString(tokenInfo?.initial_supply)" :token-id="normalizedTokenId" :show-extra="false"/>
-              </template>
-            </Property>
-            <Property id="maxSupply">
-              <template v-slot:name>Max Supply</template>
-              <template v-slot:value v-if="validEntityId">
-                <div v-if="tokenInfo?.supply_type === 'INFINITE'" class="has-text-grey">Infinite</div>
-                <TokenAmount v-else :amount="parseIntString(tokenInfo?.max_supply)" :show-extra="false" :token-id="normalizedTokenId"/>
-              </template>
-            </Property>
-            <Property id="ethereumAddress">
-              <template v-slot:name>ERC20 Address</template>
-              <template v-slot:value>
-                <EthAddress v-if="ethereumAddress"
-                            :address="ethereumAddress"
-                            :symbol="tokenSymbol"
-                            :decimals="tokenInfo?.decimals"
-                            :show-import="true"
-                            :show-none="true"/>
-              </template>
-            </Property>
+        <Property id="treasuryAccount">
+          <template v-slot:name>Treasury Account</template>
+          <template v-slot:value>
+            <AccountLink :account-id="tokenInfo?.treasury_account_id"/>
+          </template>
+        </Property>
+        <Property id="createdAt">
+          <template v-slot:name>Created at</template>
+          <template v-slot:value>
+            <TimestampValue :show-none="true" :timestamp="tokenInfo?.created_timestamp"/>
+          </template>
+        </Property>
+        <Property id="modifiedAt">
+          <template v-slot:name>Modified at</template>
+          <template v-slot:value>
+            <TimestampValue :show-none="true" :timestamp="tokenInfo?.modified_timestamp"/>
+          </template>
+        </Property>
+        <Property id="totalSupply">
+          <template v-slot:name>Total Supply</template>
+          <template v-if="validEntityId" v-slot:value>
+            <TokenAmount :amount="parseIntString(tokenInfo?.total_supply)" :show-extra="false"
+                         :token-id="normalizedTokenId"/>
+          </template>
+        </Property>
+        <Property id="initialSupply">
+          <template v-slot:name>Initial Supply</template>
+          <template v-if="validEntityId" v-slot:value>
+            <TokenAmount :amount="parseIntString(tokenInfo?.initial_supply)" :show-extra="false"
+                         :token-id="normalizedTokenId"/>
+          </template>
+        </Property>
+        <Property id="maxSupply">
+          <template v-slot:name>Max Supply</template>
+          <template v-if="validEntityId" v-slot:value>
+            <div v-if="tokenInfo?.supply_type === 'INFINITE'" class="has-text-grey">Infinite</div>
+            <TokenAmount v-else :amount="parseIntString(tokenInfo?.max_supply)" :show-extra="false"
+                         :token-id="normalizedTokenId"/>
+          </template>
+        </Property>
       </template>
 
     </DashboardCard>
@@ -261,7 +282,7 @@
 
 import {computed, defineComponent, inject, onBeforeUnmount, onMounted} from 'vue';
 import {useRouter} from "vue-router";
-import router from "@/router";
+import router, {routeManager} from "@/router";
 import KeyValue from "@/components/values/KeyValue.vue";
 import TimestampValue from "@/components/values/TimestampValue.vue";
 import TokenBalanceTable from "@/components/token/TokenBalanceTable.vue";
@@ -270,25 +291,28 @@ import DashboardCard from "@/components/DashboardCard.vue";
 import BlobValue from "@/components/values/BlobValue.vue";
 import TokenAmount from "@/components/values/TokenAmount.vue";
 import Footer from "@/components/Footer.vue";
-import EthAddress from "@/components/values/EthAddress.vue";
+import MetaMaskImport from "@/components/token/MetaMaskImport.vue";
 import {EntityID} from "@/utils/EntityID";
 import Property from "@/components/Property.vue";
 import NotificationBanner from "@/components/NotificationBanner.vue";
 import {TokenInfoLoader} from "@/components/token/TokenInfoLoader";
 import NftHolderTable from "@/components/token/NftHolderTable.vue";
-import PlayPauseButton from "@/utils/table/PlayPauseButton.vue";
+import PlayPauseButton from "@/components/PlayPauseButton.vue";
 import {NftHolderTableController} from "@/components/token/NftHolderTableController";
 import {TokenBalanceTableController} from "@/components/token/TokenBalanceTableController";
 import AccountLink from "@/components/values/AccountLink.vue";
 import StringValue from "@/components/values/StringValue.vue";
 import {networkRegistry} from "@/schemas/NetworkRegistry";
 import TokenCustomFees from "@/components/token/TokenCustomFees.vue";
+import EVMAddress from "@/components/values/EVMAddress.vue";
+import {makeTokenSymbol} from "@/schemas/HederaUtils";
 
 export default defineComponent({
 
   name: 'TokenDetails',
 
   components: {
+    EVMAddress,
     TokenCustomFees,
     PlayPauseButton,
     NftHolderTable,
@@ -296,7 +320,7 @@ export default defineComponent({
     AccountLink,
     NotificationBanner,
     Property,
-    EthAddress,
+    MetaMaskImport,
     Footer,
     BlobValue,
     DashboardCard,
@@ -335,6 +359,8 @@ export default defineComponent({
             router.currentRoute.value.params.network as string
         ) : null)
 
+    const displaySymbol = computed(() => makeTokenSymbol(tokenInfoLoader.entity.value, 256))
+
     const notification = computed(() => {
       let result
       if (!validEntityId.value) {
@@ -350,7 +376,7 @@ export default defineComponent({
     })
 
     const showTokenDetails = (tokenId: string) => {
-      router.push({name: 'TokenDetails', params: {tokenId: tokenId}})
+      routeManager.routeToToken(tokenId)
     }
 
     const perPage = computed(() => isMediumScreen ? 10 : 5)
@@ -373,7 +399,9 @@ export default defineComponent({
 
     return {
       isSmallScreen,
+      isMediumScreen,
       isTouchDevice,
+      displaySymbol,
       tokenInfoLoader,
       tokenInfo: tokenInfoLoader.entity,
       isNft: tokenInfoLoader.isNft,
@@ -393,7 +421,7 @@ export default defineComponent({
   },
 });
 
-function parseIntString(s: string|undefined): number|undefined {
+function parseIntString(s: string | undefined): number | undefined {
   const result = Number(s)
   return isNaN(result) ? undefined : result
 }

@@ -2,7 +2,7 @@
  *
  * Hedera Mirror Node Explorer
  *
- * Copyright (C) 2021 - 2022 Hedera Hashgraph, LLC
+ * Copyright (C) 2021 - 2023 Hedera Hashgraph, LLC
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -19,6 +19,9 @@
  */
 
 import {EntityID} from "@/utils/EntityID";
+import {getEnv} from "@/utils/getEnv";
+import axios from "axios";
+import {ref, Ref} from "vue";
 
 export class NetworkEntry {
 
@@ -29,7 +32,7 @@ export class NetworkEntry {
 
     constructor(name: string, displayName: string, url: string, ledgerID: string) {
         this.name = name
-        this.displayName = displayName
+        this.displayName = displayName ?? name.toUpperCase()
         this.url = url
         this.ledgerID = ledgerID
     }
@@ -37,14 +40,18 @@ export class NetworkEntry {
 
 export class NetworkRegistry {
 
+    public static readonly NETWORKS_CONFIG_URL = window.location.origin + '/networks-config.json'
+    public static readonly MAX_NETWORK_NUMBER = 15
+    public static readonly NETWORK_NAME_MAX_LENGTH = 15
+
     public static readonly MAIN_NETWORK = 'mainnet'
     public static readonly TEST_NETWORK = 'testnet'
     public static readonly PREVIEW_NETWORK = 'previewnet'
 
-    private static readonly DEFAULT_NETWORK = NetworkRegistry.TEST_NETWORK
-    private readonly defaultEntry: NetworkEntry
+    private static readonly DEFAULT_NETWORK = NetworkRegistry.MAIN_NETWORK
+    private defaultEntry: NetworkEntry
 
-    private readonly entries: NetworkEntry[] = [
+    public readonly entries: Ref<Array<NetworkEntry>> = ref ([
         {
             name: 'mainnet',
             displayName: 'MAINNET',
@@ -63,23 +70,36 @@ export class NetworkRegistry {
             url: "https://previewnet.mirrornode.hedera.com/",
             ledgerID: '02'
         }
-    ]
+    ])
 
     constructor() {
-        this.defaultEntry = this.lookup(NetworkRegistry.DEFAULT_NETWORK) ?? this.entries[0]
-
-        if (process.env.VUE_APP_LOCAL_MIRROR_NODE_URL) {
-            this.entries.push(new NetworkEntry(
-                'devnet',
-                process.env.VUE_APP_LOCAL_MIRROR_NODE_MENU_NAME ?? "DEVNET",
-                process.env.VUE_APP_LOCAL_MIRROR_NODE_URL,
-                'FF'
-            ))
-        }
+        this.defaultEntry = this.lookup(NetworkRegistry.DEFAULT_NETWORK) ?? this.entries.value[0]
     }
 
-    public getEntries(): Array<NetworkEntry> {
-        return this.entries
+    public readCustomConfig(): void {
+        axios.get<unknown>(NetworkRegistry.NETWORKS_CONFIG_URL)
+            .then((response) => {
+
+                const customEntries = NetworkRegistry.parseNetworkConfig(response.data)
+                if (customEntries !== null) {
+                    this.entries.value = customEntries
+                    this.defaultEntry = this.lookup(NetworkRegistry.DEFAULT_NETWORK) ?? this.entries.value[0]
+                }
+
+                // Keep compatibility with previous ENV VARIABLE configuration
+                const localNodeURL = getEnv('VUE_APP_LOCAL_MIRROR_NODE_URL')
+                const localNodeMenuName = getEnv('VUE_APP_LOCAL_MIRROR_NODE_MENU_NAME')
+                if (localNodeURL) {
+                    console.warn(
+                        "Use of VUE_APP_LOCAL_MIRROR_NODE_URL environment variable is deprecated.\n" +
+                        "Please use /public/networks-config.json configuration file instead")
+
+                    this.entries.value.push(new NetworkEntry(
+                        'devnet', localNodeMenuName ?? "DEVNET", localNodeURL, 'FF'
+                    ))
+                }
+            })
+            .catch((reason) => console.warn(`Failed to get ${NetworkRegistry.NETWORKS_CONFIG_URL}: ${reason}`))
     }
 
     public getDefaultEntry(): NetworkEntry {
@@ -87,7 +107,7 @@ export class NetworkRegistry {
     }
 
     public lookup(name: string): NetworkEntry | null {
-        return this.entries.find(element => element.name === name) ?? null
+        return this.entries.value.find(element => element.name === name) ?? null
     }
 
     public isValidChecksum(id: string, checksum: string, network: string): boolean {
@@ -112,6 +132,60 @@ export class NetworkRegistry {
     public makeAddressWithChecksum(address: string, network: string): string | null {
         const entity = EntityID.normalize(address)
         return entity ? (entity + '-' + this.computeChecksum(entity, network)) : null
+    }
+
+    private static parseNetworkConfig(config: unknown): Array<NetworkEntry> | null {
+
+        const entries: Array<NetworkEntry> = []
+        let isValid = true
+
+        const jsonContent = JSON.parse(JSON.stringify(config))
+
+        if (jsonContent instanceof Array) {
+            for (const n of jsonContent as Array<any>) {
+                if (entries.length >= this.MAX_NETWORK_NUMBER) {
+                    console.warn(`Dropping networks beyond ${this.MAX_NETWORK_NUMBER} entries`)
+                    break
+                }
+
+                if (typeof n === 'object'
+                    && typeof n.name === 'string'
+                    && typeof n.url === 'string'
+                    && typeof n.ledgerID === 'string')
+                {
+                    if (!entries.find(entry => entry.name === n.name)) {
+                        let displayName
+                        if (typeof n.displayName === 'undefined') {
+                            displayName = n.name
+                        } else if (typeof n.displayName === 'string') {
+                            displayName = n.displayName
+                        } else {
+                            console.warn("Invalid displayName " + n.displayName)
+                            isValid = false
+                            break
+                        }
+                        if (displayName.length > this.NETWORK_NAME_MAX_LENGTH) {
+                            displayName = displayName.slice(0, this.NETWORK_NAME_MAX_LENGTH) + '…'
+                        }
+                        entries.push(new NetworkEntry(
+                            n.name,
+                            displayName.toUpperCase(),
+                            n.url,
+                            n.ledgerID))
+                    } else {
+                        console.warn("Dropping network with duplicate name: " + n.name)
+                    }
+                } else {
+                    console.warn("Invalid networks-config.json configuration file")
+                    isValid = false
+                    break
+                }
+            }
+        } else {
+            console.warn("Invalid networks-config.json configuration file")
+        }
+
+        return (isValid && entries.length) ? entries : null
     }
 
     //

@@ -2,7 +2,7 @@
   -
   - Hedera Mirror Node Explorer
   -
-  - Copyright (C) 2021 - 2022 Hedera Hashgraph, LLC
+  - Copyright (C) 2021 - 2023 Hedera Hashgraph, LLC
   -
   - Licensed under the Apache License, Version 2.0 (the "License");
   - you may not use this file except in compliance with the License.
@@ -33,9 +33,10 @@
         :total="total"
         v-model:current-page="currentPage"
         :per-page="perPage"
+        focusable
         @page-change="onPageChange"
+        @click="handleClick"
 
-        :striped="true"
         :mobile-breakpoint="ORUGA_MOBILE_BREAKPOINT"
 
         aria-current-label="Current page"
@@ -56,7 +57,7 @@
 
       <o-table-column v-slot="props" field="message" label="Message">
         <div class="should-wrap">
-          <BlobValue v-bind:blob-value="props.row.message" v-bind:base64="true" v-bind:show-none="true"/>
+          <BlobValue :blob-value="props.row.message" :base64="true" :limiting-factor="520" :show-none="true"/>
         </div>
       </o-table-column>
 
@@ -79,6 +80,8 @@ import BlobValue from "@/components/values/BlobValue.vue";
 import {ORUGA_MOBILE_BREAKPOINT} from '@/App.vue';
 import EmptyTable from "@/components/EmptyTable.vue";
 import {TopicMessage} from "@/schemas/HederaSchemas";
+import {routeManager} from "@/router";
+import {TransactionID} from "@/utils/TransactionID";
 
 export default defineComponent({
 
@@ -97,6 +100,17 @@ export default defineComponent({
     const isTouchDevice = inject('isTouchDevice', false)
     const isMediumScreen = inject('isMediumScreen', true)
 
+    const handleClick = (t: TopicMessage) => {
+      const entityId = t.chunk_info?.initial_transaction_id.account_id
+      const timestamp = t.chunk_info?.initial_transaction_id.transaction_valid_start
+      if (entityId && timestamp) {
+        const transactionId = TransactionID.parse(entityId + '@' + timestamp)
+        if (transactionId) {
+          routeManager.routeToTransactionId(transactionId.toString(false), t.consensus_timestamp)
+        }
+      }
+    }
+
     return {
       isTouchDevice,
       isMediumScreen,
@@ -107,7 +121,8 @@ export default defineComponent({
       onPageChange: props.controller.onPageChange,
       perPage: props.controller.pageSize as Ref<number>,
       paginated: props.controller.paginated,
-      ORUGA_MOBILE_BREAKPOINT
+      ORUGA_MOBILE_BREAKPOINT,
+      handleClick
     }
   }
 });

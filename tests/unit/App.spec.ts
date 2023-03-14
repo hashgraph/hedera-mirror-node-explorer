@@ -2,7 +2,7 @@
  *
  * Hedera Mirror Node Explorer
  *
- * Copyright (C) 2021 - 2022 Hedera Hashgraph, LLC
+ * Copyright (C) 2021 - 2023 Hedera Hashgraph, LLC
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -21,7 +21,12 @@
 import {flushPromises, mount} from "@vue/test-utils"
 import router from "@/router";
 import axios from "axios";
-import {SAMPLE_COINGECKO, SAMPLE_NETWORK_SUPPLY, SAMPLE_TOKEN, SAMPLE_TRANSACTIONS} from "./Mocks";
+import {
+    SAMPLE_NETWORK_EXCHANGERATE,
+    SAMPLE_NETWORK_SUPPLY,
+    SAMPLE_TOKEN,
+    SAMPLE_TRANSACTIONS
+} from "./Mocks";
 import App from "@/App.vue";
 import TopNavBar from "@/components/TopNavBar.vue";
 import HbarMarketDashboard from "@/components/dashboard/HbarMarketDashboard.vue";
@@ -72,11 +77,18 @@ describe("App.vue", () => {
         const matcher2 = "/api/v1/tokens/" + SAMPLE_TOKEN.token_id
         mock.onGet(matcher2).reply(200, SAMPLE_TOKEN)
 
-        const matcher3 = "https://api.coingecko.com/api/v3/coins/hedera-hashgraph"
-        mock.onGet(matcher3).reply(200, SAMPLE_COINGECKO);
+        const matcher3 = "/api/v1/network/supply"
+        mock.onGet(matcher3).reply(200, SAMPLE_NETWORK_SUPPLY);
 
-        const matcher4 = "/api/v1/network/supply/"
-        mock.onGet(matcher4).reply(200, SAMPLE_NETWORK_SUPPLY);
+        const matcher4 = "/api/v1/network/exchangerate"
+        mock.onGet(matcher4).reply(200, SAMPLE_NETWORK_EXCHANGERATE);
+
+        const matcher10 = window.location.origin + '/networks-config.json'
+        mock.onGet(matcher10).reply(200, [
+            {name: "customnet1", url: "/testurl1", ledgerID: "01"},
+            {name: "customnet2", url: "/testurl2", ledgerID: "02"},
+            {name: "customnet3", url: "/testurl3", ledgerID: "03"}
+        ]);
 
         const wrapper = mount(App, {
             global: {
@@ -95,7 +107,7 @@ describe("App.vue", () => {
         const navBar = wrapper.findComponent(TopNavBar)
         expect(navBar.exists()).toBe(true)
         expect(navBar.text()).toBe(
-            "MAINNETTESTNETPREVIEWNETDashboardTransactionsTokensTopicsContractsAccountsNodesBlocks")
+            "CUSTOMNET1CUSTOMNET2CUSTOMNET3DashboardTransactionsTokensTopicsContractsAccountsNodesBlocks")
 
         expect(wrapper.findComponent(HbarMarketDashboard).exists()).toBe(true)
 

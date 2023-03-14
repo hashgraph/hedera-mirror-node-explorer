@@ -2,7 +2,7 @@
  *
  * Hedera Mirror Node Explorer
  *
- * Copyright (C) 2021 - 2022 Hedera Hashgraph, LLC
+ * Copyright (C) 2021 - 2023 Hedera Hashgraph, LLC
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -22,15 +22,15 @@
 
 describe('TokenInfoCollector', () => {
 
-    const transactionId = "0.0.88-1647364797-037128951"
+    const timestamp = "1673974382.950855003"
 
     it('should display token name', () => {
-        cy.visit('testnet/transaction/' + transactionId)
-        cy.url().should('include', '/testnet/transaction/')
+        cy.visit('mainnet/transaction/' + timestamp)
+        cy.url().should('include', '/mainnet/transaction/')
 
         cy.get('#entityId')
             .find('span')
-            .contains("NXUV_name")
+            .contains("Apollo Dog Test")
     })
 
 })

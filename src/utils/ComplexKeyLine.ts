@@ -2,7 +2,7 @@
  *
  * Hedera Mirror Node Explorer
  *
- * Copyright (C) 2021 - 2022 Hedera Hashgraph, LLC
+ * Copyright (C) 2021 - 2023 Hedera Hashgraph, LLC
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -20,6 +20,8 @@
 
 import hashgraph from "@hashgraph/proto/lib/proto";
 import {byteToHex} from "@/utils/B64Utils";
+import IContractID = hashgraph.proto.IContractID;
+import {EntityID} from "@/utils/EntityID";
 
 export class ComplexKeyLine {
 
@@ -67,6 +69,14 @@ export class ComplexKeyLine {
         return result
     }
 
+    public contractId(): string|null {
+        return this.key.contractID ? ComplexKeyLine.makeContractId(this.key.contractID) : null
+    }
+
+    public delegatableContractId(): string|null {
+        return this.key.delegatableContractId ? ComplexKeyLine.makeContractId(this.key.delegatableContractId) : null
+    }
+
     public toString(): string {
         return "" + this.level + " " + this.key.key
     }
@@ -83,15 +93,15 @@ export class ComplexKeyLine {
     // Private
     //
 
-    public static flattenComplexKeyRec(key: hashgraph.proto.Key, level: number, result: ComplexKeyLine[]): void {
+    private static flattenComplexKeyRec(key: hashgraph.proto.Key, level: number, result: ComplexKeyLine[]): void {
 
-        let newLine: ComplexKeyLine
+        let newLine: ComplexKeyLine|null
         let childKeys: hashgraph.proto.Key[]
         if (key.keyList) {
             if (key.keyList.keys && key.keyList.keys.length == 1) {
                 // Collapses singleton KeyList
-                newLine = new ComplexKeyLine(key.keyList.keys[0], level)
-                childKeys = []
+                newLine = null
+                childKeys = [key.keyList.keys[0]]
             } else {
                 newLine = new ComplexKeyLine(key, level)
                 childKeys = key.keyList?.keys ?? []
@@ -99,16 +109,35 @@ export class ComplexKeyLine {
             // newLine = new ComplexKeyLine(key, level)
             // childKeys = key.keyList?.keys ?? []
         } else if (key.thresholdKey) {
-            newLine = new ComplexKeyLine(key, level)
-            childKeys = key.thresholdKey?.keys?.keys ?? []
+            if (key.thresholdKey.keys?.keys && key.thresholdKey.keys?.keys.length == 1) {
+                // Collapses singleton ThresholdKey
+                newLine = null
+                childKeys = [key.thresholdKey.keys?.keys[0]]
+            } else {
+                newLine = new ComplexKeyLine(key, level)
+                childKeys = key.thresholdKey?.keys?.keys ?? []
+            }
+            // newLine = new ComplexKeyLine(key, level)
+            // childKeys = key.thresholdKey?.keys?.keys ?? []
         } else {
             newLine = new ComplexKeyLine(key, level)
             childKeys = []
         }
-        result.push(newLine)
-
-        for (const childKey of childKeys) {
-            this.flattenComplexKeyRec(childKey, level + 1, result)
+        if (newLine !== null) {
+            result.push(newLine)
         }
+
+        const nextLevel = newLine !== null ? level + 1 : level
+        for (const childKey of childKeys) {
+            this.flattenComplexKeyRec(childKey, nextLevel, result)
+        }
+    }
+
+    private static makeContractId(iContractID: IContractID): string {
+        const shard = Number(iContractID.shardNum ?? 0)
+        const realm = Number(iContractID.realmNum ?? 0)
+        const num = Number(iContractID.contractNum ?? 0)
+        const entityId = new EntityID(shard, realm, num)
+        return entityId.toString()
     }
 }

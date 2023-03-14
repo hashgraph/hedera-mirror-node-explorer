@@ -2,7 +2,7 @@
  *
  * Hedera Mirror Node Explorer
  *
- * Copyright (C) 2021 - 2022 Hedera Hashgraph, LLC
+ * Copyright (C) 2021 - 2023 Hedera Hashgraph, LLC
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -105,7 +105,7 @@ describe("BlockDetails.vue", () => {
         expect(table.exists()).toBe(true)
         expect(table.get('thead').text()).toBe("ID Type Content Time & Date")
         expect(table.get('tbody').text()).toBe("0.0.29624024@1646025139.152901498CRYPTO TRANSFER0.0.29624024\n" + "\n" +
-            "1\n" + "\n" +
+            "123423\n" + "\n" +
             "0.0.296939115:12:31.6676 AMFeb 28, 2022, UTC")
     });
 
@@ -154,7 +154,7 @@ describe("BlockDetails.vue", () => {
         expect(table.exists()).toBe(true)
         expect(table.get('thead').text()).toBe("ID Type Content Time & Date")
         expect(table.get('tbody').text()).toBe("0.0.29624024@1646025139.152901498CRYPTO TRANSFER0.0.29624024\n" + "\n" +
-            "1\n" + "\n" +
+            "123423\n" + "\n" +
             "0.0.296939115:12:31.6676 AMFeb 28, 2022, UTC")
     });
 
@@ -204,7 +204,7 @@ describe("BlockDetails.vue", () => {
         expect(table.exists()).toBe(true)
         expect(table.get('thead').text()).toBe("ID Type Content Time & Date")
         expect(table.get('tbody').text()).toBe("0.0.29624024@1646025139.152901498CRYPTO TRANSFER0.0.29624024\n" + "\n" +
-            "1\n" + "\n" +
+            "123423\n" + "\n" +
             "0.0.296939115:12:31.6676 AMFeb 28, 2022, UTC")
 
         // Change Block Number
@@ -270,11 +270,11 @@ describe("BlockDetails.vue", () => {
         const banner = wrapper.findComponent(NotificationBanner)
         expect(banner.text()).toBe("Invalid block number or hash: " + INVALID_BLOCK_NUMBER)
 
-        expect(wrapper.get("#countValue").text()).toBe("0")
+        expect(wrapper.get("#countValue").text()).toBe("None")
         expect(wrapper.get("#blockHashValue").text()).toBe("None")
         expect(wrapper.get("#fromTimestampValue").text()).toBe("None")
         expect(wrapper.get("#toTimestampValue").text()).toBe("None")
-        expect(wrapper.get("#gasUsedValue").text()).toBe("0")
+        expect(wrapper.get("#gasUsedValue").text()).toBe("None")
         expect(wrapper.get("#recordFileNameValue").text()).toBe("None")
         expect(wrapper.get("#blockTransactions").text()).toMatch(RegExp("^Block Transactions"))
         const table = wrapper.findComponent(BlockTransactionTable)
@@ -303,11 +303,11 @@ describe("BlockDetails.vue", () => {
         const banner = wrapper.findComponent(NotificationBanner)
         expect(banner.text()).toBe("Invalid block number or hash: " + INVALID_BLOCK_HASH)
 
-        expect(wrapper.get("#countValue").text()).toBe("0")
+        expect(wrapper.get("#countValue").text()).toBe("None")
         expect(wrapper.get("#blockHashValue").text()).toBe("None")
         expect(wrapper.get("#fromTimestampValue").text()).toBe("None")
         expect(wrapper.get("#toTimestampValue").text()).toBe("None")
-        expect(wrapper.get("#gasUsedValue").text()).toBe("0")
+        expect(wrapper.get("#gasUsedValue").text()).toBe("None")
         expect(wrapper.get("#recordFileNameValue").text()).toBe("None")
         expect(wrapper.get("#blockTransactions").text()).toMatch(RegExp("^Block Transactions"))
         const table = wrapper.findComponent(BlockTransactionTable)
@@ -339,11 +339,11 @@ describe("BlockDetails.vue", () => {
         const banner = wrapper.findComponent(NotificationBanner)
         expect(banner.text()).toBe("Block " + BLOCK_NUMBER + " was not found")
 
-        expect(wrapper.get("#countValue").text()).toBe("0")
+        expect(wrapper.get("#countValue").text()).toBe("None")
         expect(wrapper.get("#blockHashValue").text()).toBe("None")
         expect(wrapper.get("#fromTimestampValue").text()).toBe("None")
         expect(wrapper.get("#toTimestampValue").text()).toBe("None")
-        expect(wrapper.get("#gasUsedValue").text()).toBe("0")
+        expect(wrapper.get("#gasUsedValue").text()).toBe("None")
         expect(wrapper.get("#recordFileNameValue").text()).toBe("None")
         expect(wrapper.get("#blockTransactions").text()).toMatch(RegExp("^Block Transactions"))
         const table = wrapper.findComponent(BlockTransactionTable)
@@ -375,11 +375,11 @@ describe("BlockDetails.vue", () => {
         const banner = wrapper.findComponent(NotificationBanner)
         expect(banner.text()).toBe("Block " + NORMALIZED_BLOCK_HASH + " was not found")
 
-        expect(wrapper.get("#countValue").text()).toBe("0")
+        expect(wrapper.get("#countValue").text()).toBe("None")
         expect(wrapper.get("#blockHashValue").text()).toBe("None")
         expect(wrapper.get("#fromTimestampValue").text()).toBe("None")
         expect(wrapper.get("#toTimestampValue").text()).toBe("None")
-        expect(wrapper.get("#gasUsedValue").text()).toBe("0")
+        expect(wrapper.get("#gasUsedValue").text()).toBe("None")
         expect(wrapper.get("#recordFileNameValue").text()).toBe("None")
         expect(wrapper.get("#blockTransactions").text()).toMatch(RegExp("^Block Transactions"))
         const table = wrapper.findComponent(BlockTransactionTable)

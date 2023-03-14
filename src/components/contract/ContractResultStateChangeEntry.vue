@@ -2,7 +2,7 @@
   -
   - Hedera Mirror Node Explorer
   -
-  - Copyright (C) 2021 - 2022 Hedera Hashgraph, LLC
+  - Copyright (C) 2021 - 2023 Hedera Hashgraph, LLC
   -
   - Licensed under the Apache License, Version 2.0 (the "License");
   - you may not use this file except in compliance with the License.
@@ -27,10 +27,10 @@
   <template v-if="change.header===true">
     <div class="is-flex is-align-items-baseline">
       <ContractLink :contract-id="change.changes.contract_id"></ContractLink>
-      <EVMAddress :address="change.changes.address" :compact="!isMediumScreen" class="ml-3"/>
+      <EVMAddress :address="change.changes.address" :compact="isSmallScreen && !isMediumScreen" class="ml-3"/>
       <span class="mb-2 h-is-text-size-3">
             <span class="ml-4 mr-2">Contract HBar Balance Difference:</span>
-            <HbarAmount :amount="change.balanceChange" :colored="true" :show-extra="true"/>
+            <HbarAmount :amount="change.balanceChange" :timestamp="timestamp" :colored="true" :show-extra="true"/>
           </span>
     </div>
     <hr class="h-card-separator" style="margin-bottom: 12px; margin-top: 0"/>
@@ -89,11 +89,17 @@ export default defineComponent({
   name: "ContractResultStateChangeEntry",
   components: {HexaValue, HbarAmount, EVMAddress, ContractLink},
   props: {
-    change: Object as PropType<DisplayStateChange | undefined>
+    change: Object as PropType<DisplayStateChange | undefined>,
+    timestamp: {
+      type: String,
+      default: null
+    }
   },
   setup() {
+    const isSmallScreen = inject('isSmallScreen', true)
     const isMediumScreen = inject('isMediumScreen', true)
     return {
+      isSmallScreen,
       isMediumScreen
     }
   }

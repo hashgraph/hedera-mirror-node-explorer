@@ -2,7 +2,7 @@
   -
   - Hedera Mirror Node Explorer
   -
-  - Copyright (C) 2021 - 2022 Hedera Hashgraph, LLC
+  - Copyright (C) 2021 - 2023 Hedera Hashgraph, LLC
   -
   - Licensed under the Apache License, Version 2.0 (the "License");
   - you may not use this file except in compliance with the License.
@@ -34,21 +34,29 @@
         default-sort="node_id"
         @click="handleClick"
     >
+
+      <o-table-column v-slot="props" field="nature" label="">
+        <span class="icon has-text-info" style="font-size: 16px">
+          <i v-if="isCouncilNode(props.row)" class="fas fa-building"></i>
+          <i v-else class="fas fa-users"></i>
+        </span>
+      </o-table-column>
+
       <o-table-column v-slot="props" field="node_id" label="Node">
         <div class="is-numeric regular-node-column">
           {{ props.row.node_id }}
         </div>
       </o-table-column>
 
-      <o-table-column v-slot="props" field="node_account_id" label="Account">
+      <o-table-column v-if="false" v-slot="props" field="node_account_id" label="Account">
         <div class="is-numeric regular-node-column">
           {{ props.row.node_account_id }}
         </div>
       </o-table-column>
 
       <o-table-column v-slot="props" field="description" label="Description">
-        <div class="should-wrap regular-node-column">
-          <BlobValue v-bind:blob-value="makeDescription(props.row)" v-bind:show-none="true"/>
+        <div class="should-wrap regular-node-column is-inline-block">
+          <StringValue :string-value="makeDescription(props.row)"/>
         </div>
       </o-table-column>
 
@@ -65,30 +73,61 @@
         </o-tooltip>
       </o-table-column>
 
-       <o-table-column v-slot="props" field="stake_not_rewarded" label="Stake Not Rewarded" position="right">
-         <o-tooltip :label="tooltipNotRewarded"
-                    multiline
-                    :delay="tooltipDelay"
-                    class="h-tooltip">
+      <o-table-column v-slot="props" field="stake_not_rewarded" label="Stake Not Rewarded" position="right">
+        <o-tooltip :delay="tooltipDelay"
+                   :label="tooltipNotRewarded"
+                   class="h-tooltip"
+                   multiline>
            <span class="regular-node-column">
              <HbarAmount :amount="props.row.stake_not_rewarded ?? 0" :decimals="0"/>
           </span>
-         </o-tooltip>
-       </o-table-column>
+        </o-tooltip>
+      </o-table-column>
 
-      <o-table-column v-slot="props" field="last_reward_rate" label="Last Reward Rate" position="right">
+      <o-table-column id="stake-range-column" v-slot="props" field="stake-range" label="Stake Range" position="right"
+                      style="padding-bottom: 2px; padding-top: 12px;">
+        <o-tooltip multiline
+                   :delay="tooltipDelay"
+                   class="h-tooltip">
+          <StakeRange :node="props.row"/>
+          <template #content>
+            <div class="is-flex is-justify-content-space-between" style="width: 200px">
+              <p>Rewarded:</p>
+              <div class="has-text-weight-normal">
+                <HbarAmount :amount="props.row.stake_rewarded ?? 0" :decimals="0"/>
+              </div>
+            </div>
+            <div class="is-flex is-justify-content-space-between" style="width: 200px">
+              <p>Not Rewarded:</p>
+              <div class="has-text-weight-normal">
+                <HbarAmount :amount="props.row.stake_not_rewarded ?? 0" :decimals="0"/>
+              </div>
+            </div>
+            <div class="is-flex is-justify-content-space-between" style="width: 200px">
+              <p>Min:</p>
+              <div class="has-text-weight-normal">
+                <HbarAmount :amount="props.row.min_stake ?? 0" :decimals="0"/>
+              </div>
+            </div>
+            <div class="is-flex is-justify-content-space-between" style="width: 200px">
+              <p>Max:</p>
+              <div class="has-text-weight-normal">
+                <HbarAmount :amount="props.row.max_stake ?? 0" :decimals="0"/>
+              </div>
+            </div>
+          </template>
+        </o-tooltip>
+      </o-table-column>
+
+      <o-table-column v-slot="props" field="last_reward_rate" label="Reward Rate" position="right">
         <o-tooltip :label="tooltipRewardRate"
                    multiline
                    :delay="tooltipDelay"
                    class="h-tooltip">
           <span class="regular-node-column">
-            {{ makeApproxYearlyRate(props.row) }}
+            {{ makeAnnualizedRate(props.row) }}
           </span>
         </o-tooltip>
-      </o-table-column>
-
-      <o-table-column id="stake-range-column" v-slot="props" field="stake-range" label="Stake Range" style="  padding-bottom: 2px; padding-top: 12px;">
-        <StakeRange :node="props.row"/>
       </o-table-column>
 
     </o-table>
@@ -104,15 +143,16 @@
 
 <script lang="ts">
 
-import {defineComponent, inject, PropType} from 'vue';
+import {defineComponent, inject, PropType, ref} from 'vue';
 import {NetworkNode} from "@/schemas/HederaSchemas";
-import BlobValue from "@/components/values/BlobValue.vue";
 import {ORUGA_MOBILE_BREAKPOINT} from '@/App.vue';
 import EmptyTable from "@/components/EmptyTable.vue";
-import {operatorRegistry} from "@/schemas/OperatorRegistry";
 import HbarAmount from "@/components/values/HbarAmount.vue";
 import StakeRange from "@/components/node/StakeRange.vue";
-import router from "@/router";
+import {routeManager} from "@/router";
+import {NodeRegistry} from "@/components/node/NodeRegistry";
+import StringValue from "@/components/values/StringValue.vue";
+import {makeAnnualizedRate, makeStakePercentage, makeUnclampedStake} from "@/schemas/HederaUtils";
 
 
 //
@@ -122,7 +162,7 @@ import router from "@/router";
 export default defineComponent({
   name: 'NodeTable',
 
-  components: {StakeRange, HbarAmount, EmptyTable, BlobValue},
+  components: {StringValue, StakeRange, HbarAmount, EmptyTable},
 
   props: {
     nodes: Object as PropType<Array<NetworkNode> | undefined>,
@@ -142,39 +182,14 @@ export default defineComponent({
     const isTouchDevice = inject('isTouchDevice', false)
     const isMediumScreen = inject('isMediumScreen', true)
 
-    const makeDescription = (node: NetworkNode) => {
-      let result
-      if (node.description) {
-        result = node.description
-      } else if (node.node_account_id) {
-        result = operatorRegistry.makeDescription(node.node_account_id)
-      } else {
-        result = null
-      }
-      return result
-    }
-    const makeUnclampedStake = (node: NetworkNode) => (node.stake_rewarded ?? 0) + (node.stake_not_rewarded ?? 0)
+    const isCouncilNode = (node: NetworkNode) => NodeRegistry.isCouncilNode(ref(node.node_id ?? null), ref(null))
+    const makeDescription = (node: NetworkNode) => NodeRegistry.getDescription(ref(node.node_id ?? null), ref(null))
     const makeWeightPercentage = (node: NetworkNode) => {
-      const formatter = new Intl.NumberFormat("en-US", {
-        style: 'percent',
-        maximumFractionDigits: 1
-      })
-      return formatter.format(node.stake && props.stakeTotal ? node.stake / props.stakeTotal : 0);
-    }
-
-    const rewardRate = (node: NetworkNode) => {
-      return (node.reward_rate_start ?? 0) / 100000000
-    }
-    const makeApproxYearlyRate = (node: NetworkNode) => {
-      const formatter = new Intl.NumberFormat("en-US", {
-        style: 'percent',
-        maximumFractionDigits: 2
-      })
-      return formatter.format(rewardRate(node) * 365);
+      return node.stake && props.stakeTotal ? makeStakePercentage(node, props.stakeTotal) : 0
     }
 
     const handleClick = (node: NetworkNode) => {
-      router.push({name: 'NodeDetails', params: {nodeId: node.node_id}})
+      routeManager.routeToNode(node.node_id ?? 0)
     }
 
     return {
@@ -184,10 +199,11 @@ export default defineComponent({
       tooltipRewardRate,
       isTouchDevice,
       isMediumScreen,
+      isCouncilNode,
       makeDescription,
       makeUnclampedStake,
       makeWeightPercentage,
-      makeApproxYearlyRate,
+      makeAnnualizedRate,
       handleClick,
       ORUGA_MOBILE_BREAKPOINT,
     }

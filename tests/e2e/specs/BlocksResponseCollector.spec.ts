@@ -2,7 +2,7 @@
  *
  * Hedera Mirror Node Explorer
  *
- * Copyright (C) 2021 - 2022 Hedera Hashgraph, LLC
+ * Copyright (C) 2021 - 2023 Hedera Hashgraph, LLC
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -22,20 +22,20 @@
 
 describe('BlocksResponseCollector', () => {
 
-    const firstTxnInBlock = "0.0.2-1598572586-012342998"
-    const lastTxnInBlock = "0.0.59-1598572589-275875990"
+    const firstTxnInBlock = "1568412925.355652000"
+    const lastTxnInBlock = "1568412929.861487000"
 
-    it('should display block 12 for first transaction in block', () => {
-        cy.visit('testnet/transaction/' + firstTxnInBlock)
-        cy.url().should('include', '/testnet/transaction/' + firstTxnInBlock)
+    it('should display block 5 for first transaction in block', () => {
+        cy.visit('mainnet/transaction/' + firstTxnInBlock)
+        cy.url().should('include', '/mainnet/transaction/' + firstTxnInBlock)
 
-        cy.get('#blockNumberValue').contains("12")
+        cy.get('#blockNumberValue').contains("5")
     })
 
     it('should display block 12 for last transaction in block', () => {
-        cy.visit('testnet/transaction/' + lastTxnInBlock)
-        cy.url().should('include', '/testnet/transaction/' + lastTxnInBlock)
+        cy.visit('mainnet/transaction/' + lastTxnInBlock)
+        cy.url().should('include', '/mainnet/transaction/' + lastTxnInBlock)
 
-        cy.get('#blockNumberValue').contains("12")
+        cy.get('#blockNumberValue').contains("5")
     })
 })

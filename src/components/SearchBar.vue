@@ -2,7 +2,7 @@
   -
   - Hedera Mirror Node Explorer
   -
-  - Copyright (C) 2021 - 2022 Hedera Hashgraph, LLC
+  - Copyright (C) 2021 - 2023 Hedera Hashgraph, LLC
   -
   - Licensed under the Apache License, Version 2.0 (the "License");
   - you may not use this file except in compliance with the License.
@@ -63,7 +63,7 @@
 
 import {defineComponent, inject, onMounted, ref, watch} from "vue";
 import {SearchRequest} from "@/utils/SearchRequest";
-import router from "@/router";
+import {routeManager} from "@/router";
 
 
 const STYLE_SEARCH_ICON = "fa fa-search"
@@ -118,29 +118,51 @@ export default defineComponent({
         r.run().then(() => {
           try {
             if (r.contract != null) {
-              router.push({name: 'ContractDetails', params: { contractId: r.contract.contract_id}})
+              if (r.contract.contract_id) {
+                routeManager.routeToContract(r.contract.contract_id)
+              }
               searchDidEnd(true)
             } else if (r.account != null) {
-              router.push({name: 'AccountDetails', params: { accountId: r.account.account}})
+              if (r.account.account) {
+                routeManager.routeToAccount(r.account.account)
+              }
+              searchDidEnd(true)
+            } else if (r.accountsWithKey.length >= 1) {
+              if (r.accountsWithKey.length >= 2) {
+                routeManager.routeToAccountsWithKey(r.searchedId)
+              } else {
+                const accountId = r.accountsWithKey[0].account
+                if (accountId) {
+                  routeManager.routeToAccount(accountId)
+                }
+              }
               searchDidEnd(true)
             } else if (r.transactions.length >= 1) {
               const transaction = r.transactions[0]
               if (r.transactions.length == 1) {
-                router.push({name: 'TransactionDetails',
-                  params: { transactionId: transaction.transaction_id},
-                  query: { t: transaction.consensus_timestamp }})
+                routeManager.routeToTransaction(transaction)
               } else {
-                router.push({name: 'TransactionsById', params: { transactionId: transaction.transaction_id}})
+                routeManager.routeToTransactionsById(transaction.transaction_id ?? "")
               }
               searchDidEnd(true)
             } else if (r.tokenInfo != null) {
-              router.push({name: 'TokenDetails', params: { tokenId: r.tokenInfo.token_id}})
+              if (r.tokenInfo.token_id) {
+                routeManager.routeToToken(r.tokenInfo.token_id)
+              }
+              searchDidEnd(true)
+            } else if (r.block != null) {
+              if (r.block.number) {
+                routeManager.routeToBlock(r.block.number)
+              }
               searchDidEnd(true)
             } else if (r.topicMessages.length >= 1) {
-              router.push({name: 'TopicDetails', params: { topicId: r.topicMessages[0].topic_id}})
+              const topicId = r.topicMessages[0].topic_id
+              if (topicId) {
+                routeManager.routeToTopic(topicId)
+              }
               searchDidEnd(true)
             } else {
-              router.push({name: 'NoSearchResult', params: { searchedId: searchedId.value}, query: { errorCount: r.getErrorCount()}})
+              routeManager.routeToNoSearchResult(searchedId.value, r.getErrorCount())
               searchDidEnd(false)
             }
           } catch {
