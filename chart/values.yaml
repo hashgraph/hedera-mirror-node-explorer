@@ -45,8 +45,8 @@ global:
 image:
   pullPolicy: IfNotPresent
   pullSecrets: []
-  registry: docker.io
-  repository: ssheehy/hedera-explorer
+  registry: gcr.io
+  repository: hedera-registry/hedera-mirror-node-explorer
   tag: latest  # Defaults to the chart's app version
 
 ingress:
