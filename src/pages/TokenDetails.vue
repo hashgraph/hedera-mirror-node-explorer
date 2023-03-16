@@ -99,13 +99,15 @@
         <Property id="autoRenewPeriod">
           <template v-slot:name>Auto Renew Period</template>
           <template v-slot:value>
-            <DurationValue v-bind:string-value="tokenInfo?.auto_renew_period?.toString()"/>
+            <DurationValue v-if="false" v-bind:string-value="tokenInfo?.auto_renew_period?.toString()"/>
+            <span v-else class="has-text-grey">Not yet enabled</span>
           </template>
         </Property>
         <Property id="autoRenewAccount">
           <template v-slot:name>Auto Renew Account</template>
           <template v-slot:value>
-            <AccountLink :account-id="tokenInfo?.auto_renew_account" :show-none="true"/>
+            <AccountLink v-if="false" :account-id="tokenInfo?.auto_renew_account" :show-none="true"/>
+            <span v-else class="has-text-grey">Not yet enabled</span>
           </template>
         </Property>
         <Property id="freezeDefault">
