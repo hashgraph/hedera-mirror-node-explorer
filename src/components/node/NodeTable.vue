@@ -86,34 +86,22 @@
 
       <o-table-column id="stake-range-column" v-slot="props" field="stake-range" label="Stake Range" position="right"
                       style="padding-bottom: 2px; padding-top: 12px;">
-        <o-tooltip multiline
-                   :delay="tooltipDelay"
-                   class="h-tooltip">
+        <o-tooltip :delay="tooltipDelay" class="h-tooltip">
           <StakeRange :node="props.row"/>
           <template #content>
-            <div class="is-flex is-justify-content-space-between" style="width: 200px">
-              <p>Rewarded:</p>
-              <div class="has-text-weight-normal">
-                <HbarAmount :amount="props.row.stake_rewarded ?? 0" :decimals="0"/>
-              </div>
-            </div>
-            <div class="is-flex is-justify-content-space-between" style="width: 200px">
-              <p>Not Rewarded:</p>
-              <div class="has-text-weight-normal">
-                <HbarAmount :amount="props.row.stake_not_rewarded ?? 0" :decimals="0"/>
-              </div>
-            </div>
-            <div class="is-flex is-justify-content-space-between" style="width: 200px">
-              <p>Min:</p>
-              <div class="has-text-weight-normal">
-                <HbarAmount :amount="props.row.min_stake ?? 0" :decimals="0"/>
-              </div>
-            </div>
-            <div class="is-flex is-justify-content-space-between" style="width: 200px">
-              <p>Max:</p>
-              <div class="has-text-weight-normal">
-                <HbarAmount :amount="props.row.max_stake ?? 0" :decimals="0"/>
-              </div>
+            <div class="reward-range-tooltip">
+              <div class="caption has-background-success has-text-right"></div>
+              <p class="has-text-left">Rewarded:</p>
+              <div class="has-text-weight-normal has-text-right"><HbarAmount :amount="props.row.stake_rewarded ?? 0" :decimals="0"/></div>
+              <div class="caption has-background-info"></div>
+              <p class="has-text-left">Not Rewarded:</p>
+              <div class="has-text-weight-normal has-text-right"><HbarAmount :amount="props.row.stake_not_rewarded ?? 0" :decimals="0"/></div>
+              <div/>
+              <p class="has-text-left">Min:</p>
+              <div class="has-text-weight-normal has-text-right"><HbarAmount :amount="props.row.min_stake ?? 0" :decimals="0"/></div>
+              <div/>
+              <p class="has-text-left">Max:</p>
+              <div class="has-text-weight-normal has-text-right"><HbarAmount :amount="props.row.max_stake ?? 0" :decimals="0"/></div>
             </div>
           </template>
         </o-tooltip>
@@ -226,4 +214,18 @@ export default defineComponent({
   padding-top: 8px;
   padding-bottom: 8px;
 }
+
+.caption {
+  height: 0.8rem;
+  width: 0.8rem;
+  border: 1px solid white;
+}
+
+.reward-range-tooltip {
+  display: grid;
+  grid-template-columns: 1fr 4fr 3fr;
+  column-gap: 0.5rem;
+  row-gap: 0.25rem;
+}
+
 </style>
