@@ -99,8 +99,8 @@ describe("TokenDetails.vue", () => {
         expect(wrapper.find("#adminKey").text()).toBe("Admin KeyNoneToken is immutable")
         expect(wrapper.get("#memoValue").text()).toBe("234234")
         expect(wrapper.get("#expiresAtValue").text()).toBe("None")
-        expect(wrapper.get("#autoRenewPeriodValue").text()).toBe("90 days")
-        expect(wrapper.get("#autoRenewAccountValue").text()).toBe("0.0.29612329")
+        expect(wrapper.get("#autoRenewPeriodValue").text()).toBe("Not yet enabled")
+        expect(wrapper.get("#autoRenewAccountValue").text()).toBe("Not yet enabled")
         expect(wrapper.get("#freezeDefaultValue").text()).toBe("false")
         expect(wrapper.get("#pauseStatusValue").text()).toBe("Not applicable")
 
@@ -160,7 +160,7 @@ describe("TokenDetails.vue", () => {
         )
         expect(wrapper.get("#memoValue").text()).toBe("None")
         expect(wrapper.get("#expiresAtValue").text()).toBe("None")
-        expect(wrapper.get("#autoRenewPeriodValue").text()).toBe("90 days")
+        expect(wrapper.get("#autoRenewPeriodValue").text()).toBe("Not yet enabled")
 
         expect(wrapper.get("#createdAtValue").text()).toBe("3:29:27.7128 PMMar 6, 2022, UTC")
         expect(wrapper.get("#modifiedAtValue").text()).toBe("8:56:33.5203 PMMar 6, 2022, UTC")
