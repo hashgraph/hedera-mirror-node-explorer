@@ -586,18 +586,18 @@ export function makeNodeSelectorDescription(node: NetworkNode): string {
         style: 'percent',
         maximumFractionDigits: 1
     })
-    const unclampedStakeAmount = ((node.stake_rewarded ?? 0) + (node.stake_not_rewarded ?? 0))/100000000
-    const percentMin = node.min_stake ? unclampedStakeAmount / (node.min_stake / 100000000) : 0
-    const percentMax = node.max_stake ? unclampedStakeAmount / (node.max_stake / 100000000) : 0
+    const unclampedStakeAmount = (node.stake_rewarded ?? 0) + (node.stake_not_rewarded ?? 0)
+    const percentMin = node.min_stake ? unclampedStakeAmount / node.min_stake : 0
+    const percentMax = node.max_stake ? (node.stake_rewarded ?? 0) / node.max_stake : 0
 
     let result = node.node_id
         + ' - '
         + (node.description ?? makeDefaultNodeDescription(node.node_id ?? null))
 
-    if (percentMin != 0 && percentMin < 1) {
-        result += " (" + percentFormatter.format(percentMin) + " of Min Stake)"
+    if (percentMin !== 0 && percentMin < 1) {
+        result += " - Not Rewarding (total stake is " + percentFormatter.format(percentMin) + " of min)"
     } else if (percentMax !== 0) {
-        result += " (" + percentFormatter.format(percentMax) + " of Max Stake)"
+        result += " - Rewarding (stake rewarded is " + percentFormatter.format(percentMax) + " of max)"
     }
     return result
 }
