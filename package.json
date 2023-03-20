@@ -13,7 +13,7 @@
     "test:e2e:headless": "export NODE_OPTIONS=--openssl-legacy-provider && vue-cli-service test:e2e --headless --browser chrome --url http://localhost:38920",
     "lint": "vue-cli-service lint",
     "install:branding": ". ./src/assets/branding/install-branding.sh",
-    "docker:build": "export NODE_OPTIONS=--openssl-legacy-provider && npm run build && docker build . --tag gcr.io/hedera-registry/hedera-mirror-node-explorer --file ./CI.Dockerfile",
+    "docker:build": "export NODE_OPTIONS=--openssl-legacy-provider && npm run build && docker build . --tag gcr.io/hedera-registry/hedera-mirror-node-explorer",
     "docker:start": "docker-compose up -d",
     "docker:stop": "docker-compose down"
   },
