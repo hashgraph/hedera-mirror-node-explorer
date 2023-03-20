@@ -40,32 +40,32 @@
         </div>
         <a id="dashboard-menu-item"
            :class="{'is-rimmed': isDashboardRoute(previousRoute)}"
-           class="button is-ghost h-is-mobile-navbar-item h-is-dense"
+           class="button is-ghost h-is-navbar-item h-is-mobile-navbar-item h-is-dense"
            @click="$router.replace(routeManager.mainDashboardRoute)">Dashboard</a>
         <a :class="{ 'is-rimmed': isTransactionRoute(previousRoute)}"
-           class="button is-ghost h-is-mobile-navbar-item h-is-dense"
+           class="button is-ghost h-is-navbar-item h-is-mobile-navbar-item h-is-dense"
            @click="$router.replace(routeManager.transactionsRoute)">Transactions</a>
         <a :class="{ 'is-rimmed': isTokenRoute(previousRoute)}"
-           class="button is-ghost h-is-mobile-navbar-item h-is-dense"
+           class="button is-ghost h-is-navbar-item h-is-mobile-navbar-item h-is-dense"
            @click="$router.replace(routeManager.tokensRoute)">Tokens</a>
         <a :class="{ 'is-rimmed': isTopicRoute(previousRoute)}"
-           class="button is-ghost h-is-mobile-navbar-item h-is-dense"
+           class="button is-ghost h-is-navbar-item h-is-mobile-navbar-item h-is-dense"
            @click="$router.replace(routeManager.topicsRoute)">Topics</a>
         <a :class="{ 'is-rimmed': isContractRoute(previousRoute)}"
-           class="button is-ghost h-is-mobile-navbar-item h-is-dense"
+           class="button is-ghost h-is-navbar-item h-is-mobile-navbar-item h-is-dense"
            @click="$router.replace(routeManager.contractsRoute)">Contracts</a>
         <a :class="{ 'is-rimmed': isAccountRoute(previousRoute)}"
-           class="button is-ghost h-is-mobile-navbar-item h-is-dense"
+           class="button is-ghost h-is-navbar-item h-is-mobile-navbar-item h-is-dense"
            @click="$router.replace(routeManager.accountsRoute)">Accounts</a>
         <a :class="{ 'is-rimmed': isNodeRoute(previousRoute)}"
-           class="button is-ghost h-is-mobile-navbar-item h-is-dense"
+           class="button is-ghost h-is-navbar-item h-is-mobile-navbar-item h-is-dense"
            @click="$router.replace(routeManager.nodesRoute)">Nodes</a>
         <a v-if="isStakingEnabled"
            :class="{ 'is-rimmed': isStakingRoute(previousRoute)}"
-           class="button is-ghost h-is-mobile-navbar-item h-is-dense"
+           class="button is-ghost h-is-navbar-item h-is-mobile-navbar-item h-is-dense"
            @click="$router.replace(routeManager.stakingRoute)">Staking</a>
         <a :class="{ 'is-rimmed': isBlocksRoute(previousRoute)}"
-           class="button is-ghost h-is-mobile-navbar-item h-is-dense"
+           class="button is-ghost h-is-navbar-item h-is-mobile-navbar-item h-is-dense"
            @click="$router.replace(routeManager.blocksRoute)">Blocks</a>
       </div>
 

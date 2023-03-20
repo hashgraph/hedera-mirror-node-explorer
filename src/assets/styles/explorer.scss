@@ -159,8 +159,6 @@ body {
     line-height: 17px;
 }
 .h-is-mobile-navbar-item {
-    font-style: normal;
-    font-weight: 300;
     font-size: 20px;
     line-height: 24px;
 }
@@ -282,34 +280,34 @@ body {
 #mobile-drop-down-menu .o-sel-arrow {
     background-position: calc(100% - 13px) calc(100% - 16px);
 }
-a.button {
+.button.h-is-navbar-item {
     padding-top: 28px;
     padding-bottom: 16px;
 }
-a.button.is-outlined {
+.button.h-is-navbar-item.is-outlined {
     border-top-width: 0
 }
-a.button.is-outlined:not(.is-active) {
+.button.h-is-navbar-item.is-outlined:not(.is-active) {
     font-weight: bold;
     color: $h-highlight-color;
     border-color: $h-highlight-color;
 }
-a.button.is-outlined.is-active {
+.button.h-is-navbar-item.is-outlined.is-active {
     color: grey;
     border-color: grey;
     font-weight: 300;
 }
-a.button.is-outlined.is-active:hover {
+.button.h-is-navbar-item.is-outlined.is-active:hover {
     color: lightgrey;
     border-color: lightgrey;
     font-weight: 300;
 }
-a.button.is-ghost:hover {
+.button.h-is-navbar-item.is-ghost:hover {
     text-decoration-thickness: 1px;
     text-decoration-color: grey;
     text-underline-offset: 9px;
 }
-a.button.is-ghost.is-rimmed {
+.button.h-is-navbar-item.is-ghost.is-rimmed {
     text-decoration-line: underline;
     text-decoration-style: solid;
     text-decoration-color: $h-highlight-color;
@@ -318,19 +316,19 @@ a.button.is-ghost.is-rimmed {
     font-weight: bold;
     letter-spacing: normal;
 }
-a.button.is-outlined {
+.button.h-is-navbar-item.is-outlined {
     padding-left: 0.6em;
     padding-right: 0.6em;
     margin-right: 0.4em;
 }
-a.button.is-ghost {
+.button.h-is-navbar-item.is-ghost {
     padding-left: 0.4em;
     padding-right: 0.4em;
 }
-a.button.is-ghost.is-first {
+.button.h-is-navbar-item.is-ghost.is-first {
     padding-left: 2em;
 }
-a.button.is-ghost.is-last {
+.button.h-is-navbar-item.is-ghost.is-last {
     padding-right: 0;
 }
 
