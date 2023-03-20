@@ -47,7 +47,7 @@ image:
   pullSecrets: []
   registry: gcr.io
   repository: hedera-registry/hedera-mirror-node-explorer
-  tag: latest  # Defaults to the chart's app version
+  tag: ""  # Defaults to the chart's app version
 
 ingress:
   annotations: {}
