@@ -61,6 +61,16 @@ npm run docker:stop
 # then open http://localhost:8080 in your web browser
 ```
 
+### Run in Kubernetes
+
+To run in [Kubernetes](https://kubernetes.io) the hedera-explorer [Helm](https://helm.sh) chart can be used. First,
+obtain access to a Kubernetes cluster running version 1.23 or greater. [Minikube](https://minikube.sigs.k8s.io/docs/)
+can be used for a local Kubernetes cluster.
+
+```shell
+helm upgrade --install hedera-explorer chart/
+```
+
 ### Configure the Explorer
 
 #### Customize the available networks
@@ -118,6 +128,8 @@ To enable the Staking page and menu item, set the following variable to *true* i
 ```shell
 VUE_APP_ENABLE_STAKING=true
 ```
+
+### Customize configuration
 
 #### Branding
 

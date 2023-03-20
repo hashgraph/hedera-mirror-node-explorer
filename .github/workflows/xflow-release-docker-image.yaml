@@ -107,7 +107,7 @@ jobs:
       - name: Setup NodeJS
         uses: actions/setup-node@v3
         with:
-          node-version: 16
+          node-version: 19
           cache: npm
 
       - name: Authenticate to Google Cloud
@@ -141,7 +141,7 @@ jobs:
         uses: docker/build-push-action@v3
         with:
           push: true
-          file: CI.Dockerfile
+          file: Dockerfile
           context: .
           platforms: |
             linux/arm64
