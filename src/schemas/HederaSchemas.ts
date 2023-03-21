@@ -112,33 +112,39 @@ export interface TransactionResponse {
 }
 
 export interface TransactionByIdResponse {
-    transactions: Array<Transaction> | undefined
+    transactions: Array<TransactionDetail> | undefined
 }
-
 export interface Transaction {
 
+    bytes: string | null | undefined
+    charged_tx_fee: number | undefined
     consensus_timestamp: string | undefined
     entity_id: string |null | undefined             // Network entity ID in the format of shard.realm.num
-    bytes: string | null | undefined
-    transaction_hash: string | undefined
-    valid_start_timestamp: string | undefined
-    charged_tx_fee: number | undefined
-    memo_base64: string | undefined                 // To be checked
-    nonce: number | undefined
-    result: string | undefined
-    name: TransactionType | undefined
-    nft_transfers: NftTransfer[] | undefined
     max_fee: string | undefined
-    valid_duration_seconds: string | undefined
+    memo_base64: string | undefined                 // To be checked
+    name: TransactionType | undefined
     node: string | null |  undefined                // Network entity ID in the format of shard.realm.num
+    nonce: number | undefined
+    parent_consensus_timestamp: string | null | undefined
+    result: string | undefined
     scheduled: boolean | undefined
+    // staking_reward_transfers: ...
+    token_transfers: TokenTransfer[] | undefined
+    transaction_hash: string | undefined
     transaction_id: string | undefined
     transfers: Transfer[] | undefined
-    token_transfers: TokenTransfer[] | undefined
-    assessed_custom_fees: CustomFee[] | undefined
-    parent_consensus_timestamp: string | null | undefined
+    valid_duration_seconds: string | undefined
+    valid_start_timestamp: string | undefined
 
 }
+
+export interface TransactionDetail extends Transaction {
+
+    nft_transfers: NftTransfer[] | undefined
+    assessed_custom_fees: CustomFee[] | undefined
+
+}
+
 
 export interface NftTransfer {
     receiver_account_id: string | null | undefined  // Network entity ID in the format of shard.realm.num

@@ -18,7 +18,7 @@
  *
  */
 
-import {compareNftTransfer, NftTransfer, Transaction} from "@/schemas/HederaSchemas";
+import {compareNftTransfer, NftTransfer, TransactionDetail} from "@/schemas/HederaSchemas";
 
 export class NFTTransferLayout {
 
@@ -32,7 +32,7 @@ export class NFTTransferLayout {
     // Public
     //
 
-    public static make(transaction: Transaction|undefined): Array<NFTTransferLayout> {
+    public static make(transaction: TransactionDetail|undefined): Array<NFTTransferLayout> {
 
         const transfers = transaction?.nft_transfers ?? []
         transfers.sort(compareNftTransfer)

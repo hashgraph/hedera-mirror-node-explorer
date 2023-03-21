@@ -70,7 +70,7 @@
 <script lang="ts">
 
 import {computed, defineComponent, PropType} from "vue";
-import {Transaction} from "@/schemas/HederaSchemas";
+import {TransactionDetail} from "@/schemas/HederaSchemas";
 import HbarTransferGraphC from "@/components/transfer_graphs/HbarTransferGraphC.vue";
 import HbarTransferGraphF from "@/components/transfer_graphs/HbarTransferGraphF.vue";
 import NftTransferGraph from "@/components/transfer_graphs/NftTransferGraph.vue";
@@ -88,7 +88,7 @@ export default defineComponent({
     HbarTransferGraphF,
   },
   props: {
-    transaction: Object as PropType<Transaction>,
+    transaction: Object as PropType<TransactionDetail>,
     compact: {
       type: Boolean,
       default: false
