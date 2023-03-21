@@ -21,7 +21,7 @@
 import {EntityLoader} from "@/utils/loader/EntityLoader";
 import {
     ContractResultDetails,
-    Transaction,
+    TransactionDetail,
     TransactionByIdResponse,
     TransactionResponse, TransactionType
 } from "@/schemas/HederaSchemas";
@@ -40,12 +40,12 @@ import {EntityDescriptor} from "@/utils/EntityDescriptor";
 import {systemContractRegistry} from "@/schemas/SystemContractRegistry";
 import {BlocksResponseCollector} from "@/utils/collector/BlocksResponseCollector";
 
-export class TransactionLoader extends EntityLoader<Transaction> {
+export class TransactionLoader extends EntityLoader<TransactionDetail> {
 
     public readonly transactionLoc: ComputedRef<string|null> // transaction timestamp, hash or ethereum hash
     public readonly transactionId: ComputedRef<string|null>
 
-    private readonly transactionsRef: Ref<Transaction[]> = ref([])
+    private readonly transactionsRef: Ref<TransactionDetail[]> = ref([])
     private readonly contractLoader: ContractLoader
     private readonly accountLoader: AccountLoader
 
@@ -62,10 +62,10 @@ export class TransactionLoader extends EntityLoader<Transaction> {
         this.watchAndReload([this.transactionLoc, this.transactionId])
     }
 
-    public readonly transactions: ComputedRef<Transaction[]> = computed(
+    public readonly transactions: ComputedRef<TransactionDetail[]> = computed(
         () => this.transactionsRef.value)
 
-    public readonly transaction: ComputedRef<Transaction|null> = computed(() => this.entity.value)
+    public readonly transaction: ComputedRef<TransactionDetail|null> = computed(() => this.entity.value)
 
     public readonly formattedTransactionId: ComputedRef<string|null> = computed(() => {
         const transaction_id = this.transaction.value?.transaction_id
@@ -131,7 +131,7 @@ export class TransactionLoader extends EntityLoader<Transaction> {
     })
 
     public readonly scheduledTransaction = computed(() => {
-        let result: Transaction|null
+        let result: TransactionDetail|null
         if (this.transactions.value.length >= 2) {
             result = (this.transaction.value?.name === TransactionType.SCHEDULECREATE)
                 ? lookupScheduledTransaction(this.transactions.value)
@@ -143,7 +143,7 @@ export class TransactionLoader extends EntityLoader<Transaction> {
     })
 
     public readonly schedulingTransaction = computed(() => {
-        let result: Transaction|null
+        let result: TransactionDetail|null
         if (this.transactions.value.length >= 2) {
             result = this.transaction.value?.scheduled
                 ? lookupSchedulingTransaction(this.transactions.value)
@@ -155,7 +155,7 @@ export class TransactionLoader extends EntityLoader<Transaction> {
     })
 
     public readonly parentTransaction = computed(() => {
-        let result: Transaction|null
+        let result: TransactionDetail|null
         const children = lookupChildTransactions(this.transactions.value)
         if (children.length && this.transaction.value?.nonce && this.transaction.value.nonce > 0) {
             result = lookupParentTransaction(this.transactions.value)
@@ -166,7 +166,7 @@ export class TransactionLoader extends EntityLoader<Transaction> {
     })
 
     public readonly childTransactions = computed(() => {
-        let result: Transaction[]
+        let result: TransactionDetail[]
         const children = lookupChildTransactions(this.transactions.value)
         if (children.length && this.transaction.value?.nonce && this.transaction.value.nonce > 0) {
             result = []
@@ -191,8 +191,8 @@ export class TransactionLoader extends EntityLoader<Transaction> {
     //     this.accountLoader.requestLoad()
     // }
 
-    protected async load(): Promise<AxiosResponse<Transaction>|null> {
-        let result: AxiosResponse<Transaction>|null
+    protected async load(): Promise<AxiosResponse<TransactionDetail>|null> {
+        let result: AxiosResponse<TransactionDetail>|null
 
         /*
                   \ transactionId  |                null                  |               !null
@@ -225,9 +225,9 @@ export class TransactionLoader extends EntityLoader<Transaction> {
             }
 
             // 2) Loads transactions with transaction id
-            let transaction: Transaction|null
+            let transaction: TransactionDetail|null
             if (transactionId !== null) {
-                const response = await axios.get<TransactionResponse>("api/v1/transactions/" + transactionId)
+                const response = await axios.get<TransactionByIdResponse>("api/v1/transactions/" + transactionId)
                 this.transactionsRef.value = response.data.transactions ?? []
                 transaction = TransactionLoader.lookupTransaction(this.transactionsRef.value, tth)
             } else {
@@ -308,8 +308,8 @@ export class TransactionLoader extends EntityLoader<Transaction> {
     // Private (lookupTransaction)
     //
 
-    private static lookupTransaction(candidates: Transaction[], tth: Timestamp|TransactionHash): Transaction|null {
-        let result: Transaction|null = null
+    private static lookupTransaction(candidates: TransactionDetail[], tth: Timestamp|TransactionHash): TransactionDetail|null {
+        let result: TransactionDetail|null = null
         if (tth instanceof Timestamp) {
             const tt = tth.toString()
             for (const t of candidates) {
@@ -331,8 +331,8 @@ export class TransactionLoader extends EntityLoader<Transaction> {
     }
 }
 
-function lookupScheduledTransaction(transactions: Transaction[]): Transaction|null {
-    let result: Transaction | null = null
+function lookupScheduledTransaction(transactions: TransactionDetail[]): TransactionDetail|null {
+    let result: TransactionDetail | null = null
     for (const t of transactions) {
         if (t.scheduled) {
             result = t
@@ -342,8 +342,8 @@ function lookupScheduledTransaction(transactions: Transaction[]): Transaction|nu
     return result
 }
 
-function lookupSchedulingTransaction(transactions: Transaction[]): Transaction|null {
-    let result: Transaction | null = null
+function lookupSchedulingTransaction(transactions: TransactionDetail[]): TransactionDetail|null {
+    let result: TransactionDetail | null = null
     for (const t of transactions) {
         if (t.name === TransactionType.SCHEDULECREATE) {
             result = t
@@ -353,8 +353,8 @@ function lookupSchedulingTransaction(transactions: Transaction[]): Transaction|n
     return result
 }
 
-function lookupParentTransaction(transactions: Transaction[]): Transaction|null {
-    let result: Transaction | null = null
+function lookupParentTransaction(transactions: TransactionDetail[]): TransactionDetail|null {
+    let result: TransactionDetail | null = null
     for (const t of transactions) {
         if (t.nonce === 0) {
             result = t
@@ -364,8 +364,8 @@ function lookupParentTransaction(transactions: Transaction[]): Transaction|null 
     return result
 }
 
-function lookupChildTransactions(transactions: Transaction[]): Transaction[] {
-    const result = new Array<Transaction>()
+function lookupChildTransactions(transactions: TransactionDetail[]): TransactionDetail[] {
+    const result = new Array<TransactionDetail>()
     for (const t of transactions) {
         if (t.parent_consensus_timestamp) {
             result.push(t)
