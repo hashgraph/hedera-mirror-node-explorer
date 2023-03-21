@@ -113,13 +113,13 @@ import AccountLink from "@/components/values/AccountLink.vue";
 import TokenLink from "@/components/values/TokenLink.vue";
 import ArrowSegment from "@/components/transfer_graphs/ArrowSegment.vue";
 import {NFTTransferLayout} from "@/components/transfer_graphs/layout/NFTTransferLayout";
-import {Transaction} from "@/schemas/HederaSchemas";
+import {TransactionDetail} from "@/schemas/HederaSchemas";
 
 export default defineComponent({
   name: "NftTransferGraph",
   components: {TokenLink, AccountLink, ArrowSegment},
   props: {
-    transaction: Object as PropType<Transaction>,
+    transaction: Object as PropType<TransactionDetail>,
     compact: {
       type: Boolean,
       default: false

@@ -25,7 +25,7 @@
 <template>
   <template v-if="transaction">
     <TransferGraphSection v-if="shouldGraph"
-        v-bind:transaction="transaction"
+        v-bind:transaction="transactionDetail"
         v-bind:compact="true"/>
     <div v-else-if="isTokenAssociation">
       {{ transaction?.entity_id }}
@@ -54,7 +54,7 @@
 <script lang="ts">
 
 import {computed, defineComponent, onMounted, PropType, ref} from "vue";
-import {Transaction, TransactionType} from "@/schemas/HederaSchemas";
+import {Transaction, TransactionDetail, TransactionType} from "@/schemas/HederaSchemas";
 import {makeSummaryLabel} from "@/utils/TransactionTools";
 import TransferGraphSection from "@/components/transfer_graphs/TransferGraphSection.vue";
 import {TokenRelationshipLoader} from "@/components/token/TokenRelationshipLoader";
@@ -107,6 +107,10 @@ export default defineComponent({
       return result
     })
 
+    const transactionDetail = computed(() => {
+      return props.transaction as TransactionDetail|undefined
+    })
+
     return {
       shouldGraph,
       isTokenAssociation,
@@ -116,7 +120,8 @@ export default defineComponent({
       ethereumSummary,
       // From TransactionTools
       makeSummaryLabel,
-      TransactionType
+      TransactionType,
+      transactionDetail
     }
   }
 })

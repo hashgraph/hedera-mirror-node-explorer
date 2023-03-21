@@ -21,7 +21,7 @@
 import router from "@/router";
 import {flushPromises, mount} from "@vue/test-utils";
 import NftTransferGraph from "@/components/transfer_graphs/NftTransferGraph.vue";
-import {Transaction} from "@/schemas/HederaSchemas";
+import {TransactionDetail} from "@/schemas/HederaSchemas";
 import {SAMPLE_NONFUNGIBLE, SAMPLE_NONFUNGIBLE_DUDE} from "../Mocks";
 import MockAdapter from "axios-mock-adapter";
 import axios from "axios";
@@ -74,7 +74,7 @@ describe("NftTransferGraph.vue", () => {
                 plugins: [router]
             },
             props: {
-                transaction: transaction as Transaction
+                transaction: transaction as TransactionDetail
             },
         })
 
@@ -123,7 +123,7 @@ describe("NftTransferGraph.vue", () => {
                 }
             },
             props: {
-                transaction: transaction as Transaction
+                transaction: transaction as TransactionDetail
             },
         })
 
@@ -162,7 +162,7 @@ describe("NftTransferGraph.vue", () => {
                 plugins: [router]
             },
             props: {
-                transaction: transaction as Transaction
+                transaction: transaction as TransactionDetail
             },
         })
 
@@ -200,7 +200,7 @@ describe("NftTransferGraph.vue", () => {
                 plugins: [router]
             },
             props: {
-                transaction: transaction as Transaction
+                transaction: transaction as TransactionDetail
             },
         })
 
@@ -241,7 +241,7 @@ describe("NftTransferGraph.vue", () => {
                 plugins: [router]
             },
             props: {
-                transaction: transaction as Transaction
+                transaction: transaction as TransactionDetail
             },
         })
 
@@ -279,7 +279,7 @@ describe("NftTransferGraph.vue", () => {
                 plugins: [router]
             },
             props: {
-                transaction: transaction as Transaction
+                transaction: transaction as TransactionDetail
             },
         })
 
