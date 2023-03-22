@@ -227,7 +227,7 @@
       </template>
       <template v-slot:control>
         <button v-if="isWalletConnected" id="approve-button" class="button is-white is-small"
-                @click="showWizard = true">APPROVE ALLOWANCE…</button>
+                @click="showDialog = true">APPROVE ALLOWANCE…</button>
       </template>
       <template v-slot:content><br/></template>
       <template v-slot:leftContent>
@@ -248,6 +248,8 @@
         <StakingRewardsTable :controller="rewardsTableController"/>
       </template>
     </DashboardCard>
+
+    <ApproveAllowanceDialog v-model:show-dialog="showDialog" :owner-account-id="ownerAccountId"/>
 
   </section>
 
@@ -294,6 +296,7 @@ import {HbarAllowanceTableController} from "@/components/allowances/HbarAllowanc
 import HbarAllowanceTable from "@/components/allowances/HbarAllowanceTable.vue";
 import {TokenAllowanceTableController} from "@/components/allowances/TokenAllowanceTableController";
 import TokenAllowanceTable from "@/components/allowances/TokenAllowanceTable.vue";
+import ApproveAllowanceDialog from "@/components/allowances/ApproveAllowanceDialog.vue";
 
 const MAX_TOKEN_BALANCES = 10
 
@@ -302,6 +305,7 @@ export default defineComponent({
   name: 'AccountDetails',
 
   components: {
+    ApproveAllowanceDialog,
     TokenAllowanceTable,
     HbarAllowanceTable,
     EVMAddress,
@@ -336,7 +340,7 @@ export default defineComponent({
     const isTouchDevice = inject('isTouchDevice', false)
     const displaySideBySide = inject('isLargeScreen', true)
 
-    const showWizard = ref(false)
+    const showDialog = ref(false)
 
     //
     // account
@@ -500,10 +504,11 @@ export default defineComponent({
       isMediumScreen,
       isTouchDevice,
       displaySideBySide,
-      showWizard,
+      showDialog,
       transactionTableController,
       notification,
       isWalletConnected,
+      ownerAccountId: walletManager.accountId,
       account: accountLoader.entity,
       normalizedAccountId: accountLoader.accountId,
       accountChecksum: accountLoader.accountChecksum,

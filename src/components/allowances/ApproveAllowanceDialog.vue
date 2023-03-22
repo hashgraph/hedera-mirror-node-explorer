@@ -1,0 +1,103 @@
+<!--
+  -
+  - Hedera Mirror Node Explorer
+  -
+  - Copyright (C) 2021 - 2023 Hedera Hashgraph, LLC
+  -
+  - Licensed under the Apache License, Version 2.0 (the "License");
+  - you may not use this file except in compliance with the License.
+  - You may obtain a copy of the License at
+  -
+  -      http://www.apache.org/licenses/LICENSE-2.0
+  -
+  - Unless required by applicable law or agreed to in writing, software
+  - distributed under the License is distributed on an "AS IS" BASIS,
+  - WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+  - See the License for the specific language governing permissions and
+  - limitations under the License.
+  -
+  -->
+
+<!-- --------------------------------------------------------------------------------------------------------------- -->
+<!--                                                     TEMPLATE                                                    -->
+<!-- --------------------------------------------------------------------------------------------------------------- -->
+
+<template>
+  <div :class="{'is-active': showDialog}" class="modal has-text-white">
+    <div class="modal-background"/>
+    <div class="modal-content" style="width: 768px; border-radius: 16px">
+      <div class="box">
+
+        <span class="h-is-primary-title">
+          <span>Approve Allowance</span>
+          <span v-if="ownerAccountId" class="h-is-tertiary-text"> for account </span>
+          <span v-if="ownerAccountId" class="h-is-secondary-text has-text-weight-light mr-3">{{ ownerAccountId }}</span>
+        </span>
+
+        <hr class="h-card-separator"/>
+
+        <div class="mt-0" style="min-height: 136px">
+
+          <p>Stay tuned...</p>
+
+        </div>
+
+        <div class="is-flex is-justify-content-flex-end">
+          <button class="button is-white is-small" @click="handleCancel">CANCEL</button>
+          <button class="button is-info is-small ml-4"
+                  :disabled="!enableChangeButton" @click="handleChange">CHANGE</button>
+        </div>
+
+      </div>
+    </div>
+  </div>
+</template>
+
+<!-- --------------------------------------------------------------------------------------------------------------- -->
+<!--                                                      SCRIPT                                                     -->
+<!-- --------------------------------------------------------------------------------------------------------------- -->
+
+<script lang="ts">
+
+import {computed, defineComponent} from "vue";
+
+export default defineComponent({
+  name: "ApproveAllowanceDialog",
+  components: {},
+  props: {
+    ownerAccountId: String,
+    showDialog: {
+      type: Boolean,
+      default: false
+    },
+  },
+  emits: ["update:showDialog"],
+
+  setup(props, context) {
+
+    const enableChangeButton = computed(() => false)
+
+    const handleCancel = () => {
+      context.emit('update:showDialog', false)
+    }
+
+    const handleChange = () => {
+      context.emit('update:showDialog', false)
+    }
+
+    return {
+      enableChangeButton,
+      handleCancel,
+      handleChange,
+    }
+  }
+});
+
+</script>
+
+<!-- --------------------------------------------------------------------------------------------------------------- -->
+<!--                                                       STYLE                                                     -->
+<!-- --------------------------------------------------------------------------------------------------------------- -->
+
+<style>
+</style>
