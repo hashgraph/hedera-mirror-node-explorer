@@ -38,7 +38,9 @@
 
         <div class="mt-0" style="min-height: 136px">
 
-          <p>Stay tuned...</p>
+          <p>(Testnet only)</p>
+          <br/>
+          <p>Approve allowance of 1000 HBARs and 100 LFLG tokens to account 0.0.3534373</p>
 
         </div>
 
@@ -60,6 +62,7 @@
 <script lang="ts">
 
 import {computed, defineComponent} from "vue";
+import {routeManager, walletManager} from "@/router";
 
 export default defineComponent({
   name: "ApproveAllowanceDialog",
@@ -75,13 +78,29 @@ export default defineComponent({
 
   setup(props, context) {
 
-    const enableChangeButton = computed(() => false)
+    const enableChangeButton = computed(() => routeManager.currentNetwork.value === 'testnet')
 
     const handleCancel = () => {
       context.emit('update:showDialog', false)
     }
 
     const handleChange = () => {
+       walletManager.approveHbarAllowance("0.0.3534373", 1000)
+              .then((tid: string) => {
+                console.log("Transaction ID=" + tid)
+              })
+              .catch((reason) => {
+                console.log("Transaction Error: " + reason)
+              })
+
+          walletManager.approveTokenAllowance("0.0.3534370", "0.0.3534373", 100)
+              .then((tid: string) => {
+                console.log("Transaction ID=" + tid)
+              })
+              .catch((reason) => {
+                console.log("Transaction Error: " + reason)
+              })
+
       context.emit('update:showDialog', false)
     }
 
