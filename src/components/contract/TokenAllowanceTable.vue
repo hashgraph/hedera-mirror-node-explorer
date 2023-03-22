@@ -54,12 +54,10 @@
       <TimestampValue v-bind:timestamp="props.row.timestamp.from"/>
     </o-table-column>
 
-    <o-table-column v-slot="props" field="token" label="Token ID">
-      <TokenLink :token-id="props.row.token_id" show-extra="true"/>
-    </o-table-column>
-
-    <o-table-column v-slot="props" field="amount" label="Amount" position="right">
-      <HbarAmount :amount="props.row.amount_granted"/>
+    <o-table-column v-slot="props" field="token" label="Token Amount">
+      <TokenAmount :amount="props.row.amount_granted"
+                   :token-id="props.row.token_id"
+                   show-extra="true"/>
     </o-table-column>
 
   </o-table>
@@ -80,14 +78,13 @@ import {ORUGA_MOBILE_BREAKPOINT} from '@/App.vue';
 import TimestampValue from "@/components/values/TimestampValue.vue";
 import EmptyTable from "@/components/EmptyTable.vue";
 import AccountLink from "@/components/values/AccountLink.vue";
-import HbarAmount from "@/components/values/HbarAmount.vue";
 import {TokenAllowanceTableController} from "@/components/contract/TokenAllowanceTableController";
-import TokenLink from "@/components/values/TokenLink.vue";
+import TokenAmount from "@/components/values/TokenAmount.vue";
 
 export default defineComponent({
   name: 'TokenAllowanceTable',
 
-  components: {TokenLink, HbarAmount, AccountLink, EmptyTable, TimestampValue},
+  components: {TokenAmount, AccountLink, EmptyTable, TimestampValue},
 
   props: {
     controller: {
