@@ -18,7 +18,7 @@
  *
  */
 
-import {AccountUpdateTransaction} from "@hashgraph/sdk";
+import {AccountAllowanceApproveTransaction, AccountUpdateTransaction} from "@hashgraph/sdk";
 import {Signer} from "@hashgraph/sdk/lib/Signer";
 import {TransactionID} from "@/utils/TransactionID";
 import {WalletDriverError} from "@/utils/wallet/WalletDriverError";
@@ -54,7 +54,7 @@ export abstract class WalletDriver {
         return this.getSigner() !== null
     }
 
-    public async executeTransaction(t: AccountUpdateTransaction): Promise<string> {
+    public async executeTransaction(t: AccountUpdateTransaction|AccountAllowanceApproveTransaction): Promise<string> {
         let result: Promise<string>
 
         const signer = this.getSigner()

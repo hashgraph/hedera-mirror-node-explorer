@@ -111,4 +111,7 @@ export class WalletDriver_Mock extends WalletDriver {
         return this.connected
     }
 
+    getSigner(): Signer | null {
+        return null
+    }
 }

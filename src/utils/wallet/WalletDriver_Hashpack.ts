@@ -25,6 +25,7 @@ import {WalletDriver} from "@/utils/wallet/WalletDriver";
 import {HashConnectSigner} from "hashconnect/dist/provider/signer";
 import {timeGuard, TimeGuardError} from "@/utils/TimerUtils";
 import {Signer} from "@hashgraph/sdk/lib/Signer";
+import {Signer} from "@hashgraph/sdk/lib/Signer";
 
 export class WalletDriver_Hashpack extends WalletDriver {
 
@@ -54,6 +55,10 @@ export class WalletDriver_Hashpack extends WalletDriver {
             this.signer = null
         }
         return Promise.resolve()
+    }
+
+    public getSigner(): Signer|null {
+        return this.signer
     }
 
     public getSigner(): Signer|null {

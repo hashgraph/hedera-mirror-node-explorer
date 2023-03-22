@@ -19,7 +19,7 @@
  */
 
 import {computed, ref, watch} from "vue";
-import {AccountUpdateTransaction} from "@hashgraph/sdk";
+import {AccountAllowanceApproveTransaction, AccountUpdateTransaction} from "@hashgraph/sdk";
 import {RouteManager} from "@/utils/RouteManager";
 import {WalletDriver} from "@/utils/wallet/WalletDriver";
 import {WalletDriver_Blade} from "@/utils/wallet/WalletDriver_Blade";
@@ -151,4 +151,61 @@ export class WalletManager {
         return Promise.resolve(result)
     }
 
+    public async approveHbarAllowance(spender: string, amount: number): Promise<string> {
+        let result: string
+
+        // Connects if needed
+        await this.connect()
+
+        // Approves
+        if (this.accountId.value !== null) {
+
+            const trans = new AccountAllowanceApproveTransaction()
+            trans.approveHbarAllowance(this.accountId.value, spender, amount)
+
+            try {
+                result = await timeGuard(this.activeDriver.executeTransaction(trans), this.timeout)
+            } catch(error) {
+                if (error instanceof TimeGuardError) {
+                    throw this.activeDriver.callFailure(this.activeDriver.silentMessage())
+                } else {
+                    throw error
+                }
+            }
+
+        } else {
+            throw this.activeDriver.callFailure("Invalid parameters")
+        }
+
+        return Promise.resolve(result)
+    }
+
+    public async approveTokenAllowance(token: string, spender: string, amount: number): Promise<string> {
+        let result: string
+
+        // Connects if needed
+        await this.connect()
+
+        // Approves
+        if (this.accountId.value !== null) {
+
+            const trans = new AccountAllowanceApproveTransaction()
+            trans.approveTokenAllowance(token, this.accountId.value, spender, amount)
+
+            try {
+                result = await timeGuard(this.activeDriver.executeTransaction(trans), this.timeout)
+            } catch(error) {
+                if (error instanceof TimeGuardError) {
+                    throw this.activeDriver.callFailure(this.activeDriver.silentMessage())
+                } else {
+                    throw error
+                }
+            }
+
+        } else {
+            throw this.activeDriver.callFailure("Invalid parameters")
+        }
+
+        return Promise.resolve(result)
+    }
 }
