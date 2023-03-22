@@ -221,7 +221,9 @@
       </template>
     </DashboardCard>
 
-    <DashboardCard v-if="normalizedAccountId">
+    <div class="columns is-multiline">
+      <div class="column" :class="{'is-full': !displaySideBySide}">
+        <DashboardCard v-if="normalizedAccountId">
       <template v-slot:title>
         <span class="h-is-secondary-title">HBAR Allowances</span>
       </template>
@@ -229,8 +231,10 @@
         <HbarAllowanceTable :controller="hbarAllowanceTableController"/>
       </template>
     </DashboardCard>
+      </div>
 
-    <DashboardCard v-if="normalizedAccountId">
+      <div class="column">
+        <DashboardCard v-if="normalizedAccountId">
       <template v-slot:title>
         <span class="h-is-secondary-title">Token Allowances</span>
       </template>
@@ -238,6 +242,8 @@
         <TokenAllowanceTable :controller="tokenAllowanceTableController"/>
       </template>
     </DashboardCard>
+      </div>
+    </div>
 
     <DashboardCard v-if="normalizedAccountId && availableAPI">
       <template v-slot:title>
@@ -333,6 +339,7 @@ export default defineComponent({
     const isSmallScreen = inject('isSmallScreen', true)
     const isMediumScreen = inject('isMediumScreen', true)
     const isTouchDevice = inject('isTouchDevice', false)
+    const displaySideBySide = inject('isLargeScreen', true)
 
     //
     // account
@@ -493,6 +500,7 @@ export default defineComponent({
       isSmallScreen,
       isMediumScreen,
       isTouchDevice,
+      displaySideBySide,
       transactionTableController,
       notification,
       account: accountLoader.entity,
