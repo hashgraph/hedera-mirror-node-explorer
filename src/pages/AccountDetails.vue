@@ -221,29 +221,20 @@
       </template>
     </DashboardCard>
 
-    <div class="columns is-multiline">
-      <div class="column" :class="{'is-full': !displaySideBySide}">
-        <DashboardCard v-if="normalizedAccountId">
+    <DashboardCard v-if="normalizedAccountId">
       <template v-slot:title>
-        <span class="h-is-secondary-title">HBAR Allowances</span>
+        <span class="h-is-secondary-title">Allowances</span>
       </template>
-      <template v-slot:content>
+      <template v-slot:content><br/></template>
+      <template v-slot:leftContent>
+        <p class="h-is-tertiary-text mb-2">HBAR Allowances</p>
         <HbarAllowanceTable :controller="hbarAllowanceTableController"/>
       </template>
-    </DashboardCard>
-      </div>
-
-      <div class="column">
-        <DashboardCard v-if="normalizedAccountId">
-      <template v-slot:title>
-        <span class="h-is-secondary-title">Token Allowances</span>
-      </template>
-      <template v-slot:content>
+      <template v-slot:rightContent>
+        <p class="h-is-tertiary-text mb-2">Token Allowances</p>
         <TokenAllowanceTable :controller="tokenAllowanceTableController"/>
       </template>
     </DashboardCard>
-      </div>
-    </div>
 
     <DashboardCard v-if="normalizedAccountId && availableAPI">
       <template v-slot:title>
