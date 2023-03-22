@@ -283,7 +283,7 @@ import AccountLink from "@/components/values/AccountLink.vue";
 import {AccountLoader} from "@/components/account/AccountLoader";
 import {ContractLoader} from "@/components/contract/ContractLoader";
 import TransactionFilterSelect from "@/components/transaction/TransactionFilterSelect.vue";
-import router, {routeManager} from "@/router";
+import router, {routeManager, walletManager} from "@/router";
 import TransactionLink from "@/components/values/TransactionLink.vue";
 import {StakingRewardsTableController} from "@/components/staking/StakingRewardsTableController";
 import StakingRewardsTable from "@/components/staking/StakingRewardsTable.vue";
