@@ -360,7 +360,7 @@ export default defineComponent({
       return result
     })
 
-    const isWalletConnected = computed(() => true)
+    const isWalletConnected = computed(() => walletManager.connected.value)
 
     //
     // TransactionTableController
