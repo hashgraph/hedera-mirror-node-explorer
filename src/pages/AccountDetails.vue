@@ -225,6 +225,10 @@
       <template v-slot:title>
         <span class="h-is-secondary-title">Allowances</span>
       </template>
+      <template v-slot:control>
+        <button v-if="isWalletConnected" id="approve-button" class="button is-white is-small"
+                @click="showWizard = true">APPROVE ALLOWANCE…</button>
+      </template>
       <template v-slot:content><br/></template>
       <template v-slot:leftContent>
         <p class="h-is-tertiary-text mb-2">HBAR Allowances</p>
@@ -257,7 +261,7 @@
 
 <script lang="ts">
 
-import {computed, defineComponent, inject, onBeforeUnmount, onMounted, watch} from 'vue';
+import {computed, defineComponent, inject, onBeforeUnmount, onMounted, ref, watch} from 'vue';
 import KeyValue from "@/components/values/KeyValue.vue";
 import PlayPauseButton from "@/components/PlayPauseButton.vue";
 import TransactionTable from "@/components/transaction/TransactionTable.vue";
@@ -332,6 +336,8 @@ export default defineComponent({
     const isTouchDevice = inject('isTouchDevice', false)
     const displaySideBySide = inject('isLargeScreen', true)
 
+    const showWizard = ref(false)
+
     //
     // account
     //
@@ -353,6 +359,8 @@ export default defineComponent({
       }
       return result
     })
+
+    const isWalletConnected = computed(() => true)
 
     //
     // TransactionTableController
@@ -492,8 +500,10 @@ export default defineComponent({
       isMediumScreen,
       isTouchDevice,
       displaySideBySide,
+      showWizard,
       transactionTableController,
       notification,
+      isWalletConnected,
       account: accountLoader.entity,
       normalizedAccountId: accountLoader.accountId,
       accountChecksum: accountLoader.accountChecksum,
