@@ -54,10 +54,12 @@
       <TimestampValue v-bind:timestamp="props.row.timestamp.from"/>
     </o-table-column>
 
-    <o-table-column v-slot="props" field="token" label="Token Amount">
-      <TokenAmount :amount="props.row.amount_granted"
-                   :token-id="props.row.token_id"
-                   show-extra="true"/>
+    <o-table-column v-slot="props" field="token" label="Token ID">
+      <TokenLink :token-id="props.row.token_id" :show-extra="true"/>
+    </o-table-column>
+
+    <o-table-column v-slot="props" field="token" label="Amount">
+      <TokenAmount :token-id="props.row.token_id" :amount="props.row.amount_granted"/>
     </o-table-column>
 
   </o-table>
@@ -80,11 +82,12 @@ import EmptyTable from "@/components/EmptyTable.vue";
 import AccountLink from "@/components/values/AccountLink.vue";
 import {TokenAllowanceTableController} from "@/components/contract/TokenAllowanceTableController";
 import TokenAmount from "@/components/values/TokenAmount.vue";
+import TokenLink from "@/components/values/TokenLink.vue";
 
 export default defineComponent({
   name: 'TokenAllowanceTable',
 
-  components: {TokenAmount, AccountLink, EmptyTable, TimestampValue},
+  components: {TokenLink, TokenAmount, AccountLink, EmptyTable, TimestampValue},
 
   props: {
     controller: {
