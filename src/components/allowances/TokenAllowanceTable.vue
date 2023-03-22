@@ -47,7 +47,7 @@
       @page-change="onPageChange">
 
     <o-table-column v-slot="props" field="spender" label="Spender">
-      <AccountLink :account-id="props.row.spender" show-extra="true"/>
+      <AccountLink :account-id="props.row.spender" :show-extra="true"/>
     </o-table-column>
 
     <o-table-column v-slot="props" field="timestamp" label="Time">
