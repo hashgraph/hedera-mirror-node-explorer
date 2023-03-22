@@ -290,10 +290,10 @@ import StakingRewardsTable from "@/components/staking/StakingRewardsTable.vue";
 import AliasValue from "@/components/values/AliasValue.vue";
 import {NodeRegistry} from "@/components/node/NodeRegistry";
 import EVMAddress from "@/components/values/EVMAddress.vue";
-import {HbarAllowanceTableController} from "@/components/contract/HbarAllowanceTableController";
-import HbarAllowanceTable from "@/components/contract/HbarAllowanceTable.vue";
-import {TokenAllowanceTableController} from "@/components/contract/TokenAllowanceTableController";
-import TokenAllowanceTable from "@/components/contract/TokenAllowanceTable.vue";
+import {HbarAllowanceTableController} from "@/components/allowances/HbarAllowanceTableController";
+import HbarAllowanceTable from "@/components/allowances/HbarAllowanceTable.vue";
+import {TokenAllowanceTableController} from "@/components/allowances/TokenAllowanceTableController";
+import TokenAllowanceTable from "@/components/allowances/TokenAllowanceTable.vue";
 
 const MAX_TOKEN_BALANCES = 10
 

@@ -54,12 +54,8 @@
       <TimestampValue v-bind:timestamp="props.row.timestamp.from"/>
     </o-table-column>
 
-    <o-table-column v-slot="props" field="token" label="Token ID">
-      <TokenLink :token-id="props.row.token_id" :show-extra="true"/>
-    </o-table-column>
-
-    <o-table-column v-slot="props" field="token" label="Amount">
-      <TokenAmount :token-id="props.row.token_id" :amount="props.row.amount_granted"/>
+    <o-table-column v-slot="props" field="amount" label="Amount" position="right">
+      <HbarAmount :amount="props.row.amount_granted"/>
     </o-table-column>
 
   </o-table>
@@ -75,23 +71,22 @@
 <script lang="ts">
 
 import {ComputedRef, defineComponent, inject, PropType, Ref} from 'vue';
-import {TokenAllowance} from "@/schemas/HederaSchemas";
+import {CryptoAllowance} from "@/schemas/HederaSchemas";
 import {ORUGA_MOBILE_BREAKPOINT} from '@/App.vue';
+import {HbarAllowanceTableController} from "@/components/allowances/HbarAllowanceTableController";
 import TimestampValue from "@/components/values/TimestampValue.vue";
 import EmptyTable from "@/components/EmptyTable.vue";
 import AccountLink from "@/components/values/AccountLink.vue";
-import {TokenAllowanceTableController} from "@/components/contract/TokenAllowanceTableController";
-import TokenAmount from "@/components/values/TokenAmount.vue";
-import TokenLink from "@/components/values/TokenLink.vue";
+import HbarAmount from "@/components/values/HbarAmount.vue";
 
 export default defineComponent({
-  name: 'TokenAllowanceTable',
+  name: 'HbarAllowanceTable',
 
-  components: {TokenLink, TokenAmount, AccountLink, EmptyTable, TimestampValue},
+  components: {HbarAmount, AccountLink, EmptyTable, TimestampValue},
 
   props: {
     controller: {
-      type: Object as PropType<TokenAllowanceTableController>,
+      type: Object as PropType<HbarAllowanceTableController>,
       required: true
     }
   },
@@ -105,7 +100,7 @@ export default defineComponent({
       isTouchDevice,
       isSmallScreen,
       isMediumScreen,
-      allowances: props.controller.rows as ComputedRef<TokenAllowance[]>,
+      allowances: props.controller.rows as ComputedRef<CryptoAllowance[]>,
       loading: props.controller.loading as ComputedRef<boolean>,
       total: props.controller.totalRowCount as ComputedRef<number>,
       currentPage: props.controller.currentPage as Ref<number>,
