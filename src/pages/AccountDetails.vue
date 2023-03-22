@@ -221,6 +221,15 @@
       </template>
     </DashboardCard>
 
+    <DashboardCard v-if="normalizedAccountId">
+      <template v-slot:title>
+        <span class="h-is-secondary-title">HBAR Allowances</span>
+      </template>
+      <template v-slot:content>
+        <HbarAllowanceTable :controller="hbarAllowanceTableController"/>
+      </template>
+    </DashboardCard>
+
     <DashboardCard v-if="normalizedAccountId && availableAPI">
       <template v-slot:title>
         <span class="h-is-secondary-title">Recent Staking Rewards</span>
@@ -271,6 +280,8 @@ import StakingRewardsTable from "@/components/staking/StakingRewardsTable.vue";
 import AliasValue from "@/components/values/AliasValue.vue";
 import {NodeRegistry} from "@/components/node/NodeRegistry";
 import EVMAddress from "@/components/values/EVMAddress.vue";
+import {HbarAllowanceTableController} from "@/components/contract/HbarAllowanceTableController";
+import HbarAllowanceTable from "@/components/contract/HbarAllowanceTable.vue";
 
 const MAX_TOKEN_BALANCES = 10
 
@@ -279,6 +290,7 @@ export default defineComponent({
   name: 'AccountDetails',
 
   components: {
+    HbarAllowanceTable,
     EVMAddress,
     AliasValue,
     TransactionLink,
@@ -434,6 +446,14 @@ export default defineComponent({
     onMounted(() => rewardsTableController.mount())
     onBeforeUnmount(() => rewardsTableController.unmount())
 
+    //
+    // HBAR Allowances Table Controller
+    //
+    const hbarAllowanceTableController = new HbarAllowanceTableController(
+        router, accountLoader.accountId, perPage, "p3", "k3")
+    onMounted(() => hbarAllowanceTableController.mount())
+    onBeforeUnmount(() => hbarAllowanceTableController.unmount())
+
     const contractRoute = computed(() => {
       const accountId = accountLoader.accountId.value
       return accountId ? routeManager.makeRouteToContract(accountId) : null
@@ -474,6 +494,7 @@ export default defineComponent({
       stakedNodeDescription,
       stakedNodeIcon,
       rewardsTableController,
+      hbarAllowanceTableController,
       contractRoute,
       stakedNodeRoute,
       operatorNodeRoute,
