@@ -230,6 +230,15 @@
       </template>
     </DashboardCard>
 
+    <DashboardCard v-if="normalizedAccountId">
+      <template v-slot:title>
+        <span class="h-is-secondary-title">Token Allowances</span>
+      </template>
+      <template v-slot:content>
+        <TokenAllowanceTable :controller="tokenAllowanceTableController"/>
+      </template>
+    </DashboardCard>
+
     <DashboardCard v-if="normalizedAccountId && availableAPI">
       <template v-slot:title>
         <span class="h-is-secondary-title">Recent Staking Rewards</span>
@@ -282,6 +291,8 @@ import {NodeRegistry} from "@/components/node/NodeRegistry";
 import EVMAddress from "@/components/values/EVMAddress.vue";
 import {HbarAllowanceTableController} from "@/components/contract/HbarAllowanceTableController";
 import HbarAllowanceTable from "@/components/contract/HbarAllowanceTable.vue";
+import {TokenAllowanceTableController} from "@/components/contract/TokenAllowanceTableController";
+import TokenAllowanceTable from "@/components/contract/TokenAllowanceTable.vue";
 
 const MAX_TOKEN_BALANCES = 10
 
@@ -290,6 +301,7 @@ export default defineComponent({
   name: 'AccountDetails',
 
   components: {
+    TokenAllowanceTable,
     HbarAllowanceTable,
     EVMAddress,
     AliasValue,
@@ -454,6 +466,14 @@ export default defineComponent({
     onMounted(() => hbarAllowanceTableController.mount())
     onBeforeUnmount(() => hbarAllowanceTableController.unmount())
 
+    //
+    // Token Allowances Table Controller
+    //
+    const tokenAllowanceTableController = new TokenAllowanceTableController(
+        router, accountLoader.accountId, perPage, "p4", "k4")
+    onMounted(() => tokenAllowanceTableController.mount())
+    onBeforeUnmount(() => tokenAllowanceTableController.unmount())
+
     const contractRoute = computed(() => {
       const accountId = accountLoader.accountId.value
       return accountId ? routeManager.makeRouteToContract(accountId) : null
@@ -495,6 +515,7 @@ export default defineComponent({
       stakedNodeIcon,
       rewardsTableController,
       hbarAllowanceTableController,
+      tokenAllowanceTableController,
       contractRoute,
       stakedNodeRoute,
       operatorNodeRoute,
