@@ -19,7 +19,7 @@
  */
 
 import {computed, ref, watch} from "vue";
-import {AccountAllowanceApproveTransaction, AccountUpdateTransaction} from "@hashgraph/sdk";
+import {AccountAllowanceApproveTransaction, AccountUpdateTransaction, NftId, TokenId} from "@hashgraph/sdk";
 import {RouteManager} from "@/utils/RouteManager";
 import {WalletDriver} from "@/utils/wallet/WalletDriver";
 import {WalletDriver_Blade} from "@/utils/wallet/WalletDriver_Blade";
@@ -182,6 +182,36 @@ export class WalletManager {
 
             const trans = new AccountAllowanceApproveTransaction()
             trans.approveTokenAllowance(token, this.accountId.value, spender, amount)
+            result = await this.executeTransaction(trans)
+
+
+        } else {
+            throw this.activeDriver.callFailure("Invalid parameters")
+        }
+
+        return Promise.resolve(result)
+    }
+
+    public async approveNFTAllowance(token: string, spender: string, serialNumbers: number[]): Promise<string> {
+        let result: string
+
+        // Connects if needed
+        await this.connect()
+
+        // Approves
+        if (this.accountId.value !== null) {
+
+            const trans = new AccountAllowanceApproveTransaction()
+            if (1 <= serialNumbers.length && serialNumbers.length <= 20) {
+                const tid = TokenId.fromString(token)
+                for (const sn of serialNumbers) {
+                    trans.approveTokenNftAllowance(new NftId(tid, sn), this.accountId.value, spender)
+                }
+            } else if (serialNumbers.length == 0) {
+                trans.approveTokenNftAllowanceAllSerials(token, this.accountId.value, spender)
+            } else {
+                throw this.activeDriver.callFailure("Invalid serial number count (" + serialNumbers.length + ")")
+            }
             result = await this.executeTransaction(trans)
 
 
