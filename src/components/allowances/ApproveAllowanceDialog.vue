@@ -46,8 +46,9 @@
 
         <div class="is-flex is-justify-content-flex-end">
           <button class="button is-white is-small" @click="handleCancel">CANCEL</button>
-          <button class="button is-info is-small ml-4"
-                  :disabled="!enableChangeButton" @click="handleChange">CHANGE</button>
+          <button :disabled="!enableChangeButton"
+                  class="button is-info is-small ml-4" @click="handleChange">CHANGE
+          </button>
         </div>
 
       </div>
@@ -85,21 +86,21 @@ export default defineComponent({
     }
 
     const handleChange = () => {
-       walletManager.approveHbarAllowance("0.0.3534373", 1000)
-              .then((tid: string) => {
-                console.log("Transaction ID=" + tid)
-              })
-              .catch((reason) => {
-                console.log("Transaction Error: " + reason)
-              })
+      walletManager.approveHbarAllowance("0.0.3534373", 1000)
+          .then((tid: string) => {
+            console.log("Transaction ID=" + tid)
+          })
+          .catch((reason) => {
+            console.log("Transaction Error: " + reason)
+          })
 
-          walletManager.approveTokenAllowance("0.0.3534370", "0.0.3534373", 100)
-              .then((tid: string) => {
-                console.log("Transaction ID=" + tid)
-              })
-              .catch((reason) => {
-                console.log("Transaction Error: " + reason)
-              })
+      // walletManager.approveTokenAllowance("0.0.3534370", "0.0.3534373", 100)
+      //     .then((tid: string) => {
+      //       console.log("Transaction ID=" + tid)
+      //     })
+      //     .catch((reason) => {
+      //       console.log("Transaction Error: " + reason)
+      //     })
 
       context.emit('update:showDialog', false)
     }
