@@ -162,16 +162,7 @@ export class WalletManager {
 
             const trans = new AccountAllowanceApproveTransaction()
             trans.approveHbarAllowance(this.accountId.value, spender, amount)
-
-            try {
-                result = await timeGuard(this.activeDriver.executeTransaction(trans), this.timeout)
-            } catch(error) {
-                if (error instanceof TimeGuardError) {
-                    throw this.activeDriver.callFailure(this.activeDriver.silentMessage())
-                } else {
-                    throw error
-                }
-            }
+            result = await this.executeTransaction(trans)
 
         } else {
             throw this.activeDriver.callFailure("Invalid parameters")
@@ -191,21 +182,31 @@ export class WalletManager {
 
             const trans = new AccountAllowanceApproveTransaction()
             trans.approveTokenAllowance(token, this.accountId.value, spender, amount)
+            result = await this.executeTransaction(trans)
 
-            try {
-                result = await timeGuard(this.activeDriver.executeTransaction(trans), this.timeout)
-            } catch(error) {
-                if (error instanceof TimeGuardError) {
-                    throw this.activeDriver.callFailure(this.activeDriver.silentMessage())
-                } else {
-                    throw error
-                }
-            }
 
         } else {
             throw this.activeDriver.callFailure("Invalid parameters")
         }
 
+        return Promise.resolve(result)
+    }
+
+    //
+    // Protected
+    //
+
+    protected async executeTransaction(t: AccountAllowanceApproveTransaction|AccountUpdateTransaction): Promise<string> {
+        let result: string
+        try {
+            result = await timeGuard(this.activeDriver.executeTransaction(t), this.timeout)
+        } catch(error) {
+            if (error instanceof TimeGuardError) {
+                throw this.activeDriver.callFailure(this.activeDriver.silentMessage())
+            } else {
+                throw error
+            }
+        }
         return Promise.resolve(result)
     }
 }

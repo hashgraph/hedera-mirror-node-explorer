@@ -46,15 +46,7 @@ export abstract class WalletDriver {
     // Public (utilities)
     //
 
-    public getAccountId(): string|null {
-        return this.getSigner()?.getAccountId()?.toString() ?? null
-    }
-
-    public isConnected(): boolean {
-        return this.getSigner() !== null
-    }
-
-    public async executeTransaction(t: AccountUpdateTransaction|AccountAllowanceApproveTransaction): Promise<string> {
+    public async executeTransaction(t: AccountAllowanceApproveTransaction|AccountUpdateTransaction): Promise<string> {
         let result: Promise<string>
 
         const signer = this.getSigner()
@@ -62,8 +54,12 @@ export abstract class WalletDriver {
             try {
                 await t.freezeWithSigner(signer)
                 const response = await signer.call(t)
-                const transactionId = TransactionID.normalize(response.transactionId.toString(), false);
-                result = Promise.resolve(transactionId)
+                if (response) {
+                    const transactionId = TransactionID.normalize(response.transactionId.toString(), false);
+                    result = Promise.resolve(transactionId)
+                } else { // When user clicks on "Reject" button HashConnectSigner.call() returns undefined :(
+                    result = Promise.reject(this.callFailure(this.name + " wallet did reject operation"))
+                }
             } catch(reason) {
                 throw this.callFailure(reason.message)
             }

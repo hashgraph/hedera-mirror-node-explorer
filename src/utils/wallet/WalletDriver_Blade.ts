@@ -23,7 +23,8 @@ import {BladeSigner, BladeWalletError} from "@bladelabs/blade-web3.js";
 import {HederaNetwork} from "@bladelabs/blade-web3.js/lib/src/models/blade";
 import {WalletDriver} from "@/utils/wallet/WalletDriver";
 import {WalletDriverError} from "@/utils/wallet/WalletDriverError";
-import {Signer} from "@hashgraph/sdk/lib/Signer";
+import {AccountUpdateTransaction} from "@hashgraph/sdk";
+import {TransactionID} from "@/utils/TransactionID";
 import {Signer} from "@hashgraph/sdk/lib/Signer";
 
 export class WalletDriver_Blade extends WalletDriver {

@@ -19,7 +19,7 @@
  */
 
 import {WalletDriver} from "@/utils/wallet/WalletDriver";
-import {AccountUpdateTransaction} from "@hashgraph/sdk";
+import {AccountAllowanceApproveTransaction, AccountUpdateTransaction} from "@hashgraph/sdk";
 import {AccountBalanceTransactions} from "@/schemas/HederaSchemas";
 import {Signer} from "@hashgraph/sdk/lib/Signer";
 
@@ -64,7 +64,7 @@ export class WalletDriver_Mock extends WalletDriver {
         }
     }
 
-    public async executeTransaction(request: AccountUpdateTransaction): Promise<string> {
+    public async executeTransaction(request: AccountUpdateTransaction|AccountAllowanceApproveTransaction): Promise<string> {
         let result: string
 
         this.updateAccountCounter += 1
@@ -109,9 +109,5 @@ export class WalletDriver_Mock extends WalletDriver {
 
     isConnected(): boolean {
         return this.connected
-    }
-
-    getSigner(): Signer | null {
-        return null
     }
 }
