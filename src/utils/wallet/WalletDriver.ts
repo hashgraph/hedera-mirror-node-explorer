@@ -46,6 +46,15 @@ export abstract class WalletDriver {
     // Public (utilities)
     //
 
+    public getAccountId(): string|null {
+        return this.getSigner()?.getAccountId()?.toString() ?? null
+    }
+
+    public isConnected(): boolean {
+        return this.getSigner() !== null
+    }
+
+
     public async executeTransaction(t: AccountAllowanceApproveTransaction|AccountUpdateTransaction): Promise<string> {
         let result: Promise<string>
 
