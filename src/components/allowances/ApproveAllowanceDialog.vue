@@ -189,10 +189,13 @@ export default defineComponent({
     const enableChangeButton = computed(() => routeManager.currentNetwork.value === 'testnet')
 
     const selectedSpender = ref<string | null>(null)
+    const normalizedSpender = computed(() => EntityID.normalize(nr.stripChecksum(selectedSpender.value ?? "")))
     const selectedHbarAmount = ref<string | null>(null)
     const selectedToken = ref<string | null>(null)
+    const normalizedToken = computed(() => EntityID.normalize(nr.stripChecksum(selectedToken.value ?? "")))
     const selectedTokenAmount = ref<string | null>(null)
     const selectedNFT = ref<string | null>(null)
+    const normalizedNFT = computed(() => EntityID.normalize(nr.stripChecksum(selectedNFT.value ?? "")))
     const allowanceChoice = ref("hbar")
 
     const isSpenderValid = ref(false)
@@ -234,26 +237,30 @@ export default defineComponent({
     })
     const validateToken = () => validateAssociation(
         walletManager.accountId.value,
-        selectedToken.value,
+        normalizedToken.value,
         isTokenValid,
         tokenFeedback)
 
     const showConfirmDialog = ref(false)
     const confirmMessage = computed(() => {
       let result: string
+      const toAccount = normalizedSpender.value
+
       switch (allowanceChoice.value) {
         case 'hbar':
-          result = "Do you want to approve an allowance to account " + selectedSpender.value
+          result = "Do you want to approve an allowance to account " + toAccount
               + " for " + selectedHbarAmount.value + "ħ" + "?"
           break
         case 'token':
-          result = "Do you want to approve an allowance to account " + selectedSpender.value
-              + " for " + selectedTokenAmount.value + " tokens (" + selectedToken.value + ")?"
+          const token = normalizedToken.value
+          result = "Do you want to approve an allowance to account " + toAccount
+              + " for " + selectedTokenAmount.value + " tokens (" + token + ")?"
           break
         case 'nft':
         default:
-          result = "Do you want to approve an allowance to account " + selectedSpender.value
-              + " for " + selectedNFT.value + "?"
+          const nFT = normalizedNFT.value
+          result = "Do you want to approve an allowance to account " + toAccount
+              + " for " + nFT + "?"
       }
       return result
     })
@@ -274,18 +281,18 @@ export default defineComponent({
     }
 
     const handleConfirmChange = () => {
-      console.log("selectedSpender: " + selectedSpender.value)
+      console.log("normalizedSpender: " + normalizedSpender.value)
       console.log("allowanceChoice: " + allowanceChoice.value)
       console.log("selectedHbarAmount: " + selectedHbarAmount.value)
-      console.log("selectedToken: " + selectedToken.value)
+      console.log("normalizedToken: " + normalizedToken.value)
       console.log("selectedTokenAmount: " + selectedTokenAmount.value)
-      console.log("selectedNFT: " + selectedNFT.value)
+      console.log("normalizedNFT: " + normalizedNFT.value)
 
-      if (selectedSpender.value) {
+      if (normalizedSpender.value) {
         switch (allowanceChoice.value) {
           case 'hbar':
             if (selectedHbarAmount.value) {
-              walletManager.approveHbarAllowance(selectedSpender.value, parseFloat(selectedHbarAmount.value))
+              walletManager.approveHbarAllowance(normalizedSpender.value, parseFloat(selectedHbarAmount.value))
                   .then((tid: string) => {
                     console.log("Transaction ID=" + tid)
                   })
@@ -295,10 +302,10 @@ export default defineComponent({
             }
             break
           case 'token':
-            if (selectedToken.value && selectedTokenAmount.value) {
+            if (normalizedToken.value && selectedTokenAmount.value) {
               walletManager.approveTokenAllowance(
-                  selectedToken.value,
-                  selectedSpender.value,
+                  normalizedToken.value,
+                  normalizedSpender.value,
                   parseFloat(selectedTokenAmount.value)
               )
                   .then((tid: string) => {
@@ -311,7 +318,10 @@ export default defineComponent({
             break
           case 'nft':
           default:
-            console.log("Approve NFT Allowance not implemented")
+            if (normalizedNFT.value) {
+              console.log("normalizedNFT: " + normalizedNFT)
+              console.log("to be implemented...")
+            }
         }
       }
     }
