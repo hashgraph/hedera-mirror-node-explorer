@@ -48,7 +48,12 @@
                  background-color: var(--h-theme-box-background-color)"
                  type="text"
                  @input="event => handleSpenderInput(event.target.value)">
-          <div/>
+          <div v-if="spenderFeedback" id="spenderFeedback"
+               :class="{'has-text-grey': isSpenderValid, 'has-text-danger': !isSpenderValid}"
+               class="is-inline-block h-is-text-size-2"
+               style="line-height:26px;">
+            {{ spenderFeedback }}
+          </div>
         </div>
 
         <div class="dialog-grid mt-4">
@@ -142,11 +147,19 @@
 
 <script lang="ts">
 
-import {computed, defineComponent, Ref, ref} from "vue";
-import {routeManager, walletManager} from "@/router";
+import {computed, defineComponent, Ref, ref, watch} from "vue";
+import router, {routeManager, walletManager} from "@/router";
 import {EntityID} from "@/utils/EntityID";
 import {networkRegistry} from "@/schemas/NetworkRegistry";
 import ConfirmDialog from "@/components/ConfirmDialog.vue";
+import axios from "axios";
+import {AccountsResponse} from "@/schemas/HederaSchemas";
+
+const VALID_ACCOUNT_MESSAGE = "Account exists"
+const UNKNOWN_ACCOUNT_MESSAGE = "Unknown account"
+const INVALID_ACCOUNTID_MESSAGE = "Invalid account ID"
+const INVALID_CHECKSUM_MESSAGE = "Invalid account checksum"
+const SAME_AS_OWNER_ACCOUNT_MESSAGE = "Same as owner's account"
 
 export default defineComponent({
   name: "ApproveAllowanceDialog",
@@ -162,6 +175,7 @@ export default defineComponent({
 
   setup(props, context) {
     const nr = networkRegistry
+    const network = router.currentRoute.value.params.network as string
 
     const enableChangeButton = computed(() => routeManager.currentNetwork.value === 'testnet')
 
@@ -171,6 +185,27 @@ export default defineComponent({
     const selectedTokenAmount = ref<string | null>(null)
     const selectedNFT = ref<string | null>(null)
     const allowanceChoice = ref("hbar")
+
+    const isSpenderValid = ref(false)
+    const spenderFeedback = ref<string | null>(null)
+    let spenderValidationTimerId = -1
+
+    watch(selectedSpender, () => {
+      isSpenderValid.value = false
+      spenderFeedback.value = null
+
+      if (spenderValidationTimerId != -1) {
+        window.clearTimeout(spenderValidationTimerId)
+        spenderValidationTimerId = -1
+      }
+      if (selectedSpender.value?.length) {
+        spenderValidationTimerId = window.setTimeout(() => validateSpender(), 500)
+      } else {
+        selectedSpender.value = null
+      }
+    })
+
+    const validateSpender = () => validateAccount(selectedSpender, isSpenderValid, spenderFeedback)
 
     const showConfirmDialog = ref(false)
     const confirmMessage = computed(() => {
@@ -310,6 +345,47 @@ export default defineComponent({
       }
     }
 
+    const validateAccount = (accountId: Ref<string | null>, isValid: Ref<boolean>, message: Ref<string | null>) => {
+      const checksum = nr.extractChecksum(accountId.value ?? "")
+      const entity = EntityID.normalize(nr.stripChecksum(accountId.value ?? ""))
+      const isValidChecksum = checksum ? nr.isValidChecksum(entity ?? "", checksum, network) : true
+
+      console.log("network: " + network)
+      console.log("accountId: " + accountId.value)
+      console.log("entity: " + entity)
+      console.log("checksum: " + checksum)
+      console.log("isValidChecksum: " + isValidChecksum)
+      console.log("walletManager.accountId: " + walletManager.accountId.value)
+
+      if (entity === null) {
+        message.value = INVALID_ACCOUNTID_MESSAGE
+      } else if (isValidChecksum) {
+        if (entity === walletManager.accountId.value) {
+          message.value = SAME_AS_OWNER_ACCOUNT_MESSAGE
+        } else {
+          const params = {
+            'account.id': entity,
+            balance: false
+          }
+          axios
+              .get<AccountsResponse>("api/v1/accounts", {params: params})
+              .then((response) => {
+                const accounts = response.data.accounts
+                if (accounts && accounts.length > 0) {
+                  isValid.value = true
+                  message.value = VALID_ACCOUNT_MESSAGE
+                } else {
+                  message.value = UNKNOWN_ACCOUNT_MESSAGE
+                }
+              })
+              .catch(() => message.value = UNKNOWN_ACCOUNT_MESSAGE)
+
+        }
+      } else {
+        message.value = INVALID_CHECKSUM_MESSAGE
+      }
+    }
+
     return {
       enableChangeButton,
       selectedSpender,
@@ -318,6 +394,8 @@ export default defineComponent({
       selectedTokenAmount,
       selectedNFT,
       allowanceChoice,
+      isSpenderValid,
+      spenderFeedback,
       showConfirmDialog,
       confirmMessage,
       handleSpenderInput,
