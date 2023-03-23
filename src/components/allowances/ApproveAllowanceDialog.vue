@@ -246,21 +246,17 @@ export default defineComponent({
       let result: string
       const toAccount = normalizedSpender.value
 
-      switch (allowanceChoice.value) {
-        case 'hbar':
-          result = "Do you want to approve an allowance to account " + toAccount
-              + " for " + selectedHbarAmount.value + "ħ" + "?"
-          break
-        case 'token':
-          const token = normalizedToken.value
-          result = "Do you want to approve an allowance to account " + toAccount
-              + " for " + selectedTokenAmount.value + " tokens (" + token + ")?"
-          break
-        case 'nft':
-        default:
-          const nFT = normalizedNFT.value
-          result = "Do you want to approve an allowance to account " + toAccount
-              + " for " + nFT + "?"
+      if (allowanceChoice.value === 'hbar') {
+        result = "Do you want to approve an allowance to account " + toAccount
+            + " for " + selectedHbarAmount.value + "ħ" + "?"
+      } else if(allowanceChoice.value === 'token') {
+        const token = normalizedToken.value
+        result = "Do you want to approve an allowance to account " + toAccount
+            + " for " + selectedTokenAmount.value + " tokens (" + token + ")?"
+      } else {  // 'nft'
+        const nFT = normalizedNFT.value
+        result = "Do you want to approve an allowance to account " + toAccount
+            + " for " + nFT + "?"
       }
       return result
     })
@@ -319,7 +315,7 @@ export default defineComponent({
           case 'nft':
           default:
             if (normalizedNFT.value) {
-              console.log("normalizedNFT: " + normalizedNFT)
+              console.log("normalizedNFT: " + normalizedNFT.value)
               console.log("to be implemented...")
             }
         }
