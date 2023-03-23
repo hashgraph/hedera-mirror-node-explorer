@@ -30,21 +30,90 @@
 
         <span class="h-is-primary-title">
           <span>Approve Allowance</span>
-          <span v-if="ownerAccountId" class="h-is-tertiary-text"> for account </span>
+          <span v-if="ownerAccountId"> for account </span>
           <span v-if="ownerAccountId" class="h-is-secondary-text has-text-weight-light mr-3">{{ ownerAccountId }}</span>
         </span>
 
         <hr class="h-card-separator"/>
 
-        <div class="mt-0" style="min-height: 136px">
-
-          <p>(Testnet only)</p>
-          <br/>
-          <p>Approve allowance of 1000 HBARs and 100 LFLG tokens to account 0.0.3534373</p>
-
+        <div class="dialog-grid">
+          <div class="has-text-weight-light">
+            Spender Account
+          </div>
+          <div/>
+          <input :value="selectedSpender"
+                 class="input is-small has-text-right has-text-white"
+                 placeholder="Account ID (0.0.1234)"
+                 style="height:26px; margin-top: 1px; border-radius: 4px; border-width: 1px;
+                 background-color: var(--h-theme-box-background-color)"
+                 type="text"
+                 @input="event => handleSpenderInput(event.target.value)">
+          <div/>
         </div>
 
-        <div class="is-flex is-justify-content-flex-end">
+        <div class="dialog-grid mt-4">
+          <div class="has-text-weight-light">
+            Allowance Type
+          </div>
+          <div class="control" style="">
+            <label class="radio h-radio-button">
+              <input v-model="allowanceChoice" name="allowanceType" type="radio" value="hbar">
+              HBAR
+            </label>
+          </div>
+          <input :value="selectedHbarAmount"
+                 class="input is-small has-text-right has-text-white"
+                 placeholder="HBAR Amount"
+                 style="height:26px; margin-top: 1px; border-radius: 4px; border-width: 1px;
+                 background-color: var(--h-theme-box-background-color)"
+                 type="text"
+                 @input="event => handleHbarAmountInput(event.target.value)">
+          <div/>
+        </div>
+
+        <div class="dialog-grid mt-2">
+          <div/>
+          <div class="control" style="">
+            <label class="radio h-radio-button">
+              <input v-model="allowanceChoice" name="allowanceType" type="radio" value="token">
+              Token
+            </label>
+          </div>
+          <input :value="selectedToken"
+                 class="input is-small has-text-right has-text-white"
+                 placeholder="Token ID (0.0.1234)"
+                 style="height:26px; margin-top: 1px; border-radius: 4px; border-width: 1px;
+                 background-color: var(--h-theme-box-background-color)"
+                 type="text"
+                 @input="event => handleTokenInput(event.target.value)">
+          <input :value="selectedTokenAmount"
+                 class="input is-small has-text-right has-text-white"
+                 placeholder="Token Amount"
+                 style="height:26px; margin-top: 1px; border-radius: 4px; border-width: 1px;
+                 background-color: var(--h-theme-box-background-color)"
+                 type="text"
+                 @input="event => handleTokenAmountInput(event.target.value)">
+        </div>
+
+        <div class="dialog-grid mt-2">
+          <div/>
+          <div class="control" style="">
+            <label class="radio h-radio-button">
+              <input v-model="allowanceChoice" name="allowanceType" type="radio" value="nft">
+              NFT
+            </label>
+          </div>
+          <input :value="selectedNFT"
+                 class="input is-small has-text-right has-text-white"
+                 placeholder="Token ID (0.0.1234)"
+                 style="height:26px; margin-top: 1px; border-radius: 4px; border-width: 1px;
+                 background-color: var(--h-theme-box-background-color)"
+                 type="text"
+                 @input="event => handleNFTInput(event.target.value)">
+          <div/>
+        </div>
+
+        <div class="is-flex is-justify-content-flex-end mt-5">
           <button class="button is-white is-small" @click="handleCancel">CANCEL</button>
           <button :disabled="!enableChangeButton"
                   class="button is-info is-small ml-4" @click="handleChange">CHANGE
@@ -62,8 +131,10 @@
 
 <script lang="ts">
 
-import {computed, defineComponent} from "vue";
+import {computed, defineComponent, Ref, ref} from "vue";
 import {routeManager, walletManager} from "@/router";
+import {EntityID} from "@/utils/EntityID";
+import {networkRegistry} from "@/schemas/NetworkRegistry";
 
 export default defineComponent({
   name: "ApproveAllowanceDialog",
@@ -78,35 +149,145 @@ export default defineComponent({
   emits: ["update:showDialog"],
 
   setup(props, context) {
+    const nr = networkRegistry
 
     const enableChangeButton = computed(() => routeManager.currentNetwork.value === 'testnet')
+
+    const selectedSpender = ref<string | null>(null)
+    const selectedHbarAmount = ref<string | null>(null)
+    const selectedToken = ref<string | null>(null)
+    const selectedTokenAmount = ref<string | null>(null)
+    const selectedNFT = ref<string | null>(null)
+    const allowanceChoice = ref("hbar")
+
+    const handleSpenderInput = (value: string) => handleEntityIDInput(selectedSpender, value)
+    const handleHbarAmountInput = (value: string) => handleAmountInput(selectedHbarAmount, value)
+    const handleTokenInput = (value: string) => handleEntityIDInput(selectedToken, value)
+    const handleTokenAmountInput = (value: string) => handleAmountInput(selectedTokenAmount, value)
+    const handleNFTInput = (value: string) => handleEntityIDInput(selectedNFT, value)
 
     const handleCancel = () => {
       context.emit('update:showDialog', false)
     }
 
     const handleChange = () => {
-      walletManager.approveHbarAllowance("0.0.3534373", 1000)
-          .then((tid: string) => {
-            console.log("Transaction ID=" + tid)
-          })
-          .catch((reason) => {
-            console.log("Transaction Error: " + reason)
-          })
 
-      // walletManager.approveTokenAllowance("0.0.3534370", "0.0.3534373", 100)
-      //     .then((tid: string) => {
-      //       console.log("Transaction ID=" + tid)
-      //     })
-      //     .catch((reason) => {
-      //       console.log("Transaction Error: " + reason)
-      //     })
+      console.log("selectedSpender: " + selectedSpender.value)
+      console.log("allowanceChoice: " + allowanceChoice.value)
+      console.log("selectedHbarAmount: " + selectedHbarAmount.value)
+      console.log("selectedToken: " + selectedToken.value)
+      console.log("selectedTokenAmount: " + selectedTokenAmount.value)
+      console.log("selectedNFT: " + selectedNFT.value)
 
+      if (selectedSpender.value) {
+        switch (allowanceChoice.value) {
+          case 'hbar':
+            if (selectedHbarAmount.value) {
+              walletManager.approveHbarAllowance(selectedSpender.value, parseFloat(selectedHbarAmount.value))
+                  .then((tid: string) => {
+                    console.log("Transaction ID=" + tid)
+                  })
+                  .catch((reason) => {
+                    console.log("Transaction Error: " + reason)
+                  })
+            }
+            break
+          case 'token':
+            if (selectedToken.value && selectedTokenAmount.value) {
+              walletManager.approveTokenAllowance(
+                  selectedToken.value,
+                  selectedSpender.value,
+                  parseFloat(selectedTokenAmount.value)
+              )
+                  .then((tid: string) => {
+                    console.log("Transaction ID=" + tid)
+                  })
+                  .catch((reason) => {
+                    console.log("Transaction Error: " + reason)
+                  })
+            }
+            break
+          case 'nft':
+          default:
+            console.log("Approve NFT Allowance not implemented")
+        }
+      }
       context.emit('update:showDialog', false)
+    }
+
+    const handleEntityIDInput = (entityID: Ref<string | null>, value: string) => {
+      const previousValue = entityID.value
+      let isValidInput = true
+      let isValidID = false
+      let isPastDash = false
+
+      for (const c of value) {
+        if ((c >= '0' && c <= '9') || c === '.') {
+          if (isPastDash) {
+            isValidInput = false
+            break
+          } else {
+            isValidID = EntityID.parse(nr.stripChecksum(value)) !== null
+          }
+        } else if (c === '-') {
+          if (!isValidID || isPastDash) {
+            isValidInput = false
+            break
+          } else {
+            isPastDash = true
+          }
+        } else if (c < 'a' || c > 'z' || !isPastDash) {
+          isValidInput = false
+          break
+        }
+      }
+
+      if (isValidInput) {
+        entityID.value = value
+      } else {
+        entityID.value = ""
+        entityID.value = previousValue
+      }
+    }
+
+    const handleAmountInput = (amount: Ref<string | null>, value: string) => {
+      const previousValue = amount.value
+      let isValidInput = true
+      let isDecimal = false
+
+      for (const c of value) {
+        if ((c >= '0' && c <= '9') || c === '.') {
+          if (c === '.') {
+            isValidInput = !isDecimal
+            isDecimal = true
+          }
+        } else {
+          isValidInput = false
+          break
+        }
+      }
+
+      if (isValidInput) {
+        amount.value = value
+      } else {
+        amount.value = ""
+        amount.value = previousValue
+      }
     }
 
     return {
       enableChangeButton,
+      selectedSpender,
+      selectedHbarAmount,
+      selectedToken,
+      selectedTokenAmount,
+      selectedNFT,
+      allowanceChoice,
+      handleSpenderInput,
+      handleHbarAmountInput,
+      handleTokenInput,
+      handleTokenAmountInput,
+      handleNFTInput,
       handleCancel,
       handleChange,
     }
@@ -119,5 +300,12 @@ export default defineComponent({
 <!--                                                       STYLE                                                     -->
 <!-- --------------------------------------------------------------------------------------------------------------- -->
 
-<style>
+<style scoped>
+
+.dialog-grid {
+  display: grid;
+  grid-template-columns: 3fr 2fr 4fr 4fr;
+  grid-column-gap: 1rem;
+}
+
 </style>
