@@ -91,13 +91,20 @@
                  background-color: var(--h-theme-box-background-color)"
                  type="text"
                  @input="event => handleTokenInput(event.target.value)">
-          <input :value="selectedTokenAmount"
+          <input v-if="isTokenValid"
+                 :value="selectedTokenAmount"
                  class="input is-small has-text-right has-text-white"
                  placeholder="Token Amount"
                  style="height:26px; margin-top: 1px; border-radius: 4px; border-width: 1px;
                  background-color: var(--h-theme-box-background-color)"
                  type="text"
                  @input="event => handleTokenAmountInput(event.target.value)">
+          <div v-else id="tokenFeedback"
+               :class="{'has-text-grey': isTokenValid, 'has-text-danger': !isTokenValid}"
+               class="is-inline-block h-is-text-size-2"
+               style="line-height:26px;">
+            {{ tokenFeedback }}
+          </div>
         </div>
 
         <div class="dialog-grid mt-2">
@@ -153,13 +160,15 @@ import {EntityID} from "@/utils/EntityID";
 import {networkRegistry} from "@/schemas/NetworkRegistry";
 import ConfirmDialog from "@/components/ConfirmDialog.vue";
 import axios from "axios";
-import {AccountsResponse} from "@/schemas/HederaSchemas";
+import {AccountsResponse, TokenRelationshipResponse} from "@/schemas/HederaSchemas";
 
 const VALID_ACCOUNT_MESSAGE = "Account exists"
 const UNKNOWN_ACCOUNT_MESSAGE = "Unknown account"
 const INVALID_ACCOUNTID_MESSAGE = "Invalid account ID"
 const INVALID_CHECKSUM_MESSAGE = "Invalid account checksum"
 const SAME_AS_OWNER_ACCOUNT_MESSAGE = "Same as owner's account"
+const INVALID_TOKENID_MESSAGE = "Invalid token ID"
+const TOKEN_NOT_FOUND_MESSAGE = "Token not associated with account"
 
 export default defineComponent({
   name: "ApproveAllowanceDialog",
@@ -193,7 +202,6 @@ export default defineComponent({
     watch(selectedSpender, () => {
       isSpenderValid.value = false
       spenderFeedback.value = null
-
       if (spenderValidationTimerId != -1) {
         window.clearTimeout(spenderValidationTimerId)
         spenderValidationTimerId = -1
@@ -204,8 +212,31 @@ export default defineComponent({
         selectedSpender.value = null
       }
     })
+    const validateSpender =
+        () => validateAccount(selectedSpender.value, isSpenderValid, spenderFeedback)
 
-    const validateSpender = () => validateAccount(selectedSpender, isSpenderValid, spenderFeedback)
+    const isTokenValid = ref(false)
+    const tokenFeedback = ref<string | null>(null)
+    let tokenValidationTimerId = -1
+
+    watch(selectedToken, () => {
+      isTokenValid.value = false
+      tokenFeedback.value = null
+      if (tokenValidationTimerId != -1) {
+        window.clearTimeout(tokenValidationTimerId)
+        tokenValidationTimerId = -1
+      }
+      if (selectedToken.value?.length) {
+        tokenValidationTimerId = window.setTimeout(() => validateToken(), 500)
+      } else {
+        selectedToken.value = null
+      }
+    })
+    const validateToken = () => validateAssociation(
+        walletManager.accountId.value,
+        selectedToken.value,
+        isTokenValid,
+        tokenFeedback)
 
     const showConfirmDialog = ref(false)
     const confirmMessage = computed(() => {
@@ -345,17 +376,10 @@ export default defineComponent({
       }
     }
 
-    const validateAccount = (accountId: Ref<string | null>, isValid: Ref<boolean>, message: Ref<string | null>) => {
-      const checksum = nr.extractChecksum(accountId.value ?? "")
-      const entity = EntityID.normalize(nr.stripChecksum(accountId.value ?? ""))
+    const validateAccount = (accountId: string | null, isValid: Ref<boolean>, message: Ref<string | null>) => {
+      const checksum = nr.extractChecksum(accountId ?? "")
+      const entity = EntityID.normalize(nr.stripChecksum(accountId ?? ""))
       const isValidChecksum = checksum ? nr.isValidChecksum(entity ?? "", checksum, network) : true
-
-      console.log("network: " + network)
-      console.log("accountId: " + accountId.value)
-      console.log("entity: " + entity)
-      console.log("checksum: " + checksum)
-      console.log("isValidChecksum: " + isValidChecksum)
-      console.log("walletManager.accountId: " + walletManager.accountId.value)
 
       if (entity === null) {
         message.value = INVALID_ACCOUNTID_MESSAGE
@@ -386,6 +410,42 @@ export default defineComponent({
       }
     }
 
+    const validateAssociation = (
+        accountId: string | null,
+        tokenId: string | null,
+        isValid: Ref<boolean>,
+        message: Ref<string | null>) => {
+
+      const checksum = nr.extractChecksum(tokenId ?? "")
+      const entity = EntityID.normalize(nr.stripChecksum(tokenId ?? ""))
+      const isValidChecksum = checksum ? nr.isValidChecksum(entity ?? "", checksum, network) : true
+
+      if (entity === null) {
+        message.value = INVALID_TOKENID_MESSAGE
+      } else if (isValidChecksum) {
+        if (accountId && tokenId) {
+
+          const uRL = "api/v1/accounts/" + accountId + "/tokens"
+          const params = {
+            'token.id': entity,
+          }
+          axios
+              .get<TokenRelationshipResponse>(uRL, {params: params})
+              .then((response) => {
+                const tokens = response.data.tokens
+                if (tokens && tokens.length > 0) {
+                  isValid.value = true
+                } else {
+                  message.value = TOKEN_NOT_FOUND_MESSAGE
+                }
+              })
+              .catch(() => message.value = TOKEN_NOT_FOUND_MESSAGE)
+        }
+      } else {
+        message.value = INVALID_CHECKSUM_MESSAGE
+      }
+    }
+
     return {
       enableChangeButton,
       selectedSpender,
@@ -396,6 +456,8 @@ export default defineComponent({
       allowanceChoice,
       isSpenderValid,
       spenderFeedback,
+      isTokenValid,
+      tokenFeedback,
       showConfirmDialog,
       confirmMessage,
       handleSpenderInput,
