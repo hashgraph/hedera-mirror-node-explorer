@@ -123,6 +123,17 @@
       </div>
     </div>
   </div>
+
+  <ConfirmDialog v-model:show-dialog="showConfirmDialog" :main-message="confirmMessage"
+                 @onConfirm="handleConfirmChange">
+    <template v-slot:dialogTitle>
+      <span class="h-is-primary-title">Approve allowance </span>
+      <span v-if="ownerAccountId"> for account </span>
+      <span v-if="ownerAccountId" class="h-is-secondary-text has-text-weight-light mr-3"
+            style="line-height: 36px">{{ ownerAccountId }}</span>
+    </template>
+  </ConfirmDialog>
+
 </template>
 
 <!-- --------------------------------------------------------------------------------------------------------------- -->
@@ -135,10 +146,11 @@ import {computed, defineComponent, Ref, ref} from "vue";
 import {routeManager, walletManager} from "@/router";
 import {EntityID} from "@/utils/EntityID";
 import {networkRegistry} from "@/schemas/NetworkRegistry";
+import ConfirmDialog from "@/components/ConfirmDialog.vue";
 
 export default defineComponent({
   name: "ApproveAllowanceDialog",
-  components: {},
+  components: {ConfirmDialog},
   props: {
     ownerAccountId: String,
     showDialog: {
@@ -160,6 +172,26 @@ export default defineComponent({
     const selectedNFT = ref<string | null>(null)
     const allowanceChoice = ref("hbar")
 
+    const showConfirmDialog = ref(false)
+    const confirmMessage = computed(() => {
+      let result: string
+      switch (allowanceChoice.value) {
+        case 'hbar':
+          result = "Do you want to approve an allowance to account " + selectedSpender.value
+              + " for " + selectedHbarAmount.value + "ħ" + "?"
+          break
+        case 'token':
+          result = "Do you want to approve an allowance to account " + selectedSpender.value
+              + " for " + selectedTokenAmount.value + " tokens (" + selectedToken.value + ")?"
+          break
+        case 'nft':
+        default:
+          result = "Do you want to approve an allowance to account " + selectedSpender.value
+              + " for " + selectedNFT.value + "?"
+      }
+      return result
+    })
+
     const handleSpenderInput = (value: string) => handleEntityIDInput(selectedSpender, value)
     const handleHbarAmountInput = (value: string) => handleAmountInput(selectedHbarAmount, value)
     const handleTokenInput = (value: string) => handleEntityIDInput(selectedToken, value)
@@ -171,7 +203,11 @@ export default defineComponent({
     }
 
     const handleChange = () => {
+      context.emit('update:showDialog', false)
+      showConfirmDialog.value = true
+    }
 
+    const handleConfirmChange = () => {
       console.log("selectedSpender: " + selectedSpender.value)
       console.log("allowanceChoice: " + allowanceChoice.value)
       console.log("selectedHbarAmount: " + selectedHbarAmount.value)
@@ -212,7 +248,6 @@ export default defineComponent({
             console.log("Approve NFT Allowance not implemented")
         }
       }
-      context.emit('update:showDialog', false)
     }
 
     const handleEntityIDInput = (entityID: Ref<string | null>, value: string) => {
@@ -283,6 +318,8 @@ export default defineComponent({
       selectedTokenAmount,
       selectedNFT,
       allowanceChoice,
+      showConfirmDialog,
+      confirmMessage,
       handleSpenderInput,
       handleHbarAmountInput,
       handleTokenInput,
@@ -290,6 +327,7 @@ export default defineComponent({
       handleNFTInput,
       handleCancel,
       handleChange,
+      handleConfirmChange,
     }
   }
 });
