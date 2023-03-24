@@ -107,6 +107,12 @@ describe("AccountDetails.vue", () => {
         const matcher8 = "/api/v1/accounts/" + SAMPLE_ACCOUNT.account + "/rewards"
         mock.onGet(matcher8).reply(200, { rewards: [] })
 
+        const matcher9 = "/api/v1/accounts/" + SAMPLE_ACCOUNT.account + "/allowances/crypto"
+        mock.onGet(matcher9).reply(200, { rewards: [] })
+
+        const matcher10 = "/api/v1/accounts/" + SAMPLE_ACCOUNT.account + "/allowances/tokens"
+        mock.onGet(matcher10).reply(200, { rewards: [] })
+
         const wrapper = mount(AccountDetails, {
             global: {
                 plugins: [router, Oruga]
@@ -183,6 +189,12 @@ describe("AccountDetails.vue", () => {
 
         let matcher8 = "/api/v1/accounts/" + SAMPLE_ACCOUNT.account + "/rewards"
         mock.onGet(matcher8).reply(200, { rewards: [] })
+
+        const matcher9 = "/api/v1/accounts/" + SAMPLE_ACCOUNT.account + "/allowances/crypto"
+        mock.onGet(matcher9).reply(200, { rewards: [] })
+
+        const matcher10 = "/api/v1/accounts/" + SAMPLE_ACCOUNT.account + "/allowances/tokens"
+        mock.onGet(matcher10).reply(200, { rewards: [] })
 
         const wrapper = mount(AccountDetails, {
             global: {
@@ -285,6 +297,12 @@ describe("AccountDetails.vue", () => {
         const matcher8 = "/api/v1/accounts/" + SAMPLE_ACCOUNT_DELETED.account + "/rewards"
         mock.onGet(matcher8).reply(200, { rewards: [] })
 
+        const matcher9 = "/api/v1/accounts/" + SAMPLE_ACCOUNT_DELETED.account + "/allowances/crypto"
+        mock.onGet(matcher9).reply(200, { rewards: [] })
+
+        const matcher10 = "/api/v1/accounts/" + SAMPLE_ACCOUNT_DELETED.account + "/allowances/tokens"
+        mock.onGet(matcher10).reply(200, { rewards: [] })
+
         const wrapper = mount(AccountDetails, {
             global: {
                 plugins: [router, Oruga]
@@ -330,6 +348,12 @@ describe("AccountDetails.vue", () => {
         const matcher8 = "/api/v1/accounts/" + SAMPLE_ACCOUNT_STAKING_NODE.account + "/rewards"
         mock.onGet(matcher8).reply(200, { rewards: [] })
 
+        const matcher9 = "/api/v1/accounts/" + SAMPLE_ACCOUNT_STAKING_NODE.account + "/allowances/crypto"
+        mock.onGet(matcher9).reply(200, { rewards: [] })
+
+        const matcher10 = "/api/v1/accounts/" + SAMPLE_ACCOUNT_STAKING_NODE.account + "/allowances/tokens"
+        mock.onGet(matcher10).reply(200, { rewards: [] })
+
         const wrapper = mount(AccountDetails, {
             global: {
                 plugins: [router, Oruga]
@@ -373,6 +397,12 @@ describe("AccountDetails.vue", () => {
 
         const matcher8 = "/api/v1/accounts/" + SAMPLE_ACCOUNT_STAKING_ACCOUNT.account + "/rewards"
         mock.onGet(matcher8).reply(200, { rewards: [] })
+
+        const matcher9 = "/api/v1/accounts/" + SAMPLE_ACCOUNT_STAKING_ACCOUNT.account + "/allowances/crypto"
+        mock.onGet(matcher9).reply(200, { rewards: [] })
+
+        const matcher10 = "/api/v1/accounts/" + SAMPLE_ACCOUNT_STAKING_ACCOUNT.account + "/allowances/tokens"
+        mock.onGet(matcher10).reply(200, { rewards: [] })
 
         const wrapper = mount(AccountDetails, {
             global: {
