@@ -71,8 +71,8 @@
                  placeholder="HBAR Amount"
                  style="height:26px; margin-top: 1px; border-radius: 4px; border-width: 1px;
                  background-color: var(--h-theme-box-background-color)"
-                 @focus="allowanceChoice='hbar'"
                  type="text"
+                 @focus="allowanceChoice='hbar'"
                  @input="event => handleHbarAmountInput(event.target.value)">
           <div/>
         </div>
@@ -90,8 +90,8 @@
                  placeholder="Token ID (0.0.1234)"
                  style="height:26px; margin-top: 1px; border-radius: 4px; border-width: 1px;
                  background-color: var(--h-theme-box-background-color)"
-                 @focus="allowanceChoice='token'"
                  type="text"
+                 @focus="allowanceChoice='token'"
                  @input="event => handleTokenInput(event.target.value)">
           <input v-if="isTokenValid"
                  :value="selectedTokenAmount"
@@ -99,8 +99,8 @@
                  placeholder="Token Amount"
                  style="height:26px; margin-top: 1px; border-radius: 4px; border-width: 1px;
                  background-color: var(--h-theme-box-background-color)"
-                 @focus="allowanceChoice='token'"
                  type="text"
+                 @focus="allowanceChoice='token'"
                  @input="event => handleTokenAmountInput(event.target.value)">
           <div v-else id="tokenFeedback"
                :class="{'has-text-grey': isTokenValid, 'has-text-danger': !isTokenValid}"
@@ -123,8 +123,8 @@
                  placeholder="Token ID (0.0.1234)"
                  style="height:26px; margin-top: 1px; border-radius: 4px; border-width: 1px;
                  background-color: var(--h-theme-box-background-color)"
-                 @focus="allowanceChoice='nft'"
                  type="text"
+                 @focus="allowanceChoice='nft'"
                  @input="event => handleNftInput(event.target.value)">
           <input v-if="isNftValid"
                  :value="selectedNftSerials"
@@ -132,8 +132,8 @@
                  placeholder="serial numbers (1, 2, 3…)"
                  style="height:26px; margin-top: 1px; border-radius: 4px; border-width: 1px;
                  background-color: var(--h-theme-box-background-color)"
-                 @focus="allowanceChoice='nft'"
                  type="text"
+                 @focus="allowanceChoice='nft'"
                  @input="event => handleNftSerialsInput(event.target.value)">
           <div v-else id="nftFeedback"
                :class="{'has-text-grey': isNftValid, 'has-text-danger': !isNftValid}"
@@ -358,13 +358,6 @@ export default defineComponent({
     }
 
     const handleConfirmChange = () => {
-      console.log("normalizedSpender: " + normalizedSpender.value)
-      console.log("allowanceChoice: " + allowanceChoice.value)
-      console.log("selectedHbarAmount: " + selectedHbarAmount.value)
-      console.log("normalizedToken: " + normalizedToken.value)
-      console.log("selectedTokenAmount: " + selectedTokenAmount.value)
-      console.log("normalizedNFT: " + normalizedNFT.value)
-
       if (normalizedSpender.value) {
         if (allowanceChoice.value === 'hbar') {
           if (selectedHbarAmount.value) {
@@ -398,6 +391,12 @@ export default defineComponent({
                 normalizedSpender.value,
                 serials
             )
+                .then((tid: string) => {
+                  console.log("Transaction ID=" + tid)
+                })
+                .catch((reason) => {
+                  console.log("Transaction Error: " + reason)
+                })
           }
         }
       }
