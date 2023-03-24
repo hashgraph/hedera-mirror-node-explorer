@@ -66,9 +66,9 @@
               HBAR
             </label>
           </div>
-          <input :value="selectedHbarAmount"
+          <input :class="{'has-text-grey': allowanceChoice !== 'hbar'}"
+                 :value="selectedHbarAmount"
                  class="input is-small has-text-right has-text-white"
-                 :class="{'has-text-grey': allowanceChoice !== 'hbar'}"
                  placeholder="HBAR Amount"
                  style="height:26px; margin-top: 1px; border-radius: 4px; border-width: 1px;
                  background-color: var(--h-theme-box-background-color)"
@@ -86,9 +86,9 @@
               Token
             </label>
           </div>
-          <input :value="selectedToken"
+          <input :class="{'has-text-grey': allowanceChoice !== 'token'}"
+                 :value="selectedToken"
                  class="input is-small has-text-right has-text-white"
-                 :class="{'has-text-grey': allowanceChoice !== 'token'}"
                  placeholder="Token ID (0.0.1234)"
                  style="height:26px; margin-top: 1px; border-radius: 4px; border-width: 1px;
                  background-color: var(--h-theme-box-background-color)"
@@ -96,9 +96,9 @@
                  @focus="allowanceChoice='token'"
                  @input="event => handleTokenInput(event.target.value)">
           <input v-if="isTokenValid"
+                 :class="{'has-text-grey': allowanceChoice !== 'token'}"
                  :value="selectedTokenAmount"
                  class="input is-small has-text-right has-text-white"
-                 :class="{'has-text-grey': allowanceChoice !== 'token'}"
                  placeholder="Token Amount"
                  style="height:26px; margin-top: 1px; border-radius: 4px; border-width: 1px;
                  background-color: var(--h-theme-box-background-color)"
@@ -121,9 +121,9 @@
               NFT
             </label>
           </div>
-          <input :value="selectedNft"
+          <input :class="{'has-text-grey': allowanceChoice !== 'nft'}"
+                 :value="selectedNft"
                  class="input is-small has-text-right has-text-white"
-                 :class="{'has-text-grey': allowanceChoice !== 'nft'}"
                  placeholder="Token ID (0.0.1234)"
                  style="height:26px; margin-top: 1px; border-radius: 4px; border-width: 1px;
                  background-color: var(--h-theme-box-background-color)"
@@ -131,9 +131,9 @@
                  @focus="allowanceChoice='nft'"
                  @input="event => handleNftInput(event.target.value)">
           <input v-if="isNftValid"
+                 :class="{'has-text-grey': allowanceChoice !== 'nft'}"
                  :value="selectedNftSerials"
                  class="input is-small has-text-right has-text-white"
-                 :class="{'has-text-grey': allowanceChoice !== 'nft'}"
                  placeholder="serial numbers (1, 2, 3…)"
                  style="height:26px; margin-top: 1px; border-radius: 4px; border-width: 1px;
                  background-color: var(--h-theme-box-background-color)"
@@ -231,7 +231,7 @@ export default defineComponent({
     const selectedNft = ref<string | null>(null)
     const normalizedNFT = computed(() => EntityID.normalize(nr.stripChecksum(selectedNft.value ?? "")))
     const selectedNftSerials = ref<string | null>(null)
-    const nftSerials = computed(() => selectedNftSerials.value ? selectedNftSerials.value.split(',') : [])
+    const nftSerials = ref<number[]>([])
     const allowanceChoice = ref("hbar")
 
     const isSpenderValid = ref(false)
@@ -336,8 +336,9 @@ export default defineComponent({
     const validateNftSerials = () => validateSerialsAssociation(
         walletManager.accountId.value,
         normalizedNFT.value,
-        nftSerials.value,
+        selectedNftSerials.value,
         isNftSerialsValid,
+        nftSerials,
         nftSerialsFeedback)
 
     const showConfirmDialog = ref(false)
@@ -404,11 +405,10 @@ export default defineComponent({
           }
         } else {
           if (normalizedNFT.value) {
-            const serials: Array<number> = [1]
             walletManager.approveNFTAllowance(
                 normalizedNFT.value,
                 normalizedSpender.value,
-                serials
+                nftSerials.value
             )
                 .then((tid: string) => {
                   console.log("Transaction ID=" + tid)
@@ -581,11 +581,14 @@ export default defineComponent({
     const validateSerialsAssociation = (
         accountId: string | null,
         tokenId: string | null,
-        serials: string[],
+        inputSerials: string | null,
         isValid: Ref<boolean>,
+        resultSerials: Ref<number[]>,
         message: Ref<string | null>) => {
 
-      if (accountId && tokenId && serials.length) {
+      const inputSerialsSplit = inputSerials ? inputSerials.split(',') : []
+
+      if (accountId && tokenId && inputSerialsSplit.length) {
         const uRL = "api/v1/accounts/" + accountId + "/nfts"
         const params = {
           'token.id': tokenId,
@@ -601,9 +604,17 @@ export default defineComponent({
                     serialsInAccount.push(nft.serial_number)
                   }
                 }
-                for (const s of serials) {
-                  if (s.length && !serialsInAccount.includes(parseInt(s))) {
-                    isValid.value = false
+                for (const s of inputSerialsSplit) {
+                  if (s.length) {
+                    const i = parseInt(s)
+                    if (serialsInAccount.includes(i)) {
+                      if (!resultSerials.value.includes(i)) {
+                        resultSerials.value.push(i)
+                      }
+                    } else {
+                      isValid.value = false
+                      break
+                    }
                   }
                 }
               } else {
