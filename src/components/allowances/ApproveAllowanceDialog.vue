@@ -68,6 +68,7 @@
           </div>
           <input :value="selectedHbarAmount"
                  class="input is-small has-text-right has-text-white"
+                 :class="{'has-text-grey': allowanceChoice !== 'hbar'}"
                  placeholder="HBAR Amount"
                  style="height:26px; margin-top: 1px; border-radius: 4px; border-width: 1px;
                  background-color: var(--h-theme-box-background-color)"
@@ -87,6 +88,7 @@
           </div>
           <input :value="selectedToken"
                  class="input is-small has-text-right has-text-white"
+                 :class="{'has-text-grey': allowanceChoice !== 'token'}"
                  placeholder="Token ID (0.0.1234)"
                  style="height:26px; margin-top: 1px; border-radius: 4px; border-width: 1px;
                  background-color: var(--h-theme-box-background-color)"
@@ -96,6 +98,7 @@
           <input v-if="isTokenValid"
                  :value="selectedTokenAmount"
                  class="input is-small has-text-right has-text-white"
+                 :class="{'has-text-grey': allowanceChoice !== 'token'}"
                  placeholder="Token Amount"
                  style="height:26px; margin-top: 1px; border-radius: 4px; border-width: 1px;
                  background-color: var(--h-theme-box-background-color)"
@@ -120,6 +123,7 @@
           </div>
           <input :value="selectedNft"
                  class="input is-small has-text-right has-text-white"
+                 :class="{'has-text-grey': allowanceChoice !== 'nft'}"
                  placeholder="Token ID (0.0.1234)"
                  style="height:26px; margin-top: 1px; border-radius: 4px; border-width: 1px;
                  background-color: var(--h-theme-box-background-color)"
@@ -129,6 +133,7 @@
           <input v-if="isNftValid"
                  :value="selectedNftSerials"
                  class="input is-small has-text-right has-text-white"
+                 :class="{'has-text-grey': allowanceChoice !== 'nft'}"
                  placeholder="serial numbers (1, 2, 3…)"
                  style="height:26px; margin-top: 1px; border-radius: 4px; border-width: 1px;
                  background-color: var(--h-theme-box-background-color)"
@@ -147,7 +152,7 @@
           <div/>
           <div/>
           <div/>
-          <div id="nftSerialsFeedback"
+          <div v-if="isNftValid" id="nftSerialsFeedback"
                :class="{'has-text-grey': isNftSerialsValid, 'has-text-danger': !isNftSerialsValid}"
                class="is-inline-block h-is-text-size-2 has-text-right">
             {{ nftSerialsFeedback }}
@@ -184,7 +189,7 @@
 <script lang="ts">
 
 import {computed, defineComponent, Ref, ref, watch} from "vue";
-import router, {routeManager, walletManager} from "@/router";
+import router, {walletManager} from "@/router";
 import {EntityID} from "@/utils/EntityID";
 import {networkRegistry} from "@/schemas/NetworkRegistry";
 import ConfirmDialog from "@/components/ConfirmDialog.vue";
@@ -217,8 +222,6 @@ export default defineComponent({
     const nr = networkRegistry
     const network = router.currentRoute.value.params.network as string
 
-    const enableChangeButton = computed(() => routeManager.currentNetwork.value === 'testnet')
-
     const selectedSpender = ref<string | null>(null)
     const normalizedSpender = computed(() => EntityID.normalize(nr.stripChecksum(selectedSpender.value ?? "")))
     const selectedHbarAmount = ref<string | null>(null)
@@ -234,6 +237,34 @@ export default defineComponent({
     const isSpenderValid = ref(false)
     const spenderFeedback = ref<string | null>(null)
     let spenderValidationTimerId = -1
+
+    const isHbarAmountValid = computed(() =>
+        selectedHbarAmount.value !== null
+        && parseFloat(selectedHbarAmount.value) >= 0
+    )
+
+    const isTokenValid = ref(false)
+    const tokenFeedback = ref<string | null>(null)
+    let tokenValidationTimerId = -1
+    const isTokenAmountValid = computed(() =>
+        selectedTokenAmount.value !== null &&
+        parseFloat(selectedTokenAmount.value) >= 0)
+
+    const isNftValid = ref(false)
+    const nftFeedback = ref<string | null>(null)
+    let nftValidationTimerId = -1
+
+    const isNftSerialsValid = ref(true)
+    const nftSerialsFeedback = ref<string | null>(NFT_SERIAL_PROMPT_MESSAGE)
+    let nftSerialsValidationTimer = -1
+
+    const enableChangeButton = computed(() => {
+      return isSpenderValid.value && (
+          (allowanceChoice.value === 'hbar' && isHbarAmountValid.value)
+          || (allowanceChoice.value === 'token' && isTokenValid.value && isTokenAmountValid.value)
+          || (allowanceChoice.value === 'nft' && isNftValid.value && isNftSerialsValid.value)
+      )
+    })
 
     watch(selectedSpender, () => {
       isSpenderValid.value = false
@@ -251,11 +282,7 @@ export default defineComponent({
     const validateSpender =
         () => validateAccount(selectedSpender.value, isSpenderValid, spenderFeedback)
 
-    const isTokenValid = ref(false)
-    const tokenFeedback = ref<string | null>(null)
-    let tokenValidationTimerId = -1
-
-    watch([selectedToken, selectedSpender], () => {
+    watch(selectedToken, () => {
       isTokenValid.value = false
       tokenFeedback.value = null
       if (tokenValidationTimerId != -1) {
@@ -274,11 +301,7 @@ export default defineComponent({
         isTokenValid,
         tokenFeedback)
 
-    const isNftValid = ref(false)
-    const nftFeedback = ref<string | null>(null)
-    let nftValidationTimerId = -1
-
-    watch([selectedNft, selectedSpender], () => {
+    watch(selectedNft, () => {
       isNftValid.value = false
       nftFeedback.value = null
       if (nftValidationTimerId != -1) {
@@ -297,13 +320,9 @@ export default defineComponent({
         isNftValid,
         nftFeedback)
 
-    const isNftSerialsValid = ref(true)
-    const nftSerialsFeedback = ref<string | null>(NFT_SERIAL_PROMPT_MESSAGE)
-    let nftSerialsValidationTimer = -1
-
-    watch([selectedNftSerials, selectedSpender, selectedNft], (newValue) => {
+    watch([selectedNftSerials, selectedNft], () => {
       isNftSerialsValid.value = true
-      nftSerialsFeedback.value = newValue ? "" : NFT_SERIAL_PROMPT_MESSAGE
+      nftSerialsFeedback.value = NFT_SERIAL_PROMPT_MESSAGE
       if (nftSerialsValidationTimer != -1) {
         window.clearTimeout(nftSerialsValidationTimer)
         nftSerialsValidationTimer = -1
