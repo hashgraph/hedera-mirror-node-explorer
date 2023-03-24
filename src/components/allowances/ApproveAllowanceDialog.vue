@@ -71,6 +71,7 @@
                  placeholder="HBAR Amount"
                  style="height:26px; margin-top: 1px; border-radius: 4px; border-width: 1px;
                  background-color: var(--h-theme-box-background-color)"
+                 @focus="allowanceChoice='hbar'"
                  type="text"
                  @input="event => handleHbarAmountInput(event.target.value)">
           <div/>
@@ -89,6 +90,7 @@
                  placeholder="Token ID (0.0.1234)"
                  style="height:26px; margin-top: 1px; border-radius: 4px; border-width: 1px;
                  background-color: var(--h-theme-box-background-color)"
+                 @focus="allowanceChoice='token'"
                  type="text"
                  @input="event => handleTokenInput(event.target.value)">
           <input v-if="isTokenValid"
@@ -97,6 +99,7 @@
                  placeholder="Token Amount"
                  style="height:26px; margin-top: 1px; border-radius: 4px; border-width: 1px;
                  background-color: var(--h-theme-box-background-color)"
+                 @focus="allowanceChoice='token'"
                  type="text"
                  @input="event => handleTokenAmountInput(event.target.value)">
           <div v-else id="tokenFeedback"
@@ -115,14 +118,40 @@
               NFT
             </label>
           </div>
-          <input :value="selectedNFT"
+          <input :value="selectedNft"
                  class="input is-small has-text-right has-text-white"
                  placeholder="Token ID (0.0.1234)"
                  style="height:26px; margin-top: 1px; border-radius: 4px; border-width: 1px;
                  background-color: var(--h-theme-box-background-color)"
+                 @focus="allowanceChoice='nft'"
                  type="text"
-                 @input="event => handleNFTInput(event.target.value)">
+                 @input="event => handleNftInput(event.target.value)">
+          <input v-if="isNftValid"
+                 :value="selectedNftSerials"
+                 class="input is-small has-text-right has-text-white"
+                 placeholder="serial numbers (1, 2, 3…)"
+                 style="height:26px; margin-top: 1px; border-radius: 4px; border-width: 1px;
+                 background-color: var(--h-theme-box-background-color)"
+                 @focus="allowanceChoice='nft'"
+                 type="text"
+                 @input="event => handleNftSerialsInput(event.target.value)">
+          <div v-else id="nftFeedback"
+               :class="{'has-text-grey': isNftValid, 'has-text-danger': !isNftValid}"
+               class="is-inline-block h-is-text-size-2"
+               style="line-height:26px;">
+            {{ nftFeedback }}
+          </div>
+        </div>
+
+        <div class="dialog-grid mt-2">
           <div/>
+          <div/>
+          <div/>
+          <div id="nftSerialsFeedback"
+               :class="{'has-text-grey': isNftSerialsValid, 'has-text-danger': !isNftSerialsValid}"
+               class="is-inline-block h-is-text-size-2 has-text-right">
+            {{ nftSerialsFeedback }}
+          </div>
         </div>
 
         <div class="is-flex is-justify-content-flex-end mt-5">
@@ -160,15 +189,17 @@ import {EntityID} from "@/utils/EntityID";
 import {networkRegistry} from "@/schemas/NetworkRegistry";
 import ConfirmDialog from "@/components/ConfirmDialog.vue";
 import axios from "axios";
-import {AccountsResponse, TokenRelationshipResponse} from "@/schemas/HederaSchemas";
+import {AccountsResponse, Nfts, TokenRelationshipResponse} from "@/schemas/HederaSchemas";
 
 const VALID_ACCOUNT_MESSAGE = "Account exists"
 const UNKNOWN_ACCOUNT_MESSAGE = "Unknown account"
 const INVALID_ACCOUNTID_MESSAGE = "Invalid account ID"
-const INVALID_CHECKSUM_MESSAGE = "Invalid account checksum"
+const INVALID_CHECKSUM_MESSAGE = "Invalid checksum"
 const SAME_AS_OWNER_ACCOUNT_MESSAGE = "Same as owner's account"
 const INVALID_TOKENID_MESSAGE = "Invalid token ID"
-const TOKEN_NOT_FOUND_MESSAGE = "Token not associated with account"
+const TOKEN_NOT_FOUND_MESSAGE = "Not associated with account"
+const NFT_SERIAL_PROMPT_MESSAGE = "Leave empty to approve for ALL"
+const SERIAL_NOT_FOUND_MESSAGE = "Not associated with account"
 
 export default defineComponent({
   name: "ApproveAllowanceDialog",
@@ -194,8 +225,10 @@ export default defineComponent({
     const selectedToken = ref<string | null>(null)
     const normalizedToken = computed(() => EntityID.normalize(nr.stripChecksum(selectedToken.value ?? "")))
     const selectedTokenAmount = ref<string | null>(null)
-    const selectedNFT = ref<string | null>(null)
-    const normalizedNFT = computed(() => EntityID.normalize(nr.stripChecksum(selectedNFT.value ?? "")))
+    const selectedNft = ref<string | null>(null)
+    const normalizedNFT = computed(() => EntityID.normalize(nr.stripChecksum(selectedNft.value ?? "")))
+    const selectedNftSerials = ref<string | null>(null)
+    const nftSerials = computed(() => selectedNftSerials.value ? selectedNftSerials.value.split(',') : [])
     const allowanceChoice = ref("hbar")
 
     const isSpenderValid = ref(false)
@@ -222,7 +255,7 @@ export default defineComponent({
     const tokenFeedback = ref<string | null>(null)
     let tokenValidationTimerId = -1
 
-    watch(selectedToken, () => {
+    watch([selectedToken, selectedSpender], () => {
       isTokenValid.value = false
       tokenFeedback.value = null
       if (tokenValidationTimerId != -1) {
@@ -235,11 +268,58 @@ export default defineComponent({
         selectedToken.value = null
       }
     })
-    const validateToken = () => validateAssociation(
+    const validateToken = () => validateTokenAssociation(
         walletManager.accountId.value,
-        normalizedToken.value,
+        selectedToken.value,
         isTokenValid,
         tokenFeedback)
+
+    const isNftValid = ref(false)
+    const nftFeedback = ref<string | null>(null)
+    let nftValidationTimerId = -1
+
+    watch([selectedNft, selectedSpender], () => {
+      isNftValid.value = false
+      nftFeedback.value = null
+      if (nftValidationTimerId != -1) {
+        window.clearTimeout(nftValidationTimerId)
+        nftValidationTimerId = -1
+      }
+      if (selectedNft.value?.length) {
+        nftValidationTimerId = window.setTimeout(() => validateNft(), 500)
+      } else {
+        selectedNft.value = null
+      }
+    })
+    const validateNft = () => validateTokenAssociation(
+        walletManager.accountId.value,
+        selectedNft.value,
+        isNftValid,
+        nftFeedback)
+
+    const isNftSerialsValid = ref(true)
+    const nftSerialsFeedback = ref<string | null>(NFT_SERIAL_PROMPT_MESSAGE)
+    let nftSerialsValidationTimer = -1
+
+    watch([selectedNftSerials, selectedSpender, selectedNft], (newValue) => {
+      isNftSerialsValid.value = true
+      nftSerialsFeedback.value = newValue ? "" : NFT_SERIAL_PROMPT_MESSAGE
+      if (nftSerialsValidationTimer != -1) {
+        window.clearTimeout(nftSerialsValidationTimer)
+        nftSerialsValidationTimer = -1
+      }
+      if (selectedNftSerials.value?.length) {
+        nftSerialsValidationTimer = window.setTimeout(() => validateNftSerials(), 500)
+      } else {
+        selectedNftSerials.value = null
+      }
+    })
+    const validateNftSerials = () => validateSerialsAssociation(
+        walletManager.accountId.value,
+        normalizedNFT.value,
+        nftSerials.value,
+        isNftSerialsValid,
+        nftSerialsFeedback)
 
     const showConfirmDialog = ref(false)
     const confirmMessage = computed(() => {
@@ -249,7 +329,7 @@ export default defineComponent({
       if (allowanceChoice.value === 'hbar') {
         result = "Do you want to approve an allowance to account " + toAccount
             + " for " + selectedHbarAmount.value + "ħ" + "?"
-      } else if(allowanceChoice.value === 'token') {
+      } else if (allowanceChoice.value === 'token') {
         const token = normalizedToken.value
         result = "Do you want to approve an allowance to account " + toAccount
             + " for " + selectedTokenAmount.value + " tokens (" + token + ")?"
@@ -265,7 +345,8 @@ export default defineComponent({
     const handleHbarAmountInput = (value: string) => handleAmountInput(selectedHbarAmount, value)
     const handleTokenInput = (value: string) => handleEntityIDInput(selectedToken, value)
     const handleTokenAmountInput = (value: string) => handleAmountInput(selectedTokenAmount, value)
-    const handleNFTInput = (value: string) => handleEntityIDInput(selectedNFT, value)
+    const handleNftInput = (value: string) => handleEntityIDInput(selectedNft, value)
+    const handleNftSerialsInput = (value: string) => handleIntListInput(selectedNftSerials, value)
 
     const handleCancel = () => {
       context.emit('update:showDialog', false)
@@ -285,39 +366,39 @@ export default defineComponent({
       console.log("normalizedNFT: " + normalizedNFT.value)
 
       if (normalizedSpender.value) {
-        switch (allowanceChoice.value) {
-          case 'hbar':
-            if (selectedHbarAmount.value) {
-              walletManager.approveHbarAllowance(normalizedSpender.value, parseFloat(selectedHbarAmount.value))
-                  .then((tid: string) => {
-                    console.log("Transaction ID=" + tid)
-                  })
-                  .catch((reason) => {
-                    console.log("Transaction Error: " + reason)
-                  })
-            }
-            break
-          case 'token':
-            if (normalizedToken.value && selectedTokenAmount.value) {
-              walletManager.approveTokenAllowance(
-                  normalizedToken.value,
-                  normalizedSpender.value,
-                  parseFloat(selectedTokenAmount.value)
-              )
-                  .then((tid: string) => {
-                    console.log("Transaction ID=" + tid)
-                  })
-                  .catch((reason) => {
-                    console.log("Transaction Error: " + reason)
-                  })
-            }
-            break
-          case 'nft':
-          default:
-            if (normalizedNFT.value) {
-              console.log("normalizedNFT: " + normalizedNFT.value)
-              console.log("to be implemented...")
-            }
+        if (allowanceChoice.value === 'hbar') {
+          if (selectedHbarAmount.value) {
+            walletManager.approveHbarAllowance(normalizedSpender.value, parseFloat(selectedHbarAmount.value))
+                .then((tid: string) => {
+                  console.log("Transaction ID=" + tid)
+                })
+                .catch((reason) => {
+                  console.log("Transaction Error: " + reason)
+                })
+          }
+        } else if (allowanceChoice.value === 'token') {
+          if (normalizedToken.value && selectedTokenAmount.value) {
+            walletManager.approveTokenAllowance(
+                normalizedToken.value,
+                normalizedSpender.value,
+                parseFloat(selectedTokenAmount.value)
+            )
+                .then((tid: string) => {
+                  console.log("Transaction ID=" + tid)
+                })
+                .catch((reason) => {
+                  console.log("Transaction Error: " + reason)
+                })
+          }
+        } else {
+          if (normalizedNFT.value) {
+            const serials: Array<number> = [1]
+            walletManager.approveNFTAllowance(
+                normalizedNFT.value,
+                normalizedSpender.value,
+                serials
+            )
+          }
         }
       }
     }
@@ -382,6 +463,33 @@ export default defineComponent({
       }
     }
 
+    const handleIntListInput = (list: Ref<string | null>, value: string) => {
+      const previousValue = list.value
+      let isValidInput = true
+      let previousWasComma = false
+
+      for (const c of value) {
+        if ((c >= '0' && c <= '9') || c === ',') {
+          if (c === ',') {
+            isValidInput = !previousWasComma
+            previousWasComma = true
+          } else {
+            previousWasComma = false
+          }
+        } else {
+          isValidInput = false
+          break
+        }
+      }
+
+      if (isValidInput) {
+        list.value = value
+      } else {
+        list.value = ""
+        list.value = previousValue
+      }
+    }
+
     const validateAccount = (accountId: string | null, isValid: Ref<boolean>, message: Ref<string | null>) => {
       const checksum = nr.extractChecksum(accountId ?? "")
       const entity = EntityID.normalize(nr.stripChecksum(accountId ?? ""))
@@ -416,7 +524,7 @@ export default defineComponent({
       }
     }
 
-    const validateAssociation = (
+    const validateTokenAssociation = (
         accountId: string | null,
         tokenId: string | null,
         isValid: Ref<boolean>,
@@ -452,25 +560,73 @@ export default defineComponent({
       }
     }
 
+    const validateSerialsAssociation = (
+        accountId: string | null,
+        tokenId: string | null,
+        serials: string[],
+        isValid: Ref<boolean>,
+        message: Ref<string | null>) => {
+
+      if (accountId && tokenId && serials.length) {
+        const uRL = "api/v1/accounts/" + accountId + "/nfts"
+        const params = {
+          'token.id': tokenId,
+        }
+        axios
+            .get<Nfts>(uRL, {params: params})
+            .then((response) => {
+              const nfts = response.data.nfts
+              if (nfts && nfts.length > 0) {
+                const serialsInAccount = Array<number>()
+                for (const nft of nfts) {
+                  if (nft.serial_number) {
+                    serialsInAccount.push(nft.serial_number)
+                  }
+                }
+                for (const s of serials) {
+                  if (s.length && !serialsInAccount.includes(parseInt(s))) {
+                    isValid.value = false
+                  }
+                }
+              } else {
+                isValid.value = false
+              }
+              if (!isValid.value) {
+                message.value = SERIAL_NOT_FOUND_MESSAGE
+              }
+            })
+            .catch(() => {
+              isValid.value = false
+              message.value = SERIAL_NOT_FOUND_MESSAGE
+            })
+      }
+    }
+
     return {
       enableChangeButton,
       selectedSpender,
       selectedHbarAmount,
       selectedToken,
       selectedTokenAmount,
-      selectedNFT,
+      selectedNft,
+      selectedNftSerials,
       allowanceChoice,
       isSpenderValid,
       spenderFeedback,
       isTokenValid,
       tokenFeedback,
+      isNftValid,
+      nftFeedback,
+      isNftSerialsValid,
+      nftSerialsFeedback,
       showConfirmDialog,
       confirmMessage,
       handleSpenderInput,
       handleHbarAmountInput,
       handleTokenInput,
       handleTokenAmountInput,
-      handleNFTInput,
+      handleNftInput,
+      handleNftSerialsInput,
       handleCancel,
       handleChange,
       handleConfirmChange,
