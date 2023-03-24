@@ -163,7 +163,7 @@ describe('Search Bar', () => {
 
     it('should find the account by public key', () => {
         cy.visit('/mainnet/dashboard')
-        const searchKey = "0x03f92218fc51554417ef78bc84bd7a60d57844b9556f67df54d17c7b951de69c7e"
+        const searchKey = "0x02e783457e4d054db3c7850c2dc83e458a13b210fca75984bc7cfb0fae7343ff60"
         const searchAccount = "0.0.1753997"
         testBody(
             searchAccount,
