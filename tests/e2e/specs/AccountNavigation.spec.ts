@@ -52,6 +52,7 @@ describe('Account Navigation', () => {
 
         cy.get('table')
             .find('tbody tr')
+            .should('be.visible')
             .should('have.length.at.least', 2)
             .eq(0)
             .find('td')
