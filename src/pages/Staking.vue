@@ -62,12 +62,27 @@
 
     <DashboardCard>
       <template v-slot:title>
+        <div>
           <span class="h-is-primary-title">My Staking </span>
-          <span v-if="accountId" class="h-is-tertiary-text"> for account </span>
+          <span v-if="accountId" class="h-is-primary-title"> for account </span>
           <div v-if="accountId" class="h-is-secondary-text has-text-weight-light is-inline-block">
             <AccountLink :account-id="accountId">{{ accountId }}</AccountLink>
           </div>
           <span v-if="accountChecksum" class="has-text-grey mr-3" style="font-size: 28px">-{{ accountChecksum }}</span>
+        </div>
+        <div v-if="!isMediumScreen && accountId" id="showAccountLink" class="is-inline-block mt-2">
+          <router-link :to="accountRoute">
+            <span class="h-is-property-text">Show my account</span>
+          </router-link>
+        </div>
+      </template>
+
+      <template v-slot:control v-if="isMediumScreen">
+        <div v-if="accountId" id="showAccountLink" class="is-inline-block ml-3">
+          <router-link :to="accountRoute">
+            <span class="h-is-property-text">Show my account</span>
+          </router-link>
+        </div>
       </template>
 
       <template v-slot:content>
@@ -211,7 +226,7 @@
 import {computed, defineComponent, inject, onBeforeUnmount, onMounted, ref} from 'vue';
 import {useRouter} from "vue-router";
 import Footer from "@/components/Footer.vue";
-import {walletManager} from "@/router";
+import {routeManager, walletManager} from "@/router";
 import NetworkDashboardItem from "@/components/node/NetworkDashboardItem.vue";
 import axios from "axios";
 import {Transaction, TransactionByIdResponse} from "@/schemas/HederaSchemas";
@@ -345,6 +360,12 @@ export default defineComponent({
       return result
     })
 
+    const accountRoute = computed(() => {
+      return walletManager.accountId.value !== null
+          ? routeManager.makeRouteToAccount(walletManager.accountId.value)
+          : null
+    })
+
     const balanceInHbar = computed(() => {
       const balance = accountLoader.balance.value ?? 10000000000
       return balance / 100000000
@@ -467,6 +488,7 @@ export default defineComponent({
 
     return {
       isSmallScreen,
+      isMediumScreen,
       isTouchDevice,
       connecting,
       connected: walletManager.connected,
@@ -475,6 +497,7 @@ export default defineComponent({
       accountId: walletManager.accountId,
       accountChecksum: accountLoader.accountChecksum,
       account: accountLoader.entity,
+      accountRoute,
       stakePeriodStart: accountLoader.stakePeriodStart,
       showStakingDialog,
       showStopConfirmDialog,
@@ -504,7 +527,7 @@ export default defineComponent({
       progressExtraTransactionId,
       showProgressSpinner,
       transactionTableController,
-      downloader
+      downloader,
     }
   }
 });
