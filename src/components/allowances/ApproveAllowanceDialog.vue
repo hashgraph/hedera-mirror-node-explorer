@@ -242,7 +242,7 @@ export default defineComponent({
       default: 3000
     }
   },
-  emits: ["update:showDialog"],
+  emits: ["update:showDialog", "allowanceApproved"],
 
   setup(props, context) {
     const nr = networkRegistry
@@ -454,6 +454,8 @@ export default defineComponent({
           showProgressSpinner.value = false
           progressExtraMessage.value = "with transaction ID:"
           progressExtraTransactionId.value = tid
+
+          context.emit('allowanceApproved')
         }
       } catch (reason) {
         console.log("Transaction Error: " + reason)

@@ -44,7 +44,10 @@
     </template>
   </DashboardCard>
 
-  <ApproveAllowanceDialog v-model:show-dialog="showApproveAllowanceDialog" :owner-account-id="ownerAccountId"/>
+  <ApproveAllowanceDialog v-model:show-dialog="showApproveAllowanceDialog"
+                          :owner-account-id="ownerAccountId"
+                          @allowance-approved="handleApproval"
+  />
 
 </template>
 
@@ -108,6 +111,13 @@ export default defineComponent({
       }
     })
 
+    const handleApproval = () => {
+      hbarAllowanceTableController.unmount()
+      tokenAllowanceTableController.unmount()
+      hbarAllowanceTableController.mount()
+      tokenAllowanceTableController.mount()
+    }
+
     return {
       isTouchDevice,
       isSmallScreen,
@@ -116,6 +126,7 @@ export default defineComponent({
       isWalletConnected,
       hbarAllowanceTableController,
       tokenAllowanceTableController,
+      handleApproval,
       ownerAccountId: walletManager.accountId,
     }
   }
