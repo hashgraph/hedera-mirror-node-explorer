@@ -83,7 +83,7 @@
           <div class="control" style="">
             <label class="radio h-radio-button">
               <input v-model="allowanceChoice" name="allowanceType" type="radio" value="token">
-              Token
+              Fungible Token
             </label>
           </div>
           <input :class="{'has-text-grey': allowanceChoice !== 'token'}"
@@ -749,7 +749,7 @@ export default defineComponent({
 
 .dialog-grid {
   display: grid;
-  grid-template-columns: 3fr 2fr 4fr 4fr;
+  grid-template-columns: 3fr 3fr 4fr 4fr;
   grid-column-gap: 1rem;
 }
 
