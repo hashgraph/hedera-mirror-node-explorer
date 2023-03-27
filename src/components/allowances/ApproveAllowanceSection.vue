@@ -1,0 +1,132 @@
+<!--
+  -
+  - Hedera Mirror Node Explorer
+  -
+  - Copyright (C) 2021 - 2023 Hedera Hashgraph, LLC
+  -
+  - Licensed under the Apache License, Version 2.0 (the "License");
+  - you may not use this file except in compliance with the License.
+  - You may obtain a copy of the License at
+  -
+  -      http://www.apache.org/licenses/LICENSE-2.0
+  -
+  - Unless required by applicable law or agreed to in writing, software
+  - distributed under the License is distributed on an "AS IS" BASIS,
+  - WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+  - See the License for the specific language governing permissions and
+  - limitations under the License.
+  -
+  -->
+
+<!-- --------------------------------------------------------------------------------------------------------------- -->
+<!--                                                     TEMPLATE                                                    -->
+<!-- --------------------------------------------------------------------------------------------------------------- -->
+
+<template>
+
+  <DashboardCard v-if="accountId">
+    <template v-slot:title>
+      <span class="h-is-secondary-title">Allowances</span>
+    </template>
+    <template v-slot:control>
+      <button v-if="isWalletConnected" id="approve-button" class="button is-white is-small"
+              @click="showApproveAllowanceDialog = true">APPROVE ALLOWANCE…
+      </button>
+    </template>
+    <template v-slot:content><br/></template>
+    <template v-slot:leftContent>
+      <p class="h-is-tertiary-text mb-2">HBAR Allowances</p>
+      <HbarAllowanceTable :controller="hbarAllowanceTableController"/>
+    </template>
+    <template v-slot:rightContent>
+      <p class="h-is-tertiary-text mb-2">Token Allowances</p>
+      <TokenAllowanceTable :controller="tokenAllowanceTableController"/>
+    </template>
+  </DashboardCard>
+
+  <ApproveAllowanceDialog v-model:show-dialog="showApproveAllowanceDialog" :owner-account-id="ownerAccountId"/>
+
+</template>
+
+<!-- --------------------------------------------------------------------------------------------------------------- -->
+<!--                                                      SCRIPT                                                     -->
+<!-- --------------------------------------------------------------------------------------------------------------- -->
+
+<script lang="ts">
+
+import {computed, defineComponent, inject, onBeforeUnmount, onMounted, ref, watch} from 'vue';
+import router, {walletManager} from "@/router";
+import {HbarAllowanceTableController} from "@/components/allowances/HbarAllowanceTableController";
+import {TokenAllowanceTableController} from "@/components/allowances/TokenAllowanceTableController";
+import DashboardCard from "@/components/DashboardCard.vue";
+import HbarAllowanceTable from "@/components/allowances/HbarAllowanceTable.vue";
+import TokenAllowanceTable from "@/components/allowances/TokenAllowanceTable.vue";
+import ApproveAllowanceDialog from "@/components/allowances/ApproveAllowanceDialog.vue";
+
+export default defineComponent({
+  name: 'ApproveAllowanceSection',
+
+  components: {ApproveAllowanceDialog, TokenAllowanceTable, HbarAllowanceTable, DashboardCard},
+
+  props: {
+    accountId: String
+  },
+
+  setup: function (props) {
+    const isTouchDevice = inject('isTouchDevice', false)
+    const isSmallScreen = inject('isSmallScreen', true)
+    const isMediumScreen = inject('isMediumScreen', true)
+
+    const showApproveAllowanceDialog = ref(false)
+    const computedAccountId = computed(() => props.accountId || null)
+    const isWalletConnected = computed(() => walletManager.connected.value)
+    // const isWalletConnected = computed(() => false)
+    const perPage = computed(() => isMediumScreen ? 10 : 5)
+
+    //
+    // HBAR Allowances Table Controller
+    //
+    const hbarAllowanceTableController = new HbarAllowanceTableController(
+        router, computedAccountId, perPage, "ph", "kh")
+    onMounted(() => hbarAllowanceTableController.mount())
+    onBeforeUnmount(() => hbarAllowanceTableController.unmount())
+
+    //
+    // Token Allowances Table Controller
+    //
+    const tokenAllowanceTableController = new TokenAllowanceTableController(
+        router, computedAccountId, perPage, "pt", "kt")
+    onMounted(() => tokenAllowanceTableController.mount())
+    onBeforeUnmount(() => tokenAllowanceTableController.unmount())
+
+    watch(showApproveAllowanceDialog, (newValue) => {
+      if (!newValue) {
+        hbarAllowanceTableController.unmount()
+        tokenAllowanceTableController.unmount()
+        hbarAllowanceTableController.mount()
+        tokenAllowanceTableController.mount()
+      }
+    })
+
+    return {
+      isTouchDevice,
+      isSmallScreen,
+      isMediumScreen,
+      showApproveAllowanceDialog,
+      isWalletConnected,
+      hbarAllowanceTableController,
+      tokenAllowanceTableController,
+      ownerAccountId: walletManager.accountId,
+    }
+  }
+});
+
+</script>
+
+<!-- --------------------------------------------------------------------------------------------------------------- -->
+<!--                                                       STYLE                                                     -->
+<!-- --------------------------------------------------------------------------------------------------------------- -->
+
+<style scoped>
+
+</style>
