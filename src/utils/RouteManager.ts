@@ -23,7 +23,6 @@ import {Transaction} from "@/schemas/HederaSchemas";
 import {NetworkRegistry, networkRegistry} from "@/schemas/NetworkRegistry";
 import {computed, ref, watch, WatchStopHandle} from "vue";
 import router, {routeManager} from "@/router";
-import {BlocksResponseCollector} from "@/utils/collector/BlocksResponseCollector";
 import {TokenInfoCollector} from "@/utils/collector/TokenInfoCollector";
 import {NodeRegistry} from "@/components/node/NodeRegistry";
 import {AppStorage} from "@/AppStorage";
@@ -347,7 +346,6 @@ export class RouteManager {
     }
 
     private static resetSingletons() {
-        BlocksResponseCollector.instance.clear()
         TokenInfoCollector.instance.clear()
         NodeRegistry?.instance.reload()
         CacheUtils.clearAll()
