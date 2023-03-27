@@ -161,8 +161,8 @@
 
         <div class="is-flex is-justify-content-flex-end mt-5">
           <button class="button is-white is-small" @click="handleCancel">CANCEL</button>
-          <button :disabled="!enableChangeButton"
-                  class="button is-info is-small ml-4" @click="handleChange">CHANGE
+          <button :disabled="!enableApproveButton"
+                  class="button is-info is-small ml-4" @click="handleApprove">APPROVE
           </button>
         </div>
 
@@ -171,7 +171,7 @@
   </div>
 
   <ConfirmDialog v-model:show-dialog="showConfirmDialog" :main-message="confirmMessage"
-                 @onConfirm="handleConfirmChange">
+                 @onConfirm="handleConfirmApprove">
     <template v-slot:dialogTitle>
       <span class="h-is-primary-title">Approve allowance </span>
       <span v-if="ownerAccountId"> for account </span>
@@ -284,7 +284,7 @@ export default defineComponent({
     const nftSerialsFeedback = ref<string | null>(NFT_SERIAL_PROMPT_MESSAGE)
     let nftSerialsValidationTimer = -1
 
-    const enableChangeButton = computed(() => {
+    const enableApproveButton = computed(() => {
       return isSpenderValid.value && (
           (allowanceChoice.value === 'hbar' && isHbarAmountValid.value)
           || (allowanceChoice.value === 'token' && isTokenValid.value && isTokenAmountValid.value)
@@ -406,12 +406,12 @@ export default defineComponent({
       context.emit('update:showDialog', false)
     }
 
-    const handleChange = () => {
+    const handleApprove = () => {
       context.emit('update:showDialog', false)
       showConfirmDialog.value = true
     }
 
-    const handleConfirmChange = async () => {
+    const handleConfirmApprove = async () => {
 
       try {
         showProgressDialog.value = true
@@ -701,7 +701,7 @@ export default defineComponent({
     }
 
     return {
-      enableChangeButton,
+      enableApproveButton,
       selectedSpender,
       selectedHbarAmount,
       selectedToken,
@@ -733,8 +733,8 @@ export default defineComponent({
       handleNftInput,
       handleNftSerialsInput,
       handleCancel,
-      handleChange,
-      handleConfirmChange,
+      handleApprove,
+      handleConfirmApprove,
     }
   }
 });
