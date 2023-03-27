@@ -38,7 +38,7 @@ import {ContractLoader} from "@/components/contract/ContractLoader";
 import {AccountLoader} from "@/components/account/AccountLoader";
 import {EntityDescriptor} from "@/utils/EntityDescriptor";
 import {systemContractRegistry} from "@/schemas/SystemContractRegistry";
-import {BlocksResponseCollector} from "@/utils/collector/BlocksResponseCollector";
+import {BlockByTsCache} from "@/utils/cache/BlockByTsCache";
 
 export class TransactionLoader extends EntityLoader<TransactionDetail> {
 
@@ -177,8 +177,7 @@ export class TransactionLoader extends EntityLoader<TransactionDetail> {
     })
 
     public readonly blockNumber: ComputedRef<number|null> = computed(() => {
-        const blocks = this.blockResponses.value?.blocks ?? []
-        return blocks.length >= 1 ? blocks[0].number ?? null : null
+        return this.block.value?.number ?? null
     })
 
     //
@@ -263,7 +262,7 @@ export class TransactionLoader extends EntityLoader<TransactionDetail> {
         return entityId && name == TransactionType.ETHEREUMTRANSACTION ? entityId : null
     })
 
-    private readonly blockResponses = BlocksResponseCollector.instance.ref(this.consensusTimestamp)
+    private readonly block = BlockByTsCache.instance.ref(this.consensusTimestamp)
 
     //
     // Private (findTransactionId)
