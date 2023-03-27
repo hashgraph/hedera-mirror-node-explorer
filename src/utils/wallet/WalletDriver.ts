@@ -18,7 +18,11 @@
  *
  */
 
-import {AccountUpdateTransaction} from "@hashgraph/sdk";
+import {
+    AccountAllowanceApproveTransaction,
+    AccountAllowanceDeleteTransaction,
+    AccountUpdateTransaction
+} from "@hashgraph/sdk";
 import {Signer} from "@hashgraph/sdk/lib/Signer";
 import {TransactionID} from "@/utils/TransactionID";
 import {WalletDriverError} from "@/utils/wallet/WalletDriverError";
@@ -54,7 +58,11 @@ export abstract class WalletDriver {
         return this.getSigner() !== null
     }
 
-    public async executeTransaction(t: AccountUpdateTransaction): Promise<string> {
+
+    public async executeTransaction(
+        t: AccountAllowanceApproveTransaction
+            |AccountUpdateTransaction
+            |AccountAllowanceDeleteTransaction): Promise<string> {
         let result: Promise<string>
 
         const signer = this.getSigner()
@@ -62,8 +70,12 @@ export abstract class WalletDriver {
             try {
                 await t.freezeWithSigner(signer)
                 const response = await signer.call(t)
-                const transactionId = TransactionID.normalize(response.transactionId.toString(), false);
-                result = Promise.resolve(transactionId)
+                if (response) {
+                    const transactionId = TransactionID.normalize(response.transactionId.toString(), false);
+                    result = Promise.resolve(transactionId)
+                } else { // When user clicks on "Reject" button HashConnectSigner.call() returns undefined :(
+                    result = Promise.reject(this.callFailure(this.name + " wallet did reject operation"))
+                }
             } catch(reason) {
                 throw this.callFailure(reason.message)
             }

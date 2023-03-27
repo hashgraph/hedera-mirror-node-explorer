@@ -86,6 +86,27 @@ export interface TokenRelationship {
     token_id: string | null,
 }
 
+export interface CryptoAllowancesResponse {
+    allowances: Array<CryptoAllowance>,
+    links: Links
+}
+
+export interface CryptoAllowance {
+    amount_granted: number,     // The granted amount of the spender's allowance in tinybars.
+    owner: string | null,       // Network entity ID in the format of shard.realm.num
+    spender: string | null,     // Network entity ID in the format of shard.realm.num
+    timestamp: TimestampRange
+}
+
+export interface TokenAllowancesResponse {
+    allowances: Array<TokenAllowance>,
+    links: Links
+}
+
+export interface TokenAllowance extends CryptoAllowance {
+    token_id: string | null,    // Network entity ID in the format of shard.realm.num
+}
+
 // ---------------------------------------------------------------------------------------------------------------------
 //                                                   Balance
 // ---------------------------------------------------------------------------------------------------------------------
