@@ -180,6 +180,18 @@
     </template>
   </ConfirmDialog>
 
+  <ProgressDialog v-model:show-dialog="showProgressDialog"
+                  :mode="progressDialogMode"
+                  :main-message="progressMainMessage"
+                  :extra-message="progressExtraMessage"
+                  :extra-transaction-id="progressExtraTransactionId"
+                  :show-spinner="showProgressSpinner"
+  >
+    <template v-slot:dialogTitle>
+      <span class="h-is-primary-title">{{ progressDialogTitle }}</span>
+    </template>
+  </ProgressDialog>
+
 </template>
 
 <!-- --------------------------------------------------------------------------------------------------------------- -->
@@ -194,7 +206,17 @@ import {EntityID} from "@/utils/EntityID";
 import {networkRegistry} from "@/schemas/NetworkRegistry";
 import ConfirmDialog from "@/components/ConfirmDialog.vue";
 import axios from "axios";
-import {AccountsResponse, Nfts, TokenRelationshipResponse} from "@/schemas/HederaSchemas";
+import {
+  AccountsResponse,
+  Nfts,
+  TokenRelationshipResponse,
+  Transaction,
+  TransactionByIdResponse
+} from "@/schemas/HederaSchemas";
+import ProgressDialog, {Mode} from "@/components/staking/ProgressDialog.vue";
+import {normalizeTransactionId} from "@/utils/TransactionID";
+import {waitFor} from "@/utils/TimerUtils";
+import {WalletDriverError} from "@/utils/wallet/WalletDriverError";
 
 const VALID_ACCOUNT_MESSAGE = "Account exists"
 const UNKNOWN_ACCOUNT_MESSAGE = "Unknown account"
@@ -208,13 +230,17 @@ const SERIAL_NOT_FOUND_MESSAGE = "Not associated with account"
 
 export default defineComponent({
   name: "ApproveAllowanceDialog",
-  components: {ConfirmDialog},
+  components: {ProgressDialog, ConfirmDialog},
   props: {
     ownerAccountId: String,
     showDialog: {
       type: Boolean,
       default: false
     },
+    polling: { // For testing purpose
+      type: Number,
+      default: 3000
+    }
   },
   emits: ["update:showDialog"],
 
@@ -361,6 +387,14 @@ export default defineComponent({
       return result
     })
 
+    const showProgressDialog = ref(false)
+    const progressDialogMode = ref(Mode.Busy)
+    const progressDialogTitle = ref("Approving allowance")
+    const progressMainMessage = ref<string|null>(null)
+    const progressExtraMessage = ref<string|null>(null)
+    const progressExtraTransactionId = ref<string|null>(null)
+    const showProgressSpinner = ref(false)
+
     const handleSpenderInput = (value: string) => handleEntityIDInput(selectedSpender, value)
     const handleHbarAmountInput = (value: string) => handleAmountInput(selectedHbarAmount, value)
     const handleTokenInput = (value: string) => handleEntityIDInput(selectedToken, value)
@@ -377,47 +411,63 @@ export default defineComponent({
       showConfirmDialog.value = true
     }
 
-    const handleConfirmChange = () => {
-      if (normalizedSpender.value) {
-        if (allowanceChoice.value === 'hbar') {
-          if (selectedHbarAmount.value) {
-            walletManager.approveHbarAllowance(normalizedSpender.value, parseFloat(selectedHbarAmount.value))
-                .then((tid: string) => {
-                  console.log("Transaction ID=" + tid)
-                })
-                .catch((reason) => {
-                  console.log("Transaction Error: " + reason)
-                })
+    const handleConfirmChange = async () => {
+
+      try {
+        showProgressDialog.value = true
+        progressDialogMode.value = Mode.Busy
+        progressMainMessage.value = "Connecting to Hedera Network using your wallet…"
+        progressExtraMessage.value = "Check your wallet for any approval request"
+        progressExtraTransactionId.value = null
+        showProgressSpinner.value = true
+
+        if (normalizedSpender.value) {
+          let tid = null
+
+          if (allowanceChoice.value === 'hbar') {
+            if (selectedHbarAmount.value) {
+              tid = normalizeTransactionId(await walletManager.approveHbarAllowance(
+                  normalizedSpender.value, parseFloat(selectedHbarAmount.value)))
+            }
+          } else if (allowanceChoice.value === 'token') {
+            if (normalizedToken.value && selectedTokenAmount.value) {
+              tid = normalizeTransactionId(await walletManager.approveTokenAllowance(
+                  normalizedToken.value, normalizedSpender.value, parseFloat(selectedTokenAmount.value)))
+            }
+          } else { // 'nft'
+            if (normalizedNFT.value) {
+              tid = normalizeTransactionId(await walletManager.approveNFTAllowance(
+                  normalizedNFT.value, normalizedSpender.value, nftSerials.value))
+            }
           }
-        } else if (allowanceChoice.value === 'token') {
-          if (normalizedToken.value && selectedTokenAmount.value) {
-            walletManager.approveTokenAllowance(
-                normalizedToken.value,
-                normalizedSpender.value,
-                parseFloat(selectedTokenAmount.value)
-            )
-                .then((tid: string) => {
-                  console.log("Transaction ID=" + tid)
-                })
-                .catch((reason) => {
-                  console.log("Transaction Error: " + reason)
-                })
+          console.log("Transaction ID=" + tid)
+
+          if (tid) {
+            progressMainMessage.value = "Completing operation…"
+            progressExtraMessage.value = "This may take a few seconds"
+            showProgressSpinner.value = true
+            await waitForTransactionRefresh(tid, 10)
           }
-        } else {
-          if (normalizedNFT.value) {
-            walletManager.approveNFTAllowance(
-                normalizedNFT.value,
-                normalizedSpender.value,
-                nftSerials.value
-            )
-                .then((tid: string) => {
-                  console.log("Transaction ID=" + tid)
-                })
-                .catch((reason) => {
-                  console.log("Transaction Error: " + reason)
-                })
-          }
+
+          progressDialogMode.value = Mode.Success
+          progressMainMessage.value = "Operation completed"
+          showProgressSpinner.value = false
+          progressExtraMessage.value = "with transaction ID:"
+          progressExtraTransactionId.value = tid
         }
+      } catch (reason) {
+        console.log("Transaction Error: " + reason)
+
+        progressDialogMode.value = Mode.Error
+        if (reason instanceof WalletDriverError) {
+          progressMainMessage.value = reason.message
+          progressExtraMessage.value = reason.extra
+        } else {
+          progressMainMessage.value = "Operation did not complete"
+          progressExtraMessage.value = JSON.stringify(reason.message)
+        }
+        progressExtraTransactionId.value = null
+        showProgressSpinner.value = false
       }
     }
 
@@ -631,6 +681,25 @@ export default defineComponent({
       }
     }
 
+    const waitForTransactionRefresh = async (transactionId: string, attemptIndex: number) => {
+      let result: Promise<Transaction | string>
+
+      if (attemptIndex >= 0) {
+        await waitFor(props.polling)
+        try {
+          const response = await axios.get<TransactionByIdResponse>("api/v1/transactions/" + transactionId )
+          const transactions = response.data.transactions ?? []
+          result = Promise.resolve(transactions.length >= 1 ? transactions[0] : transactionId)
+        } catch {
+          result = waitForTransactionRefresh(transactionId, attemptIndex - 1)
+        }
+      } else {
+        result = Promise.resolve(transactionId)
+      }
+
+      return result
+    }
+
     return {
       enableChangeButton,
       selectedSpender,
@@ -650,6 +719,13 @@ export default defineComponent({
       nftSerialsFeedback,
       showConfirmDialog,
       confirmMessage,
+      showProgressDialog,
+      progressDialogMode,
+      progressDialogTitle,
+      progressMainMessage,
+      progressExtraMessage,
+      progressExtraTransactionId,
+      showProgressSpinner,
       handleSpenderInput,
       handleHbarAmountInput,
       handleTokenInput,
