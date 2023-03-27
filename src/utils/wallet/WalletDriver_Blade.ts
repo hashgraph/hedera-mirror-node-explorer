@@ -48,7 +48,11 @@ export class WalletDriver_Blade extends WalletDriver {
         if (this.signer === null && hNetwork !== null) {
             const newSigner = new BladeSigner()
             try {
-                await newSigner.createSession(hNetwork)
+                const params = {
+                    network: hNetwork,
+                    dAppCode: "HashScan"
+                }
+                await newSigner.createSession(params)
                 this.signer = newSigner
                 this.network = network
             } catch(reason) {

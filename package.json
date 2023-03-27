@@ -18,7 +18,7 @@
     "docker:stop": "docker-compose down"
   },
   "dependencies": {
-    "@bladelabs/blade-web3.js": "^0.9.11",
+    "@bladelabs/blade-web3.js": "^0.9.14",
     "@fortawesome/fontawesome-svg-core": "^6.1.2",
     "@fortawesome/free-brands-svg-icons": "^6.1.2",
     "@fortawesome/free-solid-svg-icons": "^6.1.2",
