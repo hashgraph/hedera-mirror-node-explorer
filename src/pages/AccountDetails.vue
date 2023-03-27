@@ -364,8 +364,8 @@ export default defineComponent({
       return result
     })
 
-    // const isWalletConnected = computed(() => walletManager.connected.value)
-    const isWalletConnected = computed(() => false)
+    const isWalletConnected = computed(() => walletManager.connected.value)
+    // const isWalletConnected = computed(() => false)
 
     //
     // TransactionTableController
