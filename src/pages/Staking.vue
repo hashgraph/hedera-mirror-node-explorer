@@ -528,7 +528,6 @@ export default defineComponent({
       showProgressSpinner,
       transactionTableController,
       downloader,
-      routeManager
     }
   }
 });
