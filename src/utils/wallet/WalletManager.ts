@@ -139,24 +139,6 @@ export class WalletManager {
         return Promise.resolve(result)
     }
 
-    //
-    // Protected
-    //
-
-    protected async executeTransaction(t: AccountUpdateTransaction): Promise<string> {
-        let result: string
-        try {
-            result = await timeGuard(this.activeDriver.executeTransaction(t), this.timeout)
-        } catch(error) {
-            if (error instanceof TimeGuardError) {
-                throw this.activeDriver.callFailure(this.activeDriver.silentMessage())
-            } else {
-                throw error
-            }
-        }
-        return Promise.resolve(result)
-    }
-
     public async approveHbarAllowance(spender: string, amount: number): Promise<string> {
         let result: string
 
@@ -262,11 +244,7 @@ export class WalletManager {
     // Private
     //
 
-    private async executeTransaction(
-        t: AccountAllowanceApproveTransaction
-            |AccountUpdateTransaction
-            |AccountAllowanceDeleteTransaction): Promise<string> {
-
+    protected async executeTransaction(t: AccountUpdateTransaction|AccountAllowanceApproveTransaction|AccountAllowanceDeleteTransaction): Promise<string> {
         let result: string
         try {
             result = await timeGuard(this.activeDriver.executeTransaction(t), this.timeout)
