@@ -190,10 +190,10 @@ describe("AccountDetails.vue", () => {
         let matcher8 = "/api/v1/accounts/" + SAMPLE_ACCOUNT.account + "/rewards"
         mock.onGet(matcher8).reply(200, { rewards: [] })
 
-        const matcher9 = "/api/v1/accounts/" + SAMPLE_ACCOUNT.account + "/allowances/crypto"
+        let matcher9 = "/api/v1/accounts/" + SAMPLE_ACCOUNT.account + "/allowances/crypto"
         mock.onGet(matcher9).reply(200, { rewards: [] })
 
-        const matcher10 = "/api/v1/accounts/" + SAMPLE_ACCOUNT.account + "/allowances/tokens"
+        let matcher10 = "/api/v1/accounts/" + SAMPLE_ACCOUNT.account + "/allowances/tokens"
         mock.onGet(matcher10).reply(200, { rewards: [] })
 
         const wrapper = mount(AccountDetails, {
@@ -224,6 +224,12 @@ describe("AccountDetails.vue", () => {
 
         matcher8 = "/api/v1/accounts/" + SAMPLE_ACCOUNT_DUDE.account + "/rewards"
         mock.onGet(matcher8).reply(200, { rewards: [] })
+
+        matcher9 = "/api/v1/accounts/" + SAMPLE_ACCOUNT_DUDE.account + "/allowances/crypto"
+        mock.onGet(matcher9).reply(200, { rewards: [] })
+
+        matcher10 = "/api/v1/accounts/" + SAMPLE_ACCOUNT_DUDE.account + "/allowances/tokens"
+        mock.onGet(matcher10).reply(200, { rewards: [] })
 
         await wrapper.setProps({
             accountId: SAMPLE_ACCOUNT_DUDE.account ?? undefined
