@@ -227,7 +227,7 @@
       </template>
       <template v-slot:control>
         <button v-if="isWalletConnected" id="approve-button" class="button is-white is-small"
-                @click="showDialog = true">APPROVE ALLOWANCE…</button>
+                @click="showApproveAllowanceDialog = true">APPROVE ALLOWANCE…</button>
       </template>
       <template v-slot:content><br/></template>
       <template v-slot:leftContent>
@@ -249,7 +249,7 @@
       </template>
     </DashboardCard>
 
-    <ApproveAllowanceDialog v-model:show-dialog="showDialog" :owner-account-id="ownerAccountId"/>
+    <ApproveAllowanceDialog v-model:show-dialog="showApproveAllowanceDialog" :owner-account-id="ownerAccountId"/>
 
   </section>
 
@@ -340,7 +340,7 @@ export default defineComponent({
     const isTouchDevice = inject('isTouchDevice', false)
     const displaySideBySide = inject('isLargeScreen', true)
 
-    const showDialog = ref(false)
+    const showApproveAllowanceDialog = ref(false)
 
     //
     // account
@@ -505,7 +505,7 @@ export default defineComponent({
       isMediumScreen,
       isTouchDevice,
       displaySideBySide,
-      showDialog,
+      showApproveAllowanceDialog,
       transactionTableController,
       notification,
       isWalletConnected,
