@@ -19,6 +19,8 @@
  */
 
 import {AccountUpdateTransaction} from "@hashgraph/sdk";
+import {Signer} from "@hashgraph/sdk/lib/Signer";
+import {TransactionID} from "@/utils/TransactionID";
 import {WalletDriverError} from "@/utils/wallet/WalletDriverError";
 
 export abstract class WalletDriver {
@@ -38,19 +40,38 @@ export abstract class WalletDriver {
         throw this.toBeImplemented("Disconnect aborted because implementation is missing")
     }
 
-    public async updateAccount(request: AccountUpdateTransaction): Promise<string> {
-        throw this.toBeImplemented("Call of " + request.toString() + " aborted because implementation is missing")
-    }
-
-    public abstract isConnected(): boolean
-
-    public abstract getNetwork(): string|null
-
-    public abstract getAccountId(): string|null
+    public abstract getSigner(): Signer|null
 
     //
     // Public (utilities)
     //
+
+    public getAccountId(): string|null {
+        return this.getSigner()?.getAccountId()?.toString() ?? null
+    }
+
+    public isConnected(): boolean {
+        return this.getSigner() !== null
+    }
+
+    public async executeTransaction(t: AccountUpdateTransaction): Promise<string> {
+        let result: Promise<string>
+
+        const signer = this.getSigner()
+        if (signer !== null) {
+            try {
+                await t.freezeWithSigner(signer)
+                const response = await signer.call(t)
+                const transactionId = TransactionID.normalize(response.transactionId.toString(), false);
+                result = Promise.resolve(transactionId)
+            } catch(reason) {
+                throw this.callFailure(reason.message)
+            }
+        } else {
+            throw this.callFailure("Signer not found (bug)")
+        }
+        return result
+    }
 
     public extensionNotFound(): WalletDriverError {
         const message = this.name + " extension not found"

@@ -21,6 +21,7 @@
 import {WalletDriver} from "@/utils/wallet/WalletDriver";
 import {AccountUpdateTransaction} from "@hashgraph/sdk";
 import {AccountBalanceTransactions} from "@/schemas/HederaSchemas";
+import {Signer} from "@hashgraph/sdk/lib/Signer";
 
 export class WalletDriver_Mock extends WalletDriver {
 
@@ -63,7 +64,7 @@ export class WalletDriver_Mock extends WalletDriver {
         }
     }
 
-    public async updateAccount(request: AccountUpdateTransaction): Promise<string> {
+    public async executeTransaction(request: AccountUpdateTransaction): Promise<string> {
         let result: string
 
         this.updateAccountCounter += 1
@@ -98,12 +99,12 @@ export class WalletDriver_Mock extends WalletDriver {
         return Promise.resolve(result)
     }
 
-    getAccountId(): string | null {
-        return this.connected ? (this.account.account ?? null) : null
+    getSigner(): Signer | null {
+        return null
     }
 
-    getNetwork(): string | null {
-        return this.connected ? this.network : null
+    getAccountId(): string | null {
+        return this.connected ? (this.account.account ?? null) : null
     }
 
     isConnected(): boolean {

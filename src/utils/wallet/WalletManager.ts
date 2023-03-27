@@ -124,20 +124,30 @@ export class WalletManager {
                 trans.setDeclineStakingReward(declineReward)
             }
 
-            try {
-                result = await timeGuard(this.activeDriver.updateAccount(trans), this.timeout)
-            } catch(error) {
-                if (error instanceof TimeGuardError) {
-                    throw this.activeDriver.callFailure(this.activeDriver.silentMessage())
-                } else {
-                    throw error
-                }
-            }
+            result = await this.executeTransaction(trans)
 
         } else {
             throw this.activeDriver.callFailure("No account id")
         }
 
+        return Promise.resolve(result)
+    }
+
+    //
+    // Protected
+    //
+
+    protected async executeTransaction(t: AccountUpdateTransaction): Promise<string> {
+        let result: string
+        try {
+            result = await timeGuard(this.activeDriver.executeTransaction(t), this.timeout)
+        } catch(error) {
+            if (error instanceof TimeGuardError) {
+                throw this.activeDriver.callFailure(this.activeDriver.silentMessage())
+            } else {
+                throw error
+            }
+        }
         return Promise.resolve(result)
     }
 
