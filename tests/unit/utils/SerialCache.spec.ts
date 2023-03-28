@@ -18,19 +18,18 @@
  *
  */
 
-import {Collector} from "@/utils/collector/Collector";
-import {AxiosResponse} from "axios";
 import {flushPromises} from "@vue/test-utils";
+import {SerialCache} from "@/utils/cache/SerialCache";
 
-describe("Collector.ts", () => {
+describe("SerialCache.ts", () => {
 
 
     test("sequential", () => {
-        const c = new TestCollector()
+        const c = new TestCache()
 
         for (let k = 0; k < 10; k += 1) {
-            c.fetch(k).then((value: AxiosResponse<TestData>) => {
-                expect(value.data.key).toBe(value.data.seq)
+            c.lookup(k).then((value: TestData) => {
+                expect(value.key).toBe(value.seq)
             })
         }
 
@@ -40,18 +39,18 @@ describe("Collector.ts", () => {
 
 
     test("concurrent", async () => {
-        const c = new TestCollector()
+        const c = new TestCache()
 
-        const promises = new Array<Promise<AxiosResponse<TestData>>>()
+        const promises = new Array<Promise<TestData>>()
 
         const count = 10
         for (let k = 0; k < count; k += 1) {
-            promises.push(c.fetch(k))
+            promises.push(c.lookup(k))
         }
 
-        const responses = new Array<AxiosResponse<TestData>>()
+        const responses = new Array<TestData>()
         for (const p of promises) {
-            p.then((r: AxiosResponse<TestData>) => {
+            p.then((r: TestData) => {
                 responses.push(r)
             })
         }
@@ -59,13 +58,13 @@ describe("Collector.ts", () => {
         await flushPromises()
 
         for (const response of responses) {
-            expect(response.data.seq).toBe(response.data.key)
+            expect(response.seq).toBe(response.key)
         }
 
     })
 })
 
-class TestCollector extends Collector<TestData, number> {
+class TestCache extends SerialCache<number, TestData> {
 
     private counter = 0
 
@@ -73,16 +72,10 @@ class TestCollector extends Collector<TestData, number> {
     // Collector
     //
 
-    protected load(key: number): Promise<AxiosResponse<TestData>> {
-        const response: AxiosResponse<TestData> = {
-            data: new TestData(key, this.counter),
-            status: 200,
-            statusText: "",
-            headers: {},
-            config: {}
-        }
+    protected load(key: number): Promise<TestData> {
+        const result = new TestData(key, this.counter)
         this.counter += 1
-        return Promise.resolve(response);
+        return Promise.resolve(result);
     }
 
 

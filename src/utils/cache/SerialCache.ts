@@ -18,21 +18,34 @@
  *
  */
 
-import {TokenInfo} from "@/schemas/HederaSchemas";
-import {Collector} from "@/utils/collector/Collector";
-import axios, {AxiosResponse} from "axios";
+import {EntityCache} from "@/utils/cache/EntityCache"
 
-export class TokenInfoCollector extends Collector<TokenInfo, string> {
+export abstract class SerialCache<K, E> extends EntityCache<K, E> {
 
-    public static readonly instance = new TokenInfoCollector()
+    private currentKey: K|null = null
 
     //
-    // Collector
+    // Cache
     //
 
-    protected load(tokenId: string): Promise<AxiosResponse<TokenInfo>> {
-        return axios.get<TokenInfo>("api/v1/tokens/" + tokenId)
+    public async lookup(key: K): Promise<E> {
+
+        let result = this.promises.get(key)
+        if (result == undefined) {
+            while (this.currentKey !== null) {
+                await this.promises.get(this.currentKey)
+            }
+            this.currentKey = key
+            const p = super.lookup(key)
+            try {
+                result = Promise.resolve(await p)
+            } finally {
+                this.currentKey = null
+            }
+        }
+
+        return result
     }
 
-
 }
+

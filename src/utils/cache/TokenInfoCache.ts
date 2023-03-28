@@ -2,7 +2,7 @@
  *
  * Hedera Mirror Node Explorer
  *
- * Copyright (C) 2021 - 2023 Hedera Hashgraph, LLC
+ * Copyright (C) 2021 - 2022 Hedera Hashgraph, LLC
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -18,23 +18,21 @@
  *
  */
 
-import {TransactionResponse} from "@/schemas/HederaSchemas";
-import {Collector} from "@/utils/collector/Collector";
-import axios, {AxiosResponse} from "axios";
+import axios from "axios";
+import {TokenInfo} from "@/schemas/HederaSchemas";
+import {SerialCache} from "@/utils/cache/SerialCache";
 
-export class TransactionCollector extends Collector<TransactionResponse, string> {
+export class TokenInfoCache extends SerialCache<string, TokenInfo> {
 
-    public static readonly instance = new TransactionCollector()
+    public static readonly instance = new TokenInfoCache()
 
     //
-    // Collector
+    // Cache
     //
 
-    protected async load(timestamp: string): Promise<AxiosResponse<TransactionResponse>> {
-        const params = {
-            timestamp: timestamp
-        }
-        return axios.get<TransactionResponse>("api/v1/transactions", { params: params })
+    protected async load(tokenId: string): Promise<TokenInfo> {
+        const response = await axios.get<TokenInfo>("api/v1/tokens/" + tokenId)
+        return Promise.resolve(response.data)
     }
 
 }
