@@ -30,10 +30,13 @@
     <template v-if="noAnchor">
       <span class="is-numeric">{{ accountId }}</span>
     </template>
-    <template v-else>
+    <template v-else-if="accountRoute">
       <router-link :to="accountRoute">
         <span class="is-numeric">{{ accountId }}</span>
       </router-link>
+    </template>
+    <template v-else>
+      <span class="is-numeric">{{ accountId }}</span>
     </template>
     <template v-if="showExtra && extra.length > 0">
       <span class="ml-2 h-is-smaller h-is-extra-text is-numeric">{{ extra }}</span>
@@ -52,10 +55,12 @@
 
 <script lang="ts">
 
-import {computed, defineComponent, inject, PropType, ref} from "vue";
+import {computed, defineComponent, inject, onMounted, PropType, ref} from "vue";
 import {initialLoadingKey} from "@/AppKeys";
 import {routeManager} from "@/router";
 import {NodeRegistry} from "@/components/node/NodeRegistry";
+import {ContractByIdCache} from "@/utils/cache/ContractByIdCache";
+import {RouteLocationRaw} from "vue-router";
 
 export default defineComponent({
   name: "AccountLink",
@@ -85,13 +90,34 @@ export default defineComponent({
       return NodeRegistry.getDescription(ref(null), ref(props.accountId??null)) ?? ""
     })
 
-    const accountRoute = computed(() => {
-      return props.accountId ?  routeManager.makeRouteToAccount(props.accountId) : null
-    })
+    const accountRoute = ref<RouteLocationRaw | null>(null)
 
     const initialLoading = inject(initialLoadingKey, ref(false))
 
-    return { extra, accountRoute, initialLoading }
+    const selectRoute = async () => {
+      let result: RouteLocationRaw | null
+      if (props.accountId) {
+        try {
+          if (await ContractByIdCache.instance.lookup(props.accountId) !== null) {
+            result = routeManager.makeRouteToContract(props.accountId)
+          } else {
+            result = routeManager.makeRouteToAccount(props.accountId)
+          }
+        }
+        catch {
+          result = null
+        }
+      } else {
+        result = null
+      }
+      return Promise.resolve(result)
+    }
+
+    onMounted(() => {
+      selectRoute().then((route) => accountRoute.value = route)
+    })
+
+    return {extra, accountRoute, initialLoading}
   }
 });
 
