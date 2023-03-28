@@ -61,7 +61,6 @@ describe('Account Navigation', () => {
             .then(($id) => {
                 // cy.log('Selected transaction Id: ' + $id.text())
                 cy.url().should('include', '/mainnet/transaction/')
-                cy.url().should('include', 'tid=' + normalizeTransactionId($id.text()))
                 cy.contains('Transaction ' + $id.text())
             })
 

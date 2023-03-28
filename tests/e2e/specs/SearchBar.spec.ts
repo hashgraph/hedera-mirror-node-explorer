@@ -44,7 +44,7 @@ describe('Search Bar', () => {
         const timestamp = "1627434006.848027000"
         testBody(
             searchTransaction,
-            '/mainnet/transaction/' + timestamp + "?tid=" + normalizeTransactionId(searchTransaction),
+            '/mainnet/transaction/' + timestamp,
             'Transaction '
         )
     })
@@ -106,7 +106,7 @@ describe('Search Bar', () => {
         const transactionId = "0.0.445590@1674821543.265349407"
         testBody(
             transactionId,
-            '/mainnet/transaction/' + timestamp + "?tid=" + normalizeTransactionId(transactionId),
+            '/mainnet/transaction/' + timestamp,
             'Transaction ',
             false,
             searchHash
@@ -118,7 +118,7 @@ describe('Search Bar', () => {
         const transactionId = "0.0.445590@1674821543.265349407"
         testBody(
             transactionId,
-            '/mainnet/transaction/' + searchTimestamp + "?tid=" + normalizeTransactionId(transactionId),
+            '/mainnet/transaction/' + searchTimestamp,
             'Transaction ',
             false,
             searchTimestamp
