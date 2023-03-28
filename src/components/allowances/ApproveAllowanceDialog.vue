@@ -105,7 +105,7 @@
                  type="text"
                  @focus="allowanceChoice='token'"
                  @input="event => handleTokenAmountInput(event.target.value)">
-          <div v-else id="tokenFeedback"
+          <div v-else-if="allowanceChoice === 'token'" id="tokenFeedback"
                :class="{'has-text-grey': isTokenValid, 'has-text-danger': !isTokenValid}"
                class="is-inline-block h-is-text-size-2"
                style="line-height:26px;">
@@ -140,7 +140,7 @@
                  type="text"
                  @focus="allowanceChoice='nft'"
                  @input="event => handleNftSerialsInput(event.target.value)">
-          <div v-else id="nftFeedback"
+          <div v-else-if="allowanceChoice === 'nft'" id="nftFeedback"
                :class="{'has-text-grey': isNftValid, 'has-text-danger': !isNftValid}"
                class="is-inline-block h-is-text-size-2"
                style="line-height:26px;">
@@ -152,8 +152,11 @@
           <div/>
           <div/>
           <div/>
-          <div v-if="isNftValid" id="nftSerialsFeedback"
-               :class="{'has-text-grey': isNftSerialsValid, 'has-text-danger': !isNftSerialsValid}"
+          <div id="nftSerialsFeedback"
+               :class="{
+                    'has-text-grey': isNftSerialsValid,
+                    'has-text-danger': !isNftSerialsValid,
+                    'is-invisible': allowanceChoice !== 'nft' || !isNftValid}"
                class="is-inline-block h-is-text-size-2 has-text-right">
             {{ nftSerialsFeedback }}
           </div>
@@ -181,10 +184,10 @@
   </ConfirmDialog>
 
   <ProgressDialog v-model:show-dialog="showProgressDialog"
-                  :mode="progressDialogMode"
-                  :main-message="progressMainMessage"
                   :extra-message="progressExtraMessage"
                   :extra-transaction-id="progressExtraTransactionId"
+                  :main-message="progressMainMessage"
+                  :mode="progressDialogMode"
                   :show-spinner="showProgressSpinner"
   >
     <template v-slot:dialogTitle>
@@ -206,24 +209,24 @@ import {EntityID} from "@/utils/EntityID";
 import {networkRegistry} from "@/schemas/NetworkRegistry";
 import ConfirmDialog from "@/components/ConfirmDialog.vue";
 import axios from "axios";
-import {
-  AccountsResponse,
-  Nfts,
-  TokenRelationshipResponse,
-  Transaction,
-  TransactionByIdResponse
-} from "@/schemas/HederaSchemas";
+import {Nfts, TokenRelationshipResponse, Transaction, TransactionByIdResponse} from "@/schemas/HederaSchemas";
 import ProgressDialog, {Mode} from "@/components/staking/ProgressDialog.vue";
 import {normalizeTransactionId} from "@/utils/TransactionID";
 import {waitFor} from "@/utils/TimerUtils";
 import {WalletDriverError} from "@/utils/wallet/WalletDriverError";
+import {TokenInfoCache} from "@/utils/cache/TokenInfoCache";
+import {AccountByIdCache} from "@/utils/cache/AccountByIdCache";
+import {ContractByIdCache} from "@/utils/cache/ContractByIdCache";
 
-const VALID_ACCOUNT_MESSAGE = "Account exists"
+const VALID_ACCOUNT_MESSAGE = "Account found"
+const VALID_CONTRACT_MESSAGE = "Contract found"
 const UNKNOWN_ACCOUNT_MESSAGE = "Unknown account"
 const INVALID_ACCOUNTID_MESSAGE = "Invalid account ID"
 const INVALID_CHECKSUM_MESSAGE = "Invalid checksum"
 const SAME_AS_OWNER_ACCOUNT_MESSAGE = "Same as owner's account"
 const INVALID_TOKENID_MESSAGE = "Invalid token ID"
+const TOKEN_NOT_FUNGIBLE_MESSAGE = "Token is not fungible"
+const TOKEN_NOT_NFT_MESSAGE = "Token is fungible"
 const TOKEN_NOT_FOUND_MESSAGE = "Not associated with this account"
 const NFT_SERIAL_PROMPT_MESSAGE = "Leave empty to approve for ALL"
 const SERIAL_NOT_FOUND_MESSAGE = "Not associated with this account"
@@ -324,6 +327,7 @@ export default defineComponent({
     const validateToken = () => validateTokenAssociation(
         walletManager.accountId.value,
         selectedToken.value,
+        'FUNGIBLE_COMMON',
         isTokenValid,
         tokenFeedback)
 
@@ -343,6 +347,7 @@ export default defineComponent({
     const validateNft = () => validateTokenAssociation(
         walletManager.accountId.value,
         selectedNft.value,
+        'NON_FUNGIBLE_UNIQUE',
         isNftValid,
         nftFeedback)
 
@@ -390,9 +395,9 @@ export default defineComponent({
     const showProgressDialog = ref(false)
     const progressDialogMode = ref(Mode.Busy)
     const progressDialogTitle = ref("Approving allowance")
-    const progressMainMessage = ref<string|null>(null)
-    const progressExtraMessage = ref<string|null>(null)
-    const progressExtraTransactionId = ref<string|null>(null)
+    const progressMainMessage = ref<string | null>(null)
+    const progressExtraMessage = ref<string | null>(null)
+    const progressExtraTransactionId = ref<string | null>(null)
     const showProgressSpinner = ref(false)
 
     const handleSpenderInput = (value: string) => handleEntityIDInput(selectedSpender, value)
@@ -571,23 +576,23 @@ export default defineComponent({
         if (entity === walletManager.accountId.value) {
           message.value = SAME_AS_OWNER_ACCOUNT_MESSAGE
         } else {
-          const params = {
-            'account.id': entity,
-            balance: false
-          }
-          axios
-              .get<AccountsResponse>("api/v1/accounts", {params: params})
-              .then((response) => {
-                const accounts = response.data.accounts
-                if (accounts && accounts.length > 0) {
+          AccountByIdCache.instance.lookup(entity)
+              .then((r) => {
+                if (r) {
                   isValid.value = true
-                  message.value = VALID_ACCOUNT_MESSAGE
+                  ContractByIdCache.instance.lookup(entity)
+                      .then((r) => {
+                        if (r) {
+                          message.value = VALID_CONTRACT_MESSAGE
+                        } else {
+                          message.value = VALID_ACCOUNT_MESSAGE
+                        }
+                      })
                 } else {
                   message.value = UNKNOWN_ACCOUNT_MESSAGE
                 }
               })
               .catch(() => message.value = UNKNOWN_ACCOUNT_MESSAGE)
-
         }
       } else {
         message.value = INVALID_CHECKSUM_MESSAGE
@@ -597,6 +602,7 @@ export default defineComponent({
     const validateTokenAssociation = (
         accountId: string | null,
         tokenId: string | null,
+        type: string | null,
         isValid: Ref<boolean>,
         message: Ref<string | null>) => {
 
@@ -618,7 +624,19 @@ export default defineComponent({
               .then((response) => {
                 const tokens = response.data.tokens
                 if (tokens && tokens.length > 0) {
-                  isValid.value = true
+                  if (type !== null) {
+                    TokenInfoCache.instance.lookup(entity)
+                        .then((t) => {
+                          if (t.type === type) {
+                            isValid.value = true
+                          } else {
+                            message.value = (type === 'FUNGIBLE_COMMON') ? TOKEN_NOT_FUNGIBLE_MESSAGE : TOKEN_NOT_NFT_MESSAGE
+                          }
+                        })
+                        .catch(() => message.value = TOKEN_NOT_FOUND_MESSAGE)
+                  } else {
+                    isValid.value = true
+                  }
                 } else {
                   message.value = TOKEN_NOT_FOUND_MESSAGE
                 }
@@ -689,7 +707,7 @@ export default defineComponent({
       if (attemptIndex >= 0) {
         await waitFor(props.polling)
         try {
-          const response = await axios.get<TransactionByIdResponse>("api/v1/transactions/" + transactionId )
+          const response = await axios.get<TransactionByIdResponse>("api/v1/transactions/" + transactionId)
           const transactions = response.data.transactions ?? []
           result = Promise.resolve(transactions.length >= 1 ? transactions[0] : transactionId)
         } catch {
