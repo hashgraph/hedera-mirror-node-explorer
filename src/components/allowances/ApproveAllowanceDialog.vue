@@ -203,13 +203,13 @@
 
 <script lang="ts">
 
-import {computed, defineComponent, Ref, ref, watch} from "vue";
+import {computed, defineComponent, PropType, Ref, ref, watch} from "vue";
 import router, {walletManager} from "@/router";
 import {EntityID} from "@/utils/EntityID";
 import {networkRegistry} from "@/schemas/NetworkRegistry";
 import ConfirmDialog from "@/components/ConfirmDialog.vue";
 import axios from "axios";
-import {Nfts, TokenRelationshipResponse, Transaction, TransactionByIdResponse} from "@/schemas/HederaSchemas";
+import {CryptoAllowance, Nfts, TokenAllowance, TokenRelationshipResponse, Transaction, TransactionByIdResponse} from "@/schemas/HederaSchemas";
 import ProgressDialog, {Mode} from "@/components/staking/ProgressDialog.vue";
 import {normalizeTransactionId} from "@/utils/TransactionID";
 import {waitFor} from "@/utils/TimerUtils";
@@ -240,6 +240,8 @@ export default defineComponent({
       type: Boolean,
       default: false
     },
+    currentHbarAllowance: Object as PropType<CryptoAllowance|null>,
+    currentTokenAllowance: Object as PropType<TokenAllowance|null>,
     polling: { // For testing purpose
       type: Number,
       default: 3000
@@ -293,6 +295,41 @@ export default defineComponent({
           || (allowanceChoice.value === 'token' && isTokenValid.value && isTokenAmountValid.value)
           || (allowanceChoice.value === 'nft' && isNftValid.value && isNftSerialsValid.value)
       )
+    })
+
+    watch(() => props.showDialog, (newValue) => {
+      if (newValue) {
+        if (props.currentHbarAllowance) {
+          console.log("currentHbarAllowance?.spender: " + props.currentHbarAllowance?.spender)
+          console.log("currentHbarAllowance?.amount_granted: " + props.currentHbarAllowance?.amount_granted)
+          allowanceChoice.value = "hbar"
+          selectedSpender.value = props.currentHbarAllowance?.spender ?? null
+          selectedHbarAmount.value = props.currentHbarAllowance?.amount_granted.toString() ?? null
+          selectedToken.value = null
+          selectedTokenAmount.value = null
+          selectedNft.value = null
+          selectedNftSerials.value = null
+        } else if (props.currentTokenAllowance) {
+          console.log("currentTokenAllowance?.spender: " + props.currentTokenAllowance?.spender)
+          console.log("currentTokenAllowance?.token_id: " + props.currentTokenAllowance?.token_id)
+          console.log("currentTokenAllowance?.amount_granted: " + props.currentTokenAllowance?.amount_granted)
+          allowanceChoice.value = "token"
+          selectedSpender.value = props.currentTokenAllowance?.spender ?? null
+          selectedHbarAmount.value = null
+          selectedToken.value = props.currentTokenAllowance.token_id
+          selectedTokenAmount.value = props.currentTokenAllowance?.amount_granted.toString() ?? null
+          selectedNft.value = null
+          selectedNftSerials.value = null
+        } else {
+          allowanceChoice.value = "hbar"
+          selectedSpender.value = null
+          selectedHbarAmount.value = null
+          selectedToken.value = null
+          selectedTokenAmount.value = null
+          selectedNft.value = null
+          selectedNftSerials.value = null
+        }
+      }
     })
 
     watch(selectedSpender, () => {

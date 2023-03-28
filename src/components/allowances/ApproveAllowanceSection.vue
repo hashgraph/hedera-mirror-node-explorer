@@ -46,6 +46,8 @@
 
   <ApproveAllowanceDialog v-model:show-dialog="showApproveAllowanceDialog"
                           :owner-account-id="ownerAccountId"
+                          :current-hbar-allowance="currentHbarAllowance"
+                          :current-token-allowance="currentTokenAllowance"
                           @allowance-approved="handleApproval"
   />
 
@@ -87,6 +89,9 @@ export default defineComponent({
     // const isWalletConnected = computed(() => false)
     const perPage = computed(() => isMediumScreen ? 10 : 5)
 
+    const currentHbarAllowance = ref<CryptoAllowance|null>(null)
+    const currentTokenAllowance = ref<TokenAllowance|null>(null)
+
     //
     // HBAR Allowances Table Controller
     //
@@ -121,10 +126,14 @@ export default defineComponent({
 
     const editHbarAllowance = (allowance: CryptoAllowance) => {
       console.log("Edit Hbar Allowance: " + JSON.stringify(allowance))
+      currentHbarAllowance.value = allowance
+      showApproveAllowanceDialog.value = true
     }
 
     const editTokenAllowance = (allowance: TokenAllowance) => {
       console.log("Edit Token Allowance: " + JSON.stringify(allowance))
+      currentTokenAllowance.value = allowance
+      showApproveAllowanceDialog.value = true
     }
 
     return {
@@ -135,6 +144,8 @@ export default defineComponent({
       isWalletConnected,
       hbarAllowanceTableController,
       tokenAllowanceTableController,
+      currentTokenAllowance,
+      currentHbarAllowance,
       handleApproval,
       ownerAccountId: walletManager.accountId,
       editHbarAllowance,
