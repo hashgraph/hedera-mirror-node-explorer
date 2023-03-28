@@ -36,9 +36,8 @@
 <script lang="ts">
 
 import {computed, defineComponent, inject, onMounted, ref, watch} from "vue";
-import {AxiosResponse} from "axios";
 import {TokenInfo} from "@/schemas/HederaSchemas";
-import {TokenInfoCollector} from "@/utils/collector/TokenInfoCollector";
+import {TokenInfoCache} from "@/utils/cache/TokenInfoCache";
 import TokenExtra from "@/components/values/TokenExtra.vue";
 import {initialLoadingKey} from "@/AppKeys";
 
@@ -60,17 +59,17 @@ export default defineComponent({
   },
 
   setup(props) {
-    const response = ref<AxiosResponse<TokenInfo>|null>(null)
+    const response = ref<TokenInfo|null>(null)
 
     const formattedAmount = computed(() => {
       let result: string
-      if (response.value !== null && response.value.status == 200) {
+      if (response.value !== null) {
         if (props.amount) {
-          result = formatTokenAmount(props.amount, response.value.data.decimals)
+          result = formatTokenAmount(props.amount, response.value.decimals)
         } else if (initialLoading.value) {
           result = ""
         } else {
-          result = formatTokenAmount(0, response.value.data.decimals)
+          result = formatTokenAmount(0, response.value.decimals)
         }
       } else {
         result = ""
@@ -80,20 +79,17 @@ export default defineComponent({
 
     const extra = computed(() => {
       let result: string
-      if (response.value !== null && response.value.status == 200) {
-        result = makeExtra(response.value as AxiosResponse<TokenInfo>)
+      if (response.value !== null) {
+        result = makeExtra(response.value)
       } else {
         result = ""
       }
       return result
     })
-    const errorFlag = computed(() => {
-      return response.value !== null && response.value.status != 200
-    })
 
     const updateResponse = () => {
       if (props.tokenId) {
-        TokenInfoCollector.instance.fetch(props.tokenId).then((r: AxiosResponse<TokenInfo>) => {
+        TokenInfoCache.instance.lookup(props.tokenId).then((r: TokenInfo) => {
           response.value = r
         }, (reason: unknown) => {
           console.warn("TokenInfoCollector did fail to fetch " + props.tokenId + " with reason: " + reason)
@@ -111,7 +107,7 @@ export default defineComponent({
       updateResponse()
     })
 
-    return { formattedAmount, extra, errorFlag, initialLoading }
+    return { formattedAmount, extra, initialLoading }
   }
 });
 
@@ -136,9 +132,9 @@ function computeDecimalCount(decimals: string|undefined): number|null {
   return result
 }
 
-function makeExtra(response: AxiosResponse<TokenInfo>): string {
-  const name = response.data?.name
-  const symbol = response.data?.symbol
+function makeExtra(response: TokenInfo): string {
+  const name = response.name
+  const symbol = response.symbol
   const maxLength = 40
 
   let candidate1: string | null
@@ -151,7 +147,7 @@ function makeExtra(response: AxiosResponse<TokenInfo>): string {
 
   const candidate2 = name && name.length < maxLength ? name : null
 
-  return candidate1 ?? candidate2 ?? response.data.token_id ?? "?"
+  return candidate1 ?? candidate2 ?? response.token_id ?? "?"
 }
 
 </script>

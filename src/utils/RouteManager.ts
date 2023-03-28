@@ -23,14 +23,11 @@ import {Transaction} from "@/schemas/HederaSchemas";
 import {NetworkRegistry, networkRegistry} from "@/schemas/NetworkRegistry";
 import {computed, ref, watch, WatchStopHandle} from "vue";
 import router, {routeManager} from "@/router";
-import {BlocksResponseCollector} from "@/utils/collector/BlocksResponseCollector";
-import {TokenInfoCollector} from "@/utils/collector/TokenInfoCollector";
-import {TransactionByHashCollector} from "@/utils/collector/TransactionByHashCollector";
-import {TransactionCollector} from "@/utils/collector/TransactionCollector";
 import {NodeRegistry} from "@/components/node/NodeRegistry";
 import {AppStorage} from "@/AppStorage";
 import {nameServiceSetNetwork} from '@/utils/NameService';
 import axios from "axios";
+import {CacheUtils} from "@/utils/cache/CacheUtils";
 
 export class RouteManager {
 
@@ -348,11 +345,8 @@ export class RouteManager {
     }
 
     private static resetSingletons() {
-        BlocksResponseCollector.instance.clear()
-        TokenInfoCollector.instance.clear()
-        TransactionByHashCollector.instance.clear()
-        TransactionCollector.instance.clear()
         NodeRegistry?.instance.reload()
+        CacheUtils.clearAll()
     }
 }
 

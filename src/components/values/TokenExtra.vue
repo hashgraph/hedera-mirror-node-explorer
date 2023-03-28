@@ -42,9 +42,8 @@
 <script lang="ts">
 
 import {computed, defineComponent, onMounted, ref, watch} from "vue";
-import {AxiosResponse} from "axios";
 import {TokenInfo} from "@/schemas/HederaSchemas";
-import {TokenInfoCollector} from "@/utils/collector/TokenInfoCollector";
+import {TokenInfoCache} from "@/utils/cache/TokenInfoCache";
 import {makeTokenSymbol} from "@/schemas/HederaUtils";
 import {routeManager} from "@/router";
 
@@ -68,11 +67,11 @@ export default defineComponent({
 
     const updateExtra = () => {
       if (props.tokenId) {
-        TokenInfoCollector.instance.fetch(props.tokenId).then((r: AxiosResponse<TokenInfo>) => {
+        TokenInfoCache.instance.lookup(props.tokenId).then((r: TokenInfo) => {
           if (props.showName) {
-            extra.value = r.data.name ?? ""
+            extra.value = r.name ?? ""
           } else {
-            extra.value = makeTokenSymbol(r.data, 40)
+            extra.value = makeTokenSymbol(r, 40)
           }
         }, (reason: unknown) => {
           console.warn("TokenInfoCollector did fail to fetch " + props.tokenId + " with reason: " + reason)
