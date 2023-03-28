@@ -300,19 +300,15 @@ export default defineComponent({
     watch(() => props.showDialog, (newValue) => {
       if (newValue) {
         if (props.currentHbarAllowance) {
-          console.log("currentHbarAllowance?.spender: " + props.currentHbarAllowance?.spender)
-          console.log("currentHbarAllowance?.amount_granted: " + props.currentHbarAllowance?.amount_granted)
           allowanceChoice.value = "hbar"
           selectedSpender.value = props.currentHbarAllowance?.spender ?? null
-          selectedHbarAmount.value = props.currentHbarAllowance?.amount_granted.toString() ?? null
+          selectedHbarAmount.value =
+              (props.currentHbarAllowance) ? (props.currentHbarAllowance.amount_granted / 100000000).toString() : null
           selectedToken.value = null
           selectedTokenAmount.value = null
           selectedNft.value = null
           selectedNftSerials.value = null
         } else if (props.currentTokenAllowance) {
-          console.log("currentTokenAllowance?.spender: " + props.currentTokenAllowance?.spender)
-          console.log("currentTokenAllowance?.token_id: " + props.currentTokenAllowance?.token_id)
-          console.log("currentTokenAllowance?.amount_granted: " + props.currentTokenAllowance?.amount_granted)
           allowanceChoice.value = "token"
           selectedSpender.value = props.currentTokenAllowance?.spender ?? null
           selectedHbarAmount.value = null
