@@ -30,7 +30,7 @@
     </template>
     <template v-slot:control>
       <button v-if="isWalletConnected" id="approve-button" class="button is-white is-small"
-              @click="showApproveAllowanceDialog = true">APPROVE ALLOWANCE…
+              @click="handleApproveButton">APPROVE ALLOWANCE…
       </button>
     </template>
     <template v-slot:content><br/></template>
@@ -59,7 +59,7 @@
 
 <script lang="ts">
 
-import {computed, defineComponent, inject, onBeforeUnmount, onMounted, ref, watch} from 'vue';
+import {computed, defineComponent, inject, onBeforeUnmount, onMounted, ref} from 'vue';
 import router, {walletManager} from "@/router";
 import {HbarAllowanceTableController} from "@/components/allowances/HbarAllowanceTableController";
 import {TokenAllowanceTableController} from "@/components/allowances/TokenAllowanceTableController";
@@ -108,14 +108,11 @@ export default defineComponent({
     onMounted(() => tokenAllowanceTableController.mount())
     onBeforeUnmount(() => tokenAllowanceTableController.unmount())
 
-    watch(showApproveAllowanceDialog, (newValue) => {
-      if (!newValue) {
-        hbarAllowanceTableController.unmount()
-        tokenAllowanceTableController.unmount()
-        hbarAllowanceTableController.mount()
-        tokenAllowanceTableController.mount()
-      }
-    })
+    const handleApproveButton = () => {
+      showApproveAllowanceDialog.value = true
+      currentHbarAllowance.value = null
+      currentTokenAllowance.value = null
+    }
 
     const handleApproval = () => {
       hbarAllowanceTableController.unmount()
@@ -146,6 +143,7 @@ export default defineComponent({
       tokenAllowanceTableController,
       currentTokenAllowance,
       currentHbarAllowance,
+      handleApproveButton,
       handleApproval,
       ownerAccountId: walletManager.accountId,
       editHbarAllowance,

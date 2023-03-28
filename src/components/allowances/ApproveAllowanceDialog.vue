@@ -332,14 +332,14 @@ export default defineComponent({
       }
     })
 
-    watch(selectedSpender, () => {
+    watch(selectedSpender, (newValue) => {
       isSpenderValid.value = false
       spenderFeedback.value = null
       if (spenderValidationTimerId != -1) {
         window.clearTimeout(spenderValidationTimerId)
         spenderValidationTimerId = -1
       }
-      if (selectedSpender.value?.length) {
+      if (newValue?.length) {
         spenderValidationTimerId = window.setTimeout(() => validateSpender(), 500)
       } else {
         selectedSpender.value = null
