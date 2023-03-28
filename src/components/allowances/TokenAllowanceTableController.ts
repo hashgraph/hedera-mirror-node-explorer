@@ -59,9 +59,9 @@ export class TokenAllowanceTableController extends TableController<TokenAllowanc
                 "spender.id": string | undefined
             }
             params.limit = limit
-            params.order = order
+            params.order = TableController.invertSortOrder(order)
             if (spenderId !== null) {
-                params["spender.id"] = operator + ":" + spenderId
+                params["spender.id"] = TableController.invertKeyOperator(operator) + ":" + spenderId
             }
             const cb = (r: AxiosResponse<TokenAllowancesResponse>): Promise<TokenAllowance[] | null> => {
                 return Promise.resolve(r.data.allowances ?? [])
