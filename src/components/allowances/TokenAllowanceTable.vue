@@ -62,6 +62,10 @@
       <TokenAmount :token-id="props.row.token_id" :amount="props.row.amount_granted"/>
     </o-table-column>
 
+    <o-table-column v-if="isWalletConnected" v-slot="props">
+      <i class="fa fa-pen" @click="$emit('editAllowance', props.row)"></i>
+    </o-table-column>
+
   </o-table>
 
   <EmptyTable v-if="!allowances.length"/>
@@ -74,7 +78,7 @@
 
 <script lang="ts">
 
-import {ComputedRef, defineComponent, inject, PropType, Ref} from 'vue';
+import {computed, ComputedRef, defineComponent, inject, PropType, Ref} from 'vue';
 import {TokenAllowance} from "@/schemas/HederaSchemas";
 import {ORUGA_MOBILE_BREAKPOINT} from '@/App.vue';
 import TimestampValue from "@/components/values/TimestampValue.vue";
@@ -83,11 +87,14 @@ import AccountLink from "@/components/values/AccountLink.vue";
 import {TokenAllowanceTableController} from "@/components/allowances/TokenAllowanceTableController";
 import TokenAmount from "@/components/values/TokenAmount.vue";
 import TokenLink from "@/components/values/TokenLink.vue";
+import {walletManager} from "@/router";
 
 export default defineComponent({
   name: 'TokenAllowanceTable',
 
   components: {TokenLink, TokenAmount, AccountLink, EmptyTable, TimestampValue},
+
+  emits: ["editAllowance"],
 
   props: {
     controller: {
@@ -101,10 +108,14 @@ export default defineComponent({
     const isSmallScreen = inject('isSmallScreen', true)
     const isMediumScreen = inject('isMediumScreen', true)
 
+    const isWalletConnected = computed(() => walletManager.connected.value)
+    // const isWalletConnected = computed(() => false)
+
     return {
       isTouchDevice,
       isSmallScreen,
       isMediumScreen,
+      isWalletConnected,
       allowances: props.controller.rows as ComputedRef<TokenAllowance[]>,
       loading: props.controller.loading as ComputedRef<boolean>,
       total: props.controller.totalRowCount as ComputedRef<number>,

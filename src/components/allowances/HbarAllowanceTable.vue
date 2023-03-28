@@ -58,6 +58,10 @@
       <HbarAmount :amount="props.row.amount_granted"/>
     </o-table-column>
 
+    <o-table-column v-if="isWalletConnected" v-slot="props">
+      <i class="fa fa-pen" @click="$emit('editAllowance', props.row)"></i>
+    </o-table-column>
+
   </o-table>
 
   <EmptyTable v-if="!allowances.length"/>
@@ -70,7 +74,7 @@
 
 <script lang="ts">
 
-import {ComputedRef, defineComponent, inject, PropType, Ref} from 'vue';
+import {computed, ComputedRef, defineComponent, inject, PropType, Ref} from 'vue';
 import {CryptoAllowance} from "@/schemas/HederaSchemas";
 import {ORUGA_MOBILE_BREAKPOINT} from '@/App.vue';
 import {HbarAllowanceTableController} from "@/components/allowances/HbarAllowanceTableController";
@@ -78,11 +82,14 @@ import TimestampValue from "@/components/values/TimestampValue.vue";
 import EmptyTable from "@/components/EmptyTable.vue";
 import AccountLink from "@/components/values/AccountLink.vue";
 import HbarAmount from "@/components/values/HbarAmount.vue";
+import {walletManager} from "@/router";
 
 export default defineComponent({
   name: 'HbarAllowanceTable',
 
   components: {HbarAmount, AccountLink, EmptyTable, TimestampValue},
+
+  emits: ["editAllowance"],
 
   props: {
     controller: {
@@ -96,10 +103,14 @@ export default defineComponent({
     const isSmallScreen = inject('isSmallScreen', true)
     const isMediumScreen = inject('isMediumScreen', true)
 
+    const isWalletConnected = computed(() => walletManager.connected.value)
+    // const isWalletConnected = computed(() => false)
+
     return {
       isTouchDevice,
       isSmallScreen,
       isMediumScreen,
+      isWalletConnected,
       allowances: props.controller.rows as ComputedRef<CryptoAllowance[]>,
       loading: props.controller.loading as ComputedRef<boolean>,
       total: props.controller.totalRowCount as ComputedRef<number>,

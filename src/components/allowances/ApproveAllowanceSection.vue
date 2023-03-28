@@ -36,11 +36,11 @@
     <template v-slot:content><br/></template>
     <template v-slot:leftContent>
       <p class="h-is-tertiary-text mb-2">HBAR Allowances</p>
-      <HbarAllowanceTable :controller="hbarAllowanceTableController"/>
+      <HbarAllowanceTable :controller="hbarAllowanceTableController" @edit-allowance="editHbarAllowance"/>
     </template>
     <template v-slot:rightContent>
       <p class="h-is-tertiary-text mb-2">Token Allowances</p>
-      <TokenAllowanceTable :controller="tokenAllowanceTableController"/>
+      <TokenAllowanceTable :controller="tokenAllowanceTableController" @edit-allowance="editTokenAllowance"/>
     </template>
   </DashboardCard>
 
@@ -65,6 +65,7 @@ import DashboardCard from "@/components/DashboardCard.vue";
 import HbarAllowanceTable from "@/components/allowances/HbarAllowanceTable.vue";
 import TokenAllowanceTable from "@/components/allowances/TokenAllowanceTable.vue";
 import ApproveAllowanceDialog from "@/components/allowances/ApproveAllowanceDialog.vue";
+import {CryptoAllowance, TokenAllowance} from "@/schemas/HederaSchemas";
 
 export default defineComponent({
   name: 'ApproveAllowanceSection',
@@ -118,6 +119,14 @@ export default defineComponent({
       tokenAllowanceTableController.mount()
     }
 
+    const editHbarAllowance = (allowance: CryptoAllowance) => {
+      console.log("Edit Hbar Allowance: " + JSON.stringify(allowance))
+    }
+
+    const editTokenAllowance = (allowance: TokenAllowance) => {
+      console.log("Edit Token Allowance: " + JSON.stringify(allowance))
+    }
+
     return {
       isTouchDevice,
       isSmallScreen,
@@ -128,6 +137,8 @@ export default defineComponent({
       tokenAllowanceTableController,
       handleApproval,
       ownerAccountId: walletManager.accountId,
+      editHbarAllowance,
+      editTokenAllowance,
     }
   }
 });
