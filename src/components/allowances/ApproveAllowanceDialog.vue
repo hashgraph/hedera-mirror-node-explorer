@@ -38,12 +38,12 @@
 
         <div class="dialog-grid">
           <div class="has-text-weight-light">
-            Spender Account
+            Spender
           </div>
           <div/>
           <input :value="selectedSpender"
                  class="input is-small has-text-right has-text-white"
-                 placeholder="Account ID (0.0.1234)"
+                 placeholder="Account or Contract ID (0.0.1234)"
                  style="height:26px; margin-top: 1px; border-radius: 4px; border-width: 1px;
                  background-color: var(--h-theme-box-background-color)"
                  type="text"
@@ -58,7 +58,7 @@
 
         <div class="dialog-grid mt-4">
           <div class="has-text-weight-light">
-            Allowance Type
+            Allowance
           </div>
           <div class="control" style="">
             <label class="radio h-radio-button">
@@ -95,7 +95,7 @@
                  type="text"
                  @focus="allowanceChoice='token'"
                  @input="event => handleTokenInput(event.target.value)">
-          <input v-if="isTokenValid"
+          <input v-if="allowanceChoice === 'token' && isTokenValid"
                  :class="{'has-text-grey': allowanceChoice !== 'token'}"
                  :value="selectedTokenAmount"
                  class="input is-small has-text-right has-text-white"
@@ -130,7 +130,7 @@
                  type="text"
                  @focus="allowanceChoice='nft'"
                  @input="event => handleNftInput(event.target.value)">
-          <input v-if="isNftValid"
+          <input v-if="allowanceChoice === 'nft' && isNftValid"
                  :class="{'has-text-grey': allowanceChoice !== 'nft'}"
                  :value="selectedNftSerials"
                  class="input is-small has-text-right has-text-white"
@@ -224,9 +224,9 @@ const INVALID_ACCOUNTID_MESSAGE = "Invalid account ID"
 const INVALID_CHECKSUM_MESSAGE = "Invalid checksum"
 const SAME_AS_OWNER_ACCOUNT_MESSAGE = "Same as owner's account"
 const INVALID_TOKENID_MESSAGE = "Invalid token ID"
-const TOKEN_NOT_FOUND_MESSAGE = "Not associated with account"
+const TOKEN_NOT_FOUND_MESSAGE = "Not associated with this account"
 const NFT_SERIAL_PROMPT_MESSAGE = "Leave empty to approve for ALL"
-const SERIAL_NOT_FOUND_MESSAGE = "Not associated with account"
+const SERIAL_NOT_FOUND_MESSAGE = "Not associated with this account"
 
 export default defineComponent({
   name: "ApproveAllowanceDialog",
@@ -751,7 +751,7 @@ export default defineComponent({
 
 .dialog-grid {
   display: grid;
-  grid-template-columns: 3fr 3fr 4fr 4fr;
+  grid-template-columns: 2fr 3fr 5fr 4fr;
   grid-column-gap: 1rem;
 }
 
