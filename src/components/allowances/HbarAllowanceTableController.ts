@@ -62,9 +62,9 @@ export class HbarAllowanceTableController extends TableController<CryptoAllowanc
                 "spender.id": string | undefined
             }
             params.limit = limit
-            params.order = order
+            params.order = TableController.invertSortOrder(order)
             if (spenderId !== null) {
-                params["spender.id"] = operator + ":" + spenderId
+                params["spender.id"] = TableController.invertKeyOperator(operator) + ":" + spenderId
             }
             const cb = (r: AxiosResponse<CryptoAllowancesResponse>): Promise<CryptoAllowance[] | null> => {
                 return Promise.resolve(r.data.allowances ?? [])
