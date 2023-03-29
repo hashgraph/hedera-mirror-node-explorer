@@ -124,11 +124,13 @@ export default defineComponent({
     const editHbarAllowance = (allowance: CryptoAllowance) => {
       console.log("Edit Hbar Allowance: " + JSON.stringify(allowance))
       currentHbarAllowance.value = allowance
+      currentTokenAllowance.value = null
       showApproveAllowanceDialog.value = true
     }
 
     const editTokenAllowance = (allowance: TokenAllowance) => {
       console.log("Edit Token Allowance: " + JSON.stringify(allowance))
+      currentHbarAllowance.value = null
       currentTokenAllowance.value = allowance
       showApproveAllowanceDialog.value = true
     }
