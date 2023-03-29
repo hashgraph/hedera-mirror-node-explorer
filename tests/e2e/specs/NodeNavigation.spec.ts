@@ -51,6 +51,7 @@ describe('Node Navigation', () => {
         cy.contains('Node ' + nodeId)
 
         cy.get('#nodeAccount')
+            .find('a')
             .contains(nodeAccount)
             .click()
 
