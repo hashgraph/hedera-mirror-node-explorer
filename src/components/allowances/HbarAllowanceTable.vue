@@ -103,9 +103,9 @@ export default defineComponent({
     const isSmallScreen = inject('isSmallScreen', true)
     const isMediumScreen = inject('isMediumScreen', true)
 
-    const isWalletConnected = computed(
-        () => walletManager.connected.value && walletManager.accountId.value === props.controller.accountId.value)
-    // const isWalletConnected = computed(() => false)
+    // const isWalletConnected = computed(
+    //     () => walletManager.connected.value && walletManager.accountId.value === props.controller.accountId.value)
+    const isWalletConnected = computed(() => false)
 
     return {
       isTouchDevice,
