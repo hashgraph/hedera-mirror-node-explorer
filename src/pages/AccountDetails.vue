@@ -221,24 +221,7 @@
       </template>
     </DashboardCard>
 
-    <DashboardCard v-if="normalizedAccountId">
-      <template v-slot:title>
-        <span class="h-is-secondary-title">Allowances</span>
-      </template>
-      <template v-slot:control>
-        <button v-if="isWalletConnected" id="approve-button" class="button is-white is-small"
-                @click="showDialog = true">APPROVE ALLOWANCE…</button>
-      </template>
-      <template v-slot:content><br/></template>
-      <template v-slot:leftContent>
-        <p class="h-is-tertiary-text mb-2">HBAR Allowances</p>
-        <HbarAllowanceTable :controller="hbarAllowanceTableController"/>
-      </template>
-      <template v-slot:rightContent>
-        <p class="h-is-tertiary-text mb-2">Token Allowances</p>
-        <TokenAllowanceTable :controller="tokenAllowanceTableController"/>
-      </template>
-    </DashboardCard>
+    <ApproveAllowanceSection :account-id="normalizedAccountId"/>
 
     <DashboardCard v-if="normalizedAccountId && availableAPI">
       <template v-slot:title>
@@ -248,8 +231,6 @@
         <StakingRewardsTable :controller="rewardsTableController"/>
       </template>
     </DashboardCard>
-
-    <ApproveAllowanceDialog v-model:show-dialog="showDialog" :owner-account-id="ownerAccountId"/>
 
   </section>
 
@@ -263,7 +244,7 @@
 
 <script lang="ts">
 
-import {computed, defineComponent, inject, onBeforeUnmount, onMounted, ref, watch} from 'vue';
+import {computed, defineComponent, inject, onBeforeUnmount, onMounted, watch} from 'vue';
 import KeyValue from "@/components/values/KeyValue.vue";
 import PlayPauseButton from "@/components/PlayPauseButton.vue";
 import TransactionTable from "@/components/transaction/TransactionTable.vue";
@@ -285,18 +266,14 @@ import AccountLink from "@/components/values/AccountLink.vue";
 import {AccountLoader} from "@/components/account/AccountLoader";
 import {ContractLoader} from "@/components/contract/ContractLoader";
 import TransactionFilterSelect from "@/components/transaction/TransactionFilterSelect.vue";
-import router, {routeManager, walletManager} from "@/router";
+import router, {routeManager} from "@/router";
 import TransactionLink from "@/components/values/TransactionLink.vue";
 import {StakingRewardsTableController} from "@/components/staking/StakingRewardsTableController";
 import StakingRewardsTable from "@/components/staking/StakingRewardsTable.vue";
 import AliasValue from "@/components/values/AliasValue.vue";
 import {NodeRegistry} from "@/components/node/NodeRegistry";
 import EVMAddress from "@/components/values/EVMAddress.vue";
-import {HbarAllowanceTableController} from "@/components/allowances/HbarAllowanceTableController";
-import HbarAllowanceTable from "@/components/allowances/HbarAllowanceTable.vue";
-import {TokenAllowanceTableController} from "@/components/allowances/TokenAllowanceTableController";
-import TokenAllowanceTable from "@/components/allowances/TokenAllowanceTable.vue";
-import ApproveAllowanceDialog from "@/components/allowances/ApproveAllowanceDialog.vue";
+import ApproveAllowanceSection from "@/components/allowances/ApproveAllowanceSection.vue";
 
 const MAX_TOKEN_BALANCES = 10
 
@@ -305,9 +282,7 @@ export default defineComponent({
   name: 'AccountDetails',
 
   components: {
-    ApproveAllowanceDialog,
-    TokenAllowanceTable,
-    HbarAllowanceTable,
+    ApproveAllowanceSection,
     EVMAddress,
     AliasValue,
     TransactionLink,
@@ -338,9 +313,6 @@ export default defineComponent({
     const isSmallScreen = inject('isSmallScreen', true)
     const isMediumScreen = inject('isMediumScreen', true)
     const isTouchDevice = inject('isTouchDevice', false)
-    const displaySideBySide = inject('isLargeScreen', true)
-
-    const showDialog = ref(false)
 
     //
     // account
@@ -363,9 +335,6 @@ export default defineComponent({
       }
       return result
     })
-
-    // const isWalletConnected = computed(() => walletManager.connected.value)
-    const isWalletConnected = computed(() => false)
 
     //
     // TransactionTableController
@@ -469,22 +438,6 @@ export default defineComponent({
     onMounted(() => rewardsTableController.mount())
     onBeforeUnmount(() => rewardsTableController.unmount())
 
-    //
-    // HBAR Allowances Table Controller
-    //
-    const hbarAllowanceTableController = new HbarAllowanceTableController(
-        router, accountLoader.accountId, perPage, "p3", "k3")
-    onMounted(() => hbarAllowanceTableController.mount())
-    onBeforeUnmount(() => hbarAllowanceTableController.unmount())
-
-    //
-    // Token Allowances Table Controller
-    //
-    const tokenAllowanceTableController = new TokenAllowanceTableController(
-        router, accountLoader.accountId, perPage, "p4", "k4")
-    onMounted(() => tokenAllowanceTableController.mount())
-    onBeforeUnmount(() => tokenAllowanceTableController.unmount())
-
     const contractRoute = computed(() => {
       const accountId = accountLoader.accountId.value
       return accountId ? routeManager.makeRouteToContract(accountId) : null
@@ -504,12 +457,8 @@ export default defineComponent({
       isSmallScreen,
       isMediumScreen,
       isTouchDevice,
-      displaySideBySide,
-      showDialog,
       transactionTableController,
       notification,
-      isWalletConnected,
-      ownerAccountId: walletManager.accountId,
       account: accountLoader.entity,
       normalizedAccountId: accountLoader.accountId,
       accountChecksum: accountLoader.accountChecksum,
@@ -529,8 +478,6 @@ export default defineComponent({
       stakedNodeDescription,
       stakedNodeIcon,
       rewardsTableController,
-      hbarAllowanceTableController,
-      tokenAllowanceTableController,
       contractRoute,
       stakedNodeRoute,
       operatorNodeRoute,

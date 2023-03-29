@@ -46,6 +46,7 @@ describe("AccountLink.vue", () => {
                 accountId: testAccountId
             },
         });
+        await flushPromises()
 
         expect(wrapper.text()).toBe(testAccountId)
         expect(wrapper.findComponent("a").attributes("href")).toMatch(
