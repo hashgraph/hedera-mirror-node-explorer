@@ -289,12 +289,30 @@ export default defineComponent({
     const nftSerialsFeedback = ref<string | null>(NFT_SERIAL_PROMPT_MESSAGE)
     let nftSerialsValidationTimer = -1
 
+    const edited = computed(() => {
+      let result = false
+      if (props.currentHbarAllowance) {
+        result ||= allowanceChoice.value !== "hbar"
+        result ||= selectedSpender.value !== props.currentHbarAllowance?.spender
+        result ||= selectedHbarAmount.value !==
+            (props.currentHbarAllowance ? (props.currentHbarAllowance.amount_granted / 100000000).toString() : null)
+      } else if (props.currentTokenAllowance) {
+        result ||= allowanceChoice.value !== "token"
+        result ||= selectedSpender.value !== props.currentTokenAllowance?.spender
+        result ||= selectedToken.value !== props.currentTokenAllowance.token_id
+        result ||= selectedTokenAmount.value !== props.currentTokenAllowance?.amount_granted.toString() ?? null
+      } else {
+        result = true
+      }
+      return result
+    })
+
     const enableApproveButton = computed(() => {
       return isSpenderValid.value && (
           (allowanceChoice.value === 'hbar' && isHbarAmountValid.value)
           || (allowanceChoice.value === 'token' && isTokenValid.value && isTokenAmountValid.value)
           || (allowanceChoice.value === 'nft' && isNftValid.value && isNftSerialsValid.value)
-      )
+      ) && edited.value
     })
 
     watch(() => props.showDialog, (newValue) => {
