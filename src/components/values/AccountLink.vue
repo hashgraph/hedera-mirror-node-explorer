@@ -55,7 +55,7 @@
 
 <script lang="ts">
 
-import {computed, defineComponent, inject, onMounted, PropType, ref} from "vue";
+import {computed, defineComponent, inject, onMounted, PropType, ref, watch} from "vue";
 import {initialLoadingKey} from "@/AppKeys";
 import {routeManager} from "@/router";
 import {NodeRegistry} from "@/components/node/NodeRegistry";
@@ -94,27 +94,34 @@ export default defineComponent({
 
     const initialLoading = inject(initialLoadingKey, ref(false))
 
-    const selectRoute = async () => {
+    const selectRoute = async (accountId: string) => {
       let result: RouteLocationRaw | null
-      if (props.accountId) {
-        try {
-          if (await ContractByIdCache.instance.lookup(props.accountId) !== null) {
-            result = routeManager.makeRouteToContract(props.accountId)
-          } else {
-            result = routeManager.makeRouteToAccount(props.accountId)
-          }
+      try {
+        if (await ContractByIdCache.instance.lookup(accountId) !== null) {
+          result = routeManager.makeRouteToContract(accountId)
+        } else {
+          result = routeManager.makeRouteToAccount(accountId)
         }
-        catch {
-          result = null
-        }
-      } else {
+      }
+      catch {
         result = null
       }
       return Promise.resolve(result)
     }
 
     onMounted(() => {
-      selectRoute().then((route) => accountRoute.value = route)
+      if (props.accountId) {
+        selectRoute(props.accountId).then((route) => accountRoute.value = route)
+      } else {
+        accountRoute.value = null
+      }
+    })
+    watch(() => props.accountId, (newValue) => {
+      if (newValue) {
+        selectRoute(newValue).then((route) => accountRoute.value = route)
+      } else {
+        accountRoute.value = null
+      }
     })
 
     return {extra, accountRoute, initialLoading}
