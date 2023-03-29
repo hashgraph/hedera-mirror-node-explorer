@@ -142,6 +142,33 @@ export abstract class TableController<R, K> {
     }
 
     //
+    // Public (utilities)
+    //
+
+    public static invertSortOrder(order: SortOrder): string {
+        return order == SortOrder.ASC ? SortOrder.DESC : SortOrder.ASC
+    }
+
+    public static invertKeyOperator(operator: KeyOperator): string {
+        let result: string
+        switch(operator) {
+            case KeyOperator.gt:
+                result = KeyOperator.lt
+                break
+            case KeyOperator.gte:
+                result = KeyOperator.lte
+                break
+            case KeyOperator.lt:
+                result = KeyOperator.gt
+                break
+            case KeyOperator.lte:
+                result = KeyOperator.gte
+                break
+        }
+        return result
+    }
+
+    //
     // Public (for testing purpose)
     //
 

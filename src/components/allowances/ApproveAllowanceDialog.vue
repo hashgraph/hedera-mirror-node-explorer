@@ -38,12 +38,12 @@
 
         <div class="dialog-grid">
           <div class="has-text-weight-light">
-            Spender Account
+            Spender
           </div>
           <div/>
           <input :value="selectedSpender"
                  class="input is-small has-text-right has-text-white"
-                 placeholder="Account ID (0.0.1234)"
+                 placeholder="Account or Contract ID (0.0.1234)"
                  style="height:26px; margin-top: 1px; border-radius: 4px; border-width: 1px;
                  background-color: var(--h-theme-box-background-color)"
                  type="text"
@@ -58,7 +58,7 @@
 
         <div class="dialog-grid mt-4">
           <div class="has-text-weight-light">
-            Allowance Type
+            Allowance
           </div>
           <div class="control" style="">
             <label class="radio h-radio-button">
@@ -83,7 +83,7 @@
           <div class="control" style="">
             <label class="radio h-radio-button">
               <input v-model="allowanceChoice" name="allowanceType" type="radio" value="token">
-              Token
+              Fungible Token
             </label>
           </div>
           <input :class="{'has-text-grey': allowanceChoice !== 'token'}"
@@ -95,7 +95,7 @@
                  type="text"
                  @focus="allowanceChoice='token'"
                  @input="event => handleTokenInput(event.target.value)">
-          <input v-if="isTokenValid"
+          <input v-if="allowanceChoice === 'token' && isTokenValid"
                  :class="{'has-text-grey': allowanceChoice !== 'token'}"
                  :value="selectedTokenAmount"
                  class="input is-small has-text-right has-text-white"
@@ -105,7 +105,7 @@
                  type="text"
                  @focus="allowanceChoice='token'"
                  @input="event => handleTokenAmountInput(event.target.value)">
-          <div v-else id="tokenFeedback"
+          <div v-else-if="allowanceChoice === 'token'" id="tokenFeedback"
                :class="{'has-text-grey': isTokenValid, 'has-text-danger': !isTokenValid}"
                class="is-inline-block h-is-text-size-2"
                style="line-height:26px;">
@@ -130,7 +130,7 @@
                  type="text"
                  @focus="allowanceChoice='nft'"
                  @input="event => handleNftInput(event.target.value)">
-          <input v-if="isNftValid"
+          <input v-if="allowanceChoice === 'nft' && isNftValid"
                  :class="{'has-text-grey': allowanceChoice !== 'nft'}"
                  :value="selectedNftSerials"
                  class="input is-small has-text-right has-text-white"
@@ -140,7 +140,7 @@
                  type="text"
                  @focus="allowanceChoice='nft'"
                  @input="event => handleNftSerialsInput(event.target.value)">
-          <div v-else id="nftFeedback"
+          <div v-else-if="allowanceChoice === 'nft'" id="nftFeedback"
                :class="{'has-text-grey': isNftValid, 'has-text-danger': !isNftValid}"
                class="is-inline-block h-is-text-size-2"
                style="line-height:26px;">
@@ -152,8 +152,11 @@
           <div/>
           <div/>
           <div/>
-          <div v-if="isNftValid" id="nftSerialsFeedback"
-               :class="{'has-text-grey': isNftSerialsValid, 'has-text-danger': !isNftSerialsValid}"
+          <div id="nftSerialsFeedback"
+               :class="{
+                    'has-text-grey': isNftSerialsValid,
+                    'has-text-danger': !isNftSerialsValid,
+                    'is-invisible': allowanceChoice !== 'nft' || !isNftValid}"
                class="is-inline-block h-is-text-size-2 has-text-right">
             {{ nftSerialsFeedback }}
           </div>
@@ -161,8 +164,8 @@
 
         <div class="is-flex is-justify-content-flex-end mt-5">
           <button class="button is-white is-small" @click="handleCancel">CANCEL</button>
-          <button :disabled="!enableChangeButton"
-                  class="button is-info is-small ml-4" @click="handleChange">CHANGE
+          <button :disabled="!enableApproveButton"
+                  class="button is-info is-small ml-4" @click="handleApprove">APPROVE
           </button>
         </div>
 
@@ -171,7 +174,7 @@
   </div>
 
   <ConfirmDialog v-model:show-dialog="showConfirmDialog" :main-message="confirmMessage"
-                 @onConfirm="handleConfirmChange">
+                 @onConfirm="handleConfirmApprove">
     <template v-slot:dialogTitle>
       <span class="h-is-primary-title">Approve allowance </span>
       <span v-if="ownerAccountId"> for account </span>
@@ -181,10 +184,10 @@
   </ConfirmDialog>
 
   <ProgressDialog v-model:show-dialog="showProgressDialog"
-                  :mode="progressDialogMode"
-                  :main-message="progressMainMessage"
                   :extra-message="progressExtraMessage"
                   :extra-transaction-id="progressExtraTransactionId"
+                  :main-message="progressMainMessage"
+                  :mode="progressDialogMode"
                   :show-spinner="showProgressSpinner"
   >
     <template v-slot:dialogTitle>
@@ -200,33 +203,33 @@
 
 <script lang="ts">
 
-import {computed, defineComponent, Ref, ref, watch} from "vue";
+import {computed, defineComponent, PropType, Ref, ref, watch} from "vue";
 import router, {walletManager} from "@/router";
 import {EntityID} from "@/utils/EntityID";
 import {networkRegistry} from "@/schemas/NetworkRegistry";
 import ConfirmDialog from "@/components/ConfirmDialog.vue";
 import axios from "axios";
-import {
-  AccountsResponse,
-  Nfts,
-  TokenRelationshipResponse,
-  Transaction,
-  TransactionByIdResponse
-} from "@/schemas/HederaSchemas";
+import {CryptoAllowance, Nfts, TokenAllowance, TokenRelationshipResponse, Transaction, TransactionByIdResponse} from "@/schemas/HederaSchemas";
 import ProgressDialog, {Mode} from "@/components/staking/ProgressDialog.vue";
 import {normalizeTransactionId} from "@/utils/TransactionID";
 import {waitFor} from "@/utils/TimerUtils";
 import {WalletDriverError} from "@/utils/wallet/WalletDriverError";
+import {TokenInfoCache} from "@/utils/cache/TokenInfoCache";
+import {AccountByIdCache} from "@/utils/cache/AccountByIdCache";
+import {ContractByIdCache} from "@/utils/cache/ContractByIdCache";
 
-const VALID_ACCOUNT_MESSAGE = "Account exists"
+const VALID_ACCOUNT_MESSAGE = "Account found"
+const VALID_CONTRACT_MESSAGE = "Contract found"
 const UNKNOWN_ACCOUNT_MESSAGE = "Unknown account"
 const INVALID_ACCOUNTID_MESSAGE = "Invalid account ID"
 const INVALID_CHECKSUM_MESSAGE = "Invalid checksum"
 const SAME_AS_OWNER_ACCOUNT_MESSAGE = "Same as owner's account"
 const INVALID_TOKENID_MESSAGE = "Invalid token ID"
-const TOKEN_NOT_FOUND_MESSAGE = "Not associated with account"
+const TOKEN_NOT_FUNGIBLE_MESSAGE = "Token is not fungible"
+const TOKEN_NOT_NFT_MESSAGE = "Token is fungible"
+const TOKEN_NOT_FOUND_MESSAGE = "Not associated with this account"
 const NFT_SERIAL_PROMPT_MESSAGE = "Leave empty to approve for ALL"
-const SERIAL_NOT_FOUND_MESSAGE = "Not associated with account"
+const SERIAL_NOT_FOUND_MESSAGE = "Not associated with this account"
 
 export default defineComponent({
   name: "ApproveAllowanceDialog",
@@ -237,12 +240,14 @@ export default defineComponent({
       type: Boolean,
       default: false
     },
+    currentHbarAllowance: Object as PropType<CryptoAllowance|null>,
+    currentTokenAllowance: Object as PropType<TokenAllowance|null>,
     polling: { // For testing purpose
       type: Number,
       default: 3000
     }
   },
-  emits: ["update:showDialog"],
+  emits: ["update:showDialog", "allowanceApproved"],
 
   setup(props, context) {
     const nr = networkRegistry
@@ -284,22 +289,71 @@ export default defineComponent({
     const nftSerialsFeedback = ref<string | null>(NFT_SERIAL_PROMPT_MESSAGE)
     let nftSerialsValidationTimer = -1
 
-    const enableChangeButton = computed(() => {
+    const edited = computed(() => {
+      let result = false
+      if (props.currentHbarAllowance) {
+        result ||= allowanceChoice.value !== "hbar"
+        result ||= selectedSpender.value !== props.currentHbarAllowance?.spender
+        result ||= selectedHbarAmount.value !==
+            (props.currentHbarAllowance ? (props.currentHbarAllowance.amount_granted / 100000000).toString() : null)
+      } else if (props.currentTokenAllowance) {
+        result ||= allowanceChoice.value !== "token"
+        result ||= selectedSpender.value !== props.currentTokenAllowance?.spender
+        result ||= selectedToken.value !== props.currentTokenAllowance.token_id
+        result ||= selectedTokenAmount.value !== props.currentTokenAllowance?.amount_granted.toString() ?? null
+      } else {
+        result = true
+      }
+      return result
+    })
+
+    const enableApproveButton = computed(() => {
       return isSpenderValid.value && (
           (allowanceChoice.value === 'hbar' && isHbarAmountValid.value)
           || (allowanceChoice.value === 'token' && isTokenValid.value && isTokenAmountValid.value)
           || (allowanceChoice.value === 'nft' && isNftValid.value && isNftSerialsValid.value)
-      )
+      ) && edited.value
     })
 
-    watch(selectedSpender, () => {
+    watch(() => props.showDialog, (newValue) => {
+      if (newValue) {
+        if (props.currentHbarAllowance) {
+          allowanceChoice.value = "hbar"
+          selectedSpender.value = props.currentHbarAllowance?.spender ?? null
+          selectedHbarAmount.value =
+              (props.currentHbarAllowance) ? (props.currentHbarAllowance.amount_granted / 100000000).toString() : null
+          selectedToken.value = null
+          selectedTokenAmount.value = null
+          selectedNft.value = null
+          selectedNftSerials.value = null
+        } else if (props.currentTokenAllowance) {
+          allowanceChoice.value = "token"
+          selectedSpender.value = props.currentTokenAllowance?.spender ?? null
+          selectedHbarAmount.value = null
+          selectedToken.value = props.currentTokenAllowance.token_id
+          selectedTokenAmount.value = props.currentTokenAllowance?.amount_granted.toString() ?? null
+          selectedNft.value = null
+          selectedNftSerials.value = null
+        } else {
+          allowanceChoice.value = "hbar"
+          selectedSpender.value = null
+          selectedHbarAmount.value = null
+          selectedToken.value = null
+          selectedTokenAmount.value = null
+          selectedNft.value = null
+          selectedNftSerials.value = null
+        }
+      }
+    })
+
+    watch(selectedSpender, (newValue) => {
       isSpenderValid.value = false
       spenderFeedback.value = null
       if (spenderValidationTimerId != -1) {
         window.clearTimeout(spenderValidationTimerId)
         spenderValidationTimerId = -1
       }
-      if (selectedSpender.value?.length) {
+      if (newValue?.length) {
         spenderValidationTimerId = window.setTimeout(() => validateSpender(), 500)
       } else {
         selectedSpender.value = null
@@ -324,6 +378,7 @@ export default defineComponent({
     const validateToken = () => validateTokenAssociation(
         walletManager.accountId.value,
         selectedToken.value,
+        'FUNGIBLE_COMMON',
         isTokenValid,
         tokenFeedback)
 
@@ -343,6 +398,7 @@ export default defineComponent({
     const validateNft = () => validateTokenAssociation(
         walletManager.accountId.value,
         selectedNft.value,
+        'NON_FUNGIBLE_UNIQUE',
         isNftValid,
         nftFeedback)
 
@@ -390,9 +446,9 @@ export default defineComponent({
     const showProgressDialog = ref(false)
     const progressDialogMode = ref(Mode.Busy)
     const progressDialogTitle = ref("Approving allowance")
-    const progressMainMessage = ref<string|null>(null)
-    const progressExtraMessage = ref<string|null>(null)
-    const progressExtraTransactionId = ref<string|null>(null)
+    const progressMainMessage = ref<string | null>(null)
+    const progressExtraMessage = ref<string | null>(null)
+    const progressExtraTransactionId = ref<string | null>(null)
     const showProgressSpinner = ref(false)
 
     const handleSpenderInput = (value: string) => handleEntityIDInput(selectedSpender, value)
@@ -406,12 +462,12 @@ export default defineComponent({
       context.emit('update:showDialog', false)
     }
 
-    const handleChange = () => {
+    const handleApprove = () => {
       context.emit('update:showDialog', false)
       showConfirmDialog.value = true
     }
 
-    const handleConfirmChange = async () => {
+    const handleConfirmApprove = async () => {
 
       try {
         showProgressDialog.value = true
@@ -454,6 +510,8 @@ export default defineComponent({
           showProgressSpinner.value = false
           progressExtraMessage.value = "with transaction ID:"
           progressExtraTransactionId.value = tid
+
+          context.emit('allowanceApproved')
         }
       } catch (reason) {
         console.log("Transaction Error: " + reason)
@@ -569,23 +627,23 @@ export default defineComponent({
         if (entity === walletManager.accountId.value) {
           message.value = SAME_AS_OWNER_ACCOUNT_MESSAGE
         } else {
-          const params = {
-            'account.id': entity,
-            balance: false
-          }
-          axios
-              .get<AccountsResponse>("api/v1/accounts", {params: params})
-              .then((response) => {
-                const accounts = response.data.accounts
-                if (accounts && accounts.length > 0) {
+          AccountByIdCache.instance.lookup(entity)
+              .then((r) => {
+                if (r) {
                   isValid.value = true
-                  message.value = VALID_ACCOUNT_MESSAGE
+                  ContractByIdCache.instance.lookup(entity)
+                      .then((r) => {
+                        if (r) {
+                          message.value = VALID_CONTRACT_MESSAGE
+                        } else {
+                          message.value = VALID_ACCOUNT_MESSAGE
+                        }
+                      })
                 } else {
                   message.value = UNKNOWN_ACCOUNT_MESSAGE
                 }
               })
               .catch(() => message.value = UNKNOWN_ACCOUNT_MESSAGE)
-
         }
       } else {
         message.value = INVALID_CHECKSUM_MESSAGE
@@ -595,6 +653,7 @@ export default defineComponent({
     const validateTokenAssociation = (
         accountId: string | null,
         tokenId: string | null,
+        type: string | null,
         isValid: Ref<boolean>,
         message: Ref<string | null>) => {
 
@@ -616,7 +675,19 @@ export default defineComponent({
               .then((response) => {
                 const tokens = response.data.tokens
                 if (tokens && tokens.length > 0) {
-                  isValid.value = true
+                  if (type !== null) {
+                    TokenInfoCache.instance.lookup(entity)
+                        .then((t) => {
+                          if (t.type === type) {
+                            isValid.value = true
+                          } else {
+                            message.value = (type === 'FUNGIBLE_COMMON') ? TOKEN_NOT_FUNGIBLE_MESSAGE : TOKEN_NOT_NFT_MESSAGE
+                          }
+                        })
+                        .catch(() => message.value = TOKEN_NOT_FOUND_MESSAGE)
+                  } else {
+                    isValid.value = true
+                  }
                 } else {
                   message.value = TOKEN_NOT_FOUND_MESSAGE
                 }
@@ -687,7 +758,7 @@ export default defineComponent({
       if (attemptIndex >= 0) {
         await waitFor(props.polling)
         try {
-          const response = await axios.get<TransactionByIdResponse>("api/v1/transactions/" + transactionId )
+          const response = await axios.get<TransactionByIdResponse>("api/v1/transactions/" + transactionId)
           const transactions = response.data.transactions ?? []
           result = Promise.resolve(transactions.length >= 1 ? transactions[0] : transactionId)
         } catch {
@@ -701,7 +772,7 @@ export default defineComponent({
     }
 
     return {
-      enableChangeButton,
+      enableApproveButton,
       selectedSpender,
       selectedHbarAmount,
       selectedToken,
@@ -733,8 +804,8 @@ export default defineComponent({
       handleNftInput,
       handleNftSerialsInput,
       handleCancel,
-      handleChange,
-      handleConfirmChange,
+      handleApprove,
+      handleConfirmApprove,
     }
   }
 });
@@ -749,7 +820,7 @@ export default defineComponent({
 
 .dialog-grid {
   display: grid;
-  grid-template-columns: 3fr 2fr 4fr 4fr;
+  grid-template-columns: 2fr 3fr 5fr 4fr;
   grid-column-gap: 1rem;
 }
 
