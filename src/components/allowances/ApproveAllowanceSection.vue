@@ -85,7 +85,8 @@ export default defineComponent({
 
     const showApproveAllowanceDialog = ref(false)
     const computedAccountId = computed(() => props.accountId || null)
-    const isWalletConnected = computed(() => walletManager.connected.value)
+    const isWalletConnected = computed(
+        () => walletManager.connected.value && walletManager.accountId.value === props.accountId)
     // const isWalletConnected = computed(() => false)
     const perPage = computed(() => isMediumScreen ? 10 : 5)
 

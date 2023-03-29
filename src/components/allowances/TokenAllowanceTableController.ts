@@ -26,11 +26,11 @@ import {Router} from "vue-router";
 
 export class TokenAllowanceTableController extends TableController<TokenAllowance, string> {
 
-    private readonly accountId: Ref<string | null>
-
     //
     // Public
     //
+
+    public readonly accountId: Ref<string | null>
 
     public constructor(router: Router,
                        accountId: Ref<string | null>,

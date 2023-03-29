@@ -29,11 +29,11 @@ import {Router} from "vue-router";
 
 export class HbarAllowanceTableController extends TableController<CryptoAllowance, string> {
 
-    private readonly accountId: Ref<string | null>
-
     //
     // Public
     //
+
+    public readonly accountId: Ref<string | null>
 
     public constructor(router: Router,
                        accountId: Ref<string | null>,
