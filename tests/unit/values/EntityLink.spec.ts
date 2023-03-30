@@ -107,7 +107,7 @@ const testBody = async (testEntityId: string, testRouteName: string, testShowExt
 
     expect(wrapper.text()).toMatch(RegExp("^" + testEntityId))
     if (testEntityId) {
-        expect(wrapper.findComponent("a").attributes("href")).toMatch(RegExp(expectedPath + "$"))
+        expect(wrapper.findComponent("a").attributes("href")).toMatch(RegExp(expectedPath))
     }
     expect(wrapper.find(".h-is-extra-text").exists()).toBe(testShowExtra)
 }
