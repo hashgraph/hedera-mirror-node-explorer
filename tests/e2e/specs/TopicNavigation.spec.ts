@@ -20,8 +20,6 @@
 
 // https://docs.cypress.io/api/introduction/api.html
 
-import {normalizeTransactionId} from "../../../src/utils/TransactionID";
-
 describe('Topic Navigation', () => {
 
     it('should navigate from topic table to topic messages', () => {
@@ -46,7 +44,7 @@ describe('Topic Navigation', () => {
     it('should navigate from transaction details to topic message table back to transaction', () => {
         const timestamp = "1673267377.484637167"
         const transactionId = "0.0.1259116@1673267363.615392477"
-        const targetURL = '/mainnet/transaction/' + timestamp + "?tid=" + normalizeTransactionId(transactionId)
+        const targetURL = '/mainnet/transaction/' + timestamp
         cy.visit(targetURL)
         cy.url().should('include', targetURL)
         cy.contains('Transaction ' + transactionId)

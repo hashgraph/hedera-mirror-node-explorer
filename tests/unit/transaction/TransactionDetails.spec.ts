@@ -22,12 +22,12 @@
 
 import {flushPromises, mount} from "@vue/test-utils"
 import router from "@/router";
-import TransactionDetails from "@/pages/TransactionDetails.vue";
+import TransactionDetailsV2 from "@/pages/TransactionDetailsV2.vue";
 import HbarTransferGraphF from "@/components/transfer_graphs/HbarTransferGraphF.vue";
 import TokenTransferGraph from "@/components/transfer_graphs/TokenTransferGraphF.vue";
 import NftTransferGraph from "@/components/transfer_graphs/NftTransferGraph.vue";
 import NotificationBanner from "@/components/NotificationBanner.vue";
-import axios from "axios";
+import axios, {AxiosRequestConfig} from "axios";
 import {
     SAMPLE_ASSOCIATED_TOKEN, SAMPLE_ASSOCIATED_TOKEN_2,
     SAMPLE_BLOCKSRESPONSE,
@@ -90,17 +90,24 @@ describe("TransactionDetails.vue", () => {
 
         const matcher1 = "/api/v1/transactions/" + SAMPLE_TRANSACTION.transaction_id
         mock.onGet(matcher1).reply(200, SAMPLE_TRANSACTIONS);
+        const matcher11 = "/api/v1/transactions"
+        mock.onGet(matcher11).reply((config: AxiosRequestConfig) => {
+            if (config.params.timestamp == SAMPLE_TRANSACTION.consensus_timestamp) {
+                return [200, { transactions: [SAMPLE_TRANSACTION]}]
+            } else {
+                return [404]
+            }
+        });
 
         const matcher2 = "/api/v1/tokens/" + SAMPLE_TOKEN.token_id
         mock.onGet(matcher2).reply(200, SAMPLE_TOKEN);
 
-        const wrapper = mount(TransactionDetails, {
+        const wrapper = mount(TransactionDetailsV2, {
             global: {
                 plugins: [router, Oruga]
             },
             props: {
                 transactionLoc: SAMPLE_TRANSACTION.consensus_timestamp,
-                transactionId: SAMPLE_TRANSACTION.transaction_id
             },
         });
 
@@ -152,18 +159,26 @@ describe("TransactionDetails.vue", () => {
 
         const matcher1 = "/api/v1/transactions/" + transactionId
         mock.onGet(matcher1).reply(200, SAMPLE_CONTRACTCALL_TRANSACTIONS);
+        const matcher11 = "/api/v1/transactions"
+        mock.onGet(matcher11).reply((config: AxiosRequestConfig) => {
+            if (config.params.timestamp == timestamp) {
+                return [200, SAMPLE_CONTRACTCALL_TRANSACTIONS]
+            } else {
+                return [404]
+            }
+        });
+
         const matcher2 = "/api/v1/contracts/" + contractId + "/results/" + timestamp
         mock.onGet(matcher2).reply(200, SAMPLE_CONTRACT_RESULT_DETAILS)
         const matcher5 = "/api/v1/contracts/results/" + transactionId + "/actions"
         mock.onGet(matcher5).reply(200, "[]")
 
-        const wrapper = mount(TransactionDetails, {
+        const wrapper = mount(TransactionDetailsV2, {
             global: {
                 plugins: [router, Oruga]
             },
             props: {
                 transactionLoc: timestamp,
-                transactionId: transactionId
             },
         });
 
@@ -207,12 +222,20 @@ describe("TransactionDetails.vue", () => {
         mock.onGet(matcher1).reply(200, { transactions: [SAMPLE_TRANSACTION]});
         const matcher11 = "/api/v1/transactions/" + transactionId
         mock.onGet(matcher11).reply(200, SAMPLE_CONTRACTCALL_TRANSACTIONS);
+        const matcher12 = "/api/v1/transactions"
+        mock.onGet(matcher12).reply((config: AxiosRequestConfig) => {
+            if (config.params.timestamp == timestamp) {
+                return [200, SAMPLE_CONTRACTCALL_TRANSACTIONS]
+            } else {
+                return [404]
+            }
+        });
         const matcher2 = "/api/v1/contracts/" + contractId  + "/results/" + timestamp
         mock.onGet(matcher2).reply(200, SAMPLE_CONTRACT_RESULT_DETAILS)
         const matcher5 = "/api/v1/contracts/results/" + transactionId + "/actions"
         mock.onGet(matcher5).reply(200, "[]")
 
-        const wrapper = mount(TransactionDetails, {
+        const wrapper = mount(TransactionDetailsV2, {
             global: {
                 plugins: [router, Oruga]
             },
@@ -249,8 +272,14 @@ describe("TransactionDetails.vue", () => {
 
         await router.push("/") // To avoid "missing required param 'network'" error
 
-        let matcher1 = "/api/v1/transactions?timestamp=" + SAMPLE_TRANSACTION.consensus_timestamp
-        mock.onGet(matcher1).reply(200, { transactions: [SAMPLE_TRANSACTION]})
+        let matcher1 = "/api/v1/transactions"
+        mock.onGet(matcher1).reply((config: AxiosRequestConfig) => {
+            if (config.params.timestamp == SAMPLE_TRANSACTION.consensus_timestamp) {
+                return [200, {transactions: [SAMPLE_TRANSACTION]}]
+            } else {
+                return [404]
+            }
+        });
 
         let matcher11 = "/api/v1/transactions/" + SAMPLE_TRANSACTION.transaction_id
         mock.onGet(matcher11).reply(200, SAMPLE_TRANSACTIONS)
@@ -258,7 +287,7 @@ describe("TransactionDetails.vue", () => {
         const matcher2 = "/api/v1/tokens/" + SAMPLE_TOKEN.token_id
         mock.onGet(matcher2).reply(200, SAMPLE_TOKEN);
 
-        const wrapper = mount(TransactionDetails, {
+        const wrapper = mount(TransactionDetailsV2, {
             global: {
                 plugins: [router, Oruga]
             },
@@ -278,8 +307,14 @@ describe("TransactionDetails.vue", () => {
         expect(wrapper.findComponent(NftTransferGraph).text()).toContain("NFT TransfersNone")
 
         const transaction = SAMPLE_CONTRACTCALL_TRANSACTIONS.transactions[0]
-        matcher1 = "/api/v1/transactions?timestamp=" + transaction.consensus_timestamp
-        mock.onGet(matcher1).reply(200, { transactions: [transaction]})
+        matcher1 = "/api/v1/transactions"
+        mock.onGet(matcher1).reply((config: AxiosRequestConfig) => {
+            if (config.params.timestamp == transaction.consensus_timestamp) {
+                return [200, {transactions: [transaction]}]
+            } else {
+                return [404]
+            }
+        });
         matcher11 = "/api/v1/transactions/" + transaction.transaction_id
         mock.onGet(matcher11).reply(200, SAMPLE_CONTRACTCALL_TRANSACTIONS)
 
@@ -303,13 +338,19 @@ describe("TransactionDetails.vue", () => {
 
         await router.push("/") // To avoid "missing required param 'network'" error
 
-        const matcher1 = "/api/v1/transactions?timestamp=" + SAMPLE_FAILED_TRANSACTION.consensus_timestamp
-        mock.onGet(matcher1).reply(200, SAMPLE_FAILED_TRANSACTIONS);
+        const matcher1 = "/api/v1/transactions"
+        mock.onGet(matcher1).reply((config: AxiosRequestConfig) => {
+            if (config.params.timestamp == SAMPLE_FAILED_TRANSACTION.consensus_timestamp) {
+                return [200, {transactions: [SAMPLE_FAILED_TRANSACTION]}]
+            } else {
+                return [404]
+            }
+        });
 
         const matcher11 = "/api/v1/transactions/" + SAMPLE_FAILED_TRANSACTION.transaction_id
         mock.onGet(matcher11).reply(200, SAMPLE_FAILED_TRANSACTIONS);
 
-        const wrapper = mount(TransactionDetails, {
+        const wrapper = mount(TransactionDetailsV2, {
             global: {
                 plugins: [router, Oruga]
             },
@@ -333,7 +374,7 @@ describe("TransactionDetails.vue", () => {
         await router.push("/") // To avoid "missing required param 'network'" error
 
         const invalidTimestamp = "1600000000.000000000"
-        const wrapper = mount(TransactionDetails, {
+        const wrapper = mount(TransactionDetailsV2, {
             global: {
                 plugins: [router, Oruga]
             },
@@ -354,12 +395,18 @@ describe("TransactionDetails.vue", () => {
 
         const transaction = SAMPLE_SYSTEM_CONTRACT_CALL_TRANSACTIONS.transactions[0]
 
-        const matcher1 = "/api/v1/transactions?timestamp=" + transaction.consensus_timestamp
-        mock.onGet(matcher1).reply(200, { transactions: [transaction]})
+        const matcher1 = "/api/v1/transactions"
+        mock.onGet(matcher1).reply((config: AxiosRequestConfig) => {
+            if (config.params.timestamp == transaction.consensus_timestamp) {
+                return [200, {transactions: [transaction]}]
+            } else {
+                return [404]
+            }
+        });
         const matcher11 = "/api/v1/transactions/" + transaction.transaction_id
         mock.onGet(matcher11).reply(200, SAMPLE_SYSTEM_CONTRACT_CALL_TRANSACTIONS)
 
-        const wrapper = mount(TransactionDetails, {
+        const wrapper = mount(TransactionDetailsV2, {
             global: {
                 plugins: [router, Oruga]
             },
@@ -383,14 +430,20 @@ describe("TransactionDetails.vue", () => {
         const SCHEDULING = SAMPLE_SCHEDULING_SCHEDULED_TRANSACTIONS.transactions[0]
         const SCHEDULED = SAMPLE_SCHEDULING_SCHEDULED_TRANSACTIONS.transactions[1]
         const TOKEN_ID = SCHEDULED.token_transfers ? SCHEDULED.token_transfers[0].token_id : "0.0.1304757"
-        const matcher1 = "/api/v1/transactions?timestamp=" + SCHEDULING.consensus_timestamp
-        mock.onGet(matcher1).reply(200, { transactions: [SCHEDULING]});
+        const matcher1 = "/api/v1/transactions"
+        mock.onGet(matcher1).reply((config: AxiosRequestConfig) => {
+            if (config.params.timestamp == SCHEDULING.consensus_timestamp) {
+                return [200, {transactions: [SCHEDULING]}]
+            } else {
+                return [404]
+            }
+        });
         const matcher11 = "/api/v1/transactions/" + SCHEDULING.transaction_id
         mock.onGet(matcher11).reply(200, SAMPLE_SCHEDULING_SCHEDULED_TRANSACTIONS);
         const matcher5 = "/api/v1/tokens/" + TOKEN_ID
         mock.onGet(matcher5).reply(200, SAMPLE_TOKEN)
 
-        const wrapper = mount(TransactionDetails, {
+        const wrapper = mount(TransactionDetailsV2, {
             global: {
                 plugins: [router, Oruga]
             },
@@ -408,7 +461,7 @@ describe("TransactionDetails.vue", () => {
         const link = wrapper.get("#scheduledLink")
         expect(link.text()).toBe("Show scheduled transaction")
         expect(link.get('a').attributes("href")).toBe(
-            "/mainnet/transaction/" + SCHEDULED.consensus_timestamp + "?tid=" + SCHEDULED.transaction_id
+            "/mainnet/transaction/" + SCHEDULED.consensus_timestamp
         )
     });
 
@@ -419,14 +472,20 @@ describe("TransactionDetails.vue", () => {
         const SCHEDULING = SAMPLE_SCHEDULING_SCHEDULED_TRANSACTIONS.transactions[0]
         const SCHEDULED = SAMPLE_SCHEDULING_SCHEDULED_TRANSACTIONS.transactions[1]
         const TOKEN_ID = SCHEDULED.token_transfers ? SCHEDULED.token_transfers[0].token_id : "0.0.1304757"
-        const matcher1 = "/api/v1/transactions?timestamp=" + SCHEDULED.consensus_timestamp
-        mock.onGet(matcher1).reply(200, { transactions: [SCHEDULED]});
+        const matcher1 = "/api/v1/transactions"
+        mock.onGet(matcher1).reply((config: AxiosRequestConfig) => {
+            if (config.params.timestamp == SCHEDULED.consensus_timestamp) {
+                return [200, {transactions: [SCHEDULED]}]
+            } else {
+                return [404]
+            }
+        });
         const matcher11 = "/api/v1/transactions/" + SCHEDULED.transaction_id
         mock.onGet(matcher11).reply(200, SAMPLE_SCHEDULING_SCHEDULED_TRANSACTIONS);
         const matcher2 = "/api/v1/tokens/" + TOKEN_ID
         mock.onGet(matcher2).reply(200, SAMPLE_TOKEN);
 
-        const wrapper = mount(TransactionDetails, {
+        const wrapper = mount(TransactionDetailsV2, {
             global: {
                 plugins: [router, Oruga]
             },
@@ -444,45 +503,52 @@ describe("TransactionDetails.vue", () => {
         const link = wrapper.get("#schedulingLink")
         expect(link.text()).toBe("Show schedule create transaction")
         expect(link.get('a').attributes("href")).toBe(
-            "/mainnet/transaction/" + SCHEDULING.consensus_timestamp + "?tid=" + SCHEDULING.transaction_id
+            "/mainnet/transaction/" + SCHEDULING.consensus_timestamp
         )
     });
 
-    it("Should display a link to the parent transaction", async () => {
+    it("Should display a link to the parent transaction",
+        async () => {
 
-        await router.push("/") // To avoid "missing required param 'network'" error
+            await router.push("/") // To avoid "missing required param 'network'" error
 
-        const PARENT = SAMPLE_PARENT_CHILD_TRANSACTIONS.transactions[0]
-        const CHILD = SAMPLE_PARENT_CHILD_TRANSACTIONS.transactions[1]
-        const TOKEN_ID = CHILD.nft_transfers ? CHILD.nft_transfers[0].token_id : "0.0.48193741"
-        const matcher1 = "/api/v1/transactions?timestamp=" + CHILD.consensus_timestamp
-        mock.onGet(matcher1).reply(200, { transactions: [CHILD]});
-        const matcher11 = "/api/v1/transactions/" + CHILD.transaction_id
-        mock.onGet(matcher11).reply(200, SAMPLE_PARENT_CHILD_TRANSACTIONS);
-        const matcher2 = "/api/v1/tokens/" + TOKEN_ID
-        mock.onGet(matcher2).reply(200, SAMPLE_TOKEN);
+            const PARENT = SAMPLE_PARENT_CHILD_TRANSACTIONS.transactions[0]
+            const CHILD = SAMPLE_PARENT_CHILD_TRANSACTIONS.transactions[1]
+            const TOKEN_ID = CHILD.nft_transfers ? CHILD.nft_transfers[0].token_id : "0.0.48193741"
+            const matcher1 = "/api/v1/transactions"
+            mock.onGet(matcher1).reply((config: AxiosRequestConfig) => {
+                if (config.params.timestamp == CHILD.consensus_timestamp) {
+                    return [200, {transactions: [CHILD]}]
+                } else {
+                    return [404]
+                }
+            });
+            const matcher11 = "/api/v1/transactions/" + CHILD.transaction_id
+            mock.onGet(matcher11).reply(200, SAMPLE_PARENT_CHILD_TRANSACTIONS);
+            const matcher2 = "/api/v1/tokens/" + TOKEN_ID
+            mock.onGet(matcher2).reply(200, SAMPLE_TOKEN);
 
-        const wrapper = mount(TransactionDetails, {
-            global: {
-                plugins: [router, Oruga]
-            },
-            props: {
-                transactionLoc: CHILD.consensus_timestamp,
-            },
+            const wrapper = mount(TransactionDetailsV2, {
+                global: {
+                    plugins: [router, Oruga]
+                },
+                props: {
+                    transactionLoc: CHILD.consensus_timestamp,
+                },
+            });
+
+            await flushPromises()
+            // console.log(wrapper.html())
+            // console.log(wrapper.text())
+
+            expect(wrapper.text()).toMatch(RegExp("^Transaction " + normalizeTransactionId(CHILD.transaction_id, true)))
+
+            const link = wrapper.get("#parentTransactionValue")
+            expect(link.text()).toBe("CONTRACT CALL")
+            expect(link.get('a').attributes("href")).toBe(
+                "/mainnet/transaction/" + PARENT.consensus_timestamp
+            )
         });
-
-        await flushPromises()
-        // console.log(wrapper.html())
-        // console.log(wrapper.text())
-
-        expect(wrapper.text()).toMatch(RegExp("^Transaction " + normalizeTransactionId(CHILD.transaction_id, true)))
-
-        const link = wrapper.get("#parentTransactionValue")
-        expect(link.text()).toBe("CONTRACT CALL")
-        expect(link.get('a').attributes("href")).toBe(
-            "/mainnet/transaction/" + PARENT.consensus_timestamp + "?tid=" + PARENT.transaction_id
-        )
-    });
 
     it("Should display link to the child transactions", async () => {
 
@@ -491,12 +557,18 @@ describe("TransactionDetails.vue", () => {
         const PARENT = SAMPLE_PARENT_CHILD_TRANSACTIONS.transactions[0]
         const CHILD1 = SAMPLE_PARENT_CHILD_TRANSACTIONS.transactions[1]
         const CHILD2 = SAMPLE_PARENT_CHILD_TRANSACTIONS.transactions[2]
-        const matcher1 = "/api/v1/transactions?timestamp=" + PARENT.consensus_timestamp
-        mock.onGet(matcher1).reply(200, {transactions: [PARENT]});
+        const matcher1 = "/api/v1/transactions"
+        mock.onGet(matcher1).reply((config: AxiosRequestConfig) => {
+            if (config.params.timestamp == PARENT.consensus_timestamp) {
+                return [200, {transactions: [PARENT]}]
+            } else {
+                return [404]
+            }
+        });
         const matcher11 = "/api/v1/transactions/" + PARENT.transaction_id
         mock.onGet(matcher11).reply(200, SAMPLE_PARENT_CHILD_TRANSACTIONS);
 
-        const wrapper = mount(TransactionDetails, {
+        const wrapper = mount(TransactionDetailsV2, {
             global: {
                 plugins: [router, Oruga]
             },
@@ -516,10 +588,10 @@ describe("TransactionDetails.vue", () => {
 
         const links = children.findAll('a')
         expect(links[0].attributes("href")).toBe(
-            "/mainnet/transaction/" + CHILD1.consensus_timestamp + "?tid=" + CHILD1.transaction_id
+            "/mainnet/transaction/" + CHILD1.consensus_timestamp
         )
         expect(links[1].attributes("href")).toBe(
-            "/mainnet/transaction/" + CHILD2.consensus_timestamp + "?tid=" + CHILD2.transaction_id
+            "/mainnet/transaction/" + CHILD2.consensus_timestamp
         )
     });
 
@@ -533,6 +605,14 @@ describe("TransactionDetails.vue", () => {
 
         const matcher1 = "/api/v1/transactions/" + transaction.transaction_id
         mock.onGet(matcher1).reply(200, { transactions: [transaction]});
+        const matcher11 = "/api/v1/transactions"
+        mock.onGet(matcher11).reply((config: AxiosRequestConfig) => {
+            if (config.params.timestamp == transaction.consensus_timestamp) {
+                return [200, { transactions: [transaction]}]
+            } else {
+                return [404]
+            }
+        });
         const matcher3 = "/api/v1/accounts/" + transaction.entity_id + "/tokens"
         mock.onGet(matcher3).reply(200, SAMPLE_TOKEN_ASSOCIATIONS);
         const matcher4 = "/api/v1/tokens/" + token1.token_id
@@ -540,13 +620,12 @@ describe("TransactionDetails.vue", () => {
         const matcher5 = "/api/v1/tokens/" + token2.token_id
         mock.onGet(matcher5).reply(200, token2);
 
-        const wrapper = mount(TransactionDetails, {
+        const wrapper = mount(TransactionDetailsV2, {
             global: {
                 plugins: [router, Oruga]
             },
             props: {
                 transactionLoc: transaction.consensus_timestamp,
-                transactionId: transaction.transaction_id
             },
         });
 

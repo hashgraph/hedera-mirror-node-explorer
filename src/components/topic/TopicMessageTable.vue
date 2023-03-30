@@ -81,7 +81,6 @@ import {ORUGA_MOBILE_BREAKPOINT} from '@/App.vue';
 import EmptyTable from "@/components/EmptyTable.vue";
 import {TopicMessage} from "@/schemas/HederaSchemas";
 import {routeManager} from "@/router";
-import {TransactionID} from "@/utils/TransactionID";
 
 export default defineComponent({
 
@@ -101,13 +100,9 @@ export default defineComponent({
     const isMediumScreen = inject('isMediumScreen', true)
 
     const handleClick = (t: TopicMessage) => {
-      const entityId = t.chunk_info?.initial_transaction_id.account_id
-      const timestamp = t.chunk_info?.initial_transaction_id.transaction_valid_start
-      if (entityId && timestamp) {
-        const transactionId = TransactionID.parse(entityId + '@' + timestamp)
-        if (transactionId) {
-          routeManager.routeToTransactionId(transactionId.toString(false), t.consensus_timestamp)
-        }
+      const consensusTimestamp = t.consensus_timestamp
+      if (consensusTimestamp) {
+        routeManager.routeToTransactionByTs(consensusTimestamp)
       }
     }
 
