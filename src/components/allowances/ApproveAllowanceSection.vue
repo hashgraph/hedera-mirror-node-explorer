@@ -101,6 +101,12 @@ export default defineComponent({
       }
     })
 
+    watch(showApproveAllowanceDialog, (newValue) => {
+      if (!newValue) {
+        cleanUpRouteQuery()
+      }
+    })
+
     const perPage = computed(() => isMediumScreen ? 10 : 5)
 
     const currentHbarAllowance = ref<CryptoAllowance|null>(null)
@@ -147,6 +153,18 @@ export default defineComponent({
       currentHbarAllowance.value = null
       currentTokenAllowance.value = allowance
       showApproveAllowanceDialog.value = true
+    }
+
+    const cleanUpRouteQuery = async () => {
+      const query = {...router.currentRoute.value.query}
+      if (query.app) {
+        delete query.app
+
+        const failure = await router.replace({ query: query })
+        if (failure && failure.type != 8 && failure.type != 16) {
+          console.warn(failure.message)
+        }
+      }
     }
 
     return {
