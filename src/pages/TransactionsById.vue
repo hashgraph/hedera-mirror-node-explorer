@@ -48,12 +48,13 @@
 
 <script lang="ts">
 
-import {computed, defineComponent, inject, onMounted} from 'vue';
+import {computed, defineComponent, inject, Ref, ref, watch} from 'vue';
 import DashboardCard from "@/components/DashboardCard.vue";
 import TransactionByIdTable from "@/components/transaction/TransactionByIdTable.vue";
 import {normalizeTransactionId} from "@/utils/TransactionID";
 import Footer from "@/components/Footer.vue";
-import {TransactionByIdLoader} from "@/components/transaction/TransactionByIdLoader";
+import {TransactionGroupCache} from "@/utils/cache/TransactionGroupCache";
+import {Transaction} from '@/schemas/HederaSchemas';
 
 export default defineComponent({
   name: 'TransactionsById',
@@ -81,13 +82,24 @@ export default defineComponent({
       return props.transactionId ? normalizeTransactionId(props.transactionId, false) : null
     })
 
-    const transactionLoader = new TransactionByIdLoader(paramTransactionId)
-    onMounted(() => transactionLoader.requestLoad())
+    const transactions: Ref<Transaction[]> = ref([])
+    watch(paramTransactionId, async () => {
+      if (paramTransactionId.value !== null) {
+        try {
+          const e = await TransactionGroupCache.instance.lookup(paramTransactionId.value)
+          transactions.value = e ?? []
+        } catch {
+          transactions.value = []
+        }
+      } else {
+        transactions.value = []
+      }
+    }, { immediate: true })
 
     return {
       isSmallScreen,
       isTouchDevice,
-      transactions: transactionLoader.transactions,
+      transactions,
       normalizedTransactionId
     }
   }
