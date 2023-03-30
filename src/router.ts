@@ -108,7 +108,7 @@ const routes: Array<RouteRecordRaw> = [
     props: route => ({
       network: route.params.network as string|undefined,
       accountId: route.params.accountId as string|undefined,
-      showApproveDialog: route.query.approve as string|undefined
+      showApproveDialog: route.query.app as string|undefined
     })
   },
   {
