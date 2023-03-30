@@ -430,15 +430,26 @@ export default defineComponent({
 
       if (allowanceChoice.value === 'hbar') {
         result = "Do you want to approve an allowance to account " + toAccount
-            + " for " + selectedHbarAmount.value + "ħ" + "?"
+            + " for " + (selectedHbarAmount.value??0/100000000) + " hbars?"
       } else if (allowanceChoice.value === 'token') {
         const token = normalizedToken.value
         result = "Do you want to approve an allowance to account " + toAccount
-            + " for " + selectedTokenAmount.value + " tokens (" + token + ")?"
+            + " for " + selectedTokenAmount.value + " fungible tokens (" + token + ")?"
       } else {  // 'nft'
         const nFT = normalizedNFT.value
         result = "Do you want to approve an allowance to account " + toAccount
-            + " for " + nFT + "?"
+            + " for NFT " + nFT
+        if (nftSerials.value.length) {
+          result += " ("
+          for (let i = 0; i < nftSerials.value.length; i++) {
+            if (i > 0) {
+              result += ', '
+            }
+            result += '#' + nftSerials.value[i]
+          }
+          result += ')'
+        }
+        result += '?'
       }
       return result
     })
