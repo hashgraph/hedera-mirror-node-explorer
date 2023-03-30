@@ -674,7 +674,7 @@ export const SAMPLE_CONTRACT_RESULT_DETAILS = {
     "gas_used": 384000,
     "timestamp": "1662655535.645046772",
     "to": "0x0000000000000000000000000000000000103783",
-    "hash": "0xc43db9eacf72c91629ac03088535dd9ae41059a2c1eefce3a528e04e7e908d2d994ebaa58139c9119dc83f567b162ce3",
+    "hash": "0xc43db9eacf72c91629ac03088535dd9ae41059a2c1eefce3a528e04e7e908d2d",
     "block_hash": "0x9128e0c85440fb647c642d9b9982d339320105cc2b0287ea8cdb0d29e4a3dd2eaa2ecfbcd4ed69ca83200905b2991702",
     "block_number": 37392133,
     "logs": [
@@ -776,6 +776,28 @@ export const SAMPLE_CONTRACT_RESULT_DETAILS = {
     "v": null,
     "nonce": null
 }
+
+
+export const SAMPLE_CONTRACT_CALL_TRANSACTION = {
+    "bytes": null,
+    "charged_tx_fee": 0,
+    "consensus_timestamp": SAMPLE_CONTRACT_RESULT_DETAILS.timestamp,
+    "entity_id": "0.0.359",
+    "max_fee": "0",
+    "memo_base64": "",
+    "name": "CONTRACTCALL",
+    "node": null,
+    "nonce": 2,
+    "parent_consensus_timestamp": "1662623752.949648608",
+    "result": "SUCCESS",
+    "scheduled": false,
+    "transaction_hash": "LC8tH/tqkOEndC3ERShZO7n6NSxhdhbkSZJX3hnbwKAWaQ2KLMsg1DgaXByxrUEY",
+    "transaction_id": "0.0.29511696-1662623740-379586211",
+    "transfers": [],
+    "valid_duration_seconds": null,
+    "valid_start_timestamp": "1662623740.379586211"
+}
+
 
 export const SAMPLE_REVERT_CONTRACT_RESULT_DETAILS = {
     "address": "0x0000000000000000000000000000000000362667",

@@ -100,7 +100,7 @@ export default defineComponent({
     })
 
     const routeToTransaction = computed(() => {
-      return props.transactionLoc ? routeManager.makeRouteToTransaction(props.transactionLoc, normalizedId.value ?? undefined) : null
+      return props.transactionLoc ? routeManager.makeRouteToTransaction(props.transactionLoc) : null
     })
 
     return { formattedId, routeToTransaction }
