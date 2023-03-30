@@ -20,15 +20,12 @@
 
 // https://docs.cypress.io/api/introduction/api.html
 
-import {normalizeTransactionId} from "../../../src/utils/TransactionID";
-
 describe('Transfer Graphs Navigation', () => {
 
     it('should follow links from Hbar transfer graph', () => {
         const timestamp = "1645611953.351954692"
-        const transactionId = "0.0.690356@1645611941.817662784"
 
-        const targetURL = 'mainnet/transaction/' + timestamp + "?tid=" + normalizeTransactionId(transactionId)
+        const targetURL = 'mainnet/transaction/' + timestamp
         cy.visit(targetURL)
         cy.url().should('include', targetURL)
 
@@ -72,9 +69,8 @@ describe('Transfer Graphs Navigation', () => {
 
     it('should follow links from NFT transfer graph', () => {
         const timestamp = "1645611953.351954692"
-        const transactionId = "0.0.690356@1645611941.817662784"
 
-        const targetURL = 'mainnet/transaction/' + timestamp + "?tid=" + normalizeTransactionId(transactionId)
+        const targetURL = 'mainnet/transaction/' + timestamp
         cy.visit(targetURL)
         cy.url().should('include', targetURL)
 
@@ -116,9 +112,8 @@ describe('Transfer Graphs Navigation', () => {
 
     it('should follow links from Token transfer graph', () => {
         const timestamp = "1644275573.359523416"
-        const transactionId = "0.0.196756@1644275559.734822737"
 
-        const targetURL = 'mainnet/transaction/' + timestamp + "?tid=" + normalizeTransactionId(transactionId)
+        const targetURL = 'mainnet/transaction/' + timestamp
         cy.visit(targetURL)
         cy.url().should('include', targetURL)
 

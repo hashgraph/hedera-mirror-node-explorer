@@ -21,7 +21,7 @@
 import {createRouter, createWebHistory, RouteLocationNormalized, Router, RouteRecordRaw} from 'vue-router'
 import MainDashboard from "@/pages/MainDashboard.vue";
 import Transactions from "@/pages/Transactions.vue";
-import TransactionDetails from "@/pages/TransactionDetails.vue";
+import TransactionDetailsV2 from "@/pages/TransactionDetailsV2.vue";
 import Accounts from "@/pages/Accounts.vue";
 import AccountDetails from "@/pages/AccountDetails.vue";
 import Tokens from "@/pages/Tokens.vue";
@@ -86,12 +86,8 @@ const routes: Array<RouteRecordRaw> = [
   {
     path: '/:network/transaction/:transactionLoc',
     name: 'TransactionDetails',
-    component: TransactionDetails,
-    props: route => ({
-      network: route.params.network as string|undefined,
-      transactionLoc: route.params.transactionLoc as string|undefined,
-      transactionId: route.query.tid as string|undefined
-    })
+    component: TransactionDetailsV2,
+    props: true
   },
   {
     path: '/:network/accounts',
@@ -204,7 +200,7 @@ const routes: Array<RouteRecordRaw> = [
     // EIP 3091 Support
     path: '/:network/tx/:transactionLoc',
     name: 'TransactionDetails3091',
-    component: TransactionDetails,
+    component: TransactionDetailsV2,
     props: true
   },
   {
