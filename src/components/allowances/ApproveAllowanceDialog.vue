@@ -29,7 +29,8 @@
       <div class="box">
 
         <span class="h-is-primary-title">
-          <span>Approve Allowance</span>
+          <span v-if="isEditing">Modify allowance</span>
+          <span v-else>Approve allowance</span>
           <span v-if="ownerAccountId"> for account </span>
           <span v-if="ownerAccountId" class="h-is-secondary-text has-text-weight-light mr-3">{{ ownerAccountId }}</span>
         </span>
@@ -162,6 +163,12 @@
           </div>
         </div>
 
+        <div v-if="isEditing" id="editingFeedback"
+             class="has-text-grey h-is-text-size-3 has-text-centered mt-1"
+             :class="{'is-invisible': !enableApproveButton}">
+            {{ editingFeedback }}
+        </div>
+
         <div class="is-flex is-justify-content-flex-end mt-5">
           <button class="button is-white is-small" @click="handleCancel">CANCEL</button>
           <button :disabled="!enableApproveButton"
@@ -176,7 +183,8 @@
   <ConfirmDialog v-model:show-dialog="showConfirmDialog" :main-message="confirmMessage"
                  @onConfirm="handleConfirmApprove">
     <template v-slot:dialogTitle>
-      <span class="h-is-primary-title">Approve allowance </span>
+      <span v-if="isEditing" class="h-is-primary-title">Modify allowance </span>
+      <span v-else class="h-is-primary-title">Approve allowance </span>
       <span v-if="ownerAccountId"> for account </span>
       <span v-if="ownerAccountId" class="h-is-secondary-text has-text-weight-light mr-3"
             style="line-height: 36px">{{ ownerAccountId }}</span>
@@ -289,6 +297,8 @@ export default defineComponent({
     const nftSerialsFeedback = ref<string | null>(NFT_SERIAL_PROMPT_MESSAGE)
     let nftSerialsValidationTimer = -1
 
+    const isEditing = ref(false)
+
     const edited = computed(() => {
       let result = false
       if (props.currentHbarAllowance) {
@@ -307,6 +317,21 @@ export default defineComponent({
       return result
     })
 
+    const editingFeedback = computed(() => {
+      let result
+      if (props.currentHbarAllowance) {
+        result = "Previous allowance was to "
+            + props.currentHbarAllowance.spender + " for "
+            + props.currentHbarAllowance.amount_granted/100000000 + " hbars"
+      } else if (props.currentTokenAllowance) {
+        result = "Previous allowance was to "
+            + props.currentTokenAllowance.spender + " for "
+            + props.currentTokenAllowance.amount_granted
+            + " tokens (" + props.currentTokenAllowance.token_id + ")"
+      }
+      return result
+    })
+
     const enableApproveButton = computed(() => {
       return isSpenderValid.value && (
           (allowanceChoice.value === 'hbar' && isHbarAmountValid.value)
@@ -318,6 +343,7 @@ export default defineComponent({
     watch(() => props.showDialog, (newValue) => {
       if (newValue) {
         if (props.currentHbarAllowance) {
+          isEditing.value = true
           allowanceChoice.value = "hbar"
           selectedSpender.value = props.currentHbarAllowance?.spender ?? null
           selectedHbarAmount.value =
@@ -327,6 +353,7 @@ export default defineComponent({
           selectedNft.value = null
           selectedNftSerials.value = null
         } else if (props.currentTokenAllowance) {
+          isEditing.value = true
           allowanceChoice.value = "token"
           selectedSpender.value = props.currentTokenAllowance?.spender ?? null
           selectedHbarAmount.value = null
@@ -335,6 +362,7 @@ export default defineComponent({
           selectedNft.value = null
           selectedNftSerials.value = null
         } else {
+          isEditing.value = false
           allowanceChoice.value = "hbar"
           selectedSpender.value = null
           selectedHbarAmount.value = null
@@ -483,6 +511,7 @@ export default defineComponent({
       try {
         showProgressDialog.value = true
         progressDialogMode.value = Mode.Busy
+        progressDialogTitle.value = isEditing.value ? "Modifying allowance" : "Approving allowance"
         progressMainMessage.value = "Connecting to Hedera Network using your wallet…"
         progressExtraMessage.value = "Check your wallet for any approval request"
         progressExtraTransactionId.value = null
@@ -783,6 +812,7 @@ export default defineComponent({
     }
 
     return {
+      editingFeedback,
       enableApproveButton,
       selectedSpender,
       selectedHbarAmount,
@@ -799,6 +829,7 @@ export default defineComponent({
       nftFeedback,
       isNftSerialsValid,
       nftSerialsFeedback,
+      isEditing,
       showConfirmDialog,
       confirmMessage,
       showProgressDialog,
