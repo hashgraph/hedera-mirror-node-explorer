@@ -109,7 +109,11 @@ const routes: Array<RouteRecordRaw> = [
     path: '/:network/account/:accountId',
     name: 'AccountDetails',
     component: AccountDetails,
-    props: true
+    props: route => ({
+      network: route.params.network as string|undefined,
+      accountId: route.params.accountId as string|undefined,
+      showApproveDialog: route.query.approve as string|undefined
+    })
   },
   {
     path: '/:network/adminKey/:accountId',
