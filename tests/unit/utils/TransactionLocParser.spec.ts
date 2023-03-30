@@ -25,7 +25,7 @@ import {Ref, ref} from "vue";
 import {flushPromises} from "@vue/test-utils";
 import {
     SAMPLE_CONTRACT_CALL_TRANSACTION,
-    SAMPLE_CONTRACT_RESULT_DETAILS, SAMPLE_PARENT_CHILD_TRANSACTIONS,
+    SAMPLE_CONTRACT_RESULT_DETAILS, SAMPLE_PARENT_CHILD_TRANSACTIONS, SAMPLE_SCHEDULING_SCHEDULED_TRANSACTIONS,
     SAMPLE_TRANSACTION
 } from "../Mocks";
 import MockAdapter from "axios-mock-adapter";
@@ -354,6 +354,76 @@ describe("TransactionLocParser.ts", () => {
         expect(parser.transactionId.value).toBe(PARENT_TRANSACTION.transaction_id)
         expect(parser.consensusTimestamp.value).toBe(PARENT_TRANSACTION.consensus_timestamp)
         expect(parser.transactionHash.value).toBe(PARENT_TRANSACTION.transaction_hash)
+        expect(parser.errorNotification.value).toBe(null)
+
+        // 3) Unsets
+        transactionLoc.value = null
+        await flushPromises()
+        expect(parser.transactionLoc.value).toBeNull()
+        expect(parser.transaction.value).toBeNull()
+        expect(parser.transactionId.value).toBeNull()
+        expect(parser.consensusTimestamp.value).toBeNull()
+        expect(parser.transactionHash.value).toBeNull()
+        expect(parser.errorNotification.value).toBeNull()
+
+        // 4) Unmounts parser
+        parser.unmount()
+        await flushPromises()
+        expect(parser.transactionLoc.value).toBeNull()
+        expect(parser.transaction.value).toBeNull()
+        expect(parser.transactionId.value).toBeNull()
+        expect(parser.consensusTimestamp.value).toBeNull()
+        expect(parser.transactionHash.value).toBeNull()
+        expect(parser.errorNotification.value).toBeNull()
+    })
+
+    //
+    // set transaction loc with transaction id (single transaction with nonce 0)
+    //
+
+    test("set transaction loc with transaction id (two transactions with nonce 0)", async () => {
+
+        const mock = new MockAdapter(axios)
+
+        const SCHEDULING_TRANSACTION = SAMPLE_SCHEDULING_SCHEDULED_TRANSACTIONS.transactions[0]
+        const SCHEDULED_TRANSACTION = SAMPLE_SCHEDULING_SCHEDULED_TRANSACTIONS.transactions[1]
+        expect(SCHEDULING_TRANSACTION.transaction_id).toBe(SCHEDULED_TRANSACTION.transaction_id)
+        expect(SCHEDULING_TRANSACTION.scheduled).toBeFalsy()
+        expect(SCHEDULED_TRANSACTION.scheduled).toBeTruthy()
+        const TRANSACTION_ID = SCHEDULED_TRANSACTION.transaction_id
+
+        const matcher1 = "/api/v1/transactions/" + TRANSACTION_ID
+        mock.onGet(matcher1).reply(200, SAMPLE_SCHEDULING_SCHEDULED_TRANSACTIONS);
+
+        // 0) Creates parser
+        const transactionLoc: Ref<string|null> = ref(null)
+        const parser = new TransactionLocParser(transactionLoc)
+        await flushPromises()
+        expect(parser.transactionLoc.value).toBeNull()
+        expect(parser.transaction.value).toBeNull()
+        expect(parser.transactionId.value).toBeNull()
+        expect(parser.consensusTimestamp.value).toBeNull()
+        expect(parser.transactionHash.value).toBeNull()
+        expect(parser.errorNotification.value).toBeNull()
+
+        // 1) Mounts parser
+        parser.mount()
+        await flushPromises()
+        expect(parser.transactionLoc.value).toBeNull()
+        expect(parser.transaction.value).toBeNull()
+        expect(parser.transactionId.value).toBeNull()
+        expect(parser.consensusTimestamp.value).toBeNull()
+        expect(parser.transactionHash.value).toBeNull()
+        expect(parser.errorNotification.value).toBeNull()
+
+        // 2) Sets with transaction id
+        transactionLoc.value = TRANSACTION_ID
+        await flushPromises()
+        expect(parser.transactionLoc.value).toBe(TRANSACTION_ID)
+        expect(parser.transaction.value).toStrictEqual(SCHEDULED_TRANSACTION)
+        expect(parser.transactionId.value).toBe(SCHEDULED_TRANSACTION.transaction_id)
+        expect(parser.consensusTimestamp.value).toBe(SCHEDULED_TRANSACTION.consensus_timestamp)
+        expect(parser.transactionHash.value).toBe(SCHEDULED_TRANSACTION.transaction_hash)
         expect(parser.errorNotification.value).toBe(null)
 
         // 3) Unsets
