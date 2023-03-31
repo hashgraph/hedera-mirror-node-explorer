@@ -18,7 +18,7 @@
  *
  */
 
-import {computed, ComputedRef, Ref, ref, watch} from "vue";
+import {computed, ComputedRef, Ref, ref, watch, WatchStopHandle} from "vue";
 
 export abstract class EntityCache<K, E> {
 
@@ -69,11 +69,54 @@ export abstract class EntityCache<K, E> {
         return computed(() => result.value)
     }
 
+    public makeLookup(key: Ref<K|null>): Lookup<K, E> {
+        return new Lookup<K,E>(key, this)
+    }
+
     //
     // Protected (to be subclassed)
     //
 
     protected async load(key: K): Promise<E> {
         throw new Error("Must be subclassed to load " + key)
+    }
+}
+
+
+export class Lookup<K,E> {
+
+    public readonly entity: Ref<E|null> = ref(null)
+
+    private readonly cache: EntityCache<K,E>
+    private readonly key: Ref<K|null>
+    private watchHandle: WatchStopHandle|null = null
+
+    constructor(key: Ref<K|null>, cache: EntityCache<K,E>) {
+        this.key = key
+        this.cache = cache
+    }
+
+    public mount(): void {
+        this.watchHandle = watch(this.key, this.keyDidChange, { immediate: true})
+    }
+
+    public unmount(): void {
+        if (this.watchHandle !== null) {
+            this.watchHandle()
+            this.watchHandle = null
+        }
+        this.entity.value = null
+    }
+
+    private keyDidChange = async () => {
+        if (this.key.value !== null) {
+            try {
+                this.entity.value = await this.cache.lookup(this.key.value)
+            } catch {
+                this.entity.value = null
+            }
+        } else {
+            this.entity.value = null
+        }
     }
 }
