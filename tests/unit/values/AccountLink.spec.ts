@@ -50,7 +50,7 @@ describe("AccountLink.vue", () => {
 
         expect(wrapper.text()).toBe(testAccountId)
         expect(wrapper.findComponent("a").attributes("href")).toMatch(
-            RegExp("/account/" + testAccountId + "$")
+            RegExp("/account/" + testAccountId)
         )
     });
 

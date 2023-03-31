@@ -70,17 +70,23 @@
           </div>
           <span v-if="accountChecksum" class="has-text-grey mr-3" style="font-size: 28px">-{{ accountChecksum }}</span>
         </div>
-        <div v-if="!isMediumScreen && accountId" id="showAccountLink" class="is-inline-block mt-2">
+        <div v-if="!isMediumScreen && accountId" id="showAccountLink" class="is-flex is-flex-direction-column mt-2">
           <router-link :to="accountRoute">
             <span class="h-is-property-text">Show my account</span>
+          </router-link>
+          <router-link :to="allowanceApprovalRoute">
+            <span class="h-is-property-text">Approve an allowance…</span>
           </router-link>
         </div>
       </template>
 
       <template v-slot:control v-if="isMediumScreen">
-        <div v-if="accountId" id="showAccountLink" class="is-inline-block ml-3">
+        <div v-if="accountId" id="showAccountLink" class="is-flex is-flex-direction-column ml-3">
           <router-link :to="accountRoute">
             <span class="h-is-property-text">Show my account</span>
+          </router-link>
+          <router-link :to="allowanceApprovalRoute">
+            <span class="h-is-property-text">Approve an allowance…</span>
           </router-link>
         </div>
       </template>
@@ -362,7 +368,12 @@ export default defineComponent({
 
     const accountRoute = computed(() => {
       return walletManager.accountId.value !== null
-          ? routeManager.makeRouteToAccount(walletManager.accountId.value)
+          ? routeManager.makeRouteToAccount(walletManager.accountId.value, false)
+          : null
+    })
+    const allowanceApprovalRoute = computed(() => {
+      return walletManager.accountId.value !== null
+          ? routeManager.makeRouteToAccount(walletManager.accountId.value, true)
           : null
     })
 
@@ -498,6 +509,7 @@ export default defineComponent({
       accountChecksum: accountLoader.accountChecksum,
       account: accountLoader.entity,
       accountRoute,
+      allowanceApprovalRoute,
       stakePeriodStart: accountLoader.stakePeriodStart,
       showStakingDialog,
       showStopConfirmDialog,

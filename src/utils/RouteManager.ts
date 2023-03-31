@@ -186,9 +186,9 @@ export class RouteManager {
     // Account
     //
 
-    public makeRouteToAccount(accountId: string): RouteLocationRaw {
+    public makeRouteToAccount(accountId: string, showApproveDialog = false): RouteLocationRaw {
         return {
-            name: 'AccountDetails', params: {accountId: accountId}
+            name: 'AccountDetails', params: {accountId: accountId}, query: {app: showApproveDialog ? 'true' : 'false'}
         }
     }
 

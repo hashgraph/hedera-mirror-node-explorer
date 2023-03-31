@@ -59,7 +59,7 @@
 
 <script lang="ts">
 
-import {computed, defineComponent, inject, onBeforeUnmount, onMounted, ref} from 'vue';
+import {computed, defineComponent, inject, onBeforeUnmount, onMounted, ref, watch} from 'vue';
 import router, {walletManager} from "@/router";
 import {HbarAllowanceTableController} from "@/components/allowances/HbarAllowanceTableController";
 import {TokenAllowanceTableController} from "@/components/allowances/TokenAllowanceTableController";
@@ -75,7 +75,8 @@ export default defineComponent({
   components: {ApproveAllowanceDialog, TokenAllowanceTable, HbarAllowanceTable, DashboardCard},
 
   props: {
-    accountId: String
+    accountId: String,
+    showApproveDialog: String
   },
 
   setup: function (props) {
@@ -83,11 +84,29 @@ export default defineComponent({
     const isSmallScreen = inject('isSmallScreen', true)
     const isMediumScreen = inject('isMediumScreen', true)
 
-    const showApproveAllowanceDialog = ref(false)
     const computedAccountId = computed(() => props.accountId || null)
-    // const isWalletConnected = computed(
-    //     () => walletManager.connected.value && walletManager.accountId.value === props.accountId)
-    const isWalletConnected = computed(() => false)
+    const isWalletConnected = computed(
+        () => walletManager.connected.value && walletManager.accountId.value === props.accountId)
+    // const isWalletConnected = computed(() => false)
+    const showApproveAllowanceDialog = ref(false)
+
+    onMounted(() => {
+      if (props.showApproveDialog === 'true' && isWalletConnected.value) {
+        showApproveAllowanceDialog.value = true
+      }
+    })
+    watch(isWalletConnected, (newValue) => {
+      if (newValue && props.showApproveDialog === 'true') {
+        showApproveAllowanceDialog.value = true
+      }
+    })
+
+    watch(showApproveAllowanceDialog, (newValue) => {
+      if (!newValue) {
+        cleanUpRouteQuery()
+      }
+    })
+
     const perPage = computed(() => isMediumScreen ? 10 : 5)
 
     const currentHbarAllowance = ref<CryptoAllowance|null>(null)
@@ -134,6 +153,18 @@ export default defineComponent({
       currentHbarAllowance.value = null
       currentTokenAllowance.value = allowance
       showApproveAllowanceDialog.value = true
+    }
+
+    const cleanUpRouteQuery = async () => {
+      const query = {...router.currentRoute.value.query}
+      if (query.app) {
+        delete query.app
+
+        const failure = await router.replace({ query: query })
+        if (failure && failure.type != 8 && failure.type != 16) {
+          console.warn(failure.message)
+        }
+      }
     }
 
     return {
