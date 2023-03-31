@@ -53,13 +53,13 @@
 
 <script lang="ts">
 
-import {computed, defineComponent, onMounted, PropType, ref} from "vue";
+import {computed, defineComponent, onBeforeUnmount, onMounted, PropType, ref} from "vue";
 import {Transaction, TransactionDetail, TransactionType} from "@/schemas/HederaSchemas";
 import {makeSummaryLabel} from "@/utils/TransactionTools";
 import TransferGraphSection from "@/components/transfer_graphs/TransferGraphSection.vue";
 import {TokenRelationshipLoader} from "@/components/token/TokenRelationshipLoader";
 import TokenExtra from "@/components/values/TokenExtra.vue";
-import {ContractLoader} from "@/components/contract/ContractLoader";
+import {ContractByIdCache} from "@/utils/cache/ContractByIdCache";
 
 const GRAPH_TRANSACTION_TYPES = [
   TransactionType.CRYPTOTRANSFER,
@@ -92,15 +92,17 @@ export default defineComponent({
 
     const isEthereumTransaction = computed(() => props.transaction?.name == TransactionType.ETHEREUMTRANSACTION)
 
-    const contractLoader = new ContractLoader(ref(props.transaction?.entity_id ?? null))
-    onMounted(() => contractLoader.requestLoad())
+    const entityID = computed(() => props.transaction?.entity_id ?? null)
+    const contractLookup = ContractByIdCache.instance.makeLookup(entityID)
+    onMounted(() => contractLookup.mount())
+    onBeforeUnmount(() => contractLookup.unmount())
 
     const ethereumSummary = computed(() => {
       let result
-      if (props.transaction?.entity_id) {
-        result = contractLoader.contractId.value
-            ? 'Contract ID: ' + contractLoader.contractId.value
-            : 'Account ID: ' + props.transaction?.entity_id
+      if (entityID.value) {
+        result = contractLookup.entity.value !== null
+            ? 'Contract ID: ' + entityID.value
+            : 'Account ID: ' + entityID.value
       } else {
         result = ""
       }
