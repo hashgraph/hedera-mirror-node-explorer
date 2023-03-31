@@ -64,7 +64,7 @@ import {defineComponent, PropType} from 'vue';
 import AccountLink from "@/components/values/AccountLink.vue";
 import TokenLink from "@/components/values/TokenLink.vue";
 import {ORUGA_MOBILE_BREAKPOINT} from "@/App.vue";
-import {TokenInfoLoader} from "@/components/token/TokenInfoLoader";
+import {TokenInfoAnalyzer} from "@/components/token/TokenInfoAnalyzer";
 import HbarAmount from "@/components/values/HbarAmount.vue";
 import PlainAmount from "@/components/values/PlainAmount.vue";
 
@@ -80,15 +80,15 @@ export default defineComponent({
   },
 
   props: {
-    tokenInfoLoader: {
-      type: Object as PropType<TokenInfoLoader>,
+    analyzer: {
+      type: Object as PropType<TokenInfoAnalyzer>,
       required: true
     }
   },
 
   setup(props) {
     return {
-      fees: props.tokenInfoLoader.fixedFees,
+      fees: props.analyzer.fixedFees,
       ORUGA_MOBILE_BREAKPOINT
     }
   },
