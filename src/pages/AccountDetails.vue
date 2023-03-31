@@ -221,7 +221,7 @@
       </template>
     </DashboardCard>
 
-    <ApproveAllowanceSection :account-id="normalizedAccountId"/>
+    <ApproveAllowanceSection :account-id="normalizedAccountId" :showApproveDialog="showApproveDialog"/>
 
     <DashboardCard v-if="normalizedAccountId && availableAPI">
       <template v-slot:title>
@@ -306,7 +306,8 @@ export default defineComponent({
 
   props: {
     accountId: String,
-    network: String
+    showApproveDialog: String,
+    network: String,
   },
 
   setup(props) {
