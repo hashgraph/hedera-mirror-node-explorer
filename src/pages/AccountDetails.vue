@@ -264,7 +264,7 @@ import StringValue from "@/components/values/StringValue.vue";
 import {TransactionTableControllerXL} from "@/components/transaction/TransactionTableControllerXL";
 import AccountLink from "@/components/values/AccountLink.vue";
 import {AccountLoader} from "@/components/account/AccountLoader";
-import {ContractLoader} from "@/components/contract/ContractLoader";
+import {ContractByIdCache} from "@/utils/cache/ContractByIdCache";
 import TransactionFilterSelect from "@/components/transaction/TransactionFilterSelect.vue";
 import router, {routeManager} from "@/router";
 import TransactionLink from "@/components/values/TransactionLink.vue";
@@ -410,10 +410,11 @@ export default defineComponent({
     //
     // contract
     //
-    const contractLoader = new ContractLoader(accountLoader.accountId)
-    onMounted(() => contractLoader.requestLoad())
+    const contractLookup = ContractByIdCache.instance.makeLookup(accountLoader.accountId)
+    onMounted(() => contractLookup.mount())
+    onBeforeUnmount(() => contractLookup.unmount())
     const showContractVisible = computed(() => {
-      return contractLoader.entity.value != null
+      return contractLookup.entity.value != null
     })
 
     //
