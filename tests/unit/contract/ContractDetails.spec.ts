@@ -36,6 +36,7 @@ import ContractDetails from "@/pages/ContractDetails.vue";
 import {HMSF} from "@/utils/HMSF";
 import NotificationBanner from "@/components/NotificationBanner.vue";
 import {TransactionID} from "@/utils/TransactionID";
+import {CacheUtils} from "@/utils/cache/CacheUtils";
 
 /*
     Bookmarks
@@ -61,6 +62,10 @@ Object.defineProperty(window, 'matchMedia', {
 HMSF.forceUTC = true
 
 describe("ContractDetails.vue", () => {
+
+    beforeEach(() => {
+        CacheUtils.clearAll()
+    })
 
     it("Should display contract details", async () => {
 

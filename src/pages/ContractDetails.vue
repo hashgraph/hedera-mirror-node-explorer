@@ -213,7 +213,7 @@ import Footer from "@/components/Footer.vue";
 import NotificationBanner from "@/components/NotificationBanner.vue";
 import {EntityID} from "@/utils/EntityID";
 import Property from "@/components/Property.vue";
-import {ContractLoader} from "@/components/contract/ContractLoader";
+import {ContractByIdCache} from "@/utils/cache/ContractByIdCache";
 import {AccountLoader} from "@/components/account/AccountLoader";
 import {TransactionTableControllerXL} from "@/components/transaction/TransactionTableControllerXL";
 import TransactionFilterSelect from "@/components/transaction/TransactionFilterSelect.vue";
@@ -274,11 +274,24 @@ export default defineComponent({
     // contract
     //
 
-    const contractLoader = new ContractLoader(normalizedContractId)
-    onMounted(() => contractLoader.requestLoad())
+    const contractLookup = ContractByIdCache.instance.makeLookup(normalizedContractId)
+    onMounted(() => contractLookup.mount())
+    onBeforeUnmount(() => contractLookup.unmount())
 
     const accountLoader = new AccountLoader(normalizedContractId)
     onMounted(() => accountLoader.requestLoad())
+
+    const autoRenewAccount = computed(() => {
+      return contractLookup.entity.value?.auto_renew_account ?? null
+    })
+
+    const obtainerId = computed(() => {
+      return contractLookup.entity.value?.obtainer_id ?? null
+    })
+
+    const proxyAccountId = computed(() => {
+      return contractLookup.entity.value?.proxy_account_id ?? null
+    })
 
     const accountChecksum = computed(() =>
         accountLoader.accountId.value ? networkRegistry.computeChecksum(
@@ -294,9 +307,9 @@ export default defineComponent({
       // const expiration = contractLoader.entity.value?.expiration_timestamp
       if (!validEntityId.value) {
         result = "Invalid contract ID: " + props.contractId
-      } else if (contractLoader.got404.value) {
+      } else if (contractLookup.entity.value == null) {
         result = "Contract with ID " + props.contractId + " was not found"
-      } else if (contractLoader.entity.value?.deleted === true) {
+      } else if (contractLookup.entity.value?.deleted === true) {
         result = "Contract is deleted"
       // to be re-activated after Feb 9th
       // } else if (expiration && Number.parseFloat(expiration) <= new Date().getTime() / 1000) {
@@ -324,7 +337,7 @@ export default defineComponent({
       isSmallScreen,
       isMediumScreen,
       isTouchDevice,
-      contract: contractLoader.entity,
+      contract: contractLookup.entity,
       account: accountLoader.entity,
       balance: accountLoader.balance,
       tokens: accountLoader.tokens,
@@ -333,9 +346,9 @@ export default defineComponent({
       displayAllTokenLinks,
       transactionTableController,
       notification,
-      autoRenewAccount: contractLoader.autoRenewAccount,
-      obtainerId: contractLoader.obtainerId,
-      proxyAccountId: contractLoader.proxyAccountId,
+      autoRenewAccount: autoRenewAccount,
+      obtainerId: obtainerId,
+      proxyAccountId: proxyAccountId,
       normalizedContractId,
       accountRoute
     }
