@@ -93,11 +93,11 @@
 
 <script lang="ts">
 
-import {computed, defineComponent, inject, onMounted, PropType, ref, Ref, watch} from 'vue';
+import {computed, defineComponent, inject, onBeforeUnmount, onMounted, PropType, ref, Ref, watch} from 'vue';
 import DashboardCard from "@/components/DashboardCard.vue";
 import {ContractResultStateChange} from "@/schemas/HederaSchemas";
 import {ORUGA_MOBILE_BREAKPOINT} from '@/App.vue';
-import {TransactionByTimestampLoader} from "@/components/transaction/TransactionByTimestampLoader";
+import {TransactionByTsCache} from "@/utils/cache/TransactionByTsCache";
 import ContractResultStateChangeEntry from "@/components/contract/ContractResultStateChangeEntry.vue";
 import {AppStorage} from "@/AppStorage";
 
@@ -169,14 +169,13 @@ export default defineComponent({
           : 0
     })
 
-    const transactionLoader = new TransactionByTimestampLoader(
-        computed(() => props.timeStamp ?? null)
-    )
-    onMounted(() => transactionLoader.requestLoad())
+    const transactionLookup = TransactionByTsCache.instance.makeLookup(computed(() => props.timeStamp ?? null))
+    onMounted(() => transactionLookup.mount())
+    onBeforeUnmount(() => transactionLookup.unmount())
 
     const displayStateChanges: Ref<Array<DisplayStateChange>> = ref([])
     onMounted(() => displayStateChanges.value = makeDisplayStateChanges())
-    watch([() => props.stateChanges, transactionLoader.entity],
+    watch([() => props.stateChanges, transactionLookup.entity],
         () => displayStateChanges.value = makeDisplayStateChanges())
 
     const makeDisplayStateChanges = () => {
@@ -209,7 +208,7 @@ export default defineComponent({
           if (result.length > 0 && s.address === (result[result.length - 1].changes.address)) {
             newItem.header = false
           } else {
-            newItem.balanceChange = transactionLoader.lookupTransfer(s.contract_id ?? "")
+            newItem.balanceChange = lookupTransfer(s.contract_id ?? "")
           }
 
           newItem.valueChange = newItem.valueReadDecimal && newItem.valueWrittenDecimal
@@ -217,6 +216,20 @@ export default defineComponent({
               : null
 
           result.push(newItem)
+        }
+      }
+      return result
+    }
+
+    const lookupTransfer = (contractId: string) => {
+      let result = null
+      const transaction = transactionLookup.entity.value
+      if (transaction !== null){
+        for (const t of transaction.transfers ?? []) {
+          if (t.account === contractId) {
+            result = t.amount
+            break
+          }
         }
       }
       return result
