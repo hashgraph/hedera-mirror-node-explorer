@@ -318,7 +318,7 @@ export default defineComponent({
     })
 
     const editingFeedback = computed(() => {
-      let result
+      let result: string | null
       if (props.currentHbarAllowance) {
         result = "Previous allowance was to "
             + props.currentHbarAllowance.spender + " for "
@@ -328,6 +328,8 @@ export default defineComponent({
             + props.currentTokenAllowance.spender + " for "
             + props.currentTokenAllowance.amount_granted
             + " tokens (" + props.currentTokenAllowance.token_id + ")"
+      } else {
+        result = null
       }
       return result
     })
