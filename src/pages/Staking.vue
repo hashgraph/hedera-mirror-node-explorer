@@ -85,7 +85,7 @@
           <router-link :to="accountRoute">
             <span class="h-is-property-text">Show my account</span>
           </router-link>
-          <router-link v-if="false" :to="allowanceApprovalRoute">
+          <router-link :to="allowanceApprovalRoute">
             <span class="h-is-property-text">Approve an allowance…</span>
           </router-link>
         </div>
