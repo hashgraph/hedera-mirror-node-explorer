@@ -306,9 +306,19 @@ body {
     font-weight: 300;
 }
 .button.h-is-navbar-item.is-ghost:hover {
-    text-decoration-thickness: 1px;
+    text-decoration-line: underline;
+    text-decoration-style: solid;
     text-decoration-color: grey;
+    text-decoration-thickness: 1px;
     text-underline-offset: 9px;
+}
+.button.h-is-navbar-item.is-ghost:focus {
+    text-decoration-line: underline;
+    text-decoration-style: solid;
+    text-decoration-color: lightgrey;
+    text-decoration-thickness: 1px;
+    text-underline-offset: 9px;
+    outline : $h-page-background-color solid 2px ;
 }
 .button.h-is-navbar-item.is-ghost.is-rimmed {
     text-decoration-line: underline;
