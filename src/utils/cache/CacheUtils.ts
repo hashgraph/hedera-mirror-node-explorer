@@ -28,6 +28,7 @@ import {TransactionByIdCache} from "@/utils/cache/TransactionByIdCache";
 import {TransactionByTsCache} from "@/utils/cache/TransactionByTsCache";
 import {TransactionGroupCache} from "@/utils/cache/TransactionGroupCache";
 import {TokenInfoCache} from "@/utils/cache/TokenInfoCache";
+import {TopicMessageCache} from "@/utils/cache/TopicMessageCache";
 
 export class CacheUtils {
 
@@ -41,5 +42,6 @@ export class CacheUtils {
         TransactionByIdCache.instance.clear()
         TransactionByTsCache.instance.clear()
         TransactionGroupCache.instance.clear()
+        TopicMessageCache.instance.clear()
     }
 }

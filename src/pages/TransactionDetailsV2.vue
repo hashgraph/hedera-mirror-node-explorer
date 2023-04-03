@@ -219,7 +219,7 @@
       </template>
     </DashboardCard>
 
-    <TopicMessage :message-loader="topicMessageLoader"/>
+    <TopicMessage :message="topicMessage"/>
 
     <ContractResult :contract-id="contractId"
                     :is-parent="transaction?.parent_consensus_timestamp === null"
@@ -257,7 +257,7 @@ import BlockLink from "@/components/values/BlockLink.vue";
 import ContractResult from "@/components/contract/ContractResult.vue";
 import {TransactionDetail, TransactionType} from "@/schemas/HederaSchemas";
 import TopicMessage from "@/components/topic/TopicMessage.vue";
-import {TopicMessageLoader} from "@/components/topic/TopicMessageLoader";
+import {TopicMessageCache} from "@/utils/cache/TopicMessageCache";
 import {routeManager} from "@/router"
 import {TokenRelationshipLoader} from "@/components/token/TokenRelationshipLoader";
 import TokenLink from "@/components/values/TokenLink.vue";
@@ -327,7 +327,9 @@ export default defineComponent({
             ? transactionAnalyzer.consensusTimestamp.value ?? ""
             : ""
     )
-    const topicMessageLoader = new TopicMessageLoader(messageTimestamp)
+    const topicMessageLookup = TopicMessageCache.instance.makeLookup(messageTimestamp)
+    onMounted(() => topicMessageLookup.mount())
+    onBeforeUnmount(() => topicMessageLookup.unmount())
 
     const isTokenAssociation = computed(
         () => transactionAnalyzer.transactionType.value === TransactionType.TOKENASSOCIATE)
@@ -433,7 +435,7 @@ export default defineComponent({
       makeOperatorAccountLabel,
       routeToAllTransactions,
       displayAllChildrenLinks,
-      topicMessageLoader,
+      topicMessage: topicMessageLookup.entity,
       isTokenAssociation,
       associatedTokens
     }
