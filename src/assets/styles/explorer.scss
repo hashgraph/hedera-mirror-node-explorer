@@ -290,21 +290,6 @@ body {
     padding-right: 0.6em;
     margin-right: 0.4em;
 }
-.button.h-is-navbar-item.is-outlined:not(.is-active) {
-    font-weight: bold;
-    color: $h-highlight-color;
-    border-color: $h-highlight-color;
-}
-.button.h-is-navbar-item.is-outlined.is-active {
-    color: grey;
-    border-color: grey;
-    font-weight: 300;
-}
-.button.h-is-navbar-item.is-outlined.is-active:hover {
-    color: lightgrey;
-    border-color: lightgrey;
-    font-weight: 300;
-}
 .button.h-is-navbar-item.is-ghost:hover {
     text-decoration-line: underline;
     text-decoration-style: solid;
