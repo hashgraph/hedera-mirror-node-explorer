@@ -39,6 +39,7 @@ import TokenCustomFees from "@/components/token/TokenCustomFees.vue";
 import FixedFeeTable from "@/components/token/FixedFeeTable.vue";
 import FractionalFeeTable from "@/components/token/FractionalFeeTable.vue";
 import RoyaltyFeeTable from "@/components/token/RoyaltyFeeTable.vue";
+import {CacheUtils} from "@/utils/cache/CacheUtils";
 
 /*
     Bookmarks
@@ -64,6 +65,10 @@ Object.defineProperty(window, 'matchMedia', {
 HMSF.forceUTC = true
 
 describe("TokenDetails.vue", () => {
+
+    beforeEach(() => {
+        CacheUtils.clearAll()
+    })
 
     it("Should display details of fungible token", async () => {
 
