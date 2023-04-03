@@ -40,7 +40,7 @@
         <Property id="message" :full-width="true">
           <template v-slot:name>Message</template>
           <template v-slot:value>
-            <BlobValue :blob-value="message" :show-none="true" :base64="true" :pretty="true"/>
+            <BlobValue :blob-value="messageContent" :show-none="true" :base64="true" :pretty="true"/>
           </template>
         </Property>
         <Property id="runningHashVersion" :full-width="true">
@@ -68,11 +68,11 @@
 
 <script lang="ts">
 
-import {defineComponent, inject, PropType} from 'vue';
+import {computed, defineComponent, inject, PropType} from 'vue';
 import DashboardCard from "@/components/DashboardCard.vue";
 import Property from "@/components/Property.vue";
 import PlainAmount from "@/components/values/PlainAmount.vue";
-import {TopicMessageLoader} from "@/components/topic/TopicMessageLoader";
+import {TopicMessage} from "@/schemas/HederaSchemas";
 import BlobValue from "@/components/values/BlobValue.vue";
 
 export default defineComponent({
@@ -87,23 +87,28 @@ export default defineComponent({
   },
 
   props: {
-    messageLoader: {
-      type: Object as PropType<TopicMessageLoader>,
-      required: true
-    }
+    message: Object as PropType<TopicMessage|null>
   },
 
   setup(props) {
     const isSmallScreen = inject('isSmallScreen', true)
     const isTouchDevice = inject('isTouchDevice', false)
 
+    const messageContent = computed(() => props.message?.message ?? null)
+
+    const sequence_number = computed(() => props.message?.sequence_number ?? null)
+
+    const running_hash_version = computed(() => props.message?.running_hash_version ?? null)
+
+    const running_hash = computed(() =>props.message?.running_hash ?? null)
+
     return {
       isSmallScreen,
       isTouchDevice,
-      sequence_number: props.messageLoader.sequence_number,
-      message: props.messageLoader.message,
-      running_hash_version: props.messageLoader.running_hash_version,
-      running_hash: props.messageLoader.running_hash
+      messageContent,
+      sequence_number,
+      running_hash_version,
+      running_hash
     }
   },
 });
