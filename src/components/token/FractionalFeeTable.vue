@@ -78,7 +78,7 @@ import TokenLink from "@/components/values/TokenLink.vue";
 import {ORUGA_MOBILE_BREAKPOINT} from "@/App.vue";
 import {FractionAmount} from "@/schemas/HederaSchemas";
 import StringValue from "@/components/values/StringValue.vue";
-import {TokenInfoLoader} from "@/components/token/TokenInfoLoader";
+import {TokenInfoAnalyzer} from "@/components/token/TokenInfoAnalyzer";
 
 export default defineComponent({
 
@@ -92,8 +92,8 @@ export default defineComponent({
   },
 
   props: {
-    tokenInfoLoader: {
-      type: Object as PropType<TokenInfoLoader>,
+    analyzer: {
+      type: Object as PropType<TokenInfoAnalyzer>,
       required: true
     }
   },
@@ -104,7 +104,7 @@ export default defineComponent({
     }
 
     return {
-      fees: props.tokenInfoLoader.fractionalFees,
+      fees: props.analyzer.fractionalFees,
       makeAmount,
       ORUGA_MOBILE_BREAKPOINT
     }

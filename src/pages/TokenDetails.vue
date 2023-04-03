@@ -249,7 +249,7 @@
 
     </DashboardCard>
 
-    <TokenCustomFees v-if="hasCustomFees" :token-info-loader="tokenInfoLoader"/>
+    <TokenCustomFees v-if="hasCustomFees" :analyzer="analyzer"/>
 
     <DashboardCard v-if="tokenInfo">
 
@@ -284,7 +284,7 @@
 
 import {computed, defineComponent, inject, onBeforeUnmount, onMounted} from 'vue';
 import {useRouter} from "vue-router";
-import router, {routeManager} from "@/router";
+import {routeManager} from "@/router";
 import KeyValue from "@/components/values/KeyValue.vue";
 import TimestampValue from "@/components/values/TimestampValue.vue";
 import TokenBalanceTable from "@/components/token/TokenBalanceTable.vue";
@@ -297,17 +297,17 @@ import MetaMaskImport from "@/components/token/MetaMaskImport.vue";
 import {EntityID} from "@/utils/EntityID";
 import Property from "@/components/Property.vue";
 import NotificationBanner from "@/components/NotificationBanner.vue";
-import {TokenInfoLoader} from "@/components/token/TokenInfoLoader";
 import NftHolderTable from "@/components/token/NftHolderTable.vue";
 import PlayPauseButton from "@/components/PlayPauseButton.vue";
 import {NftHolderTableController} from "@/components/token/NftHolderTableController";
 import {TokenBalanceTableController} from "@/components/token/TokenBalanceTableController";
 import AccountLink from "@/components/values/AccountLink.vue";
 import StringValue from "@/components/values/StringValue.vue";
-import {networkRegistry} from "@/schemas/NetworkRegistry";
 import TokenCustomFees from "@/components/token/TokenCustomFees.vue";
 import EVMAddress from "@/components/values/EVMAddress.vue";
 import {makeTokenSymbol} from "@/schemas/HederaUtils";
+import {TokenInfoCache} from "@/utils/cache/TokenInfoCache";
+import {TokenInfoAnalyzer} from "@/components/token/TokenInfoAnalyzer";
 
 export default defineComponent({
 
@@ -352,24 +352,21 @@ export default defineComponent({
     })
     const validEntityId = computed(() => normalizedTokenId.value != null)
 
-    const tokenInfoLoader = new TokenInfoLoader(normalizedTokenId)
-    onMounted(() => tokenInfoLoader.requestLoad())
+    const tokenLookup = TokenInfoCache.instance.makeLookup(normalizedTokenId)
+    onMounted(() => tokenLookup.mount())
+    onBeforeUnmount(() => tokenLookup.unmount())
 
-    const tokenChecksum = computed(() =>
-        tokenInfoLoader.tokenId.value ? networkRegistry.computeChecksum(
-            tokenInfoLoader.tokenId.value,
-            router.currentRoute.value.params.network as string
-        ) : null)
+    const tokenAnalyzer = new TokenInfoAnalyzer(tokenLookup.entity)
 
-    const displaySymbol = computed(() => makeTokenSymbol(tokenInfoLoader.entity.value, 256))
+    const displaySymbol = computed(() => makeTokenSymbol(tokenLookup.entity.value, 256))
 
     const notification = computed(() => {
       let result
       if (!validEntityId.value) {
         result = "Invalid token ID: " + props.tokenId
-      } else if (tokenInfoLoader.got404.value) {
+      } else if (tokenLookup.entity.value == null) {
         result = "Token with ID " + props.tokenId + " was not found"
-      } else if (tokenInfoLoader.entity.value?.deleted) {
+      } else if (tokenLookup.entity.value?.deleted) {
         result = "Token is deleted"
       } else {
         result = null
@@ -386,7 +383,7 @@ export default defineComponent({
     //
     // TokenBalanceTableController
     //
-    const fungibleTokenId = computed(() => tokenInfoLoader.isFungible.value ? tokenInfoLoader.tokenId.value : null)
+    const fungibleTokenId = computed(() => tokenAnalyzer.isFungible.value ? normalizedTokenId.value : null)
     const tokenBalanceTableController = new TokenBalanceTableController(useRouter(), fungibleTokenId, perPage);
     onMounted(() => tokenBalanceTableController.mount())
     onBeforeUnmount(() => tokenBalanceTableController.unmount())
@@ -394,7 +391,7 @@ export default defineComponent({
     //
     // NftHolderTableController
     //
-    const nftTokenId = computed(() => tokenInfoLoader.isNft.value ? tokenInfoLoader.tokenId.value : null)
+    const nftTokenId = computed(() => tokenAnalyzer.isNft.value ? normalizedTokenId.value : null)
     const nftHolderTableController = new NftHolderTableController(useRouter(), nftTokenId, perPage)
     onMounted(() => nftHolderTableController.mount())
     onBeforeUnmount(() => nftHolderTableController.unmount())
@@ -404,19 +401,19 @@ export default defineComponent({
       isMediumScreen,
       isTouchDevice,
       displaySymbol,
-      tokenInfoLoader,
-      tokenInfo: tokenInfoLoader.entity,
-      isNft: tokenInfoLoader.isNft,
-      isFungible: tokenInfoLoader.isFungible,
-      hasCustomFees: tokenInfoLoader.hasCustomFees,
-      tokenChecksum,
+      analyzer: tokenAnalyzer,
+      tokenInfo: tokenLookup.entity,
+      isNft: tokenAnalyzer.isNft,
+      isFungible: tokenAnalyzer.isFungible,
+      hasCustomFees: tokenAnalyzer.hasCustomFees,
+      tokenChecksum: tokenAnalyzer.tokenChecksum,
       validEntityId,
       normalizedTokenId,
       notification,
       showTokenDetails,
       parseIntString,
-      ethereumAddress: tokenInfoLoader.ethereumAddress,
-      tokenSymbol: tokenInfoLoader.tokenSymbol,
+      ethereumAddress: tokenAnalyzer.ethereumAddress,
+      tokenSymbol: tokenAnalyzer.tokenSymbol,
       tokenBalanceTableController,
       nftHolderTableController,
     }
