@@ -63,11 +63,10 @@
 
         <div id="drop-down-menu">
           <o-field>
-            <o-select v-model="selectedNetwork" class="h-is-navbar-item">
+            <o-select v-model="selectedNetwork" class="h-is-navbar-item" style="outline: none">
               <option v-for="network in networkEntries" :key="network.name" :value="network.name">
                 {{ network.displayName }}
               </option>
-
             </o-select>
           </o-field>
         </div>

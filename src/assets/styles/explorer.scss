@@ -284,6 +284,9 @@ body {
     padding-top: 28px;
     padding-bottom: 16px;
 }
+.button.h-is-navbar-item:not(.h-is-mobile-navbar-item) {
+    outline : $h-page-background-color solid 2px;
+}
 .button.h-is-navbar-item.is-outlined {
     border-top-width: 0;
     padding-left: 0.6em;
@@ -303,7 +306,6 @@ body {
     text-decoration-color: lightgrey;
     text-decoration-thickness: 1px;
     text-underline-offset: 9px;
-    outline : $h-page-background-color solid 2px ;
 }
 .button.h-is-navbar-item.is-ghost.is-rimmed {
     text-decoration-line: underline;

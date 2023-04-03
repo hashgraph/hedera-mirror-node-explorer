@@ -31,7 +31,7 @@
       <div class="is-flex is-flex-direction-column is-align-items-start">
         <div id="mobile-drop-down-menu" class="ml-1 mb-5 ">
           <o-field>
-            <o-select v-model="selectedNetwork" class="h-is-navbar-item">
+            <o-select v-model="selectedNetwork" class="h-is-navbar-item" style="outline: none">
               <option v-for="network in networkEntries" :key="network.name" :value="network.name">
                 {{ network.displayName }}
               </option>
