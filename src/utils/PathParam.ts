@@ -27,24 +27,18 @@ import {Timestamp} from "@/utils/Timestamp";
 
 export class PathParam { // Block Hash or Number
 
-    public static parseBlockHashOrNumber(s: string|undefined): string|null {
-        let result: string|null
+    public static parseBlockLoc(s: string): number|TransactionHash|EthereumHash|null {
+        let result: number|TransactionHash|EthereumHash|null
 
-        if (s) {
-            const bytes = hexToByte(s)
-            if (bytes != null && (bytes.length == 48 || bytes.length == 32) ) { // SHA384 byte count
-                result = byteToHex(bytes)
-            } else {
-                const n = parseInt(s)
-                if (isNaN(n) || n < 0 || n.toString() != s) {
-                    result = null
-                } else {
-                    result = n.toString()
-                }
+        result = TransactionHash.parse(s)
+        if (result === null) {
+            result = EthereumHash.parse(s)
+        }
+        if (result === null) {
+            const n = parseInt(s, 10)
+            if (!isNaN(n) && n >= 0 && n.toString() == s) {
+                result = n
             }
-
-        } else {
-            result = null
         }
 
         return result

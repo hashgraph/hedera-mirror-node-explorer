@@ -1,3 +1,5 @@
+// noinspection DuplicatedCode
+
 /*-
  *
  * Hedera Mirror Node Explorer
@@ -29,6 +31,7 @@ import NotificationBanner from "@/components/NotificationBanner.vue";
 import BlockDetails from "@/pages/BlockDetails.vue";
 import BlockTransactionTable from "@/components/block/BlockTransactionTable.vue";
 import {PathParam} from "@/utils/PathParam";
+import {CacheUtils} from "@/utils/cache/CacheUtils";
 
 /*
     Bookmarks
@@ -58,7 +61,9 @@ describe("BlockDetails.vue", () => {
     const BLOCK = SAMPLE_BLOCKSRESPONSE.blocks[0]
     const BLOCK_NUMBER = BLOCK.number.toString()
     const BLOCK_HASH = BLOCK.hash
-    const NORMALIZED_BLOCK_HASH = PathParam.parseBlockHashOrNumber(BLOCK_HASH)
+    const NORMALIZED_BLOCK_HASH = PathParam.parseBlockLoc(BLOCK_HASH)!.toString()
+
+    beforeEach(() => CacheUtils.clearAll())
 
     it("Should display block details from block number", async () => {
 
@@ -164,8 +169,8 @@ describe("BlockDetails.vue", () => {
 
         const mock = new MockAdapter(axios);
 
-        let normalizedBlockHash = PathParam.parseBlockHashOrNumber(BLOCK_HASH)
-        let matcher1 = "/api/v1/blocks/" + normalizedBlockHash
+        let normalizedBlockHash = PathParam.parseBlockLoc(BLOCK_HASH)
+        let matcher1 = "/api/v1/blocks/" + normalizedBlockHash!.toString()
         mock.onGet(matcher1).reply(200, BLOCK);
 
         let matcher2 = "/api/v1/transactions"
@@ -212,8 +217,8 @@ describe("BlockDetails.vue", () => {
         const NEW_BLOCK_NUMBER = NEW_BLOCK.number.toString()
         const NEW_BLOCK_HASH = NEW_BLOCK.hash
 
-        normalizedBlockHash = PathParam.parseBlockHashOrNumber(NEW_BLOCK_HASH)
-        matcher1 = "/api/v1/blocks/" + normalizedBlockHash
+        normalizedBlockHash = PathParam.parseBlockLoc(NEW_BLOCK_HASH)
+        matcher1 = "/api/v1/blocks/" + normalizedBlockHash!.toString()
         mock.onGet(matcher1).reply(200, NEW_BLOCK);
         matcher2 = "/api/v1/transactions"
         mock.onGet(matcher2).reply(200, SAMPLE_CONTRACTCALL_TRANSACTIONS);
@@ -337,7 +342,7 @@ describe("BlockDetails.vue", () => {
         // console.log(wrapper.text())
 
         const banner = wrapper.findComponent(NotificationBanner)
-        expect(banner.text()).toBe("Block " + BLOCK_NUMBER + " was not found")
+        expect(banner.text()).toBe("Block with number " + BLOCK_NUMBER + " was not found")
 
         expect(wrapper.get("#countValue").text()).toBe("None")
         expect(wrapper.get("#blockHashValue").text()).toBe("None")
@@ -373,7 +378,7 @@ describe("BlockDetails.vue", () => {
         // console.log(wrapper.text())
 
         const banner = wrapper.findComponent(NotificationBanner)
-        expect(banner.text()).toBe("Block " + NORMALIZED_BLOCK_HASH + " was not found")
+        expect(banner.text()).toBe("Block with hash " + NORMALIZED_BLOCK_HASH + " was not found")
 
         expect(wrapper.get("#countValue").text()).toBe("None")
         expect(wrapper.get("#blockHashValue").text()).toBe("None")
