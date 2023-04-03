@@ -2613,6 +2613,8 @@ export const SAMPLE_BLOCKSRESPONSE = {
     ], "links": {"next": "/api/v1/blocks?timestamp=gte:1662111646.528325857&limit=2&block.number=lt:25175997"}
 }
 
+export const SAMPLE_BLOCK = SAMPLE_BLOCKSRESPONSE.blocks[0]
+
 //
 // https://www.4byte.directory/api/v1/signatures/?hex_signature=0xb01ef608
 //

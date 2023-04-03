@@ -31,40 +31,40 @@ describe("PathParam", () => {
 
         const sampleHash = "aa1c941f33e06fc8458bf82880527b01473ca7dff9dee0159542c00971038109dbd86515ff4ff1f4d9fd25428d39489b"
 
-        let hon = PathParam.parseBlockHashOrNumber(sampleHash)
-        expect(hon).toBe(sampleHash)
+        let hon = PathParam.parseBlockLoc(sampleHash)
+        expect(hon?.toString()).toBe(sampleHash)
 
-        hon = PathParam.parseBlockHashOrNumber("0x" + sampleHash)
-        expect(hon).toBe(sampleHash)
+        hon = PathParam.parseBlockLoc("0x" + sampleHash)
+        expect(hon?.toString()).toBe(sampleHash)
     })
 
     test("PathParam.parseBlockHashOrNumber() with a number", () => {
 
         const sampleNb = "444"
-        const hon = PathParam.parseBlockHashOrNumber(sampleNb)
-        expect(hon).toBe(sampleNb)
+        const hon = PathParam.parseBlockLoc(sampleNb)
+        expect(hon?.toString()).toBe(sampleNb)
     })
 
     test("PathParam.parse() with invalid block number", () => {
-        expect(PathParam.parseBlockHashOrNumber("-1")).toBeNull()
+        expect(PathParam.parseBlockLoc("-1")).toBeNull()
     })
 
     test("PathParam.parseBlockHashOrNumber() with invalid block hash", () => {
 
         const tooShort = "1c941f33e06fc8458bf82880527b01473ca7dff9dee0159542c00971038109dbd86515ff4ff1f4d9fd25428d39489b"
 
-        let hon = PathParam.parseBlockHashOrNumber(tooShort)
+        let hon = PathParam.parseBlockLoc(tooShort)
         expect(hon).toBeNull()
 
-        hon = PathParam.parseBlockHashOrNumber("0x" + tooShort)
+        hon = PathParam.parseBlockLoc("0x" + tooShort)
         expect(hon).toBeNull()
 
         const tooLong = "aa1c941f33e06fc8458bf82880527b01473ca7dff9dee0159542c00971038109dbd86515ff4ff1f4d9fd25428d39489b00"
 
-        hon = PathParam.parseBlockHashOrNumber(tooLong)
+        hon = PathParam.parseBlockLoc(tooLong)
         expect(hon).toBeNull()
 
-        hon = PathParam.parseBlockHashOrNumber("0x" + tooShort)
+        hon = PathParam.parseBlockLoc("0x" + tooShort)
         expect(hon).toBeNull()
     })
 
