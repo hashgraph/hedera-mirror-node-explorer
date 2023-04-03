@@ -151,12 +151,21 @@ export default defineComponent({
     const isSmallScreen = inject('isSmallScreen', true)
     const isTouchDevice = inject('isTouchDevice', false)
 
-    const normBlockHON = computed(() => PathParam.parseBlockHashOrNumber(props.blockHon))
+    const blockLoc = computed(() => {
+      let result: string|null
+      if (props.blockHon) {
+        const l = PathParam.parseBlockLoc(props.blockHon)
+        result = l !== null ? l.toString() : null
+      } else {
+        result = null
+      }
+      return result
+    })
 
     //
     // block
     //
-    const blockLoader = new BlockLoader(normBlockHON)
+    const blockLoader = new BlockLoader(blockLoc)
     onMounted(() => blockLoader.requestLoad())
 
     const notification = computed(() => {
