@@ -31,6 +31,7 @@ import NotificationBanner from "@/components/NotificationBanner.vue";
 import BlockDetails from "@/pages/BlockDetails.vue";
 import BlockTransactionTable from "@/components/block/BlockTransactionTable.vue";
 import {PathParam} from "@/utils/PathParam";
+import {CacheUtils} from "@/utils/cache/CacheUtils";
 
 /*
     Bookmarks
@@ -61,6 +62,8 @@ describe("BlockDetails.vue", () => {
     const BLOCK_NUMBER = BLOCK.number.toString()
     const BLOCK_HASH = BLOCK.hash
     const NORMALIZED_BLOCK_HASH = PathParam.parseBlockLoc(BLOCK_HASH)!.toString()
+
+    beforeEach(() => CacheUtils.clearAll())
 
     it("Should display block details from block number", async () => {
 
@@ -339,7 +342,7 @@ describe("BlockDetails.vue", () => {
         // console.log(wrapper.text())
 
         const banner = wrapper.findComponent(NotificationBanner)
-        expect(banner.text()).toBe("Block " + BLOCK_NUMBER + " was not found")
+        expect(banner.text()).toBe("Block with number " + BLOCK_NUMBER + " was not found")
 
         expect(wrapper.get("#countValue").text()).toBe("None")
         expect(wrapper.get("#blockHashValue").text()).toBe("None")
@@ -375,7 +378,7 @@ describe("BlockDetails.vue", () => {
         // console.log(wrapper.text())
 
         const banner = wrapper.findComponent(NotificationBanner)
-        expect(banner.text()).toBe("Block " + NORMALIZED_BLOCK_HASH + " was not found")
+        expect(banner.text()).toBe("Block with hash " + NORMALIZED_BLOCK_HASH + " was not found")
 
         expect(wrapper.get("#countValue").text()).toBe("None")
         expect(wrapper.get("#blockHashValue").text()).toBe("None")

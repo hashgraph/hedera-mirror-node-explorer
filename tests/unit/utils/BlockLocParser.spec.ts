@@ -27,8 +27,6 @@ import MockAdapter from "axios-mock-adapter";
 import axios from "axios";
 import {CacheUtils} from "@/utils/cache/CacheUtils";
 import {BlockLocParser} from "@/utils/BlockLocParser";
-import {EthereumHash} from "@/utils/EthereumHash";
-import {TransactionHash} from "@/utils/TransactionHash";
 import {PathParam} from "@/utils/PathParam";
 
 describe("BlockLocParser.ts", () => {
