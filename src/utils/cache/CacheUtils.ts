@@ -32,10 +32,14 @@ import {TopicMessageCache} from "@/utils/cache/TopicMessageCache";
 import {BlockByNbCache} from "@/utils/cache/BlockByNbCache";
 import {BlockByHashCache} from "@/utils/cache/BlockByHashCache";
 import {StakeCache} from "@/utils/cache/StakeCache";
+import {AccountByAliasCache} from "@/utils/cache/AccountByAliasCache";
+import {AccountByAddressCache} from "@/utils/cache/AccountByAddressCache";
 
 export class CacheUtils {
 
     public static clearAll(): void {
+        AccountByAddressCache.instance.clear()
+        AccountByAliasCache.instance.clear()
         AccountByIdCache.instance.clear()
         BlockByNbCache.instance.clear()
         BlockByHashCache.instance.clear()

@@ -18,7 +18,7 @@
  *
  */
 
-import {aliasToBase32, base32ToAlias, hexToByte} from "@/utils/B64Utils";
+import {aliasToBase32, base32ToAlias, byteToHex, hexToByte} from "@/utils/B64Utils";
 
 export class AccountAlias {
 
@@ -38,6 +38,10 @@ export class AccountAlias {
 
     public toString(): string {
         return aliasToBase32(this.bytes)
+    }
+
+    public toHexString(): string {
+        return byteToHex(this.bytes)
     }
 
     //
