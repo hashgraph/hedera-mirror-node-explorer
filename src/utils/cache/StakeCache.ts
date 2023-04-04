@@ -18,7 +18,7 @@
  *
  */
 
-import {SingletonCache} from "@/utils/cache/SingletonCache";
+import {SingletonCache} from "@/utils/cache/base/SingletonCache";
 import {NetworkStake} from "@/schemas/HederaSchemas";
 import axios from "axios";
 

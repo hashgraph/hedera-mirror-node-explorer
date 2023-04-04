@@ -18,7 +18,7 @@
  *
  */
 
-import {EntityCache} from "@/utils/cache/EntityCache"
+import {EntityCache} from "@/utils/cache/base/EntityCache"
 import {Block, BlocksResponse} from "@/schemas/HederaSchemas";
 import axios from "axios";
 

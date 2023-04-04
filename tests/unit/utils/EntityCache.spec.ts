@@ -21,7 +21,7 @@
  */
 
 import {flushPromises} from "@vue/test-utils";
-import {EntityCache} from "@/utils/cache/EntityCache";
+import {EntityCache} from "@/utils/cache/base/EntityCache";
 import {ref} from "vue";
 
 describe("EntityCache.ts", () => {

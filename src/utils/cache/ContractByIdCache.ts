@@ -19,7 +19,7 @@
  */
 
 import {ContractResponse} from "@/schemas/HederaSchemas";
-import {EntityCache} from "@/utils/cache/EntityCache";
+import {EntityCache} from "@/utils/cache/base/EntityCache";
 import axios from "axios";
 
 export class ContractByIdCache extends EntityCache<string, ContractResponse|null> {

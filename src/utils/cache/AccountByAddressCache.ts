@@ -19,7 +19,7 @@
  */
 
 import {AccountBalanceTransactions} from "@/schemas/HederaSchemas";
-import {EntityCache} from "@/utils/cache/EntityCache";
+import {EntityCache} from "@/utils/cache/base/EntityCache";
 import axios from "axios";
 import {makeEthAddressForAccount} from "@/schemas/HederaUtils";
 import {AccountByIdCache} from "@/utils/cache/AccountByIdCache";
