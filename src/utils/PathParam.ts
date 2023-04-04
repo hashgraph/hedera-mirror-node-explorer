@@ -24,6 +24,8 @@ import {TransactionID} from "@/utils/TransactionID";
 import {TransactionHash} from "@/utils/TransactionHash";
 import {EthereumHash} from "@/utils/EthereumHash";
 import {Timestamp} from "@/utils/Timestamp";
+import {EthereumAddress} from "@/utils/EthereumAddress";
+import {AccountAlias} from "@/utils/AccountAlias";
 
 export class PathParam { // Block Hash or Number
 
@@ -42,6 +44,10 @@ export class PathParam { // Block Hash or Number
         }
 
         return result
+    }
+
+    public static parseAccountLoc(l: string): EntityID|EthereumAddress|AccountAlias|null {
+        return EntityID.parse(l) ?? EthereumAddress.parse(l) ?? AccountAlias.parse(l)
     }
 
     public static parseAccountIdOrAliasOrEvmAddress(s: string|undefined): string|null {
