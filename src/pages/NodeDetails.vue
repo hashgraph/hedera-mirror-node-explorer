@@ -148,7 +148,7 @@
 
 <script lang="ts">
 
-import {computed, defineComponent, inject, ref} from 'vue';
+import {computed, defineComponent, inject, onBeforeUnmount, onMounted, ref} from 'vue';
 import KeyValue from "@/components/values/KeyValue.vue";
 import AccountLink from "@/components/values/AccountLink.vue";
 import TimestampValue from "@/components/values/TimestampValue.vue";
@@ -162,7 +162,7 @@ import {base64DecToArr, byteToHex} from "@/utils/B64Utils";
 import HexaValue from "@/components/values/HexaValue.vue";
 import Endpoints from "@/components/values/Endpoints.vue";
 import NetworkDashboardItem from "@/components/node/NetworkDashboardItem.vue";
-import {StakeLoader} from "@/components/staking/StakeLoader";
+import {StakeCache} from "@/utils/cache/StakeCache";
 import {PathParam} from "@/utils/PathParam";
 import {NodeRegistry} from "@/components/node/NodeRegistry";
 
@@ -199,9 +199,12 @@ export default defineComponent({
 
     const nodeIdNb = computed(() => PathParam.parseNodeId(props.nodeId))
     const nodeCursor = NodeRegistry.getCursor(nodeIdNb)
-    const stakeLoader = new StakeLoader()
 
-    const stakeTotal = computed(() => stakeLoader.entity.value?.stake_total ?? 0)
+    const stakeLookup = StakeCache.instance.makeLookup()
+    onMounted(() => stakeLookup.mount())
+    onBeforeUnmount(() => stakeLookup.unmount())
+
+    const stakeTotal = computed(() => stakeLookup.entity.value?.stake_total ?? 0)
     const stakePercentage = computed(() =>
         stakeTotal.value ? Math.round(nodeCursor.stake.value / stakeTotal.value * 10000) / 100 : 0)
 
