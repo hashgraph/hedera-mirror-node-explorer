@@ -111,7 +111,7 @@
 <script lang="ts">
 
 import {computed, defineComponent, inject, onBeforeUnmount, onMounted, ref, watch} from 'vue';
-import {BlockLocParser} from "@/utils/BlockLocParser";
+import {BlockLocParser} from "@/utils/parser/BlockLocParser";
 import DashboardCard from "@/components/DashboardCard.vue";
 import NotificationBanner from "@/components/NotificationBanner.vue";
 import Property from "@/components/Property.vue";

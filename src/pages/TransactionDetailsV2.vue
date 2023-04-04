@@ -261,7 +261,7 @@ import {TopicMessageCache} from "@/utils/cache/TopicMessageCache";
 import {routeManager} from "@/router"
 import {TokenRelationshipLoader} from "@/components/token/TokenRelationshipLoader";
 import TokenLink from "@/components/values/TokenLink.vue";
-import {TransactionLocParser} from "@/utils/TransactionLocParser";
+import {TransactionLocParser} from "@/utils/parser/TransactionLocParser";
 import {TransactionGroupAnalyzer} from "@/components/transaction/TransactionGroupAnalyzer";
 import {TransactionAnalyzer} from "@/components/transaction/TransactionAnalyzer";
 
