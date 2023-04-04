@@ -55,15 +55,15 @@
     </o-table-column>
 
     <o-table-column v-slot="props" field="from" label="From">
-      <EVMAddress :address="props.row.from" :compact="isSmallScreen && !isMediumScreen"/>
+      <EVMAddress :address="props.row.from" :compact="false"/>
     </o-table-column>
 
-    <o-table-column v-slot="props" field="to" label="To">
-      <EVMAddress :address="props.row.to" :compact="isSmallScreen && !isMediumScreen"/>
-    </o-table-column>
-
-    <o-table-column v-slot="props" field="message" label="Error Message">
+    <o-table-column v-slot="props" field="message" label="Error Message" position="left">
       <StringValue :string-value="makeErrorMessage(props.row)"/>
+    </o-table-column>
+
+    <o-table-column v-slot="props" field="amount" label="Transfer Amount" position="right">
+      <HbarAmount :amount="props.row.amount"/>
     </o-table-column>
 
   </o-table>
@@ -88,11 +88,12 @@ import {routeManager} from "@/router";
 import StringValue from "@/components/values/StringValue.vue";
 import EVMAddress from "@/components/values/EVMAddress.vue";
 import {decodeSolidityErrorMessage} from "@/schemas/HederaUtils";
+import HbarAmount from "@/components/values/HbarAmount.vue";
 
 export default defineComponent({
   name: 'ContractResultTable',
 
-  components: {EVMAddress, StringValue, EmptyTable, TimestampValue},
+  components: {HbarAmount, EVMAddress, StringValue, EmptyTable, TimestampValue},
 
   props: {
     controller: {

@@ -166,7 +166,7 @@
 
     <DashboardCard>
       <template v-slot:title>
-        <p class="h-is-secondary-title">Recent Contract Results</p>
+        <p class="h-is-secondary-title">Recent Contract Calls</p>
       </template>
 
       <template v-slot:control>
