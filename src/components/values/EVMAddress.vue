@@ -34,7 +34,7 @@
           <div style="position: absolute; left: 0; top: 0; width: 100%; height: 100%; background: rgba(0, 0, 0, 0.50)"></div>
           <div style="position: absolute; display: inline-block; left: 50%; top: 50%; transform: translate(-50%, -50%);">
             <button class="button is-dark h-is-text-size-3"
-                    v-on:click="copyToClipboard">Copy to Clipboard</button>
+                    v-on:click.stop="copyToClipboard">Copy to Clipboard</button>
           </div>
         </div>
       </div>
