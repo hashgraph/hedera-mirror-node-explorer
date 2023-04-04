@@ -24,7 +24,7 @@ import {EntityID} from "@/utils/EntityID";
 import {EthereumAddress} from "@/utils/EthereumAddress";
 import {AccountAlias} from "@/utils/AccountAlias";
 import {AccountByIdCache} from "@/utils/cache/AccountByIdCache";
-import {AccountInfo, Key, TokenBalance} from "@/schemas/HederaSchemas";
+import {AccountBalanceTransactions, Key, TokenBalance} from "@/schemas/HederaSchemas";
 import {networkRegistry} from "@/schemas/NetworkRegistry";
 import router from "@/router";
 import {NodeRegistry} from "@/components/node/NodeRegistry";
@@ -36,7 +36,7 @@ import {AccountByAliasCache} from "@/utils/cache/AccountByAliasCache";
 export class AccountLocParser {
 
     public readonly accountLoc: Ref<string|null>
-    public readonly accountInfo: Ref<AccountInfo|null> = ref(null)
+    public readonly accountInfo: Ref<AccountBalanceTransactions|null> = ref(null)
 
     private watchHandle: Ref<WatchStopHandle|null> = ref(null)
 
@@ -58,6 +58,26 @@ export class AccountLocParser {
             this.watchHandle.value = null
         }
         this.accountInfo.value = null
+    }
+
+    public remount(): void {
+        if (this.watchHandle.value !== null) { // ie mounted
+            if (this.accountInfo.value !== null) {
+                // We tell all account caches to forget this account
+                if (this.accountInfo.value.account) {
+                    AccountByIdCache.instance.forget(this.accountInfo.value.account)
+                }
+                if (this.accountInfo.value.alias) {
+                    AccountByAliasCache.instance.forget(this.accountInfo.value.alias)
+                }
+                const address = makeEthAddressForAccount(this.accountInfo.value)
+                if (address) {
+                    AccountByAddressCache.instance.forget(address)
+                }
+            }
+            this.unmount()
+            this.mount()
+        }
     }
 
     public readonly accountId: ComputedRef<string|null>
