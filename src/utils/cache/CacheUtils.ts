@@ -31,6 +31,7 @@ import {TokenInfoCache} from "@/utils/cache/TokenInfoCache";
 import {TopicMessageCache} from "@/utils/cache/TopicMessageCache";
 import {BlockByNbCache} from "@/utils/cache/BlockByNbCache";
 import {BlockByHashCache} from "@/utils/cache/BlockByHashCache";
+import {StakeCache} from "@/utils/cache/StakeCache";
 
 export class CacheUtils {
 
@@ -41,6 +42,7 @@ export class CacheUtils {
         BlockByTsCache.instance.clear()
         ContractByIdCache.instance.clear()
         ContractResultByHashCache.instance.clear()
+        StakeCache.instance.clear()
         TokenInfoCache.instance.clear()
         TransactionByHashCache.instance.clear()
         TransactionByIdCache.instance.clear()
