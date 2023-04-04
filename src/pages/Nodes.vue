@@ -99,7 +99,7 @@ import NodeTable from "@/components/node/NodeTable.vue";
 import NetworkDashboardItem from "@/components/node/NetworkDashboardItem.vue";
 import {formatSeconds} from "@/utils/Duration";
 import {StakingPeriod} from "@/utils/StakingPeriod";
-import {StakeLoader} from "@/components/staking/StakeLoader";
+import {StakeCache} from "@/utils/cache/StakeCache";
 import {NodeRegistry} from "@/components/node/NodeRegistry";
 
 export default defineComponent({
@@ -120,9 +120,11 @@ export default defineComponent({
     const isSmallScreen = inject('isSmallScreen', true)
     const isTouchDevice = inject('isTouchDevice', false)
 
-    const stakeLoader = new StakeLoader()
+    const stakeLookup = StakeCache.instance.makeLookup()
+    onMounted(() => stakeLookup.mount())
+    onBeforeUnmount(() => stakeLookup.unmount())
 
-    const stakeTotal = computed(() => stakeLoader.entity.value?.stake_total ?? 0)
+    const stakeTotal = computed(() => stakeLookup.entity.value?.stake_total ?? 0)
 
     const stakingPeriod = ref<StakingPeriod | null>(null)
 

@@ -18,26 +18,21 @@
  *
  */
 
-import {EntityLoader} from "@/utils/loader/EntityLoader";
+import {SingletonCache} from "@/utils/cache/SingletonCache";
 import {NetworkStake} from "@/schemas/HederaSchemas";
-import axios, {AxiosResponse} from "axios";
+import axios from "axios";
 
-export class StakeLoader extends EntityLoader<NetworkStake> {
+export class StakeCache extends SingletonCache<NetworkStake> {
+
+    public static readonly instance = new StakeCache()
 
     //
-    // Public
+    // SingletonCache
     //
 
-    public constructor() {
-        super()
-        this.requestLoad()
+    protected async load(): Promise<NetworkStake> {
+        const r = await axios.get<NetworkStake>("api/v1/network/stake")
+        return r.data
     }
 
-    //
-    // EntityLoader
-    //
-
-    protected async load(): Promise<AxiosResponse<NetworkStake>|null> {
-        return axios.get<NetworkStake>("api/v1/network/stake")
-    }
 }
