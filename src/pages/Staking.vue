@@ -25,8 +25,8 @@
 <template>
 
   <StakingDialog v-model:show-dialog="showStakingDialog"
-                 :account="account"
-                 :currently-staked-to="stakedTo"
+                 :account="account ?? undefined"
+                 :currently-staked-to="stakedTo ?? undefined"
                  v-on:change-staking="handleChangeStaking"/>
 
   <ConfirmDialog v-model:show-dialog="showStopConfirmDialog" @onConfirm="handleStopStaking"
@@ -40,9 +40,9 @@
 
   <ProgressDialog v-model:show-dialog="showProgressDialog"
                   :mode="progressDialogMode"
-                  :main-message="progressMainMessage"
-                  :extra-message="progressExtraMessage"
-                  :extra-transaction-id="progressExtraTransactionId"
+                  :main-message="progressMainMessage ?? undefined"
+                  :extra-message="progressExtraMessage ?? undefined"
+                  :extra-transaction-id="progressExtraTransactionId ?? undefined"
                   :show-spinner="showProgressSpinner"
   >
     <template v-slot:dialogTitle>
@@ -96,7 +96,7 @@
         <template v-if="accountId">
           <div v-if="isSmallScreen">
             <div class="is-flex is-justify-content-space-between">
-              <NetworkDashboardItem :name="stakePeriodStart ? ('since ' + stakePeriodStart) : null" title="Staked to">
+              <NetworkDashboardItem :name="stakePeriodStart ? ('since ' + stakePeriodStart) : undefined" title="Staked to">
                 <template v-slot:value>
                   <div class="is-inline-block">
                     <span v-if="isStakedToNode"  class="icon has-text-info mr-2" style="font-size: 20px">
@@ -142,8 +142,8 @@
           </div>
           <div v-else>
             <div class="is-flex-direction-column">
-              <NetworkDashboardItem :name="stakePeriodStart ? ('since ' + stakePeriodStart) : null"
-                                    title="Staked to" :value="stakedTo"/>
+              <NetworkDashboardItem :name="stakePeriodStart ? ('since ' + stakePeriodStart) : undefined"
+                                    title="Staked to" :value="stakedTo ?? undefined"/>
               <div class="mt-4"/>
               <NetworkDashboardItem :name="stakedAmount ? 'HBAR' : ''" title="My Stake" :value="stakedAmount"/>
               <div class="mt-4"/>
@@ -154,7 +154,7 @@
               <NetworkDashboardItem v-else
                                     title="Pending Reward"
                                     name="HBAR"
-                                    :value="null"
+                                    :value="undefined"
                                     :class="{'h-has-opacity-40': ignoreReward && !pendingReward}"/>
 
               <div class="mt-4"/>
@@ -248,12 +248,12 @@ import WalletChooser from "@/components/staking/WalletChooser.vue";
 import {WalletDriver} from "@/utils/wallet/WalletDriver";
 import {WalletDriverError} from "@/utils/wallet/WalletDriverError";
 import {normalizeTransactionId} from "@/utils/TransactionID";
-import {AccountLoader} from "@/components/account/AccountLoader";
 import {StakingRewardsTableController} from "@/components/staking/StakingRewardsTableController";
 import DownloadButton from "@/components/DownloadButton.vue";
 import CSVDownloadDialog from "@/components/CSVDownloadDialog.vue";
 import {RewardDownloader} from "@/utils/downloader/RewardDownloader";
 import {NodeRegistry} from "@/components/node/NodeRegistry";
+import {AccountLocParser} from "@/utils/parser/AccountLocParser";
 
 export default defineComponent({
   name: 'Staking',
@@ -295,7 +295,7 @@ export default defineComponent({
     const showProgressDialog = ref(false)
     const progressDialogMode = ref(Mode.Busy)
     const progressDialogTitle = ref<string|null>(null)
-    const progressMainMessage = ref<string|null>(null)
+    const progressMainMessage = ref<string|undefined>(undefined)
     const progressExtraMessage = ref<string|null>(null)
     const progressExtraTransactionId = ref<string|null>(null)
     const showProgressSpinner = ref(false)
@@ -347,19 +347,20 @@ export default defineComponent({
     //
     // Account
     //
-    const accountLoader = new AccountLoader(walletManager.accountId)
-    onMounted(() => accountLoader.requestLoad())
+    const accountLocParser = new AccountLocParser(walletManager.accountId)
+    onMounted(() => accountLocParser.mount())
+    onBeforeUnmount(() => accountLocParser.unmount())
 
-    const isStakedToNode = computed(() => accountLoader.stakedNodeId.value !== null)
-    const isStakedToAccount = computed(() => accountLoader.stakedAccountId.value)
+    const isStakedToNode = computed(() => accountLocParser.stakedNodeId.value !== null)
+    const isStakedToAccount = computed(() => accountLocParser.stakedAccountId.value)
     const isStaked = computed(() => isStakedToNode.value || isStakedToAccount.value)
 
     const stakedTo = computed(() => {
       let result: string|null
       if (isStakedToAccount.value) {
-        result = "Account " + accountLoader.stakedAccountId.value
+        result = "Account " + accountLocParser.stakedAccountId.value
       } else if (isStakedToNode.value) {
-        result = "Node " + accountLoader.stakedNodeId.value + " - " + stakedNodeLoader.shortNodeDescription.value
+        result = "Node " + accountLocParser.stakedNodeId.value + " - " + stakedNodeLoader.shortNodeDescription.value
       } else {
         result = null
       }
@@ -378,11 +379,11 @@ export default defineComponent({
     })
 
     const balanceInHbar = computed(() => {
-      const balance = accountLoader.balance.value ?? 10000000000
+      const balance = accountLocParser.balance.value ?? 10000000000
       return balance / 100000000
     })
 
-    const stakedAmount = computed(() => isStaked.value ? formatHbarAmount(accountLoader.balance.value) : null)
+    const stakedAmount = computed(() => isStaked.value ? formatHbarAmount(accountLocParser.balance.value) : null)
 
     const formatHbarAmount = (amount: number | null) => {
       let result
@@ -396,22 +397,22 @@ export default defineComponent({
       return result
     }
 
-    const pendingReward = computed(() => formatHbarAmount(accountLoader.pendingReward.value ?? null))
-    const declineReward = computed(() => accountLoader.entity.value?.decline_reward ?? false)
-    const ignoreReward = computed(() => accountLoader.stakedNodeId.value === null)
+    const pendingReward = computed(() => formatHbarAmount(accountLocParser.pendingReward.value ?? null))
+    const declineReward = computed(() => accountLocParser.accountInfo.value?.decline_reward ?? false)
+    const ignoreReward = computed(() => accountLocParser.stakedNodeId.value === null)
 
     //
     // stakedNode
     //
 
-    const stakedNodeLoader = NodeRegistry.getCursor(accountLoader.stakedNodeId)
+    const stakedNodeLoader = NodeRegistry.getCursor(accountLocParser.stakedNodeId)
 
     //
     // handleStopStaking / handleChangeStaking
     //
 
     const handleStopStaking = () => {
-      changeStaking(null, null, accountLoader.entity.value?.decline_reward ? false : null)
+      changeStaking(null, null, accountLocParser.accountInfo.value?.decline_reward ? false : null)
     }
 
     const handleChangeStaking = (nodeId: number|null, accountId: string|null, declineReward: boolean|null) => {
@@ -455,8 +456,7 @@ export default defineComponent({
         showProgressSpinner.value = false
 
       } finally {
-
-        accountLoader.requestLoad()
+        accountLocParser.remount()
       }
 
     }
@@ -506,11 +506,11 @@ export default defineComponent({
       walletName: walletManager.walletName,
       walletIconURL: walletManager.getActiveDriver().iconURL,
       accountId: walletManager.accountId,
-      accountChecksum: accountLoader.accountChecksum,
-      account: accountLoader.entity,
+      accountChecksum: accountLocParser.accountChecksum,
+      account: accountLocParser.accountInfo,
       accountRoute,
       allowanceApprovalRoute,
-      stakePeriodStart: accountLoader.stakePeriodStart,
+      stakePeriodStart: accountLocParser.stakePeriodStart,
       showStakingDialog,
       showStopConfirmDialog,
       showWalletChooser,
