@@ -37,6 +37,7 @@ import Oruga from "@oruga-ui/oruga-next";
 import {HMSF} from "@/utils/HMSF";
 import NodeDetails from "@/pages/NodeDetails.vue";
 import {NodeRegistry} from "@/components/node/NodeRegistry";
+import {CacheUtils} from "@/utils/cache/CacheUtils";
 
 /*
     Bookmarks
@@ -62,6 +63,8 @@ Object.defineProperty(window, 'matchMedia', {
 HMSF.forceUTC = true
 
 describe("NodeDetails.vue", () => {
+
+    beforeEach(() => CacheUtils.clearAll())
 
     it("should display node details", async () => {
 
@@ -218,6 +221,6 @@ describe("NodeDetails.vue", () => {
         // console.log(wrapper.html())
         // console.log(wrapper.text())
 
-        expect(wrapper.get("#notificationBanner").text()).toBe("Invalid account ID: " + invalidAccountId)
+        expect(wrapper.get("#notificationBanner").text()).toBe("Invalid account ID, address or alias: " + invalidAccountId)
     });
 });
