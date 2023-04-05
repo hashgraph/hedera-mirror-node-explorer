@@ -22,11 +22,11 @@ import {AccountBalanceTransactions} from "@/schemas/HederaSchemas";
 import {EntityCache} from "@/utils/cache/EntityCache";
 import axios from "axios";
 import {AccountByAddressCache} from "@/utils/cache/AccountByAddressCache";
-import {AccountByAliasCache} from "@/utils/cache/AccountByAliasCache";
+import {AccountByIdCache} from "@/utils/cache/AccountByIdCache";
 
-export class AccountByIdCache extends EntityCache<string, AccountBalanceTransactions|null> {
+export class AccountByAliasCache extends EntityCache<string, AccountBalanceTransactions|null> {
 
-    public static readonly instance = new AccountByIdCache()
+    public static readonly instance = new AccountByAliasCache()
 
     //
     // Public
@@ -43,12 +43,12 @@ export class AccountByIdCache extends EntityCache<string, AccountBalanceTransact
     // Cache
     //
 
-    protected async load(accountId: string): Promise<AccountBalanceTransactions | null> {
+    protected async load(alias: string): Promise<AccountBalanceTransactions | null> {
         let result: Promise<AccountBalanceTransactions|null>
         try {
-            const response = await axios.get<AccountBalanceTransactions>("api/v1/accounts/" + accountId)
+            const response = await axios.get<AccountBalanceTransactions>("api/v1/accounts/" + alias)
             result = Promise.resolve(response.data)
-            AccountByAliasCache.instance.updateWithAccountInfo(response.data)
+            AccountByIdCache.instance.updateWithAccountInfo(response.data)
             AccountByAddressCache.instance.updateWithAccountInfo(response.data)
         } catch(error) {
             if (axios.isAxiosError(error) && error.response?.status == 404) {

@@ -65,15 +65,15 @@
               <template v-slot:name>{{ tokens?.length ? 'Balances' : 'Balance' }}</template>
               <template v-slot:value>
                 <div class="has-flex-direction-column">
-                  <HbarAmount v-if="contract" :amount="balance" :show-extra="true" timestamp="0"/>
+                  <HbarAmount v-if="contract" :amount="balance ?? undefined" :show-extra="true" timestamp="0"/>
                   <div v-if="displayAllTokenLinks">
                     <router-link :to="{name: 'AccountBalances', params: {accountId: contractId}}">
                       See all token balances
                     </router-link>
                   </div>
                   <div v-else>
-                    <div v-for="t in tokens" :key="t.token_id">
-                      <TokenAmount :amount="t.balance" :show-extra="true" :token-id="t.token_id"/>
+                    <div v-for="t in tokens ?? []" :key="t.token_id">
+                      <TokenAmount :amount="t.balance" :show-extra="true" :token-id="t.token_id ?? undefined"/>
                     </div>
                   </div>
                 </div>
@@ -94,19 +94,19 @@
             <Property id="createTransaction">
               <template v-slot:name>Create Transaction</template>
               <template v-slot:value>
-                <TransactionLink :transactionLoc="contract?.created_timestamp"/>
+                <TransactionLink :transactionLoc="contract?.created_timestamp ?? undefined"/>
               </template>
             </Property>
             <Property id="expiresAt">
               <template v-slot:name>Expires at</template>
               <template v-slot:value>
-                <TimestampValue v-bind:timestamp="contract?.expiration_timestamp" v-bind:show-none="true"/>
+                <TimestampValue v-bind:timestamp="contract?.expiration_timestamp ?? undefined" v-bind:show-none="true"/>
               </template>
             </Property>
             <Property id="autoRenewPeriod">
               <template v-slot:name>Auto Renew Period</template>
               <template v-slot:value>
-                <DurationValue v-bind:number-value="contract?.auto_renew_period"/>
+                <DurationValue v-bind:number-value="contract?.auto_renew_period ?? undefined"/>
               </template>
             </Property>
             <Property id="autoRenewAccount">
@@ -124,7 +124,7 @@
             <Property id="code">
               <template v-slot:name>Initcode</template>
               <template v-slot:value>
-                <ByteCodeValue :byte-code="contract?.bytecode"/>
+                <ByteCodeValue :byte-code="contract?.bytecode ?? undefined"/>
               </template>
             </Property>
       </template>
@@ -151,13 +151,13 @@
             <Property id="validUntil">
               <template v-slot:name>Valid until</template>
               <template v-slot:value>
-                <TimestampValue :timestamp="contract?.timestamp?.to" :show-none="true"/>
+                <TimestampValue :timestamp="contract?.timestamp?.to ?? undefined" :show-none="true"/>
               </template>
             </Property>
             <Property id="file">
               <template v-slot:name>File</template>
               <template v-slot:value>
-                <StringValue :string-value="contract?.file_id"/>
+                <StringValue :string-value="contract?.file_id ?? undefined"/>
               </template>
             </Property>
 
@@ -214,7 +214,7 @@ import NotificationBanner from "@/components/NotificationBanner.vue";
 import {EntityID} from "@/utils/EntityID";
 import Property from "@/components/Property.vue";
 import {ContractByIdCache} from "@/utils/cache/ContractByIdCache";
-import {AccountLoader} from "@/components/account/AccountLoader";
+import {AccountLocParser} from "@/utils/parser/AccountLocParser";
 import {TransactionTableControllerXL} from "@/components/transaction/TransactionTableControllerXL";
 import TransactionFilterSelect from "@/components/transaction/TransactionFilterSelect.vue";
 import {networkRegistry} from "@/schemas/NetworkRegistry";
@@ -278,8 +278,9 @@ export default defineComponent({
     onMounted(() => contractLookup.mount())
     onBeforeUnmount(() => contractLookup.unmount())
 
-    const accountLoader = new AccountLoader(normalizedContractId)
-    onMounted(() => accountLoader.requestLoad())
+    const accountLocParser = new AccountLocParser(normalizedContractId)
+    onMounted(() => accountLocParser.mount())
+    onBeforeUnmount(() => accountLocParser.unmount())
 
     const autoRenewAccount = computed(() => {
       return contractLookup.entity.value?.auto_renew_account ?? null
@@ -294,12 +295,12 @@ export default defineComponent({
     })
 
     const accountChecksum = computed(() =>
-        accountLoader.accountId.value ? networkRegistry.computeChecksum(
-            accountLoader.accountId.value,
+        accountLocParser.accountId.value ? networkRegistry.computeChecksum(
+            accountLocParser.accountId.value,
             router.currentRoute.value.params.network as string
         ) : null)
 
-    const displayAllTokenLinks = computed(() => accountLoader.tokens.value ? accountLoader.tokens.value.length > MAX_TOKEN_BALANCES : false)
+    const displayAllTokenLinks = computed(() => accountLocParser.tokens.value ? accountLocParser.tokens.value.length > MAX_TOKEN_BALANCES : false)
 
     const notification = computed(() => {
       let result: string|null
@@ -338,10 +339,10 @@ export default defineComponent({
       isMediumScreen,
       isTouchDevice,
       contract: contractLookup.entity,
-      account: accountLoader.entity,
-      balance: accountLoader.balance,
-      tokens: accountLoader.tokens,
-      ethereumAddress: accountLoader.ethereumAddress,
+      account: accountLocParser.accountInfo,
+      balance: accountLocParser.balance,
+      tokens: accountLocParser.tokens,
+      ethereumAddress: accountLocParser.ethereumAddress,
       accountChecksum,
       displayAllTokenLinks,
       transactionTableController,

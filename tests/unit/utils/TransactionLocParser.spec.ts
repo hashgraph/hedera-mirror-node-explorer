@@ -20,7 +20,7 @@
  *
  */
 
-import {TransactionLocParser} from "@/utils/TransactionLocParser";
+import {TransactionLocParser} from "@/utils/parser/TransactionLocParser";
 import {Ref, ref} from "vue";
 import {flushPromises} from "@vue/test-utils";
 import {

@@ -29,7 +29,7 @@ import {PathParam} from "@/utils/PathParam";
 export class BlockLocParser {
 
     public readonly blockLoc: Ref<string|null>
-    public block: Ref<Block|null> = ref(null)
+    public readonly block: Ref<Block|null> = ref(null)
 
     private watchHandle: Ref<WatchStopHandle|null> = ref(null)
 

@@ -47,6 +47,7 @@ import NotificationBanner from "@/components/NotificationBanner.vue";
 import {TransactionID} from "@/utils/TransactionID";
 import TransactionFilterSelect from "@/components/transaction/TransactionFilterSelect.vue";
 import {NodeRegistry} from "@/components/node/NodeRegistry";
+import {CacheUtils} from "@/utils/cache/CacheUtils";
 
 /*
     Bookmarks
@@ -74,6 +75,8 @@ HMSF.forceUTC = true
 describe("AccountDetails.vue", () => {
 
     const ALIAS_HEX = "0x12200000fc0634e2ab455eff393f04819efa262fe5e6ab1c7ed1d4f85fbcd8e6e296"
+
+    beforeEach(() => CacheUtils.clearAll())
 
     it("Should display account details", async () => {
 
@@ -273,7 +276,7 @@ describe("AccountDetails.vue", () => {
         // console.log(wrapper.html())
         // console.log(wrapper.text())
 
-        expect(wrapper.get("#notificationBanner").text()).toBe("Invalid account ID: " + invalidAccountId)
+        expect(wrapper.get("#notificationBanner").text()).toBe("Invalid account ID, address or alias: " + invalidAccountId)
     });
 
     it("Should display notification of deleted contract", async () => {

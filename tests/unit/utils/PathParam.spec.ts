@@ -20,6 +20,9 @@
 
 
 import {PathParam} from "@/utils/PathParam";
+import {EntityID} from "@/utils/EntityID";
+import {AccountAlias} from "@/utils/AccountAlias";
+import {EthereumAddress} from "@/utils/EthereumAddress";
 
 describe("PathParam", () => {
 
@@ -67,6 +70,51 @@ describe("PathParam", () => {
         hon = PathParam.parseBlockLoc("0x" + tooShort)
         expect(hon).toBeNull()
     })
+
+    //
+    // parseAccountLoc()
+    //
+
+    test("PathParam.parseAccountLoc() with entity id", () => {
+
+        const accountId = "0.0.1234"
+
+        const pp = PathParam.parseAccountLoc(accountId)
+        expect(pp).toBeInstanceOf(EntityID)
+        expect(pp!.toString()).toBe(accountId)
+    })
+
+    test("PathParam.parseAccountLoc() with alias in base32", () => {
+
+        const alias = "HIQQGOSRIF3EM35ICXWUQH722CIRBIWTIT3MTN4MDUKK7Q2RYOSRXYZ5"
+
+        const pp = PathParam.parseAccountLoc(alias)
+        expect(pp).toBeInstanceOf(AccountAlias)
+        expect(pp?.toString()).toBe(alias)
+    })
+
+    test("PathParam.parseAccountLoc() with alias in hex", () => {
+
+        const alias = "HIQQGOSRIF3EM35ICXWUQH722CIRBIWTIT3MTN4MDUKK7Q2RYOSRXYZ5"
+        const aliasInHex = "0x3a21033a514176466fa815ed481ffad09110a2d344f6c9b78c1d14afc351c3a51be33d"
+
+        const pp = PathParam.parseAccountLoc(aliasInHex)
+        expect(pp).toBeInstanceOf(AccountAlias)
+        expect(pp?.toString()).toBe(alias)
+    })
+
+    test("PathParam.parseAccountLoc() with evm address", () => {
+
+        const evmAddress = "a94f5374fce5edbc8e2a8697c15331677e6ebf0b"
+
+        let pp = PathParam.parseAccountLoc(evmAddress)
+        expect(pp).toBeInstanceOf(EthereumAddress)
+        expect(pp?.toString()).toBe("0x" + evmAddress)
+        pp = PathParam.parseAccountLoc("0x" + evmAddress)
+        expect(pp).toBeInstanceOf(EthereumAddress)
+        expect(pp?.toString()).toBe("0x" + evmAddress)
+    })
+
 
     //
     // parseAccountIdOrAliasOrEvmAddress()
