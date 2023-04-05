@@ -166,20 +166,19 @@
 
     <DashboardCard>
       <template v-slot:title>
-        <p class="h-is-secondary-title">Recent Transactions</p>
+        <p class="h-is-secondary-title">Recent Contract Calls</p>
       </template>
 
       <template v-slot:control>
         <div class="is-flex is-align-items-flex-end">
-          <PlayPauseButton v-bind:controller="transactionTableController"/>
-          <TransactionFilterSelect v-model:controller="transactionTableController"/>
+          <PlayPauseButton v-bind:controller="resultTableController"/>
         </div>
       </template>
 
       <template v-slot:content>
-        <ContractTransactionTable
+        <ContractResultTable
             v-if="contract"
-            v-bind:controller="transactionTableController"
+            v-bind:controller="resultTableController"
         />
       </template>
     </DashboardCard>
@@ -198,7 +197,6 @@
 
 import {computed, defineComponent, inject, onBeforeUnmount, onMounted} from 'vue';
 import KeyValue from "@/components/values/KeyValue.vue";
-import ContractTransactionTable from "@/components/contract/ContractTransactionTable.vue";
 import PlayPauseButton from "@/components/PlayPauseButton.vue";
 import AccountLink from "@/components/values/AccountLink.vue";
 import TimestampValue from "@/components/values/TimestampValue.vue";
@@ -215,12 +213,12 @@ import {EntityID} from "@/utils/EntityID";
 import Property from "@/components/Property.vue";
 import {ContractByIdCache} from "@/utils/cache/ContractByIdCache";
 import {AccountLocParser} from "@/utils/parser/AccountLocParser";
-import {TransactionTableControllerXL} from "@/components/transaction/TransactionTableControllerXL";
-import TransactionFilterSelect from "@/components/transaction/TransactionFilterSelect.vue";
 import {networkRegistry} from "@/schemas/NetworkRegistry";
 import router, {routeManager} from "@/router";
 import TransactionLink from "@/components/values/TransactionLink.vue";
 import EVMAddress from "@/components/values/EVMAddress.vue";
+import {ContractResultTableController} from "@/components/contract/ContractResultTableController";
+import ContractResultTable from "@/components/contract/ContractResultTable.vue";
 
 const MAX_TOKEN_BALANCES = 3
 
@@ -229,9 +227,9 @@ export default defineComponent({
   name: 'ContractDetails',
 
   components: {
+    ContractResultTable,
     EVMAddress,
     TransactionLink,
-    TransactionFilterSelect,
     ByteCodeValue,
     Property,
     NotificationBanner,
@@ -244,7 +242,6 @@ export default defineComponent({
     TimestampValue,
     DurationValue,
     PlayPauseButton,
-    ContractTransactionTable,
     KeyValue,
     StringValue
   },
@@ -322,13 +319,13 @@ export default defineComponent({
     })
 
     //
-    // transactionTableController
+    // resultTableController
     //
 
     const pageSize = computed(() => 10)
-    const transactionTableController = new TransactionTableControllerXL(router, normalizedContractId, pageSize, true)
-    onMounted(() => transactionTableController.mount())
-    onBeforeUnmount(() => transactionTableController.unmount())
+    const resultTableController = new ContractResultTableController(router, normalizedContractId, pageSize)
+    onMounted(() => resultTableController.mount())
+    onBeforeUnmount(() => resultTableController.unmount())
 
     const accountRoute = computed(() => {
       return normalizedContractId.value !== null ?  routeManager.makeRouteToAccount(normalizedContractId.value) : null
@@ -345,7 +342,7 @@ export default defineComponent({
       ethereumAddress: accountLocParser.ethereumAddress,
       accountChecksum,
       displayAllTokenLinks,
-      transactionTableController,
+      resultTableController,
       notification,
       autoRenewAccount: autoRenewAccount,
       obtainerId: obtainerId,

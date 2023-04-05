@@ -26,6 +26,7 @@ import {
     SAMPLE_CONTRACT_AS_ACCOUNT,
     SAMPLE_CONTRACT_DELETED,
     SAMPLE_CONTRACT_DUDE,
+    SAMPLE_CONTRACT_RESULTS,
     SAMPLE_NETWORK_EXCHANGERATE,
     SAMPLE_TRANSACTION,
     SAMPLE_TRANSACTIONS
@@ -37,6 +38,7 @@ import {HMSF} from "@/utils/HMSF";
 import NotificationBanner from "@/components/NotificationBanner.vue";
 import {TransactionID} from "@/utils/TransactionID";
 import {CacheUtils} from "@/utils/cache/CacheUtils";
+import ContractResultTable from "@/components/contract/ContractResultTable.vue";
 
 /*
     Bookmarks
@@ -85,6 +87,9 @@ describe("ContractDetails.vue", () => {
         const matcher4 = "/api/v1/network/exchangerate"
         mock.onGet(matcher4).reply(200, SAMPLE_NETWORK_EXCHANGERATE);
 
+        const matcher5 = "/api/v1/contracts/" + SAMPLE_CONTRACT.contract_id + "/results"
+        mock.onGet(matcher5).reply(200, SAMPLE_CONTRACT_RESULTS);
+
         const wrapper = mount(ContractDetails, {
             global: {
                 plugins: [router, Oruga]
@@ -113,6 +118,61 @@ describe("ContractDetails.vue", () => {
         expect(wrapper.get("#fileValue").text()).toBe("0.0.749773")
         expect(wrapper.get("#evmAddress").text()).toBe("EVM Address:0x00000000000000000000000000000000000b70cfCopy to Clipboard")
 
+        expect(wrapper.findComponent(ContractResultTable).exists()).toBe(true)
+    });
+
+    it("Should display recent contract calls table in contract details", async () => {
+
+        await router.push("/") // To avoid "missing required param 'network'" error
+
+        const mock = new MockAdapter(axios);
+
+        const matcher1 = "/api/v1/contracts/" + SAMPLE_CONTRACT.contract_id
+        mock.onGet(matcher1).reply(200, SAMPLE_CONTRACT);
+
+        const matcher2 = "/api/v1/accounts/" + SAMPLE_CONTRACT.contract_id
+        mock.onGet(matcher2).reply(200, SAMPLE_CONTRACT_AS_ACCOUNT);
+
+        const matcher3 = "/api/v1/transactions"
+        mock.onGet(matcher3).reply(200, SAMPLE_TRANSACTIONS);
+
+        const matcher4 = "/api/v1/network/exchangerate"
+        mock.onGet(matcher4).reply(200, SAMPLE_NETWORK_EXCHANGERATE);
+
+        const matcher5 = "/api/v1/contracts/" + SAMPLE_CONTRACT.contract_id + "/results"
+        mock.onGet(matcher5).reply(200, SAMPLE_CONTRACT_RESULTS);
+
+        const wrapper = mount(ContractDetails, {
+            global: {
+                plugins: [router, Oruga]
+            },
+            props: {
+                contractId: SAMPLE_CONTRACT.contract_id
+            },
+        });
+
+        await flushPromises()
+        // console.log(wrapper.html())
+
+        expect(wrapper.text()).toMatch(RegExp("^Contract Contract ID:" + SAMPLE_CONTRACT.contract_id))
+
+        const resultTable = wrapper.findComponent(ContractResultTable)
+        expect(resultTable.exists()).toBe(true)
+
+        expect(resultTable.find('thead').text()).toBe("Time From Error Message Transfer Amount")
+        const rows = wrapper.find('tbody').findAll('tr')
+
+        let cells = rows[0].findAll('td')
+        expect(cells[0].text()).toBe("9:11:37.9739 AMFeb 3, 2023, UTC")
+        expect(cells[1].text()).toBe("0x00000000000000000000000000000000000004ecCopy to Clipboard(0.0.1260)")
+        expect(cells[2].text()).toBe("None")
+        expect(cells[3].text()).toBe("0.00000000")
+
+        cells = rows[1].findAll('td')
+        expect(cells[0].text()).toBe("9:09:24.5852 AMFeb 3, 2023, UTC")
+        expect(cells[1].text()).toBe("0x00000000000000000000000000000000000004ecCopy to Clipboard(0.0.1260)")
+        expect(cells[2].text()).toBe("None")
+        expect(cells[3].text()).toBe("0.00000000")
     });
 
     it("Should update when contract id changes", async () => {
@@ -130,6 +190,9 @@ describe("ContractDetails.vue", () => {
 
         const matcher3 = "/api/v1/transactions"
         mock.onGet(matcher3).reply(200, SAMPLE_TRANSACTIONS);
+
+        let matcher5 = "/api/v1/contracts/" + contract1.contract_id + "/results"
+        mock.onGet(matcher5).reply(200, SAMPLE_CONTRACT_RESULTS);
 
         const wrapper = mount(ContractDetails, {
             global: {
@@ -159,6 +222,9 @@ describe("ContractDetails.vue", () => {
 
         matcher2 = "/api/v1/accounts/" + contract2.contract_id
         mock.onGet(matcher2).reply(200, SAMPLE_CONTRACT_AS_ACCOUNT);
+
+        matcher5 = "/api/v1/contracts/" + contract2.contract_id + "/results"
+        mock.onGet(matcher5).reply(200, SAMPLE_CONTRACT_RESULTS);
 
         await wrapper.setProps({
             contractId: SAMPLE_CONTRACT_DUDE.contract_id ?? undefined
@@ -191,6 +257,9 @@ describe("ContractDetails.vue", () => {
 
         const matcher3 = "/api/v1/transactions"
         mock.onGet(matcher3).reply(200, SAMPLE_TRANSACTIONS);
+
+        const matcher5 = "/api/v1/contracts/" + contract.contract_id + "/results"
+        mock.onGet(matcher5).reply(200, SAMPLE_CONTRACT_RESULTS);
 
         const wrapper = mount(ContractDetails, {
             global: {
@@ -228,6 +297,9 @@ describe("ContractDetails.vue", () => {
         const matcher3 = "/api/v1/transactions"
         mock.onGet(matcher3).reply(200, SAMPLE_TRANSACTIONS);
 
+        const matcher5 = "/api/v1/contracts/" + contract.contract_id + "/results"
+        mock.onGet(matcher5).reply(200, SAMPLE_CONTRACT_RESULTS);
+
         const wrapper = mount(ContractDetails, {
             global: {
                 plugins: [router, Oruga]
@@ -261,6 +333,9 @@ describe("ContractDetails.vue", () => {
 
         const matcher3 = "/api/v1/transactions"
         mock.onGet(matcher3).reply(200, SAMPLE_TRANSACTIONS);
+
+        const matcher5 = "/api/v1/contracts/" + contract.contract_id + "/results"
+        mock.onGet(matcher5).reply(200, SAMPLE_CONTRACT_RESULTS);
 
         const wrapper = mount(ContractDetails, {
             global: {
