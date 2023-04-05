@@ -50,6 +50,16 @@ describe('Account Navigation', () => {
         cy.url().should('include', '/mainnet/account/')
         cy.contains('Account ID:' + accountId1)
 
+        cy.get('#hbarAllowancesTable')
+            .find('tbody tr')
+            .should('be.visible')
+            .should('have.length.at.least', 1)
+
+        cy.get('#tokenAllowancesTable')
+            .find('tbody tr')
+            .should('be.visible')
+            .should('have.length.at.least', 1)
+
         cy.get('#recentTransactionsTable')
             .find('tbody tr')
             .should('be.visible')
