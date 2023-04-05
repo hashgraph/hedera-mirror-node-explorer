@@ -293,27 +293,59 @@ export class RouteManager {
     }
 
     //
-    // Pages
+    // Main Pages
     //
 
-    public readonly mainDashboardRoute: RouteLocationRaw = {name: 'MainDashboard'}
-    public readonly transactionsRoute:  RouteLocationRaw = {name: 'Transactions'}
-    public readonly tokensRoute:        RouteLocationRaw = {name: 'Tokens'}
-    public readonly topicsRoute:        RouteLocationRaw = {name: 'Topics'}
-    public readonly contractsRoute:     RouteLocationRaw = {name: 'Contracts'}
-    public readonly accountsRoute:      RouteLocationRaw = {name: 'Accounts'}
-    public readonly nodesRoute:         RouteLocationRaw = {name: 'Nodes'}
-    public readonly stakingRoute:       RouteLocationRaw = {name: 'Staking'}
-    public readonly blocksRoute:        RouteLocationRaw = {name: 'Blocks'}
-    public readonly mobileSearchRoute:  RouteLocationRaw = {name: 'MobileSearch'}
-    public readonly pageNotFoundRoute:  RouteLocationRaw = {name: 'PageNotFound'}
-
-    public makeRouteToMobileMenu(name: unknown): RouteLocationRaw {
-        return {name: 'MobileMenu', query: {from: name as string}}
+    public makeRouteToMainDashboard(): RouteLocationRaw {
+        return {name: 'MainDashboard', params: { network: routeManager.currentNetwork.value } }
     }
 
     public routeToMainDashboard(): Promise<NavigationFailure | void | undefined> {
-        return this.router.push(this.mainDashboardRoute)
+        return this.router.push(this.makeRouteToMainDashboard())
+    }
+
+    public makeRouteToTransactions(): RouteLocationRaw {
+        return {name: 'Transactions', params: { network: routeManager.currentNetwork.value } }
+    }
+
+    public makeRouteToTokens(): RouteLocationRaw {
+        return {name: 'Tokens', params: { network: routeManager.currentNetwork.value } }
+    }
+
+    public makeRouteToTopics(): RouteLocationRaw {
+        return {name: 'Topics', params: { network: routeManager.currentNetwork.value } }
+    }
+
+    public makeRouteToContracts(): RouteLocationRaw {
+        return {name: 'Contracts', params: { network: routeManager.currentNetwork.value } }
+    }
+
+    public makeRouteToAccounts(): RouteLocationRaw {
+        return {name: 'Accounts', params: { network: routeManager.currentNetwork.value } }
+    }
+
+    public makeRouteToNodes(): RouteLocationRaw {
+        return {name: 'Nodes', params: { network: routeManager.currentNetwork.value } }
+    }
+
+    public makeRouteToStaking(): RouteLocationRaw {
+        return {name: 'Staking', params: { network: routeManager.currentNetwork.value } }
+    }
+
+    public makeRouteToBlocks(): RouteLocationRaw {
+        return {name: 'Blocks', params: { network: routeManager.currentNetwork.value } }
+    }
+
+    public makeRouteToMobileSearch(): RouteLocationRaw {
+        return {name: 'MobileSearch', params: { network: routeManager.currentNetwork.value } }
+    }
+
+    public makeRouteToPageNotFound(): RouteLocationRaw {
+        return {name: 'PageNotFound', params: { network: routeManager.currentNetwork.value } }
+    }
+
+    public makeRouteToMobileMenu(name: unknown): RouteLocationRaw {
+        return {name: 'MobileMenu', query: {from: name as string}}
     }
 
     //
