@@ -36,11 +36,15 @@
     <template v-slot:content><br/></template>
     <template v-slot:leftContent>
       <p class="h-is-tertiary-text mb-2">HBAR Allowances</p>
-      <HbarAllowanceTable :controller="hbarAllowanceTableController" @edit-allowance="editHbarAllowance"/>
+      <div id="hbarAllowancesTable">
+        <HbarAllowanceTable :controller="hbarAllowanceTableController" @edit-allowance="editHbarAllowance"/>
+      </div>
     </template>
     <template v-slot:rightContent>
       <p class="h-is-tertiary-text mb-2">Token Allowances</p>
-      <TokenAllowanceTable :controller="tokenAllowanceTableController" @edit-allowance="editTokenAllowance"/>
+      <div id="tokenAllowancesTable">
+        <TokenAllowanceTable :controller="tokenAllowanceTableController" @edit-allowance="editTokenAllowance"/>
+      </div>
     </template>
   </DashboardCard>
 
