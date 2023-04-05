@@ -166,7 +166,7 @@ export class RouteManager {
     public makeRouteToTransaction(transactionLoc: string|undefined): RouteLocationRaw {
         return {
             name: 'TransactionDetails',
-            params: { transactionLoc: transactionLoc }
+            params: { transactionLoc: transactionLoc, network: routeManager.currentNetwork.value }
         }
     }
 
@@ -179,7 +179,7 @@ export class RouteManager {
     }
 
     public makeRouteToTransactionsById(transactionId: string): RouteLocationRaw {
-        return {name: 'TransactionsById', params: { transactionId: transactionId}}
+        return {name: 'TransactionsById', params: { transactionId: transactionId, network: routeManager.currentNetwork.value }}
     }
 
     //
@@ -188,7 +188,9 @@ export class RouteManager {
 
     public makeRouteToAccount(accountId: string, showApproveDialog = false): RouteLocationRaw {
         return {
-            name: 'AccountDetails', params: {accountId: accountId}, query: {app: showApproveDialog ? 'true' : 'false'}
+            name: 'AccountDetails',
+            params: {accountId: accountId, network: routeManager.currentNetwork.value},
+            query: {app: showApproveDialog ? 'true' : 'false'}
         }
     }
 
@@ -202,7 +204,7 @@ export class RouteManager {
 
     public makeRouteToAccountsWithKey(pubKey: string): RouteLocationRaw {
         return {
-            name: 'AccountsWithKey', params: {pubKey: pubKey}
+            name: 'AccountsWithKey', params: {pubKey: pubKey, network: routeManager.currentNetwork.value}
         }
     }
 
@@ -216,7 +218,7 @@ export class RouteManager {
 
     public makeRouteToAdminKey(accountId: string): RouteLocationRaw {
         return {
-            name: 'AdminKeyDetails', params: {accountId: accountId}
+            name: 'AdminKeyDetails', params: {accountId: accountId, network: routeManager.currentNetwork.value}
         }
     }
 
@@ -225,7 +227,7 @@ export class RouteManager {
     //
 
     public makeRouteToToken(tokenId: string): RouteLocationRaw {
-        return { name: 'TokenDetails', params: { tokenId: tokenId}}
+        return { name: 'TokenDetails', params: { tokenId: tokenId, network: routeManager.currentNetwork.value }}
     }
 
     public routeToToken(tokenId: string): Promise<NavigationFailure | void | undefined> {
@@ -237,7 +239,7 @@ export class RouteManager {
     //
 
     public makeRouteToContract(contractId: string): RouteLocationRaw {
-        return {name: 'ContractDetails', params: { contractId: contractId}}
+        return {name: 'ContractDetails', params: { contractId: contractId, network: routeManager.currentNetwork.value }}
     }
 
     public routeToContract(contractId: string): Promise<NavigationFailure | void | undefined> {
@@ -249,7 +251,7 @@ export class RouteManager {
     //
 
     public makeRouteToTopic(topicId: string): RouteLocationRaw {
-        return {name: 'TopicDetails', params: {topicId: topicId}}
+        return {name: 'TopicDetails', params: {topicId: topicId, network: routeManager.currentNetwork.value}}
     }
 
     public routeToTopic(topicId: string): Promise<NavigationFailure | void | undefined> {
@@ -261,7 +263,7 @@ export class RouteManager {
     //
 
     public makeRouteToBlock(blockHon: string|number): RouteLocationRaw {
-        return {name: 'BlockDetails', params: {blockHon: blockHon}}
+        return {name: 'BlockDetails', params: {blockHon: blockHon, network: routeManager.currentNetwork.value}}
     }
 
     public routeToBlock(blockHon: string|number): Promise<NavigationFailure | void | undefined> {
@@ -273,7 +275,7 @@ export class RouteManager {
     //
 
     public makeRouteToNode(nodeId: number): RouteLocationRaw {
-        return {name: 'NodeDetails', params: {nodeId: nodeId}}
+        return {name: 'NodeDetails', params: {nodeId: nodeId, network: routeManager.currentNetwork.value}}
     }
 
     public routeToNode(nodeId: number): Promise<NavigationFailure | void | undefined> {
@@ -285,7 +287,11 @@ export class RouteManager {
     //
 
     public makeRouteToNoSearchResult(searchedId: string, errorCount: number): RouteLocationRaw {
-        return {name: 'NoSearchResult', params: { searchedId: searchedId}, query: { errorCount: errorCount}}
+        return {
+            name: 'NoSearchResult',
+            params: { searchedId: searchedId, network: routeManager.currentNetwork.value },
+            query: { errorCount: errorCount }
+        }
     }
 
     public routeToNoSearchResult(searchedId: string, errorCount: number): Promise<NavigationFailure | void | undefined> {
@@ -345,7 +351,11 @@ export class RouteManager {
     }
 
     public makeRouteToMobileMenu(name: unknown): RouteLocationRaw {
-        return {name: 'MobileMenu', query: {from: name as string}}
+        return {
+            name: 'MobileMenu',
+            params: {network: routeManager.currentNetwork.value},
+            query: {from: name as string}
+        }
     }
 
     //
