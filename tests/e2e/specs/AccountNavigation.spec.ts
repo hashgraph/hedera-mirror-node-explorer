@@ -140,6 +140,27 @@ describe('Account Navigation', () => {
             })
     })
 
+    it ('should follow link to reward transaction', () => {
+        const accountID = "0.0.592746"
+        cy.visit('mainnet/account/' + accountID)
+        cy.url().should('include', '/mainnet/account/' + accountID)
+        cy.contains('Account ID:' + accountID)
+
+        cy.get('#recentRewardsTable')
+            .find('tbody tr')
+            .should('be.visible')
+            .should('have.length.at.least', 2)
+            .eq(0)
+            .find('td')
+            .eq(0)
+            .click()
+
+        cy.url().should('include', '/mainnet/transaction/')
+        cy.contains('Transaction')
+        cy.get('[data-cy=hbarTransfers]')
+            .contains('0.0.800')
+    })
+
     it ('should display account details using account ID', () => {
         const accountID = "0.0.592746"
         cy.visit('mainnet/account/' + accountID)
