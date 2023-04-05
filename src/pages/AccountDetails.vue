@@ -109,12 +109,11 @@
               </div>
             </div>
             <div v-else-if="stakedNodeRoute">
-              <span class="icon is-small has-text-info mr-1">
-                <i :class="stakedNodeIcon"></i>
-              </span>
-              Node
               <router-link :to="stakedNodeRoute">
-                {{ account?.staked_node_id }} - {{ stakedNodeDescription }}
+                <span class="icon is-small has-text-info mr-1">
+                  <i :class="stakedNodeIcon"></i>
+                </span>
+                Node {{ account?.staked_node_id }} - {{ stakedNodeDescription }}
               </router-link>
             </div>
             <span v-else class="has-text-grey">None</span>
@@ -230,7 +229,9 @@
         <span class="h-is-secondary-title">Recent Staking Rewards</span>
       </template>
       <template v-slot:content>
-        <StakingRewardsTable :controller="rewardsTableController"/>
+        <div id="recentRewardsTable">
+          <StakingRewardsTable :controller="rewardsTableController"/>
+        </div>
       </template>
     </DashboardCard>
 
