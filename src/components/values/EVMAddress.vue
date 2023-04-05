@@ -32,7 +32,8 @@
         <div v-if="address" id="shyCopyButton" class="shy"
              style="position: absolute; left: 0; top: 0; width: 100%; height: 100%">
           <div style="position: absolute; left: 0; top: 0; width: 100%; height: 100%; background: rgba(0, 0, 0, 0.50)"></div>
-          <div style="position: absolute; display: inline-block; left: 50%; top: 50%; transform: translate(-50%, -50%);">
+          <div v-if="enableCopy"
+               style="position: absolute; display: inline-block; left: 50%; top: 50%; transform: translate(-50%, -50%);">
             <button class="button is-dark h-is-text-size-3"
                     v-on:click.stop="copyToClipboard">Copy to Clipboard</button>
           </div>
@@ -88,6 +89,10 @@ export default defineComponent({
     hasCustomFont: {
       type: Boolean,
       default: false
+    },
+    enableCopy: {
+      type: Boolean,
+      default: true
     }
   },
 
