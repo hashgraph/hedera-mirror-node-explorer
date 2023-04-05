@@ -50,7 +50,17 @@ describe('Account Navigation', () => {
         cy.url().should('include', '/mainnet/account/')
         cy.contains('Account ID:' + accountId1)
 
-        cy.get('table')
+        cy.get('#hbarAllowancesTable')
+            .find('tbody tr')
+            .should('be.visible')
+            .should('have.length.at.least', 1)
+
+        cy.get('#tokenAllowancesTable')
+            .find('tbody tr')
+            .should('be.visible')
+            .should('have.length.at.least', 1)
+
+        cy.get('#recentTransactionsTable')
             .find('tbody tr')
             .should('be.visible')
             .should('have.length.at.least', 2)
@@ -128,6 +138,27 @@ describe('Account Navigation', () => {
                         cy.contains('Token ID:' + tokenId)
                     })
             })
+    })
+
+    it ('should follow link to reward transaction', () => {
+        const accountID = "0.0.592746"
+        cy.visit('mainnet/account/' + accountID)
+        cy.url().should('include', '/mainnet/account/' + accountID)
+        cy.contains('Account ID:' + accountID)
+
+        cy.get('#recentRewardsTable')
+            .find('tbody tr')
+            .should('be.visible')
+            .should('have.length.at.least', 2)
+            .eq(0)
+            .find('td')
+            .eq(0)
+            .click()
+
+        cy.url().should('include', '/mainnet/transaction/')
+        cy.contains('Transaction')
+        cy.get('[data-cy=hbarTransfers]')
+            .contains('0.0.800')
     })
 
     it ('should display account details using account ID', () => {
