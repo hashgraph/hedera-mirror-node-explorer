@@ -213,11 +213,13 @@
         </div>
       </template>
       <template v-slot:content>
-        <TransactionTable
-            v-if="account"
-            v-bind:controller="transactionTableController"
-            v-bind:narrowed="true"
-        />
+        <div id="recentTransactionsTable">
+          <TransactionTable
+              v-if="account"
+              v-bind:controller="transactionTableController"
+              v-bind:narrowed="true"
+          />
+        </div>
       </template>
     </DashboardCard>
 

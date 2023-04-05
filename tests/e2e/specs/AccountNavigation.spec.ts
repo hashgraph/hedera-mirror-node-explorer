@@ -50,7 +50,7 @@ describe('Account Navigation', () => {
         cy.url().should('include', '/mainnet/account/')
         cy.contains('Account ID:' + accountId1)
 
-        cy.get('table')
+        cy.get('#recentTransactionsTable')
             .find('tbody tr')
             .should('be.visible')
             .should('have.length.at.least', 2)
