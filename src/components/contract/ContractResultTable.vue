@@ -55,7 +55,7 @@
     </o-table-column>
 
     <o-table-column v-slot="props" field="from" label="From">
-      <EVMAddress :address="props.row.from" :compact="false"/>
+      <EVMAddress :address="props.row.from" :compact="false" :enable-copy="false"/>
     </o-table-column>
 
     <o-table-column v-slot="props" field="message" label="Error Message" position="left">
