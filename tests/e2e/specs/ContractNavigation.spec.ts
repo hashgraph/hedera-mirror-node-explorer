@@ -42,19 +42,18 @@ describe('Contract Navigation', () => {
     })
 
     it('should follow links from contract details', () => {
-        const contractId = "0.0.1744776"
+        const contractId = "0.0.1186129"
 
         cy.visit('mainnet/contract/' + contractId)
         cy.url().should('include', '/mainnet/contract/' + contractId)
         cy.contains('Contract ID:' + contractId)
 
-        cy.get('table').contains('td', '@')
+        cy.get('table').contains('td', '0x')
             .click()
-            .then(($id) => {
-                cy.log('Selected transaction Id: ' + $id.text())
-                cy.url().should('include', '/mainnet/transaction/')
-                cy.contains('Transaction ' + $id.text())
-            })
+         cy.url().should('include', '/mainnet/transaction/')
+        cy.contains('Transaction')
+        cy.contains('CONTRACT CALL')
+        cy.contains(contractId)
 
         cy.go('back')
         cy.url().should('include', '/mainnet/contract/' + contractId)
