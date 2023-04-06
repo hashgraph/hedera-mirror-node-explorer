@@ -164,24 +164,7 @@
       </template>
     </DashboardCard>
 
-    <DashboardCard>
-      <template v-slot:title>
-        <p class="h-is-secondary-title">Recent Contract Calls</p>
-      </template>
-
-      <template v-slot:control>
-        <div class="is-flex is-align-items-flex-end">
-          <PlayPauseButton v-bind:controller="resultTableController"/>
-        </div>
-      </template>
-
-      <template v-slot:content>
-        <ContractResultTable
-            v-if="contract"
-            v-bind:controller="resultTableController"
-        />
-      </template>
-    </DashboardCard>
+    <ContractResultsSection :contract-id="normalizedContractId"/>
 
   </section>
 
@@ -197,7 +180,6 @@
 
 import {computed, defineComponent, inject, onBeforeUnmount, onMounted} from 'vue';
 import KeyValue from "@/components/values/KeyValue.vue";
-import PlayPauseButton from "@/components/PlayPauseButton.vue";
 import AccountLink from "@/components/values/AccountLink.vue";
 import TimestampValue from "@/components/values/TimestampValue.vue";
 import DurationValue from "@/components/values/DurationValue.vue";
@@ -217,8 +199,7 @@ import {networkRegistry} from "@/schemas/NetworkRegistry";
 import router, {routeManager} from "@/router";
 import TransactionLink from "@/components/values/TransactionLink.vue";
 import EVMAddress from "@/components/values/EVMAddress.vue";
-import {ContractResultTableController} from "@/components/contract/ContractResultTableController";
-import ContractResultTable from "@/components/contract/ContractResultTable.vue";
+import ContractResultsSection from "@/components/contracts/ContractResultsSection.vue";
 
 const MAX_TOKEN_BALANCES = 3
 
@@ -227,7 +208,7 @@ export default defineComponent({
   name: 'ContractDetails',
 
   components: {
-    ContractResultTable,
+    ContractResultsSection,
     EVMAddress,
     TransactionLink,
     ByteCodeValue,
@@ -241,7 +222,6 @@ export default defineComponent({
     AccountLink,
     TimestampValue,
     DurationValue,
-    PlayPauseButton,
     KeyValue,
     StringValue
   },
@@ -318,15 +298,6 @@ export default defineComponent({
       return result
     })
 
-    //
-    // resultTableController
-    //
-
-    const pageSize = computed(() => 10)
-    const resultTableController = new ContractResultTableController(router, normalizedContractId, pageSize)
-    onMounted(() => resultTableController.mount())
-    onBeforeUnmount(() => resultTableController.unmount())
-
     const accountRoute = computed(() => {
       return normalizedContractId.value !== null ?  routeManager.makeRouteToAccount(normalizedContractId.value) : null
     })
@@ -342,7 +313,6 @@ export default defineComponent({
       ethereumAddress: accountLocParser.ethereumAddress,
       accountChecksum,
       displayAllTokenLinks,
-      resultTableController,
       notification,
       autoRenewAccount: autoRenewAccount,
       obtainerId: obtainerId,
