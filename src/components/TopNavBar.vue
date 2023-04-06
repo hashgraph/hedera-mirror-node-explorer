@@ -28,7 +28,7 @@
        class="is-flex is-align-items-center is-justify-content-space-between pt-3 pb-4">
 
     <span class="is-inline-flex is-align-items-center is-flex-grow-0 is-flex-shrink-0">
-      <router-link :to="routeManager.mainDashboardRoute" class="mr-3">
+      <router-link :to="routeManager.makeRouteToMainDashboard()" class="mr-3">
         <img alt="Product Logo" class="image" src="@/assets/branding/brand-product-logo.png" style="max-width: 165px;">
       </router-link>
       <AxiosStatus/>
@@ -36,7 +36,7 @@
 
     <div class="is-flex is-align-items-center pt-2">
       <router-link v-if="name !== 'MobileMenu' && name !== 'MobileSearch'"
-                   :to="routeManager.mobileSearchRoute">
+                   :to="routeManager.makeRouteToMobileSearch()">
         <img alt="Search bar" src="@/assets/search-icon.png" style="max-height: 20px;">
       </router-link>
       <router-link v-if="name !== 'MobileMenu' && name !== 'MobileSearch'"
@@ -53,7 +53,7 @@
 
   <div v-else class="is-flex is-justify-content-space-between is-align-items-flex-end">
     <div  class="is-inline-flex is-align-items-center is-flex-grow-0 is-flex-shrink-0 mr-3">
-      <router-link :to="routeManager.mainDashboardRoute">
+      <router-link :to="routeManager.makeRouteToMainDashboard()">
         <img id="product-logo" alt="Product Logo" class="image" src="@/assets/branding/brand-product-logo.png">
       </router-link>
       <AxiosStatus/>
@@ -73,33 +73,33 @@
 
         <div class="is-flex-grow-1 px-2"/>
 
-        <router-link :to="routeManager.mainDashboardRoute"
+        <router-link :to="routeManager.makeRouteToMainDashboard()"
                      id="dashboard-menu-item"
                      class="button is-ghost is-first h-is-navbar-item h-is-dense"
                      :class="{ 'is-rimmed': isDashboardRoute}">Dashboard</router-link>
-        <router-link :to="routeManager.transactionsRoute"
+        <router-link :to="routeManager.makeRouteToTransactions()"
                      class="button is-ghost h-is-navbar-item h-is-dense"
                      :class="{ 'is-rimmed': isTransactionRoute}">Transactions</router-link>
-        <router-link :to="routeManager.tokensRoute"
+        <router-link :to="routeManager.makeRouteToTokens()"
                      class="button is-ghost h-is-navbar-item h-is-dense"
                      :class="{ 'is-rimmed': isTokenRoute}">Tokens</router-link>
-        <router-link :to="routeManager.topicsRoute"
+        <router-link :to="routeManager.makeRouteToTopics()"
                      class="button is-ghost h-is-navbar-item h-is-dense"
                      :class="{ 'is-rimmed': isTopicRoute}">Topics</router-link>
-        <router-link :to="routeManager.contractsRoute"
+        <router-link :to="routeManager.makeRouteToContracts()"
                      class="button is-ghost h-is-navbar-item h-is-dense"
                      :class="{ 'is-rimmed': isContractRoute}">Contracts</router-link>
-        <router-link :to="routeManager.accountsRoute"
+        <router-link :to="routeManager.makeRouteToAccounts()"
                      class="button is-ghost h-is-navbar-item h-is-dense"
                      :class="{ 'is-rimmed': isAccountRoute}">Accounts</router-link>
-        <router-link :to="routeManager.nodesRoute"
+        <router-link :to="routeManager.makeRouteToNodes()"
                      class="button is-ghost h-is-navbar-item h-is-dense"
                      :class="{ 'is-rimmed': isNodeRoute}">Nodes</router-link>
         <router-link v-if="isStakingEnabled"
-                     :to="routeManager.stakingRoute"
+                     :to="routeManager.makeRouteToStaking()"
                      class="button is-ghost h-is-navbar-item h-is-dense"
                      :class="{ 'is-rimmed': isStakingRoute}">Staking</router-link>
-        <router-link :to="routeManager.blocksRoute"
+        <router-link :to="routeManager.makeRouteToBlocks()"
                      class="button is-ghost is-last h-is-navbar-item h-is-dense"
                      :class="{ 'is-rimmed': isBlocksRoute}">Blocks</router-link>
       </div>

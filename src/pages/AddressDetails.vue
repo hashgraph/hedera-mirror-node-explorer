@@ -94,7 +94,7 @@ export default defineComponent({
         }
 
       } else {
-        result = routeManager.pageNotFoundRoute
+        result = routeManager.makeRouteToPageNotFound()
       }
 
       return Promise.resolve(result)
