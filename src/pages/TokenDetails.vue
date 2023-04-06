@@ -270,6 +270,8 @@
 
     </DashboardCard>
 
+    <ContractResultsSection :contract-id="normalizedTokenId"/>
+
   </section>
 
   <Footer/>
@@ -308,12 +310,14 @@ import EVMAddress from "@/components/values/EVMAddress.vue";
 import {makeTokenSymbol} from "@/schemas/HederaUtils";
 import {TokenInfoCache} from "@/utils/cache/TokenInfoCache";
 import {TokenInfoAnalyzer} from "@/components/token/TokenInfoAnalyzer";
+import ContractResultsSection from "@/components/contracts/ContractResultsSection.vue";
 
 export default defineComponent({
 
   name: 'TokenDetails',
 
   components: {
+    ContractResultsSection,
     EVMAddress,
     TokenCustomFees,
     PlayPauseButton,

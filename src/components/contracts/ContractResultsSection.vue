@@ -24,7 +24,7 @@
 
 <template>
 
-  <DashboardCard>
+  <DashboardCard v-if="showContractResults">
     <template v-slot:title>
       <p class="h-is-secondary-title">Recent Contract Calls</p>
     </template>
@@ -75,6 +75,8 @@ export default defineComponent({
     const computedContractId = computed(() => props.contractId || null)
     const perPage = computed(() => isMediumScreen ? 10 : 5)
 
+    const showContractResults = computed(() => resultTableController.rows.value.length)
+
     //
     // resultTableController
     //
@@ -87,6 +89,7 @@ export default defineComponent({
       isTouchDevice,
       isSmallScreen,
       isMediumScreen,
+      showContractResults,
       resultTableController
     }
   }
