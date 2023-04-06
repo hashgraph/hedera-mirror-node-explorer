@@ -30,7 +30,7 @@ import NotificationBanner from "@/components/NotificationBanner.vue";
 import axios, {AxiosRequestConfig} from "axios";
 import {
     SAMPLE_ASSOCIATED_TOKEN, SAMPLE_ASSOCIATED_TOKEN_2,
-    SAMPLE_BLOCKSRESPONSE,
+    SAMPLE_BLOCKSRESPONSE, SAMPLE_CONTRACT,
     SAMPLE_CONTRACT_RESULT_DETAILS,
     SAMPLE_CONTRACTCALL_TRANSACTIONS,
     SAMPLE_FAILED_TRANSACTION,
@@ -168,8 +168,10 @@ describe("TransactionDetails.vue", () => {
             }
         });
 
-        const matcher2 = "/api/v1/contracts/" + contractId + "/results/" + timestamp
-        mock.onGet(matcher2).reply(200, SAMPLE_CONTRACT_RESULT_DETAILS)
+        const matcher2 = "/api/v1/contracts/" + contractId
+        mock.onGet(matcher2).reply(200, SAMPLE_CONTRACT)
+        const matcher3 = "/api/v1/contracts/" + contractId + "/results/" + timestamp
+        mock.onGet(matcher3).reply(200, SAMPLE_CONTRACT_RESULT_DETAILS)
         const matcher5 = "/api/v1/contracts/results/" + transactionId + "/actions"
         mock.onGet(matcher5).reply(200, "[]")
 
@@ -230,8 +232,10 @@ describe("TransactionDetails.vue", () => {
                 return [404]
             }
         });
-        const matcher2 = "/api/v1/contracts/" + contractId  + "/results/" + timestamp
-        mock.onGet(matcher2).reply(200, SAMPLE_CONTRACT_RESULT_DETAILS)
+        const matcher2 = "/api/v1/contracts/" + contractId
+        mock.onGet(matcher2).reply(200, SAMPLE_CONTRACT)
+        const matcher3 = "/api/v1/contracts/" + contractId  + "/results/" + timestamp
+        mock.onGet(matcher3).reply(200, SAMPLE_CONTRACT_RESULT_DETAILS)
         const matcher5 = "/api/v1/contracts/results/" + transactionId + "/actions"
         mock.onGet(matcher5).reply(200, "[]")
 
