@@ -164,13 +164,13 @@ describe("ContractDetails.vue", () => {
 
         let cells = rows[0].findAll('td')
         expect(cells[0].text()).toBe("9:11:37.9739 AMFeb 3, 2023, UTC")
-        expect(cells[1].text()).toBe("0x00000000000000000000000000000000000004ecCopy to Clipboard(0.0.1260)")
+        expect(cells[1].text()).toBe("0x00000000000000000000000000000000000004ec(0.0.1260)")
         expect(cells[2].text()).toBe("None")
         expect(cells[3].text()).toBe("0.00000000")
 
         cells = rows[1].findAll('td')
         expect(cells[0].text()).toBe("9:09:24.5852 AMFeb 3, 2023, UTC")
-        expect(cells[1].text()).toBe("0x00000000000000000000000000000000000004ecCopy to Clipboard(0.0.1260)")
+        expect(cells[1].text()).toBe("0x00000000000000000000000000000000000004ec(0.0.1260)")
         expect(cells[2].text()).toBe("None")
         expect(cells[3].text()).toBe("0.00000000")
     });
