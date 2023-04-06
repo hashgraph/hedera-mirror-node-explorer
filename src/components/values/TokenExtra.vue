@@ -67,9 +67,9 @@ export default defineComponent({
 
     const updateExtra = () => {
       if (props.tokenId) {
-        TokenInfoCache.instance.lookup(props.tokenId).then((r: TokenInfo) => {
+        TokenInfoCache.instance.lookup(props.tokenId).then((r: TokenInfo | null) => {
           if (props.showName) {
-            extra.value = r.name ?? ""
+            extra.value = r?.name ?? ""
           } else {
             extra.value = makeTokenSymbol(r, 40)
           }
