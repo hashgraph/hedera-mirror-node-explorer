@@ -22,7 +22,7 @@
 
 import {flushPromises, mount} from "@vue/test-utils"
 import router from "@/router";
-import TransactionDetailsV2 from "@/pages/TransactionDetailsV2.vue";
+import TransactionDetails from "@/pages/TransactionDetails.vue";
 import HbarTransferGraphF from "@/components/transfer_graphs/HbarTransferGraphF.vue";
 import TokenTransferGraph from "@/components/transfer_graphs/TokenTransferGraphF.vue";
 import NftTransferGraph from "@/components/transfer_graphs/NftTransferGraph.vue";
@@ -102,7 +102,7 @@ describe("TransactionDetails.vue", () => {
         const matcher2 = "/api/v1/tokens/" + SAMPLE_TOKEN.token_id
         mock.onGet(matcher2).reply(200, SAMPLE_TOKEN);
 
-        const wrapper = mount(TransactionDetailsV2, {
+        const wrapper = mount(TransactionDetails, {
             global: {
                 plugins: [router, Oruga]
             },
@@ -173,7 +173,7 @@ describe("TransactionDetails.vue", () => {
         const matcher5 = "/api/v1/contracts/results/" + transactionId + "/actions"
         mock.onGet(matcher5).reply(200, "[]")
 
-        const wrapper = mount(TransactionDetailsV2, {
+        const wrapper = mount(TransactionDetails, {
             global: {
                 plugins: [router, Oruga]
             },
@@ -235,7 +235,7 @@ describe("TransactionDetails.vue", () => {
         const matcher5 = "/api/v1/contracts/results/" + transactionId + "/actions"
         mock.onGet(matcher5).reply(200, "[]")
 
-        const wrapper = mount(TransactionDetailsV2, {
+        const wrapper = mount(TransactionDetails, {
             global: {
                 plugins: [router, Oruga]
             },
@@ -287,7 +287,7 @@ describe("TransactionDetails.vue", () => {
         const matcher2 = "/api/v1/tokens/" + SAMPLE_TOKEN.token_id
         mock.onGet(matcher2).reply(200, SAMPLE_TOKEN);
 
-        const wrapper = mount(TransactionDetailsV2, {
+        const wrapper = mount(TransactionDetails, {
             global: {
                 plugins: [router, Oruga]
             },
@@ -350,7 +350,7 @@ describe("TransactionDetails.vue", () => {
         const matcher11 = "/api/v1/transactions/" + SAMPLE_FAILED_TRANSACTION.transaction_id
         mock.onGet(matcher11).reply(200, SAMPLE_FAILED_TRANSACTIONS);
 
-        const wrapper = mount(TransactionDetailsV2, {
+        const wrapper = mount(TransactionDetails, {
             global: {
                 plugins: [router, Oruga]
             },
@@ -374,7 +374,7 @@ describe("TransactionDetails.vue", () => {
         await router.push("/") // To avoid "missing required param 'network'" error
 
         const invalidTimestamp = "1600000000.000000000"
-        const wrapper = mount(TransactionDetailsV2, {
+        const wrapper = mount(TransactionDetails, {
             global: {
                 plugins: [router, Oruga]
             },
@@ -406,7 +406,7 @@ describe("TransactionDetails.vue", () => {
         const matcher11 = "/api/v1/transactions/" + transaction.transaction_id
         mock.onGet(matcher11).reply(200, SAMPLE_SYSTEM_CONTRACT_CALL_TRANSACTIONS)
 
-        const wrapper = mount(TransactionDetailsV2, {
+        const wrapper = mount(TransactionDetails, {
             global: {
                 plugins: [router, Oruga]
             },
@@ -443,7 +443,7 @@ describe("TransactionDetails.vue", () => {
         const matcher5 = "/api/v1/tokens/" + TOKEN_ID
         mock.onGet(matcher5).reply(200, SAMPLE_TOKEN)
 
-        const wrapper = mount(TransactionDetailsV2, {
+        const wrapper = mount(TransactionDetails, {
             global: {
                 plugins: [router, Oruga]
             },
@@ -485,7 +485,7 @@ describe("TransactionDetails.vue", () => {
         const matcher2 = "/api/v1/tokens/" + TOKEN_ID
         mock.onGet(matcher2).reply(200, SAMPLE_TOKEN);
 
-        const wrapper = mount(TransactionDetailsV2, {
+        const wrapper = mount(TransactionDetails, {
             global: {
                 plugins: [router, Oruga]
             },
@@ -528,7 +528,7 @@ describe("TransactionDetails.vue", () => {
             const matcher2 = "/api/v1/tokens/" + TOKEN_ID
             mock.onGet(matcher2).reply(200, SAMPLE_TOKEN);
 
-            const wrapper = mount(TransactionDetailsV2, {
+            const wrapper = mount(TransactionDetails, {
                 global: {
                     plugins: [router, Oruga]
                 },
@@ -568,7 +568,7 @@ describe("TransactionDetails.vue", () => {
         const matcher11 = "/api/v1/transactions/" + PARENT.transaction_id
         mock.onGet(matcher11).reply(200, SAMPLE_PARENT_CHILD_TRANSACTIONS);
 
-        const wrapper = mount(TransactionDetailsV2, {
+        const wrapper = mount(TransactionDetails, {
             global: {
                 plugins: [router, Oruga]
             },
@@ -620,7 +620,7 @@ describe("TransactionDetails.vue", () => {
         const matcher5 = "/api/v1/tokens/" + token2.token_id
         mock.onGet(matcher5).reply(200, token2);
 
-        const wrapper = mount(TransactionDetailsV2, {
+        const wrapper = mount(TransactionDetails, {
             global: {
                 plugins: [router, Oruga]
             },
