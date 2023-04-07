@@ -264,11 +264,17 @@
       </template>
 
       <template v-slot:content>
-        <NftHolderTable v-if="isNft" :controller="nftHolderTableController"/>
-        <TokenBalanceTable v-else :controller="tokenBalanceTableController"/>
+        <div v-if="isNft" id="nft-holder-table">
+          <NftHolderTable :controller="nftHolderTableController"/>
+        </div>
+        <div v-else id="token-balance-table">
+          <TokenBalanceTable :controller="tokenBalanceTableController"/>
+        </div>
       </template>
 
     </DashboardCard>
+
+    <ContractResultsSection :contract-id="normalizedTokenId"/>
 
   </section>
 
@@ -308,12 +314,14 @@ import EVMAddress from "@/components/values/EVMAddress.vue";
 import {makeTokenSymbol} from "@/schemas/HederaUtils";
 import {TokenInfoCache} from "@/utils/cache/TokenInfoCache";
 import {TokenInfoAnalyzer} from "@/components/token/TokenInfoAnalyzer";
+import ContractResultsSection from "@/components/contracts/ContractResultsSection.vue";
 
 export default defineComponent({
 
   name: 'TokenDetails',
 
   components: {
+    ContractResultsSection,
     EVMAddress,
     TokenCustomFees,
     PlayPauseButton,

@@ -89,7 +89,7 @@ export default defineComponent({
 
     const updateResponse = () => {
       if (props.tokenId) {
-        TokenInfoCache.instance.lookup(props.tokenId).then((r: TokenInfo) => {
+        TokenInfoCache.instance.lookup(props.tokenId).then((r: TokenInfo | null) => {
           response.value = r
         }, (reason: unknown) => {
           console.warn("TokenInfoCollector did fail to fetch " + props.tokenId + " with reason: " + reason)

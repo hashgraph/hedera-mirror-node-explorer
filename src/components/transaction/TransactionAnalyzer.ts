@@ -27,7 +27,6 @@ import {base64DecToArr, byteToHex} from "@/utils/B64Utils";
 import {systemContractRegistry} from "@/schemas/SystemContractRegistry";
 import {normalizeTransactionId} from "@/utils/TransactionID";
 import {ContractByIdCache} from "@/utils/cache/ContractByIdCache";
-import {AccountByIdCache} from "@/utils/cache/AccountByIdCache";
 import {BlockByTsCache} from "@/utils/cache/BlockByTsCache";
 
 export class TransactionAnalyzer {
@@ -35,8 +34,8 @@ export class TransactionAnalyzer {
     public readonly consensusTimestamp: Ref<string|null>
     public readonly transaction: Ref<Transaction|null> = ref(null)
     public readonly contractId: Ref<string|null> = ref(null)
-    public readonly accountId: Ref<string|null> = ref(null)
     public readonly blockNumber: Ref<number|null> = ref(null)
+    public readonly entityDescriptor = ref(EntityDescriptor.DEFAULT_ENTITY_DESCRIPTOR)
     private readonly watchHandles: WatchStopHandle[] = []
 
     //
@@ -97,24 +96,6 @@ export class TransactionAnalyzer {
     })
 
     //
-    // Public (entityDescriptor)
-    //
-
-    public readonly entityDescriptor = computed(() => {
-        let result: EntityDescriptor|null
-        if (this.contractId.value !== null) {
-            result = new EntityDescriptor("Contract ID", "ContractDetails")
-        } else if (this.accountId.value !== null) {
-            result = new EntityDescriptor("Account ID", "AccountDetails")
-        } else if (this.transaction.value !== null) {
-            result = EntityDescriptor.makeEntityDescriptor(this.transaction.value)
-        } else {
-            result = null
-        }
-        return result
-    })
-
-    //
     // Private
     //
 
@@ -133,37 +114,25 @@ export class TransactionAnalyzer {
             const entityId = this.transaction.value?.entity_id ?? null
             if (entityId !== null) {
                 switch(this.transaction.value.name) {
+                    case TransactionType.CONTRACTCALL:
                     case TransactionType.ETHEREUMTRANSACTION: {
                         const contract = await ContractByIdCache.instance.lookup(entityId)
-                        if (contract !== null) {
-                            this.contractId.value = entityId
-                            this.accountId.value = null
-                        } else {
-                            const account = await AccountByIdCache.instance.lookup(entityId)
-                            if (account !== null) {
-                                this.contractId.value = null
-                                this.accountId.value = entityId
-                            } else {
-                                this.contractId.value = null
-                                this.accountId.value = null
-                            }
-                        }
+                        this.contractId.value = contract ? entityId : null
                         break
                     }
                     case TransactionType.CONTRACTCREATEINSTANCE:
-                    case TransactionType.CONTRACTCALL:
                     case TransactionType.CONTRACTUPDATEINSTANCE:
                     case TransactionType.CONTRACTDELETEINSTANCE:
-                        this.contractId.value = this.transaction.value?.entity_id ?? null
-                        this.accountId.value = null
+                        this.contractId.value = entityId
                         break
                     default:
                         this.contractId.value = null
-                        this.accountId.value = null
                 }
+
+                this.entityDescriptor.value = await EntityDescriptor.makeEntityDescriptor(this.transaction.value)
+
             } else {
                 this.contractId.value = null
-                this.accountId.value = null
             }
             const consensusTimestamp = this.transaction.value?.consensus_timestamp ?? null
             if (consensusTimestamp !== null) {
@@ -174,7 +143,6 @@ export class TransactionAnalyzer {
             }
         } else {
             this.contractId.value = null
-            this.accountId.value = null
             this.blockNumber.value = null
         }
     }

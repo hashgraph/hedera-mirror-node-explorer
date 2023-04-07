@@ -23,16 +23,25 @@
 <!-- --------------------------------------------------------------------------------------------------------------- -->
 
 <template>
-  <template v-if="tokenId != null">
-    <template v-if="useAnchor">
-      <router-link :to="tokenRoute">
-        <span class="h-is-smaller h-is-extra-text should-wrap" style="word-break: break-all">{{ extra }}</span>
-      </router-link>
+
+  <DashboardCard v-if="showContractResults">
+    <template v-slot:title>
+      <p class="h-is-secondary-title">Recent Contract Calls</p>
     </template>
-    <template v-else>
-      <span class="h-is-smaller h-is-extra-text should-wrap" style="word-break: break-all">{{ extra }}</span>
+
+    <template v-slot:control>
+      <div class="is-flex is-align-items-flex-end">
+        <PlayPauseButton v-bind:controller="resultTableController"/>
+      </div>
     </template>
-  </template>
+
+    <template v-slot:content>
+      <div id="contract-result-table">
+        <ContractResultTable v-if="contractId" :controller="resultTableController"/>
+      </div>
+    </template>
+  </DashboardCard>
+
 </template>
 
 <!-- --------------------------------------------------------------------------------------------------------------- -->
@@ -41,55 +50,47 @@
 
 <script lang="ts">
 
-import {computed, defineComponent, onMounted, ref, watch} from "vue";
-import {TokenInfo} from "@/schemas/HederaSchemas";
-import {TokenInfoCache} from "@/utils/cache/TokenInfoCache";
-import {makeTokenSymbol} from "@/schemas/HederaUtils";
-import {routeManager} from "@/router";
+import {computed, defineComponent, inject, onBeforeUnmount, onMounted} from 'vue';
+import router from "@/router";
+import DashboardCard from "@/components/DashboardCard.vue";
+import {ContractResultTableController} from "@/components/contract/ContractResultTableController";
+import PlayPauseButton from "@/components/PlayPauseButton.vue";
+import ContractResultTable from "@/components/contract/ContractResultTable.vue";
 
 export default defineComponent({
-  name: "TokenExtra",
+  name: 'ContractResultsSection',
+
+  components: {ContractResultTable, PlayPauseButton, DashboardCard},
 
   props: {
-    tokenId: String,
-    showName: {
-      type: Boolean,
-      default: false
-    },
-    useAnchor: {
-      type: Boolean,
-      defaults: false
-    }
+    contractId: String,
   },
 
-  setup(props) {
-    const extra = ref("")
+  setup: function (props) {
+    const isTouchDevice = inject('isTouchDevice', false)
+    const isSmallScreen = inject('isSmallScreen', true)
+    const isMediumScreen = inject('isMediumScreen', true)
 
-    const updateExtra = () => {
-      if (props.tokenId) {
-        TokenInfoCache.instance.lookup(props.tokenId).then((r: TokenInfo | null) => {
-          if (props.showName) {
-            extra.value = r?.name ?? ""
-          } else {
-            extra.value = makeTokenSymbol(r, 40)
-          }
-        }, (reason: unknown) => {
-          console.warn("TokenInfoCollector did fail to fetch " + props.tokenId + " with reason: " + reason)
-        })
-      }
+    const computedContractId = computed(() => props.contractId || null)
+    const perPage = computed(() => isMediumScreen ? 10 : 5)
+
+    const showContractResults = computed(() => resultTableController.rows.value.length)
+
+    //
+    // resultTableController
+    //
+
+    const resultTableController = new ContractResultTableController(router, computedContractId, perPage)
+    onMounted(() => resultTableController.mount())
+    onBeforeUnmount(() => resultTableController.unmount())
+
+    return {
+      isTouchDevice,
+      isSmallScreen,
+      isMediumScreen,
+      showContractResults,
+      resultTableController
     }
-
-    watch(() => props.tokenId, () => {
-      updateExtra()
-    })
-
-    onMounted(() => {
-      updateExtra()
-    })
-
-    const tokenRoute = computed(() => props.tokenId ? routeManager.makeRouteToToken(props.tokenId) : null)
-
-    return { extra, tokenRoute }
   }
 });
 
@@ -99,5 +100,6 @@ export default defineComponent({
 <!--                                                       STYLE                                                     -->
 <!-- --------------------------------------------------------------------------------------------------------------- -->
 
-<style/>
+<style scoped>
 
+</style>

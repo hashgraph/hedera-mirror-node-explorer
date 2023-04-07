@@ -217,7 +217,15 @@ import {EntityID} from "@/utils/EntityID";
 import {networkRegistry} from "@/schemas/NetworkRegistry";
 import ConfirmDialog from "@/components/ConfirmDialog.vue";
 import axios from "axios";
-import {CryptoAllowance, Nfts, TokenAllowance, TokenRelationshipResponse, Transaction, TransactionByIdResponse} from "@/schemas/HederaSchemas";
+import {
+  CryptoAllowance,
+  Nfts,
+  TokenAllowance,
+  TokenInfo,
+  TokenRelationshipResponse,
+  Transaction,
+  TransactionByIdResponse
+} from "@/schemas/HederaSchemas";
 import ProgressDialog, {Mode} from "@/components/staking/ProgressDialog.vue";
 import {normalizeTransactionId} from "@/utils/TransactionID";
 import {waitFor} from "@/utils/TimerUtils";
@@ -719,8 +727,8 @@ export default defineComponent({
                 if (tokens && tokens.length > 0) {
                   if (type !== null) {
                     TokenInfoCache.instance.lookup(entity)
-                        .then((t) => {
-                          if (t.type === type) {
+                        .then((t: TokenInfo | null) => {
+                          if (t?.type === type) {
                             isValid.value = true
                           } else {
                             message.value = (type === 'FUNGIBLE_COMMON') ? TOKEN_NOT_FUNGIBLE_MESSAGE : TOKEN_NOT_NFT_MESSAGE
