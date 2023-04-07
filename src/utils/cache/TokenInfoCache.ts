@@ -22,7 +22,7 @@ import axios from "axios";
 import {TokenInfo} from "@/schemas/HederaSchemas";
 import {SerialCache} from "@/utils/cache/SerialCache";
 
-export class TokenInfoCache extends SerialCache<string, TokenInfo> {
+export class TokenInfoCache extends SerialCache<string, TokenInfo | null> {
 
     public static readonly instance = new TokenInfoCache()
 
@@ -30,9 +30,18 @@ export class TokenInfoCache extends SerialCache<string, TokenInfo> {
     // Cache
     //
 
-    protected async load(tokenId: string): Promise<TokenInfo> {
-        const response = await axios.get<TokenInfo>("api/v1/tokens/" + tokenId)
-        return Promise.resolve(response.data)
+    protected async load(tokenId: string): Promise<TokenInfo | null> {
+        let result: Promise<TokenInfo|null>
+        try {
+            const response = await axios.get<TokenInfo>("api/v1/tokens/" + tokenId)
+            result = Promise.resolve(response.data)
+        } catch (error) {
+            if (axios.isAxiosError(error) && error.response?.status == 404) {
+                result = Promise.resolve(null)
+            } else {
+                throw error
+            }
+        }
+        return result
     }
-
 }

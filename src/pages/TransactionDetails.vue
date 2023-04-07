@@ -269,7 +269,7 @@ const MAX_INLINE_CHILDREN = 9
 
 export default defineComponent({
 
-  name: 'TransactionDetailsV2',
+  name: 'TransactionDetails',
 
   components: {
     TokenLink,
