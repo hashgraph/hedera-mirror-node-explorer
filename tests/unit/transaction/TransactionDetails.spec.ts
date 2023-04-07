@@ -29,15 +29,23 @@ import NftTransferGraph from "@/components/transfer_graphs/NftTransferGraph.vue"
 import NotificationBanner from "@/components/NotificationBanner.vue";
 import axios, {AxiosRequestConfig} from "axios";
 import {
-    SAMPLE_ASSOCIATED_TOKEN, SAMPLE_ASSOCIATED_TOKEN_2,
-    SAMPLE_BLOCKSRESPONSE, SAMPLE_CONTRACT,
+    SAMPLE_ASSOCIATED_TOKEN,
+    SAMPLE_ASSOCIATED_TOKEN_2,
+    SAMPLE_BLOCKSRESPONSE,
+    SAMPLE_CONTRACT,
     SAMPLE_CONTRACT_RESULT_DETAILS,
     SAMPLE_CONTRACTCALL_TRANSACTIONS,
     SAMPLE_FAILED_TRANSACTION,
-    SAMPLE_FAILED_TRANSACTIONS, SAMPLE_NETWORK_EXCHANGERATE, SAMPLE_NETWORK_NODES, SAMPLE_PARENT_CHILD_TRANSACTIONS,
+    SAMPLE_FAILED_TRANSACTIONS,
+    SAMPLE_NETWORK_EXCHANGERATE,
+    SAMPLE_NETWORK_NODES,
+    SAMPLE_PARENT_CHILD_TRANSACTIONS,
     SAMPLE_SCHEDULING_SCHEDULED_TRANSACTIONS,
     SAMPLE_SYSTEM_CONTRACT_CALL_TRANSACTIONS,
-    SAMPLE_TOKEN, SAMPLE_TOKEN_ASSOCIATE_TRANSACTION, SAMPLE_TOKEN_ASSOCIATIONS,
+    SAMPLE_TOKEN,
+    SAMPLE_TOKEN_ASSOCIATE_TRANSACTION,
+    SAMPLE_TOKEN_ASSOCIATIONS,
+    SAMPLE_TOKEN_CALL_TRANSACTIONS,
     SAMPLE_TRANSACTION,
     SAMPLE_TRANSACTIONS
 } from "../Mocks";
@@ -322,6 +330,10 @@ describe("TransactionDetails.vue", () => {
         matcher11 = "/api/v1/transactions/" + transaction.transaction_id
         mock.onGet(matcher11).reply(200, SAMPLE_CONTRACTCALL_TRANSACTIONS)
 
+        const entityId = SAMPLE_CONTRACTCALL_TRANSACTIONS.transactions[0].entity_id
+        const matcher3 = "/api/v1/contracts/" + entityId
+        mock.onGet(matcher3).reply(200, SAMPLE_CONTRACT)
+
         await wrapper.setProps({
             transactionLoc: transaction.consensus_timestamp
         })
@@ -331,6 +343,9 @@ describe("TransactionDetails.vue", () => {
         expect(wrapper.text()).toMatch(RegExp("^Transaction " + normalizeTransactionId(transaction.transaction_id, true)))
         expect(wrapper.get("#transactionTypeValue").text()).toBe("CONTRACT CALL")
         expect(wrapper.get("#memoValue").text()).toBe("Mirror Node acceptance test: 2022-03-07T15:09:26.066680977Z Execute contract")
+
+        expect(wrapper.get('#entityIdName').text()).toBe("Contract ID")
+        expect(wrapper.get('#entityIdValue').text()).toBe(entityId)
 
         expect(wrapper.findComponent(HbarTransferGraphF).exists()).toBe(true)
         expect(wrapper.findComponent(TokenTransferGraph).text()).toContain("Token TransfersNone")
@@ -657,4 +672,49 @@ describe("TransactionDetails.vue", () => {
         expect(wrapper.findComponent(NftTransferGraph).text()).toBe("NFT TransfersNone")
 
     });
+
+    it("Should display CONTRACT CALL details with link to (proxied) token as entity ID", async () => {
+
+        await router.push("/") // To avoid "missing required param 'network'" error
+
+        const transactionId = SAMPLE_TOKEN_CALL_TRANSACTIONS.transactions[0].transaction_id
+        const entityId = SAMPLE_TOKEN_CALL_TRANSACTIONS.transactions[0].entity_id
+        const timestamp = SAMPLE_TOKEN_CALL_TRANSACTIONS.transactions[0].consensus_timestamp
+
+        const matcher1 = "/api/v1/transactions/" + transactionId
+        mock.onGet(matcher1).reply(200, SAMPLE_TOKEN_CALL_TRANSACTIONS);
+        const matcher11 = "/api/v1/transactions"
+        mock.onGet(matcher11).reply((config: AxiosRequestConfig) => {
+            if (config.params.timestamp == timestamp) {
+                return [200, SAMPLE_TOKEN_CALL_TRANSACTIONS]
+            } else {
+                return [404]
+            }
+        });
+
+        const matcher2 = "/api/v1/contracts/" + entityId
+        mock.onGet(matcher2).reply(404)
+
+        const matcher3 = "/api/v1/tokens/" + entityId
+        mock.onGet(matcher3).reply(200, SAMPLE_TOKEN)
+
+        const wrapper = mount(TransactionDetails, {
+            global: {
+                plugins: [router, Oruga]
+            },
+            props: {
+                transactionLoc: timestamp
+            },
+        });
+
+        await flushPromises()
+        // console.log(wrapper.html())
+        // console.log(wrapper.text())
+
+        expect(wrapper.text()).toMatch(RegExp("^Transaction " + normalizeTransactionId(transactionId, true)))
+        expect(wrapper.text()).toMatch(RegExp("CONTRACT CALL"))
+        expect(wrapper.get("#entityIdName").text()).toBe("Token ID")
+        expect(wrapper.get("#entityIdValue").text()).toMatch(entityId)
+    });
+
 });
