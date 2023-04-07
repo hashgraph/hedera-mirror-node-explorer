@@ -144,4 +144,27 @@ describe('Token Navigation', () => {
                 cy.contains('Account ID:' + $id.text())
             })
     })
+
+    it('should follow call results link from token details (proxied as contract)', () => {
+        const proxiedTokenId = "0.0.781589"
+        cy.visit('mainnet/token/' + proxiedTokenId)
+        cy.url().should('include', '/mainnet/token/' + proxiedTokenId)
+        cy.contains('Fungible Token')
+        cy.contains('Token ID:' + proxiedTokenId)
+
+        cy.get('#contract-results-table')
+            .find('tbody tr')
+            .should('be.visible')
+            .should('have.length.at.least', 2)
+            .eq(0)
+            .find('td')
+            .eq(0)
+            .click()
+
+        cy.url().should('include', '/mainnet/transaction/1677545104.611658003')
+        cy.contains('Transaction 0.0.939841@1677545092.878406670')
+        cy.contains('CONTRACT CALL')
+        cy.contains('Token ID' + proxiedTokenId)
+    })
+
 })
