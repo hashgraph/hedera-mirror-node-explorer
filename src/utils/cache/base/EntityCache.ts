@@ -90,6 +90,7 @@ export class Lookup<K,E> {
     private readonly cache: EntityCache<K,E>
     private readonly key: Ref<K|null>
     private watchHandle: WatchStopHandle|null = null
+    private mounted = false
 
     constructor(key: Ref<K|null>, cache: EntityCache<K,E>) {
         this.key = key
@@ -98,6 +99,7 @@ export class Lookup<K,E> {
 
     public mount(): void {
         this.watchHandle = watch(this.key, this.keyDidChange, { immediate: true})
+        this.mounted = true
     }
 
     public unmount(): void {
@@ -106,12 +108,22 @@ export class Lookup<K,E> {
             this.watchHandle = null
         }
         this.entity.value = null
+        this.mounted = false
     }
 
-    private keyDidChange = async () => {
-        if (this.key.value !== null) {
+    private readonly keyDidChange = async () => {
+        const key = this.key.value
+        if (key !== null) {
             try {
-                this.entity.value = await this.cache.lookup(this.key.value)
+                let newEntity: E|null
+                try {
+                    newEntity = await this.cache.lookup(key)
+                } catch {
+                    newEntity = null
+                }
+                if (key === this.key.value && this.mounted) {
+                    this.entity.value = newEntity
+                } // else this.key has changed or cache was unmounted during lookup => aborts silently
             } catch {
                 this.entity.value = null
             }
