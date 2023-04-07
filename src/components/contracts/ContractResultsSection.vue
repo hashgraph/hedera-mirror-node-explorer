@@ -36,10 +36,9 @@
     </template>
 
     <template v-slot:content>
-      <ContractResultTable
-          v-if="contractId"
-          v-bind:controller="resultTableController"
-      />
+      <div id="contract-result-table">
+        <ContractResultTable v-if="contractId" :controller="resultTableController"/>
+      </div>
     </template>
   </DashboardCard>
 

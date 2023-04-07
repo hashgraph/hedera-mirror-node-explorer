@@ -72,8 +72,9 @@ describe('Token Navigation', () => {
         cy.contains('Non Fungible Token')
         cy.contains('Token ID:' + nftId)
 
-        cy.get('table')
+        cy.get('#nft-holder-table')
             .find('tbody tr')
+            .should('be.visible')
             .should('have.length.at.least', 2)
             .eq(0)
             .find('td')
@@ -88,14 +89,15 @@ describe('Token Navigation', () => {
     })
 
     const tokenId = "0.0.1738807"
-    it('should follow links from token details', () => {
+    it('should follow links from fungible token details', () => {
         cy.visit('mainnet/token/' + tokenId)
         cy.url().should('include', '/mainnet/token/' + tokenId)
         cy.contains('Fungible Token')
         cy.contains('Token ID:' + tokenId)
 
-        cy.get('table')
+        cy.get('#token-balance-table')
             .find('tbody tr')
+            .should('be.visible')
             .should('have.length.at.least', 2)
             .eq(0)
             .find('td')
