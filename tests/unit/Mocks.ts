@@ -661,6 +661,33 @@ export const SAMPLE_SYSTEM_CONTRACT_CALL_TRANSACTIONS = {
     ]
 }
 
+export const SAMPLE_TOKEN_CALL_TRANSACTIONS = {
+    "transactions": [{
+        "bytes": null,
+        "charged_tx_fee": 93600000,
+        "consensus_timestamp": "1677545104.611658003",
+        "entity_id": "0.0.781589",
+        "max_fee": "200000000",
+        "memo_base64": "",
+        "name": "CONTRACTCALL",
+        "node": "0.0.14",
+        "nonce": 0,
+        "parent_consensus_timestamp": null,
+        "result": "SUCCESS",
+        "scheduled": false,
+        "staking_reward_transfers": [{"account": "0.0.939841", "amount": 6816724320}],
+        "transaction_hash": "v0daADT5AeJQdNGIpDZww+amcD9C1ngBhzQwPhm7g8BRtvN1p2TaOLHIMtD0C0MS",
+        "transaction_id": "0.0.939841-1677545092-878406670",
+        "transfers": [{"account": "0.0.98", "amount": 93600000, "is_approval": false}, {
+            "account": "0.0.800",
+            "amount": -6816724320,
+            "is_approval": false
+        }, {"account": "0.0.939841", "amount": 6723124320, "is_approval": false}],
+        "valid_duration_seconds": "120",
+        "valid_start_timestamp": "1677545092.878406670"
+    }], "links": {"next": null}
+}
+
 export const SAMPLE_CONTRACT_RESULTS = {
     "results": [
         {
@@ -1728,6 +1755,89 @@ export const SAMPLE_TOKEN_ASSOCIATE_TRANSACTION = {
     }, {"account": "0.0.642949", "amount": -115905210, "is_approval": false}],
     "valid_duration_seconds": "120",
     "valid_start_timestamp": "1671648699.088023490"
+}
+
+export const SAMPLE_ETHEREUM_TRANSACTIONS_ON_ACCOUNT = {
+    "transactions": [{
+        "bytes": null,
+        "charged_tx_fee": 289885506,
+        "consensus_timestamp": "1680856113.083079074",
+        "entity_id": "0.0.1736",
+        "max_fee": "1965000000",
+        "memo_base64": "",
+        "name": "ETHEREUMTRANSACTION",
+        "node": "0.0.9",
+        "nonce": 0,
+        "parent_consensus_timestamp": null,
+        "result": "SUCCESS",
+        "scheduled": false,
+        "staking_reward_transfers": [],
+        "transaction_hash": "eCUqd8lk6CpS7/s9RJ3ZsKaeCXUqleE3Jpz5MzrkULc4xLI+B77Rrqd0rcmB0G7l",
+        "transaction_id": "0.0.902-1680856100-967831537",
+        "transfers": [
+            {
+                "account": "0.0.9", "amount": 2904321, "is_approval": false
+            },
+            {
+                "account": "0.0.98",
+                "amount": 286981185,
+                "is_approval": false
+            },
+            {
+                "account": "0.0.902", "amount": -81885506, "is_approval": false
+            },
+            {
+                "account": "0.0.1736",
+                "amount": 999100000000,
+                "is_approval": false
+            },
+            {
+                "account": "0.0.3950761", "amount": -999308000000, "is_approval": false
+            }
+        ],
+        "valid_duration_seconds": "120",
+        "valid_start_timestamp": "1680856100.967831537"
+    }], "links": {"next": null}
+}
+
+export const SAMPLE_ETHEREUM_TRANSACTIONS_ON_CONTRACT = {
+    "transactions": [{
+        "bytes": null,
+        "charged_tx_fee": 134305262,
+        "consensus_timestamp": "1680856204.729061756",
+        "entity_id": "0.0.3982005",
+        "max_fee": "1965000000",
+        "memo_base64": "",
+        "name": "ETHEREUMTRANSACTION",
+        "node": "0.0.3",
+        "nonce": 0,
+        "parent_consensus_timestamp": null,
+        "result": "SUCCESS",
+        "scheduled": false,
+        "staking_reward_transfers": [],
+        "transaction_hash": "4EWj/Lk9U/Iqg+uidRapSKXbxrfJfiXxUSl9gV+p2cgDGVMg0ioUWAH8gJy7asiG",
+        "transaction_id": "0.0.3675516-1680856194-531027354",
+        "transfers": [
+            {
+                "account": "0.0.3", "amount": 5150432, "is_approval": false
+            },
+            {
+                "account": "0.0.98",
+                "amount": 129154830,
+                "is_approval": false
+            },
+            {
+                "account": "0.0.3675516", "amount": -87505262, "is_approval": false
+            },
+            {
+                "account": "0.0.3763630",
+                "amount": -46800000,
+                "is_approval": false
+            }
+        ],
+        "valid_duration_seconds": "120",
+        "valid_start_timestamp": "1680856194.531027354"
+    }], "links": {"next": null}
 }
 
 export const SAMPLE_ASSOCIATED_TOKEN = {

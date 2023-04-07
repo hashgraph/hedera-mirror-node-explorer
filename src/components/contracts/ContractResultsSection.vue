@@ -36,7 +36,7 @@
     </template>
 
     <template v-slot:content>
-      <div id="contract-result-table">
+      <div id="contract-results-table">
         <ContractResultTable v-if="contractId" :controller="resultTableController"/>
       </div>
     </template>
