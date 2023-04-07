@@ -18,7 +18,7 @@
  *
  */
 
-import {computed, ComputedRef, Ref, ref, watch, WatchStopHandle} from "vue";
+import {Ref, ref, watch, WatchStopHandle} from "vue";
 
 export abstract class EntityCache<K, E> {
 
@@ -49,24 +49,6 @@ export abstract class EntityCache<K, E> {
 
     public clear(): void {
         this.promises.clear()
-    }
-
-    public ref(key: Ref<K|null>): ComputedRef<E|null> {
-        const result: Ref<E|null> = ref(null)
-        const updateResult = () => {
-            if (key.value !== null) {
-                this.lookup(key.value).then(
-                    (r: E|null) => {
-                        result.value = r
-                    }, () => {
-                        result.value = null
-                    })
-            } else {
-                result.value = null
-            }
-        }
-        watch(key, updateResult, { immediate: true})
-        return computed(() => result.value)
     }
 
     public makeLookup(key: Ref<K|null>): Lookup<K, E> {
