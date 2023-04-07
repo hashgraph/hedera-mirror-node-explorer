@@ -661,6 +661,33 @@ export const SAMPLE_SYSTEM_CONTRACT_CALL_TRANSACTIONS = {
     ]
 }
 
+export const SAMPLE_TOKEN_CALL_TRANSACTIONS = {
+    "transactions": [{
+        "bytes": null,
+        "charged_tx_fee": 93600000,
+        "consensus_timestamp": "1677545104.611658003",
+        "entity_id": "0.0.781589",
+        "max_fee": "200000000",
+        "memo_base64": "",
+        "name": "CONTRACTCALL",
+        "node": "0.0.14",
+        "nonce": 0,
+        "parent_consensus_timestamp": null,
+        "result": "SUCCESS",
+        "scheduled": false,
+        "staking_reward_transfers": [{"account": "0.0.939841", "amount": 6816724320}],
+        "transaction_hash": "v0daADT5AeJQdNGIpDZww+amcD9C1ngBhzQwPhm7g8BRtvN1p2TaOLHIMtD0C0MS",
+        "transaction_id": "0.0.939841-1677545092-878406670",
+        "transfers": [{"account": "0.0.98", "amount": 93600000, "is_approval": false}, {
+            "account": "0.0.800",
+            "amount": -6816724320,
+            "is_approval": false
+        }, {"account": "0.0.939841", "amount": 6723124320, "is_approval": false}],
+        "valid_duration_seconds": "120",
+        "valid_start_timestamp": "1677545092.878406670"
+    }], "links": {"next": null}
+}
+
 export const SAMPLE_CONTRACT_RESULTS = {
     "results": [
         {
