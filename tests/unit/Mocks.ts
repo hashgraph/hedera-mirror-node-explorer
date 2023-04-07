@@ -1730,6 +1730,89 @@ export const SAMPLE_TOKEN_ASSOCIATE_TRANSACTION = {
     "valid_start_timestamp": "1671648699.088023490"
 }
 
+export const SAMPLE_ETHEREUM_TRANSACTION_ON_ACCOUNT = {
+    "transactions": [{
+        "bytes": null,
+        "charged_tx_fee": 289885506,
+        "consensus_timestamp": "1680856113.083079074",
+        "entity_id": "0.0.1736",
+        "max_fee": "1965000000",
+        "memo_base64": "",
+        "name": "ETHEREUMTRANSACTION",
+        "node": "0.0.9",
+        "nonce": 0,
+        "parent_consensus_timestamp": null,
+        "result": "SUCCESS",
+        "scheduled": false,
+        "staking_reward_transfers": [],
+        "transaction_hash": "eCUqd8lk6CpS7/s9RJ3ZsKaeCXUqleE3Jpz5MzrkULc4xLI+B77Rrqd0rcmB0G7l",
+        "transaction_id": "0.0.902-1680856100-967831537",
+        "transfers": [
+            {
+                "account": "0.0.9", "amount": 2904321, "is_approval": false
+            },
+            {
+                "account": "0.0.98",
+                "amount": 286981185,
+                "is_approval": false
+            },
+            {
+                "account": "0.0.902", "amount": -81885506, "is_approval": false
+            },
+            {
+                "account": "0.0.1736",
+                "amount": 999100000000,
+                "is_approval": false
+            },
+            {
+                "account": "0.0.3950761", "amount": -999308000000, "is_approval": false
+            }
+        ],
+        "valid_duration_seconds": "120",
+        "valid_start_timestamp": "1680856100.967831537"
+    }], "links": {"next": null}
+}
+
+export const SAMPLE_ETHEREUM_TRANSACTION_ON_CONTRACT = {
+    "transactions": [{
+        "bytes": null,
+        "charged_tx_fee": 134305262,
+        "consensus_timestamp": "1680856204.729061756",
+        "entity_id": "0.0.3982005",
+        "max_fee": "1965000000",
+        "memo_base64": "",
+        "name": "ETHEREUMTRANSACTION",
+        "node": "0.0.3",
+        "nonce": 0,
+        "parent_consensus_timestamp": null,
+        "result": "SUCCESS",
+        "scheduled": false,
+        "staking_reward_transfers": [],
+        "transaction_hash": "4EWj/Lk9U/Iqg+uidRapSKXbxrfJfiXxUSl9gV+p2cgDGVMg0ioUWAH8gJy7asiG",
+        "transaction_id": "0.0.3675516-1680856194-531027354",
+        "transfers": [
+            {
+                "account": "0.0.3", "amount": 5150432, "is_approval": false
+            },
+            {
+                "account": "0.0.98",
+                "amount": 129154830,
+                "is_approval": false
+            },
+            {
+                "account": "0.0.3675516", "amount": -87505262, "is_approval": false
+            },
+            {
+                "account": "0.0.3763630",
+                "amount": -46800000,
+                "is_approval": false
+            }
+        ],
+        "valid_duration_seconds": "120",
+        "valid_start_timestamp": "1680856194.531027354"
+    }], "links": {"next": null}
+}
+
 export const SAMPLE_ASSOCIATED_TOKEN = {
     "admin_key": {"_type": "ED25519", "key": "c350fb04dc8b75e0f2bae193f42f6d08c337bd627f731b19a67231cffe325ebe"},
     "auto_renew_account": "0.0.1856648",
