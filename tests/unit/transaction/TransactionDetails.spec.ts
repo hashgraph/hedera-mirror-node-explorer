@@ -35,6 +35,8 @@ import {
     SAMPLE_CONTRACT,
     SAMPLE_CONTRACT_RESULT_DETAILS,
     SAMPLE_CONTRACTCALL_TRANSACTIONS,
+    SAMPLE_ETHEREUM_TRANSACTIONS_ON_ACCOUNT,
+    SAMPLE_ETHEREUM_TRANSACTIONS_ON_CONTRACT,
     SAMPLE_FAILED_TRANSACTION,
     SAMPLE_FAILED_TRANSACTIONS,
     SAMPLE_NETWORK_EXCHANGERATE,
@@ -714,6 +716,88 @@ describe("TransactionDetails.vue", () => {
         expect(wrapper.text()).toMatch(RegExp("^Transaction " + normalizeTransactionId(transactionId, true)))
         expect(wrapper.text()).toMatch(RegExp("CONTRACT CALL"))
         expect(wrapper.get("#entityIdName").text()).toBe("Token ID")
+        expect(wrapper.get("#entityIdValue").text()).toMatch(entityId)
+    });
+
+    it("Should display ETHEREUM TX details with link to account as entity ID", async () => {
+
+        await router.push("/") // To avoid "missing required param 'network'" error
+
+        const transactionId = SAMPLE_ETHEREUM_TRANSACTIONS_ON_ACCOUNT.transactions[0].transaction_id
+        const entityId = SAMPLE_ETHEREUM_TRANSACTIONS_ON_ACCOUNT.transactions[0].entity_id
+        const timestamp = SAMPLE_ETHEREUM_TRANSACTIONS_ON_ACCOUNT.transactions[0].consensus_timestamp
+
+        const matcher1 = "/api/v1/transactions/" + transactionId
+        mock.onGet(matcher1).reply(200, SAMPLE_ETHEREUM_TRANSACTIONS_ON_ACCOUNT);
+        const matcher11 = "/api/v1/transactions"
+        mock.onGet(matcher11).reply((config: AxiosRequestConfig) => {
+            if (config.params.timestamp == timestamp) {
+                return [200, SAMPLE_ETHEREUM_TRANSACTIONS_ON_ACCOUNT]
+            } else {
+                return [404]
+            }
+        });
+
+        const matcher2 = "/api/v1/contracts/" + entityId
+        mock.onGet(matcher2).reply(404)
+
+        const wrapper = mount(TransactionDetails, {
+            global: {
+                plugins: [router, Oruga]
+            },
+            props: {
+                transactionLoc: timestamp
+            },
+        });
+
+        await flushPromises()
+        // console.log(wrapper.html())
+        // console.log(wrapper.text())
+
+        expect(wrapper.text()).toMatch(RegExp("^Transaction " + normalizeTransactionId(transactionId, true)))
+        expect(wrapper.text()).toMatch(RegExp("ETHEREUM TRANSACTION"))
+        expect(wrapper.get("#entityIdName").text()).toBe("Account ID")
+        expect(wrapper.get("#entityIdValue").text()).toMatch(entityId)
+    });
+
+    it("Should display ETHEREUM TX details with link to contract as entity ID", async () => {
+
+        await router.push("/") // To avoid "missing required param 'network'" error
+
+        const transactionId = SAMPLE_ETHEREUM_TRANSACTIONS_ON_CONTRACT.transactions[0].transaction_id
+        const entityId = SAMPLE_ETHEREUM_TRANSACTIONS_ON_CONTRACT.transactions[0].entity_id
+        const timestamp = SAMPLE_ETHEREUM_TRANSACTIONS_ON_CONTRACT.transactions[0].consensus_timestamp
+
+        const matcher1 = "/api/v1/transactions/" + transactionId
+        mock.onGet(matcher1).reply(200, SAMPLE_ETHEREUM_TRANSACTIONS_ON_CONTRACT);
+        const matcher11 = "/api/v1/transactions"
+        mock.onGet(matcher11).reply((config: AxiosRequestConfig) => {
+            if (config.params.timestamp == timestamp) {
+                return [200, SAMPLE_ETHEREUM_TRANSACTIONS_ON_CONTRACT]
+            } else {
+                return [404]
+            }
+        });
+
+        const matcher2 = "/api/v1/contracts/" + entityId
+        mock.onGet(matcher2).reply(200, SAMPLE_CONTRACT)
+
+        const wrapper = mount(TransactionDetails, {
+            global: {
+                plugins: [router, Oruga]
+            },
+            props: {
+                transactionLoc: timestamp
+            },
+        });
+
+        await flushPromises()
+        // console.log(wrapper.html())
+        // console.log(wrapper.text())
+
+        expect(wrapper.text()).toMatch(RegExp("^Transaction " + normalizeTransactionId(transactionId, true)))
+        expect(wrapper.text()).toMatch(RegExp("ETHEREUM TRANSACTION"))
+        expect(wrapper.get("#entityIdName").text()).toBe("Contract ID")
         expect(wrapper.get("#entityIdValue").text()).toMatch(entityId)
     });
 

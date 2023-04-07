@@ -1757,7 +1757,7 @@ export const SAMPLE_TOKEN_ASSOCIATE_TRANSACTION = {
     "valid_start_timestamp": "1671648699.088023490"
 }
 
-export const SAMPLE_ETHEREUM_TRANSACTION_ON_ACCOUNT = {
+export const SAMPLE_ETHEREUM_TRANSACTIONS_ON_ACCOUNT = {
     "transactions": [{
         "bytes": null,
         "charged_tx_fee": 289885506,
@@ -1800,7 +1800,7 @@ export const SAMPLE_ETHEREUM_TRANSACTION_ON_ACCOUNT = {
     }], "links": {"next": null}
 }
 
-export const SAMPLE_ETHEREUM_TRANSACTION_ON_CONTRACT = {
+export const SAMPLE_ETHEREUM_TRANSACTIONS_ON_CONTRACT = {
     "transactions": [{
         "bytes": null,
         "charged_tx_fee": 134305262,
