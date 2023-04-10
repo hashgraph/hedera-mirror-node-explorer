@@ -121,7 +121,7 @@ import KeyValue from "@/components/values/KeyValue.vue";
 import Footer from "@/components/Footer.vue";
 import PlainAmount from "@/components/values/PlainAmount.vue";
 import BlockTransactionTable from "@/components/block/BlockTransactionTable.vue";
-import {BlockTransactionsLoader} from "@/components/block/BlockTransactionsLoader";
+import {TransactionGroupByBlockCache} from "@/utils/cache/TransactionGroupByBlockCache";
 import {routeManager} from "@/router";
 
 export default defineComponent({
@@ -160,8 +160,10 @@ export default defineComponent({
     //
     // transactions
     //
-    const blockTransactionLoader = new BlockTransactionsLoader(blockLocParser.toTimestamp, blockLocParser.blockCount)
-    onMounted(() => blockTransactionLoader.requestLoad())
+    const transactionsLookup = TransactionGroupByBlockCache.instance.makeLookup(blockLocParser.blockNumber)
+    onMounted(() => transactionsLookup.mount())
+    onBeforeUnmount(() => transactionsLookup.unmount())
+    const transactions = computed(() => transactionsLookup.entity.value ?? [])
 
     const disablePreviousButton = ref(true)
     const disableNextButton = ref(true)
@@ -182,7 +184,7 @@ export default defineComponent({
       isSmallScreen,
       isTouchDevice,
       block: blockLocParser.block,
-      transactions: blockTransactionLoader.transactions,
+      transactions,
       notification: blockLocParser.errorNotification,
       disablePreviousButton,
       disableNextButton,
