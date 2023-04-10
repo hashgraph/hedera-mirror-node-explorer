@@ -234,8 +234,7 @@ import {useRouter} from "vue-router";
 import Footer from "@/components/Footer.vue";
 import {routeManager, walletManager} from "@/router";
 import NetworkDashboardItem from "@/components/node/NetworkDashboardItem.vue";
-import axios from "axios";
-import {Transaction, TransactionByIdResponse} from "@/schemas/HederaSchemas";
+import {Transaction} from "@/schemas/HederaSchemas";
 import {waitFor} from "@/utils/TimerUtils";
 import StakingRewardsTable from "@/components/staking/StakingRewardsTable.vue";
 import StakingDialog from "@/components/staking/StakingDialog.vue";
@@ -254,6 +253,7 @@ import CSVDownloadDialog from "@/components/CSVDownloadDialog.vue";
 import {RewardDownloader} from "@/utils/downloader/RewardDownloader";
 import {NodeRegistry} from "@/components/node/NodeRegistry";
 import {AccountLocParser} from "@/utils/parser/AccountLocParser";
+import {TransactionByIdCache} from "@/utils/cache/TransactionByIdCache";
 
 export default defineComponent({
   name: 'Staking',
@@ -434,7 +434,7 @@ export default defineComponent({
         progressMainMessage.value = "Completing operation…"
         progressExtraMessage.value = "This may take a few seconds"
         showProgressSpinner.value = true
-        await waitForTransactionRefresh(transactionId, 10)
+        await waitForTransactionRefresh(transactionId)
 
         progressDialogMode.value = Mode.Success
         progressMainMessage.value = "Operation completed"
@@ -461,20 +461,20 @@ export default defineComponent({
 
     }
 
-    const waitForTransactionRefresh = async (transactionId: string, attemptIndex: number) => {
+    const waitForTransactionRefresh = async (transactionId: string) => {
       let result: Promise<Transaction | string>
 
-      if (attemptIndex >= 0) {
-        await waitFor(props.polling)
-        try {
-          const response = await axios.get<TransactionByIdResponse>("api/v1/transactions/" + transactionId )
-          const transactions = response.data.transactions ?? []
-          result = Promise.resolve(transactions.length >= 1 ? transactions[0] : transactionId)
-        } catch {
-          result = waitForTransactionRefresh(transactionId, attemptIndex - 1)
-        }
-      } else {
-        result = Promise.resolve(transactionId)
+      try {
+          let counter = 10
+          let transaction: Transaction|null = null
+          while (counter > 0 && transaction === null) {
+              await waitFor(props.polling)
+              transaction = await TransactionByIdCache.instance.lookup(transactionId, true)
+              counter -= 1
+          }
+          result = Promise.resolve(transaction ?? transactionId)
+      } catch {
+          result = Promise.resolve(transactionId)
       }
 
       return result
