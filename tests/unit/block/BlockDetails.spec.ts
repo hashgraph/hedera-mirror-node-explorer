@@ -97,7 +97,7 @@ describe("BlockDetails.vue", () => {
         expect(wrapper.text()).toMatch(RegExp("^Block " + BLOCK_NUMBER))
         expect(wrapper.findComponent(NotificationBanner).exists()).toBe(false)
 
-        expect(wrapper.get("#countValue").text()).toBe("1")
+        expect(wrapper.get("#countValue").text()).toBe("3")
         expect(wrapper.get("#blockHashValue").text()).toBe(
             "e963 0d7d 8cc8 6d0e 0d3d e531 6995 bbdf 9f2a 5845 24cf 18da 233a bdcf f82d f97d a0a0 ec38 " +
             "c6b4 0461 0129 4896 ff88 a86bCopy to ClipboardSHA384")
@@ -146,7 +146,7 @@ describe("BlockDetails.vue", () => {
         expect(wrapper.text()).toMatch(RegExp("^Block " + BLOCK_NUMBER))
         expect(wrapper.findComponent(NotificationBanner).exists()).toBe(false)
 
-        expect(wrapper.get("#countValue").text()).toBe("1")
+        expect(wrapper.get("#countValue").text()).toBe("3")
         expect(wrapper.get("#blockHashValue").text()).toBe(
             "e963 0d7d 8cc8 6d0e 0d3d e531 6995 bbdf 9f2a 5845 24cf 18da 233a bdcf f82d f97d a0a0 ec38 " +
             "c6b4 0461 0129 4896 ff88 a86bCopy to ClipboardSHA384")
@@ -196,7 +196,7 @@ describe("BlockDetails.vue", () => {
         expect(wrapper.text()).toMatch(RegExp("^Block " + BLOCK_NUMBER))
         expect(wrapper.findComponent(NotificationBanner).exists()).toBe(false)
 
-        expect(wrapper.get("#countValue").text()).toBe("1")
+        expect(wrapper.get("#countValue").text()).toBe("3")
         expect(wrapper.get("#blockHashValue").text()).toBe(
             "e963 0d7d 8cc8 6d0e 0d3d e531 6995 bbdf 9f2a 5845 24cf 18da 233a bdcf f82d f97d a0a0 ec38 " +
             "c6b4 0461 0129 4896 ff88 a86bCopy to ClipboardSHA384")
