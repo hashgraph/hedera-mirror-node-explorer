@@ -28,10 +28,10 @@ export abstract class SerialCache<K, E> extends EntityCache<K, E> {
     // Cache
     //
 
-    public async lookup(key: K): Promise<E> {
+    public async lookup(key: K, forceLoad = false): Promise<E> {
         let result: Promise<E>
 
-        if (this.contains(key)) {
+        if (this.contains(key, forceLoad)) {
             result = super.lookup(key)
         } else {
             while (this.currentKey !== null) {

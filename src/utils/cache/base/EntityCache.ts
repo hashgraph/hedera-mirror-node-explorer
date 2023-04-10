@@ -28,11 +28,11 @@ export abstract class EntityCache<K, E> {
     // Public
     //
 
-    public async lookup(key: K): Promise<E> {
+    public async lookup(key: K, forceLoad = false): Promise<E> {
         let result: Promise<E>
 
         const currentRecord = this.records.get(key)
-        if (currentRecord) {
+        if (currentRecord && (currentRecord.isFresh() || !forceLoad)) {
             result = currentRecord.promise
         } else {
             const newPromise = this.load(key)
@@ -55,8 +55,9 @@ export abstract class EntityCache<K, E> {
         return new Lookup<K,E>(key, this)
     }
 
-    public contains(key: K): boolean {
-        return this.records.has(key)
+    public contains(key: K, forceLoad = false): boolean {
+        const r = this.records.get(key)
+        return r ? r.isFresh() || !forceLoad : false
     }
 
     //
@@ -82,6 +83,9 @@ class EntityRecord<E> {
     constructor(promise: Promise<E>) {
         this.promise = promise
         this.time = Date.now()
+    }
+    isFresh(): boolean {
+        return Date.now() - this.time < 500 // ms
     }
 }
 
