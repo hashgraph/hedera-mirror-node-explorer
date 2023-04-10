@@ -60,6 +60,10 @@ export abstract class EntityCache<K, E> {
         return r ? r.isFresh() || !forceLoad : false
     }
 
+    public isEmpty(): boolean {
+        return this.records.size == 0
+    }
+
     //
     // Protected (to be subclassed)
     //
