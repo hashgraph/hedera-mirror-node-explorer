@@ -34,7 +34,7 @@ export class BlockByNbCache extends EntityCache<number, Block|null> {
     public updateWithBlock(block: Block): void {
         if (block.number) {
             this.forget(block.number)
-            this.promises.set(block.number, Promise.resolve(block))
+            this.mutate(block.number, Promise.resolve(block))
         }
     }
 

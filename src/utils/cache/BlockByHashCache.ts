@@ -34,7 +34,7 @@ export class BlockByHashCache extends EntityCache<string, Block|null> {
     public updateWithBlock(block: Block): void {
         if (block.hash) {
             this.forget(block.hash)
-            this.promises.set(block.hash, Promise.resolve(block))
+            this.mutate(block.hash, Promise.resolve(block))
         }
     }
 

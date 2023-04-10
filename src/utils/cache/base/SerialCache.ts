@@ -29,11 +29,13 @@ export abstract class SerialCache<K, E> extends EntityCache<K, E> {
     //
 
     public async lookup(key: K): Promise<E> {
+        let result: Promise<E>
 
-        let result = this.promises.get(key)
-        if (result == undefined) {
+        if (this.contains(key)) {
+            result = super.lookup(key)
+        } else {
             while (this.currentKey !== null) {
-                await this.promises.get(this.currentKey)
+                await this.lookup(this.currentKey)
             }
             this.currentKey = key
             const p = super.lookup(key)

@@ -22,7 +22,7 @@ import {Ref, ref, watch, WatchStopHandle} from "vue";
 
 export abstract class EntityCache<K, E> {
 
-    protected readonly promises = new Map<K, Promise<E>>()
+    private readonly records = new Map<K, EntityRecord<E>>()
 
     //
     // Public
@@ -31,12 +31,12 @@ export abstract class EntityCache<K, E> {
     public async lookup(key: K): Promise<E> {
         let result: Promise<E>
 
-        const currentPromise = this.promises.get(key)
-        if (currentPromise) {
-            result = currentPromise
+        const currentRecord = this.records.get(key)
+        if (currentRecord) {
+            result = currentRecord.promise
         } else {
             const newPromise = this.load(key)
-            this.promises.set(key, newPromise)
+            this.mutate(key, newPromise)
             result = newPromise
         }
 
@@ -44,15 +44,19 @@ export abstract class EntityCache<K, E> {
     }
 
     public forget(key: K): void {
-        this.promises.delete(key)
+        this.records.delete(key)
     }
 
     public clear(): void {
-        this.promises.clear()
+        this.records.clear()
     }
 
     public makeLookup(key: Ref<K|null>): Lookup<K, E> {
         return new Lookup<K,E>(key, this)
+    }
+
+    public contains(key: K): boolean {
+        return this.records.has(key)
     }
 
     //
@@ -61,6 +65,23 @@ export abstract class EntityCache<K, E> {
 
     protected async load(key: K): Promise<E> {
         throw new Error("Must be subclassed to load " + key)
+    }
+
+    //
+    // Protected (for subclasses only)
+    //
+
+    protected mutate(key: K, promise: Promise<E>): void {
+        this.records.set(key, new EntityRecord(promise))
+    }
+}
+
+class EntityRecord<E> {
+    readonly promise: Promise<E>
+    readonly time: number
+    constructor(promise: Promise<E>) {
+        this.promise = promise
+        this.time = Date.now()
     }
 }
 

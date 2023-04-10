@@ -37,7 +37,7 @@ export class AccountByAddressCache extends EntityCache<string, AccountBalanceTra
         const address = makeEthAddressForAccount(accountInfo)
         if (address) {
             this.forget(address)
-            this.promises.set(address, Promise.resolve(accountInfo))
+            this.mutate(address, Promise.resolve(accountInfo))
         }
     }
 

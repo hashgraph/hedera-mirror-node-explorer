@@ -35,7 +35,7 @@ export class AccountByAliasCache extends EntityCache<string, AccountBalanceTrans
     public updateWithAccountInfo(accountInfo: AccountBalanceTransactions): void {
         if (accountInfo.account) {
             this.forget(accountInfo.account)
-            this.promises.set(accountInfo.account, Promise.resolve(accountInfo))
+            this.mutate(accountInfo.account, Promise.resolve(accountInfo))
         }
     }
 
