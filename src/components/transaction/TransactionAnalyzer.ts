@@ -19,8 +19,7 @@
  */
 
 import {computed, ComputedRef, ref, Ref, watch, WatchStopHandle} from "vue";
-import {Transaction, TransactionType} from "@/schemas/HederaSchemas";
-import {TransactionByTsCache} from "@/utils/cache/TransactionByTsCache";
+import {TokenRelationship, Transaction, TransactionType} from "@/schemas/HederaSchemas";
 import {EntityDescriptor} from "@/utils/EntityDescriptor";
 import {computeNetAmount} from "@/utils/TransactionTools";
 import {base64DecToArr, byteToHex} from "@/utils/B64Utils";
@@ -28,35 +27,37 @@ import {systemContractRegistry} from "@/schemas/SystemContractRegistry";
 import {normalizeTransactionId} from "@/utils/TransactionID";
 import {ContractByIdCache} from "@/utils/cache/ContractByIdCache";
 import {BlockByTsCache} from "@/utils/cache/BlockByTsCache";
+import {TokenRelationshipCache} from "@/utils/cache/TokenRelationshipCache";
 
 export class TransactionAnalyzer {
 
-    public readonly consensusTimestamp: Ref<string|null>
-    public readonly transaction: Ref<Transaction|null> = ref(null)
+    public readonly transaction: Ref<Transaction|null>
     public readonly contractId: Ref<string|null> = ref(null)
     public readonly blockNumber: Ref<number|null> = ref(null)
     public readonly entityDescriptor = ref(EntityDescriptor.DEFAULT_ENTITY_DESCRIPTOR)
+    public readonly tokenRelationships: Ref<TokenRelationship[]> = ref([])
     private readonly watchHandles: WatchStopHandle[] = []
 
     //
     // Public
     //
 
-    public constructor(consensusTimestamp: Ref<string|null>) {
-        this.consensusTimestamp = consensusTimestamp
+    public constructor(transaction: Ref<Transaction|null>) {
+        this.transaction = transaction
     }
 
     public mount(): void {
         this.watchHandles.push(
-            watch(this.consensusTimestamp, this.transactionIdDidChange, {immediate: true})
+            watch(this.transaction, this.transactionDidChange, {immediate: true})
         )
     }
 
     public unmount(): void {
         this.watchHandles.map((wh) => wh())
         this.watchHandles.splice(0)
-        this.transaction.value = null
     }
+
+    public readonly consensusTimestamp = computed(() => this.transaction.value?.consensus_timestamp ?? null)
 
     public readonly transactionType = computed(() => this.transaction.value?.name ?? null)
 
@@ -95,21 +96,30 @@ export class TransactionAnalyzer {
         return result
     })
 
+
+    public readonly isEthereumTransaction = computed(
+        () => this.transactionType.value == TransactionType.ETHEREUMTRANSACTION)
+
+    public readonly isTokenAssociation = computed(
+        () => this.transactionType.value === TransactionType.TOKENASSOCIATE)
+
+    public readonly tokens = computed( () => {
+        const result: string[] = []
+        for (const r of this.tokenRelationships.value) {
+            if (r.token_id) {
+                result.push(r.token_id)
+            }
+        }
+        return result
+    })
+
+
     //
     // Private
     //
 
-    private readonly transactionIdDidChange = async (): Promise<void> => {
-        if (this.consensusTimestamp.value !== null) {
-            const tx = await TransactionByTsCache.instance.lookup(this.consensusTimestamp.value)
-            this.transaction.value = Object.preventExtensions(tx)
-        } else {
-            this.transaction.value = null
-        }
-        await this.transactionDidChange()
-    }
+    private readonly transactionDidChange = async() => {
 
-    private async transactionDidChange(): Promise<void> {
         if (this.transaction.value !== null) {
             const entityId = this.transaction.value?.entity_id ?? null
             if (entityId !== null) {
@@ -141,9 +151,26 @@ export class TransactionAnalyzer {
             } else {
                 this.blockNumber.value = null
             }
+            if (this.isTokenAssociation.value &&  this.consensusTimestamp.value !== null && this.entityId.value !== null) {
+                const r = await TokenRelationshipCache.instance.lookup(this.entityId.value)
+                this.tokenRelationships.value = this.filterTokenRelationships(r ?? [], this.consensusTimestamp.value)
+            } else {
+                this.tokenRelationships.value = []
+            }
         } else {
             this.contractId.value = null
             this.blockNumber.value = null
+            this.tokenRelationships.value = []
         }
+    }
+
+    private filterTokenRelationships(relationships: TokenRelationship[], createdTimestamp: string): TokenRelationship[] {
+        const result: TokenRelationship[] = []
+        for (const r of relationships) {
+            if (r.created_timestamp === createdTimestamp && r.token_id) {
+                result.push(r)
+            }
+        }
+        return result
     }
 }
