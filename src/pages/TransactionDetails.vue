@@ -259,7 +259,6 @@ import {TransactionDetail, TransactionType} from "@/schemas/HederaSchemas";
 import TopicMessage from "@/components/topic/TopicMessage.vue";
 import {TopicMessageCache} from "@/utils/cache/TopicMessageCache";
 import {routeManager} from "@/router"
-import {TokenRelationshipLoader} from "@/components/token/TokenRelationshipLoader";
 import TokenLink from "@/components/values/TokenLink.vue";
 import {TransactionLocParser} from "@/utils/parser/TransactionLocParser";
 import {TransactionGroupAnalyzer} from "@/components/transaction/TransactionGroupAnalyzer";
@@ -301,7 +300,7 @@ export default defineComponent({
     onMounted(() => transactionLocParser.mount())
     onBeforeUnmount(() => transactionLocParser.unmount())
 
-    const transactionAnalyzer = new TransactionAnalyzer(transactionLocParser.consensusTimestamp)
+    const transactionAnalyzer = new TransactionAnalyzer(transactionLocParser.transaction)
     onMounted(() => transactionAnalyzer.mount())
     onBeforeUnmount(() => transactionAnalyzer.unmount())
 
@@ -334,19 +333,6 @@ export default defineComponent({
     const topicMessageLookup = TopicMessageCache.instance.makeLookup(messageTimestamp)
     onMounted(() => topicMessageLookup.mount())
     onBeforeUnmount(() => topicMessageLookup.unmount())
-
-    const isTokenAssociation = computed(
-        () => transactionAnalyzer.transactionType.value === TransactionType.TOKENASSOCIATE)
-
-    const associatedAccount = computed(
-        () => isTokenAssociation.value ? transactionAnalyzer.entityId.value ?? null : null)
-
-    const tokenRelationships = new TokenRelationshipLoader(associatedAccount)
-    onMounted(() => tokenRelationships.requestLoad())
-
-    const associatedTokens = computed(
-        () =>  tokenRelationships.lookupTokens(transactionAnalyzer.consensusTimestamp.value ?? "")
-    )
 
     const transactionDetail = computed(() => {
       let result: TransactionDetail|null
@@ -441,8 +427,8 @@ export default defineComponent({
       routeToAllTransactions,
       displayAllChildrenLinks,
       topicMessage: topicMessageLookup.entity,
-      isTokenAssociation,
-      associatedTokens
+      isTokenAssociation: transactionAnalyzer.isTokenAssociation,
+      associatedTokens: transactionAnalyzer.tokens
     }
   },
 })
