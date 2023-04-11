@@ -18,25 +18,25 @@
  *
  */
 
-import {computed, ComputedRef, Ref, ref, watch, WatchStopHandle} from "vue";
+import {Ref, ref, watch, WatchStopHandle} from "vue";
 
 export abstract class EntityCache<K, E> {
 
-    protected readonly promises = new Map<K, Promise<E>>()
+    private readonly records = new Map<K, EntityRecord<E>>()
 
     //
     // Public
     //
 
-    public async lookup(key: K): Promise<E> {
+    public async lookup(key: K, forceLoad = false): Promise<E> {
         let result: Promise<E>
 
-        const currentPromise = this.promises.get(key)
-        if (currentPromise) {
-            result = currentPromise
+        const currentRecord = this.records.get(key)
+        if (currentRecord && (currentRecord.isFresh() || !forceLoad)) {
+            result = currentRecord.promise
         } else {
             const newPromise = this.load(key)
-            this.promises.set(key, newPromise)
+            this.mutate(key, newPromise)
             result = newPromise
         }
 
@@ -44,33 +44,20 @@ export abstract class EntityCache<K, E> {
     }
 
     public forget(key: K): void {
-        this.promises.delete(key)
+        this.records.delete(key)
     }
 
     public clear(): void {
-        this.promises.clear()
-    }
-
-    public ref(key: Ref<K|null>): ComputedRef<E|null> {
-        const result: Ref<E|null> = ref(null)
-        const updateResult = () => {
-            if (key.value !== null) {
-                this.lookup(key.value).then(
-                    (r: E|null) => {
-                        result.value = r
-                    }, () => {
-                        result.value = null
-                    })
-            } else {
-                result.value = null
-            }
-        }
-        watch(key, updateResult, { immediate: true})
-        return computed(() => result.value)
+        this.records.clear()
     }
 
     public makeLookup(key: Ref<K|null>): Lookup<K, E> {
         return new Lookup<K,E>(key, this)
+    }
+
+    public contains(key: K, forceLoad = false): boolean {
+        const r = this.records.get(key)
+        return r ? r.isFresh() || !forceLoad : false
     }
 
     //
@@ -79,6 +66,26 @@ export abstract class EntityCache<K, E> {
 
     protected async load(key: K): Promise<E> {
         throw new Error("Must be subclassed to load " + key)
+    }
+
+    //
+    // Protected (for subclasses only)
+    //
+
+    protected mutate(key: K, promise: Promise<E>): void {
+        this.records.set(key, new EntityRecord(promise))
+    }
+}
+
+class EntityRecord<E> {
+    readonly promise: Promise<E>
+    readonly time: number
+    constructor(promise: Promise<E>) {
+        this.promise = promise
+        this.time = Date.now()
+    }
+    isFresh(): boolean {
+        return Date.now() - this.time < 500 // ms
     }
 }
 
@@ -90,6 +97,7 @@ export class Lookup<K,E> {
     private readonly cache: EntityCache<K,E>
     private readonly key: Ref<K|null>
     private watchHandle: WatchStopHandle|null = null
+    private mounted = false
 
     constructor(key: Ref<K|null>, cache: EntityCache<K,E>) {
         this.key = key
@@ -98,6 +106,7 @@ export class Lookup<K,E> {
 
     public mount(): void {
         this.watchHandle = watch(this.key, this.keyDidChange, { immediate: true})
+        this.mounted = true
     }
 
     public unmount(): void {
@@ -106,12 +115,22 @@ export class Lookup<K,E> {
             this.watchHandle = null
         }
         this.entity.value = null
+        this.mounted = false
     }
 
-    private keyDidChange = async () => {
-        if (this.key.value !== null) {
+    private readonly keyDidChange = async () => {
+        const key = this.key.value
+        if (key !== null) {
             try {
-                this.entity.value = await this.cache.lookup(this.key.value)
+                let newEntity: E|null
+                try {
+                    newEntity = await this.cache.lookup(key)
+                } catch {
+                    newEntity = null
+                }
+                if (key === this.key.value && this.mounted) {
+                    this.entity.value = newEntity
+                } // else this.key has changed or cache was unmounted during lookup => aborts silently
             } catch {
                 this.entity.value = null
             }

@@ -264,6 +264,7 @@ import TokenLink from "@/components/values/TokenLink.vue";
 import {TransactionLocParser} from "@/utils/parser/TransactionLocParser";
 import {TransactionGroupAnalyzer} from "@/components/transaction/TransactionGroupAnalyzer";
 import {TransactionAnalyzer} from "@/components/transaction/TransactionAnalyzer";
+import {TransactionGroupCache} from "@/utils/cache/TransactionGroupCache";
 
 const MAX_INLINE_CHILDREN = 9
 
@@ -305,7 +306,11 @@ export default defineComponent({
     onMounted(() => transactionAnalyzer.mount())
     onBeforeUnmount(() => transactionAnalyzer.unmount())
 
-    const transactionGroupAnalyzer = new TransactionGroupAnalyzer(transactionLocParser.transactionId)
+    const transactionGroupLookup = TransactionGroupCache.instance.makeLookup(transactionLocParser.transactionId)
+    onMounted(() => transactionGroupLookup.mount())
+    onBeforeUnmount(() => transactionGroupLookup.unmount())
+
+    const transactionGroupAnalyzer = new TransactionGroupAnalyzer(transactionGroupLookup.entity)
     const routeToAllTransactions = computed(() => {
       const count = transactionGroupAnalyzer.transactions.value?.length ?? 0
       const transactionId = transactionLocParser.transactionId.value ?? null

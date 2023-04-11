@@ -19,7 +19,7 @@
  */
 
 import {flushPromises} from "@vue/test-utils";
-import {SerialCache} from "@/utils/cache/SerialCache";
+import {SerialCache} from "@/utils/cache/base/SerialCache";
 
 describe("SerialCache.ts", () => {
 
