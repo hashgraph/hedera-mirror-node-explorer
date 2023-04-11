@@ -34,6 +34,7 @@ import {BlockByHashCache} from "@/utils/cache/BlockByHashCache";
 import {StakeCache} from "@/utils/cache/StakeCache";
 import {AccountByAliasCache} from "@/utils/cache/AccountByAliasCache";
 import {AccountByAddressCache} from "@/utils/cache/AccountByAddressCache";
+import {TransactionGroupByBlockCache} from "@/utils/cache/TransactionGroupByBlockCache";
 
 export class CacheUtils {
 
@@ -52,6 +53,7 @@ export class CacheUtils {
         TransactionByIdCache.instance.clear()
         TransactionByTsCache.instance.clear()
         TransactionGroupCache.instance.clear()
+        TransactionGroupByBlockCache.instance.clear()
         TopicMessageCache.instance.clear()
     }
 }

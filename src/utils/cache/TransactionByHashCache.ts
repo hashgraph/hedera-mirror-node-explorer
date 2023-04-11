@@ -27,6 +27,23 @@ export class TransactionByHashCache extends EntityCache<string, Transaction|null
     public static readonly instance = new TransactionByHashCache()
 
     //
+    // Public
+    //
+
+    public updateWithTransactions(transactions: Transaction[]): void {
+        for (const t of transactions) {
+            this.updateWithTransaction(t)
+        }
+    }
+
+    public updateWithTransaction(transaction: Transaction): void {
+        if (transaction.transaction_hash) {
+            this.forget(transaction.transaction_hash)
+            this.mutate(transaction.transaction_hash, Promise.resolve(transaction))
+        }
+    }
+
+    //
     // Cache
     //
 

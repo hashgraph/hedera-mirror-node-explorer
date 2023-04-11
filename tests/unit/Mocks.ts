@@ -2732,7 +2732,7 @@ export const SAMPLE_NETWORK_EXCHANGERATE = {
 export const SAMPLE_BLOCKSRESPONSE = {
     "blocks": [
         {
-            "count": 1,
+            "count": 3,
             "hapi_version": "0.29.1",
             "hash": "0xe9630d7d8cc86d0e0d3de5316995bbdf9f2a584524cf18da233abdcff82df97da0a0ec38c6b4046101294896ff88a86b",
             "name": "2022-09-23T06_58_31.328130742Z.rcd.gz",
