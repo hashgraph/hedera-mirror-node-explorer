@@ -29,23 +29,29 @@ describe("EntityCache.ts", () => {
 
     test("lookup", async () => {
         const c = new TestCache()
+        expect(c.isEmpty()).toBeTruthy()
 
         const l1 = await c.lookup(1)
         await flushPromises()
         expect(l1.key).toBe(1)
         expect(l1.seq).toBe(0)
         expect(c.counter).toBe(1)
+        expect(c.isEmpty()).toBeFalsy()
 
         const l2 = await c.lookup(1)
         expect(l2.key).toBe(1)
         expect(l2.seq).toBe(0)
         expect(c.counter).toBe(1)
+        expect(c.isEmpty()).toBeFalsy()
 
         c.forget(1)
+        expect(c.isEmpty()).toBeTruthy()
+
         const l3 = await c.lookup(1)
         expect(l3.key).toBe(1)
         expect(l3.seq).toBe(1)
         expect(c.counter).toBe(2)
+        expect(c.isEmpty()).toBeFalsy()
 
     })
 
