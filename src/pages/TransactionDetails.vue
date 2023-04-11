@@ -288,7 +288,6 @@ export default defineComponent({
 
   props: {
     transactionLoc: String,
-    transactionId: String,
     network: String
   },
 
@@ -418,6 +417,7 @@ export default defineComponent({
       isSmallScreen,
       isLargeScreen,
       isTouchDevice,
+      transactionId: transactionLocParser.transactionId,
       transaction: transactionDetail,
       formattedTransactionId: transactionAnalyzer.formattedTransactionId,
       netAmount: transactionAnalyzer.netAmount,
