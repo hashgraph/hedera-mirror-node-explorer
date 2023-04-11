@@ -18,22 +18,19 @@
  *
  */
 
-import {computed, ref, Ref} from "vue";
+import {computed, Ref} from "vue";
 import {TransactionDetail, TransactionType} from "@/schemas/HederaSchemas";
-import {TransactionGroupCache} from "@/utils/cache/TransactionGroupCache";
 
 export class TransactionGroupAnalyzer {
 
-    public readonly transactionId: Ref<string|null> = ref(null)
     public readonly transactions: Ref<TransactionDetail[]|null>
 
     //
     // Public
     //
 
-    public constructor(transactionId: Ref<string|null>) {
-        this.transactionId = transactionId
-        this.transactions = TransactionGroupCache.instance.ref(transactionId)
+    public constructor(transactions: Ref<TransactionDetail[]|null>) {
+        this.transactions = transactions
     }
 
     public readonly parentTransaction = computed(() => {

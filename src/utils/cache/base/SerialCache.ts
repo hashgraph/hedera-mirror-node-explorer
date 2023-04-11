@@ -18,7 +18,7 @@
  *
  */
 
-import {EntityCache} from "@/utils/cache/EntityCache"
+import {EntityCache} from "@/utils/cache/base/EntityCache"
 
 export abstract class SerialCache<K, E> extends EntityCache<K, E> {
 
@@ -28,12 +28,14 @@ export abstract class SerialCache<K, E> extends EntityCache<K, E> {
     // Cache
     //
 
-    public async lookup(key: K): Promise<E> {
+    public async lookup(key: K, forceLoad = false): Promise<E> {
+        let result: Promise<E>
 
-        let result = this.promises.get(key)
-        if (result == undefined) {
+        if (this.contains(key, forceLoad)) {
+            result = super.lookup(key)
+        } else {
             while (this.currentKey !== null) {
-                await this.promises.get(this.currentKey)
+                await this.lookup(this.currentKey)
             }
             this.currentKey = key
             const p = super.lookup(key)

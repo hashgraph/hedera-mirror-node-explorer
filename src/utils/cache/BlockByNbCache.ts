@@ -18,7 +18,7 @@
  *
  */
 
-import {EntityCache} from "@/utils/cache/EntityCache"
+import {EntityCache} from "@/utils/cache/base/EntityCache"
 import {Block} from "@/schemas/HederaSchemas";
 import axios from "axios";
 import {BlockByHashCache} from "@/utils/cache/BlockByHashCache";
@@ -34,7 +34,7 @@ export class BlockByNbCache extends EntityCache<number, Block|null> {
     public updateWithBlock(block: Block): void {
         if (block.number) {
             this.forget(block.number)
-            this.promises.set(block.number, Promise.resolve(block))
+            this.mutate(block.number, Promise.resolve(block))
         }
     }
 

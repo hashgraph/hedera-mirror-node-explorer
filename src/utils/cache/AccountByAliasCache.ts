@@ -19,7 +19,7 @@
  */
 
 import {AccountBalanceTransactions} from "@/schemas/HederaSchemas";
-import {EntityCache} from "@/utils/cache/EntityCache";
+import {EntityCache} from "@/utils/cache/base/EntityCache";
 import axios from "axios";
 import {AccountByAddressCache} from "@/utils/cache/AccountByAddressCache";
 import {AccountByIdCache} from "@/utils/cache/AccountByIdCache";
@@ -33,9 +33,9 @@ export class AccountByAliasCache extends EntityCache<string, AccountBalanceTrans
     //
 
     public updateWithAccountInfo(accountInfo: AccountBalanceTransactions): void {
-        if (accountInfo.account) {
-            this.forget(accountInfo.account)
-            this.promises.set(accountInfo.account, Promise.resolve(accountInfo))
+        if (accountInfo.alias) {
+            this.forget(accountInfo.alias)
+            this.mutate(accountInfo.alias, Promise.resolve(accountInfo))
         }
     }
 
