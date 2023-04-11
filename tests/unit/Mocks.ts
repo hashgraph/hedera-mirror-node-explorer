@@ -23,6 +23,8 @@
 // Fungible token inspired from https://testnet.mirrornode.hedera.com/api/v1/tokens/0.0.29662956
 //
 
+import {TokenRelationshipResponse} from "@/schemas/HederaSchemas";
+
 export const SAMPLE_TOKEN = {
     "admin_key": null,
     "auto_renew_account": "0.0.29612329",
@@ -1904,7 +1906,7 @@ export const SAMPLE_ASSOCIATED_TOKEN_2 = {
 // Inspired from https://testnet.mirrornode.hedera.com/api/v1/accounts/0.0.642949/tokens
 //
 
-export const SAMPLE_TOKEN_ASSOCIATIONS = {
+export const SAMPLE_TOKEN_ASSOCIATIONS: TokenRelationshipResponse = {
     "tokens": [{
         "automatic_association": false,
         "balance": 0,
@@ -1926,7 +1928,10 @@ export const SAMPLE_TOKEN_ASSOCIATIONS = {
         "freeze_status": "UNFROZEN",
         "kyc_status": "NOT_APPLICABLE",
         "token_id": SAMPLE_ASSOCIATED_TOKEN_2.token_id
-    }]
+    }],
+    "links": {
+        next: null
+    }
 }
 
 //
