@@ -82,6 +82,13 @@ export class AccountLocParser {
         }
     }
 
+    public readonly isInactiveEvmAddress = computed(() => {
+        const l = this.accountLocObj.value
+        return l !== null
+            && l instanceof EthereumAddress
+            && this.accountInfo.value === null
+    })
+
     public readonly accountId: ComputedRef<string|null>
         = computed(() => this.accountInfo.value?.account ?? null)
 
