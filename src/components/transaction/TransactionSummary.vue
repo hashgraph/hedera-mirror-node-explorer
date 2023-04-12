@@ -31,7 +31,7 @@
       {{ transaction?.entity_id }}
       <span v-if="tokens.length">
         <i class="fas fa-link mr-1 has-text-grey"></i>
-        <TokenExtra :token-id="tokens[0]" :show-name="true"/>
+        <TokenExtra :token-id="tokens[0]" :show-name="false"/>
         <span v-if="additionalTokensNumber" class="h-is-smaller h-is-extra-text should-wrap">
           {{ ' ( + ' + additionalTokensNumber + ' more )' }}
         </span>

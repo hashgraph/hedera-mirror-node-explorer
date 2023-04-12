@@ -40,9 +40,9 @@
 
   <NftTransferGraph
       data-cy="nftTransfers"
+      :class="{'mb-4': !compact}"
       v-bind:transaction="transaction"
       v-bind:compact="compact"/>
-  <br/>
 
   <TokenTransferGraphC
       data-cy="tokenTransfers"
@@ -54,9 +54,9 @@
       v-bind:transaction="transaction"/>
 
   <template v-if="netAmount === 0 && !compact">
-    <br/>
     <HbarTransferGraphF
         data-cy="feeTransfers"
+        class="mt-4"
         v-bind:transaction="transaction" title="Fee Transfers" :show-none="true"/>
   </template>
 
