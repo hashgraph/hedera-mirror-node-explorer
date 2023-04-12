@@ -31,7 +31,8 @@ export class BlockLocParser {
     public readonly blockLoc: Ref<string|null>
     public readonly block: Ref<Block|null> = ref(null)
 
-    private watchHandle: Ref<WatchStopHandle|null> = ref(null)
+    private readonly watchHandle: Ref<WatchStopHandle|null> = ref(null)
+    private readonly loadCounter: Ref<number> = ref(0)
 
     //
     // Public
@@ -63,15 +64,16 @@ export class BlockLocParser {
     public readonly errorNotification: Ref<string|null> = computed(() => {
         let result: string|null
         const l = this.blockLoc.value
+        const o = this.blockLocObj.value
+        const b = this.block.value
         if (l !== null && this.watchHandle.value !== null) {
-            const o = this.blockLocObj.value
             if (o !== null) {
-                if (this.block.value !== null) {
+                if (b !== null || this.loadCounter.value == 0) {
                     result = null
                 } else {
                     if (typeof o == "number") {
                         result = "Block with number " + o + " was not found"
-                    } else {
+                    } else { // l instanceof EthereumHash
                         result = "Block with hash " + o.toString() + " was not found"
                     }
                 }
@@ -99,6 +101,8 @@ export class BlockLocParser {
                 }
             } catch(error) {
                 this.block.value = null
+            } finally {
+                this.loadCounter.value += 1
             }
         } else {
             this.block.value = null

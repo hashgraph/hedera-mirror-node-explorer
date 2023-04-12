@@ -39,6 +39,7 @@ export class AccountLocParser {
     public readonly accountInfo: Ref<AccountBalanceTransactions|null> = ref(null)
 
     private watchHandle: Ref<WatchStopHandle|null> = ref(null)
+    private readonly loadCounter: Ref<number> = ref(0)
 
     //
     // Public
@@ -58,6 +59,7 @@ export class AccountLocParser {
             this.watchHandle.value = null
         }
         this.accountInfo.value = null
+        this.loadCounter.value = 0
     }
 
     public remount(): void {
@@ -145,16 +147,17 @@ export class AccountLocParser {
     public readonly errorNotification: Ref<string|null> = computed(() => {
         let result: string|null
         const l = this.accountLoc.value
+        const o = this.accountLocObj.value
+        const a = this.accountInfo.value
         if (l !== null && this.watchHandle.value !== null) {
-            const o = this.accountLocObj.value
             if (o !== null) {
-                if (this.accountInfo.value !== null) {
-                    if (this.accountInfo.value?.deleted == true) {
+                if (a !== null) {
+                    if (a.deleted == true) {
                         result = "Account is deleted"
                     } else {
                         result = null
                     }
-                } else {
+                } else if (this.loadCounter.value >= 1) {
                     if (o instanceof EntityID) {
                         result = "Account with ID " + o + " was not found"
                     } else if (o instanceof EthereumAddress) {
@@ -162,6 +165,8 @@ export class AccountLocParser {
                     } else { // o instanceof AccountAlias
                         result = "Account with alias " + o + " was not found"
                     }
+                } else { // this.loadCounter.value === 0 => not loaded yet
+                    result = null
                 }
             } else {
                 result = "Invalid account ID, address or alias: " + l
@@ -189,6 +194,8 @@ export class AccountLocParser {
                 }
             } catch(error) {
                 this.accountInfo.value = null
+            } finally {
+                this.loadCounter.value += 1
             }
         } else {
             this.accountInfo.value = null
