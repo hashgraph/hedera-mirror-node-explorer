@@ -33,10 +33,9 @@ export class TransactionLocParser {
 
     public readonly transactionLoc: Ref<string|null>
 
-    private readonly watchHandles: WatchStopHandle[] = []
+    private watchHandle: Ref<WatchStopHandle|null> = ref(null)
     private readonly transactionRef: Ref<Transaction | null> = ref(null)
-    private readonly cacheError: Ref<unknown|null> = ref(null)
-    private readonly notFound: Ref<boolean> = ref(false)
+    private readonly loadCounter: Ref<number> = ref(0)
 
     //
     // Public
@@ -47,15 +46,16 @@ export class TransactionLocParser {
     }
 
     public mount(): void {
-        this.watchHandles.push(
-            watch(this.transactionLoc, this.transactionLocDidChange, {immediate: true})
-        )
+        this.watchHandle.value = watch(this.transactionLocObj, this.transactionLocObjDidChange, {immediate: true})
     }
 
     public unmount(): void {
-        this.watchHandles.map((wh) => wh())
-        this.watchHandles.splice(0)
+        if (this.watchHandle.value !== null) {
+            this.watchHandle.value()
+            this.watchHandle.value = null
+        }
         this.transactionRef.value = null
+        this.loadCounter.value = 0
     }
 
     public readonly transaction: ComputedRef<Transaction|null> = computed(() => {
@@ -76,25 +76,38 @@ export class TransactionLocParser {
 
     public errorNotification: Ref<string|null> = computed(() => {
         let result: string|null
-        const cacheError = this.cacheError.value
-        if (cacheError instanceof BadParamError) {
-            result = "Invalid transaction id, timestamp or hash: " + this.transactionLoc.value
-        } else if (this.notFound.value) {
-            const o = this.transactionLocObj.value
-            if (o instanceof Timestamp) {
-                result = "Transaction with timestamp " + o.toString() + " was not found"
-            } else if (o instanceof TransactionHash) {
-                result = "Transaction with hash " + o.toString() + " was not found"
-            } else if (o instanceof EthereumHash) {
-                result = "Transaction with ethereum hash " + o.toString() + " was not found"
+
+        const l = this.transactionLoc.value
+        const o = this.transactionLocObj.value
+        const t = this.transactionRef.value
+        if (l !== null && this.watchHandle.value !== null) {
+            if (o !== null) {
+                if (t !== null) {
+                    if (t.result == "SUCCESS") {
+                        result = null
+                    } else {
+                        result = t.result ?? null
+                    }
+                } else if (this.loadCounter.value >= 1) {
+                    if (o instanceof Timestamp) {
+                        result = "Transaction with timestamp " + o + " was not found"
+                    } else if (o instanceof TransactionHash) {
+                        result = "Transaction with hash " + o + " was not found"
+                    } else if (o instanceof EthereumHash) {
+                        result = "Transaction with ethereum hash " + o + " was not found"
+                    } else {
+                        result = null
+                    }
+                } else { // this.loadCounter.value === 0 => no loading yet
+                    result = null
+                }
             } else {
-                result = null
+                result = "Invalid transaction id, timestamp or hash: " + this.transactionLoc.value
             }
-        } else if (this.hasSucceeded.value) {
-            result = null
         } else {
-            result = this.transactionRef.value?.result ?? null
+            result = null
         }
+
         return result
     })
 
@@ -102,37 +115,26 @@ export class TransactionLocParser {
     // Private
     //
 
-    private readonly transactionLocDidChange = () => {
-        const l = this.transactionLoc.value
-        if (l !== null) {
-            const o = this.transactionLocObj.value
-            const fullfill = (t: Transaction|null) => {
-                this.transactionRef.value = t
-                this.cacheError.value = null
-                this.notFound.value = t == null
-            }
-            const reject = (reason: unknown) => {
+    private readonly transactionLocObjDidChange = async () => {
+        const o = this.transactionLocObj.value
+        if (o !== null) {
+            try {
+                if (o instanceof Timestamp) {
+                    this.transactionRef.value = await TransactionByTsCache.instance.lookup(o.toString())
+                } else if (o instanceof TransactionHash) {
+                    this.transactionRef.value = await TransactionByHashCache.instance.lookup(o.toString())
+                } else if (o instanceof TransactionID) {
+                    this.transactionRef.value = await TransactionByIdCache.instance.lookup(o.toString(false))
+                } else { // => o instanceof EthereumHash
+                    this.transactionRef.value = await this.lookupTransactionByResult(o.toString())
+                }
+            } catch {
                 this.transactionRef.value = null
-                this.cacheError.value = reason
-                this.notFound.value = false
+            } finally {
+                this.loadCounter.value += 1
             }
-            if (o instanceof Timestamp) {
-                TransactionByTsCache.instance.lookup(o.toString()).then(fullfill).catch(reject)
-            } else if (o instanceof TransactionHash) {
-                TransactionByHashCache.instance.lookup(o.toString()).then(fullfill).catch(reject)
-            } else if (o instanceof TransactionID) {
-                TransactionByIdCache.instance.lookup(o.toString(false)).then(fullfill).catch(reject)
-            } else if (o instanceof EthereumHash) {
-                this.lookupTransactionByResult(o.toString()).then(fullfill).catch(reject)
-            } else {
-                this.transactionRef.value = null
-                this.cacheError.value = new BadParamError()
-                this.notFound.value = false
-            }
-         } else {
+        } else {
             this.transactionRef.value = null
-            this.cacheError.value = null
-            this.notFound.value = false
         }
     }
 
@@ -145,10 +147,6 @@ export class TransactionLocParser {
             result = null
         }
         return result
-    })
-
-    private readonly hasSucceeded = computed(() => {
-        return this.transactionRef.value?.result == "SUCCESS"
     })
 
     private async lookupTransactionByResult(ethereumHash: string): Promise<Transaction|null> {
@@ -164,6 +162,4 @@ export class TransactionLocParser {
         return Promise.resolve(result)
     }
 }
-
-class BadParamError extends Error {}
 

@@ -67,6 +67,12 @@ describe("BlockLocParser.ts", () => {
 
         // 2) Sets with block number
         blockLoc.value = SAMPLE_BLOCK.number.toString()
+        expect(parser.blockLoc.value).toBe(SAMPLE_BLOCK.number.toString())
+        expect(parser.block.value).toBeNull()
+        expect(parser.blockNumber.value).toBeNull()
+        expect(parser.blockCount.value).toBeNull()
+        expect(parser.toTimestamp.value).toBeNull()
+        expect(parser.errorNotification.value).toBeNull()
         await flushPromises()
         expect(parser.blockLoc.value).toBe(SAMPLE_BLOCK.number.toString())
         expect(parser.block.value).toStrictEqual(SAMPLE_BLOCK)
@@ -120,6 +126,12 @@ describe("BlockLocParser.ts", () => {
 
         // 1) Sets with block number
         blockLoc.value = SAMPLE_BLOCK.number.toString()
+        expect(parser.blockLoc.value).toBe(SAMPLE_BLOCK.number.toString())
+        expect(parser.block.value).toBeNull()
+        expect(parser.blockNumber.value).toBeNull()
+        expect(parser.blockCount.value).toBeNull()
+        expect(parser.toTimestamp.value).toBeNull()
+        expect(parser.errorNotification.value).toBeNull()
         await flushPromises()
         expect(parser.blockLoc.value).toBe(SAMPLE_BLOCK.number.toString())
         expect(parser.block.value).toBeNull()
@@ -194,6 +206,12 @@ describe("BlockLocParser.ts", () => {
 
         // 2) Sets with block hash
         blockLoc.value = SAMPLE_BLOCK.hash
+        expect(parser.blockLoc.value).toBe(SAMPLE_BLOCK.hash)
+        expect(parser.block.value).toBeNull()
+        expect(parser.blockNumber.value).toBeNull()
+        expect(parser.blockCount.value).toBeNull()
+        expect(parser.toTimestamp.value).toBeNull()
+        expect(parser.errorNotification.value).toBeNull()
         await flushPromises()
         expect(parser.blockLoc.value).toBe(SAMPLE_BLOCK.hash)
         expect(parser.block.value).toStrictEqual(SAMPLE_BLOCK)
@@ -258,6 +276,12 @@ describe("BlockLocParser.ts", () => {
 
         // 2) Sets with block number
         blockLoc.value = UNKNOWN_NB.toString()
+        expect(parser.blockLoc.value).toBe(UNKNOWN_NB.toString())
+        expect(parser.block.value).toBeNull()
+        expect(parser.blockNumber.value).toBeNull()
+        expect(parser.blockCount.value).toBeNull()
+        expect(parser.toTimestamp.value).toBeNull()
+        expect(parser.errorNotification.value).toBeNull()
         await flushPromises()
         expect(parser.blockLoc.value).toBe(UNKNOWN_NB.toString())
         expect(parser.block.value).toBeNull()
@@ -323,6 +347,12 @@ describe("BlockLocParser.ts", () => {
 
         // 2) Sets with block hash
         blockLoc.value = UNKNOWN_HASH
+        expect(parser.blockLoc.value).toBe(UNKNOWN_HASH)
+        expect(parser.block.value).toBeNull()
+        expect(parser.blockNumber.value).toBeNull()
+        expect(parser.blockCount.value).toBeNull()
+        expect(parser.toTimestamp.value).toBeNull()
+        expect(parser.errorNotification.value).toBeNull()
         await flushPromises()
         expect(parser.blockLoc.value).toBe(UNKNOWN_HASH)
         expect(parser.block.value).toBeNull()
@@ -384,6 +414,12 @@ describe("BlockLocParser.ts", () => {
 
         // 2) Sets with dummy loc
         blockLoc.value = DUMMY_LOC
+        expect(parser.blockLoc.value).toBe(DUMMY_LOC)
+        expect(parser.block.value).toBeNull()
+        expect(parser.blockNumber.value).toBeNull()
+        expect(parser.blockCount.value).toBeNull()
+        expect(parser.toTimestamp.value).toBeNull()
+        expect(parser.errorNotification.value).toBe("Invalid block number or hash: dummy block loc")
         await flushPromises()
         expect(parser.blockLoc.value).toBe(DUMMY_LOC)
         expect(parser.block.value).toBeNull()
