@@ -219,7 +219,7 @@ describe("TransactionLocParser.ts", () => {
 
         // 2) Sets with transaction hash
         transactionLoc.value = transactionHash
-        expect(parser.transactionLoc.value).toBe(SAMPLE_TRANSACTION.consensus_timestamp)
+        expect(parser.transactionLoc.value).toBe(transactionHash)
         expect(parser.transaction.value).toBeNull()
         expect(parser.transactionId.value).toBeNull()
         expect(parser.consensusTimestamp.value).toBeNull()
@@ -296,7 +296,7 @@ describe("TransactionLocParser.ts", () => {
 
         // 2) Sets with transaction hash
         transactionLoc.value = SAMPLE_CONTRACT_RESULT_DETAILS.hash
-        expect(parser.transactionLoc.value).toBe(SAMPLE_TRANSACTION.consensus_timestamp)
+        expect(parser.transactionLoc.value).toBe(SAMPLE_CONTRACT_RESULT_DETAILS.hash)
         expect(parser.transaction.value).toBeNull()
         expect(parser.transactionId.value).toBeNull()
         expect(parser.consensusTimestamp.value).toBeNull()
@@ -372,7 +372,7 @@ describe("TransactionLocParser.ts", () => {
 
         // 2) Sets with transaction id
         transactionLoc.value = PARENT_TRANSACTION.transaction_id
-        expect(parser.transactionLoc.value).toBe(SAMPLE_TRANSACTION.consensus_timestamp)
+        expect(parser.transactionLoc.value).toBe(PARENT_TRANSACTION.transaction_id)
         expect(parser.transaction.value).toBeNull()
         expect(parser.transactionId.value).toBeNull()
         expect(parser.consensusTimestamp.value).toBeNull()
@@ -448,7 +448,7 @@ describe("TransactionLocParser.ts", () => {
 
         // 2) Sets with transaction id
         transactionLoc.value = TRANSACTION_ID
-        expect(parser.transactionLoc.value).toBe(SAMPLE_TRANSACTION.consensus_timestamp)
+        expect(parser.transactionLoc.value).toBe(TRANSACTION_ID)
         expect(parser.transaction.value).toBeNull()
         expect(parser.transactionId.value).toBeNull()
         expect(parser.consensusTimestamp.value).toBeNull()
@@ -525,7 +525,7 @@ describe("TransactionLocParser.ts", () => {
 
         // 2) Sets with consensus timestamp
         transactionLoc.value = UNKNOWN_TIMESTAMP
-        expect(parser.transactionLoc.value).toBe(SAMPLE_TRANSACTION.consensus_timestamp)
+        expect(parser.transactionLoc.value).toBe(UNKNOWN_TIMESTAMP)
         expect(parser.transaction.value).toBeNull()
         expect(parser.transactionId.value).toBeNull()
         expect(parser.consensusTimestamp.value).toBeNull()
@@ -596,7 +596,7 @@ describe("TransactionLocParser.ts", () => {
 
         // 2) Sets with consensus timestamp
         transactionLoc.value = UNKNOWN_HASH
-        expect(parser.transactionLoc.value).toBe(SAMPLE_TRANSACTION.consensus_timestamp)
+        expect(parser.transactionLoc.value).toBe(UNKNOWN_HASH)
         expect(parser.transaction.value).toBeNull()
         expect(parser.transactionId.value).toBeNull()
         expect(parser.consensusTimestamp.value).toBeNull()
@@ -667,7 +667,7 @@ describe("TransactionLocParser.ts", () => {
 
         // 2) Sets with consensus timestamp
         transactionLoc.value = UNKNOWN_ETH_HASH
-        expect(parser.transactionLoc.value).toBe(SAMPLE_TRANSACTION.consensus_timestamp)
+        expect(parser.transactionLoc.value).toBe(UNKNOWN_ETH_HASH)
         expect(parser.transaction.value).toBeNull()
         expect(parser.transactionId.value).toBeNull()
         expect(parser.consensusTimestamp.value).toBeNull()
