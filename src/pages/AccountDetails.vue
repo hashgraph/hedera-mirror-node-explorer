@@ -26,6 +26,11 @@
 
   <section :class="{'h-mobile-background': isTouchDevice || !isSmallScreen}" class="section">
 
+    <template v-if="isInactiveEvmAddress">
+      <InactiveAddressSection :account-address="accountId"/>
+    </template>
+
+    <template v-else>
     <DashboardCard>
       <template v-slot:title>
         <span class="h-is-primary-title">Account </span>
@@ -234,6 +239,7 @@
         </div>
       </template>
     </DashboardCard>
+    </template>
 
   </section>
 
@@ -276,6 +282,7 @@ import AliasValue from "@/components/values/AliasValue.vue";
 import {NodeRegistry} from "@/components/node/NodeRegistry";
 import EVMAddress from "@/components/values/EVMAddress.vue";
 import ApproveAllowanceSection from "@/components/allowances/ApproveAllowanceSection.vue";
+import InactiveAddressSection from "@/components/account/InactiveAddressSection.vue";
 
 const MAX_TOKEN_BALANCES = 10
 
@@ -284,6 +291,7 @@ export default defineComponent({
   name: 'AccountDetails',
 
   components: {
+    InactiveAddressSection,
     ApproveAllowanceSection,
     EVMAddress,
     AliasValue,
@@ -449,6 +457,7 @@ export default defineComponent({
       isTouchDevice,
       transactionTableController,
       notification: accountLocParser.errorNotification,
+      isInactiveEvmAddress: accountLocParser.isInactiveEvmAddress,
       account: accountLocParser.accountInfo,
       normalizedAccountId: accountLocParser.accountId,
       accountChecksum: accountLocParser.accountChecksum,
