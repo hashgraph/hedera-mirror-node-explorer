@@ -87,6 +87,7 @@ export class AccountLocParser {
         return l !== null
             && l instanceof EthereumAddress
             && this.accountInfo.value === null
+            && this.loadCounter.value >= 1
     })
 
     public readonly accountId: ComputedRef<string|null>
