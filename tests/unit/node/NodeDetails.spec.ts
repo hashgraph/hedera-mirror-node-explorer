@@ -108,9 +108,9 @@ describe("NodeDetails.vue", () => {
         expect(wrapper.get("#consensusStakePercent").text()).toBe("25% of total")
         expect(wrapper.get("#minStake").text()).toBe("Min Stake1,000,000HBAR")
         expect(wrapper.get("#maxStake").text()).toBe("Max Stake30,000,000HBAR")
-        expect(wrapper.get("#rewarded").text()).toBe("Stake Rewarded5,000,000HBAR")
+        expect(wrapper.get("#rewarded").text()).toBe("Staked for Reward5,000,000HBAR")
         expect(wrapper.get("#rewardedPercent").text()).toBe("26.32% of total")
-        expect(wrapper.get("#notRewarded").text()).toBe("Stake Not Rewarded1,000,000HBAR")
+        expect(wrapper.get("#notRewarded").text()).toBe("Staked For No Reward1,000,000HBAR")
         expect(wrapper.get("#notRewardedPercent").text()).toBe("20% of total")
         expect(wrapper.get("#stakingPeriod").text()).toBe("Current Staking Period24HOURS")
 

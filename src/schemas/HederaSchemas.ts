@@ -624,7 +624,7 @@ export function makeNodeSelectorDescription(node: NetworkNode): string {
     if (percentMin !== 0 && percentMin < 1) {
         result += " - Not Rewarding (total stake is " + percentFormatter.format(percentMin) + " of min)"
     } else if (percentMax !== 0) {
-        result += " - Rewarding (stake rewarded is " + percentFormatter.format(percentMax) + " of max)"
+        result += " - Rewarding (staked for reward is " + percentFormatter.format(percentMax) + " of max)"
     }
     return result
 }
