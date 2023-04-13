@@ -373,7 +373,11 @@ export default defineComponent({
       if (!validEntityId.value) {
         result = "Invalid token ID: " + props.tokenId
       } else if (tokenLookup.entity.value == null) {
-        result = "Token with ID " + props.tokenId + " was not found"
+          if (tokenLookup.isLoaded()) {
+              result = "Token with ID " + props.tokenId + " was not found"
+          } else {
+              result = null
+          }
       } else if (tokenLookup.entity.value?.deleted) {
         result = "Token is deleted"
       } else {
