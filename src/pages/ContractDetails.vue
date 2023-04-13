@@ -286,7 +286,11 @@ export default defineComponent({
       if (!validEntityId.value) {
         result = "Invalid contract ID: " + props.contractId
       } else if (contractLookup.entity.value == null) {
-        result = "Contract with ID " + props.contractId + " was not found"
+          if (contractLookup.isLoaded()) {
+              result = "Contract with ID " + props.contractId + " was not found"
+          } else {
+              result = null
+          }
       } else if (contractLookup.entity.value?.deleted === true) {
         result = "Contract is deleted"
       // to be re-activated after Feb 9th
