@@ -161,6 +161,9 @@ export default defineComponent({
                 routeManager.routeToTopic(topicId)
               }
               searchDidEnd(true)
+            }else if (r.ethereumAddress != null) {
+              routeManager.routeToAccount(r.ethereumAddress)
+              searchDidEnd(true)
             } else {
               routeManager.routeToNoSearchResult(searchedId.value, r.getErrorCount())
               searchDidEnd(false)

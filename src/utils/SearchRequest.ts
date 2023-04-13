@@ -47,6 +47,7 @@ export class SearchRequest {
     public topicMessages = Array<TopicMessage>()
     public contract: ContractResponse|null = null
     public block: Block|null = null
+    public ethereumAddress: string|null = null
 
     private promise = new DeferredPromise<void>()
     private countdown = 0
@@ -110,15 +111,15 @@ export class SearchRequest {
         const blockHash = hexBytes !== null && (hexBytes.length === 48 || hexBytes.length === 32) ? byteToHex(hexBytes) : null
         const transactionHash = hexBytes !== null && hexBytes.length == 48 ? byteToHex(hexBytes) : null
         const transactionTimestamp = this.searchedId.match(/^\d{1,10}(\.\d{1,9})?$/) ? this.searchedId : null
-        const ethereumAddress = hexBytes !== null && (1 <= hexBytes.length && hexBytes.length <= 20)
+        this.ethereumAddress = hexBytes !== null && (1 <= hexBytes.length && hexBytes.length <= 20)
                                 ? byteToHex(paddedBytes(hexBytes, 20)) : null
         const publicKey = hexBytes !== null && (hexBytes.length == 32 || hexBytes.length == 33) ? byteToHex(hexBytes) : null
         const accountAlias = base32 !== null ? aliasToBase32(base32) : (hexBytes !== null ? aliasToBase32(hexBytes) : null)
 
-        const accountParam = entityID ?? ethereumAddress ?? accountAlias
+        const accountParam = entityID ?? this.ethereumAddress ?? accountAlias
         const transactionParam = transactionID ?? transactionHash
-        const tokenParam = entityID ?? EntityID.fromAddress(ethereumAddress ?? undefined)
-        const contractParam = entityID ?? ethereumAddress
+        const tokenParam = entityID ?? EntityID.fromAddress(this.ethereumAddress ?? undefined)
+        const contractParam = entityID ?? this.ethereumAddress
 
         // 1) Searches accounts
         if (accountParam !== null) {

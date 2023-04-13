@@ -27,7 +27,7 @@
   <section :class="{'h-mobile-background': isTouchDevice || !isSmallScreen}" class="section">
 
     <DashboardCard>
-      <template v-slot:title>
+      <template v-if="!isInactiveEvmAddress" v-slot:title>
         <span class="h-is-primary-title">Account </span>
         <div class="h-is-tertiary-text mt-3" id="entityId">
           <div class="is-inline-block h-is-property-text has-text-weight-light" style="min-width: 115px">Account ID:</div>
@@ -53,6 +53,25 @@
           </router-link>
         </div>
       </template>
+      <template v-else v-slot:title>
+        <span class="h-is-primary-title">Inactive EVM Address</span>
+        <div class="h-is-tertiary-text mt-3" id="entityId">
+          <div class="is-inline-block h-is-property-text has-text-weight-light" style="min-width: 115px">Account ID:</div>
+          <span class="has-text-grey">Assigned upon activation</span>
+        </div>
+        <div id="evmAddress" class="h-is-tertiary-text mt-2" style="word-break: keep-all">
+          <div class="is-inline-block h-is-property-text has-text-weight-light" style="min-width: 115px">EVM Address:</div>
+          <div class="is-inline-block">
+            <EVMAddress :show-id="false" :has-custom-font="true" :address="accountId"/>
+          </div>
+        </div>
+
+        <div v-if="!isMediumScreen && showContractVisible" id="showContractLink" class="is-inline-block mt-2">
+          <router-link :to="contractRoute">
+            <span class="h-is-property-text">Show associated contract</span>
+          </router-link>
+        </div>
+      </template>
 
       <template v-slot:control v-if="isMediumScreen">
         <div v-if="showContractVisible" id="showContractLink" class="is-inline-block ml-3">
@@ -64,7 +83,7 @@
 
       <template v-slot:content>
 
-        <NotificationBanner v-if="notification" :message="notification"/>
+        <NotificationBanner v-if="notification" :message="notification" :is-error="!isInactiveEvmAddress"/>
 
         <div class="columns h-is-property-text">
           <div class="column">
@@ -73,6 +92,9 @@
               <template v-slot:value>
                 <div v-if="account" class="h-is-tertiary-text">
                   <HbarAmount v-bind:amount="hbarBalance ?? undefined" v-bind:show-extra="true" timestamp="0"/>
+                </div>
+                <div v-else-if="isInactiveEvmAddress" class="h-is-tertiary-text">
+                  <HbarAmount v-bind:amount="0" v-bind:show-extra="true" timestamp="0"/>
                 </div>
                 <div v-if="displayAllTokenLinks">
                   <router-link :to="{name: 'AccountBalances', params: {accountId: accountId}}">
@@ -201,7 +223,7 @@
       </template>
     </DashboardCard>
 
-    <DashboardCard>
+    <DashboardCard v-if="!isInactiveEvmAddress">
       <template v-slot:title>
         <p id="recentTransactions" class="h-is-secondary-title">Recent Transactions</p>
       </template>
@@ -449,6 +471,7 @@ export default defineComponent({
       isTouchDevice,
       transactionTableController,
       notification: accountLocParser.errorNotification,
+      isInactiveEvmAddress: accountLocParser.isInactiveEvmAddress,
       account: accountLocParser.accountInfo,
       normalizedAccountId: accountLocParser.accountId,
       accountChecksum: accountLocParser.accountChecksum,

@@ -38,6 +38,12 @@ export class EthereumAddress {
         return "0x" + byteToHex(this.bytes)
     }
 
+    public toCompactString(digitKept=6): string {
+       return "0x"
+           + byteToHex(this.bytes.slice(0, 1))[0]
+           + "…" + byteToHex(this.bytes.slice(-digitKept/2))
+    }
+
     public toEntityID(): EntityID|null {
         const view = new DataView(this.bytes.buffer)
         const bigNum = view.getBigInt64(12)
