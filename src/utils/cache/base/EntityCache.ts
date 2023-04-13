@@ -100,8 +100,8 @@ export class Lookup<K,E> {
 
     private readonly cache: EntityCache<K,E>
     private readonly key: Ref<K|null>
-    private watchHandle: WatchStopHandle|null = null
-    private mounted = false
+    private readonly watchHandle: Ref<WatchStopHandle|null> = ref(null)
+    private readonly loadCounter: Ref<number> = ref(0)
 
     constructor(key: Ref<K|null>, cache: EntityCache<K,E>) {
         this.key = key
@@ -109,17 +109,20 @@ export class Lookup<K,E> {
     }
 
     public mount(): void {
-        this.watchHandle = watch(this.key, this.keyDidChange, { immediate: true})
-        this.mounted = true
+        this.watchHandle.value = watch(this.key, this.keyDidChange, { immediate: true})
     }
 
     public unmount(): void {
-        if (this.watchHandle !== null) {
-            this.watchHandle()
-            this.watchHandle = null
+        if (this.watchHandle.value !== null) {
+            this.watchHandle.value()
+            this.watchHandle.value = null
         }
         this.entity.value = null
-        this.mounted = false
+        this.loadCounter.value = 0
+    }
+
+    public isLoaded(): boolean {
+        return this.loadCounter.value >= 1
     }
 
     private readonly keyDidChange = async () => {
@@ -132,11 +135,13 @@ export class Lookup<K,E> {
                 } catch {
                     newEntity = null
                 }
-                if (key === this.key.value && this.mounted) {
+                if (key === this.key.value && this.watchHandle.value !== null) {
                     this.entity.value = newEntity
+                    this.loadCounter.value += 1
                 } // else this.key has changed or cache was unmounted during lookup => aborts silently
             } catch {
                 this.entity.value = null
+                this.loadCounter.value += 1
             }
         } else {
             this.entity.value = null
