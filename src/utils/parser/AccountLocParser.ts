@@ -168,7 +168,8 @@ export class AccountLocParser {
                     if (o instanceof EntityID) {
                         result = "Account with ID " + o + " was not found"
                     } else if (o instanceof EthereumAddress) {
-                        result = "Account with Ethereum address " + o + " was not found"
+                        result = "Own this account? " +
+                            "Activate it by transferring any amount of ℏ or tokens to " + o.toCompactString() + '.'
                     } else { // o instanceof AccountAlias
                         result = "Account with alias " + o + " was not found"
                     }
