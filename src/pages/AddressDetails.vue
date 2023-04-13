@@ -41,7 +41,7 @@ import {RouteLocationRaw} from "vue-router";
 
 export default defineComponent({
 
-  name: 'AccountDetails',
+  name: 'AddressDetails',
 
   components: {},
 

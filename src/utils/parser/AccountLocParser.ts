@@ -82,6 +82,14 @@ export class AccountLocParser {
         }
     }
 
+    public readonly isInactiveEvmAddress = computed(() => {
+        const l = this.accountLocObj.value
+        return l !== null
+            && l instanceof EthereumAddress
+            && this.accountInfo.value === null
+            && this.loadCounter.value >= 1
+    })
+
     public readonly accountId: ComputedRef<string|null>
         = computed(() => this.accountInfo.value?.account ?? null)
 
@@ -161,7 +169,8 @@ export class AccountLocParser {
                     if (o instanceof EntityID) {
                         result = "Account with ID " + o + " was not found"
                     } else if (o instanceof EthereumAddress) {
-                        result = "Account with Ethereum address " + o + " was not found"
+                        result = "Own this account? " +
+                            "Activate it by transferring any amount of ℏ or tokens to " + o.toCompactString() + '.'
                     } else { // o instanceof AccountAlias
                         result = "Account with alias " + o + " was not found"
                     }
