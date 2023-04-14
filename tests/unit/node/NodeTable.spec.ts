@@ -91,7 +91,7 @@ describe("NodeTable.vue", () => {
         // console.log(wrapper.text())
         // console.log(wrapper.html())
 
-        expect(wrapper.get('thead').text()).toBe("Node Description Stake Stake Not Rewarded Stake Range Reward Rate")
+        expect(wrapper.get('thead').text()).toBe("Node Description Stake Staked For No Reward Stake Range Reward Rate")
         expect(wrapper.get('tbody').findAll('tr').length).toBe(3)
         expect(wrapper.get('tbody').text()).toBe(
             "0" +

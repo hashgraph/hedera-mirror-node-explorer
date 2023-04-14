@@ -119,12 +119,12 @@
         <NetworkDashboardItem id="maxStake" :value="makeFloorHbarAmount(maxStake)" name="HBAR" title="Max Stake"/>
         <br/><br/>
         <NetworkDashboardItem id="rewarded" :value="makeFloorHbarAmount(stakeRewarded)" name="HBAR"
-                              title="Stake Rewarded"/>
+                              title="Staked for Reward"/>
         <p id="rewardedPercent" class="h-is-property-text h-is-extra-text mt-1">{{ stakeRewardedPercentage }}% of
           total</p>
         <br/><br/>
         <NetworkDashboardItem id="notRewarded" :value="makeFloorHbarAmount(stakeUnrewarded)" name="HBAR"
-                              title="Stake Not Rewarded"/>
+                              title="Staked For No Reward"/>
         <p id="notRewardedPercent" class="h-is-property-text h-is-extra-text mt-1">{{ stakeUnrewardedPercentage }}% of
           total</p>
         <br/><br/>

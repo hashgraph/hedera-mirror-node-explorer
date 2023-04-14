@@ -103,7 +103,7 @@ describe("Nodes.vue", () => {
         expect(cards[1].text()).toMatch(RegExp("^Nodes"))
         const table = cards[1].findComponent(NodeTable)
         expect(table.exists()).toBe(true)
-        expect(table.get('thead').text()).toBe("Node Description Stake Stake Not Rewarded Stake Range Reward Rate")
+        expect(table.get('thead').text()).toBe("Node Description Stake Staked For No Reward Stake Range Reward Rate")
         expect(wrapper.get('tbody').text()).toBe(
             "0" +
             "Hosted by Hedera | East Coast, USA" +

@@ -87,9 +87,9 @@ describe("Staking.vue", () => {
 
         const options = wrapper.find('select').findAll('option')
         expect(options.length).toBe(SAMPLE_NETWORK_NODES.nodes.length)
-        expect(options.at(0)?.element.text).toBe('0 - Hosted by Hedera | East Coast, USA - Rewarding (stake rewarded is 16.7% of max)')
-        expect(options.at(1)?.element.text).toBe('1 - Hosted by Hedera | East Coast, USA - Rewarding (stake rewarded is 23.3% of max)')
-        expect(options.at(2)?.element.text).toBe('2 - Hosted by Hedera | Central, USA - Rewarding (stake rewarded is 23.3% of max)')
+        expect(options.at(0)?.element.text).toBe('0 - Hosted by Hedera | East Coast, USA - Rewarding (staked for reward is 16.7% of max)')
+        expect(options.at(1)?.element.text).toBe('1 - Hosted by Hedera | East Coast, USA - Rewarding (staked for reward is 23.3% of max)')
+        expect(options.at(2)?.element.text).toBe('2 - Hosted by Hedera | Central, USA - Rewarding (staked for reward is 23.3% of max)')
 
         expect(options.at(0)?.element.selected).toBe(false)
         expect(options.at(1)?.element.selected).toBe(false)
@@ -137,9 +137,9 @@ describe("Staking.vue", () => {
 
         const options = wrapper.find('select').findAll('option')
         expect(options.length).toBe(SAMPLE_NETWORK_NODES.nodes.length)
-        expect(options.at(0)?.element.text).toBe('0 - Hosted by Hedera | East Coast, USA - Rewarding (stake rewarded is 16.7% of max)')
-        expect(options.at(1)?.element.text).toBe('1 - Hosted by Hedera | East Coast, USA - Rewarding (stake rewarded is 23.3% of max)')
-        expect(options.at(2)?.element.text).toBe('2 - Hosted by Hedera | Central, USA - Rewarding (stake rewarded is 23.3% of max)')
+        expect(options.at(0)?.element.text).toBe('0 - Hosted by Hedera | East Coast, USA - Rewarding (staked for reward is 16.7% of max)')
+        expect(options.at(1)?.element.text).toBe('1 - Hosted by Hedera | East Coast, USA - Rewarding (staked for reward is 23.3% of max)')
+        expect(options.at(2)?.element.text).toBe('2 - Hosted by Hedera | Central, USA - Rewarding (staked for reward is 23.3% of max)')
 
         expect(options.at(0)?.element.selected).toBe(false)
         expect(options.at(1)?.element.selected).toBe(true)
@@ -186,9 +186,9 @@ describe("Staking.vue", () => {
         const options = wrapper.find('select').findAll('option')
 
         expect(options.length).toBe(SAMPLE_NETWORK_NODES.nodes.length)
-        expect(options.at(0)?.element.text).toBe('0 - Hosted by Hedera | East Coast, USA - Rewarding (stake rewarded is 16.7% of max)')
-        expect(options.at(1)?.element.text).toBe('1 - Hosted by Hedera | East Coast, USA - Rewarding (stake rewarded is 23.3% of max)')
-        expect(options.at(2)?.element.text).toBe('2 - Hosted by Hedera | Central, USA - Rewarding (stake rewarded is 23.3% of max)')
+        expect(options.at(0)?.element.text).toBe('0 - Hosted by Hedera | East Coast, USA - Rewarding (staked for reward is 16.7% of max)')
+        expect(options.at(1)?.element.text).toBe('1 - Hosted by Hedera | East Coast, USA - Rewarding (staked for reward is 23.3% of max)')
+        expect(options.at(2)?.element.text).toBe('2 - Hosted by Hedera | Central, USA - Rewarding (staked for reward is 23.3% of max)')
 
         expect(options.at(0)?.element.selected).toBe(false)
         expect(options.at(1)?.element.selected).toBe(false)

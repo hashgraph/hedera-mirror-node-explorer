@@ -939,7 +939,7 @@ describe("AccountLocParser.ts", () => {
         expect(parser.nodeId.value).toBeNull()
         expect(parser.ethereumAddress.value).toBeNull()
         expect(parser.aliasByteString.value).toBeNull()
-        expect(parser.errorNotification.value).toBe("Account with Ethereum address 0x0001020304050607080900010203040506070809 was not found")
+        expect(parser.errorNotification.value).toBe("Own this account? Activate it by transferring any amount of ℏ or tokens to 0x0…070809.")
 
         // 3) Unsets
         accountLoc.value = null

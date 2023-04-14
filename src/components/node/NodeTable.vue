@@ -73,7 +73,7 @@
         </o-tooltip>
       </o-table-column>
 
-      <o-table-column v-slot="props" field="stake_not_rewarded" label="Stake Not Rewarded" position="right">
+      <o-table-column v-slot="props" field="stake_not_rewarded" label="Staked For No Reward" position="right">
         <o-tooltip :delay="tooltipDelay"
                    :label="tooltipNotRewarded"
                    class="h-tooltip"
