@@ -56,7 +56,7 @@
                             :symbol="tokenSymbol"/>
           </div>
         </div>
-        <div v-if="!isSmallScreen" class="mt-2 h-is-property-text">
+        <div v-if="ethereumAddress && !isSmallScreen" class="mt-2 h-is-property-text">
           <MetaMaskImport :address="ethereumAddress"
                           :decimals="tokenInfo?.decimals"
                           :show-import="true"
