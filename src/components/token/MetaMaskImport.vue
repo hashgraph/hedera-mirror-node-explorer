@@ -23,7 +23,7 @@
 <!-- --------------------------------------------------------------------------------------------------------------- -->
 
 <template v-if="showImport" class="">
-  <button id="showStakingDialog" class="button is-white is-small ml-4"
+  <button id="showStakingDialog" class="button is-white h-is-smaller"
           @click="handleAction">ADD TO METAMASK…</button>
   <span style="display: inline-block">
     <ModalDialog v-model:show-dialog="showErrorDialog">
