@@ -62,9 +62,9 @@
           <MetaMaskImport :address="ethereumAddress"
                           :decimals="tokenInfo?.decimals"
                           :show-import="true"
-                          :show-none="true"
                           :symbol="tokenSymbol"/>
         </div>
+
       </template>
 
       <template v-slot:content>

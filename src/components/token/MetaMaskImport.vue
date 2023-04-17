@@ -58,10 +58,6 @@ export default defineComponent({
       type: Boolean,
       default: false
     },
-    showNone: {
-      type: Boolean,
-      default: false
-    },
   },
   setup(props) {
 
