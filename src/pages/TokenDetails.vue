@@ -36,29 +36,27 @@
         <div class="is-inline-block h-is-tertiary-text h-is-extra-text should-wrap" style="word-break: break-all">
           {{ displaySymbol }}
         </div>
-        <div class="h-is-tertiary-text mt-3" id="entityId">
-          <div class="is-inline-block h-is-property-text has-text-weight-light" style="min-width: 115px">Token ID:</div>
-          <span>{{ normalizedTokenId ?? "" }}</span>
-          <span v-if="tokenChecksum" class="has-text-grey">-{{ tokenChecksum }}</span>
-        </div>
-        <div v-if="ethereumAddress" id="evmAddress" class="h-is-tertiary-text mt-2" style="word-break: keep-all">
-          <div class="is-inline-block h-is-property-text has-text-weight-light" style="min-width: 115px">EVM Address:</div>
-          <div class="is-inline-block">
-            <EVMAddress :show-id="false" :has-custom-font="true" :address="ethereumAddress"/>
+        <div id="entityId" class="headline-grid h-is-tertiary-text mt-3 is-align-items-baseline">
+          <div class="h-is-property-text has-text-weight-light">Token ID:</div>
+          <div>
+            <span>{{ normalizedTokenId ?? "" }}</span>
+            <span v-if="tokenChecksum" class="has-text-grey">-{{ tokenChecksum }}</span>
           </div>
         </div>
-        <div class="mt-2">
-          <MetaMaskImport v-if="!isMediumScreen && ethereumAddress"
-                          :address="ethereumAddress"
-                          :decimals="tokenInfo?.decimals"
-                          :show-import="true"
-                          :show-none="true"
-                          :symbol="tokenSymbol"/>
-        </div>
-      </template>
 
-      <template v-if="isMediumScreen && ethereumAddress" v-slot:control>
-        <div class="ml-6">
+        <div v-if="ethereumAddress" id="evmAddress"
+             class="headline-grid is-align-items-baseline h-is-property-text mt-2" style="word-break: keep-all">
+          <div class="has-text-weight-light">EVM Address:</div>
+          <div class="is-flex is-align-items-baseline">
+            <EVMAddress class="mr-3" :show-id="false" :has-custom-font="true" :address="ethereumAddress"/>
+            <MetaMaskImport v-if="isSmallScreen"
+                            :address="ethereumAddress"
+                            :decimals="tokenInfo?.decimals"
+                            :show-import="true"
+                            :symbol="tokenSymbol"/>
+          </div>
+        </div>
+        <div v-if="!isSmallScreen" class="mt-2 h-is-property-text">
           <MetaMaskImport :address="ethereumAddress"
                           :decimals="tokenInfo?.decimals"
                           :show-import="true"
@@ -444,4 +442,12 @@ function parseIntString(s: string | undefined): number | undefined {
 <!--                                                       STYLE                                                     -->
 <!-- --------------------------------------------------------------------------------------------------------------- -->
 
-<style/>
+<style scoped>
+
+.headline-grid {
+  display: grid;
+  grid-template-columns: 2fr 10fr;
+  grid-column-gap: 0.5rem;
+}
+
+</style>
