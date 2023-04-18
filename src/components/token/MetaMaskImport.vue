@@ -23,10 +23,8 @@
 <!-- --------------------------------------------------------------------------------------------------------------- -->
 
 <template v-if="showImport" class="">
-  <ActionLink :enabled="address !== undefined"
-              :running="executing"
-              title="Import in MetaMask"
-              @action="handleAction"/>
+  <button id="showStakingDialog" class="button is-white h-is-smaller"
+          @click="handleAction">ADD TO METAMASK…</button>
   <span style="display: inline-block">
     <ModalDialog v-model:show-dialog="showErrorDialog">
       <template v-slot:dialogMessage>Please install MetaMask!</template>
@@ -47,21 +45,16 @@
 
 import {computed, defineComponent, ref} from "vue";
 import ModalDialog from "@/components/ModalDialog.vue";
-import ActionLink from "@/components/ActionLink.vue";
 import {MetaMask_Status, MetaMask_watchAsset} from "@/utils/MetaMask";
 
 export default defineComponent({
   name: "MetaMaskImport",
-  components: {ModalDialog, ActionLink},
+  components: {ModalDialog},
   props: {
     address: String,
     symbol: String,
     decimals: String,
     showImport: {
-      type: Boolean,
-      default: false
-    },
-    showNone: {
       type: Boolean,
       default: false
     },

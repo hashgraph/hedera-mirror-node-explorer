@@ -117,8 +117,8 @@ describe("TokenDetails.vue", () => {
         expect(wrapper.get("#totalSupplyValue").text()).toBe("1")
         expect(wrapper.get("#initialSupplyValue").text()).toBe("1")
         expect(wrapper.get("#maxSupplyValue").text()).toBe("Infinite")
-        expect(wrapper.get("#evmAddress").text()).toBe(
-            "EVM Address:0x0000000000000000000000000000000001c49eecCopy to Clipboard")
+        expect(wrapper.get("#evmAddress").text()).toMatch(
+            RegExp("^EVM Address:0x0000000000000000000000000000000001c49eecCopy to Clipboard"))
 
         expect(wrapper.text()).toMatch("Balances")
         expect(wrapper.findComponent(TokenBalanceTable).exists()).toBe(true)
