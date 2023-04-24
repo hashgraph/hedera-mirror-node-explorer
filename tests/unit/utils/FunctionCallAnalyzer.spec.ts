@@ -40,42 +40,42 @@ describe("FunctionCallAnalyzer.spec.ts", () => {
         const input: Ref<string|null> = ref(null)
         const output: Ref<string|null> = ref(null)
         const contractId: Ref<string|null> = ref(null)
-        const analyzer = new FunctionCallAnalyzer(input, output, contractId)
-        expect(analyzer.functionHash.value).toBeNull()
-        expect(analyzer.signature.value).toBeNull()
-        expect(analyzer.inputs.value).toStrictEqual([])
-        expect(analyzer.outputs.value).toStrictEqual([])
+        const functionCallAnalyzer = new FunctionCallAnalyzer(input, output, contractId)
+        expect(functionCallAnalyzer.functionHash.value).toBeNull()
+        expect(functionCallAnalyzer.signature.value).toBeNull()
+        expect(functionCallAnalyzer.inputs.value).toStrictEqual([])
+        expect(functionCallAnalyzer.outputs.value).toStrictEqual([])
 
         // 2) mount
-        analyzer.mount()
+        functionCallAnalyzer.mount()
         await flushPromises()
-        expect(analyzer.functionHash.value).toBeNull()
-        expect(analyzer.signature.value).toBeNull()
-        expect(analyzer.inputs.value).toStrictEqual([])
-        expect(analyzer.outputs.value).toStrictEqual([])
+        expect(functionCallAnalyzer.functionHash.value).toBeNull()
+        expect(functionCallAnalyzer.signature.value).toBeNull()
+        expect(functionCallAnalyzer.inputs.value).toStrictEqual([])
+        expect(functionCallAnalyzer.outputs.value).toStrictEqual([])
 
         // 3) input setup
         input.value = "0x49146bde000000000000000000000000845b706151aed537b1fd81c1ea4ea03920097abd0000000000000000000000000000000000000000000000000000000002e6ae09"
         output.value = "0x0000000000000000000000000000000000000000000000000000000005a995c0"
         contractId.value = "0.0.359"
         await flushPromises()
-        expect(analyzer.functionHash.value).toBe("0x49146bde")
-        expect(analyzer.signature.value).toBe("associateToken(address,address)")
-        expect(analyzer.inputs.value).toStrictEqual([
+        expect(functionCallAnalyzer.functionHash.value).toBe("0x49146bde")
+        expect(functionCallAnalyzer.signature.value).toBe("associateToken(address,address)")
+        expect(functionCallAnalyzer.inputs.value).toStrictEqual([
             new NameTypeValue("account", "address", "0x845b706151aEd537b1FD81c1Ea4EA03920097ABD"),
             new NameTypeValue("token", "address", "0x0000000000000000000000000000000002E6Ae09"),
         ])
-        expect(analyzer.outputs.value).toStrictEqual([
+        expect(functionCallAnalyzer.outputs.value).toStrictEqual([
             new NameTypeValue("responseCode", "int64", BigNumber.from("0x05a995c0")),
         ])
 
         // 4) unmount
-        analyzer.unmount()
+        functionCallAnalyzer.unmount()
         await flushPromises()
-        expect(analyzer.functionHash.value).toBeNull()
-        expect(analyzer.signature.value).toBeNull()
-        expect(analyzer.inputs.value).toStrictEqual([])
-        expect(analyzer.outputs.value).toStrictEqual([])
+        expect(functionCallAnalyzer.functionHash.value).toBeNull()
+        expect(functionCallAnalyzer.signature.value).toBeNull()
+        expect(functionCallAnalyzer.inputs.value).toStrictEqual([])
+        expect(functionCallAnalyzer.outputs.value).toStrictEqual([])
 
     })
 
