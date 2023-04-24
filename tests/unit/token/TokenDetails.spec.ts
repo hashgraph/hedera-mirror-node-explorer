@@ -104,7 +104,7 @@ describe("TokenDetails.vue", () => {
         expect(wrapper.get("#nameValue").text()).toBe("23423")
         expect(wrapper.get("#symbolValue").text()).toBe("QmVGABnvpbPwLcfG4iuW2JSzY8MLkALhd54bdPAbJxoEkB")
         expect(wrapper.find("#adminKey").text()).toBe("Admin KeyNoneToken is immutable")
-        expect(wrapper.get("#memoValue").text()).toBe("234234")
+        expect(wrapper.get("#memoValue").text()).toBe("Predator")
         expect(wrapper.get("#expiresAtValue").text()).toBe("None")
         expect(wrapper.get("#autoRenewPeriodValue").text()).toBe("Not yet enabled")
         expect(wrapper.get("#autoRenewAccountValue").text()).toBe("Not yet enabled")
