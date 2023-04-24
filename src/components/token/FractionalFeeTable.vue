@@ -41,7 +41,7 @@
       <StringValue :string-value="makeAmount(props.row.amount)"/>
     </o-table-column>
 
-    <o-table-column v-slot="props" field="token" label="Token">
+    <o-table-column v-slot="props" field="token" label="Fee Currency">
       <TokenLink :show-extra="true" :token-id="props.row.denominating_token_id"/>
     </o-table-column>
 

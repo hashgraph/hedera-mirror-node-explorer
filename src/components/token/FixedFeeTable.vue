@@ -42,7 +42,7 @@
       <HbarAmount v-else :amount="props.row.amount" timestamp="0" :show-extra="true"/>
     </o-table-column>
 
-    <o-table-column v-slot="props" field="amount" label="Token">
+    <o-table-column v-slot="props" field="amount" label="Fee Currency">
       <TokenLink v-if="props.row.denominating_token_id"
                  :show-extra="true" :token-id="props.row.denominating_token_id"/>
       <div v-else>HBAR</div>

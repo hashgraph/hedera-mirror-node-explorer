@@ -48,10 +48,10 @@
     <o-table-column v-slot="props" field="fallbackAmount" label="Fallback Fee">
       <PlainAmount v-if="props.row.fallback_fee?.denominating_token_id"
                    :amount="props.row.fallback_fee?.amount" none-label="None"/>
-      <HbarAmount v-else :amount="props.row.fallback_fee?.amount" :show-extra="true" />
+      <HbarAmount v-else :amount="props.row.fallback_fee?.amount" :show-extra="true"/>
     </o-table-column>
 
-    <o-table-column v-slot="props" field="fallbackToken" label="Token">
+    <o-table-column v-slot="props" field="fallbackToken" label="Fee Currency">
       <TokenLink v-if="props.row.fallback_fee?.denominating_token_id"
                  :token-id="props.row.fallback_fee?.denominating_token_id" :show-extra="true"/>
       <div v-else-if="props.row.fallback_fee?.amount">HBAR</div>
