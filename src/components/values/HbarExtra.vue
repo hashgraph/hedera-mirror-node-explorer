@@ -49,7 +49,7 @@ export default defineComponent({
     },
     timestamp: {
       type: String,
-      default: null
+      default: "0"
     },
     smallExtra: {
       type: Boolean,
