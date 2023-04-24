@@ -37,13 +37,15 @@
       aria-previous-label="Previous page"
   >
 
-    <o-table-column v-slot="props" field="amount" label="Amount">
+    <o-table-column v-slot="props" field="amount" label="Fixed Fee">
       <PlainAmount v-if="props.row.denominating_token_id" :amount="props.row.amount"/>
       <HbarAmount v-else :amount="props.row.amount" timestamp="0" :show-extra="true"/>
     </o-table-column>
 
-    <o-table-column v-slot="props" field="amount" label="Token">
-      <TokenLink :show-extra="true" :token-id="props.row.denominating_token_id"/>
+    <o-table-column v-slot="props" field="amount" label="Fee Currency">
+      <TokenLink v-if="props.row.denominating_token_id"
+                 :show-extra="true" :token-id="props.row.denominating_token_id"/>
+      <div v-else>HBAR</div>
     </o-table-column>
 
     <o-table-column v-slot="props" field="account_id" label="Collector Account">
