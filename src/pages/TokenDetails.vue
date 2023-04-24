@@ -85,7 +85,7 @@
         <Property id="memo">
           <template v-slot:name>Memo</template>
           <template v-slot:value>
-            <BlobValue :base64="true" :blob-value="tokenInfo?.memo" :show-none="true"/>
+            <BlobValue :blob-value="tokenInfo?.memo" :show-none="true"/>
           </template>
         </Property>
         <Property id="expiresAt">

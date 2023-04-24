@@ -102,7 +102,7 @@ export const SAMPLE_TOKEN = {
     "initial_supply": "1",
     "kyc_key": null,
     "max_supply": "0",
-    "memo": "234234",
+    "memo": "Predator",
     "modified_timestamp": "1644660150.233378000",
     "name": "23423",
     "pause_key": null,
