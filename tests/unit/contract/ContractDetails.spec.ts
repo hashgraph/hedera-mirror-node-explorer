@@ -117,6 +117,7 @@ describe("ContractDetails.vue", () => {
         expect(wrapper.get("#validUntilValue").text()).toBe("None")
         expect(wrapper.get("#fileValue").text()).toBe("0.0.749773")
         expect(wrapper.get("#evmAddress").text()).toBe("EVM Address:0x00000000000000000000000000000000000b70cfCopy to Clipboard")
+        expect(wrapper.get("#code").text()).toBe("Runtime BytecodeNone")
 
         expect(wrapper.findComponent(ContractResultTable).exists()).toBe(true)
     });
