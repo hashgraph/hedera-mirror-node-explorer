@@ -441,7 +441,7 @@ describe("TokenDetails.vue", () => {
 
         const fixedFee = customFees.findComponent(FixedFeeTable)
         expect(fixedFee.exists()).toBe(true)
-        expect(fixedFee.get('thead').text()).toBe("Fixed Fee Token Collector Account")
+        expect(fixedFee.get('thead').text()).toBe("Fixed Fee Fee Currency Collector Account")
         expect(fixedFee.get('tbody').text()).toBe(
             "5" + "0.0.2966295623423" + "0.0.617888" +
             "1" + "0.0.2966295623423" + "0.0.617889" +
@@ -450,7 +450,7 @@ describe("TokenDetails.vue", () => {
 
         const fractionalFee = customFees.findComponent(FractionalFeeTable)
         expect(fractionalFee.exists()).toBe(true)
-        expect(fractionalFee.get('thead').text()).toBe("Fractional Fee Token Collector Account Min Max Net")
+        expect(fractionalFee.get('thead').text()).toBe("Fractional Fee Fee Currency Collector Account Min Max Net")
         expect(fractionalFee.get('tbody').text()).toBe(
             "0.5%" + "0.0.2966295623423" + "0.0.617888" + "0.01" + "2" + "✓" +
             "0.1%" + "0.0.2966295623423" + "0.0.617889" + "0.01" + "2" +
@@ -494,7 +494,7 @@ describe("TokenDetails.vue", () => {
 
         const fixedFee = customFees.findComponent(FixedFeeTable)
         expect(fixedFee.exists()).toBe(true)
-        expect(fixedFee.get('thead').text()).toBe("Fixed Fee Token Collector Account")
+        expect(fixedFee.get('thead').text()).toBe("Fixed Fee Fee Currency Collector Account")
         expect(fixedFee.get('tbody').text()).toBe(
             "5" + "0.0.748383" + "Ħ Frens Kingdom" + "0.0.617888" +
             "1" + "0.0.748383" + "Ħ Frens Kingdom" + "0.0.617889" +
@@ -505,7 +505,7 @@ describe("TokenDetails.vue", () => {
 
         const royalteeFee = customFees.findComponent(RoyaltyFeeTable)
         expect(royalteeFee.exists()).toBe(true)
-        expect(royalteeFee.get('thead').text()).toBe("Percentage Fee Collector Account Fallback Fee Token")
+        expect(royalteeFee.get('thead').text()).toBe("Percentage Fee Collector Account Fallback Fee Fee Currency")
         expect(royalteeFee.get('tbody').text()).toBe(
             "0.5%" + "0.0.617888" + "500" + "0.0.748383" + "Ħ Frens Kingdom" +
             "0.1%" + "0.0.617889" + "100" + "0.0.748383" + "Ħ Frens Kingdom" +
