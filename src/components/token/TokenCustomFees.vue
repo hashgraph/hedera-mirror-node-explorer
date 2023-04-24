@@ -63,7 +63,7 @@
       </Property>
 
       <Property v-else id="royalteeFee" :full-width="true">
-        <template v-slot:name>Royalty Fees</template>
+        <template v-slot:name>Percentage & Fallback Fees</template>
         <template v-if="hasRoyaltyFees" v-slot:value>
           <div class="h-is-table-compact">
             <RoyaltyFeeTable class="h-is-table-compact" :analyzer="analyzer"/>

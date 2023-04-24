@@ -37,11 +37,11 @@
       aria-previous-label="Previous page"
   >
 
-    <o-table-column v-slot="props" field="amount" label="Amount">
+    <o-table-column v-slot="props" field="amount" label="Fractional Fee">
       <StringValue :string-value="makeAmount(props.row.amount)"/>
     </o-table-column>
 
-    <o-table-column v-slot="props" field="token" label="Token">
+    <o-table-column v-slot="props" field="token" label="Fee Currency">
       <TokenLink :show-extra="true" :token-id="props.row.denominating_token_id"/>
     </o-table-column>
 
@@ -100,7 +100,17 @@ export default defineComponent({
 
   setup(props) {
     const makeAmount = (fraction: FractionAmount): string => {
-      return fraction.numerator + '/' + fraction.denominator
+      let result: string
+      const formatter = new Intl.NumberFormat("en-US", {
+        style: 'percent',
+        maximumFractionDigits: 2
+      })
+      if (fraction.numerator && fraction.denominator) {
+        result = formatter.format(fraction.denominator ? fraction.numerator / fraction.denominator : 0)
+      } else {
+        result = ""
+      }
+      return result
     }
 
     return {

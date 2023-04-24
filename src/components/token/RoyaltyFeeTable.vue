@@ -37,7 +37,7 @@
       aria-previous-label="Previous page"
   >
 
-    <o-table-column v-slot="props" field="amount" label="Amount">
+    <o-table-column v-slot="props" field="amount" label="Percentage Fee">
       <StringValue :string-value="makeAmount(props.row.amount)"/>
     </o-table-column>
 
@@ -45,12 +45,16 @@
       <AccountLink :account-id="props.row.collector_account_id"/>
     </o-table-column>
 
-    <o-table-column v-slot="props" field="fallbackAmount" label="Fallback Amount">
-      <PlainAmount :amount="props.row.fallback_fee?.amount" none-label="None"/>
+    <o-table-column v-slot="props" field="fallbackAmount" label="Fallback Fee">
+      <PlainAmount v-if="props.row.fallback_fee?.denominating_token_id"
+                   :amount="props.row.fallback_fee?.amount" none-label="None"/>
+      <HbarAmount v-else :amount="props.row.fallback_fee?.amount" :show-extra="true"/>
     </o-table-column>
 
-    <o-table-column v-slot="props" field="fallbackToken" label="Fallback Token">
-      <TokenLink :token-id="props.row.fallback_fee?.denominating_token_id" :show-extra="true" :show-none="true"/>
+    <o-table-column v-slot="props" field="fallbackToken" label="Fee Currency">
+      <TokenLink v-if="props.row.fallback_fee?.denominating_token_id"
+                 :token-id="props.row.fallback_fee?.denominating_token_id" :show-extra="true"/>
+      <div v-else-if="props.row.fallback_fee?.amount">HBAR</div>
     </o-table-column>
 
   </o-table>
@@ -71,12 +75,14 @@ import {FractionAmount} from "@/schemas/HederaSchemas";
 import StringValue from "@/components/values/StringValue.vue";
 import {TokenInfoAnalyzer} from "@/components/token/TokenInfoAnalyzer";
 import TokenLink from "@/components/values/TokenLink.vue";
+import HbarAmount from "@/components/values/HbarAmount.vue";
 
 export default defineComponent({
 
   name: 'RoyaltyFeeTable',
 
   components: {
+    HbarAmount,
     TokenLink,
     StringValue,
     PlainAmount,
@@ -92,7 +98,17 @@ export default defineComponent({
 
   setup(props) {
     const makeAmount = (fraction: FractionAmount): string => {
-      return fraction.numerator + '/' + fraction.denominator
+      let result: string
+      const formatter = new Intl.NumberFormat("en-US", {
+        style: 'percent',
+        maximumFractionDigits: 2
+      })
+      if (fraction.numerator && fraction.denominator) {
+        result = formatter.format(fraction.denominator ? fraction.numerator / fraction.denominator : 0)
+      } else {
+        result = ""
+      }
+      return result
     }
 
     return {
