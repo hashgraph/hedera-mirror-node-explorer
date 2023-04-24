@@ -122,9 +122,9 @@
               </template>
             </Property>
             <Property id="code">
-              <template v-slot:name>Initcode</template>
+              <template v-slot:name>Runtime Bytecode</template>
               <template v-slot:value>
-                <ByteCodeValue :byte-code="contract?.bytecode ?? undefined"/>
+                <ByteCodeValue :byte-code="contract?.runtime_bytecode ?? undefined"/>
               </template>
             </Property>
       </template>
