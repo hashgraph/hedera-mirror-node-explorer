@@ -125,7 +125,7 @@ describe("StakingDialog.vue", () => {
         // console.log(stakingModal.text())
 
         expect(stakingModal.element.classList.contains("is-active")).toBeTruthy()
-        expect(stakingModal.get("#amountStakedValue").text()).toBe("0.31669471$0.0779")
+        expect(stakingModal.get("#amountStakedValue").text()).toBe("0.31669471$0.07792")
         expect(stakingModal.get("#currentlyStakedToValue").text()).toBe("Account 0.0.5")
         const buttons = stakingModal.findAll("button")
         expect(buttons.length).toBe(2) // Cancel and Change
@@ -227,7 +227,7 @@ describe("StakingDialog.vue", () => {
         // console.log(stakingModal.text())
 
         expect(stakingModal.element.classList.contains("is-active")).toBeTruthy()
-        expect(stakingModal.get("#amountStakedValue").text()).toBe("0.31669471$0.0779")
+        expect(stakingModal.get("#amountStakedValue").text()).toBe("0.31669471$0.07792")
         expect(stakingModal.get("#currentlyStakedToValue").text()).toBe("Account 0.0.5")
         const buttons = stakingModal.findAll("button")
         expect(buttons.length).toBe(2) // Cancel and Change
