@@ -89,7 +89,7 @@ export default defineComponent({
   }
 });
 
-const fractionDigits = 4
+const fractionDigits = 5
 
 const dollarFormatting = new Intl.NumberFormat('en-US', {
   style: 'currency',
