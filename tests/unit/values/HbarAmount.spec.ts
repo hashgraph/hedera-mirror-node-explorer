@@ -56,7 +56,7 @@ describe("HbarAmount.vue ", () => {
 
         const testTinybarAmount = 42
         const expectedHbarAmount = "0.00000042"
-        const expectedDollarAmount = "$0.0001"
+        const expectedDollarAmount = "$0.00001"
 
         const wrapper = mount(HbarAmount, {
             props: {
@@ -77,7 +77,7 @@ describe("HbarAmount.vue ", () => {
 
         const testTinybarAmount = 42
         const expectedHbarAmount = "0.00000042"
-        const expectedDollarAmount = "$0.0001"
+        const expectedDollarAmount = "$0.00001"
 
         const wrapper = mount(HbarAmount, {
             props: {

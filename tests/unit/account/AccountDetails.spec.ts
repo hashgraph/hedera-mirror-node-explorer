@@ -129,7 +129,7 @@ describe("AccountDetails.vue", () => {
         // console.log(wrapper.html())
 
         expect(wrapper.text()).toMatch("Account Account ID:" + SAMPLE_ACCOUNT.account)
-        expect(wrapper.get("#balanceValue").text()).toBe("23.42647909$5.7637998234231ĦFRENSKINGDOM")
+        expect(wrapper.get("#balanceValue").text()).toBe("23.42647909$5.76369998234231ĦFRENSKINGDOM")
         expect(wrapper.get("#keyValue").text()).toBe(
             "aa2f 7b3e 759f 4531 ec2e 7941 afa4 49e6 a6e6 10ef b52a dae8 9e9c d8e9 d40d dcbf" +
             "Copy to Clipboard" +
@@ -377,7 +377,7 @@ describe("AccountDetails.vue", () => {
 
         expect(wrapper.get("#stakedToName").text()).toBe("Staked to")
         expect(wrapper.get("#stakedToValue").text()).toBe("Node 1 - Hosted by Hedera | East Coast, USA")
-        expect(wrapper.get("#pendingRewardValue").text()).toBe("0.12345678$0.0304Period Started Nov 11, 2022, 00:00 UTC")
+        expect(wrapper.get("#pendingRewardValue").text()).toBe("0.12345678$0.03037Period Started Nov 11, 2022, 00:00 UTC")
         expect(wrapper.get("#declineRewardValue").text()).toBe("Accepted")
     });
 
@@ -427,7 +427,7 @@ describe("AccountDetails.vue", () => {
 
         expect(wrapper.get("#stakedToName").text()).toBe("Staked to")
         expect(wrapper.get("#stakedToValue").text()).toBe("Account 0.0.5Hosted by Hedera | Central, USA")
-        expect(wrapper.get("#pendingRewardValue").text()).toBe("0.00000000$0.0000")
+        expect(wrapper.get("#pendingRewardValue").text()).toBe("0.00000000$0.00000")
         expect(wrapper.find("#declineRewardValue").exists()).toBe(false)
     });
 });
