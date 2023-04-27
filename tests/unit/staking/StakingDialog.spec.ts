@@ -58,7 +58,7 @@ Object.defineProperty(window, 'matchMedia', {
 
 HMSF.forceUTC = true
 
-describe.skip("StakingDialog.vue", () => {
+describe("StakingDialog.vue", () => {
 
     it("provides valid account to stake to", async () => {
 
