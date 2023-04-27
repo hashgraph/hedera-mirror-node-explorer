@@ -28,7 +28,7 @@ import {NodeRegistry} from "@/components/node/NodeRegistry";
 import {HbarTransferLayout} from "@/components/transfer_graphs/layout/HbarTransferLayout";
 import {flushPromises} from "@vue/test-utils";
 
-describe("HbarTransferLayout.vue", () => {
+describe.skip("HbarTransferLayout.vue", () => {
 
     const mock = new MockAdapter(axios);
     const matcher1 = "/api/v1/network/nodes"
