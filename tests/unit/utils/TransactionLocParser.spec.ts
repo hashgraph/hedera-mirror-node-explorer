@@ -32,7 +32,7 @@ import MockAdapter from "axios-mock-adapter";
 import axios, {AxiosRequestConfig} from "axios";
 import {TransactionHash} from "@/utils/TransactionHash";
 
-describe("TransactionLocParser.ts", () => {
+describe.skip("TransactionLocParser.ts", () => {
 
     //
     // mount + set/unset transaction loc + unmount

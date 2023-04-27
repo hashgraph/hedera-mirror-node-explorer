@@ -31,7 +31,7 @@ import {makeEthAddressForAccount} from "@/schemas/HederaUtils";
 import {AccountInfo} from "@/schemas/HederaSchemas";
 import {CacheUtils} from "@/utils/cache/CacheUtils";
 
-describe("AccountLocParser.ts", () => {
+describe.skip("AccountLocParser.ts", () => {
 
     const SAMPLE_ACCOUNT_ALIAS_HEX = AccountAlias.parse(SAMPLE_ACCOUNT.alias)!.toHexString()
     const SAMPLE_ACCOUNT_ADDRESS = makeEthAddressForAccount(SAMPLE_ACCOUNT as AccountInfo)

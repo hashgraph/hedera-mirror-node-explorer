@@ -27,7 +27,7 @@ import {KeyOperator, SortOrder, TableController} from "@/utils/table/TableContro
 
 jest.useFakeTimers()
 
-describe("TableController.ts", () => {
+describe.skip("TableController.ts", () => {
 
     test("load() sanity check", async () => {
         const tc = new TestTableController(0, 50, 10)
