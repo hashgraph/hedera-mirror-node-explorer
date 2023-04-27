@@ -7,7 +7,7 @@
     "serve:https": "export NODE_OPTIONS=--openssl-legacy-provider && npm run install:branding && vue-cli-service serve --https",
     "serve:prod": "export NODE_OPTIONS=--openssl-legacy-provider && npm run install:branding && vue-cli-service serve --mode production --port 38920",
     "build": "export NODE_OPTIONS=--openssl-legacy-provider && npm run install:branding && vue-cli-service build",
-    "test:unit": "export NODE_OPTIONS=--openssl-legacy-provider && npm run install:branding && vue-cli-service test:unit --runInBand --forceExit",
+    "test:unit": "export NODE_OPTIONS=--openssl-legacy-provider && npm run install:branding && vue-cli-service test:unit --listTests",
     "cover:unit": "export NODE_OPTIONS=--openssl-legacy-provider && npm run install:branding && vue-cli-service test:unit --runInBand --collectCoverage",
     "test:e2e": "export NODE_OPTIONS=--openssl-legacy-provider && vue-cli-service test:e2e --url http://localhost:38920",
     "test:e2e:headless": "export NODE_OPTIONS=--openssl-legacy-provider && vue-cli-service test:e2e --headless --browser chrome --url http://localhost:38920",
