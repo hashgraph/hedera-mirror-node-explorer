@@ -12,5 +12,11 @@ module.exports = {
 
     transformIgnorePatterns: [
         "node_modules/(?!hashconnect|@bladelabs)"
-    ]
+    ],
+
+    setupFilesAfterEnv: [
+        "<rootDir>/tests/unit/globalSetup.js"
+    ],
+
+    logHeapUsage: true
 }
