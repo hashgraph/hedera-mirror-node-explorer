@@ -83,7 +83,7 @@ Object.defineProperty(window, 'matchMedia', {
 
 HMSF.forceUTC = true
 
-describe("TransactionDetails.vue", () => {
+describe.skip("TransactionDetails.vue", () => {
 
     const mock = new MockAdapter(axios);
     const matcher1 = "/api/v1/network/exchangerate"

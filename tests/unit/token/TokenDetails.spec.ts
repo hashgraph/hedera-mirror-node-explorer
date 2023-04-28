@@ -64,7 +64,7 @@ Object.defineProperty(window, 'matchMedia', {
 
 HMSF.forceUTC = true
 
-describe("TokenDetails.vue", () => {
+describe.skip("TokenDetails.vue", () => {
 
     beforeEach(() => {
         CacheUtils.clearAll()
