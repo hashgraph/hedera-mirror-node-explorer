@@ -46,7 +46,7 @@ export default defineComponent({
 
   components: {TokenExtra},
   props: {
-    amount: Number,
+    amount: BigInt,
     tokenId: String,
     showExtra: {
       type: Boolean,
@@ -69,7 +69,7 @@ export default defineComponent({
         } else if (initialLoading.value) {
           result = ""
         } else {
-          result = formatTokenAmount(0, response.value.decimals)
+          result = "0"
         }
       } else {
         result = ""
@@ -111,14 +111,13 @@ export default defineComponent({
   }
 });
 
-function formatTokenAmount(rawAmount: number, decimals: string|undefined): string {
+function formatTokenAmount(rawAmount: bigint, decimals: string|undefined): string {
   const decimalCount = computeDecimalCount(decimals) ?? 0
-  const amount = rawAmount / Math.pow(10, decimalCount)
   const amountFormatter = new Intl.NumberFormat('en-US', {
     minimumFractionDigits: decimalCount,
     maximumFractionDigits: decimalCount
   })
-  return amountFormatter.format(amount)
+  return amountFormatter.format(rawAmount)
 }
 
 function computeDecimalCount(decimals: string|undefined): number|null {
