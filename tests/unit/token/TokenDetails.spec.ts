@@ -49,7 +49,7 @@ import RoyaltyFeeTable from "@/components/token/RoyaltyFeeTable.vue";
 
 HMSF.forceUTC = true
 
-describe.skip("TokenDetails.vue", () => {
+describe("TokenDetails.vue", () => {
 
     it("Should display details of fungible token", async () => {
 
@@ -110,6 +110,9 @@ describe.skip("TokenDetails.vue", () => {
 
         expect(wrapper.vm.tokenBalanceTableController.mounted.value).toBe(false)
         expect(wrapper.vm.nftHolderTableController.mounted.value).toBe(false)
+
+        wrapper.unmount()
+        await flushPromises()
     });
 
     it("Should display details of non fungible token", async () => {
@@ -167,6 +170,9 @@ describe.skip("TokenDetails.vue", () => {
 
         expect(wrapper.vm.tokenBalanceTableController.mounted.value).toBe(false)
         expect(wrapper.vm.nftHolderTableController.mounted.value).toBe(false)
+
+        wrapper.unmount()
+        await flushPromises()
     });
 
     it("Should update when token id changes", async () => {
@@ -234,6 +240,9 @@ describe.skip("TokenDetails.vue", () => {
 
         expect(wrapper.vm.tokenBalanceTableController.mounted.value).toBe(false)
         expect(wrapper.vm.nftHolderTableController.mounted.value).toBe(false)
+
+        wrapper.unmount()
+        await flushPromises()
     });
 
     it("Should detect invalid token ID", async () => {
@@ -254,6 +263,9 @@ describe.skip("TokenDetails.vue", () => {
         // console.log(wrapper.text())
 
         expect(wrapper.get("#notificationBanner").text()).toBe("Invalid token ID: " + invalidTokenId)
+
+        wrapper.unmount()
+        await flushPromises()
     });
 
     it("Should display all token keys", async () => {
@@ -301,6 +313,9 @@ describe.skip("TokenDetails.vue", () => {
 
         expect(wrapper.vm.tokenBalanceTableController.mounted.value).toBe(false)
         expect(wrapper.vm.nftHolderTableController.mounted.value).toBe(false)
+
+        wrapper.unmount()
+        await flushPromises()
     });
 
     it("Should display no token keys", async () => {
@@ -348,6 +363,9 @@ describe.skip("TokenDetails.vue", () => {
 
         expect(wrapper.vm.tokenBalanceTableController.mounted.value).toBe(false)
         expect(wrapper.vm.nftHolderTableController.mounted.value).toBe(false)
+
+        wrapper.unmount()
+        await flushPromises()
     });
 
     it("Should display 'Token deleted' banner", async () => {
@@ -438,6 +456,9 @@ describe.skip("TokenDetails.vue", () => {
             "0.2%" + "0.0.2966295623423" + "0.0.617890" + "None" + "None")
 
         expect(customFees.findComponent(RoyaltyFeeTable).exists()).toBe(false)
+
+        wrapper.unmount()
+        await flushPromises()
     });
 
     it("Should display fixed fees and royaltee fee of token", async () => {
@@ -491,6 +512,9 @@ describe.skip("TokenDetails.vue", () => {
             "0.5%" + "0.0.617888" + "500" + "0.0.748383" + "Ħ Frens Kingdom" +
             "0.1%" + "0.0.617889" + "100" + "0.0.748383" + "Ħ Frens Kingdom" +
             "0.2%" + "0.0.617890" + "200" + "0.0.748383" + "Ħ Frens Kingdom")
+
+        wrapper.unmount()
+        await flushPromises()
     });
 
     it("Should not display the 'Custom Fees card'", async () => {
@@ -523,5 +547,8 @@ describe.skip("TokenDetails.vue", () => {
 
         const customFees = wrapper.findComponent(TokenCustomFees)
         expect(customFees.exists()).toBe(false)
+
+        wrapper.unmount()
+        await flushPromises()
     });
 });
