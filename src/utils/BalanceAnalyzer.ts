@@ -18,7 +18,7 @@
  *
  */
 
-import {computed, Ref, ref, watch, WatchStopHandle} from "vue";
+import {computed, ComputedRef, Ref, ref, watch, WatchStopHandle} from "vue";
 import {BalancesResponse, TokenBalance} from "@/schemas/HederaSchemas";
 import {BalanceCache} from "@/utils/cache/BalanceCache";
 
@@ -54,6 +54,10 @@ export class BalanceAnalyzer {
             this.timeoutID = -1
         }
     }
+
+    public readonly mounted: ComputedRef<Boolean> = computed(() => {
+        return this.watchHandle.value !== null
+    })
 
     public readonly hbarBalance: Ref<number|null> = computed(() => {
         const allBalances = this.response.value?.balances
