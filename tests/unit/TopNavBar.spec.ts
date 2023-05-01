@@ -57,6 +57,9 @@ describe("TopNavBar.vue", () => {
 
         const links = wrapper.findAll("a")
         expect(links.length).toBe(11)
+
+        wrapper.unmount()
+        await flushPromises()
     })
 
     it("Should display logos, page links and full search bar", async () => {
@@ -99,6 +102,7 @@ describe("TopNavBar.vue", () => {
         expect(logos[1].attributes('alt')).toBe("Modal close icon")
 
         wrapper.unmount()
+        await flushPromises()
     });
 
     it("Should display the drop-down Network selection menu", async () => {
@@ -127,6 +131,7 @@ describe("TopNavBar.vue", () => {
         expect(options[2].text()).toBe("PREVIEWNET")
 
         wrapper.unmount()
+        await flushPromises()
     });
 
 });

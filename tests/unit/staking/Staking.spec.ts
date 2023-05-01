@@ -358,6 +358,8 @@ describe("Staking.vue", () => {
         expect(testDriver.isConnected()).toBeFalsy()
         expect(testDriver.getAccountId()).toBe(null)
 
+        wrapper.unmount()
+        await flushPromises()
     })
 
 });

@@ -95,6 +95,9 @@ describe("BlockDetails.vue", () => {
         expect(table.get('tbody').text()).toBe("0.0.29624024@1646025139.152901498CRYPTO TRANSFER0.0.29624024\n" + "\n" +
             "123423\n" + "\n" +
             "0.0.296939115:12:31.6676 AMFeb 28, 2022, UTC")
+
+        wrapper.unmount()
+        await flushPromises()
     });
 
     it("Should display block details from block hash", async () => {
@@ -144,6 +147,9 @@ describe("BlockDetails.vue", () => {
         expect(table.get('tbody').text()).toBe("0.0.29624024@1646025139.152901498CRYPTO TRANSFER0.0.29624024\n" + "\n" +
             "123423\n" + "\n" +
             "0.0.296939115:12:31.6676 AMFeb 28, 2022, UTC")
+
+        wrapper.unmount()
+        await flushPromises()
     });
 
     it("Should update when block hash changes", async () => {
@@ -236,6 +242,9 @@ describe("BlockDetails.vue", () => {
             "CONTRACT CALL" +
             "Contract ID: 0.0.749723" +
             "2:42:34.8669 PMMar 7, 2022, UTC")
+
+        wrapper.unmount()
+        await flushPromises()
     });
 
     it("Should detect invalid block number", async () => {
@@ -269,6 +278,9 @@ describe("BlockDetails.vue", () => {
         expect(table.exists()).toBe(true)
         expect(table.get('thead').text()).toBe("ID Type Content Time & Date")
         expect(table.get('tbody').text()).toBe("")
+
+        wrapper.unmount()
+        await flushPromises()
     });
 
     it("Should detect invalid block hash", async () => {
@@ -302,6 +314,9 @@ describe("BlockDetails.vue", () => {
         expect(table.exists()).toBe(true)
         expect(table.get('thead').text()).toBe("ID Type Content Time & Date")
         expect(table.get('tbody').text()).toBe("")
+
+        wrapper.unmount()
+        await flushPromises()
     });
 
     it("Should detect non-existent block number", async () => {
@@ -338,6 +353,9 @@ describe("BlockDetails.vue", () => {
         expect(table.exists()).toBe(true)
         expect(table.get('thead').text()).toBe("ID Type Content Time & Date")
         expect(table.get('tbody').text()).toBe("")
+
+        wrapper.unmount()
+        await flushPromises()
     });
 
     it("Should detect non-existent block hash", async () => {
@@ -374,5 +392,8 @@ describe("BlockDetails.vue", () => {
         expect(table.exists()).toBe(true)
         expect(table.get('thead').text()).toBe("ID Type Content Time & Date")
         expect(table.get('tbody').text()).toBe("")
+
+        wrapper.unmount()
+        await flushPromises()
     });
 });

@@ -60,6 +60,9 @@ describe("TokenLink.vue", () => {
         expect(wrapper.text()).toBe(testTokenId)
         expect(wrapper.get("a").attributes("href")).toMatch(RegExp("/token/" + testTokenId + "$"))
         expect(wrapper.find(".h-is-extra-text").exists()).toBe(false)
+
+        wrapper.unmount()
+        await flushPromises()
     });
 
     it("props.topicId set and showExtra", async () => {
@@ -90,6 +93,9 @@ describe("TokenLink.vue", () => {
         expect(wrapper.text()).toBe(SAMPLE_TOKEN_DUDE.token_id + SAMPLE_TOKEN_DUDE.name)
         expect(wrapper.get("a").attributes("href")).toMatch(RegExp("/token/" + SAMPLE_TOKEN_DUDE.token_id + "$"))
         expect(wrapper.get(".h-is-extra-text").text()).toBe(SAMPLE_TOKEN_DUDE.name)
+
+        wrapper.unmount()
+        await flushPromises()
     });
 
     it("props.topicId unset and showNone", async () => {
@@ -107,5 +113,7 @@ describe("TokenLink.vue", () => {
 
         expect(wrapper.text()).toBe("None")
         expect(wrapper.find("a").exists()).toBe(false)
+
+        wrapper.unmount()
     });
 });

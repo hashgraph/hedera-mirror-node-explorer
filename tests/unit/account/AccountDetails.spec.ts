@@ -243,9 +243,6 @@ describe("AccountDetails.vue", () => {
         await flushPromises()
 
         expect(wrapper.vm.balanceCache.autoRefresh.value).toBe(false)
-
-        wrapper.unmount()
-        await flushPromises()
     });
 
     it("Should detect invalid account ID", async () => {
