@@ -25,13 +25,10 @@ import {flushPromises} from "@vue/test-utils";
 import {SAMPLE_BLOCK} from "../Mocks";
 import MockAdapter from "axios-mock-adapter";
 import axios from "axios";
-import {CacheUtils} from "@/utils/cache/CacheUtils";
 import {BlockLocParser} from "@/utils/parser/BlockLocParser";
 import {PathParam} from "@/utils/PathParam";
 
 describe("BlockLocParser.ts", () => {
-
-    beforeEach(() => CacheUtils.clearAll())
 
     //
     // mount + set/unset block loc + unmount
