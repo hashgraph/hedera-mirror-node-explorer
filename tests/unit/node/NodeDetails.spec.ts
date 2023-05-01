@@ -37,7 +37,6 @@ import Oruga from "@oruga-ui/oruga-next";
 import {HMSF} from "@/utils/HMSF";
 import NodeDetails from "@/pages/NodeDetails.vue";
 import {NodeRegistry} from "@/components/node/NodeRegistry";
-import {CacheUtils} from "@/utils/cache/CacheUtils";
 
 /*
     Bookmarks
@@ -49,8 +48,6 @@ import {CacheUtils} from "@/utils/cache/CacheUtils";
 HMSF.forceUTC = true
 
 describe("NodeDetails.vue", () => {
-
-    beforeEach(() => CacheUtils.clearAll())
 
     it("should display node details", async () => {
 

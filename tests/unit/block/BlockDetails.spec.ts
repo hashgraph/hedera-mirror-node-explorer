@@ -31,7 +31,6 @@ import NotificationBanner from "@/components/NotificationBanner.vue";
 import BlockDetails from "@/pages/BlockDetails.vue";
 import BlockTransactionTable from "@/components/block/BlockTransactionTable.vue";
 import {PathParam} from "@/utils/PathParam";
-import {CacheUtils} from "@/utils/cache/CacheUtils";
 
 /*
     Bookmarks
@@ -48,8 +47,6 @@ describe("BlockDetails.vue", () => {
     const BLOCK_NUMBER = BLOCK.number.toString()
     const BLOCK_HASH = BLOCK.hash
     const NORMALIZED_BLOCK_HASH = PathParam.parseBlockLoc(BLOCK_HASH)!.toString()
-
-    beforeEach(() => CacheUtils.clearAll())
 
     it("Should display block details from block number", async () => {
 

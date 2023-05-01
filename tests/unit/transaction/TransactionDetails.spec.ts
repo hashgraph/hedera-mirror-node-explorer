@@ -58,7 +58,6 @@ import Oruga from "@oruga-ui/oruga-next";
 import ContractResult from "@/components/contract/ContractResult.vue";
 import {base64DecToArr, byteToHex} from "@/utils/B64Utils";
 import {NodeRegistry} from "@/components/node/NodeRegistry";
-import {CacheUtils} from "@/utils/cache/CacheUtils";
 
 /*
     Bookmarks
@@ -79,8 +78,6 @@ describe.skip("TransactionDetails.vue", () => {
     const matcher3 = "api/v1/network/nodes"
     mock.onGet(matcher3).reply(200, SAMPLE_NETWORK_NODES);
     NodeRegistry.instance.reload()
-
-    beforeEach(() => CacheUtils.clearAll())
 
     it("Should display transaction details with token transfers and fee transfers", async () => {
 
