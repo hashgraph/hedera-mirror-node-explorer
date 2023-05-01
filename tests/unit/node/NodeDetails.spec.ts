@@ -37,7 +37,6 @@ import Oruga from "@oruga-ui/oruga-next";
 import {HMSF} from "@/utils/HMSF";
 import NodeDetails from "@/pages/NodeDetails.vue";
 import {NodeRegistry} from "@/components/node/NodeRegistry";
-import {CacheUtils} from "@/utils/cache/CacheUtils";
 
 /*
     Bookmarks
@@ -46,25 +45,9 @@ import {CacheUtils} from "@/utils/cache/CacheUtils";
 
  */
 
-Object.defineProperty(window, 'matchMedia', {
-    writable: true,
-    value: jest.fn().mockImplementation(query => ({
-        matches: false,
-        media: query,
-        onchange: null,
-        addListener: jest.fn(), // deprecated
-        removeListener: jest.fn(), // deprecated
-        addEventListener: jest.fn(),
-        removeEventListener: jest.fn(),
-        dispatchEvent: jest.fn(),
-    })),
-});
-
 HMSF.forceUTC = true
 
 describe("NodeDetails.vue", () => {
-
-    beforeEach(() => CacheUtils.clearAll())
 
     it("should display node details", async () => {
 

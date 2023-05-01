@@ -37,7 +37,6 @@ import ContractDetails from "@/pages/ContractDetails.vue";
 import {HMSF} from "@/utils/HMSF";
 import NotificationBanner from "@/components/NotificationBanner.vue";
 import {TransactionID} from "@/utils/TransactionID";
-import {CacheUtils} from "@/utils/cache/CacheUtils";
 import ContractResultTable from "@/components/contract/ContractResultTable.vue";
 
 /*
@@ -47,27 +46,9 @@ import ContractResultTable from "@/components/contract/ContractResultTable.vue";
 
  */
 
-Object.defineProperty(window, 'matchMedia', {
-    writable: true,
-    value: jest.fn().mockImplementation(query => ({
-        matches: false,
-        media: query,
-        onchange: null,
-        addListener: jest.fn(), // deprecated
-        removeListener: jest.fn(), // deprecated
-        addEventListener: jest.fn(),
-        removeEventListener: jest.fn(),
-        dispatchEvent: jest.fn(),
-    })),
-});
-
 HMSF.forceUTC = true
 
 describe("ContractDetails.vue", () => {
-
-    beforeEach(() => {
-        CacheUtils.clearAll()
-    })
 
     it("Should display contract details", async () => {
 

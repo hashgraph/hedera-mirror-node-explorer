@@ -58,7 +58,6 @@ import Oruga from "@oruga-ui/oruga-next";
 import ContractResult from "@/components/contract/ContractResult.vue";
 import {base64DecToArr, byteToHex} from "@/utils/B64Utils";
 import {NodeRegistry} from "@/components/node/NodeRegistry";
-import {CacheUtils} from "@/utils/cache/CacheUtils";
 
 /*
     Bookmarks
@@ -67,23 +66,9 @@ import {CacheUtils} from "@/utils/cache/CacheUtils";
 
  */
 
-Object.defineProperty(window, 'matchMedia', {
-    writable: true,
-    value: jest.fn().mockImplementation(query => ({
-        matches: false,
-        media: query,
-        onchange: null,
-        addListener: jest.fn(), // deprecated
-        removeListener: jest.fn(), // deprecated
-        addEventListener: jest.fn(),
-        removeEventListener: jest.fn(),
-        dispatchEvent: jest.fn(),
-    })),
-});
-
 HMSF.forceUTC = true
 
-describe.skip("TransactionDetails.vue", () => {
+describe("TransactionDetails.vue", () => {
 
     const mock = new MockAdapter(axios);
     const matcher1 = "/api/v1/network/exchangerate"
@@ -93,8 +78,6 @@ describe.skip("TransactionDetails.vue", () => {
     const matcher3 = "api/v1/network/nodes"
     mock.onGet(matcher3).reply(200, SAMPLE_NETWORK_NODES);
     NodeRegistry.instance.reload()
-
-    beforeEach(() => CacheUtils.clearAll())
 
     it("Should display transaction details with token transfers and fee transfers", async () => {
 
@@ -159,6 +142,8 @@ describe.skip("TransactionDetails.vue", () => {
         expect(wrapper.findComponent(NftTransferGraph).text()).toBe(
             "NFT TransfersNone")
 
+        wrapper.unmount()
+        await flushPromises()
     });
 
     it("Should display the contract result and logs (using consensus timestamp)", async () => {
@@ -219,6 +204,9 @@ describe.skip("TransactionDetails.vue", () => {
         expect(wrapper.get("#maxPriorityFeePerGasValue").text()).toBe("None")
         expect(wrapper.get("#gasPriceValue").text()).toBe("None")
         expect(wrapper.findAll("#logIndexValue").length).toBe(3)
+
+        wrapper.unmount()
+        await flushPromises()
     });
 
     it("Should display the contract result and logs (using transaction hash)", async () => {
@@ -282,6 +270,9 @@ describe.skip("TransactionDetails.vue", () => {
         expect(wrapper.get("#maxPriorityFeePerGasValue").text()).toBe("None")
         expect(wrapper.get("#gasPriceValue").text()).toBe("None")
         expect(wrapper.findAll("#logIndexValue").length).toBe(3)
+
+        wrapper.unmount()
+        await flushPromises()
     });
 
     it("Should update when consensus timestamp changes", async () => {
@@ -355,6 +346,8 @@ describe.skip("TransactionDetails.vue", () => {
         expect(wrapper.findComponent(TokenTransferGraph).text()).toContain("Token TransfersNone")
         expect(wrapper.findComponent(NftTransferGraph).text()).toContain("NFT TransfersNone")
 
+        wrapper.unmount()
+        await flushPromises()
     });
 
     it("Should display a notification banner for failed transaction", async () => {
@@ -390,6 +383,9 @@ describe.skip("TransactionDetails.vue", () => {
         const banner = wrapper.findComponent(NotificationBanner)
         expect(banner.exists()).toBe(true)
         expect(banner.text()).toBe("CONTRACT_REVERT_EXECUTED")
+
+        wrapper.unmount()
+        await flushPromises()
     });
 
     it("Should detect invalid transaction timestamp", async () => {
@@ -410,6 +406,9 @@ describe.skip("TransactionDetails.vue", () => {
         // console.log(wrapper.text())
 
         expect(wrapper.get("#notificationBanner").text()).toBe("Transaction with timestamp " + invalidTimestamp + " was not found")
+
+        wrapper.unmount()
+        await flushPromises()
     });
 
     it("Should display the name of the system contract called", async () => {
@@ -444,6 +443,9 @@ describe.skip("TransactionDetails.vue", () => {
         expect(wrapper.text()).toMatch(RegExp("^Transaction " + normalizeTransactionId(transaction.transaction_id, true)))
         expect(wrapper.get("#transactionTypeValue").text()).toBe("CONTRACT CALL")
         expect(wrapper.get("#entityId").text()).toBe("Contract IDHedera Token Service System Contract")
+
+        wrapper.unmount()
+        await flushPromises()
     });
 
     it("Should display a link to the scheduled transaction", async () => {
@@ -486,6 +488,9 @@ describe.skip("TransactionDetails.vue", () => {
         expect(link.get('a').attributes("href")).toBe(
             "/mainnet/transaction/" + SCHEDULED.consensus_timestamp
         )
+
+        wrapper.unmount()
+        await flushPromises()
     });
 
     it("Should display a link to the scheduling transaction", async () => {
@@ -528,6 +533,9 @@ describe.skip("TransactionDetails.vue", () => {
         expect(link.get('a').attributes("href")).toBe(
             "/mainnet/transaction/" + SCHEDULING.consensus_timestamp
         )
+
+        wrapper.unmount()
+        await flushPromises()
     });
 
     it("Should display a link to the parent transaction",
@@ -571,6 +579,9 @@ describe.skip("TransactionDetails.vue", () => {
             expect(link.get('a').attributes("href")).toBe(
                 "/mainnet/transaction/" + PARENT.consensus_timestamp
             )
+
+            wrapper.unmount()
+            await flushPromises()
         });
 
     it("Should display link to the child transactions", async () => {
@@ -616,6 +627,9 @@ describe.skip("TransactionDetails.vue", () => {
         expect(links[1].attributes("href")).toBe(
             "/mainnet/transaction/" + CHILD2.consensus_timestamp
         )
+
+        wrapper.unmount()
+        await flushPromises()
     });
 
     it("Should display transaction details with account/token association", async () => {
@@ -675,6 +689,8 @@ describe.skip("TransactionDetails.vue", () => {
         expect(wrapper.findComponent(TokenTransferGraph).text()).toBe("Token TransfersNone")
         expect(wrapper.findComponent(NftTransferGraph).text()).toBe("NFT TransfersNone")
 
+        wrapper.unmount()
+        await flushPromises()
     });
 
     it("Should display CONTRACT CALL details with link to (proxied) token as entity ID", async () => {
@@ -719,6 +735,9 @@ describe.skip("TransactionDetails.vue", () => {
         expect(wrapper.text()).toMatch(RegExp("CONTRACT CALL"))
         expect(wrapper.get("#entityIdName").text()).toBe("Token ID")
         expect(wrapper.get("#entityIdValue").text()).toMatch(entityId)
+
+        wrapper.unmount()
+        await flushPromises()
     });
 
     it("Should display ETHEREUM TX details with link to account as entity ID", async () => {
@@ -760,6 +779,9 @@ describe.skip("TransactionDetails.vue", () => {
         expect(wrapper.text()).toMatch(RegExp("ETHEREUM TRANSACTION"))
         expect(wrapper.get("#entityIdName").text()).toBe("Account ID")
         expect(wrapper.get("#entityIdValue").text()).toMatch(entityId)
+
+        wrapper.unmount()
+        await flushPromises()
     });
 
     it("Should display ETHEREUM TX details with link to contract as entity ID", async () => {
@@ -801,6 +823,9 @@ describe.skip("TransactionDetails.vue", () => {
         expect(wrapper.text()).toMatch(RegExp("ETHEREUM TRANSACTION"))
         expect(wrapper.get("#entityIdName").text()).toBe("Contract ID")
         expect(wrapper.get("#entityIdValue").text()).toMatch(entityId)
+
+        wrapper.unmount()
+        await flushPromises()
     });
 
 });

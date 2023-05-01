@@ -47,7 +47,6 @@ import NotificationBanner from "@/components/NotificationBanner.vue";
 import {TransactionID} from "@/utils/TransactionID";
 import TransactionFilterSelect from "@/components/transaction/TransactionFilterSelect.vue";
 import {NodeRegistry} from "@/components/node/NodeRegistry";
-import {CacheUtils} from "@/utils/cache/CacheUtils";
 
 /*
     Bookmarks
@@ -56,27 +55,11 @@ import {CacheUtils} from "@/utils/cache/CacheUtils";
 
  */
 
-Object.defineProperty(window, 'matchMedia', {
-    writable: true,
-    value: jest.fn().mockImplementation(query => ({
-        matches: false,
-        media: query,
-        onchange: null,
-        addListener: jest.fn(), // deprecated
-        removeListener: jest.fn(), // deprecated
-        addEventListener: jest.fn(),
-        removeEventListener: jest.fn(),
-        dispatchEvent: jest.fn(),
-    })),
-});
-
 HMSF.forceUTC = true
 
-describe.skip("AccountDetails.vue", () => {
+describe("AccountDetails.vue", () => {
 
     const ALIAS_HEX = "0x12200000fc0634e2ab455eff393f04819efa262fe5e6ab1c7ed1d4f85fbcd8e6e296"
-
-    beforeEach(() => CacheUtils.clearAll())
 
     it("Should display account details", async () => {
 
@@ -164,6 +147,9 @@ describe.skip("AccountDetails.vue", () => {
 
         expect(wrapper.find("#recentTransactions").exists()).toBe(true)
         expect(wrapper.findComponent(TransactionTable).exists()).toBe(true)
+
+        wrapper.unmount()
+        await flushPromises()
     });
 
     it("Should update when account id changes", async () => {
@@ -257,6 +243,9 @@ describe.skip("AccountDetails.vue", () => {
         await flushPromises()
 
         expect(wrapper.vm.balanceCache.autoRefresh.value).toBe(false)
+
+        wrapper.unmount()
+        await flushPromises()
     });
 
     it("Should detect invalid account ID", async () => {
@@ -277,6 +266,9 @@ describe.skip("AccountDetails.vue", () => {
         // console.log(wrapper.text())
 
         expect(wrapper.get("#notificationBanner").text()).toBe("Invalid account ID, address or alias: " + invalidAccountId)
+
+        wrapper.unmount()
+        await flushPromises()
     });
 
     it("Should display notification of deleted contract", async () => {
@@ -329,6 +321,9 @@ describe.skip("AccountDetails.vue", () => {
         const banner = wrapper.findComponent(NotificationBanner)
         expect(banner.exists()).toBe(true)
         expect(banner.text()).toBe("Account is deleted")
+
+        wrapper.unmount()
+        await flushPromises()
     });
 
     it("Should display account staking to node", async () => {
@@ -379,6 +374,9 @@ describe.skip("AccountDetails.vue", () => {
         expect(wrapper.get("#stakedToValue").text()).toBe("Node 1 - Hosted by Hedera | East Coast, USA")
         expect(wrapper.get("#pendingRewardValue").text()).toBe("0.12345678$0.03037Period Started Nov 11, 2022, 00:00 UTC")
         expect(wrapper.get("#declineRewardValue").text()).toBe("Accepted")
+
+        wrapper.unmount()
+        await flushPromises()
     });
 
     it("Should display account staking to account", async () => {
@@ -429,5 +427,8 @@ describe.skip("AccountDetails.vue", () => {
         expect(wrapper.get("#stakedToValue").text()).toBe("Account 0.0.5Hosted by Hedera | Central, USA")
         expect(wrapper.get("#pendingRewardValue").text()).toBe("0.00000000$0.00000")
         expect(wrapper.find("#declineRewardValue").exists()).toBe(false)
+
+        wrapper.unmount()
+        await flushPromises()
     });
 });
