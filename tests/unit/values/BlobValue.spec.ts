@@ -41,6 +41,9 @@ describe("BlobValue.vue", () => {
         await flushPromises()
 
         expect(wrapper.text()).toBe("")
+
+        wrapper.unmount()
+        await flushPromises()
     })
 
     it("blobValue undefined, showNone == true", async () => {
@@ -57,6 +60,9 @@ describe("BlobValue.vue", () => {
         await flushPromises()
 
         expect(wrapper.text()).toBe("None")
+
+        wrapper.unmount()
+        await flushPromises()
     })
 
     //
@@ -79,6 +85,9 @@ describe("BlobValue.vue", () => {
         await flushPromises()
 
         expect(wrapper.text()).toBe(BLOB_PLAIN_TEXT)
+
+        wrapper.unmount()
+        await flushPromises()
     })
 
     it("blobValue plain text, base64 == true", async () => {
@@ -95,6 +104,9 @@ describe("BlobValue.vue", () => {
         await flushPromises()
 
         expect(wrapper.text()).toBe(BLOB_PLAIN_TEXT)
+
+        wrapper.unmount()
+        await flushPromises()
     })
 
     //
@@ -119,6 +131,9 @@ describe("BlobValue.vue", () => {
 
         expect(wrapper.text()).toBe(BLOB_PLAIN_TEXT)
         expect(btoa(wrapper.text())).toBe(BLOB_BASE64)
+
+        wrapper.unmount()
+        await flushPromises()
     })
 
     it("blobValue invalid base64", async () => {
@@ -138,6 +153,9 @@ describe("BlobValue.vue", () => {
         await flushPromises()
 
         expect(wrapper.text()).toBe(invalidBase64)
+
+        wrapper.unmount()
+        await flushPromises()
     })
 
     //
@@ -161,6 +179,9 @@ describe("BlobValue.vue", () => {
 
         expect(wrapper.findComponent("a").text()).toBe(BLOB_URL)
         expect(wrapper.findComponent("a").attributes("href")).toBe(BLOB_URL)
+
+        wrapper.unmount()
+        await flushPromises()
     })
 
 

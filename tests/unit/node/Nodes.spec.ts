@@ -110,6 +110,9 @@ describe("Nodes.vue", () => {
             "Rewarded:7,000,000Not Rewarded:2,000,000Min:1,000,000Max:30,000,000" +
             tooltipRewardRate + "3%"
         )
+
+        wrapper.unmount()
+        await flushPromises()
     });
 
 });

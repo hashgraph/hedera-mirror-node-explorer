@@ -77,6 +77,9 @@ describe("AdminKeyDetails.vue", () => {
         expect(wrapper.text()).toMatch("Account Account ID:" + SAMPLE_ACCOUNT_PROTOBUF_KEY.account)
         expect(wrapper.get("#keyValue").text()).toBe("Complex Key (6 levels) See details")
 
+        wrapper.unmount()
+        await flushPromises()
+
     });
 
     test("AdminKeyDetails displaying complex (Protobuf) key", async () => {
@@ -124,6 +127,9 @@ describe("AdminKeyDetails.vue", () => {
             "ED25519: 78b769551a81d0fd10c3b5390abb3de92ed4878977a119c2be2039247d8182da" +
             "ED25519: 5b18a5aa454e99759a2e5d9c4f3239dbc3584f69ab26383470446874bb7f79d1"
         )
+
+        wrapper.unmount()
+        await flushPromises()
     });
 
     test("AdminKeyDetails displaying simple (ED25519) key", async () => {
@@ -154,5 +160,8 @@ describe("AdminKeyDetails.vue", () => {
         expect(complexKey.exists()).toBe(false)
 
         expect(key.text()).toBe("ED25519: aa2f7b3e759f4531ec2e7941afa449e6a6e610efb52adae89e9cd8e9d40ddcbf")
+
+        wrapper.unmount()
+        await flushPromises()
     });
 });

@@ -42,6 +42,8 @@ describe("ContractLink.vue", () => {
         expect(wrapper.findComponent("a").attributes("href")).toMatch(
             RegExp("/contract/" + testContractId + "$")
         )
+
+        wrapper.unmount()
     });
 
     test("topicId unset", async () => {
@@ -58,6 +60,8 @@ describe("ContractLink.vue", () => {
 
         expect(wrapper.text()).toBe("")
         expect(wrapper.findComponent("a").exists()).toBe(false)
+
+        wrapper.unmount()
     });
 
 });

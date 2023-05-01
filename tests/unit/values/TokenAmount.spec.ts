@@ -67,6 +67,9 @@ describe("TokenAmount.vue", () => {
         expect(wrapper.get('span').text()).toBe(expectedAmount.toString())
         expect(wrapper.get('a').attributes('href')).toMatch(RegExp("/token/" + SAMPLE_TOKEN.token_id + "$"))
         expect(wrapper.get('.h-is-extra-text').text()).toBe(SAMPLE_TOKEN.name)
+
+        wrapper.unmount()
+        await flushPromises()
     });
 
     it("amount; no tokenId", async () => {
@@ -87,6 +90,9 @@ describe("TokenAmount.vue", () => {
 
         expect(wrapper.get('span').text()).toBe("")
         expect(() => wrapper.get('a')).toThrowError()
+
+        wrapper.unmount()
+        await flushPromises()
     });
 
     it("amount; tokenId", async () => {
@@ -127,6 +133,9 @@ describe("TokenAmount.vue", () => {
         expect(wrapper.get('span').text()).toBe((testAmount / 100).toString())
         expect(wrapper.get('a').attributes('href')).toMatch(RegExp("/token/" + SAMPLE_TOKEN_DUDE.token_id + "$"))
         expect(wrapper.get('.h-is-extra-text').text()).toBe(SAMPLE_TOKEN_DUDE.name)
+
+        wrapper.unmount()
+        await flushPromises()
     });
 
 });

@@ -110,9 +110,6 @@ describe("TokenDetails.vue", () => {
 
         expect(wrapper.vm.tokenBalanceTableController.mounted.value).toBe(false)
         expect(wrapper.vm.nftHolderTableController.mounted.value).toBe(false)
-
-        wrapper.unmount()
-        await flushPromises()
     });
 
     it("Should display details of non fungible token", async () => {
@@ -170,9 +167,6 @@ describe("TokenDetails.vue", () => {
 
         expect(wrapper.vm.tokenBalanceTableController.mounted.value).toBe(false)
         expect(wrapper.vm.nftHolderTableController.mounted.value).toBe(false)
-
-        wrapper.unmount()
-        await flushPromises()
     });
 
     it("Should update when token id changes", async () => {
@@ -240,9 +234,6 @@ describe("TokenDetails.vue", () => {
 
         expect(wrapper.vm.tokenBalanceTableController.mounted.value).toBe(false)
         expect(wrapper.vm.nftHolderTableController.mounted.value).toBe(false)
-
-        wrapper.unmount()
-        await flushPromises()
     });
 
     it("Should detect invalid token ID", async () => {
@@ -313,9 +304,6 @@ describe("TokenDetails.vue", () => {
 
         expect(wrapper.vm.tokenBalanceTableController.mounted.value).toBe(false)
         expect(wrapper.vm.nftHolderTableController.mounted.value).toBe(false)
-
-        wrapper.unmount()
-        await flushPromises()
     });
 
     it("Should display no token keys", async () => {
@@ -363,9 +351,6 @@ describe("TokenDetails.vue", () => {
 
         expect(wrapper.vm.tokenBalanceTableController.mounted.value).toBe(false)
         expect(wrapper.vm.nftHolderTableController.mounted.value).toBe(false)
-
-        wrapper.unmount()
-        await flushPromises()
     });
 
     it("Should display 'Token deleted' banner", async () => {

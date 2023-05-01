@@ -39,6 +39,8 @@ describe("KeyValue.vue", () => {
         });
 
         expect(wrapper.text()).toBe("0001 0203 0405 0607 0809 0A0B 0C0D 0E0FCopy to Clipboard")
+
+        wrapper.unmount()
     });
 
     it("props.keyBytes unset, showNone=false", async () => {
@@ -54,6 +56,8 @@ describe("KeyValue.vue", () => {
         });
 
         expect(wrapper.text()).toBe("")
+
+        wrapper.unmount()
     });
 
     it("props.keyBytes unset, showNone=true", async () => {
@@ -70,6 +74,8 @@ describe("KeyValue.vue", () => {
         });
 
         expect(wrapper.text()).toBe("None")
+
+        wrapper.unmount()
     });
 
     it("should display 'None' with a mention on the line below", async () => {
@@ -87,5 +93,7 @@ describe("KeyValue.vue", () => {
         });
 
         expect(wrapper.text()).toBe("NoneThis should be displayed below None")
+
+        wrapper.unmount()
     });
 });

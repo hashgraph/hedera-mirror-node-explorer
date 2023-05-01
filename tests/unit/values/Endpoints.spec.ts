@@ -36,6 +36,9 @@ describe("Endpoint.vue", () => {
         });
         await flushPromises()
         expect(wrapper.text()).toBe("None")
+
+        wrapper.unmount()
+        await flushPromises()
     })
 
     it("should output 'None' when the array of endpoints is empty", async () => {
@@ -49,6 +52,9 @@ describe("Endpoint.vue", () => {
         });
         await flushPromises()
         expect(wrapper.text()).toBe("None")
+
+        wrapper.unmount()
+        await flushPromises()
     })
 
     it("should not output an endpoint where the address is undefined", async () => {
@@ -62,6 +68,9 @@ describe("Endpoint.vue", () => {
         });
         await flushPromises()
         expect(wrapper.text()).toBe("3.133.213.146:50211")
+
+        wrapper.unmount()
+        await flushPromises()
     })
 
     it("should output an endpoint address alone when port is undefined", async () => {
@@ -77,6 +86,9 @@ describe("Endpoint.vue", () => {
         expect(wrapper.text()).toBe(
             "3.133.213.146:50211" +
             "3.133.213.147")
+
+        wrapper.unmount()
+        await flushPromises()
     })
 
     it("should ouput <address>:<port> for all 5 endpoints", async () => {
@@ -95,6 +107,9 @@ describe("Endpoint.vue", () => {
             "35.231.208.148:0" +
             "35.231.208.148:50211" +
             "35.231.208.148:50212")
+
+        wrapper.unmount()
+        await flushPromises()
     })
 
 })
