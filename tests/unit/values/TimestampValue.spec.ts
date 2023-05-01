@@ -44,6 +44,9 @@ describe("TimestampValue.vue", () => {
         await flushPromises()
 
         expect(wrapper.text()).toBe("")
+
+        wrapper.unmount()
+        await flushPromises()
     })
 
     test("timestamp undefined, showNone == true", async () => {
@@ -60,6 +63,9 @@ describe("TimestampValue.vue", () => {
         await flushPromises()
 
         expect(wrapper.text()).toBe("None")
+
+        wrapper.unmount()
+        await flushPromises()
     })
 
     //
@@ -86,6 +92,9 @@ describe("TimestampValue.vue", () => {
         await flushPromises()
 
         expect(wrapper.text()).toBe(TIMESTAMP_STRING)
+
+        wrapper.unmount()
+        await flushPromises()
     })
 
     //
@@ -109,6 +118,9 @@ describe("TimestampValue.vue", () => {
         await flushPromises()
 
         expect(wrapper.text()).toBe(TIMESTAMP_STRING)
+
+        wrapper.unmount()
+        await flushPromises()
     })
 
     //
@@ -132,6 +144,9 @@ describe("TimestampValue.vue", () => {
         await flushPromises()
 
         expect(wrapper.text()).toBe(INFINITE_STRING)
+
+        wrapper.unmount()
+        await flushPromises()
     })
 })
 

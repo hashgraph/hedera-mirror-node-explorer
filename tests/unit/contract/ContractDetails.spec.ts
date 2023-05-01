@@ -101,6 +101,9 @@ describe("ContractDetails.vue", () => {
         expect(wrapper.get("#code").text()).toBe("Runtime BytecodeNone")
 
         expect(wrapper.findComponent(ContractResultTable).exists()).toBe(true)
+
+        wrapper.unmount()
+        await flushPromises()
     });
 
     it("Should display recent contract calls table in contract details", async () => {
@@ -155,6 +158,9 @@ describe("ContractDetails.vue", () => {
         expect(cells[1].text()).toBe("0x00000000000000000000000000000000000004ec(0.0.1260)")
         expect(cells[2].text()).toBe("None")
         expect(cells[3].text()).toBe("0.00000000")
+
+        wrapper.unmount()
+        await flushPromises()
     });
 
     it("Should update when contract id changes", async () => {
@@ -221,6 +227,8 @@ describe("ContractDetails.vue", () => {
         expect(wrapper.get("#fileValue").text()).toBe("0.0.803267")
         expect(wrapper.get("#evmAddress").text()).toBe("EVM Address:0x00000000000000000000000000000000000b70cfCopy to Clipboard")
 
+        wrapper.unmount()
+        await flushPromises()
     });
 
     // TODO: re-enable after Feb 9th
@@ -260,6 +268,9 @@ describe("ContractDetails.vue", () => {
         const banner = wrapper.findComponent(NotificationBanner)
         expect(banner.exists()).toBe(true)
         expect(banner.text()).toBe("Contract has expired and is in grace period")
+
+        wrapper.unmount()
+        await flushPromises()
     });
 
     // TODO: remove after Feb 9th
@@ -298,6 +309,9 @@ describe("ContractDetails.vue", () => {
 
         const banner = wrapper.findComponent(NotificationBanner)
         expect(banner.exists()).toBe(false)
+
+        wrapper.unmount()
+        await flushPromises()
     });
 
     it("Should display notification of deleted contract", async () => {
@@ -336,6 +350,9 @@ describe("ContractDetails.vue", () => {
         const banner = wrapper.findComponent(NotificationBanner)
         expect(banner.exists()).toBe(true)
         expect(banner.text()).toBe("Contract is deleted")
+
+        wrapper.unmount()
+        await flushPromises()
     });
 
     it("Should detect invalid contract ID", async () => {
@@ -356,6 +373,9 @@ describe("ContractDetails.vue", () => {
         // console.log(wrapper.text())
 
         expect(wrapper.get("#notificationBanner").text()).toBe("Invalid contract ID: " + invalidContractId)
+
+        wrapper.unmount()
+        await flushPromises()
     });
 });
 

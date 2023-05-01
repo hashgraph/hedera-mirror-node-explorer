@@ -36,6 +36,9 @@ describe("AliasValue.vue", () => {
         await flushPromises()
 
         expect(wrapper.text()).toBe("None")
+
+        wrapper.unmount()
+        await flushPromises()
     })
 
     const ALIAS_B32 = "CIQEN25ORE2F73TRYSYMMBVPR2HU4PPFGTQENJTIGVLLELP4PZ2M76A"
@@ -54,6 +57,9 @@ describe("AliasValue.vue", () => {
         await flushPromises()
 
         expect(wrapper.text()).toBe(ALIAS_HEX)
+
+        wrapper.unmount()
+        await flushPromises()
     })
 })
 

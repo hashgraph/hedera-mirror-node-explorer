@@ -68,6 +68,9 @@ describe("TokenExtra.vue", () => {
         await flushPromises()
         expect(wrapper.get('a').attributes('href')).toMatch(RegExp("/token/" + SAMPLE_TOKEN.token_id + "$"))
         expect(wrapper.get('.h-is-extra-text').text()).toBe(SAMPLE_TOKEN.name)
+
+        wrapper.unmount()
+        await flushPromises()
     });
 
 });

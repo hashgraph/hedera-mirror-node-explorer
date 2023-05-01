@@ -33,6 +33,9 @@ describe("HexaValue.vue", () => {
         await flushPromises()
 
         expect(wrapper.text()).toBe("")
+
+        wrapper.unmount()
+        await flushPromises()
     });
 
     it("props.byteString unset, showNone == true", async () => {
@@ -45,6 +48,9 @@ describe("HexaValue.vue", () => {
         await flushPromises()
 
         expect(wrapper.text()).toBe("None")
+
+        wrapper.unmount()
+        await flushPromises()
     });
 
     it("should display 'None' with a mention on the line below", async () => {
@@ -58,6 +64,9 @@ describe("HexaValue.vue", () => {
         await flushPromises()
 
         expect(wrapper.text()).toBe("NoneThis should be displayed below None")
+
+        wrapper.unmount()
+        await flushPromises()
     });
 
     //
@@ -88,6 +97,9 @@ describe("HexaValue.vue", () => {
         // ... triggers "Cannot read properties of undefined (reading 'writeText')" exception
         // because execCommand() is not supported by vue test utils.
         // Clipboard copy must be tested in e2e tests
+
+        wrapper.unmount()
+        await flushPromises()
     });
 
     //
@@ -106,6 +118,9 @@ describe("HexaValue.vue", () => {
         // console.log(wrapper.html())
 
         expect(wrapper.text()).toBe("0102 0304 0506 0708 090A 0B0C 0D0E 0FCopy to Clipboard")
+
+        wrapper.unmount()
+        await flushPromises()
     });
 
 

@@ -75,6 +75,9 @@ describe("Topics.vue", () => {
             "3:14:06.1051 PMMar 7, 2022, UTC" +
             "Mirror Node acceptance test: 2022-03-07T15:14:18.167555058Z Create Topic"
         )
+
+        wrapper.unmount()
+        await flushPromises()
     });
 
 });

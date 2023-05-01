@@ -52,6 +52,9 @@ describe("AccountLink.vue", () => {
         expect(wrapper.findComponent("a").attributes("href")).toMatch(
             RegExp("/account/" + testAccountId)
         )
+
+        wrapper.unmount()
+        await flushPromises()
     });
 
 
@@ -69,6 +72,9 @@ describe("AccountLink.vue", () => {
 
         expect(wrapper.text()).toBe("")
         expect(wrapper.findComponent("a").exists()).toBe(false)
+
+        wrapper.unmount()
+        await flushPromises()
     });
 
 
@@ -87,6 +93,9 @@ describe("AccountLink.vue", () => {
 
         expect(wrapper.text()).toBe("None")
         expect(wrapper.findComponent("a").exists()).toBe(false)
+
+        wrapper.unmount()
+        await flushPromises()
     });
 
 
@@ -110,6 +119,9 @@ describe("AccountLink.vue", () => {
 
         expect(wrapper.text()).toBe(testAccountId + testExtra)
         expect(wrapper.find(".h-is-extra-text").text()).toBe(testExtra)
+
+        wrapper.unmount()
+        await flushPromises()
     });
 
 

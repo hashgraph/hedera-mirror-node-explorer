@@ -97,6 +97,8 @@ describe("NodeDetails.vue", () => {
         expect(wrapper.get("#notRewardedPercent").text()).toBe("20% of total")
         expect(wrapper.get("#stakingPeriod").text()).toBe("Current Staking Period24HOURS")
 
+        wrapper.unmount()
+        await flushPromises()
     });
 
     it("Should update when account id changes", async () => {
@@ -185,6 +187,9 @@ describe("NodeDetails.vue", () => {
         expect(wrapper.get("#autoRenewPeriodValue").text()).toBe("Not yet enabled")
         expect(wrapper.get("#maxAutoAssociationValue").text()).toBe("10")
         expect(wrapper.get("#receiverSigRequiredValue").text()).toBe("true")
+
+        wrapper.unmount()
+        await flushPromises()
     });
 
     it("Should detect invalid account ID", async () => {
@@ -205,5 +210,8 @@ describe("NodeDetails.vue", () => {
         // console.log(wrapper.text())
 
         expect(wrapper.get("#notificationBanner").text()).toBe("Invalid account ID, address or alias: " + invalidAccountId)
+
+        wrapper.unmount()
+        await flushPromises()
     });
 });

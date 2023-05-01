@@ -113,6 +113,7 @@ describe("App.vue", () => {
         expect(logos[5].attributes('alt')).toBe("Sponsor Logo")
 
         wrapper.unmount()
+        await flushPromises()
     });
 
 });
