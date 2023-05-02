@@ -130,3 +130,10 @@ export function makeAnnualizedRate(node: NetworkNode): string {
     })
     return formatter.format(makeRewardRate(node) * 365);
 }
+
+export function isCouncilNode(node: NetworkNode): boolean {
+    // TEMPORARY IMPLEMENTATION
+    // This will need to rely on a new specific flag to be provided by REST API
+    const accountNum = EntityID.parse(node.node_account_id ?? "")?.num
+    return accountNum ? accountNum < 1000 : true
+}
