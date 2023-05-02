@@ -24,7 +24,7 @@
 
 <template>
 
-  <div id="node-table">
+  <div v-if="nodes" id="node-table">
     <o-table
         :data="nodes"
         :hoverable="true"
@@ -56,7 +56,7 @@
 
       <o-table-column v-slot="props" field="description" label="Description">
         <div class="should-wrap regular-node-column is-inline-block">
-          <StringValue :string-value="makeDescription(props.row)"/>
+          <StringValue :string-value="makeNodeDescription(props.row)"/>
         </div>
       </o-table-column>
 
@@ -121,7 +121,7 @@
     </o-table>
   </div>
 
-  <EmptyTable v-if="!nodes.length"/>
+  <EmptyTable v-if="nodes && nodes.length == 0"/>
 
 </template>
 
@@ -131,16 +131,15 @@
 
 <script lang="ts">
 
-import {defineComponent, inject, PropType, ref} from 'vue';
+import {defineComponent, inject, PropType} from 'vue';
 import {NetworkNode} from "@/schemas/HederaSchemas";
 import {ORUGA_MOBILE_BREAKPOINT} from '@/App.vue';
 import EmptyTable from "@/components/EmptyTable.vue";
 import HbarAmount from "@/components/values/HbarAmount.vue";
 import StakeRange from "@/components/node/StakeRange.vue";
 import {routeManager} from "@/router";
-import {NodeRegistry} from "@/components/node/NodeRegistry";
 import StringValue from "@/components/values/StringValue.vue";
-import {makeAnnualizedRate, makeStakePercentage, makeUnclampedStake} from "@/schemas/HederaUtils";
+import {isCouncilNode, makeNodeDescription, makeAnnualizedRate, makeStakePercentage, makeUnclampedStake} from "@/schemas/HederaUtils";
 
 
 //
@@ -170,8 +169,6 @@ export default defineComponent({
     const isTouchDevice = inject('isTouchDevice', false)
     const isMediumScreen = inject('isMediumScreen', true)
 
-    const isCouncilNode = (node: NetworkNode) => NodeRegistry.isCouncilNode(ref(node.node_id ?? null), ref(null))
-    const makeDescription = (node: NetworkNode) => NodeRegistry.getDescription(ref(node.node_id ?? null), ref(null))
     const makeWeightPercentage = (node: NetworkNode) => {
       return node.stake && props.stakeTotal ? makeStakePercentage(node, props.stakeTotal) : 0
     }
@@ -188,7 +185,7 @@ export default defineComponent({
       isTouchDevice,
       isMediumScreen,
       isCouncilNode,
-      makeDescription,
+      makeNodeDescription,
       makeUnclampedStake,
       makeWeightPercentage,
       makeAnnualizedRate,

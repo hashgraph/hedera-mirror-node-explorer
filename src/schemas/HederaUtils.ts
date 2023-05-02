@@ -63,6 +63,16 @@ export function makeTokenSymbol(token: TokenInfo | null, maxLength: number): str
     return candidate1 ?? candidate2 ?? candidate3 ?? candidate4 ?? token?.token_id ?? "?"
 }
 
+export function makeNodeDescription(node: NetworkNode): string {
+    let result: string
+    if (node.description) {
+        result = node.description
+    } else {
+        result = makeDefaultNodeDescription(node.node_id ?? null)
+    }
+    return result
+}
+
 export function makeDefaultNodeDescription(nodeId: number | null): string {
     return "Node " + nodeId ?? "?"
 }

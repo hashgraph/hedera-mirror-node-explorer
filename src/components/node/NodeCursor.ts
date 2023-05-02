@@ -24,7 +24,7 @@ import {NodeRegistry} from "@/components/node/NodeRegistry";
 import {
     isCouncilNode,
     makeAnnualizedRate,
-    makeDefaultNodeDescription,
+    makeNodeDescription,
     makeRewardRate,
     makeUnclampedStake
 } from "@/schemas/HederaUtils";
@@ -60,19 +60,8 @@ export class NodeCursor {
         return this.node.value !== null ? isCouncilNode(this.node.value) : true
     })
 
-    public readonly nodeDescription: ComputedRef<string|null> = computed(() => {
-        let result: string|null
-        if (this.node.value !== null) {
-            if (this.node.value.description) {
-                result = this.node.value.description
-            } else {
-                result = makeDefaultNodeDescription(this.node.value?.node_id ?? null)
-            }
-        } else {
-            result = null
-        }
-        return result
-    })
+    public readonly nodeDescription: ComputedRef<string|null> = computed(
+        () => this.node.value !== null ? makeNodeDescription(this.node.value) : null)
 
     public readonly shortNodeDescription: ComputedRef<string|null> = computed(
         () => this.nodeDescription.value ? makeShortNodeDescription(this.nodeDescription.value) : null)
