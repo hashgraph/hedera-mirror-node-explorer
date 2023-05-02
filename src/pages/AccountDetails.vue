@@ -280,7 +280,7 @@ import DashboardCard from "@/components/DashboardCard.vue";
 import HbarAmount from "@/components/values/HbarAmount.vue";
 import TokenAmount from "@/components/values/TokenAmount.vue";
 import BlobValue from "@/components/values/BlobValue.vue";
-import {BalanceCache} from "@/components/account/BalanceCache";
+import {BalanceAnalyzer} from "@/utils/BalanceAnalyzer";
 import Footer from "@/components/Footer.vue";
 import Property from "@/components/Property.vue";
 import NotificationBanner from "@/components/NotificationBanner.vue";
@@ -392,17 +392,17 @@ export default defineComponent({
     // balanceCache
     //
 
-    const balanceCache = new BalanceCache(accountLocParser.accountId, 10000)
-    onMounted(() => balanceCache.mounted.value = true)
-    onBeforeUnmount(() => balanceCache.mounted.value = false)
+    const balanceAnalyzer = new BalanceAnalyzer(accountLocParser.accountId, 10000)
+    onMounted(() => balanceAnalyzer.mount())
+    onBeforeUnmount(() => balanceAnalyzer.unmount())
     const displayAllTokenLinks = computed(() => {
-      const tokenCount = balanceCache.tokenBalances.value?.length ?? 0
+      const tokenCount = balanceAnalyzer.tokenBalances.value?.length ?? 0
       return tokenCount > MAX_TOKEN_BALANCES
     })
     const elapsed = computed(() => {
           let result: string | null
-          if (balanceCache.balanceTimeStamp.value) {
-            const duration = Duration.decompose(new Date().getTime() / 1000 - Number.parseFloat(balanceCache.balanceTimeStamp.value))
+          if (balanceAnalyzer.balanceTimeStamp.value) {
+            const duration = Duration.decompose(new Date().getTime() / 1000 - Number.parseFloat(balanceAnalyzer.balanceTimeStamp.value))
             if (duration.minutes >= 2) {
               result = duration.minutes + "min"
             } else if (duration.minutes == 1) {
@@ -478,10 +478,10 @@ export default defineComponent({
       accountInfo: accountLocParser.accountDescription,
       nodeId: accountLocParser.nodeId,
       ethereumAddress: accountLocParser.ethereumAddress,
-      balanceTimeStamp: balanceCache.balanceTimeStamp,
-      hbarBalance: balanceCache.hbarBalance,
-      tokenBalances: balanceCache.tokenBalances,
-      balanceCache: balanceCache, // For testing purpose
+      balanceTimeStamp: balanceAnalyzer.balanceTimeStamp,
+      hbarBalance: balanceAnalyzer.hbarBalance,
+      tokenBalances: balanceAnalyzer.tokenBalances,
+      balanceAnalyzer, // For testing purpose
       displayAllTokenLinks,
       elapsed,
       showContractVisible,
