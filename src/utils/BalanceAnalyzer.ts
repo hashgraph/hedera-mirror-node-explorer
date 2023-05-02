@@ -55,7 +55,7 @@ export class BalanceAnalyzer {
         }
     }
 
-    public readonly mounted: ComputedRef<Boolean> = computed(() => {
+    public readonly mounted: ComputedRef<boolean> = computed(() => {
         return this.watchHandle.value !== null
     })
 
