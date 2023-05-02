@@ -35,7 +35,6 @@ export class BalanceCache extends EntityCache<string, BalancesResponse | null> {
         try {
             const params = {
                 'account.id': accountId,
-                limit: 1,
             }
             const response = await axios.get<BalancesResponse>("api/v1/balances", { params: params} )
             result = Promise.resolve(response.data)
