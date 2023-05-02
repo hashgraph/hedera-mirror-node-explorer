@@ -92,15 +92,14 @@
 
 <script lang="ts">
 
-import {computed, defineComponent, inject, onBeforeUnmount, onMounted, ref} from 'vue';
+import {computed, defineComponent, inject, onBeforeUnmount, onMounted} from 'vue';
 import DashboardCard from "@/components/DashboardCard.vue";
 import Footer from "@/components/Footer.vue";
 import NodeTable from "@/components/node/NodeTable.vue";
 import NetworkDashboardItem from "@/components/node/NetworkDashboardItem.vue";
 import {formatSeconds} from "@/utils/Duration";
-import {StakingPeriod} from "@/utils/StakingPeriod";
 import {StakeCache} from "@/utils/cache/StakeCache";
-import {NodeRegistry} from "@/components/node/NodeRegistry";
+import {NetworkAnalyzer} from "@/utils/analyzer/NetworkAnalyzer";
 
 export default defineComponent({
   name: 'Nodes',
@@ -120,56 +119,29 @@ export default defineComponent({
     const isSmallScreen = inject('isSmallScreen', true)
     const isTouchDevice = inject('isTouchDevice', false)
 
+    const networkNodeAnalyzer = new NetworkAnalyzer()
+    onMounted(() => networkNodeAnalyzer.mount())
+    onBeforeUnmount(() => networkNodeAnalyzer.unmount())
+
     const stakeLookup = StakeCache.instance.makeLookup()
     onMounted(() => stakeLookup.mount())
     onBeforeUnmount(() => stakeLookup.unmount())
 
     const stakeTotal = computed(() => stakeLookup.entity.value?.stake_total ?? 0)
 
-    const stakingPeriod = ref<StakingPeriod | null>(null)
-
-    const durationMin = computed(() => stakingPeriod.value?.durationMin ??  null)
-    const elapsedMin = computed(() => stakingPeriod.value?.elapsedMin ?? null)
-    const remainingMin = computed(() => stakingPeriod.value?.remainingMin ?? null)
-
-    let intervalHandle = -1
-
-    onMounted(() => {
-      updateStakingPeriod()
-      intervalHandle = window.setInterval( () => updateStakingPeriod(), 10000)
-    })
-
-    onBeforeUnmount(() => {
-      window.clearInterval(intervalHandle)
-      intervalHandle = -1
-    })
-
-    const updateStakingPeriod = () => {
-      let startTimeInSec, endTimeInSec
-      const node0 = NodeRegistry.instance.node0.value
-      if (node0) {
-        startTimeInSec = node0.staking_period?.from ? Number.parseInt(node0.staking_period?.from) : null
-        endTimeInSec = node0.staking_period?.to ? Number.parseInt(node0.staking_period?.to) : null
-      } else {
-        startTimeInSec = null
-        endTimeInSec = null
-      }
-      stakingPeriod.value = new StakingPeriod(startTimeInSec, endTimeInSec)
-    }
-
     const makeFloorHbarAmount = (tinyBarAmount: number) => Math.floor((tinyBarAmount ?? 0) / 100000000).toLocaleString('en-US')
 
     return {
       isSmallScreen,
       isTouchDevice,
-      nodes: NodeRegistry.instance.nodes,
-      totalNodes: NodeRegistry.instance.nodeCount,
+      nodes: networkNodeAnalyzer.nodes,
+      totalNodes: networkNodeAnalyzer.nodeCount,
       stakeTotal,
-      unclampedStakeTotal: NodeRegistry.instance.unclampedStakeTotal,
-      totalRewarded: NodeRegistry.instance.totalRewarded,
-      durationMin,
-      elapsedMin,
-      remainingMin,
+      unclampedStakeTotal: networkNodeAnalyzer.unclampedStakeTotal,
+      totalRewarded: networkNodeAnalyzer.totalRewarded,
+      durationMin: networkNodeAnalyzer.durationMin,
+      elapsedMin: networkNodeAnalyzer.elapsedMin,
+      remainingMin: networkNodeAnalyzer.remainingMin,
       makeFloorHbarAmount,
       formatSeconds
     }
