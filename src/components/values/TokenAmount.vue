@@ -113,12 +113,11 @@ export default defineComponent({
 
 function formatTokenAmount(rawAmount: number, decimals: string|undefined): string {
   const decimalCount = computeDecimalCount(decimals) ?? 0
-  const amount = rawAmount / Math.pow(10, decimalCount)
   const amountFormatter = new Intl.NumberFormat('en-US', {
     minimumFractionDigits: decimalCount,
     maximumFractionDigits: decimalCount
   })
-  return amountFormatter.format(amount)
+  return amountFormatter.format(rawAmount)
 }
 
 function computeDecimalCount(decimals: string|undefined): number|null {
