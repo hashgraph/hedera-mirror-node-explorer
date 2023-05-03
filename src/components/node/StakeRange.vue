@@ -55,7 +55,7 @@
 
 import {computed, defineComponent, PropType} from "vue";
 import {NetworkNode} from "@/schemas/HederaSchemas";
-import {NodeRegistry} from "@/components/node/NodeRegistry";
+import {NetworkAnalyzer} from "@/utils/analyzer/NetworkAnalyzer";
 
 const progressSize = 250 // size (width) of progress in pixels
 
@@ -66,6 +66,10 @@ export default defineComponent({
 
   props: {
     node: Object as PropType<NetworkNode | undefined>,
+    networkAnalyzer: {
+        type: Object as PropType<NetworkAnalyzer>,
+        required: true
+    }
   },
 
   setup(props) {
@@ -80,7 +84,7 @@ export default defineComponent({
 
     // Alternative implementation for absolute stake range
     const progressScale = computed(
-        () => NodeRegistry.instance.stakeScaleEnd.value)
+        () => props.networkAnalyzer.stakeScaleEnd.value)
 
     // Alternative implementation for relative stake range
     // const progressScale = computed(

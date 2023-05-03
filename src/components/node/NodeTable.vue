@@ -87,7 +87,7 @@
       <o-table-column id="stake-range-column" v-slot="props" field="stake-range" label="Stake Range" position="right"
                       style="padding-bottom: 2px; padding-top: 12px;">
         <o-tooltip :delay="tooltipDelay" class="h-tooltip">
-          <StakeRange :node="props.row"/>
+          <StakeRange :node="props.row" :network-analyzer="networkAnalyzer"/>
           <template #content>
             <div class="reward-range-tooltip">
               <div class="caption has-background-success has-text-right"></div>
@@ -131,7 +131,7 @@
 
 <script lang="ts">
 
-import {defineComponent, inject, PropType} from 'vue';
+import {defineComponent, inject, onBeforeUnmount, onMounted, PropType} from 'vue';
 import {NetworkNode} from "@/schemas/HederaSchemas";
 import {ORUGA_MOBILE_BREAKPOINT} from '@/App.vue';
 import EmptyTable from "@/components/EmptyTable.vue";
@@ -140,6 +140,7 @@ import StakeRange from "@/components/node/StakeRange.vue";
 import {routeManager} from "@/router";
 import StringValue from "@/components/values/StringValue.vue";
 import {isCouncilNode, makeNodeDescription, makeAnnualizedRate, makeStakePercentage, makeUnclampedStake} from "@/schemas/HederaUtils";
+import {NetworkAnalyzer} from "@/utils/analyzer/NetworkAnalyzer";
 
 
 //
@@ -169,6 +170,10 @@ export default defineComponent({
     const isTouchDevice = inject('isTouchDevice', false)
     const isMediumScreen = inject('isMediumScreen', true)
 
+    const networkAnalyzer = new NetworkAnalyzer()
+    onMounted(() => networkAnalyzer.mount())
+    onBeforeUnmount(() => networkAnalyzer.unmount())
+
     const makeWeightPercentage = (node: NetworkNode) => {
       return node.stake && props.stakeTotal ? makeStakePercentage(node, props.stakeTotal) : 0
     }
@@ -184,6 +189,7 @@ export default defineComponent({
       tooltipRewardRate,
       isTouchDevice,
       isMediumScreen,
+      networkAnalyzer,
       isCouncilNode,
       makeNodeDescription,
       makeUnclampedStake,
