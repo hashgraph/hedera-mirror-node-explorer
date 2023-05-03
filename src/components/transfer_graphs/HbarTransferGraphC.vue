@@ -80,13 +80,13 @@
 
 <script lang="ts">
 
-import {defineComponent, PropType, ref, watch} from "vue";
+import {computed, defineComponent, onBeforeUnmount, onMounted, PropType} from "vue";
 import AccountLink from "@/components/values/AccountLink.vue";
 import ArrowSegment from "@/components/transfer_graphs/ArrowSegment.vue";
 import HbarAmount from "@/components/values/HbarAmount.vue";
 import {Transaction} from "@/schemas/HederaSchemas";
 import {HbarTransferLayout} from "@/components/transfer_graphs/layout/HbarTransferLayout";
-import {NodeRegistry} from "@/components/node/NodeRegistry";
+import {NetworkAnalyzer} from "@/utils/analyzer/NetworkAnalyzer";
 
 export default defineComponent({
   name: "HbarTransferOutline",
@@ -96,11 +96,12 @@ export default defineComponent({
   },
   setup(props) {
 
-    const hbarTransferLayout = ref(new HbarTransferLayout(props.transaction, false))
+    const networkAnalyzer = new NetworkAnalyzer()
+    onMounted(() => networkAnalyzer.mount())
+    onBeforeUnmount(() => networkAnalyzer.unmount())
 
-    watch([() => props.transaction, NodeRegistry.instance.nodes], () => {
-      hbarTransferLayout.value = new HbarTransferLayout(props.transaction, false)
-    })
+    const hbarTransferLayout = computed(
+        () => new HbarTransferLayout(props.transaction, networkAnalyzer.nodes.value, false))
 
     return {
       hbarTransferLayout,
