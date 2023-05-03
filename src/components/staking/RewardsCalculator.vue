@@ -88,12 +88,13 @@
 
 <script lang="ts">
 
-import {computed, defineComponent, inject, onBeforeMount, ref, watch} from 'vue';
+import {computed, defineComponent, inject, onBeforeMount, onBeforeUnmount, onMounted, ref, watch} from 'vue';
 import NetworkDashboardItem from "@/components/node/NetworkDashboardItem.vue";
 import DashboardCard from "@/components/DashboardCard.vue";
-import {makeNodeSelectorDescription, makeShortNodeDescription, NetworkNode} from "@/schemas/HederaSchemas";
+import {makeNodeSelectorDescription} from "@/schemas/HederaSchemas";
 import {getEnv} from "@/utils/getEnv";
-import {NodeRegistry} from "@/components/node/NodeRegistry";
+import {NodeAnalyzer} from "@/utils/analyzer/NodeAnalyzer";
+import {isCouncilNode, makeNodeDescription} from "@/schemas/HederaUtils";
 
 export default defineComponent({
   name: 'RewardsCalculator',
@@ -122,12 +123,14 @@ export default defineComponent({
     //
     // Node
     //
-    const nodeCursor = computed(() => NodeRegistry.getCursor(selectedNodeId))
+    const nodeAnalyzer = new NodeAnalyzer(selectedNodeId)
+    onMounted(() => nodeAnalyzer.mount())
+    onBeforeUnmount(() => nodeAnalyzer.unmount())
 
     const nodeIcon = computed(() => {
       let result
       if (selectedNodeId.value !== null) {
-        result = NodeRegistry.isCouncilNode(selectedNodeId) ? "building" : "users"
+        result = nodeAnalyzer.isCouncilNode.value ? "building" : "users"
       } else {
         result = ""
       }
@@ -141,17 +144,10 @@ export default defineComponent({
     watch(() => props.amountInHbar, updateAmountStaked)
     onBeforeMount(updateAmountStaked)
 
-    const rewardRate = computed(() => nodeCursor.value.rewardRate.value)
+    const rewardRate = computed(() => nodeAnalyzer.rewardRate.value)
     const currentReward = computed(() => rewardRate.value && amountStaked.value ? Math.round(amountStaked.value * rewardRate.value * 10000) / 10000 : 0)
     const monthlyReward = computed(() => currentReward.value ? Math.round(currentReward.value * 30 * 100) / 100 : 0)
     const yearlyReward = computed(() => currentReward.value ? Math.round(currentReward.value * 365 * 10) / 10 : 0)
-
-    const makeNodeDescription = (node: NetworkNode) => {
-      let description = node.description ?? NodeRegistry.getDescription(ref(node.node_id??null))
-      return description ? makeShortNodeDescription(description) : null
-    }
-
-    const isCouncilNode = (node: NetworkNode) => NodeRegistry.isCouncilNode(ref(node.node_id ?? 0))
 
     const handleInput = (value: string) => {
       const previousAmount = amountStaked.value
@@ -176,12 +172,12 @@ export default defineComponent({
       currentReward,
       monthlyReward,
       yearlyReward,
-      annualizedRate: nodeCursor.value.annualizedRate,
-      nodes: NodeRegistry.instance.nodes,
+      annualizedRate: nodeAnalyzer.annualizedRate,
+      nodes: nodeAnalyzer.networkAnalyzer.nodes,
+      hasCommunityNode: nodeAnalyzer.networkAnalyzer.hasCommunityNode,
       makeNodeDescription,
-      makeNodeSelectorDescription:makeNodeSelectorDescription,
+      makeNodeSelectorDescription,
       isCouncilNode,
-      hasCommunityNode: NodeRegistry.instance.hasCommunityNode,
       handleInput
     }
   }
