@@ -19,7 +19,7 @@
  */
 
 import {computed, ComputedRef, Ref} from "vue";
-import {NetworkNode} from "@/schemas/HederaSchemas";
+import {makeShortNodeDescription, NetworkNode} from "@/schemas/HederaSchemas";
 import {NetworkAnalyzer} from "@/utils/analyzer/NetworkAnalyzer";
 import {
     isCouncilNode,
@@ -81,8 +81,8 @@ export class NodeAnalyzer {
     public readonly nodeDescription: ComputedRef<string|null> = computed(
         () => this.node.value !== null ? makeNodeDescription(this.node.value) : null)
 
-    // public readonly shortNodeDescription: ComputedRef<string|null> = computed(
-    //     () => this.nodeDescription.value ? makeShortNodeDescription(this.nodeDescription.value) : null)
+    public readonly shortNodeDescription: ComputedRef<string|null> = computed(
+        () => this.nodeDescription.value ? makeShortNodeDescription(this.nodeDescription.value) : null)
 
     //
     // Public (staking)

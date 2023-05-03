@@ -251,7 +251,7 @@ import {StakingRewardsTableController} from "@/components/staking/StakingRewards
 import DownloadButton from "@/components/DownloadButton.vue";
 import CSVDownloadDialog from "@/components/CSVDownloadDialog.vue";
 import {RewardDownloader} from "@/utils/downloader/RewardDownloader";
-import {NodeRegistry} from "@/components/node/NodeRegistry";
+import {NodeAnalyzer} from "@/utils/analyzer/NodeAnalyzer";
 import {AccountLocParser} from "@/utils/parser/AccountLocParser";
 import {TransactionByIdCache} from "@/utils/cache/TransactionByIdCache";
 
@@ -360,7 +360,7 @@ export default defineComponent({
       if (isStakedToAccount.value) {
         result = "Account " + accountLocParser.stakedAccountId.value
       } else if (isStakedToNode.value) {
-        result = "Node " + accountLocParser.stakedNodeId.value + " - " + stakedNodeLoader.shortNodeDescription.value
+        result = "Node " + accountLocParser.stakedNodeId.value + " - " + stakedNodeAnalyzer.shortNodeDescription.value
       } else {
         result = null
       }
@@ -405,7 +405,9 @@ export default defineComponent({
     // stakedNode
     //
 
-    const stakedNodeLoader = NodeRegistry.getCursor(accountLocParser.stakedNodeId)
+    const stakedNodeAnalyzer = new NodeAnalyzer(accountLocParser.stakedNodeId)
+    onMounted(() => stakedNodeAnalyzer.mount())
+    onBeforeUnmount(() => stakedNodeAnalyzer.unmount())
 
     //
     // handleStopStaking / handleChangeStaking
@@ -519,8 +521,8 @@ export default defineComponent({
       isStakedToNode,
       isStakedToAccount,
       stakedTo,
-      stakedNode: stakedNodeLoader.node,
-      isCouncilNode: stakedNodeLoader.isCouncilNode,
+      stakedNode: stakedNodeAnalyzer.node,
+      isCouncilNode: stakedNodeAnalyzer.isCouncilNode,
       balanceInHbar,
       stakedAmount,
       pendingReward,
