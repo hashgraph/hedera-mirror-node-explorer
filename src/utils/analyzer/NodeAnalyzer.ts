@@ -21,7 +21,13 @@
 import {computed, ComputedRef, Ref} from "vue";
 import {NetworkNode} from "@/schemas/HederaSchemas";
 import {NetworkAnalyzer} from "@/utils/analyzer/NetworkAnalyzer";
-import {isCouncilNode, makeAnnualizedRate, makeRewardRate} from "@/schemas/HederaUtils";
+import {
+    isCouncilNode,
+    makeAnnualizedRate,
+    makeNodeDescription,
+    makeRewardRate,
+    makeUnclampedStake
+} from "@/schemas/HederaUtils";
 
 export class NodeAnalyzer {
 
@@ -72,9 +78,9 @@ export class NodeAnalyzer {
         return this.node.value != null ? isCouncilNode(this.node.value) : true
     })
 
-    // public readonly nodeDescription: ComputedRef<string|null> = computed(
-    //     () => this.node.value !== null ? makeNodeDescription(this.node.value) : null)
-    //
+    public readonly nodeDescription: ComputedRef<string|null> = computed(
+        () => this.node.value !== null ? makeNodeDescription(this.node.value) : null)
+
     // public readonly shortNodeDescription: ComputedRef<string|null> = computed(
     //     () => this.nodeDescription.value ? makeShortNodeDescription(this.nodeDescription.value) : null)
 
@@ -83,11 +89,11 @@ export class NodeAnalyzer {
     //
 
     public readonly stake = computed(() => this.node.value?.stake ?? 0)
-    // public readonly minStake = computed(() => this.node.value?.min_stake ?? 0)
-    // public readonly maxStake = computed(() => this.node.value?.max_stake ?? 0)
-    // public readonly unclampedStake = computed(() => this.node.value ? makeUnclampedStake(this.node.value) : 0)
-    // public readonly stakeRewarded = computed(() => this.node.value?.stake_rewarded ?? 0)
-    // public readonly stakeUnrewarded = computed(() => this.node.value?.stake_not_rewarded ?? 0)
+    public readonly minStake = computed(() => this.node.value?.min_stake ?? 0)
+    public readonly maxStake = computed(() => this.node.value?.max_stake ?? 0)
+    public readonly unclampedStake = computed(() => this.node.value ? makeUnclampedStake(this.node.value) : 0)
+    public readonly stakeRewarded = computed(() => this.node.value?.stake_rewarded ?? 0)
+    public readonly stakeUnrewarded = computed(() => this.node.value?.stake_not_rewarded ?? 0)
     public readonly rewardRate = computed(() => this.node.value ? makeRewardRate(this.node.value) : 0)
     public readonly annualizedRate = computed(() => this.node.value ? makeAnnualizedRate(this.node.value) : '0%')
 
