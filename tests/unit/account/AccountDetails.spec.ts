@@ -46,7 +46,6 @@ import {HMSF} from "@/utils/HMSF";
 import NotificationBanner from "@/components/NotificationBanner.vue";
 import {TransactionID} from "@/utils/TransactionID";
 import TransactionFilterSelect from "@/components/transaction/TransactionFilterSelect.vue";
-import {NodeRegistry} from "@/components/node/NodeRegistry";
 
 /*
     Bookmarks
@@ -338,7 +337,6 @@ describe("AccountDetails.vue", () => {
 
         const matcher3 = "/api/v1/network/nodes"
         mock.onGet(matcher3).reply(200, SAMPLE_NETWORK_NODES);
-        NodeRegistry.instance.reload()
 
         const matcher4 = "/api/v1/balances"
         mock.onGet(matcher4).reply(200, SAMPLE_ACCOUNT_HBAR_BALANCE);
@@ -391,7 +389,6 @@ describe("AccountDetails.vue", () => {
 
         const matcher3 = "/api/v1/network/nodes"
         mock.onGet(matcher3).reply(200, SAMPLE_NETWORK_NODES);
-        NodeRegistry.instance.reload()
 
         const matcher4 = "/api/v1/balances"
         mock.onGet(matcher4).reply(200, SAMPLE_ACCOUNT_HBAR_BALANCE);

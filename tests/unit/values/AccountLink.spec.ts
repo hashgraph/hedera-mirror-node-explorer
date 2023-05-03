@@ -22,7 +22,6 @@ import {flushPromises, mount} from "@vue/test-utils"
 import router from "@/router";
 import AccountLink from "@/components/values/AccountLink.vue";
 import {SAMPLE_NETWORK_NODES} from "../Mocks";
-import {NodeRegistry} from "@/components/node/NodeRegistry";
 import MockAdapter from "axios-mock-adapter";
 import axios from "axios";
 
@@ -31,7 +30,6 @@ describe("AccountLink.vue", () => {
     const mock = new MockAdapter(axios);
     const matcher1 = "/api/v1/network/nodes"
     mock.onGet(matcher1).reply(200, SAMPLE_NETWORK_NODES);
-    NodeRegistry.instance.reload()
 
     it("props.accountId set ; no extra", async () => {
 

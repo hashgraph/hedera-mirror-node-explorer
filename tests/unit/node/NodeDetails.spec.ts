@@ -36,7 +36,6 @@ import MockAdapter from "axios-mock-adapter";
 import Oruga from "@oruga-ui/oruga-next";
 import {HMSF} from "@/utils/HMSF";
 import NodeDetails from "@/pages/NodeDetails.vue";
-import {NodeRegistry} from "@/components/node/NodeRegistry";
 
 /*
     Bookmarks
@@ -58,7 +57,6 @@ describe("NodeDetails.vue", () => {
         const node = 0
         const matcher1 = "api/v1/network/nodes"
         mock.onGet(matcher1).reply(200, SAMPLE_NETWORK_NODES);
-        NodeRegistry.instance.reload()
 
         const matcher2 = "api/v1/network/stake"
         mock.onGet(matcher2).reply(200, SAMPLE_NETWORK_STAKE);

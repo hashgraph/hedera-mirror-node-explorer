@@ -27,7 +27,6 @@ import NodeTable from "@/components/node/NodeTable.vue";
 import {NetworkNode} from "@/schemas/HederaSchemas";
 import MockAdapter from "axios-mock-adapter";
 import axios from "axios";
-import {NodeRegistry} from "@/components/node/NodeRegistry";
 
 /*
     Bookmarks
@@ -50,7 +49,6 @@ describe("NodeTable.vue", () => {
     const mock = new MockAdapter(axios);
     const matcher1 = "/api/v1/network/nodes"
     mock.onGet(matcher1).reply(200, SAMPLE_NETWORK_NODES);
-    NodeRegistry.instance.reload()
 
     it("should list the 3 nodes in the table", async () => {
 
