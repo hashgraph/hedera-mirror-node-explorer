@@ -83,7 +83,7 @@ describe("TokenAmount.vue", () => {
                 plugins: [router]
             },
             props: {
-                amount: testAmount,
+                amount: BigInt(testAmount),
             },
         });
         await flushPromises()
@@ -106,7 +106,7 @@ describe("TokenAmount.vue", () => {
                 plugins: [router]
             },
             props: {
-                amount: Number(testAmount),
+                amount: BigInt(testAmount),
                 tokenId: SAMPLE_TOKEN.token_id,
             },
         });
