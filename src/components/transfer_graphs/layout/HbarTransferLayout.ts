@@ -18,13 +18,14 @@
  *
  */
 
-import {compareTransferByAccount, Transaction, Transfer} from "@/schemas/HederaSchemas";
+import {compareTransferByAccount, NetworkNode, Transaction, Transfer} from "@/schemas/HederaSchemas";
 import {computeNetAmount} from "@/utils/TransactionTools";
 import {makeOperatorDescription} from "@/schemas/HederaUtils";
 
 export class HbarTransferLayout {
 
     public readonly transaction: Transaction|undefined
+    public readonly nodes: NetworkNode[]
     public readonly netAmount: number
     public readonly sources = Array<HbarTransferRow>()
     public readonly destinations = Array<HbarTransferRow>()
@@ -34,9 +35,10 @@ export class HbarTransferLayout {
     // Public
     //
 
-    public constructor(transaction: Transaction|undefined, full = true) {
+    public constructor(transaction: Transaction|undefined, nodes: NetworkNode[], full = true) {
 
         this.transaction = transaction
+        this.nodes = nodes
         this.netAmount = transaction ? computeNetAmount(transaction) : 0
 
         if (this.transaction?.transfers) {
@@ -53,11 +55,11 @@ export class HbarTransferLayout {
             positiveTransfers.sort(compareTransferByAccount)
 
             for (const t of negativeTransfers) {
-                const payload = t.account === null || makeOperatorDescription(t.account) === null
+                const payload = t.account === null || makeOperatorDescription(t.account, this.nodes) === null
                 this.sources.push(new HbarTransferRow(t, null, payload))
             }
             for (const t of positiveTransfers) {
-                const operator = makeOperatorDescription(t.account ?? "")
+                const operator = t.account !== null ? makeOperatorDescription(t.account, this.nodes) : null
                 const payload = t.account === null || operator === null
                 this.destinations.push(new HbarTransferRow(t, operator ?? "Transfer", payload))
             }

@@ -27,7 +27,7 @@ import {AccountByIdCache} from "@/utils/cache/AccountByIdCache";
 import {AccountBalanceTransactions, Key, TokenBalance} from "@/schemas/HederaSchemas";
 import {networkRegistry} from "@/schemas/NetworkRegistry";
 import router from "@/router";
-import {NodeRegistry} from "@/components/node/NodeRegistry";
+import {NodeAnalyzer} from "@/utils/analyzer/NodeAnalyzer";
 import {makeEthAddressForAccount} from "@/schemas/HederaUtils";
 import {base32ToAlias, byteToHex} from "@/utils/B64Utils";
 import {AccountByAddressCache} from "@/utils/cache/AccountByAddressCache";
@@ -40,6 +40,7 @@ export class AccountLocParser {
 
     private watchHandle: Ref<WatchStopHandle|null> = ref(null)
     private readonly loadCounter: Ref<number> = ref(0)
+    private readonly nodeAnalyzer: NodeAnalyzer
 
     //
     // Public
@@ -47,10 +48,12 @@ export class AccountLocParser {
 
     public constructor(accountLoc: Ref<string|null>) {
         this.accountLoc = accountLoc
+        this.nodeAnalyzer = new NodeAnalyzer(this.accountId)
     }
 
     public mount(): void {
         this.watchHandle.value = watch(this.accountLocObj, this.accountLocObjDidChange, { immediate: true})
+        this.nodeAnalyzer.mount()
     }
 
     public unmount(): void {
@@ -60,6 +63,7 @@ export class AccountLocParser {
         }
         this.accountInfo.value = null
         this.loadCounter.value = 0
+        this.nodeAnalyzer.unmount()
     }
 
     public remount(): void {
@@ -134,13 +138,9 @@ export class AccountLocParser {
 
     public readonly pendingReward: Ref<number|null> = computed(() => this.accountInfo.value?.pending_reward ?? null)
 
-    public readonly accountDescription: Ref<string|null> = computed(() => {
-        return NodeRegistry.getShortDescription(ref(null), this.accountId)
-    })
+    public readonly accountDescription: Ref<string|null> = computed(() => this.nodeAnalyzer.nodeDescription.value)
 
-    public readonly nodeId: Ref<number|null> = computed(() => {
-        return NodeRegistry.getCursor(ref(null), this.accountId).node.value?.node_id ?? null
-    })
+    public readonly nodeId: Ref<number|null> = computed(() => this.nodeAnalyzer.node.value?.node_id ?? null)
 
     public readonly ethereumAddress = computed(() => {
         return this.accountInfo.value !== null ? makeEthAddressForAccount(this.accountInfo.value) : null

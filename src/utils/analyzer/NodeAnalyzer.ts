@@ -18,64 +18,68 @@
  *
  */
 
+import {computed, ComputedRef, Ref} from "vue";
 import {makeShortNodeDescription, NetworkNode} from "@/schemas/HederaSchemas";
-import {computed, ComputedRef, ref, Ref} from "vue";
-import {NodeRegistry} from "@/components/node/NodeRegistry";
+import {NetworkAnalyzer} from "@/utils/analyzer/NetworkAnalyzer";
 import {
+    isCouncilNode,
     makeAnnualizedRate,
-    makeDefaultNodeDescription,
+    makeNodeDescription,
     makeRewardRate,
     makeUnclampedStake
 } from "@/schemas/HederaUtils";
-import {EntityID} from "@/utils/EntityID";
 
-export class NodeCursor {
+export class NodeAnalyzer {
 
-    private readonly nodeId: Ref<number|null>
-    private readonly nodeAccountId: Ref<string|null>
+    public readonly nodeLoc: Ref<number|string|null>
+    public readonly networkAnalyzer = new NetworkAnalyzer()
 
     //
     // Public
     //
 
-    public constructor(nodeId: Ref<number|null> = ref(null), nodeAccountId: Ref<string|null> = ref(null)) {
-        this.nodeId = nodeId
-        this.nodeAccountId = nodeAccountId
+    public constructor(nodeLoc: Ref<number|string|null>) {
+        this.nodeLoc = nodeLoc
     }
 
-    public readonly node: ComputedRef<NetworkNode|null> = computed(() => {
-        let result: NetworkNode|null = null
-        if (this.nodeId.value !== null || this.nodeAccountId.value !== null) {
-            for (const n of NodeRegistry.instance.nodes.value) {
-                if (n.node_id == this.nodeId.value || n.node_account_id == this.nodeAccountId.value) {
-                    result = n
+    public mount(): void {
+        this.networkAnalyzer.mount()
+    }
+
+    public unmount(): void {
+        this.networkAnalyzer.unmount()
+    }
+
+    public node: ComputedRef<NetworkNode|null> = computed(() => {
+        let result: NetworkNode|null
+        if (typeof this.nodeLoc.value == "number") {
+            result = null
+            for (const node of this.networkAnalyzer.nodes.value) {
+                if (node.node_id == this.nodeLoc.value) {
+                    result = node
                     break
                 }
             }
-        }
-        return result
-    })
-
-    public readonly isCouncilNode:  ComputedRef<boolean> = computed(() => {
-        // TEMPORARY IMPLEMENTATION
-        // This will need to rely on a new specific flag to be provided by REST API
-        const accountNum = EntityID.parse(this.node.value?.node_account_id ?? "")?.num
-        return accountNum ? accountNum < 1000 : true
-    })
-
-    public readonly nodeDescription: ComputedRef<string|null> = computed(() => {
-        let result: string|null
-        if (this.node.value !== null) {
-            if (this.node.value.description) {
-                result = this.node.value.description
-            } else {
-                result = makeDefaultNodeDescription(this.node.value?.node_id ?? null)
+        } else if (typeof this.nodeLoc.value == "string") {
+            result = null
+            for (const node of this.networkAnalyzer.nodes.value) {
+                if (node.node_account_id == this.nodeLoc.value) {
+                    result = node
+                    break
+                }
             }
         } else {
             result = null
         }
         return result
     })
+
+    public isCouncilNode: ComputedRef<boolean> = computed(() => {
+        return this.node.value != null ? isCouncilNode(this.node.value) : true
+    })
+
+    public readonly nodeDescription: ComputedRef<string|null> = computed(
+        () => this.node.value !== null ? makeNodeDescription(this.node.value) : null)
 
     public readonly shortNodeDescription: ComputedRef<string|null> = computed(
         () => this.nodeDescription.value ? makeShortNodeDescription(this.nodeDescription.value) : null)
@@ -92,4 +96,5 @@ export class NodeCursor {
     public readonly stakeUnrewarded = computed(() => this.node.value?.stake_not_rewarded ?? 0)
     public readonly rewardRate = computed(() => this.node.value ? makeRewardRate(this.node.value) : 0)
     public readonly annualizedRate = computed(() => this.node.value ? makeAnnualizedRate(this.node.value) : '0%')
+
 }

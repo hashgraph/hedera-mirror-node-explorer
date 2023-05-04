@@ -57,7 +57,6 @@ import {normalizeTransactionId} from "@/utils/TransactionID";
 import Oruga from "@oruga-ui/oruga-next";
 import ContractResult from "@/components/contract/ContractResult.vue";
 import {base64DecToArr, byteToHex} from "@/utils/B64Utils";
-import {NodeRegistry} from "@/components/node/NodeRegistry";
 
 /*
     Bookmarks
@@ -77,7 +76,6 @@ describe("TransactionDetails.vue", () => {
     mock.onGet(matcher2).reply(200, SAMPLE_BLOCKSRESPONSE);
     const matcher3 = "api/v1/network/nodes"
     mock.onGet(matcher3).reply(200, SAMPLE_NETWORK_NODES);
-    NodeRegistry.instance.reload()
 
     it("Should display transaction details with token transfers and fee transfers", async () => {
 
