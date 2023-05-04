@@ -118,12 +118,21 @@ export default defineComponent({
 });
 
 function formatTokenAmount(rawAmount: bigint, decimals: string|undefined): string {
+  let result: string
+
   const decimalCount = computeDecimalCount(decimals) ?? 0
   const amountFormatter = new Intl.NumberFormat('en-US', {
     minimumFractionDigits: decimalCount,
     maximumFractionDigits: decimalCount
   })
-  return amountFormatter.format(rawAmount)
+
+  if (decimalCount) {
+    result = amountFormatter.format(Number(rawAmount) / Math.pow(10, decimalCount))
+  } else {
+    result = amountFormatter.format(rawAmount)
+  }
+
+  return result
 }
 
 function computeDecimalCount(decimals: string|undefined): number|null {
