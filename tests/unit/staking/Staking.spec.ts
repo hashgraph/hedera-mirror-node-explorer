@@ -42,7 +42,6 @@ import ProgressDialog from "@/components/staking/ProgressDialog.vue";
 import {waitFor} from "@/utils/TimerUtils";
 import StakingDialog from "@/components/staking/StakingDialog.vue";
 import {nextTick} from "vue";
-import {NodeRegistry} from "@/components/node/NodeRegistry";
 
 /*
     Bookmarks
@@ -86,10 +85,8 @@ describe("Staking.vue", () => {
             const response = { nodes: [ node ]}
             mock.onGet(matcher2, body).reply(200, response)
         }
-        NodeRegistry.instance.reload()
 
         mock.onGet(matcher2).reply(200, SAMPLE_NETWORK_NODES)
-        NodeRegistry.instance.reload()
         const matcher3 = "/api/v1/network/exchangerate"
         mock.onGet(matcher3).reply(200, SAMPLE_NETWORK_EXCHANGERATE);
         const matcher4 = "/api/v1/transactions/" + STAKE_UPDATE_TRANSACTION_ID

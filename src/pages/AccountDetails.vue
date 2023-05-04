@@ -295,7 +295,7 @@ import TransactionLink from "@/components/values/TransactionLink.vue";
 import {StakingRewardsTableController} from "@/components/staking/StakingRewardsTableController";
 import StakingRewardsTable from "@/components/staking/StakingRewardsTable.vue";
 import AliasValue from "@/components/values/AliasValue.vue";
-import {NodeRegistry} from "@/components/node/NodeRegistry";
+import {NodeAnalyzer} from "@/utils/analyzer/NodeAnalyzer";
 import EVMAddress from "@/components/values/EVMAddress.vue";
 import ApproveAllowanceSection from "@/components/allowances/ApproveAllowanceSection.vue";
 
@@ -430,12 +430,14 @@ export default defineComponent({
     //
     // staking
     //
-    const stakedNodeDescription = computed(() => NodeRegistry.getDescription(accountLocParser.stakedNodeId))
+    const stakedNodeAnalyzer = new NodeAnalyzer(accountLocParser.stakedNodeId)
+    onMounted(() => stakedNodeAnalyzer.mount())
+    onBeforeUnmount(() => stakedNodeAnalyzer.unmount())
 
     const stakedNodeIcon = computed(() => {
       let result
       if (accountLocParser.stakedNodeId.value !== null) {
-        result = NodeRegistry.isCouncilNode(accountLocParser.stakedNodeId) ? "fas fa-building" : "fas fa-users"
+        result = stakedNodeAnalyzer.isCouncilNode.value ? "fas fa-building" : "fas fa-users"
       } else {
         result = ""
       }
@@ -488,7 +490,7 @@ export default defineComponent({
       stakePeriodStart: accountLocParser.stakePeriodStart,
       stakedNodeId: accountLocParser.stakedNodeId,
       stakedAccountId: accountLocParser.stakedAccountId,
-      stakedNodeDescription,
+      stakedNodeDescription: stakedNodeAnalyzer.nodeDescription,
       stakedNodeIcon,
       rewardsTableController,
       contractRoute,

@@ -20,20 +20,14 @@
  *
  */
 
-import {Transaction} from "@/schemas/HederaSchemas";
-import MockAdapter from "axios-mock-adapter";
-import axios from "axios";
+import {NetworkNode, Transaction} from "@/schemas/HederaSchemas";
 import {SAMPLE_NETWORK_NODES} from "../../Mocks";
-import {NodeRegistry} from "@/components/node/NodeRegistry";
 import {HbarTransferLayout} from "@/components/transfer_graphs/layout/HbarTransferLayout";
 import {flushPromises} from "@vue/test-utils";
 
 describe("HbarTransferLayout.vue", () => {
 
-    const mock = new MockAdapter(axios);
-    const matcher1 = "/api/v1/network/nodes"
-    mock.onGet(matcher1).reply(200, SAMPLE_NETWORK_NODES);
-    NodeRegistry.instance.reload()
+    const NETWORK_NODES = SAMPLE_NETWORK_NODES.nodes as NetworkNode[]
 
     //
     // Single source
@@ -50,7 +44,7 @@ describe("HbarTransferLayout.vue", () => {
                 { "account": "0.0.98",  "amount":  +7 },
                 { "account": "0.0.100", "amount": -10 }
             ],
-        }
+        } as Transaction
 
         await flushPromises()
 
@@ -58,7 +52,7 @@ describe("HbarTransferLayout.vue", () => {
         // FULL
         //
 
-        const fullLayout = new HbarTransferLayout(transaction as Transaction)
+        const fullLayout = new HbarTransferLayout(transaction, NETWORK_NODES)
 
         expect(fullLayout.transaction).toBe(transaction)
         expect(fullLayout.netAmount).toBe(0)
@@ -88,7 +82,7 @@ describe("HbarTransferLayout.vue", () => {
         // COMPACT
         //
 
-        const compactLayout = new HbarTransferLayout(transaction as Transaction, false)
+        const compactLayout = new HbarTransferLayout(transaction, NETWORK_NODES, false)
 
         expect(compactLayout.transaction).toBe(transaction)
         expect(compactLayout.netAmount).toBe(0)
@@ -108,13 +102,13 @@ describe("HbarTransferLayout.vue", () => {
                 { "account": "0.0.98",  "amount":   +7 },
                 { "account": "0.0.120", "amount":  +90 },
             ],
-        }
+        } as Transaction
 
         //
         // FULL
         //
 
-        const fullLayout = new HbarTransferLayout(transaction as Transaction)
+        const fullLayout = new HbarTransferLayout(transaction, NETWORK_NODES)
 
         expect(fullLayout.transaction).toBe(transaction)
         expect(fullLayout.netAmount).toBe(90)
@@ -150,7 +144,7 @@ describe("HbarTransferLayout.vue", () => {
         // COMPACT
         //
 
-        const compactLayout = new HbarTransferLayout(transaction as Transaction, false)
+        const compactLayout = new HbarTransferLayout(transaction, NETWORK_NODES, false)
 
         expect(compactLayout.transaction).toBe(transaction)
         expect(compactLayout.netAmount).toBe(90)
@@ -182,13 +176,13 @@ describe("HbarTransferLayout.vue", () => {
                 { "account": "0.0.120", "amount":  +30 },
                 { "account": "0.0.121", "amount":  +60 },
             ],
-        }
+        } as Transaction
 
         //
         // FULL
         //
 
-        const fullLayout = new HbarTransferLayout(transaction as Transaction)
+        const fullLayout = new HbarTransferLayout(transaction, NETWORK_NODES)
 
         expect(fullLayout.transaction).toBe(transaction)
         expect(fullLayout.netAmount).toBe(90)
@@ -230,7 +224,7 @@ describe("HbarTransferLayout.vue", () => {
         // COMPACT
         //
 
-        const compactLayout = new HbarTransferLayout(transaction as Transaction, false)
+        const compactLayout = new HbarTransferLayout(transaction, NETWORK_NODES, false)
 
         expect(compactLayout.transaction).toBe(transaction)
         expect(compactLayout.netAmount).toBe(90)
@@ -272,13 +266,13 @@ describe("HbarTransferLayout.vue", () => {
                 { "account": "0.0.5",   "amount":  +3 },
                 { "account": "0.0.98",  "amount":  +7 },
             ],
-        }
+        } as Transaction
 
         //
         // FULL
         //
 
-        const fullLayout = new HbarTransferLayout(transaction as Transaction)
+        const fullLayout = new HbarTransferLayout(transaction, NETWORK_NODES)
 
         expect(fullLayout.transaction).toBe(transaction)
         expect(fullLayout.netAmount).toBe(0)
@@ -315,7 +309,7 @@ describe("HbarTransferLayout.vue", () => {
         // COMPACT
         //
 
-        const compactLayout = new HbarTransferLayout(transaction as Transaction, false)
+        const compactLayout = new HbarTransferLayout(transaction, NETWORK_NODES, false)
 
         expect(compactLayout.transaction).toBe(transaction)
         expect(compactLayout.netAmount).toBe(0)
@@ -336,13 +330,13 @@ describe("HbarTransferLayout.vue", () => {
                 { "account": "0.0.98",  "amount":   +7 },
                 { "account": "0.0.120", "amount":  +90 },
             ],
-        }
+        } as Transaction
 
         //
         // FULL
         //
 
-        const fullLayout = new HbarTransferLayout(transaction as Transaction)
+        const fullLayout = new HbarTransferLayout(transaction, NETWORK_NODES)
 
         expect(fullLayout.transaction).toBe(transaction)
         expect(fullLayout.netAmount).toBe(90)
@@ -384,7 +378,7 @@ describe("HbarTransferLayout.vue", () => {
         // COMPACT
         //
 
-        const compactLayout = new HbarTransferLayout(transaction as Transaction, false)
+        const compactLayout = new HbarTransferLayout(transaction, NETWORK_NODES, false)
 
         expect(compactLayout.transaction).toBe(transaction)
         expect(compactLayout.netAmount).toBe(90)
@@ -423,13 +417,13 @@ describe("HbarTransferLayout.vue", () => {
                 { "account": "0.0.120", "amount":  +30 },
                 { "account": "0.0.121", "amount":  +60 },
             ],
-        }
+        } as Transaction
 
         //
         // FULL
         //
 
-        const fullLayout = new HbarTransferLayout(transaction as Transaction)
+        const fullLayout = new HbarTransferLayout(transaction, NETWORK_NODES)
 
         expect(fullLayout.transaction).toBe(transaction)
         expect(fullLayout.netAmount).toBe(90)
@@ -478,7 +472,7 @@ describe("HbarTransferLayout.vue", () => {
         // COMPACT
         //
 
-        const compactLayout = new HbarTransferLayout(transaction as Transaction, false)
+        const compactLayout = new HbarTransferLayout(transaction, NETWORK_NODES, false)
 
         expect(compactLayout.transaction).toBe(transaction)
         expect(compactLayout.netAmount).toBe(90)
@@ -524,13 +518,13 @@ describe("HbarTransferLayout.vue", () => {
                 { "account": "0.0.98",  "amount":  +7 },
                 { "account": "0.0.100", "amount": -10 }
             ],
-        }
+        } as Transaction
 
         //
         // FULL
         //
 
-        const fullLayout = new HbarTransferLayout(transaction as Transaction)
+        const fullLayout = new HbarTransferLayout(transaction, NETWORK_NODES)
 
         expect(fullLayout.transaction).toBe(transaction)
         expect(fullLayout.netAmount).toBe(2)
@@ -566,7 +560,7 @@ describe("HbarTransferLayout.vue", () => {
         // COMPACT
         //
 
-        const compactLayout = new HbarTransferLayout(transaction as Transaction, false)
+        const compactLayout = new HbarTransferLayout(transaction, NETWORK_NODES, false)
 
         expect(compactLayout.transaction).toBe(transaction)
         expect(compactLayout.netAmount).toBe(2)

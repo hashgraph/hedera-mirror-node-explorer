@@ -21,8 +21,6 @@
 import {AccountInfo, KeyType, NetworkNode, TokenInfo} from "@/schemas/HederaSchemas";
 import {EntityID} from "@/utils/EntityID";
 import {ethers} from "ethers";
-import {NodeRegistry} from "@/components/node/NodeRegistry";
-import {ref} from "vue";
 
 export function makeEthAddressForAccount(account: AccountInfo): string|null {
     if (account.evm_address) return account.evm_address;
@@ -63,14 +61,29 @@ export function makeTokenSymbol(token: TokenInfo | null, maxLength: number): str
     return candidate1 ?? candidate2 ?? candidate3 ?? candidate4 ?? token?.token_id ?? "?"
 }
 
+export function makeNodeDescription(node: NetworkNode): string {
+    let result: string
+    if (node.description) {
+        result = node.description
+    } else {
+        result = makeDefaultNodeDescription(node.node_id ?? null)
+    }
+    return result
+}
+
 export function makeDefaultNodeDescription(nodeId: number | null): string {
     return "Node " + nodeId ?? "?"
 }
 
-export function makeOperatorDescription(accountId: string): string | null {
-    return accountId === '0.0.98'
-        ? "Hedera fee collection account"
-        : NodeRegistry.getDescription(ref(null), ref(accountId))
+export function makeOperatorDescription(accountId: string, nodes: NetworkNode[]): string | null {
+    let result: string|null
+    if (accountId === "0.0.98") {
+        result = "Hedera fee collection account"
+    } else {
+        const node = lookupNodeByAccountId(accountId, nodes)
+        result = node !== null ? makeNodeDescription(node) : null
+    }
+    return result
 }
 
 const errorStringSelector = '0x08c379a0'
@@ -129,4 +142,22 @@ export function makeAnnualizedRate(node: NetworkNode): string {
         maximumFractionDigits: 2
     })
     return formatter.format(makeRewardRate(node) * 365);
+}
+
+export function isCouncilNode(node: NetworkNode): boolean {
+    // TEMPORARY IMPLEMENTATION
+    // This will need to rely on a new specific flag to be provided by REST API
+    const accountNum = EntityID.parse(node.node_account_id ?? "")?.num
+    return accountNum ? accountNum < 1000 : true
+}
+
+export function lookupNodeByAccountId(accountId: string, nodes: NetworkNode[]): NetworkNode|null {
+    let result: NetworkNode|null = null
+    for (const n of nodes) {
+        if (n.node_account_id == accountId) {
+            result = n
+            break
+        }
+    }
+    return result
 }

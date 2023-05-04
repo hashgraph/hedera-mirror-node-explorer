@@ -53,7 +53,7 @@
         <Property id="amountStaked">
           <template v-slot:name>Amount Staked</template>
           <template v-slot:value>
-            <HbarAmount v-if="account" :amount="account.balance.balance" timestamp="0" :show-extra="true"/>
+            <HbarAmount v-if="account?.balance?.balance" :amount="account.balance.balance" timestamp="0" :show-extra="true"/>
           </template>
         </Property>
 
@@ -169,7 +169,7 @@
 
 <script lang="ts">
 
-import {computed, defineComponent, PropType, ref, watch} from "vue";
+import {computed, defineComponent, onBeforeUnmount, onMounted, PropType, ref, watch} from "vue";
 import {
   AccountBalanceTransactions,
   AccountsResponse, makeNodeSelectorDescription,
@@ -184,8 +184,8 @@ import {EntityID} from "@/utils/EntityID";
 import ConfirmDialog from "@/components/ConfirmDialog.vue";
 import {networkRegistry} from "@/schemas/NetworkRegistry";
 import router from "@/router";
-import {NodeRegistry} from "@/components/node/NodeRegistry";
-import {makeDefaultNodeDescription} from "@/schemas/HederaUtils";
+import {NodeAnalyzer} from "@/utils/analyzer/NodeAnalyzer";
+import {isCouncilNode, makeDefaultNodeDescription} from "@/schemas/HederaUtils";
 
 const VALID_ACCOUNT_MESSAGE = "Rewards will now be paid to that account"
 const UNKNOWN_ACCOUNT_MESSAGE = "This account does not exist"
@@ -227,10 +227,14 @@ export default defineComponent({
           return result
         })
 
+    const nodeAnalyzer = new NodeAnalyzer(computed(() => props.account?.staked_node_id ?? 0))
+    onMounted(() => nodeAnalyzer.mount())
+    onBeforeUnmount(() => nodeAnalyzer.unmount())
+
     const currentStakedNodeIcon = computed(() => {
       let result
       if (props.account?.staked_node_id !== null) {
-        result = NodeRegistry.isCouncilNode(ref(props.account?.staked_node_id ?? 0))
+        result = nodeAnalyzer.isCouncilNode.value
             ? "fas fa-building"
             : "fas fa-users"
       } else {
@@ -273,7 +277,8 @@ export default defineComponent({
     const selectedNodeIcon = computed(() => {
       let result
       if (selectedNode.value !== null) {
-        result = NodeRegistry.isCouncilNode(selectedNode) ? "building" : "users"
+        const nodes = nodeAnalyzer.networkAnalyzer.nodes
+        result = isCouncilNode(nodes.value[selectedNode.value]) ? "building" : "users"
       } else {
         result = ""
       }
@@ -281,8 +286,9 @@ export default defineComponent({
     })
 
     const selectedNodeDescription = computed(() => {
-      return (selectedNode.value !== null && NodeRegistry.instance.nodes.value)
-          ? makeNodeDescription(NodeRegistry.instance.nodes.value[selectedNode.value])
+      const nodes = nodeAnalyzer.networkAnalyzer.nodes
+      return selectedNode.value !== null
+          ? makeNodeDescription(nodes.value[selectedNode.value])
           : null
     })
     watch(accountId, () => {
@@ -329,8 +335,6 @@ export default defineComponent({
       let description = node.description ?? makeDefaultNodeDescription(node.node_id ?? null)
       return description ? (node.node_id + " - " + makeShortNodeDescription(description)) : null
     }
-
-    const isCouncilNode = (node: NetworkNode) => NodeRegistry.isCouncilNode(ref(node.node_id ?? 0))
 
     const handleInput = (value: string) => {
       const previousValue = selectedAccount.value
@@ -418,14 +422,14 @@ export default defineComponent({
       selectedNodeDescription,
       declineChoice,
       enableChangeButton,
-      nodes: NodeRegistry.instance.nodes,
+      nodes: nodeAnalyzer.networkAnalyzer.nodes,
       handleCancel,
       handleChange,
       handleCancelChange,
       handleConfirmChange,
       makeNodeDescription,
       isCouncilNode,
-      hasCommunityNode: NodeRegistry.instance.hasCommunityNode,
+      hasCommunityNode: nodeAnalyzer.networkAnalyzer.hasCommunityNode,
       makeNodeSelectorDescription: makeNodeSelectorDescription,
       handleInput
     }

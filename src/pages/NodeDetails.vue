@@ -164,7 +164,7 @@ import Endpoints from "@/components/values/Endpoints.vue";
 import NetworkDashboardItem from "@/components/node/NetworkDashboardItem.vue";
 import {StakeCache} from "@/utils/cache/StakeCache";
 import {PathParam} from "@/utils/PathParam";
-import {NodeRegistry} from "@/components/node/NodeRegistry";
+import {NodeAnalyzer} from "@/utils/analyzer/NodeAnalyzer";
 
 export default defineComponent({
 
@@ -198,7 +198,10 @@ export default defineComponent({
     const isTouchDevice = inject('isTouchDevice', false)
 
     const nodeIdNb = computed(() => PathParam.parseNodeId(props.nodeId))
-    const nodeCursor = NodeRegistry.getCursor(nodeIdNb)
+    const nodeAnalyzer = new NodeAnalyzer(nodeIdNb)
+    onMounted(() => nodeAnalyzer.mount())
+    onBeforeUnmount(() => nodeAnalyzer.unmount())
+    const networkAnalyzer = nodeAnalyzer.networkAnalyzer // Mounted / unmounted by nodeAnalyzer
 
     const stakeLookup = StakeCache.instance.makeLookup()
     onMounted(() => stakeLookup.mount())
@@ -206,13 +209,13 @@ export default defineComponent({
 
     const stakeTotal = computed(() => stakeLookup.entity.value?.stake_total ?? 0)
     const stakePercentage = computed(() =>
-        stakeTotal.value ? Math.round(nodeCursor.stake.value / stakeTotal.value * 10000) / 100 : 0)
+        stakeTotal.value ? Math.round(nodeAnalyzer.stake.value / stakeTotal.value * 10000) / 100 : 0)
 
     const stakeRewardedPercentage = computed(() =>
-        NodeRegistry.instance.stakeRewardedTotal.value != 0 ? Math.round(nodeCursor.stakeRewarded.value / NodeRegistry.instance.stakeRewardedTotal.value * 10000) / 100 : 0)
+        networkAnalyzer.stakeRewardedTotal.value != 0 ? Math.round(nodeAnalyzer.stakeRewarded.value / networkAnalyzer.stakeRewardedTotal.value * 10000) / 100 : 0)
 
     const stakeUnrewardedPercentage = computed(() =>
-        NodeRegistry.instance.stakeUnrewardedTotal.value != 0 ? Math.round(nodeCursor.stakeUnrewarded.value / NodeRegistry.instance.stakeUnrewardedTotal.value * 10000) / 100 : 0)
+        networkAnalyzer.stakeUnrewardedTotal.value != 0 ? Math.round(nodeAnalyzer.stakeUnrewarded.value / networkAnalyzer.stakeUnrewardedTotal.value * 10000) / 100 : 0)
 
     const unknownNodeId = ref(false)
     const notification = computed(() => {
@@ -235,20 +238,20 @@ export default defineComponent({
       isSmallScreen,
       isTouchDevice,
       nodeIdNb,
-      node: nodeCursor.node,
-      annualizedRate: nodeCursor.annualizedRate,
-      stake: nodeCursor.stake,
-      minStake: nodeCursor.minStake,
-      maxStake: nodeCursor.maxStake,
+      node: nodeAnalyzer.node,
+      annualizedRate: nodeAnalyzer.annualizedRate,
+      stake: nodeAnalyzer.stake,
+      minStake: nodeAnalyzer.minStake,
+      maxStake: nodeAnalyzer.maxStake,
       stakePercentage,
-      unclampedStake: nodeCursor.unclampedStake,
-      stakeRewarded: nodeCursor.stakeRewarded,
+      unclampedStake: nodeAnalyzer.unclampedStake,
+      stakeRewarded: nodeAnalyzer.stakeRewarded,
       stakeRewardedPercentage,
-      stakeUnrewarded: nodeCursor.stakeUnrewarded,
+      stakeUnrewarded: nodeAnalyzer.stakeUnrewarded,
       stakeUnrewardedPercentage,
       notification,
-      isCouncilNode: nodeCursor.isCouncilNode,
-      nodeDescription: nodeCursor.nodeDescription,
+      isCouncilNode: nodeAnalyzer.isCouncilNode,
+      nodeDescription: nodeAnalyzer.nodeDescription,
       formatHash,
       makeFloorHbarAmount
     }
