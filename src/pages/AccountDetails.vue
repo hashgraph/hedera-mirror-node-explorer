@@ -103,7 +103,7 @@
                 </div>
                 <div v-else>
                   <div v-for="b in tokenBalances ?? []" :key="b.token_id" class="h-is-tertiary-text">
-                    <TokenAmount v-bind:amount="b.balance" v-bind:show-extra="true" v-bind:token-id="b.token_id ?? undefined"/>
+                    <TokenAmount v-bind:amount="BigInt(b.balance)" v-bind:show-extra="true" v-bind:token-id="b.token_id ?? undefined"/>
                   </div>
                 </div>
                 <div v-if="elapsed && !isSmallScreen" class="has-text-grey has-text-right"> {{ elapsed }} ago</div>

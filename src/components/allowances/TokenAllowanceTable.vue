@@ -59,7 +59,7 @@
     </o-table-column>
 
     <o-table-column v-slot="props" field="token" label="Amount">
-      <TokenAmount :token-id="props.row.token_id" :amount="props.row.amount_granted"/>
+      <TokenAmount :token-id="props.row.token_id" :amount="BigInt(props.row.amount_granted)"/>
     </o-table-column>
 
     <o-table-column v-if="isWalletConnected" v-slot="props">
