@@ -73,7 +73,7 @@
                   </div>
                   <div v-else>
                     <div v-for="t in tokens ?? []" :key="t.token_id">
-                      <TokenAmount :amount="t.balance" :show-extra="true" :token-id="t.token_id ?? undefined"/>
+                      <TokenAmount :amount="BigInt(t.balance)" :show-extra="true" :token-id="t.token_id ?? undefined"/>
                     </div>
                   </div>
                 </div>

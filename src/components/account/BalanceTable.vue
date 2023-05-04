@@ -48,7 +48,7 @@
     </o-table-column>
 
     <o-table-column v-slot="props" field="balance" label="Balance" position="right">
-      <TokenAmount v-bind:amount="props.row.balance"
+      <TokenAmount v-bind:amount="BigInt(props.row.balance)"
                    v-bind:token-id="props.row.token_id"/>
     </o-table-column>
 

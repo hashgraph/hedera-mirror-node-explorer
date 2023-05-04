@@ -41,12 +41,14 @@ import {TokenInfoCache} from "@/utils/cache/TokenInfoCache";
 import TokenExtra from "@/components/values/TokenExtra.vue";
 import {initialLoadingKey} from "@/AppKeys";
 
+export const MAX_TOKEN_SUPPLY = 9223372036854775807n
+
 export default defineComponent({
   name: "TokenAmount",
 
   components: {TokenExtra},
   props: {
-    amount: Number,
+    amount: BigInt,
     tokenId: String,
     showExtra: {
       type: Boolean,
@@ -65,11 +67,15 @@ export default defineComponent({
       let result: string
       if (response.value !== null) {
         if (props.amount) {
-          result = formatTokenAmount(props.amount, response.value.decimals)
+          if (props.amount > MAX_TOKEN_SUPPLY) {
+            result = formatTokenAmount(MAX_TOKEN_SUPPLY, response.value.decimals)
+          } else {
+            result = formatTokenAmount(props.amount, response.value.decimals)
+          }
         } else if (initialLoading.value) {
           result = ""
         } else {
-          result = formatTokenAmount(0, response.value.decimals)
+          result = "0"
         }
       } else {
         result = ""
@@ -111,14 +117,13 @@ export default defineComponent({
   }
 });
 
-function formatTokenAmount(rawAmount: number, decimals: string|undefined): string {
+function formatTokenAmount(rawAmount: bigint, decimals: string|undefined): string {
   const decimalCount = computeDecimalCount(decimals) ?? 0
-  const amount = rawAmount / Math.pow(10, decimalCount)
   const amountFormatter = new Intl.NumberFormat('en-US', {
     minimumFractionDigits: decimalCount,
     maximumFractionDigits: decimalCount
   })
-  return amountFormatter.format(amount)
+  return amountFormatter.format(rawAmount)
 }
 
 function computeDecimalCount(decimals: string|undefined): number|null {

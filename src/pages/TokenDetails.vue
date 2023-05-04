@@ -147,14 +147,14 @@
         <Property id="totalSupply">
           <template v-slot:name>Total Supply</template>
           <template v-if="validEntityId" v-slot:value>
-            <TokenAmount :amount="parseIntString(tokenInfo?.total_supply)" :show-extra="false"
+            <TokenAmount :amount="parseBigIntString(tokenInfo?.total_supply)" :show-extra="false"
                          :token-id="normalizedTokenId"/>
           </template>
         </Property>
         <Property id="initialSupply">
           <template v-slot:name>Initial Supply</template>
           <template v-if="validEntityId" v-slot:value>
-            <TokenAmount :amount="parseIntString(tokenInfo?.initial_supply)" :show-extra="false"
+            <TokenAmount :amount="parseBigIntString(tokenInfo?.initial_supply)" :show-extra="false"
                          :token-id="normalizedTokenId"/>
           </template>
         </Property>
@@ -162,7 +162,7 @@
           <template v-slot:name>Max Supply</template>
           <template v-if="validEntityId" v-slot:value>
             <div v-if="tokenInfo?.supply_type === 'INFINITE'" class="has-text-grey">Infinite</div>
-            <TokenAmount v-else :amount="parseIntString(tokenInfo?.max_supply)" :show-extra="false"
+            <TokenAmount v-else :amount="parseBigIntString(tokenInfo?.max_supply)" :show-extra="false"
                          :token-id="normalizedTokenId"/>
           </template>
         </Property>
@@ -421,7 +421,7 @@ export default defineComponent({
       normalizedTokenId,
       notification,
       showTokenDetails,
-      parseIntString,
+      parseBigIntString,
       ethereumAddress: tokenAnalyzer.ethereumAddress,
       tokenSymbol: tokenAnalyzer.tokenSymbol,
       tokenBalanceTableController,
@@ -430,9 +430,14 @@ export default defineComponent({
   },
 });
 
-function parseIntString(s: string | undefined): number | undefined {
-  const result = Number(s)
-  return isNaN(result) ? undefined : result
+function parseBigIntString(s: string | undefined): bigint | undefined {
+  let result
+  try {
+    result = BigInt(s)
+  } catch {
+    result = undefined
+  }
+  return result
 }
 
 
