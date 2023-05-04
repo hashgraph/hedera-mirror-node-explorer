@@ -71,6 +71,32 @@ export function makeNodeDescription(node: NetworkNode): string {
     return result
 }
 
+export function makeNodeDescriptionPrefix(node: NetworkNode): string {
+    const description = makeNodeDescription(node)
+    let result: string
+    if (description.slice(0, 9).toLowerCase() === "hosted by") {
+        result = description.slice(0,9) + " "
+    } else if (description.slice(0, 10).toLowerCase() === "hosted for") {
+        result = description.slice(0,10) + " "
+    } else {
+        result = ""
+    }
+    return result
+}
+
+export function makeNodeOwnerDescription(node: NetworkNode): string {
+    const description = makeNodeDescription(node)
+    let result: string
+    if (description?.slice(0, 9).toLowerCase() === "hosted by") {
+        result = description.slice(10)
+    } else if (description.slice(0, 10).toLowerCase() === "hosted for") {
+        result = description.slice(11)
+    } else {
+        result = description
+    }
+    return result
+}
+
 export function makeDefaultNodeDescription(nodeId: number | null): string {
     return "Node " + nodeId ?? "?"
 }

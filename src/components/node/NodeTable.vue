@@ -56,7 +56,8 @@
 
       <o-table-column v-slot="props" field="description" label="Description">
         <div class="should-wrap regular-node-column is-inline-block">
-          <StringValue :string-value="makeNodeDescription(props.row)"/>
+          <StringValue :string-value="makeNodeDescriptionPrefix(props.row)" class="has-text-grey"/>
+          <StringValue :string-value="makeNodeOwnerDescription(props.row)"/>
         </div>
       </o-table-column>
 
@@ -121,7 +122,7 @@
     </o-table>
   </div>
 
-  <EmptyTable v-if="nodes && nodes.length == 0"/>
+  <EmptyTable v-if="nodes && nodes.length === 0"/>
 
 </template>
 
@@ -139,7 +140,14 @@ import HbarAmount from "@/components/values/HbarAmount.vue";
 import StakeRange from "@/components/node/StakeRange.vue";
 import {routeManager} from "@/router";
 import StringValue from "@/components/values/StringValue.vue";
-import {isCouncilNode, makeNodeDescription, makeAnnualizedRate, makeStakePercentage, makeUnclampedStake} from "@/schemas/HederaUtils";
+import {
+  isCouncilNode,
+  makeAnnualizedRate,
+  makeStakePercentage,
+  makeUnclampedStake,
+  makeNodeDescriptionPrefix,
+  makeNodeOwnerDescription
+} from "@/schemas/HederaUtils";
 import {NetworkAnalyzer} from "@/utils/analyzer/NetworkAnalyzer";
 
 
@@ -191,7 +199,8 @@ export default defineComponent({
       isMediumScreen,
       networkAnalyzer,
       isCouncilNode,
-      makeNodeDescription,
+      makeNodeDescriptionPrefix,
+      makeNodeOwnerDescription,
       makeUnclampedStake,
       makeWeightPercentage,
       makeAnnualizedRate,
