@@ -99,7 +99,7 @@ describe("TokenAmount.vue", () => {
 
         await router.push("/") // To avoid "missing required param 'network'" error
 
-        let testAmount = "42" // Token has 0 decimal
+        let testAmount = 42
 
         const wrapper = mount(TokenAmount, {
             global: {
@@ -112,7 +112,7 @@ describe("TokenAmount.vue", () => {
         });
         await flushPromises()
 
-        expect(wrapper.text()).toBe(testAmount)
+        expect(wrapper.text()).toBe(testAmount.toString())
 
         await wrapper.setProps({
             tokenId: SAMPLE_TOKEN.token_id,
@@ -120,11 +120,10 @@ describe("TokenAmount.vue", () => {
         })
         await flushPromises()
 
-        expect(wrapper.get('span').text()).toBe(testAmount)
+        // Token has 0 decimal
+        expect(wrapper.get('span').text()).toBe(testAmount.toString())
         expect(wrapper.get('a').attributes('href')).toMatch(RegExp("/token/" + SAMPLE_TOKEN.token_id + "$"))
         expect(wrapper.get('.h-is-extra-text').text()).toBe(SAMPLE_TOKEN.name)
-
-        testAmount = "42.00" // Token has 2 decimals
 
         await wrapper.setProps({
             tokenId: SAMPLE_TOKEN_DUDE.token_id,
@@ -132,7 +131,8 @@ describe("TokenAmount.vue", () => {
         })
         await flushPromises()
 
-        expect(wrapper.get('span').text()).toBe((testAmount).toString())
+        // Token has 2 decimals
+        expect(wrapper.get('span').text()).toBe((testAmount/100).toString())
         expect(wrapper.get('a').attributes('href')).toMatch(RegExp("/token/" + SAMPLE_TOKEN_DUDE.token_id + "$"))
         expect(wrapper.get('.h-is-extra-text').text()).toBe(SAMPLE_TOKEN_DUDE.name)
 
