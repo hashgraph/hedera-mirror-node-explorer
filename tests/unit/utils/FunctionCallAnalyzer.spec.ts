@@ -20,7 +20,7 @@
  *
  */
 
-import {FunctionCallAnalyzer, NameTypeValue} from "@/utils/FunctionCallAnalyzer";
+import {FunctionCallAnalyzer, NameTypeValue} from "@/utils/analyzer/FunctionCallAnalyzer";
 import {Ref, ref} from "vue";
 import {flushPromises} from "@vue/test-utils";
 import MockAdapter from "axios-mock-adapter";
