@@ -21,14 +21,14 @@
 import {ContractAction, ContractActionsResponse} from "@/schemas/HederaSchemas";
 import axios, {AxiosResponse} from "axios";
 import {computed, ref, Ref, watch} from "vue";
-import {EntityBatchLoader} from "@/utils/loader/EntityBatchLoader";
+import {EntityLoader} from "@/utils/loader/EntityLoader";
 
 export interface ContractActionWithPath {
     action: ContractAction,
     depthPath: string
 }
 
-export class ContractActionsLoader extends EntityBatchLoader<ContractActionsResponse> {
+export class ContractActionsLoader extends EntityLoader<ContractActionsResponse> {
 
     public readonly transactionIdOrHash: Ref<string | null>
 
@@ -47,36 +47,25 @@ export class ContractActionsLoader extends EntityBatchLoader<ContractActionsResp
     public readonly actions = computed(() => this.entity.value?.actions ?? null)
 
     //
-    // EntityBatchLoader
+    // EntityLoader
     //
 
-    protected async loadNext(nextURL:string | null): Promise<AxiosResponse<ContractActionsResponse> | null> {
-        let result: Promise<AxiosResponse<ContractActionsResponse> | null>
-        if (this.transactionIdOrHash.value !== null) {
-            // const sampleActions: AxiosResponse<ContractActionsResponse> = {
-            //     data: SAMPLE_CONTRACT_ACTIONS as ContractActionsResponse,
-            //     status: 200,
-            //     statusText: "",
-            //     headers: {},
-            //     config: {}
-            // }
-            // result = Promise.resolve(sampleActions)
-
-            result = axios.get<ContractActionsResponse>(
-                nextURL ?? "api/v1/contracts/results/" + this.transactionIdOrHash.value + "/actions"
-            )
-
-        } else {
-            result = Promise.resolve(null)
+    protected async load(): Promise<AxiosResponse<ContractActionsResponse> | null> {
+        let result: AxiosResponse<ContractActionsResponse>|null = null
+        let url: string|null = "api/v1/contracts/results/" + this.transactionIdOrHash.value + "/actions?limit=100"
+        while (url !== null) {
+            const next:AxiosResponse<ContractActionsResponse> = await axios.get(url)
+            result = result !== null ? this.mergeResponses(result, next) : next
+            url = next.data.links?.next ?? null
         }
-        return result
+        return Promise.resolve(result)
     }
 
-    protected nextURL(entity: ContractActionsResponse): string | null {
-        return entity.links?.next ?? null;
-    }
+    //
+    // Private
+    //
 
-    protected mergeResponses(last: AxiosResponse<ContractActionsResponse>,
+    private mergeResponses(last: AxiosResponse<ContractActionsResponse>,
                              next: AxiosResponse<ContractActionsResponse>): AxiosResponse<ContractActionsResponse> {
         const lastActions = last.data.actions ?? []
         const nextActions = next.data.actions ?? []

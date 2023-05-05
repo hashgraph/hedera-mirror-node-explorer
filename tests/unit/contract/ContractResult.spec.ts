@@ -129,7 +129,7 @@ describe("ContractResult.vue", () => {
         const mock = new MockAdapter(axios);
         const matcher1 = "/api/v1/contracts/results/" + transactionId
         mock.onGet(matcher1).reply(200, SAMPLE_REVERT_CONTRACT_RESULT_DETAILS_WITH_TRACES)
-        const matcher2 = "/api/v1/contracts/results/" + transactionId + '/actions'
+        const matcher2 = "/api/v1/contracts/results/" + transactionId + '/actions?limit=100'
         mock.onGet(matcher2).reply(200, SAMPLE_REVERT_CONTRACT_RESULT_ACTIONS)
 
         const wrapper = mount(ContractResult, {
