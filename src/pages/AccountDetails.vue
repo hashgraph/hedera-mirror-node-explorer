@@ -280,7 +280,7 @@ import DashboardCard from "@/components/DashboardCard.vue";
 import HbarAmount from "@/components/values/HbarAmount.vue";
 import TokenAmount from "@/components/values/TokenAmount.vue";
 import BlobValue from "@/components/values/BlobValue.vue";
-import {BalanceAnalyzer} from "@/utils/BalanceAnalyzer";
+import {BalanceAnalyzer} from "@/utils/analyzer/BalanceAnalyzer";
 import Footer from "@/components/Footer.vue";
 import Property from "@/components/Property.vue";
 import NotificationBanner from "@/components/NotificationBanner.vue";

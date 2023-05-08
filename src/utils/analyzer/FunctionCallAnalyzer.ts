@@ -20,7 +20,7 @@
 
 import {computed, ComputedRef, ref, Ref, watch, WatchStopHandle} from "vue";
 import {ethers} from "ethers";
-import {ContractAnalyzer} from "@/utils/ContractAnalyzer";
+import {ContractAnalyzer} from "@/utils/analyzer/ContractAnalyzer";
 
 export class FunctionCallAnalyzer {
 
