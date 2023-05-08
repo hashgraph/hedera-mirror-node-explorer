@@ -137,7 +137,7 @@ import StringValue from "@/components/values/StringValue.vue";
 import PlainAmount from "@/components/values/PlainAmount.vue";
 import SignatureValue from "@/components/values/SignatureValue.vue";
 import EVMAddress from "@/components/values/EVMAddress.vue";
-import {FunctionCallAnalyzer} from "@/utils/FunctionCallAnalyzer";
+import {FunctionCallAnalyzer} from "@/utils/analyzer/FunctionCallAnalyzer";
 import FunctionInput from "@/components/values/FunctionInput.vue";
 import FunctionResult from "@/components/values/FunctionResult.vue";
 import {decodeSolidityErrorMessage} from "@/schemas/HederaUtils";

@@ -24,7 +24,7 @@ import {Ref, ref} from "vue";
 import {flushPromises} from "@vue/test-utils";
 import MockAdapter from "axios-mock-adapter";
 import axios from "axios";
-import {BalanceAnalyzer} from "@/utils/BalanceAnalyzer";
+import {BalanceAnalyzer} from "@/utils/analyzer/BalanceAnalyzer";
 import {SAMPLE_ACCOUNT, SAMPLE_ACCOUNT_BALANCES} from "../Mocks";
 
 describe("BalanceAnalyzer.spec.ts", () => {

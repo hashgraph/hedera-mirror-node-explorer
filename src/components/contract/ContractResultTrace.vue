@@ -57,7 +57,7 @@ import {computed, defineComponent, onMounted, PropType, Ref, ref} from 'vue';
 import DashboardCard from "@/components/DashboardCard.vue";
 import {ContractActionsLoader, ContractActionWithPath} from "@/components/contract/ContractActionsLoader";
 import ContractActionsTable from "@/components/contract/ContractActionsTable.vue";
-import {FunctionCallAnalyzer} from "@/utils/FunctionCallAnalyzer";
+import {FunctionCallAnalyzer} from "@/utils/analyzer/FunctionCallAnalyzer";
 
 export default defineComponent({
 

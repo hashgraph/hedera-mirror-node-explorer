@@ -138,7 +138,7 @@ import ContractResultTrace from "@/components/contract/ContractResultTrace.vue";
 import ContractResultStates from "@/components/contract/ContractResultStates.vue";
 import EVMAddress from "@/components/values/EVMAddress.vue";
 import ContractResultLogs from "@/components/contract/ContractResultLogs.vue";
-import {FunctionCallAnalyzer} from "@/utils/FunctionCallAnalyzer";
+import {FunctionCallAnalyzer} from "@/utils/analyzer/FunctionCallAnalyzer";
 import {EntityID} from "@/utils/EntityID";
 import FunctionInput from "@/components/values/FunctionInput.vue";
 import FunctionResult from "@/components/values/FunctionResult.vue";

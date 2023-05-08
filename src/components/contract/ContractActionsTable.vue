@@ -118,7 +118,7 @@ import HbarAmount from "@/components/values/HbarAmount.vue";
 import ContractActionDetails from "@/components/contract/ContractActionDetails.vue";
 import EVMAddress from "@/components/values/EVMAddress.vue";
 import {ContractActionWithPath} from "@/components/contract/ContractActionsLoader";
-import {FunctionCallAnalyzer} from "@/utils/FunctionCallAnalyzer";
+import {FunctionCallAnalyzer} from "@/utils/analyzer/FunctionCallAnalyzer";
 
 //
 // defineComponent
