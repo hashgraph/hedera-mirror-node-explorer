@@ -166,6 +166,12 @@
                          :token-id="normalizedTokenId"/>
           </template>
         </Property>
+        <Property id="decimals">
+          <template v-slot:name>Decimals</template>
+          <template v-if="validEntityId" v-slot:value>
+            <StringValue :string-value="tokenInfo?.decimals"/>
+          </template>
+        </Property>
       </template>
 
     </DashboardCard>
