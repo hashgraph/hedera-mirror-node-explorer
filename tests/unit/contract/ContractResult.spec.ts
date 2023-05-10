@@ -86,6 +86,9 @@ describe("ContractResult.vue", () => {
         expect(wrapper.get("#gasPriceValue").text()).toBe("None")
 
         expect(wrapper.findAll("#logIndexValue").length).toBe(3)
+
+        wrapper.unmount()
+        await flushPromises()
     });
 
     it("Should display the reverted contract result and decode the error message", async () => {
@@ -118,6 +121,9 @@ describe("ContractResult.vue", () => {
         expect(wrapper.get("#errorMessageValue").text()).toBe("Insufficient token balance for wiped")
 
         expect(wrapper.findAll("#logIndexValue").length).toBe(0)
+
+        wrapper.unmount()
+        await flushPromises()
     });
 
     it("Should display the reverted contract result with call trace and state trace", async () => {
@@ -223,6 +229,9 @@ describe("ContractResult.vue", () => {
         )
 
         expect(wrapper.findAll("#logIndexValue").length).toBe(0)
+
+        wrapper.unmount()
+        await flushPromises()
     });
 
 });

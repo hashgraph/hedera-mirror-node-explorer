@@ -25,7 +25,8 @@ import MockAdapter from "axios-mock-adapter";
 import axios from "axios";
 import {
     SAMPLE_ACCOUNT,
-    SAMPLE_ACCOUNT_STAKING_ACCOUNT, SAMPLE_ACCOUNTS,
+    SAMPLE_ACCOUNT_STAKING_ACCOUNT,
+    SAMPLE_ACCOUNTS,
     SAMPLE_NETWORK_EXCHANGERATE,
     SAMPLE_NETWORK_NODES,
 } from "../Mocks";
@@ -168,6 +169,9 @@ describe("StakingDialog.vue", () => {
         await changeButton.trigger("click")
         await nextTick()
         await confirmChangeStaking("Change Staking  for account 0.0.730632Do you want to stake to account 0.0.7-bmurp ?FillerCANCELCONFIRM")
+
+        wrapper.unmount()
+        await flushPromises()
     })
 
     it("provides invalid values for account to stake to", async () => {
@@ -273,5 +277,8 @@ describe("StakingDialog.vue", () => {
         await waitFor(500)
         await flushPromises()
         expect(feedbackMessage.text()).toBe("This account does not exist")
+
+        wrapper.unmount()
+        await flushPromises()
     })
 });
