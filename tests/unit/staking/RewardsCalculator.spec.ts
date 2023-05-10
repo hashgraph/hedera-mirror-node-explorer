@@ -83,6 +83,9 @@ describe("Staking.vue", () => {
         expect(wrapper.find('#monthlyReward').text()).toBe("Approx Monthly Reward0HBAR")
         expect(wrapper.find('#yearlyReward').text()).toBe("Approx Yearly Reward0HBAR")
         expect(wrapper.find('#yearlyRate').text()).toBe("Approx Yearly Reward Rate0%")
+
+        wrapper.unmount()
+        await flushPromises()
     })
 
     it("should display a Rewards Estimator preset with 10000Hbar and Node1", async () => {
@@ -133,6 +136,9 @@ describe("Staking.vue", () => {
         expect(wrapper.find('#monthlyReward').text()).toBe("Approx Monthly Reward16.44HBAR")
         expect(wrapper.find('#yearlyReward').text()).toBe("Approx Yearly Reward200HBAR")
         expect(wrapper.find('#yearlyRate').text()).toBe("Approx Yearly Reward Rate2%")
+
+        wrapper.unmount()
+        await flushPromises()
     })
 
     it("should input different values for Hbar amount and selected Node", async () => {
@@ -193,5 +199,8 @@ describe("Staking.vue", () => {
         expect(wrapper.find('#monthlyReward').text()).toBe("Approx Monthly Reward16.44HBAR")
         expect(wrapper.find('#yearlyReward').text()).toBe("Approx Yearly Reward200HBAR")
         expect(wrapper.find('#yearlyRate').text()).toBe("Approx Yearly Reward Rate2%")
+
+        wrapper.unmount()
+        await flushPromises()
     })
 });
