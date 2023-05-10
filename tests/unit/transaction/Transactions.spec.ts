@@ -91,6 +91,9 @@ describe("Transactions.vue", () => {
             "123423\n\n" +
             "0.0.296939115:12:31.6676 AMFeb 28, 2022, UTC"
         )
+
+        wrapper.unmount()
+        await flushPromises()
     });
 
 });

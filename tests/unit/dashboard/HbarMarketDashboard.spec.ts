@@ -93,6 +93,9 @@ describe("HbarMarketDashboard.vue ", () => {
         // console.log(wrapper.text())
 
         expect(wrapper.text()).toBe("TESTNET")
+
+        wrapper.unmount()
+        await flushPromises()
     });
 
     it("should display the previewnet banner", async () => {
@@ -104,5 +107,8 @@ describe("HbarMarketDashboard.vue ", () => {
         // console.log(wrapper.text())
 
         expect(wrapper.text()).toBe("PREVIEWNET")
+
+        wrapper.unmount()
+        await flushPromises()
     });
 });
