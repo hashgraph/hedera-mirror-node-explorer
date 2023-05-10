@@ -98,6 +98,7 @@ describe("TokenDetails.vue", () => {
         expect(wrapper.get("#totalSupplyValue").text()).toBe("1")
         expect(wrapper.get("#initialSupplyValue").text()).toBe("1")
         expect(wrapper.get("#maxSupplyValue").text()).toBe("Infinite")
+        expect(wrapper.get("#decimalsValue").text()).toBe("0")
         expect(wrapper.get("#evmAddress").text()).toMatch(
             RegExp("^EVM Address:0x0000000000000000000000000000000001c49eecCopy to Clipboard"))
 
@@ -157,6 +158,7 @@ describe("TokenDetails.vue", () => {
         expect(wrapper.get("#totalSupplyValue").text()).toBe("2")
         expect(wrapper.get("#initialSupplyValue").text()).toBe("0")
         expect(wrapper.get("#maxSupplyValue").text()).toBe("150")
+        expect(wrapper.get("#decimalsValue").text()).toBe("0")
 
         expect(wrapper.text()).toMatch("NFT Holders")
         expect(wrapper.findComponent(NftHolderTable).exists()).toBe(true)
