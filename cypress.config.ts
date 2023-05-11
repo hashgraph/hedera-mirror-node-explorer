@@ -17,5 +17,6 @@ export default defineConfig({
     baseUrl: 'http://localhost:38920',
     specPattern: 'tests/e2e/specs/**/*.cy.{js,jsx,ts,tsx}',
     supportFile: 'tests/e2e/support/index.js',
+    experimentalRunAllSpecs: true,
   },
 })
