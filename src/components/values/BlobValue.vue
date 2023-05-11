@@ -31,7 +31,7 @@
          :style="{'max-width': windowWidth-limitingFactor + 'px'}">{{ decodedValue }}</div>
     <div v-else-if="limitingFactor" class="h-is-one-line is-inline-block"
          :style="{'max-width': windowWidth-limitingFactor+200 + 'px'}">{{ decodedValue }}</div>
-    <div v-else>{{ decodedValue }}</div>
+    <div v-else style="word-break: break-word">{{ decodedValue }}</div>
   </template>
   <span v-else-if="showNone && !initialLoading" class="has-text-grey">None</span>
   <span v-else/>
