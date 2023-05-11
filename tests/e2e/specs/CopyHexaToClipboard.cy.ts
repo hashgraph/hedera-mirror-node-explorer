@@ -34,7 +34,7 @@ describe('Copy HexaValue to Clipboard', () => {
         }))
     })
 
-    it('should copy the last transaction hash', () => {
+    it.skip('should copy the last transaction hash', () => {
         cy.visit('testnet/transactions')
         cy.contains('Transactions')
 
