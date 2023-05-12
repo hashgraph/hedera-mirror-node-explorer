@@ -50,7 +50,8 @@
     <div v-if="showType" class="h-is-extra-text h-is-text-size-2">{{ entityType }}</div>
   </div>
   <div v-else-if="initialLoading"/>
-  <div v-else class="has-text-grey">None</div>
+  <div v-else-if="showNone" class="has-text-grey">None</div>
+  <div v-else></div>
 </template>
 
 <!-- --------------------------------------------------------------------------------------------------------------- -->
@@ -93,7 +94,11 @@ export default defineComponent({
     enableCopy: {
       type: Boolean,
       default: true
-    }
+    },
+    showNone: {
+      type: Boolean,
+      default: true
+    },
   },
 
   setup(props) {
