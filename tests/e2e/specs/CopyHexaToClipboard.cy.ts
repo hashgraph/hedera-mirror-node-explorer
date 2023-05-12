@@ -34,7 +34,7 @@ describe('Copy HexaValue to Clipboard', () => {
         }))
     })
 
-    it.skip('should copy the last transaction hash', () => {
+    it('should copy the last transaction hash', () => {
         cy.visit('testnet/transactions')
         cy.contains('Transactions')
 
@@ -55,7 +55,7 @@ describe('Copy HexaValue to Clipboard', () => {
             .click()
 
         cy.window().its('navigator.clipboard')
-            .invoke('readText').should('not.be.empty')
+            .then ((clipboard) => clipboard.readText())
             .then(($txt) => {
                 // cy.log($txt)
                 cy.get('#transactionHashValue').should(($hash) => {
