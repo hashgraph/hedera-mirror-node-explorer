@@ -60,10 +60,11 @@
 
 <script lang="ts">
 
-import {computed, defineComponent, inject, ref} from "vue";
+import {computed, defineComponent, inject, onBeforeUnmount, ref, watch} from "vue";
 import {initialLoadingKey} from "@/AppKeys";
-import {EntityID} from "@/utils/EntityID";
 import {systemContractRegistry} from "@/schemas/SystemContractRegistry";
+import {AccountByAddressCache} from "@/utils/cache/AccountByAddressCache";
+import {EthereumAddress} from "@/utils/EthereumAddress";
 
 export default defineComponent({
   name: "EVMAddress",
@@ -108,17 +109,12 @@ export default defineComponent({
     const isContract = computed(() => props.entityType === 'CONTRACT')
     const isAccount = computed(() => props.entityType === 'ACCOUNT')
 
-    const displayAddress = computed(() => {
-      let result: string
-      if (props.compact  && props.address?.slice(0, 2) === "0x" && props.address.length === 42) {
-        result = "0x" + props.address[2] + "…" + props.address.slice(-props.bytesKept)
-      } else {
-        result = props.address?.slice(0, 2) === "0x"
-            ? props.address
-            : props.address ? "0x" + props.address : ""
-      }
-      return result
-    })
+    const evmAddress = computed(() => EthereumAddress.parse(props.address ?? ""))
+
+    const displayAddress = computed(
+        () => props.compact
+            ? evmAddress.value?.toCompactString(props.bytesKept)  ?? ""
+            : evmAddress.value?.toString() ?? "")
 
     const nonSignificantSize = computed(() => {
       let i: number
@@ -137,25 +133,38 @@ export default defineComponent({
     const significantPart = computed(
         () => displayAddress.value?.slice(nonSignificantSize.value))
 
+    const accountLookup = AccountByAddressCache.instance.makeLookup(computed(() => props.address ?? null))
+    watch(() => props.address, () => {
+      if (props.showId && evmAddress.value && !evmAddress.value.toEntityID()) {
+        accountLookup.mount()
+      }
+    })
+    onBeforeUnmount(() => accountLookup.unmount())
+
     const entityId = computed(() => {
-      let result
-      if (props.id) {
-        result = props.id
-      } else if (props.address) {
-        const entity = EntityID.fromAddress(props.address)
-        result = entity ? entity.toString() : null
+      let result: string | null
+      if (props.showId) {
+        if (props.id) {
+          result = props.id
+        } else if (evmAddress.value) {
+          result = evmAddress.value?.toEntityID()?.toString() ?? null
+          if (result) {
+            result = systemContractRegistry.lookup(result)?.description ?? result
+          } else {
+            result = accountLookup.entity.value?.account ?? null
+          }
+        } else {
+          result = null
+        }
       } else {
         result = null
-      }
-      if (result) {
-        result = systemContractRegistry.lookup(result)?.description ?? result
       }
       return result
     })
 
     const copyToClipboard = (): void => {
-      if (displayAddress.value) {
-        navigator.clipboard.writeText(displayAddress.value)
+      if (evmAddress.value) {
+        navigator.clipboard.writeText(evmAddress.value.toString())
       }
     }
 
