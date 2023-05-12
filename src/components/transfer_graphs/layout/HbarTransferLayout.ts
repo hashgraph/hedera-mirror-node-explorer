@@ -19,14 +19,14 @@
  */
 
 import {compareTransferByAccount, NetworkNode, Transaction, Transfer} from "@/schemas/HederaSchemas";
-import {computeNetAmount} from "@/utils/TransactionTools";
 import {makeOperatorDescription} from "@/schemas/HederaUtils";
+import {computeNetAmount} from "@/utils/TransactionTools";
 
 export class HbarTransferLayout {
 
     public readonly transaction: Transaction|undefined
     public readonly nodes: NetworkNode[]
-    public readonly netAmount: number
+    public readonly destinationAmount: number
     public readonly sources = Array<HbarTransferRow>()
     public readonly destinations = Array<HbarTransferRow>()
     public readonly rowCount: number
@@ -39,7 +39,6 @@ export class HbarTransferLayout {
 
         this.transaction = transaction
         this.nodes = nodes
-        this.netAmount = transaction ? computeNetAmount(transaction) : 0
 
         if (this.transaction?.transfers) {
             const negativeTransfers = new Array<Transfer>()
@@ -55,18 +54,18 @@ export class HbarTransferLayout {
             positiveTransfers.sort(compareTransferByAccount)
 
             for (const t of negativeTransfers) {
-                const payload = t.account === null || makeOperatorDescription(t.account, this.nodes) === null
+                const payload = t.account === null || t.amount < 0 || makeOperatorDescription(t.account, this.nodes) === null
                 this.sources.push(new HbarTransferRow(t, null, payload))
             }
             for (const t of positiveTransfers) {
                 const operator = t.account !== null ? makeOperatorDescription(t.account, this.nodes) : null
-                const payload = t.account === null || operator === null
+                const payload = t.account === null || t.amount < 0 || operator === null
                 this.destinations.push(new HbarTransferRow(t, operator ?? "Transfer", payload))
             }
         }
 
         // Makes sure net amount is distributed across payload transfers
-        let remaining = this.netAmount
+        let remaining = this.transaction ? computeNetAmount(this.transaction) : 0
         // First we remove amount from payload transfers
         for (const r of this.destinations) {
             if (r.payload) {
@@ -112,9 +111,13 @@ export class HbarTransferLayout {
             }
         }
 
+        this.destinationAmount = 0
+        for (const r of this.destinations) {
+            this.destinationAmount += r.transfer.amount
+        }
+
         this.rowCount = Math.max(this.sources.length, this.destinations.length)
     }
-
 
     //
     // Private
