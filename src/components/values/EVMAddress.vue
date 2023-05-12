@@ -26,7 +26,7 @@
   <div v-if="address">
     <div :class="{'is-flex': isSmallScreen, 'h-is-text-size-3': !hasCustomFont, 'is-family-monospace': !hasCustomFont}"
          class="is-inline-block" style="line-height: 20px">
-      <div class="shy-scope" style="display: inline-block; position: relative;">
+      <div class="shy-scope mr-1" style="display: inline-block; position: relative;">
         <span class="has-text-grey">{{ nonSignificantPart }}</span>
         <span>{{ significantPart }}</span>
         <div v-if="address" id="shyCopyButton" class="shy"
@@ -40,7 +40,7 @@
         </div>
       </div>
       <span v-if="entityId && showId">
-        <span class="ml-1">(</span>
+        <span>(</span>
         <router-link v-if="isContract" :to="{name: 'ContractDetails', params: {contractId: entityId}}">{{ entityId }}</router-link>
         <router-link v-else-if="isAccount" :to="{name: 'AccountDetails', params: {accountId: entityId}}">{{ entityId }}</router-link>
         <span v-else>{{ entityId }}</span>
