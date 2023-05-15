@@ -19,7 +19,7 @@
  */
 
 import {compareTransferByAccount, NetworkNode, Transaction, Transfer} from "@/schemas/HederaSchemas";
-import {makeOperatorDescription} from "@/schemas/HederaUtils";
+import {isFeeTransfer, makeOperatorDescription} from "@/schemas/HederaUtils";
 import {computeNetAmount} from "@/utils/TransactionTools";
 
 export class HbarTransferLayout {
@@ -54,13 +54,13 @@ export class HbarTransferLayout {
             positiveTransfers.sort(compareTransferByAccount)
 
             for (const t of negativeTransfers) {
-                const payload = t.account === null || t.amount < 0 || makeOperatorDescription(t.account, this.nodes) === null
-                this.sources.push(new HbarTransferRow(t, null, payload))
+                const isFee = isFeeTransfer(t, this.nodes)
+                this.sources.push(new HbarTransferRow(t, null, !isFee))
             }
             for (const t of positiveTransfers) {
-                const operator = t.account !== null ? makeOperatorDescription(t.account, this.nodes) : null
-                const payload = t.account === null || t.amount < 0 || operator === null
-                this.destinations.push(new HbarTransferRow(t, operator ?? "Transfer", payload))
+                const isFee = isFeeTransfer(t, this.nodes)
+                const operator = t.account ? makeOperatorDescription(t.account, this.nodes) : null
+                this.destinations.push(new HbarTransferRow(t, operator ?? "Transfer", !isFee))
             }
         }
 
