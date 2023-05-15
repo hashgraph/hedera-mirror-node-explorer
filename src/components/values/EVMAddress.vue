@@ -60,11 +60,12 @@
 
 <script lang="ts">
 
-import {computed, defineComponent, inject, onBeforeUnmount, ref, watch} from "vue";
+import {computed, defineComponent, inject, Ref, ref, watch} from "vue";
 import {initialLoadingKey} from "@/AppKeys";
 import {systemContractRegistry} from "@/schemas/SystemContractRegistry";
 import {AccountByAddressCache} from "@/utils/cache/AccountByAddressCache";
 import {EthereumAddress} from "@/utils/EthereumAddress";
+import {AccountBalanceTransactions} from "@/schemas/HederaSchemas";
 
 export default defineComponent({
   name: "EVMAddress",
@@ -133,13 +134,14 @@ export default defineComponent({
     const significantPart = computed(
         () => displayAddress.value?.slice(nonSignificantSize.value))
 
-    const accountLookup = AccountByAddressCache.instance.makeLookup(computed(() => props.address ?? null))
-    watch(() => props.address, () => {
+    const account: Ref<AccountBalanceTransactions | null> = ref(null)
+    watch(() => props.address, async () => {
       if (props.showId && evmAddress.value && !evmAddress.value.toEntityID()) {
-        accountLookup.mount()
+        account.value = await AccountByAddressCache.instance.lookup(evmAddress.value.toString())
+      } else {
+        account.value = null
       }
     })
-    onBeforeUnmount(() => accountLookup.unmount())
 
     const entityId = computed(() => {
       let result: string | null
@@ -151,7 +153,7 @@ export default defineComponent({
           if (result) {
             result = systemContractRegistry.lookup(result)?.description ?? result
           } else {
-            result = accountLookup.entity.value?.account ?? null
+            result = account.value?.account ?? null
           }
         } else {
           result = null
