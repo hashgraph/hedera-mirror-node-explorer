@@ -55,7 +55,7 @@ describe("HbarTransferLayout.vue", () => {
         const fullLayout = new HbarTransferLayout(transaction, NETWORK_NODES)
 
         expect(fullLayout.transaction).toBe(transaction)
-        expect(fullLayout.netAmount).toBe(0)
+        expect(fullLayout.destinationAmount).toBe(10)
         expect(fullLayout.rowCount).toBe(2)
         expect(fullLayout.sources.length).toBe(1)
         expect(fullLayout.destinations.length).toBe(2)
@@ -85,7 +85,7 @@ describe("HbarTransferLayout.vue", () => {
         const compactLayout = new HbarTransferLayout(transaction, NETWORK_NODES, false)
 
         expect(compactLayout.transaction).toBe(transaction)
-        expect(compactLayout.netAmount).toBe(0)
+        expect(compactLayout.destinationAmount).toBe(0)
         expect(compactLayout.rowCount).toBe(0)
         expect(compactLayout.sources.length).toBe(0)
         expect(compactLayout.destinations.length).toBe(0)
@@ -111,7 +111,7 @@ describe("HbarTransferLayout.vue", () => {
         const fullLayout = new HbarTransferLayout(transaction, NETWORK_NODES)
 
         expect(fullLayout.transaction).toBe(transaction)
-        expect(fullLayout.netAmount).toBe(90)
+        expect(fullLayout.destinationAmount).toBe(100)
         expect(fullLayout.rowCount).toBe(3)
         expect(fullLayout.sources.length).toBe(1)
         expect(fullLayout.destinations.length).toBe(3)
@@ -147,7 +147,7 @@ describe("HbarTransferLayout.vue", () => {
         const compactLayout = new HbarTransferLayout(transaction, NETWORK_NODES, false)
 
         expect(compactLayout.transaction).toBe(transaction)
-        expect(compactLayout.netAmount).toBe(90)
+        expect(compactLayout.destinationAmount).toBe(90)
         expect(compactLayout.rowCount).toBe(1)
         expect(compactLayout.sources.length).toBe(1)
         expect(compactLayout.destinations.length).toBe(1)
@@ -185,7 +185,7 @@ describe("HbarTransferLayout.vue", () => {
         const fullLayout = new HbarTransferLayout(transaction, NETWORK_NODES)
 
         expect(fullLayout.transaction).toBe(transaction)
-        expect(fullLayout.netAmount).toBe(90)
+        expect(fullLayout.destinationAmount).toBe(100)
         expect(fullLayout.rowCount).toBe(4)
         expect(fullLayout.sources.length).toBe(1)
         expect(fullLayout.destinations.length).toBe(4)
@@ -227,7 +227,7 @@ describe("HbarTransferLayout.vue", () => {
         const compactLayout = new HbarTransferLayout(transaction, NETWORK_NODES, false)
 
         expect(compactLayout.transaction).toBe(transaction)
-        expect(compactLayout.netAmount).toBe(90)
+        expect(compactLayout.destinationAmount).toBe(90)
         expect(compactLayout.rowCount).toBe(2)
         expect(compactLayout.sources.length).toBe(1)
         expect(compactLayout.destinations.length).toBe(2)
@@ -275,7 +275,7 @@ describe("HbarTransferLayout.vue", () => {
         const fullLayout = new HbarTransferLayout(transaction, NETWORK_NODES)
 
         expect(fullLayout.transaction).toBe(transaction)
-        expect(fullLayout.netAmount).toBe(0)
+        expect(fullLayout.destinationAmount).toBe(10)
         expect(fullLayout.rowCount).toBe(2)
         expect(fullLayout.sources.length).toBe(2)
         expect(fullLayout.destinations.length).toBe(2)
@@ -312,7 +312,7 @@ describe("HbarTransferLayout.vue", () => {
         const compactLayout = new HbarTransferLayout(transaction, NETWORK_NODES, false)
 
         expect(compactLayout.transaction).toBe(transaction)
-        expect(compactLayout.netAmount).toBe(0)
+        expect(compactLayout.destinationAmount).toBe(0)
         expect(compactLayout.rowCount).toBe(0)
         expect(compactLayout.sources.length).toBe(0)
         expect(compactLayout.destinations.length).toBe(0)
@@ -339,7 +339,7 @@ describe("HbarTransferLayout.vue", () => {
         const fullLayout = new HbarTransferLayout(transaction, NETWORK_NODES)
 
         expect(fullLayout.transaction).toBe(transaction)
-        expect(fullLayout.netAmount).toBe(90)
+        expect(fullLayout.destinationAmount).toBe(100)
         expect(fullLayout.rowCount).toBe(3)
         expect(fullLayout.sources.length).toBe(2)
         expect(fullLayout.destinations.length).toBe(3)
@@ -381,7 +381,7 @@ describe("HbarTransferLayout.vue", () => {
         const compactLayout = new HbarTransferLayout(transaction, NETWORK_NODES, false)
 
         expect(compactLayout.transaction).toBe(transaction)
-        expect(compactLayout.netAmount).toBe(90)
+        expect(compactLayout.destinationAmount).toBe(90)
         expect(compactLayout.rowCount).toBe(2)
         expect(compactLayout.sources.length).toBe(2)
         expect(compactLayout.destinations.length).toBe(1)
@@ -426,7 +426,7 @@ describe("HbarTransferLayout.vue", () => {
         const fullLayout = new HbarTransferLayout(transaction, NETWORK_NODES)
 
         expect(fullLayout.transaction).toBe(transaction)
-        expect(fullLayout.netAmount).toBe(90)
+        expect(fullLayout.destinationAmount).toBe(100)
         expect(fullLayout.rowCount).toBe(4)
         expect(fullLayout.sources.length).toBe(2)
         expect(fullLayout.destinations.length).toBe(4)
@@ -475,7 +475,7 @@ describe("HbarTransferLayout.vue", () => {
         const compactLayout = new HbarTransferLayout(transaction, NETWORK_NODES, false)
 
         expect(compactLayout.transaction).toBe(transaction)
-        expect(compactLayout.netAmount).toBe(90)
+        expect(compactLayout.destinationAmount).toBe(90)
         expect(compactLayout.rowCount).toBe(2)
         expect(compactLayout.sources.length).toBe(2)
         expect(compactLayout.destinations.length).toBe(2)
@@ -527,7 +527,7 @@ describe("HbarTransferLayout.vue", () => {
         const fullLayout = new HbarTransferLayout(transaction, NETWORK_NODES)
 
         expect(fullLayout.transaction).toBe(transaction)
-        expect(fullLayout.netAmount).toBe(2)
+        expect(fullLayout.destinationAmount).toBe(10)
         expect(fullLayout.rowCount).toBe(3)
         expect(fullLayout.sources.length).toBe(1)
         expect(fullLayout.destinations.length).toBe(3)
@@ -563,7 +563,7 @@ describe("HbarTransferLayout.vue", () => {
         const compactLayout = new HbarTransferLayout(transaction, NETWORK_NODES, false)
 
         expect(compactLayout.transaction).toBe(transaction)
-        expect(compactLayout.netAmount).toBe(2)
+        expect(compactLayout.destinationAmount).toBe(2)
         expect(compactLayout.rowCount).toBe(1)
         expect(compactLayout.sources.length).toBe(1)
         expect(compactLayout.destinations.length).toBe(1)
