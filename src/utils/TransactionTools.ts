@@ -19,6 +19,7 @@
  */
 
 import {Transaction, TransactionType} from "@/schemas/HederaSchemas";
+import {TransactionID} from "@/utils/TransactionID";
 
 export function makeSummaryLabel(row: Transaction): string {
     let result: string
@@ -305,18 +306,11 @@ export function makeTypeLabel(type: TransactionType | undefined): string {
     return result.toUpperCase()
 }
 
-export function makeOperatorAccountLabel(row: Transaction): string {
-
-    //
-    // Derived from transaction id
-    //      account-timestamp-fraction
-    //      0.0.3107590-1639489392-138251957
-
-    let result: string
-    const transactionId = row.transaction_id;
+export function makeOperatorAccountLabel(transaction: Transaction): string {
+    let result: string | null
+    const transactionId = transaction.transaction_id;
     if (transactionId != null) {
-        const index = transactionId.indexOf("-")
-        result = index != -1 ? transactionId.substring(0, index) : "?";
+        result = TransactionID.makePayerID(transactionId) ?? "?"
     } else {
         result = "?"
     }

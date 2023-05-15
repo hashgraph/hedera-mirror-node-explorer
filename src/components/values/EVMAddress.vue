@@ -26,7 +26,7 @@
   <div v-if="address">
     <div :class="{'is-flex': isSmallScreen, 'h-is-text-size-3': !hasCustomFont, 'is-family-monospace': !hasCustomFont}"
          class="is-inline-block" style="line-height: 20px">
-      <div class="shy-scope" style="display: inline-block; position: relative;">
+      <div class="shy-scope mr-1" style="display: inline-block; position: relative;">
         <span class="has-text-grey">{{ nonSignificantPart }}</span>
         <span>{{ significantPart }}</span>
         <div v-if="address" id="shyCopyButton" class="shy"
@@ -40,7 +40,7 @@
         </div>
       </div>
       <span v-if="entityId && showId">
-        <span class="ml-1">(</span>
+        <span>(</span>
         <router-link v-if="isContract" :to="{name: 'ContractDetails', params: {contractId: entityId}}">{{ entityId }}</router-link>
         <router-link v-else-if="isAccount" :to="{name: 'AccountDetails', params: {accountId: entityId}}">{{ entityId }}</router-link>
         <span v-else>{{ entityId }}</span>
@@ -50,7 +50,8 @@
     <div v-if="showType" class="h-is-extra-text h-is-text-size-2">{{ entityType }}</div>
   </div>
   <div v-else-if="initialLoading"/>
-  <div v-else class="has-text-grey">None</div>
+  <div v-else-if="showNone" class="has-text-grey">None</div>
+  <div v-else></div>
 </template>
 
 <!-- --------------------------------------------------------------------------------------------------------------- -->
@@ -59,10 +60,12 @@
 
 <script lang="ts">
 
-import {computed, defineComponent, inject, ref} from "vue";
+import {computed, defineComponent, inject, Ref, ref, watch} from "vue";
 import {initialLoadingKey} from "@/AppKeys";
-import {EntityID} from "@/utils/EntityID";
 import {systemContractRegistry} from "@/schemas/SystemContractRegistry";
+import {AccountByAddressCache} from "@/utils/cache/AccountByAddressCache";
+import {EthereumAddress} from "@/utils/EthereumAddress";
+import {AccountBalanceTransactions} from "@/schemas/HederaSchemas";
 
 export default defineComponent({
   name: "EVMAddress",
@@ -93,7 +96,11 @@ export default defineComponent({
     enableCopy: {
       type: Boolean,
       default: true
-    }
+    },
+    showNone: {
+      type: Boolean,
+      default: true
+    },
   },
 
   setup(props) {
@@ -103,17 +110,12 @@ export default defineComponent({
     const isContract = computed(() => props.entityType === 'CONTRACT')
     const isAccount = computed(() => props.entityType === 'ACCOUNT')
 
-    const displayAddress = computed(() => {
-      let result: string
-      if (props.compact  && props.address?.slice(0, 2) === "0x" && props.address.length === 42) {
-        result = "0x" + props.address[2] + "…" + props.address.slice(-props.bytesKept)
-      } else {
-        result = props.address?.slice(0, 2) === "0x"
-            ? props.address
-            : props.address ? "0x" + props.address : ""
-      }
-      return result
-    })
+    const evmAddress = computed(() => EthereumAddress.parse(props.address ?? ""))
+
+    const displayAddress = computed(
+        () => props.compact
+            ? evmAddress.value?.toCompactString(props.bytesKept)  ?? ""
+            : evmAddress.value?.toString() ?? "")
 
     const nonSignificantSize = computed(() => {
       let i: number
@@ -132,25 +134,39 @@ export default defineComponent({
     const significantPart = computed(
         () => displayAddress.value?.slice(nonSignificantSize.value))
 
+    const account: Ref<AccountBalanceTransactions | null> = ref(null)
+    watch(() => props.address, async () => {
+      if (props.showId && evmAddress.value && !evmAddress.value.toEntityID()) {
+        account.value = await AccountByAddressCache.instance.lookup(evmAddress.value.toString())
+      } else {
+        account.value = null
+      }
+    })
+
     const entityId = computed(() => {
-      let result
-      if (props.id) {
-        result = props.id
-      } else if (props.address) {
-        const entity = EntityID.fromAddress(props.address)
-        result = entity ? entity.toString() : null
+      let result: string | null
+      if (props.showId) {
+        if (props.id) {
+          result = props.id
+        } else if (evmAddress.value) {
+          result = evmAddress.value?.toEntityID()?.toString() ?? null
+        } else {
+          result = null
+        }
+        if (result) {
+          result = systemContractRegistry.lookup(result)?.description ?? result
+        } else {
+          result = account.value?.account ?? null
+        }
       } else {
         result = null
-      }
-      if (result) {
-        result = systemContractRegistry.lookup(result)?.description ?? result
       }
       return result
     })
 
     const copyToClipboard = (): void => {
-      if (displayAddress.value) {
-        navigator.clipboard.writeText(displayAddress.value)
+      if (evmAddress.value) {
+        navigator.clipboard.writeText(evmAddress.value.toString())
       }
     }
 
