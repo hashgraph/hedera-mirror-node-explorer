@@ -18,7 +18,7 @@
  *
  */
 
-import {AccountInfo, KeyType, NetworkNode, TokenInfo} from "@/schemas/HederaSchemas";
+import {AccountInfo, KeyType, NetworkNode, TokenInfo, Transfer} from "@/schemas/HederaSchemas";
 import {EntityID} from "@/utils/EntityID";
 import {ethers} from "ethers";
 
@@ -110,6 +110,12 @@ export function makeOperatorDescription(accountId: string, nodes: NetworkNode[])
         result = node !== null ? makeNodeDescription(node) : null
     }
     return result
+}
+
+export function isFeeTransfer(t: Transfer, nodes: NetworkNode[]): boolean {
+    return t.account !== null
+        && t.amount > 0
+        && makeOperatorDescription(t.account, nodes) !== null
 }
 
 const errorStringSelector = '0x08c379a0'

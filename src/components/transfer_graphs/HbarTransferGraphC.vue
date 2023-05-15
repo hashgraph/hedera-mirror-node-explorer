@@ -48,7 +48,7 @@
       <!-- #2 : hbar amount -->
       <div class="justify-end">
         <HbarAmount v-if="i === 1"
-                    v-bind:amount="hbarTransferLayout.netAmount"/>
+                    v-bind:amount="hbarTransferLayout.destinationAmount"/>
       </div>
 
       <!-- #3 : arrow -->
