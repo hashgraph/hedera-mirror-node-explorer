@@ -150,13 +150,13 @@ export default defineComponent({
           result = props.id
         } else if (evmAddress.value) {
           result = evmAddress.value?.toEntityID()?.toString() ?? null
-          if (result) {
-            result = systemContractRegistry.lookup(result)?.description ?? result
-          } else {
-            result = account.value?.account ?? null
-          }
         } else {
           result = null
+        }
+        if (result) {
+          result = systemContractRegistry.lookup(result)?.description ?? result
+        } else {
+          result = account.value?.account ?? null
         }
       } else {
         result = null
