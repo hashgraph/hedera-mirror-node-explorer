@@ -116,8 +116,12 @@ export class FunctionCallAnalyzer {
         const i = this.contractAnalyzer.interface.value
         const input = this.input.value
         if (i !== null && input !== null) {
-            const td = i.parseTransaction({data: input})
-            this.transactionDescription.value = Object.preventExtensions(td) // Because ethers does not like Ref introspection
+            try {
+                const td = i.parseTransaction({data: input})
+                this.transactionDescription.value = Object.preventExtensions(td) // Because ethers does not like Ref introspection
+            } catch {
+                this.transactionDescription.value = null
+            }
         } else {
             this.transactionDescription.value = null
         }
