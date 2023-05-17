@@ -33,7 +33,7 @@
     "base32-decode": "^1.0.0",
     "base32-encode": "^1.2.0",
     "bulma": "^0.9.4",
-    "core-js": "^3.27.2",
+    "core-js": "^3.30.1",
     "ethers": "^5.7.2",
     "hashconnect": "^0.1.9",
     "vue": "^3.2.47",
