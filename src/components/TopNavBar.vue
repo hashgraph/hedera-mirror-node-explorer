@@ -131,6 +131,7 @@ export default defineComponent({
     const isSmallScreen = inject('isSmallScreen', true)
     const isMediumScreen = inject('isMediumScreen', true)
     const isTouchDevice = inject('isTouchDevice', false)
+    const buildRelease = inject('buildRelease', "not available")
     const buildTime = inject('buildTime', "not available")
 
     const productName = getEnv('VUE_APP_PRODUCT_NAME') ?? "Hedera Mirror Node Explorer"
@@ -142,6 +143,7 @@ export default defineComponent({
       isSmallScreen,
       isMediumScreen,
       isTouchDevice,
+      buildRelease,
       buildTime,
       productName,
       isStakingEnabled,

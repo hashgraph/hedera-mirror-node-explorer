@@ -40,7 +40,7 @@
           <span v-if="!isTouchDevice && isMediumScreen"> is a ledger explorer for the Hedera network.</span>
         </span>
         <span class="h-is-text-size-1" style="font-weight:300; color: #DBDBDB">
-          Built {{ buildTime }}
+          Release <a :href="'https://github.com/hashgraph/hedera-mirror-node-explorer/commit/'+buildRelease">{{ buildRelease }}</a> Built {{ buildTime }}
         </span>
         <a data-cy="termsOfUse" v-if="termsOfUseURL" :href="termsOfUseURL" style="line-height: 1rem">
           <span class="h-is-text-size-3" style="font-weight:300">
@@ -83,6 +83,7 @@ export default defineComponent({
   },
 
   setup() {
+    const buildRelease = inject('buildRelease', "not available")
     const buildTime = inject('buildTime', "not available")
 
     const isMediumScreen = inject('isMediumScreen', true)
@@ -94,6 +95,7 @@ export default defineComponent({
     const termsOfUseURL = getEnv('VUE_APP_TERMS_OF_USE_URL') ? '/' + getEnv('VUE_APP_TERMS_OF_USE_URL') : ""
 
     return {
+      buildRelease,
       buildTime,
       isSmallScreen,
       isMediumScreen,
