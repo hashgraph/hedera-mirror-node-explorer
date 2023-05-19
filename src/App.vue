@@ -55,6 +55,12 @@ export default defineComponent({
     const route = useRoute()
     const onMainDashboardPage = computed( () => { return route.name == "MainDashboard" })
 
+    const buildRelease = process.env.BUILD_RELEASE ?? "not available"
+    provide('buildRelease', buildRelease)
+
+    const buildShortCommitHash = process.env.BUILD_SHORTCOMMITHASH ?? "not available"
+    provide('buildShortCommitHash', buildShortCommitHash)
+
     const buildTime = document.documentElement.dataset.buildTimestampUtc ?? "not available"
     provide('buildTime', buildTime)
 
