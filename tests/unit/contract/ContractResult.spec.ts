@@ -47,24 +47,29 @@ HMSF.forceUTC = true
 
 describe("ContractResult.vue", () => {
 
-    it("Should display the contract result and logs, given transaction ID", async () => {
+    it("Should display the contract result and logs, given consensus timestamp", async () => {
 
         await router.push("/") // To avoid "missing required param 'network'" error
 
-        const transactionId = "0.0.846260-1662655524-114667756"
         const contractId = SAMPLE_CONTRACT_RESULT_DETAILS.contract_id
         const timestamp = SAMPLE_CONTRACT_RESULT_DETAILS.timestamp
 
         const mock = new MockAdapter(axios);
-        const matcher1 = "/api/v1/contracts/results/" + transactionId
-        mock.onGet(matcher1).reply(200, SAMPLE_CONTRACT_RESULT_DETAILS)
+        const matcher1 = "/api/v1/contracts/results"
+        const param1 = { timestamp: timestamp, internal: true }
+        mock.onGet(matcher1, param1).reply(200, {
+            results: [ SAMPLE_CONTRACT_RESULT_DETAILS ], "links": {"next": null}
+        } );
+
+        const matcher2 = "/api/v1/contracts/" + contractId + "/results/" + timestamp
+        mock.onGet(matcher2).reply(200, SAMPLE_CONTRACT_RESULT_DETAILS);
 
         const wrapper = mount(ContractResult, {
             global: {
                 plugins: [router, Oruga]
             },
             props: {
-                transactionIdOrHash: transactionId,
+                timestamp: timestamp,
                 topLevel: true
             },
         });
@@ -95,20 +100,25 @@ describe("ContractResult.vue", () => {
 
         await router.push("/") // To avoid "missing required param 'network'" error
 
-        const transactionId = "0.0.1466-1677085130-338772063"
         const contractId = SAMPLE_REVERT_CONTRACT_RESULT_DETAILS.contract_id
         const timestamp = SAMPLE_REVERT_CONTRACT_RESULT_DETAILS.timestamp
 
         const mock = new MockAdapter(axios);
-        const matcher1 = "/api/v1/contracts/results/" + transactionId
-        mock.onGet(matcher1).reply(200, SAMPLE_REVERT_CONTRACT_RESULT_DETAILS)
+        const matcher1 = "/api/v1/contracts/results"
+        const param1 = { timestamp: timestamp, internal: true }
+        mock.onGet(matcher1, param1).reply(200, {
+            results: [ SAMPLE_REVERT_CONTRACT_RESULT_DETAILS ], "links": {"next": null}
+        } );
+
+        const matcher2 = "/api/v1/contracts/" + contractId + "/results/" + timestamp
+        mock.onGet(matcher2).reply(200, SAMPLE_REVERT_CONTRACT_RESULT_DETAILS);
 
         const wrapper = mount(ContractResult, {
             global: {
                 plugins: [router, Oruga]
             },
             props: {
-                transactionIdOrHash: transactionId,
+                timestamp: timestamp,
                 topLevel: true
             },
         });
@@ -130,20 +140,30 @@ describe("ContractResult.vue", () => {
 
         await router.push("/") // To avoid "missing required param 'network'" error
 
-        const transactionId = "0.0.902-1677504373-235127424"
 
         const mock = new MockAdapter(axios);
-        const matcher1 = "/api/v1/contracts/results/" + transactionId
-        mock.onGet(matcher1).reply(200, SAMPLE_REVERT_CONTRACT_RESULT_DETAILS_WITH_TRACES)
-        const matcher2 = "/api/v1/contracts/results/" + transactionId + '/actions?limit=100'
-        mock.onGet(matcher2).reply(200, SAMPLE_REVERT_CONTRACT_RESULT_ACTIONS)
+
+        const timestamp = SAMPLE_REVERT_CONTRACT_RESULT_DETAILS_WITH_TRACES.timestamp
+        const matcher1 = "/api/v1/contracts/results"
+        const param1 = { timestamp: timestamp, internal: true }
+        mock.onGet(matcher1, param1).reply(200, {
+            results: [ SAMPLE_REVERT_CONTRACT_RESULT_DETAILS_WITH_TRACES ], "links": {"next": null}
+        } );
+
+        const contractId = SAMPLE_REVERT_CONTRACT_RESULT_DETAILS_WITH_TRACES.contract_id
+        const matcher2 = "/api/v1/contracts/" + contractId + "/results/" + timestamp
+        mock.onGet(matcher2).reply(200, SAMPLE_REVERT_CONTRACT_RESULT_DETAILS_WITH_TRACES);
+
+        const hash = SAMPLE_REVERT_CONTRACT_RESULT_DETAILS_WITH_TRACES.hash
+        const matcher3 = "/api/v1/contracts/results/" + hash + '/actions?limit=100'
+        mock.onGet(matcher3).reply(200, SAMPLE_REVERT_CONTRACT_RESULT_ACTIONS)
 
         const wrapper = mount(ContractResult, {
             global: {
                 plugins: [router, Oruga]
             },
             props: {
-                transactionIdOrHash: transactionId,
+                timestamp: timestamp,
                 topLevel: false,
                 isParent: true
             },
