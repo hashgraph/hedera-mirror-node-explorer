@@ -165,8 +165,17 @@ describe("TransactionDetails.vue", () => {
 
         const matcher2 = "/api/v1/contracts/" + contractId
         mock.onGet(matcher2).reply(200, SAMPLE_CONTRACT)
-        const matcher3 = "/api/v1/contracts/" + contractId + "/results/" + timestamp
-        mock.onGet(matcher3).reply(200, SAMPLE_CONTRACT_RESULT_DETAILS)
+
+
+        const param3 = { timestamp: timestamp, internal: true }
+        const matcher3 = "/api/v1/contracts/results"
+        mock.onGet(matcher3, param3).reply(200, {
+            results: [ SAMPLE_CONTRACT_RESULT_DETAILS ], "links": {"next": null}
+        } );
+
+        const matcher4 = "/api/v1/contracts/" + SAMPLE_CONTRACT_RESULT_DETAILS.contract_id + "/results/" + timestamp
+        mock.onGet(matcher4).reply(200, SAMPLE_CONTRACT_RESULT_DETAILS);
+
         const matcher5 = "/api/v1/contracts/results/" + transactionId + "/actions"
         mock.onGet(matcher5).reply(200, "[]")
 
@@ -230,11 +239,21 @@ describe("TransactionDetails.vue", () => {
                 return [404]
             }
         });
+
         const matcher2 = "/api/v1/contracts/" + contractId
         mock.onGet(matcher2).reply(200, SAMPLE_CONTRACT)
-        const matcher3 = "/api/v1/contracts/" + contractId  + "/results/" + timestamp
-        mock.onGet(matcher3).reply(200, SAMPLE_CONTRACT_RESULT_DETAILS)
-        const matcher5 = "/api/v1/contracts/results/" + transactionId + "/actions"
+
+        const param3 = { timestamp: timestamp, internal: true }
+        const matcher3 = "/api/v1/contracts/results"
+        mock.onGet(matcher3, param3).reply(200, {
+            results: [ SAMPLE_CONTRACT_RESULT_DETAILS ], "links": {"next": null}
+        } );
+
+        const matcher4 = "/api/v1/contracts/" + SAMPLE_CONTRACT_RESULT_DETAILS.contract_id + "/results/" + timestamp
+        mock.onGet(matcher4).reply(200, SAMPLE_CONTRACT_RESULT_DETAILS);
+
+        const hash = SAMPLE_CONTRACT_RESULT_DETAILS.hash
+        const matcher5 = "/api/v1/contracts/results/" + hash + "/actions"
         mock.onGet(matcher5).reply(200, "[]")
 
         const wrapper = mount(TransactionDetails, {

@@ -221,10 +221,8 @@
 
     <TopicMessage :message="topicMessage"/>
 
-    <ContractResult :contract-id="contractId"
-                    :is-parent="transaction?.parent_consensus_timestamp === null"
-                    :timestamp="transaction?.consensus_timestamp"
-                    :transaction-id-or-hash="transaction?.transaction_id"/>
+    <ContractResult :timestamp="transaction?.consensus_timestamp"
+                    :is-parent="transaction?.parent_consensus_timestamp === null"/>
 
   </section>
 
