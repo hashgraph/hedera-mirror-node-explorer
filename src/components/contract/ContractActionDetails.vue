@@ -130,17 +130,16 @@
 //
 
 import {computed, defineComponent, inject, onBeforeUnmount, onMounted, PropType, ref} from "vue";
-import {ContractAction, ResultDataType} from "@/schemas/HederaSchemas";
+import {ContractAction} from "@/schemas/HederaSchemas";
 import {ORUGA_MOBILE_BREAKPOINT} from "@/App.vue";
 import Property from "@/components/Property.vue";
 import StringValue from "@/components/values/StringValue.vue";
 import PlainAmount from "@/components/values/PlainAmount.vue";
 import SignatureValue from "@/components/values/SignatureValue.vue";
 import EVMAddress from "@/components/values/EVMAddress.vue";
-import {FunctionCallAnalyzer} from "@/utils/analyzer/FunctionCallAnalyzer";
 import FunctionInput from "@/components/values/FunctionInput.vue";
 import FunctionResult from "@/components/values/FunctionResult.vue";
-import {decodeSolidityErrorMessage} from "@/schemas/HederaUtils";
+import {ContractActionAnalyzer} from "@/utils/analyzer/ContractActionAnalyzer";
 
 export default defineComponent({
   name: 'ContractActionDetails',
@@ -151,7 +150,7 @@ export default defineComponent({
   },
 
   props: {
-    action: Object as PropType<ContractAction | undefined>
+    action: Object as PropType<ContractAction>
   },
 
   setup(props) {
@@ -160,24 +159,9 @@ export default defineComponent({
     const isMediumScreen = inject('isMediumScreen', ref(false))
     const propertySizeClass = 'is-one-fifth'
 
-    const errorMessage = computed(() => {
-      let result
-      if (props.action?.result_data_type != ResultDataType.OUTPUT) {
-        result = decodeSolidityErrorMessage(props.action?.result_data ?? null)
-      } else {
-        result = null
-      }
-      return result
-    })
-
-    const isNullByteCodeValue = (value: string | null) => value == null || value == "0x"
-
-    const input = computed(() => props.action?.input ?? null)
-    const output = computed(() => null)
-    const contractId = computed(() => props.action?.recipient ?? null)
-    const functionCallAnalyzer = new FunctionCallAnalyzer(input, output, contractId)
-    onMounted(() => functionCallAnalyzer.mount())
-    onBeforeUnmount(() => functionCallAnalyzer.unmount())
+    const contractActionAnalyzer = new ContractActionAnalyzer(computed(() => props.action))
+    onMounted(() => contractActionAnalyzer.mount())
+    onBeforeUnmount(() => contractActionAnalyzer.unmount())
 
     return {
       isTouchDevice,
@@ -185,11 +169,10 @@ export default defineComponent({
       isMediumScreen,
       propertySizeClass,
       ORUGA_MOBILE_BREAKPOINT,
-      errorMessage,
-      isNullByteCodeValue,
-      functionCallAnalyzer,
-      functionHash: functionCallAnalyzer.functionHash,
-      signature: functionCallAnalyzer.signature,
+      errorMessage: contractActionAnalyzer.errorMessage,
+      functionCallAnalyzer: contractActionAnalyzer.functionCallAnalyzer,
+      functionHash: contractActionAnalyzer.functionCallAnalyzer.functionHash,
+      signature: contractActionAnalyzer.functionCallAnalyzer.signature,
     }
   }
 });
