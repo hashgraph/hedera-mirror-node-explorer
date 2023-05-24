@@ -39,12 +39,15 @@ describe("FunctionCallAnalyzer.spec.ts", () => {
         // 1) new
         const input: Ref<string|null> = ref(null)
         const output: Ref<string|null> = ref(null)
+        const error: Ref<string|null> = ref(null)
         const contractId: Ref<string|null> = ref(null)
-        const functionCallAnalyzer = new FunctionCallAnalyzer(input, output, contractId)
+        const functionCallAnalyzer = new FunctionCallAnalyzer(input, output, error, contractId)
         expect(functionCallAnalyzer.functionHash.value).toBeNull()
         expect(functionCallAnalyzer.signature.value).toBeNull()
         expect(functionCallAnalyzer.inputs.value).toStrictEqual([])
         expect(functionCallAnalyzer.outputs.value).toStrictEqual([])
+        expect(functionCallAnalyzer.errorHash.value).toBeNull()
+        expect(functionCallAnalyzer.errorSignature.value).toBeNull()
 
         // 2) mount
         functionCallAnalyzer.mount()
@@ -53,6 +56,8 @@ describe("FunctionCallAnalyzer.spec.ts", () => {
         expect(functionCallAnalyzer.signature.value).toBeNull()
         expect(functionCallAnalyzer.inputs.value).toStrictEqual([])
         expect(functionCallAnalyzer.outputs.value).toStrictEqual([])
+        expect(functionCallAnalyzer.errorHash.value).toBeNull()
+        expect(functionCallAnalyzer.errorSignature.value).toBeNull()
 
         // 3) input setup
         input.value = "0x49146bde000000000000000000000000845b706151aed537b1fd81c1ea4ea03920097abd0000000000000000000000000000000000000000000000000000000002e6ae09"
@@ -68,6 +73,8 @@ describe("FunctionCallAnalyzer.spec.ts", () => {
         expect(functionCallAnalyzer.outputs.value).toStrictEqual([
             new NameTypeValue("responseCode", "int64", BigNumber.from("0x05a995c0")),
         ])
+        expect(functionCallAnalyzer.errorHash.value).toBeNull()
+        expect(functionCallAnalyzer.errorSignature.value).toBeNull()
 
         // 4) unmount
         functionCallAnalyzer.unmount()
@@ -76,6 +83,8 @@ describe("FunctionCallAnalyzer.spec.ts", () => {
         expect(functionCallAnalyzer.signature.value).toBeNull()
         expect(functionCallAnalyzer.inputs.value).toStrictEqual([])
         expect(functionCallAnalyzer.outputs.value).toStrictEqual([])
+        expect(functionCallAnalyzer.errorHash.value).toBeNull()
+        expect(functionCallAnalyzer.errorSignature.value).toBeNull()
 
     })
 

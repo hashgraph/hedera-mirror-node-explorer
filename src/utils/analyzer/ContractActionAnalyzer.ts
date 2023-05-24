@@ -34,7 +34,7 @@ export class ContractActionAnalyzer {
 
     public constructor(action: Ref<ContractAction|undefined>) {
         this.action = action
-        this.functionCallAnalyzer = new FunctionCallAnalyzer(this.input, this.output, this.contractId)
+        this.functionCallAnalyzer = new FunctionCallAnalyzer(this.input, this.output, this.error, this.contractId)
     }
 
     public mount(): void {
@@ -59,6 +59,8 @@ export class ContractActionAnalyzer {
     // Private
     //
 
+    private readonly contractId = computed(() => this.action.value?.recipient ?? null)
+
     private readonly input = computed(() => this.action.value?.input ?? null)
 
     private readonly output = computed(() => {
@@ -71,5 +73,13 @@ export class ContractActionAnalyzer {
         return result
     })
 
-    private readonly contractId = computed(() => this.action.value?.recipient ?? null)
+    public readonly error = computed(() => {
+        let result: string|null
+        if (this.action?.value?.result_data_type == ResultDataType.ERROR) {
+            result = this.action?.value?.result_data ?? null
+        } else {
+            result = null
+        }
+        return result
+    })
 }
