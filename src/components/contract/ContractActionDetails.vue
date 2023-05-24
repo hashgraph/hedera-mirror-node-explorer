@@ -29,13 +29,13 @@
         <Property id="actionDetailFrom" :custom-nb-col-class="propertySizeClass">
           <template v-slot:name>From</template>
           <template v-slot:value>
-            <EVMAddress :id="action.caller" :address="action.from" :entity-type="action.caller_type" :show-type="true"/>
+            <EVMAddress :id="action?.caller" :address="action?.from" :entity-type="action?.caller_type" :show-type="true"/>
           </template>
         </Property>
         <Property id="actionDetailTo" :custom-nb-col-class="propertySizeClass">
           <template v-slot:name>To</template>
           <template v-slot:value>
-            <EVMAddress :id="action.recipient" :address="action.to" :entity-type="action.recipient_type"
+            <EVMAddress :id="action?.recipient" :address="action?.to" :entity-type="action?.recipient_type"
                         :show-type="true"/>
           </template>
         </Property>
@@ -50,13 +50,13 @@
         <Property id="actionDetailGasLimit" :custom-nb-col-class="propertySizeClass">
           <template v-slot:name>Gas Limit</template>
           <template v-slot:value>
-            <PlainAmount :amount="action.gas"/>
+            <PlainAmount :amount="action?.gas"/>
           </template>
         </Property>
         <Property id="actionDetailGasUsed" :custom-nb-col-class="propertySizeClass">
           <template v-slot:name>Gas Used</template>
           <template v-slot:value>
-            <PlainAmount :amount="action.gas_used"/>
+            <PlainAmount :amount="action?.gas_used"/>
           </template>
         </Property>
         <Property id="actionDetailError" :custom-nb-col-class="propertySizeClass">
@@ -85,13 +85,13 @@
       <Property id="actionDetailFrom" :custom-nb-col-class="propertySizeClass">
         <template v-slot:name>From</template>
         <template v-slot:value>
-          <EVMAddress :id="action.caller" :address="action.from" :entity-type="action.caller_type" :show-type="true"/>
+          <EVMAddress :id="action?.caller" :address="action?.from" :entity-type="action?.caller_type" :show-type="true"/>
         </template>
       </Property>
       <Property id="actionDetailTo" :custom-nb-col-class="propertySizeClass">
         <template v-slot:name>To</template>
         <template v-slot:value>
-          <EVMAddress :id="action.recipient" :address="action.to" :entity-type="action.recipient_type"
+          <EVMAddress :id="action?.recipient" :address="action?.to" :entity-type="action?.recipient_type"
                       :show-type="true"/>
         </template>
       </Property>
@@ -104,13 +104,13 @@
       <Property id="actionDetailGasUsed" :custom-nb-col-class="propertySizeClass">
         <template v-slot:name>Gas Used</template>
         <template v-slot:value>
-          <PlainAmount :amount="action.gas_used"/>
+          <PlainAmount :amount="action?.gas_used"/>
         </template>
       </Property>
       <Property id="actionDetailError" :custom-nb-col-class="propertySizeClass">
         <template v-slot:name>Error Message</template>
         <template v-slot:value>
-          <StringValue :string-value="errorMessage"/>
+          <StringValue :string-value="errorMessage ?? undefined"/>
         </template>
       </Property>
       <FunctionInput :analyzer="functionCallAnalyzer" :custom-nb-col-class="propertySizeClass"/>
