@@ -24,83 +24,83 @@
 
 <template>
 
-  <section :class="{'h-mobile-background': isTouchDevice || !isSmallScreen}" class="section">
+    <section :class="{'h-mobile-background': isTouchDevice || !isSmallScreen}" class="section">
 
-    <DashboardCard>
-      <template v-slot:title>
-        <span class="h-is-primary-title">Block {{ block?.number.toString() ?? "" }}</span>
-      </template>
+        <DashboardCard>
+            <template v-slot:title>
+                <span class="h-is-primary-title">Block {{ block?.number.toString() ?? "" }}</span>
+            </template>
 
-      <template v-slot:control>
-        <div class="is-flex is-justify-content-flex-end is-align-items-center">
-          <button id="prev-block-button" :disabled="disablePreviousButton"
-                  class="button is-white is-small" @click="handlePreviousBlock">&lt; PREV. BLOCK
-          </button>
-          <button id="next-block-button" :disabled="disableNextButton"
-                  class="button is-white is-small ml-4" @click="handleNextBlock">NEXT BLOCK &gt;
-          </button>
-        </div>
-      </template>
+            <template v-slot:control>
+                <div class="is-flex is-justify-content-flex-end is-align-items-center">
+                    <button id="prev-block-button" :disabled="disablePreviousButton"
+                            class="button is-white is-small" @click="handlePreviousBlock">&lt; PREV. BLOCK
+                    </button>
+                    <button id="next-block-button" :disabled="disableNextButton"
+                            class="button is-white is-small ml-4" @click="handleNextBlock">NEXT BLOCK &gt;
+                    </button>
+                </div>
+            </template>
 
-      <template v-slot:content>
+            <template v-slot:content>
 
-        <NotificationBanner v-if="notification" :message="notification"/>
+                <NotificationBanner v-if="notification" :message="notification"/>
 
-        <div class="columns h-is-property-text">
-          <div class="column">
-            <Property id="count">
-              <template v-slot:name>No. Transactions</template>
-              <template v-slot:value>
-                <PlainAmount :amount="block?.count"/>
-              </template>
-            </Property>
-            <Property id="blockHash">
-              <template v-slot:name>Hash</template>
-              <template v-slot:value>
-                <KeyValue :key-bytes="block?.hash" :show-none="true" key-type="SHA384"/>
-              </template>
-            </Property>
-            <Property id="fromTimestamp">
-              <template v-slot:name>From Timestamp</template>
-              <template v-slot:value>
-                <TimestampValue :show-none="true" :timestamp="block?.timestamp?.from"/>
-              </template>
-            </Property>
-            <Property id="toTimestamp">
-              <template v-slot:name>To Timestamp</template>
-              <template v-slot:value>
-                <TimestampValue :show-none="true" :timestamp="block?.timestamp?.to ?? undefined"/>
-              </template>
-            </Property>
-            <Property id="gasUsed">
-              <template v-slot:name>Gas Used</template>
-              <template v-slot:value>
-                <PlainAmount :amount="block?.gas_used"/>
-              </template>
-            </Property>
-            <Property id="recordFileName">
-              <template v-slot:name>Record File Name</template>
-              <template v-slot:value>
-                <StringValue :string-value="block?.name"/>
-              </template>
-            </Property>
-          </div>
-        </div>
-      </template>
-    </DashboardCard>
+                <div class="columns h-is-property-text">
+                    <div class="column">
+                        <Property id="count">
+                            <template v-slot:name>No. Transactions</template>
+                            <template v-slot:value>
+                                <PlainAmount :amount="block?.count"/>
+                            </template>
+                        </Property>
+                        <Property id="blockHash">
+                            <template v-slot:name>Hash</template>
+                            <template v-slot:value>
+                                <KeyValue :key-bytes="block?.hash" :show-none="true" key-type="SHA384"/>
+                            </template>
+                        </Property>
+                        <Property id="fromTimestamp">
+                            <template v-slot:name>From Timestamp</template>
+                            <template v-slot:value>
+                                <TimestampValue :show-none="true" :timestamp="block?.timestamp?.from"/>
+                            </template>
+                        </Property>
+                        <Property id="toTimestamp">
+                            <template v-slot:name>To Timestamp</template>
+                            <template v-slot:value>
+                                <TimestampValue :show-none="true" :timestamp="block?.timestamp?.to ?? undefined"/>
+                            </template>
+                        </Property>
+                        <Property id="gasUsed">
+                            <template v-slot:name>Gas Used</template>
+                            <template v-slot:value>
+                                <PlainAmount :amount="block?.gas_used"/>
+                            </template>
+                        </Property>
+                        <Property id="recordFileName">
+                            <template v-slot:name>Record File Name</template>
+                            <template v-slot:value>
+                                <StringValue :string-value="block?.name"/>
+                            </template>
+                        </Property>
+                    </div>
+                </div>
+            </template>
+        </DashboardCard>
 
-    <DashboardCard id="blockTransactions">
-      <template v-slot:title>
-        <span class="h-is-secondary-title">Block Transactions</span>
-      </template>
-      <template v-slot:content>
-        <BlockTransactionTable :transactions="transactions"/>
-      </template>
-    </DashboardCard>
+        <DashboardCard id="blockTransactions">
+            <template v-slot:title>
+                <span class="h-is-secondary-title">Block Transactions</span>
+            </template>
+            <template v-slot:content>
+                <BlockTransactionTable :transactions="transactions"/>
+            </template>
+        </DashboardCard>
 
-  </section>
+    </section>
 
-  <Footer/>
+    <Footer/>
 
 </template>
 
@@ -126,72 +126,72 @@ import {routeManager} from "@/router";
 
 export default defineComponent({
 
-  name: 'BlockDetails',
+    name: 'BlockDetails',
 
-  components: {
-    BlockTransactionTable,
-    PlainAmount,
-    DashboardCard,
-    NotificationBanner,
-    Property,
-    Footer,
-    StringValue,
-    TimestampValue,
-    KeyValue,
-  },
+    components: {
+        BlockTransactionTable,
+        PlainAmount,
+        DashboardCard,
+        NotificationBanner,
+        Property,
+        Footer,
+        StringValue,
+        TimestampValue,
+        KeyValue,
+    },
 
-  props: {
-    blockHon: String,
-    network: String
-  },
+    props: {
+        blockHon: String,
+        network: String
+    },
 
-  setup(props) {
-    const nullHash = "0x000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000"
-    const isSmallScreen = inject('isSmallScreen', true)
-    const isTouchDevice = inject('isTouchDevice', false)
+    setup(props) {
+        const nullHash = "0x000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000"
+        const isSmallScreen = inject('isSmallScreen', true)
+        const isTouchDevice = inject('isTouchDevice', false)
 
-    //
-    // block
-    //
-    const blockLocParser = new BlockLocParser(computed(() => props.blockHon ?? null))
-    onMounted(() => blockLocParser.mount())
-    onBeforeUnmount(() => blockLocParser.unmount())
+        //
+        // block
+        //
+        const blockLocParser = new BlockLocParser(computed(() => props.blockHon ?? null))
+        onMounted(() => blockLocParser.mount())
+        onBeforeUnmount(() => blockLocParser.unmount())
 
-    //
-    // transactions
-    //
-    const transactionsLookup = TransactionGroupByBlockCache.instance.makeLookup(blockLocParser.blockNumber)
-    onMounted(() => transactionsLookup.mount())
-    onBeforeUnmount(() => transactionsLookup.unmount())
-    const transactions = computed(() => transactionsLookup.entity.value ?? [])
+        //
+        // transactions
+        //
+        const transactionsLookup = TransactionGroupByBlockCache.instance.makeLookup(blockLocParser.blockNumber)
+        onMounted(() => transactionsLookup.mount())
+        onBeforeUnmount(() => transactionsLookup.unmount())
+        const transactions = computed(() => transactionsLookup.entity.value ?? [])
 
-    const disablePreviousButton = ref(true)
-    const disableNextButton = ref(true)
-    watch(blockLocParser.block, () => {
-      disablePreviousButton.value = (blockLocParser.errorNotification.value != null) || (blockLocParser.block.value?.previous_hash === nullHash)
-      disableNextButton.value = blockLocParser.errorNotification.value != null
-    })
-    const handlePreviousBlock = () => {
-      const currentBlockNumber = blockLocParser.blockNumber.value ?? 0
-      routeManager.routeToBlock(currentBlockNumber - 1)
+        const disablePreviousButton = ref(true)
+        const disableNextButton = ref(true)
+        watch(blockLocParser.block, () => {
+            disablePreviousButton.value = (blockLocParser.errorNotification.value != null) || (blockLocParser.block.value?.previous_hash === nullHash)
+            disableNextButton.value = blockLocParser.errorNotification.value != null
+        })
+        const handlePreviousBlock = () => {
+            const currentBlockNumber = blockLocParser.blockNumber.value ?? 0
+            routeManager.routeToBlock(currentBlockNumber - 1)
+        }
+        const handleNextBlock = () => {
+            const currentBlockNumber = blockLocParser.blockNumber.value ?? 0
+            routeManager.routeToBlock(currentBlockNumber + 1)
+        }
+
+        return {
+            isSmallScreen,
+            isTouchDevice,
+            block: blockLocParser.block,
+            transactions,
+            notification: blockLocParser.errorNotification,
+            disablePreviousButton,
+            disableNextButton,
+            handlePreviousBlock,
+            handleNextBlock,
+        }
     }
-    const handleNextBlock = () => {
-      const currentBlockNumber = blockLocParser.blockNumber.value ?? 0
-      routeManager.routeToBlock(currentBlockNumber + 1)
-    }
-
-    return {
-      isSmallScreen,
-      isTouchDevice,
-      block: blockLocParser.block,
-      transactions,
-      notification: blockLocParser.errorNotification,
-      disablePreviousButton,
-      disableNextButton,
-      handlePreviousBlock,
-      handleNextBlock,
-    }
-  }
 });
 
 </script>

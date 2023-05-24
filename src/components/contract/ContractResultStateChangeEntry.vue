@@ -24,51 +24,52 @@
 
 <template v-if="change">
 
-  <template v-if="change.header===true">
-    <div class="is-flex is-align-items-baseline">
-      <ContractLink :contract-id="change.changes.contract_id"></ContractLink>
-      <EVMAddress :address="change.changes.address" :compact="isSmallScreen && !isMediumScreen" class="ml-3"/>
-      <span class="mb-2 h-is-text-size-3">
+    <template v-if="change.header===true">
+        <div class="is-flex is-align-items-baseline">
+            <ContractLink :contract-id="change.changes.contract_id"></ContractLink>
+            <EVMAddress :address="change.changes.address" :compact="isSmallScreen && !isMediumScreen" class="ml-3"/>
+            <span class="mb-2 h-is-text-size-3">
             <span class="ml-4 mr-2">Contract HBar Balance Difference:</span>
             <HbarAmount :amount="change.balanceChange" :timestamp="timestamp" :colored="true" :show-extra="true"/>
           </span>
-    </div>
-    <hr class="h-card-separator" style="margin-bottom: 12px; margin-top: 0"/>
-  </template>
+        </div>
+        <hr class="h-card-separator" style="margin-bottom: 12px; margin-top: 0"/>
+    </template>
 
-  <div class="columns" style="margin-bottom:0">
+    <div class="columns" style="margin-bottom:0">
 
-    <div class="column is-1 py-1"></div>
+        <div class="column is-1 py-1"></div>
 
-    <div class="column py-1">
-      <HexaValue :byte-string="change.changes.slot" :low-contrast="false" :word-wrap-small="4" :word-wrap-medium="8"/>
-      <div class="h-is-extra-text h-is-text-size-2">
-        {{ 'Decimal: ' + (change.slotDecimal??'not available') }}
-      </div>
-    </div>
+        <div class="column py-1">
+            <HexaValue :byte-string="change.changes.slot" :low-contrast="false" :word-wrap-small="4"
+                       :word-wrap-medium="8"/>
+            <div class="h-is-extra-text h-is-text-size-2">
+                {{ 'Decimal: ' + (change.slotDecimal ?? 'not available') }}
+            </div>
+        </div>
 
-    <div class="column py-1">
-      <HexaValue :byte-string="change.changes.value_read" :word-wrap-small="4" :word-wrap-medium="8"
-                 :show-none="true" :low-contrast="change.valueReadDecimal === 0"/>
-      <div class="h-is-extra-text h-is-text-size-2">
-        {{ 'Decimal: ' + (change.valueReadDecimal??'not available') }}
-      </div>
-    </div>
+        <div class="column py-1">
+            <HexaValue :byte-string="change.changes.value_read" :word-wrap-small="4" :word-wrap-medium="8"
+                       :show-none="true" :low-contrast="change.valueReadDecimal === 0"/>
+            <div class="h-is-extra-text h-is-text-size-2">
+                {{ 'Decimal: ' + (change.valueReadDecimal ?? 'not available') }}
+            </div>
+        </div>
 
-    <div class="column py-1">
-      <HexaValue :byte-string="change.changes.value_written" :word-wrap-small="4" :word-wrap-medium="8"
-                 :show-none="true" :low-contrast="change.valueWrittenDecimal === 0"/>
-      <div class="h-is-extra-text h-is-text-size-2">
+        <div class="column py-1">
+            <HexaValue :byte-string="change.changes.value_written" :word-wrap-small="4" :word-wrap-medium="8"
+                       :show-none="true" :low-contrast="change.valueWrittenDecimal === 0"/>
+            <div class="h-is-extra-text h-is-text-size-2">
               <span v-if="change.changes.value_written">
-                {{ 'Decimal: ' + (change.valueWrittenDecimal??'not available') }}
+                {{ 'Decimal: ' + (change.valueWrittenDecimal ?? 'not available') }}
               </span>
-        <span v-if="change.valueChange" class="ml-2">
+                <span v-if="change.valueChange" class="ml-2">
           {{ '(Difference: ' + change.valueChange + ')' }}
         </span>
-      </div>
-    </div>
+            </div>
+        </div>
 
-  </div>
+    </div>
 
 </template>
 
@@ -86,23 +87,23 @@ import HbarAmount from "@/components/values/HbarAmount.vue";
 import HexaValue from "@/components/values/HexaValue.vue";
 
 export default defineComponent({
-  name: "ContractResultStateChangeEntry",
-  components: {HexaValue, HbarAmount, EVMAddress, ContractLink},
-  props: {
-    change: Object as PropType<DisplayStateChange | undefined>,
-    timestamp: {
-      type: String,
-      default: null
+    name: "ContractResultStateChangeEntry",
+    components: {HexaValue, HbarAmount, EVMAddress, ContractLink},
+    props: {
+        change: Object as PropType<DisplayStateChange | undefined>,
+        timestamp: {
+            type: String,
+            default: null
+        }
+    },
+    setup() {
+        const isSmallScreen = inject('isSmallScreen', true)
+        const isMediumScreen = inject('isMediumScreen', true)
+        return {
+            isSmallScreen,
+            isMediumScreen
+        }
     }
-  },
-  setup() {
-    const isSmallScreen = inject('isSmallScreen', true)
-    const isMediumScreen = inject('isMediumScreen', true)
-    return {
-      isSmallScreen,
-      isMediumScreen
-    }
-  }
 })
 
 </script>

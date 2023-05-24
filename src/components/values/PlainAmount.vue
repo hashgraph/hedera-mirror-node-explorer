@@ -23,9 +23,9 @@
 <!-- --------------------------------------------------------------------------------------------------------------- -->
 
 <template>
-  <span v-if="formattedAmount !== null">{{ formattedAmount }}</span>
-  <span v-else-if="initialLoading"/>
-  <span v-else class="has-text-grey">{{ noneLabel }}</span>
+    <span v-if="formattedAmount !== null">{{ formattedAmount }}</span>
+    <span v-else-if="initialLoading"/>
+    <span v-else class="has-text-grey">{{ noneLabel }}</span>
 </template>
 
 <!-- --------------------------------------------------------------------------------------------------------------- -->
@@ -38,37 +38,37 @@ import {computed, defineComponent, inject, PropType, ref} from "vue";
 import {initialLoadingKey} from "@/AppKeys";
 
 export default defineComponent({
-  name: "PlainAmount",
+    name: "PlainAmount",
 
-  props: {
-    amount: {
-      type: Number as PropType<number|null>,
-      default: null
-    },
-    noneLabel: {
-      type: String,
-      default: "None"
-    }
-  },
-
-  setup(props) {
-    const formattedAmount = computed(() => {
-      let result: string|null
-        if (props.amount !== null && !isNaN(props.amount)) {
-          result = props.amount.toLocaleString()
-        } else {
-          result = null
+    props: {
+        amount: {
+            type: Number as PropType<number | null>,
+            default: null
+        },
+        noneLabel: {
+            type: String,
+            default: "None"
         }
-      return result
-    })
+    },
 
-    const initialLoading = inject(initialLoadingKey, ref(false))
+    setup(props) {
+        const formattedAmount = computed(() => {
+            let result: string | null
+            if (props.amount !== null && !isNaN(props.amount)) {
+                result = props.amount.toLocaleString()
+            } else {
+                result = null
+            }
+            return result
+        })
 
-    return {
-      formattedAmount,
-      initialLoading
+        const initialLoading = inject(initialLoadingKey, ref(false))
+
+        return {
+            formattedAmount,
+            initialLoading
+        }
     }
-  }
 });
 
 </script>

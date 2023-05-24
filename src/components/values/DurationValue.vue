@@ -24,18 +24,18 @@
 
 <template>
 
-  <template v-if="isInfinite">
-    <span class="has-text-grey">Infinite</span>
-  </template>
-  <template v-else-if="formattedValue">
-    <span>{{ formattedValue }}</span>
-  </template>
-  <template v-else-if="showNone && !initialLoading">
-    <span class="has-text-grey">None</span>
-  </template>
-  <template v-else>
-    <span/>
-  </template>
+    <template v-if="isInfinite">
+        <span class="has-text-grey">Infinite</span>
+    </template>
+    <template v-else-if="formattedValue">
+        <span>{{ formattedValue }}</span>
+    </template>
+    <template v-else-if="showNone && !initialLoading">
+        <span class="has-text-grey">None</span>
+    </template>
+    <template v-else>
+        <span/>
+    </template>
 
 </template>
 
@@ -51,42 +51,42 @@ import {initialLoadingKey} from "@/AppKeys";
 import {infiniteDuration} from "@/schemas/HederaSchemas";
 
 export default defineComponent({
-  name: "DurationValue",
+    name: "DurationValue",
 
-  props: {
-    numberValue: Number,
-    stringValue: String,
-    showNone: {
-      type: Boolean,
-      default: false
+    props: {
+        numberValue: Number,
+        stringValue: String,
+        showNone: {
+            type: Boolean,
+            default: false
+        }
+    },
+
+    setup(props) {
+
+        const formattedValue = computed(() => {
+            let result: string | null
+            if (props.numberValue) {
+                result = formatSeconds(props.numberValue)
+            } else if (props.stringValue) {
+                result = formatSeconds(props.stringValue)
+            } else {
+                result = null
+            }
+            return result
+        })
+
+        const isInfinite = computed(() => {
+            const duration = props.numberValue ?? Number.parseInt(props.stringValue ?? "")
+            return duration >= infiniteDuration
+        })
+
+        const initialLoading = inject(initialLoadingKey, ref(false))
+
+        return {
+            isInfinite, formattedValue, initialLoading,
+        }
     }
-  },
-
-  setup(props) {
-
-    const formattedValue = computed(() => {
-      let result: string|null
-      if (props.numberValue) {
-        result = formatSeconds(props.numberValue)
-      } else if (props.stringValue) {
-        result = formatSeconds(props.stringValue)
-      } else {
-        result = null
-      }
-      return result
-    })
-
-    const isInfinite = computed(() => {
-      const duration = props.numberValue ?? Number.parseInt(props.stringValue ?? "")
-      return duration >= infiniteDuration
-    })
-
-    const initialLoading = inject(initialLoadingKey, ref(false))
-
-    return {
-      isInfinite, formattedValue, initialLoading,
-    }
-  }
 });
 
 

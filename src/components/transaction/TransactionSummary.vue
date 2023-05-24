@@ -23,28 +23,28 @@
 <!-- --------------------------------------------------------------------------------------------------------------- -->
 
 <template>
-  <template v-if="transaction">
-    <TransferGraphSection v-if="shouldGraph"
-        v-bind:transaction="transactionDetail"
-        v-bind:compact="true"/>
-    <div v-else-if="isTokenAssociation">
-      {{ transaction?.entity_id }}
-      <span v-if="tokens.length">
+    <template v-if="transaction">
+        <TransferGraphSection v-if="shouldGraph"
+                              v-bind:transaction="transactionDetail"
+                              v-bind:compact="true"/>
+        <div v-else-if="isTokenAssociation">
+            {{ transaction?.entity_id }}
+            <span v-if="tokens.length">
         <i class="fas fa-link mr-1 has-text-grey"></i>
         <TokenExtra :token-id="tokens[0]" :show-name="false"/>
         <span v-if="additionalTokensNumber" class="h-is-smaller h-is-extra-text should-wrap">
           {{ ' ( + ' + additionalTokensNumber + ' more )' }}
         </span>
       </span>
-    </div>
-    <div v-else-if="isEthereumTransaction">
-      {{ ethereumSummary }}
-    </div>
-    <div v-else class="should-wrap">
-      {{ makeSummaryLabel(transaction) }}
-    </div>
-  </template>
-  <div v-else />
+        </div>
+        <div v-else-if="isEthereumTransaction">
+            {{ ethereumSummary }}
+        </div>
+        <div v-else class="should-wrap">
+            {{ makeSummaryLabel(transaction) }}
+        </div>
+    </template>
+    <div v-else/>
 </template>
 
 <!-- --------------------------------------------------------------------------------------------------------------- -->
@@ -61,60 +61,60 @@ import {TransactionAnalyzer} from "@/components/transaction/TransactionAnalyzer"
 import TokenExtra from "@/components/values/TokenExtra.vue";
 
 const GRAPH_TRANSACTION_TYPES = [
-  TransactionType.CRYPTOTRANSFER,
-  TransactionType.TOKENBURN,
-  TransactionType.TOKENMINT
+    TransactionType.CRYPTOTRANSFER,
+    TransactionType.TOKENBURN,
+    TransactionType.TOKENMINT
 ]
 
 export default defineComponent({
-  name: "TransactionSummary",
-  components: {TokenExtra, TransferGraphSection},
-  props: {
-    transaction: Object as PropType<Transaction | undefined>
-  },
+    name: "TransactionSummary",
+    components: {TokenExtra, TransferGraphSection},
+    props: {
+        transaction: Object as PropType<Transaction | undefined>
+    },
 
-  setup(props) {
+    setup(props) {
 
-    const shouldGraph = computed(() => {
-      return props.transaction?.name && GRAPH_TRANSACTION_TYPES.indexOf(props.transaction.name) != -1
-    })
+        const shouldGraph = computed(() => {
+            return props.transaction?.name && GRAPH_TRANSACTION_TYPES.indexOf(props.transaction.name) != -1
+        })
 
-    const transactionAnalyzer = new TransactionAnalyzer(computed(() => props.transaction ?? null))
-    onMounted(() => transactionAnalyzer.mount())
-    onBeforeUnmount(() => transactionAnalyzer.unmount())
+        const transactionAnalyzer = new TransactionAnalyzer(computed(() => props.transaction ?? null))
+        onMounted(() => transactionAnalyzer.mount())
+        onBeforeUnmount(() => transactionAnalyzer.unmount())
 
-    const additionalTokensNumber = computed(
-        () => Math.max(0, transactionAnalyzer.tokens.value.length - 1))
+        const additionalTokensNumber = computed(
+            () => Math.max(0, transactionAnalyzer.tokens.value.length - 1))
 
-    const ethereumSummary = computed(() => {
-      let result
-      if (transactionAnalyzer.entityId.value !== null) {
-        result = transactionAnalyzer.contractId.value !== null
-            ? 'Contract ID: ' + transactionAnalyzer.entityId.value
-            : 'Account ID: ' + transactionAnalyzer.entityId.value
-      } else {
-        result = ""
-      }
-      return result
-    })
+        const ethereumSummary = computed(() => {
+            let result
+            if (transactionAnalyzer.entityId.value !== null) {
+                result = transactionAnalyzer.contractId.value !== null
+                    ? 'Contract ID: ' + transactionAnalyzer.entityId.value
+                    : 'Account ID: ' + transactionAnalyzer.entityId.value
+            } else {
+                result = ""
+            }
+            return result
+        })
 
-    const transactionDetail = computed(() => {
-      return props.transaction as TransactionDetail|undefined
-    })
+        const transactionDetail = computed(() => {
+            return props.transaction as TransactionDetail | undefined
+        })
 
-    return {
-      shouldGraph,
-      isTokenAssociation: transactionAnalyzer.isTokenAssociation,
-      tokens: transactionAnalyzer.tokens,
-      additionalTokensNumber,
-      isEthereumTransaction: transactionAnalyzer.isEthereumTransaction,
-      ethereumSummary,
-      // From TransactionTools
-      makeSummaryLabel,
-      TransactionType,
-      transactionDetail
+        return {
+            shouldGraph,
+            isTokenAssociation: transactionAnalyzer.isTokenAssociation,
+            tokens: transactionAnalyzer.tokens,
+            additionalTokensNumber,
+            isEthereumTransaction: transactionAnalyzer.isEthereumTransaction,
+            ethereumSummary,
+            // From TransactionTools
+            makeSummaryLabel,
+            TransactionType,
+            transactionDetail
+        }
     }
-  }
 })
 
 </script>

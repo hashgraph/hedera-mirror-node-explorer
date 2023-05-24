@@ -23,45 +23,46 @@
 <!-- --------------------------------------------------------------------------------------------------------------- -->
 
 <template>
-  <div :class="{'is-active': showDialog}" class="modal has-text-white">
-    <div class="modal-background"/>
-    <div class="modal-content" style="width: 768px; border-radius: 16px">
-      <div class="box">
+    <div :class="{'is-active': showDialog}" class="modal has-text-white">
+        <div class="modal-background"/>
+        <div class="modal-content" style="width: 768px; border-radius: 16px">
+            <div class="box">
 
-        <div class="is-flex h-is-primary-title is-justify-content-space-between is-align-items-baseline">
-          <slot name="dialogTitle"/>
-          <span v-if="showSpinner" class="loader is-inline-block"/>
+                <div class="is-flex h-is-primary-title is-justify-content-space-between is-align-items-baseline">
+                    <slot name="dialogTitle"/>
+                    <span v-if="showSpinner" class="loader is-inline-block"/>
+                </div>
+
+                <hr class="h-card-separator"/>
+
+                <div class="is-flex is-align-items-baseline" style="line-height: 21px">
+
+                    <div v-if="mode === Mode.Success" class="icon is-medium has-text-success ml-0">
+                        <i class="fas fa-check"/>
+                    </div>
+                    <div v-else-if="mode === Mode.Error" class="icon is-medium has-text-danger">
+                        <span style="font-size: 18px; font-weight: 900">X</span>
+                    </div>
+                    <div v-else/>
+
+                    <div v-if="mainMessage" class="block h-is-tertiary-text mt-2"> {{ mainMessage }}</div>
+                    <div v-else class="block h-is-tertiary-text" style="visibility: hidden">Filler</div>
+                </div>
+
+                <div class="is-flex is-align-items-baseline mt-4" style="line-height: 21px">
+                    <span v-if="extraMessage" class="h-is-property-text"> {{ extraMessage }} </span>
+                    <span v-else class="h-is-property-text" style="visibility: hidden">Filler</span>
+                    <div v-if="formattedTransactionId" class="ml-2">{{ formattedTransactionId }}</div>
+                </div>
+
+                <div class="is-flex is-justify-content-flex-end">
+                    <button class="button is-white is-small" :disabled="closeDisabled" @click="handleClose">CLOSE
+                    </button>
+                </div>
+
+            </div>
         </div>
-
-        <hr class="h-card-separator"/>
-
-        <div class="is-flex is-align-items-baseline" style="line-height: 21px">
-
-          <div v-if="mode === Mode.Success" class="icon is-medium has-text-success ml-0">
-            <i class="fas fa-check"/>
-          </div>
-          <div v-else-if="mode === Mode.Error" class="icon is-medium has-text-danger">
-            <span style="font-size: 18px; font-weight: 900">X</span>
-          </div>
-          <div v-else />
-
-          <div v-if="mainMessage" class="block h-is-tertiary-text mt-2"> {{ mainMessage }}</div>
-          <div v-else class="block h-is-tertiary-text" style="visibility: hidden">Filler</div>
-        </div>
-
-        <div class="is-flex is-align-items-baseline mt-4" style="line-height: 21px">
-          <span v-if="extraMessage" class="h-is-property-text"> {{ extraMessage }} </span>
-          <span v-else class="h-is-property-text" style="visibility: hidden">Filler</span>
-          <div v-if="formattedTransactionId" class="ml-2">{{ formattedTransactionId }}</div>
-        </div>
-
-        <div class="is-flex is-justify-content-flex-end">
-          <button class="button is-white is-small" :disabled="closeDisabled" @click="handleClose">CLOSE</button>
-        </div>
-
-      </div>
     </div>
-  </div>
 </template>
 
 <!-- --------------------------------------------------------------------------------------------------------------- -->
@@ -76,40 +77,40 @@ import {TransactionID} from "@/utils/TransactionID";
 export enum Mode { Busy = 1, Success = 2, Error = 3 }
 
 export default defineComponent({
-  name: "ProgressDialog",
-  props: {
-    showDialog: {
-      type: Boolean,
-      default: false
+    name: "ProgressDialog",
+    props: {
+        showDialog: {
+            type: Boolean,
+            default: false
+        },
+        mode: {
+            type: Number as PropType<Mode>,
+            default: Mode.Busy
+        },
+        mainMessage: String,
+        extraMessage: String,
+        extraTransactionId: String,
+        showSpinner: Boolean
     },
-    mode: {
-      type: Number as PropType<Mode>,
-      default: Mode.Busy
-    },
-    mainMessage: String,
-    extraMessage: String,
-    extraTransactionId: String,
-    showSpinner: Boolean
-  },
 
-  setup(props, context) {
+    setup(props, context) {
 
-    const handleClose = () => {
-      context.emit('update:showDialog', false)
+        const handleClose = () => {
+            context.emit('update:showDialog', false)
+        }
+
+        const closeDisabled = computed(() => props.mode == Mode.Busy)
+
+        const formattedTransactionId = computed(
+            () => props.extraTransactionId ? TransactionID.normalize(props.extraTransactionId, true) : null)
+
+        return {
+            handleClose,
+            closeDisabled,
+            formattedTransactionId,
+            Mode,
+        }
     }
-
-    const closeDisabled = computed(() => props.mode == Mode.Busy)
-
-    const formattedTransactionId = computed(
-        () => props.extraTransactionId ? TransactionID.normalize(props.extraTransactionId, true) : null)
-
-    return {
-      handleClose,
-      closeDisabled,
-      formattedTransactionId,
-      Mode,
-    }
-  }
 });
 
 </script>

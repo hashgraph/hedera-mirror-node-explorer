@@ -24,23 +24,23 @@
 
 <template>
 
-  <DashboardCard v-if="showContractResults">
-    <template v-slot:title>
-      <p class="h-is-secondary-title">Recent Contract Calls</p>
-    </template>
+    <DashboardCard v-if="showContractResults">
+        <template v-slot:title>
+            <p class="h-is-secondary-title">Recent Contract Calls</p>
+        </template>
 
-    <template v-slot:control>
-      <div class="is-flex is-align-items-flex-end">
-        <PlayPauseButton v-bind:controller="resultTableController"/>
-      </div>
-    </template>
+        <template v-slot:control>
+            <div class="is-flex is-align-items-flex-end">
+                <PlayPauseButton v-bind:controller="resultTableController"/>
+            </div>
+        </template>
 
-    <template v-slot:content>
-      <div id="contract-results-table">
-        <ContractResultTable v-if="contractId" :controller="resultTableController"/>
-      </div>
-    </template>
-  </DashboardCard>
+        <template v-slot:content>
+            <div id="contract-results-table">
+                <ContractResultTable v-if="contractId" :controller="resultTableController"/>
+            </div>
+        </template>
+    </DashboardCard>
 
 </template>
 
@@ -58,40 +58,40 @@ import PlayPauseButton from "@/components/PlayPauseButton.vue";
 import ContractResultTable from "@/components/contract/ContractResultTable.vue";
 
 export default defineComponent({
-  name: 'ContractResultsSection',
+    name: 'ContractResultsSection',
 
-  components: {ContractResultTable, PlayPauseButton, DashboardCard},
+    components: {ContractResultTable, PlayPauseButton, DashboardCard},
 
-  props: {
-    contractId: String,
-  },
+    props: {
+        contractId: String,
+    },
 
-  setup: function (props) {
-    const isTouchDevice = inject('isTouchDevice', false)
-    const isSmallScreen = inject('isSmallScreen', true)
-    const isMediumScreen = inject('isMediumScreen', true)
+    setup: function (props) {
+        const isTouchDevice = inject('isTouchDevice', false)
+        const isSmallScreen = inject('isSmallScreen', true)
+        const isMediumScreen = inject('isMediumScreen', true)
 
-    const computedContractId = computed(() => props.contractId || null)
-    const perPage = computed(() => isMediumScreen ? 10 : 5)
+        const computedContractId = computed(() => props.contractId || null)
+        const perPage = computed(() => isMediumScreen ? 10 : 5)
 
-    const showContractResults = computed(() => resultTableController.rows.value.length)
+        const showContractResults = computed(() => resultTableController.rows.value.length)
 
-    //
-    // resultTableController
-    //
+        //
+        // resultTableController
+        //
 
-    const resultTableController = new ContractResultTableController(router, computedContractId, perPage)
-    onMounted(() => resultTableController.mount())
-    onBeforeUnmount(() => resultTableController.unmount())
+        const resultTableController = new ContractResultTableController(router, computedContractId, perPage)
+        onMounted(() => resultTableController.mount())
+        onBeforeUnmount(() => resultTableController.unmount())
 
-    return {
-      isTouchDevice,
-      isSmallScreen,
-      isMediumScreen,
-      showContractResults,
-      resultTableController
+        return {
+            isTouchDevice,
+            isSmallScreen,
+            isMediumScreen,
+            showContractResults,
+            resultTableController
+        }
     }
-  }
 });
 
 </script>

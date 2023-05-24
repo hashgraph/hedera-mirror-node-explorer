@@ -24,12 +24,12 @@
 
 <template>
 
-  <div class="hero is-small mb-5 has-text-centered" id="notificationBanner"
-       :class="{'is-danger': isError, 'is-info': !isError}">
-    <div class="hero-body h-is-tertiary-text">
-      <span>{{ message }}</span>
+    <div class="hero is-small mb-5 has-text-centered" id="notificationBanner"
+         :class="{'is-danger': isError, 'is-info': !isError}">
+        <div class="hero-body h-is-tertiary-text">
+            <span>{{ message }}</span>
+        </div>
     </div>
-  </div>
 
 </template>
 
@@ -42,18 +42,18 @@
 import {defineComponent} from "vue";
 
 export default defineComponent({
-  name: "NotificationBanner",
+    name: "NotificationBanner",
 
-  props: {
-    message: {
-      type: String,
-      required: true
+    props: {
+        message: {
+            type: String,
+            required: true
+        },
+        isError: {
+            type: Boolean,
+            default: true
+        }
     },
-    isError: {
-      type: Boolean,
-      default: true
-    }
-  },
 })
 
 </script>

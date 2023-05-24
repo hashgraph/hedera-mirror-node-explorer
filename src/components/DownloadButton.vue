@@ -24,12 +24,12 @@
 
 <template>
 
-  <button
-      class="button is-small has-text-white ml-2"
-      data-cy="downloadButton"
-      style="background-color: #202532; width: 26px; height: 26px; border:1px solid white; border-radius: 0">
-    <i class="fas fa-download"></i>
-  </button>
+    <button
+            class="button is-small has-text-white ml-2"
+            data-cy="downloadButton"
+            style="background-color: #202532; width: 26px; height: 26px; border:1px solid white; border-radius: 0">
+        <i class="fas fa-download"></i>
+    </button>
 
 </template>
 
@@ -42,7 +42,7 @@
 import {defineComponent} from "vue";
 
 export default defineComponent({
-  name: "DownloadButton",
+    name: "DownloadButton",
 });
 
 </script>

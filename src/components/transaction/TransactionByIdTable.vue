@@ -24,52 +24,52 @@
 
 <template>
 
-  <o-table
-      v-model:current-page="currentPage"
-      :data="transactions"
-      :hoverable="true"
-      :narrowed="narrowed"
-      :paginated="!isTouchDevice && paginationNeeded"
-      :per-page="isMediumScreen ? pageSize : 5"
-      :striped="true"
-      :mobile-breakpoint="ORUGA_MOBILE_BREAKPOINT"
-      aria-current-label="Current page"
-      aria-next-label="Next page"
-      aria-page-label="Page"
-      aria-previous-label="Previous page"
-      customRowKey="consensus_timestamp"
-      @click="handleClick"
-  >
-    <o-table-column v-slot="props" field="consensus_timestamp" label="Time">
+    <o-table
+            v-model:current-page="currentPage"
+            :data="transactions"
+            :hoverable="true"
+            :narrowed="narrowed"
+            :paginated="!isTouchDevice && paginationNeeded"
+            :per-page="isMediumScreen ? pageSize : 5"
+            :striped="true"
+            :mobile-breakpoint="ORUGA_MOBILE_BREAKPOINT"
+            aria-current-label="Current page"
+            aria-next-label="Next page"
+            aria-page-label="Page"
+            aria-previous-label="Previous page"
+            customRowKey="consensus_timestamp"
+            @click="handleClick"
+    >
+        <o-table-column v-slot="props" field="consensus_timestamp" label="Time">
       <span>
         <TimestampValue v-bind:timestamp="props.row.consensus_timestamp"/>
         <span v-if="props.row.result !== 'SUCCESS'" class="icon has-text-danger">
           <i class="fas fa-exclamation-triangle"></i>
         </span>
       </span>
-    </o-table-column>
+        </o-table-column>
 
-    <o-table-column v-slot="props" field="name" label="Type">
-      <div class="h-has-pill" style="display: inline-block">
-        <div class="h-is-text-size-2">{{ makeTypeLabel(props.row.name) }}</div>
-      </div>
-    </o-table-column>
+        <o-table-column v-slot="props" field="name" label="Type">
+            <div class="h-has-pill" style="display: inline-block">
+                <div class="h-is-text-size-2">{{ makeTypeLabel(props.row.name) }}</div>
+            </div>
+        </o-table-column>
 
-    <o-table-column v-slot="props" label="Content">
-      <TransactionSummary v-bind:transaction="props.row"/>
-    </o-table-column>
+        <o-table-column v-slot="props" label="Content">
+            <TransactionSummary v-bind:transaction="props.row"/>
+        </o-table-column>
 
-    <o-table-column v-slot="props" label="Relationship">
-      {{ makeRelationshipLabel(props.row) }}
-    </o-table-column>
+        <o-table-column v-slot="props" label="Relationship">
+            {{ makeRelationshipLabel(props.row) }}
+        </o-table-column>
 
-    <o-table-column v-slot="props" label="Nonce">
-      {{ props.row.nonce }}
-    </o-table-column>
+        <o-table-column v-slot="props" label="Nonce">
+            {{ props.row.nonce }}
+        </o-table-column>
 
-  </o-table>
+    </o-table>
 
-  <EmptyTable v-if="!transactions.length"/>
+    <EmptyTable v-if="!transactions.length"/>
 
 </template>
 
@@ -89,81 +89,81 @@ import {ORUGA_MOBILE_BREAKPOINT} from '@/App.vue';
 import EmptyTable from "@/components/EmptyTable.vue";
 
 export default defineComponent({
-  name: 'TransactionByIdTable',
+    name: 'TransactionByIdTable',
 
-  components: {EmptyTable, TransactionSummary, TimestampValue },
+    components: {EmptyTable, TransactionSummary, TimestampValue},
 
-  props: {
-    narrowed: Boolean,
-    nbItems: Number,
-    transactions: {
-      type: Array as PropType<Array<Transaction>>,
-      default: () => []
-    }
-  },
-
-  setup(props) {
-    const isTouchDevice = inject('isTouchDevice', false)
-    const isMediumScreen = inject('isMediumScreen', true)
-
-    const DEFAULT_PAGE_SIZE = 15
-    const pageSize = props.nbItems ?? DEFAULT_PAGE_SIZE
-    const paginationNeeded = computed(() => {
-          return props.transactions.length > 5
+    props: {
+        narrowed: Boolean,
+        nbItems: Number,
+        transactions: {
+            type: Array as PropType<Array<Transaction>>,
+            default: () => []
         }
-    )
+    },
 
-    const handleClick = (t: Transaction) => {
-      routeManager.routeToTransaction(t)
-    }
+    setup(props) {
+        const isTouchDevice = inject('isTouchDevice', false)
+        const isMediumScreen = inject('isMediumScreen', true)
 
-    let currentPage = ref(1)
+        const DEFAULT_PAGE_SIZE = 15
+        const pageSize = props.nbItems ?? DEFAULT_PAGE_SIZE
+        const paginationNeeded = computed(() => {
+                return props.transactions.length > 5
+            }
+        )
 
-    const hasChild = computed(() => {
-      let result = false
-      for (const tx of props.transactions) {
-        if (tx.parent_consensus_timestamp) {
-          result = true
-          break
+        const handleClick = (t: Transaction) => {
+            routeManager.routeToTransaction(t)
         }
-      }
-      return result
-    })
 
-    const makeRelationshipLabel = (row: Transaction): string => {
-      let result: string
-      if (row.name === TransactionType.SCHEDULECREATE) {
-        result = "Schedule Create"
-      } else if (row.scheduled) {
-        result = "Scheduled"
-      } else if (hasChild.value) {
-        if (row.nonce && row.nonce > 0) {
-          result = "Child"
-        } else {
-          result = "Parent"
+        let currentPage = ref(1)
+
+        const hasChild = computed(() => {
+            let result = false
+            for (const tx of props.transactions) {
+                if (tx.parent_consensus_timestamp) {
+                    result = true
+                    break
+                }
+            }
+            return result
+        })
+
+        const makeRelationshipLabel = (row: Transaction): string => {
+            let result: string
+            if (row.name === TransactionType.SCHEDULECREATE) {
+                result = "Schedule Create"
+            } else if (row.scheduled) {
+                result = "Scheduled"
+            } else if (hasChild.value) {
+                if (row.nonce && row.nonce > 0) {
+                    result = "Child"
+                } else {
+                    result = "Parent"
+                }
+            } else {
+                result = ""
+            }
+            return result
         }
-      } else {
-        result = ""
-      }
-      return result
+
+        return {
+            isTouchDevice,
+            isMediumScreen,
+            pageSize,
+            paginationNeeded,
+            handleClick,
+            currentPage,
+
+            // From App
+            ORUGA_MOBILE_BREAKPOINT,
+
+            // From TransactionTools
+            makeTypeLabel,
+            makeRelationshipLabel
+        }
     }
-
-    return {
-      isTouchDevice,
-      isMediumScreen,
-      pageSize,
-      paginationNeeded,
-      handleClick,
-      currentPage,
-
-      // From App
-      ORUGA_MOBILE_BREAKPOINT,
-
-      // From TransactionTools
-      makeTypeLabel,
-      makeRelationshipLabel
-    }
-  }
 });
 
 </script>

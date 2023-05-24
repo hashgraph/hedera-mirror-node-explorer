@@ -24,41 +24,41 @@
 
 <template>
 
-  <template v-if="netAmount > 0">
+    <template v-if="netAmount > 0">
 
-    <HbarTransferGraphC
-        v-if="compact"
-        data-cy="hbarTransfers"
-        v-bind:transaction="transaction"/>
-    <HbarTransferGraphF
-        v-else
-        data-cy="hbarTransfers"
-        v-bind:transaction="transaction" title="Hbar Transfers"/>
-    <br/>
+        <HbarTransferGraphC
+                v-if="compact"
+                data-cy="hbarTransfers"
+                v-bind:transaction="transaction"/>
+        <HbarTransferGraphF
+                v-else
+                data-cy="hbarTransfers"
+                v-bind:transaction="transaction" title="Hbar Transfers"/>
+        <br/>
 
-  </template>
+    </template>
 
-  <NftTransferGraph
-      data-cy="nftTransfers"
-      :class="{'mb-4': !compact}"
-      v-bind:transaction="transaction"
-      v-bind:compact="compact"/>
+    <NftTransferGraph
+            data-cy="nftTransfers"
+            :class="{'mb-4': !compact}"
+            v-bind:transaction="transaction"
+            v-bind:compact="compact"/>
 
-  <TokenTransferGraphC
-      data-cy="tokenTransfers"
-      v-if="compact"
-      v-bind:transaction="transaction"/>
-  <TokenTransferGraphF
-      data-cy="tokenTransfers"
-      v-else
-      v-bind:transaction="transaction"/>
+    <TokenTransferGraphC
+            data-cy="tokenTransfers"
+            v-if="compact"
+            v-bind:transaction="transaction"/>
+    <TokenTransferGraphF
+            data-cy="tokenTransfers"
+            v-else
+            v-bind:transaction="transaction"/>
 
-  <template v-if="netAmount === 0 && !compact">
-    <HbarTransferGraphF
-        data-cy="feeTransfers"
-        class="mt-4"
-        v-bind:transaction="transaction" title="Fee Transfers" :show-none="true"/>
-  </template>
+    <template v-if="netAmount === 0 && !compact">
+        <HbarTransferGraphF
+                data-cy="feeTransfers"
+                class="mt-4"
+                v-bind:transaction="transaction" title="Fee Transfers" :show-none="true"/>
+    </template>
 
 
 </template>
@@ -79,31 +79,31 @@ import TokenTransferGraphF from "@/components/transfer_graphs/TokenTransferGraph
 import {computeNetAmount} from "@/utils/TransactionTools";
 
 export default defineComponent({
-  name: "TransferGraphSection",
-  components: {
-    NftTransferGraph,
-    TokenTransferGraphC,
-    TokenTransferGraphF,
-    HbarTransferGraphC,
-    HbarTransferGraphF,
-  },
-  props: {
-    transaction: Object as PropType<TransactionDetail>,
-    compact: {
-      type: Boolean,
-      default: false
-    }
-  },
-  setup(props) {
+    name: "TransferGraphSection",
+    components: {
+        NftTransferGraph,
+        TokenTransferGraphC,
+        TokenTransferGraphF,
+        HbarTransferGraphC,
+        HbarTransferGraphF,
+    },
+    props: {
+        transaction: Object as PropType<TransactionDetail>,
+        compact: {
+            type: Boolean,
+            default: false
+        }
+    },
+    setup(props) {
 
-    const netAmount = computed(() => {
-      return props.transaction ? computeNetAmount(props.transaction) : 0
-    })
+        const netAmount = computed(() => {
+            return props.transaction ? computeNetAmount(props.transaction) : 0
+        })
 
-    return {
-      netAmount,
+        return {
+            netAmount,
+        }
     }
-  }
 })
 
 </script>

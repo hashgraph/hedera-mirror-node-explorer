@@ -23,16 +23,16 @@
 <!-- --------------------------------------------------------------------------------------------------------------- -->
 
 <template>
-  <template v-if="tokenId != null">
-    <template v-if="useAnchor">
-      <router-link :to="tokenRoute">
-        <span class="h-is-smaller h-is-extra-text should-wrap" style="word-break: break-all">{{ extra }}</span>
-      </router-link>
+    <template v-if="tokenId != null">
+        <template v-if="useAnchor">
+            <router-link :to="tokenRoute">
+                <span class="h-is-smaller h-is-extra-text should-wrap" style="word-break: break-all">{{ extra }}</span>
+            </router-link>
+        </template>
+        <template v-else>
+            <span class="h-is-smaller h-is-extra-text should-wrap" style="word-break: break-all">{{ extra }}</span>
+        </template>
     </template>
-    <template v-else>
-      <span class="h-is-smaller h-is-extra-text should-wrap" style="word-break: break-all">{{ extra }}</span>
-    </template>
-  </template>
 </template>
 
 <!-- --------------------------------------------------------------------------------------------------------------- -->
@@ -48,49 +48,49 @@ import {makeTokenSymbol} from "@/schemas/HederaUtils";
 import {routeManager} from "@/router";
 
 export default defineComponent({
-  name: "TokenExtra",
+    name: "TokenExtra",
 
-  props: {
-    tokenId: String,
-    showName: {
-      type: Boolean,
-      default: false
+    props: {
+        tokenId: String,
+        showName: {
+            type: Boolean,
+            default: false
+        },
+        useAnchor: {
+            type: Boolean,
+            defaults: false
+        }
     },
-    useAnchor: {
-      type: Boolean,
-      defaults: false
-    }
-  },
 
-  setup(props) {
-    const extra = ref("")
+    setup(props) {
+        const extra = ref("")
 
-    const updateExtra = () => {
-      if (props.tokenId) {
-        TokenInfoCache.instance.lookup(props.tokenId).then((r: TokenInfo | null) => {
-          if (props.showName) {
-            extra.value = r?.name ?? ""
-          } else {
-            extra.value = makeTokenSymbol(r, 40)
-          }
-        }, (reason: unknown) => {
-          console.warn("TokenInfoCollector did fail to fetch " + props.tokenId + " with reason: " + reason)
+        const updateExtra = () => {
+            if (props.tokenId) {
+                TokenInfoCache.instance.lookup(props.tokenId).then((r: TokenInfo | null) => {
+                    if (props.showName) {
+                        extra.value = r?.name ?? ""
+                    } else {
+                        extra.value = makeTokenSymbol(r, 40)
+                    }
+                }, (reason: unknown) => {
+                    console.warn("TokenInfoCollector did fail to fetch " + props.tokenId + " with reason: " + reason)
+                })
+            }
+        }
+
+        watch(() => props.tokenId, () => {
+            updateExtra()
         })
-      }
+
+        onMounted(() => {
+            updateExtra()
+        })
+
+        const tokenRoute = computed(() => props.tokenId ? routeManager.makeRouteToToken(props.tokenId) : null)
+
+        return {extra, tokenRoute}
     }
-
-    watch(() => props.tokenId, () => {
-      updateExtra()
-    })
-
-    onMounted(() => {
-      updateExtra()
-    })
-
-    const tokenRoute = computed(() => props.tokenId ? routeManager.makeRouteToToken(props.tokenId) : null)
-
-    return { extra, tokenRoute }
-  }
 });
 
 </script>

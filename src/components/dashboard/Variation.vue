@@ -24,14 +24,15 @@
 
 <template>
 
-  <div v-if="variation >= 0" class="is-flex is-align-items-baseline" :class="{'mb-1':isMediumScreen, 'mt-1':!isMediumScreen}">
-    <img class="image mr-1" alt="Trend Up" src="@/assets/trend-up.png" style="width: 18px; height: 9px">
-    <span>{{ variation }}%</span>
-  </div>
-  <div v-else class="is-flex is-align-items-baseline" :class="{'mb-1':isMediumScreen, 'mt-1':!isMediumScreen}">
-    <img class="image mr-1" alt="Trend Down" src="@/assets/trend-down.png" style="width: 18px; height: 9px">
-    <span>{{ absVariation }}%</span>
-  </div>
+    <div v-if="variation >= 0" class="is-flex is-align-items-baseline"
+         :class="{'mb-1':isMediumScreen, 'mt-1':!isMediumScreen}">
+        <img class="image mr-1" alt="Trend Up" src="@/assets/trend-up.png" style="width: 18px; height: 9px">
+        <span>{{ variation }}%</span>
+    </div>
+    <div v-else class="is-flex is-align-items-baseline" :class="{'mb-1':isMediumScreen, 'mt-1':!isMediumScreen}">
+        <img class="image mr-1" alt="Trend Down" src="@/assets/trend-down.png" style="width: 18px; height: 9px">
+        <span>{{ absVariation }}%</span>
+    </div>
 
 </template>
 
@@ -44,22 +45,22 @@
 import {computed, defineComponent, inject} from 'vue';
 
 export default defineComponent({
-  name: 'Variation',
+    name: 'Variation',
 
-  props: {
-    variation: String,
-  },
+    props: {
+        variation: String,
+    },
 
-  setup(props) {
-    const isMediumScreen = inject('isMediumScreen', true)
-    const absVariation = computed(() => {
-      return props.variation ? Math.abs(Number(props.variation)) : ""
-    })
-    return {
-      isMediumScreen,
-      absVariation,
-    }
-  },
+    setup(props) {
+        const isMediumScreen = inject('isMediumScreen', true)
+        const absVariation = computed(() => {
+            return props.variation ? Math.abs(Number(props.variation)) : ""
+        })
+        return {
+            isMediumScreen,
+            absVariation,
+        }
+    },
 });
 
 </script>

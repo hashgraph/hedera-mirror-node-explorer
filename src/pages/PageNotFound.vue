@@ -24,22 +24,22 @@
 
 <template>
 
-  <section class="section has-text-centered" style="min-height: 450px">
+    <section class="section has-text-centered" style="min-height: 450px">
 
-    <p class="h-is-secondary-text" style="font-weight: 300">Page not found</p>
-    <br/>
+        <p class="h-is-secondary-text" style="font-weight: 300">Page not found</p>
+        <br/>
 
-    <div class="block">
-      <p class="h-is-tertiary-text" style="font-weight: 300">
-        No page matches the specified URL.
-        <br>
-        Check URL value or use tabs in navigation bar.
-      </p>
-    </div>
+        <div class="block">
+            <p class="h-is-tertiary-text" style="font-weight: 300">
+                No page matches the specified URL.
+                <br>
+                Check URL value or use tabs in navigation bar.
+            </p>
+        </div>
 
-  </section>
+    </section>
 
-  <Footer :keep-background="true"/>
+    <Footer :keep-background="true"/>
 
 </template>
 
@@ -53,8 +53,8 @@ import {defineComponent} from 'vue';
 import Footer from "@/components/Footer.vue";
 
 export default defineComponent({
-  name: 'PageNotFound',
-  components: {Footer}
+    name: 'PageNotFound',
+    components: {Footer}
 })
 
 </script>

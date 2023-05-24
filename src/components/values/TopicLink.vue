@@ -23,12 +23,12 @@
 <!-- --------------------------------------------------------------------------------------------------------------- -->
 
 <template>
-  <div class="is-inline-block">
-    <router-link v-if="topicId" :to="topicRoute">
-      <span class="is-numeric">{{ topicId }}</span>
-    </router-link>
-    <div v-else>?</div>
-  </div>
+    <div class="is-inline-block">
+        <router-link v-if="topicId" :to="topicRoute">
+            <span class="is-numeric">{{ topicId }}</span>
+        </router-link>
+        <div v-else>?</div>
+    </div>
 </template>
 
 <!-- --------------------------------------------------------------------------------------------------------------- -->
@@ -41,20 +41,20 @@ import {computed, defineComponent} from "vue";
 import {routeManager} from "@/router";
 
 export default defineComponent({
-  name: "TopicLink",
+    name: "TopicLink",
 
-  props: {
-    topicId: String,
-    showExtra: {
-      type: Boolean,
-      default: false
+    props: {
+        topicId: String,
+        showExtra: {
+            type: Boolean,
+            default: false
+        }
+    },
+
+    setup(props) {
+        const topicRoute = computed(() => props.topicId ? routeManager.makeRouteToTopic(props.topicId) : null)
+        return {topicRoute}
     }
-  },
-
-  setup(props) {
-    const topicRoute = computed(() => props.topicId ? routeManager.makeRouteToTopic(props.topicId) : null)
-    return { topicRoute }
-  }
 });
 
 </script>

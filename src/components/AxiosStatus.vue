@@ -72,82 +72,82 @@ import ModalDialog from "@/components/ModalDialog.vue";
 
 export default defineComponent({
 
-  name: "AxiosStatus",
+    name: "AxiosStatus",
 
-  components: { ModalDialog },
+    components: {ModalDialog},
 
-  setup() {
+    setup() {
 
-    const loading = inject(loadingKey, ref(false))
-    const error = inject(errorKey, ref(false))
-    const explanation = inject(explanationKey, ref(""))
-    const suggestion = inject(suggestionKey, ref(""))
+        const loading = inject(loadingKey, ref(false))
+        const error = inject(errorKey, ref(false))
+        const explanation = inject(explanationKey, ref(""))
+        const suggestion = inject(suggestionKey, ref(""))
 
-    watch(loading, (newValue, oldValue) => {
-      if (oldValue && !newValue) {
-        stopTimeout()
-      } else if (!oldValue && newValue) {
-        startTimeout()
-      }
-    })
-    watch(error, (newValue, oldValue) => {
-      if (oldValue && !newValue) {
-        // Error flag off => hides error dialog if needed
-        showErrorDialog.value = false
-      }
-    })
+        watch(loading, (newValue, oldValue) => {
+            if (oldValue && !newValue) {
+                stopTimeout()
+            } else if (!oldValue && newValue) {
+                startTimeout()
+            }
+        })
+        watch(error, (newValue, oldValue) => {
+            if (oldValue && !newValue) {
+                // Error flag off => hides error dialog if needed
+                showErrorDialog.value = false
+            }
+        })
 
-    //
-    // Late
-    //
-    const late = computed(() => {
-      return loading.value && timeoutElapsed.value
-    })
+        //
+        // Late
+        //
+        const late = computed(() => {
+            return loading.value && timeoutElapsed.value
+        })
 
-    //
-    // timeoutElapsed
-    //
-    const timeoutElapsed = ref(false)
-    let timeoutID = -1
-    const startTimeout = () => {
-      if (timeoutID == -1) {
-        timeoutElapsed.value = false
-        timeoutID = window.setTimeout(() => {
-          timeoutElapsed.value = true
-          timeoutID = -1
-        }, 1000)
-      }
+        //
+        // timeoutElapsed
+        //
+        const timeoutElapsed = ref(false)
+        let timeoutID = -1
+        const startTimeout = () => {
+            if (timeoutID == -1) {
+                timeoutElapsed.value = false
+                timeoutID = window.setTimeout(() => {
+                    timeoutElapsed.value = true
+                    timeoutID = -1
+                }, 1000)
+            }
+        }
+        const stopTimeout = () => {
+            if (timeoutID != -1) {
+                window.clearTimeout(timeoutID)
+                timeoutID = -1
+            }
+        }
+
+        //
+        // showErrorDialog
+        //
+        const showErrorDialog = ref(false)
+
+        //
+        // Mount
+        //
+        onMounted(() => {
+            startTimeout()
+        })
+        onBeforeUnmount(() => {
+            stopTimeout()
+        })
+
+        return {
+            late,
+            error,
+            explanation,
+            suggestion,
+            showErrorDialog,
+        }
     }
-    const stopTimeout = () => {
-      if (timeoutID != -1) {
-        window.clearTimeout(timeoutID)
-        timeoutID = -1
-      }
-    }
-
-    //
-    // showErrorDialog
-    //
-    const showErrorDialog = ref(false)
-
-    //
-    // Mount
-    //
-    onMounted(() => {
-      startTimeout()
-    })
-    onBeforeUnmount(() => {
-      stopTimeout()
-    })
-
-    return {
-      late,
-      error,
-      explanation,
-      suggestion,
-      showErrorDialog,
-    }
-  }
 })
 
 
@@ -159,10 +159,11 @@ export default defineComponent({
 
 <style scoped>
 .loader {
-  border-left-color: grey;
-  border-bottom-color: grey
+    border-left-color: grey;
+    border-bottom-color: grey
 }
+
 i.fa-exclamation-triangle {
-  cursor: pointer
+    cursor: pointer
 }
 </style>

@@ -24,28 +24,28 @@
 
 <template>
 
-  <div v-if="accountId === null">{{ nullLabel }}</div>
+    <div v-if="accountId === null">{{ nullLabel }}</div>
 
-  <div v-else-if="accountId">
-    <template v-if="noAnchor">
-      <span class="is-numeric">{{ accountId }}</span>
-    </template>
-    <template v-else-if="accountRoute">
-      <router-link :to="accountRoute">
-        <span class="is-numeric">{{ accountId }}</span>
-      </router-link>
-    </template>
-    <template v-else>
-      <span class="is-numeric">{{ accountId }}</span>
-    </template>
-    <template v-if="showExtra && extra.length > 0">
-      <span class="ml-2 h-is-smaller h-is-extra-text is-numeric">{{ extra }}</span>
-    </template>
-  </div>
+    <div v-else-if="accountId">
+        <template v-if="noAnchor">
+            <span class="is-numeric">{{ accountId }}</span>
+        </template>
+        <template v-else-if="accountRoute">
+            <router-link :to="accountRoute">
+                <span class="is-numeric">{{ accountId }}</span>
+            </router-link>
+        </template>
+        <template v-else>
+            <span class="is-numeric">{{ accountId }}</span>
+        </template>
+        <template v-if="showExtra && extra.length > 0">
+            <span class="ml-2 h-is-smaller h-is-extra-text is-numeric">{{ extra }}</span>
+        </template>
+    </div>
 
-  <span v-else-if="showNone && !initialLoading" class="has-text-grey">None</span>
+    <span v-else-if="showNone && !initialLoading" class="has-text-grey">None</span>
 
-  <span v-else/>
+    <span v-else/>
 
 </template>
 
@@ -64,77 +64,76 @@ import {RouteLocationRaw} from "vue-router";
 import {makeOperatorDescription} from "@/schemas/HederaUtils";
 
 export default defineComponent({
-  name: "AccountLink",
+    name: "AccountLink",
 
-  props: {
-    accountId: String as PropType<string|null>,
-    showExtra: {
-      type: Boolean,
-      default: false
-    },
-    showNone: {
-      type: Boolean,
-      default: false
-    },
-    noAnchor: {
-      type: Boolean,
-      default: false
-    },
-    nullLabel: {
-      type: String,
-      default: "O"
-    }
-  },
-
-  setup(props) {
-
-    const networkLookup = NetworkCache.instance.makeLookup()
-    onMounted(() => networkLookup.mount())
-    onBeforeUnmount(() => networkLookup.unmount())
-
-    const nodes = computed(() => networkLookup.entity.value ?? [])
-
-    const extra = computed(() => {
-      const result = props.accountId ? makeOperatorDescription(props.accountId, nodes.value) : null
-      return result ?? ""
-    })
-
-    const accountRoute = ref<RouteLocationRaw | null>(null)
-
-    const initialLoading = inject(initialLoadingKey, ref(false))
-
-    const selectRoute = async (accountId: string) => {
-      let result: RouteLocationRaw | null
-      try {
-        if (await ContractByIdCache.instance.lookup(accountId) !== null) {
-          result = routeManager.makeRouteToContract(accountId)
-        } else {
-          result = routeManager.makeRouteToAccount(accountId)
+    props: {
+        accountId: String as PropType<string | null>,
+        showExtra: {
+            type: Boolean,
+            default: false
+        },
+        showNone: {
+            type: Boolean,
+            default: false
+        },
+        noAnchor: {
+            type: Boolean,
+            default: false
+        },
+        nullLabel: {
+            type: String,
+            default: "O"
         }
-      }
-      catch {
-        result = null
-      }
-      return Promise.resolve(result)
+    },
+
+    setup(props) {
+
+        const networkLookup = NetworkCache.instance.makeLookup()
+        onMounted(() => networkLookup.mount())
+        onBeforeUnmount(() => networkLookup.unmount())
+
+        const nodes = computed(() => networkLookup.entity.value ?? [])
+
+        const extra = computed(() => {
+            const result = props.accountId ? makeOperatorDescription(props.accountId, nodes.value) : null
+            return result ?? ""
+        })
+
+        const accountRoute = ref<RouteLocationRaw | null>(null)
+
+        const initialLoading = inject(initialLoadingKey, ref(false))
+
+        const selectRoute = async (accountId: string) => {
+            let result: RouteLocationRaw | null
+            try {
+                if (await ContractByIdCache.instance.lookup(accountId) !== null) {
+                    result = routeManager.makeRouteToContract(accountId)
+                } else {
+                    result = routeManager.makeRouteToAccount(accountId)
+                }
+            } catch {
+                result = null
+            }
+            return Promise.resolve(result)
+        }
+
+        onMounted(() => {
+            if (props.accountId) {
+                selectRoute(props.accountId).then((route) => accountRoute.value = route)
+            } else {
+                accountRoute.value = null
+            }
+        })
+        watch(() => props.accountId, (newValue) => {
+            if (newValue) {
+                selectRoute(newValue).then((route) => accountRoute.value = route)
+            } else {
+                accountRoute.value = null
+            }
+        })
+
+        return {extra, accountRoute, initialLoading}
     }
-
-    onMounted(() => {
-      if (props.accountId) {
-        selectRoute(props.accountId).then((route) => accountRoute.value = route)
-      } else {
-        accountRoute.value = null
-      }
-    })
-    watch(() => props.accountId, (newValue) => {
-      if (newValue) {
-        selectRoute(newValue).then((route) => accountRoute.value = route)
-      } else {
-        accountRoute.value = null
-      }
-    })
-
-    return {extra, accountRoute, initialLoading}
-  }
 });
 
 </script>

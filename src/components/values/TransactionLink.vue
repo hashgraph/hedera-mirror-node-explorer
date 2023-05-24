@@ -24,15 +24,15 @@
 
 <template>
 
-  <div v-if="formattedId && routeToTransaction">
-    <router-link :to="routeToTransaction">
-      <span class="is-numeric should-wrap">{{ formattedId }}</span>
-    </router-link>
-  </div>
+    <div v-if="formattedId && routeToTransaction">
+        <router-link :to="routeToTransaction">
+            <span class="is-numeric should-wrap">{{ formattedId }}</span>
+        </router-link>
+    </div>
 
-  <span v-else-if="showNone" class="has-text-grey">None</span>
+    <span v-else-if="showNone" class="has-text-grey">None</span>
 
-  <span v-else/>
+    <span v-else/>
 
 </template>
 
@@ -53,58 +53,58 @@ import {TransactionByHashCache} from "@/utils/cache/TransactionByHashCache";
 import {TransactionByTsCache} from "@/utils/cache/TransactionByTsCache";
 
 export default defineComponent({
-  name: "TransactionLink",
+    name: "TransactionLink",
 
-  props: {
-    transactionLoc: String as PropType<string|undefined>,
-    showNone: {
-      type: Boolean,
-      default: true
+    props: {
+        transactionLoc: String as PropType<string | undefined>,
+        showNone: {
+            type: Boolean,
+            default: true
+        },
     },
-  },
 
-  setup(props) {
+    setup(props) {
 
-    const normalizedId = ref<string|null>(null)
-    const updateNormalizedId = () => {
-      if (props.transactionLoc) {
-        const tloc = PathParam.parseTransactionLoc(props.transactionLoc)
-        if (tloc instanceof Timestamp) {
-          TransactionByTsCache.instance.lookup(props.transactionLoc)
-              .then((t: Transaction|null) => {
-                normalizedId.value = t?.transaction_id ?? null
-              })
-              .catch(() => {
+        const normalizedId = ref<string | null>(null)
+        const updateNormalizedId = () => {
+            if (props.transactionLoc) {
+                const tloc = PathParam.parseTransactionLoc(props.transactionLoc)
+                if (tloc instanceof Timestamp) {
+                    TransactionByTsCache.instance.lookup(props.transactionLoc)
+                        .then((t: Transaction | null) => {
+                            normalizedId.value = t?.transaction_id ?? null
+                        })
+                        .catch(() => {
+                            normalizedId.value = null
+                        })
+                } else if (tloc instanceof TransactionHash) {
+                    TransactionByHashCache.instance.lookup(props.transactionLoc)
+                        .then((t: Transaction | null) => {
+                            normalizedId.value = t?.transaction_id ?? null
+                        })
+                        .catch(() => {
+                            normalizedId.value = null
+                        })
+                } else {
+                    normalizedId.value = null
+                }
+            } else {
                 normalizedId.value = null
-              })
-        } else if (tloc instanceof TransactionHash) {
-          TransactionByHashCache.instance.lookup(props.transactionLoc)
-              .then((t: Transaction|null) => {
-                normalizedId.value = t?.transaction_id ?? null
-              })
-              .catch(() => {
-                normalizedId.value = null
-              })
-        } else {
-          normalizedId.value = null
+            }
         }
-      } else {
-        normalizedId.value = null
-      }
+        watch(computed(() => props.transactionLoc), () => updateNormalizedId())
+        onMounted(() => updateNormalizedId())
+
+        const formattedId = computed(() => {
+            return normalizedId.value !== null ? TransactionID.normalize(normalizedId.value) : null
+        })
+
+        const routeToTransaction = computed(() => {
+            return props.transactionLoc ? routeManager.makeRouteToTransaction(props.transactionLoc) : null
+        })
+
+        return {formattedId, routeToTransaction}
     }
-    watch(computed(() => props.transactionLoc), () => updateNormalizedId())
-    onMounted(() => updateNormalizedId())
-
-    const formattedId = computed(() => {
-      return normalizedId.value !== null ? TransactionID.normalize(normalizedId.value) : null
-    })
-
-    const routeToTransaction = computed(() => {
-      return props.transactionLoc ? routeManager.makeRouteToTransaction(props.transactionLoc) : null
-    })
-
-    return { formattedId, routeToTransaction }
-  }
 });
 
 </script>

@@ -25,43 +25,43 @@
 
 <template>
 
-  <o-table
-      v-model:current-page="currentPage"
-      :data="transactions"
-      :hoverable="true"
-      :narrowed="narrowed"
-      :paginated="!isTouchDevice && paginationNeeded"
-      :per-page="isMediumScreen ? pageSize : 5"
-      :striped="true"
-      :mobile-breakpoint="ORUGA_MOBILE_BREAKPOINT"
-      aria-current-label="Current page"
-      aria-next-label="Next page"
-      aria-page-label="Page"
-      aria-previous-label="Previous page"
-      customRowKey="consensus_timestamp"
-      @click="handleClick"
-  >
-    <o-table-column v-slot="props" field="transaction_id" label="ID">
-      <TransactionLabel v-bind:transaction-id="props.row.transaction_id" v-bind:result="props.row.result"/>
-    </o-table-column>
+    <o-table
+            v-model:current-page="currentPage"
+            :data="transactions"
+            :hoverable="true"
+            :narrowed="narrowed"
+            :paginated="!isTouchDevice && paginationNeeded"
+            :per-page="isMediumScreen ? pageSize : 5"
+            :striped="true"
+            :mobile-breakpoint="ORUGA_MOBILE_BREAKPOINT"
+            aria-current-label="Current page"
+            aria-next-label="Next page"
+            aria-page-label="Page"
+            aria-previous-label="Previous page"
+            customRowKey="consensus_timestamp"
+            @click="handleClick"
+    >
+        <o-table-column v-slot="props" field="transaction_id" label="ID">
+            <TransactionLabel v-bind:transaction-id="props.row.transaction_id" v-bind:result="props.row.result"/>
+        </o-table-column>
 
-    <o-table-column v-slot="props" field="name" label="Type">
-      <div class="h-has-pill" style="display: inline-block">
-        <div class="h-is-text-size-2">{{ makeTypeLabel(props.row.name) }}</div>
-      </div>
-    </o-table-column>
+        <o-table-column v-slot="props" field="name" label="Type">
+            <div class="h-has-pill" style="display: inline-block">
+                <div class="h-is-text-size-2">{{ makeTypeLabel(props.row.name) }}</div>
+            </div>
+        </o-table-column>
 
-    <o-table-column v-slot="props" label="Content">
-      <TransactionSummary v-bind:transaction="props.row"/>
-    </o-table-column>
+        <o-table-column v-slot="props" label="Content">
+            <TransactionSummary v-bind:transaction="props.row"/>
+        </o-table-column>
 
-    <o-table-column v-slot="props" field="consensus_timestamp" label="Time & Date">
-      <TimestampValue v-bind:timestamp="props.row.consensus_timestamp"/>
-    </o-table-column>
+        <o-table-column v-slot="props" field="consensus_timestamp" label="Time & Date">
+            <TimestampValue v-bind:timestamp="props.row.consensus_timestamp"/>
+        </o-table-column>
 
-  </o-table>
+    </o-table>
 
-  <EmptyTable v-if="!transactions.length"/>
+    <EmptyTable v-if="!transactions.length"/>
 
 </template>
 
@@ -82,52 +82,52 @@ import EmptyTable from "@/components/EmptyTable.vue";
 import TransactionSummary from "@/components/transaction/TransactionSummary.vue";
 
 export default defineComponent({
-  name: 'BlockTransactionTable',
+    name: 'BlockTransactionTable',
 
-  components: {TransactionSummary, EmptyTable, TimestampValue, TransactionLabel },
+    components: {TransactionSummary, EmptyTable, TimestampValue, TransactionLabel},
 
-  props: {
-    narrowed: Boolean,
-    nbItems: Number,
-    transactions: {
-      type: Array as PropType<Array<Transaction>>,
-      default: () => []
+    props: {
+        narrowed: Boolean,
+        nbItems: Number,
+        transactions: {
+            type: Array as PropType<Array<Transaction>>,
+            default: () => []
+        },
+        accountId: String
     },
-    accountId: String
-  },
 
-  setup(props) {
-    const isTouchDevice = inject('isTouchDevice', false)
-    const isMediumScreen = inject('isMediumScreen', true)
+    setup(props) {
+        const isTouchDevice = inject('isTouchDevice', false)
+        const isMediumScreen = inject('isMediumScreen', true)
 
-    const DEFAULT_PAGE_SIZE = 15
-    const pageSize = props.nbItems ?? DEFAULT_PAGE_SIZE
-    const paginationNeeded = computed(() => {
-          return props.transactions.length > 5
+        const DEFAULT_PAGE_SIZE = 15
+        const pageSize = props.nbItems ?? DEFAULT_PAGE_SIZE
+        const paginationNeeded = computed(() => {
+                return props.transactions.length > 5
+            }
+        )
+
+        const handleClick = (t: Transaction) => {
+            routeManager.routeToTransaction(t)
         }
-    )
 
-    const handleClick = (t: Transaction) => {
-      routeManager.routeToTransaction(t)
+        let currentPage = ref(1)
+
+        return {
+            isTouchDevice,
+            isMediumScreen,
+            pageSize,
+            paginationNeeded,
+            handleClick,
+            currentPage,
+
+            // From App
+            ORUGA_MOBILE_BREAKPOINT,
+
+            // From TransactionTools
+            makeTypeLabel,
+        }
     }
-
-    let currentPage = ref(1)
-
-    return {
-      isTouchDevice,
-      isMediumScreen,
-      pageSize,
-      paginationNeeded,
-      handleClick,
-      currentPage,
-
-      // From App
-      ORUGA_MOBILE_BREAKPOINT,
-
-      // From TransactionTools
-      makeTypeLabel,
-    }
-  }
 });
 
 </script>

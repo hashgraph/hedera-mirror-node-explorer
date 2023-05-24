@@ -24,27 +24,27 @@
 
 <template>
 
-  <div v-if="signature">
-    <div class="h-is-tertiary-text my-2">Output Result</div>
+    <div v-if="signature">
+        <div class="h-is-tertiary-text my-2">Output Result</div>
 
-    <template v-for="result in outputs" :key="result.name">
-      <Property :custom-nb-col-class="customNbColClass">
-        <template v-slot:name>{{ result.name }}</template>
-        <template v-slot:value>
-          <FunctionValue :ntv="result"/>
+        <template v-for="result in outputs" :key="result.name">
+            <Property :custom-nb-col-class="customNbColClass">
+                <template v-slot:name>{{ result.name }}</template>
+                <template v-slot:value>
+                    <FunctionValue :ntv="result"/>
+                </template>
+            </Property>
         </template>
-      </Property>
-    </template>
 
-  </div>
-  <div v-else>
-    <Property :custom-nb-col-class="customNbColClass" id="FunctionResult">
-      <template v-slot:name>Output Result</template>
-      <template v-slot:value>
-        <HexaValue :byte-string="output" :show-none="true"/>
-      </template>
-    </Property>
-  </div>
+    </div>
+    <div v-else>
+        <Property :custom-nb-col-class="customNbColClass" id="FunctionResult">
+            <template v-slot:name>Output Result</template>
+            <template v-slot:value>
+                <HexaValue :byte-string="output" :show-none="true"/>
+            </template>
+        </Property>
+    </div>
 
 </template>
 
@@ -62,26 +62,26 @@ import Property from "@/components/Property.vue";
 import FunctionValue from "@/components/values/FunctionValue.vue";
 
 export default defineComponent({
-  name: 'FunctionResult',
-  components: {FunctionValue, Property, HexaValue},
-  props: {
-    analyzer: {
-      type: Object as PropType<FunctionCallAnalyzer>,
-      required: true
+    name: 'FunctionResult',
+    components: {FunctionValue, Property, HexaValue},
+    props: {
+        analyzer: {
+            type: Object as PropType<FunctionCallAnalyzer>,
+            required: true
+        },
+        customNbColClass: String
     },
-    customNbColClass: String
-  },
 
-  setup(props) {
+    setup(props) {
 
-    const initialLoading = inject(initialLoadingKey, ref(false))
-    return {
-      output: props.analyzer.output,
-      signature: props.analyzer.signature,
-      outputs: props.analyzer.outputs,
-      initialLoading
+        const initialLoading = inject(initialLoadingKey, ref(false))
+        return {
+            output: props.analyzer.output,
+            signature: props.analyzer.signature,
+            outputs: props.analyzer.outputs,
+            initialLoading
+        }
     }
-  }
 });
 
 </script>

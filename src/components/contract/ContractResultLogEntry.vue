@@ -24,36 +24,36 @@
 
 <template>
 
-  <div v-if="log">
-    <Property id="logAddress" :full-width="true">
-      <template v-slot:name>Address</template>
-      <template v-slot:value>
-        <EVMAddress :address="log.address" :id="log.contract_id"/>
-      </template>
-    </Property>
-    <Property id="logData" :full-width="true">
-      <template v-slot:name>Data</template>
-      <template v-slot:value>
-        <HexaValue :show-none="true" v-bind:byteString="log.data" :low-contrast="false"/>
-      </template>
-    </Property>
-    <Property id="logIndex" :full-width="true">>
-      <template v-slot:name>Index</template>
-      <template v-slot:value>
-        <StringValue :string-value="log?.index.toString()"/>
-      </template>
-    </Property>
-    <Property id="logTopics" :full-width="true">>
-      <template v-slot:name>Topics</template>
-      <template v-slot:value>
-        <div v-for="(t, topicIndex) in log.topics" :key="t" class="is-flex">
-          <span class="is-family-monospace h-is-text-size-3 mt-1 mr-2">{{ '(' + topicIndex + ') ' }}</span>
-          <HexaValue :show-none="true" v-bind:byteString="t" :low-contrast="false"
-                     :word-wrap-small="8" :word-wrap-medium="8" />
-        </div>
-      </template>
-    </Property>
-  </div>
+    <div v-if="log">
+        <Property id="logAddress" :full-width="true">
+            <template v-slot:name>Address</template>
+            <template v-slot:value>
+                <EVMAddress :address="log.address" :id="log.contract_id"/>
+            </template>
+        </Property>
+        <Property id="logData" :full-width="true">
+            <template v-slot:name>Data</template>
+            <template v-slot:value>
+                <HexaValue :show-none="true" v-bind:byteString="log.data" :low-contrast="false"/>
+            </template>
+        </Property>
+        <Property id="logIndex" :full-width="true">>
+            <template v-slot:name>Index</template>
+            <template v-slot:value>
+                <StringValue :string-value="log?.index.toString()"/>
+            </template>
+        </Property>
+        <Property id="logTopics" :full-width="true">>
+            <template v-slot:name>Topics</template>
+            <template v-slot:value>
+                <div v-for="(t, topicIndex) in log.topics" :key="t" class="is-flex">
+                    <span class="is-family-monospace h-is-text-size-3 mt-1 mr-2">{{ '(' + topicIndex + ') ' }}</span>
+                    <HexaValue :show-none="true" v-bind:byteString="t" :low-contrast="false"
+                               :word-wrap-small="8" :word-wrap-medium="8"/>
+                </div>
+            </template>
+        </Property>
+    </div>
 
 </template>
 
@@ -71,11 +71,11 @@ import HexaValue from "@/components/values/HexaValue.vue";
 import EVMAddress from "@/components/values/EVMAddress.vue";
 
 export default defineComponent({
-  name: "ContractResultLogEntry",
-  components: {EVMAddress, HexaValue, StringValue, Property},
-  props: {
-    log: Object as PropType<ContractResultLog | undefined>
-  },
+    name: "ContractResultLogEntry",
+    components: {EVMAddress, HexaValue, StringValue, Property},
+    props: {
+        log: Object as PropType<ContractResultLog | undefined>
+    },
 })
 
 </script>

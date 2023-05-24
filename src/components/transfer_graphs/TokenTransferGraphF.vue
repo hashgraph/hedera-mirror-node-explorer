@@ -24,110 +24,128 @@
 
 <template>
 
-  <div>
-    <p class="h-is-tertiary-text mb-2">Token Transfers</p>
+    <div>
+        <p class="h-is-tertiary-text mb-2">Token Transfers</p>
 
-    <div v-if="tokenTransferLayout.length >= 1">
+        <div v-if="tokenTransferLayout.length >= 1">
 
-    <div class="graph-container" v-bind:class="{'graph-container-8': symbolVisible}">
+            <div class="graph-container" v-bind:class="{'graph-container-8': symbolVisible}">
 
-      <template v-if="symbolVisible">
-        <div style="grid-column-end: span 1" class="h-is-text-size-3 has-text-grey-light has-text-weight-light mb-2">Account</div>
-        <div style="grid-column-end: span 2" class="h-is-text-size-3 has-text-grey-light has-text-weight-light mb-2">Token Amount</div>
-        <div/>
-        <div style="grid-column-end: span 1" class="h-is-text-size-3 has-text-grey-light has-text-weight-light mb-2">Account</div>
-        <div style="grid-column-end: span 2" class="h-is-text-size-3 has-text-grey-light has-text-weight-light mb-2">Token Amount</div>
-        <div/>
-      </template>
-      <template v-else>
-        <div style="grid-column-end: span 1" class="h-is-text-size-3 has-text-grey-light has-text-weight-light mb-2">Account</div>
-        <div style="grid-column-end: span 1" class="h-is-text-size-3 has-text-grey-light has-text-weight-light mb-2">Token Amount</div>
-        <div/>
-        <div style="grid-column-end: span 1" class="h-is-text-size-3 has-text-grey-light has-text-weight-light mb-2">Account</div>
-        <div style="grid-column-end: span 1" class="h-is-text-size-3 has-text-grey-light has-text-weight-light mb-2">Token Amount</div>
-      </template>
+                <template v-if="symbolVisible">
+                    <div style="grid-column-end: span 1"
+                         class="h-is-text-size-3 has-text-grey-light has-text-weight-light mb-2">Account
+                    </div>
+                    <div style="grid-column-end: span 2"
+                         class="h-is-text-size-3 has-text-grey-light has-text-weight-light mb-2">Token Amount
+                    </div>
+                    <div/>
+                    <div style="grid-column-end: span 1"
+                         class="h-is-text-size-3 has-text-grey-light has-text-weight-light mb-2">Account
+                    </div>
+                    <div style="grid-column-end: span 2"
+                         class="h-is-text-size-3 has-text-grey-light has-text-weight-light mb-2">Token Amount
+                    </div>
+                    <div/>
+                </template>
+                <template v-else>
+                    <div style="grid-column-end: span 1"
+                         class="h-is-text-size-3 has-text-grey-light has-text-weight-light mb-2">Account
+                    </div>
+                    <div style="grid-column-end: span 1"
+                         class="h-is-text-size-3 has-text-grey-light has-text-weight-light mb-2">Token Amount
+                    </div>
+                    <div/>
+                    <div style="grid-column-end: span 1"
+                         class="h-is-text-size-3 has-text-grey-light has-text-weight-light mb-2">Account
+                    </div>
+                    <div style="grid-column-end: span 1"
+                         class="h-is-text-size-3 has-text-grey-light has-text-weight-light mb-2">Token Amount
+                    </div>
+                </template>
 
-      <template v-for="s in tokenTransferLayout.length" v-bind:key="s">
+                <template v-for="s in tokenTransferLayout.length" v-bind:key="s">
 
-        <template v-for="i in tokenTransferLayout[s-1].rowCount" v-bind:key="i">
+                    <template v-for="i in tokenTransferLayout[s-1].rowCount" v-bind:key="i">
 
-          <!-- #0 : account id -->
-          <div>
-            <template v-if="i <= tokenTransferLayout[s-1].sources.length">
-              <AccountLink v-bind:account-id="tokenTransferLayout[s-1].sources[i-1].account"
-                           null-label="MINT"
-                           data-cy="sourceAccount"/>
-            </template>
-          </div>
+                        <!-- #0 : account id -->
+                        <div>
+                            <template v-if="i <= tokenTransferLayout[s-1].sources.length">
+                                <AccountLink v-bind:account-id="tokenTransferLayout[s-1].sources[i-1].account"
+                                             null-label="MINT"
+                                             data-cy="sourceAccount"/>
+                            </template>
+                        </div>
 
-          <!-- #1 : token amount -->
-          <div class="justify-end">
-            <TokenAmount v-if="i <= tokenTransferLayout[s-1].sources.length"
-                         v-bind:amount="BigInt(tokenTransferLayout[s-1].sources[i-1].amount)"
-                         v-bind:token-id="tokenTransferLayout[s-1].tokenId"/>
-          </div>
+                        <!-- #1 : token amount -->
+                        <div class="justify-end">
+                            <TokenAmount v-if="i <= tokenTransferLayout[s-1].sources.length"
+                                         v-bind:amount="BigInt(tokenTransferLayout[s-1].sources[i-1].amount)"
+                                         v-bind:token-id="tokenTransferLayout[s-1].tokenId"/>
+                        </div>
 
-          <!-- #2 : token symbol -->
-          <template v-if="symbolVisible">
-            <div data-cy="tokenExtra">
-              <TokenExtra v-if="i <= tokenTransferLayout[s-1].sources.length"
-                          v-bind:token-id="tokenTransferLayout[s-1].tokenId"
-                          v-bind:use-anchor="true"/>
+                        <!-- #2 : token symbol -->
+                        <template v-if="symbolVisible">
+                            <div data-cy="tokenExtra">
+                                <TokenExtra v-if="i <= tokenTransferLayout[s-1].sources.length"
+                                            v-bind:token-id="tokenTransferLayout[s-1].tokenId"
+                                            v-bind:use-anchor="true"/>
+                            </div>
+                        </template>
+
+                        <!-- #3 : arrow -->
+                        <div style="position: relative">
+                            <ArrowSegment
+                                    v-bind:source-count="tokenTransferLayout[s-1].sources.length"
+                                    v-bind:dest-count="tokenTransferLayout[s-1].destinations.length"
+                                    v-bind:row-index="i-1"/>
+                        </div>
+
+                        <!-- #4 : account id -->
+                        <div>
+                            <template v-if="i <= tokenTransferLayout[s-1].destinations.length">
+                                <AccountLink v-bind:account-id="tokenTransferLayout[s-1].destinations[i-1].account"
+                                             null-label="BURN"
+                                             data-cy="destinationAccount"/>
+                            </template>
+                        </div>
+
+                        <!-- #5 : token amount -->
+                        <div>
+                            <TokenAmount v-if="i <= tokenTransferLayout[s-1].destinations.length"
+                                         v-bind:amount="BigInt(tokenTransferLayout[s-1].destinations[i-1].amount)"
+                                         v-bind:token-id="tokenTransferLayout[s-1].tokenId"/>
+                        </div>
+
+                        <template v-if="symbolVisible">
+
+                            <!-- #6 : token symbol -->
+                            <div data-cy="tokenExtra">
+                                <TokenExtra v-if="i <= tokenTransferLayout[s-1].destinations.length"
+                                            v-bind:token-id="tokenTransferLayout[s-1].tokenId"
+                                            v-bind:use-anchor="true"/>
+                            </div>
+
+                            <!-- #7 : description -->
+                            <div>
+                                <template v-if="i <= tokenTransferLayout[s-1].descriptions.length">
+                                    <span class="h-is-smaller">{{
+                                        tokenTransferLayout[s - 1].descriptions[i - 1]
+                                        }}</span>
+                                </template>
+                            </div>
+                        </template>
+
+
+                    </template>
+
+                </template>
+
             </div>
-          </template>
 
-          <!-- #3 : arrow -->
-          <div  style="position: relative">
-            <ArrowSegment
-                v-bind:source-count="tokenTransferLayout[s-1].sources.length"
-                v-bind:dest-count="tokenTransferLayout[s-1].destinations.length"
-                v-bind:row-index="i-1"/>
-          </div>
+        </div>
 
-          <!-- #4 : account id -->
-          <div>
-            <template v-if="i <= tokenTransferLayout[s-1].destinations.length">
-              <AccountLink v-bind:account-id="tokenTransferLayout[s-1].destinations[i-1].account"
-                           null-label="BURN"
-                           data-cy="destinationAccount"/>
-            </template>
-          </div>
-
-          <!-- #5 : token amount -->
-          <div>
-            <TokenAmount v-if="i <= tokenTransferLayout[s-1].destinations.length"
-                         v-bind:amount="BigInt(tokenTransferLayout[s-1].destinations[i-1].amount)"
-                         v-bind:token-id="tokenTransferLayout[s-1].tokenId"/>
-          </div>
-
-          <template v-if="symbolVisible">
-
-            <!-- #6 : token symbol -->
-            <div data-cy="tokenExtra">
-              <TokenExtra v-if="i <= tokenTransferLayout[s-1].destinations.length"
-                          v-bind:token-id="tokenTransferLayout[s-1].tokenId"
-                          v-bind:use-anchor="true"/>
-            </div>
-
-            <!-- #7 : description -->
-            <div>
-              <template v-if="i <= tokenTransferLayout[s-1].descriptions.length">
-                <span  class="h-is-smaller">{{ tokenTransferLayout[s-1].descriptions[i-1] }}</span>
-              </template>
-            </div>
-          </template>
-
-
-        </template>
-
-      </template>
-
+        <p v-else class="has-text-grey">None</p>
     </div>
-
-    </div>
-
-    <p v-else class="has-text-grey">None</p>
-  </div>
 
 </template>
 
@@ -146,26 +164,26 @@ import {TokenTransferLayout} from "@/components/transfer_graphs/layout/TokenTran
 import {Transaction} from "@/schemas/HederaSchemas";
 
 export default defineComponent({
-  name: "TokenTransferGraphF",
-  components: {AccountLink, TokenAmount, ArrowSegment, TokenExtra},
-  props: {
-    transaction: Object as PropType<Transaction>
-  },
-  setup(props) {
+    name: "TokenTransferGraphF",
+    components: {AccountLink, TokenAmount, ArrowSegment, TokenExtra},
+    props: {
+        transaction: Object as PropType<Transaction>
+    },
+    setup(props) {
 
-    const tokenTransferLayout = ref(TokenTransferLayout.make(props.transaction))
+        const tokenTransferLayout = ref(TokenTransferLayout.make(props.transaction))
 
-    watch(() => props.transaction, () => {
-      tokenTransferLayout.value = TokenTransferLayout.make(props.transaction)
-    })
+        watch(() => props.transaction, () => {
+            tokenTransferLayout.value = TokenTransferLayout.make(props.transaction)
+        })
 
-    const symbolVisible = inject("isSmallScreen", true)
+        const symbolVisible = inject("isSmallScreen", true)
 
-    return {
-      tokenTransferLayout,
-      symbolVisible
+        return {
+            tokenTransferLayout,
+            symbolVisible
+        }
     }
-  }
 })
 
 </script>
@@ -177,17 +195,17 @@ export default defineComponent({
 <style scoped>
 
 .graph-container {
-  display: inline-grid;
-  grid-template-columns: repeat(5, auto);
-  column-gap: 1em;
+    display: inline-grid;
+    grid-template-columns: repeat(5, auto);
+    column-gap: 1em;
 }
 
 .graph-container-8 {
-  grid-template-columns: repeat(8, auto)
+    grid-template-columns: repeat(8, auto)
 }
 
 div.graph-container > div.justify-end {
-  justify-self: end;
+    justify-self: end;
 }
 
 </style>

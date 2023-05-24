@@ -46,46 +46,46 @@
 
 <template>
 
-  <o-table
-      :data="blocks"
-      :loading="loading"
-      paginated
-      backend-pagination
-      :total="total"
-      v-model:current-page="currentPage"
-      :per-page="perPage"
-      @page-change="onPageChange"
-      @click="handleClick"
+    <o-table
+            :data="blocks"
+            :loading="loading"
+            paginated
+            backend-pagination
+            :total="total"
+            v-model:current-page="currentPage"
+            :per-page="perPage"
+            @page-change="onPageChange"
+            @click="handleClick"
 
-      :hoverable="true"
-      :narrowed="narrowed"
-      :striped="true"
-      :mobile-breakpoint="ORUGA_MOBILE_BREAKPOINT"
+            :hoverable="true"
+            :narrowed="narrowed"
+            :striped="true"
+            :mobile-breakpoint="ORUGA_MOBILE_BREAKPOINT"
 
-      aria-current-label="Current page"
-      aria-next-label="Next page"
-      aria-page-label="Page"
-      aria-previous-label="Previous page"
-      customRowKey="number"
-  >
-    <o-table-column v-slot="props" field="number" label="Number">
-      {{ props.row.number }}
-    </o-table-column>
+            aria-current-label="Current page"
+            aria-next-label="Next page"
+            aria-page-label="Page"
+            aria-previous-label="Previous page"
+            customRowKey="number"
+    >
+        <o-table-column v-slot="props" field="number" label="Number">
+            {{ props.row.number }}
+        </o-table-column>
 
-    <o-table-column v-slot="props" field="timestamp" label="Start Time">
-      <TimestampValue v-bind:timestamp="props.row.timestamp.from"/>
-    </o-table-column>
+        <o-table-column v-slot="props" field="timestamp" label="Start Time">
+            <TimestampValue v-bind:timestamp="props.row.timestamp.from"/>
+        </o-table-column>
 
-    <o-table-column v-slot="props" field="count" label="No. Transactions" position="right">
-      <PlainAmount v-bind:amount="props.row.count"/>
-    </o-table-column>
+        <o-table-column v-slot="props" field="count" label="No. Transactions" position="right">
+            <PlainAmount v-bind:amount="props.row.count"/>
+        </o-table-column>
 
-    <o-table-column v-slot="props" field="gas_used" label="Gas Used" position="right">
-      <PlainAmount v-bind:amount="props.row.gas_used"/>
-    </o-table-column>
-  </o-table>
+        <o-table-column v-slot="props" field="gas_used" label="Gas Used" position="right">
+            <PlainAmount v-bind:amount="props.row.gas_used"/>
+        </o-table-column>
+    </o-table>
 
-  <EmptyTable v-if="!blocks.length"/>
+    <EmptyTable v-if="!blocks.length"/>
 
 </template>
 
@@ -105,43 +105,43 @@ import PlainAmount from "@/components/values/PlainAmount.vue";
 import {BlockTableController} from "@/components/block/BlockTableController";
 
 export default defineComponent({
-  name: 'BlockTable',
+    name: 'BlockTable',
 
-  components: {PlainAmount, TimestampValue, EmptyTable },
+    components: {PlainAmount, TimestampValue, EmptyTable},
 
-  props: {
-    narrowed: Boolean,
-    controller: {
-      type: Object as PropType<BlockTableController>,
-      required: true
+    props: {
+        narrowed: Boolean,
+        controller: {
+            type: Object as PropType<BlockTableController>,
+            required: true
+        },
     },
-  },
 
-  setup(props) {
-    const isTouchDevice = inject('isTouchDevice', false)
-    const isMediumScreen = inject('isMediumScreen', true)
+    setup(props) {
+        const isTouchDevice = inject('isTouchDevice', false)
+        const isMediumScreen = inject('isMediumScreen', true)
 
-    const handleClick = (t: Block) => {
-      if (t.number) {
-        routeManager.routeToBlock(t.number)
-      }
+        const handleClick = (t: Block) => {
+            if (t.number) {
+                routeManager.routeToBlock(t.number)
+            }
+        }
+
+        return {
+            isTouchDevice,
+            isMediumScreen,
+            blocks: props.controller.rows as ComputedRef<Block[]>,
+            loading: props.controller.loading as ComputedRef<boolean>,
+            total: props.controller.totalRowCount as ComputedRef<number>,
+            currentPage: props.controller.currentPage as Ref<number>,
+            onPageChange: props.controller.onPageChange,
+            perPage: props.controller.pageSize as Ref<number>,
+            handleClick,
+
+            // From App
+            ORUGA_MOBILE_BREAKPOINT,
+        }
     }
-
-    return {
-      isTouchDevice,
-      isMediumScreen,
-      blocks: props.controller.rows as ComputedRef<Block[]>,
-      loading: props.controller.loading as ComputedRef<boolean>,
-      total: props.controller.totalRowCount as ComputedRef<number>,
-      currentPage: props.controller.currentPage as Ref<number>,
-      onPageChange: props.controller.onPageChange,
-      perPage: props.controller.pageSize as Ref<number>,
-      handleClick,
-
-      // From App
-      ORUGA_MOBILE_BREAKPOINT,
-    }
-  }
 });
 
 </script>

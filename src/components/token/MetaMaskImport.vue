@@ -23,9 +23,10 @@
 <!-- --------------------------------------------------------------------------------------------------------------- -->
 
 <template v-if="showImport" class="">
-  <button id="showStakingDialog" class="button is-white h-is-smaller"
-          @click="handleAction">IMPORT TO METAMASK</button>
-  <span style="display: inline-block">
+    <button id="showStakingDialog" class="button is-white h-is-smaller"
+            @click="handleAction">IMPORT TO METAMASK
+    </button>
+    <span style="display: inline-block">
     <ModalDialog v-model:show-dialog="showErrorDialog">
       <template v-slot:dialogMessage>Please install MetaMask!</template>
       <template v-slot:dialogDetails>
@@ -48,45 +49,45 @@ import ModalDialog from "@/components/ModalDialog.vue";
 import {MetaMask_Status, MetaMask_watchAsset} from "@/utils/MetaMask";
 
 export default defineComponent({
-  name: "MetaMaskImport",
-  components: {ModalDialog},
-  props: {
-    address: String,
-    symbol: String,
-    decimals: String,
-    showImport: {
-      type: Boolean,
-      default: false
+    name: "MetaMaskImport",
+    components: {ModalDialog},
+    props: {
+        address: String,
+        symbol: String,
+        decimals: String,
+        showImport: {
+            type: Boolean,
+            default: false
+        },
     },
-  },
-  setup(props) {
+    setup(props) {
 
-    const executing = ref(false)
+        const executing = ref(false)
 
-    const clickDisabled = computed(() => {
-      return executing.value || props.address == undefined
-    })
+        const clickDisabled = computed(() => {
+            return executing.value || props.address == undefined
+        })
 
-    //
-    // showErrorDialog
-    //
-    const showErrorDialog = ref(false)
+        //
+        // showErrorDialog
+        //
+        const showErrorDialog = ref(false)
 
-    const handleAction = () => {
-      executing.value = true
-      MetaMask_watchAsset(props.address as string, props.symbol, props.decimals)
-          .then((status: MetaMask_Status) => {
-            if (status == MetaMask_Status.metaMaskNotInstalled) {
-              showErrorDialog.value = true
-            }
-          })
-          .finally(() => {
-        executing.value = false
-      })
+        const handleAction = () => {
+            executing.value = true
+            MetaMask_watchAsset(props.address as string, props.symbol, props.decimals)
+                .then((status: MetaMask_Status) => {
+                    if (status == MetaMask_Status.metaMaskNotInstalled) {
+                        showErrorDialog.value = true
+                    }
+                })
+                .finally(() => {
+                    executing.value = false
+                })
+        }
+
+        return {showErrorDialog, handleAction, clickDisabled, executing}
     }
-
-    return { showErrorDialog, handleAction, clickDisabled, executing }
-  }
 })
 
 </script>

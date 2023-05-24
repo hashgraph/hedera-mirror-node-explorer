@@ -24,41 +24,41 @@
 
 <template>
 
-  <o-table
-      :data="tokens"
-      :loading="loading"
-      paginated
-      backend-pagination
-      :total="total"
-      v-model:current-page="currentPage"
-      :per-page="perPage"
-      @page-change="onPageChange"
-      @click="handleClick"
+    <o-table
+            :data="tokens"
+            :loading="loading"
+            paginated
+            backend-pagination
+            :total="total"
+            v-model:current-page="currentPage"
+            :per-page="perPage"
+            @page-change="onPageChange"
+            @click="handleClick"
 
-      :hoverable="true"
-      :narrowed="narrowed"
-      :striped="true"
-      :mobile-breakpoint="ORUGA_MOBILE_BREAKPOINT"
+            :hoverable="true"
+            :narrowed="narrowed"
+            :striped="true"
+            :mobile-breakpoint="ORUGA_MOBILE_BREAKPOINT"
 
-      aria-current-label="Current page"
-      aria-next-label="Next page"
-      aria-page-label="Page"
-      aria-previous-label="Previous page"
-      customRowKey="token_id"
-  >
-    <o-table-column v-slot="props" field="token_id" label="Token">
-      <div class="is-numeric">
-        {{ props.row.token_id }}
-      </div>
-    </o-table-column>
+            aria-current-label="Current page"
+            aria-next-label="Next page"
+            aria-page-label="Page"
+            aria-previous-label="Previous page"
+            customRowKey="token_id"
+    >
+        <o-table-column v-slot="props" field="token_id" label="Token">
+            <div class="is-numeric">
+                {{ props.row.token_id }}
+            </div>
+        </o-table-column>
 
-    <o-table-column v-slot="props" field="symbol" label="Symbol">
-      <div class="w400">{{ props.row.symbol }}</div>
-    </o-table-column>
+        <o-table-column v-slot="props" field="symbol" label="Symbol">
+            <div class="w400">{{ props.row.symbol }}</div>
+        </o-table-column>
 
-  </o-table>
+    </o-table>
 
-  <EmptyTable v-if="!tokens.length"/>
+    <EmptyTable v-if="!tokens.length"/>
 
 </template>
 
@@ -76,44 +76,44 @@ import EmptyTable from "@/components/EmptyTable.vue";
 import {TokenTableController} from "@/components/token/TokenTableController";
 
 export default defineComponent({
-  name: 'TokenTable',
+    name: 'TokenTable',
 
-  components: {EmptyTable},
+    components: {EmptyTable},
 
-  props: {
-    controller: {
-      type: Object as PropType<TokenTableController>,
-      required: true
+    props: {
+        controller: {
+            type: Object as PropType<TokenTableController>,
+            required: true
+        },
+        narrowed: {
+            type: Boolean,
+            default: false
+        }
     },
-    narrowed:{
-      type: Boolean,
-      default: false
-    }
-  },
 
-  setup(props) {
-    const isTouchDevice = inject('isTouchDevice', false)
-    const isMediumScreen = inject('isMediumScreen', true)
+    setup(props) {
+        const isTouchDevice = inject('isTouchDevice', false)
+        const isMediumScreen = inject('isMediumScreen', true)
 
-    const handleClick = (t: Token) => {
-      if (t.token_id) {
-        routeManager.routeToToken(t.token_id)
-      }
-    }
+        const handleClick = (t: Token) => {
+            if (t.token_id) {
+                routeManager.routeToToken(t.token_id)
+            }
+        }
 
-    return {
-      isTouchDevice,
-      isMediumScreen,
-      tokens: props.controller.rows as ComputedRef<Token[]>,
-      loading: props.controller.loading as ComputedRef<boolean>,
-      total: props.controller.totalRowCount as ComputedRef<number>,
-      currentPage: props.controller.currentPage as Ref<number>,
-      onPageChange: props.controller.onPageChange,
-      perPage: props.controller.pageSize as Ref<number>,
-      handleClick,
-      ORUGA_MOBILE_BREAKPOINT,
+        return {
+            isTouchDevice,
+            isMediumScreen,
+            tokens: props.controller.rows as ComputedRef<Token[]>,
+            loading: props.controller.loading as ComputedRef<boolean>,
+            total: props.controller.totalRowCount as ComputedRef<number>,
+            currentPage: props.controller.currentPage as Ref<number>,
+            onPageChange: props.controller.onPageChange,
+            perPage: props.controller.pageSize as Ref<number>,
+            handleClick,
+            ORUGA_MOBILE_BREAKPOINT,
+        }
     }
-  }
 });
 
 </script>

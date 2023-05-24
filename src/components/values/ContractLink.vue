@@ -23,11 +23,11 @@
 <!-- --------------------------------------------------------------------------------------------------------------- -->
 
 <template>
-  <div v-if="contractId" class="is-inline-block">
-    <router-link :to="contractRoute">
-      <span class="is-numeric">{{ contractId }}</span>
-    </router-link>
-  </div>
+    <div v-if="contractId" class="is-inline-block">
+        <router-link :to="contractRoute">
+            <span class="is-numeric">{{ contractId }}</span>
+        </router-link>
+    </div>
 </template>
 
 <!-- --------------------------------------------------------------------------------------------------------------- -->
@@ -40,16 +40,16 @@ import {computed, defineComponent} from "vue";
 import {routeManager} from "@/router";
 
 export default defineComponent({
-  name: "ContractLink",
+    name: "ContractLink",
 
-  props: {
-    contractId: String,
-  },
+    props: {
+        contractId: String,
+    },
 
-  setup(props) {
-    const contractRoute = computed( () => props.contractId ? routeManager.makeRouteToContract(props.contractId) : null)
-    return { contractRoute }
-  }
+    setup(props) {
+        const contractRoute = computed(() => props.contractId ? routeManager.makeRouteToContract(props.contractId) : null)
+        return {contractRoute}
+    }
 });
 
 </script>

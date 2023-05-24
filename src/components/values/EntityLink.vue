@@ -23,10 +23,18 @@
 <!-- --------------------------------------------------------------------------------------------------------------- -->
 
 <template>
-  <div v-if="routeName === 'AccountDetails'"><AccountLink :account-id="entityId" :show-extra="showExtra"/></div>
-  <div v-else-if="routeName === 'TokenDetails'"><TokenLink :token-id="entityId" :show-extra="showExtra"/></div>
-  <div v-else-if="routeName === 'ContractDetails'"><ContractLink :contract-id="entityId" :show-extra="showExtra"/></div>
-  <div v-else-if="routeName === 'TopicDetails'"><TopicLink :topic-id="entityId" :show-extra="showExtra"/></div>
+    <div v-if="routeName === 'AccountDetails'">
+        <AccountLink :account-id="entityId" :show-extra="showExtra"/>
+    </div>
+    <div v-else-if="routeName === 'TokenDetails'">
+        <TokenLink :token-id="entityId" :show-extra="showExtra"/>
+    </div>
+    <div v-else-if="routeName === 'ContractDetails'">
+        <ContractLink :contract-id="entityId" :show-extra="showExtra"/>
+    </div>
+    <div v-else-if="routeName === 'TopicDetails'">
+        <TopicLink :topic-id="entityId" :show-extra="showExtra"/>
+    </div>
 </template>
 
 <!-- --------------------------------------------------------------------------------------------------------------- -->
@@ -42,16 +50,16 @@ import TopicLink from "@/components/values/TopicLink.vue";
 import ContractLink from "@/components/values/ContractLink.vue";
 
 export default defineComponent({
-  name: "EntityLink",
-  components: {TokenLink, AccountLink, ContractLink, TopicLink},
-  props: {
-    entityId: String,
-    routeName: String,
-    showExtra: {
-      type: Boolean,
-      default: false
-    }
-  },
+    name: "EntityLink",
+    components: {TokenLink, AccountLink, ContractLink, TopicLink},
+    props: {
+        entityId: String,
+        routeName: String,
+        showExtra: {
+            type: Boolean,
+            default: false
+        }
+    },
 });
 
 </script>

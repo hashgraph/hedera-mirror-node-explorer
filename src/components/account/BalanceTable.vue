@@ -24,37 +24,37 @@
 
 <template>
 
-  <o-table
-      :data="balances"
-      :hoverable="true"
-      :paginated="!isTouchDevice"
-      :per-page="isMediumScreen ? pageSize : 5"
-      :striped="true"
-      :v-model:current-page="currentPage"
-      :mobile-breakpoint="ORUGA_MOBILE_BREAKPOINT"
-      aria-current-label="Current page"
-      aria-next-label="Next page"
-      aria-page-label="Page"
-      aria-previous-label="Previous page"
-      default-sort="token_id"
-      @click="handleClick"
-  >
-    <o-table-column v-slot="props" field="token_id" label="Token">
-      <TokenLink
-          v-bind:show-extra="true"
-          v-bind:token-id="props.row.token_id"
-          v-bind:no-anchor="true"
-      />
-    </o-table-column>
+    <o-table
+            :data="balances"
+            :hoverable="true"
+            :paginated="!isTouchDevice"
+            :per-page="isMediumScreen ? pageSize : 5"
+            :striped="true"
+            :v-model:current-page="currentPage"
+            :mobile-breakpoint="ORUGA_MOBILE_BREAKPOINT"
+            aria-current-label="Current page"
+            aria-next-label="Next page"
+            aria-page-label="Page"
+            aria-previous-label="Previous page"
+            default-sort="token_id"
+            @click="handleClick"
+    >
+        <o-table-column v-slot="props" field="token_id" label="Token">
+            <TokenLink
+                    v-bind:show-extra="true"
+                    v-bind:token-id="props.row.token_id"
+                    v-bind:no-anchor="true"
+            />
+        </o-table-column>
 
-    <o-table-column v-slot="props" field="balance" label="Balance" position="right">
-      <TokenAmount v-bind:amount="BigInt(props.row.balance)"
-                   v-bind:token-id="props.row.token_id"/>
-    </o-table-column>
+        <o-table-column v-slot="props" field="balance" label="Balance" position="right">
+            <TokenAmount v-bind:amount="BigInt(props.row.balance)"
+                         v-bind:token-id="props.row.token_id"/>
+        </o-table-column>
 
-  </o-table>
+    </o-table>
 
-  <EmptyTable v-if="!balances.length"/>
+    <EmptyTable v-if="!balances.length"/>
 
 </template>
 
@@ -73,47 +73,47 @@ import EmptyTable from "@/components/EmptyTable.vue";
 import {routeManager} from "@/router";
 
 export default defineComponent({
-  name: 'BalanceTable',
+    name: 'BalanceTable',
 
-  components: {
-    EmptyTable,
-    TokenLink,
-    TokenAmount
-  },
-
-  props: {
-    balances: {
-      type: Array as PropType<Array<TokenBalance>>,
-      default: () => []
+    components: {
+        EmptyTable,
+        TokenLink,
+        TokenAmount
     },
-    nbItems: Number,
-  },
 
-  setup(props) {
-    const isTouchDevice = inject('isTouchDevice', false)
-    const isMediumScreen = inject('isMediumScreen', true)
-    const DEFAULT_PAGE_SIZE = 15
-    const pageSize = props.nbItems ?? DEFAULT_PAGE_SIZE
+    props: {
+        balances: {
+            type: Array as PropType<Array<TokenBalance>>,
+            default: () => []
+        },
+        nbItems: Number,
+    },
 
-    // 3) handleClick
-    const handleClick = (balance: TokenBalance) => {
-      if (balance.token_id) {
-        routeManager.routeToToken(balance.token_id)
-      }
+    setup(props) {
+        const isTouchDevice = inject('isTouchDevice', false)
+        const isMediumScreen = inject('isMediumScreen', true)
+        const DEFAULT_PAGE_SIZE = 15
+        const pageSize = props.nbItems ?? DEFAULT_PAGE_SIZE
+
+        // 3) handleClick
+        const handleClick = (balance: TokenBalance) => {
+            if (balance.token_id) {
+                routeManager.routeToToken(balance.token_id)
+            }
+        }
+
+        // 4) currentPage
+        let currentPage = ref(1)
+
+        return {
+            isTouchDevice,
+            isMediumScreen,
+            pageSize,
+            handleClick,
+            currentPage,
+            ORUGA_MOBILE_BREAKPOINT
+        }
     }
-
-    // 4) currentPage
-    let currentPage = ref(1)
-
-    return {
-      isTouchDevice,
-      isMediumScreen,
-      pageSize,
-      handleClick,
-      currentPage,
-      ORUGA_MOBILE_BREAKPOINT
-    }
-  }
 });
 
 </script>

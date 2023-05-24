@@ -23,32 +23,32 @@
 <!-- --------------------------------------------------------------------------------------------------------------- -->
 
 <template>
-  <div :class="{'is-active': showDialog}" class="modal has-text-white">
-    <div class="modal-background"/>
-    <div class="modal-content" style="width: 768px; border-radius: 16px">
-      <div class="box">
+    <div :class="{'is-active': showDialog}" class="modal has-text-white">
+        <div class="modal-background"/>
+        <div class="modal-content" style="width: 768px; border-radius: 16px">
+            <div class="box">
 
-        <div class="h-is-primary-title">
-          <slot name="dialogTitle"/>
+                <div class="h-is-primary-title">
+                    <slot name="dialogTitle"/>
+                </div>
+
+                <hr class="h-card-separator"/>
+
+                <div v-if="mainMessage" class="block h-is-tertiary-text mt-2">{{ mainMessage }}</div>
+                <div v-else class="block h-is-property-text" style="visibility: hidden">Filler</div>
+                <div class="mt-4" style="line-height: 21px">
+                    <span v-if="extraMessage" class="h-is-property-text">{{ extraMessage }}</span>
+                    <span v-else class="h-is-property-text" style="visibility: hidden">Filler</span>
+                </div>
+
+                <div class="is-flex is-justify-content-flex-end">
+                    <button class="button is-white is-small" @click="handleCancel">CANCEL</button>
+                    <button class="button is-info is-small ml-4" @click="handleConfirm">CONFIRM</button>
+                </div>
+
+            </div>
         </div>
-
-        <hr class="h-card-separator"/>
-
-        <div v-if="mainMessage" class="block h-is-tertiary-text mt-2">{{ mainMessage }}</div>
-        <div v-else class="block h-is-property-text" style="visibility: hidden">Filler</div>
-        <div class="mt-4" style="line-height: 21px">
-          <span v-if="extraMessage" class="h-is-property-text">{{ extraMessage }}</span>
-          <span v-else class="h-is-property-text" style="visibility: hidden">Filler</span>
-        </div>
-
-        <div class="is-flex is-justify-content-flex-end">
-          <button class="button is-white is-small" @click="handleCancel">CANCEL</button>
-          <button class="button is-info is-small ml-4" @click="handleConfirm">CONFIRM</button>
-        </div>
-
-      </div>
     </div>
-  </div>
 </template>
 
 <!-- --------------------------------------------------------------------------------------------------------------- -->
@@ -60,34 +60,34 @@
 import {defineComponent} from "vue";
 
 export default defineComponent({
-  name: "ConfirmDialog",
-  components: {},
-  props: {
-    showDialog: {
-      type: Boolean,
-      default: false
+    name: "ConfirmDialog",
+    components: {},
+    props: {
+        showDialog: {
+            type: Boolean,
+            default: false
+        },
+        mainMessage: String,
+        extraMessage: String,
     },
-    mainMessage: String,
-    extraMessage: String,
-  },
 
-  setup(props, context) {
+    setup(props, context) {
 
-    const handleCancel = () => {
-      context.emit('update:showDialog', false)
-      context.emit('onCancel')
+        const handleCancel = () => {
+            context.emit('update:showDialog', false)
+            context.emit('onCancel')
+        }
+
+        const handleConfirm = () => {
+            context.emit('update:showDialog', false)
+            context.emit('onConfirm')
+        }
+
+        return {
+            handleCancel,
+            handleConfirm,
+        }
     }
-
-    const handleConfirm = () => {
-      context.emit('update:showDialog', false)
-      context.emit('onConfirm')
-    }
-
-    return {
-      handleCancel,
-      handleConfirm,
-    }
-  }
 });
 
 </script>

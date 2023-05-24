@@ -24,41 +24,41 @@
 
 <template>
 
-  <o-table
-      :data="tokenBalances"
-      :loading="loading"
-      paginated
-      backend-pagination
-      :total="total"
-      v-model:current-page="currentPage"
-      :per-page="perPage"
-      @page-change="onPageChange"
-      @click="handleClick"
+    <o-table
+            :data="tokenBalances"
+            :loading="loading"
+            paginated
+            backend-pagination
+            :total="total"
+            v-model:current-page="currentPage"
+            :per-page="perPage"
+            @page-change="onPageChange"
+            @click="handleClick"
 
-      :hoverable="true"
-      :narrowed="true"
-      :striped="true"
-      :mobile-breakpoint="ORUGA_MOBILE_BREAKPOINT"
+            :hoverable="true"
+            :narrowed="true"
+            :striped="true"
+            :mobile-breakpoint="ORUGA_MOBILE_BREAKPOINT"
 
-      aria-current-label="Current page"
-      aria-next-label="Next page"
-      aria-page-label="Page"
-      aria-previous-label="Previous page"
-      customRowKey="account"
-  >
-    <o-table-column v-slot="props" field="account" label="Account ID">
-      <div class="is-numeric">
-        {{ props.row.account }}
-      </div>
-    </o-table-column>
+            aria-current-label="Current page"
+            aria-next-label="Next page"
+            aria-page-label="Page"
+            aria-previous-label="Previous page"
+            customRowKey="account"
+    >
+        <o-table-column v-slot="props" field="account" label="Account ID">
+            <div class="is-numeric">
+                {{ props.row.account }}
+            </div>
+        </o-table-column>
 
-    <o-table-column v-slot="props" field="balance" label="Balance" position="right">
-      <TokenAmount v-bind:amount="BigInt(props.row.balance)" v-bind:token-id="tokenId"/>
-    </o-table-column>
+        <o-table-column v-slot="props" field="balance" label="Balance" position="right">
+            <TokenAmount v-bind:amount="BigInt(props.row.balance)" v-bind:token-id="tokenId"/>
+        </o-table-column>
 
-  </o-table>
+    </o-table>
 
-  <EmptyTable v-if="!tokenBalances.length"/>
+    <EmptyTable v-if="!tokenBalances.length"/>
 
 </template>
 
@@ -77,41 +77,41 @@ import EmptyTable from "@/components/EmptyTable.vue";
 import {TokenBalanceTableController} from "@/components/token/TokenBalanceTableController";
 
 export default defineComponent({
-  name: 'TokenBalanceTable',
+    name: 'TokenBalanceTable',
 
-  components: {EmptyTable, TokenAmount},
+    components: {EmptyTable, TokenAmount},
 
-  props: {
-    controller: {
-      type: Object as PropType<TokenBalanceTableController>,
-      required: true
+    props: {
+        controller: {
+            type: Object as PropType<TokenBalanceTableController>,
+            required: true
+        },
     },
-  },
 
-  setup(props) {
-    const isTouchDevice = inject('isTouchDevice', false)
-    const isMediumScreen = inject('isMediumScreen', true)
+    setup(props) {
+        const isTouchDevice = inject('isTouchDevice', false)
+        const isMediumScreen = inject('isMediumScreen', true)
 
-    const handleClick = (t: TokenDistribution) => {
-      if (t.account) {
-        routeManager.routeToAccount(t.account)
-      }
+        const handleClick = (t: TokenDistribution) => {
+            if (t.account) {
+                routeManager.routeToAccount(t.account)
+            }
+        }
+
+        return {
+            isTouchDevice,
+            isMediumScreen,
+            tokenId: props.controller.tokenId.value,
+            tokenBalances: props.controller.rows as ComputedRef<TokenDistribution[]>,
+            loading: props.controller.loading as ComputedRef<boolean>,
+            total: props.controller.totalRowCount as ComputedRef<number>,
+            currentPage: props.controller.currentPage as Ref<number>,
+            onPageChange: props.controller.onPageChange,
+            perPage: props.controller.pageSize as Ref<number>,
+            handleClick,
+            ORUGA_MOBILE_BREAKPOINT
+        }
     }
-
-    return {
-      isTouchDevice,
-      isMediumScreen,
-      tokenId: props.controller.tokenId.value,
-      tokenBalances: props.controller.rows as ComputedRef<TokenDistribution[]>,
-      loading: props.controller.loading as ComputedRef<boolean>,
-      total: props.controller.totalRowCount as ComputedRef<number>,
-      currentPage: props.controller.currentPage as Ref<number>,
-      onPageChange: props.controller.onPageChange,
-      perPage: props.controller.pageSize as Ref<number>,
-      handleClick,
-      ORUGA_MOBILE_BREAKPOINT
-    }
-  }
 });
 
 </script>

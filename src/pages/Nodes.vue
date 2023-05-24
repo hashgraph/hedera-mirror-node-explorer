@@ -24,65 +24,71 @@
 
 <template>
 
-  <section :class="{'h-mobile-background': isTouchDevice || !isSmallScreen}" class="section">
+    <section :class="{'h-mobile-background': isTouchDevice || !isSmallScreen}" class="section">
 
-    <DashboardCard>
-      <template v-slot:title>
-        <span class="h-is-primary-title">Network</span>
-      </template>
-      <template v-slot:content>
+        <DashboardCard>
+            <template v-slot:title>
+                <span class="h-is-primary-title">Network</span>
+            </template>
+            <template v-slot:content>
 
-          <div v-if="isSmallScreen" class="is-flex is-justify-content-space-between">
-            <div class="is-flex-direction-column">
-              <NetworkDashboardItem title="Total Nodes" :value="totalNodes.toString()"/>
-              <div class="mt-4"/>
-              <NetworkDashboardItem title="Last Staked" :value="formatSeconds(elapsedMin*60) + ' ago'"/>
-            </div>
-            <div class="is-flex-direction-column">
-              <NetworkDashboardItem name="HBAR" title="Total Staked" :value="makeFloorHbarAmount(unclampedStakeTotal)"/>
-              <div class="mt-4"/>
-              <NetworkDashboardItem title="Next Staking Period" :value="'in ' + formatSeconds(remainingMin*60)"/>
-            </div>
-            <div class="is-flex-direction-column">
-              <NetworkDashboardItem name="HBAR" title="Last Period Reward" :value="makeFloorHbarAmount(totalRewarded)"/>
-              <div class="mt-4"/>
-              <NetworkDashboardItem title="Staking Period" :value="formatSeconds(durationMin*60)"/>
-            </div>
-          </div>
-          <div v-else>
-            <div class="is-flex-direction-column">
-              <NetworkDashboardItem title="Total Nodes" :value="totalNodes.toString()"/>
-              <div class="mt-4"/>
-              <NetworkDashboardItem title="Last Staked" :value="formatSeconds(elapsedMin*60) + ' ago'"/>
-              <div class="mt-4"/>
-              <NetworkDashboardItem name="HBAR" title="Total Staked" :value="makeFloorHbarAmount(unclampedStakeTotal)"/>
-              <div class="mt-4"/>
-              <NetworkDashboardItem title="Next Staking Period" :value="'in ' + formatSeconds(remainingMin*60)"/>
-              <div class="mt-4"/>
-              <NetworkDashboardItem name="HBAR" title="Last Period Reward" :value="makeFloorHbarAmount(totalRewarded)"/>
-              <div class="mt-4"/>
-              <NetworkDashboardItem title="Staking Period" :value="formatSeconds(durationMin*60)"/>
-              <div class="mt-6"/>
-            </div>
-          </div>
+                <div v-if="isSmallScreen" class="is-flex is-justify-content-space-between">
+                    <div class="is-flex-direction-column">
+                        <NetworkDashboardItem title="Total Nodes" :value="totalNodes.toString()"/>
+                        <div class="mt-4"/>
+                        <NetworkDashboardItem title="Last Staked" :value="formatSeconds(elapsedMin*60) + ' ago'"/>
+                    </div>
+                    <div class="is-flex-direction-column">
+                        <NetworkDashboardItem name="HBAR" title="Total Staked"
+                                              :value="makeFloorHbarAmount(unclampedStakeTotal)"/>
+                        <div class="mt-4"/>
+                        <NetworkDashboardItem title="Next Staking Period"
+                                              :value="'in ' + formatSeconds(remainingMin*60)"/>
+                    </div>
+                    <div class="is-flex-direction-column">
+                        <NetworkDashboardItem name="HBAR" title="Last Period Reward"
+                                              :value="makeFloorHbarAmount(totalRewarded)"/>
+                        <div class="mt-4"/>
+                        <NetworkDashboardItem title="Staking Period" :value="formatSeconds(durationMin*60)"/>
+                    </div>
+                </div>
+                <div v-else>
+                    <div class="is-flex-direction-column">
+                        <NetworkDashboardItem title="Total Nodes" :value="totalNodes.toString()"/>
+                        <div class="mt-4"/>
+                        <NetworkDashboardItem title="Last Staked" :value="formatSeconds(elapsedMin*60) + ' ago'"/>
+                        <div class="mt-4"/>
+                        <NetworkDashboardItem name="HBAR" title="Total Staked"
+                                              :value="makeFloorHbarAmount(unclampedStakeTotal)"/>
+                        <div class="mt-4"/>
+                        <NetworkDashboardItem title="Next Staking Period"
+                                              :value="'in ' + formatSeconds(remainingMin*60)"/>
+                        <div class="mt-4"/>
+                        <NetworkDashboardItem name="HBAR" title="Last Period Reward"
+                                              :value="makeFloorHbarAmount(totalRewarded)"/>
+                        <div class="mt-4"/>
+                        <NetworkDashboardItem title="Staking Period" :value="formatSeconds(durationMin*60)"/>
+                        <div class="mt-6"/>
+                    </div>
+                </div>
 
-      </template>
-    </DashboardCard>
+            </template>
+        </DashboardCard>
 
-    <DashboardCard>
-      <template v-slot:title>
-        <span class="h-is-primary-title">Nodes</span>
-      </template>
-      <template v-slot:content>
-        <NodeTable :nodes="nodes"
-                   :unclamped-stake-total="unclampedStakeTotal"
-                   :stake-total="stakeTotal"/>
-      </template>
-    </DashboardCard>
+        <DashboardCard>
+            <template v-slot:title>
+                <span class="h-is-primary-title">Nodes</span>
+            </template>
+            <template v-slot:content>
+                <NodeTable :nodes="nodes"
+                           :unclamped-stake-total="unclampedStakeTotal"
+                           :stake-total="stakeTotal"/>
+            </template>
+        </DashboardCard>
 
-  </section>
+    </section>
 
-  <Footer/>
+    <Footer/>
 
 </template>
 
@@ -102,50 +108,50 @@ import {StakeCache} from "@/utils/cache/StakeCache";
 import {NetworkAnalyzer} from "@/utils/analyzer/NetworkAnalyzer";
 
 export default defineComponent({
-  name: 'Nodes',
+    name: 'Nodes',
 
-  props: {
-    network: String
-  },
+    props: {
+        network: String
+    },
 
-  components: {
-    NetworkDashboardItem,
-    NodeTable,
-    Footer,
-    DashboardCard
-  },
+    components: {
+        NetworkDashboardItem,
+        NodeTable,
+        Footer,
+        DashboardCard
+    },
 
-  setup() {
-    const isSmallScreen = inject('isSmallScreen', true)
-    const isTouchDevice = inject('isTouchDevice', false)
+    setup() {
+        const isSmallScreen = inject('isSmallScreen', true)
+        const isTouchDevice = inject('isTouchDevice', false)
 
-    const networkNodeAnalyzer = new NetworkAnalyzer()
-    onMounted(() => networkNodeAnalyzer.mount())
-    onBeforeUnmount(() => networkNodeAnalyzer.unmount())
+        const networkNodeAnalyzer = new NetworkAnalyzer()
+        onMounted(() => networkNodeAnalyzer.mount())
+        onBeforeUnmount(() => networkNodeAnalyzer.unmount())
 
-    const stakeLookup = StakeCache.instance.makeLookup()
-    onMounted(() => stakeLookup.mount())
-    onBeforeUnmount(() => stakeLookup.unmount())
+        const stakeLookup = StakeCache.instance.makeLookup()
+        onMounted(() => stakeLookup.mount())
+        onBeforeUnmount(() => stakeLookup.unmount())
 
-    const stakeTotal = computed(() => stakeLookup.entity.value?.stake_total ?? 0)
+        const stakeTotal = computed(() => stakeLookup.entity.value?.stake_total ?? 0)
 
-    const makeFloorHbarAmount = (tinyBarAmount: number) => Math.floor((tinyBarAmount ?? 0) / 100000000).toLocaleString('en-US')
+        const makeFloorHbarAmount = (tinyBarAmount: number) => Math.floor((tinyBarAmount ?? 0) / 100000000).toLocaleString('en-US')
 
-    return {
-      isSmallScreen,
-      isTouchDevice,
-      nodes: networkNodeAnalyzer.nodes,
-      totalNodes: networkNodeAnalyzer.nodeCount,
-      stakeTotal,
-      unclampedStakeTotal: networkNodeAnalyzer.unclampedStakeTotal,
-      totalRewarded: networkNodeAnalyzer.totalRewarded,
-      durationMin: networkNodeAnalyzer.durationMin,
-      elapsedMin: networkNodeAnalyzer.elapsedMin,
-      remainingMin: networkNodeAnalyzer.remainingMin,
-      makeFloorHbarAmount,
-      formatSeconds
+        return {
+            isSmallScreen,
+            isTouchDevice,
+            nodes: networkNodeAnalyzer.nodes,
+            totalNodes: networkNodeAnalyzer.nodeCount,
+            stakeTotal,
+            unclampedStakeTotal: networkNodeAnalyzer.unclampedStakeTotal,
+            totalRewarded: networkNodeAnalyzer.totalRewarded,
+            durationMin: networkNodeAnalyzer.durationMin,
+            elapsedMin: networkNodeAnalyzer.elapsedMin,
+            remainingMin: networkNodeAnalyzer.remainingMin,
+            makeFloorHbarAmount,
+            formatSeconds
+        }
     }
-  }
 });
 
 </script>

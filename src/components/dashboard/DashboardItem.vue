@@ -24,21 +24,21 @@
 
 <template>
 
-  <div class="is-flex is-align-items-center">
-    <div class="is-flex has-text-white"
-         :class="{'is-align-items-center': variation, 'is-align-items-baseline': !variation}">
-      <p class="dashboard-value has-text-white mr-2" :class="{'is-numeric':isNumeric}" >
-        <span v-if="value !== null">{{ value }}</span>
-        <span v-else class="has-text-grey">None</span>
-      </p>
-      <div class="is-flex-is-vertical"
-           :class="{'h-is-text-size-3':isMediumScreen, 'h-is-text-size-1':!isMediumScreen, 'pt-1':isMediumScreen}"
-           style="line-height: 1">
-        <Variation v-if="variation" :variation="variation"/>
-        <p class="h-is-text-size-1">{{ name }}</p>
-      </div>
+    <div class="is-flex is-align-items-center">
+        <div class="is-flex has-text-white"
+             :class="{'is-align-items-center': variation, 'is-align-items-baseline': !variation}">
+            <p class="dashboard-value has-text-white mr-2" :class="{'is-numeric':isNumeric}">
+                <span v-if="value !== null">{{ value }}</span>
+                <span v-else class="has-text-grey">None</span>
+            </p>
+            <div class="is-flex-is-vertical"
+                 :class="{'h-is-text-size-3':isMediumScreen, 'h-is-text-size-1':!isMediumScreen, 'pt-1':isMediumScreen}"
+                 style="line-height: 1">
+                <Variation v-if="variation" :variation="variation"/>
+                <p class="h-is-text-size-1">{{ name }}</p>
+            </div>
+        </div>
     </div>
-  </div>
 
 </template>
 
@@ -52,23 +52,23 @@ import {defineComponent, inject} from 'vue';
 import Variation from "@/components/dashboard/Variation.vue";
 
 export default defineComponent({
-  name: 'DashboardItem',
-  components: {Variation},
-  props: {
-    name: String,
-    value: String,
-    variation: String,
-    isNumeric: {
-      type: Boolean,
-      default: false
-    }
-  },
+    name: 'DashboardItem',
+    components: {Variation},
+    props: {
+        name: String,
+        value: String,
+        variation: String,
+        isNumeric: {
+            type: Boolean,
+            default: false
+        }
+    },
 
-  setup() {
-    const isMediumScreen = inject('isMediumScreen', true)
+    setup() {
+        const isMediumScreen = inject('isMediumScreen', true)
 
-    return {isMediumScreen}
-  },
+        return {isMediumScreen}
+    },
 
 });
 
@@ -81,31 +81,31 @@ export default defineComponent({
 <style scoped>
 
 .dashboard-value {
-  font-style: normal;
-  font-weight: 300;
-  font-size: 22px;
-  line-height: 28px;
-  letter-spacing: -0.05em;
+    font-style: normal;
+    font-weight: 300;
+    font-size: 22px;
+    line-height: 28px;
+    letter-spacing: -0.05em;
 }
 
 @media (min-width: 1080px) {
-  .dashboard-value {
-    font-style: normal;
-    font-weight: 300;
-    font-size: 28px;
-    line-height: 34px;
-    letter-spacing: -0.05em;
-  }
+    .dashboard-value {
+        font-style: normal;
+        font-weight: 300;
+        font-size: 28px;
+        line-height: 34px;
+        letter-spacing: -0.05em;
+    }
 }
 
 @media (min-width: 1450px) {
-  .dashboard-value {
-    font-style: normal;
-    font-weight: 300;
-    font-size: 34px;
-    line-height: 41px;
-    letter-spacing: -0.05em;
-  }
+    .dashboard-value {
+        font-style: normal;
+        font-weight: 300;
+        font-size: 34px;
+        line-height: 41px;
+        letter-spacing: -0.05em;
+    }
 }
 
 </style>

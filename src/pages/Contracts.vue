@@ -24,23 +24,23 @@
 
 <template>
 
-  <section class="section" :class="{'h-mobile-background': isTouchDevice || !isSmallScreen}">
+    <section class="section" :class="{'h-mobile-background': isTouchDevice || !isSmallScreen}">
 
-    <DashboardCard>
-      <template v-slot:title>
-        <span class="h-is-primary-title">Recent Contracts</span>
-      </template>
-      <template v-slot:control>
-        <PlayPauseButton :controller="contractTableController"/>
-      </template>
-      <template v-slot:content>
-        <ContractTable :controller="contractTableController"/>
-      </template>
-    </DashboardCard>
+        <DashboardCard>
+            <template v-slot:title>
+                <span class="h-is-primary-title">Recent Contracts</span>
+            </template>
+            <template v-slot:control>
+                <PlayPauseButton :controller="contractTableController"/>
+            </template>
+            <template v-slot:content>
+                <ContractTable :controller="contractTableController"/>
+            </template>
+        </DashboardCard>
 
-  </section>
+    </section>
 
-  <Footer/>
+    <Footer/>
 
 </template>
 
@@ -59,38 +59,38 @@ import {ContractTableController} from "@/components/contract/ContractTableContro
 import {useRouter} from "vue-router";
 
 export default defineComponent({
-  name: 'Contracts',
+    name: 'Contracts',
 
-  props: {
-    network: String
-  },
+    props: {
+        network: String
+    },
 
-  components: {
-    PlayPauseButton,
-    Footer,
-    DashboardCard,
-    ContractTable
-  },
+    components: {
+        PlayPauseButton,
+        Footer,
+        DashboardCard,
+        ContractTable
+    },
 
-  setup() {
-    const isSmallScreen = inject('isSmallScreen', true)
-    const isMediumScreen = inject('isMediumScreen', true)
-    const isTouchDevice = inject('isTouchDevice', false)
+    setup() {
+        const isSmallScreen = inject('isSmallScreen', true)
+        const isMediumScreen = inject('isMediumScreen', true)
+        const isTouchDevice = inject('isTouchDevice', false)
 
-    //
-    // ContractTableController
-    //
-    const perPage = computed(() => isMediumScreen ? 15 : 10)
-    const contractTableController = new ContractTableController(useRouter(), perPage)
-    onMounted(() => contractTableController.mount())
-    onBeforeUnmount(() => contractTableController.unmount())
+        //
+        // ContractTableController
+        //
+        const perPage = computed(() => isMediumScreen ? 15 : 10)
+        const contractTableController = new ContractTableController(useRouter(), perPage)
+        onMounted(() => contractTableController.mount())
+        onBeforeUnmount(() => contractTableController.unmount())
 
-    return {
-      isSmallScreen,
-      isTouchDevice,
-      contractTableController,
+        return {
+            isSmallScreen,
+            isTouchDevice,
+            contractTableController,
+        }
     }
-  }
 });
 
 </script>

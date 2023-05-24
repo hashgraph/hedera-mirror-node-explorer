@@ -24,21 +24,21 @@
 
 <template>
 
-  <section class="section" :class="{'h-mobile-background': isTouchDevice || !isSmallScreen}">
+    <section class="section" :class="{'h-mobile-background': isTouchDevice || !isSmallScreen}">
 
-    <DashboardCard>
-      <template v-slot:title>
-        <span class="h-is-primary-title">Transactions with ID </span>
-        <span class="h-is-secondary-text">{{ normalizedTransactionId }}</span>
-      </template>
-      <template v-slot:content>
-        <TransactionByIdTable v-bind:transactions="transactions"/>
-      </template>
-    </DashboardCard>
+        <DashboardCard>
+            <template v-slot:title>
+                <span class="h-is-primary-title">Transactions with ID </span>
+                <span class="h-is-secondary-text">{{ normalizedTransactionId }}</span>
+            </template>
+            <template v-slot:content>
+                <TransactionByIdTable v-bind:transactions="transactions"/>
+            </template>
+        </DashboardCard>
 
-  </section>
+    </section>
 
-  <Footer/>
+    <Footer/>
 
 </template>
 
@@ -56,44 +56,44 @@ import Footer from "@/components/Footer.vue";
 import {TransactionGroupCache} from "@/utils/cache/TransactionGroupCache";
 
 export default defineComponent({
-  name: 'TransactionsById',
+    name: 'TransactionsById',
 
-  props: {
-    network: String,
-    transactionId: String
-  },
+    props: {
+        network: String,
+        transactionId: String
+    },
 
-  components: {
-    Footer,
-    DashboardCard,
-    TransactionByIdTable,
-  },
+    components: {
+        Footer,
+        DashboardCard,
+        TransactionByIdTable,
+    },
 
-  setup(props) {
-    const isSmallScreen = inject('isSmallScreen', true)
-    const isTouchDevice = inject('isTouchDevice', false)
+    setup(props) {
+        const isSmallScreen = inject('isSmallScreen', true)
+        const isTouchDevice = inject('isTouchDevice', false)
 
-    const normalizedTransactionId = computed(() => {
-      return props.transactionId ? normalizeTransactionId(props.transactionId, true) : "?";
-    })
+        const normalizedTransactionId = computed(() => {
+            return props.transactionId ? normalizeTransactionId(props.transactionId, true) : "?";
+        })
 
-    const paramTransactionId = computed(() => {
-      return props.transactionId ? normalizeTransactionId(props.transactionId, false) : null
-    })
+        const paramTransactionId = computed(() => {
+            return props.transactionId ? normalizeTransactionId(props.transactionId, false) : null
+        })
 
-    const groupLookup = TransactionGroupCache.instance.makeLookup(paramTransactionId)
-    onMounted(() => groupLookup.mount())
-    onBeforeUnmount(() => groupLookup.unmount())
+        const groupLookup = TransactionGroupCache.instance.makeLookup(paramTransactionId)
+        onMounted(() => groupLookup.mount())
+        onBeforeUnmount(() => groupLookup.unmount())
 
-    const transactions = computed(() => groupLookup.entity.value ?? [])
+        const transactions = computed(() => groupLookup.entity.value ?? [])
 
-    return {
-      isSmallScreen,
-      isTouchDevice,
-      transactions,
-      normalizedTransactionId
+        return {
+            isSmallScreen,
+            isTouchDevice,
+            transactions,
+            normalizedTransactionId
+        }
     }
-  }
 });
 
 </script>

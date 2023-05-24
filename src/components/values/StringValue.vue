@@ -24,11 +24,11 @@
 
 <template>
 
-  <span v-if="stringValue" class="should-wrap">{{ stringValue }}</span>
+    <span v-if="stringValue" class="should-wrap">{{ stringValue }}</span>
 
-  <span v-else-if="initialLoading"/>
+    <span v-else-if="initialLoading"/>
 
-  <span v-else class="has-text-grey">None</span>
+    <span v-else class="has-text-grey">None</span>
 
 </template>
 
@@ -42,16 +42,16 @@ import {defineComponent, inject, ref} from 'vue';
 import {initialLoadingKey} from "@/AppKeys";
 
 export default defineComponent({
-  name: 'StringValue',
+    name: 'StringValue',
 
-  props: {
-    stringValue: String,
-  },
+    props: {
+        stringValue: String,
+    },
 
-  setup() {
-    const initialLoading = inject(initialLoadingKey, ref(false))
-    return { initialLoading }
-  }
+    setup() {
+        const initialLoading = inject(initialLoadingKey, ref(false))
+        return {initialLoading}
+    }
 });
 
 </script>

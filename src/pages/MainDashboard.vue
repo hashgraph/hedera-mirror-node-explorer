@@ -24,63 +24,63 @@
 
 <template>
 
-  <HbarMarketDashboard/>
+    <HbarMarketDashboard/>
 
-  <section class="section" :class="{'h-mobile-background': isTouchDevice || !isSmallScreen}">
+    <section class="section" :class="{'h-mobile-background': isTouchDevice || !isSmallScreen}">
 
-    <div class="columns">
+        <div class="columns">
 
-      <div class="column">
-        <DashboardCard data-cy="cryptoTransfers">
-          <template v-slot:title>
-            <span class="h-is-secondary-title">Crypto Transfers</span>
-          </template>
-          <template v-slot:control>
-            <PlayPauseButton v-bind:controller="cryptoTableController"/>
-          </template>
-          <template v-slot:content>
-            <CryptoTransactionTable v-bind:controller="cryptoTableController"/>
-          </template>
-        </DashboardCard>
-      </div>
+            <div class="column">
+                <DashboardCard data-cy="cryptoTransfers">
+                    <template v-slot:title>
+                        <span class="h-is-secondary-title">Crypto Transfers</span>
+                    </template>
+                    <template v-slot:control>
+                        <PlayPauseButton v-bind:controller="cryptoTableController"/>
+                    </template>
+                    <template v-slot:content>
+                        <CryptoTransactionTable v-bind:controller="cryptoTableController"/>
+                    </template>
+                </DashboardCard>
+            </div>
 
-    </div>
+        </div>
 
-    <div class="columns is-multiline">
+        <div class="columns is-multiline">
 
-      <div class="column" :class="{'is-full': !displaySideBySide}">
-        <DashboardCard data-cy="smartContractCalls">
-          <template v-slot:title>
-            <span class="h-is-secondary-title">Smart Contract Calls</span>
-          </template>
-          <template v-slot:control>
-            <PlayPauseButton v-bind:controller="contractTableController"/>
-          </template>
-          <template v-slot:content>
-            <ContractCallTransactionTable v-bind:controller="contractTableController"/>
-          </template>
-        </DashboardCard>
-      </div>
+            <div class="column" :class="{'is-full': !displaySideBySide}">
+                <DashboardCard data-cy="smartContractCalls">
+                    <template v-slot:title>
+                        <span class="h-is-secondary-title">Smart Contract Calls</span>
+                    </template>
+                    <template v-slot:control>
+                        <PlayPauseButton v-bind:controller="contractTableController"/>
+                    </template>
+                    <template v-slot:content>
+                        <ContractCallTransactionTable v-bind:controller="contractTableController"/>
+                    </template>
+                </DashboardCard>
+            </div>
 
-      <div class="column">
-        <DashboardCard data-cy="hcsMessages">
-          <template v-slot:title>
-            <span class="h-is-secondary-title">HCS Messages</span>
-          </template>
-          <template v-slot:control>
-            <PlayPauseButton v-bind:controller="messageTableController"/>
-          </template>
-          <template v-slot:content>
-            <MessageTransactionTable v-bind:controller="messageTableController" />
-          </template>
-        </DashboardCard>
-      </div>
+            <div class="column">
+                <DashboardCard data-cy="hcsMessages">
+                    <template v-slot:title>
+                        <span class="h-is-secondary-title">HCS Messages</span>
+                    </template>
+                    <template v-slot:control>
+                        <PlayPauseButton v-bind:controller="messageTableController"/>
+                    </template>
+                    <template v-slot:content>
+                        <MessageTransactionTable v-bind:controller="messageTableController"/>
+                    </template>
+                </DashboardCard>
+            </div>
 
-    </div>
+        </div>
 
-  </section>
+    </section>
 
-  <Footer/>
+    <Footer/>
 
 </template>
 
@@ -104,70 +104,71 @@ import {TransactionTableController} from "@/components/transaction/TransactionTa
 import {useRouter} from "vue-router";
 
 export default defineComponent({
-  name: 'MainDashboard',
+    name: 'MainDashboard',
 
-  components: {
-    Footer,
-    PlayPauseButton,
-    DashboardCard,
-    CryptoTransactionTable,
-    MessageTransactionTable,
-    ContractCallTransactionTable,
-    HbarMarketDashboard,
-  },
+    components: {
+        Footer,
+        PlayPauseButton,
+        DashboardCard,
+        CryptoTransactionTable,
+        MessageTransactionTable,
+        ContractCallTransactionTable,
+        HbarMarketDashboard,
+    },
 
-  props: {
-    network: String
-  },
+    props: {
+        network: String
+    },
 
-  setup(props) {
-    const isSmallScreen = inject('isSmallScreen', true)
-    const isMediumScreen = inject('isMediumScreen', true)
-    const isTouchDevice = inject('isTouchDevice', false)
-    const displaySideBySide = inject('isLargeScreen', true)
+    setup(props) {
+        const isSmallScreen = inject('isSmallScreen', true)
+        const isMediumScreen = inject('isMediumScreen', true)
+        const isTouchDevice = inject('isTouchDevice', false)
+        const displaySideBySide = inject('isLargeScreen', true)
 
-    const router = useRouter()
-    const pageSize = computed(() => isMediumScreen ? 5 : 6)
+        const router = useRouter()
+        const pageSize = computed(() => isMediumScreen ? 5 : 6)
 
-    const cryptoTableController = new TransactionTableController(
-        router, pageSize, TransactionType.CRYPTOTRANSFER, "", "p1", "k1")
+        const cryptoTableController = new TransactionTableController(
+            router, pageSize, TransactionType.CRYPTOTRANSFER, "", "p1", "k1")
 
-    const messageTableController = new TransactionTableController(
-        router, pageSize, TransactionType.CONSENSUSSUBMITMESSAGE, "", "p2", "k2")
+        const messageTableController = new TransactionTableController(
+            router, pageSize, TransactionType.CONSENSUSSUBMITMESSAGE, "", "p2", "k2")
 
-    const contractTableController = new TransactionTableController(
-        router, pageSize, TransactionType.CONTRACTCALL, "", "p3", "k3")
+        const contractTableController = new TransactionTableController(
+            router, pageSize, TransactionType.CONTRACTCALL, "", "p3", "k3")
 
-    onMounted(() => {
-      cryptoTableController.mount()
-      messageTableController.mount()
-      contractTableController.mount()
-    })
+        onMounted(() => {
+            cryptoTableController.mount()
+            messageTableController.mount()
+            contractTableController.mount()
+        })
 
-    onBeforeUnmount(() => {
-      cryptoTableController.unmount()
-      messageTableController.unmount()
-      contractTableController.unmount()
-    })
+        onBeforeUnmount(() => {
+            cryptoTableController.unmount()
+            messageTableController.unmount()
+            contractTableController.unmount()
+        })
 
-    watch(() => props.network, () => {
-      cryptoTableController.reset()
-      messageTableController.reset()
-      contractTableController.reset()
-      cryptoTableController.startAutoRefresh()
-      messageTableController.startAutoRefresh()
-      contractTableController.startAutoRefresh()
-    })
+        watch(() => props.network, () => {
+            cryptoTableController.reset()
+            messageTableController.reset()
+            contractTableController.reset()
+            cryptoTableController.startAutoRefresh()
+            messageTableController.startAutoRefresh()
+            contractTableController.startAutoRefresh()
+        })
 
-    return {
-      isSmallScreen,
-      isTouchDevice,
-      displaySideBySide,
-      cryptoTableController,
-      messageTableController,
-      contractTableController,
-      TransactionType}
-  }
+        return {
+            isSmallScreen,
+            isTouchDevice,
+            displaySideBySide,
+            cryptoTableController,
+            messageTableController,
+            contractTableController,
+            TransactionType
+        }
+    }
 
 });
 

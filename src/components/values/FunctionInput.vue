@@ -24,27 +24,27 @@
 
 <template>
 
-  <div v-if="signature">
-    <div class="h-is-tertiary-text my-2">Arguments</div>
+    <div v-if="signature">
+        <div class="h-is-tertiary-text my-2">Arguments</div>
 
-    <template v-for="arg in inputs" :key="arg.name">
-      <Property :custom-nb-col-class="customNbColClass">
-        <template v-slot:name>{{ arg.name }}</template>
-        <template v-slot:value>
-          <FunctionValue :ntv="arg"/>
+        <template v-for="arg in inputs" :key="arg.name">
+            <Property :custom-nb-col-class="customNbColClass">
+                <template v-slot:name>{{ arg.name }}</template>
+                <template v-slot:value>
+                    <FunctionValue :ntv="arg"/>
+                </template>
+            </Property>
         </template>
-      </Property>
-    </template>
 
-  </div>
-  <div v-else>
-    <Property :custom-nb-col-class="customNbColClass" id="functionInput">
-      <template v-slot:name>Input - Function & Args</template>
-      <template v-slot:value>
-        <HexaValue :byte-string="input" :show-none="true"/>
-      </template>
-    </Property>
-  </div>
+    </div>
+    <div v-else>
+        <Property :custom-nb-col-class="customNbColClass" id="functionInput">
+            <template v-slot:name>Input - Function & Args</template>
+            <template v-slot:value>
+                <HexaValue :byte-string="input" :show-none="true"/>
+            </template>
+        </Property>
+    </div>
 
 </template>
 
@@ -62,27 +62,27 @@ import Property from "@/components/Property.vue";
 import FunctionValue from "@/components/values/FunctionValue.vue";
 
 export default defineComponent({
-  name: 'FunctionInput',
-  components: {FunctionValue, Property, HexaValue},
-  props: {
-    analyzer: {
-      type: Object as PropType<FunctionCallAnalyzer>,
-      required: true
+    name: 'FunctionInput',
+    components: {FunctionValue, Property, HexaValue},
+    props: {
+        analyzer: {
+            type: Object as PropType<FunctionCallAnalyzer>,
+            required: true
+        },
+        customNbColClass: String
     },
-    customNbColClass: String
-  },
 
-  setup(props) {
+    setup(props) {
 
-    const initialLoading = inject(initialLoadingKey, ref(false))
-    return {
-      input: props.analyzer.input,
-      signature: props.analyzer.signature,
-      functionHash: props.analyzer.functionHash,
-      inputs: props.analyzer.inputs,
-      initialLoading
+        const initialLoading = inject(initialLoadingKey, ref(false))
+        return {
+            input: props.analyzer.input,
+            signature: props.analyzer.signature,
+            functionHash: props.analyzer.functionHash,
+            inputs: props.analyzer.inputs,
+            initialLoading
+        }
     }
-  }
 });
 
 </script>

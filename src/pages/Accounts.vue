@@ -24,23 +24,23 @@
 
 <template>
 
-  <section :class="{'h-mobile-background': isTouchDevice || !isSmallScreen}" class="section">
+    <section :class="{'h-mobile-background': isTouchDevice || !isSmallScreen}" class="section">
 
-    <DashboardCard>
-      <template v-slot:title>
-        <span class="h-is-primary-title">Recent Accounts</span>
-      </template>
-      <template v-slot:control>
-        <PlayPauseButton v-bind:controller="accountTableController"/>
-      </template>
-      <template v-slot:content>
-        <AccountTable :controller="accountTableController"/>
-      </template>
-    </DashboardCard>
+        <DashboardCard>
+            <template v-slot:title>
+                <span class="h-is-primary-title">Recent Accounts</span>
+            </template>
+            <template v-slot:control>
+                <PlayPauseButton v-bind:controller="accountTableController"/>
+            </template>
+            <template v-slot:content>
+                <AccountTable :controller="accountTableController"/>
+            </template>
+        </DashboardCard>
 
-  </section>
+    </section>
 
-  <Footer/>
+    <Footer/>
 
 </template>
 
@@ -59,38 +59,38 @@ import PlayPauseButton from "@/components/PlayPauseButton.vue";
 import {useRouter} from "vue-router";
 
 export default defineComponent({
-  name: 'Accounts',
+    name: 'Accounts',
 
-  props: {
-    network: String
-  },
+    props: {
+        network: String
+    },
 
-  components: {
-    PlayPauseButton,
-    Footer,
-    DashboardCard,
-    AccountTable
-  },
+    components: {
+        PlayPauseButton,
+        Footer,
+        DashboardCard,
+        AccountTable
+    },
 
-  setup() {
-    const isSmallScreen = inject('isSmallScreen', true)
-    const isMediumScreen = inject('isMediumScreen', true)
-    const isTouchDevice = inject('isTouchDevice', false)
+    setup() {
+        const isSmallScreen = inject('isSmallScreen', true)
+        const isMediumScreen = inject('isMediumScreen', true)
+        const isTouchDevice = inject('isTouchDevice', false)
 
-    //
-    // AccountTableController
-    //
-    const perPage = computed(() => isMediumScreen ? 15 : 10)
-    const accountTableController = new AccountTableController(useRouter(), perPage)
-    onMounted(() => accountTableController.mount())
-    onBeforeUnmount(() => accountTableController.unmount())
+        //
+        // AccountTableController
+        //
+        const perPage = computed(() => isMediumScreen ? 15 : 10)
+        const accountTableController = new AccountTableController(useRouter(), perPage)
+        onMounted(() => accountTableController.mount())
+        onBeforeUnmount(() => accountTableController.unmount())
 
-    return {
-      isSmallScreen,
-      isTouchDevice,
-      accountTableController,
+        return {
+            isSmallScreen,
+            isTouchDevice,
+            accountTableController,
+        }
     }
-  }
 });
 
 </script>

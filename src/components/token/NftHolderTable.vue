@@ -24,55 +24,55 @@
 
 <template>
 
- <div id="nft-holder-table">
-  <o-table
-      :data="nfts"
-      :loading="loading"
-      paginated
-      backend-pagination
-      :total="total"
-      v-model:current-page="currentPage"
-      :per-page="perPage"
-      @page-change="onPageChange"
+    <div id="nft-holder-table">
+        <o-table
+                :data="nfts"
+                :loading="loading"
+                paginated
+                backend-pagination
+                :total="total"
+                v-model:current-page="currentPage"
+                :per-page="perPage"
+                @page-change="onPageChange"
 
-      :hoverable="false"
-      :narrowed="true"
-      :striped="true"
-      :mobile-breakpoint="ORUGA_MOBILE_BREAKPOINT"
+                :hoverable="false"
+                :narrowed="true"
+                :striped="true"
+                :mobile-breakpoint="ORUGA_MOBILE_BREAKPOINT"
 
-      aria-current-label="Current page"
-      aria-next-label="Next page"
-      aria-page-label="Page"
-      aria-previous-label="Previous page"
-      customRowKey="serial_number"
-  >
-    <o-table-column v-slot="props" field="serial_number" label="Serial #">
-      <div class="is-numeric">
-        {{ props.row.serial_number }}
-      </div>
-    </o-table-column>
+                aria-current-label="Current page"
+                aria-next-label="Next page"
+                aria-page-label="Page"
+                aria-previous-label="Previous page"
+                customRowKey="serial_number"
+        >
+            <o-table-column v-slot="props" field="serial_number" label="Serial #">
+                <div class="is-numeric">
+                    {{ props.row.serial_number }}
+                </div>
+            </o-table-column>
 
-    <o-table-column v-slot="props" field="account_id" label="Account ID">
-      <AccountLink v-bind:account-id="props.row.account_id"/>
-    </o-table-column>
+            <o-table-column v-slot="props" field="account_id" label="Account ID">
+                <AccountLink v-bind:account-id="props.row.account_id"/>
+            </o-table-column>
 
-    <o-table-column v-slot="props" field="deleted" label="Deleted">
-      {{ props.row.deleted }}
-    </o-table-column>
+            <o-table-column v-slot="props" field="deleted" label="Deleted">
+                {{ props.row.deleted }}
+            </o-table-column>
 
-    <o-table-column v-slot="props" field="modified_timestamp" label="Modification Time">
-      <TimestampValue v-bind:timestamp="props.row.modified_timestamp"/>
-    </o-table-column>
+            <o-table-column v-slot="props" field="modified_timestamp" label="Modification Time">
+                <TimestampValue v-bind:timestamp="props.row.modified_timestamp"/>
+            </o-table-column>
 
-    <o-table-column v-slot="props" field="metadata" label="Metadata">
-      <div class="should-wrap">
-        <BlobValue v-bind:base64="true" v-bind:blob-value="props.row.metadata" v-bind:show-none="true"/>
-      </div>
-    </o-table-column>
+            <o-table-column v-slot="props" field="metadata" label="Metadata">
+                <div class="should-wrap">
+                    <BlobValue v-bind:base64="true" v-bind:blob-value="props.row.metadata" v-bind:show-none="true"/>
+                </div>
+            </o-table-column>
 
-  </o-table>
-  <EmptyTable v-if="!nfts.length"/>
- </div>
+        </o-table>
+        <EmptyTable v-if="!nfts.length"/>
+    </div>
 
 </template>
 
@@ -92,33 +92,33 @@ import EmptyTable from "@/components/EmptyTable.vue";
 import {NftHolderTableController} from "@/components/token/NftHolderTableController";
 
 export default defineComponent({
-  name: 'NftHolderTable',
+    name: 'NftHolderTable',
 
-  components: {EmptyTable, AccountLink, TimestampValue, BlobValue},
+    components: {EmptyTable, AccountLink, TimestampValue, BlobValue},
 
-  props: {
-    controller: {
-      type: Object as PropType<NftHolderTableController>,
-      required: true
+    props: {
+        controller: {
+            type: Object as PropType<NftHolderTableController>,
+            required: true
+        },
     },
-  },
 
-  setup(props) {
-    const isTouchDevice = inject('isTouchDevice', false)
-    const isMediumScreen = inject('isMediumScreen', true)
+    setup(props) {
+        const isTouchDevice = inject('isTouchDevice', false)
+        const isMediumScreen = inject('isMediumScreen', true)
 
-    return {
-      isTouchDevice,
-      isMediumScreen,
-      nfts: props.controller.rows as ComputedRef<Nft[]>,
-      loading: props.controller.loading as ComputedRef<boolean>,
-      total: props.controller.totalRowCount as ComputedRef<number>,
-      currentPage: props.controller.currentPage as Ref<number>,
-      onPageChange: props.controller.onPageChange,
-      perPage: props.controller.pageSize as Ref<number>,
-      ORUGA_MOBILE_BREAKPOINT
+        return {
+            isTouchDevice,
+            isMediumScreen,
+            nfts: props.controller.rows as ComputedRef<Nft[]>,
+            loading: props.controller.loading as ComputedRef<boolean>,
+            total: props.controller.totalRowCount as ComputedRef<number>,
+            currentPage: props.controller.currentPage as Ref<number>,
+            onPageChange: props.controller.onPageChange,
+            perPage: props.controller.pageSize as Ref<number>,
+            ORUGA_MOBILE_BREAKPOINT
+        }
     }
-  }
 });
 
 </script>
@@ -129,6 +129,6 @@ export default defineComponent({
 
 <style>
 #nft-holder-table table.o-table > tbody > tr {
-  cursor:default;
+    cursor: default;
 }
 </style>

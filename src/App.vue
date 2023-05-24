@@ -20,13 +20,13 @@
 
 <template>
 
-  <section class="section is-top-section" :class="{'is-medium-screen': isMediumScreen}">
-    <TopNavBar/>
-  </section>
+    <section class="section is-top-section" :class="{'is-medium-screen': isMediumScreen}">
+        <TopNavBar/>
+    </section>
 
-  <hr v-if="!onMainDashboardPage" class="h-has-background-color" style="margin: 0; height: 4px"/>
+    <hr v-if="!onMainDashboardPage" class="h-has-background-color" style="margin: 0; height: 4px"/>
 
-  <router-view/>
+    <router-view/>
 
 </template>
 
@@ -48,83 +48,86 @@ export const FINAL_BREAKPOINT = 640
 export const ORUGA_MOBILE_BREAKPOINT = "1080px"
 
 export default defineComponent({
-  name: 'App',
-  components: {TopNavBar},
+    name: 'App',
+    components: {TopNavBar},
 
-  setup() {
-    const route = useRoute()
-    const onMainDashboardPage = computed( () => { return route.name == "MainDashboard" })
+    setup() {
+        const route = useRoute()
+        const onMainDashboardPage = computed(() => {
+            return route.name == "MainDashboard"
+        })
 
-    const buildRelease = process.env.BUILD_RELEASE ?? "not available"
-    provide('buildRelease', buildRelease)
+        const buildRelease = process.env.BUILD_RELEASE ?? "not available"
+        provide('buildRelease', buildRelease)
 
-    const buildShortCommitHash = process.env.BUILD_SHORTCOMMITHASH ?? "not available"
-    provide('buildShortCommitHash', buildShortCommitHash)
+        const buildShortCommitHash = process.env.BUILD_SHORTCOMMITHASH ?? "not available"
+        provide('buildShortCommitHash', buildShortCommitHash)
 
-    const buildTime = document.documentElement.dataset.buildTimestampUtc ?? "not available"
-    provide('buildTime', buildTime)
+        const buildTime = document.documentElement.dataset.buildTimestampUtc ?? "not available"
+        provide('buildTime', buildTime)
 
-    const isTouchDevice = ('ontouchstart' in window)
-    provide('isTouchDevice', isTouchDevice)
+        const isTouchDevice = ('ontouchstart' in window)
+        provide('isTouchDevice', isTouchDevice)
 
-    const windowWidth = ref(window.screen.width)
-    provide('windowWidth', windowWidth)
+        const windowWidth = ref(window.screen.width)
+        provide('windowWidth', windowWidth)
 
-    const isSmallScreen = computed(() => {
-      return windowWidth.value > SMALL_BREAKPOINT
-    })
-    provide('isSmallScreen', isSmallScreen)
+        const isSmallScreen = computed(() => {
+            return windowWidth.value > SMALL_BREAKPOINT
+        })
+        provide('isSmallScreen', isSmallScreen)
 
-    const isMediumScreen = computed(() => {
-      return windowWidth.value >= MEDIUM_BREAKPOINT
-    })
-    provide('isMediumScreen', isMediumScreen)
+        const isMediumScreen = computed(() => {
+            return windowWidth.value >= MEDIUM_BREAKPOINT
+        })
+        provide('isMediumScreen', isMediumScreen)
 
-    const isLargeScreen = computed(() => {
-      return windowWidth.value >= LARGE_BREAKPOINT
-    })
-    provide('isLargeScreen', isLargeScreen)
+        const isLargeScreen = computed(() => {
+            return windowWidth.value >= LARGE_BREAKPOINT
+        })
+        provide('isLargeScreen', isLargeScreen)
 
-    const  onResizeHandler = () => {
-      windowWidth.value = window.innerWidth
-    }
+        const onResizeHandler = () => {
+            windowWidth.value = window.innerWidth
+        }
 
-    provide(loadingKey,         AxiosMonitor.instance.loading)
-    provide(initialLoadingKey,  AxiosMonitor.instance.initialLoading)
-    provide(errorKey,           AxiosMonitor.instance.error)
-    provide(explanationKey,     AxiosMonitor.instance.explanation)
-    provide(suggestionKey,      AxiosMonitor.instance.suggestion)
+        provide(loadingKey, AxiosMonitor.instance.loading)
+        provide(initialLoadingKey, AxiosMonitor.instance.initialLoading)
+        provide(errorKey, AxiosMonitor.instance.error)
+        provide(explanationKey, AxiosMonitor.instance.explanation)
+        provide(suggestionKey, AxiosMonitor.instance.suggestion)
 
-    onMounted(() => {
-      windowWidth.value = window.innerWidth
-      window.addEventListener('resize', onResizeHandler);
-      networkRegistry.readCustomConfig()
-    })
+        onMounted(() => {
+            windowWidth.value = window.innerWidth
+            window.addEventListener('resize', onResizeHandler);
+            networkRegistry.readCustomConfig()
+        })
 
-    onBeforeUnmount(() => {
-      window.removeEventListener('resize', onResizeHandler);
-    })
+        onBeforeUnmount(() => {
+            window.removeEventListener('resize', onResizeHandler);
+        })
 
-    return {
-      isMediumScreen,
-      onMainDashboardPage
-    }
-  },
+        return {
+            isMediumScreen,
+            onMainDashboardPage
+        }
+    },
 });
 </script>
 
 <style scoped>
 
 section.section.is-top-section {
-  padding-top: 0;
-  padding-bottom: 0;
-  background-image: url("assets/block-chain-bg.png");
-  background-repeat: no-repeat;
-  background-size: 104px
+    padding-top: 0;
+    padding-bottom: 0;
+    background-image: url("assets/block-chain-bg.png");
+    background-repeat: no-repeat;
+    background-size: 104px
 }
+
 section.section.is-top-section.is-medium-screen {
-  padding-bottom: 30px;
-  background-size: 112px
+    padding-bottom: 30px;
+    background-size: 112px
 }
 
 </style>

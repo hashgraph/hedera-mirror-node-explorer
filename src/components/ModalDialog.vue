@@ -23,33 +23,33 @@
 <!-- --------------------------------------------------------------------------------------------------------------- -->
 
 <template>
-  <div class="modal has-text-white" v-bind:class="{'is-active': showDialog}">
-    <div class="modal-background"/>
-    <div class="modal-content" style="width: 768px; border-radius: 16px">
-      <div class="box">
+    <div class="modal has-text-white" v-bind:class="{'is-active': showDialog}">
+        <div class="modal-background"/>
+        <div class="modal-content" style="width: 768px; border-radius: 16px">
+            <div class="box">
 
-        <div class="is-flex is-justify-content-space-between is-align-items-baseline">
-          <div class="is-flex is-justify-content-start is-align-items-baseline">
-            <span v-if="iconClass" class="icon ml-2 mr-5"><i :class="iconClass"/></span>
-            <div class="block h-is-tertiary-text mt-2">
-              <slot name="dialogMessage"/>
+                <div class="is-flex is-justify-content-space-between is-align-items-baseline">
+                    <div class="is-flex is-justify-content-start is-align-items-baseline">
+                        <span v-if="iconClass" class="icon ml-2 mr-5"><i :class="iconClass"/></span>
+                        <div class="block h-is-tertiary-text mt-2">
+                            <slot name="dialogMessage"/>
+                        </div>
+                    </div>
+                    <a @click="handleClose">
+                        <img alt="Modal close icon" src="@/assets/close-icon.png" style="max-height: 20px;">
+                    </a>
+
+                </div>
+
+                <hr class="h-card-separator"/>
+
+                <div class="block h-is-property-text has-text-grey mb-2" style="line-height: 1.5">
+                    <slot name="dialogDetails"/>
+                </div>
+
             </div>
-          </div>
-          <a @click="handleClose">
-            <img alt="Modal close icon" src="@/assets/close-icon.png" style="max-height: 20px;">
-          </a>
-
         </div>
-
-        <hr class="h-card-separator"/>
-
-        <div class="block h-is-property-text has-text-grey mb-2" style="line-height: 1.5">
-          <slot name="dialogDetails"/>
-        </div>
-
-      </div>
     </div>
-  </div>
 </template>
 
 <!-- --------------------------------------------------------------------------------------------------------------- -->
@@ -61,23 +61,23 @@
 import {defineComponent} from "vue";
 
 export default defineComponent({
-  name: "ModalDialog",
-  components: {},
-  props: {
-    showDialog: {
-      type: Boolean,
-      default: false
+    name: "ModalDialog",
+    components: {},
+    props: {
+        showDialog: {
+            type: Boolean,
+            default: false
+        },
+        iconClass: String
     },
-    iconClass: String
-  },
 
-  setup(props, context) {
-    const handleClose = () => {
-      context.emit('update:showDialog', false)
-      context.emit('onClose')
+    setup(props, context) {
+        const handleClose = () => {
+            context.emit('update:showDialog', false)
+            context.emit('onClose')
+        }
+        return {handleClose}
     }
-    return { handleClose }
-  }
 });
 
 </script>
@@ -88,7 +88,7 @@ export default defineComponent({
 
 <style scoped>
 span.icon {
-  align-items: flex-start;
+    align-items: flex-start;
 }
 </style>
 

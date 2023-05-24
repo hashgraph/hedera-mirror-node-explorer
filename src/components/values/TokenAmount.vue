@@ -23,8 +23,8 @@
 <!-- --------------------------------------------------------------------------------------------------------------- -->
 
 <template>
-  <span class="is-numeric" :class="{'mr-2': showExtra && tokenId}">{{ formattedAmount }}</span>
-  <span v-if="showExtra && tokenId != null">
+    <span class="is-numeric" :class="{'mr-2': showExtra && tokenId}">{{ formattedAmount }}</span>
+    <span v-if="showExtra && tokenId != null">
     <TokenExtra v-bind:token-id="tokenId" v-bind:use-anchor="useAnchor"/>
   </span>
 </template>
@@ -44,124 +44,124 @@ import {initialLoadingKey} from "@/AppKeys";
 export const MAX_TOKEN_SUPPLY = 9223372036854775807n
 
 export default defineComponent({
-  name: "TokenAmount",
+    name: "TokenAmount",
 
-  components: {TokenExtra},
-  props: {
-    amount: BigInt,
-    tokenId: String,
-    showExtra: {
-      type: Boolean,
-      default: false
-    },
-    useAnchor: {
-      type: Boolean,
-      default: true
-    }
-  },
-
-  setup(props) {
-    const response = ref<TokenInfo|null>(null)
-
-    const formattedAmount = computed(() => {
-      let result: string
-      if (response.value !== null) {
-        if (props.amount) {
-          if (props.amount > MAX_TOKEN_SUPPLY) {
-            result = formatTokenAmount(MAX_TOKEN_SUPPLY, response.value.decimals)
-          } else {
-            result = formatTokenAmount(props.amount, response.value.decimals)
-          }
-        } else if (initialLoading.value) {
-          result = ""
-        } else {
-          result = "0"
+    components: {TokenExtra},
+    props: {
+        amount: BigInt,
+        tokenId: String,
+        showExtra: {
+            type: Boolean,
+            default: false
+        },
+        useAnchor: {
+            type: Boolean,
+            default: true
         }
-      } else {
-        result = ""
-      }
-      return result
-    })
+    },
 
-    const extra = computed(() => {
-      let result: string
-      if (response.value !== null) {
-        result = makeExtra(response.value)
-      } else {
-        result = ""
-      }
-      return result
-    })
+    setup(props) {
+        const response = ref<TokenInfo | null>(null)
 
-    const updateResponse = () => {
-      if (props.tokenId) {
-        TokenInfoCache.instance.lookup(props.tokenId).then((r: TokenInfo | null) => {
-          response.value = r
-        }, (reason: unknown) => {
-          console.warn("TokenInfoCollector did fail to fetch " + props.tokenId + " with reason: " + reason)
-          response.value = null
+        const formattedAmount = computed(() => {
+            let result: string
+            if (response.value !== null) {
+                if (props.amount) {
+                    if (props.amount > MAX_TOKEN_SUPPLY) {
+                        result = formatTokenAmount(MAX_TOKEN_SUPPLY, response.value.decimals)
+                    } else {
+                        result = formatTokenAmount(props.amount, response.value.decimals)
+                    }
+                } else if (initialLoading.value) {
+                    result = ""
+                } else {
+                    result = "0"
+                }
+            } else {
+                result = ""
+            }
+            return result
         })
-      }
+
+        const extra = computed(() => {
+            let result: string
+            if (response.value !== null) {
+                result = makeExtra(response.value)
+            } else {
+                result = ""
+            }
+            return result
+        })
+
+        const updateResponse = () => {
+            if (props.tokenId) {
+                TokenInfoCache.instance.lookup(props.tokenId).then((r: TokenInfo | null) => {
+                    response.value = r
+                }, (reason: unknown) => {
+                    console.warn("TokenInfoCollector did fail to fetch " + props.tokenId + " with reason: " + reason)
+                    response.value = null
+                })
+            }
+        }
+        watch(() => props.tokenId, () => {
+            updateResponse()
+        })
+
+        const initialLoading = inject(initialLoadingKey, ref(false))
+
+        onMounted(() => {
+            updateResponse()
+        })
+
+        return {formattedAmount, extra, initialLoading}
     }
-    watch(() => props.tokenId, () => {
-      updateResponse()
-    })
-
-    const initialLoading = inject(initialLoadingKey, ref(false))
-
-    onMounted(() => {
-      updateResponse()
-    })
-
-    return { formattedAmount, extra, initialLoading }
-  }
 });
 
-function formatTokenAmount(rawAmount: bigint, decimals: string|undefined): string {
-  let result: string
+function formatTokenAmount(rawAmount: bigint, decimals: string | undefined): string {
+    let result: string
 
-  const decimalCount = computeDecimalCount(decimals) ?? 0
-  const amountFormatter = new Intl.NumberFormat('en-US', {
-    minimumFractionDigits: decimalCount,
-    maximumFractionDigits: decimalCount
-  })
+    const decimalCount = computeDecimalCount(decimals) ?? 0
+    const amountFormatter = new Intl.NumberFormat('en-US', {
+        minimumFractionDigits: decimalCount,
+        maximumFractionDigits: decimalCount
+    })
 
-  if (decimalCount) {
-    result = amountFormatter.format(Number(rawAmount) / Math.pow(10, decimalCount))
-  } else {
-    result = amountFormatter.format(rawAmount)
-  }
+    if (decimalCount) {
+        result = amountFormatter.format(Number(rawAmount) / Math.pow(10, decimalCount))
+    } else {
+        result = amountFormatter.format(rawAmount)
+    }
 
-  return result
+    return result
 }
 
-function computeDecimalCount(decimals: string|undefined): number|null {
-  let result: number|null
-  if (decimals) {
-    const n = Number(decimals)
-    result = isNaN(n) ? null : Math.floor(n)
-  } else {
-    result = null
-  }
-  return result
+function computeDecimalCount(decimals: string | undefined): number | null {
+    let result: number | null
+    if (decimals) {
+        const n = Number(decimals)
+        result = isNaN(n) ? null : Math.floor(n)
+    } else {
+        result = null
+    }
+    return result
 }
 
 function makeExtra(response: TokenInfo): string {
-  const name = response.name
-  const symbol = response.symbol
-  const maxLength = 40
+    const name = response.name
+    const symbol = response.symbol
+    const maxLength = 40
 
-  let candidate1: string | null
-  if (symbol) {
-    const usable = symbol.search("://") == -1 && symbol.length < maxLength
-    candidate1 = usable ? symbol : null
-  } else {
-    candidate1 = null;
-  }
+    let candidate1: string | null
+    if (symbol) {
+        const usable = symbol.search("://") == -1 && symbol.length < maxLength
+        candidate1 = usable ? symbol : null
+    } else {
+        candidate1 = null;
+    }
 
-  const candidate2 = name && name.length < maxLength ? name : null
+    const candidate2 = name && name.length < maxLength ? name : null
 
-  return candidate1 ?? candidate2 ?? response.token_id ?? "?"
+    return candidate1 ?? candidate2 ?? response.token_id ?? "?"
 }
 
 </script>

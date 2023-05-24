@@ -41,24 +41,24 @@ import {computed, defineComponent} from "vue";
 import {normalizeTransactionId} from "@/utils/TransactionID";
 
 export default defineComponent({
-  name: "TransactionLabel",
+    name: "TransactionLabel",
 
-  props: {
-    transactionId: String,
-    result: String
-  },
+    props: {
+        transactionId: String,
+        result: String
+    },
 
-  setup(props) {
-    const transactionText = computed(() => {
-      return props.transactionId ? normalizeTransactionId(props.transactionId, true) : ""
-    })
+    setup(props) {
+        const transactionText = computed(() => {
+            return props.transactionId ? normalizeTransactionId(props.transactionId, true) : ""
+        })
 
-    const errorFlagVisible = computed(() => {
-      return props.result && props.result !== "SUCCESS"
-    })
+        const errorFlagVisible = computed(() => {
+            return props.result && props.result !== "SUCCESS"
+        })
 
-    return { transactionText, errorFlagVisible }
-  }
+        return {transactionText, errorFlagVisible}
+    }
 
 })
 

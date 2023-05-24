@@ -24,23 +24,23 @@
 
 <template>
 
-  <section :class="{'h-mobile-background': isTouchDevice || !isSmallScreen}" class="section">
+    <section :class="{'h-mobile-background': isTouchDevice || !isSmallScreen}" class="section">
 
-    <DashboardCard>
-      <template v-slot:title>
-        <span class="h-is-primary-title">Blocks</span>
-      </template>
-      <template v-slot:control>
-        <PlayPauseButton v-bind:controller="blockTableController"/>
-      </template>
-      <template v-slot:content>
-        <BlockTable :controller="blockTableController"/>
-      </template>
-    </DashboardCard>
+        <DashboardCard>
+            <template v-slot:title>
+                <span class="h-is-primary-title">Blocks</span>
+            </template>
+            <template v-slot:control>
+                <PlayPauseButton v-bind:controller="blockTableController"/>
+            </template>
+            <template v-slot:content>
+                <BlockTable :controller="blockTableController"/>
+            </template>
+        </DashboardCard>
 
-  </section>
+    </section>
 
-  <Footer/>
+    <Footer/>
 
 </template>
 
@@ -59,36 +59,36 @@ import {BlockTableController} from "@/components/block/BlockTableController";
 import {useRouter} from "vue-router";
 
 export default defineComponent({
-  name: 'Blocks',
+    name: 'Blocks',
 
-  props: {
-    network: String
-  },
+    props: {
+        network: String
+    },
 
-  components: {
-    PlayPauseButton,
-    BlockTable,
-    Footer,
-    DashboardCard
-  },
+    components: {
+        PlayPauseButton,
+        BlockTable,
+        Footer,
+        DashboardCard
+    },
 
-  setup() {
-    const isSmallScreen = inject('isSmallScreen', true)
-    const isMediumScreen = inject('isMediumScreen', true)
-    const isTouchDevice = inject('isTouchDevice', false)
+    setup() {
+        const isSmallScreen = inject('isSmallScreen', true)
+        const isMediumScreen = inject('isMediumScreen', true)
+        const isTouchDevice = inject('isTouchDevice', false)
 
-    // BlockTableController
-    const pageSize = computed(() => isMediumScreen ? 15 : 5)
-    const blockTableController = new BlockTableController(useRouter(), pageSize)
-    onMounted(() => blockTableController.mount())
-    onBeforeUnmount(() => blockTableController.unmount())
+        // BlockTableController
+        const pageSize = computed(() => isMediumScreen ? 15 : 5)
+        const blockTableController = new BlockTableController(useRouter(), pageSize)
+        onMounted(() => blockTableController.mount())
+        onBeforeUnmount(() => blockTableController.unmount())
 
-    return {
-      isSmallScreen,
-      isTouchDevice,
-      blockTableController
+        return {
+            isSmallScreen,
+            isTouchDevice,
+            blockTableController
+        }
     }
-  }
 });
 
 </script>

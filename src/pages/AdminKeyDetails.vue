@@ -24,28 +24,31 @@
 
 <template>
 
-  <section :class="{'h-mobile-background': isTouchDevice || !isSmallScreen}" class="section">
+    <section :class="{'h-mobile-background': isTouchDevice || !isSmallScreen}" class="section">
 
-    <DashboardCard>
-      <template v-slot:title>
-        <span class="h-is-primary-title">Admin Key for Account </span>
-        <div id="accountId" v-if="normalizedAccountId" class="h-is-secondary-text has-text-weight-light is-inline-block">
-          <AccountLink :account-id="normalizedAccountId">{{ normalizedAccountId }}</AccountLink>
-        </div>
-        <span v-if="accountChecksum" class="has-text-grey mr-3" style="font-size: 28px">-{{ accountChecksum }}</span>
-      </template>
+        <DashboardCard>
+            <template v-slot:title>
+                <span class="h-is-primary-title">Admin Key for Account </span>
+                <div id="accountId" v-if="normalizedAccountId"
+                     class="h-is-secondary-text has-text-weight-light is-inline-block">
+                    <AccountLink :account-id="normalizedAccountId">{{ normalizedAccountId }}</AccountLink>
+                </div>
+                <span v-if="accountChecksum" class="has-text-grey mr-3" style="font-size: 28px">-{{
+                    accountChecksum
+                    }}</span>
+            </template>
 
-      <template v-slot:content>
-        <NotificationBanner v-if="notification" :message="notification"/>
+            <template v-slot:content>
+                <NotificationBanner v-if="notification" :message="notification"/>
 
-        <KeyValue v-if="normalizedAccountId" :details="true" :key-bytes="key?.key" :key-type="key?._type"
-                  :show-none="true"/>
-      </template>
-    </DashboardCard>
+                <KeyValue v-if="normalizedAccountId" :details="true" :key-bytes="key?.key" :key-type="key?._type"
+                          :show-none="true"/>
+            </template>
+        </DashboardCard>
 
-  </section>
+    </section>
 
-  <Footer/>
+    <Footer/>
 
 </template>
 
@@ -65,44 +68,44 @@ import NotificationBanner from "@/components/NotificationBanner.vue";
 
 export default defineComponent({
 
-  name: 'AdminKeyDetails',
+    name: 'AdminKeyDetails',
 
-  components: {
-    NotificationBanner,
-    KeyValue,
-    AccountLink,
-    Footer,
-    DashboardCard,
-  },
+    components: {
+        NotificationBanner,
+        KeyValue,
+        AccountLink,
+        Footer,
+        DashboardCard,
+    },
 
-  props: {
-    accountId: String,
-    network: String
-  },
+    props: {
+        accountId: String,
+        network: String
+    },
 
-  setup(props) {
-    const isSmallScreen = inject('isSmallScreen', true)
-    const isTouchDevice = inject('isTouchDevice', false)
+    setup(props) {
+        const isSmallScreen = inject('isSmallScreen', true)
+        const isTouchDevice = inject('isTouchDevice', false)
 
-    //
-    // account
-    //
+        //
+        // account
+        //
 
-    const accountLocator = computed(() => props.accountId ?? null)
-    const accountLocParser = new AccountLocParser(accountLocator)
-    onMounted(() => accountLocParser.mount())
-    onBeforeUnmount(() => accountLocParser.unmount())
+        const accountLocator = computed(() => props.accountId ?? null)
+        const accountLocParser = new AccountLocParser(accountLocator)
+        onMounted(() => accountLocParser.mount())
+        onBeforeUnmount(() => accountLocParser.unmount())
 
-    return {
-      isSmallScreen,
-      isTouchDevice,
-      notification: accountLocParser.errorNotification,
-      account: accountLocParser.accountInfo,
-      normalizedAccountId: accountLocParser.accountId,
-      accountChecksum: accountLocParser.accountChecksum,
-      key: accountLocParser.key,
+        return {
+            isSmallScreen,
+            isTouchDevice,
+            notification: accountLocParser.errorNotification,
+            account: accountLocParser.accountInfo,
+            normalizedAccountId: accountLocParser.accountId,
+            accountChecksum: accountLocParser.accountChecksum,
+            key: accountLocParser.key,
+        }
     }
-  }
 });
 
 </script>

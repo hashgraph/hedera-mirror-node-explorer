@@ -23,7 +23,7 @@
 <!-- --------------------------------------------------------------------------------------------------------------- -->
 
 <template>
-  <EVMAddress :address="senderAddress" :compact="false" :show-id="true" :show-none="false"/>
+    <EVMAddress :address="senderAddress" :compact="false" :show-id="true" :show-none="false"/>
 </template>
 
 <!-- --------------------------------------------------------------------------------------------------------------- -->
@@ -37,28 +37,28 @@ import EVMAddress from "@/components/values/EVMAddress.vue";
 import {ContractResultByTransactionIdCache} from "@/utils/cache/ContractResultByTransactionIdCache";
 
 export default defineComponent({
-  name: "InnerSenderEVMAddress",
-  components: {EVMAddress},
-  props: {
-    transactionId: String,
-  },
+    name: "InnerSenderEVMAddress",
+    components: {EVMAddress},
+    props: {
+        transactionId: String,
+    },
 
-  setup(props) {
-    const isSmallScreen = inject('isSmallScreen', ref(false))
+    setup(props) {
+        const isSmallScreen = inject('isSmallScreen', ref(false))
 
-    const contractResultLookup = ContractResultByTransactionIdCache.instance.makeLookup(computed(() => props.transactionId ?? null))
-    onMounted(() => contractResultLookup.mount())
-    onBeforeUnmount(() => contractResultLookup.unmount())
+        const contractResultLookup = ContractResultByTransactionIdCache.instance.makeLookup(computed(() => props.transactionId ?? null))
+        onMounted(() => contractResultLookup.mount())
+        onBeforeUnmount(() => contractResultLookup.unmount())
 
-    const senderAddress = computed(() => {
-      return contractResultLookup.entity.value?.from ?? null
-    })
+        const senderAddress = computed(() => {
+            return contractResultLookup.entity.value?.from ?? null
+        })
 
-    return {
-      isSmallScreen,
-      senderAddress
+        return {
+            isSmallScreen,
+            senderAddress
+        }
     }
-  }
 })
 
 </script>

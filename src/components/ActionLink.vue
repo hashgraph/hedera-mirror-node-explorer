@@ -38,30 +38,30 @@
 import {computed, defineComponent} from "vue";
 
 export default defineComponent({
-  name: "ActionLink",
-  props: {
-    title: {
-      type: String,
-      default: "Action"
+    name: "ActionLink",
+    props: {
+        title: {
+            type: String,
+            default: "Action"
+        },
+        enabled: {
+            type: Boolean,
+            default: true
+        },
+        running: {
+            type: Boolean,
+            default: false
+        }
     },
-    enabled: {
-      type: Boolean,
-      default: true
-    },
-    running: {
-      type: Boolean,
-      default: false
+    emits: ['action'],
+    setup(props) {
+
+        const actionDisabled = computed(() => {
+            return props.running || !props.enabled
+        })
+
+        return {actionDisabled}
     }
-  },
-  emits: ['action'],
-  setup(props) {
-
-    const actionDisabled = computed(() => {
-      return props.running || !props.enabled
-    })
-
-    return { actionDisabled }
-  }
 })
 
 </script>
@@ -73,6 +73,6 @@ export default defineComponent({
 <style scoped>
 
 a.pointer-events-none {
-  pointer-events: none
+    pointer-events: none
 }
 </style>

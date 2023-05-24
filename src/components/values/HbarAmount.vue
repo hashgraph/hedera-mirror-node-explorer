@@ -24,19 +24,19 @@
 
 <template>
 
-  <template v-if="isNone">
-    <span v-if="initialLoading"/>
-    <span v-else class="has-text-grey">None</span>
-  </template>
-  <template v-else-if="amount !== 0 || !hideZero">
+    <template v-if="isNone">
+        <span v-if="initialLoading"/>
+        <span v-else class="has-text-grey">None</span>
+    </template>
+    <template v-else-if="amount !== 0 || !hideZero">
     <span class="has-hbar is-numeric" :class="{ 'has-text-grey': isGrey, 'h-is-debit': isRed, 'h-is-credit': isGreen }">
       {{ formattedAmount }}
     </span>
-    <span v-if="showExtra" class="ml-2">
+        <span v-if="showExtra" class="ml-2">
       <HbarExtra :hide-zero="hideZero" :small-extra="smallExtra" :tbar-amount="amount" :timestamp="timestamp"/>
     </span>
-  </template>
-  <span v-else/>
+    </template>
+    <span v-else/>
 
 </template>
 
@@ -51,69 +51,69 @@ import HbarExtra from "@/components/values/HbarExtra.vue";
 import {initialLoadingKey} from "@/AppKeys";
 
 export default defineComponent({
-  name: "HbarAmount",
-  components: {HbarExtra},
-  props: {
-    amount: {
-      type: Number,
+    name: "HbarAmount",
+    components: {HbarExtra},
+    props: {
+        amount: {
+            type: Number,
+        },
+        timestamp: {
+            type: String,
+            default: "0"
+        },
+        decimals: {
+            type: Number,
+            default: 8
+        },
+        showExtra: {
+            type: Boolean,
+            default: false
+        },
+        smallExtra: {
+            type: Boolean,
+            default: true
+        },
+        hideZero: {
+            type: Boolean,
+            default: false
+        },
+        colored: {
+            type: Boolean,
+            default: false
+        }
     },
-    timestamp: {
-      type: String,
-      default: "0"
-    },
-    decimals: {
-      type: Number,
-      default: 8
-    },
-    showExtra: {
-      type: Boolean,
-      default: false
-    },
-    smallExtra: {
-      type: Boolean,
-      default: true
-    },
-    hideZero: {
-      type: Boolean,
-      default: false
-    },
-    colored: {
-      type: Boolean,
-      default: false
+
+    setup(props) {
+        const initialLoading = inject(initialLoadingKey, ref(false))
+
+        const hbarAmount = computed(() => {
+            return (props.amount ?? 0) / 100000000
+        })
+
+        const isNone = computed(() => props.amount == null)
+
+        const formattedAmount = computed(() => {
+            const amountFormatter = new Intl.NumberFormat('en-US', {
+                minimumFractionDigits: props.decimals ?? 0,
+                maximumFractionDigits: props.decimals ?? 8
+            })
+            return amountFormatter.format(hbarAmount.value)
+        })
+
+        const isGrey = computed(() => {
+            return props.amount === 0
+        })
+
+        const isRed = computed(() => {
+            return hbarAmount.value < 0 && props.colored
+        })
+
+        const isGreen = computed(() => {
+            return hbarAmount.value > 0 && props.colored
+        })
+
+        return {initialLoading, isNone, formattedAmount, isGrey, isRed, isGreen}
     }
-  },
-
-  setup(props) {
-    const initialLoading = inject(initialLoadingKey, ref(false))
-
-    const hbarAmount = computed(() => {
-      return (props.amount??0) / 100000000
-    })
-
-    const isNone = computed(() => props.amount == null)
-
-    const formattedAmount = computed(() => {
-      const amountFormatter = new Intl.NumberFormat('en-US', {
-        minimumFractionDigits: props.decimals ?? 0,
-        maximumFractionDigits: props.decimals ?? 8
-      })
-      return amountFormatter.format(hbarAmount.value)
-    })
-
-    const isGrey = computed(() => {
-      return props.amount === 0
-    })
-
-    const isRed = computed(() => {
-      return hbarAmount.value < 0 && props.colored
-    })
-
-    const isGreen = computed(() => {
-      return hbarAmount.value > 0 && props.colored
-    })
-
-    return { initialLoading, isNone, formattedAmount, isGrey, isRed, isGreen }
-  }
 });
 
 </script>

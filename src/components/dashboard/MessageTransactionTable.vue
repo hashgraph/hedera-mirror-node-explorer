@@ -24,49 +24,49 @@
 
 <template>
 
-  <o-table
-      :data="transactions"
-      :loading="loading"
-      paginated
-      backend-pagination
-      :total="total"
-      v-model:current-page="currentPage"
-      :per-page="perPage"
-      @page-change="onPageChange"
-      @click="handleClick"
+    <o-table
+            :data="transactions"
+            :loading="loading"
+            paginated
+            backend-pagination
+            :total="total"
+            v-model:current-page="currentPage"
+            :per-page="perPage"
+            @page-change="onPageChange"
+            @click="handleClick"
 
-      :hoverable="true"
-      :narrowed="true"
-      :striped="true"
-      :mobile-breakpoint="ORUGA_MOBILE_BREAKPOINT"
+            :hoverable="true"
+            :narrowed="true"
+            :striped="true"
+            :mobile-breakpoint="ORUGA_MOBILE_BREAKPOINT"
 
-      aria-current-label="Current page"
-      aria-next-label="Next page"
-      aria-page-label="Page"
-      aria-previous-label="Previous page"
-      customRowKey="consensus_timestamp"
-      default-sort="consensus_timestamp"
-  >
+            aria-current-label="Current page"
+            aria-next-label="Next page"
+            aria-page-label="Page"
+            aria-previous-label="Previous page"
+            customRowKey="consensus_timestamp"
+            default-sort="consensus_timestamp"
+    >
 
-    <o-table-column v-slot="props" field="topic_id" label="Topic ID">
-      <div class="w200 is-numeric">
-        {{ props.row.entity_id ?? "" }}
-      </div>
-    </o-table-column>
+        <o-table-column v-slot="props" field="topic_id" label="Topic ID">
+            <div class="w200 is-numeric">
+                {{ props.row.entity_id ?? "" }}
+            </div>
+        </o-table-column>
 
-    <o-table-column v-slot="props" field="memo" label="Memo">
-      <div class="w250">
-        <BlobValue v-bind:blob-value="props.row.memo_base64" v-bind:base64="true" v-bind:show-none="true"/>
-      </div>
-    </o-table-column>
+        <o-table-column v-slot="props" field="memo" label="Memo">
+            <div class="w250">
+                <BlobValue v-bind:blob-value="props.row.memo_base64" v-bind:base64="true" v-bind:show-none="true"/>
+            </div>
+        </o-table-column>
 
-    <o-table-column v-slot="props" field="consensus_timestamp" label="Time">
-      <TimestampValue v-bind:timestamp="props.row.consensus_timestamp"/>
-    </o-table-column>
+        <o-table-column v-slot="props" field="consensus_timestamp" label="Time">
+            <TimestampValue v-bind:timestamp="props.row.consensus_timestamp"/>
+        </o-table-column>
 
-  </o-table>
+    </o-table>
 
-  <EmptyTable v-if="!transactions.length"/>
+    <EmptyTable v-if="!transactions.length"/>
 
 </template>
 
@@ -86,36 +86,36 @@ import EmptyTable from "@/components/EmptyTable.vue";
 import {TransactionTableController} from "@/components/transaction/TransactionTableController";
 
 export default defineComponent({
-  name: 'MessageTransactionTable',
+    name: 'MessageTransactionTable',
 
-  components: {EmptyTable, TimestampValue, BlobValue},
+    components: {EmptyTable, TimestampValue, BlobValue},
 
-  props: {
-    controller: {
-      type: Object as PropType<TransactionTableController>,
-      required: true
+    props: {
+        controller: {
+            type: Object as PropType<TransactionTableController>,
+            required: true
+        }
+    },
+
+    setup(props) {
+
+        const handleClick = (t: Transaction) => {
+            routeManager.routeToTransaction(t)
+        }
+
+        return {
+            transactions: props.controller.rows as ComputedRef<Transaction[]>,
+            loading: props.controller.loading as ComputedRef<boolean>,
+            total: props.controller.totalRowCount as ComputedRef<number>,
+            currentPage: props.controller.currentPage as Ref<number>,
+            onPageChange: props.controller.onPageChange,
+            perPage: props.controller.pageSize as Ref<number>,
+            handleClick,
+
+            // From App
+            ORUGA_MOBILE_BREAKPOINT,
+        }
     }
-  },
-
-  setup(props) {
-
-    const handleClick = (t: Transaction) => {
-      routeManager.routeToTransaction(t)
-    }
-
-    return {
-      transactions: props.controller.rows as ComputedRef<Transaction[]>,
-      loading: props.controller.loading as ComputedRef<boolean>,
-      total: props.controller.totalRowCount as ComputedRef<number>,
-      currentPage: props.controller.currentPage as Ref<number>,
-      onPageChange: props.controller.onPageChange,
-      perPage: props.controller.pageSize as Ref<number>,
-      handleClick,
-
-      // From App
-      ORUGA_MOBILE_BREAKPOINT,
-    }
-  }
 });
 
 </script>
