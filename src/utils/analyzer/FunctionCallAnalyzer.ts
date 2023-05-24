@@ -60,6 +60,18 @@ export class FunctionCallAnalyzer {
         this.transactionDescription.value = null
     }
 
+    public readonly normalizedInput: ComputedRef<string|null> = computed(() => {
+        return this.input.value == "0x" ? null : this.input.value
+    })
+
+    public readonly normalizedOutput: ComputedRef<string|null> = computed(() => {
+        return this.output.value == "0x" ? null : this.output.value
+    })
+
+    public readonly normalizedError: ComputedRef<string|null> = computed(() => {
+        return this.error.value == "0x" ? null : this.error.value
+    })
+
     public readonly functionHash: ComputedRef<string|null> = computed(() => {
         return this.transactionDescription.value?.sighash ?? null
     })
