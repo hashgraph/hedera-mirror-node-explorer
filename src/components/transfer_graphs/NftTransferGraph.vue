@@ -33,12 +33,11 @@
 
                 <template v-if="!compact">
 
-                    <div class="h-is-text-size-3 has-text-grey-light has-text-weight-light mb-2">Account</div>
+                    <div class="h-is-text-size-3 has-text-grey-light has-text-weight-light mb-2"><span>Account</span></div>
                     <div/>
-                    <div class="h-is-text-size-3 has-text-grey-light has-text-weight-light mb-2">Non Fungible Tokens
-                    </div>
+                    <div class="h-is-text-size-3 has-text-grey-light has-text-weight-light mb-2"><span>Non Fungible Tokens</span></div>
                     <div/>
-                    <div class="h-is-text-size-3 has-text-grey-light has-text-weight-light mb-2">Account</div>
+                    <div class="h-is-text-size-3 has-text-grey-light has-text-weight-light mb-2"><span>Account</span></div>
                     <div v-if="!compact && descriptionVisible"/>
                 </template>
 

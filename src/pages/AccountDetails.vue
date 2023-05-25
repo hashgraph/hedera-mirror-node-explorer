@@ -30,25 +30,19 @@
             <template v-if="!isInactiveEvmAddress" v-slot:title>
                 <span class="h-is-primary-title">Account </span>
                 <div class="h-is-tertiary-text mt-3" id="entityId">
-                    <div class="is-inline-block h-is-property-text has-text-weight-light" style="min-width: 115px">
-                        Account ID:
-                    </div>
+                    <div class="is-inline-block h-is-property-text has-text-weight-light" style="min-width: 115px"><span>Account ID:</span></div>
                     <span>{{ normalizedAccountId ?? "" }}</span>
                     <span v-if="accountChecksum" class="has-text-grey">-{{ accountChecksum }}</span>
                 </div>
                 <div v-if="operatorNodeRoute" id="nodeLink" class="h-is-tertiary-text mt-2">
-                    <div class="is-inline-block h-is-property-text has-text-weight-light" style="min-width: 115px">
-                        Node:
-                    </div>
+                    <div class="is-inline-block h-is-property-text has-text-weight-light" style="min-width: 115px"><span>Node:</span></div>
                     <router-link :to="operatorNodeRoute">
                         <span>{{ nodeId }} - {{ accountInfo }}</span>
                     </router-link>
                 </div>
                 <div v-else-if="ethereumAddress" id="evmAddress" class="h-is-tertiary-text mt-2"
                      style="word-break: keep-all">
-                    <div class="is-inline-block h-is-property-text has-text-weight-light" style="min-width: 115px">EVM
-                        Address:
-                    </div>
+                    <div class="is-inline-block h-is-property-text has-text-weight-light" style="min-width: 115px"><span>EVM Address:</span></div>
                     <div class="is-inline-block">
                         <EVMAddress :show-id="false" :has-custom-font="true" :address="ethereumAddress"/>
                     </div>

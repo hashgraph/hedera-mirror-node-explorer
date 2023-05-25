@@ -35,19 +35,18 @@
                     <div v-if="enableCopy"
                          style="position: absolute; display: inline-block; left: 50%; top: 50%; transform: translate(-50%, -50%);">
                         <button class="button is-dark h-is-text-size-3"
-                                v-on:click.stop="copyToClipboard">Copy to Clipboard
-                        </button>
+                                v-on:click.stop="copyToClipboard"><span>Copy to Clipboard</span></button>
                     </div>
                 </div>
             </div>
             <span v-if="entityId && showId">
         <span>(</span>
-        <router-link v-if="isContract" :to="{name: 'ContractDetails', params: {contractId: entityId}}">{{
-            entityId
-            }}</router-link>
-        <router-link v-else-if="isAccount" :to="{name: 'AccountDetails', params: {accountId: entityId}}">{{
-            entityId
-            }}</router-link>
+        <router-link v-if="isContract" :to="{name: 'ContractDetails', params: {contractId: entityId}}">
+            <span>{{ entityId }}</span>
+        </router-link>
+        <router-link v-else-if="isAccount" :to="{name: 'AccountDetails', params: {accountId: entityId}}">
+            <span>{{ entityId }}</span>
+        </router-link>
         <span v-else>{{ entityId }}</span>
         <span>)</span>
       </span>

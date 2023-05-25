@@ -31,35 +31,19 @@
             <div class="graph-container" v-bind:class="{'graph-container-8': dollarVisible }">
 
                 <template v-if="dollarVisible">
-                    <div style="grid-column-end: span 1"
-                         class="h-is-text-size-3 has-text-grey-light has-text-weight-light mb-2">Account
-                    </div>
-                    <div style="grid-column-end: span 2"
-                         class="h-is-text-size-3 has-text-grey-light has-text-weight-light mb-2">Hbar Amount
-                    </div>
+                    <div style="grid-column-end: span 1" class="h-is-text-size-3 has-text-grey-light has-text-weight-light mb-2"><span>Account</span></div>
+                    <div style="grid-column-end: span 2" class="h-is-text-size-3 has-text-grey-light has-text-weight-light mb-2"><span>Hbar Amount</span></div>
                     <div/>
-                    <div style="grid-column-end: span 1"
-                         class="h-is-text-size-3 has-text-grey-light has-text-weight-light mb-2">Account
-                    </div>
-                    <div style="grid-column-end: span 2"
-                         class="h-is-text-size-3 has-text-grey-light has-text-weight-light mb-2">Hbar Amount
-                    </div>
+                    <div style="grid-column-end: span 1" class="h-is-text-size-3 has-text-grey-light has-text-weight-light mb-2"><span>Account</span></div>
+                    <div style="grid-column-end: span 2" class="h-is-text-size-3 has-text-grey-light has-text-weight-light mb-2"><span>Hbar Amount</span></div>
                     <div/>
                 </template>
                 <template v-else>
-                    <div style="grid-column-end: span 1"
-                         class="h-is-text-size-3 has-text-grey-light has-text-weight-light mb-2">Account
-                    </div>
-                    <div style="grid-column-end: span 1"
-                         class="h-is-text-size-3 has-text-grey-light has-text-weight-light mb-2">Hbar Amount
-                    </div>
+                    <div style="grid-column-end: span 1" class="h-is-text-size-3 has-text-grey-light has-text-weight-light mb-2"><span>Account</span></div>
+                    <div style="grid-column-end: span 1" class="h-is-text-size-3 has-text-grey-light has-text-weight-light mb-2"><span>Hbar Amount</span></div>
                     <div/>
-                    <div style="grid-column-end: span 1"
-                         class="h-is-text-size-3 has-text-grey-light has-text-weight-light mb-2">Account
-                    </div>
-                    <div style="grid-column-end: span 1"
-                         class="h-is-text-size-3 has-text-grey-light has-text-weight-light mb-2">Hbar Amount
-                    </div>
+                    <div style="grid-column-end: span 1" class="h-is-text-size-3 has-text-grey-light has-text-weight-light mb-2"><span>Account</span></div>
+                    <div style="grid-column-end: span 1" class="h-is-text-size-3 has-text-grey-light has-text-weight-light mb-2"><span>Hbar Amount</span></div>
                 </template>
 
                 <template v-for="i in hbarTransferLayout.rowCount" v-bind:key="i">
