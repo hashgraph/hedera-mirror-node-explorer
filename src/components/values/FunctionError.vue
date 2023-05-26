@@ -33,7 +33,7 @@
             <Property :custom-nb-col-class="customNbColClass" id="errorFunction">
                 <template v-slot:name>Signature</template>
                 <template v-slot:value>
-                    <HexaValue :byte-string="errorHash" show-none/>
+                    <HexaValue :byte-string="errorHash" :show-none="true"/>
                     <div class="h-is-extra-text h-is-text-size-3 should-wrap">{{ errorSignature }}</div>
                 </template>
             </Property>
