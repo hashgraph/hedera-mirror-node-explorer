@@ -75,7 +75,7 @@ export class ContractActionAnalyzer {
 
     public readonly error = computed(() => {
         let result: string|null
-        if (this.action?.value?.result_data_type == ResultDataType.ERROR) {
+        if (this.action?.value?.result_data_type != ResultDataType.OUTPUT) {
             result = this.action?.value?.result_data ?? null
         } else {
             result = null
