@@ -131,20 +131,22 @@ export function isSolidityPanic(message: string | null): boolean {
 
 export function decodeSolidityErrorMessage(message: string | null): string | null {
 
-    let result = message
+    let result: string|null
 
-    if (isSolidityError(result)) {
+    if (isSolidityError(message)) {
         const reason = ethers.utils.defaultAbiCoder.decode(
             ['string'],
-            ethers.utils.hexDataSlice(result ?? "", 4)
+            ethers.utils.hexDataSlice(message ?? "", 4)
         )
-        result = reason.toString() ?? result
-    } else if (isSolidityPanic(result)) {
+        result = reason.toString() ?? message
+    } else if (isSolidityPanic(message)) {
         const code = ethers.utils.defaultAbiCoder.decode(
             ['uint256'],
-            ethers.utils.hexDataSlice(result ?? "", 4)
+            ethers.utils.hexDataSlice(message ?? "", 4)
         )
-        result = 'Panic(0x' + parseInt(code.toString()).toString(16) + ')'  ?? result
+        result = 'Panic(0x' + parseInt(code.toString()).toString(16) + ')'  ?? message
+    } else {
+        result = null
     }
 
     return result
