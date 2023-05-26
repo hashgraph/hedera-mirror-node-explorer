@@ -38,7 +38,7 @@ export class ContractResultAnalyzer {
 
     public constructor(timestamp: Ref<string | null>) {
         this.timestamp = timestamp
-        this.functionCallAnalyzer = new FunctionCallAnalyzer(this.input, this.output, this.toId)
+        this.functionCallAnalyzer = new FunctionCallAnalyzer(this.input, this.output, this.error, this.toId)
     }
 
     public mount(): void {
@@ -117,6 +117,9 @@ export class ContractResultAnalyzer {
 
     private readonly output = computed(
         () => this.contractResult.value?.call_result ?? null)
+
+    private readonly error = computed(
+        () => this.contractResult.value?.error_message ?? null)
 
     private readonly updateContractResult = async () => {
         if (this.timestamp.value !== null) {

@@ -25,7 +25,15 @@
 <template>
 
   <div v-if="signature">
-    <div class="h-is-tertiary-text my-2">Arguments</div>
+
+    <div class="h-is-tertiary-text my-2">Input</div>
+
+    <Property :custom-nb-col-class="customNbColClass" id="function">
+      <template v-slot:name>Signature</template>
+        <template v-slot:value>
+          <SignatureValue :analyzer="analyzer"/>
+        </template>
+    </Property>
 
     <template v-for="arg in inputs" :key="arg.name">
       <Property :custom-nb-col-class="customNbColClass">
@@ -37,14 +45,14 @@
     </template>
 
   </div>
-  <div v-else>
+  <template v-else>
     <Property :custom-nb-col-class="customNbColClass" id="functionInput">
       <template v-slot:name>Input - Function & Args</template>
       <template v-slot:value>
         <HexaValue :byte-string="input" :show-none="true"/>
       </template>
     </Property>
-  </div>
+  </template>
 
 </template>
 
@@ -60,10 +68,11 @@ import HexaValue from "@/components/values/HexaValue.vue";
 import {FunctionCallAnalyzer} from "@/utils/analyzer/FunctionCallAnalyzer";
 import Property from "@/components/Property.vue";
 import FunctionValue from "@/components/values/FunctionValue.vue";
+import SignatureValue from "@/components/values/SignatureValue.vue";
 
 export default defineComponent({
   name: 'FunctionInput',
-  components: {FunctionValue, Property, HexaValue},
+  components: {SignatureValue, FunctionValue, Property, HexaValue},
   props: {
     analyzer: {
       type: Object as PropType<FunctionCallAnalyzer>,
@@ -76,7 +85,7 @@ export default defineComponent({
 
     const initialLoading = inject(initialLoadingKey, ref(false))
     return {
-      input: props.analyzer.input,
+      input: props.analyzer.normalizedInput,
       signature: props.analyzer.signature,
       functionHash: props.analyzer.functionHash,
       inputs: props.analyzer.inputs,
