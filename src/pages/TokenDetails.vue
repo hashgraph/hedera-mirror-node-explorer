@@ -89,23 +89,30 @@
           </template>
         </Property>
         <Property id="expiresAt">
-          <template v-slot:name>Expires at</template>
+          <template v-slot:name>
+            <span>Expires at</span>
+            <InfoTooltip label="Token expiry is not turned on yet. Value in this field is not relevant."/>
+          </template>
           <template v-slot:value>
             <TimestampValue :nano="true" :show-none="true" :timestamp="tokenInfo?.expiry_timestamp?.toString()"/>
           </template>
         </Property>
         <Property id="autoRenewPeriod">
-          <template v-slot:name>Auto Renew Period</template>
+          <template v-slot:name>
+            <span>Auto Renew Period</span>
+            <InfoTooltip label="Token auto-renew is not turned on yet. Value in this field is not relevant."/>
+          </template>
           <template v-slot:value>
-            <DurationValue v-if="false" v-bind:string-value="tokenInfo?.auto_renew_period?.toString()"/>
-            <span v-else class="has-text-grey">Not yet enabled</span>
+            <DurationValue v-bind:string-value="tokenInfo?.auto_renew_period?.toString()"/>
           </template>
         </Property>
         <Property id="autoRenewAccount">
-          <template v-slot:name>Auto Renew Account</template>
+          <template v-slot:name>
+            <span>Auto Renew Account</span>
+            <InfoTooltip label="Token auto-renew is not turned on yet. Value in this field is not relevant."/>
+          </template>
           <template v-slot:value>
-            <AccountLink v-if="false" :account-id="tokenInfo?.auto_renew_account" :show-none="true"/>
-            <span v-else class="has-text-grey">Not yet enabled</span>
+            <AccountLink :account-id="tokenInfo?.auto_renew_account" :show-none="true"/>
           </template>
         </Property>
         <Property id="freezeDefault">
@@ -319,12 +326,14 @@ import {makeTokenSymbol} from "@/schemas/HederaUtils";
 import {TokenInfoCache} from "@/utils/cache/TokenInfoCache";
 import {TokenInfoAnalyzer} from "@/components/token/TokenInfoAnalyzer";
 import ContractResultsSection from "@/components/contracts/ContractResultsSection.vue";
+import InfoTooltip from "@/components/InfoTooltip.vue";
 
 export default defineComponent({
 
   name: 'TokenDetails',
 
   components: {
+    InfoTooltip,
     ContractResultsSection,
     EVMAddress,
     TokenCustomFees,
