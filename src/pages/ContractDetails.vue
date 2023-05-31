@@ -98,19 +98,28 @@
               </template>
             </Property>
             <Property id="expiresAt">
-              <template v-slot:name>Expires at</template>
+              <template v-slot:name>
+                <span>Expires at</span>
+                <InfoTooltip label="Contract expiry is not turned on yet. Value in this field is not relevant."/>
+              </template>
               <template v-slot:value>
                 <TimestampValue v-bind:timestamp="contract?.expiration_timestamp ?? undefined" v-bind:show-none="true"/>
               </template>
             </Property>
             <Property id="autoRenewPeriod">
-              <template v-slot:name>Auto Renew Period</template>
+              <template v-slot:name>
+                <span>Auto Renew Period</span>
+                <InfoTooltip label="Contract auto-renew is not turned on yet. Value in this field is not relevant."/>
+              </template>
               <template v-slot:value>
                 <DurationValue v-bind:number-value="contract?.auto_renew_period ?? undefined"/>
               </template>
             </Property>
             <Property id="autoRenewAccount">
-              <template v-slot:name>Auto Renew Account</template>
+              <template v-slot:name>
+                <span>Auto Renew Account</span>
+                <InfoTooltip label="Contract auto-renew is not turned on yet. Value in this field is not relevant."/>
+              </template>
               <template v-slot:value>
                 <AccountLink :account-id="autoRenewAccount" :show-none="true" null-label="None"/>
               </template>
@@ -200,6 +209,7 @@ import router, {routeManager} from "@/router";
 import TransactionLink from "@/components/values/TransactionLink.vue";
 import EVMAddress from "@/components/values/EVMAddress.vue";
 import ContractResultsSection from "@/components/contracts/ContractResultsSection.vue";
+import InfoTooltip from "@/components/InfoTooltip.vue";
 
 const MAX_TOKEN_BALANCES = 3
 
@@ -208,6 +218,7 @@ export default defineComponent({
   name: 'ContractDetails',
 
   components: {
+    InfoTooltip,
     ContractResultsSection,
     EVMAddress,
     TransactionLink,
