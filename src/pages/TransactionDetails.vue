@@ -139,7 +139,11 @@
           </template>
         </Property>
         <Property id="maxFee">
-          <template v-slot:name>Max fee</template>
+          <template v-slot:name>
+            <span>Max fee</span>
+            <InfoTooltip v-if="showMaxFeeTooltip"
+                         label="Max fee limit does not include the hbar cost of gas consumed by transactions executed on the EVM."/>
+          </template>
           <template v-slot:value>
             <HbarAmount v-if="transaction" :amount="maxFee" :show-extra="true"
                         :timestamp="transaction.consensus_timestamp"/>
@@ -262,6 +266,7 @@ import {TransactionLocParser} from "@/utils/parser/TransactionLocParser";
 import {TransactionGroupAnalyzer} from "@/components/transaction/TransactionGroupAnalyzer";
 import {TransactionAnalyzer} from "@/components/transaction/TransactionAnalyzer";
 import {TransactionGroupCache} from "@/utils/cache/TransactionGroupCache";
+import InfoTooltip from "@/components/InfoTooltip.vue";
 
 const MAX_INLINE_CHILDREN = 9
 
@@ -270,6 +275,7 @@ export default defineComponent({
   name: 'TransactionDetails',
 
   components: {
+    InfoTooltip,
     TokenLink,
     TopicMessage,
     ContractResult,
@@ -331,6 +337,9 @@ export default defineComponent({
     const topicMessageLookup = TopicMessageCache.instance.makeLookup(messageTimestamp)
     onMounted(() => topicMessageLookup.mount())
     onBeforeUnmount(() => topicMessageLookup.unmount())
+
+    const showMaxFeeTooltip = computed(
+        () => transactionAnalyzer.chargedFee.value > transactionAnalyzer.maxFee.value)
 
     const transactionDetail = computed(() => {
       let result: TransactionDetail|null
@@ -401,6 +410,7 @@ export default defineComponent({
       isSmallScreen,
       isLargeScreen,
       isTouchDevice,
+      showMaxFeeTooltip,
       transactionId: transactionLocParser.transactionId,
       transaction: transactionDetail,
       formattedTransactionId: transactionAnalyzer.formattedTransactionId,
