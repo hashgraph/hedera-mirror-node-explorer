@@ -140,9 +140,9 @@
         </Property>
         <Property id="maxFee">
           <template v-slot:name>
-            <span>Max fee</span>
+            <span>Max Fee</span>
             <InfoTooltip v-if="showMaxFeeTooltip"
-                         label="Max fee limit does not include the hbar cost of gas consumed by transactions executed on the EVM."/>
+                         label="Max Fee limit does not include the hbar cost of gas consumed by transactions executed on the EVM."/>
           </template>
           <template v-slot:value>
             <HbarAmount v-if="transaction" :amount="maxFee" :show-extra="true"
