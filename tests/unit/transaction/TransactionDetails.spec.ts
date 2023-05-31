@@ -115,6 +115,7 @@ describe("TransactionDetails.vue", () => {
         expect(wrapper.get("#transactionHashValue").text()).toBe("a012 9612 32ed 7d28 4283 6e95 f7e9 c435 6fdf e2de 0819 9091 701a 969c 1d1f d936 71d3 078e e83b 28fb 460a 88b4 cbd8 ecd2Copy to Clipboard")
         // expect(wrapper.get("#netAmountValue").text()).toBe("0.00000000$0.0000")
         expect(wrapper.get("#chargedFeeValue").text()).toBe("0.00470065$0.00116")
+        expect(wrapper.get("#maxFeeName").text()).toBe("Max Fee")
         expect(wrapper.get("#maxFeeValue").text()).toBe("1.00000000$0.24603")
 
         expect(wrapper.get("#memoValue").text()).toBe("None")
@@ -196,6 +197,11 @@ describe("TransactionDetails.vue", () => {
         expect(wrapper.get("#transactionTypeValue").text()).toBe("CONTRACT CALL")
         expect(wrapper.get("#entityId").text()).toBe("Contract ID" + contractId)
         expect(wrapper.get("#durationValue").text()).toBe("None")
+
+        expect(wrapper.get("#chargedFeeName").text()).toBe("Charged Fee")
+        expect(wrapper.get("#chargedFeeValue").text()).toBe("0.95515604$0.23500")
+        expect(wrapper.get("#maxFeeName").text()).toBe("Max FeeMax Fee limit does not include the hbar cost of gas consumed by transactions executed on the EVM.")
+        expect(wrapper.get("#maxFeeValue").text()).toBe("0.20000000$0.04921")
 
         expect(wrapper.findComponent(ContractResult).exists()).toBe(true)
         expect(wrapper.findComponent(ContractResult).text()).toMatch(RegExp("^Contract Result"))

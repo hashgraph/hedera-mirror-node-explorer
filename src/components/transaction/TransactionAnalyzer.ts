@@ -76,6 +76,9 @@ export class TransactionAnalyzer {
         return isNaN(result) ? -9999 : result
     })
 
+    public readonly chargedFee: ComputedRef<number> = computed(
+        () => this.transaction.value?.charged_tx_fee ?? 0)
+
     public readonly formattedTransactionId: ComputedRef<string|null> = computed(() => {
         const transaction_id = this.transaction.value?.transaction_id
         return transaction_id ? normalizeTransactionId(transaction_id, true) : null
