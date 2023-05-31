@@ -577,7 +577,7 @@ export const SAMPLE_CONTRACTCALL_TRANSACTIONS = {
             "charged_tx_fee": 95515604,
             "consensus_timestamp": "1646665766.574738471",
             "entity_id": "0.0.749774",
-            "max_fee": "10000000000",
+            "max_fee": "20000000",
             "memo_base64": "TWlycm9yIE5vZGUgYWNjZXB0YW5jZSB0ZXN0OiAyMDIyLTAzLTA3VDE1OjA5OjI2LjA2NjY4MDk3N1ogRXhlY3V0ZSBjb250cmFjdA==",
             "name": "CONTRACTCALL",
             "node": "0.0.3",
