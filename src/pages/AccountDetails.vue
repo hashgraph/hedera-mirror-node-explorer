@@ -172,16 +172,21 @@
         </Property>
 
         <Property id="expiresAt">
-          <template v-slot:name>Expires at</template>
+          <template v-slot:name>
+            <span>Expires at</span>
+            <InfoTooltip label="Account expiry is not turned on yet. Value in this field is not relevant."/>
+          </template>
           <template v-slot:value>
             <TimestampValue v-bind:show-none="true" v-bind:timestamp="account?.expiry_timestamp ?? undefined"/>
           </template>
         </Property>
         <Property id="autoRenewPeriod">
-          <template v-slot:name>Auto Renew Period</template>
+          <template v-slot:name>
+            <span>Auto Renew Period</span>
+            <InfoTooltip label="Account auto-renew is not turned on yet. Value in this field is not relevant."/>
+          </template>
           <template v-slot:value>
-            <DurationValue v-if="false" v-bind:number-value="account?.auto_renew_period ?? undefined"/>
-            <span v-else class="has-text-grey">Not yet enabled</span>
+            <DurationValue v-bind:number-value="account?.auto_renew_period ?? undefined"/>
           </template>
         </Property>
         <Property id="maxAutoAssociation">
@@ -298,6 +303,7 @@ import AliasValue from "@/components/values/AliasValue.vue";
 import {NodeAnalyzer} from "@/utils/analyzer/NodeAnalyzer";
 import EVMAddress from "@/components/values/EVMAddress.vue";
 import ApproveAllowanceSection from "@/components/allowances/ApproveAllowanceSection.vue";
+import InfoTooltip from "@/components/InfoTooltip.vue";
 
 const MAX_TOKEN_BALANCES = 10
 
@@ -306,6 +312,7 @@ export default defineComponent({
   name: 'AccountDetails',
 
   components: {
+    InfoTooltip,
     ApproveAllowanceSection,
     EVMAddress,
     AliasValue,
