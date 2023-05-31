@@ -182,7 +182,7 @@ describe("NodeDetails.vue", () => {
         expect(wrapper.get("#memoValue").text()).toBe("Account Dude Memo in clear")
         expect(wrapper.find("#aliasValue").exists()).toBe(false)
         expect(wrapper.get("#expiresAtValue").text()).toBe("3:33:21.4109 AMApr 11, 2022, UTC")
-        expect(wrapper.get("#autoRenewPeriodValue").text()).toBe("Not yet enabled")
+        expect(wrapper.get("#autoRenewPeriodValue").text()).toBe("77d 3h 40min")
         expect(wrapper.get("#maxAutoAssociationValue").text()).toBe("10")
         expect(wrapper.get("#receiverSigRequiredValue").text()).toBe("true")
 
