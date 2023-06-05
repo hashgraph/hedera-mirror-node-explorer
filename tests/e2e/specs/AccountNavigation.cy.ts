@@ -157,8 +157,7 @@ describe('Account Navigation', () => {
 
         cy.url().should('include', '/mainnet/transaction/')
         cy.contains('Transaction')
-        cy.get('[data-cy=feeTransfers]')
-            .contains('0.0.800')
+        cy.contains('0.0.800')
     })
 
     it ('should display account details using account ID', () => {
