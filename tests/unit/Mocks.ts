@@ -1141,6 +1141,31 @@ export const SAMPLE_REVERT_CONTRACT_RESULT_ACTIONS = {
         }], "links": {"next": null}
 }
 
+
+export const SAMPLE_ERROR_RESULTS = {
+    "results": [
+        {
+            "address": null,
+            "amount": 0,
+            "bloom": "0x",
+            "call_result": "0x",
+            "contract_id": null,
+            "created_contract_ids": [],
+            "error_message": "INSUFFICIENT_GAS",
+            "from": "0x0000000000000000000000000000000000000386",
+            "function_parameters": "0xd09de08a",
+            "gas_limit": 21500,
+            "gas_used": 21500,
+            "timestamp": "1685737274.278536163",
+            "to": null,
+            "hash": "0x9059179bccd15bfabb246dd24572f4556cbf3a5dbb1d335759e593a7a6a8abed"
+        }
+    ],
+    "links": {
+        "next": null
+    }
+}
+
 // https://mainnet-public.mirrornode.hedera.com/api/v1/transactions?limit=2&transactiontype=CRYPTOTRANSFER
 
 export const SAMPLE_CRYPTO_TRANSACTIONS = {

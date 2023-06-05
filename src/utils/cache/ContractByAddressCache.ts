@@ -18,7 +18,7 @@
  *
  */
 
-import {AccountBalanceTransactions, ContractResponse} from "@/schemas/HederaSchemas";
+import {ContractResponse} from "@/schemas/HederaSchemas";
 import {EntityCache} from "@/utils/cache/base/EntityCache";
 import axios from "axios";
 import {ContractByIdCache} from "@/utils/cache/ContractByIdCache";

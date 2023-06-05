@@ -161,8 +161,8 @@ describe('Token Navigation', () => {
             .eq(0)
             .click()
 
-        cy.url().should('include', '/mainnet/transaction/1677545104.611658003')
-        cy.contains('Transaction 0.0.939841@1677545092.878406670')
+        cy.url().should('include', '/mainnet/transaction/1685904941.951445727')
+        cy.contains('0.0.2159637@1685904926.973808295')
         cy.contains('CONTRACT CALL')
         cy.contains('Token ID' + proxiedTokenId)
     })
