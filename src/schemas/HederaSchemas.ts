@@ -481,40 +481,40 @@ export interface ContractResultsResponse {
 }
 
 export interface ContractResult {
-    amount: number | null | undefined
-    bloom: string | null | undefined
-    call_result: string | null | undefined
-    contract_id: string | null | undefined
-    created_contract_ids: Array<string> | null | undefined
-    error_message: string | null | undefined
-    from: string | undefined
-    function_parameters: string | undefined
-    gas_limit: number | undefined
-    gas_used: number | null | undefined
-    hash: string | null | undefined
-    result: string | undefined
-    status: string | undefined
-    timestamp: string | undefined
-    to: string | undefined
+    amount: number | null
+    bloom: string | null
+    call_result: string | null
+    contract_id: string | null
+    created_contract_ids: Array<string> | null
+    error_message: string | null
+    from: string
+    function_parameters: string
+    gas_limit: number
+    gas_used: number | null
+    hash: string | null
+    result: string
+    status: string
+    timestamp: string
+    to: string | null
 }
 
 export interface ContractResultDetails extends ContractResult {
-    access_list: string | null | undefined
-    block_gas_used: number | null | undefined // integer
-    block_hash: string | null | undefined
-    block_number: number | null | undefined // integer
-    chain_id: string | null | undefined
-    gas_price: string | null | undefined
-    logs: ContractResultLog[] | undefined
-    max_fee_per_gas: string | null | undefined
-    max_priority_fee_per_gas: string | null | undefined
-    nonce: number | null | undefined // integer
-    r: string | null | undefined
-    s: string | null | undefined
-    state_changes: ContractResultStateChange[] | undefined
-    transaction_index: number | null | undefined // integer
-    type: number | null | undefined // The type of the wrapped ethereum transaction, 0 (Pre-Eip1559) or 2 (Post-Eip1559)
-    v: number | null | undefined
+    access_list: string | null
+    block_gas_used: number | null // integer
+    block_hash: string | null
+    block_number: number | null // integer
+    chain_id: string | null
+    gas_price: string | null
+    logs: ContractResultLog[]
+    max_fee_per_gas: string | null
+    max_priority_fee_per_gas: string | null
+    nonce: number | null // integer
+    r: string | null
+    s: string | null
+    state_changes: ContractResultStateChange[]
+    transaction_index: number | null // integer
+    type: number | null // The type of the wrapped ethereum transaction, 0 (Pre-Eip1559) or 2 (Post-Eip1559)
+    v: number | null
 }
 
 export interface ContractResultLog {
