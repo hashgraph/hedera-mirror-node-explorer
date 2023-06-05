@@ -41,6 +41,12 @@
             <StringValue :string-value="contractResult?.result"/>
           </template>
         </Property>
+        <Property id="evm-hash">
+          <template v-slot:name>EVM Transaction Hash</template>
+          <template v-slot:value>
+              <HexaValue v-bind:byteString="contractResult?.hash ?? ''" v-bind:show-none="true"/>
+          </template>
+        </Property>
         <Property id="from">
           <template v-slot:name>From</template>
           <template v-slot:value>
@@ -130,12 +136,14 @@ import {ContractResultAnalyzer} from "@/utils/analyzer/ContractResultAnalyzer";
 import FunctionInput from "@/components/values/FunctionInput.vue";
 import FunctionResult from "@/components/values/FunctionResult.vue";
 import FunctionError from "@/components/values/FunctionError.vue";
+import HexaValue from "@/components/values/HexaValue.vue";
 
 export default defineComponent({
 
   name: 'ContractResult',
 
   components: {
+    HexaValue,
     FunctionError,
     FunctionResult,
     FunctionInput,
