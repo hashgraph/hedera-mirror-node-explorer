@@ -349,6 +349,7 @@ export default defineComponent({
         for (const t of transactionGroupAnalyzer.transactions.value ?? []) {
           if (consensusTimestamp == t.consensus_timestamp) {
             result = t
+            break
           }
         }
       } else {
