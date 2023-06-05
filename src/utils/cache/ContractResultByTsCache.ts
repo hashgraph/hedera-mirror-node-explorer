@@ -49,11 +49,16 @@ export class ContractResultByTsCache extends EntityCache<string, ContractResultD
         const contractId = contractResult?.contract_id ?? null
         if (contractId !== null) {
             result = await this.loadContractResultDetail(contractId, timestamp)
+            if (result !== null) {
+                ContractResultByHashCache.instance.updateWithContractResult(result);
+            }
         } else {
-            result = null
-        }
-        if (result !== null) {
-            ContractResultByHashCache.instance.updateWithContractResult(result);
+            const ethereumHash = contractResult?.hash ?? null
+            if (ethereumHash !== null) {
+                result = await ContractResultByHashCache.instance.lookup(ethereumHash)
+            } else {
+                result = null
+            }
         }
         return  Promise.resolve(result)
     }
