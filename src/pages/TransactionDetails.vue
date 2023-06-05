@@ -81,7 +81,7 @@
         <Property id="blockNumber">
           <template v-slot:name>Block</template>
           <template v-slot:value>
-            <BlockLink :block-number="blockNumber"/>
+            <BlockLink :block-number="blockNumber ?? undefined"/>
           </template>
         </Property>
         <Property id="nodeAccount">
@@ -116,7 +116,7 @@
           <template v-slot:value>
             <EntityLink v-if="entity?.routeName"
                         v-bind:entity-id="transaction?.entity_id"
-                        v-bind:route-name="routeName"
+                        v-bind:route-name="routeName ?? undefined"
                         v-bind:show-extra="true"
             />
             <span v-else>
@@ -197,7 +197,7 @@
           <template v-slot:name>Child Transactions</template>
           <template v-slot:value>
             <router-link v-if="displayAllChildrenLinks"
-                         :to="routeManager.makeRouteToTransactionsById(transactionId)">
+                         :to="routeManager.makeRouteToTransactionsById(transactionId ?? '')">
               {{ 'Show all ' + childTransactions.length + ' transactions' }}
             </router-link>
             <div v-else>
@@ -218,7 +218,7 @@
       </template>
       <template v-slot:content>
         <div class="h-is-property-text">
-          <TransferGraphSection v-bind:transaction="transaction"/>
+          <TransferGraphSection v-bind:transaction="transaction ?? undefined"/>
         </div>
       </template>
     </DashboardCard>

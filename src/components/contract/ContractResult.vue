@@ -50,13 +50,13 @@
         <Property id="from">
           <template v-slot:name>From</template>
           <template v-slot:value>
-            <EVMAddress :address="contractResult?.from" :id="fromId" :compact="isSmallScreen && !isMediumScreen"/>
+            <EVMAddress :address="contractResult?.from" :id="fromId ?? undefined" :compact="isSmallScreen && !isMediumScreen"/>
           </template>
         </Property>
         <Property id="to">
           <template v-slot:name>To</template>
           <template v-slot:value>
-            <EVMAddress :address="contractResult?.to" :id="toId" :compact="isSmallScreen && !isMediumScreen"/>
+            <EVMAddress :address="contractResult?.to ?? undefined" :id="toId ?? undefined" :compact="isSmallScreen && !isMediumScreen"/>
           </template>
         </Property>
 
@@ -69,7 +69,7 @@
         <Property id="type">
           <template v-slot:name>Type</template>
           <template v-slot:value>
-            <StringValue :string-value="contractType"/>
+            <StringValue :string-value="contractType ?? undefined"/>
           </template>
         </Property>
         <Property id="gasLimit">
@@ -99,7 +99,7 @@
         <Property id="gasPrice">
           <template v-slot:name>Gas Price</template>
           <template v-slot:value>
-            <HbarAmount :amount="gasPrice" :timestamp="contractResult?.timestamp" :show-extra="true"/>
+            <HbarAmount :amount="gasPrice ?? undefined" :timestamp="contractResult?.timestamp" :show-extra="true"/>
           </template>
         </Property>
       </template>
