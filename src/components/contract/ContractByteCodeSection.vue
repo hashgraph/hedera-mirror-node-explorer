@@ -46,7 +46,7 @@
             <template v-slot:name>IPFS Hash</template>
             <template v-slot:value>
                 <StringValue :string-value="ipfsHash"/>
-                <div class="has-text-grey">
+                <div v-if="ipfsHash" class="has-text-grey">
                     <div v-if="ipfsMetadata">
                         <span class="icon fas fa-check-circle has-text-success is-small mt-1 mr-1"/>
                         <span>Metadata are available on <a :href="ipfsURL" :target="ipfsMetadata">IPFS</a></span>

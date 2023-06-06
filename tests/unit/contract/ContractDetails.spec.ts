@@ -100,7 +100,7 @@ describe("ContractDetails.vue", () => {
         expect(wrapper.get("#evmAddress").text()).toBe("EVM Address:0x00000000000000000000000000000000000b70cfCopy to Clipboard")
         expect(wrapper.get("#code").text()).toBe("Runtime BytecodeNone")
         expect(wrapper.get("#solcVersion").text()).toBe("Compiler VersionNone")
-        expect(wrapper.get("#ipfsHash").text()).toBe("IPFS HashNoneMetadata are not available on IPFS")
+        expect(wrapper.get("#ipfsHash").text()).toBe("IPFS HashNone")
         expect(wrapper.get("#swarmHash").text()).toBe("SWARM HashNone")
 
         expect(wrapper.findComponent(ContractResultTable).exists()).toBe(true)
