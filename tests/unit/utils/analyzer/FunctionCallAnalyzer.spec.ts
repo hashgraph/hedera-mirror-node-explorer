@@ -31,7 +31,7 @@ describe("FunctionCallAnalyzer.spec.ts", () => {
 
     test("basic flow", async () => {
 
-        const abi = require('../../../public/abi/IHederaTokenService.json')
+        const abi = require('../../../../public/abi/IHederaTokenService.json')
         const mock = new MockAdapter(axios);
         const matcher1 = "http://localhost/abi/IHederaTokenService.json"
         mock.onGet(matcher1).reply(200, abi)
