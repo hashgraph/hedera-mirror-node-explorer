@@ -102,6 +102,12 @@
             <HbarAmount :amount="gasPrice ?? undefined" :timestamp="contractResult?.timestamp" :show-extra="true"/>
           </template>
         </Property>
+        <Property id="ethereumNonce">
+          <template v-slot:name>Ethereum Nonce</template>
+          <template v-slot:value>
+            <PlainAmount :amount="ethereumNonce" none-label="None"/>
+          </template>
+        </Property>
       </template>
 
     </DashboardCard>
@@ -196,6 +202,7 @@ export default defineComponent({
       functionHash: contractResultAnalyzer.functionCallAnalyzer.functionHash,
       signature: contractResultAnalyzer.functionCallAnalyzer.signature,
       contractType: contractResultAnalyzer.contractType,
+      ethereumNonce: contractResultAnalyzer.ethereumNonce,
     }
   },
 });

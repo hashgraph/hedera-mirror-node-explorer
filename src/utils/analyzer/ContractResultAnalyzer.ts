@@ -88,6 +88,9 @@ export class ContractResultAnalyzer {
     public errorMessage = computed(
         () => decodeSolidityErrorMessage(this.contractResult.value?.error_message ?? null))
 
+    public ethereumNonce = computed(
+        () => this.contractResult.value?.nonce ?? null)
+
     public readonly contractType = computed(() => {
         let result: string|null
         const typeValue = this.contractResult.value?.type ?? null
