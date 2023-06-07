@@ -130,12 +130,6 @@
                 <StringValue :string-value="contract?.max_automatic_token_associations?.toString()"/>
               </template>
             </Property>
-            <Property id="code">
-              <template v-slot:name>Runtime Bytecode</template>
-              <template v-slot:value>
-                <ByteCodeValue :byte-code="contract?.runtime_bytecode ?? undefined"/>
-              </template>
-            </Property>
       </template>
 
       <template v-slot:rightContent>
@@ -173,6 +167,8 @@
       </template>
     </DashboardCard>
 
+    <ContractByteCodeSection :contract-id="normalizedContractId"/>
+
     <ContractResultsSection :contract-id="normalizedContractId"/>
 
   </section>
@@ -197,7 +193,6 @@ import HbarAmount from "@/components/values/HbarAmount.vue";
 import TokenAmount from "@/components/values/TokenAmount.vue";
 import BlobValue from "@/components/values/BlobValue.vue";
 import StringValue from "@/components/values/StringValue.vue";
-import ByteCodeValue from "@/components/values/ByteCodeValue.vue";
 import Footer from "@/components/Footer.vue";
 import NotificationBanner from "@/components/NotificationBanner.vue";
 import {EntityID} from "@/utils/EntityID";
@@ -208,6 +203,7 @@ import {networkRegistry} from "@/schemas/NetworkRegistry";
 import router, {routeManager} from "@/router";
 import TransactionLink from "@/components/values/TransactionLink.vue";
 import EVMAddress from "@/components/values/EVMAddress.vue";
+import ContractByteCodeSection from "@/components/contract/ContractByteCodeSection.vue";
 import ContractResultsSection from "@/components/contracts/ContractResultsSection.vue";
 import InfoTooltip from "@/components/InfoTooltip.vue";
 
@@ -218,11 +214,11 @@ export default defineComponent({
   name: 'ContractDetails',
 
   components: {
+    ContractByteCodeSection,
     InfoTooltip,
     ContractResultsSection,
     EVMAddress,
     TransactionLink,
-    ByteCodeValue,
     Property,
     NotificationBanner,
     Footer,
