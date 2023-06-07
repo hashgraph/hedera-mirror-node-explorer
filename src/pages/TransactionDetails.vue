@@ -164,7 +164,7 @@
           </template>
         </Property>
         <Property id="nonce">
-          <template v-slot:name>Nonce</template>
+          <template v-slot:name>Transaction Nonce</template>
           <template v-slot:value>
             {{ transaction?.nonce }}
           </template>
