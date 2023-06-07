@@ -37,17 +37,18 @@
             </div>
             <div v-else class="h-has-pill has-background-danger mr-3 h-is-text-size-2 mt-3">FAILURE</div>
           </div>
-          <span v-if="routeToAllTransactions && isLargeScreen" id="allTransactionsLink" class="is-inline-block mt-2">
-          <router-link :to="routeToAllTransactions">
-            <span class="h-is-property-text has-text-grey">Show all transactions with the same ID</span>
-          </router-link>
-        </span>
         </div>
         <span v-if="routeToAllTransactions && !isLargeScreen">
           <router-link :to="routeToAllTransactions">
             <span class="h-is-property-text has-text-grey">Show all transactions with the same ID</span>
           </router-link>
         </span>
+      </template>
+
+      <template v-slot:control>
+        <router-link v-if="routeToAllTransactions && isLargeScreen" id="allTransactionsLink" :to="routeToAllTransactions">
+          <span class="h-is-property-text has-text-grey">Show all transactions with the same ID</span>
+        </router-link>
       </template>
 
       <template v-slot:content>
