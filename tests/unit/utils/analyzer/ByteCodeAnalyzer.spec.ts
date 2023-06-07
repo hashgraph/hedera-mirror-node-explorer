@@ -20,13 +20,11 @@
  *
  */
 
-import {FunctionCallAnalyzer, NameTypeValue} from "@/utils/analyzer/FunctionCallAnalyzer";
-import {Ref, ref} from "vue";
+import {ref} from "vue";
 import {flushPromises} from "@vue/test-utils";
 import MockAdapter from "axios-mock-adapter";
 import axios from "axios";
-import {BigNumber} from "ethers";
-import { ByteCodeAnalyzer } from "@/utils/analyzer/ByteCodeAnalyzer";
+import {ByteCodeAnalyzer} from "@/utils/analyzer/ByteCodeAnalyzer";
 
 describe("ByteCodeAnalyzer.spec.ts", () => {
 

@@ -69,7 +69,6 @@ export class ByteCodeAnalyzer {
         if (this.byteCode.value) {
             try {
                 result = decode(this.byteCode.value)
-                console.log("result=" + JSON.stringify(result))
             } catch {
                 result = null
             }
