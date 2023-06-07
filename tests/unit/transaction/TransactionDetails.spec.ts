@@ -42,6 +42,7 @@ import {
     SAMPLE_NETWORK_EXCHANGERATE,
     SAMPLE_NETWORK_NODES,
     SAMPLE_PARENT_CHILD_TRANSACTIONS,
+    SAMPLE_SAME_ID_NOT_PARENT_TRANSACTIONS,
     SAMPLE_SCHEDULING_SCHEDULED_TRANSACTIONS,
     SAMPLE_SYSTEM_CONTRACT_CALL_TRANSACTIONS,
     SAMPLE_TOKEN,
@@ -656,6 +657,42 @@ describe("TransactionDetails.vue", () => {
         wrapper.unmount()
         await flushPromises()
     });
+
+    it("Should NOT display a link to the parent transaction", async () => {
+
+            await router.push("/") // To avoid "missing required param 'network'" error
+
+            const NONCE_1 = SAMPLE_SAME_ID_NOT_PARENT_TRANSACTIONS.transactions[1]
+            const matcher1 = "/api/v1/transactions"
+            mock.onGet(matcher1).reply((config: AxiosRequestConfig) => {
+                if (config.params.timestamp == NONCE_1.consensus_timestamp) {
+                    return [200, {transactions: [NONCE_1]}]
+                } else {
+                    return [404]
+                }
+            });
+            const matcher11 = "/api/v1/transactions/" + NONCE_1.transaction_id
+            mock.onGet(matcher11).reply(200, SAMPLE_SAME_ID_NOT_PARENT_TRANSACTIONS);
+
+            const wrapper = mount(TransactionDetails, {
+                global: {
+                    plugins: [router, Oruga]
+                },
+                props: {
+                    transactionLoc: NONCE_1.consensus_timestamp,
+                },
+            });
+
+            await flushPromises()
+            // console.log(wrapper.html())
+            // console.log(wrapper.text())
+
+            expect(wrapper.text()).toMatch(RegExp("^Transaction " + normalizeTransactionId(NONCE_1.transaction_id, true)))
+            expect(wrapper.find("#parentTransaction").exists()).toBe(false)
+
+            wrapper.unmount()
+            await flushPromises()
+        });
 
     it("Should display transaction details with account/token association", async () => {
 

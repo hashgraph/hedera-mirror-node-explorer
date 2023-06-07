@@ -41,7 +41,7 @@ export class TransactionGroupAnalyzer {
                 break
             }
         }
-        return result
+        return this.childTransactions.value.length ? result : null
     })
 
     public readonly childTransactions = computed(() => {
