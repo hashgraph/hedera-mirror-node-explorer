@@ -310,7 +310,7 @@ export interface TokenInfo {
 
     admin_key: Key | null | undefined
     auto_renew_account: string | null | undefined   // Network entity ID in the format of shard.realm.num
-    auto_renew_period: string | number | null | undefined
+    auto_renew_period: number | null | undefined
     created_timestamp: string | undefined
     decimals: string | undefined
     deleted: boolean | null | undefined
