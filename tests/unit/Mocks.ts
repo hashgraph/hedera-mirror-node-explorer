@@ -28,7 +28,7 @@ import {TokenRelationshipResponse} from "@/schemas/HederaSchemas";
 export const SAMPLE_TOKEN = {
     "admin_key": null,
     "auto_renew_account": "0.0.29612329",
-    "auto_renew_period": "7776000",
+    "auto_renew_period": 7776000,
     "created_timestamp": "1644660150.233378000",
     "custom_fees": {
         "created_timestamp": "1644660150.233378000",
@@ -123,7 +123,7 @@ export const SAMPLE_TOKEN = {
 export const SAMPLE_TOKEN_DUDE = {
     "admin_key": null,
     "auto_renew_account": "0.0.29612329",
-    "auto_renew_period": "7776000",
+    "auto_renew_period": 7776000,
     "created_timestamp": "1644660150.233378000",
     "custom_fees": {
         "created_timestamp": "1644660150.233378000",
@@ -266,7 +266,7 @@ export const SAMPLE_NONFUNGIBLE = {
         "key": "c1a8c8c5b446ce053b6eff4fe4f0192f76535ea9ed6b2b91981177ba237f4b5d"
     },
     "auto_renew_account": "0.0.700000",
-    "auto_renew_period": "7776000",
+    "auto_renew_period": 7776000,
     "created_timestamp": "1646580567.712861636",
     "custom_fees": {
         "created_timestamp": "1646580567.712861636",
@@ -374,7 +374,7 @@ export const SAMPLE_NONFUNGIBLE_DUDE =
             "key": "c1a8c8c5b446ce053b6eff4fe4f0192f76535ea9ed6b2b91981177ba237f4b5d"
         },
         "auto_renew_account": "0.0.700000",
-        "auto_renew_period": "7776000",
+        "auto_renew_period": 7776000,
         "created_timestamp": "1646580567.712861636",
         "custom_fees": {
             "created_timestamp": "1646580567.712861636",

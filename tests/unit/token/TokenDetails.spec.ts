@@ -100,7 +100,7 @@ describe("TokenDetails.vue", () => {
         expect(wrapper.get("#maxSupplyValue").text()).toBe("Infinite")
         expect(wrapper.get("#decimalsValue").text()).toBe("0")
         expect(wrapper.get("#evmAddress").text()).toMatch(
-            RegExp("^EVM Address:0x0000000000000000000000000000000001c49eecCopy to Clipboard"))
+            RegExp("^EVM Address:0x0000000000000000000000000000000001c49eecCopy"))
 
         expect(wrapper.text()).toMatch("Balances")
         expect(wrapper.findComponent(TokenBalanceTable).exists()).toBe(true)
@@ -363,7 +363,7 @@ describe("TokenDetails.vue", () => {
 
         const testTokenId = "0.0.91961"
         const testTokenSymbol = SAMPLE_TOKEN_WITHOUT_KEYS.symbol
-        const testTokenIdWithChecksum = "0.0.91961-mkkua"
+        const testTokenIdWithChecksum = "0.0.91961Copy-mkkua"
         const testTokenEVMAddress = "0x0000000000000000000000000000000000016739"
         const matcher1 = "/api/v1/tokens/" + testTokenId
         mock.onGet(matcher1).reply(200, SAMPLE_TOKEN_WITHOUT_KEYS);
@@ -385,7 +385,7 @@ describe("TokenDetails.vue", () => {
 
         expect(wrapper.text()).toMatch(
             RegExp("^Non Fungible Token " + testTokenSymbol + 'Token ID:' + testTokenIdWithChecksum
-                + 'EVM Address:' + testTokenEVMAddress + "Copy to Clipboard"))
+                + 'EVM Address:' + testTokenEVMAddress + "Copy"))
         expect(wrapper.text()).toMatch("Token is deleted")
 
         wrapper.unmount()

@@ -126,7 +126,7 @@ describe("AccountDetails.vue", () => {
         expect(wrapper.get("#receiverSigRequiredValue").text()).toBe("false")
 
         expect(wrapper.get("#evmAddress").text()).toBe(
-            "EVM Address:0x00000000000000000000000000000000000b2607Copy to Clipboard")
+            "EVM Address:0x00000000000000000000000000000000000b2607Copy")
         expect(wrapper.get("#ethereumNonceValue").text()).toBe("0")
 
         expect(wrapper.get("#stakedToName").text()).toBe("Staked to")
