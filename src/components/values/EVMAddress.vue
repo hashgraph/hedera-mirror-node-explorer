@@ -26,21 +26,14 @@
   <div v-if="address">
     <div :class="{'is-flex': isSmallScreen, 'h-is-text-size-3': !hasCustomFont, 'is-family-monospace': !hasCustomFont}"
          class="is-inline-block" style="line-height: 20px">
-      <div class="shy-scope mr-1" style="display: inline-block; position: relative;">
-        <span class="has-text-grey">{{ nonSignificantPart }}</span>
-        <span>{{ significantPart }}</span>
-        <div v-if="address" id="shyCopyButton" class="shy"
-             style="position: absolute; left: 0; top: 0; width: 100%; height: 100%">
-          <div style="position: absolute; left: 0; top: 0; width: 100%; height: 100%; background: rgba(0, 0, 0, 0.50)"></div>
-          <div v-if="enableCopy"
-               style="position: absolute; display: inline-block; left: 50%; top: 50%; transform: translate(-50%, -50%);">
-            <button class="button is-dark h-is-text-size-3"
-                    v-on:click.stop="copyToClipboard">Copy to Clipboard</button>
-          </div>
-        </div>
-      </div>
+      <Copyable :content-to-copy="address ?? ''" :enable-copy="enableCopy">
+        <template v-slot:content>
+          <span class="has-text-grey">{{ nonSignificantPart }}</span>
+          <span>{{ significantPart }}</span>
+        </template>
+      </Copyable>
       <span v-if="entityId && showId">
-        <span>(</span>
+        <span class="ml-1">(</span>
         <router-link v-if="isContract" :to="{name: 'ContractDetails', params: {contractId: entityId}}">{{ entityId }}</router-link>
         <router-link v-else-if="isAccount" :to="{name: 'AccountDetails', params: {accountId: entityId}}">{{ entityId }}</router-link>
         <span v-else>{{ entityId }}</span>
@@ -66,9 +59,11 @@ import {systemContractRegistry} from "@/schemas/SystemContractRegistry";
 import {AccountByAddressCache} from "@/utils/cache/AccountByAddressCache";
 import {EthereumAddress} from "@/utils/EthereumAddress";
 import {AccountBalanceTransactions} from "@/schemas/HederaSchemas";
+import Copyable from "@/components/Copyable.vue";
 
 export default defineComponent({
   name: "EVMAddress",
+  components: {Copyable},
   props: {
     address: String,
     id: String,
@@ -189,14 +184,4 @@ export default defineComponent({
 <!--                                                       STYLE                                                     -->
 <!-- --------------------------------------------------------------------------------------------------------------- -->
 
-<style scoped>
-
-.shy {
-  display: none
-}
-
-.shy-scope:hover > .shy {
-  display: block;
-}
-
-</style>
+<style />
