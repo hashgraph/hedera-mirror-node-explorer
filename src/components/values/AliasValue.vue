@@ -28,6 +28,7 @@
          style="line-height: 20px">
       <Copyable :content-to-copy="hexValue">
         <template v-slot:content>
+          <span class="has-text-grey">0x</span>
           <span>{{ hexValue }}</span>
         </template>
       </Copyable>
