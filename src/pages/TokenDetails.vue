@@ -39,7 +39,11 @@
         <div id="entityId" class="headline-grid h-is-tertiary-text mt-3 is-align-items-baseline">
           <div class="h-is-property-text has-text-weight-light">Token ID:</div>
           <div>
-            <span>{{ normalizedTokenId ?? "" }}</span>
+            <Copyable :content-to-copy="normalizedTokenId ?? ''">
+              <template v-slot:content>
+                <span>{{ normalizedTokenId ?? "" }}</span>
+              </template>
+            </Copyable>
             <span v-if="tokenChecksum" class="has-text-grey">-{{ tokenChecksum }}</span>
           </div>
         </div>
@@ -327,12 +331,14 @@ import {TokenInfoCache} from "@/utils/cache/TokenInfoCache";
 import {TokenInfoAnalyzer} from "@/components/token/TokenInfoAnalyzer";
 import ContractResultsSection from "@/components/contracts/ContractResultsSection.vue";
 import InfoTooltip from "@/components/InfoTooltip.vue";
+import Copyable from "@/components/Copyable.vue";
 
 export default defineComponent({
 
   name: 'TokenDetails',
 
   components: {
+    Copyable,
     InfoTooltip,
     ContractResultsSection,
     EVMAddress,
