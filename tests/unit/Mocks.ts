@@ -840,7 +840,7 @@ export const SAMPLE_CONTRACT_RESULT_DETAILS = {
     "s": null,
     "type": null,
     "v": null,
-    "nonce": null
+    "nonce": 104
 }
 
 export const SAMPLE_CONTRACT_CALL_TRANSACTION = {

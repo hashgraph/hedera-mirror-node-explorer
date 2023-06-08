@@ -89,6 +89,7 @@ describe("ContractResult.vue", () => {
         expect(wrapper.get("#maxFeePerGasValue").text()).toBe("None")
         expect(wrapper.get("#maxPriorityFeePerGasValue").text()).toBe("None")
         expect(wrapper.get("#gasPriceValue").text()).toBe("None")
+        expect(wrapper.get("#ethereumNonceValue").text()).toBe("104")
 
         expect(wrapper.findAll("#logIndexValue").length).toBe(3)
 
@@ -129,6 +130,7 @@ describe("ContractResult.vue", () => {
         expect(wrapper.text()).toMatch(RegExp("^Contract Result for " + contractId + " at " + timestamp))
         expect(wrapper.get("#resultValue").text()).toBe("CONTRACT_REVERT_EXECUTED")
         expect(wrapper.get("#errorMessageValue").text()).toBe("Insufficient token balance for wiped")
+        expect(wrapper.get("#ethereumNonceValue").text()).toBe("None")
 
         expect(wrapper.findAll("#logIndexValue").length).toBe(0)
 
