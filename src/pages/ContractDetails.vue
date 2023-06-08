@@ -171,9 +171,9 @@
       </template>
     </DashboardCard>
 
-    <ContractByteCodeSection :contract-id="normalizedContractId"/>
+    <ContractByteCodeSection :contract-id="normalizedContractId ?? undefined"/>
 
-    <ContractResultsSection :contract-id="normalizedContractId"/>
+    <ContractResultsSection :contract-id="normalizedContractId ?? undefined"/>
 
   </section>
 
