@@ -31,8 +31,12 @@
         <span class="h-is-primary-title">Contract </span>
         <div class="h-is-tertiary-text mt-3" id="entityId">
           <div class="is-inline-block h-is-property-text has-text-weight-light" style="min-width: 115px">Contract ID:</div>
-          <span>{{ normalizedContractId ?? "" }}</span>
-          <span v-if="accountChecksum" class="has-text-grey">-{{ accountChecksum }}</span>
+          <Copyable :content-to-copy="normalizedContractId ?? ''">
+            <template v-slot:content>
+              <span>{{ normalizedContractId ?? "" }}</span>
+            </template>
+          </Copyable>
+          <span v-if="accountChecksum" class="has-text-grey h-is-smaller">-{{ accountChecksum }}</span>
         </div>
         <div v-if="ethereumAddress" id="evmAddress" class="h-is-tertiary-text mt-2" style="word-break: keep-all">
           <div class="is-inline-block h-is-property-text has-text-weight-light" style="min-width: 115px">EVM Address:</div>
@@ -167,9 +171,9 @@
       </template>
     </DashboardCard>
 
-    <ContractByteCodeSection :contract-id="normalizedContractId"/>
+    <ContractByteCodeSection :contract-id="normalizedContractId ?? undefined"/>
 
-    <ContractResultsSection :contract-id="normalizedContractId"/>
+    <ContractResultsSection :contract-id="normalizedContractId ?? undefined"/>
 
   </section>
 
@@ -206,6 +210,7 @@ import EVMAddress from "@/components/values/EVMAddress.vue";
 import ContractByteCodeSection from "@/components/contract/ContractByteCodeSection.vue";
 import ContractResultsSection from "@/components/contracts/ContractResultsSection.vue";
 import InfoTooltip from "@/components/InfoTooltip.vue";
+import Copyable from "@/components/Copyable.vue";
 
 const MAX_TOKEN_BALANCES = 3
 
@@ -214,6 +219,7 @@ export default defineComponent({
   name: 'ContractDetails',
 
   components: {
+    Copyable,
     ContractByteCodeSection,
     InfoTooltip,
     ContractResultsSection,

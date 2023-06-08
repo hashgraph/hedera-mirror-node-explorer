@@ -31,8 +31,12 @@
         <span class="h-is-primary-title">Account </span>
         <div class="h-is-tertiary-text mt-3" id="entityId">
           <div class="is-inline-block h-is-property-text has-text-weight-light" style="min-width: 115px">Account ID:</div>
-          <span>{{ normalizedAccountId ?? "" }}</span>
-          <span v-if="accountChecksum" class="has-text-grey">-{{ accountChecksum }}</span>
+          <Copyable :content-to-copy="normalizedAccountId ?? ''">
+            <template v-slot:content>
+              <span>{{ normalizedAccountId ?? "" }}</span>
+            </template>
+          </Copyable>
+          <span v-if="accountChecksum" class="has-text-grey h-is-smaller">-{{ accountChecksum }}</span>
         </div>
         <div v-if="operatorNodeRoute" id="nodeLink" class="h-is-tertiary-text mt-2">
           <div class="is-inline-block h-is-property-text has-text-weight-light" style="min-width: 115px">Node:</div>
@@ -304,6 +308,7 @@ import {NodeAnalyzer} from "@/utils/analyzer/NodeAnalyzer";
 import EVMAddress from "@/components/values/EVMAddress.vue";
 import ApproveAllowanceSection from "@/components/allowances/ApproveAllowanceSection.vue";
 import InfoTooltip from "@/components/InfoTooltip.vue";
+import Copyable from "@/components/Copyable.vue";
 
 const MAX_TOKEN_BALANCES = 10
 
@@ -312,6 +317,7 @@ export default defineComponent({
   name: 'AccountDetails',
 
   components: {
+    Copyable,
     InfoTooltip,
     ApproveAllowanceSection,
     EVMAddress,

@@ -23,19 +23,18 @@
 <!-- --------------------------------------------------------------------------------------------------------------- -->
 
 <template>
-  <div v-if="hexValue" class="should-wrap">
-    <div :class="{'is-flex': isSmallScreen}" class="is-inline-block h-is-text-size-3 is-family-monospace"
-         style="line-height: 20px">
-      <Copyable :content-to-copy="hexValue">
-        <template v-slot:content>
-          <span class="has-text-grey">0x</span>
-          <span>{{ hexValue }}</span>
-        </template>
-      </Copyable>
+  <div class="shy-scope" style="display: inline-block; position: relative;">
+    <slot name="content"/>
+    <div v-if="contentToCopy" id="shyCopyButton" class="shy"
+         style="position: absolute; left: 0; top: 0; width: 100%; height: 100%">
+      <div style="position: absolute; left: 0; top: 0; width: 100%; height: 100%; background: rgba(0, 0, 0, 0.50)"></div>
+      <div v-if="enableCopy"
+           style="position: absolute; display: inline-block; left: 50%; top: 50%; transform: translate(-50%, -50%);">
+        <button class="button is-dark h-is-text-size-3"
+                v-on:click.stop="copyToClipboard">Copy</button>
+      </div>
     </div>
   </div>
-  <div v-else-if="initialLoading"/>
-  <div v-else class="has-text-grey">None</div>
 </template>
 
 <!-- --------------------------------------------------------------------------------------------------------------- -->
@@ -44,36 +43,25 @@
 
 <script lang="ts">
 
-import {computed, defineComponent, inject, ref} from "vue";
-import {base32ToAlias, byteToHex} from "@/utils/B64Utils";
-import {initialLoadingKey} from "@/AppKeys";
-import Copyable from "@/components/Copyable.vue";
+import {defineComponent} from "vue";
 
 export default defineComponent({
-  name: "AliasValue",
-  components: {Copyable},
+  name: "Copyable",
   props: {
-    aliasValue: String,
+    contentToCopy: String,
+    enableCopy: {
+      type: Boolean,
+      default: true
+    },
   },
   setup(props) {
-    const initialLoading = inject(initialLoadingKey, ref(false))
-    const isSmallScreen = inject('isSmallScreen', ref(false))
-
-    const hexValue = computed(() => {
-      let result
-      if (props.aliasValue) {
-        const alias = base32ToAlias(props.aliasValue)
-        result = alias ? byteToHex(alias) : null
-      } else {
-        result = null
+    const copyToClipboard = (): void => {
+      if (props.contentToCopy?.length) {
+        navigator.clipboard.writeText(props.contentToCopy)
       }
-      return result
-    })
-
+    }
     return {
-      initialLoading,
-      isSmallScreen,
-      hexValue,
+      copyToClipboard
     }
   }
 })
@@ -84,4 +72,11 @@ export default defineComponent({
 <!--                                                      STYLE                                                      -->
 <!-- --------------------------------------------------------------------------------------------------------------- -->
 
-<style/>
+<style scoped>
+.shy {
+  display: none
+}
+.shy-scope:hover > .shy {
+  display: block;
+}
+</style>

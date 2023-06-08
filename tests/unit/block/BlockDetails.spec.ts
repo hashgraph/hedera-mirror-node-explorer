@@ -83,7 +83,7 @@ describe("BlockDetails.vue", () => {
         expect(wrapper.get("#countValue").text()).toBe("3")
         expect(wrapper.get("#blockHashValue").text()).toBe(
             "e963 0d7d 8cc8 6d0e 0d3d e531 6995 bbdf 9f2a 5845 24cf 18da 233a bdcf f82d f97d a0a0 ec38 " +
-            "c6b4 0461 0129 4896 ff88 a86bCopy to ClipboardSHA384")
+            "c6b4 0461 0129 4896 ff88 a86bCopySHA384")
         expect(wrapper.get("#fromTimestampValue").text()).toBe("6:58:31.3281 AMSep 23, 2022, UTC")
         expect(wrapper.get("#toTimestampValue").text()).toBe("6:58:31.3281 AMSep 23, 2022, UTC")
         expect(wrapper.get("#gasUsedValue").text()).toBe("0")
@@ -135,7 +135,7 @@ describe("BlockDetails.vue", () => {
         expect(wrapper.get("#countValue").text()).toBe("3")
         expect(wrapper.get("#blockHashValue").text()).toBe(
             "e963 0d7d 8cc8 6d0e 0d3d e531 6995 bbdf 9f2a 5845 24cf 18da 233a bdcf f82d f97d a0a0 ec38 " +
-            "c6b4 0461 0129 4896 ff88 a86bCopy to ClipboardSHA384")
+            "c6b4 0461 0129 4896 ff88 a86bCopySHA384")
         expect(wrapper.get("#fromTimestampValue").text()).toBe("6:58:31.3281 AMSep 23, 2022, UTC")
         expect(wrapper.get("#toTimestampValue").text()).toBe("6:58:31.3281 AMSep 23, 2022, UTC")
         expect(wrapper.get("#gasUsedValue").text()).toBe("0")
@@ -188,7 +188,7 @@ describe("BlockDetails.vue", () => {
         expect(wrapper.get("#countValue").text()).toBe("3")
         expect(wrapper.get("#blockHashValue").text()).toBe(
             "e963 0d7d 8cc8 6d0e 0d3d e531 6995 bbdf 9f2a 5845 24cf 18da 233a bdcf f82d f97d a0a0 ec38 " +
-            "c6b4 0461 0129 4896 ff88 a86bCopy to ClipboardSHA384")
+            "c6b4 0461 0129 4896 ff88 a86bCopySHA384")
         expect(wrapper.get("#fromTimestampValue").text()).toBe("6:58:31.3281 AMSep 23, 2022, UTC")
         expect(wrapper.get("#toTimestampValue").text()).toBe("6:58:31.3281 AMSep 23, 2022, UTC")
         expect(wrapper.get("#gasUsedValue").text()).toBe("0")
@@ -224,7 +224,7 @@ describe("BlockDetails.vue", () => {
         expect(wrapper.get("#countValue").text()).toBe("5")
         expect(wrapper.get("#blockHashValue").text()).toBe(
             "7ece 042f a936 9ac7 d6a4 07ff d4d4 b76b 284b 5407 7abf 2f52 12e9 69a9 fcbe 3467 6f9e aae9 " +
-            "dc71 8e8c a998 7a48 f92a a7c6Copy to ClipboardSHA384")
+            "dc71 8e8c a998 7a48 f92a a7c6CopySHA384")
         expect(wrapper.get("#fromTimestampValue").text()).toBe("6:58:28.2114 AMSep 23, 2022, UTC")
         expect(wrapper.get("#toTimestampValue").text()).toBe("6:58:29.2397 AMSep 23, 2022, UTC")
         expect(wrapper.get("#gasUsedValue").text()).toBe("0")

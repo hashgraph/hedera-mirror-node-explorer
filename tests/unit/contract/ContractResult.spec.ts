@@ -79,10 +79,10 @@ describe("ContractResult.vue", () => {
 
         expect(wrapper.text()).toMatch(RegExp("^Contract Result for " + contractId + " at " + timestamp))
         expect(wrapper.get("#resultValue").text()).toBe("SUCCESS")
-        expect(wrapper.get("#fromValue").text()).toBe("0x00000000000000000000000000000000000ce9b4Copy to Clipboard(0.0.846260)")
-        expect(wrapper.get("#toValue").text()).toBe("0x0000000000000000000000000000000000103783Copy to Clipboard(0.0.1062787)")
+        expect(wrapper.get("#fromValue").text()).toBe("0x00000000000000000000000000000000000ce9b4Copy(0.0.846260)")
+        expect(wrapper.get("#toValue").text()).toBe("0x0000000000000000000000000000000000103783Copy(0.0.1062787)")
         expect(wrapper.get("#typeValue").text()).toBe("None")
-        // expect(wrapper.get("#functionParametersValue").text()).toBe("18cb afe5 0000 0000 0000 0000 0000 0000 0000 0000 0000 0000 0000 0000 0000 0017 4876 e800 0000 0000 0000 0000 0000 0000 0000 0000 0000 0000 0000 0000 0000 001b 2702 b2a0 0000 0000 0000 0000 0000 0000 0000 0000 0000 0000 0000 0000 0000 0000 0000 00a0 0000 0000 0000 0000 0000 0000 0000 0000 0000 0000 0000 0000 0000 0000 000c e9b4 0000 0000 0000 0000 0000 0000 0000 0000 0000 0000 0000 0000 0000 0183 1e10 602d 0000 0000 0000 0000 0000 0000 0000 0000 0000 0000 0000 0000 0000 0000 0000 0003 0000 0000 0000 0000 0000 0000 0000 0000 0000 0000 0000 0000 0000 0000 000c ba44 0000 0000 0000 0000 0000 0000 0000 0000 0000 0000 0000 0000 0000 0000 000d 1ea6 0000 0000 0000 0000 0000 0000 0000 0000 0000 0000 0000 0000 0000 0000 0010 3708Copy to Clipboard")
+        // expect(wrapper.get("#functionParametersValue").text()).toBe("18cb afe5 0000 0000 0000 0000 0000 0000 0000 0000 0000 0000 0000 0000 0000 0017 4876 e800 0000 0000 0000 0000 0000 0000 0000 0000 0000 0000 0000 0000 0000 001b 2702 b2a0 0000 0000 0000 0000 0000 0000 0000 0000 0000 0000 0000 0000 0000 0000 0000 00a0 0000 0000 0000 0000 0000 0000 0000 0000 0000 0000 0000 0000 0000 0000 000c e9b4 0000 0000 0000 0000 0000 0000 0000 0000 0000 0000 0000 0000 0000 0183 1e10 602d 0000 0000 0000 0000 0000 0000 0000 0000 0000 0000 0000 0000 0000 0000 0000 0003 0000 0000 0000 0000 0000 0000 0000 0000 0000 0000 0000 0000 0000 0000 000c ba44 0000 0000 0000 0000 0000 0000 0000 0000 0000 0000 0000 0000 0000 0000 000d 1ea6 0000 0000 0000 0000 0000 0000 0000 0000 0000 0000 0000 0000 0000 0000 0010 3708Copy")
         expect(wrapper.get("#errorMessageValue").text()).toBe("None")
         expect(wrapper.get("#gasLimitValue").text()).toBe("480,000")
         expect(wrapper.get("#gasUsedValue").text()).toBe("384,000")
@@ -190,27 +190,27 @@ describe("ContractResult.vue", () => {
         expect(actions.length).toBe(3)
         expect(actions[0].text()).toBe(
             "1! CALL" +
-            "0x00000000000000000000000000000000000022eeCopy to Clipboard(0.0.8942)" +
+            "0x00000000000000000000000000000000000022eeCopy(0.0.8942)" +
             "→" +
             "0.00000000" +
             "→" +
-            "0x00000000000000000000000000000000000028aaCopy to Clipboard(0.0.10410)" +
+            "0x00000000000000000000000000000000000028aaCopy(0.0.10410)" +
             "7979000")
         expect(actions[1].text()).toBe(
             "1_1! CALL" +
-            "0x00000000000000000000000000000000000028aaCopy to Clipboard(0.0.10410)" +
+            "0x00000000000000000000000000000000000028aaCopy(0.0.10410)" +
             "→" +
             "0.00000000" +
             "→" +
-            "0x00000000000000000000000000000000000082c9Copy to Clipboard(0.0.33481)" +
+            "0x00000000000000000000000000000000000082c9Copy(0.0.33481)" +
             "7840814")
         expect(actions[2].text()).toBe(
             "1_1_1CALL" +
-            "0x00000000000000000000000000000000000082c9Copy to Clipboard(0.0.33481)" +
+            "0x00000000000000000000000000000000000082c9Copy(0.0.33481)" +
             "→" +
             "0.00000000" +
             "→" +
-            "0x00000000000000000000000000000000000082cbCopy to Clipboard(0.0.33483)" +
+            "0x00000000000000000000000000000000000082cbCopy(0.0.33483)" +
             "7700872")
 
         const stateTrace = wrapper.findComponent(ContractResultStates)
@@ -233,19 +233,19 @@ describe("ContractResult.vue", () => {
         expect(entries.length).toBe(5)
         expect(entries[0].text()).toBe(
             "0.0.10410" +
-            "0x20a269221c216afce16a83d0401af060a0d39b19Copy to Clipboard" +
+            "0x20a269221c216afce16a83d0401af060a0d39b19Copy" +
             "Contract HBar Balance Difference:" +
             "None" +
-            "10a8 1eed 9d63 d16f ace5 e763 5790 5348 e625 3d33 9408 6026 bb2b f214 5d7c c249Copy to Clipboard" +
+            "10a8 1eed 9d63 d16f ace5 e763 5790 5348 e625 3d33 9408 6026 bb2b f214 5d7c c249Copy" +
             "Decimal: not available" +
-            "0000 0000 0000 0000 0000 0000 0000 0000 0000 0000 0000 0000 0000 0000 0000 0001Copy to Clipboard" +
+            "0000 0000 0000 0000 0000 0000 0000 0000 0000 0000 0000 0000 0000 0000 0000 0001Copy" +
             "Decimal: 1" +
             "None"
         )
         expect(entries[1].text()).toBe(
-            "10a8 1eed 9d63 d16f ace5 e763 5790 5348 e625 3d33 9408 6026 bb2b f214 5d7c c24aCopy to Clipboard" +
+            "10a8 1eed 9d63 d16f ace5 e763 5790 5348 e625 3d33 9408 6026 bb2b f214 5d7c c24aCopy" +
             "Decimal: not available" +
-            "41ba 5057 6c59 ba82 f084 85ca 644d d627 db89 235f b6e2 1635 5ebb 2aa8 8cce b961Copy to Clipboard" +
+            "41ba 5057 6c59 ba82 f084 85ca 644d d627 db89 235f b6e2 1635 5ebb 2aa8 8cce b961Copy" +
             "Decimal: not available" +
             "None"
         )

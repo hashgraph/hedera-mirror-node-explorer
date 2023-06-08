@@ -86,7 +86,7 @@ describe("HexaValue.vue", () => {
 
         // console.log(wrapper.html())
 
-        expect(wrapper.text()).toBe("0102 0304 0506 0708 090A 0B0C 0D0E 0FCopy to Clipboard")
+        expect(wrapper.text()).toBe("0102 0304 0506 0708 090A 0B0C 0D0E 0FCopy")
 
         // Lines below ...
         //
@@ -117,7 +117,7 @@ describe("HexaValue.vue", () => {
 
         // console.log(wrapper.html())
 
-        expect(wrapper.text()).toBe("0102 0304 0506 0708 090A 0B0C 0D0E 0FCopy to Clipboard")
+        expect(wrapper.text()).toBe("0102 0304 0506 0708 090A 0B0C 0D0E 0FCopy")
 
         wrapper.unmount()
         await flushPromises()

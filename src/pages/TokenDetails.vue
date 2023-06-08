@@ -39,8 +39,12 @@
         <div id="entityId" class="headline-grid h-is-tertiary-text mt-3 is-align-items-baseline">
           <div class="h-is-property-text has-text-weight-light">Token ID:</div>
           <div>
-            <span>{{ normalizedTokenId ?? "" }}</span>
-            <span v-if="tokenChecksum" class="has-text-grey">-{{ tokenChecksum }}</span>
+            <Copyable :content-to-copy="normalizedTokenId ?? ''">
+              <template v-slot:content>
+                <span>{{ normalizedTokenId ?? "" }}</span>
+              </template>
+            </Copyable>
+            <span v-if="tokenChecksum" class="has-text-grey h-is-smaller">-{{ tokenChecksum }}</span>
           </div>
         </div>
 
@@ -103,7 +107,7 @@
             <InfoTooltip label="Token auto-renew is not turned on yet. Value in this field is not relevant."/>
           </template>
           <template v-slot:value>
-            <DurationValue v-bind:string-value="tokenInfo?.auto_renew_period?.toString()"/>
+            <DurationValue v-bind:number-value="tokenInfo?.auto_renew_period ?? undefined"/>
           </template>
         </Property>
         <Property id="autoRenewAccount">
@@ -155,14 +159,14 @@
           <template v-slot:name>Total Supply</template>
           <template v-if="validEntityId" v-slot:value>
             <TokenAmount :amount="parseBigIntString(tokenInfo?.total_supply)" :show-extra="false"
-                         :token-id="normalizedTokenId"/>
+                         :token-id="normalizedTokenId ?? undefined"/>
           </template>
         </Property>
         <Property id="initialSupply">
           <template v-slot:name>Initial Supply</template>
           <template v-if="validEntityId" v-slot:value>
             <TokenAmount :amount="parseBigIntString(tokenInfo?.initial_supply)" :show-extra="false"
-                         :token-id="normalizedTokenId"/>
+                         :token-id="normalizedTokenId ?? undefined"/>
           </template>
         </Property>
         <Property id="maxSupply">
@@ -170,7 +174,7 @@
           <template v-if="validEntityId" v-slot:value>
             <div v-if="tokenInfo?.supply_type === 'INFINITE'" class="has-text-grey">Infinite</div>
             <TokenAmount v-else :amount="parseBigIntString(tokenInfo?.max_supply)" :show-extra="false"
-                         :token-id="normalizedTokenId"/>
+                         :token-id="normalizedTokenId ?? undefined"/>
           </template>
         </Property>
         <Property id="decimals">
@@ -285,7 +289,7 @@
 
     </DashboardCard>
 
-    <ContractResultsSection :contract-id="normalizedTokenId"/>
+    <ContractResultsSection :contract-id="normalizedTokenId ?? undefined"/>
 
   </section>
 
@@ -327,12 +331,14 @@ import {TokenInfoCache} from "@/utils/cache/TokenInfoCache";
 import {TokenInfoAnalyzer} from "@/components/token/TokenInfoAnalyzer";
 import ContractResultsSection from "@/components/contracts/ContractResultsSection.vue";
 import InfoTooltip from "@/components/InfoTooltip.vue";
+import Copyable from "@/components/Copyable.vue";
 
 export default defineComponent({
 
   name: 'TokenDetails',
 
   components: {
+    Copyable,
     InfoTooltip,
     ContractResultsSection,
     EVMAddress,

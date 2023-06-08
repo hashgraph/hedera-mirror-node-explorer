@@ -100,7 +100,7 @@ describe("TokenDetails.vue", () => {
         expect(wrapper.get("#maxSupplyValue").text()).toBe("Infinite")
         expect(wrapper.get("#decimalsValue").text()).toBe("0")
         expect(wrapper.get("#evmAddress").text()).toMatch(
-            RegExp("^EVM Address:0x0000000000000000000000000000000001c49eecCopy to Clipboard"))
+            RegExp("^EVM Address:0x0000000000000000000000000000000001c49eecCopy"))
 
         expect(wrapper.text()).toMatch("Balances")
         expect(wrapper.findComponent(TokenBalanceTable).exists()).toBe(true)
@@ -147,7 +147,7 @@ describe("TokenDetails.vue", () => {
         expect(wrapper.get("#nameValue").text()).toBe("Ħ Frens Kingdom Dude")
         expect(wrapper.get("#symbolValue").text()).toBe("ĦFRENSKINGDOM")
         expect(wrapper.find("#adminKey").text()).toBe(
-            "Admin Keyc1a8 c8c5 b446 ce05 3b6e ff4f e4f0 192f 7653 5ea9 ed6b 2b91 9811 77ba 237f 4b5dCopy to ClipboardED25519"
+            "Admin Keyc1a8 c8c5 b446 ce05 3b6e ff4f e4f0 192f 7653 5ea9 ed6b 2b91 9811 77ba 237f 4b5dCopyED25519"
         )
         expect(wrapper.get("#memoValue").text()).toBe("None")
         expect(wrapper.get("#expiresAtValue").text()).toBe("None")
@@ -293,13 +293,13 @@ describe("TokenDetails.vue", () => {
         expect(wrapper.text()).toMatch(RegExp("^Non Fungible Token " + testTokenSymbol + 'Token ID:' + testTokenId))
 
         expect(wrapper.text()).toMatch("Token Keys")
-        expect(wrapper.find("#adminKey").text()).toBe("Admin Keyc539 536f 9599 daef eeb7 7767 7aa1 aeea 2242 dfc7 cca9 2348 c228 a518 7a0f af2bCopy to ClipboardED25519")
-        expect(wrapper.find("#kycKey").text()).toBe("KYC Keyc539 536f 9599 daef eeb7 7767 7aa1 aeea 2242 dfc7 cca9 2348 c228 a518 7a0f af2bCopy to ClipboardED25519")
-        expect(wrapper.find("#freezeKey").text()).toBe("Freeze Keyc539 536f 9599 daef eeb7 7767 7aa1 aeea 2242 dfc7 cca9 2348 c228 a518 7a0f af2bCopy to ClipboardED25519")
-        expect(wrapper.find("#wipeKey").text()).toBe("Wipe Keyc539 536f 9599 daef eeb7 7767 7aa1 aeea 2242 dfc7 cca9 2348 c228 a518 7a0f af2bCopy to ClipboardED25519")
-        expect(wrapper.find("#supplyKey").text()).toBe("Supply Keyc539 536f 9599 daef eeb7 7767 7aa1 aeea 2242 dfc7 cca9 2348 c228 a518 7a0f af2bCopy to ClipboardED25519")
-        expect(wrapper.find("#feeScheduleKey").text()).toBe("Fee Schedule Keyc539 536f 9599 daef eeb7 7767 7aa1 aeea 2242 dfc7 cca9 2348 c228 a518 7a0f af2bCopy to ClipboardED25519")
-        expect(wrapper.find("#pauseKey").text()).toBe("Pause Keyc539 536f 9599 daef eeb7 7767 7aa1 aeea 2242 dfc7 cca9 2348 c228 a518 7a0f af2bCopy to ClipboardED25519")
+        expect(wrapper.find("#adminKey").text()).toBe("Admin Keyc539 536f 9599 daef eeb7 7767 7aa1 aeea 2242 dfc7 cca9 2348 c228 a518 7a0f af2bCopyED25519")
+        expect(wrapper.find("#kycKey").text()).toBe("KYC Keyc539 536f 9599 daef eeb7 7767 7aa1 aeea 2242 dfc7 cca9 2348 c228 a518 7a0f af2bCopyED25519")
+        expect(wrapper.find("#freezeKey").text()).toBe("Freeze Keyc539 536f 9599 daef eeb7 7767 7aa1 aeea 2242 dfc7 cca9 2348 c228 a518 7a0f af2bCopyED25519")
+        expect(wrapper.find("#wipeKey").text()).toBe("Wipe Keyc539 536f 9599 daef eeb7 7767 7aa1 aeea 2242 dfc7 cca9 2348 c228 a518 7a0f af2bCopyED25519")
+        expect(wrapper.find("#supplyKey").text()).toBe("Supply Keyc539 536f 9599 daef eeb7 7767 7aa1 aeea 2242 dfc7 cca9 2348 c228 a518 7a0f af2bCopyED25519")
+        expect(wrapper.find("#feeScheduleKey").text()).toBe("Fee Schedule Keyc539 536f 9599 daef eeb7 7767 7aa1 aeea 2242 dfc7 cca9 2348 c228 a518 7a0f af2bCopyED25519")
+        expect(wrapper.find("#pauseKey").text()).toBe("Pause Keyc539 536f 9599 daef eeb7 7767 7aa1 aeea 2242 dfc7 cca9 2348 c228 a518 7a0f af2bCopyED25519")
 
         wrapper.unmount()
         await flushPromises()
@@ -363,7 +363,7 @@ describe("TokenDetails.vue", () => {
 
         const testTokenId = "0.0.91961"
         const testTokenSymbol = SAMPLE_TOKEN_WITHOUT_KEYS.symbol
-        const testTokenIdWithChecksum = "0.0.91961-mkkua"
+        const testTokenIdWithChecksum = "0.0.91961Copy-mkkua"
         const testTokenEVMAddress = "0x0000000000000000000000000000000000016739"
         const matcher1 = "/api/v1/tokens/" + testTokenId
         mock.onGet(matcher1).reply(200, SAMPLE_TOKEN_WITHOUT_KEYS);
@@ -385,7 +385,7 @@ describe("TokenDetails.vue", () => {
 
         expect(wrapper.text()).toMatch(
             RegExp("^Non Fungible Token " + testTokenSymbol + 'Token ID:' + testTokenIdWithChecksum
-                + 'EVM Address:' + testTokenEVMAddress + "Copy to Clipboard"))
+                + 'EVM Address:' + testTokenEVMAddress + "Copy"))
         expect(wrapper.text()).toMatch("Token is deleted")
 
         wrapper.unmount()
