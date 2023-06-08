@@ -45,10 +45,20 @@ export class EthereumAddress {
     }
 
     public toEntityID(): EntityID|null {
-        const view = new DataView(this.bytes.buffer)
-        const bigNum = view.getBigInt64(12)
-        const num = 0 <= bigNum && bigNum < EntityID.MAX_INT ? Number(bigNum) : null
-        return num != null ? new EntityID(0, 0, num) : null
+        let result: EntityID | null
+        if (this.isLongZeroForm()) {
+            const view = new DataView(this.bytes.buffer)
+            const bigNum = view.getBigInt64(12)
+            const num = 0 <= bigNum && bigNum < EntityID.MAX_INT ? Number(bigNum) : null
+            result = num != null ? new EntityID(0, 0, num) : null
+        } else {
+            result = null
+        }
+        return result
+    }
+
+    public isLongZeroForm(): boolean {
+        return this.bytes.slice(0,12).every((value) => value === 0)
     }
 
     //
