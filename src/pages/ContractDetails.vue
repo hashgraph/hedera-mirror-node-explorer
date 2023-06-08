@@ -36,7 +36,7 @@
               <span>{{ normalizedContractId ?? "" }}</span>
             </template>
           </Copyable>
-          <span v-if="accountChecksum" class="has-text-grey">-{{ accountChecksum }}</span>
+          <span v-if="accountChecksum" class="has-text-grey h-is-smaller">-{{ accountChecksum }}</span>
         </div>
         <div v-if="ethereumAddress" id="evmAddress" class="h-is-tertiary-text mt-2" style="word-break: keep-all">
           <div class="is-inline-block h-is-property-text has-text-weight-light" style="min-width: 115px">EVM Address:</div>

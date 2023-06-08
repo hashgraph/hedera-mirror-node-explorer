@@ -44,7 +44,7 @@
                 <span>{{ normalizedTokenId ?? "" }}</span>
               </template>
             </Copyable>
-            <span v-if="tokenChecksum" class="has-text-grey">-{{ tokenChecksum }}</span>
+            <span v-if="tokenChecksum" class="has-text-grey h-is-smaller">-{{ tokenChecksum }}</span>
           </div>
         </div>
 
