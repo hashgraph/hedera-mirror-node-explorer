@@ -77,11 +77,11 @@ describe("NodeDetails.vue", () => {
         expect(wrapper.text()).toMatch(RegExp("^Node " + node))
         expect(wrapper.get("#nodeAccountValue").text()).toBe("0.0.3")
         expect(wrapper.get("#descriptionValue").text()).toBe("Hosted by Hedera | East Coast, USA")
-        expect(wrapper.get("#publicKeyValue").text()).toBe("3082 01a2 300d 0609Copy to ClipboardRSA")
+        expect(wrapper.get("#publicKeyValue").text()).toBe("3082 01a2 300d 0609CopyRSA")
         expect(wrapper.get("#fileValue").text()).toBe("0.0.102")
         expect(wrapper.get("#rangeFromValue").text()).toBe("4:10:06.0411 PMJun 6, 2022, UTC")
         expect(wrapper.get("#rangeToValue").text()).toBe("None")
-        expect(wrapper.get("#nodeCertHashValue").text()).toBe("d317 df77 a69d 6bbe 1add adf8 6bCopy to Clipboard")
+        expect(wrapper.get("#nodeCertHashValue").text()).toBe("d317 df77 a69d 6bbe 1add adf8 6bCopy")
         expect(wrapper.get("#serviceEndpointsValue").text()).toBe("3.211.248.172:502113.211.248.172:5021235.231.208.148:035.231.208.148:5021135.231.208.148:50212")
 
         expect(wrapper.get("#yearlyRate").text()).toBe("Last Period Reward Rate1%APPROX ANNUAL EQUIVALENT")
@@ -147,7 +147,7 @@ describe("NodeDetails.vue", () => {
         expect(wrapper.text()).toMatch("Account Account ID:" + SAMPLE_ACCOUNT.account)
         expect(wrapper.get("#keyValue").text()).toBe(
             "aa2f 7b3e 759f 4531 ec2e 7941 afa4 49e6 a6e6 10ef b52a dae8 9e9c d8e9 d40d dcbf" +
-            "Copy to Clipboard" +
+            "Copy" +
             "ED25519")
 
         const account2 = SAMPLE_ACCOUNT_DUDE
@@ -177,7 +177,7 @@ describe("NodeDetails.vue", () => {
         expect(wrapper.text()).toMatch("Account Account ID:" + SAMPLE_ACCOUNT_DUDE.account)
         expect(wrapper.get("#keyValue").text()).toBe(
             "38f1 ea46 0e95 d97e ea13 aefa c760 eaf9 9015 4b80 a360 8ab0 1d4a 2649 44d6 8746" +
-            "Copy to Clipboard" +
+            "Copy" +
             "ED25519")
         expect(wrapper.get("#memoValue").text()).toBe("Account Dude Memo in clear")
         expect(wrapper.find("#aliasValue").exists()).toBe(false)
