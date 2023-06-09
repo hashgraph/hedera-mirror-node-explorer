@@ -2194,6 +2194,33 @@ export const SAMPLE_ACCOUNT_PROTOBUF_KEY = {
 }
 
 //
+// Account inspired from: https://mainnet-public.mirrornode.hedera.com/api/v1/accounts/0xe6d5514b8de7ef9e5f5c4cc2e8ca0207129deb65
+//
+
+export const SAMPLE_ACCOUNT_WITH_NATIVE_EVM_ADDRESS = {
+    "account": "0.0.2957798",
+    "alias": "43KVCS4N47XZ4X24JTBORSQCA4JJ323F",
+    "auto_renew_period": 7776000,
+    "balance": {"balance": 3457440000, "timestamp": "1686309927.971781003", "tokens": []},
+    "created_timestamp": "1685800751.186366002",
+    "decline_reward": false,
+    "deleted": false,
+    "ethereum_nonce": 3,
+    "evm_address": "0xe6d5514b8de7ef9e5f5c4cc2e8ca0207129deb65",
+    "expiry_timestamp": "1693576751.186366002",
+    "key": {"_type": "ECDSA_SECP256K1", "key": "0332efb3b38121d96bb000050f50e402730939dbaf206a8a77b4cfe7d510b6cfb7"},
+    "max_automatic_token_associations": 0,
+    "memo": "lazy-created account",
+    "pending_reward": 0,
+    "receiver_sig_required": false,
+    "staked_account_id": null,
+    "staked_node_id": null,
+    "stake_period_start": null,
+    "transactions": [],
+    "links": {"next": null}
+}
+
+//
 // Contract inspired from: https://mainnet-public.mirrornode.hedera.com/api/v1/contracts/0.0.749775
 //
 
