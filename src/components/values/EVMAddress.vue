@@ -32,11 +32,11 @@
           <span>{{ significantPart }}</span>
         </template>
       </Copyable>
-      <span v-if="hederaId && showId">
+      <span v-if="entityId && showId">
         <span class="ml-1">(</span>
-        <router-link v-if="isContract" :to="{name: 'ContractDetails', params: {contractId: hederaId}}">{{ hederaId }}</router-link>
-        <router-link v-else-if="isAccount" :to="{name: 'AccountDetails', params: {accountId: hederaId}}">{{ hederaId }}</router-link>
-        <span v-else>{{ hederaId }}</span>
+        <router-link v-if="isContract" :to="{name: 'ContractDetails', params: {contractId: entityId}}">{{ entityId }}</router-link>
+        <router-link v-else-if="isAccount" :to="{name: 'AccountDetails', params: {accountId: entityId}}">{{ entityId }}</router-link>
+        <span v-else>{{ entityId }}</span>
         <span>)</span>
       </span>
     </div>
@@ -108,7 +108,7 @@ export default defineComponent({
     const isContract = computed(() => props.entityType === 'CONTRACT')
     const isAccount = computed(() => props.entityType === 'ACCOUNT')
 
-    const hederaId = ref<string|null>(null)
+    const entityId = ref<string|null>(null)
     const evmAddress = ref<string|null>(null)
     const ethereumAddress = computed( () => EthereumAddress.parse(evmAddress.value ?? ''))
 
@@ -116,31 +116,31 @@ export default defineComponent({
     watch([() => props.address, () => props.id], () => updateIdAndAddress())
 
     const updateIdAndAddress = async () => {
-      hederaId.value = props.id ?? null
+      entityId.value = props.id ?? null
       evmAddress.value = props.address ?? null
       let account: AccountBalanceTransactions|null
 
-      if (hederaId.value === null || evmAddress.value === null || ethereumAddress.value?.isLongZeroForm()) {
-        if (hederaId.value !== null) {
-          account = await AccountByIdCache.instance.lookup(hederaId.value)
+      if (entityId.value === null || evmAddress.value === null || ethereumAddress.value?.isLongZeroForm()) {
+        if (entityId.value !== null) {
+          account = await AccountByIdCache.instance.lookup(entityId.value)
         } else if (evmAddress.value !== null) {
           account = await AccountByAddressCache.instance.lookup(evmAddress.value.toString())
         } else {
           account = null
         }
         if (account) {
-          hederaId.value = account?.account
+          entityId.value = account?.account
           evmAddress.value = makeEthAddressForAccount(account) ?? evmAddress.value
         }
       }
-      if (hederaId.value === null) {
-        hederaId.value = ethereumAddress.value?.toEntityID()?.toString() ?? null
+      if (entityId.value === null) {
+        entityId.value = ethereumAddress.value?.toEntityID()?.toString() ?? null
       }
       if (evmAddress.value === null) {
-        evmAddress.value = EntityID.parse(hederaId.value ?? '')?.toAddress() ?? null
+        evmAddress.value = EntityID.parse(entityId.value ?? '')?.toAddress() ?? null
       }
-      if (hederaId.value) {
-        hederaId.value = systemContractRegistry.lookup(hederaId.value)?.description ?? hederaId.value
+      if (entityId.value) {
+        entityId.value = systemContractRegistry.lookup(entityId.value)?.description ?? entityId.value
       }
     }
 
@@ -179,7 +179,7 @@ export default defineComponent({
       initialLoading,
       nonSignificantPart,
       significantPart,
-      hederaId,
+      entityId,
       evmAddress,
       copyToClipboard
     }
