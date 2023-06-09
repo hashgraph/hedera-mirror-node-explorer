@@ -25,7 +25,7 @@ describe("EthereumAddress", () => {
     test("Parsing from a long-zero address", () => {
 
         const longZeroAddress = "0x000000000000000000000000000000000010400e"
-        const compactAddress = "0x0…10400e"
+        const compactAddress = "0x00…10400e"
         const entityId = "0.0.1064974"
 
         const address = EthereumAddress.parse(longZeroAddress)
@@ -39,7 +39,7 @@ describe("EthereumAddress", () => {
     test("Parsing from a native evm address", () => {
 
         const nativeEvmAddress = "0xe6d5514b8de7ef9e5f5c4cc2e8ca0207129deb65"
-        const compactAddress = "0xe…9deb65"
+        const compactAddress = "0xe6…9deb65"
 
         const address = EthereumAddress.parse(nativeEvmAddress)
 
