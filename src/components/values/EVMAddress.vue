@@ -113,36 +113,26 @@ export default defineComponent({
     const ethereumAddress = computed( () => EthereumAddress.parse(evmAddress.value ?? ''))
 
     onMounted(() => updateIdAndAddress())
-    watch([() => props.address, () => props.id], async () => updateIdAndAddress())
+    watch([() => props.address, () => props.id], () => updateIdAndAddress())
 
-    const updateIdAndAddress = () => {
+    const updateIdAndAddress = async () => {
       hederaId.value = props.id ?? null
       evmAddress.value = props.address ?? null
+      let account
 
       if (hederaId.value === null || evmAddress.value === null || ethereumAddress.value?.isLongZeroForm()) {
         if (hederaId.value !== null) {
-          AccountByIdCache.instance.lookup(hederaId.value)
-              .then((account) => updateFromAccount(account))
-              .finally(() => finalizeUpdate())
+          account = await AccountByIdCache.instance.lookup(hederaId.value)
         } else if (evmAddress.value !== null) {
-          AccountByAddressCache.instance.lookup(evmAddress.value.toString())
-              .then((account) => updateFromAccount(account))
-              .finally(() => finalizeUpdate())
+          account = await AccountByAddressCache.instance.lookup(evmAddress.value.toString())
         } else {
-          // hederaId.value and evmAddress.value are both null - do nothing
+          account = null
+        }
+        if (account) {
+          hederaId.value = account?.account
+          evmAddress.value = makeEthAddressForAccount(account) ?? evmAddress.value
         }
       }
-    }
-
-    const updateFromAccount = (account: AccountBalanceTransactions|null) => {
-
-      if (account) {
-        hederaId.value = account?.account
-        evmAddress.value = makeEthAddressForAccount(account) ?? evmAddress.value
-      }
-    }
-
-    const finalizeUpdate = () => {
       if (hederaId.value === null) {
         hederaId.value = ethereumAddress.value?.toEntityID()?.toString() ?? null
       }
