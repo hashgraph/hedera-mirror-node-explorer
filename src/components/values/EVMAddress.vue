@@ -23,10 +23,10 @@
 <!-- --------------------------------------------------------------------------------------------------------------- -->
 
 <template>
-  <div v-if="address">
+  <div v-if="evmAddress">
     <div :class="{'is-flex': isSmallScreen, 'h-is-text-size-3': !hasCustomFont, 'is-family-monospace': !hasCustomFont}"
          class="is-inline-block" style="line-height: 20px">
-      <Copyable :content-to-copy="address ?? ''" :enable-copy="enableCopy">
+      <Copyable :content-to-copy="evmAddress ?? ''" :enable-copy="enableCopy">
         <template v-slot:content>
           <span class="has-text-grey">{{ nonSignificantPart }}</span>
           <span>{{ significantPart }}</span>
@@ -53,13 +53,16 @@
 
 <script lang="ts">
 
-import {computed, defineComponent, inject, Ref, ref, watch} from "vue";
+import {computed, defineComponent, inject, onMounted, ref, watch} from "vue";
 import {initialLoadingKey} from "@/AppKeys";
 import {systemContractRegistry} from "@/schemas/SystemContractRegistry";
 import {AccountByAddressCache} from "@/utils/cache/AccountByAddressCache";
 import {EthereumAddress} from "@/utils/EthereumAddress";
-import {AccountBalanceTransactions} from "@/schemas/HederaSchemas";
+import {AccountByIdCache} from "@/utils/cache/AccountByIdCache";
 import Copyable from "@/components/Copyable.vue";
+import {EntityID} from "@/utils/EntityID";
+import {makeEthAddressForAccount} from "@/schemas/HederaUtils";
+import {AccountBalanceTransactions} from "@/schemas/HederaSchemas";
 
 export default defineComponent({
   name: "EVMAddress",
@@ -105,12 +108,49 @@ export default defineComponent({
     const isContract = computed(() => props.entityType === 'CONTRACT')
     const isAccount = computed(() => props.entityType === 'ACCOUNT')
 
-    const evmAddress = computed(() => EthereumAddress.parse(props.address ?? ""))
+    const entityId = ref<string|null>(null)
+    const evmAddress = ref<string|null>(null)
+    const ethereumAddress = computed( () => EthereumAddress.parse(evmAddress.value ?? ''))
+
+    onMounted(() => updateIdAndAddress())
+    watch([() => props.address, () => props.id], () => updateIdAndAddress())
+
+    const updateIdAndAddress = async () => {
+      entityId.value = props.id ?? null
+      evmAddress.value = props.address ?? null
+      let account: AccountBalanceTransactions|null
+
+      if (entityId.value === null || evmAddress.value === null || ethereumAddress.value?.isLongZeroForm()) {
+        if (entityId.value !== null) {
+          account = await AccountByIdCache.instance.lookup(entityId.value)
+        } else if (evmAddress.value !== null) {
+          account = await AccountByAddressCache.instance.lookup(evmAddress.value.toString())
+        } else {
+          account = null
+        }
+        if (account) {
+          entityId.value = account?.account
+          evmAddress.value = makeEthAddressForAccount(account) ?? evmAddress.value
+        }
+        // else leave entityId.value and evmAddress.value untouched since we may well already be able to
+        // display both in case of a long-zero address.
+
+      }
+      if (entityId.value === null) {
+        entityId.value = ethereumAddress.value?.toEntityID()?.toString() ?? null
+      }
+      if (evmAddress.value === null) {
+        evmAddress.value = EntityID.parse(entityId.value ?? '')?.toAddress() ?? null
+      }
+      if (entityId.value) {
+        entityId.value = systemContractRegistry.lookup(entityId.value)?.description ?? entityId.value
+      }
+    }
 
     const displayAddress = computed(
         () => props.compact
-            ? evmAddress.value?.toCompactString(props.bytesKept)  ?? ""
-            : evmAddress.value?.toString() ?? "")
+            ? ethereumAddress.value?.toCompactString(props.bytesKept)  ?? ""
+            : ethereumAddress.value?.toString() ?? "")
 
     const nonSignificantSize = computed(() => {
       let i: number
@@ -129,36 +169,6 @@ export default defineComponent({
     const significantPart = computed(
         () => displayAddress.value?.slice(nonSignificantSize.value))
 
-    const account: Ref<AccountBalanceTransactions | null> = ref(null)
-    watch(() => props.address, async () => {
-      if (props.showId && evmAddress.value && !evmAddress.value.toEntityID()) {
-        account.value = await AccountByAddressCache.instance.lookup(evmAddress.value.toString())
-      } else {
-        account.value = null
-      }
-    })
-
-    const entityId = computed(() => {
-      let result: string | null
-      if (props.showId) {
-        if (props.id) {
-          result = props.id
-        } else if (evmAddress.value) {
-          result = evmAddress.value?.toEntityID()?.toString() ?? null
-        } else {
-          result = null
-        }
-        if (result) {
-          result = systemContractRegistry.lookup(result)?.description ?? result
-        } else {
-          result = account.value?.account ?? null
-        }
-      } else {
-        result = null
-      }
-      return result
-    })
-
     const copyToClipboard = (): void => {
       if (evmAddress.value) {
         navigator.clipboard.writeText(evmAddress.value.toString())
@@ -173,6 +183,7 @@ export default defineComponent({
       nonSignificantPart,
       significantPart,
       entityId,
+      evmAddress,
       copyToClipboard
     }
   }
