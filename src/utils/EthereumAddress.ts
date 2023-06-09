@@ -40,7 +40,7 @@ export class EthereumAddress {
 
     public toCompactString(digitKept=6): string {
        return "0x"
-           + byteToHex(this.bytes.slice(0, 1))[0]
+           + byteToHex(this.bytes.slice(0, 1))
            + "…" + byteToHex(this.bytes.slice(-digitKept/2))
     }
 
