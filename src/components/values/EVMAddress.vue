@@ -146,8 +146,6 @@ export default defineComponent({
           // hederaId.value and evmAddress.value are both null - do nothing
         }
       }
-      if (evmAddress.value === null) {
-      }
       if (hederaId.value) {
         hederaId.value = systemContractRegistry.lookup(hederaId.value)?.description ?? hederaId.value
       }
