@@ -132,6 +132,9 @@ export default defineComponent({
           entityId.value = account?.account
           evmAddress.value = makeEthAddressForAccount(account) ?? evmAddress.value
         }
+        // else leave entityId.value and evmAddress.value untouched since we may well already be able to
+        // display both in case of a long-zero address.
+
       }
       if (entityId.value === null) {
         entityId.value = ethereumAddress.value?.toEntityID()?.toString() ?? null
