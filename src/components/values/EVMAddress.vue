@@ -32,11 +32,11 @@
           <span>{{ significantPart }}</span>
         </template>
       </Copyable>
-      <span v-if="entityId && showId">
+      <span v-if="hederaId && showId">
         <span class="ml-1">(</span>
-        <router-link v-if="isContract" :to="{name: 'ContractDetails', params: {contractId: entityId}}">{{ entityId }}</router-link>
-        <router-link v-else-if="isAccount" :to="{name: 'AccountDetails', params: {accountId: entityId}}">{{ entityId }}</router-link>
-        <span v-else>{{ entityId }}</span>
+        <router-link v-if="isContract" :to="{name: 'ContractDetails', params: {contractId: hederaId}}">{{ hederaId }}</router-link>
+        <router-link v-else-if="isAccount" :to="{name: 'AccountDetails', params: {accountId: hederaId}}">{{ hederaId }}</router-link>
+        <span v-else>{{ hederaId }}</span>
         <span>)</span>
       </span>
     </div>
@@ -53,13 +53,14 @@
 
 <script lang="ts">
 
-import {computed, defineComponent, inject, Ref, ref, watch} from "vue";
+import {computed, defineComponent, inject, onMounted, ref, watch} from "vue";
 import {initialLoadingKey} from "@/AppKeys";
 import {systemContractRegistry} from "@/schemas/SystemContractRegistry";
 import {AccountByAddressCache} from "@/utils/cache/AccountByAddressCache";
 import {EthereumAddress} from "@/utils/EthereumAddress";
-import {AccountBalanceTransactions} from "@/schemas/HederaSchemas";
+import {AccountByIdCache} from "@/utils/cache/AccountByIdCache";
 import Copyable from "@/components/Copyable.vue";
+import {EntityID} from "@/utils/EntityID";
 
 export default defineComponent({
   name: "EVMAddress",
@@ -105,7 +106,52 @@ export default defineComponent({
     const isContract = computed(() => props.entityType === 'CONTRACT')
     const isAccount = computed(() => props.entityType === 'ACCOUNT')
 
-    const evmAddress = computed(() => EthereumAddress.parse(props.address ?? ""))
+    const hederaId = ref<string|null>(null)
+    const evmAddress = ref<EthereumAddress|null>(null)
+
+    onMounted(() => updateIdAndAddress())
+    watch([() => props.address, () => props.id], async () => updateIdAndAddress())
+
+    const updateIdAndAddress = () => {
+      hederaId.value = props.id ?? evmAddress.value?.toEntityID()?.toString() ?? null
+      evmAddress.value = EthereumAddress.parse(props.address ?? "")
+
+      if (hederaId.value === null || evmAddress.value === null || evmAddress.value.isLongZeroForm()) {
+        if (hederaId.value !== null) {
+          AccountByIdCache.instance.lookup(hederaId.value)
+              .then((account) => {
+                if (account) {
+                  evmAddress.value = EthereumAddress.parse(account?.evm_address ?? "")
+                }
+              })
+              .finally(() => {
+                if (evmAddress.value === null) {
+                  evmAddress.value = EthereumAddress.parse(EntityID.parse(hederaId.value ?? '')?.toAddress() ?? '')
+                }
+              })
+        } else if (evmAddress.value !== null) {
+          AccountByAddressCache.instance.lookup(evmAddress.value.toString())
+              .then((account) => {
+                if (account) {
+                  hederaId.value = account?.account ?? null
+                  evmAddress.value = EthereumAddress.parse(account?.evm_address ?? "") ?? evmAddress.value
+                }
+              })
+              .finally(() => {
+                if (hederaId.value === null) {
+                  hederaId.value = evmAddress.value?.toEntityID()?.toString() ?? null
+                }
+              })
+        } else {
+          // hederaId.value and evmAddress.value are both null - do nothing
+        }
+      }
+      if (evmAddress.value === null) {
+      }
+      if (hederaId.value) {
+        hederaId.value = systemContractRegistry.lookup(hederaId.value)?.description ?? hederaId.value
+      }
+    }
 
     const displayAddress = computed(
         () => props.compact
@@ -129,36 +175,6 @@ export default defineComponent({
     const significantPart = computed(
         () => displayAddress.value?.slice(nonSignificantSize.value))
 
-    const account: Ref<AccountBalanceTransactions | null> = ref(null)
-    watch(() => props.address, async () => {
-      if (props.showId && evmAddress.value && !evmAddress.value.toEntityID()) {
-        account.value = await AccountByAddressCache.instance.lookup(evmAddress.value.toString())
-      } else {
-        account.value = null
-      }
-    })
-
-    const entityId = computed(() => {
-      let result: string | null
-      if (props.showId) {
-        if (props.id) {
-          result = props.id
-        } else if (evmAddress.value) {
-          result = evmAddress.value?.toEntityID()?.toString() ?? null
-        } else {
-          result = null
-        }
-        if (result) {
-          result = systemContractRegistry.lookup(result)?.description ?? result
-        } else {
-          result = account.value?.account ?? null
-        }
-      } else {
-        result = null
-      }
-      return result
-    })
-
     const copyToClipboard = (): void => {
       if (evmAddress.value) {
         navigator.clipboard.writeText(evmAddress.value.toString())
@@ -172,7 +188,7 @@ export default defineComponent({
       initialLoading,
       nonSignificantPart,
       significantPart,
-      entityId,
+      hederaId,
       copyToClipboard
     }
   }
