@@ -118,7 +118,7 @@ export default defineComponent({
     const updateIdAndAddress = async () => {
       hederaId.value = props.id ?? null
       evmAddress.value = props.address ?? null
-      let account
+      let account: AccountBalanceTransactions|null
 
       if (hederaId.value === null || evmAddress.value === null || ethereumAddress.value?.isLongZeroForm()) {
         if (hederaId.value !== null) {
