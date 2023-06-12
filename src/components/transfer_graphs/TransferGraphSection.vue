@@ -53,7 +53,7 @@
       v-else
       v-bind:transaction="transaction"/>
 
-  <template v-if="netAmount === 0 && !compact">
+  <template v-if="netAmount <= 0 && !compact">
     <HbarTransferGraphF
         data-cy="feeTransfers"
         class="mt-4"
