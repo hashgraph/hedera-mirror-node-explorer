@@ -28,14 +28,12 @@
 
     <DashboardCard class="h-card">
       <template v-slot:title>
-        <div class="is-flex is-align-items-center">
+        <div class="is-flex is-align-items-center is-flex-wrap-wrap">
           <span class="h-is-primary-title mr-1">Transaction </span>
           <span class="h-is-secondary-text mr-3">{{ formattedTransactionId ?? "" }}</span>
-          <div v-if="transaction">
-            <div v-if="transactionSucceeded"
-                 class="h-has-pill has-background-success mr-3 h-is-text-size-2 mt-3">SUCCESS
-            </div>
-            <div v-else class="h-has-pill has-background-danger mr-3 h-is-text-size-2 mt-3">FAILURE</div>
+          <div v-if="transaction" class="h-is-text-size-2 mt-1">
+            <div v-if="transactionSucceeded" class="h-has-pill has-background-success">SUCCESS</div>
+            <div v-else class="h-has-pill has-background-danger">FAILURE</div>
           </div>
         </div>
         <span v-if="routeToAllTransactions && !isLargeScreen">
@@ -297,6 +295,7 @@ export default defineComponent({
 
   setup: function (props) {
     const isSmallScreen = inject('isSmallScreen', true)
+    const isMediumScreen = inject('isMediumScreen', true)
     const isLargeScreen = inject('isLargeScreen', true)
     const isTouchDevice = inject('isTouchDevice', false)
 
@@ -410,6 +409,7 @@ export default defineComponent({
 
     return {
       isSmallScreen,
+      isMediumScreen,
       isLargeScreen,
       isTouchDevice,
       showMaxFeeTooltip,
