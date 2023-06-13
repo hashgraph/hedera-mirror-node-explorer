@@ -32,7 +32,7 @@
         :paginated="false"
         :striped="true"
         default-sort="node_id"
-        @click="handleClick"
+        @cell-click="handleClick"
     >
 
       <o-table-column v-slot="props" field="nature" label="">
@@ -186,8 +186,10 @@ export default defineComponent({
       return node.stake && props.stakeTotal ? makeStakePercentage(node, props.stakeTotal) : 0
     }
 
-    const handleClick = (node: NetworkNode) => {
-      routeManager.routeToNode(node.node_id ?? 0)
+    const handleClick = (node: NetworkNode, c: unknown, i: number, ci: number, event: MouseEvent) => {
+      if (node.node_id) {
+        routeManager.routeToNode(node.node_id, event.ctrlKey || event.metaKey)
+      }
     }
 
     return {

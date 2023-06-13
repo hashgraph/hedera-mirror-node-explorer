@@ -34,7 +34,7 @@
       v-model:current-page="currentPage"
       :per-page="perPage"
       @page-change="onPageChange"
-      @click="handleClick"
+      @cell-click="handleClick"
 
       :hoverable="true"
       :narrowed="narrowed"
@@ -94,8 +94,10 @@ export default defineComponent({
     const isTouchDevice = inject('isTouchDevice', false)
     const isMediumScreen = inject('isMediumScreen', true)
 
-    const handleClick = (t: StakingReward) => {
-      routeManager.routeToTransactionByTs(t.timestamp)
+    const handleClick = (t: StakingReward, c: unknown, i: number, ci: number, event: MouseEvent) => {
+      if (t.timestamp) {
+        routeManager.routeToTransactionByTs(t.timestamp, event.ctrlKey || event.metaKey)
+      }
     }
 
     return {
