@@ -56,6 +56,10 @@
             <template v-slot:value>
                 <StringValue v-if="decodedError" :string-value="decodedError"/>
                 <HexaValue v-else :byte-string="error" :show-none="true"/>
+                <div v-if="errorDecodingStatus" class="h-is-extra-text h-is-text-size-3">
+                    <span class="icon fas fa-exclamation-circle has-text-grey is-small mt-1 mr-1"/>
+                    <span>{{ errorDecodingStatus }}</span>
+                </div>
             </template>
         </Property>
 
@@ -103,6 +107,7 @@ export default defineComponent({
             errorSignature: props.analyzer.errorSignature,
             errorHash: props.analyzer.errorHash,
             errorInputs: props.analyzer.errorInputs,
+            errorDecodingStatus: props.analyzer.errorDecodingStatus,
             decodedError,
             initialLoading
         }
