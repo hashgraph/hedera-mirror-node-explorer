@@ -30,6 +30,8 @@ export class FunctionCallAnalyzer {
     private readonly contractAnalyzer: ContractAnalyzer
     private readonly transactionDescription = ref<ethers.utils.TransactionDescription|null>(null)
     private readonly transactionDecodingFailure = ref<ArgumentError|null>(null)
+    private readonly outputResult = ref<ethers.utils.Result|null>(null)
+    private readonly outputDecodingFailure = ref<ArgumentError|null>(null)
     private readonly errorDescription = ref<ErrorDescription|null>(null) // Where is ethers.utils.ErrorDescription ?
     private readonly errorDecodingFailure = ref<ArgumentError|null>(null)
     private readonly watchHandle: Ref<WatchStopHandle[]> = ref([])
@@ -48,6 +50,7 @@ export class FunctionCallAnalyzer {
     public mount(): void {
         this.watchHandle.value = [
             watch([this.input, this.contractAnalyzer.interface], this.updateTransactionDescription, { immediate: true}),
+            watch([this.output, this.transactionDescription], this.updateOutputResult, { immediate: true}),
             watch([this.error, this.contractAnalyzer.interface], this.updateErrorDescription, { immediate: true})
         ]
         this.contractAnalyzer.mount()
@@ -61,6 +64,8 @@ export class FunctionCallAnalyzer {
         this.watchHandle.value = []
         this.transactionDescription.value = null
         this.transactionDecodingFailure.value = null
+        this.outputResult.value = null
+        this.outputDecodingFailure.value = null
         this.errorDescription.value = null
         this.errorDecodingFailure.value = null
     }
@@ -110,8 +115,8 @@ export class FunctionCallAnalyzer {
 
     public readonly outputs: ComputedRef<NameTypeValue[]> = computed(() => {
         const result: NameTypeValue[] = []
-        if (this.decodedFunctionResult.value) {
-            const results = this.decodedFunctionResult.value
+        if (this.outputResult.value !== null) {
+            const results = this.outputResult.value
             const fragmentOutputs = this.transactionDescription.value?.functionFragment.outputs ?? []
             for (let i = 0, count = results.length; i < count; i += 1) {
                 const value = results[i]
@@ -141,8 +146,20 @@ export class FunctionCallAnalyzer {
     public readonly inputDecodingStatus = computed(() => {
         let result: string|null
         if (this.transactionDecodingFailure.value !== null) {
-            const reason = this.transactionDecodingFailure.value.reason
-            result = reason ? "Decoding Error (" + reason + ")" : "Decoding Error"
+            result = this.makeDecodingErrorMessage(this.transactionDecodingFailure.value.reason)
+        } else {
+            result = null
+        }
+        return result
+    })
+
+    public readonly outputDecodingStatus = computed(() => {
+        let result: string|null
+
+        if (this.transactionDecodingFailure.value !== null) {
+            result = this.makeDecodingErrorMessage(this.transactionDecodingFailure.value.reason)
+        } else if (this.outputDecodingFailure.value !== null) {
+            result = this.makeDecodingErrorMessage(this.outputDecodingFailure.value.reason)
         } else {
             result = null
         }
@@ -152,8 +169,7 @@ export class FunctionCallAnalyzer {
     public readonly errorDecodingStatus = computed(() => {
         let result: string|null
         if (this.errorDecodingFailure.value !== null) {
-            const reason = this.errorDecodingFailure.value.reason
-            result = reason ? "Decoding Error (" + reason + ")" : "Decoding Error"
+            result = this.makeDecodingErrorMessage(this.errorDecodingFailure.value.reason)
         } else {
             result = null
         }
@@ -164,22 +180,9 @@ export class FunctionCallAnalyzer {
     // Private
     //
 
-    private readonly decodedFunctionResult: ComputedRef<ethers.utils.Result|null> = computed(() => {
-        let result: ethers.utils.Result|null
-        const td = this.transactionDescription.value
-        const i = this.contractAnalyzer.interface.value
-        const output = this.output.value
-        if (td !== null && i !== null && output !== null) {
-            try {
-                result = i.decodeFunctionResult(td.functionFragment, output)
-            } catch {
-                result = null
-            }
-        } else {
-            result = null
-        }
-        return result
-    })
+    private makeDecodingErrorMessage(reason: string|undefined): string {
+        return reason ? "Decoding Error (" + reason + ")" : "Decoding Error"
+    }
 
     private readonly updateTransactionDescription = async () => {
         const i = this.contractAnalyzer.interface.value
@@ -196,6 +199,24 @@ export class FunctionCallAnalyzer {
         } else {
             this.transactionDescription.value = null
             this.transactionDecodingFailure.value = null
+        }
+    }
+
+    private readonly updateOutputResult = () => {
+        const td = this.transactionDescription.value
+        const i = this.contractAnalyzer.interface.value
+        const output = this.output.value
+        if (td !== null && i !== null && output !== null) {
+            try {
+                this.outputResult.value = i.decodeFunctionResult(td.functionFragment, output)
+                this.outputDecodingFailure.value = null
+            } catch(failure) {
+                this.outputResult.value = null
+                this.outputDecodingFailure.value = failure
+            }
+        } else {
+            this.outputResult.value = null
+            this.outputDecodingFailure.value = null
         }
     }
 
