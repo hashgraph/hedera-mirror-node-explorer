@@ -125,8 +125,8 @@ export class FunctionCallAnalyzer {
 
     public readonly errorInputs: ComputedRef<NameTypeValue[]> = computed(() => {
         const result: NameTypeValue[] = []
-        if (this.decodedFunctionError.value !== null) {
-            const results = this.decodedFunctionError.value
+        if (this.errorDescription.value !== null) {
+            const results = this.errorDescription.value.args
             const fragmentInputs = this.errorDescription.value?.errorFragment.inputs ?? []
             for (let i = 0, count = results.length; i < count; i += 1) {
                 const value = results[i]
@@ -172,25 +172,6 @@ export class FunctionCallAnalyzer {
         if (td !== null && i !== null && output !== null) {
             try {
                 result = i.decodeFunctionResult(td.functionFragment, output)
-            } catch {
-                result = null
-            }
-        } else {
-            result = null
-        }
-        return result
-    })
-
-    private readonly decodedFunctionError: ComputedRef<ethers.utils.Result|null> = computed(() => {
-        let result: ethers.utils.Result|null
-        const d = this.errorDescription.value
-        const i = this.contractAnalyzer.interface.value
-        const error = this.error.value
-        if (d !== null && i !== null && error !== null) {
-            try {
-                // result = i.decodeErrorResult(d.errorFragment, error)
-                const bytes = ethers.utils.arrayify(error)
-                result = ethers.utils.defaultAbiCoder.decode(d.errorFragment.inputs, bytes.slice(4))
             } catch {
                 result = null
             }
