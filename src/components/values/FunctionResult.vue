@@ -56,6 +56,10 @@
         <template v-slot:name>Output Result</template>
         <template v-slot:value>
           <HexaValue :byte-string="output" :show-none="true"/>
+          <div v-if="outputDecodingStatus" class="h-is-extra-text h-is-text-size-3">
+            <span class="icon fas fa-exclamation-circle has-text-grey is-small mt-1 mr-1"/>
+            <span>{{ outputDecodingStatus }}</span>
+          </div>
         </template>
     </Property>
 
@@ -98,6 +102,7 @@ export default defineComponent({
       output: props.analyzer.normalizedOutput,
       signature: props.analyzer.signature,
       outputs: props.analyzer.outputs,
+      outputDecodingStatus: props.analyzer.outputDecodingStatus,
       initialLoading
     }
   }

@@ -29,7 +29,11 @@ export class FunctionCallAnalyzer {
     public readonly error: Ref<string|null>
     private readonly contractAnalyzer: ContractAnalyzer
     private readonly transactionDescription = ref<ethers.utils.TransactionDescription|null>(null)
+    private readonly transactionDecodingFailure = ref<ArgumentError|null>(null)
+    private readonly outputResult = ref<ethers.utils.Result|null>(null)
+    private readonly outputDecodingFailure = ref<ArgumentError|null>(null)
     private readonly errorDescription = ref<ErrorDescription|null>(null) // Where is ethers.utils.ErrorDescription ?
+    private readonly errorDecodingFailure = ref<ArgumentError|null>(null)
     private readonly watchHandle: Ref<WatchStopHandle[]> = ref([])
 
     //
@@ -46,6 +50,7 @@ export class FunctionCallAnalyzer {
     public mount(): void {
         this.watchHandle.value = [
             watch([this.input, this.contractAnalyzer.interface], this.updateTransactionDescription, { immediate: true}),
+            watch([this.output, this.transactionDescription], this.updateOutputResult, { immediate: true}),
             watch([this.error, this.contractAnalyzer.interface], this.updateErrorDescription, { immediate: true})
         ]
         this.contractAnalyzer.mount()
@@ -58,6 +63,11 @@ export class FunctionCallAnalyzer {
         }
         this.watchHandle.value = []
         this.transactionDescription.value = null
+        this.transactionDecodingFailure.value = null
+        this.outputResult.value = null
+        this.outputDecodingFailure.value = null
+        this.errorDescription.value = null
+        this.errorDecodingFailure.value = null
     }
 
     public readonly normalizedInput: ComputedRef<string|null> = computed(() => {
@@ -105,8 +115,8 @@ export class FunctionCallAnalyzer {
 
     public readonly outputs: ComputedRef<NameTypeValue[]> = computed(() => {
         const result: NameTypeValue[] = []
-        if (this.decodedFunctionResult.value) {
-            const results = this.decodedFunctionResult.value
+        if (this.outputResult.value !== null) {
+            const results = this.outputResult.value
             const fragmentOutputs = this.transactionDescription.value?.functionFragment.outputs ?? []
             for (let i = 0, count = results.length; i < count; i += 1) {
                 const value = results[i]
@@ -120,8 +130,8 @@ export class FunctionCallAnalyzer {
 
     public readonly errorInputs: ComputedRef<NameTypeValue[]> = computed(() => {
         const result: NameTypeValue[] = []
-        if (this.decodedFunctionError.value !== null) {
-            const results = this.decodedFunctionError.value
+        if (this.errorDescription.value !== null) {
+            const results = this.errorDescription.value.args
             const fragmentInputs = this.errorDescription.value?.errorFragment.inputs ?? []
             for (let i = 0, count = results.length; i < count; i += 1) {
                 const value = results[i]
@@ -133,41 +143,46 @@ export class FunctionCallAnalyzer {
         return result
     })
 
-    public readonly decodedFunctionResult: ComputedRef<ethers.utils.Result|null> = computed(() => {
-        let result: ethers.utils.Result|null
-        const td = this.transactionDescription.value
-        const i = this.contractAnalyzer.interface.value
-        const output = this.output.value
-        if (td !== null && i !== null && output !== null) {
-            try {
-                result = i.decodeFunctionResult(td.functionFragment, output)
-            } catch {
-                result = null
-            }
+    public readonly inputDecodingStatus = computed(() => {
+        let result: string|null
+        if (this.transactionDecodingFailure.value !== null) {
+            result = this.makeDecodingErrorMessage(this.transactionDecodingFailure.value.reason)
         } else {
             result = null
         }
         return result
     })
 
-    public readonly decodedFunctionError: ComputedRef<ethers.utils.Result|null> = computed(() => {
-        let result: ethers.utils.Result|null
-        const d = this.errorDescription.value
-        const i = this.contractAnalyzer.interface.value
-        const error = this.error.value
-        if (d !== null && i !== null && error !== null) {
-            try {
-                // result = i.decodeErrorResult(d.errorFragment, error)
-                const bytes = ethers.utils.arrayify(error)
-                result = ethers.utils.defaultAbiCoder.decode(d.errorFragment.inputs, bytes.slice(4))
-            } catch {
-                result = null
-            }
+    public readonly outputDecodingStatus = computed(() => {
+        let result: string|null
+
+        if (this.transactionDecodingFailure.value !== null) {
+            result = this.makeDecodingErrorMessage(this.transactionDecodingFailure.value.reason)
+        } else if (this.outputDecodingFailure.value !== null) {
+            result = this.makeDecodingErrorMessage(this.outputDecodingFailure.value.reason)
         } else {
             result = null
         }
         return result
     })
+
+    public readonly errorDecodingStatus = computed(() => {
+        let result: string|null
+        if (this.errorDecodingFailure.value !== null) {
+            result = this.makeDecodingErrorMessage(this.errorDecodingFailure.value.reason)
+        } else {
+            result = null
+        }
+        return result
+    })
+
+    //
+    // Private
+    //
+
+    private makeDecodingErrorMessage(reason: string|undefined): string {
+        return reason ? "Decoding Error (" + reason + ")" : "Decoding Error"
+    }
 
     private readonly updateTransactionDescription = async () => {
         const i = this.contractAnalyzer.interface.value
@@ -176,11 +191,32 @@ export class FunctionCallAnalyzer {
             try {
                 const td = i.parseTransaction({data: input})
                 this.transactionDescription.value = Object.preventExtensions(td) // Because ethers does not like Ref introspection
-            } catch {
+                this.transactionDecodingFailure.value = null
+            } catch(failure) {
                 this.transactionDescription.value = null
+                this.transactionDecodingFailure.value = failure
             }
         } else {
             this.transactionDescription.value = null
+            this.transactionDecodingFailure.value = null
+        }
+    }
+
+    private readonly updateOutputResult = () => {
+        const td = this.transactionDescription.value
+        const i = this.contractAnalyzer.interface.value
+        const output = this.output.value
+        if (td !== null && i !== null && output !== null) {
+            try {
+                this.outputResult.value = i.decodeFunctionResult(td.functionFragment, output)
+                this.outputDecodingFailure.value = null
+            } catch(failure) {
+                this.outputResult.value = null
+                this.outputDecodingFailure.value = failure
+            }
+        } else {
+            this.outputResult.value = null
+            this.outputDecodingFailure.value = null
         }
     }
 
@@ -191,11 +227,14 @@ export class FunctionCallAnalyzer {
             try {
                 const ed = i.parseError(error)
                 this.errorDescription.value = Object.preventExtensions(ed)
-            } catch(reason) {
+                this.errorDecodingFailure.value = null
+            } catch(failure) {
                 this.errorDescription.value = null
+                this.errorDecodingFailure.value = failure
             }
         } else {
             this.errorDescription.value = null
+            this.errorDecodingFailure.value = null
         }
     }
 
@@ -218,4 +257,12 @@ export interface ErrorDescription {
     readonly args: ethers.utils.Result
     readonly signature: string
     readonly sighash: string
+}
+
+export interface ArgumentError {
+    readonly reason?: string
+    readonly argument?: string
+    readonly value?: string
+    readonly code?: string
+    readonly version?: string
 }
