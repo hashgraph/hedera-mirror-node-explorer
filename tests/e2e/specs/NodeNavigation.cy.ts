@@ -30,10 +30,11 @@ describe('Node Navigation', () => {
 
         cy.get('table')
             .find('tbody tr')
+            .should('be.visible')
             .should('have.length', 7)
             .eq(0)
             .find('td')
-            .eq(0)
+            .eq(1)
             .click()
             .then(($id) => {
                 // cy.log('Selected node Id: ' + $id.text())

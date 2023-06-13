@@ -150,12 +150,28 @@ export class RouteManager {
     // Transaction
     //
 
-    public routeToTransaction(t: Transaction): Promise<NavigationFailure | void | undefined> {
-        return this.router.push(this.makeRouteToTransaction(t.consensus_timestamp))
+    public routeToTransaction(t: Transaction, newTab = false): Promise<NavigationFailure | void | undefined> {
+        let result: Promise<NavigationFailure | void | undefined>
+        if (newTab) {
+            const routeData = this.router.resolve(this.makeRouteToTransaction(t.consensus_timestamp));
+            window.open(routeData.href, '_blank');
+            result = Promise.resolve()
+        } else {
+            result = this.router.push(this.makeRouteToTransaction(t.consensus_timestamp))
+        }
+        return result
     }
 
-    public routeToTransactionByTs(consensusTimestamp: string|undefined): Promise<NavigationFailure | void | undefined> {
-        return this.router.push(this.makeRouteToTransaction(consensusTimestamp))
+    public routeToTransactionByTs(consensusTimestamp: string|undefined, newTab = false): Promise<NavigationFailure | void | undefined> {
+        let result: Promise<NavigationFailure | void | undefined>
+        if (newTab) {
+            const routeData = this.router.resolve(this.makeRouteToTransaction(consensusTimestamp));
+            window.open(routeData.href, '_blank');
+            result = Promise.resolve()
+        } else {
+            result = this.router.push(this.makeRouteToTransaction(consensusTimestamp))
+        }
+        return result
     }
 
     public makeRouteToTransactionObj(transaction: Transaction): RouteLocationRaw {
@@ -193,8 +209,16 @@ export class RouteManager {
         }
     }
 
-    public routeToAccount(accountId: string): Promise<NavigationFailure | void | undefined> {
-        return this.router.push(this.makeRouteToAccount(accountId))
+    public routeToAccount(accountId: string, newTab = false): Promise<NavigationFailure | void | undefined> {
+       let result: Promise<NavigationFailure | void | undefined>
+       if (newTab) {
+           const routeData = this.router.resolve(this.makeRouteToAccount(accountId));
+           window.open(routeData.href, '_blank');
+           result = Promise.resolve()
+       } else {
+           result = this.router.push(this.makeRouteToAccount(accountId))
+       }
+       return result
     }
 
     //
@@ -229,8 +253,16 @@ export class RouteManager {
         return { name: 'TokenDetails', params: { tokenId: tokenId, network: routeManager.currentNetwork.value }}
     }
 
-    public routeToToken(tokenId: string): Promise<NavigationFailure | void | undefined> {
-        return this.router.push(this.makeRouteToToken(tokenId))
+    public routeToToken(tokenId: string, newTab = false): Promise<NavigationFailure | void | undefined> {
+        let result: Promise<NavigationFailure | void | undefined>
+        if (newTab) {
+            const routeData = this.router.resolve(this.makeRouteToToken(tokenId));
+            window.open(routeData.href, '_blank');
+            result = Promise.resolve()
+        } else {
+            result = this.router.push(this.makeRouteToToken(tokenId))
+        }
+        return result
     }
 
     //
@@ -241,8 +273,16 @@ export class RouteManager {
         return {name: 'ContractDetails', params: { contractId: contractId, network: routeManager.currentNetwork.value }}
     }
 
-    public routeToContract(contractId: string): Promise<NavigationFailure | void | undefined> {
-        return this.router.push(this.makeRouteToContract(contractId))
+    public routeToContract(contractId: string, newTab = false): Promise<NavigationFailure | void | undefined> {
+        let result: Promise<NavigationFailure | void | undefined>
+        if (newTab) {
+            const routeData = this.router.resolve(this.makeRouteToContract(contractId));
+            window.open(routeData.href, '_blank');
+            result = Promise.resolve()
+        } else {
+            result = this.router.push(this.makeRouteToContract(contractId))
+        }
+        return result
     }
 
     //
@@ -253,8 +293,16 @@ export class RouteManager {
         return {name: 'TopicDetails', params: {topicId: topicId, network: routeManager.currentNetwork.value}}
     }
 
-    public routeToTopic(topicId: string): Promise<NavigationFailure | void | undefined> {
-        return this.router.push(this.makeRouteToTopic(topicId))
+    public routeToTopic(topicId: string, newTab = false): Promise<NavigationFailure | void | undefined> {
+        let result: Promise<NavigationFailure | void | undefined>
+        if (newTab) {
+            const routeData = this.router.resolve(this.makeRouteToTopic(topicId));
+            window.open(routeData.href, '_blank');
+            result = Promise.resolve()
+        } else {
+            result = this.router.push(this.makeRouteToTopic(topicId))
+        }
+        return result
     }
 
     //
@@ -265,8 +313,16 @@ export class RouteManager {
         return {name: 'BlockDetails', params: {blockHon: blockHon, network: routeManager.currentNetwork.value}}
     }
 
-    public routeToBlock(blockHon: string|number): Promise<NavigationFailure | void | undefined> {
-        return this.router.push(this.makeRouteToBlock(blockHon))
+    public routeToBlock(blockHon: string|number, newTab = false): Promise<NavigationFailure | void | undefined> {
+        let result: Promise<NavigationFailure | void | undefined>
+        if (newTab) {
+            const routeData = this.router.resolve(this.makeRouteToBlock(blockHon));
+            window.open(routeData.href, '_blank');
+            result = Promise.resolve()
+        } else {
+            result = this.router.push(this.makeRouteToBlock(blockHon))
+        }
+        return result
     }
 
     //
@@ -277,8 +333,16 @@ export class RouteManager {
         return {name: 'NodeDetails', params: {nodeId: nodeId, network: routeManager.currentNetwork.value}}
     }
 
-    public routeToNode(nodeId: number): Promise<NavigationFailure | void | undefined> {
-        return this.router.push(this.makeRouteToNode(nodeId))
+    public routeToNode(nodeId: number, newTab = false): Promise<NavigationFailure | void | undefined> {
+        let result: Promise<NavigationFailure | void | undefined>
+        if (newTab) {
+            const routeData = this.router.resolve(this.makeRouteToNode(nodeId));
+            window.open(routeData.href, '_blank');
+            result = Promise.resolve()
+        } else {
+            result = this.router.push(this.makeRouteToNode(nodeId))
+        }
+        return result
     }
 
     //
