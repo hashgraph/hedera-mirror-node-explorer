@@ -139,8 +139,7 @@ describe("TransactionDetails.vue", () => {
             "Token TransfersAccountToken AmountAccountToken Amount0.0.29624024-123423\n\n" +
             "0.0.29693911123423Transfer")
 
-        expect(wrapper.findComponent(NftTransferGraph).text()).toBe(
-            "NFT TransfersNone")
+        expect(wrapper.findComponent(NftTransferGraph).text()).toBe("")
 
         wrapper.unmount()
         await flushPromises()
@@ -337,7 +336,7 @@ describe("TransactionDetails.vue", () => {
 
         expect(wrapper.findComponent(HbarTransferGraphF).exists()).toBe(true)
         expect(wrapper.findComponent(TokenTransferGraph).exists()).toBe(true)
-        expect(wrapper.findComponent(NftTransferGraph).text()).toContain("NFT TransfersNone")
+        expect(wrapper.findComponent(NftTransferGraph).text()).toBe("")
 
         const transaction = SAMPLE_CONTRACTCALL_TRANSACTIONS.transactions[0]
         matcher1 = "/api/v1/transactions"
@@ -370,7 +369,7 @@ describe("TransactionDetails.vue", () => {
 
         expect(wrapper.findComponent(HbarTransferGraphF).exists()).toBe(true)
         expect(wrapper.findComponent(TokenTransferGraph).text()).toContain("Token TransfersNone")
-        expect(wrapper.findComponent(NftTransferGraph).text()).toContain("NFT TransfersNone")
+        expect(wrapper.findComponent(NftTransferGraph).text()).toBe("")
 
         wrapper.unmount()
         await flushPromises()
@@ -749,7 +748,7 @@ describe("TransactionDetails.vue", () => {
             "0.0.30.05805847$0.01428Hosted by Hedera | East Coast, USA\n\n" +
             "0.0.981.10099363$0.27088Hedera fee collection account")
         expect(wrapper.findComponent(TokenTransferGraph).text()).toBe("Token TransfersNone")
-        expect(wrapper.findComponent(NftTransferGraph).text()).toBe("NFT TransfersNone")
+        expect(wrapper.findComponent(NftTransferGraph).text()).toBe("")
 
         wrapper.unmount()
         await flushPromises()
