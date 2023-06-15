@@ -368,7 +368,7 @@ describe("TransactionDetails.vue", () => {
         expect(wrapper.get('#entityIdValue').text()).toBe(entityId)
 
         expect(wrapper.findComponent(HbarTransferGraphF).exists()).toBe(true)
-        expect(wrapper.findComponent(TokenTransferGraph).text()).toContain("Token TransfersNone")
+        expect(wrapper.findComponent(TokenTransferGraph).text()).toBe("")
         expect(wrapper.findComponent(NftTransferGraph).text()).toBe("")
 
         wrapper.unmount()
@@ -747,7 +747,7 @@ describe("TransactionDetails.vue", () => {
         expect(wrapper.findComponent(HbarTransferGraphF).text()).toBe("Fee TransfersAccountHbar AmountAccountHbar Amount0.0.642949-1.15905210-$0.28517\n\n" +
             "0.0.30.05805847$0.01428Hosted by Hedera | East Coast, USA\n\n" +
             "0.0.981.10099363$0.27088Hedera fee collection account")
-        expect(wrapper.findComponent(TokenTransferGraph).text()).toBe("Token TransfersNone")
+        expect(wrapper.findComponent(TokenTransferGraph).text()).toBe("")
         expect(wrapper.findComponent(NftTransferGraph).text()).toBe("")
 
         wrapper.unmount()
