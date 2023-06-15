@@ -433,6 +433,36 @@ export const SAMPLE_TOKENS = {
     ]
 }
 
+export const SAMPLE_TOKEN_WITH_LARGE_DECIMAL_COUNT = {
+    "admin_key": {"_type": "ED25519", "key": "d6e8334cd8594e88c82ff266b4974b4e4ac596962dcfab7314f935e7fdda672f"},
+    "auto_renew_account": "0.0.13688300",
+    "auto_renew_period": 7776000,
+    "created_timestamp": "1685137814.521997638",
+    "custom_fees": {"created_timestamp": "1685137814.521997638", "fixed_fees": [], "fractional_fees": []},
+    "decimals": "75",
+    "deleted": false,
+    "expiry_timestamp": 1692913814521997638,
+    "fee_schedule_key": null,
+    "freeze_default": false,
+    "freeze_key": null,
+    "initial_supply": "100000000000000",
+    "kyc_key": null,
+    "max_supply": "10000000000000000",
+    "memo": "",
+    "modified_timestamp": "1685137814.521997638",
+    "name": "TestToken0",
+    "pause_key": null,
+    "pause_status": "NOT_APPLICABLE",
+    "supply_key": {"_type": "ED25519", "key": "d6e8334cd8594e88c82ff266b4974b4e4ac596962dcfab7314f935e7fdda672f"},
+    "supply_type": "FINITE",
+    "symbol": "TTOK0",
+    "token_id": "0.0.13688500",
+    "total_supply": "100000000000000",
+    "treasury_account_id": "0.0.13688300",
+    "type": "FUNGIBLE_COMMON",
+    "wipe_key": null
+}
+
 export const SAMPLE_BALANCES = {
     "timestamp": "1646726400.100874000",
     "balances": [
