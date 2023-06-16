@@ -53,6 +53,12 @@
       v-else
       v-bind:transaction="transaction"/>
 
+  <RewardTransferGraph
+      data-cy="rewardTransfers"
+      :class="{'mb-4': !compact}"
+      v-bind:transaction="transaction"
+      v-bind:compact="compact"/>
+
   <template v-if="netAmount <= 0 && !compact">
     <HbarTransferGraphF
         data-cy="feeTransfers"
@@ -77,10 +83,12 @@ import NftTransferGraph from "@/components/transfer_graphs/NftTransferGraph.vue"
 import TokenTransferGraphC from "@/components/transfer_graphs/TokenTransferGraphC.vue";
 import TokenTransferGraphF from "@/components/transfer_graphs/TokenTransferGraphF.vue";
 import {computeNetAmount} from "@/utils/TransactionTools";
+import RewardTransferGraph from "@/components/transfer_graphs/RewardTransferGraph.vue";
 
 export default defineComponent({
   name: "TransferGraphSection",
   components: {
+    RewardTransferGraph,
     NftTransferGraph,
     TokenTransferGraphC,
     TokenTransferGraphF,

@@ -149,7 +149,7 @@ export interface Transaction {
     parent_consensus_timestamp: string | null | undefined
     result: string | undefined
     scheduled: boolean | undefined
-    // staking_reward_transfers: ...
+    staking_reward_transfers: StakingRewardTransfer[] | undefined
     token_transfers: TokenTransfer[] | undefined
     transaction_hash: string | undefined
     transaction_id: string | undefined
@@ -201,6 +201,11 @@ export interface Transfer {
 
 export interface TokenTransfer extends Transfer {
     token_id: string | null                         // Network entity ID in the format of shard.realm.num
+}
+
+export interface StakingRewardTransfer {
+    account: string | null                          // Network entity ID in the format of shard.realm.num
+    amount: number
 }
 
 export interface CustomFee {
@@ -263,7 +268,7 @@ export enum TransactionResult {
     FAILURE = "fail"
 }
 
-export function compareTransferByAccount(t1: Transfer, t2: Transfer): number {
+export function compareTransferByAccount(t1: Transfer | StakingRewardTransfer, t2: Transfer | StakingRewardTransfer): number {
     let result: number
     const account1 = t1.account
     const account2 = t2.account
