@@ -156,7 +156,7 @@ export class FunctionCallAnalyzer {
     public readonly outputDecodingStatus = computed(() => {
         let result: string|null
 
-        if (this.transactionDecodingFailure.value !== null) {
+        if (this.transactionDecodingFailure.value !== null && this.normalizedOutput.value !== null) {
             result = this.makeDecodingErrorMessage(this.transactionDecodingFailure.value.reason)
         } else if (this.outputDecodingFailure.value !== null) {
             result = this.makeDecodingErrorMessage(this.outputDecodingFailure.value.reason)
