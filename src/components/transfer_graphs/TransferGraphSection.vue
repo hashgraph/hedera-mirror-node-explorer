@@ -24,19 +24,17 @@
 
 <template>
 
-  <template v-if="netAmount > 0">
-
+  <template v-if="compact">
     <HbarTransferGraphC
-        v-if="compact"
+        v-if="netAmount > 0"
         data-cy="hbarTransfers"
         v-bind:transaction="transaction"/>
-    <HbarTransferGraphF
-        v-else
-        data-cy="hbarTransfers"
-        v-bind:transaction="transaction" title="Hbar Transfers"/>
-    <br/>
-
   </template>
+  <HbarTransferGraphF
+      v-else
+      data-cy="hbarTransfers"
+      title="Hbar Transfers" v-bind:transaction="transaction"/>
+  <br/>
 
   <NftTransferGraph
       data-cy="nftTransfers"
@@ -58,14 +56,6 @@
       :class="{'mb-4': !compact}"
       v-bind:transaction="transaction"
       v-bind:compact="compact"/>
-
-  <template v-if="netAmount <= 0 && !compact">
-    <HbarTransferGraphF
-        data-cy="feeTransfers"
-        class="mt-4"
-        v-bind:transaction="transaction" title="Fee Transfers" :show-none="true"/>
-  </template>
-
 
 </template>
 
