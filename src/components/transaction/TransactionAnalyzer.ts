@@ -69,7 +69,9 @@ export class TransactionAnalyzer {
     public readonly hasSucceeded: ComputedRef<boolean> = computed(() => this.result.value == "SUCCESS")
 
     public readonly netAmount: ComputedRef<number> = computed(
-        () => this.transaction.value !== null ? computeNetAmount(this.transaction.value) : 0)
+        () => this.transaction.value !== null
+            ? computeNetAmount(this.transaction.value?.transfers, this.transaction.value?.charged_tx_fee)
+            : 0)
 
     public readonly maxFee: ComputedRef<number> = computed(() => {
         const result = this.transaction.value?.max_fee ? Number.parseFloat(this.transaction.value?.max_fee) : 0

@@ -105,7 +105,7 @@ export default defineComponent({
   setup(props) {
 
     const netAmount = computed(() => {
-      return props.transaction ? computeNetAmount(props.transaction) : 0
+      return props.transaction ? computeNetAmount(props.transaction.transfers, props.transaction.charged_tx_fee) : 0
     })
 
     return {

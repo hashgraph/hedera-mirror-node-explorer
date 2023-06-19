@@ -60,7 +60,7 @@
 
     <o-table-column field="transfers" label="Net Amount" v-slot="props">
       <span v-if="showPositiveNetAmount(props.row) > 0">
-        <HbarAmount v-bind:amount="computeNetAmount(props.row)"/>
+        <HbarAmount v-bind:amount="computeNetAmount(props.row.transfers, props.row.charged_tx_fee)"/>
       </span>
     </o-table-column>
 

@@ -27,7 +27,7 @@ export function makeSummaryLabel(row: Transaction): string {
 
     switch (row.name) {
         case TransactionType.CRYPTOTRANSFER:
-            netAmount = computeNetAmount(row);
+            netAmount = computeNetAmount(row.transfers, row.charged_tx_fee);
             result = makeTransferLabel(row, netAmount)
             break
         case TransactionType.CONSENSUSCREATETOPIC:
@@ -136,7 +136,7 @@ function makeTransferLabel(row: Transaction, netAmount: number): string {
 export function showPositiveNetAmount(row: Transaction): boolean {
     let result: boolean
 
-    const netAmount = computeNetAmount(row)
+    const netAmount = computeNetAmount(row.transfers, row.charged_tx_fee)
     switch (row.name) {
         case TransactionType.CRYPTOTRANSFER:
             result = true
@@ -327,16 +327,16 @@ function formatMemo(memo64: string): string {
     return result
 }
 
-export function computeNetAmount(row: Transaction): number {
+export function computeNetAmount(transfers: Transfer[] | undefined, transactionFee: number | undefined): number {
     let result = 0
-    if (row.transfers !== undefined) {
-        for (const t of row.transfers) {
+    if (transfers !== undefined) {
+        for (const t of transfers) {
             if (t.amount > 0) {
                 result += t.amount
             }
         }
     }
-    result -= row.charged_tx_fee ?? 0
+    result -= transactionFee ?? 0
     return result
 }
 
