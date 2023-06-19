@@ -18,7 +18,7 @@
  *
  */
 
-import {Transaction, TransactionType} from "@/schemas/HederaSchemas";
+import {StakingRewardTransfer, Transaction, TransactionType, Transfer} from "@/schemas/HederaSchemas";
 import {TransactionID} from "@/utils/TransactionID";
 
 export function makeSummaryLabel(row: Transaction): string {
@@ -337,5 +337,43 @@ export function computeNetAmount(row: Transaction): number {
         }
     }
     result -= row.charged_tx_fee ?? 0
+    return result
+}
+
+export function makeNetOfRewards(transfers: Transfer[] | undefined, rewards: StakingRewardTransfer[] | undefined): Transfer[] {
+    let result = Array<Transfer>()
+    let totalRewardAmount = 0
+
+    if (transfers && rewards && transfers.length > 0 && rewards.length > 0) {
+        for (const r of rewards) {
+            totalRewardAmount += r.amount
+        }
+        let netAmount: number
+        for (const t of transfers) {
+            if (t.account === "0.0.800") {
+                netAmount = t.amount + totalRewardAmount
+            } else {
+                netAmount = t.amount
+                for (const r of rewards) {
+                    if (t.account == r.account) {
+                        if (t.amount < 0) {
+                            netAmount = t.amount + r.amount
+                        } else {
+                            netAmount = t.amount - r.amount
+                        }
+                        break
+                    }
+                }
+            }
+            result.push({
+                amount: netAmount,
+                account: t.account,
+                is_approval: t.is_approval
+            })
+        }
+    } else {
+        result = transfers ?? []
+    }
+
     return result
 }
