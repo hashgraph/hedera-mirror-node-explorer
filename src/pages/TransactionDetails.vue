@@ -211,7 +211,7 @@
       </template>
     </DashboardCard>
 
-    <DashboardCard class="h-card">
+    <DashboardCard v-if="displayTransfers" class="h-card">
       <template v-slot:title>
         <span class="h-is-secondary-title">Transfers</span>
       </template>
@@ -324,6 +324,11 @@ export default defineComponent({
       return transactionGroupAnalyzer.childTransactions.value.length > MAX_INLINE_CHILDREN
     })
 
+    const displayTransfers = computed(() =>
+        (transactionDetail.value?.transfers && transactionDetail.value.transfers.length > 0)
+        || (transactionDetail.value?.token_transfers && transactionDetail.value.token_transfers.length > 0)
+        || (transactionDetail.value?.nft_transfers && transactionDetail.value.nft_transfers.length > 0)
+    )
 
     const routeName = computed(() => {
       return transactionAnalyzer.entityDescriptor.value?.routeName
@@ -436,6 +441,7 @@ export default defineComponent({
       makeOperatorAccountLabel,
       routeToAllTransactions,
       displayAllChildrenLinks,
+      displayTransfers,
       topicMessage: topicMessageLookup.entity,
       isTokenAssociation: transactionAnalyzer.isTokenAssociation,
       associatedTokens: transactionAnalyzer.tokens
