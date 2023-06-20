@@ -23,8 +23,8 @@
 <!-- --------------------------------------------------------------------------------------------------------------- -->
 
 <template>
-  <div v-if="rewardTransferLayout.destinations.length">
-    <p class="h-is-tertiary-text mb-2">Staking Rewards</p>
+  <div v-if="rewardTransferLayout.destinations.length >= 1">
+    <p class="h-is-tertiary-text mb-2">Staking Reward Transfers</p>
 
     <div class="graph-container" v-bind:class="{'graph-container-8': dollarVisible }">
 
@@ -113,11 +113,6 @@ export default defineComponent({
   components: {HbarAmount, HbarExtra, ArrowSegment, AccountLink},
   props: {
     transaction: Object as PropType<Transaction>,
-    title: String,
-    showNone: {
-      type: Boolean,
-      default: false
-    }
   },
   setup(props) {
 

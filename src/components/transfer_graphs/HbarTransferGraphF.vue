@@ -23,11 +23,8 @@
 <!-- --------------------------------------------------------------------------------------------------------------- -->
 
 <template>
-  <div>
-  <p class="h-is-tertiary-text mb-2">{{ title }}</p>
-
-  <div  v-if="hbarTransferLayout.rowCount >= 1">
-
+  <div v-if="hbarTransferLayout.rowCount >= 1">
+    <p class="h-is-tertiary-text mb-2">{{ title }}</p>
     <div class="graph-container" v-bind:class="{'graph-container-8': dollarVisible }">
 
       <template v-if="dollarVisible">
@@ -69,7 +66,7 @@
           <div class="justify-end">
             <HbarExtra v-if="i <= hbarTransferLayout.sources.length"
                        v-bind:tbarAmount="hbarTransferLayout.sources[i-1].transfer.amount"
-                       v-bind:timestamp="transaction.consensus_timestamp"/>
+                       v-bind:timestamp="transaction?.consensus_timestamp"/>
           </div>
 
         </template>
@@ -103,7 +100,7 @@
           <div class="justify-end" v-bind:class="{'h-has-low-contrast': hasLowContrast(i-1)}">
             <HbarExtra v-if="i <= hbarTransferLayout.destinations.length"
                        v-bind:tbarAmount="hbarTransferLayout.destinations[i-1].transfer.amount"
-                       v-bind:timestamp="transaction.consensus_timestamp"/>
+                       v-bind:timestamp="transaction?.consensus_timestamp"/>
           </div>
 
           <!-- #7 : description -->
@@ -118,11 +115,6 @@
       </template>
 
     </div>
-
-  </div>
-
-  <p v-else-if="showNone" class="has-text-grey">None</p>
-
   </div>
 </template>
 
