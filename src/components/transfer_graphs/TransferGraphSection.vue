@@ -33,29 +33,29 @@
   <HbarTransferGraphF
       v-else
       data-cy="hbarTransfers"
-      title="Hbar Transfers" v-bind:transaction="transaction"/>
-  <br/>
+      title="Hbar Transfers"
+      v-bind:class="{'mb-4': displayRewardTransfers | displayNftTransfers | displayTokenTransfers}" v-bind:transaction="transaction"/>
+
+  <RewardTransferGraph
+      v-if="!compact"
+      data-cy="rewardTransfers"
+      v-bind:class="{'mb-4': displayNftTransfers | displayTokenTransfers}"
+      v-bind:transaction="transaction"/>
 
   <NftTransferGraph
       data-cy="nftTransfers"
-      :class="{'mb-4': !compact}"
+      v-bind:class="{'mb-4': !compact && displayTokenTransfers}"
       v-bind:transaction="transaction"
       v-bind:compact="compact"/>
 
   <TokenTransferGraphC
-      data-cy="tokenTransfers"
       v-if="compact"
+      data-cy="tokenTransfers"
       v-bind:transaction="transaction"/>
   <TokenTransferGraphF
-      data-cy="tokenTransfers"
       v-else
+      data-cy="tokenTransfers"
       v-bind:transaction="transaction"/>
-
-  <RewardTransferGraph
-      data-cy="rewardTransfers"
-      :class="{'mb-4': !compact}"
-      v-bind:transaction="transaction"
-      v-bind:compact="compact"/>
 
 </template>
 
@@ -98,8 +98,15 @@ export default defineComponent({
       return props.transaction ? computeNetAmount(props.transaction.transfers, props.transaction.charged_tx_fee) : 0
     })
 
+    const displayRewardTransfers = computed(() => props.transaction?.staking_reward_transfers && props.transaction?.staking_reward_transfers.length >= 1)
+    const displayNftTransfers = computed(() => props.transaction?.nft_transfers && props.transaction?.nft_transfers.length >= 1)
+    const displayTokenTransfers = computed(() => props.transaction?.token_transfers && props.transaction?.token_transfers.length >= 1)
+
     return {
       netAmount,
+      displayRewardTransfers,
+      displayNftTransfers,
+      displayTokenTransfers
     }
   }
 })
