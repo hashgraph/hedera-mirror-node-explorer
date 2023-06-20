@@ -78,7 +78,7 @@ describe("TransactionDetails.vue", () => {
     const matcher3 = "api/v1/network/nodes"
     mock.onGet(matcher3).reply(200, SAMPLE_NETWORK_NODES);
 
-    it("Should display transaction details with token transfers and fee transfers", async () => {
+    it("Should display transaction details with token transfers and hbar transfers", async () => {
 
         await router.push("/") // To avoid "missing required param 'network'" error
 
@@ -131,8 +131,8 @@ describe("TransactionDetails.vue", () => {
         expect(wrapper.findComponent(NftTransferGraph).exists()).toBe(true)
 
         expect(wrapper.findComponent(HbarTransferGraphF).text()).toBe(
-            "Fee TransfersAccountHbar AmountAccountHbar Amount0.0.29624024-0.00470065-$0.00116\n\n" +
-            "0.0.40.00022028$0.00005Hosted by Hedera | East Coast, USA\n\n" +
+            "Hbar TransfersAccountHbar AmountAccountHbar Amount0.0.29624024-0.00470065-$0.00116\n\n" +
+            "0.0.40.00022028$0.00005Node fee (Hedera)\n\n" +
             "0.0.980.00448037$0.00110Hedera fee collection account")
 
         expect(wrapper.findComponent(TokenTransferGraph).text()).toBe(
@@ -744,8 +744,8 @@ describe("TransactionDetails.vue", () => {
         expect(wrapper.findComponent(TokenTransferGraph).exists()).toBe(true)
         expect(wrapper.findComponent(NftTransferGraph).exists()).toBe(true)
 
-        expect(wrapper.findComponent(HbarTransferGraphF).text()).toBe("Fee TransfersAccountHbar AmountAccountHbar Amount0.0.642949-1.15905210-$0.28517\n\n" +
-            "0.0.30.05805847$0.01428Hosted by Hedera | East Coast, USA\n\n" +
+        expect(wrapper.findComponent(HbarTransferGraphF).text()).toBe("Hbar TransfersAccountHbar AmountAccountHbar Amount0.0.642949-1.15905210-$0.28517\n\n" +
+            "0.0.30.05805847$0.01428Node fee (Hedera)\n\n" +
             "0.0.981.10099363$0.27088Hedera fee collection account")
         expect(wrapper.findComponent(TokenTransferGraph).text()).toBe("")
         expect(wrapper.findComponent(NftTransferGraph).text()).toBe("")
