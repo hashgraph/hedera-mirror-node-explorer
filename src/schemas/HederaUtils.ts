@@ -95,7 +95,7 @@ export function makeNodeOwnerDescription(node: NetworkNode, short= false): strin
     } else {
         result = description
     }
-    return short ? result.split('|')[0] : result
+    return short ? result.split('|')[0].trimEnd() : result
 }
 
 export function makeDefaultNodeDescription(nodeId: number | null): string {
