@@ -25,7 +25,7 @@
     "@fortawesome/free-solid-svg-icons": "^6.3.0",
     "@fortawesome/vue-fontawesome": "^3.0.3",
     "@hashgraph/proto": "^2.11.0",
-    "@hashgraph/sdk": "^2.18.0",
+    "@hashgraph/sdk": "^2.27.0",
     "@kabuto-sh/ns": "^0.6.2",
     "@metamask/detect-provider": "^1.2.0",
     "@metamask/providers": "^9.1.0",
