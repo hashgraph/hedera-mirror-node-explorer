@@ -19,7 +19,7 @@
   },
   "dependencies": {
     "@ethereum-sourcify/bytecode-utils": "^1.1.0",
-    "@bladelabs/blade-web3.js": "^0.9.14",
+    "@bladelabs/blade-web3.js": "^0.10.2",
     "@fortawesome/fontawesome-svg-core": "^6.3.0",
     "@fortawesome/free-brands-svg-icons": "^6.3.0",
     "@fortawesome/free-solid-svg-icons": "^6.3.0",
