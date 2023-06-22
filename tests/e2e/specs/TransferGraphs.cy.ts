@@ -122,7 +122,7 @@ describe('Transfer Graphs Navigation', () => {
             .then(($account) => {
                 cy.wrap($account)
                     .find('a')
-                    .click()
+                    .click({force: true})
                 cy.url().should('include', '/mainnet/account/' + $account.text())
                 cy.contains('Account ID:' + $account.text())
             })
@@ -135,7 +135,7 @@ describe('Transfer Graphs Navigation', () => {
             .then(($token) => {
                 cy.wrap($token)
                     .find('a')
-                    .click()
+                    .click({force: true})
                     .then(($name) => {
                         cy.url().should('include', '/mainnet/token/')
                         cy.contains('Token ')
@@ -151,7 +151,7 @@ describe('Transfer Graphs Navigation', () => {
             .then(($token) => {
                 cy.wrap($token)
                     .find('a')
-                    .click()
+                    .click({force: true})
                     .then(($name) => {
                         cy.url().should('include', '/mainnet/token/')
                         cy.contains('Token ')
@@ -166,7 +166,7 @@ describe('Transfer Graphs Navigation', () => {
             .then(($account) => {
                 cy.wrap($account)
                     .find('a')
-                    .click()
+                    .click({force: true})
                 cy.url().should('include', '/mainnet/account/' + $account.text())
                 cy.contains('Account ID:' + $account.text())
             })

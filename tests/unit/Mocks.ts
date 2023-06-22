@@ -693,6 +693,74 @@ export const SAMPLE_SYSTEM_CONTRACT_CALL_TRANSACTIONS = {
     ]
 }
 
+export const SAMPLE_CRYPTO_TRANSFER_WITH_ONLY_FEE = {
+        "bytes": null,
+        "charged_tx_fee": 26494683,
+        "consensus_timestamp": "1687197609.495612761",
+        "entity_id": "0.0.3005010",
+        "max_fee": "200000000",
+        "memo_base64": "",
+        "name": "CONSENSUSCREATETOPIC",
+        "node": "0.0.25",
+        "nonce": 0,
+        "parent_consensus_timestamp": null,
+        "result": "SUCCESS",
+        "scheduled": false,
+        "transaction_hash": "c2sSCuCRNOI6gvCYs5KFxe7Z60TV8vJXxuOWNEtH4doYj0MnruIi3NLFXIX6e8s1",
+        "transaction_id": "0.0.1786365-1687197599-390469131",
+        "transfers": [{"account": "0.0.25", "amount": 1190235, "is_approval": false}, {
+            "account": "0.0.98",
+            "amount": 22774004,
+            "is_approval": false
+        }, {"account": "0.0.800", "amount": 2530444, "is_approval": false}, {
+            "account": "0.0.1786365",
+            "amount": -26494683,
+            "is_approval": false
+        }],
+        "valid_duration_seconds": "120",
+        "valid_start_timestamp": "1687197599.390469131"
+}
+
+export const SAMPLE_CRYPTO_TRANSFER_WITH_REWARDS = {
+    "bytes": null,
+    "charged_tx_fee": 5351935,
+    "consensus_timestamp": "1687133236.139653690",
+    "entity_id": null,
+    "max_fee": "100000000",
+    "memo_base64": "KDAuMC4yOTk4NTU1KUNvbmZpcm0gcHVyY2hhc2Ugb2YgTkZUOiAwLjAuMjE3Mzg5OSB3aXRoIHNlcmlhbCBudW1iZXIgMTYxMiBmb3IgMjUgSEJBUg==",
+    "name": "CRYPTOTRANSFER",
+    "node": "0.0.4",
+    "nonce": 0,
+    "parent_consensus_timestamp": null,
+    "result": "SUCCESS",
+    "scheduled": false,
+    "staking_reward_transfers": [{"account": "0.0.788887", "amount": 210704256}, {
+        "account": "0.0.2254995",
+        "amount": 2289378672
+    }],
+    "transaction_hash": "9s/JADOEqzUy4yzZA0StoTfumGL0bAALPs9tKbE/ELX0AY6gkbTl4potlyd3XHeU",
+    "transaction_id": "0.0.690356-1687133220-052118241",
+    "transfers": [{"account": "0.0.4", "amount": 206713, "is_approval": false}, {
+        "account": "0.0.98",
+        "amount": 4630700,
+        "is_approval": false
+    }, {"account": "0.0.800", "amount": -2499568406, "is_approval": false}, {
+        "account": "0.0.690356",
+        "amount": -5351935,
+        "is_approval": false
+    }, {"account": "0.0.755188", "amount": 2280000000, "is_approval": false}, {
+        "account": "0.0.788887",
+        "amount": 330704256,
+        "is_approval": false
+    }, {"account": "0.0.2254995", "amount": 2389378672, "is_approval": false}, {
+        "account": "0.0.2998555",
+        "amount": -2500000000,
+        "is_approval": false
+    }],
+    "valid_duration_seconds": "120",
+    "valid_start_timestamp": "1687133220.052118241"
+}
+
 export const SAMPLE_TOKEN_CALL_TRANSACTIONS = {
     "transactions": [{
         "bytes": null,

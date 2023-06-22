@@ -85,7 +85,7 @@ export function makeNodeDescriptionPrefix(node: NetworkNode): string {
     return result
 }
 
-export function makeNodeOwnerDescription(node: NetworkNode): string {
+export function makeNodeOwnerDescription(node: NetworkNode, short= false): string {
     const description = makeNodeDescription(node)
     let result: string
     if (description?.slice(0, 9).toLowerCase() === "hosted by") {
@@ -95,20 +95,24 @@ export function makeNodeOwnerDescription(node: NetworkNode): string {
     } else {
         result = description
     }
-    return result
+    return short ? result.split('|')[0].trimEnd() : result
 }
 
 export function makeDefaultNodeDescription(nodeId: number | null): string {
     return "Node " + nodeId ?? "?"
 }
 
-export function makeOperatorDescription(accountId: string, nodes: NetworkNode[]): string | null {
+export function makeOperatorDescription(accountId: string, nodes: NetworkNode[], isFee=false): string | null {
     let result: string|null
     if (accountId === "0.0.98") {
         result = "Hedera fee collection account"
+    } else if(accountId === "0.0.800") {
+        result = isFee ? "Staking reward account fee" : "Staking reward account"
     } else {
         const node = lookupNodeByAccountId(accountId, nodes)
-        result = node !== null ? makeNodeDescription(node) : null
+        result = node !== null
+            ? isFee ? `Node fee (${makeNodeOwnerDescription(node, true)})` : makeNodeDescription(node)
+            : null
     }
     return result
 }
