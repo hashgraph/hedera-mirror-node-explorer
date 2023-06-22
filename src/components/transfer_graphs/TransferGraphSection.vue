@@ -36,15 +36,9 @@
       title="Hbar Transfers"
       v-bind:class="{'mb-4': displayRewardTransfers | displayNftTransfers | displayTokenTransfers}" v-bind:transaction="transaction"/>
 
-  <RewardTransferGraph
-      v-if="!compact"
-      data-cy="rewardTransfers"
-      v-bind:class="{'mb-4': displayNftTransfers | displayTokenTransfers}"
-      v-bind:transaction="transaction"/>
-
   <NftTransferGraph
       data-cy="nftTransfers"
-      v-bind:class="{'mb-4': !compact && displayTokenTransfers}"
+      v-bind:class="{'mb-4': !compact && (displayTokenTransfers || displayRewardTransfers)}"
       v-bind:transaction="transaction"
       v-bind:compact="compact"/>
 
@@ -55,6 +49,12 @@
   <TokenTransferGraphF
       v-else
       data-cy="tokenTransfers"
+      v-bind:class="{'mb-4': displayRewardTransfers}"
+      v-bind:transaction="transaction"/>
+
+  <RewardTransferGraph
+      v-if="!compact"
+      data-cy="rewardTransfers"
       v-bind:transaction="transaction"/>
 
 </template>
