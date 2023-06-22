@@ -24,7 +24,7 @@
 
 <template>
   <div v-if="rewardTransferLayout.destinations.length >= 1">
-    <p class="h-is-tertiary-text mb-2">Staking Reward Transfers</p>
+    <p class="h-is-tertiary-text mb-2">Staking Rewards</p>
 
     <div class="graph-container" v-bind:class="{'graph-container-8': dollarVisible }">
 
