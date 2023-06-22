@@ -97,7 +97,7 @@ describe("RewardTransferGraph.vue", () => {
          */
 
         expect(wrapper.text()).toBe(
-            "Staking Reward Transfers" +
+            "Staking Rewards" +
             "Reward AccountAccountAmount Rewarded" +
             "0.0.800\n\n" +
             "0.0.788887" +
