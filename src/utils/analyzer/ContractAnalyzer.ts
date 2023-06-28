@@ -33,7 +33,7 @@ import {AppStorage} from "@/AppStorage";
 export class ContractAnalyzer {
 
     public readonly contractId: Ref<string|null>
-    private readonly byteCodeAnalyzer: ByteCodeAnalyzer
+    public readonly byteCodeAnalyzer: ByteCodeAnalyzer
     private readonly contractResponse: Ref<ContractResponse|null> = ref(null)
     private readonly systemContractEntry: Ref<SystemContractEntry|null> = ref(null)
     private readonly localStorageMetadata: Ref<SolcMetadata|null> = ref(null)
