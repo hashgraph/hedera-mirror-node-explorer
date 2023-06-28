@@ -33,39 +33,25 @@
         <Property id="code">
             <template v-slot:name>Runtime Bytecode</template>
             <template v-slot:value>
-                <ByteCodeValue :byte-code="byteCode"/>
+                <ByteCodeValue :byte-code="byteCode ?? undefined"/>
             </template>
         </Property>
         <Property id="solcVersion">
             <template v-slot:name>Compiler Version</template>
             <template v-slot:value>
-                <StringValue :string-value="solcVersion"/>
+                <StringValue :string-value="solcVersion ?? undefined"/>
             </template>
         </Property>
         <Property id="ipfsHash">
             <template v-slot:name>IPFS Hash</template>
             <template v-slot:value>
-                <StringValue :string-value="ipfsHash"/>
-                <div v-if="ipfsHash" class="has-text-grey">
-                    <div v-if="ipfsMetadata">
-                        <span class="icon fas fa-check-circle has-text-success is-small mt-1 mr-1"/>
-                        <span>Metadata file is available on <a :href="ipfsURL" :target="ipfsHash">IPFS</a></span>
-                    </div>
-                    <div v-else-if="ipfsLoading">
-                        <span class="icon fas fa-circle-notch fa-spin has-text-grey is-small mt-1 mr-1"/>
-                        <span>Checking IPFS…</span>
-                    </div>
-                    <div v-else>
-                        <span class="icon fas fa-info-circle has-text-grey is-small mt-1 mr-1"/>
-                        <span>Metadata file is not available on IPFS</span>
-                    </div>
-                </div>
+                <StringValue :string-value="ipfsHash ?? undefined"/>
             </template>
         </Property>
         <Property id="swarmHash">
             <template v-slot:name>SWARM Hash</template>
             <template v-slot:value>
-                <StringValue :string-value="swarmHash"/>
+                <StringValue :string-value="swarmHash ?? undefined"/>
             </template>
         </Property>
 
@@ -106,10 +92,8 @@ export default defineComponent({
     onMounted(() => contractLookup.mount())
     onBeforeUnmount(() => contractLookup.unmount())
 
-    const byteCode = computed(() => contractLookup.entity.value?.runtime_bytecode ?? undefined)
+    const byteCode = computed(() => contractLookup.entity.value?.runtime_bytecode ?? null)
     const byteCodeAnalyzer = new ByteCodeAnalyzer(byteCode)
-    onMounted(() => byteCodeAnalyzer.mount())
-    onBeforeUnmount(() => byteCodeAnalyzer.unmount())
 
     return {
       isTouchDevice,
@@ -118,9 +102,7 @@ export default defineComponent({
       byteCode: byteCodeAnalyzer.byteCode,
       solcVersion: byteCodeAnalyzer.solcVersion,
       ipfsHash: byteCodeAnalyzer.ipfsHash,
-      ipfsMetadata: byteCodeAnalyzer.ipfsMetadata,
       ipfsURL: byteCodeAnalyzer.ipfsURL,
-      ipfsLoading: byteCodeAnalyzer.ipfsLoading,
       swarmHash: byteCodeAnalyzer.swarmHash,
     }
   }

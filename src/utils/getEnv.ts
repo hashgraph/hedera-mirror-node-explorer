@@ -18,8 +18,8 @@
  *
  */
 
-declare const window: any
+declare const window: { configs: Record<string, string>|undefined }
 
-export function getEnv(name: string): string {
+export function getEnv(name: string): string|undefined {
     return window?.configs?.[name] || process.env[name]
 }

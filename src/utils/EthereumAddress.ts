@@ -20,6 +20,7 @@
 
 import {byteToHex, hexToByte} from "@/utils/B64Utils";
 import {EntityID} from "@/utils/EntityID";
+import web3Utils  from "web3-utils";
 
 export class EthereumAddress {
 
@@ -32,6 +33,12 @@ export class EthereumAddress {
     public static parse(byteString: string): EthereumAddress|null {
         const bytes = hexToByte(byteString)
         return bytes !== null && bytes.length == 20 ? new EthereumAddress(bytes) : null
+    }
+
+    public static normalizeEIP55(byteString: string): string {
+        // https://eips.ethereum.org/EIPS/eip-55
+        // https://web3js.readthedocs.io/en/v1.2.11/web3-utils.html#tochecksumaddress
+        return web3Utils.toChecksumAddress(byteString)
     }
 
     public toString(): string {

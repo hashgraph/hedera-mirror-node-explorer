@@ -18,47 +18,45 @@
  *
  */
 
-import {computed, Ref, ref, watch, WatchStopHandle} from "vue";
+import {computed, Ref, ref} from "vue";
 import {decode} from "@ethereum-sourcify/bytecode-utils";
 import {SolcMetadata} from "@/utils/solc/SolcMetadata";
-import axios from "axios";
+import {Lookup} from "@/utils/cache/base/EntityCache";
+import {IPFSCache} from "@/utils/cache/IPFSCache";
 
 export class ByteCodeAnalyzer {
 
-    public readonly byteCode = ref<string|undefined>(undefined)
-    private readonly watchHandle: Ref<WatchStopHandle|null> = ref(null)
-    public readonly ipfsLoading = ref<boolean>(false)
-    public readonly ipfsMetadata: Ref<SolcMetadata|undefined> = ref(undefined)
+    public readonly byteCode = ref<string|null>(null)
+    public readonly ipfsLookup: Lookup<string, unknown|undefined>
 
     //
     // Public
     //
 
-    public constructor(byteCode: Ref<string|undefined>) {
+    public constructor(byteCode: Ref<string|null>) {
         this.byteCode = byteCode
+        this.ipfsLookup = IPFSCache.instance.makeLookup(this.ipfsHash)
+        // this.swarmLookup = SWARMCache.instance.makeLookup(computed(() => this.swarmHash.value ?? null))
     }
 
     public mount(): void {
-        this.watchHandle.value = watch(this.ipfsURL,this.ipfsUrlDidChange, { immediate: true})
+        this.ipfsLookup.mount()
     }
 
     public unmount(): void {
-        if (this.watchHandle.value !== null) {
-            this.watchHandle.value()
-            this.watchHandle.value = null
-        }
-        this.ipfsMetadata.value = undefined
+        this.ipfsLookup.unmount()
     }
 
-    public readonly solcVersion = computed(() => this.decodedObject.value?.solcVersion)
+    public readonly solcVersion = computed(() => this.decodedObject.value?.solcVersion ?? null)
 
-    public readonly ipfsHash = computed(() => this.decodedObject.value?.ipfs)
+    public readonly ipfsHash = computed(() => this.decodedObject.value?.ipfs ?? null)
 
-    public readonly swarmHash = computed(() => this.decodedObject.value?.bzzr1)
+    public readonly swarmHash = computed(() => this.decodedObject.value?.bzzr1 ?? null)
 
-    public readonly ipfsURL = computed(() => {
-        return this.ipfsHash.value ? "https://ipfs.io/ipfs/" + this.ipfsHash.value : undefined
-    })
+    public readonly ipfsURL = computed(() => this.ipfsHash.value ? "https://ipfs.io/ipfs/" + this.ipfsHash.value : null)
+
+    public readonly ipfsMetadata = computed(() => this.ipfsLookup.entity.value as SolcMetadata|null)
+
 
     //
     // Private
@@ -77,23 +75,6 @@ export class ByteCodeAnalyzer {
         }
         return result
     })
-
-    private readonly ipfsUrlDidChange = async () => {
-        if (this.ipfsURL.value) {
-            this.ipfsLoading.value = true
-            try {
-                const options = { timeout: 10000 }
-                const stealthAxios = axios.create()
-                this.ipfsMetadata.value = (await stealthAxios.get<SolcMetadata>(this.ipfsURL.value, options)).data
-            } catch {
-                this.ipfsMetadata.value = undefined
-            } finally {
-                this.ipfsLoading.value = false
-            }
-        } else {
-            this.ipfsMetadata.value = undefined
-        }
-    }
 
 }
 

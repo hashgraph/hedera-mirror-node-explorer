@@ -19,6 +19,7 @@
  */
 
 import {NetworkEntry, networkRegistry} from "@/schemas/NetworkRegistry";
+import { SolcMetadata } from "./utils/solc/SolcMetadata";
 
 export class AppStorage {
 
@@ -103,6 +104,52 @@ export class AppStorage {
         const policy = accept ? AppStorage.COOKIE_POLICY_ACCEPT : AppStorage.COOKIE_POLICY_REJECT
         AppStorage.createCookie(AppStorage.COOKIE_POLICY_NAME, policy, AppStorage.COOKIE_POLICY_VALIDITY)
     }
+
+    //
+    // metadata
+    //
+
+    private static readonly METADATA = 'metadata'
+
+    public static getMetadata(contractId: string): SolcMetadata | null {
+        let result: SolcMetadata|null
+
+        const suffix = this.METADATA + "/" + contractId
+        const jsonText = this.getLocalStorageItem(suffix)
+        if (jsonText !== null) {
+            try {
+                result = JSON.parse(jsonText) as SolcMetadata
+            } catch {
+                result = null
+            }
+        } else {
+            result = null
+        }
+
+        return result
+    }
+
+    public static setMetadata(newValue: SolcMetadata | null, contractId: string ): void {
+        const suffix = this.METADATA + "/" + contractId
+        this.setLocalStorageItem(suffix, JSON.stringify(newValue))
+    }
+
+    //
+    // source
+    //
+
+    private static readonly SOURCE = 'source'
+
+    public static getSource(name: string): string | null {
+        const suffix = this.SOURCE + "/" + name
+        return this.getLocalStorageItem(suffix)
+    }
+
+    public static setSource(newValue: string | null, name: string ): void {
+        const suffix = this.SOURCE + "/" + name
+        this.setLocalStorageItem(suffix, newValue)
+    }
+
 
     //
     // Private

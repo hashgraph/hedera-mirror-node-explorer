@@ -40,7 +40,8 @@
     "hashconnect": "^0.1.10",
     "vue": "^3.3.4",
     "vue-axios": "^3.5.2",
-    "vue-router": "^4.2.4"
+    "vue-router": "^4.2.4",
+    "web3-utils": "^1.9.0"
   },
   "devDependencies": {
     "@cypress/code-coverage": "^3.11.0",

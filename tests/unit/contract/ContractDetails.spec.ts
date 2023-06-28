@@ -100,9 +100,9 @@ describe("ContractDetails.vue", () => {
         expect(wrapper.get("#nonceValue").text()).toBe("1")
         expect(wrapper.get("#fileValue").text()).toBe("0.0.749773")
         expect(wrapper.get("#evmAddress").text()).toBe("EVM Address:0x00000000000000000000000000000000000b70cfCopy")
-        expect(wrapper.get("#code").text()).toBe("Runtime BytecodeNone")
-        expect(wrapper.get("#solcVersion").text()).toBe("Compiler VersionNone")
-        expect(wrapper.get("#ipfsHash").text()).toBe("IPFS HashNone")
+        expect(wrapper.get("#code").text()).toBe("Runtime Bytecode")
+        expect(wrapper.get("#solcVersion").text()).toBe("Compiler Version0.8.4")
+        expect(wrapper.get("#ipfsHash").text()).toBe("IPFS HashQmap1zNn5JRVVoLFDAKbah7jZyVJAvjqq7f8oUExesSiWT")
         expect(wrapper.get("#swarmHash").text()).toBe("SWARM HashNone")
 
         expect(wrapper.findComponent(ContractResultTable).exists()).toBe(true)

@@ -43,6 +43,7 @@ import {ContractByAddressCache} from "@/utils/cache/ContractByAddressCache";
 import {HbarPriceCache} from "@/utils/cache/HbarPriceCache";
 import {ContractResultByTransactionIdCache} from "@/utils/cache/ContractResultByTransactionIdCache";
 import {ContractResultByTsCache} from "@/utils/cache/ContractResultByTsCache";
+import {SourcifyCache} from "@/utils/cache/SourcifyCache";
 
 export class CacheUtils {
 
@@ -61,7 +62,9 @@ export class CacheUtils {
         ContractResultByTransactionIdCache.instance.clear()
         ContractResultByTsCache.instance.clear()
         HbarPriceCache.instance.clear()
+        // IPFSCache.instance => no clear: we preserve it because IPFS content is valid for all networks
         NetworkCache.instance.clear()
+        SourcifyCache.instance.clear()
         StakeCache.instance.clear()
         TokenInfoCache.instance.clear()
         TokenRelationshipCache.instance.clear()
