@@ -129,6 +129,9 @@ export default defineComponent({
         return props.contractAnalyzer.sourcifyRecord.value !== null && props.contractAnalyzer.sourcifyRecord.value.fullMatch
     })
 
+    const contractName = computed(
+        () => isVerified.value ? props.contractAnalyzer.contractName.value : null)
+
     return {
       isTouchDevice,
       isSmallScreen,
@@ -138,7 +141,7 @@ export default defineComponent({
       ipfsHash: props.contractAnalyzer.byteCodeAnalyzer.ipfsHash,
       ipfsURL: props.contractAnalyzer.byteCodeAnalyzer.ipfsURL,
       swarmHash: props.contractAnalyzer.byteCodeAnalyzer.swarmHash,
-      contractName: props.contractAnalyzer.contractName,
+      contractName,
       sourcifyURL: props.contractAnalyzer.sourcifyURL,
       verifierURL: routeManager.currentNetworkEntry.value.sourcifySetup?.verifierURL,
       isVerified,
