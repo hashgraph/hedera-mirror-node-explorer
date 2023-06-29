@@ -313,33 +313,33 @@ export interface Token {
 
 export interface TokenInfo {
 
-    admin_key: Key | null | undefined
-    auto_renew_account: string | null | undefined   // Network entity ID in the format of shard.realm.num
-    auto_renew_period: number | null | undefined
-    created_timestamp: string | undefined
-    decimals: string | undefined
-    deleted: boolean | null | undefined
-    expiry_timestamp: string | null | undefined
-    fee_schedule_key: Key | null | undefined
-    freeze_default: boolean | undefined
-    freeze_key: Key |null | undefined
-    initial_supply: string | undefined
-    kyc_key: Key | null | undefined
-    max_supply: string | undefined
-    modified_timestamp: string | undefined
-    name: string | undefined
-    memo: string | undefined
-    pause_key: Key | null | undefined
-    pause_status: string | undefined // NOT_APPLICABLE, PAUSED, UNPAUSED
-    supply_key: Key | null | undefined
-    supply_type: string | undefined // FINITE, INFINITE
-    symbol: string | undefined
-    token_id: string | null | undefined     // Network entity ID in the format of shard.realm.num
-    total_supply: string | undefined
-    treasury_account_id: string | null | undefined   // Network entity ID in the format of shard.realm.num
+    admin_key: Key | null
+    auto_renew_account: string | null   // Network entity ID in the format of shard.realm.num
+    auto_renew_period: number | null
+    created_timestamp: string
+    decimals: string
+    deleted: boolean | null
+    expiry_timestamp: string | null
+    fee_schedule_key: Key | null
+    freeze_default: boolean
+    freeze_key: Key | null
+    initial_supply: string
+    kyc_key: Key | null
+    max_supply: string
+    modified_timestamp: string
+    name: string
+    memo: string
+    pause_key: Key | null
+    pause_status: string // NOT_APPLICABLE, PAUSED, UNPAUSED
+    supply_key: Key | null
+    supply_type: string // FINITE, INFINITE
+    symbol: string
+    token_id: string | null     // Network entity ID in the format of shard.realm.num
+    total_supply: string
+    treasury_account_id: string | null   // Network entity ID in the format of shard.realm.num
     type: string // FUNGIBLE_COMMON, NON_FUNGIBLE_UNIQUE
-    wipe_key: Key | null | undefined
-    custom_fees: CustomFees | undefined
+    wipe_key: Key | null
+    custom_fees: CustomFees
 }
 
 export interface CustomFees {
@@ -453,26 +453,26 @@ export interface ContractsResponse {
 
 export interface Contract {
 
-    admin_key: Key | null | undefined
-    auto_renew_account: string | null | undefined   // Network entity ID in the format of shard.realm.num
-    auto_renew_period: number | null | undefined
-    contract_id: string | null | undefined   // Network entity ID in the format of shard.realm.num
-    created_timestamp: string | null | undefined
-    deleted: boolean | undefined
-    evm_address: string | undefined
-    expiration_timestamp: string | null | undefined
+    admin_key: Key | null
+    auto_renew_account: string | null   // Network entity ID in the format of shard.realm.num
+    auto_renew_period: number | null
+    contract_id: string | null   // Network entity ID in the format of shard.realm.num
+    created_timestamp: string | null
+    deleted: boolean
+    evm_address: string
+    expiration_timestamp: string | null
     file_id: string | null | undefined   // Network entity ID in the format of shard.realm.num
-    max_automatic_token_associations: number | null | undefined
-    memo: string | undefined
-    obtainer_id: string | null | undefined   // Network entity ID in the format of shard.realm.num
-    permanent_removal: boolean | null | undefined
-    proxy_account_id: string | null | undefined   // Network entity ID in the format of shard.realm.num
-    timestamp: TimestampRange | undefined   // timestamp range the entity is valid for
+    max_automatic_token_associations: number | null
+    memo: string
+    obtainer_id: string | null   // Network entity ID in the format of shard.realm.num
+    permanent_removal: boolean | null
+    proxy_account_id: string | null   // Network entity ID in the format of shard.realm.num
+    timestamp: TimestampRange   // timestamp range the entity is valid for
 }
 
 export interface ContractResponse extends Contract {
-    bytecode: string | null | undefined
-    runtime_bytecode: string | null | undefined
+    bytecode: string | null
+    runtime_bytecode: string | null
 }
 
 export interface TimestampRange {
