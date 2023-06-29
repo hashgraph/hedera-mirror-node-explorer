@@ -34,8 +34,12 @@
       </Copyable>
       <span v-if="entityId && showId">
         <span class="ml-1">(</span>
-        <router-link v-if="isContract" :to="{name: 'ContractDetails', params: {contractId: entityId}}">{{ entityId }}</router-link>
-        <router-link v-else-if="isAccount" :to="{name: 'AccountDetails', params: {accountId: entityId}}">{{ entityId }}</router-link>
+        <router-link v-if="entityLinkType === CONTRACT"
+                     :to="{name: 'ContractDetails', params: {contractId: entityId}}">{{ entityId }}</router-link>
+        <router-link v-else-if="entityLinkType === ACCOUNT"
+                     :to="{name: 'AccountDetails', params: {accountId: entityId}}">{{ entityId }}</router-link>
+        <router-link v-else-if="entityLinkType === TOKEN"
+                     :to="{name: 'TokenDetails', params: {tokenId: entityId}}">{{ entityId }}</router-link>
         <span v-else>{{ entityId }}</span>
         <span>)</span>
       </span>
@@ -58,19 +62,28 @@ import {initialLoadingKey} from "@/AppKeys";
 import {systemContractRegistry} from "@/schemas/SystemContractRegistry";
 import {AccountByAddressCache} from "@/utils/cache/AccountByAddressCache";
 import {EthereumAddress} from "@/utils/EthereumAddress";
-import {AccountByIdCache} from "@/utils/cache/AccountByIdCache";
 import Copyable from "@/components/Copyable.vue";
-import {EntityID} from "@/utils/EntityID";
-import {makeEthAddressForAccount} from "@/schemas/HederaUtils";
-import {AccountBalanceTransactions} from "@/schemas/HederaSchemas";
+import {ContractByAddressCache} from "@/utils/cache/ContractByAddressCache";
+import {PropType} from "vue/dist/vue";
+
+export enum ExtendedEntityType { UNDEFINED, ACCOUNT, CONTRACT, TOKEN }
 
 export default defineComponent({
   name: "EVMAddress",
   components: {Copyable},
   props: {
-    address: String,
-    id: String,
-    entityType: String,
+    address: {
+      type: String as PropType<string|null>,
+      default: null
+    },
+    id: {
+      type: String as PropType<string|null>,
+      default: null
+    },
+    entityType: {
+      type: String as PropType<string|null>,
+      default: null
+    },
     showId: {
       type: Boolean,
       default: true
@@ -105,46 +118,67 @@ export default defineComponent({
     const initialLoading = inject(initialLoadingKey, ref(false))
     const isSmallScreen = inject('isSmallScreen', ref(false))
 
-    const isContract = computed(() => props.entityType === 'CONTRACT')
-    const isAccount = computed(() => props.entityType === 'ACCOUNT')
-
-    const entityId = ref<string|null>(null)
+    const entityLinkType = ref<ExtendedEntityType>(ExtendedEntityType.UNDEFINED)
     const evmAddress = ref<string|null>(null)
+    const entityId = ref<string|null>(null)
     const ethereumAddress = computed( () => EthereumAddress.parse(evmAddress.value ?? ''))
+    const derivedEntityId = computed( () => ethereumAddress.value?.toEntityID()?.toString() ?? null)
 
     onMounted(() => updateIdAndAddress())
-    watch([() => props.address, () => props.id], () => updateIdAndAddress())
+    watch(() => props.address, () => updateIdAndAddress())
 
     const updateIdAndAddress = async () => {
-      entityId.value = props.id ?? null
+      entityLinkType.value = ExtendedEntityType.UNDEFINED
       evmAddress.value = props.address ?? null
-      let account: AccountBalanceTransactions|null
+      entityId.value = props.id ?? derivedEntityId.value
 
-      if (entityId.value === null || evmAddress.value === null || ethereumAddress.value?.isLongZeroForm()) {
-        if (entityId.value !== null) {
-          account = await AccountByIdCache.instance.lookup(entityId.value)
-        } else if (evmAddress.value !== null) {
-          account = await AccountByAddressCache.instance.lookup(evmAddress.value.toString())
-        } else {
-          account = null
+      if (props.entityType === "ACCOUNT") {
+        if (ethereumAddress.value?.isLongZeroForm() || entityId.value === null) {
+          await updateFromAccount()
         }
-        if (account) {
-          entityId.value = account?.account
-          evmAddress.value = makeEthAddressForAccount(account) ?? evmAddress.value
+      } else if (props.entityType === "CONTRACT") {
+        if (! await updateFromSystemContract()) {
+          if (! await updateFromContract()) {
+            entityLinkType.value = ExtendedEntityType.TOKEN
+          }
         }
-        // else leave entityId.value and evmAddress.value untouched since we may well already be able to
-        // display both in case of a long-zero address.
+      } else { // props.entityType undefined
+        if (!await updateFromSystemContract()) {
+          if (!await updateFromContract()) {
+            if (!await updateFromAccount()) {
+              entityLinkType.value = ExtendedEntityType.TOKEN
+            }
+          }
+        }
+      }
+    }
 
+    const updateFromSystemContract = async (): Promise<boolean> => {
+      const systemContract = systemContractRegistry.lookup(derivedEntityId.value ?? "")
+      if (systemContract !== null) {
+        entityId.value = systemContract.description
       }
-      if (entityId.value === null) {
-        entityId.value = ethereumAddress.value?.toEntityID()?.toString() ?? null
+      return Promise.resolve(systemContract !== null)
+    }
+
+    const updateFromAccount = async (): Promise<boolean> => {
+      const account = await AccountByAddressCache.instance.lookup(props.address ?? "")
+      if (account !== null) {
+        entityLinkType.value = ExtendedEntityType.ACCOUNT
+        evmAddress.value = account.evm_address
+        entityId.value = account.account
       }
-      if (evmAddress.value === null) {
-        evmAddress.value = EntityID.parse(entityId.value ?? '')?.toAddress() ?? null
+      return Promise.resolve(account !== null)
+    }
+
+    const updateFromContract = async (): Promise<boolean> => {
+      const contract = await ContractByAddressCache.instance.lookup(props.address ?? "")
+      if (contract !== null) {
+        entityLinkType.value = ExtendedEntityType.CONTRACT
+        evmAddress.value = contract.evm_address
+        entityId.value = contract.contract_id
       }
-      if (entityId.value) {
-        entityId.value = systemContractRegistry.lookup(entityId.value)?.description ?? entityId.value
-      }
+      return Promise.resolve(contract !== null)
     }
 
     const displayAddress = computed(
@@ -177,8 +211,10 @@ export default defineComponent({
 
     return {
       isSmallScreen,
-      isContract,
-      isAccount,
+      ACCOUNT: ExtendedEntityType.ACCOUNT,
+      CONTRACT: ExtendedEntityType.CONTRACT,
+      TOKEN: ExtendedEntityType.TOKEN,
+      entityLinkType,
       initialLoading,
       nonSignificantPart,
       significantPart,
