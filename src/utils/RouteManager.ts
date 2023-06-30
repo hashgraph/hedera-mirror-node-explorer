@@ -22,7 +22,7 @@ import {NavigationFailure, RouteLocationNormalizedLoaded, RouteLocationRaw, Rout
 import {Transaction} from "@/schemas/HederaSchemas";
 import {NetworkRegistry, networkRegistry} from "@/schemas/NetworkRegistry";
 import {computed, ref, watch, WatchStopHandle} from "vue";
-import router, {routeManager} from "@/router";
+import router from "@/router";
 import {AppStorage} from "@/AppStorage";
 import {nameServiceSetNetwork} from '@/utils/NameService';
 import axios from "axios";
@@ -44,11 +44,13 @@ export class RouteManager {
             axios.defaults.baseURL = this.currentNetworkEntry.value.url
             this.updateSelectedNetworkSilently()
             this.switchThemes()
-            RouteManager.resetSingletons()
         }, { immediate: true})
+        watch(this.currentNetwork, () => {
+            RouteManager.resetSingletons()
+        })
     }
 
-    public readonly currentRoute = computed(() => this.router?.currentRoute.value?.name)
+    public readonly currentRoute = computed(() => this.router.currentRoute.value?.name)
 
     public readonly currentNetwork = computed(() => {
         return this.currentNetworkEntry.value.name
@@ -57,7 +59,7 @@ export class RouteManager {
     public readonly currentNetworkEntry = computed(() => {
 
         let networkName: string|null
-        const networkParam = this.router?.currentRoute.value?.params?.network
+        const networkParam = this.router.currentRoute.value?.params?.network
         if (Array.isArray(networkParam)) {
             networkName = networkParam.length >= 1 ? networkParam[0] : null
         } else {
@@ -68,7 +70,7 @@ export class RouteManager {
         return networkEntry != null ? networkEntry : networkRegistry.getDefaultEntry()
     })
 
-    public selectedNetwork = ref(routeManager?.currentNetwork.value)
+    public selectedNetwork = ref(networkRegistry.getDefaultEntry().name)
 
     public selectedNetworkWatchHandle: WatchStopHandle|undefined
 
@@ -85,7 +87,7 @@ export class RouteManager {
         })
     }
 
-    public readonly previousRoute = computed(() => (this.router?.currentRoute.value?.query.from as string))
+    public readonly previousRoute = computed(() => (this.router.currentRoute.value?.query.from as string))
 
     public readonly isDashboardRoute = computed(() => this.testDashboardRoute())
     public readonly isTransactionRoute = computed(() => this.testTransactionRoute())
@@ -181,7 +183,7 @@ export class RouteManager {
     public makeRouteToTransaction(transactionLoc: string|undefined): RouteLocationRaw {
         return {
             name: 'TransactionDetails',
-            params: { transactionLoc: transactionLoc, network: routeManager.currentNetwork.value }
+            params: { transactionLoc: transactionLoc, network: this.currentNetwork.value }
         }
     }
 
@@ -194,7 +196,7 @@ export class RouteManager {
     }
 
     public makeRouteToTransactionsById(transactionId: string): RouteLocationRaw {
-        return {name: 'TransactionsById', params: { transactionId: transactionId, network: routeManager.currentNetwork.value }}
+        return {name: 'TransactionsById', params: { transactionId: transactionId, network: this.currentNetwork.value }}
     }
 
     //
@@ -204,7 +206,7 @@ export class RouteManager {
     public makeRouteToAccount(accountId: string, showApproveDialog = false): RouteLocationRaw {
         return {
             name: 'AccountDetails',
-            params: {accountId: accountId, network: routeManager.currentNetwork.value},
+            params: {accountId: accountId, network: this.currentNetwork.value},
             query: {app: showApproveDialog ? 'true' : 'false'}
         }
     }
@@ -227,7 +229,7 @@ export class RouteManager {
 
     public makeRouteToAccountsWithKey(pubKey: string): RouteLocationRaw {
         return {
-            name: 'AccountsWithKey', params: {pubKey: pubKey, network: routeManager.currentNetwork.value}
+            name: 'AccountsWithKey', params: {pubKey: pubKey, network: this.currentNetwork.value}
         }
     }
 
@@ -241,7 +243,7 @@ export class RouteManager {
 
     public makeRouteToAdminKey(accountId: string): RouteLocationRaw {
         return {
-            name: 'AdminKeyDetails', params: {accountId: accountId, network: routeManager.currentNetwork.value}
+            name: 'AdminKeyDetails', params: {accountId: accountId, network: this.currentNetwork.value}
         }
     }
 
@@ -250,7 +252,7 @@ export class RouteManager {
     //
 
     public makeRouteToToken(tokenId: string): RouteLocationRaw {
-        return { name: 'TokenDetails', params: { tokenId: tokenId, network: routeManager.currentNetwork.value }}
+        return { name: 'TokenDetails', params: { tokenId: tokenId, network: this.currentNetwork.value }}
     }
 
     public routeToToken(tokenId: string, newTab = false): Promise<NavigationFailure | void | undefined> {
@@ -270,7 +272,7 @@ export class RouteManager {
     //
 
     public makeRouteToContract(contractId: string): RouteLocationRaw {
-        return {name: 'ContractDetails', params: { contractId: contractId, network: routeManager.currentNetwork.value }}
+        return {name: 'ContractDetails', params: { contractId: contractId, network: this.currentNetwork.value }}
     }
 
     public routeToContract(contractId: string, newTab = false): Promise<NavigationFailure | void | undefined> {
@@ -290,7 +292,7 @@ export class RouteManager {
     //
 
     public makeRouteToTopic(topicId: string): RouteLocationRaw {
-        return {name: 'TopicDetails', params: {topicId: topicId, network: routeManager.currentNetwork.value}}
+        return {name: 'TopicDetails', params: {topicId: topicId, network: this.currentNetwork.value}}
     }
 
     public routeToTopic(topicId: string, newTab = false): Promise<NavigationFailure | void | undefined> {
@@ -310,7 +312,7 @@ export class RouteManager {
     //
 
     public makeRouteToBlock(blockHon: string|number): RouteLocationRaw {
-        return {name: 'BlockDetails', params: {blockHon: blockHon, network: routeManager.currentNetwork.value}}
+        return {name: 'BlockDetails', params: {blockHon: blockHon, network: this.currentNetwork.value}}
     }
 
     public routeToBlock(blockHon: string|number, newTab = false): Promise<NavigationFailure | void | undefined> {
@@ -330,7 +332,7 @@ export class RouteManager {
     //
 
     public makeRouteToNode(nodeId: number): RouteLocationRaw {
-        return {name: 'NodeDetails', params: {nodeId: nodeId, network: routeManager.currentNetwork.value}}
+        return {name: 'NodeDetails', params: {nodeId: nodeId, network: this.currentNetwork.value}}
     }
 
     public routeToNode(nodeId: number, newTab = false): Promise<NavigationFailure | void | undefined> {
@@ -352,7 +354,7 @@ export class RouteManager {
     public makeRouteToNoSearchResult(searchedId: string, errorCount: number): RouteLocationRaw {
         return {
             name: 'NoSearchResult',
-            params: { searchedId: searchedId, network: routeManager.currentNetwork.value },
+            params: { searchedId: searchedId, network: this.currentNetwork.value },
             query: { errorCount: errorCount }
         }
     }
@@ -366,7 +368,7 @@ export class RouteManager {
     //
 
     public makeRouteToMainDashboard(): RouteLocationRaw {
-        return {name: 'MainDashboard', params: { network: routeManager.currentNetwork.value } }
+        return {name: 'MainDashboard', params: { network: this.currentNetwork.value } }
     }
 
     public routeToMainDashboard(): Promise<NavigationFailure | void | undefined> {
@@ -374,49 +376,49 @@ export class RouteManager {
     }
 
     public makeRouteToTransactions(): RouteLocationRaw {
-        return {name: 'Transactions', params: { network: routeManager.currentNetwork.value } }
+        return {name: 'Transactions', params: { network: this.currentNetwork.value } }
     }
 
     public makeRouteToTokens(): RouteLocationRaw {
-        return {name: 'Tokens', params: { network: routeManager.currentNetwork.value } }
+        return {name: 'Tokens', params: { network: this.currentNetwork.value } }
     }
 
     public makeRouteToTopics(): RouteLocationRaw {
-        return {name: 'Topics', params: { network: routeManager.currentNetwork.value } }
+        return {name: 'Topics', params: { network: this.currentNetwork.value } }
     }
 
     public makeRouteToContracts(): RouteLocationRaw {
-        return {name: 'Contracts', params: { network: routeManager.currentNetwork.value } }
+        return {name: 'Contracts', params: { network: this.currentNetwork.value } }
     }
 
     public makeRouteToAccounts(): RouteLocationRaw {
-        return {name: 'Accounts', params: { network: routeManager.currentNetwork.value } }
+        return {name: 'Accounts', params: { network: this.currentNetwork.value } }
     }
 
     public makeRouteToNodes(): RouteLocationRaw {
-        return {name: 'Nodes', params: { network: routeManager.currentNetwork.value } }
+        return {name: 'Nodes', params: { network: this.currentNetwork.value } }
     }
 
     public makeRouteToStaking(): RouteLocationRaw {
-        return {name: 'Staking', params: { network: routeManager.currentNetwork.value } }
+        return {name: 'Staking', params: { network: this.currentNetwork.value } }
     }
 
     public makeRouteToBlocks(): RouteLocationRaw {
-        return {name: 'Blocks', params: { network: routeManager.currentNetwork.value } }
+        return {name: 'Blocks', params: { network: this.currentNetwork.value } }
     }
 
     public makeRouteToMobileSearch(): RouteLocationRaw {
-        return {name: 'MobileSearch', params: { network: routeManager.currentNetwork.value } }
+        return {name: 'MobileSearch', params: { network: this.currentNetwork.value } }
     }
 
     public makeRouteToPageNotFound(): RouteLocationRaw {
-        return {name: 'PageNotFound', params: { network: routeManager.currentNetwork.value } }
+        return {name: 'PageNotFound', params: { network: this.currentNetwork.value } }
     }
 
     public makeRouteToMobileMenu(name: unknown): RouteLocationRaw {
         return {
             name: 'MobileMenu',
-            params: {network: routeManager.currentNetwork.value},
+            params: {network: this.currentNetwork.value},
             query: {from: name as string}
         }
     }
