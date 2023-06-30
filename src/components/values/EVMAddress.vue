@@ -125,7 +125,7 @@ export default defineComponent({
     const derivedEntityId = computed( () => ethereumAddress.value?.toEntityID()?.toString() ?? null)
 
     onMounted(() => updateIdAndAddress())
-    watch(() => props.address, () => updateIdAndAddress())
+    watch([() => props.address, () => props.id, () => props.entityType], () => updateIdAndAddress())
 
     const updateIdAndAddress = async () => {
       entityLinkType.value = ExtendedEntityType.UNDEFINED
