@@ -182,6 +182,20 @@ describe("TransactionDetails.vue", () => {
         const matcher5 = "/api/v1/contracts/results/" + transactionId + "/actions"
         mock.onGet(matcher5).reply(200, "[]")
 
+        const fromContract = {
+            "contract_id": "0.0.846260",
+            "evm_address": "0x00000000000000000000000000000000000ce9b4",
+        }
+        const toContract = {
+            "contract_id": "0.0.1062787",
+            "evm_address": "0x0000000000000000000000000000000000103783",
+        }
+
+        const matcher6 = "/api/v1/contracts/" + SAMPLE_CONTRACT_RESULT_DETAILS.from
+        const matcher61 = "/api/v1/contracts/" + SAMPLE_CONTRACT_RESULT_DETAILS.to
+        mock.onGet(matcher6).reply(200, fromContract)
+        mock.onGet(matcher61).reply(200, toContract)
+
         const wrapper = mount(TransactionDetails, {
             global: {
                 plugins: [router, Oruga]

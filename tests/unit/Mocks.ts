@@ -2140,7 +2140,7 @@ export const SAMPLE_ACCOUNT = {
     "max_automatic_token_associations": 0,
     "memo": "",
     "receiver_sig_required": false,
-    "evm_address": null,
+    "evm_address": "0x00000000000000000000000000000000000b2607",
     "ethereum_nonce": 0,
     "decline_reward": null,
     "staked_node_id": null,
