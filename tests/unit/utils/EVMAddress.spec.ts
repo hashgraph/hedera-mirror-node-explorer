@@ -44,62 +44,9 @@ describe("EVMAddress", () => {
     const matcher3 = "/api/v1/accounts/" + entityId
     mock.onGet(matcher3).reply(200, SAMPLE_ACCOUNT_WITH_NATIVE_EVM_ADDRESS);
 
-    test("Constructing with no Hedera ID and no EVM address", async () => {
-
-        const wrapper = mount(EVMAddress, {
-            global: {
-                plugins: [router, Oruga]
-            },
-            props: {
-            },
-        });
-        await flushPromises()
-
-        expect(wrapper.text()).toBe("None")
-
-        wrapper.unmount()
-        await flushPromises()
-    })
-
-    test("Constructing with Hedera ID and no EVM address", async () => {
-
-        const wrapper = mount(EVMAddress, {
-            global: {
-                plugins: [router, Oruga]
-            },
-            props: {
-                id: entityId,
-            },
-        });
-        await flushPromises()
-
-        expect(wrapper.text()).toBe( `${evmAddress}Copy(${entityId})`)
-
-        wrapper.unmount()
-        await flushPromises()
-    })
-
-    test("Constructing a compact form with Hedera ID and no EVM address", async () => {
-
-        const wrapper = mount(EVMAddress, {
-            global: {
-                plugins: [router, Oruga]
-            },
-            props: {
-                id: entityId,
-                compact: true
-            },
-        });
-        await flushPromises()
-
-        expect(wrapper.text()).toBe( `${compactAddress}Copy(${entityId})`)
-
-        wrapper.unmount()
-        await flushPromises()
-    })
-
     test("Constructing with EVM address and no Hedera ID", async () => {
 
+        await router.push("/") // To avoid "missing required param 'network'" error
         const wrapper = mount(EVMAddress, {
             global: {
                 plugins: [router, Oruga]
@@ -116,8 +63,29 @@ describe("EVMAddress", () => {
         await flushPromises()
     })
 
+    test("Constructing a compact form with EVM address and no Hedera ID", async () => {
+
+        await router.push("/") // To avoid "missing required param 'network'" error
+        const wrapper = mount(EVMAddress, {
+            global: {
+                plugins: [router, Oruga]
+            },
+            props: {
+                address: evmAddress,
+                compact: true
+            },
+        });
+        await flushPromises()
+
+        expect(wrapper.text()).toBe( `${compactAddress}Copy(${entityId})`)
+
+        wrapper.unmount()
+        await flushPromises()
+    })
+
     test("Constructing with long-zero address and no Hedera ID", async () => {
 
+        await router.push("/") // To avoid "missing required param 'network'" error
         const wrapper = mount(EVMAddress, {
             global: {
                 plugins: [router, Oruga]
@@ -136,6 +104,7 @@ describe("EVMAddress", () => {
 
     test("Constructing with Hedera ID and EVM address", async () => {
 
+        await router.push("/") // To avoid "missing required param 'network'" error
         const wrapper = mount(EVMAddress, {
             global: {
                 plugins: [router, Oruga]
@@ -153,14 +122,37 @@ describe("EVMAddress", () => {
         await flushPromises()
     })
 
-    test("Constructing with System Contract ID and no EVM address", async () => {
+    test("Constructing with Hedera ID and EVM address, not showing ID and showing type", async () => {
 
+        await router.push("/") // To avoid "missing required param 'network'" error
         const wrapper = mount(EVMAddress, {
             global: {
                 plugins: [router, Oruga]
             },
             props: {
-                id: systemContractId,
+                address: evmAddress,
+                id: entityId,
+                showId: false,
+                showType: true
+            },
+        });
+        await flushPromises()
+
+        expect(wrapper.text()).toBe( `${evmAddress}Copy`)
+
+        wrapper.unmount()
+        await flushPromises()
+    })
+
+    test("Constructing with System Contract address", async () => {
+
+        await router.push("/") // To avoid "missing required param 'network'" error
+        const wrapper = mount(EVMAddress, {
+            global: {
+                plugins: [router, Oruga]
+            },
+            props: {
+                address: systemContractAddress,
             },
         });
         await flushPromises()

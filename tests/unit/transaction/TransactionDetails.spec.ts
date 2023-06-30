@@ -29,12 +29,14 @@ import NftTransferGraph from "@/components/transfer_graphs/NftTransferGraph.vue"
 import NotificationBanner from "@/components/NotificationBanner.vue";
 import axios, {AxiosRequestConfig} from "axios";
 import {
+    SAMPLE_ACCOUNT,
     SAMPLE_ASSOCIATED_TOKEN,
     SAMPLE_ASSOCIATED_TOKEN_2,
     SAMPLE_BLOCKSRESPONSE,
     SAMPLE_CONTRACT,
     SAMPLE_CONTRACT_RESULT_DETAILS,
     SAMPLE_CONTRACTCALL_TRANSACTIONS,
+    SAMPLE_ETHEREUM_TRANSACTIONS_ASSOCIATING_TOKEN,
     SAMPLE_ETHEREUM_TRANSACTIONS_ON_ACCOUNT,
     SAMPLE_ETHEREUM_TRANSACTIONS_ON_CONTRACT,
     SAMPLE_FAILED_TRANSACTION,
@@ -179,6 +181,20 @@ describe("TransactionDetails.vue", () => {
 
         const matcher5 = "/api/v1/contracts/results/" + transactionId + "/actions"
         mock.onGet(matcher5).reply(200, "[]")
+
+        const fromContract = {
+            "contract_id": "0.0.846260",
+            "evm_address": "0x00000000000000000000000000000000000ce9b4",
+        }
+        const toContract = {
+            "contract_id": "0.0.1062787",
+            "evm_address": "0x0000000000000000000000000000000000103783",
+        }
+
+        const matcher6 = "/api/v1/contracts/" + SAMPLE_CONTRACT_RESULT_DETAILS.from
+        const matcher61 = "/api/v1/contracts/" + SAMPLE_CONTRACT_RESULT_DETAILS.to
+        mock.onGet(matcher6).reply(200, fromContract)
+        mock.onGet(matcher61).reply(200, toContract)
 
         const wrapper = mount(TransactionDetails, {
             global: {
@@ -822,6 +838,8 @@ describe("TransactionDetails.vue", () => {
 
         const matcher2 = "/api/v1/contracts/" + entityId
         mock.onGet(matcher2).reply(404)
+        const matcher3 = "/api/v1/accounts/" + entityId
+        mock.onGet(matcher3).reply(200, SAMPLE_ACCOUNT)
 
         const wrapper = mount(TransactionDetails, {
             global: {
@@ -889,4 +907,137 @@ describe("TransactionDetails.vue", () => {
         await flushPromises()
     });
 
+    it("Should display ETHEREUM TX details with link to token as entity ID", async () => {
+
+        await router.push("/") // To avoid "missing required param 'network'" error
+
+        const transaction = SAMPLE_ETHEREUM_TRANSACTIONS_ASSOCIATING_TOKEN.transactions[0]
+        const transactionId = transaction.transaction_id
+        const entityId = transaction.entity_id
+        const timestamp = transaction.consensus_timestamp
+
+        const matcher1 = "/api/v1/transactions/" + transactionId
+        mock.onGet(matcher1).reply(200, SAMPLE_ETHEREUM_TRANSACTIONS_ASSOCIATING_TOKEN);
+        const matcher11 = "/api/v1/transactions"
+        mock.onGet(matcher11).reply((config: AxiosRequestConfig) => {
+            if (config.params.timestamp == timestamp) {
+                return [200, SAMPLE_ETHEREUM_TRANSACTIONS_ASSOCIATING_TOKEN]
+            } else {
+                return [404]
+            }
+        });
+
+        const matcher2 = "/api/v1/tokens/" + entityId
+        mock.onGet(matcher2).reply(200, SAMPLE_TOKEN)
+
+        const result = {
+            "address": "0x00000000000000000000000000000000000382a1",
+            "amount": 0,
+            "bloom": "0x00000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000",
+            "call_result": "0x0000000000000000000000000000000000000000000000000000000000000016",
+            "contract_id": "0.0.230049",
+            "created_contract_ids": [],
+            "error_message": null,
+            "from": "0x000000000000000000000000000000000000a4f0",
+            "function_parameters": "0x0a754de6",
+            "gas_limit": 4000000,
+            "gas_used": 3200000,
+            "timestamp": "1687555828.300024003",
+            "to": "0x00000000000000000000000000000000000382a1",
+            "hash": "0xa34851b8f0df391c38a73230265e5118741408ab982c5f64345db35cee22e360",
+            "block_hash": "0xb020ca98489bf4ceecb650332de36b22b8bfe2cb8d2234d2160e2502b44198a12342ebe427b7ec8078be4afcaadd826b",
+            "block_number": 1537712,
+            "logs": [],
+            "result": "SUCCESS",
+            "transaction_index": 0,
+            "state_changes": [],
+            "status": "0x1",
+            "failed_initcode": null,
+            "access_list": "0x",
+            "block_gas_used": 3200000,
+            "chain_id": "0x129",
+            "gas_price": "0x",
+            "max_fee_per_gas": "0x55",
+            "max_priority_fee_per_gas": "0x0",
+            "r": "0x4b09e72f5b8a779411b92325dddb7a8a0d8e921f50fa09f0207e2b456b255be8",
+            "s": "0x1506a024ac70fe91e3b1ecdd517e0ae473ba4c18af88ee63fc01285db03ada98",
+            "type": 2,
+            "v": 0,
+            "nonce": 29
+        }
+
+        const param3 = { timestamp: timestamp, internal: true }
+        const matcher3 = "/api/v1/contracts/results"
+        mock.onGet(matcher3, param3).reply(200, {
+            results: [ result ], "links": {"next": null}
+        } );
+
+        const matcher4 = "/api/v1/contracts/" + result.contract_id + "/results/" + timestamp
+        mock.onGet(matcher4).reply(200, result);
+
+        const action = {
+            "call_depth": 0,
+            "call_operation_type": "CALL",
+            "call_type": "CALL",
+            "caller": "0.0.42224",
+            "caller_type": "ACCOUNT",
+            "from": "0x000000000000000000000000000000000000a4f0",
+            "gas": 3979000,
+            "gas_used": 706972,
+            "index": 0,
+            "input": "0x0a754de6",
+            "recipient": "0.0.230049",
+            "recipient_type": "CONTRACT",
+            "result_data": "0x0000000000000000000000000000000000000000000000000000000000000016",
+            "result_data_type": "OUTPUT",
+            "timestamp": "1687555828.300024003",
+            "to": "0x00000000000000000000000000000000000382a1",
+            "value": 0
+        }
+
+        const matcher5 = "/api/v1/contracts/results/" + result.hash + "/actions?limit=100"
+        mock.onGet(matcher5).reply(200, {
+            actions: [ action ], "links": {"next": null}
+        })
+
+        const wrapper = mount(TransactionDetails, {
+            global: {
+                plugins: [router, Oruga]
+            },
+            props: {
+                transactionLoc: timestamp
+            },
+        });
+
+        await flushPromises()
+        // console.log(wrapper.text())
+        // console.log(wrapper.html())
+
+        expect(wrapper.text()).toMatch(RegExp("^Transaction " + normalizeTransactionId(transactionId, true)))
+        expect(wrapper.text()).toMatch(RegExp("ETHEREUM TRANSACTION"))
+        expect(wrapper.get("#entityIdName").text()).toBe("Token ID")
+        expect(wrapper.get("#entityIdValue").text()).toMatch(entityId)
+
+        // const actionTable = wrapper.findComponent(ContractActionsTable)
+        // expect(actionTable.exists()).toBe(true)
+        // expect(actionTable.get('thead').text()).toBe("Call Type From Amount To Gas Limit")
+        // expect(actionTable.get('tbody').text()).toBe(
+        //     "1" +
+        //     "CALL" +
+        //     "0x000000000000000000000000000000000000a4f0" + "Copy" + "(0.0.42224)" +
+        //     "→" +
+        //     "0.00000000" + "$0.00000" +
+        //     "→" +
+        //     "0x00000000000000000000000000000000000382a1" + "Copy" + "(0.0.230049)" +
+        //     "3979000"
+        // )
+        //
+        // const actionTableLines = actionTable.findAll("tr")
+        // const toAddress = actionTableLines[1].findAll("td")[4]
+        // const anchor = toAddress.find("a")
+        // expect(anchor.attributes('href')).toMatch("/token/" + entityId)
+
+        wrapper.unmount()
+        await flushPromises()
+    });
 });

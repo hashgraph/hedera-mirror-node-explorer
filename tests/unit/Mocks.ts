@@ -788,6 +788,60 @@ export const SAMPLE_TOKEN_CALL_TRANSACTIONS = {
     }], "links": {"next": null}
 }
 
+export const SAMPLE_ETHEREUM_TRANSACTIONS_ASSOCIATING_TOKEN = {
+    "transactions": [{
+        "bytes": null,
+        "charged_tx_fee": 227282050,
+        "consensus_timestamp": "1687555828.300024003",
+        "entity_id": "0.0.230049",
+        "max_fee": "1080000000",
+        "memo_base64": "",
+        "name": "ETHEREUMTRANSACTION",
+        "nft_transfers": [],
+        "node": "0.0.6",
+        "nonce": 0,
+        "parent_consensus_timestamp": null,
+        "result": "SUCCESS",
+        "scheduled": false,
+        "staking_reward_transfers": [],
+        "token_transfers": [],
+        "transaction_hash": "Ws8zcqKAVEGr2R9MP3uidkx8Uh66/6g9VfhmGTOr6DNFRSj5MbalwBkNX8WaWoe5",
+        "transaction_id": "0.0.902-1687555818-297907508",
+        "transfers": [{"account": "0.0.6", "amount": 2910, "is_approval": false}, {
+            "account": "0.0.98",
+            "amount": 227279140,
+            "is_approval": false
+        }, {"account": "0.0.902", "amount": -82050, "is_approval": false}, {
+            "account": "0.0.42224",
+            "amount": -227200000,
+            "is_approval": false
+        }],
+        "valid_duration_seconds": "120",
+        "valid_start_timestamp": "1687555818.297907508"
+    }, {
+        "bytes": null,
+        "charged_tx_fee": 0,
+        "consensus_timestamp": "1687555828.300024004",
+        "entity_id": "0.0.42224",
+        "max_fee": "0",
+        "memo_base64": "",
+        "name": "TOKENASSOCIATE",
+        "nft_transfers": [],
+        "node": null,
+        "nonce": 1,
+        "parent_consensus_timestamp": "1687555828.300024003",
+        "result": "SUCCESS",
+        "scheduled": false,
+        "staking_reward_transfers": [],
+        "token_transfers": [],
+        "transaction_hash": "uWkCIG7doSPwu0YiF1sOxiUmh5qfuVW1zsnsvmtn59Dwpu8bUDUJVsg6LMvms/ak",
+        "transaction_id": "0.0.902-1687555818-297907508",
+        "transfers": [],
+        "valid_duration_seconds": null,
+        "valid_start_timestamp": "1687555818.297907508"
+    }]
+}
+
 export const SAMPLE_CONTRACT_RESULTS = {
     "results": [
         {
@@ -2086,7 +2140,7 @@ export const SAMPLE_ACCOUNT = {
     "max_automatic_token_associations": 0,
     "memo": "",
     "receiver_sig_required": false,
-    "evm_address": null,
+    "evm_address": "0x00000000000000000000000000000000000b2607",
     "ethereum_nonce": 0,
     "decline_reward": null,
     "staked_node_id": null,
