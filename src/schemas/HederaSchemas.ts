@@ -57,8 +57,8 @@ export interface AccountInfo {
 }
 
 export interface AccountBalanceTransactions extends AccountInfo {
-    transactions: Array<Transaction> | undefined
-    links: Links | undefined
+    transactions?: Array<Transaction>
+    links?: Links
 }
 
 export interface Balance {
