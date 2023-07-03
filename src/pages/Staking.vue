@@ -40,9 +40,9 @@
 
   <ProgressDialog v-model:show-dialog="showProgressDialog"
                   :mode="progressDialogMode"
-                  :main-message="progressMainMessage ?? undefined"
-                  :extra-message="progressExtraMessage ?? undefined"
-                  :extra-transaction-id="progressExtraTransactionId ?? undefined"
+                  :main-message="progressMainMessage"
+                  :extra-message="progressExtraMessage"
+                  :extra-transaction-id="progressExtraTransactionId"
                   :show-spinner="showProgressSpinner"
   >
     <template v-slot:dialogTitle>
@@ -295,7 +295,7 @@ export default defineComponent({
     const showProgressDialog = ref(false)
     const progressDialogMode = ref(Mode.Busy)
     const progressDialogTitle = ref<string|null>(null)
-    const progressMainMessage = ref<string|undefined>(undefined)
+    const progressMainMessage = ref<string|null>(null)
     const progressExtraMessage = ref<string|null>(null)
     const progressExtraTransactionId = ref<string|null>(null)
     const showProgressSpinner = ref(false)
