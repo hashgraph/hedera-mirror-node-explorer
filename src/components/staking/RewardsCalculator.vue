@@ -61,7 +61,7 @@
             <p v-else class="h-is-text-size-3 mb-1">Enter number of hbars you want to stake</p>
               <input class="input is-small has-text-right" type="text" placeholder="0"
                      :value="amountStaked"
-                     @input="event => handleInput(event.target.value)"
+                     @input="handleInput"
                      style="width: 100%; height: 26px; margin-top: 1.5px; border-radius: 4px; border-width: 1px;
                      color: white; background-color: var(--h-theme-box-background-color)">
           </div>
@@ -149,8 +149,9 @@ export default defineComponent({
     const monthlyReward = computed(() => currentReward.value ? Math.round(currentReward.value * 30 * 100) / 100 : 0)
     const yearlyReward = computed(() => currentReward.value ? Math.round(currentReward.value * 365 * 10) / 10 : 0)
 
-    const handleInput = (value: string) => {
+    const handleInput = (event: Event) => {
       const previousAmount = amountStaked.value
+      const value = (event.target as HTMLInputElement).value
       const newAmount = Number(value)
       if (!Number.isNaN(newAmount) && newAmount >= 0 && newAmount <= 50000000000) {
         amountStaked.value = newAmount
