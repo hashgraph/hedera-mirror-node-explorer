@@ -132,7 +132,10 @@ export default defineComponent({
   components: {Footer},
   props: {
     "searchedId": String,
-    "errorCount": Number,
+    "errorCount": {
+      type: Number,
+      default: 0
+    },
     "network": String
   }
 })

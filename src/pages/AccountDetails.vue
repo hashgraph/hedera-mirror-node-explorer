@@ -106,7 +106,7 @@
                   </router-link>
                 </div>
                 <div v-else>
-                  <div v-for="b in tokenBalances ?? []" :key="b.token_id" class="h-is-tertiary-text">
+                  <div v-for="b in tokenBalances ?? []" :key="b.token_id ?? undefined" class="h-is-tertiary-text">
                     <TokenAmount v-bind:amount="BigInt(b.balance)" v-bind:show-extra="true" v-bind:token-id="b.token_id"/>
                   </div>
                 </div>
