@@ -36,32 +36,32 @@
             <div class="is-flex-direction-column">
               <NetworkDashboardItem title="Total Nodes" :value="totalNodes.toString()"/>
               <div class="mt-4"/>
-              <NetworkDashboardItem title="Last Staked" :value="formatSeconds(elapsedMin*60) + ' ago'"/>
+              <NetworkDashboardItem title="Last Staked" :value="formatSeconds((elapsedMin ?? 0)*60) + ' ago'"/>
             </div>
             <div class="is-flex-direction-column">
               <NetworkDashboardItem name="HBAR" title="Total Staked" :value="makeFloorHbarAmount(unclampedStakeTotal)"/>
               <div class="mt-4"/>
-              <NetworkDashboardItem title="Next Staking Period" :value="'in ' + formatSeconds(remainingMin*60)"/>
+              <NetworkDashboardItem title="Next Staking Period" :value="'in ' + formatSeconds((remainingMin??0)*60)"/>
             </div>
             <div class="is-flex-direction-column">
               <NetworkDashboardItem name="HBAR" title="Last Period Reward" :value="makeFloorHbarAmount(totalRewarded)"/>
               <div class="mt-4"/>
-              <NetworkDashboardItem title="Staking Period" :value="formatSeconds(durationMin*60)"/>
+              <NetworkDashboardItem title="Staking Period" :value="formatSeconds((durationMin??0)*60)"/>
             </div>
           </div>
           <div v-else>
             <div class="is-flex-direction-column">
               <NetworkDashboardItem title="Total Nodes" :value="totalNodes.toString()"/>
               <div class="mt-4"/>
-              <NetworkDashboardItem title="Last Staked" :value="formatSeconds(elapsedMin*60) + ' ago'"/>
+              <NetworkDashboardItem title="Last Staked" :value="formatSeconds((elapsedMin??0)*60) + ' ago'"/>
               <div class="mt-4"/>
               <NetworkDashboardItem name="HBAR" title="Total Staked" :value="makeFloorHbarAmount(unclampedStakeTotal)"/>
               <div class="mt-4"/>
-              <NetworkDashboardItem title="Next Staking Period" :value="'in ' + formatSeconds(remainingMin*60)"/>
+              <NetworkDashboardItem title="Next Staking Period" :value="'in ' + formatSeconds((remainingMin??0)*60)"/>
               <div class="mt-4"/>
               <NetworkDashboardItem name="HBAR" title="Last Period Reward" :value="makeFloorHbarAmount(totalRewarded)"/>
               <div class="mt-4"/>
-              <NetworkDashboardItem title="Staking Period" :value="formatSeconds(durationMin*60)"/>
+              <NetworkDashboardItem title="Staking Period" :value="formatSeconds((durationMin??0)*60)"/>
               <div class="mt-6"/>
             </div>
           </div>

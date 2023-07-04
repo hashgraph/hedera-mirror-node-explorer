@@ -28,7 +28,7 @@
 
     <DashboardCard>
       <template v-slot:title>
-        <span class="h-is-primary-title">Block {{ block?.number.toString() ?? "" }}</span>
+        <span class="h-is-primary-title">Block {{ block?.number?.toString() ?? "" }}</span>
       </template>
 
       <template v-slot:control>

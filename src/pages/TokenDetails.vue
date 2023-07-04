@@ -159,14 +159,14 @@
           <template v-slot:name>Total Supply</template>
           <template v-if="validEntityId" v-slot:value>
             <TokenAmount :amount="parseBigIntString(tokenInfo?.total_supply)" :show-extra="false"
-                         :token-id="normalizedTokenId ?? undefined"/>
+                         :token-id="normalizedTokenId"/>
           </template>
         </Property>
         <Property id="initialSupply">
           <template v-slot:name>Initial Supply</template>
           <template v-if="validEntityId" v-slot:value>
             <TokenAmount :amount="parseBigIntString(tokenInfo?.initial_supply)" :show-extra="false"
-                         :token-id="normalizedTokenId ?? undefined"/>
+                         :token-id="normalizedTokenId"/>
           </template>
         </Property>
         <Property id="maxSupply">
@@ -174,7 +174,7 @@
           <template v-if="validEntityId" v-slot:value>
             <div v-if="tokenInfo?.supply_type === 'INFINITE'" class="has-text-grey">Infinite</div>
             <TokenAmount v-else :amount="parseBigIntString(tokenInfo?.max_supply)" :show-extra="false"
-                         :token-id="normalizedTokenId ?? undefined"/>
+                         :token-id="normalizedTokenId"/>
           </template>
         </Property>
         <Property id="decimals">
@@ -452,9 +452,9 @@ export default defineComponent({
 });
 
 function parseBigIntString(s: string | undefined): bigint | undefined {
-  let result
+  let result: bigint | undefined
   try {
-    result = BigInt(s)
+    result = s ? BigInt(s) : undefined
   } catch {
     result = undefined
   }
