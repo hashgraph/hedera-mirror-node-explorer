@@ -25,7 +25,7 @@
 <template>
 
   <div v-if="tokenId">
-    <template v-if="noAnchor">
+    <template v-if="noAnchor || !tokenRoute">
       <span class="is-numeric">{{ tokenId }}</span>
     </template>
     <template v-else>
