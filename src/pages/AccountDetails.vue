@@ -95,7 +95,7 @@
               <template v-slot:name>{{ tokenBalances?.length ? 'Balances' : 'Balance' }}</template>
               <template v-slot:value>
                 <div v-if="account" class="h-is-tertiary-text">
-                  <HbarAmount v-bind:amount="hbarBalance ?? undefined" v-bind:show-extra="true" timestamp="0"/>
+                  <HbarAmount v-bind:amount="hbarBalance" v-bind:show-extra="true" timestamp="0"/>
                 </div>
                 <div v-else-if="isInactiveEvmAddress" class="h-is-tertiary-text">
                   <HbarAmount v-bind:amount="0" v-bind:show-extra="true" timestamp="0"/>

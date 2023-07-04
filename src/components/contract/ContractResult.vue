@@ -99,7 +99,7 @@
         <Property id="gasPrice">
           <template v-slot:name>Gas Price</template>
           <template v-slot:value>
-            <HbarAmount :amount="gasPrice ?? undefined" :timestamp="contractResult?.timestamp" :show-extra="true"/>
+            <HbarAmount :amount="gasPrice" :timestamp="contractResult?.timestamp" :show-extra="true"/>
           </template>
         </Property>
         <Property id="ethereumNonce">
