@@ -61,7 +61,7 @@
           <template v-slot:name>Currently Staked To</template>
           <template v-slot:value>
             <span v-if="account?.staked_node_id !== null" class="icon is-small has-text-info mr-2" style="font-size: 16px">
-              <i v-if="isCouncilNode" :class="currentStakedNodeIcon"></i>
+              <i v-if="currentStakedNodeIcon" :class="currentStakedNodeIcon"></i>
             </span>
             <StringValue v-if="account" :string-value="currentlyStakedTo"/>
           </template>
@@ -119,7 +119,7 @@
                          :class="{'has-text-grey': !isAccountSelected}"
                          :value="selectedAccount"
                          @focus="stakeChoice='account'"
-                         @input="event => handleInput(event.target.value)"
+                         @input="handleInput"
                          style="min-width: 13rem; max-width: 13rem; height:26px; margin-top: 1px; border-radius: 4px; border-width: 1px;
                          background-color: var(--h-theme-box-background-color)">
 
@@ -140,7 +140,7 @@
           </div>
           <div class="column pt-0">
             <label class="checkbox">
-              <input checked="checked" type="checkbox" v-model="declineChoice" :disabled="!isNodeSelected || selectedNode == null">
+              <input type="checkbox" v-model="declineChoice" :disabled="!isNodeSelected || selectedNode == null">
             </label>
           </div>
         </div>
@@ -232,13 +232,13 @@ export default defineComponent({
     onBeforeUnmount(() => nodeAnalyzer.unmount())
 
     const currentStakedNodeIcon = computed(() => {
-      let result
+      let result: string|null
       if (props.account?.staked_node_id !== null) {
         result = nodeAnalyzer.isCouncilNode.value
             ? "fas fa-building"
             : "fas fa-users"
       } else {
-        result = ""
+        result = null
       }
       return result
     })
@@ -336,12 +336,13 @@ export default defineComponent({
       return description ? (node.node_id + " - " + makeShortNodeDescription(description)) : null
     }
 
-    const handleInput = (value: string) => {
+    const handleInput = (event: Event) => {
       const previousValue = selectedAccount.value
       let isValidInput = true
       let isValidID = false
       let isPastDash = false
 
+      const value = (event.target as HTMLInputElement).value
       for (const c of value) {
         if ((c >= '0' && c <= '9') || c === '.') {
           if (isPastDash) {
