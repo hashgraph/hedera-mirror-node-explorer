@@ -34,7 +34,7 @@
       v-else
       data-cy="hbarTransfers"
       title="Hbar Transfers"
-      v-bind:class="{'mb-4': displayRewardTransfers | displayNftTransfers | displayTokenTransfers}" v-bind:transaction="transaction"/>
+      v-bind:class="{'mb-4': displayRewardTransfers || displayNftTransfers || displayTokenTransfers}" v-bind:transaction="transaction"/>
 
   <NftTransferGraph
       data-cy="nftTransfers"
