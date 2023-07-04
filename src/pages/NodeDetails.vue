@@ -92,8 +92,7 @@
         <Property id="nodeCertHash">
           <template v-slot:name>Certificate Hash</template>
           <template v-slot:value>
-            <HexaValue v-bind:byteString="node ? formatHash(node?.node_cert_hash): null"
-                       v-bind:show-none="true"/>
+            <HexaValue v-bind:byteString="formattedHash" v-bind:show-none="true"/>
           </template>
         </Property>
       </template>
@@ -158,7 +157,6 @@ import StringValue from "@/components/values/StringValue.vue";
 import Footer from "@/components/Footer.vue";
 import NotificationBanner from "@/components/NotificationBanner.vue";
 import Property from "@/components/Property.vue";
-import {base64DecToArr, byteToHex} from "@/utils/B64Utils";
 import HexaValue from "@/components/values/HexaValue.vue";
 import Endpoints from "@/components/values/Endpoints.vue";
 import NetworkDashboardItem from "@/components/node/NetworkDashboardItem.vue";
@@ -228,10 +226,6 @@ export default defineComponent({
       return result
     })
 
-    const formatHash = (hash: string | undefined) => {
-      return hash != undefined ? byteToHex(base64DecToArr(hash)) : ""
-    }
-
     const makeFloorHbarAmount = (tinyBarAmount: number) => Math.floor((tinyBarAmount ?? 0) / 100000000).toLocaleString('en-US')
 
     return {
@@ -252,7 +246,7 @@ export default defineComponent({
       notification,
       isCouncilNode: nodeAnalyzer.isCouncilNode,
       nodeDescription: nodeAnalyzer.nodeDescription,
-      formatHash,
+      formattedHash: nodeAnalyzer.certificateHash,
       makeFloorHbarAmount
     }
   },
