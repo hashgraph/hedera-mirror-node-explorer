@@ -102,7 +102,7 @@ describe("TokenAmount.vue", () => {
 
         await router.push("/") // To avoid "missing required param 'network'" error
 
-        let testAmount = 42
+        const testAmount = 42
 
         const wrapper = mount(TokenAmount, {
             global: {
@@ -147,7 +147,7 @@ describe("TokenAmount.vue", () => {
 
         await router.push("/") // To avoid "missing required param 'network'" error
 
-        let testAmount = 42
+        const testAmount = 42
 
         const wrapper = mount(TokenAmount, {
             global: {

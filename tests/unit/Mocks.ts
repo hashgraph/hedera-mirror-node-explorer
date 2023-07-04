@@ -23,7 +23,7 @@
 // Fungible token inspired from https://testnet.mirrornode.hedera.com/api/v1/tokens/0.0.29662956
 //
 
-import {TokenRelationshipResponse} from "@/schemas/HederaSchemas";
+import {KeyType, TokenRelationshipResponse} from "@/schemas/HederaSchemas";
 
 export const SAMPLE_TOKEN = {
     "admin_key": null,
@@ -2243,7 +2243,7 @@ export const SAMPLE_ACCOUNT_STAKING_ACCOUNT = {
     },
     "deleted": false,
     "expiry_timestamp": "1649648001.410978000",
-    "key": {"_type": "ED25519", "key": "38f1ea460e95d97eea13aefac760eaf990154b80a3608ab01d4a264944d68746"},
+    "key": {"_type": KeyType.ED25519, "key": "38f1ea460e95d97eea13aefac760eaf990154b80a3608ab01d4a264944d68746"},
     "max_automatic_token_associations": 10,
     "memo": "Account staking to account",
     "receiver_sig_required": true,
@@ -2253,7 +2253,8 @@ export const SAMPLE_ACCOUNT_STAKING_ACCOUNT = {
     "staked_node_id": null,
     "staked_account_id": "0.0.5",
     "stake_period_start" : null,
-    "pending_reward": 0
+    "pending_reward": 0,
+    "created_timestamp": null
 }
 
 export const SAMPLE_ACCOUNTS = {

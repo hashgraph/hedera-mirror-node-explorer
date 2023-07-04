@@ -29,11 +29,11 @@ export class FunctionCallAnalyzer {
     public readonly error: Ref<string|null>
     private readonly contractAnalyzer: ContractAnalyzer
     private readonly transactionDescription = ref<ethers.utils.TransactionDescription|null>(null)
-    private readonly transactionDecodingFailure = ref<ArgumentError|null>(null)
+    private readonly transactionDecodingFailure = ref<unknown>(null)
     private readonly outputResult = ref<ethers.utils.Result|null>(null)
-    private readonly outputDecodingFailure = ref<ArgumentError|null>(null)
+    private readonly outputDecodingFailure = ref<unknown>(null)
     private readonly errorDescription = ref<ErrorDescription|null>(null) // Where is ethers.utils.ErrorDescription ?
-    private readonly errorDecodingFailure = ref<ArgumentError|null>(null)
+    private readonly errorDecodingFailure = ref<unknown>(null)
     private readonly watchHandle: Ref<WatchStopHandle[]> = ref([])
 
     //
@@ -146,7 +146,7 @@ export class FunctionCallAnalyzer {
     public readonly inputDecodingStatus = computed(() => {
         let result: string|null
         if (this.transactionDecodingFailure.value !== null) {
-            result = this.makeDecodingErrorMessage(this.transactionDecodingFailure.value.reason)
+            result = this.makeDecodingErrorMessage(this.transactionDecodingFailure.value)
         } else {
             result = null
         }
@@ -157,9 +157,9 @@ export class FunctionCallAnalyzer {
         let result: string|null
 
         if (this.transactionDecodingFailure.value !== null && this.normalizedOutput.value !== null) {
-            result = this.makeDecodingErrorMessage(this.transactionDecodingFailure.value.reason)
+            result = this.makeDecodingErrorMessage(this.transactionDecodingFailure.value)
         } else if (this.outputDecodingFailure.value !== null) {
-            result = this.makeDecodingErrorMessage(this.outputDecodingFailure.value.reason)
+            result = this.makeDecodingErrorMessage(this.outputDecodingFailure.value)
         } else {
             result = null
         }
@@ -169,7 +169,7 @@ export class FunctionCallAnalyzer {
     public readonly errorDecodingStatus = computed(() => {
         let result: string|null
         if (this.errorDecodingFailure.value !== null) {
-            result = this.makeDecodingErrorMessage(this.errorDecodingFailure.value.reason)
+            result = this.makeDecodingErrorMessage(this.errorDecodingFailure.value)
         } else {
             result = null
         }
@@ -180,8 +180,9 @@ export class FunctionCallAnalyzer {
     // Private
     //
 
-    private makeDecodingErrorMessage(reason: string|undefined): string {
-        return reason ? "Decoding Error (" + reason + ")" : "Decoding Error"
+    private makeDecodingErrorMessage(failure: unknown): string {
+        const f = failure as ArgumentError
+        return f?.reason ? "Decoding Error (" + f.reason + ")" : "Decoding Error"
     }
 
     private readonly updateTransactionDescription = async () => {
