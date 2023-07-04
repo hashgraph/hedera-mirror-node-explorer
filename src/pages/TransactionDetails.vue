@@ -57,7 +57,7 @@
         <Property id="transactionType">
           <template v-slot:name>Type</template>
           <template v-slot:value>
-            <StringValue :string-value="transactionType ? makeTypeLabel(transactionType) : undefined"/>
+            <StringValue :string-value="transactionType ? makeTypeLabel(transactionType) : null"/>
             <div v-if="scheduledTransaction" id="scheduledLink">
               <router-link :to="routeManager.makeRouteToTransactionObj(scheduledTransaction)">
                 <span class="h-is-text-size-3 has-text-grey">Show scheduled transaction</span>

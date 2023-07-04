@@ -69,7 +69,7 @@
         <Property id="type">
           <template v-slot:name>Type</template>
           <template v-slot:value>
-            <StringValue :string-value="contractType ?? undefined"/>
+            <StringValue :string-value="contractType"/>
           </template>
         </Property>
         <Property id="gasLimit">
