@@ -44,7 +44,7 @@
 
 <script lang="ts">
 
-import {computed, defineComponent, inject, ref} from "vue";
+import {computed, defineComponent, inject, PropType, ref} from "vue";
 import {initialLoadingKey} from "@/AppKeys";
 import Copyable from "@/components/Copyable.vue";
 
@@ -52,7 +52,10 @@ export default defineComponent({
   name: "HexaValue",
   components: {Copyable},
   props: {
-    byteString: String,
+    byteString: {
+      type: String as PropType<string|null>,
+      default: null
+    },
     showNone: {
       type: Boolean,
       default: false
@@ -79,7 +82,7 @@ export default defineComponent({
     // 0)
     const normByteString = computed((): string|undefined => {
       let result: string|undefined
-      if (props.byteString) {
+      if (props.byteString !== null) {
         result = props.byteString.startsWith("0x") ? props.byteString.slice(2) : props.byteString
       } else {
         result = undefined

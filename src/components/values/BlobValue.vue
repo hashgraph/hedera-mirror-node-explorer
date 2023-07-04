@@ -23,7 +23,7 @@
 <!-- --------------------------------------------------------------------------------------------------------------- -->
 
 <template>
-  <a v-if="isURL" v-bind:href="blobValue">{{ blobValue }}</a>
+  <a v-if="isURL && blobValue" v-bind:href="blobValue">{{ blobValue }}</a>
   <div v-else-if="jsonValue"
        class="h-is-json is-inline-block has-text-left is-family-monospace h-is-text-size-3">{{ jsonValue }}</div>
   <template v-else-if="blobValue">
@@ -43,14 +43,17 @@
 
 <script lang="ts">
 
-import {computed, defineComponent, inject, ref} from "vue";
+import {computed, defineComponent, inject, PropType, ref} from "vue";
 import {initialLoadingKey} from "@/AppKeys";
 
 export default defineComponent({
   name: "BlobValue",
   components: {},
   props: {
-    blobValue: String,
+    blobValue: {
+      type: String as PropType<string|null>,
+      default: null
+    },
     showNone: {
       type: Boolean,
       default: false

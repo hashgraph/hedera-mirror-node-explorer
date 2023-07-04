@@ -92,7 +92,7 @@
         <Property id="nodeCertHash">
           <template v-slot:name>Certificate Hash</template>
           <template v-slot:value>
-            <HexaValue v-bind:byteString="node ? formatHash(node?.node_cert_hash): undefined"
+            <HexaValue v-bind:byteString="node ? formatHash(node?.node_cert_hash): null"
                        v-bind:show-none="true"/>
           </template>
         </Property>

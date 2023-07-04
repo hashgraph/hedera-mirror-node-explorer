@@ -59,7 +59,7 @@
     </o-table-column>
 
     <o-table-column v-slot="props" field="message" label="Error Message" position="left">
-      <StringValue :string-value="makeErrorMessage(props.row) ?? undefined"/>
+      <StringValue :string-value="makeErrorMessage(props.row)"/>
     </o-table-column>
 
     <o-table-column v-slot="props" field="amount" label="Transfer Amount" position="right">

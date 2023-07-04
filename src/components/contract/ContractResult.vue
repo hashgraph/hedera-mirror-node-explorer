@@ -44,7 +44,7 @@
         <Property id="evm-hash">
           <template v-slot:name>EVM Transaction Hash</template>
           <template v-slot:value>
-              <HexaValue v-bind:byteString="contractResult?.hash ?? undefined" v-bind:show-none="true"/>
+              <HexaValue v-bind:byteString="contractResult?.hash" v-bind:show-none="true"/>
           </template>
         </Property>
         <Property id="from">
@@ -69,7 +69,7 @@
         <Property id="type">
           <template v-slot:name>Type</template>
           <template v-slot:value>
-            <StringValue :string-value="contractType ?? undefined"/>
+            <StringValue :string-value="contractType"/>
           </template>
         </Property>
         <Property id="gasLimit">
@@ -99,7 +99,7 @@
         <Property id="gasPrice">
           <template v-slot:name>Gas Price</template>
           <template v-slot:value>
-            <HbarAmount :amount="gasPrice ?? undefined" :timestamp="contractResult?.timestamp" :show-extra="true"/>
+            <HbarAmount :amount="gasPrice" :timestamp="contractResult?.timestamp" :show-extra="true"/>
           </template>
         </Property>
         <Property id="ethereumNonce">

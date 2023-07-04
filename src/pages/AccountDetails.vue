@@ -95,7 +95,7 @@
               <template v-slot:name>{{ tokenBalances?.length ? 'Balances' : 'Balance' }}</template>
               <template v-slot:value>
                 <div v-if="account" class="h-is-tertiary-text">
-                  <HbarAmount v-bind:amount="hbarBalance ?? undefined" v-bind:show-extra="true" timestamp="0"/>
+                  <HbarAmount v-bind:amount="hbarBalance" v-bind:show-extra="true" timestamp="0"/>
                 </div>
                 <div v-else-if="isInactiveEvmAddress" class="h-is-tertiary-text">
                   <HbarAmount v-bind:amount="0" v-bind:show-extra="true" timestamp="0"/>
@@ -107,7 +107,7 @@
                 </div>
                 <div v-else>
                   <div v-for="b in tokenBalances ?? []" :key="b.token_id" class="h-is-tertiary-text">
-                    <TokenAmount v-bind:amount="BigInt(b.balance)" v-bind:show-extra="true" v-bind:token-id="b.token_id ?? undefined"/>
+                    <TokenAmount v-bind:amount="BigInt(b.balance)" v-bind:show-extra="true" v-bind:token-id="b.token_id"/>
                   </div>
                 </div>
                 <div v-if="elapsed && !isSmallScreen" class="has-text-grey has-text-right"> {{ elapsed }} ago</div>
@@ -164,7 +164,7 @@
         <Property id="memo">
           <template v-slot:name>Memo</template>
           <template v-slot:value>
-            <BlobValue v-bind:base64="true" v-bind:blob-value="account?.memo ?? undefined" v-bind:show-none="true"/>
+            <BlobValue v-bind:base64="true" v-bind:blob-value="account?.memo" v-bind:show-none="true"/>
           </template>
         </Property>
 
@@ -181,7 +181,7 @@
             <InfoTooltip label="Account expiry is not turned on yet. Value in this field is not relevant."/>
           </template>
           <template v-slot:value>
-            <TimestampValue v-bind:show-none="true" v-bind:timestamp="account?.expiry_timestamp ?? undefined"/>
+            <TimestampValue v-bind:show-none="true" v-bind:timestamp="account?.expiry_timestamp"/>
           </template>
         </Property>
         <Property id="autoRenewPeriod">
@@ -211,7 +211,7 @@
         <Property id="key">
           <template v-slot:name>Admin Key</template>
           <template v-slot:value>
-            <KeyValue :account-id="normalizedAccountId ?? undefined" :key-bytes="account?.key?.key" :key-type="account?.key?._type"
+            <KeyValue :account-id="normalizedAccountId" :key-bytes="account?.key?.key" :key-type="account?.key?._type"
                       :show-none="true"/>
           </template>
         </Property>

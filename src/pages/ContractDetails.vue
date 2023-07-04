@@ -69,7 +69,7 @@
               <template v-slot:name>{{ tokens?.length ? 'Balances' : 'Balance' }}</template>
               <template v-slot:value>
                 <div class="has-flex-direction-column">
-                  <HbarAmount v-if="contract" :amount="balance ?? undefined" :show-extra="true" timestamp="0"/>
+                  <HbarAmount v-if="contract" :amount="balance" :show-extra="true" timestamp="0"/>
                   <div v-if="displayAllTokenLinks">
                     <router-link :to="{name: 'AccountBalances', params: {accountId: contractId}}">
                       See all token balances
@@ -77,7 +77,7 @@
                   </div>
                   <div v-else>
                     <div v-for="t in tokens ?? []" :key="t.token_id">
-                      <TokenAmount :amount="BigInt(t.balance)" :show-extra="true" :token-id="t.token_id ?? undefined"/>
+                      <TokenAmount :amount="BigInt(t.balance)" :show-extra="true" :token-id="t.token_id"/>
                     </div>
                   </div>
                 </div>
@@ -107,7 +107,7 @@
                 <InfoTooltip label="Contract expiry is not turned on yet. Value in this field is not relevant."/>
               </template>
               <template v-slot:value>
-                <TimestampValue v-bind:timestamp="contract?.expiration_timestamp ?? undefined" v-bind:show-none="true"/>
+                <TimestampValue v-bind:timestamp="contract?.expiration_timestamp" v-bind:show-none="true"/>
               </template>
             </Property>
             <Property id="autoRenewPeriod">

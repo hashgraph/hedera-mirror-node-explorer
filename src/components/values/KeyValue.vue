@@ -28,12 +28,12 @@
   </template>
   <template v-else>
     <div v-if="details" class="h-is-property-text">
-      <span class="h-is-extra-text">{{ this.keyType }}</span>
+      <span class="h-is-extra-text">{{ keyType }}</span>
       <span class="is-family-monospace has-text-grey">{{ ':&#8239;' + keyBytes }}</span>
     </div>
     <div v-else>
       <HexaValue :byte-string="keyBytes" :none-extra="noneExtra" :show-none="showNone"/>
-      <div v-if="keyBytes" class="h-is-extra-text h-is-text-size-3">{{ this.keyType }}</div>
+      <div v-if="keyBytes" class="h-is-extra-text h-is-text-size-3">{{ keyType }}</div>
     </div>
   </template>
 </template>
@@ -44,7 +44,7 @@
 
 <script lang="ts">
 
-import {computed, defineComponent} from "vue";
+import {computed, defineComponent, PropType} from "vue";
 import HexaValue from "@/components/values/HexaValue.vue";
 import ComplexKeyValue from "@/components/values/ComplexKeyValue.vue";
 
@@ -52,9 +52,18 @@ export default defineComponent({
   name: "KeyValue",
   components: {ComplexKeyValue, HexaValue},
   props: {
-    keyBytes: String,
-    keyType: String,
-    accountId: String,
+    keyBytes: {
+      type: String as PropType<string|null>,
+      default: null
+    },
+    keyType: {
+      type: String as PropType<string|null>,
+      default: null
+    },
+    accountId: {
+      type: String as PropType<string|null>,
+      default: null
+    },
     details: {
       type: Boolean,
       default: false
