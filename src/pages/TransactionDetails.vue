@@ -74,7 +74,7 @@
         <Property id="transactionHash">
           <template v-slot:name>Transaction Hash</template>
           <template v-slot:value>
-            <HexaValue v-bind:byteString="formattedHash ?? undefined" v-bind:show-none="true"/>
+            <HexaValue v-bind:byteString="formattedHash" v-bind:show-none="true"/>
           </template>
         </Property>
         <Property id="blockNumber">

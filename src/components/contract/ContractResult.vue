@@ -44,7 +44,7 @@
         <Property id="evm-hash">
           <template v-slot:name>EVM Transaction Hash</template>
           <template v-slot:value>
-              <HexaValue v-bind:byteString="contractResult?.hash ?? undefined" v-bind:show-none="true"/>
+              <HexaValue v-bind:byteString="contractResult?.hash" v-bind:show-none="true"/>
           </template>
         </Property>
         <Property id="from">
