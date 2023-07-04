@@ -57,14 +57,13 @@
 
 <script lang="ts">
 
-import {computed, defineComponent, inject, onMounted, ref, watch} from "vue";
+import {computed, defineComponent, inject, onMounted, PropType, ref, watch} from "vue";
 import {initialLoadingKey} from "@/AppKeys";
 import {systemContractRegistry} from "@/schemas/SystemContractRegistry";
 import {AccountByAddressCache} from "@/utils/cache/AccountByAddressCache";
 import {EthereumAddress} from "@/utils/EthereumAddress";
 import Copyable from "@/components/Copyable.vue";
 import {ContractByAddressCache} from "@/utils/cache/ContractByAddressCache";
-import {PropType} from "vue/dist/vue";
 
 export enum ExtendedEntityType { UNDEFINED, ACCOUNT, CONTRACT, TOKEN }
 

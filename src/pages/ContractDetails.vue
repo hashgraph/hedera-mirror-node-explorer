@@ -45,7 +45,7 @@
           </div>
         </div>
 
-        <div v-if="!isMediumScreen && contract" id="showAccountLink" class="is-inline-block mt-2">
+        <div v-if="!isMediumScreen && accountRoute" id="showAccountLink" class="is-inline-block mt-2">
           <router-link :to="accountRoute">
             <span class="h-is-property-text">Show associated account</span>
           </router-link>
@@ -53,7 +53,7 @@
       </template>
 
       <template v-slot:control v-if="isMediumScreen">
-        <div v-if="contract" id="showAccountLink" class="is-inline-block ml-3">
+        <div v-if="contract && accountRoute" id="showAccountLink" class="is-inline-block ml-3">
           <router-link :to="accountRoute">
             <span class="h-is-property-text">Show associated account</span>
           </router-link>
@@ -76,7 +76,7 @@
                     </router-link>
                   </div>
                   <div v-else>
-                    <div v-for="t in tokens ?? []" :key="t.token_id">
+                    <div v-for="t in tokens ?? []" :key="t.token_id ?? undefined">
                       <TokenAmount :amount="BigInt(t.balance)" :show-extra="true" :token-id="t.token_id"/>
                     </div>
                   </div>
@@ -158,13 +158,13 @@
             <Property id="validUntil">
               <template v-slot:name>Valid until</template>
               <template v-slot:value>
-                <TimestampValue :timestamp="contract?.timestamp?.to ?? undefined" :show-none="true"/>
+                <TimestampValue :timestamp="contract?.timestamp?.to" :show-none="true"/>
               </template>
             </Property>
             <Property id="file">
               <template v-slot:name>File</template>
               <template v-slot:value>
-                <StringValue :string-value="contract?.file_id ?? undefined"/>
+                <StringValue :string-value="contract?.file_id"/>
               </template>
             </Property>
 

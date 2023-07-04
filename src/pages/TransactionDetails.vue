@@ -152,7 +152,7 @@
           <template v-slot:name>Net Amount</template>
           <template v-slot:value>
             <HbarAmount v-if="transaction" :amount="netAmount" :show-extra="true"
-                        :timestamp="transaction.consensus_timestamp"/>
+                        :timestamp="transaction?.consensus_timestamp"/>
           </template>
         </Property>
         <Property id="duration">

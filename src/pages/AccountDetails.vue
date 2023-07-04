@@ -51,7 +51,7 @@
           </div>
         </div>
 
-        <div v-if="!isMediumScreen && showContractVisible" id="showContractLink" class="is-inline-block mt-2">
+        <div v-if="!isMediumScreen && showContractVisible && contractRoute" id="showContractLink" class="is-inline-block mt-2">
           <router-link :to="contractRoute">
             <span class="h-is-property-text">Show associated contract</span>
           </router-link>
@@ -78,7 +78,7 @@
       </template>
 
       <template v-slot:control v-if="isMediumScreen">
-        <div v-if="showContractVisible" id="showContractLink" class="is-inline-block ml-3">
+        <div v-if="showContractVisible && contractRoute" id="showContractLink" class="is-inline-block ml-3">
           <router-link :to="contractRoute">
             <span class="h-is-property-text">Show associated contract</span>
           </router-link>
@@ -106,7 +106,7 @@
                   </router-link>
                 </div>
                 <div v-else>
-                  <div v-for="b in tokenBalances ?? []" :key="b.token_id" class="h-is-tertiary-text">
+                  <div v-for="b in tokenBalances ?? []" :key="b.token_id ?? undefined" class="h-is-tertiary-text">
                     <TokenAmount v-bind:amount="BigInt(b.balance)" v-bind:show-extra="true" v-bind:token-id="b.token_id"/>
                   </div>
                 </div>
@@ -211,7 +211,7 @@
         <Property id="key">
           <template v-slot:name>Admin Key</template>
           <template v-slot:value>
-            <KeyValue :account-id="normalizedAccountId" :key-bytes="account?.key?.key" :key-type="account?.key?._type"
+            <KeyValue :account-id="normalizedAccountId ?? undefined" :key-bytes="account?.key?.key" :key-type="account?.key?._type"
                       :show-none="true"/>
           </template>
         </Property>

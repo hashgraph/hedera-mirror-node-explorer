@@ -34,7 +34,7 @@
       <Property id="customFeeCreatedAt" :full-width="true">
         <template v-slot:name>Created at</template>
         <template v-slot:value>
-          <TimestampValue :nano="true" :show-none="true" :timestamp="fees?.created_timestamp.toString()"/>
+          <TimestampValue :nano="true" :show-none="true" :timestamp="fees?.created_timestamp?.toString()"/>
         </template>
       </Property>
 

@@ -71,10 +71,10 @@
           <span v-if="accountChecksum" class="has-text-grey mr-3" style="font-size: 14px">-{{ accountChecksum }}</span>
         </div>
         <div v-if="!isMediumScreen && accountId" id="showAccountLink" class="is-flex is-flex-direction-column mt-2">
-          <router-link :to="accountRoute">
+          <router-link v-if="accountRoute" :to="accountRoute">
             <span class="h-is-property-text">Show my account</span>
           </router-link>
-          <router-link :to="allowanceApprovalRoute">
+          <router-link v-if="allowanceApprovalRoute" :to="allowanceApprovalRoute">
             <span class="h-is-property-text">Approve an allowance…</span>
           </router-link>
         </div>
@@ -82,10 +82,10 @@
 
       <template v-slot:control v-if="isMediumScreen">
         <div v-if="accountId" id="showAccountLink" class="is-flex is-flex-direction-column ml-3">
-          <router-link :to="accountRoute">
+          <router-link v-if="accountRoute" :to="accountRoute">
             <span class="h-is-property-text">Show my account</span>
           </router-link>
-          <router-link :to="allowanceApprovalRoute">
+          <router-link v-if="allowanceApprovalRoute" :to="allowanceApprovalRoute">
             <span class="h-is-property-text">Approve an allowance…</span>
           </router-link>
         </div>
@@ -452,7 +452,7 @@ export default defineComponent({
           progressExtraMessage.value = error.extra
         } else {
           progressMainMessage.value = "Operation did not complete"
-          progressExtraMessage.value = JSON.stringify(error.message)
+          progressExtraMessage.value = JSON.stringify(error)
         }
         progressExtraTransactionId.value = null
         showProgressSpinner.value = false

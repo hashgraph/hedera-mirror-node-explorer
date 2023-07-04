@@ -28,6 +28,7 @@ import {
     makeRewardRate,
     makeUnclampedStake
 } from "@/schemas/HederaUtils";
+import {base64DecToArr, byteToHex} from "@/utils/B64Utils";
 
 export class NodeAnalyzer {
 
@@ -72,6 +73,11 @@ export class NodeAnalyzer {
             result = null
         }
         return result
+    })
+
+    public certificateHash = computed(() => {
+        const hash = this.node.value?.node_cert_hash ?? null
+        return hash != undefined ? byteToHex(base64DecToArr(hash)) : ""
     })
 
     public isCouncilNode: ComputedRef<boolean> = computed(() => {
