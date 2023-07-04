@@ -107,7 +107,7 @@
                 <InfoTooltip label="Contract expiry is not turned on yet. Value in this field is not relevant."/>
               </template>
               <template v-slot:value>
-                <TimestampValue v-bind:timestamp="contract?.expiration_timestamp ?? undefined" v-bind:show-none="true"/>
+                <TimestampValue v-bind:timestamp="contract?.expiration_timestamp" v-bind:show-none="true"/>
               </template>
             </Property>
             <Property id="autoRenewPeriod">

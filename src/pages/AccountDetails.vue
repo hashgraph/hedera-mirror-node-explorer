@@ -181,7 +181,7 @@
             <InfoTooltip label="Account expiry is not turned on yet. Value in this field is not relevant."/>
           </template>
           <template v-slot:value>
-            <TimestampValue v-bind:show-none="true" v-bind:timestamp="account?.expiry_timestamp ?? undefined"/>
+            <TimestampValue v-bind:show-none="true" v-bind:timestamp="account?.expiry_timestamp"/>
           </template>
         </Property>
         <Property id="autoRenewPeriod">

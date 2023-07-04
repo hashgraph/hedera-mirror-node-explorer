@@ -59,7 +59,7 @@
 
 <script lang="ts">
 
-import {computed, defineComponent, inject, ref} from "vue";
+import {computed, defineComponent, inject, PropType, ref} from "vue";
 import {HMSF} from "@/utils/HMSF";
 import {initialLoadingKey} from "@/AppKeys";
 import {infiniteDuration} from "@/schemas/HederaSchemas";
@@ -68,7 +68,10 @@ export default defineComponent({
   name: "TimestampValue",
 
   props: {
-    timestamp: String,
+    timestamp: {
+        type: String as PropType<string|null>,
+        default: null
+    },
     nano: {
       type: Boolean,
       default: false
@@ -84,7 +87,7 @@ export default defineComponent({
     const locale = "en-US"
 
     const seconds = computed(() => {
-      return props.timestamp ? parseSeconds(normalizedTimestamp(props.timestamp, props.nano)) : null
+      return props.timestamp !== null ? parseSeconds(normalizedTimestamp(props.timestamp, props.nano)) : null
     })
 
     const isNever = computed( () => seconds.value && seconds.value >= infiniteDuration)
