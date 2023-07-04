@@ -38,7 +38,7 @@
 
 <script lang="ts">
 
-import {computed, defineComponent, inject, onMounted, ref, watch} from "vue";
+import {computed, defineComponent, inject, onMounted, PropType, ref, watch} from "vue";
 import {TokenInfo} from "@/schemas/HederaSchemas";
 import {TokenInfoCache} from "@/utils/cache/TokenInfoCache";
 import TokenExtra from "@/components/values/TokenExtra.vue";
@@ -53,8 +53,14 @@ export default defineComponent({
 
   components: {InfoTooltip, TokenExtra},
   props: {
-    amount: BigInt,
-    tokenId: String,
+    amount: {
+      type: BigInt as PropType<bigint|null>,
+      default: null
+    },
+    tokenId: {
+      type: String as PropType<string|null>,
+      default: null
+    },
     showExtra: {
       type: Boolean,
       default: false
@@ -71,11 +77,11 @@ export default defineComponent({
     const formattedAmount = computed(() => {
       let result: string
       if (response.value !== null) {
-        if (props.amount) {
+        if (props.amount !== null) {
           if (props.amount > MAX_TOKEN_SUPPLY) {
             result = formatTokenAmount(MAX_TOKEN_SUPPLY, decimalCount.value)
           } else {
-            result = formatTokenAmount(props.amount, decimalCount.value)
+            result = formatTokenAmount(props.amount ?? 0, decimalCount.value)
           }
         } else if (initialLoading.value) {
           result = ""
