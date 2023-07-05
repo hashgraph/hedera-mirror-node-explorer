@@ -18,6 +18,7 @@
  *
  */
 
+import {describe, test, expect} from 'vitest'
 import {flushPromises, mount} from "@vue/test-utils";
 import EVMAddress from "@/components/values/EVMAddress.vue";
 import router from "@/router";

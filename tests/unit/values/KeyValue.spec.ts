@@ -18,6 +18,7 @@
  *
  */
 
+import {describe, it, expect} from 'vitest'
 import {mount} from "@vue/test-utils"
 import router from "@/router";
 import KeyValue from "@/components/values/KeyValue.vue";

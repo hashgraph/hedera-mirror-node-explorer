@@ -20,6 +20,7 @@
  *
  */
 
+import {describe, test, expect} from 'vitest'
 import {flushPromises, mount} from "@vue/test-utils"
 import router, {walletManager} from "@/router";
 import Oruga from "@oruga-ui/oruga-next";

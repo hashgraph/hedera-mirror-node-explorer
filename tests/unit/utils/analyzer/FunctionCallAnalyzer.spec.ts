@@ -20,6 +20,7 @@
  *
  */
 
+import {describe, test, expect} from 'vitest'
 import {FunctionCallAnalyzer, NameTypeValue} from "@/utils/analyzer/FunctionCallAnalyzer";
 import {Ref, ref} from "vue";
 import {flushPromises} from "@vue/test-utils";
@@ -33,7 +34,7 @@ describe("FunctionCallAnalyzer.spec.ts", () => {
 
         const abi = require('../../../../public/abi/IHederaTokenService.json')
         const mock = new MockAdapter(axios);
-        const matcher1 = "http://localhost/abi/IHederaTokenService.json"
+        const matcher1 = "http://localhost:3000/abi/IHederaTokenService.json"
         mock.onGet(matcher1).reply(200, abi)
 
         // 1) new
