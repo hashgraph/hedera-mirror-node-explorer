@@ -18,7 +18,7 @@
  *
  */
 
-import { describe, test, expect } from 'vitest'
+import { beforeEach, describe, test, expect } from 'vitest'
 import {flushPromises, mount} from "@vue/test-utils"
 import router from "@/router";
 import axios from "axios";
@@ -48,7 +48,7 @@ HMSF.forceUTC = true
 describe("App.vue", () => {
 
     beforeEach(() => {
-        process.env = Object.assign(process.env, { VUE_APP_ENABLE_STAKING: false });
+        Object.assign(import.meta.env, { VUE_APP_ENABLE_STAKING: false });
     })
 
     test("normal screen", async () => {

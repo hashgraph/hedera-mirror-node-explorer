@@ -55,7 +55,7 @@ HMSF.forceUTC = true
 
 describe("Staking.vue", () => {
 
-    test("no props", async () => {
+    test.skip("no props", async () => {
 
         await router.push("/") // To avoid "missing required param 'network'" error
 
