@@ -19,7 +19,6 @@
  */
 
 import {EntityID} from "@/utils/EntityID";
-import {getEnv} from "@/utils/getEnv";
 import axios from "axios";
 import {ref, Ref} from "vue";
 
@@ -87,8 +86,8 @@ export class NetworkRegistry {
                 }
 
                 // Keep compatibility with previous ENV VARIABLE configuration
-                const localNodeURL = getEnv('VUE_APP_LOCAL_MIRROR_NODE_URL')
-                const localNodeMenuName = getEnv('VUE_APP_LOCAL_MIRROR_NODE_MENU_NAME')
+                const localNodeURL = import.meta.env.VUE_APP_LOCAL_MIRROR_NODE_URL
+                const localNodeMenuName = import.meta.env.VUE_APP_LOCAL_MIRROR_NODE_MENU_NAME
                 if (localNodeURL) {
                     console.warn(
                         "Use of VUE_APP_LOCAL_MIRROR_NODE_URL environment variable is deprecated.\n" +

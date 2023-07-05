@@ -46,7 +46,6 @@ import {RouteManager} from "@/utils/RouteManager";
 import {WalletManager} from "@/utils/wallet/WalletManager";
 import BlockDetails from "@/pages/BlockDetails.vue";
 import Blocks from "@/pages/Blocks.vue";
-import {getEnv} from "@/utils/getEnv";
 import AccountsWithKey from "@/pages/AccountsWithKey.vue";
 import AdminKeyDetails from "@/pages/AdminKeyDetails.vue";
 import AddressDetails from "@/pages/AddressDetails.vue";
@@ -244,7 +243,7 @@ router.beforeEach((to) => {
   let result: boolean | string
 
   if (getNetworkEntryFromRoute(to) === null // Unknown network
-    || (to.name === 'Staking' && getEnv('VUE_APP_ENABLE_STAKING') !== 'true') // Staking page not enabled
+    || (to.name === 'Staking' && import.meta.env.VUE_APP_ENABLE_STAKING !== 'true') // Staking page not enabled
   ) {
     result = "/page-not-found"
   } else {
@@ -254,9 +253,8 @@ router.beforeEach((to) => {
 })
 
 router.beforeEach((to) => {
-  const titleSuffix = getEnv('VUE_APP_DOCUMENT_TITLE_SUFFIX')
-      ? " | " + getEnv('VUE_APP_DOCUMENT_TITLE_SUFFIX')
-      : ""
+  const envTitleSuffix = import.meta.env.VUE_APP_DOCUMENT_TITLE_SUFFIX
+  const titleSuffix = envTitleSuffix ? " | " + envTitleSuffix : ""
 
   switch (to.name as string) {
     case "MainDashboard":
@@ -315,8 +313,8 @@ export function addMetaTags(): void {
 
   const title = document.title
   const description =
-      getEnv('VUE_APP_META_DESCRIPTION') ?? "Hedera Mirror Node Explorer is a ledger explorer for the Hedera network"
-  const url = getEnv('VUE_APP_META_URL')
+      import.meta.env.VUE_APP_META_DESCRIPTION ?? "Hedera Mirror Node Explorer is a ledger explorer for the Hedera network"
+  const url = import.meta.env.VUE_APP_META_URL
 
   createOrUpdateTagName('description', description)
   createOrUpdateTagProperty('og:title', title)

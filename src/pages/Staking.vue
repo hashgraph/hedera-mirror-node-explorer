@@ -112,7 +112,7 @@
               <NetworkDashboardItem class="ml-4"
                                     :name="stakedAmount ? 'HBAR' : ''"
                                     title="My Stake"
-                                    :value="stakedAmount"/>
+                                    :value="stakedAmount ?? undefined"/>
 
               <NetworkDashboardItem v-if="!ignoreReward && declineReward && !pendingReward"
                                     class="ml-4"
@@ -122,7 +122,7 @@
                                     class="ml-4"
                                     title="Pending Reward"
                                     :name="pendingReward ? 'HBAR' : ''"
-                                    :value="pendingReward"
+                                    :value="pendingReward ?? undefined"
                                     :class="{'h-has-opacity-40': ignoreReward && !pendingReward}"/>
             </div>
             <div class="is-flex is-justify-content-space-between mt-5">
@@ -145,7 +145,7 @@
               <NetworkDashboardItem :name="stakePeriodStart ? ('since ' + stakePeriodStart) : undefined"
                                     title="Staked to" :value="stakedTo ?? undefined"/>
               <div class="mt-4"/>
-              <NetworkDashboardItem :name="stakedAmount ? 'HBAR' : ''" title="My Stake" :value="stakedAmount"/>
+              <NetworkDashboardItem :name="stakedAmount ? 'HBAR' : ''" title="My Stake" :value="stakedAmount ?? undefined"/>
               <div class="mt-4"/>
 
               <NetworkDashboardItem v-if="!ignoreReward && declineReward && !pendingReward"
@@ -386,7 +386,7 @@ export default defineComponent({
     const stakedAmount = computed(() => isStaked.value ? formatHbarAmount(accountLocParser.balance.value) : null)
 
     const formatHbarAmount = (amount: number | null) => {
-      let result
+      let result: string|null
       if (amount) {
         const amountFormatter = new Intl.NumberFormat("en-US", {maximumFractionDigits: 8})
         result = amountFormatter.format(amount / 100000000)

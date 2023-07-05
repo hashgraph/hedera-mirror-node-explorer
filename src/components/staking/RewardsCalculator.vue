@@ -92,7 +92,6 @@ import {computed, defineComponent, inject, onBeforeMount, onBeforeUnmount, onMou
 import NetworkDashboardItem from "@/components/node/NetworkDashboardItem.vue";
 import DashboardCard from "@/components/DashboardCard.vue";
 import {makeNodeSelectorDescription} from "@/schemas/HederaSchemas";
-import {getEnv} from "@/utils/getEnv";
 import {NodeAnalyzer} from "@/utils/analyzer/NodeAnalyzer";
 import {isCouncilNode, makeNodeDescription} from "@/schemas/HederaUtils";
 
@@ -111,7 +110,7 @@ export default defineComponent({
   },
 
   setup(props) {
-    const htmlNotice = getEnv('VUE_APP_ESTIMATOR_NOTICE') ?? ""
+    const htmlNotice = import.meta.env.VUE_APP_ESTIMATOR_NOTICE ?? ""
 
     const isSmallScreen = inject('isSmallScreen', true)
     const isMediumScreen = inject('isMediumScreen', true)
