@@ -29,21 +29,20 @@ import {
 import {RouteManager} from "@/utils/RouteManager";
 import {WalletDriver} from "@/utils/wallet/WalletDriver";
 import {WalletDriver_Blade} from "@/utils/wallet/WalletDriver_Blade";
-import {WalletDriver_Hashpack} from "@/utils/wallet/WalletDriver_Hashpack";
 import {timeGuard, TimeGuardError} from "@/utils/TimerUtils";
 
 export class WalletManager {
 
     private readonly routeManager: RouteManager
     private readonly bladeDriver = new WalletDriver_Blade()
-    private readonly hashpackDriver = new WalletDriver_Hashpack()
-    private readonly drivers: Array<WalletDriver> = [this.bladeDriver, this.hashpackDriver]
+    // private readonly hashpackDriver = new WalletDriver_Hashpack()
+    private readonly drivers: Array<WalletDriver> = [this.bladeDriver/*, this.hashpackDriver*/]
     private readonly timeout = 30000; // milliseconds
 
     private readonly connectedRef = ref(false)
     private readonly accountIdRef = ref<string|null>(null)
 
-    private activeDriver: WalletDriver = this.hashpackDriver
+    private activeDriver: WalletDriver = this.bladeDriver
     private readonly walletNameRef = ref(this.activeDriver.name)
 
     //
