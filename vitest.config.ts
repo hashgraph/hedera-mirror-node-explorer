@@ -13,7 +13,12 @@ export default mergeConfig(
       transformMode: {
         web: [/\.[jt]sx$/]
       },
-      setupFiles: ['./tests/unit/globalSetup.js']
+      setupFiles: ['./tests/unit/globalSetup.js'],
+      deps: {
+          inline: [
+              "hashconnect"
+          ]
+      }
     }
   })
 )
