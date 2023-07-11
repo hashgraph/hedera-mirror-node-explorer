@@ -7,8 +7,8 @@
     "build": "run-p type-check build-only",
     "preview": "vite preview",
     "test:unit": "vitest",
-    "test:e2e": "START_SERVER_AND_TEST_INSECURE=1 start-server-and-test preview https://localhost:4173 'cypress run --e2e'",
-    "test:e2e:dev": "START_SERVER_AND_TEST_INSECURE=1 start-server-and-test 'vite dev --port 4173' https://localhost:4173 'cypress open --e2e'",
+    "test:e2e": "START_SERVER_AND_TEST_INSECURE=1 start-server-and-test dev https://localhost:5173 'cypress run --e2e'",
+    "test:e2e:dev": "START_SERVER_AND_TEST_INSECURE=1 start-server-and-test 'vite dev --port 5173' https://localhost:5173 'cypress open --e2e'",
     "build-only": "vite build",
     "type-check": "vue-tsc --noEmit -p tsconfig.vitest.json --composite false",
     "lint": "eslint . --ext .vue,.js,.jsx,.cjs,.mjs,.ts,.tsx,.cts,.mts --fix --ignore-path .gitignore"
