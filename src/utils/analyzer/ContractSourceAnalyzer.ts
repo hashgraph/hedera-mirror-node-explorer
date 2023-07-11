@@ -115,7 +115,7 @@ export class ContractSourceAnalyzer {
         let result: string|null
         const response = this.contractAnalyzer.sourcifyRecord.value?.response ?? null
         if (response !== null) {
-            result = SourcifyCache.fetchSource(this.sourceFileName, response)
+            result = SourcifyCache.fetchSource(this.sourceBaseName(), response)
         } else {
             result = null
         }
@@ -167,5 +167,10 @@ export class ContractSourceAnalyzer {
 
     private readonly updateLocalStorageContent = () => {
         this.localStorageContent.value = AppStorage.getSource(this.sourceFileName)
+    }
+
+    private sourceBaseName(): string {
+        const i = this.sourceFileName.lastIndexOf("/")
+        return i != -1 ? this.sourceFileName.substring(i+1) : this.sourceFileName
     }
 }
