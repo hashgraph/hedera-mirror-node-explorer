@@ -86,11 +86,11 @@ export class NetworkRegistry {
                 }
 
                 // Keep compatibility with previous ENV VARIABLE configuration
-                const localNodeURL = import.meta.env.VUE_APP_LOCAL_MIRROR_NODE_URL
-                const localNodeMenuName = import.meta.env.VUE_APP_LOCAL_MIRROR_NODE_MENU_NAME
+                const localNodeURL = import.meta.env.VITE_APP_LOCAL_MIRROR_NODE_URL
+                const localNodeMenuName = import.meta.env.VITE_APP_LOCAL_MIRROR_NODE_MENU_NAME
                 if (localNodeURL) {
                     console.warn(
-                        "Use of VUE_APP_LOCAL_MIRROR_NODE_URL environment variable is deprecated.\n" +
+                        "Use of VITE_APP_LOCAL_MIRROR_NODE_URL environment variable is deprecated.\n" +
                         "Please use /public/networks-config.json configuration file instead")
 
                     this.entries.value.push(new NetworkEntry(

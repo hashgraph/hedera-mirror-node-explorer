@@ -110,7 +110,7 @@ export default defineComponent({
   },
 
   setup(props) {
-    const htmlNotice = import.meta.env.VUE_APP_ESTIMATOR_NOTICE ?? ""
+    const htmlNotice = import.meta.env.VITE_APP_ESTIMATOR_NOTICE ?? ""
 
     const isSmallScreen = inject('isSmallScreen', true)
     const isMediumScreen = inject('isMediumScreen', true)

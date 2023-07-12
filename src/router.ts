@@ -243,7 +243,7 @@ router.beforeEach((to) => {
   let result: boolean | string
 
   if (getNetworkEntryFromRoute(to) === null // Unknown network
-    || (to.name === 'Staking' && import.meta.env.VUE_APP_ENABLE_STAKING !== 'true') // Staking page not enabled
+    || (to.name === 'Staking' && import.meta.env.VITE_APP_ENABLE_STAKING !== 'true') // Staking page not enabled
   ) {
     result = "/page-not-found"
   } else {
@@ -253,7 +253,7 @@ router.beforeEach((to) => {
 })
 
 router.beforeEach((to) => {
-  const envTitleSuffix = import.meta.env.VUE_APP_DOCUMENT_TITLE_SUFFIX
+  const envTitleSuffix = import.meta.env.VITE_APP_DOCUMENT_TITLE_SUFFIX
   const titleSuffix = envTitleSuffix ? " | " + envTitleSuffix : ""
 
   switch (to.name as string) {
@@ -313,8 +313,8 @@ export function addMetaTags(): void {
 
   const title = document.title
   const description =
-      import.meta.env.VUE_APP_META_DESCRIPTION ?? "Hedera Mirror Node Explorer is a ledger explorer for the Hedera network"
-  const url = import.meta.env.VUE_APP_META_URL
+      import.meta.env.VITE_APP_META_DESCRIPTION ?? "Hedera Mirror Node Explorer is a ledger explorer for the Hedera network"
+  const url = import.meta.env.VITE_APP_META_URL
 
   createOrUpdateTagName('description', description)
   createOrUpdateTagProperty('og:title', title)

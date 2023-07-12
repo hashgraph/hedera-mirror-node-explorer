@@ -126,7 +126,7 @@ By default, the Staking page is disabled, and the corresponding menu item is abs
 To enable the Staking page and menu item, set the following variable to *true* in the .env file:
 
 ```shell
-VUE_APP_ENABLE_STAKING=true
+VITE_APP_ENABLE_STAKING=true
 ```
 
 ### Customize configuration

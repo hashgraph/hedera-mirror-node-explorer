@@ -107,7 +107,7 @@ export default defineComponent({
   setup() {
     const isSmallScreen = inject('isSmallScreen', true)
     const isTouchDevice = inject('isTouchDevice', false)
-    const isStakingEnabled = import.meta.env.VUE_APP_ENABLE_STAKING === 'true'
+    const isStakingEnabled = import.meta.env.VITE_APP_ENABLE_STAKING === 'true'
 
     const  onResizeHandler = () => {
       if (window.innerWidth >= MEDIUM_BREAKPOINT) {

@@ -48,7 +48,7 @@ HMSF.forceUTC = true
 describe("App.vue", () => {
 
     beforeEach(() => {
-        Object.assign(import.meta.env, { VUE_APP_ENABLE_STAKING: false });
+        Object.assign(import.meta.env, { VITE_APP_ENABLE_STAKING: false });
     })
 
     test("normal screen", async () => {

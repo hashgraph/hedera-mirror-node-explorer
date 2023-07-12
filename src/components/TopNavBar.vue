@@ -132,8 +132,8 @@ export default defineComponent({
     const isTouchDevice = inject('isTouchDevice', false)
     const buildTime = inject('buildTime', "not available")
 
-    const productName = import.meta.env.VUE_APP_PRODUCT_NAME ?? "Hedera Mirror Node Explorer"
-    const isStakingEnabled = import.meta.env.VUE_APP_ENABLE_STAKING === 'true'
+    const productName = import.meta.env.VITE_APP_PRODUCT_NAME ?? "Hedera Mirror Node Explorer"
+    const isStakingEnabled = import.meta.env.VITE_APP_ENABLE_STAKING === 'true'
 
     const isMobileMenuOpen = ref(false)
 
