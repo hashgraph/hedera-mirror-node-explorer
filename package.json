@@ -8,10 +8,13 @@
     "preview": "vite preview",
     "test:unit": "vitest",
     "test:e2e": "START_SERVER_AND_TEST_INSECURE=1 start-server-and-test dev https://localhost:5173 'cypress run --browser chrome --e2e'",
+    "test:e2e:try": "START_SERVER_AND_TEST_INSECURE=1 start-server-and-test dev https://localhost:5173 'cypress run --browser chrome --e2e --spec tests/e2e/specs/MobileMenu.cy.ts'",
     "test:e2e:dev": "START_SERVER_AND_TEST_INSECURE=1 start-server-and-test 'vite dev --port 5173' https://localhost:5173 'cypress open --e2e'",
     "build-only": "vite build",
     "type-check": "vue-tsc --noEmit -p tsconfig.vitest.json --composite false",
-    "lint": "eslint . --ext .vue,.js,.jsx,.cjs,.mjs,.ts,.tsx,.cts,.mts --fix --ignore-path .gitignore"
+    "lint": "eslint . --ext .vue,.js,.jsx,.cjs,.mjs,.ts,.tsx,.cts,.mts --fix --ignore-path .gitignore",
+    "showConfig:app": "tsc -p tsconfig.app.json --showConfig",
+    "showConfig:vitest": "tsc -p tsconfig.vitest.json --showConfig"
   },
   "dependencies": {
     "@bladelabs/blade-web3.js": "1.0.0",
@@ -20,7 +23,7 @@
     "@fortawesome/free-brands-svg-icons": "^6.3.0",
     "@fortawesome/free-solid-svg-icons": "^6.3.0",
     "@fortawesome/vue-fontawesome": "^3.0.3",
-    "@hashgraph/proto": "^2.11.0",
+    "@hashgraph/proto": "^2.12.0",
     "@hashgraph/sdk": "^2.27.0",
     "@kabuto-sh/ns": "^0.6.2",
     "@metamask/detect-provider": "^1.2.0",
