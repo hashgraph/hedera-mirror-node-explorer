@@ -3,6 +3,10 @@ const GetRevisionPlugin = require('git-revision-webpack-plugin')
 const gitDescribe = new GetRevisionPlugin({ lightweightTags: true })
 
 module.exports = {
+    transpileDependencies: [
+        '@hashgraph/hedera-wallet-connect',
+        '@walletconnect',
+    ],
     configureWebpack: {
         plugins: [
             new webpack.DefinePlugin({
