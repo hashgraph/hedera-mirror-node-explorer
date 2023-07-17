@@ -29,4 +29,9 @@ export default defineConfig({
       '@': fileURLToPath(new URL('./src', import.meta.url))
     }
   },
+  build: {
+    commonjsOptions: {
+      transformMixedEsModules: true, // else hashconnect crashes because require() is undefined :(
+    },
+  }
 })
