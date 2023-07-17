@@ -5,6 +5,11 @@ import vue from '@vitejs/plugin-vue'
 import basicSsl from '@vitejs/plugin-basic-ssl'
 import pluginRewriteAll from 'vite-plugin-rewrite-all'
 import { nodePolyfills } from 'vite-plugin-node-polyfills'
+import * as child from "child_process"
+
+const commitHash = child.execSync("git rev-parse --short HEAD").toString() //i.e., 706e821
+const tagAndCommitHash = child.execSync("git describe --always --tags").toString() //i.e., v23.5.0-1-g706e821
+const buildDate = new Date().toUTCString()
 
 // https://vitejs.dev/config/
 export default defineConfig({
@@ -33,5 +38,10 @@ export default defineConfig({
     commonjsOptions: {
       transformMixedEsModules: true, // else hashconnect crashes because require() is undefined :(
     },
+  },
+  define: {
+    'import.meta.env.VITE_BUILD_SHORTCOMMITHASH': JSON.stringify(commitHash),
+    'import.meta.env.VITE_BUILD_RELEASE': JSON.stringify(tagAndCommitHash),
+    'import.meta.env.VITE_BUILD_TIME_UTC': JSON.stringify(buildDate),
   }
 })
