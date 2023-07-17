@@ -13,8 +13,10 @@
     "build-only": "vite build",
     "type-check": "vue-tsc --noEmit -p tsconfig.vitest.json --composite false",
     "lint": "eslint . --ext .vue,.js,.jsx,.cjs,.mjs,.ts,.tsx,.cts,.mts --fix --ignore-path .gitignore",
-    "showConfig:app": "tsc -p tsconfig.app.json --showConfig",
-    "showConfig:vitest": "tsc -p tsconfig.vitest.json --showConfig"
+    "install:branding": ". ./src/assets/branding/install-branding.sh",
+    "docker:build": "npm run build && docker build . --tag gcr.io/hedera-registry/hedera-mirror-node-explorer",
+    "docker:start": "docker-compose up -d",
+    "docker:stop": "docker-compose down"
   },
   "dependencies": {
     "@bladelabs/blade-web3.js": "1.0.0",
