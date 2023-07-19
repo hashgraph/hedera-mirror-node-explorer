@@ -112,7 +112,7 @@
               <NetworkDashboardItem class="ml-4"
                                     :name="stakedAmount ? 'HBAR' : ''"
                                     title="My Stake"
-                                    :value="stakedAmount ?? undefined"/>
+                                    :value="stakedAmount"/>
 
               <NetworkDashboardItem v-if="!ignoreReward && declineReward && !pendingReward"
                                     class="ml-4"
@@ -122,7 +122,7 @@
                                     class="ml-4"
                                     title="Pending Reward"
                                     :name="pendingReward ? 'HBAR' : ''"
-                                    :value="pendingReward ?? undefined"
+                                    :value="pendingReward"
                                     :class="{'h-has-opacity-40': ignoreReward && !pendingReward}"/>
             </div>
             <div class="is-flex is-justify-content-space-between mt-5">
@@ -145,7 +145,7 @@
               <NetworkDashboardItem :name="stakePeriodStart ? ('since ' + stakePeriodStart) : undefined"
                                     title="Staked to" :value="stakedTo ?? undefined"/>
               <div class="mt-4"/>
-              <NetworkDashboardItem :name="stakedAmount ? 'HBAR' : ''" title="My Stake" :value="stakedAmount ?? undefined"/>
+              <NetworkDashboardItem :name="stakedAmount ? 'HBAR' : ''" title="My Stake" :value="stakedAmount"/>
               <div class="mt-4"/>
 
               <NetworkDashboardItem v-if="!ignoreReward && declineReward && !pendingReward"
