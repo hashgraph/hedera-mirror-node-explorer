@@ -105,7 +105,7 @@
                               title="Stake for Consensus"/>
         <p v-if="stake" id="consensusStakePercent" class="h-is-property-text h-is-extra-text mt-1">{{
             stakePercentage
-          }}% of total</p>
+          }} of total</p>
         <p v-else class="h-is-property-text h-is-extra-text mt-1">(&lt;Min)</p>
         <br/><br/>
         <div v-if="stake === 0">
@@ -163,6 +163,8 @@ import NetworkDashboardItem from "@/components/node/NetworkDashboardItem.vue";
 import {StakeCache} from "@/utils/cache/StakeCache";
 import {PathParam} from "@/utils/PathParam";
 import {NodeAnalyzer} from "@/utils/analyzer/NodeAnalyzer";
+import {NetworkNode} from "@/schemas/HederaSchemas";
+import {makeStakePercentage} from "@/schemas/HederaUtils";
 
 export default defineComponent({
 
@@ -207,7 +209,9 @@ export default defineComponent({
 
     const stakeTotal = computed(() => stakeLookup.entity.value?.stake_total ?? 0)
     const stakePercentage = computed(() =>
-        stakeTotal.value ? Math.round(nodeAnalyzer.stake.value / stakeTotal.value * 10000) / 100 : 0)
+        nodeAnalyzer.node.value && stakeTotal.value
+            ? makeStakePercentage(nodeAnalyzer.node.value as NetworkNode, stakeTotal.value)
+            : "0")
 
     const stakeRewardedPercentage = computed(() =>
         networkAnalyzer.stakeRewardedTotal.value != 0 ? Math.round(nodeAnalyzer.stakeRewarded.value / networkAnalyzer.stakeRewardedTotal.value * 10000) / 100 : 0)
