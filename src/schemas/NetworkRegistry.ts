@@ -26,8 +26,8 @@ declare global {
     interface Window {
         // adding custom properties
         configs: {
-            VITE_APP_LOCAL_MIRROR_NODE_MENU_NAME: string,
-            VITE_APP_LOCAL_MIRROR_NODE_URL: string,
+            DOCKER_LOCAL_MIRROR_NODE_MENU_NAME: string,
+            DOCKER_LOCAL_MIRROR_NODE_URL: string,
         }
     }
 }
@@ -96,10 +96,10 @@ export class NetworkRegistry {
                 }
 
                 // Take into account possible additional node defined in docker configuration
-                const localNodeURL = window.configs?.VITE_APP_LOCAL_MIRROR_NODE_URL
+                const localNodeURL = window.configs?.DOCKER_LOCAL_MIRROR_NODE_URL
                 const localNodeMenuName =
-                    window.configs?.VITE_APP_LOCAL_MIRROR_NODE_MENU_NAME && window.configs.VITE_APP_LOCAL_MIRROR_NODE_MENU_NAME.length > 0
-                        ? window.configs.VITE_APP_LOCAL_MIRROR_NODE_MENU_NAME
+                    window.configs?.DOCKER_LOCAL_MIRROR_NODE_MENU_NAME && window.configs.DOCKER_LOCAL_MIRROR_NODE_MENU_NAME.length > 0
+                        ? window.configs.DOCKER_LOCAL_MIRROR_NODE_MENU_NAME
                         : "DEVNET"
 
                 if (localNodeURL) {

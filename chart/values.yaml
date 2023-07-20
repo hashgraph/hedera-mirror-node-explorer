@@ -25,7 +25,7 @@ autoscaling:
 
 # Environment variables to add to the container. The value can either be a string or an EnvVarSource. Evaluated as a template.
 env:
-  VITE_APP_LOCAL_MIRROR_NODE_URL: "https://mainnet-public.mirrornode.hedera.com"
+  DOCKER_LOCAL_MIRROR_NODE_URL: "http://localhost:5551"
   # BAR:
   #   valueFrom:
   #     secretKeyRef:
