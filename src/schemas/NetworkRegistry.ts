@@ -22,6 +22,16 @@ import {EntityID} from "@/utils/EntityID";
 import axios from "axios";
 import {ref, Ref} from "vue";
 
+declare global {
+    interface Window {
+        // adding custom properties
+        configs: {
+            VITE_APP_LOCAL_MIRROR_NODE_MENU_NAME: string,
+            VITE_APP_LOCAL_MIRROR_NODE_URL: string,
+        }
+    }
+}
+
 export class NetworkEntry {
 
     public readonly name: string
@@ -85,17 +95,21 @@ export class NetworkRegistry {
                     this.defaultEntry = this.lookup(NetworkRegistry.DEFAULT_NETWORK) ?? this.entries.value[0]
                 }
 
-                // Keep compatibility with previous ENV VARIABLE configuration
-                const localNodeURL = import.meta.env.VITE_APP_LOCAL_MIRROR_NODE_URL
-                const localNodeMenuName = import.meta.env.VITE_APP_LOCAL_MIRROR_NODE_MENU_NAME
+                // Take into account possible additional node defined in docker configuration
+                const localNodeURL = window.configs.VITE_APP_LOCAL_MIRROR_NODE_URL
+                const localNodeMenuName =
+                    window.configs.VITE_APP_LOCAL_MIRROR_NODE_MENU_NAME.length > 0
+                        ? window.configs.VITE_APP_LOCAL_MIRROR_NODE_MENU_NAME
+                        : "DEVNET"
+
                 if (localNodeURL) {
                     console.warn(
-                        "Use of VITE_APP_LOCAL_MIRROR_NODE_URL environment variable is deprecated.\n" +
-                        "Please use /public/networks-config.json configuration file instead")
+                        "FOR DEVELOPMENT PURPOSES ONLY:\n" +
+                        `Defining an additional network with URL: ${localNodeURL} and name: ${localNodeMenuName} \n`)
 
-                    this.entries.value.push(new NetworkEntry(
-                        'devnet', localNodeMenuName ?? "DEVNET", localNodeURL, 'FF'
-                    ))
+                    this.entries.value.push(
+                        new NetworkEntry('devnet', localNodeMenuName, localNodeURL, 'FF')
+                    )
                 }
             })
             .catch((reason) => console.warn(`Failed to get ${NetworkRegistry.NETWORKS_CONFIG_URL}: ${reason}`))
