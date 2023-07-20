@@ -11,7 +11,7 @@ module.exports = {
     },
 
     transformIgnorePatterns: [
-        "node_modules/(?!hashconnect|@bladelabs)"
+        "/node_modules/(?!(hashconnect|@bladelabs|@hashgraph/hedera-wallet-connect)/)",
     ],
 
     setupFilesAfterEnv: [

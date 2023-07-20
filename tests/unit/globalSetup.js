@@ -1,4 +1,5 @@
 import {CacheUtils} from "@/utils/cache/CacheUtils";
+import {TextEncoder, TextDecoder} from 'util';
 
 beforeEach(() => {
     CacheUtils.clearAll()
@@ -17,3 +18,5 @@ Object.defineProperty(window, 'matchMedia', {
         dispatchEvent: jest.fn(),
     })),
 });
+
+Object.assign(global, { TextEncoder, TextDecoder });
