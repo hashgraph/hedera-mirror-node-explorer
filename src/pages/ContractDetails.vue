@@ -161,6 +161,12 @@
                 <TimestampValue :timestamp="contract?.timestamp?.to" :show-none="true"/>
               </template>
             </Property>
+            <Property v-if="displayNonce" id="nonce">
+              <template v-slot:name>Contract Nonce</template>
+              <template v-slot:value>
+                {{ contract?.nonce }}
+              </template>
+            </Property>
             <Property id="file">
               <template v-slot:name>File</template>
               <template v-slot:value>
@@ -272,6 +278,8 @@ export default defineComponent({
     onMounted(() => accountLocParser.mount())
     onBeforeUnmount(() => accountLocParser.unmount())
 
+    const displayNonce = computed(() => contractLookup.entity.value?.nonce != undefined)
+
     const autoRenewAccount = computed(() => {
       return contractLookup.entity.value?.auto_renew_account ?? null
     })
@@ -328,6 +336,7 @@ export default defineComponent({
       balance: accountLocParser.balance,
       tokens: accountLocParser.tokens,
       ethereumAddress: accountLocParser.ethereumAddress,
+      displayNonce,
       accountChecksum,
       displayAllTokenLinks,
       notification,

@@ -96,6 +96,7 @@ describe("ContractDetails.vue", () => {
         expect(wrapper.get("#proxyAccountValue").text()).toBe("None")
         expect(wrapper.get("#validFromValue").text()).toBe("3:09:15.9474 PMMar 7, 2022, UTC")
         expect(wrapper.get("#validUntilValue").text()).toBe("None")
+        expect(wrapper.get("#nonceValue").text()).toBe("1")
         expect(wrapper.get("#fileValue").text()).toBe("0.0.749773")
         expect(wrapper.get("#evmAddress").text()).toBe("EVM Address:0x00000000000000000000000000000000000b70cfCopy")
         expect(wrapper.get("#code").text()).toBe("Runtime BytecodeNone")
@@ -227,6 +228,7 @@ describe("ContractDetails.vue", () => {
         expect(wrapper.get("#keyValue").text()).toBe("None")
         expect(wrapper.get("#maxAutoAssociationValue").text()).toBe("None")
         expect(wrapper.get("#memoValue").text()).toBe("None")
+        expect(wrapper.find("#nonce").exists()).toBe(false)
         expect(wrapper.get("#fileValue").text()).toBe("0.0.803267")
         expect(wrapper.get("#evmAddress").text()).toBe("EVM Address:0x00000000000000000000000000000000000b70cfCopy")
 
@@ -234,7 +236,7 @@ describe("ContractDetails.vue", () => {
         await flushPromises()
     });
 
-    // TODO: re-enable after Feb 9th
+    // TODO: re-enable after activation of Contract Expiry
     it.skip("Should display notification of grace period", async () => {
 
         await router.push("/") // To avoid "missing required param 'network'" error
@@ -276,7 +278,7 @@ describe("ContractDetails.vue", () => {
         await flushPromises()
     });
 
-    // TODO: remove after Feb 9th
+    // TODO: remove after activation of Contract Expiry
     it("Should NOT display notification of grace period", async () => {
 
         await router.push("/") // To avoid "missing required param 'network'" error

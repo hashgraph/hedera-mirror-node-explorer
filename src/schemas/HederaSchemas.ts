@@ -464,6 +464,7 @@ export interface Contract {
     file_id: string | null | undefined   // Network entity ID in the format of shard.realm.num
     max_automatic_token_associations: number | null
     memo: string
+    nonce: number | undefined
     obtainer_id: string | null   // Network entity ID in the format of shard.realm.num
     permanent_removal: boolean | null
     proxy_account_id: string | null   // Network entity ID in the format of shard.realm.num
