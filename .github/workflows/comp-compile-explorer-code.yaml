@@ -88,10 +88,8 @@ jobs:
         run: npm run build
 
       - name: Unit Tests
-        uses: ArtiomTr/jest-coverage-report-action@v2
+        uses: davelosert/vitest-coverage-report-action@v2
         if: ${{ inputs.enable-unit-tests && !cancelled() }}
-        with:
-          test-script: npm run test:unit
 
       - name: Cypress run
         uses: cypress-io/github-action@v4

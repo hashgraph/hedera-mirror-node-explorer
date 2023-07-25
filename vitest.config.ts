@@ -18,6 +18,9 @@ export default mergeConfig(
           inline: [
               "hashconnect"
           ]
+      },
+      coverage: {
+        reporter: ['text', 'json-summary', 'json'],
       }
     }
   })
