@@ -88,10 +88,12 @@ jobs:
         run: npm run build
 
       - name: Unit Tests
+        run: npm run test:unit
+        if: ${{ inputs.enable-unit-tests && !cancelled() }}
+
+      - name: Report Unit Test Coverage
         uses: davelosert/vitest-coverage-report-action@v2
         if: ${{ inputs.enable-unit-tests && !cancelled() }}
-        with:
-          test-script: npm run test:unit
 
       - name: Cypress run
         uses: cypress-io/github-action@v4
