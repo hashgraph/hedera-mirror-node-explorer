@@ -101,7 +101,6 @@ jobs:
         with:
           install-command: npm install
           browser: chrome
-          headless: true
           start: npm run dev
           spec: tests/e2e/specs/*
 
