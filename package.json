@@ -9,7 +9,6 @@
     "test:unit": "vitest",
     "cover:unit": "vitest run --coverage",
     "test:e2e": "START_SERVER_AND_TEST_INSECURE=1 start-server-and-test dev https://localhost:5173 'cypress run --browser chrome --e2e'",
-    "test:e2e:try": "START_SERVER_AND_TEST_INSECURE=1 start-server-and-test dev https://localhost:5173 'cypress run --browser chrome --e2e --spec tests/e2e/specs/MobileMenu.cy.ts'",
     "test:e2e:dev": "START_SERVER_AND_TEST_INSECURE=1 start-server-and-test 'vite dev --port 5173' https://localhost:5173 'cypress open --e2e'",
     "build-only": "npm run install:branding && vite build",
     "type-check": "vue-tsc --noEmit -p tsconfig.vitest.json --composite false",
