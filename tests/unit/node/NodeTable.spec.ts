@@ -18,6 +18,7 @@
  *
  */
 
+import {describe, it, expect} from 'vitest'
 import {flushPromises, mount} from "@vue/test-utils"
 import router from "@/router";
 import {SAMPLE_NETWORK_NODES} from "../Mocks";
@@ -49,7 +50,7 @@ describe("NodeTable.vue", () => {
 
     it("should list the 3 nodes in the table", async () => {
 
-        process.env = Object.assign(process.env, { VUE_APP_ENABLE_STAKING: true });
+        process.env = Object.assign(process.env, { VITE_APP_ENABLE_STAKING: true });
 
         await router.push("/") // To avoid "missing required param 'network'" error
 

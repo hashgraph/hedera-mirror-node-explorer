@@ -26,6 +26,7 @@
  */
 
 
+import {describe, it, expect} from 'vitest'
 import {flushPromises, mount} from "@vue/test-utils";
 import TokenLink from "@/components/values/TokenLink.vue";
 import router from "@/router";

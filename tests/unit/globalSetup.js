@@ -1,5 +1,5 @@
+import { beforeEach, vi } from 'vitest'
 import {CacheUtils} from "@/utils/cache/CacheUtils";
-import {TextEncoder, TextDecoder} from 'util';
 
 beforeEach(() => {
     CacheUtils.clearAll()
@@ -7,16 +7,15 @@ beforeEach(() => {
 
 Object.defineProperty(window, 'matchMedia', {
     writable: true,
-    value: jest.fn().mockImplementation(query => ({
+    value: vi.fn().mockImplementation(query => ({
         matches: false,
         media: query,
         onchange: null,
-        addListener: jest.fn(), // deprecated
-        removeListener: jest.fn(), // deprecated
-        addEventListener: jest.fn(),
-        removeEventListener: jest.fn(),
-        dispatchEvent: jest.fn(),
+        addListener: vi.fn(), // deprecated
+        removeListener: vi.fn(), // deprecated
+        addEventListener: vi.fn(),
+        removeEventListener: vi.fn(),
+        dispatchEvent: vi.fn(),
     })),
 });
 
-Object.assign(global, { TextEncoder, TextDecoder });

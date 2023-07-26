@@ -18,6 +18,7 @@
  *
  */
 
+import {describe, test, expect} from 'vitest'
 import {Duration, formatSeconds} from "@/utils/Duration";
 
 describe("Duration.ts", () => {

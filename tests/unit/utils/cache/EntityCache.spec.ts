@@ -20,6 +20,7 @@
  *
  */
 
+import {describe, test, expect} from 'vitest'
 import {flushPromises} from "@vue/test-utils";
 import {EntityCache} from "@/utils/cache/base/EntityCache";
 import {ref} from "vue";

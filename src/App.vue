@@ -55,13 +55,13 @@ export default defineComponent({
     const route = useRoute()
     const onMainDashboardPage = computed( () => { return route.name == "MainDashboard" })
 
-    const buildRelease = process.env.BUILD_RELEASE ?? "not available"
+    const buildRelease = import.meta.env.VITE_BUILD_RELEASE ?? "not available"
     provide('buildRelease', buildRelease)
 
-    const buildShortCommitHash = process.env.BUILD_SHORTCOMMITHASH ?? "not available"
+    const buildShortCommitHash = import.meta.env.VITE_BUILD_SHORTCOMMITHASH ?? "not available"
     provide('buildShortCommitHash', buildShortCommitHash)
 
-    const buildTime = document.documentElement.dataset.buildTimestampUtc ?? "not available"
+    const buildTime = import.meta.env.VITE_BUILD_TIME_UTC ?? "not available"
     provide('buildTime', buildTime)
 
     const isTouchDevice = ('ontouchstart' in window)

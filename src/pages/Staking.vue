@@ -386,7 +386,7 @@ export default defineComponent({
     const stakedAmount = computed(() => isStaked.value ? formatHbarAmount(accountLocParser.balance.value) : null)
 
     const formatHbarAmount = (amount: number | null) => {
-      let result
+      let result: string|null
       if (amount) {
         const amountFormatter = new Intl.NumberFormat("en-US", {maximumFractionDigits: 8})
         result = amountFormatter.format(amount / 100000000)

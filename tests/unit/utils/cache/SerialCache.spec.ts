@@ -18,6 +18,7 @@
  *
  */
 
+import {describe, test, expect} from 'vitest'
 import {flushPromises} from "@vue/test-utils";
 import {SerialCache} from "@/utils/cache/base/SerialCache";
 

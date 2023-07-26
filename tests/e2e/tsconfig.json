@@ -1,15 +1,10 @@
 {
+  "extends": "@vue/tsconfig/tsconfig.dom.json",
+  "include": ["./**/*", "../support/**/*"],
   "compilerOptions": {
-    "target": "esnext",
-    "types": [
-      "cypress"
-    ],
-    "lib": [
-      "esnext",
-      "dom"
-    ]
-  },
-  "include": [
-    "**/*.ts"
-  ]
+    "isolatedModules": false,
+    "target": "es5",
+    "lib": ["es5", "dom"],
+    "types": ["cypress"]
+  }
 }
