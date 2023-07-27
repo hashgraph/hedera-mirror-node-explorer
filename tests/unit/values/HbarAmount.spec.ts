@@ -25,18 +25,25 @@
 
  */
 
-import {describe, test, expect} from 'vitest'
+import {afterAll, beforeAll, describe, expect, test} from 'vitest'
 import {flushPromises, mount} from "@vue/test-utils";
 import HbarAmount from "@/components/values/HbarAmount.vue";
 import {SAMPLE_NETWORK_EXCHANGERATE} from "../Mocks";
 import MockAdapter from "axios-mock-adapter";
 import axios from "axios";
 
-const mock = new MockAdapter(axios);
-const matcher = "api/v1/network/exchangerate"
-mock.onGet(matcher).reply(200, SAMPLE_NETWORK_EXCHANGERATE);
-
 describe("HbarAmount.vue ", () => {
+
+    const mock = new MockAdapter(axios);
+
+    beforeAll(() => {
+        const matcher = "api/v1/network/exchangerate"
+        mock.onGet(matcher).reply(200, SAMPLE_NETWORK_EXCHANGERATE);
+    })
+
+    afterAll(() => {
+        mock.restore()
+    })
 
     test("with amount set", async () => {
 
