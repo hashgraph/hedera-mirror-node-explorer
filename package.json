@@ -27,7 +27,7 @@
     "@fortawesome/vue-fontawesome": "^3.0.3",
     "@hashgraph/proto": "^2.12.0",
     "@hashgraph/sdk": "^2.27.0",
-    "@kabuto-sh/ns": "^0.6.2",
+    "@kabuto-sh/ns": "^0.7.0",
     "@metamask/detect-provider": "^1.2.0",
     "@metamask/providers": "^9.1.0",
     "@oruga-ui/oruga-next": "^0.6.0",
