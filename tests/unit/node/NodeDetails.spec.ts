@@ -20,6 +20,7 @@
  *
  */
 
+import {describe, it, expect} from 'vitest'
 import {flushPromises, mount} from "@vue/test-utils"
 import router from "@/router";
 import axios from "axios";
@@ -36,7 +37,6 @@ import MockAdapter from "axios-mock-adapter";
 import Oruga from "@oruga-ui/oruga-next";
 import {HMSF} from "@/utils/HMSF";
 import NodeDetails from "@/pages/NodeDetails.vue";
-import {NodeRegistry} from "@/components/node/NodeRegistry";
 
 /*
     Bookmarks
@@ -44,20 +44,6 @@ import {NodeRegistry} from "@/components/node/NodeRegistry";
         https://test-utils.vuejs.org/api/
 
  */
-
-Object.defineProperty(window, 'matchMedia', {
-    writable: true,
-    value: jest.fn().mockImplementation(query => ({
-        matches: false,
-        media: query,
-        onchange: null,
-        addListener: jest.fn(), // deprecated
-        removeListener: jest.fn(), // deprecated
-        addEventListener: jest.fn(),
-        removeEventListener: jest.fn(),
-        dispatchEvent: jest.fn(),
-    })),
-});
 
 HMSF.forceUTC = true
 
@@ -72,7 +58,6 @@ describe("NodeDetails.vue", () => {
         const node = 0
         const matcher1 = "api/v1/network/nodes"
         mock.onGet(matcher1).reply(200, SAMPLE_NETWORK_NODES);
-        NodeRegistry.instance.reload()
 
         const matcher2 = "api/v1/network/stake"
         mock.onGet(matcher2).reply(200, SAMPLE_NETWORK_STAKE);
@@ -93,11 +78,11 @@ describe("NodeDetails.vue", () => {
         expect(wrapper.text()).toMatch(RegExp("^Node " + node))
         expect(wrapper.get("#nodeAccountValue").text()).toBe("0.0.3")
         expect(wrapper.get("#descriptionValue").text()).toBe("Hosted by Hedera | East Coast, USA")
-        expect(wrapper.get("#publicKeyValue").text()).toBe("3082 01a2 300d 0609Copy to ClipboardRSA")
+        expect(wrapper.get("#publicKeyValue").text()).toBe("3082 01a2 300d 0609CopyRSA")
         expect(wrapper.get("#fileValue").text()).toBe("0.0.102")
         expect(wrapper.get("#rangeFromValue").text()).toBe("4:10:06.0411 PMJun 6, 2022, UTC")
         expect(wrapper.get("#rangeToValue").text()).toBe("None")
-        expect(wrapper.get("#nodeCertHashValue").text()).toBe("d317 df77 a69d 6bbe 1add adf8 6bCopy to Clipboard")
+        expect(wrapper.get("#nodeCertHashValue").text()).toBe("d317 df77 a69d 6bbe 1add adf8 6bCopy")
         expect(wrapper.get("#serviceEndpointsValue").text()).toBe("3.211.248.172:502113.211.248.172:5021235.231.208.148:035.231.208.148:5021135.231.208.148:50212")
 
         expect(wrapper.get("#yearlyRate").text()).toBe("Last Period Reward Rate1%APPROX ANNUAL EQUIVALENT")
@@ -105,12 +90,14 @@ describe("NodeDetails.vue", () => {
         expect(wrapper.get("#consensusStakePercent").text()).toBe("25% of total")
         expect(wrapper.get("#minStake").text()).toBe("Min Stake1,000,000HBAR")
         expect(wrapper.get("#maxStake").text()).toBe("Max Stake30,000,000HBAR")
-        expect(wrapper.get("#rewarded").text()).toBe("Stake Rewarded5,000,000HBAR")
+        expect(wrapper.get("#rewarded").text()).toBe("Staked for Reward5,000,000HBAR")
         expect(wrapper.get("#rewardedPercent").text()).toBe("26.32% of total")
-        expect(wrapper.get("#notRewarded").text()).toBe("Stake Not Rewarded1,000,000HBAR")
+        expect(wrapper.get("#notRewarded").text()).toBe("Staked For No Reward1,000,000HBAR")
         expect(wrapper.get("#notRewardedPercent").text()).toBe("20% of total")
         expect(wrapper.get("#stakingPeriod").text()).toBe("Current Staking Period24HOURS")
 
+        wrapper.unmount()
+        await flushPromises()
     });
 
     it("Should update when account id changes", async () => {
@@ -140,6 +127,12 @@ describe("NodeDetails.vue", () => {
         let matcher8 = "/api/v1/accounts/" + account1.account + "/rewards"
         mock.onGet(matcher8).reply(200, { rewards: [] })
 
+        let matcher9 = "/api/v1/accounts/" + SAMPLE_ACCOUNT.account + "/allowances/crypto"
+        mock.onGet(matcher9).reply(200, { rewards: [] })
+
+        let matcher10 = "/api/v1/accounts/" + SAMPLE_ACCOUNT.account + "/allowances/tokens"
+        mock.onGet(matcher10).reply(200, { rewards: [] })
+
         const wrapper = mount(AccountDetails, {
             global: {
                 plugins: [router, Oruga]
@@ -155,12 +148,18 @@ describe("NodeDetails.vue", () => {
         expect(wrapper.text()).toMatch("Account Account ID:" + SAMPLE_ACCOUNT.account)
         expect(wrapper.get("#keyValue").text()).toBe(
             "aa2f 7b3e 759f 4531 ec2e 7941 afa4 49e6 a6e6 10ef b52a dae8 9e9c d8e9 d40d dcbf" +
-            "Copy to Clipboard" +
+            "Copy" +
             "ED25519")
 
         const account2 = SAMPLE_ACCOUNT_DUDE
         matcher1 = "/api/v1/accounts/" + account2.account
         mock.onGet(matcher1).reply(200, account2);
+
+        matcher9 = "/api/v1/accounts/" + SAMPLE_ACCOUNT_DUDE.account + "/allowances/crypto"
+        mock.onGet(matcher9).reply(200, { rewards: [] })
+
+        matcher10 = "/api/v1/accounts/" + SAMPLE_ACCOUNT_DUDE.account + "/allowances/tokens"
+        mock.onGet(matcher10).reply(200, { rewards: [] })
 
         const token2 = SAMPLE_TOKEN_DUDE
         matcher3 = "/api/v1/tokens/" + token2.token_id
@@ -179,7 +178,7 @@ describe("NodeDetails.vue", () => {
         expect(wrapper.text()).toMatch("Account Account ID:" + SAMPLE_ACCOUNT_DUDE.account)
         expect(wrapper.get("#keyValue").text()).toBe(
             "38f1 ea46 0e95 d97e ea13 aefa c760 eaf9 9015 4b80 a360 8ab0 1d4a 2649 44d6 8746" +
-            "Copy to Clipboard" +
+            "Copy" +
             "ED25519")
         expect(wrapper.get("#memoValue").text()).toBe("Account Dude Memo in clear")
         expect(wrapper.find("#aliasValue").exists()).toBe(false)
@@ -187,6 +186,9 @@ describe("NodeDetails.vue", () => {
         expect(wrapper.get("#autoRenewPeriodValue").text()).toBe("77d 3h 40min")
         expect(wrapper.get("#maxAutoAssociationValue").text()).toBe("10")
         expect(wrapper.get("#receiverSigRequiredValue").text()).toBe("true")
+
+        wrapper.unmount()
+        await flushPromises()
     });
 
     it("Should detect invalid account ID", async () => {
@@ -206,6 +208,9 @@ describe("NodeDetails.vue", () => {
         // console.log(wrapper.html())
         // console.log(wrapper.text())
 
-        expect(wrapper.get("#notificationBanner").text()).toBe("Invalid account ID: " + invalidAccountId)
+        expect(wrapper.get("#notificationBanner").text()).toBe("Invalid account ID, address or alias: " + invalidAccountId)
+
+        wrapper.unmount()
+        await flushPromises()
     });
 });

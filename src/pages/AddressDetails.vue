@@ -33,15 +33,15 @@
 <script lang="ts">
 
 import {defineComponent, onMounted} from 'vue';
-import axios from "axios";
 import router, {routeManager} from "@/router";
 import {PathParam} from "@/utils/PathParam";
-import {AccountBalanceTransactions, ContractResponse} from "@/schemas/HederaSchemas";
 import {RouteLocationRaw} from "vue-router";
+import {ContractByAddressCache} from "@/utils/cache/ContractByAddressCache";
+import {AccountByAddressCache} from "@/utils/cache/AccountByAddressCache";
 
 export default defineComponent({
 
-  name: 'AccountDetails',
+  name: 'AddressDetails',
 
   components: {},
 
@@ -52,27 +52,14 @@ export default defineComponent({
 
   setup(props) {
 
-
     const getContractId = async (evmAddress: string): Promise<string|null> => {
-      let result: string|null
-      try {
-        const response = await axios.get<ContractResponse>("api/v1/contracts/" + evmAddress)
-        result = response.data.contract_id ?? null
-      } catch {
-        result = null
-      }
-      return Promise.resolve(result)
+      const contract = await ContractByAddressCache.instance.lookup(evmAddress)
+      return Promise.resolve(contract?.contract_id ?? null)
     }
 
     const getAccountId = async (evmAddress: string): Promise<string|null> => {
-      let result: string|null
-      try {
-        const response = await axios.get<AccountBalanceTransactions>("api/v1/accounts/" + evmAddress)
-        result = response.data.account ?? null
-      } catch {
-        result = null
-      }
-      return Promise.resolve(result)
+      const account = await AccountByAddressCache.instance.lookup(evmAddress)
+      return Promise.resolve(account?.account ?? null)
     }
 
     const selectRoute = async () => {
@@ -89,12 +76,12 @@ export default defineComponent({
           if (accountId !== null) {
             result = routeManager.makeRouteToAccount(accountId)
           } else {
-            result = routeManager.pageNotFoundRoute
+            result = routeManager.makeRouteToAccount(evmAddress)
           }
         }
 
       } else {
-        result = routeManager.pageNotFoundRoute
+        result = routeManager.makeRouteToPageNotFound()
       }
 
       return Promise.resolve(result)

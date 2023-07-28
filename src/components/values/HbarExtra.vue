@@ -36,8 +36,8 @@
 
 <script lang="ts">
 
-import {computed, defineComponent, onMounted} from "vue";
-import {HbarPriceLoader} from "@/utils/loader/HbarPriceLoader";
+import {computed, defineComponent, onBeforeUnmount, onMounted} from "vue";
+import {HbarPriceCache} from "@/utils/cache/HbarPriceCache";
 
 export default defineComponent({
   name: "HbarExtra",
@@ -49,7 +49,7 @@ export default defineComponent({
     },
     timestamp: {
       type: String,
-      default: null
+      default: "0"
     },
     smallExtra: {
       type: Boolean,
@@ -67,9 +67,9 @@ export default defineComponent({
     })
     const dollarAmount = computed(() => {
       let result: string
-      if (hbarPriceLoader.hbarPrice.value !== null) {
+      if (hbarPrice.value !== null) {
         const resolution = Math.pow(10, -fractionDigits)
-        let usdAmount = hbarAmount.value * hbarPriceLoader.hbarPrice.value
+        let usdAmount = hbarAmount.value * hbarPrice.value
         if (0 < usdAmount && usdAmount < +resolution) {
           usdAmount = resolution
         } else if (-resolution < usdAmount && usdAmount < 0) {
@@ -82,14 +82,20 @@ export default defineComponent({
       return result
     })
 
-    const hbarPriceLoader = new HbarPriceLoader(computed(() => props.timestamp))
-    onMounted(() => hbarPriceLoader.requestLoad())
+    const hbarPriceLookup = HbarPriceCache.instance.makeLookup(computed(() => props.timestamp ?? null))
+    onMounted(() => hbarPriceLookup.mount())
+    onBeforeUnmount(() => hbarPriceLookup.unmount())
+
+    const hbarPrice = computed(() => {
+        const rate = hbarPriceLookup.entity.value?.current_rate
+        return rate ? (rate.cent_equivalent / rate.hbar_equivalent / 100) : null
+    })
 
     return { dollarAmount }
   }
 });
 
-const fractionDigits = 4
+const fractionDigits = 5
 
 const dollarFormatting = new Intl.NumberFormat('en-US', {
   style: 'currency',

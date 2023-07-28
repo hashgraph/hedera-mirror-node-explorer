@@ -28,7 +28,7 @@
 
     <DashboardCard>
       <template v-slot:title>
-        <span class="h-is-primary-title">Block {{ block?.number.toString() ?? "" }}</span>
+        <span class="h-is-primary-title">Block {{ block?.number?.toString() ?? "" }}</span>
       </template>
 
       <template v-slot:control>
@@ -69,7 +69,7 @@
             <Property id="toTimestamp">
               <template v-slot:name>To Timestamp</template>
               <template v-slot:value>
-                <TimestampValue :show-none="true" :timestamp="block?.timestamp?.to"/>
+                <TimestampValue :show-none="true" :timestamp="block?.timestamp?.to ?? undefined"/>
               </template>
             </Property>
             <Property id="gasUsed">
@@ -110,9 +110,8 @@
 
 <script lang="ts">
 
-import {computed, defineComponent, inject, onMounted, ref, watch} from 'vue';
-import {PathParam} from "@/utils/PathParam";
-import {BlockLoader} from "@/components/block/BlockLoader";
+import {computed, defineComponent, inject, onBeforeUnmount, onMounted, ref, watch} from 'vue';
+import {BlockLocParser} from "@/utils/parser/BlockLocParser";
 import DashboardCard from "@/components/DashboardCard.vue";
 import NotificationBanner from "@/components/NotificationBanner.vue";
 import Property from "@/components/Property.vue";
@@ -122,7 +121,7 @@ import KeyValue from "@/components/values/KeyValue.vue";
 import Footer from "@/components/Footer.vue";
 import PlainAmount from "@/components/values/PlainAmount.vue";
 import BlockTransactionTable from "@/components/block/BlockTransactionTable.vue";
-import {BlockTransactionsLoader} from "@/components/block/BlockTransactionsLoader";
+import {TransactionGroupByBlockCache} from "@/utils/cache/TransactionGroupByBlockCache";
 import {routeManager} from "@/router";
 
 export default defineComponent({
@@ -151,53 +150,42 @@ export default defineComponent({
     const isSmallScreen = inject('isSmallScreen', true)
     const isTouchDevice = inject('isTouchDevice', false)
 
-    const normBlockHON = computed(() => PathParam.parseBlockHashOrNumber(props.blockHon))
-
     //
     // block
     //
-    const blockLoader = new BlockLoader(normBlockHON)
-    onMounted(() => blockLoader.requestLoad())
-
-    const notification = computed(() => {
-      let result
-      if (blockLoader.blockLocator.value === null) {
-        result = "Invalid block number or hash: " + props.blockHon
-      } else if (blockLoader.got404.value) {
-        result = "Block " + blockLoader.blockLocator.value + " was not found"
-      } else {
-        result = null
-      }
-      return result
-    })
+    const blockLocParser = new BlockLocParser(computed(() => props.blockHon ?? null))
+    onMounted(() => blockLocParser.mount())
+    onBeforeUnmount(() => blockLocParser.unmount())
 
     //
     // transactions
     //
-    const blockTransactionLoader = new BlockTransactionsLoader(blockLoader.toTimestamp, blockLoader.blockCount)
-    onMounted(() => blockTransactionLoader.requestLoad())
+    const transactionsLookup = TransactionGroupByBlockCache.instance.makeLookup(blockLocParser.blockNumber)
+    onMounted(() => transactionsLookup.mount())
+    onBeforeUnmount(() => transactionsLookup.unmount())
+    const transactions = computed(() => transactionsLookup.entity.value ?? [])
 
     const disablePreviousButton = ref(true)
     const disableNextButton = ref(true)
-    watch(blockLoader.entity, () => {
-      disablePreviousButton.value = (notification.value != null) || (blockLoader.entity.value?.previous_hash === nullHash)
-      disableNextButton.value = notification.value != null
+    watch(blockLocParser.block, () => {
+      disablePreviousButton.value = (blockLocParser.errorNotification.value != null) || (blockLocParser.block.value?.previous_hash === nullHash)
+      disableNextButton.value = blockLocParser.errorNotification.value != null
     })
     const handlePreviousBlock = () => {
-      const currentBlockNumber = blockLoader.entity.value?.number ?? 0
+      const currentBlockNumber = blockLocParser.blockNumber.value ?? 0
       routeManager.routeToBlock(currentBlockNumber - 1)
     }
     const handleNextBlock = () => {
-      const currentBlockNumber = blockLoader.entity.value?.number ?? 0
+      const currentBlockNumber = blockLocParser.blockNumber.value ?? 0
       routeManager.routeToBlock(currentBlockNumber + 1)
     }
 
     return {
       isSmallScreen,
       isTouchDevice,
-      block: blockLoader.entity,
-      transactions: blockTransactionLoader.transactions,
-      notification,
+      block: blockLocParser.block,
+      transactions,
+      notification: blockLocParser.errorNotification,
       disablePreviousButton,
       disableNextButton,
       handlePreviousBlock,

@@ -33,7 +33,7 @@
       v-model:current-page="currentPage"
       :per-page="perPage"
       @page-change="onPageChange"
-      @click="handleClick"
+      @cell-click="handleClick"
 
       :hoverable="true"
       :narrowed="narrowed"
@@ -62,7 +62,7 @@
       </div>
       <div v-else-if="props.row.balance?.tokens?.length === 1">
         <TokenAmount
-            v-bind:amount="props.row.balance?.tokens[0].balance"
+            v-bind:amount="BigInt(props.row.balance?.tokens[0].balance)"
             v-bind:token-id="props.row.balance?.tokens[0].token_id"
             v-bind:show-extra="true"/>
       </div>
@@ -125,9 +125,9 @@ export default defineComponent({
     const isTouchDevice = inject('isTouchDevice', false)
     const isMediumScreen = inject('isMediumScreen', true)
 
-    const handleClick = (a: AccountInfo) => {
+    const handleClick = (a: AccountInfo, c: unknown, i: number, ci: number, event: MouseEvent) => {
       if (a.account) {
-        routeManager.routeToAccount(a.account)
+        routeManager.routeToAccount(a.account, event.ctrlKey || event.metaKey)
       }
     }
 

@@ -18,6 +18,7 @@
  *
  */
 
+import {describe, it, expect} from 'vitest'
 import {mount} from "@vue/test-utils"
 import DashboardCard from "@/components/DashboardCard.vue";
 
@@ -32,6 +33,8 @@ describe("DashboardCard.vue", () => {
         const wrapper = mount(DashboardCard, {});
 
         expect(wrapper.text()).toBe("")
+
+        wrapper.unmount()
     })
 
     it("should have all slots setup", async () => {
@@ -51,6 +54,8 @@ describe("DashboardCard.vue", () => {
         expect(wrapper.text()).toContain(sampleTitle)
         expect(wrapper.text()).toContain(sampleControl)
         expect(wrapper.text()).toContain(sampleContent)
+
+        wrapper.unmount()
     })
 
 })

@@ -18,6 +18,7 @@
  *
  */
 
+import {describe, test, expect} from 'vitest'
 import {flushPromises, mount} from "@vue/test-utils"
 import router from "@/router";
 import axios from "axios";
@@ -37,20 +38,6 @@ import {HMSF} from "@/utils/HMSF";
         https://test-utils.vuejs.org/api/
 
  */
-
-Object.defineProperty(window, 'matchMedia', {
-    writable: true,
-    value: jest.fn().mockImplementation(query => ({
-        matches: false,
-        media: query,
-        onchange: null,
-        addListener: jest.fn(), // deprecated
-        removeListener: jest.fn(), // deprecated
-        addEventListener: jest.fn(),
-        removeEventListener: jest.fn(),
-        dispatchEvent: jest.fn(),
-    })),
-});
 
 HMSF.forceUTC = true
 
@@ -105,6 +92,9 @@ describe("Transactions.vue", () => {
             "123423\n\n" +
             "0.0.296939115:12:31.6676 AMFeb 28, 2022, UTC"
         )
+
+        wrapper.unmount()
+        await flushPromises()
     });
 
 });

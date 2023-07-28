@@ -18,6 +18,7 @@
  *
  */
 
+import { beforeEach, describe, test, expect } from 'vitest'
 import {flushPromises, mount} from "@vue/test-utils"
 import router from "@/router";
 import axios from "axios";
@@ -42,26 +43,12 @@ import {HMSF} from "@/utils/HMSF";
 
  */
 
-Object.defineProperty(window, 'matchMedia', {
-    writable: true,
-    value: jest.fn().mockImplementation(query => ({
-        matches: false,
-        media: query,
-        onchange: null,
-        addListener: jest.fn(), // deprecated
-        removeListener: jest.fn(), // deprecated
-        addEventListener: jest.fn(),
-        removeEventListener: jest.fn(),
-        dispatchEvent: jest.fn(),
-    })),
-});
-
 HMSF.forceUTC = true
 
 describe("App.vue", () => {
 
     beforeEach(() => {
-        process.env = Object.assign(process.env, { VUE_APP_ENABLE_STAKING: false });
+        Object.assign(import.meta.env, { VITE_APP_ENABLE_STAKING: false });
     })
 
     test("normal screen", async () => {
@@ -127,6 +114,7 @@ describe("App.vue", () => {
         expect(logos[5].attributes('alt')).toBe("Sponsor Logo")
 
         wrapper.unmount()
+        await flushPromises()
     });
 
 });

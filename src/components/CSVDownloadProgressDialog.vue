@@ -128,13 +128,14 @@ export default defineComponent({
     }
 
     const handleSave = () => {
-      props.downloader.csvBlob.value?.text()
-
-      const url = window.URL.createObjectURL(props.downloader.csvBlob.value)
-      const a = document.createElement('a')
-      a.setAttribute('href', url)
-      a.setAttribute('download', props.downloader.getOutputName());
-      a.click()
+      const blob = props.downloader.csvBlob.value
+      if (blob !== null) {
+        const url = window.URL.createObjectURL(blob)
+        const a = document.createElement('a')
+        a.setAttribute('href', url)
+        a.setAttribute('download', props.downloader.getOutputName());
+        a.click()
+      }
       context.emit('update:showProgressDialog', false)
     }
 

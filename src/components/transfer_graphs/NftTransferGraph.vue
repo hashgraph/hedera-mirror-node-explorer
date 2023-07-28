@@ -24,10 +24,8 @@
 
 <template>
 
-  <div>
+  <div v-if="nftTransferLayout.length >= 1">
     <div v-if="!compact" class="h-is-tertiary-text mb-2">NFT Transfers</div>
-
-    <div  v-if="nftTransferLayout.length >= 1">
 
     <div class="graph-container" v-bind:class="{'graph-container-6': !compact && descriptionVisible}">
 
@@ -60,7 +58,7 @@
         <!-- #2 : nfts -->
         <div>
           <TokenLink
-              v-bind:token-id="nftTransferLayout[i-1].token_id"
+              v-bind:token-id="nftTransferLayout[i-1].token_id ?? undefined"
               v-bind:show-extra="true"
               v-bind:no-anchor="compact"
               data-cy="nft"/>
@@ -95,9 +93,6 @@
       </template>
 
     </div>
-    </div>
-
-    <div v-else-if="!compact" class="has-text-grey">None</div>
   </div>
 
 </template>
@@ -113,13 +108,13 @@ import AccountLink from "@/components/values/AccountLink.vue";
 import TokenLink from "@/components/values/TokenLink.vue";
 import ArrowSegment from "@/components/transfer_graphs/ArrowSegment.vue";
 import {NFTTransferLayout} from "@/components/transfer_graphs/layout/NFTTransferLayout";
-import {Transaction} from "@/schemas/HederaSchemas";
+import {TransactionDetail} from "@/schemas/HederaSchemas";
 
 export default defineComponent({
   name: "NftTransferGraph",
   components: {TokenLink, AccountLink, ArrowSegment},
   props: {
-    transaction: Object as PropType<Transaction>,
+    transaction: Object as PropType<TransactionDetail>,
     compact: {
       type: Boolean,
       default: false

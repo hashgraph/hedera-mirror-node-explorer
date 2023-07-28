@@ -18,6 +18,7 @@
  *
  */
 
+import {describe, test, expect} from 'vitest'
 import router from "@/router";
 import {flushPromises, mount} from "@vue/test-utils";
 import TokenTransferGraph from "@/components/transfer_graphs/TokenTransferGraphF.vue";
@@ -52,7 +53,10 @@ describe("TokenTransferGraphF.vue", () => {
         // console.log(wrapper.html())
         // console.log(wrapper.text())
 
-        expect(wrapper.text()).toBe("Token TransfersNone")
+        expect(wrapper.text()).toBe("")
+
+        wrapper.unmount()
+        await flushPromises()
     })
 
     //
@@ -87,6 +91,9 @@ describe("TokenTransferGraphF.vue", () => {
             "Token TransfersAccountToken AmountAccountToken AmountMINT-1023423\n\n" +
             "0.0.2001023423")
         expect(wrapper.text()).toMatch(SAMPLE_TOKEN.name)
+
+        wrapper.unmount()
+        await flushPromises()
     })
 
     test("Single token, single source, single dest", async () => {
@@ -139,6 +146,9 @@ describe("TokenTransferGraphF.vue", () => {
             "Token TransfersAccountToken AmountAccountToken Amount0.0.100-10\n\n" +
             "0.0.20010")
         expect(wrapper2.text()).not.toMatch(SAMPLE_TOKEN.name)
+
+        wrapper.unmount()
+        await flushPromises()
     })
 
     test("Single token, single source, two dest", async () => {
@@ -172,6 +182,9 @@ describe("TokenTransferGraphF.vue", () => {
             "0.0.200223423Transfer\n\n" +
             "0.0.201823423Transfer")
         expect(wrapper.text()).toMatch(SAMPLE_TOKEN.name)
+
+        wrapper.unmount()
+        await flushPromises()
     })
 
     test("Single token, two sources, zero dest", async () => {
@@ -203,6 +216,9 @@ describe("TokenTransferGraphF.vue", () => {
             "Token TransfersAccountToken AmountAccountToken Amount0.0.100-723423\n\n" +
             "BURN10234230.0.101-323423")
         expect(wrapper.text()).toMatch(SAMPLE_TOKEN.name)
+
+        wrapper.unmount()
+        await flushPromises()
     })
 
     test("Single token, two sources, single dest", async () => {
@@ -235,6 +251,9 @@ describe("TokenTransferGraphF.vue", () => {
             "Token TransfersAccountToken AmountAccountToken Amount0.0.100-723423\n\n" +
             "0.0.2001023423Transfer0.0.101-323423")
         expect(wrapper.text()).toMatch(SAMPLE_TOKEN.name)
+
+        wrapper.unmount()
+        await flushPromises()
     })
 
     test("Single token, two sources, two dest", async () => {
@@ -269,6 +288,9 @@ describe("TokenTransferGraphF.vue", () => {
             "0.0.200223423Transfer0.0.101-323423\n\n" +
             "0.0.201823423Transfer")
         expect(wrapper.text()).toMatch(SAMPLE_TOKEN.name)
+
+        wrapper.unmount()
+        await flushPromises()
     })
 
 
@@ -310,6 +332,9 @@ describe("TokenTransferGraphF.vue", () => {
             "0.0.200223423Transfer0.0.101-323423\n\n" +
             "0.0.201823423Transfer0.0.100-0.0623423 DUDE\n\n" +
             "0.0.2000.0623423 DUDETransfer")
+
+        wrapper.unmount()
+        await flushPromises()
     })
 
 })

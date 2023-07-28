@@ -53,7 +53,7 @@
         <Property id="amountStaked">
           <template v-slot:name>Amount Staked</template>
           <template v-slot:value>
-            <HbarAmount v-if="account" :amount="account.balance.balance" timestamp="0" :show-extra="true"/>
+            <HbarAmount v-if="account?.balance?.balance" :amount="account.balance.balance" timestamp="0" :show-extra="true"/>
           </template>
         </Property>
 
@@ -61,7 +61,7 @@
           <template v-slot:name>Currently Staked To</template>
           <template v-slot:value>
             <span v-if="account?.staked_node_id !== null" class="icon is-small has-text-info mr-2" style="font-size: 16px">
-              <i v-if="isCouncilNode" :class="currentStakedNodeIcon"></i>
+              <i v-if="currentStakedNodeIcon" :class="currentStakedNodeIcon"></i>
             </span>
             <StringValue v-if="account" :string-value="currentlyStakedTo"/>
           </template>
@@ -119,7 +119,7 @@
                          :class="{'has-text-grey': !isAccountSelected}"
                          :value="selectedAccount"
                          @focus="stakeChoice='account'"
-                         @input="event => handleInput(event.target.value)"
+                         @input="handleInput"
                          style="min-width: 13rem; max-width: 13rem; height:26px; margin-top: 1px; border-radius: 4px; border-width: 1px;
                          background-color: var(--h-theme-box-background-color)">
 
@@ -140,7 +140,7 @@
           </div>
           <div class="column pt-0">
             <label class="checkbox">
-              <input checked="checked" type="checkbox" v-model="declineChoice" :disabled="!isNodeSelected || selectedNode == null">
+              <input type="checkbox" v-model="declineChoice" :disabled="!isNodeSelected || selectedNode == null">
             </label>
           </div>
         </div>
@@ -169,7 +169,7 @@
 
 <script lang="ts">
 
-import {computed, defineComponent, PropType, ref, watch} from "vue";
+import {computed, defineComponent, onBeforeUnmount, onMounted, PropType, ref, watch} from "vue";
 import {
   AccountBalanceTransactions,
   AccountsResponse, makeNodeSelectorDescription,
@@ -184,8 +184,8 @@ import {EntityID} from "@/utils/EntityID";
 import ConfirmDialog from "@/components/ConfirmDialog.vue";
 import {networkRegistry} from "@/schemas/NetworkRegistry";
 import router from "@/router";
-import {NodeRegistry} from "@/components/node/NodeRegistry";
-import {makeDefaultNodeDescription} from "@/schemas/HederaUtils";
+import {NodeAnalyzer} from "@/utils/analyzer/NodeAnalyzer";
+import {isCouncilNode, makeDefaultNodeDescription} from "@/schemas/HederaUtils";
 
 const VALID_ACCOUNT_MESSAGE = "Rewards will now be paid to that account"
 const UNKNOWN_ACCOUNT_MESSAGE = "This account does not exist"
@@ -227,14 +227,18 @@ export default defineComponent({
           return result
         })
 
+    const nodeAnalyzer = new NodeAnalyzer(computed(() => props.account?.staked_node_id ?? 0))
+    onMounted(() => nodeAnalyzer.mount())
+    onBeforeUnmount(() => nodeAnalyzer.unmount())
+
     const currentStakedNodeIcon = computed(() => {
-      let result
+      let result: string|null
       if (props.account?.staked_node_id !== null) {
-        result = NodeRegistry.isCouncilNode(ref(props.account?.staked_node_id ?? 0))
+        result = nodeAnalyzer.isCouncilNode.value
             ? "fas fa-building"
             : "fas fa-users"
       } else {
-        result = ""
+        result = null
       }
       return result
     })
@@ -273,7 +277,8 @@ export default defineComponent({
     const selectedNodeIcon = computed(() => {
       let result
       if (selectedNode.value !== null) {
-        result = NodeRegistry.isCouncilNode(selectedNode) ? "building" : "users"
+        const nodes = nodeAnalyzer.networkAnalyzer.nodes
+        result = isCouncilNode(nodes.value[selectedNode.value]) ? "building" : "users"
       } else {
         result = ""
       }
@@ -281,8 +286,9 @@ export default defineComponent({
     })
 
     const selectedNodeDescription = computed(() => {
-      return (selectedNode.value !== null && NodeRegistry.instance.nodes.value)
-          ? makeNodeDescription(NodeRegistry.instance.nodes.value[selectedNode.value])
+      const nodes = nodeAnalyzer.networkAnalyzer.nodes
+      return selectedNode.value !== null
+          ? makeNodeDescription(nodes.value[selectedNode.value])
           : null
     })
     watch(accountId, () => {
@@ -330,14 +336,13 @@ export default defineComponent({
       return description ? (node.node_id + " - " + makeShortNodeDescription(description)) : null
     }
 
-    const isCouncilNode = (node: NetworkNode) => NodeRegistry.isCouncilNode(ref(node.node_id ?? 0))
-
-    const handleInput = (value: string) => {
+    const handleInput = (event: Event) => {
       const previousValue = selectedAccount.value
       let isValidInput = true
       let isValidID = false
       let isPastDash = false
 
+      const value = (event.target as HTMLInputElement).value
       for (const c of value) {
         if ((c >= '0' && c <= '9') || c === '.') {
           if (isPastDash) {
@@ -418,14 +423,14 @@ export default defineComponent({
       selectedNodeDescription,
       declineChoice,
       enableChangeButton,
-      nodes: NodeRegistry.instance.nodes,
+      nodes: nodeAnalyzer.networkAnalyzer.nodes,
       handleCancel,
       handleChange,
       handleCancelChange,
       handleConfirmChange,
       makeNodeDescription,
       isCouncilNode,
-      hasCommunityNode: NodeRegistry.instance.hasCommunityNode,
+      hasCommunityNode: nodeAnalyzer.networkAnalyzer.hasCommunityNode,
       makeNodeSelectorDescription: makeNodeSelectorDescription,
       handleInput
     }

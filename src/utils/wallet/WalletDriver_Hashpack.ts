@@ -22,15 +22,12 @@
 import {HashConnect, HashConnectTypes, MessageTypes} from "hashconnect";
 import {HederaLogo} from "@/utils/MetaMask";
 import {WalletDriver} from "@/utils/wallet/WalletDriver";
-import {WalletDriverError} from "@/utils/wallet/WalletDriverError";
 import {HashConnectSigner} from "hashconnect/dist/provider/signer";
-import {AccountUpdateTransaction, Executable, Transaction} from "@hashgraph/sdk";
 import {timeGuard, TimeGuardError} from "@/utils/TimerUtils";
-import {TransactionID} from "@/utils/TransactionID";
+import {Signer} from "@hashgraph/sdk";
 
 export class WalletDriver_Hashpack extends WalletDriver {
 
-    private network: string|null = null
     private signer: HashConnectSigner|null = null
     private lastHashConnectKey: string|null = null
     private lastHashConnectContext: HashConnectContext|null = null;
@@ -55,34 +52,12 @@ export class WalletDriver_Hashpack extends WalletDriver {
     public async disconnect(): Promise<void> {
         if (this.signer !== null) {
             this.signer = null
-            this.network = null
         }
         return Promise.resolve()
     }
 
-    public async updateAccount(request: AccountUpdateTransaction): Promise<string> {
-        try {
-            const response = await this.performCall(request)
-            return TransactionID.normalize(response.transactionId.toString(), false);
-        } catch(error) {
-            if (error instanceof WalletDriverError) {
-                throw error
-            } else {
-                throw this.callFailure(error.message)
-            }
-        }
-    }
-
-    public isConnected(): boolean {
-        return this.signer != null
-    }
-
-    public getNetwork(): string|null {
-        return this.network
-    }
-
-    public getAccountId(): string|null {
-        return this.signer?.getAccountId().toString() ?? null
+    public getSigner(): Signer|null {
+        return this.signer
     }
 
     //
@@ -159,24 +134,6 @@ export class WalletDriver_Hashpack extends WalletDriver {
         } else {
             await this.disconnect()
         }
-    }
-
-    private async performCall<RequestT, ResponseT, OutputT>(request: Executable<RequestT, ResponseT, OutputT>): Promise<OutputT> {
-        let result: Promise<OutputT>
-        if (this.signer !== null) {
-            if (request instanceof Transaction) {
-                await request.freezeWithSigner(this.signer)
-            }
-            const response = await this.signer.call(request)
-            if (response) {
-                result = Promise.resolve(response)
-            } else { // When user clicks on "Reject" button HashConnectSigner.call() returns undefined :(
-                throw this.callFailure(this.name + " wallet did reject operation")
-            }
-        } else {
-            throw this.callFailure("Signer not found (bug)")
-        }
-        return result
     }
 
 }

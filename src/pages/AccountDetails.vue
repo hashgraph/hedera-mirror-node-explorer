@@ -27,12 +27,16 @@
   <section :class="{'h-mobile-background': isTouchDevice || !isSmallScreen}" class="section">
 
     <DashboardCard>
-      <template v-slot:title>
+      <template v-if="!isInactiveEvmAddress" v-slot:title>
         <span class="h-is-primary-title">Account </span>
         <div class="h-is-tertiary-text mt-3" id="entityId">
           <div class="is-inline-block h-is-property-text has-text-weight-light" style="min-width: 115px">Account ID:</div>
-          <span>{{ normalizedAccountId ?? "" }}</span>
-          <span v-if="accountChecksum" class="has-text-grey">-{{ accountChecksum }}</span>
+          <Copyable :content-to-copy="normalizedAccountId ?? ''">
+            <template v-slot:content>
+              <span>{{ normalizedAccountId ?? "" }}</span>
+            </template>
+          </Copyable>
+          <span v-if="accountChecksum" class="has-text-grey h-is-smaller">-{{ accountChecksum }}</span>
         </div>
         <div v-if="operatorNodeRoute" id="nodeLink" class="h-is-tertiary-text mt-2">
           <div class="is-inline-block h-is-property-text has-text-weight-light" style="min-width: 115px">Node:</div>
@@ -47,6 +51,25 @@
           </div>
         </div>
 
+        <div v-if="!isMediumScreen && showContractVisible && contractRoute" id="showContractLink" class="is-inline-block mt-2">
+          <router-link :to="contractRoute">
+            <span class="h-is-property-text">Show associated contract</span>
+          </router-link>
+        </div>
+      </template>
+      <template v-else v-slot:title>
+        <span class="h-is-primary-title">Inactive EVM Address</span>
+        <div class="h-is-tertiary-text mt-3" id="entityId">
+          <div class="is-inline-block h-is-property-text has-text-weight-light" style="min-width: 115px">Account ID:</div>
+          <span class="has-text-grey">Assigned upon activation</span>
+        </div>
+        <div id="evmAddress" class="h-is-tertiary-text mt-2" style="word-break: keep-all">
+          <div class="is-inline-block h-is-property-text has-text-weight-light" style="min-width: 115px">EVM Address:</div>
+          <div class="is-inline-block">
+            <EVMAddress :show-id="false" :has-custom-font="true" :address="accountId"/>
+          </div>
+        </div>
+
         <div v-if="!isMediumScreen && showContractVisible" id="showContractLink" class="is-inline-block mt-2">
           <router-link :to="contractRoute">
             <span class="h-is-property-text">Show associated contract</span>
@@ -55,7 +78,7 @@
       </template>
 
       <template v-slot:control v-if="isMediumScreen">
-        <div v-if="showContractVisible" id="showContractLink" class="is-inline-block ml-3">
+        <div v-if="showContractVisible && contractRoute" id="showContractLink" class="is-inline-block ml-3">
           <router-link :to="contractRoute">
             <span class="h-is-property-text">Show associated contract</span>
           </router-link>
@@ -64,7 +87,7 @@
 
       <template v-slot:content>
 
-        <NotificationBanner v-if="notification" :message="notification"/>
+        <NotificationBanner v-if="notification" :message="notification" :is-error="!isInactiveEvmAddress"/>
 
         <div class="columns h-is-property-text">
           <div class="column">
@@ -74,14 +97,17 @@
                 <div v-if="account" class="h-is-tertiary-text">
                   <HbarAmount v-bind:amount="hbarBalance" v-bind:show-extra="true" timestamp="0"/>
                 </div>
+                <div v-else-if="isInactiveEvmAddress" class="h-is-tertiary-text">
+                  <HbarAmount v-bind:amount="0" v-bind:show-extra="true" timestamp="0"/>
+                </div>
                 <div v-if="displayAllTokenLinks">
                   <router-link :to="{name: 'AccountBalances', params: {accountId: accountId}}">
                     Show all token balances
                   </router-link>
                 </div>
                 <div v-else>
-                  <div v-for="b in tokenBalances ?? []" :key="b.token_id" class="h-is-tertiary-text">
-                    <TokenAmount v-bind:amount="b.balance" v-bind:show-extra="true" v-bind:token-id="b.token_id"/>
+                  <div v-for="b in tokenBalances ?? []" :key="b.token_id ?? undefined" class="h-is-tertiary-text">
+                    <TokenAmount v-bind:amount="BigInt(b.balance)" v-bind:show-extra="true" v-bind:token-id="b.token_id"/>
                   </div>
                 </div>
                 <div v-if="elapsed && !isSmallScreen" class="has-text-grey has-text-right"> {{ elapsed }} ago</div>
@@ -105,16 +131,15 @@
             <div v-if="stakedAccountId">
               Account
               <div class="is-inline-block">
-                <AccountLink :accountId="account.staked_account_id" v-bind:show-extra="true"/>
+                <AccountLink :accountId="account?.staked_account_id" v-bind:show-extra="true"/>
               </div>
             </div>
             <div v-else-if="stakedNodeRoute">
-              <span class="icon is-small has-text-info mr-1">
-                <i :class="stakedNodeIcon"></i>
-              </span>
-              Node
               <router-link :to="stakedNodeRoute">
-                {{ account?.staked_node_id }} - {{ stakedNodeDescription }}
+                <span class="icon is-small has-text-info mr-1">
+                  <i :class="stakedNodeIcon"></i>
+                </span>
+                Node {{ account?.staked_node_id }} - {{ stakedNodeDescription }}
               </router-link>
             </div>
             <span v-else class="has-text-grey">None</span>
@@ -146,20 +171,26 @@
         <Property id="createTransaction">
           <template v-slot:name>Create Transaction</template>
           <template v-slot:value>
-            <TransactionLink :transactionLoc="account?.created_timestamp"/>
+            <TransactionLink :transactionLoc="account?.created_timestamp ?? undefined"/>
           </template>
         </Property>
 
         <Property id="expiresAt">
-          <template v-slot:name>Expires at</template>
+          <template v-slot:name>
+            <span>Expires at</span>
+            <InfoTooltip label="Account expiry is not turned on yet. Value in this field is not relevant."/>
+          </template>
           <template v-slot:value>
             <TimestampValue v-bind:show-none="true" v-bind:timestamp="account?.expiry_timestamp"/>
           </template>
         </Property>
         <Property id="autoRenewPeriod">
-          <template v-slot:name>Auto Renew Period</template>
+          <template v-slot:name>
+            <span>Auto Renew Period</span>
+            <InfoTooltip label="Account auto-renew is not turned on yet. Value in this field is not relevant."/>
+          </template>
           <template v-slot:value>
-            <DurationValue v-bind:number-value="account?.auto_renew_period"/>
+            <DurationValue v-bind:number-value="account?.auto_renew_period ?? undefined"/>
           </template>
         </Property>
         <Property id="maxAutoAssociation">
@@ -180,7 +211,7 @@
         <Property id="key">
           <template v-slot:name>Admin Key</template>
           <template v-slot:value>
-            <KeyValue :account-id="normalizedAccountId" :key-bytes="account?.key?.key" :key-type="account?.key?._type"
+            <KeyValue :account-id="normalizedAccountId ?? undefined" :key-bytes="account?.key?.key" :key-type="account?.key?._type"
                       :show-none="true"/>
           </template>
         </Property>
@@ -201,7 +232,7 @@
       </template>
     </DashboardCard>
 
-    <DashboardCard>
+    <DashboardCard v-if="!isInactiveEvmAddress">
       <template v-slot:title>
         <p id="recentTransactions" class="h-is-secondary-title">Recent Transactions</p>
       </template>
@@ -212,20 +243,26 @@
         </div>
       </template>
       <template v-slot:content>
-        <TransactionTable
-            v-if="account"
-            v-bind:controller="transactionTableController"
-            v-bind:narrowed="true"
-        />
+        <div id="recentTransactionsTable">
+          <TransactionTable
+              v-if="account"
+              v-bind:controller="transactionTableController"
+              v-bind:narrowed="true"
+          />
+        </div>
       </template>
     </DashboardCard>
+
+    <ApproveAllowanceSection :account-id="normalizedAccountId ?? undefined" :showApproveDialog="showApproveDialog"/>
 
     <DashboardCard v-if="normalizedAccountId && availableAPI">
       <template v-slot:title>
         <span class="h-is-secondary-title">Recent Staking Rewards</span>
       </template>
       <template v-slot:content>
-        <StakingRewardsTable :controller="rewardsTableController"/>
+        <div id="recentRewardsTable">
+          <StakingRewardsTable :controller="rewardsTableController"/>
+        </div>
       </template>
     </DashboardCard>
 
@@ -252,24 +289,26 @@ import DashboardCard from "@/components/DashboardCard.vue";
 import HbarAmount from "@/components/values/HbarAmount.vue";
 import TokenAmount from "@/components/values/TokenAmount.vue";
 import BlobValue from "@/components/values/BlobValue.vue";
-import {BalanceCache} from "@/components/account/BalanceCache";
+import {BalanceAnalyzer} from "@/utils/analyzer/BalanceAnalyzer";
 import Footer from "@/components/Footer.vue";
-import {PathParam} from "@/utils/PathParam";
 import Property from "@/components/Property.vue";
 import NotificationBanner from "@/components/NotificationBanner.vue";
 import StringValue from "@/components/values/StringValue.vue";
 import {TransactionTableControllerXL} from "@/components/transaction/TransactionTableControllerXL";
 import AccountLink from "@/components/values/AccountLink.vue";
-import {AccountLoader} from "@/components/account/AccountLoader";
-import {ContractLoader} from "@/components/contract/ContractLoader";
+import {AccountLocParser} from "@/utils/parser/AccountLocParser";
+import {ContractByIdCache} from "@/utils/cache/ContractByIdCache";
 import TransactionFilterSelect from "@/components/transaction/TransactionFilterSelect.vue";
 import router, {routeManager} from "@/router";
 import TransactionLink from "@/components/values/TransactionLink.vue";
 import {StakingRewardsTableController} from "@/components/staking/StakingRewardsTableController";
 import StakingRewardsTable from "@/components/staking/StakingRewardsTable.vue";
 import AliasValue from "@/components/values/AliasValue.vue";
-import {NodeRegistry} from "@/components/node/NodeRegistry";
+import {NodeAnalyzer} from "@/utils/analyzer/NodeAnalyzer";
 import EVMAddress from "@/components/values/EVMAddress.vue";
+import ApproveAllowanceSection from "@/components/allowances/ApproveAllowanceSection.vue";
+import InfoTooltip from "@/components/InfoTooltip.vue";
+import Copyable from "@/components/Copyable.vue";
 
 const MAX_TOKEN_BALANCES = 10
 
@@ -278,6 +317,9 @@ export default defineComponent({
   name: 'AccountDetails',
 
   components: {
+    Copyable,
+    InfoTooltip,
+    ApproveAllowanceSection,
     EVMAddress,
     AliasValue,
     TransactionLink,
@@ -301,7 +343,8 @@ export default defineComponent({
 
   props: {
     accountId: String,
-    network: String
+    showApproveDialog: String,
+    network: String,
   },
 
   setup(props) {
@@ -313,29 +356,15 @@ export default defineComponent({
     // account
     //
 
-    const accountLocator = computed(() => PathParam.parseAccountIdOrAliasOrEvmAddress(props.accountId))
-    const accountLoader = new AccountLoader(accountLocator)
-    onMounted(() => accountLoader.requestLoad())
-
-    const notification = computed(() => {
-      let result
-      if (accountLoader.accountLocator.value === null) {
-        result = "Invalid account ID: " + props.accountId
-      } else if (accountLoader.got404.value) {
-        result = "Account with ID " + accountLoader.accountLocator.value + " was not found"
-      } else if (accountLoader.entity.value?.deleted === true) {
-        result = "Account is deleted"
-      } else {
-        result = null
-      }
-      return result
-    })
+    const accountLocParser = new AccountLocParser(computed(() => props.accountId ?? null))
+    onMounted(() => accountLocParser.mount())
+    onBeforeUnmount(() => accountLocParser.unmount())
 
     //
     // TransactionTableController
     //
     const perPage = computed(() => isMediumScreen ? 10 : 5)
-    const accountId = computed(() => accountLoader.entity.value?.account ?? null)
+    const accountId = accountLocParser.accountId
     const transactionTableController = new TransactionTableControllerXL(
       router, accountId, perPage, true, "p1", "k1")
 
@@ -376,17 +405,17 @@ export default defineComponent({
     // balanceCache
     //
 
-    const balanceCache = new BalanceCache(accountLoader.accountId, 10000)
-    onMounted(() => balanceCache.mounted.value = true)
-    onBeforeUnmount(() => balanceCache.mounted.value = false)
+    const balanceAnalyzer = new BalanceAnalyzer(accountLocParser.accountId, 10000)
+    onMounted(() => balanceAnalyzer.mount())
+    onBeforeUnmount(() => balanceAnalyzer.unmount())
     const displayAllTokenLinks = computed(() => {
-      const tokenCount = balanceCache.tokenBalances.value?.length ?? 0
+      const tokenCount = balanceAnalyzer.tokenBalances.value?.length ?? 0
       return tokenCount > MAX_TOKEN_BALANCES
     })
     const elapsed = computed(() => {
           let result: string | null
-          if (balanceCache.balanceTimeStamp.value) {
-            const duration = Duration.decompose(new Date().getTime() / 1000 - Number.parseFloat(balanceCache.balanceTimeStamp.value))
+          if (balanceAnalyzer.balanceTimeStamp.value) {
+            const duration = Duration.decompose(new Date().getTime() / 1000 - Number.parseFloat(balanceAnalyzer.balanceTimeStamp.value))
             if (duration.minutes >= 2) {
               result = duration.minutes + "min"
             } else if (duration.minutes == 1) {
@@ -404,21 +433,24 @@ export default defineComponent({
     //
     // contract
     //
-    const contractLoader = new ContractLoader(accountLoader.accountId)
-    onMounted(() => contractLoader.requestLoad())
+    const contractLookup = ContractByIdCache.instance.makeLookup(accountLocParser.accountId)
+    onMounted(() => contractLookup.mount())
+    onBeforeUnmount(() => contractLookup.unmount())
     const showContractVisible = computed(() => {
-      return contractLoader.entity.value != null
+      return contractLookup.entity.value != null
     })
 
     //
     // staking
     //
-    const stakedNodeDescription = computed(() => NodeRegistry.getDescription(accountLoader.stakedNodeId))
+    const stakedNodeAnalyzer = new NodeAnalyzer(accountLocParser.stakedNodeId)
+    onMounted(() => stakedNodeAnalyzer.mount())
+    onBeforeUnmount(() => stakedNodeAnalyzer.unmount())
 
     const stakedNodeIcon = computed(() => {
       let result
-      if (accountLoader.stakedNodeId.value !== null) {
-        result = NodeRegistry.isCouncilNode(accountLoader.stakedNodeId) ? "fas fa-building" : "fas fa-users"
+      if (accountLocParser.stakedNodeId.value !== null) {
+        result = stakedNodeAnalyzer.isCouncilNode.value ? "fas fa-building" : "fas fa-users"
       } else {
         result = ""
       }
@@ -429,22 +461,22 @@ export default defineComponent({
     // Rewards Table Controller
     //
     const rewardsTableController = new StakingRewardsTableController(
-        router, accountLoader.accountId, perPage, "p2", "k2")
+        router, accountLocParser.accountId, perPage, "p2", "k2")
     onMounted(() => rewardsTableController.mount())
     onBeforeUnmount(() => rewardsTableController.unmount())
 
     const contractRoute = computed(() => {
-      const accountId = accountLoader.accountId.value
+      const accountId = accountLocParser.accountId.value
       return accountId ? routeManager.makeRouteToContract(accountId) : null
     })
 
     const stakedNodeRoute = computed(() => {
-      const stakedNodeId = accountLoader.stakedNodeId.value
+      const stakedNodeId = accountLocParser.stakedNodeId.value
       return stakedNodeId !== null ? routeManager.makeRouteToNode(stakedNodeId) : null
     })
 
     const operatorNodeRoute = computed(() => {
-      const operatorNodeId = accountLoader.nodeId.value
+      const operatorNodeId = accountLocParser.nodeId.value
       return operatorNodeId != null ? routeManager.makeRouteToNode(operatorNodeId) : null
     })
 
@@ -453,24 +485,25 @@ export default defineComponent({
       isMediumScreen,
       isTouchDevice,
       transactionTableController,
-      notification,
-      account: accountLoader.entity,
-      normalizedAccountId: accountLoader.accountId,
-      accountChecksum: accountLoader.accountChecksum,
-      accountInfo: accountLoader.accountInfo,
-      nodeId: accountLoader.nodeId,
-      ethereumAddress: accountLoader.ethereumAddress,
-      balanceTimeStamp: balanceCache.balanceTimeStamp,
-      hbarBalance: balanceCache.hbarBalance,
-      tokenBalances: balanceCache.tokenBalances,
-      balanceCache: balanceCache, // For testing purpose
+      notification: accountLocParser.errorNotification,
+      isInactiveEvmAddress: accountLocParser.isInactiveEvmAddress,
+      account: accountLocParser.accountInfo,
+      normalizedAccountId: accountLocParser.accountId,
+      accountChecksum: accountLocParser.accountChecksum,
+      accountInfo: accountLocParser.accountDescription,
+      nodeId: accountLocParser.nodeId,
+      ethereumAddress: accountLocParser.ethereumAddress,
+      balanceTimeStamp: balanceAnalyzer.balanceTimeStamp,
+      hbarBalance: balanceAnalyzer.hbarBalance,
+      tokenBalances: balanceAnalyzer.tokenBalances,
+      balanceAnalyzer, // For testing purpose
       displayAllTokenLinks,
       elapsed,
       showContractVisible,
-      stakePeriodStart: accountLoader.stakePeriodStart,
-      stakedNodeId: accountLoader.stakedNodeId,
-      stakedAccountId: accountLoader.stakedAccountId,
-      stakedNodeDescription,
+      stakePeriodStart: accountLocParser.stakePeriodStart,
+      stakedNodeId: accountLocParser.stakedNodeId,
+      stakedAccountId: accountLocParser.stakedAccountId,
+      stakedNodeDescription: stakedNodeAnalyzer.nodeDescription,
       stakedNodeIcon,
       rewardsTableController,
       contractRoute,

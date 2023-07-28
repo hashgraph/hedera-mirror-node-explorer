@@ -24,9 +24,7 @@
 
 <template>
 
-  <div v-if="tokenTransferLayout.length >= 1">
-
-    <div class="graph-container">
+    <div v-if="tokenTransferLayout.length >= 1" class="graph-container">
 
       <template v-for="s in tokenTransferLayout.length" v-bind:key="s">
 
@@ -53,7 +51,7 @@
           <!-- #2 : token amount -->
           <div class="justify-end">
             <TokenAmount v-if="i === 1"
-                         v-bind:amount="tokenTransferLayout[s-1].netAmount"
+                         v-bind:amount="BigInt(tokenTransferLayout[s-1].netAmount)"
                          v-bind:token-id="tokenTransferLayout[s-1].tokenId"
                          v-bind:show-extra="true"/>
           </div>
@@ -82,8 +80,6 @@
       </template>
 
     </div>
-
-  </div>
 
 </template>
 

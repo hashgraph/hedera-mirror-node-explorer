@@ -33,7 +33,7 @@
       v-model:current-page="currentPage"
       :per-page="perPage"
       @page-change="onPageChange"
-      @click="handleClick"
+      @cell-click="handleClick"
 
       :hoverable="true"
       :narrowed="true"
@@ -53,7 +53,7 @@
     </o-table-column>
 
     <o-table-column v-slot="props" field="balance" label="Balance" position="right">
-      <TokenAmount v-bind:amount="props.row.balance" v-bind:token-id="tokenId"/>
+      <TokenAmount v-bind:amount="BigInt(props.row.balance)" v-bind:token-id="tokenId"/>
     </o-table-column>
 
   </o-table>
@@ -92,9 +92,9 @@ export default defineComponent({
     const isTouchDevice = inject('isTouchDevice', false)
     const isMediumScreen = inject('isMediumScreen', true)
 
-    const handleClick = (t: TokenDistribution) => {
+    const handleClick = (t: TokenDistribution, c: unknown, i: number, ci: number, event: MouseEvent) => {
       if (t.account) {
-        routeManager.routeToAccount(t.account)
+        routeManager.routeToAccount(t.account, event.ctrlKey || event.metaKey)
       }
     }
 

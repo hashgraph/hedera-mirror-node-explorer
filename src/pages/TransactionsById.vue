@@ -48,12 +48,12 @@
 
 <script lang="ts">
 
-import {computed, defineComponent, inject, onMounted} from 'vue';
+import {computed, defineComponent, inject, onBeforeUnmount, onMounted} from 'vue';
 import DashboardCard from "@/components/DashboardCard.vue";
 import TransactionByIdTable from "@/components/transaction/TransactionByIdTable.vue";
 import {normalizeTransactionId} from "@/utils/TransactionID";
 import Footer from "@/components/Footer.vue";
-import {TransactionByIdLoader} from "@/components/transaction/TransactionByIdLoader";
+import {TransactionGroupCache} from "@/utils/cache/TransactionGroupCache";
 
 export default defineComponent({
   name: 'TransactionsById',
@@ -81,13 +81,16 @@ export default defineComponent({
       return props.transactionId ? normalizeTransactionId(props.transactionId, false) : null
     })
 
-    const transactionLoader = new TransactionByIdLoader(paramTransactionId)
-    onMounted(() => transactionLoader.requestLoad())
+    const groupLookup = TransactionGroupCache.instance.makeLookup(paramTransactionId)
+    onMounted(() => groupLookup.mount())
+    onBeforeUnmount(() => groupLookup.unmount())
+
+    const transactions = computed(() => groupLookup.entity.value ?? [])
 
     return {
       isSmallScreen,
       isTouchDevice,
-      transactions: transactionLoader.transactions,
+      transactions,
       normalizedTransactionId
     }
   }

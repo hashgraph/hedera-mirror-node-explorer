@@ -52,8 +52,7 @@ import {computed, defineComponent, inject, onBeforeUnmount, onMounted} from 'vue
 import BalanceTable from "@/components/account/BalanceTable.vue";
 import DashboardCard from "@/components/DashboardCard.vue";
 import Footer from "@/components/Footer.vue";
-import {BalanceCache} from "@/components/account/BalanceCache";
-import {AutoRefreshLoader} from "@/utils/loader/AutoRefreshLoader";
+import {BalanceCache} from "@/utils/cache/BalanceCache";
 
 export default defineComponent({
 
@@ -75,16 +74,21 @@ export default defineComponent({
     const isTouchDevice = inject('isTouchDevice', false)
 
     //
-    // balanceCache
+    // balanceLookup
     //
-    const balanceCache = new BalanceCache(computed(() => props.accountId ?? null), AutoRefreshLoader.HUGE_COUNT)
-    onMounted(() => balanceCache.autoRefresh.value = true)
-    onBeforeUnmount(() => balanceCache.autoRefresh.value = false)
+    const balanceLookup = BalanceCache.instance.makeLookup(computed(() => props.accountId ?? null))
+    onMounted(() => balanceLookup.mount())
+    onBeforeUnmount(() => balanceLookup.unmount())
+
+    const tokenBalances = computed(() => {
+        const allBalances = balanceLookup.entity.value?.balances
+        return allBalances && allBalances.length >= 1 ? allBalances[0].tokens : []
+    })
 
     return {
       isSmallScreen,
       isTouchDevice,
-      tokenBalances: balanceCache.tokenBalances,
+      tokenBalances,
     }
   }
 });

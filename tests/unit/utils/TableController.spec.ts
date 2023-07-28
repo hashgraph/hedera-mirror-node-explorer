@@ -20,12 +20,13 @@
  *
  */
 
+import {describe, test, expect, vi} from 'vitest'
 import {computed, nextTick, Ref, ref} from "vue";
 import {makeRouter} from "@/router";
 import {flushPromises} from "@vue/test-utils";
 import {KeyOperator, SortOrder, TableController} from "@/utils/table/TableController";
 
-jest.useFakeTimers()
+vi.useFakeTimers()
 
 describe("TableController.ts", () => {
 
@@ -151,7 +152,7 @@ describe("TableController.ts", () => {
         expect(currentRoute.value.query).toStrictEqual({})
 
         // Refresh #1
-        jest.runOnlyPendingTimers()
+        vi.runOnlyPendingTimers()
         await flushPromises()
         expect(tc.autoRefresh.value).toBe(true)
         expect(tc.rows.value).toStrictEqual([49,48,47,46,45,44,43,42,41,40])
@@ -160,7 +161,7 @@ describe("TableController.ts", () => {
         expect(currentRoute.value.query).toStrictEqual({})
 
         // Refresh #2
-        jest.runOnlyPendingTimers()
+        vi.runOnlyPendingTimers()
         await flushPromises()
         expect(tc.autoRefresh.value).toBe(true)
         expect(tc.rows.value).toStrictEqual([49,48,47,46,45,44,43,42,41,40])
@@ -169,7 +170,7 @@ describe("TableController.ts", () => {
         expect(currentRoute.value.query).toStrictEqual({})
 
         // Refresh #3
-        jest.runOnlyPendingTimers()
+        vi.runOnlyPendingTimers()
         await flushPromises()
         expect(tc.autoRefresh.value).toBe(true)
         expect(tc.rows.value).toStrictEqual([49,48,47,46,45,44,43,42,41,40])
@@ -178,7 +179,7 @@ describe("TableController.ts", () => {
         expect(currentRoute.value.query).toStrictEqual({})
 
         // Refresh #4
-        jest.runOnlyPendingTimers()
+        vi.runOnlyPendingTimers()
         await flushPromises()
         expect(tc.autoRefresh.value).toBe(true)
         expect(tc.rows.value).toStrictEqual([49,48,47,46,45,44,43,42,41,40])
@@ -187,7 +188,7 @@ describe("TableController.ts", () => {
         expect(currentRoute.value.query).toStrictEqual({})
 
         // Refresh #5
-        jest.runOnlyPendingTimers()
+        vi.runOnlyPendingTimers()
         await flushPromises()
         expect(tc.autoRefresh.value).toBe(false)
         expect(tc.rows.value).toStrictEqual([49,48,47,46,45,44,43,42,41,40])
@@ -221,7 +222,7 @@ describe("TableController.ts", () => {
         expect(currentRoute.value.query).toStrictEqual({})
 
         // Refresh #1
-        jest.runOnlyPendingTimers()
+        vi.runOnlyPendingTimers()
         await flushPromises()
         expect(tc.autoRefresh.value).toBe(true)
         expect(tc.rows.value).toStrictEqual([49,48,47,46,45,44,43,42,41,40])
@@ -233,7 +234,7 @@ describe("TableController.ts", () => {
         tc.endKey += 2
 
         // Refresh #2
-        jest.runOnlyPendingTimers()
+        vi.runOnlyPendingTimers()
         await flushPromises()
         expect(tc.autoRefresh.value).toBe(true)
         expect(tc.rows.value).toStrictEqual([51,50,49,48,47,46,45,44,43,42])
@@ -245,7 +246,7 @@ describe("TableController.ts", () => {
         tc.endKey += tc.pageSize.value
 
         // Refresh #3
-        jest.runOnlyPendingTimers()
+        vi.runOnlyPendingTimers()
         await flushPromises()
         expect(tc.autoRefresh.value).toBe(true)
         expect(tc.rows.value).toStrictEqual([61,60,59,58,57,56,55,54,53,52])
@@ -280,7 +281,7 @@ describe("TableController.ts", () => {
         expect(currentRoute.value.query).toStrictEqual({})
 
         // Refresh #1
-        jest.runOnlyPendingTimers()
+        vi.runOnlyPendingTimers()
         await flushPromises()
         expect(tc.autoRefresh.value).toBe(true)
         expect(tc.rows.value).toStrictEqual([49,48,47,46,45,44,43,42,41,40])
@@ -325,7 +326,7 @@ describe("TableController.ts", () => {
         expect(currentRoute.value.query).toStrictEqual({})
 
         // Refresh #1
-        jest.runOnlyPendingTimers()
+        vi.runOnlyPendingTimers()
         await flushPromises()
         expect(tc.autoRefresh.value).toBe(true)
         expect(tc.rows.value).toStrictEqual([49,48,47,46,45,44,43,42,41,40])
@@ -634,7 +635,7 @@ describe("TableController.ts", () => {
         expect(tc.getAbortedMoveToPageCounter()).toBe(0)
 
         // Refresh #1
-        jest.runOnlyPendingTimers()
+        vi.runOnlyPendingTimers()
         await flushPromises()
         expect(tc.autoRefresh.value).toBe(true)
         expect(tc.rows.value).toStrictEqual([49,48,47,46,45,44,43,42,41,40])
@@ -646,7 +647,7 @@ describe("TableController.ts", () => {
         // Update scale => this cancels scheduled refresh and starts another one
         scale.value = 2
         await nextTick()
-        jest.runOnlyPendingTimers()
+        vi.runOnlyPendingTimers()
         await flushPromises()
         expect(tc.autoRefresh.value).toBe(true)
         expect(tc.rows.value).toStrictEqual([98,96,94,92,90,88,86,84,82,80])
@@ -656,7 +657,7 @@ describe("TableController.ts", () => {
         expect(currentRoute.value.query).toStrictEqual({})
 
         // Refresh #2
-        jest.runOnlyPendingTimers()
+        vi.runOnlyPendingTimers()
         await flushPromises()
         expect(tc.autoRefresh.value).toBe(true)
         expect(tc.rows.value).toStrictEqual([98,96,94,92,90,88,86,84,82,80])
@@ -725,7 +726,7 @@ class TestTableController extends TableController<number, number> {
     }
 
     public async load(key: number|null, operator: KeyOperator, order: SortOrder, limit: number): Promise<number[]|null> {
-        let result = new Array<number>()
+        const result = new Array<number>()
 
         this.loadCounter += 1
 

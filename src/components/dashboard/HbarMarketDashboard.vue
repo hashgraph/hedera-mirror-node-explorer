@@ -88,10 +88,6 @@ export default defineComponent({
 
   components: {DashboardItem},
 
-  props: {
-    // period: Number,
-  },
-
   setup() {
     const isSmallScreen = inject('isSmallScreen', true)
     const isLargeScreen = inject('isLargeScreen', true)

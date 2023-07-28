@@ -55,11 +55,10 @@
 
 <script lang="ts">
 
-import {computed, defineComponent, inject, onMounted} from 'vue';
+import {computed, defineComponent, inject, onBeforeUnmount, onMounted} from 'vue';
 import DashboardCard from "@/components/DashboardCard.vue";
 import Footer from "@/components/Footer.vue";
-import {PathParam} from "@/utils/PathParam";
-import {AccountLoader} from "@/components/account/AccountLoader";
+import {AccountLocParser} from "@/utils/parser/AccountLocParser";
 import AccountLink from "@/components/values/AccountLink.vue";
 import KeyValue from "@/components/values/KeyValue.vue";
 import NotificationBanner from "@/components/NotificationBanner.vue";
@@ -85,36 +84,23 @@ export default defineComponent({
     const isSmallScreen = inject('isSmallScreen', true)
     const isTouchDevice = inject('isTouchDevice', false)
 
-    const notification = computed(() => {
-      let result
-      if (accountLoader.accountLocator.value === null) {
-        result = "Invalid account ID: " + props.accountId
-      } else if (accountLoader.got404.value) {
-        result = "Account with ID " + accountLoader.accountLocator.value + " was not found"
-      } else if (accountLoader.entity.value?.deleted === true) {
-        result = "Account is deleted"
-      } else {
-        result = null
-      }
-      return result
-    })
-
     //
     // account
     //
 
-    const accountLocator = computed(() => PathParam.parseAccountIdOrAliasOrEvmAddress(props.accountId))
-    const accountLoader = new AccountLoader(accountLocator)
-    onMounted(() => accountLoader.requestLoad())
+    const accountLocator = computed(() => props.accountId ?? null)
+    const accountLocParser = new AccountLocParser(accountLocator)
+    onMounted(() => accountLocParser.mount())
+    onBeforeUnmount(() => accountLocParser.unmount())
 
     return {
       isSmallScreen,
       isTouchDevice,
-      notification,
-      account: accountLoader.entity,
-      normalizedAccountId: accountLoader.accountId,
-      accountChecksum: accountLoader.accountChecksum,
-      key: accountLoader.key,
+      notification: accountLocParser.errorNotification,
+      account: accountLocParser.accountInfo,
+      normalizedAccountId: accountLocParser.accountId,
+      accountChecksum: accountLocParser.accountChecksum,
+      key: accountLocParser.key,
     }
   }
 });

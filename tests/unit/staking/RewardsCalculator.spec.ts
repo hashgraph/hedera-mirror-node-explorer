@@ -18,6 +18,7 @@
  *
  */
 
+import {describe, it, expect} from 'vitest'
 import {flushPromises, mount} from "@vue/test-utils"
 import router from "@/router";
 import Oruga from "@oruga-ui/oruga-next";
@@ -26,7 +27,6 @@ import MockAdapter from "axios-mock-adapter";
 import axios from "axios";
 import {SAMPLE_ACCOUNT_STAKING_ACCOUNT, SAMPLE_NETWORK_NODES} from "../Mocks";
 import RewardsCalculator from "@/components/staking/RewardsCalculator.vue";
-import {NodeRegistry} from "@/components/node/NodeRegistry";
 
 /*
     Bookmarks
@@ -34,20 +34,6 @@ import {NodeRegistry} from "@/components/node/NodeRegistry";
         https://test-utils.vuejs.org/api/
 
  */
-
-Object.defineProperty(window, 'matchMedia', {
-    writable: true,
-    value: jest.fn().mockImplementation(query => ({
-        matches: false,
-        media: query,
-        onchange: null,
-        addListener: jest.fn(), // deprecated
-        removeListener: jest.fn(), // deprecated
-        addEventListener: jest.fn(),
-        removeEventListener: jest.fn(),
-        dispatchEvent: jest.fn(),
-    })),
-});
 
 HMSF.forceUTC = true
 
@@ -70,7 +56,6 @@ describe("Staking.vue", () => {
             mock.onGet(matcher2, body).reply(200, response)
         }
         mock.onGet(matcher2).reply(200, SAMPLE_NETWORK_NODES)
-        NodeRegistry.instance.reload()
 
         const wrapper = mount(RewardsCalculator, {
             global: {
@@ -87,9 +72,9 @@ describe("Staking.vue", () => {
 
         const options = wrapper.find('select').findAll('option')
         expect(options.length).toBe(SAMPLE_NETWORK_NODES.nodes.length)
-        expect(options.at(0)?.element.text).toBe('0 - Hosted by Hedera | East Coast, USA (20% of Max Stake)')
-        expect(options.at(1)?.element.text).toBe('1 - Hosted by Hedera | East Coast, USA (30% of Max Stake)')
-        expect(options.at(2)?.element.text).toBe('2 - Hosted by Hedera | Central, USA (30% of Max Stake)')
+        expect(options.at(0)?.element.text).toBe('0 - Hosted by Hedera | East Coast, USA - Rewarding (staked for reward is 16.7% of max)')
+        expect(options.at(1)?.element.text).toBe('1 - Hosted by Hedera | East Coast, USA - Rewarding (staked for reward is 23.3% of max)')
+        expect(options.at(2)?.element.text).toBe('2 - Hosted by Hedera | Central, USA - Rewarding (staked for reward is 23.3% of max)')
 
         expect(options.at(0)?.element.selected).toBe(false)
         expect(options.at(1)?.element.selected).toBe(false)
@@ -99,6 +84,9 @@ describe("Staking.vue", () => {
         expect(wrapper.find('#monthlyReward').text()).toBe("Approx Monthly Reward0HBAR")
         expect(wrapper.find('#yearlyReward').text()).toBe("Approx Yearly Reward0HBAR")
         expect(wrapper.find('#yearlyRate').text()).toBe("Approx Yearly Reward Rate0%")
+
+        wrapper.unmount()
+        await flushPromises()
     })
 
     it("should display a Rewards Estimator preset with 10000Hbar and Node1", async () => {
@@ -137,9 +125,9 @@ describe("Staking.vue", () => {
 
         const options = wrapper.find('select').findAll('option')
         expect(options.length).toBe(SAMPLE_NETWORK_NODES.nodes.length)
-        expect(options.at(0)?.element.text).toBe('0 - Hosted by Hedera | East Coast, USA (20% of Max Stake)')
-        expect(options.at(1)?.element.text).toBe('1 - Hosted by Hedera | East Coast, USA (30% of Max Stake)')
-        expect(options.at(2)?.element.text).toBe('2 - Hosted by Hedera | Central, USA (30% of Max Stake)')
+        expect(options.at(0)?.element.text).toBe('0 - Hosted by Hedera | East Coast, USA - Rewarding (staked for reward is 16.7% of max)')
+        expect(options.at(1)?.element.text).toBe('1 - Hosted by Hedera | East Coast, USA - Rewarding (staked for reward is 23.3% of max)')
+        expect(options.at(2)?.element.text).toBe('2 - Hosted by Hedera | Central, USA - Rewarding (staked for reward is 23.3% of max)')
 
         expect(options.at(0)?.element.selected).toBe(false)
         expect(options.at(1)?.element.selected).toBe(true)
@@ -149,6 +137,9 @@ describe("Staking.vue", () => {
         expect(wrapper.find('#monthlyReward').text()).toBe("Approx Monthly Reward16.44HBAR")
         expect(wrapper.find('#yearlyReward').text()).toBe("Approx Yearly Reward200HBAR")
         expect(wrapper.find('#yearlyRate').text()).toBe("Approx Yearly Reward Rate2%")
+
+        wrapper.unmount()
+        await flushPromises()
     })
 
     it("should input different values for Hbar amount and selected Node", async () => {
@@ -168,7 +159,6 @@ describe("Staking.vue", () => {
             mock.onGet(matcher2, body).reply(200, response)
         }
         mock.onGet(matcher2).reply(200, SAMPLE_NETWORK_NODES)
-        NodeRegistry.instance.reload()
 
         const wrapper = mount(RewardsCalculator, {
             global: {
@@ -186,9 +176,9 @@ describe("Staking.vue", () => {
         const options = wrapper.find('select').findAll('option')
 
         expect(options.length).toBe(SAMPLE_NETWORK_NODES.nodes.length)
-        expect(options.at(0)?.element.text).toBe('0 - Hosted by Hedera | East Coast, USA (20% of Max Stake)')
-        expect(options.at(1)?.element.text).toBe('1 - Hosted by Hedera | East Coast, USA (30% of Max Stake)')
-        expect(options.at(2)?.element.text).toBe('2 - Hosted by Hedera | Central, USA (30% of Max Stake)')
+        expect(options.at(0)?.element.text).toBe('0 - Hosted by Hedera | East Coast, USA - Rewarding (staked for reward is 16.7% of max)')
+        expect(options.at(1)?.element.text).toBe('1 - Hosted by Hedera | East Coast, USA - Rewarding (staked for reward is 23.3% of max)')
+        expect(options.at(2)?.element.text).toBe('2 - Hosted by Hedera | Central, USA - Rewarding (staked for reward is 23.3% of max)')
 
         expect(options.at(0)?.element.selected).toBe(false)
         expect(options.at(1)?.element.selected).toBe(false)
@@ -210,5 +200,8 @@ describe("Staking.vue", () => {
         expect(wrapper.find('#monthlyReward').text()).toBe("Approx Monthly Reward16.44HBAR")
         expect(wrapper.find('#yearlyReward').text()).toBe("Approx Yearly Reward200HBAR")
         expect(wrapper.find('#yearlyRate').text()).toBe("Approx Yearly Reward Rate2%")
+
+        wrapper.unmount()
+        await flushPromises()
     })
 });

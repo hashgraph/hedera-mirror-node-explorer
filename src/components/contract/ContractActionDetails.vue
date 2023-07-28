@@ -29,20 +29,14 @@
         <Property id="actionDetailFrom" :custom-nb-col-class="propertySizeClass">
           <template v-slot:name>From</template>
           <template v-slot:value>
-            <EVMAddress :id="action.caller" :address="action.from" :entity-type="action.caller_type" :show-type="true"/>
+            <EVMAddress :id="action?.caller" :address="action?.from" :entity-type="action?.caller_type" :show-type="true"/>
           </template>
         </Property>
         <Property id="actionDetailTo" :custom-nb-col-class="propertySizeClass">
           <template v-slot:name>To</template>
           <template v-slot:value>
-            <EVMAddress :id="action.recipient" :address="action.to" :entity-type="action.recipient_type"
+            <EVMAddress :id="action?.recipient" :address="action?.to" :entity-type="action?.recipient_type"
                         :show-type="true"/>
-          </template>
-        </Property>
-        <Property v-if="signature" id="function" :custom-nb-col-class="propertySizeClass">
-          <template v-slot:name>Function</template>
-          <template v-slot:value>
-            <SignatureValue :analyzer="functionCallAnalyzer"/>
           </template>
         </Property>
       </div>
@@ -50,21 +44,16 @@
         <Property id="actionDetailGasLimit" :custom-nb-col-class="propertySizeClass">
           <template v-slot:name>Gas Limit</template>
           <template v-slot:value>
-            <PlainAmount :amount="action.gas"/>
+            <PlainAmount :amount="action?.gas"/>
           </template>
         </Property>
         <Property id="actionDetailGasUsed" :custom-nb-col-class="propertySizeClass">
           <template v-slot:name>Gas Used</template>
           <template v-slot:value>
-            <PlainAmount :amount="action.gas_used"/>
+            <PlainAmount :amount="action?.gas_used"/>
           </template>
         </Property>
-        <Property id="actionDetailError" :custom-nb-col-class="propertySizeClass">
-          <template v-slot:name>Error Message</template>
-          <template v-slot:value>
-            <StringValue :string-value="errorMessage"/>
-          </template>
-        </Property>
+      <FunctionError :analyzer="functionCallAnalyzer" :custom-nb-col-class="propertySizeClass" :show-none="true"/>
       </div>
     </div>
 
@@ -72,10 +61,10 @@
 
     <div class="columns pt-0 mt-0 pb-2">
       <div class="column">
-        <FunctionInput :analyzer="functionCallAnalyzer" :custom-nb-col-class="propertySizeClass"/>
+        <FunctionInput :analyzer="functionCallAnalyzer" :custom-nb-col-class="propertySizeClass" :show-none="true"/>
       </div>
       <div class="column h-has-column-dashed-separator">
-        <FunctionResult :analyzer="functionCallAnalyzer" :custom-nb-col-class="propertySizeClass"/>
+        <FunctionResult :analyzer="functionCallAnalyzer" :custom-nb-col-class="propertySizeClass" :show-none="true"/>
       </div>
     </div>
   </template>
@@ -85,36 +74,25 @@
       <Property id="actionDetailFrom" :custom-nb-col-class="propertySizeClass">
         <template v-slot:name>From</template>
         <template v-slot:value>
-          <EVMAddress :id="action.caller" :address="action.from" :entity-type="action.caller_type" :show-type="true"/>
+          <EVMAddress :id="action?.caller" :address="action?.from" :entity-type="action?.caller_type" :show-type="true"/>
         </template>
       </Property>
       <Property id="actionDetailTo" :custom-nb-col-class="propertySizeClass">
         <template v-slot:name>To</template>
         <template v-slot:value>
-          <EVMAddress :id="action.recipient" :address="action.to" :entity-type="action.recipient_type"
+          <EVMAddress :id="action?.recipient" :address="action?.to" :entity-type="action?.recipient_type"
                       :show-type="true"/>
-        </template>
-      </Property>
-      <Property v-if="signature" id="function" :custom-nb-col-class="propertySizeClass">
-        <template v-slot:name>Function</template>
-        <template v-slot:value>
-          <SignatureValue :analyzer="functionCallAnalyzer"/>
         </template>
       </Property>
       <Property id="actionDetailGasUsed" :custom-nb-col-class="propertySizeClass">
         <template v-slot:name>Gas Used</template>
         <template v-slot:value>
-          <PlainAmount :amount="action.gas_used"/>
+          <PlainAmount :amount="action?.gas_used"/>
         </template>
       </Property>
-      <Property id="actionDetailError" :custom-nb-col-class="propertySizeClass">
-        <template v-slot:name>Error Message</template>
-        <template v-slot:value>
-          <StringValue :string-value="errorMessage"/>
-        </template>
-      </Property>
-      <FunctionInput :analyzer="functionCallAnalyzer" :custom-nb-col-class="propertySizeClass"/>
-      <FunctionResult :analyzer="functionCallAnalyzer" :custom-nb-col-class="propertySizeClass"/>
+      <FunctionError :analyzer="functionCallAnalyzer" :custom-nb-col-class="propertySizeClass" :show-none="true"/>
+      <FunctionInput :analyzer="functionCallAnalyzer" :custom-nb-col-class="propertySizeClass" :show-none="true"/>
+      <FunctionResult :analyzer="functionCallAnalyzer" :custom-nb-col-class="propertySizeClass" :show-none="true"/>
     </div>
   </template>
 </template>
@@ -130,27 +108,27 @@
 //
 
 import {computed, defineComponent, inject, onBeforeUnmount, onMounted, PropType, ref} from "vue";
-import {ContractAction, ResultDataType} from "@/schemas/HederaSchemas";
+import {ContractAction} from "@/schemas/HederaSchemas";
 import {ORUGA_MOBILE_BREAKPOINT} from "@/App.vue";
 import Property from "@/components/Property.vue";
-import StringValue from "@/components/values/StringValue.vue";
 import PlainAmount from "@/components/values/PlainAmount.vue";
-import SignatureValue from "@/components/values/SignatureValue.vue";
 import EVMAddress from "@/components/values/EVMAddress.vue";
-import {FunctionCallAnalyzer} from "@/utils/FunctionCallAnalyzer";
 import FunctionInput from "@/components/values/FunctionInput.vue";
 import FunctionResult from "@/components/values/FunctionResult.vue";
+import {ContractActionAnalyzer} from "@/utils/analyzer/ContractActionAnalyzer";
+import FunctionError from "@/components/values/FunctionError.vue";
 
 export default defineComponent({
   name: 'ContractActionDetails',
 
   components: {
+    FunctionError,
     FunctionResult,
-    FunctionInput, EVMAddress, SignatureValue, PlainAmount, StringValue, Property
+    FunctionInput, EVMAddress, PlainAmount, Property
   },
 
   props: {
-    action: Object as PropType<ContractAction | undefined>
+    action: Object as PropType<ContractAction>
   },
 
   setup(props) {
@@ -159,24 +137,9 @@ export default defineComponent({
     const isMediumScreen = inject('isMediumScreen', ref(false))
     const propertySizeClass = 'is-one-fifth'
 
-    const errorMessage = computed(() => {
-      let result
-      if (props.action?.result_data_type != ResultDataType.OUTPUT) {
-        result = props.action?.result_data
-      } else {
-        result = null
-      }
-      return result
-    })
-
-    const isNullByteCodeValue = (value: string | null) => value == null || value == "0x"
-
-    const input = computed(() => props.action?.input ?? null)
-    const output = computed(() => null)
-    const contractId = computed(() => props.action?.recipient ?? null)
-    const functionCallAnalyzer = new FunctionCallAnalyzer(input, output, contractId)
-    onMounted(() => functionCallAnalyzer.mount())
-    onBeforeUnmount(() => functionCallAnalyzer.unmount())
+    const contractActionAnalyzer = new ContractActionAnalyzer(computed(() => props.action))
+    onMounted(() => contractActionAnalyzer.mount())
+    onBeforeUnmount(() => contractActionAnalyzer.unmount())
 
     return {
       isTouchDevice,
@@ -184,11 +147,10 @@ export default defineComponent({
       isMediumScreen,
       propertySizeClass,
       ORUGA_MOBILE_BREAKPOINT,
-      errorMessage,
-      isNullByteCodeValue,
-      functionCallAnalyzer,
-      functionHash: functionCallAnalyzer.functionHash,
-      signature: functionCallAnalyzer.signature,
+      errorMessage: contractActionAnalyzer.errorMessage,
+      functionCallAnalyzer: contractActionAnalyzer.functionCallAnalyzer,
+      functionHash: contractActionAnalyzer.functionCallAnalyzer.functionHash,
+      signature: contractActionAnalyzer.functionCallAnalyzer.signature,
     }
   }
 });

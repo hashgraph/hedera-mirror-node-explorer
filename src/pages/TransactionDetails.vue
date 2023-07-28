@@ -28,26 +28,25 @@
 
     <DashboardCard class="h-card">
       <template v-slot:title>
-        <div class="is-flex is-align-items-center">
+        <div class="is-flex is-align-items-center is-flex-wrap-wrap">
           <span class="h-is-primary-title mr-1">Transaction </span>
           <span class="h-is-secondary-text mr-3">{{ formattedTransactionId ?? "" }}</span>
-          <div v-if="transaction">
-            <div v-if="transactionSucceeded"
-                 class="h-has-pill has-background-success mr-3 h-is-text-size-2 mt-3">SUCCESS
-            </div>
-            <div v-else class="h-has-pill has-background-danger mr-3 h-is-text-size-2 mt-3">FAILURE</div>
+          <div v-if="transaction" class="h-is-text-size-2 mt-1">
+            <div v-if="transactionSucceeded" class="h-has-pill has-background-success">SUCCESS</div>
+            <div v-else class="h-has-pill has-background-danger">FAILURE</div>
           </div>
-          <span v-if="routeToAllTransactions && isLargeScreen" id="allTransactionsLink" class="is-inline-block mt-2">
-          <router-link :to="routeToAllTransactions">
-            <span class="h-is-property-text has-text-grey">Show all transactions with the same ID</span>
-          </router-link>
-        </span>
         </div>
         <span v-if="routeToAllTransactions && !isLargeScreen">
           <router-link :to="routeToAllTransactions">
             <span class="h-is-property-text has-text-grey">Show all transactions with the same ID</span>
           </router-link>
         </span>
+      </template>
+
+      <template v-slot:control>
+        <router-link v-if="routeToAllTransactions && isLargeScreen" id="allTransactionsLink" :to="routeToAllTransactions">
+          <span class="h-is-property-text has-text-grey">Show all transactions with the same ID</span>
+        </router-link>
       </template>
 
       <template v-slot:content>
@@ -58,7 +57,7 @@
         <Property id="transactionType">
           <template v-slot:name>Type</template>
           <template v-slot:value>
-            <StringValue :string-value="transactionType ? makeTypeLabel(transactionType) : undefined"/>
+            <StringValue :string-value="transactionType ? makeTypeLabel(transactionType) : null"/>
             <div v-if="scheduledTransaction" id="scheduledLink">
               <router-link :to="routeManager.makeRouteToTransactionObj(scheduledTransaction)">
                 <span class="h-is-text-size-3 has-text-grey">Show scheduled transaction</span>
@@ -75,13 +74,13 @@
         <Property id="transactionHash">
           <template v-slot:name>Transaction Hash</template>
           <template v-slot:value>
-            <HexaValue v-bind:byteString="formattedHash ?? undefined" v-bind:show-none="true"/>
+            <HexaValue v-bind:byteString="formattedHash" v-bind:show-none="true"/>
           </template>
         </Property>
         <Property id="blockNumber">
           <template v-slot:name>Block</template>
           <template v-slot:value>
-            <BlockLink :block-number="blockNumber"/>
+            <BlockLink :block-number="blockNumber ?? undefined"/>
           </template>
         </Property>
         <Property id="nodeAccount">
@@ -116,7 +115,7 @@
           <template v-slot:value>
             <EntityLink v-if="entity?.routeName"
                         v-bind:entity-id="transaction?.entity_id"
-                        v-bind:route-name="routeName"
+                        v-bind:route-name="routeName ?? undefined"
                         v-bind:show-extra="true"
             />
             <span v-else>
@@ -139,7 +138,11 @@
           </template>
         </Property>
         <Property id="maxFee">
-          <template v-slot:name>Max fee</template>
+          <template v-slot:name>
+            <span>Max Fee</span>
+            <InfoTooltip v-if="showMaxFeeTooltip"
+                         label="Max Fee limit does not include the hbar cost of gas consumed by transactions executed on the EVM."/>
+          </template>
           <template v-slot:value>
             <HbarAmount v-if="transaction" :amount="maxFee" :show-extra="true"
                         :timestamp="transaction.consensus_timestamp"/>
@@ -149,7 +152,7 @@
           <template v-slot:name>Net Amount</template>
           <template v-slot:value>
             <HbarAmount v-if="transaction" :amount="netAmount" :show-extra="true"
-                        :timestamp="transaction.consensus_timestamp"/>
+                        :timestamp="transaction?.consensus_timestamp"/>
           </template>
         </Property>
         <Property id="duration">
@@ -159,7 +162,7 @@
           </template>
         </Property>
         <Property id="nonce">
-          <template v-slot:name>Nonce</template>
+          <template v-slot:name>Transaction Nonce</template>
           <template v-slot:value>
             {{ transaction?.nonce }}
           </template>
@@ -193,7 +196,7 @@
           <template v-slot:name>Child Transactions</template>
           <template v-slot:value>
             <router-link v-if="displayAllChildrenLinks"
-                         :to="routeManager.makeRouteToTransactionsById(transactionId)">
+                         :to="routeManager.makeRouteToTransactionsById(transactionId ?? '')">
               {{ 'Show all ' + childTransactions.length + ' transactions' }}
             </router-link>
             <div v-else>
@@ -208,23 +211,21 @@
       </template>
     </DashboardCard>
 
-    <DashboardCard class="h-card">
+    <DashboardCard v-if="displayTransfers" class="h-card">
       <template v-slot:title>
         <span class="h-is-secondary-title">Transfers</span>
       </template>
       <template v-slot:content>
         <div class="h-is-property-text">
-          <TransferGraphSection v-bind:transaction="transaction"/>
+          <TransferGraphSection v-bind:transaction="transaction ?? undefined"/>
         </div>
       </template>
     </DashboardCard>
 
-    <TopicMessage :message-loader="topicMessageLoader"/>
+    <TopicMessage :message="topicMessage"/>
 
-    <ContractResult :contract-id="contractId"
-                    :is-parent="transaction?.parent_consensus_timestamp === null"
-                    :timestamp="transaction?.consensus_timestamp"
-                    :transaction-id-or-hash="transaction?.transaction_id"/>
+    <ContractResult :timestamp="transaction?.consensus_timestamp"
+                    :is-parent="transaction?.parent_consensus_timestamp === null"/>
 
   </section>
 
@@ -238,10 +239,8 @@
 
 <script lang="ts">
 
-import {computed, defineComponent, inject, onMounted} from 'vue';
-import {PathParam} from "@/utils/PathParam";
+import {computed, defineComponent, inject, onBeforeUnmount, onMounted} from 'vue';
 import {makeOperatorAccountLabel, makeTypeLabel} from "@/utils/TransactionTools";
-import {TransactionLoader} from "@/components/transaction/TransactionLoader";
 import AccountLink from "@/components/values/AccountLink.vue";
 import HexaValue from "@/components/values/HexaValue.vue";
 import TimestampValue from "@/components/values/TimestampValue.vue";
@@ -257,14 +256,16 @@ import Property from "@/components/Property.vue";
 import DurationValue from "@/components/values/DurationValue.vue";
 import BlockLink from "@/components/values/BlockLink.vue";
 import ContractResult from "@/components/contract/ContractResult.vue";
-import {TransactionType} from "@/schemas/HederaSchemas";
+import {TransactionDetail, TransactionType} from "@/schemas/HederaSchemas";
 import TopicMessage from "@/components/topic/TopicMessage.vue";
-import {TopicMessageLoader} from "@/components/topic/TopicMessageLoader";
+import {TopicMessageCache} from "@/utils/cache/TopicMessageCache";
 import {routeManager} from "@/router"
-import {Timestamp} from "@/utils/Timestamp";
-import {TransactionHash} from "@/utils/TransactionHash";
-import {TokenRelationshipLoader} from "@/components/token/TokenRelationshipLoader";
 import TokenLink from "@/components/values/TokenLink.vue";
+import {TransactionLocParser} from "@/utils/parser/TransactionLocParser";
+import {TransactionGroupAnalyzer} from "@/components/transaction/TransactionGroupAnalyzer";
+import {TransactionAnalyzer} from "@/components/transaction/TransactionAnalyzer";
+import {TransactionGroupCache} from "@/utils/cache/TransactionGroupCache";
+import InfoTooltip from "@/components/InfoTooltip.vue";
 
 const MAX_INLINE_CHILDREN = 9
 
@@ -273,6 +274,7 @@ export default defineComponent({
   name: 'TransactionDetails',
 
   components: {
+    InfoTooltip,
     TokenLink,
     TopicMessage,
     ContractResult,
@@ -288,105 +290,161 @@ export default defineComponent({
 
   props: {
     transactionLoc: String,
-    transactionId: String,
     network: String
   },
 
   setup: function (props) {
     const isSmallScreen = inject('isSmallScreen', true)
+    const isMediumScreen = inject('isMediumScreen', true)
     const isLargeScreen = inject('isLargeScreen', true)
     const isTouchDevice = inject('isTouchDevice', false)
 
-    const transactionLocator = computed(
-        () => props.transactionLoc ? PathParam.parseTransactionLoc(props.transactionLoc) : null)
+    const transactionLoc = computed(() => props.transactionLoc ?? null)
+    const transactionLocParser = new TransactionLocParser(transactionLoc)
+    onMounted(() => transactionLocParser.mount())
+    onBeforeUnmount(() => transactionLocParser.unmount())
 
-    const transactionLoader = new TransactionLoader(
-        computed(() => props.transactionLoc ?? null),
-        computed(() => props.transactionId ?? null))
-    onMounted(() => transactionLoader.requestLoad())
+    const transactionAnalyzer = new TransactionAnalyzer(transactionLocParser.transaction)
+    onMounted(() => transactionAnalyzer.mount())
+    onBeforeUnmount(() => transactionAnalyzer.unmount())
 
+    const transactionGroupLookup = TransactionGroupCache.instance.makeLookup(transactionLocParser.transactionId)
+    onMounted(() => transactionGroupLookup.mount())
+    onBeforeUnmount(() => transactionGroupLookup.unmount())
+
+    const transactionGroupAnalyzer = new TransactionGroupAnalyzer(transactionGroupLookup.entity)
     const routeToAllTransactions = computed(() => {
-      const count = transactionLoader.transactions.value?.length ?? 0
-      const transactionId = transactionLoader.transaction.value?.transaction_id ?? null
-      return count >= 2 && transactionId !== null ? routeManager.makeRouteToTransactionsById(transactionId) : null
+      const count = transactionGroupAnalyzer.transactions.value?.length ?? 0
+      const transactionId = transactionLocParser.transactionId.value ?? null
+      return count >= 2 && transactionId !== null
+          ? routeManager.makeRouteToTransactionsById(transactionId)
+          : null
+    })
+    const displayAllChildrenLinks = computed(() => {
+      return transactionGroupAnalyzer.childTransactions.value.length > MAX_INLINE_CHILDREN
     })
 
-    const displayAllChildrenLinks = computed(
-        () => transactionLoader.childTransactions.value.length > MAX_INLINE_CHILDREN)
+    const displayTransfers = computed(() =>
+        (transactionDetail.value?.transfers && transactionDetail.value.transfers.length > 0)
+        || (transactionDetail.value?.token_transfers && transactionDetail.value.token_transfers.length > 0)
+        || (transactionDetail.value?.nft_transfers && transactionDetail.value.nft_transfers.length > 0)
+    )
 
-    const notification = computed(() => {
-      let result
-      if (transactionLocator.value === null) {
-        result = "Invalid transaction timestamp or hash: " + props.transactionLoc
-      } else if (transactionLoader.got404.value) {
-        if (transactionLocator.value instanceof Timestamp) {
-          result = "Transaction with timestamp " + transactionLocator.value + " was not found"
-        } else if (transactionLocator.value instanceof TransactionHash) {
-          result = "Transaction with hash " + transactionLocator.value + " was not found"
-        } else {
-          result = "Transaction with ethereum hash " + transactionLocator.value + " was not found"
-        }
-      } else if (transactionLoader.hasSucceeded.value) {
+    const routeName = computed(() => {
+      return transactionAnalyzer.entityDescriptor.value?.routeName
+    })
+
+    const messageTimestamp = computed(() =>
+        (transactionAnalyzer.transactionType.value === TransactionType.CONSENSUSSUBMITMESSAGE)
+            ? transactionAnalyzer.consensusTimestamp.value ?? ""
+            : ""
+    )
+    const topicMessageLookup = TopicMessageCache.instance.makeLookup(messageTimestamp)
+    onMounted(() => topicMessageLookup.mount())
+    onBeforeUnmount(() => topicMessageLookup.unmount())
+
+    const showMaxFeeTooltip = computed(
+        () => transactionAnalyzer.chargedFee.value > transactionAnalyzer.maxFee.value)
+
+    const transactionDetail = computed(() => {
+      let result: TransactionDetail|null
+      const consensusTimestamp = transactionAnalyzer.consensusTimestamp.value
+      if (consensusTimestamp !== null) {
         result = null
+        for (const t of transactionGroupAnalyzer.transactions.value ?? []) {
+          if (consensusTimestamp == t.consensus_timestamp) {
+            result = t
+            break
+          }
+        }
       } else {
-        result = transactionLoader.result.value
+        result = null
       }
       return result
     })
 
-    const routeName = computed(() => {
-      return transactionLoader.entityDescriptor.value?.routeName
+    const parentTransaction = computed(() => {
+      let result: TransactionDetail|null
+      const t = transactionLocParser.transaction.value
+      const p = transactionGroupAnalyzer.parentTransaction.value
+      if (t !== null && p !== null && t.consensus_timestamp !== p.consensus_timestamp) {
+        result = p
+      } else {
+        result = null
+      }
+      return result
     })
 
-    const messageTimestamp = computed(() =>
-        (transactionLoader.transactionType.value === TransactionType.CONSENSUSSUBMITMESSAGE)
-            ? transactionLoader.consensusTimestamp.value ?? ""
-            : ""
-    )
-    const topicMessageLoader = new TopicMessageLoader(messageTimestamp)
+    const childTransactions = computed(() => {
+      let result: TransactionDetail[]
+      const t = transactionLocParser.transaction.value
+      const p = transactionGroupAnalyzer.parentTransaction.value
+      if (t !== null && p !== null && t.consensus_timestamp === p.consensus_timestamp) {
+        result = transactionGroupAnalyzer.childTransactions.value
+      } else {
+        result = []
+      }
+      return result
+    })
 
-    const isTokenAssociation = computed(
-        () => transactionLoader.transactionType.value === TransactionType.TOKENASSOCIATE)
+    const scheduledTransaction = computed(() => {
+      let result: TransactionDetail|null
+      const t = transactionLocParser.transaction.value
+      const i = transactionGroupAnalyzer.scheduledTransaction.value
+      if (t !== null && i !== null && t.consensus_timestamp !== i.consensus_timestamp) {
+        result = i
+      } else {
+        result = null
+      }
+      return result
+    })
 
-    const associatedAccount = computed(
-        () => isTokenAssociation.value ? transactionLoader.entity.value?.entity_id ?? null : null
-    )
-    const tokenRelationships = new TokenRelationshipLoader(associatedAccount)
-    onMounted(() => tokenRelationships.requestLoad())
+    const schedulingTransaction = computed(() => {
+      let result: TransactionDetail|null
+      const t = transactionLocParser.transaction.value
+      const o = transactionGroupAnalyzer.schedulingTransaction.value
+      if (t !== null && o !== null && t.consensus_timestamp !== o.consensus_timestamp) {
+        result = o
+      } else {
+        result = null
+      }
+      return result
+    })
 
-    const associatedTokens = computed(
-        () =>  tokenRelationships.lookupTokens(transactionLoader.consensusTimestamp.value ?? "")
-    )
 
     return {
       isSmallScreen,
+      isMediumScreen,
       isLargeScreen,
       isTouchDevice,
-      transaction: transactionLoader.transaction,
-      formattedTransactionId: transactionLoader.formattedTransactionId,
-      netAmount: transactionLoader.netAmount,
-      entity: transactionLoader.entityDescriptor,
-      contractId: transactionLoader.contractId,
-      systemContract: transactionLoader.systemContract,
-      maxFee: transactionLoader.maxFee,
-      formattedHash: transactionLoader.formattedHash,
-      transactionType: transactionLoader.transactionType,
-      transactionSucceeded: transactionLoader.hasSucceeded,
-      scheduledTransaction: transactionLoader.scheduledTransaction,
-      schedulingTransaction: transactionLoader.schedulingTransaction,
-      parentTransaction: transactionLoader.parentTransaction,
-      childTransactions: transactionLoader.childTransactions,
-      blockNumber: transactionLoader.blockNumber,
-      notification,
+      showMaxFeeTooltip,
+      transactionId: transactionLocParser.transactionId,
+      transaction: transactionDetail,
+      formattedTransactionId: transactionAnalyzer.formattedTransactionId,
+      netAmount: transactionAnalyzer.netAmount,
+      entity: transactionAnalyzer.entityDescriptor,
+      contractId: transactionAnalyzer.contractId,
+      systemContract: transactionAnalyzer.systemContract,
+      maxFee: transactionAnalyzer.maxFee,
+      formattedHash: transactionAnalyzer.formattedHash,
+      transactionType: transactionAnalyzer.transactionType,
+      transactionSucceeded: transactionAnalyzer.hasSucceeded,
+      scheduledTransaction,
+      schedulingTransaction,
+      parentTransaction,
+      childTransactions,
+      blockNumber: transactionAnalyzer.blockNumber,
+      notification: transactionLocParser.errorNotification,
       routeName,
       routeManager,
       makeTypeLabel,
       makeOperatorAccountLabel,
       routeToAllTransactions,
       displayAllChildrenLinks,
-      topicMessageLoader,
-      isTokenAssociation,
-      associatedTokens
+      displayTransfers,
+      topicMessage: topicMessageLookup.entity,
+      isTokenAssociation: transactionAnalyzer.isTokenAssociation,
+      associatedTokens: transactionAnalyzer.tokens
     }
   },
 })

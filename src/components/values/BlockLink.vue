@@ -23,7 +23,7 @@
 <!-- --------------------------------------------------------------------------------------------------------------- -->
 
 <template>
-  <div v-if="blockNumber" class="is-inline-block">
+  <div v-if="blockNumber && blockRoute" class="is-inline-block">
     <router-link :to="blockRoute">
       <span class="is-numeric">{{ blockNumber }}</span>
     </router-link>

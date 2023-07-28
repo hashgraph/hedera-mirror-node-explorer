@@ -23,10 +23,12 @@
 // Fungible token inspired from https://testnet.mirrornode.hedera.com/api/v1/tokens/0.0.29662956
 //
 
+import {KeyType, TokenRelationshipResponse} from "@/schemas/HederaSchemas";
+
 export const SAMPLE_TOKEN = {
     "admin_key": null,
     "auto_renew_account": "0.0.29612329",
-    "auto_renew_period": "7776000",
+    "auto_renew_period": 7776000,
     "created_timestamp": "1644660150.233378000",
     "custom_fees": {
         "created_timestamp": "1644660150.233378000",
@@ -100,7 +102,7 @@ export const SAMPLE_TOKEN = {
     "initial_supply": "1",
     "kyc_key": null,
     "max_supply": "0",
-    "memo": "234234",
+    "memo": "Predator",
     "modified_timestamp": "1644660150.233378000",
     "name": "23423",
     "pause_key": null,
@@ -121,7 +123,7 @@ export const SAMPLE_TOKEN = {
 export const SAMPLE_TOKEN_DUDE = {
     "admin_key": null,
     "auto_renew_account": "0.0.29612329",
-    "auto_renew_period": "7776000",
+    "auto_renew_period": 7776000,
     "created_timestamp": "1644660150.233378000",
     "custom_fees": {
         "created_timestamp": "1644660150.233378000",
@@ -264,7 +266,7 @@ export const SAMPLE_NONFUNGIBLE = {
         "key": "c1a8c8c5b446ce053b6eff4fe4f0192f76535ea9ed6b2b91981177ba237f4b5d"
     },
     "auto_renew_account": "0.0.700000",
-    "auto_renew_period": "7776000",
+    "auto_renew_period": 7776000,
     "created_timestamp": "1646580567.712861636",
     "custom_fees": {
         "created_timestamp": "1646580567.712861636",
@@ -372,7 +374,7 @@ export const SAMPLE_NONFUNGIBLE_DUDE =
             "key": "c1a8c8c5b446ce053b6eff4fe4f0192f76535ea9ed6b2b91981177ba237f4b5d"
         },
         "auto_renew_account": "0.0.700000",
-        "auto_renew_period": "7776000",
+        "auto_renew_period": 7776000,
         "created_timestamp": "1646580567.712861636",
         "custom_fees": {
             "created_timestamp": "1646580567.712861636",
@@ -429,6 +431,36 @@ export const SAMPLE_TOKENS = {
         SAMPLE_TOKEN,
         SAMPLE_NONFUNGIBLE
     ]
+}
+
+export const SAMPLE_TOKEN_WITH_LARGE_DECIMAL_COUNT = {
+    "admin_key": {"_type": "ED25519", "key": "d6e8334cd8594e88c82ff266b4974b4e4ac596962dcfab7314f935e7fdda672f"},
+    "auto_renew_account": "0.0.13688300",
+    "auto_renew_period": 7776000,
+    "created_timestamp": "1685137814.521997638",
+    "custom_fees": {"created_timestamp": "1685137814.521997638", "fixed_fees": [], "fractional_fees": []},
+    "decimals": "75",
+    "deleted": false,
+    "expiry_timestamp": 1692913814521997638,
+    "fee_schedule_key": null,
+    "freeze_default": false,
+    "freeze_key": null,
+    "initial_supply": "100000000000000",
+    "kyc_key": null,
+    "max_supply": "10000000000000000",
+    "memo": "",
+    "modified_timestamp": "1685137814.521997638",
+    "name": "TestToken0",
+    "pause_key": null,
+    "pause_status": "NOT_APPLICABLE",
+    "supply_key": {"_type": "ED25519", "key": "d6e8334cd8594e88c82ff266b4974b4e4ac596962dcfab7314f935e7fdda672f"},
+    "supply_type": "FINITE",
+    "symbol": "TTOK0",
+    "token_id": "0.0.13688500",
+    "total_supply": "100000000000000",
+    "treasury_account_id": "0.0.13688300",
+    "type": "FUNGIBLE_COMMON",
+    "wipe_key": null
 }
 
 export const SAMPLE_BALANCES = {
@@ -575,7 +607,7 @@ export const SAMPLE_CONTRACTCALL_TRANSACTIONS = {
             "charged_tx_fee": 95515604,
             "consensus_timestamp": "1646665766.574738471",
             "entity_id": "0.0.749774",
-            "max_fee": "10000000000",
+            "max_fee": "20000000",
             "memo_base64": "TWlycm9yIE5vZGUgYWNjZXB0YW5jZSB0ZXN0OiAyMDIyLTAzLTA3VDE1OjA5OjI2LjA2NjY4MDk3N1ogRXhlY3V0ZSBjb250cmFjdA==",
             "name": "CONTRACTCALL",
             "node": "0.0.3",
@@ -661,6 +693,192 @@ export const SAMPLE_SYSTEM_CONTRACT_CALL_TRANSACTIONS = {
     ]
 }
 
+export const SAMPLE_CRYPTO_TRANSFER_WITH_ONLY_FEE = {
+        "bytes": null,
+        "charged_tx_fee": 26494683,
+        "consensus_timestamp": "1687197609.495612761",
+        "entity_id": "0.0.3005010",
+        "max_fee": "200000000",
+        "memo_base64": "",
+        "name": "CONSENSUSCREATETOPIC",
+        "node": "0.0.25",
+        "nonce": 0,
+        "parent_consensus_timestamp": null,
+        "result": "SUCCESS",
+        "scheduled": false,
+        "transaction_hash": "c2sSCuCRNOI6gvCYs5KFxe7Z60TV8vJXxuOWNEtH4doYj0MnruIi3NLFXIX6e8s1",
+        "transaction_id": "0.0.1786365-1687197599-390469131",
+        "transfers": [{"account": "0.0.25", "amount": 1190235, "is_approval": false}, {
+            "account": "0.0.98",
+            "amount": 22774004,
+            "is_approval": false
+        }, {"account": "0.0.800", "amount": 2530444, "is_approval": false}, {
+            "account": "0.0.1786365",
+            "amount": -26494683,
+            "is_approval": false
+        }],
+        "valid_duration_seconds": "120",
+        "valid_start_timestamp": "1687197599.390469131"
+}
+
+export const SAMPLE_CRYPTO_TRANSFER_WITH_REWARDS = {
+    "bytes": null,
+    "charged_tx_fee": 5351935,
+    "consensus_timestamp": "1687133236.139653690",
+    "entity_id": null,
+    "max_fee": "100000000",
+    "memo_base64": "KDAuMC4yOTk4NTU1KUNvbmZpcm0gcHVyY2hhc2Ugb2YgTkZUOiAwLjAuMjE3Mzg5OSB3aXRoIHNlcmlhbCBudW1iZXIgMTYxMiBmb3IgMjUgSEJBUg==",
+    "name": "CRYPTOTRANSFER",
+    "node": "0.0.4",
+    "nonce": 0,
+    "parent_consensus_timestamp": null,
+    "result": "SUCCESS",
+    "scheduled": false,
+    "staking_reward_transfers": [{"account": "0.0.788887", "amount": 210704256}, {
+        "account": "0.0.2254995",
+        "amount": 2289378672
+    }],
+    "transaction_hash": "9s/JADOEqzUy4yzZA0StoTfumGL0bAALPs9tKbE/ELX0AY6gkbTl4potlyd3XHeU",
+    "transaction_id": "0.0.690356-1687133220-052118241",
+    "transfers": [{"account": "0.0.4", "amount": 206713, "is_approval": false}, {
+        "account": "0.0.98",
+        "amount": 4630700,
+        "is_approval": false
+    }, {"account": "0.0.800", "amount": -2499568406, "is_approval": false}, {
+        "account": "0.0.690356",
+        "amount": -5351935,
+        "is_approval": false
+    }, {"account": "0.0.755188", "amount": 2280000000, "is_approval": false}, {
+        "account": "0.0.788887",
+        "amount": 330704256,
+        "is_approval": false
+    }, {"account": "0.0.2254995", "amount": 2389378672, "is_approval": false}, {
+        "account": "0.0.2998555",
+        "amount": -2500000000,
+        "is_approval": false
+    }],
+    "valid_duration_seconds": "120",
+    "valid_start_timestamp": "1687133220.052118241"
+}
+
+export const SAMPLE_TOKEN_CALL_TRANSACTIONS = {
+    "transactions": [{
+        "bytes": null,
+        "charged_tx_fee": 93600000,
+        "consensus_timestamp": "1677545104.611658003",
+        "entity_id": "0.0.781589",
+        "max_fee": "200000000",
+        "memo_base64": "",
+        "name": "CONTRACTCALL",
+        "node": "0.0.14",
+        "nonce": 0,
+        "parent_consensus_timestamp": null,
+        "result": "SUCCESS",
+        "scheduled": false,
+        "staking_reward_transfers": [{"account": "0.0.939841", "amount": 6816724320}],
+        "transaction_hash": "v0daADT5AeJQdNGIpDZww+amcD9C1ngBhzQwPhm7g8BRtvN1p2TaOLHIMtD0C0MS",
+        "transaction_id": "0.0.939841-1677545092-878406670",
+        "transfers": [{"account": "0.0.98", "amount": 93600000, "is_approval": false}, {
+            "account": "0.0.800",
+            "amount": -6816724320,
+            "is_approval": false
+        }, {"account": "0.0.939841", "amount": 6723124320, "is_approval": false}],
+        "valid_duration_seconds": "120",
+        "valid_start_timestamp": "1677545092.878406670"
+    }], "links": {"next": null}
+}
+
+export const SAMPLE_ETHEREUM_TRANSACTIONS_ASSOCIATING_TOKEN = {
+    "transactions": [{
+        "bytes": null,
+        "charged_tx_fee": 227282050,
+        "consensus_timestamp": "1687555828.300024003",
+        "entity_id": "0.0.230049",
+        "max_fee": "1080000000",
+        "memo_base64": "",
+        "name": "ETHEREUMTRANSACTION",
+        "nft_transfers": [],
+        "node": "0.0.6",
+        "nonce": 0,
+        "parent_consensus_timestamp": null,
+        "result": "SUCCESS",
+        "scheduled": false,
+        "staking_reward_transfers": [],
+        "token_transfers": [],
+        "transaction_hash": "Ws8zcqKAVEGr2R9MP3uidkx8Uh66/6g9VfhmGTOr6DNFRSj5MbalwBkNX8WaWoe5",
+        "transaction_id": "0.0.902-1687555818-297907508",
+        "transfers": [{"account": "0.0.6", "amount": 2910, "is_approval": false}, {
+            "account": "0.0.98",
+            "amount": 227279140,
+            "is_approval": false
+        }, {"account": "0.0.902", "amount": -82050, "is_approval": false}, {
+            "account": "0.0.42224",
+            "amount": -227200000,
+            "is_approval": false
+        }],
+        "valid_duration_seconds": "120",
+        "valid_start_timestamp": "1687555818.297907508"
+    }, {
+        "bytes": null,
+        "charged_tx_fee": 0,
+        "consensus_timestamp": "1687555828.300024004",
+        "entity_id": "0.0.42224",
+        "max_fee": "0",
+        "memo_base64": "",
+        "name": "TOKENASSOCIATE",
+        "nft_transfers": [],
+        "node": null,
+        "nonce": 1,
+        "parent_consensus_timestamp": "1687555828.300024003",
+        "result": "SUCCESS",
+        "scheduled": false,
+        "staking_reward_transfers": [],
+        "token_transfers": [],
+        "transaction_hash": "uWkCIG7doSPwu0YiF1sOxiUmh5qfuVW1zsnsvmtn59Dwpu8bUDUJVsg6LMvms/ak",
+        "transaction_id": "0.0.902-1687555818-297907508",
+        "transfers": [],
+        "valid_duration_seconds": null,
+        "valid_start_timestamp": "1687555818.297907508"
+    }]
+}
+
+export const SAMPLE_CONTRACT_RESULTS = {
+    "results": [
+        {
+            "address": "0x0000000000000000000000000000000000336f6f",
+            "amount": 0,
+            "bloom": "0x00000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000",
+            "call_result": "0x",
+            "contract_id": "0.0.3370863",
+            "created_contract_ids": [],
+            "error_message": null,
+            "from": "0x00000000000000000000000000000000000004ec",
+            "function_parameters": "0x9f1159210000000000000000000000000000000000000000000000000000000000000040000000000000000000000000000000000000000000000000000000000005161500000000000000000000000000000000000000000000000000000000000000044d69636b00000000000000000000000000000000000000000000000000000000",
+            "gas_limit": 100000,
+            "gas_used": 80000,
+            "timestamp": "1675415497.973978003",
+            "to": "0x0000000000000000000000000000000000336f6f",
+            "hash": "0x23a6480c03bd8f1a07fbb5aee5eb4ada0671f0f1d93b51fdf45b51eb14eee4b1"
+        },
+        {
+            "address": "0x0000000000000000000000000000000000336f6f",
+            "amount": 0,
+            "bloom": "0x00000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000",
+            "call_result": "0x608060405234801561001057600080fd5b50600436106100415760003560e01c806314b3ee68146100465780639f11592114610076578063fd8111e914610092575b600080fd5b610060600480360381019061005b9190610298565b6100c2565b60405161006d91906102fa565b60405180910390f35b610090600480360381019061008b9190610341565b6100e9565b005b6100ac60048036038101906100a79190610298565b610110565b6040516100b991906102fa565b60405180910390f35b600080826040516100d3919061040e565b9081526020016040518091039020549050919050565b806000836040516100fa919061040e565b9081526020016040518091039020819055505050565b6000818051602081018201805184825260208301602085012081835280955050505050506000915090505481565b6000604051905090565b600080fd5b600080fd5b600080fd5b600080fd5b6000601f19601f8301169050919050565b7f4e487b7100000000000000000000000000000000000000000000000000000000600052604160045260246000fd5b6101a58261015c565b810181811067ffffffffffffffff821117156101c4576101c361016d565b5b80604052505050565b60006101d761013e565b90506101e3828261019c565b919050565b600067ffffffffffffffff8211156102035761020261016d565b5b61020c8261015c565b9050602081019050919050565b82818337600083830152505050565b600061023b610236846101e8565b6101cd565b90508281526020810184848401111561025757610256610157565b5b610262848285610219565b509392505050565b600082601f83011261027f5761027e610152565b5b813561028f848260208601610228565b91505092915050565b6000602082840312156102ae576102ad610148565b5b600082013567ffffffffffffffff8111156102cc576102cb61014d565b5b6102d88482850161026a565b91505092915050565b6000819050919050565b6102f4816102e1565b82525050565b600060208201905061030f60008301846102eb565b92915050565b61031e816102e1565b811461032957600080fd5b50565b60008135905061033b81610315565b92915050565b6000806040838503121561035857610357610148565b5b600083013567ffffffffffffffff8111156103765761037561014d565b5b6103828582860161026a565b92505060206103938582860161032c565b9150509250929050565b600081519050919050565b600081905092915050565b60005b838110156103d15780820151818401526020810190506103b6565b60008484015250505050565b60006103e88261039d565b6103f281856103a8565b93506104028185602086016103b3565b80840191505092915050565b600061041a82846103dd565b91508190509291505056fea2646970667358221220a31fabb88354c9f0b715761adf83bb5c7fe132d0d3f3106a874d17a0e03e228d64736f6c63430008110033",
+            "contract_id": "0.0.3370863",
+            "created_contract_ids": ["0.0.3370863"],
+            "error_message": null,
+            "from": "0x00000000000000000000000000000000000004ec",
+            "function_parameters": "0x0000000000000000000000000000000000000000000000000000000000000040000000000000000000000000000000000000000000000000000000000001b2070000000000000000000000000000000000000000000000000000000000000005416c696365000000000000000000000000000000000000000000000000000000",
+            "gas_limit": 100000,
+            "gas_used": 80000,
+            "timestamp": "1675415364.585203549",
+            "to": "0x0000000000000000000000000000000000336f6f",
+            "hash": "0xd5907850f485803a3fa858ab8bbe951b991c36b04e86e8d203162b1175535bcc"
+        }
+    ], "links": {"next": null}
+}
+
 export const SAMPLE_CONTRACT_RESULT_DETAILS = {
     "amount": 0,
     "bloom": "0x00200001002000000001000090000000000000000000010000040000000000000000000040000000000000000001000000000000000000000000180000000000800000000000040000000000000000200000000000000000000208000000000000000000020800000000000000000800000800000000000000000040000000000000000000000000000002000000100100000000000000080000004000000000000080000000000020000000000000000040000000010000000000000000000000002100000000000000000000000080200000002000001000000000002020000000000000000000000000000000000040000000000000100000000000000020",
@@ -674,7 +892,7 @@ export const SAMPLE_CONTRACT_RESULT_DETAILS = {
     "gas_used": 384000,
     "timestamp": "1662655535.645046772",
     "to": "0x0000000000000000000000000000000000103783",
-    "hash": "0xc43db9eacf72c91629ac03088535dd9ae41059a2c1eefce3a528e04e7e908d2d994ebaa58139c9119dc83f567b162ce3",
+    "hash": "0xc43db9eacf72c91629ac03088535dd9ae41059a2c1eefce3a528e04e7e908d2d",
     "block_hash": "0x9128e0c85440fb647c642d9b9982d339320105cc2b0287ea8cdb0d29e4a3dd2eaa2ecfbcd4ed69ca83200905b2991702",
     "block_number": 37392133,
     "logs": [
@@ -774,7 +992,27 @@ export const SAMPLE_CONTRACT_RESULT_DETAILS = {
     "s": null,
     "type": null,
     "v": null,
-    "nonce": null
+    "nonce": 104
+}
+
+export const SAMPLE_CONTRACT_CALL_TRANSACTION = {
+    "bytes": null,
+    "charged_tx_fee": 0,
+    "consensus_timestamp": SAMPLE_CONTRACT_RESULT_DETAILS.timestamp,
+    "entity_id": "0.0.359",
+    "max_fee": "0",
+    "memo_base64": "",
+    "name": "CONTRACTCALL",
+    "node": null,
+    "nonce": 2,
+    "parent_consensus_timestamp": "1662623752.949648608",
+    "result": "SUCCESS",
+    "scheduled": false,
+    "transaction_hash": "LC8tH/tqkOEndC3ERShZO7n6NSxhdhbkSZJX3hnbwKAWaQ2KLMsg1DgaXByxrUEY",
+    "transaction_id": "0.0.29511696-1662623740-379586211",
+    "transfers": [],
+    "valid_duration_seconds": null,
+    "valid_start_timestamp": "1662623740.379586211"
 }
 
 export const SAMPLE_REVERT_CONTRACT_RESULT_DETAILS = {
@@ -856,7 +1094,7 @@ export const SAMPLE_REVERT_CONTRACT_RESULT_DETAILS_WITH_TRACES = {
     "amount": 0,
     "bloom": "0x",
     "call_result": "0x",
-    "contract_id": null,
+    "contract_id": "0.0.3548775",
     "created_contract_ids": [],
     "error_message": "0x08c379a00000000000000000000000000000000000000000000000000000000000000020000000000000000000000000000000000000000000000000000000000000003670617957697468436172644e4654202d206661696c656420746f2063616c6c2061636365707420636f6e7472616374206d6574686f6400000000000000000000",
     "from": "0x00000000000000000000000000000000000022ee",
@@ -1053,6 +1291,31 @@ export const SAMPLE_REVERT_CONTRACT_RESULT_ACTIONS = {
             "to": "0x00000000000000000000000000000000000082cb",
             "value": 0
         }], "links": {"next": null}
+}
+
+
+export const SAMPLE_ERROR_RESULTS = {
+    "results": [
+        {
+            "address": null,
+            "amount": 0,
+            "bloom": "0x",
+            "call_result": "0x",
+            "contract_id": null,
+            "created_contract_ids": [],
+            "error_message": "INSUFFICIENT_GAS",
+            "from": "0x0000000000000000000000000000000000000386",
+            "function_parameters": "0xd09de08a",
+            "gas_limit": 21500,
+            "gas_used": 21500,
+            "timestamp": "1685737274.278536163",
+            "to": null,
+            "hash": "0x9059179bccd15bfabb246dd24572f4556cbf3a5dbb1d335759e593a7a6a8abed"
+        }
+    ],
+    "links": {
+        "next": null
+    }
 }
 
 // https://mainnet-public.mirrornode.hedera.com/api/v1/transactions?limit=2&transactiontype=CRYPTOTRANSFER
@@ -1673,6 +1936,89 @@ export const SAMPLE_TOKEN_ASSOCIATE_TRANSACTION = {
     "valid_start_timestamp": "1671648699.088023490"
 }
 
+export const SAMPLE_ETHEREUM_TRANSACTIONS_ON_ACCOUNT = {
+    "transactions": [{
+        "bytes": null,
+        "charged_tx_fee": 289885506,
+        "consensus_timestamp": "1680856113.083079074",
+        "entity_id": "0.0.1736",
+        "max_fee": "1965000000",
+        "memo_base64": "",
+        "name": "ETHEREUMTRANSACTION",
+        "node": "0.0.9",
+        "nonce": 0,
+        "parent_consensus_timestamp": null,
+        "result": "SUCCESS",
+        "scheduled": false,
+        "staking_reward_transfers": [],
+        "transaction_hash": "eCUqd8lk6CpS7/s9RJ3ZsKaeCXUqleE3Jpz5MzrkULc4xLI+B77Rrqd0rcmB0G7l",
+        "transaction_id": "0.0.902-1680856100-967831537",
+        "transfers": [
+            {
+                "account": "0.0.9", "amount": 2904321, "is_approval": false
+            },
+            {
+                "account": "0.0.98",
+                "amount": 286981185,
+                "is_approval": false
+            },
+            {
+                "account": "0.0.902", "amount": -81885506, "is_approval": false
+            },
+            {
+                "account": "0.0.1736",
+                "amount": 999100000000,
+                "is_approval": false
+            },
+            {
+                "account": "0.0.3950761", "amount": -999308000000, "is_approval": false
+            }
+        ],
+        "valid_duration_seconds": "120",
+        "valid_start_timestamp": "1680856100.967831537"
+    }], "links": {"next": null}
+}
+
+export const SAMPLE_ETHEREUM_TRANSACTIONS_ON_CONTRACT = {
+    "transactions": [{
+        "bytes": null,
+        "charged_tx_fee": 134305262,
+        "consensus_timestamp": "1680856204.729061756",
+        "entity_id": "0.0.3982005",
+        "max_fee": "1965000000",
+        "memo_base64": "",
+        "name": "ETHEREUMTRANSACTION",
+        "node": "0.0.3",
+        "nonce": 0,
+        "parent_consensus_timestamp": null,
+        "result": "SUCCESS",
+        "scheduled": false,
+        "staking_reward_transfers": [],
+        "transaction_hash": "4EWj/Lk9U/Iqg+uidRapSKXbxrfJfiXxUSl9gV+p2cgDGVMg0ioUWAH8gJy7asiG",
+        "transaction_id": "0.0.3675516-1680856194-531027354",
+        "transfers": [
+            {
+                "account": "0.0.3", "amount": 5150432, "is_approval": false
+            },
+            {
+                "account": "0.0.98",
+                "amount": 129154830,
+                "is_approval": false
+            },
+            {
+                "account": "0.0.3675516", "amount": -87505262, "is_approval": false
+            },
+            {
+                "account": "0.0.3763630",
+                "amount": -46800000,
+                "is_approval": false
+            }
+        ],
+        "valid_duration_seconds": "120",
+        "valid_start_timestamp": "1680856194.531027354"
+    }], "links": {"next": null}
+}
+
 export const SAMPLE_ASSOCIATED_TOKEN = {
     "admin_key": {"_type": "ED25519", "key": "c350fb04dc8b75e0f2bae193f42f6d08c337bd627f731b19a67231cffe325ebe"},
     "auto_renew_account": "0.0.1856648",
@@ -1737,7 +2083,7 @@ export const SAMPLE_ASSOCIATED_TOKEN_2 = {
 // Inspired from https://testnet.mirrornode.hedera.com/api/v1/accounts/0.0.642949/tokens
 //
 
-export const SAMPLE_TOKEN_ASSOCIATIONS = {
+export const SAMPLE_TOKEN_ASSOCIATIONS: TokenRelationshipResponse = {
     "tokens": [{
         "automatic_association": false,
         "balance": 0,
@@ -1759,7 +2105,10 @@ export const SAMPLE_TOKEN_ASSOCIATIONS = {
         "freeze_status": "UNFROZEN",
         "kyc_status": "NOT_APPLICABLE",
         "token_id": SAMPLE_ASSOCIATED_TOKEN_2.token_id
-    }]
+    }],
+    "links": {
+        next: null
+    }
 }
 
 //
@@ -1791,7 +2140,7 @@ export const SAMPLE_ACCOUNT = {
     "max_automatic_token_associations": 0,
     "memo": "",
     "receiver_sig_required": false,
-    "evm_address": null,
+    "evm_address": "0x00000000000000000000000000000000000b2607",
     "ethereum_nonce": 0,
     "decline_reward": null,
     "staked_node_id": null,
@@ -1894,7 +2243,7 @@ export const SAMPLE_ACCOUNT_STAKING_ACCOUNT = {
     },
     "deleted": false,
     "expiry_timestamp": "1649648001.410978000",
-    "key": {"_type": "ED25519", "key": "38f1ea460e95d97eea13aefac760eaf990154b80a3608ab01d4a264944d68746"},
+    "key": {"_type": KeyType.ED25519, "key": "38f1ea460e95d97eea13aefac760eaf990154b80a3608ab01d4a264944d68746"},
     "max_automatic_token_associations": 10,
     "memo": "Account staking to account",
     "receiver_sig_required": true,
@@ -1904,7 +2253,8 @@ export const SAMPLE_ACCOUNT_STAKING_ACCOUNT = {
     "staked_node_id": null,
     "staked_account_id": "0.0.5",
     "stake_period_start" : null,
-    "pending_reward": 0
+    "pending_reward": 0,
+    "created_timestamp": null
 }
 
 export const SAMPLE_ACCOUNTS = {
@@ -1997,6 +2347,33 @@ export const SAMPLE_ACCOUNT_PROTOBUF_KEY = {
 }
 
 //
+// Account inspired from: https://mainnet-public.mirrornode.hedera.com/api/v1/accounts/0xe6d5514b8de7ef9e5f5c4cc2e8ca0207129deb65
+//
+
+export const SAMPLE_ACCOUNT_WITH_NATIVE_EVM_ADDRESS = {
+    "account": "0.0.2957798",
+    "alias": "43KVCS4N47XZ4X24JTBORSQCA4JJ323F",
+    "auto_renew_period": 7776000,
+    "balance": {"balance": 3457440000, "timestamp": "1686309927.971781003", "tokens": []},
+    "created_timestamp": "1685800751.186366002",
+    "decline_reward": false,
+    "deleted": false,
+    "ethereum_nonce": 3,
+    "evm_address": "0xe6d5514b8de7ef9e5f5c4cc2e8ca0207129deb65",
+    "expiry_timestamp": "1693576751.186366002",
+    "key": {"_type": "ECDSA_SECP256K1", "key": "0332efb3b38121d96bb000050f50e402730939dbaf206a8a77b4cfe7d510b6cfb7"},
+    "max_automatic_token_associations": 0,
+    "memo": "lazy-created account",
+    "pending_reward": 0,
+    "receiver_sig_required": false,
+    "staked_account_id": null,
+    "staked_node_id": null,
+    "stake_period_start": null,
+    "transactions": [],
+    "links": {"next": null}
+}
+
+//
 // Contract inspired from: https://mainnet-public.mirrornode.hedera.com/api/v1/contracts/0.0.749775
 //
 
@@ -2015,6 +2392,7 @@ export const SAMPLE_CONTRACT = {
     "file_id": "0.0.749773",
     "max_automatic_token_associations": 0,
     "memo": "Mirror Node acceptance test: 2022-03-07T15:09:15.228564328Z Create contract",
+    "nonce": 1,
     "obtainer_id": null,
     "proxy_account_id": null,
     "timestamp": {
@@ -2565,7 +2943,7 @@ export const SAMPLE_NETWORK_EXCHANGERATE = {
 export const SAMPLE_BLOCKSRESPONSE = {
     "blocks": [
         {
-            "count": 1,
+            "count": 3,
             "hapi_version": "0.29.1",
             "hash": "0xe9630d7d8cc86d0e0d3de5316995bbdf9f2a584524cf18da233abdcff82df97da0a0ec38c6b4046101294896ff88a86b",
             "name": "2022-09-23T06_58_31.328130742Z.rcd.gz",
@@ -2590,6 +2968,8 @@ export const SAMPLE_BLOCKSRESPONSE = {
         }
     ], "links": {"next": "/api/v1/blocks?timestamp=gte:1662111646.528325857&limit=2&block.number=lt:25175997"}
 }
+
+export const SAMPLE_BLOCK = SAMPLE_BLOCKSRESPONSE.blocks[0]
 
 //
 // https://www.4byte.directory/api/v1/signatures/?hex_signature=0xb01ef608

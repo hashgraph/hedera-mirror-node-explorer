@@ -20,6 +20,7 @@
  *
  */
 
+import { describe, it, expect } from 'vitest'
 import {flushPromises, mount} from "@vue/test-utils"
 import router from "@/router";
 import axios from "axios";
@@ -46,7 +47,6 @@ import {HMSF} from "@/utils/HMSF";
 import NotificationBanner from "@/components/NotificationBanner.vue";
 import {TransactionID} from "@/utils/TransactionID";
 import TransactionFilterSelect from "@/components/transaction/TransactionFilterSelect.vue";
-import {NodeRegistry} from "@/components/node/NodeRegistry";
 
 /*
     Bookmarks
@@ -54,20 +54,6 @@ import {NodeRegistry} from "@/components/node/NodeRegistry";
         https://test-utils.vuejs.org/api/
 
  */
-
-Object.defineProperty(window, 'matchMedia', {
-    writable: true,
-    value: jest.fn().mockImplementation(query => ({
-        matches: false,
-        media: query,
-        onchange: null,
-        addListener: jest.fn(), // deprecated
-        removeListener: jest.fn(), // deprecated
-        addEventListener: jest.fn(),
-        removeEventListener: jest.fn(),
-        dispatchEvent: jest.fn(),
-    })),
-});
 
 HMSF.forceUTC = true
 
@@ -107,6 +93,12 @@ describe("AccountDetails.vue", () => {
         const matcher8 = "/api/v1/accounts/" + SAMPLE_ACCOUNT.account + "/rewards"
         mock.onGet(matcher8).reply(200, { rewards: [] })
 
+        const matcher9 = "/api/v1/accounts/" + SAMPLE_ACCOUNT.account + "/allowances/crypto"
+        mock.onGet(matcher9).reply(200, { rewards: [] })
+
+        const matcher10 = "/api/v1/accounts/" + SAMPLE_ACCOUNT.account + "/allowances/tokens"
+        mock.onGet(matcher10).reply(200, { rewards: [] })
+
         const wrapper = mount(AccountDetails, {
             global: {
                 plugins: [router, Oruga]
@@ -120,13 +112,13 @@ describe("AccountDetails.vue", () => {
         // console.log(wrapper.html())
 
         expect(wrapper.text()).toMatch("Account Account ID:" + SAMPLE_ACCOUNT.account)
-        expect(wrapper.get("#balanceValue").text()).toBe("23.42647909$5.7637998234231ĦFRENSKINGDOM")
+        expect(wrapper.get("#balanceValue").text()).toBe("23.42647909$5.76369998234231ĦFRENSKINGDOM")
         expect(wrapper.get("#keyValue").text()).toBe(
             "aa2f 7b3e 759f 4531 ec2e 7941 afa4 49e6 a6e6 10ef b52a dae8 9e9c d8e9 d40d dcbf" +
-            "Copy to Clipboard" +
+            "Copy" +
             "ED25519")
         expect(wrapper.get("#memoValue").text()).toBe("None")
-        expect(wrapper.get("#aliasValue").text()).toBe(ALIAS_HEX + 'Copy to Clipboard')
+        expect(wrapper.get("#aliasValue").text()).toBe(ALIAS_HEX + 'Copy')
         expect(wrapper.get("#createTransactionValue").text()).toBe(TransactionID.normalize(SAMPLE_TRANSACTION.transaction_id))
 
         expect(wrapper.get("#expiresAtValue").text()).toBe("None")
@@ -135,7 +127,7 @@ describe("AccountDetails.vue", () => {
         expect(wrapper.get("#receiverSigRequiredValue").text()).toBe("false")
 
         expect(wrapper.get("#evmAddress").text()).toBe(
-            "EVM Address:0x00000000000000000000000000000000000b2607Copy to Clipboard")
+            "EVM Address:0x00000000000000000000000000000000000b2607Copy")
         expect(wrapper.get("#ethereumNonceValue").text()).toBe("0")
 
         expect(wrapper.get("#stakedToName").text()).toBe("Staked to")
@@ -155,6 +147,9 @@ describe("AccountDetails.vue", () => {
 
         expect(wrapper.find("#recentTransactions").exists()).toBe(true)
         expect(wrapper.findComponent(TransactionTable).exists()).toBe(true)
+
+        wrapper.unmount()
+        await flushPromises()
     });
 
     it("Should update when account id changes", async () => {
@@ -184,6 +179,12 @@ describe("AccountDetails.vue", () => {
         let matcher8 = "/api/v1/accounts/" + SAMPLE_ACCOUNT.account + "/rewards"
         mock.onGet(matcher8).reply(200, { rewards: [] })
 
+        let matcher9 = "/api/v1/accounts/" + SAMPLE_ACCOUNT.account + "/allowances/crypto"
+        mock.onGet(matcher9).reply(200, { rewards: [] })
+
+        let matcher10 = "/api/v1/accounts/" + SAMPLE_ACCOUNT.account + "/allowances/tokens"
+        mock.onGet(matcher10).reply(200, { rewards: [] })
+
         const wrapper = mount(AccountDetails, {
             global: {
                 plugins: [router, Oruga]
@@ -199,7 +200,7 @@ describe("AccountDetails.vue", () => {
         expect(wrapper.text()).toMatch("Account Account ID:" + SAMPLE_ACCOUNT.account)
         expect(wrapper.get("#keyValue").text()).toBe(
             "aa2f 7b3e 759f 4531 ec2e 7941 afa4 49e6 a6e6 10ef b52a dae8 9e9c d8e9 d40d dcbf" +
-            "Copy to Clipboard" +
+            "Copy" +
             "ED25519")
 
         const account2 = SAMPLE_ACCOUNT_DUDE
@@ -213,6 +214,12 @@ describe("AccountDetails.vue", () => {
         matcher8 = "/api/v1/accounts/" + SAMPLE_ACCOUNT_DUDE.account + "/rewards"
         mock.onGet(matcher8).reply(200, { rewards: [] })
 
+        matcher9 = "/api/v1/accounts/" + SAMPLE_ACCOUNT_DUDE.account + "/allowances/crypto"
+        mock.onGet(matcher9).reply(200, { rewards: [] })
+
+        matcher10 = "/api/v1/accounts/" + SAMPLE_ACCOUNT_DUDE.account + "/allowances/tokens"
+        mock.onGet(matcher10).reply(200, { rewards: [] })
+
         await wrapper.setProps({
             accountId: SAMPLE_ACCOUNT_DUDE.account ?? undefined
         })
@@ -223,7 +230,7 @@ describe("AccountDetails.vue", () => {
         expect(wrapper.text()).toMatch("Account Account ID:" + SAMPLE_ACCOUNT_DUDE.account)
         expect(wrapper.get("#keyValue").text()).toBe(
             "38f1 ea46 0e95 d97e ea13 aefa c760 eaf9 9015 4b80 a360 8ab0 1d4a 2649 44d6 8746" +
-            "Copy to Clipboard" +
+            "Copy" +
             "ED25519")
         expect(wrapper.get("#memoValue").text()).toBe("Account Dude Memo in clear")
         expect(wrapper.find("#aliasValue").exists()).toBe(false)
@@ -235,7 +242,7 @@ describe("AccountDetails.vue", () => {
         wrapper.unmount()
         await flushPromises()
 
-        expect(wrapper.vm.balanceCache.autoRefresh.value).toBe(false)
+        expect(wrapper.vm.balanceAnalyzer.mounted.value).toBe(false)
     });
 
     it("Should detect invalid account ID", async () => {
@@ -255,7 +262,10 @@ describe("AccountDetails.vue", () => {
         // console.log(wrapper.html())
         // console.log(wrapper.text())
 
-        expect(wrapper.get("#notificationBanner").text()).toBe("Invalid account ID: " + invalidAccountId)
+        expect(wrapper.get("#notificationBanner").text()).toBe("Invalid account ID, address or alias: " + invalidAccountId)
+
+        wrapper.unmount()
+        await flushPromises()
     });
 
     it("Should display notification of deleted contract", async () => {
@@ -285,6 +295,12 @@ describe("AccountDetails.vue", () => {
         const matcher8 = "/api/v1/accounts/" + SAMPLE_ACCOUNT_DELETED.account + "/rewards"
         mock.onGet(matcher8).reply(200, { rewards: [] })
 
+        const matcher9 = "/api/v1/accounts/" + SAMPLE_ACCOUNT_DELETED.account + "/allowances/crypto"
+        mock.onGet(matcher9).reply(200, { rewards: [] })
+
+        const matcher10 = "/api/v1/accounts/" + SAMPLE_ACCOUNT_DELETED.account + "/allowances/tokens"
+        mock.onGet(matcher10).reply(200, { rewards: [] })
+
         const wrapper = mount(AccountDetails, {
             global: {
                 plugins: [router, Oruga]
@@ -302,11 +318,14 @@ describe("AccountDetails.vue", () => {
         const banner = wrapper.findComponent(NotificationBanner)
         expect(banner.exists()).toBe(true)
         expect(banner.text()).toBe("Account is deleted")
+
+        wrapper.unmount()
+        await flushPromises()
     });
 
     it("Should display account staking to node", async () => {
 
-        process.env = Object.assign(process.env, { VUE_APP_ENABLE_STAKING: true });
+        process.env = Object.assign(process.env, { VITE_APP_ENABLE_STAKING: true });
         await router.push("/") // To avoid "missing required param 'network'" error
 
         const mock = new MockAdapter(axios);
@@ -319,7 +338,6 @@ describe("AccountDetails.vue", () => {
 
         const matcher3 = "/api/v1/network/nodes"
         mock.onGet(matcher3).reply(200, SAMPLE_NETWORK_NODES);
-        NodeRegistry.instance.reload()
 
         const matcher4 = "/api/v1/balances"
         mock.onGet(matcher4).reply(200, SAMPLE_ACCOUNT_HBAR_BALANCE);
@@ -329,6 +347,12 @@ describe("AccountDetails.vue", () => {
 
         const matcher8 = "/api/v1/accounts/" + SAMPLE_ACCOUNT_STAKING_NODE.account + "/rewards"
         mock.onGet(matcher8).reply(200, { rewards: [] })
+
+        const matcher9 = "/api/v1/accounts/" + SAMPLE_ACCOUNT_STAKING_NODE.account + "/allowances/crypto"
+        mock.onGet(matcher9).reply(200, { rewards: [] })
+
+        const matcher10 = "/api/v1/accounts/" + SAMPLE_ACCOUNT_STAKING_NODE.account + "/allowances/tokens"
+        mock.onGet(matcher10).reply(200, { rewards: [] })
 
         const wrapper = mount(AccountDetails, {
             global: {
@@ -344,13 +368,16 @@ describe("AccountDetails.vue", () => {
 
         expect(wrapper.get("#stakedToName").text()).toBe("Staked to")
         expect(wrapper.get("#stakedToValue").text()).toBe("Node 1 - Hosted by Hedera | East Coast, USA")
-        expect(wrapper.get("#pendingRewardValue").text()).toBe("0.12345678$0.0304Period Started Nov 11, 2022, 00:00 UTC")
+        expect(wrapper.get("#pendingRewardValue").text()).toBe("0.12345678$0.03037Period Started Nov 11, 2022, 00:00 UTC")
         expect(wrapper.get("#declineRewardValue").text()).toBe("Accepted")
+
+        wrapper.unmount()
+        await flushPromises()
     });
 
     it("Should display account staking to account", async () => {
 
-        process.env = Object.assign(process.env, { VUE_APP_ENABLE_STAKING: true });
+        process.env = Object.assign(process.env, { VITE_APP_ENABLE_STAKING: true });
         await router.push("/") // To avoid "missing required param 'network'" error
 
         const mock = new MockAdapter(axios);
@@ -363,7 +390,6 @@ describe("AccountDetails.vue", () => {
 
         const matcher3 = "/api/v1/network/nodes"
         mock.onGet(matcher3).reply(200, SAMPLE_NETWORK_NODES);
-        NodeRegistry.instance.reload()
 
         const matcher4 = "/api/v1/balances"
         mock.onGet(matcher4).reply(200, SAMPLE_ACCOUNT_HBAR_BALANCE);
@@ -373,6 +399,12 @@ describe("AccountDetails.vue", () => {
 
         const matcher8 = "/api/v1/accounts/" + SAMPLE_ACCOUNT_STAKING_ACCOUNT.account + "/rewards"
         mock.onGet(matcher8).reply(200, { rewards: [] })
+
+        const matcher9 = "/api/v1/accounts/" + SAMPLE_ACCOUNT_STAKING_ACCOUNT.account + "/allowances/crypto"
+        mock.onGet(matcher9).reply(200, { rewards: [] })
+
+        const matcher10 = "/api/v1/accounts/" + SAMPLE_ACCOUNT_STAKING_ACCOUNT.account + "/allowances/tokens"
+        mock.onGet(matcher10).reply(200, { rewards: [] })
 
         const wrapper = mount(AccountDetails, {
             global: {
@@ -388,7 +420,10 @@ describe("AccountDetails.vue", () => {
 
         expect(wrapper.get("#stakedToName").text()).toBe("Staked to")
         expect(wrapper.get("#stakedToValue").text()).toBe("Account 0.0.5Hosted by Hedera | Central, USA")
-        expect(wrapper.get("#pendingRewardValue").text()).toBe("0.00000000$0.0000")
+        expect(wrapper.get("#pendingRewardValue").text()).toBe("0.00000000$0.00000")
         expect(wrapper.find("#declineRewardValue").exists()).toBe(false)
+
+        wrapper.unmount()
+        await flushPromises()
     });
 });

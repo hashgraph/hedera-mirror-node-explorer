@@ -18,6 +18,7 @@
  *
  */
 
+import {describe, test, expect} from 'vitest'
 import {flushPromises, mount} from "@vue/test-utils"
 import router from "@/router";
 import axios from "axios";
@@ -47,20 +48,6 @@ import {TransactionType} from "@/schemas/HederaSchemas";
         https://test-utils.vuejs.org/api/
 
  */
-
-Object.defineProperty(window, 'matchMedia', {
-    writable: true,
-    value: jest.fn().mockImplementation(query => ({
-        matches: false,
-        media: query,
-        onchange: null,
-        addListener: jest.fn(), // deprecated
-        removeListener: jest.fn(), // deprecated
-        addEventListener: jest.fn(),
-        removeEventListener: jest.fn(),
-        dispatchEvent: jest.fn(),
-    })),
-});
 
 HMSF.forceUTC = true
 
@@ -147,5 +134,8 @@ describe("MainDashboard.vue", () => {
             "0.0.120438" + "None" + "1:59:03.9969 PMMar 8, 2022, UTC" +
             "0.0.120438" + "None" + "1:59:03.9622 PMMar 8, 2022, UTC"
         )
+
+        wrapper.unmount()
+        await flushPromises()
     });
 });

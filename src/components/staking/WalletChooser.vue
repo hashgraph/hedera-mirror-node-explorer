@@ -40,7 +40,7 @@
           <div v-for="d in drivers" :key="d.name">
             <a :id="d.name" @click="chosenWallet=d" @dblclick="handleConnect">
               <figure :class="{'selected':isSelected(d)}" class="h-chooser-figure my-4 mr-6">
-                <img :src="d.iconURL" alt="wallet logo" class="h-chooser-img">
+                <img :src="d.iconURL ?? undefined" alt="wallet logo" class="h-chooser-img">
               </figure>
             </a>
           </div>
@@ -80,7 +80,6 @@ import {walletManager} from "@/router";
 import {WalletDriver} from "@/utils/wallet/WalletDriver";
 import OptOutDialog from "@/components/staking/OptOutDialog.vue";
 import {AppStorage} from "@/AppStorage";
-import {getEnv} from "@/utils/getEnv";
 
 export default defineComponent({
   name: "WalletChooser",
@@ -97,7 +96,7 @@ export default defineComponent({
   setup(props, context) {
     const chosenWallet = ref<WalletDriver | null>(null)
     const showDisclaimerDialog = ref(false)
-    const disclaimer = getEnv('VUE_APP_WALLET_CHOOSER_DISCLAIMER_POPUP') ?? ""
+    const disclaimer = import.meta.env.VITE_APP_WALLET_CHOOSER_DISCLAIMER_POPUP ?? ""
 
     const handleConnect = () => {
       context.emit('update:showDialog', false)

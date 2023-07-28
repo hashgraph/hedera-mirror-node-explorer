@@ -23,12 +23,10 @@ import {BladeSigner, BladeWalletError} from "@bladelabs/blade-web3.js";
 import {HederaNetwork} from "@bladelabs/blade-web3.js/lib/src/models/blade";
 import {WalletDriver} from "@/utils/wallet/WalletDriver";
 import {WalletDriverError} from "@/utils/wallet/WalletDriverError";
-import {AccountUpdateTransaction} from "@hashgraph/sdk";
-import {TransactionID} from "@/utils/TransactionID";
+import {Signer} from "@hashgraph/sdk";
 
 export class WalletDriver_Blade extends WalletDriver {
 
-    private network: string|null = null
     private signer: BladeSigner|null = null
 
     //
@@ -48,9 +46,12 @@ export class WalletDriver_Blade extends WalletDriver {
         if (this.signer === null && hNetwork !== null) {
             const newSigner = new BladeSigner()
             try {
-                await newSigner.createSession(hNetwork)
+                const params = {
+                    network: hNetwork,
+                    dAppCode: "HashScan"
+                }
+                await newSigner.createSession(params)
                 this.signer = newSigner
-                this.network = network
             } catch(reason) {
                 throw this.makeConnectError(reason)
             }
@@ -66,37 +67,12 @@ export class WalletDriver_Blade extends WalletDriver {
                 throw this.disconnectFailure(extra)
             } finally {
                 this.signer = null
-                this.network = null
             }
         }
     }
 
-    public async updateAccount(request: AccountUpdateTransaction): Promise<string> {
-        let result: Promise<string>
-        if (this.signer !== null) {
-            try {
-                const response = await this.signer.call(request)
-                const transactionId = TransactionID.normalize(response.transactionId.toString(), false);
-                result = Promise.resolve(transactionId)
-            } catch(reason) {
-                throw this.callFailure(reason.message)
-            }
-        } else {
-            throw this.callFailure("Signer not found (bug)")
-        }
-        return result
-    }
-
-    public isConnected(): boolean {
-        return this.signer != null
-    }
-
-    public getNetwork(): string|null {
-        return this.network
-    }
-
-    public getAccountId(): string|null {
-        return this.signer?.getAccountId().toString() ?? null
+    public getSigner(): Signer|null {
+        return this.signer
     }
 
     //

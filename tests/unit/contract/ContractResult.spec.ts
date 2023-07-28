@@ -18,6 +18,7 @@
  *
  */
 
+import {describe, it, expect} from 'vitest'
 import {flushPromises, mount} from "@vue/test-utils"
 import router from "@/router";
 import axios from "axios";
@@ -43,42 +44,33 @@ import ContractResultStateChangeEntry from "@/components/contract/ContractResult
 
  */
 
-Object.defineProperty(window, 'matchMedia', {
-    writable: true,
-    value: jest.fn().mockImplementation(query => ({
-        matches: false,
-        media: query,
-        onchange: null,
-        addListener: jest.fn(), // deprecated
-        removeListener: jest.fn(), // deprecated
-        addEventListener: jest.fn(),
-        removeEventListener: jest.fn(),
-        dispatchEvent: jest.fn(),
-    })),
-});
-
 HMSF.forceUTC = true
 
 describe("ContractResult.vue", () => {
 
-    it("Should display the contract result and logs, given transaction ID", async () => {
+    it("Should display the contract result and logs, given consensus timestamp", async () => {
 
         await router.push("/") // To avoid "missing required param 'network'" error
 
-        const transactionId = "0.0.846260-1662655524-114667756"
         const contractId = SAMPLE_CONTRACT_RESULT_DETAILS.contract_id
         const timestamp = SAMPLE_CONTRACT_RESULT_DETAILS.timestamp
 
         const mock = new MockAdapter(axios);
-        const matcher1 = "/api/v1/contracts/results/" + transactionId
-        mock.onGet(matcher1).reply(200, SAMPLE_CONTRACT_RESULT_DETAILS)
+        const matcher1 = "/api/v1/contracts/results"
+        const param1 = { timestamp: timestamp, internal: true }
+        mock.onGet(matcher1, param1).reply(200, {
+            results: [ SAMPLE_CONTRACT_RESULT_DETAILS ], "links": {"next": null}
+        } );
+
+        const matcher2 = "/api/v1/contracts/" + contractId + "/results/" + timestamp
+        mock.onGet(matcher2).reply(200, SAMPLE_CONTRACT_RESULT_DETAILS);
 
         const wrapper = mount(ContractResult, {
             global: {
                 plugins: [router, Oruga]
             },
             props: {
-                transactionIdOrHash: transactionId,
+                timestamp: timestamp,
                 topLevel: true
             },
         });
@@ -88,38 +80,47 @@ describe("ContractResult.vue", () => {
 
         expect(wrapper.text()).toMatch(RegExp("^Contract Result for " + contractId + " at " + timestamp))
         expect(wrapper.get("#resultValue").text()).toBe("SUCCESS")
-        expect(wrapper.get("#fromValue").text()).toBe("0x00000000000000000000000000000000000ce9b4Copy to Clipboard(0.0.846260)")
-        expect(wrapper.get("#toValue").text()).toBe("0x0000000000000000000000000000000000103783Copy to Clipboard(0.0.1062787)")
+        expect(wrapper.get("#fromValue").text()).toBe("0x00000000000000000000000000000000000ce9b4Copy(0.0.846260)")
+        expect(wrapper.get("#toValue").text()).toBe("0x0000000000000000000000000000000000103783Copy(0.0.1062787)")
         expect(wrapper.get("#typeValue").text()).toBe("None")
-        // expect(wrapper.get("#functionParametersValue").text()).toBe("18cb afe5 0000 0000 0000 0000 0000 0000 0000 0000 0000 0000 0000 0000 0000 0017 4876 e800 0000 0000 0000 0000 0000 0000 0000 0000 0000 0000 0000 0000 0000 001b 2702 b2a0 0000 0000 0000 0000 0000 0000 0000 0000 0000 0000 0000 0000 0000 0000 0000 00a0 0000 0000 0000 0000 0000 0000 0000 0000 0000 0000 0000 0000 0000 0000 000c e9b4 0000 0000 0000 0000 0000 0000 0000 0000 0000 0000 0000 0000 0000 0183 1e10 602d 0000 0000 0000 0000 0000 0000 0000 0000 0000 0000 0000 0000 0000 0000 0000 0003 0000 0000 0000 0000 0000 0000 0000 0000 0000 0000 0000 0000 0000 0000 000c ba44 0000 0000 0000 0000 0000 0000 0000 0000 0000 0000 0000 0000 0000 0000 000d 1ea6 0000 0000 0000 0000 0000 0000 0000 0000 0000 0000 0000 0000 0000 0000 0010 3708Copy to Clipboard")
+        // expect(wrapper.get("#functionParametersValue").text()).toBe("18cb afe5 0000 0000 0000 0000 0000 0000 0000 0000 0000 0000 0000 0000 0000 0017 4876 e800 0000 0000 0000 0000 0000 0000 0000 0000 0000 0000 0000 0000 0000 001b 2702 b2a0 0000 0000 0000 0000 0000 0000 0000 0000 0000 0000 0000 0000 0000 0000 0000 00a0 0000 0000 0000 0000 0000 0000 0000 0000 0000 0000 0000 0000 0000 0000 000c e9b4 0000 0000 0000 0000 0000 0000 0000 0000 0000 0000 0000 0000 0000 0183 1e10 602d 0000 0000 0000 0000 0000 0000 0000 0000 0000 0000 0000 0000 0000 0000 0000 0003 0000 0000 0000 0000 0000 0000 0000 0000 0000 0000 0000 0000 0000 0000 000c ba44 0000 0000 0000 0000 0000 0000 0000 0000 0000 0000 0000 0000 0000 0000 000d 1ea6 0000 0000 0000 0000 0000 0000 0000 0000 0000 0000 0000 0000 0000 0000 0010 3708Copy")
         expect(wrapper.get("#errorMessageValue").text()).toBe("None")
         expect(wrapper.get("#gasLimitValue").text()).toBe("480,000")
         expect(wrapper.get("#gasUsedValue").text()).toBe("384,000")
         expect(wrapper.get("#maxFeePerGasValue").text()).toBe("None")
         expect(wrapper.get("#maxPriorityFeePerGasValue").text()).toBe("None")
         expect(wrapper.get("#gasPriceValue").text()).toBe("None")
+        expect(wrapper.get("#ethereumNonceValue").text()).toBe("104")
 
         expect(wrapper.findAll("#logIndexValue").length).toBe(3)
+
+        wrapper.unmount()
+        await flushPromises()
     });
 
     it("Should display the reverted contract result and decode the error message", async () => {
 
         await router.push("/") // To avoid "missing required param 'network'" error
 
-        const transactionId = "0.0.1466-1677085130-338772063"
         const contractId = SAMPLE_REVERT_CONTRACT_RESULT_DETAILS.contract_id
         const timestamp = SAMPLE_REVERT_CONTRACT_RESULT_DETAILS.timestamp
 
         const mock = new MockAdapter(axios);
-        const matcher1 = "/api/v1/contracts/results/" + transactionId
-        mock.onGet(matcher1).reply(200, SAMPLE_REVERT_CONTRACT_RESULT_DETAILS)
+        const matcher1 = "/api/v1/contracts/results"
+        const param1 = { timestamp: timestamp, internal: true }
+        mock.onGet(matcher1, param1).reply(200, {
+            results: [ SAMPLE_REVERT_CONTRACT_RESULT_DETAILS ], "links": {"next": null}
+        } );
+
+        const matcher2 = "/api/v1/contracts/" + contractId + "/results/" + timestamp
+        mock.onGet(matcher2).reply(200, SAMPLE_REVERT_CONTRACT_RESULT_DETAILS);
 
         const wrapper = mount(ContractResult, {
             global: {
                 plugins: [router, Oruga]
             },
             props: {
-                transactionIdOrHash: transactionId,
+                timestamp: timestamp,
                 topLevel: true
             },
         });
@@ -130,28 +131,42 @@ describe("ContractResult.vue", () => {
         expect(wrapper.text()).toMatch(RegExp("^Contract Result for " + contractId + " at " + timestamp))
         expect(wrapper.get("#resultValue").text()).toBe("CONTRACT_REVERT_EXECUTED")
         expect(wrapper.get("#errorMessageValue").text()).toBe("Insufficient token balance for wiped")
+        expect(wrapper.get("#ethereumNonceValue").text()).toBe("None")
 
         expect(wrapper.findAll("#logIndexValue").length).toBe(0)
+
+        wrapper.unmount()
+        await flushPromises()
     });
 
     it("Should display the reverted contract result with call trace and state trace", async () => {
 
         await router.push("/") // To avoid "missing required param 'network'" error
 
-        const transactionId = "0.0.902-1677504373-235127424"
 
         const mock = new MockAdapter(axios);
-        const matcher1 = "/api/v1/contracts/results/" + transactionId
-        mock.onGet(matcher1).reply(200, SAMPLE_REVERT_CONTRACT_RESULT_DETAILS_WITH_TRACES)
-        const matcher2 = "/api/v1/contracts/results/" + transactionId + '/actions'
-        mock.onGet(matcher2).reply(200, SAMPLE_REVERT_CONTRACT_RESULT_ACTIONS)
+
+        const timestamp = SAMPLE_REVERT_CONTRACT_RESULT_DETAILS_WITH_TRACES.timestamp
+        const matcher1 = "/api/v1/contracts/results"
+        const param1 = { timestamp: timestamp, internal: true }
+        mock.onGet(matcher1, param1).reply(200, {
+            results: [ SAMPLE_REVERT_CONTRACT_RESULT_DETAILS_WITH_TRACES ], "links": {"next": null}
+        } );
+
+        const contractId = SAMPLE_REVERT_CONTRACT_RESULT_DETAILS_WITH_TRACES.contract_id
+        const matcher2 = "/api/v1/contracts/" + contractId + "/results/" + timestamp
+        mock.onGet(matcher2).reply(200, SAMPLE_REVERT_CONTRACT_RESULT_DETAILS_WITH_TRACES);
+
+        const hash = SAMPLE_REVERT_CONTRACT_RESULT_DETAILS_WITH_TRACES.hash
+        const matcher3 = "/api/v1/contracts/results/" + hash + '/actions?limit=100'
+        mock.onGet(matcher3).reply(200, SAMPLE_REVERT_CONTRACT_RESULT_ACTIONS)
 
         const wrapper = mount(ContractResult, {
             global: {
                 plugins: [router, Oruga]
             },
             props: {
-                transactionIdOrHash: transactionId,
+                timestamp: timestamp,
                 topLevel: false,
                 isParent: true
             },
@@ -176,27 +191,27 @@ describe("ContractResult.vue", () => {
         expect(actions.length).toBe(3)
         expect(actions[0].text()).toBe(
             "1! CALL" +
-            "0x00000000000000000000000000000000000022eeCopy to Clipboard(0.0.8942)" +
+            "0x00000000000000000000000000000000000022eeCopy(0.0.8942)" +
             "→" +
             "0.00000000" +
             "→" +
-            "0x00000000000000000000000000000000000028aaCopy to Clipboard(0.0.10410)" +
+            "0x00000000000000000000000000000000000028aaCopy(0.0.10410)" +
             "7979000")
         expect(actions[1].text()).toBe(
             "1_1! CALL" +
-            "0x00000000000000000000000000000000000028aaCopy to Clipboard(0.0.10410)" +
+            "0x00000000000000000000000000000000000028aaCopy(0.0.10410)" +
             "→" +
             "0.00000000" +
             "→" +
-            "0x00000000000000000000000000000000000082c9Copy to Clipboard(0.0.33481)" +
+            "0x00000000000000000000000000000000000082c9Copy(0.0.33481)" +
             "7840814")
         expect(actions[2].text()).toBe(
             "1_1_1CALL" +
-            "0x00000000000000000000000000000000000082c9Copy to Clipboard(0.0.33481)" +
+            "0x00000000000000000000000000000000000082c9Copy(0.0.33481)" +
             "→" +
             "0.00000000" +
             "→" +
-            "0x00000000000000000000000000000000000082cbCopy to Clipboard(0.0.33483)" +
+            "0x00000000000000000000000000000000000082cbCopy(0.0.33483)" +
             "7700872")
 
         const stateTrace = wrapper.findComponent(ContractResultStates)
@@ -219,24 +234,27 @@ describe("ContractResult.vue", () => {
         expect(entries.length).toBe(5)
         expect(entries[0].text()).toBe(
             "0.0.10410" +
-            "0x20a269221c216afce16a83d0401af060a0d39b19Copy to Clipboard" +
+            "0x20a269221c216afce16a83d0401af060a0d39b19Copy" +
             "Contract HBar Balance Difference:" +
             "None" +
-            "10a8 1eed 9d63 d16f ace5 e763 5790 5348 e625 3d33 9408 6026 bb2b f214 5d7c c249Copy to Clipboard" +
+            "10a8 1eed 9d63 d16f ace5 e763 5790 5348 e625 3d33 9408 6026 bb2b f214 5d7c c249Copy" +
             "Decimal: not available" +
-            "0000 0000 0000 0000 0000 0000 0000 0000 0000 0000 0000 0000 0000 0000 0000 0001Copy to Clipboard" +
+            "0000 0000 0000 0000 0000 0000 0000 0000 0000 0000 0000 0000 0000 0000 0000 0001Copy" +
             "Decimal: 1" +
             "None"
         )
         expect(entries[1].text()).toBe(
-            "10a8 1eed 9d63 d16f ace5 e763 5790 5348 e625 3d33 9408 6026 bb2b f214 5d7c c24aCopy to Clipboard" +
+            "10a8 1eed 9d63 d16f ace5 e763 5790 5348 e625 3d33 9408 6026 bb2b f214 5d7c c24aCopy" +
             "Decimal: not available" +
-            "41ba 5057 6c59 ba82 f084 85ca 644d d627 db89 235f b6e2 1635 5ebb 2aa8 8cce b961Copy to Clipboard" +
+            "41ba 5057 6c59 ba82 f084 85ca 644d d627 db89 235f b6e2 1635 5ebb 2aa8 8cce b961Copy" +
             "Decimal: not available" +
             "None"
         )
 
         expect(wrapper.findAll("#logIndexValue").length).toBe(0)
+
+        wrapper.unmount()
+        await flushPromises()
     });
 
 });

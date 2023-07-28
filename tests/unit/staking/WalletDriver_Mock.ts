@@ -19,8 +19,9 @@
  */
 
 import {WalletDriver} from "@/utils/wallet/WalletDriver";
-import {AccountUpdateTransaction} from "@hashgraph/sdk";
+import {AccountAllowanceApproveTransaction, AccountUpdateTransaction} from "@hashgraph/sdk";
 import {AccountBalanceTransactions} from "@/schemas/HederaSchemas";
+import {Signer} from "@hashgraph/sdk/lib/Signer";
 
 export class WalletDriver_Mock extends WalletDriver {
 
@@ -63,33 +64,37 @@ export class WalletDriver_Mock extends WalletDriver {
         }
     }
 
-    public async updateAccount(request: AccountUpdateTransaction): Promise<string> {
+    public async executeTransaction(request: AccountUpdateTransaction|AccountAllowanceApproveTransaction): Promise<string> {
         let result: string
 
         this.updateAccountCounter += 1
         if (this.connected) {
-            const targetAccountID = request.accountId?.toString()
-            if (this.account.account == targetAccountID) {
-                if (request.stakedNodeId !== null) {
-                    const stakeNodeId = request.stakedNodeId.toNumber()
-                    this.account.staked_node_id = stakeNodeId != -1 ? stakeNodeId : null
-                    this.account.staked_account_id = null
-                    this.account.stake_period_start = "1668124800.000000000"
-                } else if (request.stakedAccountId !== null) {
-                    const stakedAccountId = request.stakedAccountId.toString()
-                    this.account.staked_node_id = null
-                    this.account.staked_account_id = stakedAccountId != "0.0.0" ? stakedAccountId : null
-                    this.account.stake_period_start = null
+            if (request instanceof AccountUpdateTransaction) {
+                const targetAccountID = request.accountId?.toString()
+                if (this.account.account == targetAccountID) {
+                    if (request.stakedNodeId !== null) {
+                        const stakeNodeId = request.stakedNodeId.toNumber()
+                        this.account.staked_node_id = stakeNodeId != -1 ? stakeNodeId : null
+                        this.account.staked_account_id = null
+                        this.account.stake_period_start = "1668124800.000000000"
+                    } else if (request.stakedAccountId !== null) {
+                        const stakedAccountId = request.stakedAccountId.toString()
+                        this.account.staked_node_id = null
+                        this.account.staked_account_id = stakedAccountId != "0.0.0" ? stakedAccountId : null
+                        this.account.stake_period_start = null
+                    }
+                    if (!this.account.staked_node_id && !this.account.staked_account_id) {
+                        this.account.stake_period_start = null
+                    }
+                    if (request.declineStakingRewards !== null) {
+                        this.account.decline_reward = request.declineStakingRewards
+                    }
+                    result = this.transactionId
+                } else {
+                    throw this.callFailure("Unexpected account id: " + targetAccountID)
                 }
-                if (!this.account.staked_node_id && !this.account.staked_account_id) {
-                    this.account.stake_period_start = null
-                }
-                if (request.declineStakingRewards !== null) {
-                    this.account.decline_reward = request.declineStakingRewards
-                }
-                result = this.transactionId
             } else {
-                throw this.callFailure("Unexpected account id: " + targetAccountID)
+                throw this.callFailure("Unexpected transaction subclass: " + request.constructor.name)
             }
         } else {
             throw this.callFailure("Not connected yet")
@@ -98,16 +103,15 @@ export class WalletDriver_Mock extends WalletDriver {
         return Promise.resolve(result)
     }
 
-    getAccountId(): string | null {
-        return this.connected ? (this.account.account ?? null) : null
+    getSigner(): Signer | null {
+        return null
     }
 
-    getNetwork(): string | null {
-        return this.connected ? this.network : null
+    getAccountId(): string | null {
+        return this.connected ? (this.account.account ?? null) : null
     }
 
     isConnected(): boolean {
         return this.connected
     }
-
 }

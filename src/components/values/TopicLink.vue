@@ -24,7 +24,7 @@
 
 <template>
   <div class="is-inline-block">
-    <router-link v-if="topicId" :to="topicRoute">
+    <router-link v-if="topicRoute" :to="topicRoute">
       <span class="is-numeric">{{ topicId }}</span>
     </router-link>
     <div v-else>?</div>

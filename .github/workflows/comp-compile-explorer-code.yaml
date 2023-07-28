@@ -57,7 +57,7 @@ jobs:
       - name: Setup NodeJS
         uses: actions/setup-node@v3
         with:
-          node-version: 16
+          node-version: 19
           cache: npm
 
       - name: Setup Xvfb
@@ -88,20 +88,20 @@ jobs:
         run: npm run build
 
       - name: Unit Tests
-        uses: ArtiomTr/jest-coverage-report-action@v2
+        run: npm run cover:unit
         if: ${{ inputs.enable-unit-tests && !cancelled() }}
-        with:
-          test-script: npm run test:unit
+
+      - name: Report Unit Test Coverage
+        uses: davelosert/vitest-coverage-report-action@v2
+        if: ${{ inputs.enable-unit-tests && !cancelled() }}
 
       - name: Cypress run
-        uses: cypress-io/github-action@v4
+        uses: cypress-io/github-action@v5
         if: ${{ inputs.enable-e2e-tests && !cancelled() }}
         with:
           install-command: npm install
           browser: chrome
-          headless: true
-          start: npm run serve:prod
-          wait-on: 'http://localhost:38920'
+          start: npm run dev
           spec: tests/e2e/specs/*
 
       - name: Sonar Analysis

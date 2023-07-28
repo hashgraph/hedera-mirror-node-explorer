@@ -30,10 +30,13 @@
     <template v-if="noAnchor">
       <span class="is-numeric">{{ accountId }}</span>
     </template>
-    <template v-else>
+    <template v-else-if="accountRoute">
       <router-link :to="accountRoute">
         <span class="is-numeric">{{ accountId }}</span>
       </router-link>
+    </template>
+    <template v-else>
+      <span class="is-numeric">{{ accountId }}</span>
     </template>
     <template v-if="showExtra && extra.length > 0">
       <span class="ml-2 h-is-smaller h-is-extra-text is-numeric">{{ extra }}</span>
@@ -52,10 +55,13 @@
 
 <script lang="ts">
 
-import {computed, defineComponent, inject, PropType, ref} from "vue";
+import {computed, defineComponent, inject, onBeforeUnmount, onMounted, PropType, ref, watch} from "vue";
 import {initialLoadingKey} from "@/AppKeys";
 import {routeManager} from "@/router";
-import {NodeRegistry} from "@/components/node/NodeRegistry";
+import {NetworkCache} from "@/utils/cache/NetworkCache";
+import {ContractByIdCache} from "@/utils/cache/ContractByIdCache";
+import {RouteLocationRaw} from "vue-router";
+import {makeOperatorDescription} from "@/schemas/HederaUtils";
 
 export default defineComponent({
   name: "AccountLink",
@@ -81,17 +87,53 @@ export default defineComponent({
   },
 
   setup(props) {
+
+    const networkLookup = NetworkCache.instance.makeLookup()
+    onMounted(() => networkLookup.mount())
+    onBeforeUnmount(() => networkLookup.unmount())
+
+    const nodes = computed(() => networkLookup.entity.value ?? [])
+
     const extra = computed(() => {
-      return NodeRegistry.getDescription(ref(null), ref(props.accountId??null)) ?? ""
+      const result = props.accountId ? makeOperatorDescription(props.accountId, nodes.value) : null
+      return result ?? ""
     })
 
-    const accountRoute = computed(() => {
-      return props.accountId ?  routeManager.makeRouteToAccount(props.accountId) : null
-    })
+    const accountRoute = ref<RouteLocationRaw | null>(null)
 
     const initialLoading = inject(initialLoadingKey, ref(false))
 
-    return { extra, accountRoute, initialLoading }
+    const selectRoute = async (accountId: string) => {
+      let result: RouteLocationRaw | null
+      try {
+        if (await ContractByIdCache.instance.lookup(accountId) !== null) {
+          result = routeManager.makeRouteToContract(accountId)
+        } else {
+          result = routeManager.makeRouteToAccount(accountId)
+        }
+      }
+      catch {
+        result = null
+      }
+      return Promise.resolve(result)
+    }
+
+    onMounted(() => {
+      if (props.accountId) {
+        selectRoute(props.accountId).then((route) => accountRoute.value = route)
+      } else {
+        accountRoute.value = null
+      }
+    })
+    watch(() => props.accountId, (newValue) => {
+      if (newValue) {
+        selectRoute(newValue).then((route) => accountRoute.value = route)
+      } else {
+        accountRoute.value = null
+      }
+    })
+
+    return {extra, accountRoute, initialLoading}
   }
 });
 

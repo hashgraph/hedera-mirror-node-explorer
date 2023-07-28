@@ -1,0 +1,17 @@
+{{- if .Values.autoscaling.enabled -}}
+apiVersion: autoscaling/v2
+kind: HorizontalPodAutoscaler
+metadata:
+  labels: {{ include "hedera-explorer.labels" . | nindent 4 }}
+  name: {{ include "hedera-explorer.fullname" . }}
+  namespace: {{ include "hedera-explorer.namespace" . }}
+spec:
+  behavior: {{ toYaml .Values.autoscaling.behavior | nindent 4 }}
+  maxReplicas: {{ .Values.autoscaling.maxReplicas }}
+  metrics: {{ tpl (toYaml .Values.autoscaling.metrics) . | nindent 4 }}
+  minReplicas: {{ .Values.autoscaling.minReplicas }}
+  scaleTargetRef:
+    apiVersion: apps/v1
+    kind: Deployment
+    name: {{ include "hedera-explorer.fullname" . }}
+{{- end -}}

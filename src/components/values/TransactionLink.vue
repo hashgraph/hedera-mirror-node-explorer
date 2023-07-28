@@ -45,20 +45,18 @@
 import {computed, defineComponent, onMounted, PropType, ref, watch} from "vue";
 import {TransactionID} from "@/utils/TransactionID";
 import {routeManager} from "@/router";
-import {TransactionCollector} from "@/utils/collector/TransactionCollector";
-import {TransactionByIdResponse, TransactionResponse} from "@/schemas/HederaSchemas";
-import {AxiosResponse} from "axios";
+import {Transaction} from "@/schemas/HederaSchemas";
 import {PathParam} from "@/utils/PathParam";
 import {Timestamp} from "@/utils/Timestamp";
 import {TransactionHash} from "@/utils/TransactionHash";
-import {TransactionByHashCollector} from "@/utils/collector/TransactionByHashCollector";
+import {TransactionByHashCache} from "@/utils/cache/TransactionByHashCache";
+import {TransactionByTsCache} from "@/utils/cache/TransactionByTsCache";
 
 export default defineComponent({
   name: "TransactionLink",
 
   props: {
     transactionLoc: String as PropType<string|undefined>,
-    transactionId: String as PropType<string|undefined>,
     showNone: {
       type: Boolean,
       default: true
@@ -69,22 +67,24 @@ export default defineComponent({
 
     const normalizedId = ref<string|null>(null)
     const updateNormalizedId = () => {
-      if (props.transactionId) {
-        normalizedId.value = props.transactionId
-      } else if (props.transactionLoc) {
+      if (props.transactionLoc) {
         const tloc = PathParam.parseTransactionLoc(props.transactionLoc)
         if (tloc instanceof Timestamp) {
-          TransactionCollector.instance.fetch(props.transactionLoc).then((r: AxiosResponse<TransactionResponse>) => {
-            const transactions = r.data.transactions ?? []
-            const transaction0 = transactions.length >= 1 ? transactions[0] : null
-            normalizedId.value = transaction0?.transaction_id ?? null
-          })
+          TransactionByTsCache.instance.lookup(props.transactionLoc)
+              .then((t: Transaction|null) => {
+                normalizedId.value = t?.transaction_id ?? null
+              })
+              .catch(() => {
+                normalizedId.value = null
+              })
         } else if (tloc instanceof TransactionHash) {
-          TransactionByHashCollector.instance.fetch(props.transactionLoc).then((r: AxiosResponse<TransactionByIdResponse>) => {
-            const transactions = r.data.transactions ?? []
-            const transaction0 = transactions.length >= 1 ? transactions[0] : null
-            normalizedId.value = transaction0?.transaction_id ?? null
-          })
+          TransactionByHashCache.instance.lookup(props.transactionLoc)
+              .then((t: Transaction|null) => {
+                normalizedId.value = t?.transaction_id ?? null
+              })
+              .catch(() => {
+                normalizedId.value = null
+              })
         } else {
           normalizedId.value = null
         }
@@ -92,7 +92,7 @@ export default defineComponent({
         normalizedId.value = null
       }
     }
-    watch([computed(() => props.transactionLoc), computed(() => props.transactionId)], () => updateNormalizedId())
+    watch(computed(() => props.transactionLoc), () => updateNormalizedId())
     onMounted(() => updateNormalizedId())
 
     const formattedId = computed(() => {
@@ -100,7 +100,7 @@ export default defineComponent({
     })
 
     const routeToTransaction = computed(() => {
-      return props.transactionLoc ? routeManager.makeRouteToTransaction(props.transactionLoc, normalizedId.value ?? undefined) : null
+      return props.transactionLoc ? routeManager.makeRouteToTransaction(props.transactionLoc) : null
     })
 
     return { formattedId, routeToTransaction }

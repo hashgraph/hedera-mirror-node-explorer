@@ -40,7 +40,7 @@
           <span v-if="!isTouchDevice && isMediumScreen"> is a ledger explorer for the Hedera network.</span>
         </span>
         <span class="h-is-text-size-1" style="font-weight:300; color: #DBDBDB">
-          Built {{ buildTime }}
+          Release <a :href="buildReleaseUrl">{{ buildRelease }}</a> built {{ buildTime }}
         </span>
         <a data-cy="termsOfUse" v-if="termsOfUseURL" :href="termsOfUseURL" style="line-height: 1rem">
           <span class="h-is-text-size-3" style="font-weight:300">
@@ -70,7 +70,6 @@
 <script lang="ts">
 
 import {defineComponent, inject} from "vue";
-import {getEnv} from "@/utils/getEnv";
 
 export default defineComponent({
   name: "Footer",
@@ -83,17 +82,33 @@ export default defineComponent({
   },
 
   setup() {
+    let buildRelease = inject('buildRelease', "not available")
+    let buildReleaseUrl = "https://github.com/hashgraph/hedera-mirror-node-explorer"
+    const buildShortCommitHash = inject('buildShortCommitHash', "not available")
+    const disposableReleaseDetails = "-0-g" + buildShortCommitHash;
+    if(buildRelease.includes(disposableReleaseDetails)) {
+      // Commit matches a specific release (i.e., v23.5.0), show only release version
+      buildRelease = buildRelease.replace(disposableReleaseDetails, "")
+      // Link release page
+      buildReleaseUrl += "/releases/tag/" + buildRelease
+    } else {
+      // Show git version (<tag>-<commit distance>-<short commit hash> (i.e., v23.5.0-1-g706e821)
+      // Link to specific commit
+      buildReleaseUrl += "/tree/" + buildShortCommitHash
+    }
     const buildTime = inject('buildTime', "not available")
 
     const isMediumScreen = inject('isMediumScreen', true)
     const isSmallScreen = inject('isSmallScreen', true)
     const isTouchDevice = inject('isTouchDevice', false)
 
-    const productName = getEnv('VUE_APP_PRODUCT_NAME') ?? "Hedera Mirror Node Explorer"
-    const sponsorURL = getEnv('VUE_APP_SPONSOR_URL') ?? ""
-    const termsOfUseURL = getEnv('VUE_APP_TERMS_OF_USE_URL') ? '/' + getEnv('VUE_APP_TERMS_OF_USE_URL') : ""
+    const productName = import.meta.env.VITE_APP_PRODUCT_NAME ?? "Hedera Mirror Node Explorer"
+    const sponsorURL = import.meta.env.VITE_APP_SPONSOR_URL ?? ""
+    const termsOfUseURL = import.meta.env.VITE_APP_TERMS_OF_USE_URL ? '/' + import.meta.env.VITE_APP_TERMS_OF_USE_URL : ""
 
     return {
+      buildRelease,
+      buildReleaseUrl,
       buildTime,
       isSmallScreen,
       isMediumScreen,

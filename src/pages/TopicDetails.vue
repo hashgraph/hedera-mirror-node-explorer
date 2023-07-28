@@ -31,7 +31,7 @@
       <template v-slot:title>
         <span class="h-is-primary-title">Messages for Topic </span>
         <span v-if="validEntityId" class="h-is-secondary-text">{{ normalizedTopicId }}</span>
-        <span v-if="topicChecksum" class="has-text-grey" style="font-size: 28px">-{{ topicChecksum }}</span>
+        <span v-if="topicChecksum" class="has-text-grey" style="font-size: 14px">-{{ topicChecksum }}</span>
       </template>
 
       <template v-slot:control>
