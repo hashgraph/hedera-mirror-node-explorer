@@ -21,9 +21,9 @@
   "dependencies": {
     "@bladelabs/blade-web3.js": "1.0.0",
     "@ethereum-sourcify/bytecode-utils": "^1.1.0",
-    "@fortawesome/fontawesome-svg-core": "^6.3.0",
-    "@fortawesome/free-brands-svg-icons": "^6.3.0",
-    "@fortawesome/free-solid-svg-icons": "^6.3.0",
+    "@fortawesome/fontawesome-svg-core": "^6.4.0",
+    "@fortawesome/free-brands-svg-icons": "^6.4.0",
+    "@fortawesome/free-solid-svg-icons": "^6.4.0",
     "@fortawesome/vue-fontawesome": "^3.0.3",
     "@hashgraph/proto": "^2.12.0",
     "@hashgraph/sdk": "^2.27.0",
