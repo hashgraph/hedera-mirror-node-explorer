@@ -28,14 +28,12 @@
 
     <DashboardCard class="h-card">
       <template v-slot:title>
-        <div class="is-flex is-align-items-center">
+        <div class="is-flex is-align-items-center is-flex-wrap-wrap">
           <span class="h-is-primary-title mr-1">Transaction </span>
           <span class="h-is-secondary-text mr-3">{{ formattedTransactionId ?? "" }}</span>
-          <div v-if="transaction">
-            <div v-if="transactionSucceeded"
-                 class="h-has-pill has-background-success mr-3 h-is-text-size-2 mt-3">SUCCESS
-            </div>
-            <div v-else class="h-has-pill has-background-danger mr-3 h-is-text-size-2 mt-3">FAILURE</div>
+          <div v-if="transaction" class="h-is-text-size-2 mt-1">
+            <div v-if="transactionSucceeded" class="h-has-pill has-background-success">SUCCESS</div>
+            <div v-else class="h-has-pill has-background-danger">FAILURE</div>
           </div>
         </div>
         <span v-if="routeToAllTransactions && !isLargeScreen">
@@ -59,7 +57,7 @@
         <Property id="transactionType">
           <template v-slot:name>Type</template>
           <template v-slot:value>
-            <StringValue :string-value="transactionType ? makeTypeLabel(transactionType) : undefined"/>
+            <StringValue :string-value="transactionType ? makeTypeLabel(transactionType) : null"/>
             <div v-if="scheduledTransaction" id="scheduledLink">
               <router-link :to="routeManager.makeRouteToTransactionObj(scheduledTransaction)">
                 <span class="h-is-text-size-3 has-text-grey">Show scheduled transaction</span>
@@ -76,7 +74,7 @@
         <Property id="transactionHash">
           <template v-slot:name>Transaction Hash</template>
           <template v-slot:value>
-            <HexaValue v-bind:byteString="formattedHash ?? undefined" v-bind:show-none="true"/>
+            <HexaValue v-bind:byteString="formattedHash" v-bind:show-none="true"/>
           </template>
         </Property>
         <Property id="blockNumber">
@@ -154,7 +152,7 @@
           <template v-slot:name>Net Amount</template>
           <template v-slot:value>
             <HbarAmount v-if="transaction" :amount="netAmount" :show-extra="true"
-                        :timestamp="transaction.consensus_timestamp"/>
+                        :timestamp="transaction?.consensus_timestamp"/>
           </template>
         </Property>
         <Property id="duration">
@@ -213,7 +211,7 @@
       </template>
     </DashboardCard>
 
-    <DashboardCard class="h-card">
+    <DashboardCard v-if="displayTransfers" class="h-card">
       <template v-slot:title>
         <span class="h-is-secondary-title">Transfers</span>
       </template>
@@ -297,6 +295,7 @@ export default defineComponent({
 
   setup: function (props) {
     const isSmallScreen = inject('isSmallScreen', true)
+    const isMediumScreen = inject('isMediumScreen', true)
     const isLargeScreen = inject('isLargeScreen', true)
     const isTouchDevice = inject('isTouchDevice', false)
 
@@ -325,6 +324,11 @@ export default defineComponent({
       return transactionGroupAnalyzer.childTransactions.value.length > MAX_INLINE_CHILDREN
     })
 
+    const displayTransfers = computed(() =>
+        (transactionDetail.value?.transfers && transactionDetail.value.transfers.length > 0)
+        || (transactionDetail.value?.token_transfers && transactionDetail.value.token_transfers.length > 0)
+        || (transactionDetail.value?.nft_transfers && transactionDetail.value.nft_transfers.length > 0)
+    )
 
     const routeName = computed(() => {
       return transactionAnalyzer.entityDescriptor.value?.routeName
@@ -410,6 +414,7 @@ export default defineComponent({
 
     return {
       isSmallScreen,
+      isMediumScreen,
       isLargeScreen,
       isTouchDevice,
       showMaxFeeTooltip,
@@ -436,6 +441,7 @@ export default defineComponent({
       makeOperatorAccountLabel,
       routeToAllTransactions,
       displayAllChildrenLinks,
+      displayTransfers,
       topicMessage: topicMessageLookup.entity,
       isTokenAssociation: transactionAnalyzer.isTokenAssociation,
       associatedTokens: transactionAnalyzer.tokens

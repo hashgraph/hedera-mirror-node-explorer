@@ -40,9 +40,9 @@
 
   <ProgressDialog v-model:show-dialog="showProgressDialog"
                   :mode="progressDialogMode"
-                  :main-message="progressMainMessage ?? undefined"
-                  :extra-message="progressExtraMessage ?? undefined"
-                  :extra-transaction-id="progressExtraTransactionId ?? undefined"
+                  :main-message="progressMainMessage"
+                  :extra-message="progressExtraMessage"
+                  :extra-transaction-id="progressExtraTransactionId"
                   :show-spinner="showProgressSpinner"
   >
     <template v-slot:dialogTitle>
@@ -71,10 +71,10 @@
           <span v-if="accountChecksum" class="has-text-grey mr-3" style="font-size: 14px">-{{ accountChecksum }}</span>
         </div>
         <div v-if="!isMediumScreen && accountId" id="showAccountLink" class="is-flex is-flex-direction-column mt-2">
-          <router-link :to="accountRoute">
+          <router-link v-if="accountRoute" :to="accountRoute">
             <span class="h-is-property-text">Show my account</span>
           </router-link>
-          <router-link :to="allowanceApprovalRoute">
+          <router-link v-if="allowanceApprovalRoute" :to="allowanceApprovalRoute">
             <span class="h-is-property-text">Approve an allowance…</span>
           </router-link>
         </div>
@@ -82,10 +82,10 @@
 
       <template v-slot:control v-if="isMediumScreen">
         <div v-if="accountId" id="showAccountLink" class="is-flex is-flex-direction-column ml-3">
-          <router-link :to="accountRoute">
+          <router-link v-if="accountRoute" :to="accountRoute">
             <span class="h-is-property-text">Show my account</span>
           </router-link>
-          <router-link :to="allowanceApprovalRoute">
+          <router-link v-if="allowanceApprovalRoute" :to="allowanceApprovalRoute">
             <span class="h-is-property-text">Approve an allowance…</span>
           </router-link>
         </div>
@@ -295,7 +295,7 @@ export default defineComponent({
     const showProgressDialog = ref(false)
     const progressDialogMode = ref(Mode.Busy)
     const progressDialogTitle = ref<string|null>(null)
-    const progressMainMessage = ref<string|undefined>(undefined)
+    const progressMainMessage = ref<string|null>(null)
     const progressExtraMessage = ref<string|null>(null)
     const progressExtraTransactionId = ref<string|null>(null)
     const showProgressSpinner = ref(false)
@@ -386,7 +386,7 @@ export default defineComponent({
     const stakedAmount = computed(() => isStaked.value ? formatHbarAmount(accountLocParser.balance.value) : null)
 
     const formatHbarAmount = (amount: number | null) => {
-      let result
+      let result: string|null
       if (amount) {
         const amountFormatter = new Intl.NumberFormat("en-US", {maximumFractionDigits: 8})
         result = amountFormatter.format(amount / 100000000)
@@ -452,7 +452,7 @@ export default defineComponent({
           progressExtraMessage.value = error.extra
         } else {
           progressMainMessage.value = "Operation did not complete"
-          progressExtraMessage.value = JSON.stringify(error.message)
+          progressExtraMessage.value = JSON.stringify(error)
         }
         progressExtraTransactionId.value = null
         showProgressSpinner.value = false

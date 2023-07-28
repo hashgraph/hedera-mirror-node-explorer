@@ -9,6 +9,7 @@ BRANDING_DIR="${BRANDING_LOCATION:-./branding}"
 cp ${BRANDING_DIR}/assets/* ./src/assets/branding/ 2>/dev/null | :
 cp ${BRANDING_DIR}/public/* ./public 2>/dev/null | :
 cp ${BRANDING_DIR}/.env ./ 2>/dev/null | :
+cp ${BRANDING_DIR}/index.html ./ 2>/dev/null | :
 
 # When custom theme provided: pre-process SASS/SCSS files based on it
 npx sass ./src/assets/branding/brand-theme.scss ./src/assets/branding/brand-theme.css

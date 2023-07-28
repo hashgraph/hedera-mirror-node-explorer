@@ -44,7 +44,7 @@
       backend-pagination
       customRowKey="consensus_timestamp"
       default-sort="consensus_timestamp"
-      @click="handleClick"
+      @cell-click="handleClick"
       @page-change="onPageChange">
 
     <o-table-column v-slot="props" field="timestamp" label="Time">
@@ -107,8 +107,8 @@ export default defineComponent({
     const isSmallScreen = inject('isSmallScreen', true)
     const isMediumScreen = inject('isMediumScreen', true)
 
-    const handleClick = (result: ContractResult) => {
-      routeManager.routeToTransactionByTs(result.timestamp)
+    const handleClick = (result: ContractResult, c: unknown, i: number, ci: number, event: MouseEvent) => {
+      routeManager.routeToTransactionByTs(result.timestamp, event.ctrlKey || event.metaKey)
     }
 
     const makeErrorMessage = (result: ContractResult) => {

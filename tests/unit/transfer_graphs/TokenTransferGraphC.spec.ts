@@ -20,6 +20,7 @@
  *
  */
 
+import {describe, test, expect} from 'vitest'
 import router from "@/router";
 import {flushPromises, mount} from "@vue/test-utils";
 import TokenTransferGraphC from "@/components/transfer_graphs/TokenTransferGraphC.vue";

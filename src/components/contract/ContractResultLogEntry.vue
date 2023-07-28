@@ -40,7 +40,7 @@
     <Property id="logIndex" :full-width="true">>
       <template v-slot:name>Index</template>
       <template v-slot:value>
-        <StringValue :string-value="log?.index.toString()"/>
+        <StringValue :string-value="log?.index?.toString()"/>
       </template>
     </Property>
     <Property id="logTopics" :full-width="true">>

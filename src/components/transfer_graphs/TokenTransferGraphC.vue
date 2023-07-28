@@ -24,9 +24,7 @@
 
 <template>
 
-  <div v-if="tokenTransferLayout.length >= 1">
-
-    <div class="graph-container">
+    <div v-if="tokenTransferLayout.length >= 1" class="graph-container">
 
       <template v-for="s in tokenTransferLayout.length" v-bind:key="s">
 
@@ -82,8 +80,6 @@
       </template>
 
     </div>
-
-  </div>
 
 </template>
 

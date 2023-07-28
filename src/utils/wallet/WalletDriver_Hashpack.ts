@@ -24,7 +24,7 @@ import {HederaLogo} from "@/utils/MetaMask";
 import {WalletDriver} from "@/utils/wallet/WalletDriver";
 import {HashConnectSigner} from "hashconnect/dist/provider/signer";
 import {timeGuard, TimeGuardError} from "@/utils/TimerUtils";
-import {Signer} from "@hashgraph/sdk/lib/Signer";
+import {Signer} from "@hashgraph/sdk";
 
 export class WalletDriver_Hashpack extends WalletDriver {
 

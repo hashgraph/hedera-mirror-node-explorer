@@ -20,6 +20,7 @@
 
 import {AccountInfo, KeyType, NetworkNode, TokenInfo, Transfer} from "@/schemas/HederaSchemas";
 import {EntityID} from "@/utils/EntityID";
+import {hexToByte} from "@/utils/B64Utils";
 import {ethers} from "ethers";
 
 export function makeEthAddressForAccount(account: AccountInfo): string|null {
@@ -84,7 +85,7 @@ export function makeNodeDescriptionPrefix(node: NetworkNode): string {
     return result
 }
 
-export function makeNodeOwnerDescription(node: NetworkNode): string {
+export function makeNodeOwnerDescription(node: NetworkNode, short= false): string {
     const description = makeNodeDescription(node)
     let result: string
     if (description?.slice(0, 9).toLowerCase() === "hosted by") {
@@ -94,20 +95,24 @@ export function makeNodeOwnerDescription(node: NetworkNode): string {
     } else {
         result = description
     }
-    return result
+    return short ? result.split('|')[0].trimEnd() : result
 }
 
 export function makeDefaultNodeDescription(nodeId: number | null): string {
     return "Node " + nodeId ?? "?"
 }
 
-export function makeOperatorDescription(accountId: string, nodes: NetworkNode[]): string | null {
+export function makeOperatorDescription(accountId: string, nodes: NetworkNode[], isFee=false): string | null {
     let result: string|null
     if (accountId === "0.0.98") {
         result = "Hedera fee collection account"
+    } else if(accountId === "0.0.800") {
+        result = isFee ? "Staking reward account fee" : "Staking reward account"
     } else {
         const node = lookupNodeByAccountId(accountId, nodes)
-        result = node !== null ? makeNodeDescription(node) : null
+        result = node !== null
+            ? isFee ? `Node fee (${makeNodeOwnerDescription(node, true)})` : makeNodeDescription(node)
+            : null
     }
     return result
 }
@@ -121,31 +126,33 @@ export function isFeeTransfer(t: Transfer, nodes: NetworkNode[]): boolean {
 const errorStringSelector = '0x08c379a0'
 const panicUint256Selector = '0x4e487b71'
 
-export function isSolidityError(message: string | null): boolean {
-    return (message !== null && message.startsWith(errorStringSelector))
-}
-
-export function isSolidityPanic(message: string | null): boolean {
-    return (message !== null && message.startsWith(panicUint256Selector))
-}
-
 export function decodeSolidityErrorMessage(message: string | null): string | null {
-
     let result: string|null
 
-    if (isSolidityError(message)) {
-        const reason = ethers.utils.defaultAbiCoder.decode(
-            ['string'],
-            ethers.utils.hexDataSlice(message ?? "", 4)
-        )
-        result = reason.toString() ?? message
-    } else if (isSolidityPanic(message)) {
-        const code = ethers.utils.defaultAbiCoder.decode(
-            ['uint256'],
-            ethers.utils.hexDataSlice(message ?? "", 4)
-        )
-        result = 'Panic(0x' + parseInt(code.toString()).toString(16) + ')'  ?? message
-    } else {
+    // https://blog.soliditylang.org/2020/12/16/solidity-v0.8.0-release-announcement/
+    // Section "Revert on assertion failures and similar conditions instead of using the invalid opcode"
+
+    try {
+        if (message === null) {
+            result = null
+        } else if (message.startsWith(errorStringSelector)) {
+            const reason = ethers.utils.defaultAbiCoder.decode(
+                ['string'],
+                ethers.utils.hexDataSlice(message ?? "", 4)
+            )
+            result = reason.toString() ?? null
+        } else if (message.startsWith(panicUint256Selector)) {
+            const code = ethers.utils.defaultAbiCoder.decode(
+                ['uint256'],
+                ethers.utils.hexDataSlice(message ?? "", 4)
+            )
+            result = 'Panic(0x' + parseInt(code.toString()).toString(16) + ')'  ?? null
+        } else {
+            const textDecoder = new TextDecoder()
+            const bytes = hexToByte(message)
+            result = bytes !== null ? textDecoder.decode(bytes) : null
+        }
+    } catch(reason) {
         result = null
     }
 

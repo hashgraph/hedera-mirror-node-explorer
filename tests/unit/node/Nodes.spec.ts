@@ -18,6 +18,7 @@
  *
  */
 
+import {describe, it, expect} from 'vitest'
 import {flushPromises, mount} from "@vue/test-utils"
 import router from "@/router";
 import axios from "axios";
@@ -41,16 +42,14 @@ HMSF.forceUTC = true
 
 describe("Nodes.vue", () => {
 
-    const tooltipStake = "This is the total amount staked to this node, followed by its consensus weight" +
-        " (weight is absent when the amount staked is below minimum)."
-    const tooltipNotRewarded = "This is the total amount staked to this node by accounts that have chosen " +
-        "to decline rewards (and all accounts staked to those accounts)."
-    const tooltipRewardRate = "This is an approximate annual reward rate based on the reward earned during the " +
+    const tooltipStake = "Total amount of HBAR staked to this specific validator for consensus."
+    const tooltipPercentage = "Total amount of HBAR staked to this validator for consensus / total amount of HBAR staked to all validators for consensus."
+    const tooltipRewardRate = "Approximate annual reward rate based on the reward earned during the " +
         "last 24h period."
 
     it("should display the nodes pages containing the node table", async () => {
 
-        process.env = Object.assign(process.env, { VUE_APP_ENABLE_STAKING: true });
+        process.env = Object.assign(process.env, { VITE_APP_ENABLE_STAKING: true });
 
         await router.push("/") // To avoid "missing required param 'network'" error
 
@@ -87,24 +86,24 @@ describe("Nodes.vue", () => {
         expect(cards[1].text()).toMatch(RegExp("^Nodes"))
         const table = cards[1].findComponent(NodeTable)
         expect(table.exists()).toBe(true)
-        expect(table.get('thead').text()).toBe("Node Description Stake Staked For No Reward Stake Range Reward Rate")
+        expect(table.get('thead').text()).toBe("Node Description Stake for Consensus % Stake Range Reward Rate")
         expect(wrapper.get('tbody').text()).toBe(
             "0" +
             "Hosted by Hedera | East Coast, USA" +
-            tooltipStake + "6,000,000(25%)" +
-            tooltipNotRewarded + "1,000,000" +
+            tooltipStake + "6,000,000" +
+            tooltipPercentage + "25%" +
             "Rewarded:5,000,000Not Rewarded:1,000,000Min:1,000,000Max:30,000,000" +
             tooltipRewardRate + "1%" +
             "1" +
             "Hosted by Hedera | East Coast, USA" +
-            tooltipStake + "9,000,000(37.5%)" +
-            tooltipNotRewarded + "2,000,000" +
+            tooltipStake + "9,000,000" +
+            tooltipPercentage + "37.5%" +
             "Rewarded:7,000,000Not Rewarded:2,000,000Min:1,000,000Max:30,000,000" +
             tooltipRewardRate + "2%" +
             "2" +
             "Hosted by Hedera | Central, USA" +
-            tooltipStake + "9,000,000(37.5%)" +
-            tooltipNotRewarded + "2,000,000" +
+            tooltipStake + "9,000,000" +
+            tooltipPercentage + "37.5%" +
             "Rewarded:7,000,000Not Rewarded:2,000,000Min:1,000,000Max:30,000,000" +
             tooltipRewardRate + "3%"
         )

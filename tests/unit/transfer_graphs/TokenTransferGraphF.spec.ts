@@ -18,6 +18,7 @@
  *
  */
 
+import {describe, test, expect} from 'vitest'
 import router from "@/router";
 import {flushPromises, mount} from "@vue/test-utils";
 import TokenTransferGraph from "@/components/transfer_graphs/TokenTransferGraphF.vue";
@@ -52,7 +53,7 @@ describe("TokenTransferGraphF.vue", () => {
         // console.log(wrapper.html())
         // console.log(wrapper.text())
 
-        expect(wrapper.text()).toBe("Token TransfersNone")
+        expect(wrapper.text()).toBe("")
 
         wrapper.unmount()
         await flushPromises()

@@ -20,6 +20,7 @@
  *
  */
 
+import {describe, test, expect} from 'vitest'
 import {NetworkNode, Transaction} from "@/schemas/HederaSchemas";
 import {SAMPLE_NETWORK_NODES} from "../../Mocks";
 import {HbarTransferLayout} from "@/components/transfer_graphs/layout/HbarTransferLayout";
@@ -69,7 +70,7 @@ describe("HbarTransferLayout.vue", () => {
         const d0 = fullLayout.destinations[0]
         expect(d0.transfer.account).toBe("0.0.5")
         expect(d0.transfer.amount).toBe(+3)
-        expect(d0.description).toBe("Hosted by Hedera | Central, USA")
+        expect(d0.description).toBe("Node fee (Hedera)")
         expect(d0.payload).toBe(false)
 
         const d1 = fullLayout.destinations[1]
@@ -131,7 +132,7 @@ describe("HbarTransferLayout.vue", () => {
         const fd1 = fullLayout.destinations[1]
         expect(fd1.transfer.account).toBe("0.0.5")
         expect(fd1.transfer.amount).toBe(+3)
-        expect(fd1.description).toBe("Hosted by Hedera | Central, USA")
+        expect(fd1.description).toBe("Node fee (Hedera)")
         expect(fd1.payload).toBe(false)
 
         const fd2 = fullLayout.destinations[2]
@@ -211,7 +212,7 @@ describe("HbarTransferLayout.vue", () => {
         const d2 = fullLayout.destinations[2]
         expect(d2.transfer.account).toBe("0.0.5")
         expect(d2.transfer.amount).toBe(+3)
-        expect(d2.description).toBe("Hosted by Hedera | Central, USA")
+        expect(d2.description).toBe("Node fee (Hedera)")
         expect(d2.payload).toBe(false)
 
         const d3 = fullLayout.destinations[3]
@@ -295,7 +296,7 @@ describe("HbarTransferLayout.vue", () => {
         const d0 = fullLayout.destinations[0]
         expect(d0.transfer.account).toBe("0.0.5")
         expect(d0.transfer.amount).toBe(+3)
-        expect(d0.description).toBe("Hosted by Hedera | Central, USA")
+        expect(d0.description).toBe("Node fee (Hedera)")
         expect(d0.payload).toBe(false)
 
         const d1 = fullLayout.destinations[1]
@@ -365,7 +366,7 @@ describe("HbarTransferLayout.vue", () => {
         const d1 = fullLayout.destinations[1]
         expect(d1.transfer.account).toBe("0.0.5")
         expect(d1.transfer.amount).toBe(+3)
-        expect(d1.description).toBe("Hosted by Hedera | Central, USA")
+        expect(d1.description).toBe("Node fee (Hedera)")
         expect(d1.payload).toBe(false)
 
         const d2 = fullLayout.destinations[2]
@@ -458,7 +459,7 @@ describe("HbarTransferLayout.vue", () => {
         const d2 = fullLayout.destinations[2]
         expect(d2.transfer.account).toBe("0.0.5")
         expect(d2.transfer.amount).toBe(+3)
-        expect(d2.description).toBe("Hosted by Hedera | Central, USA")
+        expect(d2.description).toBe("Node fee (Hedera)")
         expect(d2.payload).toBe(false)
 
         const d3 = fullLayout.destinations[3]
@@ -547,7 +548,7 @@ describe("HbarTransferLayout.vue", () => {
         const d1 = fullLayout.destinations[1]
         expect(d1.transfer.account).toBe("0.0.5")
         expect(d1.transfer.amount).toBe(+1)
-        expect(d1.description).toBe("Hosted by Hedera | Central, USA")
+        expect(d1.description).toBe("Node fee (Hedera)")
         expect(d1.payload).toBe(false)
 
         const d2 = fullLayout.destinations[2]

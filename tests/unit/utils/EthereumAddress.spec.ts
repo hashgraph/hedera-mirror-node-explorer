@@ -18,6 +18,7 @@
  *
  */
 
+import {describe, test, expect} from 'vitest'
 import {EthereumAddress} from "@/utils/EthereumAddress";
 
 describe("EthereumAddress", () => {

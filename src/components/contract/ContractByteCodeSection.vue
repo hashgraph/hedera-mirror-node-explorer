@@ -49,7 +49,7 @@
                 <div v-if="ipfsHash" class="has-text-grey">
                     <div v-if="ipfsMetadata">
                         <span class="icon fas fa-check-circle has-text-success is-small mt-1 mr-1"/>
-                        <span>Metadata file is available on <a :href="ipfsURL" :target="ipfsMetadata">IPFS</a></span>
+                        <span>Metadata file is available on <a :href="ipfsURL" :target="ipfsHash">IPFS</a></span>
                     </div>
                     <div v-else-if="ipfsLoading">
                         <span class="icon fas fa-circle-notch fa-spin has-text-grey is-small mt-1 mr-1"/>

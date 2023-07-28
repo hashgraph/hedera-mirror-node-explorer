@@ -86,9 +86,18 @@ export default defineComponent({
       type: Number as PropType<Mode>,
       default: Mode.Busy
     },
-    mainMessage: String,
-    extraMessage: String,
-    extraTransactionId: String,
+    mainMessage: {
+      type: String as PropType<string|null>,
+      default: null
+    },
+    extraMessage: {
+      type: String as PropType<string|null>,
+      default: null
+    },
+    extraTransactionId: {
+      type: String as PropType<string|null>,
+      default: null
+    },
     showSpinner: Boolean
   },
 
@@ -101,7 +110,7 @@ export default defineComponent({
     const closeDisabled = computed(() => props.mode == Mode.Busy)
 
     const formattedTransactionId = computed(
-        () => props.extraTransactionId ? TransactionID.normalize(props.extraTransactionId, true) : null)
+        () => props.extraTransactionId != null ? TransactionID.normalize(props.extraTransactionId, true) : null)
 
     return {
       handleClose,

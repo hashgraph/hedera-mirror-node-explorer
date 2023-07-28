@@ -53,7 +53,7 @@
 
 <script lang="ts">
 
-import {defineComponent, inject} from 'vue';
+import {defineComponent, inject, PropType} from 'vue';
 
 export default defineComponent({
   name: 'NetworkDashboardItem',
@@ -61,7 +61,7 @@ export default defineComponent({
   props: {
     title: String,
     name: String,
-    value: String,
+    value: String as PropType<string|null>,
     variation: String
   },
   setup() {

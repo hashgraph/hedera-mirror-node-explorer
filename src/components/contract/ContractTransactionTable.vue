@@ -33,7 +33,7 @@
       v-model:current-page="currentPage"
       :per-page="perPage"
       @page-change="onPageChange"
-      @click="handleClick"
+      @cell-click="handleClick"
 
       :hoverable="true"
       :narrowed="true"
@@ -59,8 +59,8 @@
     </o-table-column>
 
     <o-table-column field="transfers" label="Net Amount" v-slot="props">
-      <span v-if="showPositiveNetAmount(props.row) > 0">
-        <HbarAmount v-bind:amount="computeNetAmount(props.row)"/>
+      <span v-if="showPositiveNetAmount(props.row)">
+        <HbarAmount v-bind:amount="computeNetAmount(props.row.transfers, props.row.charged_tx_fee)"/>
       </span>
     </o-table-column>
 
@@ -111,9 +111,9 @@ export default defineComponent({
     const isTouchDevice = inject('isTouchDevice', false)
     const isMediumScreen = inject('isMediumScreen', true)
 
-   const handleClick = (t: Transaction) => {
-      routeManager.routeToTransaction(t)
-    }
+    const handleClick = (t: Transaction, c: unknown, i: number, ci: number, event: MouseEvent) => {
+      routeManager.routeToTransaction(t, event.ctrlKey || event.metaKey)
+   }
 
     return {
       isTouchDevice,

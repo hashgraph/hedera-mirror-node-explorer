@@ -33,7 +33,7 @@
       v-model:current-page="currentPage"
       :per-page="perPage"
       @page-change="onPageChange"
-      @click="handleClick"
+      @cell-click="handleClick"
 
       :hoverable="true"
       :narrowed="true"
@@ -99,8 +99,8 @@ export default defineComponent({
 
   setup(props) {
 
-    const handleClick = (t: Transaction) => {
-      routeManager.routeToTransaction(t)
+    const handleClick = (t: Transaction, c: unknown, i: number, ci: number, event: MouseEvent) => {
+      routeManager.routeToTransaction(t, event.ctrlKey || event.metaKey)
     }
 
     return {
