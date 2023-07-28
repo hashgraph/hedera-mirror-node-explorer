@@ -50,6 +50,10 @@
       <template v-slot:name>Input - Function & Args</template>
       <template v-slot:value>
         <HexaValue :byte-string="input" :show-none="true"/>
+        <div v-if="inputDecodingStatus" class="h-is-extra-text h-is-text-size-3">
+            <span class="icon fas fa-exclamation-circle has-text-grey is-small mt-1 mr-1"/>
+            <span>{{ inputDecodingStatus }}</span>
+        </div>
       </template>
     </Property>
   </template>
@@ -89,6 +93,7 @@ export default defineComponent({
       signature: props.analyzer.signature,
       functionHash: props.analyzer.functionHash,
       inputs: props.analyzer.inputs,
+      inputDecodingStatus: props.analyzer.inputDecodingStatus,
       initialLoading
     }
   }

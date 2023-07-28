@@ -32,7 +32,7 @@
       v-model:current-page="currentPage"
       :per-page="perPage"
       @page-change="onPageChange"
-      @click="handleClick"
+      @cell-click="handleClick"
 
       :hoverable="true"
       :paginated="!isTouchDevice"
@@ -95,9 +95,9 @@ export default defineComponent({
   setup(props) {
     const isTouchDevice = inject('isTouchDevice', false)
 
-    const handleClick = (t: Transaction) => {
+    const handleClick = (t: Transaction, c: unknown, i: number, ci: number, event: MouseEvent) => {
       if (t.entity_id) {
-        routeManager.routeToTopic(t.entity_id)
+        routeManager.routeToTopic(t.entity_id, event.ctrlKey || event.metaKey)
       }
     }
 

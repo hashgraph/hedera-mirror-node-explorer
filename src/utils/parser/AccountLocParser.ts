@@ -116,8 +116,8 @@ export class AccountLocParser {
     public readonly stakedAccountId: Ref<string|null> = computed(() => this.accountInfo.value?.staked_account_id ?? null)
 
     public readonly stakePeriodStart: Ref<string|null> = computed(() => {
-        const dateOptions = {
-            weekDay: "short",
+        const dateOptions : Intl.DateTimeFormatOptions = {
+            // weekDay: "short",
             day: "numeric",
             month: "short",
             year: "numeric",

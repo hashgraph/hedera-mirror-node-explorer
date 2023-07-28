@@ -18,6 +18,7 @@
  *
  */
 
+import {describe, test, expect} from 'vitest'
 import {aliasToBase32, base32ToAlias, byteToHex, hexToByte} from "@/utils/B64Utils";
 
 describe("B64Utils.ts", () => {

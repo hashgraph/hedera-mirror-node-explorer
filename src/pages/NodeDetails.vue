@@ -92,8 +92,7 @@
         <Property id="nodeCertHash">
           <template v-slot:name>Certificate Hash</template>
           <template v-slot:value>
-            <HexaValue v-bind:byteString="node ? formatHash(node?.node_cert_hash): undefined"
-                       v-bind:show-none="true"/>
+            <HexaValue v-bind:byteString="formattedHash" v-bind:show-none="true"/>
           </template>
         </Property>
       </template>
@@ -106,7 +105,7 @@
                               title="Stake for Consensus"/>
         <p v-if="stake" id="consensusStakePercent" class="h-is-property-text h-is-extra-text mt-1">{{
             stakePercentage
-          }}% of total</p>
+          }} of total</p>
         <p v-else class="h-is-property-text h-is-extra-text mt-1">(&lt;Min)</p>
         <br/><br/>
         <div v-if="stake === 0">
@@ -158,13 +157,14 @@ import StringValue from "@/components/values/StringValue.vue";
 import Footer from "@/components/Footer.vue";
 import NotificationBanner from "@/components/NotificationBanner.vue";
 import Property from "@/components/Property.vue";
-import {base64DecToArr, byteToHex} from "@/utils/B64Utils";
 import HexaValue from "@/components/values/HexaValue.vue";
 import Endpoints from "@/components/values/Endpoints.vue";
 import NetworkDashboardItem from "@/components/node/NetworkDashboardItem.vue";
 import {StakeCache} from "@/utils/cache/StakeCache";
 import {PathParam} from "@/utils/PathParam";
 import {NodeAnalyzer} from "@/utils/analyzer/NodeAnalyzer";
+import {NetworkNode} from "@/schemas/HederaSchemas";
+import {makeStakePercentage} from "@/schemas/HederaUtils";
 
 export default defineComponent({
 
@@ -209,7 +209,9 @@ export default defineComponent({
 
     const stakeTotal = computed(() => stakeLookup.entity.value?.stake_total ?? 0)
     const stakePercentage = computed(() =>
-        stakeTotal.value ? Math.round(nodeAnalyzer.stake.value / stakeTotal.value * 10000) / 100 : 0)
+        nodeAnalyzer.node.value && stakeTotal.value
+            ? makeStakePercentage(nodeAnalyzer.node.value as NetworkNode, stakeTotal.value)
+            : "0")
 
     const stakeRewardedPercentage = computed(() =>
         networkAnalyzer.stakeRewardedTotal.value != 0 ? Math.round(nodeAnalyzer.stakeRewarded.value / networkAnalyzer.stakeRewardedTotal.value * 10000) / 100 : 0)
@@ -227,10 +229,6 @@ export default defineComponent({
       }
       return result
     })
-
-    const formatHash = (hash: string | undefined) => {
-      return hash != undefined ? byteToHex(base64DecToArr(hash)) : ""
-    }
 
     const makeFloorHbarAmount = (tinyBarAmount: number) => Math.floor((tinyBarAmount ?? 0) / 100000000).toLocaleString('en-US')
 
@@ -252,7 +250,7 @@ export default defineComponent({
       notification,
       isCouncilNode: nodeAnalyzer.isCouncilNode,
       nodeDescription: nodeAnalyzer.nodeDescription,
-      formatHash,
+      formattedHash: nodeAnalyzer.certificateHash,
       makeFloorHbarAmount
     }
   },

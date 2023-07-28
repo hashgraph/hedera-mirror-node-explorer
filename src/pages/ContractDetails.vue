@@ -45,7 +45,7 @@
           </div>
         </div>
 
-        <div v-if="!isMediumScreen && contract" id="showAccountLink" class="is-inline-block mt-2">
+        <div v-if="!isMediumScreen && accountRoute" id="showAccountLink" class="is-inline-block mt-2">
           <router-link :to="accountRoute">
             <span class="h-is-property-text">Show associated account</span>
           </router-link>
@@ -53,7 +53,7 @@
       </template>
 
       <template v-slot:control v-if="isMediumScreen">
-        <div v-if="contract" id="showAccountLink" class="is-inline-block ml-3">
+        <div v-if="contract && accountRoute" id="showAccountLink" class="is-inline-block ml-3">
           <router-link :to="accountRoute">
             <span class="h-is-property-text">Show associated account</span>
           </router-link>
@@ -69,15 +69,15 @@
               <template v-slot:name>{{ tokens?.length ? 'Balances' : 'Balance' }}</template>
               <template v-slot:value>
                 <div class="has-flex-direction-column">
-                  <HbarAmount v-if="contract" :amount="balance ?? undefined" :show-extra="true" timestamp="0"/>
+                  <HbarAmount v-if="contract" :amount="balance" :show-extra="true" timestamp="0"/>
                   <div v-if="displayAllTokenLinks">
                     <router-link :to="{name: 'AccountBalances', params: {accountId: contractId}}">
                       See all token balances
                     </router-link>
                   </div>
                   <div v-else>
-                    <div v-for="t in tokens ?? []" :key="t.token_id">
-                      <TokenAmount :amount="BigInt(t.balance)" :show-extra="true" :token-id="t.token_id ?? undefined"/>
+                    <div v-for="t in tokens ?? []" :key="t.token_id ?? undefined">
+                      <TokenAmount :amount="BigInt(t.balance)" :show-extra="true" :token-id="t.token_id"/>
                     </div>
                   </div>
                 </div>
@@ -107,7 +107,7 @@
                 <InfoTooltip label="Contract expiry is not turned on yet. Value in this field is not relevant."/>
               </template>
               <template v-slot:value>
-                <TimestampValue v-bind:timestamp="contract?.expiration_timestamp ?? undefined" v-bind:show-none="true"/>
+                <TimestampValue v-bind:timestamp="contract?.expiration_timestamp" v-bind:show-none="true"/>
               </template>
             </Property>
             <Property id="autoRenewPeriod">
@@ -158,13 +158,19 @@
             <Property id="validUntil">
               <template v-slot:name>Valid until</template>
               <template v-slot:value>
-                <TimestampValue :timestamp="contract?.timestamp?.to ?? undefined" :show-none="true"/>
+                <TimestampValue :timestamp="contract?.timestamp?.to" :show-none="true"/>
+              </template>
+            </Property>
+            <Property v-if="displayNonce" id="nonce">
+              <template v-slot:name>Contract Nonce</template>
+              <template v-slot:value>
+                {{ contract?.nonce }}
               </template>
             </Property>
             <Property id="file">
               <template v-slot:name>File</template>
               <template v-slot:value>
-                <StringValue :string-value="contract?.file_id ?? undefined"/>
+                <StringValue :string-value="contract?.file_id"/>
               </template>
             </Property>
 
@@ -272,6 +278,8 @@ export default defineComponent({
     onMounted(() => accountLocParser.mount())
     onBeforeUnmount(() => accountLocParser.unmount())
 
+    const displayNonce = computed(() => contractLookup.entity.value?.nonce != undefined)
+
     const autoRenewAccount = computed(() => {
       return contractLookup.entity.value?.auto_renew_account ?? null
     })
@@ -328,6 +336,7 @@ export default defineComponent({
       balance: accountLocParser.balance,
       tokens: accountLocParser.tokens,
       ethereumAddress: accountLocParser.ethereumAddress,
+      displayNonce,
       accountChecksum,
       displayAllTokenLinks,
       notification,

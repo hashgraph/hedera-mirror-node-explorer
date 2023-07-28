@@ -38,14 +38,17 @@
 
 <script lang="ts">
 
-import {defineComponent, inject, ref} from 'vue';
+import {defineComponent, inject, PropType, ref} from 'vue';
 import {initialLoadingKey} from "@/AppKeys";
 
 export default defineComponent({
   name: 'StringValue',
 
   props: {
-    stringValue: String,
+    stringValue: {
+      type: String as PropType<string|null>,
+      default: null
+    },
   },
 
   setup() {

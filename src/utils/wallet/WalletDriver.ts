@@ -23,7 +23,7 @@ import {
     AccountAllowanceDeleteTransaction,
     AccountUpdateTransaction
 } from "@hashgraph/sdk";
-import {Signer} from "@hashgraph/sdk/lib/Signer";
+import {Signer} from "@hashgraph/sdk";
 import {TransactionID} from "@/utils/TransactionID";
 import {WalletDriverError} from "@/utils/wallet/WalletDriverError";
 
@@ -77,7 +77,7 @@ export abstract class WalletDriver {
                     result = Promise.reject(this.callFailure(this.name + " wallet did reject operation"))
                 }
             } catch(reason) {
-                throw this.callFailure(reason.message)
+                throw this.callFailure(reason instanceof Error ? reason.message : JSON.stringify(reason))
             }
         } else {
             throw this.callFailure("Signer not found (bug)")

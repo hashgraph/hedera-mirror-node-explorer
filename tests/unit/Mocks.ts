@@ -23,7 +23,7 @@
 // Fungible token inspired from https://testnet.mirrornode.hedera.com/api/v1/tokens/0.0.29662956
 //
 
-import {TokenRelationshipResponse} from "@/schemas/HederaSchemas";
+import {KeyType, TokenRelationshipResponse} from "@/schemas/HederaSchemas";
 
 export const SAMPLE_TOKEN = {
     "admin_key": null,
@@ -433,6 +433,36 @@ export const SAMPLE_TOKENS = {
     ]
 }
 
+export const SAMPLE_TOKEN_WITH_LARGE_DECIMAL_COUNT = {
+    "admin_key": {"_type": "ED25519", "key": "d6e8334cd8594e88c82ff266b4974b4e4ac596962dcfab7314f935e7fdda672f"},
+    "auto_renew_account": "0.0.13688300",
+    "auto_renew_period": 7776000,
+    "created_timestamp": "1685137814.521997638",
+    "custom_fees": {"created_timestamp": "1685137814.521997638", "fixed_fees": [], "fractional_fees": []},
+    "decimals": "75",
+    "deleted": false,
+    "expiry_timestamp": 1692913814521997638,
+    "fee_schedule_key": null,
+    "freeze_default": false,
+    "freeze_key": null,
+    "initial_supply": "100000000000000",
+    "kyc_key": null,
+    "max_supply": "10000000000000000",
+    "memo": "",
+    "modified_timestamp": "1685137814.521997638",
+    "name": "TestToken0",
+    "pause_key": null,
+    "pause_status": "NOT_APPLICABLE",
+    "supply_key": {"_type": "ED25519", "key": "d6e8334cd8594e88c82ff266b4974b4e4ac596962dcfab7314f935e7fdda672f"},
+    "supply_type": "FINITE",
+    "symbol": "TTOK0",
+    "token_id": "0.0.13688500",
+    "total_supply": "100000000000000",
+    "treasury_account_id": "0.0.13688300",
+    "type": "FUNGIBLE_COMMON",
+    "wipe_key": null
+}
+
 export const SAMPLE_BALANCES = {
     "timestamp": "1646726400.100874000",
     "balances": [
@@ -663,6 +693,74 @@ export const SAMPLE_SYSTEM_CONTRACT_CALL_TRANSACTIONS = {
     ]
 }
 
+export const SAMPLE_CRYPTO_TRANSFER_WITH_ONLY_FEE = {
+        "bytes": null,
+        "charged_tx_fee": 26494683,
+        "consensus_timestamp": "1687197609.495612761",
+        "entity_id": "0.0.3005010",
+        "max_fee": "200000000",
+        "memo_base64": "",
+        "name": "CONSENSUSCREATETOPIC",
+        "node": "0.0.25",
+        "nonce": 0,
+        "parent_consensus_timestamp": null,
+        "result": "SUCCESS",
+        "scheduled": false,
+        "transaction_hash": "c2sSCuCRNOI6gvCYs5KFxe7Z60TV8vJXxuOWNEtH4doYj0MnruIi3NLFXIX6e8s1",
+        "transaction_id": "0.0.1786365-1687197599-390469131",
+        "transfers": [{"account": "0.0.25", "amount": 1190235, "is_approval": false}, {
+            "account": "0.0.98",
+            "amount": 22774004,
+            "is_approval": false
+        }, {"account": "0.0.800", "amount": 2530444, "is_approval": false}, {
+            "account": "0.0.1786365",
+            "amount": -26494683,
+            "is_approval": false
+        }],
+        "valid_duration_seconds": "120",
+        "valid_start_timestamp": "1687197599.390469131"
+}
+
+export const SAMPLE_CRYPTO_TRANSFER_WITH_REWARDS = {
+    "bytes": null,
+    "charged_tx_fee": 5351935,
+    "consensus_timestamp": "1687133236.139653690",
+    "entity_id": null,
+    "max_fee": "100000000",
+    "memo_base64": "KDAuMC4yOTk4NTU1KUNvbmZpcm0gcHVyY2hhc2Ugb2YgTkZUOiAwLjAuMjE3Mzg5OSB3aXRoIHNlcmlhbCBudW1iZXIgMTYxMiBmb3IgMjUgSEJBUg==",
+    "name": "CRYPTOTRANSFER",
+    "node": "0.0.4",
+    "nonce": 0,
+    "parent_consensus_timestamp": null,
+    "result": "SUCCESS",
+    "scheduled": false,
+    "staking_reward_transfers": [{"account": "0.0.788887", "amount": 210704256}, {
+        "account": "0.0.2254995",
+        "amount": 2289378672
+    }],
+    "transaction_hash": "9s/JADOEqzUy4yzZA0StoTfumGL0bAALPs9tKbE/ELX0AY6gkbTl4potlyd3XHeU",
+    "transaction_id": "0.0.690356-1687133220-052118241",
+    "transfers": [{"account": "0.0.4", "amount": 206713, "is_approval": false}, {
+        "account": "0.0.98",
+        "amount": 4630700,
+        "is_approval": false
+    }, {"account": "0.0.800", "amount": -2499568406, "is_approval": false}, {
+        "account": "0.0.690356",
+        "amount": -5351935,
+        "is_approval": false
+    }, {"account": "0.0.755188", "amount": 2280000000, "is_approval": false}, {
+        "account": "0.0.788887",
+        "amount": 330704256,
+        "is_approval": false
+    }, {"account": "0.0.2254995", "amount": 2389378672, "is_approval": false}, {
+        "account": "0.0.2998555",
+        "amount": -2500000000,
+        "is_approval": false
+    }],
+    "valid_duration_seconds": "120",
+    "valid_start_timestamp": "1687133220.052118241"
+}
+
 export const SAMPLE_TOKEN_CALL_TRANSACTIONS = {
     "transactions": [{
         "bytes": null,
@@ -688,6 +786,60 @@ export const SAMPLE_TOKEN_CALL_TRANSACTIONS = {
         "valid_duration_seconds": "120",
         "valid_start_timestamp": "1677545092.878406670"
     }], "links": {"next": null}
+}
+
+export const SAMPLE_ETHEREUM_TRANSACTIONS_ASSOCIATING_TOKEN = {
+    "transactions": [{
+        "bytes": null,
+        "charged_tx_fee": 227282050,
+        "consensus_timestamp": "1687555828.300024003",
+        "entity_id": "0.0.230049",
+        "max_fee": "1080000000",
+        "memo_base64": "",
+        "name": "ETHEREUMTRANSACTION",
+        "nft_transfers": [],
+        "node": "0.0.6",
+        "nonce": 0,
+        "parent_consensus_timestamp": null,
+        "result": "SUCCESS",
+        "scheduled": false,
+        "staking_reward_transfers": [],
+        "token_transfers": [],
+        "transaction_hash": "Ws8zcqKAVEGr2R9MP3uidkx8Uh66/6g9VfhmGTOr6DNFRSj5MbalwBkNX8WaWoe5",
+        "transaction_id": "0.0.902-1687555818-297907508",
+        "transfers": [{"account": "0.0.6", "amount": 2910, "is_approval": false}, {
+            "account": "0.0.98",
+            "amount": 227279140,
+            "is_approval": false
+        }, {"account": "0.0.902", "amount": -82050, "is_approval": false}, {
+            "account": "0.0.42224",
+            "amount": -227200000,
+            "is_approval": false
+        }],
+        "valid_duration_seconds": "120",
+        "valid_start_timestamp": "1687555818.297907508"
+    }, {
+        "bytes": null,
+        "charged_tx_fee": 0,
+        "consensus_timestamp": "1687555828.300024004",
+        "entity_id": "0.0.42224",
+        "max_fee": "0",
+        "memo_base64": "",
+        "name": "TOKENASSOCIATE",
+        "nft_transfers": [],
+        "node": null,
+        "nonce": 1,
+        "parent_consensus_timestamp": "1687555828.300024003",
+        "result": "SUCCESS",
+        "scheduled": false,
+        "staking_reward_transfers": [],
+        "token_transfers": [],
+        "transaction_hash": "uWkCIG7doSPwu0YiF1sOxiUmh5qfuVW1zsnsvmtn59Dwpu8bUDUJVsg6LMvms/ak",
+        "transaction_id": "0.0.902-1687555818-297907508",
+        "transfers": [],
+        "valid_duration_seconds": null,
+        "valid_start_timestamp": "1687555818.297907508"
+    }]
 }
 
 export const SAMPLE_CONTRACT_RESULTS = {
@@ -1988,7 +2140,7 @@ export const SAMPLE_ACCOUNT = {
     "max_automatic_token_associations": 0,
     "memo": "",
     "receiver_sig_required": false,
-    "evm_address": null,
+    "evm_address": "0x00000000000000000000000000000000000b2607",
     "ethereum_nonce": 0,
     "decline_reward": null,
     "staked_node_id": null,
@@ -2091,7 +2243,7 @@ export const SAMPLE_ACCOUNT_STAKING_ACCOUNT = {
     },
     "deleted": false,
     "expiry_timestamp": "1649648001.410978000",
-    "key": {"_type": "ED25519", "key": "38f1ea460e95d97eea13aefac760eaf990154b80a3608ab01d4a264944d68746"},
+    "key": {"_type": KeyType.ED25519, "key": "38f1ea460e95d97eea13aefac760eaf990154b80a3608ab01d4a264944d68746"},
     "max_automatic_token_associations": 10,
     "memo": "Account staking to account",
     "receiver_sig_required": true,
@@ -2101,7 +2253,8 @@ export const SAMPLE_ACCOUNT_STAKING_ACCOUNT = {
     "staked_node_id": null,
     "staked_account_id": "0.0.5",
     "stake_period_start" : null,
-    "pending_reward": 0
+    "pending_reward": 0,
+    "created_timestamp": null
 }
 
 export const SAMPLE_ACCOUNTS = {
@@ -2239,6 +2392,7 @@ export const SAMPLE_CONTRACT = {
     "file_id": "0.0.749773",
     "max_automatic_token_associations": 0,
     "memo": "Mirror Node acceptance test: 2022-03-07T15:09:15.228564328Z Create contract",
+    "nonce": 1,
     "obtainer_id": null,
     "proxy_account_id": null,
     "timestamp": {

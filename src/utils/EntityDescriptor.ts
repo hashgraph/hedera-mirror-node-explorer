@@ -20,6 +20,7 @@
 
 import { Transaction, TransactionType } from "@/schemas/HederaSchemas";
 import {ContractByIdCache} from "@/utils/cache/ContractByIdCache";
+import {AccountByIdCache} from "@/utils/cache/AccountByIdCache";
 
 export class EntityDescriptor {
 
@@ -45,8 +46,10 @@ export class EntityDescriptor {
             case TransactionType.ETHEREUMTRANSACTION:
                 if (row.entity_id && await ContractByIdCache.instance.lookup(row.entity_id)) {
                     result = new EntityDescriptor("Contract ID", "ContractDetails")
-                } else {
+                } else if (row.entity_id && await AccountByIdCache.instance.lookup(row.entity_id)) {
                     result = new EntityDescriptor("Account ID", "AccountDetails")
+                } else {
+                    result = new EntityDescriptor("Token ID", "TokenDetails")
                 }
                 break;
 

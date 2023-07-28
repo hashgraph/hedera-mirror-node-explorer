@@ -24,7 +24,7 @@
 
 <template>
 
-  <div v-if="variation >= 0" class="is-flex is-align-items-baseline" :class="{'mb-1':isMediumScreen, 'mt-1':!isMediumScreen}">
+  <div v-if="numVariation >= 0" class="is-flex is-align-items-baseline" :class="{'mb-1':isMediumScreen, 'mt-1':!isMediumScreen}">
     <img class="image mr-1" alt="Trend Up" src="@/assets/trend-up.png" style="width: 18px; height: 9px">
     <span>{{ variation }}%</span>
   </div>
@@ -52,11 +52,13 @@ export default defineComponent({
 
   setup(props) {
     const isMediumScreen = inject('isMediumScreen', true)
-    const absVariation = computed(() => {
-      return props.variation ? Math.abs(Number(props.variation)) : ""
+    const numVariation = computed(() => {
+      return props.variation ? Number(props.variation) : 0
     })
+    const absVariation = computed(() => Math.abs(numVariation.value))
     return {
       isMediumScreen,
+      numVariation,
       absVariation,
     }
   },

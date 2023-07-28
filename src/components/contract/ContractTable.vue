@@ -33,7 +33,7 @@
       v-model:current-page="currentPage"
       :per-page="perPage"
       @page-change="onPageChange"
-      @click="handleClick"
+      @cell-click="handleClick"
 
       :hoverable="true"
       :narrowed="narrowed"
@@ -108,9 +108,9 @@ export default defineComponent({
     const isTouchDevice = inject('isTouchDevice', false)
     const isMediumScreen = inject('isMediumScreen', true)
 
-    const handleClick = (c: Contract) => {
-      if (c.contract_id) {
-        routeManager.routeToContract(c.contract_id)
+    const handleClick = (contract: Contract, c: unknown, i: number, ci: number, event: MouseEvent) => {
+      if (contract.contract_id) {
+        routeManager.routeToContract(contract.contract_id, event.ctrlKey || event.metaKey)
       }
     }
 

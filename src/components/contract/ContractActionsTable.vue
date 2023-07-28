@@ -26,7 +26,7 @@
 
   <div id="contractActionsTable">
     <o-table
-        :data="actions"
+        :data="actions ?? []"
         :paginated="isPaginated"
         :per-page="NB_ACTIONS_PER_PAGE"
 
@@ -100,7 +100,7 @@
     </o-table>
   </div>
 
-  <EmptyTable v-if="!actions.length"/>
+  <EmptyTable v-if="!actions?.length"/>
 
 </template>
 

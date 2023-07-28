@@ -18,6 +18,7 @@
  *
  */
 
+import {describe, test, expect} from 'vitest'
 import router from "@/router";
 import {flushPromises, mount} from "@vue/test-utils";
 import NftTransferGraph from "@/components/transfer_graphs/NftTransferGraph.vue";
@@ -51,7 +52,7 @@ describe("NftTransferGraph.vue", () => {
         // console.log(wrapper.html())
         // console.log(wrapper.text())
 
-        expect(wrapper.text()).toBe("NFT TransfersNone")
+        expect(wrapper.text()).toBe("")
 
         wrapper.unmount()
         await flushPromises()
