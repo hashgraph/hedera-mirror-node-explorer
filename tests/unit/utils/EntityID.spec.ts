@@ -20,6 +20,7 @@
  *
  */
 
+import {describe, test, expect} from 'vitest'
 import {EntityID} from "@/utils/EntityID";
 
 describe("EntityID.ts", () => {

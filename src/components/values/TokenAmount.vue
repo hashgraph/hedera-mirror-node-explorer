@@ -54,7 +54,7 @@ export default defineComponent({
   components: {InfoTooltip, TokenExtra},
   props: {
     amount: {
-      type: BigInt as PropType<bigint|null>,
+      type: BigInt as unknown as PropType<bigint|null>,
       default: null
     },
     tokenId: {

@@ -20,6 +20,7 @@
  *
  */
 
+import { describe, it, expect } from 'vitest'
 import {flushPromises, mount} from "@vue/test-utils"
 import router from "@/router";
 import axios from "axios";
@@ -324,7 +325,7 @@ describe("AccountDetails.vue", () => {
 
     it("Should display account staking to node", async () => {
 
-        process.env = Object.assign(process.env, { VUE_APP_ENABLE_STAKING: true });
+        process.env = Object.assign(process.env, { VITE_APP_ENABLE_STAKING: true });
         await router.push("/") // To avoid "missing required param 'network'" error
 
         const mock = new MockAdapter(axios);
@@ -376,7 +377,7 @@ describe("AccountDetails.vue", () => {
 
     it("Should display account staking to account", async () => {
 
-        process.env = Object.assign(process.env, { VUE_APP_ENABLE_STAKING: true });
+        process.env = Object.assign(process.env, { VITE_APP_ENABLE_STAKING: true });
         await router.push("/") // To avoid "missing required param 'network'" error
 
         const mock = new MockAdapter(axios);

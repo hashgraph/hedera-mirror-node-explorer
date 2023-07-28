@@ -25,6 +25,7 @@
 
  */
 
+import {describe, it, expect} from 'vitest'
 import {flushPromises, mount} from "@vue/test-utils";
 import router from "@/router";
 import {SAMPLE_TOKEN, SAMPLE_TOKEN_DUDE, SAMPLE_TOKEN_WITH_LARGE_DECIMAL_COUNT} from "../Mocks";

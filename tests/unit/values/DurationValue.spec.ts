@@ -18,6 +18,7 @@
  *
  */
 
+import {describe, test, expect} from 'vitest'
 import {flushPromises, mount, VueWrapper} from "@vue/test-utils"
 import router from "@/router";
 import DurationValue from "@/components/values/DurationValue.vue";

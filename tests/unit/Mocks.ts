@@ -2392,6 +2392,7 @@ export const SAMPLE_CONTRACT = {
     "file_id": "0.0.749773",
     "max_automatic_token_associations": 0,
     "memo": "Mirror Node acceptance test: 2022-03-07T15:09:15.228564328Z Create contract",
+    "nonce": 1,
     "obtainer_id": null,
     "proxy_account_id": null,
     "timestamp": {

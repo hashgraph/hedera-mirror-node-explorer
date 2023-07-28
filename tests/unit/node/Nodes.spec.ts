@@ -18,6 +18,7 @@
  *
  */
 
+import {describe, it, expect} from 'vitest'
 import {flushPromises, mount} from "@vue/test-utils"
 import router from "@/router";
 import axios from "axios";
@@ -48,7 +49,7 @@ describe("Nodes.vue", () => {
 
     it("should display the nodes pages containing the node table", async () => {
 
-        process.env = Object.assign(process.env, { VUE_APP_ENABLE_STAKING: true });
+        process.env = Object.assign(process.env, { VITE_APP_ENABLE_STAKING: true });
 
         await router.push("/") // To avoid "missing required param 'network'" error
 

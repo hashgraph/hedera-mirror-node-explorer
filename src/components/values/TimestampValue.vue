@@ -92,8 +92,8 @@ export default defineComponent({
 
     const isNever = computed( () => seconds.value && seconds.value >= infiniteDuration)
 
-    const dateOptions = {
-      weekDay: "short",
+    const dateOptions: Intl.DateTimeFormatOptions = {
+      // weekDay: "short",
       day: "numeric",
       month: "short",
       year: "numeric",

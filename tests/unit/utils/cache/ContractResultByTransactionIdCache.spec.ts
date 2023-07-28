@@ -20,6 +20,7 @@
  *
  */
 
+import {describe, test, expect} from 'vitest'
 import {SAMPLE_CONTRACT_RESULT_DETAILS,} from "../../Mocks";
 import {flushPromises} from "@vue/test-utils";
 import MockAdapter from "axios-mock-adapter";
