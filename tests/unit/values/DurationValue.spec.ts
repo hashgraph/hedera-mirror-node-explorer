@@ -18,6 +18,7 @@
  *
  */
 
+import {describe, test, expect} from 'vitest'
 import {flushPromises, mount, VueWrapper} from "@vue/test-utils"
 import router from "@/router";
 import DurationValue from "@/components/values/DurationValue.vue";
@@ -47,6 +48,9 @@ describe("DurationValue.vue", () => {
         })
 
         expect(wrapper.text()).toBe("None")
+
+        wrapper.unmount()
+        await flushPromises()
     })
 
     test("various cases of numberValue defined", async () => {
@@ -84,6 +88,9 @@ describe("DurationValue.vue", () => {
         await testBody(wrapper, 1, "1s")
 
         await testBody(wrapper, 31556888202959784, "Infinite")
+
+        wrapper.unmount()
+        await flushPromises()
     })
 
     test("stringValue defined", async () => {
@@ -108,6 +115,9 @@ describe("DurationValue.vue", () => {
             stringValue: S2,
         })
         expect(wrapper.text()).toBe(S2)
+
+        wrapper.unmount()
+        await flushPromises()
     })
 
     test("NaN stringValue", async () => {
@@ -124,6 +134,9 @@ describe("DurationValue.vue", () => {
         await flushPromises()
 
         expect(wrapper.text()).toBe(S1)
+
+        wrapper.unmount()
+        await flushPromises()
     })
 })
 

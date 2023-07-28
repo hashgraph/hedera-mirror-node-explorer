@@ -92,8 +92,7 @@
         <Property id="nodeCertHash">
           <template v-slot:name>Certificate Hash</template>
           <template v-slot:value>
-            <HexaValue v-bind:byteString="node ? formatHash(node?.node_cert_hash): undefined"
-                       v-bind:show-none="true"/>
+            <HexaValue v-bind:byteString="formattedHash" v-bind:show-none="true"/>
           </template>
         </Property>
       </template>
@@ -106,7 +105,7 @@
                               title="Stake for Consensus"/>
         <p v-if="stake" id="consensusStakePercent" class="h-is-property-text h-is-extra-text mt-1">{{
             stakePercentage
-          }}% of total</p>
+          }} of total</p>
         <p v-else class="h-is-property-text h-is-extra-text mt-1">(&lt;Min)</p>
         <br/><br/>
         <div v-if="stake === 0">
@@ -119,12 +118,12 @@
         <NetworkDashboardItem id="maxStake" :value="makeFloorHbarAmount(maxStake)" name="HBAR" title="Max Stake"/>
         <br/><br/>
         <NetworkDashboardItem id="rewarded" :value="makeFloorHbarAmount(stakeRewarded)" name="HBAR"
-                              title="Stake Rewarded"/>
+                              title="Staked for Reward"/>
         <p id="rewardedPercent" class="h-is-property-text h-is-extra-text mt-1">{{ stakeRewardedPercentage }}% of
           total</p>
         <br/><br/>
         <NetworkDashboardItem id="notRewarded" :value="makeFloorHbarAmount(stakeUnrewarded)" name="HBAR"
-                              title="Stake Not Rewarded"/>
+                              title="Staked For No Reward"/>
         <p id="notRewardedPercent" class="h-is-property-text h-is-extra-text mt-1">{{ stakeUnrewardedPercentage }}% of
           total</p>
         <br/><br/>
@@ -148,7 +147,7 @@
 
 <script lang="ts">
 
-import {computed, defineComponent, inject, ref} from 'vue';
+import {computed, defineComponent, inject, onBeforeUnmount, onMounted, ref} from 'vue';
 import KeyValue from "@/components/values/KeyValue.vue";
 import AccountLink from "@/components/values/AccountLink.vue";
 import TimestampValue from "@/components/values/TimestampValue.vue";
@@ -158,13 +157,14 @@ import StringValue from "@/components/values/StringValue.vue";
 import Footer from "@/components/Footer.vue";
 import NotificationBanner from "@/components/NotificationBanner.vue";
 import Property from "@/components/Property.vue";
-import {base64DecToArr, byteToHex} from "@/utils/B64Utils";
 import HexaValue from "@/components/values/HexaValue.vue";
 import Endpoints from "@/components/values/Endpoints.vue";
 import NetworkDashboardItem from "@/components/node/NetworkDashboardItem.vue";
-import {StakeLoader} from "@/components/staking/StakeLoader";
+import {StakeCache} from "@/utils/cache/StakeCache";
 import {PathParam} from "@/utils/PathParam";
-import {NodeRegistry} from "@/components/node/NodeRegistry";
+import {NodeAnalyzer} from "@/utils/analyzer/NodeAnalyzer";
+import {NetworkNode} from "@/schemas/HederaSchemas";
+import {makeStakePercentage} from "@/schemas/HederaUtils";
 
 export default defineComponent({
 
@@ -198,18 +198,26 @@ export default defineComponent({
     const isTouchDevice = inject('isTouchDevice', false)
 
     const nodeIdNb = computed(() => PathParam.parseNodeId(props.nodeId))
-    const nodeCursor = NodeRegistry.getCursor(nodeIdNb)
-    const stakeLoader = new StakeLoader()
+    const nodeAnalyzer = new NodeAnalyzer(nodeIdNb)
+    onMounted(() => nodeAnalyzer.mount())
+    onBeforeUnmount(() => nodeAnalyzer.unmount())
+    const networkAnalyzer = nodeAnalyzer.networkAnalyzer // Mounted / unmounted by nodeAnalyzer
 
-    const stakeTotal = computed(() => stakeLoader.entity.value?.stake_total ?? 0)
+    const stakeLookup = StakeCache.instance.makeLookup()
+    onMounted(() => stakeLookup.mount())
+    onBeforeUnmount(() => stakeLookup.unmount())
+
+    const stakeTotal = computed(() => stakeLookup.entity.value?.stake_total ?? 0)
     const stakePercentage = computed(() =>
-        stakeTotal.value ? Math.round(nodeCursor.stake.value / stakeTotal.value * 10000) / 100 : 0)
+        nodeAnalyzer.node.value && stakeTotal.value
+            ? makeStakePercentage(nodeAnalyzer.node.value as NetworkNode, stakeTotal.value)
+            : "0")
 
     const stakeRewardedPercentage = computed(() =>
-        NodeRegistry.instance.stakeRewardedTotal.value != 0 ? Math.round(nodeCursor.stakeRewarded.value / NodeRegistry.instance.stakeRewardedTotal.value * 10000) / 100 : 0)
+        networkAnalyzer.stakeRewardedTotal.value != 0 ? Math.round(nodeAnalyzer.stakeRewarded.value / networkAnalyzer.stakeRewardedTotal.value * 10000) / 100 : 0)
 
     const stakeUnrewardedPercentage = computed(() =>
-        NodeRegistry.instance.stakeUnrewardedTotal.value != 0 ? Math.round(nodeCursor.stakeUnrewarded.value / NodeRegistry.instance.stakeUnrewardedTotal.value * 10000) / 100 : 0)
+        networkAnalyzer.stakeUnrewardedTotal.value != 0 ? Math.round(nodeAnalyzer.stakeUnrewarded.value / networkAnalyzer.stakeUnrewardedTotal.value * 10000) / 100 : 0)
 
     const unknownNodeId = ref(false)
     const notification = computed(() => {
@@ -222,31 +230,27 @@ export default defineComponent({
       return result
     })
 
-    const formatHash = (hash: string | undefined) => {
-      return hash != undefined ? byteToHex(base64DecToArr(hash)) : ""
-    }
-
     const makeFloorHbarAmount = (tinyBarAmount: number) => Math.floor((tinyBarAmount ?? 0) / 100000000).toLocaleString('en-US')
 
     return {
       isSmallScreen,
       isTouchDevice,
       nodeIdNb,
-      node: nodeCursor.node,
-      annualizedRate: nodeCursor.annualizedRate,
-      stake: nodeCursor.stake,
-      minStake: nodeCursor.minStake,
-      maxStake: nodeCursor.maxStake,
+      node: nodeAnalyzer.node,
+      annualizedRate: nodeAnalyzer.annualizedRate,
+      stake: nodeAnalyzer.stake,
+      minStake: nodeAnalyzer.minStake,
+      maxStake: nodeAnalyzer.maxStake,
       stakePercentage,
-      unclampedStake: nodeCursor.unclampedStake,
-      stakeRewarded: nodeCursor.stakeRewarded,
+      unclampedStake: nodeAnalyzer.unclampedStake,
+      stakeRewarded: nodeAnalyzer.stakeRewarded,
       stakeRewardedPercentage,
-      stakeUnrewarded: nodeCursor.stakeUnrewarded,
+      stakeUnrewarded: nodeAnalyzer.stakeUnrewarded,
       stakeUnrewardedPercentage,
       notification,
-      isCouncilNode: nodeCursor.isCouncilNode,
-      nodeDescription: nodeCursor.nodeDescription,
-      formatHash,
+      isCouncilNode: nodeAnalyzer.isCouncilNode,
+      nodeDescription: nodeAnalyzer.nodeDescription,
+      formattedHash: nodeAnalyzer.certificateHash,
       makeFloorHbarAmount
     }
   },

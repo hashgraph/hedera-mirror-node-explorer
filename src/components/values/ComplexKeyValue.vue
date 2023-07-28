@@ -73,10 +73,10 @@
 
 <script lang="ts">
 
-import {computed, defineComponent, inject, ref} from "vue";
+import {computed, defineComponent, inject, PropType, ref} from "vue";
 import {ComplexKeyLine} from "@/utils/ComplexKeyLine";
 import {hexToByte} from "@/utils/B64Utils";
-import hashgraph from "@hashgraph/proto/lib/proto";
+import * as hashgraph from "@hashgraph/proto";
 import HexaValue from "@/components/values/HexaValue.vue";
 import ContractLink from "@/components/values/ContractLink.vue";
 import {initialLoadingKey} from "@/AppKeys";
@@ -95,8 +95,14 @@ export default defineComponent({
   name: "ComplexKeyValue",
   components: {ContractLink, HexaValue},
   props: {
-    keyBytes: String,
-    accountId: String,
+    keyBytes: {
+      type: String as PropType<string|null>,
+      default: null
+    },
+    accountId: {
+      type: String as PropType<string|null>,
+      default: null
+    },
     details: {
       type: Boolean,
       default: false

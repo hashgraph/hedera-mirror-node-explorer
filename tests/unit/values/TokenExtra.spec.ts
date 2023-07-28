@@ -25,6 +25,7 @@
 
  */
 
+import {describe, it, expect} from 'vitest'
 import {flushPromises, mount} from "@vue/test-utils";
 import router from "@/router";
 import {SAMPLE_TOKEN, SAMPLE_TOKEN_DUDE} from "../Mocks";
@@ -68,6 +69,9 @@ describe("TokenExtra.vue", () => {
         await flushPromises()
         expect(wrapper.get('a').attributes('href')).toMatch(RegExp("/token/" + SAMPLE_TOKEN.token_id + "$"))
         expect(wrapper.get('.h-is-extra-text').text()).toBe(SAMPLE_TOKEN.name)
+
+        wrapper.unmount()
+        await flushPromises()
     });
 
 });

@@ -25,8 +25,8 @@
 <template>
 
   <StakingDialog v-model:show-dialog="showStakingDialog"
-                 :account="account"
-                 :currently-staked-to="stakedTo"
+                 :account="account ?? undefined"
+                 :currently-staked-to="stakedTo ?? undefined"
                  v-on:change-staking="handleChangeStaking"/>
 
   <ConfirmDialog v-model:show-dialog="showStopConfirmDialog" @onConfirm="handleStopStaking"
@@ -68,13 +68,13 @@
           <div v-if="accountId" class="h-is-secondary-text has-text-weight-light is-inline-block">
             <AccountLink :account-id="accountId">{{ accountId }}</AccountLink>
           </div>
-          <span v-if="accountChecksum" class="has-text-grey mr-3" style="font-size: 28px">-{{ accountChecksum }}</span>
+          <span v-if="accountChecksum" class="has-text-grey mr-3" style="font-size: 14px">-{{ accountChecksum }}</span>
         </div>
         <div v-if="!isMediumScreen && accountId" id="showAccountLink" class="is-flex is-flex-direction-column mt-2">
-          <router-link :to="accountRoute">
+          <router-link v-if="accountRoute" :to="accountRoute">
             <span class="h-is-property-text">Show my account</span>
           </router-link>
-          <router-link :to="allowanceApprovalRoute">
+          <router-link v-if="allowanceApprovalRoute" :to="allowanceApprovalRoute">
             <span class="h-is-property-text">Approve an allowance…</span>
           </router-link>
         </div>
@@ -82,10 +82,10 @@
 
       <template v-slot:control v-if="isMediumScreen">
         <div v-if="accountId" id="showAccountLink" class="is-flex is-flex-direction-column ml-3">
-          <router-link :to="accountRoute">
+          <router-link v-if="accountRoute" :to="accountRoute">
             <span class="h-is-property-text">Show my account</span>
           </router-link>
-          <router-link :to="allowanceApprovalRoute">
+          <router-link v-if="allowanceApprovalRoute" :to="allowanceApprovalRoute">
             <span class="h-is-property-text">Approve an allowance…</span>
           </router-link>
         </div>
@@ -96,7 +96,7 @@
         <template v-if="accountId">
           <div v-if="isSmallScreen">
             <div class="is-flex is-justify-content-space-between">
-              <NetworkDashboardItem :name="stakePeriodStart ? ('since ' + stakePeriodStart) : null" title="Staked to">
+              <NetworkDashboardItem :name="stakePeriodStart ? ('since ' + stakePeriodStart) : undefined" title="Staked to">
                 <template v-slot:value>
                   <div class="is-inline-block">
                     <span v-if="isStakedToNode"  class="icon has-text-info mr-2" style="font-size: 20px">
@@ -142,8 +142,8 @@
           </div>
           <div v-else>
             <div class="is-flex-direction-column">
-              <NetworkDashboardItem :name="stakePeriodStart ? ('since ' + stakePeriodStart) : null"
-                                    title="Staked to" :value="stakedTo"/>
+              <NetworkDashboardItem :name="stakePeriodStart ? ('since ' + stakePeriodStart) : undefined"
+                                    title="Staked to" :value="stakedTo ?? undefined"/>
               <div class="mt-4"/>
               <NetworkDashboardItem :name="stakedAmount ? 'HBAR' : ''" title="My Stake" :value="stakedAmount"/>
               <div class="mt-4"/>
@@ -154,7 +154,7 @@
               <NetworkDashboardItem v-else
                                     title="Pending Reward"
                                     name="HBAR"
-                                    :value="null"
+                                    :value="undefined"
                                     :class="{'h-has-opacity-40': ignoreReward && !pendingReward}"/>
 
               <div class="mt-4"/>
@@ -234,8 +234,7 @@ import {useRouter} from "vue-router";
 import Footer from "@/components/Footer.vue";
 import {routeManager, walletManager} from "@/router";
 import NetworkDashboardItem from "@/components/node/NetworkDashboardItem.vue";
-import axios from "axios";
-import {Transaction, TransactionByIdResponse} from "@/schemas/HederaSchemas";
+import {Transaction} from "@/schemas/HederaSchemas";
 import {waitFor} from "@/utils/TimerUtils";
 import StakingRewardsTable from "@/components/staking/StakingRewardsTable.vue";
 import StakingDialog from "@/components/staking/StakingDialog.vue";
@@ -248,12 +247,13 @@ import WalletChooser from "@/components/staking/WalletChooser.vue";
 import {WalletDriver} from "@/utils/wallet/WalletDriver";
 import {WalletDriverError} from "@/utils/wallet/WalletDriverError";
 import {normalizeTransactionId} from "@/utils/TransactionID";
-import {AccountLoader} from "@/components/account/AccountLoader";
 import {StakingRewardsTableController} from "@/components/staking/StakingRewardsTableController";
 import DownloadButton from "@/components/DownloadButton.vue";
 import CSVDownloadDialog from "@/components/CSVDownloadDialog.vue";
 import {RewardDownloader} from "@/utils/downloader/RewardDownloader";
-import {NodeRegistry} from "@/components/node/NodeRegistry";
+import {NodeAnalyzer} from "@/utils/analyzer/NodeAnalyzer";
+import {AccountLocParser} from "@/utils/parser/AccountLocParser";
+import {TransactionByIdCache} from "@/utils/cache/TransactionByIdCache";
 
 export default defineComponent({
   name: 'Staking',
@@ -347,19 +347,20 @@ export default defineComponent({
     //
     // Account
     //
-    const accountLoader = new AccountLoader(walletManager.accountId)
-    onMounted(() => accountLoader.requestLoad())
+    const accountLocParser = new AccountLocParser(walletManager.accountId)
+    onMounted(() => accountLocParser.mount())
+    onBeforeUnmount(() => accountLocParser.unmount())
 
-    const isStakedToNode = computed(() => accountLoader.stakedNodeId.value !== null)
-    const isStakedToAccount = computed(() => accountLoader.stakedAccountId.value)
+    const isStakedToNode = computed(() => accountLocParser.stakedNodeId.value !== null)
+    const isStakedToAccount = computed(() => accountLocParser.stakedAccountId.value)
     const isStaked = computed(() => isStakedToNode.value || isStakedToAccount.value)
 
     const stakedTo = computed(() => {
       let result: string|null
       if (isStakedToAccount.value) {
-        result = "Account " + accountLoader.stakedAccountId.value
+        result = "Account " + accountLocParser.stakedAccountId.value
       } else if (isStakedToNode.value) {
-        result = "Node " + accountLoader.stakedNodeId.value + " - " + stakedNodeLoader.shortNodeDescription.value
+        result = "Node " + accountLocParser.stakedNodeId.value + " - " + stakedNodeAnalyzer.shortNodeDescription.value
       } else {
         result = null
       }
@@ -378,14 +379,14 @@ export default defineComponent({
     })
 
     const balanceInHbar = computed(() => {
-      const balance = accountLoader.balance.value ?? 10000000000
+      const balance = accountLocParser.balance.value ?? 10000000000
       return balance / 100000000
     })
 
-    const stakedAmount = computed(() => isStaked.value ? formatHbarAmount(accountLoader.balance.value) : null)
+    const stakedAmount = computed(() => isStaked.value ? formatHbarAmount(accountLocParser.balance.value) : null)
 
     const formatHbarAmount = (amount: number | null) => {
-      let result
+      let result: string|null
       if (amount) {
         const amountFormatter = new Intl.NumberFormat("en-US", {maximumFractionDigits: 8})
         result = amountFormatter.format(amount / 100000000)
@@ -396,22 +397,24 @@ export default defineComponent({
       return result
     }
 
-    const pendingReward = computed(() => formatHbarAmount(accountLoader.pendingReward.value ?? null))
-    const declineReward = computed(() => accountLoader.entity.value?.decline_reward ?? false)
-    const ignoreReward = computed(() => accountLoader.stakedNodeId.value === null)
+    const pendingReward = computed(() => formatHbarAmount(accountLocParser.pendingReward.value ?? null))
+    const declineReward = computed(() => accountLocParser.accountInfo.value?.decline_reward ?? false)
+    const ignoreReward = computed(() => accountLocParser.stakedNodeId.value === null)
 
     //
     // stakedNode
     //
 
-    const stakedNodeLoader = NodeRegistry.getCursor(accountLoader.stakedNodeId)
+    const stakedNodeAnalyzer = new NodeAnalyzer(accountLocParser.stakedNodeId)
+    onMounted(() => stakedNodeAnalyzer.mount())
+    onBeforeUnmount(() => stakedNodeAnalyzer.unmount())
 
     //
     // handleStopStaking / handleChangeStaking
     //
 
     const handleStopStaking = () => {
-      changeStaking(null, null, accountLoader.entity.value?.decline_reward ? false : null)
+      changeStaking(null, null, accountLocParser.accountInfo.value?.decline_reward ? false : null)
     }
 
     const handleChangeStaking = (nodeId: number|null, accountId: string|null, declineReward: boolean|null) => {
@@ -433,7 +436,7 @@ export default defineComponent({
         progressMainMessage.value = "Completing operation…"
         progressExtraMessage.value = "This may take a few seconds"
         showProgressSpinner.value = true
-        await waitForTransactionRefresh(transactionId, 10)
+        await waitForTransactionRefresh(transactionId)
 
         progressDialogMode.value = Mode.Success
         progressMainMessage.value = "Operation completed"
@@ -449,32 +452,31 @@ export default defineComponent({
           progressExtraMessage.value = error.extra
         } else {
           progressMainMessage.value = "Operation did not complete"
-          progressExtraMessage.value = JSON.stringify(error.message)
+          progressExtraMessage.value = JSON.stringify(error)
         }
         progressExtraTransactionId.value = null
         showProgressSpinner.value = false
 
       } finally {
-
-        accountLoader.requestLoad()
+        accountLocParser.remount()
       }
 
     }
 
-    const waitForTransactionRefresh = async (transactionId: string, attemptIndex: number) => {
+    const waitForTransactionRefresh = async (transactionId: string) => {
       let result: Promise<Transaction | string>
 
-      if (attemptIndex >= 0) {
-        await waitFor(props.polling)
-        try {
-          const response = await axios.get<TransactionByIdResponse>("api/v1/transactions/" + transactionId )
-          const transactions = response.data.transactions ?? []
-          result = Promise.resolve(transactions.length >= 1 ? transactions[0] : transactionId)
-        } catch {
-          result = waitForTransactionRefresh(transactionId, attemptIndex - 1)
-        }
-      } else {
-        result = Promise.resolve(transactionId)
+      try {
+          let counter = 10
+          let transaction: Transaction|null = null
+          while (counter > 0 && transaction === null) {
+              await waitFor(props.polling)
+              transaction = await TransactionByIdCache.instance.lookup(transactionId, true)
+              counter -= 1
+          }
+          result = Promise.resolve(transaction ?? transactionId)
+      } catch {
+          result = Promise.resolve(transactionId)
       }
 
       return result
@@ -506,11 +508,11 @@ export default defineComponent({
       walletName: walletManager.walletName,
       walletIconURL: walletManager.getActiveDriver().iconURL,
       accountId: walletManager.accountId,
-      accountChecksum: accountLoader.accountChecksum,
-      account: accountLoader.entity,
+      accountChecksum: accountLocParser.accountChecksum,
+      account: accountLocParser.accountInfo,
       accountRoute,
       allowanceApprovalRoute,
-      stakePeriodStart: accountLoader.stakePeriodStart,
+      stakePeriodStart: accountLocParser.stakePeriodStart,
       showStakingDialog,
       showStopConfirmDialog,
       showWalletChooser,
@@ -519,8 +521,8 @@ export default defineComponent({
       isStakedToNode,
       isStakedToAccount,
       stakedTo,
-      stakedNode: stakedNodeLoader.node,
-      isCouncilNode: stakedNodeLoader.isCouncilNode,
+      stakedNode: stakedNodeAnalyzer.node,
+      isCouncilNode: stakedNodeAnalyzer.isCouncilNode,
       balanceInHbar,
       stakedAmount,
       pendingReward,

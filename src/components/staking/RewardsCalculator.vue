@@ -61,7 +61,7 @@
             <p v-else class="h-is-text-size-3 mb-1">Enter number of hbars you want to stake</p>
               <input class="input is-small has-text-right" type="text" placeholder="0"
                      :value="amountStaked"
-                     @input="event => handleInput(event.target.value)"
+                     @input="handleInput"
                      style="width: 100%; height: 26px; margin-top: 1.5px; border-radius: 4px; border-width: 1px;
                      color: white; background-color: var(--h-theme-box-background-color)">
           </div>
@@ -88,12 +88,12 @@
 
 <script lang="ts">
 
-import {computed, defineComponent, inject, onBeforeMount, ref, watch} from 'vue';
+import {computed, defineComponent, inject, onBeforeMount, onBeforeUnmount, onMounted, ref, watch} from 'vue';
 import NetworkDashboardItem from "@/components/node/NetworkDashboardItem.vue";
 import DashboardCard from "@/components/DashboardCard.vue";
-import {makeNodeSelectorDescription, makeShortNodeDescription, NetworkNode} from "@/schemas/HederaSchemas";
-import {getEnv} from "@/utils/getEnv";
-import {NodeRegistry} from "@/components/node/NodeRegistry";
+import {makeNodeSelectorDescription} from "@/schemas/HederaSchemas";
+import {NodeAnalyzer} from "@/utils/analyzer/NodeAnalyzer";
+import {isCouncilNode, makeNodeDescription} from "@/schemas/HederaUtils";
 
 export default defineComponent({
   name: 'RewardsCalculator',
@@ -110,7 +110,7 @@ export default defineComponent({
   },
 
   setup(props) {
-    const htmlNotice = getEnv('VUE_APP_ESTIMATOR_NOTICE') ?? ""
+    const htmlNotice = import.meta.env.VITE_APP_ESTIMATOR_NOTICE ?? ""
 
     const isSmallScreen = inject('isSmallScreen', true)
     const isMediumScreen = inject('isMediumScreen', true)
@@ -122,12 +122,14 @@ export default defineComponent({
     //
     // Node
     //
-    const nodeCursor = computed(() => NodeRegistry.getCursor(selectedNodeId))
+    const nodeAnalyzer = new NodeAnalyzer(selectedNodeId)
+    onMounted(() => nodeAnalyzer.mount())
+    onBeforeUnmount(() => nodeAnalyzer.unmount())
 
     const nodeIcon = computed(() => {
       let result
       if (selectedNodeId.value !== null) {
-        result = NodeRegistry.isCouncilNode(selectedNodeId) ? "building" : "users"
+        result = nodeAnalyzer.isCouncilNode.value ? "building" : "users"
       } else {
         result = ""
       }
@@ -141,20 +143,14 @@ export default defineComponent({
     watch(() => props.amountInHbar, updateAmountStaked)
     onBeforeMount(updateAmountStaked)
 
-    const rewardRate = computed(() => nodeCursor.value.rewardRate.value)
+    const rewardRate = computed(() => nodeAnalyzer.rewardRate.value)
     const currentReward = computed(() => rewardRate.value && amountStaked.value ? Math.round(amountStaked.value * rewardRate.value * 10000) / 10000 : 0)
     const monthlyReward = computed(() => currentReward.value ? Math.round(currentReward.value * 30 * 100) / 100 : 0)
     const yearlyReward = computed(() => currentReward.value ? Math.round(currentReward.value * 365 * 10) / 10 : 0)
 
-    const makeNodeDescription = (node: NetworkNode) => {
-      let description = node.description ?? NodeRegistry.getDescription(ref(node.node_id??null))
-      return description ? makeShortNodeDescription(description) : null
-    }
-
-    const isCouncilNode = (node: NetworkNode) => NodeRegistry.isCouncilNode(ref(node.node_id ?? 0))
-
-    const handleInput = (value: string) => {
+    const handleInput = (event: Event) => {
       const previousAmount = amountStaked.value
+      const value = (event.target as HTMLInputElement).value
       const newAmount = Number(value)
       if (!Number.isNaN(newAmount) && newAmount >= 0 && newAmount <= 50000000000) {
         amountStaked.value = newAmount
@@ -176,12 +172,12 @@ export default defineComponent({
       currentReward,
       monthlyReward,
       yearlyReward,
-      annualizedRate: nodeCursor.value.annualizedRate,
-      nodes: NodeRegistry.instance.nodes,
+      annualizedRate: nodeAnalyzer.annualizedRate,
+      nodes: nodeAnalyzer.networkAnalyzer.nodes,
+      hasCommunityNode: nodeAnalyzer.networkAnalyzer.hasCommunityNode,
       makeNodeDescription,
-      makeNodeSelectorDescription:makeNodeSelectorDescription,
+      makeNodeSelectorDescription,
       isCouncilNode,
-      hasCommunityNode: NodeRegistry.instance.hasCommunityNode,
       handleInput
     }
   }

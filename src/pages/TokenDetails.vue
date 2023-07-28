@@ -36,35 +36,37 @@
         <div class="is-inline-block h-is-tertiary-text h-is-extra-text should-wrap" style="word-break: break-all">
           {{ displaySymbol }}
         </div>
-        <div class="h-is-tertiary-text mt-3" id="entityId">
-          <div class="is-inline-block h-is-property-text has-text-weight-light" style="min-width: 115px">Token ID:</div>
-          <span>{{ normalizedTokenId ?? "" }}</span>
-          <span v-if="tokenChecksum" class="has-text-grey">-{{ tokenChecksum }}</span>
-        </div>
-        <div v-if="ethereumAddress" id="evmAddress" class="h-is-tertiary-text mt-2" style="word-break: keep-all">
-          <div class="is-inline-block h-is-property-text has-text-weight-light" style="min-width: 115px">EVM Address:</div>
-          <div class="is-inline-block">
-            <EVMAddress :show-id="false" :has-custom-font="true" :address="ethereumAddress"/>
+        <div id="entityId" class="headline-grid h-is-tertiary-text mt-3 is-align-items-baseline">
+          <div class="h-is-property-text has-text-weight-light">Token ID:</div>
+          <div>
+            <Copyable :content-to-copy="normalizedTokenId ?? ''">
+              <template v-slot:content>
+                <span>{{ normalizedTokenId ?? "" }}</span>
+              </template>
+            </Copyable>
+            <span v-if="tokenChecksum" class="has-text-grey h-is-smaller">-{{ tokenChecksum }}</span>
           </div>
         </div>
-        <div class="mt-2">
-          <MetaMaskImport v-if="!isMediumScreen && ethereumAddress"
-                          :address="ethereumAddress"
-                          :decimals="tokenInfo?.decimals"
-                          :show-import="true"
-                          :show-none="true"
-                          :symbol="tokenSymbol"/>
-        </div>
-      </template>
 
-      <template v-if="isMediumScreen && ethereumAddress" v-slot:control>
-        <div class="ml-6">
+        <div v-if="ethereumAddress" id="evmAddress"
+             class="headline-grid is-align-items-baseline h-is-property-text mt-2" style="word-break: keep-all">
+          <div class="has-text-weight-light">EVM Address:</div>
+          <div class="is-flex is-align-items-baseline">
+            <EVMAddress class="mr-3" :show-id="false" :has-custom-font="true" :address="ethereumAddress"/>
+            <MetaMaskImport v-if="isSmallScreen"
+                            :address="ethereumAddress"
+                            :decimals="tokenInfo?.decimals"
+                            :show-import="true"
+                            :symbol="tokenSymbol"/>
+          </div>
+        </div>
+        <div v-if="ethereumAddress && !isSmallScreen" class="mt-2 h-is-property-text">
           <MetaMaskImport :address="ethereumAddress"
                           :decimals="tokenInfo?.decimals"
                           :show-import="true"
-                          :show-none="true"
                           :symbol="tokenSymbol"/>
         </div>
+
       </template>
 
       <template v-slot:content>
@@ -87,27 +89,34 @@
         <Property id="memo">
           <template v-slot:name>Memo</template>
           <template v-slot:value>
-            <BlobValue :base64="true" :blob-value="tokenInfo?.memo" :show-none="true"/>
+            <BlobValue :blob-value="tokenInfo?.memo" :show-none="true"/>
           </template>
         </Property>
         <Property id="expiresAt">
-          <template v-slot:name>Expires at</template>
+          <template v-slot:name>
+            <span>Expires at</span>
+            <InfoTooltip label="Token expiry is not turned on yet. Value in this field is not relevant."/>
+          </template>
           <template v-slot:value>
             <TimestampValue :nano="true" :show-none="true" :timestamp="tokenInfo?.expiry_timestamp?.toString()"/>
           </template>
         </Property>
         <Property id="autoRenewPeriod">
-          <template v-slot:name>Auto Renew Period</template>
+          <template v-slot:name>
+            <span>Auto Renew Period</span>
+            <InfoTooltip label="Token auto-renew is not turned on yet. Value in this field is not relevant."/>
+          </template>
           <template v-slot:value>
-            <DurationValue v-if="false" v-bind:string-value="tokenInfo?.auto_renew_period?.toString()"/>
-            <span v-else class="has-text-grey">Not yet enabled</span>
+            <DurationValue v-bind:number-value="tokenInfo?.auto_renew_period ?? undefined"/>
           </template>
         </Property>
         <Property id="autoRenewAccount">
-          <template v-slot:name>Auto Renew Account</template>
+          <template v-slot:name>
+            <span>Auto Renew Account</span>
+            <InfoTooltip label="Token auto-renew is not turned on yet. Value in this field is not relevant."/>
+          </template>
           <template v-slot:value>
-            <AccountLink v-if="false" :account-id="tokenInfo?.auto_renew_account" :show-none="true"/>
-            <span v-else class="has-text-grey">Not yet enabled</span>
+            <AccountLink :account-id="tokenInfo?.auto_renew_account" :show-none="true"/>
           </template>
         </Property>
         <Property id="freezeDefault">
@@ -149,14 +158,14 @@
         <Property id="totalSupply">
           <template v-slot:name>Total Supply</template>
           <template v-if="validEntityId" v-slot:value>
-            <TokenAmount :amount="parseIntString(tokenInfo?.total_supply)" :show-extra="false"
+            <TokenAmount :amount="parseBigIntString(tokenInfo?.total_supply)" :show-extra="false"
                          :token-id="normalizedTokenId"/>
           </template>
         </Property>
         <Property id="initialSupply">
           <template v-slot:name>Initial Supply</template>
           <template v-if="validEntityId" v-slot:value>
-            <TokenAmount :amount="parseIntString(tokenInfo?.initial_supply)" :show-extra="false"
+            <TokenAmount :amount="parseBigIntString(tokenInfo?.initial_supply)" :show-extra="false"
                          :token-id="normalizedTokenId"/>
           </template>
         </Property>
@@ -164,8 +173,14 @@
           <template v-slot:name>Max Supply</template>
           <template v-if="validEntityId" v-slot:value>
             <div v-if="tokenInfo?.supply_type === 'INFINITE'" class="has-text-grey">Infinite</div>
-            <TokenAmount v-else :amount="parseIntString(tokenInfo?.max_supply)" :show-extra="false"
+            <TokenAmount v-else :amount="parseBigIntString(tokenInfo?.max_supply)" :show-extra="false"
                          :token-id="normalizedTokenId"/>
+          </template>
+        </Property>
+        <Property id="decimals">
+          <template v-slot:name>Decimals</template>
+          <template v-if="validEntityId" v-slot:value>
+            <StringValue :string-value="tokenInfo?.decimals"/>
           </template>
         </Property>
       </template>
@@ -249,7 +264,7 @@
 
     </DashboardCard>
 
-    <TokenCustomFees v-if="hasCustomFees" :token-info-loader="tokenInfoLoader"/>
+    <TokenCustomFees v-if="hasCustomFees" :analyzer="analyzer"/>
 
     <DashboardCard v-if="tokenInfo">
 
@@ -264,11 +279,17 @@
       </template>
 
       <template v-slot:content>
-        <NftHolderTable v-if="isNft" :controller="nftHolderTableController"/>
-        <TokenBalanceTable v-else :controller="tokenBalanceTableController"/>
+        <div v-if="isNft" id="nft-holder-table">
+          <NftHolderTable :controller="nftHolderTableController"/>
+        </div>
+        <div v-else id="token-balance-table">
+          <TokenBalanceTable :controller="tokenBalanceTableController"/>
+        </div>
       </template>
 
     </DashboardCard>
+
+    <ContractResultsSection :contract-id="normalizedTokenId ?? undefined"/>
 
   </section>
 
@@ -284,7 +305,7 @@
 
 import {computed, defineComponent, inject, onBeforeUnmount, onMounted} from 'vue';
 import {useRouter} from "vue-router";
-import router, {routeManager} from "@/router";
+import {routeManager} from "@/router";
 import KeyValue from "@/components/values/KeyValue.vue";
 import TimestampValue from "@/components/values/TimestampValue.vue";
 import TokenBalanceTable from "@/components/token/TokenBalanceTable.vue";
@@ -297,23 +318,29 @@ import MetaMaskImport from "@/components/token/MetaMaskImport.vue";
 import {EntityID} from "@/utils/EntityID";
 import Property from "@/components/Property.vue";
 import NotificationBanner from "@/components/NotificationBanner.vue";
-import {TokenInfoLoader} from "@/components/token/TokenInfoLoader";
 import NftHolderTable from "@/components/token/NftHolderTable.vue";
 import PlayPauseButton from "@/components/PlayPauseButton.vue";
 import {NftHolderTableController} from "@/components/token/NftHolderTableController";
 import {TokenBalanceTableController} from "@/components/token/TokenBalanceTableController";
 import AccountLink from "@/components/values/AccountLink.vue";
 import StringValue from "@/components/values/StringValue.vue";
-import {networkRegistry} from "@/schemas/NetworkRegistry";
 import TokenCustomFees from "@/components/token/TokenCustomFees.vue";
 import EVMAddress from "@/components/values/EVMAddress.vue";
 import {makeTokenSymbol} from "@/schemas/HederaUtils";
+import {TokenInfoCache} from "@/utils/cache/TokenInfoCache";
+import {TokenInfoAnalyzer} from "@/components/token/TokenInfoAnalyzer";
+import ContractResultsSection from "@/components/contracts/ContractResultsSection.vue";
+import InfoTooltip from "@/components/InfoTooltip.vue";
+import Copyable from "@/components/Copyable.vue";
 
 export default defineComponent({
 
   name: 'TokenDetails',
 
   components: {
+    Copyable,
+    InfoTooltip,
+    ContractResultsSection,
     EVMAddress,
     TokenCustomFees,
     PlayPauseButton,
@@ -352,24 +379,25 @@ export default defineComponent({
     })
     const validEntityId = computed(() => normalizedTokenId.value != null)
 
-    const tokenInfoLoader = new TokenInfoLoader(normalizedTokenId)
-    onMounted(() => tokenInfoLoader.requestLoad())
+    const tokenLookup = TokenInfoCache.instance.makeLookup(normalizedTokenId)
+    onMounted(() => tokenLookup.mount())
+    onBeforeUnmount(() => tokenLookup.unmount())
 
-    const tokenChecksum = computed(() =>
-        tokenInfoLoader.tokenId.value ? networkRegistry.computeChecksum(
-            tokenInfoLoader.tokenId.value,
-            router.currentRoute.value.params.network as string
-        ) : null)
+    const tokenAnalyzer = new TokenInfoAnalyzer(tokenLookup.entity)
 
-    const displaySymbol = computed(() => makeTokenSymbol(tokenInfoLoader.entity.value, 256))
+    const displaySymbol = computed(() => makeTokenSymbol(tokenLookup.entity.value, 256))
 
     const notification = computed(() => {
       let result
       if (!validEntityId.value) {
         result = "Invalid token ID: " + props.tokenId
-      } else if (tokenInfoLoader.got404.value) {
-        result = "Token with ID " + props.tokenId + " was not found"
-      } else if (tokenInfoLoader.entity.value?.deleted) {
+      } else if (tokenLookup.entity.value == null) {
+          if (tokenLookup.isLoaded()) {
+              result = "Token with ID " + props.tokenId + " was not found"
+          } else {
+              result = null
+          }
+      } else if (tokenLookup.entity.value?.deleted) {
         result = "Token is deleted"
       } else {
         result = null
@@ -386,7 +414,7 @@ export default defineComponent({
     //
     // TokenBalanceTableController
     //
-    const fungibleTokenId = computed(() => tokenInfoLoader.isFungible.value ? tokenInfoLoader.tokenId.value : null)
+    const fungibleTokenId = computed(() => tokenAnalyzer.isFungible.value ? normalizedTokenId.value : null)
     const tokenBalanceTableController = new TokenBalanceTableController(useRouter(), fungibleTokenId, perPage);
     onMounted(() => tokenBalanceTableController.mount())
     onBeforeUnmount(() => tokenBalanceTableController.unmount())
@@ -394,7 +422,7 @@ export default defineComponent({
     //
     // NftHolderTableController
     //
-    const nftTokenId = computed(() => tokenInfoLoader.isNft.value ? tokenInfoLoader.tokenId.value : null)
+    const nftTokenId = computed(() => tokenAnalyzer.isNft.value ? normalizedTokenId.value : null)
     const nftHolderTableController = new NftHolderTableController(useRouter(), nftTokenId, perPage)
     onMounted(() => nftHolderTableController.mount())
     onBeforeUnmount(() => nftHolderTableController.unmount())
@@ -404,28 +432,33 @@ export default defineComponent({
       isMediumScreen,
       isTouchDevice,
       displaySymbol,
-      tokenInfoLoader,
-      tokenInfo: tokenInfoLoader.entity,
-      isNft: tokenInfoLoader.isNft,
-      isFungible: tokenInfoLoader.isFungible,
-      hasCustomFees: tokenInfoLoader.hasCustomFees,
-      tokenChecksum,
+      analyzer: tokenAnalyzer,
+      tokenInfo: tokenLookup.entity,
+      isNft: tokenAnalyzer.isNft,
+      isFungible: tokenAnalyzer.isFungible,
+      hasCustomFees: tokenAnalyzer.hasCustomFees,
+      tokenChecksum: tokenAnalyzer.tokenChecksum,
       validEntityId,
       normalizedTokenId,
       notification,
       showTokenDetails,
-      parseIntString,
-      ethereumAddress: tokenInfoLoader.ethereumAddress,
-      tokenSymbol: tokenInfoLoader.tokenSymbol,
+      parseBigIntString,
+      ethereumAddress: tokenAnalyzer.ethereumAddress,
+      tokenSymbol: tokenAnalyzer.tokenSymbol,
       tokenBalanceTableController,
       nftHolderTableController,
     }
   },
 });
 
-function parseIntString(s: string | undefined): number | undefined {
-  const result = Number(s)
-  return isNaN(result) ? undefined : result
+function parseBigIntString(s: string | undefined): bigint | undefined {
+  let result: bigint | undefined
+  try {
+    result = s ? BigInt(s) : undefined
+  } catch {
+    result = undefined
+  }
+  return result
 }
 
 
@@ -435,4 +468,12 @@ function parseIntString(s: string | undefined): number | undefined {
 <!--                                                       STYLE                                                     -->
 <!-- --------------------------------------------------------------------------------------------------------------- -->
 
-<style/>
+<style scoped>
+
+.headline-grid {
+  display: grid;
+  grid-template-columns: 2fr 10fr;
+  grid-column-gap: 0.5rem;
+}
+
+</style>

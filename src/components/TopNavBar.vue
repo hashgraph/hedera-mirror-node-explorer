@@ -28,79 +28,80 @@
        class="is-flex is-align-items-center is-justify-content-space-between pt-3 pb-4">
 
     <span class="is-inline-flex is-align-items-center is-flex-grow-0 is-flex-shrink-0">
-      <a class="mr-3" @click="routeManager.routeToMainDashboard()">
+      <router-link :to="routeManager.makeRouteToMainDashboard()" class="mr-3">
         <img alt="Product Logo" class="image" src="@/assets/branding/brand-product-logo.png" style="max-width: 165px;">
-      </a>
+      </router-link>
       <AxiosStatus/>
     </span>
 
     <div class="is-flex is-align-items-center pt-2">
-      <a v-if="name !== 'MobileMenu' && name !== 'MobileSearch'"
-         @click="$router.push(routeManager.mobileSearchRoute)">
-        <img alt="Search bar" src="@/assets/search-icon.png" style="max-height: 20px;">
-      </a>
-      <a v-if="name !== 'MobileMenu' && name !== 'MobileSearch'" class="ml-5"
-         @click="$router.push(routeManager.makeRouteToMobileMenu(name))">
-        <img alt="Search bar" src="@/assets/hamburger.png" style="max-height: 32px;">
-      </a>
+      <router-link v-if="name !== 'MobileMenu' && name !== 'MobileSearch'"
+                   :to="routeManager.makeRouteToMobileSearch()">
+        <img alt="Search bar" id="mobile-search-icon" src="@/assets/search-icon.png" style="max-height: 20px;">
+      </router-link>
+      <router-link v-if="name !== 'MobileMenu' && name !== 'MobileSearch'"
+                   :to="routeManager.makeRouteToMobileMenu(name)" class="ml-5">
+        <img alt="Mobile menu" id="mobile-menu-icon" src="@/assets/hamburger.png" style="max-height: 32px;">
+      </router-link>
       <a v-else class="ml-5 mr-2"
          @click="$router.back()">
-        <img alt="Search bar" src="@/assets/close-icon.png" style="max-height: 22px;">
+        <img alt="Search bar" id="close-icon" src="@/assets/close-icon.png" style="max-height: 22px;">
       </a>
     </div>
 
   </div>
 
   <div v-else class="is-flex is-justify-content-space-between is-align-items-flex-end">
-    <span class="is-inline-flex is-align-items-center is-flex-grow-0 is-flex-shrink-0">
-      <a id="product-logo" @click="routeManager.routeToMainDashboard()" class="mr-3">
-        <img alt="Product Logo" class="image" src="@/assets/branding/brand-product-logo.png">
-      </a>
+    <div  class="is-inline-flex is-align-items-center is-flex-grow-0 is-flex-shrink-0 mr-3">
+      <router-link :to="routeManager.makeRouteToMainDashboard()">
+        <img id="product-logo" alt="Product Logo" class="image" src="@/assets/branding/brand-product-logo.png">
+      </router-link>
       <AxiosStatus/>
-    </span>
+    </div>
     <div class="is-flex-grow-0 is-flex-shrink-0 is-flex is-flex-direction-column ml-4">
       <div class="is-flex mb-3 is-align-items-baseline">
 
         <div id="drop-down-menu">
           <o-field>
-            <o-select v-model="selectedNetwork" class="h-is-navbar-item">
+            <o-select v-model="selectedNetwork" class="h-is-navbar-item" style="outline: none">
               <option v-for="network in networkEntries" :key="network.name" :value="network.name">
                 {{ network.displayName }}
               </option>
-
             </o-select>
           </o-field>
         </div>
 
         <div class="is-flex-grow-1 px-2"/>
-        <a id="dashboard-menu-item" class="button is-ghost is-first h-is-navbar-item h-is-dense"
-           :class="{'is-rimmed': isDashboardRoute}"
-           @click="$router.push(routeManager.mainDashboardRoute)">Dashboard</a>
-        <a class="button is-ghost h-is-navbar-item h-is-dense"
-           :class="{ 'is-rimmed': isTransactionRoute}"
-           @click="$router.push(routeManager.transactionsRoute)">Transactions</a>
-        <a class="button is-ghost h-is-navbar-item h-is-dense"
-           :class="{ 'is-rimmed': isTokenRoute}"
-           @click="$router.push(routeManager.tokensRoute)">Tokens</a>
-        <a class="button is-ghost h-is-navbar-item h-is-dense"
-           :class="{ 'is-rimmed': isTopicRoute}"
-           @click="$router.push(routeManager.topicsRoute)">Topics</a>
-        <a class="button is-ghost h-is-navbar-item h-is-dense"
-           :class="{ 'is-rimmed': isContractRoute}"
-           @click="$router.push(routeManager.contractsRoute)">Contracts</a>
-        <a class="button is-ghost h-is-navbar-item h-is-dense"
-           :class="{ 'is-rimmed': isAccountRoute}"
-           @click="$router.push(routeManager.accountsRoute)">Accounts</a>
-        <a class="button is-ghost h-is-navbar-item h-is-dense"
-           :class="{ 'is-rimmed': isNodeRoute}"
-           @click="$router.push(routeManager.nodesRoute)">Nodes</a>
-        <a v-if="isStakingEnabled"
-           class="button is-ghost h-is-navbar-item h-is-dense"
-           :class="{ 'is-rimmed': isStakingRoute}"
-           @click="$router.push(routeManager.stakingRoute)">Staking</a>
-        <a class="button is-ghost is-last h-is-navbar-item h-is-dense"
-           :class="{ 'is-rimmed': isBlocksRoute}"
-           @click="$router.push(routeManager.blocksRoute)">Blocks</a>
+
+        <router-link :to="routeManager.makeRouteToMainDashboard()"
+                     id="dashboard-menu-item"
+                     class="button is-ghost is-first h-is-navbar-item h-is-dense"
+                     :class="{ 'is-rimmed': isDashboardRoute}">Dashboard</router-link>
+        <router-link :to="routeManager.makeRouteToTransactions()"
+                     class="button is-ghost h-is-navbar-item h-is-dense"
+                     :class="{ 'is-rimmed': isTransactionRoute}">Transactions</router-link>
+        <router-link :to="routeManager.makeRouteToTokens()"
+                     class="button is-ghost h-is-navbar-item h-is-dense"
+                     :class="{ 'is-rimmed': isTokenRoute}">Tokens</router-link>
+        <router-link :to="routeManager.makeRouteToTopics()"
+                     class="button is-ghost h-is-navbar-item h-is-dense"
+                     :class="{ 'is-rimmed': isTopicRoute}">Topics</router-link>
+        <router-link :to="routeManager.makeRouteToContracts()"
+                     class="button is-ghost h-is-navbar-item h-is-dense"
+                     :class="{ 'is-rimmed': isContractRoute}">Contracts</router-link>
+        <router-link :to="routeManager.makeRouteToAccounts()"
+                     class="button is-ghost h-is-navbar-item h-is-dense"
+                     :class="{ 'is-rimmed': isAccountRoute}">Accounts</router-link>
+        <router-link :to="routeManager.makeRouteToNodes()"
+                     class="button is-ghost h-is-navbar-item h-is-dense"
+                     :class="{ 'is-rimmed': isNodeRoute}">Nodes</router-link>
+        <router-link v-if="isStakingEnabled"
+                     :to="routeManager.makeRouteToStaking()"
+                     class="button is-ghost h-is-navbar-item h-is-dense"
+                     :class="{ 'is-rimmed': isStakingRoute}">Staking</router-link>
+        <router-link :to="routeManager.makeRouteToBlocks()"
+                     class="button is-ghost is-last h-is-navbar-item h-is-dense"
+                     :class="{ 'is-rimmed': isBlocksRoute}">Blocks</router-link>
       </div>
       <SearchBar style="margin-top: 4px"/>
     </div>
@@ -120,7 +121,6 @@ import {routeManager} from "@/router";
 import SearchBar from "@/components/SearchBar.vue";
 import AxiosStatus from "@/components/AxiosStatus.vue";
 import {networkRegistry} from "@/schemas/NetworkRegistry";
-import {getEnv} from "@/utils/getEnv";
 
 export default defineComponent({
   name: "TopNavBar",
@@ -132,8 +132,8 @@ export default defineComponent({
     const isTouchDevice = inject('isTouchDevice', false)
     const buildTime = inject('buildTime', "not available")
 
-    const productName = getEnv('VUE_APP_PRODUCT_NAME') ?? "Hedera Mirror Node Explorer"
-    const isStakingEnabled = getEnv('VUE_APP_ENABLE_STAKING') === 'true'
+    const productName = import.meta.env.VITE_APP_PRODUCT_NAME ?? "Hedera Mirror Node Explorer"
+    const isStakingEnabled = import.meta.env.VITE_APP_ENABLE_STAKING === 'true'
 
     const isMobileMenuOpen = ref(false)
 

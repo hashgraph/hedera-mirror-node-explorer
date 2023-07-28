@@ -34,7 +34,7 @@
       v-model:current-page="currentPage"
       :per-page="perPage"
       @page-change="onPageChange"
-      @click="handleClick"
+      @cell-click="handleClick"
 
       :hoverable="true"
       :narrowed="narrowed"
@@ -57,6 +57,10 @@
       </div>
     </o-table-column>
 
+    <o-table-column v-if="showingEthereumTransactions" v-slot="props" field="sender" label="Sender">
+      <InnerSenderEVMAddress :transaction-id="props.row.transaction_id"/>
+    </o-table-column>
+
     <o-table-column v-slot="props" label="Content">
       <TransactionSummary v-bind:transaction="props.row"/>
     </o-table-column>
@@ -76,8 +80,8 @@
 
 <script lang="ts">
 
-import {ComputedRef, defineComponent, inject, PropType, Ref} from "vue";
-import {Transaction} from "@/schemas/HederaSchemas";
+import {computed, ComputedRef, defineComponent, inject, PropType, Ref} from "vue";
+import {Transaction, TransactionType} from "@/schemas/HederaSchemas";
 import TransactionSummary from "@/components/transaction/TransactionSummary.vue";
 import TimestampValue from "@/components/values/TimestampValue.vue";
 import TransactionLabel from "@/components/values/TransactionLabel.vue";
@@ -86,11 +90,12 @@ import {routeManager} from "@/router";
 import {ORUGA_MOBILE_BREAKPOINT} from "@/App.vue";
 import {TransactionTableControllerXL} from "@/components/transaction/TransactionTableControllerXL";
 import EmptyTable from "@/components/EmptyTable.vue";
+import InnerSenderEVMAddress from "@/components/values/InnerSenderEVMAddress.vue";
 
 export default defineComponent({
   name: "TransactionTable",
 
-  components: {TransactionSummary, TimestampValue, TransactionLabel, EmptyTable },
+  components: {InnerSenderEVMAddress, TransactionSummary, TimestampValue, TransactionLabel, EmptyTable},
 
   props: {
     narrowed: Boolean,
@@ -104,8 +109,12 @@ export default defineComponent({
     const isTouchDevice = inject('isTouchDevice', false)
     const isMediumScreen = inject('isMediumScreen', true)
 
-    const handleClick = (t: Transaction) => {
-      routeManager.routeToTransaction(t)
+    const showingEthereumTransactions = computed(() => {
+      return props.controller.transactionType.value === TransactionType.ETHEREUMTRANSACTION
+    })
+
+    const handleClick = (t: Transaction, c: unknown, i: number, ci: number, event: MouseEvent) => {
+      routeManager.routeToTransaction(t, event.ctrlKey || event.metaKey)
     }
 
     return {
@@ -117,6 +126,7 @@ export default defineComponent({
       currentPage: props.controller.currentPage as Ref<number>,
       onPageChange: props.controller.onPageChange,
       perPage: props.controller.pageSize as Ref<number>,
+      showingEthereumTransactions,
       handleClick,
       makeTypeLabel,
       ORUGA_MOBILE_BREAKPOINT,

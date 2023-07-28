@@ -24,7 +24,7 @@
 
 <template>
   <template v-if="tokenId != null">
-    <template v-if="useAnchor">
+    <template v-if="useAnchor && tokenRoute">
       <router-link :to="tokenRoute">
         <span class="h-is-smaller h-is-extra-text should-wrap" style="word-break: break-all">{{ extra }}</span>
       </router-link>
@@ -67,9 +67,9 @@ export default defineComponent({
 
     const updateExtra = () => {
       if (props.tokenId) {
-        TokenInfoCache.instance.lookup(props.tokenId).then((r: TokenInfo) => {
+        TokenInfoCache.instance.lookup(props.tokenId).then((r: TokenInfo | null) => {
           if (props.showName) {
-            extra.value = r.name ?? ""
+            extra.value = r?.name ?? ""
           } else {
             extra.value = makeTokenSymbol(r, 40)
           }

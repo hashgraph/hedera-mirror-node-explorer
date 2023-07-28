@@ -24,7 +24,8 @@
 
 <template>
 
-  <div class="hero is-small is-danger mb-5 has-text-centered" id="notificationBanner">
+  <div class="hero is-small mb-5 has-text-centered" id="notificationBanner"
+       :class="{'is-danger': isError, 'is-info': !isError}">
     <div class="hero-body h-is-tertiary-text">
       <span>{{ message }}</span>
     </div>
@@ -47,6 +48,10 @@ export default defineComponent({
     message: {
       type: String,
       required: true
+    },
+    isError: {
+      type: Boolean,
+      default: true
     }
   },
 })

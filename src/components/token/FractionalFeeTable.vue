@@ -37,11 +37,11 @@
       aria-previous-label="Previous page"
   >
 
-    <o-table-column v-slot="props" field="amount" label="Amount">
+    <o-table-column v-slot="props" field="amount" label="Fractional Fee">
       <StringValue :string-value="makeAmount(props.row.amount)"/>
     </o-table-column>
 
-    <o-table-column v-slot="props" field="token" label="Token">
+    <o-table-column v-slot="props" field="token" label="Fee Currency">
       <TokenLink :show-extra="true" :token-id="props.row.denominating_token_id"/>
     </o-table-column>
 
@@ -78,7 +78,7 @@ import TokenLink from "@/components/values/TokenLink.vue";
 import {ORUGA_MOBILE_BREAKPOINT} from "@/App.vue";
 import {FractionAmount} from "@/schemas/HederaSchemas";
 import StringValue from "@/components/values/StringValue.vue";
-import {TokenInfoLoader} from "@/components/token/TokenInfoLoader";
+import {TokenInfoAnalyzer} from "@/components/token/TokenInfoAnalyzer";
 
 export default defineComponent({
 
@@ -92,19 +92,29 @@ export default defineComponent({
   },
 
   props: {
-    tokenInfoLoader: {
-      type: Object as PropType<TokenInfoLoader>,
+    analyzer: {
+      type: Object as PropType<TokenInfoAnalyzer>,
       required: true
     }
   },
 
   setup(props) {
     const makeAmount = (fraction: FractionAmount): string => {
-      return fraction.numerator + '/' + fraction.denominator
+      let result: string
+      const formatter = new Intl.NumberFormat("en-US", {
+        style: 'percent',
+        maximumFractionDigits: 2
+      })
+      if (fraction.numerator && fraction.denominator) {
+        result = formatter.format(fraction.denominator ? fraction.numerator / fraction.denominator : 0)
+      } else {
+        result = ""
+      }
+      return result
     }
 
     return {
-      fees: props.tokenInfoLoader.fractionalFees,
+      fees: props.analyzer.fractionalFees,
       makeAmount,
       ORUGA_MOBILE_BREAKPOINT
     }

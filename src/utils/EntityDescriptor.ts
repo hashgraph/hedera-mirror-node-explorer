@@ -19,8 +19,12 @@
  */
 
 import { Transaction, TransactionType } from "@/schemas/HederaSchemas";
+import {ContractByIdCache} from "@/utils/cache/ContractByIdCache";
+import {AccountByIdCache} from "@/utils/cache/AccountByIdCache";
 
 export class EntityDescriptor {
+
+    static DEFAULT_ENTITY_DESCRIPTOR = new EntityDescriptor("Entity ID", null)
 
     constructor(
         readonly label: string,
@@ -28,7 +32,7 @@ export class EntityDescriptor {
     ) {
     }
 
-    static makeEntityDescriptor(row: Transaction): EntityDescriptor {
+    static async makeEntityDescriptor(row: Transaction): Promise<EntityDescriptor> {
         let result: EntityDescriptor
         switch (row.name) {
 
@@ -39,7 +43,24 @@ export class EntityDescriptor {
                 result = new EntityDescriptor("Topic ID", "TopicDetails")
                 break;
 
+            case TransactionType.ETHEREUMTRANSACTION:
+                if (row.entity_id && await ContractByIdCache.instance.lookup(row.entity_id)) {
+                    result = new EntityDescriptor("Contract ID", "ContractDetails")
+                } else if (row.entity_id && await AccountByIdCache.instance.lookup(row.entity_id)) {
+                    result = new EntityDescriptor("Account ID", "AccountDetails")
+                } else {
+                    result = new EntityDescriptor("Token ID", "TokenDetails")
+                }
+                break;
+
             case TransactionType.CONTRACTCALL:
+                if (row.entity_id && await ContractByIdCache.instance.lookup(row.entity_id)) {
+                    result = new EntityDescriptor("Contract ID", "ContractDetails")
+                } else {
+                    result = new EntityDescriptor("Token ID", "TokenDetails")
+                }
+                break;
+
             case TransactionType.CONTRACTDELETEINSTANCE:
             case TransactionType.CONTRACTCREATEINSTANCE:
             case TransactionType.CONTRACTUPDATEINSTANCE:
@@ -92,12 +113,11 @@ export class EntityDescriptor {
             case TransactionType.SYSTEMDELETE:
             case TransactionType.SYSTEMUNDELETE:
             case TransactionType.UNCHECKEDSUBMIT:
-            case TransactionType.ETHEREUMTRANSACTION:
             default:
-                result = new EntityDescriptor("Entity ID", null);
+                result = EntityDescriptor.DEFAULT_ENTITY_DESCRIPTOR;
                 break;
         }
 
-        return result
+        return Promise.resolve(result)
     }
 }

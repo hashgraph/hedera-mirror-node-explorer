@@ -18,13 +18,30 @@
  *
  */
 
-import {EntityCache} from "@/utils/cache/EntityCache"
+import {EntityCache} from "@/utils/cache/base/EntityCache"
 import {Transaction, TransactionByIdResponse} from "@/schemas/HederaSchemas";
 import axios from "axios";
 
 export class TransactionByHashCache extends EntityCache<string, Transaction|null> {
 
     public static readonly instance = new TransactionByHashCache()
+
+    //
+    // Public
+    //
+
+    public updateWithTransactions(transactions: Transaction[]): void {
+        for (const t of transactions) {
+            this.updateWithTransaction(t)
+        }
+    }
+
+    public updateWithTransaction(transaction: Transaction): void {
+        if (transaction.transaction_hash) {
+            this.forget(transaction.transaction_hash)
+            this.mutate(transaction.transaction_hash, Promise.resolve(transaction))
+        }
+    }
 
     //
     // Cache

@@ -48,7 +48,7 @@
                  style="height:26px; margin-top: 1px; border-radius: 4px; border-width: 1px;
                  background-color: var(--h-theme-box-background-color)"
                  type="text"
-                 @input="event => handleSpenderInput(event.target.value)">
+                 @input="event => handleSpenderInput(event)">
           <div v-if="spenderFeedback" id="spenderFeedback"
                :class="{'has-text-grey': isSpenderValid, 'has-text-danger': !isSpenderValid}"
                class="is-inline-block h-is-text-size-2"
@@ -75,7 +75,7 @@
                  background-color: var(--h-theme-box-background-color)"
                  type="text"
                  @focus="allowanceChoice='hbar'"
-                 @input="event => handleHbarAmountInput(event.target.value)">
+                 @input="event => handleHbarAmountInput(event)">
           <div/>
         </div>
 
@@ -95,7 +95,7 @@
                  background-color: var(--h-theme-box-background-color)"
                  type="text"
                  @focus="allowanceChoice='token'"
-                 @input="event => handleTokenInput(event.target.value)">
+                 @input="event => handleTokenInput(event)">
           <input v-if="allowanceChoice === 'token' && isTokenValid"
                  :class="{'has-text-grey': allowanceChoice !== 'token'}"
                  :value="selectedTokenAmount"
@@ -105,7 +105,7 @@
                  background-color: var(--h-theme-box-background-color)"
                  type="text"
                  @focus="allowanceChoice='token'"
-                 @input="event => handleTokenAmountInput(event.target.value)">
+                 @input="event => handleTokenAmountInput(event)">
           <div v-else-if="allowanceChoice === 'token'" id="tokenFeedback"
                :class="{'has-text-grey': isTokenValid, 'has-text-danger': !isTokenValid}"
                class="is-inline-block h-is-text-size-2"
@@ -130,7 +130,7 @@
                  background-color: var(--h-theme-box-background-color)"
                  type="text"
                  @focus="allowanceChoice='nft'"
-                 @input="event => handleNftInput(event.target.value)">
+                 @input="event => handleNftInput(event)">
           <input v-if="allowanceChoice === 'nft' && isNftValid"
                  :class="{'has-text-grey': allowanceChoice !== 'nft'}"
                  :value="selectedNftSerials"
@@ -140,7 +140,7 @@
                  background-color: var(--h-theme-box-background-color)"
                  type="text"
                  @focus="allowanceChoice='nft'"
-                 @input="event => handleNftSerialsInput(event.target.value)">
+                 @input="event => handleNftSerialsInput(event)">
           <div v-else-if="allowanceChoice === 'nft'" id="nftFeedback"
                :class="{'has-text-grey': isNftValid, 'has-text-danger': !isNftValid}"
                class="is-inline-block h-is-text-size-2"
@@ -217,7 +217,15 @@ import {EntityID} from "@/utils/EntityID";
 import {networkRegistry} from "@/schemas/NetworkRegistry";
 import ConfirmDialog from "@/components/ConfirmDialog.vue";
 import axios from "axios";
-import {CryptoAllowance, Nfts, TokenAllowance, TokenRelationshipResponse, Transaction, TransactionByIdResponse} from "@/schemas/HederaSchemas";
+import {
+  CryptoAllowance,
+  Nfts,
+  TokenAllowance,
+  TokenInfo,
+  TokenRelationshipResponse,
+  Transaction,
+  TransactionByIdResponse
+} from "@/schemas/HederaSchemas";
 import ProgressDialog, {Mode} from "@/components/staking/ProgressDialog.vue";
 import {normalizeTransactionId} from "@/utils/TransactionID";
 import {waitFor} from "@/utils/TimerUtils";
@@ -243,7 +251,10 @@ export default defineComponent({
   name: "ApproveAllowanceDialog",
   components: {ProgressDialog, ConfirmDialog},
   props: {
-    ownerAccountId: String,
+    ownerAccountId: {
+      type: String as PropType<string|null>,
+      default: null
+    },
     showDialog: {
       type: Boolean,
       default: false
@@ -492,12 +503,12 @@ export default defineComponent({
     const progressExtraTransactionId = ref<string | null>(null)
     const showProgressSpinner = ref(false)
 
-    const handleSpenderInput = (value: string) => handleEntityIDInput(selectedSpender, value)
-    const handleHbarAmountInput = (value: string) => handleAmountInput(selectedHbarAmount, value)
-    const handleTokenInput = (value: string) => handleEntityIDInput(selectedToken, value)
-    const handleTokenAmountInput = (value: string) => handleAmountInput(selectedTokenAmount, value)
-    const handleNftInput = (value: string) => handleEntityIDInput(selectedNft, value)
-    const handleNftSerialsInput = (value: string) => handleIntListInput(selectedNftSerials, value)
+    const handleSpenderInput = (event: Event) => handleEntityIDInput(selectedSpender, event)
+    const handleHbarAmountInput = (event: Event) => handleAmountInput(selectedHbarAmount, event)
+    const handleTokenInput = (event: Event) => handleEntityIDInput(selectedToken, event)
+    const handleTokenAmountInput = (event: Event) => handleAmountInput(selectedTokenAmount, event)
+    const handleNftInput = (event: Event) => handleEntityIDInput(selectedNft, event)
+    const handleNftSerialsInput = (event: Event) => handleIntListInput(selectedNftSerials, event)
 
     const handleCancel = () => {
       context.emit('update:showDialog', false)
@@ -564,19 +575,20 @@ export default defineComponent({
           progressExtraMessage.value = reason.extra
         } else {
           progressMainMessage.value = "Operation did not complete"
-          progressExtraMessage.value = JSON.stringify(reason.message)
+          progressExtraMessage.value = reason instanceof Error ? JSON.stringify(reason.message) : JSON.stringify(reason)
         }
         progressExtraTransactionId.value = null
         showProgressSpinner.value = false
       }
     }
 
-    const handleEntityIDInput = (entityID: Ref<string | null>, value: string) => {
+    const handleEntityIDInput = (entityID: Ref<string | null>, event: Event) => {
       const previousValue = entityID.value
       let isValidInput = true
       let isValidID = false
       let isPastDash = false
 
+      const value = (event.target as HTMLInputElement).value
       for (const c of value) {
         if ((c >= '0' && c <= '9') || c === '.') {
           if (isPastDash) {
@@ -606,12 +618,13 @@ export default defineComponent({
       }
     }
 
-    const handleAmountInput = (amount: Ref<string | null>, value: string) => {
+    const handleAmountInput = (amount: Ref<string | null>, event: Event) => {
       const previousValue = amount.value
       let isValidInput = true
       let isDecimal = false
 
-      for (const c of value) {
+        const value = (event.target as HTMLInputElement).value
+        for (const c of value) {
         if ((c >= '0' && c <= '9') || c === '.') {
           if (c === '.') {
             isValidInput = !isDecimal
@@ -631,12 +644,13 @@ export default defineComponent({
       }
     }
 
-    const handleIntListInput = (list: Ref<string | null>, value: string) => {
+    const handleIntListInput = (list: Ref<string | null>, event: Event) => {
       const previousValue = list.value
       let isValidInput = true
       let previousWasComma = false
 
-      for (const c of value) {
+        const value = (event.target as HTMLInputElement).value
+        for (const c of value) {
         if ((c >= '0' && c <= '9') || c === ',') {
           if (c === ',') {
             isValidInput = !previousWasComma
@@ -719,8 +733,8 @@ export default defineComponent({
                 if (tokens && tokens.length > 0) {
                   if (type !== null) {
                     TokenInfoCache.instance.lookup(entity)
-                        .then((t) => {
-                          if (t.type === type) {
+                        .then((t: TokenInfo | null) => {
+                          if (t?.type === type) {
                             isValid.value = true
                           } else {
                             message.value = (type === 'FUNGIBLE_COMMON') ? TOKEN_NOT_FUNGIBLE_MESSAGE : TOKEN_NOT_NFT_MESSAGE

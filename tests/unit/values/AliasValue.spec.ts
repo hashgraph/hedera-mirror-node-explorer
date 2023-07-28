@@ -18,6 +18,7 @@
  *
  */
 
+import {describe, it, expect} from 'vitest'
 import {flushPromises, mount} from "@vue/test-utils"
 import router from "@/router";
 import AliasValue from "@/components/values/AliasValue.vue";
@@ -36,10 +37,13 @@ describe("AliasValue.vue", () => {
         await flushPromises()
 
         expect(wrapper.text()).toBe("None")
+
+        wrapper.unmount()
+        await flushPromises()
     })
 
     const ALIAS_B32 = "CIQEN25ORE2F73TRYSYMMBVPR2HU4PPFGTQENJTIGVLLELP4PZ2M76A"
-    const ALIAS_HEX = "0x122046ebae89345fee71c4b0c606af8e8f4e3de534e046a6683556b22dfc7e74cff8Copy to Clipboard"
+    const ALIAS_HEX = "0x122046ebae89345fee71c4b0c606af8e8f4e3de534e046a6683556b22dfc7e74cff8Copy"
 
     it("should display both base32 and hexa forms of provided alias", async () => {
 
@@ -54,6 +58,9 @@ describe("AliasValue.vue", () => {
         await flushPromises()
 
         expect(wrapper.text()).toBe(ALIAS_HEX)
+
+        wrapper.unmount()
+        await flushPromises()
     })
 })
 

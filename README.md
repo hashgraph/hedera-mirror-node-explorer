@@ -10,19 +10,19 @@ Visual Explorer for the Hedera Hashgraph DLT.
 npm install
 ```
 
-### Compiles and hot-reloads for development
+### Compile and hot-reload for development
 
 ```shell
-npm run serve
+npm run dev
 ```
 
-### Compiles and minifies for production
+### Compile and minify for production
 
 ```shell
 npm run build
 ```
 
-### Lints and fixes files
+### Lint files (find and fix problems)
 
 ```shell
 npm run lint
@@ -37,12 +37,10 @@ npm run test:unit
 ### Run end-to-end tests (based on Cypress)
 
 ```shell
-# Run the development server in production mode
-npm run serve:prod
 # Run the tests interactively
-npm run test:e2e 
+npm run test:e2e:dev 
 # Or run the tests in headless browser mode
-npm run test:e2e:headless
+npm run test:e2e
 ```
 
 ### Run the Explorer in Docker
@@ -52,8 +50,9 @@ npm run test:e2e:headless
 npm run docker:build
 
 # Start the Docker container
-# (if not built locally, this will get a pre-built image from Google Container Registry)
+# (if not built locally, this will fetch a pre-built image from Google Container Registry)
 npm run docker:start
+open http://127.0.0.1:8080
 
 # Stop the Docker container
 npm run docker:stop
@@ -72,6 +71,19 @@ helm upgrade --install hedera-explorer chart/
 ```
 
 ### Configure the Explorer
+
+#### FOR DEVELOPMENT PURPOSES: Docker configuration
+
+When running the explorer in Docker, for instance with a Local Node, it is possible
+to add a network to the list of available networks configured at build time -- see below.
+This is achieved by defining the variable `DOCKER_LOCAL_MIRROR_NODE_URL` 
+(and optionally `DOCKER_LOCAL_MIRROR_NODE_MENU_NAME`) in the `.env.docker` file, 
+which will be taken into account at start time by Docker. For instance:
+
+```shell
+DOCKER_LOCAL_MIRROR_NODE_MENU_NAME=LOCAL NODE        # Optional, defaults to 'DEVNET'
+DOCKER_LOCAL_MIRROR_NODE_URL=http://localhost:5551
+```
 
 #### Customize the available networks
 
@@ -108,14 +120,8 @@ Note:
 #### Customize the UI
 
 A few aspects of the Explorer UI, such as the product name displayed at the bottom of the pages,
-are controlled by environment variables, as follows:
-- Variables defined in the *.env* file (located at the root of the repository) will be taken
-  into account at build time. 
-- Variables defined in the *.env.docker* file will be taken into account at start time of 
-  the docker container. Any variable documented in the *.env* file can be overridden in
-  the *.env.docker* file. The variables in *.env.docker* are passed to the container either:
-  - via the *--env-file* option of the *docker run* command, or
-  - via the *env_file:* clause of the *docker-compose.yml* file.
+are controlled by environment variables defined in the `.env` file. These will be taken into 
+account at build time. 
 
 #### Enabling the Staking page
 
@@ -126,7 +132,7 @@ By default, the Staking page is disabled, and the corresponding menu item is abs
 To enable the Staking page and menu item, set the following variable to *true* in the .env file:
 
 ```shell
-VUE_APP_ENABLE_STAKING=true
+VITE_APP_ENABLE_STAKING=true
 ```
 
 ### Customize configuration
@@ -147,19 +153,14 @@ This directory should have the following structure:
 ./public/*
 ```
 
-- The file *brand-product-logo.png* should be a 660x181 PNG file, which, if present, will be
+- The file `brand-product-logo.png` should be a 660x181 PNG file, which, if present, will be
   taken into account by the build and put in the top-left placeholder of the Explorer NavBar.
-- The file *brand-sponsor-logo.png* should be a 744x313 PNG file, which, if present, will be
+- The file `brand-sponsor-logo.png` should be a 744x313 PNG file, which, if present, will be
   taken into account by the build and put in the bottom-right placeholder of the Explorer footer.
-- The file *brand-theme.scss* may provide a modified version of the file located under
-  *./src/assets/styles/brand-theme.scss* and, if present, will supersede it.
-- Any file present in the *./public/* directory will be added to the content of the 
-  *./public* directory, which allows to customize the favicon.
-
-#### Vue CLI
-
-The Hedera Mirror Node Explorer is based on the Vue CLI framework.
-See [Configuration Reference](https://cli.vuejs.org/config/) for Vue CLI related aspects.
+- The file `brand-theme.scss` may provide a modified version of the file located under
+  `./src/assets/styles/brand-theme.scss` and, if present, will supersede it.
+- Any file present in the `./public/` directory will be added to the content of the 
+  `dist/` directory, which allows to customize the favicon.
 
 ## Contributing
 

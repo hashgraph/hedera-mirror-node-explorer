@@ -25,6 +25,7 @@
 
  */
 
+import {describe, test, expect} from 'vitest'
 import {flushPromises, mount} from "@vue/test-utils";
 import HbarAmount from "@/components/values/HbarAmount.vue";
 import {SAMPLE_NETWORK_EXCHANGERATE} from "../Mocks";
@@ -50,13 +51,15 @@ describe("HbarAmount.vue ", () => {
 
         expect(wrapper.text()).toBe(expectedHbarAmount)
         expect(wrapper.get('.has-hbar').classes('has-text-grey')).toBe(false)
+
+        wrapper.unmount()
     });
 
     test("with amount set and showExtra", async () => {
 
         const testTinybarAmount = 42
         const expectedHbarAmount = "0.00000042"
-        const expectedDollarAmount = "$0.0001"
+        const expectedDollarAmount = "$0.00001"
 
         const wrapper = mount(HbarAmount, {
             props: {
@@ -71,13 +74,16 @@ describe("HbarAmount.vue ", () => {
         expect(wrapper.text()).toBe(expectedHbarAmount + expectedDollarAmount)
         expect(wrapper.get(".h-is-extra-text").classes('h-is-smaller')).toBe(true)
         expect(wrapper.get(".h-is-extra-text").text()).toBe(expectedDollarAmount)
+
+        wrapper.unmount()
+        await flushPromises()
     });
 
     test("with amount set and showExtra and not smallExtra", async () => {
 
         const testTinybarAmount = 42
         const expectedHbarAmount = "0.00000042"
-        const expectedDollarAmount = "$0.0001"
+        const expectedDollarAmount = "$0.00001"
 
         const wrapper = mount(HbarAmount, {
             props: {
@@ -92,6 +98,9 @@ describe("HbarAmount.vue ", () => {
         expect(wrapper.text()).toBe(expectedHbarAmount + expectedDollarAmount)
         expect(wrapper.get(".h-is-extra-text").classes('h-is-smaller')).toBe(false)
         expect(wrapper.get(".h-is-extra-text").text()).toBe(expectedDollarAmount)
+
+        wrapper.unmount()
+        await flushPromises()
     });
 
     test("with amount unset", async () => {
@@ -105,6 +114,8 @@ describe("HbarAmount.vue ", () => {
 
         expect(wrapper.text()).toBe(expectedHbarAmount)
         expect(wrapper.find('.has-hbar').exists()).toBe(false)
+
+        wrapper.unmount()
     });
 
     test("with hideZero and showExtra", async () => {
@@ -121,6 +132,9 @@ describe("HbarAmount.vue ", () => {
 
         expect(wrapper.text()).toBe("")
         expect(() => wrapper.get('.h-is-extra-text')).toThrowError()
+
+        wrapper.unmount()
+        await flushPromises()
     });
 
 });

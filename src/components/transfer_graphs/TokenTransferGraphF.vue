@@ -24,10 +24,8 @@
 
 <template>
 
-  <div>
+  <div v-if="tokenTransferLayout.length >= 1">
     <p class="h-is-tertiary-text mb-2">Token Transfers</p>
-
-    <div v-if="tokenTransferLayout.length >= 1">
 
     <div class="graph-container" v-bind:class="{'graph-container-8': symbolVisible}">
 
@@ -63,7 +61,7 @@
           <!-- #1 : token amount -->
           <div class="justify-end">
             <TokenAmount v-if="i <= tokenTransferLayout[s-1].sources.length"
-                         v-bind:amount="tokenTransferLayout[s-1].sources[i-1].amount"
+                         v-bind:amount="BigInt(tokenTransferLayout[s-1].sources[i-1].amount)"
                          v-bind:token-id="tokenTransferLayout[s-1].tokenId"/>
           </div>
 
@@ -71,7 +69,7 @@
           <template v-if="symbolVisible">
             <div data-cy="tokenExtra">
               <TokenExtra v-if="i <= tokenTransferLayout[s-1].sources.length"
-                          v-bind:token-id="tokenTransferLayout[s-1].tokenId"
+                          v-bind:token-id="tokenTransferLayout[s-1].tokenId ?? undefined"
                           v-bind:use-anchor="true"/>
             </div>
           </template>
@@ -96,7 +94,7 @@
           <!-- #5 : token amount -->
           <div>
             <TokenAmount v-if="i <= tokenTransferLayout[s-1].destinations.length"
-                         v-bind:amount="tokenTransferLayout[s-1].destinations[i-1].amount"
+                         v-bind:amount="BigInt(tokenTransferLayout[s-1].destinations[i-1].amount)"
                          v-bind:token-id="tokenTransferLayout[s-1].tokenId"/>
           </div>
 
@@ -105,7 +103,7 @@
             <!-- #6 : token symbol -->
             <div data-cy="tokenExtra">
               <TokenExtra v-if="i <= tokenTransferLayout[s-1].destinations.length"
-                          v-bind:token-id="tokenTransferLayout[s-1].tokenId"
+                          v-bind:token-id="tokenTransferLayout[s-1].tokenId ?? undefined"
                           v-bind:use-anchor="true"/>
             </div>
 
@@ -123,10 +121,6 @@
       </template>
 
     </div>
-
-    </div>
-
-    <p v-else class="has-text-grey">None</p>
   </div>
 
 </template>

@@ -26,7 +26,7 @@
 
   <div id="contractActionsTable">
     <o-table
-        :data="actions"
+        :data="actions ?? []"
         :paginated="isPaginated"
         :per-page="NB_ACTIONS_PER_PAGE"
 
@@ -100,7 +100,7 @@
     </o-table>
   </div>
 
-  <EmptyTable v-if="!actions.length"/>
+  <EmptyTable v-if="!actions?.length"/>
 
 </template>
 
@@ -118,7 +118,7 @@ import HbarAmount from "@/components/values/HbarAmount.vue";
 import ContractActionDetails from "@/components/contract/ContractActionDetails.vue";
 import EVMAddress from "@/components/values/EVMAddress.vue";
 import {ContractActionWithPath} from "@/components/contract/ContractActionsLoader";
-import {FunctionCallAnalyzer} from "@/utils/FunctionCallAnalyzer";
+import {FunctionCallAnalyzer} from "@/utils/analyzer/FunctionCallAnalyzer";
 
 //
 // defineComponent

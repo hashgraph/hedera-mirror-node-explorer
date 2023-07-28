@@ -37,7 +37,7 @@
       aria-page-label="Page"
       aria-previous-label="Previous page"
       default-sort="token_id"
-      @click="handleClick"
+      @cell-click="handleClick"
   >
     <o-table-column v-slot="props" field="token_id" label="Token">
       <TokenLink
@@ -48,7 +48,7 @@
     </o-table-column>
 
     <o-table-column v-slot="props" field="balance" label="Balance" position="right">
-      <TokenAmount v-bind:amount="props.row.balance"
+      <TokenAmount v-bind:amount="BigInt(props.row.balance)"
                    v-bind:token-id="props.row.token_id"/>
     </o-table-column>
 
@@ -95,14 +95,12 @@ export default defineComponent({
     const DEFAULT_PAGE_SIZE = 15
     const pageSize = props.nbItems ?? DEFAULT_PAGE_SIZE
 
-    // 3) handleClick
-    const handleClick = (balance: TokenBalance) => {
+    const handleClick = (balance: TokenBalance, c: unknown, i: number, ci: number, event: MouseEvent) => {
       if (balance.token_id) {
-        routeManager.routeToToken(balance.token_id)
+        routeManager.routeToToken(balance.token_id, event.ctrlKey || event.metaKey)
       }
     }
 
-    // 4) currentPage
     let currentPage = ref(1)
 
     return {

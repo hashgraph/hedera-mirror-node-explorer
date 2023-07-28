@@ -18,6 +18,7 @@
  *
  */
 
+import {describe, it, expect} from 'vitest'
 import {flushPromises, mount} from "@vue/test-utils"
 import router from "@/router";
 import SearchBar from "@/components/SearchBar.vue";
@@ -32,26 +33,12 @@ import {HMSF} from "@/utils/HMSF";
 
  */
 
-Object.defineProperty(window, 'matchMedia', {
-    writable: true,
-    value: jest.fn().mockImplementation(query => ({
-        matches: false,
-        media: query,
-        onchange: null,
-        addListener: jest.fn(), // deprecated
-        removeListener: jest.fn(), // deprecated
-        addEventListener: jest.fn(),
-        removeEventListener: jest.fn(),
-        dispatchEvent: jest.fn(),
-    })),
-});
-
 HMSF.forceUTC = true
 
 describe("TopNavBar.vue", () => {
 
     it("Should display page links without Staking and Blocks", async () => {
-        process.env = Object.assign(process.env, { VUE_APP_ENABLE_STAKING: true });
+        process.env = Object.assign(process.env, { VITE_APP_ENABLE_STAKING: true });
 
         await router.push("/") // To avoid "missing required param 'network'" error
         Object.defineProperty(window, 'innerWidth', {writable: true, configurable: true, value: 1920})
@@ -71,10 +58,13 @@ describe("TopNavBar.vue", () => {
 
         const links = wrapper.findAll("a")
         expect(links.length).toBe(11)
+
+        wrapper.unmount()
+        await flushPromises()
     })
 
     it("Should display logos, page links and full search bar", async () => {
-        process.env = Object.assign(process.env, { VUE_APP_ENABLE_STAKING: true });
+        process.env = Object.assign(process.env, { VITE_APP_ENABLE_STAKING: true });
 
         await router.push("/") // To avoid "missing required param 'network'" error
         Object.defineProperty(window, 'innerWidth', {writable: true, configurable: true, value: 1920})
@@ -113,6 +103,7 @@ describe("TopNavBar.vue", () => {
         expect(logos[1].attributes('alt')).toBe("Modal close icon")
 
         wrapper.unmount()
+        await flushPromises()
     });
 
     it("Should display the drop-down Network selection menu", async () => {
@@ -141,6 +132,7 @@ describe("TopNavBar.vue", () => {
         expect(options[2].text()).toBe("PREVIEWNET")
 
         wrapper.unmount()
+        await flushPromises()
     });
 
 });

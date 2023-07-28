@@ -18,6 +18,7 @@
  *
  */
 
+import {describe, it, expect} from 'vitest'
 import {flushPromises, mount} from "@vue/test-utils"
 import Oruga from "@oruga-ui/oruga-next";
 import {HMSF} from "@/utils/HMSF";
@@ -25,7 +26,8 @@ import MockAdapter from "axios-mock-adapter";
 import axios from "axios";
 import {
     SAMPLE_ACCOUNT,
-    SAMPLE_ACCOUNT_STAKING_ACCOUNT, SAMPLE_ACCOUNTS,
+    SAMPLE_ACCOUNT_STAKING_ACCOUNT,
+    SAMPLE_ACCOUNTS,
     SAMPLE_NETWORK_EXCHANGERATE,
     SAMPLE_NETWORK_NODES,
 } from "../Mocks";
@@ -41,20 +43,6 @@ import router from "@/router";
         https://test-utils.vuejs.org/api/
 
  */
-
-Object.defineProperty(window, 'matchMedia', {
-    writable: true,
-    value: jest.fn().mockImplementation(query => ({
-        matches: false,
-        media: query,
-        onchange: null,
-        addListener: jest.fn(), // deprecated
-        removeListener: jest.fn(), // deprecated
-        addEventListener: jest.fn(),
-        removeEventListener: jest.fn(),
-        dispatchEvent: jest.fn(),
-    })),
-});
 
 HMSF.forceUTC = true
 
@@ -125,7 +113,7 @@ describe("StakingDialog.vue", () => {
         // console.log(stakingModal.text())
 
         expect(stakingModal.element.classList.contains("is-active")).toBeTruthy()
-        expect(stakingModal.get("#amountStakedValue").text()).toBe("0.31669471$0.0779")
+        expect(stakingModal.get("#amountStakedValue").text()).toBe("0.31669471$0.07792")
         expect(stakingModal.get("#currentlyStakedToValue").text()).toBe("Account 0.0.5")
         const buttons = stakingModal.findAll("button")
         expect(buttons.length).toBe(2) // Cancel and Change
@@ -182,6 +170,9 @@ describe("StakingDialog.vue", () => {
         await changeButton.trigger("click")
         await nextTick()
         await confirmChangeStaking("Change Staking  for account 0.0.730632Do you want to stake to account 0.0.7-bmurp ?FillerCANCELCONFIRM")
+
+        wrapper.unmount()
+        await flushPromises()
     })
 
     it("provides invalid values for account to stake to", async () => {
@@ -227,7 +218,7 @@ describe("StakingDialog.vue", () => {
         // console.log(stakingModal.text())
 
         expect(stakingModal.element.classList.contains("is-active")).toBeTruthy()
-        expect(stakingModal.get("#amountStakedValue").text()).toBe("0.31669471$0.0779")
+        expect(stakingModal.get("#amountStakedValue").text()).toBe("0.31669471$0.07792")
         expect(stakingModal.get("#currentlyStakedToValue").text()).toBe("Account 0.0.5")
         const buttons = stakingModal.findAll("button")
         expect(buttons.length).toBe(2) // Cancel and Change
@@ -287,5 +278,8 @@ describe("StakingDialog.vue", () => {
         await waitFor(500)
         await flushPromises()
         expect(feedbackMessage.text()).toBe("This account does not exist")
+
+        wrapper.unmount()
+        await flushPromises()
     })
 });

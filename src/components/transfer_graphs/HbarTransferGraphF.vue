@@ -23,11 +23,8 @@
 <!-- --------------------------------------------------------------------------------------------------------------- -->
 
 <template>
-  <div>
-  <p class="h-is-tertiary-text mb-2">{{ title }}</p>
-
-  <div  v-if="hbarTransferLayout.rowCount >= 1">
-
+  <div v-if="hbarTransferLayout.rowCount >= 1">
+    <p class="h-is-tertiary-text mb-2">{{ title }}</p>
     <div class="graph-container" v-bind:class="{'graph-container-8': dollarVisible }">
 
       <template v-if="dollarVisible">
@@ -69,7 +66,7 @@
           <div class="justify-end">
             <HbarExtra v-if="i <= hbarTransferLayout.sources.length"
                        v-bind:tbarAmount="hbarTransferLayout.sources[i-1].transfer.amount"
-                       v-bind:timestamp="transaction.consensus_timestamp"/>
+                       v-bind:timestamp="transaction?.consensus_timestamp"/>
           </div>
 
         </template>
@@ -103,7 +100,7 @@
           <div class="justify-end" v-bind:class="{'h-has-low-contrast': hasLowContrast(i-1)}">
             <HbarExtra v-if="i <= hbarTransferLayout.destinations.length"
                        v-bind:tbarAmount="hbarTransferLayout.destinations[i-1].transfer.amount"
-                       v-bind:timestamp="transaction.consensus_timestamp"/>
+                       v-bind:timestamp="transaction?.consensus_timestamp"/>
           </div>
 
           <!-- #7 : description -->
@@ -118,11 +115,6 @@
       </template>
 
     </div>
-
-  </div>
-
-  <p v-else-if="showNone" class="has-text-grey">None</p>
-
   </div>
 </template>
 
@@ -132,14 +124,14 @@
 
 <script lang="ts">
 
-import {defineComponent, inject, PropType, ref, watch} from "vue";
+import {computed, defineComponent, inject, onBeforeUnmount, onMounted, PropType} from "vue";
 import AccountLink from "@/components/values/AccountLink.vue";
 import ArrowSegment from "@/components/transfer_graphs/ArrowSegment.vue";
 import HbarAmount from "@/components/values/HbarAmount.vue";
 import HbarExtra from "@/components/values/HbarExtra.vue";
 import {HbarTransferLayout} from "@/components/transfer_graphs/layout/HbarTransferLayout";
 import {Transaction} from "@/schemas/HederaSchemas";
-import {NodeRegistry} from "@/components/node/NodeRegistry";
+import {NetworkAnalyzer} from "@/utils/analyzer/NetworkAnalyzer";
 
 export default defineComponent({
   name: "HbarTransferGraphF",
@@ -154,17 +146,18 @@ export default defineComponent({
   },
   setup(props) {
 
-    const hbarTransferLayout = ref(new HbarTransferLayout(props.transaction))
+    const networkAnalyzer = new NetworkAnalyzer()
+    onMounted(() => networkAnalyzer.mount())
+    onBeforeUnmount(() => networkAnalyzer.unmount())
+
+    const hbarTransferLayout = computed(
+        () => new HbarTransferLayout(props.transaction, networkAnalyzer.nodes.value))
 
     function hasLowContrast(i: number): boolean {
       const destinations = hbarTransferLayout.value.destinations
       const destination = i < destinations.length ? destinations[i] : null
       return destination === null || !destination.payload
     }
-
-    watch([() => props.transaction, NodeRegistry.instance.nodes], () => {
-      hbarTransferLayout.value = new HbarTransferLayout(props.transaction)
-    })
 
     const dollarVisible = inject("isSmallScreen", true)
 

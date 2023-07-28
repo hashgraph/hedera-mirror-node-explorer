@@ -18,6 +18,7 @@
  *
  */
 
+import {describe, it, expect} from 'vitest'
 import {flushPromises, mount} from "@vue/test-utils"
 import router from "@/router";
 import {
@@ -40,20 +41,6 @@ import axios from "axios";
         https://test-utils.vuejs.org/api/
 
  */
-
-Object.defineProperty(window, 'matchMedia', {
-    writable: true,
-    value: jest.fn().mockImplementation(query => ({
-        matches: false,
-        media: query,
-        onchange: null,
-        addListener: jest.fn(), // deprecated
-        removeListener: jest.fn(), // deprecated
-        addEventListener: jest.fn(),
-        removeEventListener: jest.fn(),
-        dispatchEvent: jest.fn(),
-    })),
-});
 
 HMSF.forceUTC = true
 
@@ -87,6 +74,9 @@ describe("TransactionByIdTable.vue", () => {
             "1:29:17.0144 PMSep 6, 2022, UTCTOKEN MINTMINT\n\n0.0.48193741Reptilian Egg NFT\n\n0.0.48113503Child1" +
             "1:29:17.0144 PMSep 6, 2022, UTCCRYPTO TRANSFER0.0.48113503\n\n0.0.48193741Reptilian Egg NFT\n\n0.0.48193739Child2"
         )
+
+        wrapper.unmount()
+        await flushPromises()
     });
 
     it("Should list transactions as scheduling and scheduled", async () => {
@@ -127,6 +117,9 @@ describe("TransactionByIdTable.vue", () => {
         expect(cells[1].text()).toBe("TOKEN MINT")
         expect(cells[3].text()).toBe("Scheduled")
         expect(cells[4].text()).toBe("0")
+
+        wrapper.unmount()
+        await flushPromises()
     });
 
     it("Should list transactions as unrelated", async () => {
@@ -167,5 +160,8 @@ describe("TransactionByIdTable.vue", () => {
         expect(cells[1].text()).toBe("CONTRACT DELETE")
         expect(cells[3].text()).toBe("")
         expect(cells[4].text()).toBe("2")
+
+        wrapper.unmount()
+        await flushPromises()
     });
 });

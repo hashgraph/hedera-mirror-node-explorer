@@ -33,7 +33,7 @@
       {{ formattedAmount }}
     </span>
     <span v-if="showExtra" class="ml-2">
-      <HbarExtra :hide-zero="hideZero" :small-extra="smallExtra" :tbar-amount="amount" :timestamp="timestamp"/>
+      <HbarExtra :hide-zero="hideZero" :small-extra="smallExtra" :tbar-amount="amount ?? 0" :timestamp="timestamp"/>
     </span>
   </template>
   <span v-else/>
@@ -46,7 +46,7 @@
 
 <script lang="ts">
 
-import {computed, defineComponent, inject, ref} from "vue";
+import {computed, defineComponent, inject, PropType, ref} from "vue";
 import HbarExtra from "@/components/values/HbarExtra.vue";
 import {initialLoadingKey} from "@/AppKeys";
 
@@ -55,11 +55,12 @@ export default defineComponent({
   components: {HbarExtra},
   props: {
     amount: {
-      type: Number,
+      type: Number as PropType<number|null>,
+      default: null
     },
     timestamp: {
       type: String,
-      default: null
+      default: "0"
     },
     decimals: {
       type: Number,

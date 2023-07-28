@@ -34,7 +34,7 @@
       <Property id="customFeeCreatedAt" :full-width="true">
         <template v-slot:name>Created at</template>
         <template v-slot:value>
-          <TimestampValue :nano="true" :show-none="true" :timestamp="fees?.created_timestamp.toString()"/>
+          <TimestampValue :nano="true" :show-none="true" :timestamp="fees?.created_timestamp?.toString()"/>
         </template>
       </Property>
 
@@ -42,7 +42,7 @@
         <template v-slot:name>Fixed Fees</template>
         <template v-if="hasFixedFees" v-slot:value>
           <div class="h-is-table-compact">
-            <FixedFeeTable :token-info-loader="tokenInfoLoader"/>
+            <FixedFeeTable :analyzer="analyzer"/>
           </div>
         </template>
         <template v-else v-slot:value>
@@ -54,7 +54,7 @@
         <template v-slot:name>Fractional Fees</template>
         <template v-if="hasFractionalFees" v-slot:value>
           <div class="h-is-table-compact">
-            <FractionalFeeTable :token-info-loader="tokenInfoLoader"/>
+            <FractionalFeeTable :analyzer="analyzer"/>
           </div>
         </template>
         <template v-else v-slot:value>
@@ -63,10 +63,10 @@
       </Property>
 
       <Property v-else id="royalteeFee" :full-width="true">
-        <template v-slot:name>Royalty Fees</template>
+        <template v-slot:name>Percentage & Fallback Fees</template>
         <template v-if="hasRoyaltyFees" v-slot:value>
           <div class="h-is-table-compact">
-            <RoyaltyFeeTable class="h-is-table-compact" :token-info-loader="tokenInfoLoader"/>
+            <RoyaltyFeeTable class="h-is-table-compact" :analyzer="analyzer"/>
           </div>
         </template>
         <template v-else v-slot:value>
@@ -94,7 +94,7 @@ import {ORUGA_MOBILE_BREAKPOINT} from "@/App.vue";
 import FixedFeeTable from "@/components/token/FixedFeeTable.vue";
 import FractionalFeeTable from "@/components/token/FractionalFeeTable.vue";
 import RoyaltyFeeTable from "@/components/token/RoyaltyFeeTable.vue";
-import {TokenInfoLoader} from "@/components/token/TokenInfoLoader";
+import {TokenInfoAnalyzer} from "@/components/token/TokenInfoAnalyzer";
 
 export default defineComponent({
 
@@ -110,8 +110,8 @@ export default defineComponent({
   },
 
   props: {
-    tokenInfoLoader: {
-      type: Object as PropType<TokenInfoLoader>,
+    analyzer: {
+      type: Object as PropType<TokenInfoAnalyzer>,
       required: true
     }
   },
@@ -122,11 +122,11 @@ export default defineComponent({
     const isTouchDevice = inject('isTouchDevice', false)
 
     return {
-      fees: props.tokenInfoLoader?.customFees,
-      hasFixedFees: props.tokenInfoLoader?.hasFixedFees,
-      hasFractionalFees: props.tokenInfoLoader?.hasFractionalFees,
-      hasRoyaltyFees: props.tokenInfoLoader?.hasRoyaltyFees,
-      isFungible: props.tokenInfoLoader?.isFungible,
+      fees: props.analyzer?.customFees,
+      hasFixedFees: props.analyzer?.hasFixedFees,
+      hasFractionalFees: props.analyzer?.hasFractionalFees,
+      hasRoyaltyFees: props.analyzer?.hasRoyaltyFees,
+      isFungible: props.analyzer?.isFungible,
       isSmallScreen,
       isMediumScreen,
       isTouchDevice,

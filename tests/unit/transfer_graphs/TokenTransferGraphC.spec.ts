@@ -20,6 +20,7 @@
  *
  */
 
+import {describe, test, expect} from 'vitest'
 import router from "@/router";
 import {flushPromises, mount} from "@vue/test-utils";
 import TokenTransferGraphC from "@/components/transfer_graphs/TokenTransferGraphC.vue";
@@ -55,6 +56,9 @@ describe("TokenTransferGraphC.vue", () => {
         // console.log(wrapper.text())
 
         expect(wrapper.text()).toBe("")
+
+        wrapper.unmount()
+        await flushPromises()
     })
 
     //
@@ -88,6 +92,9 @@ describe("TokenTransferGraphC.vue", () => {
         expect(wrapper.text()).toBe("MINT\n\n" +
             "1023423\n\n" +
             "0.0.200")
+
+        wrapper.unmount()
+        await flushPromises()
     })
 
     test("Single token, single source, single dest", async () => {
@@ -119,6 +126,9 @@ describe("TokenTransferGraphC.vue", () => {
             "0.0.100\n\n" +
             "1023423\n\n" +
             "0.0.200")
+
+        wrapper.unmount()
+        await flushPromises()
     })
 
     test("Single token, single source, two dest", async () => {
@@ -152,6 +162,9 @@ describe("TokenTransferGraphC.vue", () => {
             "1023423\n\n" +
             "0.0.200\n\n\n\n" +
             "0.0.201")
+
+        wrapper.unmount()
+        await flushPromises()
     })
 
     test("Single token, two sources, zero dest", async () => {
@@ -182,6 +195,9 @@ describe("TokenTransferGraphC.vue", () => {
         expect(wrapper.text()).toBe("0.0.100\n\n" +
             "1023423\n\n" +
             "BURN0.0.101")
+
+        wrapper.unmount()
+        await flushPromises()
     })
 
     test("Single token, two sources, single dest", async () => {
@@ -214,6 +230,9 @@ describe("TokenTransferGraphC.vue", () => {
             "0.0.100\n\n" +
             "1023423\n\n" +
             "0.0.2000.0.101")
+
+        wrapper.unmount()
+        await flushPromises()
     })
 
     test("Single token, two sources, two dest", async () => {
@@ -248,6 +267,9 @@ describe("TokenTransferGraphC.vue", () => {
             "1023423\n\n" +
             "0.0.2000.0.101\n\n\n\n" +
             "0.0.201")
+
+        wrapper.unmount()
+        await flushPromises()
     })
 
 
@@ -291,6 +313,9 @@ describe("TokenTransferGraphC.vue", () => {
             "0.0.2010.0.100\n\n" +
             "0.0623423 DUDE\n\n" +
             "0.0.200")
+
+        wrapper.unmount()
+        await flushPromises()
     })
 
 })

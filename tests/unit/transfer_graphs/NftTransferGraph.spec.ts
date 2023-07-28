@@ -18,6 +18,7 @@
  *
  */
 
+import {describe, test, expect} from 'vitest'
 import router from "@/router";
 import {flushPromises, mount} from "@vue/test-utils";
 import NftTransferGraph from "@/components/transfer_graphs/NftTransferGraph.vue";
@@ -51,7 +52,10 @@ describe("NftTransferGraph.vue", () => {
         // console.log(wrapper.html())
         // console.log(wrapper.text())
 
-        expect(wrapper.text()).toBe("NFT TransfersNone")
+        expect(wrapper.text()).toBe("")
+
+        wrapper.unmount()
+        await flushPromises()
     })
 
     test("Two tokens, Transfer", async () => {
@@ -182,6 +186,9 @@ describe("NftTransferGraph.vue", () => {
             "0.0.748383Ħ Frens Kingdom #604\n\n" +
             "0.0.100")
         expect(wrapper.text()).toMatch(SAMPLE_NONFUNGIBLE.name)
+
+        wrapper.unmount()
+        await flushPromises()
     })
 
     test("Mint, one token, two destinations", async() => {
@@ -224,6 +231,9 @@ describe("NftTransferGraph.vue", () => {
             "0.0.748383Ħ Frens Kingdom #601\n\n" +
             "0.0.101")
         expect(wrapper.text()).toMatch(SAMPLE_NONFUNGIBLE.name)
+
+        wrapper.unmount()
+        await flushPromises()
     })
 
     test("Burn, one token, one source", async() => {
@@ -261,6 +271,9 @@ describe("NftTransferGraph.vue", () => {
             "0.0.748383Ħ Frens Kingdom #604\n\n" +
             "BURN")
         expect(wrapper.text()).toMatch(SAMPLE_NONFUNGIBLE.name)
+
+        wrapper.unmount()
+        await flushPromises()
     })
 
     test("Burn, one token, two sources", async() => {
@@ -303,6 +316,9 @@ describe("NftTransferGraph.vue", () => {
             "0.0.748383Ħ Frens Kingdom #601\n\n" +
             "BURN")
         expect(wrapper.text()).toMatch(SAMPLE_NONFUNGIBLE.name)
+
+        wrapper.unmount()
+        await flushPromises()
     })
 })
 

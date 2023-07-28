@@ -23,11 +23,19 @@
 <!-- --------------------------------------------------------------------------------------------------------------- -->
 
 <template>
-  <div class="should-wrap">
-
-    <EVMAddress :address="hexValue" :show-id="false"/>
-
+  <div v-if="hexValue" class="should-wrap">
+    <div :class="{'is-flex': isSmallScreen}" class="is-inline-block h-is-text-size-3 is-family-monospace"
+         style="line-height: 20px">
+      <Copyable :content-to-copy="hexValue">
+        <template v-slot:content>
+          <span class="has-text-grey">0x</span>
+          <span>{{ hexValue }}</span>
+        </template>
+      </Copyable>
+    </div>
   </div>
+  <div v-else-if="initialLoading"/>
+  <div v-else class="has-text-grey">None</div>
 </template>
 
 <!-- --------------------------------------------------------------------------------------------------------------- -->
@@ -36,29 +44,36 @@
 
 <script lang="ts">
 
-import {computed, defineComponent} from "vue";
+import {computed, defineComponent, inject, ref} from "vue";
 import {base32ToAlias, byteToHex} from "@/utils/B64Utils";
-import EVMAddress from "@/components/values/EVMAddress.vue";
+import {initialLoadingKey} from "@/AppKeys";
+import Copyable from "@/components/Copyable.vue";
 
-export default defineComponent( {
+export default defineComponent({
   name: "AliasValue",
-  components: {EVMAddress},
+  components: {Copyable},
   props: {
     aliasValue: String,
   },
   setup(props) {
+    const initialLoading = inject(initialLoadingKey, ref(false))
+    const isSmallScreen = inject('isSmallScreen', ref(false))
+
     const hexValue = computed(() => {
       let result
       if (props.aliasValue) {
         const alias = base32ToAlias(props.aliasValue)
-        result = alias ? "0x" + byteToHex(alias) : null
+        result = alias ? byteToHex(alias) : null
       } else {
         result = null
       }
       return result
     })
+
     return {
-      hexValue
+      initialLoading,
+      isSmallScreen,
+      hexValue,
     }
   }
 })
@@ -69,7 +84,4 @@ export default defineComponent( {
 <!--                                                      STYLE                                                      -->
 <!-- --------------------------------------------------------------------------------------------------------------- -->
 
-<style scoped>
-
-
-</style>
+<style/>

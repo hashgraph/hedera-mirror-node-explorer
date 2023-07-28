@@ -37,13 +37,15 @@
       aria-previous-label="Previous page"
   >
 
-    <o-table-column v-slot="props" field="amount" label="Amount">
+    <o-table-column v-slot="props" field="amount" label="Fixed Fee">
       <PlainAmount v-if="props.row.denominating_token_id" :amount="props.row.amount"/>
       <HbarAmount v-else :amount="props.row.amount" timestamp="0" :show-extra="true"/>
     </o-table-column>
 
-    <o-table-column v-slot="props" field="amount" label="Token">
-      <TokenLink :show-extra="true" :token-id="props.row.denominating_token_id"/>
+    <o-table-column v-slot="props" field="amount" label="Fee Currency">
+      <TokenLink v-if="props.row.denominating_token_id"
+                 :show-extra="true" :token-id="props.row.denominating_token_id"/>
+      <div v-else>HBAR</div>
     </o-table-column>
 
     <o-table-column v-slot="props" field="account_id" label="Collector Account">
@@ -64,7 +66,7 @@ import {defineComponent, PropType} from 'vue';
 import AccountLink from "@/components/values/AccountLink.vue";
 import TokenLink from "@/components/values/TokenLink.vue";
 import {ORUGA_MOBILE_BREAKPOINT} from "@/App.vue";
-import {TokenInfoLoader} from "@/components/token/TokenInfoLoader";
+import {TokenInfoAnalyzer} from "@/components/token/TokenInfoAnalyzer";
 import HbarAmount from "@/components/values/HbarAmount.vue";
 import PlainAmount from "@/components/values/PlainAmount.vue";
 
@@ -80,15 +82,15 @@ export default defineComponent({
   },
 
   props: {
-    tokenInfoLoader: {
-      type: Object as PropType<TokenInfoLoader>,
+    analyzer: {
+      type: Object as PropType<TokenInfoAnalyzer>,
       required: true
     }
   },
 
   setup(props) {
     return {
-      fees: props.tokenInfoLoader.fixedFees,
+      fees: props.analyzer.fixedFees,
       ORUGA_MOBILE_BREAKPOINT
     }
   },

@@ -31,7 +31,7 @@
       {{ transaction?.entity_id }}
       <span v-if="tokens.length">
         <i class="fas fa-link mr-1 has-text-grey"></i>
-        <TokenExtra :token-id="tokens[0]" :show-name="true"/>
+        <TokenExtra :token-id="tokens[0]" :show-name="false"/>
         <span v-if="additionalTokensNumber" class="h-is-smaller h-is-extra-text should-wrap">
           {{ ' ( + ' + additionalTokensNumber + ' more )' }}
         </span>
@@ -53,13 +53,12 @@
 
 <script lang="ts">
 
-import {computed, defineComponent, onBeforeUnmount, onMounted, PropType, ref} from "vue";
+import {computed, defineComponent, onBeforeUnmount, onMounted, PropType} from "vue";
 import {Transaction, TransactionDetail, TransactionType} from "@/schemas/HederaSchemas";
 import {makeSummaryLabel} from "@/utils/TransactionTools";
 import TransferGraphSection from "@/components/transfer_graphs/TransferGraphSection.vue";
-import {TokenRelationshipLoader} from "@/components/token/TokenRelationshipLoader";
+import {TransactionAnalyzer} from "@/components/transaction/TransactionAnalyzer";
 import TokenExtra from "@/components/values/TokenExtra.vue";
-import {ContractByIdCache} from "@/utils/cache/ContractByIdCache";
 
 const GRAPH_TRANSACTION_TYPES = [
   TransactionType.CRYPTOTRANSFER,
@@ -80,29 +79,19 @@ export default defineComponent({
       return props.transaction?.name && GRAPH_TRANSACTION_TYPES.indexOf(props.transaction.name) != -1
     })
 
-    const isTokenAssociation = computed(() => props.transaction?.name === TransactionType.TOKENASSOCIATE)
+    const transactionAnalyzer = new TransactionAnalyzer(computed(() => props.transaction ?? null))
+    onMounted(() => transactionAnalyzer.mount())
+    onBeforeUnmount(() => transactionAnalyzer.unmount())
 
-    const tokenRelationships = new TokenRelationshipLoader(ref(props.transaction?.entity_id ?? null))
-    onMounted(() => tokenRelationships.requestLoad())
-
-    const tokens = computed(
-        () => tokenRelationships.lookupTokens(props.transaction?.consensus_timestamp ?? ""))
-
-    const additionalTokensNumber = computed(() => tokens.value.length ?  tokens.value.length - 1 : 0)
-
-    const isEthereumTransaction = computed(() => props.transaction?.name == TransactionType.ETHEREUMTRANSACTION)
-
-    const entityID = computed(() => props.transaction?.entity_id ?? null)
-    const contractLookup = ContractByIdCache.instance.makeLookup(entityID)
-    onMounted(() => contractLookup.mount())
-    onBeforeUnmount(() => contractLookup.unmount())
+    const additionalTokensNumber = computed(
+        () => Math.max(0, transactionAnalyzer.tokens.value.length - 1))
 
     const ethereumSummary = computed(() => {
       let result
-      if (entityID.value) {
-        result = contractLookup.entity.value !== null
-            ? 'Contract ID: ' + entityID.value
-            : 'Account ID: ' + entityID.value
+      if (transactionAnalyzer.entityId.value !== null) {
+        result = transactionAnalyzer.contractId.value !== null
+            ? 'Contract ID: ' + transactionAnalyzer.entityId.value
+            : 'Account ID: ' + transactionAnalyzer.entityId.value
       } else {
         result = ""
       }
@@ -115,10 +104,10 @@ export default defineComponent({
 
     return {
       shouldGraph,
-      isTokenAssociation,
-      tokens,
+      isTokenAssociation: transactionAnalyzer.isTokenAssociation,
+      tokens: transactionAnalyzer.tokens,
       additionalTokensNumber,
-      isEthereumTransaction,
+      isEthereumTransaction: transactionAnalyzer.isEthereumTransaction,
       ethereumSummary,
       // From TransactionTools
       makeSummaryLabel,

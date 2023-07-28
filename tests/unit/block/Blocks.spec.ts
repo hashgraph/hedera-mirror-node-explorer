@@ -18,6 +18,7 @@
  *
  */
 
+import {describe, it, expect} from 'vitest'
 import {flushPromises, mount} from "@vue/test-utils"
 import router from "@/router";
 import axios from "axios";
@@ -35,20 +36,6 @@ import BlockTable from "@/components/block/BlockTable.vue";
         https://test-utils.vuejs.org/api/
 
  */
-
-Object.defineProperty(window, 'matchMedia', {
-    writable: true,
-    value: jest.fn().mockImplementation(query => ({
-        matches: false,
-        media: query,
-        onchange: null,
-        addListener: jest.fn(), // deprecated
-        removeListener: jest.fn(), // deprecated
-        addEventListener: jest.fn(),
-        removeEventListener: jest.fn(),
-        dispatchEvent: jest.fn(),
-    })),
-});
 
 HMSF.forceUTC = true
 
@@ -83,7 +70,7 @@ describe("Blocks.vue", () => {
         expect(table.exists()).toBe(true)
         expect(table.get('thead').text()).toBe("Number Start Time No. Transactions Gas Used")
         expect(table.get('tbody').text()).toBe(
-            "25175998" + "6:58:31.3281 AMSep 23, 2022, UTC" + "1" + "0" +
+            "25175998" + "6:58:31.3281 AMSep 23, 2022, UTC" + "3" + "0" +
             "25175997" + "6:58:28.2114 AMSep 23, 2022, UTC" + "5" + "0"
         )
 

@@ -19,12 +19,24 @@
  */
 
 import {ContractResponse} from "@/schemas/HederaSchemas";
-import {EntityCache} from "@/utils/cache/EntityCache";
+import {EntityCache} from "@/utils/cache/base/EntityCache";
 import axios from "axios";
+import {ContractByAddressCache} from "@/utils/cache/ContractByAddressCache";
 
 export class ContractByIdCache extends EntityCache<string, ContractResponse|null> {
 
     public static readonly instance = new ContractByIdCache()
+
+    //
+    // Public
+    //
+
+    public updateWithContractResponse(contractResponse: ContractResponse): void {
+        if (contractResponse.contract_id) {
+            this.forget(contractResponse.contract_id)
+            this.mutate(contractResponse.contract_id, Promise.resolve(contractResponse))
+        }
+    }
 
     //
     // Cache
@@ -35,6 +47,7 @@ export class ContractByIdCache extends EntityCache<string, ContractResponse|null
         try {
             const response = await axios.get<ContractResponse>("api/v1/contracts/" + key)
             result = Promise.resolve(response.data)
+            ContractByAddressCache.instance.updateWithContractResponse(response.data)
         } catch(error) {
             if (axios.isAxiosError(error) && error.response?.status == 404) {
                 result = Promise.resolve(null)

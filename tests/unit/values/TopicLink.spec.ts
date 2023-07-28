@@ -18,6 +18,7 @@
  *
  */
 
+import {describe, it, expect} from 'vitest'
 import {mount} from "@vue/test-utils"
 import TopicLink from "@/components/values/TopicLink.vue"
 import router from "@/router";
@@ -42,6 +43,8 @@ describe("TopicLink.vue", () => {
         expect(wrapper.findComponent("a").attributes("href")).toMatch(
             RegExp("/topic/" + testTopicId + "$")
         )
+
+        wrapper.unmount()
     });
 
     it("props.topicId unset", async () => {
@@ -58,5 +61,7 @@ describe("TopicLink.vue", () => {
 
         expect(wrapper.text()).toBe("?")
         expect(wrapper.findComponent("a").exists()).toBe(false)
+
+        wrapper.unmount()
     });
 });

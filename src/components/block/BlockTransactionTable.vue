@@ -39,7 +39,7 @@
       aria-page-label="Page"
       aria-previous-label="Previous page"
       customRowKey="consensus_timestamp"
-      @click="handleClick"
+      @cell-click="handleClick"
   >
     <o-table-column v-slot="props" field="transaction_id" label="ID">
       <TransactionLabel v-bind:transaction-id="props.row.transaction_id" v-bind:result="props.row.result"/>
@@ -107,8 +107,8 @@ export default defineComponent({
         }
     )
 
-    const handleClick = (t: Transaction) => {
-      routeManager.routeToTransaction(t)
+    const handleClick = (t: Transaction, c: unknown, i: number, ci: number, event: MouseEvent) => {
+      routeManager.routeToTransaction(t, event.ctrlKey || event.metaKey)
     }
 
     let currentPage = ref(1)

@@ -18,7 +18,8 @@
  *
  */
 
-import {Transaction, TransactionType} from "@/schemas/HederaSchemas";
+import {StakingRewardTransfer, Transaction, TransactionType, Transfer} from "@/schemas/HederaSchemas";
+import {TransactionID} from "@/utils/TransactionID";
 
 export function makeSummaryLabel(row: Transaction): string {
     let result: string
@@ -26,7 +27,7 @@ export function makeSummaryLabel(row: Transaction): string {
 
     switch (row.name) {
         case TransactionType.CRYPTOTRANSFER:
-            netAmount = computeNetAmount(row);
+            netAmount = computeNetAmount(row.transfers, row.charged_tx_fee);
             result = makeTransferLabel(row, netAmount)
             break
         case TransactionType.CONSENSUSCREATETOPIC:
@@ -135,7 +136,7 @@ function makeTransferLabel(row: Transaction, netAmount: number): string {
 export function showPositiveNetAmount(row: Transaction): boolean {
     let result: boolean
 
-    const netAmount = computeNetAmount(row)
+    const netAmount = computeNetAmount(row.transfers, row.charged_tx_fee)
     switch (row.name) {
         case TransactionType.CRYPTOTRANSFER:
             result = true
@@ -305,18 +306,11 @@ export function makeTypeLabel(type: TransactionType | undefined): string {
     return result.toUpperCase()
 }
 
-export function makeOperatorAccountLabel(row: Transaction): string {
-
-    //
-    // Derived from transaction id
-    //      account-timestamp-fraction
-    //      0.0.3107590-1639489392-138251957
-
-    let result: string
-    const transactionId = row.transaction_id;
+export function makeOperatorAccountLabel(transaction: Transaction): string {
+    let result: string | null
+    const transactionId = transaction.transaction_id;
     if (transactionId != null) {
-        const index = transactionId.indexOf("-")
-        result = index != -1 ? transactionId.substring(0, index) : "?";
+        result = TransactionID.makePayerID(transactionId) ?? "?"
     } else {
         result = "?"
     }
@@ -333,15 +327,53 @@ function formatMemo(memo64: string): string {
     return result
 }
 
-export function computeNetAmount(row: Transaction): number {
+export function computeNetAmount(transfers: Transfer[] | undefined, transactionFee: number | undefined): number {
     let result = 0
-    if (row.transfers !== undefined) {
-        for (const t of row.transfers) {
+    if (transfers !== undefined) {
+        for (const t of transfers) {
             if (t.amount > 0) {
                 result += t.amount
             }
         }
     }
-    result -= row.charged_tx_fee ?? 0
+    result -= transactionFee ?? 0
+    return result
+}
+
+export function makeNetOfRewards(transfers: Transfer[] | undefined, rewards: StakingRewardTransfer[] | undefined): Transfer[] {
+    let result = Array<Transfer>()
+    let totalRewardAmount = 0
+
+    if (transfers && rewards && transfers.length > 0 && rewards.length > 0) {
+        for (const r of rewards) {
+            totalRewardAmount += r.amount
+        }
+        let netAmount: number
+        for (const t of transfers) {
+            if (t.account === "0.0.800") {
+                netAmount = t.amount + totalRewardAmount
+            } else {
+                netAmount = t.amount
+                for (const r of rewards) {
+                    if (t.account == r.account) {
+                        if (t.amount < 0) {
+                            netAmount = t.amount + r.amount
+                        } else {
+                            netAmount = t.amount - r.amount
+                        }
+                        break
+                    }
+                }
+            }
+            result.push({
+                amount: netAmount,
+                account: t.account,
+                is_approval: t.is_approval
+            })
+        }
+    } else {
+        result = transfers ?? []
+    }
+
     return result
 }

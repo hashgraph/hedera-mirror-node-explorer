@@ -18,9 +18,8 @@
  *
  */
 
-import hashgraph from "@hashgraph/proto/lib/proto";
+import hashgraph from "@hashgraph/proto";
 import {byteToHex} from "@/utils/B64Utils";
-import IContractID = hashgraph.proto.IContractID;
 import {EntityID} from "@/utils/EntityID";
 
 export class ComplexKeyLine {
@@ -133,7 +132,7 @@ export class ComplexKeyLine {
         }
     }
 
-    private static makeContractId(iContractID: IContractID): string {
+    private static makeContractId(iContractID: hashgraph.proto.IContractID): string {
         const shard = Number(iContractID.shardNum ?? 0)
         const realm = Number(iContractID.realmNum ?? 0)
         const num = Number(iContractID.contractNum ?? 0)

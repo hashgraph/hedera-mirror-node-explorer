@@ -25,6 +25,7 @@
 
  */
 
+import {describe, it, expect} from 'vitest'
 import {flushPromises, mount} from "@vue/test-utils";
 import HbarMarketDashboard from "@/components/dashboard/HbarMarketDashboard.vue";
 import {SAMPLE_NETWORK_EXCHANGERATE, SAMPLE_NETWORK_SUPPLY} from "../Mocks";
@@ -93,6 +94,9 @@ describe("HbarMarketDashboard.vue ", () => {
         // console.log(wrapper.text())
 
         expect(wrapper.text()).toBe("TESTNET")
+
+        wrapper.unmount()
+        await flushPromises()
     });
 
     it("should display the previewnet banner", async () => {
@@ -104,5 +108,8 @@ describe("HbarMarketDashboard.vue ", () => {
         // console.log(wrapper.text())
 
         expect(wrapper.text()).toBe("PREVIEWNET")
+
+        wrapper.unmount()
+        await flushPromises()
     });
 });

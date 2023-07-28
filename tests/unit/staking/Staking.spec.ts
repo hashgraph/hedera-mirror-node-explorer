@@ -20,6 +20,7 @@
  *
  */
 
+import {describe, test, expect} from 'vitest'
 import {flushPromises, mount} from "@vue/test-utils"
 import router, {walletManager} from "@/router";
 import Oruga from "@oruga-ui/oruga-next";
@@ -42,7 +43,6 @@ import ProgressDialog from "@/components/staking/ProgressDialog.vue";
 import {waitFor} from "@/utils/TimerUtils";
 import StakingDialog from "@/components/staking/StakingDialog.vue";
 import {nextTick} from "vue";
-import {NodeRegistry} from "@/components/node/NodeRegistry";
 
 /*
     Bookmarks
@@ -50,20 +50,6 @@ import {NodeRegistry} from "@/components/node/NodeRegistry";
         https://test-utils.vuejs.org/api/
 
  */
-
-Object.defineProperty(window, 'matchMedia', {
-    writable: true,
-    value: jest.fn().mockImplementation(query => ({
-        matches: false,
-        media: query,
-        onchange: null,
-        addListener: jest.fn(), // deprecated
-        removeListener: jest.fn(), // deprecated
-        addEventListener: jest.fn(),
-        removeEventListener: jest.fn(),
-        dispatchEvent: jest.fn(),
-    })),
-});
 
 HMSF.forceUTC = true
 
@@ -100,10 +86,8 @@ describe("Staking.vue", () => {
             const response = { nodes: [ node ]}
             mock.onGet(matcher2, body).reply(200, response)
         }
-        NodeRegistry.instance.reload()
 
         mock.onGet(matcher2).reply(200, SAMPLE_NETWORK_NODES)
-        NodeRegistry.instance.reload()
         const matcher3 = "/api/v1/network/exchangerate"
         mock.onGet(matcher3).reply(200, SAMPLE_NETWORK_EXCHANGERATE);
         const matcher4 = "/api/v1/transactions/" + STAKE_UPDATE_TRANSACTION_ID
@@ -167,7 +151,7 @@ describe("Staking.vue", () => {
         expect(stakingModals.length).toBeGreaterThanOrEqual(2)
         const stakingModal = stakingModals[1]
         expect(stakingModal.element.classList.contains("is-active")).toBeTruthy()
-        expect(stakingModal.get("#amountStakedValue").text()).toBe("0.31669471$0.0779")
+        expect(stakingModal.get("#amountStakedValue").text()).toBe("0.31669471$0.07792")
         expect(stakingModal.get("#currentlyStakedToValue").text()).toBe("Account 0.0.5")
         const buttons = stakingModal.findAll("button")
         expect(buttons.length).toBe(2) // Cancel and Change
@@ -241,7 +225,7 @@ describe("Staking.vue", () => {
 
         // 3.2) Checks StakingDialog content
         expect(stakingModal.element.classList.contains("is-active")).toBeTruthy()
-        expect(stakingModal.get("#amountStakedValue").text()).toBe("0.31669471$0.0779")
+        expect(stakingModal.get("#amountStakedValue").text()).toBe("0.31669471$0.07792")
         expect(stakingModal.get("#currentlyStakedToValue").text()).toBe("Account 0.0.7")
         expect(changeButton.text()).toBe("CHANGE")
         // expect(changeButton.attributes("disabled")).toBeDefined()
@@ -293,7 +277,7 @@ describe("Staking.vue", () => {
 
         // 4.2) Checks StakingDialog content
         expect(stakingModal.element.classList.contains("is-active")).toBeTruthy()
-        expect(stakingModal.get("#amountStakedValue").text()).toBe("0.31669471$0.0779")
+        expect(stakingModal.get("#amountStakedValue").text()).toBe("0.31669471$0.07792")
         expect(stakingModal.get("#currentlyStakedToValue").text()).toBe("Node 2 - Hosted by Hedera")
         expect(changeButton.text()).toBe("CHANGE")
         // expect(changeButton.attributes("disabled")).toBeDefined()
@@ -372,6 +356,8 @@ describe("Staking.vue", () => {
         expect(testDriver.isConnected()).toBeFalsy()
         expect(testDriver.getAccountId()).toBe(null)
 
+        wrapper.unmount()
+        await flushPromises()
     })
 
 });

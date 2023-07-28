@@ -128,11 +128,14 @@ import {defineComponent} from 'vue';
 import Footer from "@/components/Footer.vue";
 
 export default defineComponent({
-  name: 'SearchResult',
+  name: 'NoSearchResult',
   components: {Footer},
   props: {
     "searchedId": String,
-    "errorCount": Number,
+    "errorCount": {
+      type: Number,
+      default: 0
+    },
     "network": String
   }
 })

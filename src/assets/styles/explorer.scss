@@ -75,6 +75,12 @@ body {
     font-size: 30px;
     line-height: 36px;
 }
+@media (max-width: 1079px) {
+    .h-is-primary-title {
+        font-size: 24px;
+        line-height: 29px;
+    }
+}
 @media (max-width: 767px) {
     .h-is-primary-title {
         font-size: 16px;
@@ -106,9 +112,16 @@ body {
     line-height: 41px;
     letter-spacing: -0.05em;
 }
+@media (max-width: 1079px) {
+    .h-is-secondary-text {
+        font-size: 26px;
+        line-height: 31px;
+    }
+}
 @media (max-width: 767px) {
     .h-is-secondary-text {
         font-size: 18px;
+        line-height: 22px;
     }
 }
 .h-is-tertiary-text {
@@ -159,8 +172,6 @@ body {
     line-height: 17px;
 }
 .h-is-mobile-navbar-item {
-    font-style: normal;
-    font-weight: 300;
     font-size: 20px;
     line-height: 24px;
 }
@@ -282,34 +293,34 @@ body {
 #mobile-drop-down-menu .o-sel-arrow {
     background-position: calc(100% - 13px) calc(100% - 16px);
 }
-a.button {
+.button.h-is-navbar-item {
     padding-top: 28px;
     padding-bottom: 16px;
 }
-a.button.is-outlined {
-    border-top-width: 0
+.button.h-is-navbar-item:not(.h-is-mobile-navbar-item) {
+    outline : $h-page-background-color solid 2px;
 }
-a.button.is-outlined:not(.is-active) {
-    font-weight: bold;
-    color: $h-highlight-color;
-    border-color: $h-highlight-color;
+.button.h-is-navbar-item.is-outlined {
+    border-top-width: 0;
+    padding-left: 0.6em;
+    padding-right: 0.6em;
+    margin-right: 0.4em;
 }
-a.button.is-outlined.is-active {
-    color: grey;
-    border-color: grey;
-    font-weight: 300;
-}
-a.button.is-outlined.is-active:hover {
-    color: lightgrey;
-    border-color: lightgrey;
-    font-weight: 300;
-}
-a.button.is-ghost:hover {
-    text-decoration-thickness: 1px;
+.button.h-is-navbar-item.is-ghost:hover {
+    text-decoration-line: underline;
+    text-decoration-style: solid;
     text-decoration-color: grey;
+    text-decoration-thickness: 1px;
     text-underline-offset: 9px;
 }
-a.button.is-ghost.is-rimmed {
+.button.h-is-navbar-item.is-ghost:focus {
+    text-decoration-line: underline;
+    text-decoration-style: solid;
+    text-decoration-color: lightgrey;
+    text-decoration-thickness: 1px;
+    text-underline-offset: 9px;
+}
+.button.h-is-navbar-item.is-ghost.is-rimmed {
     text-decoration-line: underline;
     text-decoration-style: solid;
     text-decoration-color: $h-highlight-color;
@@ -318,19 +329,14 @@ a.button.is-ghost.is-rimmed {
     font-weight: bold;
     letter-spacing: normal;
 }
-a.button.is-outlined {
-    padding-left: 0.6em;
-    padding-right: 0.6em;
-    margin-right: 0.4em;
-}
-a.button.is-ghost {
+.button.h-is-navbar-item.is-ghost {
     padding-left: 0.4em;
     padding-right: 0.4em;
 }
-a.button.is-ghost.is-first {
+.button.h-is-navbar-item.is-ghost.is-first {
     padding-left: 2em;
 }
-a.button.is-ghost.is-last {
+.button.h-is-navbar-item.is-ghost.is-last {
     padding-right: 0;
 }
 

@@ -55,12 +55,13 @@
 
 <script lang="ts">
 
-import {computed, defineComponent, inject, onMounted, PropType, ref, watch} from "vue";
+import {computed, defineComponent, inject, onBeforeUnmount, onMounted, PropType, ref, watch} from "vue";
 import {initialLoadingKey} from "@/AppKeys";
 import {routeManager} from "@/router";
-import {NodeRegistry} from "@/components/node/NodeRegistry";
+import {NetworkCache} from "@/utils/cache/NetworkCache";
 import {ContractByIdCache} from "@/utils/cache/ContractByIdCache";
 import {RouteLocationRaw} from "vue-router";
+import {makeOperatorDescription} from "@/schemas/HederaUtils";
 
 export default defineComponent({
   name: "AccountLink",
@@ -86,8 +87,16 @@ export default defineComponent({
   },
 
   setup(props) {
+
+    const networkLookup = NetworkCache.instance.makeLookup()
+    onMounted(() => networkLookup.mount())
+    onBeforeUnmount(() => networkLookup.unmount())
+
+    const nodes = computed(() => networkLookup.entity.value ?? [])
+
     const extra = computed(() => {
-      return NodeRegistry.getDescription(ref(null), ref(props.accountId??null)) ?? ""
+      const result = props.accountId ? makeOperatorDescription(props.accountId, nodes.value) : null
+      return result ?? ""
     })
 
     const accountRoute = ref<RouteLocationRaw | null>(null)

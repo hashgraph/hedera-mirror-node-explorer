@@ -23,7 +23,7 @@
 <!-- --------------------------------------------------------------------------------------------------------------- -->
 
 <template>
-  <a v-if="isURL" v-bind:href="blobValue">{{ blobValue }}</a>
+  <a v-if="isURL && blobValue" v-bind:href="blobValue">{{ blobValue }}</a>
   <div v-else-if="jsonValue"
        class="h-is-json is-inline-block has-text-left is-family-monospace h-is-text-size-3">{{ jsonValue }}</div>
   <template v-else-if="blobValue">
@@ -31,7 +31,7 @@
          :style="{'max-width': windowWidth-limitingFactor + 'px'}">{{ decodedValue }}</div>
     <div v-else-if="limitingFactor" class="h-is-one-line is-inline-block"
          :style="{'max-width': windowWidth-limitingFactor+200 + 'px'}">{{ decodedValue }}</div>
-    <div v-else>{{ decodedValue }}</div>
+    <div v-else style="word-break: break-word">{{ decodedValue }}</div>
   </template>
   <span v-else-if="showNone && !initialLoading" class="has-text-grey">None</span>
   <span v-else/>
@@ -43,14 +43,17 @@
 
 <script lang="ts">
 
-import {computed, defineComponent, inject, ref} from "vue";
+import {computed, defineComponent, inject, PropType, ref} from "vue";
 import {initialLoadingKey} from "@/AppKeys";
 
 export default defineComponent({
   name: "BlobValue",
   components: {},
   props: {
-    blobValue: String,
+    blobValue: {
+      type: String as PropType<string|null>,
+      default: null
+    },
     showNone: {
       type: Boolean,
       default: false

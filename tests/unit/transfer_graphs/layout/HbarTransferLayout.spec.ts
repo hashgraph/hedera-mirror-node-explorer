@@ -20,20 +20,15 @@
  *
  */
 
-import {Transaction} from "@/schemas/HederaSchemas";
-import MockAdapter from "axios-mock-adapter";
-import axios from "axios";
+import {describe, test, expect} from 'vitest'
+import {NetworkNode, Transaction} from "@/schemas/HederaSchemas";
 import {SAMPLE_NETWORK_NODES} from "../../Mocks";
-import {NodeRegistry} from "@/components/node/NodeRegistry";
 import {HbarTransferLayout} from "@/components/transfer_graphs/layout/HbarTransferLayout";
 import {flushPromises} from "@vue/test-utils";
 
 describe("HbarTransferLayout.vue", () => {
 
-    const mock = new MockAdapter(axios);
-    const matcher1 = "/api/v1/network/nodes"
-    mock.onGet(matcher1).reply(200, SAMPLE_NETWORK_NODES);
-    NodeRegistry.instance.reload()
+    const NETWORK_NODES = SAMPLE_NETWORK_NODES.nodes as NetworkNode[]
 
     //
     // Single source
@@ -50,7 +45,7 @@ describe("HbarTransferLayout.vue", () => {
                 { "account": "0.0.98",  "amount":  +7 },
                 { "account": "0.0.100", "amount": -10 }
             ],
-        }
+        } as Transaction
 
         await flushPromises()
 
@@ -58,10 +53,10 @@ describe("HbarTransferLayout.vue", () => {
         // FULL
         //
 
-        const fullLayout = new HbarTransferLayout(transaction as Transaction)
+        const fullLayout = new HbarTransferLayout(transaction, NETWORK_NODES)
 
         expect(fullLayout.transaction).toBe(transaction)
-        expect(fullLayout.netAmount).toBe(0)
+        expect(fullLayout.destinationAmount).toBe(10)
         expect(fullLayout.rowCount).toBe(2)
         expect(fullLayout.sources.length).toBe(1)
         expect(fullLayout.destinations.length).toBe(2)
@@ -75,7 +70,7 @@ describe("HbarTransferLayout.vue", () => {
         const d0 = fullLayout.destinations[0]
         expect(d0.transfer.account).toBe("0.0.5")
         expect(d0.transfer.amount).toBe(+3)
-        expect(d0.description).toBe("Hosted by Hedera | Central, USA")
+        expect(d0.description).toBe("Node fee (Hedera)")
         expect(d0.payload).toBe(false)
 
         const d1 = fullLayout.destinations[1]
@@ -88,10 +83,10 @@ describe("HbarTransferLayout.vue", () => {
         // COMPACT
         //
 
-        const compactLayout = new HbarTransferLayout(transaction as Transaction, false)
+        const compactLayout = new HbarTransferLayout(transaction, NETWORK_NODES, false)
 
         expect(compactLayout.transaction).toBe(transaction)
-        expect(compactLayout.netAmount).toBe(0)
+        expect(compactLayout.destinationAmount).toBe(0)
         expect(compactLayout.rowCount).toBe(0)
         expect(compactLayout.sources.length).toBe(0)
         expect(compactLayout.destinations.length).toBe(0)
@@ -108,16 +103,16 @@ describe("HbarTransferLayout.vue", () => {
                 { "account": "0.0.98",  "amount":   +7 },
                 { "account": "0.0.120", "amount":  +90 },
             ],
-        }
+        } as Transaction
 
         //
         // FULL
         //
 
-        const fullLayout = new HbarTransferLayout(transaction as Transaction)
+        const fullLayout = new HbarTransferLayout(transaction, NETWORK_NODES)
 
         expect(fullLayout.transaction).toBe(transaction)
-        expect(fullLayout.netAmount).toBe(90)
+        expect(fullLayout.destinationAmount).toBe(100)
         expect(fullLayout.rowCount).toBe(3)
         expect(fullLayout.sources.length).toBe(1)
         expect(fullLayout.destinations.length).toBe(3)
@@ -137,7 +132,7 @@ describe("HbarTransferLayout.vue", () => {
         const fd1 = fullLayout.destinations[1]
         expect(fd1.transfer.account).toBe("0.0.5")
         expect(fd1.transfer.amount).toBe(+3)
-        expect(fd1.description).toBe("Hosted by Hedera | Central, USA")
+        expect(fd1.description).toBe("Node fee (Hedera)")
         expect(fd1.payload).toBe(false)
 
         const fd2 = fullLayout.destinations[2]
@@ -150,10 +145,10 @@ describe("HbarTransferLayout.vue", () => {
         // COMPACT
         //
 
-        const compactLayout = new HbarTransferLayout(transaction as Transaction, false)
+        const compactLayout = new HbarTransferLayout(transaction, NETWORK_NODES, false)
 
         expect(compactLayout.transaction).toBe(transaction)
-        expect(compactLayout.netAmount).toBe(90)
+        expect(compactLayout.destinationAmount).toBe(90)
         expect(compactLayout.rowCount).toBe(1)
         expect(compactLayout.sources.length).toBe(1)
         expect(compactLayout.destinations.length).toBe(1)
@@ -182,16 +177,16 @@ describe("HbarTransferLayout.vue", () => {
                 { "account": "0.0.120", "amount":  +30 },
                 { "account": "0.0.121", "amount":  +60 },
             ],
-        }
+        } as Transaction
 
         //
         // FULL
         //
 
-        const fullLayout = new HbarTransferLayout(transaction as Transaction)
+        const fullLayout = new HbarTransferLayout(transaction, NETWORK_NODES)
 
         expect(fullLayout.transaction).toBe(transaction)
-        expect(fullLayout.netAmount).toBe(90)
+        expect(fullLayout.destinationAmount).toBe(100)
         expect(fullLayout.rowCount).toBe(4)
         expect(fullLayout.sources.length).toBe(1)
         expect(fullLayout.destinations.length).toBe(4)
@@ -217,7 +212,7 @@ describe("HbarTransferLayout.vue", () => {
         const d2 = fullLayout.destinations[2]
         expect(d2.transfer.account).toBe("0.0.5")
         expect(d2.transfer.amount).toBe(+3)
-        expect(d2.description).toBe("Hosted by Hedera | Central, USA")
+        expect(d2.description).toBe("Node fee (Hedera)")
         expect(d2.payload).toBe(false)
 
         const d3 = fullLayout.destinations[3]
@@ -230,10 +225,10 @@ describe("HbarTransferLayout.vue", () => {
         // COMPACT
         //
 
-        const compactLayout = new HbarTransferLayout(transaction as Transaction, false)
+        const compactLayout = new HbarTransferLayout(transaction, NETWORK_NODES, false)
 
         expect(compactLayout.transaction).toBe(transaction)
-        expect(compactLayout.netAmount).toBe(90)
+        expect(compactLayout.destinationAmount).toBe(90)
         expect(compactLayout.rowCount).toBe(2)
         expect(compactLayout.sources.length).toBe(1)
         expect(compactLayout.destinations.length).toBe(2)
@@ -272,16 +267,16 @@ describe("HbarTransferLayout.vue", () => {
                 { "account": "0.0.5",   "amount":  +3 },
                 { "account": "0.0.98",  "amount":  +7 },
             ],
-        }
+        } as Transaction
 
         //
         // FULL
         //
 
-        const fullLayout = new HbarTransferLayout(transaction as Transaction)
+        const fullLayout = new HbarTransferLayout(transaction, NETWORK_NODES)
 
         expect(fullLayout.transaction).toBe(transaction)
-        expect(fullLayout.netAmount).toBe(0)
+        expect(fullLayout.destinationAmount).toBe(10)
         expect(fullLayout.rowCount).toBe(2)
         expect(fullLayout.sources.length).toBe(2)
         expect(fullLayout.destinations.length).toBe(2)
@@ -301,7 +296,7 @@ describe("HbarTransferLayout.vue", () => {
         const d0 = fullLayout.destinations[0]
         expect(d0.transfer.account).toBe("0.0.5")
         expect(d0.transfer.amount).toBe(+3)
-        expect(d0.description).toBe("Hosted by Hedera | Central, USA")
+        expect(d0.description).toBe("Node fee (Hedera)")
         expect(d0.payload).toBe(false)
 
         const d1 = fullLayout.destinations[1]
@@ -315,10 +310,10 @@ describe("HbarTransferLayout.vue", () => {
         // COMPACT
         //
 
-        const compactLayout = new HbarTransferLayout(transaction as Transaction, false)
+        const compactLayout = new HbarTransferLayout(transaction, NETWORK_NODES, false)
 
         expect(compactLayout.transaction).toBe(transaction)
-        expect(compactLayout.netAmount).toBe(0)
+        expect(compactLayout.destinationAmount).toBe(0)
         expect(compactLayout.rowCount).toBe(0)
         expect(compactLayout.sources.length).toBe(0)
         expect(compactLayout.destinations.length).toBe(0)
@@ -336,16 +331,16 @@ describe("HbarTransferLayout.vue", () => {
                 { "account": "0.0.98",  "amount":   +7 },
                 { "account": "0.0.120", "amount":  +90 },
             ],
-        }
+        } as Transaction
 
         //
         // FULL
         //
 
-        const fullLayout = new HbarTransferLayout(transaction as Transaction)
+        const fullLayout = new HbarTransferLayout(transaction, NETWORK_NODES)
 
         expect(fullLayout.transaction).toBe(transaction)
-        expect(fullLayout.netAmount).toBe(90)
+        expect(fullLayout.destinationAmount).toBe(100)
         expect(fullLayout.rowCount).toBe(3)
         expect(fullLayout.sources.length).toBe(2)
         expect(fullLayout.destinations.length).toBe(3)
@@ -371,7 +366,7 @@ describe("HbarTransferLayout.vue", () => {
         const d1 = fullLayout.destinations[1]
         expect(d1.transfer.account).toBe("0.0.5")
         expect(d1.transfer.amount).toBe(+3)
-        expect(d1.description).toBe("Hosted by Hedera | Central, USA")
+        expect(d1.description).toBe("Node fee (Hedera)")
         expect(d1.payload).toBe(false)
 
         const d2 = fullLayout.destinations[2]
@@ -384,10 +379,10 @@ describe("HbarTransferLayout.vue", () => {
         // COMPACT
         //
 
-        const compactLayout = new HbarTransferLayout(transaction as Transaction, false)
+        const compactLayout = new HbarTransferLayout(transaction, NETWORK_NODES, false)
 
         expect(compactLayout.transaction).toBe(transaction)
-        expect(compactLayout.netAmount).toBe(90)
+        expect(compactLayout.destinationAmount).toBe(90)
         expect(compactLayout.rowCount).toBe(2)
         expect(compactLayout.sources.length).toBe(2)
         expect(compactLayout.destinations.length).toBe(1)
@@ -423,16 +418,16 @@ describe("HbarTransferLayout.vue", () => {
                 { "account": "0.0.120", "amount":  +30 },
                 { "account": "0.0.121", "amount":  +60 },
             ],
-        }
+        } as Transaction
 
         //
         // FULL
         //
 
-        const fullLayout = new HbarTransferLayout(transaction as Transaction)
+        const fullLayout = new HbarTransferLayout(transaction, NETWORK_NODES)
 
         expect(fullLayout.transaction).toBe(transaction)
-        expect(fullLayout.netAmount).toBe(90)
+        expect(fullLayout.destinationAmount).toBe(100)
         expect(fullLayout.rowCount).toBe(4)
         expect(fullLayout.sources.length).toBe(2)
         expect(fullLayout.destinations.length).toBe(4)
@@ -464,7 +459,7 @@ describe("HbarTransferLayout.vue", () => {
         const d2 = fullLayout.destinations[2]
         expect(d2.transfer.account).toBe("0.0.5")
         expect(d2.transfer.amount).toBe(+3)
-        expect(d2.description).toBe("Hosted by Hedera | Central, USA")
+        expect(d2.description).toBe("Node fee (Hedera)")
         expect(d2.payload).toBe(false)
 
         const d3 = fullLayout.destinations[3]
@@ -478,10 +473,10 @@ describe("HbarTransferLayout.vue", () => {
         // COMPACT
         //
 
-        const compactLayout = new HbarTransferLayout(transaction as Transaction, false)
+        const compactLayout = new HbarTransferLayout(transaction, NETWORK_NODES, false)
 
         expect(compactLayout.transaction).toBe(transaction)
-        expect(compactLayout.netAmount).toBe(90)
+        expect(compactLayout.destinationAmount).toBe(90)
         expect(compactLayout.rowCount).toBe(2)
         expect(compactLayout.sources.length).toBe(2)
         expect(compactLayout.destinations.length).toBe(2)
@@ -524,16 +519,16 @@ describe("HbarTransferLayout.vue", () => {
                 { "account": "0.0.98",  "amount":  +7 },
                 { "account": "0.0.100", "amount": -10 }
             ],
-        }
+        } as Transaction
 
         //
         // FULL
         //
 
-        const fullLayout = new HbarTransferLayout(transaction as Transaction)
+        const fullLayout = new HbarTransferLayout(transaction, NETWORK_NODES)
 
         expect(fullLayout.transaction).toBe(transaction)
-        expect(fullLayout.netAmount).toBe(2)
+        expect(fullLayout.destinationAmount).toBe(10)
         expect(fullLayout.rowCount).toBe(3)
         expect(fullLayout.sources.length).toBe(1)
         expect(fullLayout.destinations.length).toBe(3)
@@ -553,7 +548,7 @@ describe("HbarTransferLayout.vue", () => {
         const d1 = fullLayout.destinations[1]
         expect(d1.transfer.account).toBe("0.0.5")
         expect(d1.transfer.amount).toBe(+1)
-        expect(d1.description).toBe("Hosted by Hedera | Central, USA")
+        expect(d1.description).toBe("Node fee (Hedera)")
         expect(d1.payload).toBe(false)
 
         const d2 = fullLayout.destinations[2]
@@ -566,10 +561,10 @@ describe("HbarTransferLayout.vue", () => {
         // COMPACT
         //
 
-        const compactLayout = new HbarTransferLayout(transaction as Transaction, false)
+        const compactLayout = new HbarTransferLayout(transaction, NETWORK_NODES, false)
 
         expect(compactLayout.transaction).toBe(transaction)
-        expect(compactLayout.netAmount).toBe(2)
+        expect(compactLayout.destinationAmount).toBe(2)
         expect(compactLayout.rowCount).toBe(1)
         expect(compactLayout.sources.length).toBe(1)
         expect(compactLayout.destinations.length).toBe(1)

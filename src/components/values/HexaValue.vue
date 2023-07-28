@@ -23,17 +23,14 @@
 <!-- --------------------------------------------------------------------------------------------------------------- -->
 
 <template>
-  <div v-if="normByteString" class="shy-scope" style="display: inline-block; position: relative">
-    <div class="is-family-monospace h-is-text-size-3 mt-1" :class="{'has-text-grey': lowContrast}">
-      {{ flow(isMediumScreen ? wordWrapMedium : wordWrapSmall) }}
-    </div>
-    <div v-if="isCopyEnabled" id="shyCopyButton" class="shy" style="position: absolute; left: 0; top: 0; width: 100%; height: 100%">
-      <div style="position: absolute; left: 0; top: 0; width: 100%; height: 100%; background: rgba(0, 0, 0, 0.50)"></div>
-      <div style="position: absolute; display: inline-block; left: 50%; top: 50%; transform: translate(-50%, -50%);">
-        <button class="button is-dark h-is-text-size-3" v-on:click="copyToClipboard">Copy to Clipboard</button>
+  <Copyable v-if="normByteString"
+            :content-to-copy="'0x' + normByteString" :enable-copy="isCopyEnabled">
+    <template v-slot:content>
+      <div class="is-family-monospace h-is-text-size-3 mt-1" :class="{'has-text-grey': lowContrast}">
+        {{ flow(isMediumScreen ? wordWrapMedium : wordWrapSmall) }}
       </div>
-    </div>
-  </div>
+    </template>
+  </Copyable>
   <div v-else-if="showNone && !initialLoading">
     <div class="has-text-grey">None</div>
     <div v-if="noneExtra" class="has-text-grey h-is-text-size-3">{{ noneExtra }}</div>
@@ -47,13 +44,18 @@
 
 <script lang="ts">
 
-import {computed, defineComponent, inject, ref} from "vue";
+import {computed, defineComponent, inject, PropType, ref} from "vue";
 import {initialLoadingKey} from "@/AppKeys";
+import Copyable from "@/components/Copyable.vue";
 
 export default defineComponent({
   name: "HexaValue",
+  components: {Copyable},
   props: {
-    byteString: String,
+    byteString: {
+      type: String as PropType<string|null>,
+      default: null
+    },
     showNone: {
       type: Boolean,
       default: false
@@ -80,7 +82,7 @@ export default defineComponent({
     // 0)
     const normByteString = computed((): string|undefined => {
       let result: string|undefined
-      if (props.byteString) {
+      if (props.byteString !== null) {
         result = props.byteString.startsWith("0x") ? props.byteString.slice(2) : props.byteString
       } else {
         result = undefined
@@ -88,19 +90,16 @@ export default defineComponent({
       return result
     })
 
-    // 1)
     const flow = (nbWords: number|null): string => {
       return normByteString.value ? makeByteLine(normByteString.value, nbWords) : ""
     }
 
-    // 2)
     const copyToClipboard = (): void => {
       if (props.byteString) {
         navigator.clipboard.writeText("0x" + normByteString.value)
       }
     }
 
-    // 3)
     const isCopyEnabled = computed(() => {
       return (normByteString.value?.length ?? 0) >= 1
     })
@@ -144,14 +143,4 @@ function makeByteLine(byteString: string, nbWords: number|null): string {
 <!--                                                      STYLE                                                      -->
 <!-- --------------------------------------------------------------------------------------------------------------- -->
 
-<style scoped>
-
-.shy {
-  display: none
-}
-
-.shy-scope:hover > .shy {
-  display: block;
-}
-
-</style>
+<style/>
