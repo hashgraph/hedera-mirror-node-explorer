@@ -24,6 +24,7 @@ import {
     AccountsResponse,
     Block,
     ContractResponse,
+    ContractResultDetails,
     TokenInfo,
     TopicMessage,
     TopicMessagesResponse,
@@ -285,8 +286,9 @@ export class SearchRequest {
                 const r = await axios.get<TransactionByIdResponse>("api/v1/transactions/" + byteToHex(transactionParam))
                 this.transactions = r.data.transactions ?? []
             } else if (transactionParam.length == 32) { // EVM hash
-                // TBI
-                this.transactions = []
+                const r1 = await axios.get<ContractResultDetails>("api/v1/contracts/results/" + byteToHex(transactionParam))
+                const r2 = await axios.get<TransactionResponse>("api/v1/transactions?timestamp=" + r1.data.timestamp)
+                this.transactions = r2.data.transactions ?? []
             }
 
         } catch(reason: unknown) {
