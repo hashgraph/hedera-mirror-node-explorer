@@ -27,7 +27,7 @@ import {
     SAMPLE_ACCOUNT,
     SAMPLE_ACCOUNTS,
     SAMPLE_BLOCKSRESPONSE,
-    SAMPLE_CONTRACT,
+    SAMPLE_CONTRACT, SAMPLE_CONTRACT_RESULT_DETAILS,
     SAMPLE_TOKEN,
     SAMPLE_TOPIC_MESSAGES,
     SAMPLE_TRANSACTION,
@@ -64,6 +64,13 @@ mock.onGet(matcher_transaction).reply(200, SAMPLE_TRANSACTIONS)
 const TRANSACTION_HASH = byteToHex(base64DecToArr(SAMPLE_TRANSACTION.transaction_hash))
 const matcher_transaction_with_hash = "/api/v1/transactions/" + TRANSACTION_HASH
 mock.onGet(matcher_transaction_with_hash).reply(200, SAMPLE_TRANSACTIONS)
+
+const EVM_HASH = SAMPLE_CONTRACT_RESULT_DETAILS.hash.slice(2) // To remove 0x
+const matcher_contract_result = "/api/v1/contracts/results/" + EVM_HASH
+mock.onGet(matcher_contract_result).reply(200, SAMPLE_CONTRACT_RESULT_DETAILS)
+
+const matcher_transaction_with_timestamp = "/api/v1/transactions?timestamp=" + SAMPLE_CONTRACT_RESULT_DETAILS.timestamp
+mock.onGet(matcher_transaction_with_timestamp).reply(200, SAMPLE_TRANSACTIONS)
 
 // Block
 
@@ -202,11 +209,27 @@ describe("SearchRequest.ts", () => {
 
     })
 
-    test("transaction (with hash)", async () => {
+    test("transaction (with hedera hash)", async () => {
         const r = new SearchRequest(TRANSACTION_HASH)
         await r.run()
 
         expect(r.searchedId).toBe(TRANSACTION_HASH)
+        expect(r.account).toBeNull()
+        expect(r.accountsWithKey).toStrictEqual([])
+        expect(r.transactions).toStrictEqual([SAMPLE_TRANSACTION])
+        expect(r.tokenInfo).toBeNull()
+        expect(r.topicMessages).toStrictEqual([])
+        expect(r.contract).toBeNull()
+        expect(r.block).toBeNull()
+        expect(r.getErrorCount()).toBe(0)
+
+    })
+
+    test("transaction (with evm hash)", async () => {
+        const r = new SearchRequest(SAMPLE_CONTRACT_RESULT_DETAILS.hash)
+        await r.run()
+
+        expect(r.searchedId).toBe(SAMPLE_CONTRACT_RESULT_DETAILS.hash)
         expect(r.account).toBeNull()
         expect(r.accountsWithKey).toStrictEqual([])
         expect(r.transactions).toStrictEqual([SAMPLE_TRANSACTION])

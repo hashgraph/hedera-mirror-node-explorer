@@ -113,6 +113,20 @@ describe('Search Bar', () => {
         )
     })
 
+    it('should find the transaction by evm hash', () => {
+        cy.visit('/mainnet/dashboard')
+        const searchEvmHash = "0x08e62c0531e603fa6d29930195682e937978d542bd404d490546717bb128da4e"
+        const timestamp = "1674821555.935799283"
+        const transactionId = "0.0.445590@1674821543.265349407"
+        testBody(
+            transactionId,
+            '/mainnet/transaction/' + timestamp,
+            'Transaction ',
+            false,
+            searchEvmHash
+        )
+    })
+
     it('should find the transaction by timestamp', () => {
         const searchTimestamp = "1674821555.935799283"
         const transactionId = "0.0.445590@1674821543.265349407"
