@@ -78,9 +78,11 @@ export class SearchRequest {
         shard.realm.num-seconds-nanoseconds  | Transaction ID   | api/v1/transactions/{searchId}
                                              | (normalized)     |
         -------------------------------------+------------------+------------------------------------------------------
-        hexadecimal 48 bytes                 | Transaction Hash | api/v1/transactions/{searchId}
+        hexadecimal 48 bytes                 | Hedera Hash      | api/v1/transactions/{searchId}
+                                             |                  | api/v1/blocks/{searchId}
         -------------------------------------+------------------+------------------------------------------------------
-        hexadecimal 32/48 bytes              | Block Hash       | api/v1/blocks/{searchId}
+        hexadecimal 32 bytes                 | EVM Hash         | api/v1/contracts/results/{searchId}
+                                             |                  |  + api/v1/transactions/{result.timestamp}
         -------------------------------------+------------------+------------------------------------------------------
         hexadecimal 20 bytes                 | Ethereum Address | api/v1/accounts/{searchId}
                                              |                  | api/v1/contracts/{searchId}
@@ -96,6 +98,8 @@ export class SearchRequest {
                                              | in hex form      |
         -------------------------------------+------------------+------------------------------------------------------
         base32                               | Account Alias    | api/v1/accounts/{searchId}
+        -------------------------------------+------------------+------------------------------------------------------
+        /\.[a-z|ℏ]+$/                        | Kabuto domain    | Kabuto API
         -------------------------------------+------------------+------------------------------------------------------
 
          */
@@ -208,6 +212,7 @@ export class SearchRequest {
                 // https://testnet.mirrornode.hedera.com/api/v1/docs/#/accounts/listAccounts
                 const publicKey = byteToHex(accountParam)
                 const r = await axios.get<AccountsResponse>("api/v1/accounts/?account.publickey=" + publicKey + "&limit=2")
+                // limit=2 because we want to know if there are more than 1 account with this public key
                 this.accountsWithKey = r.data.accounts ?? []
             } else {
                 let accountLoc: string
