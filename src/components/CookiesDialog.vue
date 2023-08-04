@@ -23,33 +23,24 @@
 <!-- --------------------------------------------------------------------------------------------------------------- -->
 
 <template>
-  <div class="modal has-text-white" v-bind:class="{'is-active': showDialog}">
-    <div class="modal-background"/>
-    <div class="modal-content" style="width: 768px; border-radius: 16px">
-      <div class="box">
-
-        <div class="is-flex is-justify-content-space-between is-align-items-baseline">
-          <div class="is-flex is-justify-content-start is-align-items-baseline">
-            <span v-if="iconClass" class="icon ml-2 mr-5"><i :class="iconClass"/></span>
-            <div class="block h-is-tertiary-text mt-2">
-              <slot name="dialogMessage"/>
-            </div>
-          </div>
-          <a v-if="showCloseIcon" @click="handleClose">
-            <img alt="Modal close icon" src="@/assets/close-icon.png" style="max-height: 20px;">
-          </a>
-
+  <ModalDialog :icon-class="iconClass" :show-dialog="showDialog" :show-close-icon="false">
+    <template v-slot:dialogMessage>
+      <span>Accept Cookies</span>
+    </template>
+    <template v-slot:dialogDetails>
+      <span class="mr-1">We use cookies to deliver the best experience on our website and to analyze traffic.
+        By continuing to use this site, you consent to our cookie policy.
+        Review our</span>
+      <a class="mr-1" href="https://swirldslabs.com/privacy-policy/">Privacy Policy</a>
+      <span>to understand how Swirlds Labs collects and uses information.</span>
+      <div class="is-flex is-justify-content-space-between is-align-items-baseline mt-4">
+        <div class="is-flex is-justify-content-flex-end">
+          <button class="button is-white is-small" @click="handleChooseReject">REJECT</button>
+          <button class="button is-info is-small ml-4" @click="handleChooseAccept">ACCEPT</button>
         </div>
-
-        <hr class="h-card-separator"/>
-
-        <div class="block h-is-property-text has-text-grey mb-2" style="line-height: 1.5">
-          <slot name="dialogDetails"/>
-        </div>
-
       </div>
-    </div>
-  </div>
+    </template>
+  </ModalDialog>
 </template>
 
 <!-- --------------------------------------------------------------------------------------------------------------- -->
@@ -59,28 +50,31 @@
 <script lang="ts">
 
 import {defineComponent} from "vue";
+import ModalDialog from "@/components/ModalDialog.vue";
 
 export default defineComponent({
-  name: "ModalDialog",
-  components: {},
+  name: "CookiesDialog",
+  components: {ModalDialog},
   props: {
     showDialog: {
       type: Boolean,
       default: false
     },
-    iconClass: String,
-    showCloseIcon: {
-      type: Boolean,
-      default: true
-    },
+    iconClass: String
   },
-
   setup(props, context) {
-    const handleClose = () => {
+    const handleChooseAccept = () => {
       context.emit('update:showDialog', false)
-      context.emit('onClose')
+      context.emit('onChooseAccept')
     }
-    return { handleClose }
+    const handleChooseReject = () => {
+      context.emit('update:showDialog', false)
+      context.emit('onChooseReject')
+    }
+    return {
+      handleChooseAccept,
+      handleChooseReject,
+    }
   }
 });
 
@@ -91,8 +85,5 @@ export default defineComponent({
 <!-- --------------------------------------------------------------------------------------------------------------- -->
 
 <style scoped>
-span.icon {
-  align-items: flex-start;
-}
 </style>
 
