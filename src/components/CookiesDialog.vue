@@ -35,8 +35,8 @@
       <span>to understand how Swirlds Labs collects and uses information.</span>
       <div class="is-flex is-justify-content-space-between is-align-items-baseline mt-4">
         <div class="is-flex is-justify-content-flex-end">
-          <button class="button is-white is-small" @click="handleChooseNecessary">NECESSARY COOKIES</button>
-          <button class="button is-info is-small ml-4" @click="handleChooseAll">ALL COOKIES</button>
+          <button class="button is-white is-small" @click="handleChooseReject">REJECT</button>
+          <button class="button is-info is-small ml-4" @click="handleChooseAccept">ACCEPT</button>
         </div>
       </div>
     </template>
@@ -63,17 +63,17 @@ export default defineComponent({
     iconClass: String
   },
   setup(props, context) {
-    const handleChooseAll = () => {
+    const handleChooseAccept = () => {
       context.emit('update:showDialog', false)
-      context.emit('onChooseAll')
+      context.emit('onChooseAccept')
     }
-    const handleChooseNecessary = () => {
+    const handleChooseReject = () => {
       context.emit('update:showDialog', false)
-      context.emit('onChooseNecessary')
+      context.emit('onChooseReject')
     }
     return {
-      handleChooseAll,
-      handleChooseNecessary
+      handleChooseAccept,
+      handleChooseReject,
     }
   }
 });

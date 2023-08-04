@@ -89,18 +89,19 @@ export class AppStorage {
     // cookiePolicy
     //
 
-    private static readonly COOKIE_POLICY_NAME = 'cookiePolicy'
-    private static readonly COOKIE_POLICY_ACCEPT_ALL = 'acceptAll'
-    private static readonly COOKIE_POLICY_ACCEPT_NECESSARY = 'acceptNecessary'
+    private static readonly COOKIE_POLICY_NAME = 'cookie_policy'
+    private static readonly COOKIE_POLICY_ACCEPT = 'accept'
+    private static readonly COOKIE_POLICY_REJECT = 'reject'
+    private static readonly COOKIE_POLICY_VALIDITY = 365 // days
 
-    public static getCookiePolicyAcceptAll(): boolean|null {
+    public static getAcceptCookiePolicy(): boolean|null {
         const policy = AppStorage.readCookie(AppStorage.COOKIE_POLICY_NAME)
-        return policy != null ? policy === AppStorage.COOKIE_POLICY_ACCEPT_ALL : null
+        return policy != null ? policy === AppStorage.COOKIE_POLICY_ACCEPT : null
     }
 
-    public static setCookiePolicyAcceptAll(choice: boolean): void {
-        const policy = choice ? AppStorage.COOKIE_POLICY_ACCEPT_ALL : AppStorage.COOKIE_POLICY_ACCEPT_NECESSARY
-        AppStorage.createCookie(AppStorage.COOKIE_POLICY_NAME, policy, 1)
+    public static setAcceptCookiePolicy(accept: boolean): void {
+        const policy = accept ? AppStorage.COOKIE_POLICY_ACCEPT : AppStorage.COOKIE_POLICY_REJECT
+        AppStorage.createCookie(AppStorage.COOKIE_POLICY_NAME, policy, AppStorage.COOKIE_POLICY_VALIDITY)
     }
 
     //

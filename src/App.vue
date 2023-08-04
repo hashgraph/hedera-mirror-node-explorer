@@ -29,8 +29,8 @@
   <router-view/>
 
   <CookiesDialog v-model:show-dialog="showCookiesDialog"
-                 @onChooseNecessary="handleChooseNecessaryCookies"
-                 @onChooseAll="handleChooseAllCookies">
+                 @onChooseReject="handleChooseRejectCookies"
+                 @onChooseAccept="handleChooseAcceptCookies">
   </CookiesDialog>
 
 </template>
@@ -98,8 +98,8 @@ export default defineComponent({
 
     const showCookiesDialog = ref(false)
 
-    const acceptAllCookies = ref<boolean|null>(null)
-    watch(acceptAllCookies, (value) => {
+    const acceptCookies = ref<boolean|null>(null)
+    watch(acceptCookies, (value) => {
       if (value != null && value) {
         insertGoogleTag(import.meta.env.VITE_APP_GOOGLE_TAG_ID)
       }
@@ -114,10 +114,10 @@ export default defineComponent({
     onBeforeMount(() => {
       const tagId = import.meta.env.VITE_APP_GOOGLE_TAG_ID
       if (tagId != undefined && tagId.length > 0) {
-        acceptAllCookies.value = AppStorage.getCookiePolicyAcceptAll()
-        showCookiesDialog.value = (acceptAllCookies.value == null)
+        acceptCookies.value = AppStorage.getAcceptCookiePolicy()
+        showCookiesDialog.value = (acceptCookies.value == null)
       } else {
-        acceptAllCookies.value = null
+        acceptCookies.value = null
         showCookiesDialog.value = false
       }
     })
@@ -132,22 +132,22 @@ export default defineComponent({
       window.removeEventListener('resize', onResizeHandler);
     })
 
-    const handleChooseNecessaryCookies = () => {
-      acceptAllCookies.value = false
-      AppStorage.setCookiePolicyAcceptAll(false)
+    const handleChooseRejectCookies = () => {
+      acceptCookies.value = false
+      AppStorage.setAcceptCookiePolicy(false)
     }
 
-    const handleChooseAllCookies = () => {
-      acceptAllCookies.value = true
-      AppStorage.setCookiePolicyAcceptAll(true)
+    const handleChooseAcceptCookies = () => {
+      acceptCookies.value = true
+      AppStorage.setAcceptCookiePolicy(true)
     }
 
     return {
       isMediumScreen,
       onMainDashboardPage,
       showCookiesDialog,
-      handleChooseNecessaryCookies,
-      handleChooseAllCookies,
+      handleChooseRejectCookies,
+      handleChooseAcceptCookies,
     }
   },
 });
