@@ -25,7 +25,7 @@
 <template>
   <div class="modal has-text-white" v-bind:class="{'is-active': showDialog}">
     <div class="modal-background"/>
-    <div class="modal-content" style="width: 768px; border-radius: 16px">
+    <div class="modal-content h-modal-content" style="border-radius: 16px">
       <div class="box">
 
         <div class="is-flex is-justify-content-space-between is-align-items-baseline">

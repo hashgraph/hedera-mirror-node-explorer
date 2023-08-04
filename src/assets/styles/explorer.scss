@@ -393,6 +393,26 @@ hr.dotted {
 }
 
 //
+// MODALS
+//
+
+.h-modal-content {
+    width: 768px
+}
+
+@media (max-width: 1079px) {
+    .h-modal-content {
+        width: 640px
+    }
+}
+
+@media (max-width: 767px) {
+    .h-modal-content {
+        width: 280px
+    }
+}
+
+//
 // TOOLTIPS
 //
 
