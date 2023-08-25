@@ -44,7 +44,7 @@
         </span>
         <a data-cy="termsOfUse" v-if="termsOfUseURL" :href="termsOfUseURL" style="line-height: 1rem">
           <span class="h-is-text-size-3" style="font-weight:300">
-           See Terms of Use
+           See Terms of Service
           </span>
         </a>
       </div>
