@@ -147,7 +147,7 @@ volumes:
     emptyDir: {}
 
 # Enable this to use a custom network-config.json
-# customNetworkConfig: |
+#customNetworkConfig: |
 #      [
 #       {
 #         "name": "mainnet",
