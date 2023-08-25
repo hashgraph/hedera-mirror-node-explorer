@@ -69,6 +69,41 @@ can be used for a local Kubernetes cluster.
 ```shell
 helm upgrade --install hedera-explorer chart/
 ```
+#### Specify custom network (can also be used for development)
+
+By default the hedera explorer has support for MAINNET, PREVIEWNET and TESTNET. If you want to add or remove more networks
+you can specify it using the `customNetworkConfig` in the `values.yaml` file
+
+An example:
+```
+ customNetworkConfig: |
+      [
+       {
+         "name": "mainnet",
+         "displayName": "MAINNET",
+         "url": "https://mainnet-public.mirrornode.hedera.com/",
+         "ledgerID": "00"
+       },
+       {
+         "name": "testnet",
+         "displayName": "TESTNET",
+         "url": "https://testnet.mirrornode.hedera.com/",
+         "ledgerID": "01"
+       },
+       {
+         "name": "previewnet",
+         "displayName": "PREVIEWNET",
+         "url": "https://previewnet.mirrornode.hedera.com/",
+         "ledgerID": "02"
+       },
+       {
+         "name": "local",
+         "displayName": "LOCALNET",
+         "url": "/",
+         "ledgerID": "03"
+       }
+      ]
+```
 
 ### Configure the Explorer
 
