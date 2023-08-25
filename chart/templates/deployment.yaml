@@ -47,6 +47,9 @@ spec:
             - name: {{ $name }}
             {{- toYaml $config | nindent 14 }}
             {{- end }}
+            - name: custom-network-config-volume
+              mountPath: /app/networks-config.json
+              subPath: networks-config.json
           {{- end }}
       imagePullSecrets: {{ toYaml .Values.image.pullSecrets | nindent 8 }}
       nodeSelector: {{ toYaml .Values.nodeSelector | nindent 8 }}
@@ -61,4 +64,10 @@ spec:
         - name: {{ $name }}
         {{- tpl (toYaml $config) $ | nindent 10 }}
         {{- end }}
+        - name: custom-network-config-volume
+          configMap:
+            name: custom-networks-config
+            items:
+              - key: networks-config.json
+                path: networks-config.json
       {{- end }}

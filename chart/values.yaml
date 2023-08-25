@@ -24,8 +24,8 @@ autoscaling:
   minReplicas: 1
 
 # Environment variables to add to the container. The value can either be a string or an EnvVarSource. Evaluated as a template.
-env:
-  DOCKER_LOCAL_MIRROR_NODE_URL: "http://localhost:5551"
+#env:
+  # DOCKER_LOCAL_MIRROR_NODE_URL: "http://localhost:5551"
   # BAR:
   #   valueFrom:
   #     secretKeyRef:
@@ -145,4 +145,32 @@ volumeMounts:
 volumes:
   cache:
     emptyDir: {}
+
+customNetworkConfig: |
+     [
+      {
+        "name": "mainnet",
+        "displayName": "MAINNET",
+        "url": "https://mainnet-public.mirrornode.hedera.com/",
+        "ledgerID": "00"
+      },
+      {
+        "name": "testnet",
+        "displayName": "TESTNET",
+        "url": "https://testnet.mirrornode.hedera.com/",
+        "ledgerID": "01"
+      },
+      {
+        "name": "previewnet",
+        "displayName": "PREVIEWNET",
+        "url": "https://previewnet.mirrornode.hedera.com/",
+        "ledgerID": "02"
+      },
+      {
+        "name": "local",
+        "displayName": "LOCALNET",
+        "url": "/",
+        "ledgerID": "03"
+      }
+      ]
 

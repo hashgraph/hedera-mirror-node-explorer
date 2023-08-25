@@ -1,0 +1,8 @@
+{{- if .Values.customNetworkConfig }}
+apiVersion: v1
+kind: ConfigMap
+metadata:
+  name: custom-networks-config
+data:
+  networks-config.json: {{ .Values.customNetworkConfig | toJson }}
+{{- end }}
