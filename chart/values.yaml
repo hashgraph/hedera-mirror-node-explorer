@@ -140,9 +140,17 @@ updateStrategy:
 volumeMounts:
   cache:
     mountPath: /var/cache/nginx
+  nginx-config:
+    mountPath: /etc/nginx/nginx.conf
+    subPath: nginx.conf
 
 # Volume mounts to add to the container. The key is the volume name and the value is the volume definition. Evaluated as a template.
 volumes:
   cache:
     emptyDir: {}
+  nginx-config:
+    configMap:
+       name: mirrror-node-proxy
 
+nginxProxy:
+  mirrorNodeURL: http://fst-rest
