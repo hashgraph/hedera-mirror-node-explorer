@@ -177,7 +177,7 @@ config: |
         "ledgerID": "01"
       },
       {
-        "name": "previewnetzzzzz",
+        "name": "previewnet",
         "displayName": "PREVIEWNET",
         "url": "https://previewnet.mirrornode.hedera.com/",
         "ledgerID": "02"
