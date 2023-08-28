@@ -61,10 +61,4 @@ spec:
         - name: {{ $name }}
         {{- tpl (toYaml $config) $ | nindent 10 }}
         {{- end }}
-        - name: custom-network-config-volume
-          configMap:
-            name: custom-networks-config
-            items:
-              - key: networks-config.json
-                path: networks-config.json
       {{- end }}
