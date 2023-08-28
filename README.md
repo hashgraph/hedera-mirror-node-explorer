@@ -76,7 +76,7 @@ you can specify it using the `customNetworkConfig` in the `values.yaml` file
 
 An example:
 ```
- customNetworkConfig: |
+ config: |
       [
        {
          "name": "mainnet",

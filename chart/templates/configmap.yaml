@@ -1,8 +1,9 @@
-{{- if .Values.customNetworkConfig }}
 apiVersion: v1
 kind: ConfigMap
 metadata:
-  name: custom-networks-config
+  name: hedera-explorer-config
+  annotations: {{ toYaml .Values.annotations | nindent 4 }}
+  labels: {{ include "hedera-explorer.labels" . | nindent 4 }}
+  namespace: {{ include "hedera-explorer.namespace" . }}
 data:
-  networks-config.json: {{ .Values.customNetworkConfig | toJson }}
-{{- end }}
+  networks-config.json: {{ .Values.config | toJson }}
