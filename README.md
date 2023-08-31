@@ -77,32 +77,32 @@ you can specify it using the `customNetworkConfig` in the `values.yaml` file
 An example:
 ```
  config: |
-      [
-       {
-         "name": "mainnet",
-         "displayName": "MAINNET",
-         "url": "https://mainnet-public.mirrornode.hedera.com/",
-         "ledgerID": "00"
-       },
-       {
-         "name": "testnet",
-         "displayName": "TESTNET",
-         "url": "https://testnet.mirrornode.hedera.com/",
-         "ledgerID": "01"
-       },
-       {
-         "name": "previewnet",
-         "displayName": "PREVIEWNET",
-         "url": "https://previewnet.mirrornode.hedera.com/",
-         "ledgerID": "02"
-       },
-       {
-         "name": "local",
-         "displayName": "LOCALNET",
-         "url": "/",
-         "ledgerID": "03"
-       }
-      ]
+  [
+    {
+      "name": "mainnet",
+      "displayName": "MAINNET",
+      "url": "https://mainnet-public.mirrornode.hedera.com/",
+      "ledgerID": "00"
+    },
+    {
+      "name": "testnet",
+      "displayName": "TESTNET",
+      "url": "https://testnet.mirrornode.hedera.com/",
+      "ledgerID": "01"
+    },
+    {
+      "name": "previewnet",
+      "displayName": "PREVIEWNET",
+      "url": "https://previewnet.mirrornode.hedera.com/",
+      "ledgerID": "02"
+    },
+    {
+      "name": "local",
+      "displayName": "LOCALNET",
+      "url": "/",
+      "ledgerID": "03"
+    }
+  ]
 ```
 
 ### Configure the Explorer
