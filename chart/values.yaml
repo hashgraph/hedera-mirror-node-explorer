@@ -107,7 +107,7 @@ resources:
   requests:
     cpu: 200m
     memory: 100Mi
-    
+
 revisionHistoryLimit: 3
 
 securityContext:
