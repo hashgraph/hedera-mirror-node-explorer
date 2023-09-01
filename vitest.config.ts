@@ -10,15 +10,7 @@ export default mergeConfig(
       environment: 'jsdom',
       exclude: [...configDefaults.exclude, 'e2e/*'],
       root: fileURLToPath(new URL('./', import.meta.url)),
-      transformMode: {
-        web: [/\.[jt]sx$/]
-      },
       setupFiles: ['./tests/unit/globalSetup.js'],
-      deps: {
-          inline: [
-              "hashconnect"
-          ]
-      },
       coverage: {
         reporter: ['text', 'json-summary', 'json'],
       }
