@@ -42,10 +42,15 @@ data:
           expires 30s;
         }
 
-        {{- if .Values.mirrorNodeReverseProxy }}
-        location /api {
-            proxy_pass {{ .Values.mirrorNodeReverseProxy.mirrorNodeURL }};
-        }
+        {{- if .Values.proxyPass }}
+          
+          {{- range $path, $backend := .Values.proxyPass }}
+          location {{ $path }} {
+            proxy_pass {{ $backend }};
+          }
+          {{- end }}
+
+     
         {{- end }}
 
         error_page   500 502 503 504  /50x.html;
