@@ -24,8 +24,8 @@ autoscaling:
   minReplicas: 1
 
 # Environment variables to add to the container. The value can either be a string or an EnvVarSource. Evaluated as a template.
-env:
-  DOCKER_LOCAL_MIRROR_NODE_URL: "http://localhost:5551"
+env: {}
+  # DOCKER_LOCAL_MIRROR_NODE_URL: "http://localhost:5551"
   # BAR:
   #   valueFrom:
   #     secretKeyRef:
@@ -140,9 +140,36 @@ updateStrategy:
 volumeMounts:
   cache:
     mountPath: /var/cache/nginx
+  custom-networks-config:
+    mountPath: /app/networks-config.json
+    subPath: networks-config.json
 
 # Volume mounts to add to the container. The key is the volume name and the value is the volume definition. Evaluated as a template.
 volumes:
   cache:
     emptyDir: {}
+  custom-networks-config:
+    configMap: 
+      name: '{{ include "hedera-explorer.fullname" . }}-config'
 
+config: |
+  [
+    {
+      "name": "mainnet",
+      "displayName": "MAINNET",
+      "url": "https://mainnet-public.mirrornode.hedera.com/",
+      "ledgerID": "00"
+    },
+    {
+      "name": "testnet",
+      "displayName": "TESTNET",
+      "url": "https://testnet.mirrornode.hedera.com/",
+      "ledgerID": "01"
+    },
+    {
+      "name": "previewnet",
+      "displayName": "PREVIEWNET",
+      "url": "https://previewnet.mirrornode.hedera.com/",
+      "ledgerID": "02"
+    }
+  ]

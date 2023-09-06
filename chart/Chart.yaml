@@ -1,5 +1,5 @@
 apiVersion: v2
-appVersion: 0.2.0
+appVersion: 23.8.0
 description: Hedera Mirror Node Explorer for the Hedera Hashgraph DLT
 home: https://github.com/hashgraph/hedera-mirror-node-explorer
 name: hedera-explorer

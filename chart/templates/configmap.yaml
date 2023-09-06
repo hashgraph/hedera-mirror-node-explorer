@@ -1,0 +1,9 @@
+apiVersion: v1
+kind: ConfigMap
+metadata:
+  name: {{ include "hedera-explorer.fullname" . }}-config
+  annotations: {{ toYaml .Values.annotations | nindent 4 }}
+  labels: {{ include "hedera-explorer.labels" . | nindent 4 }}
+  namespace: {{ include "hedera-explorer.namespace" . }}
+data:
+  networks-config.json: {{ .Values.config | toJson }}
