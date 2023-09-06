@@ -140,7 +140,10 @@ updateStrategy:
 volumeMounts:
   cache:
     mountPath: /var/cache/nginx
-  custom-networks-config:
+  nginx-config:
+    mountPath: /etc/nginx/nginx.conf
+    subPath: nginx.conf
+  hedera-explorer-config:
     mountPath: /app/networks-config.json
     subPath: networks-config.json
 
@@ -148,9 +151,17 @@ volumeMounts:
 volumes:
   cache:
     emptyDir: {}
-  custom-networks-config:
-    configMap: 
+  nginx-config:
+    configMap:
       name: '{{ include "hedera-explorer.fullname" . }}-config'
+  hedera-explorer-config:
+    configMap:
+      name: '{{ include "hedera-explorer.fullname" . }}-config'
+
+# Add custom reverse proxy configuration
+# Primary use case is to allow access to mirror node api via hedera explorer url
+proxyPass: {}
+  # /api: http://fst-rest
 
 config: |
   [

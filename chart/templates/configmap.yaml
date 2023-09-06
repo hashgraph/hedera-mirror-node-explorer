@@ -6,4 +6,57 @@ metadata:
   labels: {{ include "hedera-explorer.labels" . | nindent 4 }}
   namespace: {{ include "hedera-explorer.namespace" . }}
 data:
+  nginx.conf: |
+    worker_processes  1;
+    error_log         stderr  warn;
+    pid               /var/cache/nginx/nginx.pid;
+
+    events {
+      worker_connections  1024;
+    }
+
+    http {
+      include           /etc/nginx/mime.types;
+      default_type      application/octet-stream;
+
+      log_format  main  '$remote_addr - $remote_user [$time_local] "$request" '
+                        '$status $body_bytes_sent "$http_referer" '
+                        '"$http_user_agent" "$http_x_forwarded_for"';
+
+      access_log        /dev/stdout   main;
+      sendfile          on;
+      keepalive_timeout 65;
+
+      server {
+        listen       8080;
+        server_name  localhost;
+
+        location / {
+          root   /app;
+          index  index.html;
+          try_files $uri $uri/ /index.html;
+        }
+
+        location = /index.html {
+          root    /app;
+          expires 30s;
+        }
+
+        {{- if .Values.proxyPass }}
+          
+          {{- range $path, $backend := .Values.proxyPass }}
+          location {{ $path }} {
+            proxy_pass {{ $backend }};
+          }
+          {{- end }}
+
+     
+        {{- end }}
+
+        error_page   500 502 503 504  /50x.html;
+        location = /50x.html {
+          root   /usr/share/nginx/html;
+        }
+      }
+    }
   networks-config.json: {{ .Values.config | toJson }}
