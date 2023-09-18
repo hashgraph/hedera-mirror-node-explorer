@@ -23,13 +23,14 @@
 <!-- --------------------------------------------------------------------------------------------------------------- -->
 
 <template>
-    <o-field>
-        <o-select v-model="selectedFilter" class="ml-2 h-is-text-size-1">
-            <option v-for="f in filterValues" v-bind:key="f" v-bind:value="f">
-                {{ makeFilterLabel(f) }}
-            </option>
-        </o-select>
-    </o-field>
+    <NftDetailsTransferGraph
+        data-cy="nftTransfers"
+        v-bind:class="{
+            'mb-4': !compact,
+        }"
+        v-bind:transaction="transaction"
+        v-bind:compact="compact"
+    />
 </template>
 
 <!-- --------------------------------------------------------------------------------------------------------------- -->
@@ -37,53 +38,38 @@
 <!-- --------------------------------------------------------------------------------------------------------------- -->
 
 <script lang="ts">
-import { defineComponent, PropType } from "vue";
-import { TransactionType } from "@/schemas/HederaSchemas";
-import { makeTypeLabel } from "@/utils/TransactionTools";
-import { TransactionTableControllerXL } from "@/components/transaction/TransactionTableControllerXL";
-import { NftTransactionTableController } from "./NftTransactionTableController";
+import { computed, defineComponent, PropType } from "vue";
+import { NftTransactionTransfer } from "@/schemas/HederaSchemas";
+import NftDetailsTransferGraph from "@/components/transfer_graphs/NftDetailsTransferGraph.vue";
 
 export default defineComponent({
-    name: "TransactionFilterSelect",
-
+    name: "NftTransferGraphSection",
+    components: {
+        NftDetailsTransferGraph,
+    },
     props: {
-        controller: {
-            type: Object as PropType<
-                TransactionTableControllerXL | NftTransactionTableController
-            >,
-            required: true,
+        transaction: Object as PropType<NftTransactionTransfer>,
+        compact: {
+            type: Boolean,
+            default: false,
         },
     },
-
     setup(props) {
-        const makeFilterLabel = (filterValue: string): string => {
-            return filterValue == ""
-                ? "TYPES: ALL"
-                : makeTypeLabel(filterValue as TransactionType);
-        };
+        const displayNftTransfers = computed(
+            () =>
+                props.transaction?.sender_account_id &&
+                props.transaction?.receiver_account_id,
+        );
 
         return {
-            filterValues: makeFilterValues(),
-            selectedFilter: props.controller.transactionType,
-            makeFilterLabel,
+            displayNftTransfers,
         };
     },
 });
-
-export function makeFilterValues(): string[] {
-    const result = Object.keys(TransactionType).sort((a, b) => {
-        return makeTypeLabel(a as TransactionType) <
-            makeTypeLabel(b as TransactionType)
-            ? -1
-            : 1;
-    });
-    result.splice(0, 0, "");
-    return result;
-}
 </script>
 
 <!-- --------------------------------------------------------------------------------------------------------------- -->
-<!--                                                       STYLE                                                     -->
+<!--                                                      STYLE                                                      -->
 <!-- --------------------------------------------------------------------------------------------------------------- -->
 
 <style />

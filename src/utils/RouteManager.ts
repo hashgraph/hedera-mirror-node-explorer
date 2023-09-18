@@ -267,6 +267,22 @@ export class RouteManager {
         return result
     }
 
+    public makeRouteToSerial(tokenId: string, serialNumber: number): RouteLocationRaw {
+        return { name: 'NftDetails', params: { tokenId: tokenId, serialNumber: serialNumber, network: this.currentNetwork.value }}
+    }
+
+    public routeToSerial(tokenId: string, serialNumber: number, newTab = false): Promise<NavigationFailure | void | undefined> {
+        let result: Promise<NavigationFailure | void | undefined>
+        if (newTab) {
+            const routeData = this.router.resolve(this.makeRouteToSerial(tokenId, serialNumber));
+            window.open(routeData.href, '_blank');
+            result = Promise.resolve()
+        } else {
+            result = this.router.push(this.makeRouteToSerial(tokenId, serialNumber))
+        }
+        return result
+    }
+
     //
     // Contract
     //

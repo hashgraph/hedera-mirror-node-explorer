@@ -23,18 +23,21 @@ import {
     SortOrder,
     TableController,
 } from "@/utils/table/TableController";
-import { Transaction, TransactionResponse } from "@/schemas/HederaSchemas";
+import {
+    NftTransactionTransfer,
+    NftTransactionHistory,
+} from "@/schemas/HederaSchemas";
 import { ComputedRef, ref, Ref, watch, WatchStopHandle } from "vue";
-import axios, { AxiosResponse } from "axios";
+import axios from "axios";
 import { LocationQuery, Router } from "vue-router";
 import { fetchStringQueryParam } from "@/utils/RouteManager";
 
-export class TransactionTableControllerXL extends TableController<
-    Transaction,
+export class NftTransactionTableController extends TableController<
+    NftTransactionTransfer,
     string
 > {
-    private readonly entityId: Ref<string | null>;
-    private readonly accountIdMandatory: boolean;
+    private readonly tokenId: Ref<string | null>;
+    private readonly serialNumber: Ref<string | null>;
 
     //
     // Public
@@ -42,9 +45,9 @@ export class TransactionTableControllerXL extends TableController<
 
     public constructor(
         router: Router,
-        entityId: Ref<string | null>,
+        tokenId: Ref<string | null>,
+        serialNumber: Ref<string | null>,
         pageSize: ComputedRef<number>,
-        accountIdMandatory: boolean,
         pageParamName = "p",
         keyParamName = "k",
     ) {
@@ -58,9 +61,13 @@ export class TransactionTableControllerXL extends TableController<
             pageParamName,
             keyParamName,
         );
-        this.entityId = entityId;
-        this.accountIdMandatory = accountIdMandatory;
-        this.watchAndReload([this.transactionType, this.entityId]);
+        this.tokenId = tokenId;
+        this.serialNumber = serialNumber;
+        this.watchAndReload([
+            this.transactionType,
+            this.tokenId,
+            this.serialNumber,
+        ]);
     }
 
     public readonly transactionType: Ref<string> = ref("");
@@ -74,46 +81,35 @@ export class TransactionTableControllerXL extends TableController<
         operator: KeyOperator,
         order: SortOrder,
         limit: number,
-    ): Promise<Transaction[] | null> {
-        let result: Promise<Transaction[] | null>;
-
-        if (this.accountIdMandatory && this.entityId.value === null) {
-            result = Promise.resolve(null);
-        } else {
-            const params = {} as {
-                limit: number;
-                order: string;
-                "account.id": string | undefined;
-                transactiontype: string | undefined;
-                timestamp: string | undefined;
-            };
-            params.limit = limit;
-            params.order = order;
-            if (this.entityId.value !== null) {
-                params["account.id"] = this.entityId.value;
-            }
-            if (this.transactionType.value != "") {
-                params.transactiontype = this.transactionType.value;
-            }
-            if (consensusTimestamp !== null) {
-                params.timestamp = operator + ":" + consensusTimestamp;
-            }
-            const cb = (
-                r: AxiosResponse<TransactionResponse>,
-            ): Promise<Transaction[] | null> => {
-                return Promise.resolve(r.data.transactions ?? []);
-            };
-            result = axios
-                .get<TransactionResponse>("api/v1/transactions", {
-                    params: params,
-                })
-                .then(cb);
+    ): Promise<NftTransactionTransfer[] | null> {
+        if (this.tokenId.value === null || this.serialNumber.value === null) {
+            return Promise.resolve(null);
         }
 
-        return result;
+        const params = {} as {
+            limit: number;
+            order: string;
+            transactiontype: string | undefined;
+            timestamp: string | undefined;
+        };
+        params.limit = limit;
+        params.order = order;
+
+        if (this.transactionType.value != "") {
+            params.transactiontype = this.transactionType.value;
+        }
+        if (consensusTimestamp !== null) {
+            params.timestamp = operator + ":" + consensusTimestamp;
+        }
+
+        const r = await axios.get<NftTransactionHistory>(
+            `api/v1/tokens/${this.tokenId.value}/nfts/${this.serialNumber.value}/transactions`,
+            { params: params },
+        );
+        return r.data.transactions ?? [];
     }
 
-    public keyFor(row: Transaction): string {
+    public keyFor(row: NftTransactionTransfer): string {
         return row.consensus_timestamp ?? "";
     }
 
@@ -126,7 +122,8 @@ export class TransactionTableControllerXL extends TableController<
     }
 
     public mount(): void {
-        this.transactionType.value = this.fetchTransactionTypeParam(); // Must be done before calling mount()
+        // Must be done before calling mount()
+        this.transactionType.value = this.fetchTransactionTypeParam();
         super.mount();
         this.watchTransactionTypeHandle = watch(this.transactionType, () =>
             this.updateRouteQuery(),
