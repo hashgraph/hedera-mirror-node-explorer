@@ -161,10 +161,11 @@
             <StringValue :string-value="account?.decline_reward ? 'Declined' : 'Accepted'"/>
           </template>
         </Property>
+        
         <Property id="memo">
           <template v-slot:name>Memo</template>
           <template v-slot:value>
-            <BlobValue v-bind:base64="true" v-bind:blob-value="account?.memo" v-bind:show-none="true"/>
+            <BlobValue v-bind:showEncodeButton="true" v-bind:base64="base64Option" v-bind:base64Toggler="base64Toggler" v-bind:blob-value="account?.memo" v-bind:show-none="true"/>
           </template>
         </Property>
 
@@ -278,7 +279,7 @@
 
 <script lang="ts">
 
-import {computed, defineComponent, inject, onBeforeUnmount, onMounted, watch} from 'vue';
+import {computed, defineComponent, inject, onBeforeUnmount, onMounted, ref, watch} from 'vue';
 import KeyValue from "@/components/values/KeyValue.vue";
 import PlayPauseButton from "@/components/PlayPauseButton.vue";
 import TransactionTable from "@/components/transaction/TransactionTable.vue";
@@ -480,6 +481,14 @@ export default defineComponent({
       return operatorNodeId != null ? routeManager.makeRouteToNode(operatorNodeId) : null
     })
 
+    //
+    // base64 decoding controler
+    //
+    const base64Option = ref(false)
+    const base64Toggler = () => {
+      base64Option.value = !base64Option.value
+    }
+
     return {
       isSmallScreen,
       isMediumScreen,
@@ -509,7 +518,9 @@ export default defineComponent({
       contractRoute,
       stakedNodeRoute,
       operatorNodeRoute,
-      availableAPI: rewardsTableController.availableAPI
+      availableAPI: rewardsTableController.availableAPI,
+      base64Option,
+      base64Toggler
     }
   }
 });
