@@ -6,7 +6,8 @@ on:
       - opened
       - reopened
       - synchronize
-
+  push: 
+    branches: ['test-ci']
 
 defaults:
   run:
