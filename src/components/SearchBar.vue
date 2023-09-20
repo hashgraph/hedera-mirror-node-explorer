@@ -38,17 +38,17 @@
   </div>
 
   <div v-else>
-    <form data-cy="searchBar" class="control is-flex" action="" v-on:submit.prevent="performSearch">
+    <form data-cy="searchBar" id="searchBar" class="control is-flex" action="" v-on:submit.prevent="performSearch">
       <input
-             class="input has-text-white h-is-navbar-item"
-             style="z-index: 1;"
-             type="text"
-             placeholder="Search accounts, transactions, tokens, contracts and topics"
-             v-model="searchedId"
-             v-bind:disabled="searchInputDisabled"
-             ref="search-input"
+          class="input has-text-white h-is-navbar-item"
+          style="z-index: 1;"
+          type="text"
+          placeholder="Search accounts, transactions, tokens, contracts and topics"
+          v-model="searchedId"
+          v-bind:disabled="searchInputDisabled"
+          ref="search-input"
       />
-      <button class="button is-dark" type="button" @click="performSearch" style="border-color: white; border-left: none; height: 35px; z-index: 0; outline: none">
+      <button class="button is-dark" type="submit" value="searchBar" style="border-color: white; border-left: none; height: 35px; z-index: 0; outline: none">
           <i v-bind:class="searchButtonIconStyle"/>
       </button>
     </form>
