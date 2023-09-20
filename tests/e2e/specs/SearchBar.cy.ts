@@ -238,6 +238,15 @@ describe('Search Bar', () => {
         testBody(unknownID, '/testnet/search-result/' + unknownID)
     })
 
+    it('should find the account ID with a submit button click', () => {
+        const searchAccount = "0.0.3"
+        clickTestBody(searchAccount, '/mainnet/account/' + searchAccount, 'Account ID:', true)
+
+        cy.visit('mainnet/account/0.0.4')
+        cy.url().should('include', '/mainnet/account/0.0.4')
+        clickTestBody(searchAccount, '/mainnet/account/' + searchAccount, 'Account ID:', true)
+    })
+
 })
 
 const testBody = (searchID: string,
@@ -263,3 +272,27 @@ const testBody = (searchID: string,
     }
 }
 
+const clickTestBody = (searchID: string,
+                       expectedPath: string,
+                       expectedTitle: string = null,
+                       expectTable = false,
+                       searchString: string = null) => {
+    cy.get('[data-cy=searchBar]').within(() => {
+        if (searchString !== null) {
+            cy.get('input').type(searchString )
+        } else {
+            cy.get('input').type(searchID)
+        }
+    })
+
+    cy.get('form > button').click()
+
+    cy.url({timeout: 5000}).should('include', expectedPath)
+    cy.contains(expectedTitle ? (expectedTitle + searchID) : 'No result')
+    if (expectTable) {
+        cy.get('table')
+            .find('tbody tr')
+            .should('have.length.gt', 1)
+        cy.contains('No Data').should("not.exist")
+    }
+}
