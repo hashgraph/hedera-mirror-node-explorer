@@ -23,60 +23,60 @@
 <!-- --------------------------------------------------------------------------------------------------------------- -->
 
 <template>
-    <o-table
-        :data="transactions"
-        :loading="loading"
-        paginated
-        backend-pagination
-        :total="total"
-        v-model:current-page="currentPage"
-        :per-page="perPage"
-        @page-change="onPageChange"
-        @cell-click="handleClick"
-        :hoverable="true"
-        :narrowed="narrowed"
-        :striped="true"
-        :mobile-breakpoint="ORUGA_MOBILE_BREAKPOINT"
-        aria-current-label="Current page"
-        aria-next-label="Next page"
-        aria-page-label="Page"
-        aria-previous-label="Previous page"
-        customRowKey="consensus_timestamp"
+  <o-table
+    :data="transactions"
+    :loading="loading"
+    paginated
+    backend-pagination
+    :total="total"
+    v-model:current-page="currentPage"
+    :per-page="perPage"
+    @page-change="onPageChange"
+    @cell-click="handleClick"
+    :hoverable="true"
+    :narrowed="narrowed"
+    :striped="true"
+    :mobile-breakpoint="ORUGA_MOBILE_BREAKPOINT"
+    aria-current-label="Current page"
+    aria-next-label="Next page"
+    aria-page-label="Page"
+    aria-previous-label="Previous page"
+    customRowKey="consensus_timestamp"
+  >
+    <o-table-column v-slot="props" field="timestamp" label="ID">
+      <TransactionLabel
+        v-bind:transaction-id="props.row.transaction_id"
+        v-bind:result="props.row.result"
+      />
+    </o-table-column>
+
+    <o-table-column v-slot="props" field="type" label="Type">
+      <div class="h-has-pill" style="display: inline-block">
+        <div class="h-is-text-size-2">
+          {{ makeTypeLabel(props.row.type) }}
+        </div>
+      </div>
+    </o-table-column>
+
+    <o-table-column
+      v-if="showingEthereumTransactions"
+      v-slot="props"
+      field="sender"
+      label="Sender"
     >
-        <o-table-column v-slot="props" field="timestamp" label="ID">
-            <TransactionLabel
-                v-bind:transaction-id="props.row.transaction_id"
-                v-bind:result="props.row.result"
-            />
-        </o-table-column>
+      <InnerSenderEVMAddress :transaction-id="props.row.transaction_id"/>
+    </o-table-column>
 
-        <o-table-column v-slot="props" field="type" label="Type">
-            <div class="h-has-pill" style="display: inline-block">
-                <div class="h-is-text-size-2">
-                    {{ makeTypeLabel(props.row.type) }}
-                </div>
-            </div>
-        </o-table-column>
+    <o-table-column v-slot="props" label="Content">
+      <NftTransactionSummary v-bind:transaction="props.row"/>
+    </o-table-column>
 
-        <o-table-column
-            v-if="showingEthereumTransactions"
-            v-slot="props"
-            field="sender"
-            label="Sender"
-        >
-            <InnerSenderEVMAddress :transaction-id="props.row.transaction_id" />
-        </o-table-column>
+    <o-table-column v-slot="props" field="consensus_timestamp" label="Time">
+      <TimestampValue v-bind:timestamp="props.row.consensus_timestamp"/>
+    </o-table-column>
+  </o-table>
 
-        <o-table-column v-slot="props" label="Content">
-            <NftTransactionSummary v-bind:transaction="props.row" />
-        </o-table-column>
-
-        <o-table-column v-slot="props" field="consensus_timestamp" label="Time">
-            <TimestampValue v-bind:timestamp="props.row.consensus_timestamp" />
-        </o-table-column>
-    </o-table>
-
-    <EmptyTable v-if="transactions.length === 0" />
+  <EmptyTable v-if="transactions.length === 0"/>
 </template>
 
 <!-- --------------------------------------------------------------------------------------------------------------- -->
@@ -91,21 +91,21 @@ import {
     inject,
     PropType,
     Ref,
-} from "vue";
+} from "vue"
 import {
     NftTransactionTransfer,
     Transaction,
     TransactionType,
-} from "@/schemas/HederaSchemas";
-import NftTransactionSummary from "@/components/transaction/NftTransactionSummary.vue";
-import TimestampValue from "@/components/values/TimestampValue.vue";
-import TransactionLabel from "@/components/values/TransactionLabel.vue";
-import { makeTypeLabel } from "@/utils/TransactionTools";
-import { routeManager } from "@/router";
-import { ORUGA_MOBILE_BREAKPOINT } from "@/App.vue";
-import EmptyTable from "@/components/EmptyTable.vue";
-import InnerSenderEVMAddress from "@/components/values/InnerSenderEVMAddress.vue";
-import { NftTransactionTableController } from "./NftTransactionTableController";
+} from "@/schemas/HederaSchemas"
+import NftTransactionSummary from "@/components/transaction/NftTransactionSummary.vue"
+import TimestampValue from "@/components/values/TimestampValue.vue"
+import TransactionLabel from "@/components/values/TransactionLabel.vue"
+import {makeTypeLabel} from "@/utils/TransactionTools"
+import {routeManager} from "@/router"
+import {ORUGA_MOBILE_BREAKPOINT} from "@/App.vue"
+import EmptyTable from "@/components/EmptyTable.vue"
+import InnerSenderEVMAddress from "@/components/values/InnerSenderEVMAddress.vue"
+import {NftTransactionTableController} from "./NftTransactionTableController"
 
 export default defineComponent({
     name: "NftTransactionTable",
@@ -127,15 +127,15 @@ export default defineComponent({
     },
 
     setup(props) {
-        const isTouchDevice = inject("isTouchDevice", false);
-        const isMediumScreen = inject("isMediumScreen", true);
+        const isTouchDevice = inject("isTouchDevice", false)
+        const isMediumScreen = inject("isMediumScreen", true)
 
         const showingEthereumTransactions = computed(() => {
             return (
                 props.controller.transactionType.value ===
                 TransactionType.ETHEREUMTRANSACTION
-            );
-        });
+            )
+        })
 
         const handleClick = (
             t: Transaction,
@@ -144,8 +144,8 @@ export default defineComponent({
             ci: number,
             event: MouseEvent,
         ) => {
-            routeManager.routeToTransaction(t, event.ctrlKey || event.metaKey);
-        };
+            routeManager.routeToTransaction(t, event.ctrlKey || event.metaKey)
+        }
 
         return {
             isTouchDevice,
@@ -162,7 +162,7 @@ export default defineComponent({
             handleClick,
             makeTypeLabel,
             ORUGA_MOBILE_BREAKPOINT,
-        };
+        }
     },
-});
+})
 </script>

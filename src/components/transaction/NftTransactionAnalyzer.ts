@@ -18,30 +18,30 @@
  *
  */
 
-import { computed, ComputedRef, ref, Ref, watch, WatchStopHandle } from "vue";
+import {computed, ComputedRef, ref, Ref, watch, WatchStopHandle} from "vue"
 import {
     NftTransactionTransfer,
     TokenRelationship,
     TransactionType,
-} from "@/schemas/HederaSchemas";
-import { EntityDescriptor } from "@/utils/EntityDescriptor";
-import { normalizeTransactionId } from "@/utils/TransactionID";
-import { TokenRelationshipCache } from "@/utils/cache/TokenRelationshipCache";
+} from "@/schemas/HederaSchemas"
+import {EntityDescriptor} from "@/utils/EntityDescriptor"
+import {normalizeTransactionId} from "@/utils/TransactionID"
+import {TokenRelationshipCache} from "@/utils/cache/TokenRelationshipCache"
 
 export class NftTransactionAnalyzer {
-    public readonly transaction: Ref<NftTransactionTransfer | null>;
+    public readonly transaction: Ref<NftTransactionTransfer | null>
     public readonly entityDescriptor = ref(
         EntityDescriptor.DEFAULT_ENTITY_DESCRIPTOR,
-    );
-    public readonly tokenRelationships: Ref<TokenRelationship[]> = ref([]);
-    private readonly watchHandles: WatchStopHandle[] = [];
+    )
+    public readonly tokenRelationships: Ref<TokenRelationship[]> = ref([])
+    private readonly watchHandles: WatchStopHandle[] = []
 
     //
     // Public
     //
 
     public constructor(transaction: Ref<NftTransactionTransfer | null>) {
-        this.transaction = transaction;
+        this.transaction = transaction
     }
 
     public mount(): void {
@@ -49,47 +49,47 @@ export class NftTransactionAnalyzer {
             watch(this.transaction, this.transactionDidChange, {
                 immediate: true,
             }),
-        );
+        )
     }
 
     public unmount(): void {
-        this.watchHandles.map((wh) => wh());
-        this.watchHandles.splice(0);
+        this.watchHandles.map((wh) => wh())
+        this.watchHandles.splice(0)
     }
 
     public readonly consensusTimestamp = computed(
         () => this.transaction.value?.consensus_timestamp ?? null,
-    );
+    )
 
     public readonly transactionType = computed(
         () => this.transaction.value?.type ?? null,
-    );
+    )
 
     public readonly entityId = computed(
         () => this.transaction.value?.sender_account_id ?? null,
-    );
+    )
 
     public readonly formattedTransactionId: ComputedRef<string | null> =
         computed(() => {
-            const transaction_id = this.transaction.value?.transaction_id;
+            const transaction_id = this.transaction.value?.transaction_id
             return transaction_id
                 ? normalizeTransactionId(transaction_id, true)
-                : null;
-        });
+                : null
+        })
 
     public readonly isTokenAssociation = computed(
         () => this.transactionType.value === TransactionType.TOKENASSOCIATE,
-    );
+    )
 
     public readonly tokens = computed(() => {
-        const result: string[] = [];
+        const result: string[] = []
         for (const r of this.tokenRelationships.value) {
             if (r.token_id) {
-                result.push(r.token_id);
+                result.push(r.token_id)
             }
         }
-        return result;
-    });
+        return result
+    })
 
     //
     // Private
@@ -104,29 +104,29 @@ export class NftTransactionAnalyzer {
             ) {
                 const r = await TokenRelationshipCache.instance.lookup(
                     this.entityId.value,
-                );
+                )
                 this.tokenRelationships.value = this.filterTokenRelationships(
                     r ?? [],
                     this.consensusTimestamp.value,
-                );
+                )
             } else {
-                this.tokenRelationships.value = [];
+                this.tokenRelationships.value = []
             }
         } else {
-            this.tokenRelationships.value = [];
+            this.tokenRelationships.value = []
         }
-    };
+    }
 
     private filterTokenRelationships(
         relationships: TokenRelationship[],
         createdTimestamp: string,
     ): TokenRelationship[] {
-        const result: TokenRelationship[] = [];
+        const result: TokenRelationship[] = []
         for (const r of relationships) {
             if (r.created_timestamp === createdTimestamp && r.token_id) {
-                result.push(r);
+                result.push(r)
             }
         }
-        return result;
+        return result
     }
 }

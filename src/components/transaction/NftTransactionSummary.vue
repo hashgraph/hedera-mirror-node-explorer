@@ -23,30 +23,30 @@
 <!-- --------------------------------------------------------------------------------------------------------------- -->
 
 <template>
-    <template v-if="transaction">
-        <NftTransferGraphSection
-            v-if="shouldGraph"
-            v-bind:transaction="transactionDetail"
-            v-bind:compact="true"
-        />
-        <div v-else-if="isTokenAssociation">
-            {{ transaction?.sender_account_id }}
-            <span v-if="tokens.length">
+  <template v-if="transaction">
+    <NftTransferGraphSection
+      v-if="shouldGraph"
+      v-bind:transaction="transactionDetail"
+      v-bind:compact="true"
+    />
+    <div v-else-if="isTokenAssociation">
+      {{ transaction?.sender_account_id }}
+      <span v-if="tokens.length">
                 <i class="fas fa-link mr-1 has-text-grey"></i>
-                <TokenExtra :token-id="tokens[0]" :show-name="false" />
+                <TokenExtra :token-id="tokens[0]" :show-name="false"/>
                 <span
-                    v-if="additionalTokensNumber"
-                    class="h-is-smaller h-is-extra-text should-wrap"
+                  v-if="additionalTokensNumber"
+                  class="h-is-smaller h-is-extra-text should-wrap"
                 >
                     {{ " ( + " + additionalTokensNumber + " more )" }}
                 </span>
             </span>
-        </div>
-        <!-- <div v-else class="should-wrap">
-            {{ makeSummaryLabel(transaction) }}
-        </div> -->
-    </template>
-    <div v-else />
+    </div>
+    <!-- <div v-else class="should-wrap">
+        {{ makeSummaryLabel(transaction) }}
+    </div> -->
+  </template>
+  <div v-else/>
 </template>
 
 <!-- --------------------------------------------------------------------------------------------------------------- -->
@@ -60,25 +60,25 @@ import {
     onBeforeUnmount,
     onMounted,
     PropType,
-} from "vue";
+} from "vue"
 import {
     NftTransactionTransfer,
     TransactionType,
-} from "@/schemas/HederaSchemas";
-import { makeSummaryLabel } from "@/utils/TransactionTools";
-import NftTransferGraphSection from "@/components/transfer_graphs/NftTransferGraphSection.vue";
-import TokenExtra from "@/components/values/TokenExtra.vue";
-import { NftTransactionAnalyzer } from "./NftTransactionAnalyzer";
+} from "@/schemas/HederaSchemas"
+import {makeSummaryLabel} from "@/utils/TransactionTools"
+import NftTransferGraphSection from "@/components/transfer_graphs/NftTransferGraphSection.vue"
+import TokenExtra from "@/components/values/TokenExtra.vue"
+import {NftTransactionAnalyzer} from "./NftTransactionAnalyzer"
 
 const GRAPH_TRANSACTION_TYPES = [
     TransactionType.CRYPTOTRANSFER,
     TransactionType.TOKENBURN,
     TransactionType.TOKENMINT,
-];
+]
 
 export default defineComponent({
     name: "NftTransactionSummary",
-    components: { TokenExtra, NftTransferGraphSection },
+    components: {TokenExtra, NftTransferGraphSection},
     props: {
         transaction: Object as PropType<NftTransactionTransfer | undefined>,
     },
@@ -88,22 +88,22 @@ export default defineComponent({
             return (
                 props.transaction?.type &&
                 GRAPH_TRANSACTION_TYPES.indexOf(props.transaction.type) != -1
-            );
-        });
+            )
+        })
 
         const transactionAnalyzer = new NftTransactionAnalyzer(
             computed(() => props.transaction ?? null),
-        );
-        onMounted(() => transactionAnalyzer.mount());
-        onBeforeUnmount(() => transactionAnalyzer.unmount());
+        )
+        onMounted(() => transactionAnalyzer.mount())
+        onBeforeUnmount(() => transactionAnalyzer.unmount())
 
         const additionalTokensNumber = computed(() =>
             Math.max(0, transactionAnalyzer.tokens.value.length - 1),
-        );
+        )
 
         const transactionDetail = computed(() => {
-            return props.transaction;
-        });
+            return props.transaction
+        })
 
         return {
             shouldGraph,
@@ -114,13 +114,13 @@ export default defineComponent({
             makeSummaryLabel,
             TransactionType,
             transactionDetail,
-        };
+        }
     },
-});
+})
 </script>
 
 <!-- --------------------------------------------------------------------------------------------------------------- -->
 <!--                                                      STYLE                                                      -->
 <!-- --------------------------------------------------------------------------------------------------------------- -->
 
-<style />
+<style/>

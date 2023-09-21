@@ -23,14 +23,14 @@
 <!-- --------------------------------------------------------------------------------------------------------------- -->
 
 <template>
-    <NftDetailsTransferGraph
-        data-cy="nftTransfers"
-        v-bind:class="{
+  <NftDetailsTransferGraph
+    data-cy="nftTransfers"
+    v-bind:class="{
             'mb-4': !compact,
         }"
-        v-bind:transaction="transaction"
-        v-bind:compact="compact"
-    />
+    v-bind:transaction="transaction"
+    v-bind:compact="compact"
+  />
 </template>
 
 <!-- --------------------------------------------------------------------------------------------------------------- -->
@@ -38,9 +38,9 @@
 <!-- --------------------------------------------------------------------------------------------------------------- -->
 
 <script lang="ts">
-import { computed, defineComponent, PropType } from "vue";
-import { NftTransactionTransfer } from "@/schemas/HederaSchemas";
-import NftDetailsTransferGraph from "@/components/transfer_graphs/NftDetailsTransferGraph.vue";
+import {computed, defineComponent, PropType} from "vue"
+import {NftTransactionTransfer} from "@/schemas/HederaSchemas"
+import NftDetailsTransferGraph from "@/components/transfer_graphs/NftDetailsTransferGraph.vue"
 
 export default defineComponent({
     name: "NftTransferGraphSection",
@@ -59,17 +59,11 @@ export default defineComponent({
             () =>
                 props.transaction?.sender_account_id &&
                 props.transaction?.receiver_account_id,
-        );
+        )
 
         return {
             displayNftTransfers,
-        };
+        }
     },
-});
+})
 </script>
-
-<!-- --------------------------------------------------------------------------------------------------------------- -->
-<!--                                                      STYLE                                                      -->
-<!-- --------------------------------------------------------------------------------------------------------------- -->
-
-<style />
