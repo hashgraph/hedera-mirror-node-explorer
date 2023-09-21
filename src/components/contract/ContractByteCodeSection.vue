@@ -26,16 +26,16 @@
 
   <DashboardCard>
     <template v-slot:title>
-      <span class="h-is-secondary-title">Contract Bytecode</span>
+      <span class="h-is-secondary-title">Contract Details</span>
       <span v-if="contractName" class="icon has-text-success ml-2"><i class="far fa-check-circle"></i></span>
     </template>
 
     <template v-slot:control>
       <div v-if="sourcifyURL" id="showSource" class="is-inline-block ml-3">
-        <a :href="sourcifyURL" target="_blank">View in Sourcify</a>
+        <a :href="sourcifyURL" target="_blank">View Contract</a>
       </div>
       <div v-else id="showVerifier" class="is-inline-block ml-3">
-        <a :href="verifierURL" target="_blank">Verify in Sourcify</a>
+        <a :href="verifierURL" target="_blank">Verify Contract</a>
       </div>
     </template>
 
