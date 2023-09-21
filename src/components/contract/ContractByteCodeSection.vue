@@ -42,7 +42,7 @@
                 <StringValue :string-value="solcVersion"/>
             </template>
         </Property>
-        <Property id="ipfsHash">
+        <Property v-if="ipfsHash" id="ipfsHash">
             <template v-slot:name>IPFS Hash</template>
             <template v-slot:value>
                 <StringValue :string-value="ipfsHash"/>
@@ -62,7 +62,7 @@
                 </div>
             </template>
         </Property>
-        <Property id="swarmHash">
+        <Property v-if="swarmHash" id="swarmHash">
             <template v-slot:name>SWARM Hash</template>
             <template v-slot:value>
                 <StringValue :string-value="swarmHash"/>
