@@ -30,45 +30,44 @@
     </template>
 
     <template v-slot:content>
-        <Property id="code">
-            <template v-slot:name>Runtime Bytecode</template>
-            <template v-slot:value>
-                <ByteCodeValue :byte-code="byteCode"/>
-            </template>
-        </Property>
-        <Property id="solcVersion">
-            <template v-slot:name>Compiler Version</template>
-            <template v-slot:value>
-                <StringValue :string-value="solcVersion"/>
-            </template>
-        </Property>
-        <Property v-if="ipfsHash" id="ipfsHash">
-            <template v-slot:name>IPFS Hash</template>
-            <template v-slot:value>
-                <StringValue :string-value="ipfsHash"/>
-                <div v-if="ipfsHash" class="has-text-grey">
-                    <div v-if="ipfsMetadata">
-                        <span class="icon fas fa-check-circle has-text-success is-small mt-1 mr-1"/>
-                        <span>Metadata file is available on <a :href="ipfsURL" :target="ipfsHash">IPFS</a></span>
-                    </div>
-                    <div v-else-if="ipfsLoading">
-                        <span class="icon fas fa-circle-notch fa-spin has-text-grey is-small mt-1 mr-1"/>
-                        <span>Checking IPFS…</span>
-                    </div>
-                    <div v-else>
-                        <span class="icon fas fa-info-circle has-text-grey is-small mt-1 mr-1"/>
-                        <span>Metadata file is not available on IPFS</span>
-                    </div>
-                </div>
-            </template>
-        </Property>
-        <Property v-if="swarmHash" id="swarmHash">
-            <template v-slot:name>SWARM Hash</template>
-            <template v-slot:value>
-                <StringValue :string-value="swarmHash"/>
-            </template>
-        </Property>
-
+      <Property id="solcVersion">
+        <template v-slot:name>Compiler Version</template>
+        <template v-slot:value>
+          <StringValue :string-value="solcVersion"/>
+        </template>
+      </Property>
+      <Property v-if="ipfsHash" id="ipfsHash">
+        <template v-slot:name>IPFS Hash</template>
+        <template v-slot:value>
+          <StringValue :string-value="ipfsHash"/>
+          <div v-if="ipfsHash" class="has-text-grey">
+            <div v-if="ipfsMetadata">
+              <span class="icon fas fa-check-circle has-text-success is-small mt-1 mr-1"/>
+              <span>Metadata file is available on <a :href="ipfsURL" :target="ipfsHash">IPFS</a></span>
+            </div>
+            <div v-else-if="ipfsLoading">
+              <span class="icon fas fa-circle-notch fa-spin has-text-grey is-small mt-1 mr-1"/>
+              <span>Checking IPFS…</span>
+            </div>
+            <div v-else>
+              <span class="icon fas fa-info-circle has-text-grey is-small mt-1 mr-1"/>
+              <span>Metadata file is not available on IPFS</span>
+            </div>
+          </div>
+        </template>
+      </Property>
+      <Property v-if="swarmHash" id="swarmHash">
+        <template v-slot:name>SWARM Hash</template>
+        <template v-slot:value>
+          <StringValue :string-value="swarmHash"/>
+        </template>
+      </Property>
+      <Property id="code">
+        <template v-slot:name>Runtime Bytecode</template>
+        <template v-slot:value>
+          <ByteCodeValue :byte-code="byteCode"/>
+        </template>
+      </Property>
     </template>
   </DashboardCard>
 
