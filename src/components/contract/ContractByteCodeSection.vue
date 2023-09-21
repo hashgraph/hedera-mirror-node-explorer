@@ -26,7 +26,7 @@
 
   <DashboardCard>
     <template v-slot:title>
-      <p class="h-is-secondary-title">Contract Bytecode</p>
+      <p class="h-is-secondary-title">Contract Details</p>
     </template>
 
     <template v-slot:content>
