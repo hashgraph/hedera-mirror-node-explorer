@@ -30,7 +30,7 @@
       <span v-if="contractName" class="icon has-text-success ml-2"><i class="far fa-check-circle"></i></span>
     </template>
 
-    <template v-slot:control>
+    <template v-if="isVerificationEnabled" v-slot:control>
       <div v-if="sourcifyURL" id="showSource" class="is-inline-block ml-3">
         <a :href="sourcifyURL" target="_blank">View Contract</a>
       </div>
@@ -40,7 +40,7 @@
     </template>
 
     <template v-slot:content>
-      <Property id="verificationStatus" :full-width="true">
+      <Property v-if="isVerificationEnabled" id="verificationStatus" :full-width="true">
         <template v-slot:name>Verification Status</template>
         <template v-slot:value>
               <span v-if="isVerified">
@@ -55,7 +55,7 @@
           <span v-else>Not yet verified</span>
         </template>
       </Property>
-      <Property id="contractName" :full-width="true">
+      <Property v-if="isVerificationEnabled" id="contractName" :full-width="true">
         <template v-slot:name>Contract Name</template>
         <template v-slot:value>
           <StringValue :string-value="contractName ?? undefined"/>
@@ -129,6 +129,8 @@ export default defineComponent({
     const contractName = computed(
         () => isVerified.value ? props.contractAnalyzer.contractName.value : null)
 
+    const isVerificationEnabled = import.meta.env.VITE_APP_ENABLE_VERIFICATION === 'true'
+
     return {
       isTouchDevice,
       isSmallScreen,
@@ -139,6 +141,7 @@ export default defineComponent({
       ipfsURL: props.contractAnalyzer.byteCodeAnalyzer.ipfsURL,
       swarmHash: props.contractAnalyzer.byteCodeAnalyzer.swarmHash,
       contractName,
+      isVerificationEnabled,
       sourcifyURL: props.contractAnalyzer.sourcifyURL,
       verifierURL: routeManager.currentNetworkEntry.value.sourcifySetup?.verifierURL,
       isVerified,
