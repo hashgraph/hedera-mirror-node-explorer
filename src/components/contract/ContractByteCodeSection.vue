@@ -40,34 +40,9 @@
     </template>
 
     <template v-slot:content>
-        <Property id="code" :full-width="true">
-            <template v-slot:name>Runtime Bytecode</template>
-            <template v-slot:value>
-                <ByteCodeValue :byte-code="byteCode ?? undefined"/>
-            </template>
-        </Property>
-        <Property id="solcVersion" :full-width="true">
-            <template v-slot:name>Compiler Version</template>
-            <template v-slot:value>
-                <StringValue :string-value="solcVersion ?? undefined"/>
-            </template>
-        </Property>
-        <Property v-if="ipfsHash" id="ipfsHash" :full-width="true">
-            <template v-slot:name>IPFS Hash</template>
-            <template v-slot:value>
-                <StringValue :string-value="ipfsHash ?? undefined"/>
-            </template>
-        </Property>
-        <Property v-if="swarmHash" id="swarmHash" :full-width="true">
-            <template v-slot:name>SWARM Hash</template>
-            <template v-slot:value>
-                <StringValue :string-value="swarmHash ?? undefined"/>
-            </template>
-        </Property>
-
-        <Property id="verificationStatus" :full-width="true">
-            <template v-slot:name>Verification Status</template>
-            <template v-slot:value>
+      <Property id="verificationStatus" :full-width="true">
+        <template v-slot:name>Verification Status</template>
+        <template v-slot:value>
               <span v-if="isVerified">
                 {{ isFullMatch ? "Full Match" : "Partial Match" }}
                 <span class="has-text-grey">
@@ -76,18 +51,40 @@
                   <span class="ml-1">for details)</span>
                 </span>
               </span>
-              <!--          <span v-else-if="compiling">Verifying contract…</span>-->
-              <span v-else>Not yet verified</span>
-            </template>
-        </Property>
-
-        <Property id="contractName" :full-width="true">
-            <template v-slot:name>Contract Name</template>
-            <template v-slot:value>
-                <StringValue :string-value="contractName ?? undefined"/>
-            </template>
-        </Property>
-
+          <!--          <span v-else-if="compiling">Verifying contract…</span>-->
+          <span v-else>Not yet verified</span>
+        </template>
+      </Property>
+      <Property id="contractName" :full-width="true">
+        <template v-slot:name>Contract Name</template>
+        <template v-slot:value>
+          <StringValue :string-value="contractName ?? undefined"/>
+        </template>
+      </Property>
+      <Property id="solcVersion" :full-width="true">
+        <template v-slot:name>Compiler Version</template>
+        <template v-slot:value>
+          <StringValue :string-value="solcVersion ?? undefined"/>
+        </template>
+      </Property>
+      <Property v-if="ipfsHash" id="ipfsHash" :full-width="true">
+        <template v-slot:name>IPFS Hash</template>
+        <template v-slot:value>
+          <StringValue :string-value="ipfsHash ?? undefined"/>
+        </template>
+      </Property>
+      <Property v-if="swarmHash" id="swarmHash" :full-width="true">
+        <template v-slot:name>SWARM Hash</template>
+        <template v-slot:value>
+          <StringValue :string-value="swarmHash ?? undefined"/>
+        </template>
+      </Property>
+      <Property id="code" :full-width="true">
+        <template v-slot:name>Runtime Bytecode</template>
+        <template v-slot:value>
+          <ByteCodeValue :byte-code="byteCode ?? undefined"/>
+        </template>
+      </Property>
     </template>
   </DashboardCard>
 
