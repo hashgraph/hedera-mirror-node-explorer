@@ -27,7 +27,8 @@ import {
     SAMPLE_CONTRACT_AS_ACCOUNT,
     SAMPLE_CONTRACT_DELETED,
     SAMPLE_CONTRACT_DUDE,
-    SAMPLE_CONTRACT_RESULTS, SAMPLE_CONTRACT_WITH_SWARM_HASH,
+    SAMPLE_CONTRACT_RESULTS,
+    SAMPLE_CONTRACT_WITH_SWARM_HASH,
     SAMPLE_NETWORK_EXCHANGERATE,
     SAMPLE_TRANSACTION,
     SAMPLE_TRANSACTIONS
@@ -39,6 +40,7 @@ import {HMSF} from "@/utils/HMSF";
 import NotificationBanner from "@/components/NotificationBanner.vue";
 import {TransactionID} from "@/utils/TransactionID";
 import ContractResultTable from "@/components/contract/ContractResultTable.vue";
+import DashboardCard from "@/components/DashboardCard.vue";
 
 /*
     Bookmarks
@@ -416,8 +418,38 @@ describe("ContractDetails.vue", () => {
         // console.log(wrapper.text())
 
         expect(wrapper.text()).toMatch(RegExp("^Contract Contract ID:" + contract.contract_id))
-        expect(wrapper.get("#swarmHash").text()).toBe("SWARM Hash0x25b12311dff4c2d38251fa91e465b5df31fca9f6c32e034ba551935d652b757a")
+        expect(wrapper.get("#swarmHashValue").text()).toBe("0x25b12311dff4c2d38251fa91e465b5df31fca9f6c32e034ba551935d652b757a")
         expect(wrapper.find("#ipfsHash").exists()).toBe(false)
+
+        wrapper.unmount()
+        await flushPromises()
+    });
+
+    it("Should display contract verification link and properties", async () => {
+
+        await router.push("/") // To avoid "missing required param 'network'" error
+
+        process.env = Object.assign(process.env, { VITE_APP_ENABLE_VERIFICATION: true });
+
+        const contractId = SAMPLE_CONTRACT_WITH_SWARM_HASH.contract_id
+        const wrapper = mount(ContractDetails, {
+            global: {
+                plugins: [router, Oruga]
+            },
+            props: {
+                contractId: contractId
+            },
+        });
+
+        await flushPromises()
+        // console.log(wrapper.text())
+
+        expect(wrapper.text()).toMatch(RegExp("^Contract Contract ID:" + contractId))
+        const cards = wrapper.findAllComponents(DashboardCard)
+        expect(cards[1].text()).toMatch(RegExp("^Contract Details"))
+        expect(cards[1].get('a').text()).toBe("Verify Contract")
+        expect(cards[1].get("#verificationStatusValue").text()).toBe("Not yet verified")
+        expect(cards[1].get("#contractNameValue").text()).toBe("None")
 
         wrapper.unmount()
         await flushPromises()
