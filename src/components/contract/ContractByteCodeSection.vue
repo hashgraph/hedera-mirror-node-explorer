@@ -52,13 +52,13 @@
                 <StringValue :string-value="solcVersion ?? undefined"/>
             </template>
         </Property>
-        <Property id="ipfsHash" :full-width="true">
+        <Property v-if="ipfsHash" id="ipfsHash" :full-width="true">
             <template v-slot:name>IPFS Hash</template>
             <template v-slot:value>
                 <StringValue :string-value="ipfsHash ?? undefined"/>
             </template>
         </Property>
-        <Property id="swarmHash" :full-width="true">
+        <Property v-if="swarmHash" id="swarmHash" :full-width="true">
             <template v-slot:name>SWARM Hash</template>
             <template v-slot:value>
                 <StringValue :string-value="swarmHash ?? undefined"/>
