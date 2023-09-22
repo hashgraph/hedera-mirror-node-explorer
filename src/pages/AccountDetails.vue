@@ -485,8 +485,12 @@ export default defineComponent({
     // base64 decoding controler
     //
     const base64Option = ref(false)
-    const base64Toggler = () => {
-      base64Option.value = !base64Option.value
+    const base64Toggler = (base64SelectedOption: string) => {
+      if (base64SelectedOption === "RAW") {
+        base64Option.value = false
+      } else {
+        base64Option.value = true
+      }
     }
 
     return {

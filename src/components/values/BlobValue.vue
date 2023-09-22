@@ -31,14 +31,19 @@
          :style="{'max-width': windowWidth-limitingFactor + 'px'}">{{ decodedValue }}</div>
     <div v-else-if="limitingFactor" class="h-is-one-line is-inline-block"
          :style="{'max-width': windowWidth-limitingFactor+200 + 'px'}">{{ decodedValue }}</div>
-    <div v-else-if="showEncodeButton" style="word-break: break-word" class="is-flex is-full is-align-items-center has-background-transparent has-border has-border-white is-radiusless">
+    <div v-else-if="showEncodeButton" style="word-break: break-word;">
       <div>{{ decodedValue }}</div>
-      <button
-        v-if="isBlobValueBase64candidate"
-        @click="base64TogglerFn"
-        class="button is-small has-text-white"
-        style="background-color: #202532; height: 26px; border:1px solid white; border-radius: 3px; margin-left: 1rem"
-      >{{ base64 ? "Decode data" : "Encode data" }}</button>
+      <div v-if="isBlobValueBase64candidate" class="is-flex">
+        <select 
+          v-model="base64OptionSelected" class="h-is-text-size-4 has-text-white" 
+          style="border-width: 0rem; padding: 0.25rem 0.25rem 0.25rem 0; background-color: transparent; cursor: pointer; outline: none; -webkit-appearance: none; -moz-appearance: none; appearance: none;"
+          >
+          <option v-for="f in base64Options" :key="f" :value="f">
+            {{ makeBase64OptionLabels(f) }}
+          </option>
+        </select>
+        <i class="fas fa-caret-down is-flex is-align-items-center"/>
+      </div>
     </div>
     <div v-else style="word-break: break-word">{{ decodedValue }}</div>
   </template>
@@ -83,10 +88,10 @@ export default defineComponent({
     base64Toggler: Function
   },
 
-  methods: {
-    base64TogglerFn() {
+  watch: {
+    base64OptionSelected(option: string) {
       if (this.base64Toggler) {
-        this.base64Toggler()
+        this.base64Toggler(option)
       }
     }
   },
@@ -94,7 +99,12 @@ export default defineComponent({
   setup(props) {
     const windowWidth = inject('windowWidth', 1280)
     const isMediumScreen = inject('isMediumScreen', true)
+    
     const base64regex = /^([0-9a-zA-Z+/]{4})*(([0-9a-zA-Z+/]{2}==)|([0-9a-zA-Z+/]{3}=))?$/;
+    
+    type base64OptionsTypes = 'RAW' | 'BASE64_DECODED'
+    const base64OptionSelected = ref<base64OptionsTypes>('RAW')
+    const base64Options = ['RAW', "BASE64_DECODED"] as base64OptionsTypes[]
 
     const isURL = computed(() => {
       let result: boolean
@@ -153,6 +163,10 @@ export default defineComponent({
 
     const initialLoading = inject(initialLoadingKey, ref(false))
 
+    const makeBase64OptionLabels = (value: base64OptionsTypes) => {
+      return value === "RAW" ? "Original data" : "Decoded data"
+    }
+
     return {
       isMediumScreen,
       windowWidth,
@@ -161,6 +175,9 @@ export default defineComponent({
       decodedValue,
       initialLoading,
       isBlobValueBase64candidate,
+      base64Options,
+      base64OptionSelected,
+      makeBase64OptionLabels
     }
   }
 })
