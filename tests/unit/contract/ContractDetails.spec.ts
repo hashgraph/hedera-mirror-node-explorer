@@ -27,7 +27,7 @@ import {
     SAMPLE_CONTRACT_AS_ACCOUNT,
     SAMPLE_CONTRACT_DELETED,
     SAMPLE_CONTRACT_DUDE,
-    SAMPLE_CONTRACT_RESULTS,
+    SAMPLE_CONTRACT_RESULTS, SAMPLE_CONTRACT_WITH_SWARM_HASH,
     SAMPLE_NETWORK_EXCHANGERATE,
     SAMPLE_TRANSACTION,
     SAMPLE_TRANSACTIONS
@@ -103,7 +103,7 @@ describe("ContractDetails.vue", () => {
         expect(wrapper.get("#code").text()).toBe("Runtime Bytecode")
         expect(wrapper.get("#solcVersion").text()).toBe("Compiler Version0.8.4")
         expect(wrapper.get("#ipfsHash").text()).toBe("IPFS HashQmap1zNn5JRVVoLFDAKbah7jZyVJAvjqq7f8oUExesSiWT")
-        expect(wrapper.get("#swarmHash").text()).toBe("SWARM HashNone")
+        expect(wrapper.find("#swarmHash").exists()).toBe(false)
 
         expect(wrapper.findComponent(ContractResultTable).exists()).toBe(true)
 
@@ -379,6 +379,45 @@ describe("ContractDetails.vue", () => {
         // console.log(wrapper.text())
 
         expect(wrapper.get("#notificationBanner").text()).toBe("Invalid contract ID: " + invalidContractId)
+
+        wrapper.unmount()
+        await flushPromises()
+    });
+
+    it("Should display swarm hash", async () => {
+
+        await router.push("/") // To avoid "missing required param 'network'" error
+
+        const mock = new MockAdapter(axios);
+
+        const contract = SAMPLE_CONTRACT_WITH_SWARM_HASH
+        const matcher1 = "/api/v1/contracts/" + contract.contract_id
+        mock.onGet(matcher1).reply(200, contract);
+
+        const matcher2 = "/api/v1/accounts/" + contract.contract_id
+        mock.onGet(matcher2).reply(200, SAMPLE_CONTRACT_AS_ACCOUNT);
+
+        const matcher3 = "/api/v1/transactions"
+        mock.onGet(matcher3).reply(200, SAMPLE_TRANSACTIONS);
+
+        const matcher5 = "/api/v1/contracts/" + contract.contract_id + "/results"
+        mock.onGet(matcher5).reply(200, SAMPLE_CONTRACT_RESULTS);
+
+        const wrapper = mount(ContractDetails, {
+            global: {
+                plugins: [router, Oruga]
+            },
+            props: {
+                contractId: contract.contract_id
+            },
+        });
+
+        await flushPromises()
+        // console.log(wrapper.text())
+
+        expect(wrapper.text()).toMatch(RegExp("^Contract Contract ID:" + contract.contract_id))
+        expect(wrapper.get("#swarmHash").text()).toBe("SWARM Hash0x25b12311dff4c2d38251fa91e465b5df31fca9f6c32e034ba551935d652b757a")
+        expect(wrapper.find("#ipfsHash").exists()).toBe(false)
 
         wrapper.unmount()
         await flushPromises()
