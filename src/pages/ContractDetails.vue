@@ -177,7 +177,7 @@
       </template>
     </DashboardCard>
 
-    <ContractByteCodeSection :contract-id="normalizedContractId ?? undefined"/>
+    <ContractByteCodeSection :contract-analyzer="contractAnalyzer"/>
 
     <ContractResultsSection :contract-id="normalizedContractId ?? undefined"/>
 
@@ -217,6 +217,7 @@ import ContractByteCodeSection from "@/components/contract/ContractByteCodeSecti
 import ContractResultsSection from "@/components/contracts/ContractResultsSection.vue";
 import InfoTooltip from "@/components/InfoTooltip.vue";
 import Copyable from "@/components/Copyable.vue";
+import {ContractAnalyzer} from "@/utils/analyzer/ContractAnalyzer";
 
 const MAX_TOKEN_BALANCES = 3
 
@@ -327,6 +328,10 @@ export default defineComponent({
       return normalizedContractId.value !== null ?  routeManager.makeRouteToAccount(normalizedContractId.value) : null
     })
 
+    const contractAnalyzer = new ContractAnalyzer(normalizedContractId)
+    onMounted(() => contractAnalyzer.mount())
+    onBeforeUnmount(() => contractAnalyzer.unmount())
+
     return {
       isSmallScreen,
       isMediumScreen,
@@ -344,7 +349,8 @@ export default defineComponent({
       obtainerId: obtainerId,
       proxyAccountId: proxyAccountId,
       normalizedContractId,
-      accountRoute
+      accountRoute,
+      contractAnalyzer
     }
   },
 });

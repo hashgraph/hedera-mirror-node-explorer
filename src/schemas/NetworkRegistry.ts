@@ -21,6 +21,7 @@
 import {EntityID} from "@/utils/EntityID";
 import axios from "axios";
 import {ref, Ref} from "vue";
+import {EthereumAddress} from "@/utils/EthereumAddress";
 
 declare global {
     interface Window {
@@ -34,16 +35,107 @@ declare global {
 
 export class NetworkEntry {
 
+    public static readonly NETWORK_NAME_MAX_LENGTH = 15
+
     public readonly name: string
     public readonly displayName: string
     public readonly url: string
     public readonly ledgerID: string
+    public readonly sourcifySetup: SourcifySetup|null
 
-    constructor(name: string, displayName: string, url: string, ledgerID: string) {
+    constructor(name: string, displayName: string, url: string, ledgerID: string, sourcifySetup: SourcifySetup|null) {
         this.name = name
         this.displayName = displayName ?? name.toUpperCase()
         this.url = url
         this.ledgerID = ledgerID
+        this.sourcifySetup = sourcifySetup
+    }
+
+    static decode(encoding: Record<string, unknown>): NetworkEntry|null {
+        let result: NetworkEntry|null
+
+        const name = encoding["name"]
+        const displayName = encoding["displayName"]
+        const url = encoding["url"]
+        const ledgerID = encoding["ledgerID"]
+        const sourcifySetupEncoding = encoding["sourcifySetup"]
+
+        if (typeof name == "string" &&
+            (typeof displayName == "string" || typeof displayName == "undefined") &&
+            typeof url == "string" &&
+            typeof ledgerID == "string" &&
+            typeof sourcifySetupEncoding == "object") {
+
+            let tidyDisplayName = (displayName ?? name).toUpperCase()
+            if (tidyDisplayName.length > this.NETWORK_NAME_MAX_LENGTH) {
+                tidyDisplayName = tidyDisplayName.slice(0, this.NETWORK_NAME_MAX_LENGTH) + '…'
+            }
+
+            if (sourcifySetupEncoding !== null) {
+                const sourcifySetup = SourcifySetup.decode(sourcifySetupEncoding as Record<string, unknown>)
+                if (sourcifySetup !== null) {
+                    result = new NetworkEntry(name, tidyDisplayName.toUpperCase(), url, ledgerID, sourcifySetup)
+                } else {
+                    result = null
+                }
+            } else {
+                result = new NetworkEntry(name, tidyDisplayName, url, ledgerID, null)
+            }
+        } else {
+            result = null
+        }
+
+        return result
+    }
+}
+
+export class SourcifySetup {
+
+    public readonly repoURL: string
+    public readonly serverURL: string
+    public readonly verifierURL: string
+    public readonly chainID: number
+
+    constructor(repoURL: string, serverURL: string, verifierURL: string, chainID: number) {
+        this.repoURL = repoURL
+        this.serverURL = serverURL
+        this.verifierURL = verifierURL
+        this.chainID = chainID
+    }
+
+    static decode(encoding: Record<string, unknown>): SourcifySetup|null {
+        let result: SourcifySetup|null
+        const repoURL = encoding["repoURL"]
+        const serverURL = encoding["serverURL"]
+        const verifierURL = encoding["verifierURL"]
+        const chainID = encoding["chainID"]
+        if (typeof repoURL == "string" &&
+            typeof serverURL == "string" &&
+            typeof verifierURL == "string" &&
+            typeof chainID == "number") {
+            result = new SourcifySetup(repoURL, serverURL, verifierURL, chainID)
+        } else {
+            result = null
+        }
+        return result
+    }
+
+    // https://docs.sourcify.dev/docs/api/repository/get-file-static/
+
+    makeRequestURL(contractAddress: string): string {
+        const normalizedAddress = EthereumAddress.normalizeEIP55(contractAddress)
+        return this.serverURL + "files/any/" + this.chainID + "/" + normalizedAddress
+    }
+
+    makeMetadataURL(contractAddress: string, full: boolean): string {
+        const normalizedAddress = EthereumAddress.normalizeEIP55(contractAddress)
+        const matchPrefix = full ? "full_match/" : "partial_match/"
+        return this.serverURL + matchPrefix + this.chainID + "/" + normalizedAddress + "/metadata.json"
+    }
+
+    makeContractLookupURL(contractAddress: string): string {
+        const normalizedAddress = EthereumAddress.normalizeEIP55(contractAddress)
+        return this.verifierURL + "lookup/" + normalizedAddress
     }
 }
 
@@ -51,7 +143,6 @@ export class NetworkRegistry {
 
     public static readonly NETWORKS_CONFIG_URL = window.location.origin + '/networks-config.json'
     public static readonly MAX_NETWORK_NUMBER = 15
-    public static readonly NETWORK_NAME_MAX_LENGTH = 15
 
     public static readonly MAIN_NETWORK = 'mainnet'
     public static readonly TEST_NETWORK = 'testnet'
@@ -65,19 +156,37 @@ export class NetworkRegistry {
             name: 'mainnet',
             displayName: 'MAINNET',
             url: "https://mainnet-public.mirrornode.hedera.com/",
-            ledgerID: '00'
+            ledgerID: '00',
+            sourcifySetup: new SourcifySetup(
+                "https://repo.verify.simonvienot.fr/contracts/",
+                "https://verify.simonvienot.fr/server/",
+                "https://verify.simonvienot.fr/#/",
+                0x127
+            )
         },
         {
             name: 'testnet',
             displayName: 'TESTNET',
             url: "https://testnet.mirrornode.hedera.com/",
-            ledgerID: '01'
+            ledgerID: '01',
+            sourcifySetup: new SourcifySetup(
+                "https://repo.verify.simonvienot.fr/contracts/",
+                "https://verify.simonvienot.fr/server/",
+                "https://verify.simonvienot.fr/#/",
+                0x128
+            )
         },
         {
             name: 'previewnet',
             displayName: 'PREVIEWNET',
             url: "https://previewnet.mirrornode.hedera.com/",
-            ledgerID: '02'
+            ledgerID: '02',
+            sourcifySetup: new SourcifySetup(
+                "https://repo.verify.simonvienot.fr/contracts/",
+                "https://verify.simonvienot.fr/server/",
+                "https://verify.simonvienot.fr/#/",
+                0x129
+            )
         }
     ])
 
@@ -89,7 +198,7 @@ export class NetworkRegistry {
         axios.get<unknown>(NetworkRegistry.NETWORKS_CONFIG_URL)
             .then((response) => {
 
-                const customEntries = NetworkRegistry.parseNetworkConfig(response.data)
+                const customEntries = NetworkRegistry.decode(response.data)
                 if (customEntries !== null) {
                     this.entries.value = customEntries
                     this.defaultEntry = this.lookup(NetworkRegistry.DEFAULT_NETWORK) ?? this.entries.value[0]
@@ -108,7 +217,7 @@ export class NetworkRegistry {
                         `Defining an additional network with URL: ${localNodeURL} and name: ${localNodeMenuName} \n`)
 
                     this.entries.value.push(
-                        new NetworkEntry('devnet', localNodeMenuName, localNodeURL, 'FF')
+                        new NetworkEntry('devnet', localNodeMenuName, localNodeURL, 'FF', null)
                     )
                 }
             })
@@ -147,58 +256,34 @@ export class NetworkRegistry {
         return entity ? (entity + '-' + this.computeChecksum(entity, network)) : null
     }
 
-    private static parseNetworkConfig(config: unknown): Array<NetworkEntry> | null {
+    private static decode(config: unknown): Array<NetworkEntry> | null {
+        let result: Array<NetworkEntry> | null
 
-        const entries: Array<NetworkEntry> = []
-        let isValid = true
-
-        const jsonContent = JSON.parse(JSON.stringify(config))
-
-        if (jsonContent instanceof Array) {
-            for (const n of jsonContent as Array<any>) {
-                if (entries.length >= this.MAX_NETWORK_NUMBER) {
+        if (Array.isArray(config)) {
+            result = Array<NetworkEntry>()
+            for (const i of config) {
+                if (result.length >= this.MAX_NETWORK_NUMBER) {
                     console.warn(`Dropping networks beyond ${this.MAX_NETWORK_NUMBER} entries`)
+                    result = null
                     break
-                }
-
-                if (typeof n === 'object'
-                    && typeof n.name === 'string'
-                    && typeof n.url === 'string'
-                    && typeof n.ledgerID === 'string')
-                {
-                    if (!entries.find(entry => entry.name === n.name)) {
-                        let displayName
-                        if (typeof n.displayName === 'undefined') {
-                            displayName = n.name
-                        } else if (typeof n.displayName === 'string') {
-                            displayName = n.displayName
-                        } else {
-                            console.warn("Invalid displayName " + n.displayName)
-                            isValid = false
-                            break
-                        }
-                        if (displayName.length > this.NETWORK_NAME_MAX_LENGTH) {
-                            displayName = displayName.slice(0, this.NETWORK_NAME_MAX_LENGTH) + '…'
-                        }
-                        entries.push(new NetworkEntry(
-                            n.name,
-                            displayName.toUpperCase(),
-                            n.url,
-                            n.ledgerID))
-                    } else {
-                        console.warn("Dropping network with duplicate name: " + n.name)
-                    }
                 } else {
-                    console.warn("Invalid networks-config.json configuration file")
-                    isValid = false
-                    break
+                    const newEntry = NetworkEntry.decode(i)
+                    if (newEntry === null) {
+                        console.warn("Invalid networks-config.json configuration file")
+                        result = null
+                        break
+                    } else if (result.find(e => newEntry.name === e.name)) {
+                        console.warn("Dropping network with duplicate name: " + newEntry.name)
+                    } else {
+                        result.push(newEntry)
+                    }
                 }
             }
         } else {
-            console.warn("Invalid networks-config.json configuration file")
+            result = null
         }
 
-        return (isValid && entries.length) ? entries : null
+        return result
     }
 
     //

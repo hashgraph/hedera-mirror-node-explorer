@@ -6,8 +6,8 @@
     "dev": "npm run install:branding && vite",
     "build": "run-p type-check build-only",
     "preview": "npm run install:branding && vite preview",
-    "test:unit": "vitest",
-    "cover:unit": "vitest run --coverage",
+    "test:unit": "vitest run --threads false",
+    "cover:unit": "vitest run --coverage --threads false",
     "test:e2e": "npm run install:branding && START_SERVER_AND_TEST_INSECURE=1 start-server-and-test dev https://localhost:5173 'cypress run --browser chrome --e2e'",
     "test:e2e:dev": "npm run install:branding && START_SERVER_AND_TEST_INSECURE=1 start-server-and-test 'vite dev --port 5173' https://localhost:5173 'cypress open --e2e'",
     "build-only": "npm run install:branding && vite build",
@@ -40,7 +40,8 @@
     "hashconnect": "^0.1.10",
     "vue": "^3.3.4",
     "vue-axios": "^3.5.2",
-    "vue-router": "^4.2.4"
+    "vue-router": "^4.2.4",
+    "web3-utils": "^1.9.0"
   },
   "devDependencies": {
     "@cypress/code-coverage": "^3.11.0",

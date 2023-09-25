@@ -3,18 +3,36 @@
     "name": "mainnet",
     "displayName": "MAINNET",
     "url": "https://mainnet-public.mirrornode.hedera.com/",
-    "ledgerID": "00"
+    "ledgerID": "00",
+    "sourcifySetup": {
+      "repoURL": "https://repo.verify.simonvienot.fr/contracts/",
+      "serverURL": "https://verify.simonvienot.fr/server/",
+      "verifierURL": "https://verify.simonvienot.fr/#/",
+      "chainID": 295
+    }
   },
   {
     "name": "testnet",
     "displayName": "TESTNET",
     "url": "https://testnet.mirrornode.hedera.com/",
-    "ledgerID": "01"
+    "ledgerID": "01",
+    "sourcifySetup": {
+      "repoURL": "https://repo.verify.simonvienot.fr/contracts/",
+      "serverURL": "https://verify.simonvienot.fr/server/",
+      "verifierURL": "https://verify.simonvienot.fr/#/",
+      "chainID": 296
+    }
   },
   {
     "name": "previewnet",
     "displayName": "PREVIEWNET",
     "url": "https://previewnet.mirrornode.hedera.com/",
-    "ledgerID": "02"
+    "ledgerID": "02",
+    "sourcifySetup": {
+      "repoURL": "https://repo.verify.simonvienot.fr/contracts/",
+      "serverURL": "https://verify.simonvienot.fr/server/",
+      "verifierURL": "https://verify.simonvienot.fr/#/",
+      "chainID": 297
+    }
   }
 ]

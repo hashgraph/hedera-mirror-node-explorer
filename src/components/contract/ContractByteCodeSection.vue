@@ -26,49 +26,65 @@
 
   <DashboardCard>
     <template v-slot:title>
-      <p class="h-is-secondary-title">Contract Bytecode</p>
+      <span class="h-is-secondary-title">Contract Details</span>
+      <span v-if="contractName" class="icon has-text-success ml-2"><i class="far fa-check-circle"></i></span>
+    </template>
+
+    <template v-if="isVerificationEnabled" v-slot:control>
+      <div v-if="sourcifyURL" id="showSource" class="is-inline-block ml-3">
+        <a :href="sourcifyURL" target="_blank">View Contract</a>
+      </div>
+      <div v-else id="showVerifier" class="is-inline-block ml-3">
+        <a :href="verifierURL" target="_blank">Verify Contract</a>
+      </div>
     </template>
 
     <template v-slot:content>
-        <Property id="code">
-            <template v-slot:name>Runtime Bytecode</template>
-            <template v-slot:value>
-                <ByteCodeValue :byte-code="byteCode"/>
-            </template>
-        </Property>
-        <Property id="solcVersion">
-            <template v-slot:name>Compiler Version</template>
-            <template v-slot:value>
-                <StringValue :string-value="solcVersion"/>
-            </template>
-        </Property>
-        <Property id="ipfsHash">
-            <template v-slot:name>IPFS Hash</template>
-            <template v-slot:value>
-                <StringValue :string-value="ipfsHash"/>
-                <div v-if="ipfsHash" class="has-text-grey">
-                    <div v-if="ipfsMetadata">
-                        <span class="icon fas fa-check-circle has-text-success is-small mt-1 mr-1"/>
-                        <span>Metadata file is available on <a :href="ipfsURL" :target="ipfsHash">IPFS</a></span>
-                    </div>
-                    <div v-else-if="ipfsLoading">
-                        <span class="icon fas fa-circle-notch fa-spin has-text-grey is-small mt-1 mr-1"/>
-                        <span>Checking IPFS…</span>
-                    </div>
-                    <div v-else>
-                        <span class="icon fas fa-info-circle has-text-grey is-small mt-1 mr-1"/>
-                        <span>Metadata file is not available on IPFS</span>
-                    </div>
-                </div>
-            </template>
-        </Property>
-        <Property id="swarmHash">
-            <template v-slot:name>SWARM Hash</template>
-            <template v-slot:value>
-                <StringValue :string-value="swarmHash"/>
-            </template>
-        </Property>
-
+      <Property v-if="isVerificationEnabled" id="verificationStatus" :full-width="true">
+        <template v-slot:name>Verification Status</template>
+        <template v-slot:value>
+              <span v-if="isVerified">
+                {{ isFullMatch ? "Full Match" : "Partial Match" }}
+                <span class="has-text-grey">
+                <span class="ml-1">(see Sourcify</span>
+                  <a class="ml-1" href="https://docs.sourcify.dev/docs/full-vs-partial-match/">documentation</a>
+                  <span class="ml-1">for details)</span>
+                </span>
+              </span>
+          <!--          <span v-else-if="compiling">Verifying contract…</span>-->
+          <span v-else>Not yet verified</span>
+        </template>
+      </Property>
+      <Property v-if="isVerificationEnabled" id="contractName" :full-width="true">
+        <template v-slot:name>Contract Name</template>
+        <template v-slot:value>
+          <StringValue :string-value="contractName ?? undefined"/>
+        </template>
+      </Property>
+      <Property id="solcVersion" :full-width="true">
+        <template v-slot:name>Compiler Version</template>
+        <template v-slot:value>
+          <StringValue :string-value="solcVersion ?? undefined"/>
+        </template>
+      </Property>
+      <Property v-if="ipfsHash" id="ipfsHash" :full-width="true">
+        <template v-slot:name>IPFS Hash</template>
+        <template v-slot:value>
+          <StringValue :string-value="ipfsHash ?? undefined"/>
+        </template>
+      </Property>
+      <Property v-if="swarmHash" id="swarmHash" :full-width="true">
+        <template v-slot:name>SWARM Hash</template>
+        <template v-slot:value>
+          <StringValue :string-value="swarmHash ?? undefined"/>
+        </template>
+      </Property>
+      <Property id="code" :full-width="true">
+        <template v-slot:name>Runtime Bytecode</template>
+        <template v-slot:value>
+          <ByteCodeValue :byte-code="byteCode ?? undefined"/>
+        </template>
+      </Property>
     </template>
   </DashboardCard>
 
@@ -80,13 +96,13 @@
 
 <script lang="ts">
 
-import {computed, defineComponent, inject, onBeforeUnmount, onMounted} from 'vue';
+import {computed, defineComponent, inject, PropType} from 'vue';
 import DashboardCard from "@/components/DashboardCard.vue";
 import ByteCodeValue from "@/components/values/ByteCodeValue.vue";
 import StringValue from "@/components/values/StringValue.vue";
 import Property from "@/components/Property.vue";
-import {ContractByIdCache} from "@/utils/cache/ContractByIdCache";
-import {ByteCodeAnalyzer} from "@/utils/analyzer/ByteCodeAnalyzer";
+import {ContractAnalyzer} from "@/utils/analyzer/ContractAnalyzer";
+import {routeManager} from "@/router";
 
 export default defineComponent({
   name: 'ContractByteCodeSection',
@@ -94,7 +110,10 @@ export default defineComponent({
   components: {Property, StringValue, ByteCodeValue, DashboardCard},
 
   props: {
-    contractId: String,
+    contractAnalyzer: {
+        type: Object as PropType<ContractAnalyzer>,
+        required: true
+    }
   },
 
   setup: function (props) {
@@ -102,26 +121,31 @@ export default defineComponent({
     const isSmallScreen = inject('isSmallScreen', true)
     const isMediumScreen = inject('isMediumScreen', true)
 
-    const contractLookup = ContractByIdCache.instance.makeLookup(computed(() => props.contractId ?? null))
-    onMounted(() => contractLookup.mount())
-    onBeforeUnmount(() => contractLookup.unmount())
+    const isVerified = computed(() => props.contractAnalyzer.sourcifyRecord.value !== null)
+    const isFullMatch = computed(() => {
+        return props.contractAnalyzer.sourcifyRecord.value !== null && props.contractAnalyzer.sourcifyRecord.value.fullMatch
+    })
 
-    const byteCode = computed(() => contractLookup.entity.value?.runtime_bytecode ?? undefined)
-    const byteCodeAnalyzer = new ByteCodeAnalyzer(byteCode)
-    onMounted(() => byteCodeAnalyzer.mount())
-    onBeforeUnmount(() => byteCodeAnalyzer.unmount())
+    const contractName = computed(
+        () => isVerified.value ? props.contractAnalyzer.contractName.value : null)
+
+    const isVerificationEnabled = import.meta.env.VITE_APP_ENABLE_VERIFICATION === 'true'
 
     return {
       isTouchDevice,
       isSmallScreen,
       isMediumScreen,
-      byteCode: byteCodeAnalyzer.byteCode,
-      solcVersion: byteCodeAnalyzer.solcVersion,
-      ipfsHash: byteCodeAnalyzer.ipfsHash,
-      ipfsMetadata: byteCodeAnalyzer.ipfsMetadata,
-      ipfsURL: byteCodeAnalyzer.ipfsURL,
-      ipfsLoading: byteCodeAnalyzer.ipfsLoading,
-      swarmHash: byteCodeAnalyzer.swarmHash,
+      byteCode: props.contractAnalyzer.byteCodeAnalyzer.byteCode,
+      solcVersion: props.contractAnalyzer.byteCodeAnalyzer.solcVersion,
+      ipfsHash: props.contractAnalyzer.byteCodeAnalyzer.ipfsHash,
+      ipfsURL: props.contractAnalyzer.byteCodeAnalyzer.ipfsURL,
+      swarmHash: props.contractAnalyzer.byteCodeAnalyzer.swarmHash,
+      contractName,
+      isVerificationEnabled,
+      sourcifyURL: props.contractAnalyzer.sourcifyURL,
+      verifierURL: routeManager.currentNetworkEntry.value.sourcifySetup?.verifierURL,
+      isVerified,
+      isFullMatch
     }
   }
 });
