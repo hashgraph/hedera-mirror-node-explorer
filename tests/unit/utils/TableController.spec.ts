@@ -20,15 +20,21 @@
  *
  */
 
-import {describe, test, expect, vi} from 'vitest'
+import {afterEach, beforeEach, describe, test, expect, vi} from 'vitest'
 import {computed, nextTick, Ref, ref} from "vue";
 import {makeRouter} from "@/router";
 import {flushPromises} from "@vue/test-utils";
 import {KeyOperator, SortOrder, TableController} from "@/utils/table/TableController";
 
-vi.useFakeTimers()
-
 describe("TableController.ts", () => {
+
+    beforeEach(() => {
+        vi.useFakeTimers()
+    })
+
+    afterEach(() => {
+        vi.useRealTimers()
+    })
 
     test("load() sanity check", async () => {
         const tc = new TestTableController(0, 50, 10)
