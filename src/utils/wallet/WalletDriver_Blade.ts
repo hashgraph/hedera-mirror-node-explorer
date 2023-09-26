@@ -19,15 +19,16 @@
  */
 
 
-import {BladeSigner, BladeWalletError} from "@bladelabs/blade-web3.js";
+import {BladeConnector, BladeWalletError, ConnectorStrategy} from "@bladelabs/blade-web3.js";
 import {HederaNetwork} from "@bladelabs/blade-web3.js/lib/src/models/blade";
 import {WalletDriver} from "@/utils/wallet/WalletDriver";
 import {WalletDriverError} from "@/utils/wallet/WalletDriverError";
 import {Signer} from "@hashgraph/sdk";
+import {HederaLogo} from "@/utils/MetaMask";
 
 export class WalletDriver_Blade extends WalletDriver {
 
-    private signer: BladeSigner|null = null
+    private connector: BladeConnector|null = null
 
     //
     // Public
@@ -43,15 +44,23 @@ export class WalletDriver_Blade extends WalletDriver {
 
     public async connect(network: string): Promise<void> {
         const hNetwork = WalletDriver_Blade.makeHederaNetwork(network)
-        if (this.signer === null && hNetwork !== null) {
-            const newSigner = new BladeSigner()
+        if (this.connector === null && hNetwork !== null) {
+            const newConnector = await BladeConnector.init(
+                ConnectorStrategy.AUTO,
+                {
+                    name: "HashScan",
+                    description: "A ledger explorer for Hedera network",
+                    url: "https://hashscan.io",
+                    icons: [ HederaLogo ]
+                }
+            )
             try {
                 const params = {
                     network: hNetwork,
                     dAppCode: "HashScan"
                 }
-                await newSigner.createSession(params)
-                this.signer = newSigner
+                await newConnector.createSession(params)
+                this.connector = newConnector
             } catch(reason) {
                 throw this.makeConnectError(reason)
             }
@@ -59,20 +68,20 @@ export class WalletDriver_Blade extends WalletDriver {
     }
 
     public async disconnect(): Promise<void> {
-        if (this.signer !== null) {
+        if (this.connector !== null) {
             try {
-                await this.signer.killSession()
+                await this.connector.killSession()
             } catch(reason) {
                 const extra = reason instanceof Error ? reason.message : JSON.stringify(reason)
                 throw this.disconnectFailure(extra)
             } finally {
-                this.signer = null
+                this.connector = null
             }
         }
     }
 
     public getSigner(): Signer|null {
-        return this.signer
+        return this.connector?.getSigner() ?? null
     }
 
     //
