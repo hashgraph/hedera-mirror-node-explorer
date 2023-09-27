@@ -41,7 +41,7 @@
     "vue": "^3.3.4",
     "vue-axios": "^3.5.2",
     "vue-router": "^4.2.5",
-    "web3-utils": "1.10.0"
+    "web3-utils": "1.10.2"
   },
   "devDependencies": {
     "@cypress/code-coverage": "^3.12.1",
