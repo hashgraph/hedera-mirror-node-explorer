@@ -19,7 +19,7 @@
  */
 
 import {computed, ref, Ref, WatchStopHandle} from 'vue';
-import {ContractAnalyzer, MetadataOrigin} from "@/utils/analyzer/ContractAnalyzer";
+import {ContractAnalyzer} from "@/utils/analyzer/ContractAnalyzer";
 import {Lookup} from "@/utils/cache/base/EntityCache";
 import {IPFSCache} from "@/utils/cache/IPFSCache";
 import {SolcUtils} from "@/utils/solc/SolcUtils";
@@ -75,20 +75,6 @@ export class ContractSourceAnalyzer {
             result = contentHash === this.keccakHash.value
         } else {
             result = false
-        }
-        return result
-    })
-
-    public readonly origin = computed(() => {
-        let result: MetadataOrigin|null
-        if (this.sourcifyContent.value !== null) {
-            result = MetadataOrigin.Sourcify
-        } else if (this.localStorageContent.value !== null) {
-            result = MetadataOrigin.LocalStorage
-        } else if (this.ipfsContent.value !== null) {
-            result = MetadataOrigin.IPFS
-        } else {
-            result = null
         }
         return result
     })

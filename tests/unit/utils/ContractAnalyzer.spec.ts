@@ -20,12 +20,12 @@
  *
  */
 
-import {describe, test, expect} from 'vitest'
+import {describe, expect, test} from 'vitest'
 import {Ref, ref} from "vue";
 import {flushPromises} from "@vue/test-utils";
 import MockAdapter from "axios-mock-adapter";
 import axios from "axios";
-import {ContractAnalyzer, MetadataOrigin} from "@/utils/analyzer/ContractAnalyzer";
+import {ContractAnalyzer} from "@/utils/analyzer/ContractAnalyzer";
 import {SAMPLE_CONTRACT} from "../Mocks";
 import {SourcifyResponse} from "@/utils/cache/SourcifyCache";
 import {routeManager} from "@/router";
@@ -42,7 +42,6 @@ describe("ContractAnalyzer.spec.ts", () => {
         const contractId: Ref<string|null> = ref(null)
         const contractAnalyzer = new ContractAnalyzer(contractId)
         expect(contractAnalyzer.contractId.value).toBeNull()
-        expect(contractAnalyzer.metadataOrigin.value).toBeNull()
         expect(contractAnalyzer.sourceFileName.value).toBeNull()
         expect(contractAnalyzer.contractName.value).toBeNull()
         expect(contractAnalyzer.interface.value).toBeNull()
@@ -54,7 +53,6 @@ describe("ContractAnalyzer.spec.ts", () => {
         contractAnalyzer.mount()
         await flushPromises()
         expect(contractAnalyzer.contractId.value).toBeNull()
-        expect(contractAnalyzer.metadataOrigin.value).toBeNull()
         expect(contractAnalyzer.sourceFileName.value).toBeNull()
         expect(contractAnalyzer.contractName.value).toBeNull()
         expect(contractAnalyzer.interface.value).toBeNull()
@@ -66,7 +64,6 @@ describe("ContractAnalyzer.spec.ts", () => {
         contractId.value = SAMPLE_CONTRACT.contract_id
         await flushPromises()
         expect(contractAnalyzer.contractId.value).toBe(SAMPLE_CONTRACT.contract_id)
-        expect(contractAnalyzer.metadataOrigin.value).toBeNull()
         expect(contractAnalyzer.sourceFileName.value).toBeNull()
         expect(contractAnalyzer.contractName.value).toBeNull()
         expect(contractAnalyzer.interface.value).toBeNull()
@@ -78,7 +75,6 @@ describe("ContractAnalyzer.spec.ts", () => {
         contractAnalyzer.unmount()
         await flushPromises()
         expect(contractAnalyzer.contractId.value).toBe(SAMPLE_CONTRACT.contract_id)
-        expect(contractAnalyzer.metadataOrigin.value).toBeNull()
         expect(contractAnalyzer.sourceFileName.value).toBeNull()
         expect(contractAnalyzer.contractName.value).toBeNull()
         expect(contractAnalyzer.interface.value).toBeNull()
@@ -104,7 +100,6 @@ describe("ContractAnalyzer.spec.ts", () => {
         const contractId: Ref<string|null> = ref(null)
         const contractAnalyzer = new ContractAnalyzer(contractId)
         expect(contractAnalyzer.contractId.value).toBeNull()
-        expect(contractAnalyzer.metadataOrigin.value).toBeNull()
         expect(contractAnalyzer.sourceFileName.value).toBeNull()
         expect(contractAnalyzer.contractName.value).toBeNull()
         expect(contractAnalyzer.interface.value).toBeNull()
@@ -116,7 +111,6 @@ describe("ContractAnalyzer.spec.ts", () => {
         contractAnalyzer.mount()
         await flushPromises()
         expect(contractAnalyzer.contractId.value).toBeNull()
-        expect(contractAnalyzer.metadataOrigin.value).toBeNull()
         expect(contractAnalyzer.sourceFileName.value).toBeNull()
         expect(contractAnalyzer.contractName.value).toBeNull()
         expect(contractAnalyzer.interface.value).toBeNull()
@@ -128,7 +122,6 @@ describe("ContractAnalyzer.spec.ts", () => {
         contractId.value = SAMPLE_CONTRACT.contract_id
         await flushPromises()
         expect(contractAnalyzer.contractId.value).toBe(SAMPLE_CONTRACT.contract_id)
-        expect(contractAnalyzer.metadataOrigin.value).toBe(MetadataOrigin.Sourcify)
         expect(contractAnalyzer.sourceFileName.value).toBe("HTSv2.sol")
         expect(contractAnalyzer.contractName.value).toBe("HTS")
         expect(contractAnalyzer.interface.value).not.toBeNull()
@@ -143,7 +136,6 @@ describe("ContractAnalyzer.spec.ts", () => {
         expect(contractAnalyzer.sourceFileName.value).toBeNull()
         expect(contractAnalyzer.contractName.value).toBeNull()
         expect(contractAnalyzer.interface.value).toBeNull()
-        expect(contractAnalyzer.metadataOrigin.value).toBeNull()
         expect(contractAnalyzer.byteCode.value).toBeNull()
         expect(contractAnalyzer.fullMatch.value).toBeNull()
         expect(contractAnalyzer.sourcifyURL.value).toBeNull()
