@@ -36,7 +36,6 @@ import {
 import {SearchRequest} from "@/utils/SearchRequest";
 import {base32ToAlias, base64DecToArr, byteToHex, hexToByte} from "@/utils/B64Utils";
 import {EntityID} from "@/utils/EntityID";
-import {nameServiceSetNetwork} from "../../../src/utils/NameService";
 
 const mock = new MockAdapter(axios)
 
@@ -101,8 +100,6 @@ mock.onGet(matcher_contracts_with_evm_address).reply(200, SAMPLE_CONTRACT)
 const INVALID_EVM_ADDRESS = "0102030405060708090102030405060708"; // 19 bytes : should be 20
 const matcher_contracts_with_invalid_evm_address = "/api/v1/contracts/" + INVALID_EVM_ADDRESS
 mock.onGet(matcher_contracts_with_invalid_evm_address).reply(400)
-
-nameServiceSetNetwork("") // to avoid 404 when calling Kabuto
 
 describe("SearchRequest.ts", () => {
 
