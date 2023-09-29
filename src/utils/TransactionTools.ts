@@ -317,6 +317,12 @@ export function makeOperatorAccountLabel(transaction: Transaction): string {
     return result
 }
 
+export function isSuccessfulResult(transactionResult: string): boolean {
+    return transactionResult === "SUCCESS"
+        || transactionResult === "FEE_SCHEDULE_FILE_PART_UPLOADED"
+        || transactionResult === "SUCCESS_BUT_MISSING_EXPECTED_OPERATION"
+}
+
 function formatMemo(memo64: string): string {
     let result: string
     try {

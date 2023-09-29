@@ -65,6 +65,12 @@
             </div>
           </template>
         </Property>
+        <Property v-if="displayResult" id="result">
+          <template v-slot:name>Result</template>
+          <template v-slot:value>
+            <StringValue :string-value="transaction?.result"/>
+          </template>
+        </Property>
         <Property id="consensusAt">
           <template v-slot:name>Consensus at</template>
           <template v-slot:value>
@@ -240,7 +246,7 @@
 <script lang="ts">
 
 import {computed, defineComponent, inject, onBeforeUnmount, onMounted} from 'vue';
-import {makeOperatorAccountLabel, makeTypeLabel} from "@/utils/TransactionTools";
+import {isSuccessfulResult, makeOperatorAccountLabel, makeTypeLabel} from "@/utils/TransactionTools";
 import AccountLink from "@/components/values/AccountLink.vue";
 import HexaValue from "@/components/values/HexaValue.vue";
 import TimestampValue from "@/components/values/TimestampValue.vue";
@@ -272,6 +278,7 @@ const MAX_INLINE_CHILDREN = 9
 export default defineComponent({
 
   name: 'TransactionDetails',
+  methods: {isSuccessfulResult},
 
   components: {
     InfoTooltip,
@@ -329,6 +336,9 @@ export default defineComponent({
         || (transactionDetail.value?.token_transfers && transactionDetail.value.token_transfers.length > 0)
         || (transactionDetail.value?.nft_transfers && transactionDetail.value.nft_transfers.length > 0)
     )
+
+    const displayResult = computed(
+        () => transactionAnalyzer.hasSucceeded.value && transactionAnalyzer.result.value != "SUCCESS")
 
     const routeName = computed(() => {
       return transactionAnalyzer.entityDescriptor.value?.routeName
@@ -442,6 +452,7 @@ export default defineComponent({
       routeToAllTransactions,
       displayAllChildrenLinks,
       displayTransfers,
+      displayResult,
       topicMessage: topicMessageLookup.entity,
       isTokenAssociation: transactionAnalyzer.isTokenAssociation,
       associatedTokens: transactionAnalyzer.tokens

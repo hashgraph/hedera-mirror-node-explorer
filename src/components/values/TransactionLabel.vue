@@ -39,6 +39,7 @@
 
 import {computed, defineComponent} from "vue";
 import {normalizeTransactionId} from "@/utils/TransactionID";
+import {isSuccessfulResult} from "@/utils/TransactionTools";
 
 export default defineComponent({
   name: "TransactionLabel",
@@ -54,7 +55,7 @@ export default defineComponent({
     })
 
     const errorFlagVisible = computed(() => {
-      return props.result && props.result !== "SUCCESS"
+      return props.result && !isSuccessfulResult(props.result)
     })
 
     return { transactionText, errorFlagVisible }

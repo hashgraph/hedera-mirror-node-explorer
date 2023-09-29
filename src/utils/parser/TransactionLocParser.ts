@@ -28,6 +28,7 @@ import {TransactionByHashCache} from "@/utils/cache/TransactionByHashCache";
 import {TransactionID} from "@/utils/TransactionID";
 import {TransactionByIdCache} from "@/utils/cache/TransactionByIdCache";
 import {ContractResultByHashCache} from "@/utils/cache/ContractResultByHashCache";
+import {isSuccessfulResult} from "@/utils/TransactionTools";
 
 export class TransactionLocParser {
 
@@ -83,11 +84,7 @@ export class TransactionLocParser {
         if (l !== null && this.watchHandle.value !== null) {
             if (o !== null) {
                 if (t !== null) {
-                    if (t.result == "SUCCESS") {
-                        result = null
-                    } else {
-                        result = t.result ?? null
-                    }
+                    result = isSuccessfulResult(t.result) ? null : t.result
                 } else if (this.loadCounter.value >= 1) {
                     if (o instanceof Timestamp) {
                         result = "Transaction with timestamp " + o + " was not found"
