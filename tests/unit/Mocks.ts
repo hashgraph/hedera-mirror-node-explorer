@@ -995,6 +995,29 @@ export const SAMPLE_CONTRACT_RESULT_DETAILS = {
     "nonce": 104
 }
 
+export const SAMPLE_FILE_UPDATE_TRANSACTION = {
+    "bytes": null,
+    "charged_tx_fee": 0,
+    "consensus_timestamp": "1654796534.535093000",
+    "entity_id": "0.0.111",
+    "max_fee": "10000000000",
+    "memo_base64": "w4PCrsOCwrfDg8K5dEY4w4LCrkrDg8KLw4PCkMODwo4=",
+    "name": "FILEUPDATE",
+    "nft_transfers": [],
+    "node": "0.0.3",
+    "nonce": 0,
+    "parent_consensus_timestamp": null,
+    "result": "FEE_SCHEDULE_FILE_PART_UPLOADED",
+    "scheduled": false,
+    "staking_reward_transfers": [],
+    "token_transfers": [],
+    "transaction_hash": "QIzB4Hk94f7FXwktUCVTbgpmsbMExd8MRBZ1n8nYbuwVKx9I2dSF6rYAYtCgtcGc",
+    "transaction_id": "0.0.56-1654796473-000000434",
+    "transfers": [],
+    "valid_duration_seconds": "120",
+    "valid_start_timestamp": "1654796473.000000434"
+}
+
 export const SAMPLE_CONTRACT_CALL_TRANSACTION = {
     "bytes": null,
     "charged_tx_fee": 0,
