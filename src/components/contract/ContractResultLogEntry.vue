@@ -66,7 +66,8 @@
             </Property>
         </template>
 
-    </template><template v-else>
+    </template>
+    <template v-else>
 
       <Property id="logData" :full-width="true">
           <template v-slot:name>Data</template>
