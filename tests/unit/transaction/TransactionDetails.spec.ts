@@ -33,6 +33,7 @@ import {
     SAMPLE_ACCOUNT,
     SAMPLE_ASSOCIATED_TOKEN,
     SAMPLE_ASSOCIATED_TOKEN_2,
+    SAMPLE_BLOCK_ZERO,
     SAMPLE_BLOCKSRESPONSE,
     SAMPLE_CONTRACT,
     SAMPLE_CONTRACT_RESULT_DETAILS,
@@ -118,7 +119,7 @@ describe("TransactionDetails.vue", () => {
         expect(wrapper.get("#transactionTypeValue").text()).toBe("CRYPTO TRANSFER")
         expect(wrapper.get("#consensusAtValue").text()).toBe("5:12:31.6676 AMFeb 28, 2022, UTC") // UTC because of HMSF.forceUTC
         expect(wrapper.get("#transactionHashValue").text()).toBe("a012 9612 32ed 7d28 4283 6e95 f7e9 c435 6fdf e2de 0819 9091 701a 969c 1d1f d936 71d3 078e e83b 28fb 460a 88b4 cbd8 ecd2Copy")
-        // expect(wrapper.get("#netAmountValue").text()).toBe("0.00000000$0.0000")
+        expect(wrapper.get("#blockNumberValue").text()).toBe("25175998")
         expect(wrapper.get("#chargedFeeValue").text()).toBe("0.00470065$0.00116")
         expect(wrapper.get("#maxFeeName").text()).toBe("Max Fee")
         expect(wrapper.get("#maxFeeValue").text()).toBe("1.00000000$0.24603")
@@ -1082,6 +1083,48 @@ describe("TransactionDetails.vue", () => {
         expect(wrapper.get("#transactionTypeValue").text()).toBe("FILE UPDATE")
         expect(wrapper.get("#resultValue").text()).toBe("FEE_SCHEDULE_FILE_PART_UPLOADED")
         expect(wrapper.get("#consensusAtValue").text()).toBe("5:42:14.5350 PMJun 9, 2022, UTC")
+
+        wrapper.unmount()
+        await flushPromises()
+    });
+
+    it("Should display block number 0", async () => {
+
+        await router.push("/") // To avoid "missing required param 'network'" error
+
+        const matcher1 = "/api/v1/transactions/" + SAMPLE_TRANSACTION.transaction_id
+        mock.onGet(matcher1).reply(200, SAMPLE_TRANSACTIONS);
+        const matcher11 = "/api/v1/transactions"
+        mock.onGet(matcher11).reply((config: AxiosRequestConfig) => {
+            if (config.params.timestamp == SAMPLE_TRANSACTION.consensus_timestamp) {
+                return [200, { transactions: [SAMPLE_TRANSACTION]}]
+            } else {
+                return [404]
+            }
+        });
+        const matcher111 = "/api/v1/blocks"
+        mock.onGet(matcher111).reply(200, { blocks: [SAMPLE_BLOCK_ZERO]});
+        const matcher2 = "/api/v1/tokens/" + SAMPLE_TOKEN.token_id
+        mock.onGet(matcher2).reply(200, SAMPLE_TOKEN);
+
+        const wrapper = mount(TransactionDetails, {
+            global: {
+                plugins: [router, Oruga]
+            },
+            props: {
+                transactionLoc: SAMPLE_TRANSACTION.consensus_timestamp,
+            },
+        });
+
+        await flushPromises()
+        // console.log(wrapper.html())
+        // console.log(wrapper.text())
+
+        expect(wrapper.text()).toMatch(RegExp("^Transaction " + normalizeTransactionId(SAMPLE_TRANSACTION.transaction_id, true)))
+
+        expect(wrapper.get("#transactionTypeValue").text()).toBe("CRYPTO TRANSFER")
+        expect(wrapper.get("#consensusAtValue").text()).toBe("5:12:31.6676 AMFeb 28, 2022, UTC") // UTC because of HMSF.forceUTC
+        expect(wrapper.get("#blockNumberValue").text()).toBe("0")
 
         wrapper.unmount()
         await flushPromises()

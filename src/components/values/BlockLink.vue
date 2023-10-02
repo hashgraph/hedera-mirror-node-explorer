@@ -23,7 +23,7 @@
 <!-- --------------------------------------------------------------------------------------------------------------- -->
 
 <template>
-  <div v-if="blockNumber && blockRoute" class="is-inline-block">
+  <div v-if="blockNumber !== undefined && blockRoute" class="is-inline-block">
     <router-link :to="blockRoute">
       <span class="is-numeric">{{ blockNumber }}</span>
     </router-link>
@@ -47,7 +47,7 @@ export default defineComponent({
   },
 
   setup(props) {
-    const blockRoute = computed(() => props.blockNumber ? routeManager.makeRouteToBlock(props.blockNumber) : null)
+    const blockRoute = computed(() => props.blockNumber !== undefined ? routeManager.makeRouteToBlock(props.blockNumber) : null)
     return { blockRoute }
   }
 });

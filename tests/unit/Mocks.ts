@@ -3016,6 +3016,19 @@ export const SAMPLE_BLOCKSRESPONSE = {
 
 export const SAMPLE_BLOCK = SAMPLE_BLOCKSRESPONSE.blocks[0]
 
+export const SAMPLE_BLOCK_ZERO = {
+    "count": 706,
+    "hapi_version": "0.43.0",
+    "hash": "0xaf24e166724841d838a23ef39040e94309cadb415ffbf1eaa9ce84c14ba1396a550de0a25dfe44f7b6a4a22782f8a06c",
+    "name": "2023-09-21T18_00_12.768624298Z.rcd.gz",
+    "number": 0,
+    "previous_hash": "0x000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000",
+    "size": 45836,
+    "timestamp": {"from": "1695319212.768624298", "to": "1695319212.768625003"},
+    "gas_used": 0,
+    "logs_bloom": "0x"
+}
+
 //
 // https://www.4byte.directory/api/v1/signatures/?hex_signature=0xb01ef608
 //
