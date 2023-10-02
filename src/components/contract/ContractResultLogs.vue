@@ -26,7 +26,7 @@
 
   <DashboardCard v-if="logs?.length" class="h-card">
     <template v-slot:title>
-      <span class="h-is-secondary-title">Logs</span>
+      <span class="h-is-secondary-title">Events</span>
     </template>
 
     <template v-slot:control v-if="logs.length > 2">
