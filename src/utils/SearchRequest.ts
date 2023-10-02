@@ -150,6 +150,7 @@ export class SearchRequest {
                         this.searchContract(hexBytes),
                         this.searchToken(hexBytes),
                     ]
+                    this.ethereumAddress = "0x" + byteToHex(hexBytes)
                     break
                 default:
                     promises = [
@@ -162,6 +163,7 @@ export class SearchRequest {
                             this.searchContract(evmAddress),
                             this.searchToken(evmAddress),
                         ])
+                        this.ethereumAddress = "0x" + byteToHex(evmAddress)
                     }
                     break
             }

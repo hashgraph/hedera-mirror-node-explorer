@@ -119,6 +119,7 @@ describe("SearchRequest.ts", () => {
         expect(r.topicMessages).toStrictEqual([])
         expect(r.contract).toBeNull()
         expect(r.block).toBeNull()
+        expect(r.ethereumAddress).toBeNull()
         expect(r.getErrorCount()).toBe(0)
 
     })
@@ -135,6 +136,7 @@ describe("SearchRequest.ts", () => {
         expect(r.topicMessages).toStrictEqual([])
         expect(r.contract).toBeNull()
         expect(r.block).toBeNull()
+        expect(r.ethereumAddress).toBe("0x" + SAMPLE_ACCOUNT_ADDRESS)
         expect(r.getErrorCount()).toBe(0)
 
     })
@@ -151,6 +153,7 @@ describe("SearchRequest.ts", () => {
         expect(r.topicMessages).toStrictEqual([])
         expect(r.contract).toBeNull()
         expect(r.block).toBeNull()
+        expect(r.ethereumAddress).toBeNull()
         expect(r.getErrorCount()).toBe(0)
 
     })
@@ -167,6 +170,7 @@ describe("SearchRequest.ts", () => {
         expect(r.topicMessages).toStrictEqual([])
         expect(r.contract).toBeNull()
         expect(r.block).toBeNull()
+        expect(r.ethereumAddress).toBeNull()
         expect(r.getErrorCount()).toBe(0)
 
     })
@@ -184,6 +188,7 @@ describe("SearchRequest.ts", () => {
         expect(r.topicMessages).toStrictEqual([])
         expect(r.contract).toBeNull()
         expect(r.block).toBeNull()
+        expect(r.ethereumAddress).toBeNull()
         expect(r.getErrorCount()).toBe(0)
 
     })
@@ -204,6 +209,7 @@ describe("SearchRequest.ts", () => {
         expect(r.topicMessages).toStrictEqual([])
         expect(r.contract).toBeNull()
         expect(r.block).toBeNull()
+        expect(r.ethereumAddress).toBeNull()
         expect(r.getErrorCount()).toBe(0)
 
     })
@@ -220,6 +226,7 @@ describe("SearchRequest.ts", () => {
         expect(r.topicMessages).toStrictEqual([])
         expect(r.contract).toBeNull()
         expect(r.block).toBeNull()
+        expect(r.ethereumAddress).toBeNull()
         expect(r.getErrorCount()).toBe(0)
 
     })
@@ -236,6 +243,7 @@ describe("SearchRequest.ts", () => {
         expect(r.topicMessages).toStrictEqual([])
         expect(r.contract).toBeNull()
         expect(r.block).toBeNull()
+        expect(r.ethereumAddress).toBeNull()
         expect(r.getErrorCount()).toBe(0)
 
     })
@@ -256,6 +264,7 @@ describe("SearchRequest.ts", () => {
         expect(r.topicMessages).toStrictEqual([])
         expect(r.contract).toBeNull()
         expect(r.block).toStrictEqual(SAMPLE_BLOCKSRESPONSE.blocks[0])
+        expect(r.ethereumAddress).toBeNull()
         expect(r.getErrorCount()).toBe(0)
 
     })
@@ -272,6 +281,7 @@ describe("SearchRequest.ts", () => {
         expect(r.topicMessages).toStrictEqual([])
         expect(r.contract).toBeNull()
         expect(r.block).toStrictEqual(SAMPLE_BLOCKSRESPONSE.blocks[0])
+        expect(r.ethereumAddress).toBeNull()
         expect(r.getErrorCount()).toBe(0)
 
     })
@@ -292,6 +302,7 @@ describe("SearchRequest.ts", () => {
         expect(r.topicMessages).toStrictEqual([])
         expect(r.contract).toBeNull()
         expect(r.block).toBeNull()
+        expect(r.ethereumAddress).toBeNull()
         expect(r.getErrorCount()).toBe(0)
 
     })
@@ -308,6 +319,7 @@ describe("SearchRequest.ts", () => {
         expect(r.topicMessages).toStrictEqual([])
         expect(r.contract).toBeNull()
         expect(r.block).toBeNull()
+        expect(r.ethereumAddress).toBe("0x" + SAMPLE_TOKEN_ADDRESS)
         expect(r.getErrorCount()).toBe(0)
 
     })
@@ -328,6 +340,7 @@ describe("SearchRequest.ts", () => {
         expect(r.topicMessages).toStrictEqual(SAMPLE_TOPIC_MESSAGES.messages)
         expect(r.contract).toBeNull()
         expect(r.block).toBeNull()
+        expect(r.ethereumAddress).toBeNull()
         expect(r.getErrorCount()).toBe(0)
 
     })
@@ -348,6 +361,7 @@ describe("SearchRequest.ts", () => {
         expect(r.topicMessages).toStrictEqual([])
         expect(r.contract).toStrictEqual(SAMPLE_CONTRACT)
         expect(r.block).toBeNull()
+        expect(r.ethereumAddress).toBeNull()
         expect(r.getErrorCount()).toBe(0)
 
     })
@@ -364,6 +378,7 @@ describe("SearchRequest.ts", () => {
         expect(r.topicMessages).toStrictEqual([])
         expect(r.contract).toStrictEqual(SAMPLE_CONTRACT)
         expect(r.block).toBeNull()
+        expect(r.ethereumAddress).toBe(SAMPLE_CONTRACT.evm_address)
         expect(r.getErrorCount()).toBe(0)
 
     })
@@ -381,6 +396,7 @@ describe("SearchRequest.ts", () => {
         expect(r.topicMessages).toStrictEqual([])
         expect(r.contract).toBeNull()
         expect(r.block).toBeNull()
+        expect(r.ethereumAddress).toBeNull()
         expect(r.getErrorCount()).toBe(0)
 
     })
@@ -397,6 +413,7 @@ describe("SearchRequest.ts", () => {
         expect(r.topicMessages).toStrictEqual([])
         expect(r.contract).toBeNull()
         expect(r.block).toBeNull()
+        expect(r.ethereumAddress).toBe("0x000000" + INVALID_EVM_ADDRESS)
         expect(r.getErrorCount()).toBe(0)
 
         const aliasHex2 = "0x" + INVALID_EVM_ADDRESS
@@ -411,6 +428,7 @@ describe("SearchRequest.ts", () => {
         expect(r2.topicMessages).toStrictEqual([])
         expect(r2.contract).toBeNull()
         expect(r.block).toBeNull()
+        expect(r.ethereumAddress).toBe("0x000000" + INVALID_EVM_ADDRESS)
         expect(r.getErrorCount()).toBe(0)
 
     })
@@ -428,6 +446,7 @@ describe("SearchRequest.ts", () => {
         expect(r.topicMessages).toStrictEqual([])
         expect(r.contract).toBeNull()
         expect(r.block).toBeNull()
+        expect(r.ethereumAddress).toBeNull()
         expect(r.getErrorCount()).toBe(0)
 
     })
