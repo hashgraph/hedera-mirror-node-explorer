@@ -21,7 +21,7 @@
 import {computed, ComputedRef, ref, Ref, watch, WatchStopHandle} from "vue";
 import {TokenRelationship, Transaction, TransactionType} from "@/schemas/HederaSchemas";
 import {EntityDescriptor} from "@/utils/EntityDescriptor";
-import {computeNetAmount} from "@/utils/TransactionTools";
+import {computeNetAmount, isSuccessfulResult} from "@/utils/TransactionTools";
 import {base64DecToArr, byteToHex} from "@/utils/B64Utils";
 import {systemContractRegistry} from "@/schemas/SystemContractRegistry";
 import {normalizeTransactionId} from "@/utils/TransactionID";
@@ -66,7 +66,8 @@ export class TransactionAnalyzer {
     public readonly result: ComputedRef<string|null> = computed(
         () => this.transaction.value?.result ?? null)
 
-    public readonly hasSucceeded: ComputedRef<boolean> = computed(() => this.result.value == "SUCCESS")
+    public readonly hasSucceeded: ComputedRef<boolean> = computed(
+        () => this.result.value != null && isSuccessfulResult(this.result.value))
 
     public readonly netAmount: ComputedRef<number> = computed(
         () => this.transaction.value !== null

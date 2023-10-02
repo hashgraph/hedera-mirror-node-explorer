@@ -137,33 +137,31 @@ export interface TransactionByIdResponse {
 }
 export interface Transaction {
 
-    bytes: string | null | undefined
-    charged_tx_fee: number | undefined
-    consensus_timestamp: string | undefined
-    entity_id: string |null | undefined             // Network entity ID in the format of shard.realm.num
-    max_fee: string | undefined
-    memo_base64: string | undefined                 // To be checked
-    name: TransactionType | undefined
-    node: string | null |  undefined                // Network entity ID in the format of shard.realm.num
-    nonce: number | undefined
-    parent_consensus_timestamp: string | null | undefined
-    result: string | undefined
-    scheduled: boolean | undefined
-    staking_reward_transfers: StakingRewardTransfer[] | undefined
-    token_transfers: TokenTransfer[] | undefined
-    transaction_hash: string | undefined
-    transaction_id: string | undefined
-    transfers: Transfer[] | undefined
-    valid_duration_seconds: string | undefined
-    valid_start_timestamp: string | undefined
-
+    bytes: string | null
+    charged_tx_fee: number
+    consensus_timestamp: string
+    entity_id: string | null           // Network entity ID in the format of shard.realm.num
+    max_fee: string
+    memo_base64: string | null         // To be checked
+    name: TransactionType
+    node: string | null                // Network entity ID in the format of shard.realm.num
+    nonce: number
+    parent_consensus_timestamp: string | null
+    result: string
+    scheduled: boolean
+    staking_reward_transfers: StakingRewardTransfer[]
+    token_transfers: TokenTransfer[]
+    transaction_hash: string
+    transaction_id: string
+    transfers: Transfer[]
+    valid_duration_seconds: string
+    valid_start_timestamp: string
 }
 
 export interface TransactionDetail extends Transaction {
 
-    nft_transfers: NftTransfer[] | undefined
-    assessed_custom_fees: CustomFee[] | undefined
-
+    nft_transfers: NftTransfer[]
+    assessed_custom_fees: CustomFee[]
 }
 
 

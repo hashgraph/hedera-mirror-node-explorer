@@ -42,6 +42,7 @@ import {
     SAMPLE_ETHEREUM_TRANSACTIONS_ON_CONTRACT,
     SAMPLE_FAILED_TRANSACTION,
     SAMPLE_FAILED_TRANSACTIONS,
+    SAMPLE_FILE_UPDATE_TRANSACTION,
     SAMPLE_NETWORK_EXCHANGERATE,
     SAMPLE_NETWORK_NODES,
     SAMPLE_PARENT_CHILD_TRANSACTIONS,
@@ -1041,4 +1042,49 @@ describe("TransactionDetails.vue", () => {
         wrapper.unmount()
         await flushPromises()
     });
+
+    it("Should display transaction returning FEE_SCHEDULE_FILE_PART_UPLOADED as successful", async () => {
+
+        await router.push("/") // To avoid "missing required param 'network'" error
+
+        const transaction = SAMPLE_FILE_UPDATE_TRANSACTION
+        const matcher1 = "/api/v1/transactions/" + transaction.transaction_id
+        mock.onGet(matcher1).reply(200, { transactions: [transaction]});
+        const matcher11 = "/api/v1/transactions"
+        mock.onGet(matcher11).reply((config: AxiosRequestConfig) => {
+            if (config.params.timestamp == transaction.consensus_timestamp) {
+                return [200, { transactions: [transaction]}]
+            } else {
+                return [404]
+            }
+        });
+
+        const wrapper = mount(TransactionDetails, {
+            global: {
+                plugins: [router, Oruga]
+            },
+            props: {
+                transactionLoc: transaction.consensus_timestamp,
+            },
+        });
+
+        await flushPromises()
+        // console.log(wrapper.html())
+        // console.log(wrapper.text())
+
+        expect(wrapper.text()).toMatch(RegExp("^Transaction " + normalizeTransactionId(transaction.transaction_id, true)))
+
+        const banner = wrapper.findComponent(NotificationBanner)
+        expect(banner.exists()).toBe(false)
+
+        expect(wrapper.text()).not.toContain("FAILURE")
+
+        expect(wrapper.get("#transactionTypeValue").text()).toBe("FILE UPDATE")
+        expect(wrapper.get("#resultValue").text()).toBe("FEE_SCHEDULE_FILE_PART_UPLOADED")
+        expect(wrapper.get("#consensusAtValue").text()).toBe("5:42:14.5350 PMJun 9, 2022, UTC")
+
+        wrapper.unmount()
+        await flushPromises()
+    });
+
 });
