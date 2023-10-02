@@ -39,6 +39,7 @@
     "crypto-js": "4.1.1",
     "ethers": "^5.7.2",
     "hashconnect": "^0.1.10",
+    "solc": "^0.8.21",
     "vue": "^3.3.4",
     "vue-router": "^4.2.5",
     "web3-utils": "1.10.0"
@@ -52,6 +53,7 @@
     "@vitejs/plugin-basic-ssl": "^1.0.1",
     "@vitejs/plugin-vue": "^4.4.0",
     "@vitest/coverage-v8": "^0.34.6",
+    "@vitest/web-worker": "^0.34.6",
     "@vue/eslint-config-typescript": "^11.0.3",
     "@vue/test-utils": "^2.4.1",
     "@vue/tsconfig": "^0.4.0",
@@ -69,6 +71,7 @@
     "typescript": "~5.0.4",
     "vite": "^4.5.0",
     "vite-plugin-node-polyfills": "^0.9.0",
+    "vite-plugin-require-transform": "^1.0.21",
     "vite-plugin-rewrite-all": "^1.0.1",
     "vitest": "^0.34.6",
     "vue-tsc": "^1.8.22"
