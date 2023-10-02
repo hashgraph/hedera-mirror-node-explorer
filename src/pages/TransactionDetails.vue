@@ -86,7 +86,7 @@
         <Property id="blockNumber">
           <template v-slot:name>Block</template>
           <template v-slot:value>
-            <BlockLink :block-number="blockNumber ?? undefined"/>
+            <BlockLink :block-number="blockNumber !== null ? blockNumber : undefined"/>
           </template>
         </Property>
         <Property id="nodeAccount">
