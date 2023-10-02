@@ -246,7 +246,7 @@
 <script lang="ts">
 
 import {computed, defineComponent, inject, onBeforeUnmount, onMounted} from 'vue';
-import {isSuccessfulResult, makeOperatorAccountLabel, makeTypeLabel} from "@/utils/TransactionTools";
+import {makeOperatorAccountLabel, makeTypeLabel} from "@/utils/TransactionTools";
 import AccountLink from "@/components/values/AccountLink.vue";
 import HexaValue from "@/components/values/HexaValue.vue";
 import TimestampValue from "@/components/values/TimestampValue.vue";
@@ -278,7 +278,6 @@ const MAX_INLINE_CHILDREN = 9
 export default defineComponent({
 
   name: 'TransactionDetails',
-  methods: {isSuccessfulResult},
 
   components: {
     InfoTooltip,
