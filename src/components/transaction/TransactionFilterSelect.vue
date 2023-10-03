@@ -40,48 +40,55 @@
 
 <script lang="ts">
 
-import {defineComponent, PropType} from "vue"
-import {TransactionType} from "@/schemas/HederaSchemas"
-import {makeTypeLabel} from "@/utils/TransactionTools"
-import {TransactionTableControllerXL} from "@/components/transaction/TransactionTableControllerXL"
-import {NftTransactionTableController} from "./NftTransactionTableController"
+import {defineComponent, PropType} from "vue";
+import {TransactionType} from "@/schemas/HederaSchemas";
+import {makeTypeLabel} from "@/utils/TransactionTools";
+import {TransactionTableControllerXL} from "@/components/transaction/TransactionTableControllerXL";
+import {NftTransactionTableController} from "./NftTransactionTableController";
 
 export default defineComponent({
-    name: "TransactionFilterSelect",
+  name: "TransactionFilterSelect",
 
-    props: {
-        controller: {
-            type: Object as PropType<
-                TransactionTableControllerXL | NftTransactionTableController
-            >,
-            required: true,
-        },
+  props: {
+    controller: {
+      type: Object as PropType<
+        TransactionTableControllerXL | NftTransactionTableController
+      >,
+      required: true,
     },
-
-    setup(props) {
-        const makeFilterLabel = (filterValue: string): string => {
-            return filterValue == ""
-                ? "TYPES: ALL"
-                : makeTypeLabel(filterValue as TransactionType)
-        }
-
-        return {
-            filterValues: makeFilterValues(),
-            selectedFilter: props.controller.transactionType,
-            makeFilterLabel,
-        }
+    nftFilter: {
+      type: Boolean,
+      required: false,
     },
-})
+  },
 
-export function makeFilterValues(): string[] {
-    const result = Object.keys(TransactionType).sort((a, b) => {
-        return makeTypeLabel(a as TransactionType) <
-        makeTypeLabel(b as TransactionType)
-            ? -1
-            : 1
+  setup(props) {
+
+    const makeFilterLabel = (filterValue: string): string => {
+      return filterValue == "" ? "TYPES: ALL" : makeTypeLabel(filterValue as TransactionType)
+    }
+
+    return {
+      filterValues: makeFilterValues(props.nftFilter),
+      selectedFilter: props.controller.transactionType,
+      makeFilterLabel,
+    }
+  }
+});
+
+export function makeFilterValues(nftFilter: boolean): string[] {
+  let result = Object
+    .keys(TransactionType)
+    .sort((a, b) => {
+      return makeTypeLabel(a as TransactionType) < makeTypeLabel(b as TransactionType) ? -1 : 1;
     })
-    result.splice(0, 0, "")
-    return result
+  if(nftFilter) {
+    result = result.filter(el => {
+      return el === "CRYPTOTRANSFER" || el.startsWith("TOKEN");
+    })
+  }
+  result.splice(0, 0, "")
+  return result
 }
 
 </script>

@@ -147,12 +147,16 @@ export default defineComponent({
             routeManager.routeToTransaction(t, event.ctrlKey || event.metaKey)
         }
 
+        const transactions = computed(() => {
+          return props.controller.rows.value.filter(el =>
+            !props.controller.transactionType.value || el.type === props.controller.transactionType.value
+          )
+        })
+
         return {
             isTouchDevice,
             isMediumScreen,
-            transactions: props.controller.rows as ComputedRef<
-                NftTransactionTransfer[]
-            >,
+            transactions: transactions,
             loading: props.controller.loading as ComputedRef<boolean>,
             total: props.controller.totalRowCount as ComputedRef<number>,
             currentPage: props.controller.currentPage as Ref<number>,

@@ -22,8 +22,8 @@
 //                                                      Account
 // ---------------------------------------------------------------------------------------------------------------------
 
-import {EntityID} from "@/utils/EntityID"
-import {makeDefaultNodeDescription} from "@/schemas/HederaUtils"
+import {EntityID} from "@/utils/EntityID";
+import {makeDefaultNodeDescription} from "@/schemas/HederaUtils";
 
 export interface AccountsResponse {
     accounts: AccountInfo[] | undefined
@@ -37,7 +37,7 @@ export interface AccountInfo {
     created_timestamp: string | null
     deleted: boolean | null
     expiry_timestamp: string | null
-    key: Key | null
+    key : Key | null
     max_automatic_token_associations: number | null
     memo: string | null
     receiver_sig_required: boolean | null
@@ -47,7 +47,7 @@ export interface AccountInfo {
     decline_reward: boolean | null      // Whether the account declines receiving a staking reward
     staked_account_id: string | null    // The account to which this account is staking
     staked_node_id: number | null       // The id of the node to which this account is staking
-    stake_period_start: string | null   // The staking period during which either the staking settings for this account
+    stake_period_start : string | null  // The staking period during which either the staking settings for this account
                                         // changed (such as starting staking or changing stakedNode) or the most recent
                                         // reward was earned, whichever is later. If this account is not currently
                                         // staked to a node, then the value is null
@@ -68,43 +68,43 @@ export interface Balance {
 }
 
 export interface TokenBalance {
-    token_id: string | null             // Network entity ID in the format of shard.realm.num
+    token_id: string | null // Network entity ID in the format of shard.realm.num
     balance: number
 }
 
 export interface TokenRelationshipResponse {
-    tokens: Array<TokenRelationship>
+    tokens: Array<TokenRelationship>,
     links: Links
 }
 
 export interface TokenRelationship {
-    automatic_association: boolean
-    balance: number
-    created_timestamp: string
-    freeze_status: string               // [ NOT_APPLICABLE, FROZEN, UNFROZEN ]
-    kyc_status: string                  // [ NOT_APPLICABLE, GRANTED, REVOKED ]
-    token_id: string | null
+    automatic_association: boolean,
+    balance: number,
+    created_timestamp: string,
+    freeze_status: string, // [ NOT_APPLICABLE, FROZEN, UNFROZEN ]
+    kyc_status: string,    // [ NOT_APPLICABLE, GRANTED, REVOKED ]
+    token_id: string | null,
 }
 
 export interface CryptoAllowancesResponse {
-    allowances: Array<CryptoAllowance>
+    allowances: Array<CryptoAllowance>,
     links: Links
 }
 
 export interface CryptoAllowance {
-    amount_granted: number              // The granted amount of the spender's allowance in tinybars.
-    owner: string | null                // Network entity ID in the format of shard.realm.num
-    spender: string | null              // Network entity ID in the format of shard.realm.num
+    amount_granted: number,     // The granted amount of the spender's allowance in tinybars.
+    owner: string | null,       // Network entity ID in the format of shard.realm.num
+    spender: string | null,     // Network entity ID in the format of shard.realm.num
     timestamp: TimestampRange
 }
 
 export interface TokenAllowancesResponse {
-    allowances: Array<TokenAllowance>
+    allowances: Array<TokenAllowance>,
     links: Links
 }
 
 export interface TokenAllowance extends CryptoAllowance {
-    token_id: string | null             // Network entity ID in the format of shard.realm.num
+    token_id: string | null,    // Network entity ID in the format of shard.realm.num
 }
 
 // ---------------------------------------------------------------------------------------------------------------------
@@ -118,7 +118,7 @@ export interface BalancesResponse {
 }
 
 export interface AccountBalance {
-    account: string | null              // Network entity ID in the format of shard.realm.num
+    account: string | null // Network entity ID in the format of shard.realm.num
     balance: number
     tokens: Array<TokenBalance>
 }
@@ -140,7 +140,6 @@ export interface NftTransactionHistory {
 export interface TransactionByIdResponse {
     transactions: Array<TransactionDetail> | undefined
 }
-
 export interface Transaction {
 
     bytes: string | null
@@ -181,15 +180,17 @@ export interface TransactionDetail extends Transaction {
     assessed_custom_fees: CustomFee[]
 }
 
+
 export interface NftTransfer {
+    receiver_account_id: string | null | undefined  // Network entity ID in the format of shard.realm.num
+    sender_account_id: string | null | undefined    // Network entity ID in the format of shard.realm.num
     is_approval: boolean
-    receiver_account_id: string | null | undefined // Network entity ID in the format of shard.realm.num
-    sender_account_id: string | null | undefined // Network entity ID in the format of shard.realm.num
     serial_number: number
-    token_id: string | null             // Network entity ID in the format of shard.realm.num}
+    token_id: string | null                         // Network entity ID in the format of shard.realm.num}
 }
 
 export function compareNftTransfer(t1: NftTransfer, t2: NftTransfer): number {
+
     let result = compareString(t1.sender_account_id, t2.sender_account_id)
 
     if (result == 0) {
@@ -208,25 +209,25 @@ export function compareNftTransfer(t1: NftTransfer, t2: NftTransfer): number {
 }
 
 export interface Transfer {
-    account: string | null              // Network entity ID in the format of shard.realm.num
+    account: string | null                          // Network entity ID in the format of shard.realm.num
     amount: number
     is_approval: boolean | undefined
 }
 
 export interface TokenTransfer extends Transfer {
-    token_id: string | null             // Network entity ID in the format of shard.realm.num
+    token_id: string | null                         // Network entity ID in the format of shard.realm.num
 }
 
 export interface StakingRewardTransfer {
-    account: string | null              // Network entity ID in the format of shard.realm.num
+    account: string | null                          // Network entity ID in the format of shard.realm.num
     amount: number
 }
 
 export interface CustomFee {
     amount: number | undefined
-    collector_account_id: string | undefined // Network entity ID in the format of shard.realm.num
+    collector_account_id: string | undefined        // Network entity ID in the format of shard.realm.num
     effective_payer_account_ids: string[] | undefined
-    token_id: string | null | undefined // Network entity ID in the format of shard.realm.num
+    token_id: string | null | undefined             // Network entity ID in the format of shard.realm.num
 }
 
 export enum TransactionType {
@@ -274,18 +275,15 @@ export enum TransactionType {
     UNCHECKEDSUBMIT = "UNCHECKEDSUBMIT",
     ETHEREUMTRANSACTION = "ETHEREUMTRANSACTION",
     NODESTAKEUPDATE = "NODESTAKEUPDATE",
-    UTILPRNG = "UTILPRNG",
+    UTILPRNG = "UTILPRNG"
 }
 
 export enum TransactionResult {
     SUCCESS = "success",
-    FAILURE = "fail",
+    FAILURE = "fail"
 }
 
-export function compareTransferByAccount(
-    t1: Transfer | StakingRewardTransfer,
-    t2: Transfer | StakingRewardTransfer,
-): number {
+export function compareTransferByAccount(t1: Transfer | StakingRewardTransfer, t2: Transfer | StakingRewardTransfer): number {
     let result: number
     const account1 = t1.account
     const account2 = t2.account
@@ -295,9 +293,9 @@ export function compareTransferByAccount(
         if (accountId1 != null && accountId2 != null) {
             result = accountId1.compareAccountID(accountId2)
         } else {
-            result = account1.localeCompare(account2)
+            result = account1.localeCompare(account2);
         }
-    } else if (account1 != null) {
+    } else if (account1 != null){
         result = +1
     } else if (account2 != null) {
         result = -1
@@ -307,12 +305,10 @@ export function compareTransferByAccount(
     return result
 }
 
-export function compareTokenTransferByTokenId(
-    t1: TokenTransfer,
-    t2: TokenTransfer,
-): number {
+export function compareTokenTransferByTokenId(t1: TokenTransfer, t2: TokenTransfer): number {
     return compareString(t1.token_id, t2.token_id)
 }
+
 
 // ---------------------------------------------------------------------------------------------------------------------
 //                                                      Token
@@ -331,6 +327,7 @@ export interface Token {
 }
 
 export interface TokenInfo {
+
     admin_key: Key | null
     auto_renew_account: string | null   // Network entity ID in the format of shard.realm.num
     auto_renew_period: number | null
@@ -348,35 +345,35 @@ export interface TokenInfo {
     name: string
     memo: string
     pause_key: Key | null
-    pause_status: string                // NOT_APPLICABLE, PAUSED, UNPAUSED
+    pause_status: string // NOT_APPLICABLE, PAUSED, UNPAUSED
     supply_key: Key | null
-    supply_type: string                 // FINITE, INFINITE
+    supply_type: string // FINITE, INFINITE
     symbol: string
-    token_id: string | null             // Network entity ID in the format of shard.realm.num
+    token_id: string | null     // Network entity ID in the format of shard.realm.num
     total_supply: string
-    treasury_account_id: string | null  // Network entity ID in the format of shard.realm.num
-    type: string                        // FUNGIBLE_COMMON, NON_FUNGIBLE_UNIQUE
+    treasury_account_id: string | null   // Network entity ID in the format of shard.realm.num
+    type: string // FUNGIBLE_COMMON, NON_FUNGIBLE_UNIQUE
     wipe_key: Key | null
     custom_fees: CustomFees
 }
 
 export interface CustomFees {
     created_timestamp: string | undefined
-    fixed_fees: FixedFee[] | undefined  // Network entity ID in the format of shard.realm.num
+    fixed_fees: FixedFee[] | undefined                    // Network entity ID in the format of shard.realm.num
     fractional_fees: FractionalFee[] | undefined
-    royalty_fees: RoyaltyFee[] | null | undefined // Network entity ID in the format of shard.realm.num
+    royalty_fees: RoyaltyFee[] | null | undefined             // Network entity ID in the format of shard.realm.num
 }
 
 export interface FixedFee {
     amount: number | undefined
-    collector_account_id: string | undefined // Network entity ID in the format of shard.realm.num
-    denominating_token_id: string | undefined // Network entity ID in the format of shard.realm.num
+    collector_account_id: string | undefined            // Network entity ID in the format of shard.realm.num
+    denominating_token_id: string | undefined           // Network entity ID in the format of shard.realm.num
 }
 
 export interface FractionalFee {
     amount: FractionAmount | undefined
-    collector_account_id: string | undefined // Network entity ID in the format of shard.realm.num
-    denominating_token_id: string | undefined // Network entity ID in the format of shard.realm.num
+    collector_account_id: string | undefined            // Network entity ID in the format of shard.realm.num
+    denominating_token_id: string | undefined           // Network entity ID in the format of shard.realm.num
     maximum: number | undefined
     mininum: number | undefined
     net_of_transfers: boolean | undefined
@@ -384,13 +381,13 @@ export interface FractionalFee {
 
 export interface RoyaltyFee {
     amount: FractionAmount | undefined
-    collector_account_id: string | undefined // Network entity ID in the format of shard.realm.num
-    fallback_fee: FallbackFee | undefined // Network entity ID in the format of shard.realm.num
+    collector_account_id: string | undefined            // Network entity ID in the format of shard.realm.num
+    fallback_fee: FallbackFee | undefined              // Network entity ID in the format of shard.realm.num
 }
 
 export interface FallbackFee {
     amount: number | undefined
-    denominating_token_id: string | undefined // Network entity ID in the format of shard.realm.num
+    denominating_token_id: string | undefined           // Network entity ID in the format of shard.realm.num
 }
 
 export interface FractionAmount {
@@ -405,7 +402,7 @@ export interface TokenBalancesResponse {
 }
 
 export interface TokenDistribution {
-    account: string | null              // Network entity ID in the format of shard.realm.num
+    account: string | null // Network entity ID in the format of shard.realm.num
     balance: number
 }
 
@@ -440,25 +437,25 @@ export interface TopicMessagesResponse {
 }
 
 export interface TopicMessage {
-    chunk_info: ChunkInfo | null
-    consensus_timestamp: string
-    topic_id: string | null
-    message: string
-    running_hash: string
-    running_hash_version: number
+    chunk_info: ChunkInfo | null,
+    consensus_timestamp: string,
+    topic_id: string | null,
+    message: string,
+    running_hash: string,
+    running_hash_version: number,
     sequence_number: number
 }
 
 export interface ChunkInfo {
-    initial_transaction_id: TransactionId
-    number: number
+    initial_transaction_id: TransactionId,
+    number: number,
     total: number
 }
 
 export interface TransactionId {
-    account_id: string | null
-    nonce: number | null
-    scheduled: boolean | null
+    account_id: string | null,
+    nonce: number | null,
+    scheduled: boolean | null,
     transaction_valid_start: string
 }
 
@@ -472,22 +469,23 @@ export interface ContractsResponse {
 }
 
 export interface Contract {
+
     admin_key: Key | null
     auto_renew_account: string | null   // Network entity ID in the format of shard.realm.num
     auto_renew_period: number | null
-    contract_id: string | null          // Network entity ID in the format of shard.realm.num
+    contract_id: string | null   // Network entity ID in the format of shard.realm.num
     created_timestamp: string | null
     deleted: boolean
     evm_address: string
     expiration_timestamp: string | null
-    file_id: string | null | undefined  // Network entity ID in the format of shard.realm.num
+    file_id: string | null | undefined   // Network entity ID in the format of shard.realm.num
     max_automatic_token_associations: number | null
     memo: string
     nonce: number | undefined
-    obtainer_id: string | null          // Network entity ID in the format of shard.realm.num
+    obtainer_id: string | null   // Network entity ID in the format of shard.realm.num
     permanent_removal: boolean | null
-    proxy_account_id: string | null     // Network entity ID in the format of shard.realm.num
-    timestamp: TimestampRange           // timestamp range the entity is valid for
+    proxy_account_id: string | null   // Network entity ID in the format of shard.realm.num
+    timestamp: TimestampRange   // timestamp range the entity is valid for
 }
 
 export interface ContractResponse extends Contract {
@@ -496,8 +494,8 @@ export interface ContractResponse extends Contract {
 }
 
 export interface TimestampRange {
-    from: string | undefined            // The inclusive from timestamp in seconds
-    to: string | null | undefined       // The exclusive to timestamp in seconds
+    from: string | undefined    // The inclusive from timestamp in seconds
+    to: string | null | undefined   // The exclusive to timestamp in seconds
 }
 
 export interface ContractResultsResponse {
@@ -525,20 +523,20 @@ export interface ContractResult {
 
 export interface ContractResultDetails extends ContractResult {
     access_list: string | null
-    block_gas_used: number | null       // integer
+    block_gas_used: number | null // integer
     block_hash: string | null
-    block_number: number | null         // integer
+    block_number: number | null // integer
     chain_id: string | null
     gas_price: string | null
     logs: ContractResultLog[]
     max_fee_per_gas: string | null
     max_priority_fee_per_gas: string | null
-    nonce: number | null                // integer
+    nonce: number | null // integer
     r: string | null
     s: string | null
     state_changes: ContractResultStateChange[]
-    transaction_index: number | null    // integer
-    type: number | null                 // The type of the wrapped ethereum transaction, 0 (Pre-Eip1559) or 2 (Post-Eip1559)
+    transaction_index: number | null // integer
+    type: number | null // The type of the wrapped ethereum transaction, 0 (Pre-Eip1559) or 2 (Post-Eip1559)
     v: number | null
 }
 
@@ -547,7 +545,7 @@ export interface ContractResultLog {
     bloom: string | null | undefined
     contract_id: string | null | undefined
     data: string | null | undefined
-    index: number | undefined           // integer
+    index: number | undefined // integer
     topics: string[] | undefined
 }
 
@@ -565,34 +563,34 @@ export interface ContractActionsResponse {
 }
 
 export interface ContractAction {
-    call_depth: number | undefined
-    call_operation_type: string | undefined
-    call_type: string | undefined
-    caller: string | null | undefined   // Network entity ID in the format of shard.realm.num
-    caller_type: string | undefined     // enum EntityType
-    from: string | undefined
-    gas: number | undefined
-    gas_used: number | undefined
-    index: number | undefined
-    input: string | null | undefined
-    recipient: string | null | undefined
-    recipient_type: string | null | undefined // enum EntityType
-    result_data: string | null | undefined
-    result_data_type: string | undefined // enum ResultDataType
-    timestamp: string | undefined
-    to: string | null | undefined
+    call_depth: number | undefined,
+    call_operation_type: string | undefined,
+    call_type: string | undefined,
+    caller: string | null | undefined, // Network entity ID in the format of shard.realm.num
+    caller_type: string | undefined,   // enum EntityType
+    from: string | undefined,
+    gas: number | undefined,
+    gas_used: number | undefined,
+    index: number | undefined,
+    input: string | null | undefined,
+    recipient: string | null | undefined,
+    recipient_type: string | null | undefined, // enum EntityType
+    result_data: string | null | undefined,
+    result_data_type: string | undefined,      // enum ResultDataType
+    timestamp: string | undefined,
+    to: string | null | undefined,
     value: number | undefined
 }
 
 export enum EntityType {
     ACCOUNT = "ACCOUNT",
-    CONTRACT = "CONTRACT",
+    CONTRACT = "CONTRACT"
 }
 
 export enum ResultDataType {
     OUTPUT = "OUTPUT",
     REVERT_REASON = "REVERT_REASON",
-    ERROR = "ERROR",
+    ERROR = "ERROR"
 }
 
 // ---------------------------------------------------------------------------------------------------------------------
@@ -606,19 +604,19 @@ export interface NetworkNodesResponse {
 
 export interface NetworkNode {
     description: string | null | undefined
-    file_id: string | null | undefined  // Network entity ID in the format of shard.realm.num
+    file_id: string | null | undefined   // Network entity ID in the format of shard.realm.num
     memo: string | undefined
     node_id: number | undefined
-    node_account_id: string | null | undefined // Network entity ID in the format of shard.realm.num
+    node_account_id: string | null | undefined   // Network entity ID in the format of shard.realm.num
     node_cert_hash: string | null | undefined
-    public_key: string | null | undefined // hex encoded X509 RSA public key used to sign stream files
+    public_key: string | null | undefined   // hex encoded X509 RSA public key used to sign stream files
     service_endpoints: ServiceEndPoint[] | undefined
     timestamp: TimestampRange | undefined
-    max_stake: number | null            // The maximum stake (rewarded or not rewarded) this node can have as consensus weight
-    min_stake: number | null            // The minimum stake (rewarded or not rewarded) this node must reach before having non-zero consensus weight
-    stake: number | null                // The node consensus weight at the beginning of the staking period
-    stake_not_rewarded: number | null   // The sum (balance + stakedToMe) for all accounts staked to this node with declineReward=true at the beginning of the staking period
-    stake_rewarded: number | null       // The sum (balance + staked) for all accounts staked to the node that are not declining rewards at the beginning of the staking period
+    max_stake: number | null // The maximum stake (rewarded or not rewarded) this node can have as consensus weight
+    min_stake: number | null // The minimum stake (rewarded or not rewarded) this node must reach before having non-zero consensus weight
+    stake: number | null // The node consensus weight at the beginning of the staking period
+    stake_not_rewarded: number | null // The sum (balance + stakedToMe) for all accounts staked to this node with declineReward=true at the beginning of the staking period
+    stake_rewarded: number | null // The sum (balance + staked) for all accounts staked to the node that are not declining rewards at the beginning of the staking period
     staking_period: TimestampRange | null
     reward_rate_start: number | null
 }
@@ -629,41 +627,27 @@ export interface ServiceEndPoint {
 }
 
 export function makeShortNodeDescription(description: string): string {
-    const separator = description.indexOf("|") ?? -1
-    return separator !== -1
-        ? description.slice(0, separator) ?? null
-        : description
+    const separator = description.indexOf('|') ?? -1
+    return (separator !== -1) ? (description.slice(0, separator) ?? null) : description
 }
 
 export function makeNodeSelectorDescription(node: NetworkNode): string {
     const percentFormatter = new Intl.NumberFormat("en-US", {
-        style: "percent",
-        maximumFractionDigits: 1,
+        style: 'percent',
+        maximumFractionDigits: 1
     })
-    const unclampedStakeAmount =
-        (node.stake_rewarded ?? 0) + (node.stake_not_rewarded ?? 0)
-    const percentMin = node.min_stake
-        ? unclampedStakeAmount / node.min_stake
-        : 0
-    const percentMax = node.max_stake
-        ? (node.stake_rewarded ?? 0) / node.max_stake
-        : 0
+    const unclampedStakeAmount = (node.stake_rewarded ?? 0) + (node.stake_not_rewarded ?? 0)
+    const percentMin = node.min_stake ? unclampedStakeAmount / node.min_stake : 0
+    const percentMax = node.max_stake ? (node.stake_rewarded ?? 0) / node.max_stake : 0
 
-    let result =
-        node.node_id +
-        " - " +
-        (node.description ?? makeDefaultNodeDescription(node.node_id ?? null))
+    let result = node.node_id
+        + ' - '
+        + (node.description ?? makeDefaultNodeDescription(node.node_id ?? null))
 
     if (percentMin !== 0 && percentMin < 1) {
-        result +=
-            " - Not Rewarding (total stake is " +
-            percentFormatter.format(percentMin) +
-            " of min)"
+        result += " - Not Rewarding (total stake is " + percentFormatter.format(percentMin) + " of min)"
     } else if (percentMax !== 0) {
-        result +=
-            " - Rewarding (staked for reward is " +
-            percentFormatter.format(percentMax) +
-            " of max)"
+        result += " - Rewarding (staked for reward is " + percentFormatter.format(percentMax) + " of max)"
     }
     return result
 }
@@ -672,33 +656,33 @@ export function makeNodeSelectorDescription(node: NetworkNode): string {
 //                                                      Network
 // ---------------------------------------------------------------------------------------------------------------------
 
-export interface NetworkExchangeRateSetResponse {
-    current_rate: ExchangeRate
-    next_rate: ExchangeRate
+export interface NetworkExchangeRateSetResponse{
+    current_rate: ExchangeRate,
+    next_rate: ExchangeRate,
     timestamp: string
 }
 
 export interface ExchangeRate {
-    cent_equivalent: number
-    expiration_time: number
+    cent_equivalent: number,
+    expiration_time: number,
     hbar_equivalent: number
 }
 
 export interface NetworkSupplyResponse {
-    released_supply: string | undefined // The network's released supply of hbars in tinybars
-    timestamp: string | undefined       // The consensus timestamp at which the released supply was valid
-    total_supply: string | undefined    // The network's total supply of hbars in tinybars
+    released_supply:	string | undefined  // The network's released supply of hbars in tinybars
+    timestamp: string | undefined  // The consensus timestamp at which the released supply was valid
+    total_supply: string | undefined  // The network's total supply of hbars in tinybars
 }
 
-export interface NetworkStake {
-    max_staking_reward_rate_per_hbar: number
-    node_reward_fee_fraction: number
-    stake_total: number
-    staking_period: TimestampRange
-    staking_period_duration: number
-    staking_periods_stored: number
-    staking_reward_fee_fraction: number
-    staking_reward_rate: number
+export interface  NetworkStake {
+    max_staking_reward_rate_per_hbar: number,
+    node_reward_fee_fraction: number,
+    stake_total: number,
+    staking_period: TimestampRange,
+    staking_period_duration: number,
+    staking_periods_stored: number,
+    staking_reward_fee_fraction: number,
+    staking_reward_rate: number,
     staking_start_threshold: number
 }
 
@@ -712,7 +696,7 @@ export interface BlocksResponse {
 }
 
 export interface Block {
-    count: number | undefined           // integer - minimum 0
+    count: number | undefined // integer - minimum 0
     gas_used: number | null | undefined // integer - minimum 0
     hapi_version: string | undefined
     hash: string | undefined
@@ -720,13 +704,13 @@ export interface Block {
     name: string | undefined
     number: number | undefined
     previous_hash: string | undefined
-    size: number | null | undefined     // integer
+    size: number | null | undefined // integer
     timestamp: TimestampRange | undefined
 }
 
 export interface TimestampRange {
-    from: string | undefined            // pattern: ^\d{1,10}(\.\d{1,9})?$
-    to: string | null | undefined       // pattern: ^\d{1,10}(\.\d{1,9})?$
+    from: string | undefined // pattern: ^\d{1,10}(\.\d{1,9})?$
+    to: string | null | undefined // pattern: ^\d{1,10}(\.\d{1,9})?$
 }
 
 // ---------------------------------------------------------------------------------------------------------------------
@@ -739,7 +723,7 @@ export interface StakingRewardsResponse {
 }
 
 export interface StakingReward {
-    account_id: string | null
+    account_id: string|null
     amount: number
     timestamp: string
 }
@@ -756,7 +740,7 @@ export interface Key {
 export enum KeyType {
     ECDSA_SECP256K1 = "ECDSA_SECP256K1",
     ED25519 = "ED25519",
-    ProtobufEncoded = "ProtobufEncoded",
+    ProtobufEncoded = "ProtobufEncoded"
 }
 
 export interface Links {
@@ -769,10 +753,7 @@ export const infiniteDuration = 31556888202959784
 //                                                      Private
 // ---------------------------------------------------------------------------------------------------------------------
 
-function compareString(
-    s1: string | null | undefined,
-    s2: string | null | undefined,
-): number {
+function compareString(s1: string|null|undefined, s2: string|null|undefined): number {
     let result: number
 
     if (s1 && s2) {
@@ -789,10 +770,7 @@ function compareString(
     return result
 }
 
-function compareNumber(
-    n1: number | null | undefined,
-    n2: number | null | undefined,
-): number {
+function compareNumber(n1: number|null|undefined, n2: number|null|undefined): number {
     let result: number
 
     if (n1 && n2) {

@@ -44,24 +44,24 @@
         <!-- #0 : account id -->
         <div>
           <AccountLink
-            v-bind:account-id="nftTransferLayout[i-1].sender_account_id"
-            v-bind:no-anchor="compact"
-            null-label="MINT"
-            data-cy="sourceAccount"/>
+              v-bind:account-id="nftTransferLayout[i-1].sender_account_id"
+              v-bind:no-anchor="compact"
+              null-label="MINT"
+              data-cy="sourceAccount"/>
         </div>
 
         <!-- #1 : arrow -->
-        <div style="position: relative">
+        <div  style="position: relative">
           <ArrowSegment v-bind:compact="compact"/>
         </div>
 
         <!-- #2 : nfts -->
         <div>
           <TokenLink
-            v-bind:token-id="nftTransferLayout[i-1].token_id ?? undefined"
-            v-bind:show-extra="true"
-            v-bind:no-anchor="compact"
-            data-cy="nft"/>
+              v-bind:token-id="nftTransferLayout[i-1].token_id ?? undefined"
+              v-bind:show-extra="true"
+              v-bind:no-anchor="compact"
+              data-cy="nft"/>
           <div class="h-is-text-size-3" style="max-width: 200px">
             <template v-if="!compact">
             <span v-for="sn in nftTransferLayout[i-1].serial_numbers" :key="sn">
@@ -72,22 +72,22 @@
         </div>
 
         <!-- #3 : arrow -->
-        <div style="position: relative">
+        <div  style="position: relative">
           <ArrowSegment v-bind:compact="compact"/>
         </div>
 
         <!-- #4 : account id -->
         <div>
           <AccountLink
-            v-bind:account-id="nftTransferLayout[i-1].receiver_account_id"
-            v-bind:no-anchor="compact"
-            null-label="BURN"
-            data-cy="destinationAccount"/>
+              v-bind:account-id="nftTransferLayout[i-1].receiver_account_id"
+              v-bind:no-anchor="compact"
+              null-label="BURN"
+              data-cy="destinationAccount"/>
         </div>
 
         <!-- #5 : description -->
         <div v-if="!compact && descriptionVisible">
-          <span class="h-is-smaller">{{ nftTransferLayout[i - 1].description }}</span>
+          <span class="h-is-smaller">{{ nftTransferLayout[i-1].description }}</span>
         </div>
 
       </template>
@@ -103,38 +103,38 @@
 
 <script lang="ts">
 
-import {defineComponent, inject, PropType, ref, watch} from "vue"
-import AccountLink from "@/components/values/AccountLink.vue"
-import TokenLink from "@/components/values/TokenLink.vue"
-import ArrowSegment from "@/components/transfer_graphs/ArrowSegment.vue"
-import {NFTTransferLayout} from "@/components/transfer_graphs/layout/NFTTransferLayout"
-import {TransactionDetail} from "@/schemas/HederaSchemas"
+import {defineComponent, inject, PropType, ref, watch} from "vue";
+import AccountLink from "@/components/values/AccountLink.vue";
+import TokenLink from "@/components/values/TokenLink.vue";
+import ArrowSegment from "@/components/transfer_graphs/ArrowSegment.vue";
+import {NFTTransferLayout} from "@/components/transfer_graphs/layout/NFTTransferLayout";
+import {TransactionDetail} from "@/schemas/HederaSchemas";
 
 export default defineComponent({
-    name: "NftTransferGraph",
-    components: {TokenLink, AccountLink, ArrowSegment},
-    props: {
-        transaction: Object as PropType<TransactionDetail>,
-        compact: {
-            type: Boolean,
-            default: false
-        }
-    },
-    setup(props) {
-
-        const nftTransferLayout = ref(NFTTransferLayout.make(props.transaction))
-
-        watch(() => props.transaction, () => {
-            nftTransferLayout.value = NFTTransferLayout.make(props.transaction)
-        })
-
-        const descriptionVisible = inject("isSmallScreen", true)
-
-        return {
-            nftTransferLayout,
-            descriptionVisible
-        }
+  name: "NftTransferGraph",
+  components: {TokenLink, AccountLink, ArrowSegment},
+  props: {
+    transaction: Object as PropType<TransactionDetail>,
+    compact: {
+      type: Boolean,
+      default: false
     }
+  },
+  setup(props) {
+
+    const nftTransferLayout = ref(NFTTransferLayout.make(props.transaction))
+
+    watch(() => props.transaction, () => {
+      nftTransferLayout.value = NFTTransferLayout.make(props.transaction)
+    })
+
+    const descriptionVisible = inject("isSmallScreen", true)
+
+    return {
+      nftTransferLayout,
+      descriptionVisible
+    }
+  }
 })
 
 </script>
@@ -146,13 +146,13 @@ export default defineComponent({
 <style scoped>
 
 .graph-container {
-    display: inline-grid;
-    grid-template-columns: repeat(5, auto);
-    column-gap: 1em;
+  display: inline-grid;
+  grid-template-columns: repeat(5, auto);
+  column-gap: 1em;
 }
 
 .graph-container-6 {
-    grid-template-columns: repeat(6, auto);
+  grid-template-columns: repeat(6, auto)
 }
 
 </style>

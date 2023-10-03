@@ -89,18 +89,9 @@ export class NftTransactionTableController extends TableController<
         const params = {} as {
             limit: number
             order: string
-            transactiontype: string | undefined
-            timestamp: string | undefined
         }
         params.limit = limit
         params.order = order
-
-        if (this.transactionType.value != "") {
-            params.transactiontype = this.transactionType.value
-        }
-        if (consensusTimestamp !== null) {
-            params.timestamp = operator + ":" + consensusTimestamp
-        }
 
         const r = await axios.get<NftTransactionHistory>(
             `api/v1/tokens/${this.tokenId.value}/nfts/${this.serialNumber.value}/transactions`,

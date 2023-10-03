@@ -38,7 +38,6 @@ export class NftBySerialCache extends SerialCache<string, Nft | null> {
             const response = await axios.get<Nft>(
                 `api/v1/tokens/${tokenIdSerialArray[0]}/nfts/${tokenIdSerialArray[1]}`,
             )
-            console.log(response)
             result = Promise.resolve(response.data)
         } catch (error) {
             if (axios.isAxiosError(error) && error.response?.status == 404) {

@@ -18,21 +18,16 @@
  *
  */
 
-import {
-    KeyOperator,
-    SortOrder,
-    TableController,
-} from "@/utils/table/TableController"
-import {Transaction, TransactionResponse} from "@/schemas/HederaSchemas"
-import {ComputedRef, ref, Ref, watch, WatchStopHandle} from "vue"
-import axios, {AxiosResponse} from "axios"
-import {LocationQuery, Router} from "vue-router"
-import {fetchStringQueryParam} from "@/utils/RouteManager"
+import {KeyOperator, SortOrder, TableController} from "@/utils/table/TableController";
+import {Transaction, TransactionResponse} from "@/schemas/HederaSchemas";
+import {ComputedRef, ref, Ref, watch, WatchStopHandle} from "vue";
+import axios, {AxiosResponse} from "axios";
+import {LocationQuery, Router} from "vue-router";
+import {fetchStringQueryParam} from "@/utils/RouteManager";
 
-export class TransactionTableControllerXL extends TableController<
-    Transaction,
-    string
-> {
+
+export class TransactionTableControllerXL extends TableController<Transaction, string> {
+
     private readonly accountId: Ref<string | null>
     private readonly accountIdMandatory: boolean
 
@@ -40,24 +35,13 @@ export class TransactionTableControllerXL extends TableController<
     // Public
     //
 
-    public constructor(
-        router: Router,
-        accountId: Ref<string | null>,
-        pageSize: ComputedRef<number>,
-        accountIdMandatory: boolean,
-        pageParamName = "p",
-        keyParamName = "k",
-    ) {
-        super(
-            router,
-            pageSize,
-            10 * pageSize.value,
-            5000,
-            10,
-            100,
-            pageParamName,
-            keyParamName,
-        )
+    public constructor(router: Router,
+                       accountId: Ref<string | null>,
+                       pageSize: ComputedRef<number>,
+                       accountIdMandatory: boolean,
+                       pageParamName = "p", keyParamName= "k") {
+        super(router, pageSize, 10 * pageSize.value, 5000, 10, 100,
+            pageParamName, keyParamName);
         this.accountId = accountId
         this.accountIdMandatory = accountIdMandatory
         this.watchAndReload([this.transactionType, this.accountId])
@@ -69,12 +53,8 @@ export class TransactionTableControllerXL extends TableController<
     // TableController
     //
 
-    public async load(
-        consensusTimestamp: string | null,
-        operator: KeyOperator,
-        order: SortOrder,
-        limit: number,
-    ): Promise<Transaction[] | null> {
+    public async load(consensusTimestamp: string | null, operator: KeyOperator,
+                      order: SortOrder, limit: number): Promise<Transaction[] | null> {
         let result: Promise<Transaction[] | null>
 
         if (this.accountIdMandatory && this.accountId.value === null) {
@@ -98,16 +78,10 @@ export class TransactionTableControllerXL extends TableController<
             if (consensusTimestamp !== null) {
                 params.timestamp = operator + ":" + consensusTimestamp
             }
-            const cb = (
-                r: AxiosResponse<TransactionResponse>,
-            ): Promise<Transaction[] | null> => {
+            const cb = (r: AxiosResponse<TransactionResponse>): Promise<Transaction[] | null> => {
                 return Promise.resolve(r.data.transactions ?? [])
             }
-            result = axios
-                .get<TransactionResponse>("api/v1/transactions", {
-                    params: params,
-                })
-                .then(cb)
+            result = axios.get<TransactionResponse>("api/v1/transactions", {params: params}).then(cb)
         }
 
         return result
@@ -128,26 +102,23 @@ export class TransactionTableControllerXL extends TableController<
     public mount(): void {
         this.transactionType.value = this.fetchTransactionTypeParam() // Must be done before calling mount()
         super.mount()
-        this.watchTransactionTypeHandle = watch(
-            this.transactionType, () => this.updateRouteQuery(),
-        )
+        this.watchTransactionTypeHandle = watch(this.transactionType, () => this.updateRouteQuery())
     }
 
     public unmount(): void {
         if (this.watchTransactionTypeHandle !== null) {
             this.watchTransactionTypeHandle()
         }
-        this.watchTransactionTypeHandle = null
+        this.watchTransactionTypeHandle = null;
         super.unmount()
     }
 
     protected makeRouteQuery(): LocationQuery {
         const result = super.makeRouteQuery()
         if (this.transactionType.value != "") {
-            result[this.typeParamName] =
-                this.transactionType.value.toLowerCase()
+            result[this.typeParamName] = this.transactionType.value.toLowerCase()
         } else {
-            delete (result[this.typeParamName])
+            delete(result[this.typeParamName])
         }
         return result
     }
@@ -157,14 +128,10 @@ export class TransactionTableControllerXL extends TableController<
     //
 
     private readonly typeParamName = "type"
-    private watchTransactionTypeHandle: WatchStopHandle | null = null
+    private watchTransactionTypeHandle: WatchStopHandle|null = null
 
     public fetchTransactionTypeParam(): string {
-        return (
-            fetchStringQueryParam(
-                this.typeParamName,
-                this.router.currentRoute.value,
-            )?.toUpperCase() ?? ""
-        )
+        return fetchStringQueryParam(this.typeParamName, this.router.currentRoute.value)?.toUpperCase() ?? ""
     }
+
 }

@@ -143,8 +143,6 @@ export default defineComponent({
             }),
         );
 
-        console.log(nftTransferLayout);
-
         watch(
             () => props.transaction,
             () => {

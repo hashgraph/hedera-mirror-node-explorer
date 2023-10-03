@@ -28,90 +28,81 @@
     class="section"
   >
     <DashboardCard>
-      <template v-slot:title>
-        <span class="h-is-primary-title mr-1"> Serial Number </span>
+      <template #title>
+        <span class="h-is-primary-title mr-1"> Serial Number {{ serialNumber }}</span>
         <div
           class="is-inline-block h-is-tertiary-text h-is-extra-text should-wrap"
           style="word-break: break-all"
         >
-          {{ serialNumber }}
-        </div>
-        <div
-          id="entityId"
-          class="headline-grid h-is-tertiary-text mt-3 is-align-items-baseline"
-        >
-          <div class="h-is-property-text has-text-weight-light">
-            Token ID:
-          </div>
-          <div>
-            <Copyable :content-to-copy="normalizedTokenId ?? ''">
-              <template v-slot:content>
-                <span>{{ normalizedTokenId ?? "" }}</span>
-              </template>
-            </Copyable>
-          </div>
+          {{ symbol }}
         </div>
       </template>
 
-      <template v-slot:content>
+      <template #content>
         <NotificationBanner
           v-if="notification"
           :message="notification"
         />
       </template>
 
-      <template v-slot:leftContent>
+      <template #leftContent>
+        <Property id="tokenId">
+          <template #name>Token ID</template>
+          <template #value>
+            <TokenLink :token-id="tokenId" />
+          </template>
+        </Property>
         <Property id="accountId">
-          <template v-slot:name>Account ID</template>
-          <template v-slot:value>
+          <template #name>Account ID</template>
+          <template #value>
             <AccountLink
-              :account-id="tokenInfo?.account_id"
+              :account-id="nftInfo?.account_id"
               :show-none="true"
             />
           </template>
         </Property>
         <Property id="createdTimestamp">
-          <template v-slot:name>Created Timestamp</template>
-          <template v-slot:value>
+          <template #name>Created Timestamp</template>
+          <template #value>
             <TimestampValue
               :show-none="true"
-              :timestamp="tokenInfo?.created_timestamp"
+              :timestamp="nftInfo?.created_timestamp"
             />
           </template>
         </Property>
         <Property id="delegatingSpender">
-          <template v-slot:name>Delegating Spender</template>
-          <template v-slot:value>
+          <template #name>Delegating Spender</template>
+          <template #value>
             <AccountLink
-              :account-id="tokenInfo?.delegating_spender"
+              :account-id="nftInfo?.delegating_spender"
               :show-none="true"
             />
           </template>
         </Property>
         <Property id="metadata">
-          <template v-slot:name>Metadata</template>
-          <template v-slot:value>
+          <template #name>Metadata</template>
+          <template #value>
             <BlobValue
               :base64="true"
-              :blob-value="tokenInfo?.metadata"
+              :blob-value="nftInfo?.metadata"
               :show-none="true"
             />
           </template>
         </Property>
         <Property id="modifiedTimeStamp">
-          <template v-slot:name>Modified Timestamp</template>
-          <template v-slot:value>
+          <template #name>Modified Timestamp</template>
+          <template #value>
             <TimestampValue
-              :timestamp="tokenInfo?.modified_timestamp"
+              :timestamp="nftInfo?.modified_timestamp"
               :show-none="true"
             />
           </template>
         </Property>
         <Property id="spenderId">
-          <template v-slot:name>Spender ID</template>
-          <template v-slot:value>
+          <template #name>Spender ID</template>
+          <template #value>
             <AccountLink
-              :account-id="tokenInfo?.spender_id"
+              :account-id="nftInfo?.spender_id"
               :show-none="true"
             />
           </template>
@@ -119,23 +110,24 @@
       </template>
     </DashboardCard>
 
-    <DashboardCard v-if="tokenInfo">
-      <template v-slot:title>
+    <DashboardCard v-if="nftInfo">
+      <template #title>
         <p id="recentTransactions" class="h-is-secondary-title">
           Recent Transactions
         </p>
       </template>
-      <template v-slot:control>
+      <template #control>
         <div class="is-flex is-align-items-flex-end">
           <PlayPauseButton
             v-bind:controller="transactionTableController"
           />
           <TransactionFilterSelect
             v-bind:controller="transactionTableController"
+            nft-filter
           />
         </div>
       </template>
-      <template v-slot:content>
+      <template #content>
         <div id="recentTransactionsTable">
           <NftTransactionTable
             v-bind:controller="transactionTableController"
@@ -177,27 +169,29 @@ import PlayPauseButton from "@/components/PlayPauseButton.vue"
 import AccountLink from "@/components/values/AccountLink.vue"
 import {NftBySerialCache} from "@/utils/cache/NftBySerialCache"
 import ContractResultsSection from "@/components/contracts/ContractResultsSection.vue"
-import Copyable from "@/components/Copyable.vue"
 import NftTransactionTable from "@/components/transaction/NftTransactionTable.vue"
 import {NftTransactionTableController} from "@/components/transaction/NftTransactionTableController"
 import TransactionFilterSelect from "@/components/transaction/TransactionFilterSelect.vue"
+import { makeTokenSymbol } from "@/schemas/HederaUtils";
+import { TokenInfoCache } from "@/utils/cache/TokenInfoCache";
+import TokenLink from "@/components/values/TokenLink.vue";
 
 export default defineComponent({
     name: "NftDetails",
 
     components: {
-        Copyable,
-        ContractResultsSection,
-        PlayPauseButton,
-        AccountLink,
-        NotificationBanner,
-        Property,
-        BlobValue,
-        DashboardCard,
-        TimestampValue,
-        NftTransactionTable,
-        TransactionFilterSelect,
-        Footer,
+      TokenLink,
+      ContractResultsSection,
+      PlayPauseButton,
+      AccountLink,
+      NotificationBanner,
+      Property,
+      BlobValue,
+      DashboardCard,
+      TimestampValue,
+      NftTransactionTable,
+      TransactionFilterSelect,
+      Footer,
     },
 
     props: {
@@ -225,26 +219,32 @@ export default defineComponent({
         })
         const validEntityId = computed(() => normalizedTokenId.value != null)
 
+        const tokenLookup = TokenInfoCache.instance.makeLookup(normalizedTokenId)
+        onMounted(() => tokenLookup.mount())
+        onBeforeUnmount(() => tokenLookup.unmount())
+
+        const symbol = computed(() => makeTokenSymbol(tokenLookup.entity.value, 256))
+
         const serialNumber = ref(props.serialNumber)
-        const tokenLookup = NftBySerialCache.instance.makeLookup(
+        const nftLookup = NftBySerialCache.instance.makeLookup(
             normalizedTokenId,
             serialNumber,
         )
-        onMounted(() => tokenLookup.mount())
-        onBeforeUnmount(() => tokenLookup.unmount())
+        onMounted(() => nftLookup.mount())
+        onBeforeUnmount(() => nftLookup.unmount())
 
         const notification = computed(() => {
             let result
             if (!validEntityId.value) {
                 result = "Invalid token ID: " + props.tokenId
-            } else if (tokenLookup.entity.value == null) {
-                if (tokenLookup.isLoaded()) {
+            } else if (nftLookup.entity.value == null) {
+                if (nftLookup.isLoaded()) {
                     result =
                         "Token with ID " + props.tokenId + " was not found"
                 } else {
                     result = null
                 }
-            } else if (tokenLookup.entity.value?.deleted) {
+            } else if (nftLookup.entity.value?.deleted) {
                 result = "Token is deleted"
             } else {
                 result = null
@@ -252,7 +252,7 @@ export default defineComponent({
             return result
         })
 
-        const showTokenDetails = (tokenId: string) => {
+        const shownftDetails = (tokenId: string) => {
             routeManager.routeToToken(tokenId)
         }
 
@@ -303,13 +303,14 @@ export default defineComponent({
             isSmallScreen,
             isMediumScreen,
             isTouchDevice,
-            tokenInfo: tokenLookup.entity,
+            nftInfo: nftLookup.entity,
             validEntityId,
             normalizedTokenId,
             notification,
-            showTokenDetails,
+            shownftDetails,
             parseBigIntString,
             transactionTableController,
+            symbol
         }
     },
 })

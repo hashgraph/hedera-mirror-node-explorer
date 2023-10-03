@@ -238,7 +238,7 @@ export abstract class TableController<R, K> {
     // Private
     //
 
-    private readonly autoRefreshRef: Ref<boolean> = ref(false)
+    private autoRefreshRef: Ref<boolean> = ref(false)
     private readonly mountedRef: Ref<boolean> = ref(false)
 
 
