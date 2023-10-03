@@ -27,7 +27,7 @@
   <DashboardCard>
     <template v-slot:title>
       <span class="h-is-secondary-title">Contract Details</span>
-      <span v-if="contractName" class="icon has-text-success ml-2"><i class="far fa-check-circle"></i></span>
+      <span v-if="isVerificationEnabled && contractName" class="icon has-text-success ml-2"><i class="far fa-check-circle"></i></span>
     </template>
 
     <template v-if="isVerificationEnabled" v-slot:control>
