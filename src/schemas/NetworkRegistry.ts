@@ -157,21 +157,36 @@ export class NetworkRegistry {
             displayName: 'MAINNET',
             url: "https://mainnet-public.mirrornode.hedera.com/",
             ledgerID: '00',
-            sourcifySetup: null
+            sourcifySetup: new SourcifySetup(
+                "https://repository.sourcify-integration.hedera-devops.com/contracts/",
+                "https://server.sourcify-integration.hedera-devops.com/",
+                "https://sourcify-integration.hedera-devops.com/#/",
+                0x127
+            )
         },
         {
             name: 'testnet',
             displayName: 'TESTNET',
             url: "https://testnet.mirrornode.hedera.com/",
             ledgerID: '01',
-            sourcifySetup: null
+            sourcifySetup: new SourcifySetup(
+                "https://repository.sourcify-integration.hedera-devops.com/contracts/",
+                "https://server.sourcify-integration.hedera-devops.com/",
+                "https://sourcify-integration.hedera-devops.com/#/",
+                0x128
+            )
         },
         {
             name: 'previewnet',
             displayName: 'PREVIEWNET',
             url: "https://previewnet.mirrornode.hedera.com/",
             ledgerID: '02',
-            sourcifySetup: null
+            sourcifySetup: new SourcifySetup(
+                "https://repository.sourcify-integration.hedera-devops.com/contracts/",
+                "https://server.sourcify-integration.hedera-devops.com/",
+                "https://sourcify-integration.hedera-devops.com/#/",
+                0x129
+            )
         }
     ])
 
