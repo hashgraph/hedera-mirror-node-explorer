@@ -157,36 +157,21 @@ export class NetworkRegistry {
             displayName: 'MAINNET',
             url: "https://mainnet-public.mirrornode.hedera.com/",
             ledgerID: '00',
-            sourcifySetup: new SourcifySetup(
-                "https://repo.verify.simonvienot.fr/contracts/",
-                "https://verify.simonvienot.fr/server/",
-                "https://verify.simonvienot.fr/#/",
-                0x127
-            )
+            sourcifySetup: null
         },
         {
             name: 'testnet',
             displayName: 'TESTNET',
             url: "https://testnet.mirrornode.hedera.com/",
             ledgerID: '01',
-            sourcifySetup: new SourcifySetup(
-                "https://repo.verify.simonvienot.fr/contracts/",
-                "https://verify.simonvienot.fr/server/",
-                "https://verify.simonvienot.fr/#/",
-                0x128
-            )
+            sourcifySetup: null
         },
         {
             name: 'previewnet',
             displayName: 'PREVIEWNET',
             url: "https://previewnet.mirrornode.hedera.com/",
             ledgerID: '02',
-            sourcifySetup: new SourcifySetup(
-                "https://repo.verify.simonvienot.fr/contracts/",
-                "https://verify.simonvienot.fr/server/",
-                "https://verify.simonvienot.fr/#/",
-                0x129
-            )
+            sourcifySetup: null
         }
     ])
 
