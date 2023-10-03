@@ -43,15 +43,10 @@
       <Property v-if="isVerificationEnabled" id="verificationStatus" :full-width="true">
         <template v-slot:name>Verification Status</template>
         <template v-slot:value>
-              <span v-if="isVerified">
-                {{ isFullMatch ? "Full Match" : "Partial Match" }}
-                <span class="has-text-grey">
-                <span class="ml-1">(see Sourcify</span>
-                  <a class="ml-1" href="https://docs.sourcify.dev/docs/full-vs-partial-match/">documentation</a>
-                  <span class="ml-1">for details)</span>
-                </span>
-              </span>
-          <!--          <span v-else-if="compiling">Verifying contract…</span>-->
+          <span v-if="isVerified">
+            {{ isFullMatch ? "Full Match" : "Partial Match" }}
+            <InfoTooltip :label="tooltipText"/>
+          </span>
           <span v-else>Not yet verified</span>
         </template>
       </Property>
@@ -103,11 +98,15 @@ import StringValue from "@/components/values/StringValue.vue";
 import Property from "@/components/Property.vue";
 import {ContractAnalyzer} from "@/utils/analyzer/ContractAnalyzer";
 import {routeManager} from "@/router";
+import InfoTooltip from "@/components/InfoTooltip.vue";
+
+const FULL_MATCH_TOOLTIP = `A Full Match indicates that the bytecode of the deployed contract is byte-by-byte the same as the compilation output of the given source code files with the settings defined in the metadata file. This means the contents of the source code files and the compilation settings are exactly the same as when the contract author compiled and deployed the contract.`
+const PARTIAL_MATCH_TOOLTIP = `A Partial Match indicates that the bytecode of the deployed contract is the same as the compilation output of the given source code files except for the metadata hash. This means the deployed contract and the given source code + metadata function in the same way but there are differences in source code comments, variable names, or other metadata fields such as source paths.`
 
 export default defineComponent({
   name: 'ContractByteCodeSection',
 
-  components: {Property, StringValue, ByteCodeValue, DashboardCard},
+  components: {InfoTooltip, Property, StringValue, ByteCodeValue, DashboardCard},
 
   props: {
     contractAnalyzer: {
@@ -131,6 +130,8 @@ export default defineComponent({
 
     const isVerificationEnabled = import.meta.env.VITE_APP_ENABLE_VERIFICATION === 'true'
 
+    const tooltipText = computed(() => isFullMatch.value ? FULL_MATCH_TOOLTIP : PARTIAL_MATCH_TOOLTIP)
+
     return {
       isTouchDevice,
       isSmallScreen,
@@ -142,6 +143,7 @@ export default defineComponent({
       swarmHash: props.contractAnalyzer.byteCodeAnalyzer.swarmHash,
       contractName,
       isVerificationEnabled,
+      tooltipText,
       sourcifyURL: props.contractAnalyzer.sourcifyURL,
       verifierURL: routeManager.currentNetworkEntry.value.sourcifySetup?.verifierURL,
       isVerified,
