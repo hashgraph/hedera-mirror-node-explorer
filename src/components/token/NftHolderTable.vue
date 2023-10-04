@@ -41,7 +41,6 @@
       :striped="true"
       :mobile-breakpoint="ORUGA_MOBILE_BREAKPOINT"
 
-      style="cursor: pointer"
       aria-current-label="Current page"
       aria-next-label="Next page"
       aria-page-label="Page"
@@ -142,3 +141,9 @@ export default defineComponent({
 });
 
 </script>
+
+<!-- --------------------------------------------------------------------------------------------------------------- -->
+<!--                                                      STYLE                                                      -->
+<!-- --------------------------------------------------------------------------------------------------------------- -->
+
+<style/>

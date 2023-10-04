@@ -18,13 +18,8 @@
  *
  */
 
-import {
-    StakingRewardTransfer,
-    Transaction,
-    TransactionType,
-    Transfer,
-} from "@/schemas/HederaSchemas"
-import {TransactionID} from "@/utils/TransactionID"
+import {StakingRewardTransfer, Transaction, TransactionType, Transfer} from "@/schemas/HederaSchemas";
+import {TransactionID} from "@/utils/TransactionID";
 
 export function makeSummaryLabel(row: Transaction): string {
     let result: string
@@ -32,7 +27,7 @@ export function makeSummaryLabel(row: Transaction): string {
 
     switch (row.name) {
         case TransactionType.CRYPTOTRANSFER:
-            netAmount = computeNetAmount(row.transfers, row.charged_tx_fee)
+            netAmount = computeNetAmount(row.transfers, row.charged_tx_fee);
             result = makeTransferLabel(row, netAmount)
             break
         case TransactionType.CONSENSUSCREATETOPIC:
@@ -155,44 +150,45 @@ export function showPositiveNetAmount(row: Transaction): boolean {
 export function makeTypeLabel(type: TransactionType | undefined): string {
     let result: string
     switch (type) {
+
         case TransactionType.CONSENSUSCREATETOPIC:
-            result = "HCS Create Topic"
-            break
+            result = "HCS Create Topic";
+            break;
         case TransactionType.CONSENSUSUPDATETOPIC:
-            result = "HCS Update Topic"
-            break
+            result = "HCS Update Topic";
+            break;
         case TransactionType.CONSENSUSDELETETOPIC:
-            result = "HCS Delete Topic"
-            break
+            result = "HCS Delete Topic";
+            break;
         case TransactionType.CONSENSUSSUBMITMESSAGE:
             result = "HCS Submit Message"
-            break
+            break;
 
         case TransactionType.CONTRACTCALL:
             result = "Contract Call"
-            break
+            break;
         case TransactionType.CONTRACTDELETEINSTANCE:
             result = "Contract Delete"
-            break
+            break;
         case TransactionType.CONTRACTCREATEINSTANCE:
             result = "Contract Create"
-            break
+            break;
         case TransactionType.CONTRACTUPDATEINSTANCE:
             result = "Contract Update"
-            break
+            break;
 
         case TransactionType.CRYPTOADDLIVEHASH:
             result = "Crypto Add Live Hash"
-            break
+            break;
         case TransactionType.CRYPTOCREATEACCOUNT:
             result = "Crypto Create Account"
-            break
+            break;
         case TransactionType.CRYPTODELETE:
             result = "Crypto Delete Account"
-            break
+            break;
         case TransactionType.CRYPTOUPDATEACCOUNT:
             result = "Crypto Update Account"
-            break
+            break;
         case TransactionType.CRYPTODELETELIVEHASH:
             result = "Crypto Delete Live Hash"
             break
@@ -207,100 +203,100 @@ export function makeTypeLabel(type: TransactionType | undefined): string {
             break
 
         case TransactionType.FILECREATE:
-            result = "File Create"
-            break
+            result = "File Create";
+            break;
         case TransactionType.FILEDELETE:
-            result = "File Delete"
-            break
+            result = "File Delete";
+            break;
         case TransactionType.FILEAPPEND:
-            result = "File Append"
-            break
+            result = "File Append";
+            break;
         case TransactionType.FILEUPDATE:
-            result = "File Update"
-            break
+            result = "File Update";
+            break;
 
         case TransactionType.FREEZE:
-            result = "Freeze"
-            break
+            result = "Freeze";
+            break;
 
         case TransactionType.SCHEDULECREATE:
-            result = "Schedule Create"
-            break
+            result = "Schedule Create";
+            break;
         case TransactionType.SCHEDULEDELETE:
-            result = "Schedule Delete"
-            break
+            result = "Schedule Delete";
+            break;
         case TransactionType.SCHEDULESIGN:
-            result = "Schedule Sign"
-            break
+            result = "Schedule Sign";
+            break;
 
         case TransactionType.SYSTEMDELETE:
-            result = "System Delete"
-            break
+            result = "System Delete";
+            break;
         case TransactionType.SYSTEMUNDELETE:
-            result = "System Undelete"
-            break
+            result = "System Undelete";
+            break;
 
         case TransactionType.TOKENBURN:
-            result = "Token Burn"
-            break
+            result = "Token Burn";
+            break;
         case TransactionType.TOKENCREATION:
-            result = "Token Create"
-            break
+            result = "Token Create";
+            break;
         case TransactionType.TOKENDELETION:
-            result = "Token Delete"
-            break
+            result = "Token Delete";
+            break;
         case TransactionType.TOKENUPDATE:
-            result = "Token Update"
-            break
+            result = "Token Update";
+            break;
         case TransactionType.TOKENASSOCIATE:
-            result = "Token Associate"
-            break
+            result = "Token Associate";
+            break;
         case TransactionType.TOKENDISSOCIATE:
-            result = "Token Dissociate"
-            break
+            result = "Token Dissociate";
+            break;
         case TransactionType.TOKENFEESCHEDULEUPDATE:
-            result = "Token Fee Schedule Update"
-            break
+            result = "Token Fee Schedule Update";
+            break;
         case TransactionType.TOKENFREEZE:
-            result = "Token Freeze"
-            break
+            result = "Token Freeze";
+            break;
         case TransactionType.TOKENGRANTKYC:
-            result = "Token KYC Grant"
-            break
+            result = "Token KYC Grant";
+            break;
         case TransactionType.TOKENMINT:
-            result = "Token Mint"
-            break
+            result = "Token Mint";
+            break;
         case TransactionType.TOKENPAUSE:
-            result = "Token Pause"
-            break
+            result = "Token Pause";
+            break;
         case TransactionType.TOKENREVOKEKYC:
-            result = "Token KYC Revoke"
-            break
+            result = "Token KYC Revoke";
+            break;
         case TransactionType.TOKENUNFREEZE:
-            result = "Token Unfreeze"
-            break
+            result = "Token Unfreeze";
+            break;
         case TransactionType.TOKENUNPAUSE:
-            result = "Token Unpause"
-            break
+            result = "Token Unpause";
+            break;
         case TransactionType.TOKENWIPE:
-            result = "Token Wipe"
-            break
+            result = "Token Wipe";
+            break;
 
         case TransactionType.UNCHECKEDSUBMIT:
-            result = "Unchecked Submit"
-            break
+            result = "Unchecked Submit";
+            break;
 
         case TransactionType.ETHEREUMTRANSACTION:
-            result = "Ethereum Transaction"
-            break
+            result = "Ethereum Transaction";
+            break;
 
         case TransactionType.NODESTAKEUPDATE:
-            result = "Node Stake Update"
-            break
+            result = "Node Stake Update";
+            break;
 
         case TransactionType.UTILPRNG:
-            result = "Pseudorandom Number Generate"
-            break
+            result = "Pseudorandom Number Generate";
+            break;
 
         default:
             result = type ?? "?"
@@ -312,7 +308,7 @@ export function makeTypeLabel(type: TransactionType | undefined): string {
 
 export function makeOperatorAccountLabel(transaction: Transaction): string {
     let result: string | null
-    const transactionId = transaction.transaction_id
+    const transactionId = transaction.transaction_id;
     if (transactionId != null) {
         result = TransactionID.makePayerID(transactionId) ?? "?"
     } else {
@@ -337,10 +333,7 @@ function formatMemo(memo64: string): string {
     return result
 }
 
-export function computeNetAmount(
-    transfers: Transfer[] | undefined,
-    transactionFee: number | undefined,
-): number {
+export function computeNetAmount(transfers: Transfer[] | undefined, transactionFee: number | undefined): number {
     let result = 0
     if (transfers !== undefined) {
         for (const t of transfers) {
@@ -353,10 +346,7 @@ export function computeNetAmount(
     return result
 }
 
-export function makeNetOfRewards(
-    transfers: Transfer[] | undefined,
-    rewards: StakingRewardTransfer[] | undefined,
-): Transfer[] {
+export function makeNetOfRewards(transfers: Transfer[] | undefined, rewards: StakingRewardTransfer[] | undefined): Transfer[] {
     let result = Array<Transfer>()
     let totalRewardAmount = 0
 
@@ -384,7 +374,7 @@ export function makeNetOfRewards(
             result.push({
                 amount: netAmount,
                 account: t.account,
-                is_approval: t.is_approval,
+                is_approval: t.is_approval
             })
         }
     } else {

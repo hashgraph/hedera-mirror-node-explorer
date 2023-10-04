@@ -18,15 +18,15 @@
  *
  */
 
-import {NavigationFailure, RouteLocationNormalizedLoaded, RouteLocationRaw, Router} from "vue-router"
-import {Transaction} from "@/schemas/HederaSchemas"
-import {NetworkRegistry, networkRegistry} from "@/schemas/NetworkRegistry"
-import {computed, ref, watch, WatchStopHandle} from "vue"
-import router from "@/router"
-import {AppStorage} from "@/AppStorage"
-import {nameServiceSetNetwork} from '@/utils/NameService'
-import axios from "axios"
-import {CacheUtils} from "@/utils/cache/CacheUtils"
+import {NavigationFailure, RouteLocationNormalizedLoaded, RouteLocationRaw, Router} from "vue-router";
+import {Transaction} from "@/schemas/HederaSchemas";
+import {NetworkRegistry, networkRegistry} from "@/schemas/NetworkRegistry";
+import {computed, ref, watch, WatchStopHandle} from "vue";
+import router from "@/router";
+import {AppStorage} from "@/AppStorage";
+import {nameServiceSetNetwork} from '@/utils/NameService';
+import axios from "axios";
+import {CacheUtils} from "@/utils/cache/CacheUtils";
 
 export class RouteManager {
 
@@ -44,7 +44,7 @@ export class RouteManager {
             axios.defaults.baseURL = this.currentNetworkEntry.value.url
             this.updateSelectedNetworkSilently()
             this.switchThemes()
-        }, {immediate: true})
+        }, { immediate: true})
         watch(this.currentNetwork, () => {
             RouteManager.resetSingletons()
         })
@@ -58,7 +58,7 @@ export class RouteManager {
 
     public readonly currentNetworkEntry = computed(() => {
 
-        let networkName: string | null
+        let networkName: string|null
         const networkParam = this.router.currentRoute.value?.params?.network
         if (Array.isArray(networkParam)) {
             networkName = networkParam.length >= 1 ? networkParam[0] : null
@@ -72,7 +72,7 @@ export class RouteManager {
 
     public selectedNetwork = ref(networkRegistry.getDefaultEntry().name)
 
-    public selectedNetworkWatchHandle: WatchStopHandle | undefined
+    public selectedNetworkWatchHandle: WatchStopHandle|undefined
 
     public updateSelectedNetworkSilently(): void {
         if (this.selectedNetworkWatchHandle) {
@@ -82,7 +82,7 @@ export class RouteManager {
         this.selectedNetworkWatchHandle = watch(this.selectedNetwork, (selection) => {
             router.push({
                 name: "MainDashboard",
-                params: {network: selection}
+                params: { network: selection }
             })
         })
     }
@@ -99,32 +99,32 @@ export class RouteManager {
     public readonly isStakingRoute = computed(() => this.testStakingRoute())
     public readonly isBlocksRoute = computed(() => this.testBlocksRoute())
 
-    public testDashboardRoute(route: string | null = null): boolean {
+    public testDashboardRoute(route: string|null = null): boolean {
         const r = route ?? this.currentRoute.value
         return r === 'MainDashboard'
     }
 
-    public testTransactionRoute(route: string | null = null): boolean {
+    public testTransactionRoute(route: string|null = null): boolean {
         const r = route ?? this.currentRoute.value
         return r === 'Transactions' || r === 'TransactionsById' || r === 'TransactionDetails'
     }
 
-    public testTokenRoute(route: string | null = null): boolean {
+    public testTokenRoute(route: string|null = null): boolean {
         const r = route ?? this.currentRoute.value
         return r === 'Tokens' || r === 'TokenDetails'
     }
 
-    public testTopicRoute(route: string | null = null): boolean {
+    public testTopicRoute(route: string|null = null): boolean {
         const r = route ?? this.currentRoute.value
         return r === 'Topics' || r === 'TopicDetails'
     }
 
-    public testContractRoute(route: string | null = null): boolean {
+    public testContractRoute(route: string|null = null): boolean {
         const r = route ?? this.currentRoute.value
         return r === 'Contracts' || r === 'ContractDetails'
     }
 
-    public testAccountRoute(route: string | null = null): boolean {
+    public testAccountRoute(route: string|null = null): boolean {
         const r = route ?? this.currentRoute.value
         return r === 'Accounts'
             || r === 'AccountDetails'
@@ -133,17 +133,17 @@ export class RouteManager {
             || r === 'AdminKeyDetails'
     }
 
-    public testNodeRoute(route: string | null = null): boolean {
+    public testNodeRoute(route: string|null = null): boolean {
         const r = route ?? this.currentRoute.value
         return r === 'Nodes' || r === 'NodeDetails'
     }
 
-    public testStakingRoute(route: string | null = null): boolean {
+    public testStakingRoute(route: string|null = null): boolean {
         const r = route ?? this.currentRoute.value
         return r === 'Staking'
     }
 
-    public testBlocksRoute(route: string | null = null): boolean {
+    public testBlocksRoute(route: string|null = null): boolean {
         const r = route ?? this.currentRoute.value
         return r === 'Blocks' || r === 'BlockDetails'
     }
@@ -155,8 +155,8 @@ export class RouteManager {
     public routeToTransaction(t: Transaction, newTab = false): Promise<NavigationFailure | void | undefined> {
         let result: Promise<NavigationFailure | void | undefined>
         if (newTab) {
-            const routeData = this.router.resolve(this.makeRouteToTransaction(t.consensus_timestamp))
-            window.open(routeData.href, '_blank')
+            const routeData = this.router.resolve(this.makeRouteToTransaction(t.consensus_timestamp));
+            window.open(routeData.href, '_blank');
             result = Promise.resolve()
         } else {
             result = this.router.push(this.makeRouteToTransaction(t.consensus_timestamp))
@@ -164,11 +164,11 @@ export class RouteManager {
         return result
     }
 
-    public routeToTransactionByTs(consensusTimestamp: string | undefined, newTab = false): Promise<NavigationFailure | void | undefined> {
+    public routeToTransactionByTs(consensusTimestamp: string|undefined, newTab = false): Promise<NavigationFailure | void | undefined> {
         let result: Promise<NavigationFailure | void | undefined>
         if (newTab) {
-            const routeData = this.router.resolve(this.makeRouteToTransaction(consensusTimestamp))
-            window.open(routeData.href, '_blank')
+            const routeData = this.router.resolve(this.makeRouteToTransaction(consensusTimestamp));
+            window.open(routeData.href, '_blank');
             result = Promise.resolve()
         } else {
             result = this.router.push(this.makeRouteToTransaction(consensusTimestamp))
@@ -180,10 +180,10 @@ export class RouteManager {
         return this.makeRouteToTransaction(transaction.consensus_timestamp)
     }
 
-    public makeRouteToTransaction(transactionLoc: string | undefined): RouteLocationRaw {
+    public makeRouteToTransaction(transactionLoc: string|undefined): RouteLocationRaw {
         return {
             name: 'TransactionDetails',
-            params: {transactionLoc: transactionLoc, network: this.currentNetwork.value}
+            params: { transactionLoc: transactionLoc, network: this.currentNetwork.value }
         }
     }
 
@@ -196,7 +196,7 @@ export class RouteManager {
     }
 
     public makeRouteToTransactionsById(transactionId: string): RouteLocationRaw {
-        return {name: 'TransactionsById', params: {transactionId: transactionId, network: this.currentNetwork.value}}
+        return {name: 'TransactionsById', params: { transactionId: transactionId, network: this.currentNetwork.value }}
     }
 
     //
@@ -212,15 +212,15 @@ export class RouteManager {
     }
 
     public routeToAccount(accountId: string, newTab = false): Promise<NavigationFailure | void | undefined> {
-        let result: Promise<NavigationFailure | void | undefined>
-        if (newTab) {
-            const routeData = this.router.resolve(this.makeRouteToAccount(accountId))
-            window.open(routeData.href, '_blank')
-            result = Promise.resolve()
-        } else {
-            result = this.router.push(this.makeRouteToAccount(accountId))
-        }
-        return result
+       let result: Promise<NavigationFailure | void | undefined>
+       if (newTab) {
+           const routeData = this.router.resolve(this.makeRouteToAccount(accountId));
+           window.open(routeData.href, '_blank');
+           result = Promise.resolve()
+       } else {
+           result = this.router.push(this.makeRouteToAccount(accountId))
+       }
+       return result
     }
 
     //
@@ -252,14 +252,14 @@ export class RouteManager {
     //
 
     public makeRouteToToken(tokenId: string): RouteLocationRaw {
-        return {name: 'TokenDetails', params: {tokenId: tokenId, network: this.currentNetwork.value}}
+        return { name: 'TokenDetails', params: { tokenId: tokenId, network: this.currentNetwork.value }}
     }
 
     public routeToToken(tokenId: string, newTab = false): Promise<NavigationFailure | void | undefined> {
         let result: Promise<NavigationFailure | void | undefined>
         if (newTab) {
-            const routeData = this.router.resolve(this.makeRouteToToken(tokenId))
-            window.open(routeData.href, '_blank')
+            const routeData = this.router.resolve(this.makeRouteToToken(tokenId));
+            window.open(routeData.href, '_blank');
             result = Promise.resolve()
         } else {
             result = this.router.push(this.makeRouteToToken(tokenId))
@@ -291,14 +291,14 @@ export class RouteManager {
     //
 
     public makeRouteToContract(contractId: string): RouteLocationRaw {
-        return {name: 'ContractDetails', params: {contractId: contractId, network: this.currentNetwork.value}}
+        return {name: 'ContractDetails', params: { contractId: contractId, network: this.currentNetwork.value }}
     }
 
     public routeToContract(contractId: string, newTab = false): Promise<NavigationFailure | void | undefined> {
         let result: Promise<NavigationFailure | void | undefined>
         if (newTab) {
-            const routeData = this.router.resolve(this.makeRouteToContract(contractId))
-            window.open(routeData.href, '_blank')
+            const routeData = this.router.resolve(this.makeRouteToContract(contractId));
+            window.open(routeData.href, '_blank');
             result = Promise.resolve()
         } else {
             result = this.router.push(this.makeRouteToContract(contractId))
@@ -317,8 +317,8 @@ export class RouteManager {
     public routeToTopic(topicId: string, newTab = false): Promise<NavigationFailure | void | undefined> {
         let result: Promise<NavigationFailure | void | undefined>
         if (newTab) {
-            const routeData = this.router.resolve(this.makeRouteToTopic(topicId))
-            window.open(routeData.href, '_blank')
+            const routeData = this.router.resolve(this.makeRouteToTopic(topicId));
+            window.open(routeData.href, '_blank');
             result = Promise.resolve()
         } else {
             result = this.router.push(this.makeRouteToTopic(topicId))
@@ -330,15 +330,15 @@ export class RouteManager {
     // Block
     //
 
-    public makeRouteToBlock(blockHon: string | number): RouteLocationRaw {
+    public makeRouteToBlock(blockHon: string|number): RouteLocationRaw {
         return {name: 'BlockDetails', params: {blockHon: blockHon, network: this.currentNetwork.value}}
     }
 
-    public routeToBlock(blockHon: string | number, newTab = false): Promise<NavigationFailure | void | undefined> {
+    public routeToBlock(blockHon: string|number, newTab = false): Promise<NavigationFailure | void | undefined> {
         let result: Promise<NavigationFailure | void | undefined>
         if (newTab) {
-            const routeData = this.router.resolve(this.makeRouteToBlock(blockHon))
-            window.open(routeData.href, '_blank')
+            const routeData = this.router.resolve(this.makeRouteToBlock(blockHon));
+            window.open(routeData.href, '_blank');
             result = Promise.resolve()
         } else {
             result = this.router.push(this.makeRouteToBlock(blockHon))
@@ -357,8 +357,8 @@ export class RouteManager {
     public routeToNode(nodeId: number, newTab = false): Promise<NavigationFailure | void | undefined> {
         let result: Promise<NavigationFailure | void | undefined>
         if (newTab) {
-            const routeData = this.router.resolve(this.makeRouteToNode(nodeId))
-            window.open(routeData.href, '_blank')
+            const routeData = this.router.resolve(this.makeRouteToNode(nodeId));
+            window.open(routeData.href, '_blank');
             result = Promise.resolve()
         } else {
             result = this.router.push(this.makeRouteToNode(nodeId))
@@ -373,8 +373,8 @@ export class RouteManager {
     public makeRouteToNoSearchResult(searchedId: string, errorCount: number): RouteLocationRaw {
         return {
             name: 'NoSearchResult',
-            params: {searchedId: searchedId, network: this.currentNetwork.value},
-            query: {errorCount: errorCount}
+            params: { searchedId: searchedId, network: this.currentNetwork.value },
+            query: { errorCount: errorCount }
         }
     }
 
@@ -387,7 +387,7 @@ export class RouteManager {
     //
 
     public makeRouteToMainDashboard(): RouteLocationRaw {
-        return {name: 'MainDashboard', params: {network: this.currentNetwork.value}}
+        return {name: 'MainDashboard', params: { network: this.currentNetwork.value } }
     }
 
     public routeToMainDashboard(): Promise<NavigationFailure | void | undefined> {
@@ -395,43 +395,43 @@ export class RouteManager {
     }
 
     public makeRouteToTransactions(): RouteLocationRaw {
-        return {name: 'Transactions', params: {network: this.currentNetwork.value}}
+        return {name: 'Transactions', params: { network: this.currentNetwork.value } }
     }
 
     public makeRouteToTokens(): RouteLocationRaw {
-        return {name: 'Tokens', params: {network: this.currentNetwork.value}}
+        return {name: 'Tokens', params: { network: this.currentNetwork.value } }
     }
 
     public makeRouteToTopics(): RouteLocationRaw {
-        return {name: 'Topics', params: {network: this.currentNetwork.value}}
+        return {name: 'Topics', params: { network: this.currentNetwork.value } }
     }
 
     public makeRouteToContracts(): RouteLocationRaw {
-        return {name: 'Contracts', params: {network: this.currentNetwork.value}}
+        return {name: 'Contracts', params: { network: this.currentNetwork.value } }
     }
 
     public makeRouteToAccounts(): RouteLocationRaw {
-        return {name: 'Accounts', params: {network: this.currentNetwork.value}}
+        return {name: 'Accounts', params: { network: this.currentNetwork.value } }
     }
 
     public makeRouteToNodes(): RouteLocationRaw {
-        return {name: 'Nodes', params: {network: this.currentNetwork.value}}
+        return {name: 'Nodes', params: { network: this.currentNetwork.value } }
     }
 
     public makeRouteToStaking(): RouteLocationRaw {
-        return {name: 'Staking', params: {network: this.currentNetwork.value}}
+        return {name: 'Staking', params: { network: this.currentNetwork.value } }
     }
 
     public makeRouteToBlocks(): RouteLocationRaw {
-        return {name: 'Blocks', params: {network: this.currentNetwork.value}}
+        return {name: 'Blocks', params: { network: this.currentNetwork.value } }
     }
 
     public makeRouteToMobileSearch(): RouteLocationRaw {
-        return {name: 'MobileSearch', params: {network: this.currentNetwork.value}}
+        return {name: 'MobileSearch', params: { network: this.currentNetwork.value } }
     }
 
     public makeRouteToPageNotFound(): RouteLocationRaw {
-        return {name: 'PageNotFound', params: {network: this.currentNetwork.value}}
+        return {name: 'PageNotFound', params: { network: this.currentNetwork.value } }
     }
 
     public makeRouteToMobileMenu(name: unknown): RouteLocationRaw {
@@ -473,8 +473,8 @@ export class RouteManager {
     }
 }
 
-export function fetchStringQueryParam(paramName: string, route: RouteLocationNormalizedLoaded): string | null {
-    let result: string | null
+export function fetchStringQueryParam(paramName: string, route: RouteLocationNormalizedLoaded): string|null {
+    let result: string|null
     const v = route.query[paramName]
     if (typeof v == "string") {
         result = v
@@ -484,8 +484,8 @@ export function fetchStringQueryParam(paramName: string, route: RouteLocationNor
     return result
 }
 
-export function fetchNumberQueryParam(paramName: string, route: RouteLocationNormalizedLoaded): number | null {
-    let result: number | null
+export function fetchNumberQueryParam(paramName: string, route: RouteLocationNormalizedLoaded): number|null {
+    let result: number|null
     const v = route.query[paramName]
     if (typeof v == "string") {
         const i = parseInt(v)
