@@ -18,12 +18,12 @@
  *
  */
 
-import {WalletDriver} from "@/utils/wallet/WalletDriver";
+import {WalletDriver_Hedera} from "../../../src/utils/wallet/WalletDriver_Hedera";
 import {AccountAllowanceApproveTransaction, AccountUpdateTransaction} from "@hashgraph/sdk";
 import {AccountBalanceTransactions} from "@/schemas/HederaSchemas";
 import {Signer} from "@hashgraph/sdk/lib/Signer";
 
-export class WalletDriver_Mock extends WalletDriver {
+export class WalletDriver_Mock extends WalletDriver_Hedera {
 
     private static WALLET_NAME = "WalletMock"
 
@@ -64,7 +64,7 @@ export class WalletDriver_Mock extends WalletDriver {
         }
     }
 
-    public async executeTransaction(request: AccountUpdateTransaction|AccountAllowanceApproveTransaction): Promise<string> {
+    protected async executeTransaction(request: AccountUpdateTransaction|AccountAllowanceApproveTransaction): Promise<string> {
         let result: string
 
         this.updateAccountCounter += 1

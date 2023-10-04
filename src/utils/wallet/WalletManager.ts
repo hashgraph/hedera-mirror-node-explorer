@@ -19,18 +19,12 @@
  */
 
 import {computed, ref, watch} from "vue";
-import {
-    AccountAllowanceApproveTransaction,
-    AccountAllowanceDeleteTransaction,
-    AccountUpdateTransaction,
-    NftId,
-    TokenId
-} from "@hashgraph/sdk";
 import {RouteManager} from "@/utils/RouteManager";
 import {WalletDriver} from "@/utils/wallet/WalletDriver";
 import {WalletDriver_Blade} from "@/utils/wallet/WalletDriver_Blade";
 import {WalletDriver_Hashpack} from "@/utils/wallet/WalletDriver_Hashpack";
 import {timeGuard, TimeGuardError} from "@/utils/TimerUtils";
+import {WalletDriver_Hedera} from "@/utils/wallet/WalletDriver_Hedera";
 
 export class WalletManager {
 
@@ -107,154 +101,48 @@ export class WalletManager {
         }
     }
 
+    public isHederaWallet(): boolean {
+        return this.activeDriver instanceof WalletDriver_Hedera
+    }
+
     public async changeStaking(nodeId: number|null, accountId: string|null, declineReward: boolean|null): Promise<string> {
-
-        let result: string
-
-        // Connects if needed
-        await this.connect()
-
-        // Updates account's stakeNodeId
-        if (this.accountId.value !== null) {
-            const trans = await new AccountUpdateTransaction()
-            trans.setAccountId(this.accountId.value)
-            if (nodeId !== null) {
-                trans.setStakedNodeId(nodeId)
-            } else if (accountId !== null) {
-                trans.setStakedAccountId(accountId)
-            } else {
-                trans.setStakedNodeId(-1)
-                trans.setStakedAccountId("0.0.0")
-            }
-            if (declineReward !== null) {
-                trans.setDeclineStakingReward(declineReward)
-            }
-
-            result = await this.executeTransaction(trans)
-
+        if (this.activeDriver instanceof WalletDriver_Hedera) {
+            return this.activeDriver.changeStaking(nodeId, accountId, declineReward)
         } else {
-            throw this.activeDriver.callFailure("No account id")
+            throw this.activeDriver.unsupportedOperation()
         }
-
-        return Promise.resolve(result)
     }
 
     public async approveHbarAllowance(spender: string, amount: number): Promise<string> {
-        let result: string
-
-        // Connects if needed
-        await this.connect()
-
-        // Approves
-        if (this.accountId.value !== null) {
-
-            const trans = new AccountAllowanceApproveTransaction()
-            trans.approveHbarAllowance(this.accountId.value, spender, amount)
-            result = await this.executeTransaction(trans)
-
+        if (this.activeDriver instanceof WalletDriver_Hedera) {
+            return this.activeDriver.approveHbarAllowance(spender, amount)
         } else {
-            throw this.activeDriver.callFailure("Invalid parameters")
+            throw this.activeDriver.unsupportedOperation()
         }
-
-        return Promise.resolve(result)
     }
 
     public async approveTokenAllowance(token: string, spender: string, amount: number): Promise<string> {
-        let result: string
-
-        // Connects if needed
-        await this.connect()
-
-        // Approves
-        if (this.accountId.value !== null) {
-
-            const trans = new AccountAllowanceApproveTransaction()
-            trans.approveTokenAllowance(token, this.accountId.value, spender, amount)
-            result = await this.executeTransaction(trans)
-
-
+        if (this.activeDriver instanceof WalletDriver_Hedera) {
+            return this.activeDriver.approveTokenAllowance(token, spender, amount)
         } else {
-            throw this.activeDriver.callFailure("Invalid parameters")
+            throw this.activeDriver.unsupportedOperation()
         }
-
-        return Promise.resolve(result)
     }
 
     public async approveNFTAllowance(token: string, spender: string, serialNumbers: number[]): Promise<string> {
-        let result: string
-
-        // Connects if needed
-        await this.connect()
-
-        // Approves
-        if (this.accountId.value !== null) {
-
-            const trans = new AccountAllowanceApproveTransaction()
-            if (1 <= serialNumbers.length && serialNumbers.length <= 20) {
-                const tid = TokenId.fromString(token)
-                for (const sn of serialNumbers) {
-                    trans.approveTokenNftAllowance(new NftId(tid, sn), this.accountId.value, spender)
-                }
-            } else if (serialNumbers.length == 0) {
-                trans.approveTokenNftAllowanceAllSerials(token, this.accountId.value, spender)
-            } else {
-                throw this.activeDriver.callFailure("Invalid serial number count (" + serialNumbers.length + ")")
-            }
-            result = await this.executeTransaction(trans)
-
-
+        if (this.activeDriver instanceof WalletDriver_Hedera) {
+            return this.activeDriver.approveNFTAllowance(token, spender, serialNumbers)
         } else {
-            throw this.activeDriver.callFailure("Invalid parameters")
+            throw this.activeDriver.unsupportedOperation()
         }
-
-        return Promise.resolve(result)
     }
-
-    public async deleteNftAllowance(token: string, serialNumbers: number[]): Promise<string> {
-        let result: string
-
-        // Connects if needed
-        await this.connect()
-
-        // Approves
-        if (this.accountId.value !== null) {
-
-            const trans = new AccountAllowanceDeleteTransaction()
-            if (1 <= serialNumbers.length && serialNumbers.length <= 20) {
-                const tid = TokenId.fromString(token)
-                for (const sn of serialNumbers) {
-                    trans.deleteAllTokenNftAllowances(new NftId(tid, sn), this.accountId.value)
-                }
-            } else {
-                throw this.activeDriver.callFailure("Invalid serial number count (" + serialNumbers.length + ")")
-            }
-            result = await this.executeTransaction(trans)
-
-
-        } else {
-            throw this.activeDriver.callFailure("Invalid parameters")
-        }
-
-        return Promise.resolve(result)
-    }
-
-
-
     //
-    // Private
-    //
+    // public async deleteNftAllowance(token: string, serialNumbers: number[]): Promise<string> {
+    //     if (this.activeDriver instanceof WalletDriver_Hedera) {
+    //         await this.activeDriver.deleteNftAllowance(token, spender, amount)
+    //     } else {
+    //         throw this.activeDriver.unsupportedOperation()
+    //     }
+    // }
 
-    protected async executeTransaction(t: AccountUpdateTransaction|AccountAllowanceApproveTransaction|AccountAllowanceDeleteTransaction): Promise<string> {
-        let result: string
-        try {
-            result = await timeGuard(this.activeDriver.executeTransaction(t), this.timeout)
-        } catch(error) {
-            if (error instanceof TimeGuardError) {
-                throw this.activeDriver.callFailure(this.activeDriver.silentMessage())
-            } else {
-                throw error
-            }
-        }
-        return Promise.resolve(result)
-    }
 }

@@ -21,12 +21,12 @@
 
 import {BladeConnector, BladeWalletError, ConnectorStrategy} from "@bladelabs/blade-web3.js";
 import {HederaNetwork} from "@bladelabs/blade-web3.js/lib/src/models/blade";
-import {WalletDriver} from "@/utils/wallet/WalletDriver";
+import {WalletDriver_Hedera} from "@/utils/wallet/WalletDriver_Hedera";
 import {WalletDriverError} from "@/utils/wallet/WalletDriverError";
 import {Signer} from "@hashgraph/sdk";
 import {HederaLogo} from "@/utils/MetaMask";
 
-export class WalletDriver_Blade extends WalletDriver {
+export class WalletDriver_Blade extends WalletDriver_Hedera {
 
     private connector: BladeConnector|null = null
 
@@ -79,6 +79,10 @@ export class WalletDriver_Blade extends WalletDriver {
             }
         }
     }
+
+    //
+    // WalletDriver_Hedera
+    //
 
     public getSigner(): Signer|null {
         return this.connector?.getSigner() ?? null

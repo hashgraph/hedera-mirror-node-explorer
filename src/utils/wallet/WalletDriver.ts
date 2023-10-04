@@ -18,13 +18,6 @@
  *
  */
 
-import {
-    AccountAllowanceApproveTransaction,
-    AccountAllowanceDeleteTransaction,
-    AccountUpdateTransaction
-} from "@hashgraph/sdk";
-import {Signer} from "@hashgraph/sdk";
-import {TransactionID} from "@/utils/TransactionID";
 import {WalletDriverError} from "@/utils/wallet/WalletDriverError";
 
 export abstract class WalletDriver {
@@ -37,53 +30,28 @@ export abstract class WalletDriver {
     //
 
     public async connect(network: string): Promise<void> {
-        throw this.toBeImplemented("Connection to " + network + " aborted because implementation is missing")
+        throw this.toBeImplemented("connect")
     }
 
     public async disconnect(): Promise<void> {
-        throw this.toBeImplemented("Disconnect aborted because implementation is missing")
+        throw this.toBeImplemented("disconnect")
     }
 
-    public abstract getSigner(): Signer|null
+    public getNetwork(): string|null {
+        throw this.toBeImplemented("getNetwork")
+    }
+
+    public getAccountId(): string|null {
+        throw this.toBeImplemented("getAccountId")
+    }
+
+    public isConnected(): boolean {
+        throw this.toBeImplemented("isConnected")
+    }
 
     //
     // Public (utilities)
     //
-
-    public getAccountId(): string|null {
-        return this.getSigner()?.getAccountId()?.toString() ?? null
-    }
-
-    public isConnected(): boolean {
-        return this.getSigner() !== null
-    }
-
-
-    public async executeTransaction(
-        t: AccountAllowanceApproveTransaction
-            |AccountUpdateTransaction
-            |AccountAllowanceDeleteTransaction): Promise<string> {
-        let result: Promise<string>
-
-        const signer = this.getSigner()
-        if (signer !== null) {
-            try {
-                await t.freezeWithSigner(signer)
-                const response = await signer.call(t)
-                if (response) {
-                    const transactionId = TransactionID.normalize(response.transactionId.toString(), false);
-                    result = Promise.resolve(transactionId)
-                } else { // When user clicks on "Reject" button HashConnectSigner.call() returns undefined :(
-                    result = Promise.reject(this.callFailure(this.name + " wallet did reject operation"))
-                }
-            } catch(reason) {
-                throw this.callFailure(reason instanceof Error ? reason.message : JSON.stringify(reason))
-            }
-        } else {
-            throw this.callFailure("Signer not found (bug)")
-        }
-        return result
-    }
 
     public extensionNotFound(): WalletDriverError {
         const message = this.name + " extension not found"
@@ -92,13 +60,18 @@ export abstract class WalletDriver {
     }
 
     public connectFailure(extra: string): WalletDriverError {
-        const message = "Connection of " + this.name + " failed"
+        const message = "Connection to " + this.name + " failed"
         return new WalletDriverError(message, extra)
     }
 
     public disconnectFailure(extra: string): WalletDriverError {
         const message = "Disconnection from " + this.name + " failed"
         return new WalletDriverError(message, extra)
+    }
+
+    public unsupportedOperation(): WalletDriverError {
+        const message = this.name + " does not support this operation"
+        return new WalletDriverError(message, "This is a bug")
     }
 
     public callFailure(extra: string): WalletDriverError {

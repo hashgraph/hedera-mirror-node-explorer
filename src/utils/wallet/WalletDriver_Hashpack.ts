@@ -21,12 +21,12 @@
 
 import {HashConnect, HashConnectTypes, MessageTypes} from "hashconnect";
 import {HederaLogo} from "@/utils/MetaMask";
-import {WalletDriver} from "@/utils/wallet/WalletDriver";
+import {WalletDriver_Hedera} from "@/utils/wallet/WalletDriver_Hedera";
 import {HashConnectSigner} from "hashconnect/dist/provider/signer";
 import {timeGuard, TimeGuardError} from "@/utils/TimerUtils";
 import {Signer} from "@hashgraph/sdk";
 
-export class WalletDriver_Hashpack extends WalletDriver {
+export class WalletDriver_Hashpack extends WalletDriver_Hedera {
 
     private signer: HashConnectSigner|null = null
     private lastHashConnectKey: string|null = null
@@ -55,6 +55,10 @@ export class WalletDriver_Hashpack extends WalletDriver {
         }
         return Promise.resolve()
     }
+
+    //
+    // WalletDriver_Hedera
+    //
 
     public getSigner(): Signer|null {
         return this.signer
