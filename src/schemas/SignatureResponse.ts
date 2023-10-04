@@ -45,16 +45,16 @@ https://www.4byte.directory/api/v1/signatures/?hex_signature=0xb01ef608
  */
 
 export interface SignatureResponse {
-    count: number,
-    next: string|null,
-    previous: string|null,
-    results: SignatureInfo[]
+    count: number;
+    next: string | null;
+    previous: string | null;
+    results: SignatureInfo[];
 }
 
 export interface SignatureInfo {
-    id: number,
-    created_at: string,
-    text_signature:string,
-    hex_signature: string,
-    bytes_signature: string,
+    id: number;
+    created_at: string;
+    text_signature: string;
+    hex_signature: string;
+    bytes_signature: string;
 }

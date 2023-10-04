@@ -18,23 +18,30 @@
  *
  */
 
-import {ContractResponse} from "@/schemas/HederaSchemas";
-import {EntityCache} from "@/utils/cache/base/EntityCache";
+import { ContractResponse } from "@/schemas/HederaSchemas";
+import { EntityCache } from "@/utils/cache/base/EntityCache";
 import axios from "axios";
-import {ContractByAddressCache} from "@/utils/cache/ContractByAddressCache";
+import { ContractByAddressCache } from "@/utils/cache/ContractByAddressCache";
 
-export class ContractByIdCache extends EntityCache<string, ContractResponse|null> {
-
-    public static readonly instance = new ContractByIdCache()
+export class ContractByIdCache extends EntityCache<
+    string,
+    ContractResponse | null
+> {
+    public static readonly instance = new ContractByIdCache();
 
     //
     // Public
     //
 
-    public updateWithContractResponse(contractResponse: ContractResponse): void {
+    public updateWithContractResponse(
+        contractResponse: ContractResponse,
+    ): void {
         if (contractResponse.contract_id) {
-            this.forget(contractResponse.contract_id)
-            this.mutate(contractResponse.contract_id, Promise.resolve(contractResponse))
+            this.forget(contractResponse.contract_id);
+            this.mutate(
+                contractResponse.contract_id,
+                Promise.resolve(contractResponse),
+            );
         }
     }
 
@@ -43,18 +50,22 @@ export class ContractByIdCache extends EntityCache<string, ContractResponse|null
     //
 
     protected async load(key: string): Promise<ContractResponse | null> {
-        let result: Promise<ContractResponse|null>
+        let result: Promise<ContractResponse | null>;
         try {
-            const response = await axios.get<ContractResponse>("api/v1/contracts/" + key)
-            result = Promise.resolve(response.data)
-            ContractByAddressCache.instance.updateWithContractResponse(response.data)
-        } catch(error) {
+            const response = await axios.get<ContractResponse>(
+                "api/v1/contracts/" + key,
+            );
+            result = Promise.resolve(response.data);
+            ContractByAddressCache.instance.updateWithContractResponse(
+                response.data,
+            );
+        } catch (error) {
             if (axios.isAxiosError(error) && error.response?.status == 404) {
-                result = Promise.resolve(null)
+                result = Promise.resolve(null);
             } else {
-                throw error
+                throw error;
             }
         }
-        return result
+        return result;
     }
 }

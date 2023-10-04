@@ -18,73 +18,97 @@
  *
  */
 
-import {KeyOperator, SortOrder, TableController} from "@/utils/table/TableController";
-import {Transaction, TransactionResponse} from "@/schemas/HederaSchemas";
-import {ComputedRef} from "vue";
-import axios, {AxiosResponse} from "axios";
-import {Router} from "vue-router";
+import {
+    KeyOperator,
+    SortOrder,
+    TableController,
+} from "@/utils/table/TableController";
+import { Transaction, TransactionResponse } from "@/schemas/HederaSchemas";
+import { ComputedRef } from "vue";
+import axios, { AxiosResponse } from "axios";
+import { Router } from "vue-router";
 
-
-export class TransactionTableController extends TableController<Transaction, string> {
-
-    private readonly transactionType: string
-    private readonly transactionResult: string
+export class TransactionTableController extends TableController<
+    Transaction,
+    string
+> {
+    private readonly transactionType: string;
+    private readonly transactionResult: string;
 
     //
     // Public
     //
 
-    public constructor(router: Router, pageSize: ComputedRef<number>,
-                       transactionType = "",
-                       transactionResult= "",
-                       pageParamName = "p", keyParamName= "k") {
-        super(router, pageSize, 10 * pageSize.value, 5000, 10, 100,
-            pageParamName, keyParamName);
-        this.transactionType = transactionType
-        this.transactionResult = transactionResult
+    public constructor(
+        router: Router,
+        pageSize: ComputedRef<number>,
+        transactionType = "",
+        transactionResult = "",
+        pageParamName = "p",
+        keyParamName = "k",
+    ) {
+        super(
+            router,
+            pageSize,
+            10 * pageSize.value,
+            5000,
+            10,
+            100,
+            pageParamName,
+            keyParamName,
+        );
+        this.transactionType = transactionType;
+        this.transactionResult = transactionResult;
     }
 
     //
     // TableController
     //
 
-    public async load(consensusTimestamp: string | null, operator: KeyOperator,
-                      order: SortOrder, limit: number): Promise<Transaction[] | null> {
-
+    public async load(
+        consensusTimestamp: string | null,
+        operator: KeyOperator,
+        order: SortOrder,
+        limit: number,
+    ): Promise<Transaction[] | null> {
         const params = {} as {
-            limit: number
-            order: string
-            transactiontype: string | undefined
-            result: string | undefined
-            timestamp: string | undefined
-        }
-        params.limit = limit
-        params.order = order
+            limit: number;
+            order: string;
+            transactiontype: string | undefined;
+            result: string | undefined;
+            timestamp: string | undefined;
+        };
+        params.limit = limit;
+        params.order = order;
         if (this.transactionType != "") {
-            params.transactiontype = this.transactionType
+            params.transactiontype = this.transactionType;
         }
         if (this.transactionResult != "") {
-            params.result = this.transactionResult
+            params.result = this.transactionResult;
         }
         if (consensusTimestamp !== null) {
-            params.timestamp = operator + ":" + consensusTimestamp
+            params.timestamp = operator + ":" + consensusTimestamp;
         }
-        const cb = (r: AxiosResponse<TransactionResponse>): Promise<Transaction[] | null> => {
-            return Promise.resolve(r.data.transactions ?? [])
-        }
+        const cb = (
+            r: AxiosResponse<TransactionResponse>,
+        ): Promise<Transaction[] | null> => {
+            return Promise.resolve(r.data.transactions ?? []);
+        };
 
-        return axios.get<TransactionResponse>("api/v1/transactions", {params: params}).then(cb)
+        return axios
+            .get<TransactionResponse>("api/v1/transactions", { params: params })
+            .then(cb);
     }
 
     public keyFor(row: Transaction): string {
-        return row.consensus_timestamp ?? ""
+        return row.consensus_timestamp ?? "";
     }
 
     public keyFromString(s: string): string | null {
-        return s
+        return s;
     }
 
     public stringFromKey(key: string): string {
-        return key
+        return key;
     }
 }

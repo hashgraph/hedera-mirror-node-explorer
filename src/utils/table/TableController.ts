@@ -18,127 +18,156 @@
  *
  */
 
-import {computed, ComputedRef, ref, Ref, watch, WatchSource, WatchStopHandle} from "vue";
-import {LocationQuery, Router} from "vue-router";
-import {fetchNumberQueryParam, fetchStringQueryParam} from "@/utils/RouteManager";
-import {RowBuffer} from "@/utils/table/RowBuffer";
-import axios, {AxiosError} from "axios";
+import {
+    computed,
+    ComputedRef,
+    ref,
+    Ref,
+    watch,
+    WatchSource,
+    WatchStopHandle,
+} from "vue";
+import { LocationQuery, Router } from "vue-router";
+import {
+    fetchNumberQueryParam,
+    fetchStringQueryParam,
+} from "@/utils/RouteManager";
+import { RowBuffer } from "@/utils/table/RowBuffer";
+import axios, { AxiosError } from "axios";
 
 export abstract class TableController<R, K> {
+    public readonly router: Router;
+    public readonly presumedRowCount: number;
+    public readonly updatePeriod: number;
+    public readonly maxAutoUpdateCount: number;
+    public readonly maxLimit: number;
+    public readonly pageParamName: string;
+    public readonly keyParamName: string;
 
-    public readonly router: Router
-    public readonly presumedRowCount: number
-    public readonly updatePeriod: number
-    public readonly maxAutoUpdateCount: number
-    public readonly maxLimit: number
-    public readonly pageParamName: string
-    public readonly keyParamName: string
-
-    private readonly buffer: RowBuffer<R,K>
-    private sources: WatchSource[] = []
+    private readonly buffer: RowBuffer<R, K>;
+    private sources: WatchSource[] = [];
 
     //
     // Public
     //
 
-    public readonly pageSize: ComputedRef<number>
+    public readonly pageSize: ComputedRef<number>;
 
     public readonly autoRefresh: ComputedRef<boolean> = computed(
-        () => this.autoRefreshRef.value)
+        () => this.autoRefreshRef.value,
+    );
 
-    public readonly currentPage: Ref<number> = ref(1)
+    public readonly currentPage: Ref<number> = ref(1);
 
     public readonly rows: ComputedRef<R[]> = computed(() => {
-        const startIndex = this.buffer.startIndex.value
-        const endIndex = startIndex + this.pageSize.value
-        return this.buffer.rows.value.slice(startIndex, endIndex)
-    })
+        const startIndex = this.buffer.startIndex.value;
+        const endIndex = startIndex + this.pageSize.value;
+        return this.buffer.rows.value.slice(startIndex, endIndex);
+    });
 
     public readonly refreshCount: ComputedRef<number> = computed(
-        () => this.refreshCountRef.value)
+        () => this.refreshCountRef.value,
+    );
 
     public readonly totalRowCount: ComputedRef<number> = computed(
-        () => this.buffer.totalRowCount.value)
+        () => this.buffer.totalRowCount.value,
+    );
 
-    public readonly loading: Ref<boolean> = ref(false)
+    public readonly loading: Ref<boolean> = ref(false);
 
     public readonly paginated: ComputedRef<boolean> = computed(
-        () => this.buffer.totalRowCount.value >= this.pageSize.value)
+        () => this.buffer.totalRowCount.value >= this.pageSize.value,
+    );
 
-    public readonly mounted: ComputedRef<boolean> = computed(() => this.mountedRef.value)
+    public readonly mounted: ComputedRef<boolean> = computed(
+        () => this.mountedRef.value,
+    );
 
     //
     // Public (mount / unmount)
     //
 
     public mount(): void {
-        this.mountedRef.value = true
-        this.startWatchingSources()
-        const pageParam = this.getPageParam()
+        this.mountedRef.value = true;
+        this.startWatchingSources();
+        const pageParam = this.getPageParam();
         if (pageParam !== null) {
-            this.moveBufferToPage(pageParam, this.getKeyParam()).catch(this.errorHandler)
+            this.moveBufferToPage(pageParam, this.getKeyParam()).catch(
+                this.errorHandler,
+            );
         } else {
-            this.refreshBuffer().catch(this.errorHandler)
+            this.refreshBuffer().catch(this.errorHandler);
         }
     }
 
     public unmount(): void {
-        this.mountedRef.value = false
-        this.stopWatchingSources()
+        this.mountedRef.value = false;
+        this.stopWatchingSources();
         if (this.autoRefreshRef.value) {
-            this.abortRefreshBuffer()
+            this.abortRefreshBuffer();
         } else {
-            this.abortMoveBufferToPage()
+            this.abortMoveBufferToPage();
         }
-        this.buffer.clear()
+        this.buffer.clear();
         // No call to this.bufferDidChange() to keep route query untouched
     }
 
     public startAutoRefresh(): void {
         if (this.mountedRef.value && !this.autoRefreshRef.value) {
-            this.autoRefreshRef.value = true
-            this.refreshCountRef.value = 0
-            this.currentPage.value = 1 // This prevents o-table to invoke onPageChange() (and stops auto refresh !)
-            this.abortMoveBufferToPage()
-            this.refreshBuffer().catch(this.errorHandler)
+            this.autoRefreshRef.value = true;
+            this.refreshCountRef.value = 0;
+            this.currentPage.value = 1; // This prevents o-table to invoke onPageChange() (and stops auto refresh !)
+            this.abortMoveBufferToPage();
+            this.refreshBuffer().catch(this.errorHandler);
         }
     }
 
-    public stopAutoRefresh(page = 1): void  {
+    public stopAutoRefresh(page = 1): void {
         if (this.mountedRef.value && this.autoRefreshRef.value) {
-            this.abortRefreshBuffer()
-            this.moveBufferToPage(page, null).catch(this.errorHandler)
+            this.abortRefreshBuffer();
+            this.moveBufferToPage(page, null).catch(this.errorHandler);
         }
     }
 
     public readonly onPageChange = (page: number): void => {
         if (this.mountedRef.value) {
             if (this.autoRefresh.value) {
-                this.stopAutoRefresh(page)
+                this.stopAutoRefresh(page);
             } else {
-                this.moveBufferToPage(page, null).catch(this.errorHandler)
+                this.moveBufferToPage(page, null).catch(this.errorHandler);
             }
         }
-    }
+    };
 
     public reset(): void {
-        this.buffer.clear()
-        this.bufferDidChange().catch(this.errorHandler)
+        this.buffer.clear();
+        this.bufferDidChange().catch(this.errorHandler);
     }
-
 
     //
     // Public (to be subclassed)
     //
 
-    public abstract keyFor(row: R): K
+    public abstract keyFor(row: R): K;
 
-    public abstract stringFromKey(key: K): string
+    public abstract stringFromKey(key: K): string;
 
-    public abstract keyFromString(s: string): K|null
+    public abstract keyFromString(s: string): K | null;
 
-    public async load(key: K|null, operator: KeyOperator, order: SortOrder, limit: number): Promise<R[]|null> {
-        throw new Error("To be subclassed: key=" + key + ", operator=" + operator + ", limit=" + limit)
+    public async load(
+        key: K | null,
+        operator: KeyOperator,
+        order: SortOrder,
+        limit: number,
+    ): Promise<R[] | null> {
+        throw new Error(
+            "To be subclassed: key=" +
+                key +
+                ", operator=" +
+                operator +
+                ", limit=" +
+                limit,
+        );
     }
 
     //
@@ -146,26 +175,26 @@ export abstract class TableController<R, K> {
     //
 
     public static invertSortOrder(order: SortOrder): string {
-        return order == SortOrder.ASC ? SortOrder.DESC : SortOrder.ASC
+        return order == SortOrder.ASC ? SortOrder.DESC : SortOrder.ASC;
     }
 
     public static invertKeyOperator(operator: KeyOperator): string {
-        let result: string
-        switch(operator) {
+        let result: string;
+        switch (operator) {
             case KeyOperator.gt:
-                result = KeyOperator.lt
-                break
+                result = KeyOperator.lt;
+                break;
             case KeyOperator.gte:
-                result = KeyOperator.lte
-                break
+                result = KeyOperator.lte;
+                break;
             case KeyOperator.lt:
-                result = KeyOperator.gt
-                break
+                result = KeyOperator.gt;
+                break;
             case KeyOperator.lte:
-                result = KeyOperator.gte
-                break
+                result = KeyOperator.gte;
+                break;
         }
-        return result
+        return result;
     }
 
     //
@@ -173,126 +202,142 @@ export abstract class TableController<R, K> {
     //
 
     public getAbortedRefreshCounter(): number {
-        return this.buffer.getAbortedRefreshCounter()
+        return this.buffer.getAbortedRefreshCounter();
     }
 
     public getAbortedMoveToPageCounter(): number {
-        return this.buffer.getAbortedMoveToPageCounter()
+        return this.buffer.getAbortedMoveToPageCounter();
     }
-
 
     //
     // Protected
     //
 
-    protected constructor(router: Router, pageSize: ComputedRef<number>,
-                          presumedRowCount: number, updatePeriod: number,
-                          maxUpdateCount: number, maxLimit: number,
-                          pageParamName = "p", keyParamName= "k") {
-        this.router = router
-        this.presumedRowCount = presumedRowCount
-        this.updatePeriod = updatePeriod
-        this.maxAutoUpdateCount = maxUpdateCount
-        this.pageSize = pageSize
-        this.maxLimit = maxLimit
-        this.pageParamName = pageParamName
-        this.keyParamName = keyParamName
-        this.buffer = new RowBuffer<R,K>(this, presumedRowCount);
+    protected constructor(
+        router: Router,
+        pageSize: ComputedRef<number>,
+        presumedRowCount: number,
+        updatePeriod: number,
+        maxUpdateCount: number,
+        maxLimit: number,
+        pageParamName = "p",
+        keyParamName = "k",
+    ) {
+        this.router = router;
+        this.presumedRowCount = presumedRowCount;
+        this.updatePeriod = updatePeriod;
+        this.maxAutoUpdateCount = maxUpdateCount;
+        this.pageSize = pageSize;
+        this.maxLimit = maxLimit;
+        this.pageParamName = pageParamName;
+        this.keyParamName = keyParamName;
+        this.buffer = new RowBuffer<R, K>(this, presumedRowCount);
     }
 
     protected watchAndReload(sources: WatchSource<unknown>[]): void {
-        this.sources = sources
+        this.sources = sources;
         if (this.mounted.value) {
-            this.startWatchingSources()
+            this.startWatchingSources();
         }
     }
 
     protected makeRouteQuery(): LocationQuery {
+        const newPageParam = this.autoRefresh.value
+            ? null
+            : this.buffer.computePage();
+        const newKeyParam = this.autoRefresh.value
+            ? null
+            : this.buffer.computeFirstVisibleKey();
 
-        const newPageParam = this.autoRefresh.value ? null : this.buffer.computePage()
-        const newKeyParam = this.autoRefresh.value ? null : this.buffer.computeFirstVisibleKey()
-
-        const result = {...this.router.currentRoute.value.query}
+        const result = { ...this.router.currentRoute.value.query };
         if (newPageParam !== null) {
-            result[this.pageParamName] = newPageParam.toString()
+            result[this.pageParamName] = newPageParam.toString();
         } else {
-            delete(result[this.pageParamName])
+            delete result[this.pageParamName];
         }
         if (newKeyParam !== null) {
-            result[this.keyParamName] = this.stringFromKey(newKeyParam)
+            result[this.keyParamName] = this.stringFromKey(newKeyParam);
         } else {
-            delete(result[this.keyParamName])
+            delete result[this.keyParamName];
         }
-        return result
+        return result;
     }
 
     protected async updateRouteQuery(): Promise<void> {
-        const failure = await this.router.replace({ query: this.makeRouteQuery() })
+        const failure = await this.router.replace({
+            query: this.makeRouteQuery(),
+        });
         if (failure && failure.type != 8 && failure.type != 16) {
-            console.warn(failure.message)
+            console.warn(failure.message);
         }
-        return Promise.resolve()
+        return Promise.resolve();
     }
 
     //
     // Private
     //
 
-    private readonly autoRefreshRef: Ref<boolean> = ref(false)
-    private readonly mountedRef: Ref<boolean> = ref(false)
-
+    private readonly autoRefreshRef: Ref<boolean> = ref(false);
+    private readonly mountedRef: Ref<boolean> = ref(false);
 
     private readonly errorHandler = (reason: unknown): void => {
-        console.log("reason=" + reason)
+        console.log("reason=" + reason);
         if (axios.isAxiosError(reason)) {
-            const axiosError = reason as AxiosError
-            console.log("url=" + axiosError.config.url)
+            const axiosError = reason as AxiosError;
+            console.log("url=" + axiosError.config.url);
         }
+    };
+
+    private getPageParam(): number | null {
+        return fetchNumberQueryParam(
+            this.pageParamName,
+            this.router.currentRoute.value,
+        );
     }
 
-    private getPageParam(): number|null {
-        return fetchNumberQueryParam(this.pageParamName, this.router.currentRoute.value)
+    private getKeyParam(): K | null {
+        const v = fetchStringQueryParam(
+            this.keyParamName,
+            this.router.currentRoute.value,
+        );
+        return v !== null ? this.keyFromString(v) : null;
     }
-
-    private getKeyParam(): K|null {
-        const v = fetchStringQueryParam(this.keyParamName, this.router.currentRoute.value)
-        return v !== null ? this.keyFromString(v) : null
-    }
-
 
     //
     // Private (xxxWatchingSources)
     //
 
-    private watchSourcesHandle: WatchStopHandle|null = null
+    private watchSourcesHandle: WatchStopHandle | null = null;
 
     private startWatchingSources(): void {
-        this.stopWatchingSources()
-        this.watchSourcesHandle = watch(this.sources, () => this.sourcesDidChange())
+        this.stopWatchingSources();
+        this.watchSourcesHandle = watch(this.sources, () =>
+            this.sourcesDidChange(),
+        );
     }
 
     private stopWatchingSources(): void {
         if (this.watchSourcesHandle !== null) {
-            this.watchSourcesHandle()
-            this.watchSourcesHandle = null
+            this.watchSourcesHandle();
+            this.watchSourcesHandle = null;
         }
     }
 
     private sourcesDidChange(): void {
         if (this.mountedRef.value) {
             if (this.autoRefreshRef.value) {
-                this.abortRefreshBuffer()
+                this.abortRefreshBuffer();
             } else {
-                this.abortMoveBufferToPage()
+                this.abortMoveBufferToPage();
             }
-            this.buffer.clear()
+            this.buffer.clear();
             this.bufferDidChange().finally(() => {
                 if (this.autoRefreshRef.value) {
-                    this.refreshBuffer().catch(this.errorHandler)
+                    this.refreshBuffer().catch(this.errorHandler);
                 } else {
-                    this.startAutoRefresh()
+                    this.startAutoRefresh();
                 }
-            })
+            });
         }
     }
 
@@ -300,45 +345,45 @@ export abstract class TableController<R, K> {
     // Private (refreshBuffer)
     //
 
-    private readonly refreshCountRef: Ref<number> = ref(0)
-    private timeoutID = -1
+    private readonly refreshCountRef: Ref<number> = ref(0);
+    private timeoutID = -1;
 
     private async refreshBuffer(): Promise<void> {
-        this.autoRefreshRef.value = true
-        await this.buffer.refresh()
-        await this.bufferDidChange()
+        this.autoRefreshRef.value = true;
+        await this.buffer.refresh();
+        await this.bufferDidChange();
         if (this.refreshCountRef.value < this.maxAutoUpdateCount) {
             this.timeoutID = window.setTimeout(() => {
-                this.refreshCountRef.value += 1
-                this.refreshBuffer().catch(this.errorHandler)
-            }, this.updatePeriod)
+                this.refreshCountRef.value += 1;
+                this.refreshBuffer().catch(this.errorHandler);
+            }, this.updatePeriod);
         } else {
-            this.stopAutoRefresh()
+            this.stopAutoRefresh();
         }
     }
 
     private abortRefreshBuffer(): void {
-        this.autoRefreshRef.value = false
+        this.autoRefreshRef.value = false;
         if (this.timeoutID != -1) {
-            window.clearTimeout(this.timeoutID)
-            this.timeoutID = -1
+            window.clearTimeout(this.timeoutID);
+            this.timeoutID = -1;
         }
-        this.buffer.abortRefresh()
+        this.buffer.abortRefresh();
     }
 
     //
     // Private (moveBufferToPage)
     //
 
-    private async moveBufferToPage(page: number, key: K|null): Promise<void> {
-        this.autoRefreshRef.value = false
-        await this.buffer.moveToPage(page, key)
-        await this.bufferDidChange()
-        return Promise.resolve()
+    private async moveBufferToPage(page: number, key: K | null): Promise<void> {
+        this.autoRefreshRef.value = false;
+        await this.buffer.moveToPage(page, key);
+        await this.bufferDidChange();
+        return Promise.resolve();
     }
 
     private abortMoveBufferToPage(): void {
-        this.buffer.abortMoveBufferToPage()
+        this.buffer.abortMoveBufferToPage();
     }
 
     //
@@ -346,11 +391,19 @@ export abstract class TableController<R, K> {
     //
 
     private async bufferDidChange(): Promise<void> {
-        this.currentPage.value = this.buffer.computePage()
-        await this.updateRouteQuery()
-        return Promise.resolve()
+        this.currentPage.value = this.buffer.computePage();
+        await this.updateRouteQuery();
+        return Promise.resolve();
     }
 }
 
-export enum KeyOperator { gt= "gt", gte = "gte", lt= "lt", lte="lte" }
-export enum SortOrder { ASC = "asc", DESC = "desc" }
+export enum KeyOperator {
+    gt = "gt",
+    gte = "gte",
+    lt = "lt",
+    lte = "lte",
+}
+export enum SortOrder {
+    ASC = "asc",
+    DESC = "desc",
+}

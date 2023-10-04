@@ -18,24 +18,29 @@
  *
  */
 
-
-import {BladeConnector, BladeWalletError, ConnectorStrategy} from "@bladelabs/blade-web3.js";
-import {HederaNetwork} from "@bladelabs/blade-web3.js/lib/src/models/blade";
-import {WalletDriver} from "@/utils/wallet/WalletDriver";
-import {WalletDriverError} from "@/utils/wallet/WalletDriverError";
-import {Signer} from "@hashgraph/sdk";
-import {HederaLogo} from "@/utils/MetaMask";
+import {
+    BladeConnector,
+    BladeWalletError,
+    ConnectorStrategy,
+} from "@bladelabs/blade-web3.js";
+import { HederaNetwork } from "@bladelabs/blade-web3.js/lib/src/models/blade";
+import { WalletDriver } from "@/utils/wallet/WalletDriver";
+import { WalletDriverError } from "@/utils/wallet/WalletDriverError";
+import { Signer } from "@hashgraph/sdk";
+import { HederaLogo } from "@/utils/MetaMask";
 
 export class WalletDriver_Blade extends WalletDriver {
-
-    private connector: BladeConnector|null = null
+    private connector: BladeConnector | null = null;
 
     //
     // Public
     //
 
     public constructor() {
-        super("Blade", "https://www.bladewallet.io/wp-content/uploads/2022/04/BladeWalletWhite.svg")
+        super(
+            "Blade",
+            "https://www.bladewallet.io/wp-content/uploads/2022/04/BladeWalletWhite.svg",
+        );
     }
 
     //
@@ -43,7 +48,7 @@ export class WalletDriver_Blade extends WalletDriver {
     //
 
     public async connect(network: string): Promise<void> {
-        const hNetwork = WalletDriver_Blade.makeHederaNetwork(network)
+        const hNetwork = WalletDriver_Blade.makeHederaNetwork(network);
         if (this.connector === null && hNetwork !== null) {
             const newConnector = await BladeConnector.init(
                 ConnectorStrategy.AUTO,
@@ -51,18 +56,18 @@ export class WalletDriver_Blade extends WalletDriver {
                     name: "HashScan",
                     description: "A ledger explorer for Hedera network",
                     url: "https://hashscan.io",
-                    icons: [ HederaLogo ]
-                }
-            )
+                    icons: [HederaLogo],
+                },
+            );
             try {
                 const params = {
                     network: hNetwork,
-                    dAppCode: "HashScan"
-                }
-                await newConnector.createSession(params)
-                this.connector = newConnector
-            } catch(reason) {
-                throw this.makeConnectError(reason)
+                    dAppCode: "HashScan",
+                };
+                await newConnector.createSession(params);
+                this.connector = newConnector;
+            } catch (reason) {
+                throw this.makeConnectError(reason);
             }
         }
     }
@@ -70,54 +75,57 @@ export class WalletDriver_Blade extends WalletDriver {
     public async disconnect(): Promise<void> {
         if (this.connector !== null) {
             try {
-                await this.connector.killSession()
-            } catch(reason) {
-                const extra = reason instanceof Error ? reason.message : JSON.stringify(reason)
-                throw this.disconnectFailure(extra)
+                await this.connector.killSession();
+            } catch (reason) {
+                const extra =
+                    reason instanceof Error
+                        ? reason.message
+                        : JSON.stringify(reason);
+                throw this.disconnectFailure(extra);
             } finally {
-                this.connector = null
+                this.connector = null;
             }
         }
     }
 
-    public getSigner(): Signer|null {
-        return this.connector?.getSigner() ?? null
+    public getSigner(): Signer | null {
+        return this.connector?.getSigner() ?? null;
     }
 
     //
     // Private
     //
 
-    private static makeHederaNetwork(network: string): HederaNetwork|null {
-        let result: HederaNetwork | null
+    private static makeHederaNetwork(network: string): HederaNetwork | null {
+        let result: HederaNetwork | null;
         switch (network) {
             case "mainnet":
-                result = HederaNetwork.Mainnet
-                break
+                result = HederaNetwork.Mainnet;
+                break;
             case "testnet":
-                result = HederaNetwork.Testnet
-                break
+                result = HederaNetwork.Testnet;
+                break;
             default:
-                result = null
-                break
+                result = null;
+                break;
         }
-        return result
+        return result;
     }
 
     private makeConnectError(reason: unknown): WalletDriverError {
-        let result: WalletDriverError
+        let result: WalletDriverError;
         if (reason instanceof Error) {
-            switch(reason.name) {
+            switch (reason.name) {
                 case BladeWalletError.ExtensionNotFound:
-                    result = this.extensionNotFound()
-                    break
+                    result = this.extensionNotFound();
+                    break;
                 default:
-                    result = this.connectFailure(reason.message)
-                    break
+                    result = this.connectFailure(reason.message);
+                    break;
             }
         } else {
-            result = this.connectFailure(JSON.stringify(reason))
+            result = this.connectFailure(JSON.stringify(reason));
         }
-        return result
+        return result;
     }
 }

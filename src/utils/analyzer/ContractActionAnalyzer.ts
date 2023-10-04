@@ -18,68 +18,76 @@
  *
  */
 
-import {computed, Ref} from "vue";
-import {ContractAction, ResultDataType} from "@/schemas/HederaSchemas";
-import {FunctionCallAnalyzer} from "@/utils/analyzer/FunctionCallAnalyzer";
-import {decodeSolidityErrorMessage} from "@/schemas/HederaUtils";
+import { computed, Ref } from "vue";
+import { ContractAction, ResultDataType } from "@/schemas/HederaSchemas";
+import { FunctionCallAnalyzer } from "@/utils/analyzer/FunctionCallAnalyzer";
+import { decodeSolidityErrorMessage } from "@/schemas/HederaUtils";
 
 export class ContractActionAnalyzer {
-
-    public readonly action: Ref<ContractAction|undefined>
-    public readonly functionCallAnalyzer: FunctionCallAnalyzer
+    public readonly action: Ref<ContractAction | undefined>;
+    public readonly functionCallAnalyzer: FunctionCallAnalyzer;
 
     //
     // Public
     //
 
-    public constructor(action: Ref<ContractAction|undefined>) {
-        this.action = action
-        this.functionCallAnalyzer = new FunctionCallAnalyzer(this.input, this.output, this.error, this.contractId)
+    public constructor(action: Ref<ContractAction | undefined>) {
+        this.action = action;
+        this.functionCallAnalyzer = new FunctionCallAnalyzer(
+            this.input,
+            this.output,
+            this.error,
+            this.contractId,
+        );
     }
 
     public mount(): void {
-        this.functionCallAnalyzer.mount()
+        this.functionCallAnalyzer.mount();
     }
 
     public unmount(): void {
-        this.functionCallAnalyzer.unmount()
+        this.functionCallAnalyzer.unmount();
     }
 
     public readonly errorMessage = computed(() => {
-        let result: string|null
+        let result: string | null;
         if (this.action?.value?.result_data_type != ResultDataType.OUTPUT) {
-            result = decodeSolidityErrorMessage(this.action?.value?.result_data ?? null)
+            result = decodeSolidityErrorMessage(
+                this.action?.value?.result_data ?? null,
+            );
         } else {
-            result = null
+            result = null;
         }
-        return result
-    })
+        return result;
+    });
 
     //
     // Private
     //
 
-    private readonly contractId = computed(() => this.action.value?.recipient ?? null)
+    private readonly contractId = computed(
+        () => this.action.value?.recipient ?? null,
+    );
 
-    private readonly input = computed(() => this.action.value?.input ?? null)
+    private readonly input = computed(() => this.action.value?.input ?? null);
 
     private readonly output = computed(() => {
-        let result: string|null
+        let result: string | null;
         if (this.action?.value?.result_data_type == ResultDataType.OUTPUT) {
-            result = this.action?.value?.result_data ?? null
+            result = this.action?.value?.result_data ?? null;
         } else {
-            result = null
+            result = null;
         }
-        return result
-    })
+        return result;
+    });
 
     public readonly error = computed(() => {
-        let result: string|null
+        let result: string | null;
         if (this.action?.value?.result_data_type != ResultDataType.OUTPUT) {
-            result = this.action?.value?.result_data ?? null
+            result = this.action?.value?.result_data ?? null;
         } else {
-            result = null
+            result = null;
         }
-        return result
-    })
+        return result;
+    });
 }

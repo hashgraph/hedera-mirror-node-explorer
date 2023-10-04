@@ -18,13 +18,11 @@
  *
  */
 
-
 export class WalletDriverError extends Error {
-
-    public readonly extra: string
+    public readonly extra: string;
 
     public constructor(message: string, extra: string) {
-        super(message)
-        this.extra = extra
+        super(message);
+        this.extra = extra;
     }
 }

@@ -23,30 +23,48 @@
 <!-- --------------------------------------------------------------------------------------------------------------- -->
 
 <template>
+    <section
+        :class="{ 'h-mobile-background': isTouchDevice || !isSmallScreen }"
+        class="section"
+    >
+        <DashboardCard>
+            <template v-slot:title>
+                <span class="h-is-primary-title">Admin Key for Account </span>
+                <div
+                    id="accountId"
+                    v-if="normalizedAccountId"
+                    class="h-is-secondary-text has-text-weight-light is-inline-block"
+                >
+                    <AccountLink :account-id="normalizedAccountId">{{
+                        normalizedAccountId
+                    }}</AccountLink>
+                </div>
+                <span
+                    v-if="accountChecksum"
+                    class="has-text-grey mr-3"
+                    style="font-size: 28px"
+                    >-{{ accountChecksum }}</span
+                >
+            </template>
 
-  <section :class="{'h-mobile-background': isTouchDevice || !isSmallScreen}" class="section">
+            <template v-slot:content>
+                <NotificationBanner
+                    v-if="notification"
+                    :message="notification"
+                />
 
-    <DashboardCard>
-      <template v-slot:title>
-        <span class="h-is-primary-title">Admin Key for Account </span>
-        <div id="accountId" v-if="normalizedAccountId" class="h-is-secondary-text has-text-weight-light is-inline-block">
-          <AccountLink :account-id="normalizedAccountId">{{ normalizedAccountId }}</AccountLink>
-        </div>
-        <span v-if="accountChecksum" class="has-text-grey mr-3" style="font-size: 28px">-{{ accountChecksum }}</span>
-      </template>
+                <KeyValue
+                    v-if="normalizedAccountId"
+                    :details="true"
+                    :key-bytes="key?.key"
+                    :key-type="key?._type"
+                    :show-none="true"
+                />
+            </template>
+        </DashboardCard>
+    </section>
 
-      <template v-slot:content>
-        <NotificationBanner v-if="notification" :message="notification"/>
-
-        <KeyValue v-if="normalizedAccountId" :details="true" :key-bytes="key?.key" :key-type="key?._type"
-                  :show-none="true"/>
-      </template>
-    </DashboardCard>
-
-  </section>
-
-  <Footer/>
-
+    <Footer />
 </template>
 
 <!-- --------------------------------------------------------------------------------------------------------------- -->
@@ -54,57 +72,60 @@
 <!-- --------------------------------------------------------------------------------------------------------------- -->
 
 <script lang="ts">
-
-import {computed, defineComponent, inject, onBeforeUnmount, onMounted} from 'vue';
+import {
+    computed,
+    defineComponent,
+    inject,
+    onBeforeUnmount,
+    onMounted,
+} from "vue";
 import DashboardCard from "@/components/DashboardCard.vue";
 import Footer from "@/components/Footer.vue";
-import {AccountLocParser} from "@/utils/parser/AccountLocParser";
+import { AccountLocParser } from "@/utils/parser/AccountLocParser";
 import AccountLink from "@/components/values/AccountLink.vue";
 import KeyValue from "@/components/values/KeyValue.vue";
 import NotificationBanner from "@/components/NotificationBanner.vue";
 
 export default defineComponent({
+    name: "AdminKeyDetails",
 
-  name: 'AdminKeyDetails',
+    components: {
+        NotificationBanner,
+        KeyValue,
+        AccountLink,
+        Footer,
+        DashboardCard,
+    },
 
-  components: {
-    NotificationBanner,
-    KeyValue,
-    AccountLink,
-    Footer,
-    DashboardCard,
-  },
+    props: {
+        accountId: String,
+        network: String,
+    },
 
-  props: {
-    accountId: String,
-    network: String
-  },
+    setup(props) {
+        const isSmallScreen = inject("isSmallScreen", true);
+        const isTouchDevice = inject("isTouchDevice", false);
 
-  setup(props) {
-    const isSmallScreen = inject('isSmallScreen', true)
-    const isTouchDevice = inject('isTouchDevice', false)
+        //
+        // account
+        //
 
-    //
-    // account
-    //
+        const accountLocator = computed(() => props.accountId ?? null);
+        const accountLocParser = new AccountLocParser(accountLocator);
+        onMounted(() => accountLocParser.mount());
+        onBeforeUnmount(() => accountLocParser.unmount());
 
-    const accountLocator = computed(() => props.accountId ?? null)
-    const accountLocParser = new AccountLocParser(accountLocator)
-    onMounted(() => accountLocParser.mount())
-    onBeforeUnmount(() => accountLocParser.unmount())
-
-    return {
-      isSmallScreen,
-      isTouchDevice,
-      notification: accountLocParser.errorNotification,
-      account: accountLocParser.accountInfo,
-      normalizedAccountId: accountLocParser.accountId,
-      accountChecksum: accountLocParser.accountChecksum,
-      key: accountLocParser.key,
-    }
-  }
+        return {
+            isSmallScreen,
+            isTouchDevice,
+            notification: accountLocParser.errorNotification,
+            account: accountLocParser.accountInfo,
+            normalizedAccountId: accountLocParser.accountId,
+            accountChecksum: accountLocParser.accountChecksum,
+            key: accountLocParser.key,
+        };
+    },
 });
-
 </script>
 
-<style/>
+<style />

@@ -23,46 +23,43 @@
 <!-- --------------------------------------------------------------------------------------------------------------- -->
 
 <template>
+    <o-table
+        :data="transactions"
+        :loading="loading"
+        paginated
+        backend-pagination
+        :total="total"
+        v-model:current-page="currentPage"
+        :per-page="perPage"
+        @page-change="onPageChange"
+        @cell-click="handleClick"
+        :hoverable="true"
+        :narrowed="true"
+        :striped="true"
+        :mobile-breakpoint="ORUGA_MOBILE_BREAKPOINT"
+        aria-current-label="Current page"
+        aria-next-label="Next page"
+        aria-page-label="Page"
+        aria-previous-label="Previous page"
+        customRowKey="consensus_timestamp"
+    >
+        <o-table-column v-slot="props" field="transaction_id" label="ID">
+            <TransactionLabel
+                v-bind:transaction-id="props.row.transaction_id"
+                v-bind:result="props.row.result"
+            />
+        </o-table-column>
 
-  <o-table
-      :data="transactions"
-      :loading="loading"
-      paginated
-      backend-pagination
-      :total="total"
-      v-model:current-page="currentPage"
-      :per-page="perPage"
-      @page-change="onPageChange"
-      @cell-click="handleClick"
+        <o-table-column v-slot="props" label="Content">
+            <TransactionSummary v-bind:transaction="props.row" />
+        </o-table-column>
 
-      :hoverable="true"
-      :narrowed="true"
-      :striped="true"
-      :mobile-breakpoint="ORUGA_MOBILE_BREAKPOINT"
+        <o-table-column v-slot="props" field="consensus_timestamp" label="Time">
+            <TimestampValue v-bind:timestamp="props.row.consensus_timestamp" />
+        </o-table-column>
+    </o-table>
 
-      aria-current-label="Current page"
-      aria-next-label="Next page"
-      aria-page-label="Page"
-      aria-previous-label="Previous page"
-      customRowKey="consensus_timestamp"
-  >
-
-    <o-table-column v-slot="props" field="transaction_id" label="ID">
-      <TransactionLabel v-bind:transaction-id="props.row.transaction_id" v-bind:result="props.row.result"/>
-    </o-table-column>
-
-    <o-table-column v-slot="props" label="Content">
-      <TransactionSummary v-bind:transaction="props.row"/>
-    </o-table-column>
-
-    <o-table-column v-slot="props" field="consensus_timestamp" label="Time">
-      <TimestampValue v-bind:timestamp="props.row.consensus_timestamp"/>
-    </o-table-column>
-
-  </o-table>
-
-  <EmptyTable v-if="!transactions.length"/>
-
+    <EmptyTable v-if="!transactions.length" />
 </template>
 
 <!-- --------------------------------------------------------------------------------------------------------------- -->
@@ -70,56 +67,62 @@
 <!-- --------------------------------------------------------------------------------------------------------------- -->
 
 <script lang="ts">
-
-import {ComputedRef, defineComponent, PropType, Ref} from 'vue';
-import {Transaction} from "@/schemas/HederaSchemas";
+import { ComputedRef, defineComponent, PropType, Ref } from "vue";
+import { Transaction } from "@/schemas/HederaSchemas";
 import TimestampValue from "@/components/values/TimestampValue.vue";
 import TransactionLabel from "@/components/values/TransactionLabel.vue";
-import {routeManager} from "@/router";
+import { routeManager } from "@/router";
 import TransactionSummary from "@/components/transaction/TransactionSummary.vue";
-import {ORUGA_MOBILE_BREAKPOINT} from '@/App.vue';
+import { ORUGA_MOBILE_BREAKPOINT } from "@/App.vue";
 import EmptyTable from "@/components/EmptyTable.vue";
-import {TransactionTableController} from "@/components/transaction/TransactionTableController";
+import { TransactionTableController } from "@/components/transaction/TransactionTableController";
 
 export default defineComponent({
-  name: 'CryptoTransactionTable',
+    name: "CryptoTransactionTable",
 
-  components: {EmptyTable, TimestampValue, TransactionSummary, TransactionLabel},
+    components: {
+        EmptyTable,
+        TimestampValue,
+        TransactionSummary,
+        TransactionLabel,
+    },
 
-  props: {
-    controller: {
-      type: Object as PropType<TransactionTableController>,
-      required: true
-    }
-  },
+    props: {
+        controller: {
+            type: Object as PropType<TransactionTableController>,
+            required: true,
+        },
+    },
 
-  setup(props) {
+    setup(props) {
+        const handleClick = (
+            t: Transaction,
+            c: unknown,
+            i: number,
+            ci: number,
+            event: MouseEvent,
+        ) => {
+            routeManager.routeToTransaction(t, event.ctrlKey || event.metaKey);
+        };
 
-    const handleClick = (t: Transaction, c: unknown, i: number, ci: number, event: MouseEvent) => {
-      routeManager.routeToTransaction(t, event.ctrlKey || event.metaKey)
-    }
+        return {
+            transactions: props.controller.rows as ComputedRef<Transaction[]>,
+            loading: props.controller.loading as ComputedRef<boolean>,
+            total: props.controller.totalRowCount as ComputedRef<number>,
+            currentPage: props.controller.currentPage as Ref<number>,
+            onPageChange: props.controller.onPageChange,
+            perPage: props.controller.pageSize as Ref<number>,
+            handleClick,
 
-    return {
-      transactions: props.controller.rows as ComputedRef<Transaction[]>,
-      loading: props.controller.loading as ComputedRef<boolean>,
-      total: props.controller.totalRowCount as ComputedRef<number>,
-      currentPage: props.controller.currentPage as Ref<number>,
-      onPageChange: props.controller.onPageChange,
-      perPage: props.controller.pageSize as Ref<number>,
-      handleClick,
-
-      // From App
-      ORUGA_MOBILE_BREAKPOINT,
-    }
-  }
+            // From App
+            ORUGA_MOBILE_BREAKPOINT,
+        };
+    },
 });
-
 </script>
 
 <!-- --------------------------------------------------------------------------------------------------------------- -->
 <!--                                                       STYLE                                                     -->
 <!-- --------------------------------------------------------------------------------------------------------------- -->
 
-<style scoped>
-
-</style>
+<style scoped></style>

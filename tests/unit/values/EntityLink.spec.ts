@@ -18,98 +18,132 @@
  *
  */
 
-import {describe, test, expect} from 'vitest'
-import {flushPromises, mount} from "@vue/test-utils"
+import { describe, test, expect } from "vitest";
+import { flushPromises, mount } from "@vue/test-utils";
 import router from "@/router";
 import EntityLink from "@/components/values/EntityLink.vue";
 import MockAdapter from "axios-mock-adapter";
 import axios from "axios";
-import {SAMPLE_NETWORK_NODES} from "../Mocks";
+import { SAMPLE_NETWORK_NODES } from "../Mocks";
 
 describe("EntityLink.vue", () => {
-
     const mock = new MockAdapter(axios);
-    const matcher1 = "/api/v1/network/nodes"
+    const matcher1 = "/api/v1/network/nodes";
     mock.onGet(matcher1).reply(200, SAMPLE_NETWORK_NODES);
 
     test("AccountLink; no extra", async () => {
-        const testEntityId = "0.0.4"
-        const testRouteName = "AccountDetails"
-        const testShowExtra = false
-        const expectedEntityPath = "/account/" + testEntityId
+        const testEntityId = "0.0.4";
+        const testRouteName = "AccountDetails";
+        const testShowExtra = false;
+        const expectedEntityPath = "/account/" + testEntityId;
 
-        await testBody(testEntityId, testRouteName, testShowExtra, expectedEntityPath)
+        await testBody(
+            testEntityId,
+            testRouteName,
+            testShowExtra,
+            expectedEntityPath,
+        );
     });
 
     test("AccountLink; extra", async () => {
-        const testEntityId = "0.0.4"
-        const testRouteName = "AccountDetails"
-        const testShowExtra = true
-        const expectedEntityPath = "/account/" + testEntityId
+        const testEntityId = "0.0.4";
+        const testRouteName = "AccountDetails";
+        const testShowExtra = true;
+        const expectedEntityPath = "/account/" + testEntityId;
 
-        await testBody(testEntityId, testRouteName, testShowExtra, expectedEntityPath)
+        await testBody(
+            testEntityId,
+            testRouteName,
+            testShowExtra,
+            expectedEntityPath,
+        );
     });
 
     test("TokenLink", async () => {
-        const testEntityId = "0.0.42"
-        const testRouteName = "TokenDetails"
-        const testShowExtra = false
-        const expectedEntityPath = "/token/" + testEntityId
+        const testEntityId = "0.0.42";
+        const testRouteName = "TokenDetails";
+        const testShowExtra = false;
+        const expectedEntityPath = "/token/" + testEntityId;
 
-        await testBody(testEntityId, testRouteName, testShowExtra, expectedEntityPath)
+        await testBody(
+            testEntityId,
+            testRouteName,
+            testShowExtra,
+            expectedEntityPath,
+        );
     });
 
     test("ContractLink", async () => {
-        const testEntityId = "0.0.42"
-        const testRouteName = "ContractDetails"
-        const testShowExtra = false
-        const expectedEntityPath = "/contract/" + testEntityId
+        const testEntityId = "0.0.42";
+        const testRouteName = "ContractDetails";
+        const testShowExtra = false;
+        const expectedEntityPath = "/contract/" + testEntityId;
 
-        await testBody(testEntityId, testRouteName, testShowExtra, expectedEntityPath)
+        await testBody(
+            testEntityId,
+            testRouteName,
+            testShowExtra,
+            expectedEntityPath,
+        );
     });
 
     test("TopicLink", async () => {
-        const testEntityId = "0.0.42"
-        const testRouteName = "TopicDetails"
-        const testShowExtra = false
-        const expectedEntityPath = "/topic/" + testEntityId
+        const testEntityId = "0.0.42";
+        const testRouteName = "TopicDetails";
+        const testShowExtra = false;
+        const expectedEntityPath = "/topic/" + testEntityId;
 
-        await testBody(testEntityId, testRouteName, testShowExtra, expectedEntityPath)
+        await testBody(
+            testEntityId,
+            testRouteName,
+            testShowExtra,
+            expectedEntityPath,
+        );
     });
 
     test("Invalid route", async () => {
-        const testEntityId = ""
-        const testRouteName = "InvalidRoute"
-        const testShowExtra = false
-        const expectedEntityPath = ""
+        const testEntityId = "";
+        const testRouteName = "InvalidRoute";
+        const testShowExtra = false;
+        const expectedEntityPath = "";
 
-        await testBody(testEntityId, testRouteName, testShowExtra, expectedEntityPath)
+        await testBody(
+            testEntityId,
+            testRouteName,
+            testShowExtra,
+            expectedEntityPath,
+        );
     });
-
 });
 
-const testBody = async (testEntityId: string, testRouteName: string, testShowExtra: boolean, expectedPath: string ) => {
-
-    await router.push("/") // To avoid "missing required param 'network'" error
+const testBody = async (
+    testEntityId: string,
+    testRouteName: string,
+    testShowExtra: boolean,
+    expectedPath: string,
+) => {
+    await router.push("/"); // To avoid "missing required param 'network'" error
 
     const wrapper = mount(EntityLink, {
         global: {
-            plugins: [router]
+            plugins: [router],
         },
         props: {
             entityId: testEntityId,
             routeName: testRouteName,
-            showExtra: testShowExtra
+            showExtra: testShowExtra,
         },
     });
-    await flushPromises()
+    await flushPromises();
 
-    expect(wrapper.text()).toMatch(RegExp("^" + testEntityId))
+    expect(wrapper.text()).toMatch(RegExp("^" + testEntityId));
     if (testEntityId) {
-        expect(wrapper.findComponent("a").attributes("href")).toMatch(RegExp(expectedPath))
+        expect(wrapper.findComponent("a").attributes("href")).toMatch(
+            RegExp(expectedPath),
+        );
     }
-    expect(wrapper.find(".h-is-extra-text").exists()).toBe(testShowExtra)
+    expect(wrapper.find(".h-is-extra-text").exists()).toBe(testShowExtra);
 
-    wrapper.unmount()
-    await flushPromises()
-}
+    wrapper.unmount();
+    await flushPromises();
+};

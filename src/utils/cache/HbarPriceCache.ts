@@ -19,22 +19,27 @@
  */
 
 import axios from "axios";
-import {EntityCache} from "@/utils/cache/base/EntityCache";
-import {NetworkExchangeRateSetResponse} from "@/schemas/HederaSchemas";
+import { EntityCache } from "@/utils/cache/base/EntityCache";
+import { NetworkExchangeRateSetResponse } from "@/schemas/HederaSchemas";
 
-export class HbarPriceCache extends EntityCache<string, NetworkExchangeRateSetResponse> {
-
-    public static readonly instance = new HbarPriceCache()
+export class HbarPriceCache extends EntityCache<
+    string,
+    NetworkExchangeRateSetResponse
+> {
+    public static readonly instance = new HbarPriceCache();
 
     //
     // Cache
     //
 
-    protected async load(timestamp: string): Promise<NetworkExchangeRateSetResponse> {
-        const parameters = timestamp != "0" ? { timestamp: timestamp } : {}
+    protected async load(
+        timestamp: string,
+    ): Promise<NetworkExchangeRateSetResponse> {
+        const parameters = timestamp != "0" ? { timestamp: timestamp } : {};
         const result = await axios.get<NetworkExchangeRateSetResponse>(
-            'api/v1/network/exchangerate', {params: parameters})
-        return Promise.resolve(result.data)
+            "api/v1/network/exchangerate",
+            { params: parameters },
+        );
+        return Promise.resolve(result.data);
     }
-
 }

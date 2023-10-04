@@ -18,24 +18,27 @@
  *
  */
 
-import {EntityCache} from "@/utils/cache/base/EntityCache"
-import {ContractResultDetails} from "@/schemas/HederaSchemas";
+import { EntityCache } from "@/utils/cache/base/EntityCache";
+import { ContractResultDetails } from "@/schemas/HederaSchemas";
 import axios from "axios";
-import {ContractResultByTsCache} from "@/utils/cache/ContractResultByTsCache";
+import { ContractResultByTsCache } from "@/utils/cache/ContractResultByTsCache";
 
-export class ContractResultByHashCache extends EntityCache<string, ContractResultDetails|null> {
-
-    public static readonly instance = new ContractResultByHashCache()
-
+export class ContractResultByHashCache extends EntityCache<
+    string,
+    ContractResultDetails | null
+> {
+    public static readonly instance = new ContractResultByHashCache();
 
     //
     // Public
     //
 
-    public updateWithContractResult(contractResult: ContractResultDetails): void {
+    public updateWithContractResult(
+        contractResult: ContractResultDetails,
+    ): void {
         if (contractResult.hash) {
-            this.forget(contractResult.hash)
-            this.mutate(contractResult.hash, Promise.resolve(contractResult))
+            this.forget(contractResult.hash);
+            this.mutate(contractResult.hash, Promise.resolve(contractResult));
         }
     }
 
@@ -43,23 +46,25 @@ export class ContractResultByHashCache extends EntityCache<string, ContractResul
     // Cache
     //
 
-    protected async load(ethHash: string): Promise<ContractResultDetails|null> {
-        let result: ContractResultDetails|null
+    protected async load(
+        ethHash: string,
+    ): Promise<ContractResultDetails | null> {
+        let result: ContractResultDetails | null;
         try {
-            const response = await axios.get<ContractResultDetails>("api/v1/contracts/results/" + ethHash)
-            result = response.data
-        } catch(error) {
+            const response = await axios.get<ContractResultDetails>(
+                "api/v1/contracts/results/" + ethHash,
+            );
+            result = response.data;
+        } catch (error) {
             if (axios.isAxiosError(error) && error.response?.status == 404) {
-                result = null
+                result = null;
             } else {
-                throw error
+                throw error;
             }
         }
         if (result !== null) {
             ContractResultByTsCache.instance.updateWithContractResult(result);
         }
-        return Promise.resolve(result)
+        return Promise.resolve(result);
     }
-
 }
-

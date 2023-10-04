@@ -23,78 +23,141 @@
 <!-- --------------------------------------------------------------------------------------------------------------- -->
 
 <template>
-  <template v-if="isMediumScreen">
-    <div class="columns pt-2 pb-0 mb-0">
-      <div class="column">
-        <Property id="actionDetailFrom" :custom-nb-col-class="propertySizeClass">
-          <template v-slot:name>From</template>
-          <template v-slot:value>
-            <EVMAddress :id="action?.caller" :address="action?.from" :entity-type="action?.caller_type" :show-type="true"/>
-          </template>
-        </Property>
-        <Property id="actionDetailTo" :custom-nb-col-class="propertySizeClass">
-          <template v-slot:name>To</template>
-          <template v-slot:value>
-            <EVMAddress :id="action?.recipient" :address="action?.to" :entity-type="action?.recipient_type"
-                        :show-type="true"/>
-          </template>
-        </Property>
-      </div>
-      <div class="column h-has-column-dashed-separator">
-        <Property id="actionDetailGasLimit" :custom-nb-col-class="propertySizeClass">
-          <template v-slot:name>Gas Limit</template>
-          <template v-slot:value>
-            <PlainAmount :amount="action?.gas"/>
-          </template>
-        </Property>
-        <Property id="actionDetailGasUsed" :custom-nb-col-class="propertySizeClass">
-          <template v-slot:name>Gas Used</template>
-          <template v-slot:value>
-            <PlainAmount :amount="action?.gas_used"/>
-          </template>
-        </Property>
-      <FunctionError :analyzer="functionCallAnalyzer" :custom-nb-col-class="propertySizeClass" :show-none="true"/>
-      </div>
-    </div>
+    <template v-if="isMediumScreen">
+        <div class="columns pt-2 pb-0 mb-0">
+            <div class="column">
+                <Property
+                    id="actionDetailFrom"
+                    :custom-nb-col-class="propertySizeClass"
+                >
+                    <template v-slot:name>From</template>
+                    <template v-slot:value>
+                        <EVMAddress
+                            :id="action?.caller"
+                            :address="action?.from"
+                            :entity-type="action?.caller_type"
+                            :show-type="true"
+                        />
+                    </template>
+                </Property>
+                <Property
+                    id="actionDetailTo"
+                    :custom-nb-col-class="propertySizeClass"
+                >
+                    <template v-slot:name>To</template>
+                    <template v-slot:value>
+                        <EVMAddress
+                            :id="action?.recipient"
+                            :address="action?.to"
+                            :entity-type="action?.recipient_type"
+                            :show-type="true"
+                        />
+                    </template>
+                </Property>
+            </div>
+            <div class="column h-has-column-dashed-separator">
+                <Property
+                    id="actionDetailGasLimit"
+                    :custom-nb-col-class="propertySizeClass"
+                >
+                    <template v-slot:name>Gas Limit</template>
+                    <template v-slot:value>
+                        <PlainAmount :amount="action?.gas" />
+                    </template>
+                </Property>
+                <Property
+                    id="actionDetailGasUsed"
+                    :custom-nb-col-class="propertySizeClass"
+                >
+                    <template v-slot:name>Gas Used</template>
+                    <template v-slot:value>
+                        <PlainAmount :amount="action?.gas_used" />
+                    </template>
+                </Property>
+                <FunctionError
+                    :analyzer="functionCallAnalyzer"
+                    :custom-nb-col-class="propertySizeClass"
+                    :show-none="true"
+                />
+            </div>
+        </div>
 
-    <hr class="dotted"/>
+        <hr class="dotted" />
 
-    <div class="columns pt-0 mt-0 pb-2">
-      <div class="column">
-        <FunctionInput :analyzer="functionCallAnalyzer" :custom-nb-col-class="propertySizeClass" :show-none="true"/>
-      </div>
-      <div class="column h-has-column-dashed-separator">
-        <FunctionResult :analyzer="functionCallAnalyzer" :custom-nb-col-class="propertySizeClass" :show-none="true"/>
-      </div>
-    </div>
-  </template>
+        <div class="columns pt-0 mt-0 pb-2">
+            <div class="column">
+                <FunctionInput
+                    :analyzer="functionCallAnalyzer"
+                    :custom-nb-col-class="propertySizeClass"
+                    :show-none="true"
+                />
+            </div>
+            <div class="column h-has-column-dashed-separator">
+                <FunctionResult
+                    :analyzer="functionCallAnalyzer"
+                    :custom-nb-col-class="propertySizeClass"
+                    :show-none="true"
+                />
+            </div>
+        </div>
+    </template>
 
-  <template v-else>
-    <div class="pt-2 pb-0 mb-0">
-      <Property id="actionDetailFrom" :custom-nb-col-class="propertySizeClass">
-        <template v-slot:name>From</template>
-        <template v-slot:value>
-          <EVMAddress :id="action?.caller" :address="action?.from" :entity-type="action?.caller_type" :show-type="true"/>
-        </template>
-      </Property>
-      <Property id="actionDetailTo" :custom-nb-col-class="propertySizeClass">
-        <template v-slot:name>To</template>
-        <template v-slot:value>
-          <EVMAddress :id="action?.recipient" :address="action?.to" :entity-type="action?.recipient_type"
-                      :show-type="true"/>
-        </template>
-      </Property>
-      <Property id="actionDetailGasUsed" :custom-nb-col-class="propertySizeClass">
-        <template v-slot:name>Gas Used</template>
-        <template v-slot:value>
-          <PlainAmount :amount="action?.gas_used"/>
-        </template>
-      </Property>
-      <FunctionError :analyzer="functionCallAnalyzer" :custom-nb-col-class="propertySizeClass" :show-none="true"/>
-      <FunctionInput :analyzer="functionCallAnalyzer" :custom-nb-col-class="propertySizeClass" :show-none="true"/>
-      <FunctionResult :analyzer="functionCallAnalyzer" :custom-nb-col-class="propertySizeClass" :show-none="true"/>
-    </div>
-  </template>
+    <template v-else>
+        <div class="pt-2 pb-0 mb-0">
+            <Property
+                id="actionDetailFrom"
+                :custom-nb-col-class="propertySizeClass"
+            >
+                <template v-slot:name>From</template>
+                <template v-slot:value>
+                    <EVMAddress
+                        :id="action?.caller"
+                        :address="action?.from"
+                        :entity-type="action?.caller_type"
+                        :show-type="true"
+                    />
+                </template>
+            </Property>
+            <Property
+                id="actionDetailTo"
+                :custom-nb-col-class="propertySizeClass"
+            >
+                <template v-slot:name>To</template>
+                <template v-slot:value>
+                    <EVMAddress
+                        :id="action?.recipient"
+                        :address="action?.to"
+                        :entity-type="action?.recipient_type"
+                        :show-type="true"
+                    />
+                </template>
+            </Property>
+            <Property
+                id="actionDetailGasUsed"
+                :custom-nb-col-class="propertySizeClass"
+            >
+                <template v-slot:name>Gas Used</template>
+                <template v-slot:value>
+                    <PlainAmount :amount="action?.gas_used" />
+                </template>
+            </Property>
+            <FunctionError
+                :analyzer="functionCallAnalyzer"
+                :custom-nb-col-class="propertySizeClass"
+                :show-none="true"
+            />
+            <FunctionInput
+                :analyzer="functionCallAnalyzer"
+                :custom-nb-col-class="propertySizeClass"
+                :show-none="true"
+            />
+            <FunctionResult
+                :analyzer="functionCallAnalyzer"
+                :custom-nb-col-class="propertySizeClass"
+                :show-none="true"
+            />
+        </div>
+    </template>
 </template>
 
 <!-- --------------------------------------------------------------------------------------------------------------- -->
@@ -102,64 +165,75 @@
 <!-- --------------------------------------------------------------------------------------------------------------- -->
 
 <script lang="ts">
-
 //
 // defineComponent
 //
 
-import {computed, defineComponent, inject, onBeforeUnmount, onMounted, PropType, ref} from "vue";
-import {ContractAction} from "@/schemas/HederaSchemas";
-import {ORUGA_MOBILE_BREAKPOINT} from "@/App.vue";
+import {
+    computed,
+    defineComponent,
+    inject,
+    onBeforeUnmount,
+    onMounted,
+    PropType,
+    ref,
+} from "vue";
+import { ContractAction } from "@/schemas/HederaSchemas";
+import { ORUGA_MOBILE_BREAKPOINT } from "@/App.vue";
 import Property from "@/components/Property.vue";
 import PlainAmount from "@/components/values/PlainAmount.vue";
 import EVMAddress from "@/components/values/EVMAddress.vue";
 import FunctionInput from "@/components/values/FunctionInput.vue";
 import FunctionResult from "@/components/values/FunctionResult.vue";
-import {ContractActionAnalyzer} from "@/utils/analyzer/ContractActionAnalyzer";
+import { ContractActionAnalyzer } from "@/utils/analyzer/ContractActionAnalyzer";
 import FunctionError from "@/components/values/FunctionError.vue";
 
 export default defineComponent({
-  name: 'ContractActionDetails',
+    name: "ContractActionDetails",
 
-  components: {
-    FunctionError,
-    FunctionResult,
-    FunctionInput, EVMAddress, PlainAmount, Property
-  },
+    components: {
+        FunctionError,
+        FunctionResult,
+        FunctionInput,
+        EVMAddress,
+        PlainAmount,
+        Property,
+    },
 
-  props: {
-    action: Object as PropType<ContractAction>
-  },
+    props: {
+        action: Object as PropType<ContractAction>,
+    },
 
-  setup(props) {
-    const isTouchDevice = inject('isTouchDevice', ref(false))
-    const isSmallScreen = inject('isSmallScreen', ref(false))
-    const isMediumScreen = inject('isMediumScreen', ref(false))
-    const propertySizeClass = 'is-one-fifth'
+    setup(props) {
+        const isTouchDevice = inject("isTouchDevice", ref(false));
+        const isSmallScreen = inject("isSmallScreen", ref(false));
+        const isMediumScreen = inject("isMediumScreen", ref(false));
+        const propertySizeClass = "is-one-fifth";
 
-    const contractActionAnalyzer = new ContractActionAnalyzer(computed(() => props.action))
-    onMounted(() => contractActionAnalyzer.mount())
-    onBeforeUnmount(() => contractActionAnalyzer.unmount())
+        const contractActionAnalyzer = new ContractActionAnalyzer(
+            computed(() => props.action),
+        );
+        onMounted(() => contractActionAnalyzer.mount());
+        onBeforeUnmount(() => contractActionAnalyzer.unmount());
 
-    return {
-      isTouchDevice,
-      isSmallScreen,
-      isMediumScreen,
-      propertySizeClass,
-      ORUGA_MOBILE_BREAKPOINT,
-      errorMessage: contractActionAnalyzer.errorMessage,
-      functionCallAnalyzer: contractActionAnalyzer.functionCallAnalyzer,
-      functionHash: contractActionAnalyzer.functionCallAnalyzer.functionHash,
-      signature: contractActionAnalyzer.functionCallAnalyzer.signature,
-    }
-  }
+        return {
+            isTouchDevice,
+            isSmallScreen,
+            isMediumScreen,
+            propertySizeClass,
+            ORUGA_MOBILE_BREAKPOINT,
+            errorMessage: contractActionAnalyzer.errorMessage,
+            functionCallAnalyzer: contractActionAnalyzer.functionCallAnalyzer,
+            functionHash:
+                contractActionAnalyzer.functionCallAnalyzer.functionHash,
+            signature: contractActionAnalyzer.functionCallAnalyzer.signature,
+        };
+    },
 });
-
 </script>
 
 <!-- --------------------------------------------------------------------------------------------------------------- -->
 <!--                                                       STYLE                                                     -->
 <!-- --------------------------------------------------------------------------------------------------------------- -->
 
-<style>
-</style>
+<style></style>

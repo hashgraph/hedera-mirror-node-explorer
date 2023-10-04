@@ -23,10 +23,14 @@
 <!-- --------------------------------------------------------------------------------------------------------------- -->
 
 <template>
-  <span class="is-inline-flex is-align-items-center">
-    <a @click="$emit('action')" :class="{'pointer-events-none': actionDisabled}">{{ title }}</a>
-    <span v-if="running" class="loader is-inline-block ml-2"/>
-  </span>
+    <span class="is-inline-flex is-align-items-center">
+        <a
+            @click="$emit('action')"
+            :class="{ 'pointer-events-none': actionDisabled }"
+            >{{ title }}</a
+        >
+        <span v-if="running" class="loader is-inline-block ml-2" />
+    </span>
 </template>
 
 <!-- --------------------------------------------------------------------------------------------------------------- -->
@@ -34,36 +38,33 @@
 <!-- --------------------------------------------------------------------------------------------------------------- -->
 
 <script lang="ts">
-
-import {computed, defineComponent} from "vue";
+import { computed, defineComponent } from "vue";
 
 export default defineComponent({
-  name: "ActionLink",
-  props: {
-    title: {
-      type: String,
-      default: "Action"
+    name: "ActionLink",
+    props: {
+        title: {
+            type: String,
+            default: "Action",
+        },
+        enabled: {
+            type: Boolean,
+            default: true,
+        },
+        running: {
+            type: Boolean,
+            default: false,
+        },
     },
-    enabled: {
-      type: Boolean,
-      default: true
+    emits: ["action"],
+    setup(props) {
+        const actionDisabled = computed(() => {
+            return props.running || !props.enabled;
+        });
+
+        return { actionDisabled };
     },
-    running: {
-      type: Boolean,
-      default: false
-    }
-  },
-  emits: ['action'],
-  setup(props) {
-
-    const actionDisabled = computed(() => {
-      return props.running || !props.enabled
-    })
-
-    return { actionDisabled }
-  }
-})
-
+});
 </script>
 
 <!-- --------------------------------------------------------------------------------------------------------------- -->
@@ -71,8 +72,7 @@ export default defineComponent({
 <!-- --------------------------------------------------------------------------------------------------------------- -->
 
 <style scoped>
-
 a.pointer-events-none {
-  pointer-events: none
+    pointer-events: none;
 }
 </style>

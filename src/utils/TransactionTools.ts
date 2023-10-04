@@ -18,26 +18,31 @@
  *
  */
 
-import {StakingRewardTransfer, Transaction, TransactionType, Transfer} from "@/schemas/HederaSchemas";
-import {TransactionID} from "@/utils/TransactionID";
+import {
+    StakingRewardTransfer,
+    Transaction,
+    TransactionType,
+    Transfer,
+} from "@/schemas/HederaSchemas";
+import { TransactionID } from "@/utils/TransactionID";
 
 export function makeSummaryLabel(row: Transaction): string {
-    let result: string
-    let netAmount: number
+    let result: string;
+    let netAmount: number;
 
     switch (row.name) {
         case TransactionType.CRYPTOTRANSFER:
             netAmount = computeNetAmount(row.transfers, row.charged_tx_fee);
-            result = makeTransferLabel(row, netAmount)
-            break
+            result = makeTransferLabel(row, netAmount);
+            break;
         case TransactionType.CONSENSUSCREATETOPIC:
         case TransactionType.CONSENSUSDELETETOPIC:
         case TransactionType.CONSENSUSUPDATETOPIC:
-            result = row.entity_id ? "Topic ID: " + row.entity_id : ""
-            break
+            result = row.entity_id ? "Topic ID: " + row.entity_id : "";
+            break;
         case TransactionType.CONSENSUSSUBMITMESSAGE:
-            result = formatMemo(row.memo_base64 ?? "")
-            break
+            result = formatMemo(row.memo_base64 ?? "");
+            break;
         case TransactionType.CRYPTOCREATEACCOUNT:
         case TransactionType.CRYPTODELETE:
         case TransactionType.CRYPTOUPDATEACCOUNT:
@@ -49,8 +54,8 @@ export function makeSummaryLabel(row: Transaction): string {
         case TransactionType.TOKENUNFREEZE:
         case TransactionType.CRYPTOADDLIVEHASH:
         case TransactionType.CRYPTODELETELIVEHASH:
-            result = row.entity_id ? "Account ID: " + row.entity_id : ""
-            break
+            result = row.entity_id ? "Account ID: " + row.entity_id : "";
+            break;
         case TransactionType.TOKENBURN:
         case TransactionType.TOKENMINT:
         case TransactionType.TOKENCREATION:
@@ -60,97 +65,96 @@ export function makeSummaryLabel(row: Transaction): string {
         case TransactionType.TOKENUNPAUSE:
         case TransactionType.TOKENUPDATE:
         case TransactionType.TOKENWIPE:
-            result = row.entity_id ? "Token ID: " + row.entity_id : ""
-            break
+            result = row.entity_id ? "Token ID: " + row.entity_id : "";
+            break;
         case TransactionType.CONTRACTCREATEINSTANCE:
         case TransactionType.CONTRACTDELETEINSTANCE:
         case TransactionType.CONTRACTUPDATEINSTANCE:
         case TransactionType.CONTRACTCALL:
-            result = row.entity_id ? "Contract ID: " + row.entity_id : ""
-            break
+            result = row.entity_id ? "Contract ID: " + row.entity_id : "";
+            break;
         case TransactionType.FILECREATE:
         case TransactionType.FILEUPDATE:
         case TransactionType.FILEDELETE:
         case TransactionType.FILEAPPEND:
-            result = row.entity_id ? "File ID: " + row.entity_id : ""
-            break
+            result = row.entity_id ? "File ID: " + row.entity_id : "";
+            break;
         case TransactionType.SCHEDULECREATE:
         case TransactionType.SCHEDULEDELETE:
         case TransactionType.SCHEDULESIGN:
-            result = row.entity_id ? "Schedule ID: " + row.entity_id : ""
-            break
+            result = row.entity_id ? "Schedule ID: " + row.entity_id : "";
+            break;
         case TransactionType.CRYPTOAPPROVEALLOWANCE:
         case TransactionType.CRYPTODELETEALLOWANCE:
-            result = formatMemo(row.memo_base64 ?? "")
-            break
+            result = formatMemo(row.memo_base64 ?? "");
+            break;
         default:
-            result = ""
-            break
+            result = "";
+            break;
     }
-    return result
+    return result;
 }
 
 function makeTransferLabel(row: Transaction, netAmount: number): string {
-    const TREASURY = "0.0.98"
-    let result: string
-    let fromAccount = null
-    let toAccount = null
-    let foundTreasury = false
-    let nbFrom = 0
+    const TREASURY = "0.0.98";
+    let result: string;
+    let fromAccount = null;
+    let toAccount = null;
+    let foundTreasury = false;
+    let nbFrom = 0;
 
     if (netAmount > 0 && row.transfers !== undefined) {
         for (const t of row.transfers) {
             if (t.amount < 0) {
-                fromAccount = t.account
-                nbFrom++
+                fromAccount = t.account;
+                nbFrom++;
                 if (Math.abs(t.amount) == netAmount) {
-                    break
+                    break;
                 }
             }
         }
         for (const t of row.transfers) {
             if (t.amount > 0) {
                 if (t.amount == netAmount) {
-                    toAccount = t.account
-                    break
+                    toAccount = t.account;
+                    break;
                 } else if (t.account == TREASURY) {
-                    foundTreasury = true
+                    foundTreasury = true;
                 }
             }
         }
 
         if (fromAccount && toAccount) {
-            result = fromAccount + " \u2192 " + toAccount
+            result = fromAccount + " \u2192 " + toAccount;
         } else if (nbFrom == 1 && foundTreasury) {
-            result = fromAccount + " \u2192 " + TREASURY
+            result = fromAccount + " \u2192 " + TREASURY;
         } else {
-            result = ""
+            result = "";
         }
     } else {
-        result = ""
+        result = "";
     }
 
-    return result
+    return result;
 }
 
 export function showPositiveNetAmount(row: Transaction): boolean {
-    let result: boolean
+    let result: boolean;
 
-    const netAmount = computeNetAmount(row.transfers, row.charged_tx_fee)
+    const netAmount = computeNetAmount(row.transfers, row.charged_tx_fee);
     switch (row.name) {
         case TransactionType.CRYPTOTRANSFER:
-            result = true
-            break
+            result = true;
+            break;
         default:
-            result = netAmount > 0
+            result = netAmount > 0;
     }
-    return result
+    return result;
 }
 
 export function makeTypeLabel(type: TransactionType | undefined): string {
-    let result: string
+    let result: string;
     switch (type) {
-
         case TransactionType.CONSENSUSCREATETOPIC:
             result = "HCS Create Topic";
             break;
@@ -161,46 +165,46 @@ export function makeTypeLabel(type: TransactionType | undefined): string {
             result = "HCS Delete Topic";
             break;
         case TransactionType.CONSENSUSSUBMITMESSAGE:
-            result = "HCS Submit Message"
+            result = "HCS Submit Message";
             break;
 
         case TransactionType.CONTRACTCALL:
-            result = "Contract Call"
+            result = "Contract Call";
             break;
         case TransactionType.CONTRACTDELETEINSTANCE:
-            result = "Contract Delete"
+            result = "Contract Delete";
             break;
         case TransactionType.CONTRACTCREATEINSTANCE:
-            result = "Contract Create"
+            result = "Contract Create";
             break;
         case TransactionType.CONTRACTUPDATEINSTANCE:
-            result = "Contract Update"
+            result = "Contract Update";
             break;
 
         case TransactionType.CRYPTOADDLIVEHASH:
-            result = "Crypto Add Live Hash"
+            result = "Crypto Add Live Hash";
             break;
         case TransactionType.CRYPTOCREATEACCOUNT:
-            result = "Crypto Create Account"
+            result = "Crypto Create Account";
             break;
         case TransactionType.CRYPTODELETE:
-            result = "Crypto Delete Account"
+            result = "Crypto Delete Account";
             break;
         case TransactionType.CRYPTOUPDATEACCOUNT:
-            result = "Crypto Update Account"
+            result = "Crypto Update Account";
             break;
         case TransactionType.CRYPTODELETELIVEHASH:
-            result = "Crypto Delete Live Hash"
-            break
+            result = "Crypto Delete Live Hash";
+            break;
         case TransactionType.CRYPTOTRANSFER:
-            result = "Crypto Transfer"
-            break
+            result = "Crypto Transfer";
+            break;
         case TransactionType.CRYPTOAPPROVEALLOWANCE:
-            result = "Crypto Approve Allowance"
-            break
+            result = "Crypto Approve Allowance";
+            break;
         case TransactionType.CRYPTODELETEALLOWANCE:
-            result = "Crypto Delete Allowance"
-            break
+            result = "Crypto Delete Allowance";
+            break;
 
         case TransactionType.FILECREATE:
             result = "File Create";
@@ -299,81 +303,87 @@ export function makeTypeLabel(type: TransactionType | undefined): string {
             break;
 
         default:
-            result = type ?? "?"
-            break
+            result = type ?? "?";
+            break;
     }
 
-    return result.toUpperCase()
+    return result.toUpperCase();
 }
 
 export function makeOperatorAccountLabel(transaction: Transaction): string {
-    let result: string | null
+    let result: string | null;
     const transactionId = transaction.transaction_id;
     if (transactionId != null) {
-        result = TransactionID.makePayerID(transactionId) ?? "?"
+        result = TransactionID.makePayerID(transactionId) ?? "?";
     } else {
-        result = "?"
+        result = "?";
     }
-    return result
+    return result;
 }
 
 function formatMemo(memo64: string): string {
-    let result: string
+    let result: string;
     try {
-        result = atob(memo64)
+        result = atob(memo64);
     } catch {
-        result = memo64
+        result = memo64;
     }
-    return result
+    return result;
 }
 
-export function computeNetAmount(transfers: Transfer[] | undefined, transactionFee: number | undefined): number {
-    let result = 0
+export function computeNetAmount(
+    transfers: Transfer[] | undefined,
+    transactionFee: number | undefined,
+): number {
+    let result = 0;
     if (transfers !== undefined) {
         for (const t of transfers) {
             if (t.amount > 0) {
-                result += t.amount
+                result += t.amount;
             }
         }
     }
-    result -= transactionFee ?? 0
-    return result
+    result -= transactionFee ?? 0;
+    return result;
 }
 
-export function makeNetOfRewards(transfers: Transfer[] | undefined, rewards: StakingRewardTransfer[] | undefined): Transfer[] {
-    let result = Array<Transfer>()
-    let totalRewardAmount = 0
+export function makeNetOfRewards(
+    transfers: Transfer[] | undefined,
+    rewards: StakingRewardTransfer[] | undefined,
+): Transfer[] {
+    let result = Array<Transfer>();
+    let totalRewardAmount = 0;
 
     if (transfers && rewards && transfers.length > 0 && rewards.length > 0) {
         for (const r of rewards) {
-            totalRewardAmount += r.amount
+            totalRewardAmount += r.amount;
         }
-        let netAmount: number
+        let netAmount: number;
         for (const t of transfers) {
             if (t.account === "0.0.800") {
-                netAmount = t.amount + totalRewardAmount
+                netAmount = t.amount + totalRewardAmount;
             } else {
-                netAmount = t.amount
+                netAmount = t.amount;
                 for (const r of rewards) {
                     if (t.account == r.account) {
                         if (t.amount < 0) {
-                            netAmount = t.amount + r.amount
+                            netAmount = t.amount + r.amount;
                         } else {
-                            netAmount = t.amount - r.amount
+                            netAmount = t.amount - r.amount;
                         }
-                        break
+                        break;
                     }
                 }
             }
             result.push({
                 amount: netAmount,
                 account: t.account,
-                is_approval: t.is_approval
-            })
+                is_approval: t.is_approval,
+            });
         }
     } else {
-        result = transfers ?? []
+        result = transfers ?? [];
     }
 
-    return result
+    return result;
 }

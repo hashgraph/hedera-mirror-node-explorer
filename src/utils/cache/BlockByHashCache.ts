@@ -18,14 +18,13 @@
  *
  */
 
-import {EntityCache} from "@/utils/cache/base/EntityCache"
-import {Block} from "@/schemas/HederaSchemas";
+import { EntityCache } from "@/utils/cache/base/EntityCache";
+import { Block } from "@/schemas/HederaSchemas";
 import axios from "axios";
-import {BlockByNbCache} from "@/utils/cache/BlockByNbCache";
+import { BlockByNbCache } from "@/utils/cache/BlockByNbCache";
 
-export class BlockByHashCache extends EntityCache<string, Block|null> {
-
-    public static readonly instance = new BlockByHashCache()
+export class BlockByHashCache extends EntityCache<string, Block | null> {
+    public static readonly instance = new BlockByHashCache();
 
     //
     // Public
@@ -33,8 +32,8 @@ export class BlockByHashCache extends EntityCache<string, Block|null> {
 
     public updateWithBlock(block: Block): void {
         if (block.hash) {
-            this.forget(block.hash)
-            this.mutate(block.hash, Promise.resolve(block))
+            this.forget(block.hash);
+            this.mutate(block.hash, Promise.resolve(block));
         }
     }
 
@@ -42,22 +41,20 @@ export class BlockByHashCache extends EntityCache<string, Block|null> {
     // Cache
     //
 
-    protected async load(hash: string): Promise<Block|null> {
-        let result: Promise<Block|null>
+    protected async load(hash: string): Promise<Block | null> {
+        let result: Promise<Block | null>;
 
         try {
-            const response = await axios.get<Block>("api/v1/blocks/" + hash)
-            result = Promise.resolve(response.data)
-            BlockByNbCache.instance.updateWithBlock(response.data)
-        } catch(error) {
+            const response = await axios.get<Block>("api/v1/blocks/" + hash);
+            result = Promise.resolve(response.data);
+            BlockByNbCache.instance.updateWithBlock(response.data);
+        } catch (error) {
             if (axios.isAxiosError(error) && error.response?.status == 404) {
-                result = Promise.resolve(null)
+                result = Promise.resolve(null);
             } else {
-                throw error
+                throw error;
             }
         }
-        return result
+        return result;
     }
-
 }
-

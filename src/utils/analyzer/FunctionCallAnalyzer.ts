@@ -18,252 +18,303 @@
  *
  */
 
-import {computed, ComputedRef, ref, Ref, watch, WatchStopHandle} from "vue";
-import {ethers} from "ethers";
-import {ContractAnalyzer} from "@/utils/analyzer/ContractAnalyzer";
+import { computed, ComputedRef, ref, Ref, watch, WatchStopHandle } from "vue";
+import { ethers } from "ethers";
+import { ContractAnalyzer } from "@/utils/analyzer/ContractAnalyzer";
 
 export class FunctionCallAnalyzer {
-
-    public readonly input: Ref<string|null>
-    public readonly output: Ref<string|null>
-    public readonly error: Ref<string|null>
-    private readonly contractAnalyzer: ContractAnalyzer
-    private readonly transactionDescription = ref<ethers.utils.TransactionDescription|null>(null)
-    private readonly transactionDecodingFailure = ref<unknown>(null)
-    private readonly outputResult = ref<ethers.utils.Result|null>(null)
-    private readonly outputDecodingFailure = ref<unknown>(null)
-    private readonly errorDescription = ref<ErrorDescription|null>(null) // Where is ethers.utils.ErrorDescription ?
-    private readonly errorDecodingFailure = ref<unknown>(null)
-    private readonly watchHandle: Ref<WatchStopHandle[]> = ref([])
+    public readonly input: Ref<string | null>;
+    public readonly output: Ref<string | null>;
+    public readonly error: Ref<string | null>;
+    private readonly contractAnalyzer: ContractAnalyzer;
+    private readonly transactionDescription =
+        ref<ethers.utils.TransactionDescription | null>(null);
+    private readonly transactionDecodingFailure = ref<unknown>(null);
+    private readonly outputResult = ref<ethers.utils.Result | null>(null);
+    private readonly outputDecodingFailure = ref<unknown>(null);
+    private readonly errorDescription = ref<ErrorDescription | null>(null); // Where is ethers.utils.ErrorDescription ?
+    private readonly errorDecodingFailure = ref<unknown>(null);
+    private readonly watchHandle: Ref<WatchStopHandle[]> = ref([]);
 
     //
     // Public
     //
 
-    public constructor(input: Ref<string|null>, output: Ref<string|null>, error: Ref<string|null>, contractId: Ref<string|null>) {
-        this.input = input
-        this.output = output
-        this.error = error
-        this.contractAnalyzer = new ContractAnalyzer(contractId)
+    public constructor(
+        input: Ref<string | null>,
+        output: Ref<string | null>,
+        error: Ref<string | null>,
+        contractId: Ref<string | null>,
+    ) {
+        this.input = input;
+        this.output = output;
+        this.error = error;
+        this.contractAnalyzer = new ContractAnalyzer(contractId);
     }
 
     public mount(): void {
         this.watchHandle.value = [
-            watch([this.input, this.contractAnalyzer.interface], this.updateTransactionDescription, { immediate: true}),
-            watch([this.output, this.transactionDescription], this.updateOutputResult, { immediate: true}),
-            watch([this.error, this.contractAnalyzer.interface], this.updateErrorDescription, { immediate: true})
-        ]
-        this.contractAnalyzer.mount()
+            watch(
+                [this.input, this.contractAnalyzer.interface],
+                this.updateTransactionDescription,
+                { immediate: true },
+            ),
+            watch(
+                [this.output, this.transactionDescription],
+                this.updateOutputResult,
+                { immediate: true },
+            ),
+            watch(
+                [this.error, this.contractAnalyzer.interface],
+                this.updateErrorDescription,
+                { immediate: true },
+            ),
+        ];
+        this.contractAnalyzer.mount();
     }
 
     public unmount(): void {
-        this.contractAnalyzer.unmount()
+        this.contractAnalyzer.unmount();
         for (const wh of this.watchHandle.value) {
-            wh()
+            wh();
         }
-        this.watchHandle.value = []
-        this.transactionDescription.value = null
-        this.transactionDecodingFailure.value = null
-        this.outputResult.value = null
-        this.outputDecodingFailure.value = null
-        this.errorDescription.value = null
-        this.errorDecodingFailure.value = null
+        this.watchHandle.value = [];
+        this.transactionDescription.value = null;
+        this.transactionDecodingFailure.value = null;
+        this.outputResult.value = null;
+        this.outputDecodingFailure.value = null;
+        this.errorDescription.value = null;
+        this.errorDecodingFailure.value = null;
     }
 
-    public readonly normalizedInput: ComputedRef<string|null> = computed(() => {
-        return this.input.value == "0x" ? null : this.input.value
-    })
+    public readonly normalizedInput: ComputedRef<string | null> = computed(
+        () => {
+            return this.input.value == "0x" ? null : this.input.value;
+        },
+    );
 
-    public readonly normalizedOutput: ComputedRef<string|null> = computed(() => {
-        return this.output.value == "0x" ? null : this.output.value
-    })
+    public readonly normalizedOutput: ComputedRef<string | null> = computed(
+        () => {
+            return this.output.value == "0x" ? null : this.output.value;
+        },
+    );
 
-    public readonly normalizedError: ComputedRef<string|null> = computed(() => {
-        return this.error.value == "0x" ? null : this.error.value
-    })
+    public readonly normalizedError: ComputedRef<string | null> = computed(
+        () => {
+            return this.error.value == "0x" ? null : this.error.value;
+        },
+    );
 
-    public readonly functionHash: ComputedRef<string|null> = computed(() => {
-        return this.transactionDescription.value?.sighash ?? null
-    })
+    public readonly functionHash: ComputedRef<string | null> = computed(() => {
+        return this.transactionDescription.value?.sighash ?? null;
+    });
 
-    public readonly signature: ComputedRef<string|null> = computed(() => {
-        return this.transactionDescription.value?.signature ?? null
-    })
+    public readonly signature: ComputedRef<string | null> = computed(() => {
+        return this.transactionDescription.value?.signature ?? null;
+    });
 
-    public readonly errorSignature: ComputedRef<string|null> = computed(() => {
-        return this.errorDescription.value?.signature ?? null
-    })
+    public readonly errorSignature: ComputedRef<string | null> = computed(
+        () => {
+            return this.errorDescription.value?.signature ?? null;
+        },
+    );
 
-    public readonly errorHash: ComputedRef<string|null> = computed(() => {
-        return this.errorDescription.value?.sighash ?? null
-    })
+    public readonly errorHash: ComputedRef<string | null> = computed(() => {
+        return this.errorDescription.value?.sighash ?? null;
+    });
 
     public readonly inputs: ComputedRef<NameTypeValue[]> = computed(() => {
-        const result: NameTypeValue[] = []
+        const result: NameTypeValue[] = [];
         if (this.transactionDescription.value) {
-            const args = this.transactionDescription.value.args
-            const fragmentInputs = this.transactionDescription.value.functionFragment.inputs
+            const args = this.transactionDescription.value.args;
+            const fragmentInputs =
+                this.transactionDescription.value.functionFragment.inputs;
             for (let i = 0, count = args.length; i < count; i += 1) {
-                const value = args[i]
-                const name = i < fragmentInputs.length ? fragmentInputs[i].name : "?"
-                const type = i < fragmentInputs.length ? fragmentInputs[i].type : "?"
-                result.push(new NameTypeValue(name, type, value))
+                const value = args[i];
+                const name =
+                    i < fragmentInputs.length ? fragmentInputs[i].name : "?";
+                const type =
+                    i < fragmentInputs.length ? fragmentInputs[i].type : "?";
+                result.push(new NameTypeValue(name, type, value));
             }
         }
-        return result
-    })
+        return result;
+    });
 
     public readonly outputs: ComputedRef<NameTypeValue[]> = computed(() => {
-        const result: NameTypeValue[] = []
+        const result: NameTypeValue[] = [];
         if (this.outputResult.value !== null) {
-            const results = this.outputResult.value
-            const fragmentOutputs = this.transactionDescription.value?.functionFragment.outputs ?? []
+            const results = this.outputResult.value;
+            const fragmentOutputs =
+                this.transactionDescription.value?.functionFragment.outputs ??
+                [];
             for (let i = 0, count = results.length; i < count; i += 1) {
-                const value = results[i]
-                const name = i < fragmentOutputs.length ? fragmentOutputs[i].name : "?"
-                const type = i < fragmentOutputs.length ? fragmentOutputs[i].type : "?"
-                result.push(new NameTypeValue(name, type, value))
+                const value = results[i];
+                const name =
+                    i < fragmentOutputs.length ? fragmentOutputs[i].name : "?";
+                const type =
+                    i < fragmentOutputs.length ? fragmentOutputs[i].type : "?";
+                result.push(new NameTypeValue(name, type, value));
             }
         }
-        return result
-    })
+        return result;
+    });
 
     public readonly errorInputs: ComputedRef<NameTypeValue[]> = computed(() => {
-        const result: NameTypeValue[] = []
+        const result: NameTypeValue[] = [];
         if (this.errorDescription.value !== null) {
-            const results = this.errorDescription.value.args
-            const fragmentInputs = this.errorDescription.value?.errorFragment.inputs ?? []
+            const results = this.errorDescription.value.args;
+            const fragmentInputs =
+                this.errorDescription.value?.errorFragment.inputs ?? [];
             for (let i = 0, count = results.length; i < count; i += 1) {
-                const value = results[i]
-                const name = i < fragmentInputs.length ? fragmentInputs[i].name : "?"
-                const type = i < fragmentInputs.length ? fragmentInputs[i].type : "?"
-                result.push(new NameTypeValue(name, type, value))
+                const value = results[i];
+                const name =
+                    i < fragmentInputs.length ? fragmentInputs[i].name : "?";
+                const type =
+                    i < fragmentInputs.length ? fragmentInputs[i].type : "?";
+                result.push(new NameTypeValue(name, type, value));
             }
         }
-        return result
-    })
+        return result;
+    });
 
     public readonly inputDecodingStatus = computed(() => {
-        let result: string|null
+        let result: string | null;
         if (this.transactionDecodingFailure.value !== null) {
-            result = this.makeDecodingErrorMessage(this.transactionDecodingFailure.value)
+            result = this.makeDecodingErrorMessage(
+                this.transactionDecodingFailure.value,
+            );
         } else {
-            result = null
+            result = null;
         }
-        return result
-    })
+        return result;
+    });
 
     public readonly outputDecodingStatus = computed(() => {
-        let result: string|null
+        let result: string | null;
 
-        if (this.transactionDecodingFailure.value !== null && this.normalizedOutput.value !== null) {
-            result = this.makeDecodingErrorMessage(this.transactionDecodingFailure.value)
+        if (
+            this.transactionDecodingFailure.value !== null &&
+            this.normalizedOutput.value !== null
+        ) {
+            result = this.makeDecodingErrorMessage(
+                this.transactionDecodingFailure.value,
+            );
         } else if (this.outputDecodingFailure.value !== null) {
-            result = this.makeDecodingErrorMessage(this.outputDecodingFailure.value)
+            result = this.makeDecodingErrorMessage(
+                this.outputDecodingFailure.value,
+            );
         } else {
-            result = null
+            result = null;
         }
-        return result
-    })
+        return result;
+    });
 
     public readonly errorDecodingStatus = computed(() => {
-        let result: string|null
+        let result: string | null;
         if (this.errorDecodingFailure.value !== null) {
-            result = this.makeDecodingErrorMessage(this.errorDecodingFailure.value)
+            result = this.makeDecodingErrorMessage(
+                this.errorDecodingFailure.value,
+            );
         } else {
-            result = null
+            result = null;
         }
-        return result
-    })
+        return result;
+    });
 
     //
     // Private
     //
 
     private makeDecodingErrorMessage(failure: unknown): string {
-        const f = failure as ArgumentError
-        return f?.reason ? "Decoding Error (" + f.reason + ")" : "Decoding Error"
+        const f = failure as ArgumentError;
+        return f?.reason
+            ? "Decoding Error (" + f.reason + ")"
+            : "Decoding Error";
     }
 
     private readonly updateTransactionDescription = async () => {
-        const i = this.contractAnalyzer.interface.value
-        const input = this.input.value
+        const i = this.contractAnalyzer.interface.value;
+        const input = this.input.value;
         if (i !== null && input !== null) {
             try {
-                const td = i.parseTransaction({data: input})
-                this.transactionDescription.value = Object.preventExtensions(td) // Because ethers does not like Ref introspection
-                this.transactionDecodingFailure.value = null
-            } catch(failure) {
-                this.transactionDescription.value = null
-                this.transactionDecodingFailure.value = failure
+                const td = i.parseTransaction({ data: input });
+                this.transactionDescription.value =
+                    Object.preventExtensions(td); // Because ethers does not like Ref introspection
+                this.transactionDecodingFailure.value = null;
+            } catch (failure) {
+                this.transactionDescription.value = null;
+                this.transactionDecodingFailure.value = failure;
             }
         } else {
-            this.transactionDescription.value = null
-            this.transactionDecodingFailure.value = null
+            this.transactionDescription.value = null;
+            this.transactionDecodingFailure.value = null;
         }
-    }
+    };
 
     private readonly updateOutputResult = () => {
-        const td = this.transactionDescription.value
-        const i = this.contractAnalyzer.interface.value
-        const output = this.output.value
+        const td = this.transactionDescription.value;
+        const i = this.contractAnalyzer.interface.value;
+        const output = this.output.value;
         if (td !== null && i !== null && output !== null) {
             try {
-                this.outputResult.value = i.decodeFunctionResult(td.functionFragment, output)
-                this.outputDecodingFailure.value = null
-            } catch(failure) {
-                this.outputResult.value = null
-                this.outputDecodingFailure.value = failure
+                this.outputResult.value = i.decodeFunctionResult(
+                    td.functionFragment,
+                    output,
+                );
+                this.outputDecodingFailure.value = null;
+            } catch (failure) {
+                this.outputResult.value = null;
+                this.outputDecodingFailure.value = failure;
             }
         } else {
-            this.outputResult.value = null
-            this.outputDecodingFailure.value = null
+            this.outputResult.value = null;
+            this.outputDecodingFailure.value = null;
         }
-    }
+    };
 
-    private readonly updateErrorDescription = async() => {
-        const i = this.contractAnalyzer.interface.value
-        const error = this.error.value
+    private readonly updateErrorDescription = async () => {
+        const i = this.contractAnalyzer.interface.value;
+        const error = this.error.value;
         if (i !== null && error !== null) {
             try {
-                const ed = i.parseError(error)
-                this.errorDescription.value = Object.preventExtensions(ed)
-                this.errorDecodingFailure.value = null
-            } catch(failure) {
-                this.errorDescription.value = null
-                this.errorDecodingFailure.value = failure
+                const ed = i.parseError(error);
+                this.errorDescription.value = Object.preventExtensions(ed);
+                this.errorDecodingFailure.value = null;
+            } catch (failure) {
+                this.errorDescription.value = null;
+                this.errorDecodingFailure.value = failure;
             }
         } else {
-            this.errorDescription.value = null
-            this.errorDecodingFailure.value = null
+            this.errorDescription.value = null;
+            this.errorDecodingFailure.value = null;
         }
-    }
-
+    };
 }
 
 export class NameTypeValue {
-    public readonly name: string
-    public readonly type: string
-    public readonly value: unknown
+    public readonly name: string;
+    public readonly type: string;
+    public readonly value: unknown;
     public constructor(name: string, type: string, value: unknown) {
-        this.name = name
-        this.type = type
-        this.value = value
+        this.name = name;
+        this.type = type;
+        this.value = value;
     }
 }
 
 export interface ErrorDescription {
-    readonly errorFragment: ethers.utils.ErrorFragment
-    readonly name: string
-    readonly args: ethers.utils.Result
-    readonly signature: string
-    readonly sighash: string
+    readonly errorFragment: ethers.utils.ErrorFragment;
+    readonly name: string;
+    readonly args: ethers.utils.Result;
+    readonly signature: string;
+    readonly sighash: string;
 }
 
 export interface ArgumentError {
-    readonly reason?: string
-    readonly argument?: string
-    readonly value?: string
-    readonly code?: string
-    readonly version?: string
+    readonly reason?: string;
+    readonly argument?: string;
+    readonly value?: string;
+    readonly code?: string;
+    readonly version?: string;
 }

@@ -18,93 +18,108 @@
  *
  */
 
-import {ContractAction, ContractActionsResponse} from "@/schemas/HederaSchemas";
-import axios, {AxiosResponse} from "axios";
-import {computed, ref, Ref, watch} from "vue";
-import {EntityLoader} from "@/utils/loader/EntityLoader";
+import {
+    ContractAction,
+    ContractActionsResponse,
+} from "@/schemas/HederaSchemas";
+import axios, { AxiosResponse } from "axios";
+import { computed, ref, Ref, watch } from "vue";
+import { EntityLoader } from "@/utils/loader/EntityLoader";
 
 export interface ContractActionWithPath {
-    action: ContractAction,
-    depthPath: string
+    action: ContractAction;
+    depthPath: string;
 }
 
 export class ContractActionsLoader extends EntityLoader<ContractActionsResponse> {
-
-    public readonly transactionIdOrHash: Ref<string | null>
+    public readonly transactionIdOrHash: Ref<string | null>;
 
     //
     // Public
     //
 
     public constructor(transactionIdOrHash: Ref<string | null>) {
-        super()
-        this.transactionIdOrHash = transactionIdOrHash
-        this.watchAndReload([this.transactionIdOrHash])
-        watch(this.actions, () => this.makeActionsWithPath())
+        super();
+        this.transactionIdOrHash = transactionIdOrHash;
+        this.watchAndReload([this.transactionIdOrHash]);
+        watch(this.actions, () => this.makeActionsWithPath());
     }
 
-    public readonly actionsWithPath: Ref<Array<ContractActionWithPath>> = ref([])
-    public readonly actions = computed(() => this.entity.value?.actions ?? null)
+    public readonly actionsWithPath: Ref<Array<ContractActionWithPath>> = ref(
+        [],
+    );
+    public readonly actions = computed(
+        () => this.entity.value?.actions ?? null,
+    );
 
     //
     // EntityLoader
     //
 
     protected async load(): Promise<AxiosResponse<ContractActionsResponse> | null> {
-        let result: AxiosResponse<ContractActionsResponse>|null = null
-        let url: string|null = "api/v1/contracts/results/" + this.transactionIdOrHash.value + "/actions?limit=100"
+        let result: AxiosResponse<ContractActionsResponse> | null = null;
+        let url: string | null =
+            "api/v1/contracts/results/" +
+            this.transactionIdOrHash.value +
+            "/actions?limit=100";
         while (url !== null) {
-            const next:AxiosResponse<ContractActionsResponse> = await axios.get(url)
-            result = result !== null ? this.mergeResponses(result, next) : next
-            url = next.data.links?.next ?? null
+            const next: AxiosResponse<ContractActionsResponse> =
+                await axios.get(url);
+            result = result !== null ? this.mergeResponses(result, next) : next;
+            url = next.data.links?.next ?? null;
         }
-        return Promise.resolve(result)
+        return Promise.resolve(result);
     }
 
     //
     // Private
     //
 
-    private mergeResponses(last: AxiosResponse<ContractActionsResponse>,
-                             next: AxiosResponse<ContractActionsResponse>): AxiosResponse<ContractActionsResponse> {
-        const lastActions = last.data.actions ?? []
-        const nextActions = next.data.actions ?? []
-        last.data.actions = lastActions.concat(nextActions)
-        return last
+    private mergeResponses(
+        last: AxiosResponse<ContractActionsResponse>,
+        next: AxiosResponse<ContractActionsResponse>,
+    ): AxiosResponse<ContractActionsResponse> {
+        const lastActions = last.data.actions ?? [];
+        const nextActions = next.data.actions ?? [];
+        last.data.actions = lastActions.concat(nextActions);
+        return last;
     }
 
     private makeActionsWithPath() {
-        let depthVector: Array<number> = []
-        const actionsWithPath: Array<ContractActionWithPath> = []
+        let depthVector: Array<number> = [];
+        const actionsWithPath: Array<ContractActionWithPath> = [];
 
         if (this.actions.value) {
-            depthVector = []
+            depthVector = [];
             for (const a of this.actions.value) {
                 actionsWithPath.push({
                     action: a,
-                    depthPath: ContractActionsLoader.buildDepthPath(a.call_depth ?? 0, depthVector)
-                } as ContractActionWithPath)
+                    depthPath: ContractActionsLoader.buildDepthPath(
+                        a.call_depth ?? 0,
+                        depthVector,
+                    ),
+                } as ContractActionWithPath);
             }
-            this.actionsWithPath.value = actionsWithPath
+            this.actionsWithPath.value = actionsWithPath;
         } else {
-            this.actionsWithPath.value = []
+            this.actionsWithPath.value = [];
         }
     }
 
     private static buildDepthPath(depth: number, depthVector: Array<number>) {
-        let result = ""
+        let result = "";
 
         if (depthVector.length >= depth + 1) {
-            depthVector[depth]++
-            depthVector.splice(depth + 1)
+            depthVector[depth]++;
+            depthVector.splice(depth + 1);
         } else {
-            depthVector.push(1)
+            depthVector.push(1);
         }
 
         for (let i = 0; i < depthVector.length; i++) {
-            result += (i === 0) ? depthVector[i] : "_" + depthVector[i]
+            result += i === 0 ? depthVector[i] : "_" + depthVector[i];
         }
 
-        return result
+        return result;
     }
 }

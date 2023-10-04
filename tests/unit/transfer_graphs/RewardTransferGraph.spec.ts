@@ -18,76 +18,75 @@
  *
  */
 
-import {describe, test, expect} from 'vitest'
+import { describe, test, expect } from "vitest";
 import router from "@/router";
-import {flushPromises, mount} from "@vue/test-utils";
-import {Transaction, TransactionDetail} from "@/schemas/HederaSchemas";
+import { flushPromises, mount } from "@vue/test-utils";
+import { Transaction, TransactionDetail } from "@/schemas/HederaSchemas";
 import RewardTransferGraph from "@/components/transfer_graphs/RewardTransferGraph.vue";
-import {SAMPLE_CRYPTO_TRANSFER_WITH_ONLY_FEE, SAMPLE_CRYPTO_TRANSFER_WITH_REWARDS} from "../Mocks";
+import {
+    SAMPLE_CRYPTO_TRANSFER_WITH_ONLY_FEE,
+    SAMPLE_CRYPTO_TRANSFER_WITH_REWARDS,
+} from "../Mocks";
 
 describe("RewardTransferGraph.vue", () => {
-
     test("Without transaction prop", async () => {
-
-        await router.push("/") // To avoid "missing required param 'network'" error
+        await router.push("/"); // To avoid "missing required param 'network'" error
 
         const wrapper = mount(RewardTransferGraph, {
             global: {
-                plugins: [router]
+                plugins: [router],
             },
-            props: {
-            },
-        })
+            props: {},
+        });
 
-        await flushPromises()
+        await flushPromises();
 
         // console.log(wrapper.html())
         // console.log(wrapper.text())
 
-        expect(wrapper.text()).toBe("")
+        expect(wrapper.text()).toBe("");
 
-        wrapper.unmount()
-        await flushPromises()
-    })
+        wrapper.unmount();
+        await flushPromises();
+    });
 
     test("with transfers and no rewards", async () => {
-
-        await router.push("/") // To avoid "missing required param 'network'" error
+        await router.push("/"); // To avoid "missing required param 'network'" error
 
         const wrapper = mount(RewardTransferGraph, {
             global: {
-                plugins: [router]
+                plugins: [router],
             },
             props: {
-                transaction: SAMPLE_CRYPTO_TRANSFER_WITH_ONLY_FEE as Transaction,
+                transaction:
+                    SAMPLE_CRYPTO_TRANSFER_WITH_ONLY_FEE as Transaction,
             },
-        })
+        });
 
-        await flushPromises()
+        await flushPromises();
 
         // console.log(wrapper.html())
         // console.log(wrapper.text())
 
-        expect(wrapper.text()).toBe("")
+        expect(wrapper.text()).toBe("");
 
-        wrapper.unmount()
-    })
+        wrapper.unmount();
+    });
 
     test("with multiple transfers and rewards", async () => {
-
-        await router.push("/") // To avoid "missing required param 'network'" error
+        await router.push("/"); // To avoid "missing required param 'network'" error
 
         const wrapper = mount(RewardTransferGraph, {
             global: {
-                plugins: [router]
+                plugins: [router],
             },
             props: {
-                transaction: SAMPLE_CRYPTO_TRANSFER_WITH_REWARDS as TransactionDetail,
-
+                transaction:
+                    SAMPLE_CRYPTO_TRANSFER_WITH_REWARDS as TransactionDetail,
             },
-        })
+        });
 
-        await flushPromises()
+        await flushPromises();
 
         // console.log(wrapper.html())
         // console.log(wrapper.text())
@@ -99,15 +98,14 @@ describe("RewardTransferGraph.vue", () => {
 
         expect(wrapper.text()).toBe(
             "Staking Rewards" +
-            "Reward AccountAccountAmount Rewarded" +
-            "0.0.800\n\n" +
-            "0.0.788887" +
-            "2.10704256\n\n" +
-            "0.0.2254995" +
-            "22.89378672")
+                "Reward AccountAccountAmount Rewarded" +
+                "0.0.800\n\n" +
+                "0.0.788887" +
+                "2.10704256\n\n" +
+                "0.0.2254995" +
+                "22.89378672",
+        );
 
-        wrapper.unmount()
-    })
-
-})
-
+        wrapper.unmount();
+    });
+});

@@ -18,24 +18,28 @@
  *
  */
 
-import {AccountBalanceTransactions} from "@/schemas/HederaSchemas";
-import {EntityCache} from "@/utils/cache/base/EntityCache";
+import { AccountBalanceTransactions } from "@/schemas/HederaSchemas";
+import { EntityCache } from "@/utils/cache/base/EntityCache";
 import axios from "axios";
-import {AccountByAddressCache} from "@/utils/cache/AccountByAddressCache";
-import {AccountByAliasCache} from "@/utils/cache/AccountByAliasCache";
+import { AccountByAddressCache } from "@/utils/cache/AccountByAddressCache";
+import { AccountByAliasCache } from "@/utils/cache/AccountByAliasCache";
 
-export class AccountByIdCache extends EntityCache<string, AccountBalanceTransactions|null> {
-
-    public static readonly instance = new AccountByIdCache()
+export class AccountByIdCache extends EntityCache<
+    string,
+    AccountBalanceTransactions | null
+> {
+    public static readonly instance = new AccountByIdCache();
 
     //
     // Public
     //
 
-    public updateWithAccountInfo(accountInfo: AccountBalanceTransactions): void {
+    public updateWithAccountInfo(
+        accountInfo: AccountBalanceTransactions,
+    ): void {
         if (accountInfo.account) {
-            this.forget(accountInfo.account)
-            this.mutate(accountInfo.account, Promise.resolve(accountInfo))
+            this.forget(accountInfo.account);
+            this.mutate(accountInfo.account, Promise.resolve(accountInfo));
         }
     }
 
@@ -43,20 +47,24 @@ export class AccountByIdCache extends EntityCache<string, AccountBalanceTransact
     // Cache
     //
 
-    protected async load(accountId: string): Promise<AccountBalanceTransactions | null> {
-        let result: Promise<AccountBalanceTransactions|null>
+    protected async load(
+        accountId: string,
+    ): Promise<AccountBalanceTransactions | null> {
+        let result: Promise<AccountBalanceTransactions | null>;
         try {
-            const response = await axios.get<AccountBalanceTransactions>("api/v1/accounts/" + accountId)
-            result = Promise.resolve(response.data)
-            AccountByAliasCache.instance.updateWithAccountInfo(response.data)
-            AccountByAddressCache.instance.updateWithAccountInfo(response.data)
-        } catch(error) {
+            const response = await axios.get<AccountBalanceTransactions>(
+                "api/v1/accounts/" + accountId,
+            );
+            result = Promise.resolve(response.data);
+            AccountByAliasCache.instance.updateWithAccountInfo(response.data);
+            AccountByAddressCache.instance.updateWithAccountInfo(response.data);
+        } catch (error) {
             if (axios.isAxiosError(error) && error.response?.status == 404) {
-                result = Promise.resolve(null)
+                result = Promise.resolve(null);
             } else {
-                throw error
+                throw error;
             }
         }
-        return result
+        return result;
     }
 }

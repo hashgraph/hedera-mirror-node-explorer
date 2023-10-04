@@ -23,16 +23,32 @@
 <!-- --------------------------------------------------------------------------------------------------------------- -->
 
 <template>
-
-  <div v-if="numVariation >= 0" class="is-flex is-align-items-baseline" :class="{'mb-1':isMediumScreen, 'mt-1':!isMediumScreen}">
-    <img class="image mr-1" alt="Trend Up" src="@/assets/trend-up.png" style="width: 18px; height: 9px">
-    <span>{{ variation }}%</span>
-  </div>
-  <div v-else class="is-flex is-align-items-baseline" :class="{'mb-1':isMediumScreen, 'mt-1':!isMediumScreen}">
-    <img class="image mr-1" alt="Trend Down" src="@/assets/trend-down.png" style="width: 18px; height: 9px">
-    <span>{{ absVariation }}%</span>
-  </div>
-
+    <div
+        v-if="numVariation >= 0"
+        class="is-flex is-align-items-baseline"
+        :class="{ 'mb-1': isMediumScreen, 'mt-1': !isMediumScreen }"
+    >
+        <img
+            class="image mr-1"
+            alt="Trend Up"
+            src="@/assets/trend-up.png"
+            style="width: 18px; height: 9px"
+        />
+        <span>{{ variation }}%</span>
+    </div>
+    <div
+        v-else
+        class="is-flex is-align-items-baseline"
+        :class="{ 'mb-1': isMediumScreen, 'mt-1': !isMediumScreen }"
+    >
+        <img
+            class="image mr-1"
+            alt="Trend Down"
+            src="@/assets/trend-down.png"
+            style="width: 18px; height: 9px"
+        />
+        <span>{{ absVariation }}%</span>
+    </div>
 </template>
 
 <!-- --------------------------------------------------------------------------------------------------------------- -->
@@ -40,34 +56,32 @@
 <!-- --------------------------------------------------------------------------------------------------------------- -->
 
 <script lang="ts">
-
-import {computed, defineComponent, inject} from 'vue';
+import { computed, defineComponent, inject } from "vue";
 
 export default defineComponent({
-  name: 'Variation',
+    name: "Variation",
 
-  props: {
-    variation: String,
-  },
+    props: {
+        variation: String,
+    },
 
-  setup(props) {
-    const isMediumScreen = inject('isMediumScreen', true)
-    const numVariation = computed(() => {
-      return props.variation ? Number(props.variation) : 0
-    })
-    const absVariation = computed(() => Math.abs(numVariation.value))
-    return {
-      isMediumScreen,
-      numVariation,
-      absVariation,
-    }
-  },
+    setup(props) {
+        const isMediumScreen = inject("isMediumScreen", true);
+        const numVariation = computed(() => {
+            return props.variation ? Number(props.variation) : 0;
+        });
+        const absVariation = computed(() => Math.abs(numVariation.value));
+        return {
+            isMediumScreen,
+            numVariation,
+            absVariation,
+        };
+    },
 });
-
 </script>
 
 <!-- --------------------------------------------------------------------------------------------------------------- -->
 <!--                                                       STYLE                                                     -->
 <!-- --------------------------------------------------------------------------------------------------------------- -->
 
-<style/>
+<style />

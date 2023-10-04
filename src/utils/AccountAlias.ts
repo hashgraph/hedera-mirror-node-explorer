@@ -18,30 +18,34 @@
  *
  */
 
-import {aliasToBase32, base32ToAlias, byteToHex, hexToByte} from "@/utils/B64Utils";
+import {
+    aliasToBase32,
+    base32ToAlias,
+    byteToHex,
+    hexToByte,
+} from "@/utils/B64Utils";
 
 export class AccountAlias {
-
-    public readonly bytes: Uint8Array
+    public readonly bytes: Uint8Array;
 
     //
     // Public
     //
 
-    public static parse(a: string): AccountAlias|null {
-        let bytes = base32ToAlias(a)
+    public static parse(a: string): AccountAlias | null {
+        let bytes = base32ToAlias(a);
         if (bytes === null) {
-            bytes = hexToByte(a)
+            bytes = hexToByte(a);
         }
-        return bytes !== null ? new AccountAlias(bytes) : null
+        return bytes !== null ? new AccountAlias(bytes) : null;
     }
 
     public toString(): string {
-        return aliasToBase32(this.bytes)
+        return aliasToBase32(this.bytes);
     }
 
     public toHexString(): string {
-        return byteToHex(this.bytes)
+        return byteToHex(this.bytes);
     }
 
     //
@@ -49,7 +53,6 @@ export class AccountAlias {
     //
 
     private constructor(bytes: Uint8Array) {
-        this.bytes = bytes
+        this.bytes = bytes;
     }
-
 }

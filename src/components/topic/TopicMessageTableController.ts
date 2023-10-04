@@ -18,65 +18,85 @@
  *
  */
 
-import {KeyOperator, SortOrder, TableController} from "@/utils/table/TableController"
-import {TopicMessage, TopicMessagesResponse} from "@/schemas/HederaSchemas"
-import axios, {AxiosResponse} from "axios"
-import {ComputedRef} from "vue"
-import {Router} from "vue-router";
+import {
+    KeyOperator,
+    SortOrder,
+    TableController,
+} from "@/utils/table/TableController";
+import { TopicMessage, TopicMessagesResponse } from "@/schemas/HederaSchemas";
+import axios, { AxiosResponse } from "axios";
+import { ComputedRef } from "vue";
+import { Router } from "vue-router";
 
-export class TopicMessageTableController extends TableController<TopicMessage, string> {
-
-    public readonly topicId: ComputedRef<string|null>
+export class TopicMessageTableController extends TableController<
+    TopicMessage,
+    string
+> {
+    public readonly topicId: ComputedRef<string | null>;
 
     //
     // Public
     //
 
-    public constructor(router: Router, topicId: ComputedRef<string|null>, pageSize: ComputedRef<number>) {
+    public constructor(
+        router: Router,
+        topicId: ComputedRef<string | null>,
+        pageSize: ComputedRef<number>,
+    ) {
         super(router, pageSize, 10 * pageSize.value, 5000, 10, 100);
-        this.topicId = topicId
-        this.watchAndReload([this.topicId])
+        this.topicId = topicId;
+        this.watchAndReload([this.topicId]);
     }
 
     //
     // TableController
     //
 
-    public async load(consensusTimestamp: string|null, operator: KeyOperator, order: SortOrder, limit: number): Promise<TopicMessage[]|null> {
-        let result: Promise<TopicMessage[]|null>
+    public async load(
+        consensusTimestamp: string | null,
+        operator: KeyOperator,
+        order: SortOrder,
+        limit: number,
+    ): Promise<TopicMessage[] | null> {
+        let result: Promise<TopicMessage[] | null>;
         if (this.topicId.value !== null) {
             const params = {} as {
-                limit: number
-                timestamp: string | undefined
-                order: string
-            }
-            params.limit = limit
-            params.order = order
+                limit: number;
+                timestamp: string | undefined;
+                order: string;
+            };
+            params.limit = limit;
+            params.order = order;
             if (consensusTimestamp != null) {
-                params.timestamp = operator + ":" + consensusTimestamp
+                params.timestamp = operator + ":" + consensusTimestamp;
             }
-            const cb = (r: AxiosResponse<TopicMessagesResponse>): Promise<TopicMessage[]|null> =>{
-                return Promise.resolve(r.data.messages ?? [])
-            }
-            result = axios.get<TopicMessagesResponse>(
-                "api/v1/topics/" + this.topicId.value + "/messages", { params: params} ).then(cb)
+            const cb = (
+                r: AxiosResponse<TopicMessagesResponse>,
+            ): Promise<TopicMessage[] | null> => {
+                return Promise.resolve(r.data.messages ?? []);
+            };
+            result = axios
+                .get<TopicMessagesResponse>(
+                    "api/v1/topics/" + this.topicId.value + "/messages",
+                    { params: params },
+                )
+                .then(cb);
         } else {
-            result = Promise.resolve(null)
+            result = Promise.resolve(null);
         }
 
-        return result
+        return result;
     }
 
     public keyFor(row: TopicMessage): string {
-        return row.consensus_timestamp ?? ""
+        return row.consensus_timestamp ?? "";
     }
 
     public stringFromKey(timestamp: string): string {
-        return timestamp
+        return timestamp;
     }
 
-    public keyFromString(s: string): string|null {
-        return s
+    public keyFromString(s: string): string | null {
+        return s;
     }
-
 }

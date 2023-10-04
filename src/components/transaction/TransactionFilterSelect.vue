@@ -23,15 +23,13 @@
 <!-- --------------------------------------------------------------------------------------------------------------- -->
 
 <template>
-
-  <o-field>
-    <o-select v-model="selectedFilter" class="ml-2 h-is-text-size-1">
-      <option v-for="f in filterValues" v-bind:key="f" v-bind:value="f">
-        {{ makeFilterLabel(f) }}
-      </option>
-    </o-select>
-  </o-field>
-
+    <o-field>
+        <o-select v-model="selectedFilter" class="ml-2 h-is-text-size-1">
+            <option v-for="f in filterValues" v-bind:key="f" v-bind:value="f">
+                {{ makeFilterLabel(f) }}
+            </option>
+        </o-select>
+    </o-field>
 </template>
 
 <!-- --------------------------------------------------------------------------------------------------------------- -->
@@ -39,50 +37,50 @@
 <!-- --------------------------------------------------------------------------------------------------------------- -->
 
 <script lang="ts">
-
-import {defineComponent, PropType} from "vue";
-import {TransactionType} from "@/schemas/HederaSchemas";
-import {makeTypeLabel} from "@/utils/TransactionTools";
-import {TransactionTableControllerXL} from "@/components/transaction/TransactionTableControllerXL";
+import { defineComponent, PropType } from "vue";
+import { TransactionType } from "@/schemas/HederaSchemas";
+import { makeTypeLabel } from "@/utils/TransactionTools";
+import { TransactionTableControllerXL } from "@/components/transaction/TransactionTableControllerXL";
 
 export default defineComponent({
-  name: "TransactionFilterSelect",
+    name: "TransactionFilterSelect",
 
-  props: {
-    controller: {
-      type: Object as PropType<TransactionTableControllerXL>,
-      required: true
-    }
-  },
+    props: {
+        controller: {
+            type: Object as PropType<TransactionTableControllerXL>,
+            required: true,
+        },
+    },
 
-  setup(props) {
+    setup(props) {
+        const makeFilterLabel = (filterValue: string): string => {
+            return filterValue == ""
+                ? "TYPES: ALL"
+                : makeTypeLabel(filterValue as TransactionType);
+        };
 
-    const makeFilterLabel = (filterValue: string): string => {
-      return filterValue == "" ? "TYPES: ALL" : makeTypeLabel(filterValue as TransactionType)
-    }
-
-    return {
-      filterValues: makeFilterValues(),
-      selectedFilter: props.controller.transactionType,
-      makeFilterLabel,
-    }
-  }
+        return {
+            filterValues: makeFilterValues(),
+            selectedFilter: props.controller.transactionType,
+            makeFilterLabel,
+        };
+    },
 });
 
 export function makeFilterValues(): string[] {
-  const result = Object
-    .keys(TransactionType)
-    .sort((a, b) => {
-      return makeTypeLabel(a as TransactionType) < makeTypeLabel(b as TransactionType) ? -1 : 1;
-    })
-  result.splice(0, 0, "")
-  return result
+    const result = Object.keys(TransactionType).sort((a, b) => {
+        return makeTypeLabel(a as TransactionType) <
+            makeTypeLabel(b as TransactionType)
+            ? -1
+            : 1;
+    });
+    result.splice(0, 0, "");
+    return result;
 }
-
 </script>
 
 <!-- --------------------------------------------------------------------------------------------------------------- -->
 <!--                                                       STYLE                                                     -->
 <!-- --------------------------------------------------------------------------------------------------------------- -->
 
-<style/>
+<style />

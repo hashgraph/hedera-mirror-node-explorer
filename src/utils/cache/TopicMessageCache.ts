@@ -18,31 +18,34 @@
  *
  */
 
-import {EntityCache} from "@/utils/cache/base/EntityCache";
-import {TopicMessage} from "@/schemas/HederaSchemas";
+import { EntityCache } from "@/utils/cache/base/EntityCache";
+import { TopicMessage } from "@/schemas/HederaSchemas";
 import axios from "axios";
 
-export class TopicMessageCache extends EntityCache<string, TopicMessage|null> {
-
-    public static readonly instance = new TopicMessageCache()
+export class TopicMessageCache extends EntityCache<
+    string,
+    TopicMessage | null
+> {
+    public static readonly instance = new TopicMessageCache();
 
     //
     // Cache
     //
 
-    protected async load(timestamp: string): Promise<TopicMessage|null> {
-        let result: Promise<TopicMessage|null>
+    protected async load(timestamp: string): Promise<TopicMessage | null> {
+        let result: Promise<TopicMessage | null>;
         try {
-            const response = await axios.get<TopicMessage>("api/v1/topics/messages/" + timestamp)
-            result = Promise.resolve(response.data)
-        } catch(error) {
+            const response = await axios.get<TopicMessage>(
+                "api/v1/topics/messages/" + timestamp,
+            );
+            result = Promise.resolve(response.data);
+        } catch (error) {
             if (axios.isAxiosError(error) && error.response?.status == 404) {
-                result = Promise.resolve(null)
+                result = Promise.resolve(null);
             } else {
-                throw error
+                throw error;
             }
         }
-        return result
+        return result;
     }
-
 }

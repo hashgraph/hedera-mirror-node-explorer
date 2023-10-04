@@ -18,34 +18,41 @@
  *
  */
 
-import {AccountInfo, AccountBalanceTransactions} from "@/schemas/HederaSchemas";
-import {KNS, NameNotFoundError} from "@kabuto-sh/ns";
+import {
+    AccountInfo,
+    AccountBalanceTransactions,
+} from "@/schemas/HederaSchemas";
+import { KNS, NameNotFoundError } from "@kabuto-sh/ns";
 import axios from "axios";
 
 let _nameService: KNS | null = null;
 
 export function nameServiceSetNetwork(name: string): void {
-  if (name === "mainnet" || name === "testnet") {
-    _nameService = new KNS({ network: name as "mainnet" | "testnet" });
-  } else {
-    _nameService = null;
-  }
+    if (name === "mainnet" || name === "testnet") {
+        _nameService = new KNS({ network: name as "mainnet" | "testnet" });
+    } else {
+        _nameService = null;
+    }
 }
 
-export async function nameServiceResolve(domain: string): Promise<AccountInfo | null> {
-  if (_nameService == null) return null;
+export async function nameServiceResolve(
+    domain: string,
+): Promise<AccountInfo | null> {
+    if (_nameService == null) return null;
 
-  try {
-    const accountId = await _nameService.getHederaAddress(domain);
-    const response = await axios.get<AccountBalanceTransactions>("api/v1/accounts/" + accountId);
+    try {
+        const accountId = await _nameService.getHederaAddress(domain);
+        const response = await axios.get<AccountBalanceTransactions>(
+            "api/v1/accounts/" + accountId,
+        );
 
-    return response.data;
-  } catch (error) {
-    if (error instanceof NameNotFoundError) {
-      // domain not found
-      return null;
+        return response.data;
+    } catch (error) {
+        if (error instanceof NameNotFoundError) {
+            // domain not found
+            return null;
+        }
+
+        throw error;
     }
-
-    throw error;
-  }
 }

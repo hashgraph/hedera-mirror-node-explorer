@@ -18,125 +18,146 @@
  *
  */
 
-import {FunctionCallAnalyzer} from "@/utils/analyzer/FunctionCallAnalyzer"
-import {ContractResultDetails} from "@/schemas/HederaSchemas"
-import {EntityID} from "@/utils/EntityID"
-import {computed, ref, Ref, watch, WatchStopHandle} from "vue"
-import {decodeSolidityErrorMessage} from "@/schemas/HederaUtils";
-import {ContractResultByTsCache} from "@/utils/cache/ContractResultByTsCache";
+import { FunctionCallAnalyzer } from "@/utils/analyzer/FunctionCallAnalyzer";
+import { ContractResultDetails } from "@/schemas/HederaSchemas";
+import { EntityID } from "@/utils/EntityID";
+import { computed, ref, Ref, watch, WatchStopHandle } from "vue";
+import { decodeSolidityErrorMessage } from "@/schemas/HederaUtils";
+import { ContractResultByTsCache } from "@/utils/cache/ContractResultByTsCache";
 
 export class ContractResultAnalyzer {
-
-    public readonly timestamp: Ref<string|null>
-    public readonly functionCallAnalyzer: FunctionCallAnalyzer
-    public readonly contractResult: Ref<ContractResultDetails|null> = ref(null)
-    private readonly watchHandle: Ref<WatchStopHandle|null> = ref(null)
+    public readonly timestamp: Ref<string | null>;
+    public readonly functionCallAnalyzer: FunctionCallAnalyzer;
+    public readonly contractResult: Ref<ContractResultDetails | null> =
+        ref(null);
+    private readonly watchHandle: Ref<WatchStopHandle | null> = ref(null);
 
     //
     // Public
     //
 
     public constructor(timestamp: Ref<string | null>) {
-        this.timestamp = timestamp
-        this.functionCallAnalyzer = new FunctionCallAnalyzer(this.input, this.output, this.error, this.toId)
+        this.timestamp = timestamp;
+        this.functionCallAnalyzer = new FunctionCallAnalyzer(
+            this.input,
+            this.output,
+            this.error,
+            this.toId,
+        );
     }
 
     public mount(): void {
-        this.watchHandle.value = watch(this.timestamp,
+        this.watchHandle.value = watch(
+            this.timestamp,
             this.updateContractResult,
-            { immediate: true})
-        this.functionCallAnalyzer.mount()
+            { immediate: true },
+        );
+        this.functionCallAnalyzer.mount();
     }
 
     public unmount(): void {
-        this.functionCallAnalyzer.unmount()
+        this.functionCallAnalyzer.unmount();
         if (this.watchHandle.value !== null) {
-            this.watchHandle.value()
-            this.watchHandle.value = null
+            this.watchHandle.value();
+            this.watchHandle.value = null;
         }
-        this.contractResult.value = null
+        this.contractResult.value = null;
     }
 
-    public readonly fromId= computed(() => {
-        const entityID = EntityID.fromAddress(this.contractResult.value?.from)
-        return entityID?.toString() ?? null
-    })
+    public readonly fromId = computed(() => {
+        const entityID = EntityID.fromAddress(this.contractResult.value?.from);
+        return entityID?.toString() ?? null;
+    });
 
     public readonly toId = computed(() => {
-        const entityID = EntityID.fromAddress(this.contractResult.value?.to ?? undefined)
-        return entityID?.toString() ?? null
-    })
+        const entityID = EntityID.fromAddress(
+            this.contractResult.value?.to ?? undefined,
+        );
+        return entityID?.toString() ?? null;
+    });
 
     public readonly gasPrice = computed(() => {
-      return (this.contractResult.value?.gas_price !== null)
-          ? Number(filter0x(this.contractResult.value?.gas_price))
-          : null
-    })
+        return this.contractResult.value?.gas_price !== null
+            ? Number(filter0x(this.contractResult.value?.gas_price))
+            : null;
+    });
 
     public readonly maxFeePerGas = computed(() => {
-      return (this.contractResult.value?.max_fee_per_gas !== null)
-          ? Number(filter0x(this.contractResult.value?.max_fee_per_gas))
-          : null
-    })
+        return this.contractResult.value?.max_fee_per_gas !== null
+            ? Number(filter0x(this.contractResult.value?.max_fee_per_gas))
+            : null;
+    });
 
     public readonly maxPriorityFeePerGas = computed(() => {
-      return (this.contractResult.value?.max_priority_fee_per_gas !== null)
-          ? Number(filter0x(this.contractResult.value?.max_priority_fee_per_gas))
-          : null
-    })
+        return this.contractResult.value?.max_priority_fee_per_gas !== null
+            ? Number(
+                  filter0x(this.contractResult.value?.max_priority_fee_per_gas),
+              )
+            : null;
+    });
 
-    public errorMessage = computed(
-        () => decodeSolidityErrorMessage(this.contractResult.value?.error_message ?? null))
+    public errorMessage = computed(() =>
+        decodeSolidityErrorMessage(
+            this.contractResult.value?.error_message ?? null,
+        ),
+    );
 
     public ethereumNonce = computed(
-        () => this.contractResult.value?.nonce ?? null)
+        () => this.contractResult.value?.nonce ?? null,
+    );
 
     public readonly contractType = computed(() => {
-        let result: string|null
-        const typeValue = this.contractResult.value?.type ?? null
-        switch(typeValue) {
+        let result: string | null;
+        const typeValue = this.contractResult.value?.type ?? null;
+        switch (typeValue) {
             case null:
-                result = null
-                break
+                result = null;
+                break;
             case 0:
-                result = "Pre-Eip1559"
-                break
+                result = "Pre-Eip1559";
+                break;
             case 2:
-                result = "Post-Eip1559"
-                break
+                result = "Post-Eip1559";
+                break;
             default:
-                result = typeValue.toString()
-                break
+                result = typeValue.toString();
+                break;
         }
-        return result
-    })
+        return result;
+    });
 
     //
     // Private
     //
 
     private readonly input = computed(
-        () => this.contractResult.value?.function_parameters ?? null)
+        () => this.contractResult.value?.function_parameters ?? null,
+    );
 
     private readonly output = computed(
-        () => this.contractResult.value?.call_result ?? null)
+        () => this.contractResult.value?.call_result ?? null,
+    );
 
     private readonly error = computed(
-        () => this.contractResult.value?.error_message ?? null)
+        () => this.contractResult.value?.error_message ?? null,
+    );
 
     private readonly updateContractResult = async () => {
         if (this.timestamp.value !== null) {
             try {
-                this.contractResult.value = await ContractResultByTsCache.instance.lookup(this.timestamp.value)
+                this.contractResult.value =
+                    await ContractResultByTsCache.instance.lookup(
+                        this.timestamp.value,
+                    );
             } catch {
-                this.contractResult.value = null
+                this.contractResult.value = null;
             }
         } else {
-            this.contractResult.value = null
+            this.contractResult.value = null;
         }
-    }
+    };
 }
 
-function filter0x(value: string|null|undefined): string|null|undefined {
-    return value === '0x' ? '0' : value
+function filter0x(value: string | null | undefined): string | null | undefined {
+    return value === "0x" ? "0" : value;
 }

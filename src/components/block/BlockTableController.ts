@@ -18,14 +18,17 @@
  *
  */
 
-import {Block, BlocksResponse} from "@/schemas/HederaSchemas";
-import {ComputedRef} from "vue";
-import axios, {AxiosResponse} from "axios";
-import {KeyOperator, SortOrder, TableController} from "@/utils/table/TableController";
-import {Router} from "vue-router";
+import { Block, BlocksResponse } from "@/schemas/HederaSchemas";
+import { ComputedRef } from "vue";
+import axios, { AxiosResponse } from "axios";
+import {
+    KeyOperator,
+    SortOrder,
+    TableController,
+} from "@/utils/table/TableController";
+import { Router } from "vue-router";
 
 export class BlockTableController extends TableController<Block, number> {
-
     //
     // Public
     //
@@ -38,34 +41,42 @@ export class BlockTableController extends TableController<Block, number> {
     // TableController
     //
 
-    public async load(blockNb: number | null, operator: KeyOperator, order: SortOrder, limit: number): Promise<Block[] | null> {
-
+    public async load(
+        blockNb: number | null,
+        operator: KeyOperator,
+        order: SortOrder,
+        limit: number,
+    ): Promise<Block[] | null> {
         const params = {} as {
-            limit: number
-            "block.number": string
-            order: string
-        }
-        params.limit = limit
-        params.order = order
+            limit: number;
+            "block.number": string;
+            order: string;
+        };
+        params.limit = limit;
+        params.order = order;
         if (blockNb !== null) {
-            params["block.number"] = operator + ":" + blockNb
+            params["block.number"] = operator + ":" + blockNb;
         }
-        const cb = (r: AxiosResponse<BlocksResponse>): Promise<Block[] | null> => {
-            return Promise.resolve(r.data.blocks ?? [])
-        }
+        const cb = (
+            r: AxiosResponse<BlocksResponse>,
+        ): Promise<Block[] | null> => {
+            return Promise.resolve(r.data.blocks ?? []);
+        };
 
-        return  axios.get<BlocksResponse>("api/v1/blocks", {params: params}).then(cb)
+        return axios
+            .get<BlocksResponse>("api/v1/blocks", { params: params })
+            .then(cb);
     }
 
     public keyFor(row: Block): number {
-        return row.number ?? -1
+        return row.number ?? -1;
     }
 
     public stringFromKey(key: number): string {
-        return key.toString()
+        return key.toString();
     }
 
     public keyFromString(s: string): number | null {
-        return Number(s)
+        return Number(s);
     }
 }

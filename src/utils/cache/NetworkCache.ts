@@ -18,30 +18,31 @@
  *
  */
 
-import {NetworkNode, NetworkNodesResponse} from "@/schemas/HederaSchemas";
-import {SingletonCache} from "@/utils/cache/base/SingletonCache";
-import axios, {AxiosResponse} from "axios";
+import { NetworkNode, NetworkNodesResponse } from "@/schemas/HederaSchemas";
+import { SingletonCache } from "@/utils/cache/base/SingletonCache";
+import axios, { AxiosResponse } from "axios";
 
 export class NetworkCache extends SingletonCache<NetworkNode[]> {
-
-    public static readonly instance = new NetworkCache()
+    public static readonly instance = new NetworkCache();
 
     //
     // Cache
     //
 
     protected async load(): Promise<NetworkNode[]> {
-        let result: NetworkNode[] = []
-        let nextURL: string|null = "api/v1/network/nodes"
+        let result: NetworkNode[] = [];
+        let nextURL: string | null = "api/v1/network/nodes";
         const params = {
-            limit: 25
-        }
+            limit: 25,
+        };
         while (nextURL !== null) {
-            const response: AxiosResponse<NetworkNodesResponse>
-                = await axios.get<NetworkNodesResponse>(nextURL, { params: params})
-            result = result.concat(response.data.nodes ?? [])
-            nextURL = response.data.links?.next ?? null
+            const response: AxiosResponse<NetworkNodesResponse> =
+                await axios.get<NetworkNodesResponse>(nextURL, {
+                    params: params,
+                });
+            result = result.concat(response.data.nodes ?? []);
+            nextURL = response.data.links?.next ?? null;
         }
-        return Promise.resolve(result)
+        return Promise.resolve(result);
     }
 }

@@ -18,72 +18,74 @@
  *
  */
 
-import {computed, Ref} from "vue";
-import {TransactionDetail, TransactionType} from "@/schemas/HederaSchemas";
+import { computed, Ref } from "vue";
+import { TransactionDetail, TransactionType } from "@/schemas/HederaSchemas";
 
 export class TransactionGroupAnalyzer {
-
-    public readonly transactions: Ref<TransactionDetail[]|null>
+    public readonly transactions: Ref<TransactionDetail[] | null>;
 
     //
     // Public
     //
 
-    public constructor(transactions: Ref<TransactionDetail[]|null>) {
-        this.transactions = transactions
+    public constructor(transactions: Ref<TransactionDetail[] | null>) {
+        this.transactions = transactions;
     }
 
     public readonly parentTransaction = computed(() => {
-        let result: TransactionDetail | null = null
+        let result: TransactionDetail | null = null;
         for (const t of this.transactions.value ?? []) {
             if (t.nonce === 0) {
-                result = t
-                break
+                result = t;
+                break;
             }
         }
-        return this.childTransactions.value.length ? result : null
-    })
+        return this.childTransactions.value.length ? result : null;
+    });
 
     public readonly childTransactions = computed(() => {
-        const result = new Array<TransactionDetail>()
+        const result = new Array<TransactionDetail>();
         for (const t of this.transactions.value ?? []) {
             if (t.parent_consensus_timestamp) {
-                result.push(t)
+                result.push(t);
             }
         }
-        return result
-    })
+        return result;
+    });
 
     public readonly scheduledTransaction = computed(() => {
-        let result: TransactionDetail | null = null
-        if (this.transactions.value !== null && this.transactions.value.length == 2) {
+        let result: TransactionDetail | null = null;
+        if (
+            this.transactions.value !== null &&
+            this.transactions.value.length == 2
+        ) {
             for (const t of this.transactions.value) {
                 if (t.scheduled) {
-                    result = t
-                    break
+                    result = t;
+                    break;
                 }
             }
         } else {
-            result = null
+            result = null;
         }
-        return result
-    })
+        return result;
+    });
 
     public readonly schedulingTransaction = computed(() => {
-        let result: TransactionDetail|null = null
-        if (this.transactions.value !== null && this.transactions.value.length == 2) {
+        let result: TransactionDetail | null = null;
+        if (
+            this.transactions.value !== null &&
+            this.transactions.value.length == 2
+        ) {
             for (const t of this.transactions.value) {
                 if (t.name === TransactionType.SCHEDULECREATE) {
-                    result = t
-                    break
+                    result = t;
+                    break;
                 }
             }
         } else {
-            result = null
+            result = null;
         }
-        return result
-    })
-
-
+        return result;
+    });
 }
-

@@ -18,15 +18,15 @@
  *
  */
 
-import {describe, it, expect} from 'vitest'
-import {flushPromises, mount} from "@vue/test-utils"
+import { describe, it, expect } from "vitest";
+import { flushPromises, mount } from "@vue/test-utils";
 import router from "@/router";
 import axios from "axios";
-import {SAMPLE_BLOCKSRESPONSE} from "../Mocks";
+import { SAMPLE_BLOCKSRESPONSE } from "../Mocks";
 import DashboardCard from "@/components/DashboardCard.vue";
 import MockAdapter from "axios-mock-adapter";
 import Oruga from "@oruga-ui/oruga-next";
-import {HMSF} from "@/utils/HMSF";
+import { HMSF } from "@/utils/HMSF";
 import Blocks from "@/pages/Blocks.vue";
 import BlockTable from "@/components/block/BlockTable.vue";
 
@@ -37,46 +37,52 @@ import BlockTable from "@/components/block/BlockTable.vue";
 
  */
 
-HMSF.forceUTC = true
+HMSF.forceUTC = true;
 
 describe("Blocks.vue", () => {
-
     it("Should display the BlockTable", async () => {
-
-        await router.push("/") // To avoid "missing required param 'network'" error
+        await router.push("/"); // To avoid "missing required param 'network'" error
 
         const mock = new MockAdapter(axios);
 
-        const matcher1 = "/api/v1/blocks"
+        const matcher1 = "/api/v1/blocks";
         mock.onGet(matcher1).reply(200, SAMPLE_BLOCKSRESPONSE);
 
         const wrapper = mount(Blocks, {
             global: {
-                plugins: [router, Oruga]
+                plugins: [router, Oruga],
             },
             props: {},
         });
 
-        await flushPromises()
+        await flushPromises();
         // console.log(wrapper.html())
         // console.log(wrapper.text())
 
-        expect(wrapper.vm.blockTableController.mounted.value).toBe(true)
-        const card = wrapper.findComponent(DashboardCard)
-        expect(card.exists()).toBe(true)
-        expect(card.text()).toMatch(RegExp("^Blocks"))
+        expect(wrapper.vm.blockTableController.mounted.value).toBe(true);
+        const card = wrapper.findComponent(DashboardCard);
+        expect(card.exists()).toBe(true);
+        expect(card.text()).toMatch(RegExp("^Blocks"));
 
-        const table = card.findComponent(BlockTable)
-        expect(table.exists()).toBe(true)
-        expect(table.get('thead').text()).toBe("Number Start Time No. Transactions Gas Used")
-        expect(table.get('tbody').text()).toBe(
-            "25175998" + "6:58:31.3281 AMSep 23, 2022, UTC" + "3" + "0" +
-            "25175997" + "6:58:28.2114 AMSep 23, 2022, UTC" + "5" + "0"
-        )
+        const table = card.findComponent(BlockTable);
+        expect(table.exists()).toBe(true);
+        expect(table.get("thead").text()).toBe(
+            "Number Start Time No. Transactions Gas Used",
+        );
+        expect(table.get("tbody").text()).toBe(
+            "25175998" +
+                "6:58:31.3281 AMSep 23, 2022, UTC" +
+                "3" +
+                "0" +
+                "25175997" +
+                "6:58:28.2114 AMSep 23, 2022, UTC" +
+                "5" +
+                "0",
+        );
 
-        wrapper.unmount()
-        await flushPromises()
+        wrapper.unmount();
+        await flushPromises();
 
-        expect(wrapper.vm.blockTableController.mounted.value).toBe(false)
+        expect(wrapper.vm.blockTableController.mounted.value).toBe(false);
     });
 });

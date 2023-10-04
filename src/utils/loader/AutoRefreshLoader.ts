@@ -18,40 +18,42 @@
  *
  */
 
-import {EntityLoader} from "@/utils/loader/EntityLoader";
-import {computed, ComputedRef, ref, Ref, watch} from "vue";
+import { EntityLoader } from "@/utils/loader/EntityLoader";
+import { computed, ComputedRef, ref, Ref, watch } from "vue";
 
 export abstract class AutoRefreshLoader<E> extends EntityLoader<E> {
+    public static readonly HUGE_COUNT = 9999999;
 
-    public static readonly HUGE_COUNT = 9999999
-
-    private readonly refreshPeriod: number
-    private readonly maxRefreshCount: number
-    private readonly refreshCount = ref(0)
-    private timeoutID = -1
-
+    private readonly refreshPeriod: number;
+    private readonly maxRefreshCount: number;
+    private readonly refreshCount = ref(0);
+    private timeoutID = -1;
 
     //
     // Public
     //
 
-    public readonly autoRefresh: Ref<boolean> = ref(false)
+    public readonly autoRefresh: Ref<boolean> = ref(false);
 
-    public readonly autoStopped: ComputedRef<boolean> = computed(() => this.refreshCount.value >= this.maxRefreshCount)
+    public readonly autoStopped: ComputedRef<boolean> = computed(
+        () => this.refreshCount.value >= this.maxRefreshCount,
+    );
 
-    public readonly mounted: Ref<boolean> = ref(false)
+    public readonly mounted: Ref<boolean> = ref(false);
 
     //
     // Protected
     //
 
     protected constructor(refreshPeriod: number, maxRefreshCount = 10) {
-        super()
-        this.refreshPeriod = refreshPeriod
-        this.maxRefreshCount = maxRefreshCount
+        super();
+        this.refreshPeriod = refreshPeriod;
+        this.maxRefreshCount = maxRefreshCount;
 
-        watch(this.mounted, () => this.mountedDidChange(), { flush: 'sync' })
-        watch(this.autoRefresh, () => this.autoRefreshDidChange(), { flush: 'sync' })
+        watch(this.mounted, () => this.mountedDidChange(), { flush: "sync" });
+        watch(this.autoRefresh, () => this.autoRefreshDidChange(), {
+            flush: "sync",
+        });
     }
 
     //
@@ -59,20 +61,20 @@ export abstract class AutoRefreshLoader<E> extends EntityLoader<E> {
     //
 
     protected concludeLoad(): void {
-        this.refreshCount.value += 1
+        this.refreshCount.value += 1;
         if (this.refreshCount.value < this.maxRefreshCount) {
             this.timeoutID = window.setTimeout(() => {
-                this.requestLoad()
-            }, this.refreshPeriod)
+                this.requestLoad();
+            }, this.refreshPeriod);
         } else {
-            this.autoRefresh.value = false
+            this.autoRefresh.value = false;
         }
     }
 
     public requestLoad(): void {
         if (this.timeoutID != -1) {
-            window.clearTimeout(this.timeoutID)
-            this.timeoutID = -1
+            window.clearTimeout(this.timeoutID);
+            this.timeoutID = -1;
         }
         super.requestLoad();
     }
@@ -83,31 +85,31 @@ export abstract class AutoRefreshLoader<E> extends EntityLoader<E> {
 
     private mountedDidChange() {
         if (this.mounted.value) {
-            this.autoRefresh.value = true
+            this.autoRefresh.value = true;
         } else {
-            this.autoRefresh.value = false
-            this.clear()
+            this.autoRefresh.value = false;
+            this.clear();
         }
     }
 
     private autoRefreshDidChange() {
         if (this.autoRefresh.value) {
-            this.startRefreshing()
+            this.startRefreshing();
         } else {
-            this.stopRefreshing()
+            this.stopRefreshing();
         }
     }
 
     private startRefreshing(): void {
-        this.refreshCount.value = 0
-        this.requestLoad()
+        this.refreshCount.value = 0;
+        this.requestLoad();
     }
 
     private stopRefreshing() {
         if (this.timeoutID != -1) {
-            window.clearTimeout(this.timeoutID)
-            this.timeoutID = -1
+            window.clearTimeout(this.timeoutID);
+            this.timeoutID = -1;
         }
-        this.incrementSessionId()
+        this.incrementSessionId();
     }
 }

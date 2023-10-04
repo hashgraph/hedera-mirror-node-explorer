@@ -23,12 +23,14 @@
 <!-- --------------------------------------------------------------------------------------------------------------- -->
 
 <template>
-  <div v-if="functionHash">
-    <HexaValue :byte-string="functionHash" show-none/>
-    <div class="h-is-extra-text h-is-text-size-3 should-wrap">{{ signature }}</div>
-  </div>
-  <div v-else-if="initialLoading"/>
-  <div v-else class="has-text-grey">None</div>
+    <div v-if="functionHash">
+        <HexaValue :byte-string="functionHash" show-none />
+        <div class="h-is-extra-text h-is-text-size-3 should-wrap">{{
+            signature
+        }}</div>
+    </div>
+    <div v-else-if="initialLoading" />
+    <div v-else class="has-text-grey">None</div>
 </template>
 
 <!-- --------------------------------------------------------------------------------------------------------------- -->
@@ -36,37 +38,35 @@
 <!-- --------------------------------------------------------------------------------------------------------------- -->
 
 <script lang="ts">
-
-import {defineComponent, inject, PropType, ref} from "vue";
-import {initialLoadingKey} from "@/AppKeys";
+import { defineComponent, inject, PropType, ref } from "vue";
+import { initialLoadingKey } from "@/AppKeys";
 import HexaValue from "@/components/values/HexaValue.vue";
-import {FunctionCallAnalyzer} from "@/utils/analyzer/FunctionCallAnalyzer";
+import { FunctionCallAnalyzer } from "@/utils/analyzer/FunctionCallAnalyzer";
 
 export default defineComponent({
-  name: "SignatureValue",
-  components: {HexaValue},
-  props: {
-    analyzer: {
-      type: Object as PropType<FunctionCallAnalyzer>,
-      required: true
-    }
-  },
+    name: "SignatureValue",
+    components: { HexaValue },
+    props: {
+        analyzer: {
+            type: Object as PropType<FunctionCallAnalyzer>,
+            required: true,
+        },
+    },
 
-  setup(props) {
-    const initialLoading = inject(initialLoadingKey, ref(false))
+    setup(props) {
+        const initialLoading = inject(initialLoadingKey, ref(false));
 
-    return {
-      functionHash: props.analyzer.functionHash,
-      signature: props.analyzer.signature,
-      initialLoading
-    }
-  }
-})
-
+        return {
+            functionHash: props.analyzer.functionHash,
+            signature: props.analyzer.signature,
+            initialLoading,
+        };
+    },
+});
 </script>
 
 <!-- --------------------------------------------------------------------------------------------------------------- -->
 <!--                                                       STYLE                                                     -->
 <!-- --------------------------------------------------------------------------------------------------------------- -->
 
-<style/>
+<style />

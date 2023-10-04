@@ -18,45 +18,49 @@
  *
  */
 
-import {AutoRefreshLoader} from "@/utils/loader/AutoRefreshLoader";
-import axios, {AxiosResponse} from "axios";
-import {computed} from "vue";
-import {NetworkExchangeRateSetResponse} from "@/schemas/HederaSchemas";
+import { AutoRefreshLoader } from "@/utils/loader/AutoRefreshLoader";
+import axios, { AxiosResponse } from "axios";
+import { computed } from "vue";
+import { NetworkExchangeRateSetResponse } from "@/schemas/HederaSchemas";
 
 export class HbarPriceCache extends AutoRefreshLoader<NetworkExchangeRateSetResponse> {
-
     //
     // Public
     //
 
-    public readonly deltaSeconds: number|null
+    public readonly deltaSeconds: number | null;
 
-    public constructor(deltaSeconds: number|null = null) {
+    public constructor(deltaSeconds: number | null = null) {
         // Refresh every 10 min, forever
-        super(600000, AutoRefreshLoader.HUGE_COUNT)
-        this.deltaSeconds = deltaSeconds
+        super(600000, AutoRefreshLoader.HUGE_COUNT);
+        this.deltaSeconds = deltaSeconds;
     }
 
     public readonly hbarPrice = computed(() => {
-        const rate = this.response.value?.data.current_rate
-        return rate ? (Math.round(rate.cent_equivalent / rate.hbar_equivalent * 100) / 10000) : null
-    })
+        const rate = this.response.value?.data.current_rate;
+        return rate
+            ? Math.round((rate.cent_equivalent / rate.hbar_equivalent) * 100) /
+                  10000
+            : null;
+    });
 
     //
     // EntityCache
     //
 
     protected load(): Promise<AxiosResponse<NetworkExchangeRateSetResponse>> {
-
         const params = {} as {
-            timestamp: string
-        }
+            timestamp: string;
+        };
         if (this.deltaSeconds) {
-            const now = new Date()
-            const target = new Date(now.getTime() - this.deltaSeconds * 1000)
-            params.timestamp = (target.getTime() / 1000).toString()
+            const now = new Date();
+            const target = new Date(now.getTime() - this.deltaSeconds * 1000);
+            params.timestamp = (target.getTime() / 1000).toString();
         }
 
-        return axios.get<NetworkExchangeRateSetResponse>("api/v1/network/exchangerate", {params: params})
+        return axios.get<NetworkExchangeRateSetResponse>(
+            "api/v1/network/exchangerate",
+            { params: params },
+        );
     }
 }

@@ -18,51 +18,46 @@
  *
  */
 
-import {describe, test, expect} from 'vitest'
-import {mount} from "@vue/test-utils"
+import { describe, test, expect } from "vitest";
+import { mount } from "@vue/test-utils";
 import router from "@/router";
 import ContractLink from "@/components/values/ContractLink.vue";
 
 describe("ContractLink.vue", () => {
-
     test("topicId set", async () => {
+        await router.push("/"); // To avoid "missing required param 'network'" error
 
-        await router.push("/") // To avoid "missing required param 'network'" error
-
-        const testContractId = "0.0.42"
+        const testContractId = "0.0.42";
         const wrapper = mount(ContractLink, {
             global: {
-                plugins: [router]
+                plugins: [router],
             },
             props: {
-                contractId: testContractId
+                contractId: testContractId,
             },
         });
 
-        expect(wrapper.text()).toBe(testContractId)
+        expect(wrapper.text()).toBe(testContractId);
         expect(wrapper.findComponent("a").attributes("href")).toMatch(
-            RegExp("/contract/" + testContractId + "$")
-        )
+            RegExp("/contract/" + testContractId + "$"),
+        );
 
-        wrapper.unmount()
+        wrapper.unmount();
     });
 
     test("topicId unset", async () => {
-
-        await router.push("/") // To avoid "missing required param 'network'" error
+        await router.push("/"); // To avoid "missing required param 'network'" error
 
         const wrapper = mount(ContractLink, {
             global: {
-                plugins: [router]
+                plugins: [router],
             },
-            props: {
-            },
+            props: {},
         });
 
-        expect(wrapper.text()).toBe("")
-        expect(wrapper.findComponent("a").exists()).toBe(false)
+        expect(wrapper.text()).toBe("");
+        expect(wrapper.findComponent("a").exists()).toBe(false);
 
-        wrapper.unmount()
+        wrapper.unmount();
     });
-
 });

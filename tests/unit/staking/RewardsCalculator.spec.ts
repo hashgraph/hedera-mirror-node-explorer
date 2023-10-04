@@ -18,14 +18,14 @@
  *
  */
 
-import {describe, it, expect} from 'vitest'
-import {flushPromises, mount} from "@vue/test-utils"
+import { describe, it, expect } from "vitest";
+import { flushPromises, mount } from "@vue/test-utils";
 import router from "@/router";
 import Oruga from "@oruga-ui/oruga-next";
-import {HMSF} from "@/utils/HMSF";
+import { HMSF } from "@/utils/HMSF";
 import MockAdapter from "axios-mock-adapter";
 import axios from "axios";
-import {SAMPLE_ACCOUNT_STAKING_ACCOUNT, SAMPLE_NETWORK_NODES} from "../Mocks";
+import { SAMPLE_ACCOUNT_STAKING_ACCOUNT, SAMPLE_NETWORK_NODES } from "../Mocks";
 import RewardsCalculator from "@/components/staking/RewardsCalculator.vue";
 
 /*
@@ -35,173 +35,219 @@ import RewardsCalculator from "@/components/staking/RewardsCalculator.vue";
 
  */
 
-HMSF.forceUTC = true
+HMSF.forceUTC = true;
 
 describe("Staking.vue", () => {
-
     it("should display an empty Rewards Estimator", async () => {
+        await router.push("/"); // To avoid "missing required param 'network'" error
 
-        await router.push("/") // To avoid "missing required param 'network'" error
-
-        const TEST_ACCOUNT = SAMPLE_ACCOUNT_STAKING_ACCOUNT
+        const TEST_ACCOUNT = SAMPLE_ACCOUNT_STAKING_ACCOUNT;
 
         // Mocks axios
         const mock = new MockAdapter(axios);
-        const matcher1 = "/api/v1/accounts/" + TEST_ACCOUNT.account
-        mock.onGet(matcher1).reply(200, TEST_ACCOUNT)
-        const matcher2 = "/api/v1/network/nodes"
+        const matcher1 = "/api/v1/accounts/" + TEST_ACCOUNT.account;
+        mock.onGet(matcher1).reply(200, TEST_ACCOUNT);
+        const matcher2 = "/api/v1/network/nodes";
         for (const node of SAMPLE_NETWORK_NODES.nodes) {
-            const body = {params: {"node.id": node.node_id}}
-            const response = {nodes: [node]}
-            mock.onGet(matcher2, body).reply(200, response)
+            const body = { params: { "node.id": node.node_id } };
+            const response = { nodes: [node] };
+            mock.onGet(matcher2, body).reply(200, response);
         }
-        mock.onGet(matcher2).reply(200, SAMPLE_NETWORK_NODES)
+        mock.onGet(matcher2).reply(200, SAMPLE_NETWORK_NODES);
 
         const wrapper = mount(RewardsCalculator, {
             global: {
-                plugins: [router, Oruga]
+                plugins: [router, Oruga],
             },
             props: {},
         });
 
-        await flushPromises()
+        await flushPromises();
         // console.log(wrapper.text())
         // console.log(wrapper.html())
 
-        expect(wrapper.text()).toMatch(RegExp("^Rewards Estimator"))
+        expect(wrapper.text()).toMatch(RegExp("^Rewards Estimator"));
 
-        const options = wrapper.find('select').findAll('option')
-        expect(options.length).toBe(SAMPLE_NETWORK_NODES.nodes.length)
-        expect(options.at(0)?.element.text).toBe('0 - Hosted by Hedera | East Coast, USA - Rewarding (staked for reward is 16.7% of max)')
-        expect(options.at(1)?.element.text).toBe('1 - Hosted by Hedera | East Coast, USA - Rewarding (staked for reward is 23.3% of max)')
-        expect(options.at(2)?.element.text).toBe('2 - Hosted by Hedera | Central, USA - Rewarding (staked for reward is 23.3% of max)')
+        const options = wrapper.find("select").findAll("option");
+        expect(options.length).toBe(SAMPLE_NETWORK_NODES.nodes.length);
+        expect(options.at(0)?.element.text).toBe(
+            "0 - Hosted by Hedera | East Coast, USA - Rewarding (staked for reward is 16.7% of max)",
+        );
+        expect(options.at(1)?.element.text).toBe(
+            "1 - Hosted by Hedera | East Coast, USA - Rewarding (staked for reward is 23.3% of max)",
+        );
+        expect(options.at(2)?.element.text).toBe(
+            "2 - Hosted by Hedera | Central, USA - Rewarding (staked for reward is 23.3% of max)",
+        );
 
-        expect(options.at(0)?.element.selected).toBe(false)
-        expect(options.at(1)?.element.selected).toBe(false)
-        expect(options.at(2)?.element.selected).toBe(false)
+        expect(options.at(0)?.element.selected).toBe(false);
+        expect(options.at(1)?.element.selected).toBe(false);
+        expect(options.at(2)?.element.selected).toBe(false);
 
-        expect(wrapper.find('#currentReward').text()).toBe("Current 24h Period Reward0HBAR")
-        expect(wrapper.find('#monthlyReward').text()).toBe("Approx Monthly Reward0HBAR")
-        expect(wrapper.find('#yearlyReward').text()).toBe("Approx Yearly Reward0HBAR")
-        expect(wrapper.find('#yearlyRate').text()).toBe("Approx Yearly Reward Rate0%")
+        expect(wrapper.find("#currentReward").text()).toBe(
+            "Current 24h Period Reward0HBAR",
+        );
+        expect(wrapper.find("#monthlyReward").text()).toBe(
+            "Approx Monthly Reward0HBAR",
+        );
+        expect(wrapper.find("#yearlyReward").text()).toBe(
+            "Approx Yearly Reward0HBAR",
+        );
+        expect(wrapper.find("#yearlyRate").text()).toBe(
+            "Approx Yearly Reward Rate0%",
+        );
 
-        wrapper.unmount()
-        await flushPromises()
-    })
+        wrapper.unmount();
+        await flushPromises();
+    });
 
     it("should display a Rewards Estimator preset with 10000Hbar and Node1", async () => {
+        await router.push("/"); // To avoid "missing required param 'network'" error
 
-        await router.push("/") // To avoid "missing required param 'network'" error
-
-        const TEST_ACCOUNT = SAMPLE_ACCOUNT_STAKING_ACCOUNT
+        const TEST_ACCOUNT = SAMPLE_ACCOUNT_STAKING_ACCOUNT;
 
         // Mocks axios
         const mock = new MockAdapter(axios);
-        const matcher1 = "/api/v1/accounts/" + TEST_ACCOUNT.account
-        mock.onGet(matcher1).reply(200, TEST_ACCOUNT)
-        const matcher2 = "/api/v1/network/nodes"
+        const matcher1 = "/api/v1/accounts/" + TEST_ACCOUNT.account;
+        mock.onGet(matcher1).reply(200, TEST_ACCOUNT);
+        const matcher2 = "/api/v1/network/nodes";
         for (const node of SAMPLE_NETWORK_NODES.nodes) {
-            const body = {params: {"node.id": node.node_id}}
-            const response = {nodes: [node]}
-            mock.onGet(matcher2, body).reply(200, response)
+            const body = { params: { "node.id": node.node_id } };
+            const response = { nodes: [node] };
+            mock.onGet(matcher2, body).reply(200, response);
         }
-        mock.onGet(matcher2).reply(200, SAMPLE_NETWORK_NODES)
+        mock.onGet(matcher2).reply(200, SAMPLE_NETWORK_NODES);
 
         const wrapper = mount(RewardsCalculator, {
             global: {
-                plugins: [router, Oruga]
+                plugins: [router, Oruga],
             },
             props: {
                 amountInHbar: 10000,
-                nodeId: 1
+                nodeId: 1,
             },
         });
 
-        await flushPromises()
+        await flushPromises();
         // console.log(wrapper.text())
         // console.log(wrapper.html())
 
-        expect(wrapper.text()).toMatch(RegExp("^Rewards Estimator"))
+        expect(wrapper.text()).toMatch(RegExp("^Rewards Estimator"));
 
-        const options = wrapper.find('select').findAll('option')
-        expect(options.length).toBe(SAMPLE_NETWORK_NODES.nodes.length)
-        expect(options.at(0)?.element.text).toBe('0 - Hosted by Hedera | East Coast, USA - Rewarding (staked for reward is 16.7% of max)')
-        expect(options.at(1)?.element.text).toBe('1 - Hosted by Hedera | East Coast, USA - Rewarding (staked for reward is 23.3% of max)')
-        expect(options.at(2)?.element.text).toBe('2 - Hosted by Hedera | Central, USA - Rewarding (staked for reward is 23.3% of max)')
+        const options = wrapper.find("select").findAll("option");
+        expect(options.length).toBe(SAMPLE_NETWORK_NODES.nodes.length);
+        expect(options.at(0)?.element.text).toBe(
+            "0 - Hosted by Hedera | East Coast, USA - Rewarding (staked for reward is 16.7% of max)",
+        );
+        expect(options.at(1)?.element.text).toBe(
+            "1 - Hosted by Hedera | East Coast, USA - Rewarding (staked for reward is 23.3% of max)",
+        );
+        expect(options.at(2)?.element.text).toBe(
+            "2 - Hosted by Hedera | Central, USA - Rewarding (staked for reward is 23.3% of max)",
+        );
 
-        expect(options.at(0)?.element.selected).toBe(false)
-        expect(options.at(1)?.element.selected).toBe(true)
-        expect(options.at(2)?.element.selected).toBe(false)
+        expect(options.at(0)?.element.selected).toBe(false);
+        expect(options.at(1)?.element.selected).toBe(true);
+        expect(options.at(2)?.element.selected).toBe(false);
 
-        expect(wrapper.find('#currentReward').text()).toBe("Current 24h Period Reward0.5479HBAR")
-        expect(wrapper.find('#monthlyReward').text()).toBe("Approx Monthly Reward16.44HBAR")
-        expect(wrapper.find('#yearlyReward').text()).toBe("Approx Yearly Reward200HBAR")
-        expect(wrapper.find('#yearlyRate').text()).toBe("Approx Yearly Reward Rate2%")
+        expect(wrapper.find("#currentReward").text()).toBe(
+            "Current 24h Period Reward0.5479HBAR",
+        );
+        expect(wrapper.find("#monthlyReward").text()).toBe(
+            "Approx Monthly Reward16.44HBAR",
+        );
+        expect(wrapper.find("#yearlyReward").text()).toBe(
+            "Approx Yearly Reward200HBAR",
+        );
+        expect(wrapper.find("#yearlyRate").text()).toBe(
+            "Approx Yearly Reward Rate2%",
+        );
 
-        wrapper.unmount()
-        await flushPromises()
-    })
+        wrapper.unmount();
+        await flushPromises();
+    });
 
     it("should input different values for Hbar amount and selected Node", async () => {
+        await router.push("/"); // To avoid "missing required param 'network'" error
 
-        await router.push("/") // To avoid "missing required param 'network'" error
-
-        const TEST_ACCOUNT = SAMPLE_ACCOUNT_STAKING_ACCOUNT
+        const TEST_ACCOUNT = SAMPLE_ACCOUNT_STAKING_ACCOUNT;
 
         // Mocks axios
         const mock = new MockAdapter(axios);
-        const matcher1 = "/api/v1/accounts/" + TEST_ACCOUNT.account
-        mock.onGet(matcher1).reply(200, TEST_ACCOUNT)
-        const matcher2 = "/api/v1/network/nodes"
+        const matcher1 = "/api/v1/accounts/" + TEST_ACCOUNT.account;
+        mock.onGet(matcher1).reply(200, TEST_ACCOUNT);
+        const matcher2 = "/api/v1/network/nodes";
         for (const node of SAMPLE_NETWORK_NODES.nodes) {
-            const body = {params: {"node.id": node.node_id}}
-            const response = {nodes: [node]}
-            mock.onGet(matcher2, body).reply(200, response)
+            const body = { params: { "node.id": node.node_id } };
+            const response = { nodes: [node] };
+            mock.onGet(matcher2, body).reply(200, response);
         }
-        mock.onGet(matcher2).reply(200, SAMPLE_NETWORK_NODES)
+        mock.onGet(matcher2).reply(200, SAMPLE_NETWORK_NODES);
 
         const wrapper = mount(RewardsCalculator, {
             global: {
-                plugins: [router, Oruga]
+                plugins: [router, Oruga],
             },
             props: {},
         });
 
-        await flushPromises()
+        await flushPromises();
         // console.log(wrapper.text())
         // console.log(wrapper.html())
 
-        expect(wrapper.text()).toMatch(RegExp("^Rewards Estimator"))
+        expect(wrapper.text()).toMatch(RegExp("^Rewards Estimator"));
 
-        const options = wrapper.find('select').findAll('option')
+        const options = wrapper.find("select").findAll("option");
 
-        expect(options.length).toBe(SAMPLE_NETWORK_NODES.nodes.length)
-        expect(options.at(0)?.element.text).toBe('0 - Hosted by Hedera | East Coast, USA - Rewarding (staked for reward is 16.7% of max)')
-        expect(options.at(1)?.element.text).toBe('1 - Hosted by Hedera | East Coast, USA - Rewarding (staked for reward is 23.3% of max)')
-        expect(options.at(2)?.element.text).toBe('2 - Hosted by Hedera | Central, USA - Rewarding (staked for reward is 23.3% of max)')
+        expect(options.length).toBe(SAMPLE_NETWORK_NODES.nodes.length);
+        expect(options.at(0)?.element.text).toBe(
+            "0 - Hosted by Hedera | East Coast, USA - Rewarding (staked for reward is 16.7% of max)",
+        );
+        expect(options.at(1)?.element.text).toBe(
+            "1 - Hosted by Hedera | East Coast, USA - Rewarding (staked for reward is 23.3% of max)",
+        );
+        expect(options.at(2)?.element.text).toBe(
+            "2 - Hosted by Hedera | Central, USA - Rewarding (staked for reward is 23.3% of max)",
+        );
 
-        expect(options.at(0)?.element.selected).toBe(false)
-        expect(options.at(1)?.element.selected).toBe(false)
-        expect(options.at(2)?.element.selected).toBe(false)
+        expect(options.at(0)?.element.selected).toBe(false);
+        expect(options.at(1)?.element.selected).toBe(false);
+        expect(options.at(2)?.element.selected).toBe(false);
 
-        expect(wrapper.find('#currentReward').text()).toBe("Current 24h Period Reward0HBAR")
-        expect(wrapper.find('#monthlyReward').text()).toBe("Approx Monthly Reward0HBAR")
-        expect(wrapper.find('#yearlyReward').text()).toBe("Approx Yearly Reward0HBAR")
-        expect(wrapper.find('#yearlyRate').text()).toBe("Approx Yearly Reward Rate0%")
+        expect(wrapper.find("#currentReward").text()).toBe(
+            "Current 24h Period Reward0HBAR",
+        );
+        expect(wrapper.find("#monthlyReward").text()).toBe(
+            "Approx Monthly Reward0HBAR",
+        );
+        expect(wrapper.find("#yearlyReward").text()).toBe(
+            "Approx Yearly Reward0HBAR",
+        );
+        expect(wrapper.find("#yearlyRate").text()).toBe(
+            "Approx Yearly Reward Rate0%",
+        );
 
         // Change Node Selection
         // await  wrapper.find('select').findAll('option').at(2)?.setValue(false)
-        await options.at(1)?.setValue(false)
+        await options.at(1)?.setValue(false);
 
         // Change Hbar Amount
-        await wrapper.find('input[type="text"]').setValue('10000')
+        await wrapper.find('input[type="text"]').setValue("10000");
 
-        expect(wrapper.find('#currentReward').text()).toBe("Current 24h Period Reward0.5479HBAR")
-        expect(wrapper.find('#monthlyReward').text()).toBe("Approx Monthly Reward16.44HBAR")
-        expect(wrapper.find('#yearlyReward').text()).toBe("Approx Yearly Reward200HBAR")
-        expect(wrapper.find('#yearlyRate').text()).toBe("Approx Yearly Reward Rate2%")
+        expect(wrapper.find("#currentReward").text()).toBe(
+            "Current 24h Period Reward0.5479HBAR",
+        );
+        expect(wrapper.find("#monthlyReward").text()).toBe(
+            "Approx Monthly Reward16.44HBAR",
+        );
+        expect(wrapper.find("#yearlyReward").text()).toBe(
+            "Approx Yearly Reward200HBAR",
+        );
+        expect(wrapper.find("#yearlyRate").text()).toBe(
+            "Approx Yearly Reward Rate2%",
+        );
 
-        wrapper.unmount()
-        await flushPromises()
-    })
+        wrapper.unmount();
+        await flushPromises();
+    });
 });

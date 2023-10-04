@@ -23,28 +23,41 @@
 <!-- --------------------------------------------------------------------------------------------------------------- -->
 
 <template>
+    <DashboardCard v-if="actions?.length" class="h-card">
+        <template v-slot:title>
+            <span class="h-is-secondary-title">Call Trace</span>
+        </template>
 
-  <DashboardCard v-if="actions?.length" class="h-card">
-    <template v-slot:title>
-      <span class="h-is-secondary-title">Call Trace</span>
-    </template>
+        <template v-slot:control>
+            <div
+                class="is-flex is-justify-content-flex-end is-align-items-baseline"
+            >
+                <button
+                    v-if="collapseAllVisible"
+                    id="collapseAllButton"
+                    :disabled="collapseAllDisabled"
+                    class="button is-white is-small ml-4"
+                    @click="collapseAll"
+                    >COLLAPSE ALL
+                </button>
+                <button
+                    v-else
+                    id="expandAllButton"
+                    class="button is-white is-small ml-4"
+                    @click="expandAll"
+                    >EXPAND ALL
+                </button>
+            </div>
+        </template>
 
-    <template v-slot:control>
-      <div class="is-flex is-justify-content-flex-end is-align-items-baseline">
-        <button v-if="collapseAllVisible" id="collapseAllButton" :disabled="collapseAllDisabled"
-                class="button is-white is-small ml-4" @click="collapseAll">COLLAPSE ALL
-        </button>
-        <button v-else id="expandAllButton"
-                class="button is-white is-small ml-4" @click="expandAll">EXPAND ALL
-        </button>
-      </div>
-    </template>
-
-    <template v-slot:content>
-      <ContractActionsTable :actions="actions" v-model:expandedActions="expandedActions" :analyzer="analyzer"/>
-    </template>
-  </DashboardCard>
-
+        <template v-slot:content>
+            <ContractActionsTable
+                :actions="actions"
+                v-model:expandedActions="expandedActions"
+                :analyzer="analyzer"
+            />
+        </template>
+    </DashboardCard>
 </template>
 
 <!-- --------------------------------------------------------------------------------------------------------------- -->
@@ -52,63 +65,67 @@
 <!-- --------------------------------------------------------------------------------------------------------------- -->
 
 <script lang="ts">
-
-import {computed, defineComponent, onMounted, PropType, Ref, ref} from 'vue';
+import { computed, defineComponent, onMounted, PropType, Ref, ref } from "vue";
 import DashboardCard from "@/components/DashboardCard.vue";
-import {ContractActionsLoader, ContractActionWithPath} from "@/components/contract/ContractActionsLoader";
+import {
+    ContractActionsLoader,
+    ContractActionWithPath,
+} from "@/components/contract/ContractActionsLoader";
 import ContractActionsTable from "@/components/contract/ContractActionsTable.vue";
-import {FunctionCallAnalyzer} from "@/utils/analyzer/FunctionCallAnalyzer";
+import { FunctionCallAnalyzer } from "@/utils/analyzer/FunctionCallAnalyzer";
 
 export default defineComponent({
+    name: "ContractResultTrace",
 
-  name: 'ContractResultTrace',
+    components: {
+        ContractActionsTable,
+        DashboardCard,
+    },
 
-  components: {
-    ContractActionsTable,
-    DashboardCard
-  },
+    props: {
+        transactionIdOrHash: String,
+        analyzer: {
+            type: Object as PropType<FunctionCallAnalyzer>,
+            required: true,
+        },
+    },
 
-  props: {
-    transactionIdOrHash: String,
-    analyzer: {
-      type: Object as PropType<FunctionCallAnalyzer>,
-      required: true
-    }
-  },
+    setup(props) {
+        // const isSmallScreen = inject('isSmallScreen', true)
+        // const isTouchDevice = inject('isTouchDevice', false)
 
-  setup(props) {
-    // const isSmallScreen = inject('isSmallScreen', true)
-    // const isTouchDevice = inject('isTouchDevice', false)
+        const contractActionsLoader = new ContractActionsLoader(
+            computed(() => props.transactionIdOrHash ?? null),
+        );
+        onMounted(() => contractActionsLoader.requestLoad());
 
-    const contractActionsLoader = new ContractActionsLoader(computed(() => props.transactionIdOrHash ?? null))
-    onMounted(() => contractActionsLoader.requestLoad())
+        const expandedActions: Ref<ContractActionWithPath[]> = ref([]);
+        const collapseAllVisible = computed(() => {
+            const actionCount =
+                contractActionsLoader.actions.value?.length ?? 0;
+            return expandedActions.value.length >= 1 || actionCount == 0;
+        });
+        const collapseAllDisabled = computed(() => {
+            return expandedActions.value.length == 0;
+        });
+        const collapseAll = (): void => {
+            expandedActions.value = [];
+        };
+        const expandAll = (): void => {
+            expandedActions.value =
+                contractActionsLoader.actionsWithPath.value ?? [];
+        };
 
-    const expandedActions: Ref<ContractActionWithPath[]> = ref([])
-    const collapseAllVisible = computed(() => {
-      const actionCount = contractActionsLoader.actions.value?.length ?? 0
-      return expandedActions.value.length >= 1 || actionCount == 0
-    })
-    const collapseAllDisabled = computed(() => {
-      return expandedActions.value.length == 0
-    })
-    const collapseAll = (): void => {
-      expandedActions.value = []
-    }
-    const expandAll = (): void => {
-      expandedActions.value = contractActionsLoader.actionsWithPath.value ?? []
-    }
-
-    return {
-      actions: contractActionsLoader.actionsWithPath,
-      expandedActions,
-      collapseAll,
-      expandAll,
-      collapseAllVisible,
-      collapseAllDisabled,
-    }
-  },
+        return {
+            actions: contractActionsLoader.actionsWithPath,
+            expandedActions,
+            collapseAll,
+            expandAll,
+            collapseAllVisible,
+            collapseAllDisabled,
+        };
+    },
 });
-
 </script>
 
 <!-- --------------------------------------------------------------------------------------------------------------- -->
@@ -116,13 +133,11 @@ export default defineComponent({
 <!-- --------------------------------------------------------------------------------------------------------------- -->
 
 <style scoped>
-
 .columns button {
-  vertical-align: initial;
+    vertical-align: initial;
 }
 
 .button.is-small {
-  font-size: 0.65rem;
+    font-size: 0.65rem;
 }
-
 </style>

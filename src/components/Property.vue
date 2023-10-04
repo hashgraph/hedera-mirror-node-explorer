@@ -23,27 +23,29 @@
 <!-- --------------------------------------------------------------------------------------------------------------- -->
 
 <template>
-
-  <div v-if="!isSmallScreen" class="columns" :id="id">
-    <div class="column is-flex is-justify-content-space-between">
-      <div class="has-text-weight-light" :id="nameId">
-        <slot name="name"/>
-      </div>
-      <div :id="valueId" class="ml-4 has-text-right">
-        <slot name="value"/>
-      </div>
+    <div v-if="!isSmallScreen" class="columns" :id="id">
+        <div class="column is-flex is-justify-content-space-between">
+            <div class="has-text-weight-light" :id="nameId">
+                <slot name="name" />
+            </div>
+            <div :id="valueId" class="ml-4 has-text-right">
+                <slot name="value" />
+            </div>
+        </div>
     </div>
-  </div>
 
-  <div v-else class="columns" :id="id" style="margin-bottom: -0.75rem;">
-    <div :class="nbColClass" class="column has-text-weight-light" :id="nameId">
-      <slot name="name"/>
+    <div v-else class="columns" :id="id" style="margin-bottom: -0.75rem">
+        <div
+            :class="nbColClass"
+            class="column has-text-weight-light"
+            :id="nameId"
+        >
+            <slot name="name" />
+        </div>
+        <div class="column has-text-left" :id="valueId">
+            <slot name="value" />
+        </div>
     </div>
-    <div class="column has-text-left" :id="valueId">
-      <slot name="value"/>
-    </div>
-  </div>
-
 </template>
 
 <!-- --------------------------------------------------------------------------------------------------------------- -->
@@ -51,42 +53,43 @@
 <!-- --------------------------------------------------------------------------------------------------------------- -->
 
 <script lang="ts">
-
-import {computed, defineComponent, inject} from "vue";
+import { computed, defineComponent, inject } from "vue";
 
 export default defineComponent({
-  name: "Property",
-  props: {
-    id: String,
-    fullWidth: {
-      type: Boolean,
-      default: false
+    name: "Property",
+    props: {
+        id: String,
+        fullWidth: {
+            type: Boolean,
+            default: false,
+        },
+        customNbColClass: String,
     },
-    customNbColClass: String
-  },
-  setup(props){
-    const nameId = props.id + 'Name'
-    const valueId = props.id + 'Value'
+    setup(props) {
+        const nameId = props.id + "Name";
+        const valueId = props.id + "Value";
 
-    const isSmallScreen = inject('isSmallScreen', true)
-    const isTouchDevice = inject('isTouchDevice', false)
-    const nbColClass = computed(() => props.customNbColClass ?? (props.fullWidth ? 'is-2' : 'is-one-third'))
+        const isSmallScreen = inject("isSmallScreen", true);
+        const isTouchDevice = inject("isTouchDevice", false);
+        const nbColClass = computed(
+            () =>
+                props.customNbColClass ??
+                (props.fullWidth ? "is-2" : "is-one-third"),
+        );
 
-    return {
-      nameId,
-      valueId,
-      isSmallScreen,
-      isTouchDevice,
-      nbColClass
-    }
-  }
-})
-
+        return {
+            nameId,
+            valueId,
+            isSmallScreen,
+            isTouchDevice,
+            nbColClass,
+        };
+    },
+});
 </script>
 
 <!-- --------------------------------------------------------------------------------------------------------------- -->
 <!--                                                      STYLE                                                      -->
 <!-- --------------------------------------------------------------------------------------------------------------- -->
 
-<style>
-</style>
+<style></style>

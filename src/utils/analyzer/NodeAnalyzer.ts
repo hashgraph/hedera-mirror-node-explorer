@@ -18,89 +18,105 @@
  *
  */
 
-import {computed, ComputedRef, Ref} from "vue";
-import {makeShortNodeDescription, NetworkNode} from "@/schemas/HederaSchemas";
-import {NetworkAnalyzer} from "@/utils/analyzer/NetworkAnalyzer";
+import { computed, ComputedRef, Ref } from "vue";
+import { makeShortNodeDescription, NetworkNode } from "@/schemas/HederaSchemas";
+import { NetworkAnalyzer } from "@/utils/analyzer/NetworkAnalyzer";
 import {
     isCouncilNode,
     makeAnnualizedRate,
     makeNodeDescription,
     makeRewardRate,
-    makeUnclampedStake
+    makeUnclampedStake,
 } from "@/schemas/HederaUtils";
-import {base64DecToArr, byteToHex} from "@/utils/B64Utils";
+import { base64DecToArr, byteToHex } from "@/utils/B64Utils";
 
 export class NodeAnalyzer {
-
-    public readonly nodeLoc: Ref<number|string|null>
-    public readonly networkAnalyzer = new NetworkAnalyzer()
+    public readonly nodeLoc: Ref<number | string | null>;
+    public readonly networkAnalyzer = new NetworkAnalyzer();
 
     //
     // Public
     //
 
-    public constructor(nodeLoc: Ref<number|string|null>) {
-        this.nodeLoc = nodeLoc
+    public constructor(nodeLoc: Ref<number | string | null>) {
+        this.nodeLoc = nodeLoc;
     }
 
     public mount(): void {
-        this.networkAnalyzer.mount()
+        this.networkAnalyzer.mount();
     }
 
     public unmount(): void {
-        this.networkAnalyzer.unmount()
+        this.networkAnalyzer.unmount();
     }
 
-    public node: ComputedRef<NetworkNode|null> = computed(() => {
-        let result: NetworkNode|null
+    public node: ComputedRef<NetworkNode | null> = computed(() => {
+        let result: NetworkNode | null;
         if (typeof this.nodeLoc.value == "number") {
-            result = null
+            result = null;
             for (const node of this.networkAnalyzer.nodes.value) {
                 if (node.node_id == this.nodeLoc.value) {
-                    result = node
-                    break
+                    result = node;
+                    break;
                 }
             }
         } else if (typeof this.nodeLoc.value == "string") {
-            result = null
+            result = null;
             for (const node of this.networkAnalyzer.nodes.value) {
                 if (node.node_account_id == this.nodeLoc.value) {
-                    result = node
-                    break
+                    result = node;
+                    break;
                 }
             }
         } else {
-            result = null
+            result = null;
         }
-        return result
-    })
+        return result;
+    });
 
     public certificateHash = computed(() => {
-        const hash = this.node.value?.node_cert_hash ?? null
-        return hash != undefined ? byteToHex(base64DecToArr(hash)) : ""
-    })
+        const hash = this.node.value?.node_cert_hash ?? null;
+        return hash != undefined ? byteToHex(base64DecToArr(hash)) : "";
+    });
 
     public isCouncilNode: ComputedRef<boolean> = computed(() => {
-        return this.node.value != null ? isCouncilNode(this.node.value) : true
-    })
+        return this.node.value != null ? isCouncilNode(this.node.value) : true;
+    });
 
-    public readonly nodeDescription: ComputedRef<string|null> = computed(
-        () => this.node.value !== null ? makeNodeDescription(this.node.value) : null)
+    public readonly nodeDescription: ComputedRef<string | null> = computed(
+        () =>
+            this.node.value !== null
+                ? makeNodeDescription(this.node.value)
+                : null,
+    );
 
-    public readonly shortNodeDescription: ComputedRef<string|null> = computed(
-        () => this.nodeDescription.value ? makeShortNodeDescription(this.nodeDescription.value) : null)
+    public readonly shortNodeDescription: ComputedRef<string | null> = computed(
+        () =>
+            this.nodeDescription.value
+                ? makeShortNodeDescription(this.nodeDescription.value)
+                : null,
+    );
 
     //
     // Public (staking)
     //
 
-    public readonly stake = computed(() => this.node.value?.stake ?? 0)
-    public readonly minStake = computed(() => this.node.value?.min_stake ?? 0)
-    public readonly maxStake = computed(() => this.node.value?.max_stake ?? 0)
-    public readonly unclampedStake = computed(() => this.node.value ? makeUnclampedStake(this.node.value) : 0)
-    public readonly stakeRewarded = computed(() => this.node.value?.stake_rewarded ?? 0)
-    public readonly stakeUnrewarded = computed(() => this.node.value?.stake_not_rewarded ?? 0)
-    public readonly rewardRate = computed(() => this.node.value ? makeRewardRate(this.node.value) : 0)
-    public readonly annualizedRate = computed(() => this.node.value ? makeAnnualizedRate(this.node.value) : '0%')
-
+    public readonly stake = computed(() => this.node.value?.stake ?? 0);
+    public readonly minStake = computed(() => this.node.value?.min_stake ?? 0);
+    public readonly maxStake = computed(() => this.node.value?.max_stake ?? 0);
+    public readonly unclampedStake = computed(() =>
+        this.node.value ? makeUnclampedStake(this.node.value) : 0,
+    );
+    public readonly stakeRewarded = computed(
+        () => this.node.value?.stake_rewarded ?? 0,
+    );
+    public readonly stakeUnrewarded = computed(
+        () => this.node.value?.stake_not_rewarded ?? 0,
+    );
+    public readonly rewardRate = computed(() =>
+        this.node.value ? makeRewardRate(this.node.value) : 0,
+    );
+    public readonly annualizedRate = computed(() =>
+        this.node.value ? makeAnnualizedRate(this.node.value) : "0%",
+    );
 }

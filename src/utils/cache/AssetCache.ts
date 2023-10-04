@@ -19,19 +19,17 @@
  */
 
 import axios from "axios";
-import {EntityCache} from "@/utils/cache/base/EntityCache";
+import { EntityCache } from "@/utils/cache/base/EntityCache";
 
 export class AssetCache extends EntityCache<string, unknown> {
-
-    public static readonly instance = new AssetCache()
+    public static readonly instance = new AssetCache();
 
     //
     // Cache
     //
 
     protected async load(url: string): Promise<unknown> {
-        const response = await axios.get<unknown>(url)
-        return Promise.resolve(response.data)
+        const response = await axios.get<unknown>(url);
+        return Promise.resolve(response.data);
     }
-
 }

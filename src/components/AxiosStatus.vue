@@ -22,7 +22,6 @@
 <!--                                                     TEMPLATE                                                    -->
 <!-- --------------------------------------------------------------------------------------------------------------- -->
 
-
 <!--
 
               \   loading  |         true         |        false         |
@@ -38,26 +37,35 @@
  -->
 
 <template>
-  <span class="icon">
-    <template v-if="late">
-      <span class="loader is-inline-block"/>
-    </template>
-    <template v-else-if="error">
-      <i class="fa fa-exclamation-triangle has-text-danger" @click="showErrorDialog = true"/>
-    </template>
-    <span style="display: inline-block">
-        <ModalDialog v-model:show-dialog="showErrorDialog" iconClass="fa fa-2x fa-exclamation-triangle has-text-danger">
-          <template v-slot:dialogMessage><slot name="message"/>{{ explanation }}</template>
-          <template v-slot:dialogDetails>
-            <div v-if="explanation" class="block">
-              Some of the data required by this page could not be downloaded.
-              The information displayed may not be accurate.
-            </div>
-            <div v-if="suggestion" class="block">{{ suggestion }}</div>
-          </template>
-        </ModalDialog>
-      </span>
-  </span>
+    <span class="icon">
+        <template v-if="late">
+            <span class="loader is-inline-block" />
+        </template>
+        <template v-else-if="error">
+            <i
+                class="fa fa-exclamation-triangle has-text-danger"
+                @click="showErrorDialog = true"
+            />
+        </template>
+        <span style="display: inline-block">
+            <ModalDialog
+                v-model:show-dialog="showErrorDialog"
+                iconClass="fa fa-2x fa-exclamation-triangle has-text-danger"
+            >
+                <template v-slot:dialogMessage
+                    ><slot name="message" />{{ explanation }}</template
+                >
+                <template v-slot:dialogDetails>
+                    <div v-if="explanation" class="block">
+                        Some of the data required by this page could not be
+                        downloaded. The information displayed may not be
+                        accurate.
+                    </div>
+                    <div v-if="suggestion" class="block">{{ suggestion }}</div>
+                </template>
+            </ModalDialog>
+        </span>
+    </span>
 </template>
 
 <!-- --------------------------------------------------------------------------------------------------------------- -->
@@ -65,92 +73,95 @@
 <!-- --------------------------------------------------------------------------------------------------------------- -->
 
 <script lang="ts">
-
-import {computed, defineComponent, inject, onBeforeUnmount, onMounted, ref, watch} from "vue"
-import {errorKey, explanationKey, loadingKey, suggestionKey} from "@/AppKeys"
+import {
+    computed,
+    defineComponent,
+    inject,
+    onBeforeUnmount,
+    onMounted,
+    ref,
+    watch,
+} from "vue";
+import { errorKey, explanationKey, loadingKey, suggestionKey } from "@/AppKeys";
 import ModalDialog from "@/components/ModalDialog.vue";
 
 export default defineComponent({
+    name: "AxiosStatus",
 
-  name: "AxiosStatus",
+    components: { ModalDialog },
 
-  components: { ModalDialog },
+    setup() {
+        const loading = inject(loadingKey, ref(false));
+        const error = inject(errorKey, ref(false));
+        const explanation = inject(explanationKey, ref(""));
+        const suggestion = inject(suggestionKey, ref(""));
 
-  setup() {
+        watch(loading, (newValue, oldValue) => {
+            if (oldValue && !newValue) {
+                stopTimeout();
+            } else if (!oldValue && newValue) {
+                startTimeout();
+            }
+        });
+        watch(error, (newValue, oldValue) => {
+            if (oldValue && !newValue) {
+                // Error flag off => hides error dialog if needed
+                showErrorDialog.value = false;
+            }
+        });
 
-    const loading = inject(loadingKey, ref(false))
-    const error = inject(errorKey, ref(false))
-    const explanation = inject(explanationKey, ref(""))
-    const suggestion = inject(suggestionKey, ref(""))
+        //
+        // Late
+        //
+        const late = computed(() => {
+            return loading.value && timeoutElapsed.value;
+        });
 
-    watch(loading, (newValue, oldValue) => {
-      if (oldValue && !newValue) {
-        stopTimeout()
-      } else if (!oldValue && newValue) {
-        startTimeout()
-      }
-    })
-    watch(error, (newValue, oldValue) => {
-      if (oldValue && !newValue) {
-        // Error flag off => hides error dialog if needed
-        showErrorDialog.value = false
-      }
-    })
+        //
+        // timeoutElapsed
+        //
+        const timeoutElapsed = ref(false);
+        let timeoutID = -1;
+        const startTimeout = () => {
+            if (timeoutID == -1) {
+                timeoutElapsed.value = false;
+                timeoutID = window.setTimeout(() => {
+                    timeoutElapsed.value = true;
+                    timeoutID = -1;
+                }, 1000);
+            }
+        };
+        const stopTimeout = () => {
+            if (timeoutID != -1) {
+                window.clearTimeout(timeoutID);
+                timeoutID = -1;
+            }
+        };
 
-    //
-    // Late
-    //
-    const late = computed(() => {
-      return loading.value && timeoutElapsed.value
-    })
+        //
+        // showErrorDialog
+        //
+        const showErrorDialog = ref(false);
 
-    //
-    // timeoutElapsed
-    //
-    const timeoutElapsed = ref(false)
-    let timeoutID = -1
-    const startTimeout = () => {
-      if (timeoutID == -1) {
-        timeoutElapsed.value = false
-        timeoutID = window.setTimeout(() => {
-          timeoutElapsed.value = true
-          timeoutID = -1
-        }, 1000)
-      }
-    }
-    const stopTimeout = () => {
-      if (timeoutID != -1) {
-        window.clearTimeout(timeoutID)
-        timeoutID = -1
-      }
-    }
+        //
+        // Mount
+        //
+        onMounted(() => {
+            startTimeout();
+        });
+        onBeforeUnmount(() => {
+            stopTimeout();
+        });
 
-    //
-    // showErrorDialog
-    //
-    const showErrorDialog = ref(false)
-
-    //
-    // Mount
-    //
-    onMounted(() => {
-      startTimeout()
-    })
-    onBeforeUnmount(() => {
-      stopTimeout()
-    })
-
-    return {
-      late,
-      error,
-      explanation,
-      suggestion,
-      showErrorDialog,
-    }
-  }
-})
-
-
+        return {
+            late,
+            error,
+            explanation,
+            suggestion,
+            showErrorDialog,
+        };
+    },
+});
 </script>
 
 <!-- --------------------------------------------------------------------------------------------------------------- -->
@@ -159,10 +170,10 @@ export default defineComponent({
 
 <style scoped>
 .loader {
-  border-left-color: grey;
-  border-bottom-color: grey
+    border-left-color: grey;
+    border-bottom-color: grey;
 }
 i.fa-exclamation-triangle {
-  cursor: pointer
+    cursor: pointer;
 }
 </style>

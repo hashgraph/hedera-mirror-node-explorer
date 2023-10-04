@@ -18,15 +18,19 @@
  *
  */
 
-import {describe, test, expect} from 'vitest'
-import {flushPromises, mount} from "@vue/test-utils"
+import { describe, test, expect } from "vitest";
+import { flushPromises, mount } from "@vue/test-utils";
 import router from "@/router";
 import axios from "axios";
-import {SAMPLE_ACCOUNT_BALANCES, SAMPLE_NONFUNGIBLE, SAMPLE_TOKEN} from "../Mocks";
+import {
+    SAMPLE_ACCOUNT_BALANCES,
+    SAMPLE_NONFUNGIBLE,
+    SAMPLE_TOKEN,
+} from "../Mocks";
 import MockAdapter from "axios-mock-adapter";
 import Oruga from "@oruga-ui/oruga-next";
 import BalanceTable from "@/components/account/BalanceTable.vue";
-import {HMSF} from "@/utils/HMSF";
+import { HMSF } from "@/utils/HMSF";
 
 /*
     Bookmarks
@@ -35,45 +39,45 @@ import {HMSF} from "@/utils/HMSF";
 
  */
 
-HMSF.forceUTC = true
+HMSF.forceUTC = true;
 
 describe("BalanceTable.vue", () => {
-
     test("all props", async () => {
-
-        await router.push("/") // To avoid "missing required param 'network'" error
+        await router.push("/"); // To avoid "missing required param 'network'" error
 
         const mock = new MockAdapter(axios);
 
-        const matcher2 = "/api/v1/tokens/"
-        mock.onGet(matcher2 + SAMPLE_TOKEN.token_id).reply(200, SAMPLE_TOKEN)
-        mock.onGet(matcher2 + SAMPLE_NONFUNGIBLE.token_id).reply(200, SAMPLE_NONFUNGIBLE)
+        const matcher2 = "/api/v1/tokens/";
+        mock.onGet(matcher2 + SAMPLE_TOKEN.token_id).reply(200, SAMPLE_TOKEN);
+        mock.onGet(matcher2 + SAMPLE_NONFUNGIBLE.token_id).reply(
+            200,
+            SAMPLE_NONFUNGIBLE,
+        );
 
         const wrapper = mount(BalanceTable, {
             global: {
-                plugins: [router, Oruga]
+                plugins: [router, Oruga],
             },
             props: {
                 balances: SAMPLE_ACCOUNT_BALANCES.balances[0].tokens,
-                nbItems: 42
+                nbItems: 42,
             },
         });
 
-        await flushPromises()
+        await flushPromises();
         // console.log(wrapper.find('thead').text())
         // console.log(wrapper.find('tbody').text())
 
-        expect(wrapper.find('thead').text()).toBe("Token Balance")
-        expect(wrapper.find('tbody').text()).toBe(
+        expect(wrapper.find("thead").text()).toBe("Token Balance");
+        expect(wrapper.find("tbody").text()).toBe(
             "0.0.2966295623423" +
-            "998" +
-            "0.0.748383" +
-            "Ħ Frens Kingdom" +
-            "1"
-        )
+                "998" +
+                "0.0.748383" +
+                "Ħ Frens Kingdom" +
+                "1",
+        );
 
-        wrapper.unmount()
-        await flushPromises()
+        wrapper.unmount();
+        await flushPromises();
     });
-
 });

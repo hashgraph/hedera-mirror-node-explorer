@@ -18,272 +18,357 @@
  *
  */
 
-import {EntityID} from "@/utils/EntityID";
+import { EntityID } from "@/utils/EntityID";
 import axios from "axios";
-import {ref, Ref} from "vue";
-import {EthereumAddress} from "@/utils/EthereumAddress";
+import { ref, Ref } from "vue";
+import { EthereumAddress } from "@/utils/EthereumAddress";
 
 declare global {
     interface Window {
         // adding custom properties
         configs: {
-            DOCKER_LOCAL_MIRROR_NODE_MENU_NAME: string,
-            DOCKER_LOCAL_MIRROR_NODE_URL: string,
-        }
+            DOCKER_LOCAL_MIRROR_NODE_MENU_NAME: string;
+            DOCKER_LOCAL_MIRROR_NODE_URL: string;
+        };
     }
 }
 
 export class NetworkEntry {
+    public static readonly NETWORK_NAME_MAX_LENGTH = 15;
 
-    public static readonly NETWORK_NAME_MAX_LENGTH = 15
+    public readonly name: string;
+    public readonly displayName: string;
+    public readonly url: string;
+    public readonly ledgerID: string;
+    public readonly sourcifySetup: SourcifySetup | null;
 
-    public readonly name: string
-    public readonly displayName: string
-    public readonly url: string
-    public readonly ledgerID: string
-    public readonly sourcifySetup: SourcifySetup|null
-
-    constructor(name: string, displayName: string, url: string, ledgerID: string, sourcifySetup: SourcifySetup|null) {
-        this.name = name
-        this.displayName = displayName ?? name.toUpperCase()
-        this.url = url
-        this.ledgerID = ledgerID
-        this.sourcifySetup = sourcifySetup
+    constructor(
+        name: string,
+        displayName: string,
+        url: string,
+        ledgerID: string,
+        sourcifySetup: SourcifySetup | null,
+    ) {
+        this.name = name;
+        this.displayName = displayName ?? name.toUpperCase();
+        this.url = url;
+        this.ledgerID = ledgerID;
+        this.sourcifySetup = sourcifySetup;
     }
 
-    static decode(encoding: Record<string, unknown>): NetworkEntry|null {
-        let result: NetworkEntry|null
+    static decode(encoding: Record<string, unknown>): NetworkEntry | null {
+        let result: NetworkEntry | null;
 
-        const name = encoding["name"]
-        const displayName = encoding["displayName"]
-        const url = encoding["url"]
-        const ledgerID = encoding["ledgerID"]
-        const sourcifySetupEncoding = encoding["sourcifySetup"]
+        const name = encoding["name"];
+        const displayName = encoding["displayName"];
+        const url = encoding["url"];
+        const ledgerID = encoding["ledgerID"];
+        const sourcifySetupEncoding = encoding["sourcifySetup"];
 
-        if (typeof name == "string" &&
-            (typeof displayName == "string" || typeof displayName == "undefined") &&
+        if (
+            typeof name == "string" &&
+            (typeof displayName == "string" ||
+                typeof displayName == "undefined") &&
             typeof url == "string" &&
             typeof ledgerID == "string" &&
-            typeof sourcifySetupEncoding == "object") {
-
-            let tidyDisplayName = (displayName ?? name).toUpperCase()
+            typeof sourcifySetupEncoding == "object"
+        ) {
+            let tidyDisplayName = (displayName ?? name).toUpperCase();
             if (tidyDisplayName.length > this.NETWORK_NAME_MAX_LENGTH) {
-                tidyDisplayName = tidyDisplayName.slice(0, this.NETWORK_NAME_MAX_LENGTH) + '…'
+                tidyDisplayName =
+                    tidyDisplayName.slice(0, this.NETWORK_NAME_MAX_LENGTH) +
+                    "…";
             }
 
             if (sourcifySetupEncoding !== null) {
-                const sourcifySetup = SourcifySetup.decode(sourcifySetupEncoding as Record<string, unknown>)
+                const sourcifySetup = SourcifySetup.decode(
+                    sourcifySetupEncoding as Record<string, unknown>,
+                );
                 if (sourcifySetup !== null) {
-                    result = new NetworkEntry(name, tidyDisplayName.toUpperCase(), url, ledgerID, sourcifySetup)
+                    result = new NetworkEntry(
+                        name,
+                        tidyDisplayName.toUpperCase(),
+                        url,
+                        ledgerID,
+                        sourcifySetup,
+                    );
                 } else {
-                    result = null
+                    result = null;
                 }
             } else {
-                result = new NetworkEntry(name, tidyDisplayName, url, ledgerID, null)
+                result = new NetworkEntry(
+                    name,
+                    tidyDisplayName,
+                    url,
+                    ledgerID,
+                    null,
+                );
             }
         } else {
-            result = null
+            result = null;
         }
 
-        return result
+        return result;
     }
 }
 
 export class SourcifySetup {
+    public readonly repoURL: string;
+    public readonly serverURL: string;
+    public readonly verifierURL: string;
+    public readonly chainID: number;
 
-    public readonly repoURL: string
-    public readonly serverURL: string
-    public readonly verifierURL: string
-    public readonly chainID: number
-
-    constructor(repoURL: string, serverURL: string, verifierURL: string, chainID: number) {
-        this.repoURL = repoURL
-        this.serverURL = serverURL
-        this.verifierURL = verifierURL
-        this.chainID = chainID
+    constructor(
+        repoURL: string,
+        serverURL: string,
+        verifierURL: string,
+        chainID: number,
+    ) {
+        this.repoURL = repoURL;
+        this.serverURL = serverURL;
+        this.verifierURL = verifierURL;
+        this.chainID = chainID;
     }
 
-    static decode(encoding: Record<string, unknown>): SourcifySetup|null {
-        let result: SourcifySetup|null
-        const repoURL = encoding["repoURL"]
-        const serverURL = encoding["serverURL"]
-        const verifierURL = encoding["verifierURL"]
-        const chainID = encoding["chainID"]
-        if (typeof repoURL == "string" &&
+    static decode(encoding: Record<string, unknown>): SourcifySetup | null {
+        let result: SourcifySetup | null;
+        const repoURL = encoding["repoURL"];
+        const serverURL = encoding["serverURL"];
+        const verifierURL = encoding["verifierURL"];
+        const chainID = encoding["chainID"];
+        if (
+            typeof repoURL == "string" &&
             typeof serverURL == "string" &&
             typeof verifierURL == "string" &&
-            typeof chainID == "number") {
-            result = new SourcifySetup(repoURL, serverURL, verifierURL, chainID)
+            typeof chainID == "number"
+        ) {
+            result = new SourcifySetup(
+                repoURL,
+                serverURL,
+                verifierURL,
+                chainID,
+            );
         } else {
-            result = null
+            result = null;
         }
-        return result
+        return result;
     }
 
     // https://docs.sourcify.dev/docs/api/repository/get-file-static/
 
     makeRequestURL(contractAddress: string): string {
-        const normalizedAddress = EthereumAddress.normalizeEIP55(contractAddress)
-        return this.serverURL + "files/any/" + this.chainID + "/" + normalizedAddress
+        const normalizedAddress =
+            EthereumAddress.normalizeEIP55(contractAddress);
+        return (
+            this.serverURL +
+            "files/any/" +
+            this.chainID +
+            "/" +
+            normalizedAddress
+        );
     }
 
     makeMetadataURL(contractAddress: string, full: boolean): string {
-        const normalizedAddress = EthereumAddress.normalizeEIP55(contractAddress)
-        const matchPrefix = full ? "full_match/" : "partial_match/"
-        return this.serverURL + matchPrefix + this.chainID + "/" + normalizedAddress + "/metadata.json"
+        const normalizedAddress =
+            EthereumAddress.normalizeEIP55(contractAddress);
+        const matchPrefix = full ? "full_match/" : "partial_match/";
+        return (
+            this.serverURL +
+            matchPrefix +
+            this.chainID +
+            "/" +
+            normalizedAddress +
+            "/metadata.json"
+        );
     }
 
     makeContractLookupURL(contractAddress: string): string {
-        const normalizedAddress = EthereumAddress.normalizeEIP55(contractAddress)
-        return this.verifierURL + "lookup/" + normalizedAddress
+        const normalizedAddress =
+            EthereumAddress.normalizeEIP55(contractAddress);
+        return this.verifierURL + "lookup/" + normalizedAddress;
     }
 }
 
 export class NetworkRegistry {
+    public static readonly NETWORKS_CONFIG_URL =
+        window.location.origin + "/networks-config.json";
+    public static readonly MAX_NETWORK_NUMBER = 15;
 
-    public static readonly NETWORKS_CONFIG_URL = window.location.origin + '/networks-config.json'
-    public static readonly MAX_NETWORK_NUMBER = 15
+    public static readonly MAIN_NETWORK = "mainnet";
+    public static readonly TEST_NETWORK = "testnet";
+    public static readonly PREVIEW_NETWORK = "previewnet";
 
-    public static readonly MAIN_NETWORK = 'mainnet'
-    public static readonly TEST_NETWORK = 'testnet'
-    public static readonly PREVIEW_NETWORK = 'previewnet'
+    private static readonly DEFAULT_NETWORK = NetworkRegistry.MAIN_NETWORK;
+    private defaultEntry: NetworkEntry;
 
-    private static readonly DEFAULT_NETWORK = NetworkRegistry.MAIN_NETWORK
-    private defaultEntry: NetworkEntry
-
-    public readonly entries: Ref<Array<NetworkEntry>> = ref ([
+    public readonly entries: Ref<Array<NetworkEntry>> = ref([
         {
-            name: 'mainnet',
-            displayName: 'MAINNET',
+            name: "mainnet",
+            displayName: "MAINNET",
             url: "https://mainnet-public.mirrornode.hedera.com/",
-            ledgerID: '00',
+            ledgerID: "00",
             sourcifySetup: new SourcifySetup(
                 "https://repo.verify.simonvienot.fr/contracts/",
                 "https://verify.simonvienot.fr/server/",
                 "https://verify.simonvienot.fr/#/",
-                0x127
-            )
+                0x127,
+            ),
         },
         {
-            name: 'testnet',
-            displayName: 'TESTNET',
+            name: "testnet",
+            displayName: "TESTNET",
             url: "https://testnet.mirrornode.hedera.com/",
-            ledgerID: '01',
+            ledgerID: "01",
             sourcifySetup: new SourcifySetup(
                 "https://repo.verify.simonvienot.fr/contracts/",
                 "https://verify.simonvienot.fr/server/",
                 "https://verify.simonvienot.fr/#/",
-                0x128
-            )
+                0x128,
+            ),
         },
         {
-            name: 'previewnet',
-            displayName: 'PREVIEWNET',
+            name: "previewnet",
+            displayName: "PREVIEWNET",
             url: "https://previewnet.mirrornode.hedera.com/",
-            ledgerID: '02',
+            ledgerID: "02",
             sourcifySetup: new SourcifySetup(
                 "https://repo.verify.simonvienot.fr/contracts/",
                 "https://verify.simonvienot.fr/server/",
                 "https://verify.simonvienot.fr/#/",
-                0x129
-            )
-        }
-    ])
+                0x129,
+            ),
+        },
+    ]);
 
     constructor() {
-        this.defaultEntry = this.lookup(NetworkRegistry.DEFAULT_NETWORK) ?? this.entries.value[0]
+        this.defaultEntry =
+            this.lookup(NetworkRegistry.DEFAULT_NETWORK) ??
+            this.entries.value[0];
     }
 
     public readCustomConfig(): void {
-        axios.get<unknown>(NetworkRegistry.NETWORKS_CONFIG_URL)
+        axios
+            .get<unknown>(NetworkRegistry.NETWORKS_CONFIG_URL)
             .then((response) => {
-
-                const customEntries = NetworkRegistry.decode(response.data)
+                const customEntries = NetworkRegistry.decode(response.data);
                 if (customEntries !== null) {
-                    this.entries.value = customEntries
-                    this.defaultEntry = this.lookup(NetworkRegistry.DEFAULT_NETWORK) ?? this.entries.value[0]
+                    this.entries.value = customEntries;
+                    this.defaultEntry =
+                        this.lookup(NetworkRegistry.DEFAULT_NETWORK) ??
+                        this.entries.value[0];
                 }
 
                 // Take into account possible additional node defined in docker configuration
-                const localNodeURL = window.configs?.DOCKER_LOCAL_MIRROR_NODE_URL
+                const localNodeURL =
+                    window.configs?.DOCKER_LOCAL_MIRROR_NODE_URL;
                 const localNodeMenuName =
-                    window.configs?.DOCKER_LOCAL_MIRROR_NODE_MENU_NAME && window.configs.DOCKER_LOCAL_MIRROR_NODE_MENU_NAME.length > 0
+                    window.configs?.DOCKER_LOCAL_MIRROR_NODE_MENU_NAME &&
+                    window.configs.DOCKER_LOCAL_MIRROR_NODE_MENU_NAME.length > 0
                         ? window.configs.DOCKER_LOCAL_MIRROR_NODE_MENU_NAME
-                        : "DEVNET"
+                        : "DEVNET";
 
                 if (localNodeURL) {
                     console.warn(
                         "FOR DEVELOPMENT PURPOSES ONLY:\n" +
-                        `Defining an additional network with URL: ${localNodeURL} and name: ${localNodeMenuName} \n`)
+                            `Defining an additional network with URL: ${localNodeURL} and name: ${localNodeMenuName} \n`,
+                    );
 
                     this.entries.value.push(
-                        new NetworkEntry('devnet', localNodeMenuName, localNodeURL, 'FF', null)
-                    )
+                        new NetworkEntry(
+                            "devnet",
+                            localNodeMenuName,
+                            localNodeURL,
+                            "FF",
+                            null,
+                        ),
+                    );
                 }
             })
-            .catch((reason) => console.warn(`Failed to get ${NetworkRegistry.NETWORKS_CONFIG_URL}: ${reason}`))
+            .catch((reason) =>
+                console.warn(
+                    `Failed to get ${NetworkRegistry.NETWORKS_CONFIG_URL}: ${reason}`,
+                ),
+            );
     }
 
     public getDefaultEntry(): NetworkEntry {
-        return this.defaultEntry
+        return this.defaultEntry;
     }
 
     public lookup(name: string): NetworkEntry | null {
-        return this.entries.value.find(element => element.name === name) ?? null
+        return (
+            this.entries.value.find((element) => element.name === name) ?? null
+        );
     }
 
-    public isValidChecksum(id: string, checksum: string, network: string): boolean {
-        return this.computeChecksum(id, network) == checksum
+    public isValidChecksum(
+        id: string,
+        checksum: string,
+        network: string,
+    ): boolean {
+        return this.computeChecksum(id, network) == checksum;
     }
 
     public computeChecksum(id: string, network: string): string {
-        const ledgerID = this.lookup(network)?.ledgerID
-        return NetworkRegistry.checksum(ledgerID ?? 'FF', id)
+        const ledgerID = this.lookup(network)?.ledgerID;
+        return NetworkRegistry.checksum(ledgerID ?? "FF", id);
     }
 
     public stripChecksum(address: string): string {
-        const dash = address.indexOf('-')
-        return dash != -1 ? address.substring(0, dash) : address
+        const dash = address.indexOf("-");
+        return dash != -1 ? address.substring(0, dash) : address;
     }
 
     public extractChecksum(address: string): string | null {
-        const dash = address.indexOf('-')
-        return dash != -1 ? address.substring(dash + 1) : null
+        const dash = address.indexOf("-");
+        return dash != -1 ? address.substring(dash + 1) : null;
     }
 
-    public makeAddressWithChecksum(address: string, network: string): string | null {
-        const entity = EntityID.normalize(address)
-        return entity ? (entity + '-' + this.computeChecksum(entity, network)) : null
+    public makeAddressWithChecksum(
+        address: string,
+        network: string,
+    ): string | null {
+        const entity = EntityID.normalize(address);
+        return entity
+            ? entity + "-" + this.computeChecksum(entity, network)
+            : null;
     }
 
     private static decode(config: unknown): Array<NetworkEntry> | null {
-        let result: Array<NetworkEntry> | null
+        let result: Array<NetworkEntry> | null;
 
         if (Array.isArray(config)) {
-            result = Array<NetworkEntry>()
+            result = Array<NetworkEntry>();
             for (const i of config) {
                 if (result.length >= this.MAX_NETWORK_NUMBER) {
-                    console.warn(`Dropping networks beyond ${this.MAX_NETWORK_NUMBER} entries`)
-                    result = null
-                    break
+                    console.warn(
+                        `Dropping networks beyond ${this.MAX_NETWORK_NUMBER} entries`,
+                    );
+                    result = null;
+                    break;
                 } else {
-                    const newEntry = NetworkEntry.decode(i)
+                    const newEntry = NetworkEntry.decode(i);
                     if (newEntry === null) {
-                        console.warn("Invalid networks-config.json configuration file")
-                        result = null
-                        break
-                    } else if (result.find(e => newEntry.name === e.name)) {
-                        console.warn("Dropping network with duplicate name: " + newEntry.name)
+                        console.warn(
+                            "Invalid networks-config.json configuration file",
+                        );
+                        result = null;
+                        break;
+                    } else if (result.find((e) => newEntry.name === e.name)) {
+                        console.warn(
+                            "Dropping network with duplicate name: " +
+                                newEntry.name,
+                        );
                     } else {
-                        result.push(newEntry)
+                        result.push(newEntry);
                     }
                 }
             }
         } else {
-            result = null
+            result = null;
         }
 
-        return result
+        return result;
     }
 
     //
@@ -310,28 +395,29 @@ export class NetworkRegistry {
 
     private static checksum(ledgerId: string, addr: string) {
         let answer = "";
-        const d = [];      //digits with 10 for ".", so if addr == "0.0.123" then d == [0, 10, 0, 10, 1, 2, 3] *** FIX ***
-        let sd0 = 0;      //sum of even positions (mod 11)
-        let sd1 = 0;      //sum of odd positions (mod 11)
-        let sd = 0;       //weighted sum of all positions (mod p3)
-        let sh = 0;      //hash of the ledger ID
-        let cp: number;       //the checksum, as a single number
-        const p3 = 26 * 26 * 26;           //3 digits in base 26
+        const d = []; //digits with 10 for ".", so if addr == "0.0.123" then d == [0, 10, 0, 10, 1, 2, 3] *** FIX ***
+        let sd0 = 0; //sum of even positions (mod 11)
+        let sd1 = 0; //sum of odd positions (mod 11)
+        let sd = 0; //weighted sum of all positions (mod p3)
+        let sh = 0; //hash of the ledger ID
+        let cp: number; //the checksum, as a single number
+        const p3 = 26 * 26 * 26; //3 digits in base 26
         const p5 = 26 * 26 * 26 * 26 * 26; //5 digits in base 26
-        const ascii_a = "a".charCodeAt(0);  //97  *** FIX ***
+        const ascii_a = "a".charCodeAt(0); //97  *** FIX ***
         const m = 1_000_003; //min prime greater than a million. Used for the final permutation.
         const w = 31; //sum s of digit values weights them by powers of w. Should be coprime to p5.
 
         let id = ledgerId + "000000000000";
         const h = []; // *** FIX ***
         if (id.length % 2 == 1) id = "0" + id;
-        for (let i=0; i<id.length; i+=2) {  // *** FIX ***
-            h.push(parseInt(id.substr(i,2),16));
+        for (let i = 0; i < id.length; i += 2) {
+            // *** FIX ***
+            h.push(parseInt(id.substr(i, 2), 16));
         }
         for (let i = 0; i < addr.length; i++) {
-            d.push(addr[i]=="." ? 10 : parseInt(addr[i],10));
+            d.push(addr[i] == "." ? 10 : parseInt(addr[i], 10));
         }
-        for (let i=0; i<d.length; i++) {
+        for (let i = 0; i < d.length; i++) {
             sd = (w * sd + d[i]) % p3;
             if (i % 2 == 0) {
                 sd0 = (sd0 + d[i]) % 11;
@@ -339,13 +425,14 @@ export class NetworkRegistry {
                 sd1 = (sd1 + d[i]) % 11;
             }
         }
-        for (let i=0; i<h.length; i++) {
+        for (let i = 0; i < h.length; i++) {
             sh = (w * sh + h[i]) % p5;
         }
-        const c = ((((addr.length % 5) * 11 + sd0) * 11 + sd1) * p3 + sd + sh) % p5;  //the checksum, before the final permutation
+        const c =
+            ((((addr.length % 5) * 11 + sd0) * 11 + sd1) * p3 + sd + sh) % p5; //the checksum, before the final permutation
         cp = (c * m) % p5;
 
-        for (let i=0; i<5; i++) {
+        for (let i = 0; i < 5; i++) {
             answer = String.fromCharCode(ascii_a + (cp % 26)) + answer;
             cp /= 26;
         }
@@ -354,4 +441,4 @@ export class NetworkRegistry {
     }
 }
 
-export const networkRegistry = new NetworkRegistry()
+export const networkRegistry = new NetworkRegistry();

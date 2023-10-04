@@ -18,23 +18,24 @@
  *
  */
 
-import {byteToHex, hexToByte} from "@/utils/B64Utils";
+import { byteToHex, hexToByte } from "@/utils/B64Utils";
 
 export class EthereumHash {
-
-    public readonly bytes: Uint8Array
+    public readonly bytes: Uint8Array;
 
     //
     // Public
     //
 
-    public static parse(byteString: string): EthereumHash|null {
-        const bytes = hexToByte(byteString)
-        return bytes !== null && bytes.length == 32 ? new EthereumHash(bytes) : null
+    public static parse(byteString: string): EthereumHash | null {
+        const bytes = hexToByte(byteString);
+        return bytes !== null && bytes.length == 32
+            ? new EthereumHash(bytes)
+            : null;
     }
 
     public toString(): string {
-        return "0x" + byteToHex(this.bytes)
+        return "0x" + byteToHex(this.bytes);
     }
 
     //
@@ -42,6 +43,6 @@ export class EthereumHash {
     //
 
     private constructor(bytes: Uint8Array) {
-        this.bytes = bytes
+        this.bytes = bytes;
     }
 }

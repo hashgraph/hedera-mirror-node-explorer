@@ -18,60 +18,56 @@
  *
  */
 
-
 /*
     Bookmarks
         https://test-utils.vuejs.org/api/
 
  */
 
-import {describe, it, expect} from 'vitest'
-import {flushPromises, mount} from "@vue/test-utils";
+import { describe, it, expect } from "vitest";
+import { flushPromises, mount } from "@vue/test-utils";
 import router from "@/router";
-import {SAMPLE_TOKEN, SAMPLE_TOKEN_DUDE} from "../Mocks";
+import { SAMPLE_TOKEN, SAMPLE_TOKEN_DUDE } from "../Mocks";
 import MockAdapter from "axios-mock-adapter";
 import axios from "axios";
 import TokenExtra from "@/components/values/TokenExtra.vue";
 
 const mock = new MockAdapter(axios);
-const matcher = "/api/v1/tokens/" + SAMPLE_TOKEN.token_id
+const matcher = "/api/v1/tokens/" + SAMPLE_TOKEN.token_id;
 mock.onGet(matcher).reply(200, SAMPLE_TOKEN);
-const matcher2 = "/api/v1/tokens/" + SAMPLE_TOKEN_DUDE.token_id
+const matcher2 = "/api/v1/tokens/" + SAMPLE_TOKEN_DUDE.token_id;
 mock.onGet(matcher2).reply(200, SAMPLE_TOKEN_DUDE);
 
 describe("TokenExtra.vue", () => {
-
     it("no props then with token id", async () => {
-
-        await router.push("/") // To avoid "missing required param 'network'" error
+        await router.push("/"); // To avoid "missing required param 'network'" error
 
         const wrapper = mount(TokenExtra, {
             global: {
-                plugins: [router]
+                plugins: [router],
             },
-            props: {
-            },
+            props: {},
         });
-        await flushPromises()
-        expect(wrapper.text()).toBe("")
-
-
-        await wrapper.setProps({
-            tokenId: SAMPLE_TOKEN.token_id
-        })
-        await flushPromises()
-        expect(wrapper.find('a').exists()).toBeFalsy()
-        expect(wrapper.get('.h-is-extra-text').text()).toBe(SAMPLE_TOKEN.name)
+        await flushPromises();
+        expect(wrapper.text()).toBe("");
 
         await wrapper.setProps({
-            useAnchor: true
-        })
-        await flushPromises()
-        expect(wrapper.get('a').attributes('href')).toMatch(RegExp("/token/" + SAMPLE_TOKEN.token_id + "$"))
-        expect(wrapper.get('.h-is-extra-text').text()).toBe(SAMPLE_TOKEN.name)
+            tokenId: SAMPLE_TOKEN.token_id,
+        });
+        await flushPromises();
+        expect(wrapper.find("a").exists()).toBeFalsy();
+        expect(wrapper.get(".h-is-extra-text").text()).toBe(SAMPLE_TOKEN.name);
 
-        wrapper.unmount()
-        await flushPromises()
+        await wrapper.setProps({
+            useAnchor: true,
+        });
+        await flushPromises();
+        expect(wrapper.get("a").attributes("href")).toMatch(
+            RegExp("/token/" + SAMPLE_TOKEN.token_id + "$"),
+        );
+        expect(wrapper.get(".h-is-extra-text").text()).toBe(SAMPLE_TOKEN.name);
+
+        wrapper.unmount();
+        await flushPromises();
     });
-
 });

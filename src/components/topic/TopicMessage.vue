@@ -23,43 +23,47 @@
 <!-- --------------------------------------------------------------------------------------------------------------- -->
 
 <template>
-
-  <div v-if="message">
-
-    <DashboardCard class="h-card">
-      <template v-slot:title>
-        <span class="h-is-secondary-title">Message Submitted</span>
-      </template>
-      <template v-slot:content>
-        <Property id="sequenceNumber" :full-width="true">
-          <template v-slot:name>Sequence Number</template>
-          <template v-slot:value>
-            {{ sequence_number }}
-          </template>
-        </Property>
-        <Property id="message" :full-width="true">
-          <template v-slot:name>Message</template>
-          <template v-slot:value>
-            <BlobValue :blob-value="messageContent" :show-none="true" :base64="true" :pretty="true"/>
-          </template>
-        </Property>
-        <Property id="runningHashVersion" :full-width="true">
-          <template v-slot:name>Running Hash Version</template>
-          <template v-slot:value>
-            <PlainAmount :amount="running_hash_version"/>
-          </template>
-        </Property>
-        <Property id="runningHash" :full-width="true">
-          <template v-slot:name>Running Hash</template>
-          <template v-slot:value>
-            <BlobValue :blob-value="running_hash" :show-none="true"/>
-          </template>
-        </Property>
-      </template>
-    </DashboardCard>
-
-  </div>
-
+    <div v-if="message">
+        <DashboardCard class="h-card">
+            <template v-slot:title>
+                <span class="h-is-secondary-title">Message Submitted</span>
+            </template>
+            <template v-slot:content>
+                <Property id="sequenceNumber" :full-width="true">
+                    <template v-slot:name>Sequence Number</template>
+                    <template v-slot:value>
+                        {{ sequence_number }}
+                    </template>
+                </Property>
+                <Property id="message" :full-width="true">
+                    <template v-slot:name>Message</template>
+                    <template v-slot:value>
+                        <BlobValue
+                            :blob-value="messageContent"
+                            :show-none="true"
+                            :base64="true"
+                            :pretty="true"
+                        />
+                    </template>
+                </Property>
+                <Property id="runningHashVersion" :full-width="true">
+                    <template v-slot:name>Running Hash Version</template>
+                    <template v-slot:value>
+                        <PlainAmount :amount="running_hash_version" />
+                    </template>
+                </Property>
+                <Property id="runningHash" :full-width="true">
+                    <template v-slot:name>Running Hash</template>
+                    <template v-slot:value>
+                        <BlobValue
+                            :blob-value="running_hash"
+                            :show-none="true"
+                        />
+                    </template>
+                </Property>
+            </template>
+        </DashboardCard>
+    </div>
 </template>
 
 <!-- --------------------------------------------------------------------------------------------------------------- -->
@@ -67,56 +71,59 @@
 <!-- --------------------------------------------------------------------------------------------------------------- -->
 
 <script lang="ts">
-
-import {computed, defineComponent, inject, PropType} from 'vue';
+import { computed, defineComponent, inject, PropType } from "vue";
 import DashboardCard from "@/components/DashboardCard.vue";
 import Property from "@/components/Property.vue";
 import PlainAmount from "@/components/values/PlainAmount.vue";
-import {TopicMessage} from "@/schemas/HederaSchemas";
+import { TopicMessage } from "@/schemas/HederaSchemas";
 import BlobValue from "@/components/values/BlobValue.vue";
 
 export default defineComponent({
+    name: "TopicMessage",
 
-  name: 'TopicMessage',
+    components: {
+        PlainAmount,
+        BlobValue,
+        Property,
+        DashboardCard,
+    },
 
-  components: {
-    PlainAmount,
-    BlobValue,
-    Property,
-    DashboardCard
-  },
+    props: {
+        message: Object as PropType<TopicMessage | null>,
+    },
 
-  props: {
-    message: Object as PropType<TopicMessage|null>
-  },
+    setup(props) {
+        const isSmallScreen = inject("isSmallScreen", true);
+        const isTouchDevice = inject("isTouchDevice", false);
 
-  setup(props) {
-    const isSmallScreen = inject('isSmallScreen', true)
-    const isTouchDevice = inject('isTouchDevice', false)
+        const messageContent = computed(() => props.message?.message ?? null);
 
-    const messageContent = computed(() => props.message?.message ?? null)
+        const sequence_number = computed(
+            () => props.message?.sequence_number ?? null,
+        );
 
-    const sequence_number = computed(() => props.message?.sequence_number ?? null)
+        const running_hash_version = computed(
+            () => props.message?.running_hash_version ?? null,
+        );
 
-    const running_hash_version = computed(() => props.message?.running_hash_version ?? null)
+        const running_hash = computed(
+            () => props.message?.running_hash ?? null,
+        );
 
-    const running_hash = computed(() =>props.message?.running_hash ?? null)
-
-    return {
-      isSmallScreen,
-      isTouchDevice,
-      messageContent,
-      sequence_number,
-      running_hash_version,
-      running_hash
-    }
-  },
+        return {
+            isSmallScreen,
+            isTouchDevice,
+            messageContent,
+            sequence_number,
+            running_hash_version,
+            running_hash,
+        };
+    },
 });
-
 </script>
 
 <!-- --------------------------------------------------------------------------------------------------------------- -->
 <!--                                                       STYLE                                                     -->
 <!-- --------------------------------------------------------------------------------------------------------------- -->
 
-<style/>
+<style />

@@ -20,100 +20,106 @@
  *
  */
 
-import {describe, test, expect} from 'vitest'
-import {Ref, ref} from "vue";
-import {flushPromises} from "@vue/test-utils";
+import { describe, test, expect } from "vitest";
+import { Ref, ref } from "vue";
+import { flushPromises } from "@vue/test-utils";
 import MockAdapter from "axios-mock-adapter";
 import axios from "axios";
-import {BalanceAnalyzer} from "@/utils/analyzer/BalanceAnalyzer";
-import {SAMPLE_ACCOUNT, SAMPLE_ACCOUNT_BALANCES} from "../../Mocks";
+import { BalanceAnalyzer } from "@/utils/analyzer/BalanceAnalyzer";
+import { SAMPLE_ACCOUNT, SAMPLE_ACCOUNT_BALANCES } from "../../Mocks";
 
 describe("BalanceAnalyzer.spec.ts", () => {
-
     test("set account before mount()", async () => {
-
         const mock = new MockAdapter(axios);
-        const matcher1 = "/api/v1/balances"
-        mock.onGet(matcher1).reply(200, SAMPLE_ACCOUNT_BALANCES)
+        const matcher1 = "/api/v1/balances";
+        mock.onGet(matcher1).reply(200, SAMPLE_ACCOUNT_BALANCES);
 
-        const contractId: Ref<string|null> = ref(null)
+        const contractId: Ref<string | null> = ref(null);
         const balanceAnalyzer = new BalanceAnalyzer(contractId, 100);
-        expect(balanceAnalyzer.accountId.value).toBeNull()
-        expect(balanceAnalyzer.hbarBalance.value).toBeNull()
-        expect(balanceAnalyzer.tokenBalances.value).toStrictEqual([])
-        expect(balanceAnalyzer.balanceTimeStamp.value).toBeNull()
+        expect(balanceAnalyzer.accountId.value).toBeNull();
+        expect(balanceAnalyzer.hbarBalance.value).toBeNull();
+        expect(balanceAnalyzer.tokenBalances.value).toStrictEqual([]);
+        expect(balanceAnalyzer.balanceTimeStamp.value).toBeNull();
 
         // sets contract id before mount
-        contractId.value = SAMPLE_ACCOUNT.account
-        expect(balanceAnalyzer.accountId.value).toBe(SAMPLE_ACCOUNT.account)
-        expect(balanceAnalyzer.hbarBalance.value).toBeNull()
-        expect(balanceAnalyzer.tokenBalances.value).toStrictEqual([])
-        expect(balanceAnalyzer.balanceTimeStamp.value).toBeNull()
-        await flushPromises()
-        expect(balanceAnalyzer.accountId.value).toBe(SAMPLE_ACCOUNT.account)
-        expect(balanceAnalyzer.hbarBalance.value).toBeNull() // because it's not mounted ;)
-        expect(balanceAnalyzer.tokenBalances.value).toStrictEqual([])
-        expect(balanceAnalyzer.balanceTimeStamp.value).toBeNull()
+        contractId.value = SAMPLE_ACCOUNT.account;
+        expect(balanceAnalyzer.accountId.value).toBe(SAMPLE_ACCOUNT.account);
+        expect(balanceAnalyzer.hbarBalance.value).toBeNull();
+        expect(balanceAnalyzer.tokenBalances.value).toStrictEqual([]);
+        expect(balanceAnalyzer.balanceTimeStamp.value).toBeNull();
+        await flushPromises();
+        expect(balanceAnalyzer.accountId.value).toBe(SAMPLE_ACCOUNT.account);
+        expect(balanceAnalyzer.hbarBalance.value).toBeNull(); // because it's not mounted ;)
+        expect(balanceAnalyzer.tokenBalances.value).toStrictEqual([]);
+        expect(balanceAnalyzer.balanceTimeStamp.value).toBeNull();
 
         // mount
-        balanceAnalyzer.mount()
-        await flushPromises()
-        expect(balanceAnalyzer.accountId.value).toBe(SAMPLE_ACCOUNT.account)
-        expect(balanceAnalyzer.hbarBalance.value).toBe(SAMPLE_ACCOUNT_BALANCES.balances[0].balance)
-        expect(balanceAnalyzer.tokenBalances.value).toStrictEqual(SAMPLE_ACCOUNT_BALANCES.balances[0].tokens)
-        expect(balanceAnalyzer.balanceTimeStamp.value).toBe(SAMPLE_ACCOUNT_BALANCES.timestamp)
+        balanceAnalyzer.mount();
+        await flushPromises();
+        expect(balanceAnalyzer.accountId.value).toBe(SAMPLE_ACCOUNT.account);
+        expect(balanceAnalyzer.hbarBalance.value).toBe(
+            SAMPLE_ACCOUNT_BALANCES.balances[0].balance,
+        );
+        expect(balanceAnalyzer.tokenBalances.value).toStrictEqual(
+            SAMPLE_ACCOUNT_BALANCES.balances[0].tokens,
+        );
+        expect(balanceAnalyzer.balanceTimeStamp.value).toBe(
+            SAMPLE_ACCOUNT_BALANCES.timestamp,
+        );
 
         // unmount
-        balanceAnalyzer.unmount()
-        await flushPromises()
-        expect(balanceAnalyzer.accountId.value).toBe(SAMPLE_ACCOUNT.account)
-        expect(balanceAnalyzer.hbarBalance.value).toBeNull()
-        expect(balanceAnalyzer.tokenBalances.value).toStrictEqual([])
-        expect(balanceAnalyzer.balanceTimeStamp.value).toBeNull()
-
-    })
+        balanceAnalyzer.unmount();
+        await flushPromises();
+        expect(balanceAnalyzer.accountId.value).toBe(SAMPLE_ACCOUNT.account);
+        expect(balanceAnalyzer.hbarBalance.value).toBeNull();
+        expect(balanceAnalyzer.tokenBalances.value).toStrictEqual([]);
+        expect(balanceAnalyzer.balanceTimeStamp.value).toBeNull();
+    });
 
     test("set account between mount() and unmount() ", async () => {
-
         const mock = new MockAdapter(axios);
-        const matcher1 = "/api/v1/balances"
-        mock.onGet(matcher1).reply(200, SAMPLE_ACCOUNT_BALANCES)
+        const matcher1 = "/api/v1/balances";
+        mock.onGet(matcher1).reply(200, SAMPLE_ACCOUNT_BALANCES);
 
-        const contractId: Ref<string|null> = ref(null)
+        const contractId: Ref<string | null> = ref(null);
         const balanceAnalyzer = new BalanceAnalyzer(contractId, 100);
-        expect(balanceAnalyzer.accountId.value).toBeNull()
-        expect(balanceAnalyzer.hbarBalance.value).toBeNull()
-        expect(balanceAnalyzer.tokenBalances.value).toStrictEqual([])
-        expect(balanceAnalyzer.balanceTimeStamp.value).toBeNull()
+        expect(balanceAnalyzer.accountId.value).toBeNull();
+        expect(balanceAnalyzer.hbarBalance.value).toBeNull();
+        expect(balanceAnalyzer.tokenBalances.value).toStrictEqual([]);
+        expect(balanceAnalyzer.balanceTimeStamp.value).toBeNull();
 
         // mount
-        balanceAnalyzer.mount()
-        await flushPromises()
-        expect(balanceAnalyzer.accountId.value).toBeNull()
-        expect(balanceAnalyzer.hbarBalance.value).toBeNull()
-        expect(balanceAnalyzer.tokenBalances.value).toStrictEqual([])
-        expect(balanceAnalyzer.balanceTimeStamp.value).toBeNull()
+        balanceAnalyzer.mount();
+        await flushPromises();
+        expect(balanceAnalyzer.accountId.value).toBeNull();
+        expect(balanceAnalyzer.hbarBalance.value).toBeNull();
+        expect(balanceAnalyzer.tokenBalances.value).toStrictEqual([]);
+        expect(balanceAnalyzer.balanceTimeStamp.value).toBeNull();
 
         // sets contract id between mount and unmount
-        contractId.value = SAMPLE_ACCOUNT.account
-        expect(balanceAnalyzer.accountId.value).toBe(SAMPLE_ACCOUNT.account)
-        expect(balanceAnalyzer.hbarBalance.value).toBeNull()
-        expect(balanceAnalyzer.tokenBalances.value).toStrictEqual([])
-        expect(balanceAnalyzer.balanceTimeStamp.value).toBeNull()
-        await flushPromises()
-        expect(balanceAnalyzer.accountId.value).toBe(SAMPLE_ACCOUNT.account)
-        expect(balanceAnalyzer.hbarBalance.value).toBe(SAMPLE_ACCOUNT_BALANCES.balances[0].balance)
-        expect(balanceAnalyzer.tokenBalances.value).toStrictEqual(SAMPLE_ACCOUNT_BALANCES.balances[0].tokens)
-        expect(balanceAnalyzer.balanceTimeStamp.value).toBe(SAMPLE_ACCOUNT_BALANCES.timestamp)
+        contractId.value = SAMPLE_ACCOUNT.account;
+        expect(balanceAnalyzer.accountId.value).toBe(SAMPLE_ACCOUNT.account);
+        expect(balanceAnalyzer.hbarBalance.value).toBeNull();
+        expect(balanceAnalyzer.tokenBalances.value).toStrictEqual([]);
+        expect(balanceAnalyzer.balanceTimeStamp.value).toBeNull();
+        await flushPromises();
+        expect(balanceAnalyzer.accountId.value).toBe(SAMPLE_ACCOUNT.account);
+        expect(balanceAnalyzer.hbarBalance.value).toBe(
+            SAMPLE_ACCOUNT_BALANCES.balances[0].balance,
+        );
+        expect(balanceAnalyzer.tokenBalances.value).toStrictEqual(
+            SAMPLE_ACCOUNT_BALANCES.balances[0].tokens,
+        );
+        expect(balanceAnalyzer.balanceTimeStamp.value).toBe(
+            SAMPLE_ACCOUNT_BALANCES.timestamp,
+        );
 
         // unmount
-        balanceAnalyzer.unmount()
-        await flushPromises()
-        expect(balanceAnalyzer.accountId.value).toBe(SAMPLE_ACCOUNT.account)
-        expect(balanceAnalyzer.hbarBalance.value).toBeNull()
-        expect(balanceAnalyzer.tokenBalances.value).toStrictEqual([])
-        expect(balanceAnalyzer.balanceTimeStamp.value).toBeNull()
-
-    })
-
-})
+        balanceAnalyzer.unmount();
+        await flushPromises();
+        expect(balanceAnalyzer.accountId.value).toBe(SAMPLE_ACCOUNT.account);
+        expect(balanceAnalyzer.hbarBalance.value).toBeNull();
+        expect(balanceAnalyzer.tokenBalances.value).toStrictEqual([]);
+        expect(balanceAnalyzer.balanceTimeStamp.value).toBeNull();
+    });
+});

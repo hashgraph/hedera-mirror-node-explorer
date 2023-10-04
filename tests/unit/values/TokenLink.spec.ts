@@ -18,103 +18,107 @@
  *
  */
 
-
 /*
     Bookmarks
         https://test-utils.vuejs.org/api/
 
  */
 
-
-import {describe, it, expect} from 'vitest'
-import {flushPromises, mount} from "@vue/test-utils";
+import { describe, it, expect } from "vitest";
+import { flushPromises, mount } from "@vue/test-utils";
 import TokenLink from "@/components/values/TokenLink.vue";
 import router from "@/router";
-import {SAMPLE_TOKEN, SAMPLE_TOKEN_DUDE} from "../Mocks";
+import { SAMPLE_TOKEN, SAMPLE_TOKEN_DUDE } from "../Mocks";
 import MockAdapter from "axios-mock-adapter";
 import axios from "axios";
 
 const mock = new MockAdapter(axios);
-const matcher = "/api/v1/tokens/" + SAMPLE_TOKEN.token_id
+const matcher = "/api/v1/tokens/" + SAMPLE_TOKEN.token_id;
 mock.onGet(matcher).reply(200, SAMPLE_TOKEN);
-const matcher2 = "/api/v1/tokens/" + SAMPLE_TOKEN_DUDE.token_id
+const matcher2 = "/api/v1/tokens/" + SAMPLE_TOKEN_DUDE.token_id;
 mock.onGet(matcher2).reply(200, SAMPLE_TOKEN_DUDE);
 
 describe("TokenLink.vue", () => {
-
     it("props.topicId set", async () => {
-
-        await router.push("/") // To avoid "missing required param 'network'" error
-
-        const wrapper = mount(TokenLink, {
-            global: {
-                plugins: [router]
-            },
-            props: {
-                tokenId: SAMPLE_TOKEN.token_id
-            },
-        });
-
-        await flushPromises()
-
-        const testTokenId = SAMPLE_TOKEN.token_id
-        expect(wrapper.text()).toBe(testTokenId)
-        expect(wrapper.get("a").attributes("href")).toMatch(RegExp("/token/" + testTokenId + "$"))
-        expect(wrapper.find(".h-is-extra-text").exists()).toBe(false)
-
-        wrapper.unmount()
-        await flushPromises()
-    });
-
-    it("props.topicId set and showExtra", async () => {
-
-        await router.push("/") // To avoid "missing required param 'network'" error
+        await router.push("/"); // To avoid "missing required param 'network'" error
 
         const wrapper = mount(TokenLink, {
             global: {
-                plugins: [router]
+                plugins: [router],
             },
             props: {
                 tokenId: SAMPLE_TOKEN.token_id,
-                showExtra: true
             },
         });
 
-        await flushPromises()
+        await flushPromises();
 
-        expect(wrapper.text()).toBe(SAMPLE_TOKEN.token_id + SAMPLE_TOKEN.name)
-        expect(wrapper.get("a").attributes("href")).toMatch(RegExp("/token/" + SAMPLE_TOKEN.token_id + "$"))
-        expect(wrapper.get(".h-is-extra-text").text()).toBe(SAMPLE_TOKEN.name)
+        const testTokenId = SAMPLE_TOKEN.token_id;
+        expect(wrapper.text()).toBe(testTokenId);
+        expect(wrapper.get("a").attributes("href")).toMatch(
+            RegExp("/token/" + testTokenId + "$"),
+        );
+        expect(wrapper.find(".h-is-extra-text").exists()).toBe(false);
 
-        await wrapper.setProps({
-            tokenId: SAMPLE_TOKEN_DUDE.token_id
-        })
-        await flushPromises()
-
-        expect(wrapper.text()).toBe(SAMPLE_TOKEN_DUDE.token_id + SAMPLE_TOKEN_DUDE.name)
-        expect(wrapper.get("a").attributes("href")).toMatch(RegExp("/token/" + SAMPLE_TOKEN_DUDE.token_id + "$"))
-        expect(wrapper.get(".h-is-extra-text").text()).toBe(SAMPLE_TOKEN_DUDE.name)
-
-        wrapper.unmount()
-        await flushPromises()
+        wrapper.unmount();
+        await flushPromises();
     });
 
-    it("props.topicId unset and showNone", async () => {
-
-        await router.push("/mainnet/dashboard") // To avoid "missing required param 'network'" error
+    it("props.topicId set and showExtra", async () => {
+        await router.push("/"); // To avoid "missing required param 'network'" error
 
         const wrapper = mount(TokenLink, {
             global: {
-                plugins: [router]
+                plugins: [router],
             },
             props: {
-                showNone: true
+                tokenId: SAMPLE_TOKEN.token_id,
+                showExtra: true,
             },
         });
 
-        expect(wrapper.text()).toBe("None")
-        expect(wrapper.find("a").exists()).toBe(false)
+        await flushPromises();
 
-        wrapper.unmount()
+        expect(wrapper.text()).toBe(SAMPLE_TOKEN.token_id + SAMPLE_TOKEN.name);
+        expect(wrapper.get("a").attributes("href")).toMatch(
+            RegExp("/token/" + SAMPLE_TOKEN.token_id + "$"),
+        );
+        expect(wrapper.get(".h-is-extra-text").text()).toBe(SAMPLE_TOKEN.name);
+
+        await wrapper.setProps({
+            tokenId: SAMPLE_TOKEN_DUDE.token_id,
+        });
+        await flushPromises();
+
+        expect(wrapper.text()).toBe(
+            SAMPLE_TOKEN_DUDE.token_id + SAMPLE_TOKEN_DUDE.name,
+        );
+        expect(wrapper.get("a").attributes("href")).toMatch(
+            RegExp("/token/" + SAMPLE_TOKEN_DUDE.token_id + "$"),
+        );
+        expect(wrapper.get(".h-is-extra-text").text()).toBe(
+            SAMPLE_TOKEN_DUDE.name,
+        );
+
+        wrapper.unmount();
+        await flushPromises();
+    });
+
+    it("props.topicId unset and showNone", async () => {
+        await router.push("/mainnet/dashboard"); // To avoid "missing required param 'network'" error
+
+        const wrapper = mount(TokenLink, {
+            global: {
+                plugins: [router],
+            },
+            props: {
+                showNone: true,
+            },
+        });
+
+        expect(wrapper.text()).toBe("None");
+        expect(wrapper.find("a").exists()).toBe(false);
+
+        wrapper.unmount();
     });
 });

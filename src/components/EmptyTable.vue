@@ -23,10 +23,10 @@
 <!-- --------------------------------------------------------------------------------------------------------------- -->
 
 <template>
-  <div class="has-text-centered h-is-tertiary-text-text has-text-grey mb-4">
-    <span v-if="initialLoading">Loading…</span>
-    <span v-else>No Data</span>
-  </div>
+    <div class="has-text-centered h-is-tertiary-text-text has-text-grey mb-4">
+        <span v-if="initialLoading">Loading…</span>
+        <span v-else>No Data</span>
+    </div>
 </template>
 
 <!-- --------------------------------------------------------------------------------------------------------------- -->
@@ -34,24 +34,21 @@
 <!-- --------------------------------------------------------------------------------------------------------------- -->
 
 <script lang="ts">
-
-import {defineComponent, inject, ref} from "vue";
-import {initialLoadingKey} from "@/AppKeys";
+import { defineComponent, inject, ref } from "vue";
+import { initialLoadingKey } from "@/AppKeys";
 
 export default defineComponent({
-  name: "EmptyTable",
+    name: "EmptyTable",
 
-  setup() {
-    const initialLoading = inject(initialLoadingKey, ref(false))
-    return { initialLoading }
-  }
-})
-
+    setup() {
+        const initialLoading = inject(initialLoadingKey, ref(false));
+        return { initialLoading };
+    },
+});
 </script>
 
 <!-- --------------------------------------------------------------------------------------------------------------- -->
 <!--                                                      STYLE                                                      -->
 <!-- --------------------------------------------------------------------------------------------------------------- -->
 
-<style>
-</style>
+<style></style>

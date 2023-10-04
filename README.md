@@ -38,7 +38,7 @@ npm run test:unit
 
 ```shell
 # Run the tests interactively
-npm run test:e2e:dev 
+npm run test:e2e:dev
 # Or run the tests in headless browser mode
 npm run test:e2e
 ```
@@ -69,12 +69,14 @@ can be used for a local Kubernetes cluster.
 ```shell
 helm upgrade --install hedera-explorer chart/
 ```
+
 #### Specify custom network (can also be used for development)
 
 By default the hedera explorer has support for MAINNET, PREVIEWNET and TESTNET. If you want to add or remove more networks
 you can specify it using the `customNetworkConfig` in the `values.yaml` file
 
 An example:
+
 ```
  config: |
   [
@@ -111,8 +113,8 @@ An example:
 
 When running the explorer in Docker, for instance with a Local Node, it is possible
 to add a network to the list of available networks configured at build time -- see below.
-This is achieved by defining the variable `DOCKER_LOCAL_MIRROR_NODE_URL` 
-(and optionally `DOCKER_LOCAL_MIRROR_NODE_MENU_NAME`) in the `.env.docker` file, 
+This is achieved by defining the variable `DOCKER_LOCAL_MIRROR_NODE_URL`
+(and optionally `DOCKER_LOCAL_MIRROR_NODE_MENU_NAME`) in the `.env.docker` file,
 which will be taken into account at start time by Docker. For instance:
 
 ```shell
@@ -143,20 +145,21 @@ This file initially contains the configuration allowing to connect to the
 _mainnet/testnet/previewnet_ networks. This configuration may be augmented, altered or
 replaced as needed.
 Note:
-- When this file is missing, is empty, or does not have the expected syntax, 
-  the configuration falls back to _mainnet/testnet/previewnet_.
-- The `name` of the network has to be unique
-- The `displayName` is the string inserted in the network selector. 
-  It will default to the network `name` in uppercase. A `displayName`
-  exceeding 15 characters will be truncated.
-- The `ledgerID` is required to process the ID checksums shown in the UI.
-- The maximum number of networks taken into account is 15. The rest will be ignored.
+
+-   When this file is missing, is empty, or does not have the expected syntax,
+    the configuration falls back to _mainnet/testnet/previewnet_.
+-   The `name` of the network has to be unique
+-   The `displayName` is the string inserted in the network selector.
+    It will default to the network `name` in uppercase. A `displayName`
+    exceeding 15 characters will be truncated.
+-   The `ledgerID` is required to process the ID checksums shown in the UI.
+-   The maximum number of networks taken into account is 15. The rest will be ignored.
 
 #### Customize the UI
 
 A few aspects of the Explorer UI, such as the product name displayed at the bottom of the pages,
-are controlled by environment variables defined in the `.env` file. These will be taken into 
-account at build time. 
+are controlled by environment variables defined in the `.env` file. These will be taken into
+account at build time.
 
 #### Enabling the Staking page
 
@@ -164,7 +167,7 @@ The Staking page allows the user to connect a wallet to the Explorer and to choo
 to a selected network node or to another account.
 
 By default, the Staking page is disabled, and the corresponding menu item is absent from the top navigation bar.
-To enable the Staking page and menu item, set the following variable to *true* in the .env file:
+To enable the Staking page and menu item, set the following variable to _true_ in the .env file:
 
 ```shell
 VITE_APP_ENABLE_STAKING=true
@@ -176,8 +179,8 @@ VITE_APP_ENABLE_STAKING=true
 
 In addition to the configuration variables described above,
 the Hedera Mirror Node Explorer UI can be customized by adding a branding
-directory which path can be provided by the environment variable *$BRANDING_LOCATION*.
-If this variable is not defined a directory *./branding* will be looked for
+directory which path can be provided by the environment variable _$BRANDING_LOCATION_.
+If this variable is not defined a directory _./branding_ will be looked for
 at the root of the repository.
 This directory should have the following structure:
 
@@ -188,14 +191,14 @@ This directory should have the following structure:
 ./public/*
 ```
 
-- The file `brand-product-logo.png` should be a 660x181 PNG file, which, if present, will be
-  taken into account by the build and put in the top-left placeholder of the Explorer NavBar.
-- The file `brand-sponsor-logo.png` should be a 744x313 PNG file, which, if present, will be
-  taken into account by the build and put in the bottom-right placeholder of the Explorer footer.
-- The file `brand-theme.scss` may provide a modified version of the file located under
-  `./src/assets/styles/brand-theme.scss` and, if present, will supersede it.
-- Any file present in the `./public/` directory will be added to the content of the 
-  `dist/` directory, which allows to customize the favicon.
+-   The file `brand-product-logo.png` should be a 660x181 PNG file, which, if present, will be
+    taken into account by the build and put in the top-left placeholder of the Explorer NavBar.
+-   The file `brand-sponsor-logo.png` should be a 744x313 PNG file, which, if present, will be
+    taken into account by the build and put in the bottom-right placeholder of the Explorer footer.
+-   The file `brand-theme.scss` may provide a modified version of the file located under
+    `./src/assets/styles/brand-theme.scss` and, if present, will supersede it.
+-   Any file present in the `./public/` directory will be added to the content of the
+    `dist/` directory, which allows to customize the favicon.
 
 ## Contributing
 

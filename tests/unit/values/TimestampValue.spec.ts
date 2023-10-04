@@ -18,136 +18,128 @@
  *
  */
 
-import {describe, test, expect} from 'vitest'
-import {flushPromises, mount} from "@vue/test-utils"
+import { describe, test, expect } from "vitest";
+import { flushPromises, mount } from "@vue/test-utils";
 import router from "@/router";
 import TimestampValue from "@/components/values/TimestampValue.vue";
-import {HMSF} from "@/utils/HMSF";
+import { HMSF } from "@/utils/HMSF";
 
-HMSF.forceUTC = true
+HMSF.forceUTC = true;
 
 describe("TimestampValue.vue", () => {
-
     //
     // timestamp undefined
     //
 
     test("timestamp undefined, showNone == false", async () => {
-
         const wrapper = mount(TimestampValue, {
             global: {
-                plugins: [router]
+                plugins: [router],
             },
-            props: {
-            },
+            props: {},
         });
 
-        await flushPromises()
+        await flushPromises();
 
-        expect(wrapper.text()).toBe("")
+        expect(wrapper.text()).toBe("");
 
-        wrapper.unmount()
-        await flushPromises()
-    })
+        wrapper.unmount();
+        await flushPromises();
+    });
 
     test("timestamp undefined, showNone == true", async () => {
-
         const wrapper = mount(TimestampValue, {
             global: {
-                plugins: [router]
+                plugins: [router],
             },
             props: {
-                showNone: true
+                showNone: true,
             },
         });
 
-        await flushPromises()
+        await flushPromises();
 
-        expect(wrapper.text()).toBe("None")
+        expect(wrapper.text()).toBe("None");
 
-        wrapper.unmount()
-        await flushPromises()
-    })
+        wrapper.unmount();
+        await flushPromises();
+    });
 
     //
     // seconds
     //
 
-    const TIMESTAMP_SECONDS = "1613954653.165071000"
+    const TIMESTAMP_SECONDS = "1613954653.165071000";
     // GMT: Monday 22 February 2021 00:44:13.165
     // https://www.epochconverter.com
 
-    const TIMESTAMP_STRING = "12:44:13.1650 AMFeb 22, 2021, UTC"
+    const TIMESTAMP_STRING = "12:44:13.1650 AMFeb 22, 2021, UTC";
 
     test("timestamp expressed in seconds", async () => {
-
         const wrapper = mount(TimestampValue, {
             global: {
-                plugins: [router]
+                plugins: [router],
             },
             props: {
-                timestamp: TIMESTAMP_SECONDS
+                timestamp: TIMESTAMP_SECONDS,
             },
         });
 
-        await flushPromises()
+        await flushPromises();
 
-        expect(wrapper.text()).toBe(TIMESTAMP_STRING)
+        expect(wrapper.text()).toBe(TIMESTAMP_STRING);
 
-        wrapper.unmount()
-        await flushPromises()
-    })
+        wrapper.unmount();
+        await flushPromises();
+    });
 
     //
     // nanoseconds
     //
 
-    const TIMESTAMP_NANOS = "1613954653165071000"
+    const TIMESTAMP_NANOS = "1613954653165071000";
 
     test("timestamp expressed in nanoseconds", async () => {
-
         const wrapper = mount(TimestampValue, {
             global: {
-                plugins: [router]
+                plugins: [router],
             },
             props: {
                 timestamp: TIMESTAMP_NANOS,
-                nano: true
+                nano: true,
             },
         });
 
-        await flushPromises()
+        await flushPromises();
 
-        expect(wrapper.text()).toBe(TIMESTAMP_STRING)
+        expect(wrapper.text()).toBe(TIMESTAMP_STRING);
 
-        wrapper.unmount()
-        await flushPromises()
-    })
+        wrapper.unmount();
+        await flushPromises();
+    });
 
     //
     // 'Infinite' timestamp
     //
 
-    const INFINITE_TIMESTAMP = "31556889864403199.196946953"
-    const INFINITE_STRING = "Never"
+    const INFINITE_TIMESTAMP = "31556889864403199.196946953";
+    const INFINITE_STRING = "Never";
 
     test("infinite timestamp", async () => {
-
         const wrapper = mount(TimestampValue, {
             global: {
-                plugins: [router]
+                plugins: [router],
             },
             props: {
-                timestamp: INFINITE_TIMESTAMP
+                timestamp: INFINITE_TIMESTAMP,
             },
         });
 
-        await flushPromises()
+        await flushPromises();
 
-        expect(wrapper.text()).toBe(INFINITE_STRING)
+        expect(wrapper.text()).toBe(INFINITE_STRING);
 
-        wrapper.unmount()
-        await flushPromises()
-    })
-})
-
+        wrapper.unmount();
+        await flushPromises();
+    });
+});

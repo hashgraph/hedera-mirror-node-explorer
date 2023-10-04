@@ -18,50 +18,50 @@
  *
  */
 
-import {AutoRefreshLoader} from "@/utils/loader/AutoRefreshLoader";
-import axios, {AxiosResponse} from "axios";
-import {computed} from "vue";
-import {NetworkSupplyResponse} from "@/schemas/HederaSchemas";
+import { AutoRefreshLoader } from "@/utils/loader/AutoRefreshLoader";
+import axios, { AxiosResponse } from "axios";
+import { computed } from "vue";
+import { NetworkSupplyResponse } from "@/schemas/HederaSchemas";
 
 export class HbarSupplyCache extends AutoRefreshLoader<NetworkSupplyResponse> {
-
     //
     // Public
     //
 
-    public readonly deltaSeconds: number|null
+    public readonly deltaSeconds: number | null;
 
-    public constructor(deltaSeconds: number|null = null) {
+    public constructor(deltaSeconds: number | null = null) {
         // Refresh every 10 min, forever
-        super(600000, AutoRefreshLoader.HUGE_COUNT)
-        this.deltaSeconds = deltaSeconds
+        super(600000, AutoRefreshLoader.HUGE_COUNT);
+        this.deltaSeconds = deltaSeconds;
     }
 
     public readonly hbarReleased = computed(() => {
-        const released = Number(this.response.value?.data.released_supply)
-        return released ? released / 100000000 : null
-    })
+        const released = Number(this.response.value?.data.released_supply);
+        return released ? released / 100000000 : null;
+    });
 
     public readonly hbarTotal = computed(() => {
-        const total = Number(this.response.value?.data.total_supply)
-        return total ? total / 100000000 : null
-    })
+        const total = Number(this.response.value?.data.total_supply);
+        return total ? total / 100000000 : null;
+    });
 
     //
     // EntityCache
     //
 
     protected load(): Promise<AxiosResponse<NetworkSupplyResponse>> {
-
         const params = {} as {
-            timestamp: string
-        }
+            timestamp: string;
+        };
         if (this.deltaSeconds) {
-            const now = new Date()
-            const target = new Date(now.getTime() - this.deltaSeconds * 1000)
-            params.timestamp = (target.getTime() / 1000).toString()
+            const now = new Date();
+            const target = new Date(now.getTime() - this.deltaSeconds * 1000);
+            params.timestamp = (target.getTime() / 1000).toString();
         }
 
-        return axios.get<NetworkSupplyResponse>("api/v1/network/supply", {params: params})
+        return axios.get<NetworkSupplyResponse>("api/v1/network/supply", {
+            params: params,
+        });
     }
 }

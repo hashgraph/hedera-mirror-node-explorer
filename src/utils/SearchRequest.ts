@@ -30,35 +30,39 @@ import {
     TopicMessagesResponse,
     Transaction,
     TransactionByIdResponse,
-    TransactionResponse
+    TransactionResponse,
 } from "@/schemas/HederaSchemas";
 import axios from "axios";
-import {TransactionID} from "@/utils/TransactionID";
-import {EntityID} from "@/utils/EntityID";
-import {aliasToBase32, base32ToAlias, byteToHex, hexToByte, paddedBytes} from "@/utils/B64Utils";
-import {nameServiceResolve} from "@/utils/NameService";
-import {Timestamp} from "@/utils/Timestamp";
+import { TransactionID } from "@/utils/TransactionID";
+import { EntityID } from "@/utils/EntityID";
+import {
+    aliasToBase32,
+    base32ToAlias,
+    byteToHex,
+    hexToByte,
+    paddedBytes,
+} from "@/utils/B64Utils";
+import { nameServiceResolve } from "@/utils/NameService";
+import { Timestamp } from "@/utils/Timestamp";
 
 export class SearchRequest {
+    public readonly searchedId: string;
+    public account: AccountInfo | null = null;
+    public accountsWithKey = Array<AccountInfo>();
+    public transactions = Array<Transaction>();
+    public tokenInfo: TokenInfo | null = null;
+    public topicMessages = Array<TopicMessage>();
+    public contract: ContractResponse | null = null;
+    public block: Block | null = null;
+    public ethereumAddress: string | null = null;
 
-    public readonly searchedId: string
-    public account: AccountInfo|null = null
-    public accountsWithKey = Array<AccountInfo>()
-    public transactions = Array<Transaction>()
-    public tokenInfo: TokenInfo|null = null
-    public topicMessages = Array<TopicMessage>()
-    public contract: ContractResponse|null = null
-    public block: Block|null = null
-    public ethereumAddress: string|null = null
-
-    private errorCount = 0
+    private errorCount = 0;
 
     constructor(searchedId: string) {
-        this.searchedId = searchedId
+        this.searchedId = searchedId;
     }
 
     async run(): Promise<void> {
-
         /*
 
         searchId syntax                      | Description      | Tentative searches
@@ -104,220 +108,247 @@ export class SearchRequest {
 
          */
 
+        const entityID = EntityID.parse(this.searchedId, true);
+        const transactionID = TransactionID.parse(this.searchedId);
+        const hexBytes = hexToByte(this.searchedId);
+        const alias =
+            base32ToAlias(this.searchedId) != null ? this.searchedId : null;
+        const timestamp = Timestamp.parse(this.searchedId);
+        const kabutoName = /\.[a-z|ℏ]+$/.test(this.searchedId)
+            ? this.searchedId
+            : null;
 
-        const entityID = EntityID.parse(this.searchedId, true)
-        const transactionID = TransactionID.parse(this.searchedId)
-        const hexBytes = hexToByte(this.searchedId)
-        const alias = base32ToAlias(this.searchedId) != null ? this.searchedId : null
-        const timestamp = Timestamp.parse(this.searchedId)
-        const kabutoName = /\.[a-z|ℏ]+$/.test(this.searchedId) ? this.searchedId : null
-
-        let promises: Promise<void>[]
+        let promises: Promise<void>[];
         if (entityID !== null) {
             promises = [
                 this.searchAccount(entityID),
                 this.searchContract(entityID),
                 this.searchToken(entityID),
-                this.searchTopic(entityID)
-            ]
+                this.searchTopic(entityID),
+            ];
         } else if (transactionID !== null) {
-            promises = [
-                this.searchTransaction(transactionID)
-            ]
+            promises = [this.searchTransaction(transactionID)];
         } else if (hexBytes !== null) {
-            switch(hexBytes.length) {
+            switch (hexBytes.length) {
                 case 48: // Hedera Hash for transaction or block
                     promises = [
                         this.searchTransaction(hexBytes),
-                        this.searchBlock(hexBytes)
-                    ]
+                        this.searchBlock(hexBytes),
+                    ];
                     break;
                 case 32: // EVM Hash for transaction or block, or account public key
                     promises = [
                         this.searchTransaction(hexBytes),
                         this.searchBlock(hexBytes),
-                        this.searchAccount(hexBytes)
-                    ]
+                        this.searchAccount(hexBytes),
+                    ];
                     break;
                 case 33: // Public key
-                    promises = [
-                        this.searchAccount(hexBytes)
-                    ]
+                    promises = [this.searchAccount(hexBytes)];
                     break;
                 case 20: // EVM Address for account, contract or token
                     promises = [
                         this.searchAccount(hexBytes),
                         this.searchContract(hexBytes),
                         this.searchToken(hexBytes),
-                    ]
-                    break
+                    ];
+                    break;
                 default:
-                    promises = [
-                        this.searchAccount(aliasToBase32(hexBytes))
-                    ]
-                    if (hexBytes.length < 20) { // Incomplete EVM Address
-                        let evmAddress = paddedBytes(hexBytes, 20)
+                    promises = [this.searchAccount(aliasToBase32(hexBytes))];
+                    if (hexBytes.length < 20) {
+                        // Incomplete EVM Address
+                        let evmAddress = paddedBytes(hexBytes, 20);
                         promises = promises.concat([
                             this.searchAccount(evmAddress),
                             this.searchContract(evmAddress),
                             this.searchToken(evmAddress),
-                        ])
+                        ]);
                     }
-                    break
+                    break;
             }
         } else if (alias !== null) {
-            promises = [
-                this.searchAccount(alias)
-            ]
+            promises = [this.searchAccount(alias)];
         } else if (timestamp !== null) {
-            promises = [
-                this.searchTransaction(timestamp)
-            ]
+            promises = [this.searchTransaction(timestamp)];
         } else if (kabutoName !== null) {
-            promises = [
-                this.searchKabuto(kabutoName)
-            ]
+            promises = [this.searchKabuto(kabutoName)];
         } else {
-            promises = []
+            promises = [];
         }
 
-        await Promise.allSettled(promises)
+        await Promise.allSettled(promises);
 
-        return Promise.resolve()
+        return Promise.resolve();
     }
-
 
     getErrorCount(): number {
-        return this.errorCount
+        return this.errorCount;
     }
-
 
     //
     // Private
     //
 
     private updateErrorCount(reason: unknown): void {
-        const notFound = axios.isAxiosError(reason) && reason.response?.status == 404
+        const notFound =
+            axios.isAxiosError(reason) && reason.response?.status == 404;
         if (!notFound) {
-            this.errorCount += 1
+            this.errorCount += 1;
         }
     }
 
-
-    private async searchAccount(accountParam: EntityID|Uint8Array|string): Promise<void> {
-
+    private async searchAccount(
+        accountParam: EntityID | Uint8Array | string,
+    ): Promise<void> {
         try {
-            if (accountParam instanceof Uint8Array && (accountParam.length == 32 || accountParam.length == 33)) {
+            if (
+                accountParam instanceof Uint8Array &&
+                (accountParam.length == 32 || accountParam.length == 33)
+            ) {
                 // accountParam is a public key
                 // https://testnet.mirrornode.hedera.com/api/v1/docs/#/accounts/listAccounts
-                const publicKey = byteToHex(accountParam)
-                const r = await axios.get<AccountsResponse>("api/v1/accounts/?account.publickey=" + publicKey + "&limit=2")
+                const publicKey = byteToHex(accountParam);
+                const r = await axios.get<AccountsResponse>(
+                    "api/v1/accounts/?account.publickey=" +
+                        publicKey +
+                        "&limit=2",
+                );
                 // limit=2 because we want to know if there are more than 1 account with this public key
-                this.accountsWithKey = r.data.accounts ?? []
+                this.accountsWithKey = r.data.accounts ?? [];
             } else {
-                let accountLoc: string
+                let accountLoc: string;
                 if (accountParam instanceof EntityID) {
-                    accountLoc = accountParam.toString()
+                    accountLoc = accountParam.toString();
                 } else if (accountParam instanceof Uint8Array) {
-                    accountLoc = byteToHex(accountParam)
+                    accountLoc = byteToHex(accountParam);
                 } else {
-                    accountLoc = accountParam
+                    accountLoc = accountParam;
                 }
                 // https://testnet.mirrornode.hedera.com/api/v1/docs/#/accounts/getAccountByIdOrAliasOrEvmAddress
-                const r = await axios.get<AccountBalanceTransactions>("api/v1/accounts/" + accountLoc)
-                this.account = r.data
+                const r = await axios.get<AccountBalanceTransactions>(
+                    "api/v1/accounts/" + accountLoc,
+                );
+                this.account = r.data;
             }
-        } catch(reason: unknown) {
-            this.updateErrorCount(reason)
+        } catch (reason: unknown) {
+            this.updateErrorCount(reason);
         }
 
-        return Promise.resolve()
+        return Promise.resolve();
     }
 
-    private async searchContract(contractParam: EntityID|Uint8Array): Promise<void> {
+    private async searchContract(
+        contractParam: EntityID | Uint8Array,
+    ): Promise<void> {
         try {
-            const l = contractParam instanceof EntityID ? contractParam.toString() : byteToHex(contractParam)
+            const l =
+                contractParam instanceof EntityID
+                    ? contractParam.toString()
+                    : byteToHex(contractParam);
             // https://testnet.mirrornode.hedera.com/api/v1/docs/#/contracts/getContractById
-            const r = await axios.get<ContractResponse>("api/v1/contracts/" + l)
-            this.contract = r.data
-        } catch(reason: unknown) {
-            this.updateErrorCount(reason)
+            const r = await axios.get<ContractResponse>(
+                "api/v1/contracts/" + l,
+            );
+            this.contract = r.data;
+        } catch (reason: unknown) {
+            this.updateErrorCount(reason);
         }
-        return Promise.resolve()
+        return Promise.resolve();
     }
 
-    private async searchToken(tokenParam: EntityID|Uint8Array): Promise<void> {
+    private async searchToken(
+        tokenParam: EntityID | Uint8Array,
+    ): Promise<void> {
         try {
-            const i = tokenParam instanceof EntityID ?
-                tokenParam : EntityID.fromAddress(byteToHex(tokenParam))
+            const i =
+                tokenParam instanceof EntityID
+                    ? tokenParam
+                    : EntityID.fromAddress(byteToHex(tokenParam));
             if (i !== null) {
                 // https://testnet.mirrornode.hedera.com/api/v1/docs/#/tokens/getTokenById
-                const r = await axios.get<TokenInfo>("api/v1/tokens/" + i)
-                this.tokenInfo = r.data
+                const r = await axios.get<TokenInfo>("api/v1/tokens/" + i);
+                this.tokenInfo = r.data;
             }
-        } catch(reason: unknown) {
-            this.updateErrorCount(reason)
+        } catch (reason: unknown) {
+            this.updateErrorCount(reason);
         }
-        return Promise.resolve()
+        return Promise.resolve();
     }
 
     private async searchTopic(topicID: EntityID): Promise<void> {
         try {
-            const params = { order: "desc", limit: "1" }
+            const params = { order: "desc", limit: "1" };
             // https://testnet.mirrornode.hedera.com/api/v1/docs/#/topics/listTopicMessagesById
-            const r = await axios.get<TopicMessagesResponse>("api/v1/topics/" + topicID.toString() + "/messages", {params})
-            this.topicMessages = r.data.messages ?? []
-        } catch(reason: unknown) {
-            this.updateErrorCount(reason)
+            const r = await axios.get<TopicMessagesResponse>(
+                "api/v1/topics/" + topicID.toString() + "/messages",
+                { params },
+            );
+            this.topicMessages = r.data.messages ?? [];
+        } catch (reason: unknown) {
+            this.updateErrorCount(reason);
         }
-        return Promise.resolve()
+        return Promise.resolve();
     }
 
-    private async searchTransaction(transactionParam: TransactionID|Timestamp|Uint8Array): Promise<void> {
-
+    private async searchTransaction(
+        transactionParam: TransactionID | Timestamp | Uint8Array,
+    ): Promise<void> {
         try {
             if (transactionParam instanceof TransactionID) {
-                const tid = transactionParam.toString(false)
+                const tid = transactionParam.toString(false);
                 // https://testnet.mirrornode.hedera.com/api/v1/docs/#/transactions/getTransactionById
-                const r = await axios.get<TransactionByIdResponse>("api/v1/transactions/" + tid)
-                this.transactions = r.data.transactions ?? []
+                const r = await axios.get<TransactionByIdResponse>(
+                    "api/v1/transactions/" + tid,
+                );
+                this.transactions = r.data.transactions ?? [];
             } else if (transactionParam instanceof Timestamp) {
                 // https://testnet.mirrornode.hedera.com/api/v1/docs/#/transactions/listTransactions
-                const t = transactionParam.toString()
-                const r = await axios.get<TransactionResponse>("api/v1/transactions?timestamp=" + t)
-                this.transactions = r.data.transactions ?? []
-            } else if (transactionParam.length == 48) { // Hedera hash
+                const t = transactionParam.toString();
+                const r = await axios.get<TransactionResponse>(
+                    "api/v1/transactions?timestamp=" + t,
+                );
+                this.transactions = r.data.transactions ?? [];
+            } else if (transactionParam.length == 48) {
+                // Hedera hash
                 // https://testnet.mirrornode.hedera.com/api/v1/docs/#/transactions/getTransactionById
-                const r = await axios.get<TransactionByIdResponse>("api/v1/transactions/" + byteToHex(transactionParam))
-                this.transactions = r.data.transactions ?? []
-            } else if (transactionParam.length == 32) { // EVM hash
-                const r1 = await axios.get<ContractResultDetails>("api/v1/contracts/results/" + byteToHex(transactionParam))
-                const r2 = await axios.get<TransactionResponse>("api/v1/transactions?timestamp=" + r1.data.timestamp)
-                this.transactions = r2.data.transactions ?? []
+                const r = await axios.get<TransactionByIdResponse>(
+                    "api/v1/transactions/" + byteToHex(transactionParam),
+                );
+                this.transactions = r.data.transactions ?? [];
+            } else if (transactionParam.length == 32) {
+                // EVM hash
+                const r1 = await axios.get<ContractResultDetails>(
+                    "api/v1/contracts/results/" + byteToHex(transactionParam),
+                );
+                const r2 = await axios.get<TransactionResponse>(
+                    "api/v1/transactions?timestamp=" + r1.data.timestamp,
+                );
+                this.transactions = r2.data.transactions ?? [];
             }
-
-        } catch(reason: unknown) {
-            this.updateErrorCount(reason)
+        } catch (reason: unknown) {
+            this.updateErrorCount(reason);
         }
     }
 
     private async searchBlock(blockHash: Uint8Array): Promise<void> {
         try {
             // https://testnet.mirrornode.hedera.com/api/v1/docs/#/blocks/getByHashOrNumber
-            const r = await axios.get<Block>("api/v1/blocks/" + byteToHex(blockHash))
-            this.block = r.data
-        } catch(reason: unknown) {
-            this.updateErrorCount(reason)
+            const r = await axios.get<Block>(
+                "api/v1/blocks/" + byteToHex(blockHash),
+            );
+            this.block = r.data;
+        } catch (reason: unknown) {
+            this.updateErrorCount(reason);
         }
-        return Promise.resolve()
+        return Promise.resolve();
     }
 
     private async searchKabuto(name: string): Promise<void> {
         try {
-            this.account = await nameServiceResolve(name)
-        } catch(reason: unknown) {
-            this.updateErrorCount(reason)
+            this.account = await nameServiceResolve(name);
+        } catch (reason: unknown) {
+            this.updateErrorCount(reason);
         }
-        return Promise.resolve()
+        return Promise.resolve();
     }
 }

@@ -23,49 +23,48 @@
 <!-- --------------------------------------------------------------------------------------------------------------- -->
 
 <template>
+    <o-table
+        :data="contracts"
+        :loading="loading"
+        paginated
+        backend-pagination
+        :total="total"
+        v-model:current-page="currentPage"
+        :per-page="perPage"
+        @page-change="onPageChange"
+        @cell-click="handleClick"
+        :hoverable="true"
+        :narrowed="narrowed"
+        :striped="true"
+        :mobile-breakpoint="ORUGA_MOBILE_BREAKPOINT"
+        aria-current-label="Current page"
+        aria-next-label="Next page"
+        aria-page-label="Page"
+        aria-previous-label="Previous page"
+        customRowKey="contract_id"
+    >
+        <o-table-column field="contract_id" label="Contract" v-slot="props">
+            <div class="is-numeric">
+                {{ props.row.contract_id }}
+            </div>
+        </o-table-column>
 
-  <o-table
-      :data="contracts"
-      :loading="loading"
-      paginated
-      backend-pagination
-      :total="total"
-      v-model:current-page="currentPage"
-      :per-page="perPage"
-      @page-change="onPageChange"
-      @cell-click="handleClick"
+        <o-table-column v-slot="props" field="created" label="Created">
+            <TimestampValue v-bind:timestamp="props.row.created_timestamp" />
+        </o-table-column>
 
-      :hoverable="true"
-      :narrowed="narrowed"
-      :striped="true"
-      :mobile-breakpoint="ORUGA_MOBILE_BREAKPOINT"
+        <o-table-column field="memo" label="Memo" v-slot="props">
+            <div class="should-wrap">
+                <BlobValue
+                    v-bind:blob-value="props.row.memo"
+                    v-bind:base64="true"
+                    v-bind:show-none="true"
+                />
+            </div>
+        </o-table-column>
+    </o-table>
 
-      aria-current-label="Current page"
-      aria-next-label="Next page"
-      aria-page-label="Page"
-      aria-previous-label="Previous page"
-      customRowKey="contract_id"
-  >
-    <o-table-column field="contract_id" label="Contract" v-slot="props">
-      <div class="is-numeric">
-        {{ props.row.contract_id }}
-      </div>
-    </o-table-column>
-
-    <o-table-column v-slot="props" field="created" label="Created">
-      <TimestampValue v-bind:timestamp="props.row.created_timestamp"/>
-    </o-table-column>
-
-    <o-table-column field="memo" label="Memo" v-slot="props">
-      <div class="should-wrap">
-        <BlobValue v-bind:blob-value="props.row.memo" v-bind:base64="true" v-bind:show-none="true"/>
-      </div>
-    </o-table-column>
-
-  </o-table>
-
-  <EmptyTable v-if="!contracts.length"/>
-
+    <EmptyTable v-if="!contracts.length" />
 </template>
 
 <!-- --------------------------------------------------------------------------------------------------------------- -->
@@ -73,66 +72,72 @@
 <!-- --------------------------------------------------------------------------------------------------------------- -->
 
 <script lang="ts">
-
-import {ComputedRef, defineComponent, inject, PropType, Ref} from 'vue';
-import {Contract} from "@/schemas/HederaSchemas";
-import {routeManager} from "@/router";
+import { ComputedRef, defineComponent, inject, PropType, Ref } from "vue";
+import { Contract } from "@/schemas/HederaSchemas";
+import { routeManager } from "@/router";
 import BlobValue from "@/components/values/BlobValue.vue";
 import TimestampValue from "@/components/values/TimestampValue.vue";
-import {ORUGA_MOBILE_BREAKPOINT} from '@/App.vue';
+import { ORUGA_MOBILE_BREAKPOINT } from "@/App.vue";
 import EmptyTable from "@/components/EmptyTable.vue";
-import {ContractTableController} from "@/components/contract/ContractTableController";
-
+import { ContractTableController } from "@/components/contract/ContractTableController";
 
 //
 // defineComponent
 //
 
 export default defineComponent({
-  name: 'ContractTable',
+    name: "ContractTable",
 
-  components: {EmptyTable, BlobValue, TimestampValue},
+    components: { EmptyTable, BlobValue, TimestampValue },
 
-  props: {
-    controller: {
-      type: Object as PropType<ContractTableController>,
-      required: true
+    props: {
+        controller: {
+            type: Object as PropType<ContractTableController>,
+            required: true,
+        },
+        narrowed: {
+            type: Boolean,
+            default: false,
+        },
     },
-    narrowed:{
-      type: Boolean,
-      default: false
-    }
-  },
 
-  setup(props) {
-    const isTouchDevice = inject('isTouchDevice', false)
-    const isMediumScreen = inject('isMediumScreen', true)
+    setup(props) {
+        const isTouchDevice = inject("isTouchDevice", false);
+        const isMediumScreen = inject("isMediumScreen", true);
 
-    const handleClick = (contract: Contract, c: unknown, i: number, ci: number, event: MouseEvent) => {
-      if (contract.contract_id) {
-        routeManager.routeToContract(contract.contract_id, event.ctrlKey || event.metaKey)
-      }
-    }
+        const handleClick = (
+            contract: Contract,
+            c: unknown,
+            i: number,
+            ci: number,
+            event: MouseEvent,
+        ) => {
+            if (contract.contract_id) {
+                routeManager.routeToContract(
+                    contract.contract_id,
+                    event.ctrlKey || event.metaKey,
+                );
+            }
+        };
 
-    return {
-      isTouchDevice,
-      isMediumScreen,
-      contracts: props.controller.rows as ComputedRef<Contract[]>,
-      loading: props.controller.loading as ComputedRef<boolean>,
-      total: props.controller.totalRowCount as ComputedRef<number>,
-      currentPage: props.controller.currentPage as Ref<number>,
-      onPageChange: props.controller.onPageChange,
-      perPage: props.controller.pageSize as Ref<number>,
-      handleClick,
-      ORUGA_MOBILE_BREAKPOINT,
-    }
-  }
+        return {
+            isTouchDevice,
+            isMediumScreen,
+            contracts: props.controller.rows as ComputedRef<Contract[]>,
+            loading: props.controller.loading as ComputedRef<boolean>,
+            total: props.controller.totalRowCount as ComputedRef<number>,
+            currentPage: props.controller.currentPage as Ref<number>,
+            onPageChange: props.controller.onPageChange,
+            perPage: props.controller.pageSize as Ref<number>,
+            handleClick,
+            ORUGA_MOBILE_BREAKPOINT,
+        };
+    },
 });
-
 </script>
 
 <!-- --------------------------------------------------------------------------------------------------------------- -->
 <!--                                                       STYLE                                                     -->
 <!-- --------------------------------------------------------------------------------------------------------------- -->
 
-<style/>
+<style />

@@ -33,9 +33,9 @@
 // https://on.cypress.io/configuration
 // ***********************************************************
 
-import './commands'
+import "./commands";
 
 // Alternatively you can use CommonJS syntax:
 // require('./commands')
 
-import '@cypress/code-coverage/support'
+import "@cypress/code-coverage/support";

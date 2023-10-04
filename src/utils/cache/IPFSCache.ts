@@ -18,15 +18,14 @@
  *
  */
 
-import {EntityCache} from "@/utils/cache/base/EntityCache";
+import { EntityCache } from "@/utils/cache/base/EntityCache";
 import axios from "axios";
 
-export class IPFSCache extends EntityCache<string, unknown|null> {
+export class IPFSCache extends EntityCache<string, unknown | null> {
+    public static readonly instance = new IPFSCache(10000);
 
-    public static readonly instance = new IPFSCache(10000)
-
-    private readonly timeout: number
-    public readonly privateAxios = axios.create()
+    private readonly timeout: number;
+    public readonly privateAxios = axios.create();
     // We use our private axios instance to be undetected from AxiosMonitor interceptors
 
     //
@@ -34,12 +33,12 @@ export class IPFSCache extends EntityCache<string, unknown|null> {
     //
 
     public constructor(timeout: number) {
-        super()
-        this.timeout = timeout
+        super();
+        this.timeout = timeout;
     }
 
     public static makeURL(hash: string): string {
-        return "https://ipfs.io/ipfs/" + hash
+        return "https://ipfs.io/ipfs/" + hash;
     }
 
     //
@@ -53,43 +52,48 @@ export class IPFSCache extends EntityCache<string, unknown|null> {
         This behavior looks better in IPFS context where it's pretty common to get transient timeout, 503 …
      */
 
-    public async lookup(hash: string, forceLoad = false): Promise<unknown|null> {
-        let result: unknown|null
+    public async lookup(
+        hash: string,
+        forceLoad = false,
+    ): Promise<unknown | null> {
+        let result: unknown | null;
 
-        const alreadyPresent = this.contains(hash, forceLoad)
+        const alreadyPresent = this.contains(hash, forceLoad);
         try {
-            result = await super.lookup(hash, forceLoad)
-        } catch(error) {
+            result = await super.lookup(hash, forceLoad);
+        } catch (error) {
             if (alreadyPresent) {
                 // hash has already been lookup and an error was detected => for IPFS, we forget and retry
-                this.forget(hash)
-                result = await super.lookup(hash, forceLoad)
+                this.forget(hash);
+                result = await super.lookup(hash, forceLoad);
             } else {
-                throw error
+                throw error;
             }
         }
 
-        return result
+        return result;
     }
 
     //
     // Cache
     //
 
-    protected async load(hash: string): Promise<unknown|null> {
-        let result: Promise<unknown|null>
+    protected async load(hash: string): Promise<unknown | null> {
+        let result: Promise<unknown | null>;
         try {
-            const options = { timeout: this.timeout }
-            const response = (await this.privateAxios.get(IPFSCache.makeURL(hash), options))
-            result = Promise.resolve(response.data)
+            const options = { timeout: this.timeout };
+            const response = await this.privateAxios.get(
+                IPFSCache.makeURL(hash),
+                options,
+            );
+            result = Promise.resolve(response.data);
         } catch (error) {
             if (axios.isAxiosError(error) && error.response?.status == 404) {
-                result = Promise.resolve(null)
+                result = Promise.resolve(null);
             } else {
-                throw error
+                throw error;
             }
         }
-        return result
+        return result;
     }
-
 }

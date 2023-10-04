@@ -23,13 +23,11 @@
 <!-- --------------------------------------------------------------------------------------------------------------- -->
 
 <template>
+    <span v-if="stringValue" class="should-wrap">{{ stringValue }}</span>
 
-  <span v-if="stringValue" class="should-wrap">{{ stringValue }}</span>
+    <span v-else-if="initialLoading" />
 
-  <span v-else-if="initialLoading"/>
-
-  <span v-else class="has-text-grey">None</span>
-
+    <span v-else class="has-text-grey">None</span>
 </template>
 
 <!-- --------------------------------------------------------------------------------------------------------------- -->
@@ -37,30 +35,28 @@
 <!-- --------------------------------------------------------------------------------------------------------------- -->
 
 <script lang="ts">
-
-import {defineComponent, inject, PropType, ref} from 'vue';
-import {initialLoadingKey} from "@/AppKeys";
+import { defineComponent, inject, PropType, ref } from "vue";
+import { initialLoadingKey } from "@/AppKeys";
 
 export default defineComponent({
-  name: 'StringValue',
+    name: "StringValue",
 
-  props: {
-    stringValue: {
-      type: String as PropType<string|null>,
-      default: null
+    props: {
+        stringValue: {
+            type: String as PropType<string | null>,
+            default: null,
+        },
     },
-  },
 
-  setup() {
-    const initialLoading = inject(initialLoadingKey, ref(false))
-    return { initialLoading }
-  }
+    setup() {
+        const initialLoading = inject(initialLoadingKey, ref(false));
+        return { initialLoading };
+    },
 });
-
 </script>
 
 <!-- --------------------------------------------------------------------------------------------------------------- -->
 <!--                                                       STYLE                                                     -->
 <!-- --------------------------------------------------------------------------------------------------------------- -->
 
-<style/>
+<style />

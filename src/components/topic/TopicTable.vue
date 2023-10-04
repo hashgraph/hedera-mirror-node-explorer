@@ -23,46 +23,47 @@
 <!-- --------------------------------------------------------------------------------------------------------------- -->
 
 <template>
+    <o-table
+        :data="transactions"
+        :loading="loading"
+        backend-pagination
+        :total="total"
+        v-model:current-page="currentPage"
+        :per-page="perPage"
+        @page-change="onPageChange"
+        @cell-click="handleClick"
+        :hoverable="true"
+        :paginated="!isTouchDevice"
+        :striped="true"
+        :mobile-breakpoint="ORUGA_MOBILE_BREAKPOINT"
+        aria-current-label="Current page"
+        aria-next-label="Next page"
+        aria-page-label="Page"
+        aria-previous-label="Previous page"
+        customRowKey="consensus_timestamp"
+    >
+        <o-table-column v-slot="props" field="topic_id" label="Topic">
+            <div class="is-numeric">
+                {{ props.row.entity_id }}
+            </div>
+        </o-table-column>
 
-  <o-table
-      :data="transactions"
-      :loading="loading"
-      backend-pagination
-      :total="total"
-      v-model:current-page="currentPage"
-      :per-page="perPage"
-      @page-change="onPageChange"
-      @cell-click="handleClick"
+        <o-table-column v-slot="props" field="created" label="Created">
+            <TimestampValue
+                v-bind:timestamp="props.row.valid_start_timestamp"
+            />
+        </o-table-column>
 
-      :hoverable="true"
-      :paginated="!isTouchDevice"
-      :striped="true"
-      :mobile-breakpoint="ORUGA_MOBILE_BREAKPOINT"
+        <o-table-column v-slot="props" field="memo" label="Memo">
+            <BlobValue
+                :blob-value="props.row.memo_base64"
+                :base64="true"
+                :show-none="true"
+            />
+        </o-table-column>
+    </o-table>
 
-      aria-current-label="Current page"
-      aria-next-label="Next page"
-      aria-page-label="Page"
-      aria-previous-label="Previous page"
-      customRowKey="consensus_timestamp"
-  >
-    <o-table-column v-slot="props" field="topic_id" label="Topic">
-      <div class="is-numeric">
-        {{ props.row.entity_id }}
-      </div>
-    </o-table-column>
-
-    <o-table-column v-slot="props" field="created" label="Created">
-      <TimestampValue v-bind:timestamp="props.row.valid_start_timestamp"/>
-    </o-table-column>
-
-    <o-table-column v-slot="props" field="memo" label="Memo">
-        <BlobValue :blob-value="props.row.memo_base64" :base64="true" :show-none="true"/>
-    </o-table-column>
-
-  </o-table>
-
-  <EmptyTable v-if="!transactions.length"/>
-
+    <EmptyTable v-if="!transactions.length" />
 </template>
 
 <!-- --------------------------------------------------------------------------------------------------------------- -->
@@ -70,59 +71,64 @@
 <!-- --------------------------------------------------------------------------------------------------------------- -->
 
 <script lang="ts">
-
-import {ComputedRef, defineComponent, inject, PropType, Ref} from 'vue';
-import {Transaction} from "@/schemas/HederaSchemas";
+import { ComputedRef, defineComponent, inject, PropType, Ref } from "vue";
+import { Transaction } from "@/schemas/HederaSchemas";
 import TimestampValue from "@/components/values/TimestampValue.vue";
-import {routeManager} from "@/router";
+import { routeManager } from "@/router";
 import BlobValue from "@/components/values/BlobValue.vue";
-import {ORUGA_MOBILE_BREAKPOINT} from '@/App.vue';
+import { ORUGA_MOBILE_BREAKPOINT } from "@/App.vue";
 import EmptyTable from "@/components/EmptyTable.vue";
-import {TransactionTableController} from "@/components/transaction/TransactionTableController";
+import { TransactionTableController } from "@/components/transaction/TransactionTableController";
 
 export default defineComponent({
-  name: 'TopicTable',
+    name: "TopicTable",
 
-  components: {EmptyTable, BlobValue, TimestampValue},
+    components: { EmptyTable, BlobValue, TimestampValue },
 
-  props: {
-    controller: {
-      type: Object as PropType<TransactionTableController>,
-      required: true
-    }
-  },
+    props: {
+        controller: {
+            type: Object as PropType<TransactionTableController>,
+            required: true,
+        },
+    },
 
-  setup(props) {
-    const isTouchDevice = inject('isTouchDevice', false)
+    setup(props) {
+        const isTouchDevice = inject("isTouchDevice", false);
 
-    const handleClick = (t: Transaction, c: unknown, i: number, ci: number, event: MouseEvent) => {
-      if (t.entity_id) {
-        routeManager.routeToTopic(t.entity_id, event.ctrlKey || event.metaKey)
-      }
-    }
+        const handleClick = (
+            t: Transaction,
+            c: unknown,
+            i: number,
+            ci: number,
+            event: MouseEvent,
+        ) => {
+            if (t.entity_id) {
+                routeManager.routeToTopic(
+                    t.entity_id,
+                    event.ctrlKey || event.metaKey,
+                );
+            }
+        };
 
-    return {
-      isTouchDevice,
-      transactions: props.controller.rows as ComputedRef<Transaction[]>,
-      loading: props.controller.loading as ComputedRef<boolean>,
-      total: props.controller.totalRowCount as ComputedRef<number>,
-      currentPage: props.controller.currentPage as Ref<number>,
-      onPageChange: props.controller.onPageChange,
-      perPage: props.controller.pageSize as Ref<number>,
-      handleClick,
+        return {
+            isTouchDevice,
+            transactions: props.controller.rows as ComputedRef<Transaction[]>,
+            loading: props.controller.loading as ComputedRef<boolean>,
+            total: props.controller.totalRowCount as ComputedRef<number>,
+            currentPage: props.controller.currentPage as Ref<number>,
+            onPageChange: props.controller.onPageChange,
+            perPage: props.controller.pageSize as Ref<number>,
+            handleClick,
 
-      // From App
-      ORUGA_MOBILE_BREAKPOINT
-    }
-  }
+            // From App
+            ORUGA_MOBILE_BREAKPOINT,
+        };
+    },
 });
-
 </script>
 
 <!-- --------------------------------------------------------------------------------------------------------------- -->
 <!--                                                       STYLE                                                     -->
 <!-- --------------------------------------------------------------------------------------------------------------- -->
 
-<style scoped>
-
-</style>
+<style scoped></style>

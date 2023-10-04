@@ -23,19 +23,32 @@
 <!-- --------------------------------------------------------------------------------------------------------------- -->
 
 <template>
-  <template v-if="isComplexKey">
-    <ComplexKeyValue :account-id="accountId" :details="details" :key-bytes="keyBytes" :show-none="showNone"/>
-  </template>
-  <template v-else>
-    <div v-if="details" class="h-is-property-text">
-      <span class="h-is-extra-text">{{ keyType }}</span>
-      <span class="is-family-monospace has-text-grey">{{ ':&#8239;' + keyBytes }}</span>
-    </div>
-    <div v-else>
-      <HexaValue :byte-string="keyBytes" :none-extra="noneExtra" :show-none="showNone"/>
-      <div v-if="keyBytes" class="h-is-extra-text h-is-text-size-3">{{ keyType }}</div>
-    </div>
-  </template>
+    <template v-if="isComplexKey">
+        <ComplexKeyValue
+            :account-id="accountId"
+            :details="details"
+            :key-bytes="keyBytes"
+            :show-none="showNone"
+        />
+    </template>
+    <template v-else>
+        <div v-if="details" class="h-is-property-text">
+            <span class="h-is-extra-text">{{ keyType }}</span>
+            <span class="is-family-monospace has-text-grey">{{
+                ":&#8239;" + keyBytes
+            }}</span>
+        </div>
+        <div v-else>
+            <HexaValue
+                :byte-string="keyBytes"
+                :none-extra="noneExtra"
+                :show-none="showNone"
+            />
+            <div v-if="keyBytes" class="h-is-extra-text h-is-text-size-3">{{
+                keyType
+            }}</div>
+        </div>
+    </template>
 </template>
 
 <!-- --------------------------------------------------------------------------------------------------------------- -->
@@ -43,53 +56,47 @@
 <!-- --------------------------------------------------------------------------------------------------------------- -->
 
 <script lang="ts">
-
-import {computed, defineComponent, PropType} from "vue";
+import { computed, defineComponent, PropType } from "vue";
 import HexaValue from "@/components/values/HexaValue.vue";
 import ComplexKeyValue from "@/components/values/ComplexKeyValue.vue";
 
 export default defineComponent({
-  name: "KeyValue",
-  components: {ComplexKeyValue, HexaValue},
-  props: {
-    keyBytes: {
-      type: String as PropType<string|null>,
-      default: null
+    name: "KeyValue",
+    components: { ComplexKeyValue, HexaValue },
+    props: {
+        keyBytes: {
+            type: String as PropType<string | null>,
+            default: null,
+        },
+        keyType: {
+            type: String as PropType<string | null>,
+            default: null,
+        },
+        accountId: {
+            type: String as PropType<string | null>,
+            default: null,
+        },
+        details: {
+            type: Boolean,
+            default: false,
+        },
+        showNone: {
+            type: Boolean,
+            default: false,
+        },
+        noneExtra: String,
     },
-    keyType: {
-      type: String as PropType<string|null>,
-      default: null
+    setup(props) {
+        const isComplexKey = computed(() => props.keyType == "ProtobufEncoded");
+        return {
+            isComplexKey,
+        };
     },
-    accountId: {
-      type: String as PropType<string|null>,
-      default: null
-    },
-    details: {
-      type: Boolean,
-      default: false
-    },
-    showNone: {
-      type: Boolean,
-      default: false
-    },
-    noneExtra: String
-  },
-  setup(props) {
-
-    const isComplexKey = computed(() => props.keyType == "ProtobufEncoded")
-    return {
-      isComplexKey,
-    }
-  }
-})
-
+});
 </script>
 
 <!-- --------------------------------------------------------------------------------------------------------------- -->
 <!--                                                      STYLE                                                      -->
 <!-- --------------------------------------------------------------------------------------------------------------- -->
 
-<style scoped>
-
-
-</style>
+<style scoped></style>

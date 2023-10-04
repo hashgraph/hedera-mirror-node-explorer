@@ -18,15 +18,15 @@
  *
  */
 
-import {describe, it, expect} from 'vitest'
-import {flushPromises, mount} from "@vue/test-utils"
+import { describe, it, expect } from "vitest";
+import { flushPromises, mount } from "@vue/test-utils";
 import router from "@/router";
 import axios from "axios";
-import {SAMPLE_NETWORK_NODES, SAMPLE_NETWORK_STAKE} from "../Mocks";
+import { SAMPLE_NETWORK_NODES, SAMPLE_NETWORK_STAKE } from "../Mocks";
 import DashboardCard from "@/components/DashboardCard.vue";
 import MockAdapter from "axios-mock-adapter";
 import Oruga from "@oruga-ui/oruga-next";
-import {HMSF} from "@/utils/HMSF";
+import { HMSF } from "@/utils/HMSF";
 import Nodes from "@/pages/Nodes.vue";
 import NodeTable from "@/components/node/NodeTable.vue";
 import NetworkDashboardItem from "@/components/node/NetworkDashboardItem.vue";
@@ -38,78 +38,91 @@ import NetworkDashboardItem from "@/components/node/NetworkDashboardItem.vue";
 
  */
 
-HMSF.forceUTC = true
+HMSF.forceUTC = true;
 
 describe("Nodes.vue", () => {
-
-    const tooltipStake = "Total amount of HBAR staked to this specific validator for consensus."
-    const tooltipPercentage = "Total amount of HBAR staked to this validator for consensus / total amount of HBAR staked to all validators for consensus."
-    const tooltipRewardRate = "Approximate annual reward rate based on the reward earned during the " +
-        "last 24h period."
+    const tooltipStake =
+        "Total amount of HBAR staked to this specific validator for consensus.";
+    const tooltipPercentage =
+        "Total amount of HBAR staked to this validator for consensus / total amount of HBAR staked to all validators for consensus.";
+    const tooltipRewardRate =
+        "Approximate annual reward rate based on the reward earned during the " +
+        "last 24h period.";
 
     it("should display the nodes pages containing the node table", async () => {
+        process.env = Object.assign(process.env, {
+            VITE_APP_ENABLE_STAKING: true,
+        });
 
-        process.env = Object.assign(process.env, { VITE_APP_ENABLE_STAKING: true });
-
-        await router.push("/") // To avoid "missing required param 'network'" error
+        await router.push("/"); // To avoid "missing required param 'network'" error
 
         const mock = new MockAdapter(axios);
 
-        const matcher1 = "/api/v1/network/nodes"
+        const matcher1 = "/api/v1/network/nodes";
         mock.onGet(matcher1).reply(200, SAMPLE_NETWORK_NODES);
 
-        const matcher2 = "/api/v1/network/stake"
+        const matcher2 = "/api/v1/network/stake";
         mock.onGet(matcher2).reply(200, SAMPLE_NETWORK_STAKE);
 
         const wrapper = mount(Nodes, {
             global: {
-                plugins: [router, Oruga]
-            }
+                plugins: [router, Oruga],
+            },
         });
 
-        await flushPromises()
+        await flushPromises();
         // console.log(wrapper.text())
 
-        const cards = wrapper.findAllComponents(DashboardCard)
-        expect(cards.length).toBe(2)
+        const cards = wrapper.findAllComponents(DashboardCard);
+        expect(cards.length).toBe(2);
 
-        expect(cards[0].text()).toMatch(RegExp("^Network"))
-        const items = cards[0].findAllComponents(NetworkDashboardItem)
-        expect(items.length).toBe(6)
-        expect(items[0].text()).toMatch(RegExp("Total Nodes3"))
-        expect(items[1].text()).toMatch(RegExp("Last Staked"))
-        expect(items[2].text()).toMatch(RegExp("Total Staked24,000,000HBAR"))
-        expect(items[3].text()).toMatch(RegExp("Next Staking Periodin"))
-        expect(items[4].text()).toMatch(RegExp("Last Period Reward1,095HBAR"))
-        expect(items[5].text()).toMatch(RegExp("Staking Period24h"))
+        expect(cards[0].text()).toMatch(RegExp("^Network"));
+        const items = cards[0].findAllComponents(NetworkDashboardItem);
+        expect(items.length).toBe(6);
+        expect(items[0].text()).toMatch(RegExp("Total Nodes3"));
+        expect(items[1].text()).toMatch(RegExp("Last Staked"));
+        expect(items[2].text()).toMatch(RegExp("Total Staked24,000,000HBAR"));
+        expect(items[3].text()).toMatch(RegExp("Next Staking Periodin"));
+        expect(items[4].text()).toMatch(RegExp("Last Period Reward1,095HBAR"));
+        expect(items[5].text()).toMatch(RegExp("Staking Period24h"));
 
-        expect(cards[1].text()).toMatch(RegExp("^Nodes"))
-        const table = cards[1].findComponent(NodeTable)
-        expect(table.exists()).toBe(true)
-        expect(table.get('thead').text()).toBe("Node Description Stake for Consensus % Stake Range Reward Rate")
-        expect(wrapper.get('tbody').text()).toBe(
+        expect(cards[1].text()).toMatch(RegExp("^Nodes"));
+        const table = cards[1].findComponent(NodeTable);
+        expect(table.exists()).toBe(true);
+        expect(table.get("thead").text()).toBe(
+            "Node Description Stake for Consensus % Stake Range Reward Rate",
+        );
+        expect(wrapper.get("tbody").text()).toBe(
             "0" +
-            "Hosted by Hedera | East Coast, USA" +
-            tooltipStake + "6,000,000" +
-            tooltipPercentage + "25%" +
-            "Rewarded:5,000,000Not Rewarded:1,000,000Min:1,000,000Max:30,000,000" +
-            tooltipRewardRate + "1%" +
-            "1" +
-            "Hosted by Hedera | East Coast, USA" +
-            tooltipStake + "9,000,000" +
-            tooltipPercentage + "37.5%" +
-            "Rewarded:7,000,000Not Rewarded:2,000,000Min:1,000,000Max:30,000,000" +
-            tooltipRewardRate + "2%" +
-            "2" +
-            "Hosted by Hedera | Central, USA" +
-            tooltipStake + "9,000,000" +
-            tooltipPercentage + "37.5%" +
-            "Rewarded:7,000,000Not Rewarded:2,000,000Min:1,000,000Max:30,000,000" +
-            tooltipRewardRate + "3%"
-        )
+                "Hosted by Hedera | East Coast, USA" +
+                tooltipStake +
+                "6,000,000" +
+                tooltipPercentage +
+                "25%" +
+                "Rewarded:5,000,000Not Rewarded:1,000,000Min:1,000,000Max:30,000,000" +
+                tooltipRewardRate +
+                "1%" +
+                "1" +
+                "Hosted by Hedera | East Coast, USA" +
+                tooltipStake +
+                "9,000,000" +
+                tooltipPercentage +
+                "37.5%" +
+                "Rewarded:7,000,000Not Rewarded:2,000,000Min:1,000,000Max:30,000,000" +
+                tooltipRewardRate +
+                "2%" +
+                "2" +
+                "Hosted by Hedera | Central, USA" +
+                tooltipStake +
+                "9,000,000" +
+                tooltipPercentage +
+                "37.5%" +
+                "Rewarded:7,000,000Not Rewarded:2,000,000Min:1,000,000Max:30,000,000" +
+                tooltipRewardRate +
+                "3%",
+        );
 
-        wrapper.unmount()
-        await flushPromises()
+        wrapper.unmount();
+        await flushPromises();
     });
-
 });

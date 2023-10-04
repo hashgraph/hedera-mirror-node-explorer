@@ -23,16 +23,17 @@
 <!-- --------------------------------------------------------------------------------------------------------------- -->
 
 <template>
+    <textarea
+        v-if="textValue"
+        v-model="textValue"
+        readonly
+        rows="4"
+        style="width: 100%; font-family: novamonoregular, monospace"
+    ></textarea>
 
-  <textarea v-if="textValue"
-            v-model="textValue"
-            readonly rows="4"
-            style="width:100%; font-family: novamonoregular,monospace"></textarea>
+    <span v-else-if="initialLoading" />
 
-  <span v-else-if="initialLoading"/>
-
-  <span v-else class="has-text-grey">None</span>
-
+    <span v-else class="has-text-grey">None</span>
 </template>
 
 <!-- --------------------------------------------------------------------------------------------------------------- -->
@@ -40,31 +41,32 @@
 <!-- --------------------------------------------------------------------------------------------------------------- -->
 
 <script lang="ts">
-
-import {defineComponent, inject, ref, watch} from 'vue';
-import {initialLoadingKey} from "@/AppKeys";
+import { defineComponent, inject, ref, watch } from "vue";
+import { initialLoadingKey } from "@/AppKeys";
 
 export default defineComponent({
-  name: 'ByteCodeValue',
+    name: "ByteCodeValue",
 
-  props: {
-    byteCode: String,
-  },
+    props: {
+        byteCode: String,
+    },
 
-  setup(props) {
-    const textValue = ref(props.byteCode)
-    watch(() => props.byteCode, () => {
-      textValue.value = props.byteCode
-    })
-    const initialLoading = inject(initialLoadingKey, ref(false))
-    return { textValue, initialLoading }
-  }
+    setup(props) {
+        const textValue = ref(props.byteCode);
+        watch(
+            () => props.byteCode,
+            () => {
+                textValue.value = props.byteCode;
+            },
+        );
+        const initialLoading = inject(initialLoadingKey, ref(false));
+        return { textValue, initialLoading };
+    },
 });
-
 </script>
 
 <!-- --------------------------------------------------------------------------------------------------------------- -->
 <!--                                                       STYLE                                                     -->
 <!-- --------------------------------------------------------------------------------------------------------------- -->
 
-<style/>
+<style />

@@ -23,13 +23,17 @@
 <!-- --------------------------------------------------------------------------------------------------------------- -->
 
 <template>
-  <o-tooltip :label="label"
-             :delay="delay"
-             multiline="multiline"
-             :position="position ?? 'auto'"
-             class="h-tooltip ml-1">
-    <span class="icon is-small h-is-extra-text"><i class="fas fa-info-circle"></i></span>
-  </o-tooltip>
+    <o-tooltip
+        :label="label"
+        :delay="delay"
+        multiline="multiline"
+        :position="position ?? 'auto'"
+        class="h-tooltip ml-1"
+    >
+        <span class="icon is-small h-is-extra-text"
+            ><i class="fas fa-info-circle"></i
+        ></span>
+    </o-tooltip>
 </template>
 
 <!-- --------------------------------------------------------------------------------------------------------------- -->
@@ -37,25 +41,23 @@
 <!-- --------------------------------------------------------------------------------------------------------------- -->
 
 <script lang="ts">
-
-import {defineComponent} from "vue";
+import { defineComponent } from "vue";
 
 export default defineComponent({
-  name: "InfoTooltip",
-  props: {
-    label: String,
-    delay: {
-      type: Number,
-      default: 200
+    name: "InfoTooltip",
+    props: {
+        label: String,
+        delay: {
+            type: Number,
+            default: 200,
+        },
+        position: String,
     },
-    position: String
-  },
-})
-
+});
 </script>
 
 <!-- --------------------------------------------------------------------------------------------------------------- -->
 <!--                                                      STYLE                                                      -->
 <!-- --------------------------------------------------------------------------------------------------------------- -->
 
-<style/>
+<style />

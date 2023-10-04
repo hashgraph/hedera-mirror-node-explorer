@@ -18,8 +18,8 @@
  *
  */
 
-export const loadingKey = Symbol()
-export const initialLoadingKey = Symbol()
-export const errorKey = Symbol()
-export const explanationKey = Symbol()
-export const suggestionKey = Symbol()
+export const loadingKey = Symbol();
+export const initialLoadingKey = Symbol();
+export const errorKey = Symbol();
+export const explanationKey = Symbol();
+export const suggestionKey = Symbol();

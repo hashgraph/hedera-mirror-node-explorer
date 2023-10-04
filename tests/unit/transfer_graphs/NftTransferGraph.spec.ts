@@ -18,71 +18,97 @@
  *
  */
 
-import {describe, test, expect} from 'vitest'
+import { describe, test, expect } from "vitest";
 import router from "@/router";
-import {flushPromises, mount} from "@vue/test-utils";
+import { flushPromises, mount } from "@vue/test-utils";
 import NftTransferGraph from "@/components/transfer_graphs/NftTransferGraph.vue";
-import {TransactionDetail} from "@/schemas/HederaSchemas";
-import {SAMPLE_NONFUNGIBLE, SAMPLE_NONFUNGIBLE_DUDE} from "../Mocks";
+import { TransactionDetail } from "@/schemas/HederaSchemas";
+import { SAMPLE_NONFUNGIBLE, SAMPLE_NONFUNGIBLE_DUDE } from "../Mocks";
 import MockAdapter from "axios-mock-adapter";
 import axios from "axios";
 
 const mock = new MockAdapter(axios);
-const matcher1 = "/api/v1/tokens/" + SAMPLE_NONFUNGIBLE.token_id
+const matcher1 = "/api/v1/tokens/" + SAMPLE_NONFUNGIBLE.token_id;
 mock.onGet(matcher1).reply(200, SAMPLE_NONFUNGIBLE);
-const matcher2 = "/api/v1/tokens/" + SAMPLE_NONFUNGIBLE_DUDE.token_id
+const matcher2 = "/api/v1/tokens/" + SAMPLE_NONFUNGIBLE_DUDE.token_id;
 mock.onGet(matcher2).reply(200, SAMPLE_NONFUNGIBLE_DUDE);
 
 describe("NftTransferGraph.vue", () => {
-
     test("Without transaction", async () => {
-
-        await router.push("/") // To avoid "missing required param 'network'" error
+        await router.push("/"); // To avoid "missing required param 'network'" error
 
         const wrapper = mount(NftTransferGraph, {
             global: {
-                plugins: [router]
+                plugins: [router],
             },
-            props: {
-            },
-        })
+            props: {},
+        });
 
-        await flushPromises()
+        await flushPromises();
 
         // console.log(wrapper.html())
         // console.log(wrapper.text())
 
-        expect(wrapper.text()).toBe("")
+        expect(wrapper.text()).toBe("");
 
-        wrapper.unmount()
-        await flushPromises()
-    })
+        wrapper.unmount();
+        await flushPromises();
+    });
 
     test("Two tokens, Transfer", async () => {
-
-        await router.push("/") // To avoid "missing required param 'network'" error
+        await router.push("/"); // To avoid "missing required param 'network'" error
 
         const transaction = {
-            "nft_transfers": [
-                { "sender_account_id": "0.0.101", "receiver_account_id": "0.0.100", "token_id": SAMPLE_NONFUNGIBLE.token_id, "serial_number": 604 },
-                { "sender_account_id": "0.0.101", "receiver_account_id": "0.0.100", "token_id": SAMPLE_NONFUNGIBLE.token_id, "serial_number": 603 },
-                { "sender_account_id": "0.0.101", "receiver_account_id": "0.0.100", "token_id": SAMPLE_NONFUNGIBLE_DUDE.token_id, "serial_number": 502 },
-                { "sender_account_id": "0.0.100", "receiver_account_id": "0.0.101", "token_id": SAMPLE_NONFUNGIBLE_DUDE.token_id, "serial_number": 501 },
-                { "sender_account_id": "0.0.100", "receiver_account_id": "0.0.101", "token_id": SAMPLE_NONFUNGIBLE.token_id, "serial_number": 602 },
-                { "sender_account_id": "0.0.100", "receiver_account_id": "0.0.101", "token_id": SAMPLE_NONFUNGIBLE.token_id, "serial_number": 601 },
-            ]
-        }
+            nft_transfers: [
+                {
+                    sender_account_id: "0.0.101",
+                    receiver_account_id: "0.0.100",
+                    token_id: SAMPLE_NONFUNGIBLE.token_id,
+                    serial_number: 604,
+                },
+                {
+                    sender_account_id: "0.0.101",
+                    receiver_account_id: "0.0.100",
+                    token_id: SAMPLE_NONFUNGIBLE.token_id,
+                    serial_number: 603,
+                },
+                {
+                    sender_account_id: "0.0.101",
+                    receiver_account_id: "0.0.100",
+                    token_id: SAMPLE_NONFUNGIBLE_DUDE.token_id,
+                    serial_number: 502,
+                },
+                {
+                    sender_account_id: "0.0.100",
+                    receiver_account_id: "0.0.101",
+                    token_id: SAMPLE_NONFUNGIBLE_DUDE.token_id,
+                    serial_number: 501,
+                },
+                {
+                    sender_account_id: "0.0.100",
+                    receiver_account_id: "0.0.101",
+                    token_id: SAMPLE_NONFUNGIBLE.token_id,
+                    serial_number: 602,
+                },
+                {
+                    sender_account_id: "0.0.100",
+                    receiver_account_id: "0.0.101",
+                    token_id: SAMPLE_NONFUNGIBLE.token_id,
+                    serial_number: 601,
+                },
+            ],
+        };
 
         const wrapper = mount(NftTransferGraph, {
             global: {
-                plugins: [router]
+                plugins: [router],
             },
             props: {
-                transaction: transaction as TransactionDetail
+                transaction: transaction as TransactionDetail,
             },
-        })
+        });
 
-        await flushPromises()
+        await flushPromises();
 
         // console.log(wrapper.html())
         // console.log(wrapper.text())
@@ -104,73 +130,77 @@ describe("NftTransferGraph.vue", () => {
 
         expect(wrapper.text()).toBe(
             "NFT TransfersAccountNon Fungible TokensAccount0.0.100\n\n" +
-            "0.0.748383Ħ Frens Kingdom #601 #602\n\n" +
-            "0.0.101Transfer0.0.100\n\n" +
-            "0.0.748384Ħ Frens Kingdom Dude #501\n\n" +
-            "0.0.101Transfer0.0.101\n\n" +
-            "0.0.748383Ħ Frens Kingdom #603 #604\n\n" +
-            "0.0.100Transfer0.0.101\n\n" +
-            "0.0.748384Ħ Frens Kingdom Dude #502\n\n" +
-            "0.0.100Transfer")
-        expect(wrapper.text()).toMatch(SAMPLE_NONFUNGIBLE.name)
-        expect(wrapper.text()).toMatch(SAMPLE_NONFUNGIBLE_DUDE.name)
+                "0.0.748383Ħ Frens Kingdom #601 #602\n\n" +
+                "0.0.101Transfer0.0.100\n\n" +
+                "0.0.748384Ħ Frens Kingdom Dude #501\n\n" +
+                "0.0.101Transfer0.0.101\n\n" +
+                "0.0.748383Ħ Frens Kingdom #603 #604\n\n" +
+                "0.0.100Transfer0.0.101\n\n" +
+                "0.0.748384Ħ Frens Kingdom Dude #502\n\n" +
+                "0.0.100Transfer",
+        );
+        expect(wrapper.text()).toMatch(SAMPLE_NONFUNGIBLE.name);
+        expect(wrapper.text()).toMatch(SAMPLE_NONFUNGIBLE_DUDE.name);
 
-        wrapper.unmount()
+        wrapper.unmount();
 
-        await router.push("/") // To avoid "missing required param 'network'" error
+        await router.push("/"); // To avoid "missing required param 'network'" error
 
         const wrapper2 = mount(NftTransferGraph, {
             global: {
                 plugins: [router],
                 provide: {
-                    isSmallScreen: false
-                }
+                    isSmallScreen: false,
+                },
             },
             props: {
-                transaction: transaction as TransactionDetail
+                transaction: transaction as TransactionDetail,
             },
-        })
+        });
 
-        await flushPromises()
+        await flushPromises();
 
         expect(wrapper2.text()).toBe(
             "NFT TransfersAccountNon Fungible TokensAccount0.0.100\n\n" +
-            "0.0.748383Ħ Frens Kingdom #601 #602\n\n" +
-            "0.0.1010.0.100\n\n" +
-            "0.0.748384Ħ Frens Kingdom Dude #501\n\n" +
-            "0.0.1010.0.101\n\n" +
-            "0.0.748383Ħ Frens Kingdom #603 #604\n\n" +
-            "0.0.1000.0.101\n\n" +
-            "0.0.748384Ħ Frens Kingdom Dude #502\n\n" +
-            "0.0.100")
-        expect(wrapper2.text()).toMatch(SAMPLE_NONFUNGIBLE.name)
-        expect(wrapper2.text()).toMatch(SAMPLE_NONFUNGIBLE_DUDE.name)
+                "0.0.748383Ħ Frens Kingdom #601 #602\n\n" +
+                "0.0.1010.0.100\n\n" +
+                "0.0.748384Ħ Frens Kingdom Dude #501\n\n" +
+                "0.0.1010.0.101\n\n" +
+                "0.0.748383Ħ Frens Kingdom #603 #604\n\n" +
+                "0.0.1000.0.101\n\n" +
+                "0.0.748384Ħ Frens Kingdom Dude #502\n\n" +
+                "0.0.100",
+        );
+        expect(wrapper2.text()).toMatch(SAMPLE_NONFUNGIBLE.name);
+        expect(wrapper2.text()).toMatch(SAMPLE_NONFUNGIBLE_DUDE.name);
 
-        wrapper2.unmount()
+        wrapper2.unmount();
+    });
 
-
-    })
-
-    test("Mint, one token, one destination", async() => {
-
-        await router.push("/") // To avoid "missing required param 'network'" error
+    test("Mint, one token, one destination", async () => {
+        await router.push("/"); // To avoid "missing required param 'network'" error
 
         const transaction = {
-            "nft_transfers": [
-                { "sender_account_id": null, "receiver_account_id": "0.0.100", "token_id": SAMPLE_NONFUNGIBLE.token_id, "serial_number": 604 },
-            ]
-        }
+            nft_transfers: [
+                {
+                    sender_account_id: null,
+                    receiver_account_id: "0.0.100",
+                    token_id: SAMPLE_NONFUNGIBLE.token_id,
+                    serial_number: 604,
+                },
+            ],
+        };
 
         const wrapper = mount(NftTransferGraph, {
             global: {
-                plugins: [router]
+                plugins: [router],
             },
             props: {
-                transaction: transaction as TransactionDetail
+                transaction: transaction as TransactionDetail,
             },
-        })
+        });
 
-        await flushPromises()
+        await flushPromises();
 
         // console.log(wrapper.html())
         // console.log(wrapper.text())
@@ -183,35 +213,45 @@ describe("NftTransferGraph.vue", () => {
 
         expect(wrapper.text()).toBe(
             "NFT TransfersAccountNon Fungible TokensAccountMINT\n\n" +
-            "0.0.748383Ħ Frens Kingdom #604\n\n" +
-            "0.0.100")
-        expect(wrapper.text()).toMatch(SAMPLE_NONFUNGIBLE.name)
+                "0.0.748383Ħ Frens Kingdom #604\n\n" +
+                "0.0.100",
+        );
+        expect(wrapper.text()).toMatch(SAMPLE_NONFUNGIBLE.name);
 
-        wrapper.unmount()
-        await flushPromises()
-    })
+        wrapper.unmount();
+        await flushPromises();
+    });
 
-    test("Mint, one token, two destinations", async() => {
-
-        await router.push("/") // To avoid "missing required param 'network'" error
+    test("Mint, one token, two destinations", async () => {
+        await router.push("/"); // To avoid "missing required param 'network'" error
 
         const transaction = {
-            "nft_transfers": [
-                { "sender_account_id": null, "receiver_account_id": "0.0.100", "token_id": SAMPLE_NONFUNGIBLE.token_id, "serial_number": 604 },
-                { "sender_account_id": null, "receiver_account_id": "0.0.101", "token_id": SAMPLE_NONFUNGIBLE.token_id, "serial_number": 601 },
-            ]
-        }
+            nft_transfers: [
+                {
+                    sender_account_id: null,
+                    receiver_account_id: "0.0.100",
+                    token_id: SAMPLE_NONFUNGIBLE.token_id,
+                    serial_number: 604,
+                },
+                {
+                    sender_account_id: null,
+                    receiver_account_id: "0.0.101",
+                    token_id: SAMPLE_NONFUNGIBLE.token_id,
+                    serial_number: 601,
+                },
+            ],
+        };
 
         const wrapper = mount(NftTransferGraph, {
             global: {
-                plugins: [router]
+                plugins: [router],
             },
             props: {
-                transaction: transaction as TransactionDetail
+                transaction: transaction as TransactionDetail,
             },
-        })
+        });
 
-        await flushPromises()
+        await flushPromises();
 
         // console.log(wrapper.html())
         // console.log(wrapper.text())
@@ -226,36 +266,41 @@ describe("NftTransferGraph.vue", () => {
 
         expect(wrapper.text()).toBe(
             "NFT TransfersAccountNon Fungible TokensAccountMINT\n\n" +
-            "0.0.748383Ħ Frens Kingdom #604\n\n" +
-            "0.0.100MINT\n\n" +
-            "0.0.748383Ħ Frens Kingdom #601\n\n" +
-            "0.0.101")
-        expect(wrapper.text()).toMatch(SAMPLE_NONFUNGIBLE.name)
+                "0.0.748383Ħ Frens Kingdom #604\n\n" +
+                "0.0.100MINT\n\n" +
+                "0.0.748383Ħ Frens Kingdom #601\n\n" +
+                "0.0.101",
+        );
+        expect(wrapper.text()).toMatch(SAMPLE_NONFUNGIBLE.name);
 
-        wrapper.unmount()
-        await flushPromises()
-    })
+        wrapper.unmount();
+        await flushPromises();
+    });
 
-    test("Burn, one token, one source", async() => {
-
-        await router.push("/") // To avoid "missing required param 'network'" error
+    test("Burn, one token, one source", async () => {
+        await router.push("/"); // To avoid "missing required param 'network'" error
 
         const transaction = {
-            "nft_transfers": [
-                { "sender_account_id": "0.0.100", "receiver_account_id": null, "token_id": SAMPLE_NONFUNGIBLE.token_id, "serial_number": 604 },
-            ]
-        }
+            nft_transfers: [
+                {
+                    sender_account_id: "0.0.100",
+                    receiver_account_id: null,
+                    token_id: SAMPLE_NONFUNGIBLE.token_id,
+                    serial_number: 604,
+                },
+            ],
+        };
 
         const wrapper = mount(NftTransferGraph, {
             global: {
-                plugins: [router]
+                plugins: [router],
             },
             props: {
-                transaction: transaction as TransactionDetail
+                transaction: transaction as TransactionDetail,
             },
-        })
+        });
 
-        await flushPromises()
+        await flushPromises();
 
         // console.log(wrapper.html())
         // console.log(wrapper.text())
@@ -268,35 +313,45 @@ describe("NftTransferGraph.vue", () => {
 
         expect(wrapper.text()).toBe(
             "NFT TransfersAccountNon Fungible TokensAccount0.0.100\n\n" +
-            "0.0.748383Ħ Frens Kingdom #604\n\n" +
-            "BURN")
-        expect(wrapper.text()).toMatch(SAMPLE_NONFUNGIBLE.name)
+                "0.0.748383Ħ Frens Kingdom #604\n\n" +
+                "BURN",
+        );
+        expect(wrapper.text()).toMatch(SAMPLE_NONFUNGIBLE.name);
 
-        wrapper.unmount()
-        await flushPromises()
-    })
+        wrapper.unmount();
+        await flushPromises();
+    });
 
-    test("Burn, one token, two sources", async() => {
-
-        await router.push("/") // To avoid "missing required param 'network'" error
+    test("Burn, one token, two sources", async () => {
+        await router.push("/"); // To avoid "missing required param 'network'" error
 
         const transaction = {
-            "nft_transfers": [
-                { "sender_account_id": "0.0.100", "receiver_account_id": null, "token_id": SAMPLE_NONFUNGIBLE.token_id, "serial_number": 604 },
-                { "sender_account_id": "0.0.101", "receiver_account_id": null, "token_id": SAMPLE_NONFUNGIBLE.token_id, "serial_number": 601 },
-            ]
-        }
+            nft_transfers: [
+                {
+                    sender_account_id: "0.0.100",
+                    receiver_account_id: null,
+                    token_id: SAMPLE_NONFUNGIBLE.token_id,
+                    serial_number: 604,
+                },
+                {
+                    sender_account_id: "0.0.101",
+                    receiver_account_id: null,
+                    token_id: SAMPLE_NONFUNGIBLE.token_id,
+                    serial_number: 601,
+                },
+            ],
+        };
 
         const wrapper = mount(NftTransferGraph, {
             global: {
-                plugins: [router]
+                plugins: [router],
             },
             props: {
-                transaction: transaction as TransactionDetail
+                transaction: transaction as TransactionDetail,
             },
-        })
+        });
 
-        await flushPromises()
+        await flushPromises();
 
         // console.log(wrapper.html())
         // console.log(wrapper.text())
@@ -311,14 +366,14 @@ describe("NftTransferGraph.vue", () => {
 
         expect(wrapper.text()).toBe(
             "NFT TransfersAccountNon Fungible TokensAccount0.0.100\n\n" +
-            "0.0.748383Ħ Frens Kingdom #604\n\n" +
-            "BURN0.0.101\n\n" +
-            "0.0.748383Ħ Frens Kingdom #601\n\n" +
-            "BURN")
-        expect(wrapper.text()).toMatch(SAMPLE_NONFUNGIBLE.name)
+                "0.0.748383Ħ Frens Kingdom #604\n\n" +
+                "BURN0.0.101\n\n" +
+                "0.0.748383Ħ Frens Kingdom #601\n\n" +
+                "BURN",
+        );
+        expect(wrapper.text()).toMatch(SAMPLE_NONFUNGIBLE.name);
 
-        wrapper.unmount()
-        await flushPromises()
-    })
-})
-
+        wrapper.unmount();
+        await flushPromises();
+    });
+});

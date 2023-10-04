@@ -23,50 +23,53 @@
 <!-- --------------------------------------------------------------------------------------------------------------- -->
 
 <template>
-
     <template v-if="errorSignature">
-
         <div v-if="error">
-
             <div class="h-is-tertiary-text my-2">Error</div>
 
-            <Property :custom-nb-col-class="customNbColClass" id="errorFunction">
+            <Property
+                :custom-nb-col-class="customNbColClass"
+                id="errorFunction"
+            >
                 <template v-slot:name>Signature</template>
                 <template v-slot:value>
-                    <HexaValue :byte-string="errorHash" :show-none="true"/>
-                    <div class="h-is-extra-text h-is-text-size-3 should-wrap">{{ errorSignature }}</div>
+                    <HexaValue :byte-string="errorHash" :show-none="true" />
+                    <div class="h-is-extra-text h-is-text-size-3 should-wrap">{{
+                        errorSignature
+                    }}</div>
                 </template>
-            </Property>
-
-        </div><template v-else>
-
-            <Property :custom-nb-col-class="customNbColClass" id="functionInput">
+            </Property> </div
+        ><template v-else>
+            <Property
+                :custom-nb-col-class="customNbColClass"
+                id="functionInput"
+            >
                 <template v-slot:name>Error Message</template>
                 <template v-slot:value>
-                    <HexaValue :show-none="true"/>
+                    <HexaValue :show-none="true" />
                 </template>
             </Property>
-
-        </template>
-
-    </template><template v-else>
-
+        </template> </template
+    ><template v-else>
         <Property :custom-nb-col-class="customNbColClass" id="errorMessage">
             <template v-slot:name>Error Message</template>
             <template v-slot:value>
-                <StringValue v-if="decodedError" :string-value="decodedError"/>
+                <StringValue v-if="decodedError" :string-value="decodedError" />
                 <template v-else>
-                    <HexaValue :byte-string="error" :show-none="true"/>
-                    <div v-if="errorDecodingStatus" class="h-is-extra-text h-is-text-size-3">
-                        <span class="icon fas fa-exclamation-circle has-text-grey is-small mt-1 mr-1"/>
+                    <HexaValue :byte-string="error" :show-none="true" />
+                    <div
+                        v-if="errorDecodingStatus"
+                        class="h-is-extra-text h-is-text-size-3"
+                    >
+                        <span
+                            class="icon fas fa-exclamation-circle has-text-grey is-small mt-1 mr-1"
+                        />
                         <span>{{ errorDecodingStatus }}</span>
                     </div>
                 </template>
             </template>
         </Property>
-
     </template>
-
 </template>
 
 <!-- --------------------------------------------------------------------------------------------------------------- -->
@@ -74,35 +77,38 @@
 <!-- --------------------------------------------------------------------------------------------------------------- -->
 
 <script lang="ts">
-
-import {computed, defineComponent, inject, PropType, ref} from 'vue';
-import {initialLoadingKey} from "@/AppKeys";
+import { computed, defineComponent, inject, PropType, ref } from "vue";
+import { initialLoadingKey } from "@/AppKeys";
 import HexaValue from "@/components/values/HexaValue.vue";
-import {FunctionCallAnalyzer} from "@/utils/analyzer/FunctionCallAnalyzer";
+import { FunctionCallAnalyzer } from "@/utils/analyzer/FunctionCallAnalyzer";
 import Property from "@/components/Property.vue";
-import {decodeSolidityErrorMessage} from "@/schemas/HederaUtils";
+import { decodeSolidityErrorMessage } from "@/schemas/HederaUtils";
 import StringValue from "@/components/values/StringValue.vue";
 
 export default defineComponent({
-    name: 'FunctionError',
-    components: {StringValue, Property, HexaValue},
+    name: "FunctionError",
+    components: { StringValue, Property, HexaValue },
     props: {
         analyzer: {
             type: Object as PropType<FunctionCallAnalyzer>,
-            required: true
+            required: true,
         },
         customNbColClass: String,
         showNone: {
             type: Boolean,
-            default: false
-        }
+            default: false,
+        },
     },
 
     setup(props) {
-
-        const initialLoading = inject(initialLoadingKey, ref(false))
-        const decodedError = computed( () =>
-            props.analyzer.normalizedError.value != null ? decodeSolidityErrorMessage(props.analyzer.normalizedError.value) : null)
+        const initialLoading = inject(initialLoadingKey, ref(false));
+        const decodedError = computed(() =>
+            props.analyzer.normalizedError.value != null
+                ? decodeSolidityErrorMessage(
+                      props.analyzer.normalizedError.value,
+                  )
+                : null,
+        );
 
         return {
             error: props.analyzer.normalizedError,
@@ -111,15 +117,14 @@ export default defineComponent({
             errorInputs: props.analyzer.errorInputs,
             errorDecodingStatus: props.analyzer.errorDecodingStatus,
             decodedError,
-            initialLoading
-        }
-    }
+            initialLoading,
+        };
+    },
 });
-
 </script>
 
 <!-- --------------------------------------------------------------------------------------------------------------- -->
 <!--                                                       STYLE                                                     -->
 <!-- --------------------------------------------------------------------------------------------------------------- -->
 
-<style/>
+<style />

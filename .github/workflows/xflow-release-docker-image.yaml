@@ -1,170 +1,170 @@
 name: "ZXF: Release Docker Image"
 on:
-  push:
-    tags:
-      - 'release/v[0-9]+.[0-9]+.[0-9]+-?*'
-      - 'v[0-9]+.[0-9]+.[0-9]+-?*'
-  workflow_dispatch:
-    inputs:
-      new-version:
-        description: "New Release Version (ie. 0.30.0):"
-        type: string
-        required: true
+    push:
+        tags:
+            - "release/v[0-9]+.[0-9]+.[0-9]+-?*"
+            - "v[0-9]+.[0-9]+.[0-9]+-?*"
+    workflow_dispatch:
+        inputs:
+            new-version:
+                description: "New Release Version (ie. 0.30.0):"
+                type: string
+                required: true
 
 defaults:
-  run:
-    shell: bash
+    run:
+        shell: bash
 
 permissions:
-  id-token: write
-  contents: read
+    id-token: write
+    contents: read
 
 env:
-  LC_ALL: C.UTF-8
+    LC_ALL: C.UTF-8
 
 jobs:
-  prepare-release:
-    name: Release / Prepare
-    runs-on: [ self-hosted, Linux, explorer, standard, ephemeral ]
-    outputs:
-      version: ${{ steps.extract.outputs.version }}
-    steps:
-      - name: Install Semantic Version Tools
-        run: |
-          echo "::group::Download SemVer Binary"
-          sudo curl -L -o /usr/local/bin/semver https://raw.githubusercontent.com/fsaintjacques/semver-tool/master/src/semver
-          echo "::endgroup::"
-          echo "::group::Change SemVer Binary Permissions"
-          sudo chmod -v +x /usr/local/bin/semver
-          echo "::endgroup::"
-          echo "::group::Show SemVer Binary Version Info"
-          semver --version
-          echo "::endgroup::"
+    prepare-release:
+        name: Release / Prepare
+        runs-on: [self-hosted, Linux, explorer, standard, ephemeral]
+        outputs:
+            version: ${{ steps.extract.outputs.version }}
+        steps:
+            - name: Install Semantic Version Tools
+              run: |
+                  echo "::group::Download SemVer Binary"
+                  sudo curl -L -o /usr/local/bin/semver https://raw.githubusercontent.com/fsaintjacques/semver-tool/master/src/semver
+                  echo "::endgroup::"
+                  echo "::group::Change SemVer Binary Permissions"
+                  sudo chmod -v +x /usr/local/bin/semver
+                  echo "::endgroup::"
+                  echo "::group::Show SemVer Binary Version Info"
+                  semver --version
+                  echo "::endgroup::"
 
-      - name: Validate Version
-        run: |
-          VALID_VERSION="$(semver validate "${{ inputs.new-version || github.ref_name }}")"
-          
-          if [[ "${VALID_VERSION}" != "valid" ]]; then 
-            echo "::error title=Version Error::The supplied new-version parameter of '${{ inputs.new_version || github.ref_name }}' is invalid and does not conform to the semantic versioning specifications."
-            exit 2
-          fi
+            - name: Validate Version
+              run: |
+                  VALID_VERSION="$(semver validate "${{ inputs.new-version || github.ref_name }}")"
 
-      - name: Extract Version
-        id: extract
-        run: |
-          RELEASE_VERSION="$(semver get release "${{ inputs.new-version || github.ref_name }}")"
-          PRERELEASE_VERSION="$(semver get prerel "${{ inputs.new-version || github.ref_name }}")"
+                  if [[ "${VALID_VERSION}" != "valid" ]]; then 
+                    echo "::error title=Version Error::The supplied new-version parameter of '${{ inputs.new_version || github.ref_name }}' is invalid and does not conform to the semantic versioning specifications."
+                    exit 2
+                  fi
 
-          FINAL_VERSION="${RELEASE_VERSION}"
-          [[ -n "${PRERELEASE_VERSION}" ]] && FINAL_VERSION="${RELEASE_VERSION}-${PRERELEASE_VERSION}"
+            - name: Extract Version
+              id: extract
+              run: |
+                  RELEASE_VERSION="$(semver get release "${{ inputs.new-version || github.ref_name }}")"
+                  PRERELEASE_VERSION="$(semver get prerel "${{ inputs.new-version || github.ref_name }}")"
 
-          echo "version=${FINAL_VERSION}" >>"${GITHUB_OUTPUT}"
+                  FINAL_VERSION="${RELEASE_VERSION}"
+                  [[ -n "${PRERELEASE_VERSION}" ]] && FINAL_VERSION="${RELEASE_VERSION}-${PRERELEASE_VERSION}"
 
-  deploy-docker-image:
-    name: Deploy / Docker / Image
-    runs-on: [ self-hosted, Linux, explorer, standard, ephemeral ]
-    needs:
-      - prepare-release
-    steps:
-      - name: Checkout Code
-        uses: actions/checkout@v3
+                  echo "version=${FINAL_VERSION}" >>"${GITHUB_OUTPUT}"
 
-      - name: Install JSON Tools
-        run: |         
-          if ! command -v jq >/dev/null 2>&1; then
-            echo "::group::Setup JQ Command"
-            sudo apt update
-            sudo apt install -y jq
-            echo "::endgroup::"
-          fi
-          
-          JQ_VERSION="$(jq --version)"
-          if [[ "${JQ_VERSION}" != "jq-1.6" ]]; then
-            echo "::group::Updating JQ Version"
-            sudo apt update
-            sudo apt upgrade -y jq
-            echo "::endgroup::"
-          fi
-          
-          if ! command -v tee >/dev/null 2>&1; then
-            echo "::group::Setup Tee Command"
-            sudo apt update
-            sudo apt install -y coreutils
-            echo "::endgroup::"
-          fi
-          
-          echo "::group::Show JQ Version"
-          jq --version
-          echo "::endgroup::"
+    deploy-docker-image:
+        name: Deploy / Docker / Image
+        runs-on: [self-hosted, Linux, explorer, standard, ephemeral]
+        needs:
+            - prepare-release
+        steps:
+            - name: Checkout Code
+              uses: actions/checkout@v3
 
-      - name: Update Application Version
-        run: |
-          cat package.json | \
-            jq --arg version "${{ needs.prepare-release.outputs.version }}" '.version = $version' | \
-            tee package.json
+            - name: Install JSON Tools
+              run: |
+                  if ! command -v jq >/dev/null 2>&1; then
+                    echo "::group::Setup JQ Command"
+                    sudo apt update
+                    sudo apt install -y jq
+                    echo "::endgroup::"
+                  fi
 
-      - name: Setup NodeJS
-        uses: actions/setup-node@v3
-        with:
-          node-version: 19
-          cache: npm
+                  JQ_VERSION="$(jq --version)"
+                  if [[ "${JQ_VERSION}" != "jq-1.6" ]]; then
+                    echo "::group::Updating JQ Version"
+                    sudo apt update
+                    sudo apt upgrade -y jq
+                    echo "::endgroup::"
+                  fi
 
-      - name: Authenticate to Google Cloud
-        id: google-auth
-        uses: google-github-actions/auth@v1
-        with:
-          workload_identity_provider: 'projects/101730247931/locations/global/workloadIdentityPools/hedera-registry-pool/providers/hedera-registry-gh-actions'
-          service_account: 'swirlds-automation@hedera-registry.iam.gserviceaccount.com'
-          token_format: access_token
+                  if ! command -v tee >/dev/null 2>&1; then
+                    echo "::group::Setup Tee Command"
+                    sudo apt update
+                    sudo apt install -y coreutils
+                    echo "::endgroup::"
+                  fi
 
-      - name: Setup Docker Buildx QEMU
-        uses: docker/setup-qemu-action@v2
+                  echo "::group::Show JQ Version"
+                  jq --version
+                  echo "::endgroup::"
 
-      - name: Set up Docker Buildx
-        uses: docker/setup-buildx-action@v2
+            - name: Update Application Version
+              run: |
+                  cat package.json | \
+                    jq --arg version "${{ needs.prepare-release.outputs.version }}" '.version = $version' | \
+                    tee package.json
 
-      - name: Authorize Docker
-        uses: docker/login-action@v2
-        with:
-          registry: gcr.io
-          username: oauth2accesstoken
-          password: ${{ steps.google-auth.outputs.access_token }}
+            - name: Setup NodeJS
+              uses: actions/setup-node@v3
+              with:
+                  node-version: 19
+                  cache: npm
 
-      - name: Install Dependencies
-        run: npm ci
+            - name: Authenticate to Google Cloud
+              id: google-auth
+              uses: google-github-actions/auth@v1
+              with:
+                  workload_identity_provider: "projects/101730247931/locations/global/workloadIdentityPools/hedera-registry-pool/providers/hedera-registry-gh-actions"
+                  service_account: "swirlds-automation@hedera-registry.iam.gserviceaccount.com"
+                  token_format: access_token
 
-      - name: Compile Code
-        run: npm run build
+            - name: Setup Docker Buildx QEMU
+              uses: docker/setup-qemu-action@v2
 
-      - name: Build and Push Image
-        uses: docker/build-push-action@v3
-        with:
-          push: true
-          file: Dockerfile
-          context: .
-          platforms: |
-            linux/arm64
-            linux/amd64
-          tags: |
-            gcr.io/hedera-registry/hedera-mirror-node-explorer:${{ needs.prepare-release.outputs.version }}
-            gcr.io/hedera-registry/hedera-mirror-node-explorer:latest
+            - name: Set up Docker Buildx
+              uses: docker/setup-buildx-action@v2
 
-      - name: Render Job Summary
-        run: |
-          printf "### Published Docker Images\n" >> "${GITHUB_STEP_SUMMARY}"
-          printf "| Image Name | Version | URL | Supported Architectures |\n" >> "${GITHUB_STEP_SUMMARY}"
-          printf "| ---------- | ------- | --- | ----------------------- |\n" >> "${GITHUB_STEP_SUMMARY}"
-          printf "| %s | %s | %s | %s |\n" \
-            "gcr.io/hedera-regsitry/hedera-mirror-node-explorer" \
-            "${{ needs.prepare-release.outputs.version }}" \
-            "[GCP Console](https://console.cloud.google.com/gcr/images/hedera-registry/global/hedera-mirror-node-explorer?project=hedera-registry)" \
-            "linux/amd64, linux/arm64" >> "${GITHUB_STEP_SUMMARY}"
-          
-          printf "| %s | %s | %s | %s |\n" \
-            "gcr.io/hedera-regsitry/hedera-mirror-node-explorer" \
-            "latest" \
-            "[GCP Console](https://console.cloud.google.com/gcr/images/hedera-registry/global/hedera-mirror-node-explorer?project=hedera-registry)" \
-            "linux/amd64, linux/arm64" >> "${GITHUB_STEP_SUMMARY}"
+            - name: Authorize Docker
+              uses: docker/login-action@v2
+              with:
+                  registry: gcr.io
+                  username: oauth2accesstoken
+                  password: ${{ steps.google-auth.outputs.access_token }}
 
-          printf "\n\n" >> "${GITHUB_STEP_SUMMARY}"
+            - name: Install Dependencies
+              run: npm ci
+
+            - name: Compile Code
+              run: npm run build
+
+            - name: Build and Push Image
+              uses: docker/build-push-action@v3
+              with:
+                  push: true
+                  file: Dockerfile
+                  context: .
+                  platforms: |
+                      linux/arm64
+                      linux/amd64
+                  tags: |
+                      gcr.io/hedera-registry/hedera-mirror-node-explorer:${{ needs.prepare-release.outputs.version }}
+                      gcr.io/hedera-registry/hedera-mirror-node-explorer:latest
+
+            - name: Render Job Summary
+              run: |
+                  printf "### Published Docker Images\n" >> "${GITHUB_STEP_SUMMARY}"
+                  printf "| Image Name | Version | URL | Supported Architectures |\n" >> "${GITHUB_STEP_SUMMARY}"
+                  printf "| ---------- | ------- | --- | ----------------------- |\n" >> "${GITHUB_STEP_SUMMARY}"
+                  printf "| %s | %s | %s | %s |\n" \
+                    "gcr.io/hedera-regsitry/hedera-mirror-node-explorer" \
+                    "${{ needs.prepare-release.outputs.version }}" \
+                    "[GCP Console](https://console.cloud.google.com/gcr/images/hedera-registry/global/hedera-mirror-node-explorer?project=hedera-registry)" \
+                    "linux/amd64, linux/arm64" >> "${GITHUB_STEP_SUMMARY}"
+
+                  printf "| %s | %s | %s | %s |\n" \
+                    "gcr.io/hedera-regsitry/hedera-mirror-node-explorer" \
+                    "latest" \
+                    "[GCP Console](https://console.cloud.google.com/gcr/images/hedera-registry/global/hedera-mirror-node-explorer?project=hedera-registry)" \
+                    "linux/amd64, linux/arm64" >> "${GITHUB_STEP_SUMMARY}"
+
+                  printf "\n\n" >> "${GITHUB_STEP_SUMMARY}"

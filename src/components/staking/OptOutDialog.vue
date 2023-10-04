@@ -23,29 +23,40 @@
 <!-- --------------------------------------------------------------------------------------------------------------- -->
 
 <template>
-  <ModalDialog :icon-class="iconClass" :show-dialog="showDialog">
-    <template v-slot:dialogMessage>
-      <slot name="dialogMessage"/>
-    </template>
-    <template v-slot:dialogDetails>
-      <slot name="dialogDetails"/>
+    <ModalDialog :icon-class="iconClass" :show-dialog="showDialog">
+        <template v-slot:dialogMessage>
+            <slot name="dialogMessage" />
+        </template>
+        <template v-slot:dialogDetails>
+            <slot name="dialogDetails" />
 
-      <div class="is-flex is-justify-content-space-between is-align-items-baseline mt-4">
-        <div class="is-flex is-justify-content-start is-align-items-center mt-3 has-text-grey-light">
-          <label class="checkbox mr-2 mt-1">
-            <input v-model="dontShowNextTime" type="checkbox">
-          </label>
-          <span>Please don't show me this next time</span>
-        </div>
+            <div
+                class="is-flex is-justify-content-space-between is-align-items-baseline mt-4"
+            >
+                <div
+                    class="is-flex is-justify-content-start is-align-items-center mt-3 has-text-grey-light"
+                >
+                    <label class="checkbox mr-2 mt-1">
+                        <input v-model="dontShowNextTime" type="checkbox" />
+                    </label>
+                    <span>Please don't show me this next time</span>
+                </div>
 
-        <div class="is-flex is-justify-content-flex-end">
-          <button class="button is-white is-small" @click="handleCancel">CANCEL</button>
-          <button class="button is-info is-small ml-4" @click="handleAgree">AGREE</button>
-        </div>
-      </div>
-
-    </template>
-  </ModalDialog>
+                <div class="is-flex is-justify-content-flex-end">
+                    <button
+                        class="button is-white is-small"
+                        @click="handleCancel"
+                        >CANCEL</button
+                    >
+                    <button
+                        class="button is-info is-small ml-4"
+                        @click="handleAgree"
+                        >AGREE</button
+                    >
+                </div>
+            </div>
+        </template>
+    </ModalDialog>
 </template>
 
 <!-- --------------------------------------------------------------------------------------------------------------- -->
@@ -53,49 +64,45 @@
 <!-- --------------------------------------------------------------------------------------------------------------- -->
 
 <script lang="ts">
-
-import {defineComponent, ref} from "vue";
+import { defineComponent, ref } from "vue";
 import ModalDialog from "@/components/ModalDialog.vue";
-import {AppStorage} from "@/AppStorage";
+import { AppStorage } from "@/AppStorage";
 
 export default defineComponent({
-  name: "OptOutDialog",
-  components: {ModalDialog},
-  props: {
-    showDialog: {
-      type: Boolean,
-      default: false
+    name: "OptOutDialog",
+    components: { ModalDialog },
+    props: {
+        showDialog: {
+            type: Boolean,
+            default: false,
+        },
+        iconClass: String,
     },
-    iconClass: String
-  },
-  setup(props, context) {
-    const dontShowNextTime = ref(false)
-    const handleAgree = () => {
-      if (dontShowNextTime.value) {
-        AppStorage.setSkipDisclaimer(true)
-      }
-      context.emit('update:showDialog', false)
-      context.emit('onAgree')
-    }
-    const handleCancel = () => {
-      dontShowNextTime.value = false
-      context.emit('update:showDialog', false)
-      context.emit('onClose')
-    }
-    return {
-      dontShowNextTime,
-      handleAgree,
-      handleCancel
-    }
-  }
+    setup(props, context) {
+        const dontShowNextTime = ref(false);
+        const handleAgree = () => {
+            if (dontShowNextTime.value) {
+                AppStorage.setSkipDisclaimer(true);
+            }
+            context.emit("update:showDialog", false);
+            context.emit("onAgree");
+        };
+        const handleCancel = () => {
+            dontShowNextTime.value = false;
+            context.emit("update:showDialog", false);
+            context.emit("onClose");
+        };
+        return {
+            dontShowNextTime,
+            handleAgree,
+            handleCancel,
+        };
+    },
 });
-
 </script>
 
 <!-- --------------------------------------------------------------------------------------------------------------- -->
 <!--                                                       STYLE                                                     -->
 <!-- --------------------------------------------------------------------------------------------------------------- -->
 
-<style scoped>
-</style>
-
+<style scoped></style>

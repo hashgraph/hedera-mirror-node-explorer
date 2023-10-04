@@ -18,18 +18,18 @@
  *
  */
 
-import {describe, it, expect} from 'vitest'
-import {flushPromises, mount} from "@vue/test-utils"
+import { describe, it, expect } from "vitest";
+import { flushPromises, mount } from "@vue/test-utils";
 import router from "@/router";
 import axios from "axios";
 import {
     SAMPLE_CONTRACT_RESULT_DETAILS,
     SAMPLE_REVERT_CONTRACT_RESULT_ACTIONS,
     SAMPLE_REVERT_CONTRACT_RESULT_DETAILS,
-    SAMPLE_REVERT_CONTRACT_RESULT_DETAILS_WITH_TRACES
+    SAMPLE_REVERT_CONTRACT_RESULT_DETAILS_WITH_TRACES,
 } from "../Mocks";
 import MockAdapter from "axios-mock-adapter";
-import {HMSF} from "@/utils/HMSF";
+import { HMSF } from "@/utils/HMSF";
 import ContractResult from "@/components/contract/ContractResult.vue";
 import Oruga from "@oruga-ui/oruga-next";
 import ContractResultTrace from "@/components/contract/ContractResultTrace.vue";
@@ -44,217 +44,248 @@ import ContractResultStateChangeEntry from "@/components/contract/ContractResult
 
  */
 
-HMSF.forceUTC = true
+HMSF.forceUTC = true;
 
 describe("ContractResult.vue", () => {
-
     it("Should display the contract result and logs, given consensus timestamp", async () => {
+        await router.push("/"); // To avoid "missing required param 'network'" error
 
-        await router.push("/") // To avoid "missing required param 'network'" error
-
-        const contractId = SAMPLE_CONTRACT_RESULT_DETAILS.contract_id
-        const timestamp = SAMPLE_CONTRACT_RESULT_DETAILS.timestamp
+        const contractId = SAMPLE_CONTRACT_RESULT_DETAILS.contract_id;
+        const timestamp = SAMPLE_CONTRACT_RESULT_DETAILS.timestamp;
 
         const mock = new MockAdapter(axios);
-        const matcher1 = "/api/v1/contracts/results"
-        const param1 = { timestamp: timestamp, internal: true }
+        const matcher1 = "/api/v1/contracts/results";
+        const param1 = { timestamp: timestamp, internal: true };
         mock.onGet(matcher1, param1).reply(200, {
-            results: [ SAMPLE_CONTRACT_RESULT_DETAILS ], "links": {"next": null}
-        } );
+            results: [SAMPLE_CONTRACT_RESULT_DETAILS],
+            links: { next: null },
+        });
 
-        const matcher2 = "/api/v1/contracts/" + contractId + "/results/" + timestamp
+        const matcher2 =
+            "/api/v1/contracts/" + contractId + "/results/" + timestamp;
         mock.onGet(matcher2).reply(200, SAMPLE_CONTRACT_RESULT_DETAILS);
 
         const wrapper = mount(ContractResult, {
             global: {
-                plugins: [router, Oruga]
+                plugins: [router, Oruga],
             },
             props: {
                 timestamp: timestamp,
-                topLevel: true
+                topLevel: true,
             },
         });
-        await flushPromises()
+        await flushPromises();
         // console.log(wrapper.html())
         // console.log(wrapper.text())
 
-        expect(wrapper.text()).toMatch(RegExp("^Contract Result for " + contractId + " at " + timestamp))
-        expect(wrapper.get("#resultValue").text()).toBe("SUCCESS")
-        expect(wrapper.get("#fromValue").text()).toBe("0x00000000000000000000000000000000000ce9b4Copy(0.0.846260)")
-        expect(wrapper.get("#toValue").text()).toBe("0x0000000000000000000000000000000000103783Copy(0.0.1062787)")
-        expect(wrapper.get("#typeValue").text()).toBe("None")
+        expect(wrapper.text()).toMatch(
+            RegExp("^Contract Result for " + contractId + " at " + timestamp),
+        );
+        expect(wrapper.get("#resultValue").text()).toBe("SUCCESS");
+        expect(wrapper.get("#fromValue").text()).toBe(
+            "0x00000000000000000000000000000000000ce9b4Copy(0.0.846260)",
+        );
+        expect(wrapper.get("#toValue").text()).toBe(
+            "0x0000000000000000000000000000000000103783Copy(0.0.1062787)",
+        );
+        expect(wrapper.get("#typeValue").text()).toBe("None");
         // expect(wrapper.get("#functionParametersValue").text()).toBe("18cb afe5 0000 0000 0000 0000 0000 0000 0000 0000 0000 0000 0000 0000 0000 0017 4876 e800 0000 0000 0000 0000 0000 0000 0000 0000 0000 0000 0000 0000 0000 001b 2702 b2a0 0000 0000 0000 0000 0000 0000 0000 0000 0000 0000 0000 0000 0000 0000 0000 00a0 0000 0000 0000 0000 0000 0000 0000 0000 0000 0000 0000 0000 0000 0000 000c e9b4 0000 0000 0000 0000 0000 0000 0000 0000 0000 0000 0000 0000 0000 0183 1e10 602d 0000 0000 0000 0000 0000 0000 0000 0000 0000 0000 0000 0000 0000 0000 0000 0003 0000 0000 0000 0000 0000 0000 0000 0000 0000 0000 0000 0000 0000 0000 000c ba44 0000 0000 0000 0000 0000 0000 0000 0000 0000 0000 0000 0000 0000 0000 000d 1ea6 0000 0000 0000 0000 0000 0000 0000 0000 0000 0000 0000 0000 0000 0000 0010 3708Copy")
-        expect(wrapper.get("#errorMessageValue").text()).toBe("None")
-        expect(wrapper.get("#gasLimitValue").text()).toBe("480,000")
-        expect(wrapper.get("#gasUsedValue").text()).toBe("384,000")
-        expect(wrapper.get("#maxFeePerGasValue").text()).toBe("None")
-        expect(wrapper.get("#maxPriorityFeePerGasValue").text()).toBe("None")
-        expect(wrapper.get("#gasPriceValue").text()).toBe("None")
-        expect(wrapper.get("#ethereumNonceValue").text()).toBe("104")
+        expect(wrapper.get("#errorMessageValue").text()).toBe("None");
+        expect(wrapper.get("#gasLimitValue").text()).toBe("480,000");
+        expect(wrapper.get("#gasUsedValue").text()).toBe("384,000");
+        expect(wrapper.get("#maxFeePerGasValue").text()).toBe("None");
+        expect(wrapper.get("#maxPriorityFeePerGasValue").text()).toBe("None");
+        expect(wrapper.get("#gasPriceValue").text()).toBe("None");
+        expect(wrapper.get("#ethereumNonceValue").text()).toBe("104");
 
-        expect(wrapper.findAll("#logIndexValue").length).toBe(3)
+        expect(wrapper.findAll("#logIndexValue").length).toBe(3);
 
-        wrapper.unmount()
-        await flushPromises()
+        wrapper.unmount();
+        await flushPromises();
     });
 
     it("Should display the reverted contract result and decode the error message", async () => {
+        await router.push("/"); // To avoid "missing required param 'network'" error
 
-        await router.push("/") // To avoid "missing required param 'network'" error
-
-        const contractId = SAMPLE_REVERT_CONTRACT_RESULT_DETAILS.contract_id
-        const timestamp = SAMPLE_REVERT_CONTRACT_RESULT_DETAILS.timestamp
+        const contractId = SAMPLE_REVERT_CONTRACT_RESULT_DETAILS.contract_id;
+        const timestamp = SAMPLE_REVERT_CONTRACT_RESULT_DETAILS.timestamp;
 
         const mock = new MockAdapter(axios);
-        const matcher1 = "/api/v1/contracts/results"
-        const param1 = { timestamp: timestamp, internal: true }
+        const matcher1 = "/api/v1/contracts/results";
+        const param1 = { timestamp: timestamp, internal: true };
         mock.onGet(matcher1, param1).reply(200, {
-            results: [ SAMPLE_REVERT_CONTRACT_RESULT_DETAILS ], "links": {"next": null}
-        } );
+            results: [SAMPLE_REVERT_CONTRACT_RESULT_DETAILS],
+            links: { next: null },
+        });
 
-        const matcher2 = "/api/v1/contracts/" + contractId + "/results/" + timestamp
+        const matcher2 =
+            "/api/v1/contracts/" + contractId + "/results/" + timestamp;
         mock.onGet(matcher2).reply(200, SAMPLE_REVERT_CONTRACT_RESULT_DETAILS);
 
         const wrapper = mount(ContractResult, {
             global: {
-                plugins: [router, Oruga]
+                plugins: [router, Oruga],
             },
             props: {
                 timestamp: timestamp,
-                topLevel: true
+                topLevel: true,
             },
         });
-        await flushPromises()
+        await flushPromises();
         // console.log(wrapper.html())
         // console.log(wrapper.text())
 
-        expect(wrapper.text()).toMatch(RegExp("^Contract Result for " + contractId + " at " + timestamp))
-        expect(wrapper.get("#resultValue").text()).toBe("CONTRACT_REVERT_EXECUTED")
-        expect(wrapper.get("#errorMessageValue").text()).toBe("Insufficient token balance for wiped")
-        expect(wrapper.get("#ethereumNonceValue").text()).toBe("None")
+        expect(wrapper.text()).toMatch(
+            RegExp("^Contract Result for " + contractId + " at " + timestamp),
+        );
+        expect(wrapper.get("#resultValue").text()).toBe(
+            "CONTRACT_REVERT_EXECUTED",
+        );
+        expect(wrapper.get("#errorMessageValue").text()).toBe(
+            "Insufficient token balance for wiped",
+        );
+        expect(wrapper.get("#ethereumNonceValue").text()).toBe("None");
 
-        expect(wrapper.findAll("#logIndexValue").length).toBe(0)
+        expect(wrapper.findAll("#logIndexValue").length).toBe(0);
 
-        wrapper.unmount()
-        await flushPromises()
+        wrapper.unmount();
+        await flushPromises();
     });
 
     it("Should display the reverted contract result with call trace and state trace", async () => {
-
-        await router.push("/") // To avoid "missing required param 'network'" error
-
+        await router.push("/"); // To avoid "missing required param 'network'" error
 
         const mock = new MockAdapter(axios);
 
-        const timestamp = SAMPLE_REVERT_CONTRACT_RESULT_DETAILS_WITH_TRACES.timestamp
-        const matcher1 = "/api/v1/contracts/results"
-        const param1 = { timestamp: timestamp, internal: true }
+        const timestamp =
+            SAMPLE_REVERT_CONTRACT_RESULT_DETAILS_WITH_TRACES.timestamp;
+        const matcher1 = "/api/v1/contracts/results";
+        const param1 = { timestamp: timestamp, internal: true };
         mock.onGet(matcher1, param1).reply(200, {
-            results: [ SAMPLE_REVERT_CONTRACT_RESULT_DETAILS_WITH_TRACES ], "links": {"next": null}
-        } );
+            results: [SAMPLE_REVERT_CONTRACT_RESULT_DETAILS_WITH_TRACES],
+            links: { next: null },
+        });
 
-        const contractId = SAMPLE_REVERT_CONTRACT_RESULT_DETAILS_WITH_TRACES.contract_id
-        const matcher2 = "/api/v1/contracts/" + contractId + "/results/" + timestamp
-        mock.onGet(matcher2).reply(200, SAMPLE_REVERT_CONTRACT_RESULT_DETAILS_WITH_TRACES);
+        const contractId =
+            SAMPLE_REVERT_CONTRACT_RESULT_DETAILS_WITH_TRACES.contract_id;
+        const matcher2 =
+            "/api/v1/contracts/" + contractId + "/results/" + timestamp;
+        mock.onGet(matcher2).reply(
+            200,
+            SAMPLE_REVERT_CONTRACT_RESULT_DETAILS_WITH_TRACES,
+        );
 
-        const hash = SAMPLE_REVERT_CONTRACT_RESULT_DETAILS_WITH_TRACES.hash
-        const matcher3 = "/api/v1/contracts/results/" + hash + '/actions?limit=100'
-        mock.onGet(matcher3).reply(200, SAMPLE_REVERT_CONTRACT_RESULT_ACTIONS)
+        const hash = SAMPLE_REVERT_CONTRACT_RESULT_DETAILS_WITH_TRACES.hash;
+        const matcher3 =
+            "/api/v1/contracts/results/" + hash + "/actions?limit=100";
+        mock.onGet(matcher3).reply(200, SAMPLE_REVERT_CONTRACT_RESULT_ACTIONS);
 
         const wrapper = mount(ContractResult, {
             global: {
-                plugins: [router, Oruga]
+                plugins: [router, Oruga],
             },
             props: {
                 timestamp: timestamp,
                 topLevel: false,
-                isParent: true
+                isParent: true,
             },
         });
-        await flushPromises()
+        await flushPromises();
         // console.log(wrapper.html())
         // console.log(wrapper.text())
 
-        expect(wrapper.text()).toMatch(RegExp("^Contract Result"))
-        expect(wrapper.get("#resultValue").text()).toBe("CONTRACT_REVERT_EXECUTED")
-        expect(wrapper.get("#errorMessageValue").text()).toBe("payWithCardNFT - failed to call accept contract method")
+        expect(wrapper.text()).toMatch(RegExp("^Contract Result"));
+        expect(wrapper.get("#resultValue").text()).toBe(
+            "CONTRACT_REVERT_EXECUTED",
+        );
+        expect(wrapper.get("#errorMessageValue").text()).toBe(
+            "payWithCardNFT - failed to call accept contract method",
+        );
 
-        const stackTrace = wrapper.findComponent(ContractResultTrace)
-        expect(stackTrace.exists()).toBe(true)
-        expect(stackTrace.text()).toMatch(RegExp("^Call Trace"))
+        const stackTrace = wrapper.findComponent(ContractResultTrace);
+        expect(stackTrace.exists()).toBe(true);
+        expect(stackTrace.text()).toMatch(RegExp("^Call Trace"));
 
-        const actionsTable = stackTrace.findComponent(ContractActionsTable)
-        expect(actionsTable.exists()).toBe(true)
-        expect(actionsTable.find('thead').text()).toBe("Call Type From Amount To Gas Limit")
+        const actionsTable = stackTrace.findComponent(ContractActionsTable);
+        expect(actionsTable.exists()).toBe(true);
+        expect(actionsTable.find("thead").text()).toBe(
+            "Call Type From Amount To Gas Limit",
+        );
 
-        const actions = actionsTable.find('tbody').findAll('tr')
-        expect(actions.length).toBe(3)
+        const actions = actionsTable.find("tbody").findAll("tr");
+        expect(actions.length).toBe(3);
         expect(actions[0].text()).toBe(
             "1! CALL" +
-            "0x00000000000000000000000000000000000022eeCopy(0.0.8942)" +
-            "→" +
-            "0.00000000" +
-            "→" +
-            "0x00000000000000000000000000000000000028aaCopy(0.0.10410)" +
-            "7979000")
+                "0x00000000000000000000000000000000000022eeCopy(0.0.8942)" +
+                "→" +
+                "0.00000000" +
+                "→" +
+                "0x00000000000000000000000000000000000028aaCopy(0.0.10410)" +
+                "7979000",
+        );
         expect(actions[1].text()).toBe(
             "1_1! CALL" +
-            "0x00000000000000000000000000000000000028aaCopy(0.0.10410)" +
-            "→" +
-            "0.00000000" +
-            "→" +
-            "0x00000000000000000000000000000000000082c9Copy(0.0.33481)" +
-            "7840814")
+                "0x00000000000000000000000000000000000028aaCopy(0.0.10410)" +
+                "→" +
+                "0.00000000" +
+                "→" +
+                "0x00000000000000000000000000000000000082c9Copy(0.0.33481)" +
+                "7840814",
+        );
         expect(actions[2].text()).toBe(
             "1_1_1CALL" +
-            "0x00000000000000000000000000000000000082c9Copy(0.0.33481)" +
-            "→" +
-            "0.00000000" +
-            "→" +
-            "0x00000000000000000000000000000000000082cbCopy(0.0.33483)" +
-            "7700872")
+                "0x00000000000000000000000000000000000082c9Copy(0.0.33481)" +
+                "→" +
+                "0.00000000" +
+                "→" +
+                "0x00000000000000000000000000000000000082cbCopy(0.0.33483)" +
+                "7700872",
+        );
 
-        const stateTrace = wrapper.findComponent(ContractResultStates)
-        expect(stateTrace.exists()).toBe(true)
-        expect(stateTrace.text()).toMatch(RegExp("^Contract States Accessed & Changed"))
+        const stateTrace = wrapper.findComponent(ContractResultStates);
+        expect(stateTrace.exists()).toBe(true);
+        expect(stateTrace.text()).toMatch(
+            RegExp("^Contract States Accessed & Changed"),
+        );
 
-        const options = stateTrace.find('select').findAll('option')
-        expect(options.length).toBe(4)
-        expect(options.at(0)?.element.text).toBe('Show 5 items')
-        expect(options.at(1)?.element.text).toBe('Show 10 items')
-        expect(options.at(2)?.element.text).toBe('Show 15 items')
-        expect(options.at(3)?.element.text).toBe('Show all items')
+        const options = stateTrace.find("select").findAll("option");
+        expect(options.length).toBe(4);
+        expect(options.at(0)?.element.text).toBe("Show 5 items");
+        expect(options.at(1)?.element.text).toBe("Show 10 items");
+        expect(options.at(2)?.element.text).toBe("Show 15 items");
+        expect(options.at(3)?.element.text).toBe("Show all items");
 
-        expect(options.at(0)?.element.selected).toBe(true)
-        expect(options.at(1)?.element.selected).toBe(false)
-        expect(options.at(2)?.element.selected).toBe(false)
-        expect(options.at(3)?.element.selected).toBe(false)
+        expect(options.at(0)?.element.selected).toBe(true);
+        expect(options.at(1)?.element.selected).toBe(false);
+        expect(options.at(2)?.element.selected).toBe(false);
+        expect(options.at(3)?.element.selected).toBe(false);
 
-        const entries = stateTrace.findAllComponents(ContractResultStateChangeEntry)
-        expect(entries.length).toBe(5)
+        const entries = stateTrace.findAllComponents(
+            ContractResultStateChangeEntry,
+        );
+        expect(entries.length).toBe(5);
         expect(entries[0].text()).toBe(
             "0.0.10410" +
-            "0x20a269221c216afce16a83d0401af060a0d39b19Copy" +
-            "Contract HBar Balance Difference:" +
-            "None" +
-            "10a8 1eed 9d63 d16f ace5 e763 5790 5348 e625 3d33 9408 6026 bb2b f214 5d7c c249Copy" +
-            "Decimal: not available" +
-            "0000 0000 0000 0000 0000 0000 0000 0000 0000 0000 0000 0000 0000 0000 0000 0001Copy" +
-            "Decimal: 1" +
-            "None"
-        )
+                "0x20a269221c216afce16a83d0401af060a0d39b19Copy" +
+                "Contract HBar Balance Difference:" +
+                "None" +
+                "10a8 1eed 9d63 d16f ace5 e763 5790 5348 e625 3d33 9408 6026 bb2b f214 5d7c c249Copy" +
+                "Decimal: not available" +
+                "0000 0000 0000 0000 0000 0000 0000 0000 0000 0000 0000 0000 0000 0000 0000 0001Copy" +
+                "Decimal: 1" +
+                "None",
+        );
         expect(entries[1].text()).toBe(
             "10a8 1eed 9d63 d16f ace5 e763 5790 5348 e625 3d33 9408 6026 bb2b f214 5d7c c24aCopy" +
-            "Decimal: not available" +
-            "41ba 5057 6c59 ba82 f084 85ca 644d d627 db89 235f b6e2 1635 5ebb 2aa8 8cce b961Copy" +
-            "Decimal: not available" +
-            "None"
-        )
+                "Decimal: not available" +
+                "41ba 5057 6c59 ba82 f084 85ca 644d d627 db89 235f b6e2 1635 5ebb 2aa8 8cce b961Copy" +
+                "Decimal: not available" +
+                "None",
+        );
 
-        expect(wrapper.findAll("#logIndexValue").length).toBe(0)
+        expect(wrapper.findAll("#logIndexValue").length).toBe(0);
 
-        wrapper.unmount()
-        await flushPromises()
+        wrapper.unmount();
+        await flushPromises();
     });
-
 });

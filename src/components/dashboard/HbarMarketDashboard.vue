@@ -23,51 +23,106 @@
 <!-- --------------------------------------------------------------------------------------------------------------- -->
 
 <template>
-
-  <div v-if="isMainNetwork" class="h-has-background-color">
-
-    <div v-if="isLargeScreen" >
-      <div class="is-flex is-flex-wrap-wrap is-justify-content-space-evenly pt-1 pb-2">
-        <DashboardItem :name="hbarPriceLabel" :value="'$' + hbarPrice" :variation="hbarPriceVariation"/>
-        <DashboardItem :name="hbarMarketCapLabel" :value="'$' + hbarMarketCap" :variation="hbarMarketCapVariation"/>
-        <DashboardItem :name="hbarReleasedLabel" :value="hbarReleased"/>
-        <DashboardItem :name="hbarTotalLabel" :value="hbarTotal"/>
-      </div>
-    </div>
-
-    <div v-else-if="isSmallScreen">
-      <div class="is-flex is-flex-wrap-wrap is-justify-content-space-evenly pt-1 pb-2">
-        <div class="is-flex is-flex-direction-column is-align-items-start">
-          <DashboardItem :is-numeric="true" :name="hbarPriceLabel" :value="'$' + hbarPrice" :variation="hbarPriceVariation"/>
-          <DashboardItem :is-numeric="true" :name="hbarMarketCapLabel" :value="'$' + hbarMarketCap" :variation="hbarMarketCapVariation"/>
+    <div v-if="isMainNetwork" class="h-has-background-color">
+        <div v-if="isLargeScreen">
+            <div
+                class="is-flex is-flex-wrap-wrap is-justify-content-space-evenly pt-1 pb-2"
+            >
+                <DashboardItem
+                    :name="hbarPriceLabel"
+                    :value="'$' + hbarPrice"
+                    :variation="hbarPriceVariation"
+                />
+                <DashboardItem
+                    :name="hbarMarketCapLabel"
+                    :value="'$' + hbarMarketCap"
+                    :variation="hbarMarketCapVariation"
+                />
+                <DashboardItem
+                    :name="hbarReleasedLabel"
+                    :value="hbarReleased"
+                />
+                <DashboardItem :name="hbarTotalLabel" :value="hbarTotal" />
+            </div>
         </div>
-        <div class="is-flex is-flex-direction-column is-align-items-start">
-          <DashboardItem :is-numeric="true" :name="hbarReleasedLabel" :value="hbarReleased"/>
-          <DashboardItem :is-numeric="true" :name="hbarTotalLabel" :value="hbarTotal"/>
+
+        <div v-else-if="isSmallScreen">
+            <div
+                class="is-flex is-flex-wrap-wrap is-justify-content-space-evenly pt-1 pb-2"
+            >
+                <div
+                    class="is-flex is-flex-direction-column is-align-items-start"
+                >
+                    <DashboardItem
+                        :is-numeric="true"
+                        :name="hbarPriceLabel"
+                        :value="'$' + hbarPrice"
+                        :variation="hbarPriceVariation"
+                    />
+                    <DashboardItem
+                        :is-numeric="true"
+                        :name="hbarMarketCapLabel"
+                        :value="'$' + hbarMarketCap"
+                        :variation="hbarMarketCapVariation"
+                    />
+                </div>
+                <div
+                    class="is-flex is-flex-direction-column is-align-items-start"
+                >
+                    <DashboardItem
+                        :is-numeric="true"
+                        :name="hbarReleasedLabel"
+                        :value="hbarReleased"
+                    />
+                    <DashboardItem
+                        :is-numeric="true"
+                        :name="hbarTotalLabel"
+                        :value="hbarTotal"
+                    />
+                </div>
+            </div>
         </div>
-      </div>
-    </div>
 
-    <div v-else>
-      <div class="is-flex is-flex-wrap-wrap is-justify-content-space-evenly pt-1 pb-2">
-        <div class="is-flex is-flex-direction-column is-align-items-start">
-          <DashboardItem :is-numeric="true" :name="hbarPriceLabel" :value="'$' + hbarPrice" :variation="hbarPriceVariation"/>
-          <DashboardItem :is-numeric="true" :name="hbarMarketCapLabel" :value="'$' + hbarMarketCap" :variation="hbarMarketCapVariation"/>
-          <DashboardItem :is-numeric="true" :name="hbarReleasedLabel" :value="hbarReleased"/>
-          <DashboardItem :is-numeric="true" :name="hbarTotalLabel" :value="hbarTotal"/>
+        <div v-else>
+            <div
+                class="is-flex is-flex-wrap-wrap is-justify-content-space-evenly pt-1 pb-2"
+            >
+                <div
+                    class="is-flex is-flex-direction-column is-align-items-start"
+                >
+                    <DashboardItem
+                        :is-numeric="true"
+                        :name="hbarPriceLabel"
+                        :value="'$' + hbarPrice"
+                        :variation="hbarPriceVariation"
+                    />
+                    <DashboardItem
+                        :is-numeric="true"
+                        :name="hbarMarketCapLabel"
+                        :value="'$' + hbarMarketCap"
+                        :variation="hbarMarketCapVariation"
+                    />
+                    <DashboardItem
+                        :is-numeric="true"
+                        :name="hbarReleasedLabel"
+                        :value="hbarReleased"
+                    />
+                    <DashboardItem
+                        :is-numeric="true"
+                        :name="hbarTotalLabel"
+                        :value="hbarTotal"
+                    />
+                </div>
+            </div>
         </div>
-      </div>
     </div>
-
-  </div>
-  <div v-else class="h-has-background-color">
-
-    <div class="is-flex is-justify-content-center h-mainnet-top-banner pt-1 pb-2">
-        <DashboardItem :value="currentNetworkDisplayName"/>
+    <div v-else class="h-has-background-color">
+        <div
+            class="is-flex is-justify-content-center h-mainnet-top-banner pt-1 pb-2"
+        >
+            <DashboardItem :value="currentNetworkDisplayName" />
+        </div>
     </div>
-
-  </div>
-
 </template>
 
 <!-- --------------------------------------------------------------------------------------------------------------- -->
@@ -75,69 +130,80 @@
 <!-- --------------------------------------------------------------------------------------------------------------- -->
 
 <script lang="ts">
-
-import {computed, defineComponent, inject, onBeforeUnmount, onMounted} from 'vue';
+import {
+    computed,
+    defineComponent,
+    inject,
+    onBeforeUnmount,
+    onMounted,
+} from "vue";
 import DashboardItem from "@/components/dashboard/DashboardItem.vue";
-import {NetworkRegistry, networkRegistry} from "@/schemas/NetworkRegistry";
+import { NetworkRegistry, networkRegistry } from "@/schemas/NetworkRegistry";
 import router from "@/router";
-import {MarketDataCache} from "@/components/dashboard/MarketDataCache";
+import { MarketDataCache } from "@/components/dashboard/MarketDataCache";
 
 export default defineComponent({
+    name: "HbarMarketDashboard",
 
-  name: 'HbarMarketDashboard',
+    components: { DashboardItem },
 
-  components: {DashboardItem},
+    setup() {
+        const isSmallScreen = inject("isSmallScreen", true);
+        const isLargeScreen = inject("isLargeScreen", true);
 
-  setup() {
-    const isSmallScreen = inject('isSmallScreen', true)
-    const isLargeScreen = inject('isLargeScreen', true)
+        const isMainNetwork = computed(
+            () =>
+                router.currentRoute.value.params.network ==
+                NetworkRegistry.MAIN_NETWORK,
+        );
 
-    const isMainNetwork = computed(() => router.currentRoute.value.params.network == NetworkRegistry.MAIN_NETWORK)
+        const currentNetworkDisplayName = computed(() => {
+            let displayName;
+            if (Array.isArray(router.currentRoute.value.params.network)) {
+                displayName = networkRegistry.lookup(
+                    router.currentRoute.value.params.network[0],
+                )?.displayName;
+            } else {
+                displayName = networkRegistry.lookup(
+                    router.currentRoute.value.params.network,
+                )?.displayName;
+            }
+            return displayName;
+        });
 
-    const currentNetworkDisplayName = computed(() => {
-      let displayName
-      if (Array.isArray(router.currentRoute.value.params.network)) {
-        displayName = networkRegistry.lookup(router.currentRoute.value.params.network[0])?.displayName
-      } else {
-        displayName = networkRegistry.lookup(router.currentRoute.value.params.network)?.displayName
-      }
-      return displayName
-    })
+        const hbarPriceLabel = "HBAR PRICE";
+        const hbarMarketCapLabel = "HBAR MARKET CAP";
+        const hbarReleasedLabel = "HBAR RELEASED";
+        const hbarTotalLabel = "HBAR TOTAL";
 
-    const hbarPriceLabel = 'HBAR PRICE'
-    const hbarMarketCapLabel = 'HBAR MARKET CAP'
-    const hbarReleasedLabel = 'HBAR RELEASED'
-    const hbarTotalLabel = 'HBAR TOTAL'
+        // marketDataCache
+        const marketDataCache = new MarketDataCache();
+        onMounted(() => marketDataCache.mount());
+        onBeforeUnmount(() => marketDataCache.unmount());
 
-    // marketDataCache
-    const marketDataCache = new MarketDataCache()
-    onMounted(() => marketDataCache.mount())
-    onBeforeUnmount(() => marketDataCache.unmount())
-
-    return {
-      isMainNetwork,
-      currentNetworkDisplayName,
-      isSmallScreen,
-      isLargeScreen,
-      hbarPriceLabel,
-      hbarMarketCapLabel,
-      hbarReleasedLabel,
-      hbarTotalLabel,
-      marketDataCache, // For testing purpose
-      hbarReleased: marketDataCache.hbarReleased,
-      hbarTotal: marketDataCache.hbarTotal,
-      hbarPrice: marketDataCache.hbarPrice,
-      hbarPriceVariation: marketDataCache.hbarPriceVariation,
-      hbarMarketCap: marketDataCache.hbarMarketCap,
-      hbarMarketCapVariation: marketDataCache.hbarMarketCapVariation,
-    }
-  },
+        return {
+            isMainNetwork,
+            currentNetworkDisplayName,
+            isSmallScreen,
+            isLargeScreen,
+            hbarPriceLabel,
+            hbarMarketCapLabel,
+            hbarReleasedLabel,
+            hbarTotalLabel,
+            marketDataCache, // For testing purpose
+            hbarReleased: marketDataCache.hbarReleased,
+            hbarTotal: marketDataCache.hbarTotal,
+            hbarPrice: marketDataCache.hbarPrice,
+            hbarPriceVariation: marketDataCache.hbarPriceVariation,
+            hbarMarketCap: marketDataCache.hbarMarketCap,
+            hbarMarketCapVariation: marketDataCache.hbarMarketCapVariation,
+        };
+    },
 });
-
 </script>
 
 <!-- --------------------------------------------------------------------------------------------------------------- -->
 <!--                                                       STYLE                                                     -->
 <!-- --------------------------------------------------------------------------------------------------------------- -->
 
-<style/>
+<style />

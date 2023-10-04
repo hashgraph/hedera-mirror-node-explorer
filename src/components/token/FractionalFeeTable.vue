@@ -23,46 +23,48 @@
 <!-- --------------------------------------------------------------------------------------------------------------- -->
 
 <template>
+    <o-table
+        :data="fees"
+        :hoverable="false"
+        :mobile-breakpoint="ORUGA_MOBILE_BREAKPOINT"
+        :narrowed="true"
+        :striped="false"
+        aria-current-label="Current page"
+        aria-next-label="Next page"
+        aria-page-label="Page"
+        aria-previous-label="Previous page"
+    >
+        <o-table-column v-slot="props" field="amount" label="Fractional Fee">
+            <StringValue :string-value="makeAmount(props.row.amount)" />
+        </o-table-column>
 
-  <o-table
-      :data="fees"
-      :hoverable="false"
-      :mobile-breakpoint="ORUGA_MOBILE_BREAKPOINT"
-      :narrowed="true"
-      :striped="false"
+        <o-table-column v-slot="props" field="token" label="Fee Currency">
+            <TokenLink
+                :show-extra="true"
+                :token-id="props.row.denominating_token_id"
+            />
+        </o-table-column>
 
-      aria-current-label="Current page"
-      aria-next-label="Next page"
-      aria-page-label="Page"
-      aria-previous-label="Previous page"
-  >
+        <o-table-column
+            v-slot="props"
+            field="collector"
+            label="Collector Account"
+        >
+            <AccountLink :account-id="props.row.collector_account_id" />
+        </o-table-column>
 
-    <o-table-column v-slot="props" field="amount" label="Fractional Fee">
-      <StringValue :string-value="makeAmount(props.row.amount)"/>
-    </o-table-column>
+        <o-table-column v-slot="props" field="min" label="Min">
+            <PlainAmount :amount="props.row.minimum" none-label="None" />
+        </o-table-column>
 
-    <o-table-column v-slot="props" field="token" label="Fee Currency">
-      <TokenLink :show-extra="true" :token-id="props.row.denominating_token_id"/>
-    </o-table-column>
+        <o-table-column v-slot="props" field="max" label="Max">
+            <PlainAmount :amount="props.row.maximum" none-label="None" />
+        </o-table-column>
 
-    <o-table-column v-slot="props" field="collector" label="Collector Account">
-      <AccountLink :account-id="props.row.collector_account_id"/>
-    </o-table-column>
-
-    <o-table-column v-slot="props" field="min" label="Min">
-      <PlainAmount :amount="props.row.minimum" none-label="None"/>
-    </o-table-column>
-
-    <o-table-column v-slot="props" field="max" label="Max">
-      <PlainAmount :amount="props.row.maximum" none-label="None"/>
-    </o-table-column>
-
-    <o-table-column v-slot="props" field="net" label="Net">
-      {{ props.row.net_of_transfers ? "&check;" : "" }}
-    </o-table-column>
-
-  </o-table>
-
+        <o-table-column v-slot="props" field="net" label="Net">
+            {{ props.row.net_of_transfers ? "&check;" : "" }}
+        </o-table-column>
+    </o-table>
 </template>
 
 <!-- --------------------------------------------------------------------------------------------------------------- -->
@@ -70,61 +72,62 @@
 <!-- --------------------------------------------------------------------------------------------------------------- -->
 
 <script lang="ts">
-
-import {defineComponent, PropType} from 'vue';
+import { defineComponent, PropType } from "vue";
 import AccountLink from "@/components/values/AccountLink.vue";
 import PlainAmount from "@/components/values/PlainAmount.vue";
 import TokenLink from "@/components/values/TokenLink.vue";
-import {ORUGA_MOBILE_BREAKPOINT} from "@/App.vue";
-import {FractionAmount} from "@/schemas/HederaSchemas";
+import { ORUGA_MOBILE_BREAKPOINT } from "@/App.vue";
+import { FractionAmount } from "@/schemas/HederaSchemas";
 import StringValue from "@/components/values/StringValue.vue";
-import {TokenInfoAnalyzer} from "@/components/token/TokenInfoAnalyzer";
+import { TokenInfoAnalyzer } from "@/components/token/TokenInfoAnalyzer";
 
 export default defineComponent({
+    name: "FractionalFeeTable",
 
-  name: 'FractionalFeeTable',
+    components: {
+        StringValue,
+        TokenLink,
+        PlainAmount,
+        AccountLink,
+    },
 
-  components: {
-    StringValue,
-    TokenLink,
-    PlainAmount,
-    AccountLink,
-  },
+    props: {
+        analyzer: {
+            type: Object as PropType<TokenInfoAnalyzer>,
+            required: true,
+        },
+    },
 
-  props: {
-    analyzer: {
-      type: Object as PropType<TokenInfoAnalyzer>,
-      required: true
-    }
-  },
+    setup(props) {
+        const makeAmount = (fraction: FractionAmount): string => {
+            let result: string;
+            const formatter = new Intl.NumberFormat("en-US", {
+                style: "percent",
+                maximumFractionDigits: 2,
+            });
+            if (fraction.numerator && fraction.denominator) {
+                result = formatter.format(
+                    fraction.denominator
+                        ? fraction.numerator / fraction.denominator
+                        : 0,
+                );
+            } else {
+                result = "";
+            }
+            return result;
+        };
 
-  setup(props) {
-    const makeAmount = (fraction: FractionAmount): string => {
-      let result: string
-      const formatter = new Intl.NumberFormat("en-US", {
-        style: 'percent',
-        maximumFractionDigits: 2
-      })
-      if (fraction.numerator && fraction.denominator) {
-        result = formatter.format(fraction.denominator ? fraction.numerator / fraction.denominator : 0)
-      } else {
-        result = ""
-      }
-      return result
-    }
-
-    return {
-      fees: props.analyzer.fractionalFees,
-      makeAmount,
-      ORUGA_MOBILE_BREAKPOINT
-    }
-  },
+        return {
+            fees: props.analyzer.fractionalFees,
+            makeAmount,
+            ORUGA_MOBILE_BREAKPOINT,
+        };
+    },
 });
-
 </script>
 
 <!-- --------------------------------------------------------------------------------------------------------------- -->
 <!--                                                       STYLE                                                     -->
 <!-- --------------------------------------------------------------------------------------------------------------- -->
 
-<style/>
+<style />

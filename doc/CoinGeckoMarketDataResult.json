@@ -8,20 +8,14 @@
     },
     "block_time_in_minutes": 0,
     "hashing_algorithm": "Directed Acyclic Graph (DAG)",
-    "categories": [
-        "Protocol"
-    ],
+    "categories": ["Protocol"],
     "public_notice": null,
     "additional_notices": [],
     "description": {
         "en": "Hedera is ... decentralized ordering service."
     },
     "links": {
-        "homepage": [
-            "https://www.hedera.com/",
-            "",
-            ""
-        ],
+        "homepage": ["https://www.hedera.com/", "", ""],
         "blockchain_site": [
             "https://hash-hash.info/",
             "https://explorer.kabuto.sh/",
@@ -34,20 +28,13 @@
             "",
             ""
         ],
-        "official_forum_url": [
-            "",
-            "",
-            ""
-        ],
+        "official_forum_url": ["", "", ""],
         "chat_url": [
             "https://hedera.com/discord",
             "https://www.linkedin.com/company/hashgraph",
             "https://www.youtube.com/hederahashgraph"
         ],
-        "announcement_url": [
-            "https://medium.com/hashgraph",
-            ""
-        ],
+        "announcement_url": ["https://medium.com/hashgraph", ""],
         "twitter_screen_name": "hedera",
         "facebook_username": "hashgraph",
         "bitcointalk_thread_identifier": null,

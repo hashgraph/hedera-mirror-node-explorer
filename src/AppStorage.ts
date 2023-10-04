@@ -18,155 +18,181 @@
  *
  */
 
-import {NetworkEntry, networkRegistry} from "@/schemas/NetworkRegistry";
+import { NetworkEntry, networkRegistry } from "@/schemas/NetworkRegistry";
 import { SolcMetadata } from "./utils/solc/SolcMetadata";
 
 export class AppStorage {
-
-    private static readonly VERSION = "v1"
+    private static readonly VERSION = "v1";
 
     //
     // network
     //
 
-    private static readonly LAST_USED_NETWORK_KEY = 'network'
+    private static readonly LAST_USED_NETWORK_KEY = "network";
 
     public static getLastNetwork(): NetworkEntry {
-        const item = this.getLocalStorageItem(this.LAST_USED_NETWORK_KEY)
-        const result = item != null ? networkRegistry.lookup(item) : null
-        return result ?? networkRegistry.getDefaultEntry()
+        const item = this.getLocalStorageItem(this.LAST_USED_NETWORK_KEY);
+        const result = item != null ? networkRegistry.lookup(item) : null;
+        return result ?? networkRegistry.getDefaultEntry();
     }
 
-    public static setLastNetwork(newValue: string|NetworkEntry): void {
-        const newItem = typeof newValue == "string" ? newValue : newValue.name
-        this.setLocalStorageItem(this.LAST_USED_NETWORK_KEY, newItem)
+    public static setLastNetwork(newValue: string | NetworkEntry): void {
+        const newItem = typeof newValue == "string" ? newValue : newValue.name;
+        this.setLocalStorageItem(this.LAST_USED_NETWORK_KEY, newItem);
     }
 
     //
     // skip disclaimer (wallet chooser)
     //
 
-    private static readonly DISCLAIMER_SKIP_KEY = 'skipDisclaimer'
+    private static readonly DISCLAIMER_SKIP_KEY = "skipDisclaimer";
 
     public static getSkipDisclaimer(): boolean {
-        return  this.getLocalStorageItem(this.DISCLAIMER_SKIP_KEY) != null
+        return this.getLocalStorageItem(this.DISCLAIMER_SKIP_KEY) != null;
     }
 
-    public static setSkipDisclaimer(newValue: boolean|null): void {
-        this.setLocalStorageItem(this.DISCLAIMER_SKIP_KEY, newValue ? "true" : null)
+    public static setSkipDisclaimer(newValue: boolean | null): void {
+        this.setLocalStorageItem(
+            this.DISCLAIMER_SKIP_KEY,
+            newValue ? "true" : null,
+        );
     }
 
     //
     // contract logs table page size
     //
 
-    private static readonly CONTRACT_LOGS_TABLE_PAGE_SIZE_KEY = 'logsPageSize'
+    private static readonly CONTRACT_LOGS_TABLE_PAGE_SIZE_KEY = "logsPageSize";
 
     public static getLogsTablePageSize(): number | null {
-        const size = this.getLocalStorageItem(this.CONTRACT_LOGS_TABLE_PAGE_SIZE_KEY)
-        return size ? Number(size) : null
+        const size = this.getLocalStorageItem(
+            this.CONTRACT_LOGS_TABLE_PAGE_SIZE_KEY,
+        );
+        return size ? Number(size) : null;
     }
 
-    public static setLogsTablePageSize(newValue: number | null ): void {
-        this.setLocalStorageItem(this.CONTRACT_LOGS_TABLE_PAGE_SIZE_KEY, newValue ? newValue?.toString() : null)
+    public static setLogsTablePageSize(newValue: number | null): void {
+        this.setLocalStorageItem(
+            this.CONTRACT_LOGS_TABLE_PAGE_SIZE_KEY,
+            newValue ? newValue?.toString() : null,
+        );
     }
 
     //
     // contract states table page size
     //
 
-    private static readonly CONTRACT_STATES_TABLE_PAGE_SIZE_KEY = 'statesPageSize'
+    private static readonly CONTRACT_STATES_TABLE_PAGE_SIZE_KEY =
+        "statesPageSize";
 
     public static getStatesTablePageSize(): number | null {
-        const size = this.getLocalStorageItem(this.CONTRACT_STATES_TABLE_PAGE_SIZE_KEY)
-        return size ? Number(size) : null
+        const size = this.getLocalStorageItem(
+            this.CONTRACT_STATES_TABLE_PAGE_SIZE_KEY,
+        );
+        return size ? Number(size) : null;
     }
 
-    public static setStatesTablePageSize(newValue: number | null ): void {
-        this.setLocalStorageItem(this.CONTRACT_STATES_TABLE_PAGE_SIZE_KEY, newValue ? newValue?.toString() : null)
+    public static setStatesTablePageSize(newValue: number | null): void {
+        this.setLocalStorageItem(
+            this.CONTRACT_STATES_TABLE_PAGE_SIZE_KEY,
+            newValue ? newValue?.toString() : null,
+        );
     }
 
     //
     // cookiePolicy
     //
 
-    private static readonly COOKIE_POLICY_NAME = 'cookie_policy'
-    private static readonly COOKIE_POLICY_ACCEPT = 'accept'
-    private static readonly COOKIE_POLICY_REJECT = 'reject'
-    private static readonly COOKIE_POLICY_VALIDITY = 365 // days
+    private static readonly COOKIE_POLICY_NAME = "cookie_policy";
+    private static readonly COOKIE_POLICY_ACCEPT = "accept";
+    private static readonly COOKIE_POLICY_REJECT = "reject";
+    private static readonly COOKIE_POLICY_VALIDITY = 365; // days
 
-    public static getAcceptCookiePolicy(): boolean|null {
-        const policy = AppStorage.readCookie(AppStorage.COOKIE_POLICY_NAME)
-        return policy != null ? policy === AppStorage.COOKIE_POLICY_ACCEPT : null
+    public static getAcceptCookiePolicy(): boolean | null {
+        const policy = AppStorage.readCookie(AppStorage.COOKIE_POLICY_NAME);
+        return policy != null
+            ? policy === AppStorage.COOKIE_POLICY_ACCEPT
+            : null;
     }
 
     public static setAcceptCookiePolicy(accept: boolean): void {
-        const policy = accept ? AppStorage.COOKIE_POLICY_ACCEPT : AppStorage.COOKIE_POLICY_REJECT
-        AppStorage.createCookie(AppStorage.COOKIE_POLICY_NAME, policy, AppStorage.COOKIE_POLICY_VALIDITY)
+        const policy = accept
+            ? AppStorage.COOKIE_POLICY_ACCEPT
+            : AppStorage.COOKIE_POLICY_REJECT;
+        AppStorage.createCookie(
+            AppStorage.COOKIE_POLICY_NAME,
+            policy,
+            AppStorage.COOKIE_POLICY_VALIDITY,
+        );
     }
 
     //
     // metadata
     //
 
-    private static readonly METADATA = 'metadata'
+    private static readonly METADATA = "metadata";
 
     public static getMetadata(contractId: string): SolcMetadata | null {
-        let result: SolcMetadata|null
+        let result: SolcMetadata | null;
 
-        const suffix = this.METADATA + "/" + contractId
-        const jsonText = this.getLocalStorageItem(suffix)
+        const suffix = this.METADATA + "/" + contractId;
+        const jsonText = this.getLocalStorageItem(suffix);
         if (jsonText !== null) {
             try {
-                result = JSON.parse(jsonText) as SolcMetadata
+                result = JSON.parse(jsonText) as SolcMetadata;
             } catch {
-                result = null
+                result = null;
             }
         } else {
-            result = null
+            result = null;
         }
 
-        return result
+        return result;
     }
 
-    public static setMetadata(newValue: SolcMetadata | null, contractId: string ): void {
-        const suffix = this.METADATA + "/" + contractId
-        this.setLocalStorageItem(suffix, JSON.stringify(newValue))
+    public static setMetadata(
+        newValue: SolcMetadata | null,
+        contractId: string,
+    ): void {
+        const suffix = this.METADATA + "/" + contractId;
+        this.setLocalStorageItem(suffix, JSON.stringify(newValue));
     }
 
     //
     // source
     //
 
-    private static readonly SOURCE = 'source'
+    private static readonly SOURCE = "source";
 
     public static getSource(name: string): string | null {
-        const suffix = this.SOURCE + "/" + name
-        return this.getLocalStorageItem(suffix)
+        const suffix = this.SOURCE + "/" + name;
+        return this.getLocalStorageItem(suffix);
     }
 
-    public static setSource(newValue: string | null, name: string ): void {
-        const suffix = this.SOURCE + "/" + name
-        this.setLocalStorageItem(suffix, newValue)
+    public static setSource(newValue: string | null, name: string): void {
+        const suffix = this.SOURCE + "/" + name;
+        this.setLocalStorageItem(suffix, newValue);
     }
-
 
     //
     // Private
     //
 
-    private static getLocalStorageItem(keySuffix: string): string|null {
-        let result: string|null
+    private static getLocalStorageItem(keySuffix: string): string | null {
+        let result: string | null;
         try {
-            result = localStorage.getItem(AppStorage.VERSION + "/" + keySuffix)
+            result = localStorage.getItem(AppStorage.VERSION + "/" + keySuffix);
         } catch {
-            result = null
+            result = null;
         }
-        return result
+        return result;
     }
 
-    private static setLocalStorageItem(keySuffix: string, value: string|null) {
-        const key = AppStorage.VERSION + "/" + keySuffix
+    private static setLocalStorageItem(
+        keySuffix: string,
+        value: string | null,
+    ) {
+        const key = AppStorage.VERSION + "/" + keySuffix;
         try {
             if (value != null) {
                 localStorage.setItem(key, value);
@@ -183,36 +209,40 @@ export class AppStorage {
     // from routines provided at https://www.quirksmode.org/js/cookies.html
     //
 
-    private static createCookie(name: string, value: string, days:number): void {
-        let expires
+    private static createCookie(
+        name: string,
+        value: string,
+        days: number,
+    ): void {
+        let expires;
         if (days) {
-            let date = new Date()
-            date.setTime(date.getTime() + (days*24*60*60*1000))
-            expires = `; expires=${date.toUTCString()}`
+            let date = new Date();
+            date.setTime(date.getTime() + days * 24 * 60 * 60 * 1000);
+            expires = `; expires=${date.toUTCString()}`;
         } else {
-            expires = ""
+            expires = "";
         }
-        document.cookie = `${name}=${value}${expires}; path=/`
+        document.cookie = `${name}=${value}${expires}; path=/`;
     }
 
-    private static readCookie(name: string): string|null {
-        let result = null
-        const nameEQ = name + "="
-        const ca = document.cookie.split(';')
-        for (let i= 0; i < ca.length; i++) {
-            let c = ca[i]
-            while (c.charAt(0)==' ') {
-                c = c.substring(1, c.length)
+    private static readCookie(name: string): string | null {
+        let result = null;
+        const nameEQ = name + "=";
+        const ca = document.cookie.split(";");
+        for (let i = 0; i < ca.length; i++) {
+            let c = ca[i];
+            while (c.charAt(0) == " ") {
+                c = c.substring(1, c.length);
             }
             if (c.indexOf(nameEQ) == 0) {
-                result = c.substring(nameEQ.length, c.length)
-                break
+                result = c.substring(nameEQ.length, c.length);
+                break;
             }
         }
-        return result
+        return result;
     }
 
     private static eraseCookie(name: string): void {
-        AppStorage.createCookie(name,"",-1)
+        AppStorage.createCookie(name, "", -1);
     }
 }

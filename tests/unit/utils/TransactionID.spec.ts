@@ -18,69 +18,68 @@
  *
  */
 
-import {describe, test, expect} from 'vitest'
-import {normalizeTransactionId, TransactionID} from "@/utils/TransactionID";
+import { describe, test, expect } from "vitest";
+import { normalizeTransactionId, TransactionID } from "@/utils/TransactionID";
 
 describe("TransactionID.ts", () => {
-
     //
     // TransactionID.parse()
     //
 
     test("0.0.88-1640084590-665216882", () => {
-        const str = "0.0.88-1640084590-665216882"
-        const obj = TransactionID.parse(str)
-        expect(obj?.entityID.shard).toBe(0)
-        expect(obj?.entityID.realm).toBe(0)
-        expect(obj?.entityID.num).toBe(88)
-        expect(obj?.seconds).toBe(1640084590)
-        expect(obj?.nanoSeconds).toBe(665216882)
-        expect(obj?.toString(false)).toBe(str)
-    })
+        const str = "0.0.88-1640084590-665216882";
+        const obj = TransactionID.parse(str);
+        expect(obj?.entityID.shard).toBe(0);
+        expect(obj?.entityID.realm).toBe(0);
+        expect(obj?.entityID.num).toBe(88);
+        expect(obj?.seconds).toBe(1640084590);
+        expect(obj?.nanoSeconds).toBe(665216882);
+        expect(obj?.toString(false)).toBe(str);
+    });
 
     test("0.0.88@1640084590.665216882", () => {
-        const str = "0.0.88@1640084590.665216882"
-        const obj = TransactionID.parse(str)
-        expect(obj?.entityID.shard).toBe(0)
-        expect(obj?.entityID.realm).toBe(0)
-        expect(obj?.entityID.num).toBe(88)
-        expect(obj?.seconds).toBe(1640084590)
-        expect(obj?.nanoSeconds).toBe(665216882)
-        expect(obj?.toString(true)).toBe(str)
-    })
+        const str = "0.0.88@1640084590.665216882";
+        const obj = TransactionID.parse(str);
+        expect(obj?.entityID.shard).toBe(0);
+        expect(obj?.entityID.realm).toBe(0);
+        expect(obj?.entityID.num).toBe(88);
+        expect(obj?.seconds).toBe(1640084590);
+        expect(obj?.nanoSeconds).toBe(665216882);
+        expect(obj?.toString(true)).toBe(str);
+    });
 
     test("00881640084590665216882", () => {
-        const obj = TransactionID.parse("00881640084590665216882")
-        expect(obj?.entityID.shard).toBe(0)
-        expect(obj?.entityID.realm).toBe(0)
-        expect(obj?.entityID.num).toBe(88)
-        expect(obj?.seconds).toBe(1640084590)
-        expect(obj?.nanoSeconds).toBe(665216882)
-        expect(obj?.toString(true)).toBe("0.0.88@1640084590.665216882")
-    })
+        const obj = TransactionID.parse("00881640084590665216882");
+        expect(obj?.entityID.shard).toBe(0);
+        expect(obj?.entityID.realm).toBe(0);
+        expect(obj?.entityID.num).toBe(88);
+        expect(obj?.seconds).toBe(1640084590);
+        expect(obj?.nanoSeconds).toBe(665216882);
+        expect(obj?.toString(true)).toBe("0.0.88@1640084590.665216882");
+    });
 
     test("invalid ids", () => {
-        expect(TransactionID.parse("abc")).toBeNull()
-        expect(TransactionID.parse("0.0.88-abc")).toBeNull()
-        expect(TransactionID.parse("0.0.88-12-abc")).toBeNull()
-        expect(TransactionID.parse("0.0.88-12-12-13")).toBeNull()
-        expect(TransactionID.parse("0.0.88@abc")).toBeNull()
-        expect(TransactionID.parse("0.0.88@12.abc")).toBeNull()
-        expect(TransactionID.parse("0.0.88@12.12.14")).toBeNull()
-        expect(TransactionID.parse("001640084590665216882")).toBeNull()
-        expect(TransactionID.parse("11881640084590665216882")).toBeNull()
-    })
+        expect(TransactionID.parse("abc")).toBeNull();
+        expect(TransactionID.parse("0.0.88-abc")).toBeNull();
+        expect(TransactionID.parse("0.0.88-12-abc")).toBeNull();
+        expect(TransactionID.parse("0.0.88-12-12-13")).toBeNull();
+        expect(TransactionID.parse("0.0.88@abc")).toBeNull();
+        expect(TransactionID.parse("0.0.88@12.abc")).toBeNull();
+        expect(TransactionID.parse("0.0.88@12.12.14")).toBeNull();
+        expect(TransactionID.parse("001640084590665216882")).toBeNull();
+        expect(TransactionID.parse("11881640084590665216882")).toBeNull();
+    });
 
     //
     // TransactionID.normalizeTransactionId()
     //
 
     test("normalize", () => {
-        const str1 = "0.0.88-1640084590-665216882"
-        const str2 = "0.0.88@1640084590.665216882"
-        expect(normalizeTransactionId(str1, true)).toBe(str2)
-        expect(normalizeTransactionId(str2, false)).toBe(str1)
-        expect(normalizeTransactionId(str1, false)).toBe(str1)
-        expect(normalizeTransactionId(str2, true)).toBe(str2)
-    })
-})
+        const str1 = "0.0.88-1640084590-665216882";
+        const str2 = "0.0.88@1640084590.665216882";
+        expect(normalizeTransactionId(str1, true)).toBe(str2);
+        expect(normalizeTransactionId(str2, false)).toBe(str1);
+        expect(normalizeTransactionId(str1, false)).toBe(str1);
+        expect(normalizeTransactionId(str2, true)).toBe(str2);
+    });
+});

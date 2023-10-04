@@ -18,8 +18,8 @@
  *
  */
 
-import {describe, it, expect} from 'vitest'
-import {mount} from "@vue/test-utils"
+import { describe, it, expect } from "vitest";
+import { mount } from "@vue/test-utils";
 import DashboardCard from "@/components/DashboardCard.vue";
 
 /*
@@ -27,36 +27,31 @@ import DashboardCard from "@/components/DashboardCard.vue";
  */
 
 describe("DashboardCard.vue", () => {
-
     it("should have all slots empty", async () => {
-
         const wrapper = mount(DashboardCard, {});
 
-        expect(wrapper.text()).toBe("")
+        expect(wrapper.text()).toBe("");
 
-        wrapper.unmount()
-    })
+        wrapper.unmount();
+    });
 
     it("should have all slots setup", async () => {
-
-        const sampleTitle = "ZeTitle"
-        const sampleControl = "ZeControl"
-        const sampleContent = "ZeContent"
+        const sampleTitle = "ZeTitle";
+        const sampleControl = "ZeControl";
+        const sampleContent = "ZeContent";
 
         const wrapper = mount(DashboardCard, {
             slots: {
                 title: sampleTitle,
                 control: sampleControl,
                 content: sampleContent,
-            }
+            },
         });
 
-        expect(wrapper.text()).toContain(sampleTitle)
-        expect(wrapper.text()).toContain(sampleControl)
-        expect(wrapper.text()).toContain(sampleContent)
+        expect(wrapper.text()).toContain(sampleTitle);
+        expect(wrapper.text()).toContain(sampleControl);
+        expect(wrapper.text()).toContain(sampleContent);
 
-        wrapper.unmount()
-    })
-
-})
-
+        wrapper.unmount();
+    });
+});

@@ -18,24 +18,34 @@
  *
  */
 
-import {ContractResult, ContractResultDetails, ContractResultsResponse} from "@/schemas/HederaSchemas";
-import {ContractResultByHashCache} from "@/utils/cache/ContractResultByHashCache";
-import {EntityCache} from "@/utils/cache/base/EntityCache"
+import {
+    ContractResult,
+    ContractResultDetails,
+    ContractResultsResponse,
+} from "@/schemas/HederaSchemas";
+import { ContractResultByHashCache } from "@/utils/cache/ContractResultByHashCache";
+import { EntityCache } from "@/utils/cache/base/EntityCache";
 import axios from "axios";
 
-export class ContractResultByTsCache extends EntityCache<string, ContractResultDetails|null> {
-
-    public static readonly instance = new ContractResultByTsCache()
-
+export class ContractResultByTsCache extends EntityCache<
+    string,
+    ContractResultDetails | null
+> {
+    public static readonly instance = new ContractResultByTsCache();
 
     //
     // Public
     //
 
-    public updateWithContractResult(contractResult: ContractResultDetails): void {
+    public updateWithContractResult(
+        contractResult: ContractResultDetails,
+    ): void {
         if (contractResult.timestamp) {
-            this.forget(contractResult.timestamp)
-            this.mutate(contractResult.timestamp, Promise.resolve(contractResult))
+            this.forget(contractResult.timestamp);
+            this.mutate(
+                contractResult.timestamp,
+                Promise.resolve(contractResult),
+            );
         }
     }
 
@@ -43,63 +53,79 @@ export class ContractResultByTsCache extends EntityCache<string, ContractResultD
     // Cache
     //
 
-    protected async load(timestamp: string): Promise<ContractResultDetails|null> {
-        let result: ContractResultDetails|null
-        const contractResult = await this.loadContractResult(timestamp)
-        const contractId = contractResult?.contract_id ?? null
+    protected async load(
+        timestamp: string,
+    ): Promise<ContractResultDetails | null> {
+        let result: ContractResultDetails | null;
+        const contractResult = await this.loadContractResult(timestamp);
+        const contractId = contractResult?.contract_id ?? null;
         if (contractId !== null) {
-            result = await this.loadContractResultDetail(contractId, timestamp)
+            result = await this.loadContractResultDetail(contractId, timestamp);
             if (result !== null) {
-                ContractResultByHashCache.instance.updateWithContractResult(result);
+                ContractResultByHashCache.instance.updateWithContractResult(
+                    result,
+                );
             }
         } else {
-            const ethereumHash = contractResult?.hash ?? null
+            const ethereumHash = contractResult?.hash ?? null;
             if (ethereumHash !== null) {
-                result = await ContractResultByHashCache.instance.lookup(ethereumHash)
+                result =
+                    await ContractResultByHashCache.instance.lookup(
+                        ethereumHash,
+                    );
             } else {
-                result = null
+                result = null;
             }
         }
-        return  Promise.resolve(result)
+        return Promise.resolve(result);
     }
 
     //
     // Private
     //
 
-    private async loadContractResult(timestamp: string): Promise<ContractResult|null> {
-        let result: ContractResult|null
+    private async loadContractResult(
+        timestamp: string,
+    ): Promise<ContractResult | null> {
+        let result: ContractResult | null;
         try {
             const parameters = {
                 timestamp: timestamp,
-                internal: true
-            }
-            const response = await axios.get<ContractResultsResponse>("api/v1/contracts/results", {params: parameters})
-            const results = response.data.results
-            result = results && results.length >= 1 ? results[0] : null
-        } catch(error) {
+                internal: true,
+            };
+            const response = await axios.get<ContractResultsResponse>(
+                "api/v1/contracts/results",
+                { params: parameters },
+            );
+            const results = response.data.results;
+            result = results && results.length >= 1 ? results[0] : null;
+        } catch (error) {
             if (axios.isAxiosError(error) && error.response?.status == 404) {
-                result = null
+                result = null;
             } else {
-                throw error
+                throw error;
             }
         }
-        return Promise.resolve(result)
+        return Promise.resolve(result);
     }
 
-    private async loadContractResultDetail(contractId: string, timestamp: string): Promise<ContractResultDetails|null> {
-        let result: ContractResultDetails|null
+    private async loadContractResultDetail(
+        contractId: string,
+        timestamp: string,
+    ): Promise<ContractResultDetails | null> {
+        let result: ContractResultDetails | null;
         try {
-            const response = await axios.get<ContractResultDetails>("api/v1/contracts/" + contractId + "/results/" + timestamp)
-            result = response.data
-        } catch(error) {
+            const response = await axios.get<ContractResultDetails>(
+                "api/v1/contracts/" + contractId + "/results/" + timestamp,
+            );
+            result = response.data;
+        } catch (error) {
             if (axios.isAxiosError(error) && error.response?.status == 404) {
-                result = null
+                result = null;
             } else {
-                throw error
+                throw error;
             }
         }
-        return  Promise.resolve(result)
+        return Promise.resolve(result);
     }
 }
-

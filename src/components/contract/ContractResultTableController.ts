@@ -18,72 +18,100 @@
  *
  */
 
-import {KeyOperator, SortOrder, TableController} from "@/utils/table/TableController";
-import {ContractResult, ContractResultsResponse} from "@/schemas/HederaSchemas";
-import {ComputedRef, Ref} from "vue";
-import axios, {AxiosResponse} from "axios";
-import {Router} from "vue-router";
+import {
+    KeyOperator,
+    SortOrder,
+    TableController,
+} from "@/utils/table/TableController";
+import {
+    ContractResult,
+    ContractResultsResponse,
+} from "@/schemas/HederaSchemas";
+import { ComputedRef, Ref } from "vue";
+import axios, { AxiosResponse } from "axios";
+import { Router } from "vue-router";
 
-export class ContractResultTableController extends TableController<ContractResult, string> {
-
-    private readonly contractId: Ref<string | null>
+export class ContractResultTableController extends TableController<
+    ContractResult,
+    string
+> {
+    private readonly contractId: Ref<string | null>;
 
     //
     // Public
     //
 
-    public constructor(router: Router,
-                       contractId: Ref<string | null>,
-                       pageSize: ComputedRef<number>,
-                       pageParamName = "p", keyParamName = "k") {
-        super(router, pageSize, 10 * pageSize.value, 5000, 10, 100,
-            pageParamName, keyParamName);
-        this.contractId = contractId
-        this.watchAndReload([this.contractId])
+    public constructor(
+        router: Router,
+        contractId: Ref<string | null>,
+        pageSize: ComputedRef<number>,
+        pageParamName = "p",
+        keyParamName = "k",
+    ) {
+        super(
+            router,
+            pageSize,
+            10 * pageSize.value,
+            5000,
+            10,
+            100,
+            pageParamName,
+            keyParamName,
+        );
+        this.contractId = contractId;
+        this.watchAndReload([this.contractId]);
     }
 
     //
     // TableController
     //
 
-    public async load(consensusTimestamp: string | null, operator: KeyOperator,
-                      order: SortOrder, limit: number): Promise<ContractResult[] | null> {
-        let result: Promise<ContractResult[] | null>
+    public async load(
+        consensusTimestamp: string | null,
+        operator: KeyOperator,
+        order: SortOrder,
+        limit: number,
+    ): Promise<ContractResult[] | null> {
+        let result: Promise<ContractResult[] | null>;
 
         if (this.contractId.value === null) {
-            result = Promise.resolve(null)
+            result = Promise.resolve(null);
         } else {
             const params = {} as {
-                limit: number
-                order: string
-                timestamp: string | undefined
-            }
-            params.limit = limit
-            params.order = order
+                limit: number;
+                order: string;
+                timestamp: string | undefined;
+            };
+            params.limit = limit;
+            params.order = order;
             if (consensusTimestamp !== null) {
-                params.timestamp = operator + ":" + consensusTimestamp
+                params.timestamp = operator + ":" + consensusTimestamp;
             }
-            const cb = (r: AxiosResponse<ContractResultsResponse>): Promise<ContractResult[] | null> => {
-                return Promise.resolve(r.data.results ?? [])
-            }
-            result = axios.get<ContractResultsResponse>(
-                "api/v1/contracts/" + this.contractId.value + "/results", {params: params})
-                .then(cb)
+            const cb = (
+                r: AxiosResponse<ContractResultsResponse>,
+            ): Promise<ContractResult[] | null> => {
+                return Promise.resolve(r.data.results ?? []);
+            };
+            result = axios
+                .get<ContractResultsResponse>(
+                    "api/v1/contracts/" + this.contractId.value + "/results",
+                    { params: params },
+                )
+                .then(cb);
         }
 
-        return result
+        return result;
     }
 
     public keyFor(row: ContractResult): string {
-        return row.timestamp ?? ""
+        return row.timestamp ?? "";
     }
 
     public keyFromString(s: string): string | null {
-        return s
+        return s;
     }
 
     public stringFromKey(key: string): string {
-        return key
+        return key;
     }
-
 }

@@ -18,55 +18,80 @@
  *
  */
 
-import {TokenBalancesResponse, TokenDistribution} from "@/schemas/HederaSchemas";
-import {ComputedRef, Ref} from "vue";
-import axios, {AxiosResponse} from "axios";
-import {KeyOperator, SortOrder, TableController} from "@/utils/table/TableController";
-import {Router} from "vue-router";
+import {
+    TokenBalancesResponse,
+    TokenDistribution,
+} from "@/schemas/HederaSchemas";
+import { ComputedRef, Ref } from "vue";
+import axios, { AxiosResponse } from "axios";
+import {
+    KeyOperator,
+    SortOrder,
+    TableController,
+} from "@/utils/table/TableController";
+import { Router } from "vue-router";
 
-export class TokenBalanceTableController extends TableController<TokenDistribution, string> {
-
-    public readonly tokenId: Ref<string | null>
+export class TokenBalanceTableController extends TableController<
+    TokenDistribution,
+    string
+> {
+    public readonly tokenId: Ref<string | null>;
 
     //
     // Public
     //
 
-    public constructor(router: Router, tokenId: ComputedRef<string | null>, pageSize: ComputedRef<number>) {
+    public constructor(
+        router: Router,
+        tokenId: ComputedRef<string | null>,
+        pageSize: ComputedRef<number>,
+    ) {
         super(router, pageSize, 10 * pageSize.value, 5000, 10, 100);
-        this.tokenId = tokenId
-        this.watchAndReload([this.tokenId])
+        this.tokenId = tokenId;
+        this.watchAndReload([this.tokenId]);
     }
 
     //
     // TableController
     //
 
-    public async load(accountId: string | null, operator: KeyOperator, order: SortOrder, limit: number): Promise<TokenDistribution[] | null> {
-        let result
+    public async load(
+        accountId: string | null,
+        operator: KeyOperator,
+        order: SortOrder,
+        limit: number,
+    ): Promise<TokenDistribution[] | null> {
+        let result;
         if (this.tokenId.value) {
             const params = {} as {
-                limit: number
-                order: string
-                'account.id': string | undefined
-            }
-            params.limit = limit
-            params.order = order
+                limit: number;
+                order: string;
+                "account.id": string | undefined;
+            };
+            params.limit = limit;
+            params.order = order;
             if (accountId !== null) {
-                params['account.id'] = operator + ":" + accountId
+                params["account.id"] = operator + ":" + accountId;
             }
-            const cb = (r: AxiosResponse<TokenBalancesResponse>): Promise<TokenDistribution[] | null> => {
-                return Promise.resolve(r.data.balances ?? [])
-            }
-            result = axios.get<TokenBalancesResponse>("api/v1/tokens/" + this.tokenId.value + "/balances", {params: params}).then(cb)
+            const cb = (
+                r: AxiosResponse<TokenBalancesResponse>,
+            ): Promise<TokenDistribution[] | null> => {
+                return Promise.resolve(r.data.balances ?? []);
+            };
+            result = axios
+                .get<TokenBalancesResponse>(
+                    "api/v1/tokens/" + this.tokenId.value + "/balances",
+                    { params: params },
+                )
+                .then(cb);
         } else {
-            result = Promise.resolve(null)
+            result = Promise.resolve(null);
         }
-        return result
+        return result;
     }
 
     public keyFor(row: TokenDistribution): string {
-        return row.account ?? ""
+        return row.account ?? "";
     }
 
     public stringFromKey(key: string): string {

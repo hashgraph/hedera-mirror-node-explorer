@@ -18,83 +18,79 @@
  *
  */
 
-import {describe, it, expect} from 'vitest'
-import {mount} from "@vue/test-utils"
+import { describe, it, expect } from "vitest";
+import { mount } from "@vue/test-utils";
 import router from "@/router";
 import KeyValue from "@/components/values/KeyValue.vue";
 
 describe("KeyValue.vue", () => {
-
     it("props.keyBytes set", async () => {
+        await router.push("/"); // To avoid "missing required param 'network'" error
 
-        await router.push("/") // To avoid "missing required param 'network'" error
-
-        const testBytes = "000102030405060708090A0B0C0D0E0F"
+        const testBytes = "000102030405060708090A0B0C0D0E0F";
         const wrapper = mount(KeyValue, {
             global: {
-                plugins: [router]
+                plugins: [router],
             },
             props: {
-                keyBytes: testBytes
+                keyBytes: testBytes,
             },
         });
 
-        expect(wrapper.text()).toBe("0001 0203 0405 0607 0809 0A0B 0C0D 0E0FCopy")
+        expect(wrapper.text()).toBe(
+            "0001 0203 0405 0607 0809 0A0B 0C0D 0E0FCopy",
+        );
 
-        wrapper.unmount()
+        wrapper.unmount();
     });
 
     it("props.keyBytes unset, showNone=false", async () => {
-
-        await router.push("/") // To avoid "missing required param 'network'" error
+        await router.push("/"); // To avoid "missing required param 'network'" error
 
         const wrapper = mount(KeyValue, {
             global: {
-                plugins: [router]
+                plugins: [router],
             },
-            props: {
-            },
+            props: {},
         });
 
-        expect(wrapper.text()).toBe("")
+        expect(wrapper.text()).toBe("");
 
-        wrapper.unmount()
+        wrapper.unmount();
     });
 
     it("props.keyBytes unset, showNone=true", async () => {
-
-        await router.push("/") // To avoid "missing required param 'network'" error
-
-        const wrapper = mount(KeyValue, {
-            global: {
-                plugins: [router]
-            },
-            props: {
-                showNone: true
-            },
-        });
-
-        expect(wrapper.text()).toBe("None")
-
-        wrapper.unmount()
-    });
-
-    it("should display 'None' with a mention on the line below", async () => {
-
-        await router.push("/") // To avoid "missing required param 'network'" error
+        await router.push("/"); // To avoid "missing required param 'network'" error
 
         const wrapper = mount(KeyValue, {
             global: {
-                plugins: [router]
+                plugins: [router],
             },
             props: {
                 showNone: true,
-                noneExtra: "This should be displayed below None"
             },
         });
 
-        expect(wrapper.text()).toBe("NoneThis should be displayed below None")
+        expect(wrapper.text()).toBe("None");
 
-        wrapper.unmount()
+        wrapper.unmount();
+    });
+
+    it("should display 'None' with a mention on the line below", async () => {
+        await router.push("/"); // To avoid "missing required param 'network'" error
+
+        const wrapper = mount(KeyValue, {
+            global: {
+                plugins: [router],
+            },
+            props: {
+                showNone: true,
+                noneExtra: "This should be displayed below None",
+            },
+        });
+
+        expect(wrapper.text()).toBe("NoneThis should be displayed below None");
+
+        wrapper.unmount();
     });
 });

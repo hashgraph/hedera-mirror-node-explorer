@@ -18,17 +18,17 @@
  *
  */
 
-import {describe, test, expect} from 'vitest'
-import {flushPromises, mount} from "@vue/test-utils"
+import { describe, test, expect } from "vitest";
+import { flushPromises, mount } from "@vue/test-utils";
 import router from "@/router";
 import axios from "axios";
-import {SAMPLE_TOKENS} from "../Mocks";
+import { SAMPLE_TOKENS } from "../Mocks";
 import Tokens from "@/pages/Tokens.vue";
 import DashboardCard from "@/components/DashboardCard.vue";
 import TokenTable from "@/components/token/TokenTable.vue";
 import MockAdapter from "axios-mock-adapter";
 import Oruga from "@oruga-ui/oruga-next";
-import {HMSF} from "@/utils/HMSF";
+import { HMSF } from "@/utils/HMSF";
 
 /*
     Bookmarks
@@ -37,64 +37,59 @@ import {HMSF} from "@/utils/HMSF";
 
  */
 
-HMSF.forceUTC = true
+HMSF.forceUTC = true;
 
 describe("Tokens.vue", () => {
-
     test("no props", async () => {
-
-        await router.push("/") // To avoid "missing required param 'network'" error
+        await router.push("/"); // To avoid "missing required param 'network'" error
 
         const mock = new MockAdapter(axios);
 
-        const matcher = "/api/v1/tokens"
+        const matcher = "/api/v1/tokens";
         mock.onGet(matcher).reply(200, SAMPLE_TOKENS);
 
         const wrapper = mount(Tokens, {
             global: {
-                plugins: [router, Oruga]
+                plugins: [router, Oruga],
             },
             props: {},
         });
 
-        await flushPromises()
+        await flushPromises();
         // console.log(wrapper.text())
 
-        expect(wrapper.vm.nftTableController.mounted.value).toBe(true)
-        expect(wrapper.vm.tokenTableController.mounted.value).toBe(true)
+        expect(wrapper.vm.nftTableController.mounted.value).toBe(true);
+        expect(wrapper.vm.tokenTableController.mounted.value).toBe(true);
 
-        const cards = wrapper.findAllComponents(DashboardCard)
-        expect(cards.length).toBe(2)
+        const cards = wrapper.findAllComponents(DashboardCard);
+        expect(cards.length).toBe(2);
 
-        expect(cards[0].text()).toMatch(RegExp("^Recent Non Fungible Tokens"))
-        const table1 = cards[0].findComponent(TokenTable)
-        expect(table1.exists()).toBe(true)
-        expect(table1.get('thead').text()).toBe("Token Symbol")
-        expect(table1.get('tbody').text()).toBe(
+        expect(cards[0].text()).toMatch(RegExp("^Recent Non Fungible Tokens"));
+        const table1 = cards[0].findComponent(TokenTable);
+        expect(table1.exists()).toBe(true);
+        expect(table1.get("thead").text()).toBe("Token Symbol");
+        expect(table1.get("tbody").text()).toBe(
             "0.0.29662956" +
-            "QmVGABnvpbPwLcfG4iuW2JSzY8MLkALhd54bdPAbJxoEkB"
-            +
-            "0.0.748383" +
-            "ĦFRENSKINGDOM"
-        )
+                "QmVGABnvpbPwLcfG4iuW2JSzY8MLkALhd54bdPAbJxoEkB" +
+                "0.0.748383" +
+                "ĦFRENSKINGDOM",
+        );
 
-        expect(cards[1].text()).toMatch(RegExp("^Recent Fungible Tokens"))
-        const table2 = cards[1].findComponent(TokenTable)
-        expect(table2.exists()).toBe(true)
-        expect(table2.get('thead').text()).toBe("Token Symbol")
-        expect(table2.get('tbody').text()).toBe(
+        expect(cards[1].text()).toMatch(RegExp("^Recent Fungible Tokens"));
+        const table2 = cards[1].findComponent(TokenTable);
+        expect(table2.exists()).toBe(true);
+        expect(table2.get("thead").text()).toBe("Token Symbol");
+        expect(table2.get("tbody").text()).toBe(
             "0.0.29662956" +
-            "QmVGABnvpbPwLcfG4iuW2JSzY8MLkALhd54bdPAbJxoEkB"
-            +
-            "0.0.748383" +
-            "ĦFRENSKINGDOM"
-        )
+                "QmVGABnvpbPwLcfG4iuW2JSzY8MLkALhd54bdPAbJxoEkB" +
+                "0.0.748383" +
+                "ĦFRENSKINGDOM",
+        );
 
-        wrapper.unmount()
-        await flushPromises()
+        wrapper.unmount();
+        await flushPromises();
 
-        expect(wrapper.vm.nftTableController.mounted.value).toBe(false)
-        expect(wrapper.vm.tokenTableController.mounted.value).toBe(false)
+        expect(wrapper.vm.nftTableController.mounted.value).toBe(false);
+        expect(wrapper.vm.tokenTableController.mounted.value).toBe(false);
     });
-
 });

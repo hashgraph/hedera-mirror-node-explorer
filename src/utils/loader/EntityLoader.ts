@@ -18,39 +18,54 @@
  *
  */
 
-import axios, {AxiosResponse} from "axios";
-import {computed, ComputedRef, Ref, ref, watch, WatchSource, WatchStopHandle} from "vue";
-
+import axios, { AxiosResponse } from "axios";
+import {
+    computed,
+    ComputedRef,
+    Ref,
+    ref,
+    watch,
+    WatchSource,
+    WatchStopHandle,
+} from "vue";
 
 export abstract class EntityLoader<E> {
-
-    private readonly responseRef: Ref<AxiosResponse<E> | null> = ref(null)
-    private readonly errorRef: Ref<unknown> = ref(null)
-    private sessionId = 0
-    private watchStopHandle: WatchStopHandle|null = null
+    private readonly responseRef: Ref<AxiosResponse<E> | null> = ref(null);
+    private readonly errorRef: Ref<unknown> = ref(null);
+    private sessionId = 0;
+    private watchStopHandle: WatchStopHandle | null = null;
 
     //
     // Public
     //
 
-    public response: ComputedRef<AxiosResponse<E>|null> = computed(() => this.responseRef.value)
-    public entity: ComputedRef<E|null> = computed(() => this.responseRef.value?.data ?? null)
-    public error: ComputedRef<unknown> = computed(() => this.errorRef.value)
-    public got404: ComputedRef<boolean> = computed(() => this.errorRef.value !== null
-                                            && axios.isAxiosError(this.errorRef.value)
-                                            && this.errorRef.value?.response?.status === 404)
+    public response: ComputedRef<AxiosResponse<E> | null> = computed(
+        () => this.responseRef.value,
+    );
+    public entity: ComputedRef<E | null> = computed(
+        () => this.responseRef.value?.data ?? null,
+    );
+    public error: ComputedRef<unknown> = computed(() => this.errorRef.value);
+    public got404: ComputedRef<boolean> = computed(
+        () =>
+            this.errorRef.value !== null &&
+            axios.isAxiosError(this.errorRef.value) &&
+            this.errorRef.value?.response?.status === 404,
+    );
 
     public requestLoad(): void {
-        this.incrementSessionId()
-        const capturedSessionId = this.sessionId
-        const resolve = (newResponse: AxiosResponse<E>|null) => this.loadDidComplete(newResponse, capturedSessionId)
-        const reject = (reason: unknown) => this.loadDidFail(reason, capturedSessionId)
-        this.load().then(resolve, reject)
+        this.incrementSessionId();
+        const capturedSessionId = this.sessionId;
+        const resolve = (newResponse: AxiosResponse<E> | null) =>
+            this.loadDidComplete(newResponse, capturedSessionId);
+        const reject = (reason: unknown) =>
+            this.loadDidFail(reason, capturedSessionId);
+        this.load().then(resolve, reject);
     }
 
     public clear(): void {
-        this.responseRef.value = null
-        this.incrementSessionId()
+        this.responseRef.value = null;
+        this.incrementSessionId();
     }
 
     //
@@ -59,16 +74,16 @@ export abstract class EntityLoader<E> {
 
     protected watchAndReload(sources: WatchSource<unknown>[]): void {
         if (this.watchStopHandle != null) {
-            this.watchStopHandle()
-            this.watchStopHandle = null
+            this.watchStopHandle();
+            this.watchStopHandle = null;
         }
         if (sources.length >= 1) {
-            this.watchStopHandle = watch(sources, () => this.requestLoad())
+            this.watchStopHandle = watch(sources, () => this.requestLoad());
         }
     }
 
-    protected async load(): Promise<AxiosResponse<E>|null> {
-        throw Error("must be subclassed")
+    protected async load(): Promise<AxiosResponse<E> | null> {
+        throw Error("must be subclassed");
     }
 
     protected concludeLoad(): void {
@@ -76,27 +91,29 @@ export abstract class EntityLoader<E> {
     }
 
     protected incrementSessionId(): void {
-        this.sessionId += 1
+        this.sessionId += 1;
     }
 
     //
     // Private
     //
 
-    private loadDidComplete(newResponse: AxiosResponse<E>|null, capturedSessionId: number) {
+    private loadDidComplete(
+        newResponse: AxiosResponse<E> | null,
+        capturedSessionId: number,
+    ) {
         if (this.sessionId == capturedSessionId) {
-            this.responseRef.value = newResponse
-            this.errorRef.value = null
-            this.concludeLoad()
+            this.responseRef.value = newResponse;
+            this.errorRef.value = null;
+            this.concludeLoad();
         }
     }
 
     private loadDidFail(reason: unknown, capturedSessionId: number) {
         if (this.sessionId == capturedSessionId) {
-            this.responseRef.value = null
-            this.errorRef.value = reason
-            this.concludeLoad()
+            this.responseRef.value = null;
+            this.errorRef.value = reason;
+            this.concludeLoad();
         }
     }
-
 }

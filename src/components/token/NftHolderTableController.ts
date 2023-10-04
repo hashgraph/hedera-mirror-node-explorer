@@ -18,55 +18,71 @@
  *
  */
 
-import {Nft, Nfts} from "@/schemas/HederaSchemas";
-import {ComputedRef, Ref} from "vue";
-import axios, {AxiosResponse} from "axios";
-import {KeyOperator, SortOrder, TableController} from "@/utils/table/TableController";
-import {Router} from "vue-router";
+import { Nft, Nfts } from "@/schemas/HederaSchemas";
+import { ComputedRef, Ref } from "vue";
+import axios, { AxiosResponse } from "axios";
+import {
+    KeyOperator,
+    SortOrder,
+    TableController,
+} from "@/utils/table/TableController";
+import { Router } from "vue-router";
 
 export class NftHolderTableController extends TableController<Nft, string> {
-
-    public readonly tokenId: Ref<string | null>
+    public readonly tokenId: Ref<string | null>;
 
     //
     // Public
     //
 
-    public constructor(router: Router, tokenId: ComputedRef<string | null>, pageSize: ComputedRef<number>) {
+    public constructor(
+        router: Router,
+        tokenId: ComputedRef<string | null>,
+        pageSize: ComputedRef<number>,
+    ) {
         super(router, pageSize, 10 * pageSize.value, 5000, 10, 100);
-        this.tokenId = tokenId
-        this.watchAndReload([this.tokenId])
+        this.tokenId = tokenId;
+        this.watchAndReload([this.tokenId]);
     }
 
     //
     // TableController
     //
 
-    public async load(serialNumber: string | null, operator: KeyOperator, order: SortOrder, limit: number): Promise<Nft[] | null> {
-        let result
+    public async load(
+        serialNumber: string | null,
+        operator: KeyOperator,
+        order: SortOrder,
+        limit: number,
+    ): Promise<Nft[] | null> {
+        let result;
         if (this.tokenId.value) {
             const params = {} as {
-                limit: number
-                order: string
-                serialnumber: string | undefined
-            }
-            params.limit = limit
-            params.order = order
+                limit: number;
+                order: string;
+                serialnumber: string | undefined;
+            };
+            params.limit = limit;
+            params.order = order;
             if (serialNumber !== null) {
-                params.serialnumber = operator + ":" + serialNumber
+                params.serialnumber = operator + ":" + serialNumber;
             }
             const cb = (r: AxiosResponse<Nfts>): Promise<Nft[] | null> => {
-                return Promise.resolve(r.data.nfts ?? [])
-            }
-            result = axios.get<Nfts>("api/v1/tokens/" + this.tokenId.value + "/nfts", {params: params}).then(cb)
+                return Promise.resolve(r.data.nfts ?? []);
+            };
+            result = axios
+                .get<Nfts>("api/v1/tokens/" + this.tokenId.value + "/nfts", {
+                    params: params,
+                })
+                .then(cb);
         } else {
-            result = Promise.resolve(null)
+            result = Promise.resolve(null);
         }
-        return result
+        return result;
     }
 
     public keyFor(row: Nft): string {
-        return row.serial_number?.toString() ?? ""
+        return row.serial_number?.toString() ?? "";
     }
 
     public stringFromKey(key: string): string {

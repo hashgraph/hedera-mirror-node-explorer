@@ -18,13 +18,13 @@
  *
  */
 
-import {describe, it, expect} from 'vitest'
-import {flushPromises, mount} from "@vue/test-utils"
+import { describe, it, expect } from "vitest";
+import { flushPromises, mount } from "@vue/test-utils";
 import router from "@/router";
 import SearchBar from "@/components/SearchBar.vue";
 import TopNavBar from "@/components/TopNavBar.vue";
 import Oruga from "@oruga-ui/oruga-next";
-import {HMSF} from "@/utils/HMSF";
+import { HMSF } from "@/utils/HMSF";
 
 /*
     Bookmarks
@@ -33,106 +33,121 @@ import {HMSF} from "@/utils/HMSF";
 
  */
 
-HMSF.forceUTC = true
+HMSF.forceUTC = true;
 
 describe("TopNavBar.vue", () => {
-
     it("Should display page links without Staking and Blocks", async () => {
-        process.env = Object.assign(process.env, { VITE_APP_ENABLE_STAKING: true });
+        process.env = Object.assign(process.env, {
+            VITE_APP_ENABLE_STAKING: true,
+        });
 
-        await router.push("/") // To avoid "missing required param 'network'" error
-        Object.defineProperty(window, 'innerWidth', {writable: true, configurable: true, value: 1920})
+        await router.push("/"); // To avoid "missing required param 'network'" error
+        Object.defineProperty(window, "innerWidth", {
+            writable: true,
+            configurable: true,
+            value: 1920,
+        });
 
         const wrapper = mount(TopNavBar, {
             global: {
-                plugins: [router, Oruga]
+                plugins: [router, Oruga],
             },
             props: {},
         });
 
-        await flushPromises()
+        await flushPromises();
         // console.log(wrapper.text())
 
         expect(wrapper.text()).toBe(
-            "MAINNETTESTNETPREVIEWNETDashboardTransactionsTokensTopicsContractsAccountsNodesStakingBlocks")
+            "MAINNETTESTNETPREVIEWNETDashboardTransactionsTokensTopicsContractsAccountsNodesStakingBlocks",
+        );
 
-        const links = wrapper.findAll("a")
-        expect(links.length).toBe(11)
+        const links = wrapper.findAll("a");
+        expect(links.length).toBe(11);
 
-        wrapper.unmount()
-        await flushPromises()
-    })
+        wrapper.unmount();
+        await flushPromises();
+    });
 
     it("Should display logos, page links and full search bar", async () => {
-        process.env = Object.assign(process.env, { VITE_APP_ENABLE_STAKING: true });
+        process.env = Object.assign(process.env, {
+            VITE_APP_ENABLE_STAKING: true,
+        });
 
-        await router.push("/") // To avoid "missing required param 'network'" error
-        Object.defineProperty(window, 'innerWidth', {writable: true, configurable: true, value: 1920})
+        await router.push("/"); // To avoid "missing required param 'network'" error
+        Object.defineProperty(window, "innerWidth", {
+            writable: true,
+            configurable: true,
+            value: 1920,
+        });
 
         const wrapper = mount(TopNavBar, {
             global: {
-                plugins: [router, Oruga]
+                plugins: [router, Oruga],
             },
             props: {},
         });
 
-        await flushPromises()
+        await flushPromises();
         // console.log(wrapper.text())
 
         expect(wrapper.text()).toBe(
-            "MAINNETTESTNETPREVIEWNETDashboardTransactionsTokensTopicsContractsAccountsNodesStakingBlocks")
+            "MAINNETTESTNETPREVIEWNETDashboardTransactionsTokensTopicsContractsAccountsNodesStakingBlocks",
+        );
 
-        const links = wrapper.findAll("a")
-        expect(links.length).toBe(11)
+        const links = wrapper.findAll("a");
+        expect(links.length).toBe(11);
 
-        expect(links[2].text()).toBe("Dashboard")
-        expect(links[3].text()).toBe("Transactions")
-        expect(links[4].text()).toBe("Tokens")
-        expect(links[5].text()).toBe("Topics")
-        expect(links[6].text()).toBe("Contracts")
-        expect(links[7].text()).toBe("Accounts")
-        expect(links[8].text()).toBe("Nodes")
-        expect(links[9].text()).toBe("Staking")
-        expect(links[10].text()).toBe("Blocks")
+        expect(links[2].text()).toBe("Dashboard");
+        expect(links[3].text()).toBe("Transactions");
+        expect(links[4].text()).toBe("Tokens");
+        expect(links[5].text()).toBe("Topics");
+        expect(links[6].text()).toBe("Contracts");
+        expect(links[7].text()).toBe("Accounts");
+        expect(links[8].text()).toBe("Nodes");
+        expect(links[9].text()).toBe("Staking");
+        expect(links[10].text()).toBe("Blocks");
 
-        expect(wrapper.findComponent(SearchBar).exists()).toBe(true)
+        expect(wrapper.findComponent(SearchBar).exists()).toBe(true);
 
-        const logos = wrapper.findAll("img")
-        expect(logos.length).toBe(2)
-        expect(logos[0].attributes('alt')).toBe("Product Logo")
-        expect(logos[1].attributes('alt')).toBe("Modal close icon")
+        const logos = wrapper.findAll("img");
+        expect(logos.length).toBe(2);
+        expect(logos[0].attributes("alt")).toBe("Product Logo");
+        expect(logos[1].attributes("alt")).toBe("Modal close icon");
 
-        wrapper.unmount()
-        await flushPromises()
+        wrapper.unmount();
+        await flushPromises();
     });
 
     it("Should display the drop-down Network selection menu", async () => {
-
-        await router.push("/") // To avoid "missing required param 'network'" error
-        Object.defineProperty(window, 'innerWidth', {writable: true, configurable: true, value: 960})
+        await router.push("/"); // To avoid "missing required param 'network'" error
+        Object.defineProperty(window, "innerWidth", {
+            writable: true,
+            configurable: true,
+            value: 960,
+        });
 
         const wrapper = mount(TopNavBar, {
             global: {
                 plugins: [router, Oruga],
                 provide: {
-                    isXLargeScreen: false
-                }
+                    isXLargeScreen: false,
+                },
             },
             props: {},
         });
 
-        await flushPromises()
+        await flushPromises();
         // console.log(wrapper.text())
         // console.log(wrapper.html())
 
-        const options = wrapper.findAll("option")
-        expect(options.length).toBe(3)
-        expect(options[0].text()).toBe("MAINNET")
-        expect(options[1].text()).toBe("TESTNET")
-        expect(options[2].text()).toBe("PREVIEWNET")
+        const options = wrapper.findAll("option");
+        expect(options.length).toBe(3);
+        expect(options[0].text()).toBe("MAINNET");
+        expect(options[1].text()).toBe("TESTNET");
+        expect(options[2].text()).toBe("PREVIEWNET");
 
-        wrapper.unmount()
-        await flushPromises()
+        wrapper.unmount();
+        await flushPromises();
     });
-
 });

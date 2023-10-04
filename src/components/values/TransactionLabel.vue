@@ -1,34 +1,24 @@
-!--
--
-- Hedera Mirror Node Explorer
--
-- Copyright (C) 2021 - 2023 Hedera Hashgraph, LLC
--
-- Licensed under the Apache License, Version 2.0 (the "License");
-- you may not use this file except in compliance with the License.
-- You may obtain a copy of the License at
--
--      http://www.apache.org/licenses/LICENSE-2.0
--
-- Unless required by applicable law or agreed to in writing, software
-- distributed under the License is distributed on an "AS IS" BASIS,
-- WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
-- See the License for the specific language governing permissions and
-- limitations under the License.
--
--->
+!-- - - Hedera Mirror Node Explorer - - Copyright (C) 2021 - 2023 Hedera
+Hashgraph, LLC - - Licensed under the Apache License, Version 2.0 (the
+"License"); - you may not use this file except in compliance with the License. -
+You may obtain a copy of the License at - -
+http://www.apache.org/licenses/LICENSE-2.0 - - Unless required by applicable law
+or agreed to in writing, software - distributed under the License is distributed
+on an "AS IS" BASIS, - WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either
+express or implied. - See the License for the specific language governing
+permissions and - limitations under the License. - -->
 
 <!-- --------------------------------------------------------------------------------------------------------------- -->
 <!--                                                     TEMPLATE                                                    -->
 <!-- --------------------------------------------------------------------------------------------------------------- -->
 
 <template>
-  <span>
-    <span class="is-numeric">{{ transactionText }}</span>
-    <span v-if="errorFlagVisible" class="icon has-text-danger">
-      <i class="fas fa-exclamation-triangle"></i>
+    <span>
+        <span class="is-numeric">{{ transactionText }}</span>
+        <span v-if="errorFlagVisible" class="icon has-text-danger">
+            <i class="fas fa-exclamation-triangle"></i>
+        </span>
     </span>
-  </span>
 </template>
 
 <!-- --------------------------------------------------------------------------------------------------------------- -->
@@ -36,36 +26,35 @@
 <!-- --------------------------------------------------------------------------------------------------------------- -->
 
 <script lang="ts">
-
-import {computed, defineComponent} from "vue";
-import {normalizeTransactionId} from "@/utils/TransactionID";
+import { computed, defineComponent } from "vue";
+import { normalizeTransactionId } from "@/utils/TransactionID";
 
 export default defineComponent({
-  name: "TransactionLabel",
+    name: "TransactionLabel",
 
-  props: {
-    transactionId: String,
-    result: String
-  },
+    props: {
+        transactionId: String,
+        result: String,
+    },
 
-  setup(props) {
-    const transactionText = computed(() => {
-      return props.transactionId ? normalizeTransactionId(props.transactionId, true) : ""
-    })
+    setup(props) {
+        const transactionText = computed(() => {
+            return props.transactionId
+                ? normalizeTransactionId(props.transactionId, true)
+                : "";
+        });
 
-    const errorFlagVisible = computed(() => {
-      return props.result && props.result !== "SUCCESS"
-    })
+        const errorFlagVisible = computed(() => {
+            return props.result && props.result !== "SUCCESS";
+        });
 
-    return { transactionText, errorFlagVisible }
-  }
-
-})
-
+        return { transactionText, errorFlagVisible };
+    },
+});
 </script>
 
 <!-- --------------------------------------------------------------------------------------------------------------- -->
 <!--                                                       STYLE                                                     -->
 <!-- --------------------------------------------------------------------------------------------------------------- -->
 
-<style/>
+<style />

@@ -18,61 +18,75 @@
  *
  */
 
-import {EntityCache} from "@/utils/cache/base/EntityCache"
-import {TransactionByIdResponse, TransactionDetail} from "@/schemas/HederaSchemas";
+import { EntityCache } from "@/utils/cache/base/EntityCache";
+import {
+    TransactionByIdResponse,
+    TransactionDetail,
+} from "@/schemas/HederaSchemas";
 import axios from "axios";
 
-export class TransactionByIdCache extends EntityCache<string, TransactionDetail|null> {
-
-    public static readonly instance = new TransactionByIdCache()
+export class TransactionByIdCache extends EntityCache<
+    string,
+    TransactionDetail | null
+> {
+    public static readonly instance = new TransactionByIdCache();
 
     //
     // Cache
     //
 
-    protected async load(transactionId: string): Promise<TransactionDetail|null> {
-        let result: TransactionDetail|null
+    protected async load(
+        transactionId: string,
+    ): Promise<TransactionDetail | null> {
+        let result: TransactionDetail | null;
         const params = {
-            nonce: 0
-        }
+            nonce: 0,
+        };
         try {
-            const response = await axios.get<TransactionByIdResponse>("api/v1/transactions/" + transactionId, { params: params })
-            const transactions = response.data.transactions ?? []
-            switch(transactions.length) {
+            const response = await axios.get<TransactionByIdResponse>(
+                "api/v1/transactions/" + transactionId,
+                { params: params },
+            );
+            const transactions = response.data.transactions ?? [];
+            switch (transactions.length) {
                 case 0:
-                    result = null
-                    break
+                    result = null;
+                    break;
                 case 1:
-                    result = transactions[0]
-                    break
+                    result = transactions[0];
+                    break;
                 default:
-                    result = TransactionByIdCache.fetchScheduledTransaction(transactions)
-                    break
+                    result =
+                        TransactionByIdCache.fetchScheduledTransaction(
+                            transactions,
+                        );
+                    break;
             }
-        } catch(error) {
+        } catch (error) {
             if (axios.isAxiosError(error) && error.response?.status == 404) {
-                result = null
+                result = null;
             } else {
-                throw error
+                throw error;
             }
         }
 
-        return Promise.resolve(result)
+        return Promise.resolve(result);
     }
 
     //
     // Private
     //
 
-    private static fetchScheduledTransaction(transactions: TransactionDetail[]): TransactionDetail|null {
-        let result: TransactionDetail|null = null
+    private static fetchScheduledTransaction(
+        transactions: TransactionDetail[],
+    ): TransactionDetail | null {
+        let result: TransactionDetail | null = null;
         for (const t of transactions) {
             if (t.scheduled) {
-                result = t
-                break
+                result = t;
+                break;
             }
         }
-        return result
+        return result;
     }
 }
-

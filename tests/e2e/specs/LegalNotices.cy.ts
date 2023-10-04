@@ -20,16 +20,16 @@
 
 // https://docs.cypress.io/api/introduction/api.html
 
-describe('Hedera Explorer legal notices', () => {
-  it.skip('Visits the terms of use notice', () => {
-    cy.visit('/')
-    cy.url().should('include', '/testnet/dashboard')
-    cy.get('[data-cy=termsOfUse]').click()
-    cy.url().should('include', '/terms-of-use.html')
-  })
+describe("Hedera Explorer legal notices", () => {
+    it.skip("Visits the terms of use notice", () => {
+        cy.visit("/");
+        cy.url().should("include", "/testnet/dashboard");
+        cy.get("[data-cy=termsOfUse]").click();
+        cy.url().should("include", "/terms-of-use.html");
+    });
 
-  it.skip('Visits the privacy policy notice', () => {
-    cy.visit('/privacy-policy.html')
-    cy.url().should('include', '/privacy-policy.html')
-  })
-})
+    it.skip("Visits the privacy policy notice", () => {
+        cy.visit("/privacy-policy.html");
+        cy.url().should("include", "/privacy-policy.html");
+    });
+});

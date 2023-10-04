@@ -23,33 +23,42 @@
 <!-- --------------------------------------------------------------------------------------------------------------- -->
 
 <template>
-  <div :class="{'box': !isTouchDevice && isSmallScreen, 'h-box-border': !isTouchDevice && isSmallScreen}" style="height: 100%">
-    <div class="is-flex is-align-items-center is-justify-content-space-between">
-      <div>
-        <slot name="title"></slot>
-      </div>
-      <div>
-        <slot name="control"></slot>
-      </div>
+    <div
+        :class="{
+            box: !isTouchDevice && isSmallScreen,
+            'h-box-border': !isTouchDevice && isSmallScreen,
+        }"
+        style="height: 100%"
+    >
+        <div
+            class="is-flex is-align-items-center is-justify-content-space-between"
+        >
+            <div>
+                <slot name="title"></slot>
+            </div>
+            <div>
+                <slot name="control"></slot>
+            </div>
+        </div>
+
+        <hr class="h-card-separator mb-3" />
+
+        <div class="h-is-property-text">
+            <slot name="content"></slot>
+        </div>
+
+        <div class="columns h-is-property-text">
+            <div class="column">
+                <slot name="leftContent"></slot>
+            </div>
+            <div
+                class="column"
+                :class="{ 'h-has-column-separator': slots.rightContent }"
+            >
+                <slot name="rightContent"></slot>
+            </div>
+        </div>
     </div>
-
-    <hr class="h-card-separator mb-3"/>
-
-    <div class="h-is-property-text">
-      <slot name="content"></slot>
-    </div>
-
-    <div class="columns h-is-property-text">
-
-      <div class="column">
-          <slot name="leftContent"></slot>
-      </div>
-      <div class="column" :class="{'h-has-column-separator':slots.rightContent}">
-          <slot name="rightContent"></slot>
-      </div>
-
-    </div>
-  </div>
 </template>
 
 <!-- --------------------------------------------------------------------------------------------------------------- -->
@@ -57,24 +66,22 @@
 <!-- --------------------------------------------------------------------------------------------------------------- -->
 
 <script lang="ts">
-
-import {defineComponent, inject, useSlots} from "vue";
+import { defineComponent, inject, useSlots } from "vue";
 
 export default defineComponent({
-  name: "DashboardCard",
+    name: "DashboardCard",
 
-  props: {
-    subtitle: Boolean
-  },
+    props: {
+        subtitle: Boolean,
+    },
 
-  setup() {
-    const isSmallScreen = inject('isSmallScreen', true)
-    const isTouchDevice = inject('isTouchDevice', false)
-    const slots = useSlots()
-    return { isSmallScreen, isTouchDevice, slots }
-  }
-})
-
+    setup() {
+        const isSmallScreen = inject("isSmallScreen", true);
+        const isTouchDevice = inject("isTouchDevice", false);
+        const slots = useSlots();
+        return { isSmallScreen, isTouchDevice, slots };
+    },
+});
 </script>
 
 <!-- --------------------------------------------------------------------------------------------------------------- -->
@@ -82,9 +89,7 @@ export default defineComponent({
 <!-- --------------------------------------------------------------------------------------------------------------- -->
 
 <style>
-
 td {
-  border: black
+    border: black;
 }
-
 </style>

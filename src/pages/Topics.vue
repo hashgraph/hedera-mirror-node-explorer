@@ -23,22 +23,21 @@
 <!-- --------------------------------------------------------------------------------------------------------------- -->
 
 <template>
+    <section
+        class="section"
+        :class="{ 'h-mobile-background': isTouchDevice || !isSmallScreen }"
+    >
+        <DashboardCard>
+            <template v-slot:title>
+                <span class="h-is-primary-title">Recent Topics</span>
+            </template>
+            <template v-slot:content>
+                <TopicTable v-bind:controller="transactionTableController" />
+            </template>
+        </DashboardCard>
+    </section>
 
-  <section class="section" :class="{'h-mobile-background': isTouchDevice || !isSmallScreen}">
-
-    <DashboardCard>
-      <template v-slot:title>
-        <span class="h-is-primary-title">Recent Topics</span>
-      </template>
-      <template v-slot:content>
-        <TopicTable v-bind:controller="transactionTableController"/>
-      </template>
-    </DashboardCard>
-
-  </section>
-
-  <Footer/>
-
+    <Footer />
 </template>
 
 <!-- --------------------------------------------------------------------------------------------------------------- -->
@@ -46,59 +45,68 @@
 <!-- --------------------------------------------------------------------------------------------------------------- -->
 
 <script lang="ts">
-
-import {computed, defineComponent, inject, onBeforeUnmount, onMounted, watch} from 'vue';
+import {
+    computed,
+    defineComponent,
+    inject,
+    onBeforeUnmount,
+    onMounted,
+    watch,
+} from "vue";
 import TopicTable from "@/components/topic/TopicTable.vue";
 import DashboardCard from "@/components/DashboardCard.vue";
 import Footer from "@/components/Footer.vue";
-import {TransactionTableController} from "@/components/transaction/TransactionTableController";
-import {TransactionResult, TransactionType} from "@/schemas/HederaSchemas";
-import {useRouter} from "vue-router";
+import { TransactionTableController } from "@/components/transaction/TransactionTableController";
+import { TransactionResult, TransactionType } from "@/schemas/HederaSchemas";
+import { useRouter } from "vue-router";
 
 export default defineComponent({
-  name: 'Topics',
+    name: "Topics",
 
-  props: {
-    network: String
-  },
+    props: {
+        network: String,
+    },
 
-  components: {
-    Footer,
-    DashboardCard,
-    TopicTable
-  },
+    components: {
+        Footer,
+        DashboardCard,
+        TopicTable,
+    },
 
-  setup(props) {
-    const isSmallScreen = inject('isSmallScreen', true)
-    const isMediumScreen = inject('isMediumScreen', true)
-    const isTouchDevice = inject('isTouchDevice', false)
+    setup(props) {
+        const isSmallScreen = inject("isSmallScreen", true);
+        const isMediumScreen = inject("isMediumScreen", true);
+        const isTouchDevice = inject("isTouchDevice", false);
 
+        const router = useRouter();
+        const pageSize = computed(() => (isMediumScreen ? 15 : 5));
+        const transactionTableController = new TransactionTableController(
+            router,
+            pageSize,
+            TransactionType.CONSENSUSCREATETOPIC,
+            TransactionResult.SUCCESS,
+        );
+        onMounted(() => transactionTableController.mount());
+        onBeforeUnmount(() => transactionTableController.unmount());
 
-    const router = useRouter()
-    const pageSize = computed(() => isMediumScreen ? 15 : 5)
-    const transactionTableController = new TransactionTableController(
-        router, pageSize, TransactionType.CONSENSUSCREATETOPIC,  TransactionResult.SUCCESS)
-    onMounted(() => transactionTableController.mount())
-    onBeforeUnmount(() => transactionTableController.unmount())
+        watch(
+            () => props.network,
+            () => {
+                transactionTableController.reset();
+            },
+        );
 
-    watch(() => props.network, () => {
-      transactionTableController.reset()
-    })
-
-    return {
-      transactionTableController,
-      isSmallScreen,
-      isTouchDevice,
-    }
-  }
+        return {
+            transactionTableController,
+            isSmallScreen,
+            isTouchDevice,
+        };
+    },
 });
-
 </script>
 
 <!-- --------------------------------------------------------------------------------------------------------------- -->
 <!--                                                       STYLE                                                     -->
 <!-- --------------------------------------------------------------------------------------------------------------- -->
 
-<style scoped>
-
-</style>
+<style scoped></style>

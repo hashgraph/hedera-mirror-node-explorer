@@ -18,11 +18,10 @@
  *
  */
 
-import {Ref, ref} from "vue";
+import { Ref, ref } from "vue";
 
 export class SingletonCache<E> {
-
-    protected promise: Promise<E>|null = null
+    protected promise: Promise<E> | null = null;
 
     //
     // Public
@@ -30,46 +29,45 @@ export class SingletonCache<E> {
 
     public async lookup(): Promise<E> {
         if (this.promise === null) {
-            this.promise = this.load()
+            this.promise = this.load();
         }
-        return this.promise
+        return this.promise;
     }
 
     public clear(): void {
-        this.promise = null
+        this.promise = null;
     }
 
     public makeLookup(): SingletonLookup<E> {
-        return new SingletonLookup(this)
+        return new SingletonLookup(this);
     }
-
 
     //
     // Protected (to be subclassed)
     //
 
     protected async load(): Promise<E> {
-        throw new Error("Must be subclassed")
+        throw new Error("Must be subclassed");
     }
 }
 
 export class SingletonLookup<E> {
+    public readonly entity: Ref<E | null> = ref(null);
 
-    public readonly entity: Ref<E|null> = ref(null)
-
-    private readonly cache: SingletonCache<E>
+    private readonly cache: SingletonCache<E>;
 
     constructor(cache: SingletonCache<E>) {
-        this.cache = cache
+        this.cache = cache;
     }
 
     public mount(): void {
-        this.cache.lookup()
-            .then((s: E) => this.entity.value = s)
-            .catch(() => this.entity.value = null)
+        this.cache
+            .lookup()
+            .then((s: E) => (this.entity.value = s))
+            .catch(() => (this.entity.value = null));
     }
 
     public unmount(): void {
-        this.entity.value = null
+        this.entity.value = null;
     }
 }

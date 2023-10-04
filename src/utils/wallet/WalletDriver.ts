@@ -21,94 +21,112 @@
 import {
     AccountAllowanceApproveTransaction,
     AccountAllowanceDeleteTransaction,
-    AccountUpdateTransaction
+    AccountUpdateTransaction,
 } from "@hashgraph/sdk";
-import {Signer} from "@hashgraph/sdk";
-import {TransactionID} from "@/utils/TransactionID";
-import {WalletDriverError} from "@/utils/wallet/WalletDriverError";
+import { Signer } from "@hashgraph/sdk";
+import { TransactionID } from "@/utils/TransactionID";
+import { WalletDriverError } from "@/utils/wallet/WalletDriverError";
 
 export abstract class WalletDriver {
-
-    public readonly name: string
-    public readonly iconURL: string|null
+    public readonly name: string;
+    public readonly iconURL: string | null;
 
     //
     // Public (to be subclassed)
     //
 
     public async connect(network: string): Promise<void> {
-        throw this.toBeImplemented("Connection to " + network + " aborted because implementation is missing")
+        throw this.toBeImplemented(
+            "Connection to " +
+                network +
+                " aborted because implementation is missing",
+        );
     }
 
     public async disconnect(): Promise<void> {
-        throw this.toBeImplemented("Disconnect aborted because implementation is missing")
+        throw this.toBeImplemented(
+            "Disconnect aborted because implementation is missing",
+        );
     }
 
-    public abstract getSigner(): Signer|null
+    public abstract getSigner(): Signer | null;
 
     //
     // Public (utilities)
     //
 
-    public getAccountId(): string|null {
-        return this.getSigner()?.getAccountId()?.toString() ?? null
+    public getAccountId(): string | null {
+        return this.getSigner()?.getAccountId()?.toString() ?? null;
     }
 
     public isConnected(): boolean {
-        return this.getSigner() !== null
+        return this.getSigner() !== null;
     }
 
-
     public async executeTransaction(
-        t: AccountAllowanceApproveTransaction
-            |AccountUpdateTransaction
-            |AccountAllowanceDeleteTransaction): Promise<string> {
-        let result: Promise<string>
+        t:
+            | AccountAllowanceApproveTransaction
+            | AccountUpdateTransaction
+            | AccountAllowanceDeleteTransaction,
+    ): Promise<string> {
+        let result: Promise<string>;
 
-        const signer = this.getSigner()
+        const signer = this.getSigner();
         if (signer !== null) {
             try {
-                await t.freezeWithSigner(signer)
-                const response = await signer.call(t)
+                await t.freezeWithSigner(signer);
+                const response = await signer.call(t);
                 if (response) {
-                    const transactionId = TransactionID.normalize(response.transactionId.toString(), false);
-                    result = Promise.resolve(transactionId)
-                } else { // When user clicks on "Reject" button HashConnectSigner.call() returns undefined :(
-                    result = Promise.reject(this.callFailure(this.name + " wallet did reject operation"))
+                    const transactionId = TransactionID.normalize(
+                        response.transactionId.toString(),
+                        false,
+                    );
+                    result = Promise.resolve(transactionId);
+                } else {
+                    // When user clicks on "Reject" button HashConnectSigner.call() returns undefined :(
+                    result = Promise.reject(
+                        this.callFailure(
+                            this.name + " wallet did reject operation",
+                        ),
+                    );
                 }
-            } catch(reason) {
-                throw this.callFailure(reason instanceof Error ? reason.message : JSON.stringify(reason))
+            } catch (reason) {
+                throw this.callFailure(
+                    reason instanceof Error
+                        ? reason.message
+                        : JSON.stringify(reason),
+                );
             }
         } else {
-            throw this.callFailure("Signer not found (bug)")
+            throw this.callFailure("Signer not found (bug)");
         }
-        return result
+        return result;
     }
 
     public extensionNotFound(): WalletDriverError {
-        const message = this.name + " extension not found"
-        const extra = "Please install " + this.name + " extension."
-        return new WalletDriverError(message, extra)
+        const message = this.name + " extension not found";
+        const extra = "Please install " + this.name + " extension.";
+        return new WalletDriverError(message, extra);
     }
 
     public connectFailure(extra: string): WalletDriverError {
-        const message = "Connection of " + this.name + " failed"
-        return new WalletDriverError(message, extra)
+        const message = "Connection of " + this.name + " failed";
+        return new WalletDriverError(message, extra);
     }
 
     public disconnectFailure(extra: string): WalletDriverError {
-        const message = "Disconnection from " + this.name + " failed"
-        return new WalletDriverError(message, extra)
+        const message = "Disconnection from " + this.name + " failed";
+        return new WalletDriverError(message, extra);
     }
 
     public callFailure(extra: string): WalletDriverError {
-        const message = this.name + " failed during operation execution"
-        return new WalletDriverError(message, extra)
+        const message = this.name + " failed during operation execution";
+        return new WalletDriverError(message, extra);
     }
 
     public toBeImplemented(methodName: string): WalletDriverError {
-        const message = methodName + " must be subclassed"
-        return new WalletDriverError(message, "bug")
+        const message = methodName + " must be subclassed";
+        return new WalletDriverError(message, "bug");
     }
 
     public silentMessage(): string {
@@ -119,8 +137,8 @@ export abstract class WalletDriver {
     // Protected
     //
 
-    protected constructor(name: string, iconURL: string|null) {
-        this.name = name
-        this.iconURL = iconURL
+    protected constructor(name: string, iconURL: string | null) {
+        this.name = name;
+        this.iconURL = iconURL;
     }
 }

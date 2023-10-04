@@ -18,100 +18,98 @@
  *
  */
 
-import {describe, it, expect} from 'vitest'
-import {flushPromises, mount} from "@vue/test-utils"
+import { describe, it, expect } from "vitest";
+import { flushPromises, mount } from "@vue/test-utils";
 import router from "@/router";
 import Endpoints from "@/components/values/Endpoints.vue";
-import {SAMPLE_NETWORK_NODES} from "../Mocks";
-import {ServiceEndPoint} from "@/schemas/HederaSchemas";
+import { SAMPLE_NETWORK_NODES } from "../Mocks";
+import { ServiceEndPoint } from "@/schemas/HederaSchemas";
 
 describe("Endpoint.vue", () => {
-
     it("should output 'None' when the props is undefined", async () => {
         const wrapper = mount(Endpoints, {
             global: {
-                plugins: [router]
+                plugins: [router],
             },
-            props: {
-            }
+            props: {},
         });
-        await flushPromises()
-        expect(wrapper.text()).toBe("None")
+        await flushPromises();
+        expect(wrapper.text()).toBe("None");
 
-        wrapper.unmount()
-        await flushPromises()
-    })
+        wrapper.unmount();
+        await flushPromises();
+    });
 
     it("should output 'None' when the array of endpoints is empty", async () => {
         const wrapper = mount(Endpoints, {
             global: {
-                plugins: [router]
+                plugins: [router],
             },
             props: {
-                endpoints: []
-            }
+                endpoints: [],
+            },
         });
-        await flushPromises()
-        expect(wrapper.text()).toBe("None")
+        await flushPromises();
+        expect(wrapper.text()).toBe("None");
 
-        wrapper.unmount()
-        await flushPromises()
-    })
+        wrapper.unmount();
+        await flushPromises();
+    });
 
     it("should not output an endpoint where the address is undefined", async () => {
         const wrapper = mount(Endpoints, {
             global: {
-                plugins: [router]
+                plugins: [router],
             },
             props: {
-                endpoints: SAMPLE_NETWORK_NODES.nodes[1].service_endpoints as Array<ServiceEndPoint>
-            }
+                endpoints: SAMPLE_NETWORK_NODES.nodes[1]
+                    .service_endpoints as Array<ServiceEndPoint>,
+            },
         });
-        await flushPromises()
-        expect(wrapper.text()).toBe("3.133.213.146:50211")
+        await flushPromises();
+        expect(wrapper.text()).toBe("3.133.213.146:50211");
 
-        wrapper.unmount()
-        await flushPromises()
-    })
+        wrapper.unmount();
+        await flushPromises();
+    });
 
     it("should output an endpoint address alone when port is undefined", async () => {
         const wrapper = mount(Endpoints, {
             global: {
-                plugins: [router]
+                plugins: [router],
             },
             props: {
-                endpoints: SAMPLE_NETWORK_NODES.nodes[2].service_endpoints as Array<ServiceEndPoint>
-            }
+                endpoints: SAMPLE_NETWORK_NODES.nodes[2]
+                    .service_endpoints as Array<ServiceEndPoint>,
+            },
         });
-        await flushPromises()
-        expect(wrapper.text()).toBe(
-            "3.133.213.146:50211" +
-            "3.133.213.147")
+        await flushPromises();
+        expect(wrapper.text()).toBe("3.133.213.146:50211" + "3.133.213.147");
 
-        wrapper.unmount()
-        await flushPromises()
-    })
+        wrapper.unmount();
+        await flushPromises();
+    });
 
     it("should ouput <address>:<port> for all 5 endpoints", async () => {
         const wrapper = mount(Endpoints, {
             global: {
-                plugins: [router]
+                plugins: [router],
             },
             props: {
-                endpoints: SAMPLE_NETWORK_NODES.nodes[0].service_endpoints as Array<ServiceEndPoint>
-            }
+                endpoints: SAMPLE_NETWORK_NODES.nodes[0]
+                    .service_endpoints as Array<ServiceEndPoint>,
+            },
         });
-        await flushPromises()
+        await flushPromises();
         expect(wrapper.text()).toBe(
             "3.211.248.172:50211" +
-            "3.211.248.172:50212" +
-            "35.231.208.148:0" +
-            "35.231.208.148:50211" +
-            "35.231.208.148:50212")
+                "3.211.248.172:50212" +
+                "35.231.208.148:0" +
+                "35.231.208.148:50211" +
+                "35.231.208.148:50212",
+        );
 
-        wrapper.unmount()
-        await flushPromises()
-    })
-
-})
-
+        wrapper.unmount();
+        await flushPromises();
+    });
+});

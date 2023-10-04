@@ -1,20 +1,20 @@
-import { fileURLToPath } from 'node:url'
-import { mergeConfig } from 'vite'
-import { configDefaults, defineConfig } from 'vitest/config'
-import viteConfig from './vite.config'
+import { fileURLToPath } from "node:url";
+import { mergeConfig } from "vite";
+import { configDefaults, defineConfig } from "vitest/config";
+import viteConfig from "./vite.config";
 
 export default mergeConfig(
-  viteConfig,
-  defineConfig({
-    test: {
-      environment: 'jsdom',
-      // cache: false, // If test fails in CI only, run locally with cache=false to be closer to CI environment
-      exclude: [...configDefaults.exclude, 'e2e/*'],
-      root: fileURLToPath(new URL('./', import.meta.url)),
-      setupFiles: ['./tests/unit/globalSetup.js'],
-      coverage: {
-        reporter: ['text', 'json-summary', 'json'],
-      }
-    }
-  })
-)
+    viteConfig,
+    defineConfig({
+        test: {
+            environment: "jsdom",
+            // cache: false, // If test fails in CI only, run locally with cache=false to be closer to CI environment
+            exclude: [...configDefaults.exclude, "e2e/*"],
+            root: fileURLToPath(new URL("./", import.meta.url)),
+            setupFiles: ["./tests/unit/globalSetup.js"],
+            coverage: {
+                reporter: ["text", "json-summary", "json"],
+            },
+        },
+    }),
+);

@@ -18,68 +18,77 @@
  *
  */
 
-import {computed, Ref, ref} from "vue";
-import {decode} from "@ethereum-sourcify/bytecode-utils";
-import {SolcMetadata} from "@/utils/solc/SolcMetadata";
-import {Lookup} from "@/utils/cache/base/EntityCache";
-import {IPFSCache} from "@/utils/cache/IPFSCache";
+import { computed, Ref, ref } from "vue";
+import { decode } from "@ethereum-sourcify/bytecode-utils";
+import { SolcMetadata } from "@/utils/solc/SolcMetadata";
+import { Lookup } from "@/utils/cache/base/EntityCache";
+import { IPFSCache } from "@/utils/cache/IPFSCache";
 
 export class ByteCodeAnalyzer {
-
-    public readonly byteCode = ref<string|null>(null)
-    public readonly ipfsLookup: Lookup<string, unknown|undefined>
+    public readonly byteCode = ref<string | null>(null);
+    public readonly ipfsLookup: Lookup<string, unknown | undefined>;
 
     //
     // Public
     //
 
-    public constructor(byteCode: Ref<string|null>) {
-        this.byteCode = byteCode
-        this.ipfsLookup = IPFSCache.instance.makeLookup(this.ipfsHash)
+    public constructor(byteCode: Ref<string | null>) {
+        this.byteCode = byteCode;
+        this.ipfsLookup = IPFSCache.instance.makeLookup(this.ipfsHash);
         // this.swarmLookup = SWARMCache.instance.makeLookup(computed(() => this.swarmHash.value ?? null))
     }
 
     public mount(): void {
-        this.ipfsLookup.mount()
+        this.ipfsLookup.mount();
     }
 
     public unmount(): void {
-        this.ipfsLookup.unmount()
+        this.ipfsLookup.unmount();
     }
 
-    public readonly solcVersion = computed(() => this.decodedObject.value?.solcVersion ?? null)
+    public readonly solcVersion = computed(
+        () => this.decodedObject.value?.solcVersion ?? null,
+    );
 
-    public readonly ipfsHash = computed(() => this.decodedObject.value?.ipfs ?? null)
+    public readonly ipfsHash = computed(
+        () => this.decodedObject.value?.ipfs ?? null,
+    );
 
-    public readonly swarmHash = computed(() => this.decodedObject.value?.bzzr1 ?? null)
+    public readonly swarmHash = computed(
+        () => this.decodedObject.value?.bzzr1 ?? null,
+    );
 
-    public readonly ipfsURL = computed(() => this.ipfsHash.value ? "https://ipfs.io/ipfs/" + this.ipfsHash.value : null)
+    public readonly ipfsURL = computed(() =>
+        this.ipfsHash.value
+            ? "https://ipfs.io/ipfs/" + this.ipfsHash.value
+            : null,
+    );
 
-    public readonly ipfsMetadata = computed(() => this.ipfsLookup.entity.value as SolcMetadata|null)
-
+    public readonly ipfsMetadata = computed(
+        () => this.ipfsLookup.entity.value as SolcMetadata | null,
+    );
 
     //
     // Private
     //
 
     private readonly decodedObject = computed(() => {
-        let result: DecodedObject|null
+        let result: DecodedObject | null;
         if (this.byteCode.value) {
             try {
-                result = decode(this.byteCode.value)
+                result = decode(this.byteCode.value);
             } catch {
-                result = null
+                result = null;
             }
         } else {
-            result = null
+            result = null;
         }
-        return result
-    })
-
+        return result;
+    });
 }
 
 type DecodedObject = {
-    ipfs?: string
-    bzzr1?: string
-    solcVersion?: string
-}
+    ipfs?: string;
+    bzzr1?: string;
+    solcVersion?: string;
+};

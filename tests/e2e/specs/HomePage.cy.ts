@@ -20,22 +20,21 @@
 
 // https://docs.cypress.io/api/introduction/api.html
 
-describe('Hedera Explorer home page', () => {
+describe("Hedera Explorer home page", () => {
+    const defaultNetwork = "mainnet";
 
-  const defaultNetwork = 'mainnet'
-
-  it('Visits the app root URL', () => {
-    cy.visit('/')
-    cy.url().should('include', '/' + defaultNetwork + '/dashboard')
-    cy.contains('Crypto Transfers')
-    cy.contains('Smart Contract Calls')
-    cy.contains('HCS Messages')
-  })
-  it('Visits an old hash-based URL', () => {
-    cy.visit('/#/testnet/token/0.0.48789573')
-    cy.url().should('include', '/' + defaultNetwork + '/dashboard')
-    cy.contains('Crypto Transfers')
-    cy.contains('Smart Contract Calls')
-    cy.contains('HCS Messages')
-  })
-})
+    it("Visits the app root URL", () => {
+        cy.visit("/");
+        cy.url().should("include", "/" + defaultNetwork + "/dashboard");
+        cy.contains("Crypto Transfers");
+        cy.contains("Smart Contract Calls");
+        cy.contains("HCS Messages");
+    });
+    it("Visits an old hash-based URL", () => {
+        cy.visit("/#/testnet/token/0.0.48789573");
+        cy.url().should("include", "/" + defaultNetwork + "/dashboard");
+        cy.contains("Crypto Transfers");
+        cy.contains("Smart Contract Calls");
+        cy.contains("HCS Messages");
+    });
+});

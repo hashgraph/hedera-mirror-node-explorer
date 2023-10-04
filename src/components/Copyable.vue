@@ -23,18 +23,48 @@
 <!-- --------------------------------------------------------------------------------------------------------------- -->
 
 <template>
-  <div class="shy-scope" style="display: inline-block; position: relative;">
-    <slot name="content"/>
-    <div v-if="contentToCopy" id="shyCopyButton" class="shy"
-         style="position: absolute; left: 0; top: 0; width: 100%; height: 100%">
-      <div style="position: absolute; left: 0; top: 0; width: 100%; height: 100%; background: rgba(0, 0, 0, 0.50)"></div>
-      <div v-if="enableCopy"
-           style="position: absolute; display: inline-block; left: 50%; top: 50%; transform: translate(-50%, -50%);">
-        <button class="button is-dark h-is-text-size-3"
-                v-on:click.stop="copyToClipboard">Copy</button>
-      </div>
+    <div class="shy-scope" style="display: inline-block; position: relative">
+        <slot name="content" />
+        <div
+            v-if="contentToCopy"
+            id="shyCopyButton"
+            class="shy"
+            style="
+                position: absolute;
+                left: 0;
+                top: 0;
+                width: 100%;
+                height: 100%;
+            "
+        >
+            <div
+                style="
+                    position: absolute;
+                    left: 0;
+                    top: 0;
+                    width: 100%;
+                    height: 100%;
+                    background: rgba(0, 0, 0, 0.5);
+                "
+            ></div>
+            <div
+                v-if="enableCopy"
+                style="
+                    position: absolute;
+                    display: inline-block;
+                    left: 50%;
+                    top: 50%;
+                    transform: translate(-50%, -50%);
+                "
+            >
+                <button
+                    class="button is-dark h-is-text-size-3"
+                    v-on:click.stop="copyToClipboard"
+                    >Copy</button
+                >
+            </div>
+        </div>
     </div>
-  </div>
 </template>
 
 <!-- --------------------------------------------------------------------------------------------------------------- -->
@@ -42,30 +72,28 @@
 <!-- --------------------------------------------------------------------------------------------------------------- -->
 
 <script lang="ts">
-
-import {defineComponent} from "vue";
+import { defineComponent } from "vue";
 
 export default defineComponent({
-  name: "Copyable",
-  props: {
-    contentToCopy: String,
-    enableCopy: {
-      type: Boolean,
-      default: true
+    name: "Copyable",
+    props: {
+        contentToCopy: String,
+        enableCopy: {
+            type: Boolean,
+            default: true,
+        },
     },
-  },
-  setup(props) {
-    const copyToClipboard = (): void => {
-      if (props.contentToCopy?.length) {
-        navigator.clipboard.writeText(props.contentToCopy)
-      }
-    }
-    return {
-      copyToClipboard
-    }
-  }
-})
-
+    setup(props) {
+        const copyToClipboard = (): void => {
+            if (props.contentToCopy?.length) {
+                navigator.clipboard.writeText(props.contentToCopy);
+            }
+        };
+        return {
+            copyToClipboard,
+        };
+    },
+});
 </script>
 
 <!-- --------------------------------------------------------------------------------------------------------------- -->
@@ -74,9 +102,9 @@ export default defineComponent({
 
 <style scoped>
 .shy {
-  display: none
+    display: none;
 }
 .shy-scope:hover > .shy {
-  display: block;
+    display: block;
 }
 </style>

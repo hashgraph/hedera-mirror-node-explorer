@@ -18,65 +18,61 @@
  *
  */
 
-import {byteToHex, hexToByte} from "./B64Utils";
+import { byteToHex, hexToByte } from "./B64Utils";
 
 export class EntityID {
-
-    public readonly shard: number
-    public readonly realm: number
-    public readonly num: number
-
-
-
+    public readonly shard: number;
+    public readonly realm: number;
+    public readonly num: number;
 
     //
     // Public
     //
 
     public constructor(shard: number, realm: number, num: number) {
-        this.shard = shard
-        this.realm = realm
-        this.num = num
+        this.shard = shard;
+        this.realm = realm;
+        this.num = num;
     }
 
-    public static parse(s: string, autoComplete = false): EntityID|null {
-        let result: EntityID|null
+    public static parse(s: string, autoComplete = false): EntityID | null {
+        let result: EntityID | null;
 
-        const i1 = s.indexOf(".")
-        const i2 = i1 != -1 ? s.indexOf(".", i1+1) : -1
-        const i3 = i2 != -1 ? s.indexOf(".", i2+1) : -1
+        const i1 = s.indexOf(".");
+        const i2 = i1 != -1 ? s.indexOf(".", i1 + 1) : -1;
+        const i3 = i2 != -1 ? s.indexOf(".", i2 + 1) : -1;
         if (i1 != -1 && i2 != -1 && i3 == -1) {
-            const shardString = s.substring(0, i1)
-            const realmString = s.substring(i1+1, i2)
-            const numString   = s.substring(i2+1)
-            const shard = EntityID.parsePositiveInt(shardString)
-            const realm = EntityID.parsePositiveInt(realmString)
-            const num   = EntityID.parsePositiveInt(numString)
+            const shardString = s.substring(0, i1);
+            const realmString = s.substring(i1 + 1, i2);
+            const numString = s.substring(i2 + 1);
+            const shard = EntityID.parsePositiveInt(shardString);
+            const realm = EntityID.parsePositiveInt(realmString);
+            const num = EntityID.parsePositiveInt(numString);
             if (shard == null || realm == null || num == null) {
-                result = null
+                result = null;
             } else {
-                result = new EntityID(shard, realm, num)
+                result = new EntityID(shard, realm, num);
             }
         } else if (i1 === -1 && i2 === -1 && autoComplete) {
-            const num = EntityID.parsePositiveInt(s)
+            const num = EntityID.parsePositiveInt(s);
             if (num == null) {
-                result = null
+                result = null;
             } else {
-                result = new EntityID(0, 0, num)
+                result = new EntityID(0, 0, num);
             }
         } else {
-            result = null
+            result = null;
         }
-        return result
+        return result;
     }
 
-    public static normalize(s: string): string|null {
-        const id = EntityID.parse(s, true)
-        return id !== null ? id.toString() : null
+    public static normalize(s: string): string | null {
+        const id = EntityID.parse(s, true);
+        return id !== null ? id.toString() : null;
     }
 
     public toString(): string {
-        return this.shard + "." + this.realm + "." + this.num
+        return this.shard + "." + this.realm + "." + this.num;
     }
 
     public toAddress(): string {
@@ -87,31 +83,39 @@ export class EntityID {
         view.setBigInt64(4, BigInt(this.realm));
         view.setBigInt64(12, BigInt(this.num));
 
-        return byteToHex(buffer)
+        return byteToHex(buffer);
     }
 
-    public static fromAddress(address: string|undefined): EntityID|null {
-        let result: EntityID|null
+    public static fromAddress(address: string | undefined): EntityID | null {
+        let result: EntityID | null;
 
         if (address) {
-            const buffer = hexToByte(address)
+            const buffer = hexToByte(address);
             if (buffer !== null && buffer.length == 20) {
-                const view = new DataView(buffer.buffer)
-                const bigNum = view.getBigInt64(12)
-                const num = 0 <= bigNum && bigNum < EntityID.MAX_INT ? Number(bigNum) : null
-                result = num != null ? new EntityID(0, 0, num) : null
+                const view = new DataView(buffer.buffer);
+                const bigNum = view.getBigInt64(12);
+                const num =
+                    0 <= bigNum && bigNum < EntityID.MAX_INT
+                        ? Number(bigNum)
+                        : null;
+                result = num != null ? new EntityID(0, 0, num) : null;
             } else {
-                result = null
+                result = null;
             }
         } else {
-            result = null
+            result = null;
         }
 
-        return result
+        return result;
     }
 
     public isEthereumPrecompiledContract(): boolean {
-        return this.shard == 0 && this.realm == 0 && 1 <= this.num && this.num < 256
+        return (
+            this.shard == 0 &&
+            this.realm == 0 &&
+            1 <= this.num &&
+            this.num < 256
+        );
     }
 
     /*
@@ -119,43 +123,50 @@ export class EntityID {
      * Accounts are sorted in ascending but account ids < 100 are put at the end.
      */
     public compareAccountID(that: EntityID): number {
-        let result = compareNumber(this.shard, that.shard)
+        let result = compareNumber(this.shard, that.shard);
         if (result == 0) {
-            result = compareNumber(this.realm, that.realm)
+            result = compareNumber(this.realm, that.realm);
         }
         if (result == 0) {
-            if ((this.num < 100 || this.num === 800) && (that.num >= 100 && that.num !== 800)) {
+            if (
+                (this.num < 100 || this.num === 800) &&
+                that.num >= 100 &&
+                that.num !== 800
+            ) {
                 // We put this.num at the end
-                result = +1
-            } else if ((that.num < 100 || that.num === 800) && (this.num >= 100 && this.num != 800)) {
+                result = +1;
+            } else if (
+                (that.num < 100 || that.num === 800) &&
+                this.num >= 100 &&
+                this.num != 800
+            ) {
                 // We put that.num at the end
-                result = -1
+                result = -1;
             } else {
-                result = compareNumber(this.num, that.num)
+                result = compareNumber(this.num, that.num);
             }
         }
-        return result
+        return result;
     }
 
     // Utility
 
-    public static readonly MAX_INT = Math.pow(2, 32) // Max supported by mirror node rest api on May 30, 2022
+    public static readonly MAX_INT = Math.pow(2, 32); // Max supported by mirror node rest api on May 30, 2022
 
-    public static parsePositiveInt(s: string): number|null {
-        const n = s.match(/^[0-9]+$/) !== null ? parseInt(s) : EntityID.MAX_INT
-        return (isNaN(n) || n >= EntityID.MAX_INT) ? null : n
+    public static parsePositiveInt(s: string): number | null {
+        const n = s.match(/^[0-9]+$/) !== null ? parseInt(s) : EntityID.MAX_INT;
+        return isNaN(n) || n >= EntityID.MAX_INT ? null : n;
     }
 }
 
-
 function compareNumber(n1: number, n2: number): number {
-    let result: number
+    let result: number;
     if (n1 < n2) {
-        result = -1
+        result = -1;
     } else if (n1 > n2) {
-        result = +1
+        result = +1;
     } else {
-        result = 0
+        result = 0;
     }
-    return result
+    return result;
 }

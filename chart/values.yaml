@@ -1,36 +1,37 @@
 affinity:
-  podAntiAffinity:
-    preferredDuringSchedulingIgnoredDuringExecution:
-      - weight: 100
-        podAffinityTerm:
-          topologyKey: kubernetes.io/hostname
-          labelSelector:
-            matchLabels:
-              app.kubernetes.io/component: hedera-explorer
+    podAntiAffinity:
+        preferredDuringSchedulingIgnoredDuringExecution:
+            - weight: 100
+              podAffinityTerm:
+                  topologyKey: kubernetes.io/hostname
+                  labelSelector:
+                      matchLabels:
+                          app.kubernetes.io/component: hedera-explorer
 
 annotations: {}
 
 autoscaling:
-  behavior: {}
-  enabled: false
-  maxReplicas: 3
-  metrics:
-    - type: Resource
-      resource:
-        name: cpu
-        target:
-          type: Utilization
-          averageUtilization: 80
-  minReplicas: 1
+    behavior: {}
+    enabled: false
+    maxReplicas: 3
+    metrics:
+        - type: Resource
+          resource:
+              name: cpu
+              target:
+                  type: Utilization
+                  averageUtilization: 80
+    minReplicas: 1
 
 # Environment variables to add to the container. The value can either be a string or an EnvVarSource. Evaluated as a template.
-env: {}
-  # DOCKER_LOCAL_MIRROR_NODE_URL: "http://localhost:5551"
-  # BAR:
-  #   valueFrom:
-  #     secretKeyRef:
-  #       name: '{{ .Release.Name }}-custom'
-  #       key: BAZ
+env:
+    {}
+    # DOCKER_LOCAL_MIRROR_NODE_URL: "http://localhost:5551"
+    # BAR:
+    #   valueFrom:
+    #     secretKeyRef:
+    #       name: '{{ .Release.Name }}-custom'
+    #       key: BAZ
 
 # Add config maps or secrets as environment variables. Evaluated as a template.
 envFrom: []
@@ -40,147 +41,148 @@ envFrom: []
 fullnameOverride: ""
 
 global:
-  namespaceOverride: ""
+    namespaceOverride: ""
 
 image:
-  pullPolicy: IfNotPresent
-  pullSecrets: []
-  registry: gcr.io
-  repository: hedera-registry/hedera-mirror-node-explorer
-  tag: ""  # Defaults to the chart's app version
+    pullPolicy: IfNotPresent
+    pullSecrets: []
+    registry: gcr.io
+    repository: hedera-registry/hedera-mirror-node-explorer
+    tag: "" # Defaults to the chart's app version
 
 ingress:
-  annotations: {}
-  className: ""
-  enabled: false
-  hosts:
-    - host: chart-example.local
-      paths:
-        - path: /
-          pathType: ImplementationSpecific
-  tls: []
-  #  - secretName: chart-example-tls
-  #    hosts:
-  #      - chart-example.local
+    annotations: {}
+    className: ""
+    enabled: false
+    hosts:
+        - host: chart-example.local
+          paths:
+              - path: /
+                pathType: ImplementationSpecific
+    tls: []
+    #  - secretName: chart-example-tls
+    #    hosts:
+    #      - chart-example.local
 
 labels: {}
 
 livenessProbe:
-  httpGet:
-    path: /
-    port: http
-  initialDelaySeconds: 3
-  timeoutSeconds: 2
+    httpGet:
+        path: /
+        port: http
+    initialDelaySeconds: 3
+    timeoutSeconds: 2
 
 nodeSelector: {}
 
 podAnnotations: {}
 
 podDisruptionBudget:
-  enabled: false
-  # maxUnavailable: 0
-  minAvailable: 50%
+    enabled: false
+    # maxUnavailable: 0
+    minAvailable: 50%
 
 podSecurityContext:
-  fsGroup: 1000
-  runAsGroup: 1000
-  runAsNonRoot: true
-  runAsUser: 1000
-  seccompProfile:
-    type: RuntimeDefault
+    fsGroup: 1000
+    runAsGroup: 1000
+    runAsNonRoot: true
+    runAsUser: 1000
+    seccompProfile:
+        type: RuntimeDefault
 
 priorityClassName: ""
 
 readinessProbe:
-  httpGet:
-    path: /
-    port: http
-  initialDelaySeconds: 3
-  timeoutSeconds: 2
+    httpGet:
+        path: /
+        port: http
+    initialDelaySeconds: 3
+    timeoutSeconds: 2
 
 replicas: 1
 
 resources:
-  limits:
-    cpu: 1150m
-    memory: 250Mi
-  requests:
-    cpu: 200m
-    memory: 100Mi
+    limits:
+        cpu: 1150m
+        memory: 250Mi
+    requests:
+        cpu: 200m
+        memory: 100Mi
 
 revisionHistoryLimit: 3
 
 securityContext:
-  allowPrivilegeEscalation: false
-  capabilities:
-    drop: [ALL]
-  readOnlyRootFilesystem: true
+    allowPrivilegeEscalation: false
+    capabilities:
+        drop: [ALL]
+    readOnlyRootFilesystem: true
 
 service:
-  annotations: {}
-  port: 80
-  type: ClusterIP
+    annotations: {}
+    port: 80
+    type: ClusterIP
 
 serviceAccount:
-  create: true
-  # The name of the service account to use. If not set and create is true, a name is generated using the fullname template
-  name:
+    create: true
+    # The name of the service account to use. If not set and create is true, a name is generated using the fullname template
+    name:
 
 terminationGracePeriodSeconds: 30
 
 tolerations: []
 
 updateStrategy:
-  type: RollingUpdate
-  rollingUpdate:
-    maxSurge: 10%
-    maxUnavailable: 25%
+    type: RollingUpdate
+    rollingUpdate:
+        maxSurge: 10%
+        maxUnavailable: 25%
 
 # Volumes to add to the container. The key is the volume name and the value is the volume mount definition. The same keys should also appear in volumes below.
 volumeMounts:
-  cache:
-    mountPath: /var/cache/nginx
-  nginx-config:
-    mountPath: /etc/nginx/nginx.conf
-    subPath: nginx.conf
-  hedera-explorer-config:
-    mountPath: /app/networks-config.json
-    subPath: networks-config.json
+    cache:
+        mountPath: /var/cache/nginx
+    nginx-config:
+        mountPath: /etc/nginx/nginx.conf
+        subPath: nginx.conf
+    hedera-explorer-config:
+        mountPath: /app/networks-config.json
+        subPath: networks-config.json
 
 # Volume mounts to add to the container. The key is the volume name and the value is the volume definition. Evaluated as a template.
 volumes:
-  cache:
-    emptyDir: {}
-  nginx-config:
-    configMap:
-      name: '{{ include "hedera-explorer.fullname" . }}-config'
-  hedera-explorer-config:
-    configMap:
-      name: '{{ include "hedera-explorer.fullname" . }}-config'
+    cache:
+        emptyDir: {}
+    nginx-config:
+        configMap:
+            name: '{{ include "hedera-explorer.fullname" . }}-config'
+    hedera-explorer-config:
+        configMap:
+            name: '{{ include "hedera-explorer.fullname" . }}-config'
 
 # Add custom reverse proxy configuration
 # Primary use case is to allow access to mirror node api via hedera explorer url
-proxyPass: {}
-  # /api: http://fst-rest
+proxyPass:
+    {}
+    # /api: http://fst-rest
 
 config: |
-  [
-    {
-      "name": "mainnet",
-      "displayName": "MAINNET",
-      "url": "https://mainnet-public.mirrornode.hedera.com/",
-      "ledgerID": "00"
-    },
-    {
-      "name": "testnet",
-      "displayName": "TESTNET",
-      "url": "https://testnet.mirrornode.hedera.com/",
-      "ledgerID": "01"
-    },
-    {
-      "name": "previewnet",
-      "displayName": "PREVIEWNET",
-      "url": "https://previewnet.mirrornode.hedera.com/",
-      "ledgerID": "02"
-    }
-  ]
+    [
+      {
+        "name": "mainnet",
+        "displayName": "MAINNET",
+        "url": "https://mainnet-public.mirrornode.hedera.com/",
+        "ledgerID": "00"
+      },
+      {
+        "name": "testnet",
+        "displayName": "TESTNET",
+        "url": "https://testnet.mirrornode.hedera.com/",
+        "ledgerID": "01"
+      },
+      {
+        "name": "previewnet",
+        "displayName": "PREVIEWNET",
+        "url": "https://previewnet.mirrornode.hedera.com/",
+        "ledgerID": "02"
+      }
+    ]

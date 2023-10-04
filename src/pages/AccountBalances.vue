@@ -23,23 +23,24 @@
 <!-- --------------------------------------------------------------------------------------------------------------- -->
 
 <template>
+    <section
+        class="section"
+        :class="{ 'h-mobile-background': isTouchDevice || !isSmallScreen }"
+    >
+        <DashboardCard>
+            <template v-slot:title>
+                <span class="h-is-primary-title"
+                    >Token Balances for Account
+                </span>
+                <span class="h-is-secondary-text">{{ accountId }}</span>
+            </template>
+            <template v-slot:content>
+                <BalanceTable v-bind:balances="tokenBalances" />
+            </template>
+        </DashboardCard>
+    </section>
 
-  <section class="section" :class="{'h-mobile-background': isTouchDevice || !isSmallScreen}">
-
-    <DashboardCard>
-      <template v-slot:title>
-        <span class="h-is-primary-title">Token Balances for Account </span>
-        <span class="h-is-secondary-text">{{ accountId }}</span>
-      </template>
-      <template v-slot:content>
-        <BalanceTable v-bind:balances="tokenBalances"/>
-      </template>
-    </DashboardCard>
-
-  </section>
-
-  <Footer/>
-
+    <Footer />
 </template>
 
 <!-- --------------------------------------------------------------------------------------------------------------- -->
@@ -47,52 +48,59 @@
 <!-- --------------------------------------------------------------------------------------------------------------- -->
 
 <script lang="ts">
-
-import {computed, defineComponent, inject, onBeforeUnmount, onMounted} from 'vue';
+import {
+    computed,
+    defineComponent,
+    inject,
+    onBeforeUnmount,
+    onMounted,
+} from "vue";
 import BalanceTable from "@/components/account/BalanceTable.vue";
 import DashboardCard from "@/components/DashboardCard.vue";
 import Footer from "@/components/Footer.vue";
-import {BalanceCache} from "@/utils/cache/BalanceCache";
+import { BalanceCache } from "@/utils/cache/BalanceCache";
 
 export default defineComponent({
+    name: "AccountBalances",
 
-  name: 'AccountBalances',
+    components: {
+        Footer,
+        DashboardCard,
+        BalanceTable,
+    },
 
-  components: {
-    Footer,
-    DashboardCard,
-    BalanceTable
-  },
+    props: {
+        accountId: String,
+        network: String,
+    },
 
-  props: {
-    accountId: String,
-    network: String
-  },
+    setup(props) {
+        const isSmallScreen = inject("isSmallScreen", true);
+        const isTouchDevice = inject("isTouchDevice", false);
 
-  setup(props) {
-    const isSmallScreen = inject('isSmallScreen', true)
-    const isTouchDevice = inject('isTouchDevice', false)
+        //
+        // balanceLookup
+        //
+        const balanceLookup = BalanceCache.instance.makeLookup(
+            computed(() => props.accountId ?? null),
+        );
+        onMounted(() => balanceLookup.mount());
+        onBeforeUnmount(() => balanceLookup.unmount());
 
-    //
-    // balanceLookup
-    //
-    const balanceLookup = BalanceCache.instance.makeLookup(computed(() => props.accountId ?? null))
-    onMounted(() => balanceLookup.mount())
-    onBeforeUnmount(() => balanceLookup.unmount())
+        const tokenBalances = computed(() => {
+            const allBalances = balanceLookup.entity.value?.balances;
+            return allBalances && allBalances.length >= 1
+                ? allBalances[0].tokens
+                : [];
+        });
 
-    const tokenBalances = computed(() => {
-        const allBalances = balanceLookup.entity.value?.balances
-        return allBalances && allBalances.length >= 1 ? allBalances[0].tokens : []
-    })
-
-    return {
-      isSmallScreen,
-      isTouchDevice,
-      tokenBalances,
-    }
-  }
+        return {
+            isSmallScreen,
+            isTouchDevice,
+            tokenBalances,
+        };
+    },
 });
-
 </script>
 
-<style/>
+<style />

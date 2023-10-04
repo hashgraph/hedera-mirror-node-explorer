@@ -18,17 +18,17 @@
  *
  */
 
-import {describe, test, expect} from 'vitest'
-import {flushPromises, mount} from "@vue/test-utils"
+import { describe, test, expect } from "vitest";
+import { flushPromises, mount } from "@vue/test-utils";
 import router from "@/router";
 import axios from "axios";
-import {SAMPLE_ACCOUNTS, SAMPLE_TOKEN} from "../Mocks";
+import { SAMPLE_ACCOUNTS, SAMPLE_TOKEN } from "../Mocks";
 import Accounts from "@/pages/Accounts.vue";
 import DashboardCard from "@/components/DashboardCard.vue";
 import AccountTable from "@/components/account/AccountTable.vue";
 import MockAdapter from "axios-mock-adapter";
 import Oruga from "@oruga-ui/oruga-next";
-import {HMSF} from "@/utils/HMSF";
+import { HMSF } from "@/utils/HMSF";
 
 /*
     Bookmarks
@@ -37,52 +37,47 @@ import {HMSF} from "@/utils/HMSF";
 
  */
 
-HMSF.forceUTC = true
+HMSF.forceUTC = true;
 
 describe("Accounts.vue", () => {
-
     test("no props", async () => {
-
-        await router.push("/") // To avoid "missing required param 'network'" error
+        await router.push("/"); // To avoid "missing required param 'network'" error
 
         const mock = new MockAdapter(axios);
 
-        const matcher1 = "/api/v1/accounts"
+        const matcher1 = "/api/v1/accounts";
         mock.onGet(matcher1).reply(200, SAMPLE_ACCOUNTS);
 
-        const matcher2 = "/api/v1/tokens/" + SAMPLE_TOKEN.token_id
-        mock.onGet(matcher2).reply(200, SAMPLE_TOKEN)
+        const matcher2 = "/api/v1/tokens/" + SAMPLE_TOKEN.token_id;
+        mock.onGet(matcher2).reply(200, SAMPLE_TOKEN);
 
         const wrapper = mount(Accounts, {
             global: {
-                plugins: [router, Oruga]
+                plugins: [router, Oruga],
             },
             props: {},
         });
 
-        await flushPromises()
+        await flushPromises();
         // console.log(wrapper.text())
 
-        const card = wrapper.findComponent(DashboardCard)
-        expect(wrapper.vm.accountTableController.mounted.value).toBe(true)
-        expect(card.exists()).toBe(true)
-        expect(card.text()).toMatch(RegExp("^Recent Accounts"))
+        const card = wrapper.findComponent(DashboardCard);
+        expect(wrapper.vm.accountTableController.mounted.value).toBe(true);
+        expect(card.exists()).toBe(true);
+        expect(card.text()).toMatch(RegExp("^Recent Accounts"));
 
-        const table = card.findComponent(AccountTable)
-        expect(table.exists()).toBe(true)
-        expect(table.get('thead').text()).toBe("Account Expiry Tokens Memo Balance")
-        expect(table.get('tbody').text()).toBe(
-            "0.0.730631" +
-            "None" +
-            "1023423" +
-            "None" +
-            "23.42647909"
-        )
+        const table = card.findComponent(AccountTable);
+        expect(table.exists()).toBe(true);
+        expect(table.get("thead").text()).toBe(
+            "Account Expiry Tokens Memo Balance",
+        );
+        expect(table.get("tbody").text()).toBe(
+            "0.0.730631" + "None" + "1023423" + "None" + "23.42647909",
+        );
 
-        wrapper.unmount()
-        await flushPromises()
+        wrapper.unmount();
+        await flushPromises();
 
-        expect(wrapper.vm.accountTableController.mounted.value).toBe(false)
+        expect(wrapper.vm.accountTableController.mounted.value).toBe(false);
     });
-
 });

@@ -18,76 +18,73 @@
  *
  */
 
-import {describe, it, expect} from 'vitest'
-import {flushPromises, mount} from "@vue/test-utils"
-import HexaValue from "@/components/values/HexaValue.vue"
+import { describe, it, expect } from "vitest";
+import { flushPromises, mount } from "@vue/test-utils";
+import HexaValue from "@/components/values/HexaValue.vue";
 
 describe("HexaValue.vue", () => {
-
     //
     // byteString unset
     //
 
     it("props.byteString unset, showNone == false", async () => {
-
         const wrapper = mount(HexaValue);
-        await flushPromises()
+        await flushPromises();
 
-        expect(wrapper.text()).toBe("")
+        expect(wrapper.text()).toBe("");
 
-        wrapper.unmount()
-        await flushPromises()
+        wrapper.unmount();
+        await flushPromises();
     });
 
     it("props.byteString unset, showNone == true", async () => {
-
-        const wrapper = mount(HexaValue, {
-            props: {
-                showNone: true
-            }
-        });
-        await flushPromises()
-
-        expect(wrapper.text()).toBe("None")
-
-        wrapper.unmount()
-        await flushPromises()
-    });
-
-    it("should display 'None' with a mention on the line below", async () => {
-
         const wrapper = mount(HexaValue, {
             props: {
                 showNone: true,
-                noneExtra: "This should be displayed below None"
-            }
+            },
         });
-        await flushPromises()
+        await flushPromises();
 
-        expect(wrapper.text()).toBe("NoneThis should be displayed below None")
+        expect(wrapper.text()).toBe("None");
 
-        wrapper.unmount()
-        await flushPromises()
+        wrapper.unmount();
+        await flushPromises();
+    });
+
+    it("should display 'None' with a mention on the line below", async () => {
+        const wrapper = mount(HexaValue, {
+            props: {
+                showNone: true,
+                noneExtra: "This should be displayed below None",
+            },
+        });
+        await flushPromises();
+
+        expect(wrapper.text()).toBe("NoneThis should be displayed below None");
+
+        wrapper.unmount();
+        await flushPromises();
     });
 
     //
     // byteString set
     //
 
-    const BYTE_STRING = "0102030405060708090A0B0C0D0E0F"
+    const BYTE_STRING = "0102030405060708090A0B0C0D0E0F";
 
     it("props.byteString set", async () => {
-
         const wrapper = mount(HexaValue, {
             props: {
-                byteString: BYTE_STRING
-            }
+                byteString: BYTE_STRING,
+            },
         });
-        await flushPromises()
+        await flushPromises();
 
         // console.log(wrapper.html())
 
-        expect(wrapper.text()).toBe("0102 0304 0506 0708 090A 0B0C 0D0E 0FCopy")
+        expect(wrapper.text()).toBe(
+            "0102 0304 0506 0708 090A 0B0C 0D0E 0FCopy",
+        );
 
         // Lines below ...
         //
@@ -99,8 +96,8 @@ describe("HexaValue.vue", () => {
         // because execCommand() is not supported by vue test utils.
         // Clipboard copy must be tested in e2e tests
 
-        wrapper.unmount()
-        await flushPromises()
+        wrapper.unmount();
+        await flushPromises();
     });
 
     //
@@ -108,21 +105,20 @@ describe("HexaValue.vue", () => {
     //
 
     it("props.byteString set (with 0x)", async () => {
-
         const wrapper = mount(HexaValue, {
             props: {
-                byteString: "0x" + BYTE_STRING
-            }
+                byteString: "0x" + BYTE_STRING,
+            },
         });
-        await flushPromises()
+        await flushPromises();
 
         // console.log(wrapper.html())
 
-        expect(wrapper.text()).toBe("0102 0304 0506 0708 090A 0B0C 0D0E 0FCopy")
+        expect(wrapper.text()).toBe(
+            "0102 0304 0506 0708 090A 0B0C 0D0E 0FCopy",
+        );
 
-        wrapper.unmount()
-        await flushPromises()
+        wrapper.unmount();
+        await flushPromises();
     });
-
-
 });

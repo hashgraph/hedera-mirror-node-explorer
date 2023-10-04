@@ -18,32 +18,40 @@
  *
  */
 
-import {EntityCache} from "@/utils/cache/base/EntityCache"
-import {TransactionByIdResponse, TransactionDetail} from "@/schemas/HederaSchemas";
+import { EntityCache } from "@/utils/cache/base/EntityCache";
+import {
+    TransactionByIdResponse,
+    TransactionDetail,
+} from "@/schemas/HederaSchemas";
 import axios from "axios";
 
-export class TransactionGroupCache extends EntityCache<string, TransactionDetail[]|null> {
-
-    public static readonly instance = new TransactionGroupCache()
+export class TransactionGroupCache extends EntityCache<
+    string,
+    TransactionDetail[] | null
+> {
+    public static readonly instance = new TransactionGroupCache();
 
     //
     // Cache
     //
 
-    protected async load(transactionId: string): Promise<TransactionDetail[]|null> {
-        let result: TransactionDetail[]|null
+    protected async load(
+        transactionId: string,
+    ): Promise<TransactionDetail[] | null> {
+        let result: TransactionDetail[] | null;
         try {
-            const response = await axios.get<TransactionByIdResponse>("api/v1/transactions/" + transactionId)
-            result = response.data?.transactions ?? null
-        } catch(error) {
+            const response = await axios.get<TransactionByIdResponse>(
+                "api/v1/transactions/" + transactionId,
+            );
+            result = response.data?.transactions ?? null;
+        } catch (error) {
             if (axios.isAxiosError(error) && error.response?.status == 404) {
-                result = null
+                result = null;
             } else {
-                throw error
+                throw error;
             }
         }
 
-        return Promise.resolve(result)
+        return Promise.resolve(result);
     }
 }
-

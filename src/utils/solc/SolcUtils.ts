@@ -18,46 +18,53 @@
  *
  */
 
-import {SolcMetadata} from "@/utils/solc/SolcMetadata";
+import { SolcMetadata } from "@/utils/solc/SolcMetadata";
 
 export class SolcUtils {
-
-    public static fetchIPFSHash(sourceFileName: string, metadata: SolcMetadata): string|null {
-        let result: string|null = null
+    public static fetchIPFSHash(
+        sourceFileName: string,
+        metadata: SolcMetadata,
+    ): string | null {
+        let result: string | null = null;
         if (sourceFileName in metadata.sources) {
-            const prefix = "dweb:/ipfs/"
+            const prefix = "dweb:/ipfs/";
             for (const url of metadata.sources[sourceFileName].urls ?? []) {
                 if (url.startsWith(prefix)) {
-                    result = url.slice(prefix.length)
-                    break
+                    result = url.slice(prefix.length);
+                    break;
                 }
             }
         }
-        return result
+        return result;
     }
 
-    public static fetchSWARMHash(sourceFileName: string, metadata: SolcMetadata): string|null {
-        let result: string|null = null
+    public static fetchSWARMHash(
+        sourceFileName: string,
+        metadata: SolcMetadata,
+    ): string | null {
+        let result: string | null = null;
         if (sourceFileName in metadata.sources) {
-            const prefix = "bzz-raw://"
+            const prefix = "bzz-raw://";
             for (const url of metadata.sources[sourceFileName].urls ?? []) {
                 if (url.startsWith(prefix)) {
-                    result = url.slice(prefix.length)
-                    break
+                    result = url.slice(prefix.length);
+                    break;
                 }
             }
         }
-        return result
+        return result;
     }
 
-    public static fetchKeccakHash(sourceFileName: string, metadata: SolcMetadata): string|null {
-        let result: string|null
+    public static fetchKeccakHash(
+        sourceFileName: string,
+        metadata: SolcMetadata,
+    ): string | null {
+        let result: string | null;
         if (sourceFileName in metadata.sources) {
-            result = metadata.sources[sourceFileName].keccak256 ?? null
+            result = metadata.sources[sourceFileName].keccak256 ?? null;
         } else {
-            result = null
+            result = null;
         }
-        return result
+        return result;
     }
-
 }

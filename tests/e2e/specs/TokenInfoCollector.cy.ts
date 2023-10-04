@@ -20,17 +20,13 @@
 
 // https://docs.cypress.io/api/table-of-contents
 
-describe('TokenInfoCollector', () => {
+describe("TokenInfoCollector", () => {
+    const timestamp = "1673974382.950855003";
 
-    const timestamp = "1673974382.950855003"
+    it("should display token name", () => {
+        cy.visit("mainnet/transaction/" + timestamp);
+        cy.url().should("include", "/mainnet/transaction/");
 
-    it('should display token name', () => {
-        cy.visit('mainnet/transaction/' + timestamp)
-        cy.url().should('include', '/mainnet/transaction/')
-
-        cy.get('#entityId')
-            .find('span')
-            .contains("Apollo Dog Test")
-    })
-
-})
+        cy.get("#entityId").find("span").contains("Apollo Dog Test");
+    });
+});

@@ -19,37 +19,38 @@
  */
 
 export class Timestamp {
-
-    public readonly seconds: number
-    public readonly nanoseconds: number
+    public readonly seconds: number;
+    public readonly nanoseconds: number;
 
     //
     // Public
     //
 
-    public static parse(timestamp: string): Timestamp|null {
-        let result: Timestamp|null
+    public static parse(timestamp: string): Timestamp | null {
+        let result: Timestamp | null;
 
-        const i = timestamp.indexOf(".")
-        const s = i != -1 ? timestamp.slice(0, i) : null
-        const n = i != -1 ? timestamp.slice(i+1) : null
+        const i = timestamp.indexOf(".");
+        const s = i != -1 ? timestamp.slice(0, i) : null;
+        const n = i != -1 ? timestamp.slice(i + 1) : null;
         if (s !== null && n !== null && n.indexOf(".") == -1) {
-            const seconds = parseInt(s)
-            const nanoseconds = parseInt(n)
+            const seconds = parseInt(s);
+            const nanoseconds = parseInt(n);
             if (isNaN(seconds) || isNaN(nanoseconds)) {
-                result = null
+                result = null;
             } else {
-                result = new Timestamp(seconds, nanoseconds)
+                result = new Timestamp(seconds, nanoseconds);
             }
         } else {
-            result = null
+            result = null;
         }
 
-        return result
+        return result;
     }
 
     public toString(): string {
-        return this.seconds + "." + this.nanoseconds.toString().padStart(9, "0")
+        return (
+            this.seconds + "." + this.nanoseconds.toString().padStart(9, "0")
+        );
     }
 
     //
@@ -57,7 +58,7 @@ export class Timestamp {
     //
 
     private constructor(seconds: number, nanoseconds: number) {
-        this.seconds = seconds
-        this.nanoseconds = nanoseconds
+        this.seconds = seconds;
+        this.nanoseconds = nanoseconds;
     }
 }

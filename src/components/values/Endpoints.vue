@@ -23,18 +23,20 @@
 <!-- --------------------------------------------------------------------------------------------------------------- -->
 
 <template>
-
-  <div v-if="endpoints && endpoints.length">
-    <div v-for="s in endpoints" :key="s.ip_address_v4">
-      <span v-if="s.ip_address_v4">{{ s.ip_address_v4 }}</span>
-      <span v-if="s.ip_address_v4 && s.port != null" class="has-text-grey h-is-smaller">{{ ':' + s.port }}</span>
+    <div v-if="endpoints && endpoints.length">
+        <div v-for="s in endpoints" :key="s.ip_address_v4">
+            <span v-if="s.ip_address_v4">{{ s.ip_address_v4 }}</span>
+            <span
+                v-if="s.ip_address_v4 && s.port != null"
+                class="has-text-grey h-is-smaller"
+                >{{ ":" + s.port }}</span
+            >
+        </div>
     </div>
-  </div>
 
-  <span v-else-if="initialLoading"/>
+    <span v-else-if="initialLoading" />
 
-  <span v-else class="has-text-grey">None</span>
-
+    <span v-else class="has-text-grey">None</span>
 </template>
 
 <!-- --------------------------------------------------------------------------------------------------------------- -->
@@ -42,28 +44,26 @@
 <!-- --------------------------------------------------------------------------------------------------------------- -->
 
 <script lang="ts">
-
-import {defineComponent, inject, PropType, ref} from 'vue';
-import {initialLoadingKey} from "@/AppKeys";
-import {ServiceEndPoint} from "@/schemas/HederaSchemas";
+import { defineComponent, inject, PropType, ref } from "vue";
+import { initialLoadingKey } from "@/AppKeys";
+import { ServiceEndPoint } from "@/schemas/HederaSchemas";
 
 export default defineComponent({
-  name: 'Endpoints',
+    name: "Endpoints",
 
-  props: {
-    endpoints: Object as PropType<Array<ServiceEndPoint>|undefined>,
-  },
+    props: {
+        endpoints: Object as PropType<Array<ServiceEndPoint> | undefined>,
+    },
 
-  setup() {
-    const initialLoading = inject(initialLoadingKey, ref(false))
-    return {initialLoading}
-  }
+    setup() {
+        const initialLoading = inject(initialLoadingKey, ref(false));
+        return { initialLoading };
+    },
 });
-
 </script>
 
 <!-- --------------------------------------------------------------------------------------------------------------- -->
 <!--                                                       STYLE                                                     -->
 <!-- --------------------------------------------------------------------------------------------------------------- -->
 
-<style/>
+<style />
