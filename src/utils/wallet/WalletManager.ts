@@ -25,13 +25,15 @@ import {WalletDriver_Blade} from "@/utils/wallet/WalletDriver_Blade";
 import {WalletDriver_Hashpack} from "@/utils/wallet/WalletDriver_Hashpack";
 import {timeGuard, TimeGuardError} from "@/utils/TimerUtils";
 import {WalletDriver_Hedera} from "@/utils/wallet/WalletDriver_Hedera";
+import {WalletDriver_Metamask} from "@/utils/wallet/WalletDriver_Metamask";
 
 export class WalletManager {
 
     private readonly routeManager: RouteManager
     private readonly bladeDriver = new WalletDriver_Blade()
     private readonly hashpackDriver = new WalletDriver_Hashpack()
-    private readonly drivers: Array<WalletDriver> = [this.bladeDriver, this.hashpackDriver]
+    private readonly metamaskDriver = new WalletDriver_Metamask()
+    private readonly drivers: Array<WalletDriver> = [this.bladeDriver, this.hashpackDriver, this.metamaskDriver]
     private readonly timeout = 30000; // milliseconds
 
     private readonly connectedRef = ref(false)
