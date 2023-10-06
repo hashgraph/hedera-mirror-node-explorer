@@ -19,10 +19,11 @@
  */
 
 import {computed, Ref} from "vue";
-import {makeEthAddressForToken, makeTokenSymbol} from "@/schemas/HederaUtils";
+import {lookupTokenRelationship, makeEthAddressForToken, makeTokenSymbol} from "@/schemas/HederaUtils";
 import {TokenInfo} from "@/schemas/HederaSchemas";
 import {networkRegistry} from "@/schemas/NetworkRegistry";
-import router from "@/router";
+import router, {walletManager} from "@/router";
+import {TokenRelationshipCache} from "@/utils/cache/TokenRelationshipCache";
 
 export class TokenInfoAnalyzer {
 
@@ -35,6 +36,17 @@ export class TokenInfoAnalyzer {
     public constructor(tokenInfo: Ref<TokenInfo|null>) {
         this.tokenInfo = tokenInfo
     }
+
+    public mount() {
+        this.relationshipLookup.mount()
+    }
+
+    public unmount() {
+        this.relationshipLookup.unmount()
+    }
+
+    public readonly tokenId = computed(
+        () => this.tokenInfo.value?.token_id ?? null)
 
     public readonly ethereumAddress = computed(
         () => this.tokenInfo.value !== null ? makeEthAddressForToken(this.tokenInfo.value) : null)
@@ -82,4 +94,42 @@ export class TokenInfoAnalyzer {
             router.currentRoute.value.params.network as string
         ) : null)
 
+    public readonly associationStatus = computed(() => {
+        let result: TokenAssociationStatus
+        const tokenId = this.tokenId.value
+        const relationships = this.relationshipLookup.entity.value
+        if (tokenId !== null && relationships !== null) {
+            // To be revisited because TokenRelationshipCache contains only first 100 tokens
+            if (lookupTokenRelationship(relationships, tokenId) !== null) {
+                result = TokenAssociationStatus.Associated
+            } else {
+                result = TokenAssociationStatus.Dissociated
+            }
+        } else {
+            result = TokenAssociationStatus.Unknown
+        }
+        return result
+    })
+
+    public tokenAssociationDidChange(): void {
+        if (walletManager.accountId.value !== null) {
+            TokenRelationshipCache.instance.forget(walletManager.accountId.value)
+            this.relationshipLookup.unmount()
+            this.relationshipLookup.mount()
+        }
+    }
+
+    //
+    // Private
+    //
+
+    private readonly relationshipLookup
+        = TokenRelationshipCache.instance.makeLookup(walletManager.accountId, true)
+
+}
+
+export enum TokenAssociationStatus {
+    Unknown,
+    Associated,
+    Dissociated
 }
