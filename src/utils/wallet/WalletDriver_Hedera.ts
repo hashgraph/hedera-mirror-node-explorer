@@ -24,10 +24,13 @@ import {
     AccountAllowanceDeleteTransaction,
     AccountUpdateTransaction,
     NftId,
-    Signer,
+    Signer, TokenAssociateTransaction, TokenDissociateTransaction,
     TokenId
 } from "@hashgraph/sdk";
 import {TransactionID} from "@/utils/TransactionID";
+import {Transaction} from "@/schemas/HederaSchemas";
+import {waitFor} from "@/utils/TimerUtils";
+import {TransactionByIdCache} from "@/utils/cache/TransactionByIdCache";
 
 export abstract class WalletDriver_Hedera extends WalletDriver {
 
@@ -165,6 +168,46 @@ export abstract class WalletDriver_Hedera extends WalletDriver {
     // WalletDriver
     //
 
+    public async associateToken(tokenId: string): Promise<string> {
+        let result: string
+
+        const accountId = this.getAccountId()
+        if (accountId !== null) {
+
+            // https://docs.hedera.com/hedera/sdks-and-apis/sdks/token-service/associate-tokens-to-an-account
+            const trans = new TokenAssociateTransaction()
+            trans.setAccountId(accountId)
+            trans.setTokenIds([tokenId])
+            result = await this.executeTransaction(trans)
+            await this.waitForTransactionSurfacing(result)
+
+        } else {
+            throw this.callFailure("No account id. Is wallet driver connected ?")
+        }
+
+        return Promise.resolve(result)
+    }
+
+    public async dissociateToken(tokenId: string): Promise<string> {
+        let result: string
+
+        const accountId = this.getAccountId()
+        if (accountId !== null) {
+
+            // https://docs.hedera.com/hedera/sdks-and-apis/sdks/token-service/dissociate-tokens-from-an-account
+            const trans = new TokenDissociateTransaction()
+            trans.setAccountId(accountId)
+            trans.setTokenIds([tokenId])
+            result = await this.executeTransaction(trans)
+            await this.waitForTransactionSurfacing(result)
+
+        } else {
+            throw this.callFailure("No account id. Is wallet driver connected ?")
+        }
+
+        return Promise.resolve(result)
+    }
+
     public getAccountId(): string|null {
         return this.getSigner()?.getAccountId()?.toString() ?? null
     }
@@ -180,7 +223,9 @@ export abstract class WalletDriver_Hedera extends WalletDriver {
     protected async executeTransaction(
         t: AccountAllowanceApproveTransaction
             |AccountUpdateTransaction
-            |AccountAllowanceDeleteTransaction): Promise<string> {
+            |AccountAllowanceDeleteTransaction
+            |TokenAssociateTransaction
+            |TokenDissociateTransaction): Promise<string> {
         let result: Promise<string>
 
         const signer = this.getSigner()
@@ -204,4 +249,22 @@ export abstract class WalletDriver_Hedera extends WalletDriver {
     }
 
 
+    private async waitForTransactionSurfacing(transactionId: string): Promise<Transaction | string> {
+        let result: Promise<Transaction | string>
+
+        try {
+            let counter = 10
+            let transaction: Transaction|null = null
+            while (counter > 0 && transaction === null) {
+                await waitFor(3000)
+                transaction = await TransactionByIdCache.instance.lookup(transactionId, true)
+                counter -= 1
+            }
+            result = Promise.resolve(transaction ?? transactionId)
+        } catch {
+            result = Promise.resolve(transactionId)
+        }
+
+        return result
+    }
 }

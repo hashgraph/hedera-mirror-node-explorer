@@ -81,10 +81,6 @@ export class WalletDriver_Metamask extends WalletDriver {
         this.accountId = null
     }
 
-    public getNetwork(): string|null {
-        return this.network
-    }
-
     public getAccountId(): string|null {
         return this.accountId
     }

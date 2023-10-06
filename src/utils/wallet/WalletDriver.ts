@@ -37,17 +37,17 @@ export abstract class WalletDriver {
         throw this.toBeImplemented("disconnect")
     }
 
-    public getNetwork(): string|null {
-        throw this.toBeImplemented("getNetwork")
+    public async associateToken(tokenId: string): Promise<string> {
+        throw this.toBeImplemented("associateToken")
     }
 
-    public getAccountId(): string|null {
-        throw this.toBeImplemented("getAccountId")
+    public async dissociateToken(tokenId: string): Promise<string> {
+        throw this.toBeImplemented("dissociateToken")
     }
 
-    public isConnected(): boolean {
-        throw this.toBeImplemented("isConnected")
-    }
+    public abstract getAccountId(): string|null
+
+    public abstract isConnected(): boolean
 
     //
     // Public (utilities)

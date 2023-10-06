@@ -31,7 +31,6 @@ export class WalletDriver_Mock extends WalletDriver_Hedera {
     public readonly transactionId: string
 
     private connected = false
-    private network: string|null = null
 
     public updateAccountCounter = 0
 

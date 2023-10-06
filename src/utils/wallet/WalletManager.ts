@@ -138,6 +138,16 @@ export class WalletManager {
             throw this.activeDriver.unsupportedOperation()
         }
     }
+
+    public async associateToken(tokenId: string): Promise<string> {
+        return this.activeDriver.associateToken(tokenId)
+    }
+
+    public async dissociateToken(tokenId: string): Promise<string> {
+        return this.activeDriver.dissociateToken(tokenId)
+    }
+
+
     //
     // public async deleteNftAllowance(token: string, serialNumbers: number[]): Promise<string> {
     //     if (this.activeDriver instanceof WalletDriver_Hedera) {
