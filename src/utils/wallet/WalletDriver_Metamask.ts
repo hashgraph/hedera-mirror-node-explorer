@@ -23,12 +23,17 @@ import detectEthereumProvider from "@metamask/detect-provider";
 import {MetaMaskInpageProvider} from "@metamask/providers";
 import {NetworkEntry} from "@/schemas/NetworkRegistry";
 import {AccountByAddressCache} from "@/utils/cache/AccountByAddressCache";
+import {ContractResultByHashCache} from "@/utils/cache/ContractResultByHashCache";
+import {TransactionByTsCache} from "@/utils/cache/TransactionByTsCache";
 import {routeManager} from "@/router";
+import {Transaction} from "@/schemas/HederaSchemas";
+import {waitFor} from "@/utils/TimerUtils";
+import {EntityID} from "@/utils/EntityID";
+import {ethers} from "ethers";
 
 export class WalletDriver_Metamask extends WalletDriver {
 
     private provider: MetaMaskInpageProvider|null = null
-    private network: string|null = null
     private accountId: string|null = null
 
     //
@@ -66,7 +71,6 @@ export class WalletDriver_Metamask extends WalletDriver {
             }
 
             this.provider = provider
-            this.network = network
             this.accountId = accountIds[0]
             this.provider.once('chainChanged', this.handleDisconnect);
         } else {
@@ -77,8 +81,60 @@ export class WalletDriver_Metamask extends WalletDriver {
     public async disconnect(): Promise<void> {
         this.provider?.off("chainChanged", this.handleDisconnect)
         this.provider = null
-        this.network = null
         this.accountId = null
+    }
+
+    public async associateToken(tokenId: string): Promise<string> {
+        let result: string
+
+        // https://stackoverflow.com/questions/76980638/how-do-you-associate-dissociate-an-hts-token-using-evm-transaction
+
+        const accountId = this.getAccountId()
+        const tokenAddress = EntityID.parse(tokenId)?.toAddress() ?? null
+        if (accountId !== null && tokenAddress !== null && this.provider !== null) {
+
+            const abi = ["function associate()"]
+            const web3provider = new ethers.providers.Web3Provider(this.provider as unknown as ethers.providers.ExternalProvider)
+            const contract = new ethers.Contract(tokenAddress, abi, web3provider.getSigner())
+            try {
+                const transactionResult = await contract.associate();
+                const hederaTransaction = await this.waitForTransactionSurfacing(transactionResult.hash)
+                result = typeof hederaTransaction == "string" ? hederaTransaction : hederaTransaction.transaction_id
+            } catch {
+                throw this.callFailure("associateToken")
+            }
+        } else {
+            throw this.callFailure("Invalid arguments")
+        }
+
+        return Promise.resolve(result)
+    }
+
+    public async dissociateToken(tokenId: string): Promise<string> {
+        let result: string
+
+        // https://stackoverflow.com/questions/76980638/how-do-you-associate-dissociate-an-hts-token-using-evm-transaction
+
+        const accountId = this.getAccountId()
+        const tokenAddress = EntityID.parse(tokenId)?.toAddress() ?? null
+        if (accountId !== null && tokenAddress !== null && this.provider !== null) {
+
+            const abi = ["function dissociate()"];
+            const web3provider = new ethers.providers.Web3Provider(this.provider as unknown as ethers.providers.ExternalProvider)
+            const contract = new ethers.Contract(tokenAddress, abi, web3provider.getSigner())
+            try {
+                const transactionResult = await contract.dissociate();
+                const hederaTransaction = await this.waitForTransactionSurfacing(transactionResult.hash)
+                result = typeof hederaTransaction == "string" ? hederaTransaction : hederaTransaction.transaction_id
+            } catch(reason) {
+                console.log("reason=" + reason)
+                throw this.callFailure("tokenDissociate")
+            }
+        } else {
+            throw this.callFailure("Invalid arguments")
+        }
+
+        return Promise.resolve(result)
     }
 
     public getAccountId(): string|null {
@@ -130,5 +186,31 @@ export class WalletDriver_Metamask extends WalletDriver {
         }
 
         return Promise.resolve(result)
+    }
+
+
+    private async waitForTransactionSurfacing(ethereumHash: Buffer): Promise<Transaction | string> {
+        let result: Promise<Transaction | string>
+
+        const hash = ethers.utils.hexlify(ethereumHash)
+        try {
+            let counter = 10
+            let transaction: Transaction|null = null
+            while (counter > 0 && transaction === null) {
+                await waitFor(3000)
+                const contractInfo = await ContractResultByHashCache.instance.lookup(hash, true)
+                if (contractInfo !== null) {
+                    transaction = await TransactionByTsCache.instance.lookup(contractInfo.timestamp, true)
+                } else {
+                    transaction = null
+                }
+                counter -= 1
+            }
+            result = Promise.resolve(transaction ?? hash)
+        } catch {
+            result = Promise.resolve(hash)
+        }
+
+        return result
     }
 }
