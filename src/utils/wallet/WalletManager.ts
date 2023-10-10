@@ -36,11 +36,12 @@ export class WalletManager {
     private readonly drivers: Array<WalletDriver> = [this.bladeDriver, this.hashpackDriver, this.metamaskDriver]
     private readonly timeout = 30000; // milliseconds
 
-    private readonly connectedRef = ref(false)
-    private readonly accountIdRef = ref<string|null>(null)
 
     private activeDriver: WalletDriver = this.hashpackDriver
+    private readonly connectedRef = ref(false)
     private readonly walletNameRef = ref(this.activeDriver.name)
+    private readonly accountIdRef = ref<string|null>(null)
+    private readonly hederaWalletRef = ref<boolean>(this.activeDriver instanceof WalletDriver_Hedera)
 
     //
     // Public
@@ -65,6 +66,7 @@ export class WalletManager {
             this.connectedRef.value = this.activeDriver.isConnected()
             this.accountIdRef.value = this.activeDriver.getAccountId()
             this.walletNameRef.value = this.activeDriver.name
+            this.hederaWalletRef.value = this.activeDriver instanceof WalletDriver_Hedera
         }
     }
 
@@ -73,6 +75,8 @@ export class WalletManager {
     public accountId = computed(() => this.accountIdRef.value)
 
     public walletName = computed(() => this.walletNameRef.value)
+
+    public isHederaWallet = computed(() => this.hederaWalletRef.value)
 
     public async connect(): Promise<void> {
         try {
@@ -101,10 +105,6 @@ export class WalletManager {
             this.connectedRef.value = false
             this.accountIdRef.value = null
         }
-    }
-
-    public isHederaWallet(): boolean {
-        return this.activeDriver instanceof WalletDriver_Hedera
     }
 
     public async changeStaking(nodeId: number|null, accountId: string|null, declineReward: boolean|null): Promise<string> {
