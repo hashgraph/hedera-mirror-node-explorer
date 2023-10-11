@@ -52,7 +52,19 @@
   </div>
 
   <div v-else class="is-flex is-justify-content-space-between is-align-items-flex-end">
-    <WalletChooser v-model:show-dialog="showWalletChooser"/>
+    <WalletChooser v-model:show-dialog="showWalletChooser" v-on:choose-wallet="handleChooseWallet"/>
+    
+    <ProgressDialog v-model:show-dialog="showProgressDialog"
+                  :mode="progressDialogMode"
+                  :main-message="progressMainMessage"
+                  :extra-message="progressExtraMessage"
+                  :extra-transaction-id="progressExtraTransactionId"
+                  :show-spinner="showProgressSpinner"
+  >
+    <template v-slot:dialogTitle>
+      <span class="h-is-primary-title">{{ progressDialogTitle }}</span>
+    </template>
+  </ProgressDialog>
 
     <div class="is-inline-flex is-align-items-center is-flex-grow-0 is-flex-shrink-0 mr-3">
       <router-link :to="routeManager.makeRouteToMainDashboard()">
@@ -110,8 +122,8 @@
         </div>
 
         <div style="grid-column: span 3;">
-          <button id="connectWalletButton" class="button" @click="chooseWallet" style="outline: none; height: 40px; width: 100%; font-size: 0.9rem;">
-            CONNECT WALLET
+          <button :disabled="connecting" id="connectWalletButton" class="button" @click="chooseWallet" style="outline: none; height: 40px; width: 100%; font-size: 0.9rem;">
+            {{ connecting ? "Attempting to connect..." : "CONNECT WALLET" }}
           </button>
         </div>
       </div>
@@ -127,12 +139,15 @@
 
 <script lang="ts">
 
-import {routeManager} from "@/router";
+import {routeManager, walletManager} from "@/router";
 import {defineComponent, inject, ref} from "vue";
 import SearchBar from "@/components/SearchBar.vue";
 import AxiosStatus from "@/components/AxiosStatus.vue";
 import {networkRegistry} from "@/schemas/NetworkRegistry";
 import WalletChooser from "@/components/staking/WalletChooser.vue";
+import { WalletDriver } from '@/utils/wallet/WalletDriver';
+import { WalletDriverError } from '@/utils/wallet/WalletDriverError';
+import { Mode } from './staking/ProgressDialog.vue';
 
 export default defineComponent({
   name: "TopNavBar",
@@ -153,6 +168,42 @@ export default defineComponent({
     const chooseWallet = () => {
       showWalletChooser.value = true
     }
+
+    const connecting = ref(false)
+    const showProgressDialog = ref(false)
+    const showProgressSpinner = ref(false)
+    const progressDialogMode = ref(Mode.Busy)
+    const progressDialogTitle = ref<string|null>(null)
+    const progressMainMessage = ref<string|null>(null)
+    const progressExtraMessage = ref<string|null>(null)
+    const progressExtraTransactionId = ref<string|null>(null)
+
+    //
+    // handleChooseWallet
+    //
+    const handleChooseWallet = (wallet: WalletDriver) => {
+      walletManager.setActiveDriver(wallet)
+      connecting.value = true
+      walletManager
+          .connect()
+          .catch((reason) => {
+            console.warn("Failed to connect wallet - reason:" + reason.toString())
+            showProgressDialog.value = true
+            progressDialogMode.value = Mode.Error
+            progressDialogTitle.value = "Could not connect wallet"
+            showProgressSpinner.value = false
+            progressExtraTransactionId.value = null
+            if (reason instanceof WalletDriverError) {
+              progressMainMessage.value = reason.message
+              progressExtraMessage.value = reason.extra
+            } else {
+              progressMainMessage.value = "Unexpected error"
+              progressExtraMessage.value = JSON.stringify(reason)
+            }
+          })
+          .finally(() => connecting.value = false)
+    }
+    
 
     return {
       isSmallScreen,
@@ -177,6 +228,15 @@ export default defineComponent({
       routeManager,
       chooseWallet,
       showWalletChooser,
+      handleChooseWallet,
+      connecting,
+      showProgressDialog,
+      progressDialogMode,
+      progressMainMessage,
+      progressExtraMessage,
+      progressExtraTransactionId,
+      showProgressSpinner,
+      progressDialogTitle,
     }
   },
 })
