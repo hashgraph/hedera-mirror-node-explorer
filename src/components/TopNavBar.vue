@@ -122,9 +122,24 @@
         </div>
 
         <div style="grid-column: span 3;">
-          <button :disabled="connecting" id="connectWalletButton" class="button" @click="chooseWallet" style="outline: none; height: 40px; width: 100%; font-size: 0.9rem;">
+          <button v-if="!connected" :disabled="connecting" id="connectWalletButton" class="button" @click="chooseWallet" style="outline: none; height: 40px; width: 100%; font-size: 0.9rem;">
             {{ connecting ? "Attempting to connect..." : "CONNECT WALLET" }}
           </button>
+
+          <div v-else class="is-flex is-align-items-center" style="outline: none; height: 40px; width: 100%; font-size: 0.9rem; border: 1px solid white; display: flex; justify-content: space-between;">
+            <figure style="width: 50px; height: 100%;">
+                <img :src="walletIconURL ?? undefined" alt="wallet logo">
+            </figure>
+
+            <p class="ml-3/" style="font-size: 1.02rem;">
+              {{ accountId }}
+            </p>
+
+            <div class="is-flex is-align-items-center" style="width: 30px; justify-content: center;">
+              <i class="fas fa-solid fa-angle-down is-flex is-align-items-center"/>
+            </div>
+
+          </div>
         </div>
       </div>
     </div>
@@ -140,18 +155,19 @@
 <script lang="ts">
 
 import {routeManager, walletManager} from "@/router";
-import {defineComponent, inject, ref} from "vue";
 import SearchBar from "@/components/SearchBar.vue";
 import AxiosStatus from "@/components/AxiosStatus.vue";
 import {networkRegistry} from "@/schemas/NetworkRegistry";
 import WalletChooser from "@/components/staking/WalletChooser.vue";
 import { WalletDriver } from '@/utils/wallet/WalletDriver';
 import { WalletDriverError } from '@/utils/wallet/WalletDriverError';
-import { Mode } from './staking/ProgressDialog.vue';
+import ProgressDialog, { Mode } from './staking/ProgressDialog.vue';
+import { AccountLocParser } from '@/utils/parser/AccountLocParser';
+import {computed, defineComponent, inject, onBeforeUnmount, onMounted, ref} from "vue";
 
 export default defineComponent({
   name: "TopNavBar",
-  components: {AxiosStatus, SearchBar, WalletChooser},
+  components: {AxiosStatus, SearchBar, WalletChooser, ProgressDialog},
 
   setup() {
     const isSmallScreen = inject('isSmallScreen', true)
@@ -203,6 +219,24 @@ export default defineComponent({
           })
           .finally(() => connecting.value = false)
     }
+
+    //
+    // Account
+    //
+    const accountLocParser = new AccountLocParser(walletManager.accountId)
+    onMounted(() => accountLocParser.mount())
+    onBeforeUnmount(() => accountLocParser.unmount())
+
+    const accountRoute = computed(() => {
+      return walletManager.accountId.value !== null
+          ? routeManager.makeRouteToAccount(walletManager.accountId.value, false)
+          : null
+    })
+
+    const balanceInHbar = computed(() => {
+      const balance = accountLocParser.balance.value ?? 10000000000
+      return balance / 100000000
+    })
     
 
     return {
@@ -237,6 +271,12 @@ export default defineComponent({
       progressExtraTransactionId,
       showProgressSpinner,
       progressDialogTitle,
+      accountId: walletManager.accountId,
+      accountChecksum: accountLocParser.accountChecksum,
+      walletIconURL: walletManager.getActiveDriver().iconURL,
+      connected: walletManager.connected,
+      accountRoute,
+      balanceInHbar, 
     }
   },
 })
