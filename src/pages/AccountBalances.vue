@@ -36,6 +36,16 @@
       </template>
     </DashboardCard>
 
+    <DashboardCard>
+      <template v-slot:title>
+        <span class="h-is-primary-title">NFTs owned by </span>
+        <span class="h-is-secondary-text">{{ accountId }}</span>
+      </template>
+      <template v-slot:content>
+        <NftsTable :controller="nftsTableController"/>
+      </template>
+    </DashboardCard>
+
   </section>
 
   <Footer/>
@@ -55,12 +65,15 @@ import Footer from "@/components/Footer.vue";
 import {TokenRelationshipsTableController} from "@/components/account/TokenRelationshipsTableController";
 import {useRouter} from "vue-router";
 import {EntityID} from "@/utils/EntityID";
+import NftsTable from "@/components/account/NftsTable.vue";
+import { NftsTableController } from "@/components/account/NftsTableController";
 
 export default defineComponent({
 
   name: 'AccountBalances',
 
   components: {
+    NftsTable,
     Footer,
     DashboardCard,
     BalanceTable
@@ -85,14 +98,22 @@ export default defineComponent({
     })
 
     const tokenRelationshipTableController =
-        new TokenRelationshipsTableController(useRouter(), normalizedAccountId, perPage)
-    onMounted(() => tokenRelationshipTableController.mount())
-    onBeforeUnmount(() => tokenRelationshipTableController.unmount())
+        new TokenRelationshipsTableController(useRouter(), normalizedAccountId, perPage);
+    const nftsTableController = new NftsTableController(useRouter(), normalizedAccountId, perPage);
+    onMounted(() => {
+        tokenRelationshipTableController.mount()
+        nftsTableController.mount()
+    })
+    onBeforeUnmount(() => {
+        tokenRelationshipTableController.unmount()
+        nftsTableController.unmount()
+    })
 
     return {
       isSmallScreen,
       isTouchDevice,
       tokenRelationshipTableController,
+      nftsTableController,
     }
   }
 });

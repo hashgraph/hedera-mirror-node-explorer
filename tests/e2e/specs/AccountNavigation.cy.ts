@@ -85,6 +85,7 @@ describe('Account Navigation', () => {
         cy.contains('Token Balances for Account ' + accountId1)
 
         cy.get('table')
+            .eq(0)
             .find('tbody tr')
             .should('have.length.at.least', 2)
             .eq(0)
