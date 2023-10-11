@@ -52,12 +52,15 @@
   </div>
 
   <div v-else class="is-flex is-justify-content-space-between is-align-items-flex-end">
-    <div  class="is-inline-flex is-align-items-center is-flex-grow-0 is-flex-shrink-0 mr-3">
+    <WalletChooser v-model:show-dialog="showWalletChooser"/>
+
+    <div class="is-inline-flex is-align-items-center is-flex-grow-0 is-flex-shrink-0 mr-3">
       <router-link :to="routeManager.makeRouteToMainDashboard()">
         <img id="product-logo" alt="Product Logo" class="image" src="@/assets/branding/brand-product-logo.png">
       </router-link>
       <AxiosStatus/>
     </div>
+    
     <div class="is-flex-grow-0 is-flex-shrink-0 is-flex is-flex-direction-column ml-4">
       <div class="is-flex mb-3 is-align-items-baseline is-justify-content-space-between">
         <router-link :to="routeManager.makeRouteToMainDashboard()"
@@ -107,7 +110,7 @@
         </div>
 
         <div style="grid-column: span 3;">
-          <button id="connectWalletButton" class="button" style="outline: none; height: 40px; width: 100%; font-size: 0.9rem;">
+          <button id="connectWalletButton" class="button" @click="chooseWallet" style="outline: none; height: 40px; width: 100%; font-size: 0.9rem;">
             CONNECT WALLET
           </button>
         </div>
@@ -124,15 +127,16 @@
 
 <script lang="ts">
 
-import {defineComponent, inject, ref} from "vue";
 import {routeManager} from "@/router";
+import {defineComponent, inject, ref} from "vue";
 import SearchBar from "@/components/SearchBar.vue";
 import AxiosStatus from "@/components/AxiosStatus.vue";
 import {networkRegistry} from "@/schemas/NetworkRegistry";
+import WalletChooser from "@/components/staking/WalletChooser.vue";
 
 export default defineComponent({
   name: "TopNavBar",
-  components: {AxiosStatus, SearchBar},
+  components: {AxiosStatus, SearchBar, WalletChooser},
 
   setup() {
     const isSmallScreen = inject('isSmallScreen', true)
@@ -144,6 +148,11 @@ export default defineComponent({
     const isStakingEnabled = import.meta.env.VITE_APP_ENABLE_STAKING === 'true'
 
     const isMobileMenuOpen = ref(false)
+
+    const showWalletChooser = ref(false)
+    const chooseWallet = () => {
+      showWalletChooser.value = true
+    }
 
     return {
       isSmallScreen,
@@ -166,6 +175,8 @@ export default defineComponent({
       isStakingRoute: routeManager.isStakingRoute,
       isBlocksRoute: routeManager.isBlocksRoute,
       routeManager,
+      chooseWallet,
+      showWalletChooser,
     }
   },
 })
