@@ -57,7 +57,7 @@
           <template #value>
             <AccountLink
               :account-id="nftInfo?.account_id"
-              :show-none="true"
+              :show-none="false"
             />
           </template>
         </Property>
@@ -65,7 +65,7 @@
           <template #name>Created Timestamp</template>
           <template #value>
             <TimestampValue
-              :show-none="true"
+              :show-none="false"
               :timestamp="nftInfo?.created_timestamp"
             />
           </template>
@@ -75,7 +75,7 @@
           <template #value>
             <AccountLink
               :account-id="nftInfo?.delegating_spender"
-              :show-none="true"
+              :show-none="false"
             />
           </template>
         </Property>
@@ -85,7 +85,7 @@
             <BlobValue
               :base64="true"
               :blob-value="nftInfo?.metadata"
-              :show-none="true"
+              :show-none="false"
             />
           </template>
         </Property>
@@ -94,7 +94,7 @@
           <template #value>
             <TimestampValue
               :timestamp="nftInfo?.modified_timestamp"
-              :show-none="true"
+              :show-none="false"
             />
           </template>
         </Property>
@@ -103,7 +103,7 @@
           <template #value>
             <AccountLink
               :account-id="nftInfo?.spender_id"
-              :show-none="true"
+              :show-none="false"
             />
           </template>
         </Property>

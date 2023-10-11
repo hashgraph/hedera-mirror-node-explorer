@@ -82,9 +82,9 @@ export function makeFilterValues(nftFilter: boolean): string[] {
     .sort((a, b) => {
       return makeTypeLabel(a as TransactionType) < makeTypeLabel(b as TransactionType) ? -1 : 1;
     })
-  if(nftFilter) {
+  if (nftFilter) {
     result = result.filter(el => {
-      return el === "CRYPTOTRANSFER" || el.startsWith("TOKEN");
+      return el === "CRYPTOTRANSFER" || el === "TOKENMINT" || el === "CRYPTOAPPROVEALLOWANCE" || el === "CRYPTODELETEALLOWANCE" || el === "TOKENWIPE" || el === "TOKENBURN" || el === "TOKENDELETION";
     })
   }
   result.splice(0, 0, "")
