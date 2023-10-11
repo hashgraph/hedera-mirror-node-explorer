@@ -29,7 +29,7 @@ export abstract class WalletDriver {
     // Public (to be subclassed)
     //
 
-    public async connect(network: string): Promise<void> {
+    public async connect(network: string): Promise<string[]> {
         throw this.toBeImplemented("connect")
     }
 
@@ -37,15 +37,13 @@ export abstract class WalletDriver {
         throw this.toBeImplemented("disconnect")
     }
 
-    public async associateToken(tokenId: string): Promise<string> {
+    public async associateToken(accountId: string, tokenId: string): Promise<string> {
         throw this.toBeImplemented("associateToken")
     }
 
-    public async dissociateToken(tokenId: string): Promise<string> {
+    public async dissociateToken(accountId: string, tokenId: string): Promise<string> {
         throw this.toBeImplemented("dissociateToken")
     }
-
-    public abstract getAccountId(): string|null
 
     public abstract isConnected(): boolean
 

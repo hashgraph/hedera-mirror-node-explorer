@@ -38,122 +38,76 @@ export abstract class WalletDriver_Hedera extends WalletDriver {
     // Public
     //
 
-    public async changeStaking(stakedNodeId: number|null, stakedAccountId: string|null, declineReward: boolean|null): Promise<string> {
+    public async changeStaking(accountId: string, stakedNodeId: number|null, stakedAccountId: string|null, declineReward: boolean|null): Promise<string> {
 
-        let result: string
-
-        const accountId = this.getAccountId()
-        if (accountId !== null) {
-            const trans = new AccountUpdateTransaction()
-            trans.setAccountId(accountId)
-            if (stakedNodeId !== null) {
-                trans.setStakedNodeId(stakedNodeId)
-            } else if (stakedAccountId !== null) {
-                trans.setStakedAccountId(stakedAccountId)
-            } else {
-                trans.setStakedNodeId(-1)
-                trans.setStakedAccountId("0.0.0")
-            }
-            if (declineReward !== null) {
-                trans.setDeclineStakingReward(declineReward)
-            }
-
-            result = await this.executeTransaction(trans)
-
+        const trans = new AccountUpdateTransaction()
+        trans.setAccountId(accountId)
+        if (stakedNodeId !== null) {
+            trans.setStakedNodeId(stakedNodeId)
+        } else if (stakedAccountId !== null) {
+            trans.setStakedAccountId(stakedAccountId)
         } else {
-            throw this.callFailure("No account id. Is wallet driver connected ?")
+            trans.setStakedNodeId(-1)
+            trans.setStakedAccountId("0.0.0")
         }
+        if (declineReward !== null) {
+            trans.setDeclineStakingReward(declineReward)
+        }
+
+        const result = await this.executeTransaction(accountId, trans)
 
         return Promise.resolve(result)
     }
 
-    public async approveHbarAllowance(spender: string, amount: number): Promise<string> {
-        let result: string
+    public async approveHbarAllowance(accountId: string, spender: string, amount: number): Promise<string> {
 
-        const accountId = this.getAccountId()
-        if (accountId !== null) {
-
-            const trans = new AccountAllowanceApproveTransaction()
-            trans.approveHbarAllowance(accountId, spender, amount)
-            result = await this.executeTransaction(trans)
-
-        } else {
-            throw this.callFailure("No account id. Is wallet driver connected ?")
-        }
+        const trans = new AccountAllowanceApproveTransaction()
+        trans.approveHbarAllowance(accountId, spender, amount)
+        const result = await this.executeTransaction(accountId, trans)
 
         return Promise.resolve(result)
     }
 
-    public async approveTokenAllowance(token: string, spender: string, amount: number): Promise<string> {
-        let result: string
+    public async approveTokenAllowance(accountId: string, token: string, spender: string, amount: number): Promise<string> {
 
-        const accountId = this.getAccountId()
-        if (accountId !== null) {
-
-            const trans = new AccountAllowanceApproveTransaction()
-            trans.approveTokenAllowance(token, accountId, spender, amount)
-            result = await this.executeTransaction(trans)
-
-
-        } else {
-            throw this.callFailure("Invalid parameters")
-        }
+        const trans = new AccountAllowanceApproveTransaction()
+        trans.approveTokenAllowance(token, accountId, spender, amount)
+        const result = await this.executeTransaction(accountId, trans)
 
         return Promise.resolve(result)
     }
 
-    public async approveNFTAllowance(token: string, spender: string, serialNumbers: number[]): Promise<string> {
-        let result: string
+    public async approveNFTAllowance(accountId: string, token: string, spender: string, serialNumbers: number[]): Promise<string> {
 
-        const accountId = this.getAccountId()
-        if (accountId !== null) {
-
-            const trans = new AccountAllowanceApproveTransaction()
-            if (1 <= serialNumbers.length && serialNumbers.length <= 20) {
-                const tid = TokenId.fromString(token)
-                for (const sn of serialNumbers) {
-                    trans.approveTokenNftAllowance(new NftId(tid, sn), accountId, spender)
-                }
-            } else if (serialNumbers.length == 0) {
-                trans.approveTokenNftAllowanceAllSerials(token, accountId, spender)
-            } else {
-                throw this.callFailure("Invalid serial number count (" + serialNumbers.length + ")")
+        const trans = new AccountAllowanceApproveTransaction()
+        if (1 <= serialNumbers.length && serialNumbers.length <= 20) {
+            const tid = TokenId.fromString(token)
+            for (const sn of serialNumbers) {
+                trans.approveTokenNftAllowance(new NftId(tid, sn), accountId, spender)
             }
-            result = await this.executeTransaction(trans)
-
-
+        } else if (serialNumbers.length == 0) {
+            trans.approveTokenNftAllowanceAllSerials(token, accountId, spender)
         } else {
-            throw this.callFailure("Invalid parameters")
+            throw this.callFailure("Invalid serial number count (" + serialNumbers.length + ")")
         }
+        const result = await this.executeTransaction(accountId, trans)
 
         return Promise.resolve(result)
     }
 
     //
     // public async deleteNftAllowance(token: string, serialNumbers: number[]): Promise<string> {
-    //     let result: string
     //
-    //     // Connects if needed
-    //     await this.connect()
-    //
-    //     // Approves
-    //     if (this.accountId.value !== null) {
-    //
-    //         const trans = new AccountAllowanceDeleteTransaction()
-    //         if (1 <= serialNumbers.length && serialNumbers.length <= 20) {
-    //             const tid = TokenId.fromString(token)
-    //             for (const sn of serialNumbers) {
-    //                 trans.deleteAllTokenNftAllowances(new NftId(tid, sn), this.accountId.value)
-    //             }
-    //         } else {
-    //             throw this.callFailure("Invalid serial number count (" + serialNumbers.length + ")")
+    //    const trans = new AccountAllowanceDeleteTransaction()
+    //    if (1 <= serialNumbers.length && serialNumbers.length <= 20) {
+    //         const tid = TokenId.fromString(token)
+    //         for (const sn of serialNumbers) {
+    //             trans.deleteAllTokenNftAllowances(new NftId(tid, sn), this.accountId.value)
     //         }
-    //         result = await this.executeTransaction(trans)
-    //
-    //
     //     } else {
-    //         throw this.callFailure("Invalid parameters")
+    //         throw this.callFailure("Invalid serial number count (" + serialNumbers.length + ")")
     //     }
+    //     const result = await this.executeTransaction(trans)
     //
     //     return Promise.resolve(result)
     // }
@@ -162,58 +116,36 @@ export abstract class WalletDriver_Hedera extends WalletDriver {
     // Public (to be subclassed)
     //
 
-    public abstract getSigner(): Signer|null
+    public abstract makeSigner(accountId: string): Signer|null
 
     //
     // WalletDriver
     //
 
-    public async associateToken(tokenId: string): Promise<string> {
+    public async associateToken(accountId: string, tokenId: string): Promise<string> {
         let result: string
 
-        const accountId = this.getAccountId()
-        if (accountId !== null) {
-
-            // https://docs.hedera.com/hedera/sdks-and-apis/sdks/token-service/associate-tokens-to-an-account
-            const trans = new TokenAssociateTransaction()
-            trans.setAccountId(accountId)
-            trans.setTokenIds([tokenId])
-            result = await this.executeTransaction(trans)
-            await this.waitForTransactionSurfacing(result)
-
-        } else {
-            throw this.callFailure("No account id. Is wallet driver connected ?")
-        }
+        // https://docs.hedera.com/hedera/sdks-and-apis/sdks/token-service/associate-tokens-to-an-account
+        const trans = new TokenAssociateTransaction()
+        trans.setAccountId(accountId)
+        trans.setTokenIds([tokenId])
+        result = await this.executeTransaction(accountId, trans)
+        await this.waitForTransactionSurfacing(result)
 
         return Promise.resolve(result)
     }
 
-    public async dissociateToken(tokenId: string): Promise<string> {
+    public async dissociateToken(accountId: string, tokenId: string): Promise<string> {
         let result: string
 
-        const accountId = this.getAccountId()
-        if (accountId !== null) {
-
-            // https://docs.hedera.com/hedera/sdks-and-apis/sdks/token-service/dissociate-tokens-from-an-account
-            const trans = new TokenDissociateTransaction()
-            trans.setAccountId(accountId)
-            trans.setTokenIds([tokenId])
-            result = await this.executeTransaction(trans)
-            await this.waitForTransactionSurfacing(result)
-
-        } else {
-            throw this.callFailure("No account id. Is wallet driver connected ?")
-        }
+        // https://docs.hedera.com/hedera/sdks-and-apis/sdks/token-service/dissociate-tokens-from-an-account
+        const trans = new TokenDissociateTransaction()
+        trans.setAccountId(accountId)
+        trans.setTokenIds([tokenId])
+        result = await this.executeTransaction(accountId, trans)
+        await this.waitForTransactionSurfacing(result)
 
         return Promise.resolve(result)
-    }
-
-    public getAccountId(): string|null {
-        return this.getSigner()?.getAccountId()?.toString() ?? null
-    }
-
-    public isConnected(): boolean {
-        return this.getSigner() !== null
     }
 
     //
@@ -221,6 +153,7 @@ export abstract class WalletDriver_Hedera extends WalletDriver {
     //
 
     protected async executeTransaction(
+        accountId: string,
         t: AccountAllowanceApproveTransaction
             |AccountUpdateTransaction
             |AccountAllowanceDeleteTransaction
@@ -228,7 +161,7 @@ export abstract class WalletDriver_Hedera extends WalletDriver {
             |TokenDissociateTransaction): Promise<string> {
         let result: Promise<string>
 
-        const signer = this.getSigner()
+        const signer = this.makeSigner(accountId)
         if (signer !== null) {
             try {
                 await t.freezeWithSigner(signer)

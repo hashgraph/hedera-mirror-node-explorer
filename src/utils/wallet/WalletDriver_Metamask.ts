@@ -34,7 +34,6 @@ import {ethers} from "ethers";
 export class WalletDriver_Metamask extends WalletDriver {
 
     private provider: MetaMaskInpageProvider|null = null
-    private accountId: string|null = null
 
     //
     // Public
@@ -48,7 +47,8 @@ export class WalletDriver_Metamask extends WalletDriver {
     // WalletDriver
     //
 
-    public async connect(network: string): Promise<void> {
+    public async connect(network: string): Promise<string[]> {
+        let result: string[]
 
         // Sanity check
         const networkEntry = routeManager.currentNetworkEntry.value
@@ -64,32 +64,31 @@ export class WalletDriver_Metamask extends WalletDriver {
             await this.switchToNetwork(provider, networkEntry)
 
             // Collects account ids
-            const accountIds = await this.fetchAccountIds(provider)
-            if (accountIds.length == 0) {
+            result = await this.fetchAccountIds(provider)
+            if (result.length == 0) {
                 // Did the user cancel connection from the wallet ?
                 throw this.connectFailure("No account found")
             }
 
             this.provider = provider
-            this.accountId = accountIds[0]
             this.provider.once('chainChanged', this.handleDisconnect);
         } else {
             throw this.extensionNotFound()
         }
+
+        return Promise.resolve(result)
     }
 
     public async disconnect(): Promise<void> {
         this.provider?.off("chainChanged", this.handleDisconnect)
         this.provider = null
-        this.accountId = null
     }
 
-    public async associateToken(tokenId: string): Promise<string> {
+    public async associateToken(accountId: string, tokenId: string): Promise<string> {
         let result: string
 
         // https://stackoverflow.com/questions/76980638/how-do-you-associate-dissociate-an-hts-token-using-evm-transaction
 
-        const accountId = this.getAccountId()
         const tokenAddress = EntityID.parse(tokenId)?.toAddress() ?? null
         if (accountId !== null && tokenAddress !== null && this.provider !== null) {
 
@@ -110,12 +109,11 @@ export class WalletDriver_Metamask extends WalletDriver {
         return Promise.resolve(result)
     }
 
-    public async dissociateToken(tokenId: string): Promise<string> {
+    public async dissociateToken(accountId: string, tokenId: string): Promise<string> {
         let result: string
 
         // https://stackoverflow.com/questions/76980638/how-do-you-associate-dissociate-an-hts-token-using-evm-transaction
 
-        const accountId = this.getAccountId()
         const tokenAddress = EntityID.parse(tokenId)?.toAddress() ?? null
         if (accountId !== null && tokenAddress !== null && this.provider !== null) {
 
@@ -135,10 +133,6 @@ export class WalletDriver_Metamask extends WalletDriver {
         }
 
         return Promise.resolve(result)
-    }
-
-    public getAccountId(): string|null {
-        return this.accountId
     }
 
     public isConnected(): boolean {

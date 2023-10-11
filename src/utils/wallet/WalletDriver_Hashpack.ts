@@ -22,13 +22,17 @@
 import {HashConnect, HashConnectTypes, MessageTypes} from "hashconnect";
 import {HederaLogo} from "@/utils/MetaMask";
 import {WalletDriver_Hedera} from "@/utils/wallet/WalletDriver_Hedera";
-import {HashConnectSigner} from "hashconnect/dist/provider/signer";
 import {timeGuard, TimeGuardError} from "@/utils/TimerUtils";
 import {Signer} from "@hashgraph/sdk";
 
 export class WalletDriver_Hashpack extends WalletDriver_Hedera {
 
-    private signer: HashConnectSigner|null = null
+    //
+    // https://github.com/Hashpack/hashconnect
+    //
+
+    private hashConnect: HashConnect|null = null
+    private network: string|null = null
     private lastHashConnectKey: string|null = null
     private lastHashConnectContext: HashConnectContext|null = null;
 
@@ -45,23 +49,34 @@ export class WalletDriver_Hashpack extends WalletDriver_Hedera {
     // WalletDriver
     //
 
-    public async connect(network: string): Promise<void> {
-        await this.performConnect(network)
+    public async connect(network: string): Promise<string[]> {
+        return await this.performConnect(network)
     }
 
     public async disconnect(): Promise<void> {
-        if (this.signer !== null) {
-            this.signer = null
-        }
+        this.hashConnect = null
+        this.network = null
         return Promise.resolve()
     }
+
+    public isConnected(): boolean {
+        return this.hashConnect !== null
+    }
+
 
     //
     // WalletDriver_Hedera
     //
 
-    public getSigner(): Signer|null {
-        return this.signer
+    public makeSigner(accountId: string): Signer|null {
+        let result: Signer|null
+        if (this.hashConnect !== null && this.network !== null && this.lastHashConnectContext !== null) {
+            const provider = this.hashConnect.getProvider(this.network, this.lastHashConnectContext.topic, accountId)
+            result = this.hashConnect.getSigner(provider)
+        } else {
+            result = null
+        }
+        return result
     }
 
     //
@@ -74,7 +89,7 @@ export class WalletDriver_Hashpack extends WalletDriver_Hedera {
         icon: HederaLogo
     }
 
-    private async performConnect(network: string): Promise<void> {
+    private async performConnect(network: string): Promise<string[]> {
 
         // connect / init
         const hashConnect = new HashConnect(false)
@@ -129,15 +144,9 @@ export class WalletDriver_Hashpack extends WalletDriver_Hedera {
 
         }
 
-        // Updates signer
-        const accountIds = this.lastHashConnectContext.pairingData.accountIds ?? []
-        const accountId = accountIds.length >= 1 ? accountIds[0] : null
-        if (accountId !== null) {
-            const provider = hashConnect.getProvider(network, this.lastHashConnectContext.topic, accountId)
-            this.signer = hashConnect.getSigner(provider)
-        } else {
-            await this.disconnect()
-        }
+        this.hashConnect = hashConnect
+        this.network = network
+        return this.lastHashConnectContext.pairingData.accountIds ?? []
     }
 
 }

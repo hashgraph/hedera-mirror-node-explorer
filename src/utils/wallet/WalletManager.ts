@@ -41,6 +41,7 @@ export class WalletManager {
     private readonly connectedRef = ref(false)
     private readonly walletNameRef = ref(this.activeDriver.name)
     private readonly accountIdRef = ref<string|null>(null)
+    private readonly accountIdsRef = ref<string[]>([])
     private readonly hederaWalletRef = ref<boolean>(this.activeDriver instanceof WalletDriver_Hedera)
 
     //
@@ -63,8 +64,8 @@ export class WalletManager {
     public setActiveDriver(newValue: WalletDriver): void {
         if (this.activeDriver != newValue) {
             this.activeDriver = newValue;
-            this.connectedRef.value = this.activeDriver.isConnected()
-            this.accountIdRef.value = this.activeDriver.getAccountId()
+            this.connectedRef.value = false
+            this.accountIdRef.value = null
             this.walletNameRef.value = this.activeDriver.name
             this.hederaWalletRef.value = this.activeDriver instanceof WalletDriver_Hedera
         }
@@ -74,21 +75,33 @@ export class WalletManager {
 
     public accountId = computed(() => this.accountIdRef.value)
 
+    public accountIds = computed(() => this.accountIdsRef.value)
+
     public walletName = computed(() => this.walletNameRef.value)
 
     public isHederaWallet = computed(() => this.hederaWalletRef.value)
 
     public async connect(): Promise<void> {
+        let accountIds: string[]
         try {
-            await timeGuard(this.activeDriver.connect(this.routeManager.currentNetwork.value), this.timeout)
-            this.connectedRef.value = this.activeDriver.isConnected()
-            this.accountIdRef.value = this.activeDriver.getAccountId()
+            accountIds = await timeGuard(this.activeDriver.connect(this.routeManager.currentNetwork.value), this.timeout)
         } catch(error) {
             if (error instanceof TimeGuardError) {
-                this.activeDriver.connectFailure(this.activeDriver.silentMessage())
+                throw this.activeDriver.connectFailure(this.activeDriver.silentMessage())
             } else {
                 throw error
             }
+        }
+        if (accountIds.length >= 1) {
+            this.connectedRef.value = true
+            this.accountIdRef.value = accountIds[0]
+            this.accountIdsRef.value = accountIds
+        } else {
+            await this.activeDriver.disconnect()
+            this.connectedRef.value = false
+            this.accountIdRef.value = null
+            this.accountIdsRef.value = []
+            throw this.activeDriver.connectFailure("No Hedera account found in wallet")
         }
     }
 
@@ -104,47 +117,81 @@ export class WalletManager {
         } finally {
             this.connectedRef.value = false
             this.accountIdRef.value = null
+            this.accountIdsRef.value = []
         }
     }
 
-    public async changeStaking(nodeId: number|null, accountId: string|null, declineReward: boolean|null): Promise<string> {
-        if (this.activeDriver instanceof WalletDriver_Hedera) {
-            return this.activeDriver.changeStaking(nodeId, accountId, declineReward)
+    public async changeAccount(accountId: string): Promise<void> {
+        if (this.accountIdsRef.value.indexOf(accountId) !== -1) {
+            this.accountIdRef.value = accountId
         } else {
-            throw this.activeDriver.unsupportedOperation()
+            throw this.activeDriver.callFailure("changeAccount")
+        }
+        return Promise.resolve()
+    }
+
+    public async changeStaking(nodeId: number|null, accountId: string|null, declineReward: boolean|null): Promise<string> {
+        if (this.accountIdRef.value !== null) {
+            if (this.activeDriver instanceof WalletDriver_Hedera) {
+                return this.activeDriver.changeStaking(this.accountIdRef.value, nodeId, accountId, declineReward)
+            } else {
+                throw this.activeDriver.unsupportedOperation()
+            }
+        } else {
+            throw this.activeDriver.callFailure("changeStaking")
         }
     }
 
     public async approveHbarAllowance(spender: string, amount: number): Promise<string> {
-        if (this.activeDriver instanceof WalletDriver_Hedera) {
-            return this.activeDriver.approveHbarAllowance(spender, amount)
+        if (this.accountIdRef.value !== null) {
+            if (this.activeDriver instanceof WalletDriver_Hedera) {
+                return this.activeDriver.approveHbarAllowance(this.accountIdRef.value, spender, amount)
+            } else {
+                throw this.activeDriver.unsupportedOperation()
+            }
         } else {
-            throw this.activeDriver.unsupportedOperation()
+            throw this.activeDriver.callFailure("approveHbarAllowance")
         }
     }
 
     public async approveTokenAllowance(token: string, spender: string, amount: number): Promise<string> {
-        if (this.activeDriver instanceof WalletDriver_Hedera) {
-            return this.activeDriver.approveTokenAllowance(token, spender, amount)
+        if (this.accountIdRef.value !== null) {
+            if (this.activeDriver instanceof WalletDriver_Hedera) {
+                return this.activeDriver.approveTokenAllowance(this.accountIdRef.value, token, spender, amount)
+            } else {
+                throw this.activeDriver.unsupportedOperation()
+            }
         } else {
-            throw this.activeDriver.unsupportedOperation()
+            throw this.activeDriver.callFailure("approveTokenAllowance")
         }
     }
 
     public async approveNFTAllowance(token: string, spender: string, serialNumbers: number[]): Promise<string> {
-        if (this.activeDriver instanceof WalletDriver_Hedera) {
-            return this.activeDriver.approveNFTAllowance(token, spender, serialNumbers)
+        if (this.accountIdRef.value !== null) {
+            if (this.activeDriver instanceof WalletDriver_Hedera) {
+                return this.activeDriver.approveNFTAllowance(this.accountIdRef.value, token, spender, serialNumbers)
+            } else {
+                throw this.activeDriver.unsupportedOperation()
+            }
         } else {
-            throw this.activeDriver.unsupportedOperation()
+            throw this.activeDriver.callFailure("approveNFTAllowance")
         }
     }
 
     public async associateToken(tokenId: string): Promise<string> {
-        return this.activeDriver.associateToken(tokenId)
+        if (this.accountIdRef.value !== null) {
+            return this.activeDriver.associateToken(this.accountIdRef.value, tokenId)
+        } else {
+            throw this.activeDriver.callFailure("associateToken")
+        }
     }
 
     public async dissociateToken(tokenId: string): Promise<string> {
-        return this.activeDriver.dissociateToken(tokenId)
+        if (this.accountIdRef.value !== null) {
+            return this.activeDriver.dissociateToken(this.accountIdRef.value, tokenId)
+        } else {
+            throw this.activeDriver.callFailure("dissociateToken")
+        }
     }
 
 

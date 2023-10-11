@@ -19,7 +19,7 @@
  */
 
 
-import {BladeConnector, BladeWalletError, ConnectorStrategy} from "@bladelabs/blade-web3.js";
+import {BladeConnector, BladeSigner, BladeWalletError, ConnectorStrategy} from "@bladelabs/blade-web3.js";
 import {HederaNetwork} from "@bladelabs/blade-web3.js/lib/src/models/blade";
 import {WalletDriver_Hedera} from "@/utils/wallet/WalletDriver_Hedera";
 import {WalletDriverError} from "@/utils/wallet/WalletDriverError";
@@ -27,6 +27,10 @@ import {Signer} from "@hashgraph/sdk";
 import {HederaLogo} from "@/utils/MetaMask";
 
 export class WalletDriver_Blade extends WalletDriver_Hedera {
+
+    //
+    // https://github.com/Blade-Labs/blade-web3.js
+    //
 
     private connector: BladeConnector|null = null
 
@@ -42,10 +46,11 @@ export class WalletDriver_Blade extends WalletDriver_Hedera {
     // WalletDriver
     //
 
-    public async connect(network: string): Promise<void> {
+    public async connect(network: string): Promise<string[]> {
+        let newConnector: BladeConnector|null
         const hNetwork = WalletDriver_Blade.makeHederaNetwork(network)
-        if (this.connector === null && hNetwork !== null) {
-            const newConnector = await BladeConnector.init(
+        if (hNetwork !== null) {
+            newConnector = await BladeConnector.init(
                 ConnectorStrategy.AUTO,
                 {
                     name: "HashScan",
@@ -60,11 +65,19 @@ export class WalletDriver_Blade extends WalletDriver_Hedera {
                     dAppCode: "HashScan"
                 }
                 await newConnector.createSession(params)
-                this.connector = newConnector
+
             } catch(reason) {
                 throw this.makeConnectError(reason)
             }
+        } else {
+            throw this.makeConnectError("Network " + network + " is not supported by " + this.name)
         }
+
+        this.connector = newConnector
+
+        const signers = this.connector.getSigners()
+        const result = signers.map<string>((s: BladeSigner) => s.getAccountId().toString())
+        return Promise.resolve(result)
     }
 
     public async disconnect(): Promise<void> {
@@ -80,12 +93,25 @@ export class WalletDriver_Blade extends WalletDriver_Hedera {
         }
     }
 
+    public isConnected(): boolean {
+        return this.connector !== null
+    }
+
     //
     // WalletDriver_Hedera
     //
 
-    public getSigner(): Signer|null {
-        return this.connector?.getSigner() ?? null
+    public makeSigner(accountId: string): Signer|null {
+        let result: Signer|null = null
+        if (this.connector !== null) {
+            for (const s of this.connector.getSigners()) {
+                if (s.getAccountId().toString() === accountId) {
+                    result = s
+                    break
+                }
+            }
+        }
+        return result
     }
 
     //
