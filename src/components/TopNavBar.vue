@@ -59,23 +59,10 @@
       <AxiosStatus/>
     </div>
     <div class="is-flex-grow-0 is-flex-shrink-0 is-flex is-flex-direction-column ml-4">
-      <div class="is-flex mb-3 is-align-items-baseline">
-
-        <div id="drop-down-menu">
-          <o-field>
-            <o-select v-model="selectedNetwork" class="h-is-navbar-item" style="outline: none">
-              <option v-for="network in networkEntries" :key="network.name" :value="network.name">
-                {{ network.displayName }}
-              </option>
-            </o-select>
-          </o-field>
-        </div>
-
-        <div class="is-flex-grow-1 px-2"/>
-
+      <div class="is-flex mb-3 is-align-items-baseline is-justify-content-space-between">
         <router-link :to="routeManager.makeRouteToMainDashboard()"
                      id="dashboard-menu-item"
-                     class="button is-ghost is-first h-is-navbar-item h-is-dense"
+                     class="button is-ghost is-first/ h-is-navbar-item h-is-dense"
                      :class="{ 'is-rimmed': isDashboardRoute}">Dashboard</router-link>
         <router-link :to="routeManager.makeRouteToTransactions()"
                      class="button is-ghost h-is-navbar-item h-is-dense"
@@ -103,7 +90,28 @@
                      class="button is-ghost is-last h-is-navbar-item h-is-dense"
                      :class="{ 'is-rimmed': isBlocksRoute}">Blocks</router-link>
       </div>
-      <SearchBar style="margin-top: 4px"/>
+
+      <div style="display: grid; gap: 1.2rem; grid-template-columns: repeat(12, minmax(0, 3.9rem));">
+        <div style="grid-column: span 7;">
+          <SearchBar/>
+        </div>
+        
+        <div style="grid-column: span 2;">
+          <o-field>
+            <o-select v-model="selectedNetwork" class="h-is-navbar-item" style="outline: none; height: 40px">
+              <option v-for="network in networkEntries" :key="network.name" :value="network.name">
+                {{ network.displayName }}
+              </option>
+            </o-select>
+          </o-field>
+        </div>
+
+        <div style="grid-column: span 3;">
+          <button id="connectWalletButton" class="button" style="outline: none; height: 40px; width: 100%; font-size: 0.9rem;">
+            CONNECT WALLET
+          </button>
+        </div>
+      </div>
     </div>
 
   </div>
