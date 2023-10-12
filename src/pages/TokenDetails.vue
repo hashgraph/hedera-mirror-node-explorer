@@ -377,6 +377,8 @@ export default defineComponent({
     onBeforeUnmount(() => tokenLookup.unmount())
 
     const tokenAnalyzer = new TokenInfoAnalyzer(tokenLookup.entity)
+    onMounted(() => tokenAnalyzer.mount())
+    onBeforeUnmount(() => tokenAnalyzer.unmount())
 
     const displaySymbol = computed(() => makeTokenSymbol(tokenLookup.entity.value, 256))
 
