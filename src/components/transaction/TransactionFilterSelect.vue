@@ -44,15 +44,22 @@ import {defineComponent, PropType} from "vue";
 import {TransactionType} from "@/schemas/HederaSchemas";
 import {makeTypeLabel} from "@/utils/TransactionTools";
 import {TransactionTableControllerXL} from "@/components/transaction/TransactionTableControllerXL";
+import {NftTransactionTableController} from "./NftTransactionTableController";
 
 export default defineComponent({
   name: "TransactionFilterSelect",
 
   props: {
     controller: {
-      type: Object as PropType<TransactionTableControllerXL>,
-      required: true
-    }
+      type: Object as PropType<
+        TransactionTableControllerXL | NftTransactionTableController
+      >,
+      required: true,
+    },
+    nftFilter: {
+      type: Boolean,
+      required: false,
+    },
   },
 
   setup(props) {
@@ -62,19 +69,24 @@ export default defineComponent({
     }
 
     return {
-      filterValues: makeFilterValues(),
+      filterValues: makeFilterValues(props.nftFilter),
       selectedFilter: props.controller.transactionType,
       makeFilterLabel,
     }
   }
 });
 
-export function makeFilterValues(): string[] {
-  const result = Object
+export function makeFilterValues(nftFilter: boolean): string[] {
+  let result = Object
     .keys(TransactionType)
     .sort((a, b) => {
       return makeTypeLabel(a as TransactionType) < makeTypeLabel(b as TransactionType) ? -1 : 1;
     })
+  if (nftFilter) {
+    result = result.filter(el => {
+      return el === "CRYPTOTRANSFER" || el === "TOKENMINT" || el === "CRYPTOAPPROVEALLOWANCE" || el === "CRYPTODELETEALLOWANCE" || el === "TOKENWIPE" || el === "TOKENBURN" || el === "TOKENDELETION";
+    })
+  }
   result.splice(0, 0, "")
   return result
 }

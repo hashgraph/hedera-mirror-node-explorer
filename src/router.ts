@@ -26,6 +26,7 @@ import Accounts from "@/pages/Accounts.vue";
 import AccountDetails from "@/pages/AccountDetails.vue";
 import Tokens from "@/pages/Tokens.vue";
 import TokenDetails from "@/pages/TokenDetails.vue";
+import NftDetails from "@/pages/NftDetails.vue";
 import Contracts from "@/pages/Contracts.vue";
 import ContractDetails from "@/pages/ContractDetails.vue";
 import Topics from "@/pages/Topics.vue";
@@ -139,6 +140,12 @@ const routes: Array<RouteRecordRaw> = [
     path: '/:network/token/:tokenId',
     name: 'TokenDetails',
     component: TokenDetails,
+    props: true
+  },
+  {
+    path: '/:network/token/:tokenId/:serialNumber',
+    name: 'NftDetails',
+    component: NftDetails,
     props: true
   },
   {

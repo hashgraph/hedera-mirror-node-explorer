@@ -24,6 +24,8 @@
 
 <template>
   <a v-if="isURL && blobValue" v-bind:href="blobValue">{{ blobValue }}</a>
+  <a v-else-if="decodedURL" :href="decodedURL.toString()">{{ decodedURL }}</a>
+  <a v-else-if="ipfsAddress" :href="ipfsAddress">{{ decodedValue }}</a>
   <div v-else-if="jsonValue"
        class="h-is-json is-inline-block has-text-left is-family-monospace h-is-text-size-3">{{ jsonValue }}</div>
   <template v-else-if="blobValue">
@@ -87,6 +89,17 @@ export default defineComponent({
       return result
     })
 
+    const decodedURL = computed(() => {
+      if (decodedValue.value.startsWith("http://") || decodedValue.value.startsWith("https://")) {
+        try {
+          return new URL(decodedValue.value)
+        } catch {
+          return null
+        }
+      }
+      return null
+    })
+
     const jsonValue = computed(() => {
       let result
       if (decodedValue.value && props.pretty) {
@@ -122,6 +135,13 @@ export default defineComponent({
       return result
     })
 
+    const ipfsAddress = computed(() => {
+      if (decodedValue.value.startsWith("ipfs://") && decodedValue.value.length > 7) {
+        return `https://ipfs.io/ipfs/${decodedValue.value.substring(7)}`
+      }
+      return null
+    })
+
     const initialLoading = inject(initialLoadingKey, ref(false))
 
     return {
@@ -130,7 +150,9 @@ export default defineComponent({
       isURL,
       jsonValue,
       decodedValue,
-      initialLoading
+      initialLoading,
+      ipfsAddress,
+      decodedURL
     }
   }
 })

@@ -132,6 +132,11 @@ export interface TransactionResponse {
     links: Links | undefined
 }
 
+export interface NftTransactionHistory {
+    transactions: Array<NftTransactionTransfer> | undefined
+    links: Links | undefined
+}
+
 export interface TransactionByIdResponse {
     transactions: Array<TransactionDetail> | undefined
 }
@@ -144,6 +149,7 @@ export interface Transaction {
     max_fee: string
     memo_base64: string | null         // To be checked
     name: TransactionType
+    nft_transfers: NftTransfer[]
     node: string | null                // Network entity ID in the format of shard.realm.num
     nonce: number
     parent_consensus_timestamp: string | null
@@ -158,6 +164,16 @@ export interface Transaction {
     valid_start_timestamp: string
 }
 
+export interface NftTransactionTransfer {
+    consensus_timestamp: string | undefined
+    nonce: number | undefined
+    transaction_id: string | undefined
+    type: TransactionType | undefined
+    is_approval: false
+    receiver_account_id: string | null | undefined // account ID in the format of shard.realm.num
+    sender_account_id: string | null | undefined // account ID in the format of shard.realm.num
+}
+
 export interface TransactionDetail extends Transaction {
 
     nft_transfers: NftTransfer[]
@@ -168,6 +184,7 @@ export interface TransactionDetail extends Transaction {
 export interface NftTransfer {
     receiver_account_id: string | null | undefined  // Network entity ID in the format of shard.realm.num
     sender_account_id: string | null | undefined    // Network entity ID in the format of shard.realm.num
+    is_approval: boolean
     serial_number: number
     token_id: string | null                         // Network entity ID in the format of shard.realm.num}
 }
@@ -401,10 +418,12 @@ export interface Nfts {
 export interface Nft {
     account_id: string | null | undefined // Network entity ID in the format of shard.realm.num
     created_timestamp: string | null | undefined
+    delegating_spender: string | null | undefined
     deleted: boolean
     metadata: string | undefined
     modified_timestamp: string | null | undefined
     serial_number: number | undefined
+    spender_id: string | null | undefined
     token_id: string | null | undefined // Network entity ID in the format of shard.realm.num
 }
 
@@ -640,7 +659,7 @@ export function makeNodeSelectorDescription(node: NetworkNode): string {
 export interface NetworkExchangeRateSetResponse{
     current_rate: ExchangeRate,
     next_rate: ExchangeRate,
-    timestamp:	string
+    timestamp: string
 }
 
 export interface ExchangeRate {
@@ -651,8 +670,8 @@ export interface ExchangeRate {
 
 export interface NetworkSupplyResponse {
     released_supply:	string | undefined  // The network's released supply of hbars in tinybars
-    timestamp:	string | undefined  // The consensus timestamp at which the released supply was valid
-    total_supply:	string | undefined  // The network's total supply of hbars in tinybars
+    timestamp: string | undefined  // The consensus timestamp at which the released supply was valid
+    total_supply: string | undefined  // The network's total supply of hbars in tinybars
 }
 
 export interface  NetworkStake {

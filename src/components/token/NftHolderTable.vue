@@ -35,7 +35,8 @@
       :per-page="perPage"
       @page-change="onPageChange"
 
-      :hoverable="false"
+      @cell-click="handleClick"
+      :hoverable="true"
       :narrowed="true"
       :striped="true"
       :mobile-breakpoint="ORUGA_MOBILE_BREAKPOINT"
@@ -53,7 +54,7 @@
     </o-table-column>
 
     <o-table-column v-slot="props" field="account_id" label="Account ID">
-      <AccountLink v-bind:account-id="props.row.account_id"/>
+      <AccountLink v-bind:account-id="props.row.account_id" no-anchor/>
     </o-table-column>
 
     <o-table-column v-slot="props" field="deleted" label="Deleted">
@@ -90,6 +91,7 @@ import BlobValue from "@/components/values/BlobValue.vue";
 import {ORUGA_MOBILE_BREAKPOINT} from '@/App.vue';
 import EmptyTable from "@/components/EmptyTable.vue";
 import {NftHolderTableController} from "@/components/token/NftHolderTableController";
+import { routeManager } from "@/router";
 
 export default defineComponent({
   name: 'NftHolderTable',
@@ -107,6 +109,22 @@ export default defineComponent({
     const isTouchDevice = inject('isTouchDevice', false)
     const isMediumScreen = inject('isMediumScreen', true)
 
+    const handleClick = (
+      n: Nft,
+      c: unknown,
+      i: number,
+      ci: number,
+      event: MouseEvent,
+    ) => {
+      if (n.token_id && n.serial_number) {
+        routeManager.routeToSerial(
+          n.token_id,
+          n.serial_number,
+          event.ctrlKey || event.metaKey,
+        );
+      }
+    };
+
     return {
       isTouchDevice,
       isMediumScreen,
@@ -116,7 +134,8 @@ export default defineComponent({
       currentPage: props.controller.currentPage as Ref<number>,
       onPageChange: props.controller.onPageChange,
       perPage: props.controller.pageSize as Ref<number>,
-      ORUGA_MOBILE_BREAKPOINT
+      ORUGA_MOBILE_BREAKPOINT,
+      handleClick,
     }
   }
 });
@@ -124,11 +143,7 @@ export default defineComponent({
 </script>
 
 <!-- --------------------------------------------------------------------------------------------------------------- -->
-<!--                                                       STYLE                                                     -->
+<!--                                                      STYLE                                                      -->
 <!-- --------------------------------------------------------------------------------------------------------------- -->
 
-<style>
-#nft-holder-table table.o-table > tbody > tr {
-  cursor:default;
-}
-</style>
+<style/>
