@@ -106,7 +106,7 @@
                      :class="{ 'is-rimmed': isBlocksRoute}">Blocks</router-link>
       </div>
 
-      <div style="display: grid; gap: 1.2rem; grid-template-columns: repeat(12, minmax(0, 3.9rem));">
+      <div style="display: grid; gap: 1.2rem; grid-template-columns: repeat(12, minmax(0, 2.8rem));">
         <div style="grid-column: span 7;">
           <SearchBar/>
         </div>
@@ -123,15 +123,15 @@
 
         <div style="grid-column: span 3;">
           <button v-if="!connected" :disabled="connecting" id="connectWalletButton" class="button" @click="chooseWallet" style="outline: none; height: 40px; width: 100%; font-size: 0.9rem;">
-            {{ connecting ? "Attempting to connect..." : "CONNECT WALLET" }}
+            {{ connecting ? "Connecting..." : "CONNECT WALLET" }}
           </button>
 
           <div v-else class="is-flex is-align-items-center" style="outline: none; height: 40px; width: 100%; font-size: 0.9rem; border: 1px solid white; display: flex; justify-content: space-between;">
-            <figure style="width: 50px; height: 100%; display: flex; align-items: center; margin-left: 0.25rem;">
+            <figure style="width: 50px; height: 100%; display: flex; align-items: center; margin-left: 0.15rem;">
                 <img :src="walletIconURL ?? undefined" alt="wallet logo" style="object-fit: contain; aspect-ratio: 3/2;display: flex; height: 90%;">
             </figure>
 
-            <p class="ml-3/" style="font-size: 1.02rem;">
+            <p>
               {{ accountId }}
             </p>
 
