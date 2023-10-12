@@ -20,7 +20,7 @@
 
 
 import {HashConnect, HashConnectTypes, MessageTypes} from "hashconnect";
-import {HederaLogo} from "@/utils/MetaMask";
+import {HederaLogo} from "@/utils/wallet/WalletDriver";
 import {WalletDriver_Hedera} from "@/utils/wallet/WalletDriver_Hedera";
 import {timeGuard, TimeGuardError} from "@/utils/TimerUtils";
 import {Signer} from "@hashgraph/sdk";

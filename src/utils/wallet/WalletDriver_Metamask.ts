@@ -18,7 +18,7 @@
  *
  */
 
-import {WalletDriver} from "@/utils/wallet/WalletDriver"
+import {HederaLogo, WalletDriver} from "@/utils/wallet/WalletDriver"
 import detectEthereumProvider from "@metamask/detect-provider";
 import {MetaMaskInpageProvider} from "@metamask/providers";
 import {NetworkEntry} from "@/schemas/NetworkRegistry";
@@ -32,7 +32,6 @@ import {EntityID} from "@/utils/EntityID";
 import {ethers} from "ethers";
 import {TokenInfoCache} from "@/utils/cache/TokenInfoCache";
 import {makeTokenSymbol} from "@/schemas/HederaUtils";
-import {HederaLogo} from "@/utils/MetaMask";
 
 /*
     References:
