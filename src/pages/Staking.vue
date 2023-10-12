@@ -24,12 +24,12 @@
 
 <template>
 
-  <StakingDialog v-model:show-dialog="showStakingDialog"
+  <StakingDialog v-model:show-dialog="stakingDialogVisible"
                  :account="account ?? undefined"
                  :currently-staked-to="stakedTo ?? undefined"
                  v-on:change-staking="handleChangeStaking"/>
 
-  <ConfirmDialog v-model:show-dialog="showStopConfirmDialog" @onConfirm="handleStopStaking"
+  <ConfirmDialog v-model:show-dialog="stopConfirmDialogVisible" @onConfirm="handleStopStaking"
                  :main-message="'Do you want to stop staking to ' + stakedTo +'?'">
     <template v-slot:dialogTitle>
             <span class="h-is-primary-title">My Staking </span>
@@ -47,6 +47,16 @@
   >
     <template v-slot:dialogTitle>
       <span class="h-is-primary-title">{{ progressDialogTitle }}</span>
+    </template>
+  </ProgressDialog>
+
+  <ProgressDialog v-model:show-dialog="notWithMetamaskDialogVisible"
+                  :mode="Mode.Error"
+                  main-message="This operation cannot be done using Metamask"
+                  extra-message="Use another wallet (Blade or Hashpack)"
+  >
+    <template v-slot:dialogTitle>
+      <span class="h-is-primary-title">Unsupported Operation</span>
     </template>
   </ProgressDialog>
 
@@ -128,8 +138,8 @@
             <div class="is-flex is-justify-content-space-between mt-5">
               <div class="is-flex is-justify-content-flex-start">
                 <button id="stopStakingButton" class="button is-white is-small"
-                        :disabled="!stakedTo" @click="showStopConfirmDialog = true">STOP STAKING</button>
-                <button id="showStakingDialog" class="button is-white is-small ml-4" @click="showStakingDialog = true">CHANGE STAKING</button>
+                        :disabled="!stakedTo" @click="showStopConfirmDialog">STOP STAKING</button>
+                <button id="showStakingDialog" class="button is-white is-small ml-4" @click="showStakingDialog">CHANGE STAKING</button>
               </div>
               <button id="disconnectWalletButton" class="button is-white is-small" @click="disconnectFromWallet">DISCONNECT {{ walletName.toLocaleUpperCase() }}</button>
             </div>
@@ -161,8 +171,8 @@
             </div>
               <div class="is-flex is-justify-content-center">
                   <button id="stopStakingButtonSmall" class="button is-white is-small"
-                          :disabled="!stakedTo" @click="showStopConfirmDialog = true">STOP STAKING</button>
-                  <button id="showStakingDialogSmall" class="button is-white is-small ml-4" @click="showStakingDialog = true">CHANGE STAKED TO</button>
+                          :disabled="!stakedTo" @click="showStopConfirmDialog">STOP STAKING</button>
+                  <button id="showStakingDialogSmall" class="button is-white is-small ml-4" @click="showStakingDialog">CHANGE STAKED TO</button>
                 </div>
             <div class="is-flex is-justify-content-center mt-4">
               <button id="disconnectWalletButtonSmall" class="button is-white is-small" @click="disconnectFromWallet">DISCONNECT WALLET</button>
@@ -288,8 +298,8 @@ export default defineComponent({
 
     const router = useRouter()
 
-    const showStakingDialog = ref(false)
-    const showStopConfirmDialog = ref(false)
+    const stakingDialogVisible = ref(false)
+    const stopConfirmDialogVisible = ref(false)
     const showWalletChooser = ref(false)
     const showErrorDialog = ref(false)
     const showProgressDialog = ref(false)
@@ -413,8 +423,26 @@ export default defineComponent({
     // handleStopStaking / handleChangeStaking
     //
 
+    const notWithMetamaskDialogVisible = ref(false)
+
+    const showStopConfirmDialog = () => {
+      if (walletManager.isHederaWallet.value) {
+        stopConfirmDialogVisible.value = true
+      } else {
+          notWithMetamaskDialogVisible.value = true
+      }
+    }
+
     const handleStopStaking = () => {
       changeStaking(null, null, accountLocParser.accountInfo.value?.decline_reward ? false : null)
+    }
+
+    const showStakingDialog = () => {
+        if (walletManager.isHederaWallet.value) {
+            stakingDialogVisible.value = true
+        } else {
+            notWithMetamaskDialogVisible.value = true
+        }
     }
 
     const handleChangeStaking = (nodeId: number|null, accountId: string|null, declineReward: boolean|null) => {
@@ -514,7 +542,9 @@ export default defineComponent({
       allowanceApprovalRoute,
       stakePeriodStart: accountLocParser.stakePeriodStart,
       showStakingDialog,
+      stakingDialogVisible,
       showStopConfirmDialog,
+      stopConfirmDialogVisible,
       showWalletChooser,
       showErrorDialog,
       showDownloadDialog,
@@ -542,6 +572,8 @@ export default defineComponent({
       showProgressSpinner,
       transactionTableController,
       downloader,
+      notWithMetamaskDialogVisible,
+      Mode
     }
   }
 });
