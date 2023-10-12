@@ -43,6 +43,7 @@ export class WalletManager {
     private readonly accountIdRef = ref<string|null>(null)
     private readonly accountIdsRef = ref<string[]>([])
     private readonly hederaWalletRef = ref<boolean>(this.activeDriver instanceof WalletDriver_Hedera)
+    private readonly metamaskWalletRef = ref<boolean>(this.activeDriver instanceof WalletDriver_Metamask)
 
     //
     // Public
@@ -68,6 +69,7 @@ export class WalletManager {
             this.accountIdRef.value = null
             this.walletNameRef.value = this.activeDriver.name
             this.hederaWalletRef.value = this.activeDriver instanceof WalletDriver_Hedera
+            this.metamaskWalletRef.value = this.activeDriver instanceof WalletDriver_Metamask
         }
     }
 
@@ -80,6 +82,8 @@ export class WalletManager {
     public walletName = computed(() => this.walletNameRef.value)
 
     public isHederaWallet = computed(() => this.hederaWalletRef.value)
+
+    public isMetamaskWallet = computed(() => this.metamaskWalletRef.value)
 
     public async connect(): Promise<void> {
         let accountIds: string[]
@@ -191,6 +195,18 @@ export class WalletManager {
             return this.activeDriver.dissociateToken(this.accountIdRef.value, tokenId)
         } else {
             throw this.activeDriver.callFailure("dissociateToken")
+        }
+    }
+
+    public async watchToken(token: string): Promise<void> {
+        if (this.accountIdRef.value !== null) {
+            if (this.activeDriver instanceof WalletDriver_Metamask) {
+                return this.activeDriver.watchToken(this.accountIdRef.value, token)
+            } else {
+                throw this.activeDriver.unsupportedOperation()
+            }
+        } else {
+            throw this.activeDriver.callFailure("watchTokenInMetamask")
         }
     }
 

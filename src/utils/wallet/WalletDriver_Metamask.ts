@@ -30,6 +30,18 @@ import {Transaction} from "@/schemas/HederaSchemas";
 import {waitFor} from "@/utils/TimerUtils";
 import {EntityID} from "@/utils/EntityID";
 import {ethers} from "ethers";
+import {TokenInfoCache} from "@/utils/cache/TokenInfoCache";
+import {makeTokenSymbol} from "@/schemas/HederaUtils";
+import {HederaLogo} from "@/utils/MetaMask";
+
+/*
+    References:
+        https://docs.metamask.io/guide/ethereum-provider.html#table-of-contents
+        https://github.com/MetaMask/metamask-extension
+        https://github.com/MetaMask/metamask-extension/pull/4606
+        https://github.com/estebanmino/EIPs/blob/master/EIPS/eip-747.md
+
+ */
 
 export class WalletDriver_Metamask extends WalletDriver {
 
@@ -133,6 +145,31 @@ export class WalletDriver_Metamask extends WalletDriver {
         }
 
         return Promise.resolve(result)
+    }
+
+    public async watchToken(accountId: string, tokenId: string): Promise<void> {
+        const tokenAddress = EntityID.parse(tokenId)?.toAddress() ?? null
+        if (accountId !== null && tokenAddress !== null && this.provider !== null) {
+            const tokenInfo = await TokenInfoCache.instance.lookup(tokenId)
+            const symbol = makeTokenSymbol(tokenInfo, 11)
+            const decimals = tokenInfo?.decimals
+            const requestParams = {
+                method: "metamask_watchAsset",
+                params: {
+                    "type":"ERC20",
+                    "options":{
+                        "address": tokenAddress,
+                        "symbol": symbol,
+                        "decimals": decimals,
+                        "image": HederaLogo
+                    },
+                },
+            }
+            await this.provider.request(requestParams)
+        } else {
+            throw this.callFailure("Invalid arguments")
+        }
+        return Promise.resolve()
     }
 
     public isConnected(): boolean {
