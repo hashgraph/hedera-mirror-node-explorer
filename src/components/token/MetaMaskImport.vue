@@ -26,15 +26,20 @@
   <button id="showStakingDialog" class="button is-white h-is-smaller"
           @click="handleAction">IMPORT TO METAMASK</button>
   <span style="display: inline-block">
-    <ModalDialog v-model:show-dialog="showErrorDialog">
-      <template v-slot:dialogMessage>Please install MetaMask!</template>
-      <template v-slot:dialogDetails>
-        <div class="block">
-          To watch this asset with MetaMask, you must download and install <a href="https://metamask.io">MetaMask</a> extension for your browser.
-        </div>
-      </template>
-    </ModalDialog>
-    </span>
+
+  <ProgressDialog v-model:show-dialog="showProgressDialog"
+                    :mode="progressDialogMode"
+                    :main-message="progressMainMessage"
+                    :extra-message="progressExtraMessage"
+                    :extra-transaction-id="progressExtraTransactionId"
+                    :show-spinner="showProgressSpinner"
+    >
+    <template v-slot:dialogTitle>
+      <span class="h-is-primary-title">Import to Metamask</span>
+    </template>
+  </ProgressDialog>
+
+  </span>
 </template>
 
 <!-- --------------------------------------------------------------------------------------------------------------- -->
@@ -43,14 +48,15 @@
 
 <script lang="ts">
 
-import {computed, defineComponent, PropType, ref} from "vue";
-import ModalDialog from "@/components/ModalDialog.vue";
-import {TokenInfoAnalyzer} from "@/components/token/TokenInfoAnalyzer";
+import {defineComponent, PropType, ref} from "vue";
+import {TokenAssociationStatus, TokenInfoAnalyzer} from "@/components/token/TokenInfoAnalyzer";
 import {walletManager} from "@/router";
+import ProgressDialog, {Mode} from "@/components/staking/ProgressDialog.vue";
+import {WalletDriverError} from "@/utils/wallet/WalletDriverError";
 
 export default defineComponent({
   name: "MetaMaskImport",
-  components: {ModalDialog},
+  components: {ProgressDialog},
   props: {
     analyzer: {
         type: Object as PropType<TokenInfoAnalyzer>,
@@ -59,30 +65,52 @@ export default defineComponent({
   },
   setup(props) {
 
-    const executing = ref(false)
-
-    const clickDisabled = computed(() => {
-      return executing.value || props.analyzer.tokenId.value === null
-    })
-
     //
-    // showErrorDialog
+    // Progress dialog
     //
-    const showErrorDialog = ref(false)
+
+    const showProgressDialog = ref(false)
+    const progressDialogMode = ref(Mode.Busy)
+    const progressMainMessage = ref<string|null>(null)
+    const progressExtraMessage = ref<string|null>(null)
+    const progressExtraTransactionId = ref<string|null>(null)
+    const showProgressSpinner = ref(false)
+
 
     const handleAction = async () => {
-      executing.value = true
       const tokenId = props.analyzer.tokenId.value!
+      const accountId = walletManager.accountId.value!
       try {
+          if (props.analyzer.associationStatus.value == TokenAssociationStatus.Dissociated) {
+              showProgressDialog.value = true
+              showProgressSpinner.value = true
+              progressMainMessage.value = "Associating token " + tokenId + " to account " + accountId
+              await walletManager.associateToken(tokenId)
+          }
         await walletManager.watchToken(tokenId)
-      } catch {
-        showErrorDialog.value = true
-      } finally {
-        executing.value = false
+        showProgressDialog.value = false
+      } catch(reason) {
+        showProgressDialog.value = true
+        progressDialogMode.value = Mode.Error
+        if (reason instanceof WalletDriverError) {
+          progressMainMessage.value = reason.message
+          progressExtraMessage.value = reason.extra
+        } else {
+          progressMainMessage.value = "Unexpected error"
+          progressExtraMessage.value = JSON.stringify(reason)
+        }
       }
     }
 
-    return { showErrorDialog, handleAction, clickDisabled, executing }
+    return {
+        handleAction,
+        showProgressDialog,
+        progressDialogMode,
+        progressMainMessage,
+        progressExtraMessage,
+        progressExtraTransactionId,
+        showProgressSpinner
+    }
   }
 })
 
