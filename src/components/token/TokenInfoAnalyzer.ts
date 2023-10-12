@@ -54,6 +54,9 @@ export class TokenInfoAnalyzer {
     public readonly tokenSymbol = computed(
         () => makeTokenSymbol(this.tokenInfo.value, 11))
 
+    public readonly decimals = computed(
+        () => this.tokenInfo.value?.decimals ?? null)
+
     public readonly isFungible = computed(
         () => this.tokenInfo.value != null ? this.tokenInfo.value.type == "FUNGIBLE_COMMON" : null)
 

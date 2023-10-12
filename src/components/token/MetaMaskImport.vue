@@ -22,7 +22,7 @@
 <!--                                                     TEMPLATE                                                    -->
 <!-- --------------------------------------------------------------------------------------------------------------- -->
 
-<template v-if="showImport" class="">
+<template class="">
   <button id="showStakingDialog" class="button is-white h-is-smaller"
           @click="handleAction">IMPORT TO METAMASK</button>
   <span style="display: inline-block">
@@ -43,28 +43,26 @@
 
 <script lang="ts">
 
-import {computed, defineComponent, ref} from "vue";
+import {computed, defineComponent, PropType, ref} from "vue";
 import ModalDialog from "@/components/ModalDialog.vue";
-import {MetaMask_Status, MetaMask_watchAsset} from "@/utils/MetaMask";
+import {TokenInfoAnalyzer} from "@/components/token/TokenInfoAnalyzer";
+import {walletManager} from "@/router";
 
 export default defineComponent({
   name: "MetaMaskImport",
   components: {ModalDialog},
   props: {
-    address: String,
-    symbol: String,
-    decimals: String,
-    showImport: {
-      type: Boolean,
-      default: false
-    },
+    analyzer: {
+        type: Object as PropType<TokenInfoAnalyzer>,
+        required: true
+    }
   },
   setup(props) {
 
     const executing = ref(false)
 
     const clickDisabled = computed(() => {
-      return executing.value || props.address == undefined
+      return executing.value || props.analyzer.tokenId.value === null
     })
 
     //
@@ -72,17 +70,16 @@ export default defineComponent({
     //
     const showErrorDialog = ref(false)
 
-    const handleAction = () => {
+    const handleAction = async () => {
       executing.value = true
-      MetaMask_watchAsset(props.address as string, props.symbol, props.decimals)
-          .then((status: MetaMask_Status) => {
-            if (status == MetaMask_Status.metaMaskNotInstalled) {
-              showErrorDialog.value = true
-            }
-          })
-          .finally(() => {
+      const tokenId = props.analyzer.tokenId.value!
+      try {
+        await walletManager.watchToken(tokenId)
+      } catch {
+        showErrorDialog.value = true
+      } finally {
         executing.value = false
-      })
+      }
     }
 
     return { showErrorDialog, handleAction, clickDisabled, executing }
