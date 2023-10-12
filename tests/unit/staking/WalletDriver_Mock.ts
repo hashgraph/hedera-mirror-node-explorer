@@ -31,6 +31,7 @@ export class WalletDriver_Mock extends WalletDriver_Hedera {
     public readonly transactionId: string
 
     private connected = false
+    private network: string|null = null
 
     public updateAccountCounter = 0
 
@@ -49,11 +50,16 @@ export class WalletDriver_Mock extends WalletDriver_Hedera {
     // WalletDriver
     //
 
-    public async connect(network: string): Promise<void> {
+    public async connect(network: string): Promise<string[]> {
+        let result: string[]
         if (!this.connected) {
             this.connected = true
             this.network = network
+            result = [this.account.account!]
+        } else {
+            throw this.connectFailure("bug")
         }
+        return Promise.resolve(result)
     }
 
     public async disconnect(): Promise<void> {
@@ -63,14 +69,25 @@ export class WalletDriver_Mock extends WalletDriver_Hedera {
         }
     }
 
-    protected async executeTransaction(request: AccountUpdateTransaction|AccountAllowanceApproveTransaction): Promise<string> {
+    isConnected(): boolean {
+        return this.connected
+    }
+
+    //
+    // WalletDriver_Hedera
+    //
+
+    public makeSigner(accountId: string): Signer|null {
+        return null
+    }
+
+    protected async executeTransaction(accountId: string, request: AccountUpdateTransaction|AccountAllowanceApproveTransaction): Promise<string> {
         let result: string
 
         this.updateAccountCounter += 1
         if (this.connected) {
             if (request instanceof AccountUpdateTransaction) {
-                const targetAccountID = request.accountId?.toString()
-                if (this.account.account == targetAccountID) {
+                if (this.account.account == accountId) {
                     if (request.stakedNodeId !== null) {
                         const stakeNodeId = request.stakedNodeId.toNumber()
                         this.account.staked_node_id = stakeNodeId != -1 ? stakeNodeId : null
@@ -90,7 +107,7 @@ export class WalletDriver_Mock extends WalletDriver_Hedera {
                     }
                     result = this.transactionId
                 } else {
-                    throw this.callFailure("Unexpected account id: " + targetAccountID)
+                    throw this.callFailure("Unexpected account id: " + accountId)
                 }
             } else {
                 throw this.callFailure("Unexpected transaction subclass: " + request.constructor.name)
@@ -100,17 +117,5 @@ export class WalletDriver_Mock extends WalletDriver_Hedera {
         }
 
         return Promise.resolve(result)
-    }
-
-    getSigner(): Signer | null {
-        return null
-    }
-
-    getAccountId(): string | null {
-        return this.connected ? (this.account.account ?? null) : null
-    }
-
-    isConnected(): boolean {
-        return this.connected
     }
 }
