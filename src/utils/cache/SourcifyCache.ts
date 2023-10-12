@@ -75,7 +75,7 @@ export class SourcifyCache extends EntityCache<string, SourcifyRecord|null> {
     protected async load(contractId: string): Promise<SourcifyRecord|null> {
         let result: SourcifyRecord|null
         const sourcifySetup = routeManager.currentNetworkEntry.value.sourcifySetup
-        if (sourcifySetup !== null) {
+        if (sourcifySetup !== null && sourcifySetup.activate) {
             const contractResponse = await ContractByIdCache.instance.lookup(contractId)
             const contractAddress = contractResponse?.evm_address
             if (contractAddress) {

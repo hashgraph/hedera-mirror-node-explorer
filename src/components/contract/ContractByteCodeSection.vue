@@ -128,7 +128,10 @@ export default defineComponent({
     const contractName = computed(
         () => isVerified.value ? props.contractAnalyzer.contractName.value : null)
 
-    const isVerificationEnabled = import.meta.env.VITE_APP_ENABLE_VERIFICATION === 'true'
+    const isVerificationEnabled = computed(() => {
+        const sourcifySetup = routeManager.currentNetworkEntry.value.sourcifySetup
+        return sourcifySetup !== null && sourcifySetup.activate
+    })
 
     const tooltipText = computed(() => isFullMatch.value ? FULL_MATCH_TOOLTIP : PARTIAL_MATCH_TOOLTIP)
 
