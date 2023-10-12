@@ -127,8 +127,8 @@
           </button>
 
           <div v-else class="is-flex is-align-items-center" style="outline: none; height: 40px; width: 100%; font-size: 0.9rem; border: 1px solid white; display: flex; justify-content: space-between;">
-            <figure style="width: 50px; height: 100%;">
-                <img :src="walletIconURL ?? undefined" alt="wallet logo">
+            <figure style="width: 50px; height: 100%; display: flex; align-items: center; margin-left: 0.25rem;">
+                <img :src="walletIconURL ?? undefined" alt="wallet logo" style="object-fit: contain; aspect-ratio: 3/2;display: flex; height: 90%;">
             </figure>
 
             <p class="ml-3/" style="font-size: 1.02rem;">
