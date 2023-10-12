@@ -91,29 +91,33 @@ export class NetworkEntry {
 
 export class SourcifySetup {
 
+    public readonly activate: boolean
     public readonly repoURL: string
     public readonly serverURL: string
     public readonly verifierURL: string
     public readonly chainID: number
 
-    constructor(repoURL: string, serverURL: string, verifierURL: string, chainID: number) {
+    constructor(activate: boolean, repoURL: string, serverURL: string, verifierURL: string, chainID: number) {
+        this.activate = activate
         this.repoURL = repoURL
         this.serverURL = serverURL
         this.verifierURL = verifierURL
         this.chainID = chainID
     }
 
-    static decode(encoding: Record<string, unknown>): SourcifySetup|null {
-        let result: SourcifySetup|null
+    static decode(encoding: Record<string, unknown>): SourcifySetup | null {
+        let result: SourcifySetup | null
+        const activate = encoding["activate"]
         const repoURL = encoding["repoURL"]
         const serverURL = encoding["serverURL"]
         const verifierURL = encoding["verifierURL"]
         const chainID = encoding["chainID"]
-        if (typeof repoURL == "string" &&
+        if (typeof activate == "boolean" &&
+            typeof repoURL == "string" &&
             typeof serverURL == "string" &&
             typeof verifierURL == "string" &&
             typeof chainID == "number") {
-            result = new SourcifySetup(repoURL, serverURL, verifierURL, chainID)
+            result = new SourcifySetup(activate, repoURL, serverURL, verifierURL, chainID)
         } else {
             result = null
         }
@@ -158,9 +162,10 @@ export class NetworkRegistry {
             url: "https://mainnet-public.mirrornode.hedera.com/",
             ledgerID: '00',
             sourcifySetup: new SourcifySetup(
-                "https://repository.sourcify-integration.hedera-devops.com/contracts/",
-                "https://server.sourcify-integration.hedera-devops.com/",
-                "https://sourcify-integration.hedera-devops.com/#/",
+                true,
+                "http://localhost:10000/contracts/",
+                "http://localhost:5002/",
+                "http://localhost:3000/#/",
                 0x127
             )
         },
@@ -170,9 +175,10 @@ export class NetworkRegistry {
             url: "https://testnet.mirrornode.hedera.com/",
             ledgerID: '01',
             sourcifySetup: new SourcifySetup(
-                "https://repository.sourcify-integration.hedera-devops.com/contracts/",
-                "https://server.sourcify-integration.hedera-devops.com/",
-                "https://sourcify-integration.hedera-devops.com/#/",
+                true,
+                "http://localhost:10000/contracts/",
+                "http://localhost:5002/",
+                "http://localhost:3000/#/",
                 0x128
             )
         },
@@ -182,9 +188,10 @@ export class NetworkRegistry {
             url: "https://previewnet.mirrornode.hedera.com/",
             ledgerID: '02',
             sourcifySetup: new SourcifySetup(
-                "https://repository.sourcify-integration.hedera-devops.com/contracts/",
-                "https://server.sourcify-integration.hedera-devops.com/",
-                "https://sourcify-integration.hedera-devops.com/#/",
+                true,
+                "http://localhost:10000/contracts/",
+                "http://localhost:5002/",
+                "http://localhost:3000/#/",
                 0x129
             )
         }

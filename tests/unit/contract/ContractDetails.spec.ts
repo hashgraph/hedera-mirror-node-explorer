@@ -429,8 +429,6 @@ describe("ContractDetails.vue", () => {
 
         await router.push("/") // To avoid "missing required param 'network'" error
 
-        process.env = Object.assign(process.env, { VITE_APP_ENABLE_VERIFICATION: true });
-
         const contractId = SAMPLE_CONTRACT_WITH_SWARM_HASH.contract_id
         const wrapper = mount(ContractDetails, {
             global: {
