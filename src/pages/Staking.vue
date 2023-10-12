@@ -545,7 +545,7 @@ export default defineComponent({
       connecting,
       connected: walletManager.connected,
       walletName: walletManager.walletName,
-      walletIconURL: walletManager.getActiveDriver().iconURL,
+      walletLogoURL: walletManager.getActiveDriver().logoURL,
       accountId: walletManager.accountId,
       isHederaWallet: walletManager.isHederaWallet,
       accountChecksum: accountLocParser.accountChecksum,

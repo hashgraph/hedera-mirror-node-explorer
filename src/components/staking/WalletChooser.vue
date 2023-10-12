@@ -40,7 +40,7 @@
           <div v-for="d in drivers" :key="d.name">
             <a :id="d.name" @click="chosenWallet=d" @dblclick="handleConnect">
               <figure :class="{'selected':isSelected(d)}" class="h-chooser-figure my-4 mr-6">
-                <img :src="d.iconURL ?? undefined" alt="wallet logo" class="h-chooser-img">
+                <img :src="d.logoURL ?? undefined" alt="wallet logo" class="h-chooser-img">
               </figure>
             </a>
           </div>
@@ -51,7 +51,6 @@
           <button id="connectButton" :disabled="!chosenWallet" class="button is-info is-small ml-4" @click="handleConnect">CONNECT
           </button>
         </div>
-
       </div>
     </div>
   </div>
