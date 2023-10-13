@@ -207,7 +207,6 @@
               To view or change your staking options first connect your wallet.
             </p>
             <br/>
-            <button id="connectWalletButton" class="button is-white is-small" @click="chooseWallet">CONNECT WALLET…</button>
           </section>
         </template>
 
