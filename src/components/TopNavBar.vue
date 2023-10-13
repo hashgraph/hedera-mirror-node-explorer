@@ -106,7 +106,7 @@
                      :class="{ 'is-rimmed': isBlocksRoute}">Blocks</router-link>
       </div>
 
-      <div style="display: grid; gap: 1.2rem; grid-template-columns: repeat(12, minmax(0, 2.8rem));">
+      <div style="position: relative; display: grid; column-gap: 1.2rem; grid-template-columns: repeat(12, minmax(0, 2.8rem));">
         <div style="grid-column: span 7;">
           <SearchBar/>
         </div>
@@ -126,7 +126,7 @@
             {{ connecting ? "Connecting..." : "CONNECT WALLET" }}
           </button>
 
-          <div v-else class="is-flex is-align-items-center" style="outline: none; height: 40px; width: 100%; font-size: 0.9rem; border: 1px solid white; display: flex; justify-content: space-between;">
+          <div v-else @click="showWalletInfo = !showWalletInfo" class="is-flex is-align-items-center" style="outline: none; height: 40px; width: 100%; font-size: 0.9rem; border: 1px solid white; display: flex; justify-content: space-between; cursor: pointer;">
             <figure style="width: 50px; height: 100%; display: flex; align-items: center; margin-left: 0.15rem;">
                 <img :src="walletIconURL ?? undefined" alt="wallet logo" style="object-fit: contain; aspect-ratio: 3/2;display: flex; height: 90%;">
             </figure>
@@ -136,11 +136,15 @@
             </p>
 
             <div class="is-flex is-align-items-center" style="width: 30px; justify-content: center;">
-              <i class="fas fa-solid fa-angle-down is-flex is-align-items-center"/>
+              <i v-if="!showWalletInfo" class="fas fa-solid fa-angle-down is-flex is-align-items-center"/>
+              <i v-else class="fas fa-solid fa-angle-up is-flex is-align-items-center"/>
             </div>
 
           </div>
         </div>
+
+        <WalletInfo :connected="connected" :showWalletInfo="showWalletInfo" :walletIconURL="walletIconURL || undefined" :accountId="accountId || undefined" @walletDisconnect="disconnectFromWallet"/>
+        
       </div>
     </div>
 
@@ -162,12 +166,12 @@ import WalletChooser from "@/components/staking/WalletChooser.vue";
 import { WalletDriver } from '@/utils/wallet/WalletDriver';
 import { WalletDriverError } from '@/utils/wallet/WalletDriverError';
 import ProgressDialog, { Mode } from './staking/ProgressDialog.vue';
-import { AccountLocParser } from '@/utils/parser/AccountLocParser';
-import {computed, defineComponent, inject, onBeforeUnmount, onMounted, ref} from "vue";
+import {defineComponent, inject, ref} from "vue";
+import WalletInfo from '@/components/wallet/WalletInfo.vue'
 
 export default defineComponent({
   name: "TopNavBar",
-  components: {AxiosStatus, SearchBar, WalletChooser, ProgressDialog},
+  components: {AxiosStatus, SearchBar, WalletChooser, ProgressDialog, WalletInfo},
 
   setup() {
     const isSmallScreen = inject('isSmallScreen', true)
@@ -186,6 +190,8 @@ export default defineComponent({
     }
 
     const connecting = ref(false)
+    const walletIconURL = ref("")
+    const showWalletInfo = ref(false)
     const showProgressDialog = ref(false)
     const showProgressSpinner = ref(false)
     const progressDialogMode = ref(Mode.Busy)
@@ -193,6 +199,7 @@ export default defineComponent({
     const progressMainMessage = ref<string|null>(null)
     const progressExtraMessage = ref<string|null>(null)
     const progressExtraTransactionId = ref<string|null>(null)
+
 
     //
     // handleChooseWallet
@@ -218,65 +225,59 @@ export default defineComponent({
             }
           })
           .finally(() => connecting.value = false)
+      walletIconURL.value = walletManager.getActiveDriver().iconURL || ""
     }
 
     //
-    // Account
+    // disconnectFromWallet
     //
-    const accountLocParser = new AccountLocParser(walletManager.accountId)
-    onMounted(() => accountLocParser.mount())
-    onBeforeUnmount(() => accountLocParser.unmount())
-
-    const accountRoute = computed(() => {
-      return walletManager.accountId.value !== null
-          ? routeManager.makeRouteToAccount(walletManager.accountId.value, false)
-          : null
-    })
-
-    const balanceInHbar = computed(() => {
-      const balance = accountLocParser.balance.value ?? 10000000000
-      return balance / 100000000
-    })
+    const disconnectFromWallet = () => {
+      walletManager
+          .disconnect()
+          .finally(() => {
+            connecting.value = false;
+            showWalletInfo.value = false;
+          })
+    }
     
 
     return {
-      isSmallScreen,
-      isMediumScreen,
-      isTouchDevice,
       buildTime,
+      connecting,
       productName,
-      isStakingEnabled,
-      isMobileMenuOpen,
-      networkEntries: networkRegistry.entries,
-      selectedNetwork: routeManager.selectedNetwork,
-      name: routeManager.currentRoute,
-      isDashboardRoute: routeManager.isDashboardRoute,
-      isTransactionRoute: routeManager.isTransactionRoute,
-      isTokenRoute: routeManager.isTokenRoute,
-      isTopicRoute: routeManager.isTopicRoute,
-      isContractRoute: routeManager.isContractRoute,
-      isAccountRoute: routeManager.isAccountRoute,
-      isNodeRoute: routeManager.isNodeRoute,
-      isStakingRoute: routeManager.isStakingRoute,
-      isBlocksRoute: routeManager.isBlocksRoute,
       routeManager,
       chooseWallet,
+      walletIconURL,
+      isSmallScreen,
+      isTouchDevice,
+      isMediumScreen,
+      showWalletInfo,
+      isStakingEnabled,
+      isMobileMenuOpen,
       showWalletChooser,
       handleChooseWallet,
-      connecting,
       showProgressDialog,
       progressDialogMode,
       progressMainMessage,
-      progressExtraMessage,
-      progressExtraTransactionId,
       showProgressSpinner,
       progressDialogTitle,
+      progressExtraMessage,
+      disconnectFromWallet,
+      progressExtraTransactionId,
+      name: routeManager.currentRoute,
       accountId: walletManager.accountId,
-      accountChecksum: accountLocParser.accountChecksum,
-      walletIconURL: walletManager.getActiveDriver().iconURL,
       connected: walletManager.connected,
-      accountRoute,
-      balanceInHbar, 
+      isNodeRoute: routeManager.isNodeRoute,
+      isTokenRoute: routeManager.isTokenRoute,
+      isTopicRoute: routeManager.isTopicRoute,
+      networkEntries: networkRegistry.entries,
+      isBlocksRoute: routeManager.isBlocksRoute,
+      isStakingRoute: routeManager.isStakingRoute,
+      isAccountRoute: routeManager.isAccountRoute,
+      isContractRoute: routeManager.isContractRoute,
+      selectedNetwork: routeManager.selectedNetwork,
+      isDashboardRoute: routeManager.isDashboardRoute,
+      isTransactionRoute: routeManager.isTransactionRoute,
     }
   },
 })
