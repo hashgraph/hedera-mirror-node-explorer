@@ -226,7 +226,7 @@ export default defineComponent({
         const symbol = computed(() => makeTokenSymbol(tokenLookup.entity.value, 256))
 
         const serialNumber = ref(props.serialNumber)
-        const nftLookup = NftBySerialCache.instance.makeLookup(
+        const nftLookup = NftBySerialCache.instance.makeNftLookup(
             normalizedTokenId,
             serialNumber,
         )
