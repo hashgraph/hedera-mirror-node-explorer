@@ -255,7 +255,7 @@ import AccountLink from "@/components/values/AccountLink.vue";
 import RewardsCalculator from "@/components/staking/RewardsCalculator.vue";
 import WalletChooser from "@/components/staking/WalletChooser.vue";
 import {WalletDriver} from "@/utils/wallet/WalletDriver";
-import {WalletDriverError} from "@/utils/wallet/WalletDriverError";
+import {WalletDriverCancelError, WalletDriverError} from "@/utils/wallet/WalletDriverError";
 import {normalizeTransactionId} from "@/utils/TransactionID";
 import {StakingRewardsTableController} from "@/components/staking/StakingRewardsTableController";
 import DownloadButton from "@/components/DownloadButton.vue";
@@ -320,28 +320,30 @@ export default defineComponent({
     //
     // handleChooseWallet
     //
-    const handleChooseWallet = (wallet: WalletDriver) => {
+    const handleChooseWallet = async (wallet: WalletDriver) => {
       walletManager.setActiveDriver(wallet)
       connecting.value = true
-      walletManager
-          .connect()
-          .catch((reason) => {
-            console.warn("Failed to connect wallet - reason:" + reason.toString())
-            showProgressDialog.value = true
-            progressDialogMode.value = Mode.Error
-            progressDialogTitle.value = "Could not connect wallet"
-            showProgressSpinner.value = false
-            progressExtraTransactionId.value = null
+      try {
+          await walletManager.connect()
+      } catch(reason) {
+          if (!(reason instanceof WalletDriverCancelError)) {
+              showProgressDialog.value = true
+              progressDialogMode.value = Mode.Error
+              progressDialogTitle.value = "Could not connect wallet"
+              showProgressSpinner.value = false
+              progressExtraTransactionId.value = null
 
-            if (reason instanceof WalletDriverError) {
-              progressMainMessage.value = reason.message
-              progressExtraMessage.value = reason.extra
-            } else {
-              progressMainMessage.value = "Unexpected error"
-              progressExtraMessage.value = JSON.stringify(reason)
-            }
-          })
-          .finally(() => connecting.value = false)
+              if (reason instanceof WalletDriverError) {
+                  progressMainMessage.value = reason.message
+                  progressExtraMessage.value = reason.extra
+              } else {
+                  progressMainMessage.value = "Unexpected error"
+                  progressExtraMessage.value = JSON.stringify(reason)
+              }
+          }
+      } finally {
+          connecting.value = false
+      }
     }
 
     //
@@ -474,16 +476,20 @@ export default defineComponent({
 
       } catch(error) {
 
-        progressDialogMode.value = Mode.Error
-        if (error instanceof WalletDriverError) {
-          progressMainMessage.value = error.message
-          progressExtraMessage.value = error.extra
-        } else {
-          progressMainMessage.value = "Operation did not complete"
-          progressExtraMessage.value = JSON.stringify(error)
-        }
-        progressExtraTransactionId.value = null
-        showProgressSpinner.value = false
+          if (error instanceof WalletDriverCancelError) {
+              showProgressDialog.value = false
+          } else {
+              progressDialogMode.value = Mode.Error
+              if (error instanceof WalletDriverError) {
+                  progressMainMessage.value = error.message
+                  progressExtraMessage.value = error.extra
+              } else {
+                  progressMainMessage.value = "Operation did not complete"
+                  progressExtraMessage.value = JSON.stringify(error)
+              }
+              progressExtraTransactionId.value = null
+              showProgressSpinner.value = false
+          }
 
       } finally {
         accountLocParser.remount()

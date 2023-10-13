@@ -52,7 +52,7 @@ import {defineComponent, PropType, ref} from "vue";
 import {TokenAssociationStatus, TokenInfoAnalyzer} from "@/components/token/TokenInfoAnalyzer";
 import {walletManager} from "@/router";
 import ProgressDialog, {Mode} from "@/components/staking/ProgressDialog.vue";
-import {WalletDriverError} from "@/utils/wallet/WalletDriverError";
+import {WalletDriverCancelError, WalletDriverError} from "@/utils/wallet/WalletDriverError";
 
 export default defineComponent({
   name: "MetaMaskImport",
@@ -90,14 +90,18 @@ export default defineComponent({
         await walletManager.watchToken(tokenId)
         showProgressDialog.value = false
       } catch(reason) {
-        showProgressDialog.value = true
-        progressDialogMode.value = Mode.Error
-        if (reason instanceof WalletDriverError) {
-          progressMainMessage.value = reason.message
-          progressExtraMessage.value = reason.extra
+        if (reason instanceof WalletDriverCancelError) {
+          showProgressDialog.value = false
         } else {
-          progressMainMessage.value = "Unexpected error"
-          progressExtraMessage.value = JSON.stringify(reason)
+          showProgressDialog.value = true
+          progressDialogMode.value = Mode.Error
+          if (reason instanceof WalletDriverError) {
+            progressMainMessage.value = reason.message
+            progressExtraMessage.value = reason.extra
+          } else {
+            progressMainMessage.value = "Unexpected error"
+            progressExtraMessage.value = JSON.stringify(reason)
+          }
         }
       }
     }

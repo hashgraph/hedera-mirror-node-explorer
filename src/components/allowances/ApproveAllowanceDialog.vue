@@ -229,7 +229,7 @@ import {
 import ProgressDialog, {Mode} from "@/components/staking/ProgressDialog.vue";
 import {normalizeTransactionId} from "@/utils/TransactionID";
 import {waitFor} from "@/utils/TimerUtils";
-import {WalletDriverError} from "@/utils/wallet/WalletDriverError";
+import {WalletDriverCancelError, WalletDriverError} from "@/utils/wallet/WalletDriverError";
 import {TokenInfoCache} from "@/utils/cache/TokenInfoCache";
 import {AccountByIdCache} from "@/utils/cache/AccountByIdCache";
 import {ContractByIdCache} from "@/utils/cache/ContractByIdCache";
@@ -569,16 +569,20 @@ export default defineComponent({
       } catch (reason) {
         console.log("Transaction Error: " + reason)
 
-        progressDialogMode.value = Mode.Error
-        if (reason instanceof WalletDriverError) {
-          progressMainMessage.value = reason.message
-          progressExtraMessage.value = reason.extra
+        if (reason instanceof WalletDriverCancelError) {
+            showProgressDialog.value = false
         } else {
-          progressMainMessage.value = "Operation did not complete"
-          progressExtraMessage.value = reason instanceof Error ? JSON.stringify(reason.message) : JSON.stringify(reason)
+            progressDialogMode.value = Mode.Error
+            if (reason instanceof WalletDriverError) {
+                progressMainMessage.value = reason.message
+                progressExtraMessage.value = reason.extra
+            } else {
+                progressMainMessage.value = "Operation did not complete"
+                progressExtraMessage.value = reason instanceof Error ? JSON.stringify(reason.message) : JSON.stringify(reason)
+            }
+            progressExtraTransactionId.value = null
+            showProgressSpinner.value = false
         }
-        progressExtraTransactionId.value = null
-        showProgressSpinner.value = false
       }
     }
 
