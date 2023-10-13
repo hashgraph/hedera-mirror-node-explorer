@@ -113,7 +113,7 @@
         
         <div style="grid-column: span 2;">
           <o-field>
-            <o-select v-model="selectedNetwork" class="h-is-navbar-item" style="outline: none; height: 40px">
+            <o-select v-model="selectedNetwork" class="h-is-navbar-item" style="outline: none; height: 40px; border-width: 0.5px">
               <option v-for="network in networkEntries" :key="network.name" :value="network.name">
                 {{ network.displayName }}
               </option>
