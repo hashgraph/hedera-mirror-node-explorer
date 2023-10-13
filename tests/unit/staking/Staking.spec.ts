@@ -26,6 +26,7 @@ import router, {walletManager} from "@/router";
 import Oruga from "@oruga-ui/oruga-next";
 import {HMSF} from "@/utils/HMSF";
 import Staking from "@/pages/Staking.vue";
+import TopNavBar from "@/components/TopNavBar.vue";
 import WalletChooser from "@/components/staking/WalletChooser.vue";
 import {WalletDriver_Mock} from "./WalletDriver_Mock";
 import MockAdapter from "axios-mock-adapter";
@@ -104,6 +105,13 @@ describe("Staking.vue", () => {
             props: { polling: POLLING},
         });
 
+        const topNavBarWrapper = mount(TopNavBar, {
+            global: {
+                plugins: [router, Oruga]
+            },
+            props: {},
+        });
+
         await flushPromises()
 
 
@@ -111,10 +119,10 @@ describe("Staking.vue", () => {
         // 1) Connection to Wallet
         //
 
-        // 1.1) Clicks "CONNECT WALLET"
-        await wrapper.get("#connectWalletButton").trigger("click")
+        // 1.1) Clicks "CONNECT WALLET" from TopNavBar comopnent
+        await topNavBarWrapper.get("#connectWalletButton").trigger("click")
         await flushPromises()
-        const walletChooser = wrapper.getComponent(WalletChooser)
+        const walletChooser = topNavBarWrapper.getComponent(WalletChooser)
         expect(walletChooser.get(".modal").element.classList.contains("is-active")).toBeTruthy()
 
         // 1.2) Chooses wallet "DriverMock"
