@@ -81,6 +81,11 @@ export class WalletDriver_Hashpack extends WalletDriver_Hedera {
         return result
     }
 
+    public isCancelError(/* reason: unknown */): boolean {
+        // Unused by this driver
+        return false
+    }
+
     //
     // Private
     //

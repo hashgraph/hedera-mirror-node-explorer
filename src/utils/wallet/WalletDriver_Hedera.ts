@@ -24,13 +24,17 @@ import {
     AccountAllowanceDeleteTransaction,
     AccountUpdateTransaction,
     NftId,
-    Signer, TokenAssociateTransaction, TokenDissociateTransaction,
-    TokenId
+    Signer,
+    TokenAssociateTransaction,
+    TokenDissociateTransaction,
+    TokenId,
+    TransactionResponse
 } from "@hashgraph/sdk";
 import {TransactionID} from "@/utils/TransactionID";
 import {Transaction} from "@/schemas/HederaSchemas";
 import {waitFor} from "@/utils/TimerUtils";
 import {TransactionByIdCache} from "@/utils/cache/TransactionByIdCache";
+import {WalletDriverCancelError} from "@/utils/wallet/WalletDriverError";
 
 export abstract class WalletDriver_Hedera extends WalletDriver {
 
@@ -118,6 +122,8 @@ export abstract class WalletDriver_Hedera extends WalletDriver {
 
     public abstract makeSigner(accountId: string): Signer|null
 
+    public abstract isCancelError(reason: unknown): boolean
+
     //
     // WalletDriver
     //
@@ -163,17 +169,22 @@ export abstract class WalletDriver_Hedera extends WalletDriver {
 
         const signer = this.makeSigner(accountId)
         if (signer !== null) {
+            let response: TransactionResponse|undefined
             try {
                 await t.freezeWithSigner(signer)
-                const response = await signer.call(t)
-                if (response) {
-                    const transactionId = TransactionID.normalize(response.transactionId.toString(), false);
-                    result = Promise.resolve(transactionId)
-                } else { // When user clicks on "Reject" button HashConnectSigner.call() returns undefined :(
-                    result = Promise.reject(this.callFailure(this.name + " wallet did reject operation"))
-                }
+                response = await signer.call(t)
             } catch(reason) {
-                throw this.callFailure(reason instanceof Error ? reason.message : JSON.stringify(reason))
+                if (this.isCancelError(reason)) {
+                    throw new WalletDriverCancelError()
+                } else {
+                    throw this.callFailure(reason instanceof Error ? reason.message : JSON.stringify(reason))
+                }
+            }
+            if (response) {
+                const transactionId = TransactionID.normalize(response.transactionId.toString(), false);
+                result = Promise.resolve(transactionId)
+            } else { // When user clicks on "Reject" button HashConnectSigner.call() returns undefined :(
+                throw new WalletDriverCancelError()
             }
         } else {
             throw this.callFailure("Signer not found (bug)")

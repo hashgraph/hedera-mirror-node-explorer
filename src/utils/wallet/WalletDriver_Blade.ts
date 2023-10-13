@@ -22,7 +22,7 @@
 import {BladeConnector, BladeSigner, BladeWalletError, ConnectorStrategy} from "@bladelabs/blade-web3.js";
 import {HederaNetwork} from "@bladelabs/blade-web3.js/lib/src/models/blade";
 import {WalletDriver_Hedera} from "@/utils/wallet/WalletDriver_Hedera";
-import {WalletDriverError} from "@/utils/wallet/WalletDriverError";
+import {WalletDriverCancelError, WalletDriverError} from "@/utils/wallet/WalletDriverError";
 import {Signer} from "@hashgraph/sdk";
 import {HederaLogo} from "@/utils/wallet/WalletDriver";
 
@@ -69,7 +69,11 @@ export class WalletDriver_Blade extends WalletDriver_Hedera {
                 await newConnector.createSession(params)
 
             } catch(reason) {
-                throw this.makeConnectError(reason)
+                if (this.isConnectCancelError(reason)) {
+                    throw new WalletDriverCancelError()
+                } else {
+                    throw this.makeConnectError(reason)
+                }
             }
         } else {
             throw this.makeConnectError("Network " + network + " is not supported by " + this.name)
@@ -116,6 +120,16 @@ export class WalletDriver_Blade extends WalletDriver_Hedera {
         return result
     }
 
+    public isCancelError(reason: unknown): boolean {
+        let result: boolean
+        if (reason instanceof Error && "code" in reason) {
+            result = reason.code == 500
+        } else {
+            result = false
+        }
+        return result
+    }
+
     //
     // Private
     //
@@ -149,6 +163,16 @@ export class WalletDriver_Blade extends WalletDriver_Hedera {
             }
         } else {
             result = this.connectFailure(JSON.stringify(reason))
+        }
+        return result
+    }
+
+    private isConnectCancelError(reason: unknown): boolean {
+        let result: boolean
+        if (typeof reason == "object" && reason !== null && "code" in reason) {
+            result = reason.code == 1000
+        } else {
+            result = false
         }
         return result
     }
