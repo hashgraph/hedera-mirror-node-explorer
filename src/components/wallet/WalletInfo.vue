@@ -74,11 +74,11 @@
 
           <!-- Footer -->
           <div class="is-flex is-justify-content-space-between">
-            <button class="has-text-white" style="outline: none; height: 40px; font-size: small; background-color: transparent; border: 1px solid white; cursor: pointer;">
+            <button class="button is-white is-small" style="outline: none; height: 40px">
               CHANGE ACCOUNT
             </button>
 
-            <button @click="disconnectFromWallet" class="has-text-white" style="outline: none; height: 40px; font-size: small; background-color: transparent; border: 1px solid white; cursor: pointer;">
+            <button @click="disconnectFromWallet" class="button is-white is-small" style="outline: none; height: 40px">
               DISCONNECT WALLET
             </button>
           </div>

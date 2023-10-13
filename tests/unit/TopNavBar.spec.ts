@@ -54,7 +54,7 @@ describe("TopNavBar.vue", () => {
         // console.log(wrapper.text())
 
         expect(wrapper.text()).toBe(
-            "Connect WalletCANCELCONNECT DisclaimerPlease don't show me this next timeCANCELAGREEFillerFillerCLOSEDashboardTransactionsTokensTopicsContractsAccountsNodesStakingBlocksMAINNETTESTNETPREVIEWNETCONNECT WALLET")
+            "Connect WalletCANCELCONNECT DisclaimerPlease don't show me this next timeCANCELAGREEFillerFillerCLOSEDashboardTransactionsTokensTopicsContractsAccountsNodesStakingBlocksMAINNETTESTNETPREVIEWNETCONNECT WALLET...")
 
         const links = wrapper.findAll("a")
         expect(links.length).toBe(15)
@@ -80,7 +80,7 @@ describe("TopNavBar.vue", () => {
         // console.log(wrapper.text())
 
         expect(wrapper.text()).toBe(
-            "Connect WalletCANCELCONNECT DisclaimerPlease don't show me this next timeCANCELAGREEFillerFillerCLOSEDashboardTransactionsTokensTopicsContractsAccountsNodesStakingBlocksMAINNETTESTNETPREVIEWNETCONNECT WALLET")
+            "Connect WalletCANCELCONNECT DisclaimerPlease don't show me this next timeCANCELAGREEFillerFillerCLOSEDashboardTransactionsTokensTopicsContractsAccountsNodesStakingBlocksMAINNETTESTNETPREVIEWNETCONNECT WALLET...")
 
         const links = wrapper.findAll("a")
         expect(links.length).toBe(15)
@@ -99,7 +99,6 @@ describe("TopNavBar.vue", () => {
 
         const logos = wrapper.findAll("img")
         expect(logos.length).toBe(6)
-        logos.forEach(logo => console.log(logo.attributes('alt') === "" ? "aabc" : logo.attributes('alt')))
         expect(logos[1].attributes('alt')).toBe("wallet logo")
         expect(logos[2].attributes('alt')).toBe("wallet logo")
         expect(logos[3].attributes('alt')).toBe("Modal close icon")
