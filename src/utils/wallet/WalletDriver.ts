@@ -23,6 +23,7 @@ import {WalletDriverError} from "@/utils/wallet/WalletDriverError";
 export abstract class WalletDriver {
 
     public readonly name: string
+    public readonly logoURL: string|null
     public readonly iconURL: string|null
 
     //
@@ -90,8 +91,9 @@ export abstract class WalletDriver {
     // Protected
     //
 
-    protected constructor(name: string, iconURL: string|null) {
+    protected constructor(name: string, logoURL: string|null, iconURL: string|null) {
         this.name = name
+        this.logoURL = logoURL
         this.iconURL = iconURL
     }
 }
