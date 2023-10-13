@@ -122,11 +122,11 @@
         </div>
 
         <div style="grid-column: span 3;">
-          <button v-if="!connected" :disabled="connecting" id="connectWalletButton" class="button" @click="chooseWallet" style="outline: none; height: 40px; width: 100%; font-size: 0.9rem;">
-            {{ connecting ? "Connecting..." : "CONNECT WALLET" }}
+          <button v-if="!connected" :disabled="connecting" id="connectWalletButton" class="button is-white is-small" @click="chooseWallet" style="outline: none; height: 40px; width: 100%; font-size: 0.8rem;">
+            {{ connecting ? "Connecting..." : "CONNECT WALLET..." }}
           </button>
 
-          <div v-else @click="showWalletInfo = !showWalletInfo" class="is-flex is-align-items-center" style="outline: none; height: 40px; width: 100%; font-size: 0.9rem; border: 1px solid white; display: flex; justify-content: space-between; cursor: pointer;">
+          <div v-else @click="showWalletInfo = !showWalletInfo" class="is-flex is-align-items-center" style="outline: none; height: 40px; width: 100%; font-size: 0.9rem; border: 0.5px solid white; display: flex; justify-content: space-between; cursor: pointer;">
             <figure style="width: 50px; height: 100%; display: flex; align-items: center; margin-left: 0.15rem;">
                 <img :src="walletIconURL ?? undefined" alt="wallet logo" style="object-fit: contain; aspect-ratio: 3/2;display: flex; height: 90%;">
             </figure>
@@ -143,7 +143,13 @@
           </div>
         </div>
 
-        <WalletInfo :connected="connected" :showWalletInfo="showWalletInfo" :walletIconURL="walletIconURL || undefined" :accountId="accountId || undefined" @walletDisconnect="disconnectFromWallet"/>
+        <WalletInfo 
+          :connected="connected" 
+          :showWalletInfo="showWalletInfo" 
+          :walletIconURL="walletIconURL || undefined" 
+          :accountId="accountId || undefined" 
+          @walletDisconnect="disconnectFromWallet"
+        />
         
       </div>
     </div>
