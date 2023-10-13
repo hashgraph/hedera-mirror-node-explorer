@@ -32,6 +32,7 @@ import {EntityID} from "@/utils/EntityID";
 import {ethers} from "ethers";
 import {TokenInfoCache} from "@/utils/cache/TokenInfoCache";
 import {makeTokenSymbol} from "@/schemas/HederaUtils";
+import {WalletDriverCancelError, WalletDriverError} from "@/utils/wallet/WalletDriverError";
 
 /*
     References:
@@ -112,8 +113,8 @@ export class WalletDriver_Metamask extends WalletDriver {
                 const transactionResult = await contract.associate();
                 const hederaTransaction = await this.waitForTransactionSurfacing(transactionResult.hash)
                 result = typeof hederaTransaction == "string" ? hederaTransaction : hederaTransaction.transaction_id
-            } catch {
-                throw this.callFailure("associateToken")
+            } catch(reason) {
+                throw this.makeCallFailure(reason, "associateToken")
             }
         } else {
             throw this.callFailure("Invalid arguments")
@@ -138,8 +139,7 @@ export class WalletDriver_Metamask extends WalletDriver {
                 const hederaTransaction = await this.waitForTransactionSurfacing(transactionResult.hash)
                 result = typeof hederaTransaction == "string" ? hederaTransaction : hederaTransaction.transaction_id
             } catch(reason) {
-                console.log("reason=" + reason)
-                throw this.callFailure("tokenDissociate")
+                throw this.makeCallFailure(reason, "dissociateToken")
             }
         } else {
             throw this.callFailure("Invalid arguments")
@@ -166,7 +166,11 @@ export class WalletDriver_Metamask extends WalletDriver {
                     },
                 },
             }
-            await this.provider.request(requestParams)
+            try {
+                await this.provider.request(requestParams)
+            } catch(reason) {
+                throw this.makeCallFailure(reason, "watchToken")
+            }
         } else {
             throw this.callFailure("Invalid arguments")
         }
@@ -199,8 +203,12 @@ export class WalletDriver_Metamask extends WalletDriver {
                     method: 'wallet_switchEthereumChain',
                     params: [{ chainId: chainId }],
                 })
-            } catch {
-                throw this.connectFailure("Make sure that 'Hedera " + networkEntry.name + "' network is added to Metamask")
+            } catch(reason) {
+                if (isCancelError(reason)) {
+                    throw new WalletDriverCancelError()
+                } else {
+                    throw this.connectFailure("Make sure that 'Hedera " + networkEntry.name + "' network is added to Metamask")
+                }
             }
         }
     }
@@ -245,4 +253,41 @@ export class WalletDriver_Metamask extends WalletDriver {
 
         return result
     }
+
+    private makeCallFailure(reason: unknown, extra: string): WalletDriverError {
+        if (isCancelError(reason)) {
+            throw new WalletDriverCancelError()
+        } else {
+            throw this.callFailure(extra)
+        }
+    }
+}
+
+//
+// https://docs.metamask.io/wallet/reference/provider-api/#errors
+//
+//
+// interface ProviderRpcError extends Error {
+//     message: string;
+//     code: number;
+//     data?: unknown;
+// }
+//
+
+function isCancelError(reason: unknown): boolean {
+    return fetchMetamaskErrorCode(reason) == 4001
+}
+
+function fetchMetamaskErrorCode(reason: unknown): number|null {
+    let result: number|null
+    if (typeof reason == "object" && reason != null) {
+        if ("code" in reason && typeof reason.code == "number") {
+            result = reason.code
+        } else {
+            result = null
+        }
+    } else {
+        result = null
+    }
+    return result
 }
