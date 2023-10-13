@@ -148,7 +148,7 @@
               </div>
               <button id="disconnectWalletButton" class="button is-white is-small" @click="disconnectFromWallet">DISCONNECT {{ walletName.toLocaleUpperCase() }}</button>
             </div>
-            <div class="mt-5 h-is-text-size-2 is-italic has-text-grey has-text-centered">
+            <div v-if="isHederaWallet" class="mt-5 h-is-text-size-2 is-italic has-text-grey has-text-centered">
               <span class="has-text-grey-light">Please Note: </span>
               Your full balance is automatically staked.<br/>
               Your funds are fully available for use while staked.<br/>
@@ -182,7 +182,7 @@
             <div class="is-flex is-justify-content-center mt-4">
               <button id="disconnectWalletButtonSmall" class="button is-white is-small" @click="disconnectFromWallet">DISCONNECT WALLET</button>
             </div>
-            <div class="mt-5 h-is-text-size-2 is-italic has-text-grey has-text-centered">
+            <div v-if="isHederaWallet" class="mt-5 h-is-text-size-2 is-italic has-text-grey has-text-centered">
               <span class="has-text-grey-light">Please Note: </span>
               Your full balance is automatically staked.<br/>
               Your funds are fully available for use while staked.<br/>
