@@ -95,7 +95,7 @@
           <router-link v-if="accountRoute" :to="accountRoute">
             <span class="h-is-property-text">Show my account</span>
           </router-link>
-          <router-link v-if="allowanceApprovalRoute" :to="allowanceApprovalRoute">
+          <router-link v-if="allowanceApprovalRoute && isHederaWallet" :to="allowanceApprovalRoute">
             <span class="h-is-property-text">Approve an allowance…</span>
           </router-link>
         </div>
@@ -136,10 +136,15 @@
                                     :class="{'h-has-opacity-40': ignoreReward && !pendingReward}"/>
             </div>
             <div class="is-flex is-justify-content-space-between mt-5">
-              <div class="is-flex is-justify-content-flex-start">
+              <div v-if="isHederaWallet" class="is-flex is-justify-content-flex-start">
                 <button id="stopStakingButton" class="button is-white is-small"
                         :disabled="!stakedTo" @click="showStopConfirmDialog">STOP STAKING</button>
                 <button id="showStakingDialog" class="button is-white is-small ml-4" @click="showStakingDialog">CHANGE STAKING</button>
+              </div>
+              <div v-else>
+                  <p class="h-is-tertiary-text has-text-grey h-is-text-size-5">
+                      To change your staking options use Blade or HashPack.
+                  </p>
               </div>
               <button id="disconnectWalletButton" class="button is-white is-small" @click="disconnectFromWallet">DISCONNECT {{ walletName.toLocaleUpperCase() }}</button>
             </div>
@@ -169,11 +174,11 @@
 
               <div class="mt-4"/>
             </div>
-              <div class="is-flex is-justify-content-center">
+              <div v-if="isHederaWallet" class="is-flex is-justify-content-center">
                   <button id="stopStakingButtonSmall" class="button is-white is-small"
                           :disabled="!stakedTo" @click="showStopConfirmDialog">STOP STAKING</button>
                   <button id="showStakingDialogSmall" class="button is-white is-small ml-4" @click="showStakingDialog">CHANGE STAKED TO</button>
-                </div>
+              </div>
             <div class="is-flex is-justify-content-center mt-4">
               <button id="disconnectWalletButtonSmall" class="button is-white is-small" @click="disconnectFromWallet">DISCONNECT WALLET</button>
             </div>
@@ -542,6 +547,7 @@ export default defineComponent({
       walletName: walletManager.walletName,
       walletIconURL: walletManager.getActiveDriver().iconURL,
       accountId: walletManager.accountId,
+      isHederaWallet: walletManager.isHederaWallet,
       accountChecksum: accountLocParser.accountChecksum,
       account: accountLocParser.accountInfo,
       accountRoute,

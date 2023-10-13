@@ -29,7 +29,7 @@
       <span class="h-is-secondary-title">Allowances</span>
     </template>
     <template v-slot:control>
-      <button v-if="isWalletConnected" id="approve-button" class="button is-white is-small"
+      <button v-if="isWalletConnected && isHederaWallet" id="approve-button" class="button is-white is-small"
               @click="handleApproveButton">APPROVE ALLOWANCE…
       </button>
     </template>
@@ -194,6 +194,7 @@ export default defineComponent({
       isMediumScreen,
       showApproveAllowanceDialog,
       isWalletConnected,
+      isHederaWallet: walletManager.isHederaWallet,
       hbarAllowanceTableController,
       tokenAllowanceTableController,
       currentTokenAllowance,
