@@ -51,7 +51,7 @@ export class WalletDriver_Blade extends WalletDriver_Hedera {
         const hNetwork = WalletDriver_Blade.makeHederaNetwork(network)
         if (hNetwork !== null) {
             newConnector = await BladeConnector.init(
-                ConnectorStrategy.AUTO,
+                ConnectorStrategy.EXTENSION,
                 {
                     name: "HashScan",
                     description: "A ledger explorer for Hedera network",
