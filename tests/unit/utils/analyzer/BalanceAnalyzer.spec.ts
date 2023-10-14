@@ -35,6 +35,8 @@ describe("BalanceAnalyzer.spec.ts", () => {
         const mock = new MockAdapter(axios);
         const matcher1 = "/api/v1/balances"
         mock.onGet(matcher1).reply(200, SAMPLE_ACCOUNT_BALANCES)
+        const matcher2 = `api/v1/accounts/${SAMPLE_ACCOUNT.account}/tokens?limit=100&order=desc`
+        mock.onGet(matcher2).reply(200, {links: {next: null}, tokens: SAMPLE_ACCOUNT_BALANCES.balances[0].tokens})
 
         const contractId: Ref<string|null> = ref(null)
         const balanceAnalyzer = new BalanceAnalyzer(contractId, 100);
@@ -78,6 +80,8 @@ describe("BalanceAnalyzer.spec.ts", () => {
         const mock = new MockAdapter(axios);
         const matcher1 = "/api/v1/balances"
         mock.onGet(matcher1).reply(200, SAMPLE_ACCOUNT_BALANCES)
+        const matcher2 = `api/v1/accounts/${SAMPLE_ACCOUNT.account}/tokens?limit=100&order=desc`
+        mock.onGet(matcher2).reply(200, {links: {next: null}, tokens: SAMPLE_ACCOUNT_BALANCES.balances[0].tokens})
 
         const contractId: Ref<string|null> = ref(null)
         const balanceAnalyzer = new BalanceAnalyzer(contractId, 100);

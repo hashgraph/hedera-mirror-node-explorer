@@ -20,12 +20,18 @@
 
 import axios from "axios";
 import {EntityCache} from "@/utils/cache/base/EntityCache";
-import {BalancesResponse} from "@/schemas/HederaSchemas";
+import {BalancesResponse, TokenBalance} from "@/schemas/HederaSchemas";
+
+interface TokenResponse {
+    links: {
+        next: string | null
+    },
+    tokens: TokenBalance[]
+}
 
 export class BalanceCache extends EntityCache<string, BalancesResponse | null> {
 
     public static readonly instance = new BalanceCache()
-
     //
     // Cache
     //
@@ -36,8 +42,15 @@ export class BalanceCache extends EntityCache<string, BalancesResponse | null> {
             const params = {
                 'account.id': accountId,
             }
-            const response = await axios.get<BalancesResponse>("api/v1/balances", { params: params} )
-            result = Promise.resolve(response.data)
+
+            const balanceResponse = await axios.get<BalancesResponse>("api/v1/balances", { params: params} )
+            const tokensReponse = await axios.get<TokenResponse>(`api/v1/accounts/${accountId}/tokens?limit=100&order=desc`)
+
+            if (balanceResponse.data.balances && balanceResponse.data.balances.length >= 1) {
+                balanceResponse.data.balances[0].tokens = (await this.requestNextTokenBatch(tokensReponse.data, [])) as TokenBalance[]
+            }
+
+            result = Promise.resolve(balanceResponse.data)
         } catch (error) {
             if (axios.isAxiosError(error) && error.response?.status == 404) {
                 result = Promise.resolve(null)
@@ -47,4 +60,24 @@ export class BalanceCache extends EntityCache<string, BalancesResponse | null> {
         }
         return result
     }
+
+
+    /**
+     * @notice The `api/v1/accounts/${accountId}/tokens` endpoint can return a maximum of 100 records. 
+     *         If more records are available, a `links.next` endpoint will be returned in the response. 
+     *         Make a new request at `links.next` endpoint to fetch the next batch of records.
+     * 
+     * @dev Recursively make request to mirror node using the `tokensReponse.links.next` url to fetch all records
+     */
+    private requestNextTokenBatch: any = async (tokensReponse: TokenResponse, tokens: TokenBalance[]) => {
+        if (!tokensReponse.links.next) {
+            tokens.push(...tokensReponse.tokens)
+            return tokens
+        }
+
+        tokens.push(...tokensReponse.tokens)
+        const nextTokensReponses = await axios.get(tokensReponse.links.next)
+        return await this.requestNextTokenBatch(nextTokensReponses.data, tokens)
+    }
+
 }

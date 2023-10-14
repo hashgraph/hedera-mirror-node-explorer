@@ -99,6 +99,9 @@ describe("AccountDetails.vue", () => {
         const matcher10 = "/api/v1/accounts/" + SAMPLE_ACCOUNT.account + "/allowances/tokens"
         mock.onGet(matcher10).reply(200, { rewards: [] })
 
+        const matcher11 = `api/v1/accounts/${SAMPLE_ACCOUNT.account}/tokens?limit=100&order=desc`
+        mock.onGet(matcher11).reply(200, {links: {next: null}, tokens: SAMPLE_ACCOUNT_BALANCES.balances[0].tokens})
+
         const wrapper = mount(AccountDetails, {
             global: {
                 plugins: [router, Oruga]
@@ -109,7 +112,6 @@ describe("AccountDetails.vue", () => {
         });
 
         await flushPromises()
-        // console.log(wrapper.html())
 
         expect(wrapper.text()).toMatch("Account Account ID:" + SAMPLE_ACCOUNT.account)
         expect(wrapper.get("#balanceValue").text()).toBe("23.42647909$5.76369998234231ĦFRENSKINGDOM")
