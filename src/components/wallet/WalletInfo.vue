@@ -33,16 +33,15 @@
             </figure>
 
             <!-- accountID-checksum -->
-            <div class="is-flex is-align-items-center" style="gap: 0.5rem; font-size: 1.35rem;">
-                <p>
-                  <!-- {{ accountId }} -->
-                  <router-link v-if="accountRoute" :to="accountRoute">
-                    <span class="is-numeric">{{ accountId }}</span>
-                  </router-link>
-                  <span class="has-text-grey h-is-smaller">-{{ accountChecksum }}</span>
-                </p>
-                <i v-if="!contentCopied.accountId.status" class="fa fa-thin fa-clone fa-rotate-180" style="font-size: 0.9rem; cursor:pointer;" @click="copyToClipboard(accountId, contentCopied.accountId.mode)"/>
-                <i v-else class="fa fa-thin fa-check" style="font-size: 0.9rem;"/>
+            <div class="is-flex is-align-items-center">
+              <Copyable :content-to-copy="accountId ?? ''">
+                <template v-slot:content>
+                  <p style="font-size: 1.35rem;">
+                      <span class="is-numeric">{{ accountId }}</span>
+                  </p>
+                </template>
+              </Copyable>
+              <span class="has-text-grey h-is-smaller">-{{ accountChecksum }}</span>
             </div>
           </div>
 
@@ -50,16 +49,17 @@
           <div class="p-2" style="border: 1px solid white;">
             <p class="has-text-grey h-is-smaller">EVM ADDRESS</p>
 
-            <div class="is-flex is-align-items-center" style="gap: 0.5rem">
-              <p>
-                <router-link v-if="accountRoute" :to="accountRoute">
-                  {{ accountEthereumAddress?.slice(0, 18) }}...{{ accountEthereumAddress?.slice(-8)}}
-                </router-link>
-              </p>
-              <i v-if="!contentCopied.evmAddress.status" class="fa fa-thin fa-clone fa-rotate-180" style="font-size: 0.9rem; cursor:pointer;" @click="copyToClipboard(accountEthereumAddress, contentCopied.evmAddress.mode)"/>
-              <i v-else class="fa fa-thin fa-check" style="font-size: 0.9rem;"/>
+            <Copyable :content-to-copy="accountEthereumAddress ?? ''">
+              <template v-slot:content>
+                <div class="is-flex is-align-items-center" style="gap: 0.5rem">
+                  <p v-if="accountEthereumAddress">
+                    {{ accountEthereumAddress.slice(0, 15) }}...{{ accountEthereumAddress.slice(-12)}}
+                  </p>
 
-            </div>
+                  <p v-else>N/A</p>
+                </div>
+              </template>
+            </Copyable>
           </div>
 
           <!-- balance -->
@@ -90,6 +90,7 @@
 <!-- --------------------------------------------------------------------------------------------------------------- -->
 
 <script lang="ts">
+import Copyable from "@/components/Copyable.vue";
 import {routeManager, walletManager} from "@/router";
 import HbarExtra from "@/components/values/HbarExtra.vue";
 import { AccountLocParser } from '@/utils/parser/AccountLocParser';
@@ -100,7 +101,7 @@ import { computed, defineComponent, inject, onBeforeUnmount, onMounted, ref } fr
 
 export default defineComponent({
     name: "WalletInfo",
-    components: {HbarExtra},
+    components: {HbarExtra, Copyable},
     props: {
         connected: {
             type: Boolean,
@@ -125,16 +126,6 @@ export default defineComponent({
         const isSmallScreen = inject('isSmallScreen', true)
         const isMediumScreen = inject('isMediumScreen', true)
         const isTouchDevice = inject('isTouchDevice', false)
-        const contentCopied = ref({
-          accountId: {
-            mode: "ACCOUNT_ID",
-            status: false,
-          },
-          evmAddress: {
-            mode: "EVM_ADDRESS",
-            status: false,
-          },
-        });
 
         //
         // Account
@@ -177,37 +168,11 @@ export default defineComponent({
           ctx.emit('walletDisconnect', true)
         }
 
-        // 
-        // Copy content to clipboard
-        //
-        const copyToClipboard = (contentToCopy: any, mode: string): void => {
-          navigator.clipboard.writeText(contentToCopy);
-          switch (mode) {
-            case "ACCOUNT_ID":
-              contentCopied.value.accountId.status = true;
-              break;
-              
-            case "EVM_ADDRESS":
-              contentCopied.value.evmAddress.status = true;
-              break;
-
-            default:
-              return
-            }
-            
-            setTimeout(() => {
-              contentCopied.value.accountId.status = false;
-              contentCopied.value.evmAddress.status = false;
-            }, 2000)
-        }
-
         return {
             accountRoute,
             isTouchDevice,
-            contentCopied,
             isSmallScreen,
             isMediumScreen,
-            copyToClipboard,
             formattedAmount,
             disconnectFromWallet,
             tbarBalance: balanceAnalyzer.hbarBalance,
