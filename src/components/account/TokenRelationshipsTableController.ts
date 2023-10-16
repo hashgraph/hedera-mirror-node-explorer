@@ -61,11 +61,9 @@ export class TokenRelationshipsTableController extends TableController<TokenRela
             if (tokenId !== null) {
                 params["token.id"] = operator + ":" + tokenId
             }
-            const cb = (r: AxiosResponse<TokenRelationshipResponse>): Promise<TokenRelationship[] | null> => {
-                return Promise.resolve(r.data.tokens ?? [])
-            }
             const url = `api/v1/accounts/${this.accountId.value}/tokens`
-            result = axios.get<TokenRelationshipResponse>(url, {params: params}).then(cb)
+            const r = await axios.get<TokenRelationshipResponse>(url, {params: params})
+            result  = Promise.resolve(r.data.tokens ?? [])
         } else {
             result = Promise.resolve(null)
         }
