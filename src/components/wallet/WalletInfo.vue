@@ -36,7 +36,7 @@
             <div class="is-flex is-align-items-center" style="gap: 0.5rem; font-size: 1.35rem;">
                 <p>
                   <!-- {{ accountId }} -->
-                  <router-link :to="accountRoute">
+                  <router-link v-if="accountRoute" :to="accountRoute">
                     <span class="is-numeric">{{ accountId }}</span>
                   </router-link>
                   <span class="has-text-grey h-is-smaller">-{{ accountChecksum }}</span>
@@ -52,7 +52,7 @@
 
             <div class="is-flex is-align-items-center" style="gap: 0.5rem">
               <p>
-                <router-link :to="accountRoute">
+                <router-link v-if="accountRoute" :to="accountRoute">
                   {{ accountEthereumAddress?.slice(0, 18) }}...{{ accountEthereumAddress?.slice(-8)}}
                 </router-link>
               </p>
@@ -180,7 +180,7 @@ export default defineComponent({
         // 
         // Copy content to clipboard
         //
-        const copyToClipboard = (contentToCopy: any, mode: "ACCOUNT_ID" | "EVM_ADDRESS"): void => {
+        const copyToClipboard = (contentToCopy: any, mode: string): void => {
           navigator.clipboard.writeText(contentToCopy);
           switch (mode) {
             case "ACCOUNT_ID":
@@ -190,6 +190,9 @@ export default defineComponent({
             case "EVM_ADDRESS":
               contentCopied.value.evmAddress.status = true;
               break;
+
+            default:
+              return
             }
             
             setTimeout(() => {
