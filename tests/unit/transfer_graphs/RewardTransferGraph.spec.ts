@@ -23,7 +23,11 @@ import router from "@/router";
 import {flushPromises, mount} from "@vue/test-utils";
 import {Transaction, TransactionDetail} from "@/schemas/HederaSchemas";
 import RewardTransferGraph from "@/components/transfer_graphs/RewardTransferGraph.vue";
-import {SAMPLE_CRYPTO_TRANSFER_WITH_ONLY_FEE, SAMPLE_CRYPTO_TRANSFER_WITH_REWARDS} from "../Mocks";
+import {
+    SAMPLE_CRYPTO_TRANSFER_WITH_ONLY_FEE,
+    SAMPLE_CRYPTO_TRANSFER_WITH_REWARDS,
+    SAMPLE_NETWORK_EXCHANGERATE
+} from "../Mocks";
 import MockAdapter from "axios-mock-adapter";
 import axios from "axios";
 
