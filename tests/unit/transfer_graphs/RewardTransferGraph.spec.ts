@@ -23,7 +23,13 @@ import router from "@/router";
 import {flushPromises, mount} from "@vue/test-utils";
 import {Transaction, TransactionDetail} from "@/schemas/HederaSchemas";
 import RewardTransferGraph from "@/components/transfer_graphs/RewardTransferGraph.vue";
-import {SAMPLE_CRYPTO_TRANSFER_WITH_ONLY_FEE, SAMPLE_CRYPTO_TRANSFER_WITH_REWARDS} from "../Mocks";
+import {
+    SAMPLE_CRYPTO_TRANSFER_WITH_ONLY_FEE,
+    SAMPLE_CRYPTO_TRANSFER_WITH_REWARDS,
+    SAMPLE_NETWORK_EXCHANGERATE
+} from "../Mocks";
+import MockAdapter from "axios-mock-adapter";
+import axios from "axios";
 
 describe("RewardTransferGraph.vue", () => {
 
@@ -77,6 +83,10 @@ describe("RewardTransferGraph.vue", () => {
 
         await router.push("/") // To avoid "missing required param 'network'" error
 
+        const mock = new MockAdapter(axios);
+        const matcher1 = "/api/v1/network/exchangerate"
+        mock.onGet(matcher1).reply(200, SAMPLE_NETWORK_EXCHANGERATE);
+
         const wrapper = mount(RewardTransferGraph, {
             global: {
                 plugins: [router]
@@ -102,9 +112,9 @@ describe("RewardTransferGraph.vue", () => {
             "Reward AccountAccountAmount Rewarded" +
             "0.0.800\n\n" +
             "0.0.788887" +
-            "2.10704256\n\n" +
+            "2.10704256" + "$0.51840\n\n" +
             "0.0.2254995" +
-            "22.89378672")
+            "22.89378672" + "$5.63263")
 
         wrapper.unmount()
     })

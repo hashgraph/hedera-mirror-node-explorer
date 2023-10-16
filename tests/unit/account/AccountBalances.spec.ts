@@ -22,10 +22,13 @@ import {describe, test, expect} from 'vitest'
 import {flushPromises, mount} from "@vue/test-utils"
 import router from "@/router";
 import axios from "axios";
-import {SAMPLE_ACCOUNT_BALANCES, SAMPLE_NONFUNGIBLE, SAMPLE_TOKEN} from "../Mocks";
+import {
+    SAMPLE_ASSOCIATED_TOKEN, SAMPLE_ASSOCIATED_TOKEN_2,
+    SAMPLE_TOKEN_ASSOCIATIONS
+} from "../Mocks";
 import MockAdapter from "axios-mock-adapter";
 import Oruga from "@oruga-ui/oruga-next";
-import BalanceTable from "@/components/account/BalanceTable.vue";
+import AccountBalances from "@/pages/AccountBalances.vue";
 import {HMSF} from "@/utils/HMSF";
 
 /*
@@ -37,25 +40,29 @@ import {HMSF} from "@/utils/HMSF";
 
 HMSF.forceUTC = true
 
-describe("BalanceTable.vue", () => {
+describe("AccountBalances.vue", () => {
 
     test("all props", async () => {
 
         await router.push("/") // To avoid "missing required param 'network'" error
 
         const mock = new MockAdapter(axios);
+        const accountId = "0.0.935559"
+        const matcher1 = `/api/v1/accounts/${accountId}/tokens`
+        mock.onGet(matcher1).reply(200, SAMPLE_TOKEN_ASSOCIATIONS)
 
+        const token1 = SAMPLE_ASSOCIATED_TOKEN.token_id
+        const token2 = SAMPLE_ASSOCIATED_TOKEN_2.token_id
         const matcher2 = "/api/v1/tokens/"
-        mock.onGet(matcher2 + SAMPLE_TOKEN.token_id).reply(200, SAMPLE_TOKEN)
-        mock.onGet(matcher2 + SAMPLE_NONFUNGIBLE.token_id).reply(200, SAMPLE_NONFUNGIBLE)
+        mock.onGet(matcher2 + token1).reply(200, SAMPLE_ASSOCIATED_TOKEN)
+        mock.onGet(matcher2 + token2).reply(200, SAMPLE_ASSOCIATED_TOKEN_2)
 
-        const wrapper = mount(BalanceTable, {
+        const wrapper = mount(AccountBalances, {
             global: {
                 plugins: [router, Oruga]
             },
             props: {
-                balances: SAMPLE_ACCOUNT_BALANCES.balances[0].tokens,
-                nbItems: 42
+                accountId: accountId
             },
         });
 
@@ -65,12 +72,8 @@ describe("BalanceTable.vue", () => {
 
         expect(wrapper.find('thead').text()).toBe("Token Balance")
         expect(wrapper.find('tbody').text()).toBe(
-            "0.0.2966295623423" +
-            "998" +
-            "0.0.748383" +
-            "Ħ Frens Kingdom" +
-            "1"
-        )
+            "0.0.34332104" + "HSuite" + "0.0000" +
+            "0.0.49292859" + "TokenA7" + "0.00000000")
 
         wrapper.unmount()
         await flushPromises()
