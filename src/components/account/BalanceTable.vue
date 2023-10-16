@@ -25,19 +25,26 @@
 <template>
 
   <o-table
-      :data="balances"
-      :hoverable="true"
+      :data="relationships"
+      :loading="loading"
       :paginated="!isTouchDevice"
-      :per-page="isMediumScreen ? pageSize : 5"
+      backend-pagination
+      :total="totalRowCount"
+      :current-page="currentPage"
+      :per-page="pageSize"
+      @page-change="onPageChange"
+      @cellClick="handleClick"
+
+      :hoverable="true"
+      :narrowed="true"
       :striped="true"
-      :v-model:current-page="currentPage"
       :mobile-breakpoint="ORUGA_MOBILE_BREAKPOINT"
+
       aria-current-label="Current page"
       aria-next-label="Next page"
       aria-page-label="Page"
       aria-previous-label="Previous page"
-      default-sort="token_id"
-      @cell-click="handleClick"
+      customRowKey="token_id"
   >
     <o-table-column v-slot="props" field="token_id" label="Token">
       <TokenLink
@@ -54,7 +61,7 @@
 
   </o-table>
 
-  <EmptyTable v-if="!balances.length"/>
+  <EmptyTable v-if="!relationships.length"/>
 
 </template>
 
@@ -64,13 +71,14 @@
 
 <script lang="ts">
 
-import {defineComponent, inject, PropType, ref} from 'vue';
-import {TokenBalance} from "@/schemas/HederaSchemas";
+import {ComputedRef, defineComponent, inject, PropType, Ref} from 'vue';
+import {TokenBalance, TokenRelationship} from "@/schemas/HederaSchemas";
 import TokenLink from "@/components/values/TokenLink.vue";
 import TokenAmount from "@/components/values/TokenAmount.vue";
 import {ORUGA_MOBILE_BREAKPOINT} from '@/App.vue';
 import EmptyTable from "@/components/EmptyTable.vue";
 import {routeManager} from "@/router";
+import {TokenRelationshipsTableController} from "@/components/account/TokenRelationshipsTableController";
 
 export default defineComponent({
   name: 'BalanceTable',
@@ -82,18 +90,15 @@ export default defineComponent({
   },
 
   props: {
-    balances: {
-      type: Array as PropType<Array<TokenBalance>>,
-      default: () => []
+    controller: {
+      type: Object as PropType<TokenRelationshipsTableController>,
+      required: true
     },
-    nbItems: Number,
   },
 
   setup(props) {
     const isTouchDevice = inject('isTouchDevice', false)
     const isMediumScreen = inject('isMediumScreen', true)
-    const DEFAULT_PAGE_SIZE = 15
-    const pageSize = props.nbItems ?? DEFAULT_PAGE_SIZE
 
     const handleClick = (balance: TokenBalance, c: unknown, i: number, ci: number, event: MouseEvent) => {
       if (balance.token_id) {
@@ -101,14 +106,16 @@ export default defineComponent({
       }
     }
 
-    let currentPage = ref(1)
-
     return {
       isTouchDevice,
       isMediumScreen,
-      pageSize,
+      relationships: props.controller.rows as ComputedRef<TokenRelationship[]>,
+      loading: props.controller.loading as ComputedRef<boolean>,
+      totalRowCount: props.controller.totalRowCount as ComputedRef<number>,
+      currentPage: props.controller.currentPage as Ref<number>,
+      onPageChange: props.controller.onPageChange,
+      pageSize: props.controller.pageSize as Ref<Number>,
       handleClick,
-      currentPage,
       ORUGA_MOBILE_BREAKPOINT
     }
   }

@@ -32,7 +32,7 @@
         <span class="h-is-secondary-text">{{ accountId }}</span>
       </template>
       <template v-slot:content>
-        <BalanceTable v-bind:balances="tokenBalances"/>
+        <BalanceTable :controller="tokenRelationshipTableController"/>
       </template>
     </DashboardCard>
 
@@ -52,7 +52,9 @@ import {computed, defineComponent, inject, onBeforeUnmount, onMounted} from 'vue
 import BalanceTable from "@/components/account/BalanceTable.vue";
 import DashboardCard from "@/components/DashboardCard.vue";
 import Footer from "@/components/Footer.vue";
-import {BalanceCache} from "@/utils/cache/BalanceCache";
+import {TokenRelationshipsTableController} from "@/components/account/TokenRelationshipsTableController";
+import {useRouter} from "vue-router";
+import {EntityID} from "@/utils/EntityID";
 
 export default defineComponent({
 
@@ -65,30 +67,32 @@ export default defineComponent({
   },
 
   props: {
-    accountId: String,
+    accountId: {
+      type: String,
+      required: true
+    },
     network: String
   },
 
   setup(props) {
     const isSmallScreen = inject('isSmallScreen', true)
+    const isMediumScreen = inject('isMediumScreen', true)
     const isTouchDevice = inject('isTouchDevice', false)
-
-    //
-    // balanceLookup
-    //
-    const balanceLookup = BalanceCache.instance.makeLookup(computed(() => props.accountId ?? null))
-    onMounted(() => balanceLookup.mount())
-    onBeforeUnmount(() => balanceLookup.unmount())
-
-    const tokenBalances = computed(() => {
-        const allBalances = balanceLookup.entity.value?.balances
-        return allBalances && allBalances.length >= 1 ? allBalances[0].tokens : []
+    const perPage = computed(() => isMediumScreen ? 15 : 5)
+    const normalizedAccountId = computed(() => {
+      const result = EntityID.parse(props.accountId) ?? EntityID.fromAddress(props.accountId)
+      return result !== null ? result.toString() : null
     })
+
+    const tokenRelationshipTableController =
+        new TokenRelationshipsTableController(useRouter(), normalizedAccountId, perPage)
+    onMounted(() => tokenRelationshipTableController.mount())
+    onBeforeUnmount(() => tokenRelationshipTableController.unmount())
 
     return {
       isSmallScreen,
       isTouchDevice,
-      tokenBalances,
+      tokenRelationshipTableController,
     }
   }
 });
