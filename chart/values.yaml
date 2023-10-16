@@ -161,7 +161,7 @@ volumes:
 # Add custom reverse proxy configuration
 # Primary use case is to allow access to mirror node api via hedera explorer url
 proxyPass: {}
-  # /api: http://fst-rest
+#  /api: "http://{{ .Release.Name }}-rest" # Note: templating is allowed
 
 config: |
   [
