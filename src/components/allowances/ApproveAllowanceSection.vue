@@ -29,7 +29,7 @@
       <span class="h-is-secondary-title">Allowances</span>
     </template>
     <template v-slot:control>
-      <button v-if="isWalletConnected" id="approve-button" class="button is-white is-small"
+      <button v-if="isWalletConnected && isHederaWallet" id="approve-button" class="button is-white is-small"
               @click="handleApproveButton">APPROVE ALLOWANCE…
       </button>
     </template>
@@ -55,6 +55,16 @@
                           @allowance-approved="handleApproval"
   />
 
+  <ProgressDialog v-model:show-dialog="notWithMetamaskDialogVisible"
+                  :mode="Mode.Error"
+                  main-message="This operation cannot be done using Metamask"
+                  extra-message="Use another wallet (Blade or Hashpack)"
+  >
+    <template v-slot:dialogTitle>
+      <span class="h-is-primary-title">Unsupported Operation</span>
+    </template>
+  </ProgressDialog>
+
 </template>
 
 <!-- --------------------------------------------------------------------------------------------------------------- -->
@@ -72,11 +82,12 @@ import HbarAllowanceTable from "@/components/allowances/HbarAllowanceTable.vue";
 import TokenAllowanceTable from "@/components/allowances/TokenAllowanceTable.vue";
 import ApproveAllowanceDialog from "@/components/allowances/ApproveAllowanceDialog.vue";
 import {CryptoAllowance, TokenAllowance} from "@/schemas/HederaSchemas";
+import ProgressDialog, {Mode} from "@/components/staking/ProgressDialog.vue";
 
 export default defineComponent({
   name: 'ApproveAllowanceSection',
 
-  components: {ApproveAllowanceDialog, TokenAllowanceTable, HbarAllowanceTable, DashboardCard},
+  components: {ProgressDialog, ApproveAllowanceDialog, TokenAllowanceTable, HbarAllowanceTable, DashboardCard},
 
   props: {
     accountId: String,
@@ -96,12 +107,12 @@ export default defineComponent({
 
     onMounted(() => {
       if (props.showApproveDialog === 'true' && isWalletConnected.value) {
-        showApproveAllowanceDialog.value = true
+        handleApproveButton()
       }
     })
     watch(isWalletConnected, (newValue) => {
       if (newValue && props.showApproveDialog === 'true') {
-        showApproveAllowanceDialog.value = true
+        handleApproveButton()
       }
     })
 
@@ -132,10 +143,16 @@ export default defineComponent({
     onMounted(() => tokenAllowanceTableController.mount())
     onBeforeUnmount(() => tokenAllowanceTableController.unmount())
 
+    const notWithMetamaskDialogVisible = ref(false)
+
     const handleApproveButton = () => {
-      showApproveAllowanceDialog.value = true
-      currentHbarAllowance.value = null
-      currentTokenAllowance.value = null
+      if (walletManager.isHederaWallet.value) {
+          showApproveAllowanceDialog.value = true
+          currentHbarAllowance.value = null
+          currentTokenAllowance.value = null
+      } else {
+          notWithMetamaskDialogVisible.value = true
+      }
     }
 
     const handleApproval = () => {
@@ -177,6 +194,7 @@ export default defineComponent({
       isMediumScreen,
       showApproveAllowanceDialog,
       isWalletConnected,
+      isHederaWallet: walletManager.isHederaWallet,
       hbarAllowanceTableController,
       tokenAllowanceTableController,
       currentTokenAllowance,
@@ -186,6 +204,8 @@ export default defineComponent({
       ownerAccountId: walletManager.accountId,
       editHbarAllowance,
       editTokenAllowance,
+      notWithMetamaskDialogVisible,
+      Mode
     }
   }
 });

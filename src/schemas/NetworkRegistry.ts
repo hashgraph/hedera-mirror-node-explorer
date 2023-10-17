@@ -141,6 +141,10 @@ export class SourcifySetup {
         const normalizedAddress = EthereumAddress.normalizeEIP55(contractAddress)
         return this.verifierURL + "lookup/" + normalizedAddress
     }
+
+    hexChainID(): string {
+        return "0x" + this.chainID.toString(16)
+    }
 }
 
 export class NetworkRegistry {

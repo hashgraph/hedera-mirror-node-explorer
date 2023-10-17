@@ -18,7 +18,7 @@
  *
  */
 
-import {AccountInfo, KeyType, NetworkNode, TokenInfo, Transfer} from "@/schemas/HederaSchemas";
+import {AccountInfo, KeyType, NetworkNode, TokenInfo, TokenRelationship, Transfer} from "@/schemas/HederaSchemas";
 import {EntityID} from "@/utils/EntityID";
 import {hexToByte} from "@/utils/B64Utils";
 import {ethers} from "ethers";
@@ -197,6 +197,17 @@ export function lookupNodeByAccountId(accountId: string, nodes: NetworkNode[]): 
     for (const n of nodes) {
         if (n.node_account_id == accountId) {
             result = n
+            break
+        }
+    }
+    return result
+}
+
+export function lookupTokenRelationship(relations: TokenRelationship[], targetTokenId: string): TokenRelationship|null {
+    let result: TokenRelationship|null = null
+    for (const r of relations) {
+        if (r.token_id == targetTokenId) {
+            result = r
             break
         }
     }

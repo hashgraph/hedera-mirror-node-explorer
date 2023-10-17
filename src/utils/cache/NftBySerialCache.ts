@@ -21,7 +21,7 @@
 import {Nft} from "@/schemas/HederaSchemas"
 import axios from "axios"
 import {SerialCache} from "./base/SerialCache"
-import {Ref, ref} from "vue"
+import {computed, Ref} from "vue"
 import {Lookup} from "./base/EntityCache"
 
 export class NftBySerialCache extends SerialCache<string, Nft | null> {
@@ -49,13 +49,19 @@ export class NftBySerialCache extends SerialCache<string, Nft | null> {
         return result
     }
 
-    public makeLookup(
-        key: Ref<string | null>,
-        key2?: Ref<string | null>,
+    public makeNftLookup(
+        tokenId: Ref<string | null>,
+        serialNb: Ref<string | null>,
     ): Lookup<string, Nft | null> {
-        return new Lookup<string, Nft | null>(
-            ref(key.value! + "---" + key2?.value),
-            this,
-        )
+        const key = computed(() => {
+            let result: string|null
+            if (tokenId.value !== null && serialNb.value !== null) {
+                result = tokenId.value + "---" + serialNb.value
+            } else {
+                result = null
+            }
+            return result
+        })
+        return this.makeLookup(key)
     }
 }

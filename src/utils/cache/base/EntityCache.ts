@@ -51,8 +51,8 @@ export abstract class EntityCache<K, E> {
         this.records.clear()
     }
 
-    public makeLookup(key: Ref<K|null>): Lookup<K, E> {
-        return new Lookup<K,E>(key, this)
+    public makeLookup(key: Ref<K|null>, forceLoad = false): Lookup<K, E> {
+        return new Lookup<K,E>(key, this, forceLoad)
     }
 
     public contains(key: K, forceLoad = false): boolean {
@@ -100,12 +100,14 @@ export class Lookup<K,E> {
 
     private readonly cache: EntityCache<K,E>
     private readonly key: Ref<K|null>
+    private readonly forceLoad: boolean
     private readonly watchHandle: Ref<WatchStopHandle|null> = ref(null)
     private readonly loadCounter: Ref<number> = ref(0)
 
-    constructor(key: Ref<K|null>, cache: EntityCache<K,E>) {
+    constructor(key: Ref<K|null>, cache: EntityCache<K,E>, forceLoad: boolean) {
         this.key = key
         this.cache = cache
+        this.forceLoad = forceLoad
     }
 
     public mount(): void {
@@ -131,7 +133,7 @@ export class Lookup<K,E> {
             try {
                 let newEntity: E|null
                 try {
-                    newEntity = await this.cache.lookup(key)
+                    newEntity = await this.cache.lookup(key, this.forceLoad)
                 } catch {
                     newEntity = null
                 }

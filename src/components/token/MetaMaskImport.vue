@@ -22,19 +22,24 @@
 <!--                                                     TEMPLATE                                                    -->
 <!-- --------------------------------------------------------------------------------------------------------------- -->
 
-<template v-if="showImport" class="">
+<template class="">
   <button id="showStakingDialog" class="button is-white h-is-smaller"
           @click="handleAction">IMPORT TO METAMASK</button>
   <span style="display: inline-block">
-    <ModalDialog v-model:show-dialog="showErrorDialog">
-      <template v-slot:dialogMessage>Please install MetaMask!</template>
-      <template v-slot:dialogDetails>
-        <div class="block">
-          To watch this asset with MetaMask, you must download and install <a href="https://metamask.io">MetaMask</a> extension for your browser.
-        </div>
-      </template>
-    </ModalDialog>
-    </span>
+
+  <ProgressDialog v-model:show-dialog="showProgressDialog"
+                    :mode="progressDialogMode"
+                    :main-message="progressMainMessage"
+                    :extra-message="progressExtraMessage"
+                    :extra-transaction-id="progressExtraTransactionId"
+                    :show-spinner="showProgressSpinner"
+    >
+    <template v-slot:dialogTitle>
+      <span class="h-is-primary-title">Import to Metamask</span>
+    </template>
+  </ProgressDialog>
+
+  </span>
 </template>
 
 <!-- --------------------------------------------------------------------------------------------------------------- -->
@@ -43,49 +48,77 @@
 
 <script lang="ts">
 
-import {computed, defineComponent, ref} from "vue";
-import ModalDialog from "@/components/ModalDialog.vue";
-import {MetaMask_Status, MetaMask_watchAsset} from "@/utils/MetaMask";
+import {defineComponent, PropType, ref} from "vue";
+import {TokenAssociationStatus, TokenInfoAnalyzer} from "@/components/token/TokenInfoAnalyzer";
+import {walletManager} from "@/router";
+import ProgressDialog, {Mode} from "@/components/staking/ProgressDialog.vue";
+import {WalletDriverCancelError, WalletDriverError} from "@/utils/wallet/WalletDriverError";
 
 export default defineComponent({
   name: "MetaMaskImport",
-  components: {ModalDialog},
+  components: {ProgressDialog},
   props: {
-    address: String,
-    symbol: String,
-    decimals: String,
-    showImport: {
-      type: Boolean,
-      default: false
-    },
+    analyzer: {
+        type: Object as PropType<TokenInfoAnalyzer>,
+        required: true
+    }
   },
   setup(props) {
 
-    const executing = ref(false)
-
-    const clickDisabled = computed(() => {
-      return executing.value || props.address == undefined
-    })
-
     //
-    // showErrorDialog
+    // Progress dialog
     //
-    const showErrorDialog = ref(false)
 
-    const handleAction = () => {
-      executing.value = true
-      MetaMask_watchAsset(props.address as string, props.symbol, props.decimals)
-          .then((status: MetaMask_Status) => {
-            if (status == MetaMask_Status.metaMaskNotInstalled) {
-              showErrorDialog.value = true
-            }
-          })
-          .finally(() => {
-        executing.value = false
-      })
+    const showProgressDialog = ref(false)
+    const progressDialogMode = ref(Mode.Busy)
+    const progressMainMessage = ref<string|null>(null)
+    const progressExtraMessage = ref<string|null>(null)
+    const progressExtraTransactionId = ref<string|null>(null)
+    const showProgressSpinner = ref(false)
+
+
+    const handleAction = async () => {
+      const tokenId = props.analyzer.tokenId.value!
+      const accountId = walletManager.accountId.value!
+      try {
+          if (props.analyzer.associationStatus.value == TokenAssociationStatus.Dissociated) {
+              showProgressDialog.value = true
+              showProgressSpinner.value = true
+              progressMainMessage.value = "Associating token " + tokenId + " to account " + accountId
+              try {
+                  await walletManager.associateToken(tokenId)
+              } finally {
+                  props.analyzer.tokenAssociationDidChange()
+              }
+          }
+        await walletManager.watchToken(tokenId)
+        showProgressDialog.value = false
+      } catch(reason) {
+        if (reason instanceof WalletDriverCancelError) {
+          showProgressDialog.value = false
+        } else {
+          showProgressDialog.value = true
+          progressDialogMode.value = Mode.Error
+          if (reason instanceof WalletDriverError) {
+            progressMainMessage.value = reason.message
+            progressExtraMessage.value = reason.extra
+          } else {
+            progressMainMessage.value = "Unexpected error"
+            progressExtraMessage.value = JSON.stringify(reason)
+          }
+        }
+      }
     }
 
-    return { showErrorDialog, handleAction, clickDisabled, executing }
+    return {
+        handleAction,
+        showProgressDialog,
+        progressDialogMode,
+        progressMainMessage,
+        progressExtraMessage,
+        progressExtraTransactionId,
+        showProgressSpinner
+    }
   }
 })
 

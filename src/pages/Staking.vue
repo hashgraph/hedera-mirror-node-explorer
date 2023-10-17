@@ -24,12 +24,12 @@
 
 <template>
 
-  <StakingDialog v-model:show-dialog="showStakingDialog"
+  <StakingDialog v-model:show-dialog="stakingDialogVisible"
                  :account="account ?? undefined"
                  :currently-staked-to="stakedTo ?? undefined"
                  v-on:change-staking="handleChangeStaking"/>
 
-  <ConfirmDialog v-model:show-dialog="showStopConfirmDialog" @onConfirm="handleStopStaking"
+  <ConfirmDialog v-model:show-dialog="stopConfirmDialogVisible" @onConfirm="handleStopStaking"
                  :main-message="'Do you want to stop staking to ' + stakedTo +'?'">
     <template v-slot:dialogTitle>
             <span class="h-is-primary-title">My Staking </span>
@@ -47,6 +47,16 @@
   >
     <template v-slot:dialogTitle>
       <span class="h-is-primary-title">{{ progressDialogTitle }}</span>
+    </template>
+  </ProgressDialog>
+
+  <ProgressDialog v-model:show-dialog="notWithMetamaskDialogVisible"
+                  :mode="Mode.Error"
+                  main-message="This operation cannot be done using Metamask"
+                  extra-message="Use another wallet (Blade or Hashpack)"
+  >
+    <template v-slot:dialogTitle>
+      <span class="h-is-primary-title">Unsupported Operation</span>
     </template>
   </ProgressDialog>
 
@@ -85,7 +95,7 @@
           <router-link v-if="accountRoute" :to="accountRoute">
             <span class="h-is-property-text">Show my account</span>
           </router-link>
-          <router-link v-if="allowanceApprovalRoute" :to="allowanceApprovalRoute">
+          <router-link v-if="allowanceApprovalRoute && isHederaWallet" :to="allowanceApprovalRoute">
             <span class="h-is-property-text">Approve an allowance…</span>
           </router-link>
         </div>
@@ -126,14 +136,19 @@
                                     :class="{'h-has-opacity-40': ignoreReward && !pendingReward}"/>
             </div>
             <div class="is-flex is-justify-content-space-between mt-5">
-              <div class="is-flex is-justify-content-flex-start">
+              <div v-if="isHederaWallet" class="is-flex is-justify-content-flex-start">
                 <button id="stopStakingButton" class="button is-white is-small"
-                        :disabled="!stakedTo" @click="showStopConfirmDialog = true">STOP STAKING</button>
-                <button id="showStakingDialog" class="button is-white is-small ml-4" @click="showStakingDialog = true">CHANGE STAKING</button>
+                        :disabled="!stakedTo" @click="showStopConfirmDialog">STOP STAKING</button>
+                <button id="showStakingDialog" class="button is-white is-small ml-4" @click="showStakingDialog">CHANGE STAKING</button>
+              </div>
+              <div v-else>
+                  <p class="h-is-tertiary-text has-text-grey h-is-text-size-5">
+                      To change your staking options use Blade or HashPack.
+                  </p>
               </div>
               <button id="disconnectWalletButton" class="button is-white is-small" @click="disconnectFromWallet">DISCONNECT {{ walletName.toLocaleUpperCase() }}</button>
             </div>
-            <div class="mt-5 h-is-text-size-2 is-italic has-text-grey has-text-centered">
+            <div v-if="isHederaWallet" class="mt-5 h-is-text-size-2 is-italic has-text-grey has-text-centered">
               <span class="has-text-grey-light">Please Note: </span>
               Your full balance is automatically staked.<br/>
               Your funds are fully available for use while staked.<br/>
@@ -159,15 +174,15 @@
 
               <div class="mt-4"/>
             </div>
-              <div class="is-flex is-justify-content-center">
+              <div v-if="isHederaWallet" class="is-flex is-justify-content-center">
                   <button id="stopStakingButtonSmall" class="button is-white is-small"
-                          :disabled="!stakedTo" @click="showStopConfirmDialog = true">STOP STAKING</button>
-                  <button id="showStakingDialogSmall" class="button is-white is-small ml-4" @click="showStakingDialog = true">CHANGE STAKED TO</button>
-                </div>
+                          :disabled="!stakedTo" @click="showStopConfirmDialog">STOP STAKING</button>
+                  <button id="showStakingDialogSmall" class="button is-white is-small ml-4" @click="showStakingDialog">CHANGE STAKED TO</button>
+              </div>
             <div class="is-flex is-justify-content-center mt-4">
               <button id="disconnectWalletButtonSmall" class="button is-white is-small" @click="disconnectFromWallet">DISCONNECT WALLET</button>
             </div>
-            <div class="mt-5 h-is-text-size-2 is-italic has-text-grey has-text-centered">
+            <div v-if="isHederaWallet" class="mt-5 h-is-text-size-2 is-italic has-text-grey has-text-centered">
               <span class="has-text-grey-light">Please Note: </span>
               Your full balance is automatically staked.<br/>
               Your funds are fully available for use while staked.<br/>
@@ -245,7 +260,7 @@ import AccountLink from "@/components/values/AccountLink.vue";
 import RewardsCalculator from "@/components/staking/RewardsCalculator.vue";
 import WalletChooser from "@/components/staking/WalletChooser.vue";
 import {WalletDriver} from "@/utils/wallet/WalletDriver";
-import {WalletDriverError} from "@/utils/wallet/WalletDriverError";
+import {WalletDriverCancelError, WalletDriverError} from "@/utils/wallet/WalletDriverError";
 import {normalizeTransactionId} from "@/utils/TransactionID";
 import {StakingRewardsTableController} from "@/components/staking/StakingRewardsTableController";
 import DownloadButton from "@/components/DownloadButton.vue";
@@ -288,8 +303,8 @@ export default defineComponent({
 
     const router = useRouter()
 
-    const showStakingDialog = ref(false)
-    const showStopConfirmDialog = ref(false)
+    const stakingDialogVisible = ref(false)
+    const stopConfirmDialogVisible = ref(false)
     const showWalletChooser = ref(false)
     const showErrorDialog = ref(false)
     const showProgressDialog = ref(false)
@@ -310,28 +325,30 @@ export default defineComponent({
     //
     // handleChooseWallet
     //
-    const handleChooseWallet = (wallet: WalletDriver) => {
+    const handleChooseWallet = async (wallet: WalletDriver) => {
       walletManager.setActiveDriver(wallet)
       connecting.value = true
-      walletManager
-          .connect()
-          .catch((reason) => {
-            console.warn("Failed to connect wallet - reason:" + reason.toString())
-            showProgressDialog.value = true
-            progressDialogMode.value = Mode.Error
-            progressDialogTitle.value = "Could not connect wallet"
-            showProgressSpinner.value = false
-            progressExtraTransactionId.value = null
+      try {
+          await walletManager.connect()
+      } catch(reason) {
+          if (!(reason instanceof WalletDriverCancelError)) {
+              showProgressDialog.value = true
+              progressDialogMode.value = Mode.Error
+              progressDialogTitle.value = "Could not connect wallet"
+              showProgressSpinner.value = false
+              progressExtraTransactionId.value = null
 
-            if (reason instanceof WalletDriverError) {
-              progressMainMessage.value = reason.message
-              progressExtraMessage.value = reason.extra
-            } else {
-              progressMainMessage.value = "Unexpected error"
-              progressExtraMessage.value = JSON.stringify(reason)
-            }
-          })
-          .finally(() => connecting.value = false)
+              if (reason instanceof WalletDriverError) {
+                  progressMainMessage.value = reason.message
+                  progressExtraMessage.value = reason.extra
+              } else {
+                  progressMainMessage.value = "Unexpected error"
+                  progressExtraMessage.value = JSON.stringify(reason)
+              }
+          }
+      } finally {
+          connecting.value = false
+      }
     }
 
     //
@@ -413,8 +430,26 @@ export default defineComponent({
     // handleStopStaking / handleChangeStaking
     //
 
+    const notWithMetamaskDialogVisible = ref(false)
+
+    const showStopConfirmDialog = () => {
+      if (walletManager.isHederaWallet.value) {
+        stopConfirmDialogVisible.value = true
+      } else {
+          notWithMetamaskDialogVisible.value = true
+      }
+    }
+
     const handleStopStaking = () => {
       changeStaking(null, null, accountLocParser.accountInfo.value?.decline_reward ? false : null)
+    }
+
+    const showStakingDialog = () => {
+        if (walletManager.isHederaWallet.value) {
+            stakingDialogVisible.value = true
+        } else {
+            notWithMetamaskDialogVisible.value = true
+        }
     }
 
     const handleChangeStaking = (nodeId: number|null, accountId: string|null, declineReward: boolean|null) => {
@@ -446,16 +481,20 @@ export default defineComponent({
 
       } catch(error) {
 
-        progressDialogMode.value = Mode.Error
-        if (error instanceof WalletDriverError) {
-          progressMainMessage.value = error.message
-          progressExtraMessage.value = error.extra
-        } else {
-          progressMainMessage.value = "Operation did not complete"
-          progressExtraMessage.value = JSON.stringify(error)
-        }
-        progressExtraTransactionId.value = null
-        showProgressSpinner.value = false
+          if (error instanceof WalletDriverCancelError) {
+              showProgressDialog.value = false
+          } else {
+              progressDialogMode.value = Mode.Error
+              if (error instanceof WalletDriverError) {
+                  progressMainMessage.value = error.message
+                  progressExtraMessage.value = error.extra
+              } else {
+                  progressMainMessage.value = "Operation did not complete"
+                  progressExtraMessage.value = JSON.stringify(error)
+              }
+              progressExtraTransactionId.value = null
+              showProgressSpinner.value = false
+          }
 
       } finally {
         accountLocParser.remount()
@@ -508,13 +547,16 @@ export default defineComponent({
       walletName: walletManager.walletName,
       walletIconURL: walletManager.getActiveDriver().iconURL,
       accountId: walletManager.accountId,
+      isHederaWallet: walletManager.isHederaWallet,
       accountChecksum: accountLocParser.accountChecksum,
       account: accountLocParser.accountInfo,
       accountRoute,
       allowanceApprovalRoute,
       stakePeriodStart: accountLocParser.stakePeriodStart,
       showStakingDialog,
+      stakingDialogVisible,
       showStopConfirmDialog,
+      stopConfirmDialogVisible,
       showWalletChooser,
       showErrorDialog,
       showDownloadDialog,
@@ -542,6 +584,8 @@ export default defineComponent({
       showProgressSpinner,
       transactionTableController,
       downloader,
+      notWithMetamaskDialogVisible,
+      Mode
     }
   }
 });

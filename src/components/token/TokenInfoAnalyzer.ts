@@ -22,7 +22,8 @@ import {computed, Ref} from "vue";
 import {makeEthAddressForToken, makeTokenSymbol} from "@/schemas/HederaUtils";
 import {TokenInfo} from "@/schemas/HederaSchemas";
 import {networkRegistry} from "@/schemas/NetworkRegistry";
-import router from "@/router";
+import router, {walletManager} from "@/router";
+import {TokenAssociationCache} from "@/utils/cache/TokenAssociationCache";
 
 export class TokenInfoAnalyzer {
 
@@ -36,11 +37,25 @@ export class TokenInfoAnalyzer {
         this.tokenInfo = tokenInfo
     }
 
+    public mount() {
+        this.associationLookup.mount()
+    }
+
+    public unmount() {
+        this.associationLookup.unmount()
+    }
+
+    public readonly tokenId = computed(
+        () => this.tokenInfo.value?.token_id ?? null)
+
     public readonly ethereumAddress = computed(
         () => this.tokenInfo.value !== null ? makeEthAddressForToken(this.tokenInfo.value) : null)
 
     public readonly tokenSymbol = computed(
         () => makeTokenSymbol(this.tokenInfo.value, 11))
+
+    public readonly decimals = computed(
+        () => this.tokenInfo.value?.decimals ?? null)
 
     public readonly isFungible = computed(
         () => this.tokenInfo.value != null ? this.tokenInfo.value.type == "FUNGIBLE_COMMON" : null)
@@ -82,4 +97,36 @@ export class TokenInfoAnalyzer {
             router.currentRoute.value.params.network as string
         ) : null)
 
+    public readonly associationStatus = computed(() => {
+        let result: TokenAssociationStatus
+        const relationships = this.associationLookup.entity.value
+        if (relationships !== null) {
+            result = relationships.length == 1 ? TokenAssociationStatus.Associated : TokenAssociationStatus.Dissociated
+        } else {
+            result = TokenAssociationStatus.Unknown
+        }
+        return result
+    })
+
+    public tokenAssociationDidChange(): void {
+        if (walletManager.accountId.value !== null && this.tokenId.value !== null) {
+            TokenAssociationCache.instance.forgetTokenAssociation(walletManager.accountId.value, this.tokenId.value)
+            this.associationLookup.unmount()
+            this.associationLookup.mount()
+        }
+    }
+
+    //
+    // Private
+    //
+
+    private readonly associationLookup
+        = TokenAssociationCache.instance.makeTokenAssociationLookup(walletManager.accountId, this.tokenId)
+
+}
+
+export enum TokenAssociationStatus {
+    Unknown,
+    Associated,
+    Dissociated
 }

@@ -18,12 +18,12 @@
  *
  */
 
-import {WalletDriver} from "@/utils/wallet/WalletDriver";
+import {WalletDriver_Hedera} from "../../../src/utils/wallet/WalletDriver_Hedera";
 import {AccountAllowanceApproveTransaction, AccountUpdateTransaction} from "@hashgraph/sdk";
 import {AccountBalanceTransactions} from "@/schemas/HederaSchemas";
 import {Signer} from "@hashgraph/sdk/lib/Signer";
 
-export class WalletDriver_Mock extends WalletDriver {
+export class WalletDriver_Mock extends WalletDriver_Hedera {
 
     private static WALLET_NAME = "WalletMock"
 
@@ -31,7 +31,6 @@ export class WalletDriver_Mock extends WalletDriver {
     public readonly transactionId: string
 
     private connected = false
-    private network: string|null = null
 
     public updateAccountCounter = 0
 
@@ -40,7 +39,7 @@ export class WalletDriver_Mock extends WalletDriver {
     //
 
     public constructor(account: AccountBalanceTransactions, transactionId: string) {
-        super(WalletDriver_Mock.WALLET_NAME, null)
+        super(WalletDriver_Mock.WALLET_NAME, null, null)
         this.account = account
         this.transactionId = transactionId
     }
@@ -50,28 +49,42 @@ export class WalletDriver_Mock extends WalletDriver {
     // WalletDriver
     //
 
-    public async connect(network: string): Promise<void> {
+    public async connect(network: string): Promise<string[]> {
+        let result: string[]
         if (!this.connected) {
             this.connected = true
-            this.network = network
+            result = [this.account.account!]
+        } else {
+            throw this.connectFailure("bug")
         }
+        return Promise.resolve(result)
     }
 
     public async disconnect(): Promise<void> {
         if (this.connected) {
             this.connected = false
-            this.network = null
         }
     }
 
-    public async executeTransaction(request: AccountUpdateTransaction|AccountAllowanceApproveTransaction): Promise<string> {
+    isConnected(): boolean {
+        return this.connected
+    }
+
+    //
+    // WalletDriver_Hedera
+    //
+
+    public makeSigner(accountId: string): Signer|null {
+        return null
+    }
+
+    protected async executeTransaction(accountId: string, request: AccountUpdateTransaction|AccountAllowanceApproveTransaction): Promise<string> {
         let result: string
 
         this.updateAccountCounter += 1
         if (this.connected) {
             if (request instanceof AccountUpdateTransaction) {
-                const targetAccountID = request.accountId?.toString()
-                if (this.account.account == targetAccountID) {
+                if (this.account.account == accountId) {
                     if (request.stakedNodeId !== null) {
                         const stakeNodeId = request.stakedNodeId.toNumber()
                         this.account.staked_node_id = stakeNodeId != -1 ? stakeNodeId : null
@@ -91,7 +104,7 @@ export class WalletDriver_Mock extends WalletDriver {
                     }
                     result = this.transactionId
                 } else {
-                    throw this.callFailure("Unexpected account id: " + targetAccountID)
+                    throw this.callFailure("Unexpected account id: " + accountId)
                 }
             } else {
                 throw this.callFailure("Unexpected transaction subclass: " + request.constructor.name)
@@ -103,15 +116,7 @@ export class WalletDriver_Mock extends WalletDriver {
         return Promise.resolve(result)
     }
 
-    getSigner(): Signer | null {
-        return null
-    }
-
-    getAccountId(): string | null {
-        return this.connected ? (this.account.account ?? null) : null
-    }
-
-    isConnected(): boolean {
-        return this.connected
+    isCancelError(reason: unknown): boolean {
+        return false;
     }
 }

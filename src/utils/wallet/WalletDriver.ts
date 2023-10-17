@@ -18,72 +18,39 @@
  *
  */
 
-import {
-    AccountAllowanceApproveTransaction,
-    AccountAllowanceDeleteTransaction,
-    AccountUpdateTransaction
-} from "@hashgraph/sdk";
-import {Signer} from "@hashgraph/sdk";
-import {TransactionID} from "@/utils/TransactionID";
 import {WalletDriverError} from "@/utils/wallet/WalletDriverError";
 
 export abstract class WalletDriver {
 
     public readonly name: string
+    public readonly logoURL: string|null
     public readonly iconURL: string|null
 
     //
     // Public (to be subclassed)
     //
 
-    public async connect(network: string): Promise<void> {
-        throw this.toBeImplemented("Connection to " + network + " aborted because implementation is missing")
+    public async connect(network: string): Promise<string[]> {
+        throw this.toBeImplemented("connect")
     }
 
     public async disconnect(): Promise<void> {
-        throw this.toBeImplemented("Disconnect aborted because implementation is missing")
+        throw this.toBeImplemented("disconnect")
     }
 
-    public abstract getSigner(): Signer|null
+    public async associateToken(accountId: string, tokenId: string): Promise<string> {
+        throw this.toBeImplemented("associateToken")
+    }
+
+    public async dissociateToken(accountId: string, tokenId: string): Promise<string> {
+        throw this.toBeImplemented("dissociateToken")
+    }
+
+    public abstract isConnected(): boolean
 
     //
     // Public (utilities)
     //
-
-    public getAccountId(): string|null {
-        return this.getSigner()?.getAccountId()?.toString() ?? null
-    }
-
-    public isConnected(): boolean {
-        return this.getSigner() !== null
-    }
-
-
-    public async executeTransaction(
-        t: AccountAllowanceApproveTransaction
-            |AccountUpdateTransaction
-            |AccountAllowanceDeleteTransaction): Promise<string> {
-        let result: Promise<string>
-
-        const signer = this.getSigner()
-        if (signer !== null) {
-            try {
-                await t.freezeWithSigner(signer)
-                const response = await signer.call(t)
-                if (response) {
-                    const transactionId = TransactionID.normalize(response.transactionId.toString(), false);
-                    result = Promise.resolve(transactionId)
-                } else { // When user clicks on "Reject" button HashConnectSigner.call() returns undefined :(
-                    result = Promise.reject(this.callFailure(this.name + " wallet did reject operation"))
-                }
-            } catch(reason) {
-                throw this.callFailure(reason instanceof Error ? reason.message : JSON.stringify(reason))
-            }
-        } else {
-            throw this.callFailure("Signer not found (bug)")
-        }
-        return result
-    }
 
     public extensionNotFound(): WalletDriverError {
         const message = this.name + " extension not found"
@@ -92,13 +59,18 @@ export abstract class WalletDriver {
     }
 
     public connectFailure(extra: string): WalletDriverError {
-        const message = "Connection of " + this.name + " failed"
+        const message = "Connection to " + this.name + " failed"
         return new WalletDriverError(message, extra)
     }
 
     public disconnectFailure(extra: string): WalletDriverError {
         const message = "Disconnection from " + this.name + " failed"
         return new WalletDriverError(message, extra)
+    }
+
+    public unsupportedOperation(): WalletDriverError {
+        const message = this.name + " does not support this operation"
+        return new WalletDriverError(message, "This is a bug")
     }
 
     public callFailure(extra: string): WalletDriverError {
@@ -119,8 +91,15 @@ export abstract class WalletDriver {
     // Protected
     //
 
-    protected constructor(name: string, iconURL: string|null) {
+    protected constructor(name: string, logoURL: string|null, iconURL: string|null) {
         this.name = name
+        this.logoURL = logoURL
         this.iconURL = iconURL
     }
 }
+
+export const HederaLogo =
+    'data:image/svg+xml;utf8,<svg id="Layer_1" data-name="Layer 1" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 40 40">' +
+    '<path d="M20 0a20 20 0 1 0 20 20A20 20 0 0 0 20 0" fill="black"></path>' +
+    '<path d="M28.13 28.65h-2.54v-5.4H14.41v5.4h-2.54V11.14h2.54v5.27h11.18v-5.27h2.54zm-13.6-7.42h11.18v-2.79H14.53z" fill="white"></path>' +
+    '</svg>'

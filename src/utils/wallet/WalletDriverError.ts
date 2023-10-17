@@ -28,3 +28,10 @@ export class WalletDriverError extends Error {
         this.extra = extra
     }
 }
+
+export class WalletDriverCancelError extends WalletDriverError {
+
+    public constructor() {
+        super("User cancelled operation ", "")
+    }
+}

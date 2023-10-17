@@ -53,18 +53,11 @@
           <div class="has-text-weight-light">EVM Address:</div>
           <div class="is-flex is-align-items-baseline">
             <EVMAddress class="mr-3" :show-id="false" :has-custom-font="true" :address="ethereumAddress"/>
-            <MetaMaskImport v-if="isSmallScreen"
-                            :address="ethereumAddress"
-                            :decimals="tokenInfo?.decimals"
-                            :show-import="true"
-                            :symbol="tokenSymbol"/>
+            <MetaMaskImport v-if="connectedToMetamask && isSmallScreen" :analyzer="tokenAnalyzer"/>
           </div>
         </div>
-        <div v-if="ethereumAddress && !isSmallScreen" class="mt-2 h-is-property-text">
-          <MetaMaskImport :address="ethereumAddress"
-                          :decimals="tokenInfo?.decimals"
-                          :show-import="true"
-                          :symbol="tokenSymbol"/>
+        <div v-if="ethereumAddress && connectedToMetamask && !isSmallScreen" class="mt-2 h-is-property-text">
+          <MetaMaskImport :analyzer="tokenAnalyzer"/>
         </div>
 
       </template>
@@ -305,7 +298,7 @@
 
 import {computed, defineComponent, inject, onBeforeUnmount, onMounted} from 'vue';
 import {useRouter} from "vue-router";
-import {routeManager} from "@/router";
+import {routeManager, walletManager} from "@/router";
 import KeyValue from "@/components/values/KeyValue.vue";
 import TimestampValue from "@/components/values/TimestampValue.vue";
 import TokenBalanceTable from "@/components/token/TokenBalanceTable.vue";
@@ -384,6 +377,8 @@ export default defineComponent({
     onBeforeUnmount(() => tokenLookup.unmount())
 
     const tokenAnalyzer = new TokenInfoAnalyzer(tokenLookup.entity)
+    onMounted(() => tokenAnalyzer.mount())
+    onBeforeUnmount(() => tokenAnalyzer.unmount())
 
     const displaySymbol = computed(() => makeTokenSymbol(tokenLookup.entity.value, 256))
 
@@ -427,6 +422,9 @@ export default defineComponent({
     onMounted(() => nftHolderTableController.mount())
     onBeforeUnmount(() => nftHolderTableController.unmount())
 
+    const connectedToMetamask = computed(
+        () => walletManager.isMetamaskWallet.value && walletManager.connected.value)
+
     return {
       isSmallScreen,
       isMediumScreen,
@@ -443,8 +441,9 @@ export default defineComponent({
       notification,
       showTokenDetails,
       parseBigIntString,
+      tokenAnalyzer,
       ethereumAddress: tokenAnalyzer.ethereumAddress,
-      tokenSymbol: tokenAnalyzer.tokenSymbol,
+      connectedToMetamask,
       tokenBalanceTableController,
       nftHolderTableController,
     }

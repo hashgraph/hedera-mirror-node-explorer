@@ -123,8 +123,9 @@ describe("Staking.vue", () => {
         await walletChooser.get("#connectButton").trigger("click")
         await flushPromises()
         expect(walletManager.getActiveDriver()).toStrictEqual(testDriver)
-        expect(testDriver.isConnected()).toBeTruthy()
-        expect(testDriver.getAccountId()).toBe(TARGET_ACCOUNT_ID)
+        expect(walletManager.connected.value).toBeTruthy()
+        expect(walletManager.accountId.value).toBe(TARGET_ACCOUNT_ID)
+        expect(walletManager.accountIds.value).toStrictEqual([TARGET_ACCOUNT_ID])
 
         // 1.3) Checks staking information
         const ndis = wrapper.findAllComponents(NetworkDashboardItem)
@@ -353,8 +354,9 @@ describe("Staking.vue", () => {
         await wrapper.get("#disconnectWalletButton").trigger("click")
         await flushPromises()
         expect(walletManager.getActiveDriver()).toStrictEqual(testDriver)
-        expect(testDriver.isConnected()).toBeFalsy()
-        expect(testDriver.getAccountId()).toBe(null)
+        expect(walletManager.connected.value).toBeFalsy()
+        expect(walletManager.accountIds.value).toStrictEqual([])
+        expect(walletManager.accountId.value).toBeNull()
 
         wrapper.unmount()
         await flushPromises()
