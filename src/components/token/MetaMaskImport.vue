@@ -85,7 +85,11 @@ export default defineComponent({
               showProgressDialog.value = true
               showProgressSpinner.value = true
               progressMainMessage.value = "Associating token " + tokenId + " to account " + accountId
-              await walletManager.associateToken(tokenId)
+              try {
+                  await walletManager.associateToken(tokenId)
+              } finally {
+                  props.analyzer.tokenAssociationDidChange()
+              }
           }
         await walletManager.watchToken(tokenId)
         showProgressDialog.value = false
