@@ -158,10 +158,13 @@ volumes:
     configMap:
       name: '{{ include "hedera-explorer.fullname" . }}-config'
 
-# Add custom reverse proxy configuration
+# Add custom reverse proxy configuration.
+# It is a key-value map where key is the path and value being a URL.
 # Primary use case is to allow access to mirror node api via hedera explorer url
+# Note that templating is allowed in the values
+# Example:
+#   /api: "http://{{ .Release.Name }}-rest"
 proxyPass: {}
-  # /api: http://fst-rest
 
 config: |
   [

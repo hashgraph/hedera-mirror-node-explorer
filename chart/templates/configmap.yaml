@@ -46,7 +46,7 @@ data:
           
           {{- range $path, $backend := .Values.proxyPass }}
           location {{ $path }} {
-            proxy_pass {{ $backend }};
+            proxy_pass {{ tpl $backend $ }};
           }
           {{- end }}
 
