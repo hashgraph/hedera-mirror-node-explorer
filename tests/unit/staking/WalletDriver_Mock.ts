@@ -31,7 +31,6 @@ export class WalletDriver_Mock extends WalletDriver_Hedera {
     public readonly transactionId: string
 
     private connected = false
-    private network: string|null = null
 
     public updateAccountCounter = 0
 
@@ -40,7 +39,7 @@ export class WalletDriver_Mock extends WalletDriver_Hedera {
     //
 
     public constructor(account: AccountBalanceTransactions, transactionId: string) {
-        super(WalletDriver_Mock.WALLET_NAME, null)
+        super(WalletDriver_Mock.WALLET_NAME, null, null)
         this.account = account
         this.transactionId = transactionId
     }
@@ -54,7 +53,6 @@ export class WalletDriver_Mock extends WalletDriver_Hedera {
         let result: string[]
         if (!this.connected) {
             this.connected = true
-            this.network = network
             result = [this.account.account!]
         } else {
             throw this.connectFailure("bug")
@@ -65,7 +63,6 @@ export class WalletDriver_Mock extends WalletDriver_Hedera {
     public async disconnect(): Promise<void> {
         if (this.connected) {
             this.connected = false
-            this.network = null
         }
     }
 
@@ -117,5 +114,9 @@ export class WalletDriver_Mock extends WalletDriver_Hedera {
         }
 
         return Promise.resolve(result)
+    }
+
+    isCancelError(reason: unknown): boolean {
+        return false;
     }
 }
