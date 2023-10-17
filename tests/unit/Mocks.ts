@@ -23,7 +23,7 @@
 // Fungible token inspired from https://testnet.mirrornode.hedera.com/api/v1/tokens/0.0.29662956
 //
 
-import {KeyType, TokenRelationshipResponse} from "@/schemas/HederaSchemas";
+import {KeyType} from "@/schemas/HederaSchemas";
 
 export const SAMPLE_TOKEN = {
     "admin_key": null,
@@ -2106,15 +2106,8 @@ export const SAMPLE_ASSOCIATED_TOKEN_2 = {
 // Inspired from https://testnet.mirrornode.hedera.com/api/v1/accounts/0.0.642949/tokens
 //
 
-export const SAMPLE_TOKEN_ASSOCIATIONS: TokenRelationshipResponse = {
+export const SAMPLE_TOKEN_ASSOCIATIONS = {
     "tokens": [{
-        "automatic_association": false,
-        "balance": 0,
-        "created_timestamp": "1647994323.478512577",
-        "freeze_status": "NOT_APPLICABLE",
-        "kyc_status": "NOT_APPLICABLE",
-        "token_id": "0.0.26568643"
-    }, {
         "automatic_association": false,
         "balance": 0,
         "created_timestamp": SAMPLE_TOKEN_ASSOCIATE_TRANSACTION.consensus_timestamp,
