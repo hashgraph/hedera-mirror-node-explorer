@@ -32,10 +32,10 @@
 
     <template v-if="isVerificationEnabled" v-slot:control>
       <div v-if="sourcifyURL" id="showSource" class="is-inline-block ml-3">
-        <a :href="sourcifyURL" target="_blank">View Contract</a>
+        <a :href="sourcifyURL" target="_blank">View Contract (beta)</a>
       </div>
       <div v-else id="showVerifier" class="is-inline-block ml-3">
-        <a :href="verifierURL" target="_blank">Verify Contract</a>
+        <a :href="verifierURL" target="_blank">Verify Contract (beta)</a>
       </div>
     </template>
 
