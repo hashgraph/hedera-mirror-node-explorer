@@ -31,12 +31,22 @@
     </template>
 
     <template v-if="isVerificationEnabled" v-slot:control>
-      <div v-if="sourcifyURL" id="showSource" class="is-inline-block ml-3">
-        <a :href="sourcifyURL" target="_blank">View Contract (beta)</a>
-      </div>
-      <div v-else-if="verifierURL" id="showVerifier" class="is-inline-block ml-3">
-        <a :href="verifierURL" target="_blank">Verify Contract (beta)</a>
-      </div>
+      <template v-if="isVerificationPhase2">
+          <div v-if="sourcifyURL" id="showSource" class="is-inline-block ml-3">
+              <a :href="sourcifyURL" target="_blank">View Contract</a>
+          </div>
+          <div v-else-if="verifierURL" class="is-inline-block ml-3">
+              <a @click="showVerifyDialog = true">Verify Contract</a>
+          </div>
+      </template>
+      <template v-else>
+          <div v-if="sourcifyURL" id="showSource" class="is-inline-block ml-3">
+              <a :href="sourcifyURL" target="_blank">View Contract (beta)</a>
+          </div>
+          <div v-else-if="verifierURL" id="showVerifier" class="is-inline-block ml-3">
+              <a :href="verifierURL" target="_blank">Verify Contract (beta)</a>
+          </div>
+      </template>
     </template>
 
     <template v-slot:content>
@@ -83,6 +93,13 @@
     </template>
   </DashboardCard>
 
+
+  <ContractVerificationDialog
+          v-model:show-dialog="showVerifyDialog"
+          :contract-id="contractId ?? undefined"
+          :byte-code-analyzer="byteCodeAnalyzer"
+          v-on:verify-did-complete="verifyDidComplete"/>
+
 </template>
 
 <!-- --------------------------------------------------------------------------------------------------------------- -->
@@ -91,7 +108,7 @@
 
 <script lang="ts">
 
-import {computed, defineComponent, inject, PropType} from 'vue';
+import {computed, defineComponent, inject, PropType, ref} from 'vue';
 import DashboardCard from "@/components/DashboardCard.vue";
 import ByteCodeValue from "@/components/values/ByteCodeValue.vue";
 import StringValue from "@/components/values/StringValue.vue";
@@ -99,6 +116,7 @@ import Property from "@/components/Property.vue";
 import {ContractAnalyzer} from "@/utils/analyzer/ContractAnalyzer";
 import {routeManager} from "@/router";
 import InfoTooltip from "@/components/InfoTooltip.vue";
+import ContractVerificationDialog from "@/components/verification/ContractVerificationDialog.vue";
 
 const FULL_MATCH_TOOLTIP = `A Full Match indicates that the bytecode of the deployed contract is byte-by-byte the same as the compilation output of the given source code files with the settings defined in the metadata file. This means the contents of the source code files and the compilation settings are exactly the same as when the contract author compiled and deployed the contract.`
 const PARTIAL_MATCH_TOOLTIP = `A Partial Match indicates that the bytecode of the deployed contract is the same as the compilation output of the given source code files except for the metadata hash. This means the deployed contract and the given source code + metadata function in the same way but there are differences in source code comments, variable names, or other metadata fields such as source paths.`
@@ -106,7 +124,7 @@ const PARTIAL_MATCH_TOOLTIP = `A Partial Match indicates that the bytecode of th
 export default defineComponent({
   name: 'ContractByteCodeSection',
 
-  components: {InfoTooltip, Property, StringValue, ByteCodeValue, DashboardCard},
+  components: {ContractVerificationDialog, InfoTooltip, Property, StringValue, ByteCodeValue, DashboardCard},
 
   props: {
     contractAnalyzer: {
@@ -133,6 +151,15 @@ export default defineComponent({
         return sourcifySetup !== null && sourcifySetup.activate
     })
 
+    const isVerificationPhase2 = computed(() => {
+        return import.meta.env.VITE_APP_ENABLE_VERIFICATION_UI_PHASE2 === "true"
+    })
+
+    const showVerifyDialog = ref(false)
+    const verifyDidComplete = () => {
+        props.contractAnalyzer.verifyDidComplete()
+    }
+
     const tooltipText = computed(() => isFullMatch.value ? FULL_MATCH_TOOLTIP : PARTIAL_MATCH_TOOLTIP)
 
     return {
@@ -146,10 +173,15 @@ export default defineComponent({
       swarmHash: props.contractAnalyzer.byteCodeAnalyzer.swarmHash,
       contractName,
       isVerificationEnabled,
+      isVerificationPhase2,
       tooltipText,
       sourcifyURL: props.contractAnalyzer.sourcifyURL,
       verifierURL: routeManager.currentVerifierUrl,
       isVerified,
+      showVerifyDialog,
+      contractId: props.contractAnalyzer.contractId,
+      byteCodeAnalyzer: props.contractAnalyzer.byteCodeAnalyzer,
+      verifyDidComplete,
       isFullMatch
     }
   }
