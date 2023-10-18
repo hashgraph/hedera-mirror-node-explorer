@@ -146,9 +146,11 @@
         <WalletInfo 
           :connected="connected" 
           :showWalletInfo="showWalletInfo" 
-          :walletIconURL="walletIconURL || undefined" 
+          :accountChanging="accountChanging"
           :accountId="accountId || undefined" 
-          @walletDisconnect="disconnectFromWallet"
+          :walletIconURL="walletIconURL || undefined" 
+          @wallet-disconnect="disconnectFromWallet"
+          @wallet-change-account="handleChangeAccount"
         />
         
       </div>
@@ -198,6 +200,7 @@ export default defineComponent({
     const connecting = ref(false)
     const walletIconURL = ref("")
     const showWalletInfo = ref(false)
+    const accountChanging = ref(false)
     const showProgressDialog = ref(false)
     const showProgressSpinner = ref(false)
     const progressDialogMode = ref(Mode.Busy)
@@ -235,6 +238,30 @@ export default defineComponent({
     }
 
     //
+    // handleChangeAccount
+    //
+    const handleChangeAccount = () => {
+      accountChanging.value = true;
+      walletManager
+        .changeAccount()
+        .catch((reason) => {
+        console.warn("Failed to connect wallet - reason:" + reason.toString())
+        showProgressDialog.value = true
+        progressDialogMode.value = Mode.Error
+        progressDialogTitle.value = "Could not switch to selected account"
+        showProgressSpinner.value = false
+        progressExtraTransactionId.value = null
+        if (reason instanceof WalletDriverError) {
+          progressMainMessage.value = reason.message
+          progressExtraMessage.value = reason.extra
+        } else {
+          progressMainMessage.value = "Unexpected error - please make sure switched account is valid"
+          progressExtraMessage.value = JSON.stringify(reason)
+        }
+      }).finally(() => accountChanging.value = false)
+    }
+
+    //
     // disconnectFromWallet
     //
     const disconnectFromWallet = () => {
@@ -258,6 +285,7 @@ export default defineComponent({
       isTouchDevice,
       isMediumScreen,
       showWalletInfo,
+      accountChanging,
       isStakingEnabled,
       isMobileMenuOpen,
       showWalletChooser,
@@ -267,6 +295,7 @@ export default defineComponent({
       progressMainMessage,
       showProgressSpinner,
       progressDialogTitle,
+      handleChangeAccount,
       progressExtraMessage,
       disconnectFromWallet,
       progressExtraTransactionId,
