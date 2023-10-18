@@ -26,6 +26,7 @@ import {WalletDriverCancelError, WalletDriverError} from "@/utils/wallet/WalletD
 import {Signer} from "@hashgraph/sdk";
 import {HederaLogo} from "@/utils/wallet/WalletDriver";
 
+
 export class WalletDriver_Blade extends WalletDriver_Hedera {
 
     //
@@ -83,6 +84,38 @@ export class WalletDriver_Blade extends WalletDriver_Hedera {
 
         const signers = this.connector.getSigners()
         const result = signers.map<string>((s: BladeSigner) => s.getAccountId().toString())
+        return Promise.resolve(result)
+    }
+
+    public async changeAccount(network: string): Promise<string[]> {
+        const hNetwork = WalletDriver_Blade.makeHederaNetwork(network)
+        if (hNetwork) {
+            if (this.connector) {
+                try {
+                    // kill the current session
+                    await this.connector.killSession()
+
+                    // create a new session for pairing new accounts
+                    const params = {
+                        network: hNetwork,
+                        dAppCode: "HashScan"
+                    }
+                    await this.connector.createSession(params)
+                } catch (reason) {
+                    if (this.isConnectCancelError(reason)) {
+                        throw new WalletDriverCancelError()
+                    } else {
+                        throw this.makeConnectError(reason)
+                    }
+                }
+            }
+        } else {
+            throw this.makeConnectError("Network " + network + " is not supported by " + this.name)
+        }
+
+        const signers = this.connector!.getSigners()
+        const result = signers.map<string>((s: BladeSigner) => s.getAccountId().toString())
+
         return Promise.resolve(result)
     }
 
