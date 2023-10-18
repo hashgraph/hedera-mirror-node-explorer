@@ -24,6 +24,7 @@ import {HederaLogo} from "@/utils/wallet/WalletDriver";
 import {WalletDriver_Hedera} from "@/utils/wallet/WalletDriver_Hedera";
 import {timeGuard, TimeGuardError} from "@/utils/TimerUtils";
 import {Signer} from "@hashgraph/sdk";
+import { WalletDriverError } from './WalletDriverError';
 
 export class WalletDriver_Hashpack extends WalletDriver_Hedera {
 
@@ -53,6 +54,10 @@ export class WalletDriver_Hashpack extends WalletDriver_Hedera {
 
     public async connect(network: string): Promise<string[]> {
         return await this.performConnect(network)
+    }
+
+    public async changeAccount(network: string): Promise<string[]> {
+        return await this.performChangeAcount(network)
     }
 
     public async disconnect(): Promise<void> {
@@ -138,7 +143,6 @@ export class WalletDriver_Hashpack extends WalletDriver_Hedera {
             }
 
         } else {
-
             // Second connection
             try {
                 await hashConnect.connect(
@@ -154,6 +158,47 @@ export class WalletDriver_Hashpack extends WalletDriver_Hedera {
         this.hashConnect = hashConnect
         this.network = network
         return this.lastHashConnectContext.pairingData.accountIds ?? []
+    }
+
+    private async performChangeAcount(network: string): Promise<string[]> {
+        if (this.hashConnect) {
+            const connectionState = await this.hashConnect.connect()
+            const pairingString = this.hashConnect.generatePairingString(connectionState, network, true)
+            
+            // Pairing 
+            this.hashConnect.connectToLocalWallet(pairingString)
+            const pairingData = await this.hashConnect!.pairingEvent.once()
+    
+            // Check pairing data
+            if (pairingData.network != network) {
+                throw this.changeAccountFailure("Unexpected pairing data")
+            } else {
+                this.lastHashConnectContext = {
+                    network: network,
+                    topic: connectionState.topic,
+                    pairingString: pairingString,
+                    pairingData: pairingData
+                }
+            }
+    
+            return this.lastHashConnectContext.pairingData.accountIds ?? []
+        } else {
+            throw this.makeError("Hash connector is interupted.")
+        }
+    }
+
+    private makeError(reason: unknown): WalletDriverError {
+        let result: WalletDriverError
+        if (reason instanceof Error) {
+            switch(reason.name) {
+                default:
+                    result = this.changeAccountFailure(reason.message)
+                    break
+            }
+        } else {
+            result = this.changeAccountFailure(JSON.stringify(reason))
+        }
+        return result
     }
 
 }
