@@ -19,7 +19,6 @@
  */
 
 import {computed, ref} from "vue";
-import {SolcInput} from "@/utils/solc/SolcInput";
 import {SolcUtils} from "@/utils/solc/SolcUtils";
 import {SolcMetadata} from "@/utils/solc/SolcMetadata";
 
@@ -63,7 +62,7 @@ export class SolidityFileImporter {
 
     public readonly metadataFileCount = computed(() => {
         let result = 0
-        for (const [fileName, content] of this.files.value.entries()) {
+        for (const content of this.files.value.values()) {
             if (typeof content === "object") {
                 result += 1
             }

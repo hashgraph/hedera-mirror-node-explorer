@@ -71,7 +71,6 @@ import {computed, defineComponent, PropType, ref} from "vue"
 import FileList from "@/components/verification/FileList.vue"
 import {SolidityFileImporter} from "@/utils/SolidityFileImporter";
 import {ByteCodeAnalyzer} from "@/utils/analyzer/ByteCodeAnalyzer";
-import {SolcIndexCache} from "@/utils/cache/SolcIndexCache";
 import {SourcifyUtils} from "@/utils/sourcify/SourcifyUtils";
 
 export default defineComponent({
