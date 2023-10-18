@@ -34,6 +34,10 @@ export abstract class WalletDriver {
         throw this.toBeImplemented("connect")
     }
 
+    public async changeAccount(): Promise<string[]> {
+        throw this.toBeImplemented("changeAccount")
+    }
+
     public async disconnect(): Promise<void> {
         throw this.toBeImplemented("disconnect")
     }
@@ -60,6 +64,11 @@ export abstract class WalletDriver {
 
     public connectFailure(extra: string): WalletDriverError {
         const message = "Connection to " + this.name + " failed"
+        return new WalletDriverError(message, extra)
+    }
+
+    public changeAccountFailure(extra: string): WalletDriverError {
+        const message = "Change account failed"
         return new WalletDriverError(message, extra)
     }
 

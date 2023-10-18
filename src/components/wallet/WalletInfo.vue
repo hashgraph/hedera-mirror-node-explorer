@@ -74,8 +74,8 @@
 
           <!-- Footer -->
           <div class="is-flex is-justify-content-space-between">
-            <button class="button is-white is-small" style="outline: none; height: 40px">
-              CHANGE ACCOUNT
+            <button @click="handleChangeAccount" class="button is-white is-small" style="outline: none; height: 40px">
+              {{accountChanging ? 'CHANGE PENDING...' : 'CHANGE ACCOUNT'}}
             </button>
 
             <button @click="disconnectFromWallet" class="button is-white is-small" style="outline: none; height: 40px">
@@ -119,8 +119,12 @@ export default defineComponent({
             type: String,
             default: undefined,
         },
+        accountChanging: {
+          type: Boolean,
+          default: false,
+        }
     },
-    emit: ['walletDisconnect'],
+    emit: ['walletDisconnect', 'walletChangeAccount'],
     
     setup(props, ctx) {
         const isSmallScreen = inject('isSmallScreen', true)
@@ -134,11 +138,6 @@ export default defineComponent({
         onMounted(() => accountLocParser.mount())
         onBeforeUnmount(() => accountLocParser.unmount())
 
-        const accountRoute = computed(() => {
-          return walletManager.accountId.value !== null
-              ? routeManager.makeRouteToAccount(walletManager.accountId.value, false)
-              : null
-         })
         
         const accountEthereumAddress = accountLocParser.ethereumAddress
 
@@ -161,6 +160,15 @@ export default defineComponent({
             return amountFormatter.format(hbarBalance.value)
         })
 
+
+        //
+        // handleChangeAccount
+        //
+        const handleChangeAccount = () => {
+          ctx.emit('walletChangeAccount', true)
+        }
+
+
         // 
         // disconnect from wallet
         // 
@@ -169,15 +177,15 @@ export default defineComponent({
         }
 
         return {
-            accountRoute,
             isTouchDevice,
             isSmallScreen,
             isMediumScreen,
             formattedAmount,
+            handleChangeAccount,
             disconnectFromWallet,
+            accountEthereumAddress,
             tbarBalance: balanceAnalyzer.hbarBalance,
             accountChecksum: accountLocParser.accountChecksum,
-            accountEthereumAddress,
         }
     },
 })

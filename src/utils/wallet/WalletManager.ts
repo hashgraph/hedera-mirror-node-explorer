@@ -112,6 +112,31 @@ export class WalletManager {
         }
     }
 
+    public async changeAccount(): Promise<void> {
+        let accountIds: string[]
+        try {
+            accountIds = await timeGuard(this.activeDriver.changeAccount(), this.timeout)
+        } catch(error) {
+            if (error instanceof TimeGuardError) {
+                throw this.activeDriver.changeAccountFailure(this.activeDriver.silentMessage())
+            } else {
+                throw error
+            }
+        }
+
+        if (accountIds.length >= 1) {
+            this.connectedRef.value = true
+            this.accountIdRef.value = accountIds[0]
+            this.accountIdsRef.value = accountIds
+        } else {
+            await this.activeDriver.disconnect()
+            this.connectedRef.value = false
+            this.accountIdRef.value = null
+            this.accountIdsRef.value = []
+            throw this.activeDriver.callFailure("No account found.")
+        }
+    }
+
     public async disconnect(): Promise<void> {
         try {
             await timeGuard(this.activeDriver.disconnect(), this.timeout)
@@ -126,15 +151,6 @@ export class WalletManager {
             this.accountIdRef.value = null
             this.accountIdsRef.value = []
         }
-    }
-
-    public async changeAccount(accountId: string): Promise<void> {
-        if (this.accountIdsRef.value.indexOf(accountId) !== -1) {
-            this.accountIdRef.value = accountId
-        } else {
-            throw this.activeDriver.callFailure("changeAccount")
-        }
-        return Promise.resolve()
     }
 
     public async changeStaking(nodeId: number|null, accountId: string|null, declineReward: boolean|null): Promise<string> {
