@@ -120,12 +120,12 @@ export default defineComponent({
         acceptCookies.value = null
         showCookiesDialog.value = false
       }
+      networkRegistry.readCustomConfig()
     })
 
     onMounted(() => {
       windowWidth.value = window.innerWidth
       window.addEventListener('resize', onResizeHandler);
-      networkRegistry.readCustomConfig()
     })
 
     onBeforeUnmount(() => {
