@@ -67,11 +67,12 @@
 
 <script lang="ts">
 
-import {computed, defineComponent, PropType, ref} from "vue"
+import {computed, defineComponent, onBeforeUnmount, onMounted, PropType, ref} from "vue"
 import FileList from "@/components/verification/FileList.vue"
 import {SolidityFileImporter} from "@/utils/SolidityFileImporter";
 import {ByteCodeAnalyzer} from "@/utils/analyzer/ByteCodeAnalyzer";
-import {SourcifyUtils} from "@/utils/sourcify/SourcifyUtils";
+import {SourcifyUtils, SourcifyVerifyResponse} from "@/utils/sourcify/SourcifyUtils";
+import {ContractSourceAnalyzer} from "@/utils/analyzer/ContractSourceAnalyzer";
 
 export default defineComponent({
     name: "ContractVerificationDialog",
@@ -103,7 +104,7 @@ export default defineComponent({
         }
 
         const verifyButtonEnabled = computed(() => {
-            return fileImporter.files.value.size >= 2 && fileImporter.metadataFileCount.value >= 1
+            return sourceAnalyzer.contractRecord.value !== null && !verifying.value
         })
 
         //
@@ -129,6 +130,13 @@ export default defineComponent({
             return Array.from(fileImporter.files.value.keys())
         })
 
+        //
+        // Source analysis
+        //
+
+        const sourceAnalyzer = new ContractSourceAnalyzer(props.byteCodeAnalyzer, fileImporter.files)
+        onMounted(() => sourceAnalyzer.mount())
+        onBeforeUnmount(() => sourceAnalyzer.unmount())
 
         //
         // Verify
@@ -136,19 +144,34 @@ export default defineComponent({
 
         const verifying = ref(false)
         const handleVerify = async () => {
-            const shortCompilerVersion = props.byteCodeAnalyzer.solcVersion.value
-            if (shortCompilerVersion != null) {
-                verifying.value = true
-                try {
-                    // const longCompilerVersion = await SolcIndexCache.instance.fetchLongVersion(shortCompilerVersion)
-                    // const sourcifyCompilerVersion = "v" + longCompilerVersion
-                    await SourcifyUtils.verify(props.contractId, fileImporter.files.value)
+            verifying.value = true
+            try {
+                let response: SourcifyVerifyResponse|null
+                const resolvedMetadataFile = sourceAnalyzer.resolvedMetadataFile.value
+                if (resolvedMetadataFile !== null) {
+                    // We verify using /verify REST call
+                    const metadata = resolvedMetadataFile[1]
+                    const sourceFiles = sourceAnalyzer.sourceFiles.value
+                    response = await SourcifyUtils.verify(props.contractId, metadata, sourceFiles)
+                } else {
+                    const contractRecord = sourceAnalyzer.contractRecord.value
+                    const compilerVersion = sourceAnalyzer.longCompilerVersion.value
+                    const solcInput = sourceAnalyzer.solcInput.value
+                    if (contractRecord !== null && compilerVersion !== null && solcInput !== null) {
+                        // We'll user /verify/solc-input REST call
+                        response = await SourcifyUtils.verifyWithSolcInput(props.contractId, contractRecord.contractName, compilerVersion, solcInput)
+                    } else {
+                        // Bug
+                        response = null
+                    }
+                }
+                if (response !== null) {
                     context.emit('update:showDialog', false)
                     context.emit("verifyDidComplete")
                     fileImporter.reset()
-                } finally {
-                    verifying.value = false
                 }
+            } finally {
+                verifying.value = false
             }
         }
 
@@ -161,29 +184,20 @@ export default defineComponent({
             let result: string
             if (fileImporter.started.value) {
                 result = "Importing files…"
-            } else if (fileImporter.metadataFileCount.value == 0) {
-                result = "Metadata file is missing"
-            } else if (fileImporter.metadataFileCount.value >= 2) {
-                result = "Multiple metadata files are present. Keep the file matching the contract and remove others."
-            } else if (fileImporter.files.value.size >= 2) {
-                result = "Contract is ready to be verified"
-            // } else if (compiling.value) {
-            //     result = "Compiling…"
-            // } else if (verifying.value) {
-            //     result = "Verifying…"
-            // } else if (contractRecord.value !== null) {
-            //     result = "Contract " + contractRecord.value.contractName + " is ready to be verified"
-            // } else if (solcOutput.value !== null) {
-            //     if (SolcUtils.countErrors(solcOutput.value) >= 1) {
-            //         const missingFiles = SolcUtils.fetchMissingFiles(solcOutput.value)
-            //         if (missingFiles.length >= 1) {
-            //             result = "File '" + missingFiles[0] + "' is missing"
-            //         } else {
-            //             result = "Compiler reports error. Check your Solidity files."
-            //         }
-            //     } else {
-            //         result = "Contract " + props.contractId + " does not match those files"
-            //     }
+            } else if (sourceAnalyzer.analyzing.value) {
+                result = "Analyzing source files…"
+            } else if (verifying.value) {
+                result = "Verifying…"
+            } else if (sourceAnalyzer.contractRecord.value !== null) {
+                const contractName = sourceAnalyzer.contractRecord.value.contractName
+                const resolveMetatadataFile = sourceAnalyzer.resolvedMetadataFile.value
+                if (resolveMetatadataFile !== null) {
+                    result = "Contract " + contractName + " is ready to be verified (with " + resolveMetatadataFile[0] + ")"
+                } else {
+                    result = "Contract " + contractName + " is ready to be verified (without metadata file)"
+                }
+            } else if (fileImporter.files.value.size >= 1) {
+                result = "These source files do not match contract byte code"
             } else {
                 result = "Drop Solidity files in the area below"
             }

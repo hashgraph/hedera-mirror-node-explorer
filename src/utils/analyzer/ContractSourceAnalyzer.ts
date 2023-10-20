@@ -18,145 +18,145 @@
  *
  */
 
-import {computed, ref, Ref, WatchStopHandle} from 'vue';
-import {ContractAnalyzer} from "@/utils/analyzer/ContractAnalyzer";
-import {Lookup} from "@/utils/cache/base/EntityCache";
-import {IPFSCache} from "@/utils/cache/IPFSCache";
-import {SolcUtils} from "@/utils/solc/SolcUtils";
-import {SourcifyCache} from "@/utils/cache/SourcifyCache";
-import {AppStorage} from "@/AppStorage";
-import {ethers} from "ethers";
+import {computed, ref, Ref, watch, WatchStopHandle} from 'vue';
+import {ByteCodeAnalyzer} from "@/utils/analyzer/ByteCodeAnalyzer";
+import {ContractRecord, SolcUtils} from "@/utils/solc/SolcUtils";
+import {SolcMetadata} from "@/utils/solc/SolcMetadata";
+import {SolcInput} from "@/utils/solc/SolcInput";
+import {SolcIndexCache} from "@/utils/cache/SolcIndexCache";
 
 export class ContractSourceAnalyzer {
 
-    public readonly sourceFileName: string
-    public readonly contractAnalyzer: ContractAnalyzer
-    public readonly ipfsLookup: Lookup<string, unknown|undefined>
-    private readonly localStorageContent: Ref<string|null> = ref(null)
+    public readonly byteCodeAnalyzer: ByteCodeAnalyzer
+    public readonly inputFiles: Ref<Map<string, string|SolcMetadata>>
+
+    private readonly analyzingRef = ref(false)
+    private readonly contractRecordRef = ref<ContractRecord|null>(null)
+    private readonly longCompilerVersionRef = ref<string|null>(null)
     private watchHandle: WatchStopHandle|null = null
 
     //
     // Public
     //
 
-    public constructor(sourceFileName: string, contractAnalyzer: ContractAnalyzer) {
-        this.sourceFileName = sourceFileName
-        this.contractAnalyzer = contractAnalyzer
-        this.ipfsLookup = IPFSCache.instance.makeLookup(this.ipfsHash)
+    public constructor(byteCodeAnalyzer: ByteCodeAnalyzer, inputFiles: Ref<Map<string, string|SolcMetadata>>) {
+        this.byteCodeAnalyzer = byteCodeAnalyzer
+        this.inputFiles = inputFiles
     }
 
 
     public mount(): void {
-        this.ipfsLookup.mount()
-        this.updateLocalStorageContent()
+        this.watchHandle = watch([
+            this.solcInput,
+            this.byteCodeAnalyzer.byteCode,
+            this.byteCodeAnalyzer.solcVersion], this.updateContractRecord)
     }
 
     public unmount(): void {
-        this.ipfsLookup.unmount()
-        this.localStorageContent.value = null
         if (this.watchHandle !== null) {
             this.watchHandle()
             this.watchHandle = null
         }
+        this.contractRecordRef.value = null
     }
 
     //
     // Public (computed)
     //
 
-    public readonly content = computed(
-        () => this.sourcifyContent.value ?? this.localStorageContent.value ?? this.ipfsContent.value)
+    public readonly analyzing = computed(
+        () => this.analyzingRef.value)
 
-    public readonly fullMatch = computed(() => {
-        let result: boolean
-        if (this.content.value !== null && this.keccakHash.value !== null) {
-            const contentBytes = ethers.utils.toUtf8Bytes(this.content.value)
-            const contentHash = ethers.utils.keccak256(contentBytes)
-            result = contentHash === this.keccakHash.value
+    public readonly longCompilerVersion = computed(
+        () => this.longCompilerVersionRef.value)
+
+    public readonly contractRecord = computed(
+        () =>  this.contractRecordRef.value)
+
+    public readonly sourceFiles = computed(() => {
+        return new Map<string, string>()
+    })
+
+    public readonly resolvedMetadataFile = computed(() => {
+        let result: [string, SolcMetadata]|null = null
+
+        if (this.contractRecord.value !== null) {
+            for (const [f, m] of this.metadataFiles.value.entries()) {
+                if (this.contractRecord.value.sourceFileName in m.sources) {
+                    result = [f, m]
+                    break
+                }
+            }
+        }
+
+        return result
+    })
+
+    public readonly solcInput = computed(() => {
+        let result: SolcInput|null
+        if (this.inputFiles.value.size >= 1) {
+            result = {
+                language: "Solidity",
+                sources: {},
+                settings: {
+                    outputSelection: {
+                        '*': {
+                            '*': [ "metadata", "evm.deployedBytecode.object" ],
+                        },
+                    },
+                },
+            }
+            for (const [path, content] of this.inputFiles.value) {
+                if (typeof content == "string") {
+                    result.sources[path] = { content: content }
+                }
+            }
         } else {
-            result = false
+            result = null
         }
         return result
     })
 
-    //
-    // Public (user actions)
-    //
-
-    public userDidSelectContent(content: string): void {
-        AppStorage.setSource(content, this.sourceFileName)
-        this.updateLocalStorageContent()
-    }
-
-    public userRequestClear(): void {
-        AppStorage.setSource(null, this.sourceFileName)
-        this.updateLocalStorageContent()
-    }
 
     //
     // Private
     //
 
-    private readonly sourcifyContent = computed(() => {
-        let result: string|null
-        const response = this.contractAnalyzer.sourcifyRecord.value?.response ?? null
-        if (response !== null) {
-            result = SourcifyCache.fetchSource(this.sourceBaseName(), response)
+    private readonly updateContractRecord = async () => {
+        const solcInput = this.solcInput.value
+        const byteCode = this.byteCodeAnalyzer.byteCode.value
+        const shortCompilerVersion = this.byteCodeAnalyzer.solcVersion.value
+        if (solcInput !== null && shortCompilerVersion !== null && byteCode !== null) {
+            this.analyzingRef.value = true
+            try {
+                const longCompilerVersion = await SolcIndexCache.instance.fetchLongVersion(shortCompilerVersion)
+                if (longCompilerVersion !== null) {
+                    const sourcifyCompilerVersion = "v" + longCompilerVersion
+                    const solcOutput = await SolcUtils.runAsWorker(sourcifyCompilerVersion, solcInput)
+                    this.contractRecordRef.value = SolcUtils.findMatchingContract(byteCode, solcOutput)
+                    this.longCompilerVersionRef.value = longCompilerVersion
+                } else {
+                    this.contractRecordRef.value = null
+                    this.longCompilerVersionRef.value = null
+                }
+            } finally {
+                this.analyzingRef.value = false
+            }
         } else {
-            result = null
+            this.contractRecordRef.value = null
+            this.longCompilerVersionRef.value = null
         }
-        return result
-    })
-
-    private readonly ipfsContent = computed(() => {
-        let result: string|null
-        const content = this.ipfsLookup.entity.value
-        if (typeof content == "string") {
-            result = content
-        } else if (typeof content === "object" && content !== null) {
-            result = JSON.stringify(content)
-        } else {
-            result = null
-        }
-        return result
-    })
-
-    private readonly ipfsHash = computed(() => {
-        let result: string|null
-        if (this.contractAnalyzer.metadata.value !== null) {
-            result = SolcUtils.fetchIPFSHash(this.sourceFileName, this.contractAnalyzer.metadata.value)
-        } else {
-            result = null
-        }
-        return result
-    })
-
-    private readonly swarmHash = computed(() => {
-        let result: string|null
-        if (this.contractAnalyzer.metadata.value !== null) {
-            result = SolcUtils.fetchSWARMHash(this.sourceFileName, this.contractAnalyzer.metadata.value)
-        } else {
-            result = null
-        }
-        return result
-    })
-
-    private readonly keccakHash = computed(() => {
-        let result: string|null
-        if (this.contractAnalyzer.metadata.value !== null) {
-            result = SolcUtils.fetchKeccakHash(this.sourceFileName, this.contractAnalyzer.metadata.value)
-        } else {
-            result = null
-        }
-        return result
-    })
-
-    private readonly updateLocalStorageContent = () => {
-        this.localStorageContent.value = AppStorage.getSource(this.sourceFileName)
     }
 
-    private sourceBaseName(): string {
-        const i = this.sourceFileName.lastIndexOf("/")
-        return i != -1 ? this.sourceFileName.substring(i+1) : this.sourceFileName
-    }
+
+    private readonly metadataFiles = computed<Map<string, SolcMetadata>>(() => {
+        let result = new Map<string, SolcMetadata>()
+        for (const [fileName, content] of this.inputFiles.value) {
+            if (typeof content == "object") {
+                result.set(fileName, content)
+            }
+        }
+        return result
+    })
+
 }

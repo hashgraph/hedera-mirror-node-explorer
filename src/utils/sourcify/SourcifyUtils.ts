@@ -45,7 +45,7 @@ export class SourcifyUtils {
                 compilerVersion: compilerVersion,
                 contractName: contractName
             }
-            const url = sourcifySetup.serverURL + "/verify/solc-json"
+            const url = sourcifySetup.serverURL + "verify/solc-json"
             const sourcifyResponse = await axios.post<SourcifyVerifyResponse>(url, requestBody)
             result = sourcifyResponse.data
         } else {
@@ -55,8 +55,7 @@ export class SourcifyUtils {
         return Promise.resolve(result)
     }
 
-    public static async verify(contractId: string,
-                               inputFiles: Map<string, string|SolcMetadata>): Promise<SourcifyVerifyResponse|null> {
+    public static async verify(contractId: string, metadata: SolcMetadata, inputFiles: Map<string, string>): Promise<SourcifyVerifyResponse|null> {
         let result: SourcifyVerifyResponse|null
 
         const contractResponse = await ContractByIdCache.instance.lookup(contractId)
@@ -66,14 +65,12 @@ export class SourcifyUtils {
             const requestBody: SourcifyVerifyBody = {
                 address: address,
                 chain: sourcifySetup.chainID.toString(),
-                files: {}
+                files: {
+                    "metadata.json": JSON.stringify(metadata)
+                }
             }
             for (const [fileName, content] of inputFiles.entries()) {
-                if (typeof content == "string") { // Solidity sources
-                    requestBody.files[fileName] = content
-                } else { // metadata file
-                    requestBody.files["metadata.json"] = JSON.stringify(content)
-                }
+                requestBody.files[fileName] = content
             }
             const url = sourcifySetup.serverURL + "verify"
             const sourcifyResponse = await axios.post<SourcifyVerifyResponse>(url, requestBody)
