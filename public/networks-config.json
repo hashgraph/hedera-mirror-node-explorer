@@ -5,10 +5,10 @@
     "url": "https://mainnet-public.mirrornode.hedera.com/",
     "ledgerID": "00",
     "sourcifySetup": {
-      "activate": false,
-      "repoURL": "https://repository.sourcify-integration.hedera-devops.com/contracts/",
-      "serverURL": "https://server.sourcify-integration.hedera-devops.com/",
-      "verifierURL": "https://sourcify-integration.hedera-devops.com/#/",
+      "activate": true,
+      "repoURL": "http://localhost:10000/contracts/",
+      "serverURL": "http://localhost:5002/",
+      "verifierURL": "http://localhost:3000/#/",
       "chainID": 295
     }
   },
@@ -18,10 +18,10 @@
     "url": "https://testnet.mirrornode.hedera.com/",
     "ledgerID": "01",
     "sourcifySetup": {
-      "activate": false,
-      "repoURL": "https://repository.sourcify-integration.hedera-devops.com/contracts/",
-      "serverURL": "https://server.sourcify-integration.hedera-devops.com/",
-      "verifierURL": "https://sourcify-integration.hedera-devops.com/#/",
+      "activate": true,
+      "repoURL": "http://localhost:10000/contracts/",
+      "serverURL": "http://localhost:5002/",
+      "verifierURL": "http://localhost:3000/#/",
       "chainID": 296
     }
   },
@@ -31,10 +31,10 @@
     "url": "https://previewnet.mirrornode.hedera.com/",
     "ledgerID": "02",
     "sourcifySetup": {
-      "activate": false,
-      "repoURL": "https://repository.sourcify-integration.hedera-devops.com/contracts/",
-      "serverURL": "https://server.sourcify-integration.hedera-devops.com/",
-      "verifierURL": "https://sourcify-integration.hedera-devops.com/#/",
+      "activate": true,
+      "repoURL": "http://localhost:10000/contracts/",
+      "serverURL": "http://localhost:5002/",
+      "verifierURL": "http://localhost:3000/#/",
       "chainID": 297
     }
   }

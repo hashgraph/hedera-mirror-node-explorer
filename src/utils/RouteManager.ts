@@ -70,6 +70,9 @@ export class RouteManager {
         return networkEntry != null ? networkEntry : networkRegistry.getDefaultEntry()
     })
 
+    public currentVerifierUrl = computed(
+        () => this.currentNetworkEntry.value.sourcifySetup?.verifierURL)
+
     public selectedNetwork = ref(networkRegistry.getDefaultEntry().name)
 
     public selectedNetworkWatchHandle: WatchStopHandle|undefined
