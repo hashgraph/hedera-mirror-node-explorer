@@ -41,7 +41,6 @@ import NotificationBanner from "@/components/NotificationBanner.vue";
 import {TransactionID} from "@/utils/TransactionID";
 import ContractResultTable from "@/components/contract/ContractResultTable.vue";
 import DashboardCard from "@/components/DashboardCard.vue";
-import {NetworkRegistry} from "../../../src/schemas/NetworkRegistry";
 
 /*
     Bookmarks
