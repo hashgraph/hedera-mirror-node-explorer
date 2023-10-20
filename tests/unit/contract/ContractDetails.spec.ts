@@ -41,6 +41,7 @@ import NotificationBanner from "@/components/NotificationBanner.vue";
 import {TransactionID} from "@/utils/TransactionID";
 import ContractResultTable from "@/components/contract/ContractResultTable.vue";
 import DashboardCard from "@/components/DashboardCard.vue";
+import {NetworkRegistry} from "../../../src/schemas/NetworkRegistry";
 
 /*
     Bookmarks
@@ -429,7 +430,16 @@ describe("ContractDetails.vue", () => {
 
         await router.push("/") // To avoid "missing required param 'network'" error
 
+        const mock = new MockAdapter(axios);
+
+        const contract = SAMPLE_CONTRACT_WITH_SWARM_HASH
         const contractId = SAMPLE_CONTRACT_WITH_SWARM_HASH.contract_id
+        const matcher1 = "/api/v1/contracts/" + contractId
+        mock.onGet(matcher1).reply(200, contract);
+
+        const matcher2 = "/api/v1/contracts/" + contractId + "/results"
+        mock.onGet(matcher2).reply(200, SAMPLE_CONTRACT_RESULTS);
+
         const wrapper = mount(ContractDetails, {
             global: {
                 plugins: [router, Oruga]
