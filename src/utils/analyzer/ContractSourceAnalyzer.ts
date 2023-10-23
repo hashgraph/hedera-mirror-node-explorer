@@ -74,7 +74,13 @@ export class ContractSourceAnalyzer {
         () =>  this.contractRecordRef.value)
 
     public readonly sourceFiles = computed(() => {
-        return new Map<string, string>()
+        const result = new Map<string, string>()
+        for (const [f, c] of this.inputFiles.value) {
+            if (typeof c == "string") {
+                result.set(f, c)
+            }
+        }
+        return result
     })
 
     public readonly resolvedMetadataFile = computed(() => {
