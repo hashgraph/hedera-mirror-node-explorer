@@ -39,7 +39,7 @@
               <NetworkDashboardItem title="Last Staked" :value="formatSeconds((elapsedMin ?? 0)*60) + ' ago'"/>
             </div>
             <div class="is-flex-direction-column">
-              <NetworkDashboardItem name="HBAR" title="Total Staked" :value="makeFloorHbarAmount(unclampedStakeTotal)"/>
+              <NetworkDashboardItem name="HBAR" title="Total Staked" :value="makeFloorHbarAmount(stakeTotal)"/>
               <div class="mt-4"/>
               <NetworkDashboardItem title="Next Staking Period" :value="'in ' + formatSeconds((remainingMin??0)*60)"/>
             </div>
@@ -55,7 +55,7 @@
               <div class="mt-4"/>
               <NetworkDashboardItem title="Last Staked" :value="formatSeconds((elapsedMin??0)*60) + ' ago'"/>
               <div class="mt-4"/>
-              <NetworkDashboardItem name="HBAR" title="Total Staked" :value="makeFloorHbarAmount(unclampedStakeTotal)"/>
+              <NetworkDashboardItem name="HBAR" title="Total Staked" :value="makeFloorHbarAmount(stakeTotal)"/>
               <div class="mt-4"/>
               <NetworkDashboardItem title="Next Staking Period" :value="'in ' + formatSeconds((remainingMin??0)*60)"/>
               <div class="mt-4"/>
@@ -136,7 +136,6 @@ export default defineComponent({
       nodes: networkNodeAnalyzer.nodes,
       totalNodes: networkNodeAnalyzer.nodeCount,
       stakeTotal,
-      unclampedStakeTotal: networkNodeAnalyzer.unclampedStakeTotal,
       totalRewarded: networkNodeAnalyzer.totalRewarded,
       durationMin: networkNodeAnalyzer.durationMin,
       elapsedMin: networkNodeAnalyzer.elapsedMin,
