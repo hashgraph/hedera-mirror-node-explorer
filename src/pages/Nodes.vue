@@ -69,6 +69,15 @@
       </template>
     </DashboardCard>
 
+    <p>{{ `Total Staked: ${makeFloorHbarAmount(stakeTotal)}` }}</p>
+    <p>{{ `Staked for Reward: ${makeFloorHbarAmount(stakeRewardedTotal)}` }}</p>
+    <p>{{ `Maximum Staked for Reward: ${makeFloorHbarAmount(maxStakeRewarded)}` }}</p>
+    <br/>
+    <p>{{ `Rewarded Last Period: ${makeFloorHbarAmount(totalRewarded)}` }}</p>
+    <p>{{ `Maximum Reward Rate: ${makeAnnualizedRate(maxRewardRate)}` }}</p>
+    <p>{{ `Current Reward Rate: ${makeAnnualizedRate(rewardRate)}` }}</p>
+    <br/>
+
     <DashboardCard>
       <template v-slot:title>
         <span class="h-is-primary-title">Nodes</span>
@@ -99,9 +108,11 @@ import NetworkDashboardItem from "@/components/node/NetworkDashboardItem.vue";
 import {formatSeconds} from "@/utils/Duration";
 import {StakeCache} from "@/utils/cache/StakeCache";
 import {NetworkAnalyzer} from "@/utils/analyzer/NetworkAnalyzer";
+import {makeAnnualizedRate} from "@/schemas/HederaUtils";
 
 export default defineComponent({
   name: 'Nodes',
+  methods: {makeAnnualizedRate},
 
   props: {
     network: String
@@ -127,6 +138,9 @@ export default defineComponent({
     onBeforeUnmount(() => stakeLookup.unmount())
 
     const stakeTotal = computed(() => stakeLookup.entity.value?.stake_total ?? 0)
+    const maxStakeRewarded = computed(() => stakeLookup.entity.value?.max_stake_rewarded ?? 0)
+    const rewardRate = computed(() => stakeLookup.entity.value?.max_staking_reward_rate_per_hbar ?? 0)
+    const maxRewardRate = computed(() => (stakeLookup.entity.value?.staking_reward_rate ?? 0) / networkNodeAnalyzer.stakeRewardedTotal.value)
 
     const makeFloorHbarAmount = (tinyBarAmount: number) => Math.floor((tinyBarAmount ?? 0) / 100000000).toLocaleString('en-US')
 
@@ -136,6 +150,10 @@ export default defineComponent({
       nodes: networkNodeAnalyzer.nodes,
       totalNodes: networkNodeAnalyzer.nodeCount,
       stakeTotal,
+      maxStakeRewarded,
+      maxRewardRate,
+      rewardRate,
+      stakeRewardedTotal: networkNodeAnalyzer.stakeRewardedTotal,
       totalRewarded: networkNodeAnalyzer.totalRewarded,
       durationMin: networkNodeAnalyzer.durationMin,
       elapsedMin: networkNodeAnalyzer.elapsedMin,
