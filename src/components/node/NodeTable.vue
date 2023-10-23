@@ -112,7 +112,7 @@
                    :delay="tooltipDelay"
                    class="h-tooltip">
           <span class="regular-node-column">
-            {{ makeAnnualizedRate(props.row) }}
+            {{ makeAnnualizedRate(props.row.reward_rate_start) }}
           </span>
         </o-tooltip>
       </o-table-column>
