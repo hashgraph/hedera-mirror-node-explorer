@@ -64,7 +64,6 @@ describe("NodeTable.vue", () => {
             },
             props: {
                 nodes: SAMPLE_NETWORK_NODES.nodes as Array<NetworkNode>,
-                unclampedStakeTotal: testTotalStaked,
                 stakeTotal: testTotalStaked
             }
         });

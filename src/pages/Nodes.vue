@@ -75,7 +75,6 @@
       </template>
       <template v-slot:content>
         <NodeTable :nodes="nodes"
-                   :unclamped-stake-total="unclampedStakeTotal"
                    :stake-total="stakeTotal"/>
       </template>
     </DashboardCard>
