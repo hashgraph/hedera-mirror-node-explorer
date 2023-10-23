@@ -59,6 +59,18 @@
         </div>
     </div>
 
+    <ProgressDialog v-model:show-dialog="showProgressDialog"
+                    :mode="progressDialogMode"
+                    :main-message="progressMainMessage"
+                    :extra-message="progressExtraMessage"
+                    :show-spinner="showProgressSpinner"
+                    @dialogClosing="progressDialogClosing"
+    >
+        <template v-slot:dialogTitle>
+            <span class="h-is-primary-title">Verify Contract</span>
+        </template>
+    </ProgressDialog>
+
 </template>
 
 <!-- --------------------------------------------------------------------------------------------------------------- -->
@@ -73,10 +85,11 @@ import {SolidityFileImporter} from "@/utils/SolidityFileImporter";
 import {ByteCodeAnalyzer} from "@/utils/analyzer/ByteCodeAnalyzer";
 import {SourcifyUtils, SourcifyVerifyResponse} from "@/utils/sourcify/SourcifyUtils";
 import {ContractSourceAnalyzer} from "@/utils/analyzer/ContractSourceAnalyzer";
+import ProgressDialog, {Mode} from "@/components/staking/ProgressDialog.vue";
 
 export default defineComponent({
     name: "ContractVerificationDialog",
-    components: {FileList},
+    components: {ProgressDialog, FileList},
     props: {
         showDialog: {
             type: Boolean,
@@ -104,7 +117,7 @@ export default defineComponent({
         }
 
         const verifyButtonEnabled = computed(() => {
-            return sourceAnalyzer.contractRecord.value !== null && !verifying.value
+            return sourceAnalyzer.contractRecord.value !== null
         })
 
         //
@@ -142,11 +155,14 @@ export default defineComponent({
         // Verify
         //
 
-        const verifying = ref(false)
         const handleVerify = async () => {
-            verifying.value = true
+            showProgressDialog.value = true
+            showProgressSpinner.value = true
+            progressDialogMode.value = Mode.Busy
+            progressMainMessage.value = "Verifying " + sourceAnalyzer.contractRecord.value!.contractName + " contract…"
+            progressExtraMessage.value = null
             try {
-                let response: SourcifyVerifyResponse|null
+                let response: SourcifyVerifyResponse | null
                 const resolvedMetadataFile = sourceAnalyzer.resolvedMetadataFile.value
                 if (resolvedMetadataFile !== null) {
                     // We verify using /verify REST call
@@ -158,20 +174,42 @@ export default defineComponent({
                     const compilerVersion = sourceAnalyzer.longCompilerVersion.value
                     const solcInput = sourceAnalyzer.solcInput.value
                     if (contractRecord !== null && compilerVersion !== null && solcInput !== null) {
-                        // We'll user /verify/solc-input REST call
+                        // We verify using /verify/solc-input REST call
                         response = await SourcifyUtils.verifyWithSolcInput(props.contractId, contractRecord.contractName, compilerVersion, solcInput)
                     } else {
                         // Bug
                         response = null
                     }
                 }
+                showProgressSpinner.value = false
                 if (response !== null) {
-                    context.emit('update:showDialog', false)
-                    context.emit("verifyDidComplete")
-                    fileImporter.reset()
+                    if (response.result) {
+                        progressDialogMode.value = Mode.Success
+                        progressMainMessage.value = "Verification succeeded"
+                        const status = SourcifyUtils.fetchVerifyStatus(response)
+                        if (status == "perfect") {
+                            progressExtraMessage.value = "Perfect Match"
+                        } else if (status == "partial") {
+                            progressExtraMessage.value = "Partial Match"
+                        } else {
+                            progressExtraMessage.value = status
+                        }
+                    } else {
+                        progressDialogMode.value = Mode.Error
+                        progressMainMessage.value = "Verification failed"
+                        progressExtraMessage.value = response.error ?? null
+                    }
+                } else {
+                    // Bug
+                    progressDialogMode.value = Mode.Error
+                    progressMainMessage.value = "Verification cannot be done"
+                    progressExtraMessage.value = null
                 }
-            } finally {
-                verifying.value = false
+            } catch(reason) {
+                showProgressSpinner.value = false
+                progressDialogMode.value = Mode.Error
+                progressMainMessage.value = "Verification failed"
+                progressExtraMessage.value = SourcifyUtils.fetchVerifyError(reason)
             }
         }
 
@@ -186,15 +224,13 @@ export default defineComponent({
                 result = "Importing files…"
             } else if (sourceAnalyzer.analyzing.value) {
                 result = "Analyzing source files…"
-            } else if (verifying.value) {
-                result = "Verifying…"
             } else if (sourceAnalyzer.contractRecord.value !== null) {
                 const contractName = sourceAnalyzer.contractRecord.value.contractName
                 const resolveMetatadataFile = sourceAnalyzer.resolvedMetadataFile.value
                 if (resolveMetatadataFile !== null) {
-                    result = "Contract " + contractName + " is ready to be verified (with " + resolveMetatadataFile[0] + ")"
+                    result = "Contract \"" + contractName + "\" is ready to be verified (with " + resolveMetatadataFile[0] + ")"
                 } else {
-                    result = "Contract " + contractName + " is ready to be verified (without metadata file)"
+                    result = "Contract \"" + contractName + "\" is ready to be verified (without metadata file)"
                 }
             } else if (fileImporter.files.value.size >= 1) {
                 result = "These source files do not match contract byte code"
@@ -204,7 +240,22 @@ export default defineComponent({
             return result
         })
 
+        //
+        // Progress dialog
+        //
+        const showProgressDialog = ref(false)
+        const progressDialogMode = ref(Mode.Busy)
+        const progressMainMessage = ref<string|null>(null)
+        const progressExtraMessage = ref<string|null>(null)
+        const showProgressSpinner = ref(false)
 
+        const progressDialogClosing = () => {
+            if (progressDialogMode.value == Mode.Success) {
+                context.emit('update:showDialog', false)
+                context.emit("verifyDidComplete")
+                fileImporter.reset()
+            }
+        }
 
         return {
             handleCancel,
@@ -213,7 +264,13 @@ export default defineComponent({
             handleDrop,
             fileList,
             verifyButtonEnabled,
-            status
+            status,
+            showProgressDialog,
+            progressDialogMode,
+            progressMainMessage,
+            progressExtraMessage,
+            showProgressSpinner,
+            progressDialogClosing
         }
     }
 })

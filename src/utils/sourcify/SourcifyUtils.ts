@@ -21,7 +21,7 @@
 import {SolcInput} from "@/utils/solc/SolcInput";
 import {routeManager} from "@/router";
 import {ContractByIdCache} from "@/utils/cache/ContractByIdCache";
-import axios from "axios";
+import axios, {AxiosResponse} from "axios";
 import {SolcMetadata} from "@/utils/solc/SolcMetadata";
 
 export class SourcifyUtils {
@@ -82,7 +82,23 @@ export class SourcifyUtils {
         return Promise.resolve(result)
     }
 
+    public static fetchVerifyError(reason: unknown): string|null {
+        let result: string|null
 
+        if (axios.isAxiosError(reason)) {
+            const response = reason.response as AxiosResponse<SourcifyVerifyResponse>|undefined
+            result = response?.data.error ?? null
+        } else if ((reason as any).message) {
+            result = (reason as any).message
+        } else {
+            result = null
+        }
+        return result
+    }
+
+    public static fetchVerifyStatus(response: SourcifyVerifyResponse): string|null {
+        return response.result && response.result.length >= 1 ? response.result[0].status : null
+    }
 }
 
 
@@ -95,10 +111,11 @@ export interface SourcifyVerifyBody {
 }
 
 export interface SourcifyVerifyResponse {
-    result: {
+    error?: string,
+    result?: {
         address: string,
         chainId: string,
         status: string,
         library: Record<string, unknown>
-    }
+    }[]
 }

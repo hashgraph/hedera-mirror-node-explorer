@@ -105,6 +105,7 @@ export default defineComponent({
 
     const handleClose = () => {
       context.emit('update:showDialog', false)
+      context.emit("dialogClosing")
     }
 
     const closeDisabled = computed(() => props.mode == Mode.Busy)
