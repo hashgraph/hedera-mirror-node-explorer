@@ -26,41 +26,37 @@
 
   <DashboardCard>
     <template v-slot:title>
-      <span class="h-is-secondary-title">Contract Details</span>
-      <span v-if="isVerificationEnabled && contractName" class="icon has-text-success ml-2"><i class="far fa-check-circle"></i></span>
+        <div class="is-flex is-align-items-center is-flex-wrap-wrap">
+            <span class="h-is-secondary-title mr-3">Contract Source</span>
+            <div v-if="isVerificationEnabled" class="h-is-text-size-2 mt-1">
+                <div v-if="contractName" class="h-has-pill has-background-success">VERIFIED</div>
+                <div v-else class="h-has-pill has-background-warning">NOT VERIFIED</div>
+            </div>
+        </div>
     </template>
 
-    <template v-if="isVerificationEnabled" v-slot:control>
-      <template v-if="isVerificationPhase2">
-          <div v-if="sourcifyURL" id="showSource" class="is-inline-block ml-3">
-              <a :href="sourcifyURL" target="_blank">View Contract (beta)</a>
-          </div>
-          <div v-else-if="verifierURL" class="is-inline-block ml-3">
-              <a @click="showVerifyDialog = true">Verify Contract (beta)</a>
-          </div>
-      </template>
-      <template v-else>
+    <template v-slot:control>
+        <template v-if="isVerificationEnabled && !isVerificationPhase2">
           <div v-if="sourcifyURL" id="showSource" class="is-inline-block ml-3">
               <a :href="sourcifyURL" target="_blank">View Contract (beta)</a>
           </div>
           <div v-else-if="verifierURL" id="showVerifier" class="is-inline-block ml-3">
               <a :href="verifierURL" target="_blank">Verify Contract (beta)</a>
           </div>
-      </template>
+        </template>
     </template>
 
     <template v-slot:content>
-      <Property v-if="isVerificationEnabled" id="verificationStatus" :full-width="true">
+      <Property v-if="isVerified" id="verificationStatus" :full-width="true">
         <template v-slot:name>Verification Status</template>
         <template v-slot:value>
-          <span v-if="isVerified">
+          <span>
             {{ isFullMatch ? "Full Match" : "Partial Match" }}
             <InfoTooltip :label="tooltipText"/>
           </span>
-          <span v-else>Not yet verified</span>
         </template>
       </Property>
-      <Property v-if="isVerificationEnabled" id="contractName" :full-width="true">
+      <Property v-if="isVerified" id="contractName" :full-width="true">
         <template v-slot:name>Contract Name</template>
         <template v-slot:value>
           <StringValue :string-value="contractName ?? undefined"/>
@@ -90,6 +86,13 @@
           <ByteCodeValue :byte-code="byteCode ?? undefined"/>
         </template>
       </Property>
+      <div class="is-flex is-justify-content-flex-end mt-3">
+        <button v-if="isVerificationEnabled && isVerificationPhase2" id="verify-button"
+                class="button is-white is-small has-text-right"
+                @click="showVerifyDialog = true">
+          VERIFY CONTRACT
+        </button>
+      </div>
     </template>
   </DashboardCard>
 
