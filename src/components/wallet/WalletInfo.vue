@@ -73,14 +73,29 @@
           </div>
 
           <!-- Footer -->
-          <div class="is-flex is-justify-content-space-between">
-            <button class="button is-white is-small" style="outline: none; height: 40px">
+          <div class="is-flex is-justify-content-space-between" style="position: relative;">
+            <button @click="showAccountIdsModal = !showAccountIdsModal"  class="button is-white is-small" style="outline: none; height: 40px">
               CHANGE ACCOUNT
             </button>
 
             <button @click="disconnectFromWallet" class="button is-white is-small" style="outline: none; height: 40px">
               DISCONNECT WALLET
             </button>
+
+            <div v-if="showAccountIdsModal" 
+                :class="{'box': !isTouchDevice && isSmallScreen, 'h-box-border': !isTouchDevice && isSmallScreen}"
+                style="position: absolute; z-index: 10; padding: 0.6rem; width: 44%; top: 120%; display: flex; flex-direction: column; gap: 0.3rem; max-height: 120px; overflow-y: auto;"
+            >
+              <div 
+                v-for="account in accountIds" :key="account"
+                class="is-flex is-align-items-center is-justify-content-space-between is-hover"
+                style="cursor: pointer;"
+                @click="changeAccount(account)"
+              >
+                <p>{{ account }}</p>
+                <i v-if="account === accountId" class="fas fa-solid fa-check is-flex is-align-items-center" style="font-size: 0.7rem;"/>
+              </div>
+            </div>
           </div>
         </div>
 </template>
@@ -119,13 +134,19 @@ export default defineComponent({
             type: String,
             default: undefined,
         },
+        accountIds: {
+            type: Array<string>,
+            default: undefined,
+        },
     },
-    emit: ['walletDisconnect'],
+    emit: ['walletDisconnect', 'changeAccount'],
     
     setup(props, ctx) {
         const isSmallScreen = inject('isSmallScreen', true)
         const isMediumScreen = inject('isMediumScreen', true)
         const isTouchDevice = inject('isTouchDevice', false)
+        const chosenAccountId = computed(() => props.accountId)
+        const showAccountIdsModal = ref(false)
 
         //
         // Account
@@ -161,23 +182,35 @@ export default defineComponent({
             return amountFormatter.format(hbarBalance.value)
         })
 
+        //
+        // Change account
+        //
+        const changeAccount = (accountId: string) => {
+          ctx.emit('changeAccount', accountId)
+          showAccountIdsModal.value = false;
+        }
+
         // 
         // disconnect from wallet
         // 
         const disconnectFromWallet = () => {
           ctx.emit('walletDisconnect', true)
+          showAccountIdsModal.value = false;
         }
 
         return {
             accountRoute,
             isTouchDevice,
+            changeAccount,
             isSmallScreen,
             isMediumScreen,
             formattedAmount,
+            chosenAccountId,
+            showAccountIdsModal,
             disconnectFromWallet,
+            accountEthereumAddress,
             tbarBalance: balanceAnalyzer.hbarBalance,
             accountChecksum: accountLocParser.accountChecksum,
-            accountEthereumAddress,
         }
     },
 })
@@ -188,5 +221,9 @@ export default defineComponent({
 <!--                                                       STYLE                                                     -->
 <!-- --------------------------------------------------------------------------------------------------------------- -->
 
-<style/>
+<style>
+  .is-hover:hover {
+    color: gray;
+  }
+</style>
 

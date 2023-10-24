@@ -145,10 +145,12 @@
 
         <WalletInfo 
           :connected="connected" 
+          :accountIds="accountIds"
           :showWalletInfo="showWalletInfo" 
-          :walletIconURL="walletIconURL || undefined" 
           :accountId="accountId || undefined" 
-          @walletDisconnect="disconnectFromWallet"
+          :walletIconURL="walletIconURL || undefined" 
+          @wallet-disconnect="disconnectFromWallet"
+          @change-account="handleChangeAccount"
         />
         
       </div>
@@ -235,6 +237,13 @@ export default defineComponent({
     }
 
     //
+    // handleChangeAccount
+    //
+    const handleChangeAccount = (chosenAccountId: string) => {
+      walletManager.changeAccount(chosenAccountId)
+    }
+
+    //
     // disconnectFromWallet
     //
     const disconnectFromWallet = () => {
@@ -267,12 +276,14 @@ export default defineComponent({
       progressMainMessage,
       showProgressSpinner,
       progressDialogTitle,
+      handleChangeAccount,
       progressExtraMessage,
       disconnectFromWallet,
       progressExtraTransactionId,
       name: routeManager.currentRoute,
       accountId: walletManager.accountId,
       connected: walletManager.connected,
+      accountIds: walletManager.accountIds,
       isNodeRoute: routeManager.isNodeRoute,
       isTokenRoute: routeManager.isTokenRoute,
       isTopicRoute: routeManager.isTopicRoute,
