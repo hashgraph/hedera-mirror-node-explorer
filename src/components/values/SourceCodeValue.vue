@@ -22,18 +22,19 @@
 <!--                                                     TEMPLATE                                                    -->
 <!-- --------------------------------------------------------------------------------------------------------------- -->
 
+<!--suppress HtmlWrongAttributeValue -->
 <template>
 
-  <textarea  v-if="sources.length > 0"
-             v-model="sourceContent"
-             wrap = "off"
-             readonly
-             :rows="rows"
-             style="width:100%; font-family: novamonoregular,monospace"></textarea>
+  <textarea v-if="sources.length > 0"
+            v-model="sourceContent"
+            :rows="rows"
+            readonly
+            style="width:100%; font-family: novamonoregular,monospace"
+            wrap="off"></textarea>
 
-  <span v-else-if="initialLoading"/>
+    <span v-else-if="initialLoading"/>
 
-  <span v-else class="has-text-grey">None</span>
+    <span v-else class="has-text-grey">None</span>
 
 </template>
 
@@ -47,34 +48,34 @@ import {computed, defineComponent, inject, ref} from 'vue';
 import {initialLoadingKey} from "@/AppKeys";
 
 export default defineComponent({
-  name: 'SourceCodeValue',
+    name: 'SourceCodeValue',
 
-  props: {
-    sources: {
-        type: Array<String>,
-        default: []
-    } ,
-    rows: {
-        type: Number,
-        default: 20
-    }
-  },
+    props: {
+        sources: {
+            type: Array<String>,
+            default: []
+        },
+        rows: {
+            type: Number,
+            default: 20
+        }
+    },
 
-  setup(props) {
-      const FILE_SEPARATOR = "\n\n==========================================================================================================================================================================================\n\n"
-    const initialLoading = inject(initialLoadingKey, ref(false))
-    const sourceContent = computed(() => {
-        let result = ""
-        props.sources.forEach((s) => {
-            result = result + s + FILE_SEPARATOR
+    setup(props) {
+        const FILE_SEPARATOR = "\n\n==========================================================================================================================================================================================\n\n"
+        const initialLoading = inject(initialLoadingKey, ref(false))
+        const sourceContent = computed(() => {
+            let result = ""
+            props.sources.forEach((s) => {
+                result = result + s + FILE_SEPARATOR
+            })
+            return result
         })
-        return result
-    })
-    return {
-        initialLoading,
-        sourceContent
+        return {
+            initialLoading,
+            sourceContent
+        }
     }
-  }
 });
 
 </script>
