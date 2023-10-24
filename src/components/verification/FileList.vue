@@ -125,9 +125,10 @@ export default defineComponent({
 
         const handleRemove = (index: number) => {
             const result = Array.from(props.fileList)
+            const globalIndex = perPage.value * (currentPage.value - 1) + index
             result.splice(index, 1)
             context.emit('update:fileList', result)
-            contractFileList.value[index].removed = true
+            contractFileList.value[globalIndex].removed = true
         }
 
         return {
