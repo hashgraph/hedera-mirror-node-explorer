@@ -134,6 +134,22 @@ export class ContractAnalyzer {
         }
         return result
     })
+
+    public readonly sourceFiles = computed(() => {
+        let result: Array<string> = []
+        if (this.sourcifyRecord.value !== null && this.sourcifyRecord.value?.response.files.length > 0) {
+            const files = this.sourcifyRecord.value?.response.files
+            files?.forEach((f) => {
+                const parts = f.name.split('.')
+                const suffix = parts[parts.length - 1].toLowerCase()
+                if (suffix === "sol") {
+                    result.push(f.content)
+                }
+            })
+        }
+        return result
+    })
+
     //
     // public readonly sourceFileNames: ComputedRef<string[]> = computed(() => {
     //     let result: string[]

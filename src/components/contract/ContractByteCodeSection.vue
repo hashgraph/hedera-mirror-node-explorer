@@ -80,19 +80,26 @@
           <StringValue :string-value="swarmHash ?? undefined"/>
         </template>
       </Property>
-      <Property id="code" :full-width="true">
-        <template v-slot:name>Runtime Bytecode</template>
-        <template v-slot:value>
-          <ByteCodeValue :byte-code="byteCode ?? undefined"/>
-        </template>
-      </Property>
-      <div class="is-flex is-justify-content-flex-end mt-3">
-        <button v-if="isVerificationEnabled && isVerificationPhase2" id="verify-button"
-                class="button is-white is-small has-text-right"
-                @click="showVerifyDialog = true">
-          VERIFY CONTRACT
-        </button>
-      </div>
+      <template v-if="isVerified && isVerificationPhase2">
+          <Property id="source-code" :full-width="true">
+              <template v-slot:name>Source Code</template>
+          </Property>
+          <SourceCodeValue :sources="sourceCode ?? undefined" :rows="25" class="mt-3"/>
+      </template>
+      <template v-else>
+          <Property id="code" :full-width="true">
+              <template v-slot:name>Runtime Bytecode</template>
+              <template v-slot:value>
+                  <ByteCodeValue :byte-code="byteCode ?? undefined"/>
+              </template>
+          </Property>
+          <div class="is-flex is-justify-content-flex-end mt-3">
+              <button v-if="isVerificationEnabled && isVerificationPhase2" id="verify-button" class="button is-white is-small has-text-right"
+                      @click="showVerifyDialog = true">
+                  VERIFY CONTRACT
+              </button>
+          </div>
+      </template>
     </template>
   </DashboardCard>
 
@@ -120,6 +127,7 @@ import {ContractAnalyzer} from "@/utils/analyzer/ContractAnalyzer";
 import {routeManager} from "@/router";
 import InfoTooltip from "@/components/InfoTooltip.vue";
 import ContractVerificationDialog from "@/components/verification/ContractVerificationDialog.vue";
+import SourceCodeValue from "@/components/values/SourceCodeValue.vue";
 
 const FULL_MATCH_TOOLTIP = `A Full Match indicates that the bytecode of the deployed contract is byte-by-byte the same as the compilation output of the given source code files with the settings defined in the metadata file. This means the contents of the source code files and the compilation settings are exactly the same as when the contract author compiled and deployed the contract.`
 const PARTIAL_MATCH_TOOLTIP = `A Partial Match indicates that the bytecode of the deployed contract is the same as the compilation output of the given source code files except for the metadata hash. This means the deployed contract and the given source code + metadata function in the same way but there are differences in source code comments, variable names, or other metadata fields such as source paths.`
@@ -127,7 +135,7 @@ const PARTIAL_MATCH_TOOLTIP = `A Partial Match indicates that the bytecode of th
 export default defineComponent({
   name: 'ContractByteCodeSection',
 
-  components: {ContractVerificationDialog, InfoTooltip, Property, StringValue, ByteCodeValue, DashboardCard},
+  components: {SourceCodeValue, ContractVerificationDialog, InfoTooltip, Property, StringValue, ByteCodeValue, DashboardCard},
 
   props: {
     contractAnalyzer: {
@@ -170,6 +178,7 @@ export default defineComponent({
       isSmallScreen,
       isMediumScreen,
       byteCode: props.contractAnalyzer.byteCodeAnalyzer.byteCode,
+      sourceCode: props.contractAnalyzer.sourceFiles,
       solcVersion: props.contractAnalyzer.byteCodeAnalyzer.solcVersion,
       ipfsHash: props.contractAnalyzer.byteCodeAnalyzer.ipfsHash,
       ipfsURL: props.contractAnalyzer.byteCodeAnalyzer.ipfsURL,
