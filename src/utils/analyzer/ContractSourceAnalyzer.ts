@@ -87,8 +87,9 @@ export class ContractSourceAnalyzer {
         let result: [string, SolcMetadata]|null = null
 
         if (this.contractRecord.value !== null) {
+            const sourceFileName = this.contractRecord.value.sourceFileName
             for (const [f, m] of this.metadataFiles.value.entries()) {
-                if (this.contractRecord.value.sourceFileName in m.sources) {
+                if (SolcUtils.fetchContractDescription(sourceFileName, m)) {
                     result = [f, m]
                     break
                 }
