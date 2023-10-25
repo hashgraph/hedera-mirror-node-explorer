@@ -18,12 +18,10 @@
  *
  */
 
-import {computed, ref, Ref, watch, WatchStopHandle} from 'vue';
+import {computed, ref, Ref, shallowRef, watch, WatchStopHandle} from 'vue';
 import {ByteCodeAnalyzer} from "@/utils/analyzer/ByteCodeAnalyzer";
-import {ContractRecord, SolcUtils} from "@/utils/solc/SolcUtils";
 import {SolcMetadata} from "@/utils/solc/SolcMetadata";
-import {SolcInput} from "@/utils/solc/SolcInput";
-import {SolcIndexCache} from "@/utils/cache/SolcIndexCache";
+import {ContractSourceAudit} from "@/utils/analyzer/ContractSourceAudit";
 
 export class ContractSourceAnalyzer {
 
@@ -31,8 +29,7 @@ export class ContractSourceAnalyzer {
     public readonly inputFiles: Ref<Map<string, string|SolcMetadata>>
 
     private readonly analyzingRef = ref(false)
-    private readonly contractRecordRef = ref<ContractRecord|null>(null)
-    private readonly longCompilerVersionRef = ref<string|null>(null)
+    private readonly auditRef = shallowRef<ContractSourceAudit|null>(null)
     private watchHandle: WatchStopHandle|null = null
 
     //
@@ -47,9 +44,9 @@ export class ContractSourceAnalyzer {
 
     public mount(): void {
         this.watchHandle = watch([
-            this.solcInput,
+            this.inputFiles,
             this.byteCodeAnalyzer.byteCode,
-            this.byteCodeAnalyzer.solcVersion], this.updateContractRecord)
+            this.byteCodeAnalyzer.solcVersion], this.updateAudit)
     }
 
     public unmount(): void {
@@ -57,113 +54,35 @@ export class ContractSourceAnalyzer {
             this.watchHandle()
             this.watchHandle = null
         }
-        this.contractRecordRef.value = null
+        this.auditRef.value = null
     }
 
     //
     // Public (computed)
     //
 
-    public readonly analyzing = computed(
-        () => this.analyzingRef.value)
+    public readonly analyzing = computed( () => this.analyzingRef.value)
 
-    public readonly longCompilerVersion = computed(
-        () => this.longCompilerVersionRef.value)
-
-    public readonly contractRecord = computed(
-        () =>  this.contractRecordRef.value)
-
-    public readonly sourceFiles = computed(() => {
-        const result = new Map<string, string>()
-        for (const [f, c] of this.inputFiles.value) {
-            if (typeof c == "string") {
-                result.set(f, c)
-            }
-        }
-        return result
-    })
-
-    public readonly resolvedMetadataFile = computed(() => {
-        let result: [string, SolcMetadata]|null = null
-
-        if (this.contractRecord.value !== null) {
-            const sourceFileName = this.contractRecord.value.sourceFileName
-            for (const [f, m] of this.metadataFiles.value.entries()) {
-                if (SolcUtils.fetchContractDescription(sourceFileName, m)) {
-                    result = [f, m]
-                    break
-                }
-            }
-        }
-
-        return result
-    })
-
-    public readonly solcInput = computed(() => {
-        let result: SolcInput|null
-        if (this.inputFiles.value.size >= 1) {
-            result = {
-                language: "Solidity",
-                sources: {},
-                settings: {
-                    outputSelection: {
-                        '*': {
-                            '*': [ "metadata", "evm.deployedBytecode.object" ],
-                        },
-                    },
-                },
-            }
-            for (const [path, content] of this.inputFiles.value) {
-                if (typeof content == "string") {
-                    result.sources[path] = { content: content }
-                }
-            }
-        } else {
-            result = null
-        }
-        return result
-    })
-
+    public readonly audit = computed(() => this.auditRef.value)
 
     //
     // Private
     //
 
-    private readonly updateContractRecord = async () => {
-        const solcInput = this.solcInput.value
+    private readonly updateAudit = async () => {
+        const solcVersion = this.byteCodeAnalyzer.solcVersion.value
         const byteCode = this.byteCodeAnalyzer.byteCode.value
-        const shortCompilerVersion = this.byteCodeAnalyzer.solcVersion.value
-        if (solcInput !== null && shortCompilerVersion !== null && byteCode !== null) {
+        if (solcVersion !== null && byteCode !== null) {
             this.analyzingRef.value = true
             try {
-                const longCompilerVersion = await SolcIndexCache.instance.fetchLongVersion(shortCompilerVersion)
-                if (longCompilerVersion !== null) {
-                    const sourcifyCompilerVersion = "v" + longCompilerVersion
-                    const solcOutput = await SolcUtils.runAsWorker(sourcifyCompilerVersion, solcInput)
-                    this.contractRecordRef.value = SolcUtils.findMatchingContract(byteCode, solcOutput)
-                    this.longCompilerVersionRef.value = longCompilerVersion
-                } else {
-                    this.contractRecordRef.value = null
-                    this.longCompilerVersionRef.value = null
-                }
+                this.auditRef.value = await ContractSourceAudit.build(this.inputFiles.value, solcVersion, byteCode)
             } finally {
                 this.analyzingRef.value = false
             }
         } else {
-            this.contractRecordRef.value = null
-            this.longCompilerVersionRef.value = null
+            this.auditRef.value = null
         }
     }
 
-
-    private readonly metadataFiles = computed<Map<string, SolcMetadata>>(() => {
-        let result = new Map<string, SolcMetadata>()
-        for (const [fileName, content] of this.inputFiles.value) {
-            if (typeof content == "object") {
-                result.set(fileName, content)
-            }
-        }
-        return result
-    })
-
 }
+

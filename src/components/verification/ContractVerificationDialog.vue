@@ -92,6 +92,7 @@ import {ByteCodeAnalyzer} from "@/utils/analyzer/ByteCodeAnalyzer";
 import {SourcifyUtils, SourcifyVerifyResponse} from "@/utils/sourcify/SourcifyUtils";
 import {ContractSourceAnalyzer} from "@/utils/analyzer/ContractSourceAnalyzer";
 import ProgressDialog, {Mode} from "@/components/staking/ProgressDialog.vue";
+import {ContractAuditItemStatus, ContractAuditStatus} from "@/utils/analyzer/ContractSourceAudit";
 
 export default defineComponent({
     name: "ContractVerificationDialog",
@@ -123,7 +124,8 @@ export default defineComponent({
         }
 
         const verifyButtonEnabled = computed(() => {
-            return sourceAnalyzer.contractRecord.value !== null
+            const auditStatus = sourceAnalyzer.audit.value?.status
+            return auditStatus == ContractAuditStatus.Resolved || auditStatus == ContractAuditStatus.Uncertain
         })
 
         //
@@ -146,7 +148,31 @@ export default defineComponent({
         }
 
         const fileList = computed(() => {
-            return Array.from(fileImporter.files.value.keys())
+            const result: string[] = []
+            for (const i of sourceAnalyzer.audit.value?.items ?? []) {
+                let tag: string
+                switch(i.status) {
+                    case ContractAuditItemStatus.OK:
+                        tag = "ok"
+                        break
+                    case ContractAuditItemStatus.Unused:
+                        tag = "unused"
+                        break
+                    case ContractAuditItemStatus.Dirty:
+                        tag = "dirty"
+                        break
+                    case ContractAuditItemStatus.Unknown:
+                        tag = "unknown"
+                        break
+                }
+                if (i.target) {
+                    tag = " (" + tag + ")  <== C'EST LUI"
+                } else {
+                    tag = " (" + tag + ")"
+                }
+                result.push(i.path + tag)
+            }
+            return result
         })
 
         //
@@ -162,30 +188,25 @@ export default defineComponent({
         //
 
         const handleVerify = async () => {
+            const audit = sourceAnalyzer.audit.value!
+            const contractRecord = audit.contractRecord!
+
             showProgressDialog.value = true
             showProgressSpinner.value = true
             progressDialogMode.value = Mode.Busy
-            progressMainMessage.value = "Verifying " + sourceAnalyzer.contractRecord.value!.contractName + " contract…"
+            progressMainMessage.value = "Verifying " + contractRecord.contractName + " contract…"
             progressExtraMessage.value = null
             try {
                 let response: SourcifyVerifyResponse | null
-                const resolvedMetadataFile = sourceAnalyzer.resolvedMetadataFile.value
-                if (resolvedMetadataFile !== null) {
+                if (audit.status == ContractAuditStatus.Resolved) {
                     // We verify using /verify REST call
-                    const metadata = resolvedMetadataFile[1]
-                    const sourceFiles = sourceAnalyzer.sourceFiles.value
+                    const metadata = audit.resolvedMetadata![1]
+                    const sourceFiles = audit.makeReducedSourceFiles()
                     response = await SourcifyUtils.verify(props.contractId, metadata, sourceFiles)
                 } else {
-                    const contractRecord = sourceAnalyzer.contractRecord.value
-                    const compilerVersion = sourceAnalyzer.longCompilerVersion.value
-                    const solcInput = sourceAnalyzer.solcInput.value
-                    if (contractRecord !== null && compilerVersion !== null && solcInput !== null) {
-                        // We verify using /verify/solc-input REST call
-                        response = await SourcifyUtils.verifyWithSolcInput(props.contractId, contractRecord.contractName, compilerVersion, solcInput)
-                    } else {
-                        // Bug
-                        response = null
-                    }
+                    const compilerVersion = "v" + audit.longCompilerVersion!
+                    const solcInput = audit.makeReducedSolcInput()
+                    response = await SourcifyUtils.verifyWithSolcInput(props.contractId, contractRecord.contractName, compilerVersion, solcInput)
                 }
                 showProgressSpinner.value = false
                 if (response !== null) {
@@ -230,13 +251,32 @@ export default defineComponent({
                 result = "Importing files…"
             } else if (sourceAnalyzer.analyzing.value) {
                 result = "Analyzing source files…"
-            } else if (sourceAnalyzer.contractRecord.value !== null) {
-                const contractName = sourceAnalyzer.contractRecord.value.contractName
-                const resolveMetatadataFile = sourceAnalyzer.resolvedMetadataFile.value
-                if (resolveMetatadataFile !== null) {
-                    result = "Contract \"" + contractName + "\" is ready to be verified (with " + resolveMetatadataFile[0] + ")"
-                } else {
-                    result = "Contract \"" + contractName + "\" is ready to be verified (without metadata file)"
+            } else if (sourceAnalyzer.audit.value !== null) {
+                switch(sourceAnalyzer.audit.value.status) {
+                    case ContractAuditStatus.NoSourceFile:
+                        result = "Drop the Solidity source files (and metadata if available) in the area below"
+                        break
+                    case ContractAuditStatus.Failure:
+                        result = "Compilation failed. Check your source files."
+                        break
+                    case ContractAuditStatus.Mismatch:
+                        result = "These source files do not match contract byte code"
+                        break
+                    case ContractAuditStatus.UnknownCompilerVersion:
+                        const compilerVersion = props.byteCodeAnalyzer.solcVersion.value ?? "?"
+                        result = "Cannot find compiler for version " + compilerVersion
+                        break
+                    case ContractAuditStatus.Resolved: {
+                        const contractName = sourceAnalyzer.audit.value.contractRecord!.contractName
+                        const metadataFile = sourceAnalyzer.audit.value.resolvedMetadata![0]
+                        result = "Contract \"" + contractName + "\" is ready to be verified (with " + metadataFile + ")"
+                        break
+                    }
+                    case ContractAuditStatus.Uncertain: {
+                        const contractName = sourceAnalyzer.audit.value.contractRecord!.contractName
+                        result = "Contract \"" + contractName + "\" is ready to be verified (without metadata file)"
+                        break
+                    }
                 }
             } else if (fileImporter.files.value.size >= 1) {
                 result = "These source files do not match contract byte code"
