@@ -84,7 +84,7 @@
           <Property id="source-code" :full-width="true">
               <template v-slot:name>Source Code</template>
           </Property>
-          <SourceCodeValue :sources="sourceCode ?? undefined" :rows="25" class="mt-3"/>
+          <SourceCodeValue :sources="sourceCode ?? undefined" :rows="20" class="mt-3"/>
       </template>
       <template v-else>
           <Property id="code" :full-width="true">

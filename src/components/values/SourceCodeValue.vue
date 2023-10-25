@@ -25,12 +25,13 @@
 <!--suppress HtmlWrongAttributeValue -->
 <template>
 
-  <textarea v-if="sources.length > 0"
-            v-model="sourceContent"
-            :rows="rows"
-            readonly
-            style="width:100%; font-family: novamonoregular,monospace"
-            wrap="off"></textarea>
+    <textarea v-if="sources.length > 0"
+              v-model="sourceContent"
+              :rows="rows"
+              readonly
+              style="width:100%; font-family: novamonoregular,monospace"
+              wrap="off">
+    </textarea>
 
     <span v-else-if="initialLoading"/>
 
@@ -66,9 +67,12 @@ export default defineComponent({
         const initialLoading = inject(initialLoadingKey, ref(false))
         const sourceContent = computed(() => {
             let result = ""
-            props.sources.forEach((s) => {
-                result = result + s + FILE_SEPARATOR
-            })
+            for (let i = 0; i < props.sources.length; i++) {
+                result += props.sources[i]
+                if (i < props.sources.length - 1) {
+                    result += FILE_SEPARATOR
+                }
+            }
             return result
         })
         return {
