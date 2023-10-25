@@ -153,12 +153,22 @@ async function asyncReadText(e: FileSystemFileEntry): Promise<string> {
 }
 
 async function asyncReadEntries(e: FileSystemDirectoryEntry): Promise<FileSystemEntry[]> {
+    let result: FileSystemEntry[] = [];
     return new Promise<FileSystemEntry[]>((resolve, reject) => {
-        e.createReader().readEntries((files: FileSystemEntry[]) => {
-            resolve(files)
-        }, (reason: unknown) => {
-            reject(reason)
-        })
+        const reader = e.createReader()
+        const readEntries = () => {
+            reader.readEntries((files: FileSystemEntry[]) => {
+                if (files.length >= 1) {
+                    result = result.concat(files)
+                    readEntries()
+                } else {
+                    resolve(result)
+                }
+            }, (reason: unknown) => {
+                reject(reason)
+            })
+        }
+        readEntries()
     })
 }
 
