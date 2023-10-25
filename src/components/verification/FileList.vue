@@ -47,12 +47,16 @@
 
             <o-table-column v-slot="props" field="type_and_name">
                 <div class="is-flex is-align-items-center">
-                    <img v-if="isMetadata(props.row)" alt="JSON file" class="image"
-                         src="../../assets/json-file.svg" style="width: 20px; height: 20px">
+                    <img v-if="isMetadata(props.row) && isUnused(props.row)" alt="JSON file" class="image"
+                         src="../../assets/json-file-grey.svg" style="width: 20px; height: 20px;">
+                    <img v-else-if="isMetadata(props.row)" alt="JSON file" class="image"
+                         src="../../assets/json-file.svg" style="width: 20px; height: 20px;">
+                    <img v-else-if="isUnused(props.row)" alt="Solidity file" class="image"
+                         src="../../assets/solidity-icon-grey.svg" style="width: 20px; height: 20px;">
                     <img v-else alt="Solidity file" class="image"
-                         src="../../assets/solidity-icon.svg" style="width: 20px; height: 20px">
+                         src="../../assets/solidity-icon.svg" style="width: 20px; height: 20px;">
                     <p :class="{
-                        'has-text-grey':props.row.status === ContractAuditItemStatus.Unused,
+                        'has-text-grey':isUnused(props.row),
                         'has-text-weight-bold':props.row.target
                     }" class="ml-2">
                         {{ props.row.path }}
@@ -108,6 +112,10 @@ export default defineComponent({
             return suffix.toLowerCase() === 'json'
         }
 
+        const isUnused = (auditItem: ContractAuditItem) => {
+            return auditItem.status === ContractAuditItemStatus.Unused
+        }
+
         const handleClearAllFiles = () => {
             context.emit("clearAllFiles")
         }
@@ -121,6 +129,7 @@ export default defineComponent({
             perPage,
             tableTitle,
             isMetadata,
+            isUnused,
             handleClearAllFiles
         }
     }
