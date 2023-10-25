@@ -25,19 +25,19 @@
 <!--suppress CssUnusedSymbol -->
 
 <template>
-    <div v-if="fileList" id="file-table">
+    <div v-if="auditItems.length> 0" id="file-table">
         <div class="is-flex is-justify-content-space-between">
             <span class="h-is-primary-subtitle">
                 {{ tableTitle }}
             </span>
-            <span class="has-text-info" @click="handleClearAllFiles" style="cursor: pointer">
+            <span class="has-text-info" style="cursor: pointer" @click="handleClearAllFiles">
                 Clear all files
             </span>
         </div>
 
         <o-table
             :current-page="currentPage"
-            :data="fileList"
+            :data="auditItems"
             :paginated="isPaginated"
             :per-page="perPage"
             aria-current-label="Current page"
@@ -51,8 +51,11 @@
                          src="../../assets/json-file.svg" style="width: 20px; height: 20px">
                     <img v-else alt="Solidity file" class="image"
                          src="../../assets/solidity-icon.svg" style="width: 20px; height: 20px">
-                    <p class="ml-2">
-                        {{ props.row }}
+                    <p :class="{
+                        'has-text-grey':props.row.status === ContractAuditItemStatus.Unused,
+                        'has-text-weight-bold':props.row.target
+                    }" class="ml-2">
+                        {{ props.row.path }}
                     </p>
                 </div>
             </o-table-column>
@@ -68,15 +71,21 @@
 <script lang="ts">
 
 import {computed, defineComponent, inject, PropType, ref} from "vue";
+import {ContractAuditItem, ContractAuditItemStatus} from "@/utils/analyzer/ContractSourceAudit";
 
 export default defineComponent({
     name: 'FileList',
+    computed: {
+        ContractAuditItemStatus() {
+            return ContractAuditItemStatus
+        }
+    },
 
     components: {},
 
     props: {
-        fileList: {
-            type: Array as PropType<string[]>,
+        auditItems: {
+            type: Array as PropType<ContractAuditItem[]>,
             default: []
         }
     },
@@ -90,11 +99,11 @@ export default defineComponent({
 
         const currentPage = ref(1);
         const perPage = ref(10);
-        const isPaginated = computed(() => props.fileList.length > perPage.value)
-        const tableTitle = computed(() => `Added Files (${props.fileList.length})`)
+        const isPaginated = computed(() => props.auditItems.length > perPage.value)
+        const tableTitle = computed(() => `Added Files (${props.auditItems.length})`)
 
-        const isMetadata = (fileName: string) => {
-            const parts = fileName.split('.')
+        const isMetadata = (auditItem: ContractAuditItem) => {
+            const parts = auditItem.path.split('.')
             const suffix = parts[parts.length - 1].toLowerCase()
             return suffix.toLowerCase() === 'json'
         }

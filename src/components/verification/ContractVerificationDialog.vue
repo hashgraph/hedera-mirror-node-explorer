@@ -46,8 +46,8 @@
                         {{ status }}
                     </div>
                     <div class="mb-4 p-3 h-dotted-area" @drop="handleDrop" @dragover="handleDragOver">
-                        <template v-if="fileList.length >= 1">
-                            <FileList :file-list="fileList" @clear-all-files="handleClearAllFiles"/>
+                        <template v-if="auditItems.length >= 1">
+                            <FileList :audit-items="auditItems" @clear-all-files="handleClearAllFiles"/>
                         </template>
                         <template v-else>
                             <div class="has-text-centered mb-4 has-text-grey">No files</div>
@@ -92,7 +92,7 @@ import {ByteCodeAnalyzer} from "@/utils/analyzer/ByteCodeAnalyzer";
 import {SourcifyUtils, SourcifyVerifyResponse} from "@/utils/sourcify/SourcifyUtils";
 import {ContractSourceAnalyzer} from "@/utils/analyzer/ContractSourceAnalyzer";
 import ProgressDialog, {Mode} from "@/components/staking/ProgressDialog.vue";
-import {ContractAuditItemStatus, ContractAuditStatus} from "@/utils/analyzer/ContractSourceAudit";
+import {ContractAuditStatus} from "@/utils/analyzer/ContractSourceAudit";
 
 export default defineComponent({
     name: "ContractVerificationDialog",
@@ -147,32 +147,8 @@ export default defineComponent({
             e.preventDefault()
         }
 
-        const fileList = computed(() => {
-            const result: string[] = []
-            for (const i of sourceAnalyzer.audit.value?.items ?? []) {
-                let tag: string
-                switch(i.status) {
-                    case ContractAuditItemStatus.OK:
-                        tag = "ok"
-                        break
-                    case ContractAuditItemStatus.Unused:
-                        tag = "unused"
-                        break
-                    case ContractAuditItemStatus.Dirty:
-                        tag = "dirty"
-                        break
-                    case ContractAuditItemStatus.Unknown:
-                        tag = "unknown"
-                        break
-                }
-                if (i.target) {
-                    tag = " (" + tag + ")  <== C'EST LUI"
-                } else {
-                    tag = " (" + tag + ")"
-                }
-                result.push(i.path + tag)
-            }
-            return result
+        const auditItems = computed(() => {
+            return sourceAnalyzer.audit.value?.items ?? []
         })
 
         //
@@ -312,7 +288,7 @@ export default defineComponent({
             handleVerify,
             handleDragOver,
             handleDrop,
-            fileList,
+            auditItems,
             verifyButtonEnabled,
             status,
             handleClearAllFiles,
