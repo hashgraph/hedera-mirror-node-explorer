@@ -25,19 +25,24 @@
 <!--suppress CssUnusedSymbol -->
 
 <template>
-    <div v-if="sortedAuditItems.length> 0" id="file-table">
+    <div v-if="displayedAuditItems.length> 0" id="file-table">
         <div class="is-flex is-justify-content-space-between">
             <span class="h-is-primary-subtitle">
                 {{ tableTitle }}
             </span>
-            <span class="has-text-info" style="cursor: pointer" @click="handleClearAllFiles">
-                Clear all files
+            <div class="is-flex is-justify-content-flex-end">
+                <span class="has-text-info" style="cursor: pointer" @click="handleToggleFiltering">
+                {{ isListFiltered ? 'Show all' : 'Hide unused' }}
             </span>
+                <span class="has-text-info ml-5" style="cursor: pointer" @click="handleClearAllFiles">
+                Clear all
+            </span>
+            </div>
         </div>
 
         <o-table
             :current-page="currentPage"
-            :data="sortedAuditItems"
+            :data="displayedAuditItems"
             :paginated="isPaginated"
             :per-page="perPage"
             aria-current-label="Current page"
@@ -79,11 +84,6 @@ import {ContractAuditItem, ContractAuditItemStatus} from "@/utils/analyzer/Contr
 
 export default defineComponent({
     name: 'FileList',
-    computed: {
-        ContractAuditItemStatus() {
-            return ContractAuditItemStatus
-        }
-    },
 
     components: {},
 
@@ -103,8 +103,9 @@ export default defineComponent({
 
         const currentPage = ref(1);
         const perPage = ref(10);
+        const isListFiltered = ref(false)
         const isPaginated = computed(() => props.auditItems.length > perPage.value)
-        const tableTitle = computed(() => `Added Files (${props.auditItems.length})`)
+        const tableTitle = computed(() => `Added Files (${displayedAuditItems.value.length})`)
 
         const sortedAuditItems = computed(() => {
             let result = [...props.auditItems]
@@ -128,6 +129,20 @@ export default defineComponent({
             return result
         })
 
+        const filteredAuditItems = computed(() => {
+            let result: Array<ContractAuditItem> = []
+            for (let i = 0; i < sortedAuditItems.value.length; i++) {
+                if (sortedAuditItems.value[i].status === ContractAuditItemStatus.OK) {
+                    result.push(sortedAuditItems.value[i])
+                }
+            }
+            return result
+        })
+
+        const displayedAuditItems = computed(() => {
+            return isListFiltered.value ? filteredAuditItems.value : sortedAuditItems.value
+        })
+
         const isMetadata = (auditItem: ContractAuditItem) => {
             const parts = auditItem.path.split('.')
             const suffix = parts[parts.length - 1].toLowerCase()
@@ -142,6 +157,10 @@ export default defineComponent({
             context.emit("clearAllFiles")
         }
 
+        const handleToggleFiltering = () => {
+            isListFiltered.value = !isListFiltered.value
+        }
+
         return {
             isTouchDevice,
             isSmallScreen,
@@ -149,11 +168,15 @@ export default defineComponent({
             isPaginated,
             currentPage,
             perPage,
+            isListFiltered,
             tableTitle,
             sortedAuditItems,
+            filteredAuditItems,
+            displayedAuditItems,
             isMetadata,
             isUnused,
-            handleClearAllFiles
+            handleClearAllFiles,
+            handleToggleFiltering
         }
     }
 });
