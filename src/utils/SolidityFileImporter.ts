@@ -128,7 +128,10 @@ export class SolidityFileImporter {
             } else if (e.isDirectory) {
                 const d = e as FileSystemDirectoryEntry
                 for (const c of await asyncReadEntries(d)) {
-                    await this.importItem(c, output, topFolder)
+                    const skip = c.name.startsWith(".") || c.name == "node_modules"
+                    if (!skip) {
+                        await this.importItem(c, output, topFolder)
+                    }
                 }
             } else {
                 console.log("SolidityFileImporter ignored unexpected FileSystemEntry subclass: " + typeof e)
