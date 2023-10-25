@@ -89,10 +89,8 @@
       <template v-else>
           <Property id="code" :full-width="true">
               <template v-slot:name>Runtime Bytecode</template>
-              <template v-slot:value>
-                  <ByteCodeValue :byte-code="byteCode ?? undefined"/>
-              </template>
           </Property>
+          <ByteCodeValue :byte-code="byteCode ?? undefined" class="mt-3"/>
           <div class="is-flex is-justify-content-flex-end mt-3">
               <button v-if="isVerificationEnabled && isVerificationPhase2" id="verify-button" class="button is-white is-small has-text-right"
                       @click="showVerifyDialog = true">
