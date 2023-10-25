@@ -31,7 +31,7 @@
                 <div class="h-is-primary-title mb-3">
                     Verify contract {{ contractId }}
                 </div>
-                <div class="h-is-text-size-3">
+                <div>
                     Verify the contract by recompiling all the Solidity source files and checking that the output
                     is the same as the bytecode of the deployed contract
                 </div>
@@ -42,12 +42,12 @@
                     <div class="h-is-primary-subtitle mb-3">
                         Add files
                     </div>
-                    <div class="h-is-text-size-3 mb-4">
+                    <div class="mb-4">
                         {{ status }}
                     </div>
                     <div class="mb-4 p-3 h-dotted-area" @drop="handleDrop" @dragover="handleDragOver">
                         <template v-if="fileList.length >= 1">
-                            <FileList :file-list="fileList"/>
+                            <FileList :file-list="fileList" @clear-all-files="handleClearAllFiles"/>
                         </template>
                         <template v-else>
                             <div class="has-text-centered mb-4 has-text-grey">No files</div>
@@ -246,6 +246,10 @@ export default defineComponent({
             return result
         })
 
+        const handleClearAllFiles = () => {
+            fileImporter.reset()
+        }
+
         //
         // Progress dialog
         //
@@ -271,6 +275,7 @@ export default defineComponent({
             fileList,
             verifyButtonEnabled,
             status,
+            handleClearAllFiles,
             showProgressDialog,
             progressDialogMode,
             progressMainMessage,

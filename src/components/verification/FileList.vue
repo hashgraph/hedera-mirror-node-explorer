@@ -26,6 +26,15 @@
 
 <template>
     <div v-if="fileList" id="file-table">
+        <div class="is-flex is-justify-content-space-between">
+            <span class="h-is-primary-subtitle">
+                {{ tableTitle }}
+            </span>
+            <span class="has-text-info" @click="handleClearAllFiles" style="cursor: pointer">
+                Clear all files
+            </span>
+        </div>
+
         <o-table
             :current-page="currentPage"
             :data="fileList"
@@ -36,7 +45,7 @@
             aria-page-label="Page"
             aria-previous-label="Previous page">
 
-            <o-table-column v-slot="props" :label="tableTitle" field="type_and_name">
+            <o-table-column v-slot="props" field="type_and_name">
                 <div class="is-flex is-align-items-center">
                     <img v-if="isMetadata(props.row)" alt="JSON file" class="image"
                          src="../../assets/json-file.svg" style="width: 20px; height: 20px">
@@ -72,7 +81,9 @@ export default defineComponent({
         }
     },
 
-    setup: function (props) {
+    emits: ['clearAllFiles'],
+
+    setup: function (props, context) {
         const isTouchDevice = inject('isTouchDevice', false)
         const isSmallScreen = inject('isSmallScreen', true)
         const isMediumScreen = inject('isMediumScreen', true)
@@ -88,6 +99,10 @@ export default defineComponent({
             return suffix.toLowerCase() === 'json'
         }
 
+        const handleClearAllFiles = () => {
+            context.emit("clearAllFiles")
+        }
+
         return {
             isTouchDevice,
             isSmallScreen,
@@ -96,7 +111,8 @@ export default defineComponent({
             currentPage,
             perPage,
             tableTitle,
-            isMetadata
+            isMetadata,
+            handleClearAllFiles
         }
     }
 });
@@ -108,6 +124,14 @@ export default defineComponent({
 <!-- --------------------------------------------------------------------------------------------------------------- -->
 
 <style>
+#file-table table.o-table {
+    margin: 0;
+}
+
+#file-table table.o-table > tbody > tr {
+    cursor: default;
+}
+
 #file-table table.o-table > thead > tr > th {
     font-size: 15px;
     line-height: 18px;
