@@ -198,6 +198,7 @@ export class SolcUtils {
                     }
                 }
             }
+            if (result != null) break
         }
 
         return result
