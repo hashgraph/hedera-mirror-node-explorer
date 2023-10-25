@@ -25,7 +25,7 @@
 <!--suppress CssUnusedSymbol -->
 
 <template>
-    <div v-if="auditItems.length> 0" id="file-table">
+    <div v-if="sortedAuditItems.length> 0" id="file-table">
         <div class="is-flex is-justify-content-space-between">
             <span class="h-is-primary-subtitle">
                 {{ tableTitle }}
@@ -37,7 +37,7 @@
 
         <o-table
             :current-page="currentPage"
-            :data="auditItems"
+            :data="sortedAuditItems"
             :paginated="isPaginated"
             :per-page="perPage"
             aria-current-label="Current page"
@@ -106,6 +106,28 @@ export default defineComponent({
         const isPaginated = computed(() => props.auditItems.length > perPage.value)
         const tableTitle = computed(() => `Added Files (${props.auditItems.length})`)
 
+        const sortedAuditItems = computed(() => {
+            let result = [...props.auditItems]
+            result.sort((a, b) => {
+                if (a.target && b.target) {
+                    return 0
+                } else if (a.target) {
+                    return -1
+                } else if (b.target) {
+                    return 1
+                } else if (a.status === b.status) {
+                    return 0
+                } else if (a.status === ContractAuditItemStatus.OK) {
+                    return -1
+                } else if (b.status === ContractAuditItemStatus.OK) {
+                    return 1
+                } else {
+                    return 0
+                }
+            })
+            return result
+        })
+
         const isMetadata = (auditItem: ContractAuditItem) => {
             const parts = auditItem.path.split('.')
             const suffix = parts[parts.length - 1].toLowerCase()
@@ -128,6 +150,7 @@ export default defineComponent({
             currentPage,
             perPage,
             tableTitle,
+            sortedAuditItems,
             isMetadata,
             isUnused,
             handleClearAllFiles
