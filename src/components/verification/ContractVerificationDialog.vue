@@ -28,18 +28,24 @@
         <div class="modal-background"/>
         <div class="modal-content" style="width: 768px; border-radius: 16px">
             <div class="box">
-                <div class="is-flex is-justify-content-space-between is-align-items-self-end">
-                    <span class="h-is-primary-title">Verify Contract {{ contractId }}</span>
-                    <a @click="handleCancel">
-                        <img alt="" src="@/assets/close-icon.png" style="max-height: 20px;">
-                    </a>
+                <div class="h-is-primary-title mb-3">
+                    Verify contract {{ contractId }}
+                </div>
+                <div class="h-is-text-size-3">
+                    Verify the contract by recompiling all the Solidity source files and checking that the output
+                    is the same as the bytecode of the deployed contract
                 </div>
 
                 <hr class="h-card-separator"/>
 
                 <div>
-                    <div class="mb-4">{{ status }}</div>
-                    <div class="mb-4 p-3" style="border: dashed 1px grey" @drop="handleDrop" @dragover="handleDragOver">
+                    <div class="h-is-primary-subtitle mb-3">
+                        Add files
+                    </div>
+                    <div class="h-is-text-size-3 mb-4">
+                        {{ status }}
+                    </div>
+                    <div class="mb-4 p-3 h-dotted-area" @drop="handleDrop" @dragover="handleDragOver">
                         <template v-if="fileList.length >= 1">
                             <FileList :file-list="fileList"/>
                         </template>
@@ -235,7 +241,7 @@ export default defineComponent({
             } else if (fileImporter.files.value.size >= 1) {
                 result = "These source files do not match contract byte code"
             } else {
-                result = "Drop Solidity files in the area below"
+                result = "Drop the Solidity source files (and metadata if available) in the area below"
             }
             return result
         })

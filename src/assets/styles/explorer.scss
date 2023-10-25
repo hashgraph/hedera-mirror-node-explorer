@@ -391,6 +391,10 @@ hr.dotted {
     margin: 0;
     padding: 0;
 }
+/* Dashed DnD area */
+.h-dotted-area {
+  border: dashed 1px $h-highlight-color;
+}
 
 //
 // MODALS
