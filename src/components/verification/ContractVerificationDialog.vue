@@ -209,6 +209,9 @@ export default defineComponent({
                         const compilerVersion = props.byteCodeAnalyzer.solcVersion.value ?? "?"
                         result = "Cannot find compiler for version " + compilerVersion
                         break
+                    case ContractAuditStatus.CompilationErrors:
+                        result = "Compiler reports some errors. Check your source files."
+                        break
                     case ContractAuditStatus.Resolved: {
                         const contractName = sourceAnalyzer.audit.value.contractRecord!.contractName
                         const metadataFile = sourceAnalyzer.audit.value.resolvedMetadata![0]
@@ -221,8 +224,6 @@ export default defineComponent({
                         break
                     }
                 }
-            } else if (fileImporter.files.value.size >= 1) {
-                result = "These source files do not match contract byte code"
             } else {
                 result = "Drop the Solidity source files (and metadata if available) in the area below"
             }
@@ -269,7 +270,7 @@ export default defineComponent({
                         progressMainMessage.value = "Verification succeeded"
                         const status = SourcifyUtils.fetchVerifyStatus(response)
                         if (status == "perfect") {
-                            progressExtraMessage.value = "Perfect Match"
+                            progressExtraMessage.value = "Full Match"
                         } else if (status == "partial") {
                             progressExtraMessage.value = "Partial Match"
                         } else {
