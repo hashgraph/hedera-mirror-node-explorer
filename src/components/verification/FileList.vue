@@ -31,13 +31,14 @@
                 {{ tableTitle }}
             </span>
             <div class="is-flex is-justify-content-flex-end">
-                <span v-if="nbUnusedAuditItems > 0" class="has-text-info" style="cursor: pointer" @click="handleToggleFiltering">
+                <span v-if="nbUnusedAuditItems > 0" class="has-text-info" style="cursor: pointer"
+                      @click="handleToggleFiltering">
                     {{ isListFiltered ? 'Show unused' : 'Hide unused' }}
                     {{ ' (' + nbUnusedAuditItems + ')' }}
                 </span>
                 <span class="has-text-info ml-5" style="cursor: pointer" @click="handleClearAllFiles">
-                Clear all
-            </span>
+                    Clear all
+                </span>
             </div>
         </div>
 
@@ -54,7 +55,7 @@
             <o-table-column v-slot="props" field="type_and_name">
                 <div class="is-flex is-align-items-center">
                     <span  v-if="isMetadata(props.row)" class="icon" style="font-size: 15px"
-                           :class="{'has-text-grey':  isUnused(props.row)}"
+                           :class="{'has-text-grey': isUnused(props.row)}"
                     >
                         <i class="far fa-file-alt"></i>
                     </span>
