@@ -49,9 +49,14 @@
                         <template v-if="auditItems.length >= 1">
                             <FileList :audit-items="auditItems" @clear-all-files="handleClearAllFiles"/>
                         </template>
-                        <template v-else>
-                            <div class="has-text-centered mb-4 has-text-grey">No files</div>
-                        </template>
+                        <div v-else class="is-flex is-justify-content-center is-align-items-center my-5">
+                            <img alt="Add file" class="image mr-1" style="width: 30px; height: 30px;"
+                                 src="../../assets/file-add.svg"
+                            >
+                            <span class="has-text-grey">
+                                Drop .sol and .json files, or folder here
+                            </span>
+                        </div>
                     </div>
                 </div>
 
