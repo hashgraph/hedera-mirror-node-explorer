@@ -57,7 +57,7 @@
 
 <script lang="ts">
 
-import {defineComponent} from "vue";
+import {defineComponent, PropType} from "vue";
 
 export default defineComponent({
   name: "ConfirmDialog",
@@ -67,8 +67,14 @@ export default defineComponent({
       type: Boolean,
       default: false
     },
-    mainMessage: String,
-    extraMessage: String,
+    mainMessage: {
+      type: String as PropType<string|null>,
+      default: null
+    },
+    extraMessage: {
+      type: String as PropType<string|null>,
+      default: null
+    },
   },
 
   setup(props, context) {
