@@ -56,9 +56,9 @@
                             <span class="has-text-grey">
                                 Drop .sol and .json files, or folder here... or
                             </span>
-                            <button class="button is-small has-text-grey h-has-page-background ml-2" @click="handleAddItems">
-                                BROWSE
-                            </button>
+                            <span class="has-text-info ml-2" style="cursor: pointer" @click="handleAddItems">
+                                Browse
+                            </span>
                         </div>
                     </div>
                 </div>
