@@ -36,9 +36,21 @@ export class SolidityFileImporter {
         if (this.started.value) {
             console.log("SolidityFileImporter aborts because it's already importing")
         } else {
+
+            // DataTransferItemList is reset immediately after drop callback termination
+            // => we copy file system entries before going async
+            const entries: FileSystemEntry[] = []
+            for (const i of transferList) {
+                const e = i.webkitGetAsEntry()
+                if (e !== null) {
+                    entries.push(e)
+                }
+            }
+
+            // Async starts here
             this.started.value = true
             const newFiles = new Map<string, string>()
-            SolidityFileImporter.importItems(transferList, newFiles)
+            SolidityFileImporter.importEntries(entries, newFiles)
                 .then(() => {
                     this.files.value = mergeMap(this.files.value, newFiles)
                     this.failure.value = null
@@ -69,47 +81,19 @@ export class SolidityFileImporter {
         }
         return result
     })
-    //
-    // public readonly solcInput = computed<SolcInput|null>(() => {
-    //     let result: SolcInput|null
-    //     if (this.files.value.size >= 1 && this.metadataFileCount.value == 1) {
-    //         result = {
-    //             language: "Solidity",
-    //             sources: {},
-    //             settings: {
-    //                 outputSelection: {
-    //                     '*': {
-    //                         '*': [ "metadata", "evm.deployedBytecode.object" ],
-    //                     },
-    //                 },
-    //             },
-    //         }
-    //         for (const [path, content] of this.files.value) {
-    //             if (typeof content == "string") {
-    //                 result.sources[path] = { content: content }
-    //             }
-    //         }
-    //     } else {
-    //         result = null
-    //     }
-    //     return result
-    // })
 
     //
     // Private
     //
 
-    private static async importItems(l: DataTransferItemList, output: Map<string, string|SolcMetadata>): Promise<void> {
-        for (const i of l) {
-            const e = i.webkitGetAsEntry()
-            if (e !== null) {
-                const topFolder = e.isDirectory ? "/" + e.name + "/" : "/"
-                await this.importItem(e, output, topFolder)
-            }
+    private static async importEntries(entries: FileSystemEntry[], output: Map<string, string|SolcMetadata>): Promise<void> {
+        for (const e of entries) {
+            const topFolder = e.isDirectory ? "/" + e.name + "/" : "/"
+            await this.importEntry(e, output, topFolder)
         }
     }
 
-    private static async importItem(e: FileSystemEntry, output: Map<string, string|SolcMetadata>, topFolder: string): Promise<void> {
+    private static async importEntry(e: FileSystemEntry, output: Map<string, string|SolcMetadata>, topFolder: string): Promise<void> {
         if (e !== null) {
             if (e.isFile) {
                 const fileName = e!.name
@@ -130,7 +114,7 @@ export class SolidityFileImporter {
                 for (const c of await asyncReadEntries(d)) {
                     const skip = c.name.startsWith(".") || c.name == "node_modules"
                     if (!skip) {
-                        await this.importItem(c, output, topFolder)
+                        await this.importEntry(c, output, topFolder)
                     }
                 }
             } else {
