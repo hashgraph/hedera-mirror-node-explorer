@@ -54,18 +54,27 @@
                                  src="../../assets/file-add.svg"
                             >
                             <span class="has-text-grey">
-                                Drop .sol and .json files, or folder here
+                                Drop .sol and .json files, or folder here... or
                             </span>
+                            <button class="button is-small has-text-grey h-has-page-background ml-2" @click="handleAddItems">
+                                BROWSE
+                            </button>
                         </div>
                     </div>
                 </div>
 
-                <div class="is-flex is-justify-content-flex-end">
-                    <button class="button is-white is-small" @click="handleCancel">CANCEL</button>
-                    <button :disabled="!verifyButtonEnabled"
-                            class="button is-info is-small ml-4" @click="handleVerify">VERIFY</button>
+                <div class="is-flex is-justify-content-space-between">
+                    <button class="button is-white is-small"
+                            :class="{'is-invisible': auditItems.length === 0}"
+                            @click="handleAddItems">
+                        ADD ITEMS
+                    </button>
+                    <div class="is-flex is-justify-content-flex-end">
+                        <button class="button is-white is-small" @click="handleCancel">CANCEL</button>
+                        <button :disabled="!verifyButtonEnabled"
+                                class="button is-info is-small ml-4" @click="handleVerify">VERIFY</button>
+                    </div>
                 </div>
-
             </div>
         </div>
     </div>
@@ -135,6 +144,11 @@ export default defineComponent({
         //
         // Buttons
         //
+
+        const handleAddItems = () => {
+            console.log(`Clicked ADD ITEMS`)
+            alert("Not yet implemented")
+        }
 
         const handleCancel = () => {
             context.emit('update:showDialog', false)
@@ -324,6 +338,7 @@ export default defineComponent({
         return {
             handleCancel,
             handleVerify,
+            handleAddItems,
             handleDragOver,
             handleDrop,
             auditItems,
