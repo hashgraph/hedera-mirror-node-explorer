@@ -67,6 +67,7 @@
 
     <ConfirmDialog :show-dialog="showConfirmDialog"
                    :main-message ="confirmMessage"
+                   :extra-message="confirmExtraMessage"
                    @onConfirm="handleConfirmVerification"
                    @onCancel="handleCancelVerification">
         <template v-slot:dialogTitle>
@@ -178,8 +179,9 @@ export default defineComponent({
         const handleVerify = async () => {
             showConfirmDialog.value = true
             confirmMessage.value =
-                "Once the contract is verified, its verification status and source files will be " +
-                "stored and publicly available. This action can not be reverted."
+                "Once the contract is verified, its verification status and source files will be publicly available."
+            confirmExtraMessage.value =
+                "This action can not be reverted."
         }
 
         //
@@ -210,7 +212,7 @@ export default defineComponent({
                     case ContractAuditStatus.Resolved: {
                         const contractName = sourceAnalyzer.audit.value.contractRecord!.contractName
                         const metadataFile = sourceAnalyzer.audit.value.resolvedMetadata![0]
-                        result = "Contract \"" + contractName + "\" is ready to be verified (with " + metadataFile + ")"
+                        result = "Contract \"" + contractName + "\" is ready to be verified"
                         break
                     }
                     case ContractAuditStatus.Uncertain: {
@@ -236,6 +238,7 @@ export default defineComponent({
         //
         const showConfirmDialog = ref(false)
         const confirmMessage = ref<string|null>(null)
+        const confirmExtraMessage = ref<string|null>(null)
 
         const handleConfirmVerification = async () => {
             const audit = sourceAnalyzer.audit.value!
@@ -323,6 +326,7 @@ export default defineComponent({
             handleClearAllFiles,
             showConfirmDialog,
             confirmMessage,
+            confirmExtraMessage,
             showProgressDialog,
             progressDialogMode,
             progressMainMessage,
