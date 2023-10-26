@@ -31,9 +31,10 @@
                 {{ tableTitle }}
             </span>
             <div class="is-flex is-justify-content-flex-end">
-                <span class="has-text-info" style="cursor: pointer" @click="handleToggleFiltering">
-                {{ isListFiltered ? 'Show all' : 'Hide unused' }}
-            </span>
+                <span v-if="nbUnusedAuditItems > 0" class="has-text-info" style="cursor: pointer" @click="handleToggleFiltering">
+                    {{ isListFiltered ? 'Show unused' : 'Hide unused' }}
+                    {{ ' (' + nbUnusedAuditItems + ')' }}
+                </span>
                 <span class="has-text-info ml-5" style="cursor: pointer" @click="handleClearAllFiles">
                 Clear all
             </span>
@@ -105,7 +106,7 @@ export default defineComponent({
         const perPage = ref(10);
         const isListFiltered = ref(false)
         const isPaginated = computed(() => props.auditItems.length > perPage.value)
-        const tableTitle = computed(() => `Added Files (${displayedAuditItems.value.length})`)
+        const tableTitle = computed(() => `Added Files (${props.auditItems.length})`)
 
         const sortedAuditItems = computed(() => {
             let result = [...props.auditItems]
@@ -143,6 +144,16 @@ export default defineComponent({
             return isListFiltered.value ? filteredAuditItems.value : sortedAuditItems.value
         })
 
+        const nbUnusedAuditItems = computed(() => {
+            let result = 0
+            for (const i of props.auditItems) {
+                if (i.status === ContractAuditItemStatus.Unused) {
+                    result++
+                }
+            }
+            return result
+        })
+
         const isMetadata = (auditItem: ContractAuditItem) => {
             const parts = auditItem.path.split('.')
             const suffix = parts[parts.length - 1].toLowerCase()
@@ -173,6 +184,7 @@ export default defineComponent({
             sortedAuditItems,
             filteredAuditItems,
             displayedAuditItems,
+            nbUnusedAuditItems,
             isMetadata,
             isUnused,
             handleClearAllFiles,
