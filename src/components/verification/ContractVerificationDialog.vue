@@ -65,6 +65,17 @@
         </div>
     </div>
 
+    <ConfirmDialog :show-dialog="showConfirmDialog"
+                   :main-message ="confirmMessage"
+                   @onConfirm="handleConfirmVerification"
+                   @onCancel="handleCancelVerification">
+        <template v-slot:dialogTitle>
+            <span class="h-is-primary-title">
+                Are you sure you want to continue?
+            </span>
+        </template>
+    </ConfirmDialog>
+
     <ProgressDialog v-model:show-dialog="showProgressDialog"
                     :mode="progressDialogMode"
                     :main-message="progressMainMessage"
@@ -93,10 +104,11 @@ import {SourcifyUtils, SourcifyVerifyResponse} from "@/utils/sourcify/SourcifyUt
 import {ContractSourceAnalyzer} from "@/utils/analyzer/ContractSourceAnalyzer";
 import ProgressDialog, {Mode} from "@/components/staking/ProgressDialog.vue";
 import {ContractAuditStatus} from "@/utils/analyzer/ContractSourceAudit";
+import ConfirmDialog from "@/components/ConfirmDialog.vue";
 
 export default defineComponent({
     name: "ContractVerificationDialog",
-    components: {ProgressDialog, FileList},
+    components: {ConfirmDialog, ProgressDialog, FileList},
     props: {
         showDialog: {
             type: Boolean,
@@ -164,58 +176,11 @@ export default defineComponent({
         //
 
         const handleVerify = async () => {
-            const audit = sourceAnalyzer.audit.value!
-            const contractRecord = audit.contractRecord!
-
-            showProgressDialog.value = true
-            showProgressSpinner.value = true
-            progressDialogMode.value = Mode.Busy
-            progressMainMessage.value = "Verifying " + contractRecord.contractName + " contract…"
-            progressExtraMessage.value = null
-            try {
-                let response: SourcifyVerifyResponse | null
-                if (audit.status == ContractAuditStatus.Resolved) {
-                    // We verify using /verify REST call
-                    const metadata = audit.resolvedMetadata![1]
-                    const sourceFiles = audit.makeReducedSourceFiles()
-                    response = await SourcifyUtils.verify(props.contractId, metadata, sourceFiles)
-                } else {
-                    const compilerVersion = "v" + audit.longCompilerVersion!
-                    const solcInput = audit.makeReducedSolcInput()
-                    response = await SourcifyUtils.verifyWithSolcInput(props.contractId, contractRecord.contractName, compilerVersion, solcInput)
-                }
-                showProgressSpinner.value = false
-                if (response !== null) {
-                    if (response.result) {
-                        progressDialogMode.value = Mode.Success
-                        progressMainMessage.value = "Verification succeeded"
-                        const status = SourcifyUtils.fetchVerifyStatus(response)
-                        if (status == "perfect") {
-                            progressExtraMessage.value = "Perfect Match"
-                        } else if (status == "partial") {
-                            progressExtraMessage.value = "Partial Match"
-                        } else {
-                            progressExtraMessage.value = status
-                        }
-                    } else {
-                        progressDialogMode.value = Mode.Error
-                        progressMainMessage.value = "Verification failed"
-                        progressExtraMessage.value = response.error ?? null
-                    }
-                } else {
-                    // Bug
-                    progressDialogMode.value = Mode.Error
-                    progressMainMessage.value = "Verification cannot be done"
-                    progressExtraMessage.value = null
-                }
-            } catch(reason) {
-                showProgressSpinner.value = false
-                progressDialogMode.value = Mode.Error
-                progressMainMessage.value = "Verification failed"
-                progressExtraMessage.value = SourcifyUtils.fetchVerifyError(reason)
-            }
+            showConfirmDialog.value = true
+            confirmMessage.value =
+                "Once the contract is verified, its verification status and source files will be " +
+                "stored and publicly available. This action can not be reverted."
         }
-
 
         //
         // Status
@@ -267,6 +232,70 @@ export default defineComponent({
         }
 
         //
+        // Confirm dialog
+        //
+        const showConfirmDialog = ref(false)
+        const confirmMessage = ref<string|null>(null)
+
+        const handleConfirmVerification = async () => {
+            const audit = sourceAnalyzer.audit.value!
+            const contractRecord = audit.contractRecord!
+
+            showConfirmDialog.value = false
+            showProgressDialog.value = true
+            showProgressSpinner.value = true
+            progressDialogMode.value = Mode.Busy
+            progressMainMessage.value = "Verifying " + contractRecord.contractName + " contract…"
+            progressExtraMessage.value = null
+            try {
+                let response: SourcifyVerifyResponse | null
+                if (audit.status == ContractAuditStatus.Resolved) {
+                    // We verify using /verify REST call
+                    const metadata = audit.resolvedMetadata![1]
+                    const sourceFiles = audit.makeReducedSourceFiles()
+                    response = await SourcifyUtils.verify(props.contractId, metadata, sourceFiles)
+                } else {
+                    const compilerVersion = "v" + audit.longCompilerVersion!
+                    const solcInput = audit.makeReducedSolcInput()
+                    response = await SourcifyUtils.verifyWithSolcInput(props.contractId, contractRecord.contractName, compilerVersion, solcInput)
+                }
+                showProgressSpinner.value = false
+                if (response !== null) {
+                    if (response.result) {
+                        progressDialogMode.value = Mode.Success
+                        progressMainMessage.value = "Verification succeeded"
+                        const status = SourcifyUtils.fetchVerifyStatus(response)
+                        if (status == "perfect") {
+                            progressExtraMessage.value = "Perfect Match"
+                        } else if (status == "partial") {
+                            progressExtraMessage.value = "Partial Match"
+                        } else {
+                            progressExtraMessage.value = status
+                        }
+                    } else {
+                        progressDialogMode.value = Mode.Error
+                        progressMainMessage.value = "Verification failed"
+                        progressExtraMessage.value = response.error ?? null
+                    }
+                } else {
+                    // Bug
+                    progressDialogMode.value = Mode.Error
+                    progressMainMessage.value = "Verification cannot be done"
+                    progressExtraMessage.value = null
+                }
+            } catch(reason) {
+                showProgressSpinner.value = false
+                progressDialogMode.value = Mode.Error
+                progressMainMessage.value = "Verification failed"
+                progressExtraMessage.value = SourcifyUtils.fetchVerifyError(reason)
+            }
+        }
+
+        const handleCancelVerification = () => {
+            showConfirmDialog.value = false
+        }
+
+        //
         // Progress dialog
         //
         const showProgressDialog = ref(false)
@@ -292,11 +321,15 @@ export default defineComponent({
             verifyButtonEnabled,
             status,
             handleClearAllFiles,
+            showConfirmDialog,
+            confirmMessage,
             showProgressDialog,
             progressDialogMode,
             progressMainMessage,
             progressExtraMessage,
             showProgressSpinner,
+            handleConfirmVerification,
+            handleCancelVerification,
             progressDialogClosing
         }
     }
