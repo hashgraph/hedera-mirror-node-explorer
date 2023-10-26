@@ -53,20 +53,23 @@
 
             <o-table-column v-slot="props" field="type_and_name">
                 <div class="is-flex is-align-items-center">
-                    <img v-if="isMetadata(props.row) && isUnused(props.row)" alt="JSON file" class="image"
-                         src="../../assets/json-file-grey.svg" style="width: 20px; height: 20px;">
-                    <img v-else-if="isMetadata(props.row)" alt="JSON file" class="image"
-                         src="../../assets/json-file.svg" style="width: 20px; height: 20px;">
-                    <img v-else-if="isUnused(props.row)" alt="Solidity file" class="image"
-                         src="../../assets/solidity-icon-grey.svg" style="width: 20px; height: 20px;">
-                    <img v-else alt="Solidity file" class="image"
-                         src="../../assets/solidity-icon.svg" style="width: 20px; height: 20px;">
-                    <p :class="{
-                        'has-text-grey':isUnused(props.row),
-                        'has-text-weight-bold':props.row.target
-                    }" class="ml-2">
+                    <span  v-if="isMetadata(props.row)" class="icon" style="font-size: 15px"
+                           :class="{'has-text-grey':  isUnused(props.row)}"
+                    >
+                        <i class="far fa-file-alt"></i>
+                    </span>
+                    <img v-else-if="isUnused(props.row)" alt="Solidity file" class="image mr-1" style="width: 20px; height: 20px;"
+                         src="../../assets/solidity-icon-grey.svg"
+                    >
+                    <img v-else alt="Solidity file" class="image mr-1" style="width: 20px; height: 20px;"
+                         src="../../assets/solidity-icon.svg"
+                    >
+                    <p :class="{'has-text-grey':isUnused(props.row)}" class="ml-1">
                         {{ props.row.path }}
                     </p>
+                    <span v-if="!isMetadata(props.row) && props.row.target" class="icon ml-2 has-text-info" style="font-size: 15px">
+                       <i class="fa fa-arrow-left"></i>
+                    </span>
                 </div>
             </o-table-column>
 
