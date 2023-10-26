@@ -67,7 +67,7 @@
                     <p :class="{'has-text-grey':isUnused(props.row)}" class="ml-1">
                         {{ props.row.path }}
                     </p>
-                    <span v-if="!isMetadata(props.row) && props.row.target" class="icon ml-2 has-text-info" style="font-size: 15px">
+                    <span v-if="!isMetadata(props.row) && props.row.target" class="icon ml-1 has-text-grey" style="font-size: 14px">
                        <i class="fa fa-arrow-left"></i>
                     </span>
                 </div>
