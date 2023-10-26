@@ -111,7 +111,7 @@ export default defineComponent({
             let result = [...props.auditItems]
             result.sort((a, b) => {
                 if (a.target && b.target) {
-                    return 0
+                    return isMetadata(a) ? -1 : isMetadata(b) ? 1 : 0
                 } else if (a.target) {
                     return -1
                 } else if (b.target) {
