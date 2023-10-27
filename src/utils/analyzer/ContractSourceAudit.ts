@@ -27,7 +27,7 @@ import {utils} from "ethers";
 export enum ContractAuditStatus {
     NoSourceFile,
     Failure,    // failure !== null
-    UnknownCompilerVersion,
+    UnknownCompilerVersion,         // when files are missing, path are available in missingFiles
     CompilationErrors,
     Mismatch,   // longCompilerVersion != null
     Uncertain,  // longCompilerversion !== null && contractRecord !== null
@@ -63,6 +63,7 @@ export class ContractSourceAudit {
     public readonly longCompilerVersion: string | null
     public readonly contractRecord: ContractRecord | null
     public readonly resolvedMetadata: [string, SolcMetadata] | null
+    public readonly missingFiles: string[]
     public readonly failure: unknown
 
     //
@@ -91,9 +92,14 @@ export class ContractSourceAudit {
                     const solcOutput = await SolcUtils.runAsWorker("v" + longCompilerVersion, solcInput)
                     if (SolcUtils.countErrors(solcOutput) >= 1) {
                         // There are compilation errors
+                        const missingFiles = SolcUtils.fetchMissingFiles(solcOutput)
                         result = new ContractSourceAudit(
                             ContractAuditStatus.CompilationErrors,
-                            ContractSourceAudit.makeAuditItems(files))
+                            ContractSourceAudit.makeAuditItems(files),
+                            null,
+                            null,
+                            null,
+                            missingFiles)
                     } else {
                         const contractRecord = SolcUtils.findMatchingContract(deployedByteCode, solcOutput)
                         if (contractRecord !== null) {
@@ -137,6 +143,7 @@ export class ContractSourceAudit {
                     null,
                     null,
                     null,
+                    [],
                     failure)
             }
         } else {
@@ -172,12 +179,14 @@ export class ContractSourceAudit {
                         longCompilerVersion: string | null = null,
                         contractRecord: ContractRecord | null = null,
                         resolvedMetadata: [string, SolcMetadata] | null = null,
+                        missingFiles: string[] = [],
                         failure: unknown = null) {
         this.status = status
         this.items = items
         this.longCompilerVersion = longCompilerVersion
         this.contractRecord = contractRecord
         this.resolvedMetadata = resolvedMetadata
+        this.missingFiles = missingFiles
         this.failure = failure
     }
 

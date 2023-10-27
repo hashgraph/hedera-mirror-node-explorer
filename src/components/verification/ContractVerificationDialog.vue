@@ -264,7 +264,11 @@ export default defineComponent({
                         result = "Cannot find compiler for version " + compilerVersion
                         break
                     case ContractAuditStatus.CompilationErrors:
-                        result = "Compiler reports some errors. Check your source files."
+                        if (sourceAnalyzer.audit.value.missingFiles.length >= 1) {
+                            result = "File '" + sourceAnalyzer.audit.value.missingFiles[0] + "' is missing."
+                        } else {
+                            result = "Compiler reports some errors. Check your source files."
+                        }
                         break
                     case ContractAuditStatus.Resolved: {
                         const contractName = sourceAnalyzer.audit.value.contractRecord!.contractName
