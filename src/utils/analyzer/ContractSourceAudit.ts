@@ -141,7 +141,9 @@ export class ContractSourceAudit {
             }
         } else {
             // There is no solidity source
-            result = new ContractSourceAudit(ContractAuditStatus.NoSourceFile)
+            result = new ContractSourceAudit(
+                ContractAuditStatus.NoSourceFile,
+                ContractSourceAudit.makeAuditItems(files))
         }
 
         return Promise.resolve(result)
