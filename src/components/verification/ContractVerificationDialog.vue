@@ -272,7 +272,6 @@ export default defineComponent({
                         break
                     case ContractAuditStatus.Resolved: {
                         const contractName = sourceAnalyzer.audit.value.contractRecord!.contractName
-                        const metadataFile = sourceAnalyzer.audit.value.resolvedMetadata![0]
                         result = "Contract \"" + contractName + "\" is ready to be verified"
                         break
                     }
