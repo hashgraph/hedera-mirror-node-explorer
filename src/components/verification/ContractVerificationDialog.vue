@@ -56,19 +56,41 @@
                             <span class="has-text-grey">
                                 Drop .sol and .json files, or folder here... or
                             </span>
-                            <span class="has-text-info ml-2" style="cursor: pointer" @click="handleAddItems">
-                                Browse
-                            </span>
+                            <a @click="showFileChooser">
+                                <span class="has-text-info ml-2" style="cursor: pointer">
+                                    Browse
+                                </span>
+                            </a>
+                            <input
+                                type="file"
+                                ref="fileChooser"
+                                id="file-chooser"
+                                accept=".json, .sol"
+                                multiple
+                                style="display: none"
+                                @change="handleFileSelected"
+                            />
                         </div>
                     </div>
                 </div>
 
                 <div class="is-flex is-justify-content-space-between">
-                    <button class="button is-white is-small"
-                            :class="{'is-invisible': auditItems.length === 0}"
-                            @click="handleAddItems">
-                        ADD ITEMS
-                    </button>
+                    <div>
+                        <button class="button is-white is-small"
+                                :class="{'is-invisible': auditItems.length === 0}"
+                                @click="showFileChooser">
+                            ADD ITEMS
+                        </button>
+                        <input
+                            type="file"
+                            ref="fileChooser"
+                            id="file-chooser"
+                            accept=".json, .sol"
+                            multiple
+                            style="display: none"
+                            @change="handleFileSelected"
+                        />
+                    </div>
                     <div class="is-flex is-justify-content-flex-end">
                         <button class="button is-white is-small" @click="handleCancel">CANCEL</button>
                         <button :disabled="!verifyButtonEnabled"
@@ -141,14 +163,27 @@ export default defineComponent({
     emits: ["update:showDialog", "verifyDidComplete"],
     setup(props, context) {
 
+        // File Chooser
+        const fileChooser = ref<HTMLInputElement | null>(null)
+
+        const showFileChooser = () => {
+            if (fileChooser.value !== null) {
+                fileChooser.value.click()
+            }
+        }
+
+        const handleFileSelected = () => {
+            const selectedFiles = fileChooser.value?.files ?? null
+            if (selectedFiles && selectedFiles.length >= 1) {
+                fileImporter.start(selectedFiles)
+            } else {
+                console.log("Selected file is undefined")
+            }
+        }
+
         //
         // Buttons
         //
-
-        const handleAddItems = () => {
-            console.log(`Clicked ADD ITEMS`)
-            alert("Not yet implemented")
-        }
 
         const handleCancel = () => {
             context.emit('update:showDialog', false)
@@ -338,7 +373,6 @@ export default defineComponent({
         return {
             handleCancel,
             handleVerify,
-            handleAddItems,
             handleDragOver,
             handleDrop,
             auditItems,
@@ -353,6 +387,9 @@ export default defineComponent({
             progressMainMessage,
             progressExtraMessage,
             showProgressSpinner,
+            fileChooser,
+            showFileChooser,
+            handleFileSelected,
             handleConfirmVerification,
             handleCancelVerification,
             progressDialogClosing

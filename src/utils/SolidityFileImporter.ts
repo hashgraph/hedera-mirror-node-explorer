@@ -32,18 +32,22 @@ export class SolidityFileImporter {
     // Public
     //
 
-    public start(transferList: DataTransferItemList) {
+    public start(transferList: DataTransferItemList | FileList) {
         if (this.started.value) {
             console.log("SolidityFileImporter aborts because it's already importing")
         } else {
 
             // DataTransferItemList is reset immediately after drop callback termination
             // => we copy file system entries before going async
-            const entries: FileSystemEntry[] = []
+            const entries: Array<FileSystemEntry | File> = []
             for (const i of transferList) {
-                const e = i.webkitGetAsEntry()
-                if (e !== null) {
-                    entries.push(e)
+                if (transferList instanceof FileList) {
+                    entries.push(i as File)
+                } else {
+                    const e = (i as DataTransferItem).webkitGetAsEntry()
+                    if (e !== null) {
+                        entries.push(e)
+                    }
                 }
             }
 
@@ -86,10 +90,15 @@ export class SolidityFileImporter {
     // Private
     //
 
-    private static async importEntries(entries: FileSystemEntry[], output: Map<string, string|SolcMetadata>): Promise<void> {
+    private static async importEntries(entries: Array<FileSystemEntry | File>, output: Map<string, string | SolcMetadata>): Promise<void> {
         for (const e of entries) {
-            const topFolder = e.isDirectory ? "/" + e.name + "/" : "/"
-            await this.importEntry(e, output, topFolder)
+            if (e instanceof File) {
+                const topFolder = "/"
+                await this.importFile(e, output, topFolder)
+            } else {
+                const topFolder = e.isDirectory ? "/" + e.name + "/" : "/"
+                await this.importEntry(e, output, topFolder)
+            }
         }
     }
 
@@ -122,6 +131,24 @@ export class SolidityFileImporter {
             }
         }
     }
+
+    private static async importFile(f: File, output: Map<string, string | SolcMetadata>, topFolder: string): Promise<void> {
+        if (f !== null) {
+            const fileName = f!.name
+            if (hasExtension(fileName, ".sol")) {
+                const path = removeTopFolder(f.name, topFolder)
+                const content = await asyncReadTextFromFile(f)
+                output.set(path, content)
+            } else if (hasExtension(fileName, ".json")) {
+                const path = removeTopFolder(f.name, topFolder)
+                const content = await asyncReadTextFromFile(f)
+                const metadata = SolcUtils.parseSolcMetadata(content)
+                if (metadata !== null) {
+                    output.set(path, metadata)
+                }
+            }
+        }
+    }
 }
 
 
@@ -134,6 +161,10 @@ async function asyncReadText(e: FileSystemFileEntry): Promise<string> {
             reject(error)
         })
     })
+}
+
+async function asyncReadTextFromFile(f: File): Promise<string> {
+    return Promise.resolve(f.text())
 }
 
 async function asyncReadEntries(e: FileSystemDirectoryEntry): Promise<FileSystemEntry[]> {
