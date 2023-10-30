@@ -82,8 +82,9 @@ export class SourcifyCache extends EntityCache<string, SourcifyRecord|null> {
                 const requestURL = sourcifySetup.makeRequestURL(contractAddress)
                 try {
                     const response = await axios.get<SourcifyResponse>(requestURL)
-                    const repoURL = sourcifySetup.makeContractLookupURL(contractAddress)
-                    result = new SourcifyRecord(response.data, response.data.status === "full", repoURL)
+                    const isFullMatch = response.data.status === "full"
+                    const repoURL = sourcifySetup.makeContractSourceURL(contractAddress, isFullMatch)
+                    result = new SourcifyRecord(response.data, isFullMatch, repoURL)
                 } catch(error) {
                     if (axios.isAxiosError(error) && error.response?.status == 404) {
                         result = null
