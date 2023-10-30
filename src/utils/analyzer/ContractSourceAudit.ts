@@ -62,6 +62,7 @@ export class ContractSourceAudit {
     public readonly items: ContractAuditItem[]
     public readonly longCompilerVersion: string | null
     public readonly contractRecord: ContractRecord | null
+    public readonly optimizerEnabled: boolean
     public readonly resolvedMetadata: [string, SolcMetadata] | null
     public readonly missingFiles: string[]
     public readonly failure: unknown
@@ -85,11 +86,11 @@ export class ContractSourceAudit {
 
         let result: ContractSourceAudit
         if (sourceFiles.size >= 1) {
-            const solcInput = ContractSourceAudit.makeSolcInput(sourceFiles)
             try {
                 const longCompilerVersion = await SolcIndexCache.instance.fetchLongVersion(solcVersion)
                 if (longCompilerVersion !== null) {
-                    const solcOutput = await SolcUtils.runAsWorker("v" + longCompilerVersion, solcInput)
+                    let solcInput = ContractSourceAudit.makeSolcInput(sourceFiles, false)
+                    let solcOutput = await SolcUtils.runAsWorker("v" + longCompilerVersion, solcInput)
                     if (SolcUtils.countErrors(solcOutput) >= 1) {
                         // There are compilation errors
                         const missingFiles = SolcUtils.fetchMissingFiles(solcOutput)
@@ -98,10 +99,17 @@ export class ContractSourceAudit {
                             ContractSourceAudit.makeAuditItems(files),
                             null,
                             null,
+                            false,
                             null,
                             missingFiles)
                     } else {
-                        const contractRecord = SolcUtils.findMatchingContract(deployedByteCode, solcOutput)
+                        let contractRecord = SolcUtils.findMatchingContract(deployedByteCode, solcOutput)
+                        if (contractRecord === null) {
+                            // Let's try to recompile with optimizer
+                            solcInput = ContractSourceAudit.makeSolcInput(sourceFiles, true)
+                            solcOutput = await SolcUtils.runAsWorker("v" + longCompilerVersion, solcInput)
+                            contractRecord = SolcUtils.findMatchingContract(deployedByteCode, solcOutput)
+                        }
                         if (contractRecord !== null) {
                             const resolvedMetadata = ContractSourceAudit.findSolcMetadata(metadataFiles, contractRecord)
                             if (resolvedMetadata !== null) {
@@ -112,6 +120,7 @@ export class ContractSourceAudit {
                                     items,
                                     longCompilerVersion,
                                     contractRecord,
+                                    solcInput.settings?.optimizer?.enabled,
                                     resolvedMetadata)
                             } else {
                                 // We don't have original metadata file => UNCERTAIN
@@ -142,6 +151,7 @@ export class ContractSourceAudit {
                     ContractSourceAudit.makeAuditItems(files),
                     null,
                     null,
+                    false,
                     null,
                     [],
                     failure)
@@ -167,7 +177,7 @@ export class ContractSourceAudit {
     }
 
     makeReducedSolcInput(): SolcInput {
-        return ContractSourceAudit.makeSolcInput(this.makeReducedSourceFiles())
+        return ContractSourceAudit.makeSolcInput(this.makeReducedSourceFiles(), this.optimizerEnabled)
     }
 
     //
@@ -175,9 +185,10 @@ export class ContractSourceAudit {
     //
 
     private constructor(status: ContractAuditStatus,
-                        items: ContractAuditItem[] = [],
+                        items: ContractAuditItem[],
                         longCompilerVersion: string | null = null,
                         contractRecord: ContractRecord | null = null,
+                        optimizerEnabled: boolean = false,
                         resolvedMetadata: [string, SolcMetadata] | null = null,
                         missingFiles: string[] = [],
                         failure: unknown = null) {
@@ -185,6 +196,7 @@ export class ContractSourceAudit {
         this.items = items
         this.longCompilerVersion = longCompilerVersion
         this.contractRecord = contractRecord
+        this.optimizerEnabled = optimizerEnabled
         this.resolvedMetadata = resolvedMetadata
         this.missingFiles = missingFiles
         this.failure = failure
@@ -237,7 +249,7 @@ export class ContractSourceAudit {
         return result
     }
 
-    private static makeSolcInput(sourceFiles: Map<string, string>): SolcInput {
+    private static makeSolcInput(sourceFiles: Map<string, string>, optimized: boolean): SolcInput {
         const result = {
             language: "Solidity",
             sources: {} as Record<string, { content: string }>,
@@ -247,10 +259,16 @@ export class ContractSourceAudit {
                         '*': ["metadata", "evm.deployedBytecode.object"],
                     },
                 },
+                optimizer: {
+                    enabled: false
+                }
             },
         }
         for (const [path, content] of sourceFiles) {
             result.sources[path] = {content: content}
+        }
+        if (optimized) {
+            result.settings.optimizer.enabled = true
         }
         return result
     }

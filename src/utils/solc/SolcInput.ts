@@ -49,4 +49,7 @@ export interface SourceInput {
 export interface InputSettings {
     remappings?: string[]
     outputSelection: Record<string, Record<string, string[]>>
+    optimizer?: {
+        enabled: boolean
+    }
 }
