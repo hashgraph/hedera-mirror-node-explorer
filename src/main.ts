@@ -22,7 +22,6 @@ import {createApp} from 'vue'
 import App from './App.vue'
 import router from './router'
 import axios from 'axios'
-import VueAxios from 'vue-axios'
 import Oruga from '@oruga-ui/oruga-next'
 import { FontAwesomeIcon } from "@fortawesome/vue-fontawesome";
 import { library } from "@fortawesome/fontawesome-svg-core";
@@ -43,6 +42,5 @@ AxiosMonitor.instance.setTargetAxios(axios)
 const app = createApp(App)
 app.component("font-awesome-icon", FontAwesomeIcon)
 app.use(router)
-app.use(VueAxios, axios)
 app.use(Oruga, {iconPack: 'fas'})
 app.mount('#app')
