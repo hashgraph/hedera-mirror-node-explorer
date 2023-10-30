@@ -18,7 +18,7 @@
  *
  */
 
-import axios, {Axios, AxiosRequestConfig, AxiosResponse} from "axios";
+import axios, {Axios, AxiosResponse, InternalAxiosRequestConfig} from "axios";
 import {ref} from "vue";
 
 export class AxiosMonitor {
@@ -58,7 +58,7 @@ export class AxiosMonitor {
         if (this.targetAxios !== null) {
 
             this.requestInterceptor = this.targetAxios.interceptors.request.use(
-                (value: AxiosRequestConfig) => this.requestIntercepted(value))
+                (value: InternalAxiosRequestConfig) => this.requestIntercepted(value))
 
             this.responseInterceptor = this.targetAxios.interceptors.response.use(
                 (response: AxiosResponse) => this.requestFullfilled(response),
@@ -142,7 +142,7 @@ export class AxiosMonitor {
     // Private
     //
 
-    private requestIntercepted(value: AxiosRequestConfig): Promise<AxiosRequestConfig>|AxiosRequestConfig {
+    private requestIntercepted(value: InternalAxiosRequestConfig): Promise<InternalAxiosRequestConfig>|InternalAxiosRequestConfig {
         this.activeRequestCount += 1
         this.stateDidChange()
         return value

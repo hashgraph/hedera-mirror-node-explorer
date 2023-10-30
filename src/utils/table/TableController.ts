@@ -246,7 +246,7 @@ export abstract class TableController<R, K> {
         console.log("reason=" + reason)
         if (axios.isAxiosError(reason)) {
             const axiosError = reason as AxiosError
-            console.log("url=" + axiosError.config.url)
+            console.log("url=" + axiosError.config?.url)
         }
     }
 
