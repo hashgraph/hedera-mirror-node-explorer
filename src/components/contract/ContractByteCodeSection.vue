@@ -24,89 +24,87 @@
 
 <template>
 
-  <DashboardCard>
-    <template v-slot:title>
-        <div class="is-flex is-align-items-center is-flex-wrap-wrap">
-            <span class="h-is-secondary-title mr-3">Contract Source</span>
-            <div v-if="isVerificationEnabled" class="h-is-text-size-2 mt-1">
-                <div v-if="contractName" class="h-has-pill has-background-success">VERIFIED</div>
-                <div v-else class="h-has-pill has-background-warning">NOT VERIFIED</div>
+    <DashboardCard>
+        <template v-slot:title>
+            <div class="is-flex is-align-items-center is-flex-wrap-wrap">
+                <span class="h-is-secondary-title mr-3">Contract Bytecode</span>
+                <div v-if="isVerificationEnabled" class="h-is-text-size-2 mt-1">
+                    <div v-if="contractName" class="h-has-pill has-background-success">VERIFIED</div>
+                    <div v-else class="h-has-pill has-background-warning">NOT VERIFIED</div>
+                </div>
             </div>
-        </div>
-    </template>
+        </template>
 
-    <template v-slot:control>
-        <template v-if="isVerificationEnabled">
-            <button v-if="!isVerified && isVerificationPhase2" id="verify-button" class="button is-white is-small has-text-right"
-                    @click="showVerifyDialog = true">
-                VERIFY CONTRACT
-            </button>
-            <template v-else-if="!isVerificationPhase2">
-                <div v-if="sourcifyURL" id="showSource" class="is-inline-block ml-3">
-              <a :href="sourcifyURL" target="_blank">View Contract (beta)</a>
-          </div>
-                <div v-else-if="verifierURL" id="showVerifier" class="is-inline-block ml-3">
-              <a :href="verifierURL" target="_blank">Verify Contract (beta)</a>
-          </div>
+        <template v-slot:control>
+            <template v-if="isVerificationEnabled">
+                <template v-if="isVerified">
+                    <div v-if="isVerificationPhase2 && sourcifyURL" id="showSource" class="is-inline-block ml-3">
+                        <a :href="sourcifyURL" target="_blank">View contract sources</a>
+                    </div>
+                    <div v-else-if="sourcifyURL" id="showSourceBeta" class="is-inline-block ml-3">
+                        <a :href="sourcifyURL" target="_blank">View contract (beta)</a>
+                    </div>
+                </template>
+                <template v-else>
+                    <button v-if="isVerificationPhase2" id="verify-button"
+                            class="button is-white is-small has-text-right"
+                            @click="showVerifyDialog = true">
+                        VERIFY CONTRACT
+                    </button>
+                    <div v-else id="showVerifier" class="is-inline-block ml-3">
+                        <a :href="verifierURL" target="_blank">Verify contract (beta)</a>
+                    </div>
+                </template>
             </template>
         </template>
-    </template>
 
-    <template v-slot:content>
-      <Property v-if="isVerified" id="verificationStatus" :full-width="true">
-        <template v-slot:name>Verification Status</template>
-        <template v-slot:value>
-          <span>
-            {{ isFullMatch ? "Full Match" : "Partial Match" }}
-            <InfoTooltip :label="tooltipText"/>
-          </span>
+        <template v-slot:content>
+            <Property v-if="isVerified" id="verificationStatus" :full-width="true">
+                <template v-slot:name>Verification Status</template>
+                <template v-slot:value>
+                    <span>
+                        {{ isFullMatch ? "Full Match" : "Partial Match" }}
+                        <InfoTooltip :label="tooltipText"/>
+                    </span>
+                </template>
+            </Property>
+            <Property v-if="isVerified" id="contractName" :full-width="true">
+                <template v-slot:name>Contract Name</template>
+                <template v-slot:value>
+                    <StringValue :string-value="contractName ?? undefined"/>
+                </template>
+            </Property>
+            <Property id="solcVersion" :full-width="true">
+                <template v-slot:name>Compiler Version</template>
+                <template v-slot:value>
+                    <StringValue :string-value="solcVersion ?? undefined"/>
+                </template>
+            </Property>
+            <Property v-if="ipfsHash" id="ipfsHash" :full-width="true">
+                <template v-slot:name>IPFS Hash</template>
+                <template v-slot:value>
+                    <StringValue :string-value="ipfsHash ?? undefined"/>
+                </template>
+            </Property>
+            <Property v-if="swarmHash" id="swarmHash" :full-width="true">
+                <template v-slot:name>SWARM Hash</template>
+                <template v-slot:value>
+                    <StringValue :string-value="swarmHash ?? undefined"/>
+                </template>
+            </Property>
+            <Property id="code" :full-width="true">
+                <template v-slot:name>Runtime Bytecode</template>
+            </Property>
+            <ByteCodeValue :byte-code="byteCode ?? undefined" class="mt-3"/>
         </template>
-      </Property>
-      <Property v-if="isVerified" id="contractName" :full-width="true">
-        <template v-slot:name>Contract Name</template>
-        <template v-slot:value>
-          <StringValue :string-value="contractName ?? undefined"/>
-        </template>
-      </Property>
-      <Property id="solcVersion" :full-width="true">
-        <template v-slot:name>Compiler Version</template>
-        <template v-slot:value>
-          <StringValue :string-value="solcVersion ?? undefined"/>
-        </template>
-      </Property>
-      <Property v-if="ipfsHash" id="ipfsHash" :full-width="true">
-        <template v-slot:name>IPFS Hash</template>
-        <template v-slot:value>
-          <StringValue :string-value="ipfsHash ?? undefined"/>
-        </template>
-      </Property>
-      <Property v-if="swarmHash" id="swarmHash" :full-width="true">
-        <template v-slot:name>SWARM Hash</template>
-        <template v-slot:value>
-          <StringValue :string-value="swarmHash ?? undefined"/>
-        </template>
-      </Property>
-      <template v-if="isVerified && isVerificationPhase2">
-          <Property id="source-code" :full-width="true">
-              <template v-slot:name>Source Code</template>
-          </Property>
-          <SourceCodeValue :sources="sourceCode ?? undefined" :rows="20" class="mt-3"/>
-      </template>
-      <template v-else>
-          <Property id="code" :full-width="true">
-              <template v-slot:name>Runtime Bytecode</template>
-          </Property>
-          <ByteCodeValue :byte-code="byteCode ?? undefined" class="mt-3"/>
-      </template>
-    </template>
-  </DashboardCard>
+    </DashboardCard>
 
 
-  <ContractVerificationDialog
-          v-model:show-dialog="showVerifyDialog"
-          :contract-id="contractId ?? undefined"
-          :byte-code-analyzer="byteCodeAnalyzer"
-          v-on:verify-did-complete="verifyDidComplete"/>
+    <ContractVerificationDialog
+        v-model:show-dialog="showVerifyDialog"
+        :byte-code-analyzer="byteCodeAnalyzer"
+        :contract-id="contractId ?? undefined"
+        v-on:verify-did-complete="verifyDidComplete"/>
 
 </template>
 
