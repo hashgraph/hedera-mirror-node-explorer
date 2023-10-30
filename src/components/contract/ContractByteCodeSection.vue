@@ -36,13 +36,19 @@
     </template>
 
     <template v-slot:control>
-        <template v-if="isVerificationEnabled && !isVerificationPhase2">
-          <div v-if="sourcifyURL" id="showSource" class="is-inline-block ml-3">
+        <template v-if="isVerificationEnabled">
+            <button v-if="!isVerified && isVerificationPhase2" id="verify-button" class="button is-white is-small has-text-right"
+                    @click="showVerifyDialog = true">
+                VERIFY CONTRACT
+            </button>
+            <template v-else-if="!isVerificationPhase2">
+                <div v-if="sourcifyURL" id="showSource" class="is-inline-block ml-3">
               <a :href="sourcifyURL" target="_blank">View Contract (beta)</a>
           </div>
-          <div v-else-if="verifierURL" id="showVerifier" class="is-inline-block ml-3">
+                <div v-else-if="verifierURL" id="showVerifier" class="is-inline-block ml-3">
               <a :href="verifierURL" target="_blank">Verify Contract (beta)</a>
           </div>
+            </template>
         </template>
     </template>
 
@@ -91,12 +97,6 @@
               <template v-slot:name>Runtime Bytecode</template>
           </Property>
           <ByteCodeValue :byte-code="byteCode ?? undefined" class="mt-3"/>
-          <div class="is-flex is-justify-content-flex-end mt-3">
-              <button v-if="isVerificationEnabled && isVerificationPhase2" id="verify-button" class="button is-white is-small has-text-right"
-                      @click="showVerifyDialog = true">
-                  VERIFY CONTRACT
-              </button>
-          </div>
       </template>
     </template>
   </DashboardCard>
