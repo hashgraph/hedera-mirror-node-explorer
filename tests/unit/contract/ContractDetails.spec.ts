@@ -455,8 +455,8 @@ describe("ContractDetails.vue", () => {
 
         expect(wrapper.text()).toMatch(RegExp("^Contract Contract ID:" + contractId))
         const cards = wrapper.findAllComponents(DashboardCard)
-        expect(cards[1].text()).toMatch(RegExp("^Contract Source"))
-        expect(cards[1].get('a').text()).toBe("Verify Contract (beta)")
+        expect(cards[1].text()).toMatch(RegExp("^Contract Bytecode"))
+        expect(cards[1].get('a').text()).toBe("Verify contract (beta)")
 
         wrapper.unmount()
         await flushPromises()

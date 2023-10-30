@@ -93,7 +93,7 @@ describe("ContractAnalyzer.spec.ts", () => {
 
         const networkEntry = routeManager.currentNetworkEntry.value
         const requestURL = networkEntry.sourcifySetup?.makeRequestURL(SAMPLE_CONTRACT.evm_address)
-        const contractURL = networkEntry.sourcifySetup?.makeContractLookupURL(SAMPLE_CONTRACT.evm_address)
+        const contractURL = networkEntry.sourcifySetup?.makeContractSourceURL(SAMPLE_CONTRACT.evm_address, true)
         mock.onGet(requestURL).reply(200, SAMPLE_SOURCIFY_RESPONSE)
 
         // 1) new
