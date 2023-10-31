@@ -58,7 +58,7 @@
                             </span>
                             <a @click="showFileChooser">
                                 <span class="has-text-info ml-2" style="cursor: pointer">
-                                    Browse
+                                    Choose files
                                 </span>
                             </a>
                             <input
@@ -79,7 +79,7 @@
                         <button class="button is-white is-small"
                                 :class="{'is-invisible': auditItems.length === 0}"
                                 @click="showFileChooser">
-                            ADD ITEMS
+                            ADD MORE FILES
                         </button>
                         <input
                             type="file"
