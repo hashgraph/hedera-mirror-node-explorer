@@ -36,14 +36,14 @@
 
         <div v-if="mainMessage" class="block h-is-tertiary-text mt-2">{{ mainMessage }}</div>
         <div v-else class="block h-is-property-text" style="visibility: hidden">Filler</div>
-        <div class="mt-4" style="line-height: 21px">
+        <div class="my-4" style="line-height: 21px">
           <span v-if="extraMessage" class="h-is-property-text">{{ extraMessage }}</span>
           <span v-else class="h-is-property-text" style="visibility: hidden">Filler</span>
         </div>
 
         <div class="is-flex is-justify-content-flex-end">
-          <button class="button is-white is-small" @click="handleCancel">CANCEL</button>
-          <button class="button is-info is-small ml-4" @click="handleConfirm">CONFIRM</button>
+          <button class="button is-white is-small" @click="handleCancel">{{ cancelLabel }}</button>
+          <button class="button is-info is-small ml-4" @click="handleConfirm">{{ confirmLabel }}</button>
         </div>
 
       </div>
@@ -75,6 +75,14 @@ export default defineComponent({
       type: String as PropType<string|null>,
       default: null
     },
+      confirmLabel: {
+          type: String as PropType<string>,
+          default: "CONFIRM"
+      },
+      cancelLabel: {
+          type: String as PropType<string>,
+          default: "CANCEL"
+    }
   },
 
   setup(props, context) {
