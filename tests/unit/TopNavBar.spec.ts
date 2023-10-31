@@ -57,7 +57,7 @@ describe("TopNavBar.vue", () => {
             "Connect WalletCANCELCONNECT DisclaimerPlease don't show me this next timeCANCELAGREEFillerFillerCLOSEDashboardTransactionsTokensTopicsContractsAccountsNodesStakingBlocksMAINNETTESTNETPREVIEWNETCONNECT WALLET...")
 
         const links = wrapper.findAll("a")
-        expect(links.length).toBe(15)
+        expect(links.length).toBe(16)
 
         wrapper.unmount()
         await flushPromises()
@@ -83,27 +83,28 @@ describe("TopNavBar.vue", () => {
             "Connect WalletCANCELCONNECT DisclaimerPlease don't show me this next timeCANCELAGREEFillerFillerCLOSEDashboardTransactionsTokensTopicsContractsAccountsNodesStakingBlocksMAINNETTESTNETPREVIEWNETCONNECT WALLET...")
 
         const links = wrapper.findAll("a")
-        expect(links.length).toBe(15)
+        expect(links.length).toBe(16)
 
-        expect(links[6].text()).toBe("Dashboard")
-        expect(links[7].text()).toBe("Transactions")
-        expect(links[8].text()).toBe("Tokens")
-        expect(links[9].text()).toBe("Topics")
-        expect(links[10].text()).toBe("Contracts")
-        expect(links[11].text()).toBe("Accounts")
-        expect(links[12].text()).toBe("Nodes")
-        expect(links[13].text()).toBe("Staking")
-        expect(links[14].text()).toBe("Blocks")
+        expect(links[7].text()).toBe("Dashboard")
+        expect(links[8].text()).toBe("Transactions")
+        expect(links[9].text()).toBe("Tokens")
+        expect(links[10].text()).toBe("Topics")
+        expect(links[11].text()).toBe("Contracts")
+        expect(links[12].text()).toBe("Accounts")
+        expect(links[13].text()).toBe("Nodes")
+        expect(links[14].text()).toBe("Staking")
+        expect(links[15].text()).toBe("Blocks")
 
         expect(wrapper.findComponent(SearchBar).exists()).toBe(true)
 
         const logos = wrapper.findAll("img")
-        expect(logos.length).toBe(6)
+        expect(logos.length).toBe(7)
         expect(logos[1].attributes('alt')).toBe("wallet logo")
         expect(logos[2].attributes('alt')).toBe("wallet logo")
-        expect(logos[3].attributes('alt')).toBe("Modal close icon")
-        expect(logos[4].attributes('alt')).toBe("Product Logo")
-        expect(logos[5].attributes('alt')).toBe("Modal close icon")
+        expect(logos[3].attributes('alt')).toBe("wallet logo")
+        expect(logos[4].attributes('alt')).toBe("Modal close icon")
+        expect(logos[5].attributes('alt')).toBe("Product Logo")
+        expect(logos[6].attributes('alt')).toBe("Modal close icon")
 
         wrapper.unmount()
         await flushPromises()
@@ -125,8 +126,6 @@ describe("TopNavBar.vue", () => {
         });
 
         await flushPromises()
-        // console.log(wrapper.text())
-        // console.log(wrapper.html())
 
         const options = wrapper.findAll("option")
         expect(options.length).toBe(3)
