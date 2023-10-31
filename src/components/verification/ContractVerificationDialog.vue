@@ -101,6 +101,19 @@
         </div>
     </div>
 
+    <ConfirmDialog :show-dialog="showMetadataDialog"
+                   :main-message ="metadataMessage"
+                   :extra-message="metadataExtraMessage"
+                   @onConfirm="handleMetadataContinue"
+                   @onCancel="handleCancelVerification"
+                   confirm-label="CONTINUE">
+        <template v-slot:dialogTitle>
+            <span class="h-is-primary-title">
+                {{ dialogTitle }}
+            </span>
+        </template>
+    </ConfirmDialog>
+
     <ConfirmDialog :show-dialog="showConfirmDialog"
                    :main-message ="confirmMessage"
                    :extra-message="confirmExtraMessage"
@@ -235,11 +248,19 @@ export default defineComponent({
         //
 
         const handleVerify = async () => {
-            showConfirmDialog.value = true
-            confirmMessage.value =
-                "Once the contract is verified, its verification status and source files will be publicly available."
-            confirmExtraMessage.value =
-                "This action can not be reverted."
+            context.emit('update:showDialog', false)
+            const audit = sourceAnalyzer.audit.value
+            if (audit?.status === ContractAuditStatus.Uncertain && audit.resolvedMetadata === null) {
+                showMetadataDialog.value = true
+                metadataMessage.value = "You may proceed as is, or go back and add the metadata file if you have it."
+                metadataExtraMessage.value = "Providing the metadata may increase the chances to get a full match."
+                showMetadataDialog.value = true
+            } else {
+                showConfirmDialog.value = true
+            }
+            console.log(`status: ${sourceAnalyzer.audit.value?.status}`)
+            console.log(`failure: ${sourceAnalyzer.audit.value?.failure}`)
+            console.log(`resolvedMetadata: ${sourceAnalyzer.audit.value?.resolvedMetadata}`)
         }
 
         //
@@ -295,11 +316,23 @@ export default defineComponent({
             fileImporter.reset()
         }
 
+        // Metadata dialog
+        const showMetadataDialog = ref(false)
+        const metadataMessage = ref<string|null>(null)
+        const metadataExtraMessage = ref<string|null>(null)
+
+        const handleMetadataContinue = async () => {
+            showMetadataDialog.value = false
+            showConfirmDialog.value = true
+        }
+
         //
         // Confirm dialog
         //
         const showConfirmDialog = ref(false)
-        const confirmMessage = ref<string|null>(null)
+        const confirmMessage = ref<string|null>(
+            "Once verified, the contract status and source files will be public."
+        )
         const confirmExtraMessage = ref<string|null>(null)
 
         const handleConfirmVerification = async () => {
@@ -357,6 +390,8 @@ export default defineComponent({
         }
 
         const handleCancelVerification = () => {
+            context.emit('update:showDialog', true)
+            showMetadataDialog.value = false
             showConfirmDialog.value = false
         }
 
@@ -387,6 +422,9 @@ export default defineComponent({
             verifyButtonEnabled,
             status,
             handleClearAllFiles,
+            showMetadataDialog,
+            metadataMessage,
+            metadataExtraMessage,
             showConfirmDialog,
             confirmMessage,
             confirmExtraMessage,
@@ -398,6 +436,7 @@ export default defineComponent({
             fileChooser,
             showFileChooser,
             handleFileSelected,
+            handleMetadataContinue,
             handleConfirmVerification,
             handleCancelVerification,
             progressDialogClosing
