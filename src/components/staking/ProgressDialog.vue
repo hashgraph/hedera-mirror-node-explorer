@@ -35,7 +35,7 @@
 
         <hr class="h-card-separator"/>
 
-        <div class="is-flex is-align-items-baseline" style="line-height: 21px">
+        <div class="is-flex is-align-items-baseline" >
 
           <div v-if="mode === Mode.Success" class="icon is-medium has-text-success ml-0">
             <i class="fas fa-check"/>
@@ -49,9 +49,9 @@
           <div v-else class="block h-is-tertiary-text" style="visibility: hidden">Filler</div>
         </div>
 
-        <div class="is-flex is-align-items-baseline mt-4" style="line-height: 21px">
-          <span v-if="extraMessage" class="h-is-property-text"> {{ extraMessage }} </span>
-          <span v-else class="h-is-property-text" style="visibility: hidden">Filler</span>
+        <div class="is-flex is-align-items-baseline my-4">
+          <span v-if="extraMessage" class="h-is-property-text" style="line-height: 21px"> {{ extraMessage }} </span>
+          <span v-else class="h-is-property-text" style="visibility: hidden; line-height: 21px">Filler</span>
           <div v-if="formattedTransactionId" class="ml-2">{{ formattedTransactionId }}</div>
         </div>
 
