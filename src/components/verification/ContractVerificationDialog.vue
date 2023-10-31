@@ -29,10 +29,10 @@
         <div class="modal-content" style="width: 768px; border-radius: 16px">
             <div class="box">
                 <div class="h-is-primary-title mb-3">
-                    Verify contract {{ contractId }}
+                    {{ dialogTitle }}
                 </div>
                 <div>
-                    Verify the contract by recompiling all the Solidity source files and checking that the output
+                    Verify the contract by recompiling the corresponding Solidity source files and checking that the output
                     is the same as the bytecode of the deployed contract
                 </div>
 
@@ -108,7 +108,7 @@
                    @onCancel="handleCancelVerification">
         <template v-slot:dialogTitle>
             <span class="h-is-primary-title">
-                Are you sure you want to continue?
+                {{ dialogTitle }}
             </span>
         </template>
     </ConfirmDialog>
@@ -121,7 +121,9 @@
                     @dialogClosing="progressDialogClosing"
     >
         <template v-slot:dialogTitle>
-            <span class="h-is-primary-title">Verify Contract</span>
+            <span class="h-is-primary-title">
+                {{ dialogTitle }}
+            </span>
         </template>
     </ProgressDialog>
 
@@ -162,6 +164,8 @@ export default defineComponent({
     },
     emits: ["update:showDialog", "verifyDidComplete"],
     setup(props, context) {
+
+        const dialogTitle = `Verify contract ${props.contractId}`
 
         // File Chooser
         const fileChooser = ref<HTMLInputElement | null>(null)
@@ -277,7 +281,7 @@ export default defineComponent({
                     }
                     case ContractAuditStatus.Uncertain: {
                         const contractName = sourceAnalyzer.audit.value.contractRecord!.contractName
-                        result = "Contract \"" + contractName + "\" is ready to be verified (without metadata file)"
+                        result = "Contract \"" + contractName + "\" is ready to be verified"
                         break
                     }
                 }
@@ -374,6 +378,7 @@ export default defineComponent({
         }
 
         return {
+            dialogTitle,
             handleCancel,
             handleVerify,
             handleDragOver,
