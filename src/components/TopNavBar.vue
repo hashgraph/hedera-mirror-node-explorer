@@ -106,12 +106,12 @@
                      :class="{ 'is-rimmed': isBlocksRoute}">Blocks</router-link>
       </div>
 
-      <div style="position: relative; display: grid; column-gap: 1.2rem; grid-template-columns: repeat(12, minmax(0, 2.8rem));">
-        <div style="grid-column: span 7;">
+      <div style="position: relative; display: grid; column-gap: 1.2rem; grid-template-columns: repeat(17, minmax(0, 35px));">
+        <div style="grid-column: span 10;">
           <SearchBar/>
         </div>
         
-        <div style="grid-column: span 2;">
+        <div style="grid-column: span 3;">
           <o-field>
             <o-select v-model="selectedNetwork" class="h-is-navbar-item" style="outline: none; height: 40px; border-width: 0.5px">
               <option v-for="network in networkEntries" :key="network.name" :value="network.name">
@@ -121,7 +121,7 @@
           </o-field>
         </div>
 
-        <div style="grid-column: span 3;">
+        <div style="grid-column: span 4;">
           <button v-if="!connected" :disabled="connecting" id="connectWalletButton" class="button is-white is-small" @click="chooseWallet" style="outline: none; height: 40px; width: 100%; font-size: 0.8rem;">
             {{ connecting ? "Connecting..." : "CONNECT WALLET..." }}
           </button>
