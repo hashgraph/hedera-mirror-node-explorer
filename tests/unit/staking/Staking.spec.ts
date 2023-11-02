@@ -27,6 +27,7 @@ import Oruga from "@oruga-ui/oruga-next";
 import {HMSF} from "@/utils/HMSF";
 import Staking from "@/pages/Staking.vue";
 import TopNavBar from "@/components/TopNavBar.vue";
+import WalletInfo from "@/components/wallet/WalletInfo.vue"
 import WalletChooser from "@/components/staking/WalletChooser.vue";
 import {WalletDriver_Mock} from "./WalletDriver_Mock";
 import MockAdapter from "axios-mock-adapter";
@@ -112,6 +113,8 @@ describe("Staking.vue", () => {
             props: {},
         });
 
+        const walletInfoWrapper = topNavBarWrapper.getComponent(WalletInfo)
+
         await flushPromises()
 
 
@@ -141,10 +144,6 @@ describe("Staking.vue", () => {
         expect(ndis[0].text()).toBe("Staked toAccount 0.0.5")
         expect(ndis[1].text()).toBe("My Stake0.31669471HBAR")
         expect(ndis[2].text()).toBe("Pending RewardNone")
-
-        // 1.4) Checks disconnect button
-        expect(wrapper.get("#disconnectWalletButton").text()).toBe("DISCONNECT WALLETMOCK")
-
 
         //
         // 2) Stake to account 0.0.7
@@ -359,7 +358,8 @@ describe("Staking.vue", () => {
         //
 
         // 6.1) Clicks "DISCONNECT WALLET"
-        await wrapper.get("#disconnectWalletButton").trigger("click")
+        await topNavBarWrapper.get("#walletInfoBanner").trigger("click")
+        await walletInfoWrapper.get("#disconnectWalletButton").trigger("click")
         await flushPromises()
         expect(walletManager.getActiveDriver()).toStrictEqual(testDriver)
         expect(walletManager.connected.value).toBeFalsy()

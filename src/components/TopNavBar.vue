@@ -126,7 +126,7 @@
             {{ connecting ? "Connecting..." : "CONNECT WALLET..." }}
           </button>
 
-          <div v-else @click="showWalletInfo = !showWalletInfo" class="is-flex is-align-items-center" style="outline: none; height: 40px; width: 100%; font-size: 0.9rem; border: 0.5px solid white; display: flex; justify-content: space-between; cursor: pointer;">
+          <div v-else @click="showWalletInfo = !showWalletInfo" id="walletInfoBanner" class="is-flex is-align-items-center" style="outline: none; height: 40px; width: 100%; font-size: 0.9rem; border: 0.5px solid white; display: flex; justify-content: space-between; cursor: pointer;">
             <figure style="width: 50px; height: 100%; display: flex; align-items: center; margin-left: 0.15rem;">
                 <img :src="walletIconURL ?? undefined" alt="wallet logo" style="object-fit: contain; aspect-ratio: 3/2;display: flex; height: 90%;">
             </figure>

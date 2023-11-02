@@ -78,7 +78,7 @@
               CHANGE ACCOUNT
             </button>
 
-            <button @click="disconnectFromWallet" class="button is-white is-small" style="outline: none; height: 40px">
+            <button @click="disconnectFromWallet" id="disconnectWalletButton" class="button is-white is-small" style="outline: none; height: 40px">
               DISCONNECT WALLET
             </button>
 

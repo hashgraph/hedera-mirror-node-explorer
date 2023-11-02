@@ -146,7 +146,6 @@
                       To change your staking options use Blade or HashPack.
                   </p>
               </div>
-              <button id="disconnectWalletButton" class="button is-white is-small" @click="disconnectFromWallet">DISCONNECT {{ walletName.toLocaleUpperCase() }}</button>
             </div>
             <div v-if="isHederaWallet" class="mt-5 h-is-text-size-2 is-italic has-text-grey has-text-centered">
               <span class="has-text-grey-light">Please Note: </span>
@@ -179,9 +178,6 @@
                           :disabled="!stakedTo" @click="showStopConfirmDialog">STOP STAKING</button>
                   <button id="showStakingDialogSmall" class="button is-white is-small ml-4" @click="showStakingDialog">CHANGE STAKED TO</button>
               </div>
-            <div class="is-flex is-justify-content-center mt-4">
-              <button id="disconnectWalletButtonSmall" class="button is-white is-small" @click="disconnectFromWallet">DISCONNECT WALLET</button>
-            </div>
             <div v-if="isHederaWallet" class="mt-5 h-is-text-size-2 is-italic has-text-grey has-text-centered">
               <span class="has-text-grey-light">Please Note: </span>
               Your full balance is automatically staked.<br/>
@@ -190,15 +186,6 @@
             </div>
             <div class="mt-4"/>
           </div>
-        </template>
-
-        <template v-else-if="connecting">
-          <section class="section has-text-centered" style="min-height: 450px">
-            <p>Connecting your Wallet...</p>
-            <p>You need to select which account you wish to connect.</p>
-            <br/>
-            <button id="abortConnectWalletButton" class="button is-white is-small" @click="disconnectFromWallet">ABORT CONNECTION</button>
-          </section>
         </template>
 
         <template v-else>
@@ -348,16 +335,6 @@ export default defineComponent({
       } finally {
           connecting.value = false
       }
-    }
-
-    //
-    // disconnectFromWallet
-    //
-
-    const disconnectFromWallet = () => {
-      walletManager
-          .disconnect()
-          .finally(() => connecting.value = false)
     }
 
     //
@@ -571,7 +548,6 @@ export default defineComponent({
       ignoreReward,
       chooseWallet,
       handleChooseWallet,
-      disconnectFromWallet,
       handleStopStaking,
       handleChangeStaking,
       showProgressDialog,
