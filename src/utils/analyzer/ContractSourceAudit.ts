@@ -205,7 +205,7 @@ export class ContractSourceAudit {
     private static findSolcMetadata(metadataFiles: Map<string, SolcMetadata>, contractRecord: ContractRecord): [string, SolcMetadata] | null {
         let result: [string, SolcMetadata] | null = null
         for (const [f, m] of metadataFiles.entries()) {
-            if (SolcUtils.fetchContractDescription(contractRecord.sourceFileName, m)) {
+            if (SolcUtils.fetchCompilationTarget(m) == contractRecord.contractName) {
                 result = [f, m]
                 break
             }

@@ -18,7 +18,7 @@
  *
  */
 
-import {ContractDescriptionV2, SolcMetadata} from "@/utils/solc/SolcMetadata";
+import {SolcMetadata} from "@/utils/solc/SolcMetadata";
 import {SolcInput} from "@/utils/solc/SolcInput";
 import {ContractDescription, SolcOutput} from "@/utils/solc/SolcOutput";
 import {splitAuxdata} from "@ethereum-sourcify/bytecode-utils";
@@ -84,18 +84,14 @@ export class SolcUtils {
         return result
     }
 
-    public static fetchContractDescription(sourceFileName: string, metadata: SolcMetadata): ContractDescriptionV2|null {
-        let result: ContractDescriptionV2|null = null
-
-        sourceFileName = sourceFileName.startsWith("./") ? sourceFileName.slice(2) : sourceFileName
-        for (let p of Object.keys(metadata.sources)) {
-            const pp = p.startsWith("./") ? p.slice(2) : p
-            if (pp == sourceFileName) {
-                result = metadata.sources[p]
-                break
-            }
+    public static fetchCompilationTarget(metadata: SolcMetadata): string|null {
+        let result: string|null
+        const keys = Object.keys(metadata.settings.compilationTarget)
+        if (keys.length >= 1 && typeof metadata.settings.compilationTarget[keys[0]] == "string") {
+            result = metadata.settings.compilationTarget[keys[0]]
+        } else {
+            result = null
         }
-
         return result
     }
 
