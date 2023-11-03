@@ -25,15 +25,15 @@ import {splitAuxdata} from "@ethereum-sourcify/bytecode-utils";
 
 export class SolcUtils {
 
-    public static async runAsWorker(version: string, input: SolcInput): Promise<SolcOutput> {
+    public static async runAsWorker(version: string, input: SolcInput): Promise<SolcReport> {
         const worker = new Worker(new URL("./SolcWorker.ts", import.meta.url), { type: "classic"})
-        return new Promise<SolcOutput>((resolve, reject) => {
+        return new Promise<SolcReport>((resolve, reject) => {
             worker.onmessage = (message: MessageEvent) => {
                 const workerOutput: SolcWorkerOutput = message.data
                 if (workerOutput.error) {
                     reject(workerOutput.error)
                 } else {
-                    resolve(workerOutput.output!)
+                    resolve(workerOutput.report!)
                 }
                 worker.terminate()
             }
@@ -236,8 +236,13 @@ export interface SolcWorkerInput {
 }
 
 export interface SolcWorkerOutput {
-    output?: SolcOutput
+    report?: SolcReport
     error?: unknown
+}
+
+export interface SolcReport {
+    output: SolcOutput
+    resolution: Record<string, string>
 }
 
 export enum BytecodeComparison {

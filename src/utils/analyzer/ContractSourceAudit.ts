@@ -90,10 +90,10 @@ export class ContractSourceAudit {
                 const longCompilerVersion = await SolcIndexCache.instance.fetchLongVersion(solcVersion)
                 if (longCompilerVersion !== null) {
                     let solcInput = ContractSourceAudit.makeSolcInput(sourceFiles, false)
-                    let solcOutput = await SolcUtils.runAsWorker("v" + longCompilerVersion, solcInput)
-                    if (SolcUtils.countErrors(solcOutput) >= 1) {
+                    let solcReport = await SolcUtils.runAsWorker("v" + longCompilerVersion, solcInput)
+                    if (SolcUtils.countErrors(solcReport.output) >= 1) {
                         // There are compilation errors
-                        const missingFiles = SolcUtils.fetchMissingFiles(solcOutput)
+                        const missingFiles = SolcUtils.fetchMissingFiles(solcReport.output)
                         result = new ContractSourceAudit(
                             ContractAuditStatus.CompilationErrors,
                             ContractSourceAudit.makeAuditItems(files),
@@ -103,12 +103,12 @@ export class ContractSourceAudit {
                             null,
                             missingFiles)
                     } else {
-                        let contractRecord = SolcUtils.findMatchingContract(deployedByteCode, solcOutput)
+                        let contractRecord = SolcUtils.findMatchingContract(deployedByteCode, solcReport.output)
                         if (contractRecord === null) {
                             // Let's try to recompile with optimizer
                             solcInput = ContractSourceAudit.makeSolcInput(sourceFiles, true)
-                            solcOutput = await SolcUtils.runAsWorker("v" + longCompilerVersion, solcInput)
-                            contractRecord = SolcUtils.findMatchingContract(deployedByteCode, solcOutput)
+                            solcReport = await SolcUtils.runAsWorker("v" + longCompilerVersion, solcInput)
+                            contractRecord = SolcUtils.findMatchingContract(deployedByteCode, solcReport.output)
                         }
                         if (contractRecord !== null) {
                             const resolvedMetadata = ContractSourceAudit.findSolcMetadata(metadataFiles, contractRecord)

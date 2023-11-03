@@ -20,8 +20,7 @@
  *
  */
 
-import {SolcOutput} from "@/utils/solc/SolcOutput";
-import {SolcWorkerInput, SolcWorkerOutput} from "@/utils/solc/SolcUtils";
+import {SolcReport, SolcWorkerInput, SolcWorkerOutput} from "@/utils/solc/SolcUtils";
 import {SolcInput} from "@/utils/solc/SolcInput";
 
 //
@@ -31,8 +30,8 @@ import {SolcInput} from "@/utils/solc/SolcInput";
 
 self.onmessage = (event: MessageEvent) => {
     handleMessage(event)
-        .then((output: SolcOutput) => {
-            const response: SolcWorkerOutput = { output: output }
+        .then((report: SolcReport) => {
+            const response: SolcWorkerOutput = { report: report }
             self.postMessage(response)
         })
         .catch((reason: unknown) => {
@@ -41,21 +40,25 @@ self.onmessage = (event: MessageEvent) => {
         })
 }
 
-async function handleMessage(event: MessageEvent): Promise<SolcOutput> {
+async function handleMessage(event: MessageEvent): Promise<SolcReport> {
     const workerInput = event.data as SolcWorkerInput
+    const solcInput = workerInput.input
     const solc = await makeSolc(workerInput.version)
+    const resolution: Record<string, string> = {}
     const importCallback = (path: string) =>  {
         const result = {} as { contents?: string, error: unknown }
-        const content = searchForSource(path, workerInput.input)
-        if (content != null) {
-            result.contents = content
+        const resolvedPath = resolvePath(path, solcInput)
+        if (resolvedPath !== null) {
+            result.contents = solcInput.sources[resolvedPath].content
+            resolution[path] = resolvedPath
         } else {
             result.error = "File not found: " + path
         }
         return result
     }
     const options = { import: importCallback }
-    return JSON.parse((solc as any).compile(JSON.stringify(workerInput.input), options))
+    const solcOutput = JSON.parse((solc as any).compile(JSON.stringify(workerInput.input), options))
+    return { output: solcOutput, resolution: {}}
 }
 
 async function makeSolc(version: string): Promise<unknown> {
@@ -144,12 +147,6 @@ async function makeSolc(version: string): Promise<unknown> {
         })
     }
     return result
-}
-
-function searchForSource(path: string, input: SolcInput): string|null {
-    const resolvedPath = resolvePath(path, input)
-    const result = resolvedPath !== null ? input.sources[resolvedPath] : null
-    return result?.content ?? null
 }
 
 function resolvePath(path: string, input: SolcInput): string|null {

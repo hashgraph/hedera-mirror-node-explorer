@@ -61,8 +61,8 @@ describe("SolcLauncher", () => {
             }
         }
 
-        const generatedOutput2 = await SolcUtils.runAsWorker("v0.8.17+commit.8df45f5f", input)
-        expect(generatedOutput2).toStrictEqual(output)
+        const report = await SolcUtils.runAsWorker("v0.8.17+commit.8df45f5f", input)
+        expect(report.output).toStrictEqual(output)
 
     }, 20000)
 
@@ -95,8 +95,8 @@ describe("SolcLauncher", () => {
             }
         }
 
-        const generatedOutput2 = await SolcUtils.runAsWorker("v0.8.17+commit.8df45f5f", input)
-        expect(generatedOutput2).toStrictEqual(output)
+        const report = await SolcUtils.runAsWorker("v0.8.17+commit.8df45f5f", input)
+        expect(report.output).toStrictEqual(output)
     }, 20000)
 
     test("HTS (with missing file)", async () => {
@@ -142,9 +142,9 @@ describe("SolcLauncher", () => {
             "sources": {}
         }
 
-        const generatedOutput2 = await SolcUtils.runAsWorker("v0.8.17+commit.8df45f5f", input)
-        expect(generatedOutput2).toStrictEqual(output)
-        const missingFiles = SolcUtils.fetchMissingFiles(generatedOutput2)
+        const report = await SolcUtils.runAsWorker("v0.8.17+commit.8df45f5f", input)
+        expect(report.output).toStrictEqual(output)
+        const missingFiles = SolcUtils.fetchMissingFiles(report.output)
         expect(missingFiles).toStrictEqual(["HederaTokenService.sol", "HederaResponseCodes.sol"])
     }, 20000)
 
@@ -192,8 +192,8 @@ describe("SolcLauncher", () => {
         }
 
 
-        const generatedOutput2 = await SolcUtils.runAsWorker("v0.8.17+commit.8df45f5f", input)
-        expect(generatedOutput2).toStrictEqual(output)
+        const report = await SolcUtils.runAsWorker("v0.8.17+commit.8df45f5f", input)
+        expect(report.output).toStrictEqual(output)
     }, 20000)
 
     test("HTS (with obsolete compiler)", async () => {
@@ -473,8 +473,8 @@ describe("SolcLauncher", () => {
         }
 
 
-        const generatedOutput2 = await SolcUtils.runAsWorker("v0.6.12+commit.27d51765", input)
-        expect(generatedOutput2).toStrictEqual(output)
+        const report = await SolcUtils.runAsWorker("v0.6.12+commit.27d51765", input)
+        expect(report.output).toStrictEqual(output)
     }, 20000)
 })
 
