@@ -50,10 +50,8 @@ describe("ContractSourceAudit.spec.ts", () => {
         expect(audit.status).toBe(ContractAuditStatus.Resolved)
         expect(audit.items.length).toBe(6)
         expect(audit.longCompilerVersion).toBe("0.8.17+commit.8df45f5f")
-        expect(audit.contractRecord.contractName).toBe("HTS")
-        expect(audit.contractRecord.sourceFileName).toBe("HTSv2.sol")
-        expect(audit.contractRecord.description.abi).toBeUndefined()
-        expect(audit.contractRecord.description.evm.deployedBytecode.object).toBe(deployedByteCode)
+        expect(audit.resolvedContractName).toBe("HTS")
+        expect(audit.resolvedMetadata).toStrictEqual(jsonContentOfFile("HTS_meta.json"))
 
         const i0 = audit.items[0]
         expect(i0.path).toBe("metadata.json")

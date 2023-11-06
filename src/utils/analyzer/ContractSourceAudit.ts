@@ -23,6 +23,8 @@ import {SolcMetadata} from "@/utils/solc/SolcMetadata";
 import {SolcIndexCache} from "@/utils/cache/SolcIndexCache";
 import {SolcInput} from "@/utils/solc/SolcInput";
 import {utils} from "ethers";
+import {HHMetadata} from "@/utils/hardhat/HHMetadata";
+import {HHMatch, HHUtils} from "@/utils/hardhat/HHUtils";
 
 export enum ContractAuditStatus {
     NoSourceFile,
@@ -44,11 +46,11 @@ export enum ContractAuditItemStatus {
 export class ContractAuditItem {
 
     public readonly path: string
-    public readonly content: string | SolcMetadata
+    public readonly content: string | SolcMetadata | HHMetadata
     public readonly status: ContractAuditItemStatus
     public readonly target: boolean
 
-    constructor(path: string, content: string | SolcMetadata, status: ContractAuditItemStatus, target: boolean) {
+    constructor(path: string, content: string | SolcMetadata | HHMetadata, status: ContractAuditItemStatus, target: boolean) {
         this.path = path
         this.content = content
         this.status = status
@@ -61,9 +63,8 @@ export class ContractSourceAudit {
     public readonly status: ContractAuditStatus
     public readonly items: ContractAuditItem[]
     public readonly longCompilerVersion: string | null
-    public readonly contractRecord: ContractRecord | null
-    public readonly optimizerEnabled: boolean
-    public readonly resolvedMetadata: [string, SolcMetadata] | null
+    public readonly resolvedContractName: string | null
+    public readonly resolvedMetadata: SolcMetadata | SolcInput | null
     public readonly missingFiles: string[]
     public readonly failure: unknown
 
@@ -71,11 +72,66 @@ export class ContractSourceAudit {
     // Public
     //
 
-    static async build(files: Map<string, string | SolcMetadata>, solcVersion: string, deployedByteCode: string): Promise<ContractSourceAudit> {
+    static async build(files: Map<string, string | SolcMetadata | HHMetadata>, solcVersion: string, deployedByteCode: string): Promise<ContractSourceAudit> {
+
+        // Extracts HardHat metadata files
+        const hhMetadataFiles = new Map<string, HHMetadata>()
+        for (const [file, content] of files) {
+            const hhMetadata = HHUtils.castMetadata(content)
+            if (hhMetadata !== null) {
+                hhMetadataFiles.set(file, hhMetadata)
+            }
+        }
+
+        let result: ContractSourceAudit
+        const hhMatch = HHUtils.match(deployedByteCode, hhMetadataFiles)
+        if (hhMatch !== null) {
+            // Some bytecode in HardHat metadata match :)
+            result = await this.buildWithHHMatch(files, hhMatch)
+        } else {
+            result = await this.buildWithoutHHMatch(files, solcVersion, deployedByteCode)
+        }
+
+        return result
+    }
+
+    makeReducedSourceFiles(): Map<string, string> {
+        const result = new Map<string, string>()
+        for (const i of this.items) {
+            if (typeof i.content == "string" && i.status !== ContractAuditItemStatus.Unused) {
+                result.set(i.path, i.content)
+            }
+        }
+        return result
+    }
+
+    makeReducedSolcInput(): SolcInput {
+        return ContractSourceAudit.makeSolcInput(this.makeReducedSourceFiles())
+    }
+
+    //
+    // Private (with hardhat metadata match)
+    //
+
+    static async buildWithHHMatch(files: Map<string, string | SolcMetadata | HHMetadata>, hhMatch: HHMatch): Promise<ContractSourceAudit> {
+        const items = ContractSourceAudit.makeAuditItemsWithHHMatch(files, hhMatch)
+        return new ContractSourceAudit(
+            ContractAuditStatus.Resolved,
+            items,
+            hhMatch.solcLongVersion,
+            hhMatch.contractName,
+            hhMatch.solcInput)
+    }
+
+    //
+    // Private (without hardhat metadata match)
+    //
+
+    static async buildWithoutHHMatch(files: Map<string, string | SolcMetadata | HHMetadata>, solcVersion: string, deployedByteCode: string): Promise<ContractSourceAudit> {
 
         // Separates sources and metadata files
         const sourceFiles = new Map<string, string>()
-        const metadataFiles = new Map<string, SolcMetadata>()
+        const metadataFiles = new Map<string, SolcMetadata|HHMetadata>()
         for (const [file, content] of files) {
             if (typeof content == "string") {
                 sourceFiles.set(file, content)
@@ -89,8 +145,8 @@ export class ContractSourceAudit {
             try {
                 const longCompilerVersion = await SolcIndexCache.instance.fetchLongVersion(solcVersion)
                 if (longCompilerVersion !== null) {
-                    let solcInput = ContractSourceAudit.makeSolcInput(sourceFiles, false)
-                    let solcReport = await SolcUtils.runAsWorker("v" + longCompilerVersion, solcInput)
+                    const solcInput = this.makeSolcInput(sourceFiles)
+                    const solcReport = await SolcUtils.runAsWorker("v" + longCompilerVersion, solcInput)
                     if (SolcUtils.countErrors(solcReport.output) >= 1) {
                         // There are compilation errors
                         const missingFiles = SolcUtils.fetchMissingFiles(solcReport.output)
@@ -99,17 +155,10 @@ export class ContractSourceAudit {
                             ContractSourceAudit.makeAuditItems(files),
                             null,
                             null,
-                            false,
                             null,
                             missingFiles)
                     } else {
-                        let contractRecord = SolcUtils.findMatchingContract(deployedByteCode, solcReport.output)
-                        if (contractRecord === null) {
-                            // Let's try to recompile with optimizer
-                            solcInput = ContractSourceAudit.makeSolcInput(sourceFiles, true)
-                            solcReport = await SolcUtils.runAsWorker("v" + longCompilerVersion, solcInput)
-                            contractRecord = SolcUtils.findMatchingContract(deployedByteCode, solcReport.output)
-                        }
+                        const contractRecord = SolcUtils.findMatchingContract(deployedByteCode, solcReport.output)
                         if (contractRecord !== null) {
                             const resolvedMetadata = ContractSourceAudit.findSolcMetadata(metadataFiles, contractRecord)
                             if (resolvedMetadata !== null) {
@@ -119,16 +168,15 @@ export class ContractSourceAudit {
                                     ContractAuditStatus.Resolved,
                                     items,
                                     longCompilerVersion,
-                                    contractRecord,
-                                    solcInput.settings?.optimizer?.enabled,
-                                    resolvedMetadata)
+                                    contractRecord.contractName,
+                                    resolvedMetadata[1])
                             } else {
                                 // We don't have original metadata file => UNCERTAIN
                                 result = new ContractSourceAudit(
                                     ContractAuditStatus.Uncertain,
                                     ContractSourceAudit.makeAuditItems(files, contractRecord),
                                     longCompilerVersion,
-                                    contractRecord)
+                                    contractRecord.contractName)
                             }
                         } else {
                             // We did not found any generated bytecode matching deployed bytecode => MISMATCH
@@ -151,7 +199,6 @@ export class ContractSourceAudit {
                     ContractSourceAudit.makeAuditItems(files),
                     null,
                     null,
-                    false,
                     null,
                     [],
                     failure)
@@ -166,20 +213,6 @@ export class ContractSourceAudit {
         return Promise.resolve(result)
     }
 
-    makeReducedSourceFiles(): Map<string, string> {
-        const result = new Map<string, string>()
-        for (const i of this.items) {
-            if (typeof i.content == "string" && i.status !== ContractAuditItemStatus.Unused) {
-                result.set(i.path, i.content)
-            }
-        }
-        return result
-    }
-
-    makeReducedSolcInput(): SolcInput {
-        return ContractSourceAudit.makeSolcInput(this.makeReducedSourceFiles(), this.optimizerEnabled)
-    }
-
     //
     // Private
     //
@@ -187,33 +220,49 @@ export class ContractSourceAudit {
     private constructor(status: ContractAuditStatus,
                         items: ContractAuditItem[],
                         longCompilerVersion: string | null = null,
-                        contractRecord: ContractRecord | null = null,
-                        optimizerEnabled: boolean = false,
-                        resolvedMetadata: [string, SolcMetadata] | null = null,
+                        contractName: string | null = null,
+                        resolvedMetadata: SolcMetadata|SolcInput|null = null,
                         missingFiles: string[] = [],
                         failure: unknown = null) {
         this.status = status
         this.items = items
         this.longCompilerVersion = longCompilerVersion
-        this.contractRecord = contractRecord
-        this.optimizerEnabled = optimizerEnabled
+        this.resolvedContractName = contractName
         this.resolvedMetadata = resolvedMetadata
         this.missingFiles = missingFiles
         this.failure = failure
     }
 
-    private static findSolcMetadata(metadataFiles: Map<string, SolcMetadata>, contractRecord: ContractRecord): [string, SolcMetadata] | null {
+    private static findSolcMetadata(metadataFiles: Map<string, SolcMetadata|HHMetadata>, contractRecord: ContractRecord): [string, SolcMetadata] | null {
         let result: [string, SolcMetadata] | null = null
         for (const [f, m] of metadataFiles.entries()) {
-            if (SolcUtils.fetchCompilationTarget(m) == contractRecord.contractName) {
-                result = [f, m]
-                break
+            const solcMetadata = SolcUtils.castSolcMetadata(m)
+            if (solcMetadata !== null) {
+                if (SolcUtils.fetchCompilationTarget(solcMetadata) == contractRecord.contractName) {
+                    result = [f, solcMetadata]
+                    break
+                }
             }
         }
         return result
     }
 
-    static makeAuditItems(inputFiles: Map<string, string | SolcMetadata>,
+    private static makeAuditItemsWithHHMatch(inputFiles: Map<string, string|SolcMetadata|HHMetadata>, hhMatch: HHMatch): ContractAuditItem[] {
+        const result: ContractAuditItem[] = []
+        for (const [f, c] of inputFiles) {
+            let newItem: ContractAuditItem
+            const hhMetadata = HHUtils.castMetadata(c)
+            if (hhMetadata !== null && f == hhMatch.metadataPath) {
+                newItem = new ContractAuditItem(f, c, ContractAuditItemStatus.OK, true)
+            } else {
+                newItem = new ContractAuditItem(f, c, ContractAuditItemStatus.Unused, false)
+            }
+            result.push(newItem)
+        }
+        return result
+    }
+
+    private static makeAuditItems(inputFiles: Map<string, string | SolcMetadata | HHMetadata>,
                           contractRecord: ContractRecord | null = null,
                           resolvedMetadata: [string, SolcMetadata] | null = null): ContractAuditItem[] {
         const result: ContractAuditItem[] = []
@@ -229,7 +278,7 @@ export class ContractSourceAudit {
                     // f is a solidity source
                     const target = f == contractRecord.sourceFileName
                     const currentHash = utils.keccak256(utils.toUtf8Bytes(c))
-                    const expectedHash = SolcUtils.fetchKeccakHash(f, resolvedMetadata[1])
+                    const expectedHash = this.fetchKeccakHash(f, resolvedMetadata[1])
                     if (expectedHash === null) {
                         newItem = new ContractAuditItem(f, c, ContractAuditItemStatus.Unused, target)
                     } else if (expectedHash === currentHash) {
@@ -249,7 +298,7 @@ export class ContractSourceAudit {
         return result
     }
 
-    private static makeSolcInput(sourceFiles: Map<string, string>, optimized: boolean): SolcInput {
+    private static makeSolcInput(sourceFiles: Map<string, string>): SolcInput {
         const result = {
             language: "Solidity",
             sources: {} as Record<string, { content: string }>,
@@ -258,17 +307,22 @@ export class ContractSourceAudit {
                     '*': {
                         '*': ["metadata", "evm.deployedBytecode.object"],
                     },
-                },
-                optimizer: {
-                    enabled: false
                 }
             },
         }
         for (const [path, content] of sourceFiles) {
             result.sources[path] = {content: content}
         }
-        if (optimized) {
-            result.settings.optimizer.enabled = true
+        return result
+    }
+
+    private static fetchKeccakHash(f: string, metadata: SolcMetadata|HHMetadata): string|null {
+        let result: string|null
+        const solcMetadata = SolcUtils.castSolcMetadata(metadata)
+        if (solcMetadata !== null) {
+            result = SolcUtils.fetchKeccakHash(f, solcMetadata)
+        } else {
+            result = null
         }
         return result
     }

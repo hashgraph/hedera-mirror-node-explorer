@@ -157,6 +157,8 @@ import {ContractSourceAnalyzer} from "@/utils/analyzer/ContractSourceAnalyzer";
 import ProgressDialog, {Mode} from "@/components/staking/ProgressDialog.vue";
 import {ContractAuditStatus} from "@/utils/analyzer/ContractSourceAudit";
 import ConfirmDialog from "@/components/ConfirmDialog.vue";
+import {SolcUtils} from "@/utils/solc/SolcUtils";
+import {SolcInput} from "@/utils/solc/SolcInput";
 
 export default defineComponent({
     name: "ContractVerificationDialog",
@@ -296,12 +298,12 @@ export default defineComponent({
                         }
                         break
                     case ContractAuditStatus.Resolved: {
-                        const contractName = sourceAnalyzer.audit.value.contractRecord!.contractName
+                        const contractName = sourceAnalyzer.audit.value.resolvedContractName
                         result = "Contract \"" + contractName + "\" is ready to be verified"
                         break
                     }
                     case ContractAuditStatus.Uncertain: {
-                        const contractName = sourceAnalyzer.audit.value.contractRecord!.contractName
+                        const contractName = sourceAnalyzer.audit.value.resolvedContractName
                         result = "Contract \"" + contractName + "\" is ready to be verified"
                         break
                     }
@@ -337,25 +339,42 @@ export default defineComponent({
 
         const handleConfirmVerification = async () => {
             const audit = sourceAnalyzer.audit.value!
-            const contractRecord = audit.contractRecord!
 
             showConfirmDialog.value = false
             showProgressDialog.value = true
             showProgressSpinner.value = true
             progressDialogMode.value = Mode.Busy
-            progressMainMessage.value = "Verifying " + contractRecord.contractName + " contract…"
+            progressMainMessage.value = "Verifying " + audit.resolvedContractName + " contract…"
             progressExtraMessage.value = null
             try {
                 let response: SourcifyVerifyResponse | null
                 if (audit.status == ContractAuditStatus.Resolved) {
-                    // We verify using /verify REST call
-                    const metadata = audit.resolvedMetadata![1]
-                    const sourceFiles = audit.makeReducedSourceFiles()
-                    response = await SourcifyUtils.verify(props.contractId, metadata, sourceFiles)
+                    const solcMetadata = SolcUtils.castSolcMetadata(audit.resolvedMetadata)
+                    if (solcMetadata !== null) {
+                        // We verify using /verify REST call
+                        const sourceFiles = audit.makeReducedSourceFiles()
+                        response = await SourcifyUtils.verify(
+                            props.contractId,
+                            solcMetadata,
+                            sourceFiles)
+                    } else {
+                        // We verify using /verify/solc-input REST call
+                        const compilerVersion = "v" + audit.longCompilerVersion!
+                        const solcInput = audit.resolvedMetadata as SolcInput
+                        response = await SourcifyUtils.verifyWithSolcInput(
+                            props.contractId,
+                            audit.resolvedContractName!,
+                            compilerVersion,
+                            solcInput)
+                    }
                 } else {
                     const compilerVersion = "v" + audit.longCompilerVersion!
                     const solcInput = audit.makeReducedSolcInput()
-                    response = await SourcifyUtils.verifyWithSolcInput(props.contractId, contractRecord.contractName, compilerVersion, solcInput)
+                    response = await SourcifyUtils.verifyWithSolcInput(
+                        props.contractId,
+                        audit.resolvedContractName!,
+                        compilerVersion,
+                        solcInput)
                 }
                 showProgressSpinner.value = false
                 if (response !== null) {

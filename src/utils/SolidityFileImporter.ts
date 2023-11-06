@@ -21,11 +21,13 @@
 import {computed, ref} from "vue";
 import {SolcUtils} from "@/utils/solc/SolcUtils";
 import {SolcMetadata} from "@/utils/solc/SolcMetadata";
+import {HHUtils} from "@/utils/hardhat/HHUtils";
+import {HHMetadata} from "@/utils/hardhat/HHMetadata";
 
 export class SolidityFileImporter {
 
     public readonly started = ref(false)
-    public readonly files = ref<Map<string, string|SolcMetadata>>(new Map())
+    public readonly files = ref<Map<string, string|SolcMetadata|HHMetadata>>(new Map())
     public readonly failure = ref<unknown>(null)
 
     //
@@ -102,7 +104,7 @@ export class SolidityFileImporter {
         }
     }
 
-    private static async importEntry(e: FileSystemEntry, output: Map<string, string|SolcMetadata>, topFolder: string): Promise<void> {
+    private static async importEntry(e: FileSystemEntry, output: Map<string, string|SolcMetadata|HHMetadata>, topFolder: string): Promise<void> {
         if (e !== null) {
             if (e.isFile) {
                 const fileName = e!.name
@@ -113,9 +115,14 @@ export class SolidityFileImporter {
                 } else if (hasExtension(fileName, ".json")) {
                     const path = removeTopFolder(e.fullPath, topFolder)
                     const content = await asyncReadText(e as FileSystemFileEntry)
-                    const metadata = SolcUtils.parseSolcMetadata(content)
-                    if (metadata !== null) {
-                        output.set(path, metadata)
+                    const solcMetadata = SolcUtils.parseSolcMetadata(content)
+                    if (solcMetadata !== null) {
+                        output.set(path, solcMetadata)
+                    } else {
+                        const hhMetadata = HHUtils.parseMetadata(content)
+                        if (hhMetadata !== null) {
+                            output.set(path, hhMetadata)
+                        }
                     }
                 }
             } else if (e.isDirectory) {
@@ -132,7 +139,7 @@ export class SolidityFileImporter {
         }
     }
 
-    private static async importFile(f: File, output: Map<string, string | SolcMetadata>, topFolder: string): Promise<void> {
+    private static async importFile(f: File, output: Map<string, string | SolcMetadata | HHMetadata>, topFolder: string): Promise<void> {
         if (f !== null) {
             const fileName = f!.name
             if (hasExtension(fileName, ".sol")) {
@@ -142,9 +149,14 @@ export class SolidityFileImporter {
             } else if (hasExtension(fileName, ".json")) {
                 const path = removeTopFolder(f.name, topFolder)
                 const content = await asyncReadTextFromFile(f)
-                const metadata = SolcUtils.parseSolcMetadata(content)
-                if (metadata !== null) {
-                    output.set(path, metadata)
+                const solcMetadata = SolcUtils.parseSolcMetadata(content)
+                if (solcMetadata !== null) {
+                    output.set(path, solcMetadata)
+                } else {
+                    const hhMetadata = HHUtils.parseMetadata(content)
+                    if (hhMetadata !== null) {
+                        output.set(path, hhMetadata)
+                    }
                 }
             }
         }
@@ -187,8 +199,8 @@ async function asyncReadEntries(e: FileSystemDirectoryEntry): Promise<FileSystem
     })
 }
 
-function mergeMap(m1: Map<string, string|SolcMetadata>, m2: Map<string, string|SolcMetadata>): Map<string,string|SolcMetadata> {
-    const result = new Map<string, string|SolcMetadata>
+function mergeMap(m1: Map<string, string|SolcMetadata|HHMetadata>, m2: Map<string, string|SolcMetadata|HHMetadata>): Map<string,string|SolcMetadata|HHMetadata> {
+    const result = new Map<string, string|SolcMetadata|HHMetadata>
     for (const [p, c] of m1) {
         result.set(p, c)
     }

@@ -22,11 +22,12 @@ import {computed, ref, Ref, shallowRef, watch, WatchStopHandle} from 'vue';
 import {ByteCodeAnalyzer} from "@/utils/analyzer/ByteCodeAnalyzer";
 import {SolcMetadata} from "@/utils/solc/SolcMetadata";
 import {ContractSourceAudit} from "@/utils/analyzer/ContractSourceAudit";
+import {HHMetadata} from "@/utils/hardhat/HHMetadata";
 
 export class ContractSourceAnalyzer {
 
     public readonly byteCodeAnalyzer: ByteCodeAnalyzer
-    public readonly inputFiles: Ref<Map<string, string|SolcMetadata>>
+    public readonly inputFiles: Ref<Map<string, string|SolcMetadata|HHMetadata>>
 
     private readonly analyzingRef = ref(false)
     private readonly auditRef = shallowRef<ContractSourceAudit|null>(null)
@@ -36,7 +37,7 @@ export class ContractSourceAnalyzer {
     // Public
     //
 
-    public constructor(byteCodeAnalyzer: ByteCodeAnalyzer, inputFiles: Ref<Map<string, string|SolcMetadata>>) {
+    public constructor(byteCodeAnalyzer: ByteCodeAnalyzer, inputFiles: Ref<Map<string, string|SolcMetadata|HHMetadata>>) {
         this.byteCodeAnalyzer = byteCodeAnalyzer
         this.inputFiles = inputFiles
     }
