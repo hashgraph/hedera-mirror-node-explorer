@@ -36,7 +36,7 @@
     "base32-encode": "^1.2.0",
     "bulma": "^0.9.4",
     "core-js": "^3.33.1",
-    "crypto-js": "4.1.1",
+    "crypto-js": "4.2.0",
     "ethers": "^5.7.2",
     "hashconnect": "^0.1.10",
     "vue": "^3.3.4",
