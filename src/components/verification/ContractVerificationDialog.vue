@@ -32,8 +32,9 @@
                     {{ dialogTitle }}
                 </div>
                 <div>
-                    Verify the contract by recompiling the corresponding Solidity source files and checking that the output
-                    is the same as the bytecode of the deployed contract
+                    Please upload the Solidity source files and metadata associated with the Hedera contract.
+                    Once submitted the verification service will compile the source code and match it with
+                    the contract bytecode deployed on the Hedera network.
                 </div>
 
                 <hr class="h-card-separator"/>
