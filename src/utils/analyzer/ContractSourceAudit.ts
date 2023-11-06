@@ -109,6 +109,28 @@ export class ContractSourceAudit {
         return ContractSourceAudit.makeSolcInput(this.makeReducedSourceFiles())
     }
 
+    countSolcMetadata(): number {
+        let result = 0
+        for (const i of this.items) {
+            if (SolcUtils.castSolcMetadata(i.content) !== null) {
+                result += 1
+            }
+        }
+        return result
+    }
+
+    fetchFallbackMetadata(): SolcMetadata|null {
+        let result: SolcMetadata|null = null
+        for (const i of this.items) {
+            const solcMetadata = SolcUtils.castSolcMetadata(i.content)
+            if (solcMetadata !== null) {
+                result = solcMetadata
+                break
+            }
+        }
+        return result
+    }
+
     //
     // Private (with hardhat metadata match)
     //
@@ -131,12 +153,15 @@ export class ContractSourceAudit {
 
         // Separates sources and metadata files
         const sourceFiles = new Map<string, string>()
-        const metadataFiles = new Map<string, SolcMetadata|HHMetadata>()
+        const metadataFiles = new Map<string, SolcMetadata>()
         for (const [file, content] of files) {
             if (typeof content == "string") {
                 sourceFiles.set(file, content)
             } else {
-                metadataFiles.set(file, content)
+                const solcMetadata = SolcUtils.castSolcMetadata(content)
+                if (solcMetadata !== null) {
+                    metadataFiles.set(file, solcMetadata)
+                }
             }
         }
 

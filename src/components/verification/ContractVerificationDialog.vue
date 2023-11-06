@@ -212,7 +212,9 @@ export default defineComponent({
 
         const verifyButtonEnabled = computed(() => {
             const auditStatus = sourceAnalyzer.audit.value?.status
-            return auditStatus == ContractAuditStatus.Resolved || auditStatus == ContractAuditStatus.Uncertain
+            return auditStatus == ContractAuditStatus.Resolved
+                || auditStatus == ContractAuditStatus.Uncertain
+                || auditStatus == ContractAuditStatus.Mismatch
         })
 
         //
@@ -285,7 +287,16 @@ export default defineComponent({
                         result = "Compilation failed. Check your source files."
                         break
                     case ContractAuditStatus.Mismatch:
-                        result = "These source files do not match contract byte code"
+                        switch(sourceAnalyzer.audit.value.countSolcMetadata()) {
+                            case 0:
+                                result = "These source files do not match contract byte code"
+                                break
+                            case 1:
+                                result = "Contract is ready to be verified"
+                                break
+                            default:
+                                result = "Multiple metadata files are present. Make sure to drop only a single one."
+                        }
                         break
                     case ContractAuditStatus.UnknownCompilerVersion:
                         const compilerVersion = props.byteCodeAnalyzer.solcVersion.value ?? "?"
@@ -368,14 +379,24 @@ export default defineComponent({
                             compilerVersion,
                             solcInput)
                     }
-                } else {
+                } else if (audit.status == ContractAuditStatus.Uncertain) {
+                    const contractName = audit.resolvedContractName!
                     const compilerVersion = "v" + audit.longCompilerVersion!
                     const solcInput = audit.makeReducedSolcInput()
                     response = await SourcifyUtils.verifyWithSolcInput(
                         props.contractId,
-                        audit.resolvedContractName!,
+                        contractName,
                         compilerVersion,
                         solcInput)
+                } else {
+                    // audit.status == ContractAuditStatus.Mismatch
+                    // We verify using /verify REST call
+                    const sourceFiles = audit.makeReducedSourceFiles()
+                    const fallbackMetadata = audit.fetchFallbackMetadata()
+                    response = await SourcifyUtils.verify(
+                        props.contractId,
+                        fallbackMetadata!,
+                        sourceFiles)
                 }
                 showProgressSpinner.value = false
                 if (response !== null) {

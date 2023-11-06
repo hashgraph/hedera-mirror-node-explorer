@@ -23,6 +23,7 @@ import {routeManager} from "@/router";
 import {ContractByIdCache} from "@/utils/cache/ContractByIdCache";
 import axios, {AxiosResponse} from "axios";
 import {SolcMetadata} from "@/utils/solc/SolcMetadata";
+import {SolcUtils} from "@/utils/solc/SolcUtils";
 
 export class SourcifyUtils {
 
@@ -67,7 +68,8 @@ export class SourcifyUtils {
                 chain: sourcifySetup.chainID.toString(),
                 files: {
                     "metadata.json": JSON.stringify(metadata)
-                }
+                },
+                contractName: SolcUtils.fetchCompilationTarget(metadata) ?? undefined
             }
             for (const [fileName, content] of inputFiles.entries()) {
                 requestBody.files[fileName] = content
