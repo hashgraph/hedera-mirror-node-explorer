@@ -178,6 +178,43 @@ export class SolcUtils {
         return result
     }
 
+    public static castSolcInput(content: unknown): SolcInput|null {
+        let result: SolcInput|null
+        /*
+            // https://docs.soliditylang.org/en/latest/metadata.html#contract-metadata
+
+            {
+                "language": "Solidity",
+                "sources": {
+                },
+            }
+
+            Note: it's like SolcMetadata but without "compiler" nor "version"
+         */
+
+        if (typeof content === "object" && content !== null) {
+            const ko1 = "compiler" in content
+            const ko2 = "version" in content
+            const ok1 = "language" in content && content.language == "Solidity"
+            const ok2 = "sources" in content && typeof content.sources == "object"
+            result = !ko1 && !ko2 && ok1 && ok2 ? content as SolcInput : null
+        } else {
+            result = null
+        }
+        return result
+    }
+
+    public static parseSolcInput(content: string): SolcInput|null {
+        let result: SolcInput|null
+        try {
+            const json = JSON.parse(content)
+            result = this.castSolcInput(json)
+        } catch {
+            result = null
+        }
+        return result
+    }
+
 
     public static findMatchingContract(deployedBytecode: string, output: SolcOutput): ContractRecord|null {
         let result: ContractRecord|null = null

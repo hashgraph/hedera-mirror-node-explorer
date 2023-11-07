@@ -50,6 +50,25 @@ export interface InputSettings {
     remappings?: string[]
     outputSelection: Record<string, Record<string, string[]>>
     optimizer?: {
-        enabled: boolean
+        details?: {
+            constantOptimizer?: boolean,
+            cse?: boolean,
+            deduplicate?: boolean,
+            // inliner defaults to "true"
+            inliner?: boolean,
+            // jumpdestRemover defaults to "true"
+            jumpdestRemover?: boolean,
+            orderLiterals?: boolean,
+            // peephole defaults to "true"
+            peephole?: boolean,
+            yul?: boolean,
+            // Optional: Only present if "yul" is "true"
+            yulDetails?: {
+                optimizerSteps?: string,
+                stackAllocation?: boolean
+            }
+        },
+        enabled?: boolean,
+        runs?: number
     }
 }
