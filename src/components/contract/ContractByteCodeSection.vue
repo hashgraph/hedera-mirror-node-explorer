@@ -62,10 +62,17 @@
             <Property v-if="isVerified" id="verificationStatus" :full-width="true">
                 <template v-slot:name>Verification Status</template>
                 <template v-slot:value>
-                    <span>
-                        {{ isFullMatch ? "Full Match" : "Partial Match" }}
-                        <InfoTooltip :label="tooltipText"/>
-                    </span>
+                    <div class="is-flex is-align-items-center">
+                        <span>
+                            {{ isFullMatch ? "Full Match" : "Partial Match" }}
+                            <InfoTooltip :label="tooltipText"/>
+                        </span>
+                        <button v-if="!isFullMatch" id="verify-button"
+                                class="button is-white h-is-smaller ml-3"
+                                @click="showVerifyDialog = true">
+                            RE-VERIFY CONTRACT
+                        </button>
+                    </div>
                 </template>
             </Property>
             <Property v-if="isVerified" id="contractName" :full-width="true">
