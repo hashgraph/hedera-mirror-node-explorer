@@ -277,7 +277,7 @@ export interface SolcWorkerOutput {
 
 export interface SolcReport {
     output: SolcOutput
-    resolution: Record<string, string>
+    resolution: Record<string, string> // importPath -> dropPath
 }
 
 export enum BytecodeComparison {

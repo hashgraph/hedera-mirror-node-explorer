@@ -58,7 +58,7 @@ async function handleMessage(event: MessageEvent): Promise<SolcReport> {
     }
     const options = { import: importCallback }
     const solcOutput = JSON.parse((solc as any).compile(JSON.stringify(workerInput.input), options))
-    return { output: solcOutput, resolution: {}}
+    return { output: solcOutput, resolution: resolution}
 }
 
 async function makeSolc(version: string): Promise<unknown> {
