@@ -21,7 +21,7 @@
 import {ContractRecord, SolcReport, SolcUtils} from "@/utils/solc/SolcUtils";
 import {SolcMetadata} from "@/utils/solc/SolcMetadata";
 import {SolcIndexCache} from "@/utils/cache/SolcIndexCache";
-import {SolcInput} from "@/utils/solc/SolcInput";
+import {InputSettings, SolcInput} from "@/utils/solc/SolcInput";
 import {HHMetadata} from "@/utils/hardhat/HHMetadata";
 import {HHMatch, HHUtils} from "@/utils/hardhat/HHUtils";
 
@@ -288,16 +288,32 @@ export class ContractSourceAudit {
             }
         }
 
-        // Compile sources using each solc metadata file and searches a contract matching deployed bytecode
+        // Extracts compilation settings from solc metadata files
+        const compilationSettings = new Set<string>()
+        for (const solcMetadata of solcMetadataFiles.values()) {
+            const settings = JSON.stringify(this.makeSolcInputSettings(solcMetadata))
+            compilationSettings.add(settings)
+        }
+
+        // Compiles sources using each settings and searches a contract matching deployed bytecode
         let record: ContractRecord|null = null
-        let solcMetadata: [string, SolcMetadata]|null = null
-        for (const [file, content] of solcMetadataFiles) {
-            const solcInput = this.makeSolcInput(sourceFiles, content)
+        for (const settings of compilationSettings) {
+            const solcInput = this.makeSolcInput(sourceFiles, JSON.parse(settings))
             const solcReport = await this.compile(solcInput, longCompilerVersion)
             if (solcReport !== null) {
                 const r = SolcUtils.findMatchingContract(deployedByteCode, solcReport.output)
                 if (r !== null) {
                     record = r
+                    break
+                }
+            }
+        }
+
+        // Finds matching solc metadata
+        let solcMetadata: [string, SolcMetadata]|null = null
+        if (record !== null) {
+            for (const [file, content] of solcMetadataFiles) {
+                if (record.sourceFileName == SolcUtils.fetchCompilationTarget(content)) {
                     solcMetadata = [file, content]
                     break
                 }
@@ -417,24 +433,21 @@ export class ContractSourceAudit {
     }
 
 
-    private static makeSolcInput(sourceFiles: Map<string, string>, solcMetadata: SolcMetadata|null = null): SolcInput {
-        const result = {
+    private static makeSolcInput(sourceFiles: Map<string, string>, settings: InputSettings|null = null): SolcInput {
+        const result: SolcInput = {
             language: "Solidity",
             sources: {} as Record<string, { content: string }>,
-            settings: {
+        }
+        if (settings !== null) {
+            result.settings = settings
+        } else {
+            result.settings = {
                 outputSelection: {
                     '*': {
                         '*': ["metadata", "evm.deployedBytecode.object"],
                     },
                 },
-                optimizer: undefined as undefined|{}
-            },
-        }
-        if (solcMetadata !== null) {
-            // We pass optimizer settings from solc metadata to solc input
-            // It looks like solcMetadata.settings.optimizer contains unclonable object
-            // So we neutralize this using JSON serialization
-            result.settings.optimizer = JSON.parse(JSON.stringify(solcMetadata.settings.optimizer))
+            }
         }
         for (const [path, content] of sourceFiles) {
             result.sources[path] = {content: content}
@@ -460,6 +473,25 @@ export class ContractSourceAudit {
                 }
             }
         }
+        return result
+    }
+
+    private static makeSolcInputSettings(solcMetadata: SolcMetadata): InputSettings {
+
+        /*
+                                        solc metadata        solc input settings
+
+                compilationTarget           x
+                emVersion                   x                       x
+                libraries                   x                       x
+                metadata                    x                       x
+                optimizer                   x                       x
+                outputSelection                                     x
+                remappings                  x                       x
+         */
+
+        const result = JSON.parse(JSON.stringify(solcMetadata.settings))
+        delete result.compilationTarget
         return result
     }
 
