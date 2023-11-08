@@ -297,13 +297,15 @@ export class ContractSourceAudit {
 
         // Compiles sources using each settings and searches a contract matching deployed bytecode
         let record: ContractRecord|null = null
+        let solcReport: SolcReport|null = null
         for (const settings of compilationSettings) {
-            const solcInput = this.makeSolcInput(sourceFiles, JSON.parse(settings))
-            const solcReport = await this.compile(solcInput, longCompilerVersion)
-            if (solcReport !== null) {
-                const r = SolcUtils.findMatchingContract(deployedByteCode, solcReport.output)
+            const input = this.makeSolcInput(sourceFiles, JSON.parse(settings))
+            const report = await this.compile(input, longCompilerVersion)
+            if (report !== null) {
+                const r = SolcUtils.findMatchingContract(deployedByteCode, report.output)
                 if (r !== null) {
                     record = r
+                    solcReport = report
                     break
                 }
             }
@@ -311,11 +313,15 @@ export class ContractSourceAudit {
 
         // Finds matching solc metadata
         let solcMetadata: [string, SolcMetadata]|null = null
-        if (record !== null) {
+        if (record !== null && solcReport !== null) {
             for (const [file, content] of solcMetadataFiles) {
-                if (record.sourceFileName == SolcUtils.fetchCompilationTarget(content)) {
-                    solcMetadata = [file, content]
-                    break
+                const compilationTarget = SolcUtils.fetchCompilationTarget(content)
+                if (compilationTarget !== null)  {
+                    const dropPath = solcReport.resolution[compilationTarget]
+                    if (record.sourceFileName === compilationTarget || record.sourceFileName === dropPath) {
+                        solcMetadata = [file, content]
+                        break
+                    }
                 }
             }
         }
