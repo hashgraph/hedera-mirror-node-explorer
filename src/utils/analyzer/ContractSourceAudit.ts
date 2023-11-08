@@ -316,10 +316,9 @@ export class ContractSourceAudit {
         let solcMetadata: [string, SolcMetadata]|null = null
         if (record !== null && solcReport !== null) {
             for (const [file, content] of solcMetadataFiles) {
-                const compilationTargetPath = SolcUtils.fetchCompilationTargetPath(content)
-                if (record.sourceFileName === compilationTargetPath) {
+                const compilationTarget = SolcUtils.fetchCompilationTarget(content)
+                if (compilationTarget == record.contractName) {
                     solcMetadata = [file, content]
-                    break
                 }
             }
         }
