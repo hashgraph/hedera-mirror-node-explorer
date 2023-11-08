@@ -309,7 +309,7 @@ export default defineComponent({
                         if (metadataFileCount >= 2) {
                             result = "Multiple metadata files are present. Make sure to drop only a single one."
                         } else {
-                            result = "Compilation settings are needed"
+                            result = "Drop the Solidity source files (and metadata if available) in the area below"
                         }
                     }
                 }
