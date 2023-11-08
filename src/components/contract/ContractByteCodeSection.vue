@@ -87,18 +87,6 @@
                     <StringValue :string-value="solcVersion ?? undefined"/>
                 </template>
             </Property>
-            <Property v-if="ipfsHash" id="ipfsHash" :full-width="true">
-                <template v-slot:name>IPFS Hash</template>
-                <template v-slot:value>
-                    <StringValue :string-value="ipfsHash ?? undefined"/>
-                </template>
-            </Property>
-            <Property v-if="swarmHash" id="swarmHash" :full-width="true">
-                <template v-slot:name>SWARM Hash</template>
-                <template v-slot:value>
-                    <StringValue :string-value="swarmHash ?? undefined"/>
-                </template>
-            </Property>
             <Property id="code" :full-width="true">
                 <template v-slot:name>Runtime Bytecode</template>
             </Property>
