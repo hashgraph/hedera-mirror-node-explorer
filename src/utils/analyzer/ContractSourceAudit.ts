@@ -240,9 +240,10 @@ export class ContractSourceAudit {
         // Compile sources with each solc input file and searches a contract matching deployed bytecode
         let record: ContractRecord|null = null
         let solcInput: [string, SolcInput]|null = null
+        let solcReport: SolcReport|null = null
         for (const [file, content] of solcInputFiles) {
             try {
-                const solcReport = await this.compile(content, longCompilerVersion)
+                solcReport = await this.compile(content, longCompilerVersion)
                 if (solcReport !== null) {
                     const r = SolcUtils.findMatchingContract(deployedByteCode, solcReport.output)
                     if (r !== null) {
@@ -254,8 +255,8 @@ export class ContractSourceAudit {
             } catch {}
         }
 
-        if (record !== null && solcInput !== null) {
-            const items = ContractSourceAudit.makeAuditItems(files, record, solcInput)
+        if (record !== null && solcInput !== null && solcReport !== null) {
+            const items = ContractSourceAudit.makeAuditItemsWithMetadata(files, record, solcInput, solcReport)
             result = new ContractSourceAudit(
                 ContractAuditStatus.Resolved,
                 items,
@@ -315,22 +316,19 @@ export class ContractSourceAudit {
         let solcMetadata: [string, SolcMetadata]|null = null
         if (record !== null && solcReport !== null) {
             for (const [file, content] of solcMetadataFiles) {
-                const compilationTarget = SolcUtils.fetchCompilationTarget(content)
-                if (compilationTarget !== null)  {
-                    const dropPath = solcReport.resolution[compilationTarget]
-                    if (record.sourceFileName === compilationTarget || record.sourceFileName === dropPath) {
-                        solcMetadata = [file, content]
-                        break
-                    }
+                const compilationTargetPath = SolcUtils.fetchCompilationTargetPath(content)
+                if (record.sourceFileName === compilationTargetPath) {
+                    solcMetadata = [file, content]
+                    break
                 }
             }
         }
 
-        if (record !== null && solcMetadata !== null) {
+        if (record !== null && solcReport !== null && solcMetadata !== null) {
 
             result = new ContractSourceAudit(
                 ContractAuditStatus.Resolved,
-                ContractSourceAudit.makeAuditItems(files, record, solcMetadata),
+                ContractSourceAudit.makeAuditItemsWithMetadata(files, record, solcMetadata, solcReport),
                 longCompilerVersion,
                 record.contractName,
                 solcMetadata[1])
@@ -360,7 +358,7 @@ export class ContractSourceAudit {
             // We found a matching contract using default compiler options ... lucky
             result = new ContractSourceAudit(
                 ContractAuditStatus.Resolved,
-                ContractSourceAudit.makeAuditItems(files, record, [record.sourceFileName, solcInput]),
+                ContractSourceAudit.makeAuditItemsWithMetadata(files, record, [record.sourceFileName, solcInput], solcReport),
                 longCompilerVersion,
                 record.contractName,
                 solcInput)
@@ -370,10 +368,10 @@ export class ContractSourceAudit {
                 // Let's fallback with the metadata file
                 result = new ContractSourceAudit(
                     ContractAuditStatus.Resolved,
-                    ContractSourceAudit.makeAuditItems(files),
+                    ContractSourceAudit.makeAuditItemsWithMetadata(files, null, fallbackMetadata, solcReport),
                     longCompilerVersion,
                     null,
-                    fallbackMetadata)
+                    fallbackMetadata[1])
             } else {
                 // User action is needed
                 //  - either there is no metadata => provide compilation settings
@@ -388,7 +386,7 @@ export class ContractSourceAudit {
         return Promise.resolve(result)
     }
 
-    private static findFallbackMetadata(files: Map<string, string | SolcMetadata | SolcInput | HHMetadata>): SolcMetadata|SolcInput|null {
+    private static findFallbackMetadata(files: Map<string, string | SolcMetadata | SolcInput | HHMetadata>): [string, SolcMetadata|SolcInput] |null {
 
         // Splits metadata files by type
         const hhMetadataFiles = new Map<string, HHMetadata>()
@@ -411,16 +409,16 @@ export class ContractSourceAudit {
             }
         }
 
-        let result: SolcMetadata|SolcInput|null
+        let result: [string, SolcMetadata|SolcInput] | null
         const metadataFileCount = hhMetadataFiles.size + solcInputFiles.size + solcMetadataFiles.size
         if (metadataFileCount === 1) {
             if (hhMetadataFiles.size == 1) {
-                const metadata0 = hhMetadataFiles.values().next().value as HHMetadata
-                result = metadata0.input
+                const hhMetadata = hhMetadataFiles.entries().next().value as [string, HHMetadata]
+                result = [hhMetadata[0], hhMetadata[1].input]
             } else if (solcInputFiles.size == 1) {
-                result = solcInputFiles.values().next().value
+                result = solcInputFiles.entries().next().value
             } else {
-                result = solcMetadataFiles.values().next().value
+                result = solcMetadataFiles.entries().next().value
             }
         } else {
             result = null
@@ -466,19 +464,31 @@ export class ContractSourceAudit {
         return result
     }
 
-    private static isReferencedInMetadata(path: string, metadata: SolcMetadata|SolcInput|HHMetadata): boolean {
-        let result: boolean
+    private static isReferencedInMetadata(path: string, metadata: SolcMetadata|SolcInput|HHMetadata, solcReport: SolcReport): boolean {
+        let result = false
         const solcMetadata = SolcUtils.castSolcMetadata(metadata)
         if (solcMetadata !== null) {
-            result = path in solcMetadata.sources
+            for (const importPath of Object.keys(solcMetadata.sources)) {
+                const dropPath = this.importToDropPath(importPath, solcReport)
+                if (dropPath === path) {
+                    result = true
+                    break
+                }
+            }
         } else {
             const solcInput = SolcUtils.castSolcInput(metadata)
             if (solcInput !== null) {
-                result = path in solcInput.sources
+                for (const importPath of Object.keys(solcInput.sources)) {
+                    const dropPath = this.importToDropPath(importPath, solcReport)
+                    if (dropPath === path) {
+                        result = true
+                        break
+                    }
+                }
             } else {
                 const hhMetadata = HHUtils.castMetadata(metadata)
-                if (hhMetadata !== null) {
-                    result = path in hhMetadata.input?.sources
+                if (hhMetadata !== null && hhMetadata.input) {
+                    result = this.isReferencedInMetadata(path, hhMetadata.input, solcReport)
                 } else {
                     result = false
                 }
@@ -543,33 +553,40 @@ export class ContractSourceAudit {
         return result
     }
 
-    private static makeAuditItems(inputFiles: Map<string, string | SolcMetadata | SolcInput | HHMetadata>,
-                          contractRecord: ContractRecord | null = null,
-                          resolvedMetadata: [string, SolcMetadata|SolcInput] | null = null): ContractAuditItem[] {
+    private static makeAuditItemsWithMetadata(inputFiles: Map<string, string | SolcMetadata | SolcInput | HHMetadata>,
+                                  contractRecord: ContractRecord | null = null,
+                                  resolvedMetadata: [string, SolcMetadata|SolcInput],
+                                  solcReport: SolcReport): ContractAuditItem[] {
         const result: ContractAuditItem[] = []
+        const contractDropPath = contractRecord !== null ? this.importToDropPath(contractRecord.sourceFileName, solcReport) : null
         for (const [f, c] of inputFiles) {
             let newItem: ContractAuditItem
-            if (contractRecord === null) {
-                newItem = new ContractAuditItem(f, c, ContractAuditItemStatus.Unknown, false)
-            } else if (resolvedMetadata === null) {
-                const target = f == contractRecord.sourceFileName
-                newItem = new ContractAuditItem(f, c, ContractAuditItemStatus.Unknown, target)
+            if (typeof c == "string") {
+                // f is a solidity source
+                const target = f == contractDropPath
+                const referenced = this.isReferencedInMetadata(f, resolvedMetadata[1], solcReport)
+                const status = referenced ? ContractAuditItemStatus.OK : ContractAuditItemStatus.Unused
+                newItem = new ContractAuditItem(f, c, status, target)
             } else {
-                if (typeof c == "string") {
-                    // f is a solidity source
-                    const target = f == contractRecord.sourceFileName
-                    const referenced = this.isReferencedInMetadata(f, resolvedMetadata[1])
-                    const status = referenced ? ContractAuditItemStatus.OK : ContractAuditItemStatus.Unused
-                    newItem = new ContractAuditItem(f, c, status, target)
-                } else {
-                    // f is a metadata file
-                    const target = f == resolvedMetadata[0]
-                    const itemStatus = target ? ContractAuditItemStatus.OK : ContractAuditItemStatus.Unused
-                    newItem = new ContractAuditItem(f, c, itemStatus, target)
-                }
+                // f is a metadata file
+                const target = f == resolvedMetadata[0]
+                const itemStatus = target ? ContractAuditItemStatus.OK : ContractAuditItemStatus.Unused
+                newItem = new ContractAuditItem(f, c, itemStatus, target)
             }
             result.push(newItem)
         }
         return result
+    }
+
+    private static makeAuditItems(inputFiles: Map<string, string | SolcMetadata | SolcInput | HHMetadata>): ContractAuditItem[] {
+        const result: ContractAuditItem[] = []
+        for (const [f, c] of inputFiles) {
+            result.push(new ContractAuditItem(f, c, ContractAuditItemStatus.Unknown, false))
+        }
+        return result
+    }
+
+    private static importToDropPath(importPath: string, solcReport: SolcReport): string {
+        return solcReport.resolution[importPath] ?? importPath
     }
 }

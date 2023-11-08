@@ -95,6 +95,17 @@ export class SolcUtils {
         return result
     }
 
+    public static fetchCompilationTargetPath(metadata: SolcMetadata): string|null {
+        let result: string|null
+        const keys = Object.keys(metadata.settings.compilationTarget)
+        if (keys.length >= 1 && typeof metadata.settings.compilationTarget[keys[0]] == "string") {
+            result = keys[0]
+        } else {
+            result = null
+        }
+        return result
+    }
+
     public static fetchIPFSHash(sourceFileName: string, metadata: SolcMetadata): string|null {
         let result: string|null = null
         if (sourceFileName in metadata.sources) {
