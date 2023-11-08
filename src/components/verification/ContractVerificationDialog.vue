@@ -187,6 +187,7 @@ export default defineComponent({
 
         const showFileChooser = () => {
             if (fileChooser.value !== null) {
+                fileChooser.value.value = ''
                 fileChooser.value.click()
             }
         }
