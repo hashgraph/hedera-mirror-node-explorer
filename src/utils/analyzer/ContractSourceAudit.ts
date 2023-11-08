@@ -440,6 +440,11 @@ export class ContractSourceAudit {
         }
         if (settings !== null) {
             result.settings = settings
+            result.settings.outputSelection = {
+                '*': {
+                    '*': ["metadata", "evm.deployedBytecode.object"],
+                },
+            }
         } else {
             result.settings = {
                 outputSelection: {
