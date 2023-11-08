@@ -349,7 +349,9 @@ export default defineComponent({
             showProgressDialog.value = true
             showProgressSpinner.value = true
             progressDialogMode.value = Mode.Busy
-            progressMainMessage.value = "Verifying " + audit.resolvedContractName + " contract…"
+            progressMainMessage.value = audit.resolvedContractName
+                ? `Verifying ${audit.resolvedContractName} contract…`
+                : `Verifying contract…`
             progressExtraMessage.value = null
             try {
                 let response: SourcifyVerifyResponse | null
