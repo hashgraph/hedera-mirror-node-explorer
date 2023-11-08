@@ -252,7 +252,7 @@ export default defineComponent({
         const handleVerify = async () => {
             context.emit('update:showDialog', false)
             const audit = sourceAnalyzer.audit.value
-            if (audit?.status === ContractAuditStatus.Resolved && audit.resolvedContractName === null) {
+            if (audit?.status === ContractAuditStatus.Resolved && audit.resolvedMetadata === null) {
                 showMetadataDialog.value = true
                 metadataMessage.value = "You may proceed as is, or go back and add the metadata file if you have it."
                 metadataExtraMessage.value = "Providing the metadata may increase the chances to get a full match."
