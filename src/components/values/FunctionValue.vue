@@ -26,8 +26,8 @@
 
   <div v-if="value">
     <EVMAddress v-if="addressValue" :address="addressValue" :compact="isSmallScreen && !isMediumScreen"/>
-    <div v-else class="is-family-monospace h-is-text-size-3 should-wrap">{{ value }}</div>
-    <div class="h-is-extra-text h-is-text-size-3">{{ type }}</div>
+    <div v-else :class="{'has-text-grey': lowContrast}" class="is-family-monospace h-is-text-size-3 should-wrap">{{ value }}</div>
+    <div v-if="!hideType" class="h-is-extra-text h-is-text-size-3">{{ type }}</div>
   </div>
   <div v-else-if="initialLoading"/>
   <div v-else class="has-text-grey">None</div>
@@ -49,7 +49,17 @@ export default defineComponent({
   name: 'FunctionValue',
   components: {EVMAddress},
   props: {
-    ntv: Object as PropType<NameTypeValue>
+    ntv: Object as PropType<NameTypeValue>,
+    hideType: {
+      type: Boolean,
+      default: false,
+      required: false,
+    },
+    lowContrast: {
+      type: Boolean,
+      default: false,
+      required: false
+    }
   },
 
   setup(props) {

@@ -38,10 +38,9 @@
         </o-select>
       </o-field>
     </template>
-
     <template v-slot:content>
       <template v-for="l in nbLogDisplayed" :key="l">
-        <ContractResultLogEntry :log="logs[logCursor + l - 1]"/>
+        <ContractResultLogEntryV2 :log="logs[logCursor + l - 1]" :block-number="blockNumber" :transaction-hash="transactionHash"/>
         <hr class="h-card-separator" style="height: 1px; background: grey"/>
       </template>
 
@@ -74,8 +73,8 @@
 
 import {computed, defineComponent, onMounted, PropType, Ref, ref, watch} from "vue";
 import DashboardCard from "@/components/DashboardCard.vue";
-import ContractResultLogEntry from "@/components/contract/ContractResultLogEntry.vue";
-import {ContractResultLog} from "@/schemas/HederaSchemas";
+import ContractResultLogEntryV2 from "@/components/contract/ContractResultLogEntryV2.vue";
+import {ContractLog, ContractResultLog} from "@/schemas/HederaSchemas";
 import {AppStorage} from "@/AppStorage";
 
 const DEFAULT_PAGE_SIZE = 3
@@ -85,12 +84,18 @@ export default defineComponent({
   name: "ContractResultLogs",
 
   components: {
-    ContractResultLogEntry,
+    ContractResultLogEntryV2,
     DashboardCard
   },
 
   props: {
-    logs: Object as PropType<Array<ContractResultLog> | undefined>
+    logs: Object as PropType<Array<ContractLog> | undefined>,
+    blockNumber: {
+      type:  Number,
+    },
+    transactionHash: {
+      type: String
+    }
   },
 
   setup(props) {
