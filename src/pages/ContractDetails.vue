@@ -181,6 +181,8 @@
 
     <ContractResultsSection :contract-id="normalizedContractId ?? undefined"/>
 
+    <ContractResultLogs :logs="logs"/>
+
   </section>
 
   <Footer/>
@@ -218,6 +220,8 @@ import ContractResultsSection from "@/components/contracts/ContractResultsSectio
 import InfoTooltip from "@/components/InfoTooltip.vue";
 import Copyable from "@/components/Copyable.vue";
 import {ContractAnalyzer} from "@/utils/analyzer/ContractAnalyzer";
+import ContractResultLogs from "@/components/contract/ContractResultLogs.vue";
+import {ContractResultsLogsAnalyzer} from "@/utils/analyzer/ContractResultsLogsAnalyzer";
 
 const MAX_TOKEN_BALANCES = 3
 
@@ -243,7 +247,8 @@ export default defineComponent({
     TimestampValue,
     DurationValue,
     KeyValue,
-    StringValue
+    StringValue,
+    ContractResultLogs
   },
 
   props: {
@@ -332,6 +337,13 @@ export default defineComponent({
     onMounted(() => contractAnalyzer.mount())
     onBeforeUnmount(() => contractAnalyzer.unmount())
 
+    //
+    // contract results logs - event logs at contract level
+    //
+    const contractResultsLogsAnalyzer = new ContractResultsLogsAnalyzer(normalizedContractId)
+    onMounted(() => contractResultsLogsAnalyzer.mount())
+    onBeforeUnmount(() => contractResultsLogsAnalyzer.unmount())
+
     return {
       isSmallScreen,
       isMediumScreen,
@@ -350,7 +362,8 @@ export default defineComponent({
       proxyAccountId: proxyAccountId,
       normalizedContractId,
       accountRoute,
-      contractAnalyzer
+      contractAnalyzer,
+      logs: contractResultsLogsAnalyzer.logs
     }
   },
 });
