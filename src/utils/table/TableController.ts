@@ -307,7 +307,7 @@ export abstract class TableController<R, K> {
         this.autoRefreshRef.value = true
         await this.buffer.refresh()
         await this.bufferDidChange()
-        if (this.refreshCountRef.value < this.maxAutoUpdateCount) {
+        if (this.refreshCountRef.value < this.maxAutoUpdateCount && this.mounted) {
             this.timeoutID = window.setTimeout(() => {
                 this.refreshCountRef.value += 1
                 this.refreshBuffer().catch(this.errorHandler)
