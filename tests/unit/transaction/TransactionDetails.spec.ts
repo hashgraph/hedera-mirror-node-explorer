@@ -243,7 +243,7 @@ describe("TransactionDetails.vue", () => {
         expect(wrapper.get("#maxFeePerGasValue").text()).toBe("None")
         expect(wrapper.get("#maxPriorityFeePerGasValue").text()).toBe("None")
         expect(wrapper.get("#gasPriceValue").text()).toBe("None")
-        expect(wrapper.findAll("#logIndexValue").length).toBe(3)
+        expect(wrapper.findAll("#transactionHash").length).toBe(4)
 
         wrapper.unmount()
         await flushPromises()
@@ -329,7 +329,7 @@ describe("TransactionDetails.vue", () => {
         expect(wrapper.get("#maxFeePerGasValue").text()).toBe("None")
         expect(wrapper.get("#maxPriorityFeePerGasValue").text()).toBe("None")
         expect(wrapper.get("#gasPriceValue").text()).toBe("None")
-        expect(wrapper.findAll("#logIndexValue").length).toBe(3)
+        expect(wrapper.findAll("#transactionHash").length).toBe(4)
 
         wrapper.unmount()
         await flushPromises()
