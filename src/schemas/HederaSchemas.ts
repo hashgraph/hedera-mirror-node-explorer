@@ -528,7 +528,7 @@ export interface ContractResultDetails extends ContractResult {
     block_number: number | null // integer
     chain_id: string | null
     gas_price: string | null
-    logs: ContractResultLog[]
+    logs: ContractLog[] | undefined
     max_fee_per_gas: string | null
     max_priority_fee_per_gas: string | null
     nonce: number | null // integer
@@ -549,6 +549,15 @@ export interface ContractResultLog {
     topics: string[] | undefined
 }
 
+export interface ContractLog extends ContractResultLog  {
+    block_hash: string | null,
+    block_number: number | null,
+    root_contract_id: string | null,
+    timestamp: string | null,
+    transaction_hash: string | null,
+    transaction_index: number | null, //integer
+}
+
 export interface ContractResultStateChange {
     address: string | undefined
     contract_id: string | null | undefined
@@ -556,6 +565,11 @@ export interface ContractResultStateChange {
     value_read: string | undefined
     value_written: string | null | undefined
 }
+
+export interface ContractResultsLogResponse {
+    logs: ContractLog[],
+    links: Links | undefined
+} 
 
 export interface ContractActionsResponse {
     actions: Array<ContractAction> | undefined
