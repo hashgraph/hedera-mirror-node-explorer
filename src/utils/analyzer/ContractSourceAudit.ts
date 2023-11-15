@@ -463,31 +463,19 @@ export class ContractSourceAudit {
         return result
     }
 
-    private static isReferencedInMetadata(path: string, metadata: SolcMetadata|SolcInput|HHMetadata, solcReport: SolcReport): boolean {
+    private static isReferencedInMetadata(path: string, metadata: SolcMetadata|SolcInput|HHMetadata): boolean {
         let result = false
         const solcMetadata = SolcUtils.castSolcMetadata(metadata)
         if (solcMetadata !== null) {
-            for (const importPath of Object.keys(solcMetadata.sources)) {
-                const dropPath = this.importToDropPath(importPath, solcReport)
-                if (dropPath === path) {
-                    result = true
-                    break
-                }
-            }
+            result = this.resolvePath(path, solcMetadata) !== null
         } else {
             const solcInput = SolcUtils.castSolcInput(metadata)
             if (solcInput !== null) {
-                for (const importPath of Object.keys(solcInput.sources)) {
-                    const dropPath = this.importToDropPath(importPath, solcReport)
-                    if (dropPath === path) {
-                        result = true
-                        break
-                    }
-                }
+                result = this.resolvePath(path, solcInput) !== null
             } else {
                 const hhMetadata = HHUtils.castMetadata(metadata)
                 if (hhMetadata !== null && hhMetadata.input) {
-                    result = this.isReferencedInMetadata(path, hhMetadata.input, solcReport)
+                    result = this.resolvePath(path, hhMetadata.input) !== null
                 } else {
                     result = false
                 }
@@ -563,7 +551,7 @@ export class ContractSourceAudit {
             if (typeof c == "string") {
                 // f is a solidity source
                 const target = f == contractDropPath
-                const referenced = this.isReferencedInMetadata(f, resolvedMetadata[1], solcReport)
+                const referenced = this.isReferencedInMetadata(f, resolvedMetadata[1])
                 const status = referenced ? ContractAuditItemStatus.OK : ContractAuditItemStatus.Unused
                 newItem = new ContractAuditItem(f, c, status, target)
             } else {
@@ -587,5 +575,48 @@ export class ContractSourceAudit {
 
     private static importToDropPath(importPath: string, solcReport: SolcReport): string {
         return solcReport.resolution[importPath] ?? importPath
+    }
+
+    private static resolvePath(path: string, input: SolcMetadata|SolcInput): string|null {
+        let result: string|null
+        if (path in input.sources) {
+            result = path
+        } else {
+            result = null
+            const targets = Object.keys(input.sources)
+            for (const t of targets) {
+                if (this.pathEndsWith(t, path)) {
+                    result = t
+                    break
+                }
+            }
+            if (result == null) {
+                const i = path.lastIndexOf("/")
+                if (i != -1) {
+                    const fileName = path.substring(i+1)
+                    for (const t of targets) {
+                        if (this.pathEndsWith(t, fileName)) {
+                            result = t
+                            break
+                        }
+                    }
+                }
+            }
+        }
+        return result
+    }
+
+    private static pathEndsWith(path: string, suffix: string): boolean {
+        let result: boolean
+        if (path == suffix) {
+            result = true
+        } else if (path.length > suffix.length) {
+            const ss1 = "/" + suffix
+            const ss2 = path.substring(path.length - ss1.length)
+            result = ss1 == ss2
+        } else {
+            result = false
+        }
+        return result
     }
 }
