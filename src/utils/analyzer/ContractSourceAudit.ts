@@ -171,18 +171,6 @@ export class ContractSourceAudit {
         return result
     }
 
-    fetchFallbackMetadata(): SolcMetadata|null {
-        let result: SolcMetadata|null = null
-        for (const i of this.items) {
-            const solcMetadata = SolcUtils.castSolcMetadata(i.content)
-            if (solcMetadata !== null) {
-                result = solcMetadata
-                break
-            }
-        }
-        return result
-    }
-
     //
     // Private (tryWithHHMetadata)
     //
@@ -464,7 +452,7 @@ export class ContractSourceAudit {
     }
 
     private static isReferencedInMetadata(path: string, metadata: SolcMetadata|SolcInput|HHMetadata): boolean {
-        let result = false
+        let result: boolean
         const solcMetadata = SolcUtils.castSolcMetadata(metadata)
         if (solcMetadata !== null) {
             result = this.resolvePath(path, solcMetadata) !== null
