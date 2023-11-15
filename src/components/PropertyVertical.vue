@@ -24,8 +24,8 @@
 
 <template>
 
-  <div v-if="!isSmallScreen" class="columns" :id="id">
-    <div class="column is-flex is-justify-content-space-between">
+  <div v-if="isHorizontal" class="columns" :id="id">
+    <div class="column is-flex is-justify-content-space-between is-align-items-center">
       <div class="has-text-weight-light" :id="nameId">
         <slot name="name"/>
       </div>
@@ -62,7 +62,11 @@ export default defineComponent({
       type: Boolean,
       default: false
     },
-    customNbColClass: String
+    customNbColClass: String,
+    isHorizontal: {
+      type: Boolean,
+      default: false,
+    }
   },
   setup(props){
     const nameId = props.id + 'Name'

@@ -24,31 +24,31 @@
 
 <template>
 
-  <div v-if="log" style="position: relative; display: grid; column-gap: 3rem; grid-template-columns: repeat(19, minmax(0, 1fr));">
+  <div v-if="log" :class="{'log-wrapper-grid': isMediumScreen, 'log-wrapper-flex': !isMediumScreen}">
     <!-- left content-->
-    <div style="grid-column: span 5; display: flex; flex-direction: column; gap: 1rem;">
-      <PropertyVertical id="transactionHash">
+    <div :class="{'log-left-content-grid': isMediumScreen}">
+      <PropertyVertical id="transactionHash" :is-horizontal="!isMediumScreen">
         <template v-slot:name>Transaction Hash</template>
         <template v-slot:value>
           <HexaValue v-bind:byteString="txHashToShow" v-bind:show-none="true"/>
         </template>
       </PropertyVertical>
 
-      <PropertyVertical id="blockNumber">
+      <PropertyVertical id="blockNumber" :is-horizontal="!isMediumScreen">
         <template v-slot:name>Block</template>
         <template v-slot:value>
           {{ blockNumberToShow }}
         </template>
       </PropertyVertical>
 
-      <PropertyVertical id="address">
+      <PropertyVertical id="address" :is-horizontal="!isMediumScreen">
         <template v-slot:name>Address</template>
         <template v-slot:value>
-          <EVMAddress :address="log.address" :compact="false" :enable-copy="true"/>
+          <EVMAddress :address="log.address" :enable-copy="true" :compact="!isSmallScreen && !isMediumScreen"/>
         </template>
       </PropertyVertical>
 
-      <PropertyVertical id="method">
+      <PropertyVertical id="method" :is-horizontal="!isMediumScreen">
         <template v-slot:name>Method</template>
         <template v-slot:value>
           <div style="border: 1px solid grey; width: 120px; text-align: center; padding: 3px 0; border-radius: 3px;">
@@ -61,18 +61,18 @@
     </div>
 
     <!-- right content -->
-    <PropertyVertical id="Topics" style="grid-column: span 14;">
+    <PropertyVertical id="Args" style="grid-column: span 14;">
       <template v-slot:name>Logs</template>
       <template v-slot:value>
         <!-- not verified -->
         <div v-if="!isContractVerified" style="display: flex; flex-direction: column; gap: 0.75rem; margin-top: 0.25rem;">
-          <div v-for="(t, ti) in log.topics" :key="t" style="display: flex; gap: 1rem;">
+          <div v-for="(t, ti) in log.topics" :class="{'unverif-log-args-prop': !isMediumScreen || !isSmallScreen}" :key="t" style="display: flex; gap: 1rem;">
             <div style="border: 1px solid grey; width: 70px; text-align: center; padding: 3px 0; border-radius: 3px;">
               <span style="font-size: 0.85rem">{{ 'Topic ' + ti }}</span>
             </div>
             
             <HexaValue :show-none="true" v-bind:byteString="t" :low-contrast="ti === 0"
-            :word-wrap-small="8" :word-wrap-medium="8"/>
+            :word-wrap-small="0" :word-wrap-medium="8"/>
           </div>
         </div>
 
@@ -80,7 +80,7 @@
           <span class="h-is-property-text">{{ fullLogSignature }}</span>
 
           <template v-for="(arg, i) in args" :key="arg.name">
-            <PropertyVertical :id="'logArg_' + arg.name" :full-width="true">
+            <PropertyVertical :id="'logArg_' + arg.name" :full-width="true" :is-horizontal="!isMediumScreen">
                 <template v-slot:name>
                   <div style="display: flex; gap: 0.5rem; align-items: center;">
                     <div v-if="arg.indexed" style="border: 1px solid grey; width: 70px; text-align: center; padding: 3px 0; border-radius: 3px;">
@@ -111,7 +111,7 @@
 
 <script lang="ts">
 
-import {computed, defineComponent, onBeforeUnmount, onMounted, PropType, ref} from "vue";
+import {computed, defineComponent, inject, onBeforeUnmount, onMounted, PropType, ref} from "vue";
 import {ContractLog} from "@/schemas/HederaSchemas";
 import PropertyVertical from "@/components/PropertyVertical.vue";
 import StringValue from "@/components/values/StringValue.vue";
@@ -138,6 +138,10 @@ export default defineComponent({
     }
   },
   setup(props) {
+      const isSmallScreen = inject('isSmallScreen', true)
+      const isMediumScreen = inject('isMediumScreen', true)
+      const isTouchDevice = inject('isTouchDevice', false)
+
       const logAnalyzer = new ContractLogAnalyzer(computed(() => props.log))
       onMounted(() => logAnalyzer.mount())
       onBeforeUnmount(() => logAnalyzer.unmount())
@@ -146,6 +150,9 @@ export default defineComponent({
       const txHashToShow = computed(() => props.transactionHash ? props.transactionHash : props.log?.transaction_hash)
 
       return {
+          isSmallScreen,
+          isMediumScreen,
+          isTouchDevice,
           args: logAnalyzer.args,
           signature: logAnalyzer.signature,
           fullLogSignature: logAnalyzer.fullLogSignature,
@@ -162,4 +169,31 @@ export default defineComponent({
 <!--                                                      STYLE                                                      -->
 <!-- --------------------------------------------------------------------------------------------------------------- -->
 
-<style/>
+<style>
+
+.log-wrapper-grid {
+  position: relative; 
+  display: grid; 
+  column-gap: 3rem; 
+  grid-template-columns: repeat(19, minmax(0, 1fr));
+}
+
+.log-left-content-grid {
+  grid-column: span 5; 
+  display: flex; 
+  flex-direction: column; 
+  gap: 1rem;
+}
+
+.log-wrapper-flex {
+  position: relative;
+  display: flex;
+  flex-direction: column;
+  gap: 1rem
+}
+
+.unverif-log-args-prop {
+  justify-content: space-between;
+}
+
+</style>
