@@ -164,7 +164,7 @@ function resolvePath(path: string, input: SolcInput): string|null {
         }
         if (result == null) {
             const i = path.lastIndexOf("/")
-            if (i != 1) {
+            if (i != -1) {
                 const fileName = path.substring(i+1)
                 for (const t of targets) {
                     if (pathEndsWith(t, fileName)) {
