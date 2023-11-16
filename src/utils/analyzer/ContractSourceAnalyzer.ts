@@ -71,9 +71,10 @@ export class ContractSourceAnalyzer {
     //
 
     private readonly updateAudit = async () => {
+        const inputFiles = this.inputFiles.value
         const solcVersion = this.byteCodeAnalyzer.solcVersion.value
         const byteCode = this.byteCodeAnalyzer.byteCode.value
-        if (solcVersion !== null && byteCode !== null) {
+        if (inputFiles.size >= 1 && solcVersion !== null && byteCode !== null) {
             this.analyzingRef.value = true
             try {
                 this.auditRef.value = await ContractSourceAudit.build(this.inputFiles.value, solcVersion, byteCode)
