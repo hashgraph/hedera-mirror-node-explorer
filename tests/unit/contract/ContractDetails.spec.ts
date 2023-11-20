@@ -104,7 +104,7 @@ describe("ContractDetails.vue", () => {
         expect(wrapper.get("#evmAddress").text()).toBe("EVM Address:0x00000000000000000000000000000000000b70cfCopy")
         expect(wrapper.get("#code").text()).toBe("Runtime Bytecode")
         expect(wrapper.get("#solcVersion").text()).toBe("Compiler Version0.8.4")
-        expect(wrapper.get("#ipfsHash").text()).toBe("IPFS HashQmap1zNn5JRVVoLFDAKbah7jZyVJAvjqq7f8oUExesSiWT")
+        expect(wrapper.find("#ipfsHash").exists()).toBe(false)
         expect(wrapper.find("#swarmHash").exists()).toBe(false)
 
         expect(wrapper.findComponent(ContractResultTable).exists()).toBe(true)
@@ -418,7 +418,7 @@ describe("ContractDetails.vue", () => {
         // console.log(wrapper.text())
 
         expect(wrapper.text()).toMatch(RegExp("^Contract Contract ID:" + contract.contract_id))
-        expect(wrapper.get("#swarmHashValue").text()).toBe("0x25b12311dff4c2d38251fa91e465b5df31fca9f6c32e034ba551935d652b757a")
+        expect(wrapper.find("#swarmHashValue").exists()).toBe(false)
         expect(wrapper.find("#ipfsHash").exists()).toBe(false)
 
         wrapper.unmount()
@@ -426,6 +426,8 @@ describe("ContractDetails.vue", () => {
     });
 
     it("Should display contract verification link and properties", async () => {
+
+        process.env = Object.assign(process.env, { VITE_APP_ENABLE_VERIFICATION_UI_PHASE2: false });
 
         await router.push("/") // To avoid "missing required param 'network'" error
 
@@ -453,10 +455,8 @@ describe("ContractDetails.vue", () => {
 
         expect(wrapper.text()).toMatch(RegExp("^Contract Contract ID:" + contractId))
         const cards = wrapper.findAllComponents(DashboardCard)
-        expect(cards[1].text()).toMatch(RegExp("^Contract Details"))
-        expect(cards[1].get('a').text()).toBe("Verify Contract (beta)")
-        expect(cards[1].get("#verificationStatusValue").text()).toBe("Not yet verified")
-        expect(cards[1].get("#contractNameValue").text()).toBe("None")
+        expect(cards[1].text()).toMatch(RegExp("^Contract Bytecode"))
+        expect(cards[1].get('a').text()).toBe("Verify contract (beta)")
 
         wrapper.unmount()
         await flushPromises()

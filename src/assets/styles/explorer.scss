@@ -391,6 +391,10 @@ hr.dotted {
     margin: 0;
     padding: 0;
 }
+/* Dashed DnD area */
+.h-dotted-area {
+  border: dashed 1px $h-highlight-color;
+}
 
 //
 // MODALS
@@ -523,3 +527,6 @@ table.o-table th.o-table__th--left {
     min-height: 450px;
 }
 
+.h-has-page-background {
+    background-color: $h-page-background-color;
+}

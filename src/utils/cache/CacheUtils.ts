@@ -65,6 +65,7 @@ export class CacheUtils {
         HbarPriceCache.instance.clear()
         // IPFSCache.instance => no clear: we preserve it because IPFS content is valid for all networks
         NetworkCache.instance.clear()
+        // SolcIndexCache.instance => no clear: solidity compiler index is valid for all networks
         SourcifyCache.instance.clear()
         StakeCache.instance.clear()
         TokenAssociationCache.instance.clear()

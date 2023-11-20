@@ -43,5 +43,8 @@ export default defineConfig({
     'import.meta.env.VITE_BUILD_SHORTCOMMITHASH': JSON.stringify(commitHash),
     'import.meta.env.VITE_BUILD_RELEASE': JSON.stringify(tagAndCommitHash),
     'import.meta.env.VITE_BUILD_TIME_UTC': JSON.stringify(buildDate),
+  },
+  worker: {
+    format: "es",
   }
 })

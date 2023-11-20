@@ -18,159 +18,73 @@
  *
  */
 
-import {computed, ref, Ref, WatchStopHandle} from 'vue';
-import {ContractAnalyzer, MetadataOrigin} from "@/utils/analyzer/ContractAnalyzer";
-import {Lookup} from "@/utils/cache/base/EntityCache";
-import {IPFSCache} from "@/utils/cache/IPFSCache";
-import {SolcUtils} from "@/utils/solc/SolcUtils";
-import {SourcifyCache} from "@/utils/cache/SourcifyCache";
-import {AppStorage} from "@/AppStorage";
-import {ethers} from "ethers";
+import {computed, ref, Ref, shallowRef, watch, WatchStopHandle} from 'vue';
+import {ByteCodeAnalyzer} from "@/utils/analyzer/ByteCodeAnalyzer";
+import {SolcMetadata} from "@/utils/solc/SolcMetadata";
+import {ContractSourceAudit} from "@/utils/analyzer/ContractSourceAudit";
+import {HHMetadata} from "@/utils/hardhat/HHMetadata";
 
 export class ContractSourceAnalyzer {
 
-    public readonly sourceFileName: string
-    public readonly contractAnalyzer: ContractAnalyzer
-    public readonly ipfsLookup: Lookup<string, unknown|undefined>
-    private readonly localStorageContent: Ref<string|null> = ref(null)
+    public readonly byteCodeAnalyzer: ByteCodeAnalyzer
+    public readonly inputFiles: Ref<Map<string, string|SolcMetadata|HHMetadata>>
+
+    private readonly analyzingRef = ref(false)
+    private readonly auditRef = shallowRef<ContractSourceAudit|null>(null)
     private watchHandle: WatchStopHandle|null = null
 
     //
     // Public
     //
 
-    public constructor(sourceFileName: string, contractAnalyzer: ContractAnalyzer) {
-        this.sourceFileName = sourceFileName
-        this.contractAnalyzer = contractAnalyzer
-        this.ipfsLookup = IPFSCache.instance.makeLookup(this.ipfsHash)
+    public constructor(byteCodeAnalyzer: ByteCodeAnalyzer, inputFiles: Ref<Map<string, string|SolcMetadata|HHMetadata>>) {
+        this.byteCodeAnalyzer = byteCodeAnalyzer
+        this.inputFiles = inputFiles
     }
 
 
     public mount(): void {
-        this.ipfsLookup.mount()
-        this.updateLocalStorageContent()
+        this.watchHandle = watch([
+            this.inputFiles,
+            this.byteCodeAnalyzer.byteCode,
+            this.byteCodeAnalyzer.solcVersion], this.updateAudit)
     }
 
     public unmount(): void {
-        this.ipfsLookup.unmount()
-        this.localStorageContent.value = null
         if (this.watchHandle !== null) {
             this.watchHandle()
             this.watchHandle = null
         }
+        this.auditRef.value = null
     }
 
     //
     // Public (computed)
     //
 
-    public readonly content = computed(
-        () => this.sourcifyContent.value ?? this.localStorageContent.value ?? this.ipfsContent.value)
+    public readonly analyzing = computed( () => this.analyzingRef.value)
 
-    public readonly fullMatch = computed(() => {
-        let result: boolean
-        if (this.content.value !== null && this.keccakHash.value !== null) {
-            const contentBytes = ethers.utils.toUtf8Bytes(this.content.value)
-            const contentHash = ethers.utils.keccak256(contentBytes)
-            result = contentHash === this.keccakHash.value
-        } else {
-            result = false
-        }
-        return result
-    })
-
-    public readonly origin = computed(() => {
-        let result: MetadataOrigin|null
-        if (this.sourcifyContent.value !== null) {
-            result = MetadataOrigin.Sourcify
-        } else if (this.localStorageContent.value !== null) {
-            result = MetadataOrigin.LocalStorage
-        } else if (this.ipfsContent.value !== null) {
-            result = MetadataOrigin.IPFS
-        } else {
-            result = null
-        }
-        return result
-    })
-
-    //
-    // Public (user actions)
-    //
-
-    public userDidSelectContent(content: string): void {
-        AppStorage.setSource(content, this.sourceFileName)
-        this.updateLocalStorageContent()
-    }
-
-    public userRequestClear(): void {
-        AppStorage.setSource(null, this.sourceFileName)
-        this.updateLocalStorageContent()
-    }
+    public readonly audit = computed(() => this.auditRef.value)
 
     //
     // Private
     //
 
-    private readonly sourcifyContent = computed(() => {
-        let result: string|null
-        const response = this.contractAnalyzer.sourcifyRecord.value?.response ?? null
-        if (response !== null) {
-            result = SourcifyCache.fetchSource(this.sourceBaseName(), response)
+    private readonly updateAudit = async () => {
+        const inputFiles = this.inputFiles.value
+        const solcVersion = this.byteCodeAnalyzer.solcVersion.value
+        const byteCode = this.byteCodeAnalyzer.byteCode.value
+        if (inputFiles.size >= 1 && solcVersion !== null && byteCode !== null) {
+            this.analyzingRef.value = true
+            try {
+                this.auditRef.value = await ContractSourceAudit.build(this.inputFiles.value, solcVersion, byteCode)
+            } finally {
+                this.analyzingRef.value = false
+            }
         } else {
-            result = null
+            this.auditRef.value = null
         }
-        return result
-    })
-
-    private readonly ipfsContent = computed(() => {
-        let result: string|null
-        const content = this.ipfsLookup.entity.value
-        if (typeof content == "string") {
-            result = content
-        } else if (typeof content === "object" && content !== null) {
-            result = JSON.stringify(content)
-        } else {
-            result = null
-        }
-        return result
-    })
-
-    private readonly ipfsHash = computed(() => {
-        let result: string|null
-        if (this.contractAnalyzer.metadata.value !== null) {
-            result = SolcUtils.fetchIPFSHash(this.sourceFileName, this.contractAnalyzer.metadata.value)
-        } else {
-            result = null
-        }
-        return result
-    })
-
-    private readonly swarmHash = computed(() => {
-        let result: string|null
-        if (this.contractAnalyzer.metadata.value !== null) {
-            result = SolcUtils.fetchSWARMHash(this.sourceFileName, this.contractAnalyzer.metadata.value)
-        } else {
-            result = null
-        }
-        return result
-    })
-
-    private readonly keccakHash = computed(() => {
-        let result: string|null
-        if (this.contractAnalyzer.metadata.value !== null) {
-            result = SolcUtils.fetchKeccakHash(this.sourceFileName, this.contractAnalyzer.metadata.value)
-        } else {
-            result = null
-        }
-        return result
-    })
-
-    private readonly updateLocalStorageContent = () => {
-        this.localStorageContent.value = AppStorage.getSource(this.sourceFileName)
     }
 
-    private sourceBaseName(): string {
-        const i = this.sourceFileName.lastIndexOf("/")
-        return i != -1 ? this.sourceFileName.substring(i+1) : this.sourceFileName
-    }
 }
+
