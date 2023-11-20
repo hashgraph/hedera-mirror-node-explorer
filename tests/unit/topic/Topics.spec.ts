@@ -77,6 +77,7 @@ describe("Topics.vue", () => {
             "Mirror Node acceptance test: 2022-03-07T15:14:18.167555058Z Create Topic"
         )
 
+        mock.restore()
         wrapper.unmount()
         await flushPromises()
     });

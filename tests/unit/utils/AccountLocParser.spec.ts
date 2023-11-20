@@ -170,6 +170,8 @@ describe("AccountLocParser.ts", () => {
         expect(parser.ethereumAddress.value).toBeNull()
         expect(parser.aliasByteString.value).toBeNull()
         expect(parser.errorNotification.value).toBeNull()
+
+        mock.restore()
     })
 
     //
@@ -305,6 +307,8 @@ describe("AccountLocParser.ts", () => {
         expect(parser.ethereumAddress.value).toBeNull()
         expect(parser.aliasByteString.value).toBeNull()
         expect(parser.errorNotification.value).toBeNull()
+
+        mock.restore()
     })
 
     //
@@ -440,6 +444,8 @@ describe("AccountLocParser.ts", () => {
         expect(parser.ethereumAddress.value).toBeNull()
         expect(parser.aliasByteString.value).toBeNull()
         expect(parser.errorNotification.value).toBeNull()
+
+        mock.restore()
     })
 
     //
@@ -574,6 +580,8 @@ describe("AccountLocParser.ts", () => {
         expect(parser.ethereumAddress.value).toBeNull()
         expect(parser.aliasByteString.value).toBeNull()
         expect(parser.errorNotification.value).toBeNull()
+
+        mock.restore()
     })
 
     //
@@ -708,6 +716,8 @@ describe("AccountLocParser.ts", () => {
         expect(parser.ethereumAddress.value).toBeNull()
         expect(parser.aliasByteString.value).toBeNull()
         expect(parser.errorNotification.value).toBeNull()
+
+        mock.restore()
     })
 
     //
@@ -844,6 +854,8 @@ describe("AccountLocParser.ts", () => {
         expect(parser.ethereumAddress.value).toBeNull()
         expect(parser.aliasByteString.value).toBeNull()
         expect(parser.errorNotification.value).toBeNull()
+
+        mock.restore()
     })
 
     //
@@ -980,6 +992,8 @@ describe("AccountLocParser.ts", () => {
         expect(parser.ethereumAddress.value).toBeNull()
         expect(parser.aliasByteString.value).toBeNull()
         expect(parser.errorNotification.value).toBeNull()
+
+        mock.restore()
     })
 
     //
@@ -1116,6 +1130,8 @@ describe("AccountLocParser.ts", () => {
         expect(parser.ethereumAddress.value).toBeNull()
         expect(parser.aliasByteString.value).toBeNull()
         expect(parser.errorNotification.value).toBeNull()
+
+        mock.restore()
     })
 
     //
@@ -1252,6 +1268,8 @@ describe("AccountLocParser.ts", () => {
         expect(parser.ethereumAddress.value).toBeNull()
         expect(parser.aliasByteString.value).toBeNull()
         expect(parser.errorNotification.value).toBeNull()
+
+        mock.restore()
     })
 
 
@@ -1389,6 +1407,8 @@ describe("AccountLocParser.ts", () => {
         expect(parser.ethereumAddress.value).toBeNull()
         expect(parser.aliasByteString.value).toBeNull()
         expect(parser.errorNotification.value).toBeNull()
+
+        mock.restore()
     })
 
 })

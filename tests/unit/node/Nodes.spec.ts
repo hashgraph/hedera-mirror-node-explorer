@@ -108,6 +108,7 @@ describe("Nodes.vue", () => {
             tooltipRewardRate + "3%"
         )
 
+        mock.restore()
         wrapper.unmount()
         await flushPromises()
     });

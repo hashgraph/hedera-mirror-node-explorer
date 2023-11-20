@@ -60,5 +60,7 @@ describe("ContractByIdCache", () => {
         if (contract?.evm_address) {
             expect(ContractByAddressCache.instance.contains(contract.evm_address))
         }
+
+        mock.restore()
     })
 })

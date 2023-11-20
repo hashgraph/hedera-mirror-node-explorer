@@ -85,6 +85,7 @@ describe("Staking.vue", () => {
         expect(wrapper.find('#yearlyReward').text()).toBe("Approx Yearly Reward0HBAR")
         expect(wrapper.find('#yearlyRate').text()).toBe("Approx Yearly Reward Rate0%")
 
+        mock.restore()
         wrapper.unmount()
         await flushPromises()
     })
@@ -138,6 +139,7 @@ describe("Staking.vue", () => {
         expect(wrapper.find('#yearlyReward').text()).toBe("Approx Yearly Reward200HBAR")
         expect(wrapper.find('#yearlyRate').text()).toBe("Approx Yearly Reward Rate2%")
 
+        mock.restore()
         wrapper.unmount()
         await flushPromises()
     })

@@ -53,5 +53,7 @@ describe("ContractResultByTransactionIdCache", () => {
 
         // Checks that ContractResultByTransactionIdCache has been populated
         expect(ContractResultByTransactionIdCache.instance.contains(transactionId))
+
+        mock.restore()
     })
 })

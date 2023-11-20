@@ -139,6 +139,7 @@ describe("FunctionCallAnalyzer.spec.ts", () => {
         expect(functionCallAnalyzer.outputDecodingStatus.value).toBeNull()
         expect(functionCallAnalyzer.errorDecodingStatus.value).toBeNull()
 
+        mock.restore()
     })
 
 })

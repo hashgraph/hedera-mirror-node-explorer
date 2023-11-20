@@ -98,6 +98,8 @@ describe("BlockLocParser.ts", () => {
         expect(parser.blockCount.value).toBeNull()
         expect(parser.toTimestamp.value).toBeNull()
         expect(parser.errorNotification.value).toBeNull()
+
+        mock.restore()
     })
 
     //
@@ -167,6 +169,8 @@ describe("BlockLocParser.ts", () => {
         expect(parser.blockCount.value).toBeNull()
         expect(parser.toTimestamp.value).toBeNull()
         expect(parser.errorNotification.value).toBeNull()
+
+        mock.restore()
     })
 
     //
@@ -237,6 +241,8 @@ describe("BlockLocParser.ts", () => {
         expect(parser.blockCount.value).toBeNull()
         expect(parser.toTimestamp.value).toBeNull()
         expect(parser.errorNotification.value).toBeNull()
+
+        mock.restore()
     })
 
     //
@@ -307,6 +313,8 @@ describe("BlockLocParser.ts", () => {
         expect(parser.blockCount.value).toBeNull()
         expect(parser.toTimestamp.value).toBeNull()
         expect(parser.errorNotification.value).toBeNull()
+
+        mock.restore()
     })
 
 
@@ -378,6 +386,8 @@ describe("BlockLocParser.ts", () => {
         expect(parser.blockCount.value).toBeNull()
         expect(parser.toTimestamp.value).toBeNull()
         expect(parser.errorNotification.value).toBeNull()
+
+        mock.restore()
     })
 
 

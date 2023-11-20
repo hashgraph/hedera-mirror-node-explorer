@@ -71,6 +71,7 @@ describe("BalanceAnalyzer.spec.ts", () => {
         expect(balanceAnalyzer.tokenBalances.value).toStrictEqual([])
         expect(balanceAnalyzer.balanceTimeStamp.value).toBeNull()
 
+        mock.restore()
     })
 
     test("set account between mount() and unmount() ", async () => {
@@ -114,6 +115,7 @@ describe("BalanceAnalyzer.spec.ts", () => {
         expect(balanceAnalyzer.tokenBalances.value).toStrictEqual([])
         expect(balanceAnalyzer.balanceTimeStamp.value).toBeNull()
 
+        mock.restore()
     })
 
 })

@@ -108,6 +108,8 @@ describe("TransactionLocParser.ts", () => {
         expect(parser.consensusTimestamp.value).toBeNull()
         expect(parser.transactionHash.value).toBeNull()
         expect(parser.errorNotification.value).toBeNull()
+
+        mock.restore()
     })
 
     //
@@ -183,6 +185,8 @@ describe("TransactionLocParser.ts", () => {
         expect(parser.consensusTimestamp.value).toBeNull()
         expect(parser.transactionHash.value).toBeNull()
         expect(parser.errorNotification.value).toBeNull()
+
+        mock.restore()
     })
 
     //
@@ -253,6 +257,8 @@ describe("TransactionLocParser.ts", () => {
         expect(parser.consensusTimestamp.value).toBeNull()
         expect(parser.transactionHash.value).toBeNull()
         expect(parser.errorNotification.value).toBeNull()
+
+        mock.restore()
     })
 
     //
@@ -330,6 +336,8 @@ describe("TransactionLocParser.ts", () => {
         expect(parser.consensusTimestamp.value).toBeNull()
         expect(parser.transactionHash.value).toBeNull()
         expect(parser.errorNotification.value).toBeNull()
+
+        mock.restore()
     })
 
     //
@@ -406,6 +414,8 @@ describe("TransactionLocParser.ts", () => {
         expect(parser.consensusTimestamp.value).toBeNull()
         expect(parser.transactionHash.value).toBeNull()
         expect(parser.errorNotification.value).toBeNull()
+
+        mock.restore()
     })
 
     //
@@ -482,6 +492,8 @@ describe("TransactionLocParser.ts", () => {
         expect(parser.consensusTimestamp.value).toBeNull()
         expect(parser.transactionHash.value).toBeNull()
         expect(parser.errorNotification.value).toBeNull()
+
+        mock.restore()
     })
 
 
@@ -559,6 +571,8 @@ describe("TransactionLocParser.ts", () => {
         expect(parser.consensusTimestamp.value).toBeNull()
         expect(parser.transactionHash.value).toBeNull()
         expect(parser.errorNotification.value).toBeNull()
+
+        mock.restore()
     })
 
 
@@ -630,6 +644,8 @@ describe("TransactionLocParser.ts", () => {
         expect(parser.consensusTimestamp.value).toBeNull()
         expect(parser.transactionHash.value).toBeNull()
         expect(parser.errorNotification.value).toBeNull()
+
+        mock.restore()
     })
 
 
@@ -701,6 +717,8 @@ describe("TransactionLocParser.ts", () => {
         expect(parser.consensusTimestamp.value).toBeNull()
         expect(parser.transactionHash.value).toBeNull()
         expect(parser.errorNotification.value).toBeNull()
+
+        mock.restore()
     })
 
 

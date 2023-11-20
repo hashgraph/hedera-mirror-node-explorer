@@ -94,6 +94,7 @@ describe("ContractResult.vue", () => {
 
         expect(wrapper.findAll("#logIndexValue").length).toBe(3)
 
+        mock.restore()
         wrapper.unmount()
         await flushPromises()
     });

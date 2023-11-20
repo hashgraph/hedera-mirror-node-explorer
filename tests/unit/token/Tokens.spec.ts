@@ -90,6 +90,7 @@ describe("Tokens.vue", () => {
             "ĦFRENSKINGDOM"
         )
 
+        mock.restore()
         wrapper.unmount()
         await flushPromises()
 

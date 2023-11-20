@@ -78,6 +78,7 @@ describe("AdminKeyDetails.vue", () => {
         expect(wrapper.text()).toMatch("Account Account ID:" + SAMPLE_ACCOUNT_PROTOBUF_KEY.account)
         expect(wrapper.get("#keyValue").text()).toBe("Complex Key (6 levels) See details")
 
+        mock.restore()
         wrapper.unmount()
         await flushPromises()
 
@@ -162,6 +163,7 @@ describe("AdminKeyDetails.vue", () => {
 
         expect(key.text()).toBe("ED25519: aa2f7b3e759f4531ec2e7941afa449e6a6e610efb52adae89e9cd8e9d40ddcbf")
 
+        mock.restore()
         wrapper.unmount()
         await flushPromises()
     });
