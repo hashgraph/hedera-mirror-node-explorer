@@ -33,19 +33,14 @@ describe("EVMAddress", () => {
     const compactAddress = "0xe6…9deb65"
     const longZeroAddress = "0x00000000000000000000000000000000002d21e6"
     const entityId = "0.0.2957798"
-    const systemContractId = "0.0.359"
     const systemContractAddress = "0x0000000000000000000000000000000000000167"
     const systemContractLabel = "Hedera Token Service System Contract"
 
-    const mock = new MockAdapter(axios);
-    const matcher1 = "/api/v1/accounts/" + evmAddress
-    mock.onGet(matcher1).reply(200, SAMPLE_ACCOUNT_WITH_NATIVE_EVM_ADDRESS);
-    const matcher2 = "/api/v1/accounts/" + longZeroAddress
-    mock.onGet(matcher2).reply(200, SAMPLE_ACCOUNT_WITH_NATIVE_EVM_ADDRESS);
-    const matcher3 = "/api/v1/accounts/" + entityId
-    mock.onGet(matcher3).reply(200, SAMPLE_ACCOUNT_WITH_NATIVE_EVM_ADDRESS);
-
     test("Constructing with EVM address and no Hedera ID", async () => {
+
+        const mock = new MockAdapter(axios);
+        const matcher1 = "/api/v1/accounts/" + evmAddress
+        mock.onGet(matcher1).reply(200, SAMPLE_ACCOUNT_WITH_NATIVE_EVM_ADDRESS);
 
         await router.push("/") // To avoid "missing required param 'network'" error
         const wrapper = mount(EVMAddress, {
@@ -62,9 +57,14 @@ describe("EVMAddress", () => {
 
         wrapper.unmount()
         await flushPromises()
+        mock.restore()
     })
 
     test("Constructing a compact form with EVM address and no Hedera ID", async () => {
+
+        const mock = new MockAdapter(axios);
+        const matcher1 = "/api/v1/accounts/" + evmAddress
+        mock.onGet(matcher1).reply(200, SAMPLE_ACCOUNT_WITH_NATIVE_EVM_ADDRESS);
 
         await router.push("/") // To avoid "missing required param 'network'" error
         const wrapper = mount(EVMAddress, {
@@ -82,9 +82,14 @@ describe("EVMAddress", () => {
 
         wrapper.unmount()
         await flushPromises()
+        mock.restore()
     })
 
     test("Constructing with long-zero address and no Hedera ID", async () => {
+
+        const mock = new MockAdapter(axios);
+        const matcher2 = "/api/v1/accounts/" + longZeroAddress
+        mock.onGet(matcher2).reply(200, SAMPLE_ACCOUNT_WITH_NATIVE_EVM_ADDRESS);
 
         await router.push("/") // To avoid "missing required param 'network'" error
         const wrapper = mount(EVMAddress, {
@@ -101,6 +106,7 @@ describe("EVMAddress", () => {
 
         wrapper.unmount()
         await flushPromises()
+        mock.restore()
     })
 
     test("Constructing with Hedera ID and EVM address", async () => {

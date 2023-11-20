@@ -33,16 +33,24 @@ import TokenAmount from "@/components/values/TokenAmount.vue";
 import MockAdapter from "axios-mock-adapter";
 import axios from "axios";
 import Oruga from "@oruga-ui/oruga-next";
-
-const mock = new MockAdapter(axios);
-const matcher = "/api/v1/tokens/" + SAMPLE_TOKEN.token_id
-mock.onGet(matcher).reply(200, SAMPLE_TOKEN);
-const matcher2 = "/api/v1/tokens/" + SAMPLE_TOKEN_DUDE.token_id
-mock.onGet(matcher2).reply(200, SAMPLE_TOKEN_DUDE);
-const matcher3 = "/api/v1/tokens/" + SAMPLE_TOKEN_WITH_LARGE_DECIMAL_COUNT.token_id
-mock.onGet(matcher3).reply(200, SAMPLE_TOKEN_WITH_LARGE_DECIMAL_COUNT);
+import {afterAll, beforeAll} from "vitest";
 
 describe("TokenAmount.vue", () => {
+
+    const mock = new MockAdapter(axios);
+
+    beforeAll(() => {
+        const matcher = "/api/v1/tokens/" + SAMPLE_TOKEN.token_id
+        mock.onGet(matcher).reply(200, SAMPLE_TOKEN);
+        const matcher2 = "/api/v1/tokens/" + SAMPLE_TOKEN_DUDE.token_id
+        mock.onGet(matcher2).reply(200, SAMPLE_TOKEN_DUDE);
+        const matcher3 = "/api/v1/tokens/" + SAMPLE_TOKEN_WITH_LARGE_DECIMAL_COUNT.token_id
+        mock.onGet(matcher3).reply(200, SAMPLE_TOKEN_WITH_LARGE_DECIMAL_COUNT);
+    })
+
+    afterAll(() => {
+        mock.restore()
+    })
 
     it("no amount; tokenId", async () => {
 

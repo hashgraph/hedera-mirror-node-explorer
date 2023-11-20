@@ -44,15 +44,15 @@ describe("NodeTable.vue", () => {
     const tooltipPercentage = "Total amount of HBAR staked to this validator for consensus / total amount of HBAR staked to all validators for consensus."
     const tooltipRewardRate = "Approximate annual reward rate based on the reward earned during the last 24h period."
 
-    const mock = new MockAdapter(axios);
-    const matcher1 = "/api/v1/network/nodes"
-    mock.onGet(matcher1).reply(200, SAMPLE_NETWORK_NODES);
-
     it("should list the 3 nodes in the table", async () => {
 
         process.env = Object.assign(process.env, { VITE_APP_ENABLE_STAKING: true });
 
         await router.push("/") // To avoid "missing required param 'network'" error
+
+        const mock = new MockAdapter(axios);
+        const matcher1 = "/api/v1/network/nodes"
+        mock.onGet(matcher1).reply(200, SAMPLE_NETWORK_NODES);
 
         let testTotalStaked = 0
         for (const node of SAMPLE_NETWORK_NODES.nodes) {
@@ -96,6 +96,7 @@ describe("NodeTable.vue", () => {
             tooltipRewardRate + "3%"
         )
 
+        mock.restore()
         wrapper.unmount()
         await flushPromises()
     });
