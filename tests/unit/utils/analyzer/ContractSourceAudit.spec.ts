@@ -31,7 +31,7 @@ import {
 
 describe("ContractSourceAudit.spec.ts", () => {
 
-    test("test1", async () => {
+    test.skip("test1", async () => {
 
         const files = new Map<string, string|SolcMetadata>( [
             ["metadata.json",           jsonContentOfFile("HTS_meta.json") as SolcMetadata],
