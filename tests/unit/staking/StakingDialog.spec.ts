@@ -171,6 +171,7 @@ describe("StakingDialog.vue", () => {
         await nextTick()
         await confirmChangeStaking("Change Staking  for account 0.0.730632Do you want to stake to account 0.0.7-bmurp ?FillerCANCELCONFIRM")
 
+        mock.restore()
         wrapper.unmount()
         await flushPromises()
     })
@@ -279,6 +280,7 @@ describe("StakingDialog.vue", () => {
         await flushPromises()
         expect(feedbackMessage.text()).toBe("This account does not exist")
 
+        mock.restore()
         wrapper.unmount()
         await flushPromises()
     })
