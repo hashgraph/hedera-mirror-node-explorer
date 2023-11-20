@@ -18,7 +18,7 @@
  *
  */
 
-import {computed, ref} from "vue";
+import {ref} from "vue";
 import {SolcUtils} from "@/utils/solc/SolcUtils";
 import {SolcMetadata} from "@/utils/solc/SolcMetadata";
 import {HHUtils} from "@/utils/hardhat/HHUtils";
@@ -77,16 +77,6 @@ export class SolidityFileImporter {
         this.files.value = new Map()
         this.failure.value = null
     }
-
-    public readonly metadataFileCount = computed(() => {
-        let result = 0
-        for (const content of this.files.value.values()) {
-            if (typeof content === "object") {
-                result += 1
-            }
-        }
-        return result
-    })
 
     //
     // Private
