@@ -106,12 +106,12 @@
                      :class="{ 'is-rimmed': isBlocksRoute}">Blocks</router-link>
       </div>
 
-      <div style="position: relative; display: grid; column-gap: 1.2rem; grid-template-columns: repeat(17, minmax(0, 35px));">
-        <div style="grid-column: span 10;">
+      <div id="navbar-grid">
+        <div id="search-bar">
           <SearchBar/>
         </div>
         
-        <div id="drop-down-menu" style="grid-column: span 3;">
+        <div id="drop-down-menu">
           <o-field>
             <o-select v-model="selectedNetwork" class="h-is-navbar-item">
               <option v-for="network in networkEntries" :key="network.name" :value="network.name">
@@ -121,7 +121,7 @@
           </o-field>
         </div>
 
-        <div style="grid-column: span 4;">
+        <div id="connect-button">
           <button v-if="!connected" :disabled="connecting" id="connectWalletButton" class="button is-white is-small" @click="chooseWallet" style="outline: none; height: 40px; width: 100%; font-size: 0.8rem;">
             {{ connecting ? "Connecting..." : "CONNECT WALLET..." }}
           </button>
@@ -307,16 +307,67 @@ export default defineComponent({
 
 <style>
 
-@media (min-width: 1240px) {
+@media (min-width: 1450px) {
   #product-logo {
     max-width: 242px;
   }
+  #navbar-grid {
+    position:relative;
+    display:grid;
+    column-gap:1.2rem;
+    grid-template-columns:repeat(20, minmax(0, 35px));
+  }
+  #search-bar {
+    grid-column: span 13;
+  }
+  #drop-down-menu {
+    grid-column: span 3;
+  }
+  #connect-button {
+    grid-column: span 4;
+  }
 }
 
-@media (max-width: 1239px) {
-  #product-logo {
-    max-width: 220px;
-  }
+@media (max-width: 1449px) {
+    #product-logo {
+        max-width: 220px;
+    }
+    #navbar-grid {
+        position:relative;
+        display:grid;
+        column-gap:1.2rem;
+        grid-template-columns:repeat(20, minmax(0, 25px));
+    }
+    #search-bar {
+        grid-column: span 12;
+    }
+    #drop-down-menu {
+        grid-column: span 4;
+    }
+    #connect-button {
+        grid-column: span 4;
+    }
+}
+
+@media (max-width: 1249px) {
+    #product-logo {
+        max-width: 200px;
+    }
+    #navbar-grid {
+        position:relative;
+        display:grid;
+        column-gap:1.2rem;
+        grid-template-columns:repeat(20, minmax(0, 18px));
+    }
+    #search-bar {
+        grid-column: span 10;
+    }
+    #drop-down-menu {
+        grid-column: span 5;
+    }
+    #connect-button {
+        grid-column: span 5;
+    }
 }
 
 </style>
