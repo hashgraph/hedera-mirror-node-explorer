@@ -75,6 +75,7 @@ describe("TransactionByIdTable.vue", () => {
             "1:29:17.0144 PMSep 6, 2022, UTCCRYPTO TRANSFER0.0.48113503\n\n0.0.48193741Reptilian Egg NFT\n\n0.0.48193739Child2"
         )
 
+        mock.restore()
         wrapper.unmount()
         await flushPromises()
     });
@@ -118,6 +119,7 @@ describe("TransactionByIdTable.vue", () => {
         expect(cells[3].text()).toBe("Scheduled")
         expect(cells[4].text()).toBe("0")
 
+        mock.restore()
         wrapper.unmount()
         await flushPromises()
     });

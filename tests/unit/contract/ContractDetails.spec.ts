@@ -109,6 +109,7 @@ describe("ContractDetails.vue", () => {
 
         expect(wrapper.findComponent(ContractResultTable).exists()).toBe(true)
 
+        mock.restore()
         wrapper.unmount()
         await flushPromises()
     });
@@ -166,6 +167,7 @@ describe("ContractDetails.vue", () => {
         expect(cells[2].text()).toBe("None")
         expect(cells[3].text()).toBe("0.00000000")
 
+        mock.restore()
         wrapper.unmount()
         await flushPromises()
     });
@@ -235,6 +237,7 @@ describe("ContractDetails.vue", () => {
         expect(wrapper.get("#fileValue").text()).toBe("0.0.803267")
         expect(wrapper.get("#evmAddress").text()).toBe("EVM Address:0x00000000000000000000000000000000000b70cfCopy")
 
+        mock.restore()
         wrapper.unmount()
         await flushPromises()
     });
@@ -277,6 +280,7 @@ describe("ContractDetails.vue", () => {
         expect(banner.exists()).toBe(true)
         expect(banner.text()).toBe("Contract has expired and is in grace period")
 
+        mock.restore()
         wrapper.unmount()
         await flushPromises()
     });
@@ -318,6 +322,7 @@ describe("ContractDetails.vue", () => {
         const banner = wrapper.findComponent(NotificationBanner)
         expect(banner.exists()).toBe(false)
 
+        mock.restore()
         wrapper.unmount()
         await flushPromises()
     });
@@ -359,6 +364,7 @@ describe("ContractDetails.vue", () => {
         expect(banner.exists()).toBe(true)
         expect(banner.text()).toBe("Contract is deleted")
 
+        mock.restore()
         wrapper.unmount()
         await flushPromises()
     });
@@ -421,6 +427,7 @@ describe("ContractDetails.vue", () => {
         expect(wrapper.find("#swarmHashValue").exists()).toBe(false)
         expect(wrapper.find("#ipfsHash").exists()).toBe(false)
 
+        mock.restore()
         wrapper.unmount()
         await flushPromises()
     });
@@ -458,6 +465,7 @@ describe("ContractDetails.vue", () => {
         expect(cards[1].text()).toMatch(RegExp("^Contract Bytecode"))
         expect(cards[1].get('a').text()).toBe("Verify contract (beta)")
 
+        mock.restore()
         wrapper.unmount()
         await flushPromises()
     });

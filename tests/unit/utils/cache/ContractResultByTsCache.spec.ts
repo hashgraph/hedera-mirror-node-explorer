@@ -66,6 +66,8 @@ describe("ContractResultByTsCache", () => {
         if (contractResult?.hash) {
             expect(ContractResultByHashCache.instance.contains(contractResult.hash))
         }
+
+        mock.restore()
     })
 
     test("contract result without contract_id", async () => {
@@ -101,5 +103,7 @@ describe("ContractResultByTsCache", () => {
         if (contractResult?.hash) {
             expect(ContractResultByHashCache.instance.contains(contractResult.hash))
         }
+
+        mock.restore()
     })
 })

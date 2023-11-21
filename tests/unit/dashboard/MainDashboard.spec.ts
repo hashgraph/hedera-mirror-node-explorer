@@ -135,6 +135,7 @@ describe("MainDashboard.vue", () => {
             "0.0.120438" + "None" + "1:59:03.9622 PMMar 8, 2022, UTC"
         )
 
+        mock.restore()
         wrapper.unmount()
         await flushPromises()
     });

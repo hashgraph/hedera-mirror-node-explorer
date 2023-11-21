@@ -358,6 +358,7 @@ describe("Staking.vue", () => {
         expect(walletManager.accountIds.value).toStrictEqual([])
         expect(walletManager.accountId.value).toBeNull()
 
+        mock.restore()
         wrapper.unmount()
         await flushPromises()
     })

@@ -96,6 +96,7 @@ describe("NodeDetails.vue", () => {
         expect(wrapper.get("#notRewardedPercent").text()).toBe("20% of total")
         expect(wrapper.get("#stakingPeriod").text()).toBe("Current Staking Period24HOURS")
 
+        mock.restore()
         wrapper.unmount()
         await flushPromises()
     });
@@ -187,6 +188,7 @@ describe("NodeDetails.vue", () => {
         expect(wrapper.get("#maxAutoAssociationValue").text()).toBe("10")
         expect(wrapper.get("#receiverSigRequiredValue").text()).toBe("true")
 
+        mock.restore()
         wrapper.unmount()
         await flushPromises()
     });

@@ -22,16 +22,22 @@
 
 import {describe, expect, test} from 'vitest'
 import {readFileSync} from "fs";
-import {SolcMetadata} from "../../../../src/utils/solc/SolcMetadata";
+import {SolcMetadata} from "@/utils/solc/SolcMetadata";
 import {
     ContractAuditItemStatus,
     ContractAuditStatus,
     ContractSourceAudit
-} from "../../../../src/utils/analyzer/ContractSourceAudit";
+} from "@/utils/analyzer/ContractSourceAudit";
+import MockAdapter from "axios-mock-adapter";
+import axios from "axios";
 
 describe("ContractSourceAudit.spec.ts", () => {
 
     test("test1", async () => {
+
+        const mock = new MockAdapter(axios)
+        const matcher = "https://binaries.soliditylang.org/bin/list.json"
+        mock.onGet(matcher).reply(200, contentOfFile("sample-list.json"))
 
         const files = new Map<string, string|SolcMetadata>( [
             ["metadata.json",           jsonContentOfFile("HTS_meta.json") as SolcMetadata],

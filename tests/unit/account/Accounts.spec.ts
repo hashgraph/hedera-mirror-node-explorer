@@ -79,6 +79,7 @@ describe("Accounts.vue", () => {
             "23.42647909"
         )
 
+        mock.restore()
         wrapper.unmount()
         await flushPromises()
 

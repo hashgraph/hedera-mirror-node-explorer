@@ -69,5 +69,7 @@ describe("TransactionGroupByBlockCache", () => {
             expect(TransactionByHashCache.instance.contains(t.transaction_hash)).toBeTruthy()
             expect(TransactionByTsCache.instance.contains(t.consensus_timestamp)).toBeTruthy()
         }
+
+        mock.restore()
     })
 })

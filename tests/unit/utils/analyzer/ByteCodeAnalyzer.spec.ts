@@ -82,6 +82,7 @@ describe("ByteCodeAnalyzer.spec.ts", () => {
         expect(analyzer.swarmHash.value).toBe(BYTECODE2_SWARM_HASH)
         expect(analyzer.ipfsMetadata.value).toBeNull()
 
+        mock.restore()
     })
 
 })

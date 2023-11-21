@@ -113,6 +113,7 @@ describe("App.vue", () => {
         expect(logos[4].attributes('alt')).toBe("Built On Hedera")
         expect(logos[5].attributes('alt')).toBe("Sponsor Logo")
 
+        mock.restore()
         wrapper.unmount()
         await flushPromises()
     });
