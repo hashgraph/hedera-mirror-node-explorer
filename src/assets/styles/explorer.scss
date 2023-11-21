@@ -265,18 +265,12 @@ body {
 //
 
 #drop-down-menu .o-sel {
-    height: 44.5px;
+    height: 40px;
     font-weight: bold;
     color: $h-highlight-color;
     border-color: $h-highlight-color;
     background-color: $h-page-background-color;
     border-width: 0.5px;
-    border-top-width: 0;
-    padding-top: 20px;
-    padding-bottom: 7px;
-}
-#drop-down-menu .o-sel-arrow {
-    background-position: calc(100% - 7px) calc(100% - 10px);
 }
 #mobile-drop-down-menu .o-sel {
     height: 44.5px;
