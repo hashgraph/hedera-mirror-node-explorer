@@ -77,7 +77,7 @@
       <div class="is-flex mb-3 is-align-items-baseline is-justify-content-space-between">
         <router-link :to="routeManager.makeRouteToMainDashboard()"
                      id="dashboard-menu-item"
-                     class="button is-ghost is-first/ h-is-navbar-item h-is-dense"
+                     class="button is-ghost is-first h-is-navbar-item h-is-dense"
                      :class="{ 'is-rimmed': isDashboardRoute}">Dashboard</router-link>
         <router-link :to="routeManager.makeRouteToTransactions()"
                      class="button is-ghost h-is-navbar-item h-is-dense"
