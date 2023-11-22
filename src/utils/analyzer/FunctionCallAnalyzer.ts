@@ -224,7 +224,7 @@ export class FunctionCallAnalyzer {
     private readonly updateErrorDescription = async() => {
         const i = this.contractAnalyzer.interface.value
         const error = this.error.value
-        if (i !== null && error !== null) {
+        if (i !== null && error !== null && error !== "0x") {
             try {
                 const ed = i.parseError(error)
                 this.errorDescription.value = Object.preventExtensions(ed)
