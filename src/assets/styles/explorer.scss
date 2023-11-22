@@ -287,6 +287,10 @@ body {
 #mobile-drop-down-menu .o-sel-arrow {
     background-position: calc(100% - 13px) calc(100% - 16px);
 }
+#drop-down-menu .h-is-navbar-item:focus
+{
+    outline: none;
+}
 .button.h-is-navbar-item {
     padding-top: 28px;
     padding-bottom: 16px;
