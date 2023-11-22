@@ -49,6 +49,9 @@ npm run test:e2e
 # Build the Docker image locally
 npm run docker:build
 
+# Copy and adjust configuration of Hedera networks as needed
+cp networks-config-example.json networks-config.json
+
 # Start the Docker container
 # (if not built locally, this will fetch a pre-built image from Google Container Registry)
 npm run docker:start
