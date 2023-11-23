@@ -52,9 +52,7 @@ export class HbarPriceLoader extends AutoRefreshLoader<NetworkExchangeRateSetRes
             timestamp: string
         }
         if (this.deltaSeconds) {
-            const now = new Date()
-            const target = new Date(now.getTime() - this.deltaSeconds * 1000)
-            params.timestamp = (target.getTime() / 1000).toString()
+            params.timestamp = (new Date().getTime() / 1000 - this.deltaSeconds).toString()
         }
 
         return axios.get<NetworkExchangeRateSetResponse>("api/v1/network/exchangerate", {params: params})
