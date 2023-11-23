@@ -19,7 +19,7 @@
  */
 
 import {computed} from "vue";
-import {HbarPriceCache} from "@/components/dashboard/HbarPriceCache";
+import {HbarPriceLoader} from "@/components/dashboard/HbarPriceLoader";
 import {HbarSupplyCache} from "@/components/dashboard/HbarSupplyCache";
 
 export class MarketDataCache {
@@ -27,8 +27,8 @@ export class MarketDataCache {
     //
     // Public
     //
-    public readonly hbarPriceCache = new HbarPriceCache()
-    public readonly hbarPrice24hCache = new HbarPriceCache(86400)
+    public readonly hbarPriceCache = new HbarPriceLoader()
+    public readonly hbarPrice24hCache = new HbarPriceLoader(86400)
     public readonly hbarSupplyCache = new HbarSupplyCache()
     public readonly hbarSupply24hCache = new HbarSupplyCache(86400)
 
