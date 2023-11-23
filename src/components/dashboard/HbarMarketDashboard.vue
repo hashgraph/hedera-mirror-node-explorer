@@ -110,9 +110,8 @@ export default defineComponent({
     const hbarTotalLabel = 'HBAR TOTAL'
 
     // marketDataCache
-    const marketDataCache = new MarketDataCache()
-    onMounted(() => marketDataCache.mount())
-    onBeforeUnmount(() => marketDataCache.unmount())
+    onMounted(() => MarketDataCache.instance.mount())
+    onBeforeUnmount(() => MarketDataCache.instance.unmount())
 
     return {
       isMainNetwork,
@@ -123,13 +122,13 @@ export default defineComponent({
       hbarMarketCapLabel,
       hbarReleasedLabel,
       hbarTotalLabel,
-      marketDataCache, // For testing purpose
-      hbarReleased: marketDataCache.hbarReleased,
-      hbarTotal: marketDataCache.hbarTotal,
-      hbarPrice: marketDataCache.hbarPrice,
-      hbarPriceVariation: marketDataCache.hbarPriceVariation,
-      hbarMarketCap: marketDataCache.hbarMarketCap,
-      hbarMarketCapVariation: marketDataCache.hbarMarketCapVariation,
+      marketDataCache: MarketDataCache.instance, // For testing purpose
+      hbarReleased: MarketDataCache.instance.hbarReleased,
+      hbarTotal: MarketDataCache.instance.hbarTotal,
+      hbarPrice: MarketDataCache.instance.hbarPrice,
+      hbarPriceVariation: MarketDataCache.instance.hbarPriceVariation,
+      hbarMarketCap: MarketDataCache.instance.hbarMarketCap,
+      hbarMarketCapVariation: MarketDataCache.instance.hbarMarketCapVariation,
     }
   },
 });

@@ -23,7 +23,7 @@ import axios, {AxiosResponse} from "axios";
 import {computed} from "vue";
 import {NetworkExchangeRateSetResponse} from "@/schemas/HederaSchemas";
 
-export class HbarPriceCache extends AutoRefreshLoader<NetworkExchangeRateSetResponse> {
+export class HbarPriceLoader extends AutoRefreshLoader<NetworkExchangeRateSetResponse> {
 
     //
     // Public
@@ -52,9 +52,7 @@ export class HbarPriceCache extends AutoRefreshLoader<NetworkExchangeRateSetResp
             timestamp: string
         }
         if (this.deltaSeconds) {
-            const now = new Date()
-            const target = new Date(now.getTime() - this.deltaSeconds * 1000)
-            params.timestamp = (target.getTime() / 1000).toString()
+            params.timestamp = (new Date().getTime() / 1000 - this.deltaSeconds).toString()
         }
 
         return axios.get<NetworkExchangeRateSetResponse>("api/v1/network/exchangerate", {params: params})

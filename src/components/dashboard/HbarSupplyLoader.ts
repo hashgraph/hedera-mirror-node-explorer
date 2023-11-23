@@ -23,7 +23,7 @@ import axios, {AxiosResponse} from "axios";
 import {computed} from "vue";
 import {NetworkSupplyResponse} from "@/schemas/HederaSchemas";
 
-export class HbarSupplyCache extends AutoRefreshLoader<NetworkSupplyResponse> {
+export class HbarSupplyLoader extends AutoRefreshLoader<NetworkSupplyResponse> {
 
     //
     // Public
