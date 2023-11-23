@@ -27,6 +27,8 @@ export class MarketDataCache {
     //
     // Public
     //
+    public static readonly instance = new MarketDataCache()
+
     public readonly hbarPriceCache = new HbarPriceLoader()
     public readonly hbarPrice24hCache = new HbarPriceLoader(86400)
     public readonly hbarSupplyCache = new HbarSupplyLoader()
@@ -90,5 +92,12 @@ export class MarketDataCache {
         this.hbarPrice24hCache.mounted.value = false
         this.hbarSupplyCache.mounted.value = false
         this.hbarSupply24hCache.mounted.value = false
+    }
+
+    public clear(): void {
+        this.hbarPriceCache.requestLoad()
+        this.hbarPrice24hCache.requestLoad()
+        this.hbarSupplyCache.requestLoad()
+        this.hbarSupply24hCache.requestLoad()
     }
 }
