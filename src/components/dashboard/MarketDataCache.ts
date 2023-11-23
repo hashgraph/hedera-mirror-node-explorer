@@ -20,7 +20,7 @@
 
 import {computed} from "vue";
 import {HbarPriceLoader} from "@/components/dashboard/HbarPriceLoader";
-import {HbarSupplyCache} from "@/components/dashboard/HbarSupplyCache";
+import {HbarSupplyLoader} from "@/components/dashboard/HbarSupplyLoader";
 
 export class MarketDataCache {
 
@@ -29,8 +29,8 @@ export class MarketDataCache {
     //
     public readonly hbarPriceCache = new HbarPriceLoader()
     public readonly hbarPrice24hCache = new HbarPriceLoader(86400)
-    public readonly hbarSupplyCache = new HbarSupplyCache()
-    public readonly hbarSupply24hCache = new HbarSupplyCache(86400)
+    public readonly hbarSupplyCache = new HbarSupplyLoader()
+    public readonly hbarSupply24hCache = new HbarSupplyLoader(86400)
 
     public readonly hbarPrice = computed(() => {
         const currentPrice = this.hbarPriceCache.hbarPrice.value
