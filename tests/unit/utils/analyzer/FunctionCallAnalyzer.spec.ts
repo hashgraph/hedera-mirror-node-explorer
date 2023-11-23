@@ -108,6 +108,7 @@ describe("FunctionCallAnalyzer.spec.ts", () => {
         // 5) output setup (invalid output encoding)
         input.value = "0x49146bde000000000000000000000000845b706151aed537b1fd81c1ea4ea03920097abd0000000000000000000000000000000000000000000000000000000002e6ae09"
         output.value = "0x000000009999999999999999999999999"
+        error.value = "0x"
         contractId.value = "0.0.359"
         await flushPromises()
         expect(functionCallAnalyzer.functionHash.value).toBe("0x49146bde")
@@ -122,7 +123,7 @@ describe("FunctionCallAnalyzer.spec.ts", () => {
         expect(functionCallAnalyzer.errorInputs.value).toStrictEqual([])
         expect(functionCallAnalyzer.inputDecodingStatus.value).toBeNull()
         expect(functionCallAnalyzer.outputDecodingStatus.value).toBe("Decoding Error (hex data is odd-length)")
-        expect(functionCallAnalyzer.errorDecodingStatus.value).toBeNull()
+        expect(functionCallAnalyzer.errorDecodingStatus.value).toBeNull() // 0x is considered as no error
 
 
         // 6) unmount
