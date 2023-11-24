@@ -74,7 +74,7 @@ export class NetworkEntry {
             if (sourcifySetupEncoding !== undefined && sourcifySetupEncoding !== null) {
                 const sourcifySetup = SourcifySetup.decode(sourcifySetupEncoding as Record<string, unknown>)
                 if (sourcifySetup !== null) {
-                    result = new NetworkEntry(name, tidyDisplayName.toUpperCase(), url, ledgerID, sourcifySetup)
+                    result = new NetworkEntry(name, tidyDisplayName, url, ledgerID, sourcifySetup)
                 } else {
                     result = null
                 }
