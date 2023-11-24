@@ -85,6 +85,22 @@
                 <template v-slot:name>Runtime Bytecode</template>
             </Property>
             <ByteCodeValue :byte-code="byteCode ?? undefined" class="mt-3"/>
+            <div class="is-flex is-align-items-center is-flex-wrap-wrap mt-1 is-justify-content-end">
+                <button id="disassembler-button"
+                    class="button is-white is-small has-text-right mr-3"
+                    @click="showDisassembler = !showDisassembler">
+                    DISASSEMBLE
+                </button>
+                <button id="disassembler-button"
+                    class="button is-white is-small has-text-right"
+                    @click="showDecompiler = !showDecompiler">
+                    DECOMPILE
+                </button>
+            </div>
+
+            <BytecodeTools v-if="showDisassembler" :byte-code="byteCode ?? ''" :tool-type="1"/>
+            <BytecodeTools class="mt-4" v-if="showDecompiler" :byte-code="byteCode ?? ''" :tool-type="2"/>
+
         </template>
     </DashboardCard>
 
@@ -111,6 +127,8 @@ import {ContractAnalyzer} from "@/utils/analyzer/ContractAnalyzer";
 import {routeManager} from "@/router";
 import InfoTooltip from "@/components/InfoTooltip.vue";
 import ContractVerificationDialog from "@/components/verification/ContractVerificationDialog.vue";
+import SourceCodeValue from "@/components/values/SourceCodeValue.vue";
+import BytecodeTools from '../bytecode_tools/BytecodeTools.vue';
 
 const FULL_MATCH_TOOLTIP = `A Full Match indicates that the bytecode of the deployed contract is byte-by-byte the same as the compilation output of the given source code files with the settings defined in the metadata file. This means the contents of the source code files and the compilation settings are exactly the same as when the contract author compiled and deployed the contract.`
 const PARTIAL_MATCH_TOOLTIP = `A Partial Match indicates that the bytecode of the deployed contract is the same as the compilation output of the given source code files except for the metadata hash. This means the deployed contract and the given source code + metadata function in the same way but there are differences in source code comments, variable names, or other metadata fields such as source paths.`
@@ -118,7 +136,7 @@ const PARTIAL_MATCH_TOOLTIP = `A Partial Match indicates that the bytecode of th
 export default defineComponent({
   name: 'ContractByteCodeSection',
 
-  components: {ContractVerificationDialog, InfoTooltip, Property, StringValue, ByteCodeValue, DashboardCard},
+  components: { SourceCodeValue, ContractVerificationDialog, InfoTooltip, Property, StringValue, ByteCodeValue, DashboardCard, BytecodeTools },
 
   props: {
     contractAnalyzer: {
@@ -154,6 +172,9 @@ export default defineComponent({
 
     const tooltipText = computed(() => isFullMatch.value ? FULL_MATCH_TOOLTIP : PARTIAL_MATCH_TOOLTIP)
 
+    const showDisassembler = ref(false)
+    const showDecompiler = ref(false)
+
     return {
       isTouchDevice,
       isSmallScreen,
@@ -169,7 +190,9 @@ export default defineComponent({
       contractId: props.contractAnalyzer.contractId,
       byteCodeAnalyzer: props.contractAnalyzer.byteCodeAnalyzer,
       verifyDidComplete,
-      isFullMatch
+      isFullMatch,
+      showDisassembler,
+      showDecompiler,
     }
   }
 });
