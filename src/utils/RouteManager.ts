@@ -101,6 +101,7 @@ export class RouteManager {
     public readonly isNodeRoute = computed(() => this.testNodeRoute())
     public readonly isStakingRoute = computed(() => this.testStakingRoute())
     public readonly isBlocksRoute = computed(() => this.testBlocksRoute())
+    public readonly isBytecodeToolsRoute = computed(() => this.testBytecodeToolsRoute())
 
     public testDashboardRoute(route: string|null = null): boolean {
         const r = route ?? this.currentRoute.value
@@ -149,6 +150,11 @@ export class RouteManager {
     public testBlocksRoute(route: string|null = null): boolean {
         const r = route ?? this.currentRoute.value
         return r === 'Blocks' || r === 'BlockDetails'
+    }
+
+    public testBytecodeToolsRoute(route: string|null = null): boolean {
+        const r = route ?? this.currentRoute.value
+        return r === 'bytecode-tools'
     }
 
     //
@@ -427,6 +433,10 @@ export class RouteManager {
 
     public makeRouteToBlocks(): RouteLocationRaw {
         return {name: 'Blocks', params: { network: this.currentNetwork.value } }
+    }
+
+    public makeRouteToBytecodeTools(): RouteLocationRaw {
+        return {name: 'BytecodeAnalyzerTools', params: { network: this.currentNetwork.value } }
     }
 
     public makeRouteToMobileSearch(): RouteLocationRaw {
