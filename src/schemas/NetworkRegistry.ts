@@ -165,39 +165,21 @@ export class NetworkRegistry {
             displayName: 'MAINNET',
             url: "https://mainnet-public.mirrornode.hedera.com/",
             ledgerID: '00',
-            sourcifySetup: new SourcifySetup(
-                true,
-                "http://localhost:10000/contracts/",
-                "http://localhost:5002/",
-                "http://localhost:3000/#/",
-                0x127
-            )
+            sourcifySetup: new SourcifySetup(true, "", "", "", 0x127)
         },
         {
             name: 'testnet',
             displayName: 'TESTNET',
             url: "https://testnet.mirrornode.hedera.com/",
             ledgerID: '01',
-            sourcifySetup: new SourcifySetup(
-                true,
-                "http://localhost:10000/contracts/",
-                "http://localhost:5002/",
-                "http://localhost:3000/#/",
-                0x128
-            )
+            sourcifySetup: new SourcifySetup(true, "", "", "", 0x128)
         },
         {
             name: 'previewnet',
             displayName: 'PREVIEWNET',
             url: "https://previewnet.mirrornode.hedera.com/",
             ledgerID: '02',
-            sourcifySetup: new SourcifySetup(
-                true,
-                "http://localhost:10000/contracts/",
-                "http://localhost:5002/",
-                "http://localhost:3000/#/",
-                0x129
-            )
+            sourcifySetup: new SourcifySetup(true, "", "", "", 0x129)
         }
     ])
 
