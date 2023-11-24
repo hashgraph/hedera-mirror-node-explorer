@@ -47,6 +47,7 @@ import {RouteManager} from "@/utils/RouteManager";
 import {WalletManager} from "@/utils/wallet/WalletManager";
 import BlockDetails from "@/pages/BlockDetails.vue";
 import Blocks from "@/pages/Blocks.vue";
+import BytecodeAnalyzerTools from "@/pages/BytecodeAnalyzerTools.vue";
 import AccountsWithKey from "@/pages/AccountsWithKey.vue";
 import AdminKeyDetails from "@/pages/AdminKeyDetails.vue";
 import AddressDetails from "@/pages/AddressDetails.vue";
@@ -198,6 +199,12 @@ const routes: Array<RouteRecordRaw> = [
     path: '/:network/blocks',
     name: 'Blocks',
     component: Blocks,
+    props: true
+  },
+  {
+    path: '/:network/bytecode-tools',
+    name: 'BytecodeAnalyzerTools',
+    component: BytecodeAnalyzerTools,
     props: true
   },
   {
