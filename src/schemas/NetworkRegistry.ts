@@ -64,14 +64,14 @@ export class NetworkEntry {
             (typeof displayName == "string" || typeof displayName == "undefined") &&
             typeof url == "string" &&
             typeof ledgerID == "string" &&
-            typeof sourcifySetupEncoding == "object") {
+            (typeof sourcifySetupEncoding == "object" || typeof sourcifySetupEncoding == "undefined")) {
 
             let tidyDisplayName = (displayName ?? name).toUpperCase()
             if (tidyDisplayName.length > this.NETWORK_NAME_MAX_LENGTH) {
                 tidyDisplayName = tidyDisplayName.slice(0, this.NETWORK_NAME_MAX_LENGTH) + '…'
             }
 
-            if (sourcifySetupEncoding !== null) {
+            if (sourcifySetupEncoding !== undefined && sourcifySetupEncoding !== null) {
                 const sourcifySetup = SourcifySetup.decode(sourcifySetupEncoding as Record<string, unknown>)
                 if (sourcifySetup !== null) {
                     result = new NetworkEntry(name, tidyDisplayName.toUpperCase(), url, ledgerID, sourcifySetup)
