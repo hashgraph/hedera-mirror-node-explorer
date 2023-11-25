@@ -54,10 +54,10 @@ describe("TopNavBar.vue", () => {
         // console.log(wrapper.text())
 
         expect(wrapper.text()).toBe(
-            "Connect WalletCANCELCONNECT DisclaimerPlease don't show me this next timeCANCELAGREEFillerFillerCLOSEDashboardTransactionsTokensTopicsContractsAccountsNodesStakingBlocksMAINNETTESTNETPREVIEWNETCONNECT WALLET...")
+            "Connect WalletCANCELCONNECT DisclaimerPlease don't show me this next timeCANCELAGREEFillerFillerCLOSEDashboardTransactionsTokensTopicsContractsAccountsNodesStakingBlocksBytecode ToolsMAINNETTESTNETPREVIEWNETCONNECT WALLET...")
 
         const links = wrapper.findAll("a")
-        expect(links.length).toBe(16)
+        expect(links.length).toBe(17)
 
         wrapper.unmount()
         await flushPromises()
@@ -80,10 +80,10 @@ describe("TopNavBar.vue", () => {
         // console.log(wrapper.text())
 
         expect(wrapper.text()).toBe(
-            "Connect WalletCANCELCONNECT DisclaimerPlease don't show me this next timeCANCELAGREEFillerFillerCLOSEDashboardTransactionsTokensTopicsContractsAccountsNodesStakingBlocksMAINNETTESTNETPREVIEWNETCONNECT WALLET...")
+            "Connect WalletCANCELCONNECT DisclaimerPlease don't show me this next timeCANCELAGREEFillerFillerCLOSEDashboardTransactionsTokensTopicsContractsAccountsNodesStakingBlocksBytecode ToolsMAINNETTESTNETPREVIEWNETCONNECT WALLET...")
 
         const links = wrapper.findAll("a")
-        expect(links.length).toBe(16)
+        expect(links.length).toBe(17)
 
         expect(links[7].text()).toBe("Dashboard")
         expect(links[8].text()).toBe("Transactions")
