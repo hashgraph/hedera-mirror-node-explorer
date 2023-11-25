@@ -31,7 +31,7 @@
                 <p class="has-text-grey">Attempts to decode the low level Contract Bytecode to EVM Opcodes.</p>
             </div>
         
-            <button v-if="isCustom" id="disassembler-button"
+            <button id="disassmbleBtn" v-if="isCustom"
                     class="button is-white is-small has-text-right mr-3"
                     @click="finalBytecode = byteCode">
                     DISASSEMBLE
@@ -39,7 +39,7 @@
         </div>
 
             
-        <div class="mt-4 py-1 px-2 is-flex analyzed-data-box">
+        <div id="disassembly" class="mt-4 py-1 px-2 is-flex analyzed-data-box">
             <div v-if="opcodes && opcodes.length > 0" v-for="opcode in opcodes" :key="opcode.index16" class="is-flex" style="gap: 0.5rem">
                 <p>[{{ opcode.index16 }}]:</p>
 
@@ -61,7 +61,7 @@
             <p class="has-text-grey">Attempts to decode the low level Contract Bytecode to Solidity smart contract.</p>
         </div>
 
-        <button v-if="isCustom" id="disassembler-button"
+        <button v-if="isCustom"
                 class="button is-white is-small has-text-right mr-3"
                 @click="finalBytecode = byteCode">
                 DECOMPILE

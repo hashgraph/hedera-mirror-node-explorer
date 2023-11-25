@@ -30,17 +30,18 @@
           <span class="h-is-primary-title">Bytecode Analyzer</span>
         </template>
         <template v-slot:content>
-          <div class="mt-3 is-flex">
-            <div @click="() => tabSelector(1)" class="tabSelector" :class="{'has-text-grey unchosentab': !showDisassembler}">
+          <div id="tabChooser" class="mt-3 is-flex">
+            <div id="disassemblerButton" @click="() => tabSelector(1)" class="tabSelector" :class="{'has-text-grey unchosentab': !showDisassembler}">
               Disassembler
             </div>
 
-            <div @click="() => tabSelector(2)" class="tabSelector" :class="{'has-text-grey unchosentab': !showDecompiler}">
+            <div id="decompilerButton" @click="() => tabSelector(2)" class="tabSelector" :class="{'has-text-grey unchosentab': !showDecompiler}">
               Decompiler
             </div>
           </div>
 
           <textarea
+            id="inputBytecodeBox"
             v-model="inputBytecode"
             rows="7"
             placeholder="Enter contract hex bytecode (0x...)"
@@ -75,16 +76,14 @@
   export default defineComponent({
     name: 'BytecodeAnalyzerTools',
   
-    props: {
-      network: String
-    },
+    props: {},
   
     components: {
-    Footer,
-    DashboardCard,
-    ByteCodeValue,
-    BytecodeTools
-},
+      Footer,
+      DashboardCard,
+      ByteCodeValue,
+      BytecodeTools
+    },
   
     setup() {
       const isSmallScreen = inject('isSmallScreen', true)
