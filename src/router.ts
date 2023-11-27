@@ -66,6 +66,10 @@ const routes: Array<RouteRecordRaw> = [
     component: PageNotFound
   },
   {
+    path: '/:network',
+    redirect: { name: 'MainDashboard' }
+  },
+  {
     path: '/:network/dashboard',
     name: 'MainDashboard',
     component: MainDashboard,
