@@ -64,17 +64,17 @@ export class NetworkEntry {
             (typeof displayName == "string" || typeof displayName == "undefined") &&
             typeof url == "string" &&
             typeof ledgerID == "string" &&
-            typeof sourcifySetupEncoding == "object") {
+            (typeof sourcifySetupEncoding == "object" || typeof sourcifySetupEncoding == "undefined")) {
 
             let tidyDisplayName = (displayName ?? name).toUpperCase()
             if (tidyDisplayName.length > this.NETWORK_NAME_MAX_LENGTH) {
                 tidyDisplayName = tidyDisplayName.slice(0, this.NETWORK_NAME_MAX_LENGTH) + '…'
             }
 
-            if (sourcifySetupEncoding !== null) {
+            if (sourcifySetupEncoding !== undefined && sourcifySetupEncoding !== null) {
                 const sourcifySetup = SourcifySetup.decode(sourcifySetupEncoding as Record<string, unknown>)
                 if (sourcifySetup !== null) {
-                    result = new NetworkEntry(name, tidyDisplayName.toUpperCase(), url, ledgerID, sourcifySetup)
+                    result = new NetworkEntry(name, tidyDisplayName, url, ledgerID, sourcifySetup)
                 } else {
                     result = null
                 }
@@ -165,39 +165,21 @@ export class NetworkRegistry {
             displayName: 'MAINNET',
             url: "https://mainnet-public.mirrornode.hedera.com/",
             ledgerID: '00',
-            sourcifySetup: new SourcifySetup(
-                true,
-                "http://localhost:10000/contracts/",
-                "http://localhost:5002/",
-                "http://localhost:3000/#/",
-                0x127
-            )
+            sourcifySetup: new SourcifySetup(true, "", "", "", 0x127)
         },
         {
             name: 'testnet',
             displayName: 'TESTNET',
             url: "https://testnet.mirrornode.hedera.com/",
             ledgerID: '01',
-            sourcifySetup: new SourcifySetup(
-                true,
-                "http://localhost:10000/contracts/",
-                "http://localhost:5002/",
-                "http://localhost:3000/#/",
-                0x128
-            )
+            sourcifySetup: new SourcifySetup(true, "", "", "", 0x128)
         },
         {
             name: 'previewnet',
             displayName: 'PREVIEWNET',
             url: "https://previewnet.mirrornode.hedera.com/",
             ledgerID: '02',
-            sourcifySetup: new SourcifySetup(
-                true,
-                "http://localhost:10000/contracts/",
-                "http://localhost:5002/",
-                "http://localhost:3000/#/",
-                0x129
-            )
+            sourcifySetup: new SourcifySetup(true, "", "", "", 0x129)
         }
     ])
 

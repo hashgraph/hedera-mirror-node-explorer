@@ -434,8 +434,6 @@ describe("ContractDetails.vue", () => {
 
     it("Should display contract verification link and properties", async () => {
 
-        process.env = Object.assign(process.env, { VITE_APP_ENABLE_VERIFICATION_UI_PHASE2: false });
-
         await router.push("/") // To avoid "missing required param 'network'" error
 
         const mock = new MockAdapter(axios);
@@ -463,7 +461,7 @@ describe("ContractDetails.vue", () => {
         expect(wrapper.text()).toMatch(RegExp("^Contract Contract ID:" + contractId))
         const cards = wrapper.findAllComponents(DashboardCard)
         expect(cards[1].text()).toMatch(RegExp("^Contract Bytecode"))
-        expect(cards[1].get('a').text()).toBe("Verify contract (beta)")
+        expect(cards[1].get('#verify-button').text()).toBe("VERIFY CONTRACT")
 
         mock.restore()
         wrapper.unmount()

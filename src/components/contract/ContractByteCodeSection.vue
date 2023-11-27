@@ -38,22 +38,16 @@
         <template v-slot:control>
             <template v-if="isVerificationEnabled">
                 <template v-if="isVerified">
-                    <div v-if="isVerificationPhase2 && sourcifyURL" id="showSource" class="is-inline-block ml-3">
+                    <div v-if="sourcifyURL" id="showSource" class="is-inline-block ml-3">
                         <a :href="sourcifyURL" target="_blank">View contract sources</a>
-                    </div>
-                    <div v-else-if="sourcifyURL" id="showSourceBeta" class="is-inline-block ml-3">
-                        <a :href="sourcifyURL" target="_blank">View contract (beta)</a>
                     </div>
                 </template>
                 <template v-else>
-                    <button v-if="isVerificationPhase2" id="verify-button"
+                    <button id="verify-button"
                             class="button is-white is-small has-text-right"
                             @click="showVerifyDialog = true">
                         VERIFY CONTRACT
                     </button>
-                    <div v-else id="showVerifier" class="is-inline-block ml-3">
-                        <a :href="verifierURL" target="_blank">Verify contract (beta)</a>
-                    </div>
                 </template>
             </template>
         </template>
@@ -153,10 +147,6 @@ export default defineComponent({
         return sourcifySetup !== null && sourcifySetup.activate
     })
 
-    const isVerificationPhase2 = computed(() => {
-        return import.meta.env.VITE_APP_ENABLE_VERIFICATION_UI_PHASE2 === "true"
-    })
-
     const showVerifyDialog = ref(false)
     const verifyDidComplete = () => {
         props.contractAnalyzer.verifyDidComplete()
@@ -176,7 +166,6 @@ export default defineComponent({
       swarmHash: props.contractAnalyzer.byteCodeAnalyzer.swarmHash,
       contractName,
       isVerificationEnabled,
-      isVerificationPhase2,
       tooltipText,
       sourcifyURL: props.contractAnalyzer.sourcifyURL,
       verifierURL: routeManager.currentVerifierUrl,
