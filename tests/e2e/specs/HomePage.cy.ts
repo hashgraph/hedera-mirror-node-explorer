@@ -31,6 +31,13 @@ describe('Hedera Explorer home page', () => {
     cy.contains('Smart Contract Calls')
     cy.contains('HCS Messages')
   })
+  it('Visits the /network URL', () => {
+    cy.visit('/' + defaultNetwork)
+    cy.url().should('include', '/' + defaultNetwork + '/dashboard')
+    cy.contains('Crypto Transfers')
+    cy.contains('Smart Contract Calls')
+    cy.contains('HCS Messages')
+  })
   it('Visits an old hash-based URL', () => {
     cy.visit('/#/testnet/token/0.0.48789573')
     cy.url().should('include', '/' + defaultNetwork + '/dashboard')
