@@ -20,10 +20,10 @@
 
 
 import { describe, test, expect } from 'vitest'
-import {Utils} from '@/utils/bytecode_tools/Utils/index.ts'
+import {Utils} from '@/utils/bytecode_tools/disassembler/Utils/index.ts'
 import { DISASSEMBLER_TESTING_ASSETS } from './bytecode_assets';
-import {EVM_OPCODES} from '@/utils/bytecode_tools/evm_opcodes/index.ts'
-import {Disassembler} from '@/utils/bytecode_tools/BytecodeDisassembler.ts'
+import {EVM_OPCODES} from '@/utils/bytecode_tools/disassembler/evm_opcodes/index.ts'
+import {Disassembler} from '@/utils/bytecode_tools/disassembler/BytecodeDisassembler.ts'
 
 describe('EVM Bytecode Disassembler Tests', () => {
   describe('Utility functions tests', () => {

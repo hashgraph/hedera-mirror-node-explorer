@@ -83,7 +83,7 @@
 <script lang="ts">
 
 import {defineComponent, inject, ref, watch, computed} from 'vue';
-import {Disassembler} from '@/utils/bytecode_tools/BytecodeDisassembler.ts'
+import {Disassembler} from '@/utils/bytecode_tools/disassembler/BytecodeDisassembler.ts'
 
 export default defineComponent({
     name: 'BytecodeTools',
