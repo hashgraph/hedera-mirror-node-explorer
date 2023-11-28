@@ -47,6 +47,9 @@ export class Utils {
       bytecode = bytecode.substring(2);
     }
 
+    // remove cbor-encoded metadata if there are any
+    bytecode = this.removeCBORMetadata(bytecode);
+
     // return trimmed and lower cased bytecode
     return bytecode.toLocaleLowerCase();
   }
@@ -126,6 +129,47 @@ export class Utils {
           operand: [],
         },
       };
+    }
+  }
+
+  /**
+   * @dev removes swarm hash or ipfs hash CBOR-encoded metadata at the end of the bytecode if there's any
+   * @notice the last 2 bytes of the bytecode may or may not indicate the length of the CBOR-encoded metadata of the bytecode.
+   *         trace back to the begining of the encoded metadata using the last 2 bytes of the bytecode, the value of the first 6 bytes can be:
+   *            - a165627a7a72 = !ebzzr (swarm hash)
+   *            - a26469706673 = "dipfs (ipfs hash)
+   *         If this is the case => bytecode has CBOR-encoded metadata at the end => remove
+   */
+  public static removeCBORMetadata(bytecode: string): string {
+    const EXPECTED_SWARM_HEADER = 'bzzr';
+    const EXPECTED_IPFS_HEADER = 'ipfs';
+
+    // The last 2 bytes indicate the length of the metadata, but also contributes 2 bytes to the whole encoded metadata.
+    // Therefore, the total length equals: indicated_length + 2
+    const potentialMetadataLength =
+      parseInt(`0x${bytecode.substring(bytecode.length - 4)}`) + 2;
+
+    // bytecode with a valid CBOR encoded metadata would never be shorter than the length of a metadata. If this is the case, bytecode doesn't have metadata encoded at the end
+    if (bytecode.length < potentialMetadataLength) return bytecode;
+
+    // trace back to the begining of the encoded metadata, decode the first 6 bytes and check if they include the expected headers. If yes => remove, keep as-is otherwise.
+    const potentialMetadataStartIndex =
+      bytecode.length - potentialMetadataLength * 2;
+    const metadataHeader = Buffer.from(
+      bytecode.substring(
+        potentialMetadataStartIndex,
+        potentialMetadataStartIndex + 6 * 2 + 1 // 6 bytes * 2 chars + 1 (included)
+      ),
+      'hex'
+    ).toString('ascii');
+
+    if (
+      metadataHeader.includes(EXPECTED_IPFS_HEADER) ||
+      metadataHeader.indexOf(EXPECTED_SWARM_HEADER)
+    ) {
+      return bytecode.substring(0, potentialMetadataStartIndex);
+    } else {
+      return bytecode;
     }
   }
 }
