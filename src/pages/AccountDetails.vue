@@ -164,7 +164,7 @@
         <Property id="memo">
           <template v-slot:name>Memo</template>
           <template v-slot:value>
-            <BlobValue v-bind:base64="true" v-bind:blob-value="account?.memo" v-bind:show-none="true"/>
+            <BlobValue v-bind:base64="true" v-bind:blob-value="account?.memo" v-bind:show-none="true" :show-base64-as-extra="true"/>
           </template>
         </Property>
 
