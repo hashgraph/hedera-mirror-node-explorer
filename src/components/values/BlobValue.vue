@@ -37,11 +37,13 @@
       <span id="blob-main">
         {{ (b64EncodingFound && showBase64AsExtra) ? blobValue : decodedValue }}
       </span>
-      <div v-if="b64EncodingFound && showBase64AsExtra"  id="blob-extra" class="h-is-extra-text h-is-text-size-3 mt-1">
+      <div v-if="b64EncodingFound && showBase64AsExtra" class="h-is-extra-text h-is-text-size-3 mt-1">
         <span class="has-text-grey">
           Base64:
         </span>
-        {{decodedValue }}
+        <span id="blob-extra">
+          {{decodedValue }}
+        </span>
       </div>
     </div>
   </template>
