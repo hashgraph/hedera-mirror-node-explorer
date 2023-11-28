@@ -29,6 +29,7 @@
             <div>
                 <p class="header-title">Bytecode to Opcode Disassembler</p>
                 <p class="has-text-grey">Attempts to decode the low level Contract Bytecode to EVM Opcodes.</p>
+                <p class="has-text-grey">**Notice**: CBOR-encoded metadata will be automatically omitted during the disassmeblation</p>
             </div>
         
             <button id="disassmbleBtn" v-if="isCustom"
