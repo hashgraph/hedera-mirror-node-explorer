@@ -34,14 +34,14 @@
         
             <button id="disassmbleBtn" v-if="isCustom"
                     class="button is-white is-small has-text-right mr-3"
-                    @click="finalBytecode = byteCode">
+                    @click="handleDisassembleBytecode">
                     DISASSEMBLE
             </button>
         </div>
 
             
         <div id="disassembly" class="mt-4 py-1 px-2 is-flex analyzed-data-box">
-            <div v-if="opcodes && opcodes.length > 0" v-for="opcode in opcodes" :key="opcode.index16" class="is-flex" style="gap: 0.5rem">
+            <div v-if="disassembly && disassembly.length > 0" v-for="opcode in disassembly" :key="opcode.index16" class="is-flex" style="gap: 0.5rem">
                 <p>[{{ opcode.index16 }}]:</p>
 
                 <p>{{ opcode.hex }} - {{ opcode.mnemonic }}</p>
@@ -49,7 +49,7 @@
                 <p v-if="opcode.operand.length > 0" class="ml-">{{ `0x${opcode.operand.join("")}` }}</p>
             </div>
 
-            <p class="has-text-grey is-italic has-text-weight-medium" v-else>no opcodes found...</p>
+            <p class="has-text-grey is-italic has-text-weight-medium" v-else>{{disassembledError}}</p>
         </div>
     </div>
 
@@ -60,18 +60,30 @@
         <div>
             <p class="header-title">Bytecode to Solidity Decompiler</p>
             <p class="has-text-grey">Attempts to decode the low level Contract Bytecode to Solidity smart contract.</p>
+            <p class="has-text-grey">**Attribution**: This decompiler uses the 
+                <a class="has-text-grey is-underlined has-text-weight-medium" 
+                    href="https://github.com/Jon-Becker/heimdall-rs/tree/main" 
+                    target="_blank"
+                >
+                    Heimdall-rs tool</a> 
+                created and mainted by 
+                <a class="has-text-grey is-underlined has-text-weight-medium"
+                    href="https://twitter.com/beckerrjon" target="_blank">
+                    @beckerrjon</a>
+            </p>
         </div>
 
         <button v-if="isCustom"
                 class="button is-white is-small has-text-right mr-3"
-                @click="finalBytecode = byteCode">
+                @click="handleDecompileBytecode">
                 DECOMPILE
         </button>
     </div>
 
         
     <div class="mt-4 py-1 px-2 is-flex analyzed-data-box">
-        <p class="has-text-grey is-italic has-text-weight-medium">WIP...</p>
+        <p v-if="decompiledContract">{{ decompiledContract }}</p>
+        <p class="has-text-grey is-italic has-text-weight-medium" v-else>{{ decompiledError }}</p>
     </div>
     </div>
 </template>
@@ -84,6 +96,7 @@
 
 import {defineComponent, inject, ref, watch, computed} from 'vue';
 import {Disassembler} from '@/utils/bytecode_tools/disassembler/BytecodeDisassembler.ts'
+import {Decompiler} from '@/utils/bytecode_tools/decompiler/BytecodeDecompiler.ts'
 
 export default defineComponent({
     name: 'BytecodeTools',
@@ -104,17 +117,48 @@ export default defineComponent({
     },
 
     setup(props) {
-        const finalBytecode = props.isCustom ? ref("") : ref(props.byteCode)
+        const disassembly = ref<DisassembledOpcodeOutput[]|null>(null)
+        const disassembledError = ref<string|null>("Input bytecode to start.")
+        const decompiledContract = ref<string|null>(null)
+        const decompiledError = ref<string|null>("Input bytecode to start.")
 
-        const opcodes: DisassembledOpcodeOutput[] = computed(() => {
-            if (finalBytecode !== "") {
-                return Disassembler.disassemble(finalBytecode.value)
+        const handleDisassembleBytecode = () => {
+            const BYTECODE_REGEX = /^(0x)?([0-9a-fA-F]{2})+$/;
+            if (BYTECODE_REGEX.test(props.byteCode)) {
+                disassembly.value = Disassembler.disassemble(props.byteCode)
+                disassembledError.value = null
             } else {
-                return []
+                disassembly.value = null
+                disassembledError.value = props.byteCode === "" ? "No data found..." : "Invalid bytecode"
             }
-        })
+        }
 
-        return {opcodes, finalBytecode}
+        const handleDecompileBytecode = async () => {
+            const decompiledResult: DecompiledResult = await Decompiler.decompile(props.byteCode)
+
+            const BYTECODE_REGEX = /^(0x)?([0-9a-fA-F]{2})+$/;
+            if (BYTECODE_REGEX.test(props.byteCode)) {
+                if (decompiledResult.error) {
+                    decompiledContract.value = null
+                    decompiledError.value = decompiledResult.error;
+                } else if (decompiledResult.decompiled) {
+                    decompiledError.value = null
+                    decompiledContract.value = decompiledResult.decompiled
+                }
+            } else {
+                decompiledContract.value = null
+                decompiledError.value = props.byteCode === "" ? "No data found..." : decompiledResult.error
+            }
+        }
+
+        return {
+            disassembly,
+            handleDecompileBytecode,
+            handleDisassembleBytecode,
+            decompiledError,
+            decompiledContract,
+            disassembledError
+        }
     }
 });
 
@@ -142,7 +186,7 @@ export default defineComponent({
     border: 0.5px solid white; 
     gap: 0.42rem; 
     flex-direction: column; 
-    max-height: 300px; 
+    max-height: 600px; 
     overflow-y: auto; 
     font-family: 
     novamonoregular, monospace; 
