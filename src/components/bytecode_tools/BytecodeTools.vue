@@ -35,7 +35,7 @@
             <button id="disassmbleBtn" v-if="isCustom"
                     class="button is-white is-small has-text-right mr-3"
                     @click="handleDisassembleBytecode">
-                    DISASSEMBLE
+                DISASSEMBLE
             </button>
         </div>
 
@@ -48,7 +48,7 @@
 
                 <p v-if="opcode.operand.length > 0" class="ml-">{{ `0x${opcode.operand.join("")}` }}</p>
             </div>
-            <p class="has-text-grey is-italic has-text-weight-medium" v-else>{{disassembledError}}</p>
+            <p class="has-text-grey is-italic has-text-weight-medium" v-else>{{ disassembledError }}</p>
 
         </div>
     </div>
@@ -73,10 +73,10 @@
             </p>
         </div>
 
-        <button v-if="isCustom"
+        <button id="decompileBtn" v-if="isCustom"
                 class="button is-white is-small has-text-right mr-3"
                 @click="handleDecompileBytecode">
-                DECOMPILE
+            DECOMPILE
         </button>
     </div>
 
@@ -85,7 +85,7 @@
         <prism language="scss" v-if="decompiledContract">
             <pre style="background: none">{{decompiledContract}}</pre>
         </prism>
-        <p class="has-text-grey is-italic has-text-weight-medium py-4 px-2" v-else>{{ decompiledError }}</p>
+        <p class="has-text-grey is-italic has-text-weight-medium py-3" v-else>{{ decompiledError }}</p>
     </div>
     </div>
 </template>
@@ -96,7 +96,7 @@
 
 <script lang="ts">
 
-import {defineComponent, inject, ref, watch, computed} from 'vue';
+import {defineComponent, inject, ref, watch, computed, onUpdated} from 'vue';
 import {Decompiler} from '@/utils/bytecode_tools/decompiler/BytecodeDecompiler.ts'
 import {Disassembler} from '@/utils/bytecode_tools/disassembler/BytecodeDisassembler.ts'
 import "prismjs/prism";
@@ -156,6 +156,13 @@ export default defineComponent({
                 decompiledError.value = props.byteCode === "" ? "No data found..." : "Invalid bytecode"
             }
         }
+
+        onUpdated(() => {
+            if (!props.isCustom && !decompiledContract.value && !disassembly.value) {
+                handleDisassembleBytecode();
+                handleDecompileBytecode();
+            }
+        })
 
         return {
             disassembly,

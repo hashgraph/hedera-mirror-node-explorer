@@ -85,22 +85,19 @@
                 <template v-slot:name>Runtime Bytecode</template>
             </Property>
             <ByteCodeValue :byte-code="byteCode ?? undefined" class="mt-3"/>
-            <div class="is-flex is-align-items-center is-flex-wrap-wrap mt-1 is-justify-content-end">
-                <button id="disassembler-button"
-                    class="button is-white is-small has-text-right mr-3"
-                    @click="showDisassembler = !showDisassembler">
-                    DISASSEMBLE
-                </button>
+
+            <div v-if="!showBytecodeController" class="is-flex is-align-items-center mt-1 is-justify-content-end">
                 <button id="disassembler-button"
                     class="button is-white is-small has-text-right"
-                    @click="showDecompiler = !showDecompiler">
-                    DECOMPILE
+                    @click="showBytecodeController = true">
+                    Enable Bytecode Analyzer
                 </button>
             </div>
 
-            <BytecodeTools v-if="showDisassembler" :byte-code="byteCode ?? ''" :tool-type="1"/>
-            <BytecodeTools class="mt-4" v-if="showDecompiler" :byte-code="byteCode ?? ''" :tool-type="2"/>
-
+            <div :class="{'is-hidden': !showBytecodeController}">
+                <BytecodeToolController :byte-code="byteCode ?? ''"  :is-custom="false" @turnOffAnalyzer="showBytecodeController=false"/>
+                <!-- <BytecodeToolController v-if="showBytecodeController" :byte-code="byteCode ?? ''"  :is-custom="false" @turnOffAnalyzer="showBytecodeController=false"/> -->
+            </div>
         </template>
     </DashboardCard>
 
@@ -128,7 +125,7 @@ import {routeManager} from "@/router";
 import InfoTooltip from "@/components/InfoTooltip.vue";
 import ContractVerificationDialog from "@/components/verification/ContractVerificationDialog.vue";
 import SourceCodeValue from "@/components/values/SourceCodeValue.vue";
-import BytecodeTools from '../bytecode_tools/BytecodeTools.vue';
+import BytecodeToolController from '@/components/bytecode_tools/BytecodeToolController.vue'
 
 const FULL_MATCH_TOOLTIP = `A Full Match indicates that the bytecode of the deployed contract is byte-by-byte the same as the compilation output of the given source code files with the settings defined in the metadata file. This means the contents of the source code files and the compilation settings are exactly the same as when the contract author compiled and deployed the contract.`
 const PARTIAL_MATCH_TOOLTIP = `A Partial Match indicates that the bytecode of the deployed contract is the same as the compilation output of the given source code files except for the metadata hash. This means the deployed contract and the given source code + metadata function in the same way but there are differences in source code comments, variable names, or other metadata fields such as source paths.`
@@ -136,7 +133,7 @@ const PARTIAL_MATCH_TOOLTIP = `A Partial Match indicates that the bytecode of th
 export default defineComponent({
   name: 'ContractByteCodeSection',
 
-  components: { SourceCodeValue, ContractVerificationDialog, InfoTooltip, Property, StringValue, ByteCodeValue, DashboardCard, BytecodeTools },
+  components: { SourceCodeValue, ContractVerificationDialog, InfoTooltip, Property, StringValue, ByteCodeValue, DashboardCard, BytecodeToolController },
 
   props: {
     contractAnalyzer: {
@@ -172,7 +169,7 @@ export default defineComponent({
 
     const tooltipText = computed(() => isFullMatch.value ? FULL_MATCH_TOOLTIP : PARTIAL_MATCH_TOOLTIP)
 
-    const showDisassembler = ref(false)
+    const showBytecodeController = ref(false)
     const showDecompiler = ref(false)
 
     return {
@@ -191,7 +188,7 @@ export default defineComponent({
       byteCodeAnalyzer: props.contractAnalyzer.byteCodeAnalyzer,
       verifyDidComplete,
       isFullMatch,
-      showDisassembler,
+      showBytecodeController,
       showDecompiler,
     }
   }
