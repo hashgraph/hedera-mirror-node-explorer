@@ -336,13 +336,13 @@ export default defineComponent({
         position:relative;
         display:grid;
         column-gap:1.2rem;
-        grid-template-columns:repeat(20, minmax(0, 25px));
+        grid-template-columns:repeat(17, minmax(0, 35px));
     }
     #search-bar {
-        grid-column: span 12;
+        grid-column: span 10;
     }
     #drop-down-menu {
-        grid-column: span 4;
+        grid-column: span 3;
     }
     #connect-button {
         grid-column: span 4;
@@ -357,13 +357,13 @@ export default defineComponent({
         position:relative;
         display:grid;
         column-gap:1.2rem;
-        grid-template-columns:repeat(20, minmax(0, 18px));
+        grid-template-columns:repeat(18, minmax(0, 24px));
     }
     #search-bar {
-        grid-column: span 10;
+        grid-column: span 9;
     }
     #drop-down-menu {
-        grid-column: span 5;
+        grid-column: span 4;
     }
     #connect-button {
         grid-column: span 5;
