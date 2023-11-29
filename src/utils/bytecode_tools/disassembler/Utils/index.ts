@@ -103,7 +103,7 @@ export class Utils {
           hex,
           mnemonic: 'INVALID',
           operand: [],
-        },
+        } as DisassembledOpcodeOutput,
       };
     }
 
@@ -117,7 +117,7 @@ export class Utils {
           hex,
           mnemonic: opcode.mnemonic,
           operand: result.operands,
-        },
+        } as DisassembledOpcodeOutput,
       };
     } else {
       return {
@@ -127,7 +127,7 @@ export class Utils {
           hex,
           mnemonic: opcode.mnemonic,
           operand: [],
-        },
+        } as DisassembledOpcodeOutput,
       };
     }
   }
@@ -172,4 +172,11 @@ export class Utils {
       return bytecode;
     }
   }
+}
+
+export interface DisassembledOpcodeOutput {
+  index16: string,
+  hex: string,
+  mnemonic: string,
+  operand: string[]
 }

@@ -106,7 +106,7 @@ export default defineComponent({
     setup(props) {
         const finalBytecode = props.isCustom ? ref("") : ref(props.byteCode)
 
-        const opcodes = computed(() => {
+        const opcodes: DisassembledOpcodeOutput[] = computed(() => {
             if (finalBytecode !== "") {
                 return Disassembler.disassemble(finalBytecode.value)
             } else {

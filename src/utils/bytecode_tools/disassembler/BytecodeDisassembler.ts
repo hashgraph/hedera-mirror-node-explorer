@@ -18,7 +18,7 @@
  *
  */
 
-import { Utils } from './Utils';
+import { DisassembledOpcodeOutput, Utils } from './Utils';
 
 export class Disassembler {
   /**
@@ -29,7 +29,7 @@ export class Disassembler {
   public static disassemble(bytecode: string) {
     const properBytecode = Utils.prepBytecode(bytecode);
     if (!properBytecode) return null;
-    const disassembly = [];
+    const disassembly: DisassembledOpcodeOutput[] = [];
 
     for (let i = 0; i < properBytecode.length; i += 2) {
       const hex = properBytecode.substring(i, i + 2);
