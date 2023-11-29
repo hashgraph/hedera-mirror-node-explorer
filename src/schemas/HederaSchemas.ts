@@ -550,12 +550,12 @@ export interface ContractResultLog {
 }
 
 export interface ContractLog extends ContractResultLog  {
-    block_hash: string | null,
-    block_number: number | null,
-    root_contract_id: string | null,
-    timestamp: string | null,
-    transaction_hash: string | null,
-    transaction_index: number | null, //integer
+    block_hash: string | undefined,
+    block_number: number | undefined,
+    root_contract_id: string | null | undefined,
+    timestamp: string | undefined,
+    transaction_hash: string | undefined,
+    transaction_index: number | null | undefined, //integer
 }
 
 export interface ContractResultStateChange {
