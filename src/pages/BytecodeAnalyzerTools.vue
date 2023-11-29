@@ -30,28 +30,7 @@
           <span class="h-is-primary-title">Bytecode Analyzer</span>
         </template>
         <template v-slot:content>
-          <div id="tabChooser" class="mt-3 is-flex">
-            <div id="disassemblerButton" @click="() => tabSelector(1)" class="tabSelector" :class="{'has-text-grey unchosentab': !showDisassembler}">
-              Disassembler
-            </div>
-
-            <div id="decompilerButton" @click="() => tabSelector(2)" class="tabSelector" :class="{'has-text-grey unchosentab': !showDecompiler}">
-              Decompiler
-            </div>
-          </div>
-
-          <textarea
-            id="inputBytecodeBox"
-            v-model="inputBytecode"
-            rows="7"
-            placeholder="Enter contract hex bytecode (0x...)"
-            class="py-1 px-2 mt-5"
-            style="width:100%; font-family: novamonoregular,monospace; resize: vertical; border-radius: 6px;"
-          />
-
-          <!-- @notice: utilize `is-hidden` class to maintain analyzed bytecode data between tabs -->
-          <BytecodeTools :byte-code="inputBytecode" :tool-type="1" :is-custom="true" class="mt-5" :class="{'is-hidden': !showDisassembler}"/>
-          <BytecodeTools :byte-code="inputBytecode" :tool-type="2" :is-custom="true" class="mt-5" :class="{'is-hidden': !showDecompiler}"/>
+          <BytecodeToolController :is-custom="true"/>
         </template>
       </DashboardCard>
   
@@ -72,6 +51,7 @@
   import DashboardCard from "@/components/DashboardCard.vue";
   import ByteCodeValue from '@/components/values/ByteCodeValue.vue';
   import BytecodeTools from '@/components/bytecode_tools/BytecodeTools.vue';
+  import BytecodeToolController from '@/components/bytecode_tools/BytecodeToolController.vue'
   
   export default defineComponent({
     name: 'BytecodeAnalyzerTools',
@@ -82,31 +62,17 @@
       Footer,
       DashboardCard,
       ByteCodeValue,
-      BytecodeTools
+      BytecodeTools,
+      BytecodeToolController
     },
   
     setup() {
       const isSmallScreen = inject('isSmallScreen', true)
       const isTouchDevice = inject('isTouchDevice', false)
-
-      const inputBytecode = ref("")
-      const finalBytecode = ref("")
-      const showDisassembler = ref(true)
-      const showDecompiler = ref(false)
-
-      const tabSelector = (mode: 1 | 2) => {
-        showDisassembler.value = mode === 1
-        showDecompiler.value = mode === 2
-      }
   
       return {
         isSmallScreen,
         isTouchDevice,
-        inputBytecode,
-        showDisassembler,
-        showDecompiler,
-        finalBytecode,
-        tabSelector,
       }
     }
   });
@@ -117,21 +83,5 @@
   <!--                                                       STYLE                                                     -->
   <!-- --------------------------------------------------------------------------------------------------------------- -->
   
-  <style scoped>
+  <style></style>
   
-  .tabSelector {
-    font-size: 1.1rem;
-    width: 140px; 
-    border-bottom: 0.5px solid white; 
-    cursor: pointer;
-    font-weight: 500;
-    display: flex;
-    justify-content:center;
-    padding-bottom: 0.3rem;
-  }
-
-  .unchosentab {
-    border-bottom: 0.5px solid grey; 
-  }
-
-  </style>
