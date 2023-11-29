@@ -29,7 +29,7 @@
             <div>
                 <p class="header-title">Bytecode to Opcode Disassembler</p>
                 <p class="has-text-grey">Attempts to decode the low level Contract Bytecode to EVM Opcodes.</p>
-                <p class="has-text-grey">**Notice**: CBOR-encoded metadata will be automatically omitted during the disassmeblation</p>
+                <p class="has-text-grey">**Notice: CBOR-encoded metadata will be automatically omitted during the disassmeblation</p>
             </div>
         
             <button id="disassmbleBtn" v-if="isCustom"
@@ -40,7 +40,7 @@
         </div>
 
             
-        <div id="disassembly" class="mt-4 py-1 px-2 is-flex analyzed-data-box">
+        <div id="disassembly" class="mt-4 py-4 px-2 is-flex analyzed-data-box">
             <div v-if="disassembly && disassembly.length > 0" v-for="opcode in disassembly" :key="opcode.index16" class="is-flex" style="gap: 0.5rem">
                 <p>[{{ opcode.index16 }}]:</p>
 
@@ -48,8 +48,8 @@
 
                 <p v-if="opcode.operand.length > 0" class="ml-">{{ `0x${opcode.operand.join("")}` }}</p>
             </div>
-
             <p class="has-text-grey is-italic has-text-weight-medium" v-else>{{disassembledError}}</p>
+
         </div>
     </div>
 
@@ -60,13 +60,13 @@
         <div>
             <p class="header-title">Bytecode to Solidity Decompiler</p>
             <p class="has-text-grey">Attempts to decode the low level Contract Bytecode to Solidity smart contract.</p>
-            <p class="has-text-grey">**Attribution**: This decompiler uses the 
+            <p class="has-text-grey">**Attribution: This decompiler uses the 
                 <a class="has-text-grey is-underlined has-text-weight-medium" 
                     href="https://github.com/Jon-Becker/heimdall-rs/tree/main" 
                     target="_blank"
                 >
-                    Heimdall-rs tool</a> 
-                created and mainted by 
+                    heimdall-rs</a>,
+                an EVM bytecode tool, created and mainted by 
                 <a class="has-text-grey is-underlined has-text-weight-medium"
                     href="https://twitter.com/beckerrjon" target="_blank">
                     @beckerrjon</a>
@@ -82,8 +82,10 @@
 
         
     <div class="mt-4 py-1 px-2 is-flex analyzed-data-box">
-        <p v-if="decompiledContract">{{ decompiledContract }}</p>
-        <p class="has-text-grey is-italic has-text-weight-medium" v-else>{{ decompiledError }}</p>
+        <prism language="scss" v-if="decompiledContract">
+            <pre style="background: none">{{decompiledContract}}</pre>
+        </prism>
+        <p class="has-text-grey is-italic has-text-weight-medium py-4 px-2" v-else>{{ decompiledError }}</p>
     </div>
     </div>
 </template>
@@ -95,8 +97,12 @@
 <script lang="ts">
 
 import {defineComponent, inject, ref, watch, computed} from 'vue';
-import {Disassembler} from '@/utils/bytecode_tools/disassembler/BytecodeDisassembler.ts'
 import {Decompiler} from '@/utils/bytecode_tools/decompiler/BytecodeDecompiler.ts'
+import {Disassembler} from '@/utils/bytecode_tools/disassembler/BytecodeDisassembler.ts'
+import "prismjs/prism";
+import "prismjs/themes/prism-tomorrow.css"
+import "prismjs/components/prism-scss.js";
+import Prism from "vue-prism-component"
 
 export default defineComponent({
     name: 'BytecodeTools',
@@ -115,6 +121,7 @@ export default defineComponent({
             default: false,
         }
     },
+    components: {Prism},
 
     setup(props) {
         const disassembly = ref<DisassembledOpcodeOutput[]|null>(null)
@@ -134,10 +141,9 @@ export default defineComponent({
         }
 
         const handleDecompileBytecode = async () => {
-            const decompiledResult: DecompiledResult = await Decompiler.decompile(props.byteCode)
-
             const BYTECODE_REGEX = /^(0x)?([0-9a-fA-F]{2})+$/;
             if (BYTECODE_REGEX.test(props.byteCode)) {
+                const decompiledResult: DecompiledResult = await Decompiler.decompile(props.byteCode)
                 if (decompiledResult.error) {
                     decompiledContract.value = null
                     decompiledError.value = decompiledResult.error;
@@ -147,7 +153,7 @@ export default defineComponent({
                 }
             } else {
                 decompiledContract.value = null
-                decompiledError.value = props.byteCode === "" ? "No data found..." : decompiledResult.error
+                decompiledError.value = props.byteCode === "" ? "No data found..." : "Invalid bytecode"
             }
         }
 
