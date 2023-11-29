@@ -24,7 +24,7 @@ export class Disassembler {
   /**
    * @dev disassembles bytecode into EVM opcodes
    * @param bytecode: string
-   * @return
+   * @return DisassembledOpcodeOutput[]
    */
   public static disassemble(bytecode: string) {
     const properBytecode = Utils.prepBytecode(bytecode);
