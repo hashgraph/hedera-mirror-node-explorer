@@ -47,8 +47,8 @@
                         {{ status }}
                     </div>
                     <div class="mb-4 p-3 h-dotted-area" @drop="handleDrop" @dragover="handleDragOver">
-                        <template v-if="auditItems.length >= 1">
-                            <FileList :audit-items="auditItems" @clear-all-files="handleClearAllFiles"/>
+                        <template v-if="items.length >= 1">
+                            <FileList :audit-items="items" @clear-all-files="handleClearAllFiles"/>
                         </template>
                         <div v-else class="is-flex is-justify-content-center is-align-items-center my-5">
                             <img alt="Add file" class="image mr-1" style="width: 30px; height: 30px;"
@@ -78,7 +78,7 @@
                 <div class="is-flex is-justify-content-space-between">
                     <div>
                         <button class="button is-white is-small"
-                                :class="{'is-invisible': auditItems.length === 0}"
+                                :class="{'is-invisible': items.length === 0}"
                                 @click="showFileChooser">
                             ADD MORE FILES
                         </button>
@@ -149,16 +149,12 @@
 
 <script lang="ts">
 
-import {computed, defineComponent, onBeforeUnmount, onMounted, PropType, ref} from "vue"
+import {computed, defineComponent, ref} from "vue"
 import FileList from "@/components/verification/FileList.vue"
-import {SolidityFileImporter} from "@/utils/SolidityFileImporter";
-import {ByteCodeAnalyzer} from "@/utils/analyzer/ByteCodeAnalyzer";
-import {SourcifyUtils, SourcifyVerifyResponse} from "@/utils/sourcify/SourcifyUtils";
-import {ContractSourceAnalyzer} from "@/utils/analyzer/ContractSourceAnalyzer";
 import ProgressDialog, {Mode} from "@/components/staking/ProgressDialog.vue";
-import {ContractAuditStatus} from "@/utils/analyzer/ContractSourceAudit";
 import ConfirmDialog from "@/components/ConfirmDialog.vue";
-import {SolcUtils} from "@/utils/solc/SolcUtils";
+import {ContractSourceAnalyzer} from "@/utils/analyzer/ContractSourceAnalyzer";
+import {SourcifyUtils} from "@/utils/sourcify/SourcifyUtils";
 
 export default defineComponent({
     name: "ContractVerificationDialog",
@@ -171,10 +167,6 @@ export default defineComponent({
         contractId: {
             type: String,
             default: null
-        },
-        byteCodeAnalyzer: {
-            type: Object as PropType<ByteCodeAnalyzer>,
-            required: true
         }
     },
     emits: ["update:showDialog", "verifyDidComplete"],
@@ -192,10 +184,10 @@ export default defineComponent({
             }
         }
 
-        const handleFileSelected = () => {
+        const handleFileSelected = async () => {
             const selectedFiles = fileChooser.value?.files ?? null
             if (selectedFiles && selectedFiles.length >= 1) {
-                fileImporter.start(selectedFiles)
+                await contractSourceAnalyzer.chooseFiles(selectedFiles)
             } else {
                 console.log("Selected file is undefined")
             }
@@ -205,20 +197,17 @@ export default defineComponent({
         // Buttons
         //
 
-        const handleCancel = () => {
+        const handleCancel = async () => {
             context.emit('update:showDialog', false)
-            fileImporter.reset()
+            await contractSourceAnalyzer.reset()
         }
 
-        const verifyButtonEnabled = computed(() => {
-            return !sourceAnalyzer.analyzing.value
-                && sourceAnalyzer.audit.value?.status == ContractAuditStatus.Resolved
-        })
+        const verifyButtonEnabled = computed(
+            () => !contractSourceAnalyzer.analyzing.value && contractSourceAnalyzer.matchingContractName.value !== null)
 
         //
         // Drag & drop
         //
-        const fileImporter = new SolidityFileImporter()
         const handleDragOver = (e: DragEvent) => {
             if (e.dataTransfer) {
                 e.dataTransfer.dropEffect = "copy";
@@ -226,44 +215,28 @@ export default defineComponent({
             e.preventDefault()
         }
 
-        const handleDrop = (e: DragEvent) => {
-            if (e.dataTransfer) {
-                e.dataTransfer.dropEffect = "copy";
-                fileImporter.start(e.dataTransfer.items)
-            }
+        const handleDrop = async (e: DragEvent) => {
             e.preventDefault()
+            if (e.dataTransfer) {
+                e.dataTransfer.dropEffect = "copy"
+                await contractSourceAnalyzer.dropFiles(e.dataTransfer.items)
+            }
         }
 
-        const auditItems = computed(() => {
-            return sourceAnalyzer.audit.value?.items ?? []
-        })
+        const items = computed(() => contractSourceAnalyzer.items.value)
 
         //
-        // Source analysis
+        // ContractSourceAnalyzer
         //
 
-        const sourceAnalyzer = new ContractSourceAnalyzer(props.byteCodeAnalyzer, fileImporter.files)
-        onMounted(() => sourceAnalyzer.mount())
-        onBeforeUnmount(() => sourceAnalyzer.unmount())
+        const contractSourceAnalyzer = new ContractSourceAnalyzer(computed(() => props.contractId))
 
         //
         // Verify
         //
 
         const handleVerify = async () => {
-            context.emit('update:showDialog', false)
-            const audit = sourceAnalyzer.audit.value
-            if (audit?.status === ContractAuditStatus.Resolved && audit.countMetadataFiles() == 0) {
-                showMetadataDialog.value = true
-                metadataMessage.value = "You may proceed as is, or go back and add the metadata file if you have it."
-                metadataExtraMessage.value = "Providing the metadata may increase the chances to get a full match."
-                showMetadataDialog.value = true
-            } else {
-                showConfirmDialog.value = true
-            }
-            console.log(`status: ${sourceAnalyzer.audit.value?.status}`)
-            console.log(`failure: ${sourceAnalyzer.audit.value?.failure}`)
-            console.log(`resolvedMetadata: ${sourceAnalyzer.audit.value?.resolvedMetadata}`)
+            showConfirmDialog.value = true
         }
 
         //
@@ -272,55 +245,24 @@ export default defineComponent({
 
         const status = computed(() => {
             let result: string
-            if (fileImporter.started.value) {
-                result = "Importing files…"
-            } else if (sourceAnalyzer.analyzing.value) {
-                result = "Analyzing source files…"
-            } else if (sourceAnalyzer.audit.value !== null) {
-                switch(sourceAnalyzer.audit.value.status) {
-                    case ContractAuditStatus.NoSourceFile:
-                        result = "Drop the Solidity source files (and metadata if available) in the area below"
-                        break
-                    case ContractAuditStatus.Failure:
-                        result = "Compilation failed. Check your source files."
-                        break
-                    case ContractAuditStatus.UnknownCompilerVersion:
-                        const compilerVersion = props.byteCodeAnalyzer.solcVersion.value ?? "?"
-                        result = "Cannot find compiler for version " + compilerVersion
-                        break
-                    case ContractAuditStatus.CompilationErrors:
-                        if (sourceAnalyzer.audit.value.missingFiles.length >= 1) {
-                            result = "File '" + sourceAnalyzer.audit.value.missingFiles[0] + "' is missing."
-                        } else {
-                            result = "Compiler reports some errors. Check your source files."
-                        }
-                        break
-                    case ContractAuditStatus.Resolved: {
-                        const contractName = sourceAnalyzer.audit.value.resolvedContractName
-                        if (contractName !== null) {
-                            result = "Contract \"" + contractName + "\" is ready to be verified"
-                        } else {
-                            result = "Contract is ready to be verified"
-                        }
-                        break
-                    }
-                    case ContractAuditStatus.Unresolved: {
-                        const metadataFileCount = sourceAnalyzer.audit.value.countMetadataFiles()
-                        if (metadataFileCount >= 2) {
-                            result = "Multiple metadata files are present. Make sure to drop only a single one."
-                        } else {
-                            result = "Drop the Solidity source files (and metadata if available) in the area below"
-                        }
-                    }
-                }
+            if (contractSourceAnalyzer.analyzing.value) {
+                result = "Analyzing…"
+            } else if (contractSourceAnalyzer.failure.value) {
+                result = "Analysis failed"
+            } else if (contractSourceAnalyzer.matchingContract.value !== null) {
+                const matchingContract = contractSourceAnalyzer.matchingContract.value
+                const note = matchingContract.status == "perfect" ? "full match" : "partial match"
+                result = "Ready to verify contract \"" + contractSourceAnalyzer.matchingContractName.value + "\" (" + note + ")"
+            } else if (contractSourceAnalyzer.contractCount.value == 0 && contractSourceAnalyzer.unusedCount.value >= 1) {
+                result = "Add contract metadata json"
             } else {
-                result = "Drop the Solidity source files (and metadata if available) in the area below"
+                result = "Drop files…"
             }
             return result
         })
 
-        const handleClearAllFiles = () => {
-            fileImporter.reset()
+        const handleClearAllFiles = async () => {
+            await contractSourceAnalyzer.reset()
         }
 
         // Metadata dialog
@@ -343,53 +285,36 @@ export default defineComponent({
         const confirmExtraMessage = ref<string|null>(null)
 
         const handleConfirmVerification = async () => {
-            const audit = sourceAnalyzer.audit.value!
+            const contractId = props.contractId
+            const matchingContract = contractSourceAnalyzer.matchingContract.value!
 
             showConfirmDialog.value = false
             showProgressDialog.value = true
             showProgressSpinner.value = true
             progressDialogMode.value = Mode.Busy
-            progressMainMessage.value = audit.resolvedContractName
-                ? `Verifying ${audit.resolvedContractName} contract…`
-                : `Verifying contract…`
+            progressMainMessage.value = `Verifying ${matchingContract.name} contract…`
             progressExtraMessage.value = null
+
             try {
-                let response: SourcifyVerifyResponse | null
-                const solcMetadata = SolcUtils.castSolcMetadata(audit.resolvedMetadata)
-                if (solcMetadata !== null) {
-                    // We verify using /verify REST call
-                    const sourceFiles = audit.makeReducedSourceFiles()
-                    response = await SourcifyUtils.verify(
-                        props.contractId,
-                        solcMetadata,
-                        sourceFiles)
-                } else {
-                    // We verify using /verify/solc-input REST call
-                    const compilerVersion = "v" + audit.longCompilerVersion!
-                    const solcInput = SolcUtils.castSolcInput(audit.resolvedMetadata)!
-                    response = await SourcifyUtils.verifyWithSolcInput(
-                        props.contractId,
-                        audit.resolvedContractName!,
-                        compilerVersion,
-                        solcInput)
-                }
+                const verificationIds = [matchingContract.verificationId]
+                const response = await SourcifyUtils.sessionVerifyChecked(contractId, verificationIds, true)
                 showProgressSpinner.value = false
-                if (response !== null) {
-                    if (response.result) {
+
+                const matchingContractBis = SourcifyUtils.fetchMatchingContract(response)
+                if (matchingContractBis !== null) {
+                    const status = matchingContractBis.status
+                    if (status == "perfect" || status == "partial") {
                         progressDialogMode.value = Mode.Success
                         progressMainMessage.value = "Verification succeeded"
-                        const status = SourcifyUtils.fetchVerifyStatus(response)
                         if (status == "perfect") {
                             progressExtraMessage.value = "Full Match"
-                        } else if (status == "partial") {
-                            progressExtraMessage.value = "Partial Match"
                         } else {
-                            progressExtraMessage.value = status
+                            progressExtraMessage.value = "Partial Match"
                         }
                     } else {
                         progressDialogMode.value = Mode.Error
                         progressMainMessage.value = "Verification failed"
-                        progressExtraMessage.value = response.error ?? null
+                        progressExtraMessage.value = matchingContractBis.statusMessage ?? null
                     }
                 } else {
                     // Bug
@@ -401,7 +326,7 @@ export default defineComponent({
                 showProgressSpinner.value = false
                 progressDialogMode.value = Mode.Error
                 progressMainMessage.value = "Verification failed"
-                progressExtraMessage.value = SourcifyUtils.fetchVerifyError(reason)
+                progressExtraMessage.value = (reason as any).toString()
             }
         }
 
@@ -422,9 +347,8 @@ export default defineComponent({
 
         const progressDialogClosing = () => {
             if (progressDialogMode.value == Mode.Success) {
-                context.emit('update:showDialog', false)
+                context.emit('update:showDialog', false) // => call ContractSourceAnalyzer.unmount()
                 context.emit("verifyDidComplete")
-                fileImporter.reset()
             }
         }
 
@@ -434,7 +358,7 @@ export default defineComponent({
             handleVerify,
             handleDragOver,
             handleDrop,
-            auditItems,
+            items,
             verifyButtonEnabled,
             status,
             handleClearAllFiles,

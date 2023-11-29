@@ -14,7 +14,7 @@ export default defineConfig({
     // setupNodeEvents(on, config) {
     //   return require('./tests/e2e/plugins/index.js')(on, config)
     // },
-    baseUrl: 'https://localhost:5173',
+    baseUrl: 'http://localhost:5173',
     specPattern: 'tests/e2e/specs/**/*.cy.{js,jsx,ts,tsx}',
     supportFile: 'tests/e2e/support/index.js',
     experimentalRunAllSpecs: true,

@@ -15,7 +15,7 @@ const buildDate = new Date().toUTCString()
 export default defineConfig({
   plugins: [
     vue(),
-    basicSsl(),
+    // basicSsl(),
     pluginRewriteAll(), // See vite issue: https://github.com/vitejs/vite/issues/2190
     nodePolyfills({ // hashgraph/proto needs NodeJS buffers
       exclude: [
