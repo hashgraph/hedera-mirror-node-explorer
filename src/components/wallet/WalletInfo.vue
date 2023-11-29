@@ -24,32 +24,28 @@
 
 <template>
     <div v-if="connected && showWalletInfo" :class="{'box': !isTouchDevice && isSmallScreen, 'h-box-border': !isTouchDevice && isSmallScreen}" 
-                style="position: absolute; display: flex; flex-direction: column; gap: 1rem; width: 380px; top: 45px; right: 0; z-index: 10; border: 1px solid white; padding: 16px 12px;">
+                style="position: absolute; display: flex; flex-direction: column; gap: 1rem; width: 380px; top: 45px; right: 0; z-index: 10; border: 0.5px solid white; padding: 16px 12px;">
           <!-- header -->
-          <div style="display: flex; gap: 1rem">
+          <div class="is-flex is-align-items-center">
             <!-- logo icon -->
-            <figure style="width: 50px; height: 50px; display: flex; align-items: center;">
-                <img :src="walletIconURL ?? undefined" alt="wallet logo" style="object-fit: contain; aspect-ratio: 3/2;display: flex; height: 90%;">
+            <figure class="is-flex is-align-items-center" style="width: 50px; height: 50px;">
+                <img :src="walletIconURL ?? undefined" alt="wallet logo" style="object-fit: contain; aspect-ratio: 3/2; height: 90%;">
             </figure>
 
             <!-- accountID-checksum -->
-            <div class="is-flex is-align-items-center">
-              <Copyable :content-to-copy="accountId ?? ''">
-                <template v-slot:content>
-                  <p style="font-size: 1.35rem;">
-                      <span class="is-numeric">{{ accountId }}</span>
-                  </p>
-                </template>
-              </Copyable>
-              <span class="has-text-grey h-is-smaller">-{{ accountChecksum }}</span>
+            <div @click="hideWalletInfo" class="is-flex is-align-items-baseline ml-3" style="font-size: 1.35rem;">
+                <AccountLink :account-id="accountId"/>
+                <span class="has-text-grey h-is-smaller">
+                    -{{ accountChecksum }}
+                </span>
             </div>
           </div>
 
           <!-- EVM address -->
-          <div class="p-2" style="border: 1px solid white;">
+          <div class="p-2" style="border: 0.5px solid white;">
             <p class="has-text-grey h-is-smaller">EVM ADDRESS</p>
 
-            <Copyable :content-to-copy="accountEthereumAddress ?? ''">
+            <Copyable @copy-made="hideWalletInfo" :content-to-copy="accountEthereumAddress ?? ''">
               <template v-slot:content>
                 <div class="is-flex is-align-items-center" style="gap: 0.5rem">
                   <p v-if="accountEthereumAddress">
@@ -63,7 +59,7 @@
           </div>
 
           <!-- balance -->
-          <div class="p-2" style="border: 1px solid white;">
+          <div class="p-2" style="border: 0.5px solid white;">
             <p class="has-text-grey h-is-smaller">BALANCE</p>
             <p class="has-text-white" style="font-size: 1.2rem">{{ formattedAmount }} ℏ</p>
 
@@ -111,12 +107,13 @@ import HbarExtra from "@/components/values/HbarExtra.vue";
 import { AccountLocParser } from '@/utils/parser/AccountLocParser';
 import { BalanceAnalyzer } from '@/utils/analyzer/BalanceAnalyzer';
 import { computed, defineComponent, inject, onBeforeUnmount, onMounted, ref } from 'vue';
+import AccountLink from "@/components/values/AccountLink.vue";
 
 
 
 export default defineComponent({
     name: "WalletInfo",
-    components: {HbarExtra, Copyable},
+    components: {AccountLink, HbarExtra, Copyable},
     props: {
         connected: {
             type: Boolean,
@@ -139,7 +136,7 @@ export default defineComponent({
             default: undefined,
         },
     },
-    emit: ['walletDisconnect', 'changeAccount'],
+    emit: ['walletDisconnect', 'changeAccount', 'update:showWalletInfo'],
     
     setup(props, ctx) {
         const isSmallScreen = inject('isSmallScreen', true)
@@ -188,6 +185,7 @@ export default defineComponent({
         const changeAccount = (accountId: string) => {
           ctx.emit('changeAccount', accountId)
           showAccountIdsModal.value = false;
+          hideWalletInfo()
         }
 
         // 
@@ -196,6 +194,10 @@ export default defineComponent({
         const disconnectFromWallet = () => {
           ctx.emit('walletDisconnect', true)
           showAccountIdsModal.value = false;
+        }
+
+        const hideWalletInfo = () => {
+            ctx.emit('update:showWalletInfo', false)
         }
 
         return {
@@ -208,6 +210,7 @@ export default defineComponent({
             chosenAccountId,
             showAccountIdsModal,
             disconnectFromWallet,
+            hideWalletInfo,
             accountEthereumAddress,
             tbarBalance: balanceAnalyzer.hbarBalance,
             accountChecksum: accountLocParser.accountChecksum,
@@ -223,7 +226,7 @@ export default defineComponent({
 
 <style>
   .is-hover:hover {
-    color: gray;
+    color: grey;
   }
 </style>
 

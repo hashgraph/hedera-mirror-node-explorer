@@ -126,19 +126,21 @@
             {{ connecting ? "Connecting..." : "CONNECT WALLET..." }}
           </button>
 
-          <div v-else @click="showWalletInfo = !showWalletInfo" id="walletInfoBanner" class="is-flex is-align-items-center" style="outline: none; height: 40px; width: 100%; font-size: 0.9rem; border: 0.5px solid white; display: flex; justify-content: space-between; cursor: pointer;">
-            <figure style="width: 50px; height: 100%; display: flex; align-items: center; margin-left: 0.15rem;">
-                <img :src="walletIconURL ?? undefined" alt="wallet logo" style="object-fit: contain; aspect-ratio: 3/2;display: flex; height: 90%;">
-            </figure>
+          <div v-else @click="showWalletInfo = !showWalletInfo" id="walletInfoBanner"
+                 class="is-flex is-align-items-center is-justify-content-space-between"
+                 style="outline: none; height: 40px; width: 100%; font-size: 0.9rem; border: 0.5px solid white; cursor: pointer;">
 
-            <p>
-              {{ accountId }}
-            </p>
-
-            <div class="is-flex is-align-items-center" style="width: 30px; justify-content: center;">
-              <i v-if="!showWalletInfo" class="fas fa-solid fa-angle-down is-flex is-align-items-center"/>
-              <i v-else class="fas fa-solid fa-angle-up is-flex is-align-items-center"/>
-            </div>
+              <div class="is-flex is-align-items-center is-justify-content-flex-start">
+                  <figure class="is-flex is-align-items-center mx-1" style="height: 40px;" >
+                      <img :src="walletIconURL ?? undefined" alt="wallet logo"
+                           style="object-fit: contain; aspect-ratio: 3/2; height: 60%;">
+                  </figure>
+                  {{ accountId }}
+              </div>
+              <div class="is-flex is-align-items-center is-justify-content-center" style="width: 30px;">
+                  <i v-if="!showWalletInfo" class="fas fa-solid fa-angle-down is-flex is-align-items-center"/>
+                  <i v-else class="fas fa-solid fa-angle-up is-flex is-align-items-center"/>
+              </div>
 
           </div>
         </div>
@@ -146,7 +148,7 @@
         <WalletInfo 
           :connected="connected" 
           :accountIds="accountIds"
-          :showWalletInfo="showWalletInfo" 
+          v-model:show-wallet-info="showWalletInfo"
           :accountId="accountId || undefined" 
           :walletIconURL="walletIconURL || undefined" 
           @wallet-disconnect="disconnectFromWallet"
@@ -336,13 +338,13 @@ export default defineComponent({
         position:relative;
         display:grid;
         column-gap:1.2rem;
-        grid-template-columns:repeat(20, minmax(0, 25px));
+        grid-template-columns:repeat(17, minmax(0, 35px));
     }
     #search-bar {
-        grid-column: span 12;
+        grid-column: span 10;
     }
     #drop-down-menu {
-        grid-column: span 4;
+        grid-column: span 3;
     }
     #connect-button {
         grid-column: span 4;
@@ -357,13 +359,13 @@ export default defineComponent({
         position:relative;
         display:grid;
         column-gap:1.2rem;
-        grid-template-columns:repeat(20, minmax(0, 18px));
+        grid-template-columns:repeat(18, minmax(0, 24px));
     }
     #search-bar {
-        grid-column: span 10;
+        grid-column: span 9;
     }
     #drop-down-menu {
-        grid-column: span 5;
+        grid-column: span 4;
     }
     #connect-button {
         grid-column: span 5;
