@@ -54,10 +54,12 @@ export default defineComponent({
       default: true
     },
   },
-  setup(props) {
+  emits: ['copyMade'],
+  setup(props, context) {
     const copyToClipboard = (): void => {
       if (props.contentToCopy?.length) {
         navigator.clipboard.writeText(props.contentToCopy)
+          context.emit('copyMade')
       }
     }
     return {

@@ -148,7 +148,7 @@
         <WalletInfo 
           :connected="connected" 
           :accountIds="accountIds"
-          :showWalletInfo="showWalletInfo" 
+          v-model:show-wallet-info="showWalletInfo"
           :accountId="accountId || undefined" 
           :walletIconURL="walletIconURL || undefined" 
           @wallet-disconnect="disconnectFromWallet"

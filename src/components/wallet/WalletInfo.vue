@@ -33,7 +33,7 @@
             </figure>
 
             <!-- accountID-checksum -->
-            <div class="is-flex is-align-items-baseline ml-3" style="font-size: 1.35rem;">
+            <div @click="hideWalletInfo" class="is-flex is-align-items-baseline ml-3" style="font-size: 1.35rem;">
                 <AccountLink :account-id="accountId"/>
                 <span class="has-text-grey h-is-smaller">
                     -{{ accountChecksum }}
@@ -45,7 +45,7 @@
           <div class="p-2" style="border: 0.5px solid white;">
             <p class="has-text-grey h-is-smaller">EVM ADDRESS</p>
 
-            <Copyable :content-to-copy="accountEthereumAddress ?? ''">
+            <Copyable @copy-made="hideWalletInfo" :content-to-copy="accountEthereumAddress ?? ''">
               <template v-slot:content>
                 <div class="is-flex is-align-items-center" style="gap: 0.5rem">
                   <p v-if="accountEthereumAddress">
@@ -136,7 +136,7 @@ export default defineComponent({
             default: undefined,
         },
     },
-    emit: ['walletDisconnect', 'changeAccount'],
+    emit: ['walletDisconnect', 'changeAccount', 'update:showWalletInfo'],
     
     setup(props, ctx) {
         const isSmallScreen = inject('isSmallScreen', true)
@@ -185,6 +185,7 @@ export default defineComponent({
         const changeAccount = (accountId: string) => {
           ctx.emit('changeAccount', accountId)
           showAccountIdsModal.value = false;
+          hideWalletInfo()
         }
 
         // 
@@ -193,6 +194,10 @@ export default defineComponent({
         const disconnectFromWallet = () => {
           ctx.emit('walletDisconnect', true)
           showAccountIdsModal.value = false;
+        }
+
+        const hideWalletInfo = () => {
+            ctx.emit('update:showWalletInfo', false)
         }
 
         return {
@@ -205,6 +210,7 @@ export default defineComponent({
             chosenAccountId,
             showAccountIdsModal,
             disconnectFromWallet,
+            hideWalletInfo,
             accountEthereumAddress,
             tbarBalance: balanceAnalyzer.hbarBalance,
             accountChecksum: accountLocParser.accountChecksum,
