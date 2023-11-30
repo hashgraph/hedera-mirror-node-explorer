@@ -28,7 +28,6 @@ import {
     SAMPLE_CONTRACT_DELETED,
     SAMPLE_CONTRACT_DUDE,
     SAMPLE_CONTRACT_RESULTS,
-    SAMPLE_CONTRACT_WITH_SWARM_HASH,
     SAMPLE_NETWORK_EXCHANGERATE,
     SAMPLE_TRANSACTION,
     SAMPLE_TRANSACTIONS
@@ -40,7 +39,6 @@ import {HMSF} from "@/utils/HMSF";
 import NotificationBanner from "@/components/NotificationBanner.vue";
 import {TransactionID} from "@/utils/TransactionID";
 import ContractResultTable from "@/components/contract/ContractResultTable.vue";
-import DashboardCard from "@/components/DashboardCard.vue";
 
 /*
     Bookmarks
@@ -104,8 +102,12 @@ describe("ContractDetails.vue", () => {
         expect(wrapper.get("#evmAddress").text()).toBe("EVM Address:0x00000000000000000000000000000000000b70cfCopy")
         expect(wrapper.get("#code").text()).toBe("Runtime Bytecode")
         expect(wrapper.get("#solcVersion").text()).toBe("Compiler Version0.8.4")
-        expect(wrapper.find("#ipfsHash").exists()).toBe(false)
-        expect(wrapper.find("#swarmHash").exists()).toBe(false)
+
+        // None of the elements related to contract verification should be present in this context
+        expect(wrapper.find('#verify-button').exists()).toBe(false)
+        expect(wrapper.find('#showSource').exists()).toBe(false)
+        expect(wrapper.find('#verificationStatus').exists()).toBe(false)
+        expect(wrapper.find('#contractName').exists()).toBe(false)
 
         expect(wrapper.findComponent(ContractResultTable).exists()).toBe(true)
 
@@ -388,82 +390,6 @@ describe("ContractDetails.vue", () => {
 
         expect(wrapper.get("#notificationBanner").text()).toBe("Invalid contract ID: " + invalidContractId)
 
-        wrapper.unmount()
-        await flushPromises()
-    });
-
-    it("Should display swarm hash", async () => {
-
-        await router.push("/") // To avoid "missing required param 'network'" error
-
-        const mock = new MockAdapter(axios);
-
-        const contract = SAMPLE_CONTRACT_WITH_SWARM_HASH
-        const matcher1 = "/api/v1/contracts/" + contract.contract_id
-        mock.onGet(matcher1).reply(200, contract);
-
-        const matcher2 = "/api/v1/accounts/" + contract.contract_id
-        mock.onGet(matcher2).reply(200, SAMPLE_CONTRACT_AS_ACCOUNT);
-
-        const matcher3 = "/api/v1/transactions"
-        mock.onGet(matcher3).reply(200, SAMPLE_TRANSACTIONS);
-
-        const matcher5 = "/api/v1/contracts/" + contract.contract_id + "/results"
-        mock.onGet(matcher5).reply(200, SAMPLE_CONTRACT_RESULTS);
-
-        const wrapper = mount(ContractDetails, {
-            global: {
-                plugins: [router, Oruga]
-            },
-            props: {
-                contractId: contract.contract_id
-            },
-        });
-
-        await flushPromises()
-        // console.log(wrapper.text())
-
-        expect(wrapper.text()).toMatch(RegExp("^Contract Contract ID:" + contract.contract_id))
-        expect(wrapper.find("#swarmHashValue").exists()).toBe(false)
-        expect(wrapper.find("#ipfsHash").exists()).toBe(false)
-
-        mock.restore()
-        wrapper.unmount()
-        await flushPromises()
-    });
-
-    it("Should display contract verification link and properties", async () => {
-
-        await router.push("/") // To avoid "missing required param 'network'" error
-
-        const mock = new MockAdapter(axios);
-
-        const contract = SAMPLE_CONTRACT_WITH_SWARM_HASH
-        const contractId = SAMPLE_CONTRACT_WITH_SWARM_HASH.contract_id
-        const matcher1 = "/api/v1/contracts/" + contractId
-        mock.onGet(matcher1).reply(200, contract);
-
-        const matcher2 = "/api/v1/contracts/" + contractId + "/results"
-        mock.onGet(matcher2).reply(200, SAMPLE_CONTRACT_RESULTS);
-
-        const wrapper = mount(ContractDetails, {
-            global: {
-                plugins: [router, Oruga]
-            },
-            props: {
-                contractId: contractId
-            },
-        });
-
-        await flushPromises()
-        // console.log(wrapper.text())
-
-        expect(wrapper.text()).toMatch(RegExp("^Contract Contract ID:" + contractId))
-        const cards = wrapper.findAllComponents(DashboardCard)
-        expect(cards[1].text()).toMatch(RegExp("^Contract Bytecode"))
-        expect(cards[1].get('#verify-button').text()).toBe("VERIFY CONTRACT")
-
-        mock.restore()
         wrapper.unmount()
         await flushPromises()
     });
