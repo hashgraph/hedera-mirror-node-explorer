@@ -34,53 +34,56 @@
 
           <div v-if="isSmallScreen" class="is-flex is-justify-content-space-between">
             <div class="is-flex-direction-column">
-              <NetworkDashboardItem title="Total Nodes" :value="totalNodes.toString()"/>
+              <NetworkDashboardItem title="Last Staked" :value="formatSeconds((elapsedMin??0)*60) + ' ago'"/>
               <div class="mt-4"/>
-              <NetworkDashboardItem title="Last Staked" :value="formatSeconds((elapsedMin ?? 0)*60) + ' ago'"/>
+              <NetworkDashboardItem title="Next Staking Period" :value="'in ' + formatSeconds((remainingMin??0)*60)"/>
+              <div class="mt-4"/>
+              <NetworkDashboardItem title="Staking Period" :value="formatSeconds((durationMin??0)*60)"/>
             </div>
             <div class="is-flex-direction-column">
               <NetworkDashboardItem name="HBAR" title="Total Staked" :value="makeFloorHbarAmount(stakeTotal)"/>
               <div class="mt-4"/>
-              <NetworkDashboardItem title="Next Staking Period" :value="'in ' + formatSeconds((remainingMin??0)*60)"/>
+              <NetworkDashboardItem name="HBAR" title="Staked for Reward" :value="makeFloorHbarAmount(stakeRewardedTotal)"/>
+              <div class="mt-4"/>
+              <NetworkDashboardItem name="HBAR" title="Maximum Staked for Reward" :value="makeFloorHbarAmount(maxStakeRewarded)"/>
             </div>
             <div class="is-flex-direction-column">
-              <NetworkDashboardItem name="HBAR" title="Last Period Reward" :value="makeFloorHbarAmount(totalRewarded)"/>
+              <NetworkDashboardItem name="HBAR" title="Rewarded Last Period" :value="makeFloorHbarAmount(totalRewarded)"/>
               <div class="mt-4"/>
-              <NetworkDashboardItem title="Staking Period" :value="formatSeconds((durationMin??0)*60)"/>
+              <NetworkDashboardItem title="Maximum Reward Rate" :value="makeAnnualizedRate(maxRewardRate)"/>
+              <div class="mt-4"/>
+              <NetworkDashboardItem title="Current Reward Rate" :value="makeAnnualizedRate(rewardRate)"/>
             </div>
           </div>
           <div v-else>
             <div class="is-flex-direction-column">
-              <NetworkDashboardItem title="Total Nodes" :value="totalNodes.toString()"/>
-              <div class="mt-4"/>
               <NetworkDashboardItem title="Last Staked" :value="formatSeconds((elapsedMin??0)*60) + ' ago'"/>
-              <div class="mt-4"/>
-              <NetworkDashboardItem name="HBAR" title="Total Staked" :value="makeFloorHbarAmount(stakeTotal)"/>
               <div class="mt-4"/>
               <NetworkDashboardItem title="Next Staking Period" :value="'in ' + formatSeconds((remainingMin??0)*60)"/>
               <div class="mt-4"/>
-              <NetworkDashboardItem name="HBAR" title="Last Period Reward" :value="makeFloorHbarAmount(totalRewarded)"/>
-              <div class="mt-4"/>
               <NetworkDashboardItem title="Staking Period" :value="formatSeconds((durationMin??0)*60)"/>
-              <div class="mt-6"/>
+              <div class="mt-4"/>
+              <NetworkDashboardItem name="HBAR" title="Total Staked" :value="makeFloorHbarAmount(stakeTotal)"/>
+              <div class="mt-4"/>
+              <NetworkDashboardItem name="HBAR" title="Staked for Reward" :value="makeFloorHbarAmount(stakeRewardedTotal)"/>
+              <div class="mt-4"/>
+              <NetworkDashboardItem name="HBAR" title="Maximum Staked for Reward" :value="makeFloorHbarAmount(maxStakeRewarded)"/>
+              <div class="mt-4"/>
+              <NetworkDashboardItem name="HBAR" title="Rewarded Last Period" :value="makeFloorHbarAmount(totalRewarded)"/>
+              <div class="mt-4"/>
+              <NetworkDashboardItem title="Maximum Reward Rate" :value="makeAnnualizedRate(maxRewardRate)"/>
+              <div class="mt-4"/>
+              <NetworkDashboardItem title="Current Reward Rate" :value="makeAnnualizedRate(rewardRate)"/>
+              <div class="mt-4"/>
             </div>
           </div>
 
       </template>
     </DashboardCard>
 
-    <p>{{ `Total Staked: ${makeFloorHbarAmount(stakeTotal)}` }}</p>
-    <p>{{ `Staked for Reward: ${makeFloorHbarAmount(stakeRewardedTotal)}` }}</p>
-    <p>{{ `Maximum Staked for Reward: ${makeFloorHbarAmount(maxStakeRewarded)}` }}</p>
-    <br/>
-    <p>{{ `Rewarded Last Period: ${makeFloorHbarAmount(totalRewarded)}` }}</p>
-    <p>{{ `Maximum Reward Rate: ${makeAnnualizedRate(maxRewardRate)}` }}</p>
-    <p>{{ `Current Reward Rate: ${makeAnnualizedRate(rewardRate)}` }}</p>
-    <br/>
-
     <DashboardCard>
       <template v-slot:title>
-        <span class="h-is-primary-title">Nodes</span>
+        <span class="h-is-primary-title">{{ `${nodes.length}  Nodes` }}</span>
       </template>
       <template v-slot:content>
         <NodeTable :nodes="nodes"
@@ -140,7 +143,7 @@ export default defineComponent({
     const stakeTotal = computed(() => stakeLookup.entity.value?.stake_total ?? 0)
     const maxStakeRewarded = computed(() => stakeLookup.entity.value?.max_stake_rewarded ?? 0)
     const rewardRate = computed(() => stakeLookup.entity.value?.max_staking_reward_rate_per_hbar ?? 0)
-    const maxRewardRate = computed(() => (stakeLookup.entity.value?.staking_reward_rate ?? 0) / networkNodeAnalyzer.stakeRewardedTotal.value)
+    const maxRewardRate = computed(() => (stakeLookup.entity.value?.staking_reward_rate ?? 0) / networkNodeAnalyzer.stakeRewardedTotal.value * 100000000)
 
     const makeFloorHbarAmount = (tinyBarAmount: number) => Math.floor((tinyBarAmount ?? 0) / 100000000).toLocaleString('en-US')
 
