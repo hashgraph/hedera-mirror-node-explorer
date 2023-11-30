@@ -142,12 +142,12 @@ export default defineComponent({
       const isMediumScreen = inject('isMediumScreen', true)
       const isTouchDevice = inject('isTouchDevice', false)
 
+      const blockNumberToShow = computed(() => props.blockNumber || props.log?.block_number)
+      const txHashToShow = computed(() => props.transactionHash || props.log?.transaction_hash)
+
       const logAnalyzer = new ContractLogAnalyzer(computed(() => props.log))
       onMounted(() => logAnalyzer.mount())
       onBeforeUnmount(() => logAnalyzer.unmount())
-
-      const blockNumberToShow = computed(() => props.blockNumber ? props.blockNumber : props.log?.block_number)
-      const txHashToShow = computed(() => props.transactionHash ? props.transactionHash : props.log?.transaction_hash)
 
       return {
           isSmallScreen,
