@@ -24,59 +24,72 @@
 
 <template>
 
-  <div v-if="log">
-    <Property id="logAddress" :full-width="true">
-      <template v-slot:name>Address</template>
+  <div v-if="log" :class="{'log-wrapper-grid': isMediumScreen, 'log-wrapper-flex': !isMediumScreen}">
+    <!-- left content-->
+    <div :class="{'log-left-content-grid': isMediumScreen}">
+      <PropertyVertical id="transactionHash" :is-horizontal="!isMediumScreen">
+        <template v-slot:name>Transaction Hash</template>
+        <template v-slot:value>
+          <HexaValue v-bind:byteString="txHashToShow" v-bind:show-none="true"/>
+        </template>
+      </PropertyVertical>
+
+      <PropertyVertical id="blockNumber" :is-horizontal="!isMediumScreen">
+        <template v-slot:name>Block</template>
+        <template v-slot:value>
+          {{ blockNumberToShow }}
+        </template>
+      </PropertyVertical>
+
+      <PropertyVertical id="address" :is-horizontal="!isMediumScreen">
+        <template v-slot:name>Address</template>
+        <template v-slot:value>
+          <EVMAddress :address="log.address" :enable-copy="true" :compact="!isSmallScreen && !isMediumScreen"/>
+        </template>
+      </PropertyVertical>
+    </div>
+
+    <!-- right content -->
+    <PropertyVertical id="Args" style="grid-column: span 14;">
+      <template v-slot:name>Logs</template>
       <template v-slot:value>
-        <EVMAddress :address="log.address" :id="log.contract_id"/>
-      </template>
-    </Property>
-    <Property id="logIndex" :full-width="true">>
-      <template v-slot:name>Index</template>
-      <template v-slot:value>
-        <StringValue :string-value="log?.index?.toString()"/>
-      </template>
-    </Property>
-    <Property id="logTopics" :full-width="true">>
-      <template v-slot:name>Topics</template>
-      <template v-slot:value>
-        <div v-for="(t, topicIndex) in log.topics" :key="t" class="is-flex">
-          <span class="is-family-monospace h-is-text-size-3 mt-1 mr-2">{{ '(' + topicIndex + ') ' }}</span>
-          <HexaValue :show-none="true" v-bind:byteString="t" :low-contrast="false"
-                     :word-wrap-small="8" :word-wrap-medium="8" />
+        <!-- not verified -->
+        <div v-if="!isContractVerified" class="is-flex is-flex-direction-column mt-1" style="gap: 0.75rem;">
+          <div v-for="(t, ti) in log.topics" :class="{'unverif-log-args-prop': !isMediumScreen || !isSmallScreen}" :key="t" class="is-flex" style="gap: 1rem;">
+            <div class="topic-title-box">
+              <span style="font-size: 0.85rem">{{ 'Topic ' + ti }}</span>
+            </div>
+            
+            <HexaValue :show-none="true" v-bind:byteString="t" :low-contrast="ti === 0"
+            :word-wrap-small="0" :word-wrap-medium="8"/>
+          </div>
+        </div>
+
+        <!-- verified -->
+        <div v-else class="log-content-box">
+          <span class="h-is-property-text">{{ fullLogSignature }}</span>
+
+          <template v-for="(arg, i) in args" :key="arg.name">
+            <PropertyVertical :id="'logArg_' + arg.name" :full-width="true" :is-horizontal="!isMediumScreen">
+                <template v-slot:name>
+                  <div class="is-flex is-align-items-center" style="gap: 0.5rem;">
+                    <div v-if="arg.indexed" class="topic-title-box">
+                      <span style="font-size: 0.85rem">{{ 'Topic ' + i }}</span>
+                    </div>  
+                    <span class="h-is-property-text is-italic log-arg-title">
+                      {{ arg.type + " " + arg.name }}
+                    </span>
+                  </div>
+
+                </template>
+                <template v-slot:value>
+                    <FunctionValue :ntv="arg" :hide-type="true" :low-contrast="i === 0"/>
+                </template>
+            </PropertyVertical>
+        </template>
         </div>
       </template>
-    </Property>
-
-    <template v-if="signature">
-
-        <div class="h-is-tertiary-text mt-4 mb-3">Data</div>
-
-        <Property id="logSignature" :full-width="true">
-            <template v-slot:name>Signature</template>
-            <template v-slot:value>{{ signature }}</template>
-        </Property>
-
-        <template v-for="arg in args" :key="arg.name">
-            <Property :id="'logArg_' + arg.name" :full-width="true">
-                <template v-slot:name>{{ arg.name }}</template>
-                <template v-slot:value>
-                    <FunctionValue :ntv="arg"/>
-                </template>
-            </Property>
-        </template>
-
-    </template>
-    <template v-else>
-
-      <Property id="logData" :full-width="true">
-          <template v-slot:name>Data</template>
-          <template v-slot:value>
-              <HexaValue :show-none="true" v-bind:byteString="log.data" :low-contrast="false"/>
-          </template>
-      </Property>
-
-    </template>
+    </PropertyVertical>
 
   </div>
 
@@ -88,33 +101,54 @@
 
 <script lang="ts">
 
-import {computed, defineComponent, onBeforeUnmount, onMounted, PropType} from "vue";
-import {ContractResultLog} from "@/schemas/HederaSchemas";
-import Property from "@/components/Property.vue";
+import {computed, defineComponent, inject, onBeforeUnmount, onMounted, PropType, ref} from "vue";
+import {ContractLog} from "@/schemas/HederaSchemas";
+import PropertyVertical from "@/components/PropertyVertical.vue";
 import StringValue from "@/components/values/StringValue.vue";
 import HexaValue from "@/components/values/HexaValue.vue";
 import EVMAddress from "@/components/values/EVMAddress.vue";
 import {ContractLogAnalyzer} from "@/utils/analyzer/ContractLogAnalyzer";
 import SignatureValue from "@/components/values/SignatureValue.vue";
 import FunctionValue from "@/components/values/FunctionValue.vue";
+import DashboardCard from '../DashboardCard.vue';
 
 export default defineComponent({
   name: "ContractResultLogEntry",
-  components: {FunctionValue, SignatureValue, EVMAddress, HexaValue, StringValue, Property},
+  components: { FunctionValue, SignatureValue, EVMAddress, HexaValue, StringValue, PropertyVertical, DashboardCard },
   props: {
     log: {
-        type: Object as PropType<ContractResultLog | null>,
+        type: Object as PropType<ContractLog | null>,
         default: null
+    },
+    blockNumber: {
+      type:  Number,
+    },
+    transactionHash: {
+      type: String
     }
   },
   setup(props) {
+      const isSmallScreen = inject('isSmallScreen', true)
+      const isMediumScreen = inject('isMediumScreen', true)
+      const isTouchDevice = inject('isTouchDevice', false)
+
+      const blockNumberToShow = computed(() => props.blockNumber || props.log?.block_number)
+      const txHashToShow = computed(() => props.transactionHash || props.log?.transaction_hash)
+
       const logAnalyzer = new ContractLogAnalyzer(computed(() => props.log))
       onMounted(() => logAnalyzer.mount())
       onBeforeUnmount(() => logAnalyzer.unmount())
 
       return {
+          isSmallScreen,
+          isMediumScreen,
+          isTouchDevice,
           args: logAnalyzer.args,
-          signature: logAnalyzer.signature
+          signature: logAnalyzer.signature,
+          fullLogSignature: logAnalyzer.fullLogSignature,
+          blockNumberToShow,
+          txHashToShow,
+          isContractVerified: logAnalyzer.isContractVerified
       }
   }
 })
@@ -125,4 +159,52 @@ export default defineComponent({
 <!--                                                      STYLE                                                      -->
 <!-- --------------------------------------------------------------------------------------------------------------- -->
 
-<style/>
+<style scope>
+
+.log-wrapper-grid {
+  position: relative; 
+  display: grid; 
+  column-gap: 3rem; 
+  grid-template-columns: repeat(19, minmax(0, 1fr));
+}
+
+.log-left-content-grid {
+  grid-column: span 5; 
+  display: flex; 
+  flex-direction: column; 
+  gap: 1rem;
+}
+
+.log-wrapper-flex {
+  position: relative;
+  display: flex;
+  flex-direction: column;
+  gap: 1rem
+}
+
+.unverif-log-args-prop {
+  justify-content: space-between;
+}
+
+.topic-title-box {
+  border: 1px solid grey; 
+  width: 70px; 
+  text-align: center; 
+  padding: 3px 0; 
+  border-radius: 3px;
+}
+
+.log-content-box {
+  border: 1px solid grey; 
+  padding: 9px; 
+  border-radius: 3px; 
+  display: flex; 
+  flex-direction: column; 
+  gap: 0.75rem
+}
+
+.log-arg-title {
+  font-size: small; 
+  letter-spacing: -0.025em;
+}
+</style>
