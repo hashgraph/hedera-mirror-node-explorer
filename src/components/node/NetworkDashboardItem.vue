@@ -30,7 +30,7 @@
 
     <div class="is-flex is-align-items-center">
       <div class="is-flex has-text-white is-align-items-baseline">
-        <p class="dashboard-value has-text-white mr-2">
+        <p class="dashboard-value is-numeric has-text-white mr-2">
           <span v-if="value !== null">{{ value }}</span>
           <span v-else class="has-text-grey">None</span>
           <slot name="value"></slot>
