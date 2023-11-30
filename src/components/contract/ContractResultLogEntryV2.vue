@@ -47,17 +47,6 @@
           <EVMAddress :address="log.address" :enable-copy="true" :compact="!isSmallScreen && !isMediumScreen"/>
         </template>
       </PropertyVertical>
-
-      <PropertyVertical id="method" :is-horizontal="!isMediumScreen">
-        <template v-slot:name>Method</template>
-        <template v-slot:value>
-          <div style="border: 1px solid grey; width: 120px; text-align: center; padding: 3px 0; border-radius: 3px;">
-            <!-- 0x5533478x -->
-            TBD
-          </div>
-        </template>
-      </PropertyVertical>
-
     </div>
 
     <!-- right content -->
