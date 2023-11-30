@@ -24,8 +24,8 @@ import { ContractResultsLogsByContractIdCache } from '../cache/ContractResultsLo
 
 export class ContractResultsLogsAnalyzer {
     public readonly contractId: Ref<string|null>
-    public readonly contractResultsLogResponse: Ref<ContractResultsLogResponse|null> = ref(null)
     private readonly watchHandle: Ref<WatchStopHandle|null> = ref(null)
+    private readonly contractResultsLogResponse: Ref<ContractResultsLogResponse|null> = ref(null)
 
     //
     // Public
