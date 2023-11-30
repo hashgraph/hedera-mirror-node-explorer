@@ -28,15 +28,15 @@
         <template v-slot:title>
             <div class="is-flex is-align-items-center is-flex-wrap-wrap">
                 <span class="h-is-secondary-title mr-3">Contract Bytecode</span>
-                <div v-if="isVerificationEnabled" class="h-is-text-size-2 mt-1">
-                    <div v-if="contractName" class="h-has-pill has-background-success">VERIFIED</div>
+                <div v-if="isVerificationAvailable" class="h-is-text-size-2 mt-1">
+                    <div v-if="isVerified" class="h-has-pill has-background-success">VERIFIED</div>
                     <div v-else class="h-has-pill has-background-warning">NOT VERIFIED</div>
                 </div>
             </div>
         </template>
 
         <template v-slot:control>
-            <template v-if="isVerificationEnabled">
+            <template v-if="isVerificationAvailable">
                 <template v-if="isVerified">
                     <div v-if="sourcifyURL" id="showSource" class="is-inline-block ml-3">
                         <a :href="sourcifyURL" target="_blank">View contract sources</a>
@@ -133,17 +133,20 @@ export default defineComponent({
     const isSmallScreen = inject('isSmallScreen', true)
     const isMediumScreen = inject('isMediumScreen', true)
 
-    const isVerified = computed(() => props.contractAnalyzer.sourcifyRecord.value !== null)
-    const isFullMatch = computed(() => {
-        return props.contractAnalyzer.sourcifyRecord.value !== null && props.contractAnalyzer.sourcifyRecord.value.fullMatch
-    })
+    const isVerified = computed(() => props.contractAnalyzer.sourcifyURL.value != null)
+
+    const isFullMatch = computed(() => props.contractAnalyzer.fullMatch.value)
 
     const contractName = computed(
         () => isVerified.value ? props.contractAnalyzer.contractName.value : null)
 
-    const isVerificationEnabled = computed(() => {
+    // True when the verification is ENABLED by configuration and the current verification STATUS is known, which
+    // enables to decide which option to present to the user
+    const isVerificationAvailable = computed(() => {
         const sourcifySetup = routeManager.currentNetworkEntry.value.sourcifySetup
-        return sourcifySetup !== null && sourcifySetup.activate
+        return sourcifySetup?.activate
+            && sourcifySetup?.serverURL.length
+            && props.contractAnalyzer.sourcifyRecord.value != null
     })
 
     const showVerifyDialog = ref(false)
@@ -158,16 +161,12 @@ export default defineComponent({
       isSmallScreen,
       isMediumScreen,
       byteCode: props.contractAnalyzer.byteCodeAnalyzer.byteCode,
-      sourceCode: props.contractAnalyzer.sourceFiles,
       solcVersion: props.contractAnalyzer.byteCodeAnalyzer.solcVersion,
-      ipfsHash: props.contractAnalyzer.byteCodeAnalyzer.ipfsHash,
       ipfsURL: props.contractAnalyzer.byteCodeAnalyzer.ipfsURL,
-      swarmHash: props.contractAnalyzer.byteCodeAnalyzer.swarmHash,
       contractName,
-      isVerificationEnabled,
+      isVerificationAvailable,
       tooltipText,
       sourcifyURL: props.contractAnalyzer.sourcifyURL,
-      verifierURL: routeManager.currentVerifierUrl,
       isVerified,
       showVerifyDialog,
       contractId: props.contractAnalyzer.contractId,
