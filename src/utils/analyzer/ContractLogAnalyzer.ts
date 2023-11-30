@@ -27,7 +27,7 @@ import {NameTypeValue} from "@/utils/analyzer/FunctionCallAnalyzer";
 export class ContractLogAnalyzer {
 
     public readonly log: Ref<ContractResultLog|null>
-    public readonly isContractVerified: Ref<Boolean|null> = ref(null)
+    public readonly isContractVerified = computed( () => this.logDescription.value !== null )
     private readonly contractAnalyzer: ContractAnalyzer
     private readonly logDescription = shallowRef<ethers.utils.LogDescription|null>(null)
     private watchHandle: WatchStopHandle|null = null
@@ -109,15 +109,12 @@ export class ContractLogAnalyzer {
         const l = this.log.value
         if (i !== null && l !== null && l.topics && l.data) {
             try {
-                this.isContractVerified.value = true
                 this.logDescription.value = i.parseLog({topics: l.topics, data: l.data})
             } catch {
                 this.logDescription.value = null
-                this.isContractVerified.value = false
             }
         } else {
             this.logDescription.value = null
-            this.isContractVerified.value = false
         }
     }
 
