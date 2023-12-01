@@ -111,15 +111,14 @@ export default defineComponent({
   },
 
   setup() {
-      const isSmallScreen = inject('isSmallScreen', true)
-      const isMediumScreen = inject('isMediumScreen', true)
+    const isSmallScreen = inject('isSmallScreen', true)
     const isTouchDevice = inject('isTouchDevice', false)
-    const stakeTotalTooltip = "Total Staked"
-    const stakeRewardedTotalTooltip = "Total Staked for Reward"
-    const maxStakeRewardedTooltip = "Maximum Staked for Reward"
-    const totalRewardedTooltip = "Rewarded Last Period"
-    const maxRewardRateTooltip = "Maximum Reward Rate"
-    const rewardRateTooltip = "Current Reward Rate"
+    const stakeTotalTooltip = "Total amount of HBAR staked to all validators for consensus."
+    const stakeRewardedTotalTooltip = "Total amount of HBAR staked for reward."
+    const maxStakeRewardedTooltip = "Maximum amount of tinybar that can be staked for reward while still achieving the maximum reward rate."
+    const totalRewardedTooltip = "Total amount of HBAR paid in reward for the last period."
+    const maxRewardRateTooltip = "Approximate annual reward rate based on the maximum reward rate that any account can receive in a day."
+    const rewardRateTooltip = "Approximate annual reward rate based on the reward earned during the last 24h period."
 
     const networkNodeAnalyzer = new NetworkAnalyzer()
     onMounted(() => networkNodeAnalyzer.mount())
@@ -138,7 +137,6 @@ export default defineComponent({
 
     return {
       isSmallScreen,
-        isMediumScreen,
       isTouchDevice,
       stakeTotalTooltip,
       stakeRewardedTotalTooltip,
