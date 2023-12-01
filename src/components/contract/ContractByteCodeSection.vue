@@ -146,7 +146,6 @@ export default defineComponent({
         const sourcifySetup = routeManager.currentNetworkEntry.value.sourcifySetup
         return sourcifySetup?.activate
             && sourcifySetup?.serverURL.length
-            && props.contractAnalyzer.sourcifyRecord.value != null
     })
 
     const showVerifyDialog = ref(false)
