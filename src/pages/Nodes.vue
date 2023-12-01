@@ -41,18 +41,18 @@
               <NetworkDashboardItem title="Staking Period" :value="formatSeconds((durationMin??0)*60)"/>
             </div>
             <div class="is-flex-direction-column">
-              <NetworkDashboardItem name="HBAR" title="Total Staked" :value="makeFloorHbarAmount(stakeTotal)"/>
+              <NetworkDashboardItem name="HBAR" title="Total Staked" :value="makeFloorHbarAmount(stakeTotal)" :tooltip-label="stakeTotalTooltip"/>
               <div class="mt-4"/>
-              <NetworkDashboardItem name="HBAR" title="Staked for Reward" :value="makeFloorHbarAmount(stakeRewardedTotal)"/>
+              <NetworkDashboardItem name="HBAR" title="Staked for Reward" :value="makeFloorHbarAmount(stakeRewardedTotal)" :tooltip-label="stakeRewardedTotalTooltip"/>
               <div class="mt-4"/>
-              <NetworkDashboardItem name="HBAR" title="Maximum Staked for Reward" :value="makeFloorHbarAmount(maxStakeRewarded)"/>
+              <NetworkDashboardItem name="HBAR" title="Maximum Staked for Reward" :value="makeFloorHbarAmount(maxStakeRewarded)" :tooltip-label="maxStakeRewardedTooltip"/>
             </div>
             <div class="is-flex-direction-column">
-              <NetworkDashboardItem name="HBAR" title="Rewarded Last Period" :value="makeFloorHbarAmount(totalRewarded)"/>
+              <NetworkDashboardItem name="HBAR" title="Rewarded Last Period" :value="makeFloorHbarAmount(totalRewarded)" :tooltip-label="totalRewardedTooltip"/>
               <div class="mt-4"/>
-              <NetworkDashboardItem title="Maximum Reward Rate" :value="makeAnnualizedRate(maxRewardRate)"/>
+              <NetworkDashboardItem title="Maximum Reward Rate" :value="makeAnnualizedRate(maxRewardRate)" :tooltip-label="maxRewardRateTooltip"/>
               <div class="mt-4"/>
-              <NetworkDashboardItem title="Current Reward Rate" :value="makeAnnualizedRate(rewardRate)"/>
+              <NetworkDashboardItem title="Current Reward Rate" :value="makeAnnualizedRate(rewardRate)" :tooltip-label="rewardRateTooltip"/>
             </div>
           </div>
           <div v-else>
@@ -63,17 +63,17 @@
               <div class="mt-4"/>
               <NetworkDashboardItem title="Staking Period" :value="formatSeconds((durationMin??0)*60)"/>
               <div class="mt-4"/>
-              <NetworkDashboardItem name="HBAR" title="Total Staked" :value="makeFloorHbarAmount(stakeTotal)"/>
+              <NetworkDashboardItem name="HBAR" title="Total Staked" :value="makeFloorHbarAmount(stakeTotal)" :tooltip-label="stakeTotalTooltip"/>
               <div class="mt-4"/>
-              <NetworkDashboardItem name="HBAR" title="Staked for Reward" :value="makeFloorHbarAmount(stakeRewardedTotal)"/>
+              <NetworkDashboardItem name="HBAR" title="Staked for Reward" :value="makeFloorHbarAmount(stakeRewardedTotal)" :tooltip-label="stakeRewardedTotalTooltip"/>
               <div class="mt-4"/>
-              <NetworkDashboardItem name="HBAR" title="Maximum Staked for Reward" :value="makeFloorHbarAmount(maxStakeRewarded)"/>
+              <NetworkDashboardItem name="HBAR" title="Maximum Staked for Reward" :value="makeFloorHbarAmount(maxStakeRewarded)" :tooltip-label="maxStakeRewardedTooltip"/>
               <div class="mt-4"/>
-              <NetworkDashboardItem name="HBAR" title="Rewarded Last Period" :value="makeFloorHbarAmount(totalRewarded)"/>
+              <NetworkDashboardItem name="HBAR" title="Rewarded Last Period" :value="makeFloorHbarAmount(totalRewarded)" :tooltip-label="totalRewardedTooltip"/>
               <div class="mt-4"/>
-              <NetworkDashboardItem title="Maximum Reward Rate" :value="makeAnnualizedRate(maxRewardRate)"/>
+              <NetworkDashboardItem title="Maximum Reward Rate" :value="makeAnnualizedRate(maxRewardRate)" :tooltip-label="maxRewardRateTooltip"/>
               <div class="mt-4"/>
-              <NetworkDashboardItem title="Current Reward Rate" :value="makeAnnualizedRate(rewardRate)"/>
+              <NetworkDashboardItem title="Current Reward Rate" :value="makeAnnualizedRate(rewardRate)" :tooltip-label="rewardRateTooltip"/>
               <div class="mt-4"/>
             </div>
           </div>
@@ -131,6 +131,12 @@ export default defineComponent({
   setup() {
     const isSmallScreen = inject('isSmallScreen', true)
     const isTouchDevice = inject('isTouchDevice', false)
+    const stakeTotalTooltip = "Total Staked"
+    const stakeRewardedTotalTooltip = "Total Staked for Reward"
+    const maxStakeRewardedTooltip = "Maximum Staked for Reward"
+    const totalRewardedTooltip = "Rewarded Last Period"
+    const maxRewardRateTooltip = "Maximum Reward Rate"
+    const rewardRateTooltip = "Current Reward Rate"
 
     const networkNodeAnalyzer = new NetworkAnalyzer()
     onMounted(() => networkNodeAnalyzer.mount())
@@ -150,6 +156,12 @@ export default defineComponent({
     return {
       isSmallScreen,
       isTouchDevice,
+      stakeTotalTooltip,
+      stakeRewardedTotalTooltip,
+      maxStakeRewardedTooltip,
+      totalRewardedTooltip,
+      maxRewardRateTooltip,
+      rewardRateTooltip,
       nodes: networkNodeAnalyzer.nodes,
       totalNodes: networkNodeAnalyzer.nodeCount,
       stakeTotal,
