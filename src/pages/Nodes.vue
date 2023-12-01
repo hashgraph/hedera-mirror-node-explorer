@@ -32,22 +32,25 @@
       </template>
       <template v-slot:content>
 
-          <div v-if="isSmallScreen" class="is-flex is-justify-content-space-between">
-            <div class="is-flex-direction-column">
+          <div class="has-text-grey "
+          :class="{'is-flex':isSmallScreen,'is-justify-content-space-between':isSmallScreen}">
+            <div :class="{'is-flex-direction-column':isSmallScreen}">
               <NetworkDashboardItem title="Last Staked" :value="formatSeconds((elapsedMin??0)*60) + ' ago'"/>
               <div class="mt-4"/>
               <NetworkDashboardItem title="Next Staking Period" :value="'in ' + formatSeconds((remainingMin??0)*60)"/>
               <div class="mt-4"/>
               <NetworkDashboardItem title="Staking Period" :value="formatSeconds((durationMin??0)*60)"/>
             </div>
-            <div class="is-flex-direction-column">
+            <div v-if="!isSmallScreen" class="mt-4"/>
+            <div :class="{'is-flex-direction-column':isSmallScreen}">
               <NetworkDashboardItem name="HBAR" title="Total Staked" :value="makeFloorHbarAmount(stakeTotal)" :tooltip-label="stakeTotalTooltip"/>
               <div class="mt-4"/>
               <NetworkDashboardItem name="HBAR" title="Staked for Reward" :value="makeFloorHbarAmount(stakeRewardedTotal)" :tooltip-label="stakeRewardedTotalTooltip"/>
               <div class="mt-4"/>
               <NetworkDashboardItem name="HBAR" title="Maximum Staked for Reward" :value="makeFloorHbarAmount(maxStakeRewarded)" :tooltip-label="maxStakeRewardedTooltip"/>
             </div>
-            <div class="is-flex-direction-column">
+            <div v-if="!isSmallScreen" class="mt-4"/>
+            <div :class="{'is-flex-direction-column':isSmallScreen}">
               <NetworkDashboardItem name="HBAR" title="Rewarded Last Period" :value="makeFloorHbarAmount(totalRewarded)" :tooltip-label="totalRewardedTooltip"/>
               <div class="mt-4"/>
               <NetworkDashboardItem title="Maximum Reward Rate" :value="makeAnnualizedRate(maxRewardRate)" :tooltip-label="maxRewardRateTooltip"/>
@@ -55,28 +58,7 @@
               <NetworkDashboardItem title="Current Reward Rate" :value="makeAnnualizedRate(rewardRate)" :tooltip-label="rewardRateTooltip"/>
             </div>
           </div>
-          <div v-else>
-            <div class="is-flex-direction-column">
-              <NetworkDashboardItem title="Last Staked" :value="formatSeconds((elapsedMin??0)*60) + ' ago'"/>
-              <div class="mt-4"/>
-              <NetworkDashboardItem title="Next Staking Period" :value="'in ' + formatSeconds((remainingMin??0)*60)"/>
-              <div class="mt-4"/>
-              <NetworkDashboardItem title="Staking Period" :value="formatSeconds((durationMin??0)*60)"/>
-              <div class="mt-4"/>
-              <NetworkDashboardItem name="HBAR" title="Total Staked" :value="makeFloorHbarAmount(stakeTotal)" :tooltip-label="stakeTotalTooltip"/>
-              <div class="mt-4"/>
-              <NetworkDashboardItem name="HBAR" title="Staked for Reward" :value="makeFloorHbarAmount(stakeRewardedTotal)" :tooltip-label="stakeRewardedTotalTooltip"/>
-              <div class="mt-4"/>
-              <NetworkDashboardItem name="HBAR" title="Maximum Staked for Reward" :value="makeFloorHbarAmount(maxStakeRewarded)" :tooltip-label="maxStakeRewardedTooltip"/>
-              <div class="mt-4"/>
-              <NetworkDashboardItem name="HBAR" title="Rewarded Last Period" :value="makeFloorHbarAmount(totalRewarded)" :tooltip-label="totalRewardedTooltip"/>
-              <div class="mt-4"/>
-              <NetworkDashboardItem title="Maximum Reward Rate" :value="makeAnnualizedRate(maxRewardRate)" :tooltip-label="maxRewardRateTooltip"/>
-              <div class="mt-4"/>
-              <NetworkDashboardItem title="Current Reward Rate" :value="makeAnnualizedRate(rewardRate)" :tooltip-label="rewardRateTooltip"/>
-              <div class="mt-4"/>
-            </div>
-          </div>
+          <div v-if="!isSmallScreen" class="mt-4"/>
 
       </template>
     </DashboardCard>
@@ -129,7 +111,8 @@ export default defineComponent({
   },
 
   setup() {
-    const isSmallScreen = inject('isSmallScreen', true)
+      const isSmallScreen = inject('isSmallScreen', true)
+      const isMediumScreen = inject('isMediumScreen', true)
     const isTouchDevice = inject('isTouchDevice', false)
     const stakeTotalTooltip = "Total Staked"
     const stakeRewardedTotalTooltip = "Total Staked for Reward"
@@ -155,6 +138,7 @@ export default defineComponent({
 
     return {
       isSmallScreen,
+        isMediumScreen,
       isTouchDevice,
       stakeTotalTooltip,
       stakeRewardedTotalTooltip,
