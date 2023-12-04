@@ -154,7 +154,7 @@ export class RouteManager {
 
     public testBytecodeToolsRoute(route: string|null = null): boolean {
         const r = route ?? this.currentRoute.value
-        return r === 'bytecode-tools'
+        return r === 'BytecodeAnalyzerTools'
     }
 
     //
