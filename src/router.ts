@@ -205,7 +205,7 @@ const routes: Array<RouteRecordRaw> = [
     path: '/:network/bytecode-tools',
     name: 'BytecodeAnalyzerTools',
     component: BytecodeAnalyzerTools,
-    props: true
+    props: false
   },
   {
     path: '/:network/block/:blockHon',

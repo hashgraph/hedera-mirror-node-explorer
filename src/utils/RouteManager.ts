@@ -436,7 +436,7 @@ export class RouteManager {
     }
 
     public makeRouteToBytecodeTools(): RouteLocationRaw {
-        return {name: 'BytecodeAnalyzerTools', params: { network: this.currentNetwork.value } }
+        return {name: 'BytecodeAnalyzerTools'}
     }
 
     public makeRouteToMobileSearch(): RouteLocationRaw {
