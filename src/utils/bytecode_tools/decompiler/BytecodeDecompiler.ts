@@ -19,6 +19,7 @@
  */
 
 import axios, {AxiosResponse} from "axios";
+import { ethers } from 'ethers';
 
 export interface DecompiledResult {
     decompiled: string | null,
@@ -27,7 +28,7 @@ export interface DecompiledResult {
 
 export class Decompiler {
 
-/**
+  /**
    * @dev decompile EVM bytecode into Solidity contract
    * @param bytecode: string
    * @return Promise<DecompiledResult>
@@ -37,7 +38,9 @@ export class Decompiler {
 
         try {
             const DECOMPILE_URL = `http://localhost:7639/api/decompile`
-            const data = JSON.stringify({ bytecode })
+            const keyhash = this.generatedRandomUniqueKey();
+
+            const data = JSON.stringify({ bytecode, keyhash })
             let config = {
                 method: 'post',
                 url: DECOMPILE_URL,
@@ -57,4 +60,14 @@ export class Decompiler {
 
         return Promise.resolve(result)
     }
+
+    /**
+     * @dev generate a random unique keyhash
+     * @return string
+     */
+    private static generatedRandomUniqueKey = () => {
+        const randomBytes = ethers.utils.randomBytes(9);
+        const randomKeyHash = ethers.utils.hexlify(randomBytes);
+        return randomKeyHash.replace('0x', '');
+      };
 }
