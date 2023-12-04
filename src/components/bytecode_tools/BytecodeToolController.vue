@@ -54,8 +54,8 @@
     />
 
     <!-- @notice: utilize `is-hidden` class to maintain analyzed bytecode data between tabs -->
-    <BytecodeTools :byte-code="isCustom ? inputBytecode : propByteCode" :is-custom="isCustom" :tool-type="1" class="mt-5" :class="{'is-hidden': !showDisassembler}"/>
-    <BytecodeTools :byte-code="isCustom ? inputBytecode : propByteCode" :is-custom="isCustom" :tool-type="2" class="mt-5" :class="{'is-hidden': !showDecompiler}"/>
+    <BytecodeTools :byte-code="isCustom ? inputBytecode : (propByteCode || '')" :is-custom="isCustom" :tool-type="1" class="mt-5" :class="{'is-hidden': !showDisassembler}"/>
+    <BytecodeTools :byte-code="isCustom ? inputBytecode : (propByteCode || '')" :is-custom="isCustom" :tool-type="2" class="mt-5" :class="{'is-hidden': !showDecompiler}"/>
 </template>
 
 <!-- --------------------------------------------------------------------------------------------------------------- -->
