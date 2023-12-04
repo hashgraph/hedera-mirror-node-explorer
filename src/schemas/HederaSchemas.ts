@@ -504,40 +504,42 @@ export interface ContractResultsResponse {
 }
 
 export interface ContractResult {
-    amount: number | null
-    bloom: string | null
-    call_result: string | null
-    contract_id: string | null
-    created_contract_ids: Array<string> | null
-    error_message: string | null
-    from: string
-    function_parameters: string
-    gas_limit: number
-    gas_used: number | null
-    hash: string | null
-    result: string
-    status: string
-    timestamp: string
-    to: string | null
-}
-
-export interface ContractResultDetails extends ContractResult {
     access_list: string | null
+    address: string | null
+    amount: number | null
     block_gas_used: number | null // integer
     block_hash: string | null
     block_number: number | null // integer
+    bloom: string | null
+    call_result: string | null
     chain_id: string | null
+    contract_id: string | null
+    created_contract_ids: Array<string> | null
+    error_message: string | null
+    failed_initcode: string
+    from: string
+    function_parameters: string
+    gas_limit: number
     gas_price: string | null
-    logs: ContractResultLog[]
+    gas_used: number | null
+    hash: string | null
     max_fee_per_gas: string | null
     max_priority_fee_per_gas: string | null
     nonce: number | null // integer
     r: string | null
+    result: string
     s: string | null
-    state_changes: ContractResultStateChange[]
+    status: string
+    timestamp: string
+    to: string | null
     transaction_index: number | null // integer
     type: number | null // The type of the wrapped ethereum transaction, 0 (Pre-Eip1559) or 2 (Post-Eip1559)
     v: number | null
+}
+
+export interface ContractResultDetails extends ContractResult {
+    logs: ContractLog[] | undefined
+    state_changes: ContractResultStateChange[]
 }
 
 export interface ContractResultLog {
@@ -548,6 +550,20 @@ export interface ContractResultLog {
     index: number | undefined // integer
     topics: string[] | undefined
 }
+
+export interface ContractLog extends ContractResultLog  {
+    block_hash: string | undefined,
+    block_number: number | undefined,
+    root_contract_id: string | null | undefined,
+    timestamp: string | undefined,
+    transaction_hash: string | undefined,
+    transaction_index: number | null | undefined, //integer
+}
+
+export interface ContractResultsLogResponse {
+    logs: ContractLog[],
+    links: Links | undefined
+} 
 
 export interface ContractResultStateChange {
     address: string | undefined

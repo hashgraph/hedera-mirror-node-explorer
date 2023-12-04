@@ -245,10 +245,12 @@ export class NameTypeValue {
     public readonly name: string
     public readonly type: string
     public readonly value: unknown
-    public constructor(name: string, type: string, value: unknown) {
+    public readonly indexed: boolean | undefined
+    public constructor(name: string, type: string, value: unknown, indexed?: boolean) {
         this.name = name
         this.type = type
         this.value = value
+        this.indexed = indexed
     }
 }
 

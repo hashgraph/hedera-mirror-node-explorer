@@ -24,13 +24,25 @@
 
 <template>
 
-  <div v-if="value">
-    <EVMAddress v-if="addressValue" :address="addressValue" :compact="!isSmallScreen && !isMediumScreen"/>
-    <div v-else :class="{'has-text-grey': lowContrast}" class="is-family-monospace h-is-text-size-3 should-wrap">{{ value }}</div>
-    <div v-if="!hideType" class="h-is-extra-text h-is-text-size-3">{{ type }}</div>
+  <div v-if="isHorizontal" class="columns" :id="id">
+    <div class="column is-flex is-justify-content-space-between is-align-items-center">
+      <div class="has-text-weight-light" :id="nameId">
+        <slot name="name"/>
+      </div>
+      <div :id="valueId" class="ml-4 has-text-right">
+        <slot name="value"/>
+      </div>
+    </div>
   </div>
-  <div v-else-if="initialLoading"/>
-  <div v-else class="has-text-grey">None</div>
+
+  <div v-else :id="id" style="display: flex; flex-direction: column; gap: 0.25rem;">
+    <div :class="nbColClass" class="has-text-weight-light" :id="nameId">
+      <slot name="name"/>
+    </div>
+    <div class="" :id="valueId">
+      <slot name="value"/>
+    </div>
+  </div>
 
 </template>
 
@@ -40,52 +52,45 @@
 
 <script lang="ts">
 
-import {computed, defineComponent, inject, PropType, ref} from 'vue';
-import {initialLoadingKey} from "@/AppKeys";
-import EVMAddress from "@/components/values/EVMAddress.vue";
-import {NameTypeValue} from "@/utils/analyzer/FunctionCallAnalyzer";
+import {computed, defineComponent, inject} from "vue";
 
 export default defineComponent({
-  name: 'FunctionValue',
-  components: {EVMAddress},
+  name: "PropertyVertical",
   props: {
-    ntv: Object as PropType<NameTypeValue>,
-    hideType: {
+    id: String,
+    fullWidth: {
       type: Boolean,
-      default: false,
-      required: false,
+      default: false
     },
-    lowContrast: {
+    customNbColClass: String,
+    isHorizontal: {
       type: Boolean,
       default: false,
-      required: false
     }
   },
+  setup(props){
+    const nameId = props.id + 'Name'
+    const valueId = props.id + 'Value'
 
-  setup(props) {
     const isSmallScreen = inject('isSmallScreen', true)
-    const isMediumScreen = inject('isMediumScreen', true)
-    const initialLoading = inject(initialLoadingKey, ref(false))
-
-    const addressValue = computed(() => {
-      return props.ntv?.type === 'address' ? props.ntv.value as string : null
-    })
+    const isTouchDevice = inject('isTouchDevice', false)
+    const nbColClass = computed(() => props.customNbColClass ?? (props.fullWidth ? 'is-2' : 'is-one-third'))
 
     return {
+      nameId,
+      valueId,
       isSmallScreen,
-      isMediumScreen,
-      initialLoading,
-      type: props.ntv?.type,
-      value: props.ntv?.value,
-      addressValue,
+      isTouchDevice,
+      nbColClass
     }
   }
-});
+})
 
 </script>
 
 <!-- --------------------------------------------------------------------------------------------------------------- -->
-<!--                                                       STYLE                                                     -->
+<!--                                                      STYLE                                                      -->
 <!-- --------------------------------------------------------------------------------------------------------------- -->
 
-<style/>
+<style>
+</style>
