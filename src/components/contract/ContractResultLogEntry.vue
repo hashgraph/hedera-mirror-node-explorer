@@ -37,7 +37,9 @@
       <PropertyVertical id="blockNumber" :is-horizontal="!isMediumScreen">
         <template v-slot:name>Block</template>
         <template v-slot:value>
-          {{ blockNumberToShow }}
+          <p class="h-is-text-size-3">
+            {{ blockNumberToShow }}
+          </p>
         </template>
       </PropertyVertical>
 
@@ -67,7 +69,7 @@
 
         <!-- verified -->
         <div v-else class="log-content-box">
-          <span class="h-is-property-text">{{ fullLogSignature }}</span>
+          <span class="h-is-property-text h-is-text-size-3 should-wrap">{{ fullLogSignature }}</span>
 
           <template v-for="(arg, i) in args" :key="arg.name">
             <PropertyVertical :id="'logArg_' + arg.name" :full-width="true" :is-horizontal="!isMediumScreen">
@@ -77,7 +79,10 @@
                       <span style="font-size: 0.85rem">{{ 'Topic ' + i }}</span>
                     </div>  
                     <span class="h-is-property-text is-italic log-arg-title">
-                      {{ arg.type + " " + arg.name }}
+                      <span class="h-is-extra-text">
+                        {{ arg.type }}
+                      </span>
+                      {{" " + arg.name }}
                     </span>
                   </div>
 
