@@ -97,8 +97,9 @@
 <script lang="ts">
 
 import {defineComponent, inject, ref, watch, computed, onUpdated} from 'vue';
-import {Decompiler} from '@/utils/bytecode_tools/decompiler/BytecodeDecompiler.ts'
-import {Disassembler} from '@/utils/bytecode_tools/disassembler/BytecodeDisassembler.ts'
+import {Disassembler} from '@/utils/bytecode_tools/disassembler/BytecodeDisassembler'
+import { DisassembledOpcodeOutput } from '@/utils/bytecode_tools/disassembler/Utils';
+import {DecompiledResult, Decompiler} from '@/utils/bytecode_tools/decompiler/BytecodeDecompiler'
 import "prismjs/prism";
 import "prismjs/themes/prism-tomorrow.css"
 import "prismjs/components/prism-scss.js";
