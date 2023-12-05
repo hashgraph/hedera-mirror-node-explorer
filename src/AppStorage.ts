@@ -33,7 +33,7 @@ export class AppStorage {
 
     public static getLastNetwork(): NetworkEntry {
         const item = this.getLocalStorageItem(this.LAST_USED_NETWORK_KEY)
-        const result = item != null ? networkRegistry.lookup(item) : null
+        const result = item != null ? networkRegistry.entries.value.find(element => element.name === item) ?? null : null
         return result ?? networkRegistry.getDefaultEntry()
     }
 

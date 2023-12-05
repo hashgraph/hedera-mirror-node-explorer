@@ -65,7 +65,7 @@ export class RouteManager {
         } else {
             networkName = networkParam
         }
-        const networkEntry = networkName != null ? networkRegistry.lookup(networkName) : null
+        const networkEntry = networkName != null ? networkRegistry.entries.value.find(element => element.name === networkName) ?? null : null
 
         return networkEntry != null ? networkEntry : networkRegistry.getDefaultEntry()
     })

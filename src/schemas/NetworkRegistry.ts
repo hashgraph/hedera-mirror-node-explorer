@@ -184,7 +184,7 @@ export class NetworkRegistry {
     ])
 
     constructor() {
-        this.defaultEntry = this.lookup(NetworkRegistry.DEFAULT_NETWORK) ?? this.entries.value[0]
+        this.defaultEntry = this.entries.value.find(element => element.name === NetworkRegistry.DEFAULT_NETWORK) ?? this.entries.value[0]
     }
 
     public readCustomConfig(): void {
@@ -194,7 +194,7 @@ export class NetworkRegistry {
                 const customEntries = NetworkRegistry.decode(response.data)
                 if (customEntries !== null) {
                     this.entries.value = customEntries
-                    this.defaultEntry = this.lookup(NetworkRegistry.DEFAULT_NETWORK) ?? this.entries.value[0]
+                    this.defaultEntry = this.entries.value.find(element => element.name === NetworkRegistry.DEFAULT_NETWORK) ?? this.entries.value[0]
                 }
 
                 // Take into account possible additional node defined in docker configuration
@@ -221,16 +221,17 @@ export class NetworkRegistry {
         return this.defaultEntry
     }
 
-    public lookup(name: string): NetworkEntry | null {
-        return this.entries.value.find(element => element.name === name) ?? null
-    }
+    // We do not use lookup() anymore since it is not reactive. Inline the code below instead.
+    // public lookup(name: string): NetworkEntry | null {
+    //     return this.entries.value.find(element => element.name === name) ?? null
+    // }
 
     public isValidChecksum(id: string, checksum: string, network: string): boolean {
         return this.computeChecksum(id, network) == checksum
     }
 
     public computeChecksum(id: string, network: string): string {
-        const ledgerID = this.lookup(network)?.ledgerID
+        const ledgerID = this.entries.value.find(element => element.name === network)?.ledgerID
         return NetworkRegistry.checksum(ledgerID ?? 'FF', id)
     }
 

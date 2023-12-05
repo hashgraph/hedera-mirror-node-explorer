@@ -97,9 +97,9 @@ export default defineComponent({
     const currentNetworkDisplayName = computed(() => {
       let displayName
       if (Array.isArray(router.currentRoute.value.params.network)) {
-        displayName = networkRegistry.lookup(router.currentRoute.value.params.network[0])?.displayName
+          displayName = networkRegistry.entries.value.find(element => element.name === router.currentRoute.value.params.network[0])?.displayName
       } else {
-        displayName = networkRegistry.lookup(router.currentRoute.value.params.network)?.displayName
+          displayName = networkRegistry.entries.value.find(element => element.name === router.currentRoute.value.params.network)?.displayName
       }
       return displayName
     })

@@ -370,7 +370,7 @@ export function getNetworkEntryFromRoute(r: RouteLocationNormalized): NetworkEnt
     networkName = networkParam
   }
 
-  return networkName !== null ? networkRegistry.lookup(networkName) : null
+  return networkName !== null ? networkRegistry.entries.value.find(element => element.name === networkName) ?? null : null
 }
 
 export function getNetworkEntryFromCurrentRoute(): NetworkEntry {
