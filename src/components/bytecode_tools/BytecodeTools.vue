@@ -33,9 +33,12 @@
             </div>
         
             <button id="disassmbleBtn" v-if="isCustom"
-                    class="button is-white is-small has-text-right mr-3"
+                    class="button is-white is-small has-text-right mr-3 is-flex"
+                    style="gap: 0.25rem"
                     @click="handleDisassembleBytecode">
-                DISASSEMBLE
+                <p>{{ showSpinner.disassembler ? "DISASSEMBLING..." : "DISASSEMBLE"}}</p>
+
+                <span v-if="showSpinner.disassembler" class="loader is-inline-block"/>
             </button>
         </div>
 
@@ -74,9 +77,12 @@
         </div>
 
         <button id="decompileBtn" v-if="isCustom"
-                class="button is-white is-small has-text-right mr-3"
-                @click="handleDecompileBytecode">
-            DECOMPILE
+                class="button is-white is-small has-text-right mr-3 is-flex"
+                style="gap: 0.25rem"
+                @click="handleDecompileBytecode">    
+            <p>{{ showSpinner.decompiler ? "DECOMPILING..." : "DECOMPILE"}}</p>
+
+            <span v-if="showSpinner.decompiler" class="loader is-inline-block"/>
         </button>
     </div>
 
@@ -96,7 +102,7 @@
 
 <script lang="ts">
 
-import {defineComponent, inject, ref, watch, computed, onUpdated} from 'vue';
+import {defineComponent, ref, onUpdated} from 'vue';
 import {Disassembler} from '@/utils/bytecode_tools/disassembler/BytecodeDisassembler'
 import { DisassembledOpcodeOutput } from '@/utils/bytecode_tools/disassembler/Utils';
 import {DecompiledResult, Decompiler} from '@/utils/bytecode_tools/decompiler/BytecodeDecompiler'
@@ -129,12 +135,18 @@ export default defineComponent({
         const disassembledError = ref<string|null>("Input bytecode to start.")
         const decompiledContract = ref<string|null>(null)
         const decompiledError = ref<string|null>("Input bytecode to start.")
+        const showSpinner = ref({
+            decompiler: false,
+            disassembler: false,
+        })
 
         const handleDisassembleBytecode = () => {
             const BYTECODE_REGEX = /^(0x)?([0-9a-fA-F]{2})+$/;
             if (BYTECODE_REGEX.test(props.byteCode)) {
+                showSpinner.value.disassembler = true
                 disassembly.value = Disassembler.disassemble(props.byteCode)
                 disassembledError.value = null
+                showSpinner.value.disassembler = false
             } else {
                 disassembly.value = null
                 disassembledError.value = props.byteCode === "" ? "No data found..." : "Invalid bytecode"
@@ -142,6 +154,7 @@ export default defineComponent({
         }
 
         const handleDecompileBytecode = async () => {
+            showSpinner.value.decompiler = true;
             const BYTECODE_REGEX = /^(0x)?([0-9a-fA-F]{2})+$/;
             if (BYTECODE_REGEX.test(props.byteCode)) {
                 const decompiledResult: DecompiledResult = await Decompiler.decompile(props.byteCode)
@@ -156,6 +169,7 @@ export default defineComponent({
                 decompiledContract.value = null
                 decompiledError.value = props.byteCode === "" ? "No data found..." : "Invalid bytecode"
             }
+            showSpinner.value.decompiler = false;
         }
 
         onUpdated(() => {
@@ -171,7 +185,8 @@ export default defineComponent({
             handleDisassembleBytecode,
             decompiledError,
             decompiledContract,
-            disassembledError
+            disassembledError,
+            showSpinner,
         }
     }
 });
