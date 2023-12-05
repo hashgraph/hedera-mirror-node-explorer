@@ -96,7 +96,6 @@
 
             <div :class="{'is-hidden': !showBytecodeController}">
                 <BytecodeToolController :byte-code="byteCode ?? ''"  :is-custom="false" @turnOffAnalyzer="showBytecodeController=false"/>
-                <!-- <BytecodeToolController v-if="showBytecodeController" :byte-code="byteCode ?? ''"  :is-custom="false" @turnOffAnalyzer="showBytecodeController=false"/> -->
             </div>
         </template>
     </DashboardCard>
@@ -125,7 +124,6 @@ import {ContractAnalyzer} from "@/utils/analyzer/ContractAnalyzer";
 import {routeManager} from "@/router";
 import InfoTooltip from "@/components/InfoTooltip.vue";
 import ContractVerificationDialog from "@/components/verification/ContractVerificationDialog.vue";
-import SourceCodeValue from "@/components/values/SourceCodeValue.vue";
 import BytecodeToolController from '@/components/bytecode_tools/BytecodeToolController.vue'
 
 const FULL_MATCH_TOOLTIP = `A Full Match indicates that the bytecode of the deployed contract is byte-by-byte the same as the compilation output of the given source code files with the settings defined in the metadata file. This means the contents of the source code files and the compilation settings are exactly the same as when the contract author compiled and deployed the contract.`
@@ -134,7 +132,7 @@ const PARTIAL_MATCH_TOOLTIP = `A Partial Match indicates that the bytecode of th
 export default defineComponent({
   name: 'ContractByteCodeSection',
 
-  components: { SourceCodeValue, ContractVerificationDialog, InfoTooltip, Property, StringValue, ByteCodeValue, DashboardCard, BytecodeToolController },
+  components: { ContractVerificationDialog, InfoTooltip, Property, StringValue, ByteCodeValue, DashboardCard, BytecodeToolController },
 
   props: {
     contractAnalyzer: {
