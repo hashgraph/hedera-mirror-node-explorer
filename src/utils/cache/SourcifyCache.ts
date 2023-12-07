@@ -52,21 +52,21 @@ export class SourcifyCache extends EntityCache<string, SourcifyRecord|null> {
 
         return result
     }
-
-    public static fetchSource(sourceFileName: string, response: SourcifyResponse): string|null {
-
-        // https://docs.sourcify.dev/docs/api/server/get-source-files-all/
-
-        let result: string|null = null
-        for (const f of response.files) {
-            if (f.name === sourceFileName) {
-                result = f.content
-                break
-            }
-        }
-
-        return result
-    }
+    //
+    // public static fetchSource(sourceFileName: string, response: SourcifyResponse): string|null {
+    //
+    //     // https://docs.sourcify.dev/docs/api/server/get-source-files-all/
+    //
+    //     let result: string|null = null
+    //     for (const f of response.files) {
+    //         if (f.name === sourceFileName) {
+    //             result = f.content
+    //             break
+    //         }
+    //     }
+    //
+    //     return result
+    // }
 
     //
     // Cache

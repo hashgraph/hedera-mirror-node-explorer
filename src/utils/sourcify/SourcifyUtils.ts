@@ -133,31 +133,6 @@ export class SourcifyUtils {
         }
         return result
     }
-
-    public static findCompiledPath(dropPath: string, contract: SourcifyVerifyCheckedContract): string|null {
-        let result: string|null = null
-        for (const compiledPath of contract.files.found) {
-            if (this.pathEndsWith(dropPath, compiledPath)) {
-                result = compiledPath
-                break
-            }
-        }
-        return result
-    }
-
-    private static pathEndsWith(path: string, suffix: string): boolean {
-        let result: boolean
-        if (path == suffix) {
-            result = true
-        } else if (path.length > suffix.length) {
-            const ss1 = "/" + suffix
-            const ss2 = path.substring(path.length - ss1.length)
-            result = ss1 == ss2
-        } else {
-            result = false
-        }
-        return result
-    }
 }
 
 
