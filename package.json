@@ -9,7 +9,7 @@
     "preview": "npm run install:branding && vite preview",
     "test:unit": "vitest run --threads false",
     "cover:unit": "vitest run --coverage --threads false",
-    "test:e2e": "npm run install:branding && start-server-and-test dev http://localhost:5173 'cypress run --browser chrome --e2e'",
+    "test:e2e": "npm run install:branding && START_SERVER_AND_TEST_INSECURE=1 start-server-and-test dev https://localhost:5173 'cypress run --browser chrome --e2e'",
     "test:e2e:dev": "npm run install:branding && START_SERVER_AND_TEST_INSECURE=1 start-server-and-test 'vite dev --port 5173' https://localhost:5173 'cypress open --e2e'",
     "build-only": "npm run install:branding && vite build",
     "type-check": "vue-tsc --noEmit -p tsconfig.vitest.json --composite false",
