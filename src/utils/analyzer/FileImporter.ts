@@ -22,9 +22,6 @@
 // Exported
 //
 
-import {SolcUtils} from "@/utils/solc/SolcUtils";
-import {HHUtils} from "@/utils/hardhat/HHUtils";
-
 export  async function importFromDrop(transferList: DataTransferItemList): Promise<Map<string, string>> {
 
     // DataTransferItemList is reset immediately after drop callback termination
@@ -71,9 +68,7 @@ async function importEntry(e: FileSystemEntry, output: Map<string, string>): Pro
             output.set(relativePath, content)
         } else if (hasExtension(fileName, ".json")) {
             const content = await asyncReadText(e as FileSystemFileEntry)
-            if (SolcUtils.parseSolcMetadata(content) !== null
-                || SolcUtils.parseSolcInput(content) !== null
-                || HHUtils.parseMetadata(content) !== null) {
+            if (isJsonText(content)) {
                 output.set(relativePath, content)
             }
         }
@@ -86,7 +81,7 @@ async function importEntry(e: FileSystemEntry, output: Map<string, string>): Pro
             }
         }
     } else {
-        console.log("SolidityFileImporter ignored unexpected FileSystemEntry subclass: " + typeof e)
+        console.log("FileImporter ignored unexpected FileSystemEntry subclass: " + typeof e)
     }
 }
 
@@ -103,9 +98,7 @@ async function importFile(f: File, output: Map<string, string>): Promise<void> {
         output.set(fileName, content)
     } else if (hasExtension(fileName, ".json")) {
         const content = await asyncReadTextFromFile(f)
-        if (SolcUtils.parseSolcMetadata(content) !== null
-            || SolcUtils.parseSolcInput(content) !== null
-            || HHUtils.parseMetadata(content) !== null) {
+        if (isJsonText(content)) {
             output.set(fileName, content)
         }
     }
@@ -156,4 +149,15 @@ function hasExtension(fileName: string, extension: string): boolean {
     const n = fileName.toLowerCase()
     const x = extension.toLowerCase()
     return n.lastIndexOf(x) == n.length - x.length
+}
+
+function isJsonText(content: string): boolean {
+    let result: boolean
+    try {
+        JSON.parse(content)
+        result = true
+    } catch {
+        result = false
+    }
+    return result
 }
