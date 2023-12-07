@@ -19,7 +19,6 @@
  */
 
 import {NetworkEntry, networkRegistry} from "@/schemas/NetworkRegistry";
-import { SolcMetadata } from "./utils/solc/SolcMetadata";
 
 export class AppStorage {
 
@@ -165,9 +164,5 @@ export class AppStorage {
             }
         }
         return result
-    }
-
-    private static eraseCookie(name: string): void {
-        AppStorage.createCookie(name,"",-1)
     }
 }
