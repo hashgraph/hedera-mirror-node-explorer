@@ -58,11 +58,11 @@ export class SourcifyUtils {
             for (const [f, c] of files) {
                 body.files[f] = c
             }
-            body.dryRun = true
             const url = sourcifySetup.serverURL + "session/input-files"
             const config = {
                 withCredentials: this.withCredentials ,
-                headers: {'content-type': 'application/json'}
+                headers: {'content-type': 'application/json'},
+                params: { dryrun: true }
             }
             const response = await axios.post<SourcifyInputFilesResponse>(url, body, config)
             result = response.data
@@ -86,9 +86,6 @@ export class SourcifyUtils {
             const body: SourcifyVerifyCheckedBody = {
                 contracts: []
             }
-            if (!store) {
-                body.dryRun = true
-            }
             for (const vid of verificationIds) {
                 body.contracts.push({
                     address: address,
@@ -100,7 +97,11 @@ export class SourcifyUtils {
             const url = sourcifySetup.serverURL + "session/verify-checked"
             const config = {
                 withCredentials: this.withCredentials ,
-                headers: {'content-type': 'application/json'}
+                headers: {'content-type': 'application/json'},
+                params: {}
+            }
+            if (!store) {
+                config.params = { dryrun: true }
             }
             const response = await axios.post<SourcifyVerifyCheckedResponse>(url, body, config)
             result = response.data
@@ -137,7 +138,6 @@ export class SourcifyUtils {
 
 
 export interface SourcifyInputFilesBody {
-    dryRun?: boolean,
     files: Record<string, string> // filename x content
 }
 
@@ -158,7 +158,6 @@ export interface SourcifyInputFilesResponse {
 }
 
 export interface SourcifyVerifyCheckedBody {
-    dryRun?: boolean,
     contracts: {
         address: string
         chainId: string
