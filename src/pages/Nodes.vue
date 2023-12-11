@@ -130,7 +130,11 @@ export default defineComponent({
 
     const stakeTotal = computed(() => stakeLookup.entity.value?.stake_total ?? 0)
     const maxStakeRewarded = computed(() => stakeLookup.entity.value?.max_stake_rewarded ?? 0)
-    const rewardRate = computed(() => (stakeLookup.entity.value?.staking_reward_rate ?? 0) / networkNodeAnalyzer.stakeRewardedTotal.value * 100000000)
+    const rewardRate = computed(() => {
+      return  networkNodeAnalyzer.stakeRewardedTotal.value != 0
+          ? (stakeLookup.entity.value?.staking_reward_rate ?? 0) / networkNodeAnalyzer.stakeRewardedTotal.value * 100000000
+          : 0
+    })
     const maxRewardRate = computed(() => stakeLookup.entity.value?.max_staking_reward_rate_per_hbar ?? 0)
 
     const makeFloorHbarAmount = (tinyBarAmount: number) => Math.floor((tinyBarAmount ?? 0) / 100000000).toLocaleString('en-US')
