@@ -180,7 +180,7 @@ export default defineComponent({
     emits: ["update:showDialog", "verifyDidComplete"],
     setup(props, context) {
 
-        const dialogTitle = `Verify contract ${props.contractId}`
+        const dialogTitle = computed(() => `Verify contract ${props.contractId}`)
 
         // File Chooser
         const fileChooser = ref<HTMLInputElement | null>(null)
