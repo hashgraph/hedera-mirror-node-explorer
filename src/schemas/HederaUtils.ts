@@ -171,18 +171,18 @@ export function makeStakePercentage(node: NetworkNode, stakeTotal: number): stri
     return formatter.format(node.stake ? node.stake / stakeTotal : 0)
 }
 
-export function makeRewardRate(node: NetworkNode): number {
+export function makeRewardRate(rewardInTinyBar: number): number {
     // rely on mirror node to provide the actual reward rate (tiny bars rewarded per hbar staked)
     // here we simply convert to hbars
-    return (node.reward_rate_start ?? 0) / 100000000
+    return (rewardInTinyBar ?? 0) / 100000000
 }
 
-export function makeAnnualizedRate(node: NetworkNode): string {
+export function makeAnnualizedRate(rewardInTinyBar: number): string {
     const formatter = new Intl.NumberFormat("en-US", {
         style: 'percent',
         maximumFractionDigits: 2
     })
-    return formatter.format(makeRewardRate(node) * 365);
+    return formatter.format(makeRewardRate(rewardInTinyBar) * 365);
 }
 
 export function isCouncilNode(node: NetworkNode): boolean {
