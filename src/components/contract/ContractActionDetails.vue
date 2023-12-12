@@ -41,6 +41,12 @@
         </Property>
       </div>
       <div class="column h-has-column-dashed-separator">
+        <Property id="actionDetailValue" :custom-nb-col-class="propertySizeClass">
+           <template v-slot:name>Value</template>
+           <template v-slot:value>
+             <HbarAmount :amount="action?.value"/>
+           </template>
+          </Property>
         <Property id="actionDetailGasLimit" :custom-nb-col-class="propertySizeClass">
           <template v-slot:name>Gas Limit</template>
           <template v-slot:value>
@@ -117,11 +123,13 @@ import FunctionInput from "@/components/values/FunctionInput.vue";
 import FunctionResult from "@/components/values/FunctionResult.vue";
 import {ContractActionAnalyzer} from "@/utils/analyzer/ContractActionAnalyzer";
 import FunctionError from "@/components/values/FunctionError.vue";
+import HbarAmount from "@/components/values/HbarAmount.vue";
 
 export default defineComponent({
   name: 'ContractActionDetails',
 
   components: {
+      HbarAmount,
     FunctionError,
     FunctionResult,
     FunctionInput, EVMAddress, PlainAmount, Property
