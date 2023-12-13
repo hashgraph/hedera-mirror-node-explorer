@@ -20,13 +20,12 @@
  *
  */
 
-import {describe, test, expect} from 'vitest'
+import {describe, expect, test} from 'vitest'
 import {FunctionCallAnalyzer, NameTypeValue} from "@/utils/analyzer/FunctionCallAnalyzer";
 import {Ref, ref} from "vue";
 import {flushPromises} from "@vue/test-utils";
 import MockAdapter from "axios-mock-adapter";
 import axios from "axios";
-import {BigNumber} from "ethers";
 
 describe("FunctionCallAnalyzer.spec.ts", () => {
 
@@ -80,7 +79,7 @@ describe("FunctionCallAnalyzer.spec.ts", () => {
             new NameTypeValue("token", "address", "0x0000000000000000000000000000000002E6Ae09"),
         ])
         expect(functionCallAnalyzer.outputs.value).toStrictEqual([
-            new NameTypeValue("responseCode", "int64", BigNumber.from("0x05a995c0")),
+            new NameTypeValue("responseCode", "int64", BigInt("0x05a995c0")),
         ])
         expect(functionCallAnalyzer.errorHash.value).toBeNull()
         expect(functionCallAnalyzer.errorSignature.value).toBeNull()
@@ -122,7 +121,7 @@ describe("FunctionCallAnalyzer.spec.ts", () => {
         expect(functionCallAnalyzer.errorSignature.value).toBeNull()
         expect(functionCallAnalyzer.errorInputs.value).toStrictEqual([])
         expect(functionCallAnalyzer.inputDecodingStatus.value).toBeNull()
-        expect(functionCallAnalyzer.outputDecodingStatus.value).toBe("Decoding Error (hex data is odd-length)")
+        expect(functionCallAnalyzer.outputDecodingStatus.value).toBe("Decoding Error (invalid BytesLike value)")
         expect(functionCallAnalyzer.errorDecodingStatus.value).toBeNull() // 0x is considered as no error
 
 

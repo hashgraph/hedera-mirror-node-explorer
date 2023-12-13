@@ -70,10 +70,10 @@ describe("ContractLogAnalyzer.spec.ts", () => {
         expect(logAnalyzer.args.value[1].value).toBe("Holding point")
         expect(logAnalyzer.args.value[2].name).toBe("airspeed")
         expect(logAnalyzer.args.value[2].type).toBe("int256")
-        expect(logAnalyzer.args.value[2].value).toStrictEqual(ethers.BigNumber.from(0))
+        expect(logAnalyzer.args.value[2].value).toStrictEqual(BigInt(0))
         expect(logAnalyzer.args.value[3].name).toBe("verticalSpeed")
         expect(logAnalyzer.args.value[3].type).toBe("int256")
-        expect(logAnalyzer.args.value[3].value).toStrictEqual(ethers.BigNumber.from(0))
+        expect(logAnalyzer.args.value[3].value).toStrictEqual(BigInt(0))
 
         // 4) mount log analyzer
         logAnalyzer.unmount()

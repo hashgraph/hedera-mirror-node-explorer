@@ -107,8 +107,9 @@ export class WalletDriver_Metamask extends WalletDriver {
         if (accountId !== null && tokenAddress !== null && this.provider !== null) {
 
             const abi = ["function associate()"]
-            const web3provider = new ethers.providers.Web3Provider(this.provider as unknown as ethers.providers.ExternalProvider)
-            const contract = new ethers.Contract(tokenAddress, abi, web3provider.getSigner())
+            const web3provider = new ethers.BrowserProvider(this.provider)
+            const signer = await web3provider.getSigner()
+            const contract = new ethers.Contract("0x" + tokenAddress, abi, signer)
             try {
                 const transactionResult = await contract.associate();
                 const hederaTransaction = await this.waitForTransactionSurfacing(transactionResult.hash)
@@ -132,8 +133,9 @@ export class WalletDriver_Metamask extends WalletDriver {
         if (accountId !== null && tokenAddress !== null && this.provider !== null) {
 
             const abi = ["function dissociate()"];
-            const web3provider = new ethers.providers.Web3Provider(this.provider as unknown as ethers.providers.ExternalProvider)
-            const contract = new ethers.Contract(tokenAddress, abi, web3provider.getSigner())
+            const web3provider = new ethers.BrowserProvider(this.provider)
+            const signer = await web3provider.getSigner()
+            const contract = new ethers.Contract("0x" + tokenAddress, abi, signer)
             try {
                 const transactionResult = await contract.dissociate();
                 const hederaTransaction = await this.waitForTransactionSurfacing(transactionResult.hash)
@@ -232,7 +234,7 @@ export class WalletDriver_Metamask extends WalletDriver {
     private async waitForTransactionSurfacing(ethereumHash: Buffer): Promise<Transaction | string> {
         let result: Promise<Transaction | string>
 
-        const hash = ethers.utils.hexlify(ethereumHash)
+        const hash = ethers.hexlify(ethereumHash)
         try {
             let counter = 10
             let transaction: Transaction|null = null

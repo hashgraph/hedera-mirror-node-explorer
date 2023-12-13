@@ -18,7 +18,7 @@
  *
  */
 
-import {computed, ComputedRef, ref, Ref, shallowRef, watch, WatchStopHandle} from "vue";
+import {computed, ComputedRef, Ref, shallowRef, watch, WatchStopHandle} from "vue";
 import {ContractResultLog} from "@/schemas/HederaSchemas";
 import {ContractAnalyzer} from "@/utils/analyzer/ContractAnalyzer";
 import {ethers} from "ethers";
@@ -29,7 +29,7 @@ export class ContractLogAnalyzer {
     public readonly log: Ref<ContractResultLog|null>
     public readonly isContractVerified = computed( () => this.logDescription.value !== null )
     private readonly contractAnalyzer: ContractAnalyzer
-    private readonly logDescription = shallowRef<ethers.utils.LogDescription|null>(null)
+    private readonly logDescription = shallowRef<ethers.LogDescription|null>(null)
     private watchHandle: WatchStopHandle|null = null
 
     //
@@ -65,7 +65,7 @@ export class ContractLogAnalyzer {
         () => {
             if (this.logDescription.value && this.args.value) {
                 const eventArgs = this.args.value.slice(1) // omit signature hash for looping
-                const fragmentInputs = this.logDescription.value.eventFragment.inputs
+                const fragmentInputs = this.logDescription.value.fragment.inputs
                 let returnedSignarue = this.logDescription.value.name + " ("
                 for (let i = 0; i < eventArgs.length; i+= 1) {
                     const name = i < fragmentInputs.length ? fragmentInputs[i].name : "?"
@@ -87,7 +87,7 @@ export class ContractLogAnalyzer {
         if (this.logDescription.value) {
             const args = this.logDescription.value.args
             const signatureHash = this.logDescription.value.topic
-            const fragmentInputs = this.logDescription.value.eventFragment.inputs
+            const fragmentInputs = this.logDescription.value.fragment.inputs
             result.push(new NameTypeValue("signature hash", "", signatureHash, true))
             for (let i = 0; i < args.length; i+= 1) {
                 const value = args[i]

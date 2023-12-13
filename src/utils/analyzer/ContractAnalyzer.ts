@@ -35,7 +35,7 @@ export class ContractAnalyzer {
     private readonly contractResponse: Ref<ContractResponse | null> = ref(null)
     private readonly systemContractEntry: Ref<SystemContractEntry | null> = ref(null)
     public readonly sourcifyRecord: Ref<SourcifyRecord | null> = ref(null)
-    private readonly abi: Ref<ethers.utils.Fragment[] | null> = ref(null)
+    private readonly abi: Ref<ethers.Fragment[] | null> = ref(null)
 
 
     private watchHandles: WatchStopHandle[] = []
@@ -92,11 +92,11 @@ export class ContractAnalyzer {
         return result
     })
 
-    public readonly interface: ComputedRef<ethers.utils.Interface | null> = computed(() => {
-        let result: ethers.utils.Interface | null
+    public readonly interface: ComputedRef<ethers.Interface | null> = computed(() => {
+        let result: ethers.Interface | null
         if (this.abi.value !== null) {
             try {
-                const i = new ethers.utils.Interface(this.abi.value)
+                const i = new ethers.Interface(this.abi.value)
                 result = Object.preventExtensions(i)
             } catch {
                 result = null
@@ -234,13 +234,13 @@ export class ContractAnalyzer {
         if (this.systemContractEntry.value !== null) {
             try {
                 const abiURL = this.systemContractEntry.value?.abiURL
-                const asset = await AssetCache.instance.lookup(abiURL) as { abi: ethers.utils.Fragment[] }
+                const asset = await AssetCache.instance.lookup(abiURL) as { abi: ethers.Fragment[] }
                 this.abi.value = asset.abi
             } catch {
                 this.abi.value = null
             }
         } else if (this.metadata.value !== null) {
-            this.abi.value = this.metadata.value.output.abi as ethers.utils.Fragment[] | null
+            this.abi.value = this.metadata.value.output.abi as ethers.Fragment[] | null
         } else {
             this.abi.value = null
         }
