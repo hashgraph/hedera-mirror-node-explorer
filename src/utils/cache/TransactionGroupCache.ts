@@ -42,7 +42,9 @@ export class TransactionGroupCache extends EntityCache<string, TransactionDetail
                 throw error
             }
         }
-
+        if (result) {
+            result.sort((t1, t2) => t1.nonce - t2.nonce)
+        }
         return Promise.resolve(result)
     }
 }
