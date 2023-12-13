@@ -61,6 +61,7 @@ so it cannot be accessed by localhost like ui and server. To this effect you nee
 bash -c 'echo "127.0.0.1       repository.local" >> /etc/hosts'
 
 # Start sourcify services
+# in sourcify-setup directory do:
 docker-compose up -d
 
 # Invoke the server API once to make sure your browser accepts the self-signed certificate
@@ -73,6 +74,7 @@ open https://localhost
 open https://repository.local
 
 # Stop sourcify services
+# in sourcify-setup directory do:
 docker-compose down
 ```
 
