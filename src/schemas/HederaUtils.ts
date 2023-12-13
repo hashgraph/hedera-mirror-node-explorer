@@ -180,7 +180,7 @@ export function makeRewardRate(rewardInTinyBar: number): number {
 export function makeAnnualizedRate(rewardInTinyBar: number): string {
     const formatter = new Intl.NumberFormat("en-US", {
         style: 'percent',
-        maximumFractionDigits: 2
+        maximumFractionDigits: 3
     })
     return formatter.format(makeRewardRate(rewardInTinyBar) * 365);
 }
