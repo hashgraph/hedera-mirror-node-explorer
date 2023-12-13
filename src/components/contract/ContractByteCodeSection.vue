@@ -161,7 +161,6 @@ export default defineComponent({
       isMediumScreen,
       byteCode: props.contractAnalyzer.byteCodeAnalyzer.byteCode,
       solcVersion: props.contractAnalyzer.byteCodeAnalyzer.solcVersion,
-      ipfsURL: props.contractAnalyzer.byteCodeAnalyzer.ipfsURL,
       contractName,
       isVerificationAvailable,
       tooltipText,
