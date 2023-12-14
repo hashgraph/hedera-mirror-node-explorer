@@ -76,7 +76,7 @@ export default defineComponent({
       isMediumScreen,
       initialLoading,
       type: props.ntv?.type,
-      value: props.ntv?.value,
+      value: props.ntv?.value?.toString(),
       addressValue,
     }
   }

@@ -27,7 +27,7 @@ export function makeEthAddressForAccount(account: AccountInfo): string|null {
     if (account.evm_address) return account.evm_address;
     if (account.key?.key && account.key?._type == KeyType.ECDSA_SECP256K1) {
         // Generates Ethereum address from public key
-        return ethers.utils.computeAddress("0x" + account.key.key)
+        return ethers.computeAddress("0x" + account.key.key)
     }
     if (account.account) {
         // Generates Ethereum address from account id
@@ -136,15 +136,15 @@ export function decodeSolidityErrorMessage(message: string | null): string | nul
         if (message === null) {
             result = null
         } else if (message.startsWith(errorStringSelector)) {
-            const reason = ethers.utils.defaultAbiCoder.decode(
+            const reason = ethers.AbiCoder.defaultAbiCoder().decode(
                 ['string'],
-                ethers.utils.hexDataSlice(message ?? "", 4)
+                ethers.dataSlice(message ?? "", 4)
             )
             result = reason.toString() ?? null
         } else if (message.startsWith(panicUint256Selector)) {
-            const code = ethers.utils.defaultAbiCoder.decode(
+            const code = ethers.AbiCoder.defaultAbiCoder().decode(
                 ['uint256'],
-                ethers.utils.hexDataSlice(message ?? "", 4)
+                ethers.dataSlice(message ?? "", 4)
             )
             result = 'Panic(0x' + parseInt(code.toString()).toString(16) + ')'  ?? null
         } else {
