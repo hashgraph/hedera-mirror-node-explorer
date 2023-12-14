@@ -387,7 +387,7 @@ export default defineComponent({
     })
     onBeforeUnmount(() => {
       mounted = false
-      if (accountId.value !== null) {
+      if (transactionTableController.mounted.value) {
         transactionTableController.unmount()
       }
     })
