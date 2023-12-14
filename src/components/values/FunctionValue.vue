@@ -40,7 +40,7 @@
 
 <script lang="ts">
 
-import {computed, defineComponent, inject, onMounted, PropType, ref} from 'vue';
+import {computed, defineComponent, inject, PropType, ref} from 'vue';
 import {initialLoadingKey} from "@/AppKeys";
 import EVMAddress from "@/components/values/EVMAddress.vue";
 import {NameTypeValue} from "@/utils/analyzer/FunctionCallAnalyzer";
