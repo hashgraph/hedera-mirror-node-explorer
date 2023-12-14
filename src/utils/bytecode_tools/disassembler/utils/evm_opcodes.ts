@@ -24,7 +24,11 @@ export interface EvmOpcode {
   operand: number;
 }
 
-
+/**
+ * @dev A mapping of EVM OPCODE IDs with their corresponding mnemonics and operand lengths.
+ * @evm_version SHANGHAI
+ * @notice This list contains the latest OPCODEs introduced in SHANGHAI. Modifications to this list can cover future EVM releases.
+ */
 export const EVM_OPCODES = new Map<string, EvmOpcode>([
   ['00', { mnemonic: 'STOP', operand: 0 }],
   ['01', { mnemonic: 'ADD', operand: 0 }],
