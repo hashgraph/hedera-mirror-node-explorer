@@ -25,12 +25,8 @@
 <template>
     <div class="is-flex is-justify-content-space-between is-align-items-center">
       <div id="tabChooser" class="mt-3 is-flex">
-        <div id="disassemblerButton" @click="() => tabSelector(1)" class="tabSelector" :class="{'has-text-grey unchosentab': !showDisassembler}">
+        <div id="disassemblerButton" class="tabSelector"  :class="{'has-text-grey unchosentab': !showDisassembler}">
           Disassembler
-        </div>
-        
-        <div id="decompilerButton" @click="() => tabSelector(2)" class="tabSelector" :class="{'has-text-grey unchosentab': !showDecompiler}">
-          Decompiler
         </div>
       </div>
 
@@ -55,7 +51,6 @@
 
     <!-- @notice: utilize `is-hidden` class to maintain analyzed bytecode data between tabs -->
     <BytecodeTools :byte-code="isCustom ? inputBytecode : (propByteCode || '')" :is-custom="isCustom" :tool-type="1" class="mt-5" :class="{'is-hidden': !showDisassembler}"/>
-    <BytecodeTools :byte-code="isCustom ? inputBytecode : (propByteCode || '')" :is-custom="isCustom" :tool-type="2" class="mt-5" :class="{'is-hidden': !showDecompiler}"/>
 </template>
 
 <!-- --------------------------------------------------------------------------------------------------------------- -->
@@ -98,11 +93,6 @@ export default defineComponent({
         propByteCode.value = props.byteCode
       })
 
-      const tabSelector = (mode: 1 | 2) => {
-        showDisassembler.value = mode === 1
-        showDecompiler.value = mode === 2
-      }
-
       const closeAnalyzer = () => {
         context.emit('turnOffAnalyzer', true)
       }
@@ -113,7 +103,6 @@ export default defineComponent({
         inputBytecode,
         showDisassembler,
         showDecompiler,
-        tabSelector,
         propByteCode,
         closeAnalyzer
       }

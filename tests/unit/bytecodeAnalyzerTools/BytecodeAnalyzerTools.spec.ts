@@ -59,7 +59,7 @@ describe("BytecodeAnalyzerTools.vue", () => {
         expect(card.text()).toMatch(RegExp("^Bytecode Analyzer"))
 
         const tabChooser = wrapper.get("#tabChooser")
-        expect(tabChooser.text()).toBe("Disassembler  Decompiler")
+        expect(tabChooser.text()).toBe("Disassembler")
         
         const decompilerButton = wrapper.get('#decompilerButton')
         decompilerButton.trigger("click")
