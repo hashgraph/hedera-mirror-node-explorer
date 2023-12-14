@@ -18,9 +18,9 @@
  *
  */
 
-import { EVM_OPCODES, EvmOpcode } from '../evm_opcodes';
+import { EVM_OPCODES, EvmOpcode } from './evm_opcodes';
 
-export class Utils {
+export class Helpers {
   /**
    * @dev check if an opcode is a PUSH opcode
    * @param opcode
@@ -107,8 +107,8 @@ export class Utils {
       };
     }
 
-    if (Utils.isPushOp(opcode)) {
-      const result = Utils.getPushOperands(opcode, bytecode, index);
+    if (Helpers.isPushOp(opcode)) {
+      const result = Helpers.getPushOperands(opcode, bytecode, index);
 
       return {
         index: result.offset,
