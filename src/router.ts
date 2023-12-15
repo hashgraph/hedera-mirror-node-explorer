@@ -51,6 +51,7 @@ import AccountsWithKey from "@/pages/AccountsWithKey.vue";
 import AdminKeyDetails from "@/pages/AdminKeyDetails.vue";
 import AddressDetails from "@/pages/AddressDetails.vue";
 import RoutingSpec from "@/pages/RoutingSpec.vue";
+import AccountCollection from "@/pages/AccountCollection.vue"
 
 const routes: Array<RouteRecordRaw> = [
   {
@@ -138,6 +139,12 @@ const routes: Array<RouteRecordRaw> = [
     path: '/:network/accountbalances/:accountId',
     name: 'AccountBalances',
     component: AccountBalances,
+    props: true
+  },
+  {
+    path: '/:network/accountbalances/:accountId/:tokenId',
+    name: 'AccountCollection',
+    component: AccountCollection,
     props: true
   },
   {

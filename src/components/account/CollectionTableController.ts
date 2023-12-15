@@ -31,32 +31,26 @@ import axios, {AxiosResponse} from "axios";
 import {KeyOperator, SortOrder, TableController} from "@/utils/table/TableController";
 import {Router} from "vue-router";
 
-export interface Collection {
-    token_id: string,
-    tokens: {
-        count: number,
-        nfts: Nft[]
-    }
-}
-
-export class NftsTableController extends TableController<Collection, string> {
+export class CollectionTableController extends TableController<Nft, string> {
 
     public readonly accountId: Ref<string | null>
+    public readonly tokenId: string
 
     //
     // Public
     //
 
-    public constructor(router: Router, accountId: Ref<string | null>, pageSize: ComputedRef<number>) {
+    public constructor(router: Router, tokenId: string, accountId: Ref<string | null>, pageSize: ComputedRef<number>) {
         super(router, pageSize, 10 * pageSize.value, 5000, 10, 100)
         this.accountId = accountId
+        this.tokenId = tokenId
     }
 
     //
     // TableController
     //
 
-    public async load(tokenId: string | null, operator: KeyOperator, order: SortOrder, limit: number): Promise<Collection[] | null> {
+    public async load(tokenId: string | null, operator: KeyOperator, order: SortOrder, limit: number): Promise<Nft[] | null> {
         if (this.accountId.value == null) {
             return Promise.resolve(null)
         }
@@ -88,10 +82,12 @@ export class NftsTableController extends TableController<Collection, string> {
             collection.nfts.push(nft);
         }
 
-        return Array.from(collectionsMap, ([token_id, tokens]) => ({ token_id,  tokens})) ?? []
+        const nfts = collectionsMap.get(this.tokenId).nfts
+
+        return nfts
     }
 
-    public keyFor(row: Collection): string {
+    public keyFor(row: Nft): string {
         return row.token_id ?? ""
     }
 

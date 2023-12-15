@@ -24,7 +24,7 @@
 
 <template>
   <o-table
-    :data="nfts"
+    :data="collection"
     :loading="loading"
     :hoverable="true"
     :paginated="!isTouchDevice"
@@ -42,19 +42,12 @@
     aria-previous-label="Previous page"
     @cell-click="handleClick"
   >
-    <o-table-column v-slot="props" field="token_id" label="Token">
-      <TokenLink
-        v-bind:show-extra="true"
-        v-bind:token-id="props.row.token_id"
-        v-bind:no-anchor="true"
-      />
-    </o-table-column>
-    <o-table-column v-slot="props" field="owned" label="Owned" position="right">
-      {{props.row.tokens.count}}
+    <o-table-column v-slot="props" field="serial" label="Serial">
+      {{ props.row.serial_number }}
     </o-table-column>
   </o-table>
 
-  <EmptyTable v-if="!nfts.length"/>
+  <EmptyTable v-if="!collection.length"/>
 
 </template>
 
@@ -72,9 +65,10 @@ import EmptyTable from "@/components/EmptyTable.vue";
 import {routeManager} from "@/router";
 import { Collection, NftsTableController } from "@/components/account/NftsTableController";
 import { useRoute } from "vue-router";
+import { CollectionTableController } from "@/components/account/CollectionTableController";
 
 export default defineComponent({
-  name: 'NftsTable',
+  name: 'CollectionTable',
 
   components: {
     EmptyTable,
@@ -83,27 +77,39 @@ export default defineComponent({
 
   props: {
     controller: {
-      type: Object as PropType<NftsTableController>,
+      type: Object as PropType<CollectionTableController>,
       required: true
     },
+    tokenId: {
+      type: String,
+      required: true
+    }
   },
 
   setup(props) {
-    const route = useRoute();
-
     const isTouchDevice = inject('isTouchDevice', false)
     const isMediumScreen = inject('isMediumScreen', true)
 
-    const handleClick = (nft: Nft, c: unknown, i: number, ci: number, event: MouseEvent) => {
-      if (nft.token_id) {
-        routeManager.routeToCollection(route.params.accountId as string, nft.token_id, event.ctrlKey || event.metaKey)
+    const handleClick = (
+      n: Nft,
+      c: unknown,
+      i: number,
+      ci: number,
+      event: MouseEvent,
+    ) => {
+      if (n.token_id && n.serial_number) {
+        routeManager.routeToSerial(
+          n.token_id,
+          n.serial_number,
+          event.ctrlKey || event.metaKey,
+        );
       }
-    }
+    };
 
     return {
       isTouchDevice,
       isMediumScreen,
-      nfts: props.controller.rows as ComputedRef<Collection[]>,
+      collection: props.controller.rows as ComputedRef<Nft[]>,
       loading: props.controller.loading as ComputedRef<boolean>,
       totalRowCount: props.controller.totalRowCount as ComputedRef<number>,
       currentPage: props.controller.currentPage as Ref<number>,
