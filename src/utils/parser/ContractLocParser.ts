@@ -64,7 +64,7 @@ export class ContractLocParser {
     public readonly entity: ComputedRef<ContractResponse|null>
         = computed(() => this.contractResponse.value ?? null)
 
-    public readonly errorNotification: Ref<string|null> = computed(() => {
+    public readonly errorNotification: ComputedRef<string|null> = computed(() => {
         let result: string|null
         const l = this.contractLoc.value
         const o = this.contractLocObj.value
