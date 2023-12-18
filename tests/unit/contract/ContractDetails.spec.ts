@@ -1,3 +1,5 @@
+// noinspection DuplicatedCode
+
 /*-
  *
  * Hedera Mirror Node Explorer
@@ -26,7 +28,9 @@ import {
     SAMPLE_CONTRACT,
     SAMPLE_CONTRACT_AS_ACCOUNT,
     SAMPLE_CONTRACT_DELETED,
+    SAMPLE_CONTRACT_DELETED_AS_ACCOUNT,
     SAMPLE_CONTRACT_DUDE,
+    SAMPLE_CONTRACT_DUDE_AS_ACCOUNT,
     SAMPLE_CONTRACT_RESULTS,
     SAMPLE_NETWORK_EXCHANGERATE,
     SAMPLE_TRANSACTION,
@@ -51,7 +55,7 @@ HMSF.forceUTC = true
 
 describe("ContractDetails.vue", () => {
 
-    it("Should display contract details", async () => {
+    it("Should display contract details (using contract id)", async () => {
 
         await router.push("/") // To avoid "missing required param 'network'" error
 
@@ -78,6 +82,71 @@ describe("ContractDetails.vue", () => {
             },
             props: {
                 contractId: SAMPLE_CONTRACT.contract_id
+            },
+        });
+
+        await flushPromises()
+        // console.log(wrapper.html())
+
+        expect(wrapper.text()).toMatch(RegExp("^Contract Contract ID:" + SAMPLE_CONTRACT.contract_id))
+        expect(wrapper.get("#balanceValue").text()).toBe("2.00000000$0.49207")
+        expect(wrapper.get("#keyValue").text()).toBe("4210 5082 0e14 85ac dd59 7260 88e0 e4a2 130e bbbb 7000 9f64 0ad9 5c78 dd5a 7b38CopyED25519")
+        expect(wrapper.get("#memoValue").text()).toBe("Mirror Node acceptance test: 2022-03-07T15:09:15.228564328Z Create contract")
+        expect(wrapper.get("#createTransactionValue").text()).toBe(TransactionID.normalize(SAMPLE_TRANSACTION.transaction_id))
+        expect(wrapper.get("#expiresAtValue").text()).toBe("None")
+        expect(wrapper.get("#autoRenewPeriodValue").text()).toBe("90 days")
+        expect(wrapper.get("#autoRenewAccountValue").text()).toBe("0.0.730632")
+        expect(wrapper.get("#maxAutoAssociationValue").text()).toBe("0")
+        expect(wrapper.get("#obtainerValue").text()).toBe("None")
+        expect(wrapper.get("#proxyAccountValue").text()).toBe("None")
+        expect(wrapper.get("#validFromValue").text()).toBe("3:09:15.9474 PMMar 7, 2022, UTC")
+        expect(wrapper.get("#validUntilValue").text()).toBe("None")
+        expect(wrapper.get("#nonceValue").text()).toBe("1")
+        expect(wrapper.get("#fileValue").text()).toBe("0.0.749773")
+        expect(wrapper.get("#evmAddress").text()).toBe("EVM Address:0x00000000000000000000000000000000000b70cfCopy")
+        expect(wrapper.get("#code").text()).toBe("Runtime Bytecode")
+        expect(wrapper.get("#solcVersion").text()).toBe("Compiler Version0.8.4")
+
+        // None of the elements related to contract verification should be present in this context
+        expect(wrapper.find('#verify-button').exists()).toBe(false)
+        expect(wrapper.find('#showSource').exists()).toBe(false)
+        expect(wrapper.find('#verificationStatus').exists()).toBe(false)
+        expect(wrapper.find('#contractName').exists()).toBe(false)
+
+        expect(wrapper.findComponent(ContractResultTable).exists()).toBe(true)
+
+        mock.restore()
+        wrapper.unmount()
+        await flushPromises()
+    });
+
+    it("Should display contract details (using evm address)", async () => {
+
+        await router.push("/") // To avoid "missing required param 'network'" error
+
+        const mock = new MockAdapter(axios);
+
+        const matcher1 = "/api/v1/contracts/" + SAMPLE_CONTRACT.evm_address
+        mock.onGet(matcher1).reply(200, SAMPLE_CONTRACT);
+
+        const matcher2 = "/api/v1/accounts/" + SAMPLE_CONTRACT.contract_id
+        mock.onGet(matcher2).reply(200, SAMPLE_CONTRACT_AS_ACCOUNT);
+
+        const matcher3 = "/api/v1/transactions"
+        mock.onGet(matcher3).reply(200, SAMPLE_TRANSACTIONS);
+
+        const matcher4 = "/api/v1/network/exchangerate"
+        mock.onGet(matcher4).reply(200, SAMPLE_NETWORK_EXCHANGERATE);
+
+        const matcher5 = "/api/v1/contracts/" + SAMPLE_CONTRACT.contract_id + "/results"
+        mock.onGet(matcher5).reply(200, SAMPLE_CONTRACT_RESULTS);
+
+        const wrapper = mount(ContractDetails, {
+            global: {
+                plugins: [router, Oruga]
+            },
+            props: {
+                contractId: SAMPLE_CONTRACT.evm_address
             },
         });
 
@@ -220,7 +289,7 @@ describe("ContractDetails.vue", () => {
         mock.onGet(matcher1).reply(200, contract2);
 
         matcher2 = "/api/v1/accounts/" + contract2.contract_id
-        mock.onGet(matcher2).reply(200, SAMPLE_CONTRACT_AS_ACCOUNT);
+        mock.onGet(matcher2).reply(200, SAMPLE_CONTRACT_DUDE_AS_ACCOUNT);
 
         matcher5 = "/api/v1/contracts/" + contract2.contract_id + "/results"
         mock.onGet(matcher5).reply(200, SAMPLE_CONTRACT_RESULTS);
@@ -299,7 +368,7 @@ describe("ContractDetails.vue", () => {
         mock.onGet(matcher1).reply(200, contract);
 
         const matcher2 = "/api/v1/accounts/" + contract.contract_id
-        mock.onGet(matcher2).reply(200, SAMPLE_CONTRACT_AS_ACCOUNT);
+        mock.onGet(matcher2).reply(200, SAMPLE_CONTRACT_DUDE_AS_ACCOUNT);
 
         const matcher3 = "/api/v1/transactions"
         mock.onGet(matcher3).reply(200, SAMPLE_TRANSACTIONS);
@@ -340,7 +409,7 @@ describe("ContractDetails.vue", () => {
         mock.onGet(matcher1).reply(200, contract);
 
         const matcher2 = "/api/v1/accounts/" + contract.contract_id
-        mock.onGet(matcher2).reply(200, SAMPLE_CONTRACT_AS_ACCOUNT);
+        mock.onGet(matcher2).reply(200, SAMPLE_CONTRACT_DELETED_AS_ACCOUNT);
 
         const matcher3 = "/api/v1/transactions"
         mock.onGet(matcher3).reply(200, SAMPLE_TRANSACTIONS);
@@ -388,7 +457,7 @@ describe("ContractDetails.vue", () => {
         // console.log(wrapper.html())
         // console.log(wrapper.text())
 
-        expect(wrapper.get("#notificationBanner").text()).toBe("Invalid contract ID: " + invalidContractId)
+        expect(wrapper.get("#notificationBanner").text()).toBe("Invalid contract ID or address: " + invalidContractId)
 
         wrapper.unmount()
         await flushPromises()

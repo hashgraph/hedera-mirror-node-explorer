@@ -81,6 +81,10 @@ export class PathParam { // Block Hash or Number
         return result
     }
 
+    public static parseContractLoc(l: string): EntityID|EthereumAddress|null {
+        return EntityID.parse(l) ?? EthereumAddress.parse(l)
+    }
+
     public static parseNodeId(s: string|undefined): number|null {
         let result: number|null
 
