@@ -195,7 +195,7 @@
 
 <script lang="ts">
 
-import {computed, defineComponent, inject, onBeforeUnmount, onMounted} from 'vue';
+import {computed, defineComponent, inject, onBeforeUnmount, onMounted, Ref} from 'vue';
 import KeyValue from "@/components/values/KeyValue.vue";
 import AccountLink from "@/components/values/AccountLink.vue";
 import TimestampValue from "@/components/values/TimestampValue.vue";
@@ -207,10 +207,9 @@ import BlobValue from "@/components/values/BlobValue.vue";
 import StringValue from "@/components/values/StringValue.vue";
 import Footer from "@/components/Footer.vue";
 import NotificationBanner from "@/components/NotificationBanner.vue";
-import {EntityID} from "@/utils/EntityID";
 import Property from "@/components/Property.vue";
-import {ContractByIdCache} from "@/utils/cache/ContractByIdCache";
-import {AccountLocParser} from "@/utils/parser/AccountLocParser";
+import {AccountByIdCache} from "@/utils/cache/AccountByIdCache";
+import {ContractLocParser} from "@/utils/parser/ContractLocParser";
 import {networkRegistry} from "@/schemas/NetworkRegistry";
 import router, {routeManager} from "@/router";
 import TransactionLink from "@/components/values/TransactionLink.vue";
@@ -222,6 +221,8 @@ import Copyable from "@/components/Copyable.vue";
 import {ContractAnalyzer} from "@/utils/analyzer/ContractAnalyzer";
 import ContractResultLogs from "@/components/contract/ContractResultLogs.vue";
 import {ContractResultsLogsAnalyzer} from "@/utils/analyzer/ContractResultsLogsAnalyzer";
+import {BalanceAnalyzer} from "@/utils/analyzer/BalanceAnalyzer";
+import {TokenBalance} from "@/schemas/HederaSchemas";
 
 const MAX_TOKEN_BALANCES = 3
 
@@ -265,68 +266,62 @@ export default defineComponent({
     // basic computed's
     //
 
-    const validEntityId = computed(() => {
-      return props.contractId ? EntityID.parse(props.contractId, true) != null : false
-    })
     const normalizedContractId = computed(() => {
-      return props.contractId ? EntityID.normalize(props.contractId) : null
+      return contractLocParser.contractId.value
     })
 
     //
     // contract
     //
 
-    const contractLookup = ContractByIdCache.instance.makeLookup(normalizedContractId)
-    onMounted(() => contractLookup.mount())
-    onBeforeUnmount(() => contractLookup.unmount())
+    const contractLocParser = new ContractLocParser(computed(() => props.contractId ?? null))
+    onMounted(() => contractLocParser.mount())
+    onBeforeUnmount(() => contractLocParser.unmount())
 
-    const accountLocParser = new AccountLocParser(normalizedContractId)
-    onMounted(() => accountLocParser.mount())
-    onBeforeUnmount(() => accountLocParser.unmount())
-
-    const displayNonce = computed(() => contractLookup.entity.value?.nonce != undefined)
+    const displayNonce = computed(() => contractLocParser.entity.value?.nonce != undefined)
 
     const autoRenewAccount = computed(() => {
-      return contractLookup.entity.value?.auto_renew_account ?? null
+      return contractLocParser.entity.value?.auto_renew_account ?? null
     })
 
     const obtainerId = computed(() => {
-      return contractLookup.entity.value?.obtainer_id ?? null
+      return contractLocParser.entity.value?.obtainer_id ?? null
     })
 
     const proxyAccountId = computed(() => {
-      return contractLookup.entity.value?.proxy_account_id ?? null
+      return contractLocParser.entity.value?.proxy_account_id ?? null
     })
 
     const accountChecksum = computed(() =>
-        accountLocParser.accountId.value ? networkRegistry.computeChecksum(
-            accountLocParser.accountId.value,
+        contractLocParser.contractId.value ? networkRegistry.computeChecksum(
+            contractLocParser.contractId.value,
             router.currentRoute.value.params.network as string
         ) : null)
 
-    const displayAllTokenLinks = computed(() => accountLocParser.tokens.value ? accountLocParser.tokens.value.length > MAX_TOKEN_BALANCES : false)
+    //
+    // account
+    //
 
-    const notification = computed(() => {
-      let result: string|null
+    const accountLookup = AccountByIdCache.instance.makeLookup(contractLocParser.contractId)
+    onMounted(() => accountLookup.mount())
+    onBeforeUnmount(() => accountLookup.unmount())
 
-      // const expiration = contractLoader.entity.value?.expiration_timestamp
-      if (!validEntityId.value) {
-        result = "Invalid contract ID: " + props.contractId
-      } else if (contractLookup.entity.value == null) {
-          if (contractLookup.isLoaded()) {
-              result = "Contract with ID " + props.contractId + " was not found"
-          } else {
-              result = null
-          }
-      } else if (contractLookup.entity.value?.deleted === true) {
-        result = "Contract is deleted"
-      // to be re-activated after Feb 9th
-      // } else if (expiration && Number.parseFloat(expiration) <= new Date().getTime() / 1000) {
-      //   result = "Contract has expired and is in grace period"
-      } else {
-        result = null
-      }
-      return result
+    const balance: Ref<number|null>
+        = computed(() => accountLookup.entity.value?.balance?.balance ?? null)
+
+    const tokens: Ref<TokenBalance[]|null>
+        = computed(() => accountLookup.entity.value?.balance?.tokens ?? null)
+
+    //
+    // balanceCache
+    //
+
+    const balanceAnalyzer = new BalanceAnalyzer(contractLocParser.contractId, 10000)
+    onMounted(() => balanceAnalyzer.mount())
+    onBeforeUnmount(() => balanceAnalyzer.unmount())
+    const displayAllTokenLinks = computed(() => {
+      const tokenCount = balanceAnalyzer.tokenBalances.value?.length ?? 0
+      return tokenCount > MAX_TOKEN_BALANCES
     })
 
     const accountRoute = computed(() => {
@@ -348,15 +343,14 @@ export default defineComponent({
       isSmallScreen,
       isMediumScreen,
       isTouchDevice,
-      contract: contractLookup.entity,
-      account: accountLocParser.accountInfo,
-      balance: accountLocParser.balance,
-      tokens: accountLocParser.tokens,
-      ethereumAddress: accountLocParser.ethereumAddress,
+      contract: contractLocParser.entity,
+      balance,
+      tokens,
+      ethereumAddress: contractLocParser.ethereumAddress,
       displayNonce,
       accountChecksum,
       displayAllTokenLinks,
-      notification,
+      notification: contractLocParser.errorNotification,
       autoRenewAccount: autoRenewAccount,
       obtainerId: obtainerId,
       proxyAccountId: proxyAccountId,
