@@ -59,17 +59,17 @@ export class BalanceAnalyzer {
         return this.watchHandle.value !== null
     })
 
-    public readonly hbarBalance: Ref<number|null> = computed(() => {
+    public readonly hbarBalance: ComputedRef<number|null> = computed(() => {
         const allBalances = this.response.value?.balances
         return allBalances && allBalances.length >= 1 ? allBalances[0].balance : null
     })
 
-    public readonly tokenBalances: Ref<Array<TokenBalance>> = computed(() => {
+    public readonly tokenBalances: ComputedRef<Array<TokenBalance>> = computed(() => {
         const allBalances = this.response.value?.balances
         return allBalances && allBalances.length >= 1 ? allBalances[0].tokens : []
     })
 
-    public readonly balanceTimeStamp: Ref<string|null> = computed(() => {
+    public readonly balanceTimeStamp: ComputedRef<string|null> = computed(() => {
         return this.response.value?.timestamp ?? null
     })
 

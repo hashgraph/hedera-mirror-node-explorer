@@ -63,19 +63,19 @@ export class TransactionLocParser {
         return this.transactionRef.value
     })
 
-    public consensusTimestamp: Ref<string|null> = computed(() => {
+    public consensusTimestamp: ComputedRef<string|null> = computed(() => {
         return this.transactionRef.value?.consensus_timestamp ?? null
     })
 
-    public transactionHash: Ref<string|null> = computed(() => {
+    public transactionHash: ComputedRef<string|null> = computed(() => {
         return this.transactionRef.value?.transaction_hash ?? null
     })
 
-    public transactionId: Ref<string|null> = computed(() => {
+    public transactionId: ComputedRef<string|null> = computed(() => {
         return this.transactionRef.value?.transaction_id ?? null
     })
 
-    public errorNotification: Ref<string|null> = computed(() => {
+    public errorNotification: ComputedRef<string|null> = computed(() => {
         let result: string|null
 
         const l = this.transactionLoc.value

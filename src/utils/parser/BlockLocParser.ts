@@ -61,7 +61,7 @@ export class BlockLocParser {
     public readonly toTimestamp: ComputedRef<string|null>
         = computed(() => this.block.value?.timestamp?.to ?? null)
 
-    public readonly errorNotification: Ref<string|null> = computed(() => {
+    public readonly errorNotification: ComputedRef<string|null> = computed(() => {
         let result: string|null
         const l = this.blockLoc.value
         const o = this.blockLocObj.value

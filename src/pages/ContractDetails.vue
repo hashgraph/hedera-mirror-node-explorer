@@ -195,7 +195,7 @@
 
 <script lang="ts">
 
-import {computed, defineComponent, inject, onBeforeUnmount, onMounted, Ref} from 'vue';
+import {computed, ComputedRef, defineComponent, inject, onBeforeUnmount, onMounted} from 'vue';
 import KeyValue from "@/components/values/KeyValue.vue";
 import AccountLink from "@/components/values/AccountLink.vue";
 import TimestampValue from "@/components/values/TimestampValue.vue";
@@ -306,10 +306,10 @@ export default defineComponent({
     onMounted(() => accountLookup.mount())
     onBeforeUnmount(() => accountLookup.unmount())
 
-    const balance: Ref<number|null>
+    const balance: ComputedRef<number|null>
         = computed(() => accountLookup.entity.value?.balance?.balance ?? null)
 
-    const tokens: Ref<TokenBalance[]|null>
+    const tokens: ComputedRef<TokenBalance[]|null>
         = computed(() => accountLookup.entity.value?.balance?.tokens ?? null)
 
     //
