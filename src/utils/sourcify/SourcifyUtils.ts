@@ -18,106 +18,173 @@
  *
  */
 
-import {SolcInput} from "@/utils/solc/SolcInput";
 import {routeManager} from "@/router";
 import {ContractByIdCache} from "@/utils/cache/ContractByIdCache";
-import axios, {AxiosResponse} from "axios";
-import {SolcMetadata} from "@/utils/solc/SolcMetadata";
-import {SolcUtils} from "@/utils/solc/SolcUtils";
+import axios from "axios";
 
 export class SourcifyUtils {
 
-    public static async verifyWithSolcInput(contractId: string,
-                               contractName: string,
-                               compilerVersion: string,
-                               solcInput: SolcInput): Promise<SourcifyVerifyResponse|null> {
-        let result: SourcifyVerifyResponse|null
 
-        const contractResponse = await ContractByIdCache.instance.lookup(contractId)
-        const address = contractResponse?.evm_address ?? null
+    //
+    // Session verification
+    //
+
+    private static readonly withCredentials = true
+
+    public static async sessionClear(): Promise<string> {
+        let result: string
+
         const sourcifySetup = routeManager.currentNetworkEntry.value.sourcifySetup
-        if (address !== null && sourcifySetup !== null) {
-            const requestBody: SourcifyVerifyBody = {
-                address: address,
-                chain: sourcifySetup.chainID.toString(),
-                files: {
-                    "SolcJsonInput.json": JSON.stringify(solcInput)
-                },
-                compilerVersion: compilerVersion,
-                contractName: contractName
-            }
-            const url = sourcifySetup.serverURL + "verify/solc-json"
-            const sourcifyResponse = await axios.post<SourcifyVerifyResponse>(url, requestBody)
-            result = sourcifyResponse.data
+        if (sourcifySetup !== null) {
+            const url = sourcifySetup.serverURL + "session/clear"
+            const config = { withCredentials: this.withCredentials }
+            const response = await axios.post<string>(url, null, config)
+            result = response.data
         } else {
-            result = null
+            throw Error("No sourcify setup for network " + routeManager.currentNetworkEntry.value.name)
         }
 
         return Promise.resolve(result)
     }
 
-    public static async verify(contractId: string, metadata: SolcMetadata, inputFiles: Map<string, string>): Promise<SourcifyVerifyResponse|null> {
-        let result: SourcifyVerifyResponse|null
+    public static async sessionInputFiles(files: Map<string, string>): Promise<SourcifyInputFilesResponse> {
+        let result: SourcifyInputFilesResponse
 
-        const contractResponse = await ContractByIdCache.instance.lookup(contractId)
-        const address = contractResponse?.evm_address ?? null
         const sourcifySetup = routeManager.currentNetworkEntry.value.sourcifySetup
-        if (address !== null && sourcifySetup !== null) {
-            const requestBody: SourcifyVerifyBody = {
-                address: address,
-                chain: sourcifySetup.chainID.toString(),
-                files: {
-                    "metadata.json": JSON.stringify(metadata)
-                },
-                contractName: SolcUtils.fetchCompilationTarget(metadata) ?? undefined
+        if (sourcifySetup !== null) {
+            const body: SourcifyInputFilesBody = {
+                files: {}
             }
-            for (const [fileName, content] of inputFiles.entries()) {
-                requestBody.files[fileName] = content
+            for (const [f, c] of files) {
+                body.files[f] = c
             }
-            const url = sourcifySetup.serverURL + "verify"
-            const sourcifyResponse = await axios.post<SourcifyVerifyResponse>(url, requestBody)
-            result = sourcifyResponse.data
+            const url = sourcifySetup.serverURL + "session/input-files"
+            const config = {
+                withCredentials: this.withCredentials ,
+                headers: {'content-type': 'application/json'},
+                params: { dryrun: true }
+            }
+            const response = await axios.post<SourcifyInputFilesResponse>(url, body, config)
+            result = response.data
         } else {
-            result = null
+            throw Error("No sourcify setup for network " + routeManager.currentNetworkEntry.value.name)
         }
 
         return Promise.resolve(result)
     }
 
-    public static fetchVerifyError(reason: unknown): string|null {
-        let result: string|null
+    public static async sessionVerifyChecked(contractId: string,
+                                             verificationIds: string[],
+                                             store: boolean): Promise<SourcifyVerifyCheckedResponse> {
+        let result: SourcifyVerifyCheckedResponse
 
-        if (axios.isAxiosError(reason)) {
-            const response = reason.response as AxiosResponse<SourcifyVerifyResponse>|undefined
-            result = response?.data.error ?? null
-        } else if ((reason as any).message) {
-            result = (reason as any).message
+        const contractResponse = await ContractByIdCache.instance.lookup(contractId)
+        const address = contractResponse?.evm_address ?? null
+        const sourcifySetup = routeManager.currentNetworkEntry.value.sourcifySetup
+        if (address !== null && sourcifySetup !== null) {
+            const chainId = sourcifySetup.chainID.toString()
+            const body: SourcifyVerifyCheckedBody = {
+                contracts: []
+            }
+            for (const vid of verificationIds) {
+                body.contracts.push({
+                    address: address,
+                    chainId: chainId,
+                    verificationId: vid,
+                    creatorTxHash: null
+                })
+            }
+            const url = sourcifySetup.serverURL + "session/verify-checked"
+            const config = {
+                withCredentials: this.withCredentials ,
+                headers: {'content-type': 'application/json'},
+                params: {}
+            }
+            if (!store) {
+                config.params = { dryrun: true }
+            }
+            const response = await axios.post<SourcifyVerifyCheckedResponse>(url, body, config)
+            result = response.data
         } else {
-            result = null
+            throw Error("No sourcify setup for network " + routeManager.currentNetworkEntry.value.name)
+        }
+
+        return Promise.resolve(result)
+    }
+
+    //
+    // Tools
+    //
+
+    public static fetchMatchingContract(response: SourcifyVerifyCheckedResponse): SourcifyVerifyCheckedContract|null {
+        let result: SourcifyVerifyCheckedContract|null = null
+        for (const c of response.contracts) {
+            if (c.status == "partial" || c.status == "perfect") {
+                result = c
+                break
+            }
         }
         return result
     }
 
-    public static fetchVerifyStatus(response: SourcifyVerifyResponse): string|null {
-        return response.result && response.result.length >= 1 ? response.result[0].status : null
+    public static fetchVerificationIds(response: SourcifyInputFilesResponse): string[] {
+        const result : string[] = []
+        for (const c of response.contracts) {
+            result.push(c.verificationId)
+        }
+        return result
     }
 }
 
 
-export interface SourcifyVerifyBody {
-    address: string
-    chain: string
+export interface SourcifyInputFilesBody {
     files: Record<string, string> // filename x content
-    compilerVersion?: string
-    contractName?: string
 }
 
-export interface SourcifyVerifyResponse {
-    error?: string,
-    result?: {
-        address: string,
-        chainId: string,
-        status: string,
-        library: Record<string, unknown>
+export interface SourcifyInputFilesResponse {
+    contracts: {
+        compiledPath: string
+        name: string
+        compilerVersion: string
+        files: {
+            found: string[]
+            missing: string[]
+        }
+        verificationId: string
+        status: string
     }[]
+    files: string[]
+    unused: string[]
+}
+
+export interface SourcifyVerifyCheckedBody {
+    contracts: {
+        address: string
+        chainId: string
+        creatorTxHash: string|null
+        verificationId: string
+    }[]
+}
+
+
+export interface SourcifyVerifyCheckedResponse {
+    contracts: SourcifyVerifyCheckedContract[]
+    files: string[]
+    unused: string[]
+}
+
+export interface SourcifyVerifyCheckedContract {
+    verificationId: string
+    compiledPath: string
+    name: string
+    compilerVersion: string
+    address: string
+    chainId: string
+    files: {
+        found: string[]
+        missing: string[]
+    }
+    status: string
+    statusMessage?: string
+    storageTimestamp: string
 }

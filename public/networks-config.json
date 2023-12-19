@@ -6,9 +6,9 @@
     "ledgerID": "00",
     "sourcifySetup": {
       "activate": true,
-      "repoURL": "http://localhost:10000/contracts/",
-      "serverURL": "http://localhost:5002/",
-      "verifierURL": "http://localhost:3000/#/",
+      "repoURL": "https://repository.local/contracts/",
+      "serverURL": "https://localhost/server/",
+      "verifierURL": "https://localhost/#/",
       "chainID": 295
     }
   },
@@ -19,9 +19,9 @@
     "ledgerID": "01",
     "sourcifySetup": {
       "activate": true,
-      "repoURL": "http://localhost:10000/contracts/",
-      "serverURL": "http://localhost:5002/",
-      "verifierURL": "http://localhost:3000/#/",
+      "repoURL": "https://repository.local/contracts/",
+      "serverURL": "https://localhost/server/",
+      "verifierURL": "https://localhost/#/",
       "chainID": 296
     }
   },
@@ -32,9 +32,9 @@
     "ledgerID": "02",
     "sourcifySetup": {
       "activate": true,
-      "repoURL": "http://localhost:10000/contracts/",
-      "serverURL": "http://localhost:5002/",
-      "verifierURL": "http://localhost:3000/#/",
+      "repoURL": "https://repository.local/contracts/",
+      "serverURL": "https://localhost/server/",
+      "verifierURL": "https://localhost/#/",
       "chainID": 297
     }
   }

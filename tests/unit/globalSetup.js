@@ -1,10 +1,8 @@
 import { beforeEach, vi } from 'vitest'
 import {CacheUtils} from "@/utils/cache/CacheUtils";
-import {SolcIndexCache} from "@/utils/cache/SolcIndexCache";
 
 beforeEach(() => {
     CacheUtils.clearAll()
-    SolcIndexCache.instance.clear()
 })
 
 Object.defineProperty(window, 'matchMedia', {

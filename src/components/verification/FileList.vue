@@ -85,7 +85,7 @@
 <script lang="ts">
 
 import {computed, defineComponent, inject, PropType, ref} from "vue";
-import {ContractAuditItem, ContractAuditItemStatus} from "@/utils/analyzer/ContractSourceAudit";
+import {ContractSourceAnalyzerItem} from "@/utils/analyzer/ContractSourceAnalyzer";
 
 export default defineComponent({
     name: 'FileList',
@@ -94,7 +94,7 @@ export default defineComponent({
 
     props: {
         auditItems: {
-            type: Array as PropType<ContractAuditItem[]>,
+            type: Array as PropType<ContractSourceAnalyzerItem[]>,
             default: []
         }
     },
@@ -112,60 +112,38 @@ export default defineComponent({
         const isPaginated = computed(() => props.auditItems.length > perPage.value)
         const tableTitle = computed(() => `Added Files (${props.auditItems.length})`)
 
-        const sortedAuditItems = computed(() => {
-            let result = [...props.auditItems]
-            result.sort((a, b) => {
-                if (a.target && b.target) {
-                    return isMetadata(a) ? -1 : isMetadata(b) ? 1 : 0
-                } else if (a.target) {
-                    return -1
-                } else if (b.target) {
-                    return 1
-                } else if (a.status === b.status) {
-                    return 0
-                } else if (a.status === ContractAuditItemStatus.OK) {
-                    return -1
-                } else if (b.status === ContractAuditItemStatus.OK) {
-                    return 1
-                } else {
-                    return 0
-                }
-            })
-            return result
-        })
-
         const filteredAuditItems = computed(() => {
-            let result: Array<ContractAuditItem> = []
-            for (let i = 0; i < sortedAuditItems.value.length; i++) {
-                if (sortedAuditItems.value[i].status === ContractAuditItemStatus.OK) {
-                    result.push(sortedAuditItems.value[i])
+            let result: Array<ContractSourceAnalyzerItem> = []
+            for (let i = 0; i < props.auditItems.length; i++) {
+                if (!props.auditItems[i].unused) {
+                    result.push(props.auditItems[i])
                 }
             }
             return result
         })
 
         const displayedAuditItems = computed(() => {
-            return isListFiltered.value ? filteredAuditItems.value : sortedAuditItems.value
+            return isListFiltered.value ? filteredAuditItems.value : props.auditItems
         })
 
         const nbUnusedAuditItems = computed(() => {
             let result = 0
             for (const i of props.auditItems) {
-                if (i.status === ContractAuditItemStatus.Unused) {
+                if (i.unused) {
                     result++
                 }
             }
             return result
         })
 
-        const isMetadata = (auditItem: ContractAuditItem) => {
-            const parts = auditItem.path.split('.')
+        const isMetadata = (item: ContractSourceAnalyzerItem) => {
+            const parts = item.path.split('.')
             const suffix = parts[parts.length - 1].toLowerCase()
             return suffix.toLowerCase() === 'json'
         }
 
-        const isUnused = (auditItem: ContractAuditItem) => {
-            return auditItem.status === ContractAuditItemStatus.Unused
+        const isUnused = (item: ContractSourceAnalyzerItem) => {
+            return item.unused
         }
 
         const handleClearAllFiles = () => {
@@ -185,7 +163,6 @@ export default defineComponent({
             perPage,
             isListFiltered,
             tableTitle,
-            sortedAuditItems,
             filteredAuditItems,
             displayedAuditItems,
             nbUnusedAuditItems,

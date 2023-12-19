@@ -91,7 +91,6 @@
 
     <ContractVerificationDialog
         v-model:show-dialog="showVerifyDialog"
-        :byte-code-analyzer="byteCodeAnalyzer"
         :contract-id="contractId ?? undefined"
         v-on:verify-did-complete="verifyDidComplete"/>
 
