@@ -24,12 +24,8 @@
 
 <template>
         <div id="disassembly" class="mt-4 py-4 px-2 is-flex analyzed-data-box">
-            <div v-if="disassembly && disassembly.length > 0" v-for="opcode in disassembly" :key="opcode.index16" class="is-flex" style="gap: 0.5rem">
-                <p  class="has-text-grey">[{{ opcode.index16 }}]:</p>
-                <p class="h-is-extra-text">{{ opcode.hex }}</p>
-                <p class="has-text-grey">-</p>
-                <p class="">{{ opcode.mnemonic }}</p>
-                <p v-if="opcode.operand.length > 0" class="ml-">{{ `0x${opcode.operand.join("")}` }}</p>
+            <div v-if="disassembly && disassembly.length > 0" v-for="opcode in disassembly" :key="opcode.index16">
+                <OpcodeValue :opcode="opcode"/>
             </div>
             <p class="has-text-grey is-italic has-text-weight-medium" v-else>{{ disassembledError }}</p>
         </div>
@@ -44,9 +40,11 @@
 import {defineComponent, ref, onMounted, watch} from 'vue';
 import {Disassembler} from '@/utils/bytecode_tools/disassembler/BytecodeDisassembler'
 import { DisassembledOpcodeOutput } from '@/utils/bytecode_tools/disassembler/utils/helpers';
+import OpcodeValue from "@/components/values/OpcodeValue.vue";
 
 export default defineComponent({
     name: 'DisassembledCodeValue',
+    components: {OpcodeValue},
 
     props: {
         byteCode: {
