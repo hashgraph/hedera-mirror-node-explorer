@@ -19,7 +19,7 @@
  */
 
 
-import {BladeConnector, BladeSigner, BladeWalletError, ConnectorStrategy} from "@bladelabs/blade-web3.js";
+import type {BladeConnector, BladeSigner} from "@bladelabs/blade-web3.js";
 import {HederaNetwork} from "@bladelabs/blade-web3.js/lib/src/models/blade";
 import {WalletDriver_Hedera} from "@/utils/wallet/WalletDriver_Hedera";
 import {WalletDriverCancelError, WalletDriverError} from "@/utils/wallet/WalletDriverError";
@@ -52,6 +52,7 @@ export class WalletDriver_Blade extends WalletDriver_Hedera {
         let newConnector: BladeConnector|null
         const hNetwork = WalletDriver_Blade.makeHederaNetwork(network)
         if (hNetwork !== null) {
+            const {BladeConnector, ConnectorStrategy} = await import("@bladelabs/blade-web3.js")
             newConnector = await BladeConnector.init(
                 ConnectorStrategy.EXTENSION,
                 {
@@ -72,11 +73,11 @@ export class WalletDriver_Blade extends WalletDriver_Hedera {
                 if (this.isConnectCancelError(reason)) {
                     throw new WalletDriverCancelError()
                 } else {
-                    throw this.makeConnectError(reason)
+                    throw await this.makeConnectError(reason)
                 }
             }
         } else {
-            throw this.makeConnectError("Network " + network + " is not supported by " + this.name)
+            throw await this.makeConnectError("Network " + network + " is not supported by " + this.name)
         }
 
         this.connector = newConnector
@@ -150,9 +151,10 @@ export class WalletDriver_Blade extends WalletDriver_Hedera {
         return result
     }
 
-    private makeConnectError(reason: unknown): WalletDriverError {
+    private async makeConnectError(reason: unknown): Promise<WalletDriverError> {
         let result: WalletDriverError
         if (reason instanceof Error) {
+            const {BladeWalletError} = await import("@bladelabs/blade-web3.js")
             switch(reason.name) {
                 case BladeWalletError.ExtensionNotFound:
                     result = this.extensionNotFound()
@@ -164,7 +166,7 @@ export class WalletDriver_Blade extends WalletDriver_Hedera {
         } else {
             result = this.connectFailure(JSON.stringify(reason))
         }
-        return result
+        return Promise.resolve(result)
     }
 
     private isConnectCancelError(reason: unknown): boolean {
