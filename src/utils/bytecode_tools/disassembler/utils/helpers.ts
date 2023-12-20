@@ -85,13 +85,13 @@ export class Helpers {
 
   /**
    * @dev parses byte to get opcode
-   * @param bytecode: string
-   * @param hex: string
-   * @param index: number
+   * @param bytecode
+   * @param hex
+   * @param index
    * @return [index: string, mnemonic: string, operands: string]
    */
   public static parseBytecode(bytecode: string, hex: string, index: number) {
-    const index16 = `0x${index.toString(16)}`;
+    const index16 = `0x${index.toString(16).padStart(4, '0')}`;
 
     const opcode = EVM_OPCODES.get(hex);
 

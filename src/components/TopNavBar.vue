@@ -104,9 +104,6 @@
         <router-link :to="routeManager.makeRouteToBlocks()"
                      class="button is-ghost is-last h-is-navbar-item h-is-dense"
                      :class="{ 'is-rimmed': isBlocksRoute}">Blocks</router-link>
-        <router-link :to="routeManager.makeRouteToBytecodeTools()"
-                     class="button is-ghost is-last h-is-navbar-item h-is-dense"
-                     :class="{ 'is-rimmed': isBytecodeToolsRoute}">Bytecode Tools</router-link>
       </div>
 
       <div id="navbar-grid">
@@ -300,7 +297,6 @@ export default defineComponent({
       selectedNetwork: routeManager.selectedNetwork,
       isDashboardRoute: routeManager.isDashboardRoute,
       isTransactionRoute: routeManager.isTransactionRoute,
-      isBytecodeToolsRoute: routeManager.isBytecodeToolsRoute,
     }
   },
 })
