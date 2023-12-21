@@ -83,7 +83,7 @@ export class Helpers {
     return { offset, operands };
   }
 
-  public static INVALID_OPCODE_MNEMONIC = 'invalid'
+  public static INVALID_OPCODE_MNEMONIC = 'INVALID'
 
   /**
    * @dev parses byte to get opcode
@@ -93,7 +93,7 @@ export class Helpers {
    * @return [index: string, mnemonic: string, operands: string]
    */
   public static parseBytecode(bytecode: string, hex: string, index: number) {
-    const index16 = `0x${index.toString(16).padStart(4, '0')}`;
+    const index16 = `0x${(index / 2).toString(16).padStart(4, '0')}`;
 
     const opcode = EVM_OPCODES.get(hex);
 
