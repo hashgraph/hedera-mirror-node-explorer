@@ -23,12 +23,17 @@
 <!-- --------------------------------------------------------------------------------------------------------------- -->
 
 <template>
-    <div id="disassembly" class="mt-4 py-4 px-2 is-flex analyzed-data-box">
+    <div v-if="disassembly" id="disassembly" class="mt-4 py-4 px-2 is-flex analyzed-data-box">
         <div v-for="opcode in disassembly" v-if="disassembly && disassembly.length > 0" :key="opcode.index16">
             <OpcodeValue :opcode="opcode"/>
         </div>
         <p v-else class="has-text-grey is-italic has-text-weight-medium">{{ disassembledError }}</p>
     </div>
+
+    <span v-else-if="initialLoading"/>
+
+    <span v-else class="has-text-grey">None</span>
+
 </template>
 
 <!-- --------------------------------------------------------------------------------------------------------------- -->
@@ -37,10 +42,11 @@
 
 <script lang="ts">
 
-import {defineComponent, computed} from 'vue';
+import {defineComponent, computed, inject, ref} from 'vue';
 import {Disassembler} from '@/utils/bytecode_tools/disassembler/BytecodeDisassembler'
 import {DisassembledOpcodeOutput} from '@/utils/bytecode_tools/disassembler/utils/helpers';
 import OpcodeValue from "@/components/values/OpcodeValue.vue";
+import {initialLoadingKey} from "@/AppKeys";
 
 export default defineComponent({
     name: 'DisassembledCodeValue',
@@ -54,6 +60,8 @@ export default defineComponent({
     },
 
     setup(props) {
+        const initialLoading = inject(initialLoadingKey, ref(false))
+
         const isValidBytecode = computed(() => {
             const BYTECODE_REGEX = /^(0x)?([0-9a-fA-F]{2})+$/;
             return BYTECODE_REGEX.test(props.byteCode)
@@ -66,6 +74,7 @@ export default defineComponent({
         )
 
         return {
+            initialLoading,
             disassembly,
             disassembledError,
         }
