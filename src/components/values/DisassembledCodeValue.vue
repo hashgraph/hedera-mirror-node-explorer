@@ -23,23 +23,23 @@
 <!-- --------------------------------------------------------------------------------------------------------------- -->
 
 <template>
-        <div id="disassembly" class="mt-4 py-4 px-2 is-flex analyzed-data-box">
-            <div v-if="disassembly && disassembly.length > 0" v-for="opcode in disassembly" :key="opcode.index16">
-                <OpcodeValue :opcode="opcode"/>
-            </div>
-            <p class="has-text-grey is-italic has-text-weight-medium" v-else>{{ disassembledError }}</p>
+    <div id="disassembly" class="mt-4 py-4 px-2 is-flex analyzed-data-box">
+        <div v-for="opcode in disassembly" v-if="disassembly && disassembly.length > 0" :key="opcode.index16">
+            <OpcodeValue :opcode="opcode"/>
         </div>
+        <p v-else class="has-text-grey is-italic has-text-weight-medium">{{ disassembledError }}</p>
+    </div>
 </template>
-  
+
 <!-- --------------------------------------------------------------------------------------------------------------- -->
 <!--                                                      SCRIPT                                                     -->
 <!-- --------------------------------------------------------------------------------------------------------------- -->
 
 <script lang="ts">
 
-import {defineComponent, ref, onMounted, watch} from 'vue';
+import {defineComponent, computed} from 'vue';
 import {Disassembler} from '@/utils/bytecode_tools/disassembler/BytecodeDisassembler'
-import { DisassembledOpcodeOutput } from '@/utils/bytecode_tools/disassembler/utils/helpers';
+import {DisassembledOpcodeOutput} from '@/utils/bytecode_tools/disassembler/utils/helpers';
 import OpcodeValue from "@/components/values/OpcodeValue.vue";
 
 export default defineComponent({
@@ -54,26 +54,19 @@ export default defineComponent({
     },
 
     setup(props) {
-        const disassembly = ref<DisassembledOpcodeOutput[]|null>(null)
-        const disassembledError = ref<string|null>("Input bytecode to start.")
-
-        onMounted(() => handleDisassembleBytecode())
-        watch(() => props.byteCode, () => handleDisassembleBytecode())
-
-        const handleDisassembleBytecode = () => {
+        const isValidBytecode = computed(() => {
             const BYTECODE_REGEX = /^(0x)?([0-9a-fA-F]{2})+$/;
-            if (BYTECODE_REGEX.test(props.byteCode)) {
-                disassembly.value = Disassembler.disassemble(props.byteCode)
-                disassembledError.value = null
-            } else {
-                disassembly.value = null
-                disassembledError.value = props.byteCode === "" ? "No data found..." : "Invalid bytecode"
-            }
-        }
+            return BYTECODE_REGEX.test(props.byteCode)
+        })
+
+        const disassembly = computed(() => isValidBytecode ? Disassembler.disassemble(props.byteCode) : null)
+
+        const disassembledError = computed(() =>
+            isValidBytecode ? null : (props.byteCode === "" ? "No data found..." : "Invalid bytecode")
+        )
 
         return {
             disassembly,
-            handleDisassembleBytecode,
             disassembledError,
         }
     }
@@ -90,11 +83,10 @@ export default defineComponent({
 .analyzed-data-box {
     border: 0.5px solid white;
     gap: 0.42rem;
-    flex-direction: column; 
+    flex-direction: column;
     max-height: 20rem;
-    overflow-y: auto; 
-    font-family: 
-    novamonoregular, monospace; 
+    overflow-y: auto;
+    font-family: novamonoregular, monospace;
     min-height: 5rem
 }
 
