@@ -24,10 +24,10 @@
 
 <template>
     <div class="is-flex" style="gap: 0.5rem">
-        <p class="has-text-grey">[{{ opcode.index16 }}]:</p>
+        <p class="has-text-grey">{{ opcode.index16 }}:</p>
         <p class="h-is-extra-text">{{ opcode.hex }}</p>
         <p class="has-text-grey">-</p>
-        <p class="">{{ opcode.mnemonic }}</p>
+        <p :class="{'has-text-grey':isInvalidOpcode}">{{ opcode.mnemonic }}</p>
         <div v-if="opcode.operand.length > 0" class="ml-">
             <ContractLink v-if="contract" :contract-id="displayAddress"/>
             <AccountLink v-else-if="account" :account-id="displayAddress"/>
@@ -48,7 +48,7 @@
 <script lang="ts">
 
 import {defineComponent, PropType, computed, onMounted, onBeforeUnmount} from 'vue';
-import {DisassembledOpcodeOutput} from '@/utils/bytecode_tools/disassembler/utils/helpers';
+import {DisassembledOpcodeOutput, Helpers} from '@/utils/bytecode_tools/disassembler/utils/helpers';
 import {ContractByAddressCache} from "@/utils/cache/ContractByAddressCache";
 import {AccountByAddressCache} from "@/utils/cache/AccountByAddressCache";
 import ContractLink from "@/components/values/ContractLink.vue";
@@ -70,6 +70,8 @@ export default defineComponent({
             return `0x${props.opcode.operand.join("")}`
         })
 
+        const isInvalidOpcode = computed(() => props.opcode.mnemonic === Helpers.INVALID_OPCODE_MNEMONIC)
+
         const contractLookup = ContractByAddressCache.instance.makeLookup(displayAddress)
         const accountLookup = AccountByAddressCache.instance.makeLookup(displayAddress)
         onMounted(() => {
@@ -83,6 +85,7 @@ export default defineComponent({
 
         return {
             displayAddress,
+            isInvalidOpcode,
             contract: contractLookup.entity,
             account: accountLookup.entity,
         }

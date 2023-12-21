@@ -83,6 +83,8 @@ export class Helpers {
     return { offset, operands };
   }
 
+  public static INVALID_OPCODE_MNEMONIC = 'invalid'
+
   /**
    * @dev parses byte to get opcode
    * @param bytecode
@@ -101,7 +103,7 @@ export class Helpers {
         opcodeRepresentation: {
           index16,
           hex,
-          mnemonic: 'INVALID',
+          mnemonic: Helpers.INVALID_OPCODE_MNEMONIC,
           operand: [],
         } as DisassembledOpcodeOutput,
       };
