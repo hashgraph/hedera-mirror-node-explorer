@@ -38,7 +38,7 @@
         <template v-slot:name>Block</template>
         <template v-slot:value>
           <p class="h-is-text-size-3">
-            {{ blockNumberToShow }}
+            <BlockLink :block-number="blockNumber"/>
           </p>
         </template>
       </PropertyVertical>
@@ -106,7 +106,7 @@
 
 <script lang="ts">
 
-import {computed, defineComponent, inject, onBeforeUnmount, onMounted, PropType, ref} from "vue";
+import {computed, defineComponent, inject, onBeforeUnmount, onMounted, PropType} from "vue";
 import {ContractLog} from "@/schemas/HederaSchemas";
 import PropertyVertical from "@/components/PropertyVertical.vue";
 import StringValue from "@/components/values/StringValue.vue";
@@ -116,10 +116,11 @@ import {ContractLogAnalyzer} from "@/utils/analyzer/ContractLogAnalyzer";
 import SignatureValue from "@/components/values/SignatureValue.vue";
 import FunctionValue from "@/components/values/FunctionValue.vue";
 import DashboardCard from '../DashboardCard.vue';
+import BlockLink from "@/components/values/BlockLink.vue";
 
 export default defineComponent({
   name: "ContractResultLogEntry",
-  components: { FunctionValue, SignatureValue, EVMAddress, HexaValue, StringValue, PropertyVertical, DashboardCard },
+  components: {BlockLink, FunctionValue, SignatureValue, EVMAddress, HexaValue, StringValue, PropertyVertical, DashboardCard },
   props: {
     log: {
         type: Object as PropType<ContractLog | null>,
@@ -164,7 +165,7 @@ export default defineComponent({
 <!--                                                      STYLE                                                      -->
 <!-- --------------------------------------------------------------------------------------------------------------- -->
 
-<style scope>
+<style scoped>
 
 .log-wrapper-grid {
   position: relative; 
