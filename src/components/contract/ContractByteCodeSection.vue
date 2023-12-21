@@ -84,11 +84,19 @@
             <Property id="code" :full-width="true">
                 <template v-slot:name>Runtime Bytecode</template>
             </Property>
-            <ByteCodeValue :byte-code="byteCode ?? undefined" class="my-3"/>
+            <ByteCodeValue :byte-code="byteCode ?? undefined" class="mt-3 mb-4"/>
             <Property id="disassembledCode" :full-width="true">
                 <template v-slot:name>Disassembled Bytecode</template>
+                <template v-slot:value>
+                    <div class="is-flex is-align-items-center is-justify-content-end">
+                        <p class="has-text-weight-light">Show hexadecimal opcode</p>
+                        <label class="checkbox pt-1 ml-3">
+                            <input type="checkbox" v-model="showOpcodeHexa">
+                        </label>
+                    </div>
+                </template>
             </Property>
-            <DisassembledCodeValue :byte-code="byteCode ?? undefined" class="mt-3"/>
+            <DisassembledCodeValue :byte-code="byteCode ?? undefined" :show-opcode-hexa="showOpcodeHexa"/>
         </template>
     </DashboardCard>
 
@@ -159,8 +167,7 @@ export default defineComponent({
 
     const tooltipText = computed(() => isFullMatch.value ? FULL_MATCH_TOOLTIP : PARTIAL_MATCH_TOOLTIP)
 
-    const showBytecodeController = ref(false)
-    const showDecompiler = ref(false)
+    const showOpcodeHexa = ref(true)
 
     return {
       isTouchDevice,
@@ -178,8 +185,7 @@ export default defineComponent({
       byteCodeAnalyzer: props.contractAnalyzer.byteCodeAnalyzer,
       verifyDidComplete,
       isFullMatch,
-      showBytecodeController,
-      showDecompiler,
+      showOpcodeHexa,
     }
   }
 });
