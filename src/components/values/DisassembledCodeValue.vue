@@ -42,7 +42,7 @@
 
 <script lang="ts">
 
-import {defineComponent, computed, inject, ref} from 'vue';
+import {computed, defineComponent, inject, ref} from 'vue';
 import {Disassembler} from '@/utils/bytecode_tools/disassembler/BytecodeDisassembler'
 import {DisassembledOpcodeOutput} from '@/utils/bytecode_tools/disassembler/utils/helpers';
 import OpcodeValue from "@/components/values/OpcodeValue.vue";
@@ -67,9 +67,10 @@ export default defineComponent({
             return BYTECODE_REGEX.test(props.byteCode)
         })
 
-        const disassembly = computed(() => isValidBytecode ? Disassembler.disassemble(props.byteCode) : null)
+        const disassembly = computed<DisassembledOpcodeOutput[] | null>(
+            () => isValidBytecode ? Disassembler.disassemble(props.byteCode) : null)
 
-        const disassembledError = computed(() =>
+        const disassembledError = computed<string | null>(() =>
             isValidBytecode ? null : (props.byteCode === "" ? "No data found..." : "Invalid bytecode")
         )
 
