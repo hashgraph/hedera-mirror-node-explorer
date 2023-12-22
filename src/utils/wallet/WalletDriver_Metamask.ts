@@ -38,6 +38,8 @@ import {MetaMaskInpageProvider} from "@metamask/providers";
 
 export class WalletDriver_Metamask extends WalletDriver_Ethereum {
 
+    private metamaskProvider: MetaMaskInpageProvider|null = null
+
     //
     // Public
     //
@@ -79,9 +81,11 @@ export class WalletDriver_Metamask extends WalletDriver_Ethereum {
     //
 
     public async makeProvider(): Promise<BrowserProvider|null> {
-        const options = { mustBeMetaMask: true }
-        const p = (await detectEthereumProvider(options) ?? null)
-        const result = p !== null ?  new ethers.BrowserProvider(p as MetaMaskInpageProvider) : null
+        if (this.metamaskProvider === null) {
+            const options = { mustBeMetaMask: true }
+           this.metamaskProvider = (await detectEthereumProvider(options) ?? null)
+        }
+        const result = this.metamaskProvider !== null ?  new ethers.BrowserProvider(this.metamaskProvider) : null
         return Promise.resolve(result)
     }
 
@@ -89,9 +93,23 @@ export class WalletDriver_Metamask extends WalletDriver_Ethereum {
         return WalletDriver_Metamask.fetchMetamaskErrorCode(reason) == 4001
     }
 
+    public async connect(network: string): Promise<string[]> {
+        const result = await super.connect(network)
+        this.metamaskProvider?.once('chainChanged', this.handleDisconnect)
+        return Promise.resolve(result)
+    }
+
+    public async disconnect(): Promise<void> {
+        this.metamaskProvider?.off("chainChanged", this.handleDisconnect)
+        this.metamaskProvider = null
+        return super.disconnect()
+    }
+
     //
     // Private
     //
+
+    private readonly handleDisconnect = () => this.disconnect()
 
     private static fetchMetamaskErrorCode(reason: unknown): number|null {
         let result: number|null
