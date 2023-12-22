@@ -105,7 +105,7 @@ describe("ContractDetails.vue", () => {
         expect(wrapper.get("#fileValue").text()).toBe("0.0.749773")
         expect(wrapper.get("#evmAddress").text()).toBe("EVM Address:0x00000000000000000000000000000000000b70cfCopy")
         expect(wrapper.get("#code").text()).toBe("Runtime Bytecode")
-        expect(wrapper.get("#solcVersion").text()).toBe("Compiler Version0.8.4")
+        expect(wrapper.get("#solcVersion").text()).toBe("Solidity Compiler Version0.8.4")
 
         // None of the elements related to contract verification should be present in this context
         expect(wrapper.find('#verify-button').exists()).toBe(false)
@@ -170,7 +170,7 @@ describe("ContractDetails.vue", () => {
         expect(wrapper.get("#fileValue").text()).toBe("0.0.749773")
         expect(wrapper.get("#evmAddress").text()).toBe("EVM Address:0x00000000000000000000000000000000000b70cfCopy")
         expect(wrapper.get("#code").text()).toBe("Runtime Bytecode")
-        expect(wrapper.get("#solcVersion").text()).toBe("Compiler Version0.8.4")
+        expect(wrapper.get("#solcVersion").text()).toBe("Solidity Compiler Version0.8.4")
 
         // None of the elements related to contract verification should be present in this context
         expect(wrapper.find('#verify-button').exists()).toBe(false)
