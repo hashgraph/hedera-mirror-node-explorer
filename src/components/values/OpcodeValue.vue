@@ -27,7 +27,7 @@
         <p class="has-text-grey">{{ opcode.index16 }}:</p>
         <p v-if="showOpcodeHexa" class="h-is-extra-text">{{ opcode.hex }}</p>
         <p v-if="showOpcodeHexa" class="has-text-grey">-</p>
-        <p :class="{'has-text-grey':isInvalidOpcode}">{{ opcode.mnemonic }}</p>
+        <p :class="{'has-text-grey':isInvalidOpcode,'is-lowercase':isInvalidOpcode}">{{ opcode.mnemonic }}</p>
         <div v-if="opcode.operand.length > 0" class="ml-">
             <ContractLink v-if="contract" :contract-id="displayAddress"/>
             <AccountLink v-else-if="account" :account-id="displayAddress"/>
