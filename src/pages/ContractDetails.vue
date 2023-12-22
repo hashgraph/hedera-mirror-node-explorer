@@ -177,9 +177,9 @@
       </template>
     </DashboardCard>
 
-    <ContractByteCodeSection :contract-analyzer="contractAnalyzer"/>
-
     <ContractResultsSection :contract-id="normalizedContractId ?? undefined"/>
+
+    <ContractByteCodeSection :contract-analyzer="contractAnalyzer"/>
 
     <ContractResultLogs :logs="logs"/>
 
