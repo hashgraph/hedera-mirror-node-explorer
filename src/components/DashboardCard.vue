@@ -41,10 +41,10 @@
 
     <div class="columns is-multiline h-is-property-text">
 
-      <div class="column" :class="{'is-full': !isMediumScreen}">
+      <div class="column is-6-desktop" :class="{'is-full': !isMediumScreen}">
           <slot name="leftContent"></slot>
       </div>
-      <div class="column" :class="{'h-has-column-separator':slots.rightContent&&isMediumScreen}">
+      <div class="column is-6-desktop" :class="{'h-has-column-separator':slots.rightContent&&isMediumScreen}">
           <slot name="rightContent"></slot>
       </div>
 
