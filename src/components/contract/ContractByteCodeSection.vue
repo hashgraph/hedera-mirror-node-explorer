@@ -81,22 +81,24 @@
                     <StringValue :string-value="solcVersion ?? undefined"/>
                 </template>
             </Property>
-            <Property id="code" :full-width="true">
-                <template v-slot:name>Runtime Bytecode</template>
-            </Property>
-            <ByteCodeValue :byte-code="byteCode ?? undefined" class="mt-3 mb-4"/>
-            <Property id="disassembledCode" :full-width="true">
-                <template v-slot:name>Disassembled Bytecode</template>
-                <template v-slot:value>
-                    <div class="is-flex is-align-items-center is-justify-content-end">
-                        <p class="has-text-weight-light">Show hexadecimal opcode</p>
-                        <label class="checkbox pt-1 ml-3">
-                            <input type="checkbox" v-model="showOpcodeHexa">
-                        </label>
+            <div class="columns is-multiline h-is-property-text">
+                <div class="column is-6" :class="{'is-full': !isSmallScreen}">
+                    <p class="has-text-weight-light">Runtime Bytecode</p>
+                    <ByteCodeValue :byte-code="byteCode ?? undefined" class="mt-3 mb-4"/>
+                </div>
+                <div class="column is-6" :class="{'h-has-column-separator':isSmallScreen}">
+                    <div class="is-flex is-align-items-center is-justify-content-space-between">
+                        <p class="has-text-weight-light">Assembly Bytecode</p>
+                        <div class="is-flex is-align-items-center is-justify-content-end">
+                            <p class="has-text-weight-light">Show hexa opcode</p>
+                            <label class="checkbox pt-1 ml-3">
+                                <input type="checkbox" v-model="showOpcodeHexa">
+                            </label>
+                        </div>
                     </div>
-                </template>
-            </Property>
-            <DisassembledCodeValue :byte-code="byteCode ?? undefined" :show-opcode-hexa="showOpcodeHexa"/>
+                    <DisassembledCodeValue :byte-code="byteCode ?? undefined" :show-opcode-hexa="showOpcodeHexa"/>
+                </div>
+            </div>
         </template>
     </DashboardCard>
 
@@ -124,6 +126,7 @@ import {routeManager} from "@/router";
 import InfoTooltip from "@/components/InfoTooltip.vue";
 import ContractVerificationDialog from "@/components/verification/ContractVerificationDialog.vue";
 import DisassembledCodeValue from "@/components/values/DisassembledCodeValue.vue";
+import HexaValue from "@/components/values/HexaValue.vue";
 
 const FULL_MATCH_TOOLTIP = `A Full Match indicates that the bytecode of the deployed contract is byte-by-byte the same as the compilation output of the given source code files with the settings defined in the metadata file. This means the contents of the source code files and the compilation settings are exactly the same as when the contract author compiled and deployed the contract.`
 const PARTIAL_MATCH_TOOLTIP = `A Partial Match indicates that the bytecode of the deployed contract is the same as the compilation output of the given source code files except for the metadata hash. This means the deployed contract and the given source code + metadata function in the same way but there are differences in source code comments, variable names, or other metadata fields such as source paths.`
@@ -131,7 +134,16 @@ const PARTIAL_MATCH_TOOLTIP = `A Partial Match indicates that the bytecode of th
 export default defineComponent({
   name: 'ContractByteCodeSection',
 
-  components: {DisassembledCodeValue, ContractVerificationDialog, InfoTooltip, Property, StringValue, ByteCodeValue, DashboardCard},
+  components: {
+      HexaValue,
+      DisassembledCodeValue,
+      ContractVerificationDialog,
+      InfoTooltip,
+      Property,
+      StringValue,
+      ByteCodeValue,
+      DashboardCard
+  },
 
   props: {
     contractAnalyzer: {

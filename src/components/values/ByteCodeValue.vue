@@ -24,14 +24,21 @@
 
 <template>
 
-  <textarea v-if="textValue"
-            v-model="textValue"
-            readonly rows="4"
-            style="width:100%; font-family: novamonoregular,monospace"></textarea>
+    <div v-if="textValue && false" id="bytecode"
+         class="is-family-monospace h-is-text-size-3 has-text-grey mt-2 mr-1 pl-1 py-1 code-data-box"
+         style="word-wrap: anywhere">
+        {{ textValue }}
+    </div>
 
-  <span v-else-if="initialLoading"/>
+    <div v-else-if="textValue && true" id="bytecode"
+         class=" mt-2 mr-1 code-data-box"
+         style="padding-left: 2px" >
+        <HexaValue :byte-string="textValue"/>
+    </div>
 
-  <span v-else class="has-text-grey">None</span>
+    <span v-else-if="initialLoading"/>
+
+    <span v-else class="has-text-grey">None</span>
 
 </template>
 
@@ -43,22 +50,24 @@
 
 import {defineComponent, inject, ref, watch} from 'vue';
 import {initialLoadingKey} from "@/AppKeys";
+import HexaValue from "@/components/values/HexaValue.vue";
 
 export default defineComponent({
-  name: 'ByteCodeValue',
+    name: 'ByteCodeValue',
+    components: {HexaValue},
 
-  props: {
-    byteCode: String,
-  },
+    props: {
+        byteCode: String,
+    },
 
-  setup(props) {
-    const textValue = ref(props.byteCode)
-    watch(() => props.byteCode, () => {
-      textValue.value = props.byteCode
-    })
-    const initialLoading = inject(initialLoadingKey, ref(false))
-    return { textValue, initialLoading }
-  }
+    setup(props) {
+        const textValue = ref(props.byteCode)
+        watch(() => props.byteCode, () => {
+            textValue.value = props.byteCode
+        })
+        const initialLoading = inject(initialLoadingKey, ref(false))
+        return {textValue, initialLoading}
+    }
 });
 
 </script>
@@ -67,4 +76,14 @@ export default defineComponent({
 <!--                                                       STYLE                                                     -->
 <!-- --------------------------------------------------------------------------------------------------------------- -->
 
-<style/>
+<style>
+
+.code-data-box {
+    border: 0.5px solid dimgrey;
+    gap: 0.42rem;
+    max-height: 20rem;
+    overflow-y: auto;
+    min-height: 5rem
+}
+
+</style>

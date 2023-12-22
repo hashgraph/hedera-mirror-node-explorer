@@ -23,7 +23,7 @@
 <!-- --------------------------------------------------------------------------------------------------------------- -->
 
 <template>
-    <div v-if="disassembly" id="disassembly" class="mt-2 py-4 px-2 is-flex analyzed-data-box">
+    <div v-if="disassembly" id="disassembly" class="mt-2 p-2 is-flex analyzed-data-box">
         <div v-for="opcode in disassembly" v-if="disassembly && disassembly.length > 0" :key="opcode.index16">
             <OpcodeValue :opcode="opcode" :show-opcode-hexa="showOpcodeHexa"/>
         </div>
@@ -95,7 +95,7 @@ export default defineComponent({
 <style>
 
 .analyzed-data-box {
-    border: 0.5px solid white;
+    border: 0.5px solid dimgrey;
     gap: 0.42rem;
     flex-direction: column;
     max-height: 20rem;
