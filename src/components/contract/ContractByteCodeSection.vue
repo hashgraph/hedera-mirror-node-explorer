@@ -82,7 +82,7 @@
                 </template>
             </Property>
             <div class="columns is-multiline h-is-property-text">
-                <div class="column is-6" :class="{'is-full': !isSmallScreen}">
+                <div id="code" class="column is-6" :class="{'is-full': !isSmallScreen}">
                     <p class="has-text-weight-light">Runtime Bytecode</p>
                     <ByteCodeValue :byte-code="byteCode ?? undefined" class="mt-3 mb-4"/>
                 </div>
