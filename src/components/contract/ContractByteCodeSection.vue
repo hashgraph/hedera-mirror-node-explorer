@@ -76,7 +76,7 @@
                 </template>
             </Property>
             <Property id="solcVersion" :full-width="true">
-                <template v-slot:name>Compiler Version</template>
+                <template v-slot:name>Solidity Compiler Version</template>
                 <template v-slot:value>
                     <StringValue :string-value="solcVersion ?? undefined"/>
                 </template>
