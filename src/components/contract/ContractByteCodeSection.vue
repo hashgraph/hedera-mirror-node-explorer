@@ -167,7 +167,7 @@ export default defineComponent({
 
     const tooltipText = computed(() => isFullMatch.value ? FULL_MATCH_TOOLTIP : PARTIAL_MATCH_TOOLTIP)
 
-    const showOpcodeHexa = ref(true)
+    const showOpcodeHexa = ref(false)
 
     return {
       isTouchDevice,
