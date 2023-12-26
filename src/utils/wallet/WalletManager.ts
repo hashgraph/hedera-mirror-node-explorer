@@ -28,16 +28,18 @@ import {WalletDriver_Hedera} from "@/utils/wallet/WalletDriver_Hedera";
 import {WalletDriver_Metamask} from "@/utils/wallet/WalletDriver_Metamask";
 import {WalletDriver_Ethereum} from "@/utils/wallet/WalletDriver_Ethereum";
 import {WalletDriver_Coinbase} from "@/utils/wallet/WalletDriver_Coinbase";
+import {WalletDriver_Brave} from '@/utils/wallet//WalletDriver_Brave';
 
 export class WalletManager {
 
     private readonly routeManager: RouteManager
     private readonly bladeDriver = new WalletDriver_Blade()
+    private readonly braveDriver = new WalletDriver_Brave()
     private readonly hashpackDriver = new WalletDriver_Hashpack()
     private readonly metamaskDriver = new WalletDriver_Metamask()
     private readonly coinbaseDriver = new WalletDriver_Coinbase()
     private readonly drivers: Array<WalletDriver> = [
-        this.bladeDriver, this.hashpackDriver, this.metamaskDriver, this.coinbaseDriver]
+        this.bladeDriver, this.hashpackDriver, this.metamaskDriver, this.coinbaseDriver, this.braveDriver]
     private readonly timeout = 30000; // milliseconds
 
 
@@ -46,6 +48,7 @@ export class WalletManager {
     private readonly walletNameRef = ref(this.activeDriver.name)
     private readonly accountIdRef = ref<string|null>(null)
     private readonly accountIdsRef = ref<string[]>([])
+    private readonly braveWalletRef = ref<boolean>(this.activeDriver instanceof WalletDriver_Brave)
     private readonly hederaWalletRef = ref<boolean>(this.activeDriver instanceof WalletDriver_Hedera)
     private readonly isEthereumWalletRef = ref<boolean>(this.activeDriver instanceof WalletDriver_Ethereum)
 
@@ -72,6 +75,7 @@ export class WalletManager {
             this.connectedRef.value = false
             this.accountIdRef.value = null
             this.walletNameRef.value = this.activeDriver.name
+            this.braveWalletRef.value = this.activeDriver instanceof WalletDriver_Brave
             this.hederaWalletRef.value = this.activeDriver instanceof WalletDriver_Hedera
             this.isEthereumWalletRef.value = this.activeDriver instanceof WalletDriver_Ethereum
         }
@@ -84,6 +88,8 @@ export class WalletManager {
     public accountIds = computed(() => this.accountIdsRef.value)
 
     public walletName = computed(() => this.walletNameRef.value)
+
+    public isBraveWallet = computed(() => this.braveWalletRef.value)
 
     public isHederaWallet = computed(() => this.hederaWalletRef.value)
 
