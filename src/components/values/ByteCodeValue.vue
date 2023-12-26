@@ -33,7 +33,7 @@
     <div v-else-if="textValue && true" id="bytecode"
          class=" mt-2 mr-1 code-data-box"
          style="padding-left: 2px" >
-        <HexaValue :byte-string="textValue"/>
+        <HexaValue :byte-string="textValue" :copyable="false"/>
     </div>
 
     <span v-else-if="initialLoading"/>
