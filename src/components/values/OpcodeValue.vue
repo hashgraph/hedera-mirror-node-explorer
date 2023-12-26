@@ -48,12 +48,13 @@
 
 <script lang="ts">
 
-import {defineComponent, PropType, computed, onMounted, onBeforeUnmount} from 'vue';
+import {defineComponent, PropType, computed, onMounted, ref, Ref} from 'vue';
 import {DisassembledOpcodeOutput, Helpers} from '@/utils/bytecode_tools/disassembler/utils/helpers';
 import {ContractByAddressCache} from "@/utils/cache/ContractByAddressCache";
 import {AccountByAddressCache} from "@/utils/cache/AccountByAddressCache";
 import ContractLink from "@/components/values/ContractLink.vue";
 import AccountLink from "@/components/values/AccountLink.vue";
+import {AccountBalanceTransactions, ContractResponse} from "@/schemas/HederaSchemas";
 
 export default defineComponent({
     name: 'OpcodeValue',
@@ -77,22 +78,29 @@ export default defineComponent({
 
         const isInvalidOpcode = computed(() => props.opcode.mnemonic === Helpers.INVALID_OPCODE_MNEMONIC)
 
-        const contractLookup = ContractByAddressCache.instance.makeLookup(displayAddress)
-        const accountLookup = AccountByAddressCache.instance.makeLookup(displayAddress)
+        const contract: Ref<ContractResponse|null> = ref(null)
+        const account: Ref<AccountBalanceTransactions|null> = ref(null)
+
         onMounted(() => {
-            contractLookup.mount()
-            accountLookup.mount()
-        })
-        onBeforeUnmount(() => {
-            contractLookup.unmount()
-            accountLookup.unmount()
+            if (props.opcode.mnemonic === 'PUSH20') {
+                console.log(`going to lookup contract for address: ${displayAddress.value}`)
+                ContractByAddressCache.instance.lookup(displayAddress.value)
+                    .then((result) => {
+                        contract.value = result
+                        if (! result) {
+                            console.log(`going to lookup account for address: ${displayAddress.value}`)
+                            AccountByAddressCache.instance.lookup(displayAddress.value)
+                                .then((result) => account.value = result)
+                        }
+                    })
+            }
         })
 
         return {
             displayAddress,
             isInvalidOpcode,
-            contract: contractLookup.entity,
-            account: accountLookup.entity,
+            contract,
+            account,
         }
     }
 });
