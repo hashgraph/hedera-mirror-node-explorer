@@ -36,7 +36,8 @@
         <div v-if="contract || account" class="is-flex has-text-grey">
             <p class="mr-2">//</p>
             <ContractLink v-if="contract" :contract-id="contract.contract_id"/>
-            <AccountLink v-if="account" :account-idd="account.account"/>
+            <AccountLink v-else-if="account" :account-id="account.account"/>
+            <p v-else/>
         </div>
     </div>
 </template>
