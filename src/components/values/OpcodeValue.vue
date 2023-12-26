@@ -83,12 +83,10 @@ export default defineComponent({
 
         onMounted(() => {
             if (props.opcode.mnemonic === 'PUSH20') {
-                console.log(`going to lookup contract for address: ${displayAddress.value}`)
                 ContractByAddressCache.instance.lookup(displayAddress.value)
                     .then((result) => {
                         contract.value = result
                         if (! result) {
-                            console.log(`going to lookup account for address: ${displayAddress.value}`)
                             AccountByAddressCache.instance.lookup(displayAddress.value)
                                 .then((result) => account.value = result)
                         }
