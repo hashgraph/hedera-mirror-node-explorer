@@ -25,7 +25,7 @@
 <template>
     <div v-if="disassembly" id="disassembly" class="mt-2 p-2 is-flex analyzed-data-box">
         <div v-for="opcode in disassembly" v-if="disassembly && disassembly.length > 0" :key="opcode.index16">
-            <OpcodeValue :opcode="opcode" :show-opcode-hexa="showOpcodeHexa"/>
+            <OpcodeValue :opcode="opcode" :show-hexa-opcode="showHexaOpcode"/>
         </div>
         <p v-else class="has-text-grey is-italic has-text-weight-medium">{{ disassembledError }}</p>
     </div>
@@ -57,7 +57,7 @@ export default defineComponent({
             type: String,
             default: ""
         },
-        showOpcodeHexa: {
+        showHexaOpcode: {
             type: Boolean,
             default: false
         }

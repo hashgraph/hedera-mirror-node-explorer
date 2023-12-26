@@ -92,11 +92,11 @@
                         <div class="is-flex is-align-items-center is-justify-content-end">
                             <p class="has-text-weight-light">Show hexa opcode</p>
                             <label class="checkbox pt-1 ml-3">
-                                <input type="checkbox" v-model="showOpcodeHexa">
+                                <input type="checkbox" v-model="showHexaOpcode">
                             </label>
                         </div>
                     </div>
-                    <DisassembledCodeValue :byte-code="byteCode ?? undefined" :show-opcode-hexa="showOpcodeHexa"/>
+                    <DisassembledCodeValue :byte-code="byteCode ?? undefined" :show-hexa-opcode="showHexaOpcode"/>
                 </div>
             </div>
         </template>
@@ -116,7 +116,7 @@
 
 <script lang="ts">
 
-import {computed, defineComponent, inject, PropType, ref} from 'vue';
+import {computed, defineComponent, inject, onMounted, PropType, ref, watch} from 'vue';
 import DashboardCard from "@/components/DashboardCard.vue";
 import ByteCodeValue from "@/components/values/ByteCodeValue.vue";
 import StringValue from "@/components/values/StringValue.vue";
@@ -127,6 +127,7 @@ import InfoTooltip from "@/components/InfoTooltip.vue";
 import ContractVerificationDialog from "@/components/verification/ContractVerificationDialog.vue";
 import DisassembledCodeValue from "@/components/values/DisassembledCodeValue.vue";
 import HexaValue from "@/components/values/HexaValue.vue";
+import {AppStorage} from "@/AppStorage";
 
 const FULL_MATCH_TOOLTIP = `A Full Match indicates that the bytecode of the deployed contract is byte-by-byte the same as the compilation output of the given source code files with the settings defined in the metadata file. This means the contents of the source code files and the compilation settings are exactly the same as when the contract author compiled and deployed the contract.`
 const PARTIAL_MATCH_TOOLTIP = `A Partial Match indicates that the bytecode of the deployed contract is the same as the compilation output of the given source code files except for the metadata hash. This means the deployed contract and the given source code + metadata function in the same way but there are differences in source code comments, variable names, or other metadata fields such as source paths.`
@@ -179,7 +180,9 @@ export default defineComponent({
 
     const tooltipText = computed(() => isFullMatch.value ? FULL_MATCH_TOOLTIP : PARTIAL_MATCH_TOOLTIP)
 
-    const showOpcodeHexa = ref(false)
+    const showHexaOpcode = ref(false)
+    onMounted(() => showHexaOpcode.value = AppStorage.getShowHexaOpcode())
+    watch(showHexaOpcode, () => AppStorage.setShowHexaOpcode(showHexaOpcode.value ? showHexaOpcode.value : null))
 
     return {
       isTouchDevice,
@@ -197,7 +200,7 @@ export default defineComponent({
       byteCodeAnalyzer: props.contractAnalyzer.byteCodeAnalyzer,
       verifyDidComplete,
       isFullMatch,
-      showOpcodeHexa,
+      showHexaOpcode,
     }
   }
 });

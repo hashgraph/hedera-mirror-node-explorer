@@ -104,6 +104,19 @@ export class AppStorage {
         AppStorage.createCookie(AppStorage.COOKIE_POLICY_NAME, policy, AppStorage.COOKIE_POLICY_VALIDITY)
     }
 
+    //
+    // display hexa opcodes in assembly code
+    //
+
+    private static readonly SHOW_HEXA_OPCODE_KEY = 'hexaOpcode'
+
+    public static getShowHexaOpcode(): boolean {
+        return  this.getLocalStorageItem(this.SHOW_HEXA_OPCODE_KEY) != null
+    }
+
+    public static setShowHexaOpcode(newValue: boolean|null): void {
+        this.setLocalStorageItem(this.SHOW_HEXA_OPCODE_KEY, newValue ? "true" : null)
+    }
 
     //
     // Private
