@@ -83,7 +83,7 @@ export class Helpers {
     return { offset, operands };
   }
 
-  public static INVALID_OPCODE_MNEMONIC = 'INVALID'
+  public static INVALID_OPCODE_MNEMONIC = 'invalid'
 
   /**
    * @dev parses byte to get opcode

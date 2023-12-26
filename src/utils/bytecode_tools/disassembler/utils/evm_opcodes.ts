@@ -172,5 +172,6 @@ export const EVM_OPCODES = new Map<string, EvmOpcode>([
   ['f5', { mnemonic: 'CREATE2', operand: 0 }],
   ['fa', { mnemonic: 'STATICCALL', operand: 0 }],
   ['fd', { mnemonic: 'REVERT', operand: 0 }],
+  ['fe', { mnemonic: 'INVALID', operand: 0 }],
   ['ff', { mnemonic: 'SELFDESTRUCT', operand: 0 }],
 ]);
