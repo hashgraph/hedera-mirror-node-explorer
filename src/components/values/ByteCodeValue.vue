@@ -24,15 +24,8 @@
 
 <template>
 
-    <div v-if="textValue && false" id="bytecode"
-         class="is-family-monospace h-is-text-size-3 has-text-grey mt-2 mr-1 pl-1 py-1 code-data-box"
-         style="word-wrap: anywhere">
-        {{ textValue }}
-    </div>
-
-    <div v-else-if="textValue && true" id="bytecode"
-         class=" mt-2 mr-1 code-data-box"
-         style="padding-left: 2px" >
+    <div v-if="textValue" id="bytecode"
+         class="pl-1 mt-2 mr-1 code-data-box">
         <HexaValue :byte-string="textValue" :copyable="false"/>
     </div>
 
