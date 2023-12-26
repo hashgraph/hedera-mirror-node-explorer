@@ -48,7 +48,7 @@
 
 <script lang="ts">
 
-import {defineComponent, PropType, ref} from "vue";
+import {computed, defineComponent, PropType, ref} from "vue";
 import {TokenAssociationStatus, TokenInfoAnalyzer} from "@/components/token/TokenInfoAnalyzer";
 import {walletManager} from "@/router";
 import ProgressDialog, {Mode} from "@/components/staking/ProgressDialog.vue";

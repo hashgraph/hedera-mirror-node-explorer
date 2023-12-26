@@ -423,7 +423,7 @@ export default defineComponent({
     onBeforeUnmount(() => nftHolderTableController.unmount())
 
     const connectedToEthereum = computed(
-        () => walletManager.isEthereumWallet.value && walletManager.connected.value)
+        () => (walletManager.isEthereumWallet.value || walletManager.isBraveWallet.value) && walletManager.connected.value)
 
     return {
       isSmallScreen,
