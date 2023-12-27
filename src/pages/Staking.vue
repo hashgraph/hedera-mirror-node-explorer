@@ -80,25 +80,6 @@
           </div>
           <span v-if="accountChecksum" class="has-text-grey mr-3" style="font-size: 14px">-{{ accountChecksum }}</span>
         </div>
-        <div v-if="!isMediumScreen && accountId" id="showAccountLink" class="is-flex is-flex-direction-column mt-2">
-          <router-link v-if="accountRoute" :to="accountRoute">
-            <span class="h-is-property-text">Show my account</span>
-          </router-link>
-          <router-link v-if="allowanceApprovalRoute" :to="allowanceApprovalRoute">
-            <span class="h-is-property-text">Approve an allowance…</span>
-          </router-link>
-        </div>
-      </template>
-
-      <template v-slot:control v-if="isMediumScreen">
-        <div v-if="accountId" id="showAccountLink" class="is-flex is-flex-direction-column ml-3">
-          <router-link v-if="accountRoute" :to="accountRoute">
-            <span class="h-is-property-text">Show my account</span>
-          </router-link>
-          <router-link v-if="allowanceApprovalRoute && isHederaWallet" :to="allowanceApprovalRoute">
-            <span class="h-is-property-text">Approve an allowance…</span>
-          </router-link>
-        </div>
       </template>
 
       <template v-slot:content>
@@ -365,11 +346,6 @@ export default defineComponent({
           ? routeManager.makeRouteToAccount(walletManager.accountId.value, false)
           : null
     })
-    const allowanceApprovalRoute = computed(() => {
-      return walletManager.accountId.value !== null
-          ? routeManager.makeRouteToAccount(walletManager.accountId.value, true)
-          : null
-    })
 
     const balanceInHbar = computed(() => {
       const balance = accountLocParser.balance.value ?? 10000000000
@@ -527,7 +503,6 @@ export default defineComponent({
       accountChecksum: accountLocParser.accountChecksum,
       account: accountLocParser.accountInfo,
       accountRoute,
-      allowanceApprovalRoute,
       stakePeriodStart: accountLocParser.stakePeriodStart,
       showStakingDialog,
       stakingDialogVisible,
