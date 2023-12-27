@@ -39,12 +39,12 @@
       <slot name="content"></slot>
     </div>
 
-    <div class="columns h-is-property-text">
+    <div class="columns is-multiline h-is-property-text">
 
-      <div class="column">
+      <div class="column is-6-desktop" :class="{'is-full': !isMediumScreen}">
           <slot name="leftContent"></slot>
       </div>
-      <div class="column" :class="{'h-has-column-separator':slots.rightContent}">
+      <div class="column is-6-desktop" :class="{'h-has-column-separator':slots.rightContent&&isMediumScreen}">
           <slot name="rightContent"></slot>
       </div>
 
@@ -69,9 +69,10 @@ export default defineComponent({
 
   setup() {
     const isSmallScreen = inject('isSmallScreen', true)
+    const isMediumScreen = inject('isMediumScreen', true)
     const isTouchDevice = inject('isTouchDevice', false)
     const slots = useSlots()
-    return { isSmallScreen, isTouchDevice, slots }
+    return { isSmallScreen, isMediumScreen, isTouchDevice, slots }
   }
 })
 

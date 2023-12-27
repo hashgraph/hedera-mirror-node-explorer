@@ -23,10 +23,11 @@
 <!-- --------------------------------------------------------------------------------------------------------------- -->
 
 <template>
-
-    <div v-if="textValue" id="bytecode"
-         class="pl-1 mt-2 mr-1 code-data-box">
-        <HexaValue :byte-string="textValue" :copyable="false"/>
+    <div v-if="disassembly" id="disassembly" class="mt-2 p-2 is-flex analyzed-data-box">
+        <div v-for="opcode in disassembly" v-if="disassembly && disassembly.length > 0" :key="opcode.index16">
+            <OpcodeValue :opcode="opcode" :show-hexa-opcode="showHexaOpcode"/>
+        </div>
+        <p v-else class="has-text-grey is-italic has-text-weight-medium">{{ disassembledError }}</p>
     </div>
 
     <span v-else-if="initialLoading"/>
@@ -41,25 +42,47 @@
 
 <script lang="ts">
 
-import {defineComponent, inject, ref, watch} from 'vue';
+import {computed, defineComponent, inject, ref} from 'vue';
+import {Disassembler} from '@/utils/bytecode_tools/disassembler/BytecodeDisassembler'
+import {DisassembledOpcodeOutput} from '@/utils/bytecode_tools/disassembler/utils/helpers';
+import OpcodeValue from "@/components/values/OpcodeValue.vue";
 import {initialLoadingKey} from "@/AppKeys";
-import HexaValue from "@/components/values/HexaValue.vue";
 
 export default defineComponent({
-    name: 'ByteCodeValue',
-    components: {HexaValue},
+    name: 'DisassembledCodeValue',
+    components: {OpcodeValue},
 
     props: {
-        byteCode: String,
+        byteCode: {
+            type: String,
+            default: ""
+        },
+        showHexaOpcode: {
+            type: Boolean,
+            default: false
+        }
     },
 
     setup(props) {
-        const textValue = ref(props.byteCode)
-        watch(() => props.byteCode, () => {
-            textValue.value = props.byteCode
-        })
         const initialLoading = inject(initialLoadingKey, ref(false))
-        return {textValue, initialLoading}
+
+        const isValidBytecode = computed(() => {
+            const BYTECODE_REGEX = /^(0x)?([0-9a-fA-F]{2})+$/;
+            return BYTECODE_REGEX.test(props.byteCode)
+        })
+
+        const disassembly = computed<DisassembledOpcodeOutput[] | null>(
+            () => isValidBytecode ? Disassembler.disassemble(props.byteCode) : null)
+
+        const disassembledError = computed<string | null>(() =>
+            isValidBytecode ? null : (props.byteCode === "" ? "No data found..." : "Invalid bytecode")
+        )
+
+        return {
+            initialLoading,
+            disassembly,
+            disassembledError,
+        }
     }
 });
 
@@ -71,11 +94,13 @@ export default defineComponent({
 
 <style>
 
-.code-data-box {
+.analyzed-data-box {
     border: 0.5px solid dimgrey;
     gap: 0.42rem;
+    flex-direction: column;
     max-height: 20rem;
     overflow-y: auto;
+    font-family: novamonoregular, monospace;
     min-height: 5rem
 }
 

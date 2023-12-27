@@ -25,7 +25,7 @@
 <template>
   <div class="shy-scope" style="display: inline-block; position: relative;">
     <slot name="content"/>
-    <div v-if="contentToCopy" id="shyCopyButton" class="shy"
+    <div v-if="enableCopy && contentToCopy" id="shyCopyButton" class="shy"
          style="position: absolute; left: 0; top: 0; width: 100%; height: 100%">
       <div style="position: absolute; left: 0; top: 0; width: 100%; height: 100%; background: rgba(0, 0, 0, 0.50)"></div>
       <div v-if="enableCopy"
