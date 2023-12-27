@@ -78,7 +78,7 @@ export default defineComponent({
     const isSmallScreen = inject('isSmallScreen', true)
     const isTouchDevice = inject('isTouchDevice', false)
 
-    const isOpen = ref([])
+    const isOpen = ref<number[]>([])
 
     const routes = ref([
       {
@@ -96,17 +96,7 @@ export default defineComponent({
         ]
       },
       {
-        title: "/{network}/transactions",
-        subtitle: "Recent transactions",
-        description: "Displays a table of recent transactions.",
-      },
-      {
-        title: "/{network}/transactionsById/{transactionId}",
-        subtitle: "Transactions by ID",
-        description: "Displays a table of transactions with the transaction ID provided.",
-      },
-      {
-        title: "/{network}/transaction/{transactionTimestamp}",
+        title: "/{network}/transaction/{transactionTimestampOrHash}",
         subtitle: "Transaction details",
         description: "Displays details of transaction with the given timestamp.",
         data: [
@@ -126,16 +116,6 @@ export default defineComponent({
           "Hbar Transfers",
           "Additional data is displayed based on transaction type"
         ]
-      },
-      {
-        title: "/{network}/accounts",
-        subtitle: "Recent accounts",
-        description: "Displays a table of recent accounts.",
-      },
-      {
-        title: "/{network}/accountsWithKey/{publicKey}",
-        subtitle: "Accounts by Key",
-        description: "Displays a table of accounts with the key provided.",
       },
       {
         title: "/{network}/account/{accountId}",
@@ -161,11 +141,6 @@ export default defineComponent({
         ]
       },
       {
-        title: "/{network}/adminKey/{accountId}",
-        subtitle: "Admin key",
-        description: "Displays the admin key for the account ID provided.",
-      },
-      {
         title: "/{network}/address/{accountAddress}",
         subtitle: "Account Details by Address",
         description: "Displays details of transaction with the given account address.",
@@ -187,16 +162,6 @@ export default defineComponent({
           "Allowances",
           "Recent Staking Rewards"
         ]
-      },
-      {
-        title: "/{network}/accountbalances/{accountId}",
-        subtitle: "Account balances",
-        description: "Displays a table of token balances for the given account ID.",
-      },
-      {
-        title: "/{network}/tokens",
-        subtitle: "Recent Tokens",
-        description: "Displays tables for recent fungible and non fungible tokens.",
       },
       {
         title: "/{network}/token/{tokenId}",
@@ -231,26 +196,6 @@ export default defineComponent({
         ]
       },
       {
-        title: "/{network}/token/{tokenId}/{serialNumber}",
-        subtitle: "NFT Details",
-        description: "Displays details of NFT with the given token ID and serial number.",
-        data: [
-          "Token ID",
-          "Account ID",
-          "Created Timestamp",
-          "Delegating Spender",
-          "Metadata",
-          "Modified Timestamp",
-          "Spender ID",
-          "Recent Transactions",
-        ]
-      },
-      {
-        title: "/{network}/contracts",
-        subtitle: "Recent Contracts",
-        description: "Displays a table for recent contracts.",
-      },
-      {
         title: "/{network}/contract/{contractId}",
         subtitle: "Contract Details",
         description: "Displays details of NFT with the given contract ID.",
@@ -280,63 +225,7 @@ export default defineComponent({
         ]
       },
       {
-        title: "/{network}/topics",
-        subtitle: "Recent Topics",
-        description: "Displays a table for recent topics.",
-      },
-      {
-        title: "/{network}/topic/{topicId}",
-        subtitle: "Messages for Topic",
-        description: "Displays a table for the messages of topic with the given topic ID.",
-      },
-      {
-        title: "/{network}/nodes",
-        subtitle: "Nodes",
-        description: "Displays general node information and a table of the nodes on this network.",
-        data: [
-          "Total Nodes",
-          "Last Staked",
-          "Total Staked",
-          "Next Staking Period",
-          "Last Period Reward",
-          "Staking Period",
-          "Nodes"
-        ]
-      },
-      {
-        title: "/{network}/node/{nodeId}",
-        subtitle: "Node Details",
-        description: "Displays details of node with the given node number.",
-        data: [
-          "Node Account",
-          "Description",
-          "Address Book File",
-          "Node existed since",
-          "Node expiry date",
-          "Service Endpoints",
-          "Public Key",
-          "Certificate Hash",
-          "Last Period Reward Rate",
-          "Stake for Consensus",
-          "Min Stake",
-          "Max Stake",
-          "Staked for Reward",
-          "Staked For No Reward",
-          "Current Staking Period",
-        ]
-      },
-      {
-        title: "/{network}/staking",
-        subtitle: "Staking Tool",
-        description: "A tool for staking with a connected wallet.",
-      },
-      {
-        title: "/{network}/blocks",
-        subtitle: "Recent Blocks",
-        description: "Displays a table for recent blocks.",
-      },
-      {
-        title: "/{network}/block/{blockNumber}",
+        title: "/{network}/block/{blockNumberOrHash}",
         subtitle: "Block Details",
         description: "Displays details of block with the given block number.",
         data: [
