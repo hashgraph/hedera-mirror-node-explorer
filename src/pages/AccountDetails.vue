@@ -26,7 +26,7 @@
 
   <section :class="{'h-mobile-background': isTouchDevice || !isSmallScreen}" class="section">
 
-    <DashboardCard>
+    <DashboardCard collapsible-key="accountDetails">
       <template v-if="!isInactiveEvmAddress" v-slot:title>
         <span class="h-is-primary-title">Account </span>
         <div class="h-is-tertiary-text mt-3" id="entityId">
@@ -232,7 +232,7 @@
       </template>
     </DashboardCard>
 
-    <DashboardCard v-if="!isInactiveEvmAddress">
+    <DashboardCard v-if="!isInactiveEvmAddress" collapsible-key="recentTransactions">
       <template v-slot:title>
         <p id="recentTransactions" class="h-is-secondary-title">Recent Transactions</p>
       </template>
@@ -255,7 +255,7 @@
 
     <ApproveAllowanceSection :account-id="normalizedAccountId ?? undefined" :showApproveDialog="showApproveDialog"/>
 
-    <DashboardCard v-if="normalizedAccountId && availableAPI">
+    <DashboardCard v-if="normalizedAccountId && availableAPI" collapsible-key="recentAccountRewards">
       <template v-slot:title>
         <span class="h-is-secondary-title">Recent Staking Rewards</span>
       </template>

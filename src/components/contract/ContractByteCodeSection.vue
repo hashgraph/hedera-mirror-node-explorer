@@ -24,7 +24,7 @@
 
 <template>
 
-    <DashboardCard>
+    <DashboardCard collapsible-key="contractBytecode">
         <template v-slot:title>
             <div class="is-flex is-align-items-center is-flex-wrap-wrap">
                 <span class="h-is-secondary-title mr-3">Contract Bytecode</span>

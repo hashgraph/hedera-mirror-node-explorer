@@ -26,7 +26,7 @@
 
   <section :class="{'h-mobile-background': isTouchDevice || !isSmallScreen}" class="section">
 
-    <DashboardCard>
+    <DashboardCard collapsible-key="networkDetails">
       <template v-slot:title>
         <span class="h-is-primary-title">Network</span>
       </template>
@@ -63,7 +63,7 @@
       </template>
     </DashboardCard>
 
-    <DashboardCard>
+    <DashboardCard collapsible-key="nodes">
       <template v-slot:title>
         <span class="h-is-primary-title">{{ `${nodes.length}  Nodes` }}</span>
       </template>
@@ -131,6 +131,8 @@ export default defineComponent({
     const stakeTotal = computed(() => stakeLookup.entity.value?.stake_total ?? 0)
     const maxStakeRewarded = computed(() => stakeLookup.entity.value?.max_stake_rewarded ?? 0)
     const rewardRate = computed(() => {
+        console.log(`staking_reward_rate: ${stakeLookup.entity.value?.staking_reward_rate}`)
+        console.log(`stakeRewardedTotal: ${networkNodeAnalyzer.stakeRewardedTotal.value}`)
       return  networkNodeAnalyzer.stakeRewardedTotal.value != 0
           ? (stakeLookup.entity.value?.staking_reward_rate ?? 0) / networkNodeAnalyzer.stakeRewardedTotal.value * 100000000
           : 0

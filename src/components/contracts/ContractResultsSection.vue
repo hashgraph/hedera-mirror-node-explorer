@@ -24,7 +24,7 @@
 
 <template>
 
-  <DashboardCard v-if="showContractResults">
+  <DashboardCard v-if="showContractResults" collapsible-key="contractCalls">
     <template v-slot:title>
       <p class="h-is-secondary-title">Recent Contract Calls</p>
     </template>

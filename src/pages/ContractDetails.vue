@@ -26,7 +26,7 @@
 
   <section class="section" :class="{'h-mobile-background': isTouchDevice || !isSmallScreen}">
 
-    <DashboardCard>
+    <DashboardCard collapsible-key="contractDetails">
       <template v-slot:title>
         <span class="h-is-primary-title">Contract </span>
         <div class="h-is-tertiary-text mt-3" id="entityId">
