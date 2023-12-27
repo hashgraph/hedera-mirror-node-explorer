@@ -18,18 +18,17 @@
  *
  */
 
-import {HederaLogo} from "@/utils/wallet/WalletDriver"
-import detectEthereumProvider from "@metamask/detect-provider";
 import {EntityID} from "@/utils/EntityID";
 import {BrowserProvider, ethers} from "ethers";
-import {TokenInfoCache} from "@/utils/cache/TokenInfoCache";
+import {BaseProvider} from '@metamask/providers';
 import {makeTokenSymbol} from "@/schemas/HederaUtils";
+import {HederaLogo} from "@/utils/wallet/WalletDriver"
+import {TokenInfoCache} from "@/utils/cache/TokenInfoCache";
 import {WalletDriver_Ethereum} from "@/utils/wallet/WalletDriver_Ethereum";
-import {MetaMaskInpageProvider} from "@metamask/providers";
 
 export class WalletDriver_Brave extends WalletDriver_Ethereum {
 
-    private metamaskProvider: MetaMaskInpageProvider|null = null
+    private braveProvider: BaseProvider|null = null
 
     //
     // Public
@@ -72,27 +71,26 @@ export class WalletDriver_Brave extends WalletDriver_Ethereum {
     //
 
     public async makeProvider(): Promise<BrowserProvider|null> {
-        if (this.metamaskProvider === null) {
-            const options = { mustBeMetaMask: true }
-           this.metamaskProvider = (await detectEthereumProvider(options) ?? null)
+        if (this.braveProvider === null) {
+           this.braveProvider = ((window as any).ethereum ?? null)
         }
-        const result = this.metamaskProvider !== null ?  new ethers.BrowserProvider(this.metamaskProvider) : null
+        const result = this.braveProvider !== null ?  new ethers.BrowserProvider(this.braveProvider) : null
         return Promise.resolve(result)
     }
 
     public isCancelError(reason: unknown): boolean {
-        return WalletDriver_Brave.fetchMetamaskErrorCode(reason) == 4001
+        return WalletDriver_Brave.fetchBraveErrorCode(reason) == 4001
     }
 
     public async connect(network: string): Promise<string[]> {
         const result = await super.connect(network)
-        this.metamaskProvider?.on('chainChanged', this.handleDisconnect)
+        this.braveProvider?.on('chainChanged', this.handleDisconnect)
         return Promise.resolve(result)
     }
 
     public async disconnect(): Promise<void> {
-        this.metamaskProvider?.off("chainChanged", this.handleDisconnect)
-        this.metamaskProvider = null
+        this.braveProvider?.on("chainChanged", this.handleDisconnect)
+        this.braveProvider = null
         return super.disconnect()
     }
 
@@ -102,7 +100,7 @@ export class WalletDriver_Brave extends WalletDriver_Ethereum {
 
     private readonly handleDisconnect = () => this.disconnect()
 
-    private static fetchMetamaskErrorCode(reason: unknown): number|null {
+    private static fetchBraveErrorCode(reason: unknown): number|null {
         let result: number|null
         if (typeof reason == "object" && reason != null) {
             if ("code" in reason && typeof reason.code == "number") {
