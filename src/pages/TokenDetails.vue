@@ -36,6 +36,9 @@
         <div class="is-inline-block h-is-tertiary-text h-is-extra-text should-wrap" style="word-break: break-all">
           {{ displaySymbol }}
         </div>
+      </template>
+
+      <template v-slot:subtitle>
         <div id="entityId" class="headline-grid h-is-tertiary-text mt-3 is-align-items-baseline">
           <div class="h-is-property-text has-text-weight-light">Token ID:</div>
           <div>
