@@ -33,7 +33,7 @@ export class WalletManager {
     private readonly bladeDriver = new WalletDriver_Blade()
     private readonly hashpackDriver = new WalletDriver_Hashpack()
     private readonly metamaskDriver = new WalletDriver_Metamask()
-    private readonly drivers: Array<WalletDriver> = [this.bladeDriver, this.hashpackDriver]
+    private readonly drivers: Array<WalletDriver> = [this.bladeDriver, this.hashpackDriver, this.metamaskDriver]
     private readonly timeout = 30000; // milliseconds
 
 
@@ -51,9 +51,6 @@ export class WalletManager {
 
     public constructor(routeManager: RouteManager) {
         this.routeManager = routeManager
-        if (import.meta.env.VITE_APP_ENABLE_METAMASK === "true") {
-            this.drivers.push(this.metamaskDriver)
-        }
         watch(this.routeManager.currentNetwork, () => this.disconnect())
     }
 
