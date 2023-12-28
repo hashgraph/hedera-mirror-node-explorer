@@ -29,6 +29,12 @@
     <DashboardCard collapsible-key="accountDetails">
       <template v-if="!isInactiveEvmAddress" v-slot:title>
         <span class="h-is-primary-title">Account </span>
+      </template>
+      <template v-else v-slot:title>
+          <span class="h-is-primary-title">Inactive EVM Address</span>
+      </template>
+
+      <template v-if="!isInactiveEvmAddress" v-slot:subtitle>
         <div class="h-is-tertiary-text mt-3" id="entityId">
           <div class="is-inline-block h-is-property-text has-text-weight-light" style="min-width: 115px">Account ID:</div>
           <Copyable :content-to-copy="normalizedAccountId ?? ''">
@@ -57,8 +63,7 @@
           </router-link>
         </div>
       </template>
-      <template v-else v-slot:title>
-        <span class="h-is-primary-title">Inactive EVM Address</span>
+      <template v-else v-slot:subtitle>
         <div class="h-is-tertiary-text mt-3" id="entityId">
           <div class="is-inline-block h-is-property-text has-text-weight-light" style="min-width: 115px">Account ID:</div>
           <span class="has-text-grey">Assigned upon activation</span>

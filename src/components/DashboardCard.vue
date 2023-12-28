@@ -30,13 +30,17 @@
             </div>
             <div class="is-flex is-align-items-center is-justify-content-end">
                 <div v-if="!isCollapsed" class="mr-4">
-                    <slot name="control"></slot>
+                  <slot name="control"></slot>
                 </div>
                 <img v-if="isCollapsible && isCollapsed" alt="Expand section"
                    @click="toggleCollapsed" src="@/assets/arrow-down.svg">
                 <img v-else-if="isCollapsible" alt="Collapse section"
                    @click="toggleCollapsed" src="@/assets/arrow-up.svg">
             </div>
+        </div>
+
+        <div>
+            <slot name="subtitle"></slot>
         </div>
 
         <div v-if="!isCollapsed">

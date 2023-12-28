@@ -29,27 +29,29 @@
     <DashboardCard collapsible-key="contractDetails">
       <template v-slot:title>
         <span class="h-is-primary-title">Contract </span>
+      </template>
+
+      <template v-slot:subtitle>
         <div class="h-is-tertiary-text mt-3" id="entityId">
-          <div class="is-inline-block h-is-property-text has-text-weight-light" style="min-width: 115px">Contract ID:</div>
-          <Copyable :content-to-copy="normalizedContractId ?? ''">
-            <template v-slot:content>
-              <span>{{ normalizedContractId ?? "" }}</span>
-            </template>
-          </Copyable>
-          <span v-if="accountChecksum" class="has-text-grey h-is-smaller">-{{ accountChecksum }}</span>
+            <div class="is-inline-block h-is-property-text has-text-weight-light" style="min-width: 115px">Contract ID:</div>
+            <Copyable :content-to-copy="normalizedContractId ?? ''">
+                <template v-slot:content>
+                    <span>{{ normalizedContractId ?? "" }}</span>
+                </template>
+            </Copyable>
+            <span v-if="accountChecksum" class="has-text-grey h-is-smaller">-{{ accountChecksum }}</span>
         </div>
         <div v-if="ethereumAddress" id="evmAddress" class="h-is-tertiary-text mt-2" style="word-break: keep-all">
-          <div class="is-inline-block h-is-property-text has-text-weight-light" style="min-width: 115px">EVM Address:</div>
-          <div class="is-inline-block">
-            <EVMAddress :show-id="false" :has-custom-font="true" :address="ethereumAddress"/>
-          </div>
-        </div>
-
+                <div class="is-inline-block h-is-property-text has-text-weight-light" style="min-width: 115px">EVM Address:</div>
+                <div class="is-inline-block">
+                    <EVMAddress :show-id="false" :has-custom-font="true" :address="ethereumAddress"/>
+                </div>
+            </div>
         <div v-if="!isMediumScreen && accountRoute" id="showAccountLink" class="is-inline-block mt-2">
-          <router-link :to="accountRoute">
-            <span class="h-is-property-text">Show associated account</span>
-          </router-link>
-        </div>
+                <router-link :to="accountRoute">
+                    <span class="h-is-property-text">Show associated account</span>
+                </router-link>
+            </div>
       </template>
 
       <template v-slot:control v-if="isMediumScreen">
