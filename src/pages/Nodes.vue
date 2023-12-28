@@ -115,7 +115,7 @@ export default defineComponent({
     const isTouchDevice = inject('isTouchDevice', false)
     const stakeTotalTooltip = "Total amount of HBAR staked to all validators for consensus."
     const stakeRewardedTotalTooltip = "Total amount of HBAR staked for reward."
-    const maxStakeRewardedTooltip = "Maximum amount of tinybar that can be staked for reward while still achieving the maximum reward rate."
+    const maxStakeRewardedTooltip = "Maximum amount of HBAR that can be staked for reward while still achieving the maximum reward rate."
     const totalRewardedTooltip = "Total amount of HBAR paid in reward for the last period."
     const maxRewardRateTooltip = "Approximate annual reward rate based on the maximum reward rate that any account can receive in a day."
     const rewardRateTooltip = "Approximate annual reward rate based on the reward earned during the last 24h period."
@@ -131,8 +131,6 @@ export default defineComponent({
     const stakeTotal = computed(() => stakeLookup.entity.value?.stake_total ?? 0)
     const maxStakeRewarded = computed(() => stakeLookup.entity.value?.max_stake_rewarded ?? 0)
     const rewardRate = computed(() => {
-        console.log(`staking_reward_rate: ${stakeLookup.entity.value?.staking_reward_rate}`)
-        console.log(`stakeRewardedTotal: ${networkNodeAnalyzer.stakeRewardedTotal.value}`)
       return  networkNodeAnalyzer.stakeRewardedTotal.value != 0
           ? (stakeLookup.entity.value?.staking_reward_rate ?? 0) / networkNodeAnalyzer.stakeRewardedTotal.value * 100000000
           : 0
