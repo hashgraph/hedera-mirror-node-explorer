@@ -25,7 +25,8 @@
 <template>
 
     <div v-if="textValue" id="bytecode"
-         class="pl-1 mt-2 mr-1 code-data-box">
+         class="h-code-box h-has-page-background pt-1 pl-3 pr-2 pb-2 mt-2 mr-1"
+         style="max-height: 400px;">
         <HexaValue :byte-string="textValue" :copyable="false"/>
     </div>
 
@@ -69,14 +70,4 @@ export default defineComponent({
 <!--                                                       STYLE                                                     -->
 <!-- --------------------------------------------------------------------------------------------------------------- -->
 
-<style>
-
-.code-data-box {
-    border: 0.5px solid dimgrey;
-    gap: 0.42rem;
-    max-height: 20rem;
-    overflow-y: auto;
-    min-height: 5rem
-}
-
-</style>
+<style/>

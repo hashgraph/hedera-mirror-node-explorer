@@ -393,6 +393,13 @@ hr.dotted {
 .h-dotted-area {
   border: dashed 1px $h-highlight-color;
 }
+/* Code box (source, bytecode, assembly code) */
+.h-code-box {
+  border: 0.5px solid dimgrey;
+  gap: 0.42rem;
+  overflow-y: auto;
+  min-height: 5rem
+}
 
 //
 // MODALS

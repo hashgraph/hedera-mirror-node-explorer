@@ -23,8 +23,10 @@
 <!-- --------------------------------------------------------------------------------------------------------------- -->
 
 <template>
-    <div v-if="disassembly" id="disassembly" class="mt-2 p-2 is-flex analyzed-data-box">
-        <div v-for="opcode in disassembly" v-if="disassembly && disassembly.length > 0" :key="opcode.index16">
+    <div v-if="disassembly" id="disassembly"
+         class="h-code-box h-has-page-background is-family-monospace mt-2 px-3 py-1"
+         style="max-height: 400px;">
+    <div v-for="opcode in disassembly" v-if="disassembly && disassembly.length > 0" :key="opcode.index16">
             <OpcodeValue :opcode="opcode" :show-hexa-opcode="showHexaOpcode"/>
         </div>
         <p v-else class="has-text-grey is-italic has-text-weight-medium">{{ disassembledError }}</p>
@@ -92,16 +94,4 @@ export default defineComponent({
 <!--                                                       STYLE                                                     -->
 <!-- --------------------------------------------------------------------------------------------------------------- -->
 
-<style>
-
-.analyzed-data-box {
-    border: 0.5px solid dimgrey;
-    gap: 0.42rem;
-    flex-direction: column;
-    max-height: 20rem;
-    overflow-y: auto;
-    font-family: novamonoregular, monospace;
-    min-height: 5rem
-}
-
-</style>
+<style/>

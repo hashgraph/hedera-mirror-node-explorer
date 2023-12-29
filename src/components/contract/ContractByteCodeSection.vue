@@ -81,12 +81,12 @@
                     <StringValue :string-value="solcVersion ?? undefined"/>
                 </template>
             </Property>
-            <div class="columns is-multiline h-is-property-text">
-                <div id="bytecode" class="column is-6" :class="{'is-full': !isSmallScreen}">
+            <div class="columns is-multiline h-is-property-text pt-3">
+                <div id="bytecode" class="column is-6 pt-0" :class="{'is-full': !isSmallScreen}">
                     <p class="has-text-weight-light">Runtime Bytecode</p>
                     <ByteCodeValue :byte-code="byteCode ?? undefined" class="mt-3 mb-4"/>
                 </div>
-                <div id="assembly-code" class="column is-6" :class="{'h-has-column-separator':isSmallScreen}">
+                <div id="assembly-code" class="column is-6 pt-0" :class="{'h-has-column-separator':isSmallScreen}">
                     <div class="is-flex is-align-items-center is-justify-content-space-between">
                         <p class="has-text-weight-light">Assembly Bytecode</p>
                         <div class="is-flex is-align-items-center is-justify-content-end">
