@@ -22,7 +22,7 @@ import {computed, ComputedRef, ref, Ref, watch, WatchStopHandle} from "vue";
 import {SystemContractEntry, systemContractRegistry} from "@/schemas/SystemContractRegistry";
 import {ethers} from "ethers";
 import {AssetCache} from "@/utils/cache/AssetCache";
-import {SourcifyCache, SourcifyRecord} from "@/utils/cache/SourcifyCache";
+import {SourcifyCache, SourcifyRecord, SourcifyResponseItem} from "@/utils/cache/SourcifyCache";
 import {SolcMetadata} from "@/utils/solc/SolcMetadata";
 import {ByteCodeAnalyzer} from "@/utils/analyzer/ByteCodeAnalyzer";
 import {ContractResponse} from "@/schemas/HederaSchemas";
@@ -134,14 +134,14 @@ export class ContractAnalyzer {
     })
 
     public readonly sourceFiles = computed(() => {
-        let result: Array<string> = []
+        let result: Array<SourcifyResponseItem> = []
         if (this.sourcifyRecord.value !== null && this.sourcifyRecord.value?.response.files.length > 0) {
             const files = this.sourcifyRecord.value?.response.files
             files?.forEach((f) => {
                 const parts = f.name.split('.')
                 const suffix = parts[parts.length - 1].toLowerCase()
                 if (suffix === "sol") {
-                    result.push(f.content)
+                    result.push(f)
                 }
             })
         }

@@ -81,6 +81,10 @@
                     <StringValue :string-value="solcVersion ?? undefined"/>
                 </template>
             </Property>
+            <Property v-if="isVerified" id="source-code" :full-width="true">
+                <template v-slot:name>Source Code</template>
+            </Property>
+            <SourceCodeValue  v-if="isVerified" :source-files="sourceFiles ?? undefined" :rows="20" class="mt-3 mb-4"/>
             <div class="columns is-multiline h-is-property-text pt-3">
                 <div id="bytecode" class="column is-6 pt-0" :class="{'is-full': !isSmallScreen}">
                     <p class="has-text-weight-light">Runtime Bytecode</p>
@@ -128,6 +132,7 @@ import ContractVerificationDialog from "@/components/verification/ContractVerifi
 import DisassembledCodeValue from "@/components/values/DisassembledCodeValue.vue";
 import HexaValue from "@/components/values/HexaValue.vue";
 import {AppStorage} from "@/AppStorage";
+import SourceCodeValue from "@/components/values/SourceCodeValue.vue";
 
 const FULL_MATCH_TOOLTIP = `A Full Match indicates that the bytecode of the deployed contract is byte-by-byte the same as the compilation output of the given source code files with the settings defined in the metadata file. This means the contents of the source code files and the compilation settings are exactly the same as when the contract author compiled and deployed the contract.`
 const PARTIAL_MATCH_TOOLTIP = `A Partial Match indicates that the bytecode of the deployed contract is the same as the compilation output of the given source code files except for the metadata hash. This means the deployed contract and the given source code + metadata function in the same way but there are differences in source code comments, variable names, or other metadata fields such as source paths.`
@@ -136,6 +141,7 @@ export default defineComponent({
   name: 'ContractByteCodeSection',
 
   components: {
+      SourceCodeValue,
       HexaValue,
       DisassembledCodeValue,
       ContractVerificationDialog,
@@ -198,6 +204,7 @@ export default defineComponent({
       showVerifyDialog,
       contractId: props.contractAnalyzer.contractId,
       byteCodeAnalyzer: props.contractAnalyzer.byteCodeAnalyzer,
+      sourceFiles: props.contractAnalyzer.sourceFiles,
       verifyDidComplete,
       isFullMatch,
       showHexaOpcode,

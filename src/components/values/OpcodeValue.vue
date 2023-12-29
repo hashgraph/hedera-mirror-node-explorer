@@ -23,7 +23,7 @@
 <!-- --------------------------------------------------------------------------------------------------------------- -->
 
 <template>
-    <div class="is-flex" style="gap: 0.5rem">
+    <div class="is-flex" style="font-family: novamonoregular, monospace; gap: 0.5rem">
         <p class="has-text-grey">{{ opcode.index16 }}:</p>
         <p v-if="showHexaOpcode" class="h-is-extra-text">{{ opcode.hex }}</p>
         <p v-if="showHexaOpcode" class="has-text-grey">-</p>
