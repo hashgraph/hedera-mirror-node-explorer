@@ -18,7 +18,7 @@
  *
  */
 
-import {BrowserProvider, ethers} from "ethers";
+import {BrowserProvider, Eip1193Provider, ethers} from "ethers";
 import {BaseProvider} from '@metamask/providers';
 import {WalletDriver_Ethereum} from "@/utils/wallet/WalletDriver_Ethereum";
 
@@ -41,8 +41,11 @@ export class WalletDriver_Brave extends WalletDriver_Ethereum {
     //
 
     public async makeProvider(): Promise<BrowserProvider|null> {
-        if (this.braveProvider === null) {
-           this.braveProvider = ((window as any).ethereum ?? null)
+        if (this.braveProvider === null && window.ethereum) {
+            // https://wallet-docs.brave.com/ethereum/wallet-detection/
+            const clientVersion = await window.ethereum.request({method: "web3_clientVersion"})
+            const isBraveWallet = clientVersion.split('/')[0] === 'BraveWallet'
+            this.braveProvider = isBraveWallet ? window.ethereum as BaseProvider : null
         }
         const result = this.braveProvider !== null ?  new ethers.BrowserProvider(this.braveProvider) : null
         return Promise.resolve(result)
@@ -85,4 +88,10 @@ export class WalletDriver_Brave extends WalletDriver_Ethereum {
     }
 
 
+}
+
+declare global {
+    interface Window {
+        ethereum?: Eip1193Provider
+    }
 }
