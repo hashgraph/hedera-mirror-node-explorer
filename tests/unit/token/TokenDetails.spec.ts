@@ -107,6 +107,7 @@ describe("TokenDetails.vue", () => {
         expect(wrapper.findComponent(TokenBalanceTable).exists()).toBe(true)
         expect(wrapper.findComponent(NftHolderTable).exists()).toBe(false)
 
+        mock.restore()
         wrapper.unmount()
         await flushPromises()
 
@@ -165,6 +166,7 @@ describe("TokenDetails.vue", () => {
         expect(wrapper.findComponent(NftHolderTable).exists()).toBe(true)
         expect(wrapper.findComponent(TokenBalanceTable).exists()).toBe(false)
 
+        mock.restore()
         wrapper.unmount()
         await flushPromises()
 
@@ -232,6 +234,7 @@ describe("TokenDetails.vue", () => {
         expect(wrapper.findComponent(NftHolderTable).exists()).toBe(false)
         expect(wrapper.findComponent(TokenBalanceTable).exists()).toBe(true)
 
+        mock.restore()
         wrapper.unmount()
         await flushPromises()
 
@@ -302,6 +305,7 @@ describe("TokenDetails.vue", () => {
         expect(wrapper.find("#feeScheduleKey").text()).toBe("Fee Schedule Keyc539 536f 9599 daef eeb7 7767 7aa1 aeea 2242 dfc7 cca9 2348 c228 a518 7a0f af2bCopyED25519")
         expect(wrapper.find("#pauseKey").text()).toBe("Pause Keyc539 536f 9599 daef eeb7 7767 7aa1 aeea 2242 dfc7 cca9 2348 c228 a518 7a0f af2bCopyED25519")
 
+        mock.restore()
         wrapper.unmount()
         await flushPromises()
 
@@ -349,6 +353,7 @@ describe("TokenDetails.vue", () => {
         expect(wrapper.find("#feeScheduleKey").text()).toBe("Fee Schedule KeyNoneCustom fee schedule is immutable")
         expect(wrapper.find("#pauseKey").text()).toBe("Pause KeyNoneToken cannot be paused")
 
+        mock.restore()
         wrapper.unmount()
         await flushPromises()
 
@@ -389,6 +394,7 @@ describe("TokenDetails.vue", () => {
                 + 'EVM Address:' + testTokenEVMAddress + "Copy"))
         expect(wrapper.text()).toMatch("Token is deleted")
 
+        mock.restore()
         wrapper.unmount()
         await flushPromises()
     });
@@ -445,6 +451,7 @@ describe("TokenDetails.vue", () => {
 
         expect(customFees.findComponent(RoyaltyFeeTable).exists()).toBe(false)
 
+        mock.restore()
         wrapper.unmount()
         await flushPromises()
     });
@@ -501,6 +508,7 @@ describe("TokenDetails.vue", () => {
             "0.1%" + "0.0.617889" + "100" + "0.0.748383" + "Ħ Frens Kingdom" +
             "0.2%" + "0.0.617890" + "200" + "0.0.748383" + "Ħ Frens Kingdom")
 
+        mock.restore()
         wrapper.unmount()
         await flushPromises()
     });
@@ -536,6 +544,7 @@ describe("TokenDetails.vue", () => {
         const customFees = wrapper.findComponent(TokenCustomFees)
         expect(customFees.exists()).toBe(false)
 
+        mock.restore()
         wrapper.unmount()
         await flushPromises()
     });

@@ -75,15 +75,18 @@ describe("Nodes.vue", () => {
 
         expect(cards[0].text()).toMatch(RegExp("^Network"))
         const items = cards[0].findAllComponents(NetworkDashboardItem)
-        expect(items.length).toBe(6)
-        expect(items[0].text()).toMatch(RegExp("Total Nodes3"))
-        expect(items[1].text()).toMatch(RegExp("Last Staked"))
-        expect(items[2].text()).toMatch(RegExp("Total Staked24,000,000HBAR"))
-        expect(items[3].text()).toMatch(RegExp("Next Staking Periodin"))
-        expect(items[4].text()).toMatch(RegExp("Last Period Reward1,095HBAR"))
-        expect(items[5].text()).toMatch(RegExp("Staking Period24h"))
+        expect(items.length).toBe(9)
+        expect(items[0].text()).toMatch("Last Staked")
+        expect(items[1].text()).toMatch("Next Staking Period")
+        expect(items[2].text()).toMatch("Staking Period24h")
+        expect(items[3].text()).toMatch("Total Staked24,000,000HBAR")
+        expect(items[4].text()).toMatch("Staked for Reward19,000,000HBAR")
+        expect(items[5].text()).toMatch("Maximum Staked for Reward0HBAR")
+        expect(items[6].text()).toMatch("Rewarded Last Period1,095HBAR")
+        expect(items[7].text()).toMatch("Maximum Reward Rate0%")
+        expect(items[8].text()).toMatch("Current Reward Rate0%")
 
-        expect(cards[1].text()).toMatch(RegExp("^Nodes"))
+        expect(cards[1].text()).toMatch("3  Nodes")
         const table = cards[1].findComponent(NodeTable)
         expect(table.exists()).toBe(true)
         expect(table.get('thead').text()).toBe("Node Description Stake for Consensus % Stake Range Reward Rate")
@@ -108,6 +111,7 @@ describe("Nodes.vue", () => {
             tooltipRewardRate + "3%"
         )
 
+        mock.restore()
         wrapper.unmount()
         await flushPromises()
     });

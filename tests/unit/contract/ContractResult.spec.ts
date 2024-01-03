@@ -92,8 +92,9 @@ describe("ContractResult.vue", () => {
         expect(wrapper.get("#gasPriceValue").text()).toBe("None")
         expect(wrapper.get("#ethereumNonceValue").text()).toBe("104")
 
-        expect(wrapper.findAll("#logIndexValue").length).toBe(3)
+        expect(wrapper.findAll("#transactionHash").length).toBe(3)
 
+        mock.restore()
         wrapper.unmount()
         await flushPromises()
     });
@@ -133,7 +134,7 @@ describe("ContractResult.vue", () => {
         expect(wrapper.get("#errorMessageValue").text()).toBe("Insufficient token balance for wiped")
         expect(wrapper.get("#ethereumNonceValue").text()).toBe("None")
 
-        expect(wrapper.findAll("#logIndexValue").length).toBe(0)
+        expect(wrapper.findAll("#transactionHash").length).toBe(0)
 
         wrapper.unmount()
         await flushPromises()
@@ -251,7 +252,7 @@ describe("ContractResult.vue", () => {
             "None"
         )
 
-        expect(wrapper.findAll("#logIndexValue").length).toBe(0)
+        expect(wrapper.findAll("#transactionHash").length).toBe(0)
 
         wrapper.unmount()
         await flushPromises()

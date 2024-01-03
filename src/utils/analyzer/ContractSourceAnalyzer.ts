@@ -18,159 +18,136 @@
  *
  */
 
-import {computed, ref, Ref, WatchStopHandle} from 'vue';
-import {ContractAnalyzer, MetadataOrigin} from "@/utils/analyzer/ContractAnalyzer";
-import {Lookup} from "@/utils/cache/base/EntityCache";
-import {IPFSCache} from "@/utils/cache/IPFSCache";
-import {SolcUtils} from "@/utils/solc/SolcUtils";
-import {SourcifyCache} from "@/utils/cache/SourcifyCache";
-import {AppStorage} from "@/AppStorage";
-import {ethers} from "ethers";
+import {computed, ref, Ref, shallowRef} from 'vue';
+import {
+    SourcifyInputFilesResponse,
+    SourcifyUtils,
+    SourcifyVerifyCheckedContract,
+    SourcifyVerifyCheckedResponse
+} from "@/utils/sourcify/SourcifyUtils";
+import {importFromChooser, importFromDrop} from "@/utils/analyzer/FileImporter";
 
 export class ContractSourceAnalyzer {
 
-    public readonly sourceFileName: string
-    public readonly contractAnalyzer: ContractAnalyzer
-    public readonly ipfsLookup: Lookup<string, unknown|undefined>
-    private readonly localStorageContent: Ref<string|null> = ref(null)
-    private watchHandle: WatchStopHandle|null = null
+    private readonly contractId: Ref<string|null>
+    private readonly analyzingRef = ref(false)
+    private readonly failureRef = ref<unknown>(null)
+    private readonly inputFiles = ref<Map<string, string>>(new Map())
+    private readonly inputFilesResponse = shallowRef<SourcifyInputFilesResponse|null>(null)
+    private readonly verifyResponse = shallowRef<SourcifyVerifyCheckedResponse|null>(null)
 
     //
     // Public
     //
 
-    public constructor(sourceFileName: string, contractAnalyzer: ContractAnalyzer) {
-        this.sourceFileName = sourceFileName
-        this.contractAnalyzer = contractAnalyzer
-        this.ipfsLookup = IPFSCache.instance.makeLookup(this.ipfsHash)
+    public constructor(contractId: Ref<string|null>) {
+        this.contractId = contractId
     }
 
+    public readonly analyzing = computed( () => this.analyzingRef.value)
 
-    public mount(): void {
-        this.ipfsLookup.mount()
-        this.updateLocalStorageContent()
-    }
+    public readonly failure = computed(() => this.failureRef.value)
 
-    public unmount(): void {
-        this.ipfsLookup.unmount()
-        this.localStorageContent.value = null
-        if (this.watchHandle !== null) {
-            this.watchHandle()
-            this.watchHandle = null
-        }
-    }
-
-    //
-    // Public (computed)
-    //
-
-    public readonly content = computed(
-        () => this.sourcifyContent.value ?? this.localStorageContent.value ?? this.ipfsContent.value)
-
-    public readonly fullMatch = computed(() => {
-        let result: boolean
-        if (this.content.value !== null && this.keccakHash.value !== null) {
-            const contentBytes = ethers.utils.toUtf8Bytes(this.content.value)
-            const contentHash = ethers.utils.keccak256(contentBytes)
-            result = contentHash === this.keccakHash.value
-        } else {
-            result = false
-        }
-        return result
+    public readonly matchingContractName = computed<string|null>(() => {
+        return this.matchingContract.value?.name ?? null
     })
 
-    public readonly origin = computed(() => {
-        let result: MetadataOrigin|null
-        if (this.sourcifyContent.value !== null) {
-            result = MetadataOrigin.Sourcify
-        } else if (this.localStorageContent.value !== null) {
-            result = MetadataOrigin.LocalStorage
-        } else if (this.ipfsContent.value !== null) {
-            result = MetadataOrigin.IPFS
+    public readonly matchingContract = computed<SourcifyVerifyCheckedContract|null>(() => {
+        let result: SourcifyVerifyCheckedContract|null
+        if (this.verifyResponse.value !== null) {
+            result = SourcifyUtils.fetchMatchingContract(this.verifyResponse.value)
         } else {
             result = null
         }
         return result
     })
 
-    //
-    // Public (user actions)
-    //
+    public readonly contractCount = computed<number>(() => {
+        return this.inputFilesResponse.value?.contracts.length ?? 0
+    })
 
-    public userDidSelectContent(content: string): void {
-        AppStorage.setSource(content, this.sourceFileName)
-        this.updateLocalStorageContent()
+    public readonly unusedCount = computed<number>(() => {
+        return this.inputFilesResponse.value?.unused.length ?? 0
+    })
+
+    public readonly items = computed<ContractSourceAnalyzerItem[]>(() => {
+        const result: ContractSourceAnalyzerItem[] = []
+
+        for (const f of this.inputFiles.value.keys()) {
+            if (this.verifyResponse.value !== null) {
+                const matchingContract = this.matchingContract.value
+                const unused = this.verifyResponse.value.unused.indexOf(f) != -1
+                const target = !unused && matchingContract !== null && matchingContract.compiledPath == f
+                result.push({ path: f, unused, target })
+            } else if (this.inputFilesResponse.value !== null) {
+                const unused = this.inputFilesResponse.value.unused.indexOf(f) != -1
+                const target = false
+                result.push({ path: f, unused, target })
+            }
+        }
+        return result
+    })
+
+    public async dropFiles(transferList: DataTransferItemList): Promise<void> {
+        if (this.contractId.value !== null) {
+            this.analyzingRef.value = true
+            try {
+                const newFiles = await importFromDrop(transferList)
+                this.inputFiles.value = new Map([...this.inputFiles.value, ...newFiles])
+                await this.verifyWithoutStore(this.contractId.value)
+                this.failureRef.value = null
+            } catch(reason) {
+                // Leaves this.inputFilesResponse and this.verifyResponse unchanged
+                this.failureRef.value = reason
+            } finally {
+                this.analyzingRef.value = false
+            }
+        }
     }
 
-    public userRequestClear(): void {
-        AppStorage.setSource(null, this.sourceFileName)
-        this.updateLocalStorageContent()
+    public async chooseFiles(fileList: FileList): Promise<void> {
+        if (this.contractId.value !== null) {
+            this.analyzingRef.value = true
+            try {
+                const newFiles = await importFromChooser(fileList)
+                this.inputFiles.value = new Map([...this.inputFiles.value, ...newFiles])
+                await this.verifyWithoutStore(this.contractId.value)
+                this.failureRef.value = null
+            } catch(reason) {
+                // Leaves this.inputFilesResponse and this.verifyResponse unchanged
+                this.failureRef.value = reason
+            } finally {
+                this.analyzingRef.value = false
+            }
+        }
+    }
+
+    public async reset(): Promise<void> {
+        this.inputFiles.value.clear()
+        this.inputFilesResponse.value = null
+        this.verifyResponse.value = null
+        this.analyzingRef.value = false
     }
 
     //
     // Private
     //
 
-    private readonly sourcifyContent = computed(() => {
-        let result: string|null
-        const response = this.contractAnalyzer.sourcifyRecord.value?.response ?? null
-        if (response !== null) {
-            result = SourcifyCache.fetchSource(this.sourceBaseName(), response)
+    private async verifyWithoutStore(contractId: string): Promise<void> {
+        await SourcifyUtils.sessionClear()
+        this.inputFilesResponse.value = await SourcifyUtils.sessionInputFiles(this.inputFiles.value)
+        const verificationIds = SourcifyUtils.fetchVerificationIds(this.inputFilesResponse.value)
+        if (verificationIds.length >= 1) {
+            this.verifyResponse.value = await SourcifyUtils.sessionVerifyChecked(contractId, verificationIds, false)
         } else {
-            result = null
+            this.verifyResponse.value = null
         }
-        return result
-    })
-
-    private readonly ipfsContent = computed(() => {
-        let result: string|null
-        const content = this.ipfsLookup.entity.value
-        if (typeof content == "string") {
-            result = content
-        } else if (typeof content === "object" && content !== null) {
-            result = JSON.stringify(content)
-        } else {
-            result = null
-        }
-        return result
-    })
-
-    private readonly ipfsHash = computed(() => {
-        let result: string|null
-        if (this.contractAnalyzer.metadata.value !== null) {
-            result = SolcUtils.fetchIPFSHash(this.sourceFileName, this.contractAnalyzer.metadata.value)
-        } else {
-            result = null
-        }
-        return result
-    })
-
-    private readonly swarmHash = computed(() => {
-        let result: string|null
-        if (this.contractAnalyzer.metadata.value !== null) {
-            result = SolcUtils.fetchSWARMHash(this.sourceFileName, this.contractAnalyzer.metadata.value)
-        } else {
-            result = null
-        }
-        return result
-    })
-
-    private readonly keccakHash = computed(() => {
-        let result: string|null
-        if (this.contractAnalyzer.metadata.value !== null) {
-            result = SolcUtils.fetchKeccakHash(this.sourceFileName, this.contractAnalyzer.metadata.value)
-        } else {
-            result = null
-        }
-        return result
-    })
-
-    private readonly updateLocalStorageContent = () => {
-        this.localStorageContent.value = AppStorage.getSource(this.sourceFileName)
     }
 
-    private sourceBaseName(): string {
-        const i = this.sourceFileName.lastIndexOf("/")
-        return i != -1 ? this.sourceFileName.substring(i+1) : this.sourceFileName
-    }
+}
+
+export interface ContractSourceAnalyzerItem {
+    path: string
+    unused: boolean
+    target: boolean
 }

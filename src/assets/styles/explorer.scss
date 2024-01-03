@@ -265,18 +265,12 @@ body {
 //
 
 #drop-down-menu .o-sel {
-    height: 44.5px;
+    height: 40px;
     font-weight: bold;
     color: $h-highlight-color;
     border-color: $h-highlight-color;
     background-color: $h-page-background-color;
     border-width: 0.5px;
-    border-top-width: 0;
-    padding-top: 20px;
-    padding-bottom: 7px;
-}
-#drop-down-menu .o-sel-arrow {
-    background-position: calc(100% - 7px) calc(100% - 10px);
 }
 #mobile-drop-down-menu .o-sel {
     height: 44.5px;
@@ -292,6 +286,10 @@ body {
 }
 #mobile-drop-down-menu .o-sel-arrow {
     background-position: calc(100% - 13px) calc(100% - 16px);
+}
+#drop-down-menu .h-is-navbar-item:focus
+{
+    outline: none;
 }
 .button.h-is-navbar-item {
     padding-top: 28px;
@@ -334,7 +332,7 @@ body {
     padding-right: 0.4em;
 }
 .button.h-is-navbar-item.is-ghost.is-first {
-    padding-left: 2em;
+    padding-left: 0;
 }
 .button.h-is-navbar-item.is-ghost.is-last {
     padding-right: 0;
@@ -390,6 +388,10 @@ hr.dotted {
     background-color: initial;
     margin: 0;
     padding: 0;
+}
+/* Dashed DnD area */
+.h-dotted-area {
+  border: dashed 1px $h-highlight-color;
 }
 
 //
@@ -523,3 +525,6 @@ table.o-table th.o-table__th--left {
     min-height: 450px;
 }
 
+.h-has-page-background {
+    background-color: $h-page-background-color;
+}

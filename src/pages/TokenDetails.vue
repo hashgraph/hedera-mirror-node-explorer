@@ -26,7 +26,7 @@
 
   <section :class="{'h-mobile-background': isTouchDevice || !isSmallScreen}" class="section">
 
-    <DashboardCard>
+    <DashboardCard collapsible-key="nftDetails">
       <template v-slot:title>
         <span v-if="tokenInfo" class="h-is-primary-title">
           <span v-if="tokenInfo.type === 'NON_FUNGIBLE_UNIQUE'">Non Fungible</span>
@@ -180,7 +180,7 @@
 
     </DashboardCard>
 
-    <DashboardCard v-if="tokenInfo">
+    <DashboardCard v-if="tokenInfo" collapsible-key="tokenKeys">
 
       <template v-slot:title>
         <div class="h-is-secondary-title mb-2">Token Keys</div>
@@ -259,7 +259,7 @@
 
     <TokenCustomFees v-if="hasCustomFees" :analyzer="analyzer"/>
 
-    <DashboardCard v-if="tokenInfo">
+    <DashboardCard v-if="tokenInfo" collapsible-key="nftHolders">
 
       <template v-slot:title>
         <div v-if="tokenInfo.type === 'NON_FUNGIBLE_UNIQUE'" class="h-is-secondary-title mb-2">NFT Holders</div>

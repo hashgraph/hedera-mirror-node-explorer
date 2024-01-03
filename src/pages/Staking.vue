@@ -70,7 +70,7 @@
 
   <section :class="{'h-mobile-background': isTouchDevice || !isSmallScreen}" class="section">
 
-    <DashboardCard>
+    <DashboardCard collapsible-key="stakingDetails">
       <template v-slot:title>
         <div>
           <span class="h-is-primary-title">My Staking </span>
@@ -79,25 +79,6 @@
             <AccountLink :account-id="accountId">{{ accountId }}</AccountLink>
           </div>
           <span v-if="accountChecksum" class="has-text-grey mr-3" style="font-size: 14px">-{{ accountChecksum }}</span>
-        </div>
-        <div v-if="!isMediumScreen && accountId" id="showAccountLink" class="is-flex is-flex-direction-column mt-2">
-          <router-link v-if="accountRoute" :to="accountRoute">
-            <span class="h-is-property-text">Show my account</span>
-          </router-link>
-          <router-link v-if="allowanceApprovalRoute" :to="allowanceApprovalRoute">
-            <span class="h-is-property-text">Approve an allowance…</span>
-          </router-link>
-        </div>
-      </template>
-
-      <template v-slot:control v-if="isMediumScreen">
-        <div v-if="accountId" id="showAccountLink" class="is-flex is-flex-direction-column ml-3">
-          <router-link v-if="accountRoute" :to="accountRoute">
-            <span class="h-is-property-text">Show my account</span>
-          </router-link>
-          <router-link v-if="allowanceApprovalRoute && isHederaWallet" :to="allowanceApprovalRoute">
-            <span class="h-is-property-text">Approve an allowance…</span>
-          </router-link>
         </div>
       </template>
 
@@ -146,7 +127,6 @@
                       To change your staking options use Blade or HashPack.
                   </p>
               </div>
-              <button id="disconnectWalletButton" class="button is-white is-small" @click="disconnectFromWallet">DISCONNECT {{ walletName.toLocaleUpperCase() }}</button>
             </div>
             <div v-if="isHederaWallet" class="mt-5 h-is-text-size-2 is-italic has-text-grey has-text-centered">
               <span class="has-text-grey-light">Please Note: </span>
@@ -179,9 +159,6 @@
                           :disabled="!stakedTo" @click="showStopConfirmDialog">STOP STAKING</button>
                   <button id="showStakingDialogSmall" class="button is-white is-small ml-4" @click="showStakingDialog">CHANGE STAKED TO</button>
               </div>
-            <div class="is-flex is-justify-content-center mt-4">
-              <button id="disconnectWalletButtonSmall" class="button is-white is-small" @click="disconnectFromWallet">DISCONNECT WALLET</button>
-            </div>
             <div v-if="isHederaWallet" class="mt-5 h-is-text-size-2 is-italic has-text-grey has-text-centered">
               <span class="has-text-grey-light">Please Note: </span>
               Your full balance is automatically staked.<br/>
@@ -192,29 +169,19 @@
           </div>
         </template>
 
-        <template v-else-if="connecting">
-          <section class="section has-text-centered" style="min-height: 450px">
-            <p>Connecting your Wallet...</p>
-            <p>You need to select which account you wish to connect.</p>
-            <br/>
-            <button id="abortConnectWalletButton" class="button is-white is-small" @click="disconnectFromWallet">ABORT CONNECTION</button>
-          </section>
-        </template>
-
         <template v-else>
           <section class="section has-text-centered pt-0" :class="{'pb-0': isSmallScreen}">
             <p class="h-is-tertiary-text" style="font-weight: 300">
               To view or change your staking options first connect your wallet.
             </p>
             <br/>
-            <button id="connectWalletButton" class="button is-white is-small" @click="chooseWallet">CONNECT WALLET…</button>
           </section>
         </template>
 
       </template>
     </DashboardCard>
 
-    <DashboardCard v-if="accountId" :class="{'h-has-opacity-40': !isStakedToNode}">
+    <DashboardCard v-if="accountId" :class="{'h-has-opacity-40': !isStakedToNode}" collapsible-key="myRecentRewards">
       <template v-slot:title>
         <span class="h-is-secondary-title">Recent Staking Rewards</span>
       </template>
@@ -352,16 +319,6 @@ export default defineComponent({
     }
 
     //
-    // disconnectFromWallet
-    //
-
-    const disconnectFromWallet = () => {
-      walletManager
-          .disconnect()
-          .finally(() => connecting.value = false)
-    }
-
-    //
     // Account
     //
     const accountLocParser = new AccountLocParser(walletManager.accountId)
@@ -387,11 +344,6 @@ export default defineComponent({
     const accountRoute = computed(() => {
       return walletManager.accountId.value !== null
           ? routeManager.makeRouteToAccount(walletManager.accountId.value, false)
-          : null
-    })
-    const allowanceApprovalRoute = computed(() => {
-      return walletManager.accountId.value !== null
-          ? routeManager.makeRouteToAccount(walletManager.accountId.value, true)
           : null
     })
 
@@ -545,13 +497,12 @@ export default defineComponent({
       connecting,
       connected: walletManager.connected,
       walletName: walletManager.walletName,
-      walletIconURL: walletManager.getActiveDriver().iconURL,
+      walletLogoURL: walletManager.getActiveDriver().logoURL,
       accountId: walletManager.accountId,
       isHederaWallet: walletManager.isHederaWallet,
       accountChecksum: accountLocParser.accountChecksum,
       account: accountLocParser.accountInfo,
       accountRoute,
-      allowanceApprovalRoute,
       stakePeriodStart: accountLocParser.stakePeriodStart,
       showStakingDialog,
       stakingDialogVisible,
@@ -572,7 +523,6 @@ export default defineComponent({
       ignoreReward,
       chooseWallet,
       handleChooseWallet,
-      disconnectFromWallet,
       handleStopStaking,
       handleChangeStaking,
       showProgressDialog,

@@ -19,18 +19,20 @@
  */
 
 import {computed} from "vue";
-import {HbarPriceCache} from "@/components/dashboard/HbarPriceCache";
-import {HbarSupplyCache} from "@/components/dashboard/HbarSupplyCache";
+import {HbarPriceLoader} from "@/components/dashboard/HbarPriceLoader";
+import {HbarSupplyLoader} from "@/components/dashboard/HbarSupplyLoader";
 
 export class MarketDataCache {
 
     //
     // Public
     //
-    public readonly hbarPriceCache = new HbarPriceCache()
-    public readonly hbarPrice24hCache = new HbarPriceCache(86400)
-    public readonly hbarSupplyCache = new HbarSupplyCache()
-    public readonly hbarSupply24hCache = new HbarSupplyCache(86400)
+    public static readonly instance = new MarketDataCache()
+
+    public readonly hbarPriceCache = new HbarPriceLoader()
+    public readonly hbarPrice24hCache = new HbarPriceLoader(86400)
+    public readonly hbarSupplyCache = new HbarSupplyLoader()
+    public readonly hbarSupply24hCache = new HbarSupplyLoader(86400)
 
     public readonly hbarPrice = computed(() => {
         const currentPrice = this.hbarPriceCache.hbarPrice.value
@@ -90,5 +92,12 @@ export class MarketDataCache {
         this.hbarPrice24hCache.mounted.value = false
         this.hbarSupplyCache.mounted.value = false
         this.hbarSupply24hCache.mounted.value = false
+    }
+
+    public clear(): void {
+        this.hbarPriceCache.requestLoad()
+        this.hbarPrice24hCache.requestLoad()
+        this.hbarSupplyCache.requestLoad()
+        this.hbarSupply24hCache.requestLoad()
     }
 }

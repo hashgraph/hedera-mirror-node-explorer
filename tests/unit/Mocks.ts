@@ -2428,7 +2428,7 @@ export const SAMPLE_CONTRACT_DUDE = {
     "contract_id": "0.0.803295",
     "created_timestamp": "1648377044.798291252",
     "deleted": false,
-    "evm_address": "0x00000000000000000000000000000000000c41df",
+    "evm_address": "0x00000000000000000000000000000000000b70cf",
     "expiration_timestamp": "1649648001.410978000",
     "file_id": "0.0.803267",
     "memo": "",
@@ -2482,7 +2482,203 @@ export const SAMPLE_CONTRACTS = {
 }
 
 export const SAMPLE_CONTRACT_AS_ACCOUNT = {
-    "account": "0.0.200611",
+    "account": "0.0.749775",
+    "alias": "CIQAAAH4AY2OFK2FL37TSPYEQGPPUJRP4XTKWHD62HKPQX543DTOFFQ",
+    "auto_renew_period": 7890000,
+    "balance": {
+        "balance": 200000000,
+        "timestamp": "1646734500.576308000",
+        "tokens": []
+    },
+    "deleted": false,
+    "expiry_timestamp": null,
+    "evm_address": "0x00000000000000000000000000000000000b70cf",
+    "key": {
+        "_type": "ED25519",
+        "key": "f6628ec23113678f60cb6e7e3972ac0bfdec0c43c787c25fd626a05627700ba5"
+    },
+    "max_automatic_token_associations": null,
+    "memo": "",
+    "receiver_sig_required": null,
+    "transactions": [
+        {
+            "bytes": null,
+            "charged_tx_fee": 75871170,
+            "consensus_timestamp": "1645373467.889797098",
+            "entity_id": "0.0.200611",
+            "max_fee": "200000000",
+            "memo_base64": "c21hcnRDb250cmFjdEZ1bmN0aW9uRXhlY3V0ZTo6LXRyYW5zZmVyQW1vdW50LTo6VGFza2Jhcjo6U21hcnQgY29udHJhY3Qgc3RhdGUgY2hhbmdlIGNhbGwu",
+            "name": "CONTRACTCALL",
+            "node": "0.0.8",
+            "nonce": 0,
+            "parent_consensus_timestamp": null,
+            "result": "SUCCESS",
+            "scheduled": false,
+            "transaction_hash": "N174IhVVDxEtHG9iE3RKGhLgzWnKrTnPDolPjDVNLOldF3lU6IQdUVmM3zp8coQy",
+            "transaction_id": "0.0.178899-1645373457-761328453",
+            "transfers": [
+                {
+                    "account": "0.0.8",
+                    "amount": 891611
+                },
+                {
+                    "account": "0.0.98",
+                    "amount": 74979559
+                },
+                {
+                    "account": "0.0.178899",
+                    "amount": -75871170
+                },
+                {
+                    "account": "0.0.200611",
+                    "amount": -100000000
+                },
+                {
+                    "account": "0.0.689670",
+                    "amount": 100000000
+                }
+            ],
+            "valid_duration_seconds": "120",
+            "valid_start_timestamp": "1645373457.761328453"
+        },
+        {
+            "bytes": null,
+            "charged_tx_fee": 18787079,
+            "consensus_timestamp": "1645373400.586655580",
+            "entity_id": "0.0.200611",
+            "max_fee": "200000000",
+            "memo_base64": "c21hcnRDb250cmFjdEZ1bmN0aW9uRXhlY3V0ZTo6LWFkZEhiYXJzLTo6VGFza2Jhcjo6IEFkZGluZyBhbW91bnQgdG8gdGFzayBzbWFydC1jb250cmFjdA==",
+            "name": "CONTRACTCALL",
+            "node": "0.0.5",
+            "nonce": 0,
+            "parent_consensus_timestamp": null,
+            "result": "SUCCESS",
+            "scheduled": false,
+            "transaction_hash": "H9P5awEyK5ApqNxwMVwQBUzshRJfIwWPVj/QPl5qL3qrqTTSzPIHqI/+A202qhpg",
+            "transaction_id": "0.0.178899-1645373391-947654307",
+            "transfers": [
+                {
+                    "account": "0.0.5", "amount": 885182
+                },
+                {
+                    "account": "0.0.98",
+                    "amount": 17901897
+                },
+                {
+                    "account": "0.0.178899",
+                    "amount": -118787079
+                },
+                {
+                    "account": "0.0.200611",
+                    "amount": 100000000
+                }
+            ],
+            "valid_duration_seconds": "120",
+            "valid_start_timestamp": "1645373391.947654307"
+        }
+    ],
+}
+
+export const SAMPLE_CONTRACT_DUDE_AS_ACCOUNT = {
+    "account": "0.0.803295",
+    "alias": "CIQAAAH4AY2OFK2FL37TSPYEQGPPUJRP4XTKWHD62HKPQX543DTOFFQ",
+    "auto_renew_period": 7890000,
+    "balance": {
+        "balance": 200000000,
+        "timestamp": "1646734500.576308000",
+        "tokens": []
+    },
+    "deleted": false,
+    "expiry_timestamp": null,
+    "evm_address": "0x00000000000000000000000000000000000b70cf",
+    "key": {
+        "_type": "ED25519",
+        "key": "f6628ec23113678f60cb6e7e3972ac0bfdec0c43c787c25fd626a05627700ba5"
+    },
+    "max_automatic_token_associations": null,
+    "memo": "",
+    "receiver_sig_required": null,
+    "transactions": [
+        {
+            "bytes": null,
+            "charged_tx_fee": 75871170,
+            "consensus_timestamp": "1645373467.889797098",
+            "entity_id": "0.0.200611",
+            "max_fee": "200000000",
+            "memo_base64": "c21hcnRDb250cmFjdEZ1bmN0aW9uRXhlY3V0ZTo6LXRyYW5zZmVyQW1vdW50LTo6VGFza2Jhcjo6U21hcnQgY29udHJhY3Qgc3RhdGUgY2hhbmdlIGNhbGwu",
+            "name": "CONTRACTCALL",
+            "node": "0.0.8",
+            "nonce": 0,
+            "parent_consensus_timestamp": null,
+            "result": "SUCCESS",
+            "scheduled": false,
+            "transaction_hash": "N174IhVVDxEtHG9iE3RKGhLgzWnKrTnPDolPjDVNLOldF3lU6IQdUVmM3zp8coQy",
+            "transaction_id": "0.0.178899-1645373457-761328453",
+            "transfers": [
+                {
+                    "account": "0.0.8",
+                    "amount": 891611
+                },
+                {
+                    "account": "0.0.98",
+                    "amount": 74979559
+                },
+                {
+                    "account": "0.0.178899",
+                    "amount": -75871170
+                },
+                {
+                    "account": "0.0.200611",
+                    "amount": -100000000
+                },
+                {
+                    "account": "0.0.689670",
+                    "amount": 100000000
+                }
+            ],
+            "valid_duration_seconds": "120",
+            "valid_start_timestamp": "1645373457.761328453"
+        },
+        {
+            "bytes": null,
+            "charged_tx_fee": 18787079,
+            "consensus_timestamp": "1645373400.586655580",
+            "entity_id": "0.0.200611",
+            "max_fee": "200000000",
+            "memo_base64": "c21hcnRDb250cmFjdEZ1bmN0aW9uRXhlY3V0ZTo6LWFkZEhiYXJzLTo6VGFza2Jhcjo6IEFkZGluZyBhbW91bnQgdG8gdGFzayBzbWFydC1jb250cmFjdA==",
+            "name": "CONTRACTCALL",
+            "node": "0.0.5",
+            "nonce": 0,
+            "parent_consensus_timestamp": null,
+            "result": "SUCCESS",
+            "scheduled": false,
+            "transaction_hash": "H9P5awEyK5ApqNxwMVwQBUzshRJfIwWPVj/QPl5qL3qrqTTSzPIHqI/+A202qhpg",
+            "transaction_id": "0.0.178899-1645373391-947654307",
+            "transfers": [
+                {
+                    "account": "0.0.5", "amount": 885182
+                },
+                {
+                    "account": "0.0.98",
+                    "amount": 17901897
+                },
+                {
+                    "account": "0.0.178899",
+                    "amount": -118787079
+                },
+                {
+                    "account": "0.0.200611",
+                    "amount": 100000000
+                }
+            ],
+            "valid_duration_seconds": "120",
+            "valid_start_timestamp": "1645373391.947654307"
+        }
+    ],
+}
+
+export const SAMPLE_CONTRACT_DELETED_AS_ACCOUNT = {
+    "account": "0.0.803295",
     "alias": "CIQAAAH4AY2OFK2FL37TSPYEQGPPUJRP4XTKWHD62HKPQX543DTOFFQ",
     "auto_renew_period": 7890000,
     "balance": {

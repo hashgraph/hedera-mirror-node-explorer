@@ -28,13 +28,13 @@ import axios from "axios";
 
 describe("AccountLink.vue", () => {
 
-    const mock = new MockAdapter(axios);
-    const matcher1 = "/api/v1/network/nodes"
-    mock.onGet(matcher1).reply(200, SAMPLE_NETWORK_NODES);
-
     it("props.accountId set ; no extra", async () => {
 
         await router.push("/") // To avoid "missing required param 'network'" error
+
+        const mock = new MockAdapter(axios);
+        const matcher1 = "/api/v1/network/nodes"
+        mock.onGet(matcher1).reply(200, SAMPLE_NETWORK_NODES);
 
         const testAccountId = "0.0.42"
         const wrapper = mount(AccountLink, {
@@ -54,6 +54,7 @@ describe("AccountLink.vue", () => {
 
         wrapper.unmount()
         await flushPromises()
+        mock.restore()
     });
 
 
@@ -102,6 +103,10 @@ describe("AccountLink.vue", () => {
 
         await router.push("/") // To avoid "missing required param 'network'" error
 
+        const mock = new MockAdapter(axios);
+        const matcher1 = "/api/v1/network/nodes"
+        mock.onGet(matcher1).reply(200, SAMPLE_NETWORK_NODES);
+
         const testAccountId = "0.0.4"
         const testExtra = "Hosted by Hedera | East Coast, USA"
         const wrapper = mount(AccountLink, {
@@ -121,6 +126,7 @@ describe("AccountLink.vue", () => {
 
         wrapper.unmount()
         await flushPromises()
+        mock.restore()
     });
 
 

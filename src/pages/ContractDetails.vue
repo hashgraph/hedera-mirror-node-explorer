@@ -26,30 +26,32 @@
 
   <section class="section" :class="{'h-mobile-background': isTouchDevice || !isSmallScreen}">
 
-    <DashboardCard>
+    <DashboardCard collapsible-key="contractDetails">
       <template v-slot:title>
         <span class="h-is-primary-title">Contract </span>
+      </template>
+
+      <template v-slot:subtitle>
         <div class="h-is-tertiary-text mt-3" id="entityId">
-          <div class="is-inline-block h-is-property-text has-text-weight-light" style="min-width: 115px">Contract ID:</div>
-          <Copyable :content-to-copy="normalizedContractId ?? ''">
-            <template v-slot:content>
-              <span>{{ normalizedContractId ?? "" }}</span>
-            </template>
-          </Copyable>
-          <span v-if="accountChecksum" class="has-text-grey h-is-smaller">-{{ accountChecksum }}</span>
+            <div class="is-inline-block h-is-property-text has-text-weight-light" style="min-width: 115px">Contract ID:</div>
+            <Copyable :content-to-copy="normalizedContractId ?? ''">
+                <template v-slot:content>
+                    <span>{{ normalizedContractId ?? "" }}</span>
+                </template>
+            </Copyable>
+            <span v-if="accountChecksum" class="has-text-grey h-is-smaller">-{{ accountChecksum }}</span>
         </div>
         <div v-if="ethereumAddress" id="evmAddress" class="h-is-tertiary-text mt-2" style="word-break: keep-all">
-          <div class="is-inline-block h-is-property-text has-text-weight-light" style="min-width: 115px">EVM Address:</div>
-          <div class="is-inline-block">
-            <EVMAddress :show-id="false" :has-custom-font="true" :address="ethereumAddress"/>
-          </div>
-        </div>
-
+                <div class="is-inline-block h-is-property-text has-text-weight-light" style="min-width: 115px">EVM Address:</div>
+                <div class="is-inline-block">
+                    <EVMAddress :show-id="false" :has-custom-font="true" :address="ethereumAddress"/>
+                </div>
+            </div>
         <div v-if="!isMediumScreen && accountRoute" id="showAccountLink" class="is-inline-block mt-2">
-          <router-link :to="accountRoute">
-            <span class="h-is-property-text">Show associated account</span>
-          </router-link>
-        </div>
+                <router-link :to="accountRoute">
+                    <span class="h-is-property-text">Show associated account</span>
+                </router-link>
+            </div>
       </template>
 
       <template v-slot:control v-if="isMediumScreen">
@@ -92,7 +94,7 @@
             <Property id="memo">
               <template v-slot:name>Memo</template>
               <template v-slot:value>
-                <BlobValue :blob-value="contract?.memo" :show-none="true" :base64="true"/>
+                <BlobValue :blob-value="contract?.memo" :show-none="true" :base64="true" :show-base64-as-extra="true"/>
               </template>
             </Property>
             <Property id="createTransaction">
@@ -177,9 +179,11 @@
       </template>
     </DashboardCard>
 
+    <ContractResultsSection :contract-id="normalizedContractId ?? undefined"/>
+
     <ContractByteCodeSection :contract-analyzer="contractAnalyzer"/>
 
-    <ContractResultsSection :contract-id="normalizedContractId ?? undefined"/>
+    <ContractResultLogs :logs="logs"/>
 
   </section>
 
@@ -193,7 +197,7 @@
 
 <script lang="ts">
 
-import {computed, defineComponent, inject, onBeforeUnmount, onMounted} from 'vue';
+import {computed, ComputedRef, defineComponent, inject, onBeforeUnmount, onMounted} from 'vue';
 import KeyValue from "@/components/values/KeyValue.vue";
 import AccountLink from "@/components/values/AccountLink.vue";
 import TimestampValue from "@/components/values/TimestampValue.vue";
@@ -205,10 +209,9 @@ import BlobValue from "@/components/values/BlobValue.vue";
 import StringValue from "@/components/values/StringValue.vue";
 import Footer from "@/components/Footer.vue";
 import NotificationBanner from "@/components/NotificationBanner.vue";
-import {EntityID} from "@/utils/EntityID";
 import Property from "@/components/Property.vue";
-import {ContractByIdCache} from "@/utils/cache/ContractByIdCache";
-import {AccountLocParser} from "@/utils/parser/AccountLocParser";
+import {AccountByIdCache} from "@/utils/cache/AccountByIdCache";
+import {ContractLocParser} from "@/utils/parser/ContractLocParser";
 import {networkRegistry} from "@/schemas/NetworkRegistry";
 import router, {routeManager} from "@/router";
 import TransactionLink from "@/components/values/TransactionLink.vue";
@@ -218,6 +221,10 @@ import ContractResultsSection from "@/components/contracts/ContractResultsSectio
 import InfoTooltip from "@/components/InfoTooltip.vue";
 import Copyable from "@/components/Copyable.vue";
 import {ContractAnalyzer} from "@/utils/analyzer/ContractAnalyzer";
+import ContractResultLogs from "@/components/contract/ContractResultLogs.vue";
+import {ContractResultsLogsAnalyzer} from "@/utils/analyzer/ContractResultsLogsAnalyzer";
+import {BalanceAnalyzer} from "@/utils/analyzer/BalanceAnalyzer";
+import {TokenBalance} from "@/schemas/HederaSchemas";
 
 const MAX_TOKEN_BALANCES = 3
 
@@ -243,7 +250,8 @@ export default defineComponent({
     TimestampValue,
     DurationValue,
     KeyValue,
-    StringValue
+    StringValue,
+    ContractResultLogs
   },
 
   props: {
@@ -260,68 +268,62 @@ export default defineComponent({
     // basic computed's
     //
 
-    const validEntityId = computed(() => {
-      return props.contractId ? EntityID.parse(props.contractId, true) != null : false
-    })
     const normalizedContractId = computed(() => {
-      return props.contractId ? EntityID.normalize(props.contractId) : null
+      return contractLocParser.contractId.value
     })
 
     //
     // contract
     //
 
-    const contractLookup = ContractByIdCache.instance.makeLookup(normalizedContractId)
-    onMounted(() => contractLookup.mount())
-    onBeforeUnmount(() => contractLookup.unmount())
+    const contractLocParser = new ContractLocParser(computed(() => props.contractId ?? null))
+    onMounted(() => contractLocParser.mount())
+    onBeforeUnmount(() => contractLocParser.unmount())
 
-    const accountLocParser = new AccountLocParser(normalizedContractId)
-    onMounted(() => accountLocParser.mount())
-    onBeforeUnmount(() => accountLocParser.unmount())
-
-    const displayNonce = computed(() => contractLookup.entity.value?.nonce != undefined)
+    const displayNonce = computed(() => contractLocParser.entity.value?.nonce != undefined)
 
     const autoRenewAccount = computed(() => {
-      return contractLookup.entity.value?.auto_renew_account ?? null
+      return contractLocParser.entity.value?.auto_renew_account ?? null
     })
 
     const obtainerId = computed(() => {
-      return contractLookup.entity.value?.obtainer_id ?? null
+      return contractLocParser.entity.value?.obtainer_id ?? null
     })
 
     const proxyAccountId = computed(() => {
-      return contractLookup.entity.value?.proxy_account_id ?? null
+      return contractLocParser.entity.value?.proxy_account_id ?? null
     })
 
     const accountChecksum = computed(() =>
-        accountLocParser.accountId.value ? networkRegistry.computeChecksum(
-            accountLocParser.accountId.value,
+        contractLocParser.contractId.value ? networkRegistry.computeChecksum(
+            contractLocParser.contractId.value,
             router.currentRoute.value.params.network as string
         ) : null)
 
-    const displayAllTokenLinks = computed(() => accountLocParser.tokens.value ? accountLocParser.tokens.value.length > MAX_TOKEN_BALANCES : false)
+    //
+    // account
+    //
 
-    const notification = computed(() => {
-      let result: string|null
+    const accountLookup = AccountByIdCache.instance.makeLookup(contractLocParser.contractId)
+    onMounted(() => accountLookup.mount())
+    onBeforeUnmount(() => accountLookup.unmount())
 
-      // const expiration = contractLoader.entity.value?.expiration_timestamp
-      if (!validEntityId.value) {
-        result = "Invalid contract ID: " + props.contractId
-      } else if (contractLookup.entity.value == null) {
-          if (contractLookup.isLoaded()) {
-              result = "Contract with ID " + props.contractId + " was not found"
-          } else {
-              result = null
-          }
-      } else if (contractLookup.entity.value?.deleted === true) {
-        result = "Contract is deleted"
-      // to be re-activated after Feb 9th
-      // } else if (expiration && Number.parseFloat(expiration) <= new Date().getTime() / 1000) {
-      //   result = "Contract has expired and is in grace period"
-      } else {
-        result = null
-      }
-      return result
+    const balance: ComputedRef<number|null>
+        = computed(() => accountLookup.entity.value?.balance?.balance ?? null)
+
+    const tokens: ComputedRef<TokenBalance[]|null>
+        = computed(() => accountLookup.entity.value?.balance?.tokens ?? null)
+
+    //
+    // balanceCache
+    //
+
+    const balanceAnalyzer = new BalanceAnalyzer(contractLocParser.contractId, 10000)
+    onMounted(() => balanceAnalyzer.mount())
+    onBeforeUnmount(() => balanceAnalyzer.unmount())
+    const displayAllTokenLinks = computed(() => {
+      const tokenCount = balanceAnalyzer.tokenBalances.value?.length ?? 0
+      return tokenCount > MAX_TOKEN_BALANCES
     })
 
     const accountRoute = computed(() => {
@@ -332,25 +334,32 @@ export default defineComponent({
     onMounted(() => contractAnalyzer.mount())
     onBeforeUnmount(() => contractAnalyzer.unmount())
 
+    //
+    // contract results logs - event logs at contract level
+    //
+    const contractResultsLogsAnalyzer = new ContractResultsLogsAnalyzer(normalizedContractId)
+    onMounted(() => contractResultsLogsAnalyzer.mount())
+    onBeforeUnmount(() => contractResultsLogsAnalyzer.unmount())
+
     return {
       isSmallScreen,
       isMediumScreen,
       isTouchDevice,
-      contract: contractLookup.entity,
-      account: accountLocParser.accountInfo,
-      balance: accountLocParser.balance,
-      tokens: accountLocParser.tokens,
-      ethereumAddress: accountLocParser.ethereumAddress,
+      contract: contractLocParser.entity,
+      balance,
+      tokens,
+      ethereumAddress: contractLocParser.ethereumAddress,
       displayNonce,
       accountChecksum,
       displayAllTokenLinks,
-      notification,
+      notification: contractLocParser.errorNotification,
       autoRenewAccount: autoRenewAccount,
       obtainerId: obtainerId,
       proxyAccountId: proxyAccountId,
       normalizedContractId,
       accountRoute,
-      contractAnalyzer
+      contractAnalyzer,
+      logs: contractResultsLogsAnalyzer.logs
     }
   },
 });

@@ -75,6 +75,7 @@ describe("TransactionByIdTable.vue", () => {
             "1:29:17.0144 PMSep 6, 2022, UTCCRYPTO TRANSFER0.0.48113503\n\n0.0.48193741Reptilian Egg NFT\n\n0.0.48193739Child2"
         )
 
+        mock.restore()
         wrapper.unmount()
         await flushPromises()
     });
@@ -105,19 +106,18 @@ describe("TransactionByIdTable.vue", () => {
         await flushPromises()
         // console.log(wrapper.text())
 
-        expect(wrapper.find('thead').text()).toBe("Time Type Content Relationship Nonce")
+        expect(wrapper.find('thead').text()).toBe("Time Type Content Relationship")
         const rows = wrapper.find('tbody').findAll('tr')
 
         let cells = rows[0].findAll('td')
         expect(cells[1].text()).toBe("SCHEDULE CREATE")
         expect(cells[3].text()).toBe("Schedule Create")
-        expect(cells[4].text()).toBe("0")
 
         cells = rows[1].findAll('td')
         expect(cells[1].text()).toBe("TOKEN MINT")
         expect(cells[3].text()).toBe("Scheduled")
-        expect(cells[4].text()).toBe("0")
 
+        mock.restore()
         wrapper.unmount()
         await flushPromises()
     });
@@ -143,23 +143,20 @@ describe("TransactionByIdTable.vue", () => {
         await flushPromises()
         // console.log(wrapper.text())
 
-        expect(wrapper.find('thead').text()).toBe("Time Type Content Relationship Nonce")
+        expect(wrapper.find('thead').text()).toBe("Time Type Content Nonce")
         const rows = wrapper.find('tbody').findAll('tr')
 
         let cells = rows[0].findAll('td')
         expect(cells[1].text()).toBe("CRYPTO DELETE ALLOWANCE")
-        expect(cells[3].text()).toBe("")
-        expect(cells[4].text()).toBe("0")
+        expect(cells[3].text()).toBe("0")
 
         cells = rows[1].findAll('td')
         expect(cells[1].text()).toBe("CONTRACT DELETE")
-        expect(cells[3].text()).toBe("")
-        expect(cells[4].text()).toBe("1")
+        expect(cells[3].text()).toBe("1")
 
         cells = rows[2].findAll('td')
         expect(cells[1].text()).toBe("CONTRACT DELETE")
-        expect(cells[3].text()).toBe("")
-        expect(cells[4].text()).toBe("2")
+        expect(cells[3].text()).toBe("2")
 
         wrapper.unmount()
         await flushPromises()

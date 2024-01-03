@@ -19,7 +19,6 @@
  */
 
 import {NetworkEntry, networkRegistry} from "@/schemas/NetworkRegistry";
-import { SolcMetadata } from "./utils/solc/SolcMetadata";
 
 export class AppStorage {
 
@@ -106,50 +105,33 @@ export class AppStorage {
     }
 
     //
-    // metadata
+    // display hexa opcodes in assembly code
     //
 
-    private static readonly METADATA = 'metadata'
+    private static readonly SHOW_HEXA_OPCODE_KEY = 'hexaOpcode'
 
-    public static getMetadata(contractId: string): SolcMetadata | null {
-        let result: SolcMetadata|null
-
-        const suffix = this.METADATA + "/" + contractId
-        const jsonText = this.getLocalStorageItem(suffix)
-        if (jsonText !== null) {
-            try {
-                result = JSON.parse(jsonText) as SolcMetadata
-            } catch {
-                result = null
-            }
-        } else {
-            result = null
-        }
-
-        return result
+    public static getShowHexaOpcode(): boolean {
+        return  this.getLocalStorageItem(this.SHOW_HEXA_OPCODE_KEY) != null
     }
 
-    public static setMetadata(newValue: SolcMetadata | null, contractId: string ): void {
-        const suffix = this.METADATA + "/" + contractId
-        this.setLocalStorageItem(suffix, JSON.stringify(newValue))
+    public static setShowHexaOpcode(newValue: boolean|null): void {
+        this.setLocalStorageItem(this.SHOW_HEXA_OPCODE_KEY, newValue ? "true" : null)
     }
 
     //
-    // source
+    // sections collapsed state
     //
 
-    private static readonly SOURCE = 'source'
+    private static readonly COLLAPSED_STATE_KEY = 'collapsed'
 
-    public static getSource(name: string): string | null {
-        const suffix = this.SOURCE + "/" + name
-        return this.getLocalStorageItem(suffix)
+    public static getCollapsedState(section: string): boolean | null {
+        const collapsed = this.getLocalStorageItem(`${section}_${this.COLLAPSED_STATE_KEY}`)
+        return collapsed ? collapsed === 'true' : null
     }
 
-    public static setSource(newValue: string | null, name: string ): void {
-        const suffix = this.SOURCE + "/" + name
-        this.setLocalStorageItem(suffix, newValue)
+    public static setCollapsedState(section: string, collapsed: boolean | null): void {
+        this.setLocalStorageItem(`${section}_${this.COLLAPSED_STATE_KEY}`, collapsed != null ? (collapsed ? "true" : "false") : null)
     }
-
 
     //
     // Private
@@ -210,9 +192,5 @@ export class AppStorage {
             }
         }
         return result
-    }
-
-    private static eraseCookie(name: string): void {
-        AppStorage.createCookie(name,"",-1)
     }
 }

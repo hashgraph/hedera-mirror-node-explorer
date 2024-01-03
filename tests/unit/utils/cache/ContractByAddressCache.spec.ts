@@ -21,14 +21,11 @@
  */
 
 
-import {describe, test, expect} from 'vitest'
-import {TransactionGroupByBlockCache} from "@/utils/cache/TransactionGroupByBlockCache";
-import {SAMPLE_ACCOUNT, SAMPLE_BLOCK, SAMPLE_CONTRACT, SAMPLE_PARENT_CHILD_TRANSACTIONS} from "../../Mocks";
+import {describe, expect, test} from 'vitest'
+import {SAMPLE_CONTRACT} from "../../Mocks";
 import {flushPromises} from "@vue/test-utils";
 import MockAdapter from "axios-mock-adapter";
-import axios, {AxiosRequestConfig} from "axios";
-import {TransactionByHashCache} from "@/utils/cache/TransactionByHashCache";
-import {TransactionByTsCache} from "@/utils/cache/TransactionByTsCache";
+import axios from "axios";
 import {ContractByIdCache} from "@/utils/cache/ContractByIdCache";
 import {ContractByAddressCache} from "@/utils/cache/ContractByAddressCache";
 
@@ -60,5 +57,7 @@ describe("ContractByAddressCache", () => {
         if (contract?.contract_id) {
             expect(ContractByIdCache.instance.contains(contract.contract_id))
         }
+
+        mock.restore()
     })
 })

@@ -27,7 +27,7 @@ export function makeEthAddressForAccount(account: AccountInfo): string|null {
     if (account.evm_address) return account.evm_address;
     if (account.key?.key && account.key?._type == KeyType.ECDSA_SECP256K1) {
         // Generates Ethereum address from public key
-        return ethers.utils.computeAddress("0x" + account.key.key)
+        return ethers.computeAddress("0x" + account.key.key)
     }
     if (account.account) {
         // Generates Ethereum address from account id
@@ -136,15 +136,15 @@ export function decodeSolidityErrorMessage(message: string | null): string | nul
         if (message === null) {
             result = null
         } else if (message.startsWith(errorStringSelector)) {
-            const reason = ethers.utils.defaultAbiCoder.decode(
+            const reason = ethers.AbiCoder.defaultAbiCoder().decode(
                 ['string'],
-                ethers.utils.hexDataSlice(message ?? "", 4)
+                ethers.dataSlice(message ?? "", 4)
             )
             result = reason.toString() ?? null
         } else if (message.startsWith(panicUint256Selector)) {
-            const code = ethers.utils.defaultAbiCoder.decode(
+            const code = ethers.AbiCoder.defaultAbiCoder().decode(
                 ['uint256'],
-                ethers.utils.hexDataSlice(message ?? "", 4)
+                ethers.dataSlice(message ?? "", 4)
             )
             result = 'Panic(0x' + parseInt(code.toString()).toString(16) + ')'  ?? null
         } else {
@@ -171,18 +171,18 @@ export function makeStakePercentage(node: NetworkNode, stakeTotal: number): stri
     return formatter.format(node.stake ? node.stake / stakeTotal : 0)
 }
 
-export function makeRewardRate(node: NetworkNode): number {
+export function makeRewardRate(rewardInTinyBar: number): number {
     // rely on mirror node to provide the actual reward rate (tiny bars rewarded per hbar staked)
     // here we simply convert to hbars
-    return (node.reward_rate_start ?? 0) / 100000000
+    return (rewardInTinyBar ?? 0) / 100000000
 }
 
-export function makeAnnualizedRate(node: NetworkNode): string {
+export function makeAnnualizedRate(rewardInTinyBar: number): string {
     const formatter = new Intl.NumberFormat("en-US", {
         style: 'percent',
-        maximumFractionDigits: 2
+        maximumFractionDigits: 3
     })
-    return formatter.format(makeRewardRate(node) * 365);
+    return formatter.format(makeRewardRate(rewardInTinyBar) * 365);
 }
 
 export function isCouncilNode(node: NetworkNode): boolean {

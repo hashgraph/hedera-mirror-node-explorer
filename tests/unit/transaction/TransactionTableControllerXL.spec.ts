@@ -145,6 +145,8 @@ describe("TransactionTableController.ts", () => {
         expect(tc.totalRowCount.value).toBe(50)
         expect(tc.rows.value).toStrictEqual([])
         expect(tc.mounted.value).toBe(false)
+
+        mock.restore()
     })
 
     test("route with p/k + accountId setup + mount + unmount", async () => {
@@ -210,6 +212,8 @@ describe("TransactionTableController.ts", () => {
         expect(tc.totalRowCount.value).toBe(50)
         expect(tc.rows.value).toStrictEqual([])
         expect(tc.mounted.value).toBe(false)
+
+        mock.restore()
     })
 
     test("mount + transactionType setup + unmount [accountMandatory=false]", async () => {
@@ -312,5 +316,6 @@ describe("TransactionTableController.ts", () => {
         expect(currentRoute.value.query).toStrictEqual({})
         expect(mock.history.get.length).toBe(4)
 
+        mock.restore()
     })
 })

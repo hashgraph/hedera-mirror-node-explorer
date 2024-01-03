@@ -24,7 +24,7 @@
 
 <template>
 
-  <DashboardCard>
+  <DashboardCard collapsible-key="rewardsEstimator">
     <template v-slot:title>
       <p class="h-is-secondary-title">Rewards Estimator</p>
     </template>

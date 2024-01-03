@@ -26,7 +26,7 @@
 
   <div v-if="contractResult">
 
-    <DashboardCard class="h-card">
+    <DashboardCard class="h-card" collapsible-key="contractResult">
       <template v-slot:title>
         <span v-if="topLevel"  class="h-is-primary-title">
           Contract Result for {{ contractResult?.contract_id }} at {{ contractResult?.timestamp }}
@@ -116,7 +116,7 @@
 
     <ContractResultStates :state-changes="contractResult?.state_changes" :time-stamp="contractResult?.timestamp"/>
 
-    <ContractResultLogs :logs="contractResult?.logs"/>
+    <ContractResultLogs :logs="contractResult?.logs" :block-number="blockNumber" :transaction-hash="transactionHash"/>
 
   </div>
 
@@ -175,6 +175,12 @@ export default defineComponent({
     isParent: {
       type: Boolean,
       default: false
+    },
+    blockNumber: {
+      type:  Number
+    },
+    transactionHash: {
+      type: String
     }
   },
 
@@ -186,6 +192,7 @@ export default defineComponent({
     const contractResultAnalyzer = new ContractResultAnalyzer(computed(() => props.timestamp ?? null))
     onMounted(() => contractResultAnalyzer.mount())
     onBeforeUnmount(() => contractResultAnalyzer.unmount())
+
 
     return {
       isSmallScreen,

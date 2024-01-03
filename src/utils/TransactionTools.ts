@@ -362,11 +362,7 @@ export function makeNetOfRewards(transfers: Transfer[] | undefined, rewards: Sta
                 netAmount = t.amount
                 for (const r of rewards) {
                     if (t.account == r.account) {
-                        if (t.amount < 0) {
-                            netAmount = t.amount + r.amount
-                        } else {
-                            netAmount = t.amount - r.amount
-                        }
+                        netAmount = t.amount - r.amount
                         break
                     }
                 }

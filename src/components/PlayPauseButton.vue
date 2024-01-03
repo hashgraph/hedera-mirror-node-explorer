@@ -46,7 +46,7 @@
 
 <template>
   <div class="is-flex is-align-items-center">
-    <span v-if="isAutoStopped" class="h-is-text-size-1 h-is-dense">REFRESH PAUSED</span>
+    <span v-if="!isPlaying" class="h-is-text-size-1 h-is-dense">REFRESH PAUSED</span>
     <button
         class="button is-small has-text-white ml-2"
         data-cy="playPauseButton"

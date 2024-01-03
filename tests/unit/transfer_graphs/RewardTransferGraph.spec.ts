@@ -116,6 +116,7 @@ describe("RewardTransferGraph.vue", () => {
             "0.0.2254995" +
             "22.89378672" + "$5.63263")
 
+        mock.restore()
         wrapper.unmount()
     })
 

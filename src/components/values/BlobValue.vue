@@ -27,13 +27,25 @@
   <a v-else-if="decodedURL" :href="decodedURL.toString()">{{ decodedURL }}</a>
   <a v-else-if="ipfsAddress" :href="ipfsAddress">{{ decodedValue }}</a>
   <div v-else-if="jsonValue"
-       class="h-is-json is-inline-block has-text-left is-family-monospace h-is-text-size-3">{{ jsonValue }}</div>
+       class="h-is-json is-inline-block has-text-left is-family-monospace h-is-text-size-3 should-wrap">{{ jsonValue }}</div>
   <template v-else-if="blobValue">
     <div v-if="limitingFactor && isMediumScreen" class="h-is-one-line is-inline-block"
          :style="{'max-width': windowWidth-limitingFactor + 'px'}">{{ decodedValue }}</div>
     <div v-else-if="limitingFactor" class="h-is-one-line is-inline-block"
          :style="{'max-width': windowWidth-limitingFactor+200 + 'px'}">{{ decodedValue }}</div>
-    <div v-else style="word-break: break-word">{{ decodedValue }}</div>
+    <div v-else style="word-break: break-word">
+      <span id="blob-main">
+        {{ (b64EncodingFound && showBase64AsExtra) ? blobValue : decodedValue }}
+      </span>
+      <div v-if="b64EncodingFound && showBase64AsExtra" class="h-is-extra-text h-is-text-size-3 mt-1">
+        <span class="has-text-grey">
+          Base64:
+        </span>
+        <span id="blob-extra">
+          {{decodedValue }}
+        </span>
+      </div>
+    </div>
   </template>
   <span v-else-if="showNone && !initialLoading" class="has-text-grey">None</span>
   <span v-else/>
@@ -61,6 +73,10 @@ export default defineComponent({
       default: false
     },
     base64: {
+      type: Boolean,
+      default: false
+    },
+    showBase64AsExtra: {
       type: Boolean,
       default: false
     },
@@ -114,15 +130,19 @@ export default defineComponent({
       return result
     })
 
+    const b64EncodingFound = ref(false)
+
     const decodedValue = computed(() => {
 
       const base64regex = /^([0-9a-zA-Z+/]{4})*(([0-9a-zA-Z+/]{2}==)|([0-9a-zA-Z+/]{3}=))?$/;
-
       let result: string
+      b64EncodingFound.value = false
+
       if (props.blobValue) {
         if (props.base64 && base64regex.test(props.blobValue)) {
           try {
             result = Buffer.from(props.blobValue, 'base64').toString()
+            b64EncodingFound.value = true
           } catch {
             result = props.blobValue
           }
@@ -149,6 +169,7 @@ export default defineComponent({
       windowWidth,
       isURL,
       jsonValue,
+      b64EncodingFound,
       decodedValue,
       initialLoading,
       ipfsAddress,

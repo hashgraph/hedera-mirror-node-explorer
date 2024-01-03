@@ -130,8 +130,61 @@ describe("BlobValue.vue", () => {
 
         await flushPromises()
 
-        expect(wrapper.text()).toBe(BLOB_PLAIN_TEXT)
-        expect(btoa(wrapper.text())).toBe(BLOB_BASE64)
+        const blobMain = wrapper.get("#blob-main").text()
+        expect(blobMain).toBe(BLOB_PLAIN_TEXT)
+        expect(btoa(blobMain)).toBe(BLOB_BASE64)
+
+        expect(wrapper.find("#blob-extra").exists()).toBe(false)
+
+        wrapper.unmount()
+        await flushPromises()
+    })
+
+    it("should display raw value and base64-decoded value as extra", async () => {
+
+        const wrapper = mount(BlobValue, {
+            global: {
+                plugins: [router]
+            },
+            props: {
+                blobValue: BLOB_BASE64,
+                base64: true,
+                showBase64AsExtra: true
+            },
+        });
+
+        await flushPromises()
+
+        const blobMain = wrapper.get("#blob-main").text()
+        expect(blobMain).toBe(BLOB_BASE64)
+
+        const blobExtra = wrapper.get("#blob-extra").text()
+        expect(blobExtra).toBe(BLOB_PLAIN_TEXT)
+        expect(btoa(blobExtra)).toBe(BLOB_BASE64)
+
+        wrapper.unmount()
+        await flushPromises()
+    })
+
+    it("should display the (unencoded) blob value and ignore the showBase64AsExtra prop", async () => {
+
+        const wrapper = mount(BlobValue, {
+            global: {
+                plugins: [router]
+            },
+            props: {
+                blobValue: BLOB_PLAIN_TEXT,
+                base64: true,
+                showBase64AsExtra: true
+            },
+        });
+
+        await flushPromises()
+
+        const blobMain = wrapper.get("#blob-main").text()
+        expect(blobMain).toBe(BLOB_PLAIN_TEXT)
+
+        expect(wrapper.find("#blob-extra").exists()).toBe(false)
 
         wrapper.unmount()
         await flushPromises()

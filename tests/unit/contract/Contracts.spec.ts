@@ -76,6 +76,7 @@ describe("Contracts.vue", () => {
             "Mirror Node acceptance test: 2022-03-07T15:09:15.228564328Z Create contract"
         )
 
+        mock.restore()
         wrapper.unmount()
         await flushPromises()
 

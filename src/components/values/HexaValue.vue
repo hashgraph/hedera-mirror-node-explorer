@@ -72,6 +72,10 @@ export default defineComponent({
     wordWrapSmall: {
       type: Number,
       default: null
+    },
+    copyable: {
+        type:Boolean,
+        default: true
     }
   },
 
@@ -101,7 +105,7 @@ export default defineComponent({
     }
 
     const isCopyEnabled = computed(() => {
-      return (normByteString.value?.length ?? 0) >= 1
+      return props.copyable && (normByteString.value?.length ?? 0) >= 1
     })
 
     // 4)

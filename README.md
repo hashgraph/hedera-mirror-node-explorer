@@ -10,6 +10,8 @@ Visual Explorer for the Hedera Hashgraph DLT.
 npm install
 ```
 
+## Build
+
 ### Compile and hot-reload for development
 
 ```shell
@@ -28,6 +30,8 @@ npm run build
 npm run lint
 ```
 
+## Test
+
 ### Run unit tests (based on Jest)
 
 ```shell
@@ -43,11 +47,45 @@ npm run test:e2e:dev
 npm run test:e2e
 ```
 
-### Run the Explorer in Docker
+## Run local sourcify instance (for smart contract verification)
+
+This set-up uses an nginx reverse proxy in front of the 3 sourcify services (ui, server, repository) in order to 
+support HTTPS. The SSL set-up is based on a self-signed certificate obtained per the instructions at:
+https://letsencrypt.org/docs/certificates-for-localhost/
+
+The design of the repository (itself based on an nginx reverse proxy) is such that it requires to be on a distinct host, 
+so it cannot be accessed by localhost like ui and server. To this effect you need to define a hostname locally (see below)
+
+```shell
+# Define the domain repository.local` used by the repository
+bash -c 'echo "127.0.0.1       repository.local" >> /etc/hosts'
+
+# Start sourcify services
+# in sourcify-setup directory do:
+docker-compose up -d
+
+# Invoke the server API once to make sure your browser accepts the self-signed certificate
+open https://localhost/server/chains
+
+# To open the sourcify UI
+open https://localhost
+
+# To open the sourcify repository UI
+open https://repository.local
+
+# Stop sourcify services
+# in sourcify-setup directory do:
+docker-compose down
+```
+
+## Run in Docker
 
 ```shell
 # Build the Docker image locally
 npm run docker:build
+
+# Copy and adjust configuration of Hedera networks as needed
+cp networks-config-example.json networks-config.json
 
 # Start the Docker container
 # (if not built locally, this will fetch a pre-built image from Google Container Registry)
@@ -60,7 +98,7 @@ npm run docker:stop
 # then open http://localhost:8080 in your web browser
 ```
 
-### Run in Kubernetes
+## Run in Kubernetes
 
 To run in [Kubernetes](https://kubernetes.io) the hedera-explorer [Helm](https://helm.sh) chart can be used. First,
 obtain access to a Kubernetes cluster running version 1.23 or greater. [Minikube](https://minikube.sigs.k8s.io/docs/)
@@ -69,7 +107,8 @@ can be used for a local Kubernetes cluster.
 ```shell
 helm upgrade --install hedera-explorer chart/
 ```
-#### Specify custom network (can also be used for development)
+
+### Configure custom networks (can also be used for development)
 
 By default the hedera explorer has support for MAINNET, PREVIEWNET and TESTNET. If you want to add or remove more networks
 you can specify it using the `customNetworkConfig` in the `values.yaml` file
@@ -105,22 +144,9 @@ An example:
   ]
 ```
 
-### Configure the Explorer
+## Configuration
 
-#### FOR DEVELOPMENT PURPOSES: Docker configuration
-
-When running the explorer in Docker, for instance with a Local Node, it is possible
-to add a network to the list of available networks configured at build time -- see below.
-This is achieved by defining the variable `DOCKER_LOCAL_MIRROR_NODE_URL` 
-(and optionally `DOCKER_LOCAL_MIRROR_NODE_MENU_NAME`) in the `.env.docker` file, 
-which will be taken into account at start time by Docker. For instance:
-
-```shell
-DOCKER_LOCAL_MIRROR_NODE_MENU_NAME=LOCAL NODE        # Optional, defaults to 'DEVNET'
-DOCKER_LOCAL_MIRROR_NODE_URL=http://localhost:5551
-```
-
-#### Customize the available networks
+### Customize the available networks
 
 The list of networks available in the network selector (top navigation bar)
 can be configured in the file `/public/networks-config.json`.
@@ -152,7 +178,7 @@ Note:
 - The `ledgerID` is required to process the ID checksums shown in the UI.
 - The maximum number of networks taken into account is 15. The rest will be ignored.
 
-#### Customize the UI
+### Customize the UI
 
 A few aspects of the Explorer UI, such as the product name displayed at the bottom of the pages,
 are controlled by environment variables defined in the `.env` file. These will be taken into 
@@ -170,7 +196,7 @@ To enable the Staking page and menu item, set the following variable to *true* i
 VITE_APP_ENABLE_STAKING=true
 ```
 
-### Customize configuration
+### Customize the look and feel
 
 #### Branding
 

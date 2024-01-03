@@ -45,6 +45,8 @@ import {ContractResultByTransactionIdCache} from "@/utils/cache/ContractResultBy
 import {ContractResultByTsCache} from "@/utils/cache/ContractResultByTsCache";
 import {SourcifyCache} from "@/utils/cache/SourcifyCache";
 import {TokenAssociationCache} from "@/utils/cache/TokenAssociationCache";
+import {MarketDataCache} from "@/components/dashboard/MarketDataCache";
+import { ContractResultsLogsByContractIdCache } from "@/utils/cache/ContractResultsLogsByContractIdCache"
 
 export class CacheUtils {
 
@@ -62,6 +64,7 @@ export class CacheUtils {
         ContractResultByHashCache.instance.clear()
         ContractResultByTransactionIdCache.instance.clear()
         ContractResultByTsCache.instance.clear()
+        MarketDataCache.instance.clear()
         HbarPriceCache.instance.clear()
         // IPFSCache.instance => no clear: we preserve it because IPFS content is valid for all networks
         NetworkCache.instance.clear()
@@ -76,5 +79,6 @@ export class CacheUtils {
         TransactionGroupCache.instance.clear()
         TransactionGroupByBlockCache.instance.clear()
         TopicMessageCache.instance.clear()
+        ContractResultsLogsByContractIdCache.instance.clear()
     }
 }

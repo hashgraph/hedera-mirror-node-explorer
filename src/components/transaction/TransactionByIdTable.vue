@@ -59,11 +59,11 @@
       <TransactionSummary v-bind:transaction="props.row"/>
     </o-table-column>
 
-    <o-table-column v-slot="props" label="Relationship">
+    <o-table-column v-if="showRelationship" v-slot="props" label="Relationship">
       {{ makeRelationshipLabel(props.row) }}
     </o-table-column>
 
-    <o-table-column v-slot="props" label="Nonce">
+    <o-table-column v-if="showNonce" v-slot="props" label="Nonce">
       {{ props.row.nonce }}
     </o-table-column>
 
@@ -112,6 +112,8 @@ export default defineComponent({
           return props.transactions.length > 5
         }
     )
+    const showRelationship = computed(() => props.transactions.length >=1 && makeRelationshipLabel(props.transactions[0]))
+    const showNonce = computed(() => props.transactions.length >=2 && !props.transactions[1].scheduled)
 
     const handleClick = (t: Transaction, c: unknown, i: number, ci: number, event: MouseEvent) => {
       routeManager.routeToTransaction(t, event.ctrlKey || event.metaKey)
@@ -153,6 +155,8 @@ export default defineComponent({
       isMediumScreen,
       pageSize,
       paginationNeeded,
+      showRelationship,
+      showNonce,
       handleClick,
       currentPage,
 

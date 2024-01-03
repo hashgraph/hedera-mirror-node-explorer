@@ -97,6 +97,7 @@ describe("BlockDetails.vue", () => {
             "123423\n" + "\n" +
             "0.0.296939115:12:31.6676 AMFeb 28, 2022, UTC")
 
+        mock.restore()
         wrapper.unmount()
         await flushPromises()
     });
@@ -149,6 +150,7 @@ describe("BlockDetails.vue", () => {
             "123423\n" + "\n" +
             "0.0.296939115:12:31.6676 AMFeb 28, 2022, UTC")
 
+        mock.restore()
         wrapper.unmount()
         await flushPromises()
     });
@@ -244,6 +246,7 @@ describe("BlockDetails.vue", () => {
             "Contract ID: 0.0.749723" +
             "2:42:34.8669 PMMar 7, 2022, UTC")
 
+        mock.restore()
         wrapper.unmount()
         await flushPromises()
     });
@@ -355,6 +358,7 @@ describe("BlockDetails.vue", () => {
         expect(table.get('thead').text()).toBe("ID Type Content Time & Date")
         expect(table.get('tbody').text()).toBe("")
 
+        mock.restore()
         wrapper.unmount()
         await flushPromises()
     });
@@ -394,6 +398,7 @@ describe("BlockDetails.vue", () => {
         expect(table.get('thead').text()).toBe("ID Type Content Time & Date")
         expect(table.get('tbody').text()).toBe("")
 
+        mock.restore()
         wrapper.unmount()
         await flushPromises()
     });

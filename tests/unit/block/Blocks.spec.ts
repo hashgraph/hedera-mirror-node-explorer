@@ -74,6 +74,7 @@ describe("Blocks.vue", () => {
             "25175997" + "6:58:28.2114 AMSep 23, 2022, UTC" + "5" + "0"
         )
 
+        mock.restore()
         wrapper.unmount()
         await flushPromises()
 

@@ -93,6 +93,7 @@ describe("Transactions.vue", () => {
             "0.0.296939115:12:31.6676 AMFeb 28, 2022, UTC"
         )
 
+        mock.restore()
         wrapper.unmount()
         await flushPromises()
     });

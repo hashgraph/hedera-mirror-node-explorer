@@ -583,4 +583,114 @@ describe("HbarTransferLayout.vue", () => {
 
     })
 
+
+    test("Transfer and payment of reward", async () => {
+
+        const transaction = {
+            "charged_tx_fee": 185749,
+            "transfers": [
+                {
+                    "account": "0.0.5",
+                    "amount": 7524,
+                    "is_approval": false
+                },
+                {
+                    "account": "0.0.98",
+                    "amount": 160403,
+                    "is_approval": false
+                },
+                {
+                    "account": "0.0.800",
+                    "amount": -7723301000,
+                    "is_approval": false
+                },
+                {
+                    "account": "0.0.1859883",
+                    "amount": -1376866927,
+                    "is_approval": false
+                },
+                {
+                    "account": "0.0.2105083",
+                    "amount": 9100000000,
+                    "is_approval": false
+                }
+            ],
+            "staking_reward_transfers": [
+                {
+                    "account": "0.0.1859883",
+                    "amount": 7723318822
+                }
+            ]
+        } as Transaction
+
+        //
+        // FULL
+        //
+
+        const Fee800 = 7723318822-7723301000
+        const FeeTotal = 7524 + 160403 + Fee800
+        const TransferTotal = 9100000000 + FeeTotal
+
+        const fullLayout = new HbarTransferLayout(transaction, NETWORK_NODES)
+
+        expect(fullLayout.transaction).toBe(transaction)
+        expect(fullLayout.destinationAmount).toBe(+TransferTotal)
+        expect(fullLayout.rowCount).toBe(4)
+        expect(fullLayout.sources.length).toBe(1)
+        expect(fullLayout.destinations.length).toBe(4)
+
+        const s0 = fullLayout.sources[0]
+        expect(s0.transfer.account).toBe("0.0.1859883")
+        expect(s0.transfer.amount).toBe(-TransferTotal)
+        expect(s0.description).toBe(null)
+        expect(s0.payload).toBe(true)
+
+        const d0 = fullLayout.destinations[0]
+        expect(d0.transfer.account).toBe("0.0.2105083")
+        expect(d0.transfer.amount).toBe(+9100000000)
+        expect(d0.description).toBe("Transfer")
+        expect(d0.payload).toBe(true)
+
+        const d1 = fullLayout.destinations[1]
+        expect(d1.transfer.account).toBe("0.0.5")
+        expect(d1.transfer.amount).toBe(+7524)
+        expect(d1.description).toBe("Node fee (Hedera)")
+        expect(d1.payload).toBe(false)
+
+        const d2 = fullLayout.destinations[2]
+        expect(d2.transfer.account).toBe("0.0.98")
+        expect(d2.transfer.amount).toBe(+160403)
+        expect(d2.description).toBe("Hedera fee collection account")
+        expect(d2.payload).toBe(false)
+
+        const d3 = fullLayout.destinations[3]
+        expect(d3.transfer.account).toBe("0.0.800")
+        expect(d3.transfer.amount).toBe(+Fee800)
+        expect(d3.description).toBe("Staking reward account fee")
+        expect(d3.payload).toBe(false)
+
+        //
+        // COMPACT
+        //
+
+        const compactLayout = new HbarTransferLayout(transaction, NETWORK_NODES, false)
+
+        expect(compactLayout.transaction).toBe(transaction)
+        expect(compactLayout.destinationAmount).toBe(+9100000000)
+        expect(compactLayout.rowCount).toBe(1)
+        expect(compactLayout.sources.length).toBe(1)
+        expect(compactLayout.destinations.length).toBe(1)
+
+        const cs0 = fullLayout.sources[0]
+        expect(cs0.transfer.account).toBe("0.0.1859883")
+        expect(cs0.transfer.amount).toBe(-9100185749)
+        expect(cs0.description).toBe(null)
+        expect(cs0.payload).toBe(true)
+
+        const cd0 = fullLayout.destinations[0]
+        expect(cd0.transfer.account).toBe("0.0.2105083")
+        expect(cd0.transfer.amount).toBe(+9100000000)
+        expect(cd0.description).toBe("Transfer")
+        expect(cd0.payload).toBe(true)
+    })
 })

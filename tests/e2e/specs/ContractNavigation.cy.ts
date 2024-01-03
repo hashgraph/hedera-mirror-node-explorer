@@ -59,6 +59,22 @@ describe('Contract Navigation', () => {
         cy.url().should('include', '/mainnet/contract/' + contractId)
     })
 
+    it ('should display contract details using contract ID', () => {
+        const contractId = "0.0.1186129"
+        cy.visit('mainnet/contract/' + contractId)
+        cy.url().should('include', '/mainnet/contract/' + contractId)
+        cy.contains('Contract ID:' + contractId)
+    })
+
+    it ('should display contract details using contract evm address', () => {
+        const contractId = "0.0.1186129"
+        const evmAddress = "0x0000000000000000000000000000000000121951"
+
+        cy.visit('mainnet/contract/' + evmAddress)
+        cy.url().should('include', '/mainnet/contract/' + evmAddress)
+        cy.contains('Contract ID:' + contractId)
+    })
+
     it('should detect navigation to unknown contract ID', () => {
         const unknownID = '9.9.9'
         cy.visit('testnet/contract/' + unknownID)

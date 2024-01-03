@@ -26,9 +26,15 @@
 
   <section :class="{'h-mobile-background': isTouchDevice || !isSmallScreen}" class="section">
 
-    <DashboardCard>
+    <DashboardCard collapsible-key="accountDetails">
       <template v-if="!isInactiveEvmAddress" v-slot:title>
         <span class="h-is-primary-title">Account </span>
+      </template>
+      <template v-else v-slot:title>
+          <span class="h-is-primary-title">Inactive EVM Address</span>
+      </template>
+
+      <template v-if="!isInactiveEvmAddress" v-slot:subtitle>
         <div class="h-is-tertiary-text mt-3" id="entityId">
           <div class="is-inline-block h-is-property-text has-text-weight-light" style="min-width: 115px">Account ID:</div>
           <Copyable :content-to-copy="normalizedAccountId ?? ''">
@@ -57,8 +63,7 @@
           </router-link>
         </div>
       </template>
-      <template v-else v-slot:title>
-        <span class="h-is-primary-title">Inactive EVM Address</span>
+      <template v-else v-slot:subtitle>
         <div class="h-is-tertiary-text mt-3" id="entityId">
           <div class="is-inline-block h-is-property-text has-text-weight-light" style="min-width: 115px">Account ID:</div>
           <span class="has-text-grey">Assigned upon activation</span>
@@ -164,7 +169,7 @@
         <Property id="memo">
           <template v-slot:name>Memo</template>
           <template v-slot:value>
-            <BlobValue v-bind:base64="true" v-bind:blob-value="account?.memo" v-bind:show-none="true"/>
+            <BlobValue v-bind:base64="true" v-bind:blob-value="account?.memo" v-bind:show-none="true" :show-base64-as-extra="true"/>
           </template>
         </Property>
 
@@ -232,7 +237,7 @@
       </template>
     </DashboardCard>
 
-    <DashboardCard v-if="!isInactiveEvmAddress">
+    <DashboardCard v-if="!isInactiveEvmAddress" collapsible-key="recentTransactions">
       <template v-slot:title>
         <p id="recentTransactions" class="h-is-secondary-title">Recent Transactions</p>
       </template>
@@ -255,7 +260,7 @@
 
     <ApproveAllowanceSection :account-id="normalizedAccountId ?? undefined" :showApproveDialog="showApproveDialog"/>
 
-    <DashboardCard v-if="normalizedAccountId && availableAPI">
+    <DashboardCard v-if="normalizedAccountId && availableAPI" collapsible-key="recentAccountRewards">
       <template v-slot:title>
         <span class="h-is-secondary-title">Recent Staking Rewards</span>
       </template>
@@ -387,7 +392,7 @@ export default defineComponent({
     })
     onBeforeUnmount(() => {
       mounted = false
-      if (accountId.value !== null) {
+      if (transactionTableController.mounted.value) {
         transactionTableController.unmount()
       }
     })

@@ -148,6 +148,7 @@ describe("AccountDetails.vue", () => {
         expect(wrapper.find("#recentTransactions").exists()).toBe(true)
         expect(wrapper.findComponent(TransactionTable).exists()).toBe(true)
 
+        mock.restore()
         wrapper.unmount()
         await flushPromises()
     });
@@ -239,6 +240,7 @@ describe("AccountDetails.vue", () => {
         expect(wrapper.get("#maxAutoAssociationValue").text()).toBe("10")
         expect(wrapper.get("#receiverSigRequiredValue").text()).toBe("true")
 
+        mock.restore()
         wrapper.unmount()
         await flushPromises()
 
@@ -319,6 +321,7 @@ describe("AccountDetails.vue", () => {
         expect(banner.exists()).toBe(true)
         expect(banner.text()).toBe("Account is deleted")
 
+        mock.restore()
         wrapper.unmount()
         await flushPromises()
     });
@@ -371,6 +374,7 @@ describe("AccountDetails.vue", () => {
         expect(wrapper.get("#pendingRewardValue").text()).toBe("0.12345678$0.03037Period Started Nov 11, 2022, 00:00 UTC")
         expect(wrapper.get("#declineRewardValue").text()).toBe("Accepted")
 
+        mock.restore()
         wrapper.unmount()
         await flushPromises()
     });
@@ -423,6 +427,7 @@ describe("AccountDetails.vue", () => {
         expect(wrapper.get("#pendingRewardValue").text()).toBe("0.00000000$0.00000")
         expect(wrapper.find("#declineRewardValue").exists()).toBe(false)
 
+        mock.restore()
         wrapper.unmount()
         await flushPromises()
     });

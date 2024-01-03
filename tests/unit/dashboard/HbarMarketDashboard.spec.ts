@@ -76,6 +76,7 @@ describe("HbarMarketDashboard.vue ", () => {
         expect(logos[0].attributes('alt')).toBe("Trend Up")
         expect(logos[1].attributes('alt')).toBe("Trend Up")
 
+        mock.restore()
         wrapper.unmount()
         await flushPromises()
 

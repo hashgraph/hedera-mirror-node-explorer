@@ -100,7 +100,7 @@ export class NodeAnalyzer {
     public readonly unclampedStake = computed(() => this.node.value ? makeUnclampedStake(this.node.value) : 0)
     public readonly stakeRewarded = computed(() => this.node.value?.stake_rewarded ?? 0)
     public readonly stakeUnrewarded = computed(() => this.node.value?.stake_not_rewarded ?? 0)
-    public readonly rewardRate = computed(() => this.node.value ? makeRewardRate(this.node.value) : 0)
-    public readonly annualizedRate = computed(() => this.node.value ? makeAnnualizedRate(this.node.value) : '0%')
+    public readonly rewardRate = computed(() => makeRewardRate(this.node.value?.reward_rate_start ?? 0))
+    public readonly annualizedRate = computed(() => makeAnnualizedRate(this.node.value?.reward_rate_start ?? 0))
 
 }

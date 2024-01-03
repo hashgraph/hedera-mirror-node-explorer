@@ -24,7 +24,7 @@
 
 <template>
 
-  <DashboardCard>
+  <DashboardCard collapsible-key="customFees">
 
     <template v-slot:title>
       <div class="h-is-secondary-title mb-2">Custom Fees</div>

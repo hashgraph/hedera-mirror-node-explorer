@@ -26,56 +26,49 @@
 
   <section :class="{'h-mobile-background': isTouchDevice || !isSmallScreen}" class="section">
 
-    <DashboardCard>
+    <DashboardCard collapsible-key="networkDetails">
       <template v-slot:title>
         <span class="h-is-primary-title">Network</span>
       </template>
       <template v-slot:content>
 
-          <div v-if="isSmallScreen" class="is-flex is-justify-content-space-between">
-            <div class="is-flex-direction-column">
-              <NetworkDashboardItem title="Total Nodes" :value="totalNodes.toString()"/>
-              <div class="mt-4"/>
-              <NetworkDashboardItem title="Last Staked" :value="formatSeconds((elapsedMin ?? 0)*60) + ' ago'"/>
-            </div>
-            <div class="is-flex-direction-column">
-              <NetworkDashboardItem name="HBAR" title="Total Staked" :value="makeFloorHbarAmount(unclampedStakeTotal)"/>
-              <div class="mt-4"/>
-              <NetworkDashboardItem title="Next Staking Period" :value="'in ' + formatSeconds((remainingMin??0)*60)"/>
-            </div>
-            <div class="is-flex-direction-column">
-              <NetworkDashboardItem name="HBAR" title="Last Period Reward" :value="makeFloorHbarAmount(totalRewarded)"/>
-              <div class="mt-4"/>
-              <NetworkDashboardItem title="Staking Period" :value="formatSeconds((durationMin??0)*60)"/>
-            </div>
-          </div>
-          <div v-else>
-            <div class="is-flex-direction-column">
-              <NetworkDashboardItem title="Total Nodes" :value="totalNodes.toString()"/>
-              <div class="mt-4"/>
+          <div class="has-text-grey "
+          :class="{'is-flex':isSmallScreen,'is-justify-content-space-between':isSmallScreen}">
+            <div :class="{'is-flex-direction-column':isSmallScreen}">
               <NetworkDashboardItem title="Last Staked" :value="formatSeconds((elapsedMin??0)*60) + ' ago'"/>
               <div class="mt-4"/>
-              <NetworkDashboardItem name="HBAR" title="Total Staked" :value="makeFloorHbarAmount(unclampedStakeTotal)"/>
-              <div class="mt-4"/>
               <NetworkDashboardItem title="Next Staking Period" :value="'in ' + formatSeconds((remainingMin??0)*60)"/>
               <div class="mt-4"/>
-              <NetworkDashboardItem name="HBAR" title="Last Period Reward" :value="makeFloorHbarAmount(totalRewarded)"/>
-              <div class="mt-4"/>
               <NetworkDashboardItem title="Staking Period" :value="formatSeconds((durationMin??0)*60)"/>
-              <div class="mt-6"/>
+            </div>
+            <div v-if="!isSmallScreen" class="mt-4"/>
+            <div :class="{'is-flex-direction-column':isSmallScreen}">
+              <NetworkDashboardItem name="HBAR" title="Total Staked" :value="makeFloorHbarAmount(stakeTotal)" :tooltip-label="stakeTotalTooltip"/>
+              <div class="mt-4"/>
+              <NetworkDashboardItem name="HBAR" title="Staked for Reward" :value="makeFloorHbarAmount(stakeRewardedTotal)" :tooltip-label="stakeRewardedTotalTooltip"/>
+              <div class="mt-4"/>
+              <NetworkDashboardItem name="HBAR" title="Maximum Staked for Reward" :value="makeFloorHbarAmount(maxStakeRewarded)" :tooltip-label="maxStakeRewardedTooltip"/>
+            </div>
+            <div v-if="!isSmallScreen" class="mt-4"/>
+            <div :class="{'is-flex-direction-column':isSmallScreen}">
+              <NetworkDashboardItem name="HBAR" title="Rewarded Last Period" :value="makeFloorHbarAmount(totalRewarded)" :tooltip-label="totalRewardedTooltip"/>
+              <div class="mt-4"/>
+              <NetworkDashboardItem title="Maximum Reward Rate" :value="makeAnnualizedRate(maxRewardRate)" :tooltip-label="maxRewardRateTooltip"/>
+              <div class="mt-4"/>
+              <NetworkDashboardItem title="Current Reward Rate" :value="makeAnnualizedRate(rewardRate)" :tooltip-label="rewardRateTooltip"/>
             </div>
           </div>
+          <div v-if="!isSmallScreen" class="mt-4"/>
 
       </template>
     </DashboardCard>
 
-    <DashboardCard>
+    <DashboardCard collapsible-key="nodes">
       <template v-slot:title>
-        <span class="h-is-primary-title">Nodes</span>
+        <span class="h-is-primary-title">{{ `${nodes.length}  Nodes` }}</span>
       </template>
       <template v-slot:content>
         <NodeTable :nodes="nodes"
-                   :unclamped-stake-total="unclampedStakeTotal"
                    :stake-total="stakeTotal"/>
       </template>
     </DashboardCard>
@@ -100,9 +93,11 @@ import NetworkDashboardItem from "@/components/node/NetworkDashboardItem.vue";
 import {formatSeconds} from "@/utils/Duration";
 import {StakeCache} from "@/utils/cache/StakeCache";
 import {NetworkAnalyzer} from "@/utils/analyzer/NetworkAnalyzer";
+import {makeAnnualizedRate} from "@/schemas/HederaUtils";
 
 export default defineComponent({
   name: 'Nodes',
+  methods: {makeAnnualizedRate},
 
   props: {
     network: String
@@ -118,6 +113,12 @@ export default defineComponent({
   setup() {
     const isSmallScreen = inject('isSmallScreen', true)
     const isTouchDevice = inject('isTouchDevice', false)
+    const stakeTotalTooltip = "Total amount of HBAR staked to all validators for consensus."
+    const stakeRewardedTotalTooltip = "Total amount of HBAR staked for reward."
+    const maxStakeRewardedTooltip = "Maximum amount of HBAR that can be staked for reward while still achieving the maximum reward rate."
+    const totalRewardedTooltip = "Total amount of HBAR paid in reward for the last period."
+    const maxRewardRateTooltip = "Approximate annual reward rate based on the maximum reward rate that any account can receive in a day."
+    const rewardRateTooltip = "Approximate annual reward rate based on the reward earned during the last 24h period."
 
     const networkNodeAnalyzer = new NetworkAnalyzer()
     onMounted(() => networkNodeAnalyzer.mount())
@@ -128,16 +129,32 @@ export default defineComponent({
     onBeforeUnmount(() => stakeLookup.unmount())
 
     const stakeTotal = computed(() => stakeLookup.entity.value?.stake_total ?? 0)
+    const maxStakeRewarded = computed(() => stakeLookup.entity.value?.max_stake_rewarded ?? 0)
+    const rewardRate = computed(() => {
+      return  networkNodeAnalyzer.stakeRewardedTotal.value != 0
+          ? (stakeLookup.entity.value?.staking_reward_rate ?? 0) / networkNodeAnalyzer.stakeRewardedTotal.value * 100000000
+          : 0
+    })
+    const maxRewardRate = computed(() => stakeLookup.entity.value?.max_staking_reward_rate_per_hbar ?? 0)
 
     const makeFloorHbarAmount = (tinyBarAmount: number) => Math.floor((tinyBarAmount ?? 0) / 100000000).toLocaleString('en-US')
 
     return {
       isSmallScreen,
       isTouchDevice,
+      stakeTotalTooltip,
+      stakeRewardedTotalTooltip,
+      maxStakeRewardedTooltip,
+      totalRewardedTooltip,
+      maxRewardRateTooltip,
+      rewardRateTooltip,
       nodes: networkNodeAnalyzer.nodes,
       totalNodes: networkNodeAnalyzer.nodeCount,
       stakeTotal,
-      unclampedStakeTotal: networkNodeAnalyzer.unclampedStakeTotal,
+      maxStakeRewarded,
+      maxRewardRate,
+      rewardRate,
+      stakeRewardedTotal: networkNodeAnalyzer.stakeRewardedTotal,
       totalRewarded: networkNodeAnalyzer.totalRewarded,
       durationMin: networkNodeAnalyzer.durationMin,
       elapsedMin: networkNodeAnalyzer.elapsedMin,

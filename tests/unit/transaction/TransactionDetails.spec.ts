@@ -75,18 +75,11 @@ HMSF.forceUTC = true
 
 describe("TransactionDetails.vue", () => {
 
-    const mock = new MockAdapter(axios);
-    const matcher1 = "/api/v1/network/exchangerate"
-    mock.onGet(matcher1).reply(200, SAMPLE_NETWORK_EXCHANGERATE);
-    const matcher2 = "/api/v1/blocks"
-    mock.onGet(matcher2).reply(200, SAMPLE_BLOCKSRESPONSE);
-    const matcher3 = "api/v1/network/nodes"
-    mock.onGet(matcher3).reply(200, SAMPLE_NETWORK_NODES);
-
     it("Should display transaction details with token transfers and hbar transfers", async () => {
 
         await router.push("/") // To avoid "missing required param 'network'" error
 
+        const mock = new MockAdapter(axios);
         const matcher1 = "/api/v1/transactions/" + SAMPLE_TRANSACTION.transaction_id
         mock.onGet(matcher1).reply(200, SAMPLE_TRANSACTIONS);
         const matcher11 = "/api/v1/transactions"
@@ -100,6 +93,13 @@ describe("TransactionDetails.vue", () => {
 
         const matcher2 = "/api/v1/tokens/" + SAMPLE_TOKEN.token_id
         mock.onGet(matcher2).reply(200, SAMPLE_TOKEN);
+
+        const matcher3 = "api/v1/network/nodes"
+        mock.onGet(matcher3).reply(200, SAMPLE_NETWORK_NODES);
+        const matcher4 = "/api/v1/blocks"
+        mock.onGet(matcher4).reply(200, SAMPLE_BLOCKSRESPONSE);
+        const matcher5 = "/api/v1/network/exchangerate"
+        mock.onGet(matcher5).reply(200, SAMPLE_NETWORK_EXCHANGERATE);
 
         const wrapper = mount(TransactionDetails, {
             global: {
@@ -148,6 +148,7 @@ describe("TransactionDetails.vue", () => {
 
         wrapper.unmount()
         await flushPromises()
+        mock.restore()
     });
 
     it("Should display the contract result and logs (using consensus timestamp)", async () => {
@@ -158,6 +159,7 @@ describe("TransactionDetails.vue", () => {
         const contractId = SAMPLE_CONTRACTCALL_TRANSACTIONS.transactions[0].entity_id
         const timestamp = SAMPLE_CONTRACTCALL_TRANSACTIONS.transactions[0].consensus_timestamp
 
+        const mock = new MockAdapter(axios)
         const matcher1 = "/api/v1/transactions/" + transactionId
         mock.onGet(matcher1).reply(200, SAMPLE_CONTRACTCALL_TRANSACTIONS);
         const matcher11 = "/api/v1/transactions"
@@ -199,6 +201,11 @@ describe("TransactionDetails.vue", () => {
         mock.onGet(matcher6).reply(200, fromContract)
         mock.onGet(matcher61).reply(200, toContract)
 
+        const matcher7 = "api/v1/network/nodes"
+        mock.onGet(matcher7).reply(200, SAMPLE_NETWORK_NODES);
+        const matcher9 = "/api/v1/network/exchangerate"
+        mock.onGet(matcher9).reply(200, SAMPLE_NETWORK_EXCHANGERATE);
+
         const wrapper = mount(TransactionDetails, {
             global: {
                 plugins: [router, Oruga]
@@ -236,10 +243,11 @@ describe("TransactionDetails.vue", () => {
         expect(wrapper.get("#maxFeePerGasValue").text()).toBe("None")
         expect(wrapper.get("#maxPriorityFeePerGasValue").text()).toBe("None")
         expect(wrapper.get("#gasPriceValue").text()).toBe("None")
-        expect(wrapper.findAll("#logIndexValue").length).toBe(3)
+        expect(wrapper.findAll("#transactionHash").length).toBe(4)
 
         wrapper.unmount()
         await flushPromises()
+        mock.restore()
     });
 
     it("Should display the contract result and logs (using transaction hash)", async () => {
@@ -253,6 +261,7 @@ describe("TransactionDetails.vue", () => {
         const contractId = SAMPLE_TRANSACTION.entity_id
         const timestamp = SAMPLE_TRANSACTION.consensus_timestamp
 
+        const mock = new MockAdapter(axios)
         const matcher1 = "/api/v1/transactions/" + transactionHash
         mock.onGet(matcher1).reply(200, { transactions: [SAMPLE_TRANSACTION]});
         const matcher11 = "/api/v1/transactions/" + transactionId
@@ -281,6 +290,13 @@ describe("TransactionDetails.vue", () => {
         const hash = SAMPLE_CONTRACT_RESULT_DETAILS.hash
         const matcher5 = "/api/v1/contracts/results/" + hash + "/actions"
         mock.onGet(matcher5).reply(200, "[]")
+
+        const matcher7 = "api/v1/network/nodes"
+        mock.onGet(matcher7).reply(200, SAMPLE_NETWORK_NODES);
+        // const matcher8 = "/api/v1/blocks"
+        // mock.onGet(matcher8).reply(200, SAMPLE_BLOCKSRESPONSE);
+        const matcher9 = "/api/v1/network/exchangerate"
+        mock.onGet(matcher9).reply(200, SAMPLE_NETWORK_EXCHANGERATE);
 
         const wrapper = mount(TransactionDetails, {
             global: {
@@ -313,16 +329,18 @@ describe("TransactionDetails.vue", () => {
         expect(wrapper.get("#maxFeePerGasValue").text()).toBe("None")
         expect(wrapper.get("#maxPriorityFeePerGasValue").text()).toBe("None")
         expect(wrapper.get("#gasPriceValue").text()).toBe("None")
-        expect(wrapper.findAll("#logIndexValue").length).toBe(3)
+        expect(wrapper.findAll("#transactionHash").length).toBe(4)
 
         wrapper.unmount()
         await flushPromises()
+        mock.restore()
     });
 
     it("Should update when consensus timestamp changes", async () => {
 
         await router.push("/") // To avoid "missing required param 'network'" error
 
+        const mock = new MockAdapter(axios)
         let matcher1 = "/api/v1/transactions"
         mock.onGet(matcher1).reply((config: AxiosRequestConfig) => {
             if (config.params.timestamp == SAMPLE_TRANSACTION.consensus_timestamp) {
@@ -392,12 +410,14 @@ describe("TransactionDetails.vue", () => {
 
         wrapper.unmount()
         await flushPromises()
+        mock.restore()
     });
 
     it("Should display a notification banner for failed transaction", async () => {
 
         await router.push("/") // To avoid "missing required param 'network'" error
 
+        const mock = new MockAdapter(axios)
         const matcher1 = "/api/v1/transactions"
         mock.onGet(matcher1).reply((config: AxiosRequestConfig) => {
             if (config.params.timestamp == SAMPLE_FAILED_TRANSACTION.consensus_timestamp) {
@@ -430,11 +450,16 @@ describe("TransactionDetails.vue", () => {
 
         wrapper.unmount()
         await flushPromises()
+        mock.restore()
     });
 
     it("Should detect invalid transaction timestamp", async () => {
 
         await router.push("/") // To avoid "missing required param 'network'" error
+
+        const mock = new MockAdapter(axios);
+        const matcher3 = "api/v1/network/nodes"
+        mock.onGet(matcher3).reply(200, SAMPLE_NETWORK_NODES);
 
         const invalidTimestamp = "1600000000.000000000"
         const wrapper = mount(TransactionDetails, {
@@ -453,6 +478,7 @@ describe("TransactionDetails.vue", () => {
 
         wrapper.unmount()
         await flushPromises()
+        mock.restore()
     });
 
     it("Should display the name of the system contract called", async () => {
@@ -461,6 +487,7 @@ describe("TransactionDetails.vue", () => {
 
         const transaction = SAMPLE_SYSTEM_CONTRACT_CALL_TRANSACTIONS.transactions[0]
 
+        const mock = new MockAdapter(axios)
         const matcher1 = "/api/v1/transactions"
         mock.onGet(matcher1).reply((config: AxiosRequestConfig) => {
             if (config.params.timestamp == transaction.consensus_timestamp) {
@@ -490,6 +517,7 @@ describe("TransactionDetails.vue", () => {
 
         wrapper.unmount()
         await flushPromises()
+        mock.restore()
     });
 
     it("Should display a link to the scheduled transaction", async () => {
@@ -499,6 +527,8 @@ describe("TransactionDetails.vue", () => {
         const SCHEDULING = SAMPLE_SCHEDULING_SCHEDULED_TRANSACTIONS.transactions[0]
         const SCHEDULED = SAMPLE_SCHEDULING_SCHEDULED_TRANSACTIONS.transactions[1]
         const TOKEN_ID = SCHEDULED.token_transfers ? SCHEDULED.token_transfers[0].token_id : "0.0.1304757"
+
+        const mock = new MockAdapter(axios)
         const matcher1 = "/api/v1/transactions"
         mock.onGet(matcher1).reply((config: AxiosRequestConfig) => {
             if (config.params.timestamp == SCHEDULING.consensus_timestamp) {
@@ -535,6 +565,7 @@ describe("TransactionDetails.vue", () => {
 
         wrapper.unmount()
         await flushPromises()
+        mock.restore()
     });
 
     it("Should display a link to the scheduling transaction", async () => {
@@ -544,6 +575,8 @@ describe("TransactionDetails.vue", () => {
         const SCHEDULING = SAMPLE_SCHEDULING_SCHEDULED_TRANSACTIONS.transactions[0]
         const SCHEDULED = SAMPLE_SCHEDULING_SCHEDULED_TRANSACTIONS.transactions[1]
         const TOKEN_ID = SCHEDULED.token_transfers ? SCHEDULED.token_transfers[0].token_id : "0.0.1304757"
+
+        const mock = new MockAdapter(axios)
         const matcher1 = "/api/v1/transactions"
         mock.onGet(matcher1).reply((config: AxiosRequestConfig) => {
             if (config.params.timestamp == SCHEDULED.consensus_timestamp) {
@@ -580,6 +613,7 @@ describe("TransactionDetails.vue", () => {
 
         wrapper.unmount()
         await flushPromises()
+        mock.restore()
     });
 
     it("Should display a link to the parent transaction",
@@ -590,6 +624,8 @@ describe("TransactionDetails.vue", () => {
             const PARENT = SAMPLE_PARENT_CHILD_TRANSACTIONS.transactions[0]
             const CHILD = SAMPLE_PARENT_CHILD_TRANSACTIONS.transactions[1]
             const TOKEN_ID = CHILD.nft_transfers ? CHILD.nft_transfers[0].token_id : "0.0.48193741"
+
+            const mock = new MockAdapter(axios)
             const matcher1 = "/api/v1/transactions"
             mock.onGet(matcher1).reply((config: AxiosRequestConfig) => {
                 if (config.params.timestamp == CHILD.consensus_timestamp) {
@@ -626,6 +662,7 @@ describe("TransactionDetails.vue", () => {
 
             wrapper.unmount()
             await flushPromises()
+            mock.restore()
         });
 
     it("Should display link to the child transactions", async () => {
@@ -635,6 +672,8 @@ describe("TransactionDetails.vue", () => {
         const PARENT = SAMPLE_PARENT_CHILD_TRANSACTIONS.transactions[0]
         const CHILD1 = SAMPLE_PARENT_CHILD_TRANSACTIONS.transactions[1]
         const CHILD2 = SAMPLE_PARENT_CHILD_TRANSACTIONS.transactions[2]
+
+        const mock = new MockAdapter(axios)
         const matcher1 = "/api/v1/transactions"
         mock.onGet(matcher1).reply((config: AxiosRequestConfig) => {
             if (config.params.timestamp == PARENT.consensus_timestamp) {
@@ -674,12 +713,14 @@ describe("TransactionDetails.vue", () => {
 
         wrapper.unmount()
         await flushPromises()
+        mock.restore()
     });
 
     it("Should NOT display a link to the parent transaction", async () => {
 
             await router.push("/") // To avoid "missing required param 'network'" error
 
+            const mock = new MockAdapter(axios)
             const NONCE_1 = SAMPLE_SAME_ID_NOT_PARENT_TRANSACTIONS.transactions[1]
             const matcher1 = "/api/v1/transactions"
             mock.onGet(matcher1).reply((config: AxiosRequestConfig) => {
@@ -710,6 +751,7 @@ describe("TransactionDetails.vue", () => {
 
             wrapper.unmount()
             await flushPromises()
+            mock.restore()
         });
 
     it("Should display transaction details with account/token association", async () => {
@@ -720,6 +762,7 @@ describe("TransactionDetails.vue", () => {
         const token1 = SAMPLE_ASSOCIATED_TOKEN
         const token2 = SAMPLE_ASSOCIATED_TOKEN_2
 
+        const mock = new MockAdapter(axios)
         const matcher1 = "/api/v1/transactions/" + transaction.transaction_id
         mock.onGet(matcher1).reply(200, { transactions: [transaction]});
         const matcher11 = "/api/v1/transactions"
@@ -736,6 +779,13 @@ describe("TransactionDetails.vue", () => {
         mock.onGet(matcher4).reply(200, token1);
         const matcher5 = "/api/v1/tokens/" + token2.token_id
         mock.onGet(matcher5).reply(200, token2);
+
+        const matcher10 = "/api/v1/network/exchangerate"
+        mock.onGet(matcher10).reply(200, SAMPLE_NETWORK_EXCHANGERATE);
+        const matcher20 = "/api/v1/blocks"
+        mock.onGet(matcher20).reply(200, SAMPLE_BLOCKSRESPONSE);
+        const matcher30 = "api/v1/network/nodes"
+        mock.onGet(matcher30).reply(200, SAMPLE_NETWORK_NODES);
 
         const wrapper = mount(TransactionDetails, {
             global: {
@@ -771,6 +821,7 @@ describe("TransactionDetails.vue", () => {
 
         wrapper.unmount()
         await flushPromises()
+        mock.restore()
     });
 
     it("Should display CONTRACT CALL details with link to (proxied) token as entity ID", async () => {
@@ -781,6 +832,7 @@ describe("TransactionDetails.vue", () => {
         const entityId = SAMPLE_TOKEN_CALL_TRANSACTIONS.transactions[0].entity_id
         const timestamp = SAMPLE_TOKEN_CALL_TRANSACTIONS.transactions[0].consensus_timestamp
 
+        const mock = new MockAdapter(axios)
         const matcher1 = "/api/v1/transactions/" + transactionId
         mock.onGet(matcher1).reply(200, SAMPLE_TOKEN_CALL_TRANSACTIONS);
         const matcher11 = "/api/v1/transactions"
@@ -818,6 +870,7 @@ describe("TransactionDetails.vue", () => {
 
         wrapper.unmount()
         await flushPromises()
+        mock.restore()
     });
 
     it("Should display ETHEREUM TX details with link to account as entity ID", async () => {
@@ -828,6 +881,7 @@ describe("TransactionDetails.vue", () => {
         const entityId = SAMPLE_ETHEREUM_TRANSACTIONS_ON_ACCOUNT.transactions[0].entity_id
         const timestamp = SAMPLE_ETHEREUM_TRANSACTIONS_ON_ACCOUNT.transactions[0].consensus_timestamp
 
+        const mock = new MockAdapter(axios)
         const matcher1 = "/api/v1/transactions/" + transactionId
         mock.onGet(matcher1).reply(200, SAMPLE_ETHEREUM_TRANSACTIONS_ON_ACCOUNT);
         const matcher11 = "/api/v1/transactions"
@@ -864,6 +918,7 @@ describe("TransactionDetails.vue", () => {
 
         wrapper.unmount()
         await flushPromises()
+        mock.restore()
     });
 
     it("Should display ETHEREUM TX details with link to contract as entity ID", async () => {
@@ -874,6 +929,7 @@ describe("TransactionDetails.vue", () => {
         const entityId = SAMPLE_ETHEREUM_TRANSACTIONS_ON_CONTRACT.transactions[0].entity_id
         const timestamp = SAMPLE_ETHEREUM_TRANSACTIONS_ON_CONTRACT.transactions[0].consensus_timestamp
 
+        const mock = new MockAdapter(axios)
         const matcher1 = "/api/v1/transactions/" + transactionId
         mock.onGet(matcher1).reply(200, SAMPLE_ETHEREUM_TRANSACTIONS_ON_CONTRACT);
         const matcher11 = "/api/v1/transactions"
@@ -908,6 +964,7 @@ describe("TransactionDetails.vue", () => {
 
         wrapper.unmount()
         await flushPromises()
+        mock.restore()
     });
 
     it("Should display ETHEREUM TX details with link to token as entity ID", async () => {
@@ -919,6 +976,7 @@ describe("TransactionDetails.vue", () => {
         const entityId = transaction.entity_id
         const timestamp = transaction.consensus_timestamp
 
+        const mock = new MockAdapter(axios)
         const matcher1 = "/api/v1/transactions/" + transactionId
         mock.onGet(matcher1).reply(200, SAMPLE_ETHEREUM_TRANSACTIONS_ASSOCIATING_TOKEN);
         const matcher11 = "/api/v1/transactions"
@@ -1042,12 +1100,14 @@ describe("TransactionDetails.vue", () => {
 
         wrapper.unmount()
         await flushPromises()
+        mock.restore()
     });
 
     it("Should display transaction returning FEE_SCHEDULE_FILE_PART_UPLOADED as successful", async () => {
 
         await router.push("/") // To avoid "missing required param 'network'" error
 
+        const mock = new MockAdapter(axios)
         const transaction = SAMPLE_FILE_UPDATE_TRANSACTION
         const matcher1 = "/api/v1/transactions/" + transaction.transaction_id
         mock.onGet(matcher1).reply(200, { transactions: [transaction]});
@@ -1086,12 +1146,14 @@ describe("TransactionDetails.vue", () => {
 
         wrapper.unmount()
         await flushPromises()
+        mock.restore()
     });
 
     it("Should display block number 0", async () => {
 
         await router.push("/") // To avoid "missing required param 'network'" error
 
+        const mock = new MockAdapter(axios)
         const matcher1 = "/api/v1/transactions/" + SAMPLE_TRANSACTION.transaction_id
         mock.onGet(matcher1).reply(200, SAMPLE_TRANSACTIONS);
         const matcher11 = "/api/v1/transactions"
@@ -1128,6 +1190,7 @@ describe("TransactionDetails.vue", () => {
 
         wrapper.unmount()
         await flushPromises()
+        mock.restore()
     });
 
 });
