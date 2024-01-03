@@ -18,12 +18,8 @@
  *
  */
 
-import {EntityID} from "@/utils/EntityID";
 import {BrowserProvider, ethers} from "ethers";
 import {BaseProvider} from '@metamask/providers';
-import {makeTokenSymbol} from "@/schemas/HederaUtils";
-import {HederaLogo} from "@/utils/wallet/WalletDriver"
-import {TokenInfoCache} from "@/utils/cache/TokenInfoCache";
 import {WalletDriver_Ethereum} from "@/utils/wallet/WalletDriver_Ethereum";
 
 export class WalletDriver_Brave extends WalletDriver_Ethereum {
@@ -38,32 +34,6 @@ export class WalletDriver_Brave extends WalletDriver_Ethereum {
         super("Brave Wallet",
             "https://brave.com/static-assets/images/optimized/brave-branding-assets/images/brave-logo-color-RGB_reversed.png",
             "https://brave.com/static-assets/images/brave-logo-no-shadow.png")
-    }
-
-    public async watchToken(accountId: string, tokenId: string): Promise<void> {
-        const tokenAddress = EntityID.parse(tokenId)?.toAddress() ?? null
-        if (accountId !== null && tokenAddress !== null && this.provider !== null) {
-            const tokenInfo = await TokenInfoCache.instance.lookup(tokenId)
-            const symbol = makeTokenSymbol(tokenInfo, 11)
-            const decimals = tokenInfo?.decimals
-            const params = {
-                "type": "ERC20",
-                "options": {
-                    "address": `0x${tokenAddress}`,
-                    "symbol": symbol,
-                    "decimals": decimals,
-                    "image": HederaLogo
-                }
-            }
-            try {
-                await this.provider.send("wallet_watchAsset", params)
-            } catch(reason) {
-                throw this.makeCallFailure(reason, "watchToken")
-            }
-        } else {
-            throw this.callFailure("Invalid arguments")
-        }
-        return Promise.resolve()
     }
 
     //
