@@ -26,7 +26,7 @@
 
   <div v-if="contractResult">
 
-    <DashboardCard class="h-card">
+    <DashboardCard class="h-card" collapsible-key="contractResult">
       <template v-slot:title>
         <span v-if="topLevel"  class="h-is-primary-title">
           Contract Result for {{ contractResult?.contract_id }} at {{ contractResult?.timestamp }}

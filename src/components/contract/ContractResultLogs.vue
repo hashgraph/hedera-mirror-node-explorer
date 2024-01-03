@@ -24,7 +24,7 @@
 
 <template>
 
-  <DashboardCard v-if="logs?.length" class="h-card">
+  <DashboardCard v-if="logs?.length" class="h-card" collapsible-key="contractEvents">
     <template v-slot:title>
       <span class="h-is-secondary-title">Events</span>
     </template>

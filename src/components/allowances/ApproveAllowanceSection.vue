@@ -24,9 +24,9 @@
 
 <template>
 
-  <DashboardCard v-if="accountId">
+  <DashboardCard v-if="accountId" collapsible-key="allowances">
     <template v-slot:title>
-      <span class="h-is-secondary-title">Allowances</span>
+      <span class="h-is-secondary-title">accountAllowances</span>
     </template>
     <template v-slot:control>
       <button v-if="isWalletConnected && isHederaWallet" id="approve-button" class="button is-white is-small"

@@ -26,7 +26,7 @@
 
   <section :class="{'h-mobile-background': isTouchDevice || !isSmallScreen}" class="section">
 
-    <DashboardCard>
+    <DashboardCard collapsible-key="networkDetails">
       <template v-slot:title>
         <span class="h-is-primary-title">Network</span>
       </template>
@@ -63,7 +63,7 @@
       </template>
     </DashboardCard>
 
-    <DashboardCard>
+    <DashboardCard collapsible-key="nodes">
       <template v-slot:title>
         <span class="h-is-primary-title">{{ `${nodes.length}  Nodes` }}</span>
       </template>
@@ -115,7 +115,7 @@ export default defineComponent({
     const isTouchDevice = inject('isTouchDevice', false)
     const stakeTotalTooltip = "Total amount of HBAR staked to all validators for consensus."
     const stakeRewardedTotalTooltip = "Total amount of HBAR staked for reward."
-    const maxStakeRewardedTooltip = "Maximum amount of tinybar that can be staked for reward while still achieving the maximum reward rate."
+    const maxStakeRewardedTooltip = "Maximum amount of HBAR that can be staked for reward while still achieving the maximum reward rate."
     const totalRewardedTooltip = "Total amount of HBAR paid in reward for the last period."
     const maxRewardRateTooltip = "Approximate annual reward rate based on the maximum reward rate that any account can receive in a day."
     const rewardRateTooltip = "Approximate annual reward rate based on the reward earned during the last 24h period."

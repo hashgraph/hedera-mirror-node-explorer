@@ -26,7 +26,7 @@
 
   <section :class="{'h-mobile-background': isTouchDevice || !isSmallScreen}" class="section">
 
-    <DashboardCard class="h-card">
+    <DashboardCard class="h-card" collapsible-key="transactionDetails">
       <template v-slot:title>
         <div class="is-flex is-align-items-center is-flex-wrap-wrap">
           <span class="h-is-primary-title mr-1">Transaction </span>
@@ -217,7 +217,7 @@
       </template>
     </DashboardCard>
 
-    <DashboardCard v-if="displayTransfers" class="h-card">
+    <DashboardCard v-if="displayTransfers" class="h-card" collapsible-key="transfers">
       <template v-slot:title>
         <span class="h-is-secondary-title">Transfers</span>
       </template>

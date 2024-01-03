@@ -24,7 +24,7 @@
 
 <template>
 
-  <DashboardCard v-if="actions?.length" class="h-card">
+  <DashboardCard v-if="actions?.length" class="h-card" collapsible-key="callTrace">
     <template v-slot:title>
       <span class="h-is-secondary-title">Call Trace</span>
     </template>

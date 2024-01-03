@@ -26,7 +26,7 @@
 
   <section :class="{'h-mobile-background': isTouchDevice || !isSmallScreen}" class="section">
 
-    <DashboardCard>
+    <DashboardCard collapsible-key="blockDetails">
       <template v-slot:title>
         <span class="h-is-primary-title">Block {{ block?.number?.toString() ?? "" }}</span>
       </template>
@@ -89,7 +89,7 @@
       </template>
     </DashboardCard>
 
-    <DashboardCard id="blockTransactions">
+    <DashboardCard id="blockTransactions" collapsible-key="blockTransactions">
       <template v-slot:title>
         <span class="h-is-secondary-title">Block Transactions</span>
       </template>

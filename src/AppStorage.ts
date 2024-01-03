@@ -119,6 +119,21 @@ export class AppStorage {
     }
 
     //
+    // sections collapsed state
+    //
+
+    private static readonly COLLAPSED_STATE_KEY = 'collapsed'
+
+    public static getCollapsedState(section: string): boolean | null {
+        const collapsed = this.getLocalStorageItem(`${section}_${this.COLLAPSED_STATE_KEY}`)
+        return collapsed ? collapsed === 'true' : null
+    }
+
+    public static setCollapsedState(section: string, collapsed: boolean | null): void {
+        this.setLocalStorageItem(`${section}_${this.COLLAPSED_STATE_KEY}`, collapsed != null ? (collapsed ? "true" : "false") : null)
+    }
+
+    //
     // Private
     //
 
