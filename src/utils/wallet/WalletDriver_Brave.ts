@@ -58,7 +58,7 @@ export class WalletDriver_Brave extends WalletDriver_Ethereum {
     }
 
     public async disconnect(): Promise<void> {
-        this.braveProvider?.on("chainChanged", this.handleDisconnect)
+        this.braveProvider?.off("chainChanged", this.handleDisconnect)
         this.braveProvider = null
         return super.disconnect()
     }
