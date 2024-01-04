@@ -53,16 +53,16 @@ export class WalletDriver_Blade extends WalletDriver_Hedera {
         const hNetwork = WalletDriver_Blade.makeHederaNetwork(network)
         if (hNetwork !== null) {
             const {BladeConnector, ConnectorStrategy} = await import("@bladelabs/blade-web3.js")
-            newConnector = await BladeConnector.init(
-                ConnectorStrategy.EXTENSION,
-                {
-                    name: "HashScan",
-                    description: "A ledger explorer for Hedera network",
-                    url: "https://hashscan.io",
-                    icons: [ HederaLogo ]
-                }
-            )
             try {
+                newConnector = await BladeConnector.init(
+                    ConnectorStrategy.EXTENSION,
+                    {
+                        name: "HashScan",
+                        description: "A ledger explorer for Hedera network",
+                        url: "https://hashscan.io",
+                        icons: [ HederaLogo ]
+                    }
+                )
                 const params = {
                     network: hNetwork,
                     dAppCode: "HashScan"
