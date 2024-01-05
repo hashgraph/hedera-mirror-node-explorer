@@ -63,8 +63,7 @@ export class ContractResultAnalyzer {
     })
 
     public readonly toId = computed(() => {
-        const entityID = EntityID.fromAddress(this.contractResult.value?.to ?? undefined)
-        return entityID?.toString() ?? null
+        return this.contractResult.value?.contract_id ?? null
     })
 
     public readonly gasPrice = computed(() => {
