@@ -67,19 +67,19 @@ export class ContractResultAnalyzer {
     })
 
     public readonly gasPrice = computed(() => {
-      return (this.contractResult.value?.gas_price !== null)
+      return this.contractResult.value?.gas_price
           ? Number(filter0x(this.contractResult.value?.gas_price))
           : null
     })
 
     public readonly maxFeePerGas = computed(() => {
-      return (this.contractResult.value?.max_fee_per_gas !== null)
+      return this.contractResult.value?.max_fee_per_gas
           ? Number(filter0x(this.contractResult.value?.max_fee_per_gas))
           : null
     })
 
     public readonly maxPriorityFeePerGas = computed(() => {
-      return (this.contractResult.value?.max_priority_fee_per_gas !== null)
+      return this.contractResult.value?.max_priority_fee_per_gas
           ? Number(filter0x(this.contractResult.value?.max_priority_fee_per_gas))
           : null
     })
