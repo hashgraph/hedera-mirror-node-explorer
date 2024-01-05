@@ -38,6 +38,15 @@
                 </template>
             </Property>
 
+            <template v-for="arg in errorInputs" :key="arg.name">
+                <Property :custom-nb-col-class="customNbColClass">
+                    <template v-slot:name>{{ arg.name != "" ? arg.name : "message" }}</template>
+                    <template v-slot:value>
+                        <FunctionValue :ntv="arg"/>
+                    </template>
+                </Property>
+            </template>
+
         </div><template v-else>
 
             <Property :custom-nb-col-class="customNbColClass" id="functionInput">
@@ -82,10 +91,11 @@ import {FunctionCallAnalyzer} from "@/utils/analyzer/FunctionCallAnalyzer";
 import Property from "@/components/Property.vue";
 import {decodeSolidityErrorMessage} from "@/schemas/HederaUtils";
 import StringValue from "@/components/values/StringValue.vue";
+import FunctionValue from "@/components/values/FunctionValue.vue";
 
 export default defineComponent({
     name: 'FunctionError',
-    components: {StringValue, Property, HexaValue},
+    components: {FunctionValue, StringValue, Property, HexaValue},
     props: {
         analyzer: {
             type: Object as PropType<FunctionCallAnalyzer>,

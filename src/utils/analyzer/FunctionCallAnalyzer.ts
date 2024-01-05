@@ -187,7 +187,7 @@ export class FunctionCallAnalyzer {
 
     private readonly updateTransactionDescription = async () => {
         const i = this.contractAnalyzer.interface.value
-        const input = this.input.value
+        const input = this.normalizedInput.value
         if (i !== null && input !== null) {
             try {
                 const td = i.parseTransaction({data: input})
@@ -206,7 +206,7 @@ export class FunctionCallAnalyzer {
     private readonly updateOutputResult = () => {
         const td = this.transactionDescription.value
         const i = this.contractAnalyzer.interface.value
-        const output = this.output.value
+        const output = this.normalizedOutput.value
         if (td !== null && i !== null && output !== null) {
             try {
                 this.outputResult.value = i.decodeFunctionResult(td.fragment as ethers.FunctionFragment, output)
@@ -223,7 +223,7 @@ export class FunctionCallAnalyzer {
 
     private readonly updateErrorDescription = async() => {
         const i = this.contractAnalyzer.interface.value
-        const error = this.error.value
+        const error = this.normalizedError.value
         if (i !== null && error !== null && error !== "0x") {
             try {
                 const ed = i.parseError(error)
