@@ -52,7 +52,7 @@
 
   </template><template v-else>
 
-    <Property :custom-nb-col-class="customNbColClass" id="functionInput">
+    <Property :custom-nb-col-class="customNbColClass" id="functionOutput">
         <template v-slot:name>Output Result</template>
         <template v-slot:value>
           <HexaValue :byte-string="output" :show-none="true"/>
