@@ -21,6 +21,7 @@
 import {BrowserProvider, Eip1193Provider, ethers} from "ethers";
 import {BaseProvider} from '@metamask/providers';
 import {WalletDriver_Ethereum} from "@/utils/wallet/WalletDriver_Ethereum";
+import {WalletDriverError} from "@/utils/wallet/WalletDriverError";
 
 export class WalletDriver_Brave extends WalletDriver_Ethereum {
 
@@ -62,6 +63,18 @@ export class WalletDriver_Brave extends WalletDriver_Ethereum {
         this.braveProvider = null
         return super.disconnect()
     }
+
+    //
+    // WalletDriver
+    //
+
+    public extensionNotFound(): WalletDriverError {
+        // Brave wallet is builtin to Brave browser => we adapt wording
+        const message = "Cannot access to " + this.name
+        const extra = "Make sure to use Brave browser and enable wallet in browser settings."
+        return new WalletDriverError(message, extra)
+    }
+
 
     //
     // Private
