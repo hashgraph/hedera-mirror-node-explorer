@@ -32,7 +32,7 @@
     "@metamask/detect-provider": "^2.0.0",
     "@metamask/providers": "^14.0.2",
     "@oruga-ui/oruga-next": "^0.7.0",
-    "axios": "^1.6.3",
+    "axios": "^1.6.2",
     "base32-decode": "^1.0.0",
     "base32-encode": "^1.2.0",
     "bulma": "^0.9.4",
