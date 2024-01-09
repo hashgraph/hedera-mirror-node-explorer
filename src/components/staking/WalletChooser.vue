@@ -26,7 +26,7 @@
 
   <div :class="{'is-active': showDialog}" class="modal has-text-white">
     <div class="modal-background"/>
-    <div class="modal-content" style="width: 768px; border-radius: 16px">
+    <div class="modal-content" style="width: 634px; border-radius: 16px">
       <div class="box">
         <div class="is-flex is-justify-content-space-between is-align-items-self-end">
           <span class="h-is-primary-title">Connect Wallet</span>
@@ -36,7 +36,7 @@
         </div>
         <hr class="h-card-separator"/>
 
-        <div class="is-flex is-justify-content-left is-align-items-center">
+        <div class="is-flex is-justify-content-left is-align-items-center is-flex-wrap-wrap">
           <div v-for="d in drivers" :key="d.name">
             <a :id="d.name" @click="chosenWallet=d" @dblclick="handleConnect">
               <figure :class="{'selected':isSelected(d)}" class="h-chooser-figure my-4 mr-6">
@@ -46,7 +46,7 @@
           </div>
         </div>
 
-        <div class="is-flex is-justify-content-flex-end">
+        <div class="is-flex is-justify-content-flex-end mt-4">
           <button id="cancelButton" class="button is-white is-small" @click="handleCancel">CANCEL</button>
           <button id="connectButton" :disabled="!chosenWallet" class="button is-info is-small ml-4" @click="handleConnect">CONNECT
           </button>
