@@ -27,8 +27,10 @@
     <div  v-if="sourceFiles.length > 0"  id="source-code"
           class="mt-2 h-code-box h-has-page-background" style="max-height: 400px;">
         <template  v-for="(file, index) in sourceFiles">
-            <p class="mt-2 mx-3 h-is-extra-text">{{ file.name }}</p>
-            <pre class="h-has-page-background">{{ file.content }}</pre>
+            <p class="pt-2 mx-3 h-is-extra-text">{{ file.name }}</p>
+            <prism language="solidity" style="background-color: #171920">
+                <pre>{{ file.content }}</pre>
+            </prism>
             <hr v-if="index < sourceFiles.length - 1" class="has-background-grey-dark m-0" style="height: 0.5px"/>
         </template>
     </div>
@@ -48,10 +50,16 @@ import {computed, defineComponent, inject, PropType, ref} from 'vue';
 import {initialLoadingKey} from "@/AppKeys";
 import OpcodeValue from "@/components/values/OpcodeValue.vue";
 import {SourcifyResponseItem} from "@/utils/cache/SourcifyCache";
+import "prismjs/prism";
+import "prismjs/themes/prism-tomorrow.css"
+import "prismjs/prism.js";
+import "prismjs/components/prism-clike.js";
+import "prismjs/components/prism-solidity.js";
+import Prism from "vue-prism-component"
 
 export default defineComponent({
     name: 'SourceCodeValue',
-    components: {OpcodeValue},
+    components: {OpcodeValue, Prism},
 
     props: {
         sourceFiles: {
