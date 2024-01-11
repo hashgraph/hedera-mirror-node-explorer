@@ -18,7 +18,7 @@
  *
  */
 
-import {WalletDriver} from "@/utils/wallet/WalletDriver";
+import {HederaLogo, WalletDriver} from "@/utils/wallet/WalletDriver";
 import {routeManager} from "@/router";
 import {EntityID} from "@/utils/EntityID";
 import {BrowserProvider, ethers} from "ethers";
@@ -30,10 +30,42 @@ import {waitFor} from "@/utils/TimerUtils";
 import {ContractResultByHashCache} from "@/utils/cache/ContractResultByHashCache";
 import {TransactionByTsCache} from "@/utils/cache/TransactionByTsCache";
 import {markRaw} from "vue";
+import {TokenInfoCache} from "@/utils/cache/TokenInfoCache";
+import {makeTokenSymbol} from "@/schemas/HederaUtils";
 
 export abstract class WalletDriver_Ethereum extends WalletDriver {
 
     protected provider: BrowserProvider|null = null
+
+    //
+    // Public
+    //
+
+    public async watchToken(accountId: string, tokenId: string): Promise<void> {
+        const tokenAddress = EntityID.parse(tokenId)?.toAddress() ?? null
+        if (accountId !== null && tokenAddress !== null && this.provider !== null) {
+            const tokenInfo = await TokenInfoCache.instance.lookup(tokenId)
+            const symbol = makeTokenSymbol(tokenInfo, 11)
+            const decimals = tokenInfo?.decimals
+            const params = {
+                "type": "ERC20",
+                "options": {
+                    "address": `0x${tokenAddress}`,
+                    "symbol": symbol,
+                    "decimals": decimals,
+                    "image": HederaLogo
+                }
+            }
+            try {
+                await this.provider.send("wallet_watchAsset", params)
+            } catch(reason) {
+                throw this.makeCallFailure(reason, "watchToken")
+            }
+        } else {
+            throw this.callFailure("Invalid arguments")
+        }
+        return Promise.resolve()
+    }
 
     //
     // Public (to be subclassed)

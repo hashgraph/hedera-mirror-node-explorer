@@ -26,6 +26,7 @@ import {WalletDriver_Hashpack} from "@/utils/wallet/WalletDriver_Hashpack";
 import {timeGuard, TimeGuardError} from "@/utils/TimerUtils";
 import {WalletDriver_Hedera} from "@/utils/wallet/WalletDriver_Hedera";
 import {WalletDriver_Metamask} from "@/utils/wallet/WalletDriver_Metamask";
+import {WalletDriver_Ethereum} from "@/utils/wallet/WalletDriver_Ethereum";
 
 export class WalletManager {
 
@@ -203,7 +204,7 @@ export class WalletManager {
 
     public async watchToken(token: string): Promise<void> {
         if (this.accountIdRef.value !== null) {
-            if (this.activeDriver instanceof WalletDriver_Metamask) {
+            if (this.activeDriver instanceof WalletDriver_Ethereum) {
                 return this.activeDriver.watchToken(this.accountIdRef.value, token)
             } else {
                 throw this.activeDriver.unsupportedOperation()
