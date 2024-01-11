@@ -220,19 +220,21 @@ export default defineComponent({
       walletManager
           .connect()
           .catch((reason) => {
-            console.warn("Failed to connect wallet - reason:" + reason.toString())
-            showProgressDialog.value = true
-            progressDialogMode.value = Mode.Error
-            progressDialogTitle.value = "Could not connect wallet"
-            showProgressSpinner.value = false
-            progressExtraTransactionId.value = null
-            if (reason instanceof WalletDriverError) {
-              progressMainMessage.value = reason.message
-              progressExtraMessage.value = reason.extra
-            } else {
-              progressMainMessage.value = "Unexpected error"
-              progressExtraMessage.value = JSON.stringify(reason)
-            }
+              if (!(reason instanceof WalletDriverCancelError)) {
+                  console.warn("Failed to connect wallet - reason:" + reason.toString())
+                  showProgressDialog.value = true
+                  progressDialogMode.value = Mode.Error
+                  progressDialogTitle.value = "Could not connect wallet"
+                  showProgressSpinner.value = false
+                  progressExtraTransactionId.value = null
+                  if (reason instanceof WalletDriverError) {
+                      progressMainMessage.value = reason.message
+                      progressExtraMessage.value = reason.extra
+                  } else {
+                      progressMainMessage.value = "Unexpected error"
+                      progressExtraMessage.value = JSON.stringify(reason)
+                  }
+              }
           })
           .finally(() => connecting.value = false)
       walletIconURL.value = walletManager.getActiveDriver().iconURL || ""

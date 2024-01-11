@@ -59,10 +59,6 @@ export class WalletDriver_Metamask extends WalletDriver_Ethereum {
         return Promise.resolve(result)
     }
 
-    public isCancelError(reason: unknown): boolean {
-        return WalletDriver_Metamask.fetchMetamaskErrorCode(reason) == 4001
-    }
-
     public async connect(network: string): Promise<string[]> {
         const result = await super.connect(network)
         this.metamaskProvider?.once('chainChanged', this.handleDisconnect)
@@ -80,20 +76,6 @@ export class WalletDriver_Metamask extends WalletDriver_Ethereum {
     //
 
     private readonly handleDisconnect = () => this.disconnect()
-
-    private static fetchMetamaskErrorCode(reason: unknown): number|null {
-        let result: number|null
-        if (typeof reason == "object" && reason != null) {
-            if ("code" in reason && typeof reason.code == "number") {
-                result = reason.code
-            } else {
-                result = null
-            }
-        } else {
-            result = null
-        }
-        return result
-    }
 
 
 }

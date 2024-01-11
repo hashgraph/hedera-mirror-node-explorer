@@ -75,10 +75,6 @@ export abstract class WalletDriver_Ethereum extends WalletDriver {
         throw this.toBeImplemented("makeProvider()")
     }
 
-    public isCancelError(reason: unknown): boolean {
-        throw this.toBeImplemented("isCancelError(" + reason + ")")
-    }
-
     //
     // WalletDriver
     //
@@ -185,6 +181,10 @@ export abstract class WalletDriver_Ethereum extends WalletDriver {
         }
     }
 
+    protected isCancelError(reason: unknown): boolean {
+        return (reason as ethers.EthersError).code == "ACTION_REJECTED"
+    }
+
 
     //
     // Private
@@ -216,12 +216,20 @@ export abstract class WalletDriver_Ethereum extends WalletDriver {
     private async fetchAccountIds(provider: BrowserProvider): Promise<string[]> {
         let result: string[] = []
 
-        const response = await provider.send("eth_requestAccounts", [])
+        try {
+            const response = await provider.send("eth_requestAccounts", [])
 
-        for (const address of response ?? []) {
-            const accountInfo = address ? await AccountByAddressCache.instance.lookup(address) : null
-            if (accountInfo?.account) {
-                result.push(accountInfo.account)
+            for (const address of response ?? []) {
+                const accountInfo = address ? await AccountByAddressCache.instance.lookup(address) : null
+                if (accountInfo?.account) {
+                    result.push(accountInfo.account)
+                }
+            }
+        } catch(reason) {
+            if (this.isCancelError(reason)) {
+                throw new WalletDriverCancelError()
+            } else {
+                throw this.connectFailure("Check " + this.name + " extension for details")
             }
         }
 
