@@ -24,13 +24,13 @@
 
 <!--suppress HtmlWrongAttributeValue -->
 <template>
-    <div  v-if="sourceFiles.length > 0"  id="source-code" class="mt-2 analyzed-data-box h-has-page-background">
+    <div  v-if="sourceFiles.length > 0"  id="source-code"
+          class="mt-2 h-code-box h-has-page-background" style="max-height: 400px;">
         <template  v-for="(file, index) in sourceFiles">
             <p class="mt-2 mx-3 h-is-extra-text">{{ file.name }}</p>
             <pre class="h-has-page-background">{{ file.content }}</pre>
             <hr v-if="index < sourceFiles.length - 1" class="has-background-grey-dark m-0" style="height: 0.5px"/>
         </template>
-
     </div>
 
     <span v-else-if="initialLoading"/>
