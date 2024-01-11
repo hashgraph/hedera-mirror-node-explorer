@@ -84,7 +84,7 @@
             <Property v-if="isVerified" id="source-code" :full-width="true">
                 <template v-slot:name>Source Code</template>
             </Property>
-            <SourceCodeValue  v-if="isVerified" :source-files="sourceFiles ?? undefined" :rows="20" class="mt-3 mb-4"/>
+            <SourceCodeValue  v-if="isVerified" :source-files="sourceFiles ?? undefined" class="mt-3 mb-4"/>
             <div class="columns is-multiline h-is-property-text pt-3">
                 <div id="bytecode" class="column is-6 pt-0" :class="{'is-full': !isSmallScreen}">
                     <p class="has-text-weight-light">Runtime Bytecode</p>

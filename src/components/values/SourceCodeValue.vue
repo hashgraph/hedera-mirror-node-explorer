@@ -58,10 +58,6 @@ export default defineComponent({
             type: Object as PropType<SourcifyResponseItem[]>,
             default: []
         },
-        rows: {
-            type: Number,
-            default: 20
-        }
     },
 
     setup(props) {
