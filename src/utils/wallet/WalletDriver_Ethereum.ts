@@ -217,9 +217,20 @@ export abstract class WalletDriver_Ethereum extends WalletDriver {
         let result: string[] = []
 
         try {
-            const response = await provider.send("eth_requestAccounts", [])
+            // We do this in two steps:
+            //  1) wallet_requestPermissions first : this forces wallet to interact with user
+            //  2) eth_requestAccounts to get accounts chosen by user
+            // See reference discussion here:
+            //  https://github.com/MetaMask/metamask-extension/issues/8990#issuecomment-980489771
 
-            for (const address of response ?? []) {
+            // 1)
+            await provider.send("wallet_requestPermissions", [ { eth_accounts: {} } ])
+
+            // 2)
+            const accountResponse = await provider.send("eth_requestAccounts", [])
+
+            // Fetches info for each return accounts
+            for (const address of accountResponse ?? []) {
                 const accountInfo = address ? await AccountByAddressCache.instance.lookup(address) : null
                 if (accountInfo?.account) {
                     result.push(accountInfo.account)
