@@ -95,4 +95,12 @@ export default defineComponent({
 <!--                                                       STYLE                                                     -->
 <!-- --------------------------------------------------------------------------------------------------------------- -->
 
-<style/>
+<style>
+pre.language-solidity {
+    .number {
+        vertical-align: baseline;
+        font-size: 1rem;
+        background-color: inherit;
+    }
+}
+</style>
