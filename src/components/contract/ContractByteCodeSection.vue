@@ -211,7 +211,9 @@ export default defineComponent({
     watch(showHexaOpcode, () => AppStorage.setShowHexaOpcode(showHexaOpcode.value ? showHexaOpcode.value : null))
 
     const selectedOption = ref('')
-    onBeforeMount(() => selectedOption.value = props.contractAnalyzer.contractFileName.value ?? '')
+    watch(props.contractAnalyzer.contractFileName,
+        () => selectedOption.value = props.contractAnalyzer.contractFileName.value ?? '', {immediate: true})
+
     const isImportFile = (file: SourcifyResponseItem): boolean => {
       return file.name !== props.contractAnalyzer.contractFileName.value
     }
