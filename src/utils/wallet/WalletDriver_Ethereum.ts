@@ -193,6 +193,11 @@ export abstract class WalletDriver_Ethereum extends WalletDriver {
         return (reason as ethers.EthersError).code == "ACTION_REJECTED"
     }
 
+    protected isChainMissing(reason: unknown): boolean {
+        const providerError = (reason as ethers.EthersError).error
+        return typeof providerError == "object" && "code" in providerError && providerError.code == 4902
+    }
+
     protected fetchEthereumProviders(): object[] {
         // See https://docs.cloud.coinbase.com/wallet-sdk/docs/injected-provider-guidance
 
@@ -231,9 +236,63 @@ export abstract class WalletDriver_Ethereum extends WalletDriver {
             } catch(reason) {
                 if (this.isCancelError(reason)) {
                     throw new WalletDriverCancelError()
-                } else {
+                } else if (this.isChainMissing(reason)) {
+                    // Try to add chain et retry
+                    try {
+                        await this.addHederaChain(provider, chainId)
+                        await provider.send("wallet_switchEthereumChain", [{ chainId: chainId }])
+                    } catch {
+                        throw this.connectFailure("Make sure that 'Hedera " + networkEntry.name + "' network is added to " + this.name)
+                    }
+                } else  {
                     throw this.connectFailure("Make sure that 'Hedera " + networkEntry.name + "' network is added to " + this.name)
                 }
+            }
+        }
+    }
+
+    private async addHederaChain(provider: BrowserProvider, desiredChainId: string): Promise<void> {
+        const NETWORK_CONFIG = {
+            rpcUrls: [""],
+            chainName: "",
+            blockExplorerUrls: [""],
+        }
+
+        switch (desiredChainId) {
+            case "0x127":
+                NETWORK_CONFIG.chainName = "Hedera Mainnet"
+                NETWORK_CONFIG.rpcUrls = ["https://mainnet.hashio.io/api"]
+                NETWORK_CONFIG.blockExplorerUrls = ["https://hashscan.io/mainnet/dashboard"]
+                break;
+            case "0x128":
+                NETWORK_CONFIG.chainName = "Hedera Testnet"
+                NETWORK_CONFIG.rpcUrls = ["https://testnet.hashio.io/api"]
+                NETWORK_CONFIG.blockExplorerUrls = ["https://hashscan.io/testnet/dashboard"]
+                break;
+            case "0x129":
+                NETWORK_CONFIG.chainName = "Hedera Previewnet"
+                NETWORK_CONFIG.rpcUrls = ["https://previewnet.hashio.io/api"]
+                NETWORK_CONFIG.blockExplorerUrls = ["https://hashscan.io/preview/dashboard"]
+                break;
+        }
+
+        try {
+            await provider.send(
+                'wallet_addEthereumChain',
+                [{
+                    chainId: desiredChainId,
+                    rpcUrls: NETWORK_CONFIG.rpcUrls,
+                    chainName: NETWORK_CONFIG.chainName,
+                    nativeCurrency: { name: 'HBAR', decimals: 18, symbol: 'HBAR' },
+                    blockExplorerUrls: NETWORK_CONFIG.blockExplorerUrls,
+                    iconUrls: [HederaLogo],
+                }],
+            )
+        } catch (reason: any) {
+            if (this.isCancelError(reason)) {
+                throw new WalletDriverCancelError()
+            } else {
+                throw this.connectFailure(reason)
             }
         }
     }
