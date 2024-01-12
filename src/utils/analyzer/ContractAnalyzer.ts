@@ -119,6 +119,10 @@ export class ContractAnalyzer {
         return result
     })
 
+    public readonly contractFileName = computed(() => {
+        return this.sourceFileName.value?.substring(this.sourceFileName.value?.lastIndexOf('/') + 1)
+    })
+
     public readonly contractName: ComputedRef<string | null> = computed(() => {
         let result: string | null
         if (this.systemContractEntry.value !== null) {
