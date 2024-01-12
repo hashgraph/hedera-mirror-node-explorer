@@ -69,22 +69,9 @@ export default defineComponent({
     },
 
     setup(props) {
-        const FILE_SEPARATOR = "\n\n==========================================================================================================================================================================================\n\n"
         const initialLoading = inject(initialLoadingKey, ref(false))
-        const sourceContent = computed(() => {
-            let result = ""
-            for (let i = 0; i < props.sourceFiles.length; i++) {
-                console.log(`source: [${props.sourceFiles[i].content}]`)
-                result += props.sourceFiles[i]
-                if (i < props.sourceFiles.length - 1) {
-                    result += FILE_SEPARATOR
-                }
-            }
-            return result
-        })
         return {
             initialLoading,
-            sourceContent
         }
     }
 });
