@@ -53,10 +53,10 @@
           <div class="has-text-weight-light">EVM Address:</div>
           <div class="is-flex is-align-items-baseline">
             <EVMAddress class="mr-3" :show-id="false" :has-custom-font="true" :address="ethereumAddress"/>
-            <MetaMaskImport v-if="connectedToMetamask && isSmallScreen" :analyzer="tokenAnalyzer"/>
+            <MetaMaskImport v-if="connectedToEthereum && isSmallScreen" :analyzer="tokenAnalyzer"/>
           </div>
         </div>
-        <div v-if="ethereumAddress && connectedToMetamask && !isSmallScreen" class="mt-2 h-is-property-text">
+        <div v-if="ethereumAddress && connectedToEthereum && !isSmallScreen" class="mt-2 h-is-property-text">
           <MetaMaskImport :analyzer="tokenAnalyzer"/>
         </div>
 
@@ -422,8 +422,8 @@ export default defineComponent({
     onMounted(() => nftHolderTableController.mount())
     onBeforeUnmount(() => nftHolderTableController.unmount())
 
-    const connectedToMetamask = computed(
-        () => walletManager.isMetamaskWallet.value && walletManager.connected.value)
+    const connectedToEthereum = computed(
+        () => walletManager.isEthereumWallet.value && walletManager.connected.value)
 
     return {
       isSmallScreen,
@@ -443,7 +443,7 @@ export default defineComponent({
       parseBigIntString,
       tokenAnalyzer,
       ethereumAddress: tokenAnalyzer.ethereumAddress,
-      connectedToMetamask,
+      connectedToEthereum,
       tokenBalanceTableController,
       nftHolderTableController,
     }

@@ -44,7 +44,7 @@ export class WalletManager {
     private readonly accountIdRef = ref<string|null>(null)
     private readonly accountIdsRef = ref<string[]>([])
     private readonly hederaWalletRef = ref<boolean>(this.activeDriver instanceof WalletDriver_Hedera)
-    private readonly metamaskWalletRef = ref<boolean>(this.activeDriver instanceof WalletDriver_Metamask)
+    private readonly isEthereumWalletRef = ref<boolean>(this.activeDriver instanceof WalletDriver_Ethereum)
 
     //
     // Public
@@ -70,7 +70,7 @@ export class WalletManager {
             this.accountIdRef.value = null
             this.walletNameRef.value = this.activeDriver.name
             this.hederaWalletRef.value = this.activeDriver instanceof WalletDriver_Hedera
-            this.metamaskWalletRef.value = this.activeDriver instanceof WalletDriver_Metamask
+            this.isEthereumWalletRef.value = this.activeDriver instanceof WalletDriver_Ethereum
         }
     }
 
@@ -84,7 +84,7 @@ export class WalletManager {
 
     public isHederaWallet = computed(() => this.hederaWalletRef.value)
 
-    public isMetamaskWallet = computed(() => this.metamaskWalletRef.value)
+    public isEthereumWallet = computed(() => this.isEthereumWalletRef.value)
 
     public async connect(): Promise<void> {
         let accountIds: string[]
