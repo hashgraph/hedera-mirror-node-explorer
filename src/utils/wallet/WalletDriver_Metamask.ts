@@ -18,8 +18,6 @@
  *
  */
 
-import detectEthereumProvider from "@metamask/detect-provider";
-import {BrowserProvider, ethers} from "ethers";
 import {WalletDriver_Ethereum} from "@/utils/wallet/WalletDriver_Ethereum";
 import {MetaMaskInpageProvider} from "@metamask/providers";
 
@@ -50,12 +48,8 @@ export class WalletDriver_Metamask extends WalletDriver_Ethereum {
     // WalletDriver_Ethereum
     //
 
-    public async makeProvider(): Promise<BrowserProvider|null> {
-        if (this.metamaskProvider === null) {
-            const options = { mustBeMetaMask: true }
-           this.metamaskProvider = (await detectEthereumProvider(options) ?? null)
-        }
-        const result = this.metamaskProvider !== null ?  new ethers.BrowserProvider(this.metamaskProvider) : null
+    public async isExpectedProvider(provider: object): Promise<boolean> {
+        const result = "isMetaMask" in provider && provider.isMetaMask == true
         return Promise.resolve(result)
     }
 

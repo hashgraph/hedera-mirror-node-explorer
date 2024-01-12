@@ -71,8 +71,9 @@ export abstract class WalletDriver_Ethereum extends WalletDriver {
     // Public (to be subclassed)
     //
 
-    public async makeProvider(): Promise<BrowserProvider|null> {
-        throw this.toBeImplemented("makeProvider()")
+    public async isExpectedProvider(provider: object): Promise<boolean> {
+        console.log("provider=" + JSON.stringify(provider))
+        throw this.toBeImplemented("isExpectedProvider()")
     }
 
     //
@@ -88,7 +89,14 @@ export abstract class WalletDriver_Ethereum extends WalletDriver {
             throw this.connectFailure("Network inconsistency: bug")
         }
 
-        const provider = await this.makeProvider()
+        let provider: BrowserProvider|null = null
+        for (const p of this.fetchEthereumProviders()) {
+            if (await this.isExpectedProvider(p)) {
+                provider = new BrowserProvider(p as ethers.Eip1193Provider)
+                break
+            }
+        }
+
         if (provider !== null) {
 
             // Switch wallet to network if needed
@@ -185,6 +193,23 @@ export abstract class WalletDriver_Ethereum extends WalletDriver {
         return (reason as ethers.EthersError).code == "ACTION_REJECTED"
     }
 
+    protected fetchEthereumProviders(): object[] {
+        // See https://docs.cloud.coinbase.com/wallet-sdk/docs/injected-provider-guidance
+
+        let result: object[]
+        if ("ethereum" in window && typeof window.ethereum === "object" && window.ethereum !== null) {
+            const ethereum = window.ethereum as Object
+            if ("providers" in ethereum && Array.isArray(ethereum.providers) ) {
+                result = ethereum.providers
+            } else {
+                result = [ethereum]
+            }
+        } else {
+            result = []
+        }
+
+        return result
+    }
 
     //
     // Private
