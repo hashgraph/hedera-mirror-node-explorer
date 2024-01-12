@@ -26,6 +26,7 @@ import {WalletDriver_Hashpack} from "@/utils/wallet/WalletDriver_Hashpack";
 import {timeGuard, TimeGuardError} from "@/utils/TimerUtils";
 import {WalletDriver_Hedera} from "@/utils/wallet/WalletDriver_Hedera";
 import {WalletDriver_Metamask} from "@/utils/wallet/WalletDriver_Metamask";
+import {WalletDriver_Ethereum} from "@/utils/wallet/WalletDriver_Ethereum";
 
 export class WalletManager {
 
@@ -33,7 +34,7 @@ export class WalletManager {
     private readonly bladeDriver = new WalletDriver_Blade()
     private readonly hashpackDriver = new WalletDriver_Hashpack()
     private readonly metamaskDriver = new WalletDriver_Metamask()
-    private readonly drivers: Array<WalletDriver> = [this.bladeDriver, this.hashpackDriver]
+    private readonly drivers: Array<WalletDriver> = [this.bladeDriver, this.hashpackDriver, this.metamaskDriver]
     private readonly timeout = 30000; // milliseconds
 
 
@@ -51,9 +52,6 @@ export class WalletManager {
 
     public constructor(routeManager: RouteManager) {
         this.routeManager = routeManager
-        if (import.meta.env.VITE_APP_ENABLE_METAMASK === "true") {
-            this.drivers.push(this.metamaskDriver)
-        }
         watch(this.routeManager.currentNetwork, () => this.disconnect())
     }
 
@@ -203,7 +201,7 @@ export class WalletManager {
 
     public async watchToken(token: string): Promise<void> {
         if (this.accountIdRef.value !== null) {
-            if (this.activeDriver instanceof WalletDriver_Metamask) {
+            if (this.activeDriver instanceof WalletDriver_Ethereum) {
                 return this.activeDriver.watchToken(this.accountIdRef.value, token)
             } else {
                 throw this.activeDriver.unsupportedOperation()

@@ -18,7 +18,7 @@
  *
  */
 
-import {WalletDriver} from "@/utils/wallet/WalletDriver";
+import {HederaLogo, WalletDriver} from "@/utils/wallet/WalletDriver";
 import {routeManager} from "@/router";
 import {EntityID} from "@/utils/EntityID";
 import {BrowserProvider, ethers} from "ethers";
@@ -30,10 +30,42 @@ import {waitFor} from "@/utils/TimerUtils";
 import {ContractResultByHashCache} from "@/utils/cache/ContractResultByHashCache";
 import {TransactionByTsCache} from "@/utils/cache/TransactionByTsCache";
 import {markRaw} from "vue";
+import {TokenInfoCache} from "@/utils/cache/TokenInfoCache";
+import {makeTokenSymbol} from "@/schemas/HederaUtils";
 
 export abstract class WalletDriver_Ethereum extends WalletDriver {
 
     protected provider: BrowserProvider|null = null
+
+    //
+    // Public
+    //
+
+    public async watchToken(accountId: string, tokenId: string): Promise<void> {
+        const tokenAddress = EntityID.parse(tokenId)?.toAddress() ?? null
+        if (accountId !== null && tokenAddress !== null && this.provider !== null) {
+            const tokenInfo = await TokenInfoCache.instance.lookup(tokenId)
+            const symbol = makeTokenSymbol(tokenInfo, 11)
+            const decimals = tokenInfo?.decimals
+            const params = {
+                "type": "ERC20",
+                "options": {
+                    "address": `0x${tokenAddress}`,
+                    "symbol": symbol,
+                    "decimals": decimals,
+                    "image": HederaLogo
+                }
+            }
+            try {
+                await this.provider.send("wallet_watchAsset", params)
+            } catch(reason) {
+                throw this.makeCallFailure(reason, "watchToken")
+            }
+        } else {
+            throw this.callFailure("Invalid arguments")
+        }
+        return Promise.resolve()
+    }
 
     //
     // Public (to be subclassed)
@@ -41,10 +73,6 @@ export abstract class WalletDriver_Ethereum extends WalletDriver {
 
     public async makeProvider(): Promise<BrowserProvider|null> {
         throw this.toBeImplemented("makeProvider()")
-    }
-
-    public isCancelError(reason: unknown): boolean {
-        throw this.toBeImplemented("isCancelError(" + reason + ")")
     }
 
     //
@@ -153,6 +181,10 @@ export abstract class WalletDriver_Ethereum extends WalletDriver {
         }
     }
 
+    protected isCancelError(reason: unknown): boolean {
+        return (reason as ethers.EthersError).code == "ACTION_REJECTED"
+    }
+
 
     //
     // Private
@@ -184,12 +216,31 @@ export abstract class WalletDriver_Ethereum extends WalletDriver {
     private async fetchAccountIds(provider: BrowserProvider): Promise<string[]> {
         let result: string[] = []
 
-        const response = await provider.send("eth_requestAccounts", [])
+        try {
+            // We do this in two steps:
+            //  1) wallet_requestPermissions first : this forces wallet to interact with user
+            //  2) eth_requestAccounts to get accounts chosen by user
+            // See reference discussion here:
+            //  https://github.com/MetaMask/metamask-extension/issues/8990#issuecomment-980489771
 
-        for (const address of response ?? []) {
-            const accountInfo = address ? await AccountByAddressCache.instance.lookup(address) : null
-            if (accountInfo?.account) {
-                result.push(accountInfo.account)
+            // 1)
+            await provider.send("wallet_requestPermissions", [ { eth_accounts: {} } ])
+
+            // 2)
+            const accountResponse = await provider.send("eth_requestAccounts", [])
+
+            // Fetches info for each return accounts
+            for (const address of accountResponse ?? []) {
+                const accountInfo = address ? await AccountByAddressCache.instance.lookup(address) : null
+                if (accountInfo?.account) {
+                    result.push(accountInfo.account)
+                }
+            }
+        } catch(reason) {
+            if (this.isCancelError(reason)) {
+                throw new WalletDriverCancelError()
+            } else {
+                throw this.connectFailure("Check " + this.name + " extension for details")
             }
         }
 

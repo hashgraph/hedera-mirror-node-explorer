@@ -84,7 +84,7 @@ export abstract class WalletDriver {
     }
 
     public silentMessage(): string {
-        return this.name + " wallet is silent";
+        return this.name + " is silent";
     }
 
     //
