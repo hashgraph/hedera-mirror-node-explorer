@@ -81,10 +81,29 @@
                     <StringValue :string-value="solcVersion ?? undefined"/>
                 </template>
             </Property>
-            <Property v-if="isVerified" id="source-code" :full-width="true">
-                <template v-slot:name>Source Code</template>
-            </Property>
-            <SourceCodeValue  v-if="isVerified" :source-files="sourceFiles ?? undefined" class="mt-3 mb-4"/>
+            <div class="is-flex is-justify-content-space-between is-align-items-center mt-2">
+                <div v-if="isVerified" class="has-text-weight-light mr-6">Source Code</div>
+                <div v-if="isVerified" class="is-flex is-justify-content-end">
+                    <o-field>
+                        <o-select v-model="selectedOption" class="h-is-text-size-3">
+                            <option value="">All source files</option>
+                            <optgroup label="Main contract file">
+                                <option :value="contractFileName">{{ sourceFileName }}</option>
+                            </optgroup>
+                            <optgroup label="Include files">
+                                <option v-for="file in sourceFiles" v-bind:key="file.path"
+                                        v-bind:value="file.name"
+                                        v-show="isImportFile(file)">
+                                    {{ relevantPath(file.path) }}
+                                </option>
+                            </optgroup>
+                        </o-select>
+                    </o-field>
+                </div>
+            </div>
+            <SourceCodeValue  v-if="isVerified" class="mt-3 mb-4"
+                              :source-files="sourceFiles ?? undefined"
+                              :filter="selectedOption"/>
             <div class="columns is-multiline h-is-property-text pt-3">
                 <div id="bytecode" class="column is-6 pt-0" :class="{'is-full': !isSmallScreen}">
                     <p class="has-text-weight-light">Runtime Bytecode</p>
@@ -120,7 +139,7 @@
 
 <script lang="ts">
 
-import {computed, defineComponent, inject, onMounted, PropType, ref, watch} from 'vue';
+import {computed, defineComponent, inject, onBeforeMount, onMounted, PropType, ref, watch} from 'vue';
 import DashboardCard from "@/components/DashboardCard.vue";
 import ByteCodeValue from "@/components/values/ByteCodeValue.vue";
 import StringValue from "@/components/values/StringValue.vue";
@@ -133,6 +152,7 @@ import DisassembledCodeValue from "@/components/values/DisassembledCodeValue.vue
 import HexaValue from "@/components/values/HexaValue.vue";
 import {AppStorage} from "@/AppStorage";
 import SourceCodeValue from "@/components/values/SourceCodeValue.vue";
+import {SourcifyResponseItem} from "@/utils/cache/SourcifyCache";
 
 const FULL_MATCH_TOOLTIP = `A Full Match indicates that the bytecode of the deployed contract is byte-by-byte the same as the compilation output of the given source code files with the settings defined in the metadata file. This means the contents of the source code files and the compilation settings are exactly the same as when the contract author compiled and deployed the contract.`
 const PARTIAL_MATCH_TOOLTIP = `A Partial Match indicates that the bytecode of the deployed contract is the same as the compilation output of the given source code files except for the metadata hash. This means the deployed contract and the given source code + metadata function in the same way but there are differences in source code comments, variable names, or other metadata fields such as source paths.`
@@ -190,6 +210,15 @@ export default defineComponent({
     onMounted(() => showHexaOpcode.value = AppStorage.getShowHexaOpcode())
     watch(showHexaOpcode, () => AppStorage.setShowHexaOpcode(showHexaOpcode.value ? showHexaOpcode.value : null))
 
+    const selectedOption = ref('')
+    onBeforeMount(() => selectedOption.value = props.contractAnalyzer.contractFileName.value ?? '')
+    const isImportFile = (file: SourcifyResponseItem): boolean => {
+      return file.name !== props.contractAnalyzer.contractFileName.value
+    }
+    const relevantPath = (fullPath: string): string => {
+      return fullPath.substring(fullPath.indexOf('sources') + 8)
+    }
+
     return {
       isTouchDevice,
       isSmallScreen,
@@ -205,9 +234,14 @@ export default defineComponent({
       contractId: props.contractAnalyzer.contractId,
       byteCodeAnalyzer: props.contractAnalyzer.byteCodeAnalyzer,
       sourceFiles: props.contractAnalyzer.sourceFiles,
+      sourceFileName: props.contractAnalyzer.sourceFileName,
+      contractFileName: props.contractAnalyzer.contractFileName,
       verifyDidComplete,
       isFullMatch,
       showHexaOpcode,
+      selectedOption,
+      isImportFile,
+      relevantPath,
     }
   }
 });

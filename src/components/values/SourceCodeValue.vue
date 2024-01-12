@@ -27,8 +27,8 @@
     <div  v-if="sourceFiles.length > 0"  id="source-code"
           class="mt-2 h-code-box h-has-page-background" style="max-height: 400px;">
         <template  v-for="(file, index) in sourceFiles">
-            <p class="pt-2 mx-3 h-is-extra-text">{{ file.name }}</p>
-            <prism language="solidity" style="background-color: #171920">
+            <p v-if="isFiltered(file)" class="pt-2 mx-3 h-is-extra-text">{{ file.name }}</p>
+            <prism v-if="isFiltered(file)" language="solidity" style="background-color: #171920; font-size: 0.7rem">
                 <pre>{{ file.content }}</pre>
             </prism>
             <hr v-if="index < sourceFiles.length - 1" class="has-background-grey-dark m-0" style="height: 0.5px"/>
@@ -46,7 +46,7 @@
 
 <script lang="ts">
 
-import {computed, defineComponent, inject, PropType, ref} from 'vue';
+import {defineComponent, inject, PropType, ref} from 'vue';
 import {initialLoadingKey} from "@/AppKeys";
 import OpcodeValue from "@/components/values/OpcodeValue.vue";
 import {SourcifyResponseItem} from "@/utils/cache/SourcifyCache";
@@ -66,12 +66,18 @@ export default defineComponent({
             type: Object as PropType<SourcifyResponseItem[]>,
             default: []
         },
+        filter: {
+            type: String,
+            default: ''
+        }
     },
 
     setup(props) {
         const initialLoading = inject(initialLoadingKey, ref(false))
+        const isFiltered = (file:SourcifyResponseItem) => props.filter =='' || props.filter == file.name
         return {
             initialLoading,
+            isFiltered,
         }
     }
 });
@@ -86,8 +92,11 @@ export default defineComponent({
 pre.language-solidity {
     .number {
         vertical-align: baseline;
-        font-size: 1rem;
+        font-size: 0.8rem;
         background-color: inherit;
+        min-width: 0;
+        padding: 0;
+        margin: 0;
     }
 }
 </style>
