@@ -81,11 +81,26 @@
                     <StringValue :string-value="solcVersion ?? undefined"/>
                 </template>
             </Property>
-            <div class="is-flex is-justify-content-space-between is-align-items-center mt-2">
-                <div v-if="isVerified" class="has-text-weight-light mr-6">Source Code</div>
-                <div v-if="isVerified" class="is-flex is-justify-content-end">
+            <div v-if="isVerified" class="is-flex is-justify-content-space-between is-align-items-center mt-5 mb-0">
+                <div class="tabs is-toggle h-has-page-background mb-1" >
+                    <ul>
+                        <li :class="{'is-active': selectedOption==='source'}">
+                            <a class="h-is-property-text has-text-weight-light h-tab" style="border-width: 0.5px; border-color: grey;"
+                               @click="selectedOption = 'source'"><span>Source</span></a>
+                        </li>
+                        <li :class="{'is-active': selectedOption==='bytecode'}">
+                            <a class="h-is-property-text has-text-weight-light" style="border-width: 0.5px; border-color: grey;"
+                               @click="selectedOption = 'bytecode'"><span>Bytecode</span></a>
+                        </li>
+                        <li :class="{'is-active': selectedOption==='abi'}">
+                            <a class="h-is-property-text has-text-weight-light" style="border-width: 0.5px; border-color: grey;"
+                               @click="selectedOption = 'abi'"><span>ABI</span></a>
+                        </li>
+                    </ul>
+                </div>
+                <div v-if="isVerified && selectedOption==='source'" class="is-flex is-justify-content-end">
                     <o-field>
-                        <o-select v-model="selectedOption" class="h-is-text-size-3">
+                        <o-select v-model="selectedSource" class="h-is-text-size-3">
                             <option value="">All source files</option>
                             <optgroup label="Main contract file">
                                 <option :value="contractFileName">{{ sourceFileName }}</option>
@@ -100,17 +115,25 @@
                         </o-select>
                     </o-field>
                 </div>
-            </div>
-            <SourceCodeValue  v-if="isVerified" class="mt-3 mb-4"
-                              :source-files="sourceFiles ?? undefined"
-                              :filter="selectedOption"/>
-            <div class="columns is-multiline h-is-property-text pt-3">
-                <div id="bytecode" class="column is-6 pt-0" :class="{'is-full': !isSmallScreen}">
-                    <p class="has-text-weight-light">Runtime Bytecode</p>
-                    <ByteCodeValue :byte-code="byteCode ?? undefined" class="mt-3 mb-4"/>
+                <div v-else-if="selectedOption==='bytecode'" class="is-flex is-align-items-center is-justify-content-end">
+                    <p class="has-text-weight-light">Show hexa opcode</p>
+                    <label class="checkbox pt-1 ml-3">
+                        <input type="checkbox" v-model="showHexaOpcode">
+                    </label>
                 </div>
-                <div id="assembly-code" class="column is-6 pt-0" :class="{'h-has-column-separator':isSmallScreen}">
-                    <div class="is-flex is-align-items-center is-justify-content-space-between">
+            </div>
+            <SourceCodeValue  v-if="isVerified && selectedOption==='source'" class="mt-3"
+                              :source-files="sourceFiles ?? undefined"
+                              :filter="selectedSource"/>
+            <div v-if="!isVerified || selectedOption==='bytecode'" class="columns is-multiline h-is-property-text" :class="{'mt-3':!isVerified,'mt-0':isVerified}">
+                <div id="bytecode" class="column is-6 pt-0 mb-0" :class="{'is-full': !isSmallScreen}">
+                    <span v-if="!isVerified" class="has-text-weight-light">Runtime Bytecode</span>
+                    <div>
+                        <ByteCodeValue :byte-code="byteCode ?? undefined" class="mb-0" :class="{'mt-3':isVerified,'mt-4':!isVerified}"/>
+                    </div>
+                </div>
+                <div id="assembly-code" class="column is-6 pt-0 mb-0" :class="{'h-has-column-separator':isSmallScreen}">
+                    <div v-if="!isVerified" class="is-flex is-align-items-center is-justify-content-space-between">
                         <p class="has-text-weight-light">Assembly Bytecode</p>
                         <div class="is-flex is-align-items-center is-justify-content-end">
                             <p class="has-text-weight-light">Show hexa opcode</p>
@@ -119,12 +142,11 @@
                             </label>
                         </div>
                     </div>
-                    <DisassembledCodeValue :byte-code="byteCode ?? undefined" :show-hexa-opcode="showHexaOpcode"/>
+                    <DisassembledCodeValue :byte-code="byteCode ?? undefined" :show-hexa-opcode="showHexaOpcode" class="mt-3 mb-0"/>
                 </div>
             </div>
         </template>
     </DashboardCard>
-
 
     <ContractVerificationDialog
         v-model:show-dialog="showVerifyDialog"
@@ -139,7 +161,7 @@
 
 <script lang="ts">
 
-import {computed, defineComponent, inject, onBeforeMount, onMounted, PropType, ref, watch} from 'vue';
+import {computed, defineComponent, inject, onMounted, PropType, ref, watch} from 'vue';
 import DashboardCard from "@/components/DashboardCard.vue";
 import ByteCodeValue from "@/components/values/ByteCodeValue.vue";
 import StringValue from "@/components/values/StringValue.vue";
@@ -210,9 +232,11 @@ export default defineComponent({
     onMounted(() => showHexaOpcode.value = AppStorage.getShowHexaOpcode())
     watch(showHexaOpcode, () => AppStorage.setShowHexaOpcode(showHexaOpcode.value ? showHexaOpcode.value : null))
 
-    const selectedOption = ref('')
+    const selectedOption = ref('source')
+
+    const selectedSource = ref('')
     watch(props.contractAnalyzer.contractFileName,
-        () => selectedOption.value = props.contractAnalyzer.contractFileName.value ?? '', {immediate: true})
+        () => selectedSource.value = props.contractAnalyzer.contractFileName.value ?? '', {immediate: true})
 
     const isImportFile = (file: SourcifyResponseItem): boolean => {
       return file.name !== props.contractAnalyzer.contractFileName.value
@@ -242,6 +266,7 @@ export default defineComponent({
       isFullMatch,
       showHexaOpcode,
       selectedOption,
+      selectedSource,
       isImportFile,
       relevantPath,
     }
