@@ -31,7 +31,7 @@
             <prism v-if="isFiltered(file)" language="solidity" style="background-color: #171920; font-size: 0.7rem">
                 <pre>{{ file.content }}</pre>
             </prism>
-            <hr v-if="index < sourceFiles.length - 1" class="has-background-grey-dark m-0" style="height: 0.5px"/>
+            <hr v-if="filter==='' && index < sourceFiles.length - 1" class="has-background-grey-dark m-0" style="height: 0.5px"/>
         </template>
     </div>
 
