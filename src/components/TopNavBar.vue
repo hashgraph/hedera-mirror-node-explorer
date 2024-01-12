@@ -174,7 +174,7 @@ import AxiosStatus from "@/components/AxiosStatus.vue";
 import {networkRegistry} from "@/schemas/NetworkRegistry";
 import WalletChooser from "@/components/staking/WalletChooser.vue";
 import { WalletDriver } from '@/utils/wallet/WalletDriver';
-import { WalletDriverError } from '@/utils/wallet/WalletDriverError';
+import {WalletDriverCancelError, WalletDriverError} from '@/utils/wallet/WalletDriverError';
 import ProgressDialog, { Mode } from './staking/ProgressDialog.vue';
 import {defineComponent, inject, ref} from "vue";
 import WalletInfo from '@/components/wallet/WalletInfo.vue'
