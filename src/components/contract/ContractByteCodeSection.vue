@@ -37,12 +37,7 @@
 
         <template v-slot:control>
             <template v-if="isVerificationAvailable">
-                <template v-if="isVerified">
-                    <div v-if="sourcifyURL" id="showSource" class="is-inline-block ml-3">
-                        <a :href="sourcifyURL" target="_blank">View contract sources</a>
-                    </div>
-                </template>
-                <template v-else>
+                <template v-if="!isVerified">
                     <button id="verify-button"
                             class="button is-white is-small has-text-right"
                             @click="showVerifyDialog = true">
