@@ -82,19 +82,17 @@
                 </template>
             </Property>
             <div v-if="isVerified" class="is-flex is-justify-content-space-between is-align-items-center mt-5 mb-0">
-                <div class="tabs is-toggle h-has-page-background mb-1" >
+                <div class="tabs is-toggle h-is-property-text mb-1" >
                     <ul>
-                        <li :class="{'is-active': selectedOption==='source'}">
-                            <a class="h-is-property-text has-text-weight-light h-tab" style="border-width: 0.5px; border-color: grey;"
-                               @click="selectedOption = 'source'"><span>Source</span></a>
+                        <li :class="{'is-active':showSource}">
+                            <a :style="tabStyle('source')"
+                               @click="selectedOption = 'source'">
+                                <span>Source</span></a>
                         </li>
-                        <li :class="{'is-active': selectedOption==='bytecode'}">
-                            <a class="h-is-property-text has-text-weight-light" style="border-width: 0.5px; border-color: grey;"
-                               @click="selectedOption = 'bytecode'"><span>Bytecode</span></a>
-                        </li>
-                        <li :class="{'is-active': selectedOption==='abi'}">
-                            <a class="h-is-property-text has-text-weight-light" style="border-width: 0.5px; border-color: grey;"
-                               @click="selectedOption = 'abi'"><span>ABI</span></a>
+                        <li :class="{'is-active':showBytecode}">
+                            <a :style="tabStyle('bytecode')"
+                               @click="selectedOption = 'bytecode'">
+                                <span>Bytecode</span></a>
                         </li>
                     </ul>
                 </div>
@@ -233,8 +231,11 @@ export default defineComponent({
     watch(showHexaOpcode, () => AppStorage.setShowHexaOpcode(showHexaOpcode.value ? showHexaOpcode.value : null))
 
     const selectedOption = ref('source')
+    const showSource = computed(() => selectedOption.value === 'source')
+    const showBytecode = computed(() => selectedOption.value === 'bytecode')
 
-    const selectedSource = ref('')
+
+      const selectedSource = ref('')
     watch(props.contractAnalyzer.contractFileName,
         () => selectedSource.value = props.contractAnalyzer.contractFileName.value ?? '', {immediate: true})
 
@@ -245,7 +246,19 @@ export default defineComponent({
       return fullPath.substring(fullPath.indexOf('sources') + 8)
     }
 
-    return {
+      const tabStyle = (option: string): Record<string, string> => {
+         if (selectedOption.value === option) {
+             return {
+                 fontWeight: "500",
+             }
+         } else {
+             return {
+                 fontWeight: "300",
+             }
+         }
+      }
+
+      return {
       isTouchDevice,
       isSmallScreen,
       isMediumScreen,
@@ -266,9 +279,12 @@ export default defineComponent({
       isFullMatch,
       showHexaOpcode,
       selectedOption,
+      showSource,
+      showBytecode,
       selectedSource,
       isImportFile,
       relevantPath,
+      tabStyle,
     }
   }
 });
