@@ -217,10 +217,10 @@ export abstract class WalletDriver_Ethereum extends WalletDriver {
     }
 
     //
-    // Private
+    // Protected (to be altered by subclass if needed)
     //
 
-    private async switchToNetwork(provider: BrowserProvider, networkEntry: NetworkEntry): Promise<void> {
+    protected async switchToNetwork(provider: BrowserProvider, networkEntry: NetworkEntry): Promise<void> {
 
         const chainId = networkEntry.sourcifySetup?.hexChainID()
         if (chainId == null) {
@@ -251,7 +251,7 @@ export abstract class WalletDriver_Ethereum extends WalletDriver {
         }
     }
 
-    private async addHederaChain(provider: BrowserProvider, desiredChainId: string): Promise<void> {
+    protected async addHederaChain(provider: BrowserProvider, desiredChainId: string): Promise<void> {
         const NETWORK_CONFIG = {
             rpcUrls: [""],
             chainName: "",
@@ -297,7 +297,7 @@ export abstract class WalletDriver_Ethereum extends WalletDriver {
         }
     }
 
-    private async fetchAccountIds(provider: BrowserProvider): Promise<string[]> {
+    protected async fetchAccountIds(provider: BrowserProvider): Promise<string[]> {
         let result: string[] = []
 
         try {
@@ -332,7 +332,7 @@ export abstract class WalletDriver_Ethereum extends WalletDriver {
     }
 
 
-    private async waitForTransactionSurfacing(ethereumHash: Buffer): Promise<Transaction | string> {
+    protected async waitForTransactionSurfacing(ethereumHash: Buffer): Promise<Transaction | string> {
         let result: Promise<Transaction | string>
 
         const hash = ethers.hexlify(ethereumHash)

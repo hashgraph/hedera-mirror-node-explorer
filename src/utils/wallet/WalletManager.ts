@@ -27,6 +27,7 @@ import {timeGuard, TimeGuardError} from "@/utils/TimerUtils";
 import {WalletDriver_Hedera} from "@/utils/wallet/WalletDriver_Hedera";
 import {WalletDriver_Metamask} from "@/utils/wallet/WalletDriver_Metamask";
 import {WalletDriver_Ethereum} from "@/utils/wallet/WalletDriver_Ethereum";
+import {WalletDriver_Coinbase} from "@/utils/wallet/WalletDriver_Coinbase";
 
 export class WalletManager {
 
@@ -34,7 +35,9 @@ export class WalletManager {
     private readonly bladeDriver = new WalletDriver_Blade()
     private readonly hashpackDriver = new WalletDriver_Hashpack()
     private readonly metamaskDriver = new WalletDriver_Metamask()
-    private readonly drivers: Array<WalletDriver> = [this.bladeDriver, this.hashpackDriver, this.metamaskDriver]
+    private readonly coinbaseDriver = new WalletDriver_Coinbase()
+    private readonly drivers: Array<WalletDriver> = [
+        this.bladeDriver, this.hashpackDriver, this.metamaskDriver, this.coinbaseDriver]
     private readonly timeout = 30000; // milliseconds
 
 
