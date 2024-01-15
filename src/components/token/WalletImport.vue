@@ -55,7 +55,7 @@ import ProgressDialog, {Mode} from "@/components/staking/ProgressDialog.vue";
 import {WalletDriverCancelError, WalletDriverError} from "@/utils/wallet/WalletDriverError";
 
 export default defineComponent({
-  name: "MetaMaskImport",
+  name: "WalletImport",
   components: {ProgressDialog},
   props: {
     analyzer: {
