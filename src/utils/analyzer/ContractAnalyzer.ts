@@ -139,7 +139,7 @@ export class ContractAnalyzer {
         return result
     })
 
-    public readonly sourceFiles = computed(() => {
+    public readonly solidityFiles = computed(() => {
         let result: Array<SourcifyResponseItem> = []
         if (this.sourcifyRecord.value !== null && this.sourcifyRecord.value?.response.files.length > 0) {
             const files = this.sourcifyRecord.value?.response.files
@@ -153,6 +153,9 @@ export class ContractAnalyzer {
         }
         return result
     })
+
+    public readonly sourceFiles = computed(
+        () => this.sourcifyRecord.value?.response.files ?? [])
 
     //
     // public readonly sourceFileNames: ComputedRef<string[]> = computed(() => {

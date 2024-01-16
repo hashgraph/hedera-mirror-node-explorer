@@ -100,7 +100,7 @@
                                 <option :value="contractFileName">{{ sourceFileName }}</option>
                             </optgroup>
                             <optgroup label="Include files">
-                                <option v-for="file in sourceFiles" v-bind:key="file.path"
+                                <option v-for="file in solidityFiles" v-bind:key="file.path"
                                         v-bind:value="file.name"
                                         v-show="isImportFile(file)">
                                     {{ relevantPath(file.path) }}
@@ -117,7 +117,7 @@
                 </div>
             </div>
             <SourceCodeValue  v-if="isVerified && selectedOption==='source'" class="mt-3"
-                              :source-files="sourceFiles ?? undefined"
+                              :source-files="solidityFiles ?? undefined"
                               :filter="selectedSource"/>
             <div v-if="!isVerified || selectedOption==='bytecode'" class="columns is-multiline h-is-property-text" :class="{'mt-3':!isVerified,'mt-0':isVerified}">
                 <div id="bytecode" class="column is-6 pt-0 mb-0" :class="{'is-full': !isSmallScreen}">
@@ -273,7 +273,7 @@ export default defineComponent({
                   });
 
           } else {
-              for (const file of props.contractAnalyzer.sourceFiles.value) {
+              for (const file of props.contractAnalyzer.solidityFiles.value) {
                   if (file.name === selectedSource.value) {
                       const URLPrefix = contractURL.substring(0, contractURL.indexOf('contracts'))
                       const filePath = file.path.substring(file.path.indexOf('contracts'))
@@ -302,7 +302,7 @@ export default defineComponent({
       showVerifyDialog,
       contractId: props.contractAnalyzer.contractId,
       byteCodeAnalyzer: props.contractAnalyzer.byteCodeAnalyzer,
-      sourceFiles: props.contractAnalyzer.sourceFiles,
+      solidityFiles: props.contractAnalyzer.solidityFiles,
       sourceFileName: props.contractAnalyzer.sourceFileName,
       contractFileName: props.contractAnalyzer.contractFileName,
       verifyDidComplete,
