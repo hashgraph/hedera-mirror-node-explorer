@@ -261,13 +261,13 @@ export default defineComponent({
       const handleDownload = async () => {
           const contractURL = props.contractAnalyzer.sourcifyURL.value ?? ''
           if (selectedSource.value === '') {
-              var zip = new JSZip();
+              const zip = new JSZip();
               for (const file of props.contractAnalyzer.sourceFiles.value) {
                   const filePath = file.path.substring(file.path.indexOf('match') + 10)
                   zip.file(filePath, file.content);
               }
               zip.generateAsync({type:"blob"})
-                  .then(function(content) {
+                  .then(function(content: any) {
                       const zipName = props.contractAnalyzer.contractAddress.value + '.zip'
                       saveAs(content, zipName);
                   });
