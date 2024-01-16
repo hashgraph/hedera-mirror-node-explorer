@@ -66,6 +66,8 @@ export class ContractAnalyzer {
         this.abi.value = null
     }
 
+    public readonly contractAddress: ComputedRef<string | null> = computed(() => this.contractResponse.value?.evm_address ?? null)
+
     public readonly globalState = computed<GlobalState | null>(() => {
         let result: GlobalState | null
         if (this.contractId.value !== null) {

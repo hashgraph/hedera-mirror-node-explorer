@@ -92,7 +92,8 @@
                     </ul>
                 </div>
                 <div v-if="isVerified && selectedOption==='source'" class="is-flex is-justify-content-end">
-                    <o-field>
+                    <DownloadButton @click="handleDownload" />
+                    <o-field class="ml-4">
                         <o-select v-model="selectedSource" class="h-is-text-size-3">
                             <option value="">All source files</option>
                             <optgroup label="Main contract file">
@@ -168,6 +169,9 @@ import HexaValue from "@/components/values/HexaValue.vue";
 import {AppStorage} from "@/AppStorage";
 import SourceCodeValue from "@/components/values/SourceCodeValue.vue";
 import {SourcifyResponseItem} from "@/utils/cache/SourcifyCache";
+import DownloadButton from "@/components/DownloadButton.vue";
+import JSZip from "jszip";
+import {saveAs} from "file-saver";
 
 const FULL_MATCH_TOOLTIP = `A Full Match indicates that the bytecode of the deployed contract is byte-by-byte the same as the compilation output of the given source code files with the settings defined in the metadata file. This means the contents of the source code files and the compilation settings are exactly the same as when the contract author compiled and deployed the contract.`
 const PARTIAL_MATCH_TOOLTIP = `A Partial Match indicates that the bytecode of the deployed contract is the same as the compilation output of the given source code files except for the metadata hash. This means the deployed contract and the given source code + metadata function in the same way but there are differences in source code comments, variable names, or other metadata fields such as source paths.`
@@ -176,6 +180,7 @@ export default defineComponent({
   name: 'ContractByteCodeSection',
 
   components: {
+      DownloadButton,
       SourceCodeValue,
       HexaValue,
       DisassembledCodeValue,
@@ -253,6 +258,36 @@ export default defineComponent({
          }
       }
 
+      const handleDownload = async () => {
+          const contractURL = props.contractAnalyzer.sourcifyURL.value ?? ''
+          if (selectedSource.value === '') {
+              var zip = new JSZip();
+              for (const file of props.contractAnalyzer.sourceFiles.value) {
+                  const filePath = file.path.substring(file.path.indexOf('match') + 10)
+                  zip.file(filePath, file.content);
+              }
+              zip.generateAsync({type:"blob"})
+                  .then(function(content) {
+                      const zipName = props.contractAnalyzer.contractAddress.value + '.zip'
+                      saveAs(content, zipName);
+                  });
+
+          } else {
+              for (const file of props.contractAnalyzer.sourceFiles.value) {
+                  if (file.name === selectedSource.value) {
+                      const URLPrefix = contractURL.substring(0, contractURL.indexOf('contracts'))
+                      const filePath = file.path.substring(file.path.indexOf('contracts'))
+                      const fileURL = URLPrefix + filePath
+
+                      const a = document.createElement('a')
+                      a.setAttribute('href', fileURL)
+                      a.setAttribute('download', file.name);
+                      a.click()
+                  }
+              }
+          }
+      }
+
       return {
       isTouchDevice,
       isSmallScreen,
@@ -280,6 +315,7 @@ export default defineComponent({
       isImportFile,
       relevantPath,
       tabStyle,
+      handleDownload,
     }
   }
 });
