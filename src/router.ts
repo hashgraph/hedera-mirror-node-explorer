@@ -50,6 +50,7 @@ import Blocks from "@/pages/Blocks.vue";
 import AccountsWithKey from "@/pages/AccountsWithKey.vue";
 import AdminKeyDetails from "@/pages/AdminKeyDetails.vue";
 import AddressDetails from "@/pages/AddressDetails.vue";
+import RoutingSpec from "@/pages/RoutingSpec.vue";
 
 const routes: Array<RouteRecordRaw> = [
   {
@@ -74,6 +75,11 @@ const routes: Array<RouteRecordRaw> = [
     name: 'MainDashboard',
     component: MainDashboard,
     props: true
+  },
+  {
+    path: '/:network/spec',
+    name: 'RoutingSpec',
+    component: RoutingSpec,
   },
   {
     path: '/:network/transactions',

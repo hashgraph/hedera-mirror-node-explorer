@@ -62,6 +62,10 @@ export default defineComponent({
       type: Boolean,
       default: false
     },
+    wideName: {
+      type: Boolean,
+      default: false
+    },
     customNbColClass: String
   },
   setup(props){
@@ -70,7 +74,7 @@ export default defineComponent({
 
     const isSmallScreen = inject('isSmallScreen', true)
     const isTouchDevice = inject('isTouchDevice', false)
-    const nbColClass = computed(() => props.customNbColClass ?? (props.fullWidth ? 'is-2' : 'is-one-third'))
+    const nbColClass = computed(() => props.customNbColClass ?? (props.wideName ? '' : props.fullWidth ? 'is-2' : 'is-one-third'))
 
     return {
       nameId,
