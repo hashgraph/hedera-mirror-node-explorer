@@ -99,7 +99,7 @@ export function makeNodeOwnerDescription(node: NetworkNode, short= false): strin
 }
 
 export function makeDefaultNodeDescription(nodeId: number | null): string {
-    return "Node " + nodeId ?? "?"
+    return nodeId ? "Node " + nodeId : "?"
 }
 
 export function makeOperatorDescription(accountId: string, nodes: NetworkNode[], isFee=false): string | null {
@@ -146,7 +146,7 @@ export function decodeSolidityErrorMessage(message: string | null): string | nul
                 ['uint256'],
                 ethers.dataSlice(message ?? "", 4)
             )
-            result = 'Panic(0x' + parseInt(code.toString()).toString(16) + ')'  ?? null
+            result = 'Panic(0x' + parseInt(code.toString()).toString(16) + ')'
         } else {
             const textDecoder = new TextDecoder()
             const bytes = hexToByte(message)
