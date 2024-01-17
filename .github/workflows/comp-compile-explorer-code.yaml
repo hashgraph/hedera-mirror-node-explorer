@@ -8,7 +8,7 @@ on:
         required: false
         default: false
       enable-e2e-tests:
-        description: "Unit Testing Enabled:"
+        description: "E2E Testing Enabled:"
         type: boolean
         required: false
         default: false
@@ -105,7 +105,7 @@ jobs:
           spec: tests/e2e/specs/*
 
       - name: Sonar Analysis
-        uses: SonarSource/sonarcloud-github-action@v1.7
+        uses: sonarsource/sonarcloud-github-action@master
         if: ${{ inputs.enable-sonar-analysis && !cancelled() }}
         env:
           GITHUB_TOKEN: ${{ secrets.access-token }}
