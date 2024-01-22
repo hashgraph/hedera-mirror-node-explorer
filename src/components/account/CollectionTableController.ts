@@ -18,20 +18,13 @@
  *
  */
 
-import {
-    Nft,
-    Nfts,
-    NftTransactionHistory,
-    TokenBalancesResponse,
-    TokenDistribution,
-    TokenRelationship
-} from "@/schemas/HederaSchemas";
+import {Nft, Nfts} from "@/schemas/HederaSchemas";
 import {ComputedRef, Ref} from "vue";
-import axios, {AxiosResponse} from "axios";
+import axios from "axios";
 import {KeyOperator, SortOrder, TableController} from "@/utils/table/TableController";
 import {Router} from "vue-router";
 
-export class CollectionTableController extends TableController<Nft, string> {
+export class CollectionTableController extends TableController<Nft, number> {
 
     public readonly accountId: Ref<string | null>
     public readonly tokenId: string
@@ -50,20 +43,23 @@ export class CollectionTableController extends TableController<Nft, string> {
     // TableController
     //
 
-    public async load(tokenId: string | null, operator: KeyOperator, order: SortOrder, limit: number): Promise<Nft[] | null> {
-        if (this.accountId.value == null) {
+    public async load(serialNumber: number | null, operator: KeyOperator, order: SortOrder, limit: number): Promise<Nft[] | null> {
+        if (this.tokenId == null || this.accountId.value == null) {
             return Promise.resolve(null)
         }
 
         const params = {} as {
             limit: number
             "token.id": string | undefined
+            serialnumber: string | undefined
             order: string
         }
-        params.limit = 10000
+        params.limit = limit
         params.order = order
-        if (tokenId !== null) {
-            params["token.id"] = operator + ":" + tokenId
+        params["token.id"] = this.tokenId
+
+        if (serialNumber !== null) {
+            params.serialnumber = operator + ":" + serialNumber
         }
 
         const { data } = await axios.get<Nfts>(
@@ -71,31 +67,20 @@ export class CollectionTableController extends TableController<Nft, string> {
           {params: params},
         )
 
-        const collectionsMap = new Map();
-        for (const nft of data.nfts!) {
-            let collection = collectionsMap.get(nft.token_id);
-            if (collection === undefined) {
-                collection = { count: 0, nfts: [] };
-                collectionsMap.set(nft.token_id, collection);
-            }
-            collection.count += 1;
-            collection.nfts.push(nft);
-        }
+        const nfts = data.nfts ?? null
 
-        const nfts = collectionsMap.get(this.tokenId).nfts
-
-        return nfts
+        return Promise.resolve(nfts)
     }
 
-    public keyFor(row: Nft): string {
-        return row.token_id ?? ""
+    public keyFor(row: Nft): number {
+        return row.serial_number ?? 0
     }
 
-    public stringFromKey(key: string): string {
-        return key;
+    public stringFromKey(serialNumber: number): string {
+        return serialNumber.toString()
     }
 
-    public keyFromString(s: string): string | null {
-        return s;
+    public keyFromString(s: string): number | null {
+        return Number(s)
     }
 }
