@@ -234,61 +234,60 @@ export default defineComponent({
     const showSource = computed(() => selectedOption.value === 'source')
     const showBytecode = computed(() => selectedOption.value === 'bytecode')
 
-
-      const selectedSource = ref('')
+    const selectedSource = ref('')
     watch(props.contractAnalyzer.contractFileName,
         () => selectedSource.value = props.contractAnalyzer.contractFileName.value ?? '', {immediate: true})
 
     const isImportFile = (file: SourcifyResponseItem): boolean => {
-      return file.name !== props.contractAnalyzer.contractFileName.value
+        return file.name !== props.contractAnalyzer.contractFileName.value
     }
+
     const relevantPath = (fullPath: string): string => {
-      return fullPath.substring(fullPath.indexOf('sources') + 8)
+        return fullPath.substring(fullPath.indexOf('sources') + 8)
     }
 
-      const tabStyle = (option: string): Record<string, string> => {
-         if (selectedOption.value === option) {
-             return {
-                 fontWeight: "500",
-             }
-         } else {
-             return {
-                 fontWeight: "300",
-             }
-         }
-      }
+    const tabStyle = (option: string): Record<string, string> => {
+        if (selectedOption.value === option) {
+            return {
+                fontWeight: "500",
+            }
+        } else {
+            return {
+                fontWeight: "300",
+            }
+        }
+    }
 
-      const handleDownload = async () => {
-          const contractURL = props.contractAnalyzer.sourcifyURL.value ?? ''
-          if (selectedSource.value === '') {
-              const zip = new JSZip();
-              for (const file of props.contractAnalyzer.sourceFiles.value) {
-                  const filePath = file.path.substring(file.path.indexOf('match') + 10)
-                  zip.file(filePath, file.content);
-              }
-              zip.generateAsync({type:"blob"})
-                  .then(function(content: any) {
-                      const zipName = props.contractAnalyzer.contractAddress.value + '.zip'
-                      saveAs(content, zipName);
-                  });
+    const handleDownload = async () => {
+        const contractURL = props.contractAnalyzer.sourcifyURL.value ?? ''
+        if (selectedSource.value === '') {
+            const zip = new JSZip();
+            for (const file of props.contractAnalyzer.sourceFiles.value) {
+                const filePath = file.path.substring(file.path.indexOf('match') + 10)
+                zip.file(filePath, file.content);
+            }
+            zip.generateAsync({type:"blob"})
+                .then(function(content: any) {
+                    const zipName = props.contractAnalyzer.contractAddress.value + '.zip'
+                    saveAs(content, zipName);
+                });
+        } else {
+            for (const file of props.contractAnalyzer.solidityFiles.value) {
+                if (file.name === selectedSource.value) {
+                    const URLPrefix = contractURL.substring(0, contractURL.indexOf('contracts'))
+                    const filePath = file.path.substring(file.path.indexOf('contracts'))
+                    const fileURL = URLPrefix + filePath
 
-          } else {
-              for (const file of props.contractAnalyzer.solidityFiles.value) {
-                  if (file.name === selectedSource.value) {
-                      const URLPrefix = contractURL.substring(0, contractURL.indexOf('contracts'))
-                      const filePath = file.path.substring(file.path.indexOf('contracts'))
-                      const fileURL = URLPrefix + filePath
+                    const a = document.createElement('a')
+                    a.setAttribute('href', fileURL)
+                    a.setAttribute('download', file.name);
+                    a.click()
+                }
+            }
+        }
+    }
 
-                      const a = document.createElement('a')
-                      a.setAttribute('href', fileURL)
-                      a.setAttribute('download', file.name);
-                      a.click()
-                  }
-              }
-          }
-      }
-
-      return {
+    return {
       isTouchDevice,
       isSmallScreen,
       isMediumScreen,
