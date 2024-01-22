@@ -80,12 +80,12 @@
                 <div class="tabs is-toggle h-is-property-text mb-1" >
                     <ul>
                         <li :class="{'is-active':showSource}">
-                            <a :style="tabStyle('source')"
+                            <a :style="{ fontWeight: selectedOption=='source'?500:300 }"
                                @click="selectedOption = 'source'">
                                 <span>Source</span></a>
                         </li>
                         <li :class="{'is-active':showBytecode}">
-                            <a :style="tabStyle('bytecode')"
+                            <a :style="{ fontWeight: selectedOption=='bytecode'?500:300 }"
                                @click="selectedOption = 'bytecode'">
                                 <span>Bytecode</span></a>
                         </li>
@@ -246,18 +246,6 @@ export default defineComponent({
         return fullPath.substring(fullPath.indexOf('sources') + 8)
     }
 
-    const tabStyle = (option: string): Record<string, string> => {
-        if (selectedOption.value === option) {
-            return {
-                fontWeight: "500",
-            }
-        } else {
-            return {
-                fontWeight: "300",
-            }
-        }
-    }
-
     const handleDownload = async () => {
         const contractURL = props.contractAnalyzer.sourcifyURL.value ?? ''
         if (selectedSource.value === '') {
@@ -313,7 +301,6 @@ export default defineComponent({
       selectedSource,
       isImportFile,
       relevantPath,
-      tabStyle,
       handleDownload,
     }
   }
