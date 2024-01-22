@@ -15,7 +15,7 @@ export default mergeConfig(
       coverage: {
         reporter: ['text', 'json-summary', 'json'],
       },
-      threads: false
+      pool: "forks"
     }
   })
 )
