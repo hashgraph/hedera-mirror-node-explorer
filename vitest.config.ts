@@ -14,7 +14,8 @@ export default mergeConfig(
       setupFiles: ['./tests/unit/globalSetup.js', '@vitest/web-worker'],
       coverage: {
         reporter: ['text', 'json-summary', 'json'],
-      }
+      },
+      pool: "forks"
     }
   })
 )
