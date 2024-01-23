@@ -28,8 +28,15 @@
 
     <DashboardCard>
       <template v-slot:title>
-        <span class="h-is-primary-title">Collection </span>
-        <span class="h-is-secondary-text">{{ tokenId }}</span>
+        <div class="is-flex is-align-items-baseline">
+          <p class="h-is-primary-title">Collection</p>
+          <TokenLink
+              v-bind:show-extra="true"
+              v-bind:token-id="tokenId"
+              class="h-is-secondary-text ml-2"
+          />
+        </div>
+        <p class="h-is-tertiary-text has-text-grey">{{ 'for Account ' + normalizedAccountId }}</p>
       </template>
       <template v-slot:content>
         <CollectionTable :token-id="tokenId" :controller="collectionTableController"/>
@@ -55,12 +62,14 @@ import { useRouter } from "vue-router";
 import {EntityID} from "@/utils/EntityID";
 import { CollectionTableController } from "@/components/account/CollectionTableController";
 import CollectionTable from "@/components/account/CollectionTable.vue";
+import TokenLink from "@/components/values/TokenLink.vue";
 
 export default defineComponent({
 
   name: 'AccountCollection',
 
   components: {
+    TokenLink,
     CollectionTable,
     Footer,
     DashboardCard
@@ -99,7 +108,8 @@ export default defineComponent({
     return {
       isSmallScreen,
       isTouchDevice,
-      collectionTableController
+      collectionTableController,
+      normalizedAccountId,
     }
   }
 });
