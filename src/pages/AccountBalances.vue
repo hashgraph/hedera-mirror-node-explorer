@@ -28,7 +28,7 @@
 
     <DashboardCard id="balanceCard">
       <template v-slot:title>
-        <span class="h-is-primary-title">Token Balances for Account </span>
+        <span class="h-is-primary-title">All Tokens Owned by </span>
         <span class="h-is-secondary-text">{{ accountId }}</span>
       </template>
       <template v-slot:content>
@@ -38,7 +38,7 @@
 
     <DashboardCard id="nftsCard">
       <template v-slot:title>
-        <span class="h-is-primary-title">NFTs owned by </span>
+        <span class="h-is-primary-title">NFTs Owned by </span>
         <span class="h-is-secondary-text">{{ accountId }}</span>
       </template>
       <template v-slot:content>
