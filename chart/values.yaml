@@ -41,6 +41,7 @@ fullnameOverride: ""
 
 global:
   namespaceOverride: ""
+  ingressClassName: "" # if set, takes precedence over the .Values.ingress.className
 
 image:
   pullPolicy: IfNotPresent
