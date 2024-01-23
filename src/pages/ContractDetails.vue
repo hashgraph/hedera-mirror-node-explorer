@@ -68,19 +68,17 @@
 
       <template v-slot:leftContent>
             <Property id="balance">
-              <template v-slot:name>{{ tokens?.length ? 'Balances' : 'Balance' }}</template>
+              <template v-slot:name>{{ displayedBalances.length ? 'Balances' : 'Balance' }}</template>
               <template v-slot:value>
                 <div class="has-flex-direction-column">
                   <HbarAmount v-if="contract" :amount="balance" :show-extra="true" timestamp="0"/>
+                  <div v-for="t in displayedBalances" :key="t.token_id ?? undefined">
+                    <TokenAmount :amount="BigInt(t.balance)" :show-extra="true" :token-id="t.token_id"/>
+                  </div>
                   <div v-if="displayAllTokenLinks">
                     <router-link :to="{name: 'AccountBalances', params: {accountId: contractId}}">
-                      See all token balances
+                      <span class="h-is-text-size-3 has-text-grey">Show all tokens</span>
                     </router-link>
-                  </div>
-                  <div v-else>
-                    <div v-for="t in tokens ?? []" :key="t.token_id ?? undefined">
-                      <TokenAmount :amount="BigInt(t.balance)" :show-extra="true" :token-id="t.token_id"/>
-                    </div>
                   </div>
                 </div>
               </template>
@@ -311,9 +309,6 @@ export default defineComponent({
     const balance: ComputedRef<number|null>
         = computed(() => accountLookup.entity.value?.balance?.balance ?? null)
 
-    const tokens: ComputedRef<TokenBalance[]|null>
-        = computed(() => accountLookup.entity.value?.balance?.tokens ?? null)
-
     //
     // balanceCache
     //
@@ -321,10 +316,20 @@ export default defineComponent({
     const balanceAnalyzer = new BalanceAnalyzer(contractLocParser.contractId, 10000)
     onMounted(() => balanceAnalyzer.mount())
     onBeforeUnmount(() => balanceAnalyzer.unmount())
-    const displayAllTokenLinks = computed(() => {
-      const tokenCount = balanceAnalyzer.tokenBalances.value?.length ?? 0
-      return tokenCount > MAX_TOKEN_BALANCES
+
+    const displayedBalances: ComputedRef<TokenBalance[]> = computed(() => {
+      const result: TokenBalance[] = []
+      const allBalances = balanceAnalyzer.tokenBalances.value
+      for (let i = 0; i < allBalances.length && result.length < MAX_TOKEN_BALANCES; i++) {
+        if (allBalances[i].balance > 0) {
+          result.push(allBalances[i])
+        }
+      }
+      return result
     })
+
+    const displayAllTokenLinks = computed(
+        () => displayedBalances.value.length < balanceAnalyzer.tokenBalances.value.length)
 
     const accountRoute = computed(() => {
       return normalizedContractId.value !== null ?  routeManager.makeRouteToAccount(normalizedContractId.value) : null
@@ -347,7 +352,7 @@ export default defineComponent({
       isTouchDevice,
       contract: contractLocParser.entity,
       balance,
-      tokens,
+      displayedBalances,
       ethereumAddress: contractLocParser.ethereumAddress,
       displayNonce,
       accountChecksum,
