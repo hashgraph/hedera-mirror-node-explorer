@@ -57,15 +57,13 @@
 
 <script lang="ts">
 
-import {defineComponent, inject, PropType, ref, ComputedRef, Ref} from 'vue';
-import { Nft } from "@/schemas/HederaSchemas";
+import {ComputedRef, defineComponent, inject, PropType, Ref} from 'vue';
+import {Nft} from "@/schemas/HederaSchemas";
 import TokenLink from "@/components/values/TokenLink.vue";
 import {ORUGA_MOBILE_BREAKPOINT} from '@/App.vue';
 import EmptyTable from "@/components/EmptyTable.vue";
 import {routeManager} from "@/router";
-import { Collection, NftsTableController } from "@/components/account/NftsTableController";
-import { useRoute } from "vue-router";
-import { CollectionTableController } from "@/components/account/CollectionTableController";
+import {CollectionTableController} from "@/components/account/CollectionTableController";
 
 export default defineComponent({
   name: 'CollectionTable',

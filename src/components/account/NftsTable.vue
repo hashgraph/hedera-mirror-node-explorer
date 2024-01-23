@@ -24,37 +24,34 @@
 
 <template>
   <o-table
-    :data="nfts"
-    :loading="loading"
-    :hoverable="true"
+    :data="collections"
     :paginated="!isTouchDevice"
-    backend-pagination
-    :total="totalRowCount"
-    :current-page="currentPage"
-    :per-page="pageSize"
-    @page-change="onPageChange"
+    :per-page="perPage"
+    @cell-click="handleClick"
+
+    :hoverable="true"
+    :narrowed="true"
     :striped="true"
-    :v-model:current-page="currentPage"
     :mobile-breakpoint="ORUGA_MOBILE_BREAKPOINT"
+
     aria-current-label="Current page"
     aria-next-label="Next page"
     aria-page-label="Page"
     aria-previous-label="Previous page"
-    @cell-click="handleClick"
   >
     <o-table-column v-slot="props" field="token_id" label="Token">
       <TokenLink
         v-bind:show-extra="true"
-        v-bind:token-id="props.row.token_id"
+        v-bind:token-id="props.row.tokenId"
         v-bind:no-anchor="true"
       />
     </o-table-column>
     <o-table-column v-slot="props" field="owned" label="Owned" position="right">
-      {{props.row.tokens.count}}
+      {{ props.row.collectionSize }}
     </o-table-column>
   </o-table>
 
-  <EmptyTable v-if="!nfts.length"/>
+  <EmptyTable v-if="!collections.length"/>
 
 </template>
 
@@ -64,14 +61,13 @@
 
 <script lang="ts">
 
-import {defineComponent, inject, PropType, ref, ComputedRef, Ref} from 'vue';
-import { Nft } from "@/schemas/HederaSchemas";
+import {computed, defineComponent, inject, PropType} from 'vue';
 import TokenLink from "@/components/values/TokenLink.vue";
 import {ORUGA_MOBILE_BREAKPOINT} from '@/App.vue';
 import EmptyTable from "@/components/EmptyTable.vue";
 import {routeManager} from "@/router";
-import { Collection, NftsTableController } from "@/components/account/NftsTableController";
-import { useRoute } from "vue-router";
+import {useRoute} from "vue-router";
+import {NftCollectionInfo} from "@/utils/cache/NftCollectionCache";
 
 export default defineComponent({
   name: 'NftsTable',
@@ -82,33 +78,30 @@ export default defineComponent({
   },
 
   props: {
-    controller: {
-      type: Object as PropType<NftsTableController>,
+    collections: {
+      type: Object as PropType<NftCollectionInfo[]>,
       required: true
     },
   },
 
-  setup(props) {
+  setup() {
     const route = useRoute();
 
     const isTouchDevice = inject('isTouchDevice', false)
     const isMediumScreen = inject('isMediumScreen', true)
 
-    const handleClick = (nft: Nft, c: unknown, i: number, ci: number, event: MouseEvent) => {
-      if (nft.token_id) {
-        routeManager.routeToCollection(route.params.accountId as string, nft.token_id, event.ctrlKey || event.metaKey)
+    const perPage = computed(() => isMediumScreen ? 15 : 5)
+
+    const handleClick = (nft: NftCollectionInfo, c: unknown, i: number, ci: number, event: MouseEvent) => {
+      if (nft.tokenId) {
+        routeManager.routeToCollection(route.params.accountId as string, nft.tokenId, event.ctrlKey || event.metaKey)
       }
     }
 
     return {
       isTouchDevice,
       isMediumScreen,
-      nfts: props.controller.rows as ComputedRef<Collection[]>,
-      loading: props.controller.loading as ComputedRef<boolean>,
-      totalRowCount: props.controller.totalRowCount as ComputedRef<number>,
-      currentPage: props.controller.currentPage as Ref<number>,
-      onPageChange: props.controller.onPageChange,
-      pageSize: props.controller.pageSize as Ref<Number>,
+      perPage,
       handleClick,
       ORUGA_MOBILE_BREAKPOINT
     }

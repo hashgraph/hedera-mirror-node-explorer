@@ -42,7 +42,7 @@
         <span class="h-is-secondary-text">{{ accountId }}</span>
       </template>
       <template v-slot:content>
-        <NftsTable :controller="nftsTableController"/>
+        <NftsTable :collections="nftCollections"/>
       </template>
     </DashboardCard>
 
@@ -66,7 +66,7 @@ import {TokenRelationshipsTableController} from "@/components/account/TokenRelat
 import {useRouter} from "vue-router";
 import {EntityID} from "@/utils/EntityID";
 import NftsTable from "@/components/account/NftsTable.vue";
-import { NftsTableController } from "@/components/account/NftsTableController";
+import {NftCollectionCache} from "@/utils/cache/NftCollectionCache";
 
 export default defineComponent({
 
@@ -99,21 +99,23 @@ export default defineComponent({
 
     const tokenRelationshipTableController =
         new TokenRelationshipsTableController(useRouter(), normalizedAccountId, perPage);
-    const nftsTableController = new NftsTableController(useRouter(), normalizedAccountId, perPage);
+    const nftCollectionLookup = NftCollectionCache.instance.makeLookup(normalizedAccountId)
     onMounted(() => {
         tokenRelationshipTableController.mount()
-        nftsTableController.mount()
+        nftCollectionLookup.mount()
     })
     onBeforeUnmount(() => {
         tokenRelationshipTableController.unmount()
-        nftsTableController.unmount()
+        nftCollectionLookup.unmount()
     })
+
+    const nftCollections = computed( () => nftCollectionLookup.entity.value ?? [])
 
     return {
       isSmallScreen,
       isTouchDevice,
       tokenRelationshipTableController,
-      nftsTableController,
+      nftCollections
     }
   }
 });
