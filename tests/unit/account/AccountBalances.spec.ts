@@ -71,7 +71,7 @@ describe("AccountBalances.vue", () => {
         // console.log(wrapper.find('tbody').text())
 
         const balanceCard = wrapper.get("#balanceCard")
-        expect(balanceCard.find('thead').text()).toBe("Token Balance")
+        expect(balanceCard.find('thead').text()).toBe("Token Balance/Nb of NFTs")
         expect(balanceCard.find('tbody').text()).toBe(
             "0.0.34332104" + "HSuite" + "0.0000" +
             "0.0.49292859" + "TokenA7" + "0.00000000")
