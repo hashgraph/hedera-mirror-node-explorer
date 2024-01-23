@@ -26,7 +26,7 @@
 
   <section class="section" :class="{'h-mobile-background': isTouchDevice || !isSmallScreen}">
 
-    <DashboardCard>
+    <DashboardCard id="balanceCard">
       <template v-slot:title>
         <span class="h-is-primary-title">Token Balances for Account </span>
         <span class="h-is-secondary-text">{{ accountId }}</span>
@@ -36,7 +36,7 @@
       </template>
     </DashboardCard>
 
-    <DashboardCard>
+    <DashboardCard id="nftsCard">
       <template v-slot:title>
         <span class="h-is-primary-title">NFTs owned by </span>
         <span class="h-is-secondary-text">{{ accountId }}</span>
