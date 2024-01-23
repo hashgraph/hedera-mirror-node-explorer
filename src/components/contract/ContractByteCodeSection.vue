@@ -37,12 +37,7 @@
 
         <template v-slot:control>
             <template v-if="isVerificationAvailable">
-                <template v-if="isVerified">
-                    <div v-if="sourcifyURL" id="showSource" class="is-inline-block ml-3">
-                        <a :href="sourcifyURL" target="_blank">View contract sources</a>
-                    </div>
-                </template>
-                <template v-else>
+                <template v-if="!isVerified">
                     <button id="verify-button"
                             class="button is-white is-small has-text-right"
                             @click="showVerifyDialog = true">
@@ -81,13 +76,58 @@
                     <StringValue :string-value="solcVersion ?? undefined"/>
                 </template>
             </Property>
-            <div class="columns is-multiline h-is-property-text pt-3">
-                <div id="bytecode" class="column is-6 pt-0" :class="{'is-full': !isSmallScreen}">
-                    <p class="has-text-weight-light">Runtime Bytecode</p>
-                    <ByteCodeValue :byte-code="byteCode ?? undefined" class="mt-3 mb-4"/>
+            <div v-if="isVerified" class="is-flex is-justify-content-space-between is-align-items-center mt-5 mb-0">
+                <div class="tabs is-toggle h-is-property-text mb-1" >
+                    <ul>
+                        <li :class="{'is-active':showSource}">
+                            <a :style="{ fontWeight: selectedOption=='source'?500:300 }"
+                               @click="selectedOption = 'source'">
+                                <span>Source</span></a>
+                        </li>
+                        <li :class="{'is-active':showBytecode}">
+                            <a :style="{ fontWeight: selectedOption=='bytecode'?500:300 }"
+                               @click="selectedOption = 'bytecode'">
+                                <span>Bytecode</span></a>
+                        </li>
+                    </ul>
                 </div>
-                <div id="assembly-code" class="column is-6 pt-0" :class="{'h-has-column-separator':isSmallScreen}">
-                    <div class="is-flex is-align-items-center is-justify-content-space-between">
+                <div v-if="isVerified && selectedOption==='source'" class="is-flex is-justify-content-end">
+                    <DownloadButton @click="handleDownload" />
+                    <o-field class="ml-4">
+                        <o-select v-model="selectedSource" class="h-is-text-size-3">
+                            <option value="">All source files</option>
+                            <optgroup label="Main contract file">
+                                <option :value="contractFileName">{{ sourceFileName }}</option>
+                            </optgroup>
+                            <optgroup label="Include files">
+                                <option v-for="file in solidityFiles" v-bind:key="file.path"
+                                        v-bind:value="file.name"
+                                        v-show="isImportFile(file)">
+                                    {{ relevantPath(file.path) }}
+                                </option>
+                            </optgroup>
+                        </o-select>
+                    </o-field>
+                </div>
+                <div v-else-if="selectedOption==='bytecode'" class="is-flex is-align-items-center is-justify-content-end">
+                    <p class="has-text-weight-light">Show hexa opcode</p>
+                    <label class="checkbox pt-1 ml-3">
+                        <input type="checkbox" v-model="showHexaOpcode">
+                    </label>
+                </div>
+            </div>
+            <SourceCodeValue  v-if="isVerified && selectedOption==='source'" class="mt-3"
+                              :source-files="solidityFiles ?? undefined"
+                              :filter="selectedSource"/>
+            <div v-if="!isVerified || selectedOption==='bytecode'" class="columns is-multiline h-is-property-text" :class="{'mt-3':!isVerified,'mt-0':isVerified}">
+                <div id="bytecode" class="column is-6 pt-0 mb-0" :class="{'is-full': !isSmallScreen}">
+                    <span v-if="!isVerified" class="has-text-weight-light">Runtime Bytecode</span>
+                    <div>
+                        <ByteCodeValue :byte-code="byteCode ?? undefined" class="mb-0" :class="{'mt-3':isVerified,'mt-4':!isVerified}"/>
+                    </div>
+                </div>
+                <div id="assembly-code" class="column is-6 pt-0 mb-0" :class="{'h-has-column-separator':isSmallScreen}">
+                    <div v-if="!isVerified" class="is-flex is-align-items-center is-justify-content-space-between">
                         <p class="has-text-weight-light">Assembly Bytecode</p>
                         <div class="is-flex is-align-items-center is-justify-content-end">
                             <p class="has-text-weight-light">Show hexa opcode</p>
@@ -96,12 +136,11 @@
                             </label>
                         </div>
                     </div>
-                    <DisassembledCodeValue :byte-code="byteCode ?? undefined" :show-hexa-opcode="showHexaOpcode"/>
+                    <DisassembledCodeValue :byte-code="byteCode ?? undefined" :show-hexa-opcode="showHexaOpcode" class="mt-3 mb-0"/>
                 </div>
             </div>
         </template>
     </DashboardCard>
-
 
     <ContractVerificationDialog
         v-model:show-dialog="showVerifyDialog"
@@ -128,6 +167,11 @@ import ContractVerificationDialog from "@/components/verification/ContractVerifi
 import DisassembledCodeValue from "@/components/values/DisassembledCodeValue.vue";
 import HexaValue from "@/components/values/HexaValue.vue";
 import {AppStorage} from "@/AppStorage";
+import SourceCodeValue from "@/components/values/SourceCodeValue.vue";
+import {SourcifyResponseItem} from "@/utils/cache/SourcifyCache";
+import DownloadButton from "@/components/DownloadButton.vue";
+import JSZip from "jszip";
+import {saveAs} from "file-saver";
 
 const FULL_MATCH_TOOLTIP = `A Full Match indicates that the bytecode of the deployed contract is byte-by-byte the same as the compilation output of the given source code files with the settings defined in the metadata file. This means the contents of the source code files and the compilation settings are exactly the same as when the contract author compiled and deployed the contract.`
 const PARTIAL_MATCH_TOOLTIP = `A Partial Match indicates that the bytecode of the deployed contract is the same as the compilation output of the given source code files except for the metadata hash. This means the deployed contract and the given source code + metadata function in the same way but there are differences in source code comments, variable names, or other metadata fields such as source paths.`
@@ -136,6 +180,8 @@ export default defineComponent({
   name: 'ContractByteCodeSection',
 
   components: {
+      DownloadButton,
+      SourceCodeValue,
       HexaValue,
       DisassembledCodeValue,
       ContractVerificationDialog,
@@ -184,6 +230,51 @@ export default defineComponent({
     onMounted(() => showHexaOpcode.value = AppStorage.getShowHexaOpcode())
     watch(showHexaOpcode, () => AppStorage.setShowHexaOpcode(showHexaOpcode.value ? showHexaOpcode.value : null))
 
+    const selectedOption = ref('source')
+    const showSource = computed(() => selectedOption.value === 'source')
+    const showBytecode = computed(() => selectedOption.value === 'bytecode')
+
+    const selectedSource = ref('')
+    watch(props.contractAnalyzer.contractFileName,
+        () => selectedSource.value = props.contractAnalyzer.contractFileName.value ?? '', {immediate: true})
+
+    const isImportFile = (file: SourcifyResponseItem): boolean => {
+        return file.name !== props.contractAnalyzer.contractFileName.value
+    }
+
+    const relevantPath = (fullPath: string): string => {
+        return fullPath.substring(fullPath.indexOf('sources') + 8)
+    }
+
+    const handleDownload = async () => {
+        const contractURL = props.contractAnalyzer.sourcifyURL.value ?? ''
+        if (selectedSource.value === '') {
+            const zip = new JSZip();
+            for (const file of props.contractAnalyzer.sourceFiles.value) {
+                const filePath = file.path.substring(file.path.indexOf('match') + 10)
+                zip.file(filePath, file.content);
+            }
+            zip.generateAsync({type:"blob"})
+                .then(function(content: any) {
+                    const zipName = props.contractAnalyzer.contractAddress.value + '.zip'
+                    saveAs(content, zipName);
+                });
+        } else {
+            for (const file of props.contractAnalyzer.solidityFiles.value) {
+                if (file.name === selectedSource.value) {
+                    const URLPrefix = contractURL.substring(0, contractURL.indexOf('contracts'))
+                    const filePath = file.path.substring(file.path.indexOf('contracts'))
+                    const fileURL = URLPrefix + filePath
+
+                    const a = document.createElement('a')
+                    a.setAttribute('href', fileURL)
+                    a.setAttribute('download', file.name);
+                    a.click()
+                }
+            }
+        }
+    }
+
     return {
       isTouchDevice,
       isSmallScreen,
@@ -198,9 +289,19 @@ export default defineComponent({
       showVerifyDialog,
       contractId: props.contractAnalyzer.contractId,
       byteCodeAnalyzer: props.contractAnalyzer.byteCodeAnalyzer,
+      solidityFiles: props.contractAnalyzer.solidityFiles,
+      sourceFileName: props.contractAnalyzer.sourceFileName,
+      contractFileName: props.contractAnalyzer.contractFileName,
       verifyDidComplete,
       isFullMatch,
       showHexaOpcode,
+      selectedOption,
+      showSource,
+      showBytecode,
+      selectedSource,
+      isImportFile,
+      relevantPath,
+      handleDownload,
     }
   }
 });

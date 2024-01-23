@@ -22,7 +22,7 @@ import {computed, ComputedRef, ref, Ref, watch, WatchStopHandle} from "vue";
 import {SystemContractEntry, systemContractRegistry} from "@/schemas/SystemContractRegistry";
 import {ethers} from "ethers";
 import {AssetCache} from "@/utils/cache/AssetCache";
-import {SourcifyCache, SourcifyRecord} from "@/utils/cache/SourcifyCache";
+import {SourcifyCache, SourcifyRecord, SourcifyResponseItem} from "@/utils/cache/SourcifyCache";
 import {SolcMetadata} from "@/utils/solc/SolcMetadata";
 import {ByteCodeAnalyzer} from "@/utils/analyzer/ByteCodeAnalyzer";
 import {ContractResponse} from "@/schemas/HederaSchemas";
@@ -65,6 +65,8 @@ export class ContractAnalyzer {
         this.sourcifyRecord.value = null
         this.abi.value = null
     }
+
+    public readonly contractAddress: ComputedRef<string | null> = computed(() => this.contractResponse.value?.evm_address ?? null)
 
     public readonly globalState = computed<GlobalState | null>(() => {
         let result: GlobalState | null
@@ -119,6 +121,10 @@ export class ContractAnalyzer {
         return result
     })
 
+    public readonly contractFileName = computed(() => {
+        return this.sourceFileName.value?.substring(this.sourceFileName.value?.lastIndexOf('/') + 1)
+    })
+
     public readonly contractName: ComputedRef<string | null> = computed(() => {
         let result: string | null
         if (this.systemContractEntry.value !== null) {
@@ -133,20 +139,23 @@ export class ContractAnalyzer {
         return result
     })
 
-    public readonly sourceFiles = computed(() => {
-        let result: Array<string> = []
+    public readonly solidityFiles = computed(() => {
+        let result: Array<SourcifyResponseItem> = []
         if (this.sourcifyRecord.value !== null && this.sourcifyRecord.value?.response.files.length > 0) {
             const files = this.sourcifyRecord.value?.response.files
             files?.forEach((f) => {
                 const parts = f.name.split('.')
                 const suffix = parts[parts.length - 1].toLowerCase()
                 if (suffix === "sol") {
-                    result.push(f.content)
+                    result.push(f)
                 }
             })
         }
         return result
     })
+
+    public readonly sourceFiles = computed(
+        () => this.sourcifyRecord.value?.response.files ?? [])
 
     //
     // public readonly sourceFileNames: ComputedRef<string[]> = computed(() => {
