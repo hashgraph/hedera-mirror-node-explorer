@@ -321,7 +321,7 @@ export default defineComponent({
         result ||= allowanceChoice.value !== "token"
         result ||= selectedSpender.value !== props.currentTokenAllowance?.spender
         result ||= selectedToken.value !== props.currentTokenAllowance.token_id
-        result ||= selectedTokenAmount.value !== props.currentTokenAllowance?.amount_granted.toString() ?? null
+        result ||= selectedTokenAmount.value !== (props.currentTokenAllowance?.amount_granted.toString() ?? null)
       } else {
         result = true
       }
