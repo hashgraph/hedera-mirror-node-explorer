@@ -54,7 +54,7 @@
       />
     </o-table-column>
 
-    <o-table-column v-slot="props" field="balance" label="Balance" position="right">
+    <o-table-column v-slot="props" field="balance" label="Balance/Nb of NFTs" position="right">
       <TokenAmount v-bind:amount="BigInt(props.row.balance)"
                    v-bind:token-id="props.row.token_id"/>
     </o-table-column>
