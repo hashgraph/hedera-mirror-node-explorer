@@ -13,7 +13,7 @@ metadata:
   name: {{ $fullName }}
   namespace: {{ include "hedera-explorer.namespace" . }}
 spec:
-  {{- with .Values.ingress.className }}
+  {{- with (coalesce .Values.global.ingressClassName .Values.ingress.className) }}
   ingressClassName: {{ . }}
   {{- end }}
   rules:
@@ -36,7 +36,7 @@ spec:
     {{- range . }}
     - hosts:
         {{- range .hosts }}
-        - {{ . | quote }}
+        - {{ tpl . $ | quote }}
         {{- end }}
       secretName: {{ .secretName }}
     {{- end }}
