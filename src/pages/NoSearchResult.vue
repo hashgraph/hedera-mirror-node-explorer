@@ -53,9 +53,12 @@
               <span style="display: inline-block">Make sure you enter one of the expressions below:</span>
               <br/><br/>
               <div>
-                &bull; an entity ID (0.0.x)<br/>
+                &bull; an entity ID with or without checksum (0.0.x or 0.0.x-abcde)<br/>
                 <div class="should-wrap h-help-item">
                   Example:&nbsp;0.0.1484550
+                </div>
+                <div class="should-wrap h-help-item">
+                  or:&nbsp;0.0.1484550-yapfr
                 </div>
               </div>
               <div>
