@@ -240,9 +240,14 @@ export abstract class WalletDriver_Ethereum extends WalletDriver {
                     // Try to add chain et retry
                     try {
                         await this.addHederaChain(provider, chainId)
-                        await provider.send("wallet_switchEthereumChain", [{ chainId: chainId }])
                     } catch {
                         throw this.connectFailure("Make sure that 'Hedera " + networkEntry.name + "' network is added to " + this.name)
+                    }
+                    // With some wallets, wallet_addEthereumChain also implies wallet_switchEthereumChain
+                    // Not sure this behavior is standard => we switch if needed
+                    const newWalletChainId =  await provider.send('eth_chainId', [])
+                    if (newWalletChainId !== chainId) {
+                        await provider.send("wallet_switchEthereumChain", [{ chainId: chainId }])
                     }
                 } else  {
                     throw this.connectFailure("Make sure that 'Hedera " + networkEntry.name + "' network is added to " + this.name)

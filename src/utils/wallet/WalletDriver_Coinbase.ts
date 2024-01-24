@@ -49,41 +49,6 @@ export class WalletDriver_Coinbase extends WalletDriver_Ethereum {
         return Promise.resolve(result)
     }
 
-    protected async switchToNetwork(provider: BrowserProvider, networkEntry: NetworkEntry): Promise<void> {
-
-        const chainId = networkEntry.sourcifySetup?.hexChainID()
-        if (chainId == null) {
-            throw this.connectFailure("Network " + networkEntry.name + " is not setup for use with wallet")
-        }
-
-        // Make sure that chainId is the current chain in Metamask
-        const walletChainId = await provider.send('eth_chainId', [])
-        if (walletChainId !== chainId) {
-            // noinspection DuplicatedCode
-            try {
-                // On Coinbase, we first need to fetch accounts ids first in order to connect
-                await this.fetchAccountIds(provider)
-
-                // Try to switch
-                await provider.send("wallet_switchEthereumChain", [{ chainId: chainId }])
-            } catch(reason) {
-                if (this.isCancelError(reason)) {
-                    throw new WalletDriverCancelError()
-                } else if (this.isChainMissing(reason)) {
-                    // Try to add chain et retry
-                    try {
-                        await this.addHederaChain(provider, chainId)
-                        await provider.send("wallet_switchEthereumChain", [{ chainId: chainId }])
-                    } catch {
-                        throw this.connectFailure("Make sure that 'Hedera " + networkEntry.name + "' network is added to " + this.name)
-                    }
-                } else  {
-                    throw this.connectFailure("Make sure that 'Hedera " + networkEntry.name + "' network is added to " + this.name)
-                }
-            }
-        }
-    }
-
     protected async fetchAccountIds(provider: BrowserProvider): Promise<string[]> {
         let result: string[] = []
 
