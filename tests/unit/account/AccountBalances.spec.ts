@@ -23,7 +23,7 @@ import {flushPromises, mount} from "@vue/test-utils"
 import router from "@/router";
 import axios from "axios";
 import {
-    SAMPLE_ASSOCIATED_TOKEN, SAMPLE_ASSOCIATED_TOKEN_2,
+    SAMPLE_ASSOCIATED_TOKEN, SAMPLE_ASSOCIATED_TOKEN_2, SAMPLE_NFTS, SAMPLE_NONFUNGIBLE,
     SAMPLE_TOKEN_ASSOCIATIONS
 } from "../Mocks";
 import MockAdapter from "axios-mock-adapter";
@@ -42,7 +42,7 @@ HMSF.forceUTC = true
 
 describe("AccountBalances.vue", () => {
 
-    test("all props", async () => {
+    test("tokens", async () => {
 
         await router.push("/") // To avoid "missing required param 'network'" error
 
@@ -70,13 +70,62 @@ describe("AccountBalances.vue", () => {
         // console.log(wrapper.find('thead').text())
         // console.log(wrapper.find('tbody').text())
 
-        expect(wrapper.find('thead').text()).toBe("Token Balance")
-        expect(wrapper.find('tbody').text()).toBe(
+        const balanceCard = wrapper.get("#balanceCard")
+        expect(balanceCard.find('thead').text()).toBe("Token Balance/Nb of NFTs")
+        expect(balanceCard.find('tbody').text()).toBe(
             "0.0.34332104" + "HSuite" + "0.0000" +
             "0.0.49292859" + "TokenA7" + "0.00000000")
 
+        const nftsCard = wrapper.get("#nftsCard")
+        expect(nftsCard.find('thead').text()).toBe("Token Owned")
+        expect(nftsCard.find('tbody').text()).toBe("")
+
         wrapper.unmount()
         await flushPromises()
+        mock.restore()
+    });
+
+    test("nfts", async () => {
+
+        await router.push("/") // To avoid "missing required param 'network'" error
+
+        const mock = new MockAdapter(axios);
+        const accountId = SAMPLE_NFTS.nfts[0].account_id
+        const tokenId = SAMPLE_NFTS.nfts[0].token_id
+
+        const matcher1 = `/api/v1/accounts/${accountId}/nfts`
+        mock.onGet(matcher1).reply(200, SAMPLE_NFTS)
+
+        const matcher2 = "/api/v1/tokens/" + tokenId
+        mock.onGet(matcher2).reply(200, SAMPLE_NONFUNGIBLE)
+
+        const matcher3 = "/api/v1/accounts/" + accountId + "/tokens"
+        mock.onGet(matcher3).reply(200, { tokens: []})
+
+        const wrapper = mount(AccountBalances, {
+            global: {
+                plugins: [router, Oruga]
+            },
+            props: {
+                accountId: accountId
+            },
+        });
+
+        await flushPromises()
+        // console.log(wrapper.find('thead').text())
+        // console.log(wrapper.find('tbody').text())
+
+        const balanceCard = wrapper.get("#balanceCard")
+        expect(balanceCard.find('thead').text()).toBe("Token Balance/Nb of NFTs")
+        expect(balanceCard.find('tbody').text()).toBe("")
+
+        const nftsCard = wrapper.get("#nftsCard")
+        expect(nftsCard.find('thead').text()).toBe("Token Owned")
+        expect(nftsCard.find('tbody').text()).toBe("0.0.748383Ħ Frens Kingdom2")
+
+        wrapper.unmount()
+        await flushPromises()
+        mock.restore()
     });
 
 });

@@ -277,6 +277,13 @@ export class RouteManager {
         }
     }
 
+    public makeRouteToCollection(accountId: string, tokenId: string): RouteLocationRaw {
+        return {
+            name: 'AccountCollection',
+            params: {accountId: accountId, tokenId: tokenId, network: this.currentNetwork.value}
+        }
+    }
+
     public routeToSerial(tokenId: string, serialNumber: number, newTab = false): Promise<NavigationFailure | void | undefined> {
         let result: Promise<NavigationFailure | void | undefined>
         if (newTab) {
@@ -285,6 +292,18 @@ export class RouteManager {
             result = Promise.resolve()
         } else {
             result = this.router.push(this.makeRouteToSerial(tokenId, serialNumber))
+        }
+        return result
+    }
+
+    public routeToCollection(accountId: string, tokenId: string, newTab = false): Promise<NavigationFailure | void | undefined> {
+        let result: Promise<NavigationFailure | void | undefined>
+        if (newTab) {
+            const routeData = this.router.resolve(this.makeRouteToCollection(accountId, tokenId))
+            window.open(routeData.href, '_blank')
+            result = Promise.resolve()
+        } else {
+            result = this.router.push(this.makeRouteToCollection(accountId, tokenId))
         }
         return result
     }

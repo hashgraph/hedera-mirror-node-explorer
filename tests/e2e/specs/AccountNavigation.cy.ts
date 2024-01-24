@@ -78,13 +78,14 @@ describe('Account Navigation', () => {
         cy.url().should('include', '/mainnet/account/')
 
         cy.get('#balance')
-            .contains('a', "Show all token balances")
+            .contains('a', "Show all tokens")
             .click()
 
         cy.url().should('include', 'accountbalances/' + accountId1)
-        cy.contains('Token Balances for Account ' + accountId1)
+        cy.contains('All Tokens Owned by ' + accountId1)
 
         cy.get('table')
+            .eq(0)
             .find('tbody tr')
             .should('have.length.at.least', 2)
             .eq(0)

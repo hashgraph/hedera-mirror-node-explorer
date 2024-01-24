@@ -97,7 +97,7 @@
         <div class="columns h-is-property-text">
           <div class="column">
             <Property id="balance">
-              <template v-slot:name>{{ tokenBalances?.length ? 'Balances' : 'Balance' }}</template>
+              <template v-slot:name>{{ displayedBalances.length ? 'Balances' : 'Balance' }}</template>
               <template v-slot:value>
                 <div v-if="account" class="h-is-tertiary-text">
                   <HbarAmount v-bind:amount="hbarBalance" v-bind:show-extra="true" timestamp="0"/>
@@ -105,15 +105,13 @@
                 <div v-else-if="isInactiveEvmAddress" class="h-is-tertiary-text">
                   <HbarAmount v-bind:amount="0" v-bind:show-extra="true" timestamp="0"/>
                 </div>
+                <div v-for="b in displayedBalances" :key="b.token_id ?? undefined" class="h-is-tertiary-text">
+                    <TokenAmount v-bind:amount="BigInt(b.balance)" v-bind:show-extra="true" v-bind:token-id="b.token_id"/>
+                </div>
                 <div v-if="displayAllTokenLinks">
                   <router-link :to="{name: 'AccountBalances', params: {accountId: accountId}}">
-                    Show all token balances
+                    <span class="h-is-text-size-3 has-text-grey">Show all tokens</span>
                   </router-link>
-                </div>
-                <div v-else>
-                  <div v-for="b in tokenBalances ?? []" :key="b.token_id ?? undefined" class="h-is-tertiary-text">
-                    <TokenAmount v-bind:amount="BigInt(b.balance)" v-bind:show-extra="true" v-bind:token-id="b.token_id"/>
-                  </div>
                 </div>
                 <div v-if="elapsed && !isSmallScreen" class="has-text-grey has-text-right"> {{ elapsed }} ago</div>
               </template>
@@ -283,7 +281,7 @@
 
 <script lang="ts">
 
-import {computed, defineComponent, inject, onBeforeUnmount, onMounted, watch} from 'vue';
+import {computed, ComputedRef, defineComponent, inject, onBeforeUnmount, onMounted, watch} from 'vue';
 import KeyValue from "@/components/values/KeyValue.vue";
 import PlayPauseButton from "@/components/PlayPauseButton.vue";
 import TransactionTable from "@/components/transaction/TransactionTable.vue";
@@ -314,6 +312,7 @@ import EVMAddress from "@/components/values/EVMAddress.vue";
 import ApproveAllowanceSection from "@/components/allowances/ApproveAllowanceSection.vue";
 import InfoTooltip from "@/components/InfoTooltip.vue";
 import Copyable from "@/components/Copyable.vue";
+import {TokenBalance} from "@/schemas/HederaSchemas";
 
 const MAX_TOKEN_BALANCES = 10
 
@@ -413,10 +412,6 @@ export default defineComponent({
     const balanceAnalyzer = new BalanceAnalyzer(accountLocParser.accountId, 10000)
     onMounted(() => balanceAnalyzer.mount())
     onBeforeUnmount(() => balanceAnalyzer.unmount())
-    const displayAllTokenLinks = computed(() => {
-      const tokenCount = balanceAnalyzer.tokenBalances.value?.length ?? 0
-      return tokenCount > MAX_TOKEN_BALANCES
-    })
     const elapsed = computed(() => {
           let result: string | null
           if (balanceAnalyzer.balanceTimeStamp.value) {
@@ -434,6 +429,20 @@ export default defineComponent({
           return result
         }
     )
+
+    const displayedBalances: ComputedRef<TokenBalance[]> = computed(() => {
+        const result: TokenBalance[] = []
+        const allBalances = balanceAnalyzer.tokenBalances.value
+        for (let i = 0; i < allBalances.length && result.length < MAX_TOKEN_BALANCES; i++) {
+            if (allBalances[i].balance > 0) {
+                result.push(allBalances[i])
+            }
+        }
+        return result
+    })
+
+    const displayAllTokenLinks = computed(
+        () => displayedBalances.value.length < balanceAnalyzer.tokenBalances.value.length)
 
     //
     // contract
@@ -500,7 +509,7 @@ export default defineComponent({
       ethereumAddress: accountLocParser.ethereumAddress,
       balanceTimeStamp: balanceAnalyzer.balanceTimeStamp,
       hbarBalance: balanceAnalyzer.hbarBalance,
-      tokenBalances: balanceAnalyzer.tokenBalances,
+      displayedBalances,
       balanceAnalyzer, // For testing purpose
       displayAllTokenLinks,
       elapsed,

@@ -2,7 +2,7 @@
   -
   - Hedera Mirror Node Explorer
   -
-  - Copyright (C) 2021 - 2024 Hedera Hashgraph, LLC
+  - Copyright (C) 2021 - 2023 Hedera Hashgraph, LLC
   -
   - Licensed under the Apache License, Version 2.0 (the "License");
   - you may not use this file except in compliance with the License.
@@ -23,45 +23,35 @@
 <!-- --------------------------------------------------------------------------------------------------------------- -->
 
 <template>
-
   <o-table
-      :data="relationships"
-      :loading="loading"
-      :paginated="!isTouchDevice"
-      backend-pagination
-      :total="totalRowCount"
-      :current-page="currentPage"
-      :per-page="pageSize"
-      @page-change="onPageChange"
-      @cellClick="handleClick"
+    :data="collections"
+    :paginated="!isTouchDevice"
+    :per-page="perPage"
+    @cell-click="handleClick"
 
-      :hoverable="true"
-      :narrowed="true"
-      :striped="true"
-      :mobile-breakpoint="ORUGA_MOBILE_BREAKPOINT"
+    :hoverable="true"
+    :narrowed="true"
+    :striped="true"
+    :mobile-breakpoint="ORUGA_MOBILE_BREAKPOINT"
 
-      aria-current-label="Current page"
-      aria-next-label="Next page"
-      aria-page-label="Page"
-      aria-previous-label="Previous page"
-      customRowKey="token_id"
+    aria-current-label="Current page"
+    aria-next-label="Next page"
+    aria-page-label="Page"
+    aria-previous-label="Previous page"
   >
     <o-table-column v-slot="props" field="token_id" label="Token">
       <TokenLink
-          v-bind:show-extra="true"
-          v-bind:token-id="props.row.token_id"
-          v-bind:no-anchor="true"
+        v-bind:show-extra="true"
+        v-bind:token-id="props.row.tokenId"
+        v-bind:no-anchor="true"
       />
     </o-table-column>
-
-    <o-table-column v-slot="props" field="balance" label="Balance/Nb of NFTs" position="right">
-      <TokenAmount v-bind:amount="BigInt(props.row.balance)"
-                   v-bind:token-id="props.row.token_id"/>
+    <o-table-column v-slot="props" field="owned" label="Owned" position="right">
+      {{ props.row.collectionSize }}
     </o-table-column>
-
   </o-table>
 
-  <EmptyTable v-if="!relationships.length"/>
+  <EmptyTable v-if="!collections.length"/>
 
 </template>
 
@@ -71,50 +61,47 @@
 
 <script lang="ts">
 
-import {ComputedRef, defineComponent, inject, PropType, Ref} from 'vue';
-import {TokenBalance, TokenRelationship} from "@/schemas/HederaSchemas";
+import {computed, defineComponent, inject, PropType} from 'vue';
 import TokenLink from "@/components/values/TokenLink.vue";
-import TokenAmount from "@/components/values/TokenAmount.vue";
 import {ORUGA_MOBILE_BREAKPOINT} from '@/App.vue';
 import EmptyTable from "@/components/EmptyTable.vue";
 import {routeManager} from "@/router";
-import {TokenRelationshipsTableController} from "@/components/account/TokenRelationshipsTableController";
+import {useRoute} from "vue-router";
+import {NftCollectionInfo} from "@/utils/cache/NftCollectionCache";
 
 export default defineComponent({
-  name: 'BalanceTable',
+  name: 'NftsTable',
 
   components: {
     EmptyTable,
     TokenLink,
-    TokenAmount
   },
 
   props: {
-    controller: {
-      type: Object as PropType<TokenRelationshipsTableController>,
+    collections: {
+      type: Object as PropType<NftCollectionInfo[]>,
       required: true
     },
   },
 
-  setup(props) {
+  setup() {
+    const route = useRoute();
+
     const isTouchDevice = inject('isTouchDevice', false)
     const isMediumScreen = inject('isMediumScreen', true)
 
-    const handleClick = (balance: TokenBalance, c: unknown, i: number, ci: number, event: MouseEvent) => {
-      if (balance.token_id) {
-        routeManager.routeToToken(balance.token_id, event.ctrlKey || event.metaKey)
+    const perPage = computed(() => isMediumScreen ? 15 : 5)
+
+    const handleClick = (nft: NftCollectionInfo, c: unknown, i: number, ci: number, event: MouseEvent) => {
+      if (nft.tokenId) {
+        routeManager.routeToCollection(route.params.accountId as string, nft.tokenId, event.ctrlKey || event.metaKey)
       }
     }
 
     return {
       isTouchDevice,
       isMediumScreen,
-      relationships: props.controller.rows as ComputedRef<TokenRelationship[]>,
-      loading: props.controller.loading as ComputedRef<boolean>,
-      totalRowCount: props.controller.totalRowCount as ComputedRef<number>,
-      currentPage: props.controller.currentPage as Ref<number>,
-      onPageChange: props.controller.onPageChange,
-      pageSize: props.controller.pageSize as Ref<Number>,
+      perPage,
       handleClick,
       ORUGA_MOBILE_BREAKPOINT
     }
