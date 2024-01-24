@@ -142,7 +142,7 @@ const routes: Array<RouteRecordRaw> = [
     props: true
   },
   {
-    path: '/:network/accountbalances/:accountId/:tokenId',
+    path: '/:network/accountcollection/:accountId/:tokenId',
     name: 'AccountCollection',
     component: AccountCollection,
     props: true
