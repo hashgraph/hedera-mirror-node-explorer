@@ -89,8 +89,6 @@ export class WalletManager {
 
     public walletName = computed(() => this.walletNameRef.value)
 
-    public isBraveWallet = computed(() => this.braveWalletRef.value)
-
     public isHederaWallet = computed(() => this.hederaWalletRef.value)
 
     public isEthereumWallet = computed(() => this.isEthereumWalletRef.value)
