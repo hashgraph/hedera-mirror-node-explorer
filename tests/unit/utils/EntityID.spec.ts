@@ -20,7 +20,7 @@
  *
  */
 
-import {describe, test, expect} from 'vitest'
+import {describe, expect, test} from 'vitest'
 import {EntityID} from "@/utils/EntityID";
 
 describe("EntityID.ts", () => {
@@ -35,7 +35,17 @@ describe("EntityID.ts", () => {
         expect(obj?.shard).toBe(0)
         expect(obj?.realm).toBe(0)
         expect(obj?.num).toBe(0)
+        expect(obj?.checksum).toBeNull()
         expect(obj?.toString()).toBe(str)
+
+        const str2 = "0.0.0-abcde"
+        expect(EntityID.parse(str2)).toBeNull()
+        const obj2 = EntityID.parseWithChecksum(str2)
+        expect(obj2?.shard).toBe(0)
+        expect(obj2?.realm).toBe(0)
+        expect(obj2?.num).toBe(0)
+        expect(obj2?.checksum).toBe("abcde")
+        expect(obj2?.toString()).toBe(str)
     })
 
     test("1.1.1", () => {
@@ -44,7 +54,17 @@ describe("EntityID.ts", () => {
         expect(obj?.shard).toBe(1)
         expect(obj?.realm).toBe(1)
         expect(obj?.num).toBe(1)
+        expect(obj?.checksum).toBeNull()
         expect(obj?.toString()).toBe(str)
+
+        const str2 = "1.1.1-abcde"
+        expect(EntityID.parse(str2)).toBeNull()
+        const obj2 = EntityID.parseWithChecksum(str2)
+        expect(obj2?.shard).toBe(1)
+        expect(obj2?.realm).toBe(1)
+        expect(obj2?.num).toBe(1)
+        expect(obj2?.checksum).toBe("abcde")
+        expect(obj2?.toString()).toBe(str)
     })
 
     test("0.0.98", () => {
@@ -53,7 +73,17 @@ describe("EntityID.ts", () => {
         expect(obj?.shard).toBe(0)
         expect(obj?.realm).toBe(0)
         expect(obj?.num).toBe(98)
+        expect(obj?.checksum).toBeNull()
         expect(obj?.toString()).toBe(str)
+
+        const str2 = "0.0.98-abcde"
+        expect(EntityID.parse(str2)).toBeNull()
+        const obj2 = EntityID.parseWithChecksum(str2)
+        expect(obj2?.shard).toBe(0)
+        expect(obj2?.realm).toBe(0)
+        expect(obj2?.num).toBe(98)
+        expect(obj2?.checksum).toBe("abcde")
+        expect(obj2?.toString()).toBe(str)
     })
 
     test("0.0.721838", () => {
@@ -62,16 +92,38 @@ describe("EntityID.ts", () => {
         expect(obj?.shard).toBe(0)
         expect(obj?.realm).toBe(0)
         expect(obj?.num).toBe(721838)
+        expect(obj?.checksum).toBeNull()
         expect(obj?.toString()).toBe(str)
+
+        const str2 = "0.0.721838-abcde"
+        expect(EntityID.parse(str2)).toBeNull()
+        const obj2 = EntityID.parseWithChecksum(str2)
+        expect(obj2?.shard).toBe(0)
+        expect(obj2?.realm).toBe(0)
+        expect(obj2?.num).toBe(721838)
+        expect(obj2?.checksum).toBe("abcde")
+        expect(obj2?.toString()).toBe(str)
     })
 
     test("98", () => {
-        const obj = EntityID.parse("98")
-        expect(obj).toBeNull()
-        const obj2 = EntityID.parse("98", true)
+        const str = "98"
+        expect(EntityID.parse(str)).toBeNull()
+        const obj = EntityID.parse(str, true)
+        expect(obj?.shard).toBe(0)
+        expect(obj?.realm).toBe(0)
+        expect(obj?.num).toBe(98)
+        expect(obj?.checksum).toBeNull()
+        expect(obj?.toString()).toBe("0.0.98")
+
+        const str2 = "98-abcde"
+        expect(EntityID.parse(str2)).toBeNull()
+        expect(EntityID.parse(str2, true)).toBeNull()
+        expect(EntityID.parseWithChecksum(str2)).toBeNull()
+        const obj2 = EntityID.parseWithChecksum(str2, true, true)
         expect(obj2?.shard).toBe(0)
         expect(obj2?.realm).toBe(0)
         expect(obj2?.num).toBe(98)
+        expect(obj2?.checksum).toBe("abcde")
         expect(obj2?.toString()).toBe("0.0.98")
     })
 
@@ -83,6 +135,7 @@ describe("EntityID.ts", () => {
         expect(obj2?.shard).toBe(0)
         expect(obj2?.realm).toBe(0)
         expect(obj2?.num).toBe(veryBigNum)
+        expect(obj2?.checksum).toBeNull()
         expect(obj2?.toString()).toBe("0.0." + veryBigNum.toString())
     })
 
