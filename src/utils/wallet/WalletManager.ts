@@ -48,7 +48,6 @@ export class WalletManager {
     private readonly walletNameRef = ref(this.activeDriver.name)
     private readonly accountIdRef = ref<string|null>(null)
     private readonly accountIdsRef = ref<string[]>([])
-    private readonly braveWalletRef = ref<boolean>(this.activeDriver instanceof WalletDriver_Brave)
     private readonly hederaWalletRef = ref<boolean>(this.activeDriver instanceof WalletDriver_Hedera)
     private readonly isEthereumWalletRef = ref<boolean>(this.activeDriver instanceof WalletDriver_Ethereum)
 
@@ -75,7 +74,6 @@ export class WalletManager {
             this.connectedRef.value = false
             this.accountIdRef.value = null
             this.walletNameRef.value = this.activeDriver.name
-            this.braveWalletRef.value = this.activeDriver instanceof WalletDriver_Brave
             this.hederaWalletRef.value = this.activeDriver instanceof WalletDriver_Hedera
             this.isEthereumWalletRef.value = this.activeDriver instanceof WalletDriver_Ethereum
         }
