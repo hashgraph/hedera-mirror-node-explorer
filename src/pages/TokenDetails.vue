@@ -53,11 +53,11 @@
           <div class="has-text-weight-light">EVM Address:</div>
           <div class="is-flex is-align-items-baseline">
             <EVMAddress class="mr-3" :show-id="false" :has-custom-font="true" :address="ethereumAddress"/>
-            <MetaMaskImport v-if="connectedToMetamask && isSmallScreen" :analyzer="tokenAnalyzer"/>
+            <WalletImport v-if="connectedToEthereum && isSmallScreen" :analyzer="tokenAnalyzer"/>
           </div>
         </div>
-        <div v-if="ethereumAddress && connectedToMetamask && !isSmallScreen" class="mt-2 h-is-property-text">
-          <MetaMaskImport :analyzer="tokenAnalyzer"/>
+        <div v-if="ethereumAddress && connectedToEthereum && !isSmallScreen" class="mt-2 h-is-property-text">
+          <WalletImport :analyzer="tokenAnalyzer"/>
         </div>
 
       </template>
@@ -307,7 +307,7 @@ import DashboardCard from "@/components/DashboardCard.vue";
 import BlobValue from "@/components/values/BlobValue.vue";
 import TokenAmount from "@/components/values/TokenAmount.vue";
 import Footer from "@/components/Footer.vue";
-import MetaMaskImport from "@/components/token/MetaMaskImport.vue";
+import WalletImport from "@/components/token/WalletImport.vue";
 import {EntityID} from "@/utils/EntityID";
 import Property from "@/components/Property.vue";
 import NotificationBanner from "@/components/NotificationBanner.vue";
@@ -342,7 +342,7 @@ export default defineComponent({
     AccountLink,
     NotificationBanner,
     Property,
-    MetaMaskImport,
+    WalletImport,
     Footer,
     BlobValue,
     DashboardCard,
@@ -422,8 +422,8 @@ export default defineComponent({
     onMounted(() => nftHolderTableController.mount())
     onBeforeUnmount(() => nftHolderTableController.unmount())
 
-    const connectedToMetamask = computed(
-        () => walletManager.isMetamaskWallet.value && walletManager.connected.value)
+    const connectedToEthereum = computed(
+        () => walletManager.isEthereumWallet.value && walletManager.connected.value)
 
     return {
       isSmallScreen,
@@ -443,7 +443,7 @@ export default defineComponent({
       parseBigIntString,
       tokenAnalyzer,
       ethereumAddress: tokenAnalyzer.ethereumAddress,
-      connectedToMetamask,
+      connectedToEthereum,
       tokenBalanceTableController,
       nftHolderTableController,
     }
