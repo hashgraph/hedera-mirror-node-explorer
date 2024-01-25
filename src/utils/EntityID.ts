@@ -25,6 +25,7 @@ export class EntityID {
     public readonly shard: number
     public readonly realm: number
     public readonly num: number
+    public readonly checksum: string|null
 
 
 
@@ -33,10 +34,11 @@ export class EntityID {
     // Public
     //
 
-    public constructor(shard: number, realm: number, num: number) {
+    public constructor(shard: number, realm: number, num: number, checksum: string|null) {
         this.shard = shard
         this.realm = realm
         this.num = num
+        this.checksum = checksum
     }
 
     public static parse(s: string, autoComplete = false): EntityID|null {
@@ -55,18 +57,38 @@ export class EntityID {
             if (shard == null || realm == null || num == null) {
                 result = null
             } else {
-                result = new EntityID(shard, realm, num)
+                result = new EntityID(shard, realm, num, null)
             }
         } else if (i1 === -1 && i2 === -1 && autoComplete) {
             const num = EntityID.parsePositiveInt(s)
             if (num == null) {
                 result = null
             } else {
-                result = new EntityID(0, 0, num)
+                result = new EntityID(0, 0, num, null)
             }
         } else {
             result = null
         }
+        return result
+    }
+
+    public static parseWithChecksum(s: string, autoComplete = false): EntityID|null {
+        let result: EntityID|null
+
+        const i = s.indexOf("-")
+        if (i != -1) {
+            const id = s.substring(0, i)
+            const checksum = s.substring(i+1)
+            const entityId = EntityID.parse(id, autoComplete)
+            if (entityId !== null && hasChecksumSyntax(checksum)) {
+                result = new EntityID(entityId.shard, entityId.realm, entityId.num, checksum)
+            } else {
+                result = null
+            }
+        } else {
+            result = EntityID.parse(s, autoComplete)
+        }
+
         return result
     }
 
@@ -99,7 +121,7 @@ export class EntityID {
                 const view = new DataView(buffer.buffer)
                 const bigNum = view.getBigInt64(12)
                 const num = 0 <= bigNum && bigNum < EntityID.MAX_INT ? Number(bigNum) : null
-                result = num != null ? new EntityID(0, 0, num) : null
+                result = num != null ? new EntityID(0, 0, num, null) : null
             } else {
                 result = null
             }
@@ -112,6 +134,16 @@ export class EntityID {
 
     public isEthereumPrecompiledContract(): boolean {
         return this.shard == 0 && this.realm == 0 && 1 <= this.num && this.num < 256
+    }
+
+    public cloneWithoutChecksum(): EntityID {
+        let result: EntityID
+        if (this.checksum !== null) {
+            result = new EntityID(this.shard, this.realm, this.num, null)
+        } else {
+            result = this
+        }
+        return result
     }
 
     /*
@@ -145,6 +177,7 @@ export class EntityID {
         const n = s.match(/^[0-9]+$/) !== null ? parseInt(s) : EntityID.MAX_INT
         return (isNaN(n) || n >= EntityID.MAX_INT) ? null : n
     }
+
 }
 
 
@@ -158,4 +191,9 @@ function compareNumber(n1: number, n2: number): number {
         result = 0
     }
     return result
+}
+
+function hasChecksumSyntax(s: string): boolean {
+    const re = /[a-z]+/
+    return s.length == 5 && re.test(s)
 }

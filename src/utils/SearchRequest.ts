@@ -38,6 +38,8 @@ import {EntityID} from "@/utils/EntityID";
 import {aliasToBase32, base32ToAlias, byteToHex, hexToByte, paddedBytes} from "@/utils/B64Utils";
 import {nameServiceResolve} from "@/utils/NameService";
 import {Timestamp} from "@/utils/Timestamp";
+import {networkRegistry} from "@/schemas/NetworkRegistry";
+import {routeManager} from "@/router";
 
 export class SearchRequest {
 
@@ -63,15 +65,15 @@ export class SearchRequest {
 
         searchId syntax                      | Description      | Tentative searches
         =====================================+==================+======================================================
-        shard.realm.num                      | Entity ID        | api/v1/accounts/{searchId}
-                                             |                  | api/v1/contracts/{searchId}
-                                             |                  | api/v1/tokens/{searchId}
-                                             |                  | api/v1/topics/{searchId}/messages
+        shard.realm.num[-checksum]           | Entity ID        | api/v1/accounts/{shard.realm.num}
+                                             |                  | api/v1/contracts/{shard.realm.num}
+                                             |                  | api/v1/tokens/{shard.realm.num}
+                                             |                  | api/v1/topics/{shard.realm.num}/messages
         -------------------------------------+------------------+------------------------------------------------------
-        integer (decimal notation)           | Incomplete       | api/v1/accounts/0.0.{searchId}
-                                             | Entity ID        | api/v1/contracts/0.0.{searchId}
-                                             |                  | api/v1/tokens/0.0.{searchId}
-                                             |                  | api/v1/topics/0.0.{searchId}/messages
+        integer[-checksum]                   | Incomplete       | api/v1/accounts/0.0.{integer}
+                                             | Entity ID        | api/v1/contracts/0.0.{integer}
+                                             |                  | api/v1/tokens/0.0.{integer}
+                                             |                  | api/v1/topics/0.0.{integer}/messages
         -------------------------------------+------------------+------------------------------------------------------
         shard.realm.num@seconds.nanoseconds  | Transaction ID   | api/v1/transactions/normalize({searchId}
         -------------------------------------+------------------+------------------------------------------------------
@@ -105,7 +107,7 @@ export class SearchRequest {
          */
 
 
-        const entityID = EntityID.parse(this.searchedId, true)
+        const entityID = EntityID.parseWithChecksum(this.searchedId, true)
         const transactionID = TransactionID.parse(this.searchedId)
         const hexBytes = hexToByte(this.searchedId)
         const alias = base32ToAlias(this.searchedId) != null ? this.searchedId : null
@@ -114,12 +116,28 @@ export class SearchRequest {
 
         let promises: Promise<void>[]
         if (entityID !== null) {
-            promises = [
-                this.searchAccount(entityID),
-                this.searchContract(entityID),
-                this.searchToken(entityID),
-                this.searchTopic(entityID)
-            ]
+            let safeEntityID: EntityID|null
+            if (entityID.checksum !== null) {
+                // Search string is an entity id with a checksum : we check it's valid
+                const network = routeManager.currentNetwork.value
+                if (networkRegistry.isValidChecksum(entityID.toString(), entityID.checksum, network)) {
+                    safeEntityID = entityID.cloneWithoutChecksum()
+                } else {
+                    safeEntityID = null
+                }
+            } else {
+                safeEntityID = entityID
+            }
+            if (safeEntityID !== null) {
+                promises = [
+                    this.searchAccount(safeEntityID),
+                    this.searchContract(safeEntityID),
+                    this.searchToken(safeEntityID),
+                    this.searchTopic(safeEntityID)
+                ]
+            } else {
+                promises = []
+            }
         } else if (transactionID !== null) {
             promises = [
                 this.searchTransaction(transactionID)

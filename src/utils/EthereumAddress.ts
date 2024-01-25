@@ -57,7 +57,7 @@ export class EthereumAddress {
             const view = new DataView(this.bytes.buffer)
             const bigNum = view.getBigInt64(12)
             const num = 0 <= bigNum && bigNum < EntityID.MAX_INT ? Number(bigNum) : null
-            result = num != null ? new EntityID(0, 0, num) : null
+            result = num != null ? new EntityID(0, 0, num, null) : null
         } else {
             result = null
         }

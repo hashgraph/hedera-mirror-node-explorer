@@ -136,7 +136,7 @@ export class ComplexKeyLine {
         const shard = Number(iContractID.shardNum ?? 0)
         const realm = Number(iContractID.realmNum ?? 0)
         const num = Number(iContractID.contractNum ?? 0)
-        const entityId = new EntityID(shard, realm, num)
+        const entityId = new EntityID(shard, realm, num, null)
         return entityId.toString()
     }
 }
