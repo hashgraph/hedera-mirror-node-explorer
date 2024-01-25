@@ -1,8 +1,4 @@
 version: "3.7"
-x-project-repository-mount: &project-repository-mount
-  type: bind
-  source: $REPOSITORY_PATH
-
 x-project-base: &project-base
   env_file:
     - .env
@@ -20,8 +16,9 @@ services:
     image: ghcr.io/hashgraph/hedera-sourcify:repository-${TAG}
     container_name: repository-${TAG}
     volumes:
-      - <<: *project-repository-mount
-        target: /data
+      - type: bind
+        source: $REPOSITORY_PATH_HOST
+        target: $REPOSITORY_PATH
         read_only: true
       - type: bind
         source: ./config.json
@@ -36,8 +33,9 @@ services:
     ports:
       - "${SERVER_EXTERNAL_PORT}:${SERVER_PORT}"
     volumes:
-      - <<: *project-repository-mount
-        target: /home/data/repository
+      - type: bind
+        source: $REPOSITORY_PATH_HOST
+        target: $REPOSITORY_PATH
       - type: bind
         source: $SOLC_REPO_HOST
         target: $SOLC_REPO

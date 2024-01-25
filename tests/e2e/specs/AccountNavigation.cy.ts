@@ -82,7 +82,7 @@ describe('Account Navigation', () => {
             .click()
 
         cy.url().should('include', 'accountbalances/' + accountId1)
-        cy.contains('All Tokens Owned by ' + accountId1)
+        cy.contains('All Tokens Associated to ' + accountId1)
 
         cy.get('table')
             .eq(0)
