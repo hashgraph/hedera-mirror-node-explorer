@@ -313,6 +313,7 @@ import ApproveAllowanceSection from "@/components/allowances/ApproveAllowanceSec
 import InfoTooltip from "@/components/InfoTooltip.vue";
 import Copyable from "@/components/Copyable.vue";
 import {TokenBalance} from "@/schemas/HederaSchemas";
+import {NftCollectionCache} from "@/utils/cache/NftCollectionCache";
 
 const MAX_TOKEN_BALANCES = 10
 
@@ -406,12 +407,21 @@ export default defineComponent({
     })
 
     //
-    // balanceCache
+    // BalanceAnalyzer
     //
 
     const balanceAnalyzer = new BalanceAnalyzer(accountLocParser.accountId, 10000)
     onMounted(() => balanceAnalyzer.mount())
     onBeforeUnmount(() => balanceAnalyzer.unmount())
+
+    //
+    // NftCollectionCache
+    //
+
+    const nftCollectionLookup = NftCollectionCache.instance.makeLookup(accountId)
+    onMounted(() => nftCollectionLookup.mount())
+    onBeforeUnmount(() => nftCollectionLookup.unmount())
+
     const elapsed = computed(() => {
           let result: string | null
           if (balanceAnalyzer.balanceTimeStamp.value) {
@@ -441,8 +451,10 @@ export default defineComponent({
         return result
     })
 
-    const displayAllTokenLinks = computed(
-        () => displayedBalances.value.length < balanceAnalyzer.tokenBalances.value.length)
+    const displayAllTokenLinks = computed(() => {
+        return displayedBalances.value.length < balanceAnalyzer.tokenBalances.value.length
+            || (nftCollectionLookup.entity.value?.length ?? 0) > 0
+    })
 
     //
     // contract

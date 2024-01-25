@@ -223,6 +223,7 @@ import ContractResultLogs from "@/components/contract/ContractResultLogs.vue";
 import {ContractResultsLogsAnalyzer} from "@/utils/analyzer/ContractResultsLogsAnalyzer";
 import {BalanceAnalyzer} from "@/utils/analyzer/BalanceAnalyzer";
 import {TokenBalance} from "@/schemas/HederaSchemas";
+import {NftCollectionCache} from "@/utils/cache/NftCollectionCache";
 
 const MAX_TOKEN_BALANCES = 3
 
@@ -302,7 +303,7 @@ export default defineComponent({
     // account
     //
 
-    const accountLookup = AccountByIdCache.instance.makeLookup(contractLocParser.contractId)
+    const accountLookup = AccountByIdCache.instance.makeLookup(normalizedContractId)
     onMounted(() => accountLookup.mount())
     onBeforeUnmount(() => accountLookup.unmount())
 
@@ -310,12 +311,20 @@ export default defineComponent({
         = computed(() => accountLookup.entity.value?.balance?.balance ?? null)
 
     //
-    // balanceCache
+    // BalanceAnalyzer
     //
 
     const balanceAnalyzer = new BalanceAnalyzer(contractLocParser.contractId, 10000)
     onMounted(() => balanceAnalyzer.mount())
     onBeforeUnmount(() => balanceAnalyzer.unmount())
+
+    //
+    // NftCollectionCache
+    //
+
+    const nftCollectionLookup = NftCollectionCache.instance.makeLookup(normalizedContractId)
+    onMounted(() => nftCollectionLookup.mount())
+    onBeforeUnmount(() => nftCollectionLookup.unmount())
 
     const displayedBalances: ComputedRef<TokenBalance[]> = computed(() => {
       const result: TokenBalance[] = []
@@ -328,8 +337,10 @@ export default defineComponent({
       return result
     })
 
-    const displayAllTokenLinks = computed(
-        () => displayedBalances.value.length < balanceAnalyzer.tokenBalances.value.length)
+    const displayAllTokenLinks = computed(() => {
+      return displayedBalances.value.length < balanceAnalyzer.tokenBalances.value.length
+          || (nftCollectionLookup.entity.value?.length ?? 0) > 0
+    })
 
     const accountRoute = computed(() => {
       return normalizedContractId.value !== null ?  routeManager.makeRouteToAccount(normalizedContractId.value) : null
