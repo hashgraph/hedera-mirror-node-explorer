@@ -80,7 +80,7 @@ export class EntityID {
             const id = s.substring(0, i)
             const checksum = s.substring(i+1)
             const entityId = EntityID.parse(id, autoComplete)
-            if (entityId !== null) {
+            if (entityId !== null && hasChecksumSyntax(checksum)) {
                 result = new EntityID(entityId.shard, entityId.realm, entityId.num, checksum)
             } else {
                 result = null
@@ -177,6 +177,7 @@ export class EntityID {
         const n = s.match(/^[0-9]+$/) !== null ? parseInt(s) : EntityID.MAX_INT
         return (isNaN(n) || n >= EntityID.MAX_INT) ? null : n
     }
+
 }
 
 
@@ -190,4 +191,9 @@ function compareNumber(n1: number, n2: number): number {
         result = 0
     }
     return result
+}
+
+function hasChecksumSyntax(s: string): boolean {
+    const re = /[a-z]+/
+    return s.length == 5 && re.test(s)
 }
