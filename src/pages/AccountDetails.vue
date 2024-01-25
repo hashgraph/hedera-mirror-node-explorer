@@ -443,8 +443,15 @@ export default defineComponent({
     const displayedBalances: ComputedRef<TokenBalance[]> = computed(() => {
         const result: TokenBalance[] = []
         const allBalances = balanceAnalyzer.tokenBalances.value
+        // Display in priority 'non-zero balances'
         for (let i = 0; i < allBalances.length && result.length < MAX_TOKEN_BALANCES; i++) {
             if (allBalances[i].balance > 0) {
+                result.push(allBalances[i])
+            }
+        }
+        // Complete with 'zero balances' if any room left
+        for (let i = 0; i < allBalances.length && result.length < MAX_TOKEN_BALANCES; i++) {
+            if (!result.includes(allBalances[i])) {
                 result.push(allBalances[i])
             }
         }
