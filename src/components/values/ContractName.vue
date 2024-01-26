@@ -33,7 +33,7 @@
                 {{ name }}
             </span>
         </div>
-        <span v-else-if="false" class="h-has-pill h-has-page-background has-text-grey has-text-weight-light">
+        <span v-else-if="true" class="h-has-pill h-has-page-background has-text-grey has-text-weight-normal">
             not verified
         </span>
     </template>
