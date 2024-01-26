@@ -70,6 +70,7 @@ export class CacheUtils {
         // IPFSCache.instance => no clear: we preserve it because IPFS content is valid for all networks
         NetworkCache.instance.clear()
         NftCollectionCache.instance.clear()
+        // SignatureCache.instance => no clear: we preserve it because 4byte content is valid for all networks
         SourcifyCache.instance.clear()
         StakeCache.instance.clear()
         TokenAssociationCache.instance.clear()
