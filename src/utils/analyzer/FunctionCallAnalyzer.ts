@@ -21,6 +21,7 @@
 import {computed, ComputedRef, ref, Ref, shallowRef, watch, WatchStopHandle} from "vue";
 import {ethers} from "ethers";
 import {ContractAnalyzer} from "@/utils/analyzer/ContractAnalyzer";
+import {SignatureCache, SignatureRecord} from "@/utils/cache/SignatureCache";
 
 export class FunctionCallAnalyzer {
 
@@ -28,6 +29,7 @@ export class FunctionCallAnalyzer {
     public readonly output: Ref<string|null>
     public readonly error: Ref<string|null>
     private readonly contractAnalyzer: ContractAnalyzer
+    private readonly signatureRecord = shallowRef<SignatureRecord|null>(null)
     private readonly functionFragment = shallowRef<ethers.FunctionFragment|null>(null)
     private readonly functionDecodingFailure = shallowRef<unknown>(null)
     private readonly inputResult = shallowRef<ethers.Result|null>(null)
@@ -51,7 +53,8 @@ export class FunctionCallAnalyzer {
 
     public mount(): void {
         this.watchHandle.value = [
-            watch([this.input, this.contractAnalyzer.interface], this.updateFunctionFragment, { immediate: true}),
+            watch([this.functionHash], this.updateSignatureRecord, {immediate: true}),
+            watch([this.functionHash, this.contractAnalyzer.interface, this.signatureRecord], this.updateFunctionFragment, { immediate: true}),
             watch([this.input, this.functionFragment], this.updateInputResult, { immediate: true}),
             watch([this.output, this.functionFragment], this.updateOutputResult, { immediate: true}),
             watch([this.error, this.contractAnalyzer.interface], this.updateErrorDescription, { immediate: true})
@@ -65,6 +68,7 @@ export class FunctionCallAnalyzer {
             wh()
         }
         this.watchHandle.value = []
+        this.signatureRecord.value = null
         this.functionFragment.value = null
         this.functionDecodingFailure.value = null
         this.inputResult.value = null
@@ -88,7 +92,8 @@ export class FunctionCallAnalyzer {
     })
 
     public readonly functionHash: ComputedRef<string|null> = computed(() => {
-        return this.functionFragment.value?.selector ?? null
+        const input = this.input.value
+        return input !== null ? input.slice(0, 10) : null
     })
 
     public readonly signature: ComputedRef<string|null> = computed(() => {
@@ -208,16 +213,37 @@ export class FunctionCallAnalyzer {
         return "Decoding Error (" + f.shortMessage + ")"
     }
 
+    private readonly updateSignatureRecord = async () => {
+        if (this.functionHash.value !== null) {
+            try {
+                this.signatureRecord.value = await SignatureCache.instance.lookup(this.functionHash.value)
+            } catch {
+                this.signatureRecord.value = null
+            }
+        } else {
+            this.signatureRecord.value = null
+        }
+    }
+
     private readonly updateFunctionFragment = async () => {
         const i = this.contractAnalyzer.interface.value
-        const input = this.normalizedInput.value
-        if (i !== null && input !== null) {
-            try {
-                this.functionFragment.value = i.getFunction(input.slice(0, 10)) // "0x" + 4bytes
+        const r = this.signatureRecord.value
+        const functionHash = this.functionHash.value
+        if (functionHash !== null) {
+            if (i !== null) {
+                try {
+                    this.functionFragment.value = i.getFunction(functionHash)
+                    this.functionDecodingFailure.value = null
+                } catch(failure) {
+                    this.functionFragment.value = null
+                    this.functionDecodingFailure.value = failure
+                }
+            } else if (r !== null) {
+                this.functionFragment.value = ethers.FunctionFragment.from(r.text_signature)
                 this.functionDecodingFailure.value = null
-            } catch(failure) {
+            } else {
                 this.functionFragment.value = null
-                this.functionDecodingFailure.value = failure
+                this.functionDecodingFailure.value = null
             }
         } else {
             this.functionFragment.value = null
@@ -227,11 +253,10 @@ export class FunctionCallAnalyzer {
 
     private readonly updateInputResult = () => {
         const ff = this.functionFragment.value
-        const i = this.contractAnalyzer.interface.value
-        const input = this.normalizedInput.value
-        if (ff !== null && i !== null && input !== null) {
+        const inputArgs = this.inputArgsOnly.value
+        if (ff !== null && inputArgs !== null) {
             try {
-                this.inputResult.value = i.decodeFunctionData(ff, input)
+                this.inputResult.value = ethers.AbiCoder.defaultAbiCoder().decode(ff.inputs, inputArgs)
                 this.inputDecodingFailure.value = null
             } catch(failure) {
                 this.inputResult.value = null
@@ -245,11 +270,10 @@ export class FunctionCallAnalyzer {
 
     private readonly updateOutputResult = () => {
         const ff = this.functionFragment.value
-        const i = this.contractAnalyzer.interface.value
         const output = this.normalizedOutput.value
-        if (ff !== null && i !== null && output !== null) {
+        if (ff !== null && output !== null) {
             try {
-                this.outputResult.value = i.decodeFunctionResult(ff, output)
+                this.outputResult.value = ethers.AbiCoder.defaultAbiCoder().decode(ff.outputs, output)
                 this.outputDecodingFailure.value = null
             } catch(failure) {
                 this.outputResult.value = null
