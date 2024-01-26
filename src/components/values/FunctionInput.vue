@@ -26,8 +26,6 @@
 
   <div v-if="signature">
 
-    <div class="h-is-tertiary-text my-2">Input</div>
-
     <Property :custom-nb-col-class="customNbColClass" id="function">
       <template v-slot:name>Signature</template>
         <template v-slot:value>
@@ -35,13 +33,32 @@
         </template>
     </Property>
 
-    <template v-for="arg in inputs" :key="arg.name">
-      <Property :custom-nb-col-class="customNbColClass">
-        <template v-slot:name>{{ arg.name }}</template>
-        <template v-slot:value>
-          <FunctionValue :ntv="arg"/>
+    <template v-if="inputs && inputs.length >= 1">
+
+        <div class="h-is-tertiary-text my-2">Input</div>
+
+        <template v-for="arg in inputs" :key="arg.name">
+            <Property :custom-nb-col-class="customNbColClass">
+                <template v-slot:name>{{ arg.name }}</template>
+                <template v-slot:value>
+                    <FunctionValue :ntv="arg"/>
+                </template>
+            </Property>
         </template>
+
+    </template><template v-else>
+
+      <Property :custom-nb-col-class="customNbColClass" id="functionInput">
+          <template v-slot:name>Input Args</template>
+          <template v-slot:value>
+            <HexaValue :byte-string="inputArgsOnly" :show-none="true"/>
+            <div v-if="inputDecodingStatus" class="h-is-extra-text h-is-text-size-3">
+              <span class="icon fas fa-exclamation-circle has-text-grey is-small mt-1 mr-1"/>
+              <span>{{ inputDecodingStatus }}</span>
+            </div>
+          </template>
       </Property>
+
     </template>
 
   </div>
@@ -50,9 +67,9 @@
       <template v-slot:name>Input - Function & Args</template>
       <template v-slot:value>
         <HexaValue :byte-string="input" :show-none="true"/>
-        <div v-if="inputDecodingStatus" class="h-is-extra-text h-is-text-size-3">
+        <div v-if="functionDecodingStatus" class="h-is-extra-text h-is-text-size-3">
             <span class="icon fas fa-exclamation-circle has-text-grey is-small mt-1 mr-1"/>
-            <span>{{ inputDecodingStatus }}</span>
+            <span>{{ functionDecodingStatus }}</span>
         </div>
       </template>
     </Property>
@@ -93,7 +110,9 @@ export default defineComponent({
       signature: props.analyzer.signature,
       functionHash: props.analyzer.functionHash,
       inputs: props.analyzer.inputs,
+      functionDecodingStatus: props.analyzer.functionDecodingStatus,
       inputDecodingStatus: props.analyzer.inputDecodingStatus,
+      inputArgsOnly: props.analyzer.inputArgsOnly,
       initialLoading
     }
   }

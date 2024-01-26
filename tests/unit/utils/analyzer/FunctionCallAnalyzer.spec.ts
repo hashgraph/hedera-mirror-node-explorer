@@ -93,8 +93,8 @@ describe("FunctionCallAnalyzer.spec.ts", () => {
         output.value = "0x00000000000000000000000000000000000000000000000000003dc604b33217"
         contractId.value = "0.0.359"
         await flushPromises()
-        expect(functionCallAnalyzer.functionHash.value).toBeNull()
-        expect(functionCallAnalyzer.signature.value).toBeNull()
+        expect(functionCallAnalyzer.functionHash.value).toBe("0x618dc65e")
+        expect(functionCallAnalyzer.signature.value).toBe("redirectForToken(address,bytes)")
         expect(functionCallAnalyzer.inputs.value).toStrictEqual([])
         expect(functionCallAnalyzer.outputs.value).toStrictEqual([])
         expect(functionCallAnalyzer.errorHash.value).toBeNull()
@@ -128,7 +128,7 @@ describe("FunctionCallAnalyzer.spec.ts", () => {
         // 6) unmount
         functionCallAnalyzer.unmount()
         await flushPromises()
-        expect(functionCallAnalyzer.functionHash.value).toBeNull()
+        expect(functionCallAnalyzer.functionHash.value).toBe("0x49146bde")
         expect(functionCallAnalyzer.signature.value).toBeNull()
         expect(functionCallAnalyzer.inputs.value).toStrictEqual([])
         expect(functionCallAnalyzer.outputs.value).toStrictEqual([])
@@ -211,7 +211,7 @@ describe("FunctionCallAnalyzer.spec.ts", () => {
         // 4) unmount
         functionCallAnalyzer.unmount()
         await flushPromises()
-        expect(functionCallAnalyzer.functionHash.value).toBeNull()
+        expect(functionCallAnalyzer.functionHash.value).toBe("0xf305d719")
         expect(functionCallAnalyzer.signature.value).toBeNull()
         expect(functionCallAnalyzer.inputs.value).toStrictEqual([])
         expect(functionCallAnalyzer.outputs.value).toStrictEqual([])
@@ -257,7 +257,7 @@ describe("FunctionCallAnalyzer.spec.ts", () => {
         error.value = "0x08c379a000000000000000000000000000000000000000000000000000000000000000200000000000000000000000000000000000000000000000000000000000000026556e69737761705632526f757465723a20494e53554646494349454e545f425f414d4f554e540000000000000000000000000000000000000000000000000000"
         contractId.value = "0.0.3045981"
         await flushPromises()
-        expect(functionCallAnalyzer.functionHash.value).toBeNull()
+        expect(functionCallAnalyzer.functionHash.value).toBe("0xf305d719")
         expect(functionCallAnalyzer.signature.value).toBeNull()
         expect(functionCallAnalyzer.inputs.value).toStrictEqual([])
         expect(functionCallAnalyzer.outputs.value).toStrictEqual([])
@@ -295,7 +295,7 @@ describe("FunctionCallAnalyzer.spec.ts", () => {
         // 4) unmount
         functionCallAnalyzer.unmount()
         await flushPromises()
-        expect(functionCallAnalyzer.functionHash.value).toBeNull()
+        expect(functionCallAnalyzer.functionHash.value).toBe("0xf305d719")
         expect(functionCallAnalyzer.signature.value).toBeNull()
         expect(functionCallAnalyzer.inputs.value).toStrictEqual([])
         expect(functionCallAnalyzer.outputs.value).toStrictEqual([])
