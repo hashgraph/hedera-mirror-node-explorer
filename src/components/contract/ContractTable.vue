@@ -46,7 +46,7 @@
       aria-previous-label="Previous page"
       customRowKey="contract_id"
   >
-    <o-table-column field="contract_id" label="Contract" v-slot="props">
+    <o-table-column field="contract_id" label="ID" v-slot="props">
       <div class="is-numeric">
         {{ props.row.contract_id }}
       </div>
