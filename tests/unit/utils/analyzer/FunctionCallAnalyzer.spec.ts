@@ -93,15 +93,15 @@ describe("FunctionCallAnalyzer.spec.ts", () => {
         output.value = "0x00000000000000000000000000000000000000000000000000003dc604b33217"
         contractId.value = "0.0.359"
         await flushPromises()
-        expect(functionCallAnalyzer.functionHash.value).toBeNull()
-        expect(functionCallAnalyzer.signature.value).toBeNull()
+        expect(functionCallAnalyzer.functionHash.value).toBe("0x618dc65e")
+        expect(functionCallAnalyzer.signature.value).toBe("redirectForToken(address,bytes)")
         expect(functionCallAnalyzer.inputs.value).toStrictEqual([])
         expect(functionCallAnalyzer.outputs.value).toStrictEqual([])
         expect(functionCallAnalyzer.errorHash.value).toBeNull()
         expect(functionCallAnalyzer.errorSignature.value).toBeNull()
         expect(functionCallAnalyzer.errorInputs.value).toStrictEqual([])
         expect(functionCallAnalyzer.inputDecodingStatus.value).toBe("Decoding Error (data out-of-bounds)")
-        expect(functionCallAnalyzer.outputDecodingStatus.value).toBe("Decoding Error (data out-of-bounds)")
+        expect(functionCallAnalyzer.outputDecodingStatus.value).toBeNull()
         expect(functionCallAnalyzer.errorDecodingStatus.value).toBeNull()
 
         // 5) output setup (invalid output encoding)
