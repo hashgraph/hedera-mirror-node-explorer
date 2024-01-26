@@ -52,6 +52,10 @@
       </div>
     </o-table-column>
 
+    <o-table-column v-slot="props" field="contract_name" label="Contract Name">
+      <ContractName :contract-id="props.row.contract_id"/>
+    </o-table-column>
+
     <o-table-column v-slot="props" field="created" label="Created">
       <TimestampValue v-bind:timestamp="props.row.created_timestamp"/>
     </o-table-column>
@@ -82,6 +86,7 @@ import TimestampValue from "@/components/values/TimestampValue.vue";
 import {ORUGA_MOBILE_BREAKPOINT} from '@/App.vue';
 import EmptyTable from "@/components/EmptyTable.vue";
 import {ContractTableController} from "@/components/contract/ContractTableController";
+import ContractName from "@/components/values/ContractName.vue";
 
 
 //
@@ -91,7 +96,7 @@ import {ContractTableController} from "@/components/contract/ContractTableContro
 export default defineComponent({
   name: 'ContractTable',
 
-  components: {EmptyTable, BlobValue, TimestampValue},
+  components: {ContractName, EmptyTable, BlobValue, TimestampValue},
 
   props: {
     controller: {
