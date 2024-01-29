@@ -54,7 +54,7 @@ export abstract class WalletDriver {
 
     public extensionNotFound(): WalletDriverError {
         const message = this.name + " extension not found"
-        const extra = "Please install and activate " + this.name + " extension."
+        const extra = "Please install and/or activate " + this.name + " extension."
         return new WalletDriverError(message, extra)
     }
 
