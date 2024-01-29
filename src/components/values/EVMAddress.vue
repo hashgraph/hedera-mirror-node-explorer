@@ -34,17 +34,30 @@
       </Copyable>
       <span v-if="entityId && showId">
         <span class="ml-1">(</span>
-        <router-link v-if="entityLinkType === CONTRACT"
-                     :to="{name: 'ContractDetails', params: {contractId: entityId}}">{{ entityId }}</router-link>
-        <router-link v-else-if="entityLinkType === ACCOUNT"
-                     :to="{name: 'AccountDetails', params: {accountId: entityId}}">{{ entityId }}</router-link>
-        <router-link v-else-if="entityLinkType === TOKEN"
-                     :to="{name: 'TokenDetails', params: {tokenId: entityId}}">{{ entityId }}</router-link>
+        <router-link v-if="verified && !showType" :to="{name: 'ContractDetails', params: {contractId: entityId}}">
+            <span>{{ contractName }}</span>
+            <span class="icon is-small has-text-success ml-1"><i class="fas fa-check-circle"></i></span>
+        </router-link>
+        <router-link v-else-if="entityLinkType === CONTRACT" :to="{name: 'ContractDetails', params: {contractId: entityId}}">
+            {{ entityId }}
+        </router-link>
+        <router-link v-else-if="entityLinkType === ACCOUNT" :to="{name: 'AccountDetails', params: {accountId: entityId}}">
+            {{ entityId }}
+        </router-link>
+        <router-link v-else-if="entityLinkType === TOKEN" :to="{name: 'TokenDetails', params: {tokenId: entityId}}">
+            {{ entityId }}
+        </router-link>
         <span v-else>{{ entityId }}</span>
         <span>)</span>
       </span>
     </div>
-    <div v-if="showType" class="h-is-extra-text h-is-text-size-2">{{ entityType }}</div>
+    <div v-if="showType" class="h-is-text-size-2">
+      <span class="h-is-extra-text">{{ entityType }}</span>
+      <span v-if="verified" class="ml-1">{{ contractName }}</span>
+      <span v-if="verified" class="icon is-small has-text-success ml-1">
+        <i class="fas fa-check-circle"></i>
+      </span>
+    </div>
   </div>
   <div v-else-if="initialLoading"/>
   <div v-else-if="showNone" class="has-text-grey">None</div>
@@ -57,19 +70,21 @@
 
 <script lang="ts">
 
-import {computed, defineComponent, inject, onMounted, PropType, ref, watch} from "vue";
+import {computed, defineComponent, inject, onBeforeUnmount, onMounted, PropType, ref, watch} from "vue";
 import {initialLoadingKey} from "@/AppKeys";
 import {systemContractRegistry} from "@/schemas/SystemContractRegistry";
 import {AccountByAddressCache} from "@/utils/cache/AccountByAddressCache";
 import {EthereumAddress} from "@/utils/EthereumAddress";
 import Copyable from "@/components/Copyable.vue";
 import {ContractByAddressCache} from "@/utils/cache/ContractByAddressCache";
+import ContractName from "@/components/values/ContractName.vue";
+import {ContractAnalyzer, GlobalState} from "@/utils/analyzer/ContractAnalyzer";
 
 export enum ExtendedEntityType { UNDEFINED, ACCOUNT, CONTRACT, TOKEN }
 
 export default defineComponent({
   name: "EVMAddress",
-  components: {Copyable},
+  components: {ContractName, Copyable},
   props: {
     address: {
       type: String as PropType<string|null>,
@@ -208,6 +223,13 @@ export default defineComponent({
       }
     }
 
+    const contractAnalyzer = new ContractAnalyzer(entityId)
+    onMounted(() => contractAnalyzer.mount())
+    onBeforeUnmount(() => contractAnalyzer.unmount())
+
+    const contractName = computed(() => contractAnalyzer.contractName.value)
+    const verified = computed(() => contractAnalyzer.globalState.value !== GlobalState.Unverified)
+
     return {
       isSmallScreen,
       ACCOUNT: ExtendedEntityType.ACCOUNT,
@@ -219,7 +241,9 @@ export default defineComponent({
       significantPart,
       entityId,
       evmAddress,
-      copyToClipboard
+      copyToClipboard,
+      contractName,
+      verified,
     }
   }
 })
