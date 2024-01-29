@@ -92,10 +92,13 @@ export default defineComponent({
       return expandedActions.value.length == 0
     })
     const collapseAll = (): void => {
-      expandedActions.value = []
+      expandedActions.value.splice(0) // expandedActions must be muted for Oruga table to work properly
     }
     const expandAll = (): void => {
-      expandedActions.value = contractActionsLoader.actionsWithPath.value ?? []
+      collapseAll()
+      for (const a of contractActionsLoader.actionsWithPath.value ?? [])  {
+          expandedActions.value.push(a) // expandedActions must be muted for Oruga table to work properly
+      }
     }
 
     return {
