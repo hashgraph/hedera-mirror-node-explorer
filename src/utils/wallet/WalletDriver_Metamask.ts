@@ -49,7 +49,7 @@ export class WalletDriver_Metamask extends WalletDriver_Ethereum {
     //
 
     public async isExpectedProvider(provider: object): Promise<boolean> {
-        const result = "isMetaMask" in provider && provider.isMetaMask == true
+        const result = "isMetaMask" in provider && provider.isMetaMask == true && !("isBraveWallet" in provider)
         return Promise.resolve(result)
     }
 
