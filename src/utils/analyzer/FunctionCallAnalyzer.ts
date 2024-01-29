@@ -21,7 +21,7 @@
 import {computed, ComputedRef, ref, Ref, shallowRef, watch, WatchStopHandle} from "vue";
 import {ethers} from "ethers";
 import {ContractAnalyzer} from "@/utils/analyzer/ContractAnalyzer";
-import {SignatureCache, SignatureRecord} from "@/utils/cache/SignatureCache";
+import {SignatureCache, SignatureRecord, SignatureResponse} from "@/utils/cache/SignatureCache";
 
 export class FunctionCallAnalyzer {
 
@@ -29,7 +29,7 @@ export class FunctionCallAnalyzer {
     public readonly output: Ref<string|null>
     public readonly error: Ref<string|null>
     private readonly contractAnalyzer: ContractAnalyzer
-    private readonly signatureRecord = shallowRef<SignatureRecord|null>(null)
+    private readonly signatureResponse = shallowRef<SignatureResponse|null>(null)
     private readonly functionFragment = shallowRef<ethers.FunctionFragment|null>(null)
     private readonly functionDecodingFailure = shallowRef<unknown>(null)
     private readonly inputResult = shallowRef<ethers.Result|null>(null)
@@ -53,8 +53,8 @@ export class FunctionCallAnalyzer {
 
     public mount(): void {
         this.watchHandle.value = [
-            watch([this.functionHash], this.updateSignatureRecord, {immediate: true}),
-            watch([this.functionHash, this.contractAnalyzer.interface, this.signatureRecord], this.updateFunctionFragment, { immediate: true}),
+            watch([this.functionHash], this.updateSignatureResponse, {immediate: true}),
+            watch([this.functionHash, this.contractAnalyzer.interface, this.signatureResponse, this.input], this.updateFunctionFragment, { immediate: true}),
             watch([this.input, this.functionFragment], this.updateInputResult, { immediate: true}),
             watch([this.output, this.functionFragment], this.updateOutputResult, { immediate: true}),
             watch([this.error, this.contractAnalyzer.interface], this.updateErrorDescription, { immediate: true})
@@ -68,7 +68,7 @@ export class FunctionCallAnalyzer {
             wh()
         }
         this.watchHandle.value = []
-        this.signatureRecord.value = null
+        this.signatureResponse.value = null
         this.functionFragment.value = null
         this.functionDecodingFailure.value = null
         this.inputResult.value = null
@@ -213,21 +213,21 @@ export class FunctionCallAnalyzer {
         return "Decoding Error (" + f.shortMessage + ")"
     }
 
-    private readonly updateSignatureRecord = async () => {
+    private readonly updateSignatureResponse = async () => {
         if (this.functionHash.value !== null) {
             try {
-                this.signatureRecord.value = await SignatureCache.instance.lookup(this.functionHash.value)
+                this.signatureResponse.value = await SignatureCache.instance.lookup(this.functionHash.value)
             } catch {
-                this.signatureRecord.value = null
+                this.signatureResponse.value = null
             }
         } else {
-            this.signatureRecord.value = null
+            this.signatureResponse.value = null
         }
     }
 
     private readonly updateFunctionFragment = async () => {
         const i = this.contractAnalyzer.interface.value
-        const r = this.signatureRecord.value
+        const r = this.signatureResponse.value
         const functionHash = this.functionHash.value
         if (functionHash !== null) {
             if (i !== null) {
@@ -238,9 +238,26 @@ export class FunctionCallAnalyzer {
                     this.functionFragment.value = null
                     this.functionDecodingFailure.value = failure
                 }
-            } else if (r !== null) {
-                this.functionFragment.value = ethers.FunctionFragment.from(r.text_signature)
-                this.functionDecodingFailure.value = null
+            } else if (r !== null && r.results.length >= 1) {
+                let r0: SignatureRecord|null
+                if (r.results.length == 1) {
+                    r0 = r.results[0]
+                } else {
+                    // Mmmm ... we have multiple signatures for this selector … :(
+                    // We take the first one which enables to decode input… if we have input … :/
+                    if (this.inputArgsOnly.value !== null) {
+                        r0 = FunctionCallAnalyzer.resolveSignatureCollisions(r.results, this.inputArgsOnly.value)
+                    } else {
+                        r0 = null // We'll see later when this.input.value is available
+                    }
+                }
+                if (r0 !== null) {
+                    this.functionFragment.value = ethers.FunctionFragment.from(r0.text_signature)
+                    this.functionDecodingFailure.value = null
+                } else {
+                    this.functionFragment.value = null
+                    this.functionDecodingFailure.value = null
+                }
             } else {
                 this.functionFragment.value = null
                 this.functionDecodingFailure.value = null
@@ -302,6 +319,22 @@ export class FunctionCallAnalyzer {
         }
     }
 
+    private static resolveSignatureCollisions(records: SignatureRecord[], inputArgs: string): SignatureRecord|null {
+        //
+        // Some selectors (like 0x70a08231) have multiple signatures registered on 4bytes.directory.
+        // We select the first signature which enables to decode inputArgs.
+        //
+        let result: SignatureRecord|null = null
+        for (const r of records) {
+            try {
+                const ff = ethers.FunctionFragment.from(r.text_signature)
+                ethers.AbiCoder.defaultAbiCoder().decode(ff.inputs, inputArgs)
+                result = r
+                break
+            } catch {}
+        }
+        return result
+    }
 }
 
 export class NameTypeValue {
