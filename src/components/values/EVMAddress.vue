@@ -39,15 +39,15 @@
             <span class="icon is-small has-text-success ml-1"><i class="fas fa-check-circle"></i></span>
         </router-link>
         <router-link v-else-if="entityLinkType === CONTRACT" :to="{name: 'ContractDetails', params: {contractId: entityId}}">
-            {{ entityId }}
+            {{ displayId }}
         </router-link>
         <router-link v-else-if="entityLinkType === ACCOUNT" :to="{name: 'AccountDetails', params: {accountId: entityId}}">
-            {{ entityId }}
+            {{ displayId }}
         </router-link>
         <router-link v-else-if="entityLinkType === TOKEN" :to="{name: 'TokenDetails', params: {tokenId: entityId}}">
-            {{ entityId }}
+            {{ displayId }}
         </router-link>
-        <span v-else>{{ entityId }}</span>
+        <span v-else>{{ displayId }}</span>
         <span>)</span>
       </span>
     </div>
@@ -72,7 +72,7 @@
 
 import {computed, defineComponent, inject, onBeforeUnmount, onMounted, PropType, ref, watch} from "vue";
 import {initialLoadingKey} from "@/AppKeys";
-import {systemContractRegistry} from "@/schemas/SystemContractRegistry";
+import {SystemContractEntry, systemContractRegistry} from "@/schemas/SystemContractRegistry";
 import {AccountByAddressCache} from "@/utils/cache/AccountByAddressCache";
 import {EthereumAddress} from "@/utils/EthereumAddress";
 import Copyable from "@/components/Copyable.vue";
@@ -135,6 +135,7 @@ export default defineComponent({
     const entityLinkType = ref<ExtendedEntityType>(ExtendedEntityType.UNDEFINED)
     const evmAddress = ref<string|null>(null)
     const entityId = ref<string|null>(null)
+    const systemContract = ref<SystemContractEntry|null>(null)
     const ethereumAddress = computed( () => EthereumAddress.parse(evmAddress.value ?? ''))
     const derivedEntityId = computed( () => ethereumAddress.value?.toEntityID()?.toString() ?? null)
 
@@ -168,11 +169,8 @@ export default defineComponent({
     }
 
     const updateFromSystemContract = async (): Promise<boolean> => {
-      const systemContract = systemContractRegistry.lookup(derivedEntityId.value ?? "")
-      if (systemContract !== null) {
-        entityId.value = systemContract.description
-      }
-      return Promise.resolve(systemContract !== null)
+      systemContract.value = systemContractRegistry.lookup(derivedEntityId.value ?? "")
+      return Promise.resolve(systemContract.value !== null)
     }
 
     const updateFromAccount = async (): Promise<boolean> => {
@@ -194,6 +192,9 @@ export default defineComponent({
       }
       return Promise.resolve(contract !== null)
     }
+
+    const displayId = computed(
+        () => systemContract.value !== null ? systemContract.value.description : entityId.value)
 
     const displayAddress = computed(
         () => props.compact
@@ -240,6 +241,7 @@ export default defineComponent({
       nonSignificantPart,
       significantPart,
       entityId,
+      displayId,
       evmAddress,
       copyToClipboard,
       contractName,
