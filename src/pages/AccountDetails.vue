@@ -269,6 +269,8 @@
       </template>
     </DashboardCard>
 
+    <MirrorLink :network="network" entityUrl="accounts" :loc="accountId"/>
+
   </section>
 
   <Footer/>
@@ -314,6 +316,7 @@ import InfoTooltip from "@/components/InfoTooltip.vue";
 import Copyable from "@/components/Copyable.vue";
 import {TokenBalance} from "@/schemas/HederaSchemas";
 import {NftCollectionCache} from "@/utils/cache/NftCollectionCache";
+import MirrorLink from "@/components/MirrorLink.vue";
 
 const MAX_TOKEN_BALANCES = 10
 
@@ -322,6 +325,7 @@ export default defineComponent({
   name: 'AccountDetails',
 
   components: {
+    MirrorLink,
     Copyable,
     InfoTooltip,
     ApproveAllowanceSection,

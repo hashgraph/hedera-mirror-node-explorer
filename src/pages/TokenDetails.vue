@@ -284,6 +284,8 @@
 
     <ContractResultsSection :contract-id="normalizedTokenId ?? undefined"/>
 
+    <MirrorLink :network="network" entityUrl="tokens" :loc="tokenId"/>
+
   </section>
 
   <Footer/>
@@ -325,12 +327,14 @@ import {TokenInfoAnalyzer} from "@/components/token/TokenInfoAnalyzer";
 import ContractResultsSection from "@/components/contracts/ContractResultsSection.vue";
 import InfoTooltip from "@/components/InfoTooltip.vue";
 import Copyable from "@/components/Copyable.vue";
+import MirrorLink from "@/components/MirrorLink.vue";
 
 export default defineComponent({
 
   name: 'TokenDetails',
 
   components: {
+    MirrorLink,
     Copyable,
     InfoTooltip,
     ContractResultsSection,
