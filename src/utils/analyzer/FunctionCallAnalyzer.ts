@@ -328,9 +328,12 @@ export class FunctionCallAnalyzer {
         for (const r of records) {
             try {
                 const ff = ethers.FunctionFragment.from(r.text_signature)
-                ethers.AbiCoder.defaultAbiCoder().decode(ff.inputs, inputArgs)
-                result = r
-                break
+                const decodedArgs = ethers.AbiCoder.defaultAbiCoder().decode(ff.inputs, inputArgs)
+                const encodedArgs = ethers.AbiCoder.defaultAbiCoder().encode(ff.inputs, decodedArgs)
+                if (encodedArgs == inputArgs) {
+                    result = r
+                    break
+                }
             } catch {}
         }
         return result
