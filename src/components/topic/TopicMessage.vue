@@ -24,9 +24,7 @@
 
 <template>
 
-  <div v-if="message">
-
-    <DashboardCard class="h-card" collapsible-key="messageSubmitted">
+    <DashboardCard v-if="message" class="h-card" collapsible-key="messageSubmitted">
       <template v-slot:title>
         <span class="h-is-secondary-title">Message Submitted</span>
       </template>
@@ -57,8 +55,6 @@
         </Property>
       </template>
     </DashboardCard>
-
-  </div>
 
 </template>
 
