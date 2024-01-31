@@ -24,7 +24,7 @@
 
 <template>
 
-  <div v-if="contractResult">
+  <template v-if="contractResult">
 
     <DashboardCard class="h-card" collapsible-key="contractResult">
       <template v-slot:title>
@@ -118,7 +118,7 @@
 
     <ContractResultLogs :logs="contractResult?.logs" :block-number="blockNumber" :transaction-hash="transactionHash"/>
 
-  </div>
+  </template>
 
 </template>
 
