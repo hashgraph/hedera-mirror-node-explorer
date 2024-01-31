@@ -26,10 +26,11 @@ import {Ref, ref} from "vue";
 import {flushPromises} from "@vue/test-utils";
 import MockAdapter from "axios-mock-adapter";
 import axios from "axios";
+import {SignatureCache} from "@/utils/cache/SignatureCache";
 
 describe("FunctionCallAnalyzer.spec.ts", () => {
 
-    test("basic flow", async () => {
+    test("Call to system contract", async () => {
 
         const abi = require('../../../../public/abi/IHederaTokenService.json')
         const mock = new MockAdapter(axios);
@@ -52,6 +53,7 @@ describe("FunctionCallAnalyzer.spec.ts", () => {
         expect(functionCallAnalyzer.inputDecodingStatus.value).toBeNull()
         expect(functionCallAnalyzer.outputDecodingStatus.value).toBeNull()
         expect(functionCallAnalyzer.errorDecodingStatus.value).toBeNull()
+        expect(functionCallAnalyzer.inputArgsOnly.value).toBeNull()
 
         // 2) mount
         functionCallAnalyzer.mount()
@@ -66,6 +68,7 @@ describe("FunctionCallAnalyzer.spec.ts", () => {
         expect(functionCallAnalyzer.inputDecodingStatus.value).toBeNull()
         expect(functionCallAnalyzer.outputDecodingStatus.value).toBeNull()
         expect(functionCallAnalyzer.errorDecodingStatus.value).toBeNull()
+        expect(functionCallAnalyzer.inputArgsOnly.value).toBeNull()
 
         // 3) input setup (valid encoding)
         input.value = "0x49146bde000000000000000000000000845b706151aed537b1fd81c1ea4ea03920097abd0000000000000000000000000000000000000000000000000000000002e6ae09"
@@ -87,14 +90,15 @@ describe("FunctionCallAnalyzer.spec.ts", () => {
         expect(functionCallAnalyzer.inputDecodingStatus.value).toBeNull()
         expect(functionCallAnalyzer.outputDecodingStatus.value).toBeNull()
         expect(functionCallAnalyzer.errorDecodingStatus.value).toBeNull()
+        expect(functionCallAnalyzer.inputArgsOnly.value).toBe("0x000000000000000000000000845b706151aed537b1fd81c1ea4ea03920097abd0000000000000000000000000000000000000000000000000000000002e6ae09")
 
         // 4) input setup (invalid input encoding)
         input.value = "0x618dc65e0000000000000000000000000000000000163b5a70a082310000000000000000000000005fe56763c7633efefe8c2272f19732521a48e300"
         output.value = "0x00000000000000000000000000000000000000000000000000003dc604b33217"
         contractId.value = "0.0.359"
         await flushPromises()
-        expect(functionCallAnalyzer.functionHash.value).toBeNull()
-        expect(functionCallAnalyzer.signature.value).toBeNull()
+        expect(functionCallAnalyzer.functionHash.value).toBe("0x618dc65e")
+        expect(functionCallAnalyzer.signature.value).toBe("redirectForToken(address,bytes)")
         expect(functionCallAnalyzer.inputs.value).toStrictEqual([])
         expect(functionCallAnalyzer.outputs.value).toStrictEqual([])
         expect(functionCallAnalyzer.errorHash.value).toBeNull()
@@ -103,6 +107,7 @@ describe("FunctionCallAnalyzer.spec.ts", () => {
         expect(functionCallAnalyzer.inputDecodingStatus.value).toBe("Decoding Error (data out-of-bounds)")
         expect(functionCallAnalyzer.outputDecodingStatus.value).toBe("Decoding Error (data out-of-bounds)")
         expect(functionCallAnalyzer.errorDecodingStatus.value).toBeNull()
+        expect(functionCallAnalyzer.inputArgsOnly.value).toBe("0x0000000000000000000000000000000000163b5a70a082310000000000000000000000005fe56763c7633efefe8c2272f19732521a48e300")
 
         // 5) output setup (invalid output encoding)
         input.value = "0x49146bde000000000000000000000000845b706151aed537b1fd81c1ea4ea03920097abd0000000000000000000000000000000000000000000000000000000002e6ae09"
@@ -123,12 +128,13 @@ describe("FunctionCallAnalyzer.spec.ts", () => {
         expect(functionCallAnalyzer.inputDecodingStatus.value).toBeNull()
         expect(functionCallAnalyzer.outputDecodingStatus.value).toBe("Decoding Error (invalid BytesLike value)")
         expect(functionCallAnalyzer.errorDecodingStatus.value).toBeNull() // 0x is considered as no error
+        expect(functionCallAnalyzer.inputArgsOnly.value).toBe("0x000000000000000000000000845b706151aed537b1fd81c1ea4ea03920097abd0000000000000000000000000000000000000000000000000000000002e6ae09")
 
 
         // 6) unmount
         functionCallAnalyzer.unmount()
         await flushPromises()
-        expect(functionCallAnalyzer.functionHash.value).toBeNull()
+        expect(functionCallAnalyzer.functionHash.value).toBe("0x49146bde")
         expect(functionCallAnalyzer.signature.value).toBeNull()
         expect(functionCallAnalyzer.inputs.value).toStrictEqual([])
         expect(functionCallAnalyzer.outputs.value).toStrictEqual([])
@@ -138,11 +144,12 @@ describe("FunctionCallAnalyzer.spec.ts", () => {
         expect(functionCallAnalyzer.inputDecodingStatus.value).toBeNull()
         expect(functionCallAnalyzer.outputDecodingStatus.value).toBeNull()
         expect(functionCallAnalyzer.errorDecodingStatus.value).toBeNull()
+        expect(functionCallAnalyzer.inputArgsOnly.value).toBe("0x000000000000000000000000845b706151aed537b1fd81c1ea4ea03920097abd0000000000000000000000000000000000000000000000000000000002e6ae09")
 
         mock.restore()
     })
 
-    test("verified contract: new + mount + setup + unmount", async () => {
+    test("Call to verified contract: new + mount + setup + unmount", async () => {
 
         const mock = new MockAdapter(axios);
         const matcher1 = "files/any/295/0x00000000000000000000000000000000002E7A5D"
@@ -166,6 +173,7 @@ describe("FunctionCallAnalyzer.spec.ts", () => {
         expect(functionCallAnalyzer.inputDecodingStatus.value).toBeNull()
         expect(functionCallAnalyzer.outputDecodingStatus.value).toBeNull()
         expect(functionCallAnalyzer.errorDecodingStatus.value).toBeNull()
+        expect(functionCallAnalyzer.inputArgsOnly.value).toBeNull()
 
         // 2) mount
         functionCallAnalyzer.mount()
@@ -180,6 +188,7 @@ describe("FunctionCallAnalyzer.spec.ts", () => {
         expect(functionCallAnalyzer.inputDecodingStatus.value).toBeNull()
         expect(functionCallAnalyzer.outputDecodingStatus.value).toBeNull()
         expect(functionCallAnalyzer.errorDecodingStatus.value).toBeNull()
+        expect(functionCallAnalyzer.inputArgsOnly.value).toBeNull()
 
         // 3) setup
         input.value = "0xf305d719000000000000000000000000000000000000000000000000000000000022d6de0000000000000000000000000000000000000000000000000000015076ac13000000000000000000000000000000000000000000000000000000014ec7ffb1a00000000000000000000000000000000000000000000000000000000f558e95eb00000000000000000000000000000000000000000000000000000000000f45b30000000000000000000000000000000000000000000000000000018cd5a698af"
@@ -206,12 +215,13 @@ describe("FunctionCallAnalyzer.spec.ts", () => {
         expect(functionCallAnalyzer.inputDecodingStatus.value).toBeNull()
         expect(functionCallAnalyzer.outputDecodingStatus.value).toBeNull()
         expect(functionCallAnalyzer.errorDecodingStatus.value).toBeNull()
+        expect(functionCallAnalyzer.inputArgsOnly.value).toBe("0x000000000000000000000000000000000000000000000000000000000022d6de0000000000000000000000000000000000000000000000000000015076ac13000000000000000000000000000000000000000000000000000000014ec7ffb1a00000000000000000000000000000000000000000000000000000000f558e95eb00000000000000000000000000000000000000000000000000000000000f45b30000000000000000000000000000000000000000000000000000018cd5a698af")
 
 
         // 4) unmount
         functionCallAnalyzer.unmount()
         await flushPromises()
-        expect(functionCallAnalyzer.functionHash.value).toBeNull()
+        expect(functionCallAnalyzer.functionHash.value).toBe("0xf305d719")
         expect(functionCallAnalyzer.signature.value).toBeNull()
         expect(functionCallAnalyzer.inputs.value).toStrictEqual([])
         expect(functionCallAnalyzer.outputs.value).toStrictEqual([])
@@ -221,12 +231,13 @@ describe("FunctionCallAnalyzer.spec.ts", () => {
         expect(functionCallAnalyzer.inputDecodingStatus.value).toBeNull()
         expect(functionCallAnalyzer.outputDecodingStatus.value).toBeNull()
         expect(functionCallAnalyzer.errorDecodingStatus.value).toBeNull()
+        expect(functionCallAnalyzer.inputArgsOnly.value).toBe("0x000000000000000000000000000000000000000000000000000000000022d6de0000000000000000000000000000000000000000000000000000015076ac13000000000000000000000000000000000000000000000000000000014ec7ffb1a00000000000000000000000000000000000000000000000000000000f558e95eb00000000000000000000000000000000000000000000000000000000000f45b30000000000000000000000000000000000000000000000000000018cd5a698af")
 
         mock.restore()
 
     })
 
-    test("verified contract: new + setup + mount + unmount", async () => {
+    test("Call to verified contract: new + setup + mount + unmount", async () => {
 
         const mock = new MockAdapter(axios);
         const matcher1 = "files/any/295/0x00000000000000000000000000000000002E7A5D"
@@ -250,6 +261,7 @@ describe("FunctionCallAnalyzer.spec.ts", () => {
         expect(functionCallAnalyzer.inputDecodingStatus.value).toBeNull()
         expect(functionCallAnalyzer.outputDecodingStatus.value).toBeNull()
         expect(functionCallAnalyzer.errorDecodingStatus.value).toBeNull()
+        expect(functionCallAnalyzer.inputArgsOnly.value).toBeNull()
 
         // 2) setup
         input.value = "0xf305d719000000000000000000000000000000000000000000000000000000000022d6de0000000000000000000000000000000000000000000000000000015076ac13000000000000000000000000000000000000000000000000000000014ec7ffb1a00000000000000000000000000000000000000000000000000000000f558e95eb00000000000000000000000000000000000000000000000000000000000f45b30000000000000000000000000000000000000000000000000000018cd5a698af"
@@ -257,7 +269,7 @@ describe("FunctionCallAnalyzer.spec.ts", () => {
         error.value = "0x08c379a000000000000000000000000000000000000000000000000000000000000000200000000000000000000000000000000000000000000000000000000000000026556e69737761705632526f757465723a20494e53554646494349454e545f425f414d4f554e540000000000000000000000000000000000000000000000000000"
         contractId.value = "0.0.3045981"
         await flushPromises()
-        expect(functionCallAnalyzer.functionHash.value).toBeNull()
+        expect(functionCallAnalyzer.functionHash.value).toBe("0xf305d719")
         expect(functionCallAnalyzer.signature.value).toBeNull()
         expect(functionCallAnalyzer.inputs.value).toStrictEqual([])
         expect(functionCallAnalyzer.outputs.value).toStrictEqual([])
@@ -267,6 +279,7 @@ describe("FunctionCallAnalyzer.spec.ts", () => {
         expect(functionCallAnalyzer.inputDecodingStatus.value).toBeNull()
         expect(functionCallAnalyzer.outputDecodingStatus.value).toBeNull()
         expect(functionCallAnalyzer.errorDecodingStatus.value).toBeNull()
+        expect(functionCallAnalyzer.inputArgsOnly.value).toBe("0x000000000000000000000000000000000000000000000000000000000022d6de0000000000000000000000000000000000000000000000000000015076ac13000000000000000000000000000000000000000000000000000000014ec7ffb1a00000000000000000000000000000000000000000000000000000000f558e95eb00000000000000000000000000000000000000000000000000000000000f45b30000000000000000000000000000000000000000000000000000018cd5a698af")
 
         // 3) mount
         functionCallAnalyzer.mount()
@@ -290,10 +303,57 @@ describe("FunctionCallAnalyzer.spec.ts", () => {
         expect(functionCallAnalyzer.inputDecodingStatus.value).toBeNull()
         expect(functionCallAnalyzer.outputDecodingStatus.value).toBeNull()
         expect(functionCallAnalyzer.errorDecodingStatus.value).toBeNull()
+        expect(functionCallAnalyzer.inputArgsOnly.value).toBe("0x000000000000000000000000000000000000000000000000000000000022d6de0000000000000000000000000000000000000000000000000000015076ac13000000000000000000000000000000000000000000000000000000014ec7ffb1a00000000000000000000000000000000000000000000000000000000f558e95eb00000000000000000000000000000000000000000000000000000000000f45b30000000000000000000000000000000000000000000000000000018cd5a698af")
 
 
         // 4) unmount
         functionCallAnalyzer.unmount()
+        await flushPromises()
+        expect(functionCallAnalyzer.functionHash.value).toBe("0xf305d719")
+        expect(functionCallAnalyzer.signature.value).toBeNull()
+        expect(functionCallAnalyzer.inputs.value).toStrictEqual([])
+        expect(functionCallAnalyzer.outputs.value).toStrictEqual([])
+        expect(functionCallAnalyzer.errorHash.value).toBeNull()
+        expect(functionCallAnalyzer.errorSignature.value).toBeNull()
+        expect(functionCallAnalyzer.errorInputs.value).toStrictEqual([])
+        expect(functionCallAnalyzer.inputDecodingStatus.value).toBeNull()
+        expect(functionCallAnalyzer.outputDecodingStatus.value).toBeNull()
+        expect(functionCallAnalyzer.errorDecodingStatus.value).toBeNull()
+        expect(functionCallAnalyzer.inputArgsOnly.value).toBe("0x000000000000000000000000000000000000000000000000000000000022d6de0000000000000000000000000000000000000000000000000000015076ac13000000000000000000000000000000000000000000000000000000014ec7ffb1a00000000000000000000000000000000000000000000000000000000f558e95eb00000000000000000000000000000000000000000000000000000000000f45b30000000000000000000000000000000000000000000000000000018cd5a698af")
+
+        mock.restore()
+
+    })
+
+    test("Call with signature declared on 4bytes.directory", async () => {
+
+        SignatureCache.instance.clear()
+
+        const functionHash = "0xf305d719"
+        const mock = new MockAdapter(axios);
+        const matcher1 = "https://www.4byte.directory/api/v1/signatures/?format=json&hex_signature=" + functionHash
+        mock.onGet(matcher1).reply(200, BYTES4_RESPONSE)
+
+        // 1) new
+        const input: Ref<string|null> = ref(null)
+        const output: Ref<string|null> = ref(null)
+        const error: Ref<string|null> = ref(null)
+        const contractId: Ref<string|null> = ref(null)
+        const functionCallAnalyzer = new FunctionCallAnalyzer(input, output, error, contractId)
+        expect(functionCallAnalyzer.functionHash.value).toBeNull()
+        expect(functionCallAnalyzer.signature.value).toBeNull()
+        expect(functionCallAnalyzer.inputs.value).toStrictEqual([])
+        expect(functionCallAnalyzer.outputs.value).toStrictEqual([])
+        expect(functionCallAnalyzer.errorHash.value).toBeNull()
+        expect(functionCallAnalyzer.errorSignature.value).toBeNull()
+        expect(functionCallAnalyzer.errorInputs.value).toStrictEqual([])
+        expect(functionCallAnalyzer.inputDecodingStatus.value).toBeNull()
+        expect(functionCallAnalyzer.outputDecodingStatus.value).toBeNull()
+        expect(functionCallAnalyzer.errorDecodingStatus.value).toBeNull()
+        expect(functionCallAnalyzer.inputArgsOnly.value).toBeNull()
+
+        // 2) mount
+        functionCallAnalyzer.mount()
         await flushPromises()
         expect(functionCallAnalyzer.functionHash.value).toBeNull()
         expect(functionCallAnalyzer.signature.value).toBeNull()
@@ -305,8 +365,51 @@ describe("FunctionCallAnalyzer.spec.ts", () => {
         expect(functionCallAnalyzer.inputDecodingStatus.value).toBeNull()
         expect(functionCallAnalyzer.outputDecodingStatus.value).toBeNull()
         expect(functionCallAnalyzer.errorDecodingStatus.value).toBeNull()
+        expect(functionCallAnalyzer.inputArgsOnly.value).toBeNull()
+
+        // 3) setup
+        input.value = "0xf305d719000000000000000000000000000000000000000000000000000000000022d6de0000000000000000000000000000000000000000000000000000015076ac13000000000000000000000000000000000000000000000000000000014ec7ffb1a00000000000000000000000000000000000000000000000000000000f558e95eb00000000000000000000000000000000000000000000000000000000000f45b30000000000000000000000000000000000000000000000000000018cd5a698af"
+        output.value = "0x"
+        error.value = "0x08c379a000000000000000000000000000000000000000000000000000000000000000200000000000000000000000000000000000000000000000000000000000000026556e69737761705632526f757465723a20494e53554646494349454e545f425f414d4f554e540000000000000000000000000000000000000000000000000000"
+        contractId.value = "0.0.3045981"
+        await flushPromises()
+        expect(functionCallAnalyzer.functionHash.value).toBe("0xf305d719")
+        expect(functionCallAnalyzer.signature.value).toBe("addLiquidityETH(address,uint256,uint256,uint256,address,uint256)")
+        expect(functionCallAnalyzer.inputs.value).toStrictEqual([
+            new NameTypeValue("", "address", "0x000000000000000000000000000000000022D6de"),
+            new NameTypeValue("", "uint256", 1445100000000n),
+            new NameTypeValue("", "uint256", 1437874500000n),
+            new NameTypeValue("", "uint256", 65859917291n),
+            new NameTypeValue("", "address", "0x00000000000000000000000000000000000f45b3"),
+            new NameTypeValue("", "uint256", 1704391514287n),
+        ])
+        expect(functionCallAnalyzer.outputs.value).toStrictEqual([])
+        expect(functionCallAnalyzer.errorHash.value).toBeNull()
+        expect(functionCallAnalyzer.errorSignature.value).toBeNull()
+        expect(functionCallAnalyzer.errorInputs.value).toStrictEqual([])
+        expect(functionCallAnalyzer.inputDecodingStatus.value).toBeNull()
+        expect(functionCallAnalyzer.outputDecodingStatus.value).toBeNull()
+        expect(functionCallAnalyzer.errorDecodingStatus.value).toBeNull()
+        expect(functionCallAnalyzer.inputArgsOnly.value).toBe("0x000000000000000000000000000000000000000000000000000000000022d6de0000000000000000000000000000000000000000000000000000015076ac13000000000000000000000000000000000000000000000000000000014ec7ffb1a00000000000000000000000000000000000000000000000000000000f558e95eb00000000000000000000000000000000000000000000000000000000000f45b30000000000000000000000000000000000000000000000000000018cd5a698af")
+
+
+        // 4) unmount
+        functionCallAnalyzer.unmount()
+        await flushPromises()
+        expect(functionCallAnalyzer.functionHash.value).toBe("0xf305d719")
+        expect(functionCallAnalyzer.signature.value).toBeNull()
+        expect(functionCallAnalyzer.inputs.value).toStrictEqual([])
+        expect(functionCallAnalyzer.outputs.value).toStrictEqual([])
+        expect(functionCallAnalyzer.errorHash.value).toBeNull()
+        expect(functionCallAnalyzer.errorSignature.value).toBeNull()
+        expect(functionCallAnalyzer.errorInputs.value).toStrictEqual([])
+        expect(functionCallAnalyzer.inputDecodingStatus.value).toBeNull()
+        expect(functionCallAnalyzer.outputDecodingStatus.value).toBeNull()
+        expect(functionCallAnalyzer.errorDecodingStatus.value).toBeNull()
+        expect(functionCallAnalyzer.inputArgsOnly.value).toBe("0x000000000000000000000000000000000000000000000000000000000022d6de0000000000000000000000000000000000000000000000000000015076ac13000000000000000000000000000000000000000000000000000000014ec7ffb1a00000000000000000000000000000000000000000000000000000000f558e95eb00000000000000000000000000000000000000000000000000000000000f45b30000000000000000000000000000000000000000000000000000018cd5a698af")
 
         mock.restore()
+
 
     })
 })
@@ -428,6 +531,36 @@ const SOURCIFY_RESPONSE = {
             "name": "UniswapV2Library.sol",
             "path": "/data/contracts/partial_match/295/0x00000000000000000000000000000000002E7A5D/sources/project_/contracts/libraries/UniswapV2Library.sol",
             "content": "// SPDX-License-Identifier: GPL-3.0\npragma solidity >=0.5.0;\n\nimport '../interfaces/IUniswapV2Pair.sol';\nimport \"./SafeMath.sol\";\n\nlibrary UniswapV2Library {\n    using SafeMath for uint;\n\n    // returns sorted token addresses, used to handle return values from pairs sorted in this order\n    function sortTokens(address tokenA, address tokenB) internal pure returns (address token0, address token1) {\n        require(tokenA != tokenB, 'UniswapV2Library: IDENTICAL_ADDRESSES');\n        (token0, token1) = tokenA < tokenB ? (tokenA, tokenB) : (tokenB, tokenA);\n        require(token0 != address(0), 'UniswapV2Library: ZERO_ADDRESS');\n    }\n\n    // calculates the CREATE2 address for a pair without making any external calls\n    function pairFor(address factory, address tokenA, address tokenB) internal pure returns (address pair) {\n        (address token0, address token1) = sortTokens(tokenA, tokenB);\n        pair = address(uint(keccak256(abi.encodePacked(\n                hex'ff',\n                factory,\n                keccak256(abi.encodePacked(token0, token1)),\n                hex'407b3b02625070246aa1a1a346747a190d54149fc468122d6934af99b6ad0e6a'\n            ))));\n    }\n\n    // fetches and sorts the reserves for a pair\n    function getReserves(address factory, address tokenA, address tokenB) internal view returns (uint reserveA, uint reserveB) {\n        (address token0,) = sortTokens(tokenA, tokenB);\n        (uint reserve0, uint reserve1,) = IUniswapV2Pair(pairFor(factory, tokenA, tokenB)).getReserves();\n        (reserveA, reserveB) = tokenA == token0 ? (reserve0, reserve1) : (reserve1, reserve0);\n    }\n\n    // given some amount of an asset and pair reserves, returns an equivalent amount of the other asset\n    function quote(uint amountA, uint reserveA, uint reserveB) internal pure returns (uint amountB) {\n        require(amountA > 0, 'UniswapV2Library: INSUFFICIENT_AMOUNT');\n        require(reserveA > 0 && reserveB > 0, 'UniswapV2Library: INSUFFICIENT_LIQUIDITY');\n        amountB = amountA.mul(reserveB) / reserveA;\n    }\n\n    // given an input amount of an asset and pair reserves, returns the maximum output amount of the other asset\n    function getAmountOut(uint amountIn, uint reserveIn, uint reserveOut) internal pure returns (uint amountOut) {\n        require(amountIn > 0, 'UniswapV2Library: INSUFFICIENT_INPUT_AMOUNT');\n        require(reserveIn > 0 && reserveOut > 0, 'UniswapV2Library: INSUFFICIENT_LIQUIDITY');\n        uint amountInWithFee = amountIn.mul(997);\n        uint numerator = amountInWithFee.mul(reserveOut);\n        uint denominator = reserveIn.mul(1000).add(amountInWithFee);\n        amountOut = numerator / denominator;\n    }\n\n    // given an output amount of an asset and pair reserves, returns a required input amount of the other asset\n    function getAmountIn(uint amountOut, uint reserveIn, uint reserveOut) internal pure returns (uint amountIn) {\n        require(amountOut > 0, 'UniswapV2Library: INSUFFICIENT_OUTPUT_AMOUNT');\n        require(reserveIn > 0 && reserveOut > 0, 'UniswapV2Library: INSUFFICIENT_LIQUIDITY');\n        uint numerator = reserveIn.mul(amountOut).mul(1000);\n        uint denominator = reserveOut.sub(amountOut).mul(997);\n        amountIn = (numerator / denominator).add(1);\n    }\n\n    // performs chained getAmountOut calculations on any number of pairs\n    function getAmountsOut(address factory, uint amountIn, address[] memory path) internal view returns (uint[] memory amounts) {\n        require(path.length >= 2, 'UniswapV2Library: INVALID_PATH');\n        amounts = new uint[](path.length);\n        amounts[0] = amountIn;\n        for (uint i; i < path.length - 1; i++) {\n            (uint reserveIn, uint reserveOut) = getReserves(factory, path[i], path[i + 1]);\n            amounts[i + 1] = getAmountOut(amounts[i], reserveIn, reserveOut);\n        }\n    }\n\n    // performs chained getAmountIn calculations on any number of pairs\n    function getAmountsIn(address factory, uint amountOut, address[] memory path) internal view returns (uint[] memory amounts) {\n        require(path.length >= 2, 'UniswapV2Library: INVALID_PATH');\n        amounts = new uint[](path.length);\n        amounts[amounts.length - 1] = amountOut;\n        for (uint i = path.length - 1; i > 0; i--) {\n            (uint reserveIn, uint reserveOut) = getReserves(factory, path[i - 1], path[i]);\n            amounts[i - 1] = getAmountIn(amounts[i], reserveIn, reserveOut);\n        }\n    }\n}\n"
+        }
+    ]
+}
+
+
+const BYTES4_RESPONSE = {
+    "count": 3,
+    "next": null,
+    "previous": null,
+    "results": [
+        {
+            "id": 1065295,
+            "created_at": "2023-06-17T03:45:54.407074Z",
+            "text_signature": "_SIMONdotBLACK_(int8,int224,int104,uint88[],bytes29[])",
+            "hex_signature": "0xf305d719",
+            "bytes_signature": "ó\u0005×\u0019"
+        },
+        {
+            "id": 844482,
+            "created_at": "2022-09-02T10:24:01.310054Z",
+            "text_signature": "watch_tg_invmru_8554910(address,address,bool)",
+            "hex_signature": "0xf305d719",
+            "bytes_signature": "ó\u0005×\u0019"
+        },
+        {
+            "id": 171032,
+            "created_at": "2020-05-19T07:39:57.530767Z",
+            "text_signature": "addLiquidityETH(address,uint256,uint256,uint256,address,uint256)",
+            "hex_signature": "0xf305d719",
+            "bytes_signature": "ó\u0005×\u0019"
         }
     ]
 }

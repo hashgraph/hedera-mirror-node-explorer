@@ -24,46 +24,34 @@
 
 <template>
 
-  <template v-if="signature">
+    <template v-if="outputs && outputs.length >= 1">
 
-    <template v-if="output">
+        <div class="h-is-tertiary-text my-2">Output</div>
 
-      <div v-if="outputs.length >= 1" class="h-is-tertiary-text my-2">Output</div>
+        <template v-for="result in outputs" :key="result.name">
+            <Property :custom-nb-col-class="customNbColClass">
+                <template v-slot:name>{{ result.name }}</template>
+                <template v-slot:value>
+                    <FunctionValue :ntv="result"/>
+                </template>
+            </Property>
+        </template>
 
-      <template v-for="result in outputs" :key="result.name">
-        <Property :custom-nb-col-class="customNbColClass">
-          <template v-slot:name>{{ result.name }}</template>
-          <template v-slot:value>
-            <FunctionValue :ntv="result"/>
-          </template>
-        </Property>
-      </template>
+    </template>
+    <template v-else>
 
-    </template><template v-else-if="showNone">
-
-        <Property :custom-nb-col-class="customNbColClass" id="functionInput">
+        <Property :custom-nb-col-class="customNbColClass" id="functionOutput">
             <template v-slot:name>Output Result</template>
             <template v-slot:value>
-                <HexaValue :show-none="true"/>
+                <HexaValue :byte-string="output" :show-none="true"/>
+                <div v-if="outputDecodingStatus" class="h-is-extra-text h-is-text-size-3">
+                    <span class="icon fas fa-exclamation-circle has-text-grey is-small mt-1 mr-1"/>
+                    <span>{{ outputDecodingStatus }}</span>
+                </div>
             </template>
         </Property>
 
     </template>
-
-  </template><template v-else>
-
-    <Property :custom-nb-col-class="customNbColClass" id="functionOutput">
-        <template v-slot:name>Output Result</template>
-        <template v-slot:value>
-          <HexaValue :byte-string="output" :show-none="true"/>
-          <div v-if="outputDecodingStatus" class="h-is-extra-text h-is-text-size-3">
-            <span class="icon fas fa-exclamation-circle has-text-grey is-small mt-1 mr-1"/>
-            <span>{{ outputDecodingStatus }}</span>
-          </div>
-        </template>
-    </Property>
-
-  </template>
 
 </template>
 
