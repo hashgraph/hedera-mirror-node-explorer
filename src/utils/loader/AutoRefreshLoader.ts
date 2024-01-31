@@ -60,7 +60,7 @@ export abstract class AutoRefreshLoader<E> extends EntityLoader<E> {
 
     protected concludeLoad(): void {
         this.refreshCount.value += 1
-        if (this.refreshCount.value < this.maxRefreshCount && window /* to avoid unit test break in CI env */) {
+        if (this.refreshCount.value < this.maxRefreshCount) {
             this.timeoutID = window.setTimeout(() => {
                 this.requestLoad()
             }, this.refreshPeriod)

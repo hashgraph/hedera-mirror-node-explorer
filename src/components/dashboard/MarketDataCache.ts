@@ -95,9 +95,17 @@ export class MarketDataCache {
     }
 
     public clear(): void {
-        this.hbarPriceCache.requestLoad()
-        this.hbarPrice24hCache.requestLoad()
-        this.hbarSupplyCache.requestLoad()
-        this.hbarSupply24hCache.requestLoad()
+        if (this.hbarPriceCache.mounted.value) {
+            this.hbarPriceCache.requestLoad()
+        }
+        if (this.hbarPrice24hCache.mounted.value) {
+            this.hbarPrice24hCache.requestLoad()
+        }
+        if (this.hbarSupplyCache.mounted.value) {
+            this.hbarSupplyCache.requestLoad()
+        }
+        if (this.hbarSupply24hCache.mounted.value) {
+            this.hbarSupply24hCache.requestLoad()
+        }
     }
 }
