@@ -43,7 +43,7 @@
         <Property :custom-nb-col-class="customNbColClass" id="functionOutput">
             <template v-slot:name>Output Result</template>
             <template v-slot:value>
-                <HexaValue :byte-string="output" :show-none="true"/>
+                <ByteCodeValue :byte-code="output ?? undefined" :height-in-pixel="140"/>
                 <div v-if="outputDecodingStatus" class="h-is-extra-text h-is-text-size-3">
                     <span class="icon fas fa-exclamation-circle has-text-grey is-small mt-1 mr-1"/>
                     <span>{{ outputDecodingStatus }}</span>
@@ -63,14 +63,14 @@
 
 import {defineComponent, inject, PropType, ref} from 'vue';
 import {initialLoadingKey} from "@/AppKeys";
-import HexaValue from "@/components/values/HexaValue.vue";
 import {FunctionCallAnalyzer} from "@/utils/analyzer/FunctionCallAnalyzer";
 import Property from "@/components/Property.vue";
 import FunctionValue from "@/components/values/FunctionValue.vue";
+import ByteCodeValue from "@/components/values/ByteCodeValue.vue";
 
 export default defineComponent({
   name: 'FunctionResult',
-  components: {FunctionValue, Property, HexaValue},
+  components: {ByteCodeValue, FunctionValue, Property},
   props: {
     analyzer: {
       type: Object as PropType<FunctionCallAnalyzer>,

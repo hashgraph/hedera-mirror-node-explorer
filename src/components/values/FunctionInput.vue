@@ -51,7 +51,7 @@
       <Property :custom-nb-col-class="customNbColClass" id="functionInput">
           <template v-slot:name>Input Args</template>
           <template v-slot:value>
-            <HexaValue :byte-string="inputArgsOnly" :show-none="true"/>
+            <ByteCodeValue :byte-code="inputArgsOnly ?? undefined" :height-in-pixel="140"/>
             <div v-if="inputDecodingStatus" class="h-is-extra-text h-is-text-size-3">
               <span class="icon fas fa-exclamation-circle has-text-grey is-small mt-1 mr-1"/>
               <span>{{ inputDecodingStatus }}</span>
@@ -66,7 +66,7 @@
     <Property :custom-nb-col-class="customNbColClass" id="functionInput">
       <template v-slot:name>Input - Function & Args</template>
       <template v-slot:value>
-        <HexaValue :byte-string="input" :show-none="true"/>
+        <ByteCodeValue :byte-code="input ?? undefined" :heightInPixel="140"/>
         <div v-if="functionDecodingStatus" class="h-is-extra-text h-is-text-size-3">
             <span class="icon fas fa-exclamation-circle has-text-grey is-small mt-1 mr-1"/>
             <span>{{ functionDecodingStatus }}</span>
@@ -85,15 +85,15 @@
 
 import {defineComponent, inject, PropType, ref} from 'vue';
 import {initialLoadingKey} from "@/AppKeys";
-import HexaValue from "@/components/values/HexaValue.vue";
 import {FunctionCallAnalyzer} from "@/utils/analyzer/FunctionCallAnalyzer";
 import Property from "@/components/Property.vue";
 import FunctionValue from "@/components/values/FunctionValue.vue";
 import SignatureValue from "@/components/values/SignatureValue.vue";
+import ByteCodeValue from "@/components/values/ByteCodeValue.vue";
 
 export default defineComponent({
   name: 'FunctionInput',
-  components: {SignatureValue, FunctionValue, Property, HexaValue},
+  components: {ByteCodeValue, SignatureValue, FunctionValue, Property},
   props: {
     analyzer: {
       type: Object as PropType<FunctionCallAnalyzer>,
