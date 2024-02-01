@@ -36,7 +36,7 @@ import axios from "axios";
 import {TransactionID} from "@/utils/TransactionID";
 import {EntityID} from "@/utils/EntityID";
 import {aliasToBase32, base32ToAlias, byteToHex, hexToByte, paddedBytes} from "@/utils/B64Utils";
-import {nameServiceResolve} from "@/utils/NameService";
+import {knsResolve} from "@/utils/name_service/KNS";
 import {Timestamp} from "@/utils/Timestamp";
 import {networkRegistry} from "@/schemas/NetworkRegistry";
 import {routeManager} from "@/router";
@@ -102,6 +102,7 @@ export class SearchRequest {
         base32                               | Account Alias    | api/v1/accounts/{searchId}
         -------------------------------------+------------------+------------------------------------------------------
         /\.[a-z|ℏ]+$/                        | Kabuto domain    | Kabuto API
+                                             | HNS domain       | HNS API
         -------------------------------------+------------------+------------------------------------------------------
 
          */
@@ -112,7 +113,7 @@ export class SearchRequest {
         const hexBytes = hexToByte(this.searchedId)
         const alias = base32ToAlias(this.searchedId) != null ? this.searchedId : null
         const timestamp = Timestamp.parse(this.searchedId)
-        const kabutoName = /\.[a-z|ℏ]+$/.test(this.searchedId) ? this.searchedId : null
+        const domainName = /\.[a-z|ℏ]+$/.test(this.searchedId) ? this.searchedId : null
 
         let promises: Promise<void>[]
         if (entityID !== null) {
@@ -193,9 +194,9 @@ export class SearchRequest {
             promises = [
                 this.searchTransaction(timestamp)
             ]
-        } else if (kabutoName !== null) {
+        } else if (domainName !== null) {
             promises = [
-                this.searchKabuto(kabutoName)
+                this.searchNamingService(domainName)
             ]
         } else {
             promises = []
@@ -332,9 +333,15 @@ export class SearchRequest {
         return Promise.resolve()
     }
 
-    private async searchKabuto(name: string): Promise<void> {
+    private async searchNamingService(name: string): Promise<void> {
         try {
-            this.account = await nameServiceResolve(name)
+            const accountId = await knsResolve(name)
+            if (accountId !== null) {
+                const r = await axios.get<AccountBalanceTransactions>("api/v1/accounts/" + accountId)
+                this.account = r.data
+            } else {
+                this.account = null
+            }
         } catch(reason: unknown) {
             this.updateErrorCount(reason)
         }

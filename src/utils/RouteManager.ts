@@ -24,7 +24,7 @@ import {NetworkRegistry, networkRegistry} from "@/schemas/NetworkRegistry";
 import {computed, ref, watch, WatchStopHandle} from "vue";
 import router from "@/router";
 import {AppStorage} from "@/AppStorage";
-import {nameServiceSetNetwork} from '@/utils/NameService';
+import {knsSetNetwork} from '@/utils/name_service/KNS';
 import axios from "axios";
 import {CacheUtils} from "@/utils/cache/CacheUtils";
 
@@ -39,7 +39,7 @@ export class RouteManager {
     public constructor(router: Router) {
         this.router = router
         watch(this.currentNetwork, () => {
-            nameServiceSetNetwork(this.currentNetworkEntry.value.name)
+            knsSetNetwork(this.currentNetworkEntry.value.name)
             AppStorage.setLastNetwork(this.currentNetworkEntry.value)
             axios.defaults.baseURL = this.currentNetworkEntry.value.url
             this.updateSelectedNetworkSilently()
