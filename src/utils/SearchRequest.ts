@@ -335,7 +335,16 @@ export class SearchRequest {
 
     private async searchNamingService(name: string): Promise<void> {
         try {
-            const accountId = await knsResolve(name)
+            const promises: Promise<string|null>[] = [
+                knsResolve(name)
+            ]
+            const responses = await Promise.allSettled(promises)
+            let accountId: string|null = null
+            for (const r of responses) {
+                if (r.status == "fulfilled" && r.value !== null) {
+                    accountId = r.value
+                }
+            }
             if (accountId !== null) {
                 const r = await axios.get<AccountBalanceTransactions>("api/v1/accounts/" + accountId)
                 this.account = r.data
