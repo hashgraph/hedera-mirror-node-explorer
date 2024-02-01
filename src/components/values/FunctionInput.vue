@@ -66,7 +66,7 @@
     <Property :custom-nb-col-class="customNbColClass" id="functionInput">
       <template v-slot:name>Input - Function & Args</template>
       <template v-slot:value>
-        <ByteCodeValue :byte-code="input" :heightInPixel="140"/>
+        <ByteCodeValue :byte-code="input ?? undefined" :heightInPixel="140"/>
         <div v-if="functionDecodingStatus" class="h-is-extra-text h-is-text-size-3">
             <span class="icon fas fa-exclamation-circle has-text-grey is-small mt-1 mr-1"/>
             <span>{{ functionDecodingStatus }}</span>
