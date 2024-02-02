@@ -65,12 +65,13 @@
 
 import {computed, defineComponent, onMounted, PropType, ref} from "vue";
 import {TableController} from "@/utils/table/TableController";
+import {VerifiedContractsLookup} from "@/utils/cache/VerifiedContractsCache";
 
 export default defineComponent({
   name: "PlayPauseButton",
 
   props: {
-    controller: Object as PropType<TableController<unknown, unknown>>
+    controller: Object as PropType<TableController<unknown, unknown> | VerifiedContractsLookup>
   },
 
   setup(props) {

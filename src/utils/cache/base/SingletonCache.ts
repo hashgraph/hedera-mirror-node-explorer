@@ -57,7 +57,7 @@ export class SingletonLookup<E> {
 
     public readonly entity: Ref<E|null> = ref(null)
 
-    private readonly cache: SingletonCache<E>
+    protected readonly cache: SingletonCache<E>
 
     constructor(cache: SingletonCache<E>) {
         this.cache = cache

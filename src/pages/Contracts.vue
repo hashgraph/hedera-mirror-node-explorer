@@ -28,13 +28,24 @@
 
     <DashboardCard>
       <template v-slot:title>
-        <span class="h-is-primary-title">Recent Contracts</span>
+        <div class="h-is-primary-title">{{ filterVerified ? 'Recent Verified Contracts' : 'Recent Contracts' }}</div>
+      </template>
+      <template v-if="filterVerified" v-slot:subtitle>
+        <div class="has-text-grey">{{ 'in the last ' + VerifiedContractsCache.MAX_CANDIDATES + ' contracts' }}</div>
       </template>
       <template v-slot:control>
-        <PlayPauseButton :controller="contractTableController"/>
+        <div class="is-flex is-justify-content-end is-align-items-center" style="line-height: 1rem">
+          <PlayPauseButton v-if="!filterVerified" :controller="contractTableController"/>
+          <PlayPauseButton v-else :controller="contractsLookup"/>
+          <span class="ml-5 mr-2">All</span>
+          <o-field>
+            <o-switch v-model="filterVerified">Verified</o-switch>
+          </o-field>
+        </div>
       </template>
       <template v-slot:content>
-        <ContractTable :controller="contractTableController"/>
+        <ContractTable v-if="!filterVerified" :controller="contractTableController"/>
+        <VerifiedContractTable v-else-if="verifiedContracts" :contracts="verifiedContracts" />
       </template>
     </DashboardCard>
 
@@ -50,22 +61,33 @@
 
 <script lang="ts">
 
-import {computed, defineComponent, inject, onBeforeUnmount, onMounted} from 'vue';
+import {computed, defineComponent, inject, onBeforeUnmount, onMounted, ref} from 'vue';
 import ContractTable from "@/components/contract/ContractTable.vue";
 import DashboardCard from "@/components/DashboardCard.vue";
 import Footer from "@/components/Footer.vue";
 import PlayPauseButton from "@/components/PlayPauseButton.vue";
 import {ContractTableController} from "@/components/contract/ContractTableController";
 import {useRouter} from "vue-router";
+import EmptyTable from "@/components/EmptyTable.vue";
+import VerifiedContractTable from "@/components/contract/VerifiedContractTable.vue";
+import {VerifiedContractsCache} from "@/utils/cache/VerifiedContractsCache";
+import {waitFor} from "@/utils/TimerUtils";
 
 export default defineComponent({
   name: 'Contracts',
+    computed: {
+        VerifiedContractsCache() {
+            return VerifiedContractsCache
+        }
+    },
 
   props: {
     network: String
   },
 
   components: {
+      VerifiedContractTable,
+      EmptyTable,
     PlayPauseButton,
     Footer,
     DashboardCard,
@@ -77,6 +99,8 @@ export default defineComponent({
     const isMediumScreen = inject('isMediumScreen', true)
     const isTouchDevice = inject('isTouchDevice', false)
 
+    const filterVerified = ref(false)
+
     //
     // ContractTableController
     //
@@ -85,10 +109,22 @@ export default defineComponent({
     onMounted(() => contractTableController.mount())
     onBeforeUnmount(() => contractTableController.unmount())
 
+    //
+    // VerifiedContractsCache
+    //
+    const contractsLookup = VerifiedContractsCache.instance.makeLookup()
+    onMounted(() => {
+        waitFor(0).then(() => contractsLookup.mount())
+    })
+    onBeforeUnmount(() => contractsLookup.unmount())
+
     return {
       isSmallScreen,
       isTouchDevice,
+      filterVerified,
       contractTableController,
+      contractsLookup,
+      verifiedContracts: contractsLookup.entity,
     }
   }
 });
