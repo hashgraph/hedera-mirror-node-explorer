@@ -29,12 +29,12 @@
                 <slot name="title"></slot>
             </div>
             <div class="is-flex is-align-items-center is-justify-content-end">
-                <div v-if="!isCollapsed" class="mr-4">
+                <div v-if="!isCollapsed">
                   <slot name="control"></slot>
                 </div>
                 <img v-if="isCollapsible && isCollapsed" alt="Expand section"
                    @click="toggleCollapsed" src="@/assets/arrow-down.svg">
-                <img v-else-if="isCollapsible" alt="Collapse section"
+                <img v-else-if="isCollapsible" alt="Collapse section" class="ml-4"
                    @click="toggleCollapsed" src="@/assets/arrow-up.svg">
             </div>
         </div>
