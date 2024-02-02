@@ -9,13 +9,13 @@
 | Go to HashScan                |
 | Select `testnet`              |
 
-| Action                            | Check                                                                                 |
-|-----------------------------------|---------------------------------------------------------------------------------------|
-| `Connect Wallet` > `Blade`        | `Blade Extension not found`<br/>`Please install and/or activate Blade extension`      |
-| `Connect Wallet` > `Hashpack`     | `Hashpack Extension not found`<br/>`Please install and/or active Blade extension`     |
-| `Connect Wallet` > `MetaMask`     | `MetaMask Extension not found`<br/>`Please install and/or active Blade extension`     |
-| `Connect Wallet` > `Coinbase`     | `Coinbase Extension not found`<br/>`Please install and/or active Blade extension`     |
-| `Connect Wallet` > `Brave Wallet` | `Brave Wallet Extension not found`<br/>`Please install and/or active Blade extension` |
+| Action                            | Check                                                                                        |
+|-----------------------------------|----------------------------------------------------------------------------------------------|
+| `Connect Wallet` > `Blade`        | `Blade Extension not found`<br/>`Please install and/or activate Blade extension`             |
+| `Connect Wallet` > `Hashpack`     | `Hashpack Extension not found`<br/>`Please install and/or active Hashpack extension`         |
+| `Connect Wallet` > `MetaMask`     | `MetaMask Extension not found`<br/>`Please install and/or active MetaMask extension`         |
+| `Connect Wallet` > `Coinbase`     | `Coinbase Extension not found`<br/>`Please install and/or active Coinbase extension`         |
+| `Connect Wallet` > `Brave Wallet` | `Brave Wallet Extension not found`<br/>`Please install and/or active Brave Wallet extension` |
 
 
 ## Wallet extensions installed and enabled
