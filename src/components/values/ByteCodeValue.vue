@@ -24,7 +24,7 @@
 
 <template>
 
-    <div v-if="textValue" id="bytecode"
+    <div v-if="nonNullValue" id="bytecode"
          class="h-code-box h-has-page-background pt-1 pl-3 pr-2 pb-2 mt-2 mr-1"
          :style="{'max-height':heightInPixel+'px'}">
         <HexaValue :byte-string="textValue" :copyable="false"/>
@@ -42,7 +42,7 @@
 
 <script lang="ts">
 
-import {defineComponent, inject, ref, watch} from 'vue';
+import {computed, defineComponent, inject, ref, watch} from 'vue';
 import {initialLoadingKey} from "@/AppKeys";
 import HexaValue from "@/components/values/HexaValue.vue";
 
@@ -63,8 +63,13 @@ export default defineComponent({
         watch(() => props.byteCode, () => {
             textValue.value = props.byteCode
         })
+        const nonNullValue = computed(() => props.byteCode != undefined && props.byteCode != '0x')
         const initialLoading = inject(initialLoadingKey, ref(false))
-        return {textValue, initialLoading}
+        return {
+            textValue,
+            nonNullValue,
+            initialLoading
+        }
     }
 });
 

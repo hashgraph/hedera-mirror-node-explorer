@@ -89,7 +89,7 @@ export default defineComponent({
     //
 
     const accountId: Ref<string|null> = ref(null)
-    const pageSize = computed(() => 10)
+    const pageSize = computed(() => 15)
     const transactionTableController = new TransactionTableControllerXL(router, accountId, pageSize, false)
     onMounted(() => transactionTableController.mount())
     onBeforeUnmount(() => transactionTableController.unmount())
