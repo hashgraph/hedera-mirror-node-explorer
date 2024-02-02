@@ -23,8 +23,8 @@
 <!-- --------------------------------------------------------------------------------------------------------------- -->
 
 <template>
-  <a :href="`${networkUrl}api/v1/${entityUrl}/${loc}`">
-    <span class="is-numeric">Mirror Data</span>
+  <a :href="`${networkUrl}api/v1/${entityUrl}/${loc}`" target="_blank">
+    <p class="has-text-right has-text-grey h-is-property-text">Show raw data</p>
   </a>
 </template>
 
@@ -45,7 +45,14 @@ export default defineComponent({
   },
 
   setup(props, context) {
-    const networkUrl = props.network == "mainnet" ?  "https://mainnet-public.mirrornode.hedera.com/" : "https://testnet.mirrornode.hedera.com/"
+    let networkUrl = "https://mainnet-public.mirrornode.hedera.com/"
+    if (props.network == "testnet") {
+      networkUrl = "https://testnet.mirrornode.hedera.com/"
+    }
+    if (props.network == "previewnet")
+    {
+      networkUrl = "https://previewnet.mirrornode.hedera.com/"
+    }
 
     return { networkUrl }
   }

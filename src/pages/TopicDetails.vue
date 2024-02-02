@@ -45,8 +45,6 @@
 
     </DashboardCard>
 
-    <div style="height: 24px" />
-
     <MirrorLink :network="network" entityUrl="transactions" :loc="topicId"/>
 
   </section>
