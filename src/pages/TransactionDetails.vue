@@ -235,6 +235,8 @@
                     :block-number="blockNumber ?? undefined"
                     :transaction-hash="formattedHash ?? undefined"/>
 
+    <MirrorLink :network="network" entityUrl="transactions" :loc="transactionId!"/>
+
   </section>
 
   <Footer/>
@@ -274,6 +276,7 @@ import {TransactionGroupAnalyzer} from "@/components/transaction/TransactionGrou
 import {TransactionAnalyzer} from "@/components/transaction/TransactionAnalyzer";
 import {TransactionGroupCache} from "@/utils/cache/TransactionGroupCache";
 import InfoTooltip from "@/components/InfoTooltip.vue";
+import MirrorLink from "@/components/MirrorLink.vue";
 
 const MAX_INLINE_CHILDREN = 9
 
@@ -282,6 +285,7 @@ export default defineComponent({
   name: 'TransactionDetails',
 
   components: {
+    MirrorLink,
     InfoTooltip,
     TokenLink,
     TopicMessage,

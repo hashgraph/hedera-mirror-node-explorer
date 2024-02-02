@@ -98,6 +98,8 @@
       </template>
     </DashboardCard>
 
+    <MirrorLink :network="network" entityUrl="blocks" :loc="blockHon"/>
+
   </section>
 
   <Footer/>
@@ -123,12 +125,14 @@ import PlainAmount from "@/components/values/PlainAmount.vue";
 import BlockTransactionTable from "@/components/block/BlockTransactionTable.vue";
 import {TransactionGroupByBlockCache} from "@/utils/cache/TransactionGroupByBlockCache";
 import {routeManager} from "@/router";
+import MirrorLink from "@/components/MirrorLink.vue";
 
 export default defineComponent({
 
   name: 'BlockDetails',
 
   components: {
+    MirrorLink,
     BlockTransactionTable,
     PlainAmount,
     DashboardCard,

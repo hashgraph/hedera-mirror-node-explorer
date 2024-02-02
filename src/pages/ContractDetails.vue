@@ -183,6 +183,8 @@
 
     <ContractResultLogs :logs="logs"/>
 
+    <MirrorLink :network="network" entityUrl="contracts" :loc="contractId"/>
+
   </section>
 
   <Footer/>
@@ -224,6 +226,7 @@ import {ContractResultsLogsAnalyzer} from "@/utils/analyzer/ContractResultsLogsA
 import {BalanceAnalyzer} from "@/utils/analyzer/BalanceAnalyzer";
 import {TokenBalance} from "@/schemas/HederaSchemas";
 import {NftCollectionCache} from "@/utils/cache/NftCollectionCache";
+import MirrorLink from "@/components/MirrorLink.vue";
 
 const MAX_TOKEN_BALANCES = 3
 
@@ -232,6 +235,7 @@ export default defineComponent({
   name: 'ContractDetails',
 
   components: {
+    MirrorLink,
     Copyable,
     ContractByteCodeSection,
     InfoTooltip,
