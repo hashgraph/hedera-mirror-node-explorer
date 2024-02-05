@@ -28,17 +28,19 @@
 
     <DashboardCard collapsible-key="nftDetails">
       <template v-slot:title>
-        <span v-if="tokenInfo" class="h-is-primary-title">
-          <span v-if="tokenInfo.type === 'NON_FUNGIBLE_UNIQUE'">Non Fungible</span>
-          <span v-else>Fungible</span>
-        </span>
-        <span class="h-is-primary-title mr-1"> Token </span>
-        <div class="is-inline-block h-is-tertiary-text h-is-extra-text should-wrap" style="word-break: break-all">
-          {{ displaySymbol }}
-        </div>
-      </template>
-
-      <template v-slot:subtitle>
+            <span v-if="tokenInfo" class="h-is-primary-title">
+              <span v-if="tokenInfo.type === 'NON_FUNGIBLE_UNIQUE'">Non Fungible</span>
+              <span v-else>Fungible</span>
+            </span>
+            <span class="h-is-primary-title mr-1"> Token </span>
+            <div class="is-inline-block h-is-tertiary-text h-is-extra-text should-wrap" style="word-break: break-all">
+              {{ displaySymbol }}
+            </div>
+            
+          <div v-if="ethereumAddress && isWalletConnected" class="h-is-property-text is-flex algin-items-center" style="position: absolute; top: 0; right: 0;">
+            <TokenActions :analyzer="tokenAnalyzer"/>
+          </div>
+        
         <div id="entityId" class="headline-grid h-is-tertiary-text mt-3 is-align-items-baseline">
           <div class="h-is-property-text has-text-weight-light">Token ID:</div>
           <div>
@@ -53,13 +55,9 @@
         <div v-if="ethereumAddress" id="evmAddress"
              class="headline-grid is-align-items-baseline h-is-property-text mt-2" style="word-break: keep-all">
           <div class="has-text-weight-light">EVM Address:</div>
-            <div class="is-flex is-align-items-baseline">
-              <EVMAddress class="mr-3" :show-id="false" :has-custom-font="true" :address="ethereumAddress"/>
-              <WalletImport v-if="connectedToEthereum && isSmallScreen" :analyzer="tokenAnalyzer"/>
-            </div>
+          <div class="is-flex is-align-items-baseline">
+            <EVMAddress class="mr-3" :show-id="false" :has-custom-font="true" :address="ethereumAddress"/>
           </div>
-        <div v-if="ethereumAddress && connectedToEthereum && !isSmallScreen" class="mt-2 h-is-property-text">
-          <WalletImport :analyzer="tokenAnalyzer"/>
         </div>
       </template>
 
@@ -310,7 +308,7 @@ import DashboardCard from "@/components/DashboardCard.vue";
 import BlobValue from "@/components/values/BlobValue.vue";
 import TokenAmount from "@/components/values/TokenAmount.vue";
 import Footer from "@/components/Footer.vue";
-import WalletImport from "@/components/token/WalletImport.vue";
+import TokenActions from "@/components/token/TokenActions.vue";
 import {EntityID} from "@/utils/EntityID";
 import Property from "@/components/Property.vue";
 import NotificationBanner from "@/components/NotificationBanner.vue";
@@ -347,7 +345,6 @@ export default defineComponent({
     AccountLink,
     NotificationBanner,
     Property,
-    WalletImport,
     Footer,
     BlobValue,
     DashboardCard,
@@ -355,7 +352,8 @@ export default defineComponent({
     DurationValue,
     TokenBalanceTable,
     TokenAmount,
-    KeyValue
+    KeyValue,
+    TokenActions,
   },
 
   props: {
@@ -427,7 +425,7 @@ export default defineComponent({
     onMounted(() => nftHolderTableController.mount())
     onBeforeUnmount(() => nftHolderTableController.unmount())
 
-    const connectedToEthereum = computed(
+    const isWalletConnected = computed(
         () => walletManager.isEthereumWallet.value && walletManager.connected.value)
 
     return {
@@ -448,7 +446,7 @@ export default defineComponent({
       parseBigIntString,
       tokenAnalyzer,
       ethereumAddress: tokenAnalyzer.ethereumAddress,
-      connectedToEthereum,
+      isWalletConnected,
       tokenBalanceTableController,
       nftHolderTableController,
     }
