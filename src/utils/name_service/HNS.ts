@@ -55,6 +55,8 @@ export async function hnsResolve(domain: string): Promise<string | null> {
     try {
         return await _nameService.resolveSLD(domain) ?? null
     } catch (error) {
+        console.log("Resolver.resolveSLD() did fail")
+        console.log("reason=" + error)
         return null;
     }
 }
