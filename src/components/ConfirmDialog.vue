@@ -36,9 +36,14 @@
 
         <div v-if="mainMessage" class="block h-is-tertiary-text mt-2">{{ mainMessage }}</div>
         <div v-else class="block h-is-property-text" style="visibility: hidden">Filler</div>
-        <div class="my-4" style="line-height: 21px">
+        <div v-if="extraMessage" class="my-4" style="line-height: 21px">
           <span v-if="extraMessage" class="h-is-property-text">{{ extraMessage }}</span>
           <span v-else class="h-is-property-text" style="visibility: hidden">Filler</span>
+        </div>
+        
+        
+        <div v-if="slots.dialogOption">
+          <slot name="dialogOption"/>
         </div>
 
         <div class="is-flex is-justify-content-flex-end">
@@ -57,7 +62,7 @@
 
 <script lang="ts">
 
-import {defineComponent, PropType} from "vue";
+import {defineComponent, PropType, useSlots} from "vue";
 
 export default defineComponent({
   name: "ConfirmDialog",
@@ -75,17 +80,18 @@ export default defineComponent({
       type: String as PropType<string|null>,
       default: null
     },
-      confirmLabel: {
-          type: String as PropType<string>,
-          default: "CONFIRM"
-      },
-      cancelLabel: {
-          type: String as PropType<string>,
-          default: "CANCEL"
-    }
+    confirmLabel: {
+        type: String as PropType<string>,
+        default: "CONFIRM"
+    },
+    cancelLabel: {
+        type: String as PropType<string>,
+        default: "CANCEL"
+    },
   },
 
   setup(props, context) {
+    const slots = useSlots()
 
     const handleCancel = () => {
       context.emit('update:showDialog', false)
@@ -98,6 +104,7 @@ export default defineComponent({
     }
 
     return {
+      slots,
       handleCancel,
       handleConfirm,
     }
