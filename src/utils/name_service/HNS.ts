@@ -18,10 +18,10 @@
  *
  */
 
-import hns from '@hedera-name-service/hns-resolution-sdk'
+import {Resolver} from '@hedera-name-service/hns-resolution-sdk'
 
 
-let _nameService: hns.Resolver | null = null
+let _nameService: Resolver | null = null
 
 export function hnsSetNetwork(name: string): void {
     let service: string|null
@@ -38,7 +38,7 @@ export function hnsSetNetwork(name: string): void {
     }
     if (service !== null) {
         try {
-            _nameService = new hns.Resolver(service as any)
+            _nameService = new Resolver(service as any)
         } catch(reason) {
             _nameService = null
             console.log("Failed to initialize HNS resolver")
