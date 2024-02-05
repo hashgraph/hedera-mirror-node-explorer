@@ -41,21 +41,35 @@ export abstract class WalletDriver_Ethereum extends WalletDriver {
     // Public
     //
 
-    public async watchToken(accountId: string, tokenId: string): Promise<void> {
+    public async watchToken(accountId: string, tokenId: string, serialNumber?: string): Promise<void> {
         const tokenAddress = EntityID.parse(tokenId)?.toAddress() ?? null
         if (accountId !== null && tokenAddress !== null && this.provider !== null) {
             const tokenInfo = await TokenInfoCache.instance.lookup(tokenId)
             const symbol = makeTokenSymbol(tokenInfo, 11)
-            const decimals = tokenInfo?.decimals
-            const params = {
-                "type": "ERC20",
-                "options": {
-                    "address": `0x${tokenAddress}`,
-                    "symbol": symbol,
-                    "decimals": decimals,
-                    "image": HederaLogo
+            let params = {}
+
+            if (serialNumber) {
+                params = {
+                    "type": "ERC721",
+                    "options": {
+                        "address": `0x${tokenAddress}`,
+                        "symbol": symbol,
+                        "tokenId": serialNumber,
+                        "image": HederaLogo
+                    }
+                }
+            } else {
+                params = {
+                    "type": "ERC20",
+                    "options": {
+                        "address": `0x${tokenAddress}`,
+                        "symbol": symbol,
+                        "decimals": tokenInfo?.decimals,
+                        "image": HederaLogo
+                    }
                 }
             }
+            
             try {
                 await this.provider.send("wallet_watchAsset", params)
             } catch(reason) {
