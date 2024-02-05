@@ -73,7 +73,7 @@ export abstract class WalletDriver_Ethereum extends WalletDriver {
             try {
                 await this.provider.send("wallet_watchAsset", params)
             } catch(reason) {
-                throw this.makeCallFailure(reason, "watchToken")
+                throw this.makeCallFailure(reason, `${(reason as ethers.EthersError).error?.message || `Unknown Error`}.`)
             }
         } else {
             throw this.callFailure("Invalid arguments")
