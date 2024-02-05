@@ -193,7 +193,7 @@ describe("Staking.vue", () => {
             await changeConfirmButtons[1].trigger("click")
             await nextTick()
         }
-        await confirmChangeStaking("Change Staking  for account 0.0.730632Do you want to stake to account 0.0.7-bmurp ?FillerCANCELCONFIRM")
+        await confirmChangeStaking("Change Staking  for account 0.0.730632Do you want to stake to account 0.0.7-bmurp ?CANCELCONFIRM")
 
         // 2.7) Waits for progress dialog and closes ...
         const waitAndClose = async(busyText: string, completeText: string) => {
@@ -257,7 +257,7 @@ describe("Staking.vue", () => {
         await nextTick()
 
         // 3.6) Confirms
-        await confirmChangeStaking("Change Staking  for account 0.0.730632Do you want to stake to Node 2 - Hosted by Hedera ?FillerCANCELCONFIRM")
+        await confirmChangeStaking("Change Staking  for account 0.0.730632Do you want to stake to Node 2 - Hosted by Hedera ?CANCELCONFIRM")
 
         // 3.7) Waits for progress dialog and closes ...
         await waitAndClose("Updating stakingConnecting to Hedera Network using your wallet…Check your wallet for any approval requestCLOSE",
@@ -301,7 +301,7 @@ describe("Staking.vue", () => {
         await nextTick()
 
         // 4.5) Confirms
-        await confirmChangeStaking("Change Staking  for account 0.0.730632Do you want to accept rewards?FillerCANCELCONFIRM")
+        await confirmChangeStaking("Change Staking  for account 0.0.730632Do you want to accept rewards?CANCELCONFIRM")
 
         // 4.6) Waits for progress dialog and closes ...
         await waitAndClose("Updating stakingConnecting to Hedera Network using your wallet…Check your wallet for any approval requestCLOSE",
@@ -336,7 +336,7 @@ describe("Staking.vue", () => {
             await confirmButtons[1].trigger("click")
             await flushPromises()
         }
-        await confirm("My Staking  for account 0.0.730632Do you want to stop staking to Node 2 - Hosted by Hedera ?FillerCANCELCONFIRM")
+        await confirm("My Staking  for account 0.0.730632Do you want to stop staking to Node 2 - Hosted by Hedera ?CANCELCONFIRM")
 
         // 5.3) Waits for progress dialog and closes ...
         await waitAndClose("Stopping stakingCompleting operation…This may take a few secondsCLOSE",
