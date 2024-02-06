@@ -286,9 +286,8 @@ export default defineComponent({
             showDoneDialog.value = true
             dialogTitle.value = `Successfully associated ${tokenType.value} ${tokenId.value!}`
             doneMessage.value = `Successfully associated ${tokenType.value} ${tokenId.value!}(${tokenSymbol.value}) to account ${accountId.value}`
+            showProgressDialog.value = false
           }
-
-          showProgressDialog.value = false
       } catch (reason) {
         handleError(reason)
       }
