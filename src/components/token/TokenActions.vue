@@ -191,8 +191,8 @@ export default defineComponent({
     const handleAssociate = () => {
         action.value = 'ASSOCIATE'
         showConfirmDialog.value = true
-        dialogTitle.value = `Associate ${tokenType} ${tokenId.value}`
-        confirmMessage.value = `Confirm associating ${tokenType} ${tokenId.value! +"("+ tokenSymbol.value +")"} to account ${accountId.value}?`
+        dialogTitle.value = `Associate ${tokenType.value} ${tokenId.value}`
+        confirmMessage.value = `Confirm associating ${tokenType.value} ${tokenId.value! +"("+ tokenSymbol.value +")"} to account ${accountId.value}?`
         confirmExtraMessage.value = null
     }
 
@@ -202,8 +202,8 @@ export default defineComponent({
     const handleDissociate = () => {
       action.value = 'DISSOCIATE'
       showConfirmDialog.value = true
-      dialogTitle.value = `Dissociate ${tokenType} ${tokenId.value}`
-      confirmMessage.value = `Confirm dissociating ${tokenType} ${tokenId.value!} (${tokenSymbol.value}) from account ${accountId.value}?`
+      dialogTitle.value = `Dissociate ${tokenType.value} ${tokenId.value}`
+      confirmMessage.value = `Confirm dissociating ${tokenType.value} ${tokenId.value!} (${tokenSymbol.value}) from account ${accountId.value}?`
       confirmExtraMessage.value = null
     }
 
@@ -271,7 +271,7 @@ export default defineComponent({
         if (props.analyzer.associationStatus.value == TokenAssociationStatus.Dissociated) {
               showProgressDialog.value = true
               showProgressSpinner.value = true
-              progressMainMessage.value = `Associating ${tokenType} ${tokenId.value!} (${tokenSymbol.value}) to account ${accountId.value}...`
+              progressMainMessage.value = `Associating ${tokenType.value} ${tokenId.value!} (${tokenSymbol.value}) to account ${accountId.value}...`
               
               try {
                   await walletManager.associateToken(tokenId.value!)
@@ -284,8 +284,8 @@ export default defineComponent({
             await importTokenAction()
           } else {
             showDoneDialog.value = true
-            dialogTitle.value = `Successfully associated ${tokenType} ${tokenId.value!}`
-            doneMessage.value = `Successfully associated ${tokenType} ${tokenId.value!}(${tokenSymbol.value}) to account ${accountId.value}`
+            dialogTitle.value = `Successfully associated ${tokenType.value} ${tokenId.value!}`
+            doneMessage.value = `Successfully associated ${tokenType.value} ${tokenId.value!}(${tokenSymbol.value}) to account ${accountId.value}`
           }
 
           showProgressDialog.value = false
@@ -302,7 +302,7 @@ export default defineComponent({
         if (props.analyzer.associationStatus.value == TokenAssociationStatus.Associated) {
               showProgressDialog.value = true
               showProgressSpinner.value = true
-              progressMainMessage.value = `Dissociating ${tokenType} ${tokenId.value!} (${tokenSymbol.value}) from account ${accountId.value}...`
+              progressMainMessage.value = `Dissociating ${tokenType.value} ${tokenId.value!} (${tokenSymbol.value}) from account ${accountId.value}...`
               try {
                   await walletManager.dissociateToken(tokenId.value!)
               } finally {
@@ -311,8 +311,8 @@ export default defineComponent({
           }
           showProgressDialog.value = false
           showDoneDialog.value = true
-          dialogTitle.value = `Successfully dissociated ${tokenType} ${tokenId.value!}`
-          doneMessage.value = `Successfully dissociated ${tokenType} ${tokenId.value!}(${tokenSymbol.value}) from account ${accountId.value}`
+          dialogTitle.value = `Successfully dissociated ${tokenType.value} ${tokenId.value!}`
+          doneMessage.value = `Successfully dissociated ${tokenType.value} ${tokenId.value!}(${tokenSymbol.value}) from account ${accountId.value}`
       } catch (reason) {
         handleError(reason)
       }
@@ -335,8 +335,8 @@ export default defineComponent({
           isActive.value = false
           showDoneDialog.value = true
           showProgressDialog.value = false
-          dialogTitle.value = `Successfully imported ${tokenType} ${tokenId.value!}`
-          doneMessage.value = `Successfully imported ${tokenType} ${tokenId.value!}(${tokenSymbol.value}) ${!props.analyzer.isFungible.value && `#${tokenSerialNumber.value}`} to ${walletManager.walletName.value}`
+          dialogTitle.value = `Successfully imported ${tokenType.value} ${tokenId.value!}`
+          doneMessage.value = `Successfully imported ${tokenType.value} ${tokenId.value!}(${tokenSymbol.value}) ${!props.analyzer.isFungible.value && `#${tokenSerialNumber.value}`} to ${walletManager.walletName.value}`
         } catch (reason) {
           handleError(reason)
         }
