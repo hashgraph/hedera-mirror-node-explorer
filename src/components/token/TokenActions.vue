@@ -144,8 +144,7 @@ export default defineComponent({
     //
     // Token Info States
     //
-    const tokenType = isFungible ? "token" : "NFT"
-    const isFungible = props.analyzer.isFungible.value
+    const tokenType = computed(() => props.analyzer.isFungible.value ? "token" : "NFT")
     const tokenId = computed(() => props.analyzer.tokenId.value)
     const accountId = computed(() => walletManager.accountId.value)
     const tokenSymbol = computed(() => props.analyzer.tokenSymbol.value)
