@@ -160,7 +160,7 @@ export default defineComponent({
     const dialogTitle = ref<string|null>(null)
     const confirmMessage = ref<string|null>(null)
     const confirmExtraMessage = ref<string|null>(null)
-    const showWatchOption = computed(() => action.value === 'ASSOCIATE' && isFungible)
+    const showWatchOption = computed(() => action.value === 'ASSOCIATE' && props.analyzer.isFungible.value)
 
     //
     // Dynamic dialog states
@@ -213,7 +213,7 @@ export default defineComponent({
     const handleImport = () => {
       action.value = "IMPORT_TOKEN"
 
-      if (isFungible) {
+      if (props.analyzer.isFungible.value) {
         dialogTitle.value = `Import token ${tokenId.value}`
         handleConfirm();
       } else {
@@ -323,7 +323,7 @@ export default defineComponent({
     //
     const importTokenAction = async () => {
         try {
-          if (isFungible) {
+          if (props.analyzer.isFungible.value) {
             progressMainMessage.value = `Importing token ${tokenId.value} (${tokenSymbol.value}) to wallet ${walletManager.walletName.value}...`
             await walletManager.watchToken(tokenId.value!)
           } else {
@@ -336,7 +336,7 @@ export default defineComponent({
           showDoneDialog.value = true
           showProgressDialog.value = false
           dialogTitle.value = `Successfully imported ${tokenType} ${tokenId.value!}`
-          doneMessage.value = `Successfully imported ${tokenType} ${tokenId.value!}(${tokenSymbol.value}) ${!isFungible && `#${tokenSerialNumber.value}`} to ${walletManager.walletName.value}`
+          doneMessage.value = `Successfully imported ${tokenType} ${tokenId.value!}(${tokenSymbol.value}) ${!props.analyzer.isFungible.value && `#${tokenSerialNumber.value}`} to ${walletManager.walletName.value}`
         } catch (reason) {
           handleError(reason)
         }
