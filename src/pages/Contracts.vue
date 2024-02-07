@@ -45,7 +45,7 @@
       </template>
       <template v-slot:content>
         <ContractTable v-if="!filterVerified" :controller="contractTableController"/>
-        <VerifiedContractTable v-else-if="verifiedContracts" :contracts="verifiedContracts" />
+        <VerifiedContractTable v-else :contracts-lookup="contractsLookup"/>
       </template>
     </DashboardCard>
 
@@ -61,7 +61,7 @@
 
 <script lang="ts">
 
-import {computed, defineComponent, inject, onBeforeUnmount, onMounted, ref} from 'vue';
+import {computed, defineComponent, inject, ref} from 'vue';
 import ContractTable from "@/components/contract/ContractTable.vue";
 import DashboardCard from "@/components/DashboardCard.vue";
 import Footer from "@/components/Footer.vue";
@@ -71,7 +71,6 @@ import {useRouter} from "vue-router";
 import EmptyTable from "@/components/EmptyTable.vue";
 import VerifiedContractTable from "@/components/contract/VerifiedContractTable.vue";
 import {VerifiedContractsCache} from "@/utils/cache/VerifiedContractsCache";
-import {waitFor} from "@/utils/TimerUtils";
 
 export default defineComponent({
   name: 'Contracts',
@@ -106,17 +105,11 @@ export default defineComponent({
     //
     const perPage = computed(() => isMediumScreen ? 15 : 10)
     const contractTableController = new ContractTableController(useRouter(), perPage)
-    onMounted(() => contractTableController.mount())
-    onBeforeUnmount(() => contractTableController.unmount())
 
     //
     // VerifiedContractsCache
     //
     const contractsLookup = VerifiedContractsCache.instance.makeLookup()
-    onMounted(() => {
-        waitFor(0).then(() => contractsLookup.mount())
-    })
-    onBeforeUnmount(() => contractsLookup.unmount())
 
     return {
       isSmallScreen,
@@ -124,7 +117,6 @@ export default defineComponent({
       filterVerified,
       contractTableController,
       contractsLookup,
-      verifiedContracts: contractsLookup.entity,
     }
   }
 });

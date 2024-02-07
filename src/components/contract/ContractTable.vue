@@ -78,7 +78,7 @@
 
 <script lang="ts">
 
-import {ComputedRef, defineComponent, inject, PropType, Ref} from 'vue';
+import {ComputedRef, defineComponent, inject, onBeforeUnmount, onMounted, PropType, Ref} from 'vue';
 import {Contract} from "@/schemas/HederaSchemas";
 import {routeManager} from "@/router";
 import BlobValue from "@/components/values/BlobValue.vue";
@@ -112,6 +112,9 @@ export default defineComponent({
   setup(props) {
     const isTouchDevice = inject('isTouchDevice', false)
     const isMediumScreen = inject('isMediumScreen', true)
+
+    onMounted(() => props.controller.mount())
+    onBeforeUnmount(() => props.controller.unmount())
 
     const handleClick = (contract: Contract, c: unknown, i: number, ci: number, event: MouseEvent) => {
       if (contract.contract_id) {

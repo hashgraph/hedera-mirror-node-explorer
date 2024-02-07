@@ -62,7 +62,7 @@
 
   </o-table>
 
-  <EmptyTable v-if="!contracts.length"/>
+  <EmptyTable v-if="contracts.length === 0"/>
 
 </template>
 
@@ -72,7 +72,7 @@
 
 <script lang="ts">
 
-import {defineComponent, inject, PropType} from 'vue';
+import {computed, defineComponent, inject, onBeforeUnmount, onMounted, PropType} from 'vue';
 import {Contract} from "@/schemas/HederaSchemas";
 import {routeManager} from "@/router";
 import BlobValue from "@/components/values/BlobValue.vue";
@@ -80,6 +80,7 @@ import TimestampValue from "@/components/values/TimestampValue.vue";
 import {ORUGA_MOBILE_BREAKPOINT} from '@/App.vue';
 import EmptyTable from "@/components/EmptyTable.vue";
 import ContractName from "@/components/values/ContractName.vue";
+import {VerifiedContractsLookup} from "@/utils/cache/VerifiedContractsCache";
 
 
 //
@@ -92,16 +93,21 @@ export default defineComponent({
   components: {ContractName, EmptyTable, BlobValue, TimestampValue},
 
   props: {
-    contracts: {
-      type: Array as PropType<Array<Contract>>,
+    contractsLookup: {
+      type: Object as PropType<VerifiedContractsLookup>,
       required: true
     }
   },
 
-  setup() {
+  setup(props) {
     const isTouchDevice = inject('isTouchDevice', false)
     const isMediumScreen = inject('isMediumScreen', true)
+
     const perPage = 15
+    const contracts = computed(() => props.contractsLookup.entity.value ?? [])
+
+    onMounted(() => props.contractsLookup.mount())
+    onBeforeUnmount(() => props.contractsLookup.unmount())
 
     const handleClick = (contract: Contract, c: unknown, i: number, ci: number, event: MouseEvent) => {
       if (contract.contract_id) {
@@ -115,6 +121,7 @@ export default defineComponent({
       perPage,
       handleClick,
       ORUGA_MOBILE_BREAKPOINT,
+      contracts,
     }
   }
 });
