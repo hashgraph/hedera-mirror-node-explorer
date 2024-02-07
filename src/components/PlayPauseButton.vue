@@ -63,15 +63,19 @@
 
 <script lang="ts">
 
-import {computed, defineComponent, onMounted, PropType, ref} from "vue";
-import {TableController} from "@/utils/table/TableController";
-import {VerifiedContractsLookup} from "@/utils/cache/VerifiedContractsCache";
+import {computed, ComputedRef, defineComponent, onMounted, PropType, ref} from "vue";
+
+export interface PlayPauseController {
+    startAutoRefresh(): void
+    stopAutoRefresh(): void
+    autoRefresh: ComputedRef<boolean>
+}
 
 export default defineComponent({
   name: "PlayPauseButton",
 
   props: {
-    controller: Object as PropType<TableController<unknown, unknown> | VerifiedContractsLookup>
+    controller: Object as PropType<PlayPauseController>
   },
 
   setup(props) {

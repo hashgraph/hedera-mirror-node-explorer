@@ -22,7 +22,8 @@ import {Contract, ContractsResponse} from "@/schemas/HederaSchemas";
 import {SingletonCache, SingletonLookup} from "@/utils/cache/base/SingletonCache";
 import axios, {AxiosResponse} from "axios";
 import {routeManager} from "@/router";
-import {ref, Ref} from "vue";
+import {computed, ComputedRef, ref, Ref} from "vue";
+import {PlayPauseController} from "@/components/PlayPauseButton.vue";
 
 export class VerifiedContractsCache extends SingletonCache<Contract[]> {
 
@@ -111,24 +112,20 @@ export class VerifiedContractsCache extends SingletonCache<Contract[]> {
     }
 }
 
-export class VerifiedContractsLookup extends SingletonLookup<Contract[]> {
+export class VerifiedContractsLookup extends SingletonLookup<Contract[]> implements PlayPauseController {
 
     private updatePeriod = 10000
     private timeoutID = -1
     private maxRefreshCount = 10
     private refreshCount = 0
-
-    public autoRefresh: Ref<boolean> = ref(false)
+    private autoRefreshRef: Ref<boolean> = ref(false)
 
     constructor(cache: VerifiedContractsCache) {
         super(cache)
     }
 
     public mount(): void {
-        this.startAutoRefresh(false)
-        this.cache.lookup()
-            .then((s: Contract[]) => this.entity.value = s)
-            .catch(() => this.entity.value = null)
+        this.startAutoRefresh()
     }
 
     public unmount(): void {
@@ -136,21 +133,23 @@ export class VerifiedContractsLookup extends SingletonLookup<Contract[]> {
         this.stopAutoRefresh()
     }
 
-    public startAutoRefresh(immediate = true): void {
-        if (!this.autoRefresh.value) {
-            this.autoRefresh.value = true
+    //
+    // PlayPauseController
+    //
+
+    public autoRefresh : ComputedRef<boolean> = computed(() => this.autoRefreshRef.value)
+
+    public startAutoRefresh(): void {
+        if (!this.autoRefreshRef.value) {
+            this.autoRefreshRef.value = true
             this.refreshCount = 0
-            if (immediate) {
-                this.refresh()
-            } else {
-                this.scheduleNextRefresh()
-            }
+            this.refresh()
         }
     }
 
     public stopAutoRefresh(): void  {
-        if (this.autoRefresh.value) {
-            this.autoRefresh.value = false
+        if (this.autoRefreshRef.value) {
+            this.autoRefreshRef.value = false
             if (this.timeoutID != -1) {
                 window.clearTimeout(this.timeoutID)
                 this.timeoutID = -1
@@ -168,7 +167,7 @@ export class VerifiedContractsLookup extends SingletonLookup<Contract[]> {
         if (this.refreshCount < this.maxRefreshCount) {
             this.scheduleNextRefresh()
         } else {
-            this.autoRefresh.value = false
+            this.autoRefreshRef.value = false
         }
         this.entity.value = await this.cache.lookup()
         return Promise.resolve()
