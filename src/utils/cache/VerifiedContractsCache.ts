@@ -117,7 +117,8 @@ export class VerifiedContractsLookup extends SingletonLookup<Contract[]> {
     private timeoutID = -1
     private maxRefreshCount = 10
     private refreshCount = 0
-    private autoRefresh: Ref<boolean> = ref(false)
+
+    public autoRefresh: Ref<boolean> = ref(false)
 
     constructor(cache: VerifiedContractsCache) {
         super(cache)
