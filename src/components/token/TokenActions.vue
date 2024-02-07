@@ -35,7 +35,7 @@
       <div v-if="isAssociated" id="showStakingDialog" class="token-actions-btn is-hover"
         @click="handleDissociate">TOKEN DISSOCIATE</div>
 
-      <div id="showStakingDialog" class="token-actions-btn is-hover"
+      <div v-if="isWatchAssetSupported" id="showStakingDialog" class="token-actions-btn is-hover"
         @click="handleImport">TOKEN IMPORT</div>
     </div>
 
@@ -49,7 +49,7 @@
                 {{ dialogTitle }}
             </span>
         </template>
-        <template v-if="showWatchOption" v-slot:dialogOption>
+        <template v-if="showWatchOption && isWatchAssetSupported" v-slot:dialogOption>
             <div class="is-flex is-align-items-center">
                 <label class="checkbox mr-3">
                     <input type="checkbox" v-model="watchInWallet">
@@ -140,6 +140,7 @@ export default defineComponent({
     const isActive = ref(false)
     const tokenSerialNumber = ref("")
     const serialNumberInputRef = ref(null)
+    const isWatchAssetSupported = computed(() => walletManager.isEthereumWallet.value)
 
     //
     // Token Info States
@@ -392,6 +393,7 @@ export default defineComponent({
       showProgressSpinner,
       progressExtraMessage,
       serialNumberInputRef,
+      isWatchAssetSupported,
       progressExtraTransactionId
     }
   }
@@ -406,7 +408,7 @@ export default defineComponent({
 <style scoped> 
 
 .token-actions-wrapper {
-  top: -18px;
+  top: 0px;
   gap: 0.45rem;
   left: -160px;
   width: 153px;

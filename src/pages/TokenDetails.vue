@@ -425,8 +425,7 @@ export default defineComponent({
     onMounted(() => nftHolderTableController.mount())
     onBeforeUnmount(() => nftHolderTableController.unmount())
 
-    const isWalletConnected = computed(
-        () => walletManager.isEthereumWallet.value && walletManager.connected.value)
+    const isWalletConnected = computed(() => walletManager.connected.value)
 
     return {
       isSmallScreen,
