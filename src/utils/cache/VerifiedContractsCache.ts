@@ -30,6 +30,7 @@ export class VerifiedContractsCache extends SingletonCache<Contract[]> {
     private static MAX_ITERATIONS = 5
     private static ITERATION_LIMIT = 100
     private candidates: Contract[] = []
+    private verifiedAddresses: string[] = []
 
     public static MAX_CANDIDATES = VerifiedContractsCache.ITERATION_LIMIT * VerifiedContractsCache.MAX_ITERATIONS
     public static readonly instance = new VerifiedContractsCache()
@@ -52,7 +53,6 @@ export class VerifiedContractsCache extends SingletonCache<Contract[]> {
     }
 
     protected async load(): Promise<Contract[]> {
-        console.log('VerifiedContractsCache.load')
         let result: Contract[] = []
         const sourcifySetup = routeManager.currentNetworkEntry.value.sourcifySetup!
 
@@ -77,11 +77,12 @@ export class VerifiedContractsCache extends SingletonCache<Contract[]> {
 
             this.candidates = loadedContracts.concat(this.candidates).slice(0, VerifiedContractsCache.MAX_CANDIDATES)
 
-            if (this.candidates.length > 0) {
+            if (loadedContracts.length > 0) {
 
+                // Only check the verification status of newly loaded contracts to avoid unduly loading Sourcify server
+                // at each reset
                 const addressesToCheck: string[] = []
-                this.candidates.forEach((c) => addressesToCheck.push(c.evm_address))
-                const verifiedAddresses: string[] = []
+                loadedContracts.forEach((c) => addressesToCheck.push(c.evm_address))
 
                 const baseURL = sourcifySetup.makeCheckAllByAddressURL()
                 const MAX_VERIFICATIONS = 100
@@ -95,16 +96,15 @@ export class VerifiedContractsCache extends SingletonCache<Contract[]> {
                     if (sourcifyResponse.data) {
                         for (const r of sourcifyResponse.data) {
                             if ('chainIds' in r) {
-                                verifiedAddresses.push(r.address.toLowerCase())
+                                this.verifiedAddresses.push(r.address.toLowerCase())
                             }
                         }
                     }
                 }
-
-                for (const c of this.candidates) {
-                        if (verifiedAddresses.includes(c.evm_address)) {
-                            result.push(c)
-                        }
+            }
+            for (const c of this.candidates) {
+                if (this.verifiedAddresses.includes(c.evm_address)) {
+                    result.push(c)
                 }
             }
         }
@@ -163,7 +163,6 @@ export class VerifiedContractsLookup extends SingletonLookup<Contract[]> impleme
 
     private async refresh(): Promise<void> {
         this.refreshCount += 1
-        console.log(`Refresh iteration ${this.refreshCount}`)
         if (this.refreshCount < this.maxRefreshCount) {
             this.scheduleNextRefresh()
         } else {
