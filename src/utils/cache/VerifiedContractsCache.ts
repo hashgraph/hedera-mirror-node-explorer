@@ -24,6 +24,7 @@ import axios, {AxiosResponse} from "axios";
 import {routeManager} from "@/router";
 import {computed, ComputedRef, ref, Ref} from "vue";
 import {PlayPauseController} from "@/components/PlayPauseButton.vue";
+import {SourcifyCache} from "@/utils/cache/SourcifyCache";
 
 export class VerifiedContractsCache extends SingletonCache<Contract[]> {
 
@@ -105,6 +106,10 @@ export class VerifiedContractsCache extends SingletonCache<Contract[]> {
             for (const c of this.candidates) {
                 if (this.verifiedAddresses.includes(c.evm_address)) {
                     result.push(c)
+                    const record = await SourcifyCache.instance.lookup(c.contract_id!)
+                    if (record === null) {
+                        SourcifyCache.instance.forget(c.contract_id!)
+                    }
                 }
             }
         }
