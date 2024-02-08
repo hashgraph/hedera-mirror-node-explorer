@@ -123,19 +123,25 @@ export class VerifiedContractsLookup extends SingletonLookup<Contract[]> impleme
     private timeoutID = -1
     private maxRefreshCount = 10
     private refreshCount = 0
-    private autoRefreshRef: Ref<boolean> = ref(false)
+    private autoRefreshRef: Ref<boolean> = ref(true)
 
     constructor(cache: VerifiedContractsCache) {
         super(cache)
     }
 
-    public mount(): void {
-        this.startAutoRefresh()
+    public async mount(): Promise<void> {
+        if (this.autoRefreshRef.value) {
+            this.scheduleNextRefresh()
+        }
+        this.entity.value = await this.cache.lookup()
     }
 
     public unmount(): void {
         this.entity.value = null
-        this.stopAutoRefresh()
+        if (this.timeoutID != -1) {
+            window.clearTimeout(this.timeoutID)
+            this.timeoutID = -1
+        }
     }
 
     //
