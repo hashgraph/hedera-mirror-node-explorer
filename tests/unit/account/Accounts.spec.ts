@@ -70,10 +70,10 @@ describe("Accounts.vue", () => {
 
         const table = card.findComponent(AccountTable)
         expect(table.exists()).toBe(true)
-        expect(table.get('thead').text()).toBe("Account Expiry Tokens Memo Balance")
+        expect(table.get('thead').text()).toBe("ID Created Tokens Memo Balance")
         expect(table.get('tbody').text()).toBe(
             "0.0.730631" +
-            "None" +
+            "5:12:31.6676 AMFeb 28, 2022, UTC" +
             "1023423" +
             "None" +
             "23.42647909"

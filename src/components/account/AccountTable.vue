@@ -46,14 +46,14 @@
       aria-previous-label="Previous page"
       customRowKey="account"
   >
-    <o-table-column v-slot="props" field="account" label="Account">
+    <o-table-column v-slot="props" field="account" label="ID">
       <div class="is-numeric">
         {{ props.row.account }}
       </div>
     </o-table-column>
 
-    <o-table-column field="expiry" label="Expiry" v-slot="props">
-      <TimestampValue v-bind:timestamp="props.row?.expiration_timestamp" v-bind:show-none="true"/>
+    <o-table-column v-slot="props" field="created" label="Created">
+      <TimestampValue v-bind:timestamp="props.row.created_timestamp"/>
     </o-table-column>
 
     <o-table-column field="nb_tokens" label="Tokens" v-slot="props">
@@ -74,7 +74,7 @@
 
     <o-table-column v-slot="props" field="memo" label="Memo">
       <div class="w250">
-        <BlobValue v-bind:blob-value="props.row.memo_base64" v-bind:base64="true" v-bind:show-none="true"/>
+        <BlobValue v-bind:blob-value="props.row.memo" v-bind:base64="true" v-bind:show-none="true"/>
       </div>
     </o-table-column>
 
