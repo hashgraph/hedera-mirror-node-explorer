@@ -25,7 +25,7 @@
 <template>
   <div>
   <!-- <div class="is-relative"> -->
-    <button id="showStakingDialog" class="button is-white h-is-smaller"
+    <button v-if="isEthereumWallet" id="showStakingDialog" class="button is-white h-is-smaller"
         @click="() => isActive = !isActive">TOKEN ACTIONS</button>
 
     <div v-if="isActive" class="token-actions-wrapper">
@@ -38,6 +38,9 @@
       <div v-if="isWatchAssetSupported" id="showStakingDialog" class="token-actions-btn is-hover"
         @click="handleImport">TOKEN IMPORT</div>
     </div>
+
+    <button v-if="isHederaWallet" id="showStakingDialog" class="button is-white h-is-smaller"
+        @click="() => isDissociated ? handleAssociate() : handleDissociate()">{{ isDissociated ? `TOKEN ASSOCIATE` : `TOKEN DISSOCIATE` }}</button>
 
     <ConfirmDialog :show-dialog="showConfirmDialog"
                    :main-message ="confirmMessage"
@@ -140,6 +143,8 @@ export default defineComponent({
     const isActive = ref(false)
     const tokenSerialNumber = ref("")
     const serialNumberInputRef = ref(null)
+    const isHederaWallet = computed(() => walletManager.isHederaWallet.value)
+    const isEthereumWallet = computed(() => walletManager.isEthereumWallet.value)
     const isWatchAssetSupported = computed(() => walletManager.isEthereumWallet.value)
 
     //
@@ -376,11 +381,13 @@ export default defineComponent({
       walletManager,
       isDissociated,
       confirmMessage,
+      isHederaWallet,
       dynamicMessage,
       showDoneDialog,
       handleAssociate,
       showWatchOption,
       handleDissociate,
+      isEthereumWallet,
       showDynamicDialog,
       tokenSerialNumber,
       handleDoneConfirm,
@@ -394,7 +401,7 @@ export default defineComponent({
       progressExtraMessage,
       serialNumberInputRef,
       isWatchAssetSupported,
-      progressExtraTransactionId
+      progressExtraTransactionId,
     }
   }
 })
