@@ -36,11 +36,6 @@
             <div class="is-inline-block h-is-tertiary-text h-is-extra-text should-wrap" style="word-break: break-all">
               {{ displaySymbol }}
             </div>
-            
-          <div v-if="ethereumAddress && isWalletConnected" class="h-is-property-text is-flex algin-items-center" style="position: absolute; top: 0; right: 0;">
-            <TokenActions :analyzer="tokenAnalyzer"/>
-          </div>
-        
         <div id="entityId" class="headline-grid h-is-tertiary-text mt-3 is-align-items-baseline">
           <div class="h-is-property-text has-text-weight-light">Token ID:</div>
           <div>
@@ -58,6 +53,12 @@
           <div class="is-flex is-align-items-baseline">
             <EVMAddress class="mr-3" :show-id="false" :has-custom-font="true" :address="ethereumAddress"/>
           </div>
+        </div>
+      </template>
+
+      <template v-slot:control>
+        <div v-if="ethereumAddress && isWalletConnected" class="h-is-property-text is-flex algin-items-center is-relative">
+          <TokenActions :analyzer="tokenAnalyzer"/>
         </div>
       </template>
 
