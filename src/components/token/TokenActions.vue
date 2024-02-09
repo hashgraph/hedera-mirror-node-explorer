@@ -28,14 +28,14 @@
     <button v-if="isEthereumWallet" id="showStakingDialog" class="button is-white h-is-smaller"
         @click="() => isActive = !isActive">TOKEN ACTIONS</button>
 
-    <div v-if="isActive" class="token-actions-wrapper">
-      <div v-if="isDissociated" id="showStakingDialog" class="token-actions-btn is-hover"
+    <div v-if="isActive" class="token-actions-wrapper is-flex is-flex-direction-column">
+      <div v-if="isDissociated" id="showStakingDialog" class="is-cursor is-hover-grey is-full has-cursor-pointer h-is-text-size-3"
         @click="handleAssociate">TOKEN ASSOCIATE</div>
 
-      <div v-if="isAssociated" id="showStakingDialog" class="token-actions-btn is-hover"
+      <div v-if="isAssociated" id="showStakingDialog" class="is-cursor is-hover-grey  is-full has-cursor-pointer h-is-text-size-3"
         @click="handleDissociate">TOKEN DISSOCIATE</div>
 
-      <div v-if="isWatchAssetSupported" id="showStakingDialog" class="token-actions-btn is-hover"
+      <div v-if="isWatchAssetSupported" id="showStakingDialog" class="is-cursor is-hover-grey  is-full has-cursor-pointer h-is-text-size-3"
         @click="handleImport">TOKEN IMPORT</div>
     </div>
 
@@ -73,16 +73,17 @@
         </template>
 
         <template v-slot:dialogInput>
-          <div class="dynamic-dialog-input-wrapper">
-            <p class="dynamic-dialog-input-title">
+          <div class="is-full is-flex is-flex-direction-column" style="gap: 0.34rem;">
+            <p class="h-is-property-text has-text-weight-medium">
               Serial Number:
             </p>
             <input
                 type="number"
                 ref="serialNumberInputRef"
                 v-model="tokenSerialNumber"
-                class="serial-number-input-box" 
+                style="border-radius: 0.3rem"
                 placeholder="Input serial number..." 
+                class="serial-number-input-box is-full py-2 px-1 h-is-property-text"
             />
           </div>
         </template>
@@ -417,41 +418,11 @@ export default defineComponent({
 .token-actions-wrapper {
   top: 0px;
   gap: 0.45rem;
-  left: -160px;
-  width: 153px;
-  display: flex;
+  width: 8.4rem;
+  left: -8.82rem;
   position: absolute;
-  padding: 8px 0 8px 6px;
-  flex-direction: column;
   border: 0.5px solid white;
-  background-color: transparent;
-}
-
-.token-actions-btn {
-  width: 100%;
-  cursor: pointer;
-  font-size: 0.72rem;
-  letter-spacing: 0.025em;
-}
-
-.dynamic-dialog-input-wrapper {
-  width: 100%;
-  gap: 0.34rem;
-  display: flex;
-  flex-direction: column;
-}
-
-.dynamic-dialog-input-title {
-  font-size: 1rem;
-  font-weight: 500;
-}
-
-.serial-number-input-box {
-  width: 100%;
-  appearance: none;
-  padding: 0.42rem;
-  font-size: medium;
-  border-radius: 0.3rem;
+  padding: 0.36rem 0 0.36rem 0.375rem;
 }
 
 .serial-number-input-box:focus {
@@ -465,13 +436,12 @@ export default defineComponent({
   letter-spacing: 0.025rem;
 }
 
-.is-hover:hover {
-    color: grey;
-}
-
+.is-cursor {cursor: pointer}
+.is-hover-grey:hover {color: grey}
 input::-webkit-outer-spin-button,
 input::-webkit-inner-spin-button {
   -webkit-appearance: none;
   margin: 0;
 }
+
 </style>
