@@ -21,6 +21,7 @@
 import {computed, ComputedRef, Ref, ref, watch, WatchStopHandle} from "vue";
 import {BalancesResponse, TokenBalance} from "@/schemas/HederaSchemas";
 import {BalanceCache} from "@/utils/cache/BalanceCache";
+import {Duration} from "@/utils/Duration";
 
 export class BalanceAnalyzer {
 
@@ -73,6 +74,7 @@ export class BalanceAnalyzer {
         return this.response.value?.timestamp ?? null
     })
 
+    public readonly balanceAge: Ref<Duration|null> = ref(null)
 
     //
     // Private
@@ -86,6 +88,7 @@ export class BalanceAnalyzer {
             } catch {
                 this.response.value = null
             } finally {
+                this.balanceAge.value = Duration.decompose(new Date().getTime() / 1000 - Number.parseFloat(this.balanceTimeStamp.value ?? ''))
                 this.scheduleNextLookup()
             }
         } else {
