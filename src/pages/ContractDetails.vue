@@ -64,25 +64,18 @@
 
       <template v-slot:content>
         <NotificationBanner v-if="notification" :message="notification"/>
+
+        <div class="h-is-property-text">
+          <Property id="balance" :full-width="isMediumScreen">
+            <template v-slot:name>{{ balanceAnalyzer.tokenBalances.value.length > 0 ? 'Balances' : 'Balance' }}</template>
+            <template v-slot:value>
+              <InlineBalancesValue :balance-analyzer="balanceAnalyzer"/>
+            </template>
+          </Property>
+        </div>
       </template>
 
       <template v-slot:leftContent>
-            <Property id="balance">
-              <template v-slot:name>{{ displayedBalances.length ? 'Balances' : 'Balance' }}</template>
-              <template v-slot:value>
-                <div class="has-flex-direction-column">
-                  <HbarAmount v-if="contract" :amount="balance" :show-extra="true" timestamp="0"/>
-                  <div v-for="t in displayedBalances" :key="t.token_id ?? undefined">
-                    <TokenAmount :amount="BigInt(t.balance)" :show-extra="true" :token-id="t.token_id"/>
-                  </div>
-                  <div v-if="displayAllTokenLinks">
-                    <router-link :to="{name: 'AccountBalances', params: {accountId: contractId}}">
-                      <span class="h-is-text-size-3 has-text-grey">Show all tokens</span>
-                    </router-link>
-                  </div>
-                </div>
-              </template>
-            </Property>
             <Property id="key">
               <template v-slot:name>Admin Key</template>
               <template v-slot:value>
@@ -197,7 +190,7 @@
 
 <script lang="ts">
 
-import {computed, ComputedRef, defineComponent, inject, onBeforeUnmount, onMounted} from 'vue';
+import {computed, defineComponent, inject, onBeforeUnmount, onMounted} from 'vue';
 import KeyValue from "@/components/values/KeyValue.vue";
 import AccountLink from "@/components/values/AccountLink.vue";
 import TimestampValue from "@/components/values/TimestampValue.vue";
@@ -224,17 +217,15 @@ import {ContractAnalyzer} from "@/utils/analyzer/ContractAnalyzer";
 import ContractResultLogs from "@/components/contract/ContractResultLogs.vue";
 import {ContractResultsLogsAnalyzer} from "@/utils/analyzer/ContractResultsLogsAnalyzer";
 import {BalanceAnalyzer} from "@/utils/analyzer/BalanceAnalyzer";
-import {TokenBalance} from "@/schemas/HederaSchemas";
-import {NftCollectionCache} from "@/utils/cache/NftCollectionCache";
+import InlineBalancesValue from "@/components/values/InlineBalancesValue.vue";
 import MirrorLink from "@/components/MirrorLink.vue";
-
-const MAX_TOKEN_BALANCES = 3
 
 export default defineComponent({
 
   name: 'ContractDetails',
 
   components: {
+    InlineBalancesValue,
     MirrorLink,
     Copyable,
     ContractByteCodeSection,
@@ -311,9 +302,6 @@ export default defineComponent({
     onMounted(() => accountLookup.mount())
     onBeforeUnmount(() => accountLookup.unmount())
 
-    const balance: ComputedRef<number|null>
-        = computed(() => accountLookup.entity.value?.balance?.balance ?? null)
-
     //
     // BalanceAnalyzer
     //
@@ -321,37 +309,6 @@ export default defineComponent({
     const balanceAnalyzer = new BalanceAnalyzer(contractLocParser.contractId, 10000)
     onMounted(() => balanceAnalyzer.mount())
     onBeforeUnmount(() => balanceAnalyzer.unmount())
-
-    //
-    // NftCollectionCache
-    //
-
-    const nftCollectionLookup = NftCollectionCache.instance.makeLookup(normalizedContractId)
-    onMounted(() => nftCollectionLookup.mount())
-    onBeforeUnmount(() => nftCollectionLookup.unmount())
-
-    const displayedBalances: ComputedRef<TokenBalance[]> = computed(() => {
-      const result: TokenBalance[] = []
-      const allBalances = balanceAnalyzer.tokenBalances.value
-      // Display in priority 'non-zero balances'
-      for (let i = 0; i < allBalances.length && result.length < MAX_TOKEN_BALANCES; i++) {
-        if (allBalances[i].balance > 0) {
-          result.push(allBalances[i])
-        }
-      }
-      // Complete with 'zero balances' if any room left
-      for (let i = 0; i < allBalances.length && result.length < MAX_TOKEN_BALANCES; i++) {
-        if (!result.includes(allBalances[i])) {
-          result.push(allBalances[i])
-        }
-      }
-      return result
-    })
-
-    const displayAllTokenLinks = computed(() => {
-      return displayedBalances.value.length < balanceAnalyzer.tokenBalances.value.length
-          || (nftCollectionLookup.entity.value?.length ?? 0) > 0
-    })
 
     const accountRoute = computed(() => {
       return normalizedContractId.value !== null ?  routeManager.makeRouteToAccount(normalizedContractId.value) : null
@@ -373,12 +330,10 @@ export default defineComponent({
       isMediumScreen,
       isTouchDevice,
       contract: contractLocParser.entity,
-      balance,
-      displayedBalances,
+      balanceAnalyzer,
       ethereumAddress: contractLocParser.ethereumAddress,
       displayNonce,
       accountChecksum,
-      displayAllTokenLinks,
       notification: contractLocParser.errorNotification,
       autoRenewAccount: autoRenewAccount,
       obtainerId: obtainerId,
