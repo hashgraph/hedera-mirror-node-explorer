@@ -36,6 +36,9 @@
         <div class="is-inline-block h-is-tertiary-text h-is-extra-text should-wrap" style="word-break: break-all">
           {{ displaySymbol }}
         </div>
+      </template>
+
+      <template v-slot:subtitle>
         <div id="entityId" class="headline-grid h-is-tertiary-text mt-3 is-align-items-baseline">
           <div class="h-is-property-text has-text-weight-light">Token ID:</div>
           <div>
@@ -47,19 +50,17 @@
             <span v-if="tokenChecksum" class="has-text-grey h-is-smaller">-{{ tokenChecksum }}</span>
           </div>
         </div>
-
         <div v-if="ethereumAddress" id="evmAddress"
              class="headline-grid is-align-items-baseline h-is-property-text mt-2" style="word-break: keep-all">
           <div class="has-text-weight-light">EVM Address:</div>
-          <div class="is-flex is-align-items-baseline">
-            <EVMAddress class="mr-3" :show-id="false" :has-custom-font="true" :address="ethereumAddress"/>
-            <WalletImport v-if="connectedToEthereum && isSmallScreen" :analyzer="tokenAnalyzer"/>
+            <div class="is-flex is-align-items-baseline">
+              <EVMAddress class="mr-3" :show-id="false" :has-custom-font="true" :address="ethereumAddress"/>
+              <WalletImport v-if="connectedToEthereum && isSmallScreen" :analyzer="tokenAnalyzer"/>
+            </div>
           </div>
-        </div>
         <div v-if="ethereumAddress && connectedToEthereum && !isSmallScreen" class="mt-2 h-is-property-text">
           <WalletImport :analyzer="tokenAnalyzer"/>
         </div>
-
       </template>
 
       <template v-slot:content>
