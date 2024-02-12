@@ -131,6 +131,8 @@ export default defineComponent({
         })
 
         const displayAllTokenLinks = computed(() => {
+            // Display 'Show all tokens' link if > 10 balances or if at least 1 NFT collection (so we get a chance to
+            // display the collection details)
             return displayedBalances.value.length < props.balanceAnalyzer.tokenBalances.value.length
                 || (nftCollectionLookup.entity.value?.length ?? 0) > 0
         })
