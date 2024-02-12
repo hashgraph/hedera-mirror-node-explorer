@@ -25,6 +25,7 @@ import {flushPromises, mount} from "@vue/test-utils"
 import router from "@/router";
 import axios from "axios";
 import {
+    SAMPLE_ACCOUNT_BALANCES,
     SAMPLE_CONTRACT,
     SAMPLE_CONTRACT_AS_ACCOUNT,
     SAMPLE_CONTRACT_DELETED,
@@ -76,6 +77,9 @@ describe("ContractDetails.vue", () => {
         const matcher5 = "/api/v1/contracts/" + SAMPLE_CONTRACT.contract_id + "/results"
         mock.onGet(matcher5).reply(200, SAMPLE_CONTRACT_RESULTS);
 
+        const matcher6 = "/api/v1/balances"
+        mock.onGet(matcher6).reply(200, SAMPLE_ACCOUNT_BALANCES);
+
         const wrapper = mount(ContractDetails, {
             global: {
                 plugins: [router, Oruga]
@@ -89,7 +93,7 @@ describe("ContractDetails.vue", () => {
         // console.log(wrapper.html())
 
         expect(wrapper.text()).toMatch(RegExp("^Contract " + "Show associated account" + "Contract ID:" + SAMPLE_CONTRACT.contract_id))
-        expect(wrapper.get("#balanceValue").text()).toBe("2.00000000$0.49207")
+        expect(wrapper.get("#balanceValue").text()).toContain("23.42647909$5.76369")
         expect(wrapper.get("#keyValue").text()).toBe("4210 5082 0e14 85ac dd59 7260 88e0 e4a2 130e bbbb 7000 9f64 0ad9 5c78 dd5a 7b38CopyED25519")
         expect(wrapper.get("#memoValue").text()).toBe("Mirror Node acceptance test: 2022-03-07T15:09:15.228564328Z Create contract")
         expect(wrapper.get("#createTransactionValue").text()).toBe(TransactionID.normalize(SAMPLE_TRANSACTION.transaction_id))
@@ -159,6 +163,9 @@ describe("ContractDetails.vue", () => {
         const matcher5 = "/api/v1/contracts/" + SAMPLE_CONTRACT.contract_id + "/results"
         mock.onGet(matcher5).reply(200, SAMPLE_CONTRACT_RESULTS);
 
+        const matcher6 = "/api/v1/balances"
+        mock.onGet(matcher6).reply(200, SAMPLE_ACCOUNT_BALANCES);
+
         const wrapper = mount(ContractDetails, {
             global: {
                 plugins: [router, Oruga]
@@ -172,7 +179,7 @@ describe("ContractDetails.vue", () => {
         // console.log(wrapper.html())
 
         expect(wrapper.text()).toMatch(RegExp("^Contract " + "Show associated account" + "Contract ID:" + SAMPLE_CONTRACT.contract_id))
-        expect(wrapper.get("#balanceValue").text()).toBe("2.00000000$0.49207")
+        expect(wrapper.get("#balanceValue").text()).toContain("23.42647909$5.76369")
         expect(wrapper.get("#keyValue").text()).toBe("4210 5082 0e14 85ac dd59 7260 88e0 e4a2 130e bbbb 7000 9f64 0ad9 5c78 dd5a 7b38CopyED25519")
         expect(wrapper.get("#memoValue").text()).toBe("Mirror Node acceptance test: 2022-03-07T15:09:15.228564328Z Create contract")
         expect(wrapper.get("#createTransactionValue").text()).toBe(TransactionID.normalize(SAMPLE_TRANSACTION.transaction_id))

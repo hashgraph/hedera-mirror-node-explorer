@@ -112,7 +112,8 @@ describe("AccountDetails.vue", () => {
         // console.log(wrapper.html())
 
         expect(wrapper.text()).toMatch("Account Account ID:" + SAMPLE_ACCOUNT.account)
-        expect(wrapper.get("#balanceValue").text()).toBe("23.42647909$5.76369998234231ĦFRENSKINGDOM")
+        expect(wrapper.get("#balanceValue").text()).toContain("23.42647909$5.76369")
+        expect(wrapper.get("#balanceValue").text()).toContain("998234231ĦFRENSKINGDOM")
         expect(wrapper.get("#keyValue").text()).toBe(
             "aa2f 7b3e 759f 4531 ec2e 7941 afa4 49e6 a6e6 10ef b52a dae8 9e9c d8e9 d40d dcbf" +
             "Copy" +

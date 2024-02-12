@@ -91,37 +91,15 @@
       </template>
 
       <template v-slot:content>
-
         <NotificationBanner v-if="notification" :message="notification" :is-error="!isInactiveEvmAddress"/>
 
-        <div class="columns h-is-property-text">
-          <div class="column">
-            <Property id="balance">
-              <template v-slot:name>{{ displayedBalances.length ? 'Balances' : 'Balance' }}</template>
+        <div class="h-is-property-text">
+            <Property id="balance" :full-width="isMediumScreen">
+              <template v-slot:name>{{ balanceAnalyzer.tokenBalances.value.length > 0 ? 'Balances' : 'Balance' }}</template>
               <template v-slot:value>
-                <div v-if="account" class="h-is-tertiary-text">
-                  <HbarAmount v-bind:amount="hbarBalance" v-bind:show-extra="true" timestamp="0"/>
-                </div>
-                <div v-else-if="isInactiveEvmAddress" class="h-is-tertiary-text">
-                  <HbarAmount v-bind:amount="0" v-bind:show-extra="true" timestamp="0"/>
-                </div>
-                <div v-for="b in displayedBalances" :key="b.token_id ?? undefined" class="h-is-tertiary-text">
-                    <TokenAmount v-bind:amount="BigInt(b.balance)" v-bind:show-extra="true" v-bind:token-id="b.token_id"/>
-                </div>
-                <div v-if="displayAllTokenLinks">
-                  <router-link :to="{name: 'AccountBalances', params: {accountId: accountId}}">
-                    <span class="h-is-text-size-3 has-text-grey">Show all tokens</span>
-                  </router-link>
-                </div>
-                <div v-if="elapsed && !isSmallScreen" class="has-text-grey has-text-right"> {{ elapsed }} ago</div>
+                  <InlineBalancesValue :balance-analyzer="balanceAnalyzer"/>
               </template>
             </Property>
-          </div>
-          <div class="column">
-            <div v-if="isSmallScreen && elapsed" class="has-text-right has-text-grey mt-1">
-              {{ elapsed }} ago
-            </div>
-          </div>
         </div>
       </template>
 
@@ -283,11 +261,10 @@
 
 <script lang="ts">
 
-import {computed, ComputedRef, defineComponent, inject, onBeforeUnmount, onMounted, watch} from 'vue';
+import {computed, defineComponent, inject, onBeforeUnmount, onMounted, watch} from 'vue';
 import KeyValue from "@/components/values/KeyValue.vue";
 import PlayPauseButton from "@/components/PlayPauseButton.vue";
 import TransactionTable from "@/components/transaction/TransactionTable.vue";
-import {Duration} from "@/utils/Duration";
 import DurationValue from "@/components/values/DurationValue.vue";
 import TimestampValue from "@/components/values/TimestampValue.vue";
 import DashboardCard from "@/components/DashboardCard.vue";
@@ -314,11 +291,8 @@ import EVMAddress from "@/components/values/EVMAddress.vue";
 import ApproveAllowanceSection from "@/components/allowances/ApproveAllowanceSection.vue";
 import InfoTooltip from "@/components/InfoTooltip.vue";
 import Copyable from "@/components/Copyable.vue";
-import {TokenBalance} from "@/schemas/HederaSchemas";
-import {NftCollectionCache} from "@/utils/cache/NftCollectionCache";
+import InlineBalancesValue from "@/components/values/InlineBalancesValue.vue";
 import MirrorLink from "@/components/MirrorLink.vue";
-
-const MAX_TOKEN_BALANCES = 10
 
 export default defineComponent({
 
@@ -326,6 +300,7 @@ export default defineComponent({
 
   components: {
     MirrorLink,
+    InlineBalancesValue,
     Copyable,
     InfoTooltip,
     ApproveAllowanceSection,
@@ -419,55 +394,6 @@ export default defineComponent({
     onBeforeUnmount(() => balanceAnalyzer.unmount())
 
     //
-    // NftCollectionCache
-    //
-
-    const nftCollectionLookup = NftCollectionCache.instance.makeLookup(accountId)
-    onMounted(() => nftCollectionLookup.mount())
-    onBeforeUnmount(() => nftCollectionLookup.unmount())
-
-    const elapsed = computed(() => {
-          let result: string | null
-          if (balanceAnalyzer.balanceTimeStamp.value) {
-            const duration = Duration.decompose(new Date().getTime() / 1000 - Number.parseFloat(balanceAnalyzer.balanceTimeStamp.value))
-            if (duration.minutes >= 2) {
-              result = duration.minutes + "min"
-            } else if (duration.minutes == 1) {
-              result = "1min"
-            } else {
-              result = "just moments"
-            }
-          } else {
-            result = null
-          }
-          return result
-        }
-    )
-
-    const displayedBalances: ComputedRef<TokenBalance[]> = computed(() => {
-        const result: TokenBalance[] = []
-        const allBalances = balanceAnalyzer.tokenBalances.value
-        // Display in priority 'non-zero balances'
-        for (let i = 0; i < allBalances.length && result.length < MAX_TOKEN_BALANCES; i++) {
-            if (allBalances[i].balance > 0) {
-                result.push(allBalances[i])
-            }
-        }
-        // Complete with 'zero balances' if any room left
-        for (let i = 0; i < allBalances.length && result.length < MAX_TOKEN_BALANCES; i++) {
-            if (!result.includes(allBalances[i])) {
-                result.push(allBalances[i])
-            }
-        }
-        return result
-    })
-
-    const displayAllTokenLinks = computed(() => {
-        return displayedBalances.value.length < balanceAnalyzer.tokenBalances.value.length
-            || (nftCollectionLookup.entity.value?.length ?? 0) > 0
-    })
-
-    //
     // contract
     //
     const contractLookup = ContractByIdCache.instance.makeLookup(accountLocParser.accountId)
@@ -530,12 +456,7 @@ export default defineComponent({
       accountInfo: accountLocParser.accountDescription,
       nodeId: accountLocParser.nodeId,
       ethereumAddress: accountLocParser.ethereumAddress,
-      balanceTimeStamp: balanceAnalyzer.balanceTimeStamp,
-      hbarBalance: balanceAnalyzer.hbarBalance,
-      displayedBalances,
-      balanceAnalyzer, // For testing purpose
-      displayAllTokenLinks,
-      elapsed,
+      balanceAnalyzer,
       showContractVisible,
       stakePeriodStart: accountLocParser.stakePeriodStart,
       stakedNodeId: accountLocParser.stakedNodeId,
