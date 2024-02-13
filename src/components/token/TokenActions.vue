@@ -29,7 +29,7 @@
         @click="() => isActive = !isActive">TOKEN ACTIONS
     </button>
 
-    <div v-if="isActive" class="token-actions-wrapper is-flex is-flex-direction-column">
+    <div v-if="isActive" class="token-actions-wrapper is-flex is-flex-direction-column box">
       <div v-if="isDissociated" id="showStakingDialog" class="is-cursor is-hover-grey is-full has-cursor-pointer"
         @click="handleAssociate">TOKEN ASSOCIATE</div>
 
@@ -426,11 +426,6 @@ export default defineComponent({
   position: absolute;
   border: 0.5px solid white;
   padding: 0.36rem 0 0.36rem 0.375rem;
-}
-
-.serial-number-input-box:focus {
-  outline-offset: 2px;
-  outline: 2px solid transparent;
 }
 
 .serial-number-input-box::placeholder {
