@@ -25,22 +25,24 @@
 <template>
   <div>
   <!-- <div class="is-relative"> -->
-    <button v-if="isEthereumWallet" id="showStakingDialog" class="button is-white h-is-smaller"
-        @click="() => isActive = !isActive">TOKEN ACTIONS</button>
+    <button v-if="isEthereumWallet" id="showStakingDialog" class="button is-white is-small"
+        @click="() => isActive = !isActive">TOKEN ACTIONS
+    </button>
 
     <div v-if="isActive" class="token-actions-wrapper is-flex is-flex-direction-column">
-      <div v-if="isDissociated" id="showStakingDialog" class="is-cursor is-hover-grey is-full has-cursor-pointer h-is-text-size-3"
+      <div v-if="isDissociated" id="showStakingDialog" class="is-cursor is-hover-grey is-full has-cursor-pointer"
         @click="handleAssociate">TOKEN ASSOCIATE</div>
 
-      <div v-if="isAssociated" id="showStakingDialog" class="is-cursor is-hover-grey  is-full has-cursor-pointer h-is-text-size-3"
+      <div v-if="isAssociated" id="showStakingDialog" class="is-cursor is-hover-grey  is-full has-cursor-pointer"
         @click="handleDissociate">TOKEN DISSOCIATE</div>
 
-      <div v-if="isWatchAssetSupported" id="showStakingDialog" class="is-cursor is-hover-grey  is-full has-cursor-pointer h-is-text-size-3"
+      <div v-if="isWatchAssetSupported" id="showStakingDialog" class="is-cursor is-hover-grey  is-full has-cursor-pointer"
         @click="handleImport">TOKEN IMPORT</div>
     </div>
 
-    <button v-if="isHederaWallet" id="showStakingDialog" class="button is-white h-is-smaller"
-        @click="() => isDissociated ? handleAssociate() : handleDissociate()">{{ isDissociated ? `TOKEN ASSOCIATE` : `TOKEN DISSOCIATE` }}</button>
+    <button v-if="isHederaWallet" id="showStakingDialog" class="button is-white is-small"
+        @click="() => isDissociated ? handleAssociate() : handleDissociate()">{{ isDissociated ? `TOKEN ASSOCIATE` : `TOKEN DISSOCIATE` }}
+    </button>
 
     <ConfirmDialog :show-dialog="showConfirmDialog"
                    :main-message ="confirmMessage"
@@ -418,8 +420,9 @@ export default defineComponent({
 .token-actions-wrapper {
   top: 0px;
   gap: 0.45rem;
-  width: 8.4rem;
-  left: -8.82rem;
+  width: 9rem;
+  left: -9.6rem;
+  font-size: 0.735rem;
   position: absolute;
   border: 0.5px solid white;
   padding: 0.36rem 0 0.36rem 0.375rem;
