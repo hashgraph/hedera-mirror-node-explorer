@@ -62,7 +62,7 @@
 
   </o-table>
 
-  <EmptyTable v-if="contracts.length === 0"/>
+  <EmptyTable v-if="contracts.length === 0" :loading="!loaded"/>
 
 </template>
 
@@ -122,6 +122,7 @@ export default defineComponent({
       handleClick,
       ORUGA_MOBILE_BREAKPOINT,
       contracts,
+      loaded: props.contractsLookup.loaded
     }
   }
 });

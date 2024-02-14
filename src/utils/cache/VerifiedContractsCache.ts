@@ -125,6 +125,8 @@ export class VerifiedContractsLookup extends SingletonLookup<Contract[]> impleme
     private refreshCount = 0
     private autoRefreshRef: Ref<boolean> = ref(true)
 
+    public loaded = ref(false)
+
     constructor(cache: VerifiedContractsCache) {
         super(cache)
     }
@@ -134,10 +136,12 @@ export class VerifiedContractsLookup extends SingletonLookup<Contract[]> impleme
             this.scheduleNextRefresh()
         }
         this.entity.value = await this.cache.lookup()
+        this.loaded.value = true
     }
 
     public unmount(): void {
         this.entity.value = null
+        this.loaded.value = false
         if (this.timeoutID != -1) {
             window.clearTimeout(this.timeoutID)
             this.timeoutID = -1
