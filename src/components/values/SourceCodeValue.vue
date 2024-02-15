@@ -26,9 +26,9 @@
 <template>
     <div  v-if="sourceFiles.length > 0"  id="source-code"
           class="mt-2 h-code-box h-has-page-background" style="max-height: 400px;">
-        <template  v-for="(file, index) in sourceFiles">
+        <template  v-for="(file, index) in sourceFiles" :key="file.path">
             <p v-if="isFiltered(file)" class="pt-2 mx-3 h-is-extra-text">{{ file.name }}</p>
-            <prism v-if="isFiltered(file)" :key="file.name" language="solidity" style="background-color: #171920; font-size: 0.7rem">
+            <prism v-if="isFiltered(file)" language="solidity" style="background-color: #171920; font-size: 0.7rem">
                 <pre>{{ file.content }}</pre>
             </prism>
             <hr v-if="filter==='' && index < sourceFiles.length - 1" class="has-background-grey-dark m-0" style="height: 0.5px"/>
