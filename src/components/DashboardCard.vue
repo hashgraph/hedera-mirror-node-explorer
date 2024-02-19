@@ -24,7 +24,7 @@
 
 <template>
     <div :class="{'box': !isTouchDevice && isSmallScreen, 'h-box-border': !isTouchDevice && isSmallScreen}" style="height: 100%">
-        <div class="is-flex is-align-items-center is-justify-content-space-between">
+        <div class="is-flex is-align-items-center is-justify-content-space-between is-relative">
             <div>
                 <slot name="title"></slot>
             </div>

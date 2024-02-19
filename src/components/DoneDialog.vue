@@ -25,7 +25,7 @@
 <template>
   <div :class="{'is-active': showDialog}" class="modal has-text-white">
     <div class="modal-background"/>
-    <div class="modal-content" style="width: 768px; border-radius: 16px">
+    <div class="modal-content" style="width: 772px; border-radius: 16px">
       <div class="box">
 
         <div class="h-is-primary-title">
@@ -35,20 +35,13 @@
         <hr class="h-card-separator"/>
 
         <div v-if="mainMessage" class="block h-is-tertiary-text mt-2">{{ mainMessage }}</div>
-        <div v-else class="block h-is-property-text" style="visibility: hidden">Filler</div>
         <div v-if="extraMessage" class="my-4" style="line-height: 21px">
           <span v-if="extraMessage" class="h-is-property-text">{{ extraMessage }}</span>
-          <span v-else class="h-is-property-text" style="visibility: hidden">Filler</span>
         </div>
         
         
-        <div v-if="slots.dialogOption">
-          <slot name="dialogOption"/>
-        </div>
-
         <div class="is-flex is-justify-content-flex-end">
-          <button class="button is-white is-small" @click="handleCancel">{{ cancelLabel }}</button>
-          <button class="button is-info is-small ml-4" @click="handleConfirm">{{ confirmLabel }}</button>
+          <button class="button is-info is-small ml-4" @click="handleDone">{{ confirmLabel }}</button>
         </div>
 
       </div>
@@ -65,7 +58,7 @@
 import {defineComponent, PropType, useSlots} from "vue";
 
 export default defineComponent({
-  name: "ConfirmDialog",
+  name: "DoneDialog",
   components: {},
   props: {
     showDialog: {
@@ -82,31 +75,21 @@ export default defineComponent({
     },
     confirmLabel: {
         type: String as PropType<string>,
-        default: "CONFIRM"
-    },
-    cancelLabel: {
-        type: String as PropType<string>,
-        default: "CANCEL"
-    },
+        default: "DONE"
+    }
   },
 
   setup(props, context) {
     const slots = useSlots()
 
-    const handleCancel = () => {
-      context.emit('update:showDialog', false)
-      context.emit('onCancel')
-    }
-
-    const handleConfirm = () => {
-      context.emit('update:showDialog', false)
-      context.emit('onConfirm')
+    const handleDone = () => {
+      context.emit('update:showDoneDialog', false)
+      context.emit('onDoneConfirm')
     }
 
     return {
       slots,
-      handleCancel,
-      handleConfirm,
+      handleDone,
     }
   }
 });

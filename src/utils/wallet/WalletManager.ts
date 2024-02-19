@@ -204,10 +204,10 @@ export class WalletManager {
         }
     }
 
-    public async watchToken(token: string): Promise<void> {
+    public async watchToken(token: string, serialNumber?: string): Promise<void> {
         if (this.accountIdRef.value !== null) {
             if (this.activeDriver instanceof WalletDriver_Ethereum) {
-                return this.activeDriver.watchToken(this.accountIdRef.value, token)
+                return this.activeDriver.watchToken(this.accountIdRef.value, token, serialNumber)
             } else {
                 throw this.activeDriver.unsupportedOperation()
             }

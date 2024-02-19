@@ -25,8 +25,8 @@
 <template>
   <div :class="{'is-active': showDialog}" class="modal has-text-white">
     <div class="modal-background"/>
-    <div class="modal-content" style="width: 768px; border-radius: 16px">
-      <div class="box">
+    <div class="modal-content" style="width: 390px; border-radius: 9px">
+      <div class="box" style="padding: 12px;">
 
         <div class="h-is-primary-title">
           <slot name="dialogTitle"/>
@@ -34,19 +34,14 @@
 
         <hr class="h-card-separator"/>
 
-        <div v-if="mainMessage" class="block h-is-tertiary-text mt-2">{{ mainMessage }}</div>
+        <div v-if="mainMessage" class="h-is-tertiary-text mb-5" style="letter-spacing: 0.025rem; font-size: 1rem;">{{ mainMessage }}</div>
         <div v-else class="block h-is-property-text" style="visibility: hidden">Filler</div>
-        <div v-if="extraMessage" class="my-4" style="line-height: 21px">
-          <span v-if="extraMessage" class="h-is-property-text">{{ extraMessage }}</span>
-          <span v-else class="h-is-property-text" style="visibility: hidden">Filler</span>
-        </div>
         
-        
-        <div v-if="slots.dialogOption">
-          <slot name="dialogOption"/>
+        <div v-if="slots.dialogInput">
+          <slot name="dialogInput"/>
         </div>
 
-        <div class="is-flex is-justify-content-flex-end">
+        <div class="is-flex is-justify-content-flex-end mt-5 mb-1">
           <button class="button is-white is-small" @click="handleCancel">{{ cancelLabel }}</button>
           <button class="button is-info is-small ml-4" @click="handleConfirm">{{ confirmLabel }}</button>
         </div>
@@ -65,7 +60,7 @@
 import {defineComponent, PropType, useSlots} from "vue";
 
 export default defineComponent({
-  name: "ConfirmDialog",
+  name: "DynamicDialog",
   components: {},
   props: {
     showDialog: {
@@ -73,10 +68,6 @@ export default defineComponent({
       default: false
     },
     mainMessage: {
-      type: String as PropType<string|null>,
-      default: null
-    },
-    extraMessage: {
       type: String as PropType<string|null>,
       default: null
     },

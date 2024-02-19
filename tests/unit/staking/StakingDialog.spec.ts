@@ -141,7 +141,7 @@ describe("StakingDialog.vue", () => {
         // Clicks "CANCEL"
         await changeButton.trigger("click")
         await nextTick()
-        await cancelChangeStaking("Change Staking  for account 0.0.730632Do you want to stake to account 0.0.7-bmurp ?FillerCANCELCONFIRM")
+        await cancelChangeStaking("Change Staking  for account 0.0.730632Do you want to stake to account 0.0.7-bmurp ?CANCELCONFIRM")
 
         //
         // Valid EntityID:  "0.0.7"
@@ -155,7 +155,7 @@ describe("StakingDialog.vue", () => {
         // Clicks "CANCEL"
         await changeButton.trigger("click")
         await nextTick()
-        await cancelChangeStaking("Change Staking  for account 0.0.730632Do you want to stake to account 0.0.7-bmurp ?FillerCANCELCONFIRM")
+        await cancelChangeStaking("Change Staking  for account 0.0.730632Do you want to stake to account 0.0.7-bmurp ?CANCELCONFIRM")
 
         //
         // Valid EntityID:  "0.0.7-bmurp"
@@ -169,7 +169,7 @@ describe("StakingDialog.vue", () => {
         // Clicks "CHANGE"
         await changeButton.trigger("click")
         await nextTick()
-        await confirmChangeStaking("Change Staking  for account 0.0.730632Do you want to stake to account 0.0.7-bmurp ?FillerCANCELCONFIRM")
+        await confirmChangeStaking("Change Staking  for account 0.0.730632Do you want to stake to account 0.0.7-bmurp ?CANCELCONFIRM")
 
         mock.restore()
         wrapper.unmount()
