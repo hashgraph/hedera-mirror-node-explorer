@@ -44,5 +44,10 @@ export default defineConfig({
   },
   worker: {
     format: "es",
+  },
+  server: {
+    fs: {
+      cachedChecks: false // To be removed someday ? See https://github.com/vitejs/vite/issues/15784
+    }
   }
 })
