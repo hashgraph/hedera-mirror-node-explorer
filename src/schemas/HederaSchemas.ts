@@ -522,6 +522,7 @@ export interface ContractResult {
     gas_limit: number
     gas_price: string | null
     gas_used: number | null
+    gas_consumed: number | null
     hash: string | null
     max_fee_per_gas: string | null
     max_priority_fee_per_gas: string | null
