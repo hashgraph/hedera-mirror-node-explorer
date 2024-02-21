@@ -26,7 +26,17 @@
 
   <div v-if="value">
     <EVMAddress v-if="addressValue" :address="addressValue" :compact="!isSmallScreen && !isMediumScreen"/>
-    <div v-else :class="{'has-text-grey': lowContrast}" class="is-family-monospace h-is-text-size-3 should-wrap">{{ value }}</div>
+    <div v-else :class="{'has-text-grey': lowContrast}" class="is-family-monospace h-is-text-size-3 should-wrap is-flex">
+      <p class="mr-1">{{ value }}</p>
+
+      <a 
+        v-if="ntv?.comment" 
+        :href="ntv.comment.resourceLink || undefined"
+        target="_blank"
+        class="h-is-extra-text has-text-weight-bold is-family-monospace">
+          - {{ ntv.comment.message }}
+      </a>
+    </div>
     <div v-if="!hideType" class="h-is-extra-text h-is-text-size-3">{{ type }}</div>
   </div>
   <div v-else-if="initialLoading"/>
