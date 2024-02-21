@@ -21,7 +21,7 @@
  */
 
 import {describe, expect, test} from 'vitest'
-import {FunctionCallAnalyzer, NameTypeValue} from "@/utils/analyzer/FunctionCallAnalyzer";
+import {FunctionCallAnalyzer, FunctionFragments} from "@/utils/analyzer/FunctionCallAnalyzer";
 import {Ref, ref} from "vue";
 import {flushPromises} from "@vue/test-utils";
 import MockAdapter from "axios-mock-adapter";
@@ -78,11 +78,11 @@ describe("FunctionCallAnalyzer.spec.ts", () => {
         expect(functionCallAnalyzer.functionHash.value).toBe("0x49146bde")
         expect(functionCallAnalyzer.signature.value).toBe("associateToken(address,address)")
         expect(functionCallAnalyzer.inputs.value).toStrictEqual([
-            new NameTypeValue("account", "address", "0x845b706151aEd537b1FD81c1Ea4EA03920097ABD"),
-            new NameTypeValue("token", "address", "0x0000000000000000000000000000000002E6Ae09"),
+            new FunctionFragments("account", "address", "0x845b706151aEd537b1FD81c1Ea4EA03920097ABD"),
+            new FunctionFragments("token", "address", "0x0000000000000000000000000000000002E6Ae09"),
         ])
         expect(functionCallAnalyzer.outputs.value).toStrictEqual([
-            new NameTypeValue("responseCode", "int64", BigInt("0x05a995c0")),
+            new FunctionFragments("responseCode", "int64", BigInt("0x05a995c0")),
         ])
         expect(functionCallAnalyzer.errorHash.value).toBeNull()
         expect(functionCallAnalyzer.errorSignature.value).toBeNull()
@@ -118,8 +118,8 @@ describe("FunctionCallAnalyzer.spec.ts", () => {
         expect(functionCallAnalyzer.functionHash.value).toBe("0x49146bde")
         expect(functionCallAnalyzer.signature.value).toBe("associateToken(address,address)")
         expect(functionCallAnalyzer.inputs.value).toStrictEqual([
-            new NameTypeValue("account", "address", "0x845b706151aEd537b1FD81c1Ea4EA03920097ABD"),
-            new NameTypeValue("token", "address", "0x0000000000000000000000000000000002E6Ae09"),
+            new FunctionFragments("account", "address", "0x845b706151aEd537b1FD81c1Ea4EA03920097ABD"),
+            new FunctionFragments("token", "address", "0x0000000000000000000000000000000002E6Ae09"),
         ])
         expect(functionCallAnalyzer.outputs.value).toStrictEqual([])
         expect(functionCallAnalyzer.errorHash.value).toBeNull()
@@ -199,18 +199,18 @@ describe("FunctionCallAnalyzer.spec.ts", () => {
         expect(functionCallAnalyzer.functionHash.value).toBe("0xf305d719")
         expect(functionCallAnalyzer.signature.value).toBe("addLiquidityETH(address,uint256,uint256,uint256,address,uint256)")
         expect(functionCallAnalyzer.inputs.value).toStrictEqual([
-            new NameTypeValue("token", "address", "0x000000000000000000000000000000000022D6de"),
-            new NameTypeValue("amountTokenDesired", "uint256", 1445100000000n),
-            new NameTypeValue("amountTokenMin", "uint256", 1437874500000n),
-            new NameTypeValue("amountETHMin", "uint256", 65859917291n),
-            new NameTypeValue("to", "address", "0x00000000000000000000000000000000000f45b3"),
-            new NameTypeValue("deadline", "uint256", 1704391514287n),
+            new FunctionFragments("token", "address", "0x000000000000000000000000000000000022D6de"),
+            new FunctionFragments("amountTokenDesired", "uint256", 1445100000000n),
+            new FunctionFragments("amountTokenMin", "uint256", 1437874500000n),
+            new FunctionFragments("amountETHMin", "uint256", 65859917291n),
+            new FunctionFragments("to", "address", "0x00000000000000000000000000000000000f45b3"),
+            new FunctionFragments("deadline", "uint256", 1704391514287n),
         ])
         expect(functionCallAnalyzer.outputs.value).toStrictEqual([])
         expect(functionCallAnalyzer.errorHash.value).toBe("0x08c379a0")
         expect(functionCallAnalyzer.errorSignature.value).toBe("Error(string)")
         expect(functionCallAnalyzer.errorInputs.value).toStrictEqual([
-            new NameTypeValue("", "string", "UniswapV2Router: INSUFFICIENT_B_AMOUNT"),
+            new FunctionFragments("", "string", "UniswapV2Router: INSUFFICIENT_B_AMOUNT"),
         ])
         expect(functionCallAnalyzer.inputDecodingStatus.value).toBeNull()
         expect(functionCallAnalyzer.outputDecodingStatus.value).toBeNull()
@@ -287,18 +287,18 @@ describe("FunctionCallAnalyzer.spec.ts", () => {
         expect(functionCallAnalyzer.functionHash.value).toBe("0xf305d719")
         expect(functionCallAnalyzer.signature.value).toBe("addLiquidityETH(address,uint256,uint256,uint256,address,uint256)")
         expect(functionCallAnalyzer.inputs.value).toStrictEqual([
-            new NameTypeValue("token", "address", "0x000000000000000000000000000000000022D6de"),
-            new NameTypeValue("amountTokenDesired", "uint256", 1445100000000n),
-            new NameTypeValue("amountTokenMin", "uint256", 1437874500000n),
-            new NameTypeValue("amountETHMin", "uint256", 65859917291n),
-            new NameTypeValue("to", "address", "0x00000000000000000000000000000000000f45b3"),
-            new NameTypeValue("deadline", "uint256", 1704391514287n),
+            new FunctionFragments("token", "address", "0x000000000000000000000000000000000022D6de"),
+            new FunctionFragments("amountTokenDesired", "uint256", 1445100000000n),
+            new FunctionFragments("amountTokenMin", "uint256", 1437874500000n),
+            new FunctionFragments("amountETHMin", "uint256", 65859917291n),
+            new FunctionFragments("to", "address", "0x00000000000000000000000000000000000f45b3"),
+            new FunctionFragments("deadline", "uint256", 1704391514287n),
         ])
         expect(functionCallAnalyzer.outputs.value).toStrictEqual([])
         expect(functionCallAnalyzer.errorHash.value).toBe("0x08c379a0")
         expect(functionCallAnalyzer.errorSignature.value).toBe("Error(string)")
         expect(functionCallAnalyzer.errorInputs.value).toStrictEqual([
-            new NameTypeValue("", "string", "UniswapV2Router: INSUFFICIENT_B_AMOUNT"),
+            new FunctionFragments("", "string", "UniswapV2Router: INSUFFICIENT_B_AMOUNT"),
         ])
         expect(functionCallAnalyzer.inputDecodingStatus.value).toBeNull()
         expect(functionCallAnalyzer.outputDecodingStatus.value).toBeNull()
@@ -376,12 +376,12 @@ describe("FunctionCallAnalyzer.spec.ts", () => {
         expect(functionCallAnalyzer.functionHash.value).toBe("0xf305d719")
         expect(functionCallAnalyzer.signature.value).toBe("addLiquidityETH(address,uint256,uint256,uint256,address,uint256)")
         expect(functionCallAnalyzer.inputs.value).toStrictEqual([
-            new NameTypeValue("", "address", "0x000000000000000000000000000000000022D6de"),
-            new NameTypeValue("", "uint256", 1445100000000n),
-            new NameTypeValue("", "uint256", 1437874500000n),
-            new NameTypeValue("", "uint256", 65859917291n),
-            new NameTypeValue("", "address", "0x00000000000000000000000000000000000f45b3"),
-            new NameTypeValue("", "uint256", 1704391514287n),
+            new FunctionFragments("", "address", "0x000000000000000000000000000000000022D6de"),
+            new FunctionFragments("", "uint256", 1445100000000n),
+            new FunctionFragments("", "uint256", 1437874500000n),
+            new FunctionFragments("", "uint256", 65859917291n),
+            new FunctionFragments("", "address", "0x00000000000000000000000000000000000f45b3"),
+            new FunctionFragments("", "uint256", 1704391514287n),
         ])
         expect(functionCallAnalyzer.outputs.value).toStrictEqual([])
         expect(functionCallAnalyzer.errorHash.value).toBeNull()

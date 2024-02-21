@@ -108,8 +108,8 @@ export class FunctionCallAnalyzer {
         return this.errorDescription.value?.selector ?? null
     })
 
-    public readonly inputs: ComputedRef<NameTypeValue[]> = computed(() => {
-        const result: NameTypeValue[] = []
+    public readonly inputs: ComputedRef<FunctionFragments[]> = computed(() => {
+        const result: FunctionFragments[] = []
         if (this.functionFragment.value !== null && this.inputResult.value !== null) {
             const results = this.inputResult.value
             const fragmentInputs = this.functionFragment.value.inputs
@@ -117,14 +117,14 @@ export class FunctionCallAnalyzer {
                 const value = results[i]
                 const name = i < fragmentInputs.length ? fragmentInputs[i].name : "?"
                 const type = i < fragmentInputs.length ? fragmentInputs[i].type : "?"
-                result.push(new NameTypeValue(name, type, value))
+                result.push(new FunctionFragments(name, type, value))
             }
         }
         return result
     })
 
-    public readonly outputs: ComputedRef<NameTypeValue[]> = computed(() => {
-        const result: NameTypeValue[] = []
+    public readonly outputs: ComputedRef<FunctionFragments[]> = computed(() => {
+        const result: FunctionFragments[] = []
         if (this.functionFragment.value !== null && this.outputResult.value !== null) {
             const results = this.outputResult.value
             const fragmentOutputs = this.functionFragment.value.outputs
@@ -132,14 +132,14 @@ export class FunctionCallAnalyzer {
                 const value = results[i]
                 const name = i < fragmentOutputs.length ? fragmentOutputs[i].name : "?"
                 const type = i < fragmentOutputs.length ? fragmentOutputs[i].type : "?"
-                result.push(new NameTypeValue(name, type, value))
+                result.push(new FunctionFragments(name, type, value))
             }
         }
         return result
     })
 
-    public readonly errorInputs: ComputedRef<NameTypeValue[]> = computed(() => {
-        const result: NameTypeValue[] = []
+    public readonly errorInputs: ComputedRef<FunctionFragments[]> = computed(() => {
+        const result: FunctionFragments[] = []
         if (this.errorDescription.value !== null) {
             const results = this.errorDescription.value.args
             const fragmentInputs = this.errorDescription.value?.fragment.inputs ?? []
@@ -147,7 +147,7 @@ export class FunctionCallAnalyzer {
                 const value = results[i]
                 const name = i < fragmentInputs.length ? fragmentInputs[i].name : "?"
                 const type = i < fragmentInputs.length ? fragmentInputs[i].type : "?"
-                result.push(new NameTypeValue(name, type, value))
+                result.push(new FunctionFragments(name, type, value))
             }
         }
         return result
@@ -340,7 +340,7 @@ export class FunctionCallAnalyzer {
     }
 }
 
-export class NameTypeValue {
+export class FunctionFragments {
     public readonly name: string
     public readonly type: string
     public readonly value: unknown

@@ -22,7 +22,7 @@ import {computed, ComputedRef, Ref, shallowRef, watch, WatchStopHandle} from "vu
 import {ContractResultLog} from "@/schemas/HederaSchemas";
 import {ContractAnalyzer} from "@/utils/analyzer/ContractAnalyzer";
 import {ethers} from "ethers";
-import {NameTypeValue} from "@/utils/analyzer/FunctionCallAnalyzer";
+import {FunctionFragments} from "@/utils/analyzer/FunctionCallAnalyzer";
 
 export class ContractLogAnalyzer {
 
@@ -82,19 +82,19 @@ export class ContractLogAnalyzer {
     )
 
 
-    public readonly args: ComputedRef<NameTypeValue[]> = computed(() => {
-        const result: NameTypeValue[] = []
+    public readonly args: ComputedRef<FunctionFragments[]> = computed(() => {
+        const result: FunctionFragments[] = []
         if (this.logDescription.value) {
             const args = this.logDescription.value.args
             const signatureHash = this.logDescription.value.topic
             const fragmentInputs = this.logDescription.value.fragment.inputs
-            result.push(new NameTypeValue("signature hash", "", signatureHash, true))
+            result.push(new FunctionFragments("signature hash", "", signatureHash, true))
             for (let i = 0; i < args.length; i+= 1) {
                 const value = args[i]
                 const name = i < fragmentInputs.length ? fragmentInputs[i].name : "?"
                 const type = i < fragmentInputs.length ? fragmentInputs[i].type : "?"
                 const indexed = i < fragmentInputs.length ? fragmentInputs[i].indexed : false
-                result.push(new NameTypeValue(name, type, value, indexed))
+                result.push(new FunctionFragments(name, type, value, indexed))
             }
         }
         return result
