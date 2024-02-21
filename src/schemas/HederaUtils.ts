@@ -19,9 +19,10 @@
  */
 
 import {AccountInfo, KeyType, NetworkNode, TokenInfo, TokenRelationship, Transfer} from "@/schemas/HederaSchemas";
+import {ethers} from "ethers";
 import {EntityID} from "@/utils/EntityID";
 import {hexToByte} from "@/utils/B64Utils";
-import {ethers} from "ethers";
+import * as hashgraph from "@hashgraph/proto";
 
 export function makeEthAddressForAccount(account: AccountInfo): string|null {
     if (account.evm_address) return account.evm_address;
@@ -212,4 +213,10 @@ export function lookupTokenRelationship(relations: TokenRelationship[], targetTo
         }
     }
     return result
+}
+
+export function labelForResponseCode(responseCode: bigint): string|null {
+    const responseCodeEnum = hashgraph.proto.ResponseCodeEnum;
+    const result = Object.keys(responseCodeEnum).find((key: any) => BigInt(responseCodeEnum[key]) === responseCode);
+    return result || null;
 }
