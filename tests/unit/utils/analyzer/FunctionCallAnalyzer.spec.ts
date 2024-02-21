@@ -82,7 +82,7 @@ describe("FunctionCallAnalyzer.spec.ts", () => {
             new FunctionFragments("token", "address", "0x0000000000000000000000000000000002E6Ae09"),
         ])
         expect(functionCallAnalyzer.outputs.value).toStrictEqual([
-            new FunctionFragments("responseCode", "int64", BigInt("0x05a995c0")),
+            new FunctionFragments("responseCode", "int64", BigInt("0x05a995c0"), null, {message: null, resourceLink: null}),
         ])
         expect(functionCallAnalyzer.errorHash.value).toBeNull()
         expect(functionCallAnalyzer.errorSignature.value).toBeNull()

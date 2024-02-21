@@ -20,6 +20,7 @@
 
 import {computed, ComputedRef, ref, Ref, shallowRef, watch, WatchStopHandle} from "vue";
 import {ethers} from "ethers";
+import {labelForResponseCode} from "@/schemas/HederaUtils";
 import {ContractAnalyzer} from "@/utils/analyzer/ContractAnalyzer";
 import {SignatureCache, SignatureRecord, SignatureResponse} from "@/utils/cache/SignatureCache";
 
@@ -132,7 +133,8 @@ export class FunctionCallAnalyzer {
                 const value = results[i]
                 const name = i < fragmentOutputs.length ? fragmentOutputs[i].name : "?"
                 const type = i < fragmentOutputs.length ? fragmentOutputs[i].type : "?"
-                result.push(new FunctionFragments(name, type, value))
+                const comment = i < fragmentOutputs.length ? this.makeComment(value, fragmentOutputs[i]) : null
+                result.push(new FunctionFragments(name, type, value, null, comment))
             }
         }
         return result
@@ -338,6 +340,20 @@ export class FunctionCallAnalyzer {
         }
         return result
     }
+
+    private makeComment(value: unknown, paramType: ethers.ParamType): FuctionFragmentsComment|null {
+        if (this.contractAnalyzer.systemContractEntry.value !== null
+            && paramType.name == "responseCode"
+            && typeof value == "bigint") {
+            // It's a responseCode from a system contract
+            const message = labelForResponseCode(value)
+            const resourceLink = message && `https://docs.hedera.com/hedera/sdks-and-apis/hedera-api/miscellaneous/responsecode#${message}`
+            return {message, resourceLink}
+        } else {
+            return null
+        }
+    }
+
 }
 
 export class FunctionFragments {
@@ -345,10 +361,17 @@ export class FunctionFragments {
     public readonly type: string
     public readonly value: unknown
     public readonly indexed: boolean | null
-    public constructor(name: string, type: string, value: unknown, indexed: boolean|null = null) {
+    public readonly comment: FuctionFragmentsComment | null
+    public constructor(name: string, type: string, value: unknown, indexed: boolean|null = null, comment: FuctionFragmentsComment|null = null) {
         this.name = name
         this.type = type
         this.value = value
         this.indexed = indexed
+        this.comment = comment
     }
+}
+
+interface FuctionFragmentsComment {
+    message: string|null;
+    resourceLink: string|null;
 }
