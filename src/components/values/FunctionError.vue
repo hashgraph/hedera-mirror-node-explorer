@@ -23,11 +23,8 @@
 <!-- --------------------------------------------------------------------------------------------------------------- -->
 
 <template>
-
     <template v-if="errorSignature">
-
         <div v-if="error">
-
             <div class="h-is-tertiary-text my-2">Error</div>
 
             <Property :custom-nb-col-class="customNbColClass" id="errorFunction">
@@ -46,20 +43,19 @@
                     </template>
                 </Property>
             </template>
-
-        </div><template v-else>
-
+        </div>
+        
+        <template v-else>
             <Property :custom-nb-col-class="customNbColClass" id="functionInput">
                 <template v-slot:name>Error Message</template>
                 <template v-slot:value>
                     <HexaValue :show-none="true"/>
                 </template>
             </Property>
-
         </template>
-
-    </template><template v-else>
-
+    </template>
+    
+    <template v-else>
         <Property :custom-nb-col-class="customNbColClass" id="errorMessage">
             <template v-slot:name>Error Message</template>
             <template v-slot:value>
@@ -73,7 +69,6 @@
                 </template>
             </template>
         </Property>
-
     </template>
 
 </template>
@@ -109,7 +104,6 @@ export default defineComponent({
     },
 
     setup(props) {
-
         const initialLoading = inject(initialLoadingKey, ref(false))
         const decodedError = computed( () =>
             props.analyzer.normalizedError.value != null ? decodeSolidityErrorMessage(props.analyzer.normalizedError.value) : null)
