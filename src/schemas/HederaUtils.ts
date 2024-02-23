@@ -127,7 +127,7 @@ const errorStringSelector = '0x08c379a0'
 const panicUint256Selector = '0x4e487b71'
 
 export function decodeSolidityErrorMessage(message: string | null): string | null {
-    let result: string|null = null
+    let result: string|null
 
     // https://blog.soliditylang.org/2020/12/16/solidity-v0.8.0-release-announcement/
     // Section "Revert on assertion failures and similar conditions instead of using the invalid opcode"
@@ -147,7 +147,9 @@ export function decodeSolidityErrorMessage(message: string | null): string | nul
                 ethers.dataSlice(message ?? "", 4)
             )
             result = 'Panic(0x' + parseInt(code.toString()).toString(16) + ')'
-        } 
+        }  else {
+            result = null;
+        }
     } catch(reason) {
         result = null
     }
