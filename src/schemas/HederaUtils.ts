@@ -147,10 +147,8 @@ export function decodeSolidityErrorMessage(message: string | null): string | nul
                 ethers.dataSlice(message ?? "", 4)
             )
             result = 'Panic(0x' + parseInt(code.toString()).toString(16) + ')'
-        } else {
-            const textDecoder = new TextDecoder()
-            const bytes = hexToByte(message)
-            result = bytes !== null ? textDecoder.decode(bytes) : null
+        }  else {
+            result = null;
         }
     } catch(reason) {
         result = null
