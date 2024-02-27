@@ -109,8 +109,8 @@ export class FunctionCallAnalyzer {
         return this.errorDescription.value?.selector ?? null
     })
 
-    public readonly inputs: ComputedRef<FunctionFragments[]> = computed(() => {
-        const result: FunctionFragments[] = []
+    public readonly inputs: ComputedRef<NameTypeValue[]> = computed(() => {
+        const result: NameTypeValue[] = []
         if (this.functionFragment.value !== null && this.inputResult.value !== null) {
             const results = this.inputResult.value
             const fragmentInputs = this.functionFragment.value.inputs
@@ -118,14 +118,14 @@ export class FunctionCallAnalyzer {
                 const value = results[i]
                 const name = i < fragmentInputs.length ? fragmentInputs[i].name : "?"
                 const type = i < fragmentInputs.length ? fragmentInputs[i].type : "?"
-                result.push(new FunctionFragments(name, type, value))
+                result.push(new NameTypeValue(name, type, value))
             }
         }
         return result
     })
 
-    public readonly outputs: ComputedRef<FunctionFragments[]> = computed(() => {
-        const result: FunctionFragments[] = []
+    public readonly outputs: ComputedRef<NameTypeValue[]> = computed(() => {
+        const result: NameTypeValue[] = []
         if (this.functionFragment.value !== null && this.outputResult.value !== null) {
             const results = this.outputResult.value
             const fragmentOutputs = this.functionFragment.value.outputs
@@ -134,14 +134,14 @@ export class FunctionCallAnalyzer {
                 const name = i < fragmentOutputs.length ? fragmentOutputs[i].name : "?"
                 const type = i < fragmentOutputs.length ? fragmentOutputs[i].type : "?"
                 const comment = i < fragmentOutputs.length ? this.makeComment(value, fragmentOutputs[i]) : null
-                result.push(new FunctionFragments(name, type, value, null, comment))
+                result.push(new NameTypeValue(name, type, value, null, comment))
             }
         }
         return result
     })
 
-    public readonly errorInputs: ComputedRef<FunctionFragments[]> = computed(() => {
-        const result: FunctionFragments[] = []
+    public readonly errorInputs: ComputedRef<NameTypeValue[]> = computed(() => {
+        const result: NameTypeValue[] = []
         if (this.errorDescription.value !== null) {
             const results = this.errorDescription.value.args
             const fragmentInputs = this.errorDescription.value?.fragment.inputs ?? []
@@ -149,7 +149,7 @@ export class FunctionCallAnalyzer {
                 const value = results[i]
                 const name = i < fragmentInputs.length ? fragmentInputs[i].name : "?"
                 const type = i < fragmentInputs.length ? fragmentInputs[i].type : "?"
-                result.push(new FunctionFragments(name, type, value))
+                result.push(new NameTypeValue(name, type, value))
             }
         }
         return result
@@ -341,7 +341,7 @@ export class FunctionCallAnalyzer {
         return result
     }
 
-    private makeComment(value: unknown, paramType: ethers.ParamType): FuctionFragmentsComment|null {
+    private makeComment(value: unknown, paramType: ethers.ParamType): NameTypeValueComment|null {
         if (this.contractAnalyzer.systemContractEntry.value !== null
             && paramType.name == "responseCode"
             && typeof value == "bigint") {
@@ -356,13 +356,13 @@ export class FunctionCallAnalyzer {
 
 }
 
-export class FunctionFragments {
+export class NameTypeValue {
     public readonly name: string
     public readonly type: string
     public readonly value: unknown
     public readonly indexed: boolean | null
-    public readonly comment: FuctionFragmentsComment | null
-    public constructor(name: string, type: string, value: unknown, indexed: boolean|null = null, comment: FuctionFragmentsComment|null = null) {
+    public readonly comment: NameTypeValueComment | null
+    public constructor(name: string, type: string, value: unknown, indexed: boolean|null = null, comment: NameTypeValueComment|null = null) {
         this.name = name
         this.type = type
         this.value = value
@@ -371,7 +371,7 @@ export class FunctionFragments {
     }
 }
 
-interface FuctionFragmentsComment {
+interface NameTypeValueComment {
     message: string|null;
     resourceLink: string|null;
 }

@@ -53,13 +53,13 @@
 import {computed, defineComponent, inject, PropType, ref} from 'vue';
 import {initialLoadingKey} from "@/AppKeys";
 import EVMAddress from "@/components/values/EVMAddress.vue";
-import {FunctionFragments} from "@/utils/analyzer/FunctionCallAnalyzer";
+import {NameTypeValue} from "@/utils/analyzer/FunctionCallAnalyzer";
 
 export default defineComponent({
   name: 'FunctionValue',
   components: {EVMAddress},
   props: {
-    ntv: Object as PropType<FunctionFragments>,
+    ntv: Object as PropType<NameTypeValue>,
     hideType: {
       type: Boolean,
       default: false,
