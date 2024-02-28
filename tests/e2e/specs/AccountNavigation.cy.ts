@@ -147,6 +147,9 @@ describe('Account Navigation', () => {
         cy.url().should('include', '/mainnet/account/' + accountID)
         cy.contains('Account ID:' + accountID)
 
+        cy.get('#operations-tab-2')
+            .click()
+
         cy.get('#recentRewardsTable')
             .find('tbody tr')
             .should('be.visible')
