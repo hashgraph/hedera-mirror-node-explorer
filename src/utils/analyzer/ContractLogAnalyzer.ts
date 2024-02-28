@@ -88,13 +88,13 @@ export class ContractLogAnalyzer {
             const args = this.logDescription.value.args
             const signatureHash = this.logDescription.value.topic
             const fragmentInputs = this.logDescription.value.fragment.inputs
-            result.push(new NameTypeValue("signature hash", "", signatureHash, true))
+            result.push(new NameTypeValue("signature hash", "", signatureHash, true, null))
             for (let i = 0; i < args.length; i+= 1) {
                 const value = args[i]
                 const name = i < fragmentInputs.length ? fragmentInputs[i].name : "?"
                 const type = i < fragmentInputs.length ? fragmentInputs[i].type : "?"
                 const indexed = i < fragmentInputs.length ? fragmentInputs[i].indexed : false
-                result.push(new NameTypeValue(name, type, value, indexed))
+                result.push(new NameTypeValue(name, type, value, indexed, null))
             }
         }
         return result

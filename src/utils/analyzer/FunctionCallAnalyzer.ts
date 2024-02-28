@@ -20,6 +20,7 @@
 
 import {computed, ComputedRef, ref, Ref, shallowRef, watch, WatchStopHandle} from "vue";
 import {ethers} from "ethers";
+import {labelForResponseCode} from "@/schemas/HederaUtils";
 import {ContractAnalyzer} from "@/utils/analyzer/ContractAnalyzer";
 import {SignatureCache, SignatureRecord, SignatureResponse} from "@/utils/cache/SignatureCache";
 
@@ -117,7 +118,7 @@ export class FunctionCallAnalyzer {
                 const value = results[i]
                 const name = i < fragmentInputs.length ? fragmentInputs[i].name : "?"
                 const type = i < fragmentInputs.length ? fragmentInputs[i].type : "?"
-                result.push(new NameTypeValue(name, type, value))
+                result.push(new NameTypeValue(name, type, value, null, null))
             }
         }
         return result
@@ -132,7 +133,8 @@ export class FunctionCallAnalyzer {
                 const value = results[i]
                 const name = i < fragmentOutputs.length ? fragmentOutputs[i].name : "?"
                 const type = i < fragmentOutputs.length ? fragmentOutputs[i].type : "?"
-                result.push(new NameTypeValue(name, type, value))
+                const comment = i < fragmentOutputs.length ? this.makeComment(value, fragmentOutputs[i]) : null
+                result.push(new NameTypeValue(name, type, value, null, comment))
             }
         }
         return result
@@ -147,7 +149,7 @@ export class FunctionCallAnalyzer {
                 const value = results[i]
                 const name = i < fragmentInputs.length ? fragmentInputs[i].name : "?"
                 const type = i < fragmentInputs.length ? fragmentInputs[i].type : "?"
-                result.push(new NameTypeValue(name, type, value))
+                result.push(new NameTypeValue(name, type, value, null, null))
             }
         }
         return result
@@ -338,6 +340,19 @@ export class FunctionCallAnalyzer {
         }
         return result
     }
+
+    private makeComment(value: unknown, paramType: ethers.ParamType): string|null {
+        if (this.contractAnalyzer.systemContractEntry.value !== null
+            && paramType.name == "responseCode"
+            && typeof value == "bigint") {
+            // It's a responseCode from a system contract
+            const message = labelForResponseCode(value)
+            return message
+        } else {
+            return null
+        }
+    }
+
 }
 
 export class NameTypeValue {
@@ -345,10 +360,12 @@ export class NameTypeValue {
     public readonly type: string
     public readonly value: unknown
     public readonly indexed: boolean | null
-    public constructor(name: string, type: string, value: unknown, indexed: boolean|null = null) {
+    public readonly comment: string | null
+    public constructor(name: string, type: string, value: unknown, indexed: boolean|null = null, comment: string|null) {
         this.name = name
         this.type = type
         this.value = value
         this.indexed = indexed
+        this.comment = comment
     }
 }
