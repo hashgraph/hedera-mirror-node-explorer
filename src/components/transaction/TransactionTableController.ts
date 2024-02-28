@@ -20,13 +20,14 @@
 
 import {KeyOperator, SortOrder, TableController} from "@/utils/table/TableController";
 import {Transaction, TransactionResponse} from "@/schemas/HederaSchemas";
-import {ComputedRef} from "vue";
+import {ComputedRef, ref, Ref} from "vue";
 import axios, {AxiosResponse} from "axios";
 import {Router} from "vue-router";
 
 
 export class TransactionTableController extends TableController<Transaction, string> {
 
+    private readonly accountId: Ref<string | null>
     private readonly transactionType: string
     private readonly transactionResult: string
 
@@ -37,11 +38,15 @@ export class TransactionTableController extends TableController<Transaction, str
     public constructor(router: Router, pageSize: ComputedRef<number>,
                        transactionType = "",
                        transactionResult= "",
-                       pageParamName = "p", keyParamName= "k") {
+                       pageParamName = "p",
+                       keyParamName= "k",
+                       accountId: Ref<string | null> = ref(null)) {
         super(router, pageSize, 10 * pageSize.value, 5000, 10, 100,
             pageParamName, keyParamName);
         this.transactionType = transactionType
         this.transactionResult = transactionResult
+        this.accountId = accountId
+        this.watchAndReload([this.accountId])
     }
 
     //
@@ -57,6 +62,7 @@ export class TransactionTableController extends TableController<Transaction, str
             transactiontype: string | undefined
             result: string | undefined
             timestamp: string | undefined
+            "account.id": string | undefined
         }
         params.limit = limit
         params.order = order
@@ -65,6 +71,9 @@ export class TransactionTableController extends TableController<Transaction, str
         }
         if (this.transactionResult != "") {
             params.result = this.transactionResult
+        }
+        if (this.accountId.value !== null) {
+            params["account.id"] = this.accountId.value
         }
         if (consensusTimestamp !== null) {
             params.timestamp = operator + ":" + consensusTimestamp
