@@ -28,7 +28,7 @@
   <o-table
       :data="transactions"
       :loading="loading"
-      paginated
+      :paginated="paginated"
       backend-pagination
       :total="total"
       v-model:current-page="currentPage"
@@ -129,6 +129,7 @@ export default defineComponent({
       currentPage: props.controller.currentPage as Ref<number>,
       onPageChange: props.controller.onPageChange,
       perPage: props.controller.pageSize as Ref<number>,
+      paginated: props.controller.paginated as ComputedRef<boolean>,
       showingEthereumTransactions,
       handleClick,
       makeTypeLabel,
