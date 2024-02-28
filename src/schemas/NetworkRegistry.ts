@@ -137,6 +137,10 @@ export class SourcifySetup {
         return this.repoURL + matchPrefix + this.chainID + "/" + normalizedAddress
     }
 
+    makeCheckAllByAddressURL(): string {
+        return this.serverURL + "check-all-by-addresses"
+    }
+
     makeContractLookupURL(contractAddress: string): string {
         const normalizedAddress = EthereumAddress.normalizeEIP55(contractAddress)
         return this.verifierURL + "lookup/" + normalizedAddress
