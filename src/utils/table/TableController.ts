@@ -132,6 +132,15 @@ export abstract class TableController<R, K> implements PlayPauseController {
         }
     }
 
+    public readonly onKeyChange = (key: K): void => {
+        if (this.mountedRef.value) {
+            if (this.autoRefresh.value) {
+                this.stopAutoRefresh(1)
+            }
+            this.moveBufferToPage(1, key).catch(this.errorHandler)
+        }
+    }
+
     //
     // Public (to be subclassed)
     //
