@@ -50,7 +50,7 @@
 
 <script lang="ts">
 
-import {computed, defineComponent, inject, onBeforeUnmount, onMounted} from 'vue';
+import {computed, defineComponent, inject} from 'vue';
 import ContractTable from "@/components/contract/ContractTable.vue";
 import DashboardCard from "@/components/DashboardCard.vue";
 import Footer from "@/components/Footer.vue";
@@ -82,8 +82,6 @@ export default defineComponent({
     //
     const perPage = computed(() => isMediumScreen ? 15 : 10)
     const contractTableController = new ContractTableController(useRouter(), perPage)
-    onMounted(() => contractTableController.mount())
-    onBeforeUnmount(() => contractTableController.unmount())
 
     return {
       isSmallScreen,
