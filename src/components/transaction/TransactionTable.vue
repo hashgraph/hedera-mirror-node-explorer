@@ -80,7 +80,7 @@
 
 <script lang="ts">
 
-import {computed, ComputedRef, defineComponent, inject, PropType, Ref} from "vue";
+import {computed, ComputedRef, defineComponent, inject, onBeforeUnmount, onMounted, PropType, Ref} from "vue";
 import {Transaction, TransactionType} from "@/schemas/HederaSchemas";
 import TransactionSummary from "@/components/transaction/TransactionSummary.vue";
 import TimestampValue from "@/components/values/TimestampValue.vue";
@@ -108,6 +108,9 @@ export default defineComponent({
   setup(props) {
     const isTouchDevice = inject('isTouchDevice', false)
     const isMediumScreen = inject('isMediumScreen', true)
+
+    onMounted(() => props.controller.mount())
+    onBeforeUnmount(() => props.controller.unmount())
 
     const showingEthereumTransactions = computed(() => {
       return props.controller.transactionType.value === TransactionType.ETHEREUMTRANSACTION
