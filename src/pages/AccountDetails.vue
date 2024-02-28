@@ -222,6 +222,9 @@
               <PlayPauseButton :controller="transactionTableController"/>
               <TransactionFilterSelect :controller="transactionTableController"/>
           </div>
+          <div v-else-if="selectedTab===1" class="is-flex is-justify-content-end is-align-items-center">
+              <PlayPauseButton :controller="contractCreateTableController"/>
+          </div>
       </template>
       <template v-slot:content>
           <Tabs
@@ -236,6 +239,8 @@
           </div>
 
           <div v-else-if="selectedTab===1" id="recentContractsTable">
+              <AccountCreatedContractsTable v-if="account" :controller="contractCreateTableController"/>
+              <EmptyTable v-else/>
           </div>
 
           <div v-else id="recentRewardsTable">
@@ -293,6 +298,9 @@ import Copyable from "@/components/Copyable.vue";
 import InlineBalancesValue from "@/components/values/InlineBalancesValue.vue";
 import MirrorLink from "@/components/MirrorLink.vue";
 import EmptyTable from "@/components/EmptyTable.vue";
+import AccountCreatedContractsTable from "@/components/account/AccountCreatedContractsTable.vue";
+import {TransactionType} from "@/schemas/HederaSchemas";
+import {TransactionTableController} from "@/components/transaction/TransactionTableController";
 import {AppStorage} from "@/AppStorage";
 import Tabs from "@/components/Tabs.vue";
 
@@ -301,8 +309,9 @@ export default defineComponent({
   name: 'AccountDetails',
 
   components: {
-    Tabs,
+    AccountCreatedContractsTable,
     EmptyTable,
+    Tabs,
     MirrorLink,
     InlineBalancesValue,
     Copyable,
@@ -413,6 +422,9 @@ export default defineComponent({
     const transactionTableController = new TransactionTableControllerXL(
         router, accountId, perPage, true, "p1", "k1")
 
+    const contractCreateTableController = new TransactionTableController(
+        router, perPage, TransactionType.CONTRACTCREATEINSTANCE, "success", "p3", "k3", accountId)
+
     const rewardsTableController = new StakingRewardsTableController(
         router, accountLocParser.accountId, perPage, "p2", "k2")
 
@@ -421,6 +433,7 @@ export default defineComponent({
       isMediumScreen,
       isTouchDevice,
       transactionTableController,
+      contractCreateTableController,
       notification: accountLocParser.errorNotification,
       isInactiveEvmAddress: accountLocParser.isInactiveEvmAddress,
       account: accountLocParser.accountInfo,
