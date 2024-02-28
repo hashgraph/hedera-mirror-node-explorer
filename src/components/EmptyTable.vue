@@ -24,8 +24,8 @@
 
 <template>
   <div class="has-text-centered h-is-tertiary-text-text has-text-grey mb-4">
-    <span v-if="initialLoading">Loading…</span>
-    <span v-else>No Data</span>
+    <span v-if="initialLoading || loading">Loading…</span>
+    <span v-else>{{ noDataMessage }}</span>
   </div>
 </template>
 
@@ -40,6 +40,17 @@ import {initialLoadingKey} from "@/AppKeys";
 
 export default defineComponent({
   name: "EmptyTable",
+
+  props: {
+    loading: {
+      type: Boolean,
+      default: false
+    },
+    noDataMessage: {
+      type: String,
+      default: 'No data'
+    }
+  },
 
   setup() {
     const initialLoading = inject(initialLoadingKey, ref(false))
