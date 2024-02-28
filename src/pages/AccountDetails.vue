@@ -219,7 +219,7 @@
       </template>
       <template v-slot:control>
           <div v-if="selectedTab === 'transactions'" class="is-flex is-align-items-flex-end">
-              <TimeButton :controller="transactionTableController"/>
+              <DateTimePicker :controller="transactionTableController"/>
               <PlayPauseButton :controller="transactionTableController"/>
               <TransactionFilterSelect :controller="transactionTableController"/>
           </div>
@@ -317,7 +317,7 @@ import Tabs from "@/components/Tabs.vue";
 import AccountCreatedContractsTable from "@/components/account/AccountCreatedContractsTable.vue";
 import {VerifiedContractsByAccountIdCache} from "@/utils/cache/VerifiedContractsByAccountIdCache";
 import {VerifiedContractsController} from "@/components/contract/VerifiedContractsController";
-import TimeButton from "@/components/DateTimePicker.vue";
+import DateTimePicker from "@/components/DateTimePicker.vue";
 
 export default defineComponent({
 
@@ -328,6 +328,7 @@ export default defineComponent({
     VerifiedContractsTable,
     EmptyTable,
     Tabs,
+    DateTimePicker,
     MirrorLink,
     InlineBalancesValue,
     Copyable,
@@ -352,7 +353,7 @@ export default defineComponent({
     DurationValue,
     StringValue,
     StakingRewardsTable,
-    TimeButton
+    DateTimePicker
   },
 
   props: {

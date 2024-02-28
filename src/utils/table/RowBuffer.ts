@@ -67,7 +67,7 @@ export class RowBuffer<R, K> {
         return headRow !== null ? this.tableController.keyFor(headRow) : null
     })
 
-    public readonly maxStartIndex: ComputedRef<number> = computed(() => {
+    public readonly maxStartIndex: Ref<number> = computed(() => {
         const pageSize = this.tableController.pageSize.value
         const pageCount = Math.floor((this.shadowRowCount.value + this.rows.value.length) / pageSize) + 1
         return Math.max(0, (pageCount - 1) * pageSize)
