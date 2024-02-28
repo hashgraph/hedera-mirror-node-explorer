@@ -164,6 +164,29 @@ describe('Account Navigation', () => {
         cy.contains('0.0.800')
     })
 
+    it ('should follow link to recent created contract', () => {
+        const accountID = "0.0.902"
+        cy.visit('testnet/account/' + accountID)
+        cy.url().should('include', '/testnet/account/' + accountID)
+        cy.contains('Account ID:' + accountID)
+
+        cy.get('#operations-tab-1')
+            .click()
+
+        cy.get('#recentContractsTable')
+            .find('tbody tr')
+            .should('be.visible')
+            .should('have.length.at.least', 2)
+            .eq(0)
+            .find('td')
+            .eq(0)
+            .click()
+
+        cy.url().should('include', '/testnet/contract/')
+        cy.contains('Contract')
+        cy.contains(accountID)
+    })
+
     it ('should display account details using account ID', () => {
         const accountID = "0.0.592746"
         cy.visit('mainnet/account/' + accountID)
