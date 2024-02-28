@@ -23,8 +23,9 @@ import {LocationQuery, Router} from "vue-router";
 import {fetchNumberQueryParam, fetchStringQueryParam} from "@/utils/RouteManager";
 import {RowBuffer} from "@/utils/table/RowBuffer";
 import axios, {AxiosError} from "axios";
+import {PlayPauseController} from "@/components/PlayPauseButton.vue";
 
-export abstract class TableController<R, K> {
+export abstract class TableController<R, K> implements PlayPauseController {
 
     public readonly router: Router
     public readonly presumedRowCount: number
@@ -42,9 +43,6 @@ export abstract class TableController<R, K> {
     //
 
     public readonly pageSize: ComputedRef<number>
-
-    public readonly autoRefresh: ComputedRef<boolean> = computed(
-        () => this.autoRefreshRef.value)
 
     public readonly currentPage: Ref<number> = ref(1)
 
@@ -94,6 +92,27 @@ export abstract class TableController<R, K> {
         // No call to this.bufferDidChange() to keep route query untouched
     }
 
+    public readonly onPageChange = (page: number): void => {
+        if (this.mountedRef.value) {
+            if (this.autoRefresh.value) {
+                this.stopAutoRefresh(page)
+            } else {
+                this.moveBufferToPage(page, null).catch(this.errorHandler)
+            }
+        }
+    }
+
+    public reset(): void {
+        this.buffer.clear()
+        this.bufferDidChange().catch(this.errorHandler)
+    }
+
+    //
+    // PlayPauseController
+    //
+
+    public autoRefresh: ComputedRef<boolean> = computed(() => this.autoRefreshRef.value)
+
     public startAutoRefresh(): void {
         if (this.mountedRef.value && !this.autoRefreshRef.value) {
             this.autoRefreshRef.value = true
@@ -110,22 +129,6 @@ export abstract class TableController<R, K> {
             this.moveBufferToPage(page, null).catch(this.errorHandler)
         }
     }
-
-    public readonly onPageChange = (page: number): void => {
-        if (this.mountedRef.value) {
-            if (this.autoRefresh.value) {
-                this.stopAutoRefresh(page)
-            } else {
-                this.moveBufferToPage(page, null).catch(this.errorHandler)
-            }
-        }
-    }
-
-    public reset(): void {
-        this.buffer.clear()
-        this.bufferDidChange().catch(this.errorHandler)
-    }
-
 
     //
     // Public (to be subclassed)
