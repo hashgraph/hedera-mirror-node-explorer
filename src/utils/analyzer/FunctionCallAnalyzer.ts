@@ -118,7 +118,7 @@ export class FunctionCallAnalyzer {
                 const value = results[i]
                 const name = i < fragmentInputs.length ? fragmentInputs[i].name : "?"
                 const type = i < fragmentInputs.length ? fragmentInputs[i].type : "?"
-                result.push(new NameTypeValue(name, type, value))
+                result.push(new NameTypeValue(name, type, value, null, null))
             }
         }
         return result
@@ -149,7 +149,7 @@ export class FunctionCallAnalyzer {
                 const value = results[i]
                 const name = i < fragmentInputs.length ? fragmentInputs[i].name : "?"
                 const type = i < fragmentInputs.length ? fragmentInputs[i].type : "?"
-                result.push(new NameTypeValue(name, type, value))
+                result.push(new NameTypeValue(name, type, value, null, null))
             }
         }
         return result
@@ -341,14 +341,13 @@ export class FunctionCallAnalyzer {
         return result
     }
 
-    private makeComment(value: unknown, paramType: ethers.ParamType): NameTypeValueComment|null {
+    private makeComment(value: unknown, paramType: ethers.ParamType): string|null {
         if (this.contractAnalyzer.systemContractEntry.value !== null
             && paramType.name == "responseCode"
             && typeof value == "bigint") {
             // It's a responseCode from a system contract
             const message = labelForResponseCode(value)
-            const resourceLink = message && `https://docs.hedera.com/hedera/sdks-and-apis/hedera-api/miscellaneous/responsecode#${message}`
-            return {message, resourceLink}
+            return message
         } else {
             return null
         }
@@ -361,17 +360,12 @@ export class NameTypeValue {
     public readonly type: string
     public readonly value: unknown
     public readonly indexed: boolean | null
-    public readonly comment: NameTypeValueComment | null
-    public constructor(name: string, type: string, value: unknown, indexed: boolean|null = null, comment: NameTypeValueComment|null = null) {
+    public readonly comment: string | null
+    public constructor(name: string, type: string, value: unknown, indexed: boolean|null = null, comment: string|null) {
         this.name = name
         this.type = type
         this.value = value
         this.indexed = indexed
         this.comment = comment
     }
-}
-
-interface NameTypeValueComment {
-    message: string|null;
-    resourceLink: string|null;
 }
