@@ -18,11 +18,12 @@
  *
  */
 
-import {computed, ComputedRef, ref, Ref} from "vue";
+import {computed, ComputedRef, ref, Ref, watch} from "vue";
 import {PlayPauseController} from "@/components/PlayPauseButton.vue";
 import {Contract} from "@/schemas/HederaSchemas";
 import {VerifiedContractsBuffer, VerifiedContractsByAccountCache} from "@/utils/cache/VerifiedContractsByAccountCache";
 import {Lookup} from "@/utils/cache/base/EntityCache";
+import axios, {AxiosError} from "axios";
 
 export class VerifiedContractsController implements PlayPauseController {
 
@@ -34,21 +35,24 @@ export class VerifiedContractsController implements PlayPauseController {
 
     public constructor(accountId: Ref<string | null>) {
         this.contractsLookup = VerifiedContractsByAccountCache.instance.makeLookup(accountId)
+        watch(
+            this.contractsLookup.entity,
+            () => this.contracts.value = this.contractsLookup.entity.value?.contracts ?? []
+        )
     }
 
-    public readonly contracts: ComputedRef<Contract[]> = computed(() => {
-        return this.contractsLookup.entity.value?.contracts ?? []
-    })
-
+    public contracts: Ref<Contract[]> = ref([])
     public capacity = VerifiedContractsBuffer.MAX_CANDIDATES
     public overflow = computed(() => this.contractsLookup.entity.value?.overflow ?? false)
     public loaded = computed(() => this.contractsLookup.entity.value != null)
 
     public mount(): void {
         this.contractsLookup.mount()
+        this.refresh()
     }
 
     public unmount(): void {
+        this.cancelNextRefresh()
         this.contractsLookup.unmount()
     }
 
@@ -56,27 +60,67 @@ export class VerifiedContractsController implements PlayPauseController {
     // PlayPauseController
     //
 
-    public autoRefresh: ComputedRef<boolean> = computed(() => this.autoRefreshRef.value)
+    public readonly autoRefresh: ComputedRef<boolean> = computed(() => this.autoRefreshRef.value)
 
     public startAutoRefresh(): void {
-
+        if (!this.autoRefreshRef.value) {
+            this.autoRefreshRef.value = true
+            this.refreshCount = 0
+            this.refresh()
+        }
     }
 
     public stopAutoRefresh(): void  {
-
+        if (this.autoRefreshRef.value) {
+            this.autoRefreshRef.value = false
+            this.cancelNextRefresh()
+        }
     }
 
     //
     // Private
     //
 
-    private readonly autoRefreshRef: Ref<boolean> = ref(false)
+    private updatePeriod = 10000
+    private timeoutID = -1
+    private maxRefreshCount = 10
+    private refreshCount = 0
+    private autoRefreshRef: Ref<boolean> = ref(false)
 
-    // private readonly errorHandler = (reason: unknown): void => {
-    //     console.log("reason=" + reason)
-    //     if (axios.isAxiosError(reason)) {
-    //         const axiosError = reason as AxiosError
-    //         console.log("url=" + axiosError.config?.url)
-    //     }
-    // }
+    private async refresh(): Promise<void> {
+        this.autoRefreshRef.value = true
+        if (this.contractsLookup.entity.value != null) {
+            this.contractsLookup.entity.value?.update().catch(this.errorHandler)
+            this.contracts.value = this.contractsLookup.entity.value.contracts
+        }
+        this.refreshCount += 1
+        if (this.refreshCount < this.maxRefreshCount) {
+            this.scheduleNextRefresh()
+        } else {
+            this.autoRefreshRef.value = false
+        }
+        return Promise.resolve()
+    }
+
+    private scheduleNextRefresh(): void  {
+        this.timeoutID = window.setTimeout(
+            () => this.refresh(),
+            this.updatePeriod
+        )
+    }
+
+    private cancelNextRefresh(): void {
+        if (this.timeoutID != -1) {
+            window.clearTimeout(this.timeoutID)
+            this.timeoutID = -1
+        }
+    }
+
+    private readonly errorHandler = (reason: unknown): void => {
+        console.log("reason=" + reason)
+        if (axios.isAxiosError(reason)) {
+            const axiosError = reason as AxiosError
+            console.log("url=" + axiosError.config?.url)
+        }
+    }
 }
