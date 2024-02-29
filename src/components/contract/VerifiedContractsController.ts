@@ -40,10 +40,9 @@ export class VerifiedContractsController implements PlayPauseController {
         return this.contractsLookup.entity.value?.contracts ?? []
     })
 
-    public capacity = 250
-
-    public loaded = ref(false)
-    public overflow = ref(false)
+    public capacity = VerifiedContractsBuffer.MAX_CANDIDATES
+    public overflow = computed(() => this.contractsLookup.entity.value?.overflow ?? false)
+    public loaded = computed(() => this.contractsLookup.entity.value != null)
 
     public mount(): void {
         this.contractsLookup.mount()
