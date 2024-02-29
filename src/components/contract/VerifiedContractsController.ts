@@ -33,6 +33,11 @@ export class VerifiedContractsController implements PlayPauseController {
     // Public
     //
 
+    public contracts: Ref<Contract[]> = ref([])
+    public capacity = VerifiedContractsBuffer.MAX_CANDIDATES
+    public overflow = computed(() => this.contractsLookup.entity.value?.overflow ?? false)
+    public loaded = computed(() => this.contractsLookup.entity.value != null)
+
     public constructor(accountId: Ref<string | null>) {
         this.contractsLookup = VerifiedContractsByAccountCache.instance.makeLookup(accountId)
         watch(
@@ -41,10 +46,6 @@ export class VerifiedContractsController implements PlayPauseController {
         )
     }
 
-    public contracts: Ref<Contract[]> = ref([])
-    public capacity = VerifiedContractsBuffer.MAX_CANDIDATES
-    public overflow = computed(() => this.contractsLookup.entity.value?.overflow ?? false)
-    public loaded = computed(() => this.contractsLookup.entity.value != null)
 
     public mount(): void {
         this.contractsLookup.mount()
@@ -90,8 +91,12 @@ export class VerifiedContractsController implements PlayPauseController {
     private async refresh(): Promise<void> {
         this.autoRefreshRef.value = true
         if (this.contractsLookup.entity.value != null) {
-            this.contractsLookup.entity.value?.update().catch(this.errorHandler)
-            this.contracts.value = this.contractsLookup.entity.value.contracts
+            this.contractsLookup.entity.value.update().catch(this.errorHandler)
+            this.contractsLookup.entity.value.contracts.forEach((c) => {
+                if (!this.contracts.value.includes(c)) {
+                    this.contracts.value.unshift(c)
+                }
+            })
         }
         this.refreshCount += 1
         if (this.refreshCount < this.maxRefreshCount) {
