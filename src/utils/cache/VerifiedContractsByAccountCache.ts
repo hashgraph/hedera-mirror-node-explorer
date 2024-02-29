@@ -20,7 +20,7 @@
 
 import {Contract, ContractsResponse, TransactionResponse} from "@/schemas/HederaSchemas";
 import {EntityCache} from "@/utils/cache/base/EntityCache";
-import axios, {AxiosResponse} from "axios";
+import axios, {AxiosError, AxiosResponse} from "axios";
 import {routeManager} from "@/router";
 import {SourcifyCache} from "@/utils/cache/SourcifyCache";
 
@@ -118,7 +118,15 @@ export class VerifiedContractsByAccountCache extends EntityCache<string, Verifie
 
     protected async load(key: string): Promise<VerifiedContractsBuffer | null> {
         const buffer = new VerifiedContractsBuffer(key)
-        await buffer.update()
+        await buffer.update().catch(this.errorHandler)
         return Promise.resolve(buffer)
+    }
+
+    private readonly errorHandler = (reason: unknown): void => {
+        console.log("reason=" + reason)
+        if (axios.isAxiosError(reason)) {
+            const axiosError = reason as AxiosError
+            console.log("url=" + axiosError.config?.url)
+        }
     }
 }
