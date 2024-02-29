@@ -112,9 +112,9 @@ export class VerifiedContractsBuffer {
     }
 }
 
-export class VerifiedContractsByAccountCache extends EntityCache<string, VerifiedContractsBuffer | null> {
+export class VerifiedContractsByAccountIdCache extends EntityCache<string, VerifiedContractsBuffer | null> {
 
-    public static readonly instance = new VerifiedContractsByAccountCache()
+    public static readonly instance = new VerifiedContractsByAccountIdCache()
 
     protected async load(key: string): Promise<VerifiedContractsBuffer | null> {
         const buffer = new VerifiedContractsBuffer(key)

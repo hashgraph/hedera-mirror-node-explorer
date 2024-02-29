@@ -21,7 +21,7 @@
 import {computed, ComputedRef, ref, Ref, watch} from "vue";
 import {PlayPauseController} from "@/components/PlayPauseButton.vue";
 import {Contract} from "@/schemas/HederaSchemas";
-import {VerifiedContractsBuffer, VerifiedContractsByAccountCache} from "@/utils/cache/VerifiedContractsByAccountCache";
+import {VerifiedContractsBuffer, VerifiedContractsByAccountIdCache} from "@/utils/cache/VerifiedContractsByAccountIdCache";
 import {Lookup} from "@/utils/cache/base/EntityCache";
 import axios, {AxiosError} from "axios";
 
@@ -39,7 +39,7 @@ export class VerifiedContractsController implements PlayPauseController {
     public loaded = computed(() => this.contractsLookup.entity.value != null)
 
     public constructor(accountId: Ref<string | null>) {
-        this.contractsLookup = VerifiedContractsByAccountCache.instance.makeLookup(accountId)
+        this.contractsLookup = VerifiedContractsByAccountIdCache.instance.makeLookup(accountId)
         watch(
             this.contractsLookup.entity,
             () => this.contracts.value = this.contractsLookup.entity.value?.contracts ?? []
