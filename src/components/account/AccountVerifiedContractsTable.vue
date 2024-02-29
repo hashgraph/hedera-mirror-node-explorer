@@ -97,7 +97,7 @@ export default defineComponent({
         const noDataMessage = computed(() =>
             props.overflow
                 ? 'No verified contract found in the last ' + props.controller.capacity + ' created contracts'
-                :  'No verified contract'
+                :  'No data'
         )
 
         onMounted( () => props.controller.mount())
