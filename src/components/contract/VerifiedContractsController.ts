@@ -18,7 +18,7 @@
  *
  */
 
-import {computed, ComputedRef, ref, Ref, watch} from "vue";
+import {computed, ComputedRef, ref, Ref} from "vue";
 import {PlayPauseController} from "@/components/PlayPauseButton.vue";
 import {Contract} from "@/schemas/HederaSchemas";
 import {VerifiedContractsBuffer, VerifiedContractsByAccountCache} from "@/utils/cache/VerifiedContractsByAccountCache";
@@ -46,8 +46,6 @@ export class VerifiedContractsController implements PlayPauseController {
     public overflow = ref(false)
 
     public mount(): void {
-        watch(this.contracts, ()=>console.log(`contracts.length: ${this.contracts.value.length}`))
-        console.log(`VerifiedContractsController.mount`)
         this.contractsLookup.mount()
     }
 
