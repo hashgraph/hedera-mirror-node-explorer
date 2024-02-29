@@ -223,7 +223,12 @@
               <TransactionFilterSelect :controller="transactionTableController"/>
           </div>
           <div v-else-if="selectedTab===1" class="is-flex is-justify-content-end is-align-items-center">
-              <PlayPauseButton :controller="contractCreateTableController"/>
+              <PlayPauseButton v-if="!filterVerified" :controller="contractCreateTableController"/>
+              <PlayPauseButton v-else :controller="verifiedContractsController"/>
+              <span class="ml-5 mr-2">All</span>
+              <o-field>
+                  <o-switch v-model="filterVerified">Verified</o-switch>
+              </o-field>
           </div>
       </template>
       <template v-slot:content>
@@ -239,7 +244,12 @@
           </div>
 
           <div v-else-if="selectedTab===1" id="recentContractsTable">
-              <AccountCreatedContractsTable v-if="account" :controller="contractCreateTableController"/>
+              <AccountCreatedContractsTable v-if="account && !filterVerified" :controller="contractCreateTableController"/>
+              <AccountVerifiedContractsTable
+                  v-else-if="account"
+                  :controller="verifiedContractsController"
+                  :loaded="loaded"
+                  :overflow="overflow"/>
               <EmptyTable v-else/>
           </div>
 
@@ -297,12 +307,14 @@ import InfoTooltip from "@/components/InfoTooltip.vue";
 import Copyable from "@/components/Copyable.vue";
 import InlineBalancesValue from "@/components/values/InlineBalancesValue.vue";
 import MirrorLink from "@/components/MirrorLink.vue";
-import EmptyTable from "@/components/EmptyTable.vue";
-import AccountCreatedContractsTable from "@/components/account/AccountCreatedContractsTable.vue";
 import {TransactionType} from "@/schemas/HederaSchemas";
 import {TransactionTableController} from "@/components/transaction/TransactionTableController";
+import EmptyTable from "@/components/EmptyTable.vue";
+import AccountVerifiedContractsTable from "@/components/account/AccountVerifiedContractsTable.vue";
 import {AppStorage} from "@/AppStorage";
 import Tabs from "@/components/Tabs.vue";
+import {VerifiedContractsController} from "@/components/contract/VerifiedContractsController";
+import AccountCreatedContractsTable from "@/components/account/AccountCreatedContractsTable.vue";
 
 export default defineComponent({
 
@@ -310,6 +322,7 @@ export default defineComponent({
 
   components: {
     AccountCreatedContractsTable,
+    AccountVerifiedContractsTable,
     EmptyTable,
     Tabs,
     MirrorLink,
@@ -411,6 +424,7 @@ export default defineComponent({
       selectedTab.value = tab
       AppStorage.setAccountOperationTab(tab)
     }
+    const filterVerified = ref(false)
 
     //
     // Table controllers and cache for Recent Account Operations
@@ -425,6 +439,8 @@ export default defineComponent({
     const contractCreateTableController = new TransactionTableController(
         router, perPage, TransactionType.CONTRACTCREATEINSTANCE, "success", "p3", "k3", accountId)
 
+    const verifiedContractsController = new VerifiedContractsController(accountId)
+
     const rewardsTableController = new StakingRewardsTableController(
         router, accountLocParser.accountId, perPage, "p2", "k2")
 
@@ -434,6 +450,9 @@ export default defineComponent({
       isTouchDevice,
       transactionTableController,
       contractCreateTableController,
+      verifiedContractsController,
+      loaded: verifiedContractsController.loaded,
+      overflow: verifiedContractsController.overflow,
       notification: accountLocParser.errorNotification,
       isInactiveEvmAddress: accountLocParser.isInactiveEvmAddress,
       account: accountLocParser.accountInfo,
@@ -457,6 +476,7 @@ export default defineComponent({
       selectedTab,
       tabLabels,
       handleTabUpdate,
+      filterVerified,
     }
   }
 });
