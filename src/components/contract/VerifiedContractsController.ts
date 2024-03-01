@@ -47,9 +47,9 @@ export class VerifiedContractsController implements PlayPauseController {
     }
 
 
-    public mount(): void {
+    public async mount(): Promise<void> {
         this.contractsLookup.mount()
-        this.refresh()
+        await this.refresh()
     }
 
     public unmount(): void {
@@ -63,11 +63,11 @@ export class VerifiedContractsController implements PlayPauseController {
 
     public readonly autoRefresh: ComputedRef<boolean> = computed(() => this.autoRefreshRef.value)
 
-    public startAutoRefresh(): void {
+    public async startAutoRefresh(): Promise<void> {
         if (!this.autoRefreshRef.value) {
             this.autoRefreshRef.value = true
             this.refreshCount = 0
-            this.refresh()
+            await this.refresh()
         }
     }
 
@@ -102,11 +102,8 @@ export class VerifiedContractsController implements PlayPauseController {
         return Promise.resolve()
     }
 
-    private scheduleNextRefresh(): void  {
-        this.timeoutID = window.setTimeout(
-            () => this.refresh(),
-            this.updatePeriod
-        )
+    private scheduleNextRefresh(): void {
+        this.timeoutID = window.setTimeout(() => this.refresh(), this.updatePeriod)
     }
 
     private cancelNextRefresh(): void {

@@ -23,8 +23,8 @@
 <!-- --------------------------------------------------------------------------------------------------------------- -->
 
 <template>
-    <div  class="is-flex is-justify-content-space-between is-align-items-center mt-5 mb-4">
-        <div class="tabs is-toggle h-is-property-text mb-1" >
+    <div class="is-flex is-justify-content-space-between is-align-items-center mt-5 mb-4">
+        <div class="tabs is-toggle h-is-property-text mb-1">
             <ul>
                 <li v-for="(tab, i) in tabs" :key="i" :class="{'is-active':selectedTab===i}">
                     <a :id="cssId + '-' + i" :style="{ fontWeight: selectedTab===i?500:300 }"
@@ -46,39 +46,39 @@
 import {defineComponent, PropType, ref} from "vue";
 
 export default defineComponent({
-  name: "Tabs",
+    name: "Tabs",
 
-  props: {
-      selectedTab: {
-          type: Number,
-          required: true
-      },
-      tabs: {
-          type: Array as PropType<string[]>,
-          required: true
-      },
-      cssId: {
-          type: String,
-          default: 'tab'
-      }
-  },
+    props: {
+        selectedTab: {
+            type: Number,
+            required: true
+        },
+        tabs: {
+            type: Array as PropType<string[]>,
+            required: true
+        },
+        cssId: {
+            type: String,
+            default: 'tab'
+        }
+    },
 
-  emits: ["update:selectedTab"],
+    emits: ["update:selectedTab"],
 
-  setup(props, context) {
+    setup(props, context) {
 
-      const selection = ref(props.selectedTab)
+        const selection = ref(props.selectedTab)
 
-      const handleSelect = (tab: number) => {
-          selection.value = tab
-          context.emit('update:selectedTab', tab)
-      }
+        const handleSelect = (tab: number) => {
+            selection.value = tab
+            context.emit('update:selectedTab', tab)
+        }
 
-    return {
-        selection,
-        handleSelect,
+        return {
+            selection,
+            handleSelect,
+        }
     }
-  }
 });
 
 </script>

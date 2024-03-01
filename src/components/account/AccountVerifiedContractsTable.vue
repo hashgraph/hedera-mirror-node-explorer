@@ -26,20 +26,20 @@
 
     <o-table
         :data="contracts"
-        :paginated="contracts.length > perPage"
-        :per-page="perPage"
-        :narrowed="true"
-        @cell-click="handleClick"
-
         :hoverable="true"
-        :striped="true"
         :mobile-breakpoint="ORUGA_MOBILE_BREAKPOINT"
+        :narrowed="true"
+        :paginated="contracts.length > perPage"
 
+        :per-page="perPage"
+        :striped="true"
         aria-current-label="Current page"
+
         aria-next-label="Next page"
         aria-page-label="Page"
         aria-previous-label="Previous page"
         customRowKey="contract_id"
+        @cell-click="handleClick"
     >
 
         <o-table-column v-slot="props" field="contract_id" label="ID">
@@ -58,7 +58,7 @@
 
     </o-table>
 
-    <EmptyTable v-if="!contracts.length" :no-data-message="noDataMessage" :loading="!loaded"/>
+    <EmptyTable v-if="!contracts.length" :loading="!loaded" :no-data-message="noDataMessage"/>
 
 </template>
 
@@ -97,10 +97,10 @@ export default defineComponent({
         const noDataMessage = computed(() =>
             props.overflow
                 ? 'No verified contract found in the last ' + props.controller.capacity + ' created contracts'
-                :  'No data'
+                : 'No data'
         )
 
-        onMounted( () => props.controller.mount())
+        onMounted(() => props.controller.mount())
         onBeforeUnmount(() => props.controller.unmount())
 
         const handleClick = (t: Transaction, c: unknown, i: number, ci: number, event: MouseEvent) => {
@@ -112,7 +112,7 @@ export default defineComponent({
             noDataMessage,
             handleClick,
             ORUGA_MOBILE_BREAKPOINT,
-            contracts:props.controller.contracts,
+            contracts: props.controller.contracts,
         }
     }
 });

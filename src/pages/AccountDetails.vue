@@ -218,11 +218,11 @@
         <p id="recentTransactions" class="h-is-secondary-title">Recent Account Operations</p>
       </template>
       <template v-slot:control>
-          <div v-if="selectedTab===0" class="is-flex is-align-items-flex-end">
+          <div v-if="selectedTab === 0" class="is-flex is-align-items-flex-end">
               <PlayPauseButton :controller="transactionTableController"/>
               <TransactionFilterSelect :controller="transactionTableController"/>
           </div>
-          <div v-else-if="selectedTab===1" class="is-flex is-justify-content-end is-align-items-center">
+          <div v-else-if="selectedTab === 1" class="is-flex is-justify-content-end is-align-items-center">
               <PlayPauseButton v-if="!filterVerified" :controller="contractCreateTableController"/>
               <PlayPauseButton v-else :controller="verifiedContractsController"/>
               <span class="ml-5 mr-2">All</span>
@@ -239,11 +239,11 @@
               css-id="operations-tab"
           />
 
-          <div v-if="selectedTab===0" id="recentTransactionsTable">
+          <div v-if="selectedTab === 0" id="recentTransactionsTable">
               <TransactionTable v-if="account" :controller="transactionTableController" :narrowed="true"/>
           </div>
 
-          <div v-else-if="selectedTab===1" id="recentContractsTable">
+          <div v-else-if="selectedTab === 1" id="recentContractsTable">
               <AccountCreatedContractsTable v-if="account && !filterVerified" :controller="contractCreateTableController"/>
               <AccountVerifiedContractsTable
                   v-else-if="account"
