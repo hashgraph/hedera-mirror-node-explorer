@@ -72,7 +72,7 @@ describe("Contracts.vue", () => {
         expect(table.get('thead').text()).toBe("ID Contract Name Created Memo")
         expect(table.get('tbody').text()).toBe(
             "0.0.749775" +
-            " not verified " +
+            " NOT VERIFIED " +
             "3:09:15.9474 PMMar 7, 2022, UTC" +
             "Mirror Node acceptance test: 2022-03-07T15:09:15.228564328Z Create contract"
         )
@@ -81,7 +81,8 @@ describe("Contracts.vue", () => {
         wrapper.unmount()
         await flushPromises()
 
-        expect(wrapper.vm.contractTableController.mounted.value).toBe(false)
+        // we now expect the controller to be still mounted since it is mounted by the ContractTable component
+        expect(wrapper.vm.contractTableController.mounted.value).toBe(true)
     });
 
 });

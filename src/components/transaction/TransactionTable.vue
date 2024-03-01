@@ -28,7 +28,7 @@
   <o-table
       :data="transactions"
       :loading="loading"
-      paginated
+      :paginated="paginated"
       backend-pagination
       :total="total"
       v-model:current-page="currentPage"
@@ -80,7 +80,7 @@
 
 <script lang="ts">
 
-import {computed, ComputedRef, defineComponent, inject, PropType, Ref} from "vue";
+import {computed, ComputedRef, defineComponent, inject, onBeforeUnmount, onMounted, PropType, Ref} from "vue";
 import {Transaction, TransactionType} from "@/schemas/HederaSchemas";
 import TransactionSummary from "@/components/transaction/TransactionSummary.vue";
 import TimestampValue from "@/components/values/TimestampValue.vue";
@@ -109,6 +109,9 @@ export default defineComponent({
     const isTouchDevice = inject('isTouchDevice', false)
     const isMediumScreen = inject('isMediumScreen', true)
 
+    onMounted(() => props.controller.mount())
+    onBeforeUnmount(() => props.controller.unmount())
+
     const showingEthereumTransactions = computed(() => {
       return props.controller.transactionType.value === TransactionType.ETHEREUMTRANSACTION
     })
@@ -126,6 +129,7 @@ export default defineComponent({
       currentPage: props.controller.currentPage as Ref<number>,
       onPageChange: props.controller.onPageChange,
       perPage: props.controller.pageSize as Ref<number>,
+      paginated: props.controller.paginated as ComputedRef<boolean>,
       showingEthereumTransactions,
       handleClick,
       makeTypeLabel,

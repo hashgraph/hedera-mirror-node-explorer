@@ -134,6 +134,21 @@ export class AppStorage {
     }
 
     //
+    // preferred tab in account operations
+    //
+
+    private static readonly ACCOUNT_OPERATION_TAB_KEY = 'accountOperationTab'
+
+    public static getAccountOperationTab(): number | null {
+        const tab = this.getLocalStorageItem(this.ACCOUNT_OPERATION_TAB_KEY)
+        return tab != null ? Number(tab) : null
+    }
+
+    public static setAccountOperationTab(newValue: number | null): void {
+        this.setLocalStorageItem(this.ACCOUNT_OPERATION_TAB_KEY, newValue?.toString() ?? null)
+    }
+
+    //
     // Private
     //
 

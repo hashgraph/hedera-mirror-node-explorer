@@ -19,14 +19,22 @@
   -->
 
 <!-- --------------------------------------------------------------------------------------------------------------- -->
-<!--                                                     TEMPLATE                                                    -->
+<!--                                                     TEMPLATE                                                 -->
 <!-- --------------------------------------------------------------------------------------------------------------- -->
 
 <template>
-  <div class="has-text-centered h-is-tertiary-text-text has-text-grey mb-4">
-    <span v-if="initialLoading || loading">Loading…</span>
-    <span v-else>{{ noDataMessage }}</span>
-  </div>
+    <div class="is-flex is-justify-content-space-between is-align-items-center mt-5 mb-4">
+        <div class="tabs is-toggle h-is-property-text mb-1">
+            <ul>
+                <li v-for="(tab, i) in tabs" :key="i" :class="{'is-active':selectedTab===i}">
+                    <a :id="cssId + '-' + i" :style="{ fontWeight: selectedTab===i?500:300 }"
+                       @click="handleSelect(i)">
+                        <span>{{ tab }}</span>
+                    </a>
+                </li>
+            </ul>
+        </div>
+    </div>
 </template>
 
 <!-- --------------------------------------------------------------------------------------------------------------- -->
@@ -35,34 +43,48 @@
 
 <script lang="ts">
 
-import {defineComponent, inject, ref} from "vue";
-import {initialLoadingKey} from "@/AppKeys";
+import {defineComponent, PropType, ref} from "vue";
 
 export default defineComponent({
-  name: "EmptyTable",
+    name: "Tabs",
 
-  props: {
-    loading: {
-      type: Boolean,
-      default: false
+    props: {
+        selectedTab: {
+            type: Number,
+            required: true
+        },
+        tabs: {
+            type: Array as PropType<string[]>,
+            required: true
+        },
+        cssId: {
+            type: String,
+            default: 'tab'
+        }
     },
-    noDataMessage: {
-      type: String,
-      default: 'No data'
-    }
-  },
 
-  setup() {
-    const initialLoading = inject(initialLoadingKey, ref(false))
-    return { initialLoading }
-  }
-})
+    emits: ["update:selectedTab"],
+
+    setup(props, context) {
+
+        const selection = ref(props.selectedTab)
+
+        const handleSelect = (tab: number) => {
+            selection.value = tab
+            context.emit('update:selectedTab', tab)
+        }
+
+        return {
+            selection,
+            handleSelect,
+        }
+    }
+});
 
 </script>
 
 <!-- --------------------------------------------------------------------------------------------------------------- -->
-<!--                                                      STYLE                                                      -->
+<!--                                                       STYLE                                                     -->
 <!-- --------------------------------------------------------------------------------------------------------------- -->
 
-<style>
-</style>
+<style/>

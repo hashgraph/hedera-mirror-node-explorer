@@ -18,7 +18,7 @@
  *
  */
 
-import axios from "axios";
+import axios, {AxiosResponse} from "axios";
 import {EntityCache} from "@/utils/cache/base/EntityCache";
 import {SolcMetadata} from "@/utils/solc/SolcMetadata";
 import {ContractByIdCache} from "@/utils/cache/ContractByIdCache";
@@ -52,6 +52,32 @@ export class SourcifyCache extends EntityCache<string, SourcifyRecord|null> {
 
         return result
     }
+
+    public static async checkAllContracts(addressesToCheck: string[]): Promise<string[]> {
+        const verifiedAddresses: string[] = []
+        const sourcifySetup = routeManager.currentNetworkEntry.value.sourcifySetup!
+
+        const baseURL = sourcifySetup.makeCheckAllByAddressURL()
+        const MAX_VERIFICATIONS = 100
+
+        for (let i = 0; i < addressesToCheck.length; i += MAX_VERIFICATIONS) {
+            const queryParams = new URLSearchParams();
+            queryParams.append('chainIds', sourcifySetup.chainID.toString());
+            queryParams.append('addresses', addressesToCheck.slice(i, i + MAX_VERIFICATIONS).join());
+            const requestURL = `${baseURL}?${queryParams.toString()}`;
+
+            const sourcifyResponse: AxiosResponse<Array<any>> = await axios.get<Array<any>>(requestURL)
+            if (sourcifyResponse.data) {
+                for (const r of sourcifyResponse.data) {
+                    if ('chainIds' in r) {
+                        verifiedAddresses.push(r.address.toLowerCase())
+                    }
+                }
+            }
+        }
+        return Promise.resolve(verifiedAddresses)
+    }
+
     //
     // public static fetchSource(sourceFileName: string, response: SourcifyResponse): string|null {
     //

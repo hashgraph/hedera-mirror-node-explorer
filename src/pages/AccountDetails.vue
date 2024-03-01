@@ -215,37 +215,51 @@
 
     <DashboardCard v-if="!isInactiveEvmAddress" collapsible-key="recentTransactions">
       <template v-slot:title>
-        <p id="recentTransactions" class="h-is-secondary-title">Recent Transactions</p>
+        <p id="recentTransactions" class="h-is-secondary-title">Recent Account Operations</p>
       </template>
       <template v-slot:control>
-        <div class="is-flex is-align-items-flex-end">
-          <PlayPauseButton v-bind:controller="transactionTableController"/>
-          <TransactionFilterSelect v-bind:controller="transactionTableController"/>
-        </div>
+          <div v-if="selectedTab === 0" class="is-flex is-align-items-flex-end">
+              <PlayPauseButton :controller="transactionTableController"/>
+              <TransactionFilterSelect :controller="transactionTableController"/>
+          </div>
+          <div v-else-if="selectedTab === 1" class="is-flex is-justify-content-end is-align-items-center">
+              <PlayPauseButton v-if="!filterVerified" :controller="contractCreateTableController"/>
+              <PlayPauseButton v-else :controller="verifiedContractsController"/>
+              <span class="ml-5 mr-2">All</span>
+              <o-field>
+                  <o-switch v-model="filterVerified">Verified</o-switch>
+              </o-field>
+          </div>
       </template>
       <template v-slot:content>
-        <div id="recentTransactionsTable">
-          <TransactionTable
-              v-if="account"
-              v-bind:controller="transactionTableController"
-              v-bind:narrowed="true"
+          <Tabs
+              :selected-tab="selectedTab"
+              :tabs="tabLabels"
+              @update:selected-tab="handleTabUpdate($event)"
+              css-id="operations-tab"
           />
-        </div>
+
+          <div v-if="selectedTab === 0" id="recentTransactionsTable">
+              <TransactionTable v-if="account" :controller="transactionTableController" :narrowed="true"/>
+          </div>
+
+          <div v-else-if="selectedTab === 1" id="recentContractsTable">
+              <AccountCreatedContractsTable v-if="account && !filterVerified" :controller="contractCreateTableController"/>
+              <AccountVerifiedContractsTable
+                  v-else-if="account"
+                  :controller="verifiedContractsController"
+                  :loaded="loaded"
+                  :overflow="overflow"/>
+              <EmptyTable v-else/>
+          </div>
+
+          <div v-else id="recentRewardsTable">
+              <StakingRewardsTable :controller="rewardsTableController"/>
+          </div>
       </template>
     </DashboardCard>
 
     <ApproveAllowanceSection :account-id="normalizedAccountId ?? undefined" :showApproveDialog="showApproveDialog"/>
-
-    <DashboardCard v-if="normalizedAccountId && availableAPI" collapsible-key="recentAccountRewards">
-      <template v-slot:title>
-        <span class="h-is-secondary-title">Recent Staking Rewards</span>
-      </template>
-      <template v-slot:content>
-        <div id="recentRewardsTable">
-          <StakingRewardsTable :controller="rewardsTableController"/>
-        </div>
-      </template>
-    </DashboardCard>
 
     <MirrorLink :network="network" entityUrl="accounts" :loc="accountId"/>
 
@@ -261,7 +275,7 @@
 
 <script lang="ts">
 
-import {computed, defineComponent, inject, onBeforeUnmount, onMounted, watch} from 'vue';
+import {computed, defineComponent, inject, onBeforeUnmount, onMounted, ref} from 'vue';
 import KeyValue from "@/components/values/KeyValue.vue";
 import PlayPauseButton from "@/components/PlayPauseButton.vue";
 import TransactionTable from "@/components/transaction/TransactionTable.vue";
@@ -293,12 +307,24 @@ import InfoTooltip from "@/components/InfoTooltip.vue";
 import Copyable from "@/components/Copyable.vue";
 import InlineBalancesValue from "@/components/values/InlineBalancesValue.vue";
 import MirrorLink from "@/components/MirrorLink.vue";
+import {TransactionType} from "@/schemas/HederaSchemas";
+import {TransactionTableController} from "@/components/transaction/TransactionTableController";
+import EmptyTable from "@/components/EmptyTable.vue";
+import AccountVerifiedContractsTable from "@/components/account/AccountVerifiedContractsTable.vue";
+import {AppStorage} from "@/AppStorage";
+import Tabs from "@/components/Tabs.vue";
+import {VerifiedContractsController} from "@/components/contract/VerifiedContractsController";
+import AccountCreatedContractsTable from "@/components/account/AccountCreatedContractsTable.vue";
 
 export default defineComponent({
 
   name: 'AccountDetails',
 
   components: {
+    AccountCreatedContractsTable,
+    AccountVerifiedContractsTable,
+    EmptyTable,
+    Tabs,
     MirrorLink,
     InlineBalancesValue,
     Copyable,
@@ -339,56 +365,13 @@ export default defineComponent({
     //
     // account
     //
-
     const accountLocParser = new AccountLocParser(computed(() => props.accountId ?? null))
     onMounted(() => accountLocParser.mount())
     onBeforeUnmount(() => accountLocParser.unmount())
 
     //
-    // TransactionTableController
-    //
-    const perPage = computed(() => isMediumScreen ? 10 : 5)
-    const accountId = accountLocParser.accountId
-    const transactionTableController = new TransactionTableControllerXL(
-      router, accountId, perPage, true, "p1", "k1")
-
-    /*
-          vue   \   accountId |       null       |      not null     |
-          state  \            |                  |                   |
-          --------------------+------------------+-------------------+
-          unmounted           |   ttc unmounted  |   ttc unmounted   |
-          --------------------+------------------+-------------------+
-          mounted             |   ttc unmounted  |    ttc mounted    |
-          --------------------+------------------+-------------------+
-     */
-
-    let mounted = false
-    onMounted(() => {
-      mounted = true
-      if (accountId.value !== null) {
-        transactionTableController.mount()
-      }
-    })
-    onBeforeUnmount(() => {
-      mounted = false
-      if (transactionTableController.mounted.value) {
-        transactionTableController.unmount()
-      }
-    })
-    watch(accountId, () => {
-      if (mounted) {
-        if (accountId.value !== null) {
-          transactionTableController.mount()
-        } else {
-          transactionTableController.unmount()
-        }
-      }
-    })
-
-    //
     // BalanceAnalyzer
     //
-
     const balanceAnalyzer = new BalanceAnalyzer(accountLocParser.accountId, 10000)
     onMounted(() => balanceAnalyzer.mount())
     onBeforeUnmount(() => balanceAnalyzer.unmount())
@@ -420,14 +403,6 @@ export default defineComponent({
       return result
     })
 
-    //
-    // Rewards Table Controller
-    //
-    const rewardsTableController = new StakingRewardsTableController(
-        router, accountLocParser.accountId, perPage, "p2", "k2")
-    onMounted(() => rewardsTableController.mount())
-    onBeforeUnmount(() => rewardsTableController.unmount())
-
     const contractRoute = computed(() => {
       const accountId = accountLocParser.accountId.value
       return accountId ? routeManager.makeRouteToContract(accountId) : null
@@ -443,11 +418,41 @@ export default defineComponent({
       return operatorNodeId != null ? routeManager.makeRouteToNode(operatorNodeId) : null
     })
 
+    const selectedTab = ref(AppStorage.getAccountOperationTab() ?? 0)
+    const tabLabels = ['Transactions', 'Created Contracts', 'Staking Rewards']
+    const handleTabUpdate = (tab: number) => {
+      selectedTab.value = tab
+      AppStorage.setAccountOperationTab(tab)
+    }
+    const filterVerified = ref(false)
+
+    //
+    // Table controllers and cache for Recent Account Operations
+    // These are mounted only when their respective table is mounted, i.e. when the corresponding tab is selected
+    //
+    const perPage = computed(() => isMediumScreen ? 10 : 5)
+    const accountId = accountLocParser.accountId
+
+    const transactionTableController = new TransactionTableControllerXL(
+        router, accountId, perPage, true, "p1", "k1")
+
+    const contractCreateTableController = new TransactionTableController(
+        router, perPage, TransactionType.CONTRACTCREATEINSTANCE, "success", "p3", "k3", accountId)
+
+    const verifiedContractsController = new VerifiedContractsController(accountId)
+
+    const rewardsTableController = new StakingRewardsTableController(
+        router, accountLocParser.accountId, perPage, "p2", "k2")
+
     return {
       isSmallScreen,
       isMediumScreen,
       isTouchDevice,
       transactionTableController,
+      contractCreateTableController,
+      verifiedContractsController,
+      loaded: verifiedContractsController.loaded,
+      overflow: verifiedContractsController.overflow,
       notification: accountLocParser.errorNotification,
       isInactiveEvmAddress: accountLocParser.isInactiveEvmAddress,
       account: accountLocParser.accountInfo,
@@ -467,7 +472,11 @@ export default defineComponent({
       contractRoute,
       stakedNodeRoute,
       operatorNodeRoute,
-      availableAPI: rewardsTableController.availableAPI
+      availableAPI: rewardsTableController.availableAPI,
+      selectedTab,
+      tabLabels,
+      handleTabUpdate,
+      filterVerified,
     }
   }
 });
