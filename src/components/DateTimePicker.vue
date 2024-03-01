@@ -53,7 +53,7 @@ export default defineComponent({
     const handleClosed = () => {
       if (props.controller) {
         const controller = props.controller
-        const timestamp = (date.value as Date).getTime()
+        const timestamp = (date.value as Date).getTime() / 1000
         controller.onKeyChange(timestamp)
       } else {
         console.log("Ignoring click because props.controller is undefined")
