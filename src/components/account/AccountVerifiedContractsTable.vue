@@ -69,7 +69,7 @@
 <script lang="ts">
 
 import {computed, defineComponent, onBeforeUnmount, onMounted, PropType} from 'vue';
-import {Transaction} from "@/schemas/HederaSchemas";
+import {Contract} from "@/schemas/HederaSchemas";
 import TimestampValue from "@/components/values/TimestampValue.vue";
 import {routeManager} from "@/router";
 import BlobValue from "@/components/values/BlobValue.vue";
@@ -103,8 +103,8 @@ export default defineComponent({
         onMounted(() => props.controller.mount())
         onBeforeUnmount(() => props.controller.unmount())
 
-        const handleClick = (t: Transaction, c: unknown, i: number, ci: number, event: MouseEvent) => {
-            routeManager.routeToContract(t.entity_id!, event.ctrlKey || event.metaKey)
+        const handleClick = (contract: Contract, c: unknown, i: number, ci: number, event: MouseEvent) => {
+            routeManager.routeToContract(contract.contract_id!, event.ctrlKey || event.metaKey)
         }
 
         return {
