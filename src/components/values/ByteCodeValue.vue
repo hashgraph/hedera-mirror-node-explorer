@@ -26,6 +26,7 @@
 
     <div v-if="nonNullValue" id="bytecode"
          class="h-code-box h-has-page-background pt-1 pl-3 pr-2 pb-2 mt-2 mr-1"
+         style="min-height:20px"
          :style="{'max-height':heightInPixel+'px'}">
         <HexaValue :byte-string="textValue" :copyable="false"/>
     </div>
