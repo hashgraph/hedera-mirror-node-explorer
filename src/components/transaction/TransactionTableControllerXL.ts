@@ -133,9 +133,4 @@ export class TransactionTableControllerXL extends TableController<Transaction, s
     public fetchTransactionTypeParam(): string {
         return fetchStringQueryParam(this.typeParamName, this.router.currentRoute.value)?.toUpperCase() ?? ""
     }
-
-    public onChangePageSize(pageSize: Ref<number>) {
-        this.pageSize.value = pageSize.value
-    }
-
 }

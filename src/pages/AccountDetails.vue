@@ -353,7 +353,6 @@ export default defineComponent({
     DurationValue,
     StringValue,
     StakingRewardsTable,
-    DateTimePicker
   },
 
   props: {

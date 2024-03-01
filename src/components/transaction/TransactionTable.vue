@@ -143,7 +143,6 @@ export default defineComponent({
       handleClick,
       makeTypeLabel,
       ORUGA_MOBILE_BREAKPOINT,
-      onPerPageChange: props.controller.onChangePageSize
     }
   }
 })

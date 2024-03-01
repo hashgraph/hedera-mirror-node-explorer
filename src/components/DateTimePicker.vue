@@ -34,6 +34,7 @@ import {defineComponent, onMounted, PropType, ref} from "vue";
 import {TableController} from "@/utils/table/TableController";
 import Datepicker from '@vuepic/vue-datepicker';
 import '@vuepic/vue-datepicker/dist/main.css';
+import { TransactionTableControllerXL } from "@/components/transaction/TransactionTableControllerXL";
 
 export default defineComponent({
   name: "DateTimePicker",
@@ -43,7 +44,7 @@ export default defineComponent({
   },
 
   props: {
-    controller: Object as PropType<TableController<unknown, unknown>>
+    controller: Object as PropType<TransactionTableControllerXL>
   },
 
   setup(props) {
