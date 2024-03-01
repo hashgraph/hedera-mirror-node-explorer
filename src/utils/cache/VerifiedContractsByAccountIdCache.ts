@@ -86,17 +86,12 @@ export class VerifiedContractsBuffer {
                 this.candidates = loadedContracts.concat(this.candidates)
                 this.overflow = (this.candidates.length >= VerifiedContractsBuffer.MAX_CANDIDATES)
                 this.candidates = this.candidates.slice(0, VerifiedContractsBuffer.MAX_CANDIDATES)
-
-                // Only check the verification status of the newly loaded contracts
-                // to avoid unduly loading Sourcify server at each refresh
-                const addressesToCheck: string[] = []
-                for (const c of loadedContracts ?? []) {
-                    addressesToCheck.push(c.evm_address)
-                }
-
-                const newlyVerifiedAddresses = await SourcifyCache.checkAllContracts(addressesToCheck)
-                this.verifiedAddresses = this.verifiedAddresses.concat(newlyVerifiedAddresses)
             }
+
+            const addressesToCheck: string[] = []
+            this.candidates.forEach((c) => addressesToCheck.push(c.evm_address))
+            const newlyVerifiedAddresses = await SourcifyCache.checkAllContracts(addressesToCheck)
+            this.verifiedAddresses = this.verifiedAddresses.concat(newlyVerifiedAddresses)
 
             for (const c of this.candidates) {
                 if (c.contract_id != null && this.verifiedAddresses.includes(c.evm_address)) {

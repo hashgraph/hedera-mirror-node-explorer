@@ -86,17 +86,12 @@ export class VerifiedContractsController implements PlayPauseController {
     private timeoutID = -1
     private maxRefreshCount = 10
     private refreshCount = 0
-    private autoRefreshRef: Ref<boolean> = ref(false)
+    private autoRefreshRef: Ref<boolean> = ref(true)
 
     private async refresh(): Promise<void> {
-        this.autoRefreshRef.value = true
         if (this.contractsLookup.entity.value != null) {
-            this.contractsLookup.entity.value.update().catch(this.errorHandler)
-            this.contractsLookup.entity.value.contracts.forEach((c) => {
-                if (!this.contracts.value.includes(c)) {
-                    this.contracts.value.unshift(c)
-                }
-            })
+            await this.contractsLookup.entity.value.update().catch(this.errorHandler)
+            this.contracts.value = this.contractsLookup.entity.value.contracts
         }
         this.refreshCount += 1
         if (this.refreshCount < this.maxRefreshCount) {
