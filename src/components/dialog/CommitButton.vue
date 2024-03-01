@@ -32,10 +32,6 @@
                 <span class="loader is-inline-block"/>
             </div>
         </div>
-        <template v-if="isBusy">
-        </template>
-        <template v-else>
-        </template>
     </DialogButton>
 </template>
 
