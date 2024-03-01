@@ -610,6 +610,21 @@ export enum ResultDataType {
     ERROR = "ERROR"
 }
 
+export interface ContractCallRequest {
+    block?: string|null      // Hexadecimal block number or the string "latest", "pending", "earliest". Defaults to "latest"
+    data?: string|null       // Hexadecimal method signature and encoded parameters
+    estimate?: boolean|null  // Whether gas estimation is called. Defaults to false
+    from?: string|null       // The 20-byte hexadecimal EVM address the transaction is sent from
+    gas?: number|null        // Gas provided for the transaction execution. Defaults to 15000000
+    gasPrice?: number|null   // Gas price used for each paid gas
+    to: string               // The 20-byte hexadecimal EVM address the transaction is directed to
+    value?: number|null      // Value sent with this transaction. Defaults to 0
+}
+
+export interface ContractCallResponse {
+    result: string          // Result in hexadecimal from executed contract call
+}
+
 // ---------------------------------------------------------------------------------------------------------------------
 //                                                      Node
 // ---------------------------------------------------------------------------------------------------------------------

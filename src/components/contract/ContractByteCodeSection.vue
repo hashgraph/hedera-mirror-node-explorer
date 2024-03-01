@@ -89,9 +89,14 @@
                                @click="selectedOption = 'bytecode'">
                                 <span>Bytecode</span></a>
                         </li>
+                        <li :class="{'is-active':showABI}">
+                            <a :style="{ fontWeight: selectedOption=='abi'?500:300 }"
+                               @click="selectedOption = 'abi'">
+                                <span>ABI</span></a>
+                        </li>
                     </ul>
                 </div>
-                <div v-if="isVerified && selectedOption==='source'" class="is-flex is-justify-content-end">
+                <div v-if="selectedOption==='source'" class="is-flex is-justify-content-end">
                     <DownloadButton @click="handleDownload" />
                     <o-field class="ml-4">
                         <o-select v-model="selectedSource" class="h-is-text-size-3">
@@ -139,6 +144,8 @@
                     <DisassembledCodeValue :byte-code="byteCode ?? undefined" :show-hexa-opcode="showHexaOpcode" class="mt-3 mb-0"/>
                 </div>
             </div>
+            <ContractAbiValue v-if="isVerified && selectedOption==='abi'"
+                              :contract-analyzer="contractAnalyzer">ABI</ContractAbiValue>
         </template>
     </DashboardCard>
 
@@ -168,6 +175,7 @@ import DisassembledCodeValue from "@/components/values/DisassembledCodeValue.vue
 import HexaValue from "@/components/values/HexaValue.vue";
 import {AppStorage} from "@/AppStorage";
 import SourceCodeValue from "@/components/values/SourceCodeValue.vue";
+import ContractAbiValue from "@/components/values/abi/ContractAbiValue.vue";
 import {SourcifyResponseItem} from "@/utils/cache/SourcifyCache";
 import DownloadButton from "@/components/DownloadButton.vue";
 import JSZip from "jszip";
@@ -180,6 +188,7 @@ export default defineComponent({
   name: 'ContractByteCodeSection',
 
   components: {
+      ContractAbiValue,
       DownloadButton,
       SourceCodeValue,
       HexaValue,
@@ -233,6 +242,7 @@ export default defineComponent({
     const selectedOption = ref('source')
     const showSource = computed(() => selectedOption.value === 'source')
     const showBytecode = computed(() => selectedOption.value === 'bytecode')
+    const showABI = computed(() => selectedOption.value === 'abi')
 
     const selectedSource = ref('')
     watch(props.contractAnalyzer.contractFileName,
@@ -298,6 +308,7 @@ export default defineComponent({
       selectedOption,
       showSource,
       showBytecode,
+      showABI,
       selectedSource,
       isImportFile,
       relevantPath,

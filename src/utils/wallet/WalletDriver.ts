@@ -19,6 +19,7 @@
  */
 
 import {WalletDriverError} from "@/utils/wallet/WalletDriverError";
+import {ContractResultDetails} from "@/schemas/HederaSchemas";
 
 export abstract class WalletDriver {
 
@@ -44,6 +45,10 @@ export abstract class WalletDriver {
 
     public async dissociateToken(accountId: string, tokenId: string): Promise<string> {
         throw this.toBeImplemented("dissociateToken")
+    }
+
+    public async callContract(contractAddress: string, functionData: string): Promise<ContractResultDetails|string> {
+        throw this.toBeImplemented("callContract")
     }
 
     public abstract isConnected(): boolean

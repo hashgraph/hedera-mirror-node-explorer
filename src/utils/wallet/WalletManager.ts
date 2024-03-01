@@ -29,6 +29,7 @@ import {WalletDriver_Metamask} from "@/utils/wallet/WalletDriver_Metamask";
 import {WalletDriver_Ethereum} from "@/utils/wallet/WalletDriver_Ethereum";
 import {WalletDriver_Coinbase} from "@/utils/wallet/WalletDriver_Coinbase";
 import {WalletDriver_Brave} from '@/utils/wallet//WalletDriver_Brave';
+import {ContractResultDetails} from "@/schemas/HederaSchemas";
 
 export class WalletManager {
 
@@ -213,6 +214,14 @@ export class WalletManager {
             }
         } else {
             throw this.activeDriver.callFailure("watchTokenInMetamask")
+        }
+    }
+
+    public async callContract(contractAddress: string, functionData: string): Promise<ContractResultDetails|string> {
+        if (this.accountIdRef.value !== null) {
+            return this.activeDriver.callContract(contractAddress, functionData)
+        } else {
+            throw this.activeDriver.callFailure("callContract")
         }
     }
 

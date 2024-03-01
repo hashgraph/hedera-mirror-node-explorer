@@ -93,7 +93,7 @@ export class FunctionCallAnalyzer {
     })
 
     public readonly functionHash: ComputedRef<string|null> = computed(() => {
-        const input = this.input.value
+        const input = this.normalizedInput.value
         return input !== null ? input.slice(0, 10) : null
     })
 
@@ -198,8 +198,8 @@ export class FunctionCallAnalyzer {
 
     public readonly inputArgsOnly = computed(() => {
         let result: string|null
-        if (this.input.value !== null) {
-            result = "0x" + this.input.value.slice(10) // "0x" + 2x4 bytes
+        if (this.normalizedInput.value !== null) {
+            result = "0x" + this.normalizedInput.value.slice(10) // "0x" + 2x4 bytes
         } else {
             result = null
         }

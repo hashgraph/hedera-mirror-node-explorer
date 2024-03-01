@@ -32,6 +32,10 @@ describe("ContractResultAnalyzer.spec.ts", () => {
     test("new + mount + setup + unmount", async () => {
 
         const mock = new MockAdapter(axios);
+
+        const matcher0 = "/api/v1/contracts/" + CONTRACT_RESULT.to
+        mock.onGet(matcher0).reply(200, CONTRACT);
+
         const matcher1 = "/api/v1/contracts/results"
         const param1 = { timestamp: CONTRACT_RESULT.timestamp, internal: true }
         mock.onGet(matcher1, param1).reply(200, {
@@ -41,7 +45,7 @@ describe("ContractResultAnalyzer.spec.ts", () => {
         const matcher2 = "/api/v1/contracts/" + CONTRACT_RESULT.contract_id + "/results/" + CONTRACT_RESULT.timestamp
         mock.onGet(matcher2).reply(200, CONTRACT_RESULT_DETAILS);
 
-        const matcher3 = "https://server-verify.hashscan.io/files/any/296/0x06a50d1f642cA50284EFb59988AF9b60683FAD3F"
+        const matcher3 = "files/any/295/0x06a50d1f642cA50284EFb59988AF9b60683FAD3F"
         mock.onGet(matcher3).reply(200, SOURCIFY_RESPONSE);
 
         // 1) new
@@ -56,6 +60,9 @@ describe("ContractResultAnalyzer.spec.ts", () => {
         expect(analyzer.errorMessage.value).toBeNull()
         expect(analyzer.ethereumNonce.value).toBeNull()
         expect(analyzer.contractType.value).toBeNull()
+        expect(analyzer.contractResult.value).toBeNull()
+        expect(analyzer.functionCallAnalyzer.functionHash.value).toBeNull()
+        expect(analyzer.functionCallAnalyzer.signature.value).toBeNull()
 
         // 2) mount
         analyzer.mount()
@@ -69,6 +76,9 @@ describe("ContractResultAnalyzer.spec.ts", () => {
         expect(analyzer.errorMessage.value).toBeNull()
         expect(analyzer.ethereumNonce.value).toBeNull()
         expect(analyzer.contractType.value).toBeNull()
+        expect(analyzer.contractResult.value).toBeNull()
+        expect(analyzer.functionCallAnalyzer.functionHash.value).toBeNull()
+        expect(analyzer.functionCallAnalyzer.signature.value).toBeNull()
 
         // 3) setup timestamp
         timestamp.value = CONTRACT_RESULT.timestamp
@@ -82,6 +92,9 @@ describe("ContractResultAnalyzer.spec.ts", () => {
         expect(analyzer.errorMessage.value).toBeNull()
         expect(analyzer.ethereumNonce.value).toBe(97)
         expect(analyzer.contractType.value).toBe("Post-Eip1559")
+        expect(analyzer.contractResult.value).toStrictEqual(CONTRACT_RESULT_DETAILS)
+        expect(analyzer.functionCallAnalyzer.functionHash.value).toBe("0x5d123e3f")
+        expect(analyzer.functionCallAnalyzer.signature.value).toBe("forwardDepositToICHIVault(address,address,address,uint256,uint256,address)")
 
         // 4) unmount
         analyzer.unmount()
@@ -94,6 +107,18 @@ describe("ContractResultAnalyzer.spec.ts", () => {
         expect(analyzer.errorMessage.value).toBeNull()
         expect(analyzer.ethereumNonce.value).toBeNull()
         expect(analyzer.contractType.value).toBeNull()
+        expect(analyzer.contractResult.value).toBeNull()
+        expect(analyzer.functionCallAnalyzer.functionHash.value).toBeNull()
+        expect(analyzer.functionCallAnalyzer.signature.value).toBeNull()
+
+        // 5) check history
+        expect(fetchGetURLs(mock)).toStrictEqual([
+            "api/v1/contracts/results",
+            "api/v1/contracts/0.0.6810663/results/1704186823.658538003",
+            "https://www.4byte.directory/api/v1/signatures/?format=json&hex_signature=0x5d123e3f",
+            "api/v1/contracts/0x06a50d1f642ca50284efb59988af9b60683fad3f",
+            "files/any/295/0x06a50d1f642cA50284EFb59988AF9b60683FAD3F",
+        ])
 
         mock.restore()
         await flushPromises()
@@ -102,6 +127,10 @@ describe("ContractResultAnalyzer.spec.ts", () => {
     test("new + setup + mount + unmount", async () => {
 
         const mock = new MockAdapter(axios);
+
+        const matcher0 = "/api/v1/contracts/" + CONTRACT_RESULT.to
+        mock.onGet(matcher0).reply(200, CONTRACT);
+
         const matcher1 = "/api/v1/contracts/results"
         const param1 = { timestamp: CONTRACT_RESULT.timestamp, internal: true }
         mock.onGet(matcher1, param1).reply(200, {
@@ -111,7 +140,7 @@ describe("ContractResultAnalyzer.spec.ts", () => {
         const matcher2 = "/api/v1/contracts/" + CONTRACT_RESULT.contract_id + "/results/" + CONTRACT_RESULT.timestamp
         mock.onGet(matcher2).reply(200, CONTRACT_RESULT_DETAILS);
 
-        const matcher3 = "https://server-verify.hashscan.io/files/any/296/0x06a50d1f642cA50284EFb59988AF9b60683FAD3F"
+        const matcher3 = "files/any/295/0x06a50d1f642cA50284EFb59988AF9b60683FAD3F"
         mock.onGet(matcher3).reply(200, SOURCIFY_RESPONSE);
 
         // 1) new
@@ -126,6 +155,9 @@ describe("ContractResultAnalyzer.spec.ts", () => {
         expect(analyzer.errorMessage.value).toBeNull()
         expect(analyzer.ethereumNonce.value).toBeNull()
         expect(analyzer.contractType.value).toBeNull()
+        expect(analyzer.contractResult.value).toBeNull()
+        expect(analyzer.functionCallAnalyzer.functionHash.value).toBeNull()
+        expect(analyzer.functionCallAnalyzer.signature.value).toBeNull()
 
         // 2) setup timestamp
         timestamp.value = CONTRACT_RESULT.timestamp
@@ -139,6 +171,9 @@ describe("ContractResultAnalyzer.spec.ts", () => {
         expect(analyzer.errorMessage.value).toBeNull()
         expect(analyzer.ethereumNonce.value).toBeNull()
         expect(analyzer.contractType.value).toBeNull()
+        expect(analyzer.contractResult.value).toBeNull()
+        expect(analyzer.functionCallAnalyzer.functionHash.value).toBeNull()
+        expect(analyzer.functionCallAnalyzer.signature.value).toBeNull()
 
         // 3) mount
         analyzer.mount()
@@ -152,6 +187,9 @@ describe("ContractResultAnalyzer.spec.ts", () => {
         expect(analyzer.errorMessage.value).toBeNull()
         expect(analyzer.ethereumNonce.value).toBe(97)
         expect(analyzer.contractType.value).toBe("Post-Eip1559")
+        expect(analyzer.contractResult.value).toStrictEqual(CONTRACT_RESULT_DETAILS)
+        expect(analyzer.functionCallAnalyzer.functionHash.value).toBe("0x5d123e3f")
+        expect(analyzer.functionCallAnalyzer.signature.value).toBe("forwardDepositToICHIVault(address,address,address,uint256,uint256,address)")
 
         // 4) unmount
         analyzer.unmount()
@@ -164,12 +202,53 @@ describe("ContractResultAnalyzer.spec.ts", () => {
         expect(analyzer.errorMessage.value).toBeNull()
         expect(analyzer.ethereumNonce.value).toBeNull()
         expect(analyzer.contractType.value).toBeNull()
+        expect(analyzer.contractResult.value).toBeNull()
+        expect(analyzer.functionCallAnalyzer.functionHash.value).toBeNull()
+        expect(analyzer.functionCallAnalyzer.signature.value).toBeNull()
+
+        // 5) check history
+        expect(fetchGetURLs(mock)).toStrictEqual([
+            "api/v1/contracts/results",
+            "api/v1/contracts/0.0.6810663/results/1704186823.658538003",
+            // "https://www.4byte.directory/api/v1/signatures/?format=json&hex_signature=0x5d123e3f", WHY ?
+            "api/v1/contracts/0x06a50d1f642ca50284efb59988af9b60683fad3f",
+            "files/any/295/0x06a50d1f642cA50284EFb59988AF9b60683FAD3F",
+        ])
 
         mock.restore()
         await flushPromises()
     })
 
 })
+
+function fetchGetURLs(mock: MockAdapter): string[] {
+    let result: string[] = []
+    for (const e of mock.history.get) {
+        result.push(e.url)
+    }
+    return result
+}
+
+const CONTRACT = {
+    admin_key:  null,
+    auto_renew_account: null,
+    auto_renew_period: null,
+    contract_id: "0.0.6810663",
+    created_timestamp: "1704186823.658538003",
+    deleted: false,
+    evm_address: "0x06a50d1f642ca50284efb59988af9b60683fad3f",
+    expiration_timestamp: null,
+    file_id: null,
+    max_automatic_token_associations: null,
+    memo: "0x",
+    nonce: 0,
+    obtainer_id: null,
+    permanent_removal: null,
+    proxy_account_id: null,
+    timestamp: {},
+    bytecode: null,
+    runtime_bytecode: null
+}
 
 
 const CONTRACT_RESULT = {
