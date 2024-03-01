@@ -148,6 +148,37 @@ export class AppStorage {
     }
 
     //
+    // input params (for abi section)
+    //
+
+    private static readonly INPUT_PARAMS = 'inputParams'
+
+    public static getInputParam(functionHash: string, paramName: string): unknown|null {
+        const jsonText = this.getLocalStorageItem(this.makeInputParamKey(functionHash, paramName))
+        let result: unknown|null
+        if (jsonText !== null) {
+            try {
+                result = JSON.parse(jsonText)
+            } catch {
+                result = null
+            }
+        } else {
+            result = null
+        }
+        return result
+    }
+
+    public static setInputParam(newValue: unknown|null, functionHash: string, paramName: string) {
+        const jsonText = newValue !== null ? JSON.stringify(newValue) : null
+        this.setLocalStorageItem(this.makeInputParamKey(functionHash, paramName), jsonText)
+    }
+
+    private static makeInputParamKey(functionHash: string, paramName: string): string {
+        return this.INPUT_PARAMS + "/" + functionHash + "/" + paramName
+    }
+
+
+    //
     // Private
     //
 
