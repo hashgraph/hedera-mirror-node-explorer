@@ -33,7 +33,7 @@
                 {{ "//\n// Functions\n//"}}
             </prism>
             <div v-for="b of contractCallBuilders" :key="b.fragment.selector">
-                <div class="mb-2">
+                <div class="mb-2" style="margin-left: 0.6rem">
                     <ContractAbiEntry :contract-call-builder="b"
                                       @did-update-contract-state="entryDidUpdateContractState"/>
                 </div>
