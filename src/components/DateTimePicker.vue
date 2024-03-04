@@ -18,6 +18,8 @@
   -
   -->
 
+<!--Documentation for vue-datepicker: https://vue3datepicker.com-->
+
 <template>
   <div class="is-flex is-align-items-center" style="margin-right: 8px">
     <Datepicker v-model="date" @closed="handleClosed" @cleared="handleCleared"/>
