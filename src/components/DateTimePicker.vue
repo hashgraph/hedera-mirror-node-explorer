@@ -20,7 +20,7 @@
 
 <template>
   <div class="is-flex is-align-items-center" style="margin-right: 8px">
-    <Datepicker v-model="date" @closed="handleClosed"/>
+    <Datepicker v-model="date" @closed="handleClosed" @cleared="handleCleared"/>
   </div>
 </template>
 
@@ -55,7 +55,15 @@ export default defineComponent({
       if (props.controller) {
         const controller = props.controller
         const timestamp = (date.value as Date).getTime() / 1000
-        controller.onKeyChange(timestamp)
+        controller.onKeyChange(timestamp.toString())
+      } else {
+        console.log("Ignoring click because props.controller is undefined")
+      }
+    }
+    const handleCleared = () => {
+      if (props.controller) {
+        const controller = props.controller
+        controller.startAutoRefresh()
       } else {
         console.log("Ignoring click because props.controller is undefined")
       }
@@ -64,6 +72,7 @@ export default defineComponent({
 
     return {
       handleClosed,
+      handleCleared,
       date
     }
   }
