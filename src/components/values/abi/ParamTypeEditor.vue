@@ -31,9 +31,7 @@
             <ParamBooleanEditor :param-builder="paramBuilder"/>
         </template>
         <template v-else>
-            <div class="is-flex is-align-items-center" style="height: 40px">
-                <i class="has-text-grey">Editing not supported</i>
-            </div>
+            <ParamJsonEditor :param-builder="paramBuilder"/>
         </template>
     </div>
 </template>
@@ -48,11 +46,12 @@ import {computed, defineComponent, PropType} from "vue";
 import Property from "@/components/Property.vue";
 import ParamTextEditor from "@/components/values/abi/ParamTextEditor.vue";
 import ParamBooleanEditor from "@/components/values/abi/ParamBooleanEditor.vue";
+import ParamJsonEditor from "@/components/values/abi/ParamJsonEditor.vue";
 import {ContractParamBuilder} from "@/components/values/abi/ContractCallBuilder";
 
 export default defineComponent({
     name: "ParamTypeEditor",
-    components: {ParamBooleanEditor, ParamTextEditor, Property},
+    components: {ParamJsonEditor, ParamBooleanEditor, ParamTextEditor, Property},
     props: {
         paramBuilder: {
             type: Object as PropType<ContractParamBuilder>,

@@ -131,7 +131,7 @@ export class ContractCallBuilder {
     public saveInputParams() {
         for (const b of this.paramBuilders) {
             if (b.paramData.value) {
-                AppStorage.setInputParam(b.paramData.value.toString(), this.fragment.selector, b.paramType.name)
+                AppStorage.setInputParam(b.paramData.value, this.fragment.selector, b.paramType.name)
             }
         }
     }
