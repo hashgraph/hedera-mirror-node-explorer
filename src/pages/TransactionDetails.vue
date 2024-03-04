@@ -201,21 +201,19 @@
         <Property v-if="childTransactions.length" id="childTransactions">
           <template v-slot:name>Child Transactions</template>
           <template v-slot:value>
-            <router-link v-if="displayAllChildrenLinks"
-                         :to="routeManager.makeRouteToTransactionsById(transactionId ?? '')">
-              {{ 'Show all ' + childTransactions.length + ' transactions' }}
-            </router-link>
-            <div v-else>
-              <div v-for="tx in childTransactions" :key="tx.nonce">
-                <router-link :to="routeManager.makeRouteToTransactionObj(tx)">
-                  <span class="is-numeric">{{ '#' + tx.nonce }}</span>
-                  <span class="ml-2">{{ makeTypeLabel(tx.name) }}</span>
-                </router-link>
-                <span v-for="id in getTargetedTokens(tx, 5)" :key="id" class="ml-2">
-                  <TokenExtra :token-id="id" :use-anchor="true"/>
-                </span>
-              </div>
+            <div v-for="tx in childTransactions.slice(0, MAX_INLINE_CHILDREN)" :key="tx.nonce">
+              <router-link :to="routeManager.makeRouteToTransactionObj(tx)">
+                <span class="is-numeric">{{ '#' + tx.nonce }}</span>
+                <span class="ml-2">{{ makeTypeLabel(tx.name) }}</span>
+              </router-link>
+              <span v-for="id in getTargetedTokens(tx, 5)" :key="id" class="ml-2">
+                <TokenExtra :token-id="id" :use-anchor="true"/>
+              </span>
             </div>
+            <router-link v-if="displayAllChildrenLinks" class="has-text-grey"
+                         :to="routeManager.makeRouteToTransactionsById(transactionId ?? '')">
+              {{ 'Show all ' + childTransactions.length + ' child transactions' }}
+            </router-link>
           </template>
         </Property>
       </template>
@@ -283,7 +281,7 @@ import InfoTooltip from "@/components/InfoTooltip.vue";
 import MirrorLink from "@/components/MirrorLink.vue";
 import TokenExtra from "@/components/values/TokenExtra.vue";
 
-const MAX_INLINE_CHILDREN = 9
+const MAX_INLINE_CHILDREN = 10
 
 export default defineComponent({
 
@@ -468,6 +466,7 @@ export default defineComponent({
       isTokenAssociation: transactionAnalyzer.isTokenAssociation,
       associatedTokens: transactionAnalyzer.tokens,
       getTargetedTokens,
+      MAX_INLINE_CHILDREN
     }
   },
 })
