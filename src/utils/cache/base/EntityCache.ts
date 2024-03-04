@@ -19,6 +19,7 @@
  */
 
 import {Ref, ref, watch, WatchStopHandle} from "vue";
+import {Lookup} from "@/utils/cache/base/Lookup";
 
 export abstract class EntityCache<K, E> {
 
@@ -51,8 +52,8 @@ export abstract class EntityCache<K, E> {
         this.records.clear()
     }
 
-    public makeLookup(key: Ref<K|null>, forceLoad = false): Lookup<K, E> {
-        return new Lookup<K,E>(key, this, forceLoad)
+    public makeLookup(key: Ref<K|null>, forceLoad = false): EntityLookup<K, E> {
+        return new EntityLookup<K,E>(key, this, forceLoad)
     }
 
     public contains(key: K, forceLoad = false): boolean {
@@ -93,8 +94,7 @@ class EntityRecord<E> {
     }
 }
 
-
-export class Lookup<K,E> {
+export class EntityLookup<K,E> implements Lookup<E>{
 
     public readonly entity: Ref<E|null> = ref(null)
 

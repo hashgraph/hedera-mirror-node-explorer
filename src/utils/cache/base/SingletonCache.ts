@@ -19,6 +19,7 @@
  */
 
 import {Ref, ref} from "vue";
+import {Lookup} from "@/utils/cache/base/Lookup";
 
 export class SingletonCache<E> {
 
@@ -53,7 +54,7 @@ export class SingletonCache<E> {
     }
 }
 
-export class SingletonLookup<E> {
+export class SingletonLookup<E> implements Lookup<E>{
 
     public readonly entity: Ref<E|null> = ref(null)
 

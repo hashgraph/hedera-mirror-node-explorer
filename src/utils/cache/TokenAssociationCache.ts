@@ -19,7 +19,7 @@
  */
 
 import {TokenRelationship, TokenRelationshipResponse} from "@/schemas/HederaSchemas";
-import {EntityCache, Lookup} from "@/utils/cache/base/EntityCache";
+import {EntityCache, EntityLookup} from "@/utils/cache/base/EntityCache";
 import axios, {AxiosResponse} from "axios";
 import {computed, Ref} from "vue";
 
@@ -40,7 +40,7 @@ export class TokenAssociationCache extends EntityCache<string, TokenRelationship
         return components.length == 2 ? components : []
     }
 
-    public makeTokenAssociationLookup(accountId: Ref<string|null>, tokenId: Ref<string|null>): Lookup<string, TokenRelationship[]|null> {
+    public makeTokenAssociationLookup(accountId: Ref<string|null>, tokenId: Ref<string|null>): EntityLookup<string, TokenRelationship[]|null> {
         const key= computed(() => {
             let result: string|null
             if (accountId.value !== null && tokenId.value !== null) {

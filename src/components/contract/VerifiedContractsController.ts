@@ -23,12 +23,11 @@ import {PlayPauseController} from "@/components/PlayPauseButton.vue";
 import {Contract} from "@/schemas/HederaSchemas";
 import axios, {AxiosError} from "axios";
 import {VerifiedContractsBuffer} from "@/utils/cache/VerifiedContractsBuffer";
-import {SingletonLookup} from "@/utils/cache/base/SingletonCache";
-import {Lookup} from "@/utils/cache/base/EntityCache";
+import {Lookup} from "@/utils/cache/base/Lookup";
 
 export class VerifiedContractsController implements PlayPauseController {
 
-    private contractsLookup: SingletonLookup<VerifiedContractsBuffer> | Lookup<string, VerifiedContractsBuffer | null>
+    private contractsLookup: Lookup<VerifiedContractsBuffer>
 
     //
     // Public
@@ -39,7 +38,7 @@ export class VerifiedContractsController implements PlayPauseController {
     public overflow = computed(() => this.contractsLookup.entity.value?.overflow ?? false)
     public loaded = computed(() => this.contractsLookup.entity.value != null)
 
-    public constructor(contractsLookup: SingletonLookup<VerifiedContractsBuffer> | Lookup<string, VerifiedContractsBuffer | null>) {
+    public constructor(contractsLookup: Lookup<VerifiedContractsBuffer>) {
         this.contractsLookup = contractsLookup
         watch(
             this.contractsLookup.entity,
