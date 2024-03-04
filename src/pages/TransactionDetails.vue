@@ -206,11 +206,15 @@
               {{ 'Show all ' + childTransactions.length + ' transactions' }}
             </router-link>
             <div v-else>
-              <router-link v-for="tx in childTransactions" :key="tx.nonce"
-                           :to="routeManager.makeRouteToTransactionObj(tx)">
-                <span class="mr-2 is-numeric">{{ '#' + tx.nonce }}</span>
-                <span>{{ makeTypeLabel(tx.name) }}</span>
-                <br/></router-link>
+              <div v-for="tx in childTransactions" :key="tx.nonce">
+                <router-link :to="routeManager.makeRouteToTransactionObj(tx)">
+                  <span class="is-numeric">{{ '#' + tx.nonce }}</span>
+                  <span class="ml-2">{{ makeTypeLabel(tx.name) }}</span>
+                </router-link>
+                <span v-for="id in getTargetedTokens(tx, 5)" :key="id" class="ml-2">
+                  <TokenExtra :token-id="id" :use-anchor="true"/>
+                </span>
+              </div>
             </div>
           </template>
         </Property>
@@ -250,7 +254,7 @@
 <script lang="ts">
 
 import {computed, defineComponent, inject, onBeforeUnmount, onMounted} from 'vue';
-import {makeOperatorAccountLabel, makeTypeLabel} from "@/utils/TransactionTools";
+import {getTargetedTokens, makeOperatorAccountLabel, makeTypeLabel} from "@/utils/TransactionTools";
 import AccountLink from "@/components/values/AccountLink.vue";
 import HexaValue from "@/components/values/HexaValue.vue";
 import TimestampValue from "@/components/values/TimestampValue.vue";
@@ -277,6 +281,7 @@ import {TransactionAnalyzer} from "@/components/transaction/TransactionAnalyzer"
 import {TransactionGroupCache} from "@/utils/cache/TransactionGroupCache";
 import InfoTooltip from "@/components/InfoTooltip.vue";
 import MirrorLink from "@/components/MirrorLink.vue";
+import TokenExtra from "@/components/values/TokenExtra.vue";
 
 const MAX_INLINE_CHILDREN = 9
 
@@ -285,6 +290,7 @@ export default defineComponent({
   name: 'TransactionDetails',
 
   components: {
+    TokenExtra,
     MirrorLink,
     InfoTooltip,
     TokenLink,
@@ -460,7 +466,8 @@ export default defineComponent({
       displayResult,
       topicMessage: topicMessageLookup.entity,
       isTokenAssociation: transactionAnalyzer.isTokenAssociation,
-      associatedTokens: transactionAnalyzer.tokens
+      associatedTokens: transactionAnalyzer.tokens,
+      getTargetedTokens,
     }
   },
 })
