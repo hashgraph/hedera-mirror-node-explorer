@@ -77,7 +77,7 @@ import {ORUGA_MOBILE_BREAKPOINT} from '@/App.vue';
 import EmptyTable from "@/components/EmptyTable.vue";
 import ContractName from "@/components/values/ContractName.vue";
 import {AccountVerifiedContractsController} from "@/components/contract/AccountVerifiedContractsController";
-import {VerifiedContractsController} from "@/components/contract/VerifiedContractsController";
+import {AllVerifiedContractsController} from "@/components/contract/AllVerifiedContractsController";
 
 export default defineComponent({
     name: 'VerifiedContractsTable',
@@ -86,7 +86,7 @@ export default defineComponent({
 
     props: {
         controller: {
-            type: Object as PropType<VerifiedContractsController | AccountVerifiedContractsController>,
+            type: Object as PropType<AllVerifiedContractsController | AccountVerifiedContractsController>,
             required: true
         },
         loaded: Boolean,

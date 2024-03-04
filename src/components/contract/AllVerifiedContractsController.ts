@@ -26,7 +26,7 @@ import {VerifiedContractsBuffer} from "@/utils/cache/VerifiedContractsBuffer";
 import {SingletonLookup} from "@/utils/cache/base/SingletonCache";
 import {VerifiedContractsCache} from "@/utils/cache/VerifiedContractsCache";
 
-export class VerifiedContractsController implements PlayPauseController {
+export class AllVerifiedContractsController implements PlayPauseController {
 
     private contractsLookup: SingletonLookup<VerifiedContractsBuffer>
 
