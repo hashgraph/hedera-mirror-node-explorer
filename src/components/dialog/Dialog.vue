@@ -29,7 +29,7 @@
             <div class="modal-content" style="width: 768px; border-radius: 16px">
                 <div class="box">
 
-                    <div class="is-flex h-is-primary-title is-justify-content-space-between is-align-items-baseline">
+                    <div class="is-flex is-justify-content-space-between is-align-items-baseline">
                         <slot name="dialogTitle"/>
                     </div>
 
