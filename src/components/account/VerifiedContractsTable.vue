@@ -76,16 +76,17 @@ import BlobValue from "@/components/values/BlobValue.vue";
 import {ORUGA_MOBILE_BREAKPOINT} from '@/App.vue';
 import EmptyTable from "@/components/EmptyTable.vue";
 import ContractName from "@/components/values/ContractName.vue";
+import {AccountVerifiedContractsController} from "@/components/contract/AccountVerifiedContractsController";
 import {VerifiedContractsController} from "@/components/contract/VerifiedContractsController";
 
 export default defineComponent({
-    name: 'AccountVerifiedContractsTable',
+    name: 'VerifiedContractsTable',
 
     components: {ContractName, EmptyTable, TimestampValue, BlobValue},
 
     props: {
         controller: {
-            type: Object as PropType<VerifiedContractsController>,
+            type: Object as PropType<VerifiedContractsController | AccountVerifiedContractsController>,
             required: true
         },
         loaded: Boolean,
