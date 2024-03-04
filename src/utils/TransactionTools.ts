@@ -379,3 +379,30 @@ export function makeNetOfRewards(transfers: Transfer[] | undefined, rewards: Sta
 
     return result
 }
+
+export function getTargetedTokens(transaction: Transaction, nbItems: number|null = null): string[]  {
+    let result: string[]
+    const type = transaction.name
+    if (makeTypeLabel(type).toUpperCase().includes("TOKEN")) {
+        result = transaction.entity_id ? [transaction.entity_id] : []
+    } else if (type === TransactionType.CRYPTOTRANSFER) {
+        result = []
+        transaction.nft_transfers.forEach((nft) => {
+            if (nft.token_id && !result.includes(nft.token_id)) {
+                result.push(nft.token_id)
+            }
+        })
+        transaction.token_transfers.forEach((token) => {
+            if (token.token_id && !result.includes(token.token_id)) {
+                result.push(token.token_id)
+            }
+        })
+    } else {
+        result = []
+    }
+    if (nbItems != null) {
+        result = result.slice(0, nbItems)
+    }
+    return result
+}
+
