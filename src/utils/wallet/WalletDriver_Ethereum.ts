@@ -187,7 +187,7 @@ export abstract class WalletDriver_Ethereum extends WalletDriver {
         return Promise.resolve(result)
     }
 
-    public async callContract(contractAddress: string, functionData: string): Promise<ContractResultDetails|string> {
+    public async callContract(contractId: string, contractAddress: string, functionData: string, payerId: string): Promise<ContractResultDetails|string> {
         let result: ContractResultDetails|string
 
         if (this.provider !== null) {

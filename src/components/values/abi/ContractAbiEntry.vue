@@ -55,7 +55,6 @@
         <template v-slot:dialogInput>
             <DialogStatus :controller="alertController">
                 <template v-slot:mainMessage>To execute this function first connect your wallet</template>
-                <template v-slot:extraMessage>Use Metamask, Coinbase or Brave (other wallets to be supported soon)</template>
             </DialogStatus>
         </template>
     </Dialog>

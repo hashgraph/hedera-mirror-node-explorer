@@ -23,6 +23,7 @@ import {
     AccountAllowanceApproveTransaction,
     AccountAllowanceDeleteTransaction,
     AccountUpdateTransaction,
+    ContractExecuteTransaction,
     NftId,
     Signer,
     TokenAssociateTransaction,
@@ -31,10 +32,12 @@ import {
     TransactionResponse
 } from "@hashgraph/sdk";
 import {TransactionID} from "@/utils/TransactionID";
-import {Transaction} from "@/schemas/HederaSchemas";
+import {ContractResultDetails, Transaction} from "@/schemas/HederaSchemas";
 import {waitFor} from "@/utils/TimerUtils";
 import {TransactionByIdCache} from "@/utils/cache/TransactionByIdCache";
+import {ContractResultByTransactionIdCache} from "@/utils/cache/ContractResultByTransactionIdCache";
 import {WalletDriverCancelError} from "@/utils/wallet/WalletDriverError";
+import {hexToByte} from "@/utils/B64Utils";
 
 export abstract class WalletDriver_Hedera extends WalletDriver {
 
@@ -154,6 +157,24 @@ export abstract class WalletDriver_Hedera extends WalletDriver {
         return Promise.resolve(result)
     }
 
+    public async callContract(contractId: string, contractAddress: string, functionData: string, payerId: string): Promise<ContractResultDetails|string> {
+        let result: string|ContractResultDetails
+
+        const fp = hexToByte(functionData)
+        if (fp !== null) {
+            const trans = new ContractExecuteTransaction()
+            trans.setContractId(contractId)
+            trans.setFunctionParameters(fp)
+            trans.setGas(75000)
+            const transactionId = await this.executeTransaction(payerId, trans)
+            result = await this.waitForContractResultSurfacing(transactionId)
+        } else {
+            throw this.callFailure("invalid function data")
+        }
+
+        return Promise.resolve(result)
+    }
+
     //
     // Protected
     //
@@ -164,7 +185,8 @@ export abstract class WalletDriver_Hedera extends WalletDriver {
             |AccountUpdateTransaction
             |AccountAllowanceDeleteTransaction
             |TokenAssociateTransaction
-            |TokenDissociateTransaction): Promise<string> {
+            |TokenDissociateTransaction
+            |ContractExecuteTransaction): Promise<string> {
         let result: Promise<string>
 
         const signer = this.makeSigner(accountId)
@@ -205,6 +227,26 @@ export abstract class WalletDriver_Hedera extends WalletDriver {
                 counter -= 1
             }
             result = Promise.resolve(transaction ?? transactionId)
+        } catch {
+            result = Promise.resolve(transactionId)
+        }
+
+        return result
+    }
+
+
+    protected async waitForContractResultSurfacing(transactionId: string): Promise<ContractResultDetails | string> {
+        let result: Promise<ContractResultDetails | string>
+
+        try {
+            let counter = 10
+            let contractResult: ContractResultDetails|null = null
+            while (counter > 0 && contractResult === null) {
+                await waitFor(3000)
+                contractResult = await ContractResultByTransactionIdCache.instance.lookup(transactionId, true)
+                counter -= 1
+            }
+            result = Promise.resolve(contractResult ?? transactionId)
         } catch {
             result = Promise.resolve(transactionId)
         }

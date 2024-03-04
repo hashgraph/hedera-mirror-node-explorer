@@ -47,7 +47,7 @@ export abstract class WalletDriver {
         throw this.toBeImplemented("dissociateToken")
     }
 
-    public async callContract(contractAddress: string, functionData: string): Promise<ContractResultDetails|string> {
+    public async callContract(contractId: string, contractAddress: string, functionData: string, payerId: string): Promise<ContractResultDetails|string> {
         throw this.toBeImplemented("callContract")
     }
 
