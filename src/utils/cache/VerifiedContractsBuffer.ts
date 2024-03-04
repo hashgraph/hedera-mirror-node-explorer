@@ -25,18 +25,21 @@ import {SourcifyCache} from "@/utils/cache/SourcifyCache";
 
 export class VerifiedContractsBuffer {
 
-    private static MAX_ITERATIONS = 10
+    private static DEFAULT_CAPACITY = 250
     private static ITERATION_LIMIT = 25
+    private maxIterations: number
     private candidates: Contract[] = []
     private verifiedAddresses: string[] = []
     private readonly accountId: string|null
 
-    public static MAX_CANDIDATES = VerifiedContractsBuffer.ITERATION_LIMIT * VerifiedContractsBuffer.MAX_ITERATIONS
     public contracts: Contract[] = []
+    public capacity: number
     public overflow = false
 
-    public constructor(accountId: string|null = null) {
+    public constructor(accountId: string|null = null, capacity = VerifiedContractsBuffer.DEFAULT_CAPACITY) {
         this.accountId = accountId
+        this.capacity = capacity
+        this.maxIterations = Math.ceil(capacity / VerifiedContractsBuffer.ITERATION_LIMIT)
     }
 
     public async update(): Promise<void> {
@@ -50,7 +53,7 @@ export class VerifiedContractsBuffer {
             let nextURL: string | null = "api/v1/transactions"
             let iteration = 0
 
-            while (nextURL !== null && iteration < VerifiedContractsBuffer.MAX_ITERATIONS) {
+            while (nextURL !== null && iteration < this.maxIterations) {
                 const params = {
                     limit: VerifiedContractsBuffer.ITERATION_LIMIT,
                     order: 'desc',
@@ -83,8 +86,8 @@ export class VerifiedContractsBuffer {
 
             if (loadedContracts.length > 0) {
                 this.candidates = loadedContracts.concat(this.candidates)
-                this.overflow = (this.candidates.length >= VerifiedContractsBuffer.MAX_CANDIDATES)
-                this.candidates = this.candidates.slice(0, VerifiedContractsBuffer.MAX_CANDIDATES)
+                this.overflow = (this.candidates.length >= this.capacity)
+                this.candidates = this.candidates.slice(0, this.capacity)
             }
 
             const addressesToCheck: string[] = []

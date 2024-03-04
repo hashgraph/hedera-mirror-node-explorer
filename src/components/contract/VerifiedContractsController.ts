@@ -34,7 +34,7 @@ export class VerifiedContractsController implements PlayPauseController {
     //
 
     public contracts: Ref<Contract[]> = ref([])
-    public capacity = VerifiedContractsBuffer.MAX_CANDIDATES
+    public capacity = 0
     public overflow = computed(() => this.contractsLookup.entity.value?.overflow ?? false)
     public loaded = computed(() => this.contractsLookup.entity.value != null)
 
@@ -42,7 +42,10 @@ export class VerifiedContractsController implements PlayPauseController {
         this.contractsLookup = contractsLookup
         watch(
             this.contractsLookup.entity,
-            () => this.contracts.value = this.contractsLookup.entity.value?.contracts ?? []
+            () => {
+                this.contracts.value = this.contractsLookup.entity.value?.contracts ?? []
+                this.capacity = this.contractsLookup.entity.value?.capacity ?? 0
+            }
         )
     }
 

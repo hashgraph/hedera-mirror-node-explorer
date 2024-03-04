@@ -27,7 +27,7 @@ export class VerifiedContractsCache extends SingletonCache<VerifiedContractsBuff
     public static readonly instance = new VerifiedContractsCache()
 
     protected async load(): Promise<VerifiedContractsBuffer> {
-        const buffer = new VerifiedContractsBuffer()
+        const buffer = new VerifiedContractsBuffer(null, 500)
         await buffer.update().catch(this.errorHandler)
         return Promise.resolve(buffer)
     }
