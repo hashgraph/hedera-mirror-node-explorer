@@ -136,7 +136,7 @@ describe('Transaction Navigation', () => {
 
         cy.get('#childTransactionsValue')
             .find('a')
-            .should('have.length', 4)
+            .should('have.length', 6)
             .eq(0)
             .click()
             .then(() => {
@@ -213,7 +213,7 @@ describe('Transaction Navigation', () => {
 
         cy.get('#childTransactionsValue')
             .find('a')
-            .should('have.length', 2)
+            .should('have.length', 4)
             .eq(0)
             .click()
             .then(() => {
