@@ -24,11 +24,11 @@ import {Contract} from "@/schemas/HederaSchemas";
 import axios, {AxiosError} from "axios";
 import {VerifiedContractsBuffer} from "@/utils/cache/VerifiedContractsBuffer";
 import {SingletonLookup} from "@/utils/cache/base/SingletonCache";
-import {VerifiedContractsCache} from "@/utils/cache/VerifiedContractsCache";
+import {Lookup} from "@/utils/cache/base/EntityCache";
 
-export class AllVerifiedContractsController implements PlayPauseController {
+export class VerifiedContractsController implements PlayPauseController {
 
-    private contractsLookup: SingletonLookup<VerifiedContractsBuffer>
+    private contractsLookup: SingletonLookup<VerifiedContractsBuffer> | Lookup<string, VerifiedContractsBuffer | null>
 
     //
     // Public
@@ -39,8 +39,8 @@ export class AllVerifiedContractsController implements PlayPauseController {
     public overflow = computed(() => this.contractsLookup.entity.value?.overflow ?? false)
     public loaded = computed(() => this.contractsLookup.entity.value != null)
 
-    public constructor() {
-        this.contractsLookup = VerifiedContractsCache.instance.makeLookup()
+    public constructor(contractsLookup: SingletonLookup<VerifiedContractsBuffer> | Lookup<string, VerifiedContractsBuffer | null>) {
+        this.contractsLookup = contractsLookup
         watch(
             this.contractsLookup.entity,
             () => this.contracts.value = this.contractsLookup.entity.value?.contracts ?? []

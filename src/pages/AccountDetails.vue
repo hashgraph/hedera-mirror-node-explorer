@@ -313,8 +313,9 @@ import EmptyTable from "@/components/EmptyTable.vue";
 import VerifiedContractsTable from "@/components/account/VerifiedContractsTable.vue";
 import {AppStorage} from "@/AppStorage";
 import Tabs from "@/components/Tabs.vue";
-import {AccountVerifiedContractsController} from "@/components/contract/AccountVerifiedContractsController";
 import AccountCreatedContractsTable from "@/components/account/AccountCreatedContractsTable.vue";
+import {VerifiedContractsByAccountIdCache} from "@/utils/cache/VerifiedContractsByAccountIdCache";
+import {VerifiedContractsController} from "@/components/contract/VerifiedContractsController";
 
 export default defineComponent({
 
@@ -439,7 +440,9 @@ export default defineComponent({
     const contractCreateTableController = new TransactionTableController(
         router, perPage, TransactionType.CONTRACTCREATEINSTANCE, "success", "p3", "k3", accountId)
 
-    const verifiedContractsController = new AccountVerifiedContractsController(accountId)
+    const verifiedContractsController = new VerifiedContractsController(
+        VerifiedContractsByAccountIdCache.instance.makeLookup(accountId)
+    )
 
     const rewardsTableController = new StakingRewardsTableController(
         router, accountLocParser.accountId, perPage, "p2", "k2")

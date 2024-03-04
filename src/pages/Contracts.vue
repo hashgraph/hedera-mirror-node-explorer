@@ -71,7 +71,8 @@ import PlayPauseButton from "@/components/PlayPauseButton.vue";
 import {ContractTableController} from "@/components/contract/ContractTableController";
 import {useRouter} from "vue-router";
 import VerifiedContractsTable from "@/components/account/VerifiedContractsTable.vue";
-import {AllVerifiedContractsController} from "@/components/contract/AllVerifiedContractsController";
+import {VerifiedContractsController} from "@/components/contract/VerifiedContractsController";
+import {VerifiedContractsCache} from "@/utils/cache/VerifiedContractsCache";
 
 export default defineComponent({
   name: 'Contracts',
@@ -100,7 +101,7 @@ export default defineComponent({
     //
     const perPage = computed(() => isMediumScreen ? 15 : 10)
     const contractTableController = new ContractTableController(useRouter(), perPage)
-    const verifiedContractsController = new AllVerifiedContractsController()
+    const verifiedContractsController = new VerifiedContractsController(VerifiedContractsCache.instance.makeLookup())
 
     return {
       isSmallScreen,
