@@ -225,6 +225,7 @@
                 <option value="JUMP">JUMP TO DATE</option>
               </o-select>
             </o-field>
+            <DownloadButton @click="downloadController.visible.value = true"/>
             <TransactionFilterSelect :controller="transactionTableController"/>
           </div>
           <div v-else-if="selectedTab === 'contracts'" class="is-flex is-justify-content-end is-align-items-center">
@@ -267,6 +268,8 @@
     <ApproveAllowanceSection :account-id="normalizedAccountId ?? undefined"/>
 
     <MirrorLink :network="network" entityUrl="accounts" :loc="accountId"/>
+
+    <TransactionDownloadDialog :controller="downloadController"/>
 
   </section>
 
@@ -321,12 +324,17 @@ import AccountCreatedContractsTable from "@/components/account/AccountCreatedCon
 import {VerifiedContractsByAccountIdCache} from "@/utils/cache/VerifiedContractsByAccountIdCache";
 import {VerifiedContractsController} from "@/components/contract/VerifiedContractsController";
 import DateTimePicker from "@/components/DateTimePicker.vue";
+import DownloadButton from "@/components/DownloadButton.vue";
+import {DialogController} from "@/components/dialog/DialogController";
+import TransactionDownloadDialog from "@/components/download/TransactionDownloadDialog.vue";
 
 export default defineComponent({
 
   name: 'AccountDetails',
 
   components: {
+    TransactionDownloadDialog,
+    DownloadButton,
     AccountCreatedContractsTable,
     VerifiedContractsTable,
     EmptyTable,
@@ -469,6 +477,12 @@ export default defineComponent({
     const rewardsTableController = new StakingRewardsTableController(
         router, accountLocParser.accountId, perPage, "p2", "k2")
 
+    //
+    // Transactions download
+    //
+
+    const downloadController = new DialogController()
+
     return {
       isSmallScreen,
       isMediumScreen,
@@ -503,6 +517,7 @@ export default defineComponent({
       tabLabels,
       handleTabUpdate,
       filterVerified,
+      downloadController,
       timeSelection,
       onDateCleared
     }
