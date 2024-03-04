@@ -21,9 +21,10 @@
 import {computed, ComputedRef, ref, Ref, watch} from "vue";
 import {PlayPauseController} from "@/components/PlayPauseButton.vue";
 import {Contract} from "@/schemas/HederaSchemas";
-import {VerifiedContractsBuffer, VerifiedContractsByAccountIdCache} from "@/utils/cache/VerifiedContractsByAccountIdCache";
+import {VerifiedContractsByAccountIdCache} from "@/utils/cache/VerifiedContractsByAccountIdCache";
 import {Lookup} from "@/utils/cache/base/EntityCache";
 import axios, {AxiosError} from "axios";
+import {VerifiedContractsBuffer} from "@/utils/cache/VerifiedContractsBuffer";
 
 export class VerifiedContractsController implements PlayPauseController {
 
