@@ -45,7 +45,7 @@ import {
     SAMPLE_FAILED_TRANSACTIONS,
     SAMPLE_FILE_UPDATE_TRANSACTION,
     SAMPLE_NETWORK_EXCHANGERATE,
-    SAMPLE_NETWORK_NODES,
+    SAMPLE_NETWORK_NODES, SAMPLE_NONFUNGIBLE,
     SAMPLE_PARENT_CHILD_TRANSACTIONS,
     SAMPLE_SAME_ID_NOT_PARENT_TRANSACTIONS,
     SAMPLE_SCHEDULING_SCHEDULED_TRANSACTIONS,
@@ -672,6 +672,7 @@ describe("TransactionDetails.vue", () => {
         const PARENT = SAMPLE_PARENT_CHILD_TRANSACTIONS.transactions[0]
         const CHILD1 = SAMPLE_PARENT_CHILD_TRANSACTIONS.transactions[1]
         const CHILD2 = SAMPLE_PARENT_CHILD_TRANSACTIONS.transactions[2]
+        const TARGETED_TOKEN = CHILD1.entity_id
 
         const mock = new MockAdapter(axios)
         const matcher1 = "/api/v1/transactions"
@@ -684,6 +685,8 @@ describe("TransactionDetails.vue", () => {
         });
         const matcher11 = "/api/v1/transactions/" + PARENT.transaction_id
         mock.onGet(matcher11).reply(200, SAMPLE_PARENT_CHILD_TRANSACTIONS);
+        const matcher2 = "/api/v1/tokens/" + TARGETED_TOKEN
+        mock.onGet(matcher2).reply(200, SAMPLE_NONFUNGIBLE);
 
         const wrapper = mount(TransactionDetails, {
             global: {
@@ -701,14 +704,22 @@ describe("TransactionDetails.vue", () => {
         expect(wrapper.text()).toMatch(RegExp("^Transaction " + normalizeTransactionId(PARENT.transaction_id, true)))
 
         const children = wrapper.get("#childTransactionsValue")
-        expect(children.text()).toBe("#1TOKEN MINT#2CRYPTO TRANSFER")
+        expect(children.text()).toBe("" +
+            "#1TOKEN MINTĦFRENSKINGDOM" +
+            "#2CRYPTO TRANSFERĦFRENSKINGDOM")
 
         const links = children.findAll('a')
         expect(links[0].attributes("href")).toBe(
             "/mainnet/transaction/" + CHILD1.consensus_timestamp
         )
         expect(links[1].attributes("href")).toBe(
+            "/mainnet/token/" + TARGETED_TOKEN
+        )
+        expect(links[2].attributes("href")).toBe(
             "/mainnet/transaction/" + CHILD2.consensus_timestamp
+        )
+        expect(links[3].attributes("href")).toBe(
+            "/mainnet/token/" + TARGETED_TOKEN
         )
 
         wrapper.unmount()

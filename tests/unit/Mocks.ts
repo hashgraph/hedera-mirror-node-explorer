@@ -1799,6 +1799,7 @@ export const SAMPLE_PARENT_CHILD_TRANSACTIONS = {
             "parent_consensus_timestamp": "1662470957.014478705",
             "result": "SUCCESS",
             "scheduled": false,
+            "token_transfers": [],
             "transaction_hash": "Gqep6H2B3iE4id1qPG92q51LP20WXW7r53ujWlKekk8RBhYTfpFiD4iJBkK8UnGc",
             "transaction_id": "0.0.48113503-1662470948-432078184",
             "transfers": [],
