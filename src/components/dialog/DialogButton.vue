@@ -23,7 +23,7 @@
 <!-- --------------------------------------------------------------------------------------------------------------- -->
 
 <template>
-    <button class="button is-white is-small is-uppercase ml-4"
+    <button class="button is-white is-small is-uppercase"
             @click="handleClick"
             :disabled="!buttonEnabled"><slot/></button>
 </template>

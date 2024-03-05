@@ -35,7 +35,7 @@
 
                     <hr class="h-card-separator"/>
 
-                    <div class="dialog-stack">
+                    <div class="dialog-stack mb-4">
                         <div :class="{'is-invisible': !dialogInputVisible}">
                             <slot name="dialogInput"/>
                         </div>
@@ -50,22 +50,30 @@
                         </div>
                     </div>
 
-                    <div class="is-flex is-justify-content-flex-end">
-                        <template v-if="dialogInputVisible || dialogBusyVisible">
-                            <slot name="dialogInputButtons">
-                                <DialogButton :controller="controller">Close</DialogButton>
-                            </slot>
-                        </template>
-                        <template v-else-if="dialogSuccessVisible">
-                            <slot name="dialogSuccessButtons">
-                                <DialogButton :controller="controller">Close</DialogButton>
-                            </slot>
-                        </template>
-                        <template v-else-if="dialogErrorVisible">
-                            <slot name="dialogErrorButtons">
-                                <DialogButton :controller="controller">Close</DialogButton>
-                            </slot>
-                        </template>
+                    <div class="is-flex is-justify-content-space-between column-gap-1">
+                        <div class="is-flex is-justify-content-flex-start column-gap-1">
+                            <template v-if="dialogInputVisible || dialogBusyVisible">
+                                <slot name="dialogInputControls"/>
+                            </template>
+                        </div>
+                        <div class="is-flex is-justify-content-flex-end column-gap-1">
+                            <template v-if="dialogInputVisible || dialogBusyVisible">
+                                <slot name="dialogInputButtons">
+                                    <DialogButton :controller="controller">Close</DialogButton>
+                                </slot>
+                            </template>
+                            <template v-else-if="dialogSuccessVisible">
+                                <slot name="dialogSuccessButtons">
+                                    <DialogButton :controller="controller">Close</DialogButton>
+                                </slot>
+                            </template>
+                            <template v-else-if="dialogErrorVisible">
+                                <slot name="dialogErrorButtons">
+                                    <DialogButton :controller="controller">Close</DialogButton>
+                                </slot>
+                            </template>
+                        </div>
+
                     </div>
 
                 </div>
@@ -132,6 +140,9 @@ export default defineComponent({
 .dialog-stack div {
     grid-column-start: 1;
     grid-row-start: 1
+}
+.column-gap-1 {
+    column-gap: 1em
 }
 </style>
 
