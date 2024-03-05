@@ -49,6 +49,7 @@ import {MarketDataCache} from "@/components/dashboard/MarketDataCache";
 import { ContractResultsLogsByContractIdCache } from "@/utils/cache/ContractResultsLogsByContractIdCache"
 import {NftCollectionCache} from "@/utils/cache/NftCollectionCache";
 import {VerifiedContractsByAccountIdCache} from "@/utils/cache/VerifiedContractsByAccountIdCache";
+import {VerifiedContractsCache} from "@/utils/cache/VerifiedContractsCache";
 
 export class CacheUtils {
 
@@ -85,5 +86,6 @@ export class CacheUtils {
         TransactionGroupByBlockCache.instance.clear()
         TopicMessageCache.instance.clear()
         VerifiedContractsByAccountIdCache.instance.clear()
+        VerifiedContractsCache.instance.clear()
     }
 }

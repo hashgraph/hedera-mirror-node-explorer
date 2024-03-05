@@ -18,16 +18,16 @@
  *
  */
 
-import {EntityCache} from "@/utils/cache/base/EntityCache";
 import axios, {AxiosError} from "axios";
 import {VerifiedContractsBuffer} from "@/utils/cache/VerifiedContractsBuffer";
+import {SingletonCache} from "@/utils/cache/base/SingletonCache";
 
-export class VerifiedContractsByAccountIdCache extends EntityCache<string, VerifiedContractsBuffer | null> {
+export class VerifiedContractsCache extends SingletonCache<VerifiedContractsBuffer> {
 
-    public static readonly instance = new VerifiedContractsByAccountIdCache()
+    public static readonly instance = new VerifiedContractsCache()
 
-    protected async load(key: string): Promise<VerifiedContractsBuffer | null> {
-        const buffer = new VerifiedContractsBuffer(key)
+    protected async load(): Promise<VerifiedContractsBuffer> {
+        const buffer = new VerifiedContractsBuffer(null, 500)
         await buffer.update().catch(this.errorHandler)
         return Promise.resolve(buffer)
     }

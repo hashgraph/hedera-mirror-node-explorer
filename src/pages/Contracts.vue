@@ -31,10 +31,23 @@
         <span class="h-is-primary-title">Recent Contracts</span>
       </template>
       <template v-slot:control>
-        <PlayPauseButton :controller="contractTableController"/>
+        <div class="is-flex is-justify-content-end is-align-items-center">
+          <PlayPauseButton v-if="!filterVerified" :controller="contractTableController"/>
+          <PlayPauseButton v-else :controller="verifiedContractsController"/>
+          <span class="ml-5 mr-2">All</span>
+          <o-field>
+            <o-switch v-model="filterVerified">Verified</o-switch>
+          </o-field>
+        </div>
       </template>
       <template v-slot:content>
-        <ContractTable :controller="contractTableController"/>
+        <ContractTable v-if="!filterVerified" :controller="contractTableController"/>
+        <VerifiedContractsTable
+            v-else
+            :controller="verifiedContractsController"
+            :loaded="loaded"
+            :overflow="overflow"
+        />
       </template>
     </DashboardCard>
 
@@ -50,13 +63,16 @@
 
 <script lang="ts">
 
-import {computed, defineComponent, inject} from 'vue';
+import {computed, defineComponent, inject, ref} from 'vue';
 import ContractTable from "@/components/contract/ContractTable.vue";
 import DashboardCard from "@/components/DashboardCard.vue";
 import Footer from "@/components/Footer.vue";
 import PlayPauseButton from "@/components/PlayPauseButton.vue";
 import {ContractTableController} from "@/components/contract/ContractTableController";
 import {useRouter} from "vue-router";
+import VerifiedContractsTable from "@/components/account/VerifiedContractsTable.vue";
+import {VerifiedContractsController} from "@/components/contract/VerifiedContractsController";
+import {VerifiedContractsCache} from "@/utils/cache/VerifiedContractsCache";
 
 export default defineComponent({
   name: 'Contracts',
@@ -66,6 +82,7 @@ export default defineComponent({
   },
 
   components: {
+    VerifiedContractsTable,
     PlayPauseButton,
     Footer,
     DashboardCard,
@@ -77,16 +94,24 @@ export default defineComponent({
     const isMediumScreen = inject('isMediumScreen', true)
     const isTouchDevice = inject('isTouchDevice', false)
 
+    const filterVerified = ref(false)
+
     //
     // ContractTableController
     //
     const perPage = computed(() => isMediumScreen ? 15 : 10)
     const contractTableController = new ContractTableController(useRouter(), perPage)
+    const verifiedContractsController =
+        new VerifiedContractsController(VerifiedContractsCache.instance.makeLookup(), )
 
     return {
       isSmallScreen,
       isTouchDevice,
       contractTableController,
+      verifiedContractsController,
+      loaded: verifiedContractsController.loaded,
+      overflow: verifiedContractsController.overflow,
+      filterVerified,
     }
   }
 });

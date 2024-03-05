@@ -79,7 +79,7 @@ import ContractName from "@/components/values/ContractName.vue";
 import {VerifiedContractsController} from "@/components/contract/VerifiedContractsController";
 
 export default defineComponent({
-    name: 'AccountVerifiedContractsTable',
+    name: 'VerifiedContractsTable',
 
     components: {ContractName, EmptyTable, TimestampValue, BlobValue},
 

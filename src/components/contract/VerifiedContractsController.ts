@@ -21,31 +21,33 @@
 import {computed, ComputedRef, ref, Ref, watch} from "vue";
 import {PlayPauseController} from "@/components/PlayPauseButton.vue";
 import {Contract} from "@/schemas/HederaSchemas";
-import {VerifiedContractsBuffer, VerifiedContractsByAccountIdCache} from "@/utils/cache/VerifiedContractsByAccountIdCache";
-import {Lookup} from "@/utils/cache/base/EntityCache";
 import axios, {AxiosError} from "axios";
+import {VerifiedContractsBuffer} from "@/utils/cache/VerifiedContractsBuffer";
+import {Lookup} from "@/utils/cache/base/Lookup";
 
 export class VerifiedContractsController implements PlayPauseController {
 
-    private contractsLookup: Lookup<string, VerifiedContractsBuffer | null>
+    private contractsLookup: Lookup<VerifiedContractsBuffer>
 
     //
     // Public
     //
 
     public contracts: Ref<Contract[]> = ref([])
-    public capacity = VerifiedContractsBuffer.MAX_CANDIDATES
+    public capacity = 0
     public overflow = computed(() => this.contractsLookup.entity.value?.overflow ?? false)
     public loaded = computed(() => this.contractsLookup.entity.value != null)
 
-    public constructor(accountId: Ref<string | null>) {
-        this.contractsLookup = VerifiedContractsByAccountIdCache.instance.makeLookup(accountId)
+    public constructor(contractsLookup: Lookup<VerifiedContractsBuffer>) {
+        this.contractsLookup = contractsLookup
         watch(
             this.contractsLookup.entity,
-            () => this.contracts.value = this.contractsLookup.entity.value?.contracts ?? []
+            () => {
+                this.contracts.value = this.contractsLookup.entity.value?.contracts ?? []
+                this.capacity = this.contractsLookup.entity.value?.capacity ?? 0
+            }
         )
     }
-
 
     public async mount(): Promise<void> {
         this.contractsLookup.mount()
