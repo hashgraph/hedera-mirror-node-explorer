@@ -27,6 +27,7 @@ import {Ref, watch} from "vue";
 export class TransactionDownloader extends EntityDownloader<Transaction, TransactionResponse> {
 
     public readonly accountId: Ref<string|null>
+    public readonly transactionTypes: Ref<Set<string>>
 
     protected readonly wrongSetupError = new Error("this.accountId or this.startDate not set")
 
@@ -37,9 +38,11 @@ export class TransactionDownloader extends EntityDownloader<Transaction, Transac
     public constructor(accountId: Ref<string|null>,
                        startDate: Ref<Date|null>,
                        endDate: Ref<Date|null>,
+                       transactionTypes: Ref<Set<string>>,
                        maxTransactionCount: number) {
         super(startDate, endDate, maxTransactionCount)
         this.accountId = accountId
+        this.transactionTypes = transactionTypes
         watch(this.accountId, () => {
             this.abort().then()
         })
@@ -59,6 +62,9 @@ export class TransactionDownloader extends EntityDownloader<Transaction, Transac
                 nextURL = "api/v1/transactions"
                     + "?account.id=" + this.accountId.value
                     + "&timestamp=gte:" + startTimestamp
+                for (const t of this.transactionTypes.value) {
+                    nextURL += "&transactiontype=" + t
+                }
                 if (endTimestamp !== null) {
                     nextURL += "&timestamp=lt:" + endTimestamp
                 }

@@ -35,6 +35,7 @@
             <div>
                 <div>Start date: {{ downloader.startDate.value?.toDateString() }}</div>
                 <div>End date: {{ downloader.startDate.value?.toDateString() }}</div>
+                <div>Transaction types: {{ transactionTypesText }}</div>
             </div>
         </template>
 
@@ -71,7 +72,8 @@ export default defineComponent({
         const accountId = computed(() => props.accountId ?? null)
         const startDate = ref<Date|null>(new Date(2023, 0, 1))
         const endDate = ref<Date|null>(new Date(2023, 0, 7))
-        const downloader = new TransactionDownloader(accountId, startDate, endDate, 1000)
+        const transactionTypes = ref<Set<string>>(new Set(["CONTRACTCALL", "TOKENMINT"]))
+        const downloader = new TransactionDownloader(accountId, startDate, endDate, transactionTypes, 1000)
 
         const handleSave = () => {
             const blob = downloader.csvBlob.value
@@ -135,8 +137,11 @@ export default defineComponent({
            return downloader.failureReason.value
         })
 
+        const transactionTypesText = computed(() => JSON.stringify(Array.from(downloader.transactionTypes.value)))
+
         return {
             dialogTitle,
+            transactionTypesText,
             downloadEnabled,
             busyMessage,
             successMessage,
