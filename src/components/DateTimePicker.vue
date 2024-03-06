@@ -50,9 +50,7 @@ export default defineComponent({
   },
 
   setup(props) {
-    const userRequestedStop = ref(false)
     const date = ref()
-    onMounted(() => userRequestedStop.value = false)
     const handleClosed = () => {
       if (props.controller) {
         const controller = props.controller

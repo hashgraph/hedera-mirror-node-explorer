@@ -35,7 +35,7 @@ export class TransactionTableController extends TableController<Transaction, str
     // Public
     //
 
-    public constructor(router: Router, pageSize: Ref<number>,
+    public constructor(router: Router, pageSize: ComputedRef<number>,
                        transactionType = "",
                        transactionResult= "",
                        pageParamName = "p",

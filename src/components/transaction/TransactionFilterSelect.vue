@@ -25,7 +25,7 @@
 <template>
 
   <o-field>
-    <o-select v-model="selectedFilter" class="ml-2 h-is-text-size-1" data-cy="select-type">
+    <o-select v-model="selectedFilter" class="ml-2 h-is-text-size-1">
       <option v-for="f in filterValues" v-bind:key="f" v-bind:value="f">
         {{ makeFilterLabel(f) }}
       </option>

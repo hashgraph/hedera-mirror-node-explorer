@@ -36,7 +36,7 @@ export class TransactionTableControllerXL extends TableController<Transaction, s
     //
 
     public constructor(router: Router,
-                       accountId: Ref<string | null>,
+                       accountId: ComputedRef<string | null>,
                        pageSize: Ref<number>,
                        accountIdMandatory: boolean,
                        pageParamName = "p", keyParamName= "k") {
@@ -133,4 +133,5 @@ export class TransactionTableControllerXL extends TableController<Transaction, s
     public fetchTransactionTypeParam(): string {
         return fetchStringQueryParam(this.typeParamName, this.router.currentRoute.value)?.toUpperCase() ?? ""
     }
+
 }
