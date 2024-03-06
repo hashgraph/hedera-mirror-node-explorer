@@ -68,6 +68,17 @@
     <o-table-column v-slot="props" field="consensus_timestamp" label="Time">
       <TimestampValue v-bind:timestamp="props.row.consensus_timestamp"/>
     </o-table-column>
+    <template v-slot:bottom-left>
+      <o-select v-model="perPage" :disabled="!paginated">
+        <!--        Use "as number" to avoid warning as o-select does not allow to force type-->
+        <option :value="5 as number">5 per page</option>
+        <option :value="10 as number">10 per page</option>
+        <option :value="15 as number">15 per page</option>
+        <option :value="20 as number">20 per page</option>
+        <option :value="50 as number">50 per page</option>
+        <option :value="100 as number">100 per page</option>
+      </o-select>
+    </template>
   </o-table>
 
   <EmptyTable v-if="transactions.length === 0"/>

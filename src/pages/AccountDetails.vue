@@ -431,7 +431,7 @@ export default defineComponent({
     // Table controllers and cache for Recent Account Operations
     // These are mounted only when their respective table is mounted, i.e. when the corresponding tab is selected
     //
-    const perPage = computed(() => isMediumScreen ? 10 : 5)
+    const perPage = ref(isMediumScreen ? 10 : 5)
     const accountId = accountLocParser.accountId
 
     const transactionTableController = new TransactionTableControllerXL(

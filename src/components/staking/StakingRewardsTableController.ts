@@ -33,7 +33,7 @@ export class StakingRewardsTableController extends TableController<StakingReward
     // Public
     //
 
-    public constructor(router: Router, accountId: Ref<string | null>, pageSize: ComputedRef<number>,
+    public constructor(router: Router, accountId: Ref<string | null>, pageSize: Ref<number>,
                        pageParamName = "p", keyParamName= "k") {
         super(router, pageSize, 10 * pageSize.value, 5000, 0, 100,
             pageParamName, keyParamName);

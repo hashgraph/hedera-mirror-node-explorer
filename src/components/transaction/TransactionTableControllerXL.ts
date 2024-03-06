@@ -37,7 +37,7 @@ export class TransactionTableControllerXL extends TableController<Transaction, s
 
     public constructor(router: Router,
                        accountId: Ref<string | null>,
-                       pageSize: ComputedRef<number>,
+                       pageSize: Ref<number>,
                        accountIdMandatory: boolean,
                        pageParamName = "p", keyParamName= "k") {
         super(router, pageSize, 10 * pageSize.value, 5000, 10, 100,
@@ -45,6 +45,7 @@ export class TransactionTableControllerXL extends TableController<Transaction, s
         this.accountId = accountId
         this.accountIdMandatory = accountIdMandatory
         this.watchAndReload([this.transactionType, this.accountId])
+        this.watchAndReload([this.pageSize, this.accountId])
     }
 
     public readonly transactionType: Ref<string> = ref("")
