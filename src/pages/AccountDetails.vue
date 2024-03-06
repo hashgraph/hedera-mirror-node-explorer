@@ -269,7 +269,7 @@
 
     <MirrorLink :network="network" entityUrl="accounts" :loc="accountId"/>
 
-    <TransactionDownloadDialog :controller="downloadController"/>
+    <TransactionDownloadDialog :account-id="accountId" :controller="downloadController"/>
 
   </section>
 

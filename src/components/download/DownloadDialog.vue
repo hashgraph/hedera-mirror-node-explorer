@@ -23,22 +23,40 @@
 <!-- --------------------------------------------------------------------------------------------------------------- -->
 
 <template>
-    <DownloadDialog :controller="controller" :downloader="downloader">
+    <Dialog :controller="controller">
 
         <!-- title -->
-        <template v-slot:dialogTitle>
-            <DialogTitle>{{ dialogTitle }}</DialogTitle>
-        </template>
+        <template v-slot:dialogTitle><slot name="dialogTitle"/></template>
 
         <!-- input -->
-        <template v-slot:dialogInput>
-            <div>
-                <div>Start date: {{ downloader.startDate.value?.toDateString() }}</div>
-                <div>End date: {{ downloader.startDate.value?.toDateString() }}</div>
-            </div>
+        <template v-slot:dialogInput><slot name="dialogInput"/></template>
+
+        <!-- busy -->
+        <template v-slot:dialogBusy>
+            <progress id="progress" :value="downloader.progress.value" class="progress is-large is-info mt-5"/>
+            <span>Downloading:</span>
+            <span class="has-text-grey is-numeric ml-2">{{ busyMessage }}</span>
         </template>
 
-    </DownloadDialog>
+        <!-- success -->
+        <template v-slot:dialogSuccess>
+            <span>Download completed:</span>
+            <span class="has-text-grey is-numeric ml-2">{{ successMessage }}</span>
+        </template>
+
+        <!-- error -->
+        <template v-slot:dialogError>
+            <span>Download failed:</span>
+            <span class="has-text-grey is-numeric ml-2">{{ errorMessage }}</span>
+        </template>
+
+        <template v-slot:dialogInputButtons>
+            <DialogButton :controller="controller">CANCEL</DialogButton>
+            <CommitButton :controller="controller" :enabled="downloadEnabled" @action="handleDownload" >DOWNLOAD</CommitButton>
+        </template>
+
+
+    </Dialog>
 
 </template>
 
@@ -48,47 +66,44 @@
 
 <script lang="ts">
 
-import {computed, defineComponent, PropType, ref} from "vue";
-import {DialogController, DialogMode} from "@/components/dialog/DialogController";
-import {TransactionDownloader} from "@/utils/downloader/TransactionDownloader";
-import {DownloaderState} from "@/utils/downloader/EntityDownloader";
-import DownloadDialog from "@/components/download/DownloadDialog.vue";
+import {computed, defineComponent, PropType} from "vue";
+import Dialog from "@/components/dialog/Dialog.vue";
+import CommitButton from "@/components/dialog/CommitButton.vue";
+import DialogButton from "@/components/dialog/DialogButton.vue";
 import DialogTitle from "@/components/dialog/DialogTitle.vue";
+import {DialogController, DialogMode} from "@/components/dialog/DialogController";
+import {DownloaderState, EntityDownloader} from "@/utils/downloader/EntityDownloader";
 
 export default defineComponent({
-    components: {DialogTitle, DownloadDialog},
+    components: {DialogTitle, DialogButton, CommitButton, Dialog},
     props: {
         controller: {
             type: Object as PropType<DialogController>,
             required: true
         },
-        accountId: String
+        downloader: {
+            type: Object as PropType<EntityDownloader<unknown, unknown>>,
+            required: true
+        }
     },
     setup(props) {
 
-        const dialogTitle = computed(() => "Download transactions from " + props.accountId)
-
-        const accountId = computed(() => props.accountId ?? null)
-        const startDate = ref<Date|null>(new Date(2023, 0, 1))
-        const endDate = ref<Date|null>(new Date(2023, 0, 7))
-        const downloader = new TransactionDownloader(accountId, startDate, endDate, 1000)
-
         const handleSave = () => {
-            const blob = downloader.csvBlob.value
+            const blob = props.downloader.csvBlob.value
             if (blob !== null) {
                 const url = window.URL.createObjectURL(blob)
                 const a = document.createElement('a')
                 a.setAttribute('href', url)
-                a.setAttribute('download', downloader.getOutputName());
+                a.setAttribute('download', props.downloader.getOutputName());
                 a.click()
             }
         }
 
         const handleDownload = () => {
             props.controller.mode.value = DialogMode.Busy
-            downloader.run()
+            props.downloader.run()
                 .then(() => {
-                    switch(downloader.state.value) {
+                    switch(props.downloader.state.value) {
                         case DownloaderState.Completed:
                             props.controller.mode.value = DialogMode.Success
                             handleSave()
@@ -96,8 +111,12 @@ export default defineComponent({
                         case DownloaderState.Failure:
                             props.controller.mode.value = DialogMode.Error
                             break
-                        default:
-                            props.controller.mode.value = DialogMode.Error
+                        case DownloaderState.Running: // Emergency code
+                            props.controller.mode.value = DialogMode.Busy
+                            break
+                        case DownloaderState.Fresh: // Emergency code
+                        case DownloaderState.Aborted:
+                            props.controller.mode.value = DialogMode.Input
                             break
                     }
                 })
@@ -107,24 +126,23 @@ export default defineComponent({
         }
 
         const downloadEnabled = computed(() => {
-            return downloader.accountId.value !== null
-            && downloader.startDate.value !== null
-            && downloader.endDate.value !== null
-            && downloader.startDate.value < downloader.endDate.value
+            return props.downloader.startDate.value !== null
+                && props.downloader.endDate.value !== null
+                && props.downloader.startDate.value < props.downloader.endDate.value
         })
 
         const busyMessage = computed(() => {
-            const items = downloader.downloadedCount.value
+            const items = props.downloader.downloadedCount.value
             return items + " " + (items > 1 ? "items" : "item")
         })
 
         const successMessage = computed(() => {
             let result: string
-            const count = downloader.downloadedCount.value
-            if (downloader.downloadedCount.value === 0) {
+            const count = props.downloader.downloadedCount.value
+            if (props.downloader.downloadedCount.value === 0) {
                 result = "No item matches this range"
-            } else if (!downloader.drained.value) {
-                result = "The maximum of " + downloader.maxEntityCount + " downloaded items was hit"
+            } else if (!props.downloader.drained.value) {
+                result = "The maximum of " + props.downloader.maxEntityCount + " downloaded items was hit"
             } else {
                 result = count + " " + (count > 1 ? "items" : "item")
             }
@@ -132,22 +150,18 @@ export default defineComponent({
         })
 
         const errorMessage = computed(() => {
-           return downloader.failureReason.value
+            return props.downloader.failureReason.value
         })
 
         return {
-            dialogTitle,
             downloadEnabled,
             busyMessage,
             successMessage,
             errorMessage,
-            downloader,
             handleDownload
         }
     }
-
 })
-
 </script>
 
 <!-- --------------------------------------------------------------------------------------------------------------- -->
