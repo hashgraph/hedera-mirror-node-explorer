@@ -139,13 +139,12 @@ export class AppStorage {
 
     private static readonly ACCOUNT_OPERATION_TAB_KEY = 'accountOperationTab'
 
-    public static getAccountOperationTab(): number | null {
-        const tab = this.getLocalStorageItem(this.ACCOUNT_OPERATION_TAB_KEY)
-        return tab != null ? Number(tab) : null
+    public static getAccountOperationTab(): string | null {
+        return this.getLocalStorageItem(this.ACCOUNT_OPERATION_TAB_KEY)
     }
 
-    public static setAccountOperationTab(newValue: number | null): void {
-        this.setLocalStorageItem(this.ACCOUNT_OPERATION_TAB_KEY, newValue?.toString() ?? null)
+    public static setAccountOperationTab(newValue: string | null): void {
+        this.setLocalStorageItem(this.ACCOUNT_OPERATION_TAB_KEY, newValue)
     }
 
     //
