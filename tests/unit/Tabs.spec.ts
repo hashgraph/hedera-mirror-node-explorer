@@ -51,7 +51,7 @@ describe("Tabs.vue", () => {
         const tabs = wrapper.findAll('li')
         expect(tabs.length).toBe(tabIds.length)
 
-        tabIds.forEach((id, index) => expect(wrapper.get('#' + id).text()).toBe(tabLabels[index]))
+        tabIds.forEach((id, index) => expect(wrapper.get('#tab-' + id).text()).toBe(tabLabels[index]))
 
         expect(tabs[selectedTab].attributes('class')).toContain('is-active')
 
@@ -84,7 +84,7 @@ describe("Tabs.vue", () => {
 
         expect(tabs.length).toBe(tabIds.length)
 
-        tabIds.forEach((id, index) => expect(wrapper.get('#' + id).text()).toBe(tabLabels[index]))
+        tabIds.forEach((id, index) => expect(wrapper.get('#tab-' + id).text()).toBe(tabLabels[index]))
 
         expect(tabs[0].attributes('class')).toContain('is-active')
 
@@ -120,9 +120,9 @@ describe("Tabs.vue", () => {
 
         tabIds.forEach((id, index) => {
             if (tabLabels[index] != undefined) {
-                expect(wrapper.get('#' + id).text()).toBe(tabLabels[index])
+                expect(wrapper.get('#tab-' + id).text()).toBe(tabLabels[index])
             } else {
-                expect(wrapper.get('#' + id).text()).toBe(tabIds[index])
+                expect(wrapper.get('#tab-' + id).text()).toBe(tabIds[index])
             }
         })
 
@@ -160,9 +160,9 @@ describe("Tabs.vue", () => {
 
         tabIds.forEach((id, index) => {
             if (tabLabels[index] != undefined) {
-                expect(wrapper.get('#' + id).text()).toBe(tabLabels[index])
+                expect(wrapper.get('#tab-' + id).text()).toBe(tabLabels[index])
             } else {
-                expect(wrapper.get('#' + id).text()).toBe(tabIds[index])
+                expect(wrapper.get('#tab-' + id).text()).toBe(tabIds[index])
             }
         })
 
