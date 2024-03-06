@@ -65,6 +65,8 @@ export abstract class TableController<R, K> implements PlayPauseController {
 
     public readonly mounted: ComputedRef<boolean> = computed(() => this.mountedRef.value)
 
+    public readonly showPageSizeSelector = computed(() => this.buffer.totalRowCount.value > 5)
+
     //
     // Public (mount / unmount)
     //
