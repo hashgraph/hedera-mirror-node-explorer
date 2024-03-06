@@ -26,10 +26,10 @@
     <div class="is-flex is-justify-content-space-between is-align-items-center mt-5 mb-4">
         <div class="tabs is-toggle h-is-property-text mb-1">
             <ul>
-                <li v-for="(tab, i) in tabs" :key="i" :class="{'is-active':selectedTab===i}">
+                <li v-for="(label, i) in tabLabels" :key="i" :class="{'is-active':selectedTab===i}">
                     <a :id="cssIdPrefix + '-' + i" :style="{ fontWeight: selectedTab===i?500:300 }"
                        @click="handleSelect(i)">
-                        <span>{{ tab }}</span>
+                        <span>{{ label }}</span>
                     </a>
                 </li>
             </ul>
@@ -53,7 +53,7 @@ export default defineComponent({
             type: Number,
             required: true
         },
-        tabs: {
+        tabLabels: {
             type: Array as PropType<string[]>,
             required: true
         },

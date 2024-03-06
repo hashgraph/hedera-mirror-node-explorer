@@ -234,7 +234,7 @@
       <template v-slot:content>
           <Tabs
               :selected-tab="selectedTab"
-              :tabs="tabLabels"
+              :tabLabels="tabLabels"
               @update:selected-tab="handleTabUpdate($event)"
               css-id-prefix="operations-tab"
           />
