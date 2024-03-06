@@ -293,7 +293,7 @@ describe("InlineBalancesValue.vue", () => {
 
         balanceAnalyzer.mount()
         await flushPromises()
-        console.log(wrapper.text())
+        // console.log(wrapper.text())
 
         expect(wrapper.text()).toContain("100.00000000" + ">")
         expect(wrapper.text()).toContain("days ago" +
