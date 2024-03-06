@@ -148,6 +148,20 @@ export class AppStorage {
     }
 
     //
+    // preferred tab in account operations
+    //
+
+    private static readonly CONTRACT_BYTECODE_TAB_KEY = 'contractBytecodeTab'
+
+    public static getContractByteCodeTab(): string | null {
+        return this.getLocalStorageItem(this.CONTRACT_BYTECODE_TAB_KEY)
+    }
+
+    public static setContractByteCodeTab(newValue: string | null): void {
+        this.setLocalStorageItem(this.CONTRACT_BYTECODE_TAB_KEY, newValue)
+    }
+
+    //
     // input params (for abi section)
     //
 

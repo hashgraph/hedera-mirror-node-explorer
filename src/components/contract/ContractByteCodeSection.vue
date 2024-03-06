@@ -77,25 +77,10 @@
                 </template>
             </Property>
             <div v-if="isVerified" class="is-flex is-justify-content-space-between is-align-items-center mt-5 mb-0">
-                <div class="tabs is-toggle h-is-property-text mb-1" >
-                    <ul>
-                        <li :class="{'is-active':showABI}">
-                            <a :style="{ fontWeight: selectedOption=='abi'?500:300 }"
-                               @click="selectedOption = 'abi'">
-                                <span>ABI</span></a>
-                        </li>
-                        <li :class="{'is-active':showSource}">
-                            <a :style="{ fontWeight: selectedOption=='source'?500:300 }"
-                               @click="selectedOption = 'source'">
-                                <span>Source</span></a>
-                        </li>
-                        <li :class="{'is-active':showBytecode}">
-                            <a :style="{ fontWeight: selectedOption=='bytecode'?500:300 }"
-                               @click="selectedOption = 'bytecode'">
-                                <span>Bytecode</span></a>
-                        </li>
-                    </ul>
-                </div>
+                <Tabs :tab-ids=tabIds :tab-labels=tabLabels
+                      :selected-tab="selectedOption"
+                      @update:selected-tab="handleTabUpdate($event)"
+                />
                 <div v-if="selectedOption==='source'" class="is-flex is-justify-content-end">
                     <DownloadButton @click="handleDownload" />
                     <o-field class="ml-4">
@@ -180,6 +165,7 @@ import {SourcifyResponseItem} from "@/utils/cache/SourcifyCache";
 import DownloadButton from "@/components/DownloadButton.vue";
 import JSZip from "jszip";
 import {saveAs} from "file-saver";
+import Tabs from "@/components/Tabs.vue";
 
 const FULL_MATCH_TOOLTIP = `A Full Match indicates that the bytecode of the deployed contract is byte-by-byte the same as the compilation output of the given source code files with the settings defined in the metadata file. This means the contents of the source code files and the compilation settings are exactly the same as when the contract author compiled and deployed the contract.`
 const PARTIAL_MATCH_TOOLTIP = `A Partial Match indicates that the bytecode of the deployed contract is the same as the compilation output of the given source code files except for the metadata hash. This means the deployed contract and the given source code + metadata function in the same way but there are differences in source code comments, variable names, or other metadata fields such as source paths.`
@@ -188,6 +174,7 @@ export default defineComponent({
   name: 'ContractByteCodeSection',
 
   components: {
+      Tabs,
       ContractAbiValue,
       DownloadButton,
       SourceCodeValue,
@@ -239,10 +226,13 @@ export default defineComponent({
     onMounted(() => showHexaOpcode.value = AppStorage.getShowHexaOpcode())
     watch(showHexaOpcode, () => AppStorage.setShowHexaOpcode(showHexaOpcode.value ? showHexaOpcode.value : null))
 
-    const selectedOption = ref('source')
-    const showSource = computed(() => selectedOption.value === 'source')
-    const showBytecode = computed(() => selectedOption.value === 'bytecode')
-    const showABI = computed(() => selectedOption.value === 'abi')
+    const tabIds = ['abi', 'source', 'bytecode']
+    const tabLabels = ['ABI', 'Source', 'Bytecode']
+    const selectedOption = ref(AppStorage.getContractByteCodeTab() ?? tabIds[0])
+    const handleTabUpdate = (tab: string) => {
+        selectedOption.value = tab
+        AppStorage.setContractByteCodeTab(tab)
+    }
 
     const selectedSource = ref('')
     watch(props.contractAnalyzer.contractFileName,
@@ -306,9 +296,9 @@ export default defineComponent({
       isFullMatch,
       showHexaOpcode,
       selectedOption,
-      showSource,
-      showBytecode,
-      showABI,
+      tabIds,
+      tabLabels,
+      handleTabUpdate,
       selectedSource,
       isImportFile,
       relevantPath,
