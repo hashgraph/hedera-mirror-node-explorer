@@ -79,6 +79,11 @@
             <div v-if="isVerified" class="is-flex is-justify-content-space-between is-align-items-center mt-5 mb-0">
                 <div class="tabs is-toggle h-is-property-text mb-1" >
                     <ul>
+                        <li :class="{'is-active':showABI}">
+                            <a :style="{ fontWeight: selectedOption=='abi'?500:300 }"
+                               @click="selectedOption = 'abi'">
+                                <span>ABI</span></a>
+                        </li>
                         <li :class="{'is-active':showSource}">
                             <a :style="{ fontWeight: selectedOption=='source'?500:300 }"
                                @click="selectedOption = 'source'">
@@ -88,11 +93,6 @@
                             <a :style="{ fontWeight: selectedOption=='bytecode'?500:300 }"
                                @click="selectedOption = 'bytecode'">
                                 <span>Bytecode</span></a>
-                        </li>
-                        <li :class="{'is-active':showABI}">
-                            <a :style="{ fontWeight: selectedOption=='abi'?500:300 }"
-                               @click="selectedOption = 'abi'">
-                                <span>ABI</span></a>
                         </li>
                     </ul>
                 </div>
