@@ -219,9 +219,15 @@
       </template>
       <template v-slot:control>
           <div v-if="selectedTab === 'transactions'" class="is-flex is-align-items-flex-end">
-              <DateTimePicker :controller="transactionTableController"/>
-              <PlayPauseButton :controller="transactionTableController"/>
-              <TransactionFilterSelect :controller="transactionTableController"/>
+            <PlayPauseButton v-if="timeSelection == 'LATEST'" :controller="transactionTableController"/>
+            <DateTimePicker v-else :controller="transactionTableController"/>
+            <o-field style="margin-bottom: 0">
+              <o-select v-model="timeSelection" class="ml-2 h-is-text-size-1">
+                <option value="LATEST" @click="onLatest">LATEST</option>
+                <option value="JUMP">JUMP TO DATE</option>
+              </o-select>
+            </o-field>
+            <TransactionFilterSelect :controller="transactionTableController"/>
           </div>
           <div v-else-if="selectedTab === 'contracts'" class="is-flex is-justify-content-end is-align-items-center">
               <PlayPauseButton v-if="!filterVerified" :controller="contractCreateTableController"/>
@@ -365,6 +371,11 @@ export default defineComponent({
     const isMediumScreen = inject('isMediumScreen', true)
     const isTouchDevice = inject('isTouchDevice', false)
 
+    const timeSelection = ref("LATEST")
+    function onLatest() {
+      transactionTableController.startAutoRefresh()
+    }
+
     //
     // account
     //
@@ -485,6 +496,8 @@ export default defineComponent({
       tabLabels,
       handleTabUpdate,
       filterVerified,
+      timeSelection,
+      onLatest
     }
   }
 });
