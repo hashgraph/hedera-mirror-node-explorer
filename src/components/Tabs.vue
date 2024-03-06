@@ -26,10 +26,10 @@
     <div class="is-flex is-justify-content-space-between is-align-items-center mt-5 mb-4">
         <div class="tabs is-toggle h-is-property-text mb-1">
             <ul>
-                <li v-for="(label, i) in tabLabels" :key="i" :class="{'is-active':selectedTab===i}">
-                    <a :id="cssIdPrefix + '-' + i" :style="{ fontWeight: selectedTab===i?500:300 }"
-                       @click="handleSelect(i)">
-                        <span>{{ label }}</span>
+                <li v-for="(tab, i) in tabIds" :key="tab" :class="{'is-active':selection === tab}">
+                    <a :id="tab" :style="{fontWeight: selection === tab ? 500 : 300}"
+                       @click="handleSelect(tab)">
+                        <span>{{ tabLabels[i] ?? tab }}</span>
                     </a>
                 </li>
             </ul>
@@ -43,23 +43,23 @@
 
 <script lang="ts">
 
-import {defineComponent, PropType, ref} from "vue";
+import {defineComponent, onMounted, PropType, ref} from "vue";
 
 export default defineComponent({
     name: "Tabs",
 
     props: {
         selectedTab: {
-            type: Number,
+            type: String,
+            required: true
+        },
+        tabIds: {
+            type: Array as PropType<string[]>,
             required: true
         },
         tabLabels: {
             type: Array as PropType<string[]>,
-            required: true
-        },
-        cssIdPrefix: {
-            type: String,
-            default: 'tab'
+            default: []
         }
     },
 
@@ -67,9 +67,17 @@ export default defineComponent({
 
     setup(props, context) {
 
-        const selection = ref(props.selectedTab)
+        const selection = ref('')
 
-        const handleSelect = (tab: number) => {
+        onMounted(() => {
+            if (props.tabIds.includes(props.selectedTab)) {
+                selection.value = props.selectedTab
+            } else {
+                handleSelect(props.tabIds[0])
+            }
+        })
+
+        const handleSelect = (tab: string) => {
             selection.value = tab
             context.emit('update:selectedTab', tab)
         }
