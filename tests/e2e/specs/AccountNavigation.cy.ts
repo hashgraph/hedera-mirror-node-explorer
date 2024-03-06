@@ -147,7 +147,7 @@ describe('Account Navigation', () => {
         cy.url().should('include', '/mainnet/account/' + accountID)
         cy.contains('Account ID:' + accountID)
 
-        cy.get('#operations-tab-2')
+        cy.get('#tab-rewards')
             .click()
 
         cy.get('#recentRewardsTable')
@@ -170,7 +170,7 @@ describe('Account Navigation', () => {
         cy.url().should('include', '/testnet/account/' + accountID)
         cy.contains('Account ID:' + accountID)
 
-        cy.get('#operations-tab-1')
+        cy.get('#tab-contracts')
             .click()
 
         cy.get('#recentContractsTable')

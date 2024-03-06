@@ -27,7 +27,7 @@
         <div class="tabs is-toggle h-is-property-text mb-1">
             <ul>
                 <li v-for="(tab, i) in tabIds" :key="tab" :class="{'is-active':selection === tab}">
-                    <a :id="tab" :style="{fontWeight: selection === tab ? 500 : 300}"
+                    <a :id="'tab-' + tab" :style="{fontWeight: selection === tab ? 500 : 300}"
                        @click="handleSelect(tab)">
                         <span>{{ tabLabels[i] ?? tab }}</span>
                     </a>
