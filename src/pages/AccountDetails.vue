@@ -236,7 +236,7 @@
               :selected-tab="selectedTab"
               :tabs="tabLabels"
               @update:selected-tab="handleTabUpdate($event)"
-              css-id="operations-tab"
+              css-id-prefix="operations-tab"
           />
 
           <div v-if="selectedTab === 0" id="recentTransactionsTable">

@@ -27,7 +27,7 @@
         <div class="tabs is-toggle h-is-property-text mb-1">
             <ul>
                 <li v-for="(tab, i) in tabs" :key="i" :class="{'is-active':selectedTab===i}">
-                    <a :id="cssId + '-' + i" :style="{ fontWeight: selectedTab===i?500:300 }"
+                    <a :id="cssIdPrefix + '-' + i" :style="{ fontWeight: selectedTab===i?500:300 }"
                        @click="handleSelect(i)">
                         <span>{{ tab }}</span>
                     </a>
@@ -57,7 +57,7 @@ export default defineComponent({
             type: Array as PropType<string[]>,
             required: true
         },
-        cssId: {
+        cssIdPrefix: {
             type: String,
             default: 'tab'
         }
