@@ -20,9 +20,10 @@
 
 import {computed, ComputedRef, ref, Ref, shallowRef, watch, WatchStopHandle} from "vue";
 import {ethers} from "ethers";
-import {labelForResponseCode} from "@/schemas/HederaUtils";
 import {ContractAnalyzer} from "@/utils/analyzer/ContractAnalyzer";
 import {SignatureCache, SignatureRecord, SignatureResponse} from "@/utils/cache/SignatureCache";
+import {HTS_PRECOMPILE_CONTRACT_ID, REDIRECT_FOR_TOKEN_FUNCTION_SIGHASH} from '@/schemas/HederaSchemas';
+import {decodeRedirectForTokenInput, resolveFunctionFragmentForHTSProxyContract, labelForResponseCode} from "@/schemas/HederaUtils";
 
 export class FunctionCallAnalyzer {
 
@@ -237,13 +238,30 @@ export class FunctionCallAnalyzer {
         const i = this.contractAnalyzer.interface.value
         const r = this.signatureResponse.value
         const functionHash = this.functionHash.value
-        if (functionHash !== null) {
+        const contractId = this.contractAnalyzer.contractId.value
+        const inputArgs = this.inputArgsOnly.value
+
+
+        if (functionHash !== null && inputArgs !== null) {
             if (i !== null) {
                 try {
-                    this.functionFragment.value = i.getFunction(functionHash)
+                    // this.functionFragment.value = i.getFunction(functionHash)
                     this.functionDecodingFailure.value = null
                     this.is4byteFunctionFragment.value = false
-                } catch (failure) {
+
+                    let currentFunctionFragment = i.getFunction(functionHash)
+                    // please refer to the ticket below for more information on this logic for redirectForToken(address,bytes) method on HTS System Contract 
+                    // https://github.com/hashgraph/hedera-mirror-node-explorer/issues/921
+                    if (
+                        currentFunctionFragment !== null &&
+                        contractId === HTS_PRECOMPILE_CONTRACT_ID &&
+                        functionHash === REDIRECT_FOR_TOKEN_FUNCTION_SIGHASH
+                    ) {
+                        currentFunctionFragment = resolveFunctionFragmentForHTSProxyContract(currentFunctionFragment, inputArgs)
+                    }
+
+                    this.functionFragment.value = currentFunctionFragment
+                } catch(failure) {
                     this.functionFragment.value = null
                     this.functionDecodingFailure.value = failure
                     this.is4byteFunctionFragment.value = false
@@ -285,13 +303,27 @@ export class FunctionCallAnalyzer {
     private readonly updateInputResult = () => {
         const ff = this.functionFragment.value
         const inputArgs = this.inputArgsOnly.value
+        const contractId = this.contractAnalyzer.contractId.value
+        const functionHash = this.functionHash.value
+
         if (ff !== null && inputArgs !== null) {
             try {
                 this.inputResult.value = ethers.AbiCoder.defaultAbiCoder().decode(ff.inputs, inputArgs)
                 this.inputDecodingFailure.value = null
-            } catch (failure) {
-                this.inputResult.value = null
-                this.inputDecodingFailure.value = failure
+            } catch(failure) {
+                const f = failure as ethers.EthersError
+                // please refer to the ticket below for more information on this logic for redirectForToken(address,bytes) method on HTS System Contract 
+                // https://github.com/hashgraph/hedera-mirror-node-explorer/issues/921
+                if (
+                    (f.code === "BUFFER_OVERRUN" || f.code === "INVALID_ARGUMENT") &&
+                    contractId === HTS_PRECOMPILE_CONTRACT_ID &&
+                    functionHash === REDIRECT_FOR_TOKEN_FUNCTION_SIGHASH
+                ) {
+                    this.inputResult.value = decodeRedirectForTokenInput(inputArgs)
+                } else {
+                    this.inputResult.value = null
+                    this.inputDecodingFailure.value = failure
+                }
             }
         } else {
             this.inputResult.value = null
