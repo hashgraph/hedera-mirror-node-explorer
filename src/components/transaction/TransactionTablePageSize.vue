@@ -56,7 +56,7 @@ export default defineComponent({
 
   setup(props) {
     return {
-      perPage: props.controller.pageSize as Ref<number>,
+      perPage: props.controller.pageSize,
     }
   }
 });
