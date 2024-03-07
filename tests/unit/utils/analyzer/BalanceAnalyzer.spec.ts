@@ -42,6 +42,7 @@ describe("BalanceAnalyzer.spec.ts", () => {
         expect(balanceAnalyzer.hbarBalance.value).toBeNull()
         expect(balanceAnalyzer.tokenBalances.value).toStrictEqual([])
         expect(balanceAnalyzer.balanceTimeStamp.value).toBeNull()
+        expect(balanceAnalyzer.balanceAge.value).toBeNull()
 
         // sets contract id before mount
         contractId.value = SAMPLE_ACCOUNT.account
@@ -49,11 +50,13 @@ describe("BalanceAnalyzer.spec.ts", () => {
         expect(balanceAnalyzer.hbarBalance.value).toBeNull()
         expect(balanceAnalyzer.tokenBalances.value).toStrictEqual([])
         expect(balanceAnalyzer.balanceTimeStamp.value).toBeNull()
+        expect(balanceAnalyzer.balanceAge.value).toBeNull()
         await flushPromises()
         expect(balanceAnalyzer.accountId.value).toBe(SAMPLE_ACCOUNT.account)
         expect(balanceAnalyzer.hbarBalance.value).toBeNull() // because it's not mounted ;)
         expect(balanceAnalyzer.tokenBalances.value).toStrictEqual([])
         expect(balanceAnalyzer.balanceTimeStamp.value).toBeNull()
+        expect(balanceAnalyzer.balanceAge.value).toBeNull()
 
         // mount
         balanceAnalyzer.mount()
@@ -62,6 +65,7 @@ describe("BalanceAnalyzer.spec.ts", () => {
         expect(balanceAnalyzer.hbarBalance.value).toBe(SAMPLE_ACCOUNT_BALANCES.balances[0].balance)
         expect(balanceAnalyzer.tokenBalances.value).toStrictEqual(SAMPLE_ACCOUNT_BALANCES.balances[0].tokens)
         expect(balanceAnalyzer.balanceTimeStamp.value).toBe(SAMPLE_ACCOUNT_BALANCES.timestamp)
+        expect(balanceAnalyzer.balanceAge.value?.years).toBeGreaterThan(1)
 
         // unmount
         balanceAnalyzer.unmount()
@@ -70,6 +74,7 @@ describe("BalanceAnalyzer.spec.ts", () => {
         expect(balanceAnalyzer.hbarBalance.value).toBeNull()
         expect(balanceAnalyzer.tokenBalances.value).toStrictEqual([])
         expect(balanceAnalyzer.balanceTimeStamp.value).toBeNull()
+        expect(balanceAnalyzer.balanceAge.value).toBeNull()
 
         mock.restore()
     })
@@ -86,6 +91,7 @@ describe("BalanceAnalyzer.spec.ts", () => {
         expect(balanceAnalyzer.hbarBalance.value).toBeNull()
         expect(balanceAnalyzer.tokenBalances.value).toStrictEqual([])
         expect(balanceAnalyzer.balanceTimeStamp.value).toBeNull()
+        expect(balanceAnalyzer.balanceAge.value).toBeNull()
 
         // mount
         balanceAnalyzer.mount()
@@ -94,6 +100,7 @@ describe("BalanceAnalyzer.spec.ts", () => {
         expect(balanceAnalyzer.hbarBalance.value).toBeNull()
         expect(balanceAnalyzer.tokenBalances.value).toStrictEqual([])
         expect(balanceAnalyzer.balanceTimeStamp.value).toBeNull()
+        expect(balanceAnalyzer.balanceAge.value).toBeNull()
 
         // sets contract id between mount and unmount
         contractId.value = SAMPLE_ACCOUNT.account
@@ -101,11 +108,13 @@ describe("BalanceAnalyzer.spec.ts", () => {
         expect(balanceAnalyzer.hbarBalance.value).toBeNull()
         expect(balanceAnalyzer.tokenBalances.value).toStrictEqual([])
         expect(balanceAnalyzer.balanceTimeStamp.value).toBeNull()
+        expect(balanceAnalyzer.balanceAge.value).toBeNull()
         await flushPromises()
         expect(balanceAnalyzer.accountId.value).toBe(SAMPLE_ACCOUNT.account)
         expect(balanceAnalyzer.hbarBalance.value).toBe(SAMPLE_ACCOUNT_BALANCES.balances[0].balance)
         expect(balanceAnalyzer.tokenBalances.value).toStrictEqual(SAMPLE_ACCOUNT_BALANCES.balances[0].tokens)
         expect(balanceAnalyzer.balanceTimeStamp.value).toBe(SAMPLE_ACCOUNT_BALANCES.timestamp)
+        expect(balanceAnalyzer.balanceAge.value?.years).toBeGreaterThan(1)
 
         // unmount
         balanceAnalyzer.unmount()
@@ -114,6 +123,7 @@ describe("BalanceAnalyzer.spec.ts", () => {
         expect(balanceAnalyzer.hbarBalance.value).toBeNull()
         expect(balanceAnalyzer.tokenBalances.value).toStrictEqual([])
         expect(balanceAnalyzer.balanceTimeStamp.value).toBeNull()
+        expect(balanceAnalyzer.balanceAge.value).toBeNull()
 
         mock.restore()
     })

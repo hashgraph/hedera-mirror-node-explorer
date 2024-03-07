@@ -50,6 +50,7 @@ export class BalanceAnalyzer {
             this.watchHandle.value = null
         }
         this.response.value = null
+        this.balanceAge.value = null
         if (this.timeoutID != -1) {
             window.clearTimeout(this.timeoutID)
             this.timeoutID = -1
@@ -88,11 +89,14 @@ export class BalanceAnalyzer {
             } catch {
                 this.response.value = null
             } finally {
-                this.balanceAge.value = Duration.decompose(new Date().getTime() / 1000 - Number.parseFloat(this.balanceTimeStamp.value ?? ''))
+                this.balanceAge.value = this.balanceTimeStamp.value !== null
+                    ? Duration.decompose(new Date().getTime() / 1000 - Number.parseFloat(this.balanceTimeStamp.value))
+                    : null
                 this.scheduleNextLookup()
             }
         } else {
             this.response.value = null
+            this.balanceAge.value = null
         }
     }
 
