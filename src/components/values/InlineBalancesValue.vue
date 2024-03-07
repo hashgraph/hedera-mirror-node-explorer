@@ -97,7 +97,9 @@ export default defineComponent({
             let result: string|null
             const duration = props.balanceAnalyzer.balanceAge.value
             if (duration !== null) {
-                if (duration.days > 0) {
+                if (duration.years > 0) {
+                    result = "> " + (duration.years > 1 ? duration.years + " years" : "1 year") + " ago"
+                } else if (duration.days > 0) {
                     result = "> " + (duration.days > 1 ? duration.days + " days" : "1 day") + " ago"
                 } else if (duration.hours > 0) {
                     result = "> " + (duration.hours > 1 ? duration.hours + " hours" : "1 hour") + " ago"

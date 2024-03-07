@@ -26,6 +26,7 @@ import {flushPromises} from "@vue/test-utils";
 import MockAdapter from "axios-mock-adapter";
 import axios from "axios";
 import {BalanceAnalyzer} from "@/utils/analyzer/BalanceAnalyzer";
+import {Timestamp} from "@/utils/Timestamp";
 import {SAMPLE_ACCOUNT, SAMPLE_ACCOUNT_BALANCES} from "../../Mocks";
 
 describe("BalanceAnalyzer.spec.ts", () => {
@@ -42,6 +43,7 @@ describe("BalanceAnalyzer.spec.ts", () => {
         expect(balanceAnalyzer.hbarBalance.value).toBeNull()
         expect(balanceAnalyzer.tokenBalances.value).toStrictEqual([])
         expect(balanceAnalyzer.balanceTimeStamp.value).toBeNull()
+        expect(balanceAnalyzer.balanceAge.value).toBeNull()
 
         // sets contract id before mount
         contractId.value = SAMPLE_ACCOUNT.account
@@ -49,11 +51,13 @@ describe("BalanceAnalyzer.spec.ts", () => {
         expect(balanceAnalyzer.hbarBalance.value).toBeNull()
         expect(balanceAnalyzer.tokenBalances.value).toStrictEqual([])
         expect(balanceAnalyzer.balanceTimeStamp.value).toBeNull()
+        expect(balanceAnalyzer.balanceAge.value).toBeNull()
         await flushPromises()
         expect(balanceAnalyzer.accountId.value).toBe(SAMPLE_ACCOUNT.account)
         expect(balanceAnalyzer.hbarBalance.value).toBeNull() // because it's not mounted ;)
         expect(balanceAnalyzer.tokenBalances.value).toStrictEqual([])
         expect(balanceAnalyzer.balanceTimeStamp.value).toBeNull()
+        expect(balanceAnalyzer.balanceAge.value).toBeNull()
 
         // mount
         balanceAnalyzer.mount()
@@ -62,6 +66,7 @@ describe("BalanceAnalyzer.spec.ts", () => {
         expect(balanceAnalyzer.hbarBalance.value).toBe(SAMPLE_ACCOUNT_BALANCES.balances[0].balance)
         expect(balanceAnalyzer.tokenBalances.value).toStrictEqual(SAMPLE_ACCOUNT_BALANCES.balances[0].tokens)
         expect(balanceAnalyzer.balanceTimeStamp.value).toBe(SAMPLE_ACCOUNT_BALANCES.timestamp)
+        expect(balanceAnalyzer.balanceAge.value?.years).toBeGreaterThan(1)
 
         // unmount
         balanceAnalyzer.unmount()
@@ -70,11 +75,16 @@ describe("BalanceAnalyzer.spec.ts", () => {
         expect(balanceAnalyzer.hbarBalance.value).toBeNull()
         expect(balanceAnalyzer.tokenBalances.value).toStrictEqual([])
         expect(balanceAnalyzer.balanceTimeStamp.value).toBeNull()
+        expect(balanceAnalyzer.balanceAge.value).toBeNull()
 
         mock.restore()
     })
 
     test("set account between mount() and unmount() ", async () => {
+
+        const t = "1646728200.821070000"
+        const tt = Timestamp.parse(t)
+        const date = tt.toDate()
 
         const mock = new MockAdapter(axios);
         const matcher1 = "/api/v1/balances"
@@ -86,6 +96,7 @@ describe("BalanceAnalyzer.spec.ts", () => {
         expect(balanceAnalyzer.hbarBalance.value).toBeNull()
         expect(balanceAnalyzer.tokenBalances.value).toStrictEqual([])
         expect(balanceAnalyzer.balanceTimeStamp.value).toBeNull()
+        expect(balanceAnalyzer.balanceAge.value).toBeNull()
 
         // mount
         balanceAnalyzer.mount()
@@ -94,6 +105,7 @@ describe("BalanceAnalyzer.spec.ts", () => {
         expect(balanceAnalyzer.hbarBalance.value).toBeNull()
         expect(balanceAnalyzer.tokenBalances.value).toStrictEqual([])
         expect(balanceAnalyzer.balanceTimeStamp.value).toBeNull()
+        expect(balanceAnalyzer.balanceAge.value).toBeNull()
 
         // sets contract id between mount and unmount
         contractId.value = SAMPLE_ACCOUNT.account
@@ -101,11 +113,13 @@ describe("BalanceAnalyzer.spec.ts", () => {
         expect(balanceAnalyzer.hbarBalance.value).toBeNull()
         expect(balanceAnalyzer.tokenBalances.value).toStrictEqual([])
         expect(balanceAnalyzer.balanceTimeStamp.value).toBeNull()
+        expect(balanceAnalyzer.balanceAge.value).toBeNull()
         await flushPromises()
         expect(balanceAnalyzer.accountId.value).toBe(SAMPLE_ACCOUNT.account)
         expect(balanceAnalyzer.hbarBalance.value).toBe(SAMPLE_ACCOUNT_BALANCES.balances[0].balance)
         expect(balanceAnalyzer.tokenBalances.value).toStrictEqual(SAMPLE_ACCOUNT_BALANCES.balances[0].tokens)
         expect(balanceAnalyzer.balanceTimeStamp.value).toBe(SAMPLE_ACCOUNT_BALANCES.timestamp)
+        expect(balanceAnalyzer.balanceAge.value?.years).toBeGreaterThan(1)
 
         // unmount
         balanceAnalyzer.unmount()
@@ -114,6 +128,7 @@ describe("BalanceAnalyzer.spec.ts", () => {
         expect(balanceAnalyzer.hbarBalance.value).toBeNull()
         expect(balanceAnalyzer.tokenBalances.value).toStrictEqual([])
         expect(balanceAnalyzer.balanceTimeStamp.value).toBeNull()
+        expect(balanceAnalyzer.balanceAge.value).toBeNull()
 
         mock.restore()
     })

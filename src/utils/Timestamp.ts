@@ -52,6 +52,11 @@ export class Timestamp {
         return this.seconds + "." + this.nanoseconds.toString().padStart(9, "0")
     }
 
+    public toDate(): Date {
+        const seconds = this.seconds + (this.nanoseconds / 1_000_000_000)
+        return new Date(seconds * 1000)
+    }
+
     //
     // Private
     //
