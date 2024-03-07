@@ -224,7 +224,7 @@
             <o-field style="margin-bottom: 0">
               <o-select v-model="timeSelection" class="ml-2 h-is-text-size-1">
                 <option value="LATEST" @click="onLatest">LATEST</option>
-                <option value="JUMP">JUMP TO DATE</option>
+                <option value="JUMP" @click="onJump">JUMP TO DATE</option>
               </o-select>
             </o-field>
             <TransactionFilterSelect :controller="transactionTableController"/>
@@ -372,8 +372,13 @@ export default defineComponent({
     const isTouchDevice = inject('isTouchDevice', false)
 
     const timeSelection = ref("LATEST")
+
     function onLatest() {
       transactionTableController.startAutoRefresh()
+    }
+
+    function onJump() {
+      transactionTableController.stopAutoRefresh()
     }
 
     //
@@ -497,7 +502,8 @@ export default defineComponent({
       handleTabUpdate,
       filterVerified,
       timeSelection,
-      onLatest
+      onLatest,
+      onJump
     }
   }
 });

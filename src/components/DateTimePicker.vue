@@ -21,8 +21,8 @@
 <!--Documentation for vue-datepicker: https://vue3datepicker.com-->
 
 <template>
-  <div class="is-flex is-align-items-center" style="margin-right: 8px">
-    <Datepicker v-model="date" @closed="handleClosed" @cleared="handleCleared"/>
+  <div class="is-flex is-align-items-center">
+    <Datepicker v-model="date" placeholder="SELECT A DATE" :is-24="false" time-picker-inline dark @closed="handleClosed" @cleared="handleCleared"/>
   </div>
 </template>
 
@@ -50,7 +50,7 @@ export default defineComponent({
   },
 
   setup(props) {
-    const date = ref()
+    const date = ref(new Date())
     const handleClosed = () => {
       if (props.controller) {
         const controller = props.controller
@@ -86,4 +86,18 @@ export default defineComponent({
 <!--                                                       STYLE                                                     -->
 <!-- --------------------------------------------------------------------------------------------------------------- -->
 
-<style/>
+<style>
+.dp__theme_dark {
+  --dp-background-color: var(--h-theme-box-background-color);
+  --dp-primary-color: #575757;
+  --dp-border-color: white;
+  --dp-border-color-hover: white;
+  --dp-icon-color: white;
+}
+:root {
+  --dp-font-family: "Styrene A Web", sans-serif;
+  --dp-border-radius: 0;
+  --dp-font-size: 11px;
+  --dp-input-padding: 3.5px 30px 3.5px 12px
+}
+</style>
