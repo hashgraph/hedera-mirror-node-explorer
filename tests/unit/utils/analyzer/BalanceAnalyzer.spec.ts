@@ -26,7 +26,6 @@ import {flushPromises} from "@vue/test-utils";
 import MockAdapter from "axios-mock-adapter";
 import axios from "axios";
 import {BalanceAnalyzer} from "@/utils/analyzer/BalanceAnalyzer";
-import {Timestamp} from "@/utils/Timestamp";
 import {SAMPLE_ACCOUNT, SAMPLE_ACCOUNT_BALANCES} from "../../Mocks";
 
 describe("BalanceAnalyzer.spec.ts", () => {
@@ -81,10 +80,6 @@ describe("BalanceAnalyzer.spec.ts", () => {
     })
 
     test("set account between mount() and unmount() ", async () => {
-
-        const t = "1646728200.821070000"
-        const tt = Timestamp.parse(t)
-        const date = tt.toDate()
 
         const mock = new MockAdapter(axios);
         const matcher1 = "/api/v1/balances"
