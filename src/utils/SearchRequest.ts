@@ -37,6 +37,7 @@ import {TransactionID} from "@/utils/TransactionID";
 import {EntityID} from "@/utils/EntityID";
 import {aliasToBase32, base32ToAlias, byteToHex, hexToByte, paddedBytes} from "@/utils/B64Utils";
 import {knsResolve} from "@/utils/name_service/KNS";
+import {hnsResolve} from "@/utils/name_service/HNS";
 import {Timestamp} from "@/utils/Timestamp";
 import {networkRegistry} from "@/schemas/NetworkRegistry";
 import {routeManager} from "@/router";
@@ -335,7 +336,17 @@ export class SearchRequest {
 
     private async searchNamingService(name: string): Promise<void> {
         try {
-            const accountId = await knsResolve(name)
+            const promises: Promise<string|null>[] = [
+                knsResolve(name),
+                hnsResolve(name)
+            ]
+            const responses = await Promise.allSettled(promises)
+            let accountId: string|null = null
+            for (const r of responses) {
+                if (r.status == "fulfilled" && r.value !== null) {
+                    accountId = r.value
+                }
+            }
             if (accountId !== null) {
                 const r = await axios.get<AccountBalanceTransactions>("api/v1/accounts/" + accountId)
                 this.account = r.data

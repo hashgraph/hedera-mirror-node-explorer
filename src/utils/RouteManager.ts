@@ -27,6 +27,7 @@ import {AppStorage} from "@/AppStorage";
 import {knsSetNetwork} from '@/utils/name_service/KNS';
 import axios from "axios";
 import {CacheUtils} from "@/utils/cache/CacheUtils";
+import {hnsSetNetwork} from "@/utils/name_service/HNS";
 
 export class RouteManager {
 
@@ -40,6 +41,7 @@ export class RouteManager {
         this.router = router
         watch(this.currentNetwork, () => {
             knsSetNetwork(this.currentNetworkEntry.value.name)
+            hnsSetNetwork(this.currentNetworkEntry.value.name)
             AppStorage.setLastNetwork(this.currentNetworkEntry.value)
             axios.defaults.baseURL = this.currentNetworkEntry.value.url
             this.updateSelectedNetworkSilently()
