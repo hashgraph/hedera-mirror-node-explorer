@@ -124,6 +124,7 @@
           <TransactionFilterSelect
             v-bind:controller="transactionTableController"
             nft-filter
+            class="ml-2"
           />
         </div>
       </template>

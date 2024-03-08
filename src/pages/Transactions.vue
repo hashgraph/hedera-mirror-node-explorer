@@ -33,7 +33,7 @@
       <template v-slot:control>
         <div class="is-flex is-align-items-flex-end">
           <PlayPauseButton v-bind:controller="transactionTableController"/>
-          <TransactionFilterSelect v-bind:controller="transactionTableController"/>
+          <TransactionFilterSelect v-bind:controller="transactionTableController" class="ml-2"/>
         </div>
       </template>
       <template v-slot:content>
