@@ -259,7 +259,7 @@
       </template>
     </DashboardCard>
 
-    <ApproveAllowanceSection :account-id="normalizedAccountId ?? undefined" :showApproveDialog="showApproveDialog"/>
+    <ApproveAllowanceSection :account-id="normalizedAccountId ?? undefined"/>
 
     <MirrorLink :network="network" entityUrl="accounts" :loc="accountId"/>
 
@@ -354,7 +354,6 @@ export default defineComponent({
 
   props: {
     accountId: String,
-    showApproveDialog: String,
     network: String,
   },
 

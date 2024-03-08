@@ -91,7 +91,6 @@ export default defineComponent({
 
   props: {
     accountId: String,
-    showApproveDialog: String
   },
 
   setup: function (props) {
@@ -104,17 +103,6 @@ export default defineComponent({
         () => walletManager.connected.value && walletManager.accountId.value === props.accountId)
     // const isWalletConnected = computed(() => false)
     const showApproveAllowanceDialog = ref(false)
-
-    onMounted(() => {
-      if (props.showApproveDialog === 'true' && isWalletConnected.value) {
-        handleApproveButton()
-      }
-    })
-    watch(isWalletConnected, (newValue) => {
-      if (newValue && props.showApproveDialog === 'true') {
-        handleApproveButton()
-      }
-    })
 
     watch(showApproveAllowanceDialog, (newValue) => {
       if (!newValue) {

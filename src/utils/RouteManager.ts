@@ -208,11 +208,10 @@ export class RouteManager {
     // Account
     //
 
-    public makeRouteToAccount(accountId: string, showApproveDialog = false): RouteLocationRaw {
+    public makeRouteToAccount(accountId: string): RouteLocationRaw {
         return {
             name: 'AccountDetails',
-            params: {accountId: accountId, network: this.currentNetwork.value},
-            query: {app: showApproveDialog ? 'true' : 'false'}
+            params: {accountId: accountId, network: this.currentNetwork.value}
         }
     }
 
