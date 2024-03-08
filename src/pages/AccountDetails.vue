@@ -226,7 +226,7 @@
               </o-select>
             </o-field>
             <DownloadButton @click="downloadController.visible.value = true"/>
-            <TransactionFilterSelect :controller="transactionTableController" class="ml-2"/>
+            <TransactionFilterSelect v-model:selected-filter="transactionType"/>
           </div>
           <div v-else-if="selectedTab === 'contracts'" class="is-flex is-justify-content-end is-align-items-center">
               <PlayPauseButton v-if="!filterVerified" :controller="contractCreateTableController"/>
@@ -488,6 +488,7 @@ export default defineComponent({
       isMediumScreen,
       isTouchDevice,
       transactionTableController,
+      transactionType:transactionTableController.transactionType,
       contractCreateTableController,
       verifiedContractsController,
       loaded: verifiedContractsController.loaded,
