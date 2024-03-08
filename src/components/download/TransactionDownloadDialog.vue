@@ -61,6 +61,7 @@
                 <div class="column">
                     <Datepicker
                         v-model="endDate"
+                        placeholder="SELECT A DATE"
                         :is-24="false"
                         :enable-time-picker="false" dark
                         :teleport="true"
