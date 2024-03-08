@@ -226,7 +226,7 @@
               </o-select>
             </o-field>
             <DownloadButton @click="downloadController.visible.value = true"/>
-            <TransactionFilterSelect v-model:selected-filter="transactionType"/>
+            <TransactionFilterSelect v-model:selected-filter="transactionType" class="ml-2"/>
           </div>
           <div v-else-if="selectedTab === 'contracts'" class="is-flex is-justify-content-end is-align-items-center">
               <PlayPauseButton v-if="!filterVerified" :controller="contractCreateTableController"/>
