@@ -154,7 +154,7 @@ export default defineComponent({
 
         const accountRoute = computed(() => {
           return walletManager.accountId.value !== null
-              ? routeManager.makeRouteToAccount(walletManager.accountId.value, false)
+              ? routeManager.makeRouteToAccount(walletManager.accountId.value)
               : null
          })
         
