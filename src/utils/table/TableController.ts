@@ -42,7 +42,7 @@ export abstract class TableController<R, K> implements PlayPauseController {
     // Public
     //
 
-    public readonly pageSize: ComputedRef<number>
+    public readonly pageSize: Ref<number>
 
     public readonly currentPage: Ref<number> = ref(1)
 
@@ -64,6 +64,8 @@ export abstract class TableController<R, K> implements PlayPauseController {
         () => this.buffer.totalRowCount.value >= this.pageSize.value)
 
     public readonly mounted: ComputedRef<boolean> = computed(() => this.mountedRef.value)
+
+    public readonly showPageSizeSelector = computed(() => this.buffer.totalRowCount.value > 5)
 
     //
     // Public (mount / unmount)
@@ -188,7 +190,7 @@ export abstract class TableController<R, K> implements PlayPauseController {
     // Protected
     //
 
-    protected constructor(router: Router, pageSize: ComputedRef<number>,
+    protected constructor(router: Router, pageSize: Ref<number>,
                           presumedRowCount: number, updatePeriod: number,
                           maxUpdateCount: number, maxLimit: number,
                           pageParamName = "p", keyParamName= "k") {

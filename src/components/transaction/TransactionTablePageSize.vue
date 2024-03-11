@@ -23,15 +23,15 @@
 <!-- --------------------------------------------------------------------------------------------------------------- -->
 
 <template>
-
-  <o-field>
-    <o-select v-model="selectedFilter" class="ml-2 h-is-text-size-1"  data-cy="select-type">
-      <option v-for="f in filterValues" v-bind:key="f" v-bind:value="f">
-        {{ makeFilterLabel(f) }}
-      </option>
-    </o-select>
-  </o-field>
-
+  <o-select v-model="perPage" class="h-is-text-size-2" >
+    <!--        Use "as number" to avoid warning as o-select does not allow to force type-->
+    <option :value="5 as number">5 per page</option>
+    <option :value="10 as number">10 per page</option>
+    <option :value="15 as number">15 per page</option>
+    <option :value="20 as number">20 per page</option>
+    <option :value="50 as number">50 per page</option>
+    <option :value="100 as number">100 per page</option>
+  </o-select>
 </template>
 
 <!-- --------------------------------------------------------------------------------------------------------------- -->
@@ -40,56 +40,26 @@
 
 <script lang="ts">
 
-import {defineComponent, PropType} from "vue";
-import {TransactionType} from "@/schemas/HederaSchemas";
-import {makeTypeLabel} from "@/utils/TransactionTools";
-import {TransactionTableControllerXL} from "@/components/transaction/TransactionTableControllerXL";
-import {NftTransactionTableController} from "./NftTransactionTableController";
+import { defineComponent, PropType, Ref } from "vue";
+import { TransactionTableControllerXL } from "@/components/transaction/TransactionTableControllerXL";
+
 
 export default defineComponent({
-  name: "TransactionFilterSelect",
+  name: "TransactionTablePageSize",
 
   props: {
     controller: {
-      type: Object as PropType<
-        TransactionTableControllerXL | NftTransactionTableController
-      >,
-      required: true,
-    },
-    nftFilter: {
-      type: Boolean,
-      required: false,
-    },
+      type: Object as PropType<TransactionTableControllerXL>,
+      required: true
+    }
   },
 
   setup(props) {
-
-    const makeFilterLabel = (filterValue: string): string => {
-      return filterValue == "" ? "TYPES: ALL" : makeTypeLabel(filterValue as TransactionType)
-    }
-
     return {
-      filterValues: makeFilterValues(props.nftFilter),
-      selectedFilter: props.controller.transactionType,
-      makeFilterLabel,
+      perPage: props.controller.pageSize,
     }
   }
 });
-
-export function makeFilterValues(nftFilter: boolean): string[] {
-  let result = Object
-    .keys(TransactionType)
-    .sort((a, b) => {
-      return makeTypeLabel(a as TransactionType) < makeTypeLabel(b as TransactionType) ? -1 : 1;
-    })
-  if (nftFilter) {
-    result = result.filter(el => {
-      return el === "CRYPTOTRANSFER" || el === "TOKENMINT" || el === "CRYPTOAPPROVEALLOWANCE" || el === "CRYPTODELETEALLOWANCE" || el === "TOKENWIPE" || el === "TOKENBURN" || el === "TOKENDELETION";
-    })
-  }
-  result.splice(0, 0, "")
-  return result
-}
 
 </script>
 

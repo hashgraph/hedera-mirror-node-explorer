@@ -20,7 +20,7 @@
 
 import {KeyOperator, SortOrder, TableController} from "@/utils/table/TableController";
 import {Transaction, TransactionResponse} from "@/schemas/HederaSchemas";
-import {ComputedRef, ref, Ref, watch, WatchStopHandle} from "vue";
+import { ref, Ref, watch, WatchStopHandle} from "vue";
 import axios, {AxiosResponse} from "axios";
 import {LocationQuery, Router} from "vue-router";
 import {fetchStringQueryParam} from "@/utils/RouteManager";
@@ -37,14 +37,14 @@ export class TransactionTableControllerXL extends TableController<Transaction, s
 
     public constructor(router: Router,
                        accountId: Ref<string | null>,
-                       pageSize: ComputedRef<number>,
+                       pageSize: Ref<number>,
                        accountIdMandatory: boolean,
                        pageParamName = "p", keyParamName= "k") {
         super(router, pageSize, 10 * pageSize.value, 5000, 10, 100,
             pageParamName, keyParamName);
         this.accountId = accountId
         this.accountIdMandatory = accountIdMandatory
-        this.watchAndReload([this.transactionType, this.accountId])
+        this.watchAndReload([this.transactionType, this.accountId, this.pageSize])
     }
 
     public readonly transactionType: Ref<string> = ref("")

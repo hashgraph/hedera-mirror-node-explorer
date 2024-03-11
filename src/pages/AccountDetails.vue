@@ -431,11 +431,12 @@ export default defineComponent({
     // Table controllers and cache for Recent Account Operations
     // These are mounted only when their respective table is mounted, i.e. when the corresponding tab is selected
     //
-    const perPage = computed(() => isMediumScreen ? 10 : 5)
+    const txPerPage = ref(isMediumScreen ? 10 : 5) // nb of transactions in table controlled by UI
+    const perPage = ref(isMediumScreen ? 10 : 5)   // nb of items in other tables not (yet) controlled by UI
     const accountId = accountLocParser.accountId
 
     const transactionTableController = new TransactionTableControllerXL(
-        router, accountId, perPage, true, "p1", "k1")
+        router, accountId, txPerPage, true, "p1", "k1")
 
     const contractCreateTableController = new TransactionTableController(
         router, perPage, TransactionType.CONTRACTCREATEINSTANCE, "success", "p3", "k3", accountId)

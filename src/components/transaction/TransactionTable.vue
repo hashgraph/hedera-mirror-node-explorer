@@ -68,7 +68,12 @@
     <o-table-column v-slot="props" field="consensus_timestamp" label="Time">
       <TimestampValue v-bind:timestamp="props.row.consensus_timestamp"/>
     </o-table-column>
+    <template v-slot:bottom-left>
+      <TransactionTablePageSize :controller="controller" />
+    </template>
   </o-table>
+
+  <TransactionTablePageSize v-if="!paginated && showPageSizeSelector" :controller="controller" style="width: 116px; margin-left: 4px" />
 
   <EmptyTable v-if="transactions.length === 0"/>
 
@@ -91,11 +96,14 @@ import {ORUGA_MOBILE_BREAKPOINT} from "@/App.vue";
 import {TransactionTableControllerXL} from "@/components/transaction/TransactionTableControllerXL";
 import EmptyTable from "@/components/EmptyTable.vue";
 import InnerSenderEVMAddress from "@/components/values/InnerSenderEVMAddress.vue";
+import TransactionTablePageSize from "@/components/transaction/TransactionTablePageSize.vue";
 
 export default defineComponent({
   name: "TransactionTable",
 
-  components: {InnerSenderEVMAddress, TransactionSummary, TimestampValue, TransactionLabel, EmptyTable},
+  components: {
+    TransactionTablePageSize,
+    InnerSenderEVMAddress, TransactionSummary, TimestampValue, TransactionLabel, EmptyTable},
 
   props: {
     narrowed: Boolean,
@@ -130,6 +138,7 @@ export default defineComponent({
       onPageChange: props.controller.onPageChange,
       perPage: props.controller.pageSize as Ref<number>,
       paginated: props.controller.paginated as ComputedRef<boolean>,
+      showPageSizeSelector: props.controller.showPageSizeSelector as ComputedRef<boolean>,
       showingEthereumTransactions,
       handleClick,
       makeTypeLabel,

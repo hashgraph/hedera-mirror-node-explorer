@@ -48,8 +48,7 @@ describe('Transaction Navigation', () => {
         cy.visit('testnet/transactions/')
         cy.url().should('include', '/testnet/transactions')
 
-        cy.get('.box')
-            .find('select')
+        cy.get('[data-cy="select-type"]')
             .select(selectType)
             .then(($type) => {
                 cy.wrap($type).should('have.value', selectType)
