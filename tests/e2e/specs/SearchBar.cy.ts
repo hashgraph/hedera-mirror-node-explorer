@@ -251,6 +251,7 @@ describe('Search Bar', () => {
         const searchName = "kabuto.hh"
         const searchAccount = "0.0.1001"
         testBody(searchAccount, '/mainnet/account/' + searchAccount, 'Account ID:', true, searchName)
+        testBody(searchAccount.toUpperCase(), '/mainnet/account/' + searchAccount, 'Account ID:', true, searchName)
     })
 
 })
