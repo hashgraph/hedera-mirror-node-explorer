@@ -114,7 +114,7 @@ export class SearchRequest {
         const hexBytes = hexToByte(this.searchedId)
         const alias = base32ToAlias(this.searchedId) != null ? this.searchedId : null
         const timestamp = Timestamp.parse(this.searchedId)
-        const domainName = /\.[a-z|ℏ]+$/.test(this.searchedId) ? this.searchedId : null
+        const domainName = /\.[a-zA-Z|ℏ]+$/.test(this.searchedId) ? this.searchedId : null
 
         let promises: Promise<void>[]
         if (entityID !== null) {
