@@ -116,12 +116,12 @@ export class TransactionEncoder extends CSVEncoder<Transaction> {
             const accountId = transfer.account ?? ""
             const fromAccountId = transfer.amount < 0 ? accountId : ""
             const toAccountId = transfer.amount >= 0 ? accountId : ""
-            result.push([timestamp, transactionID, type, amount, fromAccountId, toAccountId])
+            result.push([timestamp, fromAccountId, toAccountId, amount, transactionID, type])
         }
         return result
     }
 
     protected encodeHeaderRow(): string[] | null {
-        return ["#date","#transaction_id","#transaction_type","#amount","#from_account_id","#to_account_id"]
+        return ["#date","#from_account_id","#to_account_id","#amount","#transaction_id","#transaction_type"]
     }
 }
