@@ -22,7 +22,7 @@
 
 <template>
   <div class="is-flex is-align-items-center">
-    <Datepicker v-model="date" placeholder="SELECT A DATE" :is-24="false" time-picker-inline dark @closed="handleClosed" @cleared="handleCleared"/>
+    <Datepicker v-model="date" placeholder="SELECT A DATE" :is-24="false" time-picker-inline dark @closed="handleClosed" @cleared="$emit('dateCleared')"/>
   </div>
 </template>
 
@@ -49,6 +49,8 @@ export default defineComponent({
     controller: Object as PropType<TransactionTableControllerXL>
   },
 
+  emits: ["dateCleared"],
+
   setup(props) {
     const date = ref(new Date())
     const handleClosed = () => {
@@ -62,19 +64,9 @@ export default defineComponent({
         console.log("Ignoring click because props.controller is undefined")
       }
     }
-    const handleCleared = () => {
-      if (props.controller) {
-        const controller = props.controller
-        controller.startAutoRefresh()
-      } else {
-        console.log("Ignoring click because props.controller is undefined")
-      }
-    }
-
 
     return {
       handleClosed,
-      handleCleared,
       date
     }
   }

@@ -199,7 +199,7 @@ export abstract class TableController<R, K> implements PlayPauseController {
     // Protected
     //
 
-    protected constructor(router: Router, pageSize: ComputedRef<number>,
+    protected constructor(router: Router, pageSize: Ref<number>,
                           presumedRowCount: number, updatePeriod: number,
                           maxUpdateCount: number, maxLimit: number,
                           pageParamName = "p", keyParamName= "k") {

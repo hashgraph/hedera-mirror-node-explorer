@@ -220,7 +220,7 @@
       <template v-slot:control>
           <div v-if="selectedTab === 'transactions'" class="is-flex is-align-items-flex-end">
             <PlayPauseButton v-if="timeSelection == 'LATEST'" :controller="transactionTableController"/>
-            <DateTimePicker v-else :controller="transactionTableController"/>
+            <DateTimePicker v-else :controller="transactionTableController" @dateCleared="onDateCleared"/>
             <o-field style="margin-bottom: 0">
               <o-select v-model="timeSelection" class="ml-2 h-is-text-size-1">
                 <option value="LATEST" @click="onLatest">LATEST</option>
@@ -381,6 +381,11 @@ export default defineComponent({
       transactionTableController.stopAutoRefresh()
     }
 
+    function onDateCleared() {
+      timeSelection.value = "LATEST"
+      onLatest()
+    }
+
     //
     // account
     //
@@ -503,7 +508,8 @@ export default defineComponent({
       filterVerified,
       timeSelection,
       onLatest,
-      onJump
+      onJump,
+      onDateCleared
     }
   }
 });
