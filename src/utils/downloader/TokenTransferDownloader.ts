@@ -74,18 +74,21 @@ export class TokenTransferDownloader extends AbstractTransactionDownloader {
             }
         }
 
-        const response = (await axios.get<TransactionResponse>(nextURL))
+        return axios.get<TransactionResponse>(nextURL)
+    }
+
+    protected filter(transactions: Transaction[]): Transaction[] {
+        const result: Transaction[] = []
+
         const tokenId = this.tokenId.value
-        const winners: Transaction[] = []
-        for (const c of response.data.transactions ?? []) {
-            const match = tokenId !== null ? lookupTokenTransfer(c, tokenId) !== null : c.token_transfers.length >= 1
+        for (const t of transactions ?? []) {
+            const match = tokenId !== null ? lookupTokenTransfer(t, tokenId) !== null : t.token_transfers.length >= 1
             if (match) {
-                winners.push(c)
+                result.push(t)
             }
         }
-        response.data.transactions = winners
 
-        return Promise.resolve(response)
+        return result
     }
 
     protected makeCSVEncoder(dateFormat: Intl.DateTimeFormat): CSVEncoder<Transaction> {
