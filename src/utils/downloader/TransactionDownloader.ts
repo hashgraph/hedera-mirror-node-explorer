@@ -21,10 +21,11 @@
 import {compareTransferByAccount, Transaction, TransactionResponse} from "@/schemas/HederaSchemas";
 import axios, {AxiosResponse} from "axios";
 import {CSVEncoder} from "@/utils/CSVEncoder";
-import {dateToTimestamp, EntityDownloader} from "@/utils/downloader/EntityDownloader";
+import {dateToTimestamp} from "@/utils/downloader/EntityDownloader";
+import {AbstractTransactionDownloader} from "@/utils/downloader/AbstractTransationDownloader";
 import {Ref, watch} from "vue";
 
-export class TransactionDownloader extends EntityDownloader<Transaction, TransactionResponse> {
+export class TransactionDownloader extends AbstractTransactionDownloader {
 
     public readonly accountId: Ref<string|null>
     public readonly transactionTypes: Ref<Set<string>>
@@ -49,7 +50,7 @@ export class TransactionDownloader extends EntityDownloader<Transaction, Transac
     }
 
     //
-    // EntityDownloader
+    // AbstractTransactionDownloader
     //
 
     protected async loadNext(nextURL: string|null): Promise<AxiosResponse<TransactionResponse>> {
@@ -75,18 +76,6 @@ export class TransactionDownloader extends EntityDownloader<Transaction, Transac
         }
 
         return axios.get<TransactionResponse>(nextURL)
-    }
-
-    protected fetchEntities(response: TransactionResponse): Transaction[] {
-        return response.transactions ?? []
-    }
-
-    protected nextURL(response: TransactionResponse): string | null {
-        return response.links?.next ?? null
-    }
-
-    protected entityTimestamp(entity: Transaction): string | null {
-        return entity.consensus_timestamp ?? null
     }
 
     protected makeCSVEncoder(dateFormat: Intl.DateTimeFormat): CSVEncoder<Transaction> {
