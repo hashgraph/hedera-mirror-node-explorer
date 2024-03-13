@@ -92,7 +92,7 @@ export class TokenTransferDownloader extends AbstractTransactionDownloader {
     }
 
     protected makeCSVEncoder(dateFormat: Intl.DateTimeFormat): CSVEncoder<Transaction> {
-        return new TokenTransferEncoder(this.tokenId, this.getEntities(), dateFormat)
+        return new TokenTransferEncoder(this.tokenId, this.entities.value, dateFormat)
     }
 
     protected makeOutputPrefix(): string {

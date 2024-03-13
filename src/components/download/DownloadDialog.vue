@@ -143,7 +143,7 @@ export default defineComponent({
 
         const successMessage = computed(() => {
             let result: string
-            const entityCount = props.downloader.getEntities().length
+            const entityCount = props.downloader.entities.value.length
             if (entityCount === 0) {
                 result = "No item matches this range"
             } else {

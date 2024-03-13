@@ -79,7 +79,7 @@ export class TransactionDownloader extends AbstractTransactionDownloader {
     }
 
     protected makeCSVEncoder(dateFormat: Intl.DateTimeFormat): CSVEncoder<Transaction> {
-        return new TransactionEncoder(this.getEntities(), dateFormat)
+        return new TransactionEncoder(this.entities.value, dateFormat)
     }
 
     protected makeOutputPrefix(): string {

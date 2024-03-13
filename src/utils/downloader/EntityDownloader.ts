@@ -27,8 +27,9 @@ export abstract class EntityDownloader<E, R> {
     public readonly startDate: Ref<Date|null>
     public readonly endDate: Ref<Date|null>
     public readonly maxEntityCount: number
-    private entities: E[] = []
 
+
+    private readonly entitiesRef: Ref<E[]> = ref([])
     private readonly downloadedCountRef = ref(0)
     private readonly firstDownloadedEntityRef: Ref<E|null> = ref(null)
     private readonly lastDownloadedEntityRef: Ref<E|null> = ref(null)
@@ -75,10 +76,8 @@ export abstract class EntityDownloader<E, R> {
         return Promise.resolve()
     }
 
-    public getEntities(): E[] {
-        return this.entities
-    }
-
+    public readonly entities: ComputedRef<E[]>
+        = computed(() => this.entitiesRef.value)
     public readonly state: ComputedRef<DownloaderState>
         = computed(() => this.stateRef.value)
     public readonly downloadedCount: ComputedRef<number>
@@ -126,7 +125,7 @@ export abstract class EntityDownloader<E, R> {
             const progress = firstTime !== null && lastTime !== null
                 ? (firstTime - lastTime) / (firstTime - startTime) : 0
             const result1 = Math.round(progress * 1000) / 1000
-            const result2 = this.entities.length / this.maxEntityCount
+            const result2 = this.entitiesRef.value.length / this.maxEntityCount
             result = Math.max(result1, result2)
         } else {
             result = 0
@@ -210,7 +209,7 @@ export abstract class EntityDownloader<E, R> {
     //
 
     private async download(): Promise<void> {
-        this.entities = []
+        this.entitiesRef.value = []
         this.downloadedCountRef.value = 0
         this.lastDownloadedEntityRef.value = null
 
@@ -229,8 +228,8 @@ export abstract class EntityDownloader<E, R> {
             this.lastDownloadedEntityRef.value
                 = newEntities.length >= 1 ? newEntities[newEntities.length - 1] : null
 
-            this.entities
-                = this.entities.concat(this.filter(newEntities))
+            this.entitiesRef.value
+                = this.entitiesRef.value.concat(this.filter(newEntities))
 
             nextURL = this.nextURL(newResponse.data)
             this.drainedRef.value = nextURL == null
