@@ -209,15 +209,17 @@ export abstract class EntityDownloader<E, R> {
 
         this.drainedRef.value = false
         let nextURL = null
-        while (this.entities.length < this.maxEntityCount && !this.drainedRef.value && !this.abortRequested) {
+        while (this.downloadedCountRef.value < this.maxEntityCount && !this.drainedRef.value && !this.abortRequested) {
             const newResponse
                 = await this.loadNext(nextURL)
             const newEntities
-                = this.filter(this.fetchEntities(newResponse.data))
+                = this.fetchEntities(newResponse.data)
+            const matchingEntities
+                = this.filter(newEntities)
             this.entities
-                = this.entities.concat(newEntities)
+                = this.entities.concat(matchingEntities)
             this.downloadedCountRef.value
-                = this.entities.length
+                += newEntities.length
             this.firstDownloadedEntityRef.value
                 = this.entities.length >= 1 ? this.entities[0] : null
             this.lastDownloadedEntityRef.value
