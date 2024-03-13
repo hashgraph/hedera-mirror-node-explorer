@@ -124,7 +124,8 @@ export default defineComponent({
                             break
                     }
                 })
-                .catch(() => {
+                .catch((reason: unknown) => {
+                    console.log("Download did fail:" + reason)
                     props.controller.mode.value = DialogMode.Error
                 })
         }
