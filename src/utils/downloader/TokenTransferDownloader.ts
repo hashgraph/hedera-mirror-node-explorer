@@ -75,23 +75,21 @@ export class TokenTransferDownloader extends AbstractTransactionDownloader {
         }
 
         const response = (await axios.get<TransactionResponse>(nextURL))
-        response.data.transactions = this.filterTransactions(response.data.transactions ?? [])
+        const tokenId = this.tokenId.value
+        const winners: Transaction[] = []
+        for (const c of response.data.transactions ?? []) {
+            const match = tokenId !== null ? lookupTokenTransfer(c, tokenId) !== null : c.token_transfers.length >= 1
+            if (match) {
+                winners.push(c)
+            }
+        }
+        response.data.transactions = winners
+
         return Promise.resolve(response)
     }
 
-    protected filterTransactions(candidates: Transaction[]): Transaction[] {
-        let result: Transaction[] = []
-        const tokenId = this.tokenId.value
-        for (const c of candidates) {
-            if ((tokenId !== null && lookupTokenTransfer(c, tokenId) !== null) || c.token_transfers.length >= 1) {
-                result.push(c)
-            }
-        }
-        return result
-    }
-
     protected makeCSVEncoder(dateFormat: Intl.DateTimeFormat): CSVEncoder<Transaction> {
-        return new TokenTransferEncoder(this.getEntities(), dateFormat)
+        return new TokenTransferEncoder(this.tokenId, this.getEntities(), dateFormat)
     }
 
     protected makeOutputPrefix(): string {
@@ -100,6 +98,17 @@ export class TokenTransferDownloader extends AbstractTransactionDownloader {
 }
 
 export class TokenTransferEncoder extends CSVEncoder<Transaction> {
+
+    public readonly tokenId: Ref<string|null>
+
+    //
+    // Public
+    //
+
+    public constructor(tokenId: Ref<string|null>, entities: Transaction[], dateFormat: Intl.DateTimeFormat) {
+        super(entities, dateFormat)
+        this.tokenId = tokenId
+    }
 
     //
     // CSVEncoder
@@ -112,13 +121,16 @@ export class TokenTransferEncoder extends CSVEncoder<Transaction> {
         const type = t.name ?? ""
         const sortedTransfers = t.token_transfers?.slice() ?? []
         sortedTransfers.sort(compareTransferByAccount)
+        const targetTokenId = this.tokenId.value
         for (const transfer of sortedTransfers) {
             const tokenId = transfer.token_id
-            const amount = transfer.amount ? this.formatAmount(transfer.amount) : ""
-            const accountId = transfer.account ?? ""
-            const fromAccountId = transfer.amount < 0 ? accountId : ""
-            const toAccountId = transfer.amount >= 0 ? accountId : ""
-            result.push([timestamp, tokenId ?? "null", fromAccountId, toAccountId, amount, transactionID, type])
+            if (targetTokenId == null || targetTokenId == tokenId) {
+                const amount = transfer.amount ? this.formatAmount(transfer.amount) : ""
+                const accountId = transfer.account ?? ""
+                const fromAccountId = transfer.amount < 0 ? accountId : ""
+                const toAccountId = transfer.amount >= 0 ? accountId : ""
+                result.push([timestamp, tokenId ?? "null", fromAccountId, toAccountId, amount, transactionID, type])
+            }
         }
         return result
     }
