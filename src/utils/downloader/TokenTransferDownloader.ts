@@ -21,7 +21,7 @@
 import {compareTransferByAccount, Transaction, TransactionResponse, TransactionType} from "@/schemas/HederaSchemas";
 import axios, {AxiosResponse} from "axios";
 import {CSVEncoder} from "@/utils/CSVEncoder";
-import {dateToTimestamp, EntityDownloader} from "@/utils/downloader/EntityDownloader";
+import {dateToTimestamp} from "@/utils/downloader/EntityDownloader";
 import {Ref, watch} from "vue";
 import {lookupTokenTransfer} from "@/schemas/HederaUtils";
 import {AbstractTransactionDownloader} from "@/utils/downloader/AbstractTransationDownloader";
@@ -75,16 +75,19 @@ export class TokenTransferDownloader extends AbstractTransactionDownloader {
         }
 
         const response = (await axios.get<TransactionResponse>(nextURL))
+        response.data.transactions = this.filterTransactions(response.data.transactions ?? [])
+        return Promise.resolve(response)
+    }
+
+    protected filterTransactions(candidates: Transaction[]): Transaction[] {
+        let result: Transaction[] = []
         const tokenId = this.tokenId.value
-        const winners: Transaction[] = []
-        for (const c of response.data.transactions ?? []) {
+        for (const c of candidates) {
             if ((tokenId !== null && lookupTokenTransfer(c, tokenId) !== null) || c.token_transfers.length >= 1) {
-                winners.push(c)
+                result.push(c)
             }
         }
-        response.data.transactions = winners
-
-        return Promise.resolve(response)
+        return result
     }
 
     protected makeCSVEncoder(dateFormat: Intl.DateTimeFormat): CSVEncoder<Transaction> {
