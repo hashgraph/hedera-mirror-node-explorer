@@ -21,7 +21,7 @@
 import {
     AccountInfo,
     KeyType,
-    NetworkNode,
+    NetworkNode, NftTransfer,
     TokenInfo,
     TokenRelationship, TokenTransfer,
     Transaction,
@@ -229,6 +229,17 @@ export function labelForResponseCode(responseCode: bigint): string|null {
 export function lookupTokenTransfer(transaction: Transaction, tokenId: string): TokenTransfer|null {
     let result: TokenTransfer|null = null
     for (const t of transaction.token_transfers) {
+        if (t.token_id == tokenId) {
+            result = t
+            break
+        }
+    }
+    return result
+}
+
+export function lookupNFTTransfer(transaction: Transaction, tokenId: string): NftTransfer|null {
+    let result: NftTransfer|null = null
+    for (const t of transaction.nft_transfers) {
         if (t.token_id == tokenId) {
             result = t
             break
