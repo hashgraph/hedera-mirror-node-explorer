@@ -92,6 +92,13 @@ export abstract class EntityDownloader<E, R> {
     public readonly failureReason: ComputedRef<unknown|null>
         = computed(() => this.failureReasonRef.value)
 
+    public readonly lastDownloadedEntityDate: ComputedRef<Date|null> = computed(() => {
+        const lastEntity = this.lastDownloadedEntityRef.value
+        const lastTimestamp = lastEntity !== null ? this.entityTimestamp(lastEntity) : null
+        const lastMillis = lastTimestamp !== null ? timestampToMillis(lastTimestamp) : null
+        return lastMillis !== null ? new Date(lastMillis) : null
+    })
+
     public progress: ComputedRef<number> = computed(() => {
         let result: number
 
@@ -214,16 +221,16 @@ export abstract class EntityDownloader<E, R> {
                 = await this.loadNext(nextURL)
             const newEntities
                 = this.fetchEntities(newResponse.data)
-            const matchingEntities
-                = this.filter(newEntities)
-            this.entities
-                = this.entities.concat(matchingEntities)
             this.downloadedCountRef.value
                 += newEntities.length
-            this.firstDownloadedEntityRef.value
-                = this.entities.length >= 1 ? this.entities[0] : null
+            if (this.firstDownloadedEntityRef.value === null) {
+                this.firstDownloadedEntityRef.value = newEntities.length >= 1 ? newEntities[0] : null
+            }
             this.lastDownloadedEntityRef.value
-                = this.entities.length >= 1 ? this.entities[this.entities.length - 1] : null
+                = newEntities.length >= 1 ? newEntities[newEntities.length - 1] : null
+
+            this.entities
+                = this.entities.concat(this.filter(newEntities))
 
             nextURL = this.nextURL(newResponse.data)
             this.drainedRef.value = nextURL == null
