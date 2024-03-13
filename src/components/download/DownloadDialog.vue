@@ -40,8 +40,14 @@
 
         <!-- success -->
         <template v-slot:dialogSuccess>
-            <span>Download completed:</span>
-            <span class="has-text-grey is-numeric ml-2">{{ successMessage }}</span>
+            <div class="is-flex">
+                <span>Download completed:</span>
+                <div class="ml-2">
+                    <div class="has-text-grey is-numeric">{{ successMessage }}</div>
+                    <div v-if="successMessage2" class="has-text-grey is-numeric">{{ successMessage2 }}</div>
+                    <div v-if="successMessage3" class="has-text-grey is-numeric">{{ successMessage3 }}</div>
+                </div>
+            </div>
         </template>
 
         <!-- error -->
@@ -137,13 +143,38 @@ export default defineComponent({
 
         const successMessage = computed(() => {
             let result: string
-            const count = props.downloader.downloadedCount.value
-            if (props.downloader.downloadedCount.value === 0) {
+            const entityCount = props.downloader.getEntities().length
+            if (entityCount === 0) {
                 result = "No item matches this range"
-            } else if (!props.downloader.drained.value) {
-                result = "The maximum of " + props.downloader.maxEntityCount + " downloaded items was hit"
             } else {
-                result = count + " " + (count > 1 ? "items" : "item")
+                result = entityCount + " " + (entityCount > 1 ? "items" : "item")
+            }
+            return result
+        })
+
+        const successMessage2 = computed(() => {
+            return props.downloader.drained.value ? null : "The maximum of " + props.downloader.maxEntityCount + " downloads was hit"
+        })
+
+        const successMessage3 = computed(() => {
+            let result: string|null
+            const drained = props.downloader.drained.value
+            const lastDownloadedEntityDate = props.downloader.lastDownloadedEntityDate.value
+            if (!drained && lastDownloadedEntityDate !== null) {
+                const locale = "en-US"
+                const dateOptions: Intl.DateTimeFormatOptions = {
+                    second: "2-digit",
+                    minute: "2-digit",
+                    hour: "2-digit",
+                    day: "2-digit",
+                    month: "2-digit",
+                    year: "numeric",
+                }
+                const format = new Intl.DateTimeFormat(locale, dateOptions)
+                const lastDate = format.format(lastDownloadedEntityDate)
+                result = "Operation stopped at " + lastDate
+            } else {
+                result = null
             }
             return result
         })
@@ -155,6 +186,8 @@ export default defineComponent({
         return {
             busyMessage,
             successMessage,
+            successMessage2,
+            successMessage3,
             errorMessage,
             handleDownload
         }
