@@ -193,7 +193,6 @@ export interface NftTransactionTransfer {
 
 export interface TransactionDetail extends Transaction {
 
-    nft_transfers: NftTransfer[]
     assessed_custom_fees: CustomFee[]
 }
 
