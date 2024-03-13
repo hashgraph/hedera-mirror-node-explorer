@@ -84,6 +84,10 @@ export default defineComponent({
         downloader: {
             type: Object as PropType<EntityDownloader<unknown, unknown>>,
             required: true
+        },
+        downloadEnabled: {
+            type: Boolean,
+            required: true
         }
     },
     setup(props) {
@@ -125,12 +129,6 @@ export default defineComponent({
                 })
         }
 
-        const downloadEnabled = computed(() => {
-            return props.downloader.startDate.value !== null
-                && props.downloader.endDate.value !== null
-                && props.downloader.startDate.value < props.downloader.endDate.value
-        })
-
         const busyMessage = computed(() => {
             const items = props.downloader.downloadedCount.value
             return items + " " + (items > 1 ? "items" : "item")
@@ -154,7 +152,6 @@ export default defineComponent({
         })
 
         return {
-            downloadEnabled,
             busyMessage,
             successMessage,
             errorMessage,

@@ -23,7 +23,7 @@
 <!-- --------------------------------------------------------------------------------------------------------------- -->
 
 <template>
-    <DownloadDialog :controller="controller" :downloader="downloader">
+    <DownloadDialog :controller="controller" :downloader="downloader" :download-enabled="downloadEnabled">
 
         <!-- title -->
         <template v-slot:dialogTitle>
@@ -90,6 +90,7 @@ import Datepicker from '@vuepic/vue-datepicker';
 import '@vuepic/vue-datepicker/dist/main.css';
 
 export default defineComponent({
+    name: 'TransactionDownloadDialog',
     components: {Datepicker, TransactionFilterSelect, DialogTitle, DownloadDialog},
     props: {
         controller: {
@@ -113,17 +114,21 @@ export default defineComponent({
         )
         const downloader = new TransactionDownloader(accountId, startDate, endDate, transactionTypes, 1000)
 
-        const transactionTypesText = computed(() => JSON.stringify(Array.from(downloader.transactionTypes.value)))
+        const downloadEnabled = computed(() => {
+            return startDate.value !== null
+                && endDate.value !== null
+                && startDate.value < endDate.value
+        })
 
         return {
             dialogTitle,
-            transactionTypesText,
             selectedFilter,
             startDate,
             endDate,
             startTimestamp,
             endTimestamp,
             downloader,
+            downloadEnabled,
         }
     }
 
