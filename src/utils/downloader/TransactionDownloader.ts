@@ -62,12 +62,13 @@ export class TransactionDownloader extends AbstractTransactionDownloader {
 
                 nextURL = "api/v1/transactions"
                     + "?account.id=" + this.accountId.value
+                    + "&order=asc"
                     + "&timestamp=gte:" + startTimestamp
-                for (const t of this.transactionTypes.value) {
-                    nextURL += "&transactiontype=" + t
-                }
                 if (endTimestamp !== null) {
                     nextURL += "&timestamp=lt:" + endTimestamp
+                }
+                for (const t of this.transactionTypes.value) {
+                    nextURL += "&transactiontype=" + t
                 }
                 nextURL += "&limit=100"
             } else {

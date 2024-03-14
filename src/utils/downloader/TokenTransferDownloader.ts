@@ -64,6 +64,7 @@ export class TokenTransferDownloader extends AbstractTransactionDownloader {
                 nextURL = "api/v1/transactions"
                     + "?account.id=" + this.accountId.value
                     + "&transactiontype=" + TransactionType.CRYPTOTRANSFER
+                    + "&order=asc"
                     + "&timestamp=gte:" + startTimestamp
                 if (endTimestamp !== null) {
                     nextURL += "&timestamp=lt:" + endTimestamp
