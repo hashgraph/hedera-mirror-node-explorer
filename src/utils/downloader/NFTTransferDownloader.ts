@@ -42,11 +42,12 @@ export class NFTTransferDownloader extends TokenTransferDownloader {
     // TokenTransferDownloader
     //
 
-    protected filterTransactions(candidates: Transaction[]): Transaction[] {
+    protected filter(candidates: Transaction[]): Transaction[] {
         let result: Transaction[] = []
         const tokenId = this.tokenId.value
         for (const c of candidates) {
-            if ((tokenId !== null && lookupNFTTransfer(c, tokenId) !== null) || c.nft_transfers.length >= 1) {
+            const match = tokenId !== null ? lookupNFTTransfer(c, tokenId) !== null : c.nft_transfers.length >= 1
+            if (match) {
                 result.push(c)
             }
         }
@@ -58,7 +59,7 @@ export class NFTTransferDownloader extends TokenTransferDownloader {
     //
 
     protected makeCSVEncoder(dateFormat: Intl.DateTimeFormat): CSVEncoder<Transaction> {
-        return new NFTTransferEncoder(this.getEntities(), dateFormat)
+        return new NFTTransferEncoder(this.entities.value, dateFormat)
     }
 
     protected makeOutputPrefix(): string {
