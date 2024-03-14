@@ -39,8 +39,16 @@ export class NFTTransferDownloader extends TokenTransferDownloader {
     }
 
     //
-    // TokenTransferDownloader
+    // EntityDownloader
     //
+
+    protected makeCSVEncoder(dateFormat: Intl.DateTimeFormat): CSVEncoder<Transaction> {
+        return new NFTTransferEncoder(this.entities.value, dateFormat)
+    }
+
+    protected makeOutputPrefix(): string {
+        return this.accountId.value !== null ? "Hedera NFT Transfers " + this.accountId.value : ""
+    }
 
     protected filter(candidates: Transaction[]): Transaction[] {
         let result: Transaction[] = []
@@ -52,18 +60,6 @@ export class NFTTransferDownloader extends TokenTransferDownloader {
             }
         }
         return result
-    }
-
-    //
-    // EntityDownloader
-    //
-
-    protected makeCSVEncoder(dateFormat: Intl.DateTimeFormat): CSVEncoder<Transaction> {
-        return new NFTTransferEncoder(this.entities.value, dateFormat)
-    }
-
-    protected makeOutputPrefix(): string {
-        return this.accountId.value !== null ? "Hedera NFT Transfers " + this.accountId.value : ""
     }
 }
 
