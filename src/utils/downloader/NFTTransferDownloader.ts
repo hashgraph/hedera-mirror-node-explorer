@@ -20,38 +20,18 @@
 
 import {Transaction} from "@/schemas/HederaSchemas";
 import {CSVEncoder} from "@/utils/CSVEncoder";
-import {Ref} from "vue";
 import {lookupNFTTransfer} from "@/schemas/HederaUtils";
 import {TokenTransferDownloader} from "@/utils/downloader/TokenTransferDownloader";
 
 export class NFTTransferDownloader extends TokenTransferDownloader {
 
     //
-    // Public
-    //
-
-    public constructor(accountId: Ref<string|null>,
-                       startDate: Ref<Date|null>,
-                       endDate: Ref<Date|null>,
-                       tokenId: Ref<string|null>,
-                       maxTransactionCount: number) {
-        super(accountId, startDate, endDate, tokenId, maxTransactionCount)
-    }
-
-    //
     // EntityDownloader
     //
 
-    protected makeCSVEncoder(dateFormat: Intl.DateTimeFormat): CSVEncoder<Transaction> {
-        return new NFTTransferEncoder(this.entities.value, dateFormat)
-    }
-
-    protected makeOutputPrefix(): string {
-        return this.accountId.value !== null ? "Hedera NFT Transfers " + this.accountId.value : ""
-    }
-
     protected filter(candidates: Transaction[]): Transaction[] {
-        let result: Transaction[] = []
+        const result: Transaction[] = []
+
         const tokenId = this.tokenId.value
         for (const c of candidates) {
             const match = tokenId !== null ? lookupNFTTransfer(c, tokenId) !== null : c.nft_transfers.length >= 1
@@ -59,7 +39,16 @@ export class NFTTransferDownloader extends TokenTransferDownloader {
                 result.push(c)
             }
         }
+
         return result
+    }
+
+    protected makeCSVEncoder(dateFormat: Intl.DateTimeFormat): CSVEncoder<Transaction> {
+        return new NFTTransferEncoder(this.entities.value, dateFormat)
+    }
+
+    protected makeOutputPrefix(): string {
+        return this.accountId.value !== null ? "Hedera NFT Transfers " + this.accountId.value : ""
     }
 }
 

@@ -18,20 +18,15 @@
  *
  */
 
-import {compareTransferByAccount, Transaction, TransactionResponse, TransactionType} from "@/schemas/HederaSchemas";
-import axios, {AxiosResponse} from "axios";
+import {compareTransferByAccount, Transaction, TransactionType} from "@/schemas/HederaSchemas";
 import {CSVEncoder} from "@/utils/CSVEncoder";
-import {dateToTimestamp} from "@/utils/downloader/EntityDownloader";
-import {Ref, watch} from "vue";
+import {computed, Ref} from "vue";
 import {lookupTokenTransfer} from "@/schemas/HederaUtils";
 import {AbstractTransactionDownloader} from "@/utils/downloader/AbstractTransationDownloader";
 
 export class TokenTransferDownloader extends AbstractTransactionDownloader {
 
-    public readonly accountId: Ref<string|null>
     public readonly tokenId: Ref<string|null>
-
-    protected readonly wrongSetupError = new Error("this.accountId or this.startDate not set")
 
     //
     // Public
@@ -42,47 +37,19 @@ export class TokenTransferDownloader extends AbstractTransactionDownloader {
                        endDate: Ref<Date|null>,
                        tokenId: Ref<string|null>,
                        maxTransactionCount: number) {
-        super(startDate, endDate, maxTransactionCount)
-        this.accountId = accountId
+        super(accountId, computed(() => TransactionType.CRYPTOTRANSFER), startDate, endDate, maxTransactionCount)
         this.tokenId = tokenId
-        watch(this.accountId, () => {
-            this.abort().then()
-        })
     }
 
     //
     // EntityDownloader
     //
 
-    protected async loadNext(nextURL: string|null): Promise<AxiosResponse<TransactionResponse>> {
-
-        if (nextURL == null) {
-            if (this.accountId.value !== null && this.startDate.value !== null){
-                const startTimestamp = dateToTimestamp(this.startDate.value)
-                const endTimestamp = this.endDate.value !== null ? dateToTimestamp(this.endDate.value) : null
-
-                nextURL = "api/v1/transactions"
-                    + "?account.id=" + this.accountId.value
-                    + "&transactiontype=" + TransactionType.CRYPTOTRANSFER
-                    + "&order=asc"
-                    + "&timestamp=gte:" + startTimestamp
-                if (endTimestamp !== null) {
-                    nextURL += "&timestamp=lt:" + endTimestamp
-                }
-                nextURL += "&limit=100"
-            } else {
-                throw this.wrongSetupError
-            }
-        }
-
-        return axios.get<TransactionResponse>(nextURL)
-    }
-
     protected filter(transactions: Transaction[]): Transaction[] {
         const result: Transaction[] = []
 
         const tokenId = this.tokenId.value
-        for (const t of transactions ?? []) {
+        for (const t of transactions) {
             const match = tokenId !== null ? lookupTokenTransfer(t, tokenId) !== null : t.token_transfers.length >= 1
             if (match) {
                 result.push(t)

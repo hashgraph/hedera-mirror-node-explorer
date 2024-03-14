@@ -18,17 +18,13 @@
  *
  */
 
-import {compareTransferByAccount, Transaction, TransactionResponse} from "@/schemas/HederaSchemas";
-import axios, {AxiosResponse} from "axios";
+import {compareTransferByAccount, Transaction, TransactionType} from "@/schemas/HederaSchemas";
 import {CSVEncoder} from "@/utils/CSVEncoder";
-import {dateToTimestamp} from "@/utils/downloader/EntityDownloader";
 import {AbstractTransactionDownloader} from "@/utils/downloader/AbstractTransationDownloader";
-import {Ref, watch} from "vue";
+import {Ref} from "vue";
 
 export class TransactionDownloader extends AbstractTransactionDownloader {
 
-    public readonly accountId: Ref<string|null>
-    public readonly transactionTypes: Ref<Set<string>>
 
     protected readonly wrongSetupError = new Error("this.accountId or this.startDate not set")
 
@@ -39,45 +35,14 @@ export class TransactionDownloader extends AbstractTransactionDownloader {
     public constructor(accountId: Ref<string|null>,
                        startDate: Ref<Date|null>,
                        endDate: Ref<Date|null>,
-                       transactionTypes: Ref<Set<string>>,
+                       transactionType: Ref<TransactionType|null>,
                        maxTransactionCount: number) {
-        super(startDate, endDate, maxTransactionCount)
-        this.accountId = accountId
-        this.transactionTypes = transactionTypes
-        watch(this.accountId, () => {
-            this.abort().then()
-        })
+        super(accountId, transactionType,  startDate, endDate, maxTransactionCount)
     }
 
     //
     // AbstractTransactionDownloader
     //
-
-    protected async loadNext(nextURL: string|null): Promise<AxiosResponse<TransactionResponse>> {
-
-        if (nextURL == null) {
-            if (this.accountId.value !== null && this.startDate.value !== null){
-                const startTimestamp = dateToTimestamp(this.startDate.value)
-                const endTimestamp = this.endDate.value !== null ? dateToTimestamp(this.endDate.value) : null
-
-                nextURL = "api/v1/transactions"
-                    + "?account.id=" + this.accountId.value
-                    + "&order=asc"
-                    + "&timestamp=gte:" + startTimestamp
-                if (endTimestamp !== null) {
-                    nextURL += "&timestamp=lt:" + endTimestamp
-                }
-                for (const t of this.transactionTypes.value) {
-                    nextURL += "&transactiontype=" + t
-                }
-                nextURL += "&limit=100"
-            } else {
-                throw this.wrongSetupError
-            }
-        }
-
-        return axios.get<TransactionResponse>(nextURL)
-    }
 
     protected makeCSVEncoder(dateFormat: Intl.DateTimeFormat): CSVEncoder<Transaction> {
         return new TransactionEncoder(this.entities.value, dateFormat)

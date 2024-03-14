@@ -86,6 +86,7 @@ import {TransactionDownloader} from "@/utils/downloader/TransactionDownloader";
 import DownloadDialog from "@/components/download/DownloadDialog.vue";
 import DialogTitle from "@/components/dialog/DialogTitle.vue";
 import TransactionFilterSelect from "@/components/transaction/TransactionFilterSelect.vue";
+import {TransactionType} from "@/schemas/HederaSchemas";
 import Datepicker from '@vuepic/vue-datepicker';
 import '@vuepic/vue-datepicker/dist/main.css';
 
@@ -109,10 +110,8 @@ export default defineComponent({
         const endTimestamp = computed(() => endDate.value ? endDate.value.getTime()/1000 : null)
         const startDate = ref<Date|null>(new Date(new Date(endDate.value?.getTime() ?? '').setMonth(new Date(endDate.value?.getTime() ?? '').getMonth()-1)))
         const startTimestamp = computed(() => startDate.value ? startDate.value.getTime()/1000 : null)
-        const transactionTypes = computed<Set<string>>(
-            () => new Set(selectedFilter.value ? [selectedFilter.value] : [])
-        )
-        const downloader = new TransactionDownloader(accountId, startDate, endDate, transactionTypes, 1000)
+        const transactionType = computed(() => selectedFilter.value as TransactionType)
+        const downloader = new TransactionDownloader(accountId, startDate, endDate, transactionType, 1000)
 
         const downloadEnabled = computed(() => {
             return startDate.value !== null
