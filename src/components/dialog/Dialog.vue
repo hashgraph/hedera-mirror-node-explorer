@@ -135,7 +135,7 @@ export default defineComponent({
     display: grid;
     grid-template-columns: 1fr;
     grid-template-rows: 1fr;
-    justify-items: start;
+    justify-items: stretch;
 }
 .dialog-stack div {
     grid-column-start: 1;
