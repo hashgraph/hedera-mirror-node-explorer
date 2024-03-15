@@ -140,7 +140,10 @@ export default defineComponent({
         const selectedScope = ref<string>("TRANSACTION TYPE")
         const selectedFilter = ref<string>("CRYPTOTRANSFER")
         const tokenId = ref<string|null>(null)
-        const isValidTokenId = ref(false)
+        const isTokenIdRequired = computed(
+            () => selectedScope.value === 'TOKEN TRANSFERS BY ID' || selectedScope.value === 'NFT TRANSFERS BY ID'
+        )
+        const isTokenIdValid = ref(false)
         const inputFeedbackMessage = ref<string>('')
 
         const startDate = ref<Date|null>(new Date(new Date().setHours(0, 0, 0, 0)))
@@ -164,11 +167,12 @@ export default defineComponent({
             return startDate.value !== null
                 && endDate.value !== null
                 && startDate.value < endDate.value
+                && (!isTokenIdRequired.value || isTokenIdValid.value)
         })
 
         let validationTimerId = -1
         watch(tokenId, () => {
-            isValidTokenId.value = false
+            isTokenIdValid.value = false
             inputFeedbackMessage.value = ''
 
             if (validationTimerId != -1) {
@@ -184,7 +188,7 @@ export default defineComponent({
 
         const validate = async () => {
             let entity = EntityID.normalize(tokenId.value ?? '')
-            return entity != null && await TokenInfoCache.instance.lookup(entity) != null
+            isTokenIdValid.value = entity != null && await TokenInfoCache.instance.lookup(entity) != null
         }
 
         const handleInput = (event: Event) => {
@@ -197,7 +201,7 @@ export default defineComponent({
             selectedScope,
             selectedFilter,
             tokenId,
-            isValidTokenId,
+            isTokenIdValid,
             inputFeedbackMessage,
             startDate,
             endDate,
