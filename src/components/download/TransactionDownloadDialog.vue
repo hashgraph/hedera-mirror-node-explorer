@@ -137,7 +137,7 @@ export default defineComponent({
             'NFT TRANSFERS BY ID',
             'TRANSACTION TYPE'
         ]
-        const selectedScope = ref<string>("TRANSACTION TYPE")
+        const selectedScope = ref<string>("HBAR TRANSFERS")
         const selectedFilter = ref<string>("CRYPTOTRANSFER")
         const tokenId = ref<string|null>(null)
         const isTokenIdRequired = computed(
@@ -192,7 +192,37 @@ export default defineComponent({
         }
 
         const handleInput = (event: Event) => {
-            tokenId.value = (event.target as HTMLInputElement).value
+            const input = (event.target as HTMLInputElement).value
+            const previousValue = tokenId.value
+            let isValidInput = true
+            let pastDigits = 0
+            let pastDots = 0
+
+            for (const c of input) {
+                if ((c >= '0' && c <= '9') || c === '.') {
+                    if (c === '.') {
+                        if (++pastDots > 2 || !pastDigits) {
+                            isValidInput = false
+                            break
+                        } else {
+                            pastDigits = 0
+                        }
+                    } else if (++pastDigits > 10) {
+                        isValidInput = false
+                        break
+                    }
+                } else {
+                    isValidInput = false
+                    break
+                }
+            }
+
+            if (isValidInput) {
+                tokenId.value = input
+            } else {
+                tokenId.value = ""
+                tokenId.value = previousValue
+            }
         }
 
         return {
@@ -221,7 +251,7 @@ export default defineComponent({
 
 <style>
 .dp__theme_dark {
-    --dp-background-color: var(--h-theme-box-background-color);
+    --dp-background-color: var(--h-theme-page-background-color);
     --dp-primary-color: #575757;
     --dp-border-color: white;
     --dp-border-color-hover: white;
