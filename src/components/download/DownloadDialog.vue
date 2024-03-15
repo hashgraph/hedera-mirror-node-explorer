@@ -81,6 +81,7 @@ import {DialogController, DialogMode} from "@/components/dialog/DialogController
 import {DownloaderState, EntityDownloader} from "@/utils/downloader/EntityDownloader";
 
 export default defineComponent({
+    name: "DownloadDialog",
     components: {DialogTitle, DialogButton, CommitButton, Dialog},
     props: {
         controller: {
