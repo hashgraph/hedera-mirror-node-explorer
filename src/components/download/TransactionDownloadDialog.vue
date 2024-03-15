@@ -49,11 +49,13 @@
                     </o-field>
                 </div>
                 <div v-if="selectedScope==='TOKEN TRANSFERS BY ID' || selectedScope==='NFT TRANSFERS BY ID'" class="column is-two-fifths">
-                    <input class="input is-small has-text-right has-text-white" type="text" placeholder="ENTER TOKEN ID"
+                    <input class="input is-small has-text-left has-text-white" type="text" placeholder="ENTER TOKEN ID"
                            :class="{'has-text-grey': !tokenId}"
                            :value="tokenId"
                            @input="handleInput"
                            style="min-width: 13rem; max-width: 13rem; height:26px; margin-top: 1px; border-radius: 4px; border-width: 1px; background-color: var(--h-theme-box-background-color)">
+                    <span v-if="topicIdFeedback=='valid'" class="icon is-small has-text-success ml-2"><i class="fas fa-check"></i></span>
+                    <span v-else-if="topicIdFeedback=='invalid'" class="icon is-small has-text-danger ml-2"><i class="fas fa-times"></i></span>
                 </div>
                 <div v-else-if="selectedScope==='TRANSACTION TYPE'" class="column is-two-fifths">
                     <TransactionFilterSelect v-model:selected-filter="selectedFilter"/>
@@ -144,7 +146,7 @@ export default defineComponent({
             () => selectedScope.value === 'TOKEN TRANSFERS BY ID' || selectedScope.value === 'NFT TRANSFERS BY ID'
         )
         const isTokenIdValid = ref(false)
-        const inputFeedbackMessage = ref<string>('')
+        const topicIdFeedback = ref<string>('')
 
         const startDate = ref<Date|null>(new Date(new Date().setHours(0, 0, 0, 0)))
         const endDate = ref<Date|null>(new Date(new Date().setHours(24, 0, 0, 0)))
@@ -173,7 +175,7 @@ export default defineComponent({
         let validationTimerId = -1
         watch(tokenId, () => {
             isTokenIdValid.value = false
-            inputFeedbackMessage.value = ''
+            topicIdFeedback.value = ''
 
             if (validationTimerId != -1) {
                 window.clearTimeout(validationTimerId)
@@ -189,6 +191,7 @@ export default defineComponent({
         const validate = async () => {
             let entity = EntityID.normalize(tokenId.value ?? '')
             isTokenIdValid.value = entity != null && await TokenInfoCache.instance.lookup(entity) != null
+            topicIdFeedback.value = isTokenIdValid.value ? 'valid' : 'invalid'
         }
 
         const handleInput = (event: Event) => {
@@ -232,7 +235,7 @@ export default defineComponent({
             selectedFilter,
             tokenId,
             isTokenIdValid,
-            inputFeedbackMessage,
+            topicIdFeedback,
             startDate,
             endDate,
             downloader,
@@ -251,7 +254,7 @@ export default defineComponent({
 
 <style>
 .dp__theme_dark {
-    --dp-background-color: var(--h-theme-page-background-color);
+    --dp-background-color: var(--h-theme-box-background-color);
     --dp-primary-color: #575757;
     --dp-border-color: white;
     --dp-border-color-hover: white;
