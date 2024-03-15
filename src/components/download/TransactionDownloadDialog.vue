@@ -33,18 +33,37 @@
         <!-- input -->
         <template v-slot:dialogInput>
             <div class="columns">
-                <p class="column has-text-weight-light">
-                    Select transaction type:
+                <p class="column is-one-fifth has-text-weight-light">
+                    Select scope:
                 </p>
-                <div class="column">
+                <div class="column is-two-fifths">
+                    <o-field>
+                        <o-select
+                            v-model="selectedScope"
+                            class="h-is-text-size-1"
+                        >
+                            <option v-for="s in scopes" v-bind:key="s" v-bind:value="s">
+                                {{ s }}
+                            </option>
+                        </o-select>
+                    </o-field>
+                </div>
+                <div v-if="selectedScope==='TOKEN TRANSFERS BY ID' || selectedScope==='NFT TRANSFERS BY ID'" class="column is-two-fifths">
+                    <input class="input is-small has-text-right has-text-white" type="text" placeholder="ENTER TOKEN ID"
+                           :class="{'has-text-grey': !tokenId}"
+                           :value="tokenId"
+                           @input="handleInput"
+                           style="min-width: 13rem; max-width: 13rem; height:26px; margin-top: 1px; border-radius: 4px; border-width: 1px; background-color: var(--h-theme-box-background-color)">
+                </div>
+                <div v-else-if="selectedScope==='TRANSACTION TYPE'" class="column is-two-fifths">
                     <TransactionFilterSelect v-model:selected-filter="selectedFilter"/>
                 </div>
             </div>
             <div class="columns">
-                <p class="column has-text-weight-light">
-                    Select start date:
+                <p class="column is-one-fifth has-text-weight-light">
+                    Start date:
                 </p>
-                <div class="column">
+                <div class="column is-two-fifths">
                     <Datepicker
                         v-model="startDate"
                         placeholder="SELECT A DATE"
@@ -54,11 +73,11 @@
                         @closed="" @cleared=""/>
                 </div>
             </div>
-            <div class="columns ">
-                <p class="column has-text-weight-light">
-                    Select end date:
+            <div class="columns">
+                <p class="column is-one-fifth has-text-weight-light">
+                    End date:
                 </p>
-                <div class="column">
+                <div class="column is-two-fifths ">
                     <Datepicker
                         v-model="endDate"
                         placeholder="SELECT A DATE"
@@ -80,7 +99,7 @@
 
 <script lang="ts">
 
-import {computed, defineComponent, PropType, ref} from "vue";
+import {computed, defineComponent, PropType, ref, watch} from "vue";
 import {DialogController} from "@/components/dialog/DialogController";
 import {TransactionDownloader} from "@/utils/downloader/TransactionDownloader";
 import DownloadDialog from "@/components/download/DownloadDialog.vue";
@@ -89,6 +108,11 @@ import TransactionFilterSelect from "@/components/transaction/TransactionFilterS
 import {TransactionType} from "@/schemas/HederaSchemas";
 import Datepicker from '@vuepic/vue-datepicker';
 import '@vuepic/vue-datepicker/dist/main.css';
+import {TokenTransferDownloader} from "@/utils/downloader/TokenTransferDownloader";
+import {EntityID} from "@/utils/EntityID";
+import {TokenInfoCache} from "@/utils/cache/TokenInfoCache";
+import {NFTTransferDownloader} from "@/utils/downloader/NFTTransferDownloader";
+import {HbarTransferDownloader} from "@/utils/downloader/HBarTransferDownloader";
 
 export default defineComponent({
     name: 'TransactionDownloadDialog',
@@ -105,13 +129,36 @@ export default defineComponent({
         const dialogTitle = computed(() => "Download transactions from " + props.accountId)
 
         const accountId = computed(() => props.accountId ?? null)
+        const scopes = [
+            'HBAR TRANSFERS',
+            'TOKEN TRANSFERS',
+            'TOKEN TRANSFERS BY ID',
+            'NFT TRANSFERS',
+            'NFT TRANSFERS BY ID',
+            'TRANSACTION TYPE'
+        ]
+        const selectedScope = ref<string>("TRANSACTION TYPE")
         const selectedFilter = ref<string>("CRYPTOTRANSFER")
-        const endDate = ref<Date|null>(new Date(new Date().setHours(0, 0, 0, 0)))
-        const endTimestamp = computed(() => endDate.value ? endDate.value.getTime()/1000 : null)
-        const startDate = ref<Date|null>(new Date(new Date(endDate.value?.getTime() ?? '').setMonth(new Date(endDate.value?.getTime() ?? '').getMonth()-1)))
-        const startTimestamp = computed(() => startDate.value ? startDate.value.getTime()/1000 : null)
+        const tokenId = ref<string|null>(null)
+        const isValidTokenId = ref(false)
+        const inputFeedbackMessage = ref<string>('')
+
+        const startDate = ref<Date|null>(new Date(new Date().setHours(0, 0, 0, 0)))
+        const endDate = ref<Date|null>(new Date(new Date().setHours(24, 0, 0, 0)))
         const transactionType = computed(() => selectedFilter.value as TransactionType)
-        const downloader = new TransactionDownloader(accountId, startDate, endDate, transactionType, 1000)
+        const downloader = computed(() => {
+            let result
+            if (selectedScope.value === 'TOKEN TRANSFERS' || selectedScope.value === 'TOKEN TRANSFERS BY ID') {
+                result = new TokenTransferDownloader(accountId, startDate, endDate, tokenId, 1000)
+            } else if (selectedScope.value === 'NFT TRANSFERS' || selectedScope.value === 'NFT TRANSFERS BY ID') {
+                result = new NFTTransferDownloader(accountId, startDate, endDate, tokenId, 1000)
+            } else if (selectedScope.value === 'HBAR TRANSFERS') {
+                result = new HbarTransferDownloader(accountId, startDate, endDate, 1000)
+            } else {
+                result = new TransactionDownloader(accountId, startDate, endDate, transactionType, 1000)
+            }
+            return result
+        })
 
         const downloadEnabled = computed(() => {
             return startDate.value !== null
@@ -119,15 +166,44 @@ export default defineComponent({
                 && startDate.value < endDate.value
         })
 
+        let validationTimerId = -1
+        watch(tokenId, () => {
+            isValidTokenId.value = false
+            inputFeedbackMessage.value = ''
+
+            if (validationTimerId != -1) {
+                window.clearTimeout(validationTimerId)
+                validationTimerId = -1
+            }
+            if (tokenId.value?.length) {
+                validationTimerId = window.setTimeout(() => validate(), 500)
+            } else {
+                tokenId.value = null
+            }
+        })
+
+        const validate = async () => {
+            let entity = EntityID.normalize(tokenId.value ?? '')
+            return entity != null && await TokenInfoCache.instance.lookup(entity) != null
+        }
+
+        const handleInput = (event: Event) => {
+            tokenId.value = (event.target as HTMLInputElement).value
+        }
+
         return {
             dialogTitle,
+            scopes,
+            selectedScope,
             selectedFilter,
+            tokenId,
+            isValidTokenId,
+            inputFeedbackMessage,
             startDate,
             endDate,
-            startTimestamp,
-            endTimestamp,
             downloader,
             downloadEnabled,
+            handleInput
         }
     }
 
