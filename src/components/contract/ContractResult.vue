@@ -84,7 +84,7 @@
             <PlainAmount :amount="contractResult?.gas_used" none-label="None"/>
           </template>
         </Property>
-        <Property id="gasUsed">
+        <Property id="gasConsumed">
           <template v-slot:name>Gas Consumed</template>
           <template v-slot:value>
             <PlainAmount :amount="contractResult?.gas_consumed" none-label="None"/>
