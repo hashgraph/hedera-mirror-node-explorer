@@ -84,6 +84,12 @@
             <PlainAmount :amount="contractResult?.gas_used" none-label="None"/>
           </template>
         </Property>
+        <Property id="gasConsumed">
+          <template v-slot:name>Gas Consumed</template>
+          <template v-slot:value>
+            <PlainAmount :amount="contractResult?.gas_consumed" none-label="None"/>
+          </template>
+        </Property>
         <Property id="maxFeePerGas">
           <template v-slot:name>Max Fee Per Gas</template>
           <template v-slot:value>
