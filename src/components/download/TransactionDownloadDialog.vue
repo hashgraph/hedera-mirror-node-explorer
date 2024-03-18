@@ -192,7 +192,9 @@ export default defineComponent({
                 && (startDate.value == null || startDate.value < endDate.value)
         )
 
-        const transactionType = computed(() => selectedFilter.value as TransactionType)
+        const transactionType = computed(
+            () => selectedFilter.value !== '' ? selectedFilter.value as TransactionType : null
+        )
         const downloader = computed<AbstractTransactionDownloader>(() => {
             let result: AbstractTransactionDownloader
             if (selectedScope.value === 'TOKEN TRANSFERS' || selectedScope.value === 'TOKEN TRANSFERS BY ID') {
