@@ -45,8 +45,6 @@
 
     </DashboardCard>
 
-    <MirrorLink :network="network" entityUrl="transactions" :loc="topicId"/>
-
   </section>
 
   <Footer/>
