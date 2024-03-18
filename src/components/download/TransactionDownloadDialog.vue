@@ -158,17 +158,33 @@ export default defineComponent({
         const lastMidnight = new Date(new Date().setHours(0, 0, 0, 0))
         const nextMidnight = new Date(new Date().setHours(24, 0, 0, 0))
 
-        const selectedStartDate = ref<Date|null>(lastMidnight)
-        const startDate = computed(
-            () => selectedStartDate.value ? new Date(selectedStartDate.value?.setHours(0,0,0,0)) : null
+        const selectedStartDate = ref<Date|null>(new Date())
+        const startDate = computed<Date|null>(() => {
+                let result
+                if (selectedStartDate.value != null) {
+                    result = new Date(selectedStartDate.value)
+                    result.setHours(0, 0, 0, 0)
+                } else {
+                    result = null
+                }
+                return result
+            }
         )
         const isStartDateValid = computed(
             () => startDate.value !== null && startDate.value <= lastMidnight
         )
 
-        const selectedEndDate = ref<Date|null>(nextMidnight)
-        const endDate = computed(
-            () => selectedEndDate.value ? new Date(selectedEndDate.value?.setHours(0,0,0,0)) : null
+        const selectedEndDate = ref<Date|null>(new Date())
+        const endDate = computed<Date|null>(() => {
+                let result
+                if (selectedEndDate.value != null) {
+                    result = new Date(selectedEndDate.value)
+                    result.setHours(24, 0, 0, 0)
+                } else {
+                    result = null
+                }
+                return result
+            }
         )
         const isEndDateValid = computed(
             () => endDate.value !== null
