@@ -44,7 +44,13 @@ export class HbarTransferDownloader extends AbstractTransactionDownloader {
         const result: Transaction[] = []
 
         for (const t of transactions) {
-            const match = t.token_transfers.length == 0 && t.nft_transfers.length
+            let totalAmount = 0
+            for (const transfer of t.transfers) {
+                if (transfer.amount > 0) {
+                    totalAmount += transfer.amount
+                }
+            }
+            const match = totalAmount > t.charged_tx_fee
             if (match) {
                 result.push(t)
             }
