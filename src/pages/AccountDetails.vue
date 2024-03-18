@@ -219,8 +219,15 @@
       </template>
       <template v-slot:control>
           <div v-if="selectedTab === 'transactions'" class="is-flex is-align-items-flex-end">
-              <PlayPauseButton :controller="transactionTableController"/>
-              <TransactionFilterSelect :controller="transactionTableController"/>
+            <PlayPauseButton v-if="timeSelection == 'LATEST'" :controller="transactionTableController"/>
+            <DateTimePicker v-else :controller="transactionTableController" @dateCleared="onDateCleared"/>
+            <o-field style="margin-bottom: 0">
+              <o-select v-model="timeSelection" class="ml-2 h-is-text-size-1">
+                <option value="LATEST">LATEST</option>
+                <option value="JUMP">JUMP TO DATE</option>
+              </o-select>
+            </o-field>
+            <TransactionFilterSelect :controller="transactionTableController"/>
           </div>
           <div v-else-if="selectedTab === 'contracts'" class="is-flex is-justify-content-end is-align-items-center">
               <PlayPauseButton v-if="!filterVerified" :controller="contractCreateTableController"/>
@@ -275,7 +282,7 @@
 
 <script lang="ts">
 
-import {computed, defineComponent, inject, onBeforeUnmount, onMounted, ref} from 'vue';
+import {computed, defineComponent, inject, onBeforeUnmount, onMounted, ref, watch} from 'vue';
 import KeyValue from "@/components/values/KeyValue.vue";
 import PlayPauseButton from "@/components/PlayPauseButton.vue";
 import TransactionTable from "@/components/transaction/TransactionTable.vue";
@@ -316,6 +323,7 @@ import Tabs from "@/components/Tabs.vue";
 import AccountCreatedContractsTable from "@/components/account/AccountCreatedContractsTable.vue";
 import {VerifiedContractsByAccountIdCache} from "@/utils/cache/VerifiedContractsByAccountIdCache";
 import {VerifiedContractsController} from "@/components/contract/VerifiedContractsController";
+import DateTimePicker from "@/components/DateTimePicker.vue";
 
 export default defineComponent({
 
@@ -326,6 +334,7 @@ export default defineComponent({
     VerifiedContractsTable,
     EmptyTable,
     Tabs,
+    DateTimePicker,
     MirrorLink,
     InlineBalancesValue,
     Copyable,
@@ -361,6 +370,22 @@ export default defineComponent({
     const isSmallScreen = inject('isSmallScreen', true)
     const isMediumScreen = inject('isMediumScreen', true)
     const isTouchDevice = inject('isTouchDevice', false)
+
+    const timeSelection = ref("LATEST")
+    watch(timeSelection, (newValue, oldValue) => {
+        if (newValue !== oldValue) {
+            if (timeSelection.value == "LATEST") {
+                transactionTableController.startAutoRefresh() // (1)
+            } else {
+                transactionTableController.stopAutoRefresh()
+            }
+        }
+    })
+
+    function onDateCleared() {
+      timeSelection.value = "LATEST"
+      // (1) will restart auto-refresh
+    }
 
     //
     // account
@@ -482,6 +507,8 @@ export default defineComponent({
       tabLabels,
       handleTabUpdate,
       filterVerified,
+      timeSelection,
+      onDateCleared
     }
   }
 });
