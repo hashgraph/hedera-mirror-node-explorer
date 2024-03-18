@@ -65,14 +65,17 @@
                 <p class="column is-one-fifth has-text-weight-light">
                     Start date:
                 </p>
-                <div class="column is-two-fifths">
+                <div class="column is-two-fifths is-flex is-align-items-center">
                     <Datepicker
-                        v-model="startDate"
+                        v-model="selectedStartDate"
                         placeholder="SELECT A DATE"
                         :is-24="false"
                         :enable-time-picker="false" dark
                         :teleport="true"
                         @closed="" @cleared=""/>
+                </div>
+                <div v-if="!isStartDateValid" class="column icon is-small has-text-danger">
+                    <i class="fas fa-times"></i>
                 </div>
             </div>
             <div class="columns">
@@ -81,12 +84,15 @@
                 </p>
                 <div class="column is-two-fifths ">
                     <Datepicker
-                        v-model="endDate"
+                        v-model="selectedEndDate"
                         placeholder="SELECT A DATE"
                         :is-24="false"
                         :enable-time-picker="false" dark
                         :teleport="true"
                         @closed="" @cleared=""/>
+                </div>
+                <div v-if="!isEndDateValid" class="column icon is-small has-text-danger">
+                    <i class="fas fa-times"></i>
                 </div>
             </div>
         </template>
@@ -115,6 +121,7 @@ import {EntityID} from "@/utils/EntityID";
 import {TokenInfoCache} from "@/utils/cache/TokenInfoCache";
 import {NFTTransferDownloader} from "@/utils/downloader/NFTTransferDownloader";
 import {HbarTransferDownloader} from "@/utils/downloader/HBarTransferDownloader";
+import {AbstractTransactionDownloader} from "@/utils/downloader/AbstractTransationDownloader";
 
 export default defineComponent({
     name: 'TransactionDownloadDialog',
@@ -148,11 +155,30 @@ export default defineComponent({
         const isTokenIdValid = ref(false)
         const topicIdFeedback = ref<string>('')
 
-        const startDate = ref<Date|null>(new Date(new Date().setHours(0, 0, 0, 0)))
-        const endDate = ref<Date|null>(new Date(new Date().setHours(24, 0, 0, 0)))
+        const lastMidnight = new Date(new Date().setHours(0, 0, 0, 0))
+        const nextMidnight = new Date(new Date().setHours(24, 0, 0, 0))
+
+        const selectedStartDate = ref<Date|null>(lastMidnight)
+        const startDate = computed(
+            () => selectedStartDate.value ? new Date(selectedStartDate.value?.setHours(0,0,0,0)) : null
+        )
+        const isStartDateValid = computed(
+            () => startDate.value !== null && startDate.value <= lastMidnight
+        )
+
+        const selectedEndDate = ref<Date|null>(nextMidnight)
+        const endDate = computed(
+            () => selectedEndDate.value ? new Date(selectedEndDate.value?.setHours(0,0,0,0)) : null
+        )
+        const isEndDateValid = computed(
+            () => endDate.value !== null
+                && endDate.value <= nextMidnight
+                && (startDate.value == null || startDate.value < endDate.value)
+        )
+
         const transactionType = computed(() => selectedFilter.value as TransactionType)
-        const downloader = computed(() => {
-            let result
+        const downloader = computed<AbstractTransactionDownloader>(() => {
+            let result: AbstractTransactionDownloader
             if (selectedScope.value === 'TOKEN TRANSFERS' || selectedScope.value === 'TOKEN TRANSFERS BY ID') {
                 result = new TokenTransferDownloader(accountId, startDate, endDate, tokenId, 1000)
             } else if (selectedScope.value === 'NFT TRANSFERS' || selectedScope.value === 'NFT TRANSFERS BY ID') {
@@ -166,9 +192,8 @@ export default defineComponent({
         })
 
         const downloadEnabled = computed(() => {
-            return startDate.value !== null
-                && endDate.value !== null
-                && startDate.value < endDate.value
+            return isStartDateValid.value
+                && isEndDateValid.value
                 && (!isTokenIdRequired.value || isTokenIdValid.value)
         })
 
@@ -236,8 +261,10 @@ export default defineComponent({
             tokenId,
             isTokenIdValid,
             topicIdFeedback,
-            startDate,
-            endDate,
+            selectedStartDate,
+            selectedEndDate,
+            isStartDateValid,
+            isEndDateValid,
             downloader,
             downloadEnabled,
             handleInput
