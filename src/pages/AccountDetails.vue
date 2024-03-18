@@ -223,8 +223,8 @@
             <DateTimePicker v-else :controller="transactionTableController" @dateCleared="onDateCleared"/>
             <o-field style="margin-bottom: 0">
               <o-select v-model="timeSelection" class="ml-2 h-is-text-size-1">
-                <option value="LATEST" @click="onLatest">LATEST</option>
-                <option value="JUMP" @click="onJump">JUMP TO DATE</option>
+                <option value="LATEST">LATEST</option>
+                <option value="JUMP">JUMP TO DATE</option>
               </o-select>
             </o-field>
             <TransactionFilterSelect :controller="transactionTableController"/>
@@ -282,7 +282,7 @@
 
 <script lang="ts">
 
-import {computed, defineComponent, inject, onBeforeUnmount, onMounted, ref} from 'vue';
+import {computed, defineComponent, inject, onBeforeUnmount, onMounted, ref, watch} from 'vue';
 import KeyValue from "@/components/values/KeyValue.vue";
 import PlayPauseButton from "@/components/PlayPauseButton.vue";
 import TransactionTable from "@/components/transaction/TransactionTable.vue";
@@ -358,7 +358,7 @@ export default defineComponent({
     KeyValue,
     DurationValue,
     StringValue,
-    StakingRewardsTable,
+    StakingRewardsTable
   },
 
   props: {
@@ -372,18 +372,19 @@ export default defineComponent({
     const isTouchDevice = inject('isTouchDevice', false)
 
     const timeSelection = ref("LATEST")
-
-    function onLatest() {
-      transactionTableController.startAutoRefresh()
-    }
-
-    function onJump() {
-      transactionTableController.stopAutoRefresh()
-    }
+    watch(timeSelection, (newValue, oldValue) => {
+        if (newValue !== oldValue) {
+            if (timeSelection.value == "LATEST") {
+                transactionTableController.startAutoRefresh() // (1)
+            } else {
+                transactionTableController.stopAutoRefresh()
+            }
+        }
+    })
 
     function onDateCleared() {
       timeSelection.value = "LATEST"
-      onLatest()
+      // (1) will restart auto-refresh
     }
 
     //
@@ -507,8 +508,6 @@ export default defineComponent({
       handleTabUpdate,
       filterVerified,
       timeSelection,
-      onLatest,
-      onJump,
       onDateCleared
     }
   }
