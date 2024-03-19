@@ -24,6 +24,7 @@
 
 import {EntityID} from "@/utils/EntityID";
 import {makeDefaultNodeDescription} from "@/schemas/HederaUtils";
+import {BalanceCache} from "@/utils/cache/BalanceCache";
 
 export interface AccountsResponse {
     accounts: AccountInfo[] | undefined
@@ -105,6 +106,22 @@ export interface TokenAllowancesResponse {
 
 export interface TokenAllowance extends CryptoAllowance {
     token_id: string | null,    // Network entity ID in the format of shard.realm.num
+}
+
+export async function isTokenAllowanceEditable(allowance: TokenAllowance): Promise<boolean> {
+    let result = false
+    if (allowance.owner != null) {
+        const r = await BalanceCache.instance.lookup(allowance.owner, true)
+        if (r && r.balances && r.balances.length >= 1) {
+            for (const balance of r.balances[0].tokens) {
+                if (balance.token_id === allowance.token_id) {
+                    result = true
+                    break
+                }
+            }
+        }
+    }
+    return result
 }
 
 // ---------------------------------------------------------------------------------------------------------------------
