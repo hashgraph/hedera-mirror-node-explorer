@@ -52,10 +52,8 @@
                 <template v-slot:name>Verification Status</template>
                 <template v-slot:value>
                     <div class="is-flex is-align-items-center">
-                        <span>
-                            {{ isFullMatch ? "Full Match" : "Partial Match" }}
-                            <InfoTooltip :label="tooltipText"/>
-                        </span>
+                        <p class="mr-2">{{ isFullMatch ? "Full Match" : "Partial Match" }}</p>
+                        <InfoTooltip :label="tooltipText"/>
                         <button v-if="!isFullMatch" id="verify-button"
                                 class="button is-white h-is-smaller ml-3"
                                 @click="showVerifyDialog = true">

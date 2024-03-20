@@ -28,6 +28,8 @@
     <div class="column is-flex is-justify-content-space-between">
       <div class="has-text-weight-light" :id="nameId">
         <slot name="name"/>
+        <span v-if="tooltip" class="ml-2"/>
+        <InfoTooltip v-if="tooltip" :label="tooltip"/>
       </div>
       <div :id="valueId" class="ml-4 has-text-right">
         <slot name="value"/>
@@ -38,6 +40,8 @@
   <div v-else class="columns" :id="id" style="margin-bottom: -0.75rem;">
     <div :class="nbColClass" class="column has-text-weight-light" :id="nameId">
       <slot name="name"/>
+      <span v-if="tooltip" class="ml-2"/>
+      <InfoTooltip v-if="tooltip" :label="tooltip"/>
     </div>
     <div class="column has-text-left" :id="valueId">
       <slot name="value"/>
@@ -53,9 +57,11 @@
 <script lang="ts">
 
 import {computed, defineComponent, inject} from "vue";
+import InfoTooltip from "@/components/InfoTooltip.vue";
 
 export default defineComponent({
   name: "Property",
+  components: {InfoTooltip},
   props: {
     id: String,
     fullWidth: {
@@ -66,7 +72,8 @@ export default defineComponent({
       type: Boolean,
       default: false
     },
-    customNbColClass: String
+    customNbColClass: String,
+    tooltip: String
   },
   setup(props){
     const nameId = props.id + 'Name'

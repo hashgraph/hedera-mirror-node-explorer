@@ -156,19 +156,17 @@
           </template>
         </Property>
 
-        <Property id="expiresAt">
+        <Property id="expiresAt" tooltip="Account expiry is not turned on yet. Value in this field is not relevant.">
           <template v-slot:name>
             <span>Expires at</span>
-            <InfoTooltip label="Account expiry is not turned on yet. Value in this field is not relevant."/>
           </template>
           <template v-slot:value>
             <TimestampValue v-bind:show-none="true" v-bind:timestamp="account?.expiry_timestamp"/>
           </template>
         </Property>
-        <Property id="autoRenewPeriod">
+        <Property id="autoRenewPeriod" tooltip="Account auto-renew is not turned on yet. Value in this field is not relevant.">
           <template v-slot:name>
             <span>Auto Renew Period</span>
-            <InfoTooltip label="Account auto-renew is not turned on yet. Value in this field is not relevant."/>
           </template>
           <template v-slot:value>
             <DurationValue v-bind:number-value="account?.auto_renew_period ?? undefined"/>
@@ -310,7 +308,6 @@ import AliasValue from "@/components/values/AliasValue.vue";
 import {NodeAnalyzer} from "@/utils/analyzer/NodeAnalyzer";
 import EVMAddress from "@/components/values/EVMAddress.vue";
 import ApproveAllowanceSection from "@/components/allowances/ApproveAllowanceSection.vue";
-import InfoTooltip from "@/components/InfoTooltip.vue";
 import Copyable from "@/components/Copyable.vue";
 import InlineBalancesValue from "@/components/values/InlineBalancesValue.vue";
 import MirrorLink from "@/components/MirrorLink.vue";
@@ -338,7 +335,6 @@ export default defineComponent({
     MirrorLink,
     InlineBalancesValue,
     Copyable,
-    InfoTooltip,
     ApproveAllowanceSection,
     EVMAddress,
     AliasValue,

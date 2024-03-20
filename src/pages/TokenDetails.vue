@@ -88,28 +88,25 @@
             <BlobValue :blob-value="tokenInfo?.memo" :show-none="true"/>
           </template>
         </Property>
-        <Property id="expiresAt">
+        <Property id="expiresAt" tooltip="Token expiry is not turned on yet. Value in this field is not relevant.">
           <template v-slot:name>
             <span>Expires at</span>
-            <InfoTooltip label="Token expiry is not turned on yet. Value in this field is not relevant."/>
           </template>
           <template v-slot:value>
             <TimestampValue :nano="true" :show-none="true" :timestamp="tokenInfo?.expiry_timestamp?.toString()"/>
           </template>
         </Property>
-        <Property id="autoRenewPeriod">
+        <Property id="autoRenewPeriod" tooltip="Token auto-renew is not turned on yet. Value in this field is not relevant.">
           <template v-slot:name>
             <span>Auto Renew Period</span>
-            <InfoTooltip label="Token auto-renew is not turned on yet. Value in this field is not relevant."/>
           </template>
           <template v-slot:value>
             <DurationValue v-bind:number-value="tokenInfo?.auto_renew_period ?? undefined"/>
           </template>
         </Property>
-        <Property id="autoRenewAccount">
+        <Property id="autoRenewAccount" tooltip="Token auto-renew is not turned on yet. Value in this field is not relevant.">
           <template v-slot:name>
             <span>Auto Renew Account</span>
-            <InfoTooltip label="Token auto-renew is not turned on yet. Value in this field is not relevant."/>
           </template>
           <template v-slot:value>
             <AccountLink :account-id="tokenInfo?.auto_renew_account" :show-none="true"/>
@@ -328,7 +325,6 @@ import {makeTokenSymbol} from "@/schemas/HederaUtils";
 import {TokenInfoCache} from "@/utils/cache/TokenInfoCache";
 import {TokenInfoAnalyzer} from "@/components/token/TokenInfoAnalyzer";
 import ContractResultsSection from "@/components/contracts/ContractResultsSection.vue";
-import InfoTooltip from "@/components/InfoTooltip.vue";
 import Copyable from "@/components/Copyable.vue";
 import MirrorLink from "@/components/MirrorLink.vue";
 
@@ -339,7 +335,6 @@ export default defineComponent({
   components: {
     MirrorLink,
     Copyable,
-    InfoTooltip,
     ContractResultsSection,
     EVMAddress,
     TokenCustomFees,

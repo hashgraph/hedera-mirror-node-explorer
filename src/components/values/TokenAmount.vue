@@ -28,7 +28,7 @@
   <span v-if="showExtra && tokenId != null">
     <TokenExtra v-bind:token-id="tokenId" v-bind:use-anchor="useAnchor"/>
   </span>
-  <InfoTooltip v-if="decimalOverflow"
+  <InfoTooltip v-if="decimalOverflow" class="ml-2"
                :label="`This token amount cannot be displayed because the number of decimals (${decimalCount}) of the token is too large`"/>
 </template>
 
