@@ -117,14 +117,17 @@ export default defineComponent({
     const isMediumScreen = inject('isMediumScreen', true)
 
     const isWalletConnected = computed(
-        () => walletManager.connected.value && walletManager.accountId.value === props.controller.accountId.value)
+        () => walletManager.isHederaWallet.value
+            && walletManager.connected.value
+            && walletManager.accountId.value === props.controller.accountId.value
+    )
     // const isWalletConnected = computed(() => false)
 
     const allowances = computed<DisplayedTokenAllowance[]>(() => {
         const result = []
         for (const a of props.controller.rows.value) {
             let allowance: DisplayedTokenAllowance = a as DisplayedTokenAllowance
-            isTokenAllowanceEditable(a).then((result) => allowance.isEditable = result)
+            isTokenAllowanceEditable(a).then((r) => allowance.isEditable = r)
             result.push(allowance)
         }
         return result
