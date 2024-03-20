@@ -63,7 +63,10 @@
     </o-table-column>
 
     <o-table-column v-if="isWalletConnected" v-slot="props">
-      <i class="fa fa-pen" @click="$emit('editAllowance', props.row)"></i>
+        <span v-if="props.row.isEditable" class="icon is-small">
+            <i  class="fa fa-pen" @click="$emit('editAllowance', props.row)"></i>
+        </span>
+        <InfoTooltip v-else label="The allowance cannot be modified because the token is no longer associated with this account."/>
     </o-table-column>
 
   </o-table>
@@ -79,7 +82,7 @@
 <script lang="ts">
 
 import {computed, ComputedRef, defineComponent, inject, PropType, Ref} from 'vue';
-import {TokenAllowance} from "@/schemas/HederaSchemas";
+import {isTokenAllowanceEditable, TokenAllowance} from "@/schemas/HederaSchemas";
 import {ORUGA_MOBILE_BREAKPOINT} from '@/App.vue';
 import TimestampValue from "@/components/values/TimestampValue.vue";
 import EmptyTable from "@/components/EmptyTable.vue";
@@ -88,11 +91,16 @@ import {TokenAllowanceTableController} from "@/components/allowances/TokenAllowa
 import TokenAmount from "@/components/values/TokenAmount.vue";
 import TokenLink from "@/components/values/TokenLink.vue";
 import {walletManager} from "@/router";
+import InfoTooltip from "@/components/InfoTooltip.vue";
+
+interface DisplayedTokenAllowance extends TokenAllowance {
+    isEditable: boolean
+}
 
 export default defineComponent({
   name: 'TokenAllowanceTable',
 
-  components: {TokenLink, TokenAmount, AccountLink, EmptyTable, TimestampValue},
+  components: {InfoTooltip, TokenLink, TokenAmount, AccountLink, EmptyTable, TimestampValue},
 
   emits: ["editAllowance"],
 
@@ -112,12 +120,22 @@ export default defineComponent({
         () => walletManager.connected.value && walletManager.accountId.value === props.controller.accountId.value)
     // const isWalletConnected = computed(() => false)
 
+    const allowances = computed<DisplayedTokenAllowance[]>(() => {
+        const result = []
+        for (const a of props.controller.rows.value) {
+            let allowance: DisplayedTokenAllowance = a as DisplayedTokenAllowance
+            isTokenAllowanceEditable(a).then((result) => allowance.isEditable = result)
+            result.push(allowance)
+        }
+        return result
+    })
+
     return {
       isTouchDevice,
       isSmallScreen,
       isMediumScreen,
       isWalletConnected,
-      allowances: props.controller.rows as ComputedRef<TokenAllowance[]>,
+      allowances,
       loading: props.controller.loading as ComputedRef<boolean>,
       total: props.controller.totalRowCount as ComputedRef<number>,
       currentPage: props.controller.currentPage as Ref<number>,
