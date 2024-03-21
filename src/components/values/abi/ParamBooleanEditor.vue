@@ -19,66 +19,69 @@
   -->
 
 <!-- --------------------------------------------------------------------------------------------------------------- -->
-<!--                                                      SCRIPT                                                     -->
+<!--                                                     TEMPLATE                                                    -->
 <!-- --------------------------------------------------------------------------------------------------------------- -->
 
 <template>
-    <button class="button is-white is-small is-uppercase"
-            @click="handleClick"
-            :disabled="!buttonEnabled"><slot/></button>
+    <input class="checkbox" type="checkbox" v-model="checked"/>
 </template>
 
 <!-- --------------------------------------------------------------------------------------------------------------- -->
-<!--                                                     TEMPLATE                                                    -->
+<!--                                                      SCRIPT                                                     -->
 <!-- --------------------------------------------------------------------------------------------------------------- -->
 
 <script lang="ts">
 
-import {computed, defineComponent, PropType} from "vue";
-import {DialogController, DialogMode} from "@/components/dialog/DialogController";
+import {computed, defineComponent, onBeforeUnmount, onMounted, PropType, ref, watch, WatchStopHandle} from "vue";
+import {ContractParamBuilder} from "@/components/values/abi/ContractCallBuilder";
+import {AppStorage} from "@/AppStorage";
 
 export default defineComponent({
-    name: "DialogButton",
+    name: "ParamBooleanEditor",
     components: {},
-
     props: {
-        controller: {
-            type: Object as PropType<DialogController>,
+        paramBuilder: {
+            type: Object as PropType<ContractParamBuilder>,
             required: true
         },
-        autoClose: {
-            type: Boolean,
-            default: true
-        },
-        enabled: {
-            type: Boolean,
-            default: true
-        }
     },
-    emits: ["action"],
-    setup(props, ctx) {
+    setup(props) {
+        const checked = ref<boolean>(false)
 
-        const handleClick = () => {
-            ctx.emit("action")
-            if (props.autoClose) {
-                props.controller.visible.value = false
+        const lastParamData = computed(() => {
+            const functionHash = props.paramBuilder.callBuilder.fragment.selector
+            const paramName = props.paramBuilder.paramType.name
+            return AppStorage.getInputParam(functionHash, paramName)
+        })
+
+        let watchHandle: WatchStopHandle|null = null
+        onMounted(() => {
+            checked.value = !!lastParamData.value
+            watchHandle = watch(checked, () => {
+                props.paramBuilder.paramData.value = checked.value
+            }, { immediate: true })
+        })
+        onBeforeUnmount(() => {
+            if (watchHandle !== null) {
+                watchHandle()
+                watchHandle = null
             }
-        }
-
-        const buttonEnabled = computed(
-            () => props.enabled && props.controller.mode.value !== DialogMode.Busy)
+            props.paramBuilder.paramData.value = null
+            checked.value = false
+        })
 
         return {
-            handleClick,
-            buttonEnabled
+            checked
         }
-    }
 
+
+    }
 })
+
 </script>
 
 <!-- --------------------------------------------------------------------------------------------------------------- -->
 <!--                                                       STYLE                                                     -->
 <!-- --------------------------------------------------------------------------------------------------------------- -->
 
-<style scoped/>
+<style/>

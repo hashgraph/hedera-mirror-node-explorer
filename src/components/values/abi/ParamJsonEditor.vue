@@ -19,62 +19,44 @@
   -->
 
 <!-- --------------------------------------------------------------------------------------------------------------- -->
-<!--                                                      SCRIPT                                                     -->
+<!--                                                     TEMPLATE                                                    -->
 <!-- --------------------------------------------------------------------------------------------------------------- -->
 
 <template>
-    <button class="button is-white is-small is-uppercase"
-            @click="handleClick"
-            :disabled="!buttonEnabled"><slot/></button>
+    <button class="button is-white h-is-smaller" @click="jsonEditorController.visible.value = true">EDIT…</button>
+    <JsonEditorDialog :controller="jsonEditorController" :param-builder="paramBuilder"/>
 </template>
 
 <!-- --------------------------------------------------------------------------------------------------------------- -->
-<!--                                                     TEMPLATE                                                    -->
+<!--                                                      SCRIPT                                                     -->
 <!-- --------------------------------------------------------------------------------------------------------------- -->
 
 <script lang="ts">
 
-import {computed, defineComponent, PropType} from "vue";
-import {DialogController, DialogMode} from "@/components/dialog/DialogController";
+import {defineComponent, PropType} from "vue";
+import {ContractParamBuilder} from "@/components/values/abi/ContractCallBuilder";
+import {DialogController} from "@/components/dialog/DialogController";
+import JsonEditorDialog from "@/components/values/abi/JsonEditorDialog.vue";
 
 export default defineComponent({
-    name: "DialogButton",
-    components: {},
-
+    name: "ParamJsonEditor",
+    components: {JsonEditorDialog},
     props: {
-        controller: {
-            type: Object as PropType<DialogController>,
+        paramBuilder: {
+            type: Object as PropType<ContractParamBuilder>,
             required: true
         },
-        autoClose: {
-            type: Boolean,
-            default: true
-        },
-        enabled: {
-            type: Boolean,
-            default: true
-        }
     },
-    emits: ["action"],
-    setup(props, ctx) {
+    setup() {
 
-        const handleClick = () => {
-            ctx.emit("action")
-            if (props.autoClose) {
-                props.controller.visible.value = false
-            }
-        }
-
-        const buttonEnabled = computed(
-            () => props.enabled && props.controller.mode.value !== DialogMode.Busy)
+        const jsonEditorController = new DialogController()
 
         return {
-            handleClick,
-            buttonEnabled
+            jsonEditorController
         }
     }
-
 })
+
 </script>
 
 <!-- --------------------------------------------------------------------------------------------------------------- -->

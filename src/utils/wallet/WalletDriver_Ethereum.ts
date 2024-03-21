@@ -25,7 +25,7 @@ import {BrowserProvider, ethers} from "ethers";
 import {NetworkEntry} from "@/schemas/NetworkRegistry";
 import {WalletDriverCancelError, WalletDriverError} from "@/utils/wallet/WalletDriverError";
 import {AccountByAddressCache} from "@/utils/cache/AccountByAddressCache";
-import {Transaction} from "@/schemas/HederaSchemas";
+import {ContractResultDetails, Transaction} from "@/schemas/HederaSchemas";
 import {waitFor} from "@/utils/TimerUtils";
 import {ContractResultByHashCache} from "@/utils/cache/ContractResultByHashCache";
 import {TransactionByTsCache} from "@/utils/cache/TransactionByTsCache";
@@ -187,6 +187,27 @@ export abstract class WalletDriver_Ethereum extends WalletDriver {
         return Promise.resolve(result)
     }
 
+    public async callContract(contractId: string, contractAddress: string, functionData: string, payerId: string): Promise<ContractResultDetails|string> {
+        let result: ContractResultDetails|string
+
+        if (this.provider !== null) {
+            const signer = await this.provider.getSigner()
+            const transaction: ethers.TransactionRequest = {
+                to: contractAddress,
+                data: functionData
+            }
+            try {
+                const response = await signer.sendTransaction(transaction)
+                result = await this.waitForContractResultSurfacing(response.hash)
+            } catch(reason) {
+                throw this.makeCallFailure(reason, "callContract")
+            }
+        } else {
+            throw this.callFailure("Invalid arguments")
+        }
+        return result
+    }
+
     public isConnected(): boolean {
         return this.provider !== null
     }
@@ -199,7 +220,9 @@ export abstract class WalletDriver_Ethereum extends WalletDriver {
         if (this.isCancelError(reason)) {
             throw new WalletDriverCancelError()
         } else {
-            throw this.callFailure(extra)
+            console.log("WalletDriver_Ethereum.makeCallFailure: " + JSON.stringify(reason))
+            const providerError = (reason as ethers.EthersError).error
+            throw this.callFailure(providerError?.message ?? extra)
         }
     }
 
@@ -351,7 +374,7 @@ export abstract class WalletDriver_Ethereum extends WalletDriver {
     }
 
 
-    protected async waitForTransactionSurfacing(ethereumHash: Buffer): Promise<Transaction | string> {
+    protected async waitForTransactionSurfacing(ethereumHash: ethers.BytesLike): Promise<Transaction | string> {
         let result: Promise<Transaction | string>
 
         const hash = ethers.hexlify(ethereumHash)
@@ -369,6 +392,27 @@ export abstract class WalletDriver_Ethereum extends WalletDriver {
                 counter -= 1
             }
             result = Promise.resolve(transaction ?? hash)
+        } catch {
+            result = Promise.resolve(hash)
+        }
+
+        return result
+    }
+
+
+    protected async waitForContractResultSurfacing(ethereumHash: ethers.BytesLike): Promise<ContractResultDetails | string> {
+        let result: Promise<ContractResultDetails | string>
+
+        const hash = ethers.hexlify(ethereumHash)
+        try {
+            let counter = 10
+            let contractResult: ContractResultDetails|null = null
+            while (counter > 0 && contractResult === null) {
+                await waitFor(3000)
+                contractResult = await ContractResultByHashCache.instance.lookup(hash, true)
+                counter -= 1
+            }
+            result = Promise.resolve(contractResult ?? hash)
         } catch {
             result = Promise.resolve(hash)
         }

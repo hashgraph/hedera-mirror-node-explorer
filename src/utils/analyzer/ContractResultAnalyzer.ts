@@ -19,18 +19,20 @@
  */
 
 import {FunctionCallAnalyzer} from "@/utils/analyzer/FunctionCallAnalyzer"
-import {ContractResultDetails} from "@/schemas/HederaSchemas"
+import {ContractResponse, ContractResultDetails} from "@/schemas/HederaSchemas"
 import {EntityID} from "@/utils/EntityID"
 import {computed, ref, Ref, watch, WatchStopHandle} from "vue"
 import {decodeSolidityErrorMessage} from "@/schemas/HederaUtils";
 import {ContractResultByTsCache} from "@/utils/cache/ContractResultByTsCache";
+import {ContractByAddressCache} from "@/utils/cache/ContractByAddressCache";
 
 export class ContractResultAnalyzer {
 
     public readonly timestamp: Ref<string|null>
     public readonly functionCallAnalyzer: FunctionCallAnalyzer
     public readonly contractResult: Ref<ContractResultDetails|null> = ref(null)
-    private readonly watchHandle: Ref<WatchStopHandle|null> = ref(null)
+    private readonly contractResponse: Ref<ContractResponse | null> = ref(null)
+    private readonly watchHandle: Ref<WatchStopHandle[]> = ref([])
 
     //
     // Public
@@ -42,19 +44,21 @@ export class ContractResultAnalyzer {
     }
 
     public mount(): void {
-        this.watchHandle.value = watch(this.timestamp,
-            this.updateContractResult,
-            { immediate: true})
+        this.watchHandle.value = [
+            watch(this.timestamp, this.updateContractResult, { immediate: true}),
+            watch(this.contractResult, this.updateContractResponse, { immediate: true})
+        ]
         this.functionCallAnalyzer.mount()
     }
 
     public unmount(): void {
         this.functionCallAnalyzer.unmount()
-        if (this.watchHandle.value !== null) {
-            this.watchHandle.value()
-            this.watchHandle.value = null
+        for (const wh of this.watchHandle.value) {
+            wh()
         }
+        this.watchHandle.value = []
         this.contractResult.value = null
+        this.contractResponse.value = null
     }
 
     public readonly fromId= computed(() => {
@@ -63,7 +67,7 @@ export class ContractResultAnalyzer {
     })
 
     public readonly toId = computed(() => {
-        return this.contractResult.value?.contract_id ?? null
+        return this.contractResponse.value?.contract_id ?? null
     })
 
     public readonly gasPrice = computed(() => {
@@ -132,6 +136,19 @@ export class ContractResultAnalyzer {
             }
         } else {
             this.contractResult.value = null
+        }
+    }
+
+    private readonly updateContractResponse = async () => {
+        const toId = this.contractResult.value?.to ?? null
+        if (toId !== null) {
+            try {
+                this.contractResponse.value = await ContractByAddressCache.instance.lookup(toId)
+            } catch {
+                this.contractResponse.value = null
+            }
+        } else {
+            this.contractResponse.value = null
         }
     }
 }
