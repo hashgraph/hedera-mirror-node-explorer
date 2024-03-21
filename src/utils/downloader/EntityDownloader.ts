@@ -27,8 +27,9 @@ export abstract class EntityDownloader<E, R> {
     public readonly startDate: Ref<Date|null>
     public readonly endDate: Ref<Date|null>
     public readonly maxEntityCount: number
-    private entities: E[] = []
 
+
+    private readonly entitiesRef: Ref<E[]> = ref([])
     private readonly downloadedCountRef = ref(0)
     private readonly firstDownloadedEntityRef: Ref<E|null> = ref(null)
     private readonly lastDownloadedEntityRef: Ref<E|null> = ref(null)
@@ -75,10 +76,8 @@ export abstract class EntityDownloader<E, R> {
         return Promise.resolve()
     }
 
-    public getEntities(): E[] {
-        return this.entities
-    }
-
+    public readonly entities: ComputedRef<E[]>
+        = computed(() => this.entitiesRef.value)
     public readonly state: ComputedRef<DownloaderState>
         = computed(() => this.stateRef.value)
     public readonly downloadedCount: ComputedRef<number>
@@ -91,6 +90,13 @@ export abstract class EntityDownloader<E, R> {
         = computed(() => this.drainedRef.value)
     public readonly failureReason: ComputedRef<unknown|null>
         = computed(() => this.failureReasonRef.value)
+
+    public readonly lastDownloadedEntityDate: ComputedRef<Date|null> = computed(() => {
+        const lastEntity = this.lastDownloadedEntityRef.value
+        const lastTimestamp = lastEntity !== null ? this.entityTimestamp(lastEntity) : null
+        const lastMillis = lastTimestamp !== null ? timestampToMillis(lastTimestamp) : null
+        return lastMillis !== null ? new Date(lastMillis) : null
+    })
 
     public progress: ComputedRef<number> = computed(() => {
         let result: number
@@ -119,7 +125,7 @@ export abstract class EntityDownloader<E, R> {
             const progress = firstTime !== null && lastTime !== null
                 ? (firstTime - lastTime) / (firstTime - startTime) : 0
             const result1 = Math.round(progress * 1000) / 1000
-            const result2 = this.entities.length / this.maxEntityCount
+            const result2 = this.entitiesRef.value.length / this.maxEntityCount
             result = Math.max(result1, result2)
         } else {
             result = 0
@@ -144,7 +150,7 @@ export abstract class EntityDownloader<E, R> {
 
     public csvBlob: ComputedRef<Blob|null> = computed(() => {
         let result: Blob|null
-        if (this.state.value == DownloaderState.Completed && this.downloadedCount.value >= 1) {
+        if (this.state.value == DownloaderState.Completed && this.entitiesRef.value.length >= 1) {
             const encoder = this.makeCSVEncoder(this.dateFormat)
             result = new Blob([encoder.encode()], { type: "text/csv" })
         } else {
@@ -203,25 +209,27 @@ export abstract class EntityDownloader<E, R> {
     //
 
     private async download(): Promise<void> {
-        this.entities = []
+        this.entitiesRef.value = []
         this.downloadedCountRef.value = 0
         this.lastDownloadedEntityRef.value = null
 
         this.drainedRef.value = false
         let nextURL = null
-        while (this.entities.length < this.maxEntityCount && !this.drainedRef.value && !this.abortRequested) {
+        while (this.downloadedCountRef.value < this.maxEntityCount && !this.drainedRef.value && !this.abortRequested) {
             const newResponse
                 = await this.loadNext(nextURL)
             const newEntities
-                = this.filter(this.fetchEntities(newResponse.data))
-            this.entities
-                = this.entities.concat(newEntities)
+                = this.fetchEntities(newResponse.data)
             this.downloadedCountRef.value
-                = this.entities.length
-            this.firstDownloadedEntityRef.value
-                = this.entities.length >= 1 ? this.entities[0] : null
+                += newEntities.length
+            if (this.firstDownloadedEntityRef.value === null) {
+                this.firstDownloadedEntityRef.value = newEntities.length >= 1 ? newEntities[0] : null
+            }
             this.lastDownloadedEntityRef.value
-                = this.entities.length >= 1 ? this.entities[this.entities.length - 1] : null
+                = newEntities.length >= 1 ? newEntities[newEntities.length - 1] : null
+
+            this.entitiesRef.value
+                = this.entitiesRef.value.concat(this.filter(newEntities))
 
             nextURL = this.nextURL(newResponse.data)
             this.drainedRef.value = nextURL == null

@@ -25,7 +25,12 @@
 <template>
 
   <o-field>
-    <o-select v-model="selectedFilter" class="ml-2 h-is-text-size-1"  data-cy="select-type">
+    <o-select
+        v-bind:model-value="selectedFilter"
+        @update:model-value="handleOption($event)"
+        class="h-is-text-size-1"
+        data-cy="select-type"
+    >
       <option v-for="f in filterValues" v-bind:key="f" v-bind:value="f">
         {{ makeFilterLabel(f) }}
       </option>
@@ -40,20 +45,16 @@
 
 <script lang="ts">
 
-import {defineComponent, PropType} from "vue";
+import {defineComponent} from "vue";
 import {TransactionType} from "@/schemas/HederaSchemas";
 import {makeTypeLabel} from "@/utils/TransactionTools";
-import {TransactionTableControllerXL} from "@/components/transaction/TransactionTableControllerXL";
-import {NftTransactionTableController} from "./NftTransactionTableController";
 
 export default defineComponent({
   name: "TransactionFilterSelect",
 
   props: {
-    controller: {
-      type: Object as PropType<
-        TransactionTableControllerXL | NftTransactionTableController
-      >,
+      selectedFilter: {
+      type: String,
       required: true,
     },
     nftFilter: {
@@ -62,16 +63,18 @@ export default defineComponent({
     },
   },
 
-  setup(props) {
+  setup(props, context) {
 
     const makeFilterLabel = (filterValue: string): string => {
       return filterValue == "" ? "TYPES: ALL" : makeTypeLabel(filterValue as TransactionType)
     }
 
+    const handleOption = (option: string) => context.emit('update:selectedFilter', option)
+
     return {
       filterValues: makeFilterValues(props.nftFilter),
-      selectedFilter: props.controller.transactionType,
       makeFilterLabel,
+      handleOption,
     }
   }
 });

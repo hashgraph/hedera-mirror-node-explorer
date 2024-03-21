@@ -121,9 +121,8 @@
           <PlayPauseButton
             v-bind:controller="transactionTableController"
           />
-          <TransactionFilterSelect
-            v-bind:controller="transactionTableController"
-            nft-filter
+          <TransactionFilterSelect v-model:selected-filter="transactionType" nft-filter
+            class="ml-2"
           />
         </div>
       </template>
@@ -310,6 +309,7 @@ export default defineComponent({
             shownftDetails,
             parseBigIntString,
             transactionTableController,
+            transactionType:transactionTableController.transactionType,
             symbol
         }
     },

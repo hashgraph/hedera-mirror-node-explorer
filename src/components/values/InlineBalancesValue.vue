@@ -54,7 +54,6 @@ import HbarAmount from "@/components/values/HbarAmount.vue";
 import TokenAmount from "@/components/values/TokenAmount.vue";
 import {BalanceAnalyzer} from "@/utils/analyzer/BalanceAnalyzer";
 import Property from "@/components/Property.vue";
-import TransactionFilterSelect from "@/components/transaction/TransactionFilterSelect.vue";
 import {TokenBalance} from "@/schemas/HederaSchemas";
 import {NftCollectionCache} from "@/utils/cache/NftCollectionCache";
 
@@ -66,7 +65,6 @@ export default defineComponent({
 
     components: {
         Property,
-        TransactionFilterSelect,
         TokenAmount,
         HbarAmount,
     },

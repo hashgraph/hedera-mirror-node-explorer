@@ -18,10 +18,17 @@
  *
  */
 
-import {AccountInfo, KeyType, NetworkNode, TokenInfo, TokenRelationship, Transfer} from "@/schemas/HederaSchemas";
+import {
+    AccountInfo,
+    KeyType,
+    NetworkNode, NftTransfer,
+    TokenInfo,
+    TokenRelationship, TokenTransfer,
+    Transaction,
+    Transfer
+} from "@/schemas/HederaSchemas";
 import {ethers} from "ethers";
 import {EntityID} from "@/utils/EntityID";
-import {hexToByte} from "@/utils/B64Utils";
 import * as hashgraph from "@hashgraph/proto";
 
 export function makeEthAddressForAccount(account: AccountInfo): string|null {
@@ -217,4 +224,26 @@ export function labelForResponseCode(responseCode: bigint): string|null {
     const responseCodeEnum = hashgraph.proto.ResponseCodeEnum;
     const result = Object.keys(responseCodeEnum).find((key: any) => BigInt(responseCodeEnum[key]) === responseCode);
     return result || null;
+}
+
+export function lookupTokenTransfer(transaction: Transaction, tokenId: string): TokenTransfer|null {
+    let result: TokenTransfer|null = null
+    for (const t of transaction.token_transfers) {
+        if (t.token_id == tokenId) {
+            result = t
+            break
+        }
+    }
+    return result
+}
+
+export function lookupNFTTransfer(transaction: Transaction, tokenId: string): NftTransfer|null {
+    let result: NftTransfer|null = null
+    for (const t of transaction.nft_transfers) {
+        if (t.token_id == tokenId) {
+            result = t
+            break
+        }
+    }
+    return result
 }

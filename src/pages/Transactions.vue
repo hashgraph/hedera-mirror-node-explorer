@@ -33,7 +33,7 @@
       <template v-slot:control>
         <div class="is-flex is-align-items-flex-end">
           <PlayPauseButton v-bind:controller="transactionTableController"/>
-          <TransactionFilterSelect v-bind:controller="transactionTableController"/>
+          <TransactionFilterSelect v-model:selected-filter="transactionType" class="ml-2"/>
         </div>
       </template>
       <template v-slot:content>
@@ -98,6 +98,7 @@ export default defineComponent({
       isSmallScreen,
       isTouchDevice,
       transactionTableController,
+      transactionType:transactionTableController.transactionType
     }
   }
 });

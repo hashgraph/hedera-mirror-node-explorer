@@ -78,7 +78,7 @@ export class RewardDownloader extends EntityDownloader<StakingReward, StakingRew
     }
 
     protected makeCSVEncoder(dateFormat: Intl.DateTimeFormat): CSVEncoder<StakingReward> {
-        return new RewardEncoder(this.getEntities(), this.checkAccountId(), dateFormat)
+        return new RewardEncoder(this.entities.value, this.checkAccountId(), dateFormat)
     }
 
     protected makeOutputPrefix(): string {
