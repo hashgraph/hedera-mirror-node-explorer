@@ -103,6 +103,7 @@
                         <input type="checkbox" v-model="showHexaOpcode">
                     </label>
                 </div>
+                <div v-else-if="selectedOption==='abi' && showDownloadABI" class="is-flex is-justify-content-end"><DownloadButton @click="handleDownloadABI"/></div>
             </div>
             <SourceCodeValue  v-if="isVerified && selectedOption==='source'" class="mt-3"
                               :source-files="solidityFiles ?? undefined"
@@ -273,6 +274,32 @@ export default defineComponent({
         }
     }
 
+    const abiBlob  = computed(() => {
+      let result: Blob|null
+      const itf = props.contractAnalyzer.interface.value
+      if (itf !== null) {
+        result = new Blob([itf.formatJson()], { type: "text/json" })
+      } else {
+        result = null
+      }
+      return result
+    })
+
+    const handleDownloadABI = () => {
+        if (abiBlob.value !== null) {
+            const url = window.URL.createObjectURL(abiBlob.value)
+            const outputName = props.contractAnalyzer.contractName.value + ".json"
+            const a = document.createElement('a')
+            a.setAttribute('href', url)
+            a.setAttribute('download', outputName);
+            a.click()
+        }
+    }
+
+    const showDownloadABI = computed(() => {
+        return routeManager.currentNetworkEntry.value.name == "previewnet"
+    })
+
     return {
       isTouchDevice,
       isSmallScreen,
@@ -301,6 +328,8 @@ export default defineComponent({
       isImportFile,
       relevantPath,
       handleDownload,
+      handleDownloadABI,
+      showDownloadABI,
     }
   }
 });
