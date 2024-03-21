@@ -149,7 +149,7 @@ export default defineComponent({
   }
 });
 
-function formatTokenAmount(rawAmount: bigint, decimalCount: number): string {
+export function formatTokenAmount(rawAmount: bigint, decimalCount: number): string {
   let result: string
 
   const amountFormatter = new Intl.NumberFormat('en-US', {
