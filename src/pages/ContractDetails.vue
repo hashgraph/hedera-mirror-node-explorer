@@ -94,28 +94,25 @@
                 <TransactionLink :transactionLoc="contract?.created_timestamp ?? undefined"/>
               </template>
             </Property>
-            <Property id="expiresAt">
+            <Property id="expiresAt" tooltip="Contract expiry is not turned on yet. Value in this field is not relevant.">
               <template v-slot:name>
                 <span>Expires at</span>
-                <InfoTooltip label="Contract expiry is not turned on yet. Value in this field is not relevant."/>
               </template>
               <template v-slot:value>
                 <TimestampValue v-bind:timestamp="contract?.expiration_timestamp" v-bind:show-none="true"/>
               </template>
             </Property>
-            <Property id="autoRenewPeriod">
+            <Property id="autoRenewPeriod" tooltip="Contract auto-renew is not turned on yet. Value in this field is not relevant.">
               <template v-slot:name>
                 <span>Auto Renew Period</span>
-                <InfoTooltip label="Contract auto-renew is not turned on yet. Value in this field is not relevant."/>
               </template>
               <template v-slot:value>
                 <DurationValue v-bind:number-value="contract?.auto_renew_period ?? undefined"/>
               </template>
             </Property>
-            <Property id="autoRenewAccount">
+            <Property id="autoRenewAccount" tooltip="Contract auto-renew is not turned on yet. Value in this field is not relevant.">
               <template v-slot:name>
                 <span>Auto Renew Account</span>
-                <InfoTooltip label="Contract auto-renew is not turned on yet. Value in this field is not relevant."/>
               </template>
               <template v-slot:value>
                 <AccountLink :account-id="autoRenewAccount" :show-none="true" null-label="None"/>
@@ -211,7 +208,6 @@ import TransactionLink from "@/components/values/TransactionLink.vue";
 import EVMAddress from "@/components/values/EVMAddress.vue";
 import ContractByteCodeSection from "@/components/contract/ContractByteCodeSection.vue";
 import ContractResultsSection from "@/components/contracts/ContractResultsSection.vue";
-import InfoTooltip from "@/components/InfoTooltip.vue";
 import Copyable from "@/components/Copyable.vue";
 import {ContractAnalyzer} from "@/utils/analyzer/ContractAnalyzer";
 import ContractResultLogs from "@/components/contract/ContractResultLogs.vue";
@@ -229,7 +225,6 @@ export default defineComponent({
     MirrorLink,
     Copyable,
     ContractByteCodeSection,
-    InfoTooltip,
     ContractResultsSection,
     EVMAddress,
     TransactionLink,

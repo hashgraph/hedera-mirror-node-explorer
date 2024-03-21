@@ -143,11 +143,12 @@
                         :show-extra="true" :timestamp="transaction.consensus_timestamp"/>
           </template>
         </Property>
-        <Property id="maxFee">
+        <Property id="maxFee"
+                  :tooltip="showMaxFeeTooltip
+                  ? 'Max Fee limit does not include the hbar cost of gas consumed by transactions executed on the EVM.'
+                  : undefined">
           <template v-slot:name>
             <span>Max Fee</span>
-            <InfoTooltip v-if="showMaxFeeTooltip"
-                         label="Max Fee limit does not include the hbar cost of gas consumed by transactions executed on the EVM."/>
           </template>
           <template v-slot:value>
             <HbarAmount v-if="transaction" :amount="maxFee" :show-extra="true"
@@ -277,7 +278,6 @@ import {TransactionLocParser} from "@/utils/parser/TransactionLocParser";
 import {TransactionGroupAnalyzer} from "@/components/transaction/TransactionGroupAnalyzer";
 import {TransactionAnalyzer} from "@/components/transaction/TransactionAnalyzer";
 import {TransactionGroupCache} from "@/utils/cache/TransactionGroupCache";
-import InfoTooltip from "@/components/InfoTooltip.vue";
 import MirrorLink from "@/components/MirrorLink.vue";
 import TokenExtra from "@/components/values/TokenExtra.vue";
 
@@ -290,7 +290,6 @@ export default defineComponent({
   components: {
     TokenExtra,
     MirrorLink,
-    InfoTooltip,
     TokenLink,
     TopicMessage,
     ContractResult,

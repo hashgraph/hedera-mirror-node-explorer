@@ -27,8 +27,8 @@
              :delay="delay"
              multiline="multiline"
              :position="position ?? 'auto'"
-             class="h-tooltip ml-1">
-    <span class="icon is-small h-is-extra-text"><i class="fas fa-info-circle"></i></span>
+             class="h-tooltip">
+    <span class="icon is-small h-is-property-text h-is-extra-text"><i class="fas fa-info-circle"></i></span>
   </o-tooltip>
 </template>
 

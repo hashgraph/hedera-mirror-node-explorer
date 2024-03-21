@@ -211,7 +211,7 @@
 
 <script lang="ts">
 
-import {computed, defineComponent, PropType, Ref, ref, watch} from "vue";
+import {computed, defineComponent, onBeforeUnmount, onMounted, PropType, Ref, ref, watch} from "vue";
 import router, {walletManager} from "@/router";
 import {EntityID} from "@/utils/EntityID";
 import {networkRegistry} from "@/schemas/NetworkRegistry";
@@ -221,7 +221,6 @@ import {
   CryptoAllowance,
   Nfts,
   TokenAllowance,
-  TokenInfo,
   TokenRelationshipResponse,
   Transaction,
   TransactionByIdResponse
@@ -233,6 +232,8 @@ import {WalletDriverCancelError, WalletDriverError} from "@/utils/wallet/WalletD
 import {TokenInfoCache} from "@/utils/cache/TokenInfoCache";
 import {AccountByIdCache} from "@/utils/cache/AccountByIdCache";
 import {ContractByIdCache} from "@/utils/cache/ContractByIdCache";
+import {formatTokenAmount} from "@/components/values/TokenAmount.vue";
+import {makeTokenSymbol} from "@/schemas/HederaUtils";
 
 const VALID_ACCOUNT_MESSAGE = "Account found"
 const VALID_CONTRACT_MESSAGE = "Contract found"
@@ -277,7 +278,25 @@ export default defineComponent({
     const selectedHbarAmount = ref<string | null>(null)
     const selectedToken = ref<string | null>(null)
     const normalizedToken = computed(() => EntityID.normalize(nr.stripChecksum(selectedToken.value ?? "")))
+    const tokenInfoLookup = TokenInfoCache.instance.makeLookup(normalizedToken)
+    onMounted(() => tokenInfoLookup.mount())
+    onBeforeUnmount(() => tokenInfoLookup.unmount())
+    const tokenInfo = computed(() => tokenInfoLookup.entity.value)
+    const tokenSymbol = computed(() => makeTokenSymbol(tokenInfo.value, 8))
+    const initialTokenAmount = computed(
+        () => props.currentTokenAllowance?.amount_granted
+            ? formatTokenAmount(
+                BigInt(props.currentTokenAllowance.amount_granted),
+                Number(tokenInfo.value?.decimals ?? 0)
+            )
+            : null
+    )
     const selectedTokenAmount = ref<string | null>(null)
+    const rawTokenAmount = computed(
+        () => selectedTokenAmount.value != null
+            ? Number.parseFloat(selectedTokenAmount.value) * Math.pow(10, Number(tokenInfo.value?.decimals))
+            : null
+    )
     const selectedNft = ref<string | null>(null)
     const normalizedNFT = computed(() => EntityID.normalize(nr.stripChecksum(selectedNft.value ?? "")))
     const selectedNftSerials = ref<string | null>(null)
@@ -321,7 +340,7 @@ export default defineComponent({
         result ||= allowanceChoice.value !== "token"
         result ||= selectedSpender.value !== props.currentTokenAllowance?.spender
         result ||= selectedToken.value !== props.currentTokenAllowance.token_id
-        result ||= selectedTokenAmount.value !== (props.currentTokenAllowance?.amount_granted.toString() ?? null)
+        result ||= rawTokenAmount.value !== (props.currentTokenAllowance?.amount_granted ?? null)
       } else {
         result = true
       }
@@ -337,8 +356,8 @@ export default defineComponent({
       } else if (props.currentTokenAllowance) {
         result = "Previous allowance was to "
             + props.currentTokenAllowance.spender + " for "
-            + props.currentTokenAllowance.amount_granted
-            + " tokens (" + props.currentTokenAllowance.token_id + ")"
+            + initialTokenAmount.value
+            + " " + tokenSymbol.value + " tokens (" + props.currentTokenAllowance.token_id + ")"
       } else {
         result = null
       }
@@ -353,8 +372,8 @@ export default defineComponent({
       ) && edited.value
     })
 
-    watch(() => props.showDialog, (newValue) => {
-      if (newValue) {
+    watch([() => props.showDialog, tokenInfo], () => {
+      if (props.showDialog) {
         if (props.currentHbarAllowance) {
           isEditing.value = true
           allowanceChoice.value = "hbar"
@@ -371,7 +390,12 @@ export default defineComponent({
           selectedSpender.value = props.currentTokenAllowance?.spender ?? null
           selectedHbarAmount.value = null
           selectedToken.value = props.currentTokenAllowance.token_id
-          selectedTokenAmount.value = props.currentTokenAllowance?.amount_granted.toString() ?? null
+          selectedTokenAmount.value = props.currentTokenAllowance.amount_granted
+              ? formatTokenAmount(
+                  BigInt(props.currentTokenAllowance.amount_granted),
+                  Number(tokenInfo.value?.decimals ?? 0)
+              )
+              : null
           selectedNft.value = null
           selectedNftSerials.value = null
         } else {
@@ -465,17 +489,27 @@ export default defineComponent({
         nftSerialsFeedback)
 
     const showConfirmDialog = ref(false)
+
     const confirmMessage = computed(() => {
       let result: string
       const toAccount = normalizedSpender.value
 
       if (allowanceChoice.value === 'hbar') {
-        result = "Do you want to approve an allowance to account " + toAccount
-            + " for " + (selectedHbarAmount.value??0/100000000) + " hbars?"
+        if (Number(selectedHbarAmount.value) === 0) {
+            result = "Do you want to remove the hbar allowance for account " + toAccount + "?"
+        } else {
+            result = "Do you want to approve an allowance to account " + toAccount
+                + " for " + (selectedHbarAmount.value??0/100000000) + " hbars?"
+        }
       } else if (allowanceChoice.value === 'token') {
         const token = normalizedToken.value
-        result = "Do you want to approve an allowance to account " + toAccount
-            + " for " + selectedTokenAmount.value + " fungible tokens (" + token + ")?"
+        if (rawTokenAmount.value === 0) {
+          result = "Do you want to remove the allowance to account " + toAccount
+              + " for " + tokenSymbol.value + " token (" + token + ")?"
+        } else {
+          result = "Do you want to approve an allowance to account " + toAccount
+              + " for " + selectedTokenAmount.value + " " + tokenSymbol.value + " tokens (" + token + ")?"
+        }
       } else {  // 'nft'
         const nFT = normalizedNFT.value
         result = "Do you want to approve an allowance to account " + toAccount
@@ -534,17 +568,17 @@ export default defineComponent({
           let tid = null
 
           if (allowanceChoice.value === 'hbar') {
-            if (selectedHbarAmount.value) {
+            if (selectedHbarAmount.value != null) {
               tid = normalizeTransactionId(await walletManager.approveHbarAllowance(
                   normalizedSpender.value, parseFloat(selectedHbarAmount.value)))
             }
           } else if (allowanceChoice.value === 'token') {
-            if (normalizedToken.value && selectedTokenAmount.value) {
+              if (normalizedToken.value != null && rawTokenAmount.value != null) {
               tid = normalizeTransactionId(await walletManager.approveTokenAllowance(
-                  normalizedToken.value, normalizedSpender.value, parseFloat(selectedTokenAmount.value)))
+                  normalizedToken.value, normalizedSpender.value, rawTokenAmount.value))
             }
           } else { // 'nft'
-            if (normalizedNFT.value) {
+            if (normalizedNFT.value != null) {
               tid = normalizeTransactionId(await walletManager.approveNFTAllowance(
                   normalizedNFT.value, normalizedSpender.value, nftSerials.value))
             }
@@ -736,15 +770,15 @@ export default defineComponent({
                 const tokens = response.data.tokens
                 if (tokens && tokens.length > 0) {
                   if (type !== null) {
-                    TokenInfoCache.instance.lookup(entity)
-                        .then((t: TokenInfo | null) => {
-                          if (t?.type === type) {
-                            isValid.value = true
+                      if (tokenInfo.value != null) {
+                          if (tokenInfo.value.type === type) {
+                              isValid.value = true
                           } else {
-                            message.value = (type === 'FUNGIBLE_COMMON') ? TOKEN_NOT_FUNGIBLE_MESSAGE : TOKEN_NOT_NFT_MESSAGE
+                              message.value = (type === 'FUNGIBLE_COMMON') ? TOKEN_NOT_FUNGIBLE_MESSAGE : TOKEN_NOT_NFT_MESSAGE
                           }
-                        })
-                        .catch(() => message.value = TOKEN_NOT_FOUND_MESSAGE)
+                      } else {
+                          message.value = TOKEN_NOT_FOUND_MESSAGE
+                      }
                   } else {
                     isValid.value = true
                   }
