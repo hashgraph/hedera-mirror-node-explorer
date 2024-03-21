@@ -489,6 +489,7 @@ export default defineComponent({
         nftSerialsFeedback)
 
     const showConfirmDialog = ref(false)
+
     const confirmMessage = computed(() => {
       let result: string
       const toAccount = normalizedSpender.value
@@ -558,17 +559,17 @@ export default defineComponent({
           let tid = null
 
           if (allowanceChoice.value === 'hbar') {
-            if (selectedHbarAmount.value) {
+            if (selectedHbarAmount.value != null) {
               tid = normalizeTransactionId(await walletManager.approveHbarAllowance(
                   normalizedSpender.value, parseFloat(selectedHbarAmount.value)))
             }
           } else if (allowanceChoice.value === 'token') {
-              if (normalizedToken.value && rawTokenAmount.value) {
+              if (normalizedToken.value != null && rawTokenAmount.value != null) {
               tid = normalizeTransactionId(await walletManager.approveTokenAllowance(
                   normalizedToken.value, normalizedSpender.value, rawTokenAmount.value))
             }
           } else { // 'nft'
-            if (normalizedNFT.value) {
+            if (normalizedNFT.value != null) {
               tid = normalizeTransactionId(await walletManager.approveNFTAllowance(
                   normalizedNFT.value, normalizedSpender.value, nftSerials.value))
             }
