@@ -103,7 +103,7 @@
                         <input type="checkbox" v-model="showHexaOpcode">
                     </label>
                 </div>
-                <div v-else-if="selectedOption==='abi'" class="is-flex is-justify-content-end"><DownloadButton @click="handleDownloadABI"/></div>
+                <div v-else-if="selectedOption==='abi' && showDownloadABI" class="is-flex is-justify-content-end"><DownloadButton @click="handleDownloadABI"/></div>
             </div>
             <SourceCodeValue  v-if="isVerified && selectedOption==='source'" class="mt-3"
                               :source-files="solidityFiles ?? undefined"
@@ -296,6 +296,10 @@ export default defineComponent({
         }
     }
 
+    const showDownloadABI = computed(() => {
+        return routeManager.currentNetworkEntry.value.name == "previewnet"
+    })
+
     return {
       isTouchDevice,
       isSmallScreen,
@@ -324,7 +328,8 @@ export default defineComponent({
       isImportFile,
       relevantPath,
       handleDownload,
-      handleDownloadABI
+      handleDownloadABI,
+      showDownloadABI,
     }
   }
 });
