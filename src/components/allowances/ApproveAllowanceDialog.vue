@@ -282,6 +282,7 @@ export default defineComponent({
     onMounted(() => tokenInfoLookup.mount())
     onBeforeUnmount(() => tokenInfoLookup.unmount())
     const tokenInfo = computed(() => tokenInfoLookup.entity.value)
+    const tokenSymbol = computed(() => makeTokenSymbol(tokenInfo.value, 8))
     const initialTokenAmount = computed(
         () => props.currentTokenAllowance?.amount_granted
             ? formatTokenAmount(
@@ -356,7 +357,7 @@ export default defineComponent({
         result = "Previous allowance was to "
             + props.currentTokenAllowance.spender + " for "
             + initialTokenAmount.value
-            + " tokens (" + props.currentTokenAllowance.token_id + ")"
+            + " " + tokenSymbol.value + " tokens (" + props.currentTokenAllowance.token_id + ")"
       } else {
         result = null
       }
@@ -497,9 +498,8 @@ export default defineComponent({
             + " for " + (selectedHbarAmount.value??0/100000000) + " hbars?"
       } else if (allowanceChoice.value === 'token') {
         const token = normalizedToken.value
-        const symbol = makeTokenSymbol(tokenInfo.value, 8)
         result = "Do you want to approve an allowance to account " + toAccount
-            + " for " + selectedTokenAmount.value + " fungible tokens " + symbol + " (" + token + ")?"
+            + " for " + selectedTokenAmount.value + " " + tokenSymbol.value + " tokens (" + token + ")?"
       } else {  // 'nft'
         const nFT = normalizedNFT.value
         result = "Do you want to approve an allowance to account " + toAccount
