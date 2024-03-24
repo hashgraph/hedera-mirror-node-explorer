@@ -48,7 +48,7 @@
     "vue": "^3.3.4",
     "vue-prism-component": "^2.0.0",
     "vue-router": "^4.3.0",
-    "web3-utils": "1.10.0"
+    "web3-utils": "4.2.1"
   },
   "devDependencies": {
     "@cypress/code-coverage": "^3.12.29",
