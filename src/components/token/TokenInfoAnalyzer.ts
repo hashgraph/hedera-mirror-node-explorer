@@ -90,6 +90,7 @@ export class TokenInfoAnalyzer {
 
     public readonly customFees = computed(() => this.tokenInfo.value?.custom_fees)
 
+    public readonly treasuryAccount = computed(() => this.tokenInfo.value?.treasury_account_id)
 
     public readonly tokenChecksum = computed(() =>
         this.tokenInfo.value?.token_id ? networkRegistry.computeChecksum(
