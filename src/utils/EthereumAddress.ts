@@ -20,7 +20,7 @@
 
 import {byteToHex, hexToByte} from "@/utils/B64Utils";
 import {EntityID} from "@/utils/EntityID";
-import web3Utils  from "web3-utils";
+import {ethers} from "ethers";
 
 export class EthereumAddress {
 
@@ -37,8 +37,8 @@ export class EthereumAddress {
 
     public static normalizeEIP55(byteString: string): string {
         // https://eips.ethereum.org/EIPS/eip-55
-        // https://web3js.readthedocs.io/en/v1.2.11/web3-utils.html#tochecksumaddress
-        return web3Utils.toChecksumAddress(byteString)
+        // https://docs.ethers.org/v6/api/address/#getAddress
+        return ethers.getAddress(byteString)
     }
 
     public toString(): string {
