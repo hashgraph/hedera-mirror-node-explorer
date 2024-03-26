@@ -33,7 +33,7 @@
             <i :class="{ 'fa-play': !isGetter, 'fa-redo': isGetter}" class="fas fa-xs" style="background-color: #202532"/>
         </button>
         <div class="is-flex is-align-items-baseline ml-3">
-            <div class="h-is-text-size-3 has-text-grey has-text-weight-normal">{{ index }}.</div>
+            <div class="h-is-text-size-3 has-text-grey has-text-weight-medium">{{ index }}.</div>
             <prism language="solidity" style="background-color: #171920; font-size: 0.7rem">{{ signature }}</prism>
             <div class="h-has-pill h-is-text-size-1 has-background-black has-text-grey has-text-weight-normal">{{ mutability }}</div>
             <div style="color:#f08d49" class="h-has-pill h-is-text-size-1 has-background-black has-text-weight-normal ml-1">{{ selector }}</div>
