@@ -32,9 +32,9 @@
             <prism language="solidity" style="background-color: #171920; font-size: 0.7rem">
                 {{ "//\n// Functions\n//"}}
             </prism>
-            <div v-for="b of contractCallBuilders" :key="b.fragment.selector">
+            <div v-for="(b,i) in contractCallBuilders" :key="b.fragment.selector">
                 <div class="mb-2" style="margin-left: 0.6rem">
-                    <ContractAbiEntry :contract-call-builder="b"
+                    <ContractAbiEntry :contract-call-builder="b" :index="i"
                                       @did-update-contract-state="entryDidUpdateContractState"/>
                 </div>
             </div>
