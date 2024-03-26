@@ -28,16 +28,42 @@
          class="h-code-box h-has-page-background mt-2 px-3 py-1"
          style="max-height: 400px;">
 
-        <template v-if="contractCallBuilders.length >= 1">
-            <prism language="solidity" style="background-color: #171920; font-size: 0.7rem">
-                {{ "//\n// Functions\n//"}}
-            </prism>
-            <div v-for="(b,i) in contractCallBuilders" :key="b.fragment.selector">
-                <div class="mb-2" style="margin-left: 0.6rem">
-                    <ContractAbiEntry :contract-call-builder="b" :index="i"
-                                      @did-update-contract-state="entryDidUpdateContractState"/>
+        <template v-if="roContractCallBuilders.length >= 1 || rwContractCallBuilders.length >= 1">
+
+            <template v-if="roContractCallBuilders.length >= 1">
+                <prism language="solidity" style="background-color: #171920; font-size: 0.7rem">
+                    {{ "//\n// Functions (read-only)\n//"}}
+                </prism>
+                <div v-for="(b,i) in roContractCallBuilders" :key="b.fragment.selector">
+                    <div class="mb-2" style="margin-left: 0.6rem">
+                        <ContractAbiEntry :contract-call-builder="b" :index="i"
+                                          @did-update-contract-state="entryDidUpdateContractState"/>
+                    </div>
                 </div>
-            </div>
+            </template>
+            <template v-else>
+                <prism language="solidity" style="background-color: #171920; font-size: 0.7rem">
+                    {{ "//\n// No read-only function\n//"}}
+                </prism>
+            </template>
+
+            <template v-if="rwContractCallBuilders.length >= 1">
+                <prism language="solidity" style="background-color: #171920; font-size: 0.7rem">
+                    {{ "//\n// Functions (read-write)\n//"}}
+                </prism>
+                <div v-for="(b,i) in rwContractCallBuilders" :key="b.fragment.selector">
+                    <div class="mb-2" style="margin-left: 0.6rem">
+                        <ContractAbiEntry :contract-call-builder="b" :index="i"
+                                          @did-update-contract-state="entryDidUpdateContractState"/>
+                    </div>
+                </div>
+            </template>
+            <template v-else>
+                <prism language="solidity" style="background-color: #171920; font-size: 0.7rem">
+                    {{ "//\n// No read-write function\n//"}}
+                </prism>
+            </template>
+
         </template>
         <template v-else>
             <prism language="solidity" style="background-color: #171920; font-size: 0.7rem">
@@ -206,6 +232,26 @@ export default defineComponent({
             return result
         })
 
+        const roContractCallBuilders = computed(() => {
+            const result: ContractCallBuilder[] = []
+            for (const b of contractCallBuilders.value) {
+                if (b.isReadOnly()) {
+                    result.push(b)
+                }
+            }
+            return result
+        })
+
+        const rwContractCallBuilders = computed(() => {
+            const result: ContractCallBuilder[] = []
+            for (const b of contractCallBuilders.value) {
+                if (!b.isReadOnly()) {
+                    result.push(b)
+                }
+            }
+            return result
+        })
+
         const entryDidUpdateContractState = () => {
             for (const b of contractCallBuilders.value) {
                 if (b.isGetter()) {
@@ -215,7 +261,8 @@ export default defineComponent({
         }
 
         return {
-            contractCallBuilders,
+            roContractCallBuilders,
+            rwContractCallBuilders,
             eventList,
             errorList,
             otherList,
