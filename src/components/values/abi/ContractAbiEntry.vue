@@ -35,6 +35,7 @@
         <div class="is-flex is-align-items-baseline">
             <prism language="solidity" style="background-color: #171920; font-size: 0.7rem">{{ signature }}</prism>
             <div class="h-has-pill h-is-text-size-1 has-background-black has-text-grey has-text-weight-normal">{{ mutability }}</div>
+            <div class="h-has-pill h-is-text-size-1 has-background-black has-text-grey has-text-weight-normal">{{ selector }}</div>
         </div>
 
         <!-- Row 1 -->
@@ -130,6 +131,8 @@ export default defineComponent({
 
         const mutability = computed(() => (props.contractCallBuilder.fragment.stateMutability as string).toUpperCase())
 
+        const selector = computed(() => props.contractCallBuilder.fragment.selector)
+
         const hasResult = computed(() => props.contractCallBuilder.hasResult())
 
         const dialogDidUpdateContractState = () => {
@@ -140,6 +143,7 @@ export default defineComponent({
             running,
             signature,
             mutability,
+            selector,
             isGetter,
             hasResult,
             callOutput: props.contractCallBuilder.callOutput,
