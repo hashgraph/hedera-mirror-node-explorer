@@ -33,7 +33,7 @@
                         <slot name="dialogTitle"/>
                     </div>
 
-                    <hr class="h-card-separator"/>
+                    <hr v-if="slots.dialogTitle" class="h-card-separator"/>
 
                     <div class="dialog-stack mb-4">
                         <div :class="{'is-invisible': !dialogInputVisible}">
@@ -89,7 +89,7 @@
 
 <script lang="ts">
 
-import {computed, defineComponent, PropType, watch} from "vue";
+import {computed, defineComponent, PropType, useSlots, watch} from "vue";
 import DialogButton from "@/components/dialog/DialogButton.vue";
 import {DialogController, DialogMode} from "@/components/dialog/DialogController";
 
@@ -103,7 +103,7 @@ export default defineComponent({
         },
     },
     setup(props) {
-
+        const slots = useSlots()
         const dialogInputVisible = computed(() => props.controller.mode.value === DialogMode.Input)
         const dialogBusyVisible = computed(() => props.controller.mode.value === DialogMode.Busy)
         const dialogSuccessVisible = computed(() => props.controller.mode.value === DialogMode.Success)
@@ -116,6 +116,7 @@ export default defineComponent({
         })
 
         return {
+            slots,
             dialogInputVisible,
             dialogBusyVisible,
             dialogSuccessVisible,

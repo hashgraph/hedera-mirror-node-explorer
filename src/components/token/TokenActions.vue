@@ -112,6 +112,13 @@
         </template>
     </DoneDialog>
   </div>
+
+  <AlertDialog :controller="alertController">
+    <template v-slot:alertMessage>
+      {{ tooltipLabel }}
+    </template>
+  </AlertDialog>
+
 </template>
 
 <!-- --------------------------------------------------------------------------------------------------------------- -->
@@ -128,10 +135,12 @@ import {PropType, computed, defineComponent, ref} from "vue";
 import ProgressDialog, {Mode} from "@/components/staking/ProgressDialog.vue";
 import { TokenAssociationStatus, TokenInfoAnalyzer } from './TokenInfoAnalyzer';
 import { WalletDriverCancelError, WalletDriverError } from '@/utils/wallet/WalletDriverError';
+import AlertDialog from "@/components/AlertDialog.vue";
+import {DialogController} from "@/components/dialog/DialogController";
 
 export default defineComponent({
   name: "TokenActions",
-  components: { ConfirmDialog, ProgressDialog, DoneDialog, DynamicDialog },
+  components: {AlertDialog, ConfirmDialog, ProgressDialog, DoneDialog, DynamicDialog },
   props: {
     analyzer: {
         type: Object as PropType<TokenInfoAnalyzer>,
@@ -160,6 +169,12 @@ export default defineComponent({
     const isAssociated = computed(() => props.analyzer.associationStatus.value == TokenAssociationStatus.Associated )
     const isDissociated = computed(() => props.analyzer.associationStatus.value == TokenAssociationStatus.Dissociated )
 
+    // Alert dialog states
+    const alertController = new DialogController()
+    const tooltipLabel = computed(
+        () => "Token " + tokenSymbol.value + " cannot be dissociated because "
+            + walletManager.accountId.value + " is its treasury account."
+    )
 
     //
     // Confirm dialog states
@@ -209,11 +224,15 @@ export default defineComponent({
     // handleDissociate()
     //
     const handleDissociate = () => {
-      action.value = 'DISSOCIATE'
-      showConfirmDialog.value = true
-      dialogTitle.value = `Dissociate ${tokenType.value} ${tokenId.value}`
-      confirmMessage.value = `Confirm dissociating ${tokenType.value} ${tokenId.value!} (${tokenSymbol.value}) from account ${accountId.value}?`
-      confirmExtraMessage.value = null
+      if (props.analyzer.treasuryAccount.value != walletManager.accountId.value) {
+          action.value = 'DISSOCIATE'
+          showConfirmDialog.value = true
+          dialogTitle.value = `Dissociate ${tokenType.value} ${tokenId.value}`
+          confirmMessage.value = `Confirm dissociating ${tokenType.value} ${tokenId.value!} (${tokenSymbol.value}) from account ${accountId.value}?`
+          confirmExtraMessage.value = null
+      } else {
+          alertController.visible.value = true
+      }
     }
 
     //
@@ -383,6 +402,8 @@ export default defineComponent({
       handleConfirm,
       walletManager,
       isDissociated,
+      alertController,
+      tooltipLabel,
       confirmMessage,
       isHederaWallet,
       dynamicMessage,
@@ -418,7 +439,7 @@ export default defineComponent({
 <style scoped> 
 
 .token-actions-wrapper {
-  top: 0px;
+  top: 0;
   gap: 0.45rem;
   width: 9rem;
   left: -9.6rem;
