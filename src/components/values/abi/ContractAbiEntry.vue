@@ -129,9 +129,9 @@ export default defineComponent({
 
         const signature = computed(() => props.contractCallBuilder.fragment.format("full"))
 
-        const mutability = computed(() => (props.contractCallBuilder.fragment.stateMutability as string).toUpperCase())
+        const mutability = computed(() => props.contractCallBuilder.fragment.stateMutability.toUpperCase())
 
-        const selector = computed(() => (props.contractCallBuilder.fragment.selector as string))
+        const selector = computed(() => props.contractCallBuilder.fragment.selector)
 
         const hasResult = computed(() => props.contractCallBuilder.hasResult())
 
