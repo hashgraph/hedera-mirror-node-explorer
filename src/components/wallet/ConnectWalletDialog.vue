@@ -23,28 +23,26 @@
 <!-- --------------------------------------------------------------------------------------------------------------- -->
 
 <template>
+    <Dialog :controller="controller">
 
-    <div class="is-flex is-align-items-baseline" >
+        <template v-slot:dialogTitle>
+            <DialogTitle>{{ title }}</DialogTitle>
+        </template>
 
-        <div v-if="dialogSuccessVisible" class="icon is-medium has-text-success ml-0">
-            <i class="fas fa-check"/>
-        </div>
-        <div v-else-if="dialogErrorVisible" class="icon is-medium has-text-danger">
-            <span style="font-size: 18px; font-weight: 900">X</span>
-        </div>
-        <div v-else />
+        <template v-slot:dialogInput>
+            <DialogStatus :controller="controller" :is-success="false">
+                <template v-slot:mainMessage>{{ mainMessage }}</template>
+                <template v-slot:extraMessage>{{ extraMessage }}</template>
+            </DialogStatus>
+        </template>
 
-        <div class="block h-is-tertiary-text mt-2">
-            <slot name="mainMessage"/>
-        </div>
-    </div>
+        <template v-slot:dialogInputButtons>
+            <DialogButton :controller="controller">CLOSE</DialogButton>
+        </template>
 
-    <div class="h-is-property-text my-4">
-        <slot name="extraMessage"/>
-    </div>
+    </Dialog>
 
 </template>
-
 
 <!-- --------------------------------------------------------------------------------------------------------------- -->
 <!--                                                      SCRIPT                                                     -->
@@ -53,36 +51,48 @@
 <script lang="ts">
 
 import {computed, defineComponent, PropType} from "vue";
-import {DialogController, DialogMode} from "@/components/dialog/DialogController";
+import Dialog from "@/components/dialog/Dialog.vue";
+import DialogButton from "@/components/dialog/DialogButton.vue";
+import DialogTitle from "@/components/dialog/DialogTitle.vue";
+import {DialogController} from "@/components/dialog/DialogController";
+import DialogStatus from "@/components/dialog/DialogStatus.vue";
+import {WalletDriverError} from "@/utils/wallet/WalletDriverError";
 
 export default defineComponent({
-    name: "DialogStatus",
-    components: {},
+    name: "ConnectWalletDialog",
+
+    components: {DialogStatus, DialogTitle, DialogButton, Dialog},
+
     props: {
         controller: {
             type: Object as PropType<DialogController>,
             required: true
         },
-        isSuccess: Boolean as PropType<boolean|undefined>,
-    },
-    setup(props) {
-
-        const dialogSuccessVisible = computed(
-            () => props.isSuccess !== undefined
-                ? props.isSuccess
-                : props.controller.mode.value === DialogMode.Success)
-        const dialogErrorVisible = computed(
-            () => props.isSuccess !== undefined
-                ? !props.isSuccess
-                : props.controller.mode.value === DialogMode.Error)
-
-        return {
-            dialogSuccessVisible,
-            dialogErrorVisible
+        error: {
+            type: Object as PropType<unknown>,
+            required: false
         }
-    }
-});
+    },
 
+    setup(props) {
+        const title = "Could not connect wallet"
+        const mainMessage = computed(
+            () => props.error instanceof WalletDriverError
+                ? props.error.message
+                : "Unexpected error"
+        )
+        const extraMessage = computed(
+            () => props.error instanceof WalletDriverError
+                ? props.error.extra
+                : JSON.stringify(props.error)
+        )
+        return {
+            title,
+            mainMessage,
+            extraMessage,
+        }
+    },
+})
 
 </script>
 
@@ -90,4 +100,4 @@ export default defineComponent({
 <!--                                                       STYLE                                                     -->
 <!-- --------------------------------------------------------------------------------------------------------------- -->
 
-<style/>
+<style scoped/>

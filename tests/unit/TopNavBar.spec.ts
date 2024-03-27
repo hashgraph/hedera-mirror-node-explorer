@@ -54,7 +54,7 @@ describe("TopNavBar.vue", () => {
         // console.log(wrapper.text())
 
         expect(wrapper.text()).toBe(
-            "Connect WalletCANCELCONNECT DisclaimerPlease don't show me this next timeCANCELAGREEFillerFillerCLOSEDashboardTransactionsTokensTopicsContractsAccountsNodesStakingBlocksMAINNETTESTNETPREVIEWNETCONNECT WALLET...")
+            "Connect WalletCANCELCONNECT DisclaimerPlease don't show me this next timeCANCELAGREEDashboardTransactionsTokensTopicsContractsAccountsNodesStakingBlocksMAINNETTESTNETPREVIEWNETCONNECT WALLET...")
 
         const links = wrapper.findAll("a")
         expect(links.length).toBe(18)
@@ -80,7 +80,7 @@ describe("TopNavBar.vue", () => {
         // console.log(wrapper.text())
 
         expect(wrapper.text()).toBe(
-            "Connect WalletCANCELCONNECT DisclaimerPlease don't show me this next timeCANCELAGREEFillerFillerCLOSEDashboardTransactionsTokensTopicsContractsAccountsNodesStakingBlocksMAINNETTESTNETPREVIEWNETCONNECT WALLET...")
+            "Connect WalletCANCELCONNECT DisclaimerPlease don't show me this next timeCANCELAGREEDashboardTransactionsTokensTopicsContractsAccountsNodesStakingBlocksMAINNETTESTNETPREVIEWNETCONNECT WALLET...")
 
         const links = wrapper.findAll("a")
         expect(links.length).toBe(18)
