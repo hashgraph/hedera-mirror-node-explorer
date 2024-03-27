@@ -53,18 +53,8 @@
 
   <div v-else class="is-flex is-justify-content-space-between is-align-items-flex-end">
     <WalletChooser v-model:show-dialog="showWalletChooser" v-on:choose-wallet="handleChooseWallet"/>
-    
-    <ProgressDialog v-model:show-dialog="showProgressDialog"
-                  :mode="progressDialogMode"
-                  :main-message="progressMainMessage"
-                  :extra-message="progressExtraMessage"
-                  :extra-transaction-id="progressExtraTransactionId"
-                  :show-spinner="showProgressSpinner"
-  >
-    <template v-slot:dialogTitle>
-      <span class="h-is-primary-title">{{ progressDialogTitle }}</span>
-    </template>
-  </ProgressDialog>
+
+    <ConnectWalletDialog :error="connectError" :controller="connectDialogController"/>
 
     <div class="is-inline-flex is-align-items-center is-flex-grow-0 is-flex-shrink-0 mr-3">
       <router-link :to="routeManager.makeRouteToMainDashboard()">
@@ -174,14 +164,16 @@ import AxiosStatus from "@/components/AxiosStatus.vue";
 import {networkRegistry} from "@/schemas/NetworkRegistry";
 import WalletChooser from "@/components/staking/WalletChooser.vue";
 import { WalletDriver } from '@/utils/wallet/WalletDriver';
-import {WalletDriverCancelError, WalletDriverError} from '@/utils/wallet/WalletDriverError';
-import ProgressDialog, { Mode } from './staking/ProgressDialog.vue';
+import {WalletDriverCancelError} from '@/utils/wallet/WalletDriverError';
+import ProgressDialog from './staking/ProgressDialog.vue';
 import {defineComponent, inject, ref} from "vue";
 import WalletInfo from '@/components/wallet/WalletInfo.vue'
+import {DialogController} from "@/components/dialog/DialogController";
+import ConnectWalletDialog from "@/components/wallet/ConnectWalletDialog.vue";
 
 export default defineComponent({
   name: "TopNavBar",
-  components: {AxiosStatus, SearchBar, WalletChooser, ProgressDialog, WalletInfo},
+  components: {ConnectWalletDialog, AxiosStatus, SearchBar, WalletChooser, ProgressDialog, WalletInfo},
 
   setup() {
     const isSmallScreen = inject('isSmallScreen', true)
@@ -202,14 +194,9 @@ export default defineComponent({
     const connecting = ref(false)
     const walletIconURL = ref("")
     const showWalletInfo = ref(false)
-    const showProgressDialog = ref(false)
-    const showProgressSpinner = ref(false)
-    const progressDialogMode = ref(Mode.Busy)
-    const progressDialogTitle = ref<string|null>(null)
-    const progressMainMessage = ref<string|null>(null)
-    const progressExtraMessage = ref<string|null>(null)
-    const progressExtraTransactionId = ref<string|null>(null)
 
+    const connectDialogController = new DialogController()
+    const connectError = ref<unknown>()
 
     //
     // handleChooseWallet
@@ -222,18 +209,8 @@ export default defineComponent({
           .catch((reason) => {
               if (!(reason instanceof WalletDriverCancelError)) {
                   console.warn("Failed to connect wallet - reason:" + reason.toString())
-                  showProgressDialog.value = true
-                  progressDialogMode.value = Mode.Error
-                  progressDialogTitle.value = "Could not connect wallet"
-                  showProgressSpinner.value = false
-                  progressExtraTransactionId.value = null
-                  if (reason instanceof WalletDriverError) {
-                      progressMainMessage.value = reason.message
-                      progressExtraMessage.value = reason.extra
-                  } else {
-                      progressMainMessage.value = "Unexpected error"
-                      progressExtraMessage.value = JSON.stringify(reason)
-                  }
+                  connectError.value = reason
+                  connectDialogController.visible.value = true
               }
           })
           .finally(() => connecting.value = false)
@@ -275,15 +252,10 @@ export default defineComponent({
       isMobileMenuOpen,
       showWalletChooser,
       handleChooseWallet,
-      showProgressDialog,
-      progressDialogMode,
-      progressMainMessage,
-      showProgressSpinner,
-      progressDialogTitle,
       handleChangeAccount,
-      progressExtraMessage,
       disconnectFromWallet,
-      progressExtraTransactionId,
+      connectDialogController,
+      connectError,
       name: routeManager.currentRoute,
       accountId: walletManager.accountId,
       connected: walletManager.connected,
