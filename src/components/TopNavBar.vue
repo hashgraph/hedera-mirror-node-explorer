@@ -165,7 +165,6 @@ import {networkRegistry} from "@/schemas/NetworkRegistry";
 import WalletChooser from "@/components/staking/WalletChooser.vue";
 import { WalletDriver } from '@/utils/wallet/WalletDriver';
 import {WalletDriverCancelError} from '@/utils/wallet/WalletDriverError';
-import ProgressDialog from './staking/ProgressDialog.vue';
 import {defineComponent, inject, ref} from "vue";
 import WalletInfo from '@/components/wallet/WalletInfo.vue'
 import {DialogController} from "@/components/dialog/DialogController";
@@ -173,7 +172,7 @@ import ConnectWalletDialog from "@/components/wallet/ConnectWalletDialog.vue";
 
 export default defineComponent({
   name: "TopNavBar",
-  components: {ConnectWalletDialog, AxiosStatus, SearchBar, WalletChooser, ProgressDialog, WalletInfo},
+  components: {ConnectWalletDialog, AxiosStatus, SearchBar, WalletChooser, WalletInfo},
 
   setup() {
     const isSmallScreen = inject('isSmallScreen', true)
