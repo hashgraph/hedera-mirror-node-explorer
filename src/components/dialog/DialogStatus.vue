@@ -39,7 +39,7 @@
         </div>
     </div>
 
-    <div class="is-flex is-align-items-baseline my-4">
+    <div class="h-is-property-text my-4">
         <slot name="extraMessage"/>
     </div>
 
@@ -52,7 +52,7 @@
 
 <script lang="ts">
 
-import {computed, defineComponent, PropType, watch} from "vue";
+import {computed, defineComponent, PropType} from "vue";
 import {DialogController, DialogMode} from "@/components/dialog/DialogController";
 
 export default defineComponent({
@@ -63,11 +63,18 @@ export default defineComponent({
             type: Object as PropType<DialogController>,
             required: true
         },
+        isSuccess: Boolean as PropType<boolean|undefined>,
     },
     setup(props) {
 
-        const dialogSuccessVisible = computed(() => props.controller.mode.value === DialogMode.Success)
-        const dialogErrorVisible = computed(() => props.controller.mode.value === DialogMode.Error)
+        const dialogSuccessVisible = computed(
+            () => props.isSuccess !== undefined
+                ? props.isSuccess
+                : props.controller.mode.value === DialogMode.Success)
+        const dialogErrorVisible = computed(
+            () => props.isSuccess !== undefined
+                ? !props.isSuccess
+                : props.controller.mode.value === DialogMode.Error)
 
         return {
             dialogSuccessVisible,
