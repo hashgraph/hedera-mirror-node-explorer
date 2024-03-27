@@ -89,7 +89,10 @@ export abstract class WalletDriver {
     }
 
     public silentMessage(): string {
-        return this.name + " is silent";
+        return this.name + " is silent. " +
+            "Try to deactivate and re-activate the extension, " +
+            "then to restart Chrome, " +
+            "and then to re-install the extension."
     }
 
     //
