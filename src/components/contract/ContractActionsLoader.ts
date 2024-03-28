@@ -23,6 +23,8 @@ import axios, {AxiosResponse} from "axios";
 import {computed, ref, Ref, watch} from "vue";
 import {EntityLoader} from "@/utils/loader/EntityLoader";
 
+const MAX_DEPTH_LEVEL = 20
+
 export interface ContractActionWithPath {
     action: ContractAction,
     depthPath: string
@@ -101,8 +103,12 @@ export class ContractActionsLoader extends EntityLoader<ContractActionsResponse>
             depthVector.push(1)
         }
 
-        for (let i = 0; i < depthVector.length; i++) {
-            result += (i === 0) ? depthVector[i] : "_" + depthVector[i]
+        for (let i = 0; i < depthVector.length && i < MAX_DEPTH_LEVEL; i++) {
+            if (i < MAX_DEPTH_LEVEL - 1) {
+                result += (i === 0) ? depthVector[i] : "_" + depthVector[i]
+            } else {
+                result +='(…)'
+            }
         }
 
         return result
