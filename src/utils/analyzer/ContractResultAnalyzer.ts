@@ -19,7 +19,7 @@
  */
 
 import {FunctionCallAnalyzer} from "@/utils/analyzer/FunctionCallAnalyzer"
-import {ContractResponse, ContractResultDetails} from "@/schemas/HederaSchemas"
+import {ContractResultDetails} from "@/schemas/HederaSchemas"
 import {EntityID} from "@/utils/EntityID"
 import {computed, ref, Ref, watch, WatchStopHandle} from "vue"
 import {decodeSolidityErrorMessage} from "@/schemas/HederaUtils";
@@ -31,7 +31,8 @@ export class ContractResultAnalyzer {
     public readonly timestamp: Ref<string|null>
     public readonly functionCallAnalyzer: FunctionCallAnalyzer
     public readonly contractResult: Ref<ContractResultDetails|null> = ref(null)
-    private readonly contractResponse: Ref<ContractResponse | null> = ref(null)
+    public readonly toId: Ref<string|null> = ref(null)
+    public readonly fromId: Ref<string|null> = ref(null)
     private readonly watchHandle: Ref<WatchStopHandle[]> = ref([])
 
     //
@@ -46,7 +47,6 @@ export class ContractResultAnalyzer {
     public mount(): void {
         this.watchHandle.value = [
             watch(this.timestamp, this.updateContractResult, { immediate: true}),
-            watch(this.contractResult, this.updateContractResponse, { immediate: true})
         ]
         this.functionCallAnalyzer.mount()
     }
@@ -58,17 +58,9 @@ export class ContractResultAnalyzer {
         }
         this.watchHandle.value = []
         this.contractResult.value = null
-        this.contractResponse.value = null
+        this.toId.value = null
+        this.fromId.value = null
     }
-
-    public readonly fromId= computed(() => {
-        const entityID = EntityID.fromAddress(this.contractResult.value?.from)
-        return entityID?.toString() ?? null
-    })
-
-    public readonly toId = computed(() => {
-        return this.contractResponse.value?.contract_id ?? null
-    })
 
     public readonly gasPrice = computed(() => {
       return this.contractResult.value?.gas_price
@@ -131,6 +123,8 @@ export class ContractResultAnalyzer {
         if (this.timestamp.value !== null) {
             try {
                 this.contractResult.value = await ContractResultByTsCache.instance.lookup(this.timestamp.value)
+                await this.updateFromId()
+                await this.updateToId()
             } catch {
                 this.contractResult.value = null
             }
@@ -139,16 +133,35 @@ export class ContractResultAnalyzer {
         }
     }
 
-    private readonly updateContractResponse = async () => {
-        const toId = this.contractResult.value?.to ?? null
-        if (toId !== null) {
-            try {
-                this.contractResponse.value = await ContractByAddressCache.instance.lookup(toId)
-            } catch {
-                this.contractResponse.value = null
+    private readonly updateFromId = async () => {
+        if (this.contractResult.value !== null) {
+            if (this.contractResult.value.from !== null) {
+                const entityID = EntityID.fromAddress(this.contractResult.value.from)
+                this.fromId.value = entityID?.toString() ?? null
+            } else {
+                this.fromId.value = null
             }
         } else {
-            this.contractResponse.value = null
+            this.fromId.value = null
+        }
+    }
+
+    private readonly updateToId = async () => {
+        if (this.contractResult.value !== null) {
+            if (this.contractResult.value.contract_id !== null) {
+                // Target contract id is specified in contract result
+                this.toId.value = this.contractResult.value.contract_id
+            } else if (this.contractResult.value.to !== null) {
+                // Contract result does not specifies contract id but contract address
+                // => we must fetch contract by address and get its contract id
+                const contractResponse = await ContractByAddressCache.instance.lookup(this.contractResult.value.to)
+                this.toId.value = contractResponse?.contract_id ?? null
+            } else {
+                // Emergency code
+                this.toId.value = null
+            }
+        } else {
+            this.toId.value = null
         }
     }
 }

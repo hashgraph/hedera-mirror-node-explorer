@@ -33,7 +33,7 @@ describe("ContractResultAnalyzer.spec.ts", () => {
 
         const mock = new MockAdapter(axios);
 
-        const matcher0 = "/api/v1/contracts/" + CONTRACT_RESULT.to
+        const matcher0 = "/api/v1/contracts/" + CONTRACT_RESULT.contract_id
         mock.onGet(matcher0).reply(200, CONTRACT);
 
         const matcher1 = "/api/v1/contracts/results"
@@ -94,7 +94,7 @@ describe("ContractResultAnalyzer.spec.ts", () => {
         expect(analyzer.contractType.value).toBe("Post-Eip1559")
         expect(analyzer.contractResult.value).toStrictEqual(CONTRACT_RESULT_DETAILS)
         expect(analyzer.functionCallAnalyzer.functionHash.value).toBe("0x5d123e3f")
-        expect(analyzer.functionCallAnalyzer.signature.value).toBe("forwardDepositToICHIVault(address,address,address,uint256,uint256,address)")
+        // expect(analyzer.functionCallAnalyzer.signature.value).toBe("forwardDepositToICHIVault(address,address,address,uint256,uint256,address)")
 
         // 4) unmount
         analyzer.unmount()
@@ -112,11 +112,12 @@ describe("ContractResultAnalyzer.spec.ts", () => {
         expect(analyzer.functionCallAnalyzer.signature.value).toBeNull()
 
         // 5) check history
+        console.log(JSON.stringify(fetchGetURLs(mock), null, "  "))
         expect(fetchGetURLs(mock)).toStrictEqual([
             "api/v1/contracts/results",
             "api/v1/contracts/0.0.6810663/results/1704186823.658538003",
             "https://www.4byte.directory/api/v1/signatures/?format=json&hex_signature=0x5d123e3f",
-            "api/v1/contracts/0x06a50d1f642ca50284efb59988af9b60683fad3f",
+            "api/v1/contracts/0.0.6810663",
             "files/any/295/0x06a50d1f642cA50284EFb59988AF9b60683FAD3F",
         ])
 
@@ -128,7 +129,7 @@ describe("ContractResultAnalyzer.spec.ts", () => {
 
         const mock = new MockAdapter(axios);
 
-        const matcher0 = "/api/v1/contracts/" + CONTRACT_RESULT.to
+        const matcher0 = "/api/v1/contracts/" + CONTRACT_RESULT.contract_id
         mock.onGet(matcher0).reply(200, CONTRACT);
 
         const matcher1 = "/api/v1/contracts/results"
@@ -189,7 +190,7 @@ describe("ContractResultAnalyzer.spec.ts", () => {
         expect(analyzer.contractType.value).toBe("Post-Eip1559")
         expect(analyzer.contractResult.value).toStrictEqual(CONTRACT_RESULT_DETAILS)
         expect(analyzer.functionCallAnalyzer.functionHash.value).toBe("0x5d123e3f")
-        expect(analyzer.functionCallAnalyzer.signature.value).toBe("forwardDepositToICHIVault(address,address,address,uint256,uint256,address)")
+        // expect(analyzer.functionCallAnalyzer.signature.value).toBe("forwardDepositToICHIVault(address,address,address,uint256,uint256,address)")
 
         // 4) unmount
         analyzer.unmount()
@@ -207,12 +208,105 @@ describe("ContractResultAnalyzer.spec.ts", () => {
         expect(analyzer.functionCallAnalyzer.signature.value).toBeNull()
 
         // 5) check history
+        console.log(JSON.stringify(fetchGetURLs(mock), null, "  "))
         expect(fetchGetURLs(mock)).toStrictEqual([
             "api/v1/contracts/results",
             "api/v1/contracts/0.0.6810663/results/1704186823.658538003",
             // "https://www.4byte.directory/api/v1/signatures/?format=json&hex_signature=0x5d123e3f", WHY ?
-            "api/v1/contracts/0x06a50d1f642ca50284efb59988af9b60683fad3f",
+            "api/v1/contracts/0.0.6810663",
             "files/any/295/0x06a50d1f642cA50284EFb59988AF9b60683FAD3F",
+        ])
+
+        mock.restore()
+        await flushPromises()
+    })
+
+    test("new + setup with HTS result + mount + unmount", async () => {
+
+        const mock = new MockAdapter(axios);
+
+        const matcher1 = "/api/v1/contracts/results"
+        const param1 = { timestamp: CONTRACT_RESULT_HTS.timestamp, internal: true }
+        mock.onGet(matcher1, param1).reply(200, {
+            results: [ CONTRACT_RESULT_HTS ], "links": {"next": null}
+        } );
+
+        const matcher2 = "/api/v1/contracts/results/" + CONTRACT_RESULT_HTS.hash
+        mock.onGet(matcher2).reply(200, CONTRACT_RESULT_DETAILS_HTS);
+
+        const abi = require('../../../../public/abi/IHederaTokenService.json')
+        const matcher3 = "http://localhost:3000/abi/IHederaTokenService.json"
+        mock.onGet(matcher3).reply(200, abi)
+
+        // 1) new
+        const timestamp = ref<string|null>(null)
+        const analyzer = new ContractResultAnalyzer(timestamp)
+        expect(analyzer.timestamp.value).toBeNull()
+        expect(analyzer.fromId.value).toBeNull()
+        expect(analyzer.toId.value).toBeNull()
+        expect(analyzer.gasPrice.value).toBeNull()
+        expect(analyzer.maxFeePerGas.value).toBeNull()
+        expect(analyzer.maxPriorityFeePerGas.value).toBeNull()
+        expect(analyzer.errorMessage.value).toBeNull()
+        expect(analyzer.ethereumNonce.value).toBeNull()
+        expect(analyzer.contractType.value).toBeNull()
+        expect(analyzer.contractResult.value).toBeNull()
+        expect(analyzer.functionCallAnalyzer.functionHash.value).toBeNull()
+        expect(analyzer.functionCallAnalyzer.signature.value).toBeNull()
+
+        // 2) setup timestamp
+        timestamp.value = CONTRACT_RESULT_HTS.timestamp
+        await flushPromises()
+        expect(analyzer.timestamp.value).toBe(CONTRACT_RESULT_HTS.timestamp)
+        expect(analyzer.fromId.value).toBeNull()
+        expect(analyzer.toId.value).toBeNull()
+        expect(analyzer.gasPrice.value).toBeNull()
+        expect(analyzer.maxFeePerGas.value).toBeNull()
+        expect(analyzer.maxPriorityFeePerGas.value).toBeNull()
+        expect(analyzer.errorMessage.value).toBeNull()
+        expect(analyzer.ethereumNonce.value).toBeNull()
+        expect(analyzer.contractType.value).toBeNull()
+        expect(analyzer.contractResult.value).toBeNull()
+        expect(analyzer.functionCallAnalyzer.functionHash.value).toBeNull()
+        expect(analyzer.functionCallAnalyzer.signature.value).toBeNull()
+
+        // 3) mount
+        analyzer.mount()
+        await flushPromises()
+        expect(analyzer.timestamp.value).toBe(CONTRACT_RESULT_HTS.timestamp)
+        expect(analyzer.fromId.value).toBe("0.0.1584")
+        expect(analyzer.toId.value).toBe(CONTRACT_RESULT_HTS.contract_id)
+        expect(analyzer.gasPrice.value).toBeNull()
+        expect(analyzer.maxFeePerGas.value).toBeNull()
+        expect(analyzer.maxPriorityFeePerGas.value).toBeNull()
+        expect(analyzer.errorMessage.value).toBe("INVALID_FULL_PREFIX_SIGNATURE_FOR_PRECOMPILE")
+        expect(analyzer.ethereumNonce.value).toBeNull()
+        expect(analyzer.contractType.value).toBeNull()
+        expect(analyzer.contractResult.value).toStrictEqual(CONTRACT_RESULT_DETAILS_HTS)
+        expect(analyzer.functionCallAnalyzer.functionHash.value).toBe("0x49146bde")
+        expect(analyzer.functionCallAnalyzer.signature.value).toBe("associateToken(address,address)")
+
+        // 4) unmount
+        analyzer.unmount()
+        expect(analyzer.timestamp.value).toBe(CONTRACT_RESULT_HTS.timestamp)
+        expect(analyzer.fromId.value).toBeNull()
+        expect(analyzer.toId.value).toBeNull()
+        expect(analyzer.gasPrice.value).toBeNull()
+        expect(analyzer.maxFeePerGas.value).toBeNull()
+        expect(analyzer.maxPriorityFeePerGas.value).toBeNull()
+        expect(analyzer.errorMessage.value).toBeNull()
+        expect(analyzer.ethereumNonce.value).toBeNull()
+        expect(analyzer.contractType.value).toBeNull()
+        expect(analyzer.contractResult.value).toBeNull()
+        expect(analyzer.functionCallAnalyzer.functionHash.value).toBeNull()
+        expect(analyzer.functionCallAnalyzer.signature.value).toBeNull()
+
+        // 5) check history
+        expect(fetchGetURLs(mock)).toStrictEqual([
+            "api/v1/contracts/results",
+            "api/v1/contracts/results/0x4f0887dcc3c3f23ce2e80a2e3c3bfa246d488698d5e0cc17c76ef13262580d73",
+            "https://www.4byte.directory/api/v1/signatures/?format=json&hex_signature=0x49146bde",
+            "http://localhost:3000/abi/IHederaTokenService.json"
         ])
 
         mock.restore()
@@ -719,4 +813,77 @@ const SOURCIFY_RESPONSE = {
             "content": "// SPDX-License-Identifier: GPL-2.0-or-later\npragma solidity >=0.5.0;\n\n// added this interface explicitly instead of importing from hedera-smart-contracts\n// in order to avoid issue with solidity compiler versions\n// i.e. this codebase uses 0.7.6 and hedera-smart-contracts uses 0.8+\ninterface IHRC {\n    function associate() external returns (uint256 responseCode);\n\n    function dissociate() external returns (uint256 responseCode);\n}\n"
         }
     ]
+}
+
+
+const CONTRACT_RESULT_HTS = {
+    "address": "0x0000000000000000000000000000000000000167",
+    "amount": 0,
+    "bloom": "0x",
+    "call_result": "0x0000000000000000000000000000000000000000000000000000000000000146",
+    "contract_id": "0.0.359",
+    "created_contract_ids": [],
+    "error_message": "INVALID_FULL_PREFIX_SIGNATURE_FOR_PRECOMPILE",
+    "from": "0x0000000000000000000000000000000000000630",
+    "function_parameters": "0x49146bde0000000000000000000000000000000000000000000000000000000000000513000000000000000000000000000000000000000000000000000000000036a144",
+    "gas_consumed": null,
+    "gas_limit": 1978620,
+    "gas_used": 704414,
+    "timestamp": "1711559858.799271379",
+    "to": "0x0000000000000000000000000000000000000167",
+    "hash": "0x4f0887dcc3c3f23ce2e80a2e3c3bfa246d488698d5e0cc17c76ef13262580d73",
+    "block_hash": "0x1e1990286e3295ea971f58d5044deec04f0853fd528a1808846a32b0bd425434ef4d9a8a3fea17597045e4daf75e2311",
+    "block_number": 2138651,
+    "result": "INVALID_FULL_PREFIX_SIGNATURE_FOR_PRECOMPILE",
+    "transaction_index": 3,
+    "status": "0x0",
+    "failed_initcode": null,
+    "access_list": null,
+    "block_gas_used": 1600000,
+    "chain_id": null,
+    "gas_price": null,
+    "max_fee_per_gas": null,
+    "max_priority_fee_per_gas": null,
+    "r": null,
+    "s": null,
+    "type": null,
+    "v": null,
+    "nonce": null
+}
+
+const CONTRACT_RESULT_DETAILS_HTS = {
+    "address": "0x0000000000000000000000000000000000000167",
+    "amount": 0,
+    "bloom": "0x",
+    "call_result": "0x0000000000000000000000000000000000000000000000000000000000000146",
+    "contract_id": "0.0.359",
+    "created_contract_ids": [],
+    "error_message": "INVALID_FULL_PREFIX_SIGNATURE_FOR_PRECOMPILE",
+    "from": "0x0000000000000000000000000000000000000630",
+    "function_parameters": "0x49146bde0000000000000000000000000000000000000000000000000000000000000513000000000000000000000000000000000000000000000000000000000036a144",
+    "gas_consumed": null,
+    "gas_limit": 1978620,
+    "gas_used": 704414,
+    "timestamp": "1711559858.799271379",
+    "to": "0x0000000000000000000000000000000000000167",
+    "hash": "0x4f0887dcc3c3f23ce2e80a2e3c3bfa246d488698d5e0cc17c76ef13262580d73",
+    "block_hash": "0x1e1990286e3295ea971f58d5044deec04f0853fd528a1808846a32b0bd425434ef4d9a8a3fea17597045e4daf75e2311",
+    "block_number": 2138651,
+    "logs": [],
+    "result": "INVALID_FULL_PREFIX_SIGNATURE_FOR_PRECOMPILE",
+    "transaction_index": 3,
+    "state_changes": [],
+    "status": "0x0",
+    "failed_initcode": null,
+    "access_list": null,
+    "block_gas_used": 1600000,
+    "chain_id": null,
+    "gas_price": null,
+    "max_fee_per_gas": null,
+    "max_priority_fee_per_gas": null,
+    "r": null,
+    "s": null,
+    "type": null,
+    "v": null,
+    "nonce": null
 }

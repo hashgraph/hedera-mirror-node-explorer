@@ -155,7 +155,9 @@ export function decodeSolidityErrorMessage(message: string | null): string | nul
                 ethers.dataSlice(message ?? "", 4)
             )
             result = 'Panic(0x' + parseInt(code.toString()).toString(16) + ')'
-        }  else {
+        } else if (!message.startsWith("0x")) {
+            result = message
+        } else {
             result = null;
         }
     } catch(reason) {
