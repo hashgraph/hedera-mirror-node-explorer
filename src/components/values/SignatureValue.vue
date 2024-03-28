@@ -27,7 +27,12 @@
     <HexaValue :byte-string="functionHash" show-none/>
     <div class="h-is-extra-text h-is-text-size-3 should-wrap">{{ signature }}</div>
     <div v-if="is4byteSignature" class="mt-1">
-        <span class="h-has-pill h-is-text-size-1 has-background-grey">4byte.directory</span>
+        <o-tooltip label="Decoding of the signature provided by the 4byte.directory Signature Database"
+                   :delay="200"
+                   multiline="multiline"
+                   class="h-tooltip">
+            <span class="h-has-pill h-is-text-size-1 has-background-grey" style="cursor:default;">4byte</span>
+        </o-tooltip>
     </div>
   </div>
   <div v-else-if="initialLoading"/>
