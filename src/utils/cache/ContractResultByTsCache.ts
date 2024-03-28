@@ -47,7 +47,7 @@ export class ContractResultByTsCache extends EntityCache<string, ContractResultD
         let result: ContractResultDetails|null
         const contractResult = await this.loadContractResult(timestamp)
         const contractId = contractResult?.contract_id ?? null
-        if (contractId !== null) {
+        if (contractId !== null && contractId !== "0.0.359") {
             result = await this.loadContractResultDetail(contractId, timestamp)
             if (result !== null) {
                 ContractResultByHashCache.instance.updateWithContractResult(result);
