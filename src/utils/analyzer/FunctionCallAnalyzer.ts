@@ -32,6 +32,7 @@ export class FunctionCallAnalyzer {
     private readonly contractAnalyzer: ContractAnalyzer
     private readonly signatureResponse = shallowRef<SignatureResponse|null>(null)
     private readonly functionFragment = shallowRef<ethers.FunctionFragment|null>(null)
+    private readonly is4byteFunctionFragment = ref<boolean>(false)
     private readonly functionDecodingFailure = shallowRef<unknown>(null)
     private readonly inputResult = shallowRef<ethers.Result|null>(null)
     private readonly inputDecodingFailure = shallowRef<unknown>(null)
@@ -99,6 +100,10 @@ export class FunctionCallAnalyzer {
 
     public readonly signature: ComputedRef<string|null> = computed(() => {
         return this.functionFragment.value?.format() ?? null
+    })
+
+    public readonly is4byteSignature: ComputedRef<boolean> = computed(() => {
+        return this.is4byteFunctionFragment.value
     })
 
     public readonly errorSignature: ComputedRef<string|null> = computed(() => {
@@ -236,9 +241,11 @@ export class FunctionCallAnalyzer {
                 try {
                     this.functionFragment.value = i.getFunction(functionHash)
                     this.functionDecodingFailure.value = null
+                    this.is4byteFunctionFragment.value = false
                 } catch(failure) {
                     this.functionFragment.value = null
                     this.functionDecodingFailure.value = failure
+                    this.is4byteFunctionFragment.value = false
                 }
             } else if (r !== null && r.results.length >= 1) {
                 let r0: SignatureRecord|null
@@ -256,17 +263,21 @@ export class FunctionCallAnalyzer {
                 if (r0 !== null) {
                     this.functionFragment.value = ethers.FunctionFragment.from(r0.text_signature)
                     this.functionDecodingFailure.value = null
+                    this.is4byteFunctionFragment.value = true
                 } else {
                     this.functionFragment.value = null
                     this.functionDecodingFailure.value = null
+                    this.is4byteFunctionFragment.value = false
                 }
             } else {
                 this.functionFragment.value = null
                 this.functionDecodingFailure.value = null
+                this.is4byteFunctionFragment.value = false
             }
         } else {
             this.functionFragment.value = null
             this.functionDecodingFailure.value = null
+            this.is4byteFunctionFragment.value = false
         }
     }
 
@@ -346,8 +357,7 @@ export class FunctionCallAnalyzer {
             && paramType.name == "responseCode"
             && typeof value == "bigint") {
             // It's a responseCode from a system contract
-            const message = labelForResponseCode(value)
-            return message
+            return labelForResponseCode(value)
         } else {
             return null
         }
