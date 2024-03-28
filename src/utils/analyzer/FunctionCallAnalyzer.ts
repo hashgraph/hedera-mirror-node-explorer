@@ -357,8 +357,7 @@ export class FunctionCallAnalyzer {
             && paramType.name == "responseCode"
             && typeof value == "bigint") {
             // It's a responseCode from a system contract
-            const message = labelForResponseCode(value)
-            return message
+            return labelForResponseCode(value)
         } else {
             return null
         }
