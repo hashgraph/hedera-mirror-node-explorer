@@ -74,7 +74,7 @@
                     <StringValue :string-value="solcVersion ?? undefined"/>
                 </template>
             </Property>
-            <div v-if="isVerified" class="is-flex is-justify-content-space-between is-align-items-center mt-5 mb-0">
+            <div v-if="isVerified" class="is-flex is-justify-content-space-between is-align-items-center mb-0">
                 <Tabs :tab-ids=tabIds :tab-labels=tabLabels
                       :selected-tab="selectedOption"
                       @update:selected-tab="handleTabUpdate($event)"
@@ -117,14 +117,14 @@
                     </o-field>
                 </div>
             </div>
-            <SourceCodeValue  v-if="isVerified && selectedOption==='source'" class="mt-3"
+            <SourceCodeValue  v-if="isVerified && selectedOption==='source'"
                               :source-files="solidityFiles ?? undefined"
                               :filter="selectedSource"/>
             <div v-if="!isVerified || selectedOption==='bytecode'" class="columns is-multiline h-is-property-text" :class="{'mt-3':!isVerified,'mt-0':isVerified}">
                 <div id="bytecode" class="column is-6 pt-0 mb-0" :class="{'is-full': !isSmallScreen}">
                     <span v-if="!isVerified" class="has-text-weight-light">Runtime Bytecode</span>
                     <div>
-                        <ByteCodeValue :byte-code="byteCode ?? undefined" class="mb-0" :class="{'mt-3':isVerified,'mt-4':!isVerified}"/>
+                        <ByteCodeValue :byte-code="byteCode ?? undefined" class="mb-0" :class="{'mt-3':!isVerified}"/>
                     </div>
                 </div>
                 <div id="assembly-code" class="column is-6 pt-0 mb-0" :class="{'h-has-column-separator':isSmallScreen}">
@@ -137,7 +137,7 @@
                             </label>
                         </div>
                     </div>
-                    <DisassembledCodeValue :byte-code="byteCode ?? undefined" :show-hexa-opcode="showHexaOpcode" class="mt-3 mb-0"/>
+                    <DisassembledCodeValue :byte-code="byteCode ?? undefined" :show-hexa-opcode="showHexaOpcode" class="mb-0"/>
                 </div>
             </div>
             <ContractAbiValue v-if="isVerified && selectedOption==='abi'"
