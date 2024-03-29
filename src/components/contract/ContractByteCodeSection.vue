@@ -81,7 +81,7 @@
                 />
                 <div v-if="selectedOption==='source'" class="is-flex is-justify-content-end">
                     <DownloadButton @click="handleDownload" />
-                    <o-field class="ml-4">
+                    <o-field class="ml-2">
                         <o-select v-model="selectedSource" class="h-is-text-size-3">
                             <option value="">All source files</option>
                             <optgroup label="Main contract file">
@@ -103,7 +103,19 @@
                         <input type="checkbox" v-model="showHexaOpcode">
                     </label>
                 </div>
-                <div v-else-if="selectedOption==='abi' && showDownloadABI" class="is-flex is-justify-content-end"><DownloadButton @click="handleDownloadABI"/></div>
+                <div v-else-if="selectedOption==='abi'" class="is-flex is-justify-content-end">
+                    <DownloadButton v-if="showDownloadABI" @click="handleDownloadABI"/>
+                    <o-field class="ml-2">
+                        <o-select v-model="selectedType" class="h-is-text-size-3">
+                            <option :value="FragmentType.ALL">All definitions</option>
+                            <option :value="FragmentType.READONLY">Read-only functions</option>
+                            <option :value="FragmentType.READWRITE">Read-write functions</option>
+                            <option :value="FragmentType.EVENTS">Events</option>
+                            <option :value="FragmentType.ERRORS">Errors</option>
+                            <option :value="FragmentType.OTHER">Other definitions</option>
+                        </o-select>
+                    </o-field>
+                </div>
             </div>
             <SourceCodeValue  v-if="isVerified && selectedOption==='source'" class="mt-3"
                               :source-files="solidityFiles ?? undefined"
@@ -129,7 +141,8 @@
                 </div>
             </div>
             <ContractAbiValue v-if="isVerified && selectedOption==='abi'"
-                              :contract-analyzer="contractAnalyzer">ABI</ContractAbiValue>
+                              :contract-analyzer="contractAnalyzer"
+                              :fragment-type="selectedType"/>
         </template>
     </DashboardCard>
 
@@ -159,7 +172,7 @@ import DisassembledCodeValue from "@/components/values/DisassembledCodeValue.vue
 import HexaValue from "@/components/values/HexaValue.vue";
 import {AppStorage} from "@/AppStorage";
 import SourceCodeValue from "@/components/values/SourceCodeValue.vue";
-import ContractAbiValue from "@/components/values/abi/ContractAbiValue.vue";
+import ContractAbiValue, {FragmentType} from "@/components/values/abi/ContractAbiValue.vue";
 import {SourcifyResponseItem} from "@/utils/cache/SourcifyCache";
 import DownloadButton from "@/components/DownloadButton.vue";
 import JSZip from "jszip";
@@ -274,6 +287,8 @@ export default defineComponent({
         }
     }
 
+    const selectedType = ref<FragmentType>(FragmentType.ALL)
+
     const abiBlob  = computed(() => {
       let result: Blob|null
       const itf = props.contractAnalyzer.interface.value
@@ -328,8 +343,10 @@ export default defineComponent({
       isImportFile,
       relevantPath,
       handleDownload,
+      selectedType,
       handleDownloadABI,
       showDownloadABI,
+      FragmentType
     }
   }
 });
