@@ -142,7 +142,7 @@
             </div>
             <ContractAbiValue v-if="isVerified && selectedOption==='abi'"
                               :contract-analyzer="contractAnalyzer"
-                              :fragment-type="selectedType"/>
+                              :fragment-type="selectedType as FragmentType"/>
         </template>
     </DashboardCard>
 
