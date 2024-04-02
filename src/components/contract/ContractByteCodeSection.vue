@@ -287,7 +287,17 @@ export default defineComponent({
         }
     }
 
-    const selectedType = ref<FragmentType>(FragmentType.ALL)
+    const selectedType = ref<string>(FragmentType.ALL)
+    onMounted(() => {
+        const preferredType = AppStorage.getFragmentType()
+        if (preferredType && Object.values(FragmentType).includes(preferredType as FragmentType)) {
+            selectedType.value = preferredType
+        } else {
+            AppStorage.setFragmentType(null)
+            selectedType.value = FragmentType.ALL
+        }
+    })
+    watch(selectedType, () => AppStorage.setFragmentType(selectedType.value))
 
     const abiBlob  = computed(() => {
       let result: Blob|null

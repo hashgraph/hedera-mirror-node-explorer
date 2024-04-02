@@ -129,12 +129,12 @@ import {ContractCallBuilder} from "@/components/values/abi/ContractCallBuilder";
 import ContractAbiDialog from "@/components/values/abi/ContractAbiDialog.vue";
 
 export enum FragmentType {
-    ALL = "ALL",
-    READONLY = "READONLY",
-    READWRITE = "READWRITE",
-    EVENTS = "EVENTS",
-    ERRORS = "ERRORS",
-    OTHER = "OTHER",
+    ALL = "all",
+    READONLY = "read-only",
+    READWRITE = "read-write",
+    EVENTS = "events",
+    ERRORS = "errors",
+    OTHER = "other",
 }
 
 export default defineComponent({
