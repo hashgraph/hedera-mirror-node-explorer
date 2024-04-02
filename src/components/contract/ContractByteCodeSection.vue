@@ -74,14 +74,14 @@
                     <StringValue :string-value="solcVersion ?? undefined"/>
                 </template>
             </Property>
-            <div v-if="isVerified" class="is-flex is-justify-content-space-between is-align-items-center mt-5 mb-0">
+            <div v-if="isVerified" class="is-flex is-justify-content-space-between is-align-items-center mb-0">
                 <Tabs :tab-ids=tabIds :tab-labels=tabLabels
                       :selected-tab="selectedOption"
                       @update:selected-tab="handleTabUpdate($event)"
                 />
                 <div v-if="selectedOption==='source'" class="is-flex is-justify-content-end">
                     <DownloadButton @click="handleDownload" />
-                    <o-field class="ml-4">
+                    <o-field class="ml-2">
                         <o-select v-model="selectedSource" class="h-is-text-size-3">
                             <option value="">All source files</option>
                             <optgroup label="Main contract file">
@@ -103,16 +103,28 @@
                         <input type="checkbox" v-model="showHexaOpcode">
                     </label>
                 </div>
-                <div v-else-if="selectedOption==='abi' && showDownloadABI" class="is-flex is-justify-content-end"><DownloadButton @click="handleDownloadABI"/></div>
+                <div v-else-if="selectedOption==='abi'" class="is-flex is-justify-content-end">
+                    <DownloadButton v-if="showDownloadABI" @click="handleDownloadABI"/>
+                    <o-field class="ml-2">
+                        <o-select v-model="selectedType" class="h-is-text-size-3">
+                            <option :value="FragmentType.ALL">All definitions</option>
+                            <option :value="FragmentType.READONLY">Read-only functions</option>
+                            <option :value="FragmentType.READWRITE">Read-write functions</option>
+                            <option :value="FragmentType.EVENTS">Events</option>
+                            <option :value="FragmentType.ERRORS">Errors</option>
+                            <option :value="FragmentType.OTHER">Other definitions</option>
+                        </o-select>
+                    </o-field>
+                </div>
             </div>
-            <SourceCodeValue  v-if="isVerified && selectedOption==='source'" class="mt-3"
+            <SourceCodeValue  v-if="isVerified && selectedOption==='source'"
                               :source-files="solidityFiles ?? undefined"
                               :filter="selectedSource"/>
             <div v-if="!isVerified || selectedOption==='bytecode'" class="columns is-multiline h-is-property-text" :class="{'mt-3':!isVerified,'mt-0':isVerified}">
                 <div id="bytecode" class="column is-6 pt-0 mb-0" :class="{'is-full': !isSmallScreen}">
                     <span v-if="!isVerified" class="has-text-weight-light">Runtime Bytecode</span>
                     <div>
-                        <ByteCodeValue :byte-code="byteCode ?? undefined" class="mb-0" :class="{'mt-3':isVerified,'mt-4':!isVerified}"/>
+                        <ByteCodeValue :byte-code="byteCode ?? undefined" class="mb-0" :class="{'mt-3':!isVerified}"/>
                     </div>
                 </div>
                 <div id="assembly-code" class="column is-6 pt-0 mb-0" :class="{'h-has-column-separator':isSmallScreen}">
@@ -125,11 +137,12 @@
                             </label>
                         </div>
                     </div>
-                    <DisassembledCodeValue :byte-code="byteCode ?? undefined" :show-hexa-opcode="showHexaOpcode" class="mt-3 mb-0"/>
+                    <DisassembledCodeValue :byte-code="byteCode ?? undefined" :show-hexa-opcode="showHexaOpcode" class="mb-0"/>
                 </div>
             </div>
             <ContractAbiValue v-if="isVerified && selectedOption==='abi'"
-                              :contract-analyzer="contractAnalyzer">ABI</ContractAbiValue>
+                              :contract-analyzer="contractAnalyzer"
+                              :fragment-type="selectedType as FragmentType"/>
         </template>
     </DashboardCard>
 
@@ -159,7 +172,7 @@ import DisassembledCodeValue from "@/components/values/DisassembledCodeValue.vue
 import HexaValue from "@/components/values/HexaValue.vue";
 import {AppStorage} from "@/AppStorage";
 import SourceCodeValue from "@/components/values/SourceCodeValue.vue";
-import ContractAbiValue from "@/components/values/abi/ContractAbiValue.vue";
+import ContractAbiValue, {FragmentType} from "@/components/values/abi/ContractAbiValue.vue";
 import {SourcifyResponseItem} from "@/utils/cache/SourcifyCache";
 import DownloadButton from "@/components/DownloadButton.vue";
 import JSZip from "jszip";
@@ -274,6 +287,18 @@ export default defineComponent({
         }
     }
 
+    const selectedType = ref<string>(FragmentType.ALL)
+    onMounted(() => {
+        const preferredType = AppStorage.getFragmentType()
+        if (preferredType && Object.values(FragmentType).includes(preferredType as FragmentType)) {
+            selectedType.value = preferredType
+        } else {
+            AppStorage.setFragmentType(null)
+            selectedType.value = FragmentType.ALL
+        }
+    })
+    watch(selectedType, () => AppStorage.setFragmentType(selectedType.value))
+
     const abiBlob  = computed(() => {
       let result: Blob|null
       const itf = props.contractAnalyzer.interface.value
@@ -328,8 +353,10 @@ export default defineComponent({
       isImportFile,
       relevantPath,
       handleDownload,
+      selectedType,
       handleDownloadABI,
       showDownloadABI,
+      FragmentType
     }
   }
 });

@@ -191,6 +191,19 @@ export class AppStorage {
         return this.INPUT_PARAMS + "/" + functionHash + "/" + paramName
     }
 
+    //
+    // selected fragment type in ABI tab
+    //
+
+    private static readonly FRAGMENT_TYPE_KEY = 'fragmentType'
+
+    public static getFragmentType(): string | null {
+        return this.getLocalStorageItem(this.FRAGMENT_TYPE_KEY)
+    }
+
+    public static setFragmentType(newValue: string | null): void {
+        this.setLocalStorageItem(this.FRAGMENT_TYPE_KEY, newValue)
+    }
 
     //
     // Private
