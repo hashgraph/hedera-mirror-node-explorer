@@ -104,7 +104,7 @@
                     </label>
                 </div>
                 <div v-else-if="selectedOption==='abi'" class="is-flex is-justify-content-end">
-                    <DownloadButton v-if="showDownloadABI" @click="handleDownloadABI"/>
+                    <DownloadButton @click="handleDownloadABI"/>
                     <o-field class="ml-2">
                         <o-select v-model="selectedType" class="h-is-text-size-3">
                             <option :value="FragmentType.ALL">All definitions</option>
@@ -321,10 +321,6 @@ export default defineComponent({
         }
     }
 
-    const showDownloadABI = computed(() => {
-        return routeManager.currentNetworkEntry.value.name == "previewnet"
-    })
-
     return {
       isTouchDevice,
       isSmallScreen,
@@ -355,7 +351,6 @@ export default defineComponent({
       handleDownload,
       selectedType,
       handleDownloadABI,
-      showDownloadABI,
       FragmentType
     }
   }
