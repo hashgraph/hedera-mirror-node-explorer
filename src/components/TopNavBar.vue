@@ -68,41 +68,32 @@
         <router-link :to="routeManager.makeRouteToMainDashboard()"
                      id="dashboard-menu-item"
                      class="button is-ghost is-first h-is-navbar-item h-is-dense"
-                     :class="{ 'is-rimmed': isDashboardRoute}">Dashboard
-        </router-link>
+                     :class="{ 'is-rimmed': isDashboardRoute}">Dashboard</router-link>
         <router-link :to="routeManager.makeRouteToTransactions()"
                      class="button is-ghost h-is-navbar-item h-is-dense"
-                     :class="{ 'is-rimmed': isTransactionRoute}">Transactions
-        </router-link>
+                     :class="{ 'is-rimmed': isTransactionRoute}">Transactions</router-link>
         <router-link :to="routeManager.makeRouteToTokens()"
                      class="button is-ghost h-is-navbar-item h-is-dense"
-                     :class="{ 'is-rimmed': isTokenRoute}">Tokens
-        </router-link>
+                     :class="{ 'is-rimmed': isTokenRoute}">Tokens</router-link>
         <router-link :to="routeManager.makeRouteToTopics()"
                      class="button is-ghost h-is-navbar-item h-is-dense"
-                     :class="{ 'is-rimmed': isTopicRoute}">Topics
-        </router-link>
+                     :class="{ 'is-rimmed': isTopicRoute}">Topics</router-link>
         <router-link :to="routeManager.makeRouteToContracts()"
                      class="button is-ghost h-is-navbar-item h-is-dense"
-                     :class="{ 'is-rimmed': isContractRoute}">Contracts
-        </router-link>
+                     :class="{ 'is-rimmed': isContractRoute}">Contracts</router-link>
         <router-link :to="routeManager.makeRouteToAccounts()"
                      class="button is-ghost h-is-navbar-item h-is-dense"
-                     :class="{ 'is-rimmed': isAccountRoute}">Accounts
-        </router-link>
+                     :class="{ 'is-rimmed': isAccountRoute}">Accounts</router-link>
         <router-link :to="routeManager.makeRouteToNodes()"
                      class="button is-ghost h-is-navbar-item h-is-dense"
-                     :class="{ 'is-rimmed': isNodeRoute}">Nodes
-        </router-link>
+                     :class="{ 'is-rimmed': isNodeRoute}">Nodes</router-link>
         <router-link v-if="isStakingEnabled"
                      :to="routeManager.makeRouteToStaking()"
                      class="button is-ghost h-is-navbar-item h-is-dense"
-                     :class="{ 'is-rimmed': isStakingRoute}">Staking
-        </router-link>
+                     :class="{ 'is-rimmed': isStakingRoute}">Staking</router-link>
         <router-link :to="routeManager.makeRouteToBlocks()"
                      class="button is-ghost is-last h-is-navbar-item h-is-dense"
-                     :class="{ 'is-rimmed': isBlocksRoute}">Blocks
-        </router-link>
+                     :class="{ 'is-rimmed': isBlocksRoute}">Blocks</router-link>
       </div>
 
       <div id="navbar-grid">

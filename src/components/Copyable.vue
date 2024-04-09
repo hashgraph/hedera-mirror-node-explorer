@@ -32,8 +32,7 @@
       <div v-if="enableCopy"
            style="position: absolute; display: inline-block; left: 50%; top: 50%; transform: translate(-50%, -50%);">
         <button class="button is-dark h-is-text-size-3"
-                v-on:click.stop="copyToClipboard">Copy
-        </button>
+                v-on:click.stop="copyToClipboard">Copy</button>
       </div>
     </div>
   </div>

@@ -36,8 +36,7 @@
 
       <template v-if="!isInactiveEvmAddress" v-slot:subtitle>
         <div class="h-is-tertiary-text mt-3" id="entityId">
-          <div class="is-inline-block h-is-property-text has-text-weight-light" style="min-width: 115px">Account ID:
-          </div>
+          <div class="is-inline-block h-is-property-text has-text-weight-light" style="min-width: 115px">Account ID:</div>
           <Copyable :content-to-copy="normalizedAccountId ?? ''">
             <template v-slot:content>
               <span>{{ normalizedAccountId ?? "" }}</span>
@@ -52,8 +51,7 @@
           </router-link>
         </div>
         <div v-else-if="ethereumAddress" id="evmAddress" class="h-is-tertiary-text mt-2" style="word-break: keep-all">
-          <div class="is-inline-block h-is-property-text has-text-weight-light" style="min-width: 115px">EVM Address:
-          </div>
+          <div class="is-inline-block h-is-property-text has-text-weight-light" style="min-width: 115px">EVM Address:</div>
           <div class="is-inline-block">
             <EVMAddress :show-id="false" :has-custom-font="true" :address="ethereumAddress"/>
           </div>
