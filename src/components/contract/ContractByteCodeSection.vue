@@ -74,6 +74,14 @@
           <StringValue :string-value="solcVersion ?? undefined"/>
         </template>
       </Property>
+      <Property id="logicContract" :full-width="true">
+        <template v-slot:name>Proxy for Contract</template>
+        <template v-slot:value>
+          <AccountLink v-bind:accountId="logicContractId"
+                       v-bind:show-extra="true"
+                       v-bind:show-none="true"/>
+        </template>
+      </Property>
       <div v-if="isVerified" class="is-flex is-justify-content-space-between is-align-items-center mb-0">
         <Tabs :tab-ids=tabIds :tab-labels=tabLabels
               :selected-tab="selectedOption"
@@ -179,6 +187,7 @@ import DownloadButton from "@/components/DownloadButton.vue";
 import JSZip from "jszip";
 import {saveAs} from "file-saver";
 import Tabs from "@/components/Tabs.vue";
+import AccountLink from "@/components/values/AccountLink.vue";
 
 const FULL_MATCH_TOOLTIP = `A Full Match indicates that the bytecode of the deployed contract is byte-by-byte the same as the compilation output of the given source code files with the settings defined in the metadata file. This means the contents of the source code files and the compilation settings are exactly the same as when the contract author compiled and deployed the contract.`
 const PARTIAL_MATCH_TOOLTIP = `A Partial Match indicates that the bytecode of the deployed contract is the same as the compilation output of the given source code files except for the metadata hash. This means the deployed contract and the given source code + metadata function in the same way but there are differences in source code comments, variable names, or other metadata fields such as source paths.`
@@ -187,6 +196,7 @@ export default defineComponent({
   name: 'ContractByteCodeSection',
 
   components: {
+    AccountLink,
     Tabs,
     ContractAbiValue,
     DownloadButton,
@@ -322,6 +332,10 @@ export default defineComponent({
       }
     }
 
+    const logicContractId = computed(() => {
+      return props.contractAnalyzer.logicContractId.value ?? undefined
+    })
+
     return {
       isTouchDevice,
       isSmallScreen,
@@ -339,6 +353,7 @@ export default defineComponent({
       solidityFiles: props.contractAnalyzer.solidityFiles,
       sourceFileName: props.contractAnalyzer.sourceFileName,
       contractFileName: props.contractAnalyzer.contractFileName,
+      logicContractId,
       verifyDidComplete,
       isFullMatch,
       showHexaOpcode,
