@@ -26,19 +26,19 @@ import {SignatureCache, SignatureRecord, SignatureResponse} from "@/utils/cache/
 
 export class FunctionCallAnalyzer {
 
-    public readonly input: Ref<string|null>
-    public readonly output: Ref<string|null>
-    public readonly error: Ref<string|null>
+    public readonly input: Ref<string | null>
+    public readonly output: Ref<string | null>
+    public readonly error: Ref<string | null>
     private readonly contractAnalyzer: ContractAnalyzer
-    private readonly signatureResponse = shallowRef<SignatureResponse|null>(null)
-    private readonly functionFragment = shallowRef<ethers.FunctionFragment|null>(null)
+    private readonly signatureResponse = shallowRef<SignatureResponse | null>(null)
+    private readonly functionFragment = shallowRef<ethers.FunctionFragment | null>(null)
     private readonly is4byteFunctionFragment = ref<boolean>(false)
     private readonly functionDecodingFailure = shallowRef<unknown>(null)
-    private readonly inputResult = shallowRef<ethers.Result|null>(null)
+    private readonly inputResult = shallowRef<ethers.Result | null>(null)
     private readonly inputDecodingFailure = shallowRef<unknown>(null)
-    private readonly outputResult = shallowRef<ethers.Result|null>(null)
+    private readonly outputResult = shallowRef<ethers.Result | null>(null)
     private readonly outputDecodingFailure = shallowRef<unknown>(null)
-    private readonly errorDescription = shallowRef<ethers.ErrorDescription|null>(null)
+    private readonly errorDescription = shallowRef<ethers.ErrorDescription | null>(null)
     private readonly errorDecodingFailure = shallowRef<unknown>(null)
     private readonly watchHandle: Ref<WatchStopHandle[]> = ref([])
 
@@ -46,7 +46,7 @@ export class FunctionCallAnalyzer {
     // Public
     //
 
-    public constructor(input: Ref<string|null>, output: Ref<string|null>, error: Ref<string|null>, contractId: Ref<string|null>) {
+    public constructor(input: Ref<string | null>, output: Ref<string | null>, error: Ref<string | null>, contractId: Ref<string | null>) {
         this.input = input
         this.output = output
         this.error = error
@@ -56,10 +56,10 @@ export class FunctionCallAnalyzer {
     public mount(): void {
         this.watchHandle.value = [
             watch([this.functionHash], this.updateSignatureResponse, {immediate: true}),
-            watch([this.functionHash, this.contractAnalyzer.interface, this.signatureResponse, this.input], this.updateFunctionFragment, { immediate: true}),
-            watch([this.input, this.functionFragment], this.updateInputResult, { immediate: true}),
-            watch([this.output, this.functionFragment], this.updateOutputResult, { immediate: true}),
-            watch([this.error, this.contractAnalyzer.interface], this.updateErrorDescription, { immediate: true})
+            watch([this.functionHash, this.contractAnalyzer.interface, this.signatureResponse, this.input], this.updateFunctionFragment, {immediate: true}),
+            watch([this.input, this.functionFragment], this.updateInputResult, {immediate: true}),
+            watch([this.output, this.functionFragment], this.updateOutputResult, {immediate: true}),
+            watch([this.error, this.contractAnalyzer.interface], this.updateErrorDescription, {immediate: true})
         ]
         this.contractAnalyzer.mount()
     }
@@ -81,24 +81,24 @@ export class FunctionCallAnalyzer {
         this.errorDecodingFailure.value = null
     }
 
-    public readonly normalizedInput: ComputedRef<string|null> = computed(() => {
+    public readonly normalizedInput: ComputedRef<string | null> = computed(() => {
         return this.input.value == "0x" ? null : this.input.value
     })
 
-    public readonly normalizedOutput: ComputedRef<string|null> = computed(() => {
+    public readonly normalizedOutput: ComputedRef<string | null> = computed(() => {
         return this.output.value == "0x" ? null : this.output.value
     })
 
-    public readonly normalizedError: ComputedRef<string|null> = computed(() => {
+    public readonly normalizedError: ComputedRef<string | null> = computed(() => {
         return this.error.value == "0x" ? null : this.error.value
     })
 
-    public readonly functionHash: ComputedRef<string|null> = computed(() => {
+    public readonly functionHash: ComputedRef<string | null> = computed(() => {
         const input = this.normalizedInput.value
         return input !== null ? input.slice(0, 10) : null
     })
 
-    public readonly signature: ComputedRef<string|null> = computed(() => {
+    public readonly signature: ComputedRef<string | null> = computed(() => {
         return this.functionFragment.value?.format() ?? null
     })
 
@@ -106,11 +106,11 @@ export class FunctionCallAnalyzer {
         return this.is4byteFunctionFragment.value
     })
 
-    public readonly errorSignature: ComputedRef<string|null> = computed(() => {
+    public readonly errorSignature: ComputedRef<string | null> = computed(() => {
         return this.errorDescription.value?.signature ?? null
     })
 
-    public readonly errorHash: ComputedRef<string|null> = computed(() => {
+    public readonly errorHash: ComputedRef<string | null> = computed(() => {
         return this.errorDescription.value?.selector ?? null
     })
 
@@ -161,7 +161,7 @@ export class FunctionCallAnalyzer {
     })
 
     public readonly functionDecodingStatus = computed(() => {
-        let result: string|null
+        let result: string | null
         if (this.functionDecodingFailure.value !== null) {
             result = this.makeDecodingErrorMessage(this.functionDecodingFailure.value)
         } else {
@@ -171,7 +171,7 @@ export class FunctionCallAnalyzer {
     })
 
     public readonly inputDecodingStatus = computed(() => {
-        let result: string|null
+        let result: string | null
         if (this.inputDecodingFailure.value !== null) {
             result = this.makeDecodingErrorMessage(this.inputDecodingFailure.value)
         } else {
@@ -181,7 +181,7 @@ export class FunctionCallAnalyzer {
     })
 
     public readonly outputDecodingStatus = computed(() => {
-        let result: string|null
+        let result: string | null
 
         if (this.outputDecodingFailure.value !== null) {
             result = this.makeDecodingErrorMessage(this.outputDecodingFailure.value)
@@ -192,7 +192,7 @@ export class FunctionCallAnalyzer {
     })
 
     public readonly errorDecodingStatus = computed(() => {
-        let result: string|null
+        let result: string | null
         if (this.errorDecodingFailure.value !== null) {
             result = this.makeDecodingErrorMessage(this.errorDecodingFailure.value)
         } else {
@@ -202,7 +202,7 @@ export class FunctionCallAnalyzer {
     })
 
     public readonly inputArgsOnly = computed(() => {
-        let result: string|null
+        let result: string | null
         if (this.normalizedInput.value !== null) {
             result = "0x" + this.normalizedInput.value.slice(10) // "0x" + 2x4 bytes
         } else {
@@ -242,13 +242,13 @@ export class FunctionCallAnalyzer {
                     this.functionFragment.value = i.getFunction(functionHash)
                     this.functionDecodingFailure.value = null
                     this.is4byteFunctionFragment.value = false
-                } catch(failure) {
+                } catch (failure) {
                     this.functionFragment.value = null
                     this.functionDecodingFailure.value = failure
                     this.is4byteFunctionFragment.value = false
                 }
             } else if (r !== null && r.results.length >= 1) {
-                let r0: SignatureRecord|null
+                let r0: SignatureRecord | null
                 if (r.results.length == 1) {
                     r0 = r.results[0]
                 } else {
@@ -288,7 +288,7 @@ export class FunctionCallAnalyzer {
             try {
                 this.inputResult.value = ethers.AbiCoder.defaultAbiCoder().decode(ff.inputs, inputArgs)
                 this.inputDecodingFailure.value = null
-            } catch(failure) {
+            } catch (failure) {
                 this.inputResult.value = null
                 this.inputDecodingFailure.value = failure
             }
@@ -305,7 +305,7 @@ export class FunctionCallAnalyzer {
             try {
                 this.outputResult.value = ethers.AbiCoder.defaultAbiCoder().decode(ff.outputs, output)
                 this.outputDecodingFailure.value = null
-            } catch(failure) {
+            } catch (failure) {
                 this.outputResult.value = null
                 this.outputDecodingFailure.value = failure
             }
@@ -315,14 +315,14 @@ export class FunctionCallAnalyzer {
         }
     }
 
-    private readonly updateErrorDescription = async() => {
+    private readonly updateErrorDescription = async () => {
         const i = this.contractAnalyzer.interface.value
         const error = this.normalizedError.value
         if (i !== null && error !== null && error !== "0x") {
             try {
                 this.errorDescription.value = i.parseError(error)
                 this.errorDecodingFailure.value = null
-            } catch(failure) {
+            } catch (failure) {
                 this.errorDescription.value = null
                 this.errorDecodingFailure.value = failure
             }
@@ -332,12 +332,12 @@ export class FunctionCallAnalyzer {
         }
     }
 
-    private static resolveSignatureCollisions(records: SignatureRecord[], inputArgs: string): SignatureRecord|null {
+    private static resolveSignatureCollisions(records: SignatureRecord[], inputArgs: string): SignatureRecord | null {
         //
         // Some selectors (like 0x70a08231) have multiple signatures registered on 4bytes.directory.
         // We select the first signature which enables to decode inputArgs.
         //
-        let result: SignatureRecord|null = null
+        let result: SignatureRecord | null = null
         for (const r of records) {
             try {
                 const ff = ethers.FunctionFragment.from(r.text_signature)
@@ -347,12 +347,13 @@ export class FunctionCallAnalyzer {
                     result = r
                     break
                 }
-            } catch {}
+            } catch {
+            }
         }
         return result
     }
 
-    private makeComment(value: unknown, paramType: ethers.ParamType): string|null {
+    private makeComment(value: unknown, paramType: ethers.ParamType): string | null {
         if (this.contractAnalyzer.systemContractEntry.value !== null
             && paramType.name == "responseCode"
             && typeof value == "bigint") {
@@ -371,7 +372,8 @@ export class NameTypeValue {
     public readonly value: unknown
     public readonly indexed: boolean | null
     public readonly comment: string | null
-    public constructor(name: string, type: string, value: unknown, indexed: boolean|null = null, comment: string|null) {
+
+    public constructor(name: string, type: string, value: unknown, indexed: boolean | null = null, comment: string | null) {
         this.name = name
         this.type = type
         this.value = value

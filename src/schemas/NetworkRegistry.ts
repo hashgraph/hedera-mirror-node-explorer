@@ -41,9 +41,9 @@ export class NetworkEntry {
     public readonly displayName: string
     public readonly url: string
     public readonly ledgerID: string
-    public readonly sourcifySetup: SourcifySetup|null
+    public readonly sourcifySetup: SourcifySetup | null
 
-    constructor(name: string, displayName: string, url: string, ledgerID: string, sourcifySetup: SourcifySetup|null) {
+    constructor(name: string, displayName: string, url: string, ledgerID: string, sourcifySetup: SourcifySetup | null) {
         this.name = name
         this.displayName = displayName ?? name.toUpperCase()
         this.url = url
@@ -51,8 +51,8 @@ export class NetworkEntry {
         this.sourcifySetup = sourcifySetup
     }
 
-    static decode(encoding: Record<string, unknown>): NetworkEntry|null {
-        let result: NetworkEntry|null
+    static decode(encoding: Record<string, unknown>): NetworkEntry | null {
+        let result: NetworkEntry | null
 
         const name = encoding["name"]
         const displayName = encoding["displayName"]
@@ -163,7 +163,7 @@ export class NetworkRegistry {
     private static readonly DEFAULT_NETWORK = NetworkRegistry.MAIN_NETWORK
     private defaultEntry: NetworkEntry
 
-    public readonly entries: Ref<Array<NetworkEntry>> = ref ([
+    public readonly entries: Ref<Array<NetworkEntry>> = ref([
         {
             name: 'mainnet',
             displayName: 'MAINNET',
@@ -322,13 +322,13 @@ export class NetworkRegistry {
         let id = ledgerId + "000000000000";
         const h = []; // *** FIX ***
         if (id.length % 2 == 1) id = "0" + id;
-        for (let i=0; i<id.length; i+=2) {  // *** FIX ***
-            h.push(parseInt(id.substr(i,2),16));
+        for (let i = 0; i < id.length; i += 2) {  // *** FIX ***
+            h.push(parseInt(id.substr(i, 2), 16));
         }
         for (let i = 0; i < addr.length; i++) {
-            d.push(addr[i]=="." ? 10 : parseInt(addr[i],10));
+            d.push(addr[i] == "." ? 10 : parseInt(addr[i], 10));
         }
-        for (let i=0; i<d.length; i++) {
+        for (let i = 0; i < d.length; i++) {
             sd = (w * sd + d[i]) % p3;
             if (i % 2 == 0) {
                 sd0 = (sd0 + d[i]) % 11;
@@ -336,13 +336,13 @@ export class NetworkRegistry {
                 sd1 = (sd1 + d[i]) % 11;
             }
         }
-        for (let i=0; i<h.length; i++) {
+        for (let i = 0; i < h.length; i++) {
             sh = (w * sh + h[i]) % p5;
         }
         const c = ((((addr.length % 5) * 11 + sd0) * 11 + sd1) * p3 + sd + sh) % p5;  //the checksum, before the final permutation
         cp = (c * m) % p5;
 
-        for (let i=0; i<5; i++) {
+        for (let i = 0; i < 5; i++) {
             answer = String.fromCharCode(ascii_a + (cp % 26)) + answer;
             cp /= 26;
         }

@@ -35,7 +35,7 @@
 
         <hr class="h-card-separator"/>
 
-        <div class="is-flex is-align-items-baseline" >
+        <div class="is-flex is-align-items-baseline">
 
           <div v-if="mode === Mode.Success" class="icon is-medium has-text-success ml-0">
             <i class="fas fa-check"/>
@@ -43,7 +43,7 @@
           <div v-else-if="mode === Mode.Error" class="icon is-medium has-text-danger">
             <span style="font-size: 18px; font-weight: 900">X</span>
           </div>
-          <div v-else />
+          <div v-else/>
 
           <div v-if="mainMessage" class="block h-is-tertiary-text mt-2"> {{ mainMessage }}</div>
           <div v-else class="block h-is-tertiary-text" style="visibility: hidden">Filler</div>
@@ -87,15 +87,15 @@ export default defineComponent({
       default: Mode.Busy
     },
     mainMessage: {
-      type: String as PropType<string|null>,
+      type: String as PropType<string | null>,
       default: null
     },
     extraMessage: {
-      type: String as PropType<string|null>,
+      type: String as PropType<string | null>,
       default: null
     },
     extraTransactionId: {
-      type: String as PropType<string|null>,
+      type: String as PropType<string | null>,
       default: null
     },
     showSpinner: Boolean

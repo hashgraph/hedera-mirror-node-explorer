@@ -24,34 +24,34 @@
 
 <template>
 
-    <template v-if="outputs && outputs.length >= 1">
+  <template v-if="outputs && outputs.length >= 1">
 
-        <div class="h-is-tertiary-text my-2">Output</div>
+    <div class="h-is-tertiary-text my-2">Output</div>
 
-        <template v-for="result in outputs" :key="result.name">
-            <Property :custom-nb-col-class="customNbColClass">
-                <template v-slot:name>{{ result.name }}</template>
-                <template v-slot:value>
-                    <FunctionValue :ntv="result"/>
-                </template>
-            </Property>
+    <template v-for="result in outputs" :key="result.name">
+      <Property :custom-nb-col-class="customNbColClass">
+        <template v-slot:name>{{ result.name }}</template>
+        <template v-slot:value>
+          <FunctionValue :ntv="result"/>
         </template>
-
+      </Property>
     </template>
-    <template v-else>
 
-        <Property :custom-nb-col-class="customNbColClass" id="functionOutput">
-            <template v-slot:name>Output Result</template>
-            <template v-slot:value>
-                <ByteCodeValue :byte-code="output ?? undefined" :height-in-pixel="140"/>
-                <div v-if="outputDecodingStatus" class="h-is-extra-text h-is-text-size-3">
-                    <span class="icon fas fa-exclamation-circle has-text-grey is-small mt-1 mr-1"/>
-                    <span>{{ outputDecodingStatus }}</span>
-                </div>
-            </template>
-        </Property>
+  </template>
+  <template v-else>
 
-    </template>
+    <Property :custom-nb-col-class="customNbColClass" id="functionOutput">
+      <template v-slot:name>Output Result</template>
+      <template v-slot:value>
+        <ByteCodeValue :byte-code="output ?? undefined" :height-in-pixel="140"/>
+        <div v-if="outputDecodingStatus" class="h-is-extra-text h-is-text-size-3">
+          <span class="icon fas fa-exclamation-circle has-text-grey is-small mt-1 mr-1"/>
+          <span>{{ outputDecodingStatus }}</span>
+        </div>
+      </template>
+    </Property>
+
+  </template>
 
 </template>
 

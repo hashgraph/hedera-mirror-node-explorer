@@ -32,9 +32,9 @@
   <ConfirmDialog v-model:show-dialog="stopConfirmDialogVisible" @onConfirm="handleStopStaking"
                  :main-message="'Do you want to stop staking to ' + stakedTo +'?'">
     <template v-slot:dialogTitle>
-            <span class="h-is-primary-title">My Staking </span>
-            <span v-if="accountId" class="h-is-tertiary-text"> for account </span>
-            <span v-if="accountId" class="h-is-secondary-text has-text-weight-light mr-3">{{ accountId }}</span>
+      <span class="h-is-primary-title">My Staking </span>
+      <span v-if="accountId" class="h-is-tertiary-text"> for account </span>
+      <span v-if="accountId" class="h-is-secondary-text has-text-weight-light mr-3">{{ accountId }}</span>
     </template>
   </ConfirmDialog>
 
@@ -87,10 +87,11 @@
         <template v-if="accountId">
           <div v-if="isSmallScreen">
             <div class="is-flex is-justify-content-space-between">
-              <NetworkDashboardItem :name="stakePeriodStart ? ('since ' + stakePeriodStart) : undefined" title="Staked to">
+              <NetworkDashboardItem :name="stakePeriodStart ? ('since ' + stakePeriodStart) : undefined"
+                                    title="Staked to">
                 <template v-slot:value>
                   <div class="is-inline-block">
-                    <span v-if="isStakedToNode"  class="icon has-text-info mr-2" style="font-size: 20px">
+                    <span v-if="isStakedToNode" class="icon has-text-info mr-2" style="font-size: 20px">
                       <i v-if="isCouncilNode" class="fas fa-building"></i>
                       <i v-else class="fas fa-users"></i>
                     </span>
@@ -119,13 +120,16 @@
             <div class="is-flex is-justify-content-space-between mt-5">
               <div v-if="isHederaWallet" class="is-flex is-justify-content-flex-start">
                 <button id="stopStakingButton" class="button is-white is-small"
-                        :disabled="!stakedTo" @click="showStopConfirmDialog">STOP STAKING</button>
-                <button id="showStakingDialog" class="button is-white is-small ml-4" @click="showStakingDialog">CHANGE STAKING</button>
+                        :disabled="!stakedTo" @click="showStopConfirmDialog">STOP STAKING
+                </button>
+                <button id="showStakingDialog" class="button is-white is-small ml-4" @click="showStakingDialog">CHANGE
+                  STAKING
+                </button>
               </div>
               <div v-else>
-                  <p class="h-is-tertiary-text has-text-grey h-is-text-size-5">
-                      To change your staking options use Blade or HashPack.
-                  </p>
+                <p class="h-is-tertiary-text has-text-grey h-is-text-size-5">
+                  To change your staking options use Blade or HashPack.
+                </p>
               </div>
             </div>
             <div v-if="isHederaWallet" class="mt-5 h-is-text-size-2 is-italic has-text-grey has-text-centered">
@@ -154,11 +158,14 @@
 
               <div class="mt-4"/>
             </div>
-              <div v-if="isHederaWallet" class="is-flex is-justify-content-center">
-                  <button id="stopStakingButtonSmall" class="button is-white is-small"
-                          :disabled="!stakedTo" @click="showStopConfirmDialog">STOP STAKING</button>
-                  <button id="showStakingDialogSmall" class="button is-white is-small ml-4" @click="showStakingDialog">CHANGE STAKED TO</button>
-              </div>
+            <div v-if="isHederaWallet" class="is-flex is-justify-content-center">
+              <button id="stopStakingButtonSmall" class="button is-white is-small"
+                      :disabled="!stakedTo" @click="showStopConfirmDialog">STOP STAKING
+              </button>
+              <button id="showStakingDialogSmall" class="button is-white is-small ml-4" @click="showStakingDialog">
+                CHANGE STAKED TO
+              </button>
+            </div>
             <div v-if="isHederaWallet" class="mt-5 h-is-text-size-2 is-italic has-text-grey has-text-centered">
               <span class="has-text-grey-light">Please Note: </span>
               Your full balance is automatically staked.<br/>
@@ -276,10 +283,10 @@ export default defineComponent({
     const showErrorDialog = ref(false)
     const showProgressDialog = ref(false)
     const progressDialogMode = ref(Mode.Busy)
-    const progressDialogTitle = ref<string|null>(null)
-    const progressMainMessage = ref<string|null>(null)
-    const progressExtraMessage = ref<string|null>(null)
-    const progressExtraTransactionId = ref<string|null>(null)
+    const progressDialogTitle = ref<string | null>(null)
+    const progressMainMessage = ref<string | null>(null)
+    const progressExtraMessage = ref<string | null>(null)
+    const progressExtraTransactionId = ref<string | null>(null)
     const showProgressSpinner = ref(false)
     const showDownloadDialog = ref(false)
 
@@ -296,25 +303,25 @@ export default defineComponent({
       walletManager.setActiveDriver(wallet)
       connecting.value = true
       try {
-          await walletManager.connect()
-      } catch(reason) {
-          if (!(reason instanceof WalletDriverCancelError)) {
-              showProgressDialog.value = true
-              progressDialogMode.value = Mode.Error
-              progressDialogTitle.value = "Could not connect wallet"
-              showProgressSpinner.value = false
-              progressExtraTransactionId.value = null
+        await walletManager.connect()
+      } catch (reason) {
+        if (!(reason instanceof WalletDriverCancelError)) {
+          showProgressDialog.value = true
+          progressDialogMode.value = Mode.Error
+          progressDialogTitle.value = "Could not connect wallet"
+          showProgressSpinner.value = false
+          progressExtraTransactionId.value = null
 
-              if (reason instanceof WalletDriverError) {
-                  progressMainMessage.value = reason.message
-                  progressExtraMessage.value = reason.extra
-              } else {
-                  progressMainMessage.value = "Unexpected error"
-                  progressExtraMessage.value = JSON.stringify(reason)
-              }
+          if (reason instanceof WalletDriverError) {
+            progressMainMessage.value = reason.message
+            progressExtraMessage.value = reason.extra
+          } else {
+            progressMainMessage.value = "Unexpected error"
+            progressExtraMessage.value = JSON.stringify(reason)
           }
+        }
       } finally {
-          connecting.value = false
+        connecting.value = false
       }
     }
 
@@ -330,7 +337,7 @@ export default defineComponent({
     const isStaked = computed(() => isStakedToNode.value || isStakedToAccount.value)
 
     const stakedTo = computed(() => {
-      let result: string|null
+      let result: string | null
       if (isStakedToAccount.value) {
         result = "Account " + accountLocParser.stakedAccountId.value
       } else if (isStakedToNode.value) {
@@ -355,12 +362,11 @@ export default defineComponent({
     const stakedAmount = computed(() => isStaked.value ? formatHbarAmount(accountLocParser.balance.value) : null)
 
     const formatHbarAmount = (amount: number | null) => {
-      let result: string|null
+      let result: string | null
       if (amount) {
         const amountFormatter = new Intl.NumberFormat("en-US", {maximumFractionDigits: 8})
         result = amountFormatter.format(amount / 100000000)
-      }
-      else {
+      } else {
         result = null
       }
       return result
@@ -388,7 +394,7 @@ export default defineComponent({
       if (walletManager.isHederaWallet.value) {
         stopConfirmDialogVisible.value = true
       } else {
-          notWithMetamaskDialogVisible.value = true
+        notWithMetamaskDialogVisible.value = true
       }
     }
 
@@ -397,18 +403,18 @@ export default defineComponent({
     }
 
     const showStakingDialog = () => {
-        if (walletManager.isHederaWallet.value) {
-            stakingDialogVisible.value = true
-        } else {
-            notWithMetamaskDialogVisible.value = true
-        }
+      if (walletManager.isHederaWallet.value) {
+        stakingDialogVisible.value = true
+      } else {
+        notWithMetamaskDialogVisible.value = true
+      }
     }
 
-    const handleChangeStaking = (nodeId: number|null, accountId: string|null, declineReward: boolean|null) => {
+    const handleChangeStaking = (nodeId: number | null, accountId: string | null, declineReward: boolean | null) => {
       changeStaking(nodeId, accountId, declineReward)
     }
 
-    const changeStaking = async (nodeId: number|null, accountId: string|null, declineReward: boolean|null) => {
+    const changeStaking = async (nodeId: number | null, accountId: string | null, declineReward: boolean | null) => {
 
       try {
 
@@ -431,22 +437,22 @@ export default defineComponent({
         progressExtraMessage.value = "with transaction ID:"
         progressExtraTransactionId.value = transactionId
 
-      } catch(error) {
+      } catch (error) {
 
-          if (error instanceof WalletDriverCancelError) {
-              showProgressDialog.value = false
+        if (error instanceof WalletDriverCancelError) {
+          showProgressDialog.value = false
+        } else {
+          progressDialogMode.value = Mode.Error
+          if (error instanceof WalletDriverError) {
+            progressMainMessage.value = error.message
+            progressExtraMessage.value = error.extra
           } else {
-              progressDialogMode.value = Mode.Error
-              if (error instanceof WalletDriverError) {
-                  progressMainMessage.value = error.message
-                  progressExtraMessage.value = error.extra
-              } else {
-                  progressMainMessage.value = "Operation did not complete"
-                  progressExtraMessage.value = JSON.stringify(error)
-              }
-              progressExtraTransactionId.value = null
-              showProgressSpinner.value = false
+            progressMainMessage.value = "Operation did not complete"
+            progressExtraMessage.value = JSON.stringify(error)
           }
+          progressExtraTransactionId.value = null
+          showProgressSpinner.value = false
+        }
 
       } finally {
         accountLocParser.remount()
@@ -458,16 +464,16 @@ export default defineComponent({
       let result: Promise<Transaction | string>
 
       try {
-          let counter = 10
-          let transaction: Transaction|null = null
-          while (counter > 0 && transaction === null) {
-              await waitFor(props.polling)
-              transaction = await TransactionByIdCache.instance.lookup(transactionId, true)
-              counter -= 1
-          }
-          result = Promise.resolve(transaction ?? transactionId)
+        let counter = 10
+        let transaction: Transaction | null = null
+        while (counter > 0 && transaction === null) {
+          await waitFor(props.polling)
+          transaction = await TransactionByIdCache.instance.lookup(transactionId, true)
+          counter -= 1
+        }
+        result = Promise.resolve(transaction ?? transactionId)
       } catch {
-          result = Promise.resolve(transactionId)
+        result = Promise.resolve(transactionId)
       }
 
       return result

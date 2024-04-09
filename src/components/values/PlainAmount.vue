@@ -42,7 +42,7 @@ export default defineComponent({
 
   props: {
     amount: {
-      type: Number as PropType<number|null>,
+      type: Number as PropType<number | null>,
       default: null
     },
     noneLabel: {
@@ -53,12 +53,12 @@ export default defineComponent({
 
   setup(props) {
     const formattedAmount = computed(() => {
-      let result: string|null
-        if (props.amount !== null && !isNaN(props.amount)) {
-          result = props.amount.toLocaleString()
-        } else {
-          result = null
-        }
+      let result: string | null
+      if (props.amount !== null && !isNaN(props.amount)) {
+        result = props.amount.toLocaleString()
+      } else {
+        result = null
+      }
       return result
     })
 

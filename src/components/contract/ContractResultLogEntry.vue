@@ -57,13 +57,14 @@
       <template v-slot:value>
         <!-- not verified -->
         <div v-if="!isContractVerified" class="is-flex is-flex-direction-column mt-1" style="gap: 0.75rem;">
-          <div v-for="(t, ti) in log.topics" :class="{'unverif-log-args-prop': !isMediumScreen || !isSmallScreen}" :key="t" class="is-flex" style="gap: 1rem;">
+          <div v-for="(t, ti) in log.topics" :class="{'unverif-log-args-prop': !isMediumScreen || !isSmallScreen}"
+               :key="t" class="is-flex" style="gap: 1rem;">
             <div class="topic-title-box">
               <span style="font-size: 0.85rem">{{ 'Topic ' + ti }}</span>
             </div>
-            
+
             <HexaValue :show-none="true" v-bind:byteString="t" :low-contrast="ti === 0"
-            :word-wrap-small="0" :word-wrap-medium="8"/>
+                       :word-wrap-small="0" :word-wrap-medium="8"/>
           </div>
         </div>
 
@@ -73,25 +74,25 @@
 
           <template v-for="(arg, i) in args" :key="arg.name">
             <PropertyVertical :id="'logArg_' + arg.name" :full-width="true" :is-horizontal="!isMediumScreen">
-                <template v-slot:name>
-                  <div class="is-flex is-align-items-center" style="gap: 0.5rem;">
-                    <div v-if="arg.indexed" class="topic-title-box">
-                      <span style="font-size: 0.85rem">{{ 'Topic ' + i }}</span>
-                    </div>  
-                    <span class="h-is-property-text is-italic log-arg-title">
+              <template v-slot:name>
+                <div class="is-flex is-align-items-center" style="gap: 0.5rem;">
+                  <div v-if="arg.indexed" class="topic-title-box">
+                    <span style="font-size: 0.85rem">{{ 'Topic ' + i }}</span>
+                  </div>
+                  <span class="h-is-property-text is-italic log-arg-title">
                       <span class="h-is-extra-text">
                         {{ arg.type }}
                       </span>
-                      {{" " + arg.name }}
+                      {{ " " + arg.name }}
                     </span>
-                  </div>
+                </div>
 
-                </template>
-                <template v-slot:value>
-                    <FunctionValue :ntv="arg" :hide-type="true" :low-contrast="i === 0"/>
-                </template>
+              </template>
+              <template v-slot:value>
+                <FunctionValue :ntv="arg" :hide-type="true" :low-contrast="i === 0"/>
+              </template>
             </PropertyVertical>
-        </template>
+          </template>
         </div>
       </template>
     </PropertyVertical>
@@ -120,42 +121,51 @@ import BlockLink from "@/components/values/BlockLink.vue";
 
 export default defineComponent({
   name: "ContractResultLogEntry",
-  components: {BlockLink, FunctionValue, SignatureValue, EVMAddress, HexaValue, StringValue, PropertyVertical, DashboardCard },
+  components: {
+    BlockLink,
+    FunctionValue,
+    SignatureValue,
+    EVMAddress,
+    HexaValue,
+    StringValue,
+    PropertyVertical,
+    DashboardCard
+  },
   props: {
     log: {
-        type: Object as PropType<ContractLog | null>,
-        default: null
+      type: Object as PropType<ContractLog | null>,
+      default: null
     },
     blockNumber: {
-      type:  Number,
+      type: Number,
     },
     transactionHash: {
       type: String
     }
   },
   setup(props) {
-      const isSmallScreen = inject('isSmallScreen', true)
-      const isMediumScreen = inject('isMediumScreen', true)
-      const isTouchDevice = inject('isTouchDevice', false)
+    const isSmallScreen = inject('isSmallScreen', true)
+    const isMediumScreen = inject('isMediumScreen', true)
+    const isTouchDevice = inject('isTouchDevice', false)
 
-      const blockNumberToShow = computed(() => props.blockNumber || props.log?.block_number)
-      const txHashToShow = computed(() => props.transactionHash || props.log?.transaction_hash)
+    const blockNumberToShow = computed(() => props.blockNumber || props.log?.block_number)
+    const txHashToShow = computed(() => props.transactionHash || props.log?.transaction_hash)
 
-      const logAnalyzer = new ContractLogAnalyzer(computed(() => props.log))
-      onMounted(() => logAnalyzer.mount())
-      onBeforeUnmount(() => logAnalyzer.unmount())
+    const logAnalyzer = new ContractLogAnalyzer(computed(() => props.log))
+    onMounted(() => logAnalyzer.mount())
+    onBeforeUnmount(() => logAnalyzer.unmount())
 
-      return {
-          isSmallScreen,
-          isMediumScreen,
-          isTouchDevice,
-          args: logAnalyzer.args,
-          signature: logAnalyzer.signature,
-          fullLogSignature: logAnalyzer.fullLogSignature,
-          blockNumberToShow,
-          txHashToShow,
-          isContractVerified: logAnalyzer.isContractVerified
-      }
+    return {
+      isSmallScreen,
+      isMediumScreen,
+      isTouchDevice,
+      args: logAnalyzer.args,
+      signature: logAnalyzer.signature,
+      fullLogSignature: logAnalyzer.fullLogSignature,
+      blockNumberToShow,
+      txHashToShow,
+      isContractVerified: logAnalyzer.isContractVerified
+    }
   }
 })
 
@@ -168,16 +178,16 @@ export default defineComponent({
 <style scoped>
 
 .log-wrapper-grid {
-  position: relative; 
-  display: grid; 
-  column-gap: 3rem; 
+  position: relative;
+  display: grid;
+  column-gap: 3rem;
   grid-template-columns: repeat(19, minmax(0, 1fr));
 }
 
 .log-left-content-grid {
-  grid-column: span 5; 
-  display: flex; 
-  flex-direction: column; 
+  grid-column: span 5;
+  display: flex;
+  flex-direction: column;
   gap: 1rem;
 }
 
@@ -193,24 +203,24 @@ export default defineComponent({
 }
 
 .topic-title-box {
-  border: 1px solid grey; 
-  width: 70px; 
-  text-align: center; 
-  padding: 3px 0; 
+  border: 1px solid grey;
+  width: 70px;
+  text-align: center;
+  padding: 3px 0;
   border-radius: 3px;
 }
 
 .log-content-box {
-  border: 1px solid grey; 
-  padding: 9px; 
-  border-radius: 3px; 
-  display: flex; 
-  flex-direction: column; 
+  border: 1px solid grey;
+  padding: 9px;
+  border-radius: 3px;
+  display: flex;
+  flex-direction: column;
   gap: 0.75rem
 }
 
 .log-arg-title {
-  font-size: small; 
+  font-size: small;
   letter-spacing: -0.025em;
 }
 </style>

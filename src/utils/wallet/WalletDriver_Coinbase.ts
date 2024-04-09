@@ -64,7 +64,7 @@ export class WalletDriver_Coinbase extends WalletDriver_Ethereum {
                     result.push(accountInfo.account)
                 }
             }
-        } catch(reason) {
+        } catch (reason) {
             if (this.isCancelError(reason)) {
                 throw new WalletDriverCancelError()
             } else {

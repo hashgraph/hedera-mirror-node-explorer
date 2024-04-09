@@ -24,8 +24,8 @@ import {Resolver} from '@hedera-name-service/hns-resolution-sdk'
 let _nameService: Resolver | null = null
 
 export function hnsSetNetwork(name: string): void {
-    let service: string|null
-    switch(name) {
+    let service: string | null
+    switch (name) {
         case "mainnet":
             service = "hedera_main"
             break
@@ -39,7 +39,7 @@ export function hnsSetNetwork(name: string): void {
     if (service !== null) {
         try {
             _nameService = new Resolver(service as any)
-        } catch(reason) {
+        } catch (reason) {
             _nameService = null
             console.log("Failed to initialize HNS resolver")
             console.log("reason=" + reason)

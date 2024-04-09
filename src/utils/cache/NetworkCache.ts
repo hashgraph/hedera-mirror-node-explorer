@@ -32,13 +32,13 @@ export class NetworkCache extends SingletonCache<NetworkNode[]> {
 
     protected async load(): Promise<NetworkNode[]> {
         let result: NetworkNode[] = []
-        let nextURL: string|null = "api/v1/network/nodes"
+        let nextURL: string | null = "api/v1/network/nodes"
         const params = {
             limit: 25
         }
         while (nextURL !== null) {
             const response: AxiosResponse<NetworkNodesResponse>
-                = await axios.get<NetworkNodesResponse>(nextURL, { params: params})
+                = await axios.get<NetworkNodesResponse>(nextURL, {params: params})
             result = result.concat(response.data.nodes ?? [])
             nextURL = response.data.links?.next ?? null
         }

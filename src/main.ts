@@ -23,9 +23,9 @@ import App from './App.vue'
 import router from './router'
 import axios from 'axios'
 import Oruga from '@oruga-ui/oruga-next'
-import { FontAwesomeIcon } from "@fortawesome/vue-fontawesome";
-import { library } from "@fortawesome/fontawesome-svg-core";
-import { faForward } from "@fortawesome/free-solid-svg-icons";
+import {FontAwesomeIcon} from "@fortawesome/vue-fontawesome";
+import {library} from "@fortawesome/fontawesome-svg-core";
+import {faForward} from "@fortawesome/free-solid-svg-icons";
 
 import "./fonts/styreneA/1802-UFGULA.css";
 import "./fonts/novamono/stylesheet.css";

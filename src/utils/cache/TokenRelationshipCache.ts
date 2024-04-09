@@ -33,10 +33,10 @@ export class TokenRelationshipCache extends EntityCache<string, TokenRelationshi
     protected async load(accountId: string): Promise<TokenRelationship[] | null> {
         let result: TokenRelationship[] = []
 
-        let url: string|null = "api/v1/accounts/" + accountId + "/tokens?limit=100"
+        let url: string | null = "api/v1/accounts/" + accountId + "/tokens?limit=100"
         let counter = 10
         while (url !== null && counter > 0) {
-            const response:AxiosResponse<TokenRelationshipResponse> = await axios.get<TokenRelationshipResponse>(url)
+            const response: AxiosResponse<TokenRelationshipResponse> = await axios.get<TokenRelationshipResponse>(url)
             if (response.data.tokens) {
                 result = result.concat(response.data.tokens)
             }

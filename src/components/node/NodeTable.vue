@@ -91,16 +91,24 @@
             <div class="reward-range-tooltip">
               <div class="caption has-background-success has-text-right"></div>
               <p class="has-text-left">Rewarded:</p>
-              <div class="has-text-weight-normal has-text-right"><HbarAmount :amount="props.row.stake_rewarded ?? 0" :decimals="0"/></div>
+              <div class="has-text-weight-normal has-text-right">
+                <HbarAmount :amount="props.row.stake_rewarded ?? 0" :decimals="0"/>
+              </div>
               <div class="caption has-background-info"></div>
               <p class="has-text-left">Not Rewarded:</p>
-              <div class="has-text-weight-normal has-text-right"><HbarAmount :amount="props.row.stake_not_rewarded ?? 0" :decimals="0"/></div>
+              <div class="has-text-weight-normal has-text-right">
+                <HbarAmount :amount="props.row.stake_not_rewarded ?? 0" :decimals="0"/>
+              </div>
               <div/>
               <p class="has-text-left">Min:</p>
-              <div class="has-text-weight-normal has-text-right"><HbarAmount :amount="props.row.min_stake ?? 0" :decimals="0"/></div>
+              <div class="has-text-weight-normal has-text-right">
+                <HbarAmount :amount="props.row.min_stake ?? 0" :decimals="0"/>
+              </div>
               <div/>
               <p class="has-text-left">Max:</p>
-              <div class="has-text-weight-normal has-text-right"><HbarAmount :amount="props.row.max_stake ?? 0" :decimals="0"/></div>
+              <div class="has-text-weight-normal has-text-right">
+                <HbarAmount :amount="props.row.max_stake ?? 0" :decimals="0"/>
+              </div>
             </div>
           </template>
         </o-tooltip>
@@ -216,6 +224,7 @@ export default defineComponent({
   padding-top: 0;
   padding-bottom: 0;
 }
+
 .regular-node-column {
   padding-top: 8px;
   padding-bottom: 8px;

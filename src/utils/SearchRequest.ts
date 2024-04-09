@@ -45,14 +45,14 @@ import {routeManager} from "@/router";
 export class SearchRequest {
 
     public readonly searchedId: string
-    public account: AccountInfo|null = null
+    public account: AccountInfo | null = null
     public accountsWithKey = Array<AccountInfo>()
     public transactions = Array<Transaction>()
-    public tokenInfo: TokenInfo|null = null
+    public tokenInfo: TokenInfo | null = null
     public topicMessages = Array<TopicMessage>()
-    public contract: ContractResponse|null = null
-    public block: Block|null = null
-    public ethereumAddress: string|null = null
+    public contract: ContractResponse | null = null
+    public block: Block | null = null
+    public ethereumAddress: string | null = null
 
     private errorCount = 0
 
@@ -118,7 +118,7 @@ export class SearchRequest {
 
         let promises: Promise<void>[]
         if (entityID !== null) {
-            let safeEntityID: EntityID|null
+            let safeEntityID: EntityID | null
             if (entityID.checksum !== null) {
                 // Search string is an entity id with a checksum : we check it's valid
                 const network = routeManager.currentNetwork.value
@@ -145,7 +145,7 @@ export class SearchRequest {
                 this.searchTransaction(transactionID)
             ]
         } else if (hexBytes !== null) {
-            switch(hexBytes.length) {
+            switch (hexBytes.length) {
                 case 48: // Hedera Hash for transaction or block
                     promises = [
                         this.searchTransaction(hexBytes),
@@ -226,7 +226,7 @@ export class SearchRequest {
     }
 
 
-    private async searchAccount(accountParam: EntityID|Uint8Array|string): Promise<void> {
+    private async searchAccount(accountParam: EntityID | Uint8Array | string): Promise<void> {
 
         try {
             if (accountParam instanceof Uint8Array && (accountParam.length == 32 || accountParam.length == 33)) {
@@ -249,26 +249,26 @@ export class SearchRequest {
                 const r = await axios.get<AccountBalanceTransactions>("api/v1/accounts/" + accountLoc)
                 this.account = r.data
             }
-        } catch(reason: unknown) {
+        } catch (reason: unknown) {
             this.updateErrorCount(reason)
         }
 
         return Promise.resolve()
     }
 
-    private async searchContract(contractParam: EntityID|Uint8Array): Promise<void> {
+    private async searchContract(contractParam: EntityID | Uint8Array): Promise<void> {
         try {
             const l = contractParam instanceof EntityID ? contractParam.toString() : byteToHex(contractParam)
             // https://testnet.mirrornode.hedera.com/api/v1/docs/#/contracts/getContractById
             const r = await axios.get<ContractResponse>("api/v1/contracts/" + l)
             this.contract = r.data
-        } catch(reason: unknown) {
+        } catch (reason: unknown) {
             this.updateErrorCount(reason)
         }
         return Promise.resolve()
     }
 
-    private async searchToken(tokenParam: EntityID|Uint8Array): Promise<void> {
+    private async searchToken(tokenParam: EntityID | Uint8Array): Promise<void> {
         try {
             const i = tokenParam instanceof EntityID ?
                 tokenParam : EntityID.fromAddress(byteToHex(tokenParam))
@@ -277,7 +277,7 @@ export class SearchRequest {
                 const r = await axios.get<TokenInfo>("api/v1/tokens/" + i)
                 this.tokenInfo = r.data
             }
-        } catch(reason: unknown) {
+        } catch (reason: unknown) {
             this.updateErrorCount(reason)
         }
         return Promise.resolve()
@@ -285,17 +285,17 @@ export class SearchRequest {
 
     private async searchTopic(topicID: EntityID): Promise<void> {
         try {
-            const params = { order: "desc", limit: "1" }
+            const params = {order: "desc", limit: "1"}
             // https://testnet.mirrornode.hedera.com/api/v1/docs/#/topics/listTopicMessagesById
             const r = await axios.get<TopicMessagesResponse>("api/v1/topics/" + topicID.toString() + "/messages", {params})
             this.topicMessages = r.data.messages ?? []
-        } catch(reason: unknown) {
+        } catch (reason: unknown) {
             this.updateErrorCount(reason)
         }
         return Promise.resolve()
     }
 
-    private async searchTransaction(transactionParam: TransactionID|Timestamp|Uint8Array): Promise<void> {
+    private async searchTransaction(transactionParam: TransactionID | Timestamp | Uint8Array): Promise<void> {
 
         try {
             if (transactionParam instanceof TransactionID) {
@@ -318,7 +318,7 @@ export class SearchRequest {
                 this.transactions = r2.data.transactions ?? []
             }
 
-        } catch(reason: unknown) {
+        } catch (reason: unknown) {
             this.updateErrorCount(reason)
         }
     }
@@ -328,7 +328,7 @@ export class SearchRequest {
             // https://testnet.mirrornode.hedera.com/api/v1/docs/#/blocks/getByHashOrNumber
             const r = await axios.get<Block>("api/v1/blocks/" + byteToHex(blockHash))
             this.block = r.data
-        } catch(reason: unknown) {
+        } catch (reason: unknown) {
             this.updateErrorCount(reason)
         }
         return Promise.resolve()
@@ -336,12 +336,12 @@ export class SearchRequest {
 
     private async searchNamingService(name: string): Promise<void> {
         try {
-            const promises: Promise<string|null>[] = [
+            const promises: Promise<string | null>[] = [
                 knsResolve(name),
                 hnsResolve(name)
             ]
             const responses = await Promise.allSettled(promises)
-            let accountId: string|null = null
+            let accountId: string | null = null
             for (const r of responses) {
                 if (r.status == "fulfilled" && r.value !== null) {
                     accountId = r.value
@@ -353,7 +353,7 @@ export class SearchRequest {
             } else {
                 this.account = null
             }
-        } catch(reason: unknown) {
+        } catch (reason: unknown) {
             this.updateErrorCount(reason)
         }
         return Promise.resolve()

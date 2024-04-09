@@ -67,7 +67,7 @@ export default defineComponent({
   name: "AccountLink",
 
   props: {
-    accountId: String as PropType<string|null>,
+    accountId: String as PropType<string | null>,
     showExtra: {
       type: Boolean,
       default: false
@@ -111,8 +111,7 @@ export default defineComponent({
         } else {
           result = routeManager.makeRouteToAccount(accountId)
         }
-      }
-      catch {
+      } catch {
         result = null
       }
       return Promise.resolve(result)

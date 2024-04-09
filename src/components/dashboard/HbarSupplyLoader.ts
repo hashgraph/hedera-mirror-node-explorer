@@ -29,9 +29,9 @@ export class HbarSupplyLoader extends AutoRefreshLoader<NetworkSupplyResponse> {
     // Public
     //
 
-    public readonly deltaSeconds: number|null
+    public readonly deltaSeconds: number | null
 
-    public constructor(deltaSeconds: number|null = null) {
+    public constructor(deltaSeconds: number | null = null) {
         // Refresh every 10 min, forever
         super(600000, AutoRefreshLoader.HUGE_COUNT)
         this.deltaSeconds = deltaSeconds

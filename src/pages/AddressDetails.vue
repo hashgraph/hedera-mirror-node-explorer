@@ -52,12 +52,12 @@ export default defineComponent({
 
   setup(props) {
 
-    const getContractId = async (evmAddress: string): Promise<string|null> => {
+    const getContractId = async (evmAddress: string): Promise<string | null> => {
       const contract = await ContractByAddressCache.instance.lookup(evmAddress)
       return Promise.resolve(contract?.contract_id ?? null)
     }
 
-    const getAccountId = async (evmAddress: string): Promise<string|null> => {
+    const getAccountId = async (evmAddress: string): Promise<string | null> => {
       const account = await AccountByAddressCache.instance.lookup(evmAddress)
       return Promise.resolve(account?.account ?? null)
     }

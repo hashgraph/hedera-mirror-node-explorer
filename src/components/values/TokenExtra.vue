@@ -89,7 +89,7 @@ export default defineComponent({
 
     const tokenRoute = computed(() => props.tokenId ? routeManager.makeRouteToToken(props.tokenId) : null)
 
-    return { extra, tokenRoute }
+    return {extra, tokenRoute}
   }
 });
 

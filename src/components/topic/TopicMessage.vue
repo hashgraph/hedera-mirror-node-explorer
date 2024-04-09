@@ -24,37 +24,37 @@
 
 <template>
 
-    <DashboardCard v-if="message" class="h-card" collapsible-key="messageSubmitted">
-      <template v-slot:title>
-        <span class="h-is-secondary-title">Message Submitted</span>
-      </template>
-      <template v-slot:content>
-        <Property id="sequenceNumber" :full-width="true">
-          <template v-slot:name>Sequence Number</template>
-          <template v-slot:value>
-            {{ sequence_number }}
-          </template>
-        </Property>
-        <Property id="message" :full-width="true">
-          <template v-slot:name>Message</template>
-          <template v-slot:value>
-            <BlobValue :blob-value="messageContent" :show-none="true" :base64="true" :pretty="true"/>
-          </template>
-        </Property>
-        <Property id="runningHashVersion" :full-width="true">
-          <template v-slot:name>Running Hash Version</template>
-          <template v-slot:value>
-            <PlainAmount :amount="running_hash_version"/>
-          </template>
-        </Property>
-        <Property id="runningHash" :full-width="true">
-          <template v-slot:name>Running Hash</template>
-          <template v-slot:value>
-            <BlobValue :blob-value="running_hash" :show-none="true"/>
-          </template>
-        </Property>
-      </template>
-    </DashboardCard>
+  <DashboardCard v-if="message" class="h-card" collapsible-key="messageSubmitted">
+    <template v-slot:title>
+      <span class="h-is-secondary-title">Message Submitted</span>
+    </template>
+    <template v-slot:content>
+      <Property id="sequenceNumber" :full-width="true">
+        <template v-slot:name>Sequence Number</template>
+        <template v-slot:value>
+          {{ sequence_number }}
+        </template>
+      </Property>
+      <Property id="message" :full-width="true">
+        <template v-slot:name>Message</template>
+        <template v-slot:value>
+          <BlobValue :blob-value="messageContent" :show-none="true" :base64="true" :pretty="true"/>
+        </template>
+      </Property>
+      <Property id="runningHashVersion" :full-width="true">
+        <template v-slot:name>Running Hash Version</template>
+        <template v-slot:value>
+          <PlainAmount :amount="running_hash_version"/>
+        </template>
+      </Property>
+      <Property id="runningHash" :full-width="true">
+        <template v-slot:name>Running Hash</template>
+        <template v-slot:value>
+          <BlobValue :blob-value="running_hash" :show-none="true"/>
+        </template>
+      </Property>
+    </template>
+  </DashboardCard>
 
 </template>
 
@@ -83,7 +83,7 @@ export default defineComponent({
   },
 
   props: {
-    message: Object as PropType<TopicMessage|null>
+    message: Object as PropType<TopicMessage | null>
   },
 
   setup(props) {
@@ -96,7 +96,7 @@ export default defineComponent({
 
     const running_hash_version = computed(() => props.message?.running_hash_version ?? null)
 
-    const running_hash = computed(() =>props.message?.running_hash ?? null)
+    const running_hash = computed(() => props.message?.running_hash ?? null)
 
     return {
       isSmallScreen,

@@ -22,7 +22,7 @@ import {EntityCache} from "@/utils/cache/base/EntityCache"
 import {TransactionByIdResponse, TransactionDetail} from "@/schemas/HederaSchemas";
 import axios from "axios";
 
-export class TransactionByIdCache extends EntityCache<string, TransactionDetail|null> {
+export class TransactionByIdCache extends EntityCache<string, TransactionDetail | null> {
 
     public static readonly instance = new TransactionByIdCache()
 
@@ -30,15 +30,15 @@ export class TransactionByIdCache extends EntityCache<string, TransactionDetail|
     // Cache
     //
 
-    protected async load(transactionId: string): Promise<TransactionDetail|null> {
-        let result: TransactionDetail|null
+    protected async load(transactionId: string): Promise<TransactionDetail | null> {
+        let result: TransactionDetail | null
         const params = {
             nonce: 0
         }
         try {
-            const response = await axios.get<TransactionByIdResponse>("api/v1/transactions/" + transactionId, { params: params })
+            const response = await axios.get<TransactionByIdResponse>("api/v1/transactions/" + transactionId, {params: params})
             const transactions = response.data.transactions ?? []
-            switch(transactions.length) {
+            switch (transactions.length) {
                 case 0:
                     result = null
                     break
@@ -49,7 +49,7 @@ export class TransactionByIdCache extends EntityCache<string, TransactionDetail|
                     result = TransactionByIdCache.fetchScheduledTransaction(transactions)
                     break
             }
-        } catch(error) {
+        } catch (error) {
             if (axios.isAxiosError(error) && error.response?.status == 404) {
                 result = null
             } else {
@@ -64,8 +64,8 @@ export class TransactionByIdCache extends EntityCache<string, TransactionDetail|
     // Private
     //
 
-    private static fetchScheduledTransaction(transactions: TransactionDetail[]): TransactionDetail|null {
-        let result: TransactionDetail|null = null
+    private static fetchScheduledTransaction(transactions: TransactionDetail[]): TransactionDetail | null {
+        let result: TransactionDetail | null = null
         for (const t of transactions) {
             if (t.scheduled) {
                 result = t

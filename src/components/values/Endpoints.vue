@@ -51,7 +51,7 @@ export default defineComponent({
   name: 'Endpoints',
 
   props: {
-    endpoints: Object as PropType<Array<ServiceEndPoint>|undefined>,
+    endpoints: Object as PropType<Array<ServiceEndPoint> | undefined>,
   },
 
   setup() {

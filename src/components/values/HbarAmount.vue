@@ -55,7 +55,7 @@ export default defineComponent({
   components: {HbarExtra},
   props: {
     amount: {
-      type: Number as PropType<number|null>,
+      type: Number as PropType<number | null>,
       default: null
     },
     timestamp: {
@@ -88,7 +88,7 @@ export default defineComponent({
     const initialLoading = inject(initialLoadingKey, ref(false))
 
     const hbarAmount = computed(() => {
-      return (props.amount??0) / 100000000
+      return (props.amount ?? 0) / 100000000
     })
 
     const isNone = computed(() => props.amount == null)
@@ -113,7 +113,7 @@ export default defineComponent({
       return hbarAmount.value > 0 && props.colored
     })
 
-    return { initialLoading, isNone, formattedAmount, isGrey, isRed, isGreen }
+    return {initialLoading, isNone, formattedAmount, isGrey, isRed, isGreen}
   }
 });
 

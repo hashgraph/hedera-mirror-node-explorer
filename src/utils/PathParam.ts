@@ -29,8 +29,8 @@ import {AccountAlias} from "@/utils/AccountAlias";
 
 export class PathParam { // Block Hash or Number
 
-    public static parseBlockLoc(s: string): number|TransactionHash|EthereumHash|null {
-        let result: number|TransactionHash|EthereumHash|null
+    public static parseBlockLoc(s: string): number | TransactionHash | EthereumHash | null {
+        let result: number | TransactionHash | EthereumHash | null
 
         result = TransactionHash.parse(s)
         if (result === null) {
@@ -46,12 +46,12 @@ export class PathParam { // Block Hash or Number
         return result
     }
 
-    public static parseAccountLoc(l: string): EntityID|EthereumAddress|AccountAlias|null {
+    public static parseAccountLoc(l: string): EntityID | EthereumAddress | AccountAlias | null {
         return EntityID.parse(l) ?? EthereumAddress.parse(l) ?? AccountAlias.parse(l)
     }
 
-    public static parseAccountIdOrAliasOrEvmAddress(s: string|undefined): string|null {
-        let result: string|null
+    public static parseAccountIdOrAliasOrEvmAddress(s: string | undefined): string | null {
+        let result: string | null
 
         if (s) {
             const id = EntityID.parse(s)
@@ -81,16 +81,16 @@ export class PathParam { // Block Hash or Number
         return result
     }
 
-    public static parseContractLoc(l: string): EntityID|EthereumAddress|null {
+    public static parseContractLoc(l: string): EntityID | EthereumAddress | null {
         return EntityID.parse(l) ?? EthereumAddress.parse(l)
     }
 
-    public static parseNodeId(s: string|undefined): number|null {
-        let result: number|null
+    public static parseNodeId(s: string | undefined): number | null {
+        let result: number | null
 
         if (s) {
             const n = parseInt(s)
-            result =  isNaN(n) || n < 0 ? null : n
+            result = isNaN(n) || n < 0 ? null : n
         } else {
             result = null
         }
@@ -98,8 +98,8 @@ export class PathParam { // Block Hash or Number
         return result
     }
 
-    public static parseTransactionIdOrHash(s: string|undefined): string|null {
-        let result: string|null
+    public static parseTransactionIdOrHash(s: string | undefined): string | null {
+        let result: string | null
 
         if (s) {
             const id = TransactionID.parse(s)
@@ -120,8 +120,8 @@ export class PathParam { // Block Hash or Number
         return Timestamp.parse(s) ?? TransactionHash.parse(s) ?? EthereumHash.parse(s)
     }
 
-    public static parseEvmAddress(s: string|undefined): string|null {
-        let result: string|null
+    public static parseEvmAddress(s: string | undefined): string | null {
+        let result: string | null
         if (s) {
             const hex = hexToByte(s)
             if (hex !== null && hex.length == 20) {

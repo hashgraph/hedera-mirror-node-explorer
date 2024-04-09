@@ -23,22 +23,22 @@
 <!-- --------------------------------------------------------------------------------------------------------------- -->
 
 <template>
-    <Dialog :controller="controller">
+  <Dialog :controller="controller">
 
-        <template v-slot:dialogInput>
-            <div class="is-flex is-justify-content-center h-is-tertiary-text">
+    <template v-slot:dialogInput>
+      <div class="is-flex is-justify-content-center h-is-tertiary-text">
             <span class="icon has-text-warning h-is-secondary-title mr-3">
                 <i class="fas fa-exclamation-triangle"></i>
             </span>
-                <slot name="alertMessage"/>
-            </div>
-        </template>
+        <slot name="alertMessage"/>
+      </div>
+    </template>
 
-        <template v-slot:dialogInputButtons>
-            <DialogButton :controller="controller">CLOSE</DialogButton>
-        </template>
+    <template v-slot:dialogInputButtons>
+      <DialogButton :controller="controller">CLOSE</DialogButton>
+    </template>
 
-    </Dialog>
+  </Dialog>
 
 </template>
 
@@ -56,14 +56,14 @@ import DialogTitle from "@/components/dialog/DialogTitle.vue";
 import {DialogController} from "@/components/dialog/DialogController";
 
 export default defineComponent({
-    name: "AlertDialog",
-    components: {DialogTitle, DialogButton, CommitButton, Dialog},
-    props: {
-        controller: {
-            type: Object as PropType<DialogController>,
-            required: true
-        },
+  name: "AlertDialog",
+  components: {DialogTitle, DialogButton, CommitButton, Dialog},
+  props: {
+    controller: {
+      type: Object as PropType<DialogController>,
+      required: true
     },
+  },
 })
 
 </script>

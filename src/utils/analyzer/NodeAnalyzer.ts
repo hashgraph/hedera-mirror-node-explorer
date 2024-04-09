@@ -32,14 +32,14 @@ import {base64DecToArr, byteToHex} from "@/utils/B64Utils";
 
 export class NodeAnalyzer {
 
-    public readonly nodeLoc: Ref<number|string|null>
+    public readonly nodeLoc: Ref<number | string | null>
     public readonly networkAnalyzer = new NetworkAnalyzer()
 
     //
     // Public
     //
 
-    public constructor(nodeLoc: Ref<number|string|null>) {
+    public constructor(nodeLoc: Ref<number | string | null>) {
         this.nodeLoc = nodeLoc
     }
 
@@ -51,8 +51,8 @@ export class NodeAnalyzer {
         this.networkAnalyzer.unmount()
     }
 
-    public node: ComputedRef<NetworkNode|null> = computed(() => {
-        let result: NetworkNode|null
+    public node: ComputedRef<NetworkNode | null> = computed(() => {
+        let result: NetworkNode | null
         if (typeof this.nodeLoc.value == "number") {
             result = null
             for (const node of this.networkAnalyzer.nodes.value) {
@@ -84,10 +84,10 @@ export class NodeAnalyzer {
         return this.node.value != null ? isCouncilNode(this.node.value) : true
     })
 
-    public readonly nodeDescription: ComputedRef<string|null> = computed(
+    public readonly nodeDescription: ComputedRef<string | null> = computed(
         () => this.node.value !== null ? makeNodeDescription(this.node.value) : null)
 
-    public readonly shortNodeDescription: ComputedRef<string|null> = computed(
+    public readonly shortNodeDescription: ComputedRef<string | null> = computed(
         () => this.nodeDescription.value ? makeShortNodeDescription(this.nodeDescription.value) : null)
 
     //

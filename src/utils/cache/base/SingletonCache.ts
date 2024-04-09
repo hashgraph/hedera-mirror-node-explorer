@@ -23,7 +23,7 @@ import {Lookup} from "@/utils/cache/base/Lookup";
 
 export class SingletonCache<E> {
 
-    protected promise: Promise<E>|null = null
+    protected promise: Promise<E> | null = null
 
     //
     // Public
@@ -54,9 +54,9 @@ export class SingletonCache<E> {
     }
 }
 
-export class SingletonLookup<E> implements Lookup<E>{
+export class SingletonLookup<E> implements Lookup<E> {
 
-    public readonly entity: Ref<E|null> = ref(null)
+    public readonly entity: Ref<E | null> = ref(null)
 
     private readonly cache: SingletonCache<E>
 

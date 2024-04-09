@@ -22,7 +22,7 @@ import {EntityCache} from "@/utils/cache/base/EntityCache"
 
 export abstract class SerialCache<K, E> extends EntityCache<K, E> {
 
-    private currentKey: K|null = null
+    private currentKey: K | null = null
 
     //
     // Cache

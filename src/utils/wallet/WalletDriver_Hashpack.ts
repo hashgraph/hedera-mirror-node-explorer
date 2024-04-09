@@ -31,10 +31,10 @@ export class WalletDriver_Hashpack extends WalletDriver_Hedera {
     // https://github.com/Hashpack/hashconnect
     //
 
-    private hashConnect: HashConnect|null = null
-    private network: string|null = null
-    private lastHashConnectKey: string|null = null
-    private lastHashConnectContext: HashConnectContext|null = null;
+    private hashConnect: HashConnect | null = null
+    private network: string | null = null
+    private lastHashConnectKey: string | null = null
+    private lastHashConnectContext: HashConnectContext | null = null;
 
     //
     // Public
@@ -70,8 +70,8 @@ export class WalletDriver_Hashpack extends WalletDriver_Hedera {
     // WalletDriver_Hedera
     //
 
-    public makeSigner(accountId: string): Signer|null {
-        let result: Signer|null
+    public makeSigner(accountId: string): Signer | null {
+        let result: Signer | null
         if (this.hashConnect !== null && this.network !== null && this.lastHashConnectContext !== null) {
             const provider = this.hashConnect.getProvider(this.network, this.lastHashConnectContext.topic, accountId)
             result = this.hashConnect.getSigner(provider)
@@ -113,7 +113,7 @@ export class WalletDriver_Hashpack extends WalletDriver_Hedera {
             hashConnect.findLocalWallets()
             try {
                 await timeGuard(hashConnect.foundExtensionEvent.once(), 200)
-            } catch(error) {
+            } catch (error) {
                 if (error instanceof TimeGuardError) {
                     throw this.extensionNotFound()
                 } else {
@@ -144,7 +144,7 @@ export class WalletDriver_Hashpack extends WalletDriver_Hedera {
                 await hashConnect.connect(
                     this.lastHashConnectContext.topic,
                     this.lastHashConnectContext.pairingData.metadata)
-            } catch(error) {
+            } catch (error) {
                 this.lastHashConnectContext = null
                 throw error
             }

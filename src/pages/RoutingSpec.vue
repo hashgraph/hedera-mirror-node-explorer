@@ -32,12 +32,12 @@
       </template>
       <template v-slot:content>
         <o-collapse
-          v-for="(route, index) of routes"
-          :key="index"
-          class="card"
-          animation="slide"
-          :open="isOpen.includes(index)"
-          @open="isOpen.push(index)">
+            v-for="(route, index) of routes"
+            :key="index"
+            class="card"
+            animation="slide"
+            :open="isOpen.includes(index)"
+            @open="isOpen.push(index)">
           <template #trigger="props">
             <Property class="trigger" aria-controls="contentIdForA11y1" id="dashboard" wide-name>
               <template v-slot:name>
@@ -45,14 +45,14 @@
               </template>
               <template v-slot:value>
                 <StringValue class="value" :string-value="route.subtitle"/>
-                <o-icon :icon="props.open ? 'caret-up' : 'caret-down'" />
+                <o-icon :icon="props.open ? 'caret-up' : 'caret-down'"/>
               </template>
             </Property>
           </template>
-          <div class="content" >
-            <div>{{route.description}}</div>
+          <div class="content">
+            <div>{{ route.description }}</div>
             <div v-if="route.data" style="margin-top: 17px; margin-bottom: 8px">Data Displayed:</div>
-            <div style="margin-left: 17px" v-for="d of route.data" :key="d">{{d}}</div>
+            <div style="margin-left: 17px" v-for="d of route.data" :key="d">{{ d }}</div>
           </div>
         </o-collapse>
       </template>
@@ -64,14 +64,14 @@
 
 <script lang="ts">
 
-import { defineComponent, inject, ref } from "vue";
+import {defineComponent, inject, ref} from "vue";
 import DashboardCard from "@/components/DashboardCard.vue";
 import Property from "@/components/Property.vue";
 import StringValue from "@/components/values/StringValue.vue";
 
 export default defineComponent({
   name: 'RoutingSpec',
-  components: { StringValue, Property, DashboardCard },
+  components: {StringValue, Property, DashboardCard},
   props: {},
 
   setup() {

@@ -31,12 +31,12 @@ export class BalanceCache extends EntityCache<string, BalancesResponse | null> {
     //
 
     protected async load(accountId: string): Promise<BalancesResponse | null> {
-        let result: Promise<BalancesResponse|null>
+        let result: Promise<BalancesResponse | null>
         try {
             const params = {
                 'account.id': accountId,
             }
-            const response = await axios.get<BalancesResponse>("api/v1/balances", { params: params} )
+            const response = await axios.get<BalancesResponse>("api/v1/balances", {params: params})
             result = Promise.resolve(response.data)
         } catch (error) {
             if (axios.isAxiosError(error) && error.response?.status == 404) {

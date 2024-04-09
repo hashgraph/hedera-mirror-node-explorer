@@ -53,7 +53,7 @@ export default defineComponent({
   components: {Copyable},
   props: {
     byteString: {
-      type: String as PropType<string|null>,
+      type: String as PropType<string | null>,
       default: null
     },
     showNone: {
@@ -74,8 +74,8 @@ export default defineComponent({
       default: null
     },
     copyable: {
-        type:Boolean,
-        default: true
+      type: Boolean,
+      default: true
     }
   },
 
@@ -84,8 +84,8 @@ export default defineComponent({
     const isMediumScreen = inject('isMediumScreen', true)
 
     // 0)
-    const normByteString = computed((): string|undefined => {
-      let result: string|undefined
+    const normByteString = computed((): string | undefined => {
+      let result: string | undefined
       if (props.byteString !== null) {
         result = props.byteString.startsWith("0x") ? props.byteString.slice(2) : props.byteString
       } else {
@@ -94,7 +94,7 @@ export default defineComponent({
       return result
     })
 
-    const flow = (nbWords: number|null): string => {
+    const flow = (nbWords: number | null): string => {
       return normByteString.value ? makeByteLine(normByteString.value, nbWords) : ""
     }
 
@@ -123,10 +123,10 @@ export default defineComponent({
   }
 })
 
-function makeByteLine(byteString: string, nbWords: number|null): string {
+function makeByteLine(byteString: string, nbWords: number | null): string {
   let result = ""
 
-  const  wordCount = byteString.length / 4
+  const wordCount = byteString.length / 4
   for (let i = 0; i < wordCount; i += 1) {
     if (result != "") {
       if (nbWords && i % nbWords != 0) {

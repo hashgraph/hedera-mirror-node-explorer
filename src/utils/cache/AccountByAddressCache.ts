@@ -25,7 +25,7 @@ import {makeEthAddressForAccount} from "@/schemas/HederaUtils";
 import {AccountByIdCache} from "@/utils/cache/AccountByIdCache";
 import {AccountByAliasCache} from "@/utils/cache/AccountByAliasCache";
 
-export class AccountByAddressCache extends EntityCache<string, AccountBalanceTransactions|null> {
+export class AccountByAddressCache extends EntityCache<string, AccountBalanceTransactions | null> {
 
     public static readonly instance = new AccountByAddressCache()
 
@@ -46,13 +46,13 @@ export class AccountByAddressCache extends EntityCache<string, AccountBalanceTra
     //
 
     protected async load(accountAddress: string): Promise<AccountBalanceTransactions | null> {
-        let result: Promise<AccountBalanceTransactions|null>
+        let result: Promise<AccountBalanceTransactions | null>
         try {
             const response = await axios.get<AccountBalanceTransactions>("api/v1/accounts/" + accountAddress)
             result = Promise.resolve(response.data)
             AccountByIdCache.instance.updateWithAccountInfo(response.data)
             AccountByAliasCache.instance.updateWithAccountInfo(response.data)
-        } catch(error) {
+        } catch (error) {
             if (axios.isAxiosError(error) && error.response?.status == 404) {
                 result = Promise.resolve(null)
             } else {

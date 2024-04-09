@@ -45,7 +45,7 @@ export abstract class WalletDriver_Hedera extends WalletDriver {
     // Public
     //
 
-    public async changeStaking(accountId: string, stakedNodeId: number|null, stakedAccountId: string|null, declineReward: boolean|null): Promise<string> {
+    public async changeStaking(accountId: string, stakedNodeId: number | null, stakedAccountId: string | null, declineReward: boolean | null): Promise<string> {
 
         const trans = new AccountUpdateTransaction()
         trans.setAccountId(accountId)
@@ -123,7 +123,7 @@ export abstract class WalletDriver_Hedera extends WalletDriver {
     // Public (to be subclassed)
     //
 
-    public abstract makeSigner(accountId: string): Signer|null
+    public abstract makeSigner(accountId: string): Signer | null
 
     public abstract isCancelError(reason: unknown): boolean
 
@@ -157,8 +157,8 @@ export abstract class WalletDriver_Hedera extends WalletDriver {
         return Promise.resolve(result)
     }
 
-    public async callContract(contractId: string, contractAddress: string, functionData: string, payerId: string): Promise<ContractResultDetails|string> {
-        let result: string|ContractResultDetails
+    public async callContract(contractId: string, contractAddress: string, functionData: string, payerId: string): Promise<ContractResultDetails | string> {
+        let result: string | ContractResultDetails
 
         const fp = hexToByte(functionData)
         if (fp !== null) {
@@ -182,20 +182,20 @@ export abstract class WalletDriver_Hedera extends WalletDriver {
     protected async executeTransaction(
         accountId: string,
         t: AccountAllowanceApproveTransaction
-            |AccountUpdateTransaction
-            |AccountAllowanceDeleteTransaction
-            |TokenAssociateTransaction
-            |TokenDissociateTransaction
-            |ContractExecuteTransaction): Promise<string> {
+            | AccountUpdateTransaction
+            | AccountAllowanceDeleteTransaction
+            | TokenAssociateTransaction
+            | TokenDissociateTransaction
+            | ContractExecuteTransaction): Promise<string> {
         let result: Promise<string>
 
         const signer = this.makeSigner(accountId)
         if (signer !== null) {
-            let response: TransactionResponse|undefined
+            let response: TransactionResponse | undefined
             try {
                 await t.freezeWithSigner(signer)
                 response = await signer.call(t)
-            } catch(reason) {
+            } catch (reason) {
                 if (this.isCancelError(reason)) {
                     throw new WalletDriverCancelError()
                 } else {
@@ -220,7 +220,7 @@ export abstract class WalletDriver_Hedera extends WalletDriver {
 
         try {
             let counter = 10
-            let transaction: Transaction|null = null
+            let transaction: Transaction | null = null
             while (counter > 0 && transaction === null) {
                 await waitFor(3000)
                 transaction = await TransactionByIdCache.instance.lookup(transactionId, true)
@@ -240,7 +240,7 @@ export abstract class WalletDriver_Hedera extends WalletDriver {
 
         try {
             let counter = 10
-            let contractResult: ContractResultDetails|null = null
+            let contractResult: ContractResultDetails | null = null
             while (counter > 0 && contractResult === null) {
                 await waitFor(3000)
                 contractResult = await ContractResultByTransactionIdCache.instance.lookup(transactionId, true)

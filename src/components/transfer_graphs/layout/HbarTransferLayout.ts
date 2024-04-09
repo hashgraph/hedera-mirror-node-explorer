@@ -24,7 +24,7 @@ import {computeNetAmount, makeNetOfRewards} from "@/utils/TransactionTools";
 
 export class HbarTransferLayout {
 
-    public readonly transaction: Transaction|undefined
+    public readonly transaction: Transaction | undefined
     public readonly nodes: NetworkNode[]
     public readonly destinationAmount: number
     public readonly sources = Array<HbarTransferRow>()
@@ -35,7 +35,7 @@ export class HbarTransferLayout {
     // Public
     //
 
-    public constructor(transaction: Transaction|undefined, nodes: NetworkNode[], full = true) {
+    public constructor(transaction: Transaction | undefined, nodes: NetworkNode[], full = true) {
 
         this.transaction = transaction
         this.nodes = nodes
@@ -87,7 +87,8 @@ export class HbarTransferLayout {
                     const replacedTransfer = this.destinations[i]
                     this.destinations.splice(i, 1)
                     // Inserts two new transfers
-                    const payloadTransfer = { ... r.transfer } ; payloadTransfer.amount = payloadAmount
+                    const payloadTransfer = {...r.transfer};
+                    payloadTransfer.amount = payloadAmount
                     const payloadRow =
                         new HbarTransferRow(
                             payloadTransfer,
@@ -95,9 +96,10 @@ export class HbarTransferLayout {
                             true)
                     this.destinations.splice(i, 0, payloadRow)
                     if (feeAmount > 0) {
-                        const feeTransfer = { ... r.transfer } ; feeTransfer.amount = feeAmount
+                        const feeTransfer = {...r.transfer};
+                        feeTransfer.amount = feeAmount
                         const feeRow = new HbarTransferRow(feeTransfer, replacedTransfer.description, false)
-                        this.destinations.splice(i+1, 0, feeRow)
+                        this.destinations.splice(i + 1, 0, feeRow)
                     }
                     remaining -= payloadAmount
                     if (remaining <= 0) break
@@ -147,10 +149,10 @@ export class HbarTransferLayout {
 
 export class HbarTransferRow {
     public readonly transfer: Transfer
-    public readonly description: string|null
+    public readonly description: string | null
     public readonly payload: boolean
 
-    constructor(transfer: Transfer, description: string|null, payload: boolean) {
+    constructor(transfer: Transfer, description: string | null, payload: boolean) {
         this.transfer = transfer
         this.description = description
         this.payload = payload

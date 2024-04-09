@@ -23,53 +23,53 @@
 <!-- --------------------------------------------------------------------------------------------------------------- -->
 
 <template>
-    <template v-if="errorSignature">
-        <div v-if="error">
-            <div class="h-is-tertiary-text my-2">Error</div>
+  <template v-if="errorSignature">
+    <div v-if="error">
+      <div class="h-is-tertiary-text my-2">Error</div>
 
-            <Property :custom-nb-col-class="customNbColClass" id="errorFunction">
-                <template v-slot:name>Signature</template>
-                <template v-slot:value>
-                    <HexaValue :byte-string="errorHash" :show-none="true"/>
-                    <div class="h-is-extra-text h-is-text-size-3 should-wrap">{{ errorSignature }}</div>
-                </template>
-            </Property>
-
-            <template v-for="arg in errorInputs" :key="arg.name">
-                <Property :custom-nb-col-class="customNbColClass">
-                    <template v-slot:name>{{ arg.name != "" ? arg.name : "message" }}</template>
-                    <template v-slot:value>
-                        <FunctionValue :ntv="arg"/>
-                    </template>
-                </Property>
-            </template>
-        </div>
-        
-        <template v-else>
-            <Property :custom-nb-col-class="customNbColClass" id="functionInput">
-                <template v-slot:name>Error Message</template>
-                <template v-slot:value>
-                    <HexaValue :show-none="true"/>
-                </template>
-            </Property>
+      <Property :custom-nb-col-class="customNbColClass" id="errorFunction">
+        <template v-slot:name>Signature</template>
+        <template v-slot:value>
+          <HexaValue :byte-string="errorHash" :show-none="true"/>
+          <div class="h-is-extra-text h-is-text-size-3 should-wrap">{{ errorSignature }}</div>
         </template>
-    </template>
-    
-    <template v-else>
-        <Property :custom-nb-col-class="customNbColClass" id="errorMessage">
-            <template v-slot:name>Error Message</template>
-            <template v-slot:value>
-                <StringValue v-if="decodedError" :string-value="decodedError"/>
-                <template v-else>
-                    <HexaValue :byte-string="error" :show-none="true"/>
-                    <div v-if="errorDecodingStatus" class="h-is-extra-text h-is-text-size-3">
-                        <span class="icon fas fa-exclamation-circle has-text-grey is-small mt-1 mr-1"/>
-                        <span>{{ errorDecodingStatus }}</span>
-                    </div>
-                </template>
-            </template>
+      </Property>
+
+      <template v-for="arg in errorInputs" :key="arg.name">
+        <Property :custom-nb-col-class="customNbColClass">
+          <template v-slot:name>{{ arg.name != "" ? arg.name : "message" }}</template>
+          <template v-slot:value>
+            <FunctionValue :ntv="arg"/>
+          </template>
         </Property>
+      </template>
+    </div>
+
+    <template v-else>
+      <Property :custom-nb-col-class="customNbColClass" id="functionInput">
+        <template v-slot:name>Error Message</template>
+        <template v-slot:value>
+          <HexaValue :show-none="true"/>
+        </template>
+      </Property>
     </template>
+  </template>
+
+  <template v-else>
+    <Property :custom-nb-col-class="customNbColClass" id="errorMessage">
+      <template v-slot:name>Error Message</template>
+      <template v-slot:value>
+        <StringValue v-if="decodedError" :string-value="decodedError"/>
+        <template v-else>
+          <HexaValue :byte-string="error" :show-none="true"/>
+          <div v-if="errorDecodingStatus" class="h-is-extra-text h-is-text-size-3">
+            <span class="icon fas fa-exclamation-circle has-text-grey is-small mt-1 mr-1"/>
+            <span>{{ errorDecodingStatus }}</span>
+          </div>
+        </template>
+      </template>
+    </Property>
+  </template>
 
 </template>
 
@@ -89,35 +89,35 @@ import StringValue from "@/components/values/StringValue.vue";
 import FunctionValue from "@/components/values/FunctionValue.vue";
 
 export default defineComponent({
-    name: 'FunctionError',
-    components: {FunctionValue, StringValue, Property, HexaValue},
-    props: {
-        analyzer: {
-            type: Object as PropType<FunctionCallAnalyzer>,
-            required: true
-        },
-        customNbColClass: String,
-        showNone: {
-            type: Boolean,
-            default: false
-        }
+  name: 'FunctionError',
+  components: {FunctionValue, StringValue, Property, HexaValue},
+  props: {
+    analyzer: {
+      type: Object as PropType<FunctionCallAnalyzer>,
+      required: true
     },
-
-    setup(props) {
-        const initialLoading = inject(initialLoadingKey, ref(false))
-        const decodedError = computed( () =>
-            props.analyzer.normalizedError.value != null ? decodeSolidityErrorMessage(props.analyzer.normalizedError.value) : null)
-
-        return {
-            error: props.analyzer.normalizedError,
-            errorSignature: props.analyzer.errorSignature,
-            errorHash: props.analyzer.errorHash,
-            errorInputs: props.analyzer.errorInputs,
-            errorDecodingStatus: props.analyzer.errorDecodingStatus,
-            decodedError,
-            initialLoading
-        }
+    customNbColClass: String,
+    showNone: {
+      type: Boolean,
+      default: false
     }
+  },
+
+  setup(props) {
+    const initialLoading = inject(initialLoadingKey, ref(false))
+    const decodedError = computed(() =>
+        props.analyzer.normalizedError.value != null ? decodeSolidityErrorMessage(props.analyzer.normalizedError.value) : null)
+
+    return {
+      error: props.analyzer.normalizedError,
+      errorSignature: props.analyzer.errorSignature,
+      errorHash: props.analyzer.errorHash,
+      errorInputs: props.analyzer.errorInputs,
+      errorDecodingStatus: props.analyzer.errorDecodingStatus,
+      decodedError,
+      initialLoading
+    }
+  }
 });
 
 </script>

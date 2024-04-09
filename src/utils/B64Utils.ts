@@ -26,7 +26,7 @@ import base32Encode from "base32-encode";
 // https://developer.mozilla.org/en-US/docs/Glossary/Base64
 //
 
-export function base64DecToArr (sBase64: string, nBlocksSize: number|undefined = undefined): Uint8Array {
+export function base64DecToArr(sBase64: string, nBlocksSize: number | undefined = undefined): Uint8Array {
 
     const sB64Enc = sBase64.replace(/[^A-Za-z0-9+/]/g, "")
     const nInLen = sB64Enc.length
@@ -47,20 +47,20 @@ export function base64DecToArr (sBase64: string, nBlocksSize: number|undefined =
     return taBytes;
 }
 
-export function b64ToUint6 (nChr: number): number {
+export function b64ToUint6(nChr: number): number {
 
-  return nChr > 64 && nChr < 91 ?
-      nChr - 65
-    : nChr > 96 && nChr < 123 ?
-      nChr - 71
-    : nChr > 47 && nChr < 58 ?
-      nChr + 4
-    : nChr === 43 ?
-      62
-    : nChr === 47 ?
-      63
-    :
-      0;
+    return nChr > 64 && nChr < 91 ?
+        nChr - 65
+        : nChr > 96 && nChr < 123 ?
+            nChr - 71
+            : nChr > 47 && nChr < 58 ?
+                nChr + 4
+                : nChr === 43 ?
+                    62
+                    : nChr === 47 ?
+                        63
+                        :
+                        0;
 
 }
 
@@ -95,17 +95,17 @@ export function base64EncArr(aBytes: Uint8Array): string {
 }
 
 function uint6ToB64(nUint6: number) {
-  return nUint6 < 26
-    ? nUint6 + 65
-    : nUint6 < 52
-    ? nUint6 + 71
-    : nUint6 < 62
-    ? nUint6 - 4
-    : nUint6 === 62
-    ? 43
-    : nUint6 === 63
-    ? 47
-    : 65;
+    return nUint6 < 26
+        ? nUint6 + 65
+        : nUint6 < 52
+            ? nUint6 + 71
+            : nUint6 < 62
+                ? nUint6 - 4
+                : nUint6 === 62
+                    ? 43
+                    : nUint6 === 63
+                        ? 47
+                        : 65;
 }
 
 
@@ -132,15 +132,15 @@ export function paddedBytes(bytes: Uint8Array, length: number): Uint8Array {
 
 const HEXSET = "0123456789ABCDEF"
 
-export function hexToByte(hex: string): Uint8Array|null {
-    let result: Uint8Array|null
+export function hexToByte(hex: string): Uint8Array | null {
+    let result: Uint8Array | null
     if (hex.length % 2 == 0) {
         const startIndex = hex.startsWith("0x") ? 1 : 0
         const bytes = Array<number>()
         let ok = true
         for (let i = startIndex, endIndex = hex.length / 2; i < endIndex && ok; i += 1) {
-            const b1 = hex[2*i].toUpperCase()
-            const b0 = hex[2*i+1].toUpperCase()
+            const b1 = hex[2 * i].toUpperCase()
+            const b0 = hex[2 * i + 1].toUpperCase()
             const okB1 = HEXSET.indexOf(b1) != -1
             const okB0 = HEXSET.indexOf(b0) != -1
             if (okB0 && okB1) {
@@ -162,10 +162,10 @@ export function hexToByte(hex: string): Uint8Array|null {
 //
 
 export function aliasToBase32(bytes: Uint8Array): string {
-    return base32Encode(bytes, 'RFC4648', { padding: false })
+    return base32Encode(bytes, 'RFC4648', {padding: false})
 }
 
-export function base32ToAlias(aliasBase32: string): Uint8Array|null {
+export function base32ToAlias(aliasBase32: string): Uint8Array | null {
     let result: Uint8Array | null
     try {
         result = new Uint8Array(base32Decode(aliasBase32, 'RFC4648'))

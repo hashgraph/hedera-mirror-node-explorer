@@ -27,12 +27,12 @@ export class Timestamp {
     // Public
     //
 
-    public static parse(timestamp: string): Timestamp|null {
-        let result: Timestamp|null
+    public static parse(timestamp: string): Timestamp | null {
+        let result: Timestamp | null
 
         const i = timestamp.indexOf(".")
         const s = i != -1 ? timestamp.slice(0, i) : null
-        const n = i != -1 ? timestamp.slice(i+1) : null
+        const n = i != -1 ? timestamp.slice(i + 1) : null
         if (s !== null && n !== null && n.indexOf(".") == -1) {
             const seconds = parseInt(s)
             const nanoseconds = parseInt(n)

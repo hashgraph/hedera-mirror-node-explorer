@@ -62,45 +62,54 @@
       </router-link>
       <AxiosStatus/>
     </div>
-    
+
     <div class="is-flex-grow-0 is-flex-shrink-0 is-flex is-flex-direction-column ml-4">
       <div class="is-flex mb-3 is-align-items-baseline is-justify-content-space-between">
         <router-link :to="routeManager.makeRouteToMainDashboard()"
                      id="dashboard-menu-item"
                      class="button is-ghost is-first h-is-navbar-item h-is-dense"
-                     :class="{ 'is-rimmed': isDashboardRoute}">Dashboard</router-link>
+                     :class="{ 'is-rimmed': isDashboardRoute}">Dashboard
+        </router-link>
         <router-link :to="routeManager.makeRouteToTransactions()"
                      class="button is-ghost h-is-navbar-item h-is-dense"
-                     :class="{ 'is-rimmed': isTransactionRoute}">Transactions</router-link>
+                     :class="{ 'is-rimmed': isTransactionRoute}">Transactions
+        </router-link>
         <router-link :to="routeManager.makeRouteToTokens()"
                      class="button is-ghost h-is-navbar-item h-is-dense"
-                     :class="{ 'is-rimmed': isTokenRoute}">Tokens</router-link>
+                     :class="{ 'is-rimmed': isTokenRoute}">Tokens
+        </router-link>
         <router-link :to="routeManager.makeRouteToTopics()"
                      class="button is-ghost h-is-navbar-item h-is-dense"
-                     :class="{ 'is-rimmed': isTopicRoute}">Topics</router-link>
+                     :class="{ 'is-rimmed': isTopicRoute}">Topics
+        </router-link>
         <router-link :to="routeManager.makeRouteToContracts()"
                      class="button is-ghost h-is-navbar-item h-is-dense"
-                     :class="{ 'is-rimmed': isContractRoute}">Contracts</router-link>
+                     :class="{ 'is-rimmed': isContractRoute}">Contracts
+        </router-link>
         <router-link :to="routeManager.makeRouteToAccounts()"
                      class="button is-ghost h-is-navbar-item h-is-dense"
-                     :class="{ 'is-rimmed': isAccountRoute}">Accounts</router-link>
+                     :class="{ 'is-rimmed': isAccountRoute}">Accounts
+        </router-link>
         <router-link :to="routeManager.makeRouteToNodes()"
                      class="button is-ghost h-is-navbar-item h-is-dense"
-                     :class="{ 'is-rimmed': isNodeRoute}">Nodes</router-link>
+                     :class="{ 'is-rimmed': isNodeRoute}">Nodes
+        </router-link>
         <router-link v-if="isStakingEnabled"
                      :to="routeManager.makeRouteToStaking()"
                      class="button is-ghost h-is-navbar-item h-is-dense"
-                     :class="{ 'is-rimmed': isStakingRoute}">Staking</router-link>
+                     :class="{ 'is-rimmed': isStakingRoute}">Staking
+        </router-link>
         <router-link :to="routeManager.makeRouteToBlocks()"
                      class="button is-ghost is-last h-is-navbar-item h-is-dense"
-                     :class="{ 'is-rimmed': isBlocksRoute}">Blocks</router-link>
+                     :class="{ 'is-rimmed': isBlocksRoute}">Blocks
+        </router-link>
       </div>
 
       <div id="navbar-grid">
         <div id="search-bar">
           <SearchBar/>
         </div>
-        
+
         <div id="drop-down-menu">
           <o-field>
             <o-select v-model="selectedNetwork" class="h-is-navbar-item">
@@ -112,39 +121,40 @@
         </div>
 
         <div id="connect-button">
-          <button v-if="!connected" :disabled="connecting" id="connectWalletButton" class="button is-white is-small" @click="chooseWallet" style="outline: none; height: 40px; width: 100%; font-size: 0.8rem;">
+          <button v-if="!connected" :disabled="connecting" id="connectWalletButton" class="button is-white is-small"
+                  @click="chooseWallet" style="outline: none; height: 40px; width: 100%; font-size: 0.8rem;">
             {{ connecting ? "Connecting..." : "CONNECT WALLET..." }}
           </button>
 
           <div v-else @click="showWalletInfo = !showWalletInfo" id="walletInfoBanner"
-                 class="is-flex is-align-items-center is-justify-content-space-between"
-                 style="outline: none; height: 40px; width: 100%; font-size: 0.9rem; border: 0.5px solid white; cursor: pointer;">
+               class="is-flex is-align-items-center is-justify-content-space-between"
+               style="outline: none; height: 40px; width: 100%; font-size: 0.9rem; border: 0.5px solid white; cursor: pointer;">
 
-              <div class="is-flex is-align-items-center is-justify-content-flex-start">
-                  <figure class="is-flex is-align-items-center mx-1" style="height: 40px;" >
-                      <img :src="walletIconURL ?? undefined" alt="wallet logo"
-                           style="object-fit: contain; aspect-ratio: 3/2; height: 60%;">
-                  </figure>
-                  {{ accountId }}
-              </div>
-              <div class="is-flex is-align-items-center is-justify-content-center" style="width: 30px;">
-                  <i v-if="!showWalletInfo" class="fas fa-solid fa-angle-down is-flex is-align-items-center"/>
-                  <i v-else class="fas fa-solid fa-angle-up is-flex is-align-items-center"/>
-              </div>
+            <div class="is-flex is-align-items-center is-justify-content-flex-start">
+              <figure class="is-flex is-align-items-center mx-1" style="height: 40px;">
+                <img :src="walletIconURL ?? undefined" alt="wallet logo"
+                     style="object-fit: contain; aspect-ratio: 3/2; height: 60%;">
+              </figure>
+              {{ accountId }}
+            </div>
+            <div class="is-flex is-align-items-center is-justify-content-center" style="width: 30px;">
+              <i v-if="!showWalletInfo" class="fas fa-solid fa-angle-down is-flex is-align-items-center"/>
+              <i v-else class="fas fa-solid fa-angle-up is-flex is-align-items-center"/>
+            </div>
 
           </div>
         </div>
 
-        <WalletInfo 
-          :connected="connected" 
-          :accountIds="accountIds"
-          v-model:show-wallet-info="showWalletInfo"
-          :accountId="accountId || undefined" 
-          :walletIconURL="walletIconURL || undefined" 
-          @wallet-disconnect="disconnectFromWallet"
-          @change-account="handleChangeAccount"
+        <WalletInfo
+            :connected="connected"
+            :accountIds="accountIds"
+            v-model:show-wallet-info="showWalletInfo"
+            :accountId="accountId || undefined"
+            :walletIconURL="walletIconURL || undefined"
+            @wallet-disconnect="disconnectFromWallet"
+            @change-account="handleChangeAccount"
         />
-        
+
       </div>
     </div>
 
@@ -163,7 +173,7 @@ import SearchBar from "@/components/SearchBar.vue";
 import AxiosStatus from "@/components/AxiosStatus.vue";
 import {networkRegistry} from "@/schemas/NetworkRegistry";
 import WalletChooser from "@/components/staking/WalletChooser.vue";
-import { WalletDriver } from '@/utils/wallet/WalletDriver';
+import {WalletDriver} from '@/utils/wallet/WalletDriver';
 import {WalletDriverCancelError} from '@/utils/wallet/WalletDriverError';
 import {defineComponent, inject, ref} from "vue";
 import WalletInfo from '@/components/wallet/WalletInfo.vue'
@@ -206,11 +216,11 @@ export default defineComponent({
       walletManager
           .connect()
           .catch((reason) => {
-              if (!(reason instanceof WalletDriverCancelError)) {
-                  console.warn("Failed to connect wallet - reason:" + reason.toString())
-                  connectError.value = reason
-                  connectDialogController.visible.value = true
-              }
+            if (!(reason instanceof WalletDriverCancelError)) {
+              console.warn("Failed to connect wallet - reason:" + reason.toString())
+              connectError.value = reason
+              connectDialogController.visible.value = true
+            }
           })
           .finally(() => connecting.value = false)
       walletIconURL.value = walletManager.getActiveDriver().iconURL || ""
@@ -234,7 +244,7 @@ export default defineComponent({
             showWalletInfo.value = false;
           })
     }
-    
+
 
     return {
       buildTime,
@@ -286,63 +296,75 @@ export default defineComponent({
   #product-logo {
     max-width: 242px;
   }
+
   #navbar-grid {
-    position:relative;
-    display:grid;
-    column-gap:1.2rem;
+    position: relative;
+    display: grid;
+    column-gap: 1.2rem;
     grid-template-columns:repeat(20, minmax(0, 35px));
   }
+
   #search-bar {
     grid-column: span 13;
   }
+
   #drop-down-menu {
     grid-column: span 3;
   }
+
   #connect-button {
     grid-column: span 4;
   }
 }
 
 @media (max-width: 1449px) {
-    #product-logo {
-        max-width: 220px;
-    }
-    #navbar-grid {
-        position:relative;
-        display:grid;
-        column-gap:1.2rem;
-        grid-template-columns:repeat(17, minmax(0, 35px));
-    }
-    #search-bar {
-        grid-column: span 10;
-    }
-    #drop-down-menu {
-        grid-column: span 3;
-    }
-    #connect-button {
-        grid-column: span 4;
-    }
+  #product-logo {
+    max-width: 220px;
+  }
+
+  #navbar-grid {
+    position: relative;
+    display: grid;
+    column-gap: 1.2rem;
+    grid-template-columns:repeat(17, minmax(0, 35px));
+  }
+
+  #search-bar {
+    grid-column: span 10;
+  }
+
+  #drop-down-menu {
+    grid-column: span 3;
+  }
+
+  #connect-button {
+    grid-column: span 4;
+  }
 }
 
 @media (max-width: 1249px) {
-    #product-logo {
-        max-width: 200px;
-    }
-    #navbar-grid {
-        position:relative;
-        display:grid;
-        column-gap:1.2rem;
-        grid-template-columns:repeat(18, minmax(0, 24px));
-    }
-    #search-bar {
-        grid-column: span 9;
-    }
-    #drop-down-menu {
-        grid-column: span 4;
-    }
-    #connect-button {
-        grid-column: span 5;
-    }
+  #product-logo {
+    max-width: 200px;
+  }
+
+  #navbar-grid {
+    position: relative;
+    display: grid;
+    column-gap: 1.2rem;
+    grid-template-columns:repeat(18, minmax(0, 24px));
+  }
+
+  #search-bar {
+    grid-column: span 9;
+  }
+
+  #drop-down-menu {
+    grid-column: span 4;
+  }
+
+  #connect-button {
+    grid-column: span 5;
+  }
 }
 
 </style>

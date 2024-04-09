@@ -23,7 +23,7 @@ import {ContractResultByHashCache} from "@/utils/cache/ContractResultByHashCache
 import {EntityCache} from "@/utils/cache/base/EntityCache"
 import axios from "axios";
 
-export class ContractResultByTsCache extends EntityCache<string, ContractResultDetails|null> {
+export class ContractResultByTsCache extends EntityCache<string, ContractResultDetails | null> {
 
     public static readonly instance = new ContractResultByTsCache()
 
@@ -43,8 +43,8 @@ export class ContractResultByTsCache extends EntityCache<string, ContractResultD
     // Cache
     //
 
-    protected async load(timestamp: string): Promise<ContractResultDetails|null> {
-        let result: ContractResultDetails|null
+    protected async load(timestamp: string): Promise<ContractResultDetails | null> {
+        let result: ContractResultDetails | null
         const contractResult = await this.loadContractResult(timestamp)
         const contractId = contractResult?.contract_id ?? null
         if (contractId !== null && contractId !== "0.0.359") {
@@ -60,15 +60,15 @@ export class ContractResultByTsCache extends EntityCache<string, ContractResultD
                 result = null
             }
         }
-        return  Promise.resolve(result)
+        return Promise.resolve(result)
     }
 
     //
     // Private
     //
 
-    private async loadContractResult(timestamp: string): Promise<ContractResult|null> {
-        let result: ContractResult|null
+    private async loadContractResult(timestamp: string): Promise<ContractResult | null> {
+        let result: ContractResult | null
         try {
             const parameters = {
                 timestamp: timestamp,
@@ -77,7 +77,7 @@ export class ContractResultByTsCache extends EntityCache<string, ContractResultD
             const response = await axios.get<ContractResultsResponse>("api/v1/contracts/results", {params: parameters})
             const results = response.data.results
             result = results && results.length >= 1 ? results[0] : null
-        } catch(error) {
+        } catch (error) {
             if (axios.isAxiosError(error) && error.response?.status == 404) {
                 result = null
             } else {
@@ -87,19 +87,19 @@ export class ContractResultByTsCache extends EntityCache<string, ContractResultD
         return Promise.resolve(result)
     }
 
-    private async loadContractResultDetail(contractId: string, timestamp: string): Promise<ContractResultDetails|null> {
-        let result: ContractResultDetails|null
+    private async loadContractResultDetail(contractId: string, timestamp: string): Promise<ContractResultDetails | null> {
+        let result: ContractResultDetails | null
         try {
             const response = await axios.get<ContractResultDetails>("api/v1/contracts/" + contractId + "/results/" + timestamp)
             result = response.data
-        } catch(error) {
+        } catch (error) {
             if (axios.isAxiosError(error) && error.response?.status == 404) {
                 result = null
             } else {
                 throw error
             }
         }
-        return  Promise.resolve(result)
+        return Promise.resolve(result)
     }
 }
 

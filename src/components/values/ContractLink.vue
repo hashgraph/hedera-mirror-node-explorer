@@ -44,14 +44,14 @@ export default defineComponent({
 
   props: {
     contractId: {
-      type: String as PropType<string|null>,
+      type: String as PropType<string | null>,
       default: null
     },
   },
 
   setup(props) {
-    const contractRoute = computed( () => props.contractId ? routeManager.makeRouteToContract(props.contractId) : null)
-    return { contractRoute }
+    const contractRoute = computed(() => props.contractId ? routeManager.makeRouteToContract(props.contractId) : null)
+    return {contractRoute}
   }
 });
 

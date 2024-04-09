@@ -32,7 +32,9 @@
       <span>
         <span v-if="timePart" class="mr-3 is-numeric">
           <span>{{ timePart.hour }}:{{ timePart.minute }}</span>
-          <span class="h-is-text-size-3 has-text-grey">:{{ timePart.second }}.{{ timePart.fractionalSecond }}&nbsp;{{ timePart.dayPeriod }}</span>
+          <span class="h-is-text-size-3 has-text-grey">:{{ timePart.second }}.{{
+              timePart.fractionalSecond
+            }}&nbsp;{{ timePart.dayPeriod }}</span>
         </span>
         <span class="is-numeric">{{ datePart }}</span>
       </span>
@@ -69,8 +71,8 @@ export default defineComponent({
 
   props: {
     timestamp: {
-        type: String as PropType<string|null>,
-        default: null
+      type: String as PropType<string | null>,
+      default: null
     },
     nano: {
       type: Boolean,
@@ -90,7 +92,7 @@ export default defineComponent({
       return props.timestamp !== null ? parseSeconds(normalizedTimestamp(props.timestamp, props.nano)) : null
     })
 
-    const isNever = computed( () => seconds.value && seconds.value >= infiniteDuration)
+    const isNever = computed(() => seconds.value && seconds.value >= infiniteDuration)
 
     const dateOptions: Intl.DateTimeFormatOptions = {
       // weekDay: "short",

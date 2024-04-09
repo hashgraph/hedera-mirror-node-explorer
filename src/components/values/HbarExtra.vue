@@ -25,7 +25,7 @@
 <template>
   <span v-if="tbarAmount !== 0 || !hideZero"
         v-bind:class="{'h-is-smaller': smallExtra}"
-        class="h-is-extra-text is-numeric" >
+        class="h-is-extra-text is-numeric">
     {{ dollarAmount }}
   </span>
 </template>
@@ -87,11 +87,11 @@ export default defineComponent({
     onBeforeUnmount(() => hbarPriceLookup.unmount())
 
     const hbarPrice = computed(() => {
-        const rate = hbarPriceLookup.entity.value?.current_rate
-        return rate ? (rate.cent_equivalent / rate.hbar_equivalent / 100) : null
+      const rate = hbarPriceLookup.entity.value?.current_rate
+      return rate ? (rate.cent_equivalent / rate.hbar_equivalent / 100) : null
     })
 
-    return { dollarAmount }
+    return {dollarAmount}
   }
 });
 

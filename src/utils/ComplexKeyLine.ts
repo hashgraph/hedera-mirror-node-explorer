@@ -53,7 +53,7 @@ export class ComplexKeyLine {
     }
 
     public innerKeyType(): string | null {
-        let result: string|null
+        let result: string | null
         if (this.key.ed25519) {
             result = "ED25519"
         } else if (this.key.ECDSASecp256k1) {
@@ -68,11 +68,11 @@ export class ComplexKeyLine {
         return result
     }
 
-    public contractId(): string|null {
+    public contractId(): string | null {
         return this.key.contractID ? ComplexKeyLine.makeContractId(this.key.contractID) : null
     }
 
-    public delegatableContractId(): string|null {
+    public delegatableContractId(): string | null {
         return this.key.delegatableContractId ? ComplexKeyLine.makeContractId(this.key.delegatableContractId) : null
     }
 
@@ -94,7 +94,7 @@ export class ComplexKeyLine {
 
     private static flattenComplexKeyRec(key: hashgraph.proto.Key, level: number, result: ComplexKeyLine[]): void {
 
-        let newLine: ComplexKeyLine|null
+        let newLine: ComplexKeyLine | null
         let childKeys: hashgraph.proto.Key[]
         if (key.keyList) {
             if (key.keyList.keys && key.keyList.keys.length == 1) {

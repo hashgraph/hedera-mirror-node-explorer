@@ -24,20 +24,21 @@
 
 <!--suppress HtmlWrongAttributeValue -->
 <template>
-    <div  v-if="sourceFiles.length > 0"  id="source-code"
-          class="mt-2 h-code-box h-has-page-background" style="max-height: 400px;">
-        <template  v-for="(file, index) in sourceFiles" :key="file.path">
-            <p v-if="isFiltered(file)" class="pt-2 mx-3 h-is-extra-text">{{ file.name }}</p>
-            <prism v-if="isFiltered(file)" language="solidity" style="background-color: #171920; font-size: 0.7rem">
-                <pre>{{ file.content }}</pre>
-            </prism>
-            <hr v-if="filter==='' && index < sourceFiles.length - 1" class="has-background-grey-dark m-0" style="height: 0.5px"/>
-        </template>
-    </div>
+  <div v-if="sourceFiles.length > 0" id="source-code"
+       class="mt-2 h-code-box h-has-page-background" style="max-height: 400px;">
+    <template v-for="(file, index) in sourceFiles" :key="file.path">
+      <p v-if="isFiltered(file)" class="pt-2 mx-3 h-is-extra-text">{{ file.name }}</p>
+      <prism v-if="isFiltered(file)" language="solidity" style="background-color: #171920; font-size: 0.7rem">
+        <pre>{{ file.content }}</pre>
+      </prism>
+      <hr v-if="filter==='' && index < sourceFiles.length - 1" class="has-background-grey-dark m-0"
+          style="height: 0.5px"/>
+    </template>
+  </div>
 
-    <span v-else-if="initialLoading"/>
+  <span v-else-if="initialLoading"/>
 
-    <span v-else class="has-text-grey">None</span>
+  <span v-else class="has-text-grey">None</span>
 </template>
 
 <!-- --------------------------------------------------------------------------------------------------------------- -->
@@ -58,28 +59,28 @@ import "prismjs/components/prism-solidity.js";
 import Prism from "vue-prism-component"
 
 export default defineComponent({
-    name: 'SourceCodeValue',
-    components: {OpcodeValue, Prism},
+  name: 'SourceCodeValue',
+  components: {OpcodeValue, Prism},
 
-    props: {
-        sourceFiles: {
-            type: Object as PropType<SourcifyResponseItem[]>,
-            default: []
-        },
-        filter: {
-            type: String,
-            default: ''
-        }
+  props: {
+    sourceFiles: {
+      type: Object as PropType<SourcifyResponseItem[]>,
+      default: []
     },
-
-    setup(props) {
-        const initialLoading = inject(initialLoadingKey, ref(false))
-        const isFiltered = (file:SourcifyResponseItem) => props.filter =='' || props.filter == file.name
-        return {
-            initialLoading,
-            isFiltered,
-        }
+    filter: {
+      type: String,
+      default: ''
     }
+  },
+
+  setup(props) {
+    const initialLoading = inject(initialLoadingKey, ref(false))
+    const isFiltered = (file: SourcifyResponseItem) => props.filter == '' || props.filter == file.name
+    return {
+      initialLoading,
+      isFiltered,
+    }
+  }
 });
 
 </script>
@@ -90,13 +91,13 @@ export default defineComponent({
 
 <style>
 pre.language-solidity {
-    .number {
-        vertical-align: baseline;
-        font-size: 0.8rem;
-        background-color: inherit;
-        min-width: 0;
-        padding: 0;
-        margin: 0;
-    }
+  .number {
+    vertical-align: baseline;
+    font-size: 0.8rem;
+    background-color: inherit;
+    min-width: 0;
+    padding: 0;
+    margin: 0;
+  }
 }
 </style>

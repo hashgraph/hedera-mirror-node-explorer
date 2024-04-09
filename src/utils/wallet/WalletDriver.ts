@@ -24,8 +24,8 @@ import {ContractResultDetails} from "@/schemas/HederaSchemas";
 export abstract class WalletDriver {
 
     public readonly name: string
-    public readonly logoURL: string|null
-    public readonly iconURL: string|null
+    public readonly logoURL: string | null
+    public readonly iconURL: string | null
 
     //
     // Public (to be subclassed)
@@ -47,7 +47,7 @@ export abstract class WalletDriver {
         throw this.toBeImplemented("dissociateToken")
     }
 
-    public async callContract(contractId: string, contractAddress: string, functionData: string, payerId: string): Promise<ContractResultDetails|string> {
+    public async callContract(contractId: string, contractAddress: string, functionData: string, payerId: string): Promise<ContractResultDetails | string> {
         throw this.toBeImplemented("callContract")
     }
 
@@ -99,7 +99,7 @@ export abstract class WalletDriver {
     // Protected
     //
 
-    protected constructor(name: string, logoURL: string|null, iconURL: string|null) {
+    protected constructor(name: string, logoURL: string | null, iconURL: string | null) {
         this.name = name
         this.logoURL = logoURL
         this.iconURL = iconURL

@@ -25,35 +25,33 @@ export class EntityID {
     public readonly shard: number
     public readonly realm: number
     public readonly num: number
-    public readonly checksum: string|null
-
-
+    public readonly checksum: string | null
 
 
     //
     // Public
     //
 
-    public constructor(shard: number, realm: number, num: number, checksum: string|null) {
+    public constructor(shard: number, realm: number, num: number, checksum: string | null) {
         this.shard = shard
         this.realm = realm
         this.num = num
         this.checksum = checksum
     }
 
-    public static parse(s: string, autoComplete = false): EntityID|null {
-        let result: EntityID|null
+    public static parse(s: string, autoComplete = false): EntityID | null {
+        let result: EntityID | null
 
         const i1 = s.indexOf(".")
-        const i2 = i1 != -1 ? s.indexOf(".", i1+1) : -1
-        const i3 = i2 != -1 ? s.indexOf(".", i2+1) : -1
+        const i2 = i1 != -1 ? s.indexOf(".", i1 + 1) : -1
+        const i3 = i2 != -1 ? s.indexOf(".", i2 + 1) : -1
         if (i1 != -1 && i2 != -1 && i3 == -1) {
             const shardString = s.substring(0, i1)
-            const realmString = s.substring(i1+1, i2)
-            const numString   = s.substring(i2+1)
+            const realmString = s.substring(i1 + 1, i2)
+            const numString = s.substring(i2 + 1)
             const shard = EntityID.parsePositiveInt(shardString)
             const realm = EntityID.parsePositiveInt(realmString)
-            const num   = EntityID.parsePositiveInt(numString)
+            const num = EntityID.parsePositiveInt(numString)
             if (shard == null || realm == null || num == null) {
                 result = null
             } else {
@@ -72,13 +70,13 @@ export class EntityID {
         return result
     }
 
-    public static parseWithChecksum(s: string, autoComplete = false): EntityID|null {
-        let result: EntityID|null
+    public static parseWithChecksum(s: string, autoComplete = false): EntityID | null {
+        let result: EntityID | null
 
         const i = s.indexOf("-")
         if (i != -1) {
             const id = s.substring(0, i)
-            const checksum = s.substring(i+1)
+            const checksum = s.substring(i + 1)
             const entityId = EntityID.parse(id, autoComplete)
             if (entityId !== null && hasChecksumSyntax(checksum)) {
                 result = new EntityID(entityId.shard, entityId.realm, entityId.num, checksum)
@@ -92,7 +90,7 @@ export class EntityID {
         return result
     }
 
-    public static normalize(s: string): string|null {
+    public static normalize(s: string): string | null {
         const id = EntityID.parse(s, true)
         return id !== null ? id.toString() : null
     }
@@ -112,8 +110,8 @@ export class EntityID {
         return byteToHex(buffer)
     }
 
-    public static fromAddress(address: string|undefined): EntityID|null {
-        let result: EntityID|null
+    public static fromAddress(address: string | undefined): EntityID | null {
+        let result: EntityID | null
 
         if (address) {
             const buffer = hexToByte(address)
@@ -173,7 +171,7 @@ export class EntityID {
 
     public static readonly MAX_INT = Math.pow(2, 32) // Max supported by mirror node rest api on May 30, 2022
 
-    public static parsePositiveInt(s: string): number|null {
+    public static parsePositiveInt(s: string): number | null {
         const n = s.match(/^[0-9]+$/) !== null ? parseInt(s) : EntityID.MAX_INT
         return (isNaN(n) || n >= EntityID.MAX_INT) ? null : n
     }

@@ -59,7 +59,7 @@ export class HMSF {
     //
 
     private constructor(hour: string, minute: string, second: string, fractionalSecond: string, dayPeriod: string) {
-        this.hour =  hour
+        this.hour = hour
         this.minute = minute
         this.second = second
         this.fractionalSecond = fractionalSecond

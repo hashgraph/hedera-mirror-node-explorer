@@ -27,12 +27,15 @@
   <a v-else-if="decodedURL" :href="decodedURL.toString()">{{ decodedURL }}</a>
   <a v-else-if="ipfsAddress" :href="ipfsAddress">{{ decodedValue }}</a>
   <div v-else-if="jsonValue"
-       class="h-is-json is-inline-block has-text-left is-family-monospace h-is-text-size-3 should-wrap">{{ jsonValue }}</div>
+       class="h-is-json is-inline-block has-text-left is-family-monospace h-is-text-size-3 should-wrap">{{ jsonValue }}
+  </div>
   <template v-else-if="blobValue">
     <div v-if="limitingFactor && isMediumScreen" class="h-is-one-line is-inline-block"
-         :style="{'max-width': windowWidth-limitingFactor + 'px'}">{{ decodedValue }}</div>
+         :style="{'max-width': windowWidth-limitingFactor + 'px'}">{{ decodedValue }}
+    </div>
     <div v-else-if="limitingFactor" class="h-is-one-line is-inline-block"
-         :style="{'max-width': windowWidth-limitingFactor+200 + 'px'}">{{ decodedValue }}</div>
+         :style="{'max-width': windowWidth-limitingFactor+200 + 'px'}">{{ decodedValue }}
+    </div>
     <div v-else style="word-break: break-word">
       <span id="blob-main">
         {{ (b64EncodingFound && showBase64AsExtra) ? blobValue : decodedValue }}
@@ -42,7 +45,7 @@
           Base64:
         </span>
         <span id="blob-extra">
-          {{decodedValue }}
+          {{ decodedValue }}
         </span>
       </div>
     </div>
@@ -65,7 +68,7 @@ export default defineComponent({
   components: {},
   props: {
     blobValue: {
-      type: String as PropType<string|null>,
+      type: String as PropType<string | null>,
       default: null
     },
     showNone: {

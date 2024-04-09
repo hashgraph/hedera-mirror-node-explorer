@@ -75,6 +75,6 @@ export class NFTTransferEncoder extends CSVEncoder<Transaction> {
     }
 
     protected encodeHeaderRow(): string[] | null {
-        return ["#date","#token_id","#serial_number","#from_account_id","#to_account_id","#transaction_id","#transaction_type"]
+        return ["#date", "#token_id", "#serial_number", "#from_account_id", "#to_account_id", "#transaction_id", "#transaction_type"]
     }
 }

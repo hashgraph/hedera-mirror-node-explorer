@@ -24,132 +24,133 @@
 
 <template>
 
-    <DashboardCard collapsible-key="contractBytecode">
-        <template v-slot:title>
-            <div class="is-flex is-align-items-center is-flex-wrap-wrap">
-                <span class="h-is-secondary-title mr-3">Contract Bytecode</span>
-                <div v-if="isVerificationAvailable" class="h-is-text-size-2 mt-1">
-                    <div v-if="isVerified" class="h-has-pill has-background-success">VERIFIED</div>
-                    <div v-else class="h-has-pill has-background-warning">NOT VERIFIED</div>
-                </div>
-            </div>
-        </template>
+  <DashboardCard collapsible-key="contractBytecode">
+    <template v-slot:title>
+      <div class="is-flex is-align-items-center is-flex-wrap-wrap">
+        <span class="h-is-secondary-title mr-3">Contract Bytecode</span>
+        <div v-if="isVerificationAvailable" class="h-is-text-size-2 mt-1">
+          <div v-if="isVerified" class="h-has-pill has-background-success">VERIFIED</div>
+          <div v-else class="h-has-pill has-background-warning">NOT VERIFIED</div>
+        </div>
+      </div>
+    </template>
 
-        <template v-slot:control>
-            <template v-if="isVerificationAvailable">
-                <template v-if="!isVerified">
-                    <button id="verify-button"
-                            class="button is-white is-small has-text-right"
-                            @click="showVerifyDialog = true">
-                        VERIFY CONTRACT
-                    </button>
-                </template>
-            </template>
+    <template v-slot:control>
+      <template v-if="isVerificationAvailable">
+        <template v-if="!isVerified">
+          <button id="verify-button"
+                  class="button is-white is-small has-text-right"
+                  @click="showVerifyDialog = true">
+            VERIFY CONTRACT
+          </button>
         </template>
+      </template>
+    </template>
 
-        <template v-slot:content>
-            <Property v-if="isVerified" id="verificationStatus" :full-width="true">
-                <template v-slot:name>Verification Status</template>
-                <template v-slot:value>
-                    <div class="is-flex is-align-items-center">
-                        <p class="mr-2">{{ isFullMatch ? "Full Match" : "Partial Match" }}</p>
-                        <InfoTooltip :label="tooltipText"/>
-                        <button v-if="!isFullMatch" id="verify-button"
-                                class="button is-white h-is-smaller ml-3"
-                                @click="showVerifyDialog = true">
-                            RE-VERIFY CONTRACT
-                        </button>
-                    </div>
-                </template>
-            </Property>
-            <Property v-if="isVerified" id="contractName" :full-width="true">
-                <template v-slot:name>Contract Name</template>
-                <template v-slot:value>
-                    <StringValue :string-value="contractName ?? undefined"/>
-                </template>
-            </Property>
-            <Property id="solcVersion" :full-width="true">
-                <template v-slot:name>Solidity Compiler Version</template>
-                <template v-slot:value>
-                    <StringValue :string-value="solcVersion ?? undefined"/>
-                </template>
-            </Property>
-            <div v-if="isVerified" class="is-flex is-justify-content-space-between is-align-items-center mb-0">
-                <Tabs :tab-ids=tabIds :tab-labels=tabLabels
-                      :selected-tab="selectedOption"
-                      @update:selected-tab="handleTabUpdate($event)"
-                />
-                <div v-if="selectedOption==='source'" class="is-flex is-justify-content-end">
-                    <DownloadButton @click="handleDownload" />
-                    <o-field class="ml-2">
-                        <o-select v-model="selectedSource" class="h-is-text-size-3">
-                            <option value="">All source files</option>
-                            <optgroup label="Main contract file">
-                                <option :value="contractFileName">{{ sourceFileName }}</option>
-                            </optgroup>
-                            <optgroup label="Include files">
-                                <option v-for="file in solidityFiles" v-bind:key="file.path"
-                                        v-bind:value="file.name"
-                                        v-show="isImportFile(file)">
-                                    {{ relevantPath(file.path) }}
-                                </option>
-                            </optgroup>
-                        </o-select>
-                    </o-field>
-                </div>
-                <div v-else-if="selectedOption==='bytecode'" class="is-flex is-align-items-center is-justify-content-end">
-                    <p class="has-text-weight-light">Show hexa opcode</p>
-                    <label class="checkbox pt-1 ml-3">
-                        <input type="checkbox" v-model="showHexaOpcode">
-                    </label>
-                </div>
-                <div v-else-if="selectedOption==='abi'" class="is-flex is-justify-content-end">
-                    <DownloadButton @click="handleDownloadABI"/>
-                    <o-field class="ml-2">
-                        <o-select v-model="selectedType" class="h-is-text-size-3">
-                            <option :value="FragmentType.ALL">All definitions</option>
-                            <option :value="FragmentType.READONLY">Read-only functions</option>
-                            <option :value="FragmentType.READWRITE">Read-write functions</option>
-                            <option :value="FragmentType.EVENTS">Events</option>
-                            <option :value="FragmentType.ERRORS">Errors</option>
-                            <option :value="FragmentType.OTHER">Other definitions</option>
-                        </o-select>
-                    </o-field>
-                </div>
-            </div>
-            <SourceCodeValue  v-if="isVerified && selectedOption==='source'"
-                              :source-files="solidityFiles ?? undefined"
-                              :filter="selectedSource"/>
-            <div v-if="!isVerified || selectedOption==='bytecode'" class="columns is-multiline h-is-property-text" :class="{'mt-3':!isVerified,'mt-0':isVerified}">
-                <div id="bytecode" class="column is-6 pt-0 mb-0" :class="{'is-full': !isSmallScreen}">
-                    <span v-if="!isVerified" class="has-text-weight-light">Runtime Bytecode</span>
-                    <div>
-                        <ByteCodeValue :byte-code="byteCode ?? undefined" class="mb-0" :class="{'mt-3':!isVerified}"/>
-                    </div>
-                </div>
-                <div id="assembly-code" class="column is-6 pt-0 mb-0" :class="{'h-has-column-separator':isSmallScreen}">
-                    <div v-if="!isVerified" class="is-flex is-align-items-center is-justify-content-space-between">
-                        <p class="has-text-weight-light">Assembly Bytecode</p>
-                        <div class="is-flex is-align-items-center is-justify-content-end">
-                            <p class="has-text-weight-light">Show hexa opcode</p>
-                            <label class="checkbox pt-1 ml-3">
-                                <input type="checkbox" v-model="showHexaOpcode">
-                            </label>
-                        </div>
-                    </div>
-                    <DisassembledCodeValue :byte-code="byteCode ?? undefined" :show-hexa-opcode="showHexaOpcode" class="mb-0"/>
-                </div>
-            </div>
-            <ContractAbiValue v-if="isVerified && selectedOption==='abi'"
-                              :contract-analyzer="contractAnalyzer"
-                              :fragment-type="selectedType as FragmentType"/>
+    <template v-slot:content>
+      <Property v-if="isVerified" id="verificationStatus" :full-width="true">
+        <template v-slot:name>Verification Status</template>
+        <template v-slot:value>
+          <div class="is-flex is-align-items-center">
+            <p class="mr-2">{{ isFullMatch ? "Full Match" : "Partial Match" }}</p>
+            <InfoTooltip :label="tooltipText"/>
+            <button v-if="!isFullMatch" id="verify-button"
+                    class="button is-white h-is-smaller ml-3"
+                    @click="showVerifyDialog = true">
+              RE-VERIFY CONTRACT
+            </button>
+          </div>
         </template>
-    </DashboardCard>
+      </Property>
+      <Property v-if="isVerified" id="contractName" :full-width="true">
+        <template v-slot:name>Contract Name</template>
+        <template v-slot:value>
+          <StringValue :string-value="contractName ?? undefined"/>
+        </template>
+      </Property>
+      <Property id="solcVersion" :full-width="true">
+        <template v-slot:name>Solidity Compiler Version</template>
+        <template v-slot:value>
+          <StringValue :string-value="solcVersion ?? undefined"/>
+        </template>
+      </Property>
+      <div v-if="isVerified" class="is-flex is-justify-content-space-between is-align-items-center mb-0">
+        <Tabs :tab-ids=tabIds :tab-labels=tabLabels
+              :selected-tab="selectedOption"
+              @update:selected-tab="handleTabUpdate($event)"
+        />
+        <div v-if="selectedOption==='source'" class="is-flex is-justify-content-end">
+          <DownloadButton @click="handleDownload"/>
+          <o-field class="ml-2">
+            <o-select v-model="selectedSource" class="h-is-text-size-3">
+              <option value="">All source files</option>
+              <optgroup label="Main contract file">
+                <option :value="contractFileName">{{ sourceFileName }}</option>
+              </optgroup>
+              <optgroup label="Include files">
+                <option v-for="file in solidityFiles" v-bind:key="file.path"
+                        v-bind:value="file.name"
+                        v-show="isImportFile(file)">
+                  {{ relevantPath(file.path) }}
+                </option>
+              </optgroup>
+            </o-select>
+          </o-field>
+        </div>
+        <div v-else-if="selectedOption==='bytecode'" class="is-flex is-align-items-center is-justify-content-end">
+          <p class="has-text-weight-light">Show hexa opcode</p>
+          <label class="checkbox pt-1 ml-3">
+            <input type="checkbox" v-model="showHexaOpcode">
+          </label>
+        </div>
+        <div v-else-if="selectedOption==='abi'" class="is-flex is-justify-content-end">
+          <DownloadButton @click="handleDownloadABI"/>
+          <o-field class="ml-2">
+            <o-select v-model="selectedType" class="h-is-text-size-3">
+              <option :value="FragmentType.ALL">All definitions</option>
+              <option :value="FragmentType.READONLY">Read-only functions</option>
+              <option :value="FragmentType.READWRITE">Read-write functions</option>
+              <option :value="FragmentType.EVENTS">Events</option>
+              <option :value="FragmentType.ERRORS">Errors</option>
+              <option :value="FragmentType.OTHER">Other definitions</option>
+            </o-select>
+          </o-field>
+        </div>
+      </div>
+      <SourceCodeValue v-if="isVerified && selectedOption==='source'"
+                       :source-files="solidityFiles ?? undefined"
+                       :filter="selectedSource"/>
+      <div v-if="!isVerified || selectedOption==='bytecode'" class="columns is-multiline h-is-property-text"
+           :class="{'mt-3':!isVerified,'mt-0':isVerified}">
+        <div id="bytecode" class="column is-6 pt-0 mb-0" :class="{'is-full': !isSmallScreen}">
+          <span v-if="!isVerified" class="has-text-weight-light">Runtime Bytecode</span>
+          <div>
+            <ByteCodeValue :byte-code="byteCode ?? undefined" class="mb-0" :class="{'mt-3':!isVerified}"/>
+          </div>
+        </div>
+        <div id="assembly-code" class="column is-6 pt-0 mb-0" :class="{'h-has-column-separator':isSmallScreen}">
+          <div v-if="!isVerified" class="is-flex is-align-items-center is-justify-content-space-between">
+            <p class="has-text-weight-light">Assembly Bytecode</p>
+            <div class="is-flex is-align-items-center is-justify-content-end">
+              <p class="has-text-weight-light">Show hexa opcode</p>
+              <label class="checkbox pt-1 ml-3">
+                <input type="checkbox" v-model="showHexaOpcode">
+              </label>
+            </div>
+          </div>
+          <DisassembledCodeValue :byte-code="byteCode ?? undefined" :show-hexa-opcode="showHexaOpcode" class="mb-0"/>
+        </div>
+      </div>
+      <ContractAbiValue v-if="isVerified && selectedOption==='abi'"
+                        :contract-analyzer="contractAnalyzer"
+                        :fragment-type="selectedType as FragmentType"/>
+    </template>
+  </DashboardCard>
 
-    <ContractVerificationDialog
-        v-model:show-dialog="showVerifyDialog"
-        :contract-id="contractId ?? undefined"
-        v-on:verify-did-complete="verifyDidComplete"/>
+  <ContractVerificationDialog
+      v-model:show-dialog="showVerifyDialog"
+      :contract-id="contractId ?? undefined"
+      v-on:verify-did-complete="verifyDidComplete"/>
 
 </template>
 
@@ -186,24 +187,24 @@ export default defineComponent({
   name: 'ContractByteCodeSection',
 
   components: {
-      Tabs,
-      ContractAbiValue,
-      DownloadButton,
-      SourceCodeValue,
-      HexaValue,
-      DisassembledCodeValue,
-      ContractVerificationDialog,
-      InfoTooltip,
-      Property,
-      StringValue,
-      ByteCodeValue,
-      DashboardCard
+    Tabs,
+    ContractAbiValue,
+    DownloadButton,
+    SourceCodeValue,
+    HexaValue,
+    DisassembledCodeValue,
+    ContractVerificationDialog,
+    InfoTooltip,
+    Property,
+    StringValue,
+    ByteCodeValue,
+    DashboardCard
   },
 
   props: {
     contractAnalyzer: {
-        type: Object as PropType<ContractAnalyzer>,
-        required: true
+      type: Object as PropType<ContractAnalyzer>,
+      required: true
     }
   },
 
@@ -222,14 +223,14 @@ export default defineComponent({
     // True when the verification is ENABLED by configuration and the current verification STATUS is known, which
     // enables to decide which option to present to the user
     const isVerificationAvailable = computed(() => {
-        const sourcifySetup = routeManager.currentNetworkEntry.value.sourcifySetup
-        return sourcifySetup?.activate
-            && sourcifySetup?.serverURL.length
+      const sourcifySetup = routeManager.currentNetworkEntry.value.sourcifySetup
+      return sourcifySetup?.activate
+          && sourcifySetup?.serverURL.length
     })
 
     const showVerifyDialog = ref(false)
     const verifyDidComplete = () => {
-        props.contractAnalyzer.verifyDidComplete()
+      props.contractAnalyzer.verifyDidComplete()
     }
 
     const tooltipText = computed(() => isFullMatch.value ? FULL_MATCH_TOOLTIP : PARTIAL_MATCH_TOOLTIP)
@@ -242,8 +243,8 @@ export default defineComponent({
     const tabLabels = ['ABI', 'Source', 'Bytecode']
     const selectedOption = ref(AppStorage.getContractByteCodeTab() ?? tabIds[0])
     const handleTabUpdate = (tab: string) => {
-        selectedOption.value = tab
-        AppStorage.setContractByteCodeTab(tab)
+      selectedOption.value = tab
+      AppStorage.setContractByteCodeTab(tab)
     }
 
     const selectedSource = ref('')
@@ -251,59 +252,59 @@ export default defineComponent({
         () => selectedSource.value = props.contractAnalyzer.contractFileName.value ?? '', {immediate: true})
 
     const isImportFile = (file: SourcifyResponseItem): boolean => {
-        return file.name !== props.contractAnalyzer.contractFileName.value
+      return file.name !== props.contractAnalyzer.contractFileName.value
     }
 
     const relevantPath = (fullPath: string): string => {
-        return fullPath.substring(fullPath.indexOf('sources') + 8)
+      return fullPath.substring(fullPath.indexOf('sources') + 8)
     }
 
     const handleDownload = async () => {
-        const contractURL = props.contractAnalyzer.sourcifyURL.value ?? ''
-        if (selectedSource.value === '') {
-            const zip = new JSZip();
-            for (const file of props.contractAnalyzer.sourceFiles.value) {
-                const filePath = file.path.substring(file.path.indexOf('match') + 10)
-                zip.file(filePath, file.content);
-            }
-            zip.generateAsync({type:"blob"})
-                .then(function(content: any) {
-                    const zipName = props.contractAnalyzer.contractAddress.value + '.zip'
-                    saveAs(content, zipName);
-                });
-        } else {
-            for (const file of props.contractAnalyzer.solidityFiles.value) {
-                if (file.name === selectedSource.value) {
-                    const URLPrefix = contractURL.substring(0, contractURL.indexOf('contracts'))
-                    const filePath = file.path.substring(file.path.indexOf('contracts'))
-                    const fileURL = URLPrefix + filePath
-
-                    const a = document.createElement('a')
-                    a.setAttribute('href', fileURL)
-                    a.setAttribute('download', file.name);
-                    a.click()
-                }
-            }
+      const contractURL = props.contractAnalyzer.sourcifyURL.value ?? ''
+      if (selectedSource.value === '') {
+        const zip = new JSZip();
+        for (const file of props.contractAnalyzer.sourceFiles.value) {
+          const filePath = file.path.substring(file.path.indexOf('match') + 10)
+          zip.file(filePath, file.content);
         }
+        zip.generateAsync({type: "blob"})
+            .then(function (content: any) {
+              const zipName = props.contractAnalyzer.contractAddress.value + '.zip'
+              saveAs(content, zipName);
+            });
+      } else {
+        for (const file of props.contractAnalyzer.solidityFiles.value) {
+          if (file.name === selectedSource.value) {
+            const URLPrefix = contractURL.substring(0, contractURL.indexOf('contracts'))
+            const filePath = file.path.substring(file.path.indexOf('contracts'))
+            const fileURL = URLPrefix + filePath
+
+            const a = document.createElement('a')
+            a.setAttribute('href', fileURL)
+            a.setAttribute('download', file.name);
+            a.click()
+          }
+        }
+      }
     }
 
     const selectedType = ref<string>(FragmentType.ALL)
     onMounted(() => {
-        const preferredType = AppStorage.getFragmentType()
-        if (preferredType && Object.values(FragmentType).includes(preferredType as FragmentType)) {
-            selectedType.value = preferredType
-        } else {
-            AppStorage.setFragmentType(null)
-            selectedType.value = FragmentType.ALL
-        }
+      const preferredType = AppStorage.getFragmentType()
+      if (preferredType && Object.values(FragmentType).includes(preferredType as FragmentType)) {
+        selectedType.value = preferredType
+      } else {
+        AppStorage.setFragmentType(null)
+        selectedType.value = FragmentType.ALL
+      }
     })
     watch(selectedType, () => AppStorage.setFragmentType(selectedType.value))
 
-    const abiBlob  = computed(() => {
-      let result: Blob|null
+    const abiBlob = computed(() => {
+      let result: Blob | null
       const itf = props.contractAnalyzer.interface.value
       if (itf !== null) {
-        result = new Blob([itf.formatJson()], { type: "text/json" })
+        result = new Blob([itf.formatJson()], {type: "text/json"})
       } else {
         result = null
       }
@@ -311,14 +312,14 @@ export default defineComponent({
     })
 
     const handleDownloadABI = () => {
-        if (abiBlob.value !== null) {
-            const url = window.URL.createObjectURL(abiBlob.value)
-            const outputName = props.contractAnalyzer.contractName.value + ".json"
-            const a = document.createElement('a')
-            a.setAttribute('href', url)
-            a.setAttribute('download', outputName);
-            a.click()
-        }
+      if (abiBlob.value !== null) {
+        const url = window.URL.createObjectURL(abiBlob.value)
+        const outputName = props.contractAnalyzer.contractName.value + ".json"
+        const a = document.createElement('a')
+        a.setAttribute('href', url)
+        a.setAttribute('download', outputName);
+        a.click()
+      }
     }
 
     return {

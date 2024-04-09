@@ -24,7 +24,7 @@ import {WalletDriverError} from "@/utils/wallet/WalletDriverError";
 
 export class WalletDriver_Brave extends WalletDriver_Ethereum {
 
-    private braveProvider: BaseProvider|null = null
+    private braveProvider: BaseProvider | null = null
 
     //
     // Public

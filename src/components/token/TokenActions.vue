@@ -24,92 +24,97 @@
 
 <template>
   <div>
-  <!-- <div class="is-relative"> -->
+    <!-- <div class="is-relative"> -->
     <button v-if="isEthereumWallet" id="showStakingDialog" class="button is-white is-small"
-        @click="() => isActive = !isActive">TOKEN ACTIONS
+            @click="() => isActive = !isActive">TOKEN ACTIONS
     </button>
 
     <div v-if="isActive" class="token-actions-wrapper is-flex is-flex-direction-column box">
       <div v-if="isDissociated" id="showStakingDialog" class="is-cursor is-hover-grey is-full has-cursor-pointer"
-        @click="handleAssociate">TOKEN ASSOCIATE</div>
+           @click="handleAssociate">TOKEN ASSOCIATE
+      </div>
 
       <div v-if="isAssociated" id="showStakingDialog" class="is-cursor is-hover-grey  is-full has-cursor-pointer"
-        @click="handleDissociate">TOKEN DISSOCIATE</div>
+           @click="handleDissociate">TOKEN DISSOCIATE
+      </div>
 
-      <div v-if="isWatchAssetSupported" id="showStakingDialog" class="is-cursor is-hover-grey  is-full has-cursor-pointer"
-        @click="handleImport">TOKEN IMPORT</div>
+      <div v-if="isWatchAssetSupported" id="showStakingDialog"
+           class="is-cursor is-hover-grey  is-full has-cursor-pointer"
+           @click="handleImport">TOKEN IMPORT
+      </div>
     </div>
 
     <button v-if="isHederaWallet" id="showStakingDialog" class="button is-white is-small"
-        @click="() => isDissociated ? handleAssociate() : handleDissociate()">{{ isDissociated ? `TOKEN ASSOCIATE` : `TOKEN DISSOCIATE` }}
+            @click="() => isDissociated ? handleAssociate() : handleDissociate()">
+      {{ isDissociated ? `TOKEN ASSOCIATE` : `TOKEN DISSOCIATE` }}
     </button>
 
     <ConfirmDialog :show-dialog="showConfirmDialog"
-                   :main-message ="confirmMessage"
+                   :main-message="confirmMessage"
                    :extra-message="confirmExtraMessage"
                    @onConfirm="handleConfirm"
                    @onCancel="handleCancel">
-        <template v-slot:dialogTitle>
+      <template v-slot:dialogTitle>
             <span class="h-is-primary-title">
                 {{ dialogTitle }}
             </span>
-        </template>
-        <template v-if="showWatchOption && isWatchAssetSupported" v-slot:dialogOption>
-            <div class="is-flex is-align-items-center">
-                <label class="checkbox mr-3">
-                    <input type="checkbox" v-model="watchInWallet">
-                </label>
-                <p class="h-is-property-text">Import {{ tokenSymbol }} to {{ walletManager.walletName.value }}</p>
-            </div>
-        </template>
+      </template>
+      <template v-if="showWatchOption && isWatchAssetSupported" v-slot:dialogOption>
+        <div class="is-flex is-align-items-center">
+          <label class="checkbox mr-3">
+            <input type="checkbox" v-model="watchInWallet">
+          </label>
+          <p class="h-is-property-text">Import {{ tokenSymbol }} to {{ walletManager.walletName.value }}</p>
+        </div>
+      </template>
     </ConfirmDialog>
 
     <DynamicDialog :show-dialog="showDynamicDialog"
                    :main-message="dynamicMessage"
                    @onConfirm="handleConfirm"
                    @onCancel="handleCancel">
-        <template v-slot:dialogTitle>
+      <template v-slot:dialogTitle>
             <span class="h-is-primary-titlee">
                 {{ dialogTitle }}
             </span>
-        </template>
+      </template>
 
-        <template v-slot:dialogInput>
-          <div class="is-full is-flex is-flex-direction-column" style="gap: 0.34rem;">
-            <p class="h-is-property-text has-text-weight-medium">
-              Serial Number:
-            </p>
-            <input
-                type="number"
-                ref="serialNumberInputRef"
-                v-model="tokenSerialNumber"
-                style="border-radius: 0.3rem"
-                placeholder="Input serial number..." 
-                class="serial-number-input-box is-full py-2 px-1 h-is-property-text"
-            />
-          </div>
-        </template>
+      <template v-slot:dialogInput>
+        <div class="is-full is-flex is-flex-direction-column" style="gap: 0.34rem;">
+          <p class="h-is-property-text has-text-weight-medium">
+            Serial Number:
+          </p>
+          <input
+              type="number"
+              ref="serialNumberInputRef"
+              v-model="tokenSerialNumber"
+              style="border-radius: 0.3rem"
+              placeholder="Input serial number..."
+              class="serial-number-input-box is-full py-2 px-1 h-is-property-text"
+          />
+        </div>
+      </template>
     </DynamicDialog>
-    
+
     <ProgressDialog v-model:show-dialog="showProgressDialog"
                     :mode="progressDialogMode"
                     :main-message="progressMainMessage"
                     :extra-message="progressExtraMessage"
                     :extra-transaction-id="progressExtraTransactionId"
                     :show-spinner="showProgressSpinner">
-        <template v-slot:dialogTitle>
-            <span class="h-is-primary-title">{{ dialogTitle }}</span>
-        </template>
+      <template v-slot:dialogTitle>
+        <span class="h-is-primary-title">{{ dialogTitle }}</span>
+      </template>
     </ProgressDialog>
 
     <DoneDialog :show-dialog="showDoneDialog"
-                :main-message ="doneMessage"
+                :main-message="doneMessage"
                 @onDoneConfirm="handleDoneConfirm">
-        <template v-slot:dialogTitle>
+      <template v-slot:dialogTitle>
             <span class="h-is-primary-title">
                 {{ dialogTitle }}
             </span>
-        </template>
+      </template>
     </DoneDialog>
   </div>
 
@@ -133,18 +138,18 @@ import ConfirmDialog from '../ConfirmDialog.vue';
 import DynamicDialog from '../DynamicDialog.vue';
 import {PropType, computed, defineComponent, ref} from "vue";
 import ProgressDialog, {Mode} from "@/components/staking/ProgressDialog.vue";
-import { TokenAssociationStatus, TokenInfoAnalyzer } from './TokenInfoAnalyzer';
-import { WalletDriverCancelError, WalletDriverError } from '@/utils/wallet/WalletDriverError';
+import {TokenAssociationStatus, TokenInfoAnalyzer} from './TokenInfoAnalyzer';
+import {WalletDriverCancelError, WalletDriverError} from '@/utils/wallet/WalletDriverError';
 import AlertDialog from "@/components/AlertDialog.vue";
 import {DialogController} from "@/components/dialog/DialogController";
 
 export default defineComponent({
   name: "TokenActions",
-  components: {AlertDialog, ConfirmDialog, ProgressDialog, DoneDialog, DynamicDialog },
+  components: {AlertDialog, ConfirmDialog, ProgressDialog, DoneDialog, DynamicDialog},
   props: {
     analyzer: {
-        type: Object as PropType<TokenInfoAnalyzer>,
-        required: true
+      type: Object as PropType<TokenInfoAnalyzer>,
+      required: true
     }
   },
   setup(props) {
@@ -166,8 +171,8 @@ export default defineComponent({
     const tokenId = computed(() => props.analyzer.tokenId.value)
     const accountId = computed(() => walletManager.accountId.value)
     const tokenSymbol = computed(() => props.analyzer.tokenSymbol.value)
-    const isAssociated = computed(() => props.analyzer.associationStatus.value == TokenAssociationStatus.Associated )
-    const isDissociated = computed(() => props.analyzer.associationStatus.value == TokenAssociationStatus.Dissociated )
+    const isAssociated = computed(() => props.analyzer.associationStatus.value == TokenAssociationStatus.Associated)
+    const isDissociated = computed(() => props.analyzer.associationStatus.value == TokenAssociationStatus.Dissociated)
 
     // Alert dialog states
     const alertController = new DialogController()
@@ -181,16 +186,16 @@ export default defineComponent({
     //
     const watchInWallet = ref(false)
     const showConfirmDialog = ref(false)
-    const dialogTitle = ref<string|null>(null)
-    const confirmMessage = ref<string|null>(null)
-    const confirmExtraMessage = ref<string|null>(null)
+    const dialogTitle = ref<string | null>(null)
+    const confirmMessage = ref<string | null>(null)
+    const confirmExtraMessage = ref<string | null>(null)
     const showWatchOption = computed(() => action.value === 'ASSOCIATE' && props.analyzer.isFungible.value)
 
     //
     // Dynamic dialog states
     //
     const showDynamicDialog = ref(false)
-    const dynamicMessage = ref<string|null>(null)
+    const dynamicMessage = ref<string | null>(null)
 
     //
     // Progress dialog states
@@ -198,26 +203,26 @@ export default defineComponent({
     const showProgressDialog = ref(false)
     const showProgressSpinner = ref(false)
     const progressDialogMode = ref(Mode.Busy)
-    const progressMainMessage = ref<string|null>(null)
-    const progressExtraMessage = ref<string|null>(null)
-    const progressExtraTransactionId = ref<string|null>(null)
+    const progressMainMessage = ref<string | null>(null)
+    const progressExtraMessage = ref<string | null>(null)
+    const progressExtraTransactionId = ref<string | null>(null)
 
     //
     // Done dialog states
     //
     const showDoneDialog = ref(false)
-    const doneMessage = ref<string|null>(null)
-    
+    const doneMessage = ref<string | null>(null)
+
 
     //
     // handleAssociate()
     //
     const handleAssociate = () => {
-        action.value = 'ASSOCIATE'
-        showConfirmDialog.value = true
-        dialogTitle.value = `Associate ${tokenType.value} ${tokenId.value}`
-        confirmMessage.value = `Confirm associating ${tokenType.value} ${tokenId.value! +"("+ tokenSymbol.value +")"} to account ${accountId.value}?`
-        confirmExtraMessage.value = null
+      action.value = 'ASSOCIATE'
+      showConfirmDialog.value = true
+      dialogTitle.value = `Associate ${tokenType.value} ${tokenId.value}`
+      confirmMessage.value = `Confirm associating ${tokenType.value} ${tokenId.value! + "(" + tokenSymbol.value + ")"} to account ${accountId.value}?`
+      confirmExtraMessage.value = null
     }
 
     //
@@ -225,13 +230,13 @@ export default defineComponent({
     //
     const handleDissociate = () => {
       if (props.analyzer.treasuryAccount.value != walletManager.accountId.value) {
-          action.value = 'DISSOCIATE'
-          showConfirmDialog.value = true
-          dialogTitle.value = `Dissociate ${tokenType.value} ${tokenId.value}`
-          confirmMessage.value = `Confirm dissociating ${tokenType.value} ${tokenId.value!} (${tokenSymbol.value}) from account ${accountId.value}?`
-          confirmExtraMessage.value = null
+        action.value = 'DISSOCIATE'
+        showConfirmDialog.value = true
+        dialogTitle.value = `Dissociate ${tokenType.value} ${tokenId.value}`
+        confirmMessage.value = `Confirm dissociating ${tokenType.value} ${tokenId.value!} (${tokenSymbol.value}) from account ${accountId.value}?`
+        confirmExtraMessage.value = null
       } else {
-          alertController.visible.value = true
+        alertController.visible.value = true
       }
     }
 
@@ -255,19 +260,25 @@ export default defineComponent({
     // handleConfirm()
     //
     const handleConfirm = () => {
-        isActive.value=false
-        showConfirmDialog.value = false
-        showDynamicDialog.value = false
-        showProgressDialog.value = true
-        showProgressSpinner.value = true
-        progressMainMessage.value = null
-        progressExtraMessage.value = null
-        progressDialogMode.value = Mode.Busy
-        switch (action.value) {
-          case "ASSOCIATE": associateAction(); break;
-          case "DISSOCIATE": dissociateAction(); break;
-          case "IMPORT_TOKEN": importTokenAction(); break;
-        }
+      isActive.value = false
+      showConfirmDialog.value = false
+      showDynamicDialog.value = false
+      showProgressDialog.value = true
+      showProgressSpinner.value = true
+      progressMainMessage.value = null
+      progressExtraMessage.value = null
+      progressDialogMode.value = Mode.Busy
+      switch (action.value) {
+        case "ASSOCIATE":
+          associateAction();
+          break;
+        case "DISSOCIATE":
+          dissociateAction();
+          break;
+        case "IMPORT_TOKEN":
+          importTokenAction();
+          break;
+      }
     }
 
     //
@@ -297,25 +308,25 @@ export default defineComponent({
     const associateAction = async () => {
       try {
         if (props.analyzer.associationStatus.value == TokenAssociationStatus.Dissociated) {
-              showProgressDialog.value = true
-              showProgressSpinner.value = true
-              progressMainMessage.value = `Associating ${tokenType.value} ${tokenId.value!} (${tokenSymbol.value}) to account ${accountId.value}...`
-              
-              try {
-                  await walletManager.associateToken(tokenId.value!)
-              } finally {
-                  props.analyzer.tokenAssociationDidChange()
-              }
-          }
+          showProgressDialog.value = true
+          showProgressSpinner.value = true
+          progressMainMessage.value = `Associating ${tokenType.value} ${tokenId.value!} (${tokenSymbol.value}) to account ${accountId.value}...`
 
-          if (watchInWallet.value) {
-            await importTokenAction()
-          } else {
-            showDoneDialog.value = true
-            dialogTitle.value = `Successfully associated ${tokenType.value} ${tokenId.value!}`
-            doneMessage.value = `Successfully associated ${tokenType.value} ${tokenId.value!}(${tokenSymbol.value}) to account ${accountId.value}`
-            showProgressDialog.value = false
+          try {
+            await walletManager.associateToken(tokenId.value!)
+          } finally {
+            props.analyzer.tokenAssociationDidChange()
           }
+        }
+
+        if (watchInWallet.value) {
+          await importTokenAction()
+        } else {
+          showDoneDialog.value = true
+          dialogTitle.value = `Successfully associated ${tokenType.value} ${tokenId.value!}`
+          doneMessage.value = `Successfully associated ${tokenType.value} ${tokenId.value!}(${tokenSymbol.value}) to account ${accountId.value}`
+          showProgressDialog.value = false
+        }
       } catch (reason) {
         handleError(reason)
       }
@@ -327,19 +338,19 @@ export default defineComponent({
     const dissociateAction = async () => {
       try {
         if (props.analyzer.associationStatus.value == TokenAssociationStatus.Associated) {
-              showProgressDialog.value = true
-              showProgressSpinner.value = true
-              progressMainMessage.value = `Dissociating ${tokenType.value} ${tokenId.value!} (${tokenSymbol.value}) from account ${accountId.value}...`
-              try {
-                  await walletManager.dissociateToken(tokenId.value!)
-              } finally {
-                  props.analyzer.tokenAssociationDidChange()
-              }
+          showProgressDialog.value = true
+          showProgressSpinner.value = true
+          progressMainMessage.value = `Dissociating ${tokenType.value} ${tokenId.value!} (${tokenSymbol.value}) from account ${accountId.value}...`
+          try {
+            await walletManager.dissociateToken(tokenId.value!)
+          } finally {
+            props.analyzer.tokenAssociationDidChange()
           }
-          showProgressDialog.value = false
-          showDoneDialog.value = true
-          dialogTitle.value = `Successfully dissociated ${tokenType.value} ${tokenId.value!}`
-          doneMessage.value = `Successfully dissociated ${tokenType.value} ${tokenId.value!}(${tokenSymbol.value}) from account ${accountId.value}`
+        }
+        showProgressDialog.value = false
+        showDoneDialog.value = true
+        dialogTitle.value = `Successfully dissociated ${tokenType.value} ${tokenId.value!}`
+        doneMessage.value = `Successfully dissociated ${tokenType.value} ${tokenId.value!}(${tokenSymbol.value}) from account ${accountId.value}`
       } catch (reason) {
         handleError(reason)
       }
@@ -349,24 +360,24 @@ export default defineComponent({
     // importTokenAction()
     //
     const importTokenAction = async () => {
-        try {
-          if (props.analyzer.isFungible.value) {
-            progressMainMessage.value = `Importing token ${tokenId.value} (${tokenSymbol.value}) to wallet ${walletManager.walletName.value}...`
-            await walletManager.watchToken(tokenId.value!)
-          } else {
-            dialogTitle.value = `Import NFT ${tokenId.value}(${tokenSymbol.value}) #${tokenSerialNumber.value}`
-            progressMainMessage.value = `Importing NFT ${tokenId.value}(${tokenSymbol.value}) #${tokenSerialNumber.value} to wallet ${walletManager.walletName.value}...`
-            await walletManager.watchToken(tokenId.value!, tokenSerialNumber.value.toString())
-          }
-
-          isActive.value = false
-          showDoneDialog.value = true
-          showProgressDialog.value = false
-          dialogTitle.value = `Successfully imported ${tokenType.value} ${tokenId.value!}`
-          doneMessage.value = `Successfully imported ${tokenType.value} ${tokenId.value!}(${tokenSymbol.value}) ${!props.analyzer.isFungible.value && `#${tokenSerialNumber.value}`} to ${walletManager.walletName.value}`
-        } catch (reason) {
-          handleError(reason)
+      try {
+        if (props.analyzer.isFungible.value) {
+          progressMainMessage.value = `Importing token ${tokenId.value} (${tokenSymbol.value}) to wallet ${walletManager.walletName.value}...`
+          await walletManager.watchToken(tokenId.value!)
+        } else {
+          dialogTitle.value = `Import NFT ${tokenId.value}(${tokenSymbol.value}) #${tokenSerialNumber.value}`
+          progressMainMessage.value = `Importing NFT ${tokenId.value}(${tokenSymbol.value}) #${tokenSerialNumber.value} to wallet ${walletManager.walletName.value}...`
+          await walletManager.watchToken(tokenId.value!, tokenSerialNumber.value.toString())
         }
+
+        isActive.value = false
+        showDoneDialog.value = true
+        showProgressDialog.value = false
+        dialogTitle.value = `Successfully imported ${tokenType.value} ${tokenId.value!}`
+        doneMessage.value = `Successfully imported ${tokenType.value} ${tokenId.value!}(${tokenSymbol.value}) ${!props.analyzer.isFungible.value && `#${tokenSerialNumber.value}`} to ${walletManager.walletName.value}`
+      } catch (reason) {
+        handleError(reason)
+      }
     }
 
     //
@@ -374,7 +385,7 @@ export default defineComponent({
     //
     const handleError = (reason: unknown) => {
       if (reason instanceof WalletDriverCancelError) {
-          showProgressDialog.value = false
+        showProgressDialog.value = false
       } else {
         showProgressDialog.value = true
         showProgressSpinner.value = false
@@ -436,7 +447,7 @@ export default defineComponent({
 <!--                                                      STYLE                                                      -->
 <!-- --------------------------------------------------------------------------------------------------------------- -->
 
-<style scoped> 
+<style scoped>
 
 .token-actions-wrapper {
   top: 0;
@@ -455,8 +466,14 @@ export default defineComponent({
   letter-spacing: 0.025rem;
 }
 
-.is-cursor {cursor: pointer}
-.is-hover-grey:hover {color: grey}
+.is-cursor {
+  cursor: pointer
+}
+
+.is-hover-grey:hover {
+  color: grey
+}
+
 input::-webkit-outer-spin-button,
 input::-webkit-inner-spin-button {
   -webkit-appearance: none;

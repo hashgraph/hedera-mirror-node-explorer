@@ -26,15 +26,15 @@ import {CSVEncoder} from "@/utils/CSVEncoder";
 
 export class RewardDownloader extends EntityDownloader<StakingReward, StakingRewardsResponse> {
 
-    public readonly accountId: Ref<string|null>
+    public readonly accountId: Ref<string | null>
 
     //
     // Public
     //
 
-    public constructor(accountId: Ref<string|null>,
-                       startDate: Ref<Date|null>,
-                       endDate: Ref<Date|null>,
+    public constructor(accountId: Ref<string | null>,
+                       startDate: Ref<Date | null>,
+                       endDate: Ref<Date | null>,
                        maxRewardCount: number) {
         super(startDate, endDate, maxRewardCount)
         this.accountId = accountId
@@ -47,7 +47,7 @@ export class RewardDownloader extends EntityDownloader<StakingReward, StakingRew
     // EntityDownloader
     //
 
-    protected async loadNext(nextURL: string|null): Promise<AxiosResponse<StakingRewardsResponse>> {
+    protected async loadNext(nextURL: string | null): Promise<AxiosResponse<StakingRewardsResponse>> {
 
         if (nextURL == null) {
 
@@ -124,6 +124,6 @@ export class RewardEncoder extends CSVEncoder<StakingReward> {
     }
 
     protected encodeHeaderRow(): string[] | null {
-        return ["#date","#reward_amount"]
+        return ["#date", "#reward_amount"]
     }
 }

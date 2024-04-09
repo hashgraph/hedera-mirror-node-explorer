@@ -24,20 +24,20 @@ import {CSVEncoder} from "@/utils/CSVEncoder";
 
 export abstract class EntityDownloader<E, R> {
 
-    public readonly startDate: Ref<Date|null>
-    public readonly endDate: Ref<Date|null>
+    public readonly startDate: Ref<Date | null>
+    public readonly endDate: Ref<Date | null>
     public readonly maxEntityCount: number
 
 
     private readonly entitiesRef: Ref<E[]> = ref([])
     private readonly downloadedCountRef = ref(0)
-    private readonly firstDownloadedEntityRef: Ref<E|null> = ref(null)
-    private readonly lastDownloadedEntityRef: Ref<E|null> = ref(null)
+    private readonly firstDownloadedEntityRef: Ref<E | null> = ref(null)
+    private readonly lastDownloadedEntityRef: Ref<E | null> = ref(null)
     private readonly drainedRef = ref(false)
     private readonly stateRef = ref(DownloaderState.Fresh)
-    private readonly failureReasonRef: Ref<unknown|null> = ref(null)
+    private readonly failureReasonRef: Ref<unknown | null> = ref(null)
 
-    private runPromise: Promise<void>|null = null
+    private runPromise: Promise<void> | null = null
     private abortRequested = false
     private readonly dateFormat = EntityDownloader.makeDateFormat()
     private readonly now = new Date()
@@ -55,7 +55,7 @@ export abstract class EntityDownloader<E, R> {
         try {
             await this.runPromise
             this.stateRef.value = this.abortRequested ? DownloaderState.Aborted : DownloaderState.Completed
-        } catch(error) {
+        } catch (error) {
             this.failureReasonRef.value = error
             this.stateRef.value = DownloaderState.Failure
         } finally {
@@ -82,16 +82,16 @@ export abstract class EntityDownloader<E, R> {
         = computed(() => this.stateRef.value)
     public readonly downloadedCount: ComputedRef<number>
         = computed(() => this.downloadedCountRef.value)
-    public readonly firstDownloadedEntity: ComputedRef<E|null>
+    public readonly firstDownloadedEntity: ComputedRef<E | null>
         = computed(() => this.firstDownloadedEntityRef.value)
-    public readonly lastDownloadedEntity: ComputedRef<E|null>
+    public readonly lastDownloadedEntity: ComputedRef<E | null>
         = computed(() => this.lastDownloadedEntityRef.value)
     public readonly drained: ComputedRef<boolean>
         = computed(() => this.drainedRef.value)
-    public readonly failureReason: ComputedRef<unknown|null>
+    public readonly failureReason: ComputedRef<unknown | null>
         = computed(() => this.failureReasonRef.value)
 
-    public readonly lastDownloadedEntityDate: ComputedRef<Date|null> = computed(() => {
+    public readonly lastDownloadedEntityDate: ComputedRef<Date | null> = computed(() => {
         const lastEntity = this.lastDownloadedEntityRef.value
         const lastTimestamp = lastEntity !== null ? this.entityTimestamp(lastEntity) : null
         const lastMillis = lastTimestamp !== null ? timestampToMillis(lastTimestamp) : null
@@ -148,11 +148,11 @@ export abstract class EntityDownloader<E, R> {
     }
 
 
-    public csvBlob: ComputedRef<Blob|null> = computed(() => {
-        let result: Blob|null
+    public csvBlob: ComputedRef<Blob | null> = computed(() => {
+        let result: Blob | null
         if (this.state.value == DownloaderState.Completed && this.entitiesRef.value.length >= 1) {
             const encoder = this.makeCSVEncoder(this.dateFormat)
-            result = new Blob([encoder.encode()], { type: "text/csv" })
+            result = new Blob([encoder.encode()], {type: "text/csv"})
         } else {
             result = null
         }
@@ -163,8 +163,8 @@ export abstract class EntityDownloader<E, R> {
     // Protected (to be subclassed)
     //
 
-    protected constructor(startDate: Ref<Date|null>,
-                          endDate: Ref<Date|null>,
+    protected constructor(startDate: Ref<Date | null>,
+                          endDate: Ref<Date | null>,
                           maxEntityCount: number) {
         this.startDate = startDate
         this.endDate = endDate
@@ -174,15 +174,15 @@ export abstract class EntityDownloader<E, R> {
         })
     }
 
-    protected async loadNext(nextURL: string|null): Promise<AxiosResponse<R>> {
+    protected async loadNext(nextURL: string | null): Promise<AxiosResponse<R>> {
         throw "To be subclassed (nextURL=" + nextURL + ")"
     }
 
     protected abstract fetchEntities(response: R): E[]
 
-    protected abstract nextURL(response: R): string|null
+    protected abstract nextURL(response: R): string | null
 
-    protected abstract entityTimestamp(entity: E): string|null
+    protected abstract entityTimestamp(entity: E): string | null
 
     protected abstract makeCSVEncoder(dateFormat: Intl.DateTimeFormat): CSVEncoder<E>
 
@@ -255,7 +255,7 @@ export enum DownloaderState {
     Fresh, Running, Completed, Failure, Aborted
 }
 
-export function timestampToMillis(value: string): number|null {
+export function timestampToMillis(value: string): number | null {
     const seconds = Number.parseFloat(value);
     return isNaN(seconds) ? null : seconds * 1000
 }

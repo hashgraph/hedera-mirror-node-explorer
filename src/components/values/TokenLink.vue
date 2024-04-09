@@ -60,7 +60,7 @@ import {routeManager} from "@/router";
 
 export default defineComponent({
   name: "TokenLink",
-  components: { TokenExtra },
+  components: {TokenExtra},
   props: {
     tokenId: String,
     showExtra: {
@@ -79,7 +79,7 @@ export default defineComponent({
   setup(props) {
     const tokenRoute = computed(() => props.tokenId ? routeManager.makeRouteToToken(props.tokenId) : null)
     const initialLoading = inject(initialLoadingKey, ref(false))
-    return { tokenRoute, initialLoading }
+    return {tokenRoute, initialLoading}
   }
 });
 

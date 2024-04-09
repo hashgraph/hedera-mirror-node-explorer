@@ -37,7 +37,7 @@ export class SourcifyUtils {
         const sourcifySetup = routeManager.currentNetworkEntry.value.sourcifySetup
         if (sourcifySetup !== null) {
             const url = sourcifySetup.serverURL + "session/clear"
-            const config = { withCredentials: this.withCredentials }
+            const config = {withCredentials: this.withCredentials}
             const response = await axios.post<string>(url, null, config)
             result = response.data
         } else {
@@ -60,9 +60,9 @@ export class SourcifyUtils {
             }
             const url = sourcifySetup.serverURL + "session/input-files"
             const config = {
-                withCredentials: this.withCredentials ,
+                withCredentials: this.withCredentials,
                 headers: {'content-type': 'application/json'},
-                params: { dryrun: true }
+                params: {dryrun: true}
             }
             const response = await axios.post<SourcifyInputFilesResponse>(url, body, config)
             result = response.data
@@ -96,12 +96,12 @@ export class SourcifyUtils {
             }
             const url = sourcifySetup.serverURL + "session/verify-checked"
             const config = {
-                withCredentials: this.withCredentials ,
+                withCredentials: this.withCredentials,
                 headers: {'content-type': 'application/json'},
                 params: {}
             }
             if (!store) {
-                config.params = { dryrun: true }
+                config.params = {dryrun: true}
             }
             const response = await axios.post<SourcifyVerifyCheckedResponse>(url, body, config)
             result = response.data
@@ -116,8 +116,8 @@ export class SourcifyUtils {
     // Tools
     //
 
-    public static fetchMatchingContract(response: SourcifyVerifyCheckedResponse): SourcifyVerifyCheckedContract|null {
-        let result: SourcifyVerifyCheckedContract|null = null
+    public static fetchMatchingContract(response: SourcifyVerifyCheckedResponse): SourcifyVerifyCheckedContract | null {
+        let result: SourcifyVerifyCheckedContract | null = null
         for (const c of response.contracts) {
             if (c.status == "partial" || c.status == "perfect") {
                 result = c
@@ -128,7 +128,7 @@ export class SourcifyUtils {
     }
 
     public static fetchVerificationIds(response: SourcifyInputFilesResponse): string[] {
-        const result : string[] = []
+        const result: string[] = []
         for (const c of response.contracts) {
             result.push(c.verificationId)
         }
@@ -161,7 +161,7 @@ export interface SourcifyVerifyCheckedBody {
     contracts: {
         address: string
         chainId: string
-        creatorTxHash: string|null
+        creatorTxHash: string | null
         verificationId: string
     }[]
 }

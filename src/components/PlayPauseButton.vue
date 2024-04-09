@@ -66,9 +66,11 @@
 import {computed, ComputedRef, defineComponent, onMounted, PropType, ref} from "vue";
 
 export interface PlayPauseController {
-    startAutoRefresh(): void
-    stopAutoRefresh(): void
-    autoRefresh: ComputedRef<boolean>
+  startAutoRefresh(): void
+
+  stopAutoRefresh(): void
+
+  autoRefresh: ComputedRef<boolean>
 }
 
 export default defineComponent({

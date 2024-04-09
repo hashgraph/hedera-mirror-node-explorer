@@ -23,33 +23,33 @@
 <!-- --------------------------------------------------------------------------------------------------------------- -->
 
 <template>
-    <o-tooltip :active="tooltipLabel != null"
-               :label="tooltipLabel"
-               :delay="tooltipDelay"
-               multiline
-               class="h-tooltip">
-        <div class="is-flex is-flex-direction-column is-align-items-flex-start">
-            <p v-if="isMediumScreen" class="h-is-property-text mb-1">{{ title }}</p>
-            <p v-else class="h-is-text-size-3 mb-1">{{ title }}</p>
+  <o-tooltip :active="tooltipLabel != null"
+             :label="tooltipLabel"
+             :delay="tooltipDelay"
+             multiline
+             class="h-tooltip">
+    <div class="is-flex is-flex-direction-column is-align-items-flex-start">
+      <p v-if="isMediumScreen" class="h-is-property-text mb-1">{{ title }}</p>
+      <p v-else class="h-is-text-size-3 mb-1">{{ title }}</p>
 
-            <div class="is-flex is-align-items-center">
-                <div class="is-flex has-text-white is-align-items-baseline">
-                    <p class="dashboard-value is-numeric has-text-white mr-2">
-                        <span v-if="value !== null">{{ value }}</span>
-                        <span v-else class="has-text-grey">None</span>
-                        <slot name="value"></slot>
-                    </p>
-                    <div class="is-flex-is-vertical"
-                         :class="{'h-is-text-size-3':isMediumScreen, 'h-is-text-size-1':!isMediumScreen, 'pt-1':isMediumScreen}"
-                         style="line-height: 1">
-                        <p class="h-is-text-size-1">{{ name }}</p>
-                    </div>
-                </div>
-            </div>
-
+      <div class="is-flex is-align-items-center">
+        <div class="is-flex has-text-white is-align-items-baseline">
+          <p class="dashboard-value is-numeric has-text-white mr-2">
+            <span v-if="value !== null">{{ value }}</span>
+            <span v-else class="has-text-grey">None</span>
+            <slot name="value"></slot>
+          </p>
+          <div class="is-flex-is-vertical"
+               :class="{'h-is-text-size-3':isMediumScreen, 'h-is-text-size-1':!isMediumScreen, 'pt-1':isMediumScreen}"
+               style="line-height: 1">
+            <p class="h-is-text-size-1">{{ name }}</p>
+          </div>
         </div>
+      </div>
 
-    </o-tooltip>
+    </div>
+
+  </o-tooltip>
 </template>
 
 <!-- --------------------------------------------------------------------------------------------------------------- -->
@@ -66,10 +66,10 @@ export default defineComponent({
   props: {
     title: String,
     name: String,
-    value: String as PropType<string|null>,
+    value: String as PropType<string | null>,
     variation: String,
     tooltipLabel: {
-      type: String as PropType<string|null>,
+      type: String as PropType<string | null>,
       default: null
     }
   },

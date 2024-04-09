@@ -34,9 +34,11 @@
 
         <hr class="h-card-separator"/>
 
-        <div v-if="mainMessage" class="h-is-tertiary-text mb-5" style="letter-spacing: 0.025rem; font-size: 1rem;">{{ mainMessage }}</div>
+        <div v-if="mainMessage" class="h-is-tertiary-text mb-5" style="letter-spacing: 0.025rem; font-size: 1rem;">{{
+          mainMessage }}
+        </div>
         <div v-else class="block h-is-property-text" style="visibility: hidden">Filler</div>
-        
+
         <div v-if="slots.dialogInput">
           <slot name="dialogInput"/>
         </div>
@@ -68,16 +70,16 @@ export default defineComponent({
       default: false
     },
     mainMessage: {
-      type: String as PropType<string|null>,
+      type: String as PropType<string | null>,
       default: null
     },
     confirmLabel: {
-        type: String as PropType<string>,
-        default: "CONFIRM"
+      type: String as PropType<string>,
+      default: "CONFIRM"
     },
     cancelLabel: {
-        type: String as PropType<string>,
-        default: "CANCEL"
+      type: String as PropType<string>,
+      default: "CANCEL"
     },
   },
 

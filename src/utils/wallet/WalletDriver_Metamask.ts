@@ -32,7 +32,7 @@ import {MetaMaskInpageProvider} from "@metamask/providers";
 
 export class WalletDriver_Metamask extends WalletDriver_Ethereum {
 
-    private metamaskProvider: MetaMaskInpageProvider|null = null
+    private metamaskProvider: MetaMaskInpageProvider | null = null
 
     //
     // Public

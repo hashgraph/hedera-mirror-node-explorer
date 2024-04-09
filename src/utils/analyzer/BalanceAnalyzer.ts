@@ -25,23 +25,23 @@ import {Duration} from "@/utils/Duration";
 
 export class BalanceAnalyzer {
 
-    public readonly accountId = ref<string|null>(null)
+    public readonly accountId = ref<string | null>(null)
     private readonly updatePeriod: number
-    private readonly response: Ref<BalancesResponse|null> = ref(null)
-    private readonly watchHandle: Ref<WatchStopHandle|null> = ref(null)
+    private readonly response: Ref<BalancesResponse | null> = ref(null)
+    private readonly watchHandle: Ref<WatchStopHandle | null> = ref(null)
     private timeoutID = -1
 
     //
     // Public
     //
 
-    public constructor(accountId = ref<string|null>(null), updatePeriod: number) {
+    public constructor(accountId = ref<string | null>(null), updatePeriod: number) {
         this.accountId = accountId
         this.updatePeriod = updatePeriod
     }
 
     public mount(): void {
-        this.watchHandle.value = watch(this.accountId,this.accountIdDidChange, { immediate: true})
+        this.watchHandle.value = watch(this.accountId, this.accountIdDidChange, {immediate: true})
     }
 
     public unmount(): void {
@@ -61,7 +61,7 @@ export class BalanceAnalyzer {
         return this.watchHandle.value !== null
     })
 
-    public readonly hbarBalance: ComputedRef<number|null> = computed(() => {
+    public readonly hbarBalance: ComputedRef<number | null> = computed(() => {
         const allBalances = this.response.value?.balances
         return allBalances && allBalances.length >= 1 ? allBalances[0].balance : null
     })
@@ -71,11 +71,11 @@ export class BalanceAnalyzer {
         return allBalances && allBalances.length >= 1 ? allBalances[0].tokens : []
     })
 
-    public readonly balanceTimeStamp: ComputedRef<string|null> = computed(() => {
+    public readonly balanceTimeStamp: ComputedRef<string | null> = computed(() => {
         return this.response.value?.timestamp ?? null
     })
 
-    public readonly balanceAge: Ref<Duration|null> = ref(null)
+    public readonly balanceAge: Ref<Duration | null> = ref(null)
 
     //
     // Private

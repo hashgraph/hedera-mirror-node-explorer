@@ -53,14 +53,16 @@
         <Property id="amountStaked">
           <template v-slot:name>Amount Staked</template>
           <template v-slot:value>
-            <HbarAmount v-if="account?.balance?.balance" :amount="account.balance.balance" timestamp="0" :show-extra="true"/>
+            <HbarAmount v-if="account?.balance?.balance" :amount="account.balance.balance" timestamp="0"
+                        :show-extra="true"/>
           </template>
         </Property>
 
         <Property id="currentlyStakedTo">
           <template v-slot:name>Currently Staked To</template>
           <template v-slot:value>
-            <span v-if="account?.staked_node_id !== null" class="icon is-small has-text-info mr-2" style="font-size: 16px">
+            <span v-if="account?.staked_node_id !== null" class="icon is-small has-text-info mr-2"
+                  style="font-size: 16px">
               <i v-if="currentStakedNodeIcon" :class="currentStakedNodeIcon"></i>
             </span>
             <StringValue v-if="account" :string-value="currentlyStakedTo"/>
@@ -107,10 +109,10 @@
             <div class="columns">
               <div class="column is-one-fifth pt-0">
                 <div class="control" style="width: 100px">
-                <label class="radio h-radio-button ml-0">
-                  <input name="stakeTarget" type="radio" value="account" v-model="stakeChoice">
-                  Account
-                </label>
+                  <label class="radio h-radio-button ml-0">
+                    <input name="stakeTarget" type="radio" value="account" v-model="stakeChoice">
+                    Account
+                  </label>
                 </div>
               </div>
               <div class="column pt-0">
@@ -131,8 +133,8 @@
                 </div>
               </div>
 
+            </div>
           </div>
-        </div>
         </div>
         <div class="columns">
           <div class="column is-one-third has-text-weight-light pt-0">
@@ -155,7 +157,8 @@
         <div class="is-flex is-justify-content-flex-end">
           <button class="button is-white is-small" @click="handleCancel">CANCEL</button>
           <button class="button is-info is-small ml-4"
-                  :disabled="!enableChangeButton" @click="handleChange">CHANGE</button>
+                  :disabled="!enableChangeButton" @click="handleChange">CHANGE
+          </button>
         </div>
 
       </div>
@@ -204,7 +207,7 @@ export default defineComponent({
     account: Object as PropType<AccountBalanceTransactions>,
     currentlyStakedTo: String,
   },
-  emits: [ "changeStaking", "update:showDialog"],
+  emits: ["changeStaking", "update:showDialog"],
   setup(props, context) {
     const accountId = computed(() => props.account?.account)
     const network = router.currentRoute.value.params.network as string
@@ -212,27 +215,27 @@ export default defineComponent({
 
     const showConfirmDialog = ref(false)
     const confirmMessage = computed(() => {
-          let result: string
-          if (isNodeSelected.value) {
-            if (selectedNode.value !== props.account?.staked_node_id) {
-              result = "Do you want to stake to Node " + selectedNodeDescription.value + "?"
-            } else {
-              result = declineChoice.value ? "Do you want to decline rewards?" : "Do you want to accept rewards?"
-            }
-          } else {
-            result = "Do you want to stake to account "
-                + nr.makeAddressWithChecksum(selectedAccountEntity.value??"", network)
-                + " ?"
-          }
-          return result
-        })
+      let result: string
+      if (isNodeSelected.value) {
+        if (selectedNode.value !== props.account?.staked_node_id) {
+          result = "Do you want to stake to Node " + selectedNodeDescription.value + "?"
+        } else {
+          result = declineChoice.value ? "Do you want to decline rewards?" : "Do you want to accept rewards?"
+        }
+      } else {
+        result = "Do you want to stake to account "
+            + nr.makeAddressWithChecksum(selectedAccountEntity.value ?? "", network)
+            + " ?"
+      }
+      return result
+    })
 
     const nodeAnalyzer = new NodeAnalyzer(computed(() => props.account?.staked_node_id ?? 0))
     onMounted(() => nodeAnalyzer.mount())
     onBeforeUnmount(() => nodeAnalyzer.unmount())
 
     const currentStakedNodeIcon = computed(() => {
-      let result: string|null
+      let result: string | null
       if (props.account?.staked_node_id !== null) {
         result = nodeAnalyzer.isCouncilNode.value
             ? "fas fa-building"
@@ -249,9 +252,9 @@ export default defineComponent({
 
     const selectedAccount = ref<string | null>(null)
     const selectedAccountEntity = computed(
-        () => EntityID.normalize(nr.stripChecksum(selectedAccount.value??"")))
+        () => EntityID.normalize(nr.stripChecksum(selectedAccount.value ?? "")))
     const selectedAccountChecksum = computed(
-        () => nr.extractChecksum(selectedAccount.value??""))
+        () => nr.extractChecksum(selectedAccount.value ?? ""))
     const isSelectedAccountValid = ref(false)
     const inputFeedbackMessage = ref<string | null>(null)
 
@@ -272,7 +275,7 @@ export default defineComponent({
       }
     })
 
-    const selectedNode = ref<number|null>(null)
+    const selectedNode = ref<number | null>(null)
 
     const selectedNodeIcon = computed(() => {
       let result
@@ -292,7 +295,7 @@ export default defineComponent({
           : null
     })
     watch(accountId, () => {
-      if ( isNodeSelected.value && selectedNode.value == null) {
+      if (isNodeSelected.value && selectedNode.value == null) {
         selectedNode.value = props.account?.staked_node_id ?? null
       }
     })
@@ -302,8 +305,8 @@ export default defineComponent({
 
     const enableChangeButton = computed(() => {
       return (
-          isAccountSelected.value && isSelectedAccountValid.value && props.account?.staked_account_id != selectedAccountEntity.value)
-          || (isNodeSelected.value  && selectedNode.value !== null && props.account?.staked_node_id != selectedNode.value)
+              isAccountSelected.value && isSelectedAccountValid.value && props.account?.staked_account_id != selectedAccountEntity.value)
+          || (isNodeSelected.value && selectedNode.value !== null && props.account?.staked_node_id != selectedNode.value)
           || (props.account?.decline_reward != declineChoice.value)
     })
 
@@ -352,7 +355,7 @@ export default defineComponent({
             isValidID = EntityID.parse(nr.stripChecksum(value)) !== null
           }
         } else if (c === '-') {
-          if (! isValidID || isPastDash) {
+          if (!isValidID || isPastDash) {
             isValidInput = false
             break
           } else {
@@ -376,7 +379,7 @@ export default defineComponent({
       if (selectedAccountEntity.value === null) {
         inputFeedbackMessage.value = INVALID_ACCOUNTID_MESSAGE
       } else if (selectedAccountChecksum.value === null
-          || nr.isValidChecksum(selectedAccountEntity.value??"", selectedAccountChecksum.value, network)) {
+          || nr.isValidChecksum(selectedAccountEntity.value ?? "", selectedAccountChecksum.value, network)) {
 
         if (selectedAccountEntity.value == accountId.value) {
           inputFeedbackMessage.value = CANT_STAKE_SAME_ACCOUNT_MESSAGE
@@ -387,7 +390,7 @@ export default defineComponent({
             balance: false
           }
           axios
-              .get<AccountsResponse>("api/v1/accounts", { params: params } )
+              .get<AccountsResponse>("api/v1/accounts", {params: params})
               .then((response) => {
                 const accounts = response.data.accounts
                 if (accounts && accounts.length > 0) {

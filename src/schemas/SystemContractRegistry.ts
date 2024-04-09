@@ -32,7 +32,7 @@ export class SystemContractRegistry {
     }
 
     private addEntry(contractId: string, description: string, abiFileName: string) {
-        if(!this.entries.get(contractId)) {
+        if (!this.entries.get(contractId)) {
             this.entries.set(contractId, new SystemContractEntry(contractId, description, abiFileName))
         }
     }

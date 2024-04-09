@@ -25,14 +25,14 @@ import {decodeSolidityErrorMessage} from "@/schemas/HederaUtils";
 
 export class ContractActionAnalyzer {
 
-    public readonly action: Ref<ContractAction|undefined>
+    public readonly action: Ref<ContractAction | undefined>
     public readonly functionCallAnalyzer: FunctionCallAnalyzer
 
     //
     // Public
     //
 
-    public constructor(action: Ref<ContractAction|undefined>) {
+    public constructor(action: Ref<ContractAction | undefined>) {
         this.action = action
         this.functionCallAnalyzer = new FunctionCallAnalyzer(this.input, this.output, this.error, this.contractId)
     }
@@ -46,7 +46,7 @@ export class ContractActionAnalyzer {
     }
 
     public readonly errorMessage = computed(() => {
-        let result: string|null
+        let result: string | null
         if (this.action?.value?.result_data_type != ResultDataType.OUTPUT) {
             result = decodeSolidityErrorMessage(this.action?.value?.result_data ?? null)
         } else {
@@ -64,7 +64,7 @@ export class ContractActionAnalyzer {
     private readonly input = computed(() => this.action.value?.input ?? null)
 
     private readonly output = computed(() => {
-        let result: string|null
+        let result: string | null
         if (this.action?.value?.result_data_type == ResultDataType.OUTPUT) {
             result = this.action?.value?.result_data ?? null
         } else {
@@ -74,7 +74,7 @@ export class ContractActionAnalyzer {
     })
 
     public readonly error = computed(() => {
-        let result: string|null
+        let result: string | null
         if (this.action?.value?.result_data_type != ResultDataType.OUTPUT) {
             result = this.action?.value?.result_data ?? null
         } else {

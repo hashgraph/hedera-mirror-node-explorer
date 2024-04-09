@@ -25,8 +25,8 @@
 <template>
   <div v-if="key">
     <div v-if=" !details && maxLevel >= MAX_INLINE_LEVEL && adminKeyRoute">
-      <span>{{ 'Complex Key (' + (maxLevel+1) + ' levels)' }}</span>
-      <router-link v-if="adminKeyRoute"  :to="adminKeyRoute">
+      <span>{{ 'Complex Key (' + (maxLevel + 1) + ' levels)' }}</span>
+      <router-link v-if="adminKeyRoute" :to="adminKeyRoute">
         <span class="ml-2 has-text-grey h-is-text-size-3">
           See details
         </span>
@@ -46,10 +46,12 @@
             </div>
           </template>
           <template v-else-if="line.contractId() !== null">
-            Contract: <ContractLink :contract-id="line.contractId()"/>
+            Contract:
+            <ContractLink :contract-id="line.contractId()"/>
           </template>
           <template v-else-if="line.delegatableContractId() !== null">
-            Delegatable Contract: <ContractLink :contract-id="line.delegatableContractId()"/>
+            Delegatable Contract:
+            <ContractLink :contract-id="line.delegatableContractId()"/>
           </template>
           <template v-else>
             <div v-if="details && line.level" :class="lineClass(line)">{{ lineText(line) }}</div>
@@ -96,11 +98,11 @@ export default defineComponent({
   components: {ContractLink, HexaValue},
   props: {
     keyBytes: {
-      type: String as PropType<string|null>,
+      type: String as PropType<string | null>,
       default: null
     },
     accountId: {
-      type: String as PropType<string|null>,
+      type: String as PropType<string | null>,
       default: null
     },
     details: {
@@ -115,12 +117,12 @@ export default defineComponent({
   setup(props) {
 
     const key = computed(() => {
-      let result: hashgraph.proto.Key|null
+      let result: hashgraph.proto.Key | null
       if (props.keyBytes) {
         const keyByteArray = hexToByte(props.keyBytes)
         try {
           result = keyByteArray !== null ? hashgraph.proto.Key.decode(keyByteArray) : null
-        } catch(reason) {
+        } catch (reason) {
           console.warn("Failed to decode key:" + reason)
           result = null
         }

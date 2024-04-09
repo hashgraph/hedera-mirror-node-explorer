@@ -21,7 +21,7 @@
 import axios from "axios";
 import {EntityCache} from "@/utils/cache/base/EntityCache";
 
-export class SignatureCache extends EntityCache<string, SignatureResponse|null> {
+export class SignatureCache extends EntityCache<string, SignatureResponse | null> {
 
     public static readonly instance = new SignatureCache()
 
@@ -30,14 +30,14 @@ export class SignatureCache extends EntityCache<string, SignatureResponse|null> 
     // Cache
     //
 
-    protected async load(function4bytes: string): Promise<SignatureResponse|null> {
-        let result: SignatureResponse|null
+    protected async load(function4bytes: string): Promise<SignatureResponse | null> {
+        let result: SignatureResponse | null
         try {
             // https://www.4byte.directory/docs/
             const url = "https://www.4byte.directory/api/v1/signatures/?format=json&hex_signature=" + function4bytes
             const response = await axios.get<SignatureResponse>(url)
             result = response.data
-        } catch(error) {
+        } catch (error) {
             if (axios.isAxiosError(error) && error.response?.status == 404) {
                 result = null
             } else {
@@ -68,8 +68,8 @@ export class SignatureCache extends EntityCache<string, SignatureResponse|null> 
 
 export interface SignatureResponse {
     count: number,
-    next: string|null,
-    previous: string|null,
+    next: string | null,
+    previous: string | null,
     results: SignatureRecord[]
 }
 

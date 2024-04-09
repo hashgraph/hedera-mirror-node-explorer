@@ -28,12 +28,12 @@ export class TransactionHash {
     // Public
     //
 
-    public static parse(byteString: string): TransactionHash|null {
+    public static parse(byteString: string): TransactionHash | null {
         const bytes = hexToByte(byteString)
         return bytes !== null && bytes.length == 48 ? new TransactionHash(bytes) : null
     }
 
-    public static parseBase64(base64: string): TransactionHash|null {
+    public static parseBase64(base64: string): TransactionHash | null {
         const bytes = base64DecToArr(base64)
         return bytes !== null && bytes.length == 48 ? new TransactionHash(bytes) : null
     }

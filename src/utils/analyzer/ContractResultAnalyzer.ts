@@ -28,11 +28,11 @@ import {ContractByAddressCache} from "@/utils/cache/ContractByAddressCache";
 
 export class ContractResultAnalyzer {
 
-    public readonly timestamp: Ref<string|null>
+    public readonly timestamp: Ref<string | null>
     public readonly functionCallAnalyzer: FunctionCallAnalyzer
-    public readonly contractResult: Ref<ContractResultDetails|null> = ref(null)
-    public readonly toId: Ref<string|null> = ref(null)
-    public readonly fromId: Ref<string|null> = ref(null)
+    public readonly contractResult: Ref<ContractResultDetails | null> = ref(null)
+    public readonly toId: Ref<string | null> = ref(null)
+    public readonly fromId: Ref<string | null> = ref(null)
     private readonly watchHandle: Ref<WatchStopHandle[]> = ref([])
 
     //
@@ -46,7 +46,7 @@ export class ContractResultAnalyzer {
 
     public mount(): void {
         this.watchHandle.value = [
-            watch(this.timestamp, this.updateContractResult, { immediate: true}),
+            watch(this.timestamp, this.updateContractResult, {immediate: true}),
         ]
         this.functionCallAnalyzer.mount()
     }
@@ -63,21 +63,21 @@ export class ContractResultAnalyzer {
     }
 
     public readonly gasPrice = computed(() => {
-      return this.contractResult.value?.gas_price
-          ? Number(filter0x(this.contractResult.value?.gas_price))
-          : null
+        return this.contractResult.value?.gas_price
+            ? Number(filter0x(this.contractResult.value?.gas_price))
+            : null
     })
 
     public readonly maxFeePerGas = computed(() => {
-      return this.contractResult.value?.max_fee_per_gas
-          ? Number(filter0x(this.contractResult.value?.max_fee_per_gas))
-          : null
+        return this.contractResult.value?.max_fee_per_gas
+            ? Number(filter0x(this.contractResult.value?.max_fee_per_gas))
+            : null
     })
 
     public readonly maxPriorityFeePerGas = computed(() => {
-      return this.contractResult.value?.max_priority_fee_per_gas
-          ? Number(filter0x(this.contractResult.value?.max_priority_fee_per_gas))
-          : null
+        return this.contractResult.value?.max_priority_fee_per_gas
+            ? Number(filter0x(this.contractResult.value?.max_priority_fee_per_gas))
+            : null
     })
 
     public errorMessage = computed(
@@ -87,9 +87,9 @@ export class ContractResultAnalyzer {
         () => this.contractResult.value?.nonce ?? null)
 
     public readonly contractType = computed(() => {
-        let result: string|null
+        let result: string | null
         const typeValue = this.contractResult.value?.type ?? null
-        switch(typeValue) {
+        switch (typeValue) {
             case null:
                 result = null
                 break
@@ -166,6 +166,6 @@ export class ContractResultAnalyzer {
     }
 }
 
-function filter0x(value: string|null|undefined): string|null|undefined {
+function filter0x(value: string | null | undefined): string | null | undefined {
     return value === '0x' ? '0' : value
 }

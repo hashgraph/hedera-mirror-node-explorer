@@ -40,7 +40,8 @@
     </template>
     <template v-slot:content>
       <template v-for="l in nbLogDisplayed" :key="l">
-        <ContractResultLogEntry :log="logs[logCursor + l - 1]" :block-number="blockNumber" :transaction-hash="transactionHash"/>
+        <ContractResultLogEntry :log="logs[logCursor + l - 1]" :block-number="blockNumber"
+                                :transaction-hash="transactionHash"/>
         <hr class="h-card-separator" style="height: 1px; background: grey"/>
       </template>
 
@@ -91,7 +92,7 @@ export default defineComponent({
   props: {
     logs: Object as PropType<Array<ContractLog> | undefined>,
     blockNumber: {
-      type:  Number,
+      type: Number,
     },
     transactionHash: {
       type: String
@@ -99,11 +100,11 @@ export default defineComponent({
   },
 
   setup(props) {
-    const sizeOptions:Array<number> = [3, 5, 10, 15, 20, 30]
+    const sizeOptions: Array<number> = [3, 5, 10, 15, 20, 30]
     const actualSizeOptions: Ref<Array<number>> = ref([])
 
     const currentPage = ref(1)
-    const pageSize = ref(AppStorage.getLogsTablePageSize() ??  DEFAULT_PAGE_SIZE)
+    const pageSize = ref(AppStorage.getLogsTablePageSize() ?? DEFAULT_PAGE_SIZE)
     watch(pageSize, () => {
       AppStorage.setLogsTablePageSize(pageSize.value)
       currentPage.value = 1

@@ -24,22 +24,22 @@
 
 <template>
 
-    <div class="is-flex is-justify-content-space-between">
-        <div v-if="accountId" class="h-is-tertiary-text">
-            <HbarAmount timestamp="0" v-bind:amount="hbarBalance" v-bind:show-extra="true"/>
-        </div>
-        <div v-if="isSmallScreen && elapsed" class="has-text-right has-text-grey mt-1">
-            {{ elapsed }}
-        </div>
+  <div class="is-flex is-justify-content-space-between">
+    <div v-if="accountId" class="h-is-tertiary-text">
+      <HbarAmount timestamp="0" v-bind:amount="hbarBalance" v-bind:show-extra="true"/>
     </div>
-    <div v-for="b in displayedBalances" :key="b.token_id ?? undefined" class="h-is-tertiary-text">
-        <TokenAmount v-bind:amount="BigInt(b.balance)" v-bind:show-extra="true" v-bind:token-id="b.token_id"/>
+    <div v-if="isSmallScreen && elapsed" class="has-text-right has-text-grey mt-1">
+      {{ elapsed }}
     </div>
-    <div v-if="displayAllTokenLinks" id="show-all-link">
-        <router-link :to="{name: 'AccountBalances', params: {accountId: accountId}}">
-            <span class="h-is-text-size-3 has-text-grey">Show all tokens</span>
-        </router-link>
-    </div>
+  </div>
+  <div v-for="b in displayedBalances" :key="b.token_id ?? undefined" class="h-is-tertiary-text">
+    <TokenAmount v-bind:amount="BigInt(b.balance)" v-bind:show-extra="true" v-bind:token-id="b.token_id"/>
+  </div>
+  <div v-if="displayAllTokenLinks" id="show-all-link">
+    <router-link :to="{name: 'AccountBalances', params: {accountId: accountId}}">
+      <span class="h-is-text-size-3 has-text-grey">Show all tokens</span>
+    </router-link>
+  </div>
 
 </template>
 
@@ -61,94 +61,94 @@ const MAX_TOKEN_BALANCES = 10
 
 export default defineComponent({
 
-    name: 'InlineBalancesValue',
+  name: 'InlineBalancesValue',
 
-    components: {
-        Property,
-        TokenAmount,
-        HbarAmount,
-    },
+  components: {
+    Property,
+    TokenAmount,
+    HbarAmount,
+  },
 
-    props: {
-        balanceAnalyzer: {
-            type: Object as PropType<BalanceAnalyzer>,
-            required: true
-        }
-    },
-
-    setup(props) {
-        const isSmallScreen = inject('isSmallScreen', true)
-        const isMediumScreen = inject('isMediumScreen', true)
-        const isTouchDevice = inject('isTouchDevice', false)
-
-        const accountId = props.balanceAnalyzer.accountId ?? ref(null)
-
-        //
-        // NftCollectionCache
-        //
-
-        const nftCollectionLookup = NftCollectionCache.instance.makeLookup(accountId)
-        onMounted(() => nftCollectionLookup.mount())
-        onBeforeUnmount(() => nftCollectionLookup.unmount())
-
-        const elapsed = computed(() => {
-            let result: string|null
-            const duration = props.balanceAnalyzer.balanceAge.value
-            if (duration !== null) {
-                if (duration.years > 0) {
-                    result = "> " + (duration.years > 1 ? duration.years + " years" : "1 year") + " ago"
-                } else if (duration.days > 0) {
-                    result = "> " + (duration.days > 1 ? duration.days + " days" : "1 day") + " ago"
-                } else if (duration.hours > 0) {
-                    result = "> " + (duration.hours > 1 ? duration.hours + " hours" : "1 hour") + " ago"
-                } else if (duration.minutes > 0) {
-                    result = duration.minutes + " min ago"
-                } else {
-                    result = null
-                }
-            } else {
-                result = null
-            }
-            return result
-        })
-
-        const displayedBalances: ComputedRef<TokenBalance[]> = computed(() => {
-            const result: TokenBalance[] = []
-            const allBalances = props.balanceAnalyzer.tokenBalances.value
-            // Display in priority 'non-zero balances'
-            for (let i = 0; i < allBalances.length && result.length < MAX_TOKEN_BALANCES; i++) {
-                if (allBalances[i].balance > 0) {
-                    result.push(allBalances[i])
-                }
-            }
-            // Complete with 'zero balances' if any room left
-            for (let i = 0; i < allBalances.length && result.length < MAX_TOKEN_BALANCES; i++) {
-                if (!result.includes(allBalances[i])) {
-                    result.push(allBalances[i])
-                }
-            }
-            return result
-        })
-
-        const displayAllTokenLinks = computed(() => {
-            // Display 'Show all tokens' link if > 10 balances or if at least 1 NFT collection (so we get a chance to
-            // display the collection details)
-            return displayedBalances.value.length < props.balanceAnalyzer.tokenBalances.value.length
-                || (nftCollectionLookup.entity.value?.length ?? 0) > 0
-        })
-
-        return {
-            isSmallScreen,
-            isMediumScreen,
-            isTouchDevice,
-            accountId,
-            balanceTimeStamp: props.balanceAnalyzer.balanceTimeStamp,
-            hbarBalance: props.balanceAnalyzer.hbarBalance,
-            displayedBalances,
-            displayAllTokenLinks,
-            elapsed,
-        }
+  props: {
+    balanceAnalyzer: {
+      type: Object as PropType<BalanceAnalyzer>,
+      required: true
     }
+  },
+
+  setup(props) {
+    const isSmallScreen = inject('isSmallScreen', true)
+    const isMediumScreen = inject('isMediumScreen', true)
+    const isTouchDevice = inject('isTouchDevice', false)
+
+    const accountId = props.balanceAnalyzer.accountId ?? ref(null)
+
+    //
+    // NftCollectionCache
+    //
+
+    const nftCollectionLookup = NftCollectionCache.instance.makeLookup(accountId)
+    onMounted(() => nftCollectionLookup.mount())
+    onBeforeUnmount(() => nftCollectionLookup.unmount())
+
+    const elapsed = computed(() => {
+      let result: string | null
+      const duration = props.balanceAnalyzer.balanceAge.value
+      if (duration !== null) {
+        if (duration.years > 0) {
+          result = "> " + (duration.years > 1 ? duration.years + " years" : "1 year") + " ago"
+        } else if (duration.days > 0) {
+          result = "> " + (duration.days > 1 ? duration.days + " days" : "1 day") + " ago"
+        } else if (duration.hours > 0) {
+          result = "> " + (duration.hours > 1 ? duration.hours + " hours" : "1 hour") + " ago"
+        } else if (duration.minutes > 0) {
+          result = duration.minutes + " min ago"
+        } else {
+          result = null
+        }
+      } else {
+        result = null
+      }
+      return result
+    })
+
+    const displayedBalances: ComputedRef<TokenBalance[]> = computed(() => {
+      const result: TokenBalance[] = []
+      const allBalances = props.balanceAnalyzer.tokenBalances.value
+      // Display in priority 'non-zero balances'
+      for (let i = 0; i < allBalances.length && result.length < MAX_TOKEN_BALANCES; i++) {
+        if (allBalances[i].balance > 0) {
+          result.push(allBalances[i])
+        }
+      }
+      // Complete with 'zero balances' if any room left
+      for (let i = 0; i < allBalances.length && result.length < MAX_TOKEN_BALANCES; i++) {
+        if (!result.includes(allBalances[i])) {
+          result.push(allBalances[i])
+        }
+      }
+      return result
+    })
+
+    const displayAllTokenLinks = computed(() => {
+      // Display 'Show all tokens' link if > 10 balances or if at least 1 NFT collection (so we get a chance to
+      // display the collection details)
+      return displayedBalances.value.length < props.balanceAnalyzer.tokenBalances.value.length
+          || (nftCollectionLookup.entity.value?.length ?? 0) > 0
+    })
+
+    return {
+      isSmallScreen,
+      isMediumScreen,
+      isTouchDevice,
+      accountId,
+      balanceTimeStamp: props.balanceAnalyzer.balanceTimeStamp,
+      hbarBalance: props.balanceAnalyzer.hbarBalance,
+      displayedBalances,
+      displayAllTokenLinks,
+      elapsed,
+    }
+  }
 });
 
 </script>

@@ -27,11 +27,13 @@
     <slot name="content"/>
     <div v-if="enableCopy && contentToCopy" id="shyCopyButton" class="shy"
          style="position: absolute; left: 0; top: 0; width: 100%; height: 100%">
-      <div style="position: absolute; left: 0; top: 0; width: 100%; height: 100%; background: rgba(0, 0, 0, 0.50)"></div>
+      <div
+          style="position: absolute; left: 0; top: 0; width: 100%; height: 100%; background: rgba(0, 0, 0, 0.50)"></div>
       <div v-if="enableCopy"
            style="position: absolute; display: inline-block; left: 50%; top: 50%; transform: translate(-50%, -50%);">
         <button class="button is-dark h-is-text-size-3"
-                v-on:click.stop="copyToClipboard">Copy</button>
+                v-on:click.stop="copyToClipboard">Copy
+        </button>
       </div>
     </div>
   </div>
@@ -59,7 +61,7 @@ export default defineComponent({
     const copyToClipboard = (): void => {
       if (props.contentToCopy?.length) {
         navigator.clipboard.writeText(props.contentToCopy)
-          context.emit('copyMade')
+        context.emit('copyMade')
       }
     }
     return {
@@ -78,6 +80,7 @@ export default defineComponent({
 .shy {
   display: none
 }
+
 .shy-scope:hover > .shy {
   display: block;
 }

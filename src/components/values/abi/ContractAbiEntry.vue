@@ -23,43 +23,48 @@
 <!-- --------------------------------------------------------------------------------------------------------------- -->
 
 <template>
-    <div class="entry-container m-0">
-        <!-- Row 0 -->
-        <button
-                class="button h-is-smaller has-text-white"
-                data-cy="execFunction"
-                style="background-color: #202532; border:0; border-radius: 0;"
-                v-on:click="handleClick()">
-            <i :class="{ 'fa-play': !isGetter, 'fa-redo': isGetter}" class="fas fa-xs" style="background-color: #202532"/>
-        </button>
-        <div class="is-flex is-align-items-baseline ml-3">
-            <div class="h-is-text-size-3 has-text-grey has-text-weight-medium">{{ index }}.</div>
-            <prism language="solidity" style="background-color: #171920; font-size: 0.7rem">{{ signature }}</prism>
-            <div class="h-has-pill h-is-text-size-1 has-background-black has-text-grey has-text-weight-normal">{{ mutability }}</div>
-            <div style="color:#f08d49" class="h-has-pill h-is-text-size-1 has-background-black has-text-weight-normal ml-1">{{ selector }}</div>
-        </div>
-
-        <!-- Row 1 -->
-        <div/>
-        <div v-if="hasResult" class="ml-2 h-is-property-text">
-            <span class="icon has-text-grey"><i class="fas fa-long-arrow-alt-right"/></span>
-            <span class="h-is-extra-text ml-1">{{ callOutput }}</span>
-        </div>
+  <div class="entry-container m-0">
+    <!-- Row 0 -->
+    <button
+        class="button h-is-smaller has-text-white"
+        data-cy="execFunction"
+        style="background-color: #202532; border:0; border-radius: 0;"
+        v-on:click="handleClick()">
+      <i :class="{ 'fa-play': !isGetter, 'fa-redo': isGetter}" class="fas fa-xs" style="background-color: #202532"/>
+    </button>
+    <div class="is-flex is-align-items-baseline ml-3">
+      <div class="h-is-text-size-3 has-text-grey has-text-weight-medium">{{ index }}.</div>
+      <prism language="solidity" style="background-color: #171920; font-size: 0.7rem">{{ signature }}</prism>
+      <div class="h-has-pill h-is-text-size-1 has-background-black has-text-grey has-text-weight-normal">{{
+          mutability
+        }}
+      </div>
+      <div style="color:#f08d49" class="h-has-pill h-is-text-size-1 has-background-black has-text-weight-normal ml-1">
+        {{ selector }}
+      </div>
     </div>
-    <ContractAbiDialog
-            :controller="dialogController"
-            :contract-call-builder="contractCallBuilder"
-            @did-update-contract-state="dialogDidUpdateContractState"/>
-    <Dialog :controller="alertController">
-        <template v-slot:dialogTitle>
-            <DialogTitle>Connect your Wallet</DialogTitle>
-        </template>
-        <template v-slot:dialogInput>
-            <DialogStatus :controller="alertController">
-                <template v-slot:mainMessage>To execute this function first connect your wallet</template>
-            </DialogStatus>
-        </template>
-    </Dialog>
+
+    <!-- Row 1 -->
+    <div/>
+    <div v-if="hasResult" class="ml-2 h-is-property-text">
+      <span class="icon has-text-grey"><i class="fas fa-long-arrow-alt-right"/></span>
+      <span class="h-is-extra-text ml-1">{{ callOutput }}</span>
+    </div>
+  </div>
+  <ContractAbiDialog
+      :controller="dialogController"
+      :contract-call-builder="contractCallBuilder"
+      @did-update-contract-state="dialogDidUpdateContractState"/>
+  <Dialog :controller="alertController">
+    <template v-slot:dialogTitle>
+      <DialogTitle>Connect your Wallet</DialogTitle>
+    </template>
+    <template v-slot:dialogInput>
+      <DialogStatus :controller="alertController">
+        <template v-slot:mainMessage>To execute this function first connect your wallet</template>
+      </DialogStatus>
+    </template>
+  </Dialog>
 </template>
 
 <!-- --------------------------------------------------------------------------------------------------------------- -->
@@ -84,80 +89,80 @@ import DialogStatus from "@/components/dialog/DialogStatus.vue";
 import DialogTitle from "@/components/dialog/DialogTitle.vue";
 
 export default defineComponent({
-    components: {DialogTitle, DialogStatus, ContractAbiDialog, Dialog, Prism},
-    emits: ["didUpdateContractState"],
-    props: {
-        contractCallBuilder: {
-            type: Object as PropType<ContractCallBuilder>,
-            required: true
-        },
-        index: {
-            type: Number,
-            required: true
-        }
+  components: {DialogTitle, DialogStatus, ContractAbiDialog, Dialog, Prism},
+  emits: ["didUpdateContractState"],
+  props: {
+    contractCallBuilder: {
+      type: Object as PropType<ContractCallBuilder>,
+      required: true
     },
-
-    setup(props, ctx) {
-
-        const running = ref(true)
-
-        const handleClick = () => {
-            if (props.contractCallBuilder.isGetter()) {
-                running.value = true
-                try {
-                    props.contractCallBuilder.execute()
-                        .finally(() => {
-                            running.value = false
-                        })
-                } catch {
-                    running.value = false
-                }
-            } else {
-                if (props.contractCallBuilder.isReadOnly() || walletManager.connected.value) {
-                    dialogController.visible.value = true
-                } else {
-                    alertController.visible.value = true
-                }
-            }
-        }
-
-        const dialogController = new DialogController()
-        const alertController = new DialogController()
-
-        onMounted(() => {
-            if (props.contractCallBuilder.isGetter()) {
-                handleClick()
-            }
-        })
-
-        const isGetter = computed(() => props.contractCallBuilder.isGetter())
-
-        const signature = computed(() => props.contractCallBuilder.fragment.format("full"))
-
-        const mutability = computed(() => props.contractCallBuilder.fragment.stateMutability.toUpperCase())
-
-        const selector = computed(() => props.contractCallBuilder.fragment.selector)
-
-        const hasResult = computed(() => props.contractCallBuilder.hasResult())
-
-        const dialogDidUpdateContractState = () => {
-            ctx.emit("didUpdateContractState")
-        }
-
-        return {
-            running,
-            signature,
-            mutability,
-            selector,
-            isGetter,
-            hasResult,
-            callOutput: props.contractCallBuilder.callOutput,
-            dialogController,
-            alertController,
-            handleClick,
-            dialogDidUpdateContractState
-        }
+    index: {
+      type: Number,
+      required: true
     }
+  },
+
+  setup(props, ctx) {
+
+    const running = ref(true)
+
+    const handleClick = () => {
+      if (props.contractCallBuilder.isGetter()) {
+        running.value = true
+        try {
+          props.contractCallBuilder.execute()
+              .finally(() => {
+                running.value = false
+              })
+        } catch {
+          running.value = false
+        }
+      } else {
+        if (props.contractCallBuilder.isReadOnly() || walletManager.connected.value) {
+          dialogController.visible.value = true
+        } else {
+          alertController.visible.value = true
+        }
+      }
+    }
+
+    const dialogController = new DialogController()
+    const alertController = new DialogController()
+
+    onMounted(() => {
+      if (props.contractCallBuilder.isGetter()) {
+        handleClick()
+      }
+    })
+
+    const isGetter = computed(() => props.contractCallBuilder.isGetter())
+
+    const signature = computed(() => props.contractCallBuilder.fragment.format("full"))
+
+    const mutability = computed(() => props.contractCallBuilder.fragment.stateMutability.toUpperCase())
+
+    const selector = computed(() => props.contractCallBuilder.fragment.selector)
+
+    const hasResult = computed(() => props.contractCallBuilder.hasResult())
+
+    const dialogDidUpdateContractState = () => {
+      ctx.emit("didUpdateContractState")
+    }
+
+    return {
+      running,
+      signature,
+      mutability,
+      selector,
+      isGetter,
+      hasResult,
+      callOutput: props.contractCallBuilder.callOutput,
+      dialogController,
+      alertController,
+      handleClick,
+      dialogDidUpdateContractState
+    }
+  }
 
 })
 
@@ -166,9 +171,9 @@ export default defineComponent({
 <style scoped>
 
 .entry-container {
-    display: grid;
-    grid-template-columns: min-content auto;
-    align-items: center;
+  display: grid;
+  grid-template-columns: min-content auto;
+  align-items: center;
 }
 
 </style>

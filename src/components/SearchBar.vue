@@ -48,8 +48,9 @@
           v-bind:disabled="searchInputDisabled"
           ref="search-input"
       />
-      <button class="button is-dark" type="submit" value="searchBar" style="border-color: white; border-left: none; height: 40px; z-index: 0; outline: none">
-          <i v-bind:class="searchButtonIconStyle"/>
+      <button class="button is-dark" type="submit" value="searchBar"
+              style="border-color: white; border-left: none; height: 40px; z-index: 0; outline: none">
+        <i v-bind:class="searchButtonIconStyle"/>
       </button>
     </form>
   </div>
@@ -109,7 +110,7 @@ export default defineComponent({
       updateSearchBarEnabled()
     }
 
-    const performSearch = (): void  => {
+    const performSearch = (): void => {
       searchInputDisabled.value = true
       searchButtonIconStyle.value = STYLE_BUSY_ICON
 
@@ -163,14 +164,14 @@ export default defineComponent({
               }
               searchDidEnd(true)
             } else {
-                // No match => if searchId looks like an EVM address we say "inactive" else we say "not found"
-                if (r.ethereumAddress !== null) {
-                    routeManager.routeToAccount(r.ethereumAddress) // Will display inactive
-                    searchDidEnd(true)
-                } else {
-                    routeManager.routeToNoSearchResult(searchedId.value, r.getErrorCount())
-                    searchDidEnd(false)
-                }
+              // No match => if searchId looks like an EVM address we say "inactive" else we say "not found"
+              if (r.ethereumAddress !== null) {
+                routeManager.routeToAccount(r.ethereumAddress) // Will display inactive
+                searchDidEnd(true)
+              } else {
+                routeManager.routeToNoSearchResult(searchedId.value, r.getErrorCount())
+                searchDidEnd(false)
+              }
             }
           } catch {
             console.trace("Failed to route")

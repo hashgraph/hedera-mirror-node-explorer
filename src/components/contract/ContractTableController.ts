@@ -54,7 +54,7 @@ export class ContractTableController extends TableController<Contract, string> {
             return Promise.resolve(r.data.contracts ?? [])
         }
 
-        return  axios.get<ContractsResponse>("api/v1/contracts", {params: params}).then(cb)
+        return axios.get<ContractsResponse>("api/v1/contracts", {params: params}).then(cb)
     }
 
     public keyFor(row: Contract): string {

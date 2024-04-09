@@ -166,7 +166,7 @@
         <div v-if="isEditing" id="editingFeedback"
              class="has-text-grey h-is-text-size-3 has-text-centered mt-1"
              :class="{'is-invisible': !enableApproveButton}">
-            {{ editingFeedback }}
+          {{ editingFeedback }}
         </div>
 
         <div class="is-flex is-justify-content-flex-end mt-5">
@@ -253,15 +253,15 @@ export default defineComponent({
   components: {ProgressDialog, ConfirmDialog},
   props: {
     ownerAccountId: {
-      type: String as PropType<string|null>,
+      type: String as PropType<string | null>,
       default: null
     },
     showDialog: {
       type: Boolean,
       default: false
     },
-    currentHbarAllowance: Object as PropType<CryptoAllowance|null>,
-    currentTokenAllowance: Object as PropType<TokenAllowance|null>,
+    currentHbarAllowance: Object as PropType<CryptoAllowance | null>,
+    currentTokenAllowance: Object as PropType<TokenAllowance | null>,
     polling: { // For testing purpose
       type: Number,
       default: 3000
@@ -352,7 +352,7 @@ export default defineComponent({
       if (props.currentHbarAllowance) {
         result = "Previous allowance was to "
             + props.currentHbarAllowance.spender + " for "
-            + props.currentHbarAllowance.amount_granted/100000000 + " hbars"
+            + props.currentHbarAllowance.amount_granted / 100000000 + " hbars"
       } else if (props.currentTokenAllowance) {
         result = "Previous allowance was to "
             + props.currentTokenAllowance.spender + " for "
@@ -496,10 +496,10 @@ export default defineComponent({
 
       if (allowanceChoice.value === 'hbar') {
         if (Number(selectedHbarAmount.value) === 0) {
-            result = "Do you want to remove the hbar allowance for account " + toAccount + "?"
+          result = "Do you want to remove the hbar allowance for account " + toAccount + "?"
         } else {
-            result = "Do you want to approve an allowance to account " + toAccount
-                + " for " + (selectedHbarAmount.value??0/100000000) + " hbars?"
+          result = "Do you want to approve an allowance to account " + toAccount
+              + " for " + (selectedHbarAmount.value ?? 0 / 100000000) + " hbars?"
         }
       } else if (allowanceChoice.value === 'token') {
         const token = normalizedToken.value
@@ -573,7 +573,7 @@ export default defineComponent({
                   normalizedSpender.value, parseFloat(selectedHbarAmount.value)))
             }
           } else if (allowanceChoice.value === 'token') {
-              if (normalizedToken.value != null && rawTokenAmount.value != null) {
+            if (normalizedToken.value != null && rawTokenAmount.value != null) {
               tid = normalizeTransactionId(await walletManager.approveTokenAllowance(
                   normalizedToken.value, normalizedSpender.value, rawTokenAmount.value))
             }
@@ -604,18 +604,18 @@ export default defineComponent({
         console.log("Transaction Error: " + reason)
 
         if (reason instanceof WalletDriverCancelError) {
-            showProgressDialog.value = false
+          showProgressDialog.value = false
         } else {
-            progressDialogMode.value = Mode.Error
-            if (reason instanceof WalletDriverError) {
-                progressMainMessage.value = reason.message
-                progressExtraMessage.value = reason.extra
-            } else {
-                progressMainMessage.value = "Operation did not complete"
-                progressExtraMessage.value = reason instanceof Error ? JSON.stringify(reason.message) : JSON.stringify(reason)
-            }
-            progressExtraTransactionId.value = null
-            showProgressSpinner.value = false
+          progressDialogMode.value = Mode.Error
+          if (reason instanceof WalletDriverError) {
+            progressMainMessage.value = reason.message
+            progressExtraMessage.value = reason.extra
+          } else {
+            progressMainMessage.value = "Operation did not complete"
+            progressExtraMessage.value = reason instanceof Error ? JSON.stringify(reason.message) : JSON.stringify(reason)
+          }
+          progressExtraTransactionId.value = null
+          showProgressSpinner.value = false
         }
       }
     }
@@ -661,8 +661,8 @@ export default defineComponent({
       let isValidInput = true
       let isDecimal = false
 
-        const value = (event.target as HTMLInputElement).value
-        for (const c of value) {
+      const value = (event.target as HTMLInputElement).value
+      for (const c of value) {
         if ((c >= '0' && c <= '9') || c === '.') {
           if (c === '.') {
             isValidInput = !isDecimal
@@ -687,8 +687,8 @@ export default defineComponent({
       let isValidInput = true
       let previousWasComma = false
 
-        const value = (event.target as HTMLInputElement).value
-        for (const c of value) {
+      const value = (event.target as HTMLInputElement).value
+      for (const c of value) {
         if ((c >= '0' && c <= '9') || c === ',') {
           if (c === ',') {
             isValidInput = !previousWasComma
@@ -770,15 +770,15 @@ export default defineComponent({
                 const tokens = response.data.tokens
                 if (tokens && tokens.length > 0) {
                   if (type !== null) {
-                      if (tokenInfo.value != null) {
-                          if (tokenInfo.value.type === type) {
-                              isValid.value = true
-                          } else {
-                              message.value = (type === 'FUNGIBLE_COMMON') ? TOKEN_NOT_FUNGIBLE_MESSAGE : TOKEN_NOT_NFT_MESSAGE
-                          }
+                    if (tokenInfo.value != null) {
+                      if (tokenInfo.value.type === type) {
+                        isValid.value = true
                       } else {
-                          message.value = TOKEN_NOT_FOUND_MESSAGE
+                        message.value = (type === 'FUNGIBLE_COMMON') ? TOKEN_NOT_FUNGIBLE_MESSAGE : TOKEN_NOT_NFT_MESSAGE
                       }
+                    } else {
+                      message.value = TOKEN_NOT_FOUND_MESSAGE
+                    }
                   } else {
                     isValid.value = true
                   }

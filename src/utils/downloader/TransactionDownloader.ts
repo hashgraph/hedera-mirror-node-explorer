@@ -32,12 +32,12 @@ export class TransactionDownloader extends AbstractTransactionDownloader {
     // Public
     //
 
-    public constructor(accountId: Ref<string|null>,
-                       startDate: Ref<Date|null>,
-                       endDate: Ref<Date|null>,
-                       transactionType: Ref<TransactionType|null>,
+    public constructor(accountId: Ref<string | null>,
+                       startDate: Ref<Date | null>,
+                       endDate: Ref<Date | null>,
+                       transactionType: Ref<TransactionType | null>,
                        maxTransactionCount: number) {
-        super(accountId, transactionType,  startDate, endDate, maxTransactionCount)
+        super(accountId, transactionType, startDate, endDate, maxTransactionCount)
     }
 
     //
@@ -77,6 +77,6 @@ export class TransactionEncoder extends CSVEncoder<Transaction> {
     }
 
     protected encodeHeaderRow(): string[] | null {
-        return ["#date","#from_account_id","#to_account_id","#amount","#transaction_id","#transaction_type"]
+        return ["#date", "#from_account_id", "#to_account_id", "#amount", "#transaction_id", "#transaction_type"]
     }
 }

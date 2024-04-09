@@ -35,10 +35,10 @@ import {AccountByAliasCache} from "@/utils/cache/AccountByAliasCache";
 
 export class AccountLocParser {
 
-    public readonly accountLoc: Ref<string|null>
-    public readonly accountInfo: Ref<AccountBalanceTransactions|null> = ref(null)
+    public readonly accountLoc: Ref<string | null>
+    public readonly accountInfo: Ref<AccountBalanceTransactions | null> = ref(null)
 
-    private watchHandle: Ref<WatchStopHandle|null> = ref(null)
+    private watchHandle: Ref<WatchStopHandle | null> = ref(null)
     private readonly loadCounter: Ref<number> = ref(0)
     private readonly nodeAnalyzer: NodeAnalyzer
 
@@ -46,13 +46,13 @@ export class AccountLocParser {
     // Public
     //
 
-    public constructor(accountLoc: Ref<string|null>) {
+    public constructor(accountLoc: Ref<string | null>) {
         this.accountLoc = accountLoc
         this.nodeAnalyzer = new NodeAnalyzer(this.accountId)
     }
 
     public mount(): void {
-        this.watchHandle.value = watch(this.accountLocObj, this.accountLocObjDidChange, { immediate: true})
+        this.watchHandle.value = watch(this.accountLocObj, this.accountLocObjDidChange, {immediate: true})
         this.nodeAnalyzer.mount()
     }
 
@@ -94,29 +94,29 @@ export class AccountLocParser {
             && this.loadCounter.value >= 1
     })
 
-    public readonly accountId: ComputedRef<string|null>
+    public readonly accountId: ComputedRef<string | null>
         = computed(() => this.accountInfo.value?.account ?? null)
 
-    public readonly accountChecksum: ComputedRef<string|null> = computed(() =>
+    public readonly accountChecksum: ComputedRef<string | null> = computed(() =>
         this.accountId.value ? networkRegistry.computeChecksum(
             this.accountId.value,
             router.currentRoute.value.params.network as string
         ) : null)
 
-    public readonly balance: ComputedRef<number|null> = computed(() => this.accountInfo.value?.balance?.balance ?? null)
+    public readonly balance: ComputedRef<number | null> = computed(() => this.accountInfo.value?.balance?.balance ?? null)
 
-    public readonly createdTimestamp: ComputedRef<string|null> = computed(() => this.accountInfo.value?.created_timestamp ?? null)
+    public readonly createdTimestamp: ComputedRef<string | null> = computed(() => this.accountInfo.value?.created_timestamp ?? null)
 
-    public readonly key: ComputedRef<Key|null> = computed(() => this.accountInfo.value?.key ?? null)
+    public readonly key: ComputedRef<Key | null> = computed(() => this.accountInfo.value?.key ?? null)
 
-    public readonly tokens: ComputedRef<TokenBalance[]|null> = computed(() => this.accountInfo.value?.balance?.tokens ?? null)
+    public readonly tokens: ComputedRef<TokenBalance[] | null> = computed(() => this.accountInfo.value?.balance?.tokens ?? null)
 
-    public readonly stakedNodeId: ComputedRef<number|null> = computed(() => this.accountInfo.value?.staked_node_id ?? null)
+    public readonly stakedNodeId: ComputedRef<number | null> = computed(() => this.accountInfo.value?.staked_node_id ?? null)
 
-    public readonly stakedAccountId: ComputedRef<string|null> = computed(() => this.accountInfo.value?.staked_account_id ?? null)
+    public readonly stakedAccountId: ComputedRef<string | null> = computed(() => this.accountInfo.value?.staked_account_id ?? null)
 
-    public readonly stakePeriodStart: ComputedRef<string|null> = computed(() => {
-        const dateOptions : Intl.DateTimeFormatOptions = {
+    public readonly stakePeriodStart: ComputedRef<string | null> = computed(() => {
+        const dateOptions: Intl.DateTimeFormatOptions = {
             // weekDay: "short",
             day: "numeric",
             month: "short",
@@ -136,11 +136,11 @@ export class AccountLocParser {
         return result
     })
 
-    public readonly pendingReward: ComputedRef<number|null> = computed(() => this.accountInfo.value?.pending_reward ?? null)
+    public readonly pendingReward: ComputedRef<number | null> = computed(() => this.accountInfo.value?.pending_reward ?? null)
 
-    public readonly accountDescription: ComputedRef<string|null> = computed(() => this.nodeAnalyzer.nodeDescription.value)
+    public readonly accountDescription: ComputedRef<string | null> = computed(() => this.nodeAnalyzer.nodeDescription.value)
 
-    public readonly nodeId: ComputedRef<number|null> = computed(() => this.nodeAnalyzer.node.value?.node_id ?? null)
+    public readonly nodeId: ComputedRef<number | null> = computed(() => this.nodeAnalyzer.node.value?.node_id ?? null)
 
     public readonly ethereumAddress = computed(() => {
         return this.accountInfo.value !== null ? makeEthAddressForAccount(this.accountInfo.value) : null
@@ -152,8 +152,8 @@ export class AccountLocParser {
         return aliasBytes !== null ? byteToHex(aliasBytes) : null
     })
 
-    public readonly errorNotification: ComputedRef<string|null> = computed(() => {
-        let result: string|null
+    public readonly errorNotification: ComputedRef<string | null> = computed(() => {
+        let result: string | null
         const l = this.accountLoc.value
         const o = this.accountLocObj.value
         const a = this.accountInfo.value
@@ -201,7 +201,7 @@ export class AccountLocParser {
                 } else { // l instanceof AccountAlias
                     this.accountInfo.value = await AccountByAliasCache.instance.lookup(l.toString())
                 }
-            } catch(error) {
+            } catch (error) {
                 this.accountInfo.value = null
             } finally {
                 this.loadCounter.value += 1
@@ -212,7 +212,7 @@ export class AccountLocParser {
     }
 
     private readonly accountLocObj = computed(() => {
-        let result: EntityID|EthereumAddress|AccountAlias|null
+        let result: EntityID | EthereumAddress | AccountAlias | null
         if (this.accountLoc.value !== null) {
             result = PathParam.parseAccountLoc(this.accountLoc.value)
         } else {

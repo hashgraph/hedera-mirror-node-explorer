@@ -38,10 +38,12 @@
             <span>{{ contractName }}</span>
             <span class="icon is-small has-text-success ml-1"><i class="fas fa-check-circle"></i></span>
         </router-link>
-        <router-link v-else-if="entityLinkType === CONTRACT" :to="{name: 'ContractDetails', params: {contractId: entityId}}">
+        <router-link v-else-if="entityLinkType === CONTRACT"
+                     :to="{name: 'ContractDetails', params: {contractId: entityId}}">
             {{ displayId }}
         </router-link>
-        <router-link v-else-if="entityLinkType === ACCOUNT" :to="{name: 'AccountDetails', params: {accountId: entityId}}">
+        <router-link v-else-if="entityLinkType === ACCOUNT"
+                     :to="{name: 'AccountDetails', params: {accountId: entityId}}">
             {{ displayId }}
         </router-link>
         <router-link v-else-if="entityLinkType === TOKEN" :to="{name: 'TokenDetails', params: {tokenId: entityId}}">
@@ -87,15 +89,15 @@ export default defineComponent({
   components: {ContractName, Copyable},
   props: {
     address: {
-      type: String as PropType<string|null>,
+      type: String as PropType<string | null>,
       default: null
     },
     id: {
-      type: String as PropType<string|null>,
+      type: String as PropType<string | null>,
       default: null
     },
     entityType: {
-      type: String as PropType<string|null>,
+      type: String as PropType<string | null>,
       default: null
     },
     showId: {
@@ -133,11 +135,11 @@ export default defineComponent({
     const isSmallScreen = inject('isSmallScreen', ref(false))
 
     const entityLinkType = ref<ExtendedEntityType>(ExtendedEntityType.UNDEFINED)
-    const evmAddress = ref<string|null>(null)
-    const entityId = ref<string|null>(null)
-    const systemContract = ref<SystemContractEntry|null>(null)
-    const ethereumAddress = computed( () => EthereumAddress.parse(evmAddress.value ?? ''))
-    const derivedEntityId = computed( () => ethereumAddress.value?.toEntityID()?.toString() ?? null)
+    const evmAddress = ref<string | null>(null)
+    const entityId = ref<string | null>(null)
+    const systemContract = ref<SystemContractEntry | null>(null)
+    const ethereumAddress = computed(() => EthereumAddress.parse(evmAddress.value ?? ''))
+    const derivedEntityId = computed(() => ethereumAddress.value?.toEntityID()?.toString() ?? null)
 
     onMounted(() => updateIdAndAddress())
     watch([() => props.address, () => props.id, () => props.entityType], () => updateIdAndAddress())
@@ -152,8 +154,8 @@ export default defineComponent({
           await updateFromAccount()
         }
       } else if (props.entityType === "CONTRACT") {
-        if (! await updateFromSystemContract()) {
-          if (! await updateFromContract()) {
+        if (!await updateFromSystemContract()) {
+          if (!await updateFromContract()) {
             entityLinkType.value = ExtendedEntityType.TOKEN
           }
         }
@@ -198,7 +200,7 @@ export default defineComponent({
 
     const displayAddress = computed(
         () => props.compact
-            ? ethereumAddress.value?.toCompactString(props.bytesKept)  ?? ""
+            ? ethereumAddress.value?.toCompactString(props.bytesKept) ?? ""
             : ethereumAddress.value?.toString() ?? "")
 
     const nonSignificantSize = computed(() => {
@@ -256,4 +258,4 @@ export default defineComponent({
 <!--                                                       STYLE                                                     -->
 <!-- --------------------------------------------------------------------------------------------------------------- -->
 
-<style />
+<style/>

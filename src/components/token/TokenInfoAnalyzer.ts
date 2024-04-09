@@ -27,13 +27,13 @@ import {TokenAssociationCache} from "@/utils/cache/TokenAssociationCache";
 
 export class TokenInfoAnalyzer {
 
-    private readonly tokenInfo: Ref<TokenInfo|null>
+    private readonly tokenInfo: Ref<TokenInfo | null>
 
     //
     // Public
     //
 
-    public constructor(tokenInfo: Ref<TokenInfo|null>) {
+    public constructor(tokenInfo: Ref<TokenInfo | null>) {
         this.tokenInfo = tokenInfo
     }
 

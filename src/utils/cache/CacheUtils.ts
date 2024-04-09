@@ -46,7 +46,7 @@ import {ContractResultByTsCache} from "@/utils/cache/ContractResultByTsCache";
 import {SourcifyCache} from "@/utils/cache/SourcifyCache";
 import {TokenAssociationCache} from "@/utils/cache/TokenAssociationCache";
 import {MarketDataCache} from "@/components/dashboard/MarketDataCache";
-import { ContractResultsLogsByContractIdCache } from "@/utils/cache/ContractResultsLogsByContractIdCache"
+import {ContractResultsLogsByContractIdCache} from "@/utils/cache/ContractResultsLogsByContractIdCache"
 import {NftCollectionCache} from "@/utils/cache/NftCollectionCache";
 import {VerifiedContractsByAccountIdCache} from "@/utils/cache/VerifiedContractsByAccountIdCache";
 import {VerifiedContractsCache} from "@/utils/cache/VerifiedContractsCache";

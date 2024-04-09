@@ -101,15 +101,15 @@ export default defineComponent({
         new TokenRelationshipsTableController(useRouter(), normalizedAccountId, perPage);
     const nftCollectionLookup = NftCollectionCache.instance.makeLookup(normalizedAccountId)
     onMounted(() => {
-        tokenRelationshipTableController.mount()
-        nftCollectionLookup.mount()
+      tokenRelationshipTableController.mount()
+      nftCollectionLookup.mount()
     })
     onBeforeUnmount(() => {
-        tokenRelationshipTableController.unmount()
-        nftCollectionLookup.unmount()
+      tokenRelationshipTableController.unmount()
+      nftCollectionLookup.unmount()
     })
 
-    const nftCollections = computed( () => nftCollectionLookup.entity.value ?? [])
+    const nftCollections = computed(() => nftCollectionLookup.entity.value ?? [])
 
     return {
       isSmallScreen,

@@ -40,8 +40,8 @@
           <span v-if="extraMessage" class="h-is-property-text">{{ extraMessage }}</span>
           <span v-else class="h-is-property-text" style="visibility: hidden">Filler</span>
         </div>
-        
-        
+
+
         <div v-if="slots.dialogOption">
           <slot name="dialogOption"/>
         </div>
@@ -73,20 +73,20 @@ export default defineComponent({
       default: false
     },
     mainMessage: {
-      type: String as PropType<string|null>,
+      type: String as PropType<string | null>,
       default: null
     },
     extraMessage: {
-      type: String as PropType<string|null>,
+      type: String as PropType<string | null>,
       default: null
     },
     confirmLabel: {
-        type: String as PropType<string>,
-        default: "CONFIRM"
+      type: String as PropType<string>,
+      default: "CONFIRM"
     },
     cancelLabel: {
-        type: String as PropType<string>,
-        default: "CANCEL"
+      type: String as PropType<string>,
+      default: "CANCEL"
     },
   },
 

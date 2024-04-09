@@ -32,9 +32,9 @@ import {isSuccessfulResult} from "@/utils/TransactionTools";
 
 export class TransactionLocParser {
 
-    public readonly transactionLoc: Ref<string|null>
+    public readonly transactionLoc: Ref<string | null>
 
-    private watchHandle: Ref<WatchStopHandle|null> = ref(null)
+    private watchHandle: Ref<WatchStopHandle | null> = ref(null)
     private readonly transactionRef: Ref<Transaction | null> = ref(null)
     private readonly loadCounter: Ref<number> = ref(0)
 
@@ -42,7 +42,7 @@ export class TransactionLocParser {
     // Public
     //
 
-    public constructor(transactionLoc: Ref<string|null>) {
+    public constructor(transactionLoc: Ref<string | null>) {
         this.transactionLoc = transactionLoc
     }
 
@@ -59,24 +59,24 @@ export class TransactionLocParser {
         this.loadCounter.value = 0
     }
 
-    public readonly transaction: ComputedRef<Transaction|null> = computed(() => {
+    public readonly transaction: ComputedRef<Transaction | null> = computed(() => {
         return this.transactionRef.value
     })
 
-    public consensusTimestamp: ComputedRef<string|null> = computed(() => {
+    public consensusTimestamp: ComputedRef<string | null> = computed(() => {
         return this.transactionRef.value?.consensus_timestamp ?? null
     })
 
-    public transactionHash: ComputedRef<string|null> = computed(() => {
+    public transactionHash: ComputedRef<string | null> = computed(() => {
         return this.transactionRef.value?.transaction_hash ?? null
     })
 
-    public transactionId: ComputedRef<string|null> = computed(() => {
+    public transactionId: ComputedRef<string | null> = computed(() => {
         return this.transactionRef.value?.transaction_id ?? null
     })
 
-    public errorNotification: ComputedRef<string|null> = computed(() => {
-        let result: string|null
+    public errorNotification: ComputedRef<string | null> = computed(() => {
+        let result: string | null
 
         const l = this.transactionLoc.value
         const o = this.transactionLocObj.value
@@ -136,7 +136,7 @@ export class TransactionLocParser {
     }
 
     private readonly transactionLocObj = computed(() => {
-        let result: Timestamp|TransactionHash|TransactionID|EthereumHash|null
+        let result: Timestamp | TransactionHash | TransactionID | EthereumHash | null
         const l = this.transactionLoc.value
         if (l !== null) {
             result = Timestamp.parse(l) ?? TransactionHash.parse(l) ?? TransactionID.parse(l) ?? EthereumHash.parse(l)
@@ -146,8 +146,8 @@ export class TransactionLocParser {
         return result
     })
 
-    private async lookupTransactionByResult(ethereumHash: string): Promise<Transaction|null> {
-        let result: Transaction|null
+    private async lookupTransactionByResult(ethereumHash: string): Promise<Transaction | null> {
+        let result: Transaction | null
         const contractResult = await ContractResultByHashCache.instance.lookup(ethereumHash)
         const consensusTimestamp = contractResult?.timestamp ?? null
         if (consensusTimestamp !== null) {

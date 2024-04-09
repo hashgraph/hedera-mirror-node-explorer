@@ -28,7 +28,7 @@
 
     <DashboardCard class="h-card" collapsible-key="contractResult">
       <template v-slot:title>
-        <span v-if="topLevel"  class="h-is-primary-title">
+        <span v-if="topLevel" class="h-is-primary-title">
           Contract Result for {{ contractResult?.contract_id }} at {{ contractResult?.timestamp }}
         </span>
         <span v-else class="h-is-secondary-title">Contract Result</span>
@@ -44,19 +44,21 @@
         <Property id="evm-hash">
           <template v-slot:name>EVM Transaction Hash</template>
           <template v-slot:value>
-              <HexaValue v-bind:byteString="contractResult?.hash" v-bind:show-none="true"/>
+            <HexaValue v-bind:byteString="contractResult?.hash" v-bind:show-none="true"/>
           </template>
         </Property>
         <Property id="from">
           <template v-slot:name>From</template>
           <template v-slot:value>
-            <EVMAddress :address="contractResult?.from" :id="fromId ?? undefined" :compact="isSmallScreen && !isMediumScreen"/>
+            <EVMAddress :address="contractResult?.from" :id="fromId ?? undefined"
+                        :compact="isSmallScreen && !isMediumScreen"/>
           </template>
         </Property>
         <Property id="to">
           <template v-slot:name>To</template>
           <template v-slot:value>
-            <EVMAddress :address="contractResult?.to ?? undefined" :id="toId ?? undefined" :compact="isSmallScreen && !isMediumScreen"/>
+            <EVMAddress :address="contractResult?.to ?? undefined" :id="toId ?? undefined"
+                        :compact="isSmallScreen && !isMediumScreen"/>
           </template>
         </Property>
 
@@ -118,7 +120,8 @@
 
     </DashboardCard>
 
-    <ContractResultTrace v-if="isParent" :transaction-id-or-hash="contractResult?.hash ?? undefined" :analyzer="analyzer"/>
+    <ContractResultTrace v-if="isParent" :transaction-id-or-hash="contractResult?.hash ?? undefined"
+                         :analyzer="analyzer"/>
 
     <ContractResultStates :state-changes="contractResult?.state_changes" :time-stamp="contractResult?.timestamp"/>
 
@@ -172,7 +175,7 @@ export default defineComponent({
 
   props: {
     timestamp: {
-        type: String,
+      type: String,
     },
     topLevel: {
       type: Boolean,
@@ -183,7 +186,7 @@ export default defineComponent({
       default: false
     },
     blockNumber: {
-      type:  Number
+      type: Number
     },
     transactionHash: {
       type: String

@@ -30,7 +30,7 @@ export class EthereumAddress {
     // Public
     //
 
-    public static parse(byteString: string): EthereumAddress|null {
+    public static parse(byteString: string): EthereumAddress | null {
         const bytes = hexToByte(byteString)
         return bytes !== null && bytes.length == 20 ? new EthereumAddress(bytes) : null
     }
@@ -45,13 +45,13 @@ export class EthereumAddress {
         return "0x" + byteToHex(this.bytes)
     }
 
-    public toCompactString(digitKept=6): string {
-       return "0x"
-           + byteToHex(this.bytes.slice(0, 1))
-           + "…" + byteToHex(this.bytes.slice(-digitKept/2))
+    public toCompactString(digitKept = 6): string {
+        return "0x"
+            + byteToHex(this.bytes.slice(0, 1))
+            + "…" + byteToHex(this.bytes.slice(-digitKept / 2))
     }
 
-    public toEntityID(): EntityID|null {
+    public toEntityID(): EntityID | null {
         let result: EntityID | null
         if (this.isLongZeroForm()) {
             const view = new DataView(this.bytes.buffer)
@@ -65,7 +65,7 @@ export class EthereumAddress {
     }
 
     public isLongZeroForm(): boolean {
-        return this.bytes.slice(0,12).every((value) => value === 0)
+        return this.bytes.slice(0, 12).every((value) => value === 0)
     }
 
     //

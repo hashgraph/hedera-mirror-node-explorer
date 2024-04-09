@@ -31,7 +31,7 @@ export class HbarPriceCache extends EntityCache<string, NetworkExchangeRateSetRe
     //
 
     protected async load(timestamp: string): Promise<NetworkExchangeRateSetResponse> {
-        const parameters = timestamp != "0" ? { timestamp: timestamp } : {}
+        const parameters = timestamp != "0" ? {timestamp: timestamp} : {}
         const result = await axios.get<NetworkExchangeRateSetResponse>(
             'api/v1/network/exchangerate', {params: parameters})
         return Promise.resolve(result.data)

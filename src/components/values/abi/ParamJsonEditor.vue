@@ -23,8 +23,8 @@
 <!-- --------------------------------------------------------------------------------------------------------------- -->
 
 <template>
-    <button class="button is-white h-is-smaller" @click="jsonEditorController.visible.value = true">EDIT…</button>
-    <JsonEditorDialog :controller="jsonEditorController" :param-builder="paramBuilder"/>
+  <button class="button is-white h-is-smaller" @click="jsonEditorController.visible.value = true">EDIT…</button>
+  <JsonEditorDialog :controller="jsonEditorController" :param-builder="paramBuilder"/>
 </template>
 
 <!-- --------------------------------------------------------------------------------------------------------------- -->
@@ -39,22 +39,22 @@ import {DialogController} from "@/components/dialog/DialogController";
 import JsonEditorDialog from "@/components/values/abi/JsonEditorDialog.vue";
 
 export default defineComponent({
-    name: "ParamJsonEditor",
-    components: {JsonEditorDialog},
-    props: {
-        paramBuilder: {
-            type: Object as PropType<ContractParamBuilder>,
-            required: true
-        },
+  name: "ParamJsonEditor",
+  components: {JsonEditorDialog},
+  props: {
+    paramBuilder: {
+      type: Object as PropType<ContractParamBuilder>,
+      required: true
     },
-    setup() {
+  },
+  setup() {
 
-        const jsonEditorController = new DialogController()
+    const jsonEditorController = new DialogController()
 
-        return {
-            jsonEditorController
-        }
+    return {
+      jsonEditorController
     }
+  }
 })
 
 </script>

@@ -54,7 +54,7 @@ export class NftBySerialCache extends SerialCache<string, Nft | null> {
         serialNb: Ref<string | null>,
     ): EntityLookup<string, Nft | null> {
         const key = computed(() => {
-            let result: string|null
+            let result: string | null
             if (tokenId.value !== null && serialNb.value !== null) {
                 result = tokenId.value + "---" + serialNb.value
             } else {

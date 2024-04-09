@@ -29,7 +29,7 @@ export class NetworkAnalyzer {
     public readonly networkLookup = NetworkCache.instance.makeLookup()
     public readonly stakingPeriod: Ref<StakingPeriod | null> = ref(null)
     private intervalHandle = -1
-    private watchHandle: WatchStopHandle|null = null
+    private watchHandle: WatchStopHandle | null = null
 
     //
     // Public
@@ -109,7 +109,7 @@ export class NetworkAnalyzer {
 
     public readonly hasCommunityNode: ComputedRef<boolean> = computed(() => {
         for (const n of this.nodes.value) {
-            if (! isCouncilNode(n)) {
+            if (!isCouncilNode(n)) {
                 return true
             }
         }
@@ -118,9 +118,9 @@ export class NetworkAnalyzer {
 
     public readonly durationMin
         = computed(() => this.stakingPeriod.value?.durationMin ?? null)
-    public readonly  elapsedMin
+    public readonly elapsedMin
         = computed(() => this.stakingPeriod.value?.elapsedMin ?? null)
-    public readonly  remainingMin
+    public readonly remainingMin
         = computed(() => this.stakingPeriod.value?.remainingMin ?? null)
 
     //

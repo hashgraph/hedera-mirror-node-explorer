@@ -32,13 +32,13 @@ export class NftCollectionCache extends EntityCache<string, NftCollectionInfo[]>
 
     protected async load(accountId: string): Promise<NftCollectionInfo[]> {
         let result: NftCollectionInfo[] = []
-        let nextURL: string|null = "api/v1/accounts/" + accountId + "/nfts"
+        let nextURL: string | null = "api/v1/accounts/" + accountId + "/nfts"
         const params = {
             limit: 25
         }
         while (nextURL !== null) {
             const response: AxiosResponse<Nfts>
-                = await axios.get<Nfts>(nextURL, { params: params})
+                = await axios.get<Nfts>(nextURL, {params: params})
             this.appendNfts(response.data.nfts ?? [], result)
             nextURL = response.data.links?.next ?? null
         }
@@ -65,7 +65,7 @@ export class NftCollectionCache extends EntityCache<string, NftCollectionInfo[]>
         // Logic below assumes this ordering
         //
 
-        const lastCollection = result.length >= 1 ? result[result.length-1] : null
+        const lastCollection = result.length >= 1 ? result[result.length - 1] : null
         if (lastCollection !== null && lastCollection.tokenId === nft.token_id) {
             lastCollection.collectionSize += 1
             if (lastCollection.samples.length < NftCollectionCache.SAMPLE_COUNT) {
@@ -79,11 +79,11 @@ export class NftCollectionCache extends EntityCache<string, NftCollectionInfo[]>
 
 export class NftCollectionInfo {
 
-    public readonly tokenId: string|null
+    public readonly tokenId: string | null
     public collectionSize: number
     public samples: Nft[]
 
-    public constructor(tokenId: string|null, firstSample: Nft) {
+    public constructor(tokenId: string | null, firstSample: Nft) {
         this.tokenId = tokenId
         this.collectionSize = 1
         this.samples = [firstSample]

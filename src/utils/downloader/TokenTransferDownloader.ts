@@ -26,16 +26,16 @@ import {AbstractTransactionDownloader} from "@/utils/downloader/AbstractTransati
 
 export class TokenTransferDownloader extends AbstractTransactionDownloader {
 
-    public readonly tokenId: Ref<string|null>
+    public readonly tokenId: Ref<string | null>
 
     //
     // Public
     //
 
-    public constructor(accountId: Ref<string|null>,
-                       startDate: Ref<Date|null>,
-                       endDate: Ref<Date|null>,
-                       tokenId: Ref<string|null>,
+    public constructor(accountId: Ref<string | null>,
+                       startDate: Ref<Date | null>,
+                       endDate: Ref<Date | null>,
+                       tokenId: Ref<string | null>,
                        maxTransactionCount: number) {
         super(accountId, computed(() => TransactionType.CRYPTOTRANSFER), startDate, endDate, maxTransactionCount)
         this.tokenId = tokenId
@@ -70,13 +70,13 @@ export class TokenTransferDownloader extends AbstractTransactionDownloader {
 
 export class TokenTransferEncoder extends CSVEncoder<Transaction> {
 
-    public readonly tokenId: Ref<string|null>
+    public readonly tokenId: Ref<string | null>
 
     //
     // Public
     //
 
-    public constructor(tokenId: Ref<string|null>, entities: Transaction[], dateFormat: Intl.DateTimeFormat) {
+    public constructor(tokenId: Ref<string | null>, entities: Transaction[], dateFormat: Intl.DateTimeFormat) {
         super(entities, dateFormat)
         this.tokenId = tokenId
     }
@@ -107,6 +107,6 @@ export class TokenTransferEncoder extends CSVEncoder<Transaction> {
     }
 
     protected encodeHeaderRow(): string[] | null {
-        return ["#date","#token_id","#from_account_id","#to_account_id","#amount","#transaction_id","#transaction_type"]
+        return ["#date", "#token_id", "#from_account_id", "#to_account_id", "#amount", "#transaction_id", "#transaction_type"]
     }
 }

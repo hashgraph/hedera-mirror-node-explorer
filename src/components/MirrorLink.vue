@@ -49,12 +49,11 @@ export default defineComponent({
     if (props.network == "testnet") {
       networkUrl = "https://testnet.mirrornode.hedera.com/"
     }
-    if (props.network == "previewnet")
-    {
+    if (props.network == "previewnet") {
       networkUrl = "https://previewnet.mirrornode.hedera.com/"
     }
 
-    return { networkUrl }
+    return {networkUrl}
   }
 });
 </script>

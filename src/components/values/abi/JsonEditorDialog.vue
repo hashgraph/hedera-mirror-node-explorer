@@ -23,19 +23,19 @@
 <!-- --------------------------------------------------------------------------------------------------------------- -->
 
 <template>
-    <Dialog :controller="controller">
-        <template v-slot:dialogTitle>
-            <DialogTitle>{{ dialogTitle }}</DialogTitle>
-        </template>
-        <template v-slot:dialogInput>
-            <div class="mb-4">{{ typeDeclaration }}</div>
-            <textarea style="width: 728px" class="textarea is-small has-text-white mb-4" v-model="currentText"/>
-        </template>
-        <template v-slot:dialogInputButtons>
-            <DialogButton :controller="controller">CANCEL</DialogButton>
-            <DialogButton :controller="controller" :enabled="isValidText">OK</DialogButton>
-        </template>
-    </Dialog>
+  <Dialog :controller="controller">
+    <template v-slot:dialogTitle>
+      <DialogTitle>{{ dialogTitle }}</DialogTitle>
+    </template>
+    <template v-slot:dialogInput>
+      <div class="mb-4">{{ typeDeclaration }}</div>
+      <textarea style="width: 728px" class="textarea is-small has-text-white mb-4" v-model="currentText"/>
+    </template>
+    <template v-slot:dialogInputButtons>
+      <DialogButton :controller="controller">CANCEL</DialogButton>
+      <DialogButton :controller="controller" :enabled="isValidText">OK</DialogButton>
+    </template>
+  </Dialog>
 </template>
 
 <!-- --------------------------------------------------------------------------------------------------------------- -->
@@ -54,83 +54,83 @@ import {DialogController} from "@/components/dialog/DialogController";
 import {ethers} from "ethers";
 
 export default defineComponent({
-    name: "JsonEditorDialog",
-    components: {Dialog,DialogButton, DialogTitle},
-    props: {
-        controller: {
-            type: Object as PropType<DialogController>,
-            required: true
-        },
-        paramBuilder: {
-            type: Object as PropType<ContractParamBuilder>,
-            required: true
-        },
+  name: "JsonEditorDialog",
+  components: {Dialog, DialogButton, DialogTitle},
+  props: {
+    controller: {
+      type: Object as PropType<DialogController>,
+      required: true
     },
-    setup(props) {
+    paramBuilder: {
+      type: Object as PropType<ContractParamBuilder>,
+      required: true
+    },
+  },
+  setup(props) {
 
-        const dialogTitle = computed(() => props.paramBuilder.paramType.name)
+    const dialogTitle = computed(() => props.paramBuilder.paramType.name)
 
-        const typeDeclaration = computed( () => props.paramBuilder.paramType.format("full"))
+    const typeDeclaration = computed(() => props.paramBuilder.paramType.format("full"))
 
-        const currentText = ref<string>("")
+    const currentText = ref<string>("")
 
-        const currentJson = computed(() => {
-            let result: string|null
-            try {
-                result = JSON.parse(currentText.value)
-            } catch {
-                result = null
-            }
-            return result
-        })
+    const currentJson = computed(() => {
+      let result: string | null
+      try {
+        result = JSON.parse(currentText.value)
+      } catch {
+        result = null
+      }
+      return result
+    })
 
-        const currentEncoding = computed(() => {
-            let result: unknown
-            if (currentJson.value !== null) {
-                try {
-                    result = ethers.AbiCoder.defaultAbiCoder().encode(
-                        [props.paramBuilder.paramType],
-                        [currentJson.value])
-                } catch {
-                    result = null
-                }
-            } else {
-                result = null
-            }
-            return result
-        })
-
-        const isValidText = computed(() => currentEncoding.value !== null)
-
-        const lastParamData = computed(() => {
-            const functionHash = props.paramBuilder.callBuilder.fragment.selector
-            const paramName = props.paramBuilder.paramType.name
-            const paramData = AppStorage.getInputParam(functionHash, paramName)
-            return paramData !== null ? JSON.stringify(paramData, null, "  ") : ""
-        })
-
-        let watchHandle: WatchStopHandle|null = null
-        onMounted(() => {
-            currentText.value = lastParamData.value
-            watchHandle = watch(currentJson, () => {
-                props.paramBuilder.paramData.value = currentJson.value
-            }, { immediate: true })
-        })
-        onBeforeUnmount(() => {
-            if (watchHandle !== null) {
-                watchHandle()
-                watchHandle = null
-            }
-            currentText.value = ""
-        })
-
-        return {
-            dialogTitle,
-            typeDeclaration,
-            currentText,
-            isValidText
+    const currentEncoding = computed(() => {
+      let result: unknown
+      if (currentJson.value !== null) {
+        try {
+          result = ethers.AbiCoder.defaultAbiCoder().encode(
+              [props.paramBuilder.paramType],
+              [currentJson.value])
+        } catch {
+          result = null
         }
+      } else {
+        result = null
+      }
+      return result
+    })
+
+    const isValidText = computed(() => currentEncoding.value !== null)
+
+    const lastParamData = computed(() => {
+      const functionHash = props.paramBuilder.callBuilder.fragment.selector
+      const paramName = props.paramBuilder.paramType.name
+      const paramData = AppStorage.getInputParam(functionHash, paramName)
+      return paramData !== null ? JSON.stringify(paramData, null, "  ") : ""
+    })
+
+    let watchHandle: WatchStopHandle | null = null
+    onMounted(() => {
+      currentText.value = lastParamData.value
+      watchHandle = watch(currentJson, () => {
+        props.paramBuilder.paramData.value = currentJson.value
+      }, {immediate: true})
+    })
+    onBeforeUnmount(() => {
+      if (watchHandle !== null) {
+        watchHandle()
+        watchHandle = null
+      }
+      currentText.value = ""
+    })
+
+    return {
+      dialogTitle,
+      typeDeclaration,
+      currentText,
+      isValidText
     }
+  }
 })
 
 </script>

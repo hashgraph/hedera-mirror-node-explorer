@@ -52,7 +52,7 @@ export class Duration {
     }
 }
 
-export function formatSeconds(secondCount: number|string|undefined): string {
+export function formatSeconds(secondCount: number | string | undefined): string {
     let result: string
 
     if (secondCount) {

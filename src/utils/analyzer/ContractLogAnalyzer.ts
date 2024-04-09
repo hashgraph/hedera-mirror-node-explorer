@@ -26,17 +26,17 @@ import {NameTypeValue} from "@/utils/analyzer/FunctionCallAnalyzer";
 
 export class ContractLogAnalyzer {
 
-    public readonly log: Ref<ContractResultLog|null>
-    public readonly isContractVerified = computed( () => this.logDescription.value !== null )
+    public readonly log: Ref<ContractResultLog | null>
+    public readonly isContractVerified = computed(() => this.logDescription.value !== null)
     private readonly contractAnalyzer: ContractAnalyzer
-    private readonly logDescription = shallowRef<ethers.LogDescription|null>(null)
-    private watchHandle: WatchStopHandle|null = null
+    private readonly logDescription = shallowRef<ethers.LogDescription | null>(null)
+    private watchHandle: WatchStopHandle | null = null
 
     //
     // Public
     //
 
-    public constructor(log: Ref<ContractResultLog|null>) {
+    public constructor(log: Ref<ContractResultLog | null>) {
         this.log = log
         this.contractAnalyzer = new ContractAnalyzer(computed(() => log.value?.contract_id ?? null))
     }
@@ -45,7 +45,7 @@ export class ContractLogAnalyzer {
         this.watchHandle = watch([
             this.log,
             this.contractAnalyzer.interface
-        ], this.updateLogDescription, { immediate: true})
+        ], this.updateLogDescription, {immediate: true})
         this.contractAnalyzer.mount()
     }
 
@@ -67,11 +67,11 @@ export class ContractLogAnalyzer {
                 const eventArgs = this.args.value.slice(1) // omit signature hash for looping
                 const fragmentInputs = this.logDescription.value.fragment.inputs
                 let returnedSignarue = this.logDescription.value.name + " ("
-                for (let i = 0; i < eventArgs.length; i+= 1) {
+                for (let i = 0; i < eventArgs.length; i += 1) {
                     const name = i < fragmentInputs.length ? fragmentInputs[i].name : "?"
                     const type = i < fragmentInputs.length ? fragmentInputs[i].type : "?"
                     const indexed = i < fragmentInputs.length ? fragmentInputs[i].indexed : false
-                    returnedSignarue = returnedSignarue + `${indexed ? `index_topic_${i+1} ` : ''}` + type + " " + name + `${i === eventArgs.length - 1 ? "" : ", "}`
+                    returnedSignarue = returnedSignarue + `${indexed ? `index_topic_${i + 1} ` : ''}` + type + " " + name + `${i === eventArgs.length - 1 ? "" : ", "}`
                 }
                 returnedSignarue = returnedSignarue + ")"
                 return returnedSignarue
@@ -89,7 +89,7 @@ export class ContractLogAnalyzer {
             const signatureHash = this.logDescription.value.topic
             const fragmentInputs = this.logDescription.value.fragment.inputs
             result.push(new NameTypeValue("signature hash", "", signatureHash, true, null))
-            for (let i = 0; i < args.length; i+= 1) {
+            for (let i = 0; i < args.length; i += 1) {
                 const value = args[i]
                 const name = i < fragmentInputs.length ? fragmentInputs[i].name : "?"
                 const type = i < fragmentInputs.length ? fragmentInputs[i].type : "?"

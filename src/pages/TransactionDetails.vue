@@ -44,7 +44,8 @@
       </template>
 
       <template v-slot:control>
-        <router-link v-if="routeToAllTransactions && isLargeScreen" id="allTransactionsLink" :to="routeToAllTransactions">
+        <router-link v-if="routeToAllTransactions && isLargeScreen" id="allTransactionsLink"
+                     :to="routeToAllTransactions">
           <span class="h-is-property-text has-text-grey">Show all transactions with the same ID</span>
         </router-link>
       </template>
@@ -365,7 +366,7 @@ export default defineComponent({
         () => transactionAnalyzer.chargedFee.value > transactionAnalyzer.maxFee.value)
 
     const transactionDetail = computed(() => {
-      let result: TransactionDetail|null
+      let result: TransactionDetail | null
       const consensusTimestamp = transactionAnalyzer.consensusTimestamp.value
       if (consensusTimestamp !== null) {
         result = null
@@ -382,7 +383,7 @@ export default defineComponent({
     })
 
     const parentTransaction = computed(() => {
-      let result: TransactionDetail|null
+      let result: TransactionDetail | null
       const t = transactionLocParser.transaction.value
       const p = transactionGroupAnalyzer.parentTransaction.value
       if (t !== null && p !== null && t.consensus_timestamp !== p.consensus_timestamp) {
@@ -406,7 +407,7 @@ export default defineComponent({
     })
 
     const scheduledTransaction = computed(() => {
-      let result: TransactionDetail|null
+      let result: TransactionDetail | null
       const t = transactionLocParser.transaction.value
       const i = transactionGroupAnalyzer.scheduledTransaction.value
       if (t !== null && i !== null && t.consensus_timestamp !== i.consensus_timestamp) {
@@ -418,7 +419,7 @@ export default defineComponent({
     })
 
     const schedulingTransaction = computed(() => {
-      let result: TransactionDetail|null
+      let result: TransactionDetail | null
       const t = transactionLocParser.transaction.value
       const o = transactionGroupAnalyzer.schedulingTransaction.value
       if (t !== null && o !== null && t.consensus_timestamp !== o.consensus_timestamp) {

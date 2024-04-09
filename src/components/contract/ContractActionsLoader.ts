@@ -53,10 +53,10 @@ export class ContractActionsLoader extends EntityLoader<ContractActionsResponse>
     //
 
     protected async load(): Promise<AxiosResponse<ContractActionsResponse> | null> {
-        let result: AxiosResponse<ContractActionsResponse>|null = null
-        let url: string|null = "api/v1/contracts/results/" + this.transactionIdOrHash.value + "/actions?limit=100"
+        let result: AxiosResponse<ContractActionsResponse> | null = null
+        let url: string | null = "api/v1/contracts/results/" + this.transactionIdOrHash.value + "/actions?limit=100"
         while (url !== null) {
-            const next:AxiosResponse<ContractActionsResponse> = await axios.get(url)
+            const next: AxiosResponse<ContractActionsResponse> = await axios.get(url)
             result = result !== null ? this.mergeResponses(result, next) : next
             url = next.data.links?.next ?? null
         }
@@ -68,7 +68,7 @@ export class ContractActionsLoader extends EntityLoader<ContractActionsResponse>
     //
 
     private mergeResponses(last: AxiosResponse<ContractActionsResponse>,
-                             next: AxiosResponse<ContractActionsResponse>): AxiosResponse<ContractActionsResponse> {
+                           next: AxiosResponse<ContractActionsResponse>): AxiosResponse<ContractActionsResponse> {
         const lastActions = last.data.actions ?? []
         const nextActions = next.data.actions ?? []
         last.data.actions = lastActions.concat(nextActions)
@@ -107,7 +107,7 @@ export class ContractActionsLoader extends EntityLoader<ContractActionsResponse>
             if (i < MAX_DEPTH_LEVEL - 1) {
                 result += (i === 0) ? depthVector[i] : "_" + depthVector[i]
             } else {
-                result +='(…)'
+                result += '(…)'
             }
         }
 

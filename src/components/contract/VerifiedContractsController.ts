@@ -73,7 +73,7 @@ export class VerifiedContractsController implements PlayPauseController {
         }
     }
 
-    public stopAutoRefresh(): void  {
+    public stopAutoRefresh(): void {
         if (this.autoRefreshRef.value) {
             this.autoRefreshRef.value = false
             this.cancelNextRefresh()

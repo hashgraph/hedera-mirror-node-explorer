@@ -85,7 +85,7 @@ export default defineComponent({
       type: Object as PropType<TokenTableController>,
       required: true
     },
-    narrowed:{
+    narrowed: {
       type: Boolean,
       default: false
     }

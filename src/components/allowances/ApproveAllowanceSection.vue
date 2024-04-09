@@ -112,8 +112,8 @@ export default defineComponent({
 
     const perPage = computed(() => isMediumScreen ? 10 : 5)
 
-    const currentHbarAllowance = ref<CryptoAllowance|null>(null)
-    const currentTokenAllowance = ref<TokenAllowance|null>(null)
+    const currentHbarAllowance = ref<CryptoAllowance | null>(null)
+    const currentTokenAllowance = ref<TokenAllowance | null>(null)
 
     //
     // HBAR Allowances Table Controller
@@ -135,11 +135,11 @@ export default defineComponent({
 
     const handleApproveButton = () => {
       if (walletManager.isHederaWallet.value) {
-          showApproveAllowanceDialog.value = true
-          currentHbarAllowance.value = null
-          currentTokenAllowance.value = null
+        showApproveAllowanceDialog.value = true
+        currentHbarAllowance.value = null
+        currentTokenAllowance.value = null
       } else {
-          notWithMetamaskDialogVisible.value = true
+        notWithMetamaskDialogVisible.value = true
       }
     }
 
@@ -153,22 +153,22 @@ export default defineComponent({
     const editHbarAllowance = (allowance: CryptoAllowance) => {
       // console.log("Edit Hbar Allowance: " + JSON.stringify(allowance))
       if (walletManager.isHederaWallet.value) {
-          currentHbarAllowance.value = allowance
-          currentTokenAllowance.value = null
-          showApproveAllowanceDialog.value = true
+        currentHbarAllowance.value = allowance
+        currentTokenAllowance.value = null
+        showApproveAllowanceDialog.value = true
       } else {
-          notWithMetamaskDialogVisible.value = true
+        notWithMetamaskDialogVisible.value = true
       }
     }
 
     const editTokenAllowance = (allowance: TokenAllowance) => {
       // console.log("Edit Token Allowance: " + JSON.stringify(allowance))
       if (walletManager.isHederaWallet.value) {
-          currentHbarAllowance.value = null
-          currentTokenAllowance.value = allowance
-          showApproveAllowanceDialog.value = true
+        currentHbarAllowance.value = null
+        currentTokenAllowance.value = allowance
+        showApproveAllowanceDialog.value = true
       } else {
-          notWithMetamaskDialogVisible.value = true
+        notWithMetamaskDialogVisible.value = true
       }
     }
 
@@ -177,7 +177,7 @@ export default defineComponent({
       if (query.app) {
         delete query.app
 
-        const failure = await router.replace({ query: query })
+        const failure = await router.replace({query: query})
         if (failure && failure.type != 8 && failure.type != 16) {
           console.warn(failure.message)
         }

@@ -23,7 +23,7 @@
 <!-- --------------------------------------------------------------------------------------------------------------- -->
 
 <template>
-    <span class="h-is-primary-title"><slot/></span>
+  <span class="h-is-primary-title"><slot/></span>
 </template>
 
 <!-- --------------------------------------------------------------------------------------------------------------- -->
@@ -35,7 +35,7 @@
 import {defineComponent} from "vue";
 
 export default defineComponent({
-    name: "DialogTitle",
+  name: "DialogTitle",
 });
 
 </script>

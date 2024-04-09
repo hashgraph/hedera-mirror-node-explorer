@@ -24,41 +24,41 @@
 
 <template>
 
-    <o-table
-        :data="contracts"
-        :hoverable="true"
-        :mobile-breakpoint="ORUGA_MOBILE_BREAKPOINT"
-        :narrowed="true"
-        :paginated="contracts.length > perPage"
+  <o-table
+      :data="contracts"
+      :hoverable="true"
+      :mobile-breakpoint="ORUGA_MOBILE_BREAKPOINT"
+      :narrowed="true"
+      :paginated="contracts.length > perPage"
 
-        :per-page="perPage"
-        :striped="true"
-        aria-current-label="Current page"
+      :per-page="perPage"
+      :striped="true"
+      aria-current-label="Current page"
 
-        aria-next-label="Next page"
-        aria-page-label="Page"
-        aria-previous-label="Previous page"
-        customRowKey="contract_id"
-        @cell-click="handleClick"
-    >
+      aria-next-label="Next page"
+      aria-page-label="Page"
+      aria-previous-label="Previous page"
+      customRowKey="contract_id"
+      @cell-click="handleClick"
+  >
 
-        <o-table-column v-slot="props" field="contract_id" label="ID">
-            <div class="is-numeric">
-                {{ props.row.contract_id }}
-            </div>
-        </o-table-column>
+    <o-table-column v-slot="props" field="contract_id" label="ID">
+      <div class="is-numeric">
+        {{ props.row.contract_id }}
+      </div>
+    </o-table-column>
 
-        <o-table-column v-slot="props" field="contract_name" label="Contract Name">
-            <ContractName :contract-id="props.row.contract_id"/>
-        </o-table-column>
+    <o-table-column v-slot="props" field="contract_name" label="Contract Name">
+      <ContractName :contract-id="props.row.contract_id"/>
+    </o-table-column>
 
-        <o-table-column v-slot="props" field="created" label="Created">
-            <TimestampValue v-bind:timestamp="props.row.created_timestamp"/>
-        </o-table-column>
+    <o-table-column v-slot="props" field="created" label="Created">
+      <TimestampValue v-bind:timestamp="props.row.created_timestamp"/>
+    </o-table-column>
 
-    </o-table>
+  </o-table>
 
-    <EmptyTable v-if="!contracts.length" :loading="!loaded" :no-data-message="noDataMessage"/>
+  <EmptyTable v-if="!contracts.length" :loading="!loaded" :no-data-message="noDataMessage"/>
 
 </template>
 
@@ -79,42 +79,42 @@ import ContractName from "@/components/values/ContractName.vue";
 import {VerifiedContractsController} from "@/components/contract/VerifiedContractsController";
 
 export default defineComponent({
-    name: 'VerifiedContractsTable',
+  name: 'VerifiedContractsTable',
 
-    components: {ContractName, EmptyTable, TimestampValue, BlobValue},
+  components: {ContractName, EmptyTable, TimestampValue, BlobValue},
 
-    props: {
-        controller: {
-            type: Object as PropType<VerifiedContractsController>,
-            required: true
-        },
-        loaded: Boolean,
-        overflow: Boolean
+  props: {
+    controller: {
+      type: Object as PropType<VerifiedContractsController>,
+      required: true
     },
+    loaded: Boolean,
+    overflow: Boolean
+  },
 
-    setup(props) {
-        const perPage = 10
-        const noDataMessage = computed(() =>
-            props.overflow
-                ? 'No verified contract found in the last ' + props.controller.capacity + ' created contracts'
-                : 'No data'
-        )
+  setup(props) {
+    const perPage = 10
+    const noDataMessage = computed(() =>
+        props.overflow
+            ? 'No verified contract found in the last ' + props.controller.capacity + ' created contracts'
+            : 'No data'
+    )
 
-        onMounted(() => props.controller.mount())
-        onBeforeUnmount(() => props.controller.unmount())
+    onMounted(() => props.controller.mount())
+    onBeforeUnmount(() => props.controller.unmount())
 
-        const handleClick = (contract: Contract, c: unknown, i: number, ci: number, event: MouseEvent) => {
-            routeManager.routeToContract(contract.contract_id!, event.ctrlKey || event.metaKey)
-        }
-
-        return {
-            perPage,
-            noDataMessage,
-            handleClick,
-            ORUGA_MOBILE_BREAKPOINT,
-            contracts: props.controller.contracts,
-        }
+    const handleClick = (contract: Contract, c: unknown, i: number, ci: number, event: MouseEvent) => {
+      routeManager.routeToContract(contract.contract_id!, event.ctrlKey || event.metaKey)
     }
+
+    return {
+      perPage,
+      noDataMessage,
+      handleClick,
+      ORUGA_MOBILE_BREAKPOINT,
+      contracts: props.controller.contracts,
+    }
+  }
 });
 
 </script>

@@ -23,7 +23,7 @@
 <!-- --------------------------------------------------------------------------------------------------------------- -->
 
 <template>
-    <input class="checkbox" type="checkbox" v-model="checked"/>
+  <input class="checkbox" type="checkbox" v-model="checked"/>
 </template>
 
 <!-- --------------------------------------------------------------------------------------------------------------- -->
@@ -37,45 +37,45 @@ import {ContractParamBuilder} from "@/components/values/abi/ContractCallBuilder"
 import {AppStorage} from "@/AppStorage";
 
 export default defineComponent({
-    name: "ParamBooleanEditor",
-    components: {},
-    props: {
-        paramBuilder: {
-            type: Object as PropType<ContractParamBuilder>,
-            required: true
-        },
+  name: "ParamBooleanEditor",
+  components: {},
+  props: {
+    paramBuilder: {
+      type: Object as PropType<ContractParamBuilder>,
+      required: true
     },
-    setup(props) {
-        const checked = ref<boolean>(false)
+  },
+  setup(props) {
+    const checked = ref<boolean>(false)
 
-        const lastParamData = computed(() => {
-            const functionHash = props.paramBuilder.callBuilder.fragment.selector
-            const paramName = props.paramBuilder.paramType.name
-            return AppStorage.getInputParam(functionHash, paramName)
-        })
+    const lastParamData = computed(() => {
+      const functionHash = props.paramBuilder.callBuilder.fragment.selector
+      const paramName = props.paramBuilder.paramType.name
+      return AppStorage.getInputParam(functionHash, paramName)
+    })
 
-        let watchHandle: WatchStopHandle|null = null
-        onMounted(() => {
-            checked.value = !!lastParamData.value
-            watchHandle = watch(checked, () => {
-                props.paramBuilder.paramData.value = checked.value
-            }, { immediate: true })
-        })
-        onBeforeUnmount(() => {
-            if (watchHandle !== null) {
-                watchHandle()
-                watchHandle = null
-            }
-            props.paramBuilder.paramData.value = null
-            checked.value = false
-        })
+    let watchHandle: WatchStopHandle | null = null
+    onMounted(() => {
+      checked.value = !!lastParamData.value
+      watchHandle = watch(checked, () => {
+        props.paramBuilder.paramData.value = checked.value
+      }, {immediate: true})
+    })
+    onBeforeUnmount(() => {
+      if (watchHandle !== null) {
+        watchHandle()
+        watchHandle = null
+      }
+      props.paramBuilder.paramData.value = null
+      checked.value = false
+    })
 
-        return {
-            checked
-        }
-
-
+    return {
+      checked
     }
+
+
+  }
 })
 
 </script>

@@ -20,7 +20,7 @@
 
 import {KeyOperator, SortOrder, TableController} from "@/utils/table/TableController";
 import {Transaction, TransactionResponse} from "@/schemas/HederaSchemas";
-import { ref, Ref, watch, WatchStopHandle} from "vue";
+import {ref, Ref, watch, WatchStopHandle} from "vue";
 import axios, {AxiosResponse} from "axios";
 import {LocationQuery, Router} from "vue-router";
 import {fetchStringQueryParam} from "@/utils/RouteManager";
@@ -39,7 +39,7 @@ export class TransactionTableControllerXL extends TableController<Transaction, s
                        accountId: Ref<string | null>,
                        pageSize: Ref<number>,
                        accountIdMandatory: boolean,
-                       pageParamName = "p", keyParamName= "k") {
+                       pageParamName = "p", keyParamName = "k") {
         super(router, pageSize, 10 * pageSize.value, 5000, 10, 100,
             pageParamName, keyParamName);
         this.accountId = accountId
@@ -118,7 +118,7 @@ export class TransactionTableControllerXL extends TableController<Transaction, s
         if (this.transactionType.value != "") {
             result[this.typeParamName] = this.transactionType.value.toLowerCase()
         } else {
-            delete(result[this.typeParamName])
+            delete (result[this.typeParamName])
         }
         return result
     }
@@ -128,7 +128,7 @@ export class TransactionTableControllerXL extends TableController<Transaction, s
     //
 
     private readonly typeParamName = "type"
-    private watchTransactionTypeHandle: WatchStopHandle|null = null
+    private watchTransactionTypeHandle: WatchStopHandle | null = null
 
     public fetchTransactionTypeParam(): string {
         return fetchStringQueryParam(this.typeParamName, this.router.currentRoute.value)?.toUpperCase() ?? ""

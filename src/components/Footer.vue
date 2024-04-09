@@ -86,7 +86,7 @@ export default defineComponent({
     let buildReleaseUrl = "https://github.com/hashgraph/hedera-mirror-node-explorer"
     const buildShortCommitHash = inject('buildShortCommitHash', "not available")
     const disposableReleaseDetails = "-0-g" + buildShortCommitHash;
-    if(buildRelease.includes(disposableReleaseDetails)) {
+    if (buildRelease.includes(disposableReleaseDetails)) {
       // Commit matches a specific release (i.e., v23.5.0), show only release version
       buildRelease = buildRelease.replace(disposableReleaseDetails, "")
       // Link release page

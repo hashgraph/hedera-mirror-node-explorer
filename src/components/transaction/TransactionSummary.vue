@@ -25,8 +25,8 @@
 <template>
   <template v-if="transaction">
     <TransferGraphSection v-if="shouldGraph"
-        v-bind:transaction="transactionDetail"
-        v-bind:compact="true"/>
+                          v-bind:transaction="transactionDetail"
+                          v-bind:compact="true"/>
     <div v-else-if="isTokenAssociation">
       {{ transaction?.entity_id }}
       <span v-if="tokens.length">
@@ -44,7 +44,7 @@
       {{ makeSummaryLabel(transaction) }}
     </div>
   </template>
-  <div v-else />
+  <div v-else/>
 </template>
 
 <!-- --------------------------------------------------------------------------------------------------------------- -->
@@ -99,7 +99,7 @@ export default defineComponent({
     })
 
     const transactionDetail = computed(() => {
-      return props.transaction as TransactionDetail|undefined
+      return props.transaction as TransactionDetail | undefined
     })
 
     return {

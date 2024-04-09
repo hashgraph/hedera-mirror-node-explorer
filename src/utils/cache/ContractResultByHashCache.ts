@@ -23,7 +23,7 @@ import {ContractResultDetails} from "@/schemas/HederaSchemas";
 import axios from "axios";
 import {ContractResultByTsCache} from "@/utils/cache/ContractResultByTsCache";
 
-export class ContractResultByHashCache extends EntityCache<string, ContractResultDetails|null> {
+export class ContractResultByHashCache extends EntityCache<string, ContractResultDetails | null> {
 
     public static readonly instance = new ContractResultByHashCache()
 
@@ -43,12 +43,12 @@ export class ContractResultByHashCache extends EntityCache<string, ContractResul
     // Cache
     //
 
-    protected async load(ethHash: string): Promise<ContractResultDetails|null> {
-        let result: ContractResultDetails|null
+    protected async load(ethHash: string): Promise<ContractResultDetails | null> {
+        let result: ContractResultDetails | null
         try {
             const response = await axios.get<ContractResultDetails>("api/v1/contracts/results/" + ethHash)
             result = response.data
-        } catch(error) {
+        } catch (error) {
             if (axios.isAxiosError(error) && error.response?.status == 404) {
                 result = null
             } else {

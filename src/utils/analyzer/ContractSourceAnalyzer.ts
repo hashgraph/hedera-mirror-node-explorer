@@ -29,31 +29,31 @@ import {importFromChooser, importFromDrop} from "@/utils/analyzer/FileImporter";
 
 export class ContractSourceAnalyzer {
 
-    private readonly contractId: Ref<string|null>
+    private readonly contractId: Ref<string | null>
     private readonly analyzingRef = ref(false)
     private readonly failureRef = ref<unknown>(null)
     private readonly inputFiles = ref<Map<string, string>>(new Map())
-    private readonly inputFilesResponse = shallowRef<SourcifyInputFilesResponse|null>(null)
-    private readonly verifyResponse = shallowRef<SourcifyVerifyCheckedResponse|null>(null)
+    private readonly inputFilesResponse = shallowRef<SourcifyInputFilesResponse | null>(null)
+    private readonly verifyResponse = shallowRef<SourcifyVerifyCheckedResponse | null>(null)
 
     //
     // Public
     //
 
-    public constructor(contractId: Ref<string|null>) {
+    public constructor(contractId: Ref<string | null>) {
         this.contractId = contractId
     }
 
-    public readonly analyzing = computed( () => this.analyzingRef.value)
+    public readonly analyzing = computed(() => this.analyzingRef.value)
 
     public readonly failure = computed(() => this.failureRef.value)
 
-    public readonly matchingContractName = computed<string|null>(() => {
+    public readonly matchingContractName = computed<string | null>(() => {
         return this.matchingContract.value?.name ?? null
     })
 
-    public readonly matchingContract = computed<SourcifyVerifyCheckedContract|null>(() => {
-        let result: SourcifyVerifyCheckedContract|null
+    public readonly matchingContract = computed<SourcifyVerifyCheckedContract | null>(() => {
+        let result: SourcifyVerifyCheckedContract | null
         if (this.verifyResponse.value !== null) {
             result = SourcifyUtils.fetchMatchingContract(this.verifyResponse.value)
         } else {
@@ -78,11 +78,11 @@ export class ContractSourceAnalyzer {
                 const matchingContract = this.matchingContract.value
                 const unused = this.verifyResponse.value.unused.indexOf(f) != -1
                 const target = !unused && matchingContract !== null && matchingContract.compiledPath == f
-                result.push({ path: f, unused, target })
+                result.push({path: f, unused, target})
             } else if (this.inputFilesResponse.value !== null) {
                 const unused = this.inputFilesResponse.value.unused.indexOf(f) != -1
                 const target = false
-                result.push({ path: f, unused, target })
+                result.push({path: f, unused, target})
             }
         }
         return result
@@ -96,7 +96,7 @@ export class ContractSourceAnalyzer {
                 this.inputFiles.value = new Map([...this.inputFiles.value, ...newFiles])
                 await this.verifyWithoutStore(this.contractId.value)
                 this.failureRef.value = null
-            } catch(reason) {
+            } catch (reason) {
                 // Leaves this.inputFilesResponse and this.verifyResponse unchanged
                 this.failureRef.value = reason
             } finally {
@@ -113,7 +113,7 @@ export class ContractSourceAnalyzer {
                 this.inputFiles.value = new Map([...this.inputFiles.value, ...newFiles])
                 await this.verifyWithoutStore(this.contractId.value)
                 this.failureRef.value = null
-            } catch(reason) {
+            } catch (reason) {
                 // Leaves this.inputFilesResponse and this.verifyResponse unchanged
                 this.failureRef.value = reason
             } finally {
