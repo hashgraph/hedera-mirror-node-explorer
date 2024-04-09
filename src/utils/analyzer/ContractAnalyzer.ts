@@ -27,12 +27,14 @@ import {SolcMetadata} from "@/utils/solc/SolcMetadata";
 import {ByteCodeAnalyzer} from "@/utils/analyzer/ByteCodeAnalyzer";
 import {ContractResponse} from "@/schemas/HederaSchemas";
 import {ContractByIdCache} from "@/utils/cache/ContractByIdCache";
+import {LogicContractCache} from "@/utils/cache/LogicContractCache";
 
 export class ContractAnalyzer {
 
     public readonly contractId: Ref<string | null>
     public readonly byteCodeAnalyzer: ByteCodeAnalyzer
     private readonly contractResponse: Ref<ContractResponse | null> = ref(null)
+    public readonly logicContractId: Ref<string | null> = ref(null)
     public readonly systemContractEntry: Ref<SystemContractEntry | null> = ref(null)
     public readonly sourcifyRecord: Ref<SourcifyRecord | null> = ref(null)
     private readonly abi: Ref<ethers.Fragment[] | null> = ref(null)
@@ -219,9 +221,12 @@ export class ContractAnalyzer {
                     this.contractResponse.value = null
                 }
             }
+            const l = await LogicContractCache.instance.lookup((this.contractId.value))
+            this.logicContractId.value = l?.contract_id ?? null
         } else {
             this.systemContractEntry.value = null
             this.contractResponse.value = null
+            this.logicContractId.value = null
         }
     }
 
