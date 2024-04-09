@@ -37,7 +37,7 @@ describe("TransactionTableController.ts", () => {
         // const mock = new MockAdapter(axios)
 
         const router = makeRouter()
-        const accountId = ref<string|null>(null)
+        const accountId = ref<string | null>(null)
         const pageSize = computed(() => PAGE_SIZE)
 
         const tc = new TransactionTableControllerXL(router, accountId, pageSize, true)
@@ -96,14 +96,14 @@ describe("TransactionTableController.ts", () => {
         mock.onGet(matcher1).reply(200, SAMPLE_CONTRACTCALL_TRANSACTIONS)
 
         const router = makeRouter()
-        const accountId = ref<string|null>(null)
+        const accountId = ref<string | null>(null)
         const pageSize = computed(() => PAGE_SIZE)
 
         const tc = new TransactionTableControllerXL(router, accountId, pageSize, true)
 
         // Preset p and k params in current route
         const TIMESTAMP0 = SAMPLE_CONTRACTCALL_TRANSACTIONS.transactions[0].consensus_timestamp
-        await tc.router.replace({query: { p: 10, k: TIMESTAMP0}})
+        await tc.router.replace({query: {p: 10, k: TIMESTAMP0}})
         await flushPromises()
 
         // Mount
@@ -167,12 +167,12 @@ describe("TransactionTableController.ts", () => {
 
         // Setup controller
         const router = makeRouter()
-        const accountId = ref<string|null>(null)
+        const accountId = ref<string | null>(null)
         const pageSize = computed(() => PAGE_SIZE)
         const tc = new TransactionTableControllerXL(router, accountId, pageSize, true)
 
         // Preset p and k params in current route
-        await tc.router.replace({query: { p: 10, k: TIMESTAMP0}})
+        await tc.router.replace({query: {p: 10, k: TIMESTAMP0}})
         await flushPromises()
 
         // Setup account id
@@ -222,19 +222,19 @@ describe("TransactionTableController.ts", () => {
         const mock = new MockAdapter(axios)
 
         const matcher1 = "/api/v1/transactions"
-        const params1 = { limit: 5, order: "desc"}
-        mock.onGet(matcher1, { params: params1 }).reply(200, SAMPLE_CONTRACTCALL_TRANSACTIONS)
+        const params1 = {limit: 5, order: "desc"}
+        mock.onGet(matcher1, {params: params1}).reply(200, SAMPLE_CONTRACTCALL_TRANSACTIONS)
 
         const matcher2 = "/api/v1/transactions"
-        const params2 = { limit: 5, order: "desc", transactiontype: "CONTRACTCALL"}
-        mock.onGet(matcher2, { params: params2 }).reply(200, SAMPLE_CONTRACTCALL_TRANSACTIONS)
+        const params2 = {limit: 5, order: "desc", transactiontype: "CONTRACTCALL"}
+        mock.onGet(matcher2, {params: params2}).reply(200, SAMPLE_CONTRACTCALL_TRANSACTIONS)
 
         const matcher3 = "/api/v1/transactions"
-        const params3 = { limit: 5, order: "desc", transactiontype: "CRYPTOTRANSFER"}
-        mock.onGet(matcher3, { params: params3 }).reply(200, [])
+        const params3 = {limit: 5, order: "desc", transactiontype: "CRYPTOTRANSFER"}
+        mock.onGet(matcher3, {params: params3}).reply(200, [])
 
         const router = makeRouter()
-        const accountId = ref<string|null>(null)
+        const accountId = ref<string | null>(null)
         const pageSize = computed(() => PAGE_SIZE)
         const tc = new TransactionTableControllerXL(router, accountId, pageSize, false)
         const currentRoute = tc.router.currentRoute

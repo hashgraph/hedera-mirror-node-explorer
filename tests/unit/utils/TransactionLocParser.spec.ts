@@ -53,7 +53,7 @@ describe("TransactionLocParser.ts", () => {
         });
 
         // 0) Creates parser
-        const transactionLoc: Ref<string|null> = ref(null)
+        const transactionLoc: Ref<string | null> = ref(null)
         const parser = new TransactionLocParser(transactionLoc)
         await flushPromises()
         expect(parser.transactionLoc.value).toBeNull()
@@ -130,7 +130,7 @@ describe("TransactionLocParser.ts", () => {
         });
 
         // 0) Creates parser
-        const transactionLoc: Ref<string|null> = ref(null)
+        const transactionLoc: Ref<string | null> = ref(null)
         const parser = new TransactionLocParser(transactionLoc)
         await flushPromises()
         expect(parser.transactionLoc.value).toBeNull()
@@ -199,10 +199,10 @@ describe("TransactionLocParser.ts", () => {
 
         const transactionHash = TransactionHash.parseBase64(SAMPLE_TRANSACTION.transaction_hash)!.toString()
         const matcher1 = "/api/v1/transactions/" + transactionHash
-        mock.onGet(matcher1).reply(200,{ transactions: [SAMPLE_TRANSACTION] });
+        mock.onGet(matcher1).reply(200, {transactions: [SAMPLE_TRANSACTION]});
 
         // 0) Creates parser
-        const transactionLoc: Ref<string|null> = ref(null)
+        const transactionLoc: Ref<string | null> = ref(null)
         const parser = new TransactionLocParser(transactionLoc)
         await flushPromises()
         expect(parser.transactionLoc.value).toBeNull()
@@ -270,7 +270,7 @@ describe("TransactionLocParser.ts", () => {
         const mock = new MockAdapter(axios)
 
         const matcher1 = "/api/v1/contracts/results/" + SAMPLE_CONTRACT_RESULT_DETAILS.hash
-        mock.onGet(matcher1).reply(200,SAMPLE_CONTRACT_RESULT_DETAILS);
+        mock.onGet(matcher1).reply(200, SAMPLE_CONTRACT_RESULT_DETAILS);
         const matcher2 = "/api/v1/transactions"
         mock.onGet(matcher2).reply((config: AxiosRequestConfig) => {
             if (config.params.timestamp == SAMPLE_CONTRACT_CALL_TRANSACTION.consensus_timestamp) {
@@ -281,7 +281,7 @@ describe("TransactionLocParser.ts", () => {
         });
 
         // 0) Creates parser
-        const transactionLoc: Ref<string|null> = ref(null)
+        const transactionLoc: Ref<string | null> = ref(null)
         const parser = new TransactionLocParser(transactionLoc)
         await flushPromises()
         expect(parser.transactionLoc.value).toBeNull()
@@ -359,7 +359,7 @@ describe("TransactionLocParser.ts", () => {
         });
 
         // 0) Creates parser
-        const transactionLoc: Ref<string|null> = ref(null)
+        const transactionLoc: Ref<string | null> = ref(null)
         const parser = new TransactionLocParser(transactionLoc)
         await flushPromises()
         expect(parser.transactionLoc.value).toBeNull()
@@ -437,7 +437,7 @@ describe("TransactionLocParser.ts", () => {
         mock.onGet(matcher1).reply(200, SAMPLE_SCHEDULING_SCHEDULED_TRANSACTIONS);
 
         // 0) Creates parser
-        const transactionLoc: Ref<string|null> = ref(null)
+        const transactionLoc: Ref<string | null> = ref(null)
         const parser = new TransactionLocParser(transactionLoc)
         await flushPromises()
         expect(parser.transactionLoc.value).toBeNull()
@@ -516,7 +516,7 @@ describe("TransactionLocParser.ts", () => {
         });
 
         // 0) Creates parser
-        const transactionLoc: Ref<string|null> = ref(null)
+        const transactionLoc: Ref<string | null> = ref(null)
         const parser = new TransactionLocParser(transactionLoc)
         await flushPromises()
         expect(parser.transactionLoc.value).toBeNull()
@@ -589,7 +589,7 @@ describe("TransactionLocParser.ts", () => {
         mock.onGet(matcher1).reply(404);
 
         // 0) Creates parser
-        const transactionLoc: Ref<string|null> = ref(null)
+        const transactionLoc: Ref<string | null> = ref(null)
         const parser = new TransactionLocParser(transactionLoc)
         await flushPromises()
         expect(parser.transactionLoc.value).toBeNull()
@@ -662,7 +662,7 @@ describe("TransactionLocParser.ts", () => {
         mock.onGet(matcher1).reply(404);
 
         // 0) Creates parser
-        const transactionLoc: Ref<string|null> = ref(null)
+        const transactionLoc: Ref<string | null> = ref(null)
         const parser = new TransactionLocParser(transactionLoc)
         await flushPromises()
         expect(parser.transactionLoc.value).toBeNull()
@@ -731,7 +731,7 @@ describe("TransactionLocParser.ts", () => {
         const DUMMY_LOC = "dummy transaction loc"
 
         // 0) Creates parser
-        const transactionLoc: Ref<string|null> = ref(null)
+        const transactionLoc: Ref<string | null> = ref(null)
         const parser = new TransactionLocParser(transactionLoc)
         await flushPromises()
         expect(parser.transactionLoc.value).toBeNull()

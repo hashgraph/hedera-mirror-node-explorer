@@ -122,7 +122,7 @@ describe("TableController.ts", () => {
         expect(tc.currentPage.value).toBe(1)
         expect(tc.loading.value).toBe(false)
         expect(tc.totalRowCount.value).toBe(TestTableController.PRESUMED_ROW_COUNT)
-        expect(tc.rows.value).toStrictEqual([49,48,47,46,45,44,43,42,41,40])
+        expect(tc.rows.value).toStrictEqual([49, 48, 47, 46, 45, 44, 43, 42, 41, 40])
         expect(tc.mounted.value).toBe(true)
         expect(tc.loadCounter).toBe(1)
         expect(currentRoute.value.query).toStrictEqual({})
@@ -152,7 +152,7 @@ describe("TableController.ts", () => {
         tc.mount()
         await flushPromises()
         expect(tc.autoRefresh.value).toBe(true)
-        expect(tc.rows.value).toStrictEqual([49,48,47,46,45,44,43,42,41,40])
+        expect(tc.rows.value).toStrictEqual([49, 48, 47, 46, 45, 44, 43, 42, 41, 40])
         expect(tc.refreshCount.value).toBe(0)
         expect(tc.loadCounter).toBe(1)
         expect(currentRoute.value.query).toStrictEqual({})
@@ -161,7 +161,7 @@ describe("TableController.ts", () => {
         vi.runOnlyPendingTimers()
         await flushPromises()
         expect(tc.autoRefresh.value).toBe(true)
-        expect(tc.rows.value).toStrictEqual([49,48,47,46,45,44,43,42,41,40])
+        expect(tc.rows.value).toStrictEqual([49, 48, 47, 46, 45, 44, 43, 42, 41, 40])
         expect(tc.refreshCount.value).toBe(1)
         expect(tc.loadCounter).toBe(2)
         expect(currentRoute.value.query).toStrictEqual({})
@@ -170,7 +170,7 @@ describe("TableController.ts", () => {
         vi.runOnlyPendingTimers()
         await flushPromises()
         expect(tc.autoRefresh.value).toBe(true)
-        expect(tc.rows.value).toStrictEqual([49,48,47,46,45,44,43,42,41,40])
+        expect(tc.rows.value).toStrictEqual([49, 48, 47, 46, 45, 44, 43, 42, 41, 40])
         expect(tc.refreshCount.value).toBe(2)
         expect(tc.loadCounter).toBe(3)
         expect(currentRoute.value.query).toStrictEqual({})
@@ -179,7 +179,7 @@ describe("TableController.ts", () => {
         vi.runOnlyPendingTimers()
         await flushPromises()
         expect(tc.autoRefresh.value).toBe(true)
-        expect(tc.rows.value).toStrictEqual([49,48,47,46,45,44,43,42,41,40])
+        expect(tc.rows.value).toStrictEqual([49, 48, 47, 46, 45, 44, 43, 42, 41, 40])
         expect(tc.refreshCount.value).toBe(3)
         expect(tc.loadCounter).toBe(4)
         expect(currentRoute.value.query).toStrictEqual({})
@@ -188,7 +188,7 @@ describe("TableController.ts", () => {
         vi.runOnlyPendingTimers()
         await flushPromises()
         expect(tc.autoRefresh.value).toBe(true)
-        expect(tc.rows.value).toStrictEqual([49,48,47,46,45,44,43,42,41,40])
+        expect(tc.rows.value).toStrictEqual([49, 48, 47, 46, 45, 44, 43, 42, 41, 40])
         expect(tc.refreshCount.value).toBe(4)
         expect(tc.loadCounter).toBe(5)
         expect(currentRoute.value.query).toStrictEqual({})
@@ -197,7 +197,7 @@ describe("TableController.ts", () => {
         vi.runOnlyPendingTimers()
         await flushPromises()
         expect(tc.autoRefresh.value).toBe(false)
-        expect(tc.rows.value).toStrictEqual([49,48,47,46,45,44,43,42,41,40])
+        expect(tc.rows.value).toStrictEqual([49, 48, 47, 46, 45, 44, 43, 42, 41, 40])
         expect(tc.refreshCount.value).toBe(5)
         expect(tc.loadCounter).toBe(6)
         expect(currentRoute.value.query).toStrictEqual({k: "49", p: "1"})
@@ -222,7 +222,7 @@ describe("TableController.ts", () => {
         tc.mount()
         await flushPromises()
         expect(tc.autoRefresh.value).toBe(true)
-        expect(tc.rows.value).toStrictEqual([49,48,47,46,45,44,43,42,41,40])
+        expect(tc.rows.value).toStrictEqual([49, 48, 47, 46, 45, 44, 43, 42, 41, 40])
         expect(tc.refreshCount.value).toBe(0)
         expect(tc.loadCounter).toBe(1)
         expect(currentRoute.value.query).toStrictEqual({})
@@ -231,7 +231,7 @@ describe("TableController.ts", () => {
         vi.runOnlyPendingTimers()
         await flushPromises()
         expect(tc.autoRefresh.value).toBe(true)
-        expect(tc.rows.value).toStrictEqual([49,48,47,46,45,44,43,42,41,40])
+        expect(tc.rows.value).toStrictEqual([49, 48, 47, 46, 45, 44, 43, 42, 41, 40])
         expect(tc.refreshCount.value).toBe(1)
         expect(tc.loadCounter).toBe(2)
         expect(currentRoute.value.query).toStrictEqual({})
@@ -243,7 +243,7 @@ describe("TableController.ts", () => {
         vi.runOnlyPendingTimers()
         await flushPromises()
         expect(tc.autoRefresh.value).toBe(true)
-        expect(tc.rows.value).toStrictEqual([51,50,49,48,47,46,45,44,43,42])
+        expect(tc.rows.value).toStrictEqual([51, 50, 49, 48, 47, 46, 45, 44, 43, 42])
         expect(tc.refreshCount.value).toBe(2)
         expect(tc.loadCounter).toBe(3)
         expect(currentRoute.value.query).toStrictEqual({})
@@ -255,7 +255,7 @@ describe("TableController.ts", () => {
         vi.runOnlyPendingTimers()
         await flushPromises()
         expect(tc.autoRefresh.value).toBe(true)
-        expect(tc.rows.value).toStrictEqual([61,60,59,58,57,56,55,54,53,52])
+        expect(tc.rows.value).toStrictEqual([61, 60, 59, 58, 57, 56, 55, 54, 53, 52])
         expect(tc.refreshCount.value).toBe(3)
         expect(tc.loadCounter).toBe(4)
         expect(currentRoute.value.query).toStrictEqual({})
@@ -281,7 +281,7 @@ describe("TableController.ts", () => {
         tc.mount()
         await flushPromises()
         expect(tc.autoRefresh.value).toBe(true)
-        expect(tc.rows.value).toStrictEqual([49,48,47,46,45,44,43,42,41,40])
+        expect(tc.rows.value).toStrictEqual([49, 48, 47, 46, 45, 44, 43, 42, 41, 40])
         expect(tc.refreshCount.value).toBe(0)
         expect(tc.loadCounter).toBe(1)
         expect(currentRoute.value.query).toStrictEqual({})
@@ -290,7 +290,7 @@ describe("TableController.ts", () => {
         vi.runOnlyPendingTimers()
         await flushPromises()
         expect(tc.autoRefresh.value).toBe(true)
-        expect(tc.rows.value).toStrictEqual([49,48,47,46,45,44,43,42,41,40])
+        expect(tc.rows.value).toStrictEqual([49, 48, 47, 46, 45, 44, 43, 42, 41, 40])
         expect(tc.refreshCount.value).toBe(1)
         expect(tc.loadCounter).toBe(2)
         expect(currentRoute.value.query).toStrictEqual({})
@@ -300,7 +300,7 @@ describe("TableController.ts", () => {
         await nextTick()
         await flushPromises()
         expect(tc.autoRefresh.value).toBe(true)
-        expect(tc.rows.value).toStrictEqual([98,96,94,92,90,88,86,84,82,80])
+        expect(tc.rows.value).toStrictEqual([98, 96, 94, 92, 90, 88, 86, 84, 82, 80])
         expect(tc.refreshCount.value).toBe(0)
         expect(tc.loadCounter).toBe(3)
         expect(currentRoute.value.query).toStrictEqual({})
@@ -325,7 +325,7 @@ describe("TableController.ts", () => {
         tc.mount()
         await flushPromises()
         expect(tc.autoRefresh.value).toBe(true)
-        expect(tc.rows.value).toStrictEqual([49,48,47,46,45,44,43,42,41,40])
+        expect(tc.rows.value).toStrictEqual([49, 48, 47, 46, 45, 44, 43, 42, 41, 40])
         expect(tc.refreshCount.value).toBe(0)
         expect(tc.currentPage.value).toBe(1)
         expect(tc.loadCounter).toBe(1)
@@ -335,7 +335,7 @@ describe("TableController.ts", () => {
         vi.runOnlyPendingTimers()
         await flushPromises()
         expect(tc.autoRefresh.value).toBe(true)
-        expect(tc.rows.value).toStrictEqual([49,48,47,46,45,44,43,42,41,40])
+        expect(tc.rows.value).toStrictEqual([49, 48, 47, 46, 45, 44, 43, 42, 41, 40])
         expect(tc.refreshCount.value).toBe(1)
         expect(tc.currentPage.value).toBe(1)
         expect(tc.loadCounter).toBe(2)
@@ -345,25 +345,25 @@ describe("TableController.ts", () => {
         tc.onPageChange(2)
         await flushPromises()
         expect(tc.autoRefresh.value).toBe(false)
-        expect(tc.rows.value).toStrictEqual([39,38,37,36,35,34,33,32,31,30])
+        expect(tc.rows.value).toStrictEqual([39, 38, 37, 36, 35, 34, 33, 32, 31, 30])
         expect(tc.refreshCount.value).toBe(1)
         expect(tc.currentPage.value).toBe(2)
         expect(tc.loadCounter).toBe(3)
-        expect(currentRoute.value.query).toStrictEqual({ p:"2", k:"39"})
+        expect(currentRoute.value.query).toStrictEqual({p: "2", k: "39"})
 
         // Goto page #4
         tc.onPageChange(4)
         await flushPromises()
         expect(tc.autoRefresh.value).toBe(false)
-        expect(tc.rows.value).toStrictEqual([19,18,17,16,15,14,13,12,11,10])
+        expect(tc.rows.value).toStrictEqual([19, 18, 17, 16, 15, 14, 13, 12, 11, 10])
         expect(tc.refreshCount.value).toBe(1)
         expect(tc.currentPage.value).toBe(4)
         expect(tc.loadCounter).toBe(5) // 20 rows needed => one load for 12 + one load for 8
-        expect(currentRoute.value.query).toStrictEqual({ p:"4", k:"19"})
+        expect(currentRoute.value.query).toStrictEqual({p: "4", k: "19"})
     })
 
 
-    test("shadow pages", async() => {
+    test("shadow pages", async () => {
 
         const tc = new TestTableController(0, 50, 10)
         const currentRoute = tc.router.currentRoute
@@ -376,7 +376,7 @@ describe("TableController.ts", () => {
         tc.mount()
         await flushPromises()
         expect(tc.autoRefresh.value).toBe(false)
-        expect(tc.rows.value).toStrictEqual([19,18,17,16,15,14,13,12,11,10])
+        expect(tc.rows.value).toStrictEqual([19, 18, 17, 16, 15, 14, 13, 12, 11, 10])
         expect(tc.refreshCount.value).toBe(0)
         expect(tc.currentPage.value).toBe(4)
         expect(tc.loadCounter).toBe(1)
@@ -386,36 +386,36 @@ describe("TableController.ts", () => {
         tc.onPageChange(2)
         await flushPromises()
         expect(tc.autoRefresh.value).toBe(false)
-        expect(tc.rows.value).toStrictEqual([39,38,37,36,35,34,33,32,31,30])
+        expect(tc.rows.value).toStrictEqual([39, 38, 37, 36, 35, 34, 33, 32, 31, 30])
         expect(tc.refreshCount.value).toBe(0)
         expect(tc.currentPage.value).toBe(2)
         expect(tc.loadCounter).toBe(3)
-        expect(currentRoute.value.query).toStrictEqual({ p:"2", k:"39"})
+        expect(currentRoute.value.query).toStrictEqual({p: "2", k: "39"})
 
         // Goto page #3
         tc.onPageChange(3)
         await flushPromises()
         expect(tc.autoRefresh.value).toBe(false)
-        expect(tc.rows.value).toStrictEqual([29,28,27,26,25,24,23,22,21,20])
+        expect(tc.rows.value).toStrictEqual([29, 28, 27, 26, 25, 24, 23, 22, 21, 20])
         expect(tc.refreshCount.value).toBe(0)
         expect(tc.currentPage.value).toBe(3)
         expect(tc.loadCounter).toBe(3) // Page #3 has been load at the same time than page #2
-        expect(currentRoute.value.query).toStrictEqual({ p:"3", k:"29"})
+        expect(currentRoute.value.query).toStrictEqual({p: "3", k: "29"})
 
         // Goto page #1
         tc.onPageChange(1)
         await flushPromises()
         expect(tc.autoRefresh.value).toBe(false)
-        expect(tc.rows.value).toStrictEqual([49,48,47,46,45,44,43,42,41,40])
+        expect(tc.rows.value).toStrictEqual([49, 48, 47, 46, 45, 44, 43, 42, 41, 40])
         expect(tc.refreshCount.value).toBe(0)
         expect(tc.currentPage.value).toBe(1)
         expect(tc.loadCounter).toBe(4)
-        expect(currentRoute.value.query).toStrictEqual({ p:"1", k:"49"})
+        expect(currentRoute.value.query).toStrictEqual({p: "1", k: "49"})
 
     })
 
 
-    test("shadow pages (inconsistent)", async() => {
+    test("shadow pages (inconsistent)", async () => {
 
         const tc = new TestTableController(0, 50, 10)
         const currentRoute = tc.router.currentRoute
@@ -428,35 +428,35 @@ describe("TableController.ts", () => {
         tc.mount()
         await flushPromises()
         expect(tc.autoRefresh.value).toBe(false)
-        expect(tc.rows.value).toStrictEqual([21,20,19,18,17,16,15,14,13,12])
+        expect(tc.rows.value).toStrictEqual([21, 20, 19, 18, 17, 16, 15, 14, 13, 12])
         expect(tc.refreshCount.value).toBe(0)
         expect(tc.currentPage.value).toBe(40)
         expect(tc.loadCounter).toBe(1)
-        expect(currentRoute.value.query).toStrictEqual({ p: "40", k: "21" })
+        expect(currentRoute.value.query).toStrictEqual({p: "40", k: "21"})
 
         // Goto page #38
         tc.onPageChange(38)
         await flushPromises()
         expect(tc.autoRefresh.value).toBe(false)
-        expect(tc.rows.value).toStrictEqual([41,40,39,38,37,36,35,34,33,32])
+        expect(tc.rows.value).toStrictEqual([41, 40, 39, 38, 37, 36, 35, 34, 33, 32])
         expect(tc.refreshCount.value).toBe(0)
         expect(tc.currentPage.value).toBe(38)
         expect(tc.loadCounter).toBe(3)
-        expect(currentRoute.value.query).toStrictEqual({ p: "38", k: "41" })
+        expect(currentRoute.value.query).toStrictEqual({p: "38", k: "41"})
 
         // Goto page #1
         tc.onPageChange(1)
         await flushPromises()
         expect(tc.autoRefresh.value).toBe(false)
-        expect(tc.rows.value).toStrictEqual([49,48,47,46,45,44,43,42,41,40])
+        expect(tc.rows.value).toStrictEqual([49, 48, 47, 46, 45, 44, 43, 42, 41, 40])
         expect(tc.refreshCount.value).toBe(0)
         expect(tc.currentPage.value).toBe(1)
         expect(tc.loadCounter).toBe(4)
-        expect(currentRoute.value.query).toStrictEqual({ p: "1", k: "49" })
+        expect(currentRoute.value.query).toStrictEqual({p: "1", k: "49"})
 
     })
 
-    test("multiple controllers (sharing same router)", async() => {
+    test("multiple controllers (sharing same router)", async () => {
 
         const router = makeRouter()
         const currentRoute = router.currentRoute
@@ -472,14 +472,14 @@ describe("TableController.ts", () => {
 
         expect(tc1.autoRefresh.value).toBe(true)
         expect(tc1.totalRowCount.value).toBe(TestTableController.PRESUMED_ROW_COUNT)
-        expect(tc1.rows.value).toStrictEqual([49,48,47,46,45,44,43,42,41,40])
+        expect(tc1.rows.value).toStrictEqual([49, 48, 47, 46, 45, 44, 43, 42, 41, 40])
         expect(tc1.refreshCount.value).toBe(0)
         expect(tc1.currentPage.value).toBe(1)
         expect(tc1.loadCounter).toBe(1)
         expect(currentRoute.value.query).toStrictEqual({})
 
         expect(tc2.autoRefresh.value).toBe(true)
-        expect(tc2.rows.value).toStrictEqual([199,198,197,196,195,194,193,192,191,190])
+        expect(tc2.rows.value).toStrictEqual([199, 198, 197, 196, 195, 194, 193, 192, 191, 190])
         expect(tc2.refreshCount.value).toBe(0)
         expect(tc2.currentPage.value).toBe(1)
         expect(tc2.loadCounter).toBe(1)
@@ -489,7 +489,7 @@ describe("TableController.ts", () => {
         tc1.onPageChange(4)
         await flushPromises()
         expect(tc1.autoRefresh.value).toBe(false)
-        expect(tc1.rows.value).toStrictEqual([19,18,17,16,15,14,13,12,11,10])
+        expect(tc1.rows.value).toStrictEqual([19, 18, 17, 16, 15, 14, 13, 12, 11, 10])
         expect(tc1.refreshCount.value).toBe(0)
         expect(tc1.currentPage.value).toBe(4)
         expect(tc1.loadCounter).toBe(4)
@@ -499,7 +499,7 @@ describe("TableController.ts", () => {
         tc2.onPageChange(2)
         await flushPromises()
         expect(tc2.autoRefresh.value).toBe(false)
-        expect(tc2.rows.value).toStrictEqual([189,188,187,186,185,184,183,182,181,180])
+        expect(tc2.rows.value).toStrictEqual([189, 188, 187, 186, 185, 184, 183, 182, 181, 180])
         expect(tc2.refreshCount.value).toBe(0)
         expect(tc2.currentPage.value).toBe(2)
         expect(tc2.loadCounter).toBe(2)
@@ -517,11 +517,11 @@ describe("TableController.ts", () => {
         tc.stopAutoRefresh()
         await flushPromises()
         expect(tc.autoRefresh.value).toBe(false)
-        expect(tc.rows.value).toStrictEqual([49,48,47,46,45,44,43,42,41,40])
+        expect(tc.rows.value).toStrictEqual([49, 48, 47, 46, 45, 44, 43, 42, 41, 40])
         expect(tc.refreshCount.value).toBe(0)
         expect(tc.currentPage.value).toBe(1)
         expect(tc.loadCounter).toBe(2)
-        expect(currentRoute.value.query).toStrictEqual({ p: "1", k: "49" })
+        expect(currentRoute.value.query).toStrictEqual({p: "1", k: "49"})
         expect(tc.getAbortedRefreshCounter()).toBe(1)
         expect(tc.getAbortedMoveToPageCounter()).toBe(0)
 
@@ -532,7 +532,7 @@ describe("TableController.ts", () => {
         expect(tc.rows.value).toStrictEqual([])
         expect(tc.refreshCount.value).toBe(0)
         expect(tc.loadCounter).toBe(2)
-        expect(currentRoute.value.query).toStrictEqual({ p: "1", k: "49" })
+        expect(currentRoute.value.query).toStrictEqual({p: "1", k: "49"})
         expect(tc.getAbortedRefreshCounter()).toBe(1)
         expect(tc.getAbortedMoveToPageCounter()).toBe(0)
     })
@@ -545,7 +545,7 @@ describe("TableController.ts", () => {
         tc.mount()
         await flushPromises()
         expect(tc.autoRefresh.value).toBe(true)
-        expect(tc.rows.value).toStrictEqual([49,48,47,46,45,44,43,42,41,40])
+        expect(tc.rows.value).toStrictEqual([49, 48, 47, 46, 45, 44, 43, 42, 41, 40])
         expect(tc.refreshCount.value).toBe(0)
         expect(tc.currentPage.value).toBe(1)
         expect(tc.loadCounter).toBe(1) // +1 "refresh" operation
@@ -558,7 +558,7 @@ describe("TableController.ts", () => {
         tc.startAutoRefresh() // Starts a "refresh" operation
         await flushPromises()
         expect(tc.autoRefresh.value).toBe(true)
-        expect(tc.rows.value).toStrictEqual([49,48,47,46,45,44,43,42,41,40])
+        expect(tc.rows.value).toStrictEqual([49, 48, 47, 46, 45, 44, 43, 42, 41, 40])
         expect(tc.refreshCount.value).toBe(0)
         expect(tc.currentPage.value).toBe(1)
         expect(tc.loadCounter).toBe(2) // +1 "refresh"
@@ -587,7 +587,7 @@ describe("TableController.ts", () => {
         tc.mount()
         await flushPromises()
         expect(tc.autoRefresh.value).toBe(true)
-        expect(tc.rows.value).toStrictEqual([499,498,497,496,495,494,493,492,491,490])
+        expect(tc.rows.value).toStrictEqual([499, 498, 497, 496, 495, 494, 493, 492, 491, 490])
         expect(tc.refreshCount.value).toBe(0)
         expect(tc.currentPage.value).toBe(1)
         expect(tc.loadCounter).toBe(1) // +1 "refresh" operation
@@ -602,7 +602,7 @@ describe("TableController.ts", () => {
         tc.startAutoRefresh()
         await flushPromises()
         expect(tc.autoRefresh.value).toBe(true)
-        expect(tc.rows.value).toStrictEqual([499,498,497,496,495,494,493,492,491,490])
+        expect(tc.rows.value).toStrictEqual([499, 498, 497, 496, 495, 494, 493, 492, 491, 490])
         expect(tc.refreshCount.value).toBe(0)
         expect(tc.currentPage.value).toBe(1)
         expect(tc.loadCounter).toBe(51) // +10 +20 +30 (aborted) "move to page" + 1 refresh
@@ -632,7 +632,7 @@ describe("TableController.ts", () => {
         tc.mount()
         await flushPromises()
         expect(tc.autoRefresh.value).toBe(true)
-        expect(tc.rows.value).toStrictEqual([49,48,47,46,45,44,43,42,41,40])
+        expect(tc.rows.value).toStrictEqual([49, 48, 47, 46, 45, 44, 43, 42, 41, 40])
         expect(tc.refreshCount.value).toBe(0)
         expect(tc.currentPage.value).toBe(1)
         expect(tc.loadCounter).toBe(1) // +1 "refresh" operation
@@ -644,7 +644,7 @@ describe("TableController.ts", () => {
         vi.runOnlyPendingTimers()
         await flushPromises()
         expect(tc.autoRefresh.value).toBe(true)
-        expect(tc.rows.value).toStrictEqual([49,48,47,46,45,44,43,42,41,40])
+        expect(tc.rows.value).toStrictEqual([49, 48, 47, 46, 45, 44, 43, 42, 41, 40])
         expect(tc.refreshCount.value).toBe(1)
         expect(tc.currentPage.value).toBe(1)
         expect(tc.loadCounter).toBe(2)
@@ -656,7 +656,7 @@ describe("TableController.ts", () => {
         vi.runOnlyPendingTimers()
         await flushPromises()
         expect(tc.autoRefresh.value).toBe(true)
-        expect(tc.rows.value).toStrictEqual([98,96,94,92,90,88,86,84,82,80])
+        expect(tc.rows.value).toStrictEqual([98, 96, 94, 92, 90, 88, 86, 84, 82, 80])
         expect(tc.refreshCount.value).toBe(0)
         expect(tc.currentPage.value).toBe(1)
         expect(tc.loadCounter).toBe(3)
@@ -666,7 +666,7 @@ describe("TableController.ts", () => {
         vi.runOnlyPendingTimers()
         await flushPromises()
         expect(tc.autoRefresh.value).toBe(true)
-        expect(tc.rows.value).toStrictEqual([98,96,94,92,90,88,86,84,82,80])
+        expect(tc.rows.value).toStrictEqual([98, 96, 94, 92, 90, 88, 86, 84, 82, 80])
         expect(tc.refreshCount.value).toBe(1)
         expect(tc.currentPage.value).toBe(1)
         expect(tc.loadCounter).toBe(4)
@@ -699,7 +699,7 @@ class TestTableController extends TableController<number, number> {
 
     constructor(startKey: number, endKey: number, pageSize: number,
                 scale: Ref<number> = computed(() => 1),
-                pageParamName = "p", keyParamName= "k",
+                pageParamName = "p", keyParamName = "k",
                 router = makeRouter()) {
         super(router, computed(() => pageSize),
             TestTableController.PRESUMED_ROW_COUNT,
@@ -726,12 +726,12 @@ class TestTableController extends TableController<number, number> {
         return key.toString()
     }
 
-    public keyFromString(s: string): number|null {
+    public keyFromString(s: string): number | null {
         const n = parseInt(s)
         return isNaN(n) ? null : n
     }
 
-    public async load(key: number|null, operator: KeyOperator, order: SortOrder, limit: number): Promise<number[]|null> {
+    public async load(key: number | null, operator: KeyOperator, order: SortOrder, limit: number): Promise<number[] | null> {
         const result = new Array<number>()
 
         this.loadCounter += 1
@@ -741,7 +741,7 @@ class TestTableController extends TableController<number, number> {
         if (key !== null) {
             key = key / this.scale.value
             key = Math.max(Math.min(key, this.endKey), this.startKey)
-            switch(operator) {
+            switch (operator) {
                 case KeyOperator.gt:
                     if (order == SortOrder.ASC) {
                         /*
@@ -749,7 +749,7 @@ class TestTableController extends TableController<number, number> {
                                  |________________________________|_______________________________|
                                                                    |...................|
                          */
-                        fromKey = key+1
+                        fromKey = key + 1
                         toKey = Math.min(fromKey + limit, this.endKey)
                     } else {
                         /*
@@ -807,14 +807,14 @@ class TestTableController extends TableController<number, number> {
                                  |...................|
                          */
                         fromKey = this.startKey
-                        toKey = Math.min(fromKey + limit, key+1)
+                        toKey = Math.min(fromKey + limit, key + 1)
                     } else {
                         /*
                                   startKey                         key                             endKey
                                  |________________________________|_______________________________|
                                                |...................|
                          */
-                        toKey = key+1
+                        toKey = key + 1
                         fromKey = Math.max(toKey - limit, this.startKey)
                     }
                     break

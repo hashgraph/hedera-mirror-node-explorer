@@ -85,6 +85,7 @@ class TestCache extends SerialCache<number, TestData> {
 class TestData {
     public readonly key: number
     public readonly seq: number
+
     constructor(key: number, seq: number) {
         this.key = key
         this.seq = seq

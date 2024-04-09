@@ -100,7 +100,7 @@ describe("AccountBalances.vue", () => {
         mock.onGet(matcher2).reply(200, SAMPLE_NONFUNGIBLE)
 
         const matcher3 = "/api/v1/accounts/" + accountId + "/tokens"
-        mock.onGet(matcher3).reply(200, { tokens: []})
+        mock.onGet(matcher3).reply(200, {tokens: []})
 
         const wrapper = mount(AccountBalances, {
             global: {

@@ -35,8 +35,7 @@ describe("DurationValue.vue", () => {
             global: {
                 plugins: [router]
             },
-            props: {
-            }
+            props: {}
         });
 
         await flushPromises()
@@ -59,8 +58,7 @@ describe("DurationValue.vue", () => {
             global: {
                 plugins: [router]
             },
-            props: {
-            }
+            props: {}
         });
 
         const year = 31536000

@@ -37,10 +37,10 @@ describe("ContractResultAnalyzer.spec.ts", () => {
         mock.onGet(matcher0).reply(200, CONTRACT);
 
         const matcher1 = "/api/v1/contracts/results"
-        const param1 = { timestamp: CONTRACT_RESULT.timestamp, internal: true }
+        const param1 = {timestamp: CONTRACT_RESULT.timestamp, internal: true}
         mock.onGet(matcher1, param1).reply(200, {
-            results: [ CONTRACT_RESULT ], "links": {"next": null}
-        } );
+            results: [CONTRACT_RESULT], "links": {"next": null}
+        });
 
         const matcher2 = "/api/v1/contracts/" + CONTRACT_RESULT.contract_id + "/results/" + CONTRACT_RESULT.timestamp
         mock.onGet(matcher2).reply(200, CONTRACT_RESULT_DETAILS);
@@ -49,7 +49,7 @@ describe("ContractResultAnalyzer.spec.ts", () => {
         mock.onGet(matcher3).reply(200, SOURCIFY_RESPONSE);
 
         // 1) new
-        const timestamp = ref<string|null>(null)
+        const timestamp = ref<string | null>(null)
         const analyzer = new ContractResultAnalyzer(timestamp)
         expect(analyzer.timestamp.value).toBeNull()
         expect(analyzer.fromId.value).toBeNull()
@@ -133,10 +133,10 @@ describe("ContractResultAnalyzer.spec.ts", () => {
         mock.onGet(matcher0).reply(200, CONTRACT);
 
         const matcher1 = "/api/v1/contracts/results"
-        const param1 = { timestamp: CONTRACT_RESULT.timestamp, internal: true }
+        const param1 = {timestamp: CONTRACT_RESULT.timestamp, internal: true}
         mock.onGet(matcher1, param1).reply(200, {
-            results: [ CONTRACT_RESULT ], "links": {"next": null}
-        } );
+            results: [CONTRACT_RESULT], "links": {"next": null}
+        });
 
         const matcher2 = "/api/v1/contracts/" + CONTRACT_RESULT.contract_id + "/results/" + CONTRACT_RESULT.timestamp
         mock.onGet(matcher2).reply(200, CONTRACT_RESULT_DETAILS);
@@ -145,7 +145,7 @@ describe("ContractResultAnalyzer.spec.ts", () => {
         mock.onGet(matcher3).reply(200, SOURCIFY_RESPONSE);
 
         // 1) new
-        const timestamp = ref<string|null>(null)
+        const timestamp = ref<string | null>(null)
         const analyzer = new ContractResultAnalyzer(timestamp)
         expect(analyzer.timestamp.value).toBeNull()
         expect(analyzer.fromId.value).toBeNull()
@@ -226,10 +226,10 @@ describe("ContractResultAnalyzer.spec.ts", () => {
         const mock = new MockAdapter(axios);
 
         const matcher1 = "/api/v1/contracts/results"
-        const param1 = { timestamp: CONTRACT_RESULT_HTS.timestamp, internal: true }
+        const param1 = {timestamp: CONTRACT_RESULT_HTS.timestamp, internal: true}
         mock.onGet(matcher1, param1).reply(200, {
-            results: [ CONTRACT_RESULT_HTS ], "links": {"next": null}
-        } );
+            results: [CONTRACT_RESULT_HTS], "links": {"next": null}
+        });
 
         const matcher2 = "/api/v1/contracts/results/" + CONTRACT_RESULT_HTS.hash
         mock.onGet(matcher2).reply(200, CONTRACT_RESULT_DETAILS_HTS);
@@ -239,7 +239,7 @@ describe("ContractResultAnalyzer.spec.ts", () => {
         mock.onGet(matcher3).reply(200, abi)
 
         // 1) new
-        const timestamp = ref<string|null>(null)
+        const timestamp = ref<string | null>(null)
         const analyzer = new ContractResultAnalyzer(timestamp)
         expect(analyzer.timestamp.value).toBeNull()
         expect(analyzer.fromId.value).toBeNull()
@@ -324,7 +324,7 @@ function fetchGetURLs(mock: MockAdapter): string[] {
 }
 
 const CONTRACT = {
-    admin_key:  null,
+    admin_key: null,
     auto_renew_account: null,
     auto_renew_period: null,
     contract_id: "0.0.6810663",

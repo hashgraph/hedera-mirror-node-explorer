@@ -98,7 +98,7 @@ describe("EntityLink.vue", () => {
 
 });
 
-const testBody = async (testEntityId: string, testRouteName: string, testShowExtra: boolean, expectedPath: string ) => {
+const testBody = async (testEntityId: string, testRouteName: string, testShowExtra: boolean, expectedPath: string) => {
 
     await router.push("/") // To avoid "missing required param 'network'" error
 

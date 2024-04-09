@@ -47,7 +47,7 @@ describe("ContractLogAnalyzer.spec.ts", () => {
         mock.onGet(requestURL).reply(200, SAMPLE_SOURCIFY_RESPONSE)
 
         // 1) new
-        const contractLog: Ref<ContractResultLog|null> = ref(null)
+        const contractLog: Ref<ContractResultLog | null> = ref(null)
         const logAnalyzer = new ContractLogAnalyzer(contractLog)
         expect(logAnalyzer.signature.value).toBeNull()
         expect(logAnalyzer.args.value).toStrictEqual([])

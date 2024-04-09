@@ -37,7 +37,7 @@ describe("HbarMarketDashboard.vue ", () => {
 
     it("should display the market dashboard banner", async () => {
 
-        await router.push({name: "MainDashboard", params: { network: 'mainnet' }})
+        await router.push({name: "MainDashboard", params: {network: 'mainnet'}})
 
         const mock = new MockAdapter(axios);
 
@@ -88,7 +88,7 @@ describe("HbarMarketDashboard.vue ", () => {
 
     it("should display the testnet banner", async () => {
 
-        await router.push({name: "MainDashboard", params: { network: 'testnet' }})
+        await router.push({name: "MainDashboard", params: {network: 'testnet'}})
 
         const wrapper = mount(HbarMarketDashboard);
         await flushPromises()
@@ -102,7 +102,7 @@ describe("HbarMarketDashboard.vue ", () => {
 
     it("should display the previewnet banner", async () => {
 
-        await router.push({name: "MainDashboard", params: { network: 'previewnet' }})
+        await router.push({name: "MainDashboard", params: {network: 'previewnet'}})
 
         const wrapper = mount(HbarMarketDashboard);
         await flushPromises()

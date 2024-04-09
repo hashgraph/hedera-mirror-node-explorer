@@ -84,8 +84,8 @@ describe("Staking.vue", () => {
         mock.onGet(matcher1).reply(200, testDriver.account)
         const matcher2 = "/api/v1/network/nodes"
         for (const node of SAMPLE_NETWORK_NODES.nodes) {
-            const body = { params: { "node.id": node.node_id }}
-            const response = { nodes: [ node ]}
+            const body = {params: {"node.id": node.node_id}}
+            const response = {nodes: [node]}
             mock.onGet(matcher2, body).reply(200, response)
         }
 
@@ -97,13 +97,13 @@ describe("Staking.vue", () => {
         const matcher5 = "/api/v1/transactions"
         mock.onGet(matcher5).reply(200, SAMPLE_TRANSACTIONS)
         const matcher8 = "/api/v1/accounts/" + testDriver.account.account + "/rewards"
-        mock.onGet(matcher8).reply(200, { rewards: [] })
+        mock.onGet(matcher8).reply(200, {rewards: []})
 
         const wrapper = mount(Staking, {
             global: {
                 plugins: [router, Oruga]
             },
-            props: { polling: POLLING},
+            props: {polling: POLLING},
         });
 
         const topNavBarWrapper = mount(TopNavBar, {
@@ -196,7 +196,7 @@ describe("Staking.vue", () => {
         await confirmChangeStaking("Change Staking  for account 0.0.730632Do you want to stake to account 0.0.7-bmurp ?CANCELCONFIRM")
 
         // 2.7) Waits for progress dialog and closes ...
-        const waitAndClose = async(busyText: string, completeText: string) => {
+        const waitAndClose = async (busyText: string, completeText: string) => {
             const progressDialog = wrapper.getComponent(ProgressDialog);
             // expect(progressDialog.text()).toBe(busyText);
             await waitFor(POLLING * 2)

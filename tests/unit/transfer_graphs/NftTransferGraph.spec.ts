@@ -43,8 +43,7 @@ describe("NftTransferGraph.vue", () => {
             global: {
                 plugins: [router]
             },
-            props: {
-            },
+            props: {},
         })
 
         await flushPromises()
@@ -64,12 +63,42 @@ describe("NftTransferGraph.vue", () => {
 
         const transaction = {
             "nft_transfers": [
-                { "sender_account_id": "0.0.101", "receiver_account_id": "0.0.100", "token_id": SAMPLE_NONFUNGIBLE.token_id, "serial_number": 604 },
-                { "sender_account_id": "0.0.101", "receiver_account_id": "0.0.100", "token_id": SAMPLE_NONFUNGIBLE.token_id, "serial_number": 603 },
-                { "sender_account_id": "0.0.101", "receiver_account_id": "0.0.100", "token_id": SAMPLE_NONFUNGIBLE_DUDE.token_id, "serial_number": 502 },
-                { "sender_account_id": "0.0.100", "receiver_account_id": "0.0.101", "token_id": SAMPLE_NONFUNGIBLE_DUDE.token_id, "serial_number": 501 },
-                { "sender_account_id": "0.0.100", "receiver_account_id": "0.0.101", "token_id": SAMPLE_NONFUNGIBLE.token_id, "serial_number": 602 },
-                { "sender_account_id": "0.0.100", "receiver_account_id": "0.0.101", "token_id": SAMPLE_NONFUNGIBLE.token_id, "serial_number": 601 },
+                {
+                    "sender_account_id": "0.0.101",
+                    "receiver_account_id": "0.0.100",
+                    "token_id": SAMPLE_NONFUNGIBLE.token_id,
+                    "serial_number": 604
+                },
+                {
+                    "sender_account_id": "0.0.101",
+                    "receiver_account_id": "0.0.100",
+                    "token_id": SAMPLE_NONFUNGIBLE.token_id,
+                    "serial_number": 603
+                },
+                {
+                    "sender_account_id": "0.0.101",
+                    "receiver_account_id": "0.0.100",
+                    "token_id": SAMPLE_NONFUNGIBLE_DUDE.token_id,
+                    "serial_number": 502
+                },
+                {
+                    "sender_account_id": "0.0.100",
+                    "receiver_account_id": "0.0.101",
+                    "token_id": SAMPLE_NONFUNGIBLE_DUDE.token_id,
+                    "serial_number": 501
+                },
+                {
+                    "sender_account_id": "0.0.100",
+                    "receiver_account_id": "0.0.101",
+                    "token_id": SAMPLE_NONFUNGIBLE.token_id,
+                    "serial_number": 602
+                },
+                {
+                    "sender_account_id": "0.0.100",
+                    "receiver_account_id": "0.0.101",
+                    "token_id": SAMPLE_NONFUNGIBLE.token_id,
+                    "serial_number": 601
+                },
             ]
         }
 
@@ -151,13 +180,18 @@ describe("NftTransferGraph.vue", () => {
 
     })
 
-    test("Mint, one token, one destination", async() => {
+    test("Mint, one token, one destination", async () => {
 
         await router.push("/") // To avoid "missing required param 'network'" error
 
         const transaction = {
             "nft_transfers": [
-                { "sender_account_id": null, "receiver_account_id": "0.0.100", "token_id": SAMPLE_NONFUNGIBLE.token_id, "serial_number": 604 },
+                {
+                    "sender_account_id": null,
+                    "receiver_account_id": "0.0.100",
+                    "token_id": SAMPLE_NONFUNGIBLE.token_id,
+                    "serial_number": 604
+                },
             ]
         }
 
@@ -191,14 +225,24 @@ describe("NftTransferGraph.vue", () => {
         await flushPromises()
     })
 
-    test("Mint, one token, two destinations", async() => {
+    test("Mint, one token, two destinations", async () => {
 
         await router.push("/") // To avoid "missing required param 'network'" error
 
         const transaction = {
             "nft_transfers": [
-                { "sender_account_id": null, "receiver_account_id": "0.0.100", "token_id": SAMPLE_NONFUNGIBLE.token_id, "serial_number": 604 },
-                { "sender_account_id": null, "receiver_account_id": "0.0.101", "token_id": SAMPLE_NONFUNGIBLE.token_id, "serial_number": 601 },
+                {
+                    "sender_account_id": null,
+                    "receiver_account_id": "0.0.100",
+                    "token_id": SAMPLE_NONFUNGIBLE.token_id,
+                    "serial_number": 604
+                },
+                {
+                    "sender_account_id": null,
+                    "receiver_account_id": "0.0.101",
+                    "token_id": SAMPLE_NONFUNGIBLE.token_id,
+                    "serial_number": 601
+                },
             ]
         }
 
@@ -236,13 +280,18 @@ describe("NftTransferGraph.vue", () => {
         await flushPromises()
     })
 
-    test("Burn, one token, one source", async() => {
+    test("Burn, one token, one source", async () => {
 
         await router.push("/") // To avoid "missing required param 'network'" error
 
         const transaction = {
             "nft_transfers": [
-                { "sender_account_id": "0.0.100", "receiver_account_id": null, "token_id": SAMPLE_NONFUNGIBLE.token_id, "serial_number": 604 },
+                {
+                    "sender_account_id": "0.0.100",
+                    "receiver_account_id": null,
+                    "token_id": SAMPLE_NONFUNGIBLE.token_id,
+                    "serial_number": 604
+                },
             ]
         }
 
@@ -276,14 +325,24 @@ describe("NftTransferGraph.vue", () => {
         await flushPromises()
     })
 
-    test("Burn, one token, two sources", async() => {
+    test("Burn, one token, two sources", async () => {
 
         await router.push("/") // To avoid "missing required param 'network'" error
 
         const transaction = {
             "nft_transfers": [
-                { "sender_account_id": "0.0.100", "receiver_account_id": null, "token_id": SAMPLE_NONFUNGIBLE.token_id, "serial_number": 604 },
-                { "sender_account_id": "0.0.101", "receiver_account_id": null, "token_id": SAMPLE_NONFUNGIBLE.token_id, "serial_number": 601 },
+                {
+                    "sender_account_id": "0.0.100",
+                    "receiver_account_id": null,
+                    "token_id": SAMPLE_NONFUNGIBLE.token_id,
+                    "serial_number": 604
+                },
+                {
+                    "sender_account_id": "0.0.101",
+                    "receiver_account_id": null,
+                    "token_id": SAMPLE_NONFUNGIBLE.token_id,
+                    "serial_number": 601
+                },
             ]
         }
 

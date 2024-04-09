@@ -36,7 +36,7 @@ describe("BalanceAnalyzer.spec.ts", () => {
         const matcher1 = "/api/v1/balances"
         mock.onGet(matcher1).reply(200, SAMPLE_ACCOUNT_BALANCES)
 
-        const contractId: Ref<string|null> = ref(null)
+        const contractId: Ref<string | null> = ref(null)
         const balanceAnalyzer = new BalanceAnalyzer(contractId, 100);
         expect(balanceAnalyzer.accountId.value).toBeNull()
         expect(balanceAnalyzer.hbarBalance.value).toBeNull()
@@ -85,7 +85,7 @@ describe("BalanceAnalyzer.spec.ts", () => {
         const matcher1 = "/api/v1/balances"
         mock.onGet(matcher1).reply(200, SAMPLE_ACCOUNT_BALANCES)
 
-        const contractId: Ref<string|null> = ref(null)
+        const contractId: Ref<string | null> = ref(null)
         const balanceAnalyzer = new BalanceAnalyzer(contractId, 100);
         expect(balanceAnalyzer.accountId.value).toBeNull()
         expect(balanceAnalyzer.hbarBalance.value).toBeNull()

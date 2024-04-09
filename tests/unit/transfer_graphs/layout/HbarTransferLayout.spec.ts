@@ -41,9 +41,9 @@ describe("HbarTransferLayout.vue", () => {
         const transaction = {
             "charged_tx_fee": 10,
             "transfers": [
-                { "account": "0.0.5",   "amount":  +3 },
-                { "account": "0.0.98",  "amount":  +7 },
-                { "account": "0.0.100", "amount": -10 }
+                {"account": "0.0.5", "amount": +3},
+                {"account": "0.0.98", "amount": +7},
+                {"account": "0.0.100", "amount": -10}
             ],
         } as Transaction
 
@@ -98,10 +98,10 @@ describe("HbarTransferLayout.vue", () => {
         const transaction = {
             "charged_tx_fee": 10,
             "transfers": [
-                { "account": "0.0.100", "amount": -100 },
-                { "account": "0.0.5",   "amount":   +3 },
-                { "account": "0.0.98",  "amount":   +7 },
-                { "account": "0.0.120", "amount":  +90 },
+                {"account": "0.0.100", "amount": -100},
+                {"account": "0.0.5", "amount": +3},
+                {"account": "0.0.98", "amount": +7},
+                {"account": "0.0.120", "amount": +90},
             ],
         } as Transaction
 
@@ -171,11 +171,11 @@ describe("HbarTransferLayout.vue", () => {
         const transaction = {
             "charged_tx_fee": 10,
             "transfers": [
-                { "account": "0.0.100", "amount": -100 },
-                { "account": "0.0.5",   "amount":   +3 },
-                { "account": "0.0.98",  "amount":   +7 },
-                { "account": "0.0.120", "amount":  +30 },
-                { "account": "0.0.121", "amount":  +60 },
+                {"account": "0.0.100", "amount": -100},
+                {"account": "0.0.5", "amount": +3},
+                {"account": "0.0.98", "amount": +7},
+                {"account": "0.0.120", "amount": +30},
+                {"account": "0.0.121", "amount": +60},
             ],
         } as Transaction
 
@@ -262,10 +262,10 @@ describe("HbarTransferLayout.vue", () => {
         const transaction = {
             "charged_tx_fee": 10,
             "transfers": [
-                { "account": "0.0.100", "amount":  -2 },
-                { "account": "0.0.101", "amount":  -8 },
-                { "account": "0.0.5",   "amount":  +3 },
-                { "account": "0.0.98",  "amount":  +7 },
+                {"account": "0.0.100", "amount": -2},
+                {"account": "0.0.101", "amount": -8},
+                {"account": "0.0.5", "amount": +3},
+                {"account": "0.0.98", "amount": +7},
             ],
         } as Transaction
 
@@ -325,11 +325,11 @@ describe("HbarTransferLayout.vue", () => {
         const transaction = {
             "charged_tx_fee": 10,
             "transfers": [
-                { "account": "0.0.100", "amount":  -20 },
-                { "account": "0.0.101", "amount":  -80 },
-                { "account": "0.0.5",   "amount":   +3 },
-                { "account": "0.0.98",  "amount":   +7 },
-                { "account": "0.0.120", "amount":  +90 },
+                {"account": "0.0.100", "amount": -20},
+                {"account": "0.0.101", "amount": -80},
+                {"account": "0.0.5", "amount": +3},
+                {"account": "0.0.98", "amount": +7},
+                {"account": "0.0.120", "amount": +90},
             ],
         } as Transaction
 
@@ -411,12 +411,12 @@ describe("HbarTransferLayout.vue", () => {
         const transaction = {
             "charged_tx_fee": 10,
             "transfers": [
-                { "account": "0.0.100", "amount":  -20 },
-                { "account": "0.0.101", "amount":  -80 },
-                { "account": "0.0.5",   "amount":   +3 },
-                { "account": "0.0.98",  "amount":   +7 },
-                { "account": "0.0.120", "amount":  +30 },
-                { "account": "0.0.121", "amount":  +60 },
+                {"account": "0.0.100", "amount": -20},
+                {"account": "0.0.101", "amount": -80},
+                {"account": "0.0.5", "amount": +3},
+                {"account": "0.0.98", "amount": +7},
+                {"account": "0.0.120", "amount": +30},
+                {"account": "0.0.121", "amount": +60},
             ],
         } as Transaction
 
@@ -515,9 +515,9 @@ describe("HbarTransferLayout.vue", () => {
         const transaction = {
             "charged_tx_fee": 8,
             "transfers": [
-                { "account": "0.0.5",   "amount":  +3 },
-                { "account": "0.0.98",  "amount":  +7 },
-                { "account": "0.0.100", "amount": -10 }
+                {"account": "0.0.5", "amount": +3},
+                {"account": "0.0.98", "amount": +7},
+                {"account": "0.0.100", "amount": -10}
             ],
         } as Transaction
 
@@ -627,7 +627,7 @@ describe("HbarTransferLayout.vue", () => {
         // FULL
         //
 
-        const Fee800 = 7723318822-7723301000
+        const Fee800 = 7723318822 - 7723301000
         const FeeTotal = 7524 + 160403 + Fee800
         const TransferTotal = 9100000000 + FeeTotal
 

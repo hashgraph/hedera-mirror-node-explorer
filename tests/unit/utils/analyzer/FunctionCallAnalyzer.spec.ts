@@ -38,10 +38,10 @@ describe("FunctionCallAnalyzer.spec.ts", () => {
         mock.onGet(matcher1).reply(200, abi)
 
         // 1) new
-        const input: Ref<string|null> = ref(null)
-        const output: Ref<string|null> = ref(null)
-        const error: Ref<string|null> = ref(null)
-        const contractId: Ref<string|null> = ref(null)
+        const input: Ref<string | null> = ref(null)
+        const output: Ref<string | null> = ref(null)
+        const error: Ref<string | null> = ref(null)
+        const contractId: Ref<string | null> = ref(null)
         const functionCallAnalyzer = new FunctionCallAnalyzer(input, output, error, contractId)
         expect(functionCallAnalyzer.functionHash.value).toBeNull()
         expect(functionCallAnalyzer.signature.value).toBeNull()
@@ -158,10 +158,10 @@ describe("FunctionCallAnalyzer.spec.ts", () => {
         mock.onGet(matcher2).reply(200, CONTRACT_DETAILS)
 
         // 1) new
-        const input: Ref<string|null> = ref(null)
-        const output: Ref<string|null> = ref(null)
-        const error: Ref<string|null> = ref(null)
-        const contractId: Ref<string|null> = ref(null)
+        const input: Ref<string | null> = ref(null)
+        const output: Ref<string | null> = ref(null)
+        const error: Ref<string | null> = ref(null)
+        const contractId: Ref<string | null> = ref(null)
         const functionCallAnalyzer = new FunctionCallAnalyzer(input, output, error, contractId)
         expect(functionCallAnalyzer.functionHash.value).toBeNull()
         expect(functionCallAnalyzer.signature.value).toBeNull()
@@ -246,10 +246,10 @@ describe("FunctionCallAnalyzer.spec.ts", () => {
         mock.onGet(matcher2).reply(200, CONTRACT_DETAILS)
 
         // 1) new
-        const input: Ref<string|null> = ref(null)
-        const output: Ref<string|null> = ref(null)
-        const error: Ref<string|null> = ref(null)
-        const contractId: Ref<string|null> = ref(null)
+        const input: Ref<string | null> = ref(null)
+        const output: Ref<string | null> = ref(null)
+        const error: Ref<string | null> = ref(null)
+        const contractId: Ref<string | null> = ref(null)
         const functionCallAnalyzer = new FunctionCallAnalyzer(input, output, error, contractId)
         expect(functionCallAnalyzer.functionHash.value).toBeNull()
         expect(functionCallAnalyzer.signature.value).toBeNull()
@@ -335,10 +335,10 @@ describe("FunctionCallAnalyzer.spec.ts", () => {
         mock.onGet(matcher1).reply(200, BYTES4_RESPONSE)
 
         // 1) new
-        const input: Ref<string|null> = ref(null)
-        const output: Ref<string|null> = ref(null)
-        const error: Ref<string|null> = ref(null)
-        const contractId: Ref<string|null> = ref(null)
+        const input: Ref<string | null> = ref(null)
+        const output: Ref<string | null> = ref(null)
+        const error: Ref<string | null> = ref(null)
+        const contractId: Ref<string | null> = ref(null)
         const functionCallAnalyzer = new FunctionCallAnalyzer(input, output, error, contractId)
         expect(functionCallAnalyzer.functionHash.value).toBeNull()
         expect(functionCallAnalyzer.signature.value).toBeNull()

@@ -115,8 +115,7 @@ describe("HbarAmount.vue ", () => {
         const expectedHbarAmount = "None"
 
         const wrapper = mount(HbarAmount, {
-            props: {
-            },
+            props: {},
         });
 
         expect(wrapper.text()).toBe(expectedHbarAmount)

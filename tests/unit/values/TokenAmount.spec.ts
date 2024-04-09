@@ -71,9 +71,9 @@ describe("TokenAmount.vue", () => {
         expect(wrapper.text()).toBe(expectedAmount.toString())
 
         await wrapper.setProps({
-                tokenId: SAMPLE_TOKEN.token_id,
-                showExtra: true
-            })
+            tokenId: SAMPLE_TOKEN.token_id,
+            showExtra: true
+        })
         await flushPromises()
 
         expect(wrapper.get('span').text()).toBe(expectedAmount.toString())
@@ -144,7 +144,7 @@ describe("TokenAmount.vue", () => {
         await flushPromises()
 
         // Token has 2 decimals
-        expect(wrapper.get('span').text()).toBe((testAmount/100).toString())
+        expect(wrapper.get('span').text()).toBe((testAmount / 100).toString())
         expect(wrapper.get('a').attributes('href')).toMatch(RegExp("/token/" + SAMPLE_TOKEN_DUDE.token_id + "$"))
         expect(wrapper.get('.h-is-extra-text').text()).toBe(SAMPLE_TOKEN_DUDE.name)
 

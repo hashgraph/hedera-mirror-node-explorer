@@ -224,7 +224,7 @@ describe("EntityID.ts", () => {
         const obj = EntityID.fromAddress(a)
         expect(obj?.shard).toBe(0)
         expect(obj?.realm).toBe(0)
-        expect(obj?.num).toBe(EntityID.MAX_INT -1)
+        expect(obj?.num).toBe(EntityID.MAX_INT - 1)
         expect(obj?.toString()).toBe("0.0.4294967295")
     })
 

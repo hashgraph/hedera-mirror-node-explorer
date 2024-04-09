@@ -158,7 +158,7 @@ describe("NetworkRegistry.ts", () => {
 
     it("Should deactivate SC verif when sourcifySetup undefined in networks-config.json", async () => {
 
-        const config =  [
+        const config = [
             {
                 "name": "mainnet",
                 "displayName": "MAINNET",

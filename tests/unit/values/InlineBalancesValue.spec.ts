@@ -335,7 +335,7 @@ describe("InlineBalancesValue.vue", () => {
         })
 
 
-        const matcher2: string|null = "api/v1/accounts/" + accountId.value + "/nfts"
+        const matcher2: string | null = "api/v1/accounts/" + accountId.value + "/nfts"
         mock.onGet(matcher2).reply(200, {
             "nfts": [
                 {

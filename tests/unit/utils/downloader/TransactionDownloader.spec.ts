@@ -35,10 +35,10 @@ describe("TransactionDownloader.ts", () => {
         const mock = new MockAdapter(axios);
 
         // Constructs
-        const accountId = ref<string|null>(null)
-        const startDate = ref<Date|null>(null)
-        const endDate = ref<Date|null>(null)
-        const transactionType = ref<TransactionType|null>(null)
+        const accountId = ref<string | null>(null)
+        const startDate = ref<Date | null>(null)
+        const endDate = ref<Date | null>(null)
+        const transactionType = ref<TransactionType | null>(null)
         const d = new TransactionDownloader(accountId, startDate, endDate, transactionType, 1500)
         expect(d.startDate).toBe(startDate)
         expect(d.endDate).toBe(endDate)

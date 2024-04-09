@@ -38,8 +38,7 @@ describe("TimestampValue.vue", () => {
             global: {
                 plugins: [router]
             },
-            props: {
-            },
+            props: {},
         });
 
         await flushPromises()

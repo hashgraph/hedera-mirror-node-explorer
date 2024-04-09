@@ -66,8 +66,7 @@ describe("AccountLink.vue", () => {
             global: {
                 plugins: [router]
             },
-            props: {
-            },
+            props: {},
         });
 
         expect(wrapper.text()).toBe("")
@@ -128,7 +127,6 @@ describe("AccountLink.vue", () => {
         await flushPromises()
         mock.restore()
     });
-
 
 
 });

@@ -694,31 +694,31 @@ export const SAMPLE_SYSTEM_CONTRACT_CALL_TRANSACTIONS = {
 }
 
 export const SAMPLE_CRYPTO_TRANSFER_WITH_ONLY_FEE = {
-        "bytes": null,
-        "charged_tx_fee": 26494683,
-        "consensus_timestamp": "1687197609.495612761",
-        "entity_id": "0.0.3005010",
-        "max_fee": "200000000",
-        "memo_base64": "",
-        "name": "CONSENSUSCREATETOPIC",
-        "node": "0.0.25",
-        "nonce": 0,
-        "parent_consensus_timestamp": null,
-        "result": "SUCCESS",
-        "scheduled": false,
-        "transaction_hash": "c2sSCuCRNOI6gvCYs5KFxe7Z60TV8vJXxuOWNEtH4doYj0MnruIi3NLFXIX6e8s1",
-        "transaction_id": "0.0.1786365-1687197599-390469131",
-        "transfers": [{"account": "0.0.25", "amount": 1190235, "is_approval": false}, {
-            "account": "0.0.98",
-            "amount": 22774004,
-            "is_approval": false
-        }, {"account": "0.0.800", "amount": 2530444, "is_approval": false}, {
-            "account": "0.0.1786365",
-            "amount": -26494683,
-            "is_approval": false
-        }],
-        "valid_duration_seconds": "120",
-        "valid_start_timestamp": "1687197599.390469131"
+    "bytes": null,
+    "charged_tx_fee": 26494683,
+    "consensus_timestamp": "1687197609.495612761",
+    "entity_id": "0.0.3005010",
+    "max_fee": "200000000",
+    "memo_base64": "",
+    "name": "CONSENSUSCREATETOPIC",
+    "node": "0.0.25",
+    "nonce": 0,
+    "parent_consensus_timestamp": null,
+    "result": "SUCCESS",
+    "scheduled": false,
+    "transaction_hash": "c2sSCuCRNOI6gvCYs5KFxe7Z60TV8vJXxuOWNEtH4doYj0MnruIi3NLFXIX6e8s1",
+    "transaction_id": "0.0.1786365-1687197599-390469131",
+    "transfers": [{"account": "0.0.25", "amount": 1190235, "is_approval": false}, {
+        "account": "0.0.98",
+        "amount": 22774004,
+        "is_approval": false
+    }, {"account": "0.0.800", "amount": 2530444, "is_approval": false}, {
+        "account": "0.0.1786365",
+        "amount": -26494683,
+        "is_approval": false
+    }],
+    "valid_duration_seconds": "120",
+    "valid_start_timestamp": "1687197599.390469131"
 }
 
 export const SAMPLE_CRYPTO_TRANSFER_WITH_REWARDS = {
@@ -2162,7 +2162,7 @@ export const SAMPLE_ACCOUNT = {
     "decline_reward": null,
     "staked_node_id": null,
     "staked_account_id": null,
-    "stake_period_start" : null
+    "stake_period_start": null
 }
 
 //
@@ -2194,7 +2194,7 @@ export const SAMPLE_ACCOUNT_DUDE = {
     "decline_reward": null,
     "staked_node_id": null,
     "staked_account_id": null,
-    "stake_period_start" : null
+    "stake_period_start": null
 }
 
 export const SAMPLE_ACCOUNT_DELETED = {
@@ -2222,7 +2222,7 @@ export const SAMPLE_ACCOUNT_DELETED = {
     "decline_reward": null,
     "staked_node_id": null,
     "staked_account_id": null,
-    "stake_period_start" : null
+    "stake_period_start": null
 }
 
 export const SAMPLE_ACCOUNT_STAKING_NODE = {
@@ -2245,7 +2245,7 @@ export const SAMPLE_ACCOUNT_STAKING_NODE = {
     "decline_reward": false,
     "staked_node_id": 1,
     "staked_account_id": null,
-    "stake_period_start" : "1668124800.000000000",
+    "stake_period_start": "1668124800.000000000",
     "pending_reward": 12345678
 }
 
@@ -2269,7 +2269,7 @@ export const SAMPLE_ACCOUNT_STAKING_ACCOUNT = {
     "decline_reward": true,
     "staked_node_id": null,
     "staked_account_id": "0.0.5",
-    "stake_period_start" : null,
+    "stake_period_start": null,
     "pending_reward": 0,
     "created_timestamp": null
 }
@@ -2416,7 +2416,7 @@ export const SAMPLE_CONTRACT = {
         "from": "1646665755.947488266",
         "to": null
     },
-    "runtime_bytecode":"0x608060405236606d573073ffffffffffffffffffffffffffffffffffffffff163373ffffffffffffffffffffffffffffffffffffffff167fddf252ad1be2c89b69c2b068fc378daa952ba7f163c4a11628f55a4df523b3ef3460405160639190607f565b60405180910390a3005b600080fd5b6079816098565b82525050565b6000602082019050609260008301846072565b92915050565b600081905091905056fea2646970667358221220b94efca641a0cf62b2bd505f79fe4be165c582520bc615e5c5fa3402156eafd864736f6c63430008040033"
+    "runtime_bytecode": "0x608060405236606d573073ffffffffffffffffffffffffffffffffffffffff163373ffffffffffffffffffffffffffffffffffffffff167fddf252ad1be2c89b69c2b068fc378daa952ba7f163c4a11628f55a4df523b3ef3460405160639190607f565b60405180910390a3005b600080fd5b6079816098565b82525050565b6000602082019050609260008301846072565b92915050565b600081905091905056fea2646970667358221220b94efca641a0cf62b2bd505f79fe4be165c582520bc615e5c5fa3402156eafd864736f6c63430008040033"
 }
 
 //
@@ -3056,11 +3056,11 @@ export const SAMPLE_NETWORK_NODES = {
                 "from": "1654531806.041135961",
                 "to": null
             },
-            "max_stake":         3000000000000000,
-            "min_stake":          100000000000000,
-            "stake":              600000000000000,
+            "max_stake": 3000000000000000,
+            "min_stake": 100000000000000,
+            "stake": 600000000000000,
             "stake_not_rewarded": 100000000000000,
-            "stake_rewarded":     500000000000000,
+            "stake_rewarded": 500000000000000,
             "staking_period": null
         },
         {
@@ -3085,11 +3085,11 @@ export const SAMPLE_NETWORK_NODES = {
                 "from": "1654531806.041135961",
                 "to": null
             },
-            "max_stake":         3000000000000000,
-            "min_stake":          100000000000000,
-            "stake":              900000000000000,
+            "max_stake": 3000000000000000,
+            "min_stake": 100000000000000,
+            "stake": 900000000000000,
             "stake_not_rewarded": 200000000000000,
-            "stake_rewarded":     700000000000000,
+            "stake_rewarded": 700000000000000,
             "staking_period": null
         },
         {
@@ -3114,11 +3114,11 @@ export const SAMPLE_NETWORK_NODES = {
                 "from": "1654531806.041135961",
                 "to": null
             },
-            "max_stake":         3000000000000000,
-            "min_stake":          100000000000000,
-            "stake":              900000000000000,
+            "max_stake": 3000000000000000,
+            "min_stake": 100000000000000,
+            "stake": 900000000000000,
             "stake_not_rewarded": 200000000000000,
-            "stake_rewarded":     700000000000000,
+            "stake_rewarded": 700000000000000,
             "staking_period": null
         }
     ],
@@ -3225,16 +3225,16 @@ export const SAMPLE_BLOCK_ZERO = {
 
 export const SAMPLE_4BYTE_0xB01EF608 = {
 
-    "count":1,
-    "next":null,
-    "previous":null,
-    "results":[
+    "count": 1,
+    "next": null,
+    "previous": null,
+    "results": [
         {
-            "id":842814,
-            "created_at":"2022-07-03T20:24:54.756716Z",
-            "text_signature":"buyV2(address,uint256,uint256,address)",
-            "hex_signature":"0xb01ef608",
-            "bytes_signature":"°\u001eö\b"
+            "id": 842814,
+            "created_at": "2022-07-03T20:24:54.756716Z",
+            "text_signature": "buyV2(address,uint256,uint256,address)",
+            "hex_signature": "0xb01ef608",
+            "bytes_signature": "°\u001eö\b"
         },
     ]
 

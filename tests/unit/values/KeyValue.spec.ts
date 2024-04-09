@@ -52,8 +52,7 @@ describe("KeyValue.vue", () => {
             global: {
                 plugins: [router]
             },
-            props: {
-            },
+            props: {},
         });
 
         expect(wrapper.text()).toBe("")

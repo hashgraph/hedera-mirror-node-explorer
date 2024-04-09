@@ -107,8 +107,8 @@ describe("OpcodeValue.vue", () => {
             operand: []
         }
         const address = SAMPLE_CONTRACT.evm_address
-        for (let i = 2 ; i < address.length; i+=2) {
-            opcode.operand.push(address.substring(i, i+2))
+        for (let i = 2; i < address.length; i += 2) {
+            opcode.operand.push(address.substring(i, i + 2))
         }
 
         const displayWithHexaOpcode =
@@ -170,8 +170,8 @@ describe("OpcodeValue.vue", () => {
             operand: []
         }
         const address = SAMPLE_ACCOUNT.evm_address
-        for (let i = 2 ; i < address.length; i+=2) {
-            opcode.operand.push(address.substring(i, i+2))
+        for (let i = 2; i < address.length; i += 2) {
+            opcode.operand.push(address.substring(i, i + 2))
         }
 
         const displayWithHexaOpcode =
