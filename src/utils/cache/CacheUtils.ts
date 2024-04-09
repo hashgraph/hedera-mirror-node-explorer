@@ -50,6 +50,7 @@ import {ContractResultsLogsByContractIdCache} from "@/utils/cache/ContractResult
 import {NftCollectionCache} from "@/utils/cache/NftCollectionCache";
 import {VerifiedContractsByAccountIdCache} from "@/utils/cache/VerifiedContractsByAccountIdCache";
 import {VerifiedContractsCache} from "@/utils/cache/VerifiedContractsCache";
+import {LogicContractCache} from "@/utils/cache/LogicContractCache";
 
 export class CacheUtils {
 
@@ -68,6 +69,7 @@ export class CacheUtils {
         ContractResultByTransactionIdCache.instance.clear()
         ContractResultByTsCache.instance.clear()
         ContractResultsLogsByContractIdCache.instance.clear()
+        LogicContractCache.instance.clear()
         MarketDataCache.instance.clear()
         HbarPriceCache.instance.clear()
         // IPFSCache.instance => no clear: we preserve it because IPFS content is valid for all networks
