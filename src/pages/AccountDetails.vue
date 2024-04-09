@@ -31,7 +31,7 @@
         <span class="h-is-primary-title">Account </span>
       </template>
       <template v-else v-slot:title>
-          <span class="h-is-primary-title">Inactive EVM Address</span>
+        <span class="h-is-primary-title">Inactive EVM Address</span>
       </template>
 
       <template v-if="!isInactiveEvmAddress" v-slot:subtitle>
@@ -57,7 +57,8 @@
           </div>
         </div>
 
-        <div v-if="!isMediumScreen && showContractVisible && contractRoute" id="showContractLink" class="is-inline-block mt-2">
+        <div v-if="!isMediumScreen && showContractVisible && contractRoute" id="showContractLink"
+             class="is-inline-block mt-2">
           <router-link :to="contractRoute">
             <span class="h-is-property-text">Show associated contract</span>
           </router-link>
@@ -65,11 +66,13 @@
       </template>
       <template v-else v-slot:subtitle>
         <div class="h-is-tertiary-text mt-3" id="entityId">
-          <div class="is-inline-block h-is-property-text has-text-weight-light" style="min-width: 115px">Account ID:</div>
+          <div class="is-inline-block h-is-property-text has-text-weight-light" style="min-width: 115px">Account ID:
+          </div>
           <span class="has-text-grey">Assigned upon activation</span>
         </div>
         <div id="evmAddress" class="h-is-tertiary-text mt-2" style="word-break: keep-all">
-          <div class="is-inline-block h-is-property-text has-text-weight-light" style="min-width: 115px">EVM Address:</div>
+          <div class="is-inline-block h-is-property-text has-text-weight-light" style="min-width: 115px">EVM Address:
+          </div>
           <div class="is-inline-block">
             <EVMAddress :show-id="false" :has-custom-font="true" :address="accountId"/>
           </div>
@@ -94,12 +97,15 @@
         <NotificationBanner v-if="notification" :message="notification" :is-error="!isInactiveEvmAddress"/>
 
         <div class="h-is-property-text">
-            <Property id="balance" :full-width="isMediumScreen">
-              <template v-slot:name>{{ balanceAnalyzer.tokenBalances.value.length > 0 ? 'Balances' : 'Balance' }}</template>
-              <template v-slot:value>
-                  <InlineBalancesValue :balance-analyzer="balanceAnalyzer"/>
-              </template>
-            </Property>
+          <Property id="balance" :full-width="isMediumScreen">
+            <template v-slot:name>{{
+                balanceAnalyzer.tokenBalances.value.length > 0 ? 'Balances' : 'Balance'
+              }}
+            </template>
+            <template v-slot:value>
+              <InlineBalancesValue :balance-analyzer="balanceAnalyzer"/>
+            </template>
+          </Property>
         </div>
       </template>
 
@@ -145,7 +151,8 @@
         <Property id="memo">
           <template v-slot:name>Memo</template>
           <template v-slot:value>
-            <BlobValue v-bind:base64="true" v-bind:blob-value="account?.memo" v-bind:show-none="true" :show-base64-as-extra="true"/>
+            <BlobValue v-bind:base64="true" v-bind:blob-value="account?.memo" v-bind:show-none="true"
+                       :show-base64-as-extra="true"/>
           </template>
         </Property>
 
@@ -164,7 +171,8 @@
             <TimestampValue v-bind:show-none="true" v-bind:timestamp="account?.expiry_timestamp"/>
           </template>
         </Property>
-        <Property id="autoRenewPeriod" tooltip="Account auto-renew is not turned on yet. Value in this field is not relevant.">
+        <Property id="autoRenewPeriod"
+                  tooltip="Account auto-renew is not turned on yet. Value in this field is not relevant.">
           <template v-slot:name>
             <span>Auto Renew Period</span>
           </template>
@@ -190,7 +198,8 @@
         <Property id="key">
           <template v-slot:name>Admin Key</template>
           <template v-slot:value>
-            <KeyValue :account-id="normalizedAccountId ?? undefined" :key-bytes="account?.key?.key" :key-type="account?.key?._type"
+            <KeyValue :account-id="normalizedAccountId ?? undefined" :key-bytes="account?.key?.key"
+                      :key-type="account?.key?._type"
                       :show-none="true"/>
           </template>
         </Property>
@@ -216,52 +225,52 @@
         <p id="recentTransactions" class="h-is-secondary-title">Recent Account Operations</p>
       </template>
       <template v-slot:control>
-          <div v-if="selectedTab === 'transactions'" class="is-flex is-align-items-flex-end">
-            <PlayPauseButton v-if="timeSelection == 'LATEST'" :controller="transactionTableController"/>
-            <DateTimePicker v-else :controller="transactionTableController" @dateCleared="onDateCleared"/>
-            <o-field style="margin-bottom: 0">
-              <o-select v-model="timeSelection" class="ml-2 h-is-text-size-1">
-                <option value="LATEST">LATEST</option>
-                <option value="JUMP">JUMP TO DATE</option>
-              </o-select>
-            </o-field>
-            <DownloadButton @click="downloadController.visible.value = true"/>
-            <TransactionFilterSelect v-model:selected-filter="transactionType" class="ml-2"/>
-          </div>
-          <div v-else-if="selectedTab === 'contracts'" class="is-flex is-justify-content-end is-align-items-center">
-              <PlayPauseButton v-if="!filterVerified" :controller="contractCreateTableController"/>
-              <PlayPauseButton v-else :controller="verifiedContractsController"/>
-              <span class="ml-5 mr-2">All</span>
-              <o-field>
-                  <o-switch v-model="filterVerified">Verified</o-switch>
-              </o-field>
-          </div>
+        <div v-if="selectedTab === 'transactions'" class="is-flex is-align-items-flex-end">
+          <PlayPauseButton v-if="timeSelection == 'LATEST'" :controller="transactionTableController"/>
+          <DateTimePicker v-else :controller="transactionTableController" @dateCleared="onDateCleared"/>
+          <o-field style="margin-bottom: 0">
+            <o-select v-model="timeSelection" class="ml-2 h-is-text-size-1">
+              <option value="LATEST">LATEST</option>
+              <option value="JUMP">JUMP TO DATE</option>
+            </o-select>
+          </o-field>
+          <DownloadButton @click="downloadController.visible.value = true"/>
+          <TransactionFilterSelect v-model:selected-filter="transactionType" class="ml-2"/>
+        </div>
+        <div v-else-if="selectedTab === 'contracts'" class="is-flex is-justify-content-end is-align-items-center">
+          <PlayPauseButton v-if="!filterVerified" :controller="contractCreateTableController"/>
+          <PlayPauseButton v-else :controller="verifiedContractsController"/>
+          <span class="ml-5 mr-2">All</span>
+          <o-field>
+            <o-switch v-model="filterVerified">Verified</o-switch>
+          </o-field>
+        </div>
       </template>
       <template v-slot:content>
-          <Tabs
-              :selected-tab="selectedTab"
-              :tab-ids="tabIds"
-              :tabLabels="tabLabels"
-              @update:selected-tab="handleTabUpdate($event)"
-          />
+        <Tabs
+            :selected-tab="selectedTab"
+            :tab-ids="tabIds"
+            :tabLabels="tabLabels"
+            @update:selected-tab="handleTabUpdate($event)"
+        />
 
-          <div v-if="selectedTab === 'transactions'" id="recentTransactionsTable">
-              <TransactionTable v-if="account" :controller="transactionTableController" :narrowed="true"/>
-          </div>
+        <div v-if="selectedTab === 'transactions'" id="recentTransactionsTable">
+          <TransactionTable v-if="account" :controller="transactionTableController" :narrowed="true"/>
+        </div>
 
-          <div v-else-if="selectedTab === 'contracts'" id="recentContractsTable">
-              <AccountCreatedContractsTable v-if="account && !filterVerified" :controller="contractCreateTableController"/>
-              <VerifiedContractsTable
-                  v-else-if="account"
-                  :controller="verifiedContractsController"
-                  :loaded="loaded"
-                  :overflow="overflow"/>
-              <EmptyTable v-else/>
-          </div>
+        <div v-else-if="selectedTab === 'contracts'" id="recentContractsTable">
+          <AccountCreatedContractsTable v-if="account && !filterVerified" :controller="contractCreateTableController"/>
+          <VerifiedContractsTable
+              v-else-if="account"
+              :controller="verifiedContractsController"
+              :loaded="loaded"
+              :overflow="overflow"/>
+          <EmptyTable v-else/>
+        </div>
 
-          <div v-else id="recentRewardsTable">
-              <StakingRewardsTable :controller="rewardsTableController"/>
-          </div>
+        <div v-else id="recentRewardsTable">
+          <StakingRewardsTable :controller="rewardsTableController"/>
+        </div>
       </template>
     </DashboardCard>
 
@@ -377,13 +386,13 @@ export default defineComponent({
 
     const timeSelection = ref("LATEST")
     watch(timeSelection, (newValue, oldValue) => {
-        if (newValue !== oldValue) {
-            if (timeSelection.value == "LATEST") {
-                transactionTableController.startAutoRefresh() // (1)
-            } else {
-                transactionTableController.stopAutoRefresh()
-            }
+      if (newValue !== oldValue) {
+        if (timeSelection.value == "LATEST") {
+          transactionTableController.startAutoRefresh() // (1)
+        } else {
+          transactionTableController.stopAutoRefresh()
         }
+      }
     })
 
     function onDateCleared() {
@@ -450,10 +459,10 @@ export default defineComponent({
     const tabIds = ['transactions', 'contracts', 'rewards']
     const tabLabels = ['Transactions', 'Created Contracts', 'Staking Rewards']
     const selectedTab = ref(AppStorage.getAccountOperationTab() ?? tabIds[0])
-      const handleTabUpdate = (tab: string) => {
-          selectedTab.value = tab
-          AppStorage.setAccountOperationTab(tab)
-      }
+    const handleTabUpdate = (tab: string) => {
+      selectedTab.value = tab
+      AppStorage.setAccountOperationTab(tab)
+    }
     const filterVerified = ref(false)
 
     //
@@ -488,7 +497,7 @@ export default defineComponent({
       isMediumScreen,
       isTouchDevice,
       transactionTableController,
-      transactionType:transactionTableController.transactionType,
+      transactionType: transactionTableController.transactionType,
       contractCreateTableController,
       verifiedContractsController,
       loaded: verifiedContractsController.loaded,

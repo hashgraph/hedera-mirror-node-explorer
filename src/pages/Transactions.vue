@@ -88,7 +88,7 @@ export default defineComponent({
     // transactionTableController
     //
 
-    const accountId: Ref<string|null> = ref(null)
+    const accountId: Ref<string | null> = ref(null)
     const pageSize = ref(15)
     const transactionTableController = new TransactionTableControllerXL(router, accountId, pageSize, false)
     onMounted(() => transactionTableController.mount())
@@ -98,7 +98,7 @@ export default defineComponent({
       isSmallScreen,
       isTouchDevice,
       transactionTableController,
-      transactionType:transactionTableController.transactionType
+      transactionType: transactionTableController.transactionType
     }
   }
 });

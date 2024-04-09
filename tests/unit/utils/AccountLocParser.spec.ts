@@ -20,7 +20,7 @@
  *
  */
 
-import { describe, test, expect } from 'vitest'
+import {describe, test, expect} from 'vitest'
 import {Ref, ref} from "vue";
 import {flushPromises} from "@vue/test-utils";
 import {SAMPLE_ACCOUNT} from "../Mocks";
@@ -49,7 +49,7 @@ describe("AccountLocParser.ts", () => {
         mock.onGet(matcher1).reply(200, SAMPLE_ACCOUNT);
 
         // 0) Creates parser
-        const accountLoc: Ref<string|null> = ref(null)
+        const accountLoc: Ref<string | null> = ref(null)
         const parser = new AccountLocParser(accountLoc)
         await flushPromises()
         expect(parser.accountLoc.value).toBeNull()
@@ -186,7 +186,7 @@ describe("AccountLocParser.ts", () => {
         mock.onGet(matcher1).reply(200, SAMPLE_ACCOUNT);
 
         // 0) Creates parser
-        const accountLoc: Ref<string|null> = ref(null)
+        const accountLoc: Ref<string | null> = ref(null)
         const parser = new AccountLocParser(accountLoc)
         await flushPromises()
         expect(parser.accountLoc.value).toBeNull()
@@ -323,7 +323,7 @@ describe("AccountLocParser.ts", () => {
         mock.onGet(matcher1).reply(200, SAMPLE_ACCOUNT);
 
         // 0) Creates parser
-        const accountLoc: Ref<string|null> = ref(null)
+        const accountLoc: Ref<string | null> = ref(null)
         const parser = new AccountLocParser(accountLoc)
         await flushPromises()
         expect(parser.accountLoc.value).toBeNull()
@@ -460,7 +460,7 @@ describe("AccountLocParser.ts", () => {
         mock.onGet(matcher1).reply(200, SAMPLE_ACCOUNT);
 
         // 0) Creates parser
-        const accountLoc: Ref<string|null> = ref(null)
+        const accountLoc: Ref<string | null> = ref(null)
         const parser = new AccountLocParser(accountLoc)
         await flushPromises()
         expect(parser.accountLoc.value).toBeNull()
@@ -596,7 +596,7 @@ describe("AccountLocParser.ts", () => {
         mock.onGet(matcher1).reply(200, SAMPLE_ACCOUNT);
 
         // 0) Creates parser
-        const accountLoc: Ref<string|null> = ref(null)
+        const accountLoc: Ref<string | null> = ref(null)
         const parser = new AccountLocParser(accountLoc)
         await flushPromises()
         expect(parser.accountLoc.value).toBeNull()
@@ -733,7 +733,7 @@ describe("AccountLocParser.ts", () => {
         mock.onGet(matcher1).reply(404);
 
         // 0) Creates parser
-        const accountLoc: Ref<string|null> = ref(null)
+        const accountLoc: Ref<string | null> = ref(null)
         const parser = new AccountLocParser(accountLoc)
         await flushPromises()
         expect(parser.accountLoc.value).toBeNull()
@@ -871,7 +871,7 @@ describe("AccountLocParser.ts", () => {
         mock.onGet(matcher1).reply(404);
 
         // 0) Creates parser
-        const accountLoc: Ref<string|null> = ref(null)
+        const accountLoc: Ref<string | null> = ref(null)
         const parser = new AccountLocParser(accountLoc)
         await flushPromises()
         expect(parser.accountLoc.value).toBeNull()
@@ -1009,7 +1009,7 @@ describe("AccountLocParser.ts", () => {
         mock.onGet(matcher1).reply(404);
 
         // 0) Creates parser
-        const accountLoc: Ref<string|null> = ref(null)
+        const accountLoc: Ref<string | null> = ref(null)
         const parser = new AccountLocParser(accountLoc)
         await flushPromises()
         expect(parser.accountLoc.value).toBeNull()
@@ -1147,7 +1147,7 @@ describe("AccountLocParser.ts", () => {
         mock.onGet(matcher1).reply(404);
 
         // 0) Creates parser
-        const accountLoc: Ref<string|null> = ref(null)
+        const accountLoc: Ref<string | null> = ref(null)
         const parser = new AccountLocParser(accountLoc)
         await flushPromises()
         expect(parser.accountLoc.value).toBeNull()
@@ -1286,7 +1286,7 @@ describe("AccountLocParser.ts", () => {
         mock.onGet(matcher1).reply(404);
 
         // 0) Creates parser
-        const accountLoc: Ref<string|null> = ref(null)
+        const accountLoc: Ref<string | null> = ref(null)
         const parser = new AccountLocParser(accountLoc)
         await flushPromises()
         expect(parser.accountLoc.value).toBeNull()

@@ -30,7 +30,7 @@ describe("ByteCodeAnalyzer.spec.ts", () => {
     test("basic flow", async () => {
 
         // 1) new
-        const bytecode = ref<string|null>(null)
+        const bytecode = ref<string | null>(null)
         const analyzer = new ByteCodeAnalyzer(bytecode)
         expect(analyzer.byteCode.value).toBeNull()
         expect(analyzer.solcVersion.value).toBeNull()

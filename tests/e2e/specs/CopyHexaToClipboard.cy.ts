@@ -55,7 +55,7 @@ describe('Copy HexaValue to Clipboard', () => {
             .click()
 
         cy.window().its('navigator.clipboard')
-            .then ((clipboard) => clipboard.readText())
+            .then((clipboard) => clipboard.readText())
             .then(($txt) => {
                 // cy.log($txt)
                 cy.get('#transactionHashValue').should(($hash) => {

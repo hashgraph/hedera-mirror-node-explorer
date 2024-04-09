@@ -25,8 +25,8 @@ import {Ref, watch} from "vue";
 
 export abstract class AbstractTransactionDownloader extends EntityDownloader<Transaction, TransactionResponse> {
 
-    public readonly accountId: Ref<string|null>
-    public readonly transactionType: Ref<TransactionType|null>
+    public readonly accountId: Ref<string | null>
+    public readonly transactionType: Ref<TransactionType | null>
 
     protected readonly wrongSetupError = new Error("this.accountId or this.startDate not set")
 
@@ -34,10 +34,10 @@ export abstract class AbstractTransactionDownloader extends EntityDownloader<Tra
     // EntityDownloader
     //
 
-    protected async loadNext(nextURL: string|null): Promise<AxiosResponse<TransactionResponse>> {
+    protected async loadNext(nextURL: string | null): Promise<AxiosResponse<TransactionResponse>> {
 
         if (nextURL == null) {
-            if (this.accountId.value !== null && this.startDate.value !== null){
+            if (this.accountId.value !== null && this.startDate.value !== null) {
                 const startTimestamp = dateToTimestamp(this.startDate.value)
                 const endTimestamp = this.endDate.value !== null ? dateToTimestamp(this.endDate.value) : null
 
@@ -77,10 +77,10 @@ export abstract class AbstractTransactionDownloader extends EntityDownloader<Tra
     // Protected
     //
 
-    protected constructor(accountId: Ref<string|null>,
-                          transactionType: Ref<TransactionType|null>,
-                          startDate: Ref<Date|null>,
-                          endDate: Ref<Date|null>,
+    protected constructor(accountId: Ref<string | null>,
+                          transactionType: Ref<TransactionType | null>,
+                          startDate: Ref<Date | null>,
+                          endDate: Ref<Date | null>,
                           maxTransactionCount: number) {
         super(startDate, endDate, maxTransactionCount)
         this.accountId = accountId

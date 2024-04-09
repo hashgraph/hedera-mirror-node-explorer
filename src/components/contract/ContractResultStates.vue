@@ -135,11 +135,11 @@ export default defineComponent({
 
   setup(props) {
     const isSmallScreen = inject('isSmallScreen', true)
-    const sizeOptions:Array<number> = [5, 10, 15, 20, 30, 50, 100]
+    const sizeOptions: Array<number> = [5, 10, 15, 20, 30, 50, 100]
     const actualSizeOptions: Ref<Array<number>> = ref([])
 
     const currentPage = ref(1)
-    const pageSize = ref(AppStorage.getStatesTablePageSize() ??  DEFAULT_PAGE_SIZE)
+    const pageSize = ref(AppStorage.getStatesTablePageSize() ?? DEFAULT_PAGE_SIZE)
     watch(pageSize, () => {
       AppStorage.setStatesTablePageSize(pageSize.value)
       currentPage.value = 1
@@ -189,12 +189,12 @@ export default defineComponent({
             header: true,
             balanceChange: null,
             slotType: 'DECIMAL',
-            slotDecimal: makeDecimal(s.slot??""),
+            slotDecimal: makeDecimal(s.slot ?? ""),
             valueReadType: 'DECIMAL',
-            valueReadDecimal: makeDecimal(s.value_read??""),
+            valueReadDecimal: makeDecimal(s.value_read ?? ""),
             valueReadString: null,
             valueWrittenType: 'DECIMAL',
-            valueWrittenDecimal: makeDecimal(s.value_written??""),
+            valueWrittenDecimal: makeDecimal(s.value_written ?? ""),
             valueWrittenString: null,
             valueChange: null,
             index: result.length
@@ -224,7 +224,7 @@ export default defineComponent({
     const lookupTransfer = (contractId: string) => {
       let result = null
       const transaction = transactionLookup.entity.value
-      if (transaction !== null){
+      if (transaction !== null) {
         for (const t of transaction.transfers ?? []) {
           if (t.account === contractId) {
             result = t.amount

@@ -26,13 +26,13 @@ import {Router} from "vue-router";
 
 export class AccountTableController extends TableController<AccountInfo, string> {
 
-    private readonly pubKey: string|null
+    private readonly pubKey: string | null
 
     //
     // Public
     //
 
-    public constructor(router: Router, pageSize: ComputedRef<number>, pubKey: string|null = null) {
+    public constructor(router: Router, pageSize: ComputedRef<number>, pubKey: string | null = null) {
         super(router, pageSize, 10 * pageSize.value, 5000, 10, 100)
         this.pubKey = pubKey
     }
@@ -61,7 +61,7 @@ export class AccountTableController extends TableController<AccountInfo, string>
             return Promise.resolve(r.data.accounts ?? [])
         }
 
-        return  axios.get<AccountsResponse>("api/v1/accounts", {params: params}).then(cb)
+        return axios.get<AccountsResponse>("api/v1/accounts", {params: params}).then(cb)
     }
 
     public keyFor(row: AccountInfo): string {
@@ -72,7 +72,7 @@ export class AccountTableController extends TableController<AccountInfo, string>
         return account
     }
 
-    public keyFromString(s: string): string|null {
+    public keyFromString(s: string): string | null {
         return s
     }
 }

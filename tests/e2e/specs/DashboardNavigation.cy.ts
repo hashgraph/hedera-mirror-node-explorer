@@ -25,7 +25,7 @@ describe('Main Dashboard Navigation', () => {
 
     const defaultNetwork = 'mainnet'
 
-    beforeEach( () => {
+    beforeEach(() => {
         cy.visit('/')
         cy.url().should('include', '/' + defaultNetwork + '/dashboard')
     })

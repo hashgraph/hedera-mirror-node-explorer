@@ -79,7 +79,7 @@
     </o-table-column>
 
     <o-table-column v-slot="props" field="balance" label="Balance" position="right">
-      <HbarAmount  v-bind:amount="props.row.balance.balance ?? 0"/>
+      <HbarAmount v-bind:amount="props.row.balance.balance ?? 0"/>
     </o-table-column>
 
   </o-table>
@@ -115,7 +115,7 @@ export default defineComponent({
       type: Object as PropType<AccountTableController>,
       required: true
     },
-    narrowed:{
+    narrowed: {
       type: Boolean,
       default: false
     }

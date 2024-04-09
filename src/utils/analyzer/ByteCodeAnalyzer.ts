@@ -23,13 +23,13 @@ import {decode} from "@ethereum-sourcify/bytecode-utils";
 
 export class ByteCodeAnalyzer {
 
-    public readonly byteCode = ref<string|null>(null)
+    public readonly byteCode = ref<string | null>(null)
 
     //
     // Public
     //
 
-    public constructor(byteCode: Ref<string|null>) {
+    public constructor(byteCode: Ref<string | null>) {
         this.byteCode = byteCode
     }
 
@@ -40,7 +40,7 @@ export class ByteCodeAnalyzer {
     //
 
     private readonly decodedObject = computed(() => {
-        let result: DecodedObject|null
+        let result: DecodedObject | null
         if (this.byteCode.value) {
             try {
                 result = decode(this.byteCode.value)

@@ -58,7 +58,7 @@ export default defineComponent({
       return props.result && !isSuccessfulResult(props.result)
     })
 
-    return { transactionText, errorFlagVisible }
+    return {transactionText, errorFlagVisible}
   }
 
 })

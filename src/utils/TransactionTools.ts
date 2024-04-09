@@ -380,7 +380,7 @@ export function makeNetOfRewards(transfers: Transfer[] | undefined, rewards: Sta
     return result
 }
 
-export function getTargetedTokens(transaction: Transaction, nbItems: number|null = null): string[]  {
+export function getTargetedTokens(transaction: Transaction, nbItems: number | null = null): string[] {
     let result: string[]
     const type = transaction.name
     if (makeTypeLabel(type).toUpperCase().includes("TOKEN")) {

@@ -56,6 +56,7 @@ export abstract class CSVEncoder<E> {
     //
 
     protected abstract encodeEntity(entity: E): string[][]
+
     protected abstract encodeHeaderRow(): string[] | null
 
     //

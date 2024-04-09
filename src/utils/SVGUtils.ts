@@ -22,7 +22,6 @@ const STROKE_WIDTH = 1
 const STROKE_COLOR = "white"
 
 
-
 /*
 
         x0       x1       x2       x3       x4       x5       x6       x7       x8
@@ -52,8 +51,8 @@ export function makeTransferSVG(width: number, height: number, dy: number,
 }
 
 export function makeTransferPathZ(width: number, height: number, dy: number,
-                                 sourceCount: number, destCount: number,
-                                 rowIndex: number): string {
+                                  sourceCount: number, destCount: number,
+                                  rowIndex: number): string {
 
 
     const dx = width / 8.0
@@ -83,7 +82,7 @@ export function makeTransferPathZ(width: number, height: number, dy: number,
             // There is another source on the next row
             // Curve from (x2, y1) to (x3, yb)
             if (yb < yc) {
-                result += "M " + x2 + " " + y1 + "L " + x2 + " " + yc + " Q " + x2 + " " + yb  + " " + x3 + " " + yb + " "
+                result += "M " + x2 + " " + y1 + "L " + x2 + " " + yc + " Q " + x2 + " " + yb + " " + x3 + " " + yb + " "
             } else {
                 result += "M " + x2 + " " + y1 + " Q " + x2 + " " + yb + " " + x3 + " " + yc + " "
             }
@@ -125,12 +124,12 @@ export function makeTransferPathZ(width: number, height: number, dy: number,
 
     // Arrow
     if (rowIndex < destCount) {
-        const xu  = x8 - dx
+        const xu = x8 - dx
         const yu1 = yb - dx
         const yu2 = yb + dx
         result +=
             "M " + xu + " " + yu1 + " " +
-            "L " + x8 + " " + yb  + " " +
+            "L " + x8 + " " + yb + " " +
             "L " + xu + " " + yu2 + " "
     }
 

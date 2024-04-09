@@ -23,18 +23,18 @@
 <!-- --------------------------------------------------------------------------------------------------------------- -->
 
 <template>
-    <div class="is-flex is-justify-content-space-between is-align-items-center mt-5 mb-4">
-        <div class="tabs is-toggle h-is-property-text mb-1">
-            <ul>
-                <li v-for="(tab, i) in tabIds" :key="tab" :class="{'is-active':selection === tab}">
-                    <a :id="'tab-' + tab" :style="{fontWeight: selection === tab ? 500 : 300}"
-                       @click="handleSelect(tab)">
-                        <span>{{ tabLabels[i] ?? tab }}</span>
-                    </a>
-                </li>
-            </ul>
-        </div>
+  <div class="is-flex is-justify-content-space-between is-align-items-center mt-5 mb-4">
+    <div class="tabs is-toggle h-is-property-text mb-1">
+      <ul>
+        <li v-for="(tab, i) in tabIds" :key="tab" :class="{'is-active':selection === tab}">
+          <a :id="'tab-' + tab" :style="{fontWeight: selection === tab ? 500 : 300}"
+             @click="handleSelect(tab)">
+            <span>{{ tabLabels[i] ?? tab }}</span>
+          </a>
+        </li>
+      </ul>
     </div>
+  </div>
 </template>
 
 <!-- --------------------------------------------------------------------------------------------------------------- -->
@@ -46,47 +46,47 @@
 import {defineComponent, onMounted, PropType, ref} from "vue";
 
 export default defineComponent({
-    name: "Tabs",
+  name: "Tabs",
 
-    props: {
-        selectedTab: {
-            type: String,
-            required: true
-        },
-        tabIds: {
-            type: Array as PropType<string[]>,
-            required: true
-        },
-        tabLabels: {
-            type: Array as PropType<string[]>,
-            default: []
-        }
+  props: {
+    selectedTab: {
+      type: String,
+      required: true
     },
-
-    emits: ["update:selectedTab"],
-
-    setup(props, context) {
-
-        const selection = ref('')
-
-        onMounted(() => {
-            if (props.tabIds.includes(props.selectedTab)) {
-                selection.value = props.selectedTab
-            } else {
-                handleSelect(props.tabIds[0])
-            }
-        })
-
-        const handleSelect = (tab: string) => {
-            selection.value = tab
-            context.emit('update:selectedTab', tab)
-        }
-
-        return {
-            selection,
-            handleSelect,
-        }
+    tabIds: {
+      type: Array as PropType<string[]>,
+      required: true
+    },
+    tabLabels: {
+      type: Array as PropType<string[]>,
+      default: []
     }
+  },
+
+  emits: ["update:selectedTab"],
+
+  setup(props, context) {
+
+    const selection = ref('')
+
+    onMounted(() => {
+      if (props.tabIds.includes(props.selectedTab)) {
+        selection.value = props.selectedTab
+      } else {
+        handleSelect(props.tabIds[0])
+      }
+    })
+
+    const handleSelect = (tab: string) => {
+      selection.value = tab
+      context.emit('update:selectedTab', tab)
+    }
+
+    return {
+      selection,
+      handleSelect,
+    }
+  }
 });
 
 </script>

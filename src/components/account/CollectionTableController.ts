@@ -62,9 +62,9 @@ export class CollectionTableController extends TableController<Nft, number> {
             params.serialnumber = operator + ":" + serialNumber
         }
 
-        const { data } = await axios.get<Nfts>(
-          `api/v1/accounts/${this.accountId.value}/nfts`,
-          {params: params},
+        const {data} = await axios.get<Nfts>(
+            `api/v1/accounts/${this.accountId.value}/nfts`,
+            {params: params},
         )
 
         const nfts = data.nfts ?? null

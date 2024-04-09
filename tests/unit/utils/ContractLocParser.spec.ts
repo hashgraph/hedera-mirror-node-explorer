@@ -42,7 +42,7 @@ describe("ContractLocParser.ts", () => {
         mock.onGet(matcher1).reply(200, SAMPLE_CONTRACT);
 
         // 0) Creates parser
-        const contractLoc: Ref<string|null> = ref(null)
+        const contractLoc: Ref<string | null> = ref(null)
         const parser = new ContractLocParser(contractLoc)
         await flushPromises()
         expect(parser.contractLoc.value).toBeNull()
@@ -107,7 +107,7 @@ describe("ContractLocParser.ts", () => {
         mock.onGet(matcher1).reply(200, SAMPLE_CONTRACT);
 
         // 0) Creates parser
-        const contractLoc: Ref<string|null> = ref(null)
+        const contractLoc: Ref<string | null> = ref(null)
         const parser = new ContractLocParser(contractLoc)
         await flushPromises()
         expect(parser.contractLoc.value).toBeNull()
@@ -172,7 +172,7 @@ describe("ContractLocParser.ts", () => {
         mock.onGet(matcher1).reply(200, SAMPLE_CONTRACT);
 
         // 0) Creates parser
-        const contractLoc: Ref<string|null> = ref(null)
+        const contractLoc: Ref<string | null> = ref(null)
         const parser = new ContractLocParser(contractLoc)
         await flushPromises()
         expect(parser.contractLoc.value).toBeNull()
@@ -238,7 +238,7 @@ describe("ContractLocParser.ts", () => {
         mock.onGet(matcher1).reply(404);
 
         // 0) Creates parser
-        const contractLoc: Ref<string|null> = ref(null)
+        const contractLoc: Ref<string | null> = ref(null)
         const parser = new ContractLocParser(contractLoc)
         await flushPromises()
         expect(parser.contractLoc.value).toBeNull()
@@ -304,7 +304,7 @@ describe("ContractLocParser.ts", () => {
         mock.onGet(matcher1).reply(404);
 
         // 0) Creates parser
-        const contractLoc: Ref<string|null> = ref(null)
+        const contractLoc: Ref<string | null> = ref(null)
         const parser = new ContractLocParser(contractLoc)
         await flushPromises()
         expect(parser.contractLoc.value).toBeNull()
@@ -372,7 +372,7 @@ describe("ContractLocParser.ts", () => {
 
 
         // 0) Creates parser
-        const contractLoc: Ref<string|null> = ref(null)
+        const contractLoc: Ref<string | null> = ref(null)
         const parser = new ContractLocParser(contractLoc)
         await flushPromises()
         expect(parser.contractLoc.value).toBeNull()

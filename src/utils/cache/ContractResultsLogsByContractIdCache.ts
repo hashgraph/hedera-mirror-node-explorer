@@ -19,13 +19,13 @@
  */
 
 import axios from 'axios';
-import { EntityCache } from './base/EntityCache';
-import { ContractResultsLogResponse } from '@/schemas/HederaSchemas';
+import {EntityCache} from './base/EntityCache';
+import {ContractResultsLogResponse} from '@/schemas/HederaSchemas';
 
-export class ContractResultsLogsByContractIdCache extends EntityCache<string, ContractResultsLogResponse | null>{
+export class ContractResultsLogsByContractIdCache extends EntityCache<string, ContractResultsLogResponse | null> {
 
     public static readonly instance = new ContractResultsLogsByContractIdCache()
-    
+
     //
     // Cache
     //

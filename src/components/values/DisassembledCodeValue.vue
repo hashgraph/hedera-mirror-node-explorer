@@ -23,18 +23,18 @@
 <!-- --------------------------------------------------------------------------------------------------------------- -->
 
 <template>
-    <div v-if="disassembly" id="disassembly"
-         class="h-code-box h-has-page-background is-family-monospace mt-2 px-3 py-1"
-         style="max-height: 400px;">
+  <div v-if="disassembly" id="disassembly"
+       class="h-code-box h-has-page-background is-family-monospace mt-2 px-3 py-1"
+       style="max-height: 400px;">
     <div v-for="opcode in disassembly" v-if="disassembly && disassembly.length > 0" :key="opcode.index16">
-            <OpcodeValue :opcode="opcode" :show-hexa-opcode="showHexaOpcode"/>
-        </div>
-        <p v-else class="has-text-grey is-italic has-text-weight-medium">{{ disassembledError }}</p>
+      <OpcodeValue :opcode="opcode" :show-hexa-opcode="showHexaOpcode"/>
     </div>
+    <p v-else class="has-text-grey is-italic has-text-weight-medium">{{ disassembledError }}</p>
+  </div>
 
-    <span v-else-if="initialLoading"/>
+  <span v-else-if="initialLoading"/>
 
-    <span v-else class="has-text-grey">None</span>
+  <span v-else class="has-text-grey">None</span>
 
 </template>
 
@@ -51,41 +51,41 @@ import OpcodeValue from "@/components/values/OpcodeValue.vue";
 import {initialLoadingKey} from "@/AppKeys";
 
 export default defineComponent({
-    name: 'DisassembledCodeValue',
-    components: {OpcodeValue},
+  name: 'DisassembledCodeValue',
+  components: {OpcodeValue},
 
-    props: {
-        byteCode: {
-            type: String,
-            default: ""
-        },
-        showHexaOpcode: {
-            type: Boolean,
-            default: false
-        }
+  props: {
+    byteCode: {
+      type: String,
+      default: ""
     },
-
-    setup(props) {
-        const initialLoading = inject(initialLoadingKey, ref(false))
-
-        const isValidBytecode = computed(() => {
-            const BYTECODE_REGEX = /^(0x)?([0-9a-fA-F]{2})+$/;
-            return BYTECODE_REGEX.test(props.byteCode)
-        })
-
-        const disassembly = computed<DisassembledOpcodeOutput[] | null>(
-            () => isValidBytecode ? Disassembler.disassemble(props.byteCode) : null)
-
-        const disassembledError = computed<string | null>(() =>
-            isValidBytecode ? null : (props.byteCode === "" ? "No data found..." : "Invalid bytecode")
-        )
-
-        return {
-            initialLoading,
-            disassembly,
-            disassembledError,
-        }
+    showHexaOpcode: {
+      type: Boolean,
+      default: false
     }
+  },
+
+  setup(props) {
+    const initialLoading = inject(initialLoadingKey, ref(false))
+
+    const isValidBytecode = computed(() => {
+      const BYTECODE_REGEX = /^(0x)?([0-9a-fA-F]{2})+$/;
+      return BYTECODE_REGEX.test(props.byteCode)
+    })
+
+    const disassembly = computed<DisassembledOpcodeOutput[] | null>(
+        () => isValidBytecode ? Disassembler.disassemble(props.byteCode) : null)
+
+    const disassembledError = computed<string | null>(() =>
+        isValidBytecode ? null : (props.byteCode === "" ? "No data found..." : "Invalid bytecode")
+    )
+
+    return {
+      initialLoading,
+      disassembly,
+      disassembledError,
+    }
+  }
 });
 
 </script>

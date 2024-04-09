@@ -38,7 +38,7 @@ describe("Duration.ts", () => {
         expect(d.days).toBe(days)
         expect(formatSeconds(secondCount)).toBe(durationText)
         expect(formatSeconds(secondCount.toString())).toBe(durationText)
-   })
+    })
 
     test("42 days 42 seconds", () => {
         const seconds = 42

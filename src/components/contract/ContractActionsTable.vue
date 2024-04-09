@@ -69,7 +69,7 @@
 
       <o-table-column v-slot="props" field="amount" label="Amount">
         <div class="is-flex is-align-items-end is-align-content-end is-numeric">
-         <span style="font-size: 13px; margin-right: 2px">&#8594;</span>
+          <span style="font-size: 13px; margin-right: 2px">&#8594;</span>
           <HbarAmount :amount="props.row.action.value" :timestamp="props.row.action.timestamp" :show-extra="true"/>
           <span style="font-size: 13px; margin-left: 2px;: 2px">&#8594;</span>
         </div>
@@ -133,7 +133,7 @@ export default defineComponent({
 
   props: {
     actions: Array as PropType<Array<ContractActionWithPath> | undefined>,
-    expandedActions:  {
+    expandedActions: {
       type: Array as PropType<Array<ContractActionWithPath>>,
       default: () => []
     },
@@ -149,7 +149,7 @@ export default defineComponent({
     const isMediumScreen = inject('isMediumScreen', true)
     const isLargeScreen = inject('isLargeScreen', true)
 
-    const isPaginated = computed(() => (props.actions?.length??0) > NB_ACTIONS_PER_PAGE)
+    const isPaginated = computed(() => (props.actions?.length ?? 0) > NB_ACTIONS_PER_PAGE)
 
     const isSuccessful = (action: ContractAction) => action.result_data_type == "OUTPUT"
 

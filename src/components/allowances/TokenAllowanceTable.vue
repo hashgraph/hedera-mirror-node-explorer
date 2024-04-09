@@ -64,9 +64,10 @@
 
     <o-table-column v-if="isWalletConnected" v-slot="props">
         <span v-if="props.row.isEditable" class="icon is-small">
-            <i  class="fa fa-pen" @click="$emit('editAllowance', props.row)"></i>
+            <i class="fa fa-pen" @click="$emit('editAllowance', props.row)"></i>
         </span>
-        <InfoTooltip v-else label="The allowance cannot be modified because the token is no longer associated with this account."/>
+      <InfoTooltip v-else
+                   label="The allowance cannot be modified because the token is no longer associated with this account."/>
     </o-table-column>
 
   </o-table>
@@ -94,7 +95,7 @@ import {walletManager} from "@/router";
 import InfoTooltip from "@/components/InfoTooltip.vue";
 
 interface DisplayedTokenAllowance extends TokenAllowance {
-    isEditable: boolean
+  isEditable: boolean
 }
 
 export default defineComponent({
@@ -124,13 +125,13 @@ export default defineComponent({
     // const isWalletConnected = computed(() => false)
 
     const allowances = computed<DisplayedTokenAllowance[]>(() => {
-        const result = []
-        for (const a of props.controller.rows.value) {
-            let allowance: DisplayedTokenAllowance = a as DisplayedTokenAllowance
-            isTokenAllowanceEditable(a).then((r) => allowance.isEditable = r)
-            result.push(allowance)
-        }
-        return result
+      const result = []
+      for (const a of props.controller.rows.value) {
+        let allowance: DisplayedTokenAllowance = a as DisplayedTokenAllowance
+        isTokenAllowanceEditable(a).then((r) => allowance.isEditable = r)
+        result.push(allowance)
+      }
+      return result
     })
 
     return {

@@ -30,13 +30,13 @@ export class VerifiedContractsBuffer {
     private maxIterations: number
     private candidates: Contract[] = []
     private verifiedAddresses: string[] = []
-    private readonly accountId: string|null
+    private readonly accountId: string | null
 
     public contracts: Contract[] = []
     public capacity: number
     public overflow = false
 
-    public constructor(accountId: string|null = null, capacity = VerifiedContractsBuffer.DEFAULT_CAPACITY) {
+    public constructor(accountId: string | null = null, capacity = VerifiedContractsBuffer.DEFAULT_CAPACITY) {
         this.accountId = accountId
         this.capacity = capacity
         this.maxIterations = Math.ceil(capacity / VerifiedContractsBuffer.ITERATION_LIMIT)

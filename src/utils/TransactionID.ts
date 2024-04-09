@@ -31,18 +31,18 @@ export class TransactionID {
     // Public
     //
 
-    public static parse(value: string): TransactionID|null {
+    public static parse(value: string): TransactionID | null {
         // 0.0.88-1640084590-665216882                      useArobas == false
         // 0.0.88@1640084590.665216882                      useArobas == true
         // 00881640084590665216882
 
-        let result: TransactionID|null
+        let result: TransactionID | null
 
         const useArobas = value.indexOf("@") >= 0
         const sep1 = useArobas ? "@" : "-"
         const sep2 = useArobas ? "." : "-"
         const i1 = value.indexOf(sep1)
-        const i2 = i1 != -1 ? value.indexOf(sep2, i1+1) : -1
+        const i2 = i1 != -1 ? value.indexOf(sep2, i1 + 1) : -1
 
         if (i1 != -1 && i2 != -1) {
             const s0 = value.substring(0, i1)
@@ -51,7 +51,7 @@ export class TransactionID {
             const v0 = EntityID.parse(s0)
             const v1 = EntityID.parsePositiveInt(s1)
             const v2 = EntityID.parsePositiveInt(s2)
-            if (v0 == null || v1 == null || v2 == null ) {
+            if (v0 == null || v1 == null || v2 == null) {
                 result = null;
             } else {
                 result = new TransactionID(v0, v1, v2)
@@ -69,7 +69,7 @@ export class TransactionID {
                     const v0 = EntityID.parse("0.0." + s0.substring(2))
                     const v1 = EntityID.parsePositiveInt(s1)
                     const v2 = EntityID.parsePositiveInt(s2)
-                    if (v0 == null || v1 == null || v2 == null ) {
+                    if (v0 == null || v1 == null || v2 == null) {
                         result = null;
                     } else {
                         result = new TransactionID(v0, v1, v2)
@@ -90,7 +90,7 @@ export class TransactionID {
     public toString(useArobas = true): string {
         const sep1 = useArobas ? "@" : "-"
         const sep2 = useArobas ? "." : "-"
-        return  this.entityID.toString() + sep1 + this.seconds + sep2 + this.nanoSeconds.toString().padStart(9, '0')
+        return this.entityID.toString() + sep1 + this.seconds + sep2 + this.nanoSeconds.toString().padStart(9, '0')
     }
 
     public static normalize(transactionID: string, useArobas = true): string {
@@ -100,7 +100,7 @@ export class TransactionID {
 
     public static makePayerID(transactionID: string): string | null {
         const tid = TransactionID.parse(transactionID)
-        return tid != null ? tid.entityID.toString(): null
+        return tid != null ? tid.entityID.toString() : null
     }
 
     //

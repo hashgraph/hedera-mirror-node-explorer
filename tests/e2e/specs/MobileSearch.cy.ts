@@ -25,7 +25,7 @@ import {normalizeTransactionId} from "../../../src/utils/TransactionID";
 
 describe('Search Bar', () => {
 
-    beforeEach( () => {
+    beforeEach(() => {
         cy.viewport(700, 800)
         cy.visit('/mainnet/dashboard')
         cy.url().should('include', '/mainnet/dashboard')
@@ -203,7 +203,7 @@ const testBody = (searchID: string,
                   searchString: string = null) => {
     cy.get('[data-cy=searchBar]').within(() => {
         if (searchString !== null) {
-            cy.get('input').type(searchString )
+            cy.get('input').type(searchString)
         } else {
             cy.get('input').type(searchID)
         }

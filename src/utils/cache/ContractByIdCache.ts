@@ -23,7 +23,7 @@ import {EntityCache} from "@/utils/cache/base/EntityCache";
 import axios from "axios";
 import {ContractByAddressCache} from "@/utils/cache/ContractByAddressCache";
 
-export class ContractByIdCache extends EntityCache<string, ContractResponse|null> {
+export class ContractByIdCache extends EntityCache<string, ContractResponse | null> {
 
     public static readonly instance = new ContractByIdCache()
 
@@ -43,12 +43,12 @@ export class ContractByIdCache extends EntityCache<string, ContractResponse|null
     //
 
     protected async load(key: string): Promise<ContractResponse | null> {
-        let result: Promise<ContractResponse|null>
+        let result: Promise<ContractResponse | null>
         try {
             const response = await axios.get<ContractResponse>("api/v1/contracts/" + key)
             result = Promise.resolve(response.data)
             ContractByAddressCache.instance.updateWithContractResponse(response.data)
-        } catch(error) {
+        } catch (error) {
             if (axios.isAxiosError(error) && error.response?.status == 404) {
                 result = Promise.resolve(null)
             } else {

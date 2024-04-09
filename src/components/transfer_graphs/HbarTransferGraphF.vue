@@ -72,7 +72,7 @@
         </template>
 
         <!-- #3 : arrow -->
-        <div  style="position: relative">
+        <div style="position: relative">
           <ArrowSegment
               v-bind:source-count="hbarTransferLayout.sources.length"
               v-bind:dest-count="hbarTransferLayout.destinations.length"

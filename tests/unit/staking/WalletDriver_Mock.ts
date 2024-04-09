@@ -74,11 +74,11 @@ export class WalletDriver_Mock extends WalletDriver_Hedera {
     // WalletDriver_Hedera
     //
 
-    public makeSigner(accountId: string): Signer|null {
+    public makeSigner(accountId: string): Signer | null {
         return null
     }
 
-    protected async executeTransaction(accountId: string, request: AccountUpdateTransaction|AccountAllowanceApproveTransaction): Promise<string> {
+    protected async executeTransaction(accountId: string, request: AccountUpdateTransaction | AccountAllowanceApproveTransaction): Promise<string> {
         let result: string
 
         this.updateAccountCounter += 1

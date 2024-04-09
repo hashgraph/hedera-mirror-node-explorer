@@ -75,7 +75,7 @@
           </template>
 
           <!-- #3 : arrow -->
-          <div  style="position: relative">
+          <div style="position: relative">
             <ArrowSegment
                 v-bind:source-count="tokenTransferLayout[s-1].sources.length"
                 v-bind:dest-count="tokenTransferLayout[s-1].destinations.length"
@@ -110,7 +110,7 @@
             <!-- #7 : description -->
             <div>
               <template v-if="i <= tokenTransferLayout[s-1].descriptions.length">
-                <span  class="h-is-smaller">{{ tokenTransferLayout[s-1].descriptions[i-1] }}</span>
+                <span class="h-is-smaller">{{ tokenTransferLayout[s-1].descriptions[i-1] }}</span>
               </template>
             </div>
           </template>

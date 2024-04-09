@@ -54,7 +54,7 @@ export default defineComponent({
 
   setup() {
     const initialLoading = inject(initialLoadingKey, ref(false))
-    return { initialLoading }
+    return {initialLoading}
   }
 })
 

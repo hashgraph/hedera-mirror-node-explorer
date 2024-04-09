@@ -26,7 +26,7 @@ import {
 
 export class RewardTransferLayout {
 
-    public readonly transaction: Transaction|undefined
+    public readonly transaction: Transaction | undefined
     public readonly destinations = Array<StakingRewardTransfer>()
     public readonly rewardAmount: number
 
@@ -34,7 +34,7 @@ export class RewardTransferLayout {
     // Public
     //
 
-    public constructor(transaction: Transaction|undefined) {
+    public constructor(transaction: Transaction | undefined) {
 
         this.transaction = transaction
         this.rewardAmount = 0

@@ -55,7 +55,7 @@ describe("TokenInfoAnalyzer.spec.ts", () => {
         mock.onGet(matcher1).reply(200, response1)
 
         // 1) new
-        const tokenInfo = ref<TokenInfo|null>(null)
+        const tokenInfo = ref<TokenInfo | null>(null)
         const analyzer = new TokenInfoAnalyzer(tokenInfo)
         expect(analyzer.tokenId.value).toBeNull()
         expect(analyzer.ethereumAddress.value).toBeNull()

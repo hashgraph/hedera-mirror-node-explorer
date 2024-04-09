@@ -24,7 +24,7 @@ export class NFTTransferLayout {
 
     public readonly receiver_account_id: string | null | undefined
     public readonly sender_account_id: string | null | undefined
-    public readonly token_id: string |null
+    public readonly token_id: string | null
     public readonly serial_numbers = Array<number>()
     public readonly description: string
 
@@ -32,7 +32,7 @@ export class NFTTransferLayout {
     // Public
     //
 
-    public static make(transaction: TransactionDetail|undefined): Array<NFTTransferLayout> {
+    public static make(transaction: TransactionDetail | undefined): Array<NFTTransferLayout> {
 
         const transfers = transaction?.nft_transfers ?? []
         transfers.sort(compareNftTransfer)

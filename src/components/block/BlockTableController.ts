@@ -54,7 +54,7 @@ export class BlockTableController extends TableController<Block, number> {
             return Promise.resolve(r.data.blocks ?? [])
         }
 
-        return  axios.get<BlocksResponse>("api/v1/blocks", {params: params}).then(cb)
+        return axios.get<BlocksResponse>("api/v1/blocks", {params: params}).then(cb)
     }
 
     public keyFor(row: Block): number {

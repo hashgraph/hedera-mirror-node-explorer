@@ -141,7 +141,7 @@ describe('Account Navigation', () => {
             })
     })
 
-    it ('should follow link to reward transaction', () => {
+    it('should follow link to reward transaction', () => {
         const accountID = "0.0.592746"
         cy.visit('mainnet/account/' + accountID)
         cy.url().should('include', '/mainnet/account/' + accountID)
@@ -164,7 +164,7 @@ describe('Account Navigation', () => {
         cy.contains('0.0.800')
     })
 
-    it ('should follow link to recent created contract', () => {
+    it('should follow link to recent created contract', () => {
         const accountID = "0.0.902"
         cy.visit('testnet/account/' + accountID)
         cy.url().should('include', '/testnet/account/' + accountID)
@@ -187,14 +187,14 @@ describe('Account Navigation', () => {
         cy.contains(accountID)
     })
 
-    it ('should display account details using account ID', () => {
+    it('should display account details using account ID', () => {
         const accountID = "0.0.592746"
         cy.visit('mainnet/account/' + accountID)
         cy.url().should('include', '/mainnet/account/' + accountID)
         cy.contains('Account ID:' + accountID)
     })
 
-    it.skip ('should display account details using account base32 alias', () => {
+    it.skip('should display account details using account base32 alias', () => {
         const accountID = "0.0.592746"
         const accountAlias = "HIQQGOGHZGVM3E7KT47Z6VQYY2TTYY3USZUDJGVSRLYRUR5J72ZD6PI4"
         cy.visit('mainnet/account/' + accountAlias)
@@ -202,7 +202,7 @@ describe('Account Navigation', () => {
         cy.contains('Account ID:' + accountID)
     })
 
-    it.skip ('should display account details using account hex alias', () => {
+    it.skip('should display account details using account hex alias', () => {
         const accountID = "0.0.46022656"
         const accountAliasInHex = "0x3a210338c7c9aacd93ea9f3f9f5618c6a73c63749668349ab28af11a47a9feb23f3d1c"
         cy.visit('testnet/account/' + accountAliasInHex)
@@ -210,7 +210,7 @@ describe('Account Navigation', () => {
         cy.contains('Account ID:' + accountID)
     })
 
-    it ('should display account details using account evm address', () => {
+    it('should display account details using account evm address', () => {
         const accountID = "0.0.592746"
         const evmAddress = "0x0000000000000000000000000000000000090b6a"
 

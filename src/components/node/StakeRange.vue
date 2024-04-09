@@ -34,7 +34,7 @@
     </div>
 
     <div class="is-flex">
-        <img alt="Minimum staking mark" src="@/assets/min-mark.png"
+      <img alt="Minimum staking mark" src="@/assets/min-mark.png"
            class="image" style="max-height: 8px" :style="{'margin-left': minStakePix}">
       <img alt="Maximum staking mark" src="@/assets/max-mark.png"
            class="image" style="max-height: 8px" :style="{'margin-left': maxStakePix}">
@@ -67,8 +67,8 @@ export default defineComponent({
   props: {
     node: Object as PropType<NetworkNode | undefined>,
     networkAnalyzer: {
-        type: Object as PropType<NetworkAnalyzer>,
-        required: true
+      type: Object as PropType<NetworkAnalyzer>,
+      required: true
     }
   },
 
@@ -174,6 +174,7 @@ export default defineComponent({
   top: 0rem;
   left: 0rem;
 }
+
 .miniBar {
   height: 0.5rem;
   border: 1px solid grey;

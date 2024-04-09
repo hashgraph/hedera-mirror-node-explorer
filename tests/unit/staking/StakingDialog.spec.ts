@@ -83,8 +83,8 @@ describe("StakingDialog.vue", () => {
         mock.onGet(matcher1).reply(200, SAMPLE_ACCOUNT)
         const matcher2 = "/api/v1/network/nodes"
         for (const node of SAMPLE_NETWORK_NODES.nodes) {
-            const body = { params: { "node.id": node.node_id }}
-            const response = { nodes: [ node ]}
+            const body = {params: {"node.id": node.node_id}}
+            const response = {nodes: [node]}
             mock.onGet(matcher2, body).reply(200, response)
         }
         mock.onGet(matcher2).reply(200, SAMPLE_NETWORK_NODES)
@@ -189,8 +189,8 @@ describe("StakingDialog.vue", () => {
         mock.onGet(matcher1).reply(200, SAMPLE_ACCOUNT)
         const matcher2 = "/api/v1/network/nodes"
         for (const node of SAMPLE_NETWORK_NODES.nodes) {
-            const body = { params: { "node.id": node.node_id }}
-            const response = { nodes: [ node ]}
+            const body = {params: {"node.id": node.node_id}}
+            const response = {nodes: [node]}
             mock.onGet(matcher2, body).reply(200, response)
         }
         mock.onGet(matcher2).reply(200, SAMPLE_NETWORK_NODES)

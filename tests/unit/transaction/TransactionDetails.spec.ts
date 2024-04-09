@@ -85,7 +85,7 @@ describe("TransactionDetails.vue", () => {
         const matcher11 = "/api/v1/transactions"
         mock.onGet(matcher11).reply((config: AxiosRequestConfig) => {
             if (config.params.timestamp == SAMPLE_TRANSACTION.consensus_timestamp) {
-                return [200, { transactions: [SAMPLE_TRANSACTION]}]
+                return [200, {transactions: [SAMPLE_TRANSACTION]}]
             } else {
                 return [404]
             }
@@ -175,11 +175,11 @@ describe("TransactionDetails.vue", () => {
         mock.onGet(matcher2).reply(200, SAMPLE_CONTRACT)
 
 
-        const param3 = { timestamp: timestamp, internal: true }
+        const param3 = {timestamp: timestamp, internal: true}
         const matcher3 = "/api/v1/contracts/results"
         mock.onGet(matcher3, param3).reply(200, {
-            results: [ SAMPLE_CONTRACT_RESULT_DETAILS ], "links": {"next": null}
-        } );
+            results: [SAMPLE_CONTRACT_RESULT_DETAILS], "links": {"next": null}
+        });
 
         const matcher4 = "/api/v1/contracts/" + SAMPLE_CONTRACT_RESULT_DETAILS.contract_id + "/results/" + timestamp
         mock.onGet(matcher4).reply(200, SAMPLE_CONTRACT_RESULT_DETAILS);
@@ -263,7 +263,7 @@ describe("TransactionDetails.vue", () => {
 
         const mock = new MockAdapter(axios)
         const matcher1 = "/api/v1/transactions/" + transactionHash
-        mock.onGet(matcher1).reply(200, { transactions: [SAMPLE_TRANSACTION]});
+        mock.onGet(matcher1).reply(200, {transactions: [SAMPLE_TRANSACTION]});
         const matcher11 = "/api/v1/transactions/" + transactionId
         mock.onGet(matcher11).reply(200, SAMPLE_CONTRACTCALL_TRANSACTIONS);
         const matcher12 = "/api/v1/transactions"
@@ -278,11 +278,11 @@ describe("TransactionDetails.vue", () => {
         const matcher2 = "/api/v1/contracts/" + contractId
         mock.onGet(matcher2).reply(200, SAMPLE_CONTRACT)
 
-        const param3 = { timestamp: timestamp, internal: true }
+        const param3 = {timestamp: timestamp, internal: true}
         const matcher3 = "/api/v1/contracts/results"
         mock.onGet(matcher3, param3).reply(200, {
-            results: [ SAMPLE_CONTRACT_RESULT_DETAILS ], "links": {"next": null}
-        } );
+            results: [SAMPLE_CONTRACT_RESULT_DETAILS], "links": {"next": null}
+        });
 
         const matcher4 = "/api/v1/contracts/" + SAMPLE_CONTRACT_RESULT_DETAILS.contract_id + "/results/" + timestamp
         mock.onGet(matcher4).reply(200, SAMPLE_CONTRACT_RESULT_DETAILS);
@@ -729,41 +729,41 @@ describe("TransactionDetails.vue", () => {
 
     it("Should NOT display a link to the parent transaction", async () => {
 
-            await router.push("/") // To avoid "missing required param 'network'" error
+        await router.push("/") // To avoid "missing required param 'network'" error
 
-            const mock = new MockAdapter(axios)
-            const NONCE_1 = SAMPLE_SAME_ID_NOT_PARENT_TRANSACTIONS.transactions[1]
-            const matcher1 = "/api/v1/transactions"
-            mock.onGet(matcher1).reply((config: AxiosRequestConfig) => {
-                if (config.params.timestamp == NONCE_1.consensus_timestamp) {
-                    return [200, {transactions: [NONCE_1]}]
-                } else {
-                    return [404]
-                }
-            });
-            const matcher11 = "/api/v1/transactions/" + NONCE_1.transaction_id
-            mock.onGet(matcher11).reply(200, SAMPLE_SAME_ID_NOT_PARENT_TRANSACTIONS);
-
-            const wrapper = mount(TransactionDetails, {
-                global: {
-                    plugins: [router, Oruga]
-                },
-                props: {
-                    transactionLoc: NONCE_1.consensus_timestamp,
-                },
-            });
-
-            await flushPromises()
-            // console.log(wrapper.html())
-            // console.log(wrapper.text())
-
-            expect(wrapper.text()).toMatch(RegExp("^Transaction " + normalizeTransactionId(NONCE_1.transaction_id, true)))
-            expect(wrapper.find("#parentTransaction").exists()).toBe(false)
-
-            wrapper.unmount()
-            await flushPromises()
-            mock.restore()
+        const mock = new MockAdapter(axios)
+        const NONCE_1 = SAMPLE_SAME_ID_NOT_PARENT_TRANSACTIONS.transactions[1]
+        const matcher1 = "/api/v1/transactions"
+        mock.onGet(matcher1).reply((config: AxiosRequestConfig) => {
+            if (config.params.timestamp == NONCE_1.consensus_timestamp) {
+                return [200, {transactions: [NONCE_1]}]
+            } else {
+                return [404]
+            }
         });
+        const matcher11 = "/api/v1/transactions/" + NONCE_1.transaction_id
+        mock.onGet(matcher11).reply(200, SAMPLE_SAME_ID_NOT_PARENT_TRANSACTIONS);
+
+        const wrapper = mount(TransactionDetails, {
+            global: {
+                plugins: [router, Oruga]
+            },
+            props: {
+                transactionLoc: NONCE_1.consensus_timestamp,
+            },
+        });
+
+        await flushPromises()
+        // console.log(wrapper.html())
+        // console.log(wrapper.text())
+
+        expect(wrapper.text()).toMatch(RegExp("^Transaction " + normalizeTransactionId(NONCE_1.transaction_id, true)))
+        expect(wrapper.find("#parentTransaction").exists()).toBe(false)
+
+        wrapper.unmount()
+        await flushPromises()
+        mock.restore()
+    });
 
     it("Should display transaction details with account/token association", async () => {
 
@@ -775,11 +775,11 @@ describe("TransactionDetails.vue", () => {
 
         const mock = new MockAdapter(axios)
         const matcher1 = "/api/v1/transactions/" + transaction.transaction_id
-        mock.onGet(matcher1).reply(200, { transactions: [transaction]});
+        mock.onGet(matcher1).reply(200, {transactions: [transaction]});
         const matcher11 = "/api/v1/transactions"
         mock.onGet(matcher11).reply((config: AxiosRequestConfig) => {
             if (config.params.timestamp == transaction.consensus_timestamp) {
-                return [200, { transactions: [transaction]}]
+                return [200, {transactions: [transaction]}]
             } else {
                 return [404]
             }
@@ -1038,11 +1038,11 @@ describe("TransactionDetails.vue", () => {
             "nonce": 29
         }
 
-        const param3 = { timestamp: timestamp, internal: true }
+        const param3 = {timestamp: timestamp, internal: true}
         const matcher3 = "/api/v1/contracts/results"
         mock.onGet(matcher3, param3).reply(200, {
-            results: [ result ], "links": {"next": null}
-        } );
+            results: [result], "links": {"next": null}
+        });
 
         const matcher4 = "/api/v1/contracts/" + result.contract_id + "/results/" + timestamp
         mock.onGet(matcher4).reply(200, result);
@@ -1069,7 +1069,7 @@ describe("TransactionDetails.vue", () => {
 
         const matcher5 = "/api/v1/contracts/results/" + result.hash + "/actions?limit=100"
         mock.onGet(matcher5).reply(200, {
-            actions: [ action ], "links": {"next": null}
+            actions: [action], "links": {"next": null}
         })
 
         const wrapper = mount(TransactionDetails, {
@@ -1121,11 +1121,11 @@ describe("TransactionDetails.vue", () => {
         const mock = new MockAdapter(axios)
         const transaction = SAMPLE_FILE_UPDATE_TRANSACTION
         const matcher1 = "/api/v1/transactions/" + transaction.transaction_id
-        mock.onGet(matcher1).reply(200, { transactions: [transaction]});
+        mock.onGet(matcher1).reply(200, {transactions: [transaction]});
         const matcher11 = "/api/v1/transactions"
         mock.onGet(matcher11).reply((config: AxiosRequestConfig) => {
             if (config.params.timestamp == transaction.consensus_timestamp) {
-                return [200, { transactions: [transaction]}]
+                return [200, {transactions: [transaction]}]
             } else {
                 return [404]
             }
@@ -1170,13 +1170,13 @@ describe("TransactionDetails.vue", () => {
         const matcher11 = "/api/v1/transactions"
         mock.onGet(matcher11).reply((config: AxiosRequestConfig) => {
             if (config.params.timestamp == SAMPLE_TRANSACTION.consensus_timestamp) {
-                return [200, { transactions: [SAMPLE_TRANSACTION]}]
+                return [200, {transactions: [SAMPLE_TRANSACTION]}]
             } else {
                 return [404]
             }
         });
         const matcher111 = "/api/v1/blocks"
-        mock.onGet(matcher111).reply(200, { blocks: [SAMPLE_BLOCK_ZERO]});
+        mock.onGet(matcher111).reply(200, {blocks: [SAMPLE_BLOCK_ZERO]});
         const matcher2 = "/api/v1/tokens/" + SAMPLE_TOKEN.token_id
         mock.onGet(matcher2).reply(200, SAMPLE_TOKEN);
 

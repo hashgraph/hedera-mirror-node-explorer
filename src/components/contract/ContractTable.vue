@@ -103,7 +103,7 @@ export default defineComponent({
       type: Object as PropType<ContractTableController>,
       required: true
     },
-    narrowed:{
+    narrowed: {
       type: Boolean,
       default: false
     }

@@ -25,9 +25,9 @@
 <template>
   <template v-if="transaction">
     <NftTransferGraphSection
-      v-if="shouldGraph"
-      v-bind:transaction="transactionDetail"
-      v-bind:compact="true"
+        v-if="shouldGraph"
+        v-bind:transaction="transactionDetail"
+        v-bind:compact="true"
     />
     <div v-else-if="isTokenAssociation">
       {{ transaction?.sender_account_id }}
@@ -35,8 +35,8 @@
                 <i class="fas fa-link mr-1 has-text-grey"></i>
                 <TokenExtra :token-id="tokens[0]" :show-name="false"/>
                 <span
-                  v-if="additionalTokensNumber"
-                  class="h-is-smaller h-is-extra-text should-wrap"
+                    v-if="additionalTokensNumber"
+                    class="h-is-smaller h-is-extra-text should-wrap"
                 >
                     {{ " ( + " + additionalTokensNumber + " more )" }}
                 </span>
@@ -55,15 +55,15 @@
 
 <script lang="ts">
 import {
-    computed,
-    defineComponent,
-    onBeforeUnmount,
-    onMounted,
-    PropType,
+  computed,
+  defineComponent,
+  onBeforeUnmount,
+  onMounted,
+  PropType,
 } from "vue"
 import {
-    NftTransactionTransfer,
-    TransactionType,
+  NftTransactionTransfer,
+  TransactionType,
 } from "@/schemas/HederaSchemas"
 import {makeSummaryLabel} from "@/utils/TransactionTools"
 import NftTransferGraphSection from "@/components/transfer_graphs/NftTransferGraphSection.vue"
@@ -71,51 +71,51 @@ import TokenExtra from "@/components/values/TokenExtra.vue"
 import {NftTransactionAnalyzer} from "./NftTransactionAnalyzer"
 
 const GRAPH_TRANSACTION_TYPES = [
-    TransactionType.CRYPTOTRANSFER,
-    TransactionType.TOKENBURN,
-    TransactionType.TOKENMINT,
+  TransactionType.CRYPTOTRANSFER,
+  TransactionType.TOKENBURN,
+  TransactionType.TOKENMINT,
 ]
 
 export default defineComponent({
-    name: "NftTransactionSummary",
-    components: {TokenExtra, NftTransferGraphSection},
-    props: {
-        transaction: Object as PropType<NftTransactionTransfer | undefined>,
-    },
+  name: "NftTransactionSummary",
+  components: {TokenExtra, NftTransferGraphSection},
+  props: {
+    transaction: Object as PropType<NftTransactionTransfer | undefined>,
+  },
 
-    setup(props) {
-        const shouldGraph = computed(() => {
-            return (
-                props.transaction?.type &&
-                GRAPH_TRANSACTION_TYPES.indexOf(props.transaction.type) != -1
-            )
-        })
+  setup(props) {
+    const shouldGraph = computed(() => {
+      return (
+          props.transaction?.type &&
+          GRAPH_TRANSACTION_TYPES.indexOf(props.transaction.type) != -1
+      )
+    })
 
-        const transactionAnalyzer = new NftTransactionAnalyzer(
-            computed(() => props.transaction ?? null),
-        )
-        onMounted(() => transactionAnalyzer.mount())
-        onBeforeUnmount(() => transactionAnalyzer.unmount())
+    const transactionAnalyzer = new NftTransactionAnalyzer(
+        computed(() => props.transaction ?? null),
+    )
+    onMounted(() => transactionAnalyzer.mount())
+    onBeforeUnmount(() => transactionAnalyzer.unmount())
 
-        const additionalTokensNumber = computed(() =>
-            Math.max(0, transactionAnalyzer.tokens.value.length - 1),
-        )
+    const additionalTokensNumber = computed(() =>
+        Math.max(0, transactionAnalyzer.tokens.value.length - 1),
+    )
 
-        const transactionDetail = computed(() => {
-            return props.transaction
-        })
+    const transactionDetail = computed(() => {
+      return props.transaction
+    })
 
-        return {
-            shouldGraph,
-            isTokenAssociation: transactionAnalyzer.isTokenAssociation,
-            tokens: transactionAnalyzer.tokens,
-            additionalTokensNumber,
-            // From TransactionTools
-            makeSummaryLabel,
-            TransactionType,
-            transactionDetail,
-        }
-    },
+    return {
+      shouldGraph,
+      isTokenAssociation: transactionAnalyzer.isTokenAssociation,
+      tokens: transactionAnalyzer.tokens,
+      additionalTokensNumber,
+      // From TransactionTools
+      makeSummaryLabel,
+      TransactionType,
+      transactionDetail,
+    }
+  },
 })
 </script>
 

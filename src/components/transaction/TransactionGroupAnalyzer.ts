@@ -23,13 +23,13 @@ import {TransactionDetail, TransactionType} from "@/schemas/HederaSchemas";
 
 export class TransactionGroupAnalyzer {
 
-    public readonly transactions: Ref<TransactionDetail[]|null>
+    public readonly transactions: Ref<TransactionDetail[] | null>
 
     //
     // Public
     //
 
-    public constructor(transactions: Ref<TransactionDetail[]|null>) {
+    public constructor(transactions: Ref<TransactionDetail[] | null>) {
         this.transactions = transactions
     }
 
@@ -70,7 +70,7 @@ export class TransactionGroupAnalyzer {
     })
 
     public readonly schedulingTransaction = computed(() => {
-        let result: TransactionDetail|null = null
+        let result: TransactionDetail | null = null
         if (this.transactions.value !== null && this.transactions.value.length == 2) {
             for (const t of this.transactions.value) {
                 if (t.name === TransactionType.SCHEDULECREATE) {

@@ -27,23 +27,23 @@ export abstract class EntityLoader<E> {
     private readonly responseRef: Ref<AxiosResponse<E> | null> = ref(null)
     private readonly errorRef: Ref<unknown> = ref(null)
     private sessionId = 0
-    private watchStopHandle: WatchStopHandle|null = null
+    private watchStopHandle: WatchStopHandle | null = null
 
     //
     // Public
     //
 
-    public response: ComputedRef<AxiosResponse<E>|null> = computed(() => this.responseRef.value)
-    public entity: ComputedRef<E|null> = computed(() => this.responseRef.value?.data ?? null)
+    public response: ComputedRef<AxiosResponse<E> | null> = computed(() => this.responseRef.value)
+    public entity: ComputedRef<E | null> = computed(() => this.responseRef.value?.data ?? null)
     public error: ComputedRef<unknown> = computed(() => this.errorRef.value)
     public got404: ComputedRef<boolean> = computed(() => this.errorRef.value !== null
-                                            && axios.isAxiosError(this.errorRef.value)
-                                            && this.errorRef.value?.response?.status === 404)
+        && axios.isAxiosError(this.errorRef.value)
+        && this.errorRef.value?.response?.status === 404)
 
     public requestLoad(): void {
         this.incrementSessionId()
         const capturedSessionId = this.sessionId
-        const resolve = (newResponse: AxiosResponse<E>|null) => this.loadDidComplete(newResponse, capturedSessionId)
+        const resolve = (newResponse: AxiosResponse<E> | null) => this.loadDidComplete(newResponse, capturedSessionId)
         const reject = (reason: unknown) => this.loadDidFail(reason, capturedSessionId)
         this.load().then(resolve, reject)
     }
@@ -67,7 +67,7 @@ export abstract class EntityLoader<E> {
         }
     }
 
-    protected async load(): Promise<AxiosResponse<E>|null> {
+    protected async load(): Promise<AxiosResponse<E> | null> {
         throw Error("must be subclassed")
     }
 
@@ -83,7 +83,7 @@ export abstract class EntityLoader<E> {
     // Private
     //
 
-    private loadDidComplete(newResponse: AxiosResponse<E>|null, capturedSessionId: number) {
+    private loadDidComplete(newResponse: AxiosResponse<E> | null, capturedSessionId: number) {
         if (this.sessionId == capturedSessionId) {
             this.responseRef.value = newResponse
             this.errorRef.value = null

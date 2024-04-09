@@ -57,9 +57,9 @@ describe("AdminKeyDetails.vue", () => {
         const matcher3 = "/api/v1/accounts/" + SAMPLE_ACCOUNT_PROTOBUF_KEY.account + "/rewards"
         mock.onGet(matcher3).reply(200, {rewards: []})
         const matcher31 = "/api/v1/accounts/" + SAMPLE_ACCOUNT_PROTOBUF_KEY.account + "/allowances/crypto"
-        mock.onGet(matcher31).reply(200, { rewards: [] })
+        mock.onGet(matcher31).reply(200, {rewards: []})
         const matcher32 = "/api/v1/accounts/" + SAMPLE_ACCOUNT_PROTOBUF_KEY.account + "/allowances/tokens"
-        mock.onGet(matcher32).reply(200, { rewards: [] })
+        mock.onGet(matcher32).reply(200, {rewards: []})
         const matcher4 = "/api/v1/tokens/0.0.29662956"
         mock.onGet(matcher4).reply(200, SAMPLE_TOKEN);
 

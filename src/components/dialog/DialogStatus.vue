@@ -24,24 +24,24 @@
 
 <template>
 
-    <div class="is-flex is-align-items-baseline" >
+  <div class="is-flex is-align-items-baseline">
 
-        <div v-if="dialogSuccessVisible" class="icon is-medium has-text-success ml-0">
-            <i class="fas fa-check"/>
-        </div>
-        <div v-else-if="dialogErrorVisible" class="icon is-medium has-text-danger">
-            <span style="font-size: 18px; font-weight: 900">X</span>
-        </div>
-        <div v-else />
-
-        <div class="block h-is-tertiary-text mt-2">
-            <slot name="mainMessage"/>
-        </div>
+    <div v-if="dialogSuccessVisible" class="icon is-medium has-text-success ml-0">
+      <i class="fas fa-check"/>
     </div>
-
-    <div class="h-is-property-text my-4">
-        <slot name="extraMessage"/>
+    <div v-else-if="dialogErrorVisible" class="icon is-medium has-text-danger">
+      <span style="font-size: 18px; font-weight: 900">X</span>
     </div>
+    <div v-else/>
+
+    <div class="block h-is-tertiary-text mt-2">
+      <slot name="mainMessage"/>
+    </div>
+  </div>
+
+  <div class="h-is-property-text my-4">
+    <slot name="extraMessage"/>
+  </div>
 
 </template>
 
@@ -56,31 +56,31 @@ import {computed, defineComponent, PropType} from "vue";
 import {DialogController, DialogMode} from "@/components/dialog/DialogController";
 
 export default defineComponent({
-    name: "DialogStatus",
-    components: {},
-    props: {
-        controller: {
-            type: Object as PropType<DialogController>,
-            required: true
-        },
-        isSuccess: Boolean as PropType<boolean|undefined>,
+  name: "DialogStatus",
+  components: {},
+  props: {
+    controller: {
+      type: Object as PropType<DialogController>,
+      required: true
     },
-    setup(props) {
+    isSuccess: Boolean as PropType<boolean | undefined>,
+  },
+  setup(props) {
 
-        const dialogSuccessVisible = computed(
-            () => props.isSuccess !== undefined
-                ? props.isSuccess
-                : props.controller.mode.value === DialogMode.Success)
-        const dialogErrorVisible = computed(
-            () => props.isSuccess !== undefined
-                ? !props.isSuccess
-                : props.controller.mode.value === DialogMode.Error)
+    const dialogSuccessVisible = computed(
+        () => props.isSuccess !== undefined
+            ? props.isSuccess
+            : props.controller.mode.value === DialogMode.Success)
+    const dialogErrorVisible = computed(
+        () => props.isSuccess !== undefined
+            ? !props.isSuccess
+            : props.controller.mode.value === DialogMode.Error)
 
-        return {
-            dialogSuccessVisible,
-            dialogErrorVisible
-        }
+    return {
+      dialogSuccessVisible,
+      dialogErrorVisible
     }
+  }
 });
 
 

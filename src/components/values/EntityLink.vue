@@ -23,10 +23,18 @@
 <!-- --------------------------------------------------------------------------------------------------------------- -->
 
 <template>
-  <div v-if="routeName === 'AccountDetails'"><AccountLink :account-id="entityId" :show-extra="showExtra"/></div>
-  <div v-else-if="routeName === 'TokenDetails'"><TokenLink :token-id="entityId" :show-extra="showExtra"/></div>
-  <div v-else-if="routeName === 'ContractDetails'"><ContractLink :contract-id="entityId" :show-extra="showExtra"/></div>
-  <div v-else-if="routeName === 'TopicDetails'"><TopicLink :topic-id="entityId" :show-extra="showExtra"/></div>
+  <div v-if="routeName === 'AccountDetails'">
+    <AccountLink :account-id="entityId" :show-extra="showExtra"/>
+  </div>
+  <div v-else-if="routeName === 'TokenDetails'">
+    <TokenLink :token-id="entityId" :show-extra="showExtra"/>
+  </div>
+  <div v-else-if="routeName === 'ContractDetails'">
+    <ContractLink :contract-id="entityId" :show-extra="showExtra"/>
+  </div>
+  <div v-else-if="routeName === 'TopicDetails'">
+    <TopicLink :topic-id="entityId" :show-extra="showExtra"/>
+  </div>
 </template>
 
 <!-- --------------------------------------------------------------------------------------------------------------- -->

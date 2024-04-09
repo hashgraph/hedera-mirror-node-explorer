@@ -50,8 +50,8 @@ export abstract class AutoRefreshLoader<E> extends EntityLoader<E> {
         this.refreshPeriod = refreshPeriod
         this.maxRefreshCount = maxRefreshCount
 
-        watch(this.mounted, () => this.mountedDidChange(), { flush: 'sync' })
-        watch(this.autoRefresh, () => this.autoRefreshDidChange(), { flush: 'sync' })
+        watch(this.mounted, () => this.mountedDidChange(), {flush: 'sync'})
+        watch(this.autoRefresh, () => this.autoRefreshDidChange(), {flush: 'sync'})
     }
 
     //

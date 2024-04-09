@@ -39,7 +39,7 @@ describe("ContractAnalyzer.spec.ts", () => {
         mock.onGet(matcher1).reply(200, SAMPLE_CONTRACT)
 
         // 1) new
-        const contractId: Ref<string|null> = ref(null)
+        const contractId: Ref<string | null> = ref(null)
         const contractAnalyzer = new ContractAnalyzer(contractId)
         expect(contractAnalyzer.contractId.value).toBeNull()
         expect(contractAnalyzer.sourceFileName.value).toBeNull()
@@ -97,7 +97,7 @@ describe("ContractAnalyzer.spec.ts", () => {
         mock.onGet(requestURL).reply(200, SAMPLE_SOURCIFY_RESPONSE)
 
         // 1) new
-        const contractId: Ref<string|null> = ref(null)
+        const contractId: Ref<string | null> = ref(null)
         const contractAnalyzer = new ContractAnalyzer(contractId)
         expect(contractAnalyzer.contractId.value).toBeNull()
         expect(contractAnalyzer.sourceFileName.value).toBeNull()

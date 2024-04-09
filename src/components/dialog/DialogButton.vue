@@ -23,9 +23,11 @@
 <!-- --------------------------------------------------------------------------------------------------------------- -->
 
 <template>
-    <button class="button is-white is-small is-uppercase"
-            @click="handleClick"
-            :disabled="!buttonEnabled"><slot/></button>
+  <button class="button is-white is-small is-uppercase"
+          @click="handleClick"
+          :disabled="!buttonEnabled">
+    <slot/>
+  </button>
 </template>
 
 <!-- --------------------------------------------------------------------------------------------------------------- -->
@@ -38,41 +40,41 @@ import {computed, defineComponent, PropType} from "vue";
 import {DialogController, DialogMode} from "@/components/dialog/DialogController";
 
 export default defineComponent({
-    name: "DialogButton",
-    components: {},
+  name: "DialogButton",
+  components: {},
 
-    props: {
-        controller: {
-            type: Object as PropType<DialogController>,
-            required: true
-        },
-        autoClose: {
-            type: Boolean,
-            default: true
-        },
-        enabled: {
-            type: Boolean,
-            default: true
-        }
+  props: {
+    controller: {
+      type: Object as PropType<DialogController>,
+      required: true
     },
-    emits: ["action"],
-    setup(props, ctx) {
-
-        const handleClick = () => {
-            ctx.emit("action")
-            if (props.autoClose) {
-                props.controller.visible.value = false
-            }
-        }
-
-        const buttonEnabled = computed(
-            () => props.enabled && props.controller.mode.value !== DialogMode.Busy)
-
-        return {
-            handleClick,
-            buttonEnabled
-        }
+    autoClose: {
+      type: Boolean,
+      default: true
+    },
+    enabled: {
+      type: Boolean,
+      default: true
     }
+  },
+  emits: ["action"],
+  setup(props, ctx) {
+
+    const handleClick = () => {
+      ctx.emit("action")
+      if (props.autoClose) {
+        props.controller.visible.value = false
+      }
+    }
+
+    const buttonEnabled = computed(
+        () => props.enabled && props.controller.mode.value !== DialogMode.Busy)
+
+    return {
+      handleClick,
+      buttonEnabled
+    }
+  }
 
 })
 </script>

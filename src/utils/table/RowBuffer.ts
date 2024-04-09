@@ -55,13 +55,13 @@ export class RowBuffer<R, K> {
         return result
     })
 
-    public readonly tailKey: ComputedRef<K|null> = computed(() => {
+    public readonly tailKey: ComputedRef<K | null> = computed(() => {
         const bufferLength = this.rows.value.length
-        const tailRow = bufferLength >= 1 ? this.rows.value[bufferLength-1] : null
+        const tailRow = bufferLength >= 1 ? this.rows.value[bufferLength - 1] : null
         return tailRow !== null ? this.tableController.keyFor(tailRow) : null
     })
 
-    public readonly headKey: ComputedRef<K|null> = computed(() => {
+    public readonly headKey: ComputedRef<K | null> = computed(() => {
         const bufferLength = this.rows.value.length
         const headRow = bufferLength >= 1 ? this.rows.value[0] : null
         return headRow !== null ? this.tableController.keyFor(headRow) : null
@@ -79,7 +79,7 @@ export class RowBuffer<R, K> {
         return Math.floor(i / pageSize) + 1
     }
 
-    public computeFirstVisibleKey(): K|null {
+    public computeFirstVisibleKey(): K | null {
         const bufferLength = this.rows.value.length
         const firstRow = this.startIndex.value < bufferLength ? this.rows.value[this.startIndex.value] : null
         return firstRow !== null ? this.tableController.keyFor(firstRow) : null
@@ -146,7 +146,7 @@ export class RowBuffer<R, K> {
     private moveToPageCounter = 0
     private abortedMoveToPageCounter = 0
 
-    public async moveToPage(page: number, key:K|null): Promise<void> {
+    public async moveToPage(page: number, key: K | null): Promise<void> {
         this.moveToPageCounter += 1
         const captureMoveToPageCounter = this.moveToPageCounter
 
@@ -252,7 +252,6 @@ export class RowBuffer<R, K> {
     }
 
 
-
     //
     // Private (xxxLoad)
     //
@@ -262,7 +261,7 @@ export class RowBuffer<R, K> {
 
         if (rowCount >= 1) {
 
-            const cb = (r: R[]|null): Promise<R[] | null> => {
+            const cb = (r: R[] | null): Promise<R[] | null> => {
                 let result: Promise<R[] | null>
                 if (r !== null) {
                     current = r.reverse().concat(current)
@@ -291,12 +290,12 @@ export class RowBuffer<R, K> {
         return result
     }
 
-    private tailLoad(key: K|null, rowCount: number, lte: boolean, current: R[] = []): Promise<R[] | null> {
+    private tailLoad(key: K | null, rowCount: number, lte: boolean, current: R[] = []): Promise<R[] | null> {
         let result: Promise<R[] | null>
 
         if (rowCount >= 1) {
 
-            const cb = (r: R[]|null): Promise<R[] | null> => {
+            const cb = (r: R[] | null): Promise<R[] | null> => {
                 let result: Promise<R[] | null>
                 if (r !== null) {
                     current = current.concat(r)
@@ -330,7 +329,7 @@ export class RowBuffer<R, K> {
 
         if (rowCount >= 1) {
 
-            const cb = (r: R[]|null): Promise<R[] | null> => {
+            const cb = (r: R[] | null): Promise<R[] | null> => {
                 let result: Promise<R[] | null>
                 if (r !== null) {
                     current = this.concatOrReplace(r, current)

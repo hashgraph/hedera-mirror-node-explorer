@@ -23,7 +23,7 @@
 <!-- --------------------------------------------------------------------------------------------------------------- -->
 
 <template>
-    <input class="input is-small has-text-white" type="text" v-model="currentText"/>
+  <input class="input is-small has-text-white" type="text" v-model="currentText"/>
 </template>
 
 <!-- --------------------------------------------------------------------------------------------------------------- -->
@@ -37,43 +37,43 @@ import {ContractParamBuilder} from "@/components/values/abi/ContractCallBuilder"
 import {AppStorage} from "@/AppStorage";
 
 export default defineComponent({
-    name: "ParamTextEditor",
-    components: {},
-    props: {
-        paramBuilder: {
-            type: Object as PropType<ContractParamBuilder>,
-            required: true
-        },
+  name: "ParamTextEditor",
+  components: {},
+  props: {
+    paramBuilder: {
+      type: Object as PropType<ContractParamBuilder>,
+      required: true
     },
-    setup(props) {
-        const currentText = ref<string>("")
+  },
+  setup(props) {
+    const currentText = ref<string>("")
 
-        const lastParamData = computed(() => {
-            const functionHash = props.paramBuilder.callBuilder.fragment.selector
-            const paramName = props.paramBuilder.paramType.name
-            return AppStorage.getInputParam(functionHash, paramName)
-        })
+    const lastParamData = computed(() => {
+      const functionHash = props.paramBuilder.callBuilder.fragment.selector
+      const paramName = props.paramBuilder.paramType.name
+      return AppStorage.getInputParam(functionHash, paramName)
+    })
 
-        let watchHandle: WatchStopHandle|null = null
-        onMounted(() => {
-            currentText.value = lastParamData.value?.toString() ?? ""
-            watchHandle = watch(currentText, () => {
-                props.paramBuilder.paramData.value = currentText.value
-            }, { immediate: true })
-        })
-        onBeforeUnmount(() => {
-            if (watchHandle !== null) {
-                watchHandle()
-                watchHandle = null
-            }
-            props.paramBuilder.paramData.value = null
-            currentText.value = ""
-        })
+    let watchHandle: WatchStopHandle | null = null
+    onMounted(() => {
+      currentText.value = lastParamData.value?.toString() ?? ""
+      watchHandle = watch(currentText, () => {
+        props.paramBuilder.paramData.value = currentText.value
+      }, {immediate: true})
+    })
+    onBeforeUnmount(() => {
+      if (watchHandle !== null) {
+        watchHandle()
+        watchHandle = null
+      }
+      props.paramBuilder.paramData.value = null
+      currentText.value = ""
+    })
 
-        return {
-            currentText
-        }
+    return {
+      currentText
     }
+  }
 })
 
 </script>

@@ -22,7 +22,7 @@
 // Exported
 //
 
-export  async function importFromDrop(transferList: DataTransferItemList): Promise<Map<string, string>> {
+export async function importFromDrop(transferList: DataTransferItemList): Promise<Map<string, string>> {
 
     // DataTransferItemList is reset immediately after drop callback termination
     // => we copy file system entries before going async
@@ -107,7 +107,6 @@ async function importFile(f: File, output: Map<string, string>): Promise<void> {
 //
 // Private
 //
-
 
 
 async function asyncReadText(e: FileSystemFileEntry): Promise<string> {

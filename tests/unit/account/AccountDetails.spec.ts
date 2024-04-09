@@ -20,7 +20,7 @@
  *
  */
 
-import { describe, it, expect } from 'vitest'
+import {describe, it, expect} from 'vitest'
 import {flushPromises, mount} from "@vue/test-utils"
 import router from "@/router";
 import axios from "axios";
@@ -91,13 +91,13 @@ describe("AccountDetails.vue", () => {
         mock.onGet(matcher7).reply(200, SAMPLE_TRANSACTIONS);
 
         const matcher8 = "/api/v1/accounts/" + SAMPLE_ACCOUNT.account + "/rewards"
-        mock.onGet(matcher8).reply(200, { rewards: [] })
+        mock.onGet(matcher8).reply(200, {rewards: []})
 
         const matcher9 = "/api/v1/accounts/" + SAMPLE_ACCOUNT.account + "/allowances/crypto"
-        mock.onGet(matcher9).reply(200, { rewards: [] })
+        mock.onGet(matcher9).reply(200, {rewards: []})
 
         const matcher10 = "/api/v1/accounts/" + SAMPLE_ACCOUNT.account + "/allowances/tokens"
-        mock.onGet(matcher10).reply(200, { rewards: [] })
+        mock.onGet(matcher10).reply(200, {rewards: []})
 
         const wrapper = mount(AccountDetails, {
             global: {
@@ -179,13 +179,13 @@ describe("AccountDetails.vue", () => {
         mock.onGet(matcher5).reply(200, SAMPLE_ACCOUNT_BALANCES);
 
         let matcher8 = "/api/v1/accounts/" + SAMPLE_ACCOUNT.account + "/rewards"
-        mock.onGet(matcher8).reply(200, { rewards: [] })
+        mock.onGet(matcher8).reply(200, {rewards: []})
 
         let matcher9 = "/api/v1/accounts/" + SAMPLE_ACCOUNT.account + "/allowances/crypto"
-        mock.onGet(matcher9).reply(200, { rewards: [] })
+        mock.onGet(matcher9).reply(200, {rewards: []})
 
         let matcher10 = "/api/v1/accounts/" + SAMPLE_ACCOUNT.account + "/allowances/tokens"
-        mock.onGet(matcher10).reply(200, { rewards: [] })
+        mock.onGet(matcher10).reply(200, {rewards: []})
 
         const wrapper = mount(AccountDetails, {
             global: {
@@ -214,13 +214,13 @@ describe("AccountDetails.vue", () => {
         mock.onGet(matcher3).reply(200, token2);
 
         matcher8 = "/api/v1/accounts/" + SAMPLE_ACCOUNT_DUDE.account + "/rewards"
-        mock.onGet(matcher8).reply(200, { rewards: [] })
+        mock.onGet(matcher8).reply(200, {rewards: []})
 
         matcher9 = "/api/v1/accounts/" + SAMPLE_ACCOUNT_DUDE.account + "/allowances/crypto"
-        mock.onGet(matcher9).reply(200, { rewards: [] })
+        mock.onGet(matcher9).reply(200, {rewards: []})
 
         matcher10 = "/api/v1/accounts/" + SAMPLE_ACCOUNT_DUDE.account + "/allowances/tokens"
-        mock.onGet(matcher10).reply(200, { rewards: [] })
+        mock.onGet(matcher10).reply(200, {rewards: []})
 
         await wrapper.setProps({
             accountId: SAMPLE_ACCOUNT_DUDE.account ?? undefined
@@ -296,13 +296,13 @@ describe("AccountDetails.vue", () => {
         mock.onGet(matcher5).reply(200, SAMPLE_ACCOUNT_BALANCES);
 
         const matcher8 = "/api/v1/accounts/" + SAMPLE_ACCOUNT_DELETED.account + "/rewards"
-        mock.onGet(matcher8).reply(200, { rewards: [] })
+        mock.onGet(matcher8).reply(200, {rewards: []})
 
         const matcher9 = "/api/v1/accounts/" + SAMPLE_ACCOUNT_DELETED.account + "/allowances/crypto"
-        mock.onGet(matcher9).reply(200, { rewards: [] })
+        mock.onGet(matcher9).reply(200, {rewards: []})
 
         const matcher10 = "/api/v1/accounts/" + SAMPLE_ACCOUNT_DELETED.account + "/allowances/tokens"
-        mock.onGet(matcher10).reply(200, { rewards: [] })
+        mock.onGet(matcher10).reply(200, {rewards: []})
 
         const wrapper = mount(AccountDetails, {
             global: {
@@ -316,7 +316,7 @@ describe("AccountDetails.vue", () => {
         await flushPromises()
         // console.log(wrapper.text())
 
-            expect(wrapper.text()).toMatch(RegExp("Account Account ID:" + deletedAccount.account))
+        expect(wrapper.text()).toMatch(RegExp("Account Account ID:" + deletedAccount.account))
 
         const banner = wrapper.findComponent(NotificationBanner)
         expect(banner.exists()).toBe(true)
@@ -329,7 +329,7 @@ describe("AccountDetails.vue", () => {
 
     it("Should display account staking to node", async () => {
 
-        process.env = Object.assign(process.env, { VITE_APP_ENABLE_STAKING: true });
+        process.env = Object.assign(process.env, {VITE_APP_ENABLE_STAKING: true});
         await router.push("/") // To avoid "missing required param 'network'" error
 
         const mock = new MockAdapter(axios);
@@ -350,13 +350,13 @@ describe("AccountDetails.vue", () => {
         mock.onGet(matcher5).reply(200, SAMPLE_NETWORK_EXCHANGERATE);
 
         const matcher8 = "/api/v1/accounts/" + SAMPLE_ACCOUNT_STAKING_NODE.account + "/rewards"
-        mock.onGet(matcher8).reply(200, { rewards: [] })
+        mock.onGet(matcher8).reply(200, {rewards: []})
 
         const matcher9 = "/api/v1/accounts/" + SAMPLE_ACCOUNT_STAKING_NODE.account + "/allowances/crypto"
-        mock.onGet(matcher9).reply(200, { rewards: [] })
+        mock.onGet(matcher9).reply(200, {rewards: []})
 
         const matcher10 = "/api/v1/accounts/" + SAMPLE_ACCOUNT_STAKING_NODE.account + "/allowances/tokens"
-        mock.onGet(matcher10).reply(200, { rewards: [] })
+        mock.onGet(matcher10).reply(200, {rewards: []})
 
         const wrapper = mount(AccountDetails, {
             global: {
@@ -382,7 +382,7 @@ describe("AccountDetails.vue", () => {
 
     it("Should display account staking to account", async () => {
 
-        process.env = Object.assign(process.env, { VITE_APP_ENABLE_STAKING: true });
+        process.env = Object.assign(process.env, {VITE_APP_ENABLE_STAKING: true});
         await router.push("/") // To avoid "missing required param 'network'" error
 
         const mock = new MockAdapter(axios);
@@ -403,13 +403,13 @@ describe("AccountDetails.vue", () => {
         mock.onGet(matcher5).reply(200, SAMPLE_NETWORK_EXCHANGERATE);
 
         const matcher8 = "/api/v1/accounts/" + SAMPLE_ACCOUNT_STAKING_ACCOUNT.account + "/rewards"
-        mock.onGet(matcher8).reply(200, { rewards: [] })
+        mock.onGet(matcher8).reply(200, {rewards: []})
 
         const matcher9 = "/api/v1/accounts/" + SAMPLE_ACCOUNT_STAKING_ACCOUNT.account + "/allowances/crypto"
-        mock.onGet(matcher9).reply(200, { rewards: [] })
+        mock.onGet(matcher9).reply(200, {rewards: []})
 
         const matcher10 = "/api/v1/accounts/" + SAMPLE_ACCOUNT_STAKING_ACCOUNT.account + "/allowances/tokens"
-        mock.onGet(matcher10).reply(200, { rewards: [] })
+        mock.onGet(matcher10).reply(200, {rewards: []})
 
         const wrapper = mount(AccountDetails, {
             global: {

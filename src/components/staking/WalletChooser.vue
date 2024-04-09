@@ -48,7 +48,8 @@
 
         <div class="is-flex is-justify-content-flex-end mt-4">
           <button id="cancelButton" class="button is-white is-small" @click="handleCancel">CANCEL</button>
-          <button id="connectButton" :disabled="!chosenWallet" class="button is-info is-small ml-4" @click="handleConnect">CONNECT
+          <button id="connectButton" :disabled="!chosenWallet" class="button is-info is-small ml-4"
+                  @click="handleConnect">CONNECT
           </button>
         </div>
       </div>

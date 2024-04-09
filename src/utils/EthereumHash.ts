@@ -28,7 +28,7 @@ export class EthereumHash {
     // Public
     //
 
-    public static parse(byteString: string): EthereumHash|null {
+    public static parse(byteString: string): EthereumHash | null {
         const bytes = hexToByte(byteString)
         return bytes !== null && bytes.length == 32 ? new EthereumHash(bytes) : null
     }

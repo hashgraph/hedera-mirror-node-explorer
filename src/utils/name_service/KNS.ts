@@ -23,25 +23,25 @@ import {KNS, NameNotFoundError} from "@kabuto-sh/ns";
 let _nameService: KNS | null = null;
 
 export function knsSetNetwork(name: string): void {
-  if (name === "mainnet" || name === "testnet") {
-    _nameService = new KNS({ network: name as "mainnet" | "testnet" });
-  } else {
-    _nameService = null;
-  }
+    if (name === "mainnet" || name === "testnet") {
+        _nameService = new KNS({network: name as "mainnet" | "testnet"});
+    } else {
+        _nameService = null;
+    }
 }
 
 export async function knsResolve(domain: string): Promise<string | null> {
-  if (_nameService == null) return null;
+    if (_nameService == null) return null;
 
-  try {
-    const accountId = await _nameService.getHederaAddress(domain);
-    return accountId.toString()
-  } catch (error) {
-    if (error instanceof NameNotFoundError) {
-      // domain not found
-      return null;
+    try {
+        const accountId = await _nameService.getHederaAddress(domain);
+        return accountId.toString()
+    } catch (error) {
+        if (error instanceof NameNotFoundError) {
+            // domain not found
+            return null;
+        }
+
+        throw error;
     }
-
-    throw error;
-  }
 }

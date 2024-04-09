@@ -60,7 +60,9 @@ export default defineComponent({
 
   setup() {
     const route = useRoute()
-    const onMainDashboardPage = computed( () => { return route.name == "MainDashboard" })
+    const onMainDashboardPage = computed(() => {
+      return route.name == "MainDashboard"
+    })
 
     const buildRelease = import.meta.env.VITE_BUILD_RELEASE ?? "not available"
     provide('buildRelease', buildRelease)
@@ -92,24 +94,24 @@ export default defineComponent({
     })
     provide('isLargeScreen', isLargeScreen)
 
-    const  onResizeHandler = () => {
+    const onResizeHandler = () => {
       windowWidth.value = window.innerWidth
     }
 
     const showCookiesDialog = ref(false)
 
-    const acceptCookies = ref<boolean|null>(null)
+    const acceptCookies = ref<boolean | null>(null)
     watch(acceptCookies, (value) => {
       if (value != null && value) {
         insertGoogleTag(import.meta.env.VITE_APP_GOOGLE_TAG_ID)
       }
     })
 
-    provide(loadingKey,         AxiosMonitor.instance.loading)
-    provide(initialLoadingKey,  AxiosMonitor.instance.initialLoading)
-    provide(errorKey,           AxiosMonitor.instance.error)
-    provide(explanationKey,     AxiosMonitor.instance.explanation)
-    provide(suggestionKey,      AxiosMonitor.instance.suggestion)
+    provide(loadingKey, AxiosMonitor.instance.loading)
+    provide(initialLoadingKey, AxiosMonitor.instance.initialLoading)
+    provide(errorKey, AxiosMonitor.instance.error)
+    provide(explanationKey, AxiosMonitor.instance.explanation)
+    provide(suggestionKey, AxiosMonitor.instance.suggestion)
 
     onBeforeMount(() => {
       const tagId = import.meta.env.VITE_APP_GOOGLE_TAG_ID
@@ -154,18 +156,18 @@ export default defineComponent({
 
 function insertGoogleTag(tagId: string) {
   const src1 = `https://www.googletagmanager.com/gtag/js?id=${tagId}`
-  let s1 = document.createElement( 'script' );
-  s1.setAttribute( 'async', '' );
-  s1.setAttribute( 'src', src1 );
-  document.head.appendChild( s1 );
+  let s1 = document.createElement('script');
+  s1.setAttribute('async', '');
+  s1.setAttribute('src', src1);
+  document.head.appendChild(s1);
 
   const src2 = `window.dataLayer = window.dataLayer || [];
     function gtag() {dataLayer.push(arguments);}
     gtag('js', new Date());
     gtag('config', '${import.meta.env.VITE_APP_GOOGLE_TAG_ID}');`
-  let s2 = document.createElement( 'script' );
+  let s2 = document.createElement('script');
   s2.innerHTML = src2;
-  document.head.appendChild( s2 );
+  document.head.appendChild(s2);
 }
 
 </script>
@@ -179,6 +181,7 @@ section.section.is-top-section {
   background-repeat: no-repeat;
   background-size: 104px
 }
+
 section.section.is-top-section.is-medium-screen {
   padding-bottom: 30px;
   background-size: 112px

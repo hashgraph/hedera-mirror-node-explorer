@@ -1,4 +1,4 @@
-import { beforeEach, vi } from 'vitest'
+import {beforeEach, vi} from 'vitest'
 import {CacheUtils} from "@/utils/cache/CacheUtils";
 
 beforeEach(() => {

@@ -43,7 +43,7 @@
     <div class="column py-1">
       <HexaValue :byte-string="change?.changes.slot" :low-contrast="false" :word-wrap-small="4" :word-wrap-medium="8"/>
       <div class="h-is-extra-text h-is-text-size-2">
-        {{ 'Decimal: ' + (change?.slotDecimal??'not available') }}
+        {{ 'Decimal: ' + (change?.slotDecimal ?? 'not available') }}
       </div>
     </div>
 
@@ -51,7 +51,7 @@
       <HexaValue :byte-string="change?.changes.value_read" :word-wrap-small="4" :word-wrap-medium="8"
                  :show-none="true" :low-contrast="change?.valueReadDecimal === 0"/>
       <div class="h-is-extra-text h-is-text-size-2">
-        {{ 'Decimal: ' + (change?.valueReadDecimal??'not available') }}
+        {{ 'Decimal: ' + (change?.valueReadDecimal ?? 'not available') }}
       </div>
     </div>
 
@@ -60,7 +60,7 @@
                  :show-none="true" :low-contrast="change?.valueWrittenDecimal === 0"/>
       <div class="h-is-extra-text h-is-text-size-2">
               <span v-if="change?.changes.value_written">
-                {{ 'Decimal: ' + (change?.valueWrittenDecimal??'not available') }}
+                {{ 'Decimal: ' + (change?.valueWrittenDecimal ?? 'not available') }}
               </span>
         <span v-if="change?.valueChange" class="ml-2">
           {{ '(Difference: ' + change?.valueChange + ')' }}

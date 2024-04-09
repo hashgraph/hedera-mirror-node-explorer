@@ -130,6 +130,6 @@ export default defineComponent({
 
 <style>
 #topic-message-table table.o-table > tbody > tr {
-  cursor:default;
+  cursor: default;
 }
 </style>

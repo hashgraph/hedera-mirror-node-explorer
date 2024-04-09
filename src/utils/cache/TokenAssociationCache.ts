@@ -40,9 +40,9 @@ export class TokenAssociationCache extends EntityCache<string, TokenRelationship
         return components.length == 2 ? components : []
     }
 
-    public makeTokenAssociationLookup(accountId: Ref<string|null>, tokenId: Ref<string|null>): EntityLookup<string, TokenRelationship[]|null> {
-        const key= computed(() => {
-            let result: string|null
+    public makeTokenAssociationLookup(accountId: Ref<string | null>, tokenId: Ref<string | null>): EntityLookup<string, TokenRelationship[] | null> {
+        const key = computed(() => {
+            let result: string | null
             if (accountId.value !== null && tokenId.value !== null) {
                 result = TokenAssociationCache.makeAssociationKey(accountId.value, tokenId.value)
             } else {
@@ -62,14 +62,14 @@ export class TokenAssociationCache extends EntityCache<string, TokenRelationship
     //
 
     protected async load(associationKey: string): Promise<TokenRelationship[] | null> {
-        let result: TokenRelationship[]|null
+        let result: TokenRelationship[] | null
 
         let components = TokenAssociationCache.parseAssociationKey(associationKey)
         if (components.length == 2) {
             const accountId = components[0]
             const tokenId = components[1]
-            const url: string|null = "api/v1/accounts/" + accountId + "/tokens?token.id=" + tokenId + "&limit=1"
-            const response:AxiosResponse<TokenRelationshipResponse> = await axios.get<TokenRelationshipResponse>(url)
+            const url: string | null = "api/v1/accounts/" + accountId + "/tokens?token.id=" + tokenId + "&limit=1"
+            const response: AxiosResponse<TokenRelationshipResponse> = await axios.get<TokenRelationshipResponse>(url)
             result = response.data.tokens.length == 1 ? response.data.tokens : []
         } else {
             // Emergency code

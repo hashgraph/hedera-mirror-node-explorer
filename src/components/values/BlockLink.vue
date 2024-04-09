@@ -48,7 +48,7 @@ export default defineComponent({
 
   setup(props) {
     const blockRoute = computed(() => props.blockNumber !== undefined ? routeManager.makeRouteToBlock(props.blockNumber) : null)
-    return { blockRoute }
+    return {blockRoute}
   }
 });
 

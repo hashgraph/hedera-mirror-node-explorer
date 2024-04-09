@@ -25,7 +25,7 @@ import axios from "axios";
 import {TransactionByHashCache} from "@/utils/cache/TransactionByHashCache";
 import {TransactionByTsCache} from "@/utils/cache/TransactionByTsCache";
 
-export class TransactionGroupByBlockCache extends EntityCache<number, Transaction[]|null> {
+export class TransactionGroupByBlockCache extends EntityCache<number, Transaction[] | null> {
 
     public static readonly instance = new TransactionGroupByBlockCache()
 
@@ -33,8 +33,8 @@ export class TransactionGroupByBlockCache extends EntityCache<number, Transactio
     // Cache
     //
 
-    protected async load(blockNb: number): Promise<Transaction[]|null> {
-        let result: Transaction[]|null
+    protected async load(blockNb: number): Promise<Transaction[] | null> {
+        let result: Transaction[] | null
         try {
             const block = await BlockByNbCache.instance.lookup(blockNb)
             if (block?.timestamp?.to && block?.count) {
@@ -42,14 +42,14 @@ export class TransactionGroupByBlockCache extends EntityCache<number, Transactio
                     limit: Math.min(block.count, 100),
                     timestamp: "lte:" + block.timestamp.to
                 }
-                const response = await axios.get<TransactionResponse>("api/v1/transactions", { params: params} )
+                const response = await axios.get<TransactionResponse>("api/v1/transactions", {params: params})
                 result = response.data.transactions ?? []
                 TransactionByHashCache.instance.updateWithTransactions(result)
                 TransactionByTsCache.instance.updateWithTransactions(result)
             } else {
                 result = null
             }
-        } catch(error) {
+        } catch (error) {
             if (axios.isAxiosError(error) && error.response?.status == 404) {
                 result = null
             } else {

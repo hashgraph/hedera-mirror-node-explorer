@@ -107,7 +107,7 @@ import {BlockTableController} from "@/components/block/BlockTableController";
 export default defineComponent({
   name: 'BlockTable',
 
-  components: {PlainAmount, TimestampValue, EmptyTable },
+  components: {PlainAmount, TimestampValue, EmptyTable},
 
   props: {
     narrowed: Boolean,

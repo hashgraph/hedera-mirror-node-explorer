@@ -24,8 +24,8 @@ import {splitAuxdata} from "@ethereum-sourcify/bytecode-utils";
 
 export class SolcUtils {
 
-    public static findMatchingContract(deployedBytecode: string, output: SolcOutput): ContractRecord|null {
-        let result: ContractRecord|null = null
+    public static findMatchingContract(deployedBytecode: string, output: SolcOutput): ContractRecord | null {
+        let result: ContractRecord | null = null
 
         const contracts = output.contracts ?? {}
         for (const sourceFileName of Object.keys(contracts)) {
@@ -36,7 +36,7 @@ export class SolcUtils {
                 if (compiledBytecode !== null && compiledBytecode != "") {
                     const comparison = SolcUtils.compareBytecode(deployedBytecode, compiledBytecode)
                     if (comparison !== BytecodeComparison.mismatch) {
-                        result = { contractName, sourceFileName, description }
+                        result = {contractName, sourceFileName, description}
                         break
                     }
                 }

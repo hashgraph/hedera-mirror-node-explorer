@@ -18,19 +18,19 @@
  *
  */
 
-import { Ref, WatchStopHandle, computed, ref, watch } from 'vue';
+import {Ref, WatchStopHandle, computed, ref, watch} from 'vue';
 import {ContractResultsLogResponse} from '@/schemas/HederaSchemas'
-import { ContractResultsLogsByContractIdCache } from '../cache/ContractResultsLogsByContractIdCache';
+import {ContractResultsLogsByContractIdCache} from '../cache/ContractResultsLogsByContractIdCache';
 
 export class ContractResultsLogsAnalyzer {
-    public readonly contractId: Ref<string|null>
-    private readonly watchHandle: Ref<WatchStopHandle|null> = ref(null)
-    private readonly contractResultsLogResponse: Ref<ContractResultsLogResponse|null> = ref(null)
+    public readonly contractId: Ref<string | null>
+    private readonly watchHandle: Ref<WatchStopHandle | null> = ref(null)
+    private readonly contractResultsLogResponse: Ref<ContractResultsLogResponse | null> = ref(null)
 
     //
     // Public
     //
-    public constructor(contractId: Ref<string|null>) {
+    public constructor(contractId: Ref<string | null>) {
         this.contractId = contractId
     }
 

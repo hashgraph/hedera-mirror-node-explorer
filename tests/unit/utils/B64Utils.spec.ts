@@ -27,17 +27,17 @@ describe("B64Utils.ts", () => {
     const base32String = "CIQAAAH4AY2OFK2FL37TSPYEQGPPUJRP4XTKWHD62HKPQX543DTOFFQ"
 
 
-    test("hexToByte() <=> byteToHex()", ()=> {
+    test("hexToByte() <=> byteToHex()", () => {
         const decodedBytes = hexToByte(hexString)
         expect(decodedBytes).not.toBeNull()
-        const hexString2 = decodedBytes? byteToHex(decodedBytes) : ""
+        const hexString2 = decodedBytes ? byteToHex(decodedBytes) : ""
         expect(hexString2).toEqual(hexString)
     })
 
-    test("hexToByte() <=> byteToHex()   with 0x prefix", ()=> {
+    test("hexToByte() <=> byteToHex()   with 0x prefix", () => {
         const decodedBytes = hexToByte("0x" + hexString)
         expect(decodedBytes).not.toBeNull()
-        const hexString2 = decodedBytes? byteToHex(decodedBytes) : ""
+        const hexString2 = decodedBytes ? byteToHex(decodedBytes) : ""
         expect(hexString2).toEqual(hexString)
     })
 
@@ -46,7 +46,7 @@ describe("B64Utils.ts", () => {
         const decodedBytes = hexToByte(hexString)
         expect(decodedBytes).not.toBeNull()
 
-        const encodedString = decodedBytes? aliasToBase32(decodedBytes) : ""
+        const encodedString = decodedBytes ? aliasToBase32(decodedBytes) : ""
         expect(encodedString).toEqual(base32String)
     })
 

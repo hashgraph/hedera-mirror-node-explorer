@@ -56,7 +56,7 @@ export default defineComponent({
   name: "TransactionLink",
 
   props: {
-    transactionLoc: String as PropType<string|undefined>,
+    transactionLoc: String as PropType<string | undefined>,
     showNone: {
       type: Boolean,
       default: true
@@ -65,13 +65,13 @@ export default defineComponent({
 
   setup(props) {
 
-    const normalizedId = ref<string|null>(null)
+    const normalizedId = ref<string | null>(null)
     const updateNormalizedId = () => {
       if (props.transactionLoc) {
         const tloc = PathParam.parseTransactionLoc(props.transactionLoc)
         if (tloc instanceof Timestamp) {
           TransactionByTsCache.instance.lookup(props.transactionLoc)
-              .then((t: Transaction|null) => {
+              .then((t: Transaction | null) => {
                 normalizedId.value = t?.transaction_id ?? null
               })
               .catch(() => {
@@ -79,7 +79,7 @@ export default defineComponent({
               })
         } else if (tloc instanceof TransactionHash) {
           TransactionByHashCache.instance.lookup(props.transactionLoc)
-              .then((t: Transaction|null) => {
+              .then((t: Transaction | null) => {
                 normalizedId.value = t?.transaction_id ?? null
               })
               .catch(() => {
@@ -103,7 +103,7 @@ export default defineComponent({
       return props.transactionLoc ? routeManager.makeRouteToTransaction(props.transactionLoc) : null
     })
 
-    return { formattedId, routeToTransaction }
+    return {formattedId, routeToTransaction}
   }
 });
 

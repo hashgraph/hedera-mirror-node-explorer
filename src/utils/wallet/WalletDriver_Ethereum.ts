@@ -35,7 +35,7 @@ import {makeTokenSymbol} from "@/schemas/HederaUtils";
 
 export abstract class WalletDriver_Ethereum extends WalletDriver {
 
-    protected provider: BrowserProvider|null = null
+    protected provider: BrowserProvider | null = null
 
     //
     // Public
@@ -69,10 +69,10 @@ export abstract class WalletDriver_Ethereum extends WalletDriver {
                     }
                 }
             }
-            
+
             try {
                 await this.provider.send("wallet_watchAsset", params)
-            } catch(reason) {
+            } catch (reason) {
                 throw this.makeCallFailure(reason, `${(reason as ethers.EthersError).error?.message || `Unknown Error`}.`)
             }
         } else {
@@ -103,7 +103,7 @@ export abstract class WalletDriver_Ethereum extends WalletDriver {
             throw this.connectFailure("Network inconsistency: bug")
         }
 
-        let provider: BrowserProvider|null = null
+        let provider: BrowserProvider | null = null
         for (const p of this.fetchEthereumProviders()) {
             if (await this.isExpectedProvider(p)) {
                 provider = new BrowserProvider(p as ethers.Eip1193Provider)
@@ -152,7 +152,7 @@ export abstract class WalletDriver_Ethereum extends WalletDriver {
                 const transactionResult = await contract.associate();
                 const hederaTransaction = await this.waitForTransactionSurfacing(transactionResult.hash)
                 result = typeof hederaTransaction == "string" ? hederaTransaction : hederaTransaction.transaction_id
-            } catch(reason) {
+            } catch (reason) {
                 throw this.makeCallFailure(reason, "associateToken")
             }
         } else {
@@ -177,7 +177,7 @@ export abstract class WalletDriver_Ethereum extends WalletDriver {
                 const transactionResult = await contract.dissociate();
                 const hederaTransaction = await this.waitForTransactionSurfacing(transactionResult.hash)
                 result = typeof hederaTransaction == "string" ? hederaTransaction : hederaTransaction.transaction_id
-            } catch(reason) {
+            } catch (reason) {
                 throw this.makeCallFailure(reason, "dissociateToken")
             }
         } else {
@@ -187,8 +187,8 @@ export abstract class WalletDriver_Ethereum extends WalletDriver {
         return Promise.resolve(result)
     }
 
-    public async callContract(contractId: string, contractAddress: string, functionData: string, payerId: string): Promise<ContractResultDetails|string> {
-        let result: ContractResultDetails|string
+    public async callContract(contractId: string, contractAddress: string, functionData: string, payerId: string): Promise<ContractResultDetails | string> {
+        let result: ContractResultDetails | string
 
         if (this.provider !== null) {
             const signer = await this.provider.getSigner()
@@ -199,7 +199,7 @@ export abstract class WalletDriver_Ethereum extends WalletDriver {
             try {
                 const response = await signer.sendTransaction(transaction)
                 result = await this.waitForContractResultSurfacing(response.hash)
-            } catch(reason) {
+            } catch (reason) {
                 throw this.makeCallFailure(reason, "callContract")
             }
         } else {
@@ -241,7 +241,7 @@ export abstract class WalletDriver_Ethereum extends WalletDriver {
         let result: object[]
         if ("ethereum" in window && typeof window.ethereum === "object" && window.ethereum !== null) {
             const ethereum = window.ethereum as Object
-            if ("providers" in ethereum && Array.isArray(ethereum.providers) ) {
+            if ("providers" in ethereum && Array.isArray(ethereum.providers)) {
                 result = ethereum.providers
             } else {
                 result = [ethereum]
@@ -269,8 +269,8 @@ export abstract class WalletDriver_Ethereum extends WalletDriver {
         if (walletChainId !== chainId) {
             try {
                 // Try to switch
-                await provider.send("wallet_switchEthereumChain", [{ chainId: chainId }])
-            } catch(reason) {
+                await provider.send("wallet_switchEthereumChain", [{chainId: chainId}])
+            } catch (reason) {
                 if (this.isCancelError(reason)) {
                     throw new WalletDriverCancelError()
                 } else if (this.isChainMissing(reason)) {
@@ -282,11 +282,11 @@ export abstract class WalletDriver_Ethereum extends WalletDriver {
                     }
                     // With some wallets, wallet_addEthereumChain also implies wallet_switchEthereumChain
                     // Not sure this behavior is standard => we switch if needed
-                    const newWalletChainId =  await provider.send('eth_chainId', [])
+                    const newWalletChainId = await provider.send('eth_chainId', [])
                     if (newWalletChainId !== chainId) {
-                        await provider.send("wallet_switchEthereumChain", [{ chainId: chainId }])
+                        await provider.send("wallet_switchEthereumChain", [{chainId: chainId}])
                     }
-                } else  {
+                } else {
                     throw this.connectFailure("Make sure that 'Hedera " + networkEntry.name + "' network is added to " + this.name)
                 }
             }
@@ -325,7 +325,7 @@ export abstract class WalletDriver_Ethereum extends WalletDriver {
                     chainId: desiredChainId,
                     rpcUrls: NETWORK_CONFIG.rpcUrls,
                     chainName: NETWORK_CONFIG.chainName,
-                    nativeCurrency: { name: 'HBAR', decimals: 18, symbol: 'HBAR' },
+                    nativeCurrency: {name: 'HBAR', decimals: 18, symbol: 'HBAR'},
                     blockExplorerUrls: NETWORK_CONFIG.blockExplorerUrls,
                     iconUrls: [HederaLogo],
                 }],
@@ -350,7 +350,7 @@ export abstract class WalletDriver_Ethereum extends WalletDriver {
             //  https://github.com/MetaMask/metamask-extension/issues/8990#issuecomment-980489771
 
             // 1)
-            await provider.send("wallet_requestPermissions", [ { eth_accounts: {} } ])
+            await provider.send("wallet_requestPermissions", [{eth_accounts: {}}])
 
             // 2)
             const accountResponse = await provider.send("eth_requestAccounts", [])
@@ -362,7 +362,7 @@ export abstract class WalletDriver_Ethereum extends WalletDriver {
                     result.push(accountInfo.account)
                 }
             }
-        } catch(reason) {
+        } catch (reason) {
             if (this.isCancelError(reason)) {
                 throw new WalletDriverCancelError()
             } else {
@@ -380,7 +380,7 @@ export abstract class WalletDriver_Ethereum extends WalletDriver {
         const hash = ethers.hexlify(ethereumHash)
         try {
             let counter = 10
-            let transaction: Transaction|null = null
+            let transaction: Transaction | null = null
             while (counter > 0 && transaction === null) {
                 await waitFor(3000)
                 const contractInfo = await ContractResultByHashCache.instance.lookup(hash, true)
@@ -406,7 +406,7 @@ export abstract class WalletDriver_Ethereum extends WalletDriver {
         const hash = ethers.hexlify(ethereumHash)
         try {
             let counter = 10
-            let contractResult: ContractResultDetails|null = null
+            let contractResult: ContractResultDetails | null = null
             while (counter > 0 && contractResult === null) {
                 await waitFor(3000)
                 contractResult = await ContractResultByHashCache.instance.lookup(hash, true)

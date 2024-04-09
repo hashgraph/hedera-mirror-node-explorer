@@ -23,17 +23,17 @@
 <!-- --------------------------------------------------------------------------------------------------------------- -->
 
 <template>
-    <div>
-        <template v-if="needsTextEditor">
-            <ParamTextEditor :param-builder="paramBuilder"/>
-        </template>
-        <template v-else-if="needsBooleanEditor">
-            <ParamBooleanEditor :param-builder="paramBuilder"/>
-        </template>
-        <template v-else>
-            <ParamJsonEditor :param-builder="paramBuilder"/>
-        </template>
-    </div>
+  <div>
+    <template v-if="needsTextEditor">
+      <ParamTextEditor :param-builder="paramBuilder"/>
+    </template>
+    <template v-else-if="needsBooleanEditor">
+      <ParamBooleanEditor :param-builder="paramBuilder"/>
+    </template>
+    <template v-else>
+      <ParamJsonEditor :param-builder="paramBuilder"/>
+    </template>
+  </div>
 </template>
 
 <!-- --------------------------------------------------------------------------------------------------------------- -->
@@ -50,67 +50,67 @@ import ParamJsonEditor from "@/components/values/abi/ParamJsonEditor.vue";
 import {ContractParamBuilder} from "@/components/values/abi/ContractCallBuilder";
 
 export default defineComponent({
-    name: "ParamTypeEditor",
-    components: {ParamJsonEditor, ParamBooleanEditor, ParamTextEditor, Property},
-    props: {
-        paramBuilder: {
-            type: Object as PropType<ContractParamBuilder>,
-            required: true
-        },
+  name: "ParamTypeEditor",
+  components: {ParamJsonEditor, ParamBooleanEditor, ParamTextEditor, Property},
+  props: {
+    paramBuilder: {
+      type: Object as PropType<ContractParamBuilder>,
+      required: true
     },
-    setup(props) {
+  },
+  setup(props) {
 
-        const needsBooleanEditor = computed(
-            () => props.paramBuilder.paramType.baseType == "bool")
+    const needsBooleanEditor = computed(
+        () => props.paramBuilder.paramType.baseType == "bool")
 
-        const needsTextEditor = computed(() => {
-            let result: boolean
-            switch(clearSize(props.paramBuilder.paramType.baseType)) {
-                case "int":
-                case "uint":
-                case "string":
-                case "address":
-                case "bytes":
-                    result = true
-                    break
-                default:
-                    result = false
-                    break
-            }
-            return result
-        } )
+    const needsTextEditor = computed(() => {
+      let result: boolean
+      switch (clearSize(props.paramBuilder.paramType.baseType)) {
+        case "int":
+        case "uint":
+        case "string":
+        case "address":
+        case "bytes":
+          result = true
+          break
+        default:
+          result = false
+          break
+      }
+      return result
+    })
 
-        return {
-            needsBooleanEditor,
-            needsTextEditor
-        }
+    return {
+      needsBooleanEditor,
+      needsTextEditor
     }
+  }
 })
 
 interface SizedType {
-    coreType: string, // int, uint, string, bytes
-    size: number
+  coreType: string, // int, uint, string, bytes
+  size: number
 }
 
 function clearSize(baseType: string): string {
-    const sizedType = parseBaseType(baseType)
-    return sizedType?.coreType ?? baseType
+  const sizedType = parseBaseType(baseType)
+  return sizedType?.coreType ?? baseType
 }
 
 function parseBaseType(baseType: string): SizedType | null {
-    let result: SizedType | null = null
-    let sizableTypes = ["int", "uint", "string", "bytes"]
-    for (const t of sizableTypes) {
-        if (baseType.startsWith(t)) {
-            const coreType = baseType.slice(0, t.length)
-            const size = parseInt(baseType.slice(t.length))
-            if (!isNaN(size) && size >= 1) {
-                result = { coreType, size }
-                break
-            }
-        }
+  let result: SizedType | null = null
+  let sizableTypes = ["int", "uint", "string", "bytes"]
+  for (const t of sizableTypes) {
+    if (baseType.startsWith(t)) {
+      const coreType = baseType.slice(0, t.length)
+      const size = parseInt(baseType.slice(t.length))
+      if (!isNaN(size) && size >= 1) {
+        result = {coreType, size}
+        break
+      }
     }
-    return result
+  }
+  return result
 }
 
 </script>

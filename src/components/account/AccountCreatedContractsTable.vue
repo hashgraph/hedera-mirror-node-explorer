@@ -24,47 +24,47 @@
 
 <template>
 
-    <o-table
-        v-model:current-page="currentPage"
-        :data="transactions"
-        :hoverable="true"
-        :loading="loading"
-        :mobile-breakpoint="ORUGA_MOBILE_BREAKPOINT"
-        :narrowed="true"
-        :paginated="paginated"
-        :per-page="perPage"
-        :striped="true"
+  <o-table
+      v-model:current-page="currentPage"
+      :data="transactions"
+      :hoverable="true"
+      :loading="loading"
+      :mobile-breakpoint="ORUGA_MOBILE_BREAKPOINT"
+      :narrowed="true"
+      :paginated="paginated"
+      :per-page="perPage"
+      :striped="true"
 
-        :total="total"
-        aria-current-label="Current page"
-        aria-next-label="Next page"
-        aria-page-label="Page"
+      :total="total"
+      aria-current-label="Current page"
+      aria-next-label="Next page"
+      aria-page-label="Page"
 
-        aria-previous-label="Previous page"
-        backend-pagination
-        customRowKey="consensus_timestamp"
-        default-sort="consensus_timestamp"
-        @page-change="onPageChange"
-        @cell-click="handleClick"
-    >
+      aria-previous-label="Previous page"
+      backend-pagination
+      customRowKey="consensus_timestamp"
+      default-sort="consensus_timestamp"
+      @page-change="onPageChange"
+      @cell-click="handleClick"
+  >
 
-        <o-table-column v-slot="props" field="contract_id" label="ID">
-            <div class="is-numeric">
-                {{ props.row.entity_id }}
-            </div>
-        </o-table-column>
+    <o-table-column v-slot="props" field="contract_id" label="ID">
+      <div class="is-numeric">
+        {{ props.row.entity_id }}
+      </div>
+    </o-table-column>
 
-        <o-table-column v-slot="props" field="contract_name" label="Contract Name">
-            <ContractName :contract-id="props.row.entity_id"/>
-        </o-table-column>
+    <o-table-column v-slot="props" field="contract_name" label="Contract Name">
+      <ContractName :contract-id="props.row.entity_id"/>
+    </o-table-column>
 
-        <o-table-column v-slot="props" field="created" label="Created">
-            <TimestampValue v-bind:timestamp="props.row.consensus_timestamp"/>
-        </o-table-column>
+    <o-table-column v-slot="props" field="created" label="Created">
+      <TimestampValue v-bind:timestamp="props.row.consensus_timestamp"/>
+    </o-table-column>
 
-    </o-table>
+  </o-table>
 
-    <EmptyTable v-if="!transactions.length"/>
+  <EmptyTable v-if="!transactions.length"/>
 
 </template>
 
@@ -85,39 +85,39 @@ import {TransactionTableController} from "@/components/transaction/TransactionTa
 import ContractName from "@/components/values/ContractName.vue";
 
 export default defineComponent({
-    name: 'AccountCreatedContractsTable',
+  name: 'AccountCreatedContractsTable',
 
-    components: {ContractName, EmptyTable, TimestampValue, BlobValue},
+  components: {ContractName, EmptyTable, TimestampValue, BlobValue},
 
-    props: {
-        controller: {
-            type: Object as PropType<TransactionTableController>,
-            required: true
-        }
-    },
-
-    setup(props) {
-
-        onMounted(() => props.controller.mount())
-        onBeforeUnmount(() => props.controller.unmount())
-
-        const handleClick = (t: Transaction, c: unknown, i: number, ci: number, event: MouseEvent) => {
-            routeManager.routeToContract(t.entity_id!, event.ctrlKey || event.metaKey)
-        }
-
-        return {
-            transactions: props.controller.rows as ComputedRef<Transaction[]>,
-            loading: props.controller.loading as ComputedRef<boolean>,
-            total: props.controller.totalRowCount as ComputedRef<number>,
-            currentPage: props.controller.currentPage as Ref<number>,
-            onPageChange: props.controller.onPageChange,
-            perPage: props.controller.pageSize as Ref<number>,
-            paginated: props.controller.paginated as ComputedRef<boolean>,
-            handleClick,
-            // From App
-            ORUGA_MOBILE_BREAKPOINT,
-        }
+  props: {
+    controller: {
+      type: Object as PropType<TransactionTableController>,
+      required: true
     }
+  },
+
+  setup(props) {
+
+    onMounted(() => props.controller.mount())
+    onBeforeUnmount(() => props.controller.unmount())
+
+    const handleClick = (t: Transaction, c: unknown, i: number, ci: number, event: MouseEvent) => {
+      routeManager.routeToContract(t.entity_id!, event.ctrlKey || event.metaKey)
+    }
+
+    return {
+      transactions: props.controller.rows as ComputedRef<Transaction[]>,
+      loading: props.controller.loading as ComputedRef<boolean>,
+      total: props.controller.totalRowCount as ComputedRef<number>,
+      currentPage: props.controller.currentPage as Ref<number>,
+      onPageChange: props.controller.onPageChange,
+      perPage: props.controller.pageSize as Ref<number>,
+      paginated: props.controller.paginated as ComputedRef<boolean>,
+      handleClick,
+      // From App
+      ORUGA_MOBILE_BREAKPOINT,
+    }
+  }
 });
 
 </script>

@@ -22,7 +22,7 @@ import {EntityCache} from "@/utils/cache/base/EntityCache"
 import {Transaction, TransactionResponse} from "@/schemas/HederaSchemas";
 import axios from "axios";
 
-export class TransactionByTsCache extends EntityCache<string, Transaction|null> {
+export class TransactionByTsCache extends EntityCache<string, Transaction | null> {
 
     public static readonly instance = new TransactionByTsCache()
 
@@ -47,16 +47,16 @@ export class TransactionByTsCache extends EntityCache<string, Transaction|null> 
     // Cache
     //
 
-    protected async load(timestamp: string): Promise<Transaction|null> {
-        let result: Promise<Transaction|null>
+    protected async load(timestamp: string): Promise<Transaction | null> {
+        let result: Promise<Transaction | null>
         const params = {
             timestamp: timestamp
         }
         try {
-            const response = await axios.get<TransactionResponse>("api/v1/transactions", { params: params })
+            const response = await axios.get<TransactionResponse>("api/v1/transactions", {params: params})
             const transactions = response.data.transactions ?? []
             result = Promise.resolve(transactions.length >= 1 ? transactions[0] : null)
-        } catch(error) {
+        } catch (error) {
             if (axios.isAxiosError(error) && error.response?.status == 404) {
                 result = Promise.resolve(null)
             } else {

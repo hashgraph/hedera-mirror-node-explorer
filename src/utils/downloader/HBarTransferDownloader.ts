@@ -29,9 +29,9 @@ export class HbarTransferDownloader extends AbstractTransactionDownloader {
     // Public
     //
 
-    public constructor(accountId: Ref<string|null>,
-                       startDate: Ref<Date|null>,
-                       endDate: Ref<Date|null>,
+    public constructor(accountId: Ref<string | null>,
+                       startDate: Ref<Date | null>,
+                       endDate: Ref<Date | null>,
                        maxTransactionCount: number) {
         super(accountId, computed(() => TransactionType.CRYPTOTRANSFER), startDate, endDate, maxTransactionCount)
     }
@@ -92,6 +92,6 @@ export class HbarTransferEncoder extends CSVEncoder<Transaction> {
     }
 
     protected encodeHeaderRow(): string[] | null {
-        return ["#date","#from_account_id","#to_account_id","#amount","#transaction_id","#transaction_type"]
+        return ["#date", "#from_account_id", "#to_account_id", "#amount", "#transaction_id", "#transaction_type"]
     }
 }

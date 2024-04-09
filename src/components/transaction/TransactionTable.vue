@@ -69,11 +69,12 @@
       <TimestampValue v-bind:timestamp="props.row.consensus_timestamp"/>
     </o-table-column>
     <template v-slot:bottom-left>
-      <TransactionTablePageSize :controller="controller" />
+      <TransactionTablePageSize :controller="controller"/>
     </template>
   </o-table>
 
-  <TransactionTablePageSize v-if="!paginated && showPageSizeSelector" :controller="controller" style="width: 116px; margin-left: 4px" />
+  <TransactionTablePageSize v-if="!paginated && showPageSizeSelector" :controller="controller"
+                            style="width: 116px; margin-left: 4px"/>
 
   <EmptyTable v-if="transactions.length === 0"/>
 
@@ -103,7 +104,8 @@ export default defineComponent({
 
   components: {
     TransactionTablePageSize,
-    InnerSenderEVMAddress, TransactionSummary, TimestampValue, TransactionLabel, EmptyTable},
+    InnerSenderEVMAddress, TransactionSummary, TimestampValue, TransactionLabel, EmptyTable
+  },
 
   props: {
     narrowed: Boolean,

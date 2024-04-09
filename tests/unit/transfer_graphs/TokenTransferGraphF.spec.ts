@@ -69,7 +69,7 @@ describe("TokenTransferGraphF.vue", () => {
 
         const transaction = {
             "token_transfers": [
-                { "account": "0.0.200", "amount": +10, "token_id": SAMPLE_TOKEN.token_id },
+                {"account": "0.0.200", "amount": +10, "token_id": SAMPLE_TOKEN.token_id},
             ],
         }
 
@@ -102,8 +102,8 @@ describe("TokenTransferGraphF.vue", () => {
 
         const transaction = {
             "token_transfers": [
-                { "account": "0.0.100", "amount": -10, "token_id": SAMPLE_TOKEN.token_id },
-                { "account": "0.0.200", "amount": +10, "token_id": SAMPLE_TOKEN.token_id },
+                {"account": "0.0.100", "amount": -10, "token_id": SAMPLE_TOKEN.token_id},
+                {"account": "0.0.200", "amount": +10, "token_id": SAMPLE_TOKEN.token_id},
             ],
         }
 
@@ -130,7 +130,7 @@ describe("TokenTransferGraphF.vue", () => {
         const wrapper2 = mount(TokenTransferGraph, {
             global: {
                 plugins: [router],
-                provide: { isSmallScreen: false }
+                provide: {isSmallScreen: false}
             },
             props: {
                 transaction: transaction as Transaction
@@ -157,9 +157,9 @@ describe("TokenTransferGraphF.vue", () => {
 
         const transaction = {
             "token_transfers": [
-                { "account": "0.0.100", "amount": -10, "token_id": SAMPLE_TOKEN.token_id },
-                { "account": "0.0.200", "amount": +2, "token_id": SAMPLE_TOKEN.token_id },
-                { "account": "0.0.201", "amount": +8, "token_id": SAMPLE_TOKEN.token_id },
+                {"account": "0.0.100", "amount": -10, "token_id": SAMPLE_TOKEN.token_id},
+                {"account": "0.0.200", "amount": +2, "token_id": SAMPLE_TOKEN.token_id},
+                {"account": "0.0.201", "amount": +8, "token_id": SAMPLE_TOKEN.token_id},
             ],
         }
 
@@ -193,8 +193,8 @@ describe("TokenTransferGraphF.vue", () => {
 
         const transaction = {
             "token_transfers": [
-                { "account": "0.0.101", "amount": -3, "token_id": SAMPLE_TOKEN.token_id },
-                { "account": "0.0.100", "amount": -7, "token_id": SAMPLE_TOKEN.token_id },
+                {"account": "0.0.101", "amount": -3, "token_id": SAMPLE_TOKEN.token_id},
+                {"account": "0.0.100", "amount": -7, "token_id": SAMPLE_TOKEN.token_id},
             ],
         }
 
@@ -227,9 +227,9 @@ describe("TokenTransferGraphF.vue", () => {
 
         const transaction = {
             "token_transfers": [
-                { "account": "0.0.101", "amount": -3, "token_id": SAMPLE_TOKEN.token_id },
-                { "account": "0.0.100", "amount": -7, "token_id": SAMPLE_TOKEN.token_id },
-                { "account": "0.0.200", "amount": +10, "token_id": SAMPLE_TOKEN.token_id },
+                {"account": "0.0.101", "amount": -3, "token_id": SAMPLE_TOKEN.token_id},
+                {"account": "0.0.100", "amount": -7, "token_id": SAMPLE_TOKEN.token_id},
+                {"account": "0.0.200", "amount": +10, "token_id": SAMPLE_TOKEN.token_id},
             ],
         }
 
@@ -262,10 +262,10 @@ describe("TokenTransferGraphF.vue", () => {
 
         const transaction = {
             "token_transfers": [
-                { "account": "0.0.101", "amount": -3, "token_id": SAMPLE_TOKEN.token_id },
-                { "account": "0.0.100", "amount": -7, "token_id": SAMPLE_TOKEN.token_id },
-                { "account": "0.0.201", "amount": +8, "token_id": SAMPLE_TOKEN.token_id },
-                { "account": "0.0.200", "amount": +2, "token_id": SAMPLE_TOKEN.token_id },
+                {"account": "0.0.101", "amount": -3, "token_id": SAMPLE_TOKEN.token_id},
+                {"account": "0.0.100", "amount": -7, "token_id": SAMPLE_TOKEN.token_id},
+                {"account": "0.0.201", "amount": +8, "token_id": SAMPLE_TOKEN.token_id},
+                {"account": "0.0.200", "amount": +2, "token_id": SAMPLE_TOKEN.token_id},
             ],
         }
 
@@ -304,13 +304,13 @@ describe("TokenTransferGraphF.vue", () => {
 
         const transaction = {
             "token_transfers": [
-                { "account": "0.0.101", "amount": -3, "token_id": SAMPLE_TOKEN.token_id },
-                { "account": "0.0.100", "amount": -7, "token_id": SAMPLE_TOKEN.token_id },
-                { "account": "0.0.201", "amount": +8, "token_id": SAMPLE_TOKEN.token_id },
-                { "account": "0.0.200", "amount": +2, "token_id": SAMPLE_TOKEN.token_id },
+                {"account": "0.0.101", "amount": -3, "token_id": SAMPLE_TOKEN.token_id},
+                {"account": "0.0.100", "amount": -7, "token_id": SAMPLE_TOKEN.token_id},
+                {"account": "0.0.201", "amount": +8, "token_id": SAMPLE_TOKEN.token_id},
+                {"account": "0.0.200", "amount": +2, "token_id": SAMPLE_TOKEN.token_id},
 
-                { "account": "0.0.100", "amount": -6, "token_id": SAMPLE_TOKEN_DUDE.token_id },
-                { "account": "0.0.200", "amount": +6, "token_id": SAMPLE_TOKEN_DUDE.token_id },
+                {"account": "0.0.100", "amount": -6, "token_id": SAMPLE_TOKEN_DUDE.token_id},
+                {"account": "0.0.200", "amount": +6, "token_id": SAMPLE_TOKEN_DUDE.token_id},
             ],
         }
 

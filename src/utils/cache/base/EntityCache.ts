@@ -52,8 +52,8 @@ export abstract class EntityCache<K, E> {
         this.records.clear()
     }
 
-    public makeLookup(key: Ref<K|null>, forceLoad = false): EntityLookup<K, E> {
-        return new EntityLookup<K,E>(key, this, forceLoad)
+    public makeLookup(key: Ref<K | null>, forceLoad = false): EntityLookup<K, E> {
+        return new EntityLookup<K, E>(key, this, forceLoad)
     }
 
     public contains(key: K, forceLoad = false): boolean {
@@ -85,33 +85,35 @@ export abstract class EntityCache<K, E> {
 class EntityRecord<E> {
     readonly promise: Promise<E>
     readonly time: number
+
     constructor(promise: Promise<E>) {
         this.promise = promise
         this.time = Date.now()
     }
+
     isFresh(): boolean {
         return Date.now() - this.time < 500 // ms
     }
 }
 
-export class EntityLookup<K,E> implements Lookup<E>{
+export class EntityLookup<K, E> implements Lookup<E> {
 
-    public readonly entity: Ref<E|null> = ref(null)
+    public readonly entity: Ref<E | null> = ref(null)
 
-    private readonly cache: EntityCache<K,E>
-    private readonly key: Ref<K|null>
+    private readonly cache: EntityCache<K, E>
+    private readonly key: Ref<K | null>
     private readonly forceLoad: boolean
-    private readonly watchHandle: Ref<WatchStopHandle|null> = ref(null)
+    private readonly watchHandle: Ref<WatchStopHandle | null> = ref(null)
     private readonly loadCounter: Ref<number> = ref(0)
 
-    constructor(key: Ref<K|null>, cache: EntityCache<K,E>, forceLoad: boolean) {
+    constructor(key: Ref<K | null>, cache: EntityCache<K, E>, forceLoad: boolean) {
         this.key = key
         this.cache = cache
         this.forceLoad = forceLoad
     }
 
     public mount(): void {
-        this.watchHandle.value = watch(this.key, this.keyDidChange, { immediate: true})
+        this.watchHandle.value = watch(this.key, this.keyDidChange, {immediate: true})
     }
 
     public unmount(): void {
@@ -131,7 +133,7 @@ export class EntityLookup<K,E> implements Lookup<E>{
         const key = this.key.value
         if (key !== null) {
             try {
-                let newEntity: E|null
+                let newEntity: E | null
                 try {
                     newEntity = await this.cache.lookup(key, this.forceLoad)
                 } catch {

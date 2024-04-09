@@ -41,40 +41,49 @@
         <router-link :to="routeManager.makeRouteToMainDashboard()" replace
                      id="dashboard-menu-item"
                      class="button is-ghost h-is-navbar-item h-is-mobile-navbar-item h-is-dense"
-                     :class="{'is-rimmed': isDashboardRoute(previousRoute)}">Dashboard</router-link>
+                     :class="{'is-rimmed': isDashboardRoute(previousRoute)}">Dashboard
+        </router-link>
         <router-link :to="routeManager.makeRouteToTransactions()" replace
                      id="dashboard-menu-item"
                      class="button is-ghost h-is-navbar-item h-is-mobile-navbar-item h-is-dense"
-                     :class="{'is-rimmed': isTransactionRoute(previousRoute)}">Transactions</router-link>
+                     :class="{'is-rimmed': isTransactionRoute(previousRoute)}">Transactions
+        </router-link>
         <router-link :to="routeManager.makeRouteToTokens()" replace
                      id="dashboard-menu-item"
                      class="button is-ghost h-is-navbar-item h-is-mobile-navbar-item h-is-dense"
-                     :class="{'is-rimmed': isTokenRoute(previousRoute)}">Tokens</router-link>
+                     :class="{'is-rimmed': isTokenRoute(previousRoute)}">Tokens
+        </router-link>
         <router-link :to="routeManager.makeRouteToTopics()" replace
                      id="dashboard-menu-item"
                      class="button is-ghost h-is-navbar-item h-is-mobile-navbar-item h-is-dense"
-                     :class="{'is-rimmed': isTopicRoute(previousRoute)}">Topics</router-link>
+                     :class="{'is-rimmed': isTopicRoute(previousRoute)}">Topics
+        </router-link>
         <router-link :to="routeManager.makeRouteToContracts()" replace
                      id="dashboard-menu-item"
                      class="button is-ghost h-is-navbar-item h-is-mobile-navbar-item h-is-dense"
-                     :class="{'is-rimmed': isContractRoute(previousRoute)}">Contracts</router-link>
+                     :class="{'is-rimmed': isContractRoute(previousRoute)}">Contracts
+        </router-link>
         <router-link :to="routeManager.makeRouteToAccounts()" replace
                      id="dashboard-menu-item"
                      class="button is-ghost h-is-navbar-item h-is-mobile-navbar-item h-is-dense"
-                     :class="{'is-rimmed': isAccountRoute(previousRoute)}">Accounts</router-link>
+                     :class="{'is-rimmed': isAccountRoute(previousRoute)}">Accounts
+        </router-link>
         <router-link :to="routeManager.makeRouteToNodes()" replace
                      id="dashboard-menu-item"
                      class="button is-ghost h-is-navbar-item h-is-mobile-navbar-item h-is-dense"
-                     :class="{'is-rimmed': isNodeRoute(previousRoute)}">Nodes</router-link>
+                     :class="{'is-rimmed': isNodeRoute(previousRoute)}">Nodes
+        </router-link>
         <router-link v-if="isStakingEnabled"
                      :to="routeManager.makeRouteToStaking()" replace
                      id="dashboard-menu-item"
                      class="button is-ghost h-is-navbar-item h-is-mobile-navbar-item h-is-dense"
-                     :class="{'is-rimmed': isStakingRoute(previousRoute)}">Staking</router-link>
+                     :class="{'is-rimmed': isStakingRoute(previousRoute)}">Staking
+        </router-link>
         <router-link :to="routeManager.makeRouteToBlocks()" replace
                      id="dashboard-menu-item"
                      class="button is-ghost h-is-navbar-item h-is-mobile-navbar-item h-is-dense"
-                     :class="{'is-rimmed': isBlocksRoute(previousRoute)}">Blocks</router-link>
+                     :class="{'is-rimmed': isBlocksRoute(previousRoute)}">Blocks
+        </router-link>
       </div>
 
     </div>
@@ -109,7 +118,7 @@ export default defineComponent({
     const isTouchDevice = inject('isTouchDevice', false)
     const isStakingEnabled = import.meta.env.VITE_APP_ENABLE_STAKING === 'true'
 
-    const  onResizeHandler = () => {
+    const onResizeHandler = () => {
       if (window.innerWidth >= MEDIUM_BREAKPOINT) {
         router.back()
       }

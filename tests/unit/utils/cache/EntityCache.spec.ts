@@ -60,7 +60,7 @@ describe("EntityCache.ts", () => {
 
         const c = new TestCache()
 
-        const key = ref<number|null>(null)
+        const key = ref<number | null>(null)
         const lookup = c.makeLookup(key)
         await flushPromises()
         expect(lookup.entity.value).toBeNull()
@@ -124,6 +124,7 @@ class TestCache extends EntityCache<number, TestData> {
 class TestData {
     public readonly key: number
     public readonly seq: number
+
     constructor(key: number, seq: number) {
         this.key = key
         this.seq = seq

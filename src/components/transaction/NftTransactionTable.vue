@@ -24,29 +24,29 @@
 
 <template>
   <o-table
-    :data="transactions"
-    :loading="loading"
-    paginated
-    backend-pagination
-    :total="total"
-    v-model:current-page="currentPage"
-    :per-page="perPage"
-    @page-change="onPageChange"
-    @cell-click="handleClick"
-    :hoverable="true"
-    :narrowed="narrowed"
-    :striped="true"
-    :mobile-breakpoint="ORUGA_MOBILE_BREAKPOINT"
-    aria-current-label="Current page"
-    aria-next-label="Next page"
-    aria-page-label="Page"
-    aria-previous-label="Previous page"
-    customRowKey="consensus_timestamp"
+      :data="transactions"
+      :loading="loading"
+      paginated
+      backend-pagination
+      :total="total"
+      v-model:current-page="currentPage"
+      :per-page="perPage"
+      @page-change="onPageChange"
+      @cell-click="handleClick"
+      :hoverable="true"
+      :narrowed="narrowed"
+      :striped="true"
+      :mobile-breakpoint="ORUGA_MOBILE_BREAKPOINT"
+      aria-current-label="Current page"
+      aria-next-label="Next page"
+      aria-page-label="Page"
+      aria-previous-label="Previous page"
+      customRowKey="consensus_timestamp"
   >
     <o-table-column v-slot="props" field="timestamp" label="ID">
       <TransactionLabel
-        v-bind:transaction-id="props.row.transaction_id"
-        v-bind:result="props.row.result"
+          v-bind:transaction-id="props.row.transaction_id"
+          v-bind:result="props.row.result"
       />
     </o-table-column>
 
@@ -59,10 +59,10 @@
     </o-table-column>
 
     <o-table-column
-      v-if="showingEthereumTransactions"
-      v-slot="props"
-      field="sender"
-      label="Sender"
+        v-if="showingEthereumTransactions"
+        v-slot="props"
+        field="sender"
+        label="Sender"
     >
       <InnerSenderEVMAddress :transaction-id="props.row.transaction_id"/>
     </o-table-column>
@@ -85,17 +85,17 @@
 
 <script lang="ts">
 import {
-    computed,
-    ComputedRef,
-    defineComponent,
-    inject,
-    PropType,
-    Ref,
+  computed,
+  ComputedRef,
+  defineComponent,
+  inject,
+  PropType,
+  Ref,
 } from "vue"
 import {
-    NftTransactionTransfer,
-    Transaction,
-    TransactionType,
+  NftTransactionTransfer,
+  Transaction,
+  TransactionType,
 } from "@/schemas/HederaSchemas"
 import NftTransactionSummary from "@/components/transaction/NftTransactionSummary.vue"
 import TimestampValue from "@/components/values/TimestampValue.vue"
@@ -108,65 +108,65 @@ import InnerSenderEVMAddress from "@/components/values/InnerSenderEVMAddress.vue
 import {NftTransactionTableController} from "./NftTransactionTableController"
 
 export default defineComponent({
-    name: "NftTransactionTable",
+  name: "NftTransactionTable",
 
-    components: {
-        InnerSenderEVMAddress,
-        NftTransactionSummary,
-        TimestampValue,
-        TransactionLabel,
-        EmptyTable,
+  components: {
+    InnerSenderEVMAddress,
+    NftTransactionSummary,
+    TimestampValue,
+    TransactionLabel,
+    EmptyTable,
+  },
+
+  props: {
+    narrowed: Boolean,
+    controller: {
+      type: Object as PropType<NftTransactionTableController>,
+      required: true,
     },
+  },
 
-    props: {
-        narrowed: Boolean,
-        controller: {
-            type: Object as PropType<NftTransactionTableController>,
-            required: true,
-        },
-    },
+  setup(props) {
+    const isTouchDevice = inject("isTouchDevice", false)
+    const isMediumScreen = inject("isMediumScreen", true)
 
-    setup(props) {
-        const isTouchDevice = inject("isTouchDevice", false)
-        const isMediumScreen = inject("isMediumScreen", true)
+    const showingEthereumTransactions = computed(() => {
+      return (
+          props.controller.transactionType.value ===
+          TransactionType.ETHEREUMTRANSACTION
+      )
+    })
 
-        const showingEthereumTransactions = computed(() => {
-            return (
-                props.controller.transactionType.value ===
-                TransactionType.ETHEREUMTRANSACTION
-            )
-        })
+    const handleClick = (
+        t: Transaction,
+        c: unknown,
+        i: number,
+        ci: number,
+        event: MouseEvent,
+    ) => {
+      routeManager.routeToTransaction(t, event.ctrlKey || event.metaKey)
+    }
 
-        const handleClick = (
-            t: Transaction,
-            c: unknown,
-            i: number,
-            ci: number,
-            event: MouseEvent,
-        ) => {
-            routeManager.routeToTransaction(t, event.ctrlKey || event.metaKey)
-        }
+    const transactions = computed(() => {
+      return props.controller.rows.value.filter(el =>
+          !props.controller.transactionType.value || el.type === props.controller.transactionType.value
+      )
+    })
 
-        const transactions = computed(() => {
-          return props.controller.rows.value.filter(el =>
-            !props.controller.transactionType.value || el.type === props.controller.transactionType.value
-          )
-        })
-
-        return {
-            isTouchDevice,
-            isMediumScreen,
-            transactions: transactions,
-            loading: props.controller.loading as ComputedRef<boolean>,
-            total: props.controller.totalRowCount as ComputedRef<number>,
-            currentPage: props.controller.currentPage as Ref<number>,
-            onPageChange: props.controller.onPageChange,
-            perPage: props.controller.pageSize as Ref<number>,
-            showingEthereumTransactions,
-            handleClick,
-            makeTypeLabel,
-            ORUGA_MOBILE_BREAKPOINT,
-        }
-    },
+    return {
+      isTouchDevice,
+      isMediumScreen,
+      transactions: transactions,
+      loading: props.controller.loading as ComputedRef<boolean>,
+      total: props.controller.totalRowCount as ComputedRef<number>,
+      currentPage: props.controller.currentPage as Ref<number>,
+      onPageChange: props.controller.onPageChange,
+      perPage: props.controller.pageSize as Ref<number>,
+      showingEthereumTransactions,
+      handleClick,
+      makeTypeLabel,
+      ORUGA_MOBILE_BREAKPOINT,
+    }
+  },
 })
 </script>

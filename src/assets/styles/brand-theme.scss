@@ -19,33 +19,33 @@
  */
 
 :root {
-    // Theme for MAINNET
-    --h-mainnet-background-color: #575757;
-    --h-mainnet-highlight-color: lightgrey;
-    --h-mainnet-page-background-color: #171717;
-    --h-mainnet-box-background-color: #202020;
-    --h-mainnet-pill-background-color: lightgrey;
+  // Theme for MAINNET
+  --h-mainnet-background-color: #575757;
+  --h-mainnet-highlight-color: lightgrey;
+  --h-mainnet-page-background-color: #171717;
+  --h-mainnet-box-background-color: #202020;
+  --h-mainnet-pill-background-color: lightgrey;
 
-    // Theme for TESTNET
-    --h-testnet-background-color: #575757;
-    --h-testnet-highlight-color: lightgrey;
-    --h-testnet-page-background-color: #171717;
-    --h-testnet-box-background-color: #202020;
-    --h-testnet-pill-background-color: lightgrey;
+  // Theme for TESTNET
+  --h-testnet-background-color: #575757;
+  --h-testnet-highlight-color: lightgrey;
+  --h-testnet-page-background-color: #171717;
+  --h-testnet-box-background-color: #202020;
+  --h-testnet-pill-background-color: lightgrey;
 
-    // Theme for PREVIEWNET
-    --h-previewnet-background-color: #575757;
-    --h-previewnet-highlight-color: lightgrey;
-    --h-previewnet-page-background-color: #171717;
-    --h-previewnet-box-background-color: #202020;
-    --h-previewnet-pill-background-color: lightgrey;
+  // Theme for PREVIEWNET
+  --h-previewnet-background-color: #575757;
+  --h-previewnet-highlight-color: lightgrey;
+  --h-previewnet-page-background-color: #171717;
+  --h-previewnet-box-background-color: #202020;
+  --h-previewnet-pill-background-color: lightgrey;
 
-    // Active Theme
-    --h-theme-background-color: var(--h-mainnet-background-color);
-    --h-theme-highlight-color: var(--h-mainnet-highlight-color);
-    --h-theme-page-background-color: var(--h-mainnet-page-background-color);
-    --h-theme-box-background-color: var(--h-mainnet-box-background-color);
-    --h-theme-pill-background-color: var(--h-mainnet-pill-background-color);
+  // Active Theme
+  --h-theme-background-color: var(--h-mainnet-background-color);
+  --h-theme-highlight-color: var(--h-mainnet-highlight-color);
+  --h-theme-page-background-color: var(--h-mainnet-page-background-color);
+  --h-theme-box-background-color: var(--h-mainnet-box-background-color);
+  --h-theme-pill-background-color: var(--h-mainnet-pill-background-color);
 }
 
 // Theme SCSS variables
@@ -64,9 +64,9 @@ $h-table-hover-background-color: $h-page-background-color;
 
 // Global styling of boxes
 .h-box-border {
-    border: 0.5px solid;
-    border-image-slice: 1;
-    border-image-source: $h-background-color;
+  border: 0.5px solid;
+  border-image-slice: 1;
+  border-image-source: $h-background-color;
 }
 
 

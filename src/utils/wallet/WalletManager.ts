@@ -47,7 +47,7 @@ export class WalletManager {
     private activeDriver: WalletDriver = this.hashpackDriver
     private readonly connectedRef = ref(false)
     private readonly walletNameRef = ref(this.activeDriver.name)
-    private readonly accountIdRef = ref<string|null>(null)
+    private readonly accountIdRef = ref<string | null>(null)
     private readonly accountIdsRef = ref<string[]>([])
     private readonly hederaWalletRef = ref<boolean>(this.activeDriver instanceof WalletDriver_Hedera)
     private readonly isEthereumWalletRef = ref<boolean>(this.activeDriver instanceof WalletDriver_Ethereum)
@@ -96,7 +96,7 @@ export class WalletManager {
         let accountIds: string[]
         try {
             accountIds = await timeGuard(this.activeDriver.connect(this.routeManager.currentNetwork.value), this.timeout)
-        } catch(error) {
+        } catch (error) {
             if (error instanceof TimeGuardError) {
                 throw this.activeDriver.connectFailure(this.activeDriver.silentMessage())
             } else {
@@ -119,7 +119,7 @@ export class WalletManager {
     public async disconnect(): Promise<void> {
         try {
             await timeGuard(this.activeDriver.disconnect(), this.timeout)
-        } catch(error) {
+        } catch (error) {
             if (error instanceof TimeGuardError) {
                 this.activeDriver.connectFailure(this.activeDriver.silentMessage())
             } else {
@@ -141,7 +141,7 @@ export class WalletManager {
         return Promise.resolve()
     }
 
-    public async changeStaking(nodeId: number|null, accountId: string|null, declineReward: boolean|null): Promise<string> {
+    public async changeStaking(nodeId: number | null, accountId: string | null, declineReward: boolean | null): Promise<string> {
         if (this.accountIdRef.value !== null) {
             if (this.activeDriver instanceof WalletDriver_Hedera) {
                 return this.activeDriver.changeStaking(this.accountIdRef.value, nodeId, accountId, declineReward)
@@ -217,7 +217,7 @@ export class WalletManager {
         }
     }
 
-    public async callContract(contractId: string, contractAddress: string, functionData: string): Promise<ContractResultDetails|string> {
+    public async callContract(contractId: string, contractAddress: string, functionData: string): Promise<ContractResultDetails | string> {
         if (this.accountIdRef.value !== null) {
             return this.activeDriver.callContract(contractId, contractAddress, functionData,
                 this.accountIdRef.value)

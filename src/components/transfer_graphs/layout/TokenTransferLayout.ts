@@ -27,14 +27,14 @@ import {
 
 export class TokenTransferLayout {
 
-    public readonly tokenId: string|null
+    public readonly tokenId: string | null
     public readonly sources = Array<TokenTransfer>()
     public readonly destinations = Array<TokenTransfer>()
     public readonly descriptions = Array<string>()
     public readonly netAmount: number
     public readonly rowCount: number
 
-    public constructor(tokenId: string|null, transfers: Array<TokenTransfer>) {
+    public constructor(tokenId: string | null, transfers: Array<TokenTransfer>) {
 
         this.tokenId = tokenId
 
@@ -49,10 +49,10 @@ export class TokenTransferLayout {
         }
         if (balance < 0) {
             // We add a destination transfer to null account id
-            this.destinations.push({ account: null, amount: -balance, token_id: tokenId, is_approval: false})
+            this.destinations.push({account: null, amount: -balance, token_id: tokenId, is_approval: false})
         } else if (balance > 0) {
             // We add a source transfer from null account id
-            this.sources.push({ account: null, amount: -balance, token_id: tokenId, is_approval: false})
+            this.sources.push({account: null, amount: -balance, token_id: tokenId, is_approval: false})
         }
 
         let netAmount = 0
@@ -72,7 +72,7 @@ export class TokenTransferLayout {
         }
     }
 
-    public static make(transaction: Transaction|undefined): Array<TokenTransferLayout> {
+    public static make(transaction: Transaction | undefined): Array<TokenTransferLayout> {
         const result = new Array<TokenTransferLayout>()
 
         const transferSplit = TokenTransferLayout.splitByTokenID(transaction?.token_transfers ?? [])
@@ -87,8 +87,8 @@ export class TokenTransferLayout {
     // Private
     //
 
-    private static splitByTokenID(transfers: Array<TokenTransfer>): Map<string|null, Array<TokenTransfer>> {
-        const result = new Map<string|null, Array<TokenTransfer>>()
+    private static splitByTokenID(transfers: Array<TokenTransfer>): Map<string | null, Array<TokenTransfer>> {
+        const result = new Map<string | null, Array<TokenTransfer>>()
 
         if (transfers.length >= 1) {
             transfers.sort(compareTokenTransferByTokenId)

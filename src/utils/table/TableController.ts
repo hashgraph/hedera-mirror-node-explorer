@@ -35,7 +35,7 @@ export abstract class TableController<R, K> implements PlayPauseController {
     public readonly pageParamName: string
     public readonly keyParamName: string
 
-    private readonly buffer: RowBuffer<R,K>
+    private readonly buffer: RowBuffer<R, K>
     private sources: WatchSource[] = []
 
     //
@@ -125,7 +125,7 @@ export abstract class TableController<R, K> implements PlayPauseController {
         }
     }
 
-    public stopAutoRefresh(page = 1): void  {
+    public stopAutoRefresh(page = 1): void {
         if (this.mountedRef.value && this.autoRefreshRef.value) {
             this.abortRefreshBuffer()
             this.moveBufferToPage(page, null).catch(this.errorHandler)
@@ -149,9 +149,9 @@ export abstract class TableController<R, K> implements PlayPauseController {
 
     public abstract stringFromKey(key: K): string
 
-    public abstract keyFromString(s: string): K|null
+    public abstract keyFromString(s: string): K | null
 
-    public async load(key: K|null, operator: KeyOperator, order: SortOrder, limit: number): Promise<R[]|null> {
+    public async load(key: K | null, operator: KeyOperator, order: SortOrder, limit: number): Promise<R[] | null> {
         throw new Error("To be subclassed: key=" + key + ", operator=" + operator + ", limit=" + limit)
     }
 
@@ -165,7 +165,7 @@ export abstract class TableController<R, K> implements PlayPauseController {
 
     public static invertKeyOperator(operator: KeyOperator): string {
         let result: string
-        switch(operator) {
+        switch (operator) {
             case KeyOperator.gt:
                 result = KeyOperator.lt
                 break
@@ -202,7 +202,7 @@ export abstract class TableController<R, K> implements PlayPauseController {
     protected constructor(router: Router, pageSize: Ref<number>,
                           presumedRowCount: number, updatePeriod: number,
                           maxUpdateCount: number, maxLimit: number,
-                          pageParamName = "p", keyParamName= "k") {
+                          pageParamName = "p", keyParamName = "k") {
         this.router = router
         this.presumedRowCount = presumedRowCount
         this.updatePeriod = updatePeriod
@@ -211,7 +211,7 @@ export abstract class TableController<R, K> implements PlayPauseController {
         this.maxLimit = maxLimit
         this.pageParamName = pageParamName
         this.keyParamName = keyParamName
-        this.buffer = new RowBuffer<R,K>(this, presumedRowCount);
+        this.buffer = new RowBuffer<R, K>(this, presumedRowCount);
     }
 
     protected watchAndReload(sources: WatchSource<unknown>[]): void {
@@ -230,18 +230,18 @@ export abstract class TableController<R, K> implements PlayPauseController {
         if (newPageParam !== null) {
             result[this.pageParamName] = newPageParam.toString()
         } else {
-            delete(result[this.pageParamName])
+            delete (result[this.pageParamName])
         }
         if (newKeyParam !== null) {
             result[this.keyParamName] = this.stringFromKey(newKeyParam)
         } else {
-            delete(result[this.keyParamName])
+            delete (result[this.keyParamName])
         }
         return result
     }
 
     protected async updateRouteQuery(): Promise<void> {
-        const failure = await this.router.replace({ query: this.makeRouteQuery() })
+        const failure = await this.router.replace({query: this.makeRouteQuery()})
         if (failure && failure.type != 8 && failure.type != 16) {
             console.warn(failure.message)
         }
@@ -264,11 +264,11 @@ export abstract class TableController<R, K> implements PlayPauseController {
         }
     }
 
-    private getPageParam(): number|null {
+    private getPageParam(): number | null {
         return fetchNumberQueryParam(this.pageParamName, this.router.currentRoute.value)
     }
 
-    private getKeyParam(): K|null {
+    private getKeyParam(): K | null {
         const v = fetchStringQueryParam(this.keyParamName, this.router.currentRoute.value)
         return v !== null ? this.keyFromString(v) : null
     }
@@ -278,7 +278,7 @@ export abstract class TableController<R, K> implements PlayPauseController {
     // Private (xxxWatchingSources)
     //
 
-    private watchSourcesHandle: WatchStopHandle|null = null
+    private watchSourcesHandle: WatchStopHandle | null = null
 
     private startWatchingSources(): void {
         this.stopWatchingSources()
@@ -344,7 +344,7 @@ export abstract class TableController<R, K> implements PlayPauseController {
     // Private (moveBufferToPage)
     //
 
-    private async moveBufferToPage(page: number, key: K|null): Promise<void> {
+    private async moveBufferToPage(page: number, key: K | null): Promise<void> {
         this.autoRefreshRef.value = false
         await this.buffer.moveToPage(page, key)
         await this.bufferDidChange()
@@ -366,5 +366,6 @@ export abstract class TableController<R, K> implements PlayPauseController {
     }
 }
 
-export enum KeyOperator { gt= "gt", gte = "gte", lt= "lt", lte="lte" }
+export enum KeyOperator { gt = "gt", gte = "gte", lt = "lt", lte = "lte" }
+
 export enum SortOrder { ASC = "asc", DESC = "desc" }

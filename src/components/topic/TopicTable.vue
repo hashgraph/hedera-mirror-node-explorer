@@ -56,7 +56,7 @@
     </o-table-column>
 
     <o-table-column v-slot="props" field="memo" label="Memo">
-        <BlobValue :blob-value="props.row.memo_base64" :base64="true" :show-none="true"/>
+      <BlobValue :blob-value="props.row.memo_base64" :base64="true" :show-none="true"/>
     </o-table-column>
 
   </o-table>

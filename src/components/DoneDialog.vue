@@ -38,8 +38,8 @@
         <div v-if="extraMessage" class="my-4" style="line-height: 21px">
           <span v-if="extraMessage" class="h-is-property-text">{{ extraMessage }}</span>
         </div>
-        
-        
+
+
         <div class="is-flex is-justify-content-flex-end">
           <button class="button is-info is-small ml-4" @click="handleDone">{{ confirmLabel }}</button>
         </div>
@@ -66,16 +66,16 @@ export default defineComponent({
       default: false
     },
     mainMessage: {
-      type: String as PropType<string|null>,
+      type: String as PropType<string | null>,
       default: null
     },
     extraMessage: {
-      type: String as PropType<string|null>,
+      type: String as PropType<string | null>,
       default: null
     },
     confirmLabel: {
-        type: String as PropType<string>,
-        default: "DONE"
+      type: String as PropType<string>,
+      default: "DONE"
     }
   },
 

@@ -22,7 +22,8 @@
 
 <template>
   <div class="is-flex is-align-items-center">
-    <Datepicker v-model="date" placeholder="SELECT A DATE" :is-24="false" time-picker-inline dark @closed="handleClosed" @cleared="$emit('dateCleared')"/>
+    <Datepicker v-model="date" placeholder="SELECT A DATE" :is-24="false" time-picker-inline dark @closed="handleClosed"
+                @cleared="$emit('dateCleared')"/>
   </div>
 </template>
 
@@ -36,7 +37,7 @@ import {defineComponent, onMounted, PropType, ref} from "vue";
 import {TableController} from "@/utils/table/TableController";
 import Datepicker from '@vuepic/vue-datepicker';
 import '@vuepic/vue-datepicker/dist/main.css';
-import { TransactionTableControllerXL } from "@/components/transaction/TransactionTableControllerXL";
+import {TransactionTableControllerXL} from "@/components/transaction/TransactionTableControllerXL";
 
 export default defineComponent({
   name: "DateTimePicker",
@@ -86,6 +87,7 @@ export default defineComponent({
   --dp-border-color-hover: white;
   --dp-icon-color: white;
 }
+
 :root {
   --dp-font-family: "Styrene A Web", sans-serif;
   --dp-border-radius: 0;

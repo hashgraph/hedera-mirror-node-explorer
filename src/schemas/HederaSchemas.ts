@@ -38,7 +38,7 @@ export interface AccountInfo {
     created_timestamp: string | null
     deleted: boolean | null
     expiry_timestamp: string | null
-    key : Key | null
+    key: Key | null
     max_automatic_token_associations: number | null
     memo: string | null
     receiver_sig_required: boolean | null
@@ -48,10 +48,10 @@ export interface AccountInfo {
     decline_reward: boolean | null      // Whether the account declines receiving a staking reward
     staked_account_id: string | null    // The account to which this account is staking
     staked_node_id: number | null       // The id of the node to which this account is staking
-    stake_period_start : string | null  // The staking period during which either the staking settings for this account
-                                        // changed (such as starting staking or changing stakedNode) or the most recent
-                                        // reward was earned, whichever is later. If this account is not currently
-                                        // staked to a node, then the value is null
+    stake_period_start: string | null  // The staking period during which either the staking settings for this account
+                                       // changed (such as starting staking or changing stakedNode) or the most recent
+                                       // reward was earned, whichever is later. If this account is not currently
+                                       // staked to a node, then the value is null
     pending_reward: number | undefined  // The pending reward in tinybars the account will receive in the next
                                         // reward payout. Note the value is updated at the end of each staking period
                                         // and there may be delay to reflect the changes in the past staking period.
@@ -157,6 +157,7 @@ export interface NftTransactionHistory {
 export interface TransactionByIdResponse {
     transactions: Array<TransactionDetail> | undefined
 }
+
 export interface Transaction {
 
     bytes: string | null
@@ -311,7 +312,7 @@ export function compareTransferByAccount(t1: Transfer | StakingRewardTransfer, t
         } else {
             result = account1.localeCompare(account2);
         }
-    } else if (account1 != null){
+    } else if (account1 != null) {
         result = +1
     } else if (account2 != null) {
         result = -1
@@ -568,7 +569,7 @@ export interface ContractResultLog {
     topics: string[] | undefined
 }
 
-export interface ContractLog extends ContractResultLog  {
+export interface ContractLog extends ContractResultLog {
     block_hash: string | undefined,
     block_number: number | undefined,
     root_contract_id: string | null | undefined,
@@ -580,7 +581,7 @@ export interface ContractLog extends ContractResultLog  {
 export interface ContractResultsLogResponse {
     logs: ContractLog[],
     links: Links | undefined
-} 
+}
 
 export interface ContractResultStateChange {
     address: string | undefined
@@ -627,14 +628,14 @@ export enum ResultDataType {
 }
 
 export interface ContractCallRequest {
-    block?: string|null      // Hexadecimal block number or the string "latest", "pending", "earliest". Defaults to "latest"
-    data?: string|null       // Hexadecimal method signature and encoded parameters
-    estimate?: boolean|null  // Whether gas estimation is called. Defaults to false
-    from?: string|null       // The 20-byte hexadecimal EVM address the transaction is sent from
-    gas?: number|null        // Gas provided for the transaction execution. Defaults to 15000000
-    gasPrice?: number|null   // Gas price used for each paid gas
+    block?: string | null      // Hexadecimal block number or the string "latest", "pending", "earliest". Defaults to "latest"
+    data?: string | null       // Hexadecimal method signature and encoded parameters
+    estimate?: boolean | null  // Whether gas estimation is called. Defaults to false
+    from?: string | null       // The 20-byte hexadecimal EVM address the transaction is sent from
+    gas?: number | null        // Gas provided for the transaction execution. Defaults to 15000000
+    gasPrice?: number | null   // Gas price used for each paid gas
     to: string               // The 20-byte hexadecimal EVM address the transaction is directed to
-    value?: number|null      // Value sent with this transaction. Defaults to 0
+    value?: number | null      // Value sent with this transaction. Defaults to 0
 }
 
 export interface ContractCallResponse {
@@ -704,7 +705,7 @@ export function makeNodeSelectorDescription(node: NetworkNode): string {
 //                                                      Network
 // ---------------------------------------------------------------------------------------------------------------------
 
-export interface NetworkExchangeRateSetResponse{
+export interface NetworkExchangeRateSetResponse {
     current_rate: ExchangeRate,
     next_rate: ExchangeRate,
     timestamp: string
@@ -717,7 +718,7 @@ export interface ExchangeRate {
 }
 
 export interface NetworkSupplyResponse {
-    released_supply:	string | undefined  // The network's released supply of hbars in tinybars
+    released_supply: string | undefined  // The network's released supply of hbars in tinybars
     timestamp: string | undefined  // The consensus timestamp at which the released supply was valid
     total_supply: string | undefined  // The network's total supply of hbars in tinybars
 }
@@ -781,7 +782,7 @@ export interface StakingRewardsResponse {
 }
 
 export interface StakingReward {
-    account_id: string|null
+    account_id: string | null
     amount: number
     timestamp: string
 }
@@ -811,7 +812,7 @@ export const infiniteDuration = 31556888202959784
 //                                                      Private
 // ---------------------------------------------------------------------------------------------------------------------
 
-function compareString(s1: string|null|undefined, s2: string|null|undefined): number {
+function compareString(s1: string | null | undefined, s2: string | null | undefined): number {
     let result: number
 
     if (s1 && s2) {
@@ -828,7 +829,7 @@ function compareString(s1: string|null|undefined, s2: string|null|undefined): nu
     return result
 }
 
-function compareNumber(n1: number|null|undefined, n2: number|null|undefined): number {
+function compareNumber(n1: number | null | undefined, n2: number | null | undefined): number {
     let result: number
 
     if (n1 && n2) {

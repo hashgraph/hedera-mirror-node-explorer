@@ -53,7 +53,7 @@ export default defineComponent({
   name: "TransactionFilterSelect",
 
   props: {
-      selectedFilter: {
+    selectedFilter: {
       type: String,
       required: true,
     },
@@ -81,10 +81,10 @@ export default defineComponent({
 
 export function makeFilterValues(nftFilter: boolean): string[] {
   let result = Object
-    .keys(TransactionType)
-    .sort((a, b) => {
-      return makeTypeLabel(a as TransactionType) < makeTypeLabel(b as TransactionType) ? -1 : 1;
-    })
+      .keys(TransactionType)
+      .sort((a, b) => {
+        return makeTypeLabel(a as TransactionType) < makeTypeLabel(b as TransactionType) ? -1 : 1;
+      })
   if (nftFilter) {
     result = result.filter(el => {
       return el === "CRYPTOTRANSFER" || el === "TOKENMINT" || el === "CRYPTOAPPROVEALLOWANCE" || el === "CRYPTODELETEALLOWANCE" || el === "TOKENWIPE" || el === "TOKENBURN" || el === "TOKENDELETION";

@@ -31,9 +31,9 @@ import {TokenRelationshipCache} from "@/utils/cache/TokenRelationshipCache";
 
 export class TransactionAnalyzer {
 
-    public readonly transaction: Ref<Transaction|null>
-    public readonly contractId: Ref<string|null> = ref(null)
-    public readonly blockNumber: Ref<number|null> = ref(null)
+    public readonly transaction: Ref<Transaction | null>
+    public readonly contractId: Ref<string | null> = ref(null)
+    public readonly blockNumber: Ref<number | null> = ref(null)
     public readonly entityDescriptor = ref(EntityDescriptor.DEFAULT_ENTITY_DESCRIPTOR)
     public readonly tokenRelationships: Ref<TokenRelationship[]> = ref([])
     private readonly watchHandles: WatchStopHandle[] = []
@@ -42,7 +42,7 @@ export class TransactionAnalyzer {
     // Public
     //
 
-    public constructor(transaction: Ref<Transaction|null>) {
+    public constructor(transaction: Ref<Transaction | null>) {
         this.transaction = transaction
     }
 
@@ -63,7 +63,7 @@ export class TransactionAnalyzer {
 
     public readonly entityId = computed(() => this.transaction.value?.entity_id ?? null)
 
-    public readonly result: ComputedRef<string|null> = computed(
+    public readonly result: ComputedRef<string | null> = computed(
         () => this.transaction.value?.result ?? null)
 
     public readonly hasSucceeded: ComputedRef<boolean> = computed(
@@ -82,18 +82,18 @@ export class TransactionAnalyzer {
     public readonly chargedFee: ComputedRef<number> = computed(
         () => this.transaction.value?.charged_tx_fee ?? 0)
 
-    public readonly formattedTransactionId: ComputedRef<string|null> = computed(() => {
+    public readonly formattedTransactionId: ComputedRef<string | null> = computed(() => {
         const transaction_id = this.transaction.value?.transaction_id
         return transaction_id ? normalizeTransactionId(transaction_id, true) : null
     })
 
-    public readonly formattedHash: ComputedRef<string|null> = computed( () => {
+    public readonly formattedHash: ComputedRef<string | null> = computed(() => {
         const hash = this.transaction.value?.transaction_hash
         return hash ? byteToHex(base64DecToArr(hash)) : null
     })
 
-    public readonly systemContract: ComputedRef<string|null> = computed(() => {
-        let result: string|null
+    public readonly systemContract: ComputedRef<string | null> = computed(() => {
+        let result: string | null
         if (this.transaction.value?.name === TransactionType.CONTRACTCALL && this.transaction.value.entity_id) {
             result = systemContractRegistry.lookup(this.transaction.value.entity_id)?.description ?? null
         } else {
@@ -109,7 +109,7 @@ export class TransactionAnalyzer {
     public readonly isTokenAssociation = computed(
         () => this.transactionType.value === TransactionType.TOKENASSOCIATE)
 
-    public readonly tokens = computed( () => {
+    public readonly tokens = computed(() => {
         const result: string[] = []
         for (const r of this.tokenRelationships.value) {
             if (r.token_id) {
@@ -124,12 +124,12 @@ export class TransactionAnalyzer {
     // Private
     //
 
-    private readonly transactionDidChange = async() => {
+    private readonly transactionDidChange = async () => {
 
         if (this.transaction.value !== null) {
             const entityId = this.transaction.value?.entity_id ?? null
             if (entityId !== null) {
-                switch(this.transaction.value.name) {
+                switch (this.transaction.value.name) {
                     case TransactionType.CONTRACTCALL:
                     case TransactionType.ETHEREUMTRANSACTION: {
                         const contract = await ContractByIdCache.instance.lookup(entityId)
@@ -157,7 +157,7 @@ export class TransactionAnalyzer {
             } else {
                 this.blockNumber.value = null
             }
-            if (this.isTokenAssociation.value &&  this.consensusTimestamp.value !== null && this.entityId.value !== null) {
+            if (this.isTokenAssociation.value && this.consensusTimestamp.value !== null && this.entityId.value !== null) {
                 const r = await TokenRelationshipCache.instance.lookup(this.entityId.value)
                 this.tokenRelationships.value = this.filterTokenRelationships(r ?? [], this.consensusTimestamp.value)
             } else {

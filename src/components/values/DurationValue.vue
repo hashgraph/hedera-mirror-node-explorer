@@ -65,7 +65,7 @@ export default defineComponent({
   setup(props) {
 
     const formattedValue = computed(() => {
-      let result: string|null
+      let result: string | null
       if (props.numberValue) {
         result = formatSeconds(props.numberValue)
       } else if (props.stringValue) {

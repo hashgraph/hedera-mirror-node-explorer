@@ -58,9 +58,9 @@
 import {computed, defineComponent, inject, onBeforeUnmount, onMounted} from 'vue';
 import DashboardCard from "@/components/DashboardCard.vue";
 import Footer from "@/components/Footer.vue";
-import { useRouter } from "vue-router";
+import {useRouter} from "vue-router";
 import {EntityID} from "@/utils/EntityID";
-import { CollectionTableController } from "@/components/account/CollectionTableController";
+import {CollectionTableController} from "@/components/account/CollectionTableController";
 import CollectionTable from "@/components/account/CollectionTable.vue";
 import TokenLink from "@/components/values/TokenLink.vue";
 

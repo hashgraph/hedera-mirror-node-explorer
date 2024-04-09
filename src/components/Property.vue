@@ -75,7 +75,7 @@ export default defineComponent({
     customNbColClass: String,
     tooltip: String
   },
-  setup(props){
+  setup(props) {
     const nameId = props.id + 'Name'
     const valueId = props.id + 'Value'
 

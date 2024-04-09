@@ -24,15 +24,15 @@
 
 <template>
   <section
-    :class="{ 'h-mobile-background': isTouchDevice || !isSmallScreen }"
-    class="section"
+      :class="{ 'h-mobile-background': isTouchDevice || !isSmallScreen }"
+      class="section"
   >
     <DashboardCard>
       <template #title>
         <span class="h-is-primary-title mr-1"> Serial Number {{ serialNumber }}</span>
         <div
-          class="is-inline-block h-is-tertiary-text h-is-extra-text should-wrap"
-          style="word-break: break-all"
+            class="is-inline-block h-is-tertiary-text h-is-extra-text should-wrap"
+            style="word-break: break-all"
         >
           {{ symbol }}
         </div>
@@ -40,8 +40,8 @@
 
       <template #content>
         <NotificationBanner
-          v-if="notification"
-          :message="notification"
+            v-if="notification"
+            :message="notification"
         />
       </template>
 
@@ -49,15 +49,15 @@
         <Property id="tokenId">
           <template #name>Token ID</template>
           <template #value>
-            <TokenLink :token-id="tokenId" />
+            <TokenLink :token-id="tokenId"/>
           </template>
         </Property>
         <Property id="accountId">
           <template #name>Account ID</template>
           <template #value>
             <AccountLink
-              :account-id="nftInfo?.account_id"
-              :show-none="false"
+                :account-id="nftInfo?.account_id"
+                :show-none="false"
             />
           </template>
         </Property>
@@ -65,8 +65,8 @@
           <template #name>Created Timestamp</template>
           <template #value>
             <TimestampValue
-              :show-none="false"
-              :timestamp="nftInfo?.created_timestamp"
+                :show-none="false"
+                :timestamp="nftInfo?.created_timestamp"
             />
           </template>
         </Property>
@@ -74,8 +74,8 @@
           <template #name>Delegating Spender</template>
           <template #value>
             <AccountLink
-              :account-id="nftInfo?.delegating_spender"
-              :show-none="false"
+                :account-id="nftInfo?.delegating_spender"
+                :show-none="false"
             />
           </template>
         </Property>
@@ -83,9 +83,9 @@
           <template #name>Metadata</template>
           <template #value>
             <BlobValue
-              :base64="true"
-              :blob-value="nftInfo?.metadata"
-              :show-none="false"
+                :base64="true"
+                :blob-value="nftInfo?.metadata"
+                :show-none="false"
             />
           </template>
         </Property>
@@ -93,8 +93,8 @@
           <template #name>Modified Timestamp</template>
           <template #value>
             <TimestampValue
-              :timestamp="nftInfo?.modified_timestamp"
-              :show-none="false"
+                :timestamp="nftInfo?.modified_timestamp"
+                :show-none="false"
             />
           </template>
         </Property>
@@ -102,8 +102,8 @@
           <template #name>Spender ID</template>
           <template #value>
             <AccountLink
-              :account-id="nftInfo?.spender_id"
-              :show-none="false"
+                :account-id="nftInfo?.spender_id"
+                :show-none="false"
             />
           </template>
         </Property>
@@ -119,18 +119,18 @@
       <template #control>
         <div class="is-flex is-align-items-flex-end">
           <PlayPauseButton
-            v-bind:controller="transactionTableController"
+              v-bind:controller="transactionTableController"
           />
           <TransactionFilterSelect v-model:selected-filter="transactionType" nft-filter
-            class="ml-2"
+                                   class="ml-2"
           />
         </div>
       </template>
       <template #content>
         <div id="recentTransactionsTable">
           <NftTransactionTable
-            v-bind:controller="transactionTableController"
-            v-bind:narrowed="true"
+              v-bind:controller="transactionTableController"
+              v-bind:narrowed="true"
           />
         </div>
       </template>
@@ -148,13 +148,13 @@
 
 <script lang="ts">
 import {
-    computed,
-    defineComponent,
-    inject,
-    onBeforeUnmount,
-    onMounted,
-    ref,
-    watch,
+  computed,
+  defineComponent,
+  inject,
+  onBeforeUnmount,
+  onMounted,
+  ref,
+  watch,
 } from "vue"
 import router, {routeManager} from "@/router"
 import TimestampValue from "@/components/values/TimestampValue.vue"
@@ -171,158 +171,158 @@ import ContractResultsSection from "@/components/contracts/ContractResultsSectio
 import NftTransactionTable from "@/components/transaction/NftTransactionTable.vue"
 import {NftTransactionTableController} from "@/components/transaction/NftTransactionTableController"
 import TransactionFilterSelect from "@/components/transaction/TransactionFilterSelect.vue"
-import { makeTokenSymbol } from "@/schemas/HederaUtils";
-import { TokenInfoCache } from "@/utils/cache/TokenInfoCache";
+import {makeTokenSymbol} from "@/schemas/HederaUtils";
+import {TokenInfoCache} from "@/utils/cache/TokenInfoCache";
 import TokenLink from "@/components/values/TokenLink.vue";
 
 export default defineComponent({
-    name: "NftDetails",
+  name: "NftDetails",
 
-    components: {
-      TokenLink,
-      ContractResultsSection,
-      PlayPauseButton,
-      AccountLink,
-      NotificationBanner,
-      Property,
-      BlobValue,
-      DashboardCard,
-      TimestampValue,
-      NftTransactionTable,
-      TransactionFilterSelect,
-      Footer,
+  components: {
+    TokenLink,
+    ContractResultsSection,
+    PlayPauseButton,
+    AccountLink,
+    NotificationBanner,
+    Property,
+    BlobValue,
+    DashboardCard,
+    TimestampValue,
+    NftTransactionTable,
+    TransactionFilterSelect,
+    Footer,
+  },
+
+  props: {
+    tokenId: {
+      type: String,
+      required: true,
     },
-
-    props: {
-        tokenId: {
-            type: String,
-            required: true,
-        },
-        serialNumber: {
-            type: String,
-            required: true,
-        },
-        network: String,
+    serialNumber: {
+      type: String,
+      required: true,
     },
+    network: String,
+  },
 
-    setup(props) {
-        const isSmallScreen = inject("isSmallScreen", true)
-        const isMediumScreen = inject("isMediumScreen", true)
-        const isTouchDevice = inject("isTouchDevice", false)
+  setup(props) {
+    const isSmallScreen = inject("isSmallScreen", true)
+    const isMediumScreen = inject("isMediumScreen", true)
+    const isTouchDevice = inject("isTouchDevice", false)
 
-        const normalizedTokenId = computed(() => {
-            const result =
-                EntityID.parse(props.tokenId) ??
-                EntityID.fromAddress(props.tokenId)
-            return result !== null ? result.toString() : null
-        })
-        const validEntityId = computed(() => normalizedTokenId.value != null)
+    const normalizedTokenId = computed(() => {
+      const result =
+          EntityID.parse(props.tokenId) ??
+          EntityID.fromAddress(props.tokenId)
+      return result !== null ? result.toString() : null
+    })
+    const validEntityId = computed(() => normalizedTokenId.value != null)
 
-        const tokenLookup = TokenInfoCache.instance.makeLookup(normalizedTokenId)
-        onMounted(() => tokenLookup.mount())
-        onBeforeUnmount(() => tokenLookup.unmount())
+    const tokenLookup = TokenInfoCache.instance.makeLookup(normalizedTokenId)
+    onMounted(() => tokenLookup.mount())
+    onBeforeUnmount(() => tokenLookup.unmount())
 
-        const symbol = computed(() => makeTokenSymbol(tokenLookup.entity.value, 256))
+    const symbol = computed(() => makeTokenSymbol(tokenLookup.entity.value, 256))
 
-        const serialNumber = ref(props.serialNumber)
-        const nftLookup = NftBySerialCache.instance.makeNftLookup(
-            normalizedTokenId,
-            serialNumber,
-        )
-        onMounted(() => nftLookup.mount())
-        onBeforeUnmount(() => nftLookup.unmount())
+    const serialNumber = ref(props.serialNumber)
+    const nftLookup = NftBySerialCache.instance.makeNftLookup(
+        normalizedTokenId,
+        serialNumber,
+    )
+    onMounted(() => nftLookup.mount())
+    onBeforeUnmount(() => nftLookup.unmount())
 
-        const notification = computed(() => {
-            let result
-            if (!validEntityId.value) {
-                result = "Invalid token ID: " + props.tokenId
-            } else if (nftLookup.entity.value == null) {
-                if (nftLookup.isLoaded()) {
-                    result =
-                        "Token with ID " + props.tokenId + " was not found"
-                } else {
-                    result = null
-                }
-            } else if (nftLookup.entity.value?.deleted) {
-                result = "Token is deleted"
-            } else {
-                result = null
-            }
-            return result
-        })
-
-        const shownftDetails = (tokenId: string) => {
-            routeManager.routeToToken(tokenId)
+    const notification = computed(() => {
+      let result
+      if (!validEntityId.value) {
+        result = "Invalid token ID: " + props.tokenId
+      } else if (nftLookup.entity.value == null) {
+        if (nftLookup.isLoaded()) {
+          result =
+              "Token with ID " + props.tokenId + " was not found"
+        } else {
+          result = null
         }
+      } else if (nftLookup.entity.value?.deleted) {
+        result = "Token is deleted"
+      } else {
+        result = null
+      }
+      return result
+    })
 
-        const perPage = computed(() => (isMediumScreen ? 10 : 5))
+    const shownftDetails = (tokenId: string) => {
+      routeManager.routeToToken(tokenId)
+    }
 
-        //
-        // TokenBalanceTableController
-        //
+    const perPage = computed(() => (isMediumScreen ? 10 : 5))
 
-        const tokenId = ref(props.tokenId)
+    //
+    // TokenBalanceTableController
+    //
 
-        //
-        // TransactionTableController
-        //
-        const transactionTableController = new NftTransactionTableController(
-            router,
-            tokenId,
-            serialNumber,
-            perPage,
-            "p1",
-            "k1",
-        )
+    const tokenId = ref(props.tokenId)
 
-        let mounted = false
-        onMounted(() => {
-            mounted = true
-            if (serialNumber.value !== null) {
-                transactionTableController.mount()
-            }
-        })
-        onBeforeUnmount(() => {
-            mounted = false
-            if (serialNumber.value !== null) {
-                transactionTableController.unmount()
-            }
-        })
-        watch(serialNumber, () => {
-            if (mounted) {
-                if (serialNumber.value !== null) {
-                    transactionTableController.mount()
-                } else {
-                    transactionTableController.unmount()
-                }
-            }
-        })
+    //
+    // TransactionTableController
+    //
+    const transactionTableController = new NftTransactionTableController(
+        router,
+        tokenId,
+        serialNumber,
+        perPage,
+        "p1",
+        "k1",
+    )
 
-        return {
-            isSmallScreen,
-            isMediumScreen,
-            isTouchDevice,
-            nftInfo: nftLookup.entity,
-            validEntityId,
-            normalizedTokenId,
-            notification,
-            shownftDetails,
-            parseBigIntString,
-            transactionTableController,
-            transactionType:transactionTableController.transactionType,
-            symbol
+    let mounted = false
+    onMounted(() => {
+      mounted = true
+      if (serialNumber.value !== null) {
+        transactionTableController.mount()
+      }
+    })
+    onBeforeUnmount(() => {
+      mounted = false
+      if (serialNumber.value !== null) {
+        transactionTableController.unmount()
+      }
+    })
+    watch(serialNumber, () => {
+      if (mounted) {
+        if (serialNumber.value !== null) {
+          transactionTableController.mount()
+        } else {
+          transactionTableController.unmount()
         }
-    },
+      }
+    })
+
+    return {
+      isSmallScreen,
+      isMediumScreen,
+      isTouchDevice,
+      nftInfo: nftLookup.entity,
+      validEntityId,
+      normalizedTokenId,
+      notification,
+      shownftDetails,
+      parseBigIntString,
+      transactionTableController,
+      transactionType: transactionTableController.transactionType,
+      symbol
+    }
+  },
 })
 
 function parseBigIntString(s: string | undefined): bigint | undefined {
-    let result: bigint | undefined
-    try {
-        result = s ? BigInt(s) : undefined
-    } catch {
-        result = undefined
-    }
-    return result
+  let result: bigint | undefined
+  try {
+    result = s ? BigInt(s) : undefined
+  } catch {
+    result = undefined
+  }
+  return result
 }
 </script>
 
@@ -332,8 +332,8 @@ function parseBigIntString(s: string | undefined): bigint | undefined {
 
 <style scoped>
 .headline-grid {
-    display: grid;
-    grid-template-columns: 2fr 10fr;
-    grid-column-gap: 0.5rem;
+  display: grid;
+  grid-template-columns: 2fr 10fr;
+  grid-column-gap: 0.5rem;
 }
 </style>

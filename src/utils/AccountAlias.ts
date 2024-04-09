@@ -28,7 +28,7 @@ export class AccountAlias {
     // Public
     //
 
-    public static parse(a: string): AccountAlias|null {
+    public static parse(a: string): AccountAlias | null {
         let bytes = base32ToAlias(a)
         if (bytes === null) {
             bytes = hexToByte(a)

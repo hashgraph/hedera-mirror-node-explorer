@@ -24,56 +24,56 @@
 
 <template>
 
- <div id="nft-holder-table">
-  <o-table
-      :data="nfts"
-      :loading="loading"
-      paginated
-      backend-pagination
-      :total="total"
-      v-model:current-page="currentPage"
-      :per-page="perPage"
-      @page-change="onPageChange"
+  <div id="nft-holder-table">
+    <o-table
+        :data="nfts"
+        :loading="loading"
+        paginated
+        backend-pagination
+        :total="total"
+        v-model:current-page="currentPage"
+        :per-page="perPage"
+        @page-change="onPageChange"
 
-      @cell-click="handleClick"
-      :hoverable="true"
-      :narrowed="true"
-      :striped="true"
-      :mobile-breakpoint="ORUGA_MOBILE_BREAKPOINT"
+        @cell-click="handleClick"
+        :hoverable="true"
+        :narrowed="true"
+        :striped="true"
+        :mobile-breakpoint="ORUGA_MOBILE_BREAKPOINT"
 
-      aria-current-label="Current page"
-      aria-next-label="Next page"
-      aria-page-label="Page"
-      aria-previous-label="Previous page"
-      customRowKey="serial_number"
-  >
-    <o-table-column v-slot="props" field="serial_number" label="Serial #">
-      <div class="is-numeric">
-        {{ props.row.serial_number }}
-      </div>
-    </o-table-column>
+        aria-current-label="Current page"
+        aria-next-label="Next page"
+        aria-page-label="Page"
+        aria-previous-label="Previous page"
+        customRowKey="serial_number"
+    >
+      <o-table-column v-slot="props" field="serial_number" label="Serial #">
+        <div class="is-numeric">
+          {{ props.row.serial_number }}
+        </div>
+      </o-table-column>
 
-    <o-table-column v-slot="props" field="account_id" label="Account ID">
-      <AccountLink v-bind:account-id="props.row.account_id" no-anchor/>
-    </o-table-column>
+      <o-table-column v-slot="props" field="account_id" label="Account ID">
+        <AccountLink v-bind:account-id="props.row.account_id" no-anchor/>
+      </o-table-column>
 
-    <o-table-column v-slot="props" field="deleted" label="Deleted">
-      {{ props.row.deleted }}
-    </o-table-column>
+      <o-table-column v-slot="props" field="deleted" label="Deleted">
+        {{ props.row.deleted }}
+      </o-table-column>
 
-    <o-table-column v-slot="props" field="modified_timestamp" label="Modification Time">
-      <TimestampValue v-bind:timestamp="props.row.modified_timestamp"/>
-    </o-table-column>
+      <o-table-column v-slot="props" field="modified_timestamp" label="Modification Time">
+        <TimestampValue v-bind:timestamp="props.row.modified_timestamp"/>
+      </o-table-column>
 
-    <o-table-column v-slot="props" field="metadata" label="Metadata">
-      <div class="should-wrap">
-        <BlobValue v-bind:base64="true" v-bind:blob-value="props.row.metadata" v-bind:show-none="true"/>
-      </div>
-    </o-table-column>
+      <o-table-column v-slot="props" field="metadata" label="Metadata">
+        <div class="should-wrap">
+          <BlobValue v-bind:base64="true" v-bind:blob-value="props.row.metadata" v-bind:show-none="true"/>
+        </div>
+      </o-table-column>
 
-  </o-table>
-  <EmptyTable v-if="!nfts.length"/>
- </div>
+    </o-table>
+    <EmptyTable v-if="!nfts.length"/>
+  </div>
 
 </template>
 
@@ -91,7 +91,7 @@ import BlobValue from "@/components/values/BlobValue.vue";
 import {ORUGA_MOBILE_BREAKPOINT} from '@/App.vue';
 import EmptyTable from "@/components/EmptyTable.vue";
 import {NftHolderTableController} from "@/components/token/NftHolderTableController";
-import { routeManager } from "@/router";
+import {routeManager} from "@/router";
 
 export default defineComponent({
   name: 'NftHolderTable',
@@ -110,17 +110,17 @@ export default defineComponent({
     const isMediumScreen = inject('isMediumScreen', true)
 
     const handleClick = (
-      n: Nft,
-      c: unknown,
-      i: number,
-      ci: number,
-      event: MouseEvent,
+        n: Nft,
+        c: unknown,
+        i: number,
+        ci: number,
+        event: MouseEvent,
     ) => {
       if (n.token_id && n.serial_number) {
         routeManager.routeToSerial(
-          n.token_id,
-          n.serial_number,
-          event.ctrlKey || event.metaKey,
+            n.token_id,
+            n.serial_number,
+            event.ctrlKey || event.metaKey,
         );
       }
     };

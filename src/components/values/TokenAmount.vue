@@ -54,11 +54,11 @@ export default defineComponent({
   components: {InfoTooltip, TokenExtra},
   props: {
     amount: {
-      type: BigInt as unknown as PropType<bigint|null>,
+      type: BigInt as unknown as PropType<bigint | null>,
       default: null
     },
     tokenId: {
-      type: String as PropType<string|null>,
+      type: String as PropType<string | null>,
       default: null
     },
     showExtra: {
@@ -72,7 +72,7 @@ export default defineComponent({
   },
 
   setup(props) {
-    const response = ref<TokenInfo|null>(null)
+    const response = ref<TokenInfo | null>(null)
 
     const formattedAmount = computed(() => {
       let result: string

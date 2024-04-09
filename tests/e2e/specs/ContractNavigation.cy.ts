@@ -50,7 +50,7 @@ describe('Contract Navigation', () => {
 
         cy.get('table').contains('td', '0x')
             .click()
-         cy.url().should('include', '/mainnet/transaction/')
+        cy.url().should('include', '/mainnet/transaction/')
         cy.contains('Transaction')
         cy.contains('CONTRACT CALL')
         cy.contains(contractId)
@@ -59,14 +59,14 @@ describe('Contract Navigation', () => {
         cy.url().should('include', '/mainnet/contract/' + contractId)
     })
 
-    it ('should display contract details using contract ID', () => {
+    it('should display contract details using contract ID', () => {
         const contractId = "0.0.1186129"
         cy.visit('mainnet/contract/' + contractId)
         cy.url().should('include', '/mainnet/contract/' + contractId)
         cy.contains('Contract ID:' + contractId)
     })
 
-    it ('should display contract details using contract evm address', () => {
+    it('should display contract details using contract evm address', () => {
         const contractId = "0.0.1186129"
         const evmAddress = "0x0000000000000000000000000000000000121951"
 

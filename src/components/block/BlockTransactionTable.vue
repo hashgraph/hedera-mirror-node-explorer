@@ -84,7 +84,7 @@ import TransactionSummary from "@/components/transaction/TransactionSummary.vue"
 export default defineComponent({
   name: 'BlockTransactionTable',
 
-  components: {TransactionSummary, EmptyTable, TimestampValue, TransactionLabel },
+  components: {TransactionSummary, EmptyTable, TimestampValue, TransactionLabel},
 
   props: {
     narrowed: Boolean,

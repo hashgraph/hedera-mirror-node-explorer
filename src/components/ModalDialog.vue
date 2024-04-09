@@ -80,7 +80,7 @@ export default defineComponent({
       context.emit('update:showDialog', false)
       context.emit('onClose')
     }
-    return { handleClose }
+    return {handleClose}
   }
 });
 

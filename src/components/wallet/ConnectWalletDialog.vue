@@ -23,24 +23,24 @@
 <!-- --------------------------------------------------------------------------------------------------------------- -->
 
 <template>
-    <Dialog :controller="controller">
+  <Dialog :controller="controller">
 
-        <template v-slot:dialogTitle>
-            <DialogTitle>{{ title }}</DialogTitle>
-        </template>
+    <template v-slot:dialogTitle>
+      <DialogTitle>{{ title }}</DialogTitle>
+    </template>
 
-        <template v-slot:dialogInput>
-            <DialogStatus :controller="controller" :is-success="false">
-                <template v-slot:mainMessage>{{ mainMessage }}</template>
-                <template v-slot:extraMessage>{{ extraMessage }}</template>
-            </DialogStatus>
-        </template>
+    <template v-slot:dialogInput>
+      <DialogStatus :controller="controller" :is-success="false">
+        <template v-slot:mainMessage>{{ mainMessage }}</template>
+        <template v-slot:extraMessage>{{ extraMessage }}</template>
+      </DialogStatus>
+    </template>
 
-        <template v-slot:dialogInputButtons>
-            <DialogButton :controller="controller">CLOSE</DialogButton>
-        </template>
+    <template v-slot:dialogInputButtons>
+      <DialogButton :controller="controller">CLOSE</DialogButton>
+    </template>
 
-    </Dialog>
+  </Dialog>
 
 </template>
 
@@ -59,39 +59,39 @@ import DialogStatus from "@/components/dialog/DialogStatus.vue";
 import {WalletDriverError} from "@/utils/wallet/WalletDriverError";
 
 export default defineComponent({
-    name: "ConnectWalletDialog",
+  name: "ConnectWalletDialog",
 
-    components: {DialogStatus, DialogTitle, DialogButton, Dialog},
+  components: {DialogStatus, DialogTitle, DialogButton, Dialog},
 
-    props: {
-        controller: {
-            type: Object as PropType<DialogController>,
-            required: true
-        },
-        error: {
-            type: Object as PropType<unknown>,
-            required: false
-        }
+  props: {
+    controller: {
+      type: Object as PropType<DialogController>,
+      required: true
     },
+    error: {
+      type: Object as PropType<unknown>,
+      required: false
+    }
+  },
 
-    setup(props) {
-        const title = "Could not connect wallet"
-        const mainMessage = computed(
-            () => props.error instanceof WalletDriverError
-                ? props.error.message
-                : "Unexpected error"
-        )
-        const extraMessage = computed(
-            () => props.error instanceof WalletDriverError
-                ? props.error.extra
-                : JSON.stringify(props.error)
-        )
-        return {
-            title,
-            mainMessage,
-            extraMessage,
-        }
-    },
+  setup(props) {
+    const title = "Could not connect wallet"
+    const mainMessage = computed(
+        () => props.error instanceof WalletDriverError
+            ? props.error.message
+            : "Unexpected error"
+    )
+    const extraMessage = computed(
+        () => props.error instanceof WalletDriverError
+            ? props.error.extra
+            : JSON.stringify(props.error)
+    )
+    return {
+      title,
+      mainMessage,
+      extraMessage,
+    }
+  },
 })
 
 </script>

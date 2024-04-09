@@ -32,7 +32,7 @@ export class WalletDriver_Blade extends WalletDriver_Hedera {
     // https://github.com/Blade-Labs/blade-web3.js
     //
 
-    private connector: BladeConnector|null = null
+    private connector: BladeConnector | null = null
 
     //
     // Public
@@ -49,7 +49,7 @@ export class WalletDriver_Blade extends WalletDriver_Hedera {
     //
 
     public async connect(network: string): Promise<string[]> {
-        let newConnector: BladeConnector|null
+        let newConnector: BladeConnector | null
         const hNetwork = WalletDriver_Blade.makeHederaNetwork(network)
         if (hNetwork !== null) {
             const {BladeConnector, ConnectorStrategy} = await import("@bladelabs/blade-web3.js")
@@ -60,7 +60,7 @@ export class WalletDriver_Blade extends WalletDriver_Hedera {
                         name: "HashScan",
                         description: "A ledger explorer for Hedera network",
                         url: "https://hashscan.io",
-                        icons: [ HederaLogo ]
+                        icons: [HederaLogo]
                     }
                 )
                 const params = {
@@ -69,7 +69,7 @@ export class WalletDriver_Blade extends WalletDriver_Hedera {
                 }
                 await newConnector.createSession(params)
 
-            } catch(reason) {
+            } catch (reason) {
                 if (this.isConnectCancelError(reason)) {
                     throw new WalletDriverCancelError()
                 } else {
@@ -91,7 +91,7 @@ export class WalletDriver_Blade extends WalletDriver_Hedera {
         if (this.connector !== null) {
             try {
                 await this.connector.killSession()
-            } catch(reason) {
+            } catch (reason) {
                 const extra = reason instanceof Error ? reason.message : JSON.stringify(reason)
                 throw this.disconnectFailure(extra)
             } finally {
@@ -108,8 +108,8 @@ export class WalletDriver_Blade extends WalletDriver_Hedera {
     // WalletDriver_Hedera
     //
 
-    public makeSigner(accountId: string): Signer|null {
-        let result: Signer|null = null
+    public makeSigner(accountId: string): Signer | null {
+        let result: Signer | null = null
         if (this.connector !== null) {
             for (const s of this.connector.getSigners()) {
                 if (s.getAccountId().toString() === accountId) {
@@ -135,7 +135,7 @@ export class WalletDriver_Blade extends WalletDriver_Hedera {
     // Private
     //
 
-    private static makeHederaNetwork(network: string): HederaNetwork|null {
+    private static makeHederaNetwork(network: string): HederaNetwork | null {
         let result: HederaNetwork | null
         switch (network) {
             case "mainnet":
@@ -155,7 +155,7 @@ export class WalletDriver_Blade extends WalletDriver_Hedera {
         let result: WalletDriverError
         if (reason instanceof Error) {
             const {BladeWalletError} = await import("@bladelabs/blade-web3.js")
-            switch(reason.name) {
+            switch (reason.name) {
                 case BladeWalletError.ExtensionNotFound:
                     result = this.extensionNotFound()
                     break

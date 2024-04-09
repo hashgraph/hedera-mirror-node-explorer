@@ -53,7 +53,7 @@ export default defineComponent({
 
   setup(props) {
     const topicRoute = computed(() => props.topicId ? routeManager.makeRouteToTopic(props.topicId) : null)
-    return { topicRoute }
+    return {topicRoute}
   }
 });
 

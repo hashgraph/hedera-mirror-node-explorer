@@ -54,7 +54,7 @@
         <div/>
 
         <!-- #1 : arrow -->
-        <div  style="position: relative">
+        <div style="position: relative">
           <ArrowSegment
               :source-count="1"
               :dest-count="rewardTransferLayout.destinations.length"

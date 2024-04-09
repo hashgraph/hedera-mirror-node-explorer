@@ -28,22 +28,22 @@ import {ContractByAddressCache} from "@/utils/cache/ContractByAddressCache";
 
 export class ContractLocParser {
 
-    public readonly contractLoc: Ref<string|null>
-    public readonly contractResponse: Ref<ContractResponse|null> = ref(null)
+    public readonly contractLoc: Ref<string | null>
+    public readonly contractResponse: Ref<ContractResponse | null> = ref(null)
 
-    private watchHandle: Ref<WatchStopHandle|null> = ref(null)
+    private watchHandle: Ref<WatchStopHandle | null> = ref(null)
     private readonly loadCounter: Ref<number> = ref(0)
 
     //
     // Public
     //
 
-    public constructor(contractLoc: Ref<string|null>) {
+    public constructor(contractLoc: Ref<string | null>) {
         this.contractLoc = contractLoc
     }
 
     public mount(): void {
-        this.watchHandle.value = watch(this.contractLocObj, this.contractLocObjDidChange, { immediate: true})
+        this.watchHandle.value = watch(this.contractLocObj, this.contractLocObjDidChange, {immediate: true})
     }
 
     public unmount(): void {
@@ -55,17 +55,17 @@ export class ContractLocParser {
         this.loadCounter.value = 0
     }
 
-    public readonly contractId: ComputedRef<string|null>
+    public readonly contractId: ComputedRef<string | null>
         = computed(() => this.contractResponse.value?.contract_id ?? null)
 
-    public readonly ethereumAddress: ComputedRef<string|null>
+    public readonly ethereumAddress: ComputedRef<string | null>
         = computed(() => this.contractResponse.value?.evm_address ?? null)
 
-    public readonly entity: ComputedRef<ContractResponse|null>
+    public readonly entity: ComputedRef<ContractResponse | null>
         = computed(() => this.contractResponse.value ?? null)
 
-    public readonly errorNotification: ComputedRef<string|null> = computed(() => {
-        let result: string|null
+    public readonly errorNotification: ComputedRef<string | null> = computed(() => {
+        let result: string | null
         const l = this.contractLoc.value
         const o = this.contractLocObj.value
         const r = this.contractResponse.value
@@ -108,7 +108,7 @@ export class ContractLocParser {
                 } else {
                     this.contractResponse.value = await ContractByAddressCache.instance.lookup(l.toString())
                 }
-            } catch(error) {
+            } catch (error) {
                 this.contractResponse.value = null
             } finally {
                 this.loadCounter.value += 1
@@ -119,7 +119,7 @@ export class ContractLocParser {
     }
 
     private readonly contractLocObj = computed(() => {
-        let result: EntityID|EthereumAddress|null
+        let result: EntityID | EthereumAddress | null
         if (this.contractLoc.value !== null && this.watchHandle.value !== null) {
             result = PathParam.parseContractLoc(this.contractLoc.value)
         } else {

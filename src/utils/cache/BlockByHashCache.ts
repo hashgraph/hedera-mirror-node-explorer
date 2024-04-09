@@ -23,7 +23,7 @@ import {Block} from "@/schemas/HederaSchemas";
 import axios from "axios";
 import {BlockByNbCache} from "@/utils/cache/BlockByNbCache";
 
-export class BlockByHashCache extends EntityCache<string, Block|null> {
+export class BlockByHashCache extends EntityCache<string, Block | null> {
 
     public static readonly instance = new BlockByHashCache()
 
@@ -42,14 +42,14 @@ export class BlockByHashCache extends EntityCache<string, Block|null> {
     // Cache
     //
 
-    protected async load(hash: string): Promise<Block|null> {
-        let result: Promise<Block|null>
+    protected async load(hash: string): Promise<Block | null> {
+        let result: Promise<Block | null>
 
         try {
             const response = await axios.get<Block>("api/v1/blocks/" + hash)
             result = Promise.resolve(response.data)
             BlockByNbCache.instance.updateWithBlock(response.data)
-        } catch(error) {
+        } catch (error) {
             if (axios.isAxiosError(error) && error.response?.status == 404) {
                 result = Promise.resolve(null)
             } else {

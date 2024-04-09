@@ -60,7 +60,8 @@
       </template>
 
       <template v-slot:control>
-        <div v-if="ethereumAddress && isWalletConnected" class="h-is-property-text is-flex algin-items-center is-relative">
+        <div v-if="ethereumAddress && isWalletConnected"
+             class="h-is-property-text is-flex algin-items-center is-relative">
           <TokenActions :analyzer="tokenAnalyzer"/>
         </div>
       </template>
@@ -96,7 +97,8 @@
             <TimestampValue :nano="true" :show-none="true" :timestamp="tokenInfo?.expiry_timestamp?.toString()"/>
           </template>
         </Property>
-        <Property id="autoRenewPeriod" tooltip="Token auto-renew is not turned on yet. Value in this field is not relevant.">
+        <Property id="autoRenewPeriod"
+                  tooltip="Token auto-renew is not turned on yet. Value in this field is not relevant.">
           <template v-slot:name>
             <span>Auto Renew Period</span>
           </template>
@@ -104,7 +106,8 @@
             <DurationValue v-bind:number-value="tokenInfo?.auto_renew_period ?? undefined"/>
           </template>
         </Property>
-        <Property id="autoRenewAccount" tooltip="Token auto-renew is not turned on yet. Value in this field is not relevant.">
+        <Property id="autoRenewAccount"
+                  tooltip="Token auto-renew is not turned on yet. Value in this field is not relevant.">
           <template v-slot:name>
             <span>Auto Renew Account</span>
           </template>
@@ -389,11 +392,11 @@ export default defineComponent({
       if (!validEntityId.value) {
         result = "Invalid token ID: " + props.tokenId
       } else if (tokenLookup.entity.value == null) {
-          if (tokenLookup.isLoaded()) {
-              result = "Token with ID " + props.tokenId + " was not found"
-          } else {
-              result = null
-          }
+        if (tokenLookup.isLoaded()) {
+          result = "Token with ID " + props.tokenId + " was not found"
+        } else {
+          result = null
+        }
       } else if (tokenLookup.entity.value?.deleted) {
         result = "Token is deleted"
       } else {

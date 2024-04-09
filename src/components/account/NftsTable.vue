@@ -24,26 +24,26 @@
 
 <template>
   <o-table
-    :data="collections"
-    :paginated="!isTouchDevice"
-    :per-page="perPage"
-    @cell-click="handleClick"
+      :data="collections"
+      :paginated="!isTouchDevice"
+      :per-page="perPage"
+      @cell-click="handleClick"
 
-    :hoverable="true"
-    :narrowed="true"
-    :striped="true"
-    :mobile-breakpoint="ORUGA_MOBILE_BREAKPOINT"
+      :hoverable="true"
+      :narrowed="true"
+      :striped="true"
+      :mobile-breakpoint="ORUGA_MOBILE_BREAKPOINT"
 
-    aria-current-label="Current page"
-    aria-next-label="Next page"
-    aria-page-label="Page"
-    aria-previous-label="Previous page"
+      aria-current-label="Current page"
+      aria-next-label="Next page"
+      aria-page-label="Page"
+      aria-previous-label="Previous page"
   >
     <o-table-column v-slot="props" field="token_id" label="Token">
       <TokenLink
-        v-bind:show-extra="true"
-        v-bind:token-id="props.row.tokenId"
-        v-bind:no-anchor="true"
+          v-bind:show-extra="true"
+          v-bind:token-id="props.row.tokenId"
+          v-bind:no-anchor="true"
       />
     </o-table-column>
     <o-table-column v-slot="props" field="owned" label="Owned" position="right">

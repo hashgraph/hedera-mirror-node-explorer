@@ -45,11 +45,11 @@
                   </option>
                 </optgroup>
                 <optgroup v-if="hasCommunityNode" label="Community nodes">
-                    <option v-for="n in nodes" :key="n.node_id" :value="n.node_id"
-                            style="background-color: var(--h-theme-box-background-color)"
-                            v-show="!isCouncilNode(n)">
-                      {{ makeNodeSelectorDescription(n) }}
-                    </option>
+                  <option v-for="n in nodes" :key="n.node_id" :value="n.node_id"
+                          style="background-color: var(--h-theme-box-background-color)"
+                          v-show="!isCouncilNode(n)">
+                    {{ makeNodeSelectorDescription(n) }}
+                  </option>
                 </optgroup>
               </o-select>
             </o-field>
@@ -59,19 +59,22 @@
           <div class="is-flex is-flex-direction-column is-align-items-flex-start">
             <p v-if="isMediumScreen" class="h-is-property-text mb-3">Enter the number of hbars you want to stake</p>
             <p v-else class="h-is-text-size-3 mb-1">Enter number of hbars you want to stake</p>
-              <input class="input is-small has-text-right" type="text" placeholder="0"
-                     :value="amountStaked"
-                     @input="handleInput"
-                     style="width: 100%; height: 26px; margin-top: 1.5px; border-radius: 4px; border-width: 1px;
+            <input class="input is-small has-text-right" type="text" placeholder="0"
+                   :value="amountStaked"
+                   @input="handleInput"
+                   style="width: 100%; height: 26px; margin-top: 1.5px; border-radius: 4px; border-width: 1px;
                      color: white; background-color: var(--h-theme-box-background-color)">
           </div>
         </div>
       </div>
 
       <div class="is-flex is-justify-content-space-between">
-        <NetworkDashboardItem id="currentReward" name="HBAR" title="Current 24h Period Reward" :value="currentReward.toString()"/>
-        <NetworkDashboardItem id="monthlyReward" name="HBAR" title="Approx Monthly Reward" :value="monthlyReward.toString()"/>
-        <NetworkDashboardItem id="yearlyReward" name="HBAR" title="Approx Yearly Reward" :value="yearlyReward.toString()"/>
+        <NetworkDashboardItem id="currentReward" name="HBAR" title="Current 24h Period Reward"
+                              :value="currentReward.toString()"/>
+        <NetworkDashboardItem id="monthlyReward" name="HBAR" title="Approx Monthly Reward"
+                              :value="monthlyReward.toString()"/>
+        <NetworkDashboardItem id="yearlyReward" name="HBAR" title="Approx Yearly Reward"
+                              :value="yearlyReward.toString()"/>
         <NetworkDashboardItem id="yearlyRate" title="Approx Yearly Reward Rate" :value="annualizedRate"/>
       </div>
 
@@ -136,7 +139,7 @@ export default defineComponent({
       return result
     })
 
-    const amountStaked = ref<number>( 100)
+    const amountStaked = ref<number>(100)
     const updateAmountStaked = () => {
       amountStaked.value = props.amountInHbar ?? 100
     }

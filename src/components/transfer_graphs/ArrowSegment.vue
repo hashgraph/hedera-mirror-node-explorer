@@ -59,9 +59,9 @@ export default defineComponent({
   },
 
   setup(props) {
-    const rootElement = ref<SVGSVGElement|null>(null)
-    const parentElement = ref<HTMLElement|null>(null)
-    const svgContent = ref<string|null>(null)
+    const rootElement = ref<SVGSVGElement | null>(null)
+    const parentElement = ref<HTMLElement | null>(null)
+    const svgContent = ref<string | null>(null)
 
     watch(rootElement, () => {
       parentElement.value = rootElement.value?.parentElement ?? null

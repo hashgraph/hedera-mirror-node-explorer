@@ -31,7 +31,7 @@ export class AxiosMonitor {
     public readonly explanation = ref("")
     public readonly suggestion = ref("")
 
-    private targetAxios: Axios|null = null
+    private targetAxios: Axios | null = null
     private requestInterceptor: number | null = null
     private responseInterceptor: number | null = null
     private activeRequestCount = 0
@@ -43,7 +43,7 @@ export class AxiosMonitor {
     // Public
     //
 
-    public setTargetAxios(newValue: Axios|null): void {
+    public setTargetAxios(newValue: Axios | null): void {
         if (this.targetAxios !== null) {
             if (this.requestInterceptor !== null) {
                 this.targetAxios.interceptors.request.eject(this.requestInterceptor)
@@ -142,7 +142,7 @@ export class AxiosMonitor {
     // Private
     //
 
-    private requestIntercepted(value: InternalAxiosRequestConfig): Promise<InternalAxiosRequestConfig>|InternalAxiosRequestConfig {
+    private requestIntercepted(value: InternalAxiosRequestConfig): Promise<InternalAxiosRequestConfig> | InternalAxiosRequestConfig {
         this.activeRequestCount += 1
         this.stateDidChange()
         return value

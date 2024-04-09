@@ -29,7 +29,8 @@
     <DashboardCard>
       <template v-slot:title>
         <span class="h-is-primary-title">Admin Key for Account </span>
-        <div id="accountId" v-if="normalizedAccountId" class="h-is-secondary-text has-text-weight-light is-inline-block">
+        <div id="accountId" v-if="normalizedAccountId"
+             class="h-is-secondary-text has-text-weight-light is-inline-block">
           <AccountLink :account-id="normalizedAccountId">{{ normalizedAccountId }}</AccountLink>
         </div>
         <span v-if="accountChecksum" class="has-text-grey mr-3" style="font-size: 28px">-{{ accountChecksum }}</span>

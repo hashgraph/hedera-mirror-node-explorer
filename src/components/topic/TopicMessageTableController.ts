@@ -26,13 +26,13 @@ import {Router} from "vue-router";
 
 export class TopicMessageTableController extends TableController<TopicMessage, string> {
 
-    public readonly topicId: ComputedRef<string|null>
+    public readonly topicId: ComputedRef<string | null>
 
     //
     // Public
     //
 
-    public constructor(router: Router, topicId: ComputedRef<string|null>, pageSize: ComputedRef<number>) {
+    public constructor(router: Router, topicId: ComputedRef<string | null>, pageSize: ComputedRef<number>) {
         super(router, pageSize, 10 * pageSize.value, 5000, 10, 100);
         this.topicId = topicId
         this.watchAndReload([this.topicId])
@@ -42,8 +42,8 @@ export class TopicMessageTableController extends TableController<TopicMessage, s
     // TableController
     //
 
-    public async load(consensusTimestamp: string|null, operator: KeyOperator, order: SortOrder, limit: number): Promise<TopicMessage[]|null> {
-        let result: Promise<TopicMessage[]|null>
+    public async load(consensusTimestamp: string | null, operator: KeyOperator, order: SortOrder, limit: number): Promise<TopicMessage[] | null> {
+        let result: Promise<TopicMessage[] | null>
         if (this.topicId.value !== null) {
             const params = {} as {
                 limit: number
@@ -55,11 +55,11 @@ export class TopicMessageTableController extends TableController<TopicMessage, s
             if (consensusTimestamp != null) {
                 params.timestamp = operator + ":" + consensusTimestamp
             }
-            const cb = (r: AxiosResponse<TopicMessagesResponse>): Promise<TopicMessage[]|null> =>{
+            const cb = (r: AxiosResponse<TopicMessagesResponse>): Promise<TopicMessage[] | null> => {
                 return Promise.resolve(r.data.messages ?? [])
             }
             result = axios.get<TopicMessagesResponse>(
-                "api/v1/topics/" + this.topicId.value + "/messages", { params: params} ).then(cb)
+                "api/v1/topics/" + this.topicId.value + "/messages", {params: params}).then(cb)
         } else {
             result = Promise.resolve(null)
         }
@@ -75,7 +75,7 @@ export class TopicMessageTableController extends TableController<TopicMessage, s
         return timestamp
     }
 
-    public keyFromString(s: string): string|null {
+    public keyFromString(s: string): string | null {
         return s
     }
 

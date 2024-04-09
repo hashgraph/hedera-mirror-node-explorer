@@ -36,7 +36,7 @@ export class AppStorage {
         return result ?? networkRegistry.getDefaultEntry()
     }
 
-    public static setLastNetwork(newValue: string|NetworkEntry): void {
+    public static setLastNetwork(newValue: string | NetworkEntry): void {
         const newItem = typeof newValue == "string" ? newValue : newValue.name
         this.setLocalStorageItem(this.LAST_USED_NETWORK_KEY, newItem)
     }
@@ -48,10 +48,10 @@ export class AppStorage {
     private static readonly DISCLAIMER_SKIP_KEY = 'skipDisclaimer'
 
     public static getSkipDisclaimer(): boolean {
-        return  this.getLocalStorageItem(this.DISCLAIMER_SKIP_KEY) != null
+        return this.getLocalStorageItem(this.DISCLAIMER_SKIP_KEY) != null
     }
 
-    public static setSkipDisclaimer(newValue: boolean|null): void {
+    public static setSkipDisclaimer(newValue: boolean | null): void {
         this.setLocalStorageItem(this.DISCLAIMER_SKIP_KEY, newValue ? "true" : null)
     }
 
@@ -66,7 +66,7 @@ export class AppStorage {
         return size ? Number(size) : null
     }
 
-    public static setLogsTablePageSize(newValue: number | null ): void {
+    public static setLogsTablePageSize(newValue: number | null): void {
         this.setLocalStorageItem(this.CONTRACT_LOGS_TABLE_PAGE_SIZE_KEY, newValue ? newValue?.toString() : null)
     }
 
@@ -81,7 +81,7 @@ export class AppStorage {
         return size ? Number(size) : null
     }
 
-    public static setStatesTablePageSize(newValue: number | null ): void {
+    public static setStatesTablePageSize(newValue: number | null): void {
         this.setLocalStorageItem(this.CONTRACT_STATES_TABLE_PAGE_SIZE_KEY, newValue ? newValue?.toString() : null)
     }
 
@@ -94,7 +94,7 @@ export class AppStorage {
     private static readonly COOKIE_POLICY_REJECT = 'reject'
     private static readonly COOKIE_POLICY_VALIDITY = 365 // days
 
-    public static getAcceptCookiePolicy(): boolean|null {
+    public static getAcceptCookiePolicy(): boolean | null {
         const policy = AppStorage.readCookie(AppStorage.COOKIE_POLICY_NAME)
         return policy != null ? policy === AppStorage.COOKIE_POLICY_ACCEPT : null
     }
@@ -111,10 +111,10 @@ export class AppStorage {
     private static readonly SHOW_HEXA_OPCODE_KEY = 'hexaOpcode'
 
     public static getShowHexaOpcode(): boolean {
-        return  this.getLocalStorageItem(this.SHOW_HEXA_OPCODE_KEY) != null
+        return this.getLocalStorageItem(this.SHOW_HEXA_OPCODE_KEY) != null
     }
 
-    public static setShowHexaOpcode(newValue: boolean|null): void {
+    public static setShowHexaOpcode(newValue: boolean | null): void {
         this.setLocalStorageItem(this.SHOW_HEXA_OPCODE_KEY, newValue ? "true" : null)
     }
 
@@ -167,9 +167,9 @@ export class AppStorage {
 
     private static readonly INPUT_PARAMS = 'inputParams'
 
-    public static getInputParam(functionHash: string, paramName: string): unknown|null {
+    public static getInputParam(functionHash: string, paramName: string): unknown | null {
         const jsonText = this.getLocalStorageItem(this.makeInputParamKey(functionHash, paramName))
-        let result: unknown|null
+        let result: unknown | null
         if (jsonText !== null) {
             try {
                 result = JSON.parse(jsonText)
@@ -182,7 +182,7 @@ export class AppStorage {
         return result
     }
 
-    public static setInputParam(newValue: unknown|null, functionHash: string, paramName: string) {
+    public static setInputParam(newValue: unknown | null, functionHash: string, paramName: string) {
         const jsonText = newValue !== null ? JSON.stringify(newValue) : null
         this.setLocalStorageItem(this.makeInputParamKey(functionHash, paramName), jsonText)
     }
@@ -209,8 +209,8 @@ export class AppStorage {
     // Private
     //
 
-    private static getLocalStorageItem(keySuffix: string): string|null {
-        let result: string|null
+    private static getLocalStorageItem(keySuffix: string): string | null {
+        let result: string | null
         try {
             result = localStorage.getItem(AppStorage.VERSION + "/" + keySuffix)
         } catch {
@@ -219,7 +219,7 @@ export class AppStorage {
         return result
     }
 
-    private static setLocalStorageItem(keySuffix: string, value: string|null) {
+    private static setLocalStorageItem(keySuffix: string, value: string | null) {
         const key = AppStorage.VERSION + "/" + keySuffix
         try {
             if (value != null) {
@@ -237,11 +237,11 @@ export class AppStorage {
     // from routines provided at https://www.quirksmode.org/js/cookies.html
     //
 
-    private static createCookie(name: string, value: string, days:number): void {
+    private static createCookie(name: string, value: string, days: number): void {
         let expires
         if (days) {
             let date = new Date()
-            date.setTime(date.getTime() + (days*24*60*60*1000))
+            date.setTime(date.getTime() + (days * 24 * 60 * 60 * 1000))
             expires = `; expires=${date.toUTCString()}`
         } else {
             expires = ""
@@ -249,13 +249,13 @@ export class AppStorage {
         document.cookie = `${name}=${value}${expires}; path=/`
     }
 
-    private static readCookie(name: string): string|null {
+    private static readCookie(name: string): string | null {
         let result = null
         const nameEQ = name + "="
         const ca = document.cookie.split(';')
-        for (let i= 0; i < ca.length; i++) {
+        for (let i = 0; i < ca.length; i++) {
             let c = ca[i]
-            while (c.charAt(0)==' ') {
+            while (c.charAt(0) == ' ') {
                 c = c.substring(1, c.length)
             }
             if (c.indexOf(nameEQ) == 0) {

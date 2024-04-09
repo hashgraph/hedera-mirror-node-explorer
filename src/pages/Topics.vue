@@ -77,7 +77,7 @@ export default defineComponent({
     const router = useRouter()
     const pageSize = computed(() => isMediumScreen ? 15 : 5)
     const transactionTableController = new TransactionTableController(
-        router, pageSize, TransactionType.CONSENSUSCREATETOPIC,  TransactionResult.SUCCESS)
+        router, pageSize, TransactionType.CONSENSUSCREATETOPIC, TransactionResult.SUCCESS)
     onMounted(() => transactionTableController.mount())
     onBeforeUnmount(() => transactionTableController.unmount())
 

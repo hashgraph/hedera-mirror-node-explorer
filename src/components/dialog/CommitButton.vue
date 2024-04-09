@@ -23,16 +23,16 @@
 <!-- --------------------------------------------------------------------------------------------------------------- -->
 
 <template>
-    <DialogButton :controller="controller" :auto-close="false" :enabled="enabled" @action="handleAction">
-        <div class="dialog-stack">
-            <div :class="{'is-invisible': isBusy}">
-                <slot/>
-            </div>
-            <div :class="{'is-invisible': !isBusy}">
-                <span class="loader is-inline-block"/>
-            </div>
-        </div>
-    </DialogButton>
+  <DialogButton :controller="controller" :auto-close="false" :enabled="enabled" @action="handleAction">
+    <div class="dialog-stack">
+      <div :class="{'is-invisible': isBusy}">
+        <slot/>
+      </div>
+      <div :class="{'is-invisible': !isBusy}">
+        <span class="loader is-inline-block"/>
+      </div>
+    </div>
+  </DialogButton>
 </template>
 
 <!-- --------------------------------------------------------------------------------------------------------------- -->
@@ -48,29 +48,29 @@ import DialogButton from "@/components/dialog/DialogButton.vue";
 import {DialogController, DialogMode} from "@/components/dialog/DialogController";
 
 export default defineComponent({
-    name: "CommitButton",
-    components: {DialogButton, Dialog },
+  name: "CommitButton",
+  components: {DialogButton, Dialog},
 
-    props: {
-        controller: {
-            type: Object as PropType<DialogController>,
-            required: true
-        },
-        enabled: Boolean
+  props: {
+    controller: {
+      type: Object as PropType<DialogController>,
+      required: true
     },
-    emits: ["action"],
-    setup(props, ctx) {
+    enabled: Boolean
+  },
+  emits: ["action"],
+  setup(props, ctx) {
 
-        const isBusy = computed(() => props.controller.mode.value == DialogMode.Busy)
-        const handleAction = () => {
-            ctx.emit("action")
-        }
-
-        return {
-            isBusy,
-            handleAction
-        }
+    const isBusy = computed(() => props.controller.mode.value == DialogMode.Busy)
+    const handleAction = () => {
+      ctx.emit("action")
     }
+
+    return {
+      isBusy,
+      handleAction
+    }
+  }
 
 })
 
@@ -82,13 +82,14 @@ export default defineComponent({
 
 <style scoped>
 .dialog-stack {
-    display: grid;
-    grid-template-columns: 1fr;
-    grid-template-rows: 1fr;
-    justify-items: center;
+  display: grid;
+  grid-template-columns: 1fr;
+  grid-template-rows: 1fr;
+  justify-items: center;
 }
+
 .dialog-stack div {
-    grid-column-start: 1;
-    grid-row-start: 1
+  grid-column-start: 1;
+  grid-row-start: 1
 }
 </style>

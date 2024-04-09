@@ -91,7 +91,7 @@ import EmptyTable from "@/components/EmptyTable.vue";
 export default defineComponent({
   name: 'TransactionByIdTable',
 
-  components: {EmptyTable, TransactionSummary, TimestampValue },
+  components: {EmptyTable, TransactionSummary, TimestampValue},
 
   props: {
     narrowed: Boolean,
@@ -112,8 +112,8 @@ export default defineComponent({
           return props.transactions.length > 5
         }
     )
-    const showRelationship = computed(() => props.transactions.length >=1 && makeRelationshipLabel(props.transactions[0]))
-    const showNonce = computed(() => props.transactions.length >=2 && !props.transactions[1].scheduled)
+    const showRelationship = computed(() => props.transactions.length >= 1 && makeRelationshipLabel(props.transactions[0]))
+    const showNonce = computed(() => props.transactions.length >= 2 && !props.transactions[1].scheduled)
 
     const handleClick = (t: Transaction, c: unknown, i: number, ci: number, event: MouseEvent) => {
       routeManager.routeToTransaction(t, event.ctrlKey || event.metaKey)

@@ -31,11 +31,11 @@ describe("TokenTransferLayout.ts", () => {
     // Single token
     //
 
-    test("Single token, zero source, one destination", async() => {
+    test("Single token, zero source, one destination", async () => {
 
         const transaction = {
             "token_transfers": [
-                { "account": "0.0.200", "amount": +10, "token_id": SAMPLE_TOKEN.token_id },
+                {"account": "0.0.200", "amount": +10, "token_id": SAMPLE_TOKEN.token_id},
             ],
         }
 
@@ -60,12 +60,12 @@ describe("TokenTransferLayout.ts", () => {
         expect(d0.token_id).toBe(SAMPLE_TOKEN.token_id)
     })
 
-    test("Single token, zero source, two destinations", async() => {
+    test("Single token, zero source, two destinations", async () => {
 
         const transaction = {
             "token_transfers": [
-                { "account": "0.0.201", "amount": +2, "token_id": SAMPLE_TOKEN.token_id },
-                { "account": "0.0.200", "amount": +8, "token_id": SAMPLE_TOKEN.token_id },
+                {"account": "0.0.201", "amount": +2, "token_id": SAMPLE_TOKEN.token_id},
+                {"account": "0.0.200", "amount": +8, "token_id": SAMPLE_TOKEN.token_id},
             ],
         }
 
@@ -99,9 +99,9 @@ describe("TokenTransferLayout.ts", () => {
 
         const transaction = {
             "token_transfers": [
-                { "account": "0.0.100", "amount": -10, "token_id": SAMPLE_TOKEN.token_id },
-                { "account": "0.0.200", "amount": +2, "token_id": SAMPLE_TOKEN.token_id },
-                { "account": "0.0.201", "amount": +8, "token_id": SAMPLE_TOKEN.token_id },
+                {"account": "0.0.100", "amount": -10, "token_id": SAMPLE_TOKEN.token_id},
+                {"account": "0.0.200", "amount": +2, "token_id": SAMPLE_TOKEN.token_id},
+                {"account": "0.0.201", "amount": +8, "token_id": SAMPLE_TOKEN.token_id},
             ],
         }
 
@@ -136,9 +136,9 @@ describe("TokenTransferLayout.ts", () => {
 
         const transaction = {
             "token_transfers": [
-                { "account": "0.0.100", "amount": -10, "token_id": SAMPLE_TOKEN.token_id },
-                { "account": "0.0.200", "amount": +2, "token_id": SAMPLE_TOKEN.token_id },
-                { "account": "0.0.201", "amount": +8, "token_id": SAMPLE_TOKEN.token_id },
+                {"account": "0.0.100", "amount": -10, "token_id": SAMPLE_TOKEN.token_id},
+                {"account": "0.0.200", "amount": +2, "token_id": SAMPLE_TOKEN.token_id},
+                {"account": "0.0.201", "amount": +8, "token_id": SAMPLE_TOKEN.token_id},
             ],
         }
 
@@ -172,9 +172,9 @@ describe("TokenTransferLayout.ts", () => {
 
         const transaction = {
             "token_transfers": [
-                { "account": "0.0.101", "amount": -3, "token_id": SAMPLE_TOKEN.token_id },
-                { "account": "0.0.100", "amount": -7, "token_id": SAMPLE_TOKEN.token_id },
-                { "account": "0.0.200", "amount": +10, "token_id": SAMPLE_TOKEN.token_id },
+                {"account": "0.0.101", "amount": -3, "token_id": SAMPLE_TOKEN.token_id},
+                {"account": "0.0.100", "amount": -7, "token_id": SAMPLE_TOKEN.token_id},
+                {"account": "0.0.200", "amount": +10, "token_id": SAMPLE_TOKEN.token_id},
             ],
         }
 
@@ -208,10 +208,10 @@ describe("TokenTransferLayout.ts", () => {
 
         const transaction = {
             "token_transfers": [
-                { "account": "0.0.101", "amount": -3, "token_id": SAMPLE_TOKEN.token_id },
-                { "account": "0.0.100", "amount": -7, "token_id": SAMPLE_TOKEN.token_id },
-                { "account": "0.0.201", "amount": +8, "token_id": SAMPLE_TOKEN.token_id },
-                { "account": "0.0.200", "amount": +2, "token_id": SAMPLE_TOKEN.token_id },
+                {"account": "0.0.101", "amount": -3, "token_id": SAMPLE_TOKEN.token_id},
+                {"account": "0.0.100", "amount": -7, "token_id": SAMPLE_TOKEN.token_id},
+                {"account": "0.0.201", "amount": +8, "token_id": SAMPLE_TOKEN.token_id},
+                {"account": "0.0.200", "amount": +2, "token_id": SAMPLE_TOKEN.token_id},
             ],
         }
 
@@ -250,10 +250,10 @@ describe("TokenTransferLayout.ts", () => {
 
         const transaction = {
             "token_transfers": [
-                { "account": null, "amount": -3, "token_id": SAMPLE_TOKEN.token_id },
-                { "account": "0.0.100", "amount": -7, "token_id": SAMPLE_TOKEN.token_id },
-                { "account": "0.0.201", "amount": +8, "token_id": SAMPLE_TOKEN.token_id },
-                { "account": null, "amount": +2, "token_id": SAMPLE_TOKEN.token_id },
+                {"account": null, "amount": -3, "token_id": SAMPLE_TOKEN.token_id},
+                {"account": "0.0.100", "amount": -7, "token_id": SAMPLE_TOKEN.token_id},
+                {"account": "0.0.201", "amount": +8, "token_id": SAMPLE_TOKEN.token_id},
+                {"account": null, "amount": +2, "token_id": SAMPLE_TOKEN.token_id},
             ],
         }
 
@@ -296,13 +296,13 @@ describe("TokenTransferLayout.ts", () => {
 
         const transaction = {
             "token_transfers": [
-                { "account": "0.0.101", "amount": -3, "token_id": SAMPLE_TOKEN.token_id },
-                { "account": "0.0.100", "amount": -7, "token_id": SAMPLE_TOKEN.token_id },
-                { "account": "0.0.201", "amount": +8, "token_id": SAMPLE_TOKEN.token_id },
-                { "account": "0.0.200", "amount": +2, "token_id": SAMPLE_TOKEN.token_id },
+                {"account": "0.0.101", "amount": -3, "token_id": SAMPLE_TOKEN.token_id},
+                {"account": "0.0.100", "amount": -7, "token_id": SAMPLE_TOKEN.token_id},
+                {"account": "0.0.201", "amount": +8, "token_id": SAMPLE_TOKEN.token_id},
+                {"account": "0.0.200", "amount": +2, "token_id": SAMPLE_TOKEN.token_id},
 
-                { "account": "0.0.100", "amount": -6, "token_id": SAMPLE_TOKEN_DUDE.token_id },
-                { "account": "0.0.200", "amount": +6, "token_id": SAMPLE_TOKEN_DUDE.token_id },
+                {"account": "0.0.100", "amount": -6, "token_id": SAMPLE_TOKEN_DUDE.token_id},
+                {"account": "0.0.200", "amount": +6, "token_id": SAMPLE_TOKEN_DUDE.token_id},
             ],
         }
 

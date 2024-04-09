@@ -24,23 +24,23 @@
 
 <template>
   <o-table
-    :data="collection"
-    :loading="loading"
-    :hoverable="true"
-    :paginated="!isTouchDevice"
-    backend-pagination
-    :total="totalRowCount"
-    :current-page="currentPage"
-    :per-page="pageSize"
-    @page-change="onPageChange"
-    :striped="true"
-    :v-model:current-page="currentPage"
-    :mobile-breakpoint="ORUGA_MOBILE_BREAKPOINT"
-    aria-current-label="Current page"
-    aria-next-label="Next page"
-    aria-page-label="Page"
-    aria-previous-label="Previous page"
-    @cell-click="handleClick"
+      :data="collection"
+      :loading="loading"
+      :hoverable="true"
+      :paginated="!isTouchDevice"
+      backend-pagination
+      :total="totalRowCount"
+      :current-page="currentPage"
+      :per-page="pageSize"
+      @page-change="onPageChange"
+      :striped="true"
+      :v-model:current-page="currentPage"
+      :mobile-breakpoint="ORUGA_MOBILE_BREAKPOINT"
+      aria-current-label="Current page"
+      aria-next-label="Next page"
+      aria-page-label="Page"
+      aria-previous-label="Previous page"
+      @cell-click="handleClick"
   >
     <o-table-column v-slot="props" field="serial" label="Serial">
       {{ props.row.serial_number }}
@@ -89,17 +89,17 @@ export default defineComponent({
     const isMediumScreen = inject('isMediumScreen', true)
 
     const handleClick = (
-      n: Nft,
-      c: unknown,
-      i: number,
-      ci: number,
-      event: MouseEvent,
+        n: Nft,
+        c: unknown,
+        i: number,
+        ci: number,
+        event: MouseEvent,
     ) => {
       if (n.token_id && n.serial_number) {
         routeManager.routeToSerial(
-          n.token_id,
-          n.serial_number,
-          event.ctrlKey || event.metaKey,
+            n.token_id,
+            n.serial_number,
+            event.ctrlKey || event.metaKey,
         );
       }
     };

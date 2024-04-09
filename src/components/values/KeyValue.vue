@@ -53,15 +53,15 @@ export default defineComponent({
   components: {ComplexKeyValue, HexaValue},
   props: {
     keyBytes: {
-      type: String as PropType<string|null>,
+      type: String as PropType<string | null>,
       default: null
     },
     keyType: {
-      type: String as PropType<string|null>,
+      type: String as PropType<string | null>,
       default: null
     },
     accountId: {
-      type: String as PropType<string|null>,
+      type: String as PropType<string | null>,
       default: null
     },
     details: {

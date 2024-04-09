@@ -23,7 +23,7 @@
 <!-- --------------------------------------------------------------------------------------------------------------- -->
 
 <template>
-  <o-select v-model="perPage" class="h-is-text-size-2" >
+  <o-select v-model="perPage" class="h-is-text-size-2">
     <!--        Use "as number" to avoid warning as o-select does not allow to force type-->
     <option :value="5 as number">5 per page</option>
     <option :value="10 as number">10 per page</option>
@@ -40,8 +40,8 @@
 
 <script lang="ts">
 
-import { defineComponent, PropType, Ref } from "vue";
-import { TransactionTableControllerXL } from "@/components/transaction/TransactionTableControllerXL";
+import {defineComponent, PropType, Ref} from "vue";
+import {TransactionTableControllerXL} from "@/components/transaction/TransactionTableControllerXL";
 
 
 export default defineComponent({

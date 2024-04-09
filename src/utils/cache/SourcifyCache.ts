@@ -24,7 +24,7 @@ import {SolcMetadata} from "@/utils/solc/SolcMetadata";
 import {ContractByIdCache} from "@/utils/cache/ContractByIdCache";
 import {routeManager} from "@/router";
 
-export class SourcifyCache extends EntityCache<string, SourcifyRecord|null> {
+export class SourcifyCache extends EntityCache<string, SourcifyRecord | null> {
 
     public static readonly instance = new SourcifyCache()
 
@@ -33,11 +33,11 @@ export class SourcifyCache extends EntityCache<string, SourcifyRecord|null> {
     // Public
     //
 
-    public static fetchMetadata(response: SourcifyResponse): SolcMetadata|null {
+    public static fetchMetadata(response: SourcifyResponse): SolcMetadata | null {
 
         // https://docs.sourcify.dev/docs/api/server/get-source-files-all/
 
-        let result: SolcMetadata|null
+        let result: SolcMetadata | null
         try {
             result = null
             for (const i of response.files) {
@@ -98,8 +98,8 @@ export class SourcifyCache extends EntityCache<string, SourcifyRecord|null> {
     // Cache
     //
 
-    protected async load(contractId: string): Promise<SourcifyRecord|null> {
-        let result: SourcifyRecord|null
+    protected async load(contractId: string): Promise<SourcifyRecord | null> {
+        let result: SourcifyRecord | null
         const sourcifySetup = routeManager.currentNetworkEntry.value.sourcifySetup
         if (sourcifySetup !== null && sourcifySetup.activate) {
             const contractResponse = await ContractByIdCache.instance.lookup(contractId)
@@ -111,7 +111,7 @@ export class SourcifyCache extends EntityCache<string, SourcifyRecord|null> {
                     const isFullMatch = response.data.status === "full"
                     const repoURL = sourcifySetup.makeContractSourceURL(contractAddress, isFullMatch)
                     result = new SourcifyRecord(response.data, isFullMatch, repoURL)
-                } catch(error) {
+                } catch (error) {
                     if (axios.isAxiosError(error) && error.response?.status == 404) {
                         result = null
                     } else {
@@ -132,6 +132,7 @@ export class SourcifyRecord {
     public readonly response: SourcifyResponse
     public readonly fullMatch: boolean
     public readonly folderURL: string
+
     constructor(response: SourcifyResponse, fullMatch: boolean, folderURL: string) {
         this.response = response
         this.fullMatch = fullMatch

@@ -18,7 +18,7 @@
  *
  */
 
-import { beforeEach, describe, test, expect } from 'vitest'
+import {beforeEach, describe, test, expect} from 'vitest'
 import {flushPromises, mount} from "@vue/test-utils"
 import router from "@/router";
 import axios from "axios";
@@ -48,12 +48,12 @@ HMSF.forceUTC = true
 describe("App.vue", () => {
 
     beforeEach(() => {
-        Object.assign(import.meta.env, { VITE_APP_ENABLE_STAKING: false });
+        Object.assign(import.meta.env, {VITE_APP_ENABLE_STAKING: false});
     })
 
     test("normal screen", async () => {
 
-        await router.push({name: "MainDashboard", params: { network: 'mainnet' }})
+        await router.push({name: "MainDashboard", params: {network: 'mainnet'}})
         Object.defineProperty(window, 'innerWidth', {writable: true, configurable: true, value: 1920})
 
         const mock = new MockAdapter(axios)

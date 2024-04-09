@@ -57,10 +57,10 @@ describe("ContractResult.vue", () => {
 
         const mock = new MockAdapter(axios);
         const matcher1 = "/api/v1/contracts/results"
-        const param1 = { timestamp: timestamp, internal: true }
+        const param1 = {timestamp: timestamp, internal: true}
         mock.onGet(matcher1, param1).reply(200, {
-            results: [ SAMPLE_CONTRACT_RESULT_DETAILS ], "links": {"next": null}
-        } );
+            results: [SAMPLE_CONTRACT_RESULT_DETAILS], "links": {"next": null}
+        });
 
         const matcher2 = "/api/v1/contracts/" + contractId + "/results/" + timestamp
         mock.onGet(matcher2).reply(200, SAMPLE_CONTRACT_RESULT_DETAILS);
@@ -108,10 +108,10 @@ describe("ContractResult.vue", () => {
 
         const mock = new MockAdapter(axios);
         const matcher1 = "/api/v1/contracts/results"
-        const param1 = { timestamp: timestamp, internal: true }
+        const param1 = {timestamp: timestamp, internal: true}
         mock.onGet(matcher1, param1).reply(200, {
-            results: [ SAMPLE_REVERT_CONTRACT_RESULT_DETAILS ], "links": {"next": null}
-        } );
+            results: [SAMPLE_REVERT_CONTRACT_RESULT_DETAILS], "links": {"next": null}
+        });
 
         const matcher2 = "/api/v1/contracts/" + contractId + "/results/" + timestamp
         mock.onGet(matcher2).reply(200, SAMPLE_REVERT_CONTRACT_RESULT_DETAILS);
@@ -149,10 +149,10 @@ describe("ContractResult.vue", () => {
 
         const timestamp = SAMPLE_REVERT_CONTRACT_RESULT_DETAILS_WITH_TRACES.timestamp
         const matcher1 = "/api/v1/contracts/results"
-        const param1 = { timestamp: timestamp, internal: true }
+        const param1 = {timestamp: timestamp, internal: true}
         mock.onGet(matcher1, param1).reply(200, {
-            results: [ SAMPLE_REVERT_CONTRACT_RESULT_DETAILS_WITH_TRACES ], "links": {"next": null}
-        } );
+            results: [SAMPLE_REVERT_CONTRACT_RESULT_DETAILS_WITH_TRACES], "links": {"next": null}
+        });
 
         const contractId = SAMPLE_REVERT_CONTRACT_RESULT_DETAILS_WITH_TRACES.contract_id
         const matcher2 = "/api/v1/contracts/" + contractId + "/results/" + timestamp

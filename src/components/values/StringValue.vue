@@ -46,14 +46,14 @@ export default defineComponent({
 
   props: {
     stringValue: {
-      type: String as PropType<string|null>,
+      type: String as PropType<string | null>,
       default: null
     },
   },
 
   setup() {
     const initialLoading = inject(initialLoadingKey, ref(false))
-    return { initialLoading }
+    return {initialLoading}
   }
 });
 

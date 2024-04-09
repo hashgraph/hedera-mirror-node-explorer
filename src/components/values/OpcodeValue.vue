@@ -23,23 +23,23 @@
 <!-- --------------------------------------------------------------------------------------------------------------- -->
 
 <template>
-    <div class="is-flex" style="font-family: novamonoregular, monospace; gap: 0.5rem">
-        <p class="has-text-grey">{{ opcode.index16 }}:</p>
-        <p v-if="showHexaOpcode" class="h-is-extra-text">{{ opcode.hex }}</p>
-        <p v-if="showHexaOpcode" class="has-text-grey">-</p>
-        <p :class="{'has-text-grey':isInvalidOpcode}">{{ opcode.mnemonic }}</p>
-        <div v-if="opcode.operand.length > 0" class="ml-">
-            <ContractLink v-if="contract" :contract-id="displayAddress"/>
-            <AccountLink v-else-if="account" :account-id="displayAddress"/>
-            <p v-else>{{ displayAddress }}</p>
-        </div>
-        <div v-if="contract || account" class="is-flex has-text-grey">
-            <p class="mr-2">//</p>
-            <ContractLink v-if="contract" :contract-id="contract.contract_id"/>
-            <AccountLink v-else-if="account" :account-id="account.account"/>
-            <p v-else/>
-        </div>
+  <div class="is-flex" style="font-family: novamonoregular, monospace; gap: 0.5rem">
+    <p class="has-text-grey">{{ opcode.index16 }}:</p>
+    <p v-if="showHexaOpcode" class="h-is-extra-text">{{ opcode.hex }}</p>
+    <p v-if="showHexaOpcode" class="has-text-grey">-</p>
+    <p :class="{'has-text-grey':isInvalidOpcode}">{{ opcode.mnemonic }}</p>
+    <div v-if="opcode.operand.length > 0" class="ml-">
+      <ContractLink v-if="contract" :contract-id="displayAddress"/>
+      <AccountLink v-else-if="account" :account-id="displayAddress"/>
+      <p v-else>{{ displayAddress }}</p>
     </div>
+    <div v-if="contract || account" class="is-flex has-text-grey">
+      <p class="mr-2">//</p>
+      <ContractLink v-if="contract" :contract-id="contract.contract_id"/>
+      <AccountLink v-else-if="account" :account-id="account.account"/>
+      <p v-else/>
+    </div>
+  </div>
 </template>
 
 <!-- --------------------------------------------------------------------------------------------------------------- -->
@@ -57,50 +57,50 @@ import AccountLink from "@/components/values/AccountLink.vue";
 import {AccountBalanceTransactions, ContractResponse} from "@/schemas/HederaSchemas";
 
 export default defineComponent({
-    name: 'OpcodeValue',
-    components: {AccountLink, ContractLink},
+  name: 'OpcodeValue',
+  components: {AccountLink, ContractLink},
 
-    props: {
-        opcode: {
-            type: Object as PropType<DisassembledOpcodeOutput>,
-            required: true
-        },
-        showHexaOpcode: {
-            type: Boolean,
-            default: false
-        }
+  props: {
+    opcode: {
+      type: Object as PropType<DisassembledOpcodeOutput>,
+      required: true
     },
-
-    setup(props) {
-        const displayAddress = computed(() => {
-            return `0x${props.opcode.operand.join("")}`
-        })
-
-        const isInvalidOpcode = computed(() => props.opcode.mnemonic === Helpers.INVALID_OPCODE_MNEMONIC)
-
-        const contract: Ref<ContractResponse|null> = ref(null)
-        const account: Ref<AccountBalanceTransactions|null> = ref(null)
-
-        onMounted(() => {
-            if (props.opcode.mnemonic === 'PUSH20') {
-                ContractByAddressCache.instance.lookup(displayAddress.value)
-                    .then((result) => {
-                        contract.value = result
-                        if (! result) {
-                            AccountByAddressCache.instance.lookup(displayAddress.value)
-                                .then((result) => account.value = result)
-                        }
-                    })
-            }
-        })
-
-        return {
-            displayAddress,
-            isInvalidOpcode,
-            contract,
-            account,
-        }
+    showHexaOpcode: {
+      type: Boolean,
+      default: false
     }
+  },
+
+  setup(props) {
+    const displayAddress = computed(() => {
+      return `0x${props.opcode.operand.join("")}`
+    })
+
+    const isInvalidOpcode = computed(() => props.opcode.mnemonic === Helpers.INVALID_OPCODE_MNEMONIC)
+
+    const contract: Ref<ContractResponse | null> = ref(null)
+    const account: Ref<AccountBalanceTransactions | null> = ref(null)
+
+    onMounted(() => {
+      if (props.opcode.mnemonic === 'PUSH20') {
+        ContractByAddressCache.instance.lookup(displayAddress.value)
+            .then((result) => {
+              contract.value = result
+              if (!result) {
+                AccountByAddressCache.instance.lookup(displayAddress.value)
+                    .then((result) => account.value = result)
+              }
+            })
+      }
+    })
+
+    return {
+      displayAddress,
+      isInvalidOpcode,
+      contract,
+      account,
+    }
+  }
 });
 
 </script>

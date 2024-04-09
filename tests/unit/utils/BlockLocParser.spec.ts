@@ -43,7 +43,7 @@ describe("BlockLocParser.ts", () => {
         mock.onGet(matcher1).reply(200, SAMPLE_BLOCK);
 
         // 0) Creates parser
-        const blockLoc: Ref<string|null> = ref(null)
+        const blockLoc: Ref<string | null> = ref(null)
         const parser = new BlockLocParser(blockLoc)
         await flushPromises()
         expect(parser.blockLoc.value).toBeNull()
@@ -114,7 +114,7 @@ describe("BlockLocParser.ts", () => {
         mock.onGet(matcher1).reply(200, SAMPLE_BLOCK);
 
         // 0) Creates parser
-        const blockLoc: Ref<string|null> = ref(null)
+        const blockLoc: Ref<string | null> = ref(null)
         const parser = new BlockLocParser(blockLoc)
         await flushPromises()
         expect(parser.blockLoc.value).toBeNull()
@@ -186,7 +186,7 @@ describe("BlockLocParser.ts", () => {
         mock.onGet(matcher1).reply(200, SAMPLE_BLOCK);
 
         // 0) Creates parser
-        const blockLoc: Ref<string|null> = ref(null)
+        const blockLoc: Ref<string | null> = ref(null)
         const parser = new BlockLocParser(blockLoc)
         await flushPromises()
         expect(parser.blockLoc.value).toBeNull()
@@ -258,7 +258,7 @@ describe("BlockLocParser.ts", () => {
         mock.onGet(matcher1).reply(404);
 
         // 0) Creates parser
-        const blockLoc: Ref<string|null> = ref(null)
+        const blockLoc: Ref<string | null> = ref(null)
         const parser = new BlockLocParser(blockLoc)
         await flushPromises()
         expect(parser.blockLoc.value).toBeNull()
@@ -331,7 +331,7 @@ describe("BlockLocParser.ts", () => {
         mock.onGet(matcher1).reply(404);
 
         // 0) Creates parser
-        const blockLoc: Ref<string|null> = ref(null)
+        const blockLoc: Ref<string | null> = ref(null)
         const parser = new BlockLocParser(blockLoc)
         await flushPromises()
         expect(parser.blockLoc.value).toBeNull()
@@ -400,7 +400,7 @@ describe("BlockLocParser.ts", () => {
         const DUMMY_LOC = "dummy block loc"
 
         // 0) Creates parser
-        const blockLoc: Ref<string|null> = ref(null)
+        const blockLoc: Ref<string | null> = ref(null)
         const parser = new BlockLocParser(blockLoc)
         await flushPromises()
         expect(parser.blockLoc.value).toBeNull()

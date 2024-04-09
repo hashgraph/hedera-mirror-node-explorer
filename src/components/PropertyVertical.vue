@@ -68,7 +68,7 @@ export default defineComponent({
       default: false,
     }
   },
-  setup(props){
+  setup(props) {
     const nameId = props.id + 'Name'
     const valueId = props.id + 'Value'
 

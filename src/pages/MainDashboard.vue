@@ -71,7 +71,7 @@
             <PlayPauseButton v-bind:controller="messageTableController"/>
           </template>
           <template v-slot:content>
-            <MessageTransactionTable v-bind:controller="messageTableController" />
+            <MessageTransactionTable v-bind:controller="messageTableController"/>
           </template>
         </DashboardCard>
       </div>
@@ -166,7 +166,8 @@ export default defineComponent({
       cryptoTableController,
       messageTableController,
       contractTableController,
-      TransactionType}
+      TransactionType
+    }
   }
 
 });

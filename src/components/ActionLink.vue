@@ -60,7 +60,7 @@ export default defineComponent({
       return props.running || !props.enabled
     })
 
-    return { actionDisabled }
+    return {actionDisabled}
   }
 })
 

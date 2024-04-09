@@ -28,17 +28,17 @@ import {PathParam} from "@/utils/PathParam";
 
 export class BlockLocParser {
 
-    public readonly blockLoc: Ref<string|null>
-    public readonly block: Ref<Block|null> = ref(null)
+    public readonly blockLoc: Ref<string | null>
+    public readonly block: Ref<Block | null> = ref(null)
 
-    private readonly watchHandle: Ref<WatchStopHandle|null> = ref(null)
+    private readonly watchHandle: Ref<WatchStopHandle | null> = ref(null)
     private readonly loadCounter: Ref<number> = ref(0)
 
     //
     // Public
     //
 
-    public constructor(blockLoc: Ref<string|null>) {
+    public constructor(blockLoc: Ref<string | null>) {
         this.blockLoc = blockLoc
     }
 
@@ -54,15 +54,15 @@ export class BlockLocParser {
         this.block.value = null
     }
 
-    public readonly blockNumber: ComputedRef<number|null>
+    public readonly blockNumber: ComputedRef<number | null>
         = computed(() => this.block.value?.number ?? null)
-    public readonly blockCount: ComputedRef<number|null>
+    public readonly blockCount: ComputedRef<number | null>
         = computed(() => this.block.value?.count ?? null)
-    public readonly toTimestamp: ComputedRef<string|null>
+    public readonly toTimestamp: ComputedRef<string | null>
         = computed(() => this.block.value?.timestamp?.to ?? null)
 
-    public readonly errorNotification: ComputedRef<string|null> = computed(() => {
-        let result: string|null
+    public readonly errorNotification: ComputedRef<string | null> = computed(() => {
+        let result: string | null
         const l = this.blockLoc.value
         const o = this.blockLocObj.value
         const b = this.block.value
@@ -99,7 +99,7 @@ export class BlockLocParser {
                 } else { // l instanceof EthereumHash
                     this.block.value = await BlockByHashCache.instance.lookup(l.toString())
                 }
-            } catch(error) {
+            } catch (error) {
                 this.block.value = null
             } finally {
                 this.loadCounter.value += 1
@@ -110,7 +110,7 @@ export class BlockLocParser {
     }
 
     private readonly blockLocObj = computed(() => {
-        let result: number|TransactionHash|EthereumHash|null
+        let result: number | TransactionHash | EthereumHash | null
         if (this.blockLoc.value !== null) {
             result = PathParam.parseBlockLoc(this.blockLoc.value)
         } else {

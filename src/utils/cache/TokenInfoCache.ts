@@ -31,7 +31,7 @@ export class TokenInfoCache extends SerialCache<string, TokenInfo | null> {
     //
 
     protected async load(tokenId: string): Promise<TokenInfo | null> {
-        let result: Promise<TokenInfo|null>
+        let result: Promise<TokenInfo | null>
         try {
             const response = await axios.get<TokenInfo>("api/v1/tokens/" + tokenId)
             result = Promise.resolve(response.data)

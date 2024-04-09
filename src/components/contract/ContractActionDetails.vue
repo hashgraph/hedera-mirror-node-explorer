@@ -29,7 +29,8 @@
         <Property id="actionDetailFrom" :custom-nb-col-class="propertySizeClass">
           <template v-slot:name>From</template>
           <template v-slot:value>
-            <EVMAddress :id="action?.caller" :address="action?.from" :entity-type="action?.caller_type" :show-type="true"/>
+            <EVMAddress :id="action?.caller" :address="action?.from" :entity-type="action?.caller_type"
+                        :show-type="true"/>
           </template>
         </Property>
         <Property id="actionDetailTo" :custom-nb-col-class="propertySizeClass">
@@ -42,11 +43,11 @@
       </div>
       <div class="column h-has-column-dashed-separator">
         <Property id="actionDetailValue" :custom-nb-col-class="propertySizeClass">
-           <template v-slot:name>Value</template>
-           <template v-slot:value>
-             <HbarAmount :amount="action?.value"/>
-           </template>
-          </Property>
+          <template v-slot:name>Value</template>
+          <template v-slot:value>
+            <HbarAmount :amount="action?.value"/>
+          </template>
+        </Property>
         <Property id="actionDetailGasLimit" :custom-nb-col-class="propertySizeClass">
           <template v-slot:name>Gas Limit</template>
           <template v-slot:value>
@@ -59,7 +60,7 @@
             <PlainAmount :amount="action?.gas_used"/>
           </template>
         </Property>
-      <FunctionError :analyzer="functionCallAnalyzer" :custom-nb-col-class="propertySizeClass" :show-none="true"/>
+        <FunctionError :analyzer="functionCallAnalyzer" :custom-nb-col-class="propertySizeClass" :show-none="true"/>
       </div>
     </div>
 
@@ -80,7 +81,8 @@
       <Property id="actionDetailFrom" :custom-nb-col-class="propertySizeClass">
         <template v-slot:name>From</template>
         <template v-slot:value>
-          <EVMAddress :id="action?.caller" :address="action?.from" :entity-type="action?.caller_type" :show-type="true"/>
+          <EVMAddress :id="action?.caller" :address="action?.from" :entity-type="action?.caller_type"
+                      :show-type="true"/>
         </template>
       </Property>
       <Property id="actionDetailTo" :custom-nb-col-class="propertySizeClass">
@@ -129,7 +131,7 @@ export default defineComponent({
   name: 'ContractActionDetails',
 
   components: {
-      HbarAmount,
+    HbarAmount,
     FunctionError,
     FunctionResult,
     FunctionInput, EVMAddress, PlainAmount, Property

@@ -24,40 +24,40 @@
 
 <template>
 
-    <Dialog :controller="controller">
-        <template v-slot:dialogTitle>
-            <DialogTitle>{{ dialogTitle }}</DialogTitle>
+  <Dialog :controller="controller">
+    <template v-slot:dialogTitle>
+      <DialogTitle>{{ dialogTitle }}</DialogTitle>
+    </template>
+    <template v-slot:dialogInput>
+      <div class="dialog-grid">
+        <template v-for="b of contractCallBuilder.paramBuilders">
+          <div class="has-text-weight-light" style="align-self: center">{{ b.paramType.name }}</div>
+          <ParamTypeEditor :param-builder="b"/>
+          <div/>
+          <div class="h-is-extra-text h-is-text-size-3 mt-1 mb-4">{{ b.paramType.format() }}</div>
         </template>
-        <template v-slot:dialogInput>
-            <div class="dialog-grid">
-                <template v-for="b of contractCallBuilder.paramBuilders">
-                    <div class="has-text-weight-light" style="align-self: center">{{ b.paramType.name }}</div>
-                    <ParamTypeEditor :param-builder="b"/>
-                    <div/>
-                    <div class="h-is-extra-text h-is-text-size-3 mt-1 mb-4">{{ b.paramType.format() }}</div>
-                </template>
-            </div>
-        </template>
-        <template v-slot:dialogBusy>
-            Running {{ dialogTitle }} through {{ walletName }} …
-        </template>
-        <template v-slot:dialogSuccess>
-            <DialogStatus :controller="controller">
-                <template v-slot:mainMessage>Operation succeeded</template>
-                <template v-if="contractCallBuilder.hasResult()" v-slot:extraMessage> {{ callOutput }} </template>
-            </DialogStatus>
-        </template>
-        <template v-slot:dialogError>
-            <DialogStatus :controller="controller">
-                <template v-slot:mainMessage>Operation failed</template>
-                <template v-if="contractCallBuilder.hasResult()" v-slot:extraMessage> {{ errorMessage }} </template>
-            </DialogStatus>
-        </template>
-        <template v-slot:dialogInputButtons>
-            <DialogButton :controller="controller">Cancel</DialogButton>
-            <CommitButton :controller="controller" :enabled="runEnabled" @action="handleRun" >Run</CommitButton>
-        </template>
-    </Dialog>
+      </div>
+    </template>
+    <template v-slot:dialogBusy>
+      Running {{ dialogTitle }} through {{ walletName }} …
+    </template>
+    <template v-slot:dialogSuccess>
+      <DialogStatus :controller="controller">
+        <template v-slot:mainMessage>Operation succeeded</template>
+        <template v-if="contractCallBuilder.hasResult()" v-slot:extraMessage> {{ callOutput }}</template>
+      </DialogStatus>
+    </template>
+    <template v-slot:dialogError>
+      <DialogStatus :controller="controller">
+        <template v-slot:mainMessage>Operation failed</template>
+        <template v-if="contractCallBuilder.hasResult()" v-slot:extraMessage> {{ errorMessage }}</template>
+      </DialogStatus>
+    </template>
+    <template v-slot:dialogInputButtons>
+      <DialogButton :controller="controller">Cancel</DialogButton>
+      <CommitButton :controller="controller" :enabled="runEnabled" @action="handleRun">Run</CommitButton>
+    </template>
+  </Dialog>
 
 </template>
 
@@ -81,67 +81,67 @@ import DialogStatus from "@/components/dialog/DialogStatus.vue";
 import DialogTitle from "@/components/dialog/DialogTitle.vue";
 
 export default defineComponent({
-    components: {DialogTitle, DialogStatus, FunctionValue, Property, CommitButton, DialogButton, ParamTypeEditor, Dialog },
-    emits: ["didUpdateContractState"],
-    props: {
-        controller: {
-            type: Object as PropType<DialogController>,
-            required: true
-        },
-        contractCallBuilder: {
-            type: Object as PropType<ContractCallBuilder>,
-            required: true
-        },
+  components: {DialogTitle, DialogStatus, FunctionValue, Property, CommitButton, DialogButton, ParamTypeEditor, Dialog},
+  emits: ["didUpdateContractState"],
+  props: {
+    controller: {
+      type: Object as PropType<DialogController>,
+      required: true
     },
-    setup(props, ctx) {
+    contractCallBuilder: {
+      type: Object as PropType<ContractCallBuilder>,
+      required: true
+    },
+  },
+  setup(props, ctx) {
 
-        const dialogTitle = computed(() => props.contractCallBuilder.fragment.name + "()")
+    const dialogTitle = computed(() => props.contractCallBuilder.fragment.name + "()")
 
-        const handleRun = () => {
-            props.controller.mode.value = DialogMode.Busy
-            props.contractCallBuilder.saveInputParams()
-            props.contractCallBuilder.execute()
-                .then(() => {
-                    if (props.contractCallBuilder.lastError.value !== null) {
-                        props.controller.mode.value = DialogMode.Error
-                    } else {
-                        props.controller.mode.value = DialogMode.Success
-                    }
-                })
-                .catch(() => {
-                    props.controller.mode.value = DialogMode.Error
-                })
-                .finally(() => {
-                    if (!props.contractCallBuilder.isReadOnly()) {
-                        ctx.emit("didUpdateContractState")
-                    }
-                })
-        }
-
-        const runEnabled = computed(() => props.contractCallBuilder.functionData.value !== null)
-
-        const errorMessage = computed(() => {
-            let result: string
-            const lastError = props.contractCallBuilder.lastError.value
-            if (lastError instanceof Error) {
-                result = lastError.message
-            } else if (lastError !== null) {
-                result = JSON.stringify(lastError)
+    const handleRun = () => {
+      props.controller.mode.value = DialogMode.Busy
+      props.contractCallBuilder.saveInputParams()
+      props.contractCallBuilder.execute()
+          .then(() => {
+            if (props.contractCallBuilder.lastError.value !== null) {
+              props.controller.mode.value = DialogMode.Error
             } else {
-                result = "No error details"
+              props.controller.mode.value = DialogMode.Success
             }
-            return result
-        } )
-
-        return {
-            dialogTitle,
-            runEnabled,
-            walletName: walletManager.walletName,
-            callOutput: props.contractCallBuilder.callOutput,
-            errorMessage,
-            handleRun
-        }
+          })
+          .catch(() => {
+            props.controller.mode.value = DialogMode.Error
+          })
+          .finally(() => {
+            if (!props.contractCallBuilder.isReadOnly()) {
+              ctx.emit("didUpdateContractState")
+            }
+          })
     }
+
+    const runEnabled = computed(() => props.contractCallBuilder.functionData.value !== null)
+
+    const errorMessage = computed(() => {
+      let result: string
+      const lastError = props.contractCallBuilder.lastError.value
+      if (lastError instanceof Error) {
+        result = lastError.message
+      } else if (lastError !== null) {
+        result = JSON.stringify(lastError)
+      } else {
+        result = "No error details"
+      }
+      return result
+    })
+
+    return {
+      dialogTitle,
+      runEnabled,
+      walletName: walletManager.walletName,
+      callOutput: props.contractCallBuilder.callOutput,
+      errorMessage,
+      handleRun
+    }
+  }
 
 })
 
@@ -155,9 +155,9 @@ export default defineComponent({
 <style scoped>
 
 .dialog-grid {
-    display: grid;
-    grid-template-columns: 2fr 5fr;
-    grid-column-gap: 1rem;
+  display: grid;
+  grid-template-columns: 2fr 5fr;
+  grid-column-gap: 1rem;
 }
 
 </style>

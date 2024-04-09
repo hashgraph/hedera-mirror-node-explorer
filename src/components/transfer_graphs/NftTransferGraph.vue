@@ -51,7 +51,7 @@
         </div>
 
         <!-- #1 : arrow -->
-        <div  style="position: relative">
+        <div style="position: relative">
           <ArrowSegment v-bind:compact="compact"/>
         </div>
 
@@ -72,7 +72,7 @@
         </div>
 
         <!-- #3 : arrow -->
-        <div  style="position: relative">
+        <div style="position: relative">
           <ArrowSegment v-bind:compact="compact"/>
         </div>
 

@@ -32,8 +32,8 @@ export class ContractCallBuilder {
     public readonly contractAnalyzer: ContractAnalyzer
     public readonly paramBuilders: ContractParamBuilder[]
 
-    public readonly lastValue = ref<ethers.Result|null>(null)
-    public readonly lastError = ref<unknown|null>(null)
+    public readonly lastValue = ref<ethers.Result | null>(null)
+    public readonly lastError = ref<unknown | null>(null)
 
     //
     // Public
@@ -48,7 +48,7 @@ export class ContractCallBuilder {
         }
     }
 
-   public readonly functionData = computed(() => {
+    public readonly functionData = computed(() => {
         let paramDataList: unknown[] = []
         for (const b of this.paramBuilders) {
             const paramData = b.paramData.value
@@ -57,12 +57,12 @@ export class ContractCallBuilder {
             }
         }
 
-        let result: string|null
+        let result: string | null
         const paramOK = paramDataList.length == this.paramBuilders.length
         const itf = this.contractAnalyzer.interface.value
         if (itf !== null && paramOK) {
             try {
-                result =  itf.encodeFunctionData(this.fragment, paramDataList)
+                result = itf.encodeFunctionData(this.fragment, paramDataList)
             } catch {
                 result = null
             }
@@ -104,12 +104,12 @@ export class ContractCallBuilder {
 
     public async execute(): Promise<void> {
         const contractId = this.contractAnalyzer.contractId.value
-        const contractAddress =  this.contractAnalyzer.contractAddress.value
+        const contractAddress = this.contractAnalyzer.contractAddress.value
         const itf = this.contractAnalyzer.interface.value
         const functionData = this.functionData.value
         if (contractId !== null && contractAddress !== null && itf !== null && functionData !== null) {
             try {
-                let response: string|null
+                let response: string | null
                 if (this.isReadOnly()) {
                     response = await ContractCallBuilder.executeWithMirrorNode(contractAddress, functionData)
                 } else {
@@ -117,7 +117,7 @@ export class ContractCallBuilder {
                 }
                 this.lastValue.value = response !== null ? itf.decodeFunctionResult(this.fragment, response) : null
                 this.lastError.value = null
-            } catch(reason) {
+            } catch (reason) {
                 this.lastValue.value = null
                 this.lastError.value = reason
             }
@@ -151,7 +151,7 @@ export class ContractCallBuilder {
     }
 
 
-    private static async executeWithWallet(contractId: string, contractAddress: string, functionData: string): Promise<string|null> {
+    private static async executeWithWallet(contractId: string, contractAddress: string, functionData: string): Promise<string | null> {
         const callResult = await walletManager.callContract(contractId, contractAddress, functionData)
         return typeof callResult == "string" ? null : callResult.call_result
     }
@@ -162,8 +162,8 @@ export class ContractParamBuilder {
 
     public readonly paramType: ethers.ParamType
     public readonly callBuilder: ContractCallBuilder
-    public readonly paramData = ref<unknown|null>(null)
-    public readonly encodingError = ref<unknown|null>(null)
+    public readonly paramData = ref<unknown | null>(null)
+    public readonly encodingError = ref<unknown | null>(null)
 
     public constructor(paramType: ethers.ParamType, callBuilder: ContractCallBuilder) {
         this.paramType = paramType
@@ -176,7 +176,7 @@ export class ContractParamBuilder {
             try {
                 ethers.AbiCoder.defaultAbiCoder().encode([this.paramType], [this.paramData.value])
                 this.encodingError.value = null
-            } catch(reason) {
+            } catch (reason) {
                 this.encodingError.value = reason
             }
         } else {

@@ -74,7 +74,7 @@ export default defineComponent({
 
   name: "AxiosStatus",
 
-  components: { ModalDialog },
+  components: {ModalDialog},
 
   setup() {
 
@@ -162,6 +162,7 @@ export default defineComponent({
   border-left-color: grey;
   border-bottom-color: grey
 }
+
 i.fa-exclamation-triangle {
   cursor: pointer
 }
