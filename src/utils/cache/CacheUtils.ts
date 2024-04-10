@@ -51,6 +51,7 @@ import {NftCollectionCache} from "@/utils/cache/NftCollectionCache";
 import {VerifiedContractsByAccountIdCache} from "@/utils/cache/VerifiedContractsByAccountIdCache";
 import {VerifiedContractsCache} from "@/utils/cache/VerifiedContractsCache";
 import {LogicContractCache} from "@/utils/cache/LogicContractCache";
+import {AdminContractCache} from "@/utils/cache/AdminContractCache";
 
 export class CacheUtils {
 
@@ -58,6 +59,7 @@ export class CacheUtils {
         AccountByAddressCache.instance.clear()
         AccountByAliasCache.instance.clear()
         AccountByIdCache.instance.clear()
+        AdminContractCache.instance.clear()
         AssetCache.instance.clear()
         BalanceCache.instance.clear()
         BlockByNbCache.instance.clear()
