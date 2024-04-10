@@ -165,7 +165,7 @@
         </div>
       </div>
       <ContractAbiValue v-if="isVerified && selectedOption==='abi'"
-                        :contract-analyzer="contractAnalyzer"
+                        :abiController="abiController"
                         :fragment-type="selectedType as FragmentType"/>
     </template>
   </DashboardCard>
@@ -396,6 +396,7 @@ export default defineComponent({
       handleDownload,
       selectedType,
       handleDownloadABI,
+      abiController,
       logicModeAvailable: abiController.logicModeAvailable,
       adminModeAvailable: abiController.adminModeAvailable,
       FragmentType,

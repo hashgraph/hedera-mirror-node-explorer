@@ -118,7 +118,6 @@ import DashboardCard from "@/components/DashboardCard.vue";
 import StringValue from "@/components/values/StringValue.vue";
 import DisassembledCodeValue from "@/components/values/DisassembledCodeValue.vue";
 import ContractAbiEntry from "@/components/values/abi/ContractAbiEntry.vue";
-import {ContractAnalyzer} from "@/utils/analyzer/ContractAnalyzer";
 import "prismjs/prism";
 import "prismjs/themes/prism-tomorrow.css"
 import "prismjs/prism.js";
@@ -127,6 +126,7 @@ import "prismjs/components/prism-solidity.js";
 import Prism from "vue-prism-component"
 import {ContractCallBuilder} from "@/components/values/abi/ContractCallBuilder";
 import ContractAbiDialog from "@/components/values/abi/ContractAbiDialog.vue";
+import {ABIController} from "@/components/contract/ABIController";
 
 export enum FragmentType {
   ALL = "all",
@@ -151,8 +151,8 @@ export default defineComponent({
   },
 
   props: {
-    contractAnalyzer: {
-      type: Object as PropType<ContractAnalyzer>,
+    abiController: {
+      type: Object as PropType<ABIController>,
       required: true
     },
     fragmentType: {
@@ -172,7 +172,7 @@ export default defineComponent({
 
     const functionFragments = computed(() => {
       const result: ethers.FunctionFragment[] = []
-      const i = props.contractAnalyzer.interface.value
+      const i = props.abiController.targetInterface.value
       if (i !== null) {
         for (const f of i.fragments) {
           if (f instanceof ethers.FunctionFragment) {
@@ -186,7 +186,7 @@ export default defineComponent({
 
     const eventFragments = computed(() => {
       const result: ethers.EventFragment[] = []
-      const i = props.contractAnalyzer.interface.value
+      const i = props.abiController.targetInterface.value
       if (i !== null) {
         for (const f of i.fragments) {
           if (f instanceof ethers.EventFragment) {
@@ -212,7 +212,7 @@ export default defineComponent({
 
     const errorFragments = computed(() => {
       const result: ethers.ErrorFragment[] = []
-      const i = props.contractAnalyzer.interface.value
+      const i = props.abiController.targetInterface.value
       if (i !== null) {
         for (const f of i.fragments) {
           if (f instanceof ethers.ErrorFragment) {
@@ -238,7 +238,7 @@ export default defineComponent({
 
     const otherFragments = computed(() => {
       const result: ethers.Fragment[] = []
-      const i = props.contractAnalyzer.interface.value
+      const i = props.abiController.targetInterface.value
       if (i !== null) {
         for (const f of i.fragments) {
           const regular = (
@@ -270,7 +270,7 @@ export default defineComponent({
     const contractCallBuilders = computed(() => {
       const result: ContractCallBuilder[] = []
       for (const f of functionFragments.value) {
-        result.push(new ContractCallBuilder(f, props.contractAnalyzer))
+        result.push(new ContractCallBuilder(f, props.abiController))
       }
       return result
     })
