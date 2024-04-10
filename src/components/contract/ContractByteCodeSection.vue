@@ -75,9 +75,17 @@
         </template>
       </Property>
       <Property id="logicContract" :full-width="true">
-        <template v-slot:name>Proxy for Contract</template>
+        <template v-slot:name>Proxying to Logic Contract</template>
         <template v-slot:value>
           <AccountLink v-bind:accountId="logicContractId"
+                       v-bind:show-extra="true"
+                       v-bind:show-none="true"/>
+        </template>
+      </Property>
+      <Property id="adminContract" :full-width="true">
+        <template v-slot:name>Proxying with Admin Contract</template>
+        <template v-slot:value>
+          <AccountLink v-bind:accountId="adminContractId"
                        v-bind:show-extra="true"
                        v-bind:show-none="true"/>
         </template>
@@ -112,6 +120,13 @@
           </label>
         </div>
         <div v-else-if="selectedOption==='abi'" class="is-flex is-justify-content-end">
+          <o-field v-if="logicModeAvailable || adminModeAvailable" class="ml-2">
+            <o-select v-model="abiMode" class="h-is-text-size-3">
+              <option :value="ABIMode.Normal">Contract ABI</option>
+              <option v-if="logicModeAvailable" :value="ABIMode.Logic">Logic Contract ABI</option>
+              <option v-if="adminModeAvailable" :value="ABIMode.Admin">Admin Contract ABI</option>
+            </o-select>
+          </o-field>
           <DownloadButton @click="handleDownloadABI"/>
           <o-field class="ml-2">
             <o-select v-model="selectedType" class="h-is-text-size-3">
@@ -168,7 +183,7 @@
 
 <script lang="ts">
 
-import {computed, defineComponent, inject, onMounted, PropType, ref, watch} from 'vue';
+import {computed, defineComponent, inject, onBeforeUnmount, onMounted, PropType, ref, watch} from 'vue';
 import DashboardCard from "@/components/DashboardCard.vue";
 import ByteCodeValue from "@/components/values/ByteCodeValue.vue";
 import StringValue from "@/components/values/StringValue.vue";
@@ -188,6 +203,8 @@ import JSZip from "jszip";
 import {saveAs} from "file-saver";
 import Tabs from "@/components/Tabs.vue";
 import AccountLink from "@/components/values/AccountLink.vue";
+import {ABIController, ABIMode} from "@/components/contract/ABIController";
+import {ABIAnalyzer} from "@/utils/analyzer/ABIAnalyzer";
 
 const FULL_MATCH_TOOLTIP = `A Full Match indicates that the bytecode of the deployed contract is byte-by-byte the same as the compilation output of the given source code files with the settings defined in the metadata file. This means the contents of the source code files and the compilation settings are exactly the same as when the contract author compiled and deployed the contract.`
 const PARTIAL_MATCH_TOOLTIP = `A Partial Match indicates that the bytecode of the deployed contract is the same as the compilation output of the given source code files except for the metadata hash. This means the deployed contract and the given source code + metadata function in the same way but there are differences in source code comments, variable names, or other metadata fields such as source paths.`
@@ -332,9 +349,20 @@ export default defineComponent({
       }
     }
 
+    const abiAnalyzer  = new ABIAnalyzer(props.contractAnalyzer)
+    onMounted(() => abiAnalyzer.mount())
+    onBeforeUnmount(() => abiAnalyzer.unmount())
+
     const logicContractId = computed(() => {
-      return props.contractAnalyzer.logicContractId.value ?? undefined
+      return abiAnalyzer.logicContractId.value ?? undefined
     })
+
+    const adminContractId = computed(() => {
+      return abiAnalyzer.adminContractId.value ?? undefined
+    })
+
+    const abiController = new ABIController(abiAnalyzer)
+
 
     return {
       isTouchDevice,
@@ -354,6 +382,7 @@ export default defineComponent({
       sourceFileName: props.contractAnalyzer.sourceFileName,
       contractFileName: props.contractAnalyzer.contractFileName,
       logicContractId,
+      adminContractId,
       verifyDidComplete,
       isFullMatch,
       showHexaOpcode,
@@ -367,7 +396,11 @@ export default defineComponent({
       handleDownload,
       selectedType,
       handleDownloadABI,
-      FragmentType
+      logicModeAvailable: abiController.logicModeAvailable,
+      adminModeAvailable: abiController.adminModeAvailable,
+      FragmentType,
+      abiMode: abiController.mode,
+      ABIMode,
     }
   }
 });
