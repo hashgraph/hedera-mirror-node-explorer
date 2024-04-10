@@ -54,6 +54,22 @@ export class ABIController {
         return result
     })
 
+    public readonly targetContractName = computed(() => {
+        let result: string|null
+        switch(this.mode.value) {
+            case ABIMode.Normal:
+                result = this.abiAnalyzer.contractAnalyzer.contractName.value
+                break
+            case ABIMode.Logic:
+                result = this.abiAnalyzer.logicContractName.value
+                break
+            default:
+                result = null
+                break
+        }
+        return result
+    })
+
 }
 
 export enum ABIMode {

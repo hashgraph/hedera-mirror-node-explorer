@@ -329,7 +329,7 @@ export default defineComponent({
 
     const abiBlob = computed(() => {
       let result: Blob | null
-      const itf = props.contractAnalyzer.interface.value
+      const itf = abiController.targetInterface.value
       if (itf !== null) {
         result = new Blob([itf.formatJson()], {type: "text/json"})
       } else {
@@ -341,7 +341,7 @@ export default defineComponent({
     const handleDownloadABI = () => {
       if (abiBlob.value !== null) {
         const url = window.URL.createObjectURL(abiBlob.value)
-        const outputName = props.contractAnalyzer.contractName.value + ".json"
+        const outputName = abiController.targetContractName.value + ".json"
         const a = document.createElement('a')
         a.setAttribute('href', url)
         a.setAttribute('download', outputName);
