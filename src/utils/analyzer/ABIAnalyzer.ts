@@ -69,9 +69,6 @@ export class ABIAnalyzer {
     public readonly logicInterface
         = computed(() => this.logicContractAnalyzer.interface.value)
 
-    public readonly adminInterface
-        = computed(() => this.adminContractAnalyzer.interface.value)
-
 
     //
     // Private

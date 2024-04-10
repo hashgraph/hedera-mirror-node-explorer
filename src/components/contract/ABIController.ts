@@ -38,9 +38,6 @@ export class ABIController {
     public readonly logicModeAvailable = computed(
         () => this.abiAnalyzer.logicInterface.value !== null)
 
-    public readonly adminModeAvailable = computed(
-        () => this.abiAnalyzer.adminInterface.value !== null)
-
     public readonly targetInterface = computed(() => {
         let result: ethers.Interface|null
         switch(this.mode.value) {
@@ -49,9 +46,6 @@ export class ABIController {
                 break
             case ABIMode.Logic:
                 result = this.abiAnalyzer.logicInterface.value
-                break
-            case ABIMode.Admin:
-                result = this.abiAnalyzer.adminInterface.value
                 break
             default:
                 result = null
@@ -65,5 +59,4 @@ export class ABIController {
 export enum ABIMode {
     Normal= "normal",
     Logic = "logic",
-    Admin = "admin"
 }

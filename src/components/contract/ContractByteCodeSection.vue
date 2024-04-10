@@ -74,22 +74,23 @@
           <StringValue :string-value="solcVersion ?? undefined"/>
         </template>
       </Property>
-      <Property id="logicContract" :full-width="true">
-        <template v-slot:name>Proxying to Logic Contract</template>
-        <template v-slot:value>
-          <AccountLink v-bind:accountId="logicContractId"
-                       v-bind:show-extra="true"
-                       v-bind:show-none="true"/>
-        </template>
-      </Property>
-      <Property id="adminContract" :full-width="true">
-        <template v-slot:name>Proxying with Admin Contract</template>
-        <template v-slot:value>
-          <AccountLink v-bind:accountId="adminContractId"
-                       v-bind:show-extra="true"
-                       v-bind:show-none="true"/>
-        </template>
-      </Property>
+      <template  v-if="logicContractId">
+        <Property id="logicContract" :full-width="true">
+          <template v-slot:name>Proxying to Logic Contract</template>
+          <template v-slot:value>
+            <AccountLink v-bind:accountId="logicContractId"
+                         v-bind:show-extra="true"/>
+          </template>
+        </Property>
+        <Property id="adminContract" :full-width="true">
+          <template v-slot:name>Proxying with Admin Contract</template>
+          <template v-slot:value>
+            <AccountLink v-bind:accountId="adminContractId"
+                         v-bind:show-extra="true"
+                         v-bind:show-none="true"/>
+          </template>
+        </Property>
+      </template>
       <div v-if="isVerified" class="is-flex is-justify-content-space-between is-align-items-center mb-0">
         <Tabs :tab-ids=tabIds :tab-labels=tabLabels
               :selected-tab="selectedOption"
@@ -120,11 +121,10 @@
           </label>
         </div>
         <div v-else-if="selectedOption==='abi'" class="is-flex is-justify-content-end">
-          <o-field v-if="logicModeAvailable || adminModeAvailable" class="ml-2">
+          <o-field v-if="logicModeAvailable" class="ml-2">
             <o-select v-model="abiMode" class="h-is-text-size-3">
               <option :value="ABIMode.Normal">Contract ABI</option>
-              <option v-if="logicModeAvailable" :value="ABIMode.Logic">Logic Contract ABI</option>
-              <option v-if="adminModeAvailable" :value="ABIMode.Admin">Admin Contract ABI</option>
+              <option :value="ABIMode.Logic">Logic Contract ABI</option>
             </o-select>
           </o-field>
           <DownloadButton @click="handleDownloadABI"/>
@@ -398,7 +398,6 @@ export default defineComponent({
       handleDownloadABI,
       abiController,
       logicModeAvailable: abiController.logicModeAvailable,
-      adminModeAvailable: abiController.adminModeAvailable,
       FragmentType,
       abiMode: abiController.mode,
       ABIMode,
