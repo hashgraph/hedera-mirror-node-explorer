@@ -120,13 +120,11 @@
             <input type="checkbox" v-model="showHexaOpcode">
           </label>
         </div>
-        <div v-else-if="selectedOption==='abi'" class="is-flex is-justify-content-end">
-          <o-field v-if="logicModeAvailable" class="ml-2">
-            <o-select v-model="abiMode" class="h-is-text-size-3">
-              <option :value="ABIMode.Normal">Contract ABI</option>
-              <option :value="ABIMode.Logic">Logic Contract ABI</option>
-            </o-select>
-          </o-field>
+        <div v-else-if="selectedOption==='abi'" class="is-flex is-justify-content-end is-align-items-center">
+          <template v-if="logicModeAvailable" class="ml-2">
+            <p class="mr-2 h-is-text-size-3">Show Logic Contract ABI</p>
+            <o-switch v-model="showLogicABI"/>
+          </template>
           <DownloadButton @click="handleDownloadABI"/>
           <o-field class="ml-2">
             <o-select v-model="selectedType" class="h-is-text-size-3">
@@ -363,6 +361,11 @@ export default defineComponent({
 
     const abiController = new ABIController(abiAnalyzer)
 
+    const showLogicABI = ref(AppStorage.getShowLogicABI())
+    watch(showLogicABI, () => {
+      abiController.mode.value = showLogicABI.value ? ABIMode.Logic : ABIMode.Normal
+      AppStorage.setShowLogicABI(showLogicABI.value)
+    }, { immediate: true })
 
     return {
       isTouchDevice,
@@ -399,7 +402,7 @@ export default defineComponent({
       abiController,
       logicModeAvailable: abiController.logicModeAvailable,
       FragmentType,
-      abiMode: abiController.mode,
+      showLogicABI,
       ABIMode,
     }
   }
