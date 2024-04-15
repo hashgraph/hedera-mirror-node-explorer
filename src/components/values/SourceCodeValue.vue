@@ -28,9 +28,7 @@
        class="mt-2 h-code-box h-has-page-background" style="max-height: 400px;">
     <template v-for="(file, index) in sourceFiles" :key="file.path">
       <p v-if="isFiltered(file)" class="pt-2 mx-3 h-is-extra-text">{{ file.name }}</p>
-      <prism v-if="isFiltered(file)" language="solidity" style="background-color: #171920; font-size: 0.7rem">
-        <pre>{{ file.content }}</pre>
-      </prism>
+      <SolidityCode v-if="isFiltered(file)" style="background-color: #171920; font-size: 0.7rem">{{file.content}}</SolidityCode>
       <hr v-if="filter==='' && index < sourceFiles.length - 1" class="has-background-grey-dark m-0"
           style="height: 0.5px"/>
     </template>
@@ -56,11 +54,11 @@ import "prismjs/themes/prism-tomorrow.css"
 import "prismjs/prism.js";
 import "prismjs/components/prism-clike.js";
 import "prismjs/components/prism-solidity.js";
-import Prism from "vue-prism-component"
+import SolidityCode from "@/components/SolidityCode.vue";
 
 export default defineComponent({
   name: 'SourceCodeValue',
-  components: {OpcodeValue, Prism},
+  components: {SolidityCode, OpcodeValue},
 
   props: {
     sourceFiles: {
@@ -89,15 +87,4 @@ export default defineComponent({
 <!--                                                       STYLE                                                     -->
 <!-- --------------------------------------------------------------------------------------------------------------- -->
 
-<style>
-pre.language-solidity {
-  .number {
-    vertical-align: baseline;
-    font-size: 0.8rem;
-    background-color: inherit;
-    min-width: 0;
-    padding: 0;
-    margin: 0;
-  }
-}
-</style>
+<style/>

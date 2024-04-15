@@ -29,16 +29,16 @@
        style="max-height: 400px;">
 
     <template v-if="showAll && roContractCallBuilders.length == 0 && rwContractCallBuilders.length == 0">
-      <prism language="solidity" style="background-color: #171920; font-size: 0.7rem">
+      <SolidityCode style="background-color: #171920; font-size: 0.7rem">
         {{ "//\n// No function\n//" }}
-      </prism>
+      </SolidityCode>
     </template>
     <template v-else>
       <template v-if="showReadOnly">
         <template v-if="roContractCallBuilders.length >= 1">
-          <prism language="solidity" style="background-color: #171920; font-size: 0.7rem">
+          <SolidityCode style="background-color: #171920; font-size: 0.7rem">
             {{ "//\n// Functions (read-only)\n//" }}
-          </prism>
+          </SolidityCode>
           <div v-for="(b,i) in roContractCallBuilders" :key="b.fragment.selector">
             <div class="mb-2" style="margin-left: 0.6rem">
               <ContractAbiEntry :contract-call-builder="b" :index="i"
@@ -47,9 +47,9 @@
           </div>
         </template>
         <template v-else>
-          <prism language="solidity" style="background-color: #171920; font-size: 0.7rem">
+          <SolidityCode style="background-color: #171920; font-size: 0.7rem">
             {{ "//\n// No read-only function\n//" }}
-          </prism>
+          </SolidityCode>
         </template>
       </template>
 
@@ -57,9 +57,9 @@
 
       <template v-if="showReadWrite">
         <template v-if="rwContractCallBuilders.length >= 1">
-          <prism language="solidity" style="background-color: #171920; font-size: 0.7rem">
+          <SolidityCode style="background-color: #171920; font-size: 0.7rem">
             {{ "//\n// Functions (read-write)\n//" }}
-          </prism>
+          </SolidityCode>
           <div v-for="(b,i) in rwContractCallBuilders" :key="b.fragment.selector">
             <div class="mb-2" style="margin-left: 0.6rem">
               <ContractAbiEntry :contract-call-builder="b" :index="i"
@@ -68,9 +68,9 @@
           </div>
         </template>
         <template v-else>
-          <prism language="solidity" style="background-color: #171920; font-size: 0.7rem">
+          <SolidityCode style="background-color: #171920; font-size: 0.7rem">
             {{ "//\n// No read-write function\n//" }}
-          </prism>
+          </SolidityCode>
         </template>
       </template>
     </template>
@@ -78,25 +78,25 @@
     <hr v-if="showAll" class="has-background-grey-dark m-0" style="height: 0.5px"/>
 
     <template v-if="showEvents">
-      <prism language="solidity" style="background-color: #171920; font-size: 0.7rem">
+      <SolidityCode style="background-color: #171920; font-size: 0.7rem">
         {{ eventList }}
-      </prism>
+      </SolidityCode>
     </template>
 
     <hr v-if="showAll" class="has-background-grey-dark m-0" style="height: 0.5px"/>
 
     <template v-if="showErrors">
-      <prism language="solidity" style="background-color: #171920; font-size: 0.7rem">
+      <SolidityCode style="background-color: #171920; font-size: 0.7rem">
         {{ errorList }}
-      </prism>
+      </SolidityCode>
     </template>
 
     <hr v-if="showAll" class="has-background-grey-dark m-0" style="height: 0.5px"/>
 
     <template v-if="showOther">
-      <prism language="solidity" style="background-color: #171920; font-size: 0.7rem">
+      <SolidityCode style="background-color: #171920; font-size: 0.7rem">
         {{ otherList }}
-      </prism>
+      </SolidityCode>
     </template>
 
   </div>
@@ -123,7 +123,7 @@ import "prismjs/themes/prism-tomorrow.css"
 import "prismjs/prism.js";
 import "prismjs/components/prism-clike.js";
 import "prismjs/components/prism-solidity.js";
-import Prism from "vue-prism-component"
+import SolidityCode from "@/components/SolidityCode.vue";
 import {ContractCallBuilder} from "@/components/values/abi/ContractCallBuilder";
 import ContractAbiDialog from "@/components/values/abi/ContractAbiDialog.vue";
 import {ABIController} from "@/components/contract/ABIController";
@@ -139,6 +139,7 @@ export enum FragmentType {
 
 export default defineComponent({
   components: {
+    SolidityCode,
     ContractAbiDialog,
     ContractAbiEntry,
     DisassembledCodeValue,
@@ -146,7 +147,6 @@ export default defineComponent({
     DashboardCard,
     ByteCodeValue,
     InfoTooltip,
-    Prism,
     Property
   },
 
