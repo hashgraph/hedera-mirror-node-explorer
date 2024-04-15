@@ -181,7 +181,7 @@
 
 <script lang="ts">
 
-import {computed, defineComponent, inject, onBeforeUnmount, onMounted, PropType, ref, watch} from 'vue';
+import {computed, ComputedRef, defineComponent, inject, onBeforeUnmount, onMounted, PropType, ref, watch} from 'vue';
 import DashboardCard from "@/components/DashboardCard.vue";
 import ByteCodeValue from "@/components/values/ByteCodeValue.vue";
 import StringValue from "@/components/values/StringValue.vue";
@@ -359,13 +359,15 @@ export default defineComponent({
       return abiAnalyzer.adminContractId.value ?? undefined
     })
 
-    const abiController = new ABIController(abiAnalyzer)
-
     const showLogicABI = ref(AppStorage.getShowLogicABI())
     watch(showLogicABI, () => {
-      abiController.mode.value = showLogicABI.value ? ABIMode.Logic : ABIMode.Normal
       AppStorage.setShowLogicABI(showLogicABI.value)
-    }, { immediate: true })
+    })
+
+    const mode: ComputedRef<ABIMode> = computed(() => {
+      return showLogicABI.value && abiController.logicModeAvailable.value ? ABIMode.Logic : ABIMode.Normal
+    })
+    const abiController = new ABIController(abiAnalyzer, mode)
 
     return {
       isTouchDevice,

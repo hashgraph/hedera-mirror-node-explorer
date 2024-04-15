@@ -18,21 +18,22 @@
  *
  */
 
-import {computed, ref} from "vue";
+import {computed, Ref} from "vue";
 import {ethers} from "ethers";
 import {ABIAnalyzer} from "@/utils/analyzer/ABIAnalyzer";
 
 export class ABIController {
 
     public readonly abiAnalyzer: ABIAnalyzer
-    public readonly mode = ref<ABIMode>(ABIMode.Normal)
+    private readonly mode: Ref<ABIMode>
 
     //
     // Public
     //
 
-    public constructor(abiAnalyzer: ABIAnalyzer) {
+    public constructor(abiAnalyzer: ABIAnalyzer, mode: Ref<ABIMode>) {
         this.abiAnalyzer = abiAnalyzer
+        this.mode = mode
     }
 
     public readonly logicModeAvailable = computed(
