@@ -315,7 +315,7 @@ describe("ContractResultAnalyzer.spec.ts", () => {
 
 })
 
-function fetchGetURLs(mock: MockAdapter): string[] {
+export function fetchGetURLs(mock: MockAdapter): string[] {
     let result: string[] = []
     for (const e of mock.history.get) {
         result.push(e.url)
