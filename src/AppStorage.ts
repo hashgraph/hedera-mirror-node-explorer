@@ -206,6 +206,21 @@ export class AppStorage {
     }
 
     //
+    // show logic  ABI
+    //
+
+    private static readonly SHOW_LOGIC_ABI_KEY = 'showLogicABI'
+
+    public static getShowLogicABI(): boolean {
+        return this.getLocalStorageItem(this.SHOW_LOGIC_ABI_KEY) !== null
+    }
+
+    public static setShowLogicABI(newValue: boolean): void {
+        this.setLocalStorageItem(this.SHOW_LOGIC_ABI_KEY, newValue ? "true" : null)
+    }
+
+
+    //
     // Private
     //
 

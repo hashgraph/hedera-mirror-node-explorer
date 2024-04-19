@@ -74,6 +74,23 @@
           <StringValue :string-value="solcVersion ?? undefined"/>
         </template>
       </Property>
+      <template  v-if="logicContractId">
+        <Property id="logicContract" :full-width="true">
+          <template v-slot:name>Proxying to Logic Contract</template>
+          <template v-slot:value>
+            <AccountLink v-bind:accountId="logicContractId"
+                         v-bind:show-extra="true"/>
+          </template>
+        </Property>
+        <Property id="adminContract" :full-width="true">
+          <template v-slot:name>Proxying with Admin Contract</template>
+          <template v-slot:value>
+            <AccountLink v-bind:accountId="adminContractId"
+                         v-bind:show-extra="true"
+                         v-bind:show-none="true"/>
+          </template>
+        </Property>
+      </template>
       <div v-if="isVerified" class="is-flex is-justify-content-space-between is-align-items-center mb-0">
         <Tabs :tab-ids=tabIds :tab-labels=tabLabels
               :selected-tab="selectedOption"
@@ -103,7 +120,11 @@
             <input type="checkbox" v-model="showHexaOpcode">
           </label>
         </div>
-        <div v-else-if="selectedOption==='abi'" class="is-flex is-justify-content-end">
+        <div v-else-if="selectedOption==='abi'" class="is-flex is-justify-content-end is-align-items-center">
+          <template v-if="logicModeAvailable" class="ml-2">
+            <p class="mr-2 h-is-text-size-3">Show Logic Contract ABI</p>
+            <o-switch v-model="showLogicABI"/>
+          </template>
           <DownloadButton @click="handleDownloadABI"/>
           <o-field class="ml-2">
             <o-select v-model="selectedType" class="h-is-text-size-3">
@@ -142,7 +163,7 @@
         </div>
       </div>
       <ContractAbiValue v-if="isVerified && selectedOption==='abi'"
-                        :contract-analyzer="contractAnalyzer"
+                        :abiController="abiController"
                         :fragment-type="selectedType as FragmentType"/>
     </template>
   </DashboardCard>
@@ -160,7 +181,7 @@
 
 <script lang="ts">
 
-import {computed, defineComponent, inject, onMounted, PropType, ref, watch} from 'vue';
+import {computed, ComputedRef, defineComponent, inject, onBeforeUnmount, onMounted, PropType, ref, watch} from 'vue';
 import DashboardCard from "@/components/DashboardCard.vue";
 import ByteCodeValue from "@/components/values/ByteCodeValue.vue";
 import StringValue from "@/components/values/StringValue.vue";
@@ -179,6 +200,9 @@ import DownloadButton from "@/components/DownloadButton.vue";
 import JSZip from "jszip";
 import {saveAs} from "file-saver";
 import Tabs from "@/components/Tabs.vue";
+import AccountLink from "@/components/values/AccountLink.vue";
+import {ABIController, ABIMode} from "@/components/contract/ABIController";
+import {ABIAnalyzer} from "@/utils/analyzer/ABIAnalyzer";
 
 const FULL_MATCH_TOOLTIP = `A Full Match indicates that the bytecode of the deployed contract is byte-by-byte the same as the compilation output of the given source code files with the settings defined in the metadata file. This means the contents of the source code files and the compilation settings are exactly the same as when the contract author compiled and deployed the contract.`
 const PARTIAL_MATCH_TOOLTIP = `A Partial Match indicates that the bytecode of the deployed contract is the same as the compilation output of the given source code files except for the metadata hash. This means the deployed contract and the given source code + metadata function in the same way but there are differences in source code comments, variable names, or other metadata fields such as source paths.`
@@ -187,6 +211,7 @@ export default defineComponent({
   name: 'ContractByteCodeSection',
 
   components: {
+    AccountLink,
     Tabs,
     ContractAbiValue,
     DownloadButton,
@@ -302,7 +327,7 @@ export default defineComponent({
 
     const abiBlob = computed(() => {
       let result: Blob | null
-      const itf = props.contractAnalyzer.interface.value
+      const itf = abiController.targetInterface.value
       if (itf !== null) {
         result = new Blob([itf.formatJson()], {type: "text/json"})
       } else {
@@ -314,13 +339,35 @@ export default defineComponent({
     const handleDownloadABI = () => {
       if (abiBlob.value !== null) {
         const url = window.URL.createObjectURL(abiBlob.value)
-        const outputName = props.contractAnalyzer.contractName.value + ".json"
+        const outputName = abiController.targetContractName.value + ".json"
         const a = document.createElement('a')
         a.setAttribute('href', url)
         a.setAttribute('download', outputName);
         a.click()
       }
     }
+
+    const abiAnalyzer  = new ABIAnalyzer(props.contractAnalyzer)
+    onMounted(() => abiAnalyzer.mount())
+    onBeforeUnmount(() => abiAnalyzer.unmount())
+
+    const logicContractId = computed(() => {
+      return abiAnalyzer.logicContractId.value ?? undefined
+    })
+
+    const adminContractId = computed(() => {
+      return abiAnalyzer.adminContractId.value ?? undefined
+    })
+
+    const showLogicABI = ref(AppStorage.getShowLogicABI())
+    watch(showLogicABI, () => {
+      AppStorage.setShowLogicABI(showLogicABI.value)
+    })
+
+    const mode: ComputedRef<ABIMode> = computed(() => {
+      return showLogicABI.value && abiController.logicModeAvailable.value ? ABIMode.Logic : ABIMode.Normal
+    })
+    const abiController = new ABIController(abiAnalyzer, mode)
 
     return {
       isTouchDevice,
@@ -339,6 +386,8 @@ export default defineComponent({
       solidityFiles: props.contractAnalyzer.solidityFiles,
       sourceFileName: props.contractAnalyzer.sourceFileName,
       contractFileName: props.contractAnalyzer.contractFileName,
+      logicContractId,
+      adminContractId,
       verifyDidComplete,
       isFullMatch,
       showHexaOpcode,
@@ -352,7 +401,11 @@ export default defineComponent({
       handleDownload,
       selectedType,
       handleDownloadABI,
-      FragmentType
+      abiController,
+      logicModeAvailable: abiController.logicModeAvailable,
+      FragmentType,
+      showLogicABI,
+      ABIMode,
     }
   }
 });

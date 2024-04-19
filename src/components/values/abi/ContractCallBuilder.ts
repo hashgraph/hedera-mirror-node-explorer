@@ -22,14 +22,14 @@ import {computed, ref, watch} from "vue";
 import {ethers} from "ethers";
 import {AppStorage} from "@/AppStorage";
 import {ContractCallRequest, ContractCallResponse} from "@/schemas/HederaSchemas";
-import {ContractAnalyzer} from "@/utils/analyzer/ContractAnalyzer";
 import {walletManager} from "@/router";
 import axios from "axios";
+import {ABIController} from "@/components/contract/ABIController";
 
 export class ContractCallBuilder {
 
     public readonly fragment: ethers.FunctionFragment
-    public readonly contractAnalyzer: ContractAnalyzer
+    public readonly abiController: ABIController
     public readonly paramBuilders: ContractParamBuilder[]
 
     public readonly lastValue = ref<ethers.Result | null>(null)
@@ -39,9 +39,9 @@ export class ContractCallBuilder {
     // Public
     //
 
-    public constructor(fragment: ethers.FunctionFragment, contractAnalyzer: ContractAnalyzer) {
+    public constructor(fragment: ethers.FunctionFragment, abiController: ABIController) {
         this.fragment = fragment
-        this.contractAnalyzer = contractAnalyzer
+        this.abiController = abiController
         this.paramBuilders = []
         for (const i of this.fragment.inputs) {
             this.paramBuilders.push(new ContractParamBuilder(i, this))
@@ -59,7 +59,7 @@ export class ContractCallBuilder {
 
         let result: string | null
         const paramOK = paramDataList.length == this.paramBuilders.length
-        const itf = this.contractAnalyzer.interface.value
+        const itf = this.abiController.targetInterface.value
         if (itf !== null && paramOK) {
             try {
                 result = itf.encodeFunctionData(this.fragment, paramDataList)
@@ -103,9 +103,9 @@ export class ContractCallBuilder {
     })
 
     public async execute(): Promise<void> {
-        const contractId = this.contractAnalyzer.contractId.value
-        const contractAddress = this.contractAnalyzer.contractAddress.value
-        const itf = this.contractAnalyzer.interface.value
+        const contractId = this.abiController.abiAnalyzer.contractAnalyzer.contractId.value
+        const contractAddress = this.abiController.abiAnalyzer.contractAnalyzer.contractAddress.value
+        const itf = this.abiController.targetInterface.value
         const functionData = this.functionData.value
         if (contractId !== null && contractAddress !== null && itf !== null && functionData !== null) {
             try {

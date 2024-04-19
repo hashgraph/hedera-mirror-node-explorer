@@ -642,6 +642,21 @@ export interface ContractCallResponse {
     result: string          // Result in hexadecimal from executed contract call
 }
 
+
+export interface ContractStateResponse {
+    state: Array<ContractState> | undefined
+    links: Links | undefined
+}
+
+export interface ContractState {
+    address: string         // A network entity encoded as an EVM address in hex
+    contract_id: string     // Network entity ID in the format of shard.realm.num
+    timestamp: string       // A Unix timestamp in seconds.nanoseconds format
+    slot: string            // The hex encoded storage slot
+    value: string           // The hex encoded value to the slot. 0x implies no value written
+}
+
+
 // ---------------------------------------------------------------------------------------------------------------------
 //                                                      Node
 // ---------------------------------------------------------------------------------------------------------------------

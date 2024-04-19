@@ -23,7 +23,7 @@
 // Fungible token inspired from https://testnet.mirrornode.hedera.com/api/v1/tokens/0.0.29662956
 //
 
-import {KeyType} from "@/schemas/HederaSchemas";
+import {ContractStateResponse, KeyType} from "@/schemas/HederaSchemas";
 
 export const SAMPLE_TOKEN = {
     "admin_key": null,
@@ -3217,6 +3217,34 @@ export const SAMPLE_BLOCK_ZERO = {
     "timestamp": {"from": "1695319212.768624298", "to": "1695319212.768625003"},
     "gas_used": 0,
     "logs_bloom": "0x"
+}
+
+//
+// Contract state
+//
+
+export const SAMPLE_PROXY_ADDRESS_RESPONSE: ContractStateResponse = {
+    state: [
+        {
+            "address": SAMPLE_CONTRACT.evm_address,
+            "contract_id": SAMPLE_CONTRACT.contract_id,
+            "timestamp": "1706044673.266736003",
+            "slot": "0xb53127684a568b3173ae13b9f8a6016e243e63b6e8ee1178d6a717850b5d6103",
+            "value": "0x00000000000000000000000000000000000000000000000000000000000b70cf"
+        }
+    ]
+}
+
+export const SAMPLE_ADMIN_ADDRESS_RESPONSE: ContractStateResponse = {
+    state: [
+        {
+            "address": SAMPLE_CONTRACT.evm_address,
+            "contract_id": SAMPLE_CONTRACT.contract_id,
+            "timestamp": "1706044673.266736003",
+            "slot": "0x360894a13ba1a3210667c828492db98dca3e2076cc3735a920a3ca505d382bbc",
+            "value": "0x000000000000000000000000000000000000000000000000000000000002294a"
+        }
+    ]
 }
 
 //

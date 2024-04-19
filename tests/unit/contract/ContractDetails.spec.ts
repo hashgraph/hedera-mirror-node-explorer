@@ -44,6 +44,7 @@ import {HMSF} from "@/utils/HMSF";
 import NotificationBanner from "@/components/NotificationBanner.vue";
 import {TransactionID} from "@/utils/TransactionID";
 import ContractResultTable from "@/components/contract/ContractResultTable.vue";
+import {ContractStateResponse} from "../../../src/schemas/HederaSchemas";
 
 /*
     Bookmarks
@@ -79,6 +80,12 @@ describe("ContractDetails.vue", () => {
 
         const matcher6 = "/api/v1/balances"
         mock.onGet(matcher6).reply(200, SAMPLE_ACCOUNT_BALANCES);
+
+        const matcher7 = "api/v1/contracts/" + SAMPLE_CONTRACT.contract_id + "/state?slot=0x360894a13ba1a3210667c828492db98dca3e2076cc3735a920a3ca505d382bbc"
+        mock.onGet(matcher7).reply<ContractStateResponse>(200, { state: [], links: undefined })
+
+        const matcher8 = "api/v1/contracts/" + SAMPLE_CONTRACT.contract_id + "/state?slot=0xb53127684a568b3173ae13b9f8a6016e243e63b6e8ee1178d6a717850b5d6103"
+        mock.onGet(matcher8).reply<ContractStateResponse>(200, { state: [], links: undefined })
 
         const wrapper = mount(ContractDetails, {
             global: {
@@ -166,6 +173,12 @@ describe("ContractDetails.vue", () => {
         const matcher6 = "/api/v1/balances"
         mock.onGet(matcher6).reply(200, SAMPLE_ACCOUNT_BALANCES);
 
+        const matcher7 = "api/v1/contracts/" + SAMPLE_CONTRACT.contract_id + "/state?slot=0x360894a13ba1a3210667c828492db98dca3e2076cc3735a920a3ca505d382bbc"
+        mock.onGet(matcher7).reply<ContractStateResponse>(200, { state: [], links: undefined })
+
+        const matcher8 = "api/v1/contracts/" + SAMPLE_CONTRACT.contract_id + "/state?slot=0xb53127684a568b3173ae13b9f8a6016e243e63b6e8ee1178d6a717850b5d6103"
+        mock.onGet(matcher8).reply<ContractStateResponse>(200, { state: [], links: undefined })
+
         const wrapper = mount(ContractDetails, {
             global: {
                 plugins: [router, Oruga]
@@ -249,6 +262,12 @@ describe("ContractDetails.vue", () => {
         const matcher5 = "/api/v1/contracts/" + SAMPLE_CONTRACT.contract_id + "/results"
         mock.onGet(matcher5).reply(200, SAMPLE_CONTRACT_RESULTS);
 
+        const matcher7 = "api/v1/contracts/" + SAMPLE_CONTRACT.contract_id + "/state?slot=0x360894a13ba1a3210667c828492db98dca3e2076cc3735a920a3ca505d382bbc"
+        mock.onGet(matcher7).reply<ContractStateResponse>(200, { state: [], links: undefined })
+
+        const matcher8 = "api/v1/contracts/" + SAMPLE_CONTRACT.contract_id + "/state?slot=0xb53127684a568b3173ae13b9f8a6016e243e63b6e8ee1178d6a717850b5d6103"
+        mock.onGet(matcher8).reply<ContractStateResponse>(200, { state: [], links: undefined })
+
         const wrapper = mount(ContractDetails, {
             global: {
                 plugins: [router, Oruga]
@@ -305,6 +324,12 @@ describe("ContractDetails.vue", () => {
         let matcher5 = "/api/v1/contracts/" + contract1.contract_id + "/results"
         mock.onGet(matcher5).reply(200, SAMPLE_CONTRACT_RESULTS);
 
+        let matcher7 = "api/v1/contracts/" + contract1.contract_id + "/state?slot=0x360894a13ba1a3210667c828492db98dca3e2076cc3735a920a3ca505d382bbc"
+        mock.onGet(matcher7).reply<ContractStateResponse>(200, { state: [], links: undefined })
+
+        let matcher8 = "api/v1/contracts/" + contract1.contract_id + "/state?slot=0xb53127684a568b3173ae13b9f8a6016e243e63b6e8ee1178d6a717850b5d6103"
+        mock.onGet(matcher8).reply<ContractStateResponse>(200, { state: [], links: undefined })
+
         const wrapper = mount(ContractDetails, {
             global: {
                 plugins: [router, Oruga]
@@ -336,6 +361,12 @@ describe("ContractDetails.vue", () => {
 
         matcher5 = "/api/v1/contracts/" + contract2.contract_id + "/results"
         mock.onGet(matcher5).reply(200, SAMPLE_CONTRACT_RESULTS);
+
+        matcher7 = "api/v1/contracts/" + contract2.contract_id + "/state?slot=0x360894a13ba1a3210667c828492db98dca3e2076cc3735a920a3ca505d382bbc"
+        mock.onGet(matcher7).reply<ContractStateResponse>(200, { state: [], links: undefined })
+
+        matcher8 = "api/v1/contracts/" + contract2.contract_id + "/state?slot=0xb53127684a568b3173ae13b9f8a6016e243e63b6e8ee1178d6a717850b5d6103"
+        mock.onGet(matcher8).reply<ContractStateResponse>(200, { state: [], links: undefined })
 
         await wrapper.setProps({
             contractId: SAMPLE_CONTRACT_DUDE.contract_id ?? undefined
@@ -375,6 +406,12 @@ describe("ContractDetails.vue", () => {
 
         const matcher5 = "/api/v1/contracts/" + contract.contract_id + "/results"
         mock.onGet(matcher5).reply(200, SAMPLE_CONTRACT_RESULTS);
+
+        const matcher7 = "api/v1/contracts/" + contract.contract_id + "/state?slot=0x360894a13ba1a3210667c828492db98dca3e2076cc3735a920a3ca505d382bbc"
+        mock.onGet(matcher7).reply<ContractStateResponse>(200, { state: [], links: undefined })
+
+        const matcher8 = "api/v1/contracts/" + contract.contract_id + "/state?slot=0xb53127684a568b3173ae13b9f8a6016e243e63b6e8ee1178d6a717850b5d6103"
+        mock.onGet(matcher8).reply<ContractStateResponse>(200, { state: [], links: undefined })
 
         const wrapper = mount(ContractDetails, {
             global: {
@@ -419,6 +456,12 @@ describe("ContractDetails.vue", () => {
         const matcher5 = "/api/v1/contracts/" + contract.contract_id + "/results"
         mock.onGet(matcher5).reply(200, SAMPLE_CONTRACT_RESULTS);
 
+        const matcher7 = "api/v1/contracts/" + contract.contract_id + "/state?slot=0x360894a13ba1a3210667c828492db98dca3e2076cc3735a920a3ca505d382bbc"
+        mock.onGet(matcher7).reply<ContractStateResponse>(200, { state: [], links: undefined })
+
+        const matcher8 = "api/v1/contracts/" + contract.contract_id + "/state?slot=0xb53127684a568b3173ae13b9f8a6016e243e63b6e8ee1178d6a717850b5d6103"
+        mock.onGet(matcher8).reply<ContractStateResponse>(200, { state: [], links: undefined })
+
         const wrapper = mount(ContractDetails, {
             global: {
                 plugins: [router, Oruga]
@@ -459,6 +502,12 @@ describe("ContractDetails.vue", () => {
 
         const matcher5 = "/api/v1/contracts/" + contract.contract_id + "/results"
         mock.onGet(matcher5).reply(200, SAMPLE_CONTRACT_RESULTS);
+
+        const matcher7 = "api/v1/contracts/" + contract.contract_id + "/state?slot=0x360894a13ba1a3210667c828492db98dca3e2076cc3735a920a3ca505d382bbc"
+        mock.onGet(matcher7).reply<ContractStateResponse>(200, { state: [], links: undefined })
+
+        const matcher8 = "api/v1/contracts/" + contract.contract_id + "/state?slot=0xb53127684a568b3173ae13b9f8a6016e243e63b6e8ee1178d6a717850b5d6103"
+        mock.onGet(matcher8).reply<ContractStateResponse>(200, { state: [], links: undefined })
 
         const wrapper = mount(ContractDetails, {
             global: {

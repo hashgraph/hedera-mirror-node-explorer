@@ -34,7 +34,7 @@
     </button>
     <div class="is-flex is-align-items-baseline ml-3">
       <div class="h-is-text-size-3 has-text-grey has-text-weight-medium">{{ index }}.</div>
-      <prism language="solidity" style="background-color: #171920; font-size: 0.7rem">{{ signature }}</prism>
+      <SolidityCode style="background-color: #171920; font-size: 0.7rem">{{ signature }}</SolidityCode>
       <div class="h-has-pill h-is-text-size-1 has-background-black has-text-grey has-text-weight-normal">{{
           mutability
         }}
@@ -79,7 +79,7 @@ import "prismjs/themes/prism-tomorrow.css"
 import "prismjs/prism.js";
 import "prismjs/components/prism-clike.js";
 import "prismjs/components/prism-solidity.js";
-import Prism from "vue-prism-component"
+import SolidityCode from "@/components/SolidityCode.vue";
 import ContractAbiDialog from "@/components/values/abi/ContractAbiDialog.vue";
 import {DialogController} from "@/components/dialog/DialogController";
 import {ContractCallBuilder} from "@/components/values/abi/ContractCallBuilder";
@@ -89,7 +89,7 @@ import DialogStatus from "@/components/dialog/DialogStatus.vue";
 import DialogTitle from "@/components/dialog/DialogTitle.vue";
 
 export default defineComponent({
-  components: {DialogTitle, DialogStatus, ContractAbiDialog, Dialog, Prism},
+  components: {SolidityCode, DialogTitle, DialogStatus, ContractAbiDialog, Dialog},
   emits: ["didUpdateContractState"],
   props: {
     contractCallBuilder: {
