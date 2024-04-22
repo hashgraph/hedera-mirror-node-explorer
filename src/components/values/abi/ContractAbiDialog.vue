@@ -79,6 +79,7 @@ import Property from "@/components/Property.vue";
 import FunctionValue from "@/components/values/FunctionValue.vue";
 import DialogStatus from "@/components/dialog/DialogStatus.vue";
 import DialogTitle from "@/components/dialog/DialogTitle.vue";
+import {gtagCallContract} from "@/gtag";
 
 export default defineComponent({
   components: {DialogTitle, DialogStatus, FunctionValue, Property, CommitButton, DialogButton, ParamTypeEditor, Dialog},
@@ -115,6 +116,7 @@ export default defineComponent({
             if (!props.contractCallBuilder.isReadOnly()) {
               ctx.emit("didUpdateContractState")
             }
+            gtagCallContract(props.contractCallBuilder.fragment.format("minimal"))
           })
     }
 

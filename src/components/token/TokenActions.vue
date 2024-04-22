@@ -142,6 +142,7 @@ import {TokenAssociationStatus, TokenInfoAnalyzer} from './TokenInfoAnalyzer';
 import {WalletDriverCancelError, WalletDriverError} from '@/utils/wallet/WalletDriverError';
 import AlertDialog from "@/components/AlertDialog.vue";
 import {DialogController} from "@/components/dialog/DialogController";
+import {gtagTransaction} from "@/gtag";
 
 export default defineComponent({
   name: "TokenActions",
@@ -316,6 +317,7 @@ export default defineComponent({
             await walletManager.associateToken(tokenId.value!)
           } finally {
             props.analyzer.tokenAssociationDidChange()
+            gtagTransaction("associate_token")
           }
         }
 
@@ -345,6 +347,7 @@ export default defineComponent({
             await walletManager.dissociateToken(tokenId.value!)
           } finally {
             props.analyzer.tokenAssociationDidChange()
+            gtagTransaction("dissociate_token")
           }
         }
         showProgressDialog.value = false

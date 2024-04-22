@@ -170,6 +170,7 @@ import {defineComponent, inject, ref} from "vue";
 import WalletInfo from '@/components/wallet/WalletInfo.vue'
 import {DialogController} from "@/components/dialog/DialogController";
 import ConnectWalletDialog from "@/components/wallet/ConnectWalletDialog.vue";
+import {gtagWalletConnect, gtagWalletConnectionFailure} from "@/gtag";
 
 export default defineComponent({
   name: "TopNavBar",
@@ -211,10 +212,12 @@ export default defineComponent({
               console.warn("Failed to connect wallet - reason:" + reason.toString())
               connectError.value = reason
               connectDialogController.visible.value = true
+              gtagWalletConnectionFailure(wallet.name)
             }
           })
           .finally(() => connecting.value = false)
       walletIconURL.value = walletManager.getActiveDriver().iconURL || ""
+      gtagWalletConnect(wallet.name)
     }
 
     //
