@@ -156,6 +156,7 @@ import ProgressDialog, {Mode} from "@/components/staking/ProgressDialog.vue";
 import ConfirmDialog from "@/components/ConfirmDialog.vue";
 import {ContractSourceAnalyzer} from "@/utils/analyzer/ContractSourceAnalyzer";
 import {SourcifyUtils} from "@/utils/sourcify/SourcifyUtils";
+import {gtagTransaction, gtagVerifyContract} from "@/gtag";
 
 export default defineComponent({
   name: "ContractVerificationDialog",
@@ -328,6 +329,8 @@ export default defineComponent({
         progressDialogMode.value = Mode.Error
         progressMainMessage.value = "Verification failed"
         progressExtraMessage.value = (reason as any).toString()
+      } finally {
+        gtagVerifyContract(progressMainMessage.value)
       }
     }
 

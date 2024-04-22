@@ -66,6 +66,7 @@
 import {defineComponent, inject, onMounted, ref, watch} from "vue";
 import {SearchRequest} from "@/utils/SearchRequest";
 import {routeManager} from "@/router";
+import {gtagSearch} from "@/gtag";
 
 
 const STYLE_SEARCH_ICON = "fa fa-search"
@@ -116,6 +117,7 @@ export default defineComponent({
 
       const searchedValue = searchedId.value.trim()
       if (searchedValue != "") {
+        gtagSearch(searchedValue)
         const r = new SearchRequest(searchedValue)
         r.run().then(() => {
           try {
