@@ -58,7 +58,7 @@
 
 <script lang="ts">
 
-import {computed, defineComponent, inject, onBeforeUnmount, onMounted, PropType} from "vue";
+import {computed, defineComponent, onBeforeUnmount, onMounted, PropType} from "vue";
 import EntityLabel from "@/components/values/EntityLabel.vue";
 import {LabelByIdCache} from "@/utils/cache/LabelByIdCache";
 import TokenExtra from "@/components/values/TokenExtra.vue";

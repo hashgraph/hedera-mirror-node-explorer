@@ -25,7 +25,7 @@
 <template>
   <div v-if="contractId && contractRoute" class="is-inline-block">
     <router-link :to="contractRoute">
-      <span class="is-numeric">{{ contractId }}</span>
+      <ContractIOL :contract-id="contractId" class="h-is-hoverable"/>
     </router-link>
   </div>
 </template>
@@ -38,19 +38,20 @@
 
 import {computed, defineComponent, PropType} from "vue";
 import {routeManager} from "@/router";
+import ContractIOL from "@/components/values/ContractIOL.vue";
 
 export default defineComponent({
   name: "ContractLink",
+  components: {ContractIOL},
 
   props: {
-    contractId: {
-      type: String as PropType<string | null>,
-      default: null
-    },
+    contractId: String as PropType<string | null>,
   },
 
   setup(props) {
-    const contractRoute = computed(() => props.contractId ? routeManager.makeRouteToContract(props.contractId) : null)
+    const contractRoute = computed(
+        () => props.contractId ? routeManager.makeRouteToContract(props.contractId) : null
+    )
     return {contractRoute}
   }
 });

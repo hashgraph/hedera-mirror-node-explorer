@@ -23,11 +23,10 @@
 <!-- --------------------------------------------------------------------------------------------------------------- -->
 
 <template>
-  <div class="is-inline-block">
-    <router-link v-if="topicRoute" :to="topicRoute">
-      <span class="is-numeric">{{ topicId }}</span>
+  <div v-if="topicId && topicRoute" class="is-inline-block">
+    <router-link :to="topicRoute">
+      <TopicIOL :topic-id="topicId" class="h-is-hoverable"/>
     </router-link>
-    <div v-else>?</div>
   </div>
 </template>
 
@@ -39,16 +38,14 @@
 
 import {computed, defineComponent} from "vue";
 import {routeManager} from "@/router";
+import TopicIOL from "@/components/values/TopicIOL.vue";
 
 export default defineComponent({
   name: "TopicLink",
+  components: {TopicIOL},
 
   props: {
     topicId: String,
-    showExtra: {
-      type: Boolean,
-      default: false
-    }
   },
 
   setup(props) {
