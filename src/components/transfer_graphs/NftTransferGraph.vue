@@ -64,9 +64,9 @@
               data-cy="nft"/>
           <div class="h-is-text-size-3" style="max-width: 200px">
             <template v-if="!compact">
-            <span v-for="sn in nftTransferLayout[i-1].serial_numbers" :key="sn">
-              #{{ sn }}
-            </span>
+              <span v-for="sn in nftTransferLayout[i-1].serial_numbers" :key="sn">
+                #{{ sn }}
+              </span>
             </template>
           </div>
         </div>
@@ -148,11 +148,13 @@ export default defineComponent({
 .graph-container {
   display: inline-grid;
   grid-template-columns: repeat(5, auto);
+  line-height: 1.4rem;
   column-gap: 1em;
 }
 
 .graph-container-6 {
-  grid-template-columns: repeat(6, auto)
+  grid-template-columns: repeat(6, auto);
+  line-height: 1.4rem;
 }
 
 </style>
