@@ -43,6 +43,12 @@
       </span>
     </template>
 
+    <template v-if="showExtra && extra.length > 0">
+      <span class="ml-2 h-is-smaller h-is-extra-text is-numeric">
+        {{ extra }}
+      </span>
+    </template>
+
   </div>
 
   <span v-else-if="showNone && !initialLoading" class="has-text-grey">
@@ -63,6 +69,8 @@ import {computed, defineComponent, inject, onBeforeUnmount, onMounted, PropType,
 import EntityLabel from "@/components/values/EntityLabel.vue";
 import {LabelByIdCache} from "@/utils/cache/LabelByIdCache";
 import {initialLoadingKey} from "@/AppKeys";
+import {makeOperatorDescription} from "@/schemas/HederaUtils";
+import {NetworkCache} from "@/utils/cache/NetworkCache";
 
 export default defineComponent({
   name: "AccountIOL",
@@ -71,6 +79,10 @@ export default defineComponent({
     accountId: {
       type: String as PropType<string | null>,
       default: null
+    },
+    showExtra: {
+      type: Boolean,
+      default: false
     },
     showNone: {
       type: Boolean,
@@ -91,8 +103,24 @@ export default defineComponent({
     onBeforeUnmount(
         () => labelLookup.unmount()
     )
+
+    const networkLookup = NetworkCache.instance.makeLookup()
+    onMounted(
+        () => networkLookup.mount()
+    )
+    onBeforeUnmount(
+        () => networkLookup.unmount()
+    )
+    const nodes = computed(() => networkLookup.entity.value ?? [])
+
+    const extra = computed(() => {
+      const result = props.accountId ? makeOperatorDescription(props.accountId, nodes.value) : null
+      return result ?? ""
+    })
+
     return {
       initialLoading,
+      extra,
       label: labelLookup.entity,
     }
   }

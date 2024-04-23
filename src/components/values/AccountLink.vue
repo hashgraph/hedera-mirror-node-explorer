@@ -36,6 +36,7 @@
     <router-link :to="accountRoute">
       <AccountIOL class="h-is-hoverable"
                   :account-id="accountId"
+                  :show-extra="showExtra"
                   :show-none="showNone"
                   :null-label="nullLabel"
       />
@@ -63,6 +64,7 @@ export default defineComponent({
 
   props: {
     accountId: String as PropType<string | null>,
+    showExtra: Boolean,
     noAnchor: {
       type: Boolean,
       default: false
