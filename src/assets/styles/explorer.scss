@@ -210,6 +210,38 @@ body {
   color: $h-extra-text-color;
 }
 
+.h-is-label {
+  color: #DDD;
+  background: #333;
+  border: solid 0.5px var(--h-theme-highlight-color);
+  border-radius: 4px;
+  font-family: "Styrene A Web", sans-serif;
+  font-weight: normal;
+  font-size: 13px;
+  line-height: 19px;
+  padding: 3px 6px 3px;
+  //height: 26px;
+  letter-spacing: normal;
+  align-content: center;
+}
+.h-is-hoverable:hover {
+  color: grey;
+}
+.h-is-compact-label {
+  color: #DDD;
+  background: #333;
+  border-radius: 4px;
+  font-family: "Styrene A Web", sans-serif;
+  font-weight: normal;
+  font-size: 11px;
+  line-height: 16px;
+  padding: 1px 4px 2px;
+  width: fit-content;
+  //height: 22px;
+  letter-spacing: normal;
+  align-content: center;
+}
+
 .h-has-pill {
   color: black;
   font-weight: bold;
