@@ -24,24 +24,28 @@
 
 <template>
 
-  <div v-if="noAnchor || accountRoute === null">
-    <AccountIOL
-        :account-id="accountId"
-        :show-extra="showExtra"
-        :show-none="showNone"
-        :null-label="nullLabel"
-    />
-  </div>
+  <div class="is-inline-block">
 
-  <div v-else>
-    <router-link :to="accountRoute">
-      <AccountIOL class="h-is-hoverable"
-                  :account-id="accountId"
-                  :show-extra="showExtra"
-                  :show-none="showNone"
-                  :null-label="nullLabel"
+    <template v-if="noAnchor || accountRoute === null">
+      <AccountIOL
+          :account-id="accountId"
+          :show-extra="showExtra"
+          :show-none="showNone"
+          :null-label="nullLabel"
       />
-    </router-link>
+    </template>
+
+    <template v-else>
+      <router-link :to="accountRoute">
+        <AccountIOL class="h-is-hoverable"
+                    :account-id="accountId"
+                    :show-extra="showExtra"
+                    :show-none="showNone"
+                    :null-label="nullLabel"
+        />
+      </router-link>
+    </template>
+
   </div>
 
 </template>
