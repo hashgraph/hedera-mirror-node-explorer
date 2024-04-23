@@ -47,9 +47,7 @@
       customRowKey="contract_id"
   >
     <o-table-column field="contract_id" label="ID" v-slot="props">
-      <div class="is-numeric">
-        {{ props.row.contract_id }}
-      </div>
+      <ContractIOL :contract-id="props.row.contract_id"/>
     </o-table-column>
 
     <o-table-column v-slot="props" field="contract_name" label="Contract Name">
@@ -87,6 +85,7 @@ import {ORUGA_MOBILE_BREAKPOINT} from '@/App.vue';
 import EmptyTable from "@/components/EmptyTable.vue";
 import {ContractTableController} from "@/components/contract/ContractTableController";
 import ContractName from "@/components/values/ContractName.vue";
+import ContractIOL from "@/components/values/ContractIOL.vue";
 
 
 //
@@ -96,7 +95,7 @@ import ContractName from "@/components/values/ContractName.vue";
 export default defineComponent({
   name: 'ContractTable',
 
-  components: {ContractName, EmptyTable, BlobValue, TimestampValue},
+  components: {ContractIOL, ContractName, EmptyTable, BlobValue, TimestampValue},
 
   props: {
     controller: {

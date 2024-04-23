@@ -46,9 +46,7 @@
       customRowKey="consensus_timestamp"
   >
     <o-table-column v-slot="props" field="topic_id" label="Topic">
-      <div class="is-numeric">
-        {{ props.row.entity_id }}
-      </div>
+      <TopicIOL :topic-id="props.row.entity_id"/>
     </o-table-column>
 
     <o-table-column v-slot="props" field="created" label="Created">
@@ -79,11 +77,12 @@ import BlobValue from "@/components/values/BlobValue.vue";
 import {ORUGA_MOBILE_BREAKPOINT} from '@/App.vue';
 import EmptyTable from "@/components/EmptyTable.vue";
 import {TransactionTableController} from "@/components/transaction/TransactionTableController";
+import TopicIOL from "@/components/values/TopicIOL.vue";
 
 export default defineComponent({
   name: 'TopicTable',
 
-  components: {EmptyTable, BlobValue, TimestampValue},
+  components: {TopicIOL, EmptyTable, BlobValue, TimestampValue},
 
   props: {
     controller: {
