@@ -76,10 +76,7 @@ export default defineComponent({
   name: "AccountIOL",
   components: {EntityLabel},
   props: {
-    accountId: {
-      type: String as PropType<string | null>,
-      default: null
-    },
+    accountId: String as PropType<string | null>,
     showExtra: {
       type: Boolean,
       default: false
