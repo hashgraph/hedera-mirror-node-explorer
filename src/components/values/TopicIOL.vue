@@ -1,0 +1,85 @@
+<!--
+  -
+  - Hedera Mirror Node Explorer
+  -
+  - Copyright (C) 2021 - 2024 Hedera Hashgraph, LLC
+  -
+  - Licensed under the Apache License, Version 2.0 (the "License");
+  - you may not use this file except in compliance with the License.
+  - You may obtain a copy of the License at
+  -
+  -      http://www.apache.org/licenses/LICENSE-2.0
+  -
+  - Unless required by applicable law or agreed to in writing, software
+  - distributed under the License is distributed on an "AS IS" BASIS,
+  - WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+  - See the License for the specific language governing permissions and
+  - limitations under the License.
+  -
+  -->
+
+<!-- --------------------------------------------------------------------------------------------------------------- -->
+<!--                                                     TEMPLATE                                                    -->
+<!-- --------------------------------------------------------------------------------------------------------------- -->
+
+<template>
+
+  <div class="is-inline-block">
+
+    <template v-if="label !== null">
+      <EntityLabel
+          :id="topicId"
+          :compact="true"
+      />
+    </template>
+
+    <template v-else>
+      <span class="is-numeric">
+        {{ topicId ?? "" }}
+      </span>
+    </template>
+
+  </div>
+
+</template>
+
+<!-- --------------------------------------------------------------------------------------------------------------- -->
+<!--                                                      SCRIPT                                                     -->
+<!-- --------------------------------------------------------------------------------------------------------------- -->
+
+<script lang="ts">
+
+import {computed, defineComponent, onBeforeUnmount, onMounted, PropType} from "vue";
+import EntityLabel from "@/components/values/EntityLabel.vue";
+import {LabelByIdCache} from "@/utils/cache/LabelByIdCache";
+
+export default defineComponent({
+  name: "TopicIOL",
+  components: {EntityLabel},
+  props: {
+    topicId: {
+      type: String as PropType<string | null>,
+      default: null
+    },
+  },
+  setup(props) {
+    const labelLookup = LabelByIdCache.instance.makeLookup(computed(() => props.topicId))
+    onMounted(
+        () => labelLookup.mount()
+    )
+    onBeforeUnmount(
+        () => labelLookup.unmount()
+    )
+    return {
+      label: labelLookup.entity
+    }
+  }
+})
+
+</script>
+
+<!-- --------------------------------------------------------------------------------------------------------------- -->
+<!--                                                       STYLE                                                     -->
+<!-- --------------------------------------------------------------------------------------------------------------- -->
+
+<style/>
