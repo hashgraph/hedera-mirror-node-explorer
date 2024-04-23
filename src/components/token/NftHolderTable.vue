@@ -54,7 +54,7 @@
       </o-table-column>
 
       <o-table-column v-slot="props" field="account_id" label="Account ID">
-        <AccountLink v-bind:account-id="props.row.account_id" no-anchor/>
+        <AccountIOL :account-id="props.row.account_id"/>
       </o-table-column>
 
       <o-table-column v-slot="props" field="deleted" label="Deleted">
@@ -86,17 +86,17 @@
 import {ComputedRef, defineComponent, inject, PropType, Ref} from 'vue';
 import {Nft} from "@/schemas/HederaSchemas";
 import TimestampValue from "@/components/values/TimestampValue.vue";
-import AccountLink from "@/components/values/AccountLink.vue";
 import BlobValue from "@/components/values/BlobValue.vue";
 import {ORUGA_MOBILE_BREAKPOINT} from '@/App.vue';
 import EmptyTable from "@/components/EmptyTable.vue";
 import {NftHolderTableController} from "@/components/token/NftHolderTableController";
 import {routeManager} from "@/router";
+import AccountIOL from "@/components/values/AccountIOL.vue";
 
 export default defineComponent({
   name: 'NftHolderTable',
 
-  components: {EmptyTable, AccountLink, TimestampValue, BlobValue},
+  components: {AccountIOL, EmptyTable, TimestampValue, BlobValue},
 
   props: {
     controller: {
