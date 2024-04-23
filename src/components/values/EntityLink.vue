@@ -24,7 +24,7 @@
 
 <template>
   <div v-if="routeName === 'AccountDetails'">
-    <AccountLink :account-id="entityId"/>
+    <AccountLink :account-id="entityId" :show-extra="showExtra"/>
   </div>
   <div v-else-if="routeName === 'TokenDetails'">
     <TokenLink :token-id="entityId" :show-extra="showExtra"/>

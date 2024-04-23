@@ -27,6 +27,7 @@
   <div v-if="noAnchor || accountRoute === null">
     <AccountIOL
         :account-id="accountId"
+        :show-extra="showExtra"
         :show-none="showNone"
         :null-label="nullLabel"
     />
