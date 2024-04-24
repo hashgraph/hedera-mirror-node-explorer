@@ -35,13 +35,12 @@
 <script lang="ts">
 
 import {computed, defineComponent, onBeforeUnmount, onMounted, PropType} from "vue";
-import EntityLabel from "@/components/values/EntityLabel.vue";
 import {LabelByIdCache} from "@/utils/cache/LabelByIdCache";
 import EntityIOL from "@/components/values/EntityIOL.vue";
 
 export default defineComponent({
   name: "ContractIOL",
-  components: {EntityIOL, EntityLabel},
+  components: {EntityIOL},
   props: {
     contractId: {
       type: String as PropType<string | null>,
