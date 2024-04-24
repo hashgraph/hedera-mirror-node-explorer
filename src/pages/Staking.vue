@@ -76,7 +76,7 @@
           <span class="h-is-primary-title">My Staking </span>
           <span v-if="accountId" class="h-is-primary-title"> for account </span>
           <div v-if="accountId" class="h-is-secondary-text has-text-weight-light is-inline-block">
-            <AccountLink :account-id="accountId">{{ accountId }}</AccountLink>
+            <AccountLink :account-id="accountId"/>
           </div>
           <span v-if="accountChecksum" class="has-text-grey mr-3" style="font-size: 14px">-{{ accountChecksum }}</span>
         </div>

@@ -24,7 +24,29 @@
 
 <template>
 
-  <EntityIOL :entityId="accountId" :label="label" :null-label="nullLabel"/>
+  <div class="is-inline-block">
+
+    <template v-if="label !== null">
+      <span :class="{'h-is-label':!compact, 'h-is-compact-label':compact}" class="is-inline-block">
+        {{ label }}
+      </span>
+    </template>
+
+    <template v-else-if="entityId !== null">
+      <span class="is-numeric">
+        {{ entityId ?? "" }}
+      </span>
+    </template>
+
+    <template v-else-if="!initialLoading">
+      <span>{{ nullLabel ?? "None" }}</span>
+    </template>
+
+    <template v-else>
+      <!-- Nothing because entityId is null and (showNone=false or initialLoading is true) -->
+    </template>
+
+  </div>
 
 </template>
 
@@ -33,52 +55,60 @@
 <!-- --------------------------------------------------------------------------------------------------------------- -->
 
 <script lang="ts">
-
-import {computed, defineComponent, inject, onBeforeUnmount, onMounted, PropType, ref} from "vue";
-import EntityIOL from "@/components/values/EntityIOL.vue";
-import {LabelByIdCache} from "@/utils/cache/LabelByIdCache";
+import {computed, defineComponent, inject, PropType, ref} from "vue";
 import {initialLoadingKey} from "@/AppKeys";
-import {NetworkCache} from "@/utils/cache/NetworkCache";
+
+export const MAX_LABEL_SIZE = 35
 
 export default defineComponent({
-  name: "AccountIOL",
-  components: {EntityIOL},
+
+  name: "EntityIOL",
+
   props: {
-    accountId: {
+    entityId: {
       type: String as PropType<string | null>,
       default: null
+    },
+    label: {
+      type: String as PropType<string | null>,
+      default: null
+    },
+    slice: {
+      type: Number as PropType<number | null>,
+      default: MAX_LABEL_SIZE
+    },
+    compact: {
+      type: Boolean,
+      default: false
     },
     nullLabel: {
       type: String,
       default: null
-    }
+    },
   },
+
   setup(props) {
     const initialLoading = inject(initialLoadingKey, ref(false))
 
-    const labelLookup = LabelByIdCache.instance.makeLookup(computed(() => props.accountId))
-    onMounted(
-        () => labelLookup.mount()
-    )
-    onBeforeUnmount(
-        () => labelLookup.unmount()
-    )
-
-    const networkLookup = NetworkCache.instance.makeLookup()
-    onMounted(
-        () => networkLookup.mount()
-    )
-    onBeforeUnmount(
-        () => networkLookup.unmount()
-    )
+    const slice = computed(() => props.compact ? 12 : props.slice)
+    const label = computed(() => {
+      let result = props.label
+      if (result != null
+          && slice.value != null
+          && slice.value > 0
+          && slice.value < result.length) {
+        result = result.slice(0, slice.value) + '…'
+      }
+      return result
+    })
 
     return {
       initialLoading,
-      label: labelLookup.entity,
+      label,
     }
   }
-})
 
+})
 </script>
 
 <!-- --------------------------------------------------------------------------------------------------------------- -->

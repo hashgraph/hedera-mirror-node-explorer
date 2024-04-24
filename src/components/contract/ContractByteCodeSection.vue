@@ -86,8 +86,7 @@
           <template v-slot:name>Proxying with Admin Contract</template>
           <template v-slot:value>
             <AccountLink v-bind:accountId="adminContractId"
-                         v-bind:show-extra="true"
-                         v-bind:show-none="true"/>
+                         v-bind:show-extra="true"/>
           </template>
         </Property>
       </template>

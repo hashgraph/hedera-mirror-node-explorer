@@ -112,7 +112,7 @@
             <span>Auto Renew Account</span>
           </template>
           <template v-slot:value>
-            <AccountLink :account-id="tokenInfo?.auto_renew_account" :show-none="true"/>
+            <AccountLink :account-id="tokenInfo?.auto_renew_account"/>
           </template>
         </Property>
         <Property id="freezeDefault">

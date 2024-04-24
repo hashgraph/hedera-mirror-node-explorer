@@ -120,7 +120,7 @@
             <span>Auto Renew Account</span>
           </template>
           <template v-slot:value>
-            <AccountLink :account-id="autoRenewAccount" :show-none="true" null-label="None"/>
+            <AccountLink :account-id="autoRenewAccount"/>
           </template>
         </Property>
         <Property id="maxAutoAssociation">
@@ -135,13 +135,13 @@
         <Property id="obtainer">
           <template v-slot:name>Obtainer</template>
           <template v-slot:value>
-            <AccountLink :account-id="obtainerId" :show-none="true" null-label="None"/>
+            <AccountLink :account-id="obtainerId"/>
           </template>
         </Property>
         <Property id="proxyAccount">
           <template v-slot:name>Proxy Account</template>
           <template v-slot:value>
-            <AccountLink :account-id="proxyAccountId" :show-none="true" null-label="None"/>
+            <AccountLink :account-id="proxyAccountId"/>
           </template>
         </Property>
         <Property id="validFrom">

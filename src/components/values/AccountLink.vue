@@ -29,21 +29,24 @@
     <template v-if="noAnchor || accountRoute === null">
       <AccountIOL
           :account-id="accountId"
-          :show-extra="showExtra"
-          :show-none="showNone"
           :null-label="nullLabel"
       />
     </template>
 
     <template v-else>
       <router-link :to="accountRoute">
-        <AccountIOL class="h-is-hoverable"
-                    :account-id="accountId"
-                    :show-extra="showExtra"
-                    :show-none="showNone"
-                    :null-label="nullLabel"
-        />
+        <span class="h-is-hoverable">
+          <AccountIOL :account-id="accountId"
+                      :null-label="nullLabel"
+          />
+        </span>
       </router-link>
+    </template>
+
+    <template v-if="showExtra && extra.length > 0">
+      <span class="ml-2 h-is-smaller h-is-extra-text is-numeric">
+        {{ extra }}
+      </span>
     </template>
 
   </div>
@@ -56,26 +59,35 @@
 
 <script lang="ts">
 
-import {defineComponent, onBeforeUnmount, onMounted, PropType, ref, watch} from "vue";
+import {computed, defineComponent, onBeforeUnmount, onMounted, PropType, ref, watch} from "vue";
 import {routeManager} from "@/router";
 import {NetworkCache} from "@/utils/cache/NetworkCache";
 import {ContractByIdCache} from "@/utils/cache/ContractByIdCache";
 import {RouteLocationRaw} from "vue-router";
 import AccountIOL from "@/components/values/AccountIOL.vue";
+import {makeOperatorDescription} from "@/schemas/HederaUtils";
 
 export default defineComponent({
   name: "AccountLink",
   components: {AccountIOL},
 
   props: {
-    accountId: String as PropType<string | null>,
-    showExtra: Boolean,
+    accountId: {
+      type: String as PropType<string | null>,
+      default: null
+    },
+    showExtra: {
+      type: Boolean,
+      default: false
+    },
     noAnchor: {
       type: Boolean,
       default: false
     },
-    showNone: Boolean,
-    nullLabel: String,
+    nullLabel: {
+      type: String,
+      default: null
+    },
   },
 
   setup(props) {
@@ -114,8 +126,14 @@ export default defineComponent({
         accountRoute.value = null
       }
     })
+    const nodes = computed(() => networkLookup.entity.value ?? [])
 
-    return {accountRoute}
+    const extra = computed(() => {
+      const result = props.accountId ? makeOperatorDescription(props.accountId, nodes.value) : null
+      return result ?? ""
+    })
+
+    return {accountRoute, extra}
   }
 });
 

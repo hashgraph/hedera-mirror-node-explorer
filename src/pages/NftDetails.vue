@@ -55,10 +55,7 @@
         <Property id="accountId">
           <template #name>Account ID</template>
           <template #value>
-            <AccountLink
-                :account-id="nftInfo?.account_id"
-                :show-none="false"
-            />
+            <AccountLink :account-id="nftInfo?.account_id"/>
           </template>
         </Property>
         <Property id="createdTimestamp">
@@ -73,10 +70,7 @@
         <Property id="delegatingSpender">
           <template #name>Delegating Spender</template>
           <template #value>
-            <AccountLink
-                :account-id="nftInfo?.delegating_spender"
-                :show-none="false"
-            />
+            <AccountLink :account-id="nftInfo?.delegating_spender"/>
           </template>
         </Property>
         <Property id="metadata">
@@ -101,10 +95,7 @@
         <Property id="spenderId">
           <template #name>Spender ID</template>
           <template #value>
-            <AccountLink
-                :account-id="nftInfo?.spender_id"
-                :show-none="false"
-            />
+            <AccountLink :account-id="nftInfo?.spender_id"/>
           </template>
         </Property>
       </template>
