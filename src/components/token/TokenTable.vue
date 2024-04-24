@@ -51,7 +51,15 @@
     </o-table-column>
 
     <o-table-column v-slot="props" field="symbol" label="Symbol">
-      <div class="w400">{{ props.row.symbol }}</div>
+      <div class="w400">
+        {{ props.row.symbol }}
+      </div>
+    </o-table-column>
+
+    <o-table-column v-slot="props" field="name" label="Name">
+      <div class="w400">
+        {{ props.row.name }}
+      </div>
     </o-table-column>
 
   </o-table>
