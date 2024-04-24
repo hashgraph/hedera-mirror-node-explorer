@@ -337,10 +337,13 @@ export interface TokensResponse {
 }
 
 export interface Token {
-    token_id: string | null
-    symbol: string
     admin_key: Key | null
-    type: string
+    decimals: number
+    metadata: string
+    name: string
+    symbol: string
+    token_id: string | null
+    type: string // FUNGIBLE_COMMON, NON_FUNGIBLE_UNIQUE
 }
 
 export interface TokenInfo {
@@ -358,6 +361,8 @@ export interface TokenInfo {
     initial_supply: string
     kyc_key: Key | null
     max_supply: string
+    metadata: string
+    metadata_key: Key | null
     modified_timestamp: string
     name: string
     memo: string
