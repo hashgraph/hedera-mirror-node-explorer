@@ -25,7 +25,9 @@
 <template>
   <div v-if="contractId && contractRoute" class="is-inline-block">
     <router-link :to="contractRoute">
-      <ContractIOL :contract-id="contractId" class="h-is-hoverable"/>
+      <span class="h-is-hoverable">
+        <ContractIOL :contract-id="contractId"/>
+      </span>
     </router-link>
   </div>
 </template>

@@ -24,22 +24,7 @@
 
 <template>
 
-  <div class="is-inline-block">
-
-    <template v-if="label !== null">
-      <EntityLabel
-          :id="contractId"
-          :compact="true"
-      />
-    </template>
-
-    <template v-else>
-      <span class="is-numeric">
-        {{ contractId ?? "" }}
-      </span>
-    </template>
-
-  </div>
+  <EntityIOL :entityId="contractId" :label="label"/>
 
 </template>
 
@@ -52,10 +37,11 @@
 import {computed, defineComponent, onBeforeUnmount, onMounted, PropType} from "vue";
 import EntityLabel from "@/components/values/EntityLabel.vue";
 import {LabelByIdCache} from "@/utils/cache/LabelByIdCache";
+import EntityIOL from "@/components/values/EntityIOL.vue";
 
 export default defineComponent({
   name: "ContractIOL",
-  components: {EntityLabel},
+  components: {EntityIOL, EntityLabel},
   props: {
     contractId: {
       type: String as PropType<string | null>,
