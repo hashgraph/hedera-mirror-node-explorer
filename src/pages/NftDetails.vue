@@ -55,31 +55,18 @@
         <Property id="accountId">
           <template #name>Account ID</template>
           <template #value>
-            <AccountLink :account-id="nftInfo?.account_id"/>
+            <AccountLink
+                :account-id="nftInfo?.account_id"
+                :show-none="true"
+            />
           </template>
         </Property>
         <Property id="createdTimestamp">
           <template #name>Created Timestamp</template>
           <template #value>
             <TimestampValue
-                :show-none="false"
+                :show-none="true"
                 :timestamp="nftInfo?.created_timestamp"
-            />
-          </template>
-        </Property>
-        <Property id="delegatingSpender">
-          <template #name>Delegating Spender</template>
-          <template #value>
-            <AccountLink :account-id="nftInfo?.delegating_spender"/>
-          </template>
-        </Property>
-        <Property id="metadata">
-          <template #name>Metadata</template>
-          <template #value>
-            <BlobValue
-                :base64="true"
-                :blob-value="nftInfo?.metadata"
-                :show-none="false"
             />
           </template>
         </Property>
@@ -88,14 +75,36 @@
           <template #value>
             <TimestampValue
                 :timestamp="nftInfo?.modified_timestamp"
-                :show-none="false"
+                :show-none="true"
+            />
+          </template>
+        </Property>
+        <Property id="metadata">
+          <template #name>Metadata</template>
+          <template #value>
+            <BlobValue
+                :base64="true"
+                :blob-value="nftInfo?.metadata"
+                :show-none="true"
             />
           </template>
         </Property>
         <Property id="spenderId">
           <template #name>Spender ID</template>
           <template #value>
-            <AccountLink :account-id="nftInfo?.spender_id"/>
+            <AccountLink
+                :account-id="nftInfo?.spender_id"
+                :show-none="true"
+            />
+          </template>
+        </Property>
+        <Property id="delegatingSpender">
+          <template #name>Delegating Spender</template>
+          <template #value>
+            <AccountLink
+                :account-id="nftInfo?.delegating_spender"
+                :show-none="true"
+            />
           </template>
         </Property>
       </template>
