@@ -24,31 +24,7 @@
 
 <template>
 
-  <div class="is-inline-block">
-
-    <template v-if="label !== null">
-      <EntityLabel
-          :id="tokenId"
-          :compact="true"
-      />
-    </template>
-
-    <template v-else>
-      <span class="is-numeric">
-        {{ tokenId ?? "" }}
-      </span>
-    </template>
-
-    <template v-if="showExtra">
-      <span class="ml-2">
-        <TokenExtra
-            :token-id="tokenId ?? undefined"
-            :show-name="true"
-        />
-      </span>
-    </template>
-
-  </div>
+  <EntityIOL :entityId="tokenId" :label="label"/>
 
 </template>
 
@@ -59,21 +35,17 @@
 <script lang="ts">
 
 import {computed, defineComponent, onBeforeUnmount, onMounted, PropType} from "vue";
-import EntityLabel from "@/components/values/EntityLabel.vue";
+import EntityIOL from "@/components/values/EntityIOL.vue";
 import {LabelByIdCache} from "@/utils/cache/LabelByIdCache";
 import TokenExtra from "@/components/values/TokenExtra.vue";
 
 export default defineComponent({
   name: "TokenIOL",
-  components: {TokenExtra, EntityLabel},
+  components: {EntityIOL, TokenExtra},
   props: {
     tokenId: {
       type: String as PropType<string | null>,
       default: null
-    },
-    showExtra: {
-      type: Boolean,
-      default: false
     },
   },
   setup(props) {

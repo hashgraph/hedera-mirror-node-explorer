@@ -24,13 +24,29 @@
 
 <template>
 
-  <div v-if="tokenId && tokenRoute" class="is-inline-block">
-    <router-link :to="tokenRoute">
-      <TokenIOL class="h-is-hoverable"
-                :token-id="tokenId"
-                :show-extra="showExtra"
-      />
-    </router-link>
+  <div class="is-inline-block">
+
+    <template v-if="tokenRoute === null">
+      <TokenIOL :token-id="tokenId"/>
+    </template>
+
+    <template v-else>
+      <router-link :to="tokenRoute">
+        <span class="h-is-hoverable">
+          <TokenIOL :token-id="tokenId"/>
+        </span>
+      </router-link>
+    </template>
+
+    <template v-if="showExtra">
+      <span class="ml-2">
+        <TokenExtra
+            :token-id="tokenId ?? undefined"
+            :show-name="true"
+        />
+      </span>
+    </template>
+
   </div>
 
 </template>

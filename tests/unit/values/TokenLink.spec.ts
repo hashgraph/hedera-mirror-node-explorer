@@ -112,7 +112,7 @@ describe("TokenLink.vue", () => {
             },
         });
 
-        expect(wrapper.text()).toBe("")
+        expect(wrapper.text()).toBe("None")
         expect(wrapper.find("a").exists()).toBe(false)
 
         wrapper.unmount()
