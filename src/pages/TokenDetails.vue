@@ -89,6 +89,16 @@
             <BlobValue :blob-value="tokenInfo?.memo" :show-none="true"/>
           </template>
         </Property>
+        <Property id="metadata">
+          <template #name>Metadata</template>
+          <template #value>
+            <BlobValue
+                :base64="true"
+                :blob-value="tokenInfo?.metadata"
+                :show-none="true"
+            />
+          </template>
+        </Property>
         <Property id="expiresAt" tooltip="Token expiry is not turned on yet. Value in this field is not relevant.">
           <template v-slot:name>
             <span>Expires at</span>
@@ -121,15 +131,6 @@
             <StringValue :string-value="tokenInfo?.freeze_default?.toString()"/>
           </template>
         </Property>
-        <Property id="pauseStatus">
-          <template v-slot:name>Pause Status</template>
-          <template v-slot:value>
-            <StringValue v-if="tokenInfo?.pause_status === 'NOT_APPLICABLE'"
-                         class="has-text-grey" string-value="Not applicable"/>
-            <StringValue v-else :string-value="tokenInfo?.pause_status"/>
-          </template>
-        </Property>
-
       </template>
 
       <template v-slot:rightContent>
@@ -179,6 +180,14 @@
             <StringValue :string-value="tokenInfo?.decimals"/>
           </template>
         </Property>
+        <Property id="pauseStatus">
+          <template v-slot:name>Pause Status</template>
+          <template v-slot:value>
+            <StringValue v-if="tokenInfo?.pause_status === 'NOT_APPLICABLE'"
+                         class="has-text-grey" string-value="Not applicable"/>
+            <StringValue v-else :string-value="tokenInfo?.pause_status"/>
+          </template>
+        </Property>
       </template>
 
     </DashboardCard>
@@ -199,13 +208,13 @@
                       none-extra="Token is immutable"/>
           </template>
         </Property>
-        <Property id="kycKey">
-          <template v-slot:name>KYC Key</template>
+        <Property id="feeScheduleKey">
+          <template v-slot:name>Fee Schedule Key</template>
           <template v-slot:value>
-            <KeyValue :key-bytes="tokenInfo?.kyc_key?.key"
-                      :key-type="tokenInfo?.kyc_key?._type"
+            <KeyValue :key-bytes="tokenInfo?.fee_schedule_key?.key"
+                      :key-type="tokenInfo?.fee_schedule_key?._type"
                       :show-none="true"
-                      none-extra="KYC is not required"/>
+                      none-extra="Custom fee schedule is immutable"/>
           </template>
         </Property>
         <Property id="freezeKey">
@@ -217,34 +226,25 @@
                       none-extra="Token cannot be frozen"/>
           </template>
         </Property>
-        <Property id="wipeKey">
-          <template v-slot:name>Wipe Key</template>
+        <Property id="kycKey">
+          <template v-slot:name>KYC Key</template>
           <template v-slot:value>
-            <KeyValue :key-bytes="tokenInfo?.wipe_key?.key"
-                      :key-type="tokenInfo?.wipe_key?._type"
+            <KeyValue :key-bytes="tokenInfo?.kyc_key?.key"
+                      :key-type="tokenInfo?.kyc_key?._type"
                       :show-none="true"
-                      none-extra="Token cannot be wiped"/>
+                      none-extra="KYC is not required"/>
           </template>
         </Property>
       </template>
 
       <template v-slot:rightContent>
-        <Property id="supplyKey">
-          <template v-slot:name>Supply Key</template>
+        <Property id="metadataKey">
+          <template v-slot:name>Metadata Key</template>
           <template v-slot:value>
-            <KeyValue :key-bytes="tokenInfo?.supply_key?.key"
-                      :key-type="tokenInfo?.supply_key?._type"
+            <KeyValue :key-bytes="tokenInfo?.metadata_key?.key"
+                      :key-type="tokenInfo?.metadata_key?._type"
                       :show-none="true"
-                      none-extra="Token cannot be minted or burnt"/>
-          </template>
-        </Property>
-        <Property id="feeScheduleKey">
-          <template v-slot:name>Fee Schedule Key</template>
-          <template v-slot:value>
-            <KeyValue :key-bytes="tokenInfo?.fee_schedule_key?.key"
-                      :key-type="tokenInfo?.fee_schedule_key?._type"
-                      :show-none="true"
-                      none-extra="Custom fee schedule is immutable"/>
+                      none-extra="Token metadata is immutable"/>
           </template>
         </Property>
         <Property id="pauseKey">
@@ -254,6 +254,24 @@
                       :key-type="tokenInfo?.pause_key?._type"
                       :show-none="true"
                       none-extra="Token cannot be paused"/>
+          </template>
+        </Property>
+        <Property id="supplyKey">
+          <template v-slot:name>Supply Key</template>
+          <template v-slot:value>
+            <KeyValue :key-bytes="tokenInfo?.supply_key?.key"
+                      :key-type="tokenInfo?.supply_key?._type"
+                      :show-none="true"
+                      none-extra="Token cannot be minted or burnt"/>
+          </template>
+        </Property>
+        <Property id="wipeKey">
+          <template v-slot:name>Wipe Key</template>
+          <template v-slot:value>
+            <KeyValue :key-bytes="tokenInfo?.wipe_key?.key"
+                      :key-type="tokenInfo?.wipe_key?._type"
+                      :show-none="true"
+                      none-extra="Token cannot be wiped"/>
           </template>
         </Property>
       </template>
