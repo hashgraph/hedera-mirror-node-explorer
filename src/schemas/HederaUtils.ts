@@ -158,7 +158,7 @@ export function decodeSolidityErrorMessage(message: string | null): string | nul
         } else if (!message.startsWith("0x")) {
             result = message
         } else {
-            result = null;
+            result = ethers.toUtf8String(message);
         }
     } catch (reason) {
         result = null
