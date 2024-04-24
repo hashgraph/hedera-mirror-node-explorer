@@ -212,7 +212,7 @@ body {
 
 .h-is-label {
   color: #DDD;
-  background: #333;
+  background: #383838;
   border: solid 0.5px var(--h-theme-highlight-color);
   border-radius: 4px;
   font-family: "Styrene A Web", sans-serif;
@@ -229,7 +229,8 @@ body {
 }
 .h-is-compact-label {
   color: #DDD;
-  background: #333;
+  background: #383838;
+  border: solid 0.5px var(--h-theme-highlight-color);
   border-radius: 4px;
   font-family: "Styrene A Web", sans-serif;
   font-weight: normal;
