@@ -23,11 +23,23 @@
 <!-- --------------------------------------------------------------------------------------------------------------- -->
 
 <template>
-  <div v-if="topicId && topicRoute" class="is-inline-block">
-    <router-link :to="topicRoute">
-      <TopicIOL :topic-id="topicId" class="h-is-hoverable"/>
-    </router-link>
+
+  <div class="is-inline-block">
+
+    <template v-if="topicRoute === null">
+      <TopicIOL :topic-id="topicId"/>
+    </template>
+
+    <template v-else>
+      <router-link :to="topicRoute">
+        <span class="h-is-hoverable">
+          <TopicIOL :topic-id="topicId"/>
+        </span>
+      </router-link>
+    </template>
+
   </div>
+
 </template>
 
 <!-- --------------------------------------------------------------------------------------------------------------- -->
