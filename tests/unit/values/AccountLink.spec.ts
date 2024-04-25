@@ -58,7 +58,7 @@ describe("AccountLink.vue", () => {
     });
 
 
-    it("props.accountId unset, showNone=false", async () => {
+    it("props.accountId unset, nullLabel unset", async () => {
 
         await router.push("/") // To avoid "missing required param 'network'" error
 
@@ -69,7 +69,7 @@ describe("AccountLink.vue", () => {
             props: {},
         });
 
-        expect(wrapper.text()).toBe("")
+        expect(wrapper.text()).toBe("None")
         expect(wrapper.findComponent("a").exists()).toBe(false)
 
         wrapper.unmount()
@@ -77,7 +77,7 @@ describe("AccountLink.vue", () => {
     });
 
 
-    it("props.accountId unset, showNone=true", async () => {
+    it("props.accountId unset, nullLabel set", async () => {
 
         await router.push("/") // To avoid "missing required param 'network'" error
 
@@ -86,11 +86,11 @@ describe("AccountLink.vue", () => {
                 plugins: [router]
             },
             props: {
-                showNone: true
+                nullLabel: "MINT"
             },
         });
 
-        expect(wrapper.text()).toBe("None")
+        expect(wrapper.text()).toBe("MINT")
         expect(wrapper.findComponent("a").exists()).toBe(false)
 
         wrapper.unmount()

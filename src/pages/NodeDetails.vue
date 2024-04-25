@@ -50,7 +50,7 @@
         <Property id="nodeAccount">
           <template v-slot:name>Node Account</template>
           <template v-slot:value>
-            <AccountLink :accountId="node?.node_account_id" :show-none="true"/>
+            <AccountLink :accountId="node?.node_account_id"/>
           </template>
         </Property>
         <Property id="description">

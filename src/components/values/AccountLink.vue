@@ -24,28 +24,32 @@
 
 <template>
 
-  <div v-if="accountId === null">{{ nullLabel }}</div>
+  <div class="is-inline-block">
 
-  <div v-else-if="accountId">
-    <template v-if="noAnchor">
-      <span class="is-numeric">{{ accountId }}</span>
+    <template v-if="noAnchor || accountRoute === null">
+      <AccountIOL
+          :account-id="accountId"
+          :null-label="nullLabel"
+      />
     </template>
-    <template v-else-if="accountRoute">
+
+    <template v-else>
       <router-link :to="accountRoute">
-        <span class="is-numeric">{{ accountId }}</span>
+        <span class="h-is-hoverable">
+          <AccountIOL :account-id="accountId"
+                      :null-label="nullLabel"
+          />
+        </span>
       </router-link>
     </template>
-    <template v-else>
-      <span class="is-numeric">{{ accountId }}</span>
-    </template>
+
     <template v-if="showExtra && extra.length > 0">
-      <span class="ml-2 h-is-smaller h-is-extra-text is-numeric">{{ extra }}</span>
+      <span class="ml-2 h-is-smaller h-is-extra-text is-numeric">
+        {{ extra }}
+      </span>
     </template>
+
   </div>
-
-  <span v-else-if="showNone && !initialLoading" class="has-text-grey">None</span>
-
-  <span v-else/>
 
 </template>
 
@@ -55,24 +59,24 @@
 
 <script lang="ts">
 
-import {computed, defineComponent, inject, onBeforeUnmount, onMounted, PropType, ref, watch} from "vue";
-import {initialLoadingKey} from "@/AppKeys";
+import {computed, defineComponent, onBeforeUnmount, onMounted, PropType, ref, watch} from "vue";
 import {routeManager} from "@/router";
 import {NetworkCache} from "@/utils/cache/NetworkCache";
 import {ContractByIdCache} from "@/utils/cache/ContractByIdCache";
 import {RouteLocationRaw} from "vue-router";
+import AccountIOL from "@/components/values/AccountIOL.vue";
 import {makeOperatorDescription} from "@/schemas/HederaUtils";
 
 export default defineComponent({
   name: "AccountLink",
+  components: {AccountIOL},
 
   props: {
-    accountId: String as PropType<string | null>,
-    showExtra: {
-      type: Boolean,
-      default: false
+    accountId: {
+      type: String as PropType<string | null>,
+      default: null
     },
-    showNone: {
+    showExtra: {
       type: Boolean,
       default: false
     },
@@ -82,8 +86,8 @@ export default defineComponent({
     },
     nullLabel: {
       type: String,
-      default: "O"
-    }
+      default: null
+    },
   },
 
   setup(props) {
@@ -92,16 +96,7 @@ export default defineComponent({
     onMounted(() => networkLookup.mount())
     onBeforeUnmount(() => networkLookup.unmount())
 
-    const nodes = computed(() => networkLookup.entity.value ?? [])
-
-    const extra = computed(() => {
-      const result = props.accountId ? makeOperatorDescription(props.accountId, nodes.value) : null
-      return result ?? ""
-    })
-
     const accountRoute = ref<RouteLocationRaw | null>(null)
-
-    const initialLoading = inject(initialLoadingKey, ref(false))
 
     const selectRoute = async (accountId: string) => {
       let result: RouteLocationRaw | null
@@ -131,8 +126,14 @@ export default defineComponent({
         accountRoute.value = null
       }
     })
+    const nodes = computed(() => networkLookup.entity.value ?? [])
 
-    return {extra, accountRoute, initialLoading}
+    const extra = computed(() => {
+      const result = props.accountId ? makeOperatorDescription(props.accountId, nodes.value) : null
+      return result ?? ""
+    })
+
+    return {accountRoute, extra}
   }
 });
 

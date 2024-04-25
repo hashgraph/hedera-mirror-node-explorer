@@ -127,6 +127,7 @@ export default defineComponent({
 .graph-container {
   display: inline-grid;
   grid-template-columns: repeat(5, auto);
+  line-height: 1.4rem;
   column-gap: 1em
 }
 

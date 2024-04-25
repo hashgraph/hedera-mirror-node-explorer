@@ -99,7 +99,7 @@ describe("TokenLink.vue", () => {
         await flushPromises()
     });
 
-    it("props.topicId unset and showNone", async () => {
+    it("props.topicId unset", async () => {
 
         await router.push("/mainnet/dashboard") // To avoid "missing required param 'network'" error
 

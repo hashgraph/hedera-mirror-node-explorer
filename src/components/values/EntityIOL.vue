@@ -23,7 +23,31 @@
 <!-- --------------------------------------------------------------------------------------------------------------- -->
 
 <template>
-  <div ref="rootElement" style="width: 2em" v-html="svgContent"/>
+
+  <div class="is-inline-block">
+
+    <template v-if="label !== null">
+      <span :class="{'h-is-label':!compact, 'h-is-compact-label':compact}" class="is-inline-block">
+        {{ label }}
+      </span>
+    </template>
+
+    <template v-else-if="entityId !== null">
+      <span class="is-numeric">
+        {{ entityId ?? "" }}
+      </span>
+    </template>
+
+    <template v-else-if="!initialLoading">
+      <span>{{ nullLabel ?? "None" }}</span>
+    </template>
+
+    <template v-else>
+      <!-- Nothing because entityId is null and (showNone=false or initialLoading is true) -->
+    </template>
+
+  </div>
+
 </template>
 
 <!-- --------------------------------------------------------------------------------------------------------------- -->
@@ -31,67 +55,60 @@
 <!-- --------------------------------------------------------------------------------------------------------------- -->
 
 <script lang="ts">
+import {computed, defineComponent, inject, PropType, ref} from "vue";
+import {initialLoadingKey} from "@/AppKeys";
 
-import {defineComponent, ref, watch} from "vue";
-import {makeTransferSVG} from "@/utils/SVGUtils";
-import ResizeObserver from "resize-observer-polyfill";
+export const MAX_LABEL_SIZE = 35
 
 export default defineComponent({
-  name: "ArrowSegment",
+
+  name: "EntityIOL",
 
   props: {
-    sourceCount: {
-      type: Number,
-      default: 1
+    entityId: {
+      type: String as PropType<string | null>,
+      default: null
     },
-    destCount: {
-      type: Number,
-      default: 1
+    label: {
+      type: String as PropType<string | null>,
+      default: null
     },
-    rowIndex: {
-      type: Number,
-      default: 0
+    slice: {
+      type: Number as PropType<number | null>,
+      default: MAX_LABEL_SIZE
     },
     compact: {
       type: Boolean,
-      default: false,
-    }
+      default: false
+    },
+    nullLabel: {
+      type: String,
+      default: null
+    },
   },
 
   setup(props) {
-    const rootElement = ref<SVGSVGElement | null>(null)
-    const parentElement = ref<HTMLElement | null>(null)
-    const svgContent = ref<string | null>(null)
+    const initialLoading = inject(initialLoadingKey, ref(false))
 
-    watch(rootElement, () => {
-      parentElement.value = rootElement.value?.parentElement ?? null
+    const slice = computed(() => props.compact ? 12 : props.slice)
+    const label = computed(() => {
+      let result = props.label
+      if (result != null
+          && slice.value != null
+          && slice.value > 0
+          && slice.value < result.length) {
+        result = result.slice(0, slice.value) + '…'
+      }
+      return result
     })
 
-    const resizeObserver = new ResizeObserver(() => {
-      updateSvgContent()
-    })
-    watch(parentElement, (newValue, oldValue) => {
-      if (oldValue !== null) {
-        resizeObserver.unobserve(oldValue)
-      }
-      if (newValue !== null) {
-        resizeObserver.observe(newValue)
-        updateSvgContent()
-      }
-    })
-
-    const updateSvgContent = () => {
-      if (parentElement.value != null) {
-        const bb = parentElement.value.getBoundingClientRect();
-        const dy = props.compact ? 11.5 : 13
-        svgContent.value = makeTransferSVG(bb.width, bb.height, dy, props.sourceCount, props.destCount, props.rowIndex)
-      }
+    return {
+      initialLoading,
+      label,
     }
-
-    return {rootElement, svgContent}
   }
-});
 
+})
 </script>
 
 <!-- --------------------------------------------------------------------------------------------------------------- -->
@@ -99,4 +116,3 @@ export default defineComponent({
 <!-- --------------------------------------------------------------------------------------------------------------- -->
 
 <style/>
-

@@ -34,21 +34,16 @@
       </Copyable>
       <span v-if="entityId && showId">
         <span class="ml-1">(</span>
-        <router-link v-if="verified && !showType" :to="{name: 'ContractDetails', params: {contractId: entityId}}">
+        <router-link v-if="verified && !showType" :to="routeManager.makeRouteToContract(entityId)">
             <span>{{ contractName }}</span>
             <span class="icon is-small has-text-success ml-1"><i class="fas fa-check-circle"></i></span>
         </router-link>
-        <router-link v-else-if="entityLinkType === CONTRACT"
-                     :to="{name: 'ContractDetails', params: {contractId: entityId}}">
+        <router-link v-else-if="systemContract !== null" :to="routeManager.makeRouteToContract(entityId)">
             {{ displayId }}
         </router-link>
-        <router-link v-else-if="entityLinkType === ACCOUNT"
-                     :to="{name: 'AccountDetails', params: {accountId: entityId}}">
-            {{ displayId }}
-        </router-link>
-        <router-link v-else-if="entityLinkType === TOKEN" :to="{name: 'TokenDetails', params: {tokenId: entityId}}">
-            {{ displayId }}
-        </router-link>
+        <ContractLink v-else-if="entityLinkType === CONTRACT" :contract-id="entityId"/>
+        <AccountLink v-else-if="entityLinkType === ACCOUNT" :account-id="entityId"/>
+        <TokenLink v-else-if="entityLinkType === TOKEN" :token-id="entityId"/>
         <span v-else>{{ displayId }}</span>
         <span>)</span>
       </span>
@@ -81,12 +76,22 @@ import Copyable from "@/components/Copyable.vue";
 import {ContractByAddressCache} from "@/utils/cache/ContractByAddressCache";
 import ContractName from "@/components/values/ContractName.vue";
 import {ContractAnalyzer, GlobalState} from "@/utils/analyzer/ContractAnalyzer";
+import ContractIOL from "@/components/values/ContractIOL.vue";
+import {routeManager} from "@/router";
+import ContractLink from "@/components/values/ContractLink.vue";
+import AccountLink from "@/components/values/AccountLink.vue";
+import TokenLink from "@/components/values/TokenLink.vue";
 
 export enum ExtendedEntityType { UNDEFINED, ACCOUNT, CONTRACT, TOKEN }
 
 export default defineComponent({
   name: "EVMAddress",
-  components: {ContractName, Copyable},
+  methods: {
+    routeManager() {
+      return routeManager
+    }
+  },
+  components: {TokenLink, AccountLink, ContractLink, ContractIOL, ContractName, Copyable},
   props: {
     address: {
       type: String as PropType<string | null>,
@@ -248,6 +253,8 @@ export default defineComponent({
       copyToClipboard,
       contractName,
       verified,
+      systemContract,
+      routeManager
     }
   }
 })

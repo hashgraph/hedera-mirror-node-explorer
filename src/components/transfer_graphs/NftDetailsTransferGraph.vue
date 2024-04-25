@@ -74,12 +74,12 @@
         />
         <div class="h-is-text-size-3" style="max-width: 200px">
           <template v-if="!compact">
-                        <span
-                            v-for="sn in nftTransferLayout.serial_numbers"
-                            :key="sn"
-                        >
-                            #{{ sn }}
-                        </span>
+            <span
+                v-for="sn in nftTransferLayout.serial_numbers"
+                :key="sn"
+            >
+              #{{ sn }}
+            </span>
           </template>
         </div>
       </div>
@@ -98,9 +98,9 @@
       </div>
 
       <div v-if="!compact && descriptionVisible">
-                <span class="h-is-smaller">{{
-                    nftTransferLayout.description
-                }}</span>
+        <span class="h-is-smaller">
+          {{ nftTransferLayout.description }}
+        </span>
       </div>
     </div>
   </div>

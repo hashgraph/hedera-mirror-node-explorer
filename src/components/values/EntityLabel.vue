@@ -23,7 +23,14 @@
 <!-- --------------------------------------------------------------------------------------------------------------- -->
 
 <template>
-  <div ref="rootElement" style="width: 2em" v-html="svgContent"/>
+  <div v-if="label"
+       :class="{'h-is-label':!compact, 'h-is-compact-label':compact}"
+       class="is-inline-block">
+    <slot/>
+    <span>
+      {{ label }}
+    </span>
+  </div>
 </template>
 
 <!-- --------------------------------------------------------------------------------------------------------------- -->
@@ -32,65 +39,55 @@
 
 <script lang="ts">
 
-import {defineComponent, ref, watch} from "vue";
-import {makeTransferSVG} from "@/utils/SVGUtils";
-import ResizeObserver from "resize-observer-polyfill";
+import {computed, defineComponent, onBeforeUnmount, onMounted, PropType} from "vue";
+import {LabelByIdCache} from "@/utils/cache/LabelByIdCache";
+
+export const MAX_LABEL_SIZE = 35
 
 export default defineComponent({
-  name: "ArrowSegment",
+  name: "EntityLabel",
+
+  components: {},
 
   props: {
-    sourceCount: {
-      type: Number,
-      default: 1
+    id: {
+      type: String as PropType<string | null>,
+      default: null
     },
-    destCount: {
-      type: Number,
-      default: 1
-    },
-    rowIndex: {
-      type: Number,
-      default: 0
+    slice: {
+      type: Number as PropType<number | null>,
+      default: MAX_LABEL_SIZE
     },
     compact: {
       type: Boolean,
-      default: false,
-    }
+      default: false
+    },
   },
 
   setup(props) {
-    const rootElement = ref<SVGSVGElement | null>(null)
-    const parentElement = ref<HTMLElement | null>(null)
-    const svgContent = ref<string | null>(null)
+    const id = computed(() => props.id)
 
-    watch(rootElement, () => {
-      parentElement.value = rootElement.value?.parentElement ?? null
+    const labelLookup = LabelByIdCache.instance.makeLookup(id)
+    onMounted(() =>labelLookup.mount())
+    onBeforeUnmount(() => labelLookup.unmount())
+
+    const slice = computed(() => props.compact ? 12 : props.slice)
+    const label = computed(() => {
+      let result = labelLookup.entity.value
+      if (result != null
+          && slice.value != null
+          && slice.value > 0
+          && slice.value < result.length) {
+        result = result.slice(0, slice.value) + '…'
+      }
+      return result
     })
 
-    const resizeObserver = new ResizeObserver(() => {
-      updateSvgContent()
-    })
-    watch(parentElement, (newValue, oldValue) => {
-      if (oldValue !== null) {
-        resizeObserver.unobserve(oldValue)
-      }
-      if (newValue !== null) {
-        resizeObserver.observe(newValue)
-        updateSvgContent()
-      }
-    })
-
-    const updateSvgContent = () => {
-      if (parentElement.value != null) {
-        const bb = parentElement.value.getBoundingClientRect();
-        const dy = props.compact ? 11.5 : 13
-        svgContent.value = makeTransferSVG(bb.width, bb.height, dy, props.sourceCount, props.destCount, props.rowIndex)
-      }
+    return {
+      label,
     }
-
-    return {rootElement, svgContent}
   }
-});
+})
 
 </script>
 
@@ -99,4 +96,3 @@ export default defineComponent({
 <!-- --------------------------------------------------------------------------------------------------------------- -->
 
 <style/>
-

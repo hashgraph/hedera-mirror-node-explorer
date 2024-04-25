@@ -47,9 +47,7 @@
       customRowKey="account"
   >
     <o-table-column v-slot="props" field="account" label="ID">
-      <div class="is-numeric">
-        {{ props.row.account }}
-      </div>
+      <AccountIOL :account-id="props.row.account"/>
     </o-table-column>
 
     <o-table-column v-slot="props" field="created" label="Created">
@@ -104,11 +102,12 @@ import TokenAmount from "@/components/values/TokenAmount.vue";
 import {ORUGA_MOBILE_BREAKPOINT} from '@/App.vue';
 import EmptyTable from "@/components/EmptyTable.vue";
 import {AccountTableController} from "@/components/account/AccountTableController";
+import AccountIOL from "@/components/values/AccountIOL.vue";
 
 export default defineComponent({
   name: 'AccountTable',
 
-  components: {EmptyTable, BlobValue, HbarAmount, TimestampValue, TokenAmount},
+  components: {AccountIOL, EmptyTable, BlobValue, HbarAmount, TimestampValue, TokenAmount},
 
   props: {
     controller: {

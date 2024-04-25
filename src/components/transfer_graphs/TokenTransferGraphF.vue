@@ -173,11 +173,13 @@ export default defineComponent({
 .graph-container {
   display: inline-grid;
   grid-template-columns: repeat(5, auto);
+  line-height: 1.4rem;
   column-gap: 1em;
 }
 
 .graph-container-8 {
-  grid-template-columns: repeat(8, auto)
+  grid-template-columns: repeat(8, auto);
+  line-height: 1.4rem;
 }
 
 div.graph-container > div.justify-end {

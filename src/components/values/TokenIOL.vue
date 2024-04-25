@@ -23,7 +23,9 @@
 <!-- --------------------------------------------------------------------------------------------------------------- -->
 
 <template>
-  <div ref="rootElement" style="width: 2em" v-html="svgContent"/>
+
+  <EntityIOL :entityId="tokenId" :label="label"/>
+
 </template>
 
 <!-- --------------------------------------------------------------------------------------------------------------- -->
@@ -32,65 +34,29 @@
 
 <script lang="ts">
 
-import {defineComponent, ref, watch} from "vue";
-import {makeTransferSVG} from "@/utils/SVGUtils";
-import ResizeObserver from "resize-observer-polyfill";
+import {computed, defineComponent, onBeforeUnmount, onMounted, PropType} from "vue";
+import EntityIOL from "@/components/values/EntityIOL.vue";
+import {LabelByIdCache} from "@/utils/cache/LabelByIdCache";
+import TokenExtra from "@/components/values/TokenExtra.vue";
 
 export default defineComponent({
-  name: "ArrowSegment",
-
+  name: "TokenIOL",
+  components: {EntityIOL, TokenExtra},
   props: {
-    sourceCount: {
-      type: Number,
-      default: 1
+    tokenId: {
+      type: String as PropType<string | null>,
+      default: null
     },
-    destCount: {
-      type: Number,
-      default: 1
-    },
-    rowIndex: {
-      type: Number,
-      default: 0
-    },
-    compact: {
-      type: Boolean,
-      default: false,
-    }
   },
-
   setup(props) {
-    const rootElement = ref<SVGSVGElement | null>(null)
-    const parentElement = ref<HTMLElement | null>(null)
-    const svgContent = ref<string | null>(null)
-
-    watch(rootElement, () => {
-      parentElement.value = rootElement.value?.parentElement ?? null
-    })
-
-    const resizeObserver = new ResizeObserver(() => {
-      updateSvgContent()
-    })
-    watch(parentElement, (newValue, oldValue) => {
-      if (oldValue !== null) {
-        resizeObserver.unobserve(oldValue)
-      }
-      if (newValue !== null) {
-        resizeObserver.observe(newValue)
-        updateSvgContent()
-      }
-    })
-
-    const updateSvgContent = () => {
-      if (parentElement.value != null) {
-        const bb = parentElement.value.getBoundingClientRect();
-        const dy = props.compact ? 11.5 : 13
-        svgContent.value = makeTransferSVG(bb.width, bb.height, dy, props.sourceCount, props.destCount, props.rowIndex)
-      }
+    const labelLookup = LabelByIdCache.instance.makeLookup(computed(() => props.tokenId))
+    onMounted(() => labelLookup.mount())
+    onBeforeUnmount(() => labelLookup.unmount())
+    return {
+      label: labelLookup.entity
     }
-
-    return {rootElement, svgContent}
   }
-});
+})
 
 </script>
 
@@ -99,4 +65,3 @@ export default defineComponent({
 <!-- --------------------------------------------------------------------------------------------------------------- -->
 
 <style/>
-

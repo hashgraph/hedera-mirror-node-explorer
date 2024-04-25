@@ -24,26 +24,30 @@
 
 <template>
 
-  <div v-if="tokenId">
-    <template v-if="noAnchor || !tokenRoute">
-      <span class="is-numeric">{{ tokenId }}</span>
+  <div class="is-inline-block">
+
+    <template v-if="tokenRoute === null">
+      <TokenIOL :token-id="tokenId"/>
     </template>
+
     <template v-else>
       <router-link :to="tokenRoute">
-        <span class="is-numeric">{{ tokenId }}</span>
+        <span class="h-is-hoverable">
+          <TokenIOL :token-id="tokenId"/>
+        </span>
       </router-link>
     </template>
+
     <template v-if="showExtra">
       <span class="ml-2">
-        <TokenExtra v-bind:token-id="tokenId" v-bind:show-name="true"/>
+        <TokenExtra
+            :token-id="tokenId ?? undefined"
+            :show-name="true"
+        />
       </span>
     </template>
+
   </div>
-
-  <span v-else-if="showNone && !initialLoading" class="has-text-grey">None</span>
-
-  <span v-else/>
-
 
 </template>
 
@@ -53,33 +57,21 @@
 
 <script lang="ts">
 
-import {computed, defineComponent, inject, ref} from "vue";
+import {computed, defineComponent} from "vue";
 import TokenExtra from "@/components/values/TokenExtra.vue";
-import {initialLoadingKey} from "@/AppKeys";
 import {routeManager} from "@/router";
+import TokenIOL from "@/components/values/TokenIOL.vue";
 
 export default defineComponent({
   name: "TokenLink",
-  components: {TokenExtra},
+  components: {TokenIOL, TokenExtra},
   props: {
     tokenId: String,
-    showExtra: {
-      type: Boolean,
-      default: false
-    },
-    showNone: {
-      type: Boolean,
-      default: false
-    },
-    noAnchor: {
-      type: Boolean,
-      default: false
-    }
+    showExtra: Boolean,
   },
   setup(props) {
     const tokenRoute = computed(() => props.tokenId ? routeManager.makeRouteToToken(props.tokenId) : null)
-    const initialLoading = inject(initialLoadingKey, ref(false))
-    return {tokenRoute, initialLoading}
+    return {tokenRoute}
   }
 });
 

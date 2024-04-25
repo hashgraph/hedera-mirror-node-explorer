@@ -49,9 +49,7 @@
   >
 
     <o-table-column v-slot="props" field="topic_id" label="Topic ID">
-      <div class="w200 is-numeric">
-        {{ props.row.entity_id ?? "" }}
-      </div>
+      <TopicIOL class="w200" :topic-id="props.row.entity_id"/>
     </o-table-column>
 
     <o-table-column v-slot="props" field="memo" label="Memo">
@@ -84,11 +82,12 @@ import BlobValue from "@/components/values/BlobValue.vue";
 import {ORUGA_MOBILE_BREAKPOINT} from '@/App.vue';
 import EmptyTable from "@/components/EmptyTable.vue";
 import {TransactionTableController} from "@/components/transaction/TransactionTableController";
+import TopicIOL from "@/components/values/TopicIOL.vue";
 
 export default defineComponent({
   name: 'MessageTransactionTable',
 
-  components: {EmptyTable, TimestampValue, BlobValue},
+  components: {TopicIOL, EmptyTable, TimestampValue, BlobValue},
 
   props: {
     controller: {

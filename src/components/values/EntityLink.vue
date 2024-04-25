@@ -30,10 +30,10 @@
     <TokenLink :token-id="entityId" :show-extra="showExtra"/>
   </div>
   <div v-else-if="routeName === 'ContractDetails'">
-    <ContractLink :contract-id="entityId" :show-extra="showExtra"/>
+    <ContractLink :contract-id="entityId"/>
   </div>
   <div v-else-if="routeName === 'TopicDetails'">
-    <TopicLink :topic-id="entityId" :show-extra="showExtra"/>
+    <TopicLink :topic-id="entityId"/>
   </div>
 </template>
 
@@ -55,10 +55,7 @@ export default defineComponent({
   props: {
     entityId: String,
     routeName: String,
-    showExtra: {
-      type: Boolean,
-      default: false
-    }
+    showExtra: Boolean,
   },
 });
 

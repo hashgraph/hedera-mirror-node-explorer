@@ -307,7 +307,7 @@ export function makeTypeLabel(type: TransactionType | undefined): string {
 }
 
 export function makeOperatorAccountLabel(transaction: Transaction): string {
-    let result: string | null
+    let result: string
     const transactionId = transaction.transaction_id;
     if (transactionId != null) {
         result = TransactionID.makePayerID(transactionId) ?? "?"
