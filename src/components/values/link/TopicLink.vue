@@ -26,17 +26,9 @@
 
   <div class="is-inline-block">
 
-    <template v-if="topicRoute === null">
+    <EntityLink :route="topicRoute">
       <TopicIOL :topic-id="topicId"/>
-    </template>
-
-    <template v-else>
-      <router-link :to="topicRoute">
-        <span class="h-is-hoverable">
-          <TopicIOL :topic-id="topicId"/>
-        </span>
-      </router-link>
-    </template>
+    </EntityLink>
 
   </div>
 
@@ -51,10 +43,12 @@
 import {computed, defineComponent} from "vue";
 import {routeManager} from "@/router";
 import TopicIOL from "@/components/values/link/TopicIOL.vue";
+import TokenIOL from "@/components/values/link/TokenIOL.vue";
+import EntityLink from "@/components/values/link/EntityLink.vue";
 
 export default defineComponent({
   name: "TopicLink",
-  components: {TopicIOL},
+  components: {EntityLink, TokenIOL, TopicIOL},
 
   props: {
     topicId: String,

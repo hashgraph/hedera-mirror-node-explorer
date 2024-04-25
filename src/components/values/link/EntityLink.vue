@@ -49,11 +49,6 @@
 <script lang="ts">
 
 import {defineComponent, PropType} from "vue";
-import AccountLink from "@/components/values/link/AccountLink.vue";
-import TokenLink from "@/components/values/link/TokenLink.vue";
-import TopicLink from "@/components/values/link/TopicLink.vue";
-import ContractLink from "@/components/values/link/ContractLink.vue";
-import AccountIOL from "@/components/values/link/AccountIOL.vue";
 import {RouteLocationRaw} from "vue-router";
 
 export default defineComponent({

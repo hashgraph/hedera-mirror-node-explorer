@@ -26,17 +26,9 @@
 
   <div class="is-inline-block">
 
-    <template v-if="tokenRoute === null">
+    <EntityLink :route="tokenRoute">
       <TokenIOL :token-id="tokenId"/>
-    </template>
-
-    <template v-else>
-      <router-link :to="tokenRoute">
-        <span class="h-is-hoverable">
-          <TokenIOL :token-id="tokenId"/>
-        </span>
-      </router-link>
-    </template>
+    </EntityLink>
 
     <template v-if="showExtra">
       <span class="ml-2">
@@ -61,10 +53,11 @@ import {computed, defineComponent} from "vue";
 import TokenExtra from "@/components/values/link/TokenExtra.vue";
 import {routeManager} from "@/router";
 import TokenIOL from "@/components/values/link/TokenIOL.vue";
+import EntityLink from "@/components/values/link/EntityLink.vue";
 
 export default defineComponent({
   name: "TokenLink",
-  components: {TokenIOL, TokenExtra},
+  components: {EntityLink, TokenIOL, TokenExtra},
   props: {
     tokenId: String,
     showExtra: Boolean,
