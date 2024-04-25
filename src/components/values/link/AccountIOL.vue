@@ -34,10 +34,9 @@
 
 <script lang="ts">
 
-import {computed, defineComponent, inject, onBeforeUnmount, onMounted, PropType, ref} from "vue";
+import {computed, defineComponent, onBeforeUnmount, onMounted, PropType} from "vue";
 import EntityIOL from "@/components/values/link/EntityIOL.vue";
 import {LabelByIdCache} from "@/utils/cache/LabelByIdCache";
-import {initialLoadingKey} from "@/AppKeys";
 import {NetworkCache} from "@/utils/cache/NetworkCache";
 
 export default defineComponent({
@@ -54,7 +53,6 @@ export default defineComponent({
     }
   },
   setup(props) {
-    const initialLoading = inject(initialLoadingKey, ref(false))
 
     const labelLookup = LabelByIdCache.instance.makeLookup(computed(() => props.accountId))
     onMounted(
@@ -73,7 +71,6 @@ export default defineComponent({
     )
 
     return {
-      initialLoading,
       label: labelLookup.entity,
     }
   }
