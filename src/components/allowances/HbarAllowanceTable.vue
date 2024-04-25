@@ -80,7 +80,7 @@ import {ORUGA_MOBILE_BREAKPOINT} from '@/App.vue';
 import {HbarAllowanceTableController} from "@/components/allowances/HbarAllowanceTableController";
 import TimestampValue from "@/components/values/TimestampValue.vue";
 import EmptyTable from "@/components/EmptyTable.vue";
-import AccountLink from "@/components/values/AccountLink.vue";
+import AccountLink from "@/components/values/link/AccountLink.vue";
 import HbarAmount from "@/components/values/HbarAmount.vue";
 import {walletManager} from "@/router";
 

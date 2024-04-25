@@ -255,10 +255,10 @@
 
 import {computed, defineComponent, inject, onBeforeUnmount, onMounted} from 'vue';
 import {getTargetedTokens, makeOperatorAccountLabel, makeTypeLabel} from "@/utils/TransactionTools";
-import AccountLink from "@/components/values/AccountLink.vue";
+import AccountLink from "@/components/values/link/AccountLink.vue";
 import HexaValue from "@/components/values/HexaValue.vue";
 import TimestampValue from "@/components/values/TimestampValue.vue";
-import EntityLink from "@/components/values/EntityLink.vue";
+import EntityLink from "@/components/values/link/EntityLink.vue";
 import DashboardCard from "@/components/DashboardCard.vue";
 import HbarAmount from "@/components/values/HbarAmount.vue";
 import BlobValue from "@/components/values/BlobValue.vue";
@@ -274,13 +274,13 @@ import {TransactionDetail, TransactionType} from "@/schemas/HederaSchemas";
 import TopicMessage from "@/components/topic/TopicMessage.vue";
 import {TopicMessageCache} from "@/utils/cache/TopicMessageCache";
 import {routeManager} from "@/router"
-import TokenLink from "@/components/values/TokenLink.vue";
+import TokenLink from "@/components/values/link/TokenLink.vue";
 import {TransactionLocParser} from "@/utils/parser/TransactionLocParser";
 import {TransactionGroupAnalyzer} from "@/components/transaction/TransactionGroupAnalyzer";
 import {TransactionAnalyzer} from "@/components/transaction/TransactionAnalyzer";
 import {TransactionGroupCache} from "@/utils/cache/TransactionGroupCache";
 import MirrorLink from "@/components/MirrorLink.vue";
-import TokenExtra from "@/components/values/TokenExtra.vue";
+import TokenExtra from "@/components/values/link/TokenExtra.vue";
 
 const MAX_INLINE_CHILDREN = 10
 

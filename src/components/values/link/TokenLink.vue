@@ -24,7 +24,30 @@
 
 <template>
 
-  <EntityIOL :entity-id="topicId" :label="label" :compact="true"/>
+  <div class="is-inline-block">
+
+    <template v-if="tokenRoute === null">
+      <TokenIOL :token-id="tokenId"/>
+    </template>
+
+    <template v-else>
+      <router-link :to="tokenRoute">
+        <span class="h-is-hoverable">
+          <TokenIOL :token-id="tokenId"/>
+        </span>
+      </router-link>
+    </template>
+
+    <template v-if="showExtra">
+      <span class="ml-2">
+        <TokenExtra
+            :token-id="tokenId ?? undefined"
+            :show-name="true"
+        />
+      </span>
+    </template>
+
+  </div>
 
 </template>
 
@@ -34,32 +57,23 @@
 
 <script lang="ts">
 
-import {computed, defineComponent, onBeforeUnmount, onMounted, PropType} from "vue";
-import EntityIOL from "@/components/values/EntityIOL.vue";
-import {LabelByIdCache} from "@/utils/cache/LabelByIdCache";
+import {computed, defineComponent} from "vue";
+import TokenExtra from "@/components/values/link/TokenExtra.vue";
+import {routeManager} from "@/router";
+import TokenIOL from "@/components/values/link/TokenIOL.vue";
 
 export default defineComponent({
-  name: "TopicIOL",
-  components: {EntityIOL},
+  name: "TokenLink",
+  components: {TokenIOL, TokenExtra},
   props: {
-    topicId: {
-      type: String as PropType<string | null>,
-      default: null
-    },
+    tokenId: String,
+    showExtra: Boolean,
   },
   setup(props) {
-    const labelLookup = LabelByIdCache.instance.makeLookup(computed(() => props.topicId))
-    onMounted(
-        () => labelLookup.mount()
-    )
-    onBeforeUnmount(
-        () => labelLookup.unmount()
-    )
-    return {
-      label: labelLookup.entity
-    }
+    const tokenRoute = computed(() => props.tokenId ? routeManager.makeRouteToToken(props.tokenId) : null)
+    return {tokenRoute}
   }
-})
+});
 
 </script>
 

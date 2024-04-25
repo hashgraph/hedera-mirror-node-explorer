@@ -23,13 +23,9 @@
 <!-- --------------------------------------------------------------------------------------------------------------- -->
 
 <template>
-  <div v-if="contractId && contractRoute" class="is-inline-block">
-    <router-link :to="contractRoute">
-      <span class="h-is-hoverable">
-        <ContractIOL :contract-id="contractId"/>
-      </span>
-    </router-link>
-  </div>
+
+  <EntityIOL :entityId="accountId" :label="label" :null-label="nullLabel"/>
+
 </template>
 
 <!-- --------------------------------------------------------------------------------------------------------------- -->
@@ -38,25 +34,50 @@
 
 <script lang="ts">
 
-import {computed, defineComponent, PropType} from "vue";
-import {routeManager} from "@/router";
-import ContractIOL from "@/components/values/ContractIOL.vue";
+import {computed, defineComponent, inject, onBeforeUnmount, onMounted, PropType, ref} from "vue";
+import EntityIOL from "@/components/values/link/EntityIOL.vue";
+import {LabelByIdCache} from "@/utils/cache/LabelByIdCache";
+import {initialLoadingKey} from "@/AppKeys";
+import {NetworkCache} from "@/utils/cache/NetworkCache";
 
 export default defineComponent({
-  name: "ContractLink",
-  components: {ContractIOL},
-
+  name: "AccountIOL",
+  components: {EntityIOL},
   props: {
-    contractId: String as PropType<string | null>,
+    accountId: {
+      type: String as PropType<string | null>,
+      default: null
+    },
+    nullLabel: {
+      type: String,
+      default: null
+    }
   },
-
   setup(props) {
-    const contractRoute = computed(
-        () => props.contractId ? routeManager.makeRouteToContract(props.contractId) : null
+    const initialLoading = inject(initialLoadingKey, ref(false))
+
+    const labelLookup = LabelByIdCache.instance.makeLookup(computed(() => props.accountId))
+    onMounted(
+        () => labelLookup.mount()
     )
-    return {contractRoute}
+    onBeforeUnmount(
+        () => labelLookup.unmount()
+    )
+
+    const networkLookup = NetworkCache.instance.makeLookup()
+    onMounted(
+        () => networkLookup.mount()
+    )
+    onBeforeUnmount(
+        () => networkLookup.unmount()
+    )
+
+    return {
+      initialLoading,
+      label: labelLookup.entity,
+    }
   }
-});
+})
 
 </script>
 
@@ -65,4 +86,3 @@ export default defineComponent({
 <!-- --------------------------------------------------------------------------------------------------------------- -->
 
 <style/>
-

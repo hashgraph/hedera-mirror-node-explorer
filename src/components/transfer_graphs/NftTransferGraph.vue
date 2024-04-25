@@ -104,8 +104,8 @@
 <script lang="ts">
 
 import {defineComponent, inject, PropType, ref, watch} from "vue";
-import AccountLink from "@/components/values/AccountLink.vue";
-import TokenLink from "@/components/values/TokenLink.vue";
+import AccountLink from "@/components/values/link/AccountLink.vue";
+import TokenLink from "@/components/values/link/TokenLink.vue";
 import ArrowSegment from "@/components/transfer_graphs/ArrowSegment.vue";
 import {NFTTransferLayout} from "@/components/transfer_graphs/layout/NFTTransferLayout";
 import {TransactionDetail} from "@/schemas/HederaSchemas";

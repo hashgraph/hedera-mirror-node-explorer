@@ -23,18 +23,9 @@
 <!-- --------------------------------------------------------------------------------------------------------------- -->
 
 <template>
-  <div v-if="routeName === 'AccountDetails'">
-    <AccountLink :account-id="entityId" :show-extra="showExtra"/>
-  </div>
-  <div v-else-if="routeName === 'TokenDetails'">
-    <TokenLink :token-id="entityId" :show-extra="showExtra"/>
-  </div>
-  <div v-else-if="routeName === 'ContractDetails'">
-    <ContractLink :contract-id="entityId"/>
-  </div>
-  <div v-else-if="routeName === 'TopicDetails'">
-    <TopicLink :topic-id="entityId"/>
-  </div>
+
+  <EntityIOL :entity-id="topicId" :label="label" :compact="true"/>
+
 </template>
 
 <!-- --------------------------------------------------------------------------------------------------------------- -->
@@ -43,21 +34,32 @@
 
 <script lang="ts">
 
-import {defineComponent} from "vue";
-import AccountLink from "@/components/values/AccountLink.vue";
-import TokenLink from "@/components/values/TokenLink.vue";
-import TopicLink from "@/components/values/TopicLink.vue";
-import ContractLink from "@/components/values/ContractLink.vue";
+import {computed, defineComponent, onBeforeUnmount, onMounted, PropType} from "vue";
+import EntityIOL from "@/components/values/link/EntityIOL.vue";
+import {LabelByIdCache} from "@/utils/cache/LabelByIdCache";
 
 export default defineComponent({
-  name: "EntityLink",
-  components: {TokenLink, AccountLink, ContractLink, TopicLink},
+  name: "TopicIOL",
+  components: {EntityIOL},
   props: {
-    entityId: String,
-    routeName: String,
-    showExtra: Boolean,
+    topicId: {
+      type: String as PropType<string | null>,
+      default: null
+    },
   },
-});
+  setup(props) {
+    const labelLookup = LabelByIdCache.instance.makeLookup(computed(() => props.topicId))
+    onMounted(
+        () => labelLookup.mount()
+    )
+    onBeforeUnmount(
+        () => labelLookup.unmount()
+    )
+    return {
+      label: labelLookup.entity
+    }
+  }
+})
 
 </script>
 
@@ -66,4 +68,3 @@ export default defineComponent({
 <!-- --------------------------------------------------------------------------------------------------------------- -->
 
 <style/>
-

@@ -73,7 +73,7 @@ import TokenAmount from "@/components/values/TokenAmount.vue";
 import {ORUGA_MOBILE_BREAKPOINT} from '@/App.vue';
 import EmptyTable from "@/components/EmptyTable.vue";
 import {TokenBalanceTableController} from "@/components/token/TokenBalanceTableController";
-import AccountIOL from "@/components/values/AccountIOL.vue";
+import AccountIOL from "@/components/values/link/AccountIOL.vue";
 
 export default defineComponent({
   name: 'TokenBalanceTable',

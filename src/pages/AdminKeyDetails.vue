@@ -60,7 +60,7 @@ import {computed, defineComponent, inject, onBeforeUnmount, onMounted} from 'vue
 import DashboardCard from "@/components/DashboardCard.vue";
 import Footer from "@/components/Footer.vue";
 import {AccountLocParser} from "@/utils/parser/AccountLocParser";
-import AccountLink from "@/components/values/AccountLink.vue";
+import AccountLink from "@/components/values/link/AccountLink.vue";
 import KeyValue from "@/components/values/KeyValue.vue";
 import NotificationBanner from "@/components/NotificationBanner.vue";
 

@@ -62,7 +62,7 @@ import {useRouter} from "vue-router";
 import {EntityID} from "@/utils/EntityID";
 import {CollectionTableController} from "@/components/account/CollectionTableController";
 import CollectionTable from "@/components/account/CollectionTable.vue";
-import TokenLink from "@/components/values/TokenLink.vue";
+import TokenLink from "@/components/values/link/TokenLink.vue";
 
 export default defineComponent({
 

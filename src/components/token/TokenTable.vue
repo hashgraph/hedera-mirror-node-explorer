@@ -72,7 +72,7 @@ import {Token} from "@/schemas/HederaSchemas";
 import {ORUGA_MOBILE_BREAKPOINT} from '@/App.vue';
 import EmptyTable from "@/components/EmptyTable.vue";
 import {TokenTableController} from "@/components/token/TokenTableController";
-import TokenIOL from "@/components/values/TokenIOL.vue";
+import TokenIOL from "@/components/values/link/TokenIOL.vue";
 
 export default defineComponent({
   name: 'TokenTable',

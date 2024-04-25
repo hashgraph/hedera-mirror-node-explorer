@@ -112,7 +112,7 @@ import HbarExtra from "@/components/values/HbarExtra.vue";
 import {AccountLocParser} from '@/utils/parser/AccountLocParser';
 import {BalanceAnalyzer} from '@/utils/analyzer/BalanceAnalyzer';
 import {computed, defineComponent, inject, onBeforeUnmount, onMounted, ref} from 'vue';
-import AccountLink from "@/components/values/AccountLink.vue";
+import AccountLink from "@/components/values/link/AccountLink.vue";
 
 
 export default defineComponent({

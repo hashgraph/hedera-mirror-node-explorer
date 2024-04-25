@@ -64,7 +64,7 @@ import {routeManager} from "@/router";
 import {NetworkCache} from "@/utils/cache/NetworkCache";
 import {ContractByIdCache} from "@/utils/cache/ContractByIdCache";
 import {RouteLocationRaw} from "vue-router";
-import AccountIOL from "@/components/values/AccountIOL.vue";
+import AccountIOL from "@/components/values/link/AccountIOL.vue";
 import {makeOperatorDescription} from "@/schemas/HederaUtils";
 
 export default defineComponent({

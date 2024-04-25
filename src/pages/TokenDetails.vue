@@ -320,7 +320,7 @@ import NftHolderTable from "@/components/token/NftHolderTable.vue";
 import PlayPauseButton from "@/components/PlayPauseButton.vue";
 import {NftHolderTableController} from "@/components/token/NftHolderTableController";
 import {TokenBalanceTableController} from "@/components/token/TokenBalanceTableController";
-import AccountLink from "@/components/values/AccountLink.vue";
+import AccountLink from "@/components/values/link/AccountLink.vue";
 import StringValue from "@/components/values/StringValue.vue";
 import TokenCustomFees from "@/components/token/TokenCustomFees.vue";
 import EVMAddress from "@/components/values/EVMAddress.vue";

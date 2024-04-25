@@ -63,8 +63,8 @@
 <script lang="ts">
 
 import {defineComponent, PropType} from 'vue';
-import AccountLink from "@/components/values/AccountLink.vue";
-import TokenLink from "@/components/values/TokenLink.vue";
+import AccountLink from "@/components/values/link/AccountLink.vue";
+import TokenLink from "@/components/values/link/TokenLink.vue";
 import {ORUGA_MOBILE_BREAKPOINT} from "@/App.vue";
 import {TokenInfoAnalyzer} from "@/components/token/TokenInfoAnalyzer";
 import HbarAmount from "@/components/values/HbarAmount.vue";

@@ -59,7 +59,7 @@
 
 import {ComputedRef, defineComponent, inject, PropType, Ref} from 'vue';
 import {Nft} from "@/schemas/HederaSchemas";
-import TokenLink from "@/components/values/TokenLink.vue";
+import TokenLink from "@/components/values/link/TokenLink.vue";
 import {ORUGA_MOBILE_BREAKPOINT} from '@/App.vue';
 import EmptyTable from "@/components/EmptyTable.vue";
 import {routeManager} from "@/router";

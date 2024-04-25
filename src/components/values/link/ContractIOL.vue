@@ -24,21 +24,7 @@
 
 <template>
 
-  <div class="is-inline-block">
-
-    <template v-if="topicRoute === null">
-      <TopicIOL :topic-id="topicId"/>
-    </template>
-
-    <template v-else>
-      <router-link :to="topicRoute">
-        <span class="h-is-hoverable">
-          <TopicIOL :topic-id="topicId"/>
-        </span>
-      </router-link>
-    </template>
-
-  </div>
+  <EntityIOL :entityId="contractId" :label="label"/>
 
 </template>
 
@@ -48,23 +34,32 @@
 
 <script lang="ts">
 
-import {computed, defineComponent} from "vue";
-import {routeManager} from "@/router";
-import TopicIOL from "@/components/values/TopicIOL.vue";
+import {computed, defineComponent, onBeforeUnmount, onMounted, PropType} from "vue";
+import {LabelByIdCache} from "@/utils/cache/LabelByIdCache";
+import EntityIOL from "@/components/values/link/EntityIOL.vue";
 
 export default defineComponent({
-  name: "TopicLink",
-  components: {TopicIOL},
-
+  name: "ContractIOL",
+  components: {EntityIOL},
   props: {
-    topicId: String,
+    contractId: {
+      type: String as PropType<string | null>,
+      default: null
+    },
   },
-
   setup(props) {
-    const topicRoute = computed(() => props.topicId ? routeManager.makeRouteToTopic(props.topicId) : null)
-    return {topicRoute}
+    const labelLookup = LabelByIdCache.instance.makeLookup(computed(() => props.contractId))
+    onMounted(
+        () => labelLookup.mount()
+    )
+    onBeforeUnmount(
+        () => labelLookup.unmount()
+    )
+    return {
+      label: labelLookup.entity
+    }
   }
-});
+})
 
 </script>
 
@@ -73,4 +68,3 @@ export default defineComponent({
 <!-- --------------------------------------------------------------------------------------------------------------- -->
 
 <style/>
-

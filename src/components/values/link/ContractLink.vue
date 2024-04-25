@@ -23,9 +23,13 @@
 <!-- --------------------------------------------------------------------------------------------------------------- -->
 
 <template>
-
-  <EntityIOL :entityId="tokenId" :label="label"/>
-
+  <div v-if="contractId && contractRoute" class="is-inline-block">
+    <router-link :to="contractRoute">
+      <span class="h-is-hoverable">
+        <ContractIOL :contract-id="contractId"/>
+      </span>
+    </router-link>
+  </div>
 </template>
 
 <!-- --------------------------------------------------------------------------------------------------------------- -->
@@ -34,29 +38,25 @@
 
 <script lang="ts">
 
-import {computed, defineComponent, onBeforeUnmount, onMounted, PropType} from "vue";
-import EntityIOL from "@/components/values/EntityIOL.vue";
-import {LabelByIdCache} from "@/utils/cache/LabelByIdCache";
-import TokenExtra from "@/components/values/TokenExtra.vue";
+import {computed, defineComponent, PropType} from "vue";
+import {routeManager} from "@/router";
+import ContractIOL from "@/components/values/link/ContractIOL.vue";
 
 export default defineComponent({
-  name: "TokenIOL",
-  components: {EntityIOL, TokenExtra},
+  name: "ContractLink",
+  components: {ContractIOL},
+
   props: {
-    tokenId: {
-      type: String as PropType<string | null>,
-      default: null
-    },
+    contractId: String as PropType<string | null>,
   },
+
   setup(props) {
-    const labelLookup = LabelByIdCache.instance.makeLookup(computed(() => props.tokenId))
-    onMounted(() => labelLookup.mount())
-    onBeforeUnmount(() => labelLookup.unmount())
-    return {
-      label: labelLookup.entity
-    }
+    const contractRoute = computed(
+        () => props.contractId ? routeManager.makeRouteToContract(props.contractId) : null
+    )
+    return {contractRoute}
   }
-})
+});
 
 </script>
 
@@ -65,3 +65,4 @@ export default defineComponent({
 <!-- --------------------------------------------------------------------------------------------------------------- -->
 
 <style/>
+

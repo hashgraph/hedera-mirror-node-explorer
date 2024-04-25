@@ -23,9 +23,18 @@
 <!-- --------------------------------------------------------------------------------------------------------------- -->
 
 <template>
-
-  <EntityIOL :entityId="accountId" :label="label" :null-label="nullLabel"/>
-
+  <div v-if="routeName === 'AccountDetails'">
+    <AccountLink :account-id="entityId" :show-extra="showExtra"/>
+  </div>
+  <div v-else-if="routeName === 'TokenDetails'">
+    <TokenLink :token-id="entityId" :show-extra="showExtra"/>
+  </div>
+  <div v-else-if="routeName === 'ContractDetails'">
+    <ContractLink :contract-id="entityId"/>
+  </div>
+  <div v-else-if="routeName === 'TopicDetails'">
+    <TopicLink :topic-id="entityId"/>
+  </div>
 </template>
 
 <!-- --------------------------------------------------------------------------------------------------------------- -->
@@ -34,50 +43,21 @@
 
 <script lang="ts">
 
-import {computed, defineComponent, inject, onBeforeUnmount, onMounted, PropType, ref} from "vue";
-import EntityIOL from "@/components/values/EntityIOL.vue";
-import {LabelByIdCache} from "@/utils/cache/LabelByIdCache";
-import {initialLoadingKey} from "@/AppKeys";
-import {NetworkCache} from "@/utils/cache/NetworkCache";
+import {defineComponent} from "vue";
+import AccountLink from "@/components/values/link/AccountLink.vue";
+import TokenLink from "@/components/values/link/TokenLink.vue";
+import TopicLink from "@/components/values/link/TopicLink.vue";
+import ContractLink from "@/components/values/link/ContractLink.vue";
 
 export default defineComponent({
-  name: "AccountIOL",
-  components: {EntityIOL},
+  name: "EntityLink",
+  components: {TokenLink, AccountLink, ContractLink, TopicLink},
   props: {
-    accountId: {
-      type: String as PropType<string | null>,
-      default: null
-    },
-    nullLabel: {
-      type: String,
-      default: null
-    }
+    entityId: String,
+    routeName: String,
+    showExtra: Boolean,
   },
-  setup(props) {
-    const initialLoading = inject(initialLoadingKey, ref(false))
-
-    const labelLookup = LabelByIdCache.instance.makeLookup(computed(() => props.accountId))
-    onMounted(
-        () => labelLookup.mount()
-    )
-    onBeforeUnmount(
-        () => labelLookup.unmount()
-    )
-
-    const networkLookup = NetworkCache.instance.makeLookup()
-    onMounted(
-        () => networkLookup.mount()
-    )
-    onBeforeUnmount(
-        () => networkLookup.unmount()
-    )
-
-    return {
-      initialLoading,
-      label: labelLookup.entity,
-    }
-  }
-})
+});
 
 </script>
 
@@ -86,3 +66,4 @@ export default defineComponent({
 <!-- --------------------------------------------------------------------------------------------------------------- -->
 
 <style/>
+
