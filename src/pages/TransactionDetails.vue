@@ -120,10 +120,10 @@
         <Property v-else-if="transaction?.entity_id" id="entityId">
           <template v-slot:name>{{ entity?.label }}</template>
           <template v-slot:value>
-            <EntityLink v-if="entity?.routeName"
-                        v-bind:entity-id="transaction?.entity_id"
-                        v-bind:route-name="routeName ?? undefined"
-                        v-bind:show-extra="true"
+            <SmartLink v-if="entity?.routeName"
+                       v-bind:entity-id="transaction?.entity_id"
+                       v-bind:route-name="routeName ?? undefined"
+                       v-bind:show-extra="true"
             />
             <span v-else>
                   {{ transaction?.entity_id }}
@@ -258,7 +258,7 @@ import {getTargetedTokens, makeOperatorAccountLabel, makeTypeLabel} from "@/util
 import AccountLink from "@/components/values/link/AccountLink.vue";
 import HexaValue from "@/components/values/HexaValue.vue";
 import TimestampValue from "@/components/values/TimestampValue.vue";
-import EntityLink from "@/components/values/link/EntityLink.vue";
+import SmartLink from "@/components/values/link/SmartLink.vue";
 import DashboardCard from "@/components/DashboardCard.vue";
 import HbarAmount from "@/components/values/HbarAmount.vue";
 import BlobValue from "@/components/values/BlobValue.vue";
@@ -299,7 +299,7 @@ export default defineComponent({
     NotificationBanner,
     Footer,
     HbarAmount, BlobValue,
-    DashboardCard, EntityLink, AccountLink,
+    DashboardCard, SmartLink, AccountLink,
     HexaValue, TimestampValue, TransferGraphSection,
     StringValue, DurationValue
   },
