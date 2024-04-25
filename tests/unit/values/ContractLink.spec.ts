@@ -58,7 +58,7 @@ describe("ContractLink.vue", () => {
             props: {},
         });
 
-        expect(wrapper.text()).toBe("")
+        expect(wrapper.text()).toBe("None")
         expect(wrapper.findComponent("a").exists()).toBe(false)
 
         wrapper.unmount()
