@@ -101,7 +101,7 @@ export default defineComponent({
     }
 
     onMounted(() => {
-      if (props.accountId) {
+      if (props.accountId && !props.noAnchor) {
         selectRoute(props.accountId).then((route) => accountRoute.value = route)
       } else {
         accountRoute.value = null
