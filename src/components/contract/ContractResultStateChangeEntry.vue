@@ -80,7 +80,7 @@
 
 import {defineComponent, inject, PropType} from "vue";
 import {DisplayStateChange} from "@/components/contract/ContractResultStates.vue";
-import ContractLink from "@/components/values/ContractLink.vue";
+import ContractLink from "@/components/values/link/ContractLink.vue";
 import EVMAddress from "@/components/values/EVMAddress.vue";
 import HbarAmount from "@/components/values/HbarAmount.vue";
 import HexaValue from "@/components/values/HexaValue.vue";

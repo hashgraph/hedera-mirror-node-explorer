@@ -87,10 +87,10 @@ import {isTokenAllowanceEditable, TokenAllowance} from "@/schemas/HederaSchemas"
 import {ORUGA_MOBILE_BREAKPOINT} from '@/App.vue';
 import TimestampValue from "@/components/values/TimestampValue.vue";
 import EmptyTable from "@/components/EmptyTable.vue";
-import AccountLink from "@/components/values/AccountLink.vue";
+import AccountLink from "@/components/values/link/AccountLink.vue";
 import {TokenAllowanceTableController} from "@/components/allowances/TokenAllowanceTableController";
 import TokenAmount from "@/components/values/TokenAmount.vue";
-import TokenLink from "@/components/values/TokenLink.vue";
+import TokenLink from "@/components/values/link/TokenLink.vue";
 import {walletManager} from "@/router";
 import InfoTooltip from "@/components/InfoTooltip.vue";
 

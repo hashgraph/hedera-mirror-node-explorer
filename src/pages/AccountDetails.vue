@@ -308,7 +308,7 @@ import Property from "@/components/Property.vue";
 import NotificationBanner from "@/components/NotificationBanner.vue";
 import StringValue from "@/components/values/StringValue.vue";
 import {TransactionTableControllerXL} from "@/components/transaction/TransactionTableControllerXL";
-import AccountLink from "@/components/values/AccountLink.vue";
+import AccountLink from "@/components/values/link/AccountLink.vue";
 import {AccountLocParser} from "@/utils/parser/AccountLocParser";
 import {ContractByIdCache} from "@/utils/cache/ContractByIdCache";
 import TransactionFilterSelect from "@/components/transaction/TransactionFilterSelect.vue";

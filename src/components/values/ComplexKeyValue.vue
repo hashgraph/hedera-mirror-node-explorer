@@ -80,7 +80,7 @@ import {ComplexKeyLine} from "@/utils/ComplexKeyLine";
 import {hexToByte} from "@/utils/B64Utils";
 import * as hashgraph from "@hashgraph/proto";
 import HexaValue from "@/components/values/HexaValue.vue";
-import ContractLink from "@/components/values/ContractLink.vue";
+import ContractLink from "@/components/values/link/ContractLink.vue";
 import {initialLoadingKey} from "@/AppKeys";
 import {routeManager} from "@/router";
 

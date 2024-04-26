@@ -81,7 +81,7 @@
 <script lang="ts">
 
 import {computed, defineComponent, onBeforeUnmount, onMounted, PropType} from "vue";
-import AccountLink from "@/components/values/AccountLink.vue";
+import AccountLink from "@/components/values/link/AccountLink.vue";
 import ArrowSegment from "@/components/transfer_graphs/ArrowSegment.vue";
 import HbarAmount from "@/components/values/HbarAmount.vue";
 import {Transaction} from "@/schemas/HederaSchemas";

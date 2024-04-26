@@ -26,22 +26,9 @@
 
   <div class="is-inline-block">
 
-    <template v-if="noAnchor || accountRoute === null">
-      <AccountIOL
-          :account-id="accountId"
-          :null-label="nullLabel"
-      />
-    </template>
-
-    <template v-else>
-      <router-link :to="accountRoute">
-        <span class="h-is-hoverable">
-          <AccountIOL :account-id="accountId"
-                      :null-label="nullLabel"
-          />
-        </span>
-      </router-link>
-    </template>
+    <EntityLink :route="accountRoute">
+      <AccountIOL :account-id="accountId" :null-label="nullLabel"/>
+    </EntityLink>
 
     <template v-if="showExtra && extra.length > 0">
       <span class="ml-2 h-is-smaller h-is-extra-text is-numeric">
@@ -64,12 +51,13 @@ import {routeManager} from "@/router";
 import {NetworkCache} from "@/utils/cache/NetworkCache";
 import {ContractByIdCache} from "@/utils/cache/ContractByIdCache";
 import {RouteLocationRaw} from "vue-router";
-import AccountIOL from "@/components/values/AccountIOL.vue";
+import EntityLink from "@/components/values/link/EntityLink.vue";
+import AccountIOL from "@/components/values/link/AccountIOL.vue";
 import {makeOperatorDescription} from "@/schemas/HederaUtils";
 
 export default defineComponent({
   name: "AccountLink",
-  components: {AccountIOL},
+  components: {EntityLink, AccountIOL},
 
   props: {
     accountId: {
@@ -113,7 +101,7 @@ export default defineComponent({
     }
 
     onMounted(() => {
-      if (props.accountId) {
+      if (props.accountId && !props.noAnchor) {
         selectRoute(props.accountId).then((route) => accountRoute.value = route)
       } else {
         accountRoute.value = null

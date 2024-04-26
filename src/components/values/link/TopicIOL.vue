@@ -24,29 +24,7 @@
 
 <template>
 
-  <div class="is-inline-block">
-
-    <template v-if="label !== null">
-      <span :class="{'h-is-label':!compact, 'h-is-compact-label':compact}" class="is-inline-block">
-        {{ label }}
-      </span>
-    </template>
-
-    <template v-else-if="entityId !== null">
-      <span class="is-numeric">
-        {{ entityId ?? "" }}
-      </span>
-    </template>
-
-    <template v-else-if="!initialLoading">
-      <span>{{ nullLabel ?? "None" }}</span>
-    </template>
-
-    <template v-else>
-      <!-- Nothing because entityId is null and (showNone=false or initialLoading is true) -->
-    </template>
-
-  </div>
+  <EntityIOL :entity-id="topicId" :label="label"/>
 
 </template>
 
@@ -55,60 +33,34 @@
 <!-- --------------------------------------------------------------------------------------------------------------- -->
 
 <script lang="ts">
-import {computed, defineComponent, inject, PropType, ref} from "vue";
-import {initialLoadingKey} from "@/AppKeys";
 
-export const MAX_LABEL_SIZE = 35
+import {computed, defineComponent, onBeforeUnmount, onMounted, PropType} from "vue";
+import EntityIOL from "@/components/values/link/EntityIOL.vue";
+import {LabelByIdCache} from "@/utils/cache/LabelByIdCache";
 
 export default defineComponent({
-
-  name: "EntityIOL",
-
+  name: "TopicIOL",
+  components: {EntityIOL},
   props: {
-    entityId: {
+    topicId: {
       type: String as PropType<string | null>,
-      default: null
-    },
-    label: {
-      type: String as PropType<string | null>,
-      default: null
-    },
-    slice: {
-      type: Number as PropType<number | null>,
-      default: MAX_LABEL_SIZE
-    },
-    compact: {
-      type: Boolean,
-      default: false
-    },
-    nullLabel: {
-      type: String,
       default: null
     },
   },
-
   setup(props) {
-    const initialLoading = inject(initialLoadingKey, ref(false))
-
-    const slice = computed(() => props.compact ? 12 : props.slice)
-    const label = computed(() => {
-      let result = props.label
-      if (result != null
-          && slice.value != null
-          && slice.value > 0
-          && slice.value < result.length) {
-        result = result.slice(0, slice.value) + '…'
-      }
-      return result
-    })
-
+    const labelLookup = LabelByIdCache.instance.makeLookup(computed(() => props.topicId))
+    onMounted(
+        () => labelLookup.mount()
+    )
+    onBeforeUnmount(
+        () => labelLookup.unmount()
+    )
     return {
-      initialLoading,
-      label,
+      label: labelLookup.entity
     }
   }
-
 })
+
 </script>
 
 <!-- --------------------------------------------------------------------------------------------------------------- -->

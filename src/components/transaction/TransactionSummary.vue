@@ -58,7 +58,7 @@ import {Transaction, TransactionDetail, TransactionType} from "@/schemas/HederaS
 import {makeSummaryLabel} from "@/utils/TransactionTools";
 import TransferGraphSection from "@/components/transfer_graphs/TransferGraphSection.vue";
 import {TransactionAnalyzer} from "@/components/transaction/TransactionAnalyzer";
-import TokenExtra from "@/components/values/TokenExtra.vue";
+import TokenExtra from "@/components/values/link/TokenExtra.vue";
 
 const GRAPH_TRANSACTION_TYPES = [
   TransactionType.CRYPTOTRANSFER,

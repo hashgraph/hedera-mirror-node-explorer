@@ -24,7 +24,7 @@
 
 <template>
 
-  <EntityIOL :entityId="accountId" :label="label" :null-label="nullLabel"/>
+  <EntityIOL :entityId="tokenId" :label="label"/>
 
 </template>
 
@@ -34,47 +34,25 @@
 
 <script lang="ts">
 
-import {computed, defineComponent, inject, onBeforeUnmount, onMounted, PropType, ref} from "vue";
-import EntityIOL from "@/components/values/EntityIOL.vue";
+import {computed, defineComponent, onBeforeUnmount, onMounted, PropType} from "vue";
+import EntityIOL from "@/components/values/link/EntityIOL.vue";
 import {LabelByIdCache} from "@/utils/cache/LabelByIdCache";
-import {initialLoadingKey} from "@/AppKeys";
-import {NetworkCache} from "@/utils/cache/NetworkCache";
 
 export default defineComponent({
-  name: "AccountIOL",
+  name: "TokenIOL",
   components: {EntityIOL},
   props: {
-    accountId: {
+    tokenId: {
       type: String as PropType<string | null>,
       default: null
     },
-    nullLabel: {
-      type: String,
-      default: null
-    }
   },
   setup(props) {
-    const initialLoading = inject(initialLoadingKey, ref(false))
-
-    const labelLookup = LabelByIdCache.instance.makeLookup(computed(() => props.accountId))
-    onMounted(
-        () => labelLookup.mount()
-    )
-    onBeforeUnmount(
-        () => labelLookup.unmount()
-    )
-
-    const networkLookup = NetworkCache.instance.makeLookup()
-    onMounted(
-        () => networkLookup.mount()
-    )
-    onBeforeUnmount(
-        () => networkLookup.unmount()
-    )
-
+    const labelLookup = LabelByIdCache.instance.makeLookup(computed(() => props.tokenId))
+    onMounted(() => labelLookup.mount())
+    onBeforeUnmount(() => labelLookup.unmount())
     return {
-      initialLoading,
-      label: labelLookup.entity,
+      label: labelLookup.entity
     }
   }
 })

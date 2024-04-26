@@ -120,10 +120,10 @@
         <Property v-else-if="transaction?.entity_id" id="entityId">
           <template v-slot:name>{{ entity?.label }}</template>
           <template v-slot:value>
-            <EntityLink v-if="entity?.routeName"
-                        v-bind:entity-id="transaction?.entity_id"
-                        v-bind:route-name="routeName ?? undefined"
-                        v-bind:show-extra="true"
+            <SmartLink v-if="entity?.routeName"
+                       v-bind:entity-id="transaction?.entity_id"
+                       v-bind:route-name="routeName ?? undefined"
+                       v-bind:show-extra="true"
             />
             <span v-else>
                   {{ transaction?.entity_id }}
@@ -255,10 +255,10 @@
 
 import {computed, defineComponent, inject, onBeforeUnmount, onMounted} from 'vue';
 import {getTargetedTokens, makeOperatorAccountLabel, makeTypeLabel} from "@/utils/TransactionTools";
-import AccountLink from "@/components/values/AccountLink.vue";
+import AccountLink from "@/components/values/link/AccountLink.vue";
 import HexaValue from "@/components/values/HexaValue.vue";
 import TimestampValue from "@/components/values/TimestampValue.vue";
-import EntityLink from "@/components/values/EntityLink.vue";
+import SmartLink from "@/components/values/link/SmartLink.vue";
 import DashboardCard from "@/components/DashboardCard.vue";
 import HbarAmount from "@/components/values/HbarAmount.vue";
 import BlobValue from "@/components/values/BlobValue.vue";
@@ -274,13 +274,13 @@ import {TransactionDetail, TransactionType} from "@/schemas/HederaSchemas";
 import TopicMessage from "@/components/topic/TopicMessage.vue";
 import {TopicMessageCache} from "@/utils/cache/TopicMessageCache";
 import {routeManager} from "@/router"
-import TokenLink from "@/components/values/TokenLink.vue";
+import TokenLink from "@/components/values/link/TokenLink.vue";
 import {TransactionLocParser} from "@/utils/parser/TransactionLocParser";
 import {TransactionGroupAnalyzer} from "@/components/transaction/TransactionGroupAnalyzer";
 import {TransactionAnalyzer} from "@/components/transaction/TransactionAnalyzer";
 import {TransactionGroupCache} from "@/utils/cache/TransactionGroupCache";
 import MirrorLink from "@/components/MirrorLink.vue";
-import TokenExtra from "@/components/values/TokenExtra.vue";
+import TokenExtra from "@/components/values/link/TokenExtra.vue";
 
 const MAX_INLINE_CHILDREN = 10
 
@@ -299,7 +299,7 @@ export default defineComponent({
     NotificationBanner,
     Footer,
     HbarAmount, BlobValue,
-    DashboardCard, EntityLink, AccountLink,
+    DashboardCard, SmartLink, AccountLink,
     HexaValue, TimestampValue, TransferGraphSection,
     StringValue, DurationValue
   },

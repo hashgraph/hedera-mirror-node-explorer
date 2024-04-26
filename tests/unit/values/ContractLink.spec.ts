@@ -21,7 +21,7 @@
 import {describe, test, expect} from 'vitest'
 import {mount} from "@vue/test-utils"
 import router from "@/router";
-import ContractLink from "@/components/values/ContractLink.vue";
+import ContractLink from "../../../src/components/values/link/ContractLink.vue";
 
 describe("ContractLink.vue", () => {
 
@@ -58,7 +58,7 @@ describe("ContractLink.vue", () => {
             props: {},
         });
 
-        expect(wrapper.text()).toBe("")
+        expect(wrapper.text()).toBe("None")
         expect(wrapper.findComponent("a").exists()).toBe(false)
 
         wrapper.unmount()

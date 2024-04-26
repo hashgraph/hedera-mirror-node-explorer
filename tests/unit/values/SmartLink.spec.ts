@@ -21,12 +21,12 @@
 import {describe, test, expect} from 'vitest'
 import {flushPromises, mount} from "@vue/test-utils"
 import router from "@/router";
-import EntityLink from "@/components/values/EntityLink.vue";
+import SmartLink from "../../../src/components/values/link/SmartLink.vue";
 import MockAdapter from "axios-mock-adapter";
 import axios from "axios";
 import {SAMPLE_NETWORK_NODES} from "../Mocks";
 
-describe("EntityLink.vue", () => {
+describe("SmartLink.vue", () => {
 
     test("AccountLink; no extra", async () => {
 
@@ -102,7 +102,7 @@ const testBody = async (testEntityId: string, testRouteName: string, testShowExt
 
     await router.push("/") // To avoid "missing required param 'network'" error
 
-    const wrapper = mount(EntityLink, {
+    const wrapper = mount(SmartLink, {
         global: {
             plugins: [router]
         },

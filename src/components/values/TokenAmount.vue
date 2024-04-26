@@ -41,7 +41,7 @@
 import {computed, defineComponent, inject, onMounted, PropType, ref, watch} from "vue";
 import {TokenInfo} from "@/schemas/HederaSchemas";
 import {TokenInfoCache} from "@/utils/cache/TokenInfoCache";
-import TokenExtra from "@/components/values/TokenExtra.vue";
+import TokenExtra from "@/components/values/link/TokenExtra.vue";
 import {initialLoadingKey} from "@/AppKeys";
 import InfoTooltip from "@/components/InfoTooltip.vue";
 

@@ -31,7 +31,7 @@ import router from "@/router";
 import {SAMPLE_TOKEN, SAMPLE_TOKEN_DUDE} from "../Mocks";
 import MockAdapter from "axios-mock-adapter";
 import axios from "axios";
-import TokenExtra from "@/components/values/TokenExtra.vue";
+import TokenExtra from "../../../src/components/values/link/TokenExtra.vue";
 
 describe("TokenExtra.vue", () => {
 

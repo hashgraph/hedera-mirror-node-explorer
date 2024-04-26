@@ -24,35 +24,7 @@
 
 <template>
 
-  <o-table
-      :data="fees"
-      :hoverable="false"
-      :mobile-breakpoint="ORUGA_MOBILE_BREAKPOINT"
-      :narrowed="true"
-      :striped="false"
-
-      aria-current-label="Current page"
-      aria-next-label="Next page"
-      aria-page-label="Page"
-      aria-previous-label="Previous page"
-  >
-
-    <o-table-column v-slot="props" field="amount" label="Fixed Fee">
-      <PlainAmount v-if="props.row.denominating_token_id" :amount="props.row.amount"/>
-      <HbarAmount v-else :amount="props.row.amount" timestamp="0" :show-extra="true"/>
-    </o-table-column>
-
-    <o-table-column v-slot="props" field="amount" label="Fee Currency">
-      <TokenLink v-if="props.row.denominating_token_id"
-                 :show-extra="true" :token-id="props.row.denominating_token_id"/>
-      <div v-else>HBAR</div>
-    </o-table-column>
-
-    <o-table-column v-slot="props" field="account_id" label="Collector Account">
-      <AccountLink :account-id="props.row.collector_account_id"/>
-    </o-table-column>
-
-  </o-table>
+  <EntityIOL :entityId="contractId" :label="label"/>
 
 </template>
 
@@ -62,39 +34,32 @@
 
 <script lang="ts">
 
-import {defineComponent, PropType} from 'vue';
-import AccountLink from "@/components/values/link/AccountLink.vue";
-import TokenLink from "@/components/values/link/TokenLink.vue";
-import {ORUGA_MOBILE_BREAKPOINT} from "@/App.vue";
-import {TokenInfoAnalyzer} from "@/components/token/TokenInfoAnalyzer";
-import HbarAmount from "@/components/values/HbarAmount.vue";
-import PlainAmount from "@/components/values/PlainAmount.vue";
+import {computed, defineComponent, onBeforeUnmount, onMounted, PropType} from "vue";
+import {LabelByIdCache} from "@/utils/cache/LabelByIdCache";
+import EntityIOL from "@/components/values/link/EntityIOL.vue";
 
 export default defineComponent({
-
-  name: 'FixedFeeTable',
-
-  components: {
-    PlainAmount,
-    HbarAmount,
-    TokenLink,
-    AccountLink,
-  },
-
+  name: "ContractIOL",
+  components: {EntityIOL},
   props: {
-    analyzer: {
-      type: Object as PropType<TokenInfoAnalyzer>,
-      required: true
-    }
+    contractId: {
+      type: String as PropType<string | null>,
+      default: null
+    },
   },
-
   setup(props) {
+    const labelLookup = LabelByIdCache.instance.makeLookup(computed(() => props.contractId))
+    onMounted(
+        () => labelLookup.mount()
+    )
+    onBeforeUnmount(
+        () => labelLookup.unmount()
+    )
     return {
-      fees: props.analyzer.fixedFees,
-      ORUGA_MOBILE_BREAKPOINT
+      label: labelLookup.entity
     }
-  },
-});
+  }
+})
 
 </script>
 

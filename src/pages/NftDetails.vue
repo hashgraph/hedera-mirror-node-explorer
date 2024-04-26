@@ -156,7 +156,7 @@ import {EntityID} from "@/utils/EntityID"
 import Property from "@/components/Property.vue"
 import NotificationBanner from "@/components/NotificationBanner.vue"
 import PlayPauseButton from "@/components/PlayPauseButton.vue"
-import AccountLink from "@/components/values/AccountLink.vue"
+import AccountLink from "@/components/values/link/AccountLink.vue"
 import {NftBySerialCache} from "@/utils/cache/NftBySerialCache"
 import ContractResultsSection from "@/components/contracts/ContractResultsSection.vue"
 import NftTransactionTable from "@/components/transaction/NftTransactionTable.vue"
@@ -164,7 +164,7 @@ import {NftTransactionTableController} from "@/components/transaction/NftTransac
 import TransactionFilterSelect from "@/components/transaction/TransactionFilterSelect.vue"
 import {makeTokenSymbol} from "@/schemas/HederaUtils";
 import {TokenInfoCache} from "@/utils/cache/TokenInfoCache";
-import TokenLink from "@/components/values/TokenLink.vue";
+import TokenLink from "@/components/values/link/TokenLink.vue";
 
 export default defineComponent({
   name: "NftDetails",

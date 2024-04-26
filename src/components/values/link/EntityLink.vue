@@ -24,7 +24,21 @@
 
 <template>
 
-  <EntityIOL :entity-id="topicId" :label="label" :compact="true"/>
+  <div class="is-inline-block">
+
+    <template v-if="route === null">
+      <slot/>
+    </template>
+
+    <template v-else>
+      <router-link :to="route">
+        <span class="h-is-hoverable">
+          <slot/>
+        </span>
+      </router-link>
+    </template>
+
+  </div>
 
 </template>
 
@@ -34,32 +48,19 @@
 
 <script lang="ts">
 
-import {computed, defineComponent, onBeforeUnmount, onMounted, PropType} from "vue";
-import EntityIOL from "@/components/values/EntityIOL.vue";
-import {LabelByIdCache} from "@/utils/cache/LabelByIdCache";
+import {defineComponent, PropType} from "vue";
+import {RouteLocationRaw} from "vue-router";
 
 export default defineComponent({
-  name: "TopicIOL",
-  components: {EntityIOL},
+  name: "EntityLink",
+  components: {},
   props: {
-    topicId: {
-      type: String as PropType<string | null>,
+    route: {
+      type: Object as PropType<RouteLocationRaw|null>,
       default: null
     },
   },
-  setup(props) {
-    const labelLookup = LabelByIdCache.instance.makeLookup(computed(() => props.topicId))
-    onMounted(
-        () => labelLookup.mount()
-    )
-    onBeforeUnmount(
-        () => labelLookup.unmount()
-    )
-    return {
-      label: labelLookup.entity
-    }
-  }
-})
+});
 
 </script>
 
@@ -68,3 +69,4 @@ export default defineComponent({
 <!-- --------------------------------------------------------------------------------------------------------------- -->
 
 <style/>
+

@@ -52,8 +52,8 @@ import {defineComponent, PropType, computed, onMounted, ref, Ref} from 'vue';
 import {DisassembledOpcodeOutput, Helpers} from '@/utils/bytecode_tools/disassembler/utils/helpers';
 import {ContractByAddressCache} from "@/utils/cache/ContractByAddressCache";
 import {AccountByAddressCache} from "@/utils/cache/AccountByAddressCache";
-import ContractLink from "@/components/values/ContractLink.vue";
-import AccountLink from "@/components/values/AccountLink.vue";
+import ContractLink from "@/components/values/link/ContractLink.vue";
+import AccountLink from "@/components/values/link/AccountLink.vue";
 import {AccountBalanceTransactions, ContractResponse} from "@/schemas/HederaSchemas";
 
 export default defineComponent({

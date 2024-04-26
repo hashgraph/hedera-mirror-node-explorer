@@ -76,11 +76,11 @@ import Copyable from "@/components/Copyable.vue";
 import {ContractByAddressCache} from "@/utils/cache/ContractByAddressCache";
 import ContractName from "@/components/values/ContractName.vue";
 import {ContractAnalyzer, GlobalState} from "@/utils/analyzer/ContractAnalyzer";
-import ContractIOL from "@/components/values/ContractIOL.vue";
+import ContractIOL from "@/components/values/link/ContractIOL.vue";
 import {routeManager} from "@/router";
-import ContractLink from "@/components/values/ContractLink.vue";
-import AccountLink from "@/components/values/AccountLink.vue";
-import TokenLink from "@/components/values/TokenLink.vue";
+import ContractLink from "@/components/values/link/ContractLink.vue";
+import AccountLink from "@/components/values/link/AccountLink.vue";
+import TokenLink from "@/components/values/link/TokenLink.vue";
 
 export enum ExtendedEntityType { UNDEFINED, ACCOUNT, CONTRACT, TOKEN }
 

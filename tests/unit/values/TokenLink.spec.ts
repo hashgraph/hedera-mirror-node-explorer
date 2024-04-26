@@ -28,7 +28,7 @@
 
 import {describe, it, expect} from 'vitest'
 import {flushPromises, mount} from "@vue/test-utils";
-import TokenLink from "@/components/values/TokenLink.vue";
+import TokenLink from "../../../src/components/values/link/TokenLink.vue";
 import router from "@/router";
 import {SAMPLE_TOKEN, SAMPLE_TOKEN_DUDE} from "../Mocks";
 import MockAdapter from "axios-mock-adapter";

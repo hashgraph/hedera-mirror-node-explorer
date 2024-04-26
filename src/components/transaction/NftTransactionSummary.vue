@@ -67,7 +67,7 @@ import {
 } from "@/schemas/HederaSchemas"
 import {makeSummaryLabel} from "@/utils/TransactionTools"
 import NftTransferGraphSection from "@/components/transfer_graphs/NftTransferGraphSection.vue"
-import TokenExtra from "@/components/values/TokenExtra.vue"
+import TokenExtra from "@/components/values/link/TokenExtra.vue"
 import {NftTransactionAnalyzer} from "./NftTransactionAnalyzer"
 
 const GRAPH_TRANSACTION_TYPES = [

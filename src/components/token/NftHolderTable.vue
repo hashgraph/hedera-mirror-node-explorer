@@ -91,7 +91,7 @@ import {ORUGA_MOBILE_BREAKPOINT} from '@/App.vue';
 import EmptyTable from "@/components/EmptyTable.vue";
 import {NftHolderTableController} from "@/components/token/NftHolderTableController";
 import {routeManager} from "@/router";
-import AccountIOL from "@/components/values/AccountIOL.vue";
+import AccountIOL from "@/components/values/link/AccountIOL.vue";
 
 export default defineComponent({
   name: 'NftHolderTable',

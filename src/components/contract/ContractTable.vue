@@ -85,7 +85,7 @@ import {ORUGA_MOBILE_BREAKPOINT} from '@/App.vue';
 import EmptyTable from "@/components/EmptyTable.vue";
 import {ContractTableController} from "@/components/contract/ContractTableController";
 import ContractName from "@/components/values/ContractName.vue";
-import ContractIOL from "@/components/values/ContractIOL.vue";
+import ContractIOL from "@/components/values/link/ContractIOL.vue";
 
 
 //

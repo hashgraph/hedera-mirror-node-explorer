@@ -199,7 +199,7 @@ import DownloadButton from "@/components/DownloadButton.vue";
 import JSZip from "jszip";
 import {saveAs} from "file-saver";
 import Tabs from "@/components/Tabs.vue";
-import AccountLink from "@/components/values/AccountLink.vue";
+import AccountLink from "@/components/values/link/AccountLink.vue";
 import {ABIController, ABIMode} from "@/components/contract/ABIController";
 import {ABIAnalyzer} from "@/utils/analyzer/ABIAnalyzer";
 

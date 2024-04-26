@@ -23,13 +23,15 @@
 <!-- --------------------------------------------------------------------------------------------------------------- -->
 
 <template>
-  <div v-if="contractId && contractRoute" class="is-inline-block">
-    <router-link :to="contractRoute">
-      <span class="h-is-hoverable">
-        <ContractIOL :contract-id="contractId"/>
-      </span>
-    </router-link>
+
+  <div class="is-inline-block">
+
+    <EntityLink :route="topicRoute">
+      <TopicIOL :topic-id="topicId"/>
+    </EntityLink>
+
   </div>
+
 </template>
 
 <!-- --------------------------------------------------------------------------------------------------------------- -->
@@ -38,23 +40,22 @@
 
 <script lang="ts">
 
-import {computed, defineComponent, PropType} from "vue";
+import {computed, defineComponent} from "vue";
 import {routeManager} from "@/router";
-import ContractIOL from "@/components/values/ContractIOL.vue";
+import TopicIOL from "@/components/values/link/TopicIOL.vue";
+import EntityLink from "@/components/values/link/EntityLink.vue";
 
 export default defineComponent({
-  name: "ContractLink",
-  components: {ContractIOL},
+  name: "TopicLink",
+  components: {EntityLink, TopicIOL},
 
   props: {
-    contractId: String as PropType<string | null>,
+    topicId: String,
   },
 
   setup(props) {
-    const contractRoute = computed(
-        () => props.contractId ? routeManager.makeRouteToContract(props.contractId) : null
-    )
-    return {contractRoute}
+    const topicRoute = computed(() => props.topicId ? routeManager.makeRouteToTopic(props.topicId) : null)
+    return {topicRoute}
   }
 });
 

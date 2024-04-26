@@ -132,10 +132,10 @@
 <script lang="ts">
 
 import {defineComponent, inject, PropType, ref, watch} from "vue";
-import AccountLink from "@/components/values/AccountLink.vue";
+import AccountLink from "@/components/values/link/AccountLink.vue";
 import TokenAmount from "@/components/values/TokenAmount.vue";
 import ArrowSegment from "@/components/transfer_graphs/ArrowSegment.vue";
-import TokenExtra from "@/components/values/TokenExtra.vue";
+import TokenExtra from "@/components/values/link/TokenExtra.vue";
 import {TokenTransferLayout} from "@/components/transfer_graphs/layout/TokenTransferLayout";
 import {Transaction} from "@/schemas/HederaSchemas";
 
