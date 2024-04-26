@@ -24,7 +24,7 @@
 
 <template>
 
-  <EntityIOL :entity-id="topicId" :label="label" :compact="true"/>
+  <EntityIOL :entity-id="topicId" :label="label"/>
 
 </template>
 

@@ -79,7 +79,7 @@ export default defineComponent({
     },
     compact: {
       type: Boolean,
-      default: false
+      default: true
     },
     nullLabel: {
       type: String,
