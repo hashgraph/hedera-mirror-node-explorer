@@ -37,11 +37,10 @@
 import {computed, defineComponent, onBeforeUnmount, onMounted, PropType} from "vue";
 import EntityIOL from "@/components/values/link/EntityIOL.vue";
 import {LabelByIdCache} from "@/utils/cache/LabelByIdCache";
-import TokenExtra from "@/components/values/link/TokenExtra.vue";
 
 export default defineComponent({
   name: "TokenIOL",
-  components: {EntityIOL, TokenExtra},
+  components: {EntityIOL},
   props: {
     tokenId: {
       type: String as PropType<string | null>,

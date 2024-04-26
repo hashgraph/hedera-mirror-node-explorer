@@ -43,12 +43,11 @@
 import {computed, defineComponent} from "vue";
 import {routeManager} from "@/router";
 import TopicIOL from "@/components/values/link/TopicIOL.vue";
-import TokenIOL from "@/components/values/link/TokenIOL.vue";
 import EntityLink from "@/components/values/link/EntityLink.vue";
 
 export default defineComponent({
   name: "TopicLink",
-  components: {EntityLink, TokenIOL, TopicIOL},
+  components: {EntityLink, TopicIOL},
 
   props: {
     topicId: String,
