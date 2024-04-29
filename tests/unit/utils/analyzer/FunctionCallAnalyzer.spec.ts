@@ -54,6 +54,7 @@ describe("FunctionCallAnalyzer.spec.ts", () => {
         expect(functionCallAnalyzer.outputDecodingStatus.value).toBeNull()
         expect(functionCallAnalyzer.errorDecodingStatus.value).toBeNull()
         expect(functionCallAnalyzer.inputArgsOnly.value).toBeNull()
+        expect(functionCallAnalyzer.is4byteSignature.value).toBe(false)
 
         // 2) mount
         functionCallAnalyzer.mount()
@@ -69,6 +70,7 @@ describe("FunctionCallAnalyzer.spec.ts", () => {
         expect(functionCallAnalyzer.outputDecodingStatus.value).toBeNull()
         expect(functionCallAnalyzer.errorDecodingStatus.value).toBeNull()
         expect(functionCallAnalyzer.inputArgsOnly.value).toBeNull()
+        expect(functionCallAnalyzer.is4byteSignature.value).toBe(false)
 
         // 3) input setup (valid encoding)
         input.value = "0x49146bde000000000000000000000000845b706151aed537b1fd81c1ea4ea03920097abd0000000000000000000000000000000000000000000000000000000002e6ae09"
@@ -91,6 +93,7 @@ describe("FunctionCallAnalyzer.spec.ts", () => {
         expect(functionCallAnalyzer.outputDecodingStatus.value).toBeNull()
         expect(functionCallAnalyzer.errorDecodingStatus.value).toBeNull()
         expect(functionCallAnalyzer.inputArgsOnly.value).toBe("0x000000000000000000000000845b706151aed537b1fd81c1ea4ea03920097abd0000000000000000000000000000000000000000000000000000000002e6ae09")
+        expect(functionCallAnalyzer.is4byteSignature.value).toBe(false)
 
         // 4) input setup (invalid input encoding)
         input.value = "0x618dc65e0000000000000000000000000000000000163b5a70a082310000000000000000000000005fe56763c7633efefe8c2272f19732521a48e300"
@@ -108,6 +111,7 @@ describe("FunctionCallAnalyzer.spec.ts", () => {
         expect(functionCallAnalyzer.outputDecodingStatus.value).toBe("Decoding Error (data out-of-bounds)")
         expect(functionCallAnalyzer.errorDecodingStatus.value).toBeNull()
         expect(functionCallAnalyzer.inputArgsOnly.value).toBe("0x0000000000000000000000000000000000163b5a70a082310000000000000000000000005fe56763c7633efefe8c2272f19732521a48e300")
+        expect(functionCallAnalyzer.is4byteSignature.value).toBe(false)
 
         // 5) output setup (invalid output encoding)
         input.value = "0x49146bde000000000000000000000000845b706151aed537b1fd81c1ea4ea03920097abd0000000000000000000000000000000000000000000000000000000002e6ae09"
@@ -129,6 +133,7 @@ describe("FunctionCallAnalyzer.spec.ts", () => {
         expect(functionCallAnalyzer.outputDecodingStatus.value).toBe("Decoding Error (invalid BytesLike value)")
         expect(functionCallAnalyzer.errorDecodingStatus.value).toBeNull() // 0x is considered as no error
         expect(functionCallAnalyzer.inputArgsOnly.value).toBe("0x000000000000000000000000845b706151aed537b1fd81c1ea4ea03920097abd0000000000000000000000000000000000000000000000000000000002e6ae09")
+        expect(functionCallAnalyzer.is4byteSignature.value).toBe(false)
 
 
         // 6) unmount
@@ -145,6 +150,7 @@ describe("FunctionCallAnalyzer.spec.ts", () => {
         expect(functionCallAnalyzer.outputDecodingStatus.value).toBeNull()
         expect(functionCallAnalyzer.errorDecodingStatus.value).toBeNull()
         expect(functionCallAnalyzer.inputArgsOnly.value).toBe("0x000000000000000000000000845b706151aed537b1fd81c1ea4ea03920097abd0000000000000000000000000000000000000000000000000000000002e6ae09")
+        expect(functionCallAnalyzer.is4byteSignature.value).toBe(false)
 
         mock.restore()
     })
@@ -174,6 +180,7 @@ describe("FunctionCallAnalyzer.spec.ts", () => {
         expect(functionCallAnalyzer.outputDecodingStatus.value).toBeNull()
         expect(functionCallAnalyzer.errorDecodingStatus.value).toBeNull()
         expect(functionCallAnalyzer.inputArgsOnly.value).toBeNull()
+        expect(functionCallAnalyzer.is4byteSignature.value).toBe(false)
 
         // 2) mount
         functionCallAnalyzer.mount()
@@ -189,6 +196,7 @@ describe("FunctionCallAnalyzer.spec.ts", () => {
         expect(functionCallAnalyzer.outputDecodingStatus.value).toBeNull()
         expect(functionCallAnalyzer.errorDecodingStatus.value).toBeNull()
         expect(functionCallAnalyzer.inputArgsOnly.value).toBeNull()
+        expect(functionCallAnalyzer.is4byteSignature.value).toBe(false)
 
         // 3) setup
         input.value = "0xf305d719000000000000000000000000000000000000000000000000000000000022d6de0000000000000000000000000000000000000000000000000000015076ac13000000000000000000000000000000000000000000000000000000014ec7ffb1a00000000000000000000000000000000000000000000000000000000f558e95eb00000000000000000000000000000000000000000000000000000000000f45b30000000000000000000000000000000000000000000000000000018cd5a698af"
@@ -216,6 +224,7 @@ describe("FunctionCallAnalyzer.spec.ts", () => {
         expect(functionCallAnalyzer.outputDecodingStatus.value).toBeNull()
         expect(functionCallAnalyzer.errorDecodingStatus.value).toBeNull()
         expect(functionCallAnalyzer.inputArgsOnly.value).toBe("0x000000000000000000000000000000000000000000000000000000000022d6de0000000000000000000000000000000000000000000000000000015076ac13000000000000000000000000000000000000000000000000000000014ec7ffb1a00000000000000000000000000000000000000000000000000000000f558e95eb00000000000000000000000000000000000000000000000000000000000f45b30000000000000000000000000000000000000000000000000000018cd5a698af")
+        expect(functionCallAnalyzer.is4byteSignature.value).toBe(false)
 
 
         // 4) unmount
@@ -232,6 +241,7 @@ describe("FunctionCallAnalyzer.spec.ts", () => {
         expect(functionCallAnalyzer.outputDecodingStatus.value).toBeNull()
         expect(functionCallAnalyzer.errorDecodingStatus.value).toBeNull()
         expect(functionCallAnalyzer.inputArgsOnly.value).toBe("0x000000000000000000000000000000000000000000000000000000000022d6de0000000000000000000000000000000000000000000000000000015076ac13000000000000000000000000000000000000000000000000000000014ec7ffb1a00000000000000000000000000000000000000000000000000000000f558e95eb00000000000000000000000000000000000000000000000000000000000f45b30000000000000000000000000000000000000000000000000000018cd5a698af")
+        expect(functionCallAnalyzer.is4byteSignature.value).toBe(false)
 
         mock.restore()
 
@@ -262,6 +272,7 @@ describe("FunctionCallAnalyzer.spec.ts", () => {
         expect(functionCallAnalyzer.outputDecodingStatus.value).toBeNull()
         expect(functionCallAnalyzer.errorDecodingStatus.value).toBeNull()
         expect(functionCallAnalyzer.inputArgsOnly.value).toBeNull()
+        expect(functionCallAnalyzer.is4byteSignature.value).toBe(false)
 
         // 2) setup
         input.value = "0xf305d719000000000000000000000000000000000000000000000000000000000022d6de0000000000000000000000000000000000000000000000000000015076ac13000000000000000000000000000000000000000000000000000000014ec7ffb1a00000000000000000000000000000000000000000000000000000000f558e95eb00000000000000000000000000000000000000000000000000000000000f45b30000000000000000000000000000000000000000000000000000018cd5a698af"
@@ -280,6 +291,7 @@ describe("FunctionCallAnalyzer.spec.ts", () => {
         expect(functionCallAnalyzer.outputDecodingStatus.value).toBeNull()
         expect(functionCallAnalyzer.errorDecodingStatus.value).toBeNull()
         expect(functionCallAnalyzer.inputArgsOnly.value).toBe("0x000000000000000000000000000000000000000000000000000000000022d6de0000000000000000000000000000000000000000000000000000015076ac13000000000000000000000000000000000000000000000000000000014ec7ffb1a00000000000000000000000000000000000000000000000000000000f558e95eb00000000000000000000000000000000000000000000000000000000000f45b30000000000000000000000000000000000000000000000000000018cd5a698af")
+        expect(functionCallAnalyzer.is4byteSignature.value).toBe(false)
 
         // 3) mount
         functionCallAnalyzer.mount()
@@ -304,6 +316,7 @@ describe("FunctionCallAnalyzer.spec.ts", () => {
         expect(functionCallAnalyzer.outputDecodingStatus.value).toBeNull()
         expect(functionCallAnalyzer.errorDecodingStatus.value).toBeNull()
         expect(functionCallAnalyzer.inputArgsOnly.value).toBe("0x000000000000000000000000000000000000000000000000000000000022d6de0000000000000000000000000000000000000000000000000000015076ac13000000000000000000000000000000000000000000000000000000014ec7ffb1a00000000000000000000000000000000000000000000000000000000f558e95eb00000000000000000000000000000000000000000000000000000000000f45b30000000000000000000000000000000000000000000000000000018cd5a698af")
+        expect(functionCallAnalyzer.is4byteSignature.value).toBe(false)
 
 
         // 4) unmount
@@ -320,6 +333,7 @@ describe("FunctionCallAnalyzer.spec.ts", () => {
         expect(functionCallAnalyzer.outputDecodingStatus.value).toBeNull()
         expect(functionCallAnalyzer.errorDecodingStatus.value).toBeNull()
         expect(functionCallAnalyzer.inputArgsOnly.value).toBe("0x000000000000000000000000000000000000000000000000000000000022d6de0000000000000000000000000000000000000000000000000000015076ac13000000000000000000000000000000000000000000000000000000014ec7ffb1a00000000000000000000000000000000000000000000000000000000f558e95eb00000000000000000000000000000000000000000000000000000000000f45b30000000000000000000000000000000000000000000000000000018cd5a698af")
+        expect(functionCallAnalyzer.is4byteSignature.value).toBe(false)
 
         mock.restore()
 
@@ -351,6 +365,7 @@ describe("FunctionCallAnalyzer.spec.ts", () => {
         expect(functionCallAnalyzer.outputDecodingStatus.value).toBeNull()
         expect(functionCallAnalyzer.errorDecodingStatus.value).toBeNull()
         expect(functionCallAnalyzer.inputArgsOnly.value).toBeNull()
+        expect(functionCallAnalyzer.is4byteSignature.value).toBe(false)
 
         // 2) mount
         functionCallAnalyzer.mount()
@@ -366,6 +381,7 @@ describe("FunctionCallAnalyzer.spec.ts", () => {
         expect(functionCallAnalyzer.outputDecodingStatus.value).toBeNull()
         expect(functionCallAnalyzer.errorDecodingStatus.value).toBeNull()
         expect(functionCallAnalyzer.inputArgsOnly.value).toBeNull()
+        expect(functionCallAnalyzer.is4byteSignature.value).toBe(false)
 
         // 3) setup
         input.value = "0xf305d719000000000000000000000000000000000000000000000000000000000022d6de0000000000000000000000000000000000000000000000000000015076ac13000000000000000000000000000000000000000000000000000000014ec7ffb1a00000000000000000000000000000000000000000000000000000000f558e95eb00000000000000000000000000000000000000000000000000000000000f45b30000000000000000000000000000000000000000000000000000018cd5a698af"
@@ -392,6 +408,7 @@ describe("FunctionCallAnalyzer.spec.ts", () => {
         expect(functionCallAnalyzer.outputDecodingStatus.value).toBeNull()
         expect(functionCallAnalyzer.errorDecodingStatus.value).toBeNull()
         expect(functionCallAnalyzer.inputArgsOnly.value).toBe("0x000000000000000000000000000000000000000000000000000000000022d6de0000000000000000000000000000000000000000000000000000015076ac13000000000000000000000000000000000000000000000000000000014ec7ffb1a00000000000000000000000000000000000000000000000000000000f558e95eb00000000000000000000000000000000000000000000000000000000000f45b30000000000000000000000000000000000000000000000000000018cd5a698af")
+        expect(functionCallAnalyzer.is4byteSignature.value).toBe(true)
 
 
         // 4) unmount
@@ -408,6 +425,7 @@ describe("FunctionCallAnalyzer.spec.ts", () => {
         expect(functionCallAnalyzer.outputDecodingStatus.value).toBeNull()
         expect(functionCallAnalyzer.errorDecodingStatus.value).toBeNull()
         expect(functionCallAnalyzer.inputArgsOnly.value).toBe("0x000000000000000000000000000000000000000000000000000000000022d6de0000000000000000000000000000000000000000000000000000015076ac13000000000000000000000000000000000000000000000000000000014ec7ffb1a00000000000000000000000000000000000000000000000000000000f558e95eb00000000000000000000000000000000000000000000000000000000000f45b30000000000000000000000000000000000000000000000000000018cd5a698af")
+        expect(functionCallAnalyzer.is4byteSignature.value).toBe(false)
 
         mock.restore()
 
