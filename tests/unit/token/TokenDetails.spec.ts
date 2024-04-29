@@ -92,6 +92,7 @@ describe("TokenDetails.vue", () => {
         expect(wrapper.get("#autoRenewAccountValue").text()).toBe("0.0.29612329")
         expect(wrapper.get("#freezeDefaultValue").text()).toBe("false")
         expect(wrapper.get("#pauseStatusValue").text()).toBe("Not applicable")
+        expect(wrapper.get("#metadataValue").text()).toBe("None")
 
         expect(wrapper.get("#treasuryAccountValue").text()).toBe("0.0.29624024")
         expect(wrapper.get("#createdAtValue").text()).toBe("10:02:30.2333 AMFeb 12, 2022, UTC")
@@ -161,6 +162,7 @@ describe("TokenDetails.vue", () => {
         expect(wrapper.get("#initialSupplyValue").text()).toBe("0")
         expect(wrapper.get("#maxSupplyValue").text()).toBe("150")
         expect(wrapper.get("#decimalsValue").text()).toBe("0")
+        expect(wrapper.get("#metadataValue").text()).toBe("None")
 
         expect(wrapper.text()).toMatch("NFT Holders")
         expect(wrapper.findComponent(NftHolderTable).exists()).toBe(true)
@@ -304,6 +306,7 @@ describe("TokenDetails.vue", () => {
         expect(wrapper.find("#supplyKey").text()).toBe("Supply Keyc539 536f 9599 daef eeb7 7767 7aa1 aeea 2242 dfc7 cca9 2348 c228 a518 7a0f af2bCopyED25519")
         expect(wrapper.find("#feeScheduleKey").text()).toBe("Fee Schedule Keyc539 536f 9599 daef eeb7 7767 7aa1 aeea 2242 dfc7 cca9 2348 c228 a518 7a0f af2bCopyED25519")
         expect(wrapper.find("#pauseKey").text()).toBe("Pause Keyc539 536f 9599 daef eeb7 7767 7aa1 aeea 2242 dfc7 cca9 2348 c228 a518 7a0f af2bCopyED25519")
+        expect(wrapper.find("#metadataKey").text()).toBe("Metadata Keyc539 536f 9599 daef eeb7 7767 7aa1 aeea 2242 dfc7 cca9 2348 c228 a518 7a0f af2bCopyED25519")
 
         mock.restore()
         wrapper.unmount()
@@ -352,6 +355,7 @@ describe("TokenDetails.vue", () => {
         expect(wrapper.find("#supplyKey").text()).toBe("Supply KeyNoneToken cannot be minted or burnt")
         expect(wrapper.find("#feeScheduleKey").text()).toBe("Fee Schedule KeyNoneCustom fee schedule is immutable")
         expect(wrapper.find("#pauseKey").text()).toBe("Pause KeyNoneToken cannot be paused")
+        expect(wrapper.find("#metadataKey").text()).toBe("Metadata KeyNoneToken metadata is immutable")
 
         mock.restore()
         wrapper.unmount()
