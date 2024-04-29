@@ -79,6 +79,7 @@ export class FunctionCallAnalyzer {
         this.outputDecodingFailure.value = null
         this.errorDescription.value = null
         this.errorDecodingFailure.value = null
+        this.is4byteFunctionFragment.value = false
     }
 
     public readonly normalizedInput: ComputedRef<string | null> = computed(() => {

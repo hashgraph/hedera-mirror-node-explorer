@@ -18,6 +18,8 @@
  *
  */
 
+import {EntityID} from "@/utils/EntityID";
+
 export class SystemContractRegistry {
 
     private readonly entries = new Map<string, SystemContractEntry>()
@@ -29,6 +31,11 @@ export class SystemContractRegistry {
 
     public lookup(contractId: string): SystemContractEntry | null {
         return this.entries.get(contractId) ?? null
+    }
+
+    public lookupByAddress(contractAddress: string): SystemContractEntry | null {
+        const entityID = EntityID.fromAddress(contractAddress)
+        return entityID != null ? this.lookup(entityID.toString()) : null
     }
 
     private addEntry(contractId: string, description: string, abiFileName: string) {

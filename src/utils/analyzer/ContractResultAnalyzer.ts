@@ -25,6 +25,7 @@ import {computed, ref, Ref, watch, WatchStopHandle} from "vue"
 import {decodeSolidityErrorMessage} from "@/schemas/HederaUtils";
 import {ContractResultByTsCache} from "@/utils/cache/ContractResultByTsCache";
 import {ContractByAddressCache} from "@/utils/cache/ContractByAddressCache";
+import {systemContractRegistry} from "@/schemas/SystemContractRegistry";
 
 export class ContractResultAnalyzer {
 
@@ -153,9 +154,18 @@ export class ContractResultAnalyzer {
                 this.toId.value = this.contractResult.value.contract_id
             } else if (this.contractResult.value.to !== null) {
                 // Contract result does not specifies contract id but contract address
-                // => we must fetch contract by address and get its contract id
-                const contractResponse = await ContractByAddressCache.instance.lookup(this.contractResult.value.to)
-                this.toId.value = contractResponse?.contract_id ?? null
+                // => if it's a system contract, then address is computed
+                // => else we must fetch contract by address and get its contract id
+                const systemContractEntry = systemContractRegistry.lookupByAddress(this.contractResult.value.to)
+                if (systemContractEntry !== null) {
+                    this.toId.value = systemContractEntry.contractId
+                } else {
+                    const contractResponse = await ContractByAddressCache.instance.lookup(this.contractResult.value.to)
+                    this.toId.value = contractResponse?.contract_id ?? null
+                    if (this.toId.value === null) {
+                        console.log("WARNING: cannot find contract id for " + this.contractResult.value.to)
+                    }
+                }
             } else {
                 // Emergency code
                 this.toId.value = null
