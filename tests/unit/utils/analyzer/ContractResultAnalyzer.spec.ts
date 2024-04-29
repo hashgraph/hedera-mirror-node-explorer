@@ -63,6 +63,7 @@ describe("ContractResultAnalyzer.spec.ts", () => {
         expect(analyzer.contractResult.value).toBeNull()
         expect(analyzer.functionCallAnalyzer.functionHash.value).toBeNull()
         expect(analyzer.functionCallAnalyzer.signature.value).toBeNull()
+        expect(analyzer.functionCallAnalyzer.is4byteSignature.value).toBe(false)
 
         // 2) mount
         analyzer.mount()
@@ -79,6 +80,7 @@ describe("ContractResultAnalyzer.spec.ts", () => {
         expect(analyzer.contractResult.value).toBeNull()
         expect(analyzer.functionCallAnalyzer.functionHash.value).toBeNull()
         expect(analyzer.functionCallAnalyzer.signature.value).toBeNull()
+        expect(analyzer.functionCallAnalyzer.is4byteSignature.value).toBe(false)
 
         // 3) setup timestamp
         timestamp.value = CONTRACT_RESULT.timestamp
@@ -94,6 +96,7 @@ describe("ContractResultAnalyzer.spec.ts", () => {
         expect(analyzer.contractType.value).toBe("Post-Eip1559")
         expect(analyzer.contractResult.value).toStrictEqual(CONTRACT_RESULT_DETAILS)
         expect(analyzer.functionCallAnalyzer.functionHash.value).toBe("0x5d123e3f")
+        expect(analyzer.functionCallAnalyzer.is4byteSignature.value).toBe(false)
         // expect(analyzer.functionCallAnalyzer.signature.value).toBe("forwardDepositToICHIVault(address,address,address,uint256,uint256,address)")
 
         // 4) unmount
@@ -110,6 +113,7 @@ describe("ContractResultAnalyzer.spec.ts", () => {
         expect(analyzer.contractResult.value).toBeNull()
         expect(analyzer.functionCallAnalyzer.functionHash.value).toBeNull()
         expect(analyzer.functionCallAnalyzer.signature.value).toBeNull()
+        expect(analyzer.functionCallAnalyzer.is4byteSignature.value).toBe(false)
 
         // 5) check history
         console.log(JSON.stringify(fetchGetURLs(mock), null, "  "))
@@ -159,6 +163,7 @@ describe("ContractResultAnalyzer.spec.ts", () => {
         expect(analyzer.contractResult.value).toBeNull()
         expect(analyzer.functionCallAnalyzer.functionHash.value).toBeNull()
         expect(analyzer.functionCallAnalyzer.signature.value).toBeNull()
+        expect(analyzer.functionCallAnalyzer.is4byteSignature.value).toBe(false)
 
         // 2) setup timestamp
         timestamp.value = CONTRACT_RESULT.timestamp
@@ -175,6 +180,7 @@ describe("ContractResultAnalyzer.spec.ts", () => {
         expect(analyzer.contractResult.value).toBeNull()
         expect(analyzer.functionCallAnalyzer.functionHash.value).toBeNull()
         expect(analyzer.functionCallAnalyzer.signature.value).toBeNull()
+        expect(analyzer.functionCallAnalyzer.is4byteSignature.value).toBe(false)
 
         // 3) mount
         analyzer.mount()
@@ -190,6 +196,7 @@ describe("ContractResultAnalyzer.spec.ts", () => {
         expect(analyzer.contractType.value).toBe("Post-Eip1559")
         expect(analyzer.contractResult.value).toStrictEqual(CONTRACT_RESULT_DETAILS)
         expect(analyzer.functionCallAnalyzer.functionHash.value).toBe("0x5d123e3f")
+        expect(analyzer.functionCallAnalyzer.is4byteSignature.value).toBe(false)
         // expect(analyzer.functionCallAnalyzer.signature.value).toBe("forwardDepositToICHIVault(address,address,address,uint256,uint256,address)")
 
         // 4) unmount
@@ -206,6 +213,7 @@ describe("ContractResultAnalyzer.spec.ts", () => {
         expect(analyzer.contractResult.value).toBeNull()
         expect(analyzer.functionCallAnalyzer.functionHash.value).toBeNull()
         expect(analyzer.functionCallAnalyzer.signature.value).toBeNull()
+        expect(analyzer.functionCallAnalyzer.is4byteSignature.value).toBe(false)
 
         // 5) check history
         console.log(JSON.stringify(fetchGetURLs(mock), null, "  "))
@@ -238,6 +246,11 @@ describe("ContractResultAnalyzer.spec.ts", () => {
         const matcher3 = "http://localhost:3000/abi/IHederaTokenService.json"
         mock.onGet(matcher3).reply(200, abi)
 
+        // We also setup valid 4byte matcher to be sure it is ignored by ContractResultAnalyzer.
+        const functionHash = "0x49146bde"
+        const matcher4 = "https://www.4byte.directory/api/v1/signatures/?format=json&hex_signature=" + functionHash
+        mock.onGet(matcher4).reply(200, BYTES4_RESPONSE)
+
         // 1) new
         const timestamp = ref<string | null>(null)
         const analyzer = new ContractResultAnalyzer(timestamp)
@@ -253,6 +266,7 @@ describe("ContractResultAnalyzer.spec.ts", () => {
         expect(analyzer.contractResult.value).toBeNull()
         expect(analyzer.functionCallAnalyzer.functionHash.value).toBeNull()
         expect(analyzer.functionCallAnalyzer.signature.value).toBeNull()
+        expect(analyzer.functionCallAnalyzer.is4byteSignature.value).toBe(false)
 
         // 2) setup timestamp
         timestamp.value = CONTRACT_RESULT_HTS.timestamp
@@ -269,13 +283,14 @@ describe("ContractResultAnalyzer.spec.ts", () => {
         expect(analyzer.contractResult.value).toBeNull()
         expect(analyzer.functionCallAnalyzer.functionHash.value).toBeNull()
         expect(analyzer.functionCallAnalyzer.signature.value).toBeNull()
+        expect(analyzer.functionCallAnalyzer.is4byteSignature.value).toBe(false)
 
         // 3) mount
         analyzer.mount()
         await flushPromises()
         expect(analyzer.timestamp.value).toBe(CONTRACT_RESULT_HTS.timestamp)
         expect(analyzer.fromId.value).toBe("0.0.1584")
-        expect(analyzer.toId.value).toBe(CONTRACT_RESULT_HTS.contract_id)
+        expect(analyzer.toId.value).toBe("0.0.359")
         expect(analyzer.gasPrice.value).toBeNull()
         expect(analyzer.maxFeePerGas.value).toBeNull()
         expect(analyzer.maxPriorityFeePerGas.value).toBeNull()
@@ -285,6 +300,7 @@ describe("ContractResultAnalyzer.spec.ts", () => {
         expect(analyzer.contractResult.value).toStrictEqual(CONTRACT_RESULT_DETAILS_HTS)
         expect(analyzer.functionCallAnalyzer.functionHash.value).toBe("0x49146bde")
         expect(analyzer.functionCallAnalyzer.signature.value).toBe("associateToken(address,address)")
+        expect(analyzer.functionCallAnalyzer.is4byteSignature.value).toBe(false)
 
         // 4) unmount
         analyzer.unmount()
@@ -300,6 +316,7 @@ describe("ContractResultAnalyzer.spec.ts", () => {
         expect(analyzer.contractResult.value).toBeNull()
         expect(analyzer.functionCallAnalyzer.functionHash.value).toBeNull()
         expect(analyzer.functionCallAnalyzer.signature.value).toBeNull()
+        expect(analyzer.functionCallAnalyzer.is4byteSignature.value).toBe(false)
 
         // 5) check history
         expect(fetchGetURLs(mock)).toStrictEqual([
@@ -821,7 +838,7 @@ const CONTRACT_RESULT_HTS = {
     "amount": 0,
     "bloom": "0x",
     "call_result": "0x0000000000000000000000000000000000000000000000000000000000000146",
-    "contract_id": "0.0.359",
+    "contract_id": null,
     "created_contract_ids": [],
     "error_message": "INVALID_FULL_PREFIX_SIGNATURE_FOR_PRECOMPILE",
     "from": "0x0000000000000000000000000000000000000630",
@@ -856,7 +873,7 @@ const CONTRACT_RESULT_DETAILS_HTS = {
     "amount": 0,
     "bloom": "0x",
     "call_result": "0x0000000000000000000000000000000000000000000000000000000000000146",
-    "contract_id": "0.0.359",
+    "contract_id": null,
     "created_contract_ids": [],
     "error_message": "INVALID_FULL_PREFIX_SIGNATURE_FOR_PRECOMPILE",
     "from": "0x0000000000000000000000000000000000000630",
@@ -887,3 +904,19 @@ const CONTRACT_RESULT_DETAILS_HTS = {
     "v": null,
     "nonce": null
 }
+
+const BYTES4_RESPONSE = {
+    "count": 1,
+    "next": null,
+    "previous": null,
+    "results": [
+        {
+            "id": 951384,
+            "created_at": "2023-03-09T19:31:27.895916Z",
+            "text_signature": "associateToken(address,address)",
+            "hex_signature": "0x49146bde",
+            "bytes_signature": "I\u0014kÞ"
+        }
+    ]
+}
+
