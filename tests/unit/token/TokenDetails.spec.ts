@@ -78,8 +78,8 @@ describe("TokenDetails.vue", () => {
         await flushPromises()
         // console.log(wrapper.text())
 
-        expect(wrapper.vm.tokenBalanceTableController.mounted.value).toBe(true)
-        expect(wrapper.vm.nftHolderTableController.mounted.value).toBe(true)
+        expect((wrapper.vm as any).tokenBalanceTableController.mounted.value).toBe(true)
+        expect((wrapper.vm as any).nftHolderTableController.mounted.value).toBe(true)
 
         expect(wrapper.text()).toMatch(RegExp("^Fungible Token " + testTokenSymbol + 'Token ID:' + testTokenId))
 
@@ -112,8 +112,8 @@ describe("TokenDetails.vue", () => {
         wrapper.unmount()
         await flushPromises()
 
-        expect(wrapper.vm.tokenBalanceTableController.mounted.value).toBe(false)
-        expect(wrapper.vm.nftHolderTableController.mounted.value).toBe(false)
+        expect((wrapper.vm as any).tokenBalanceTableController.mounted.value).toBe(false)
+        expect((wrapper.vm as any).nftHolderTableController.mounted.value).toBe(false)
     });
 
     it("Should display details of non fungible token", async () => {
@@ -142,8 +142,8 @@ describe("TokenDetails.vue", () => {
         await flushPromises()
         // console.log(wrapper.text())
 
-        expect(wrapper.vm.tokenBalanceTableController.mounted.value).toBe(true)
-        expect(wrapper.vm.nftHolderTableController.mounted.value).toBe(true)
+        expect((wrapper.vm as any).tokenBalanceTableController.mounted.value).toBe(true)
+        expect((wrapper.vm as any).nftHolderTableController.mounted.value).toBe(true)
 
         expect(wrapper.text()).toMatch(RegExp("^Non Fungible Token " + testTokenSymbol + 'Token ID:' + testTokenId))
 
@@ -172,8 +172,8 @@ describe("TokenDetails.vue", () => {
         wrapper.unmount()
         await flushPromises()
 
-        expect(wrapper.vm.tokenBalanceTableController.mounted.value).toBe(false)
-        expect(wrapper.vm.nftHolderTableController.mounted.value).toBe(false)
+        expect((wrapper.vm as any).tokenBalanceTableController.mounted.value).toBe(false)
+        expect((wrapper.vm as any).nftHolderTableController.mounted.value).toBe(false)
     });
 
     it("Should update when token id changes", async () => {
@@ -202,8 +202,8 @@ describe("TokenDetails.vue", () => {
         await flushPromises()
         // console.log(wrapper.text())
 
-        expect(wrapper.vm.tokenBalanceTableController.mounted.value).toBe(true)
-        expect(wrapper.vm.nftHolderTableController.mounted.value).toBe(true)
+        expect((wrapper.vm as any).tokenBalanceTableController.mounted.value).toBe(true)
+        expect((wrapper.vm as any).nftHolderTableController.mounted.value).toBe(true)
 
         expect(wrapper.text()).toMatch(RegExp("^Non Fungible Token " + testTokenSymbol + 'Token ID:' + testTokenId))
         expect(wrapper.get("#nameValue").text()).toBe("Ħ Frens Kingdom Dude")
@@ -240,8 +240,8 @@ describe("TokenDetails.vue", () => {
         wrapper.unmount()
         await flushPromises()
 
-        expect(wrapper.vm.tokenBalanceTableController.mounted.value).toBe(false)
-        expect(wrapper.vm.nftHolderTableController.mounted.value).toBe(false)
+        expect((wrapper.vm as any).tokenBalanceTableController.mounted.value).toBe(false)
+        expect((wrapper.vm as any).nftHolderTableController.mounted.value).toBe(false)
     });
 
     it("Should detect invalid token ID", async () => {
@@ -293,8 +293,8 @@ describe("TokenDetails.vue", () => {
         await flushPromises()
         // console.log(wrapper.text())
 
-        expect(wrapper.vm.tokenBalanceTableController.mounted.value).toBe(true)
-        expect(wrapper.vm.nftHolderTableController.mounted.value).toBe(true)
+        expect((wrapper.vm as any).tokenBalanceTableController.mounted.value).toBe(true)
+        expect((wrapper.vm as any).nftHolderTableController.mounted.value).toBe(true)
 
         expect(wrapper.text()).toMatch(RegExp("^Non Fungible Token " + testTokenSymbol + 'Token ID:' + testTokenId))
 
@@ -312,8 +312,8 @@ describe("TokenDetails.vue", () => {
         wrapper.unmount()
         await flushPromises()
 
-        expect(wrapper.vm.tokenBalanceTableController.mounted.value).toBe(false)
-        expect(wrapper.vm.nftHolderTableController.mounted.value).toBe(false)
+        expect((wrapper.vm as any).tokenBalanceTableController.mounted.value).toBe(false)
+        expect((wrapper.vm as any).nftHolderTableController.mounted.value).toBe(false)
     });
 
     it("Should display no token keys", async () => {
@@ -342,8 +342,8 @@ describe("TokenDetails.vue", () => {
         await flushPromises()
         // console.log(wrapper.text())
 
-        expect(wrapper.vm.tokenBalanceTableController.mounted.value).toBe(true)
-        expect(wrapper.vm.nftHolderTableController.mounted.value).toBe(true)
+        expect((wrapper.vm as any).tokenBalanceTableController.mounted.value).toBe(true)
+        expect((wrapper.vm as any).nftHolderTableController.mounted.value).toBe(true)
 
         expect(wrapper.text()).toMatch(RegExp("^Non Fungible Token " + testTokenSymbol + 'Token ID:' + testTokenId))
 
@@ -361,8 +361,8 @@ describe("TokenDetails.vue", () => {
         wrapper.unmount()
         await flushPromises()
 
-        expect(wrapper.vm.tokenBalanceTableController.mounted.value).toBe(false)
-        expect(wrapper.vm.nftHolderTableController.mounted.value).toBe(false)
+        expect((wrapper.vm as any).tokenBalanceTableController.mounted.value).toBe(false)
+        expect((wrapper.vm as any).nftHolderTableController.mounted.value).toBe(false)
     });
 
     it("Should display 'Token deleted' banner", async () => {
