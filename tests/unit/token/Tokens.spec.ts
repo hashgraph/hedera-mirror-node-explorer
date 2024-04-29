@@ -69,24 +69,28 @@ describe("Tokens.vue", () => {
         expect(cards[0].text()).toMatch(RegExp("^Recent Non Fungible Tokens"))
         const table1 = cards[0].findComponent(TokenTable)
         expect(table1.exists()).toBe(true)
-        expect(table1.get('thead').text()).toBe("Token Symbol")
+        expect(table1.get('thead').text()).toBe("Token Name Symbol")
         expect(table1.get('tbody').text()).toBe(
             "0.0.29662956" +
+            "23423" +
             "QmVGABnvpbPwLcfG4iuW2JSzY8MLkALhd54bdPAbJxoEkB"
             +
             "0.0.748383" +
+            "Ħ Frens Kingdom" +
             "ĦFRENSKINGDOM"
         )
 
         expect(cards[1].text()).toMatch(RegExp("^Recent Fungible Tokens"))
         const table2 = cards[1].findComponent(TokenTable)
         expect(table2.exists()).toBe(true)
-        expect(table2.get('thead').text()).toBe("Token Symbol")
+        expect(table2.get('thead').text()).toBe("Token Name Symbol")
         expect(table2.get('tbody').text()).toBe(
             "0.0.29662956" +
+            "23423" +
             "QmVGABnvpbPwLcfG4iuW2JSzY8MLkALhd54bdPAbJxoEkB"
             +
             "0.0.748383" +
+            "Ħ Frens Kingdom" +
             "ĦFRENSKINGDOM"
         )
 
