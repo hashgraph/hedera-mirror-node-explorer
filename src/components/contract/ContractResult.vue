@@ -213,7 +213,6 @@ export default defineComponent({
       maxFeePerGas: contractResultAnalyzer.maxFeePerGas,
       maxPriorityFeePerGas: contractResultAnalyzer.maxPriorityFeePerGas,
       contractResult: contractResultAnalyzer.contractResult,
-      errorMessage: contractResultAnalyzer.errorMessage,
       analyzer: contractResultAnalyzer.functionCallAnalyzer,
       functionHash: contractResultAnalyzer.functionCallAnalyzer.functionHash,
       signature: contractResultAnalyzer.functionCallAnalyzer.signature,

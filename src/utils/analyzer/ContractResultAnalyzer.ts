@@ -22,7 +22,6 @@ import {FunctionCallAnalyzer} from "@/utils/analyzer/FunctionCallAnalyzer"
 import {ContractResultDetails} from "@/schemas/HederaSchemas"
 import {EntityID} from "@/utils/EntityID"
 import {computed, ref, Ref, watch, WatchStopHandle} from "vue"
-import {decodeSolidityErrorMessage} from "@/schemas/HederaUtils";
 import {ContractResultByTsCache} from "@/utils/cache/ContractResultByTsCache";
 import {ContractByAddressCache} from "@/utils/cache/ContractByAddressCache";
 import {systemContractRegistry} from "@/schemas/SystemContractRegistry";
@@ -80,9 +79,6 @@ export class ContractResultAnalyzer {
             ? Number(filter0x(this.contractResult.value?.max_priority_fee_per_gas))
             : null
     })
-
-    public errorMessage = computed(
-        () => decodeSolidityErrorMessage(this.contractResult.value?.error_message ?? null))
 
     public ethereumNonce = computed(
         () => this.contractResult.value?.nonce ?? null)
