@@ -157,7 +157,6 @@ export default defineComponent({
       isMediumScreen,
       propertySizeClass,
       ORUGA_MOBILE_BREAKPOINT,
-      errorMessage: contractActionAnalyzer.errorMessage,
       functionCallAnalyzer: contractActionAnalyzer.functionCallAnalyzer,
       functionHash: contractActionAnalyzer.functionCallAnalyzer.functionHash,
       signature: contractActionAnalyzer.functionCallAnalyzer.signature,

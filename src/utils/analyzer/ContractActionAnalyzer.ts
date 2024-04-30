@@ -21,7 +21,6 @@
 import {computed, Ref} from "vue";
 import {ContractAction, ResultDataType} from "@/schemas/HederaSchemas";
 import {FunctionCallAnalyzer} from "@/utils/analyzer/FunctionCallAnalyzer";
-import {decodeSolidityErrorMessage} from "@/schemas/HederaUtils";
 
 export class ContractActionAnalyzer {
 
@@ -44,16 +43,6 @@ export class ContractActionAnalyzer {
     public unmount(): void {
         this.functionCallAnalyzer.unmount()
     }
-
-    public readonly errorMessage = computed(() => {
-        let result: string | null
-        if (this.action?.value?.result_data_type != ResultDataType.OUTPUT) {
-            result = decodeSolidityErrorMessage(this.action?.value?.result_data ?? null)
-        } else {
-            result = null
-        }
-        return result
-    })
 
     //
     // Private
