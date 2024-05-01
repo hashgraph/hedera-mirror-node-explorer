@@ -132,26 +132,24 @@ export abstract class WalletDriver_Hedera extends WalletDriver {
     //
 
     public async associateToken(accountId: string, tokenId: string): Promise<string> {
-        let result: string
 
         // https://docs.hedera.com/hedera/sdks-and-apis/sdks/token-service/associate-tokens-to-an-account
         const trans = new TokenAssociateTransaction()
         trans.setAccountId(accountId)
         trans.setTokenIds([tokenId])
-        result = await this.executeTransaction(accountId, trans)
+        const result = await this.executeTransaction(accountId, trans)
         await this.waitForTransactionSurfacing(result)
 
         return Promise.resolve(result)
     }
 
     public async dissociateToken(accountId: string, tokenId: string): Promise<string> {
-        let result: string
 
         // https://docs.hedera.com/hedera/sdks-and-apis/sdks/token-service/dissociate-tokens-from-an-account
         const trans = new TokenDissociateTransaction()
         trans.setAccountId(accountId)
         trans.setTokenIds([tokenId])
-        result = await this.executeTransaction(accountId, trans)
+        const result = await this.executeTransaction(accountId, trans)
         await this.waitForTransactionSurfacing(result)
 
         return Promise.resolve(result)

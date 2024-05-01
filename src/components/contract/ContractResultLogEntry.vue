@@ -110,13 +110,10 @@
 import {computed, defineComponent, inject, onBeforeUnmount, onMounted, PropType} from "vue";
 import {ContractLog} from "@/schemas/HederaSchemas";
 import PropertyVertical from "@/components/PropertyVertical.vue";
-import StringValue from "@/components/values/StringValue.vue";
 import HexaValue from "@/components/values/HexaValue.vue";
 import EVMAddress from "@/components/values/EVMAddress.vue";
 import {ContractLogAnalyzer} from "@/utils/analyzer/ContractLogAnalyzer";
-import SignatureValue from "@/components/values/SignatureValue.vue";
 import FunctionValue from "@/components/values/FunctionValue.vue";
-import DashboardCard from '../DashboardCard.vue';
 import BlockLink from "@/components/values/BlockLink.vue";
 
 export default defineComponent({
@@ -124,12 +121,9 @@ export default defineComponent({
   components: {
     BlockLink,
     FunctionValue,
-    SignatureValue,
     EVMAddress,
     HexaValue,
-    StringValue,
     PropertyVertical,
-    DashboardCard
   },
   props: {
     log: {

@@ -84,19 +84,8 @@
 <!-- --------------------------------------------------------------------------------------------------------------- -->
 
 <script lang="ts">
-import {
-  computed,
-  ComputedRef,
-  defineComponent,
-  inject,
-  PropType,
-  Ref,
-} from "vue"
-import {
-  NftTransactionTransfer,
-  Transaction,
-  TransactionType,
-} from "@/schemas/HederaSchemas"
+import {computed, ComputedRef, defineComponent, inject, PropType, Ref,} from "vue"
+import {Transaction, TransactionType,} from "@/schemas/HederaSchemas"
 import NftTransactionSummary from "@/components/transaction/NftTransactionSummary.vue"
 import TimestampValue from "@/components/values/TimestampValue.vue"
 import TransactionLabel from "@/components/values/TransactionLabel.vue"

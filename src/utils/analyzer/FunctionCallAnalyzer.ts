@@ -349,6 +349,7 @@ export class FunctionCallAnalyzer {
                     break
                 }
             } catch {
+                // Ignored
             }
         }
         return result

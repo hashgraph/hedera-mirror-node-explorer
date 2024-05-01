@@ -20,7 +20,7 @@
 
 import {KeyOperator, SortOrder, TableController} from "@/utils/table/TableController";
 import {StakingReward, StakingRewardsResponse} from "@/schemas/HederaSchemas";
-import {ComputedRef, ref, Ref, watch} from "vue";
+import {ref, Ref, watch} from "vue";
 import axios from "axios";
 import {Router} from "vue-router";
 

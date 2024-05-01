@@ -20,7 +20,7 @@
 
 import {KeyOperator, SortOrder, TableController} from "@/utils/table/TableController";
 import {Transaction, TransactionResponse} from "@/schemas/HederaSchemas";
-import {ComputedRef, ref, Ref} from "vue";
+import {ref, Ref} from "vue";
 import axios, {AxiosResponse} from "axios";
 import {Router} from "vue-router";
 

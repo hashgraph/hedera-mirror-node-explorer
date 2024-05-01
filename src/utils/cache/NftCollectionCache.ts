@@ -31,7 +31,7 @@ export class NftCollectionCache extends EntityCache<string, NftCollectionInfo[]>
     //
 
     protected async load(accountId: string): Promise<NftCollectionInfo[]> {
-        let result: NftCollectionInfo[] = []
+        const result: NftCollectionInfo[] = []
         let nextURL: string | null = "api/v1/accounts/" + accountId + "/nfts"
         const params = {
             limit: 25

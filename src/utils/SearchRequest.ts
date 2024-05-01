@@ -177,7 +177,7 @@ export class SearchRequest {
                         this.searchAccount(aliasToBase32(hexBytes))
                     ]
                     if (hexBytes.length < 20) { // Incomplete EVM Address
-                        let evmAddress = paddedBytes(hexBytes, 20)
+                        const evmAddress = paddedBytes(hexBytes, 20)
                         promises = promises.concat([
                             this.searchAccount(evmAddress),
                             this.searchContract(evmAddress),

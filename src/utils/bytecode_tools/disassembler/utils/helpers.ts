@@ -74,7 +74,7 @@ export class Helpers {
 
         const operandString = bytecode.substring(index + 2, offset + 2);
 
-        let operands = [];
+        const operands = [];
 
         for (let i = 0; i < operandString.length; i += 2) {
             operands.push(`${operandString.substring(i, i + 2)}`);

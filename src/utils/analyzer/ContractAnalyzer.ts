@@ -140,7 +140,7 @@ export class ContractAnalyzer {
     })
 
     public readonly solidityFiles = computed(() => {
-        let result: Array<SourcifyResponseItem> = []
+        const result: Array<SourcifyResponseItem> = []
         if (this.sourcifyRecord.value !== null && this.sourcifyRecord.value?.response.files.length > 0) {
             const files = this.sourcifyRecord.value?.response.files
             files?.forEach((f) => {

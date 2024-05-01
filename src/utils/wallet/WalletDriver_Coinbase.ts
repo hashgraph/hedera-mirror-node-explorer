@@ -22,7 +22,6 @@ import {WalletDriver_Ethereum} from "@/utils/wallet/WalletDriver_Ethereum";
 import {BrowserProvider} from "ethers";
 import {AccountByAddressCache} from "@/utils/cache/AccountByAddressCache";
 import {WalletDriverCancelError} from "@/utils/wallet/WalletDriverError";
-import {NetworkEntry} from "@/schemas/NetworkRegistry";
 
 export class WalletDriver_Coinbase extends WalletDriver_Ethereum {
 
@@ -50,7 +49,7 @@ export class WalletDriver_Coinbase extends WalletDriver_Ethereum {
     }
 
     protected async fetchAccountIds(provider: BrowserProvider): Promise<string[]> {
-        let result: string[] = []
+        const result: string[] = []
 
         try {
             // Coinbase does not support wallet_requestPermissions request

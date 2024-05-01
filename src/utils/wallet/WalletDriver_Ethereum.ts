@@ -340,7 +340,7 @@ export abstract class WalletDriver_Ethereum extends WalletDriver {
     }
 
     protected async fetchAccountIds(provider: BrowserProvider): Promise<string[]> {
-        let result: string[] = []
+        const result: string[] = []
 
         try {
             // We do this in two steps:

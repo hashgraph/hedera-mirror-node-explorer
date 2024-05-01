@@ -33,8 +33,7 @@
 
 <script lang="ts">
 
-import {defineComponent, onMounted, PropType, ref} from "vue";
-import {TableController} from "@/utils/table/TableController";
+import {defineComponent, PropType, ref} from "vue";
 import Datepicker from '@vuepic/vue-datepicker';
 import '@vuepic/vue-datepicker/dist/main.css';
 import {TransactionTableControllerXL} from "@/components/transaction/TransactionTableControllerXL";
