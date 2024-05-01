@@ -1,6 +1,7 @@
 {
   "name": "hedera-explorer",
   "version": "0.1.0",
+  "type": "module",
   "private": true,
   "scripts": {
     "dev": "npm run install:branding && cp ./networks-config-https-example.json ./public/networks-config.json && vite",
