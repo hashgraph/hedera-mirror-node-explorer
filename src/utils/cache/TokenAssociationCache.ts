@@ -64,7 +64,7 @@ export class TokenAssociationCache extends EntityCache<string, TokenRelationship
     protected async load(associationKey: string): Promise<TokenRelationship[] | null> {
         let result: TokenRelationship[] | null
 
-        let components = TokenAssociationCache.parseAssociationKey(associationKey)
+        const components = TokenAssociationCache.parseAssociationKey(associationKey)
         if (components.length == 2) {
             const accountId = components[0]
             const tokenId = components[1]

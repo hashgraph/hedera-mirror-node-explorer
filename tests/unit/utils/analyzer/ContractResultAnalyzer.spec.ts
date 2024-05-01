@@ -321,7 +321,7 @@ describe("ContractResultAnalyzer.spec.ts", () => {
 })
 
 export function fetchGetURLs(mock: MockAdapter): string[] {
-    let result: string[] = []
+    const result: string[] = []
     for (const e of mock.history.get) {
         result.push(e.url)
     }

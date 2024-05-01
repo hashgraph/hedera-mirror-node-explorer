@@ -44,7 +44,7 @@ export default defineComponent({
     loc: String,
   },
 
-  setup(props, context) {
+  setup(props) {
     let networkUrl = "https://mainnet-public.mirrornode.hedera.com/"
     if (props.network == "testnet") {
       networkUrl = "https://testnet.mirrornode.hedera.com/"

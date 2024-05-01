@@ -190,7 +190,6 @@ import {routeManager} from "@/router";
 import InfoTooltip from "@/components/InfoTooltip.vue";
 import ContractVerificationDialog from "@/components/verification/ContractVerificationDialog.vue";
 import DisassembledCodeValue from "@/components/values/DisassembledCodeValue.vue";
-import HexaValue from "@/components/values/HexaValue.vue";
 import {AppStorage} from "@/AppStorage";
 import SourceCodeValue from "@/components/values/SourceCodeValue.vue";
 import ContractAbiValue, {FragmentType} from "@/components/values/abi/ContractAbiValue.vue";
@@ -215,7 +214,6 @@ export default defineComponent({
     ContractAbiValue,
     DownloadButton,
     SourceCodeValue,
-    HexaValue,
     DisassembledCodeValue,
     ContractVerificationDialog,
     InfoTooltip,

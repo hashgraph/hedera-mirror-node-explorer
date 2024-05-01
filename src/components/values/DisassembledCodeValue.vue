@@ -74,10 +74,10 @@ export default defineComponent({
     })
 
     const disassembly = computed<DisassembledOpcodeOutput[] | null>(
-        () => isValidBytecode ? Disassembler.disassemble(props.byteCode) : null)
+        () => isValidBytecode.value ? Disassembler.disassemble(props.byteCode) : null)
 
     const disassembledError = computed<string | null>(() =>
-        isValidBytecode ? null : (props.byteCode === "" ? "No data found..." : "Invalid bytecode")
+        isValidBytecode.value ? null : (props.byteCode === "" ? "No data found..." : "Invalid bytecode")
     )
 
     return {

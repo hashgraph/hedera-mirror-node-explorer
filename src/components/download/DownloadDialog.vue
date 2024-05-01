@@ -80,13 +80,12 @@ import {computed, defineComponent, PropType} from "vue";
 import Dialog from "@/components/dialog/Dialog.vue";
 import CommitButton from "@/components/dialog/CommitButton.vue";
 import DialogButton from "@/components/dialog/DialogButton.vue";
-import DialogTitle from "@/components/dialog/DialogTitle.vue";
 import {DialogController, DialogMode} from "@/components/dialog/DialogController";
 import {DownloaderState, EntityDownloader} from "@/utils/downloader/EntityDownloader";
 
 export default defineComponent({
   name: "DownloadDialog",
-  components: {DialogTitle, DialogButton, CommitButton, Dialog},
+  components: {DialogButton, CommitButton, Dialog},
   props: {
     controller: {
       type: Object as PropType<DialogController>,

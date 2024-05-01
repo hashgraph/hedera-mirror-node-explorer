@@ -72,7 +72,6 @@ import {computed, defineComponent, onBeforeUnmount, onMounted, PropType} from 'v
 import {Contract} from "@/schemas/HederaSchemas";
 import TimestampValue from "@/components/values/TimestampValue.vue";
 import {routeManager} from "@/router";
-import BlobValue from "@/components/values/BlobValue.vue";
 import {ORUGA_MOBILE_BREAKPOINT} from '@/App.vue';
 import EmptyTable from "@/components/EmptyTable.vue";
 import ContractName from "@/components/values/ContractName.vue";
@@ -81,7 +80,7 @@ import {VerifiedContractsController} from "@/components/contract/VerifiedContrac
 export default defineComponent({
   name: 'VerifiedContractsTable',
 
-  components: {ContractName, EmptyTable, TimestampValue, BlobValue},
+  components: {ContractName, EmptyTable, TimestampValue},
 
   props: {
     controller: {

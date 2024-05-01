@@ -30,7 +30,6 @@ import {ContractResultLog} from "@/schemas/HederaSchemas";
 import {routeManager} from "@/router";
 import {SourcifyResponse} from "@/utils/cache/SourcifyCache";
 import {flushPromises} from "@vue/test-utils";
-import {ethers} from "ethers";
 
 describe("ContractLogAnalyzer.spec.ts", () => {
 

@@ -49,7 +49,7 @@ export class ContractCallBuilder {
     }
 
     public readonly functionData = computed(() => {
-        let paramDataList: unknown[] = []
+        const paramDataList: unknown[] = []
         for (const b of this.paramBuilders) {
             const paramData = b.paramData.value
             if (paramData !== null) {
