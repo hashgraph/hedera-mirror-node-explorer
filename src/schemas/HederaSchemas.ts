@@ -438,15 +438,15 @@ export interface Nfts {
 }
 
 export interface Nft {
-    account_id: string | null | undefined // Network entity ID in the format of shard.realm.num
-    created_timestamp: string | null | undefined
-    delegating_spender: string | null | undefined
+    account_id: string | null // Network entity ID in the format of shard.realm.num
+    created_timestamp: string | null
+    delegating_spender: string | null
     deleted: boolean
-    metadata: string | undefined
-    modified_timestamp: string | null | undefined
-    serial_number: number | undefined
-    spender_id: string | null | undefined
-    token_id: string | null | undefined // Network entity ID in the format of shard.realm.num
+    metadata: string
+    modified_timestamp: string | null
+    serial_number: number
+    spender_id: string | null
+    token_id: string | null // Network entity ID in the format of shard.realm.num
 }
 
 // ---------------------------------------------------------------------------------------------------------------------
