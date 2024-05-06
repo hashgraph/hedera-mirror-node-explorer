@@ -252,25 +252,19 @@ export function lookupNFTTransfer(transaction: Transaction, tokenId: string): Nf
     return result
 }
 
-export function decodeRedirectForTokenInput(inputArgs: string): ethers.Result {
-    const tokenAddress = `0x${inputArgs.slice(2, 42)}`
-    const encodedFunctionSelector = `0x${inputArgs.slice(42)}`
-    return new ethers.Result(tokenAddress, encodedFunctionSelector)
+export function decodeRedirectForTokenInput(functionFragment: ethers.FunctionFragment, inputArgs: string): ethers.Result {
+    try {
+        return ethers.AbiCoder.defaultAbiCoder().decode(functionFragment.inputs, inputArgs)
+    } catch (e) {
+        const tokenAddress = `0x${inputArgs.slice(2, 42)}`
+        const encodedFunctionSelector = `0x${inputArgs.slice(42)}`
+        return new ethers.Result(tokenAddress, encodedFunctionSelector)
+    }
 }
 
 export function resolveFunctionFragmentForHTSProxyContract(functionFragment: ethers.FunctionFragment, inputArgs: string): ethers.FunctionFragment {
-    let encodedFunction4BytesSignature = ""
-
-    try {
-        const inputResult = ethers.AbiCoder.defaultAbiCoder().decode(functionFragment.inputs, inputArgs)
-        encodedFunction4BytesSignature = inputResult[1].slice(0, 10)
-    } catch (failure) {
-        const f = failure as ethers.EthersError
-        if (f.code === "BUFFER_OVERRUN" || f.code === "INVALID_ARGUMENT") {
-            const inputResult = decodeRedirectForTokenInput(inputArgs)
-            encodedFunction4BytesSignature = inputResult[1].slice(0, 10)
-        }
-    }
+    const inputResult = decodeRedirectForTokenInput(functionFragment, inputArgs)
+    const encodedFunction4BytesSignature = inputResult[1].slice(0, 10)
 
     // @notice this is the list of supported method which is collected based on HIP-218 https://hips.hedera.com/hip/hip-218
     const ABI_FOR_SUPPORTED_METHODS = [
@@ -300,7 +294,7 @@ export function resolveFunctionFragmentForHTSProxyContract(functionFragment: eth
     return ethers.FunctionFragment.from({...functionFragment, outputs: iface.getFunction(encodedFunction4BytesSignature)?.outputs})
 }
 
-export function isRedirectForTokenTx(contractId: string|null, functionHash: string|null): boolean {
+export function isRedirectForTokenTx(contractId: string, functionHash: string): boolean {
     return contractId === HTS_PRECOMPILE_CONTRACT_ID &&
         functionHash === REDIRECT_FOR_TOKEN_FUNCTION_SIGHASH
 }
