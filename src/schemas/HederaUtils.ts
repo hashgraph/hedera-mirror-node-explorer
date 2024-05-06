@@ -19,13 +19,15 @@
  */
 
 import {
-    AccountInfo,
     KeyType,
-    NetworkNode, NftTransfer,
+    Transfer,
     TokenInfo,
-    TokenRelationship, TokenTransfer,
+    AccountInfo,
     Transaction,
-    Transfer
+    NetworkNode, NftTransfer,
+    HTS_PRECOMPILE_CONTRACT_ID,
+    TokenRelationship, TokenTransfer,
+    REDIRECT_FOR_TOKEN_FUNCTION_SIGHASH,
 } from "@/schemas/HederaSchemas";
 import {ethers} from "ethers";
 import {EntityID} from "@/utils/EntityID";
@@ -296,4 +298,9 @@ export function resolveFunctionFragmentForHTSProxyContract(functionFragment: eth
       
     const iface = new ethers.Interface(ABI_FOR_SUPPORTED_METHODS)
     return ethers.FunctionFragment.from({...functionFragment, outputs: iface.getFunction(encodedFunction4BytesSignature)?.outputs})
+}
+
+export function isRedirectForTokenTx(contractId: string|null, functionHash: string|null): boolean {
+    return contractId === HTS_PRECOMPILE_CONTRACT_ID &&
+        functionHash === REDIRECT_FOR_TOKEN_FUNCTION_SIGHASH
 }

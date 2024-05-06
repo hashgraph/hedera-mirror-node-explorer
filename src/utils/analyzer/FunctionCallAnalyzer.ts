@@ -22,8 +22,7 @@ import {computed, ComputedRef, ref, Ref, shallowRef, watch, WatchStopHandle} fro
 import {ethers} from "ethers";
 import {ContractAnalyzer} from "@/utils/analyzer/ContractAnalyzer";
 import {SignatureCache, SignatureRecord, SignatureResponse} from "@/utils/cache/SignatureCache";
-import {HTS_PRECOMPILE_CONTRACT_ID, REDIRECT_FOR_TOKEN_FUNCTION_SIGHASH} from '@/schemas/HederaSchemas';
-import {decodeRedirectForTokenInput, resolveFunctionFragmentForHTSProxyContract, labelForResponseCode} from "@/schemas/HederaUtils";
+import {decodeRedirectForTokenInput, resolveFunctionFragmentForHTSProxyContract, labelForResponseCode, isRedirectForTokenTx} from "@/schemas/HederaUtils";
 
 export class FunctionCallAnalyzer {
 
@@ -254,8 +253,7 @@ export class FunctionCallAnalyzer {
                     // https://github.com/hashgraph/hedera-mirror-node-explorer/issues/921
                     if (
                         currentFunctionFragment !== null &&
-                        contractId === HTS_PRECOMPILE_CONTRACT_ID &&
-                        functionHash === REDIRECT_FOR_TOKEN_FUNCTION_SIGHASH
+                        isRedirectForTokenTx(contractId, functionHash)
                     ) {
                         currentFunctionFragment = resolveFunctionFragmentForHTSProxyContract(currentFunctionFragment, inputArgs)
                     }
@@ -316,8 +314,7 @@ export class FunctionCallAnalyzer {
                 // https://github.com/hashgraph/hedera-mirror-node-explorer/issues/921
                 if (
                     (f.code === "BUFFER_OVERRUN" || f.code === "INVALID_ARGUMENT") &&
-                    contractId === HTS_PRECOMPILE_CONTRACT_ID &&
-                    functionHash === REDIRECT_FOR_TOKEN_FUNCTION_SIGHASH
+                    isRedirectForTokenTx(contractId, functionHash)
                 ) {
                     this.inputResult.value = decodeRedirectForTokenInput(inputArgs)
                 } else {
