@@ -29,7 +29,7 @@
   >
     <DashboardCard>
       <template #title>
-        <span class="h-is-primary-title mr-1"> Serial Number {{ serialNumber }}</span>
+        <span class="h-is-primary-title mr-3">Serial Number {{ serialNumber }}</span>
         <div
             class="is-inline-block h-is-tertiary-text h-is-extra-text should-wrap"
             style="word-break: break-all"
