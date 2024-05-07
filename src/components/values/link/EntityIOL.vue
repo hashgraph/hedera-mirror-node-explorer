@@ -39,7 +39,9 @@
     </template>
 
     <template v-else-if="!initialLoading">
-      <span>{{ nullLabel ?? "None" }}</span>
+      <span class="has-text-grey">
+        {{ nullLabel ?? "None" }}
+      </span>
     </template>
 
     <template v-else>
