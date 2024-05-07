@@ -174,10 +174,12 @@ export default defineComponent({
 .graph-container {
   display: inline-grid;
   grid-template-columns: repeat(5, auto);
+  line-height: 1.4rem;
   column-gap: 1em;
 }
 
 .graph-container-6 {
   grid-template-columns: repeat(6, auto);
+  line-height: 1.4rem;
 }
 </style>
