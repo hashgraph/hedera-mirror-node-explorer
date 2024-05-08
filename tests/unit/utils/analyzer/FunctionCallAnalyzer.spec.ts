@@ -102,13 +102,36 @@ describe("FunctionCallAnalyzer.spec.ts", () => {
         await flushPromises()
         expect(functionCallAnalyzer.functionHash.value).toBe("0x618dc65e")
         expect(functionCallAnalyzer.signature.value).toBe("redirectForToken(address,bytes)")
-        expect(functionCallAnalyzer.inputs.value).toStrictEqual([])
-        expect(functionCallAnalyzer.outputs.value).toStrictEqual([])
+        expect(functionCallAnalyzer.inputs.value).toEqual([
+            {
+                name: 'token',
+                type: 'address',
+                value: '0x0000000000000000000000000000000000163b5a',
+                indexed: null,
+                comment: null
+            },
+            {
+                name: 'encodedFunctionSelector',
+                type: 'bytes',
+                value: '0x70a082310000000000000000000000005fe56763c7633efefe8c2272f19732521a48e300',
+                indexed: null,
+                comment: null
+            }
+        ])
+        expect(functionCallAnalyzer.outputs.value).toEqual([
+            {
+                "comment": null,
+                "indexed": null,
+                "name": "balanceOf",
+                "type": "uint256",
+                "value": 67920691671575n,
+              },
+            ])
         expect(functionCallAnalyzer.errorHash.value).toBeNull()
         expect(functionCallAnalyzer.errorSignature.value).toBeNull()
         expect(functionCallAnalyzer.errorInputs.value).toStrictEqual([])
-        expect(functionCallAnalyzer.inputDecodingStatus.value).toBe("Decoding Error (data out-of-bounds)")
-        expect(functionCallAnalyzer.outputDecodingStatus.value).toBe("Decoding Error (data out-of-bounds)")
+        expect(functionCallAnalyzer.inputDecodingStatus.value).toBeNull
+        expect(functionCallAnalyzer.outputDecodingStatus.value).toBe(null)
         expect(functionCallAnalyzer.errorDecodingStatus.value).toBeNull()
         expect(functionCallAnalyzer.inputArgsOnly.value).toBe("0x0000000000000000000000000000000000163b5a70a082310000000000000000000000005fe56763c7633efefe8c2272f19732521a48e300")
         expect(functionCallAnalyzer.is4byteSignature.value).toBe(false)

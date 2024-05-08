@@ -20,9 +20,9 @@
 
 import {computed, ComputedRef, ref, Ref, shallowRef, watch, WatchStopHandle} from "vue";
 import {ethers} from "ethers";
-import {labelForResponseCode} from "@/schemas/HederaUtils";
 import {ContractAnalyzer} from "@/utils/analyzer/ContractAnalyzer";
 import {SignatureCache, SignatureRecord, SignatureResponse} from "@/utils/cache/SignatureCache";
+import {decodeRedirectForTokenInput, resolveFunctionFragmentForHTSProxyContract, labelForResponseCode, isRedirectForTokenTx} from "@/schemas/HederaUtils";
 
 export class FunctionCallAnalyzer {
 
@@ -237,13 +237,25 @@ export class FunctionCallAnalyzer {
         const i = this.contractAnalyzer.interface.value
         const r = this.signatureResponse.value
         const functionHash = this.functionHash.value
-        if (functionHash !== null) {
+        const contractId = this.contractAnalyzer.contractId.value
+        const inputArgs = this.inputArgsOnly.value
+
+
+        if (functionHash !== null && inputArgs !== null && contractId !== null) {
             if (i !== null) {
                 try {
-                    this.functionFragment.value = i.getFunction(functionHash)
+                    const ff = i.getFunction(functionHash)
                     this.functionDecodingFailure.value = null
                     this.is4byteFunctionFragment.value = false
-                } catch (failure) {
+
+                    // please refer to the ticket below for more information on this logic for redirectForToken(address,bytes) method on HTS System Contract 
+                    // https://github.com/hashgraph/hedera-mirror-node-explorer/issues/921
+                    if (ff !== null && isRedirectForTokenTx(contractId, functionHash)) {
+                        this.functionFragment.value = resolveFunctionFragmentForHTSProxyContract(ff, inputArgs)
+                    } else {
+                        this.functionFragment.value = ff
+                    }
+                } catch(failure) {
                     this.functionFragment.value = null
                     this.functionDecodingFailure.value = failure
                     this.is4byteFunctionFragment.value = false
@@ -285,10 +297,20 @@ export class FunctionCallAnalyzer {
     private readonly updateInputResult = () => {
         const ff = this.functionFragment.value
         const inputArgs = this.inputArgsOnly.value
+        const contractId = this.contractAnalyzer.contractId.value
+        const functionHash = this.functionHash.value
+
         if (ff !== null && inputArgs !== null) {
             try {
-                this.inputResult.value = ethers.AbiCoder.defaultAbiCoder().decode(ff.inputs, inputArgs)
-                this.inputDecodingFailure.value = null
+                if (contractId !== null && functionHash !== null) {
+                    if (isRedirectForTokenTx(contractId, functionHash)) {
+                        this.inputResult.value = decodeRedirectForTokenInput(ff, inputArgs)
+                        this.inputDecodingFailure.value = null
+                    } else {
+                        this.inputResult.value = ethers.AbiCoder.defaultAbiCoder().decode(ff.inputs, inputArgs)
+                        this.inputDecodingFailure.value = null
+                    }
+                }
             } catch (failure) {
                 this.inputResult.value = null
                 this.inputDecodingFailure.value = failure

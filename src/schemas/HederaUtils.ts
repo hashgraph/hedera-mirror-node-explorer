@@ -19,13 +19,15 @@
  */
 
 import {
-    AccountInfo,
     KeyType,
-    NetworkNode, NftTransfer,
+    Transfer,
     TokenInfo,
-    TokenRelationship, TokenTransfer,
+    AccountInfo,
     Transaction,
-    Transfer
+    NetworkNode, NftTransfer,
+    HTS_PRECOMPILE_CONTRACT_ID,
+    TokenRelationship, TokenTransfer,
+    REDIRECT_FOR_TOKEN_FUNCTION_SIGHASH,
 } from "@/schemas/HederaSchemas";
 import {ethers} from "ethers";
 import {EntityID} from "@/utils/EntityID";
@@ -248,4 +250,51 @@ export function lookupNFTTransfer(transaction: Transaction, tokenId: string): Nf
         }
     }
     return result
+}
+
+export function decodeRedirectForTokenInput(functionFragment: ethers.FunctionFragment, inputArgs: string): ethers.Result {
+    try {
+        return ethers.AbiCoder.defaultAbiCoder().decode(functionFragment.inputs, inputArgs)
+    } catch (e) {
+        const tokenAddress = `0x${inputArgs.slice(2, 42)}`
+        const encodedFunctionSelector = `0x${inputArgs.slice(42)}`
+        return new ethers.Result(tokenAddress, encodedFunctionSelector)
+    }
+}
+
+export function resolveFunctionFragmentForHTSProxyContract(functionFragment: ethers.FunctionFragment, inputArgs: string): ethers.FunctionFragment {
+    const inputResult = decodeRedirectForTokenInput(functionFragment, inputArgs)
+    const encodedFunction4BytesSignature = inputResult[1].slice(0, 10)
+
+    // @notice this is the list of supported method which is collected based on HIP-218 https://hips.hedera.com/hip/hip-218
+    const ABI_FOR_SUPPORTED_METHODS = [
+        "function name() public view returns (string name)",
+        "function symbol() public view returns (string symbol)",
+        "function decimals() public view returns (uint8 decimals)",
+        "function totalSupply() external view returns (uint256 totalSupply)",
+        "function setApprovalForAll(address _operator, bool _approved) external",
+        "function ownerOf(uint256 _tokenId) external view returns (address ownerOf)",
+        "function tokenURI(uint256 _tokenId) external view returns (string tokenURI)",
+        "function balanceOf(address _owner) external view returns (uint256 balanceOf)",
+        "function balanceOf(address account) external view returns (uint256 balanceOf)",
+        "function approve(address spender, uint256 amount) external returns (bool approve)",
+        "function tokenByIndex(uint256 _index) external view returns (uint256 tokenByIndex)",
+        "function getApproved(uint256 _tokenId) external view returns (address getApproved)",
+        "function transferFrom(address _from, address _to, uint256 _tokenId) external payable",
+        "function transfer(address recipient, uint256 amount) external returns (bool transfer)",
+        "function safeTransferFrom(address _from, address _to, uint256 _tokenId) external payable",
+        "function allowance(address owner, address spender) external view returns (uint256 allowance)",
+        "function safeTransferFrom(address _from, address _to, uint256 _tokenId, bytes data) external payable",
+        "function isApprovedForAll(address _owner, address _operator) external view returns (bool isApprovedForAll)",
+        "function transferFrom(address sender, address recipient, uint256 amount) external returns (bool transferFrom)",
+        "function tokenOfOwnerByIndex(address _owner, uint256 _index) external view returns (uint256 tokenOfOwnerByIndex)",
+      ];
+      
+    const iface = new ethers.Interface(ABI_FOR_SUPPORTED_METHODS)
+    return ethers.FunctionFragment.from({...functionFragment, outputs: iface.getFunction(encodedFunction4BytesSignature)?.outputs})
+}
+
+export function isRedirectForTokenTx(contractId: string, functionHash: string): boolean {
+    return contractId === HTS_PRECOMPILE_CONTRACT_ID &&
+        functionHash === REDIRECT_FOR_TOKEN_FUNCTION_SIGHASH
 }

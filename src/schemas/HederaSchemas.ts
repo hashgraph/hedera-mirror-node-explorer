@@ -827,6 +827,8 @@ export interface Links {
 }
 
 export const infiniteDuration = 31556888202959784
+export const HTS_PRECOMPILE_CONTRACT_ID = "0.0.359"
+export const REDIRECT_FOR_TOKEN_FUNCTION_SIGHASH = "0x618dc65e"
 
 // ---------------------------------------------------------------------------------------------------------------------
 //                                                      Private
