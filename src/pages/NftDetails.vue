@@ -256,10 +256,6 @@ export default defineComponent({
       return result
     })
 
-    const shownftDetails = (tokenId: string) => {
-      routeManager.routeToToken(tokenId)
-    }
-
     const perPage = computed(() => (isMediumScreen ? 10 : 5))
 
     //
@@ -311,7 +307,6 @@ export default defineComponent({
       validEntityId,
       normalizedTokenId,
       notification,
-      shownftDetails,
       parseBigIntString,
       transactionTableController,
       transactionType: transactionTableController.transactionType,
