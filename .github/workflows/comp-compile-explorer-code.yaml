@@ -47,7 +47,7 @@ env:
 jobs:
   compile:
     name: ${{ inputs.custom-job-label || 'Compiles' }}
-    runs-on: [ self-hosted, Linux, explorer, standard, ephemeral ]
+    runs-on: [ self-hosted, Linux, large, ephemeral ]
     steps:
       - name: Harden Runner
         uses: step-security/harden-runner@a4aa98b93cab29d9b1101a6143fb8bce00e2eac4 # v2.7.1

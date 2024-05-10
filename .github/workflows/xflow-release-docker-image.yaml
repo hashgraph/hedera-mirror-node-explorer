@@ -25,7 +25,7 @@ env:
 jobs:
   prepare-release:
     name: Release / Prepare
-    runs-on: [ self-hosted, Linux, explorer, standard, ephemeral ]
+    runs-on: [ self-hosted, Linux, medium, ephemeral ]
     outputs:
       version: ${{ steps.extract.outputs.version }}
     steps:
@@ -68,7 +68,7 @@ jobs:
 
   deploy-docker-image:
     name: Deploy / Docker / Image
-    runs-on: [ self-hosted, Linux, explorer, standard, ephemeral ]
+    runs-on: [ self-hosted, Linux, medium, ephemeral ]
     needs:
       - prepare-release
     steps:
