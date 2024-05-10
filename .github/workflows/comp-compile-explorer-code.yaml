@@ -49,13 +49,18 @@ jobs:
     name: ${{ inputs.custom-job-label || 'Compiles' }}
     runs-on: [ self-hosted, Linux, explorer, standard, ephemeral ]
     steps:
+      - name: Harden Runner
+        uses: step-security/harden-runner@a4aa98b93cab29d9b1101a6143fb8bce00e2eac4 # v2.7.1
+        with:
+          egress-policy: audit
+
       - name: Checkout Code
-        uses: actions/checkout@v3
+        uses: actions/checkout@f43a0e5ff2bd294095638e18286ca9a3d1956744 # v3.6.0
         with:
           fetch-depth: 0
 
       - name: Setup NodeJS
-        uses: actions/setup-node@v3
+        uses: actions/setup-node@1a4442cacd436585916779262731d5b162bc6ec7 # v3.8.2
         with:
           node-version: 20
           cache: npm
@@ -92,11 +97,11 @@ jobs:
         if: ${{ inputs.enable-unit-tests && !cancelled() }}
 
       - name: Report Unit Test Coverage
-        uses: davelosert/vitest-coverage-report-action@v2
+        uses: davelosert/vitest-coverage-report-action@1c46e624fc42799d6b1090de7decc8b967784fce # v2.3.1
         if: ${{ inputs.enable-unit-tests && !cancelled() }}
 
       - name: Cypress run
-        uses: cypress-io/github-action@v5
+        uses: cypress-io/github-action@248bde77443c376edc45906ede03a1aba9da0462 # v5.8.4
         if: ${{ inputs.enable-e2e-tests && !cancelled() }}
         with:
           install-command: npm install
@@ -105,7 +110,7 @@ jobs:
           spec: tests/e2e/specs/*
 
       - name: Sonar Analysis
-        uses: sonarsource/sonarcloud-github-action@master
+        uses: sonarsource/sonarcloud-github-action@49e6cd3b187936a73b8280d59ffd9da69df63ec9 # v2.1.1
         if: ${{ inputs.enable-sonar-analysis && !cancelled() }}
         env:
           GITHUB_TOKEN: ${{ secrets.access-token }}

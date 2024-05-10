@@ -1,0 +1,5 @@
+###################################
+##### Global Protection Rule ######
+###################################
+# NOTE: This rule is overriden by the more specific rules below. This is the catch-all rule for all files not covered by the more specific rules below.
+*                                               @hashgraph/release-engineering @hashgraph/release-engineering-managers
