@@ -2,4 +2,32 @@
 ##### Global Protection Rule ######
 ###################################
 # NOTE: This rule is overriden by the more specific rules below. This is the catch-all rule for all files not covered by the more specific rules below.
-*                                               @hashgraph/release-engineering @hashgraph/release-engineering-managers
+*                                               @ericleponner @svienot
+
+#########################
+#####  Core Files  ######
+#########################
+
+# NOTE: Must be placed last to ensure enforcement over all other rules
+
+# Protection Rules for Github Configuration Files and Actions Workflows
+/.github/                                       @hashgraph/release-engineering @hashgraph/release-engineering-managers
+/.github/workflows/                             @hashgraph/release-engineering @hashgraph/release-engineering-managers @ericleponner @svienot
+
+# Self-protection for root CODEOWNERS files (this file should not exist and should definitely require approval)
+/CODEOWNERS                                      @hashgraph/release-engineering @hashgraph/release-engineering-managers @ericleponner @svienot
+
+# Protect the repository root files
+/README.md                                      @hashgraph/release-engineering @hashgraph/release-engineering-managers  @ericleponner @svienot
+**/LICENSE                                      @hashgraph/release-engineering @hashgraph/release-engineering-managers
+
+# Git Ignore definitions
+**/.gitignore                                   @hashgraph/release-engineering @hashgraph/release-engineering-managers @ericleponner @svienot
+**/.gitignore.*                                 @hashgraph/release-engineering @hashgraph/release-engineering-managers @ericleponner @svienot
+
+# Docker
+/chart/                                         @hashgraph/release-engineering @hashgraph/release-engineering-managers @ericleponner @svienot
+/sourcify-setup/                                @hashgraph/release-engineering @hashgraph/release-engineering-managers @ericleponner @svienot
+**/.env.docker                                  @hashgraph/release-engineering @hashgraph/release-engineering-managers @ericleponner @svienot
+**/.dockerignore                                @hashgraph/release-engineering @hashgraph/release-engineering-managers @ericleponner @svienot
+**/nginx-docker.conf                            @hashgraph/release-engineering @hashgraph/release-engineering-managers @ericleponner @svienot
