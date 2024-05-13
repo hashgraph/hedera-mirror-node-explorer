@@ -61,6 +61,9 @@
         </div>
 
       </div>
+
+      <div v-if="!isSmallScreen" class="mb-5"/>
+
     </div>
     <p v-else class="mb-1"/>
   </div>
