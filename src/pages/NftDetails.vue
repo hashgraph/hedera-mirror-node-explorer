@@ -49,7 +49,7 @@
         <Property id="tokenId">
           <template #name>Token ID</template>
           <template #value>
-            <TokenLink :token-id="tokenId"/>
+            <TokenLink :token-id="tokenId" :show-extra="true"/>
           </template>
         </Property>
         <Property id="accountId">
