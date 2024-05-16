@@ -74,6 +74,17 @@ describe('Token Navigation', () => {
         cy.contains('Non Fungible Token')
         cy.contains('Token ID:' + nftId)
 
+        cy.get('#createTransactionValue')
+            cy.contains('@')
+            .click()
+            .then( () => {
+                cy.url().should('include', '/mainnet/transaction/')
+                cy.contains('Token ID' + nftId)
+            })
+
+        cy.go("back")
+        cy.url().should('include', '/mainnet/token/' + nftId)
+
         cy.get('#nft-holder-table')
             .find('tbody tr')
             .should('be.visible')
@@ -98,6 +109,17 @@ describe('Token Navigation', () => {
         cy.url().should('include', '/mainnet/token/' + tokenId)
         cy.contains('Fungible Token')
         cy.contains('Token ID:' + tokenId)
+
+        cy.get('#createTransactionValue')
+        cy.contains('@')
+            .click()
+            .then( () => {
+                cy.url().should('include', '/mainnet/transaction/')
+                cy.contains('Token ID' + tokenId)
+            })
+
+        cy.go("back")
+        cy.url().should('include', '/mainnet/token/' + tokenId)
 
         cy.get('#token-balance-table')
             .find('tbody tr')
