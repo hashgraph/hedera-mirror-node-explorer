@@ -18,18 +18,22 @@
  *
  */
 
-import {describe, it, expect} from 'vitest'
+import {describe, expect, it} from 'vitest'
 import {flushPromises, mount} from "@vue/test-utils"
 import router from "@/router";
 import TokenDetails from "@/pages/TokenDetails.vue";
 import axios from "axios";
 import {
-    SAMPLE_BALANCES, SAMPLE_NETWORK_EXCHANGERATE,
-    SAMPLE_NFTS, SAMPLE_NONFUNGIBLE,
+    SAMPLE_BALANCES,
+    SAMPLE_NETWORK_EXCHANGERATE,
+    SAMPLE_NFTS,
+    SAMPLE_NONFUNGIBLE,
     SAMPLE_NONFUNGIBLE_DUDE,
     SAMPLE_TOKEN,
     SAMPLE_TOKEN_WITH_KEYS,
-    SAMPLE_TOKEN_WITHOUT_KEYS
+    SAMPLE_TOKEN_WITHOUT_KEYS,
+    SAMPLE_TRANSACTION,
+    SAMPLE_TRANSACTIONS
 } from "../Mocks";
 import TokenBalanceTable from "@/components/token/TokenBalanceTable.vue";
 import MockAdapter from "axios-mock-adapter";
@@ -40,6 +44,7 @@ import TokenCustomFees from "@/components/token/TokenCustomFees.vue";
 import FixedFeeTable from "@/components/token/FixedFeeTable.vue";
 import FractionalFeeTable from "@/components/token/FractionalFeeTable.vue";
 import RoyaltyFeeTable from "@/components/token/RoyaltyFeeTable.vue";
+import {TransactionID} from "../../../src/utils/TransactionID";
 
 /*
     Bookmarks
@@ -66,6 +71,8 @@ describe("TokenDetails.vue", () => {
         mock.onGet(matcher2).reply(200, SAMPLE_BALANCES);
         const matcher3 = "/api/v1/contracts/" + testTokenId + "/results"
         mock.onGet(matcher3).reply(200, []);
+        const matcher4 = "/api/v1/transactions"
+        mock.onGet(matcher4).reply(200, SAMPLE_TRANSACTIONS);
 
         const wrapper = mount(TokenDetails, {
             global: {
@@ -103,6 +110,8 @@ describe("TokenDetails.vue", () => {
         expect(wrapper.get("#decimalsValue").text()).toBe("0")
         expect(wrapper.get("#evmAddress").text()).toMatch(
             RegExp("^EVM Address:0x0000000000000000000000000000000001c49eecCopy"))
+
+        expect(wrapper.get("#createTransactionValue").text()).toBe(TransactionID.normalize(SAMPLE_TRANSACTION.transaction_id))
 
         expect(wrapper.text()).toMatch("Balances")
         expect(wrapper.findComponent(TokenBalanceTable).exists()).toBe(true)

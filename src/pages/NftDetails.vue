@@ -79,6 +79,12 @@
             />
           </template>
         </Property>
+        <Property id="createTransaction">
+          <template v-slot:name>Mint Transaction</template>
+          <template v-slot:value>
+            <TransactionLink :transactionLoc="nftInfo?.created_timestamp ?? undefined"/>
+          </template>
+        </Property>
         <Property id="metadata">
           <template #name>Metadata</template>
           <template #value>
@@ -147,15 +153,7 @@
 <!-- --------------------------------------------------------------------------------------------------------------- -->
 
 <script lang="ts">
-import {
-  computed,
-  defineComponent,
-  inject,
-  onBeforeUnmount,
-  onMounted,
-  ref,
-  watch,
-} from "vue"
+import {computed, defineComponent, inject, onBeforeUnmount, onMounted, ref, watch,} from "vue"
 import router, {routeManager} from "@/router"
 import TimestampValue from "@/components/values/TimestampValue.vue"
 import DashboardCard from "@/components/DashboardCard.vue"
@@ -174,11 +172,13 @@ import TransactionFilterSelect from "@/components/transaction/TransactionFilterS
 import {makeTokenSymbol} from "@/schemas/HederaUtils";
 import {TokenInfoCache} from "@/utils/cache/TokenInfoCache";
 import TokenLink from "@/components/values/link/TokenLink.vue";
+import TransactionLink from "@/components/values/TransactionLink.vue";
 
 export default defineComponent({
   name: "NftDetails",
 
   components: {
+    TransactionLink,
     TokenLink,
     ContractResultsSection,
     PlayPauseButton,

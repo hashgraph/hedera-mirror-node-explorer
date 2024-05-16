@@ -99,6 +99,12 @@
             />
           </template>
         </Property>
+        <Property id="createTransaction">
+          <template v-slot:name>Create Transaction</template>
+          <template v-slot:value>
+            <TransactionLink :transactionLoc="tokenInfo?.created_timestamp ?? undefined"/>
+          </template>
+        </Property>
         <Property id="expiresAt" tooltip="Token expiry is not turned on yet. Value in this field is not relevant.">
           <template v-slot:name>
             <span>Expires at</span>
@@ -348,12 +354,14 @@ import {TokenInfoAnalyzer} from "@/components/token/TokenInfoAnalyzer";
 import ContractResultsSection from "@/components/contracts/ContractResultsSection.vue";
 import Copyable from "@/components/Copyable.vue";
 import MirrorLink from "@/components/MirrorLink.vue";
+import TransactionLink from "@/components/values/TransactionLink.vue";
 
 export default defineComponent({
 
   name: 'TokenDetails',
 
   components: {
+    TransactionLink,
     MirrorLink,
     Copyable,
     ContractResultsSection,
