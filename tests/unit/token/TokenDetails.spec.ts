@@ -32,6 +32,7 @@ import {
     SAMPLE_TOKEN,
     SAMPLE_TOKEN_WITH_KEYS,
     SAMPLE_TOKEN_WITHOUT_KEYS,
+    SAMPLE_TRANSACTION,
     SAMPLE_TRANSACTIONS
 } from "../Mocks";
 import TokenBalanceTable from "@/components/token/TokenBalanceTable.vue";
