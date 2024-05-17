@@ -41,6 +41,7 @@ import {hnsResolve} from "@/utils/name_service/HNS";
 import {Timestamp} from "@/utils/Timestamp";
 import {networkRegistry} from "@/schemas/NetworkRegistry";
 import {routeManager} from "@/router";
+import {AppStorage} from "@/AppStorage";
 
 export class SearchRequest {
 
@@ -350,6 +351,7 @@ export class SearchRequest {
             if (accountId !== null) {
                 const r = await axios.get<AccountBalanceTransactions>("api/v1/accounts/" + accountId)
                 this.account = r.data
+                AppStorage.setNameRecord(accountId, name, routeManager.currentNetwork.value)
             } else {
                 this.account = null
             }
