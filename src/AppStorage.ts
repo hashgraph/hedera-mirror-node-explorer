@@ -219,6 +219,43 @@ export class AppStorage {
         this.setLocalStorageItem(this.SHOW_LOGIC_ABI_KEY, newValue ? "true" : null)
     }
 
+    //
+    // name resolution
+    //
+
+    private static readonly NAMING = "naming"
+
+    public static getNameRecord(entityId: string, network: string): NameRecord|null {
+        const key = this.makeNamingKey(entityId, network)
+        const jsonText = this.getLocalStorageItem(key)
+        let result: unknown|null
+        if (jsonText !== null) {
+            try {
+                result = JSON.parse(jsonText)
+            } catch {
+                result = null
+            }
+        } else {
+            result = null
+        }
+        return result as NameRecord|null
+    }
+
+    public static setNameRecord(entityId: string, name: string, network: string): void {
+        const t = new Date().getTime()
+        const newRecord: NameRecord = { entityId, name, timestamp: t}
+        const jsonText = JSON.stringify(newRecord)
+        this.setLocalStorageItem(this.makeNamingKey(entityId, network), jsonText)
+    }
+
+    public static clearNameRecord(entityId: string, network: string): void {
+        this.setLocalStorageItem(this.makeNamingKey(entityId, network), null)
+    }
+
+    private static makeNamingKey(entityId: string, network: string): string {
+        return this.NAMING + "/" + network + "/" + entityId
+    }
+
 
     //
     // Private
@@ -280,4 +317,10 @@ export class AppStorage {
         }
         return result
     }
+}
+
+export interface NameRecord {
+    entityId: string
+    name: string
+    timestamp: number // Date.getTime()
 }
