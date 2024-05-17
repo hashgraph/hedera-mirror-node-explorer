@@ -21,9 +21,6 @@
 import {computed, ref, Ref, watch, WatchStopHandle} from "vue";
 import {routeManager} from "@/router";
 import {AppStorage, NameRecord} from "@/AppStorage";
-import {knsResolve} from "@/utils/name_service/KNS";
-import {hnsResolve} from "@/utils/name_service/HNS";
-import {KNS} from "@kabuto-sh/ns";
 import {KNSCache} from "@/utils/cache/KNSCache";
 import {HNSCache} from "@/utils/cache/HNSCache";
 
