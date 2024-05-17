@@ -56,6 +56,14 @@
             <EVMAddress :show-id="false" :has-custom-font="true" :address="ethereumAddress"/>
           </div>
         </div>
+        <div v-if="domainName" id="names" class="h-is-tertiary-text mt-2" style="word-break: keep-all">
+          <div class="is-inline-block h-is-property-text has-text-weight-light" style="min-width: 115px">Domain:</div>
+          <div class="is-inline-block h-is-property-text">
+            <div class="is-inline-block">
+              <EntityIOL :label="domainName"/>
+            </div>
+          </div>
+        </div>
 
         <div v-if="!isMediumScreen && showContractVisible && contractRoute" id="showContractLink"
              class="is-inline-block mt-2">
@@ -339,12 +347,15 @@ import DateTimePicker from "@/components/DateTimePicker.vue";
 import DownloadButton from "@/components/DownloadButton.vue";
 import {DialogController} from "@/components/dialog/DialogController";
 import TransactionDownloadDialog from "@/components/download/TransactionDownloadDialog.vue";
+import {NameQuery} from "@/utils/name_service/NameQuery";
+import EntityIOL from "@/components/values/link/EntityIOL.vue";
 
 export default defineComponent({
 
   name: 'AccountDetails',
 
   components: {
+    EntityIOL,
     TransactionDownloadDialog,
     DownloadButton,
     AccountCreatedContractsTable,
@@ -494,6 +505,14 @@ export default defineComponent({
 
     const downloadController = new DialogController()
 
+    //
+    // Naming
+    //
+
+    const nameQuery = new NameQuery(computed(() => props.accountId ?? null))
+    onMounted(() => nameQuery.mount())
+    onBeforeUnmount(() => nameQuery.unmount())
+
     return {
       isSmallScreen,
       isMediumScreen,
@@ -531,7 +550,8 @@ export default defineComponent({
       filterVerified,
       downloadController,
       timeSelection,
-      onDateCleared
+      onDateCleared,
+      domainName: nameQuery.name
     }
   }
 });

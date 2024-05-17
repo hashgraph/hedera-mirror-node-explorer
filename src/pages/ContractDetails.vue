@@ -47,6 +47,14 @@
             <EVMAddress :show-id="false" :has-custom-font="true" :address="ethereumAddress"/>
           </div>
         </div>
+        <div v-if="domainName" id="names" class="h-is-tertiary-text mt-2" style="word-break: keep-all">
+          <div class="is-inline-block h-is-property-text has-text-weight-light" style="min-width: 115px">Domain:</div>
+          <div class="is-inline-block h-is-property-text">
+            <div class="is-inline-block">
+              <EntityIOL :label="domainName"/>
+            </div>
+          </div>
+        </div>
         <div v-if="!isMediumScreen && accountRoute" id="showAccountLink" class="is-inline-block mt-2">
           <router-link :to="accountRoute">
             <span class="h-is-property-text">Show associated account</span>
@@ -218,12 +226,15 @@ import {ContractResultsLogsAnalyzer} from "@/utils/analyzer/ContractResultsLogsA
 import {BalanceAnalyzer} from "@/utils/analyzer/BalanceAnalyzer";
 import InlineBalancesValue from "@/components/values/InlineBalancesValue.vue";
 import MirrorLink from "@/components/MirrorLink.vue";
+import {NameQuery} from "@/utils/name_service/NameQuery";
+import EntityIOL from "@/components/values/link/EntityIOL.vue";
 
 export default defineComponent({
 
   name: 'ContractDetails',
 
   components: {
+    EntityIOL,
     InlineBalancesValue,
     MirrorLink,
     Copyable,
@@ -321,6 +332,13 @@ export default defineComponent({
     onMounted(() => contractResultsLogsAnalyzer.mount())
     onBeforeUnmount(() => contractResultsLogsAnalyzer.unmount())
 
+    //
+    // Naming
+    //
+    const nameQuery = new NameQuery(computed(() => props.contractId ?? null))
+    onMounted(() => nameQuery.mount())
+    onBeforeUnmount(() => nameQuery.unmount())
+
     return {
       isSmallScreen,
       isMediumScreen,
@@ -337,7 +355,8 @@ export default defineComponent({
       normalizedContractId,
       accountRoute,
       contractAnalyzer,
-      logs: contractResultsLogsAnalyzer.logs
+      logs: contractResultsLogsAnalyzer.logs,
+      domainName: nameQuery.name
     }
   },
 });
