@@ -36,8 +36,8 @@
 
 import {computed, defineComponent, onBeforeUnmount, onMounted, PropType} from "vue";
 import EntityIOL from "@/components/values/link/EntityIOL.vue";
-import {LabelByIdCache} from "@/utils/cache/LabelByIdCache";
 import {NetworkCache} from "@/utils/cache/NetworkCache";
+import {NamingStore} from "@/utils/name_service/NamingStore";
 
 export default defineComponent({
   name: "AccountIOL",
@@ -54,13 +54,9 @@ export default defineComponent({
   },
   setup(props) {
 
-    const labelLookup = LabelByIdCache.instance.makeLookup(computed(() => props.accountId))
-    onMounted(
-        () => labelLookup.mount()
-    )
-    onBeforeUnmount(
-        () => labelLookup.unmount()
-    )
+    const domainName = computed(() => {
+      return props.accountId ? NamingStore.instance.lookup(props.accountId) : null
+    })
 
     const networkLookup = NetworkCache.instance.makeLookup()
     onMounted(
@@ -71,7 +67,7 @@ export default defineComponent({
     )
 
     return {
-      label: labelLookup.entity,
+      label: domainName,
     }
   }
 })
