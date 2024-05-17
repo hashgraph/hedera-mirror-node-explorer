@@ -96,7 +96,7 @@ export class NameQuery {
                 // => clears local storage
                 AppStorage.clearNameRecord(record.entityId, routeManager.currentNetwork.value)
             }
-            result = AppStorage.getNameRecord(record.entityId, record.name)
+            result = AppStorage.getNameRecord(record.entityId, routeManager.currentNetwork.value)
         } else {
             result = record
         }
