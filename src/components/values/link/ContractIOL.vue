@@ -35,7 +35,6 @@
 <script lang="ts">
 
 import {computed, defineComponent, onBeforeUnmount, onMounted, PropType} from "vue";
-import {LabelByIdCache} from "@/utils/cache/LabelByIdCache";
 import {NameQuery} from "@/utils/name_service/NameQuery";
 import EntityIOL from "@/components/values/link/EntityIOL.vue";
 
@@ -54,13 +53,6 @@ export default defineComponent({
     onMounted(() => nameQuery.mount())
     onBeforeUnmount(() => nameQuery.unmount())
 
-    const labelLookup = LabelByIdCache.instance.makeLookup(computed(() => props.contractId))
-    onMounted(
-        () => labelLookup.mount()
-    )
-    onBeforeUnmount(
-        () => labelLookup.unmount()
-    )
     return {
       label: nameQuery.name
     }
