@@ -36,7 +36,7 @@
     "@vuepic/vue-datepicker": "^8.6.0",
     "axios": "^1.7.0",
     "base32-decode": "^1.0.0",
-    "base32-encode": "^1.2.0",
+    "base32-encode": "^2.0.0",
     "bulma": "^0.9.4",
     "core-js": "^3.37.1",
     "crypto-js": "4.1.1",
