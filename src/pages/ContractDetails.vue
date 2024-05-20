@@ -50,9 +50,7 @@
         <div v-if="domainName" id="names" class="h-is-tertiary-text mt-2" style="word-break: keep-all">
           <div class="is-inline-block h-is-property-text has-text-weight-light" style="min-width: 115px">Domain:</div>
           <div class="is-inline-block h-is-property-text">
-            <div class="is-inline-block">
-              <EntityIOL :label="domainName"/>
-            </div>
+            <EntityIOL :label="domainName"/>
           </div>
         </div>
         <div v-if="!isMediumScreen && accountRoute" id="showAccountLink" class="is-inline-block mt-2">
