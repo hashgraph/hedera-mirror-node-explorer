@@ -19,6 +19,7 @@
  */
 
 import {NetworkEntry, networkRegistry} from "@/schemas/NetworkRegistry";
+import {ref} from "vue";
 
 export class AppStorage {
 
@@ -246,11 +247,15 @@ export class AppStorage {
         const newRecord: NameRecord = { entityId, name, timestamp: t}
         const jsonText = JSON.stringify(newRecord)
         this.setLocalStorageItem(this.makeNamingKey(entityId, network), jsonText)
+        this.nameRecordChangeCounter.value += 1
     }
 
     public static clearNameRecord(entityId: string, network: string): void {
         this.setLocalStorageItem(this.makeNamingKey(entityId, network), null)
+        this.nameRecordChangeCounter.value += 1
     }
+
+    public static readonly nameRecordChangeCounter = ref(0)
 
     private static makeNamingKey(entityId: string, network: string): string {
         return this.NAMING + "/" + network + "/" + entityId

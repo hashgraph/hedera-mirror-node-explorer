@@ -39,7 +39,9 @@ export class NameQuery {
     }
 
     public mount(): void {
-        this.watchHandle = watch(this.entityId, this.entityIdDidChange, {immediate: true} )
+        this.watchHandle = watch(
+            [this.entityId, AppStorage.nameRecordChangeCounter],
+            this.entityIdDidChange, {immediate: true} )
     }
 
     public unmount(): void {
