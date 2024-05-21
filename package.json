@@ -42,7 +42,7 @@
     "crypto-js": "4.1.1",
     "ethers": "^6.12.1",
     "file-saver": "^2.0.5",
-    "hashconnect": "^0.1.10",
+    "hashconnect": "^3.0.13",
     "jszip": "^3.10.1",
     "prismjs": "^1.29.0",
     "vue": "^3.3.4",
