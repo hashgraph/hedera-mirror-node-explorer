@@ -34,7 +34,7 @@ export class NftCollectionCache extends EntityCache<string, NftCollectionInfo[]>
         const result: NftCollectionInfo[] = []
         let nextURL: string | null = "api/v1/accounts/" + accountId + "/nfts"
         const params = {
-            limit: 25 as number | undefined
+            limit: 100 as number | undefined
         }
         while (nextURL !== null) {
             const response: AxiosResponse<Nfts>

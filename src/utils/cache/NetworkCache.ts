@@ -34,7 +34,7 @@ export class NetworkCache extends SingletonCache<NetworkNode[]> {
         let result: NetworkNode[] = []
         let nextURL: string | null = "api/v1/network/nodes"
         let params = {
-            limit: 25 as number | undefined
+            limit: 100 as number | undefined
         }
         while (nextURL !== null) {
             const response: AxiosResponse<NetworkNodesResponse>
