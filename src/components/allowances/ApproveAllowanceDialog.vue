@@ -282,7 +282,7 @@ export default defineComponent({
     onMounted(() => tokenInfoLookup.mount())
     onBeforeUnmount(() => tokenInfoLookup.unmount())
     const tokenInfo = computed(() => tokenInfoLookup.entity.value)
-    const tokenSymbol = computed(() => makeTokenSymbol(tokenInfo.value, 8))
+    const tokenSymbol = computed(() => makeTokenSymbol(tokenInfo.value))
     const initialTokenAmount = computed(
         () => props.currentTokenAllowance?.amount_granted
             ? formatTokenAmount(

@@ -52,7 +52,7 @@ export class TokenInfoAnalyzer {
         () => this.tokenInfo.value !== null ? makeEthAddressForToken(this.tokenInfo.value) : null)
 
     public readonly tokenSymbol = computed(
-        () => makeTokenSymbol(this.tokenInfo.value, 11))
+        () => makeTokenSymbol(this.tokenInfo.value))
 
     public readonly decimals = computed(
         () => this.tokenInfo.value?.decimals ?? null)
