@@ -198,8 +198,6 @@ import AccountLink from "@/components/values/link/AccountLink.vue";
 import TimestampValue from "@/components/values/TimestampValue.vue";
 import DurationValue from "@/components/values/DurationValue.vue";
 import DashboardCard from "@/components/DashboardCard.vue";
-import HbarAmount from "@/components/values/HbarAmount.vue";
-import TokenAmount from "@/components/values/TokenAmount.vue";
 import BlobValue from "@/components/values/BlobValue.vue";
 import StringValue from "@/components/values/StringValue.vue";
 import Footer from "@/components/Footer.vue";
@@ -237,8 +235,6 @@ export default defineComponent({
     NotificationBanner,
     Footer,
     BlobValue,
-    HbarAmount,
-    TokenAmount,
     DashboardCard,
     AccountLink,
     TimestampValue,

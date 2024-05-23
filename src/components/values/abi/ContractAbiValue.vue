@@ -111,7 +111,6 @@
 
 import {computed, defineComponent, PropType} from "vue";
 import {ethers} from "ethers";
-import Property from "@/components/Property.vue";
 import ContractAbiEntry from "@/components/values/abi/ContractAbiEntry.vue";
 import "prismjs/prism";
 import "prismjs/themes/prism-tomorrow.css"
@@ -135,7 +134,6 @@ export default defineComponent({
   components: {
     SolidityCode,
     ContractAbiEntry,
-    Property
   },
 
   props: {

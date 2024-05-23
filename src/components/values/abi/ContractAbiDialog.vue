@@ -75,14 +75,12 @@ import CommitButton from "@/components/dialog/CommitButton.vue";
 import ParamTypeEditor from "@/components/values/abi/ParamTypeEditor.vue";
 import {ContractCallBuilder} from "@/components/values/abi/ContractCallBuilder";
 import {walletManager} from "@/router";
-import Property from "@/components/Property.vue";
-import FunctionValue from "@/components/values/FunctionValue.vue";
 import DialogStatus from "@/components/dialog/DialogStatus.vue";
 import DialogTitle from "@/components/dialog/DialogTitle.vue";
 import {gtagCallContract} from "@/gtag";
 
 export default defineComponent({
-  components: {DialogTitle, DialogStatus, FunctionValue, Property, CommitButton, DialogButton, ParamTypeEditor, Dialog},
+  components: {DialogTitle, DialogStatus, CommitButton, DialogButton, ParamTypeEditor, Dialog},
   emits: ["didUpdateContractState"],
   props: {
     controller: {

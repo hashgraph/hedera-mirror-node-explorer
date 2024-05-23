@@ -96,7 +96,7 @@ export default defineComponent({
   props: {
     auditItems: {
       type: Array as PropType<ContractSourceAnalyzerItem[]>,
-      default: []
+      default: [] as Array<ContractSourceAnalyzerItem> /* to please eslint */
     }
   },
 
