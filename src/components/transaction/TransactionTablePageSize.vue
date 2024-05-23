@@ -40,7 +40,7 @@
 
 <script lang="ts">
 
-import {defineComponent, PropType, Ref} from "vue";
+import {defineComponent, PropType} from "vue";
 import {TransactionTableControllerXL} from "@/components/transaction/TransactionTableControllerXL";
 
 

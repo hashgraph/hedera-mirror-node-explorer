@@ -33,7 +33,7 @@ export class NetworkCache extends SingletonCache<NetworkNode[]> {
     protected async load(): Promise<NetworkNode[]> {
         let result: NetworkNode[] = []
         let nextURL: string | null = "api/v1/network/nodes"
-        let params = {
+        const params = {
             limit: 100 as number | undefined
         }
         while (nextURL !== null) {

@@ -50,13 +50,12 @@
 
 import {defineComponent, PropType} from "vue";
 import Dialog from "@/components/dialog/Dialog.vue";
-import CommitButton from "@/components/dialog/CommitButton.vue";
 import DialogButton from "@/components/dialog/DialogButton.vue";
 import {DialogController} from "@/components/dialog/DialogController";
 
 export default defineComponent({
   name: "AlertDialog",
-  components: {DialogButton, CommitButton, Dialog},
+  components: {DialogButton, Dialog},
   props: {
     controller: {
       type: Object as PropType<DialogController>,

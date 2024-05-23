@@ -43,13 +43,12 @@
 
 
 import {computed, defineComponent, PropType} from "vue";
-import Dialog from "@/components/dialog/Dialog.vue";
 import DialogButton from "@/components/dialog/DialogButton.vue";
 import {DialogController, DialogMode} from "@/components/dialog/DialogController";
 
 export default defineComponent({
   name: "CommitButton",
-  components: {DialogButton, Dialog},
+  components: {DialogButton},
 
   props: {
     controller: {
