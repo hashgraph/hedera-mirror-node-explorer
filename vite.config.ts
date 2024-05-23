@@ -22,7 +22,7 @@ export default defineConfig({
       globals: {
         Buffer: true,
         global: false,
-        process: false,
+        process: true,
       },
       protocolImports: false,
     }),
