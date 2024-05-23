@@ -62,7 +62,7 @@ export default defineComponent({
   props: {
     sourceFiles: {
       type: Object as PropType<SourcifyResponseItem[]>,
-      default: []
+      default: [] as SourcifyResponseItem[] /* to please eslint */
     },
     filter: {
       type: String,

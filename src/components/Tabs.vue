@@ -59,7 +59,7 @@ export default defineComponent({
     },
     tabLabels: {
       type: Array as PropType<string[]>,
-      default: []
+      default: [] as string[] /* to please eslint */
     }
   },
 
