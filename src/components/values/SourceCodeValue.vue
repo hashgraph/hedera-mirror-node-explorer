@@ -47,7 +47,6 @@
 
 import {defineComponent, inject, PropType, ref} from 'vue';
 import {initialLoadingKey} from "@/AppKeys";
-import OpcodeValue from "@/components/values/OpcodeValue.vue";
 import {SourcifyResponseItem} from "@/utils/cache/SourcifyCache";
 import "prismjs/prism";
 import "prismjs/themes/prism-tomorrow.css"
@@ -58,7 +57,7 @@ import SolidityCode from "@/components/SolidityCode.vue";
 
 export default defineComponent({
   name: 'SourceCodeValue',
-  components: {SolidityCode, OpcodeValue},
+  components: {SolidityCode},
 
   props: {
     sourceFiles: {

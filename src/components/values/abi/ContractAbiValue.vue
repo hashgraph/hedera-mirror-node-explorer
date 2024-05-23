@@ -112,11 +112,6 @@
 import {computed, defineComponent, PropType} from "vue";
 import {ethers} from "ethers";
 import Property from "@/components/Property.vue";
-import InfoTooltip from "@/components/InfoTooltip.vue";
-import ByteCodeValue from "@/components/values/ByteCodeValue.vue";
-import DashboardCard from "@/components/DashboardCard.vue";
-import StringValue from "@/components/values/StringValue.vue";
-import DisassembledCodeValue from "@/components/values/DisassembledCodeValue.vue";
 import ContractAbiEntry from "@/components/values/abi/ContractAbiEntry.vue";
 import "prismjs/prism";
 import "prismjs/themes/prism-tomorrow.css"
@@ -125,7 +120,6 @@ import "prismjs/components/prism-clike.js";
 import "prismjs/components/prism-solidity.js";
 import SolidityCode from "@/components/SolidityCode.vue";
 import {ContractCallBuilder} from "@/components/values/abi/ContractCallBuilder";
-import ContractAbiDialog from "@/components/values/abi/ContractAbiDialog.vue";
 import {ABIController} from "@/components/contract/ABIController";
 
 export enum FragmentType {
@@ -140,13 +134,7 @@ export enum FragmentType {
 export default defineComponent({
   components: {
     SolidityCode,
-    ContractAbiDialog,
     ContractAbiEntry,
-    DisassembledCodeValue,
-    StringValue,
-    DashboardCard,
-    ByteCodeValue,
-    InfoTooltip,
     Property
   },
 

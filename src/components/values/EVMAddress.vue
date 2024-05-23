@@ -74,9 +74,7 @@ import {AccountByAddressCache} from "@/utils/cache/AccountByAddressCache";
 import {EthereumAddress} from "@/utils/EthereumAddress";
 import Copyable from "@/components/Copyable.vue";
 import {ContractByAddressCache} from "@/utils/cache/ContractByAddressCache";
-import ContractName from "@/components/values/ContractName.vue";
 import {ContractAnalyzer, GlobalState} from "@/utils/analyzer/ContractAnalyzer";
-import ContractIOL from "@/components/values/link/ContractIOL.vue";
 import {routeManager} from "@/router";
 import ContractLink from "@/components/values/link/ContractLink.vue";
 import AccountLink from "@/components/values/link/AccountLink.vue";
@@ -91,7 +89,7 @@ export default defineComponent({
       return routeManager
     }
   },
-  components: {TokenLink, AccountLink, ContractLink, ContractIOL, ContractName, Copyable},
+  components: {TokenLink, AccountLink, ContractLink, Copyable},
   props: {
     address: {
       type: String as PropType<string | null>,
