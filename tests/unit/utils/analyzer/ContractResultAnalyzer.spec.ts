@@ -112,7 +112,7 @@ describe("ContractResultAnalyzer.spec.ts", () => {
         expect(analyzer.functionCallAnalyzer.is4byteSignature.value).toBe(false)
 
         // 5) check history
-        console.log(JSON.stringify(fetchGetURLs(mock), null, "  "))
+        // console.log(JSON.stringify(fetchGetURLs(mock), null, "  "))
         expect(fetchGetURLs(mock)).toStrictEqual([
             "api/v1/contracts/results",
             "api/v1/contracts/0.0.6810663/results/1704186823.658538003",
@@ -208,7 +208,7 @@ describe("ContractResultAnalyzer.spec.ts", () => {
         expect(analyzer.functionCallAnalyzer.is4byteSignature.value).toBe(false)
 
         // 5) check history
-        console.log(JSON.stringify(fetchGetURLs(mock), null, "  "))
+        // console.log(JSON.stringify(fetchGetURLs(mock), null, "  "))
         expect(fetchGetURLs(mock)).toStrictEqual([
             "api/v1/contracts/results",
             "api/v1/contracts/0.0.6810663/results/1704186823.658538003",
