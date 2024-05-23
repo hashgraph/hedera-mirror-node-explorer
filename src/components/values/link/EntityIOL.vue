@@ -26,9 +26,9 @@
 
   <div class="is-inline-block">
 
-    <template v-if="label !== null">
+    <template v-if="actualLabel !== null">
       <span :class="{'h-is-label':!compact, 'h-is-compact-label':compact}" class="is-inline-block">
-        {{ label }}
+        {{ actualLabel }}
       </span>
     </template>
 
@@ -91,7 +91,7 @@ export default defineComponent({
     const initialLoading = inject(initialLoadingKey, ref(false))
 
     const slice = computed(() => props.compact ? 12 : props.slice)
-    const label = computed(() => {
+    const actualLabel = computed(() => {
       let result = props.label
       if (result != null
           && slice.value != null
@@ -104,7 +104,7 @@ export default defineComponent({
 
     return {
       initialLoading,
-      label,
+      actualLabel,
     }
   }
 
