@@ -53,7 +53,6 @@ import {computed, ComputedRef, defineComponent, inject, onBeforeUnmount, onMount
 import HbarAmount from "@/components/values/HbarAmount.vue";
 import TokenAmount from "@/components/values/TokenAmount.vue";
 import {BalanceAnalyzer} from "@/utils/analyzer/BalanceAnalyzer";
-import Property from "@/components/Property.vue";
 import {TokenBalance} from "@/schemas/HederaSchemas";
 import {NftCollectionCache} from "@/utils/cache/NftCollectionCache";
 
@@ -64,7 +63,6 @@ export default defineComponent({
   name: 'InlineBalancesValue',
 
   components: {
-    Property,
     TokenAmount,
     HbarAmount,
   },

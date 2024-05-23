@@ -43,7 +43,6 @@
 <script lang="ts">
 
 import {computed, defineComponent, PropType} from "vue";
-import Property from "@/components/Property.vue";
 import ParamTextEditor from "@/components/values/abi/ParamTextEditor.vue";
 import ParamBooleanEditor from "@/components/values/abi/ParamBooleanEditor.vue";
 import ParamJsonEditor from "@/components/values/abi/ParamJsonEditor.vue";
@@ -51,7 +50,7 @@ import {ContractParamBuilder} from "@/components/values/abi/ContractCallBuilder"
 
 export default defineComponent({
   name: "ParamTypeEditor",
-  components: {ParamJsonEditor, ParamBooleanEditor, ParamTextEditor, Property},
+  components: {ParamJsonEditor, ParamBooleanEditor, ParamTextEditor},
   props: {
     paramBuilder: {
       type: Object as PropType<ContractParamBuilder>,

@@ -300,7 +300,6 @@ import DurationValue from "@/components/values/DurationValue.vue";
 import TimestampValue from "@/components/values/TimestampValue.vue";
 import DashboardCard from "@/components/DashboardCard.vue";
 import HbarAmount from "@/components/values/HbarAmount.vue";
-import TokenAmount from "@/components/values/TokenAmount.vue";
 import BlobValue from "@/components/values/BlobValue.vue";
 import {BalanceAnalyzer} from "@/utils/analyzer/BalanceAnalyzer";
 import Footer from "@/components/Footer.vue";
@@ -362,7 +361,6 @@ export default defineComponent({
     TransactionFilterSelect,
     Footer,
     BlobValue,
-    TokenAmount,
     HbarAmount,
     DashboardCard,
     TransactionTable,

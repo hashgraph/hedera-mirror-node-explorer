@@ -68,7 +68,6 @@ import {EntityID} from "@/utils/EntityID";
 import {TopicMessageTableController} from "@/components/topic/TopicMessageTableController";
 import {networkRegistry} from "@/schemas/NetworkRegistry";
 import router from "@/router";
-import MirrorLink from "@/components/MirrorLink.vue";
 
 export default defineComponent({
 
@@ -83,7 +82,6 @@ export default defineComponent({
   },
 
   components: {
-    MirrorLink,
     NotificationBanner,
     Footer,
     DashboardCard,

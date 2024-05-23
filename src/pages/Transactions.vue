@@ -53,7 +53,7 @@
 
 <script lang="ts">
 
-import {computed, defineComponent, inject, onBeforeUnmount, onMounted, Ref, ref} from 'vue';
+import {defineComponent, inject, onBeforeUnmount, onMounted, Ref, ref} from 'vue';
 
 import TransactionTable from "@/components/transaction/TransactionTable.vue";
 import PlayPauseButton from "@/components/PlayPauseButton.vue";
