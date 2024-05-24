@@ -28,16 +28,22 @@
 
     <DashboardCard>
       <template v-slot:title>
-        <div class="is-flex is-align-items-baseline">
-          <p class="h-is-primary-title">Collection</p>
-          <TokenLink
-              v-bind:show-extra="true"
-              v-bind:token-id="tokenId"
-              class="h-is-secondary-text ml-2"
-          />
+        <span v-if="tokenInfo" class="h-is-primary-title mr-2">
+          <span v-if="tokenInfo.type === 'NON_FUNGIBLE_UNIQUE'">NFT Collection</span>
+          <span v-else>Fungible Token</span>
+        </span>
+        <div class="is-inline-block h-is-tertiary-text h-is-extra-text should-wrap" style="word-break: break-all">
+          {{ `${displayName} (${displaySymbol})` }}
         </div>
-        <p class="h-is-tertiary-text has-text-grey">{{ 'for Account ' + normalizedAccountId }}</p>
       </template>
+
+      <template v-slot:subtitle>
+        <div class="mt-3 h-is-tertiary-text">
+          <span class="has-text-grey">for Account</span>
+          <span class="ml-2"><AccountLink :account-id="normalizedAccountId"/></span>
+        </div>
+      </template>
+
       <template v-slot:content>
         <CollectionTable :token-id="tokenId" :controller="collectionTableController"/>
       </template>
@@ -63,12 +69,19 @@ import {EntityID} from "@/utils/EntityID";
 import {CollectionTableController} from "@/components/account/CollectionTableController";
 import CollectionTable from "@/components/account/CollectionTable.vue";
 import TokenLink from "@/components/values/link/TokenLink.vue";
+import {TokenInfoCache} from "@/utils/cache/TokenInfoCache";
+import {TokenInfoAnalyzer} from "@/components/token/TokenInfoAnalyzer";
+import {makeTokenName, makeTokenSymbol} from "@/schemas/HederaUtils";
+import AccountIOL from "@/components/values/link/AccountIOL.vue";
+import AccountLink from "@/components/values/link/AccountLink.vue";
 
 export default defineComponent({
 
   name: 'AccountCollection',
 
   components: {
+    AccountLink,
+    AccountIOL,
     TokenLink,
     CollectionTable,
     Footer,
@@ -97,6 +110,21 @@ export default defineComponent({
       return result !== null ? result.toString() : null
     })
 
+    const normalizedTokenId = computed(() => {
+      const result = EntityID.parse(props.tokenId) ?? EntityID.fromAddress(props.tokenId)
+      return result !== null ? result.toString() : null
+    })
+    const tokenLookup = TokenInfoCache.instance.makeLookup(normalizedTokenId)
+    onMounted(() => tokenLookup.mount())
+    onBeforeUnmount(() => tokenLookup.unmount())
+
+    const tokenAnalyzer = new TokenInfoAnalyzer(tokenLookup.entity)
+    onMounted(() => tokenAnalyzer.mount())
+    onBeforeUnmount(() => tokenAnalyzer.unmount())
+
+    const displayName = computed(() => makeTokenName(tokenLookup.entity.value, 80))
+    const displaySymbol = computed(() => makeTokenSymbol(tokenLookup.entity.value, 80))
+
     const collectionTableController = new CollectionTableController(useRouter(), props.tokenId, normalizedAccountId, perPage);
     onMounted(() => {
       collectionTableController.mount()
@@ -108,6 +136,9 @@ export default defineComponent({
     return {
       isSmallScreen,
       isTouchDevice,
+      tokenInfo: tokenLookup.entity,
+      displayName,
+      displaySymbol,
       collectionTableController,
       normalizedAccountId,
     }
