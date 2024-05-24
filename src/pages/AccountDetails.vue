@@ -98,9 +98,13 @@
 
         <div class="h-is-property-text">
           <Property id="balance" :full-width="isMediumScreen">
-            <template v-slot:name>{{
-                balanceAnalyzer.tokenBalances.value.length > 0 ? 'Balances' : 'Balance'
-              }}
+            <template v-slot:name>
+              <span class="h-is-tertiary-text">
+                {{balanceAnalyzer.tokenBalances.value.length > 0 ? 'Balances' : 'Balance'}}
+              </span>
+              <router-link :to="{name: 'AccountBalances', params: {accountId: accountId}}">
+                <div class="mt-1 h-is-extra-text">Show all tokens</div>
+              </router-link>
             </template>
             <template v-slot:value>
               <InlineBalancesValue :balance-analyzer="balanceAnalyzer"/>

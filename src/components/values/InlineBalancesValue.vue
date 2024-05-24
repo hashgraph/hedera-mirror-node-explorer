@@ -35,11 +35,6 @@
   <div v-for="b in displayedBalances" :key="b.token_id ?? undefined" class="h-is-tertiary-text">
     <TokenAmount v-bind:amount="BigInt(b.balance)" v-bind:show-extra="true" v-bind:token-id="b.token_id"/>
   </div>
-  <div v-if="displayAllTokenLinks" id="show-all-link">
-    <router-link :to="{name: 'AccountBalances', params: {accountId: accountId}}">
-      <span class="h-is-text-size-3 has-text-grey">Show all tokens</span>
-    </router-link>
-  </div>
 
 </template>
 
