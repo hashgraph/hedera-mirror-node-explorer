@@ -81,7 +81,8 @@ export default defineComponent({
     // const isTouchDevice = inject('isTouchDevice', false)
 
     const contractActionsLoader = new ContractActionsLoader(computed(() => props.transactionIdOrHash ?? null))
-    onMounted(() => contractActionsLoader.requestLoad())
+    onMounted(() => contractActionsLoader.mount())
+    onMounted(() => contractActionsLoader.unmount())
 
     const expandedActions: Ref<ContractActionWithPath[]> = ref([])
     const collapseAllVisible = computed(() => {
