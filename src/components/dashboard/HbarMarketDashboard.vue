@@ -28,8 +28,8 @@
 
     <div v-if="isLargeScreen">
       <div class="is-flex is-flex-wrap-wrap is-justify-content-space-evenly pt-1 pb-2">
-        <DashboardItem :name="hbarPriceLabel" :value="'$' + hbarPrice" :variation="hbarPriceVariation"/>
-        <DashboardItem :name="hbarMarketCapLabel" :value="'$' + hbarMarketCap" :variation="hbarMarketCapVariation"/>
+        <DashboardItem :name="hbarPriceLabel" :value="hbarPrice" :variation="hbarPriceVariation"/>
+        <DashboardItem :name="hbarMarketCapLabel" :value="hbarMarketCap" :variation="hbarMarketCapVariation"/>
         <DashboardItem :name="hbarReleasedLabel" :value="hbarReleased"/>
         <DashboardItem :name="hbarTotalLabel" :value="hbarTotal"/>
       </div>
@@ -38,9 +38,9 @@
     <div v-else-if="isSmallScreen">
       <div class="is-flex is-flex-wrap-wrap is-justify-content-space-evenly pt-1 pb-2">
         <div class="is-flex is-flex-direction-column is-align-items-start">
-          <DashboardItem :is-numeric="true" :name="hbarPriceLabel" :value="'$' + hbarPrice"
+          <DashboardItem :is-numeric="true" :name="hbarPriceLabel" :value="hbarPrice"
                          :variation="hbarPriceVariation"/>
-          <DashboardItem :is-numeric="true" :name="hbarMarketCapLabel" :value="'$' + hbarMarketCap"
+          <DashboardItem :is-numeric="true" :name="hbarMarketCapLabel" :value="hbarMarketCap"
                          :variation="hbarMarketCapVariation"/>
         </div>
         <div class="is-flex is-flex-direction-column is-align-items-start">
@@ -53,9 +53,9 @@
     <div v-else>
       <div class="is-flex is-flex-wrap-wrap is-justify-content-space-evenly pt-1 pb-2">
         <div class="is-flex is-flex-direction-column is-align-items-start">
-          <DashboardItem :is-numeric="true" :name="hbarPriceLabel" :value="'$' + hbarPrice"
+          <DashboardItem :is-numeric="true" :name="hbarPriceLabel" :value="hbarPrice"
                          :variation="hbarPriceVariation"/>
-          <DashboardItem :is-numeric="true" :name="hbarMarketCapLabel" :value="'$' + hbarMarketCap"
+          <DashboardItem :is-numeric="true" :name="hbarMarketCapLabel" :value="hbarMarketCap"
                          :variation="hbarMarketCapVariation"/>
           <DashboardItem :is-numeric="true" :name="hbarReleasedLabel" :value="hbarReleased"/>
           <DashboardItem :is-numeric="true" :name="hbarTotalLabel" :value="hbarTotal"/>
@@ -84,7 +84,7 @@ import {computed, defineComponent, inject, onBeforeUnmount, onMounted} from 'vue
 import DashboardItem from "@/components/dashboard/DashboardItem.vue";
 import {NetworkRegistry, networkRegistry} from "@/schemas/NetworkRegistry";
 import router from "@/router";
-import {MarketDataCache} from "@/components/dashboard/MarketDataCache";
+import {HederaMetricsLoader} from "@/components/dashboard/metrics/HederaMetricsLoader";
 
 export default defineComponent({
 
@@ -113,9 +113,10 @@ export default defineComponent({
     const hbarReleasedLabel = 'HBAR RELEASED'
     const hbarTotalLabel = 'HBAR TOTAL'
 
-    // marketDataCache
-    onMounted(() => MarketDataCache.instance.mount())
-    onBeforeUnmount(() => MarketDataCache.instance.unmount())
+    // Hedera Metrics
+    const hederaMetricsLoader = new HederaMetricsLoader()
+    onMounted(() => hederaMetricsLoader.mount())
+    onBeforeUnmount(() => hederaMetricsLoader.unmount())
 
     return {
       isMainNetwork,
@@ -126,13 +127,12 @@ export default defineComponent({
       hbarMarketCapLabel,
       hbarReleasedLabel,
       hbarTotalLabel,
-      marketDataCache: MarketDataCache.instance, // For testing purpose
-      hbarReleased: MarketDataCache.instance.hbarReleased,
-      hbarTotal: MarketDataCache.instance.hbarTotal,
-      hbarPrice: MarketDataCache.instance.hbarPrice,
-      hbarPriceVariation: MarketDataCache.instance.hbarPriceVariation,
-      hbarMarketCap: MarketDataCache.instance.hbarMarketCap,
-      hbarMarketCapVariation: MarketDataCache.instance.hbarMarketCapVariation,
+      hbarReleased: hederaMetricsLoader.hbarReleasedText,
+      hbarTotal: hederaMetricsLoader.hbarTotalText,
+      hbarPrice: hederaMetricsLoader.hbarPriceText,
+      hbarPriceVariation: hederaMetricsLoader.hbarPriceVariationText,
+      hbarMarketCap: hederaMetricsLoader.hbarMarketCapText,
+      hbarMarketCapVariation: hederaMetricsLoader.hbarMarketCapVariationText,
     }
   },
 });

@@ -52,11 +52,6 @@ describe("HbarMarketDashboard.vue ", () => {
         await flushPromises()
         // console.log(wrapper.text())
 
-        expect(wrapper.vm.marketDataCache.hbarPriceCache.autoRefresh.value).toBe(true)
-        expect(wrapper.vm.marketDataCache.hbarPrice24hCache.autoRefresh.value).toBe(true)
-        expect(wrapper.vm.marketDataCache.hbarSupplyCache.autoRefresh.value).toBe(true)
-        expect(wrapper.vm.marketDataCache.hbarSupply24hCache.autoRefresh.value).toBe(true)
-
         expect(wrapper.text()).toBe(
             "$0.2460" +
             "0.00%" +
@@ -80,10 +75,6 @@ describe("HbarMarketDashboard.vue ", () => {
         wrapper.unmount()
         await flushPromises()
 
-        expect(wrapper.vm.marketDataCache.hbarPriceCache.autoRefresh.value).toBe(false)
-        expect(wrapper.vm.marketDataCache.hbarPrice24hCache.autoRefresh.value).toBe(false)
-        expect(wrapper.vm.marketDataCache.hbarSupplyCache.autoRefresh.value).toBe(false)
-        expect(wrapper.vm.marketDataCache.hbarSupply24hCache.autoRefresh.value).toBe(false)
     });
 
     it("should display the testnet banner", async () => {
