@@ -56,6 +56,7 @@ export abstract class EntityLoaderV2<E> {
     }
 
     public readonly entity = computed(() => this.entityRef.value)
+
     public readonly state = computed(() => {
 
         /*
@@ -103,7 +104,6 @@ export abstract class EntityLoaderV2<E> {
     //
 
     private requestLoad(): void {
-        this.abortLoad()
         this.requestCount.value += 1
         const capturedRequestCount = this.requestCount.value
         this.load()
@@ -143,9 +143,9 @@ export abstract class EntityLoaderV2<E> {
     }
 
     private concludeLoad(): void {
-        this.timeoutID.value = -1
         if (this.requestCount.value < this.maxRefreshCount) {
             this.timeoutID.value = window.setTimeout(() => {
+                this.timeoutID.value = -1
                 this.requestLoad()
             }, this.refreshPeriod)
         } else {
