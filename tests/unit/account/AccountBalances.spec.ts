@@ -80,7 +80,7 @@ describe("AccountBalances.vue", () => {
             "0.0.49292859" + "TokenA7" + "0.00000000")
 
         const nftsCard = wrapper.get("#nftsCard")
-        expect(nftsCard.find('thead').text()).toBe("Token Owned")
+        expect(nftsCard.find('thead').text()).toBe("NFT Collection Nb of NFTs")
         expect(nftsCard.find('tbody').text()).toBe("")
 
         wrapper.unmount()
@@ -123,7 +123,7 @@ describe("AccountBalances.vue", () => {
         expect(balanceCard.find('tbody').text()).toBe("")
 
         const nftsCard = wrapper.get("#nftsCard")
-        expect(nftsCard.find('thead').text()).toBe("Token Owned")
+        expect(nftsCard.find('thead').text()).toBe("NFT Collection Nb of NFTs")
         expect(nftsCard.find('tbody').text()).toBe("0.0.748383" + SAMPLE_NONFUNGIBLE.symbol + "2")
 
         wrapper.unmount()
