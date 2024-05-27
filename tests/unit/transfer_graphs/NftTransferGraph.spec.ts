@@ -18,7 +18,7 @@
  *
  */
 
-import {describe, test, expect} from 'vitest'
+import {describe, expect, test} from 'vitest'
 import router from "@/router";
 import {flushPromises, mount} from "@vue/test-utils";
 import NftTransferGraph from "@/components/transfer_graphs/NftTransferGraph.vue";
@@ -133,16 +133,16 @@ describe("NftTransferGraph.vue", () => {
 
         expect(wrapper.text()).toBe(
             "NFT TransfersAccountNon Fungible TokensAccount0.0.100\n\n" +
-            "0.0.748383Ħ Frens Kingdom #601 #602\n\n" +
+            "0.0.748383" + SAMPLE_NONFUNGIBLE_DUDE.symbol + " #601 #602\n\n" +
             "0.0.101Transfer0.0.100\n\n" +
-            "0.0.748384Ħ Frens Kingdom Dude #501\n\n" +
+            "0.0.748384" + SAMPLE_NONFUNGIBLE_DUDE.symbol + " #501\n\n" +
             "0.0.101Transfer0.0.101\n\n" +
-            "0.0.748383Ħ Frens Kingdom #603 #604\n\n" +
+            "0.0.748383" + SAMPLE_NONFUNGIBLE_DUDE.symbol + " #603 #604\n\n" +
             "0.0.100Transfer0.0.101\n\n" +
-            "0.0.748384Ħ Frens Kingdom Dude #502\n\n" +
+            "0.0.748384" + SAMPLE_NONFUNGIBLE_DUDE.symbol + " #502\n\n" +
             "0.0.100Transfer")
-        expect(wrapper.text()).toMatch(SAMPLE_NONFUNGIBLE.name)
-        expect(wrapper.text()).toMatch(SAMPLE_NONFUNGIBLE_DUDE.name)
+        expect(wrapper.text()).toMatch(SAMPLE_NONFUNGIBLE.symbol)
+        expect(wrapper.text()).toMatch(SAMPLE_NONFUNGIBLE_DUDE.symbol)
 
         wrapper.unmount()
 
@@ -164,16 +164,16 @@ describe("NftTransferGraph.vue", () => {
 
         expect(wrapper2.text()).toBe(
             "NFT TransfersAccountNon Fungible TokensAccount0.0.100\n\n" +
-            "0.0.748383Ħ Frens Kingdom #601 #602\n\n" +
+            "0.0.748383" + SAMPLE_NONFUNGIBLE_DUDE.symbol + " #601 #602\n\n" +
             "0.0.1010.0.100\n\n" +
-            "0.0.748384Ħ Frens Kingdom Dude #501\n\n" +
+            "0.0.748384" + SAMPLE_NONFUNGIBLE_DUDE.symbol + " #501\n\n" +
             "0.0.1010.0.101\n\n" +
-            "0.0.748383Ħ Frens Kingdom #603 #604\n\n" +
+            "0.0.748383" + SAMPLE_NONFUNGIBLE_DUDE.symbol + " #603 #604\n\n" +
             "0.0.1000.0.101\n\n" +
-            "0.0.748384Ħ Frens Kingdom Dude #502\n\n" +
+            "0.0.748384" + SAMPLE_NONFUNGIBLE_DUDE.symbol + " #502\n\n" +
             "0.0.100")
-        expect(wrapper2.text()).toMatch(SAMPLE_NONFUNGIBLE.name)
-        expect(wrapper2.text()).toMatch(SAMPLE_NONFUNGIBLE_DUDE.name)
+        expect(wrapper2.text()).toMatch(SAMPLE_NONFUNGIBLE.symbol)
+        expect(wrapper2.text()).toMatch(SAMPLE_NONFUNGIBLE_DUDE.symbol)
 
         wrapper2.unmount()
 
@@ -217,9 +217,9 @@ describe("NftTransferGraph.vue", () => {
 
         expect(wrapper.text()).toBe(
             "NFT TransfersAccountNon Fungible TokensAccountMINT\n\n" +
-            "0.0.748383Ħ Frens Kingdom #604\n\n" +
+            "0.0.748383" + SAMPLE_NONFUNGIBLE_DUDE.symbol + " #604\n\n" +
             "0.0.100")
-        expect(wrapper.text()).toMatch(SAMPLE_NONFUNGIBLE.name)
+        expect(wrapper.text()).toMatch(SAMPLE_NONFUNGIBLE.symbol)
 
         wrapper.unmount()
         await flushPromises()
@@ -270,11 +270,11 @@ describe("NftTransferGraph.vue", () => {
 
         expect(wrapper.text()).toBe(
             "NFT TransfersAccountNon Fungible TokensAccountMINT\n\n" +
-            "0.0.748383Ħ Frens Kingdom #604\n\n" +
+            "0.0.748383" + SAMPLE_NONFUNGIBLE_DUDE.symbol + " #604\n\n" +
             "0.0.100MINT\n\n" +
-            "0.0.748383Ħ Frens Kingdom #601\n\n" +
+            "0.0.748383" + SAMPLE_NONFUNGIBLE_DUDE.symbol + " #601\n\n" +
             "0.0.101")
-        expect(wrapper.text()).toMatch(SAMPLE_NONFUNGIBLE.name)
+        expect(wrapper.text()).toMatch(SAMPLE_NONFUNGIBLE.symbol)
 
         wrapper.unmount()
         await flushPromises()
@@ -317,9 +317,9 @@ describe("NftTransferGraph.vue", () => {
 
         expect(wrapper.text()).toBe(
             "NFT TransfersAccountNon Fungible TokensAccount0.0.100\n\n" +
-            "0.0.748383Ħ Frens Kingdom #604\n\n" +
+            "0.0.748383" + SAMPLE_NONFUNGIBLE_DUDE.symbol + " #604\n\n" +
             "BURN")
-        expect(wrapper.text()).toMatch(SAMPLE_NONFUNGIBLE.name)
+        expect(wrapper.text()).toMatch(SAMPLE_NONFUNGIBLE.symbol)
 
         wrapper.unmount()
         await flushPromises()
@@ -370,11 +370,11 @@ describe("NftTransferGraph.vue", () => {
 
         expect(wrapper.text()).toBe(
             "NFT TransfersAccountNon Fungible TokensAccount0.0.100\n\n" +
-            "0.0.748383Ħ Frens Kingdom #604\n\n" +
+            "0.0.748383" + SAMPLE_NONFUNGIBLE_DUDE.symbol + " #604\n\n" +
             "BURN0.0.101\n\n" +
-            "0.0.748383Ħ Frens Kingdom #601\n\n" +
+            "0.0.748383" + SAMPLE_NONFUNGIBLE_DUDE.symbol + " #601\n\n" +
             "BURN")
-        expect(wrapper.text()).toMatch(SAMPLE_NONFUNGIBLE.name)
+        expect(wrapper.text()).toMatch(SAMPLE_NONFUNGIBLE.symbol)
 
         wrapper.unmount()
         await flushPromises()

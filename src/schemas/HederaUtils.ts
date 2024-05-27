@@ -19,15 +19,17 @@
  */
 
 import {
-    KeyType,
-    Transfer,
-    TokenInfo,
     AccountInfo,
-    Transaction,
-    NetworkNode, NftTransfer,
     HTS_PRECOMPILE_CONTRACT_ID,
-    TokenRelationship, TokenTransfer,
+    KeyType,
+    NetworkNode,
+    NftTransfer,
     REDIRECT_FOR_TOKEN_FUNCTION_SIGHASH,
+    TokenInfo,
+    TokenRelationship,
+    TokenTransfer,
+    Transaction,
+    Transfer,
 } from "@/schemas/HederaSchemas";
 import {ethers} from "ethers";
 import {EntityID} from "@/utils/EntityID";
@@ -58,18 +60,20 @@ export function makeEthAddressForToken(token: TokenInfo): string | null {
     return result
 }
 
-export function makeTokenSymbol(token: TokenInfo | null, maxLength: number): string {
-    const symbol = token?.symbol
-    const name = token?.name
+export function makeTokenName(token: TokenInfo | null, maxLength: number=40): string {
+    let result = token?.name ?? '?'
+    if (result.length > maxLength) {
+        result = result.slice(0, maxLength) + '…'
+    }
+    return result
+}
 
-    const symbolUsable = symbol && symbol.search("://") == -1
-
-    const candidate1 = symbol && symbolUsable && symbol.length <= maxLength ? symbol : null
-    const candidate2 = name && name.length <= maxLength ? name : null
-    const candidate3 = symbol && symbolUsable ? symbol.slice(0, maxLength) : null
-    const candidate4 = name ? name.slice(0, maxLength) : null
-
-    return candidate1 ?? candidate2 ?? candidate3 ?? candidate4 ?? token?.token_id ?? "?"
+export function makeTokenSymbol(token: TokenInfo | null, maxLength: number=11): string {
+    let result = token?.symbol ?? '?'
+    if (result.length > maxLength) {
+        result = result.slice(0, maxLength) + '…'
+    }
+    return result
 }
 
 export function makeNodeDescription(node: NetworkNode): string {

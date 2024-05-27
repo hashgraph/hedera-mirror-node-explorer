@@ -25,13 +25,14 @@
 
  */
 
-import {describe, it, expect} from 'vitest'
+import {describe, expect, it} from 'vitest'
 import {flushPromises, mount} from "@vue/test-utils";
 import router from "@/router";
 import {SAMPLE_TOKEN, SAMPLE_TOKEN_DUDE} from "../Mocks";
 import MockAdapter from "axios-mock-adapter";
 import axios from "axios";
 import TokenExtra from "../../../src/components/values/link/TokenExtra.vue";
+import {truncateTokenSymbol} from "./TokenLink.spec";
 
 describe("TokenExtra.vue", () => {
 
@@ -60,14 +61,14 @@ describe("TokenExtra.vue", () => {
         })
         await flushPromises()
         expect(wrapper.find('a').exists()).toBeFalsy()
-        expect(wrapper.get('.h-is-extra-text').text()).toBe(SAMPLE_TOKEN.name)
+        expect(wrapper.get('.h-is-extra-text').text()).toBe(truncateTokenSymbol(SAMPLE_TOKEN.symbol))
 
         await wrapper.setProps({
             useAnchor: true
         })
         await flushPromises()
         expect(wrapper.get('a').attributes('href')).toMatch(RegExp("/token/" + SAMPLE_TOKEN.token_id + "$"))
-        expect(wrapper.get('.h-is-extra-text').text()).toBe(SAMPLE_TOKEN.name)
+        expect(wrapper.get('.h-is-extra-text').text()).toBe(truncateTokenSymbol(SAMPLE_TOKEN.symbol))
 
         wrapper.unmount()
         await flushPromises()

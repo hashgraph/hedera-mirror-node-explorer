@@ -34,7 +34,7 @@
       <span class="ml-2">
         <TokenExtra
             :token-id="tokenId ?? undefined"
-            :show-name="true"
+            :use-anchor="true"
         />
       </span>
     </template>

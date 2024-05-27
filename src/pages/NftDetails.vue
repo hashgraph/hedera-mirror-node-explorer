@@ -27,14 +27,14 @@
       :class="{ 'h-mobile-background': isTouchDevice || !isSmallScreen }"
       class="section"
   >
-    <DashboardCard>
+    <DashboardCard collapsible-key="nftDetails">
       <template #title>
         <span class="h-is-primary-title mr-3">Serial Number {{ serialNumber }}</span>
         <div
             class="is-inline-block h-is-tertiary-text h-is-extra-text should-wrap"
             style="word-break: break-all"
         >
-          {{ symbol }}
+          {{ `${tokenName} (${tokenSymbol})` }}
         </div>
       </template>
 
@@ -49,7 +49,7 @@
         <Property id="tokenId">
           <template #name>Token ID</template>
           <template #value>
-            <TokenLink :token-id="tokenId"/>
+            <TokenLink :token-id="tokenId" :show-extra="true"/>
           </template>
         </Property>
         <Property id="accountId">
@@ -157,7 +157,7 @@
 
 <script lang="ts">
 import {computed, defineComponent, inject, onBeforeUnmount, onMounted, ref, watch} from "vue"
-import router, {routeManager} from "@/router"
+import router from "@/router"
 import TimestampValue from "@/components/values/TimestampValue.vue"
 import DashboardCard from "@/components/DashboardCard.vue"
 import BlobValue from "@/components/values/BlobValue.vue"
@@ -172,7 +172,7 @@ import ContractResultsSection from "@/components/contracts/ContractResultsSectio
 import NftTransactionTable from "@/components/transaction/NftTransactionTable.vue"
 import {NftTransactionTableController} from "@/components/transaction/NftTransactionTableController"
 import TransactionFilterSelect from "@/components/transaction/TransactionFilterSelect.vue"
-import {makeTokenSymbol} from "@/schemas/HederaUtils";
+import {makeTokenName, makeTokenSymbol} from "@/schemas/HederaUtils";
 import {TokenInfoCache} from "@/utils/cache/TokenInfoCache";
 import TokenLink from "@/components/values/link/TokenLink.vue";
 import TransactionLink from "@/components/values/TransactionLink.vue";
@@ -227,7 +227,8 @@ export default defineComponent({
     onMounted(() => tokenLookup.mount())
     onBeforeUnmount(() => tokenLookup.unmount())
 
-    const symbol = computed(() => makeTokenSymbol(tokenLookup.entity.value, 256))
+    const tokenName = computed(() => makeTokenName(tokenLookup.entity.value, 80))
+    const tokenSymbol = computed(() => makeTokenSymbol(tokenLookup.entity.value, 80))
 
     const serialNumber = ref(props.serialNumber)
     const nftLookup = NftBySerialCache.instance.makeNftLookup(
@@ -310,7 +311,8 @@ export default defineComponent({
       parseBigIntString,
       transactionTableController,
       transactionType: transactionTableController.transactionType,
-      symbol
+      tokenSymbol,
+      tokenName,
     }
   },
 })

@@ -26,7 +26,7 @@
 
   <section :class="{'h-mobile-background': isTouchDevice || !isSmallScreen}" class="section">
 
-    <DashboardCard collapsible-key="nftDetails">
+    <DashboardCard collapsible-key="tokenDetails">
       <template v-slot:title>
         <span v-if="tokenInfo" class="h-is-primary-title">
           <span v-if="tokenInfo.type === 'NON_FUNGIBLE_UNIQUE'">Non Fungible</span>
@@ -34,7 +34,7 @@
         </span>
         <span class="h-is-primary-title mr-1"> Token </span>
         <div class="is-inline-block h-is-tertiary-text h-is-extra-text should-wrap" style="word-break: break-all">
-          {{ displaySymbol }}
+          {{ `${displayName} (${displaySymbol})` }}
         </div>
       </template>
 
@@ -348,7 +348,7 @@ import AccountLink from "@/components/values/link/AccountLink.vue";
 import StringValue from "@/components/values/StringValue.vue";
 import TokenCustomFees from "@/components/token/TokenCustomFees.vue";
 import EVMAddress from "@/components/values/EVMAddress.vue";
-import {makeTokenSymbol} from "@/schemas/HederaUtils";
+import {makeTokenName, makeTokenSymbol} from "@/schemas/HederaUtils";
 import {TokenInfoCache} from "@/utils/cache/TokenInfoCache";
 import {TokenInfoAnalyzer} from "@/components/token/TokenInfoAnalyzer";
 import ContractResultsSection from "@/components/contracts/ContractResultsSection.vue";
@@ -411,7 +411,8 @@ export default defineComponent({
     onMounted(() => tokenAnalyzer.mount())
     onBeforeUnmount(() => tokenAnalyzer.unmount())
 
-    const displaySymbol = computed(() => makeTokenSymbol(tokenLookup.entity.value, 256))
+    const displayName = computed(() => makeTokenName(tokenLookup.entity.value, 80))
+    const displaySymbol = computed(() => makeTokenSymbol(tokenLookup.entity.value, 80))
 
     const notification = computed(() => {
       let result
@@ -460,6 +461,7 @@ export default defineComponent({
       isMediumScreen,
       isTouchDevice,
       displaySymbol,
+      displayName,
       analyzer: tokenAnalyzer,
       tokenInfo: tokenLookup.entity,
       isNft: tokenAnalyzer.isNft,

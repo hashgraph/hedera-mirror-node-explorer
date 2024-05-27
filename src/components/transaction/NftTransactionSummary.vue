@@ -33,7 +33,7 @@
       {{ transaction?.sender_account_id }}
       <span v-if="tokens.length">
                 <i class="fas fa-link mr-1 has-text-grey"></i>
-                <TokenExtra :token-id="tokens[0]" :show-name="false"/>
+                <TokenExtra :token-id="tokens[0]"/>
                 <span
                     v-if="additionalTokensNumber"
                     class="h-is-smaller h-is-extra-text should-wrap"
@@ -54,17 +54,8 @@
 <!-- --------------------------------------------------------------------------------------------------------------- -->
 
 <script lang="ts">
-import {
-  computed,
-  defineComponent,
-  onBeforeUnmount,
-  onMounted,
-  PropType,
-} from "vue"
-import {
-  NftTransactionTransfer,
-  TransactionType,
-} from "@/schemas/HederaSchemas"
+import {computed, defineComponent, onBeforeUnmount, onMounted, PropType,} from "vue"
+import {NftTransactionTransfer, TransactionType,} from "@/schemas/HederaSchemas"
 import {makeSummaryLabel} from "@/utils/TransactionTools"
 import NftTransferGraphSection from "@/components/transfer_graphs/NftTransferGraphSection.vue"
 import TokenExtra from "@/components/values/link/TokenExtra.vue"
