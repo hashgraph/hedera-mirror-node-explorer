@@ -91,6 +91,7 @@ describe('Transfer Graphs Navigation', () => {
             .then((nft) => {
                 cy.wrap(nft)
                     .find('a')
+                    .eq(0)
                     .click()
                 cy.url().should('include', '/mainnet/token/')
                 cy.contains('Token ')
