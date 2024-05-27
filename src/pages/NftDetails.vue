@@ -29,7 +29,7 @@
   >
     <DashboardCard>
       <template #title>
-        <span class="h-is-primary-title mr-1"> Serial Number {{ serialNumber }}</span>
+        <span class="h-is-primary-title mr-3">Serial Number {{ serialNumber }}</span>
         <div
             class="is-inline-block h-is-tertiary-text h-is-extra-text should-wrap"
             style="word-break: break-all"
@@ -143,6 +143,9 @@
     </DashboardCard>
 
     <ContractResultsSection :contract-id="normalizedTokenId ?? undefined"/>
+
+    <MirrorLink :network="network" entityUrl="tokens" :loc="normalizedTokenId + '/nfts/' + serialNumber"/>
+
   </section>
 
   <Footer/>
@@ -153,7 +156,7 @@
 <!-- --------------------------------------------------------------------------------------------------------------- -->
 
 <script lang="ts">
-import {computed, defineComponent, inject, onBeforeUnmount, onMounted, ref, watch,} from "vue"
+import {computed, defineComponent, inject, onBeforeUnmount, onMounted, ref, watch} from "vue"
 import router, {routeManager} from "@/router"
 import TimestampValue from "@/components/values/TimestampValue.vue"
 import DashboardCard from "@/components/DashboardCard.vue"
@@ -173,12 +176,14 @@ import {makeTokenSymbol} from "@/schemas/HederaUtils";
 import {TokenInfoCache} from "@/utils/cache/TokenInfoCache";
 import TokenLink from "@/components/values/link/TokenLink.vue";
 import TransactionLink from "@/components/values/TransactionLink.vue";
+import MirrorLink from "@/components/MirrorLink.vue";
 
 export default defineComponent({
   name: "NftDetails",
 
   components: {
     TransactionLink,
+    MirrorLink,
     TokenLink,
     ContractResultsSection,
     PlayPauseButton,
@@ -251,10 +256,6 @@ export default defineComponent({
       return result
     })
 
-    const shownftDetails = (tokenId: string) => {
-      routeManager.routeToToken(tokenId)
-    }
-
     const perPage = computed(() => (isMediumScreen ? 10 : 5))
 
     //
@@ -306,7 +307,6 @@ export default defineComponent({
       validEntityId,
       normalizedTokenId,
       notification,
-      shownftDetails,
       parseBigIntString,
       transactionTableController,
       transactionType: transactionTableController.transactionType,
