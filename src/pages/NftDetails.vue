@@ -238,11 +238,6 @@ export default defineComponent({
     onMounted(() => nftLookup.mount())
     onBeforeUnmount(() => nftLookup.unmount())
 
-    const metadata = computed(() => nftLookup.entity.value?.metadata ?? '')
-    const metadataAnalyzer = new TokenMetadataAnalyzer(metadata)
-    onMounted(() => metadataAnalyzer.mount())
-    onBeforeUnmount(() => metadataAnalyzer.unmount())
-
     const notification = computed(() => {
       let result
       if (!validEntityId.value) {
