@@ -102,7 +102,7 @@
               <span class="h-is-tertiary-text">
                 {{balanceAnalyzer.tokenBalances.value.length > 0 ? 'Balances' : 'Balance'}}
               </span>
-              <router-link :to="{name: 'AccountBalances', params: {accountId: accountId}}">
+              <router-link id="show-all-link" :to="{name: 'AccountBalances', params: {accountId: accountId}}">
                 <div class="mt-1 h-is-extra-text">Show all tokens</div>
               </router-link>
             </template>

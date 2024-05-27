@@ -244,8 +244,6 @@ describe("InlineBalancesValue.vue", () => {
             "3" + "NFT-3" +
             "4" + "NFT-4" +
             "5" + "NFT-5")
-        // expect(wrapper.text()).toContain("Show all tokens")
-        expect(wrapper.get('#show-all-link').text()).toBe("Show all tokens")
 
         wrapper.unmount()
         await flushPromises()
@@ -361,7 +359,6 @@ describe("InlineBalancesValue.vue", () => {
         expect(wrapper.text()).toContain("100.00000000" + ">")
         expect(wrapper.text()).toContain("years ago" +
             "1" + "NFT-1")
-        expect(wrapper.get('#show-all-link').text()).toBe("Show all tokens")
 
         wrapper.unmount()
         await flushPromises()
