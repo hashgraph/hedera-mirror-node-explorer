@@ -25,7 +25,7 @@
 
  */
 
-import {describe, it, expect} from 'vitest'
+import {afterAll, beforeAll, describe, expect, it} from 'vitest'
 import {flushPromises, mount} from "@vue/test-utils";
 import router from "@/router";
 import {SAMPLE_TOKEN, SAMPLE_TOKEN_DUDE, SAMPLE_TOKEN_WITH_LARGE_DECIMAL_COUNT} from "../Mocks";
@@ -33,7 +33,7 @@ import TokenAmount from "@/components/values/TokenAmount.vue";
 import MockAdapter from "axios-mock-adapter";
 import axios from "axios";
 import Oruga from "@oruga-ui/oruga-next";
-import {afterAll, beforeAll} from "vitest";
+import {truncateTokenSymbol} from "./TokenLink.spec";
 
 describe("TokenAmount.vue", () => {
 
@@ -78,7 +78,7 @@ describe("TokenAmount.vue", () => {
 
         expect(wrapper.get('span').text()).toBe(expectedAmount.toString())
         expect(wrapper.get('a').attributes('href')).toMatch(RegExp("/token/" + SAMPLE_TOKEN.token_id + "$"))
-        expect(wrapper.get('.h-is-extra-text').text()).toBe(SAMPLE_TOKEN.name)
+        expect(wrapper.get('.h-is-extra-text').text()).toBe(truncateTokenSymbol(SAMPLE_TOKEN.symbol))
 
         wrapper.unmount()
         await flushPromises()
@@ -135,7 +135,7 @@ describe("TokenAmount.vue", () => {
         // Token has 0 decimal
         expect(wrapper.get('span').text()).toBe(testAmount.toString())
         expect(wrapper.get('a').attributes('href')).toMatch(RegExp("/token/" + SAMPLE_TOKEN.token_id + "$"))
-        expect(wrapper.get('.h-is-extra-text').text()).toBe(SAMPLE_TOKEN.name)
+        expect(wrapper.get('.h-is-extra-text').text()).toBe(truncateTokenSymbol(SAMPLE_TOKEN.symbol))
 
         await wrapper.setProps({
             tokenId: SAMPLE_TOKEN_DUDE.token_id,
@@ -146,7 +146,7 @@ describe("TokenAmount.vue", () => {
         // Token has 2 decimals
         expect(wrapper.get('span').text()).toBe((testAmount / 100).toString())
         expect(wrapper.get('a').attributes('href')).toMatch(RegExp("/token/" + SAMPLE_TOKEN_DUDE.token_id + "$"))
-        expect(wrapper.get('.h-is-extra-text').text()).toBe(SAMPLE_TOKEN_DUDE.name)
+        expect(wrapper.get('.h-is-extra-text').text()).toBe(truncateTokenSymbol(SAMPLE_TOKEN_DUDE.symbol))
 
         wrapper.unmount()
         await flushPromises()

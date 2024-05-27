@@ -18,12 +18,15 @@
  *
  */
 
-import {describe, test, expect} from 'vitest'
+import {describe, expect, test} from 'vitest'
 import {flushPromises, mount} from "@vue/test-utils"
 import router from "@/router";
 import axios from "axios";
 import {
-    SAMPLE_ASSOCIATED_TOKEN, SAMPLE_ASSOCIATED_TOKEN_2, SAMPLE_NFTS, SAMPLE_NONFUNGIBLE,
+    SAMPLE_ASSOCIATED_TOKEN,
+    SAMPLE_ASSOCIATED_TOKEN_2,
+    SAMPLE_NFTS,
+    SAMPLE_NONFUNGIBLE,
     SAMPLE_TOKEN_ASSOCIATIONS
 } from "../Mocks";
 import MockAdapter from "axios-mock-adapter";
@@ -121,7 +124,7 @@ describe("AccountBalances.vue", () => {
 
         const nftsCard = wrapper.get("#nftsCard")
         expect(nftsCard.find('thead').text()).toBe("Token Owned")
-        expect(nftsCard.find('tbody').text()).toBe("0.0.748383Ħ Frens Kingdom2")
+        expect(nftsCard.find('tbody').text()).toBe("0.0.748383" + SAMPLE_NONFUNGIBLE.symbol + "2")
 
         wrapper.unmount()
         await flushPromises()

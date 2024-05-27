@@ -18,7 +18,7 @@
  *
  */
 
-import {describe, test, expect} from 'vitest'
+import {describe, expect, test} from 'vitest'
 import router from "@/router";
 import {flushPromises, mount} from "@vue/test-utils";
 import TokenTransferGraph from "@/components/transfer_graphs/TokenTransferGraphF.vue";
@@ -90,7 +90,7 @@ describe("TokenTransferGraphF.vue", () => {
         expect(wrapper.text()).toBe(
             "Token TransfersAccountToken AmountAccountToken AmountMINT-1023423\n\n" +
             "0.0.2001023423")
-        expect(wrapper.text()).toMatch(SAMPLE_TOKEN.name)
+        expect(wrapper.text()).toMatch(SAMPLE_TOKEN.symbol)
 
         wrapper.unmount()
         await flushPromises()
@@ -124,7 +124,7 @@ describe("TokenTransferGraphF.vue", () => {
         expect(wrapper.text()).toBe(
             "Token TransfersAccountToken AmountAccountToken Amount0.0.100-1023423\n\n" +
             "0.0.2001023423Transfer")
-        expect(wrapper.text()).toMatch(SAMPLE_TOKEN.name)
+        expect(wrapper.text()).toMatch(SAMPLE_TOKEN.symbol)
 
         await router.push("/") // To avoid "missing required param 'network'" error
         const wrapper2 = mount(TokenTransferGraph, {
@@ -181,7 +181,7 @@ describe("TokenTransferGraphF.vue", () => {
             "Token TransfersAccountToken AmountAccountToken Amount0.0.100-1023423\n\n" +
             "0.0.200223423Transfer\n\n" +
             "0.0.201823423Transfer")
-        expect(wrapper.text()).toMatch(SAMPLE_TOKEN.name)
+        expect(wrapper.text()).toMatch(SAMPLE_TOKEN.symbol)
 
         wrapper.unmount()
         await flushPromises()
@@ -215,7 +215,7 @@ describe("TokenTransferGraphF.vue", () => {
         expect(wrapper.text()).toBe(
             "Token TransfersAccountToken AmountAccountToken Amount0.0.100-723423\n\n" +
             "BURN10234230.0.101-323423")
-        expect(wrapper.text()).toMatch(SAMPLE_TOKEN.name)
+        expect(wrapper.text()).toMatch(SAMPLE_TOKEN.symbol)
 
         wrapper.unmount()
         await flushPromises()
@@ -250,7 +250,7 @@ describe("TokenTransferGraphF.vue", () => {
         expect(wrapper.text()).toBe(
             "Token TransfersAccountToken AmountAccountToken Amount0.0.100-723423\n\n" +
             "0.0.2001023423Transfer0.0.101-323423")
-        expect(wrapper.text()).toMatch(SAMPLE_TOKEN.name)
+        expect(wrapper.text()).toMatch(SAMPLE_TOKEN.symbol)
 
         wrapper.unmount()
         await flushPromises()
@@ -287,7 +287,7 @@ describe("TokenTransferGraphF.vue", () => {
             "Token TransfersAccountToken AmountAccountToken Amount0.0.100-723423\n\n" +
             "0.0.200223423Transfer0.0.101-323423\n\n" +
             "0.0.201823423Transfer")
-        expect(wrapper.text()).toMatch(SAMPLE_TOKEN.name)
+        expect(wrapper.text()).toMatch(SAMPLE_TOKEN.symbol)
 
         wrapper.unmount()
         await flushPromises()

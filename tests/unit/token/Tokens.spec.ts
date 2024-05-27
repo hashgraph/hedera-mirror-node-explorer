@@ -18,7 +18,7 @@
  *
  */
 
-import {describe, test, expect} from 'vitest'
+import {describe, expect, test} from 'vitest'
 import {flushPromises, mount} from "@vue/test-utils"
 import router from "@/router";
 import axios from "axios";
@@ -71,13 +71,12 @@ describe("Tokens.vue", () => {
         expect(table1.exists()).toBe(true)
         expect(table1.get('thead').text()).toBe("Token Name Symbol")
         expect(table1.get('tbody').text()).toBe(
-            "0.0.29662956" +
-            "23423" +
-            "QmVGABnvpbPwLcfG4iuW2JSzY8MLkALhd54bdPAbJxoEkB"
-            +
-            "0.0.748383" +
-            "Ħ Frens Kingdom" +
-            "ĦFRENSKINGDOM"
+            SAMPLE_TOKENS.tokens[0].token_id +
+            SAMPLE_TOKENS.tokens[0].name +
+            SAMPLE_TOKENS.tokens[0].symbol +
+            SAMPLE_TOKENS.tokens[1].token_id +
+            SAMPLE_TOKENS.tokens[1].name +
+            SAMPLE_TOKENS.tokens[1].symbol
         )
 
         expect(cards[1].text()).toMatch(RegExp("^Recent Fungible Tokens"))
@@ -85,13 +84,12 @@ describe("Tokens.vue", () => {
         expect(table2.exists()).toBe(true)
         expect(table2.get('thead').text()).toBe("Token Name Symbol")
         expect(table2.get('tbody').text()).toBe(
-            "0.0.29662956" +
-            "23423" +
-            "QmVGABnvpbPwLcfG4iuW2JSzY8MLkALhd54bdPAbJxoEkB"
-            +
-            "0.0.748383" +
-            "Ħ Frens Kingdom" +
-            "ĦFRENSKINGDOM"
+            SAMPLE_TOKENS.tokens[0].token_id +
+            SAMPLE_TOKENS.tokens[0].name +
+            SAMPLE_TOKENS.tokens[0].symbol +
+            SAMPLE_TOKENS.tokens[1].token_id +
+            SAMPLE_TOKENS.tokens[1].name +
+            SAMPLE_TOKENS.tokens[1].symbol
         )
 
         mock.restore()

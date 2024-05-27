@@ -26,7 +26,7 @@
  */
 
 
-import {describe, it, expect} from 'vitest'
+import {describe, expect, it} from 'vitest'
 import {flushPromises, mount} from "@vue/test-utils";
 import TokenLink from "../../../src/components/values/link/TokenLink.vue";
 import router from "@/router";
@@ -34,17 +34,15 @@ import {SAMPLE_TOKEN, SAMPLE_TOKEN_DUDE} from "../Mocks";
 import MockAdapter from "axios-mock-adapter";
 import axios from "axios";
 
-const mock = new MockAdapter(axios);
-const matcher = "/api/v1/tokens/" + SAMPLE_TOKEN.token_id
-mock.onGet(matcher).reply(200, SAMPLE_TOKEN);
-const matcher2 = "/api/v1/tokens/" + SAMPLE_TOKEN_DUDE.token_id
-mock.onGet(matcher2).reply(200, SAMPLE_TOKEN_DUDE);
-
 describe("TokenLink.vue", () => {
 
     it("props.topicId set", async () => {
 
         await router.push("/") // To avoid "missing required param 'network'" error
+
+        const mock = new MockAdapter(axios);
+        const matcher = "/api/v1/tokens/" + SAMPLE_TOKEN.token_id
+        mock.onGet(matcher).reply(200, SAMPLE_TOKEN);
 
         const wrapper = mount(TokenLink, {
             global: {
@@ -63,12 +61,19 @@ describe("TokenLink.vue", () => {
         expect(wrapper.find(".h-is-extra-text").exists()).toBe(false)
 
         wrapper.unmount()
+        mock.restore()
         await flushPromises()
     });
 
     it("props.topicId set and showExtra", async () => {
 
         await router.push("/") // To avoid "missing required param 'network'" error
+
+        const mock = new MockAdapter(axios);
+        const matcher = "/api/v1/tokens/" + SAMPLE_TOKEN.token_id
+        mock.onGet(matcher).reply(200, SAMPLE_TOKEN);
+        const matcher2 = "/api/v1/tokens/" + SAMPLE_TOKEN_DUDE.token_id
+        mock.onGet(matcher2).reply(200, SAMPLE_TOKEN_DUDE);
 
         const wrapper = mount(TokenLink, {
             global: {
@@ -82,20 +87,21 @@ describe("TokenLink.vue", () => {
 
         await flushPromises()
 
-        expect(wrapper.text()).toBe(SAMPLE_TOKEN.token_id + SAMPLE_TOKEN.name)
+        expect(wrapper.text()).toBe(SAMPLE_TOKEN.token_id + truncateTokenSymbol(SAMPLE_TOKEN.symbol))
         expect(wrapper.get("a").attributes("href")).toMatch(RegExp("/token/" + SAMPLE_TOKEN.token_id + "$"))
-        expect(wrapper.get(".h-is-extra-text").text()).toBe(SAMPLE_TOKEN.name)
+        expect(wrapper.get(".h-is-extra-text").text()).toBe(truncateTokenSymbol(SAMPLE_TOKEN.symbol))
 
         await wrapper.setProps({
             tokenId: SAMPLE_TOKEN_DUDE.token_id
         })
         await flushPromises()
 
-        expect(wrapper.text()).toBe(SAMPLE_TOKEN_DUDE.token_id + SAMPLE_TOKEN_DUDE.name)
+        expect(wrapper.text()).toBe(SAMPLE_TOKEN_DUDE.token_id + truncateTokenSymbol(SAMPLE_TOKEN_DUDE.symbol))
         expect(wrapper.get("a").attributes("href")).toMatch(RegExp("/token/" + SAMPLE_TOKEN_DUDE.token_id + "$"))
-        expect(wrapper.get(".h-is-extra-text").text()).toBe(SAMPLE_TOKEN_DUDE.name)
+        expect(wrapper.get(".h-is-extra-text").text()).toBe(truncateTokenSymbol(SAMPLE_TOKEN_DUDE.symbol))
 
         wrapper.unmount()
+        mock.restore()
         await flushPromises()
     });
 
@@ -118,3 +124,7 @@ describe("TokenLink.vue", () => {
         wrapper.unmount()
     });
 });
+
+export function truncateTokenSymbol(name:string, max= 40): string {
+    return name.length > max ? name.slice(0, max) + '…' : name
+}
