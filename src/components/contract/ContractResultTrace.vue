@@ -53,7 +53,7 @@
 
 <script lang="ts">
 
-import {computed, defineComponent, onMounted, PropType, Ref, ref} from 'vue';
+import {computed, defineComponent, onBeforeUnmount, onMounted, PropType, Ref, ref} from 'vue';
 import DashboardCard from "@/components/DashboardCard.vue";
 import {ContractActionsLoader, ContractActionWithPath} from "@/components/contract/ContractActionsLoader";
 import ContractActionsTable from "@/components/contract/ContractActionsTable.vue";
@@ -82,7 +82,7 @@ export default defineComponent({
 
     const contractActionsLoader = new ContractActionsLoader(computed(() => props.transactionIdOrHash ?? null))
     onMounted(() => contractActionsLoader.mount())
-    onMounted(() => contractActionsLoader.unmount())
+    onBeforeUnmount(() => contractActionsLoader.unmount())
 
     const expandedActions: Ref<ContractActionWithPath[]> = ref([])
     const collapseAllVisible = computed(() => {
