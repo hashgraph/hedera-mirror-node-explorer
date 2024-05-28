@@ -23,13 +23,38 @@
 <!-- --------------------------------------------------------------------------------------------------------------- -->
 
 <template>
-  <span v-if="decimalOverflow" :class="{'mr-2': showExtra && tokenId}">?</span>
-  <span v-else class="is-numeric" :class="{'mr-2': showExtra && tokenId}">{{ formattedAmount }}</span>
-  <span v-if="showExtra && tokenId != null">
-    <TokenExtra v-bind:token-id="tokenId" v-bind:use-anchor="useAnchor"/>
-  </span>
-  <InfoTooltip v-if="decimalOverflow" class="ml-2"
-               :label="`This token amount cannot be displayed because the number of decimals (${decimalCount}) of the token is too large`"/>
+  <div class="is-flex is is-align-items-baseline">
+    <span v-if="decimalOverflow" :class="{'mr-2': showExtra && tokenId}">
+      ?
+    </span>
+    <span v-else class="is-numeric" :class="{'mr-2': showExtra && tokenId}">
+      {{ formattedAmount }}
+    </span>
+
+    <template v-if="routeToCollection">
+      <router-link :to="routeToCollection ?? ''">
+        <TokenExtra
+            v-if="showExtra && tokenId != null"
+            :token-id="tokenId"
+            :use-anchor="false"
+        />
+      </router-link>
+    </template>
+
+    <template v-else>
+      <TokenExtra
+          v-if="showExtra && tokenId != null"
+          :token-id="tokenId"
+          :use-anchor="true"
+      />
+    </template>
+
+    <InfoTooltip
+        v-if="decimalOverflow"
+        class="ml-2"
+        :label="`This token amount cannot be displayed because the number of decimals (${decimalCount}) of the token is too large`"
+    />
+  </div>
 </template>
 
 <!-- --------------------------------------------------------------------------------------------------------------- -->
@@ -38,14 +63,14 @@
 
 <script lang="ts">
 
-import {computed, defineComponent, inject, onMounted, PropType, ref, watch} from "vue";
-import {TokenInfo} from "@/schemas/HederaSchemas";
+import {computed, defineComponent, inject, onBeforeUnmount, onMounted, PropType, ref} from "vue";
 import {TokenInfoCache} from "@/utils/cache/TokenInfoCache";
 import TokenExtra from "@/components/values/link/TokenExtra.vue";
 import {initialLoadingKey} from "@/AppKeys";
 import InfoTooltip from "@/components/InfoTooltip.vue";
+import {formatTokenAmount} from "@/schemas/HederaUtils";
+import {routeManager} from "@/router";
 
-export const MAX_TOKEN_SUPPLY = 9223372036854775807n
 export const MAX_DECIMALS = 20
 
 export default defineComponent({
@@ -61,6 +86,10 @@ export default defineComponent({
       type: String as PropType<string | null>,
       default: null
     },
+    accountId: {
+      type: String as PropType<string | null>,
+      default: null
+    },
     showExtra: {
       type: Boolean,
       default: false
@@ -72,17 +101,45 @@ export default defineComponent({
   },
 
   setup(props) {
-    const response = ref<TokenInfo | null>(null)
+    const initialLoading = inject(initialLoadingKey, ref(false))
+
+    const id = computed(() => props.tokenId)
+    const lookup = TokenInfoCache.instance.makeLookup(id)
+    onMounted(() => lookup.mount())
+    onBeforeUnmount(() => lookup.unmount())
+
+    const isNft = computed(() => lookup.entity.value?.type === 'NON_FUNGIBLE_UNIQUE')
+
+    const routeToCollection = computed(() => {
+      let result
+      if (isNft.value && props.useAnchor && props.accountId && props.tokenId) {
+          result = routeManager.makeRouteToCollection(props.accountId, props.tokenId)
+      } else {
+          result = null
+      }
+      return result
+    })
+
+    const decimalCount = computed(() => {
+      let result: number
+      if (lookup.entity.value?.decimals) {
+        const n = Number(lookup.entity.value.decimals)
+        result = isNaN(n) ? 0 : Math.floor(n)
+      } else {
+        result = 0
+      }
+      return result
+    })
+
+    const decimalOverflow = computed(() => {
+      return decimalCount.value ? decimalCount.value > MAX_DECIMALS : false
+    })
 
     const formattedAmount = computed(() => {
       let result: string
-      if (response.value !== null) {
+      if (lookup.entity.value !== null) {
         if (props.amount !== null) {
-          if (props.amount > MAX_TOKEN_SUPPLY) {
-            result = formatTokenAmount(MAX_TOKEN_SUPPLY, decimalCount.value)
-          } else {
-            result = formatTokenAmount(props.amount ?? 0, decimalCount.value)
-          }
+          result = formatTokenAmount(props.amount ?? 0, decimalCount.value)
         } else if (initialLoading.value) {
           result = ""
         } else {
@@ -94,95 +151,16 @@ export default defineComponent({
       return result
     })
 
-    const extra = computed(() => {
-      let result: string
-      if (response.value !== null) {
-        result = makeExtra(response.value)
-      } else {
-        result = ""
-      }
-      return result
-    })
-
-    const decimalOverflow = computed(() => {
-      return decimalCount.value ? decimalCount.value > MAX_DECIMALS : false
-    })
-
-    const decimalCount = computed(() => {
-      let result: number
-      if (response.value?.decimals) {
-        const n = Number(response.value.decimals)
-        result = isNaN(n) ? 0 : Math.floor(n)
-      } else {
-        result = 0
-      }
-      return result
-    })
-
-    const updateResponse = () => {
-      if (props.tokenId) {
-        TokenInfoCache.instance.lookup(props.tokenId).then((r: TokenInfo | null) => {
-          response.value = r
-        }, (reason: unknown) => {
-          console.warn("TokenInfoCollector did fail to fetch " + props.tokenId + " with reason: " + reason)
-          response.value = null
-        })
-      }
-    }
-    watch(() => props.tokenId, () => {
-      updateResponse()
-    })
-
-    const initialLoading = inject(initialLoadingKey, ref(false))
-
-    onMounted(() => {
-      updateResponse()
-    })
-
     return {
+      isNft,
+      routeToCollection,
       formattedAmount,
-      extra,
       decimalOverflow,
       decimalCount,
       initialLoading
     }
   }
 });
-
-export function formatTokenAmount(rawAmount: bigint, decimalCount: number): string {
-  let result: string
-
-  const amountFormatter = new Intl.NumberFormat('en-US', {
-    minimumFractionDigits: decimalCount,
-    maximumFractionDigits: decimalCount
-  })
-
-  if (decimalCount) {
-    result = amountFormatter.format(Number(rawAmount) / Math.pow(10, decimalCount))
-  } else {
-    result = amountFormatter.format(rawAmount)
-  }
-
-  return result
-}
-
-function makeExtra(response: TokenInfo): string {
-  const name = response.name
-  const symbol = response.symbol
-  const maxLength = 40
-
-  let candidate1: string | null
-  if (symbol) {
-    const usable = symbol.search("://") == -1 && symbol.length < maxLength
-    candidate1 = usable ? symbol : null
-  } else {
-    candidate1 = null;
-  }
-
-  const candidate2 = name && name.length < maxLength ? name : null
-
-  return candidate1 ?? candidate2 ?? response.token_id ?? "?"
-}
 
 </script>
 

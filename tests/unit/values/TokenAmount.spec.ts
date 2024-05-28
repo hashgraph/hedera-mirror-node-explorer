@@ -173,7 +173,7 @@ describe("TokenAmount.vue", () => {
         expect(wrapper.get('span').text()).toBe("?")
         expect(wrapper.get('a').attributes('href')).toMatch(RegExp("/token/" + SAMPLE_TOKEN_WITH_LARGE_DECIMAL_COUNT.token_id + "$"))
         expect(wrapper.get('.h-is-extra-text').text()).toBe(SAMPLE_TOKEN_WITH_LARGE_DECIMAL_COUNT.symbol)
-        expect(wrapper.text()).toBe("?TTOK0This token amount cannot be displayed because the number of decimals (75) of the token is too large")
+        expect(wrapper.text()).toBe("? TTOK0This token amount cannot be displayed because the number of decimals (75) of the token is too large")
 
         wrapper.unmount()
         await flushPromises()

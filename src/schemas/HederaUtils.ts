@@ -76,6 +76,25 @@ export function makeTokenSymbol(token: TokenInfo | null, maxLength: number=11): 
     return result
 }
 
+export const MAX_TOKEN_SUPPLY = 9223372036854775807n
+
+export function formatTokenAmount(rawAmount: bigint, decimalCount: number): string {
+    let result: string
+    if (rawAmount > MAX_TOKEN_SUPPLY) {
+        rawAmount = MAX_TOKEN_SUPPLY
+    }
+    const amountFormatter = new Intl.NumberFormat('en-US', {
+        minimumFractionDigits: decimalCount,
+        maximumFractionDigits: decimalCount
+    })
+    if (decimalCount) {
+        result = amountFormatter.format(Number(rawAmount) / Math.pow(10, decimalCount))
+    } else {
+        result = amountFormatter.format(rawAmount)
+    }
+    return result
+}
+
 export function makeNodeDescription(node: NetworkNode): string {
     let result: string
     if (node.description) {

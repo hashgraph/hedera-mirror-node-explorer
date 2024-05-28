@@ -33,7 +33,12 @@
     </div>
   </div>
   <div v-for="b in displayedBalances" :key="b.token_id ?? undefined" class="h-is-tertiary-text">
-    <TokenAmount v-bind:amount="BigInt(b.balance)" v-bind:show-extra="true" v-bind:token-id="b.token_id"/>
+    <TokenAmount
+        :amount="BigInt(b.balance)"
+        :show-extra="true"
+        :token-id="b.token_id"
+        :account-id="accountId"
+    />
   </div>
 
 </template>
