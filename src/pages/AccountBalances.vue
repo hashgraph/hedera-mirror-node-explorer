@@ -26,23 +26,27 @@
 
   <section class="section" :class="{'h-mobile-background': isTouchDevice || !isSmallScreen}">
 
-    <DashboardCard id="balanceCard">
-      <template v-slot:title>
-        <span class="h-is-primary-title">All Tokens Associated to </span>
-        <span class="h-is-secondary-text">{{ accountId }}</span>
-      </template>
-      <template v-slot:content>
-        <BalanceTable :controller="tokenRelationshipTableController"/>
-      </template>
-    </DashboardCard>
-
-    <DashboardCard id="nftsCard">
+    <DashboardCard id="nftsCard" collapsible-key="nft-collection-table">
       <template v-slot:title>
         <span class="h-is-primary-title">NFTs Owned by </span>
-        <span class="h-is-secondary-text">{{ accountId }}</span>
+        <span class="h-is-secondary-text">
+          <AccountLink :account-id="accountId"/>
+        </span>
       </template>
       <template v-slot:content>
         <NftsTable :collections="nftCollections"/>
+      </template>
+    </DashboardCard>
+
+    <DashboardCard id="balanceCard" collapsible-key="token-association-table">
+      <template v-slot:title>
+        <span class="h-is-primary-title">All Tokens Associated to </span>
+        <span class="h-is-secondary-text">
+          <AccountLink :account-id="accountId"/>
+        </span>
+      </template>
+      <template v-slot:content>
+        <BalanceTable :controller="tokenRelationshipTableController"/>
       </template>
     </DashboardCard>
 
@@ -67,12 +71,14 @@ import {useRouter} from "vue-router";
 import {EntityID} from "@/utils/EntityID";
 import NftsTable from "@/components/account/NftsTable.vue";
 import {NftCollectionCache} from "@/utils/cache/NftCollectionCache";
+import AccountLink from "@/components/values/link/AccountLink.vue";
 
 export default defineComponent({
 
   name: 'AccountBalances',
 
   components: {
+    AccountLink,
     NftsTable,
     Footer,
     DashboardCard,

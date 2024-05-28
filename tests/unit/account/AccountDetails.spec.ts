@@ -20,7 +20,7 @@
  *
  */
 
-import {describe, it, expect} from 'vitest'
+import {describe, expect, it} from 'vitest'
 import {flushPromises, mount} from "@vue/test-utils"
 import router from "@/router";
 import axios from "axios";
@@ -33,11 +33,13 @@ import {
     SAMPLE_ACCOUNT_HBAR_BALANCE,
     SAMPLE_ACCOUNT_STAKING_ACCOUNT,
     SAMPLE_ACCOUNT_STAKING_NODE,
-    SAMPLE_FAILED_TRANSACTIONS, SAMPLE_NETWORK_EXCHANGERATE,
+    SAMPLE_FAILED_TRANSACTIONS,
+    SAMPLE_NETWORK_EXCHANGERATE,
     SAMPLE_NETWORK_NODES,
     SAMPLE_NONFUNGIBLE,
     SAMPLE_TOKEN,
-    SAMPLE_TOKEN_DUDE, SAMPLE_TRANSACTION,
+    SAMPLE_TOKEN_DUDE,
+    SAMPLE_TRANSACTION,
     SAMPLE_TRANSACTIONS,
 } from "../Mocks";
 import MockAdapter from "axios-mock-adapter";
@@ -118,6 +120,9 @@ describe("AccountDetails.vue", () => {
             "aa2f 7b3e 759f 4531 ec2e 7941 afa4 49e6 a6e6 10ef b52a dae8 9e9c d8e9 d40d dcbf" +
             "Copy" +
             "ED25519")
+
+        expect(wrapper.get('#show-all-link').text()).toBe("Show all tokens")
+
         expect(wrapper.get("#memoValue").text()).toBe("None")
         expect(wrapper.get("#aliasValue").text()).toBe(ALIAS_HEX + 'Copy')
         expect(wrapper.get("#createTransactionValue").text()).toBe(TransactionID.normalize(SAMPLE_TRANSACTION.transaction_id))

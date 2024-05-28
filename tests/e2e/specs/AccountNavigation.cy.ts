@@ -84,8 +84,8 @@ describe('Account Navigation', () => {
         cy.url().should('include', 'accountbalances/' + accountId1)
         cy.contains('All Tokens Associated to ' + accountId1)
 
-        cy.get('table')
-            .eq(0)
+        cy.get('#balanceCard')
+            .find('table')
             .find('tbody tr')
             .should('have.length.at.least', 2)
             .eq(0)

@@ -42,7 +42,7 @@ describe('Token Navigation', () => {
             .then(($id) => {
                 // cy.log('Selected transaction Id: ' + $id.text())
                 cy.url().should('include', '/testnet/token/' + $id.text())
-                cy.contains('Non Fungible Token')
+                cy.contains('NFT Collection')
                 cy.contains('Token ID:' + $id.text())
             })
 
@@ -71,7 +71,7 @@ describe('Token Navigation', () => {
     it('should follow links from NFT details', () => {
         cy.visit('mainnet/token/' + nftId)
         cy.url().should('include', '/mainnet/token/' + nftId)
-        cy.contains('Non Fungible Token')
+        cy.contains('NFT Collection')
         cy.contains('Token ID:' + nftId)
 
         cy.get('#createTransactionValue')
@@ -95,8 +95,8 @@ describe('Token Navigation', () => {
             .click()
             .then(($id) => {
                 cy.url().should('include', '/mainnet/token/' + nftId + '/' + $id.text())
-                cy.contains('Serial Number ' + $id.text())
-                cy.contains('Token ID')
+                cy.contains('NFT#' + $id.text())
+                cy.contains('NFT Collection')
                 cy.contains('Account ID')
                 cy.contains('Metadata')
                 cy.contains('Recent Transactions')

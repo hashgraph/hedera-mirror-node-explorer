@@ -29,13 +29,14 @@
   >
     <DashboardCard collapsible-key="nftDetails">
       <template #title>
-        <span class="h-is-primary-title mr-3">Serial Number {{ serialNumber }}</span>
-        <div
-            class="is-inline-block h-is-tertiary-text h-is-extra-text should-wrap"
+        <span class="h-is-primary-title mr-1">NFT</span>
+        <span class="h-is-tertiary-text mr-3">#{{ serialNumber }}</span>
+        <span
+            class=" h-is-tertiary-text h-is-extra-text should-wrap"
             style="word-break: break-all"
         >
           {{ `${tokenName} (${tokenSymbol})` }}
-        </div>
+        </span>
       </template>
 
       <template #content>
@@ -47,7 +48,7 @@
 
       <template #leftContent>
         <Property id="tokenId">
-          <template #name>Token ID</template>
+          <template #name>NFT Collection</template>
           <template #value>
             <TokenLink :token-id="tokenId" :show-extra="true"/>
           </template>

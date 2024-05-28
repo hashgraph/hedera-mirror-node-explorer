@@ -28,11 +28,10 @@
 
     <DashboardCard collapsible-key="tokenDetails">
       <template v-slot:title>
-        <span v-if="tokenInfo" class="h-is-primary-title">
-          <span v-if="tokenInfo.type === 'NON_FUNGIBLE_UNIQUE'">Non Fungible</span>
-          <span v-else>Fungible</span>
+        <span v-if="tokenInfo" class="h-is-primary-title mr-2">
+          <span v-if="tokenInfo.type === 'NON_FUNGIBLE_UNIQUE'">NFT Collection</span>
+          <span v-else>Fungible Token</span>
         </span>
-        <span class="h-is-primary-title mr-1"> Token </span>
         <div class="is-inline-block h-is-tertiary-text h-is-extra-text should-wrap" style="word-break: break-all">
           {{ `${displayName} (${displaySymbol})` }}
         </div>
@@ -289,7 +288,7 @@
     <DashboardCard v-if="tokenInfo" collapsible-key="nftHolders">
 
       <template v-slot:title>
-        <div v-if="tokenInfo.type === 'NON_FUNGIBLE_UNIQUE'" class="h-is-secondary-title mb-2">NFT Holders</div>
+        <div v-if="tokenInfo.type === 'NON_FUNGIBLE_UNIQUE'" class="h-is-secondary-title mb-2">NFTs</div>
         <div v-else class="h-is-secondary-title mb-2">Balances</div>
       </template>
 

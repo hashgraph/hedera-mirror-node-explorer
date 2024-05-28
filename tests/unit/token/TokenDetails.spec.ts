@@ -89,7 +89,7 @@ describe("TokenDetails.vue", () => {
         expect((wrapper.vm as any).tokenBalanceTableController.mounted.value).toBe(true)
         expect((wrapper.vm as any).nftHolderTableController.mounted.value).toBe(true)
 
-        expect(wrapper.text()).toContain("Fungible Token " + testTokenName + ' (' + testTokenSymbol + ')' + 'Token ID:' + testTokenId)
+        expect(wrapper.text()).toContain("Fungible Token" + testTokenName + ' (' + testTokenSymbol + ')' + 'Token ID:' + testTokenId)
 
         expect(wrapper.get("#nameValue").text()).toBe("QmVGABnvpbPwLcfG4iuW2JSzY8MLkALhd54bdPAbJxoEkB")
         expect(wrapper.get("#symbolValue").text()).toBe("23423")
@@ -156,7 +156,7 @@ describe("TokenDetails.vue", () => {
         expect((wrapper.vm as any).tokenBalanceTableController.mounted.value).toBe(true)
         expect((wrapper.vm as any).nftHolderTableController.mounted.value).toBe(true)
 
-        expect(wrapper.text()).toContain("Non Fungible Token " + testTokenName + ' (' + testTokenSymbol + ')' + 'Token ID:' + testTokenId)
+        expect(wrapper.text()).toContain("NFT Collection" + testTokenName + ' (' + testTokenSymbol + ')' + 'Token ID:' + testTokenId)
 
         expect(wrapper.get("#nameValue").text()).toBe("Ħ Frens Kingdom Dude")
         expect(wrapper.get("#symbolValue").text()).toBe("ĦFRENSKINGDOM")
@@ -175,7 +175,7 @@ describe("TokenDetails.vue", () => {
         expect(wrapper.get("#decimalsValue").text()).toBe("0")
         expect(wrapper.get("#metadataValue").text()).toBe("None")
 
-        expect(wrapper.text()).toMatch("NFT Holders")
+        expect(wrapper.text()).toMatch("NFTs")
         expect(wrapper.findComponent(NftHolderTable).exists()).toBe(true)
         expect(wrapper.findComponent(TokenBalanceTable).exists()).toBe(false)
 
@@ -217,10 +217,10 @@ describe("TokenDetails.vue", () => {
         expect((wrapper.vm as any).tokenBalanceTableController.mounted.value).toBe(true)
         expect((wrapper.vm as any).nftHolderTableController.mounted.value).toBe(true)
 
-        expect(wrapper.text()).toContain("Non Fungible Token " + testTokenName + ' (' + testTokenSymbol + ')' + 'Token ID:' + testTokenId)
+        expect(wrapper.text()).toContain("NFT Collection" + testTokenName + ' (' + testTokenSymbol + ')' + 'Token ID:' + testTokenId)
         expect(wrapper.get("#nameValue").text()).toBe("Ħ Frens Kingdom Dude")
         expect(wrapper.get("#symbolValue").text()).toBe("ĦFRENSKINGDOM")
-        expect(wrapper.text()).toMatch("NFT Holders")
+        expect(wrapper.text()).toMatch("NFTs")
         expect(wrapper.findComponent(NftHolderTable).exists()).toBe(true)
         expect(wrapper.findComponent(TokenBalanceTable).exists()).toBe(false)
 
@@ -242,7 +242,7 @@ describe("TokenDetails.vue", () => {
         await flushPromises()
         // console.log(wrapper.text())
 
-        expect(wrapper.text()).toContain("Fungible Token " + testTokenName + ' (' + testTokenSymbol + ')' + 'Token ID:' + testTokenId)
+        expect(wrapper.text()).toContain("Fungible Token" + testTokenName + ' (' + testTokenSymbol + ')' + 'Token ID:' + testTokenId)
         expect(wrapper.get("#nameValue").text()).toBe("QmVGABnvpbPwLcfG4iuW2JSzY8MLkALhd54bdPAbJxoEkB")
         expect(wrapper.get("#symbolValue").text()).toBe("23423")
         expect(wrapper.text()).toMatch("Balances")
@@ -310,7 +310,7 @@ describe("TokenDetails.vue", () => {
         expect((wrapper.vm as any).tokenBalanceTableController.mounted.value).toBe(true)
         expect((wrapper.vm as any).nftHolderTableController.mounted.value).toBe(true)
 
-        expect(wrapper.text()).toContain("Non Fungible Token " + testTokenName + ' (' + testTokenSymbol + ')' + 'Token ID:' + testTokenId)
+        expect(wrapper.text()).toContain("NFT Collection" + testTokenName + ' (' + testTokenSymbol + ')' + 'Token ID:' + testTokenId)
 
         expect(wrapper.text()).toMatch("Token Keys")
         expect(wrapper.find("#adminKey").text()).toBe("Admin Keyc539 536f 9599 daef eeb7 7767 7aa1 aeea 2242 dfc7 cca9 2348 c228 a518 7a0f af2bCopyED25519")
@@ -360,7 +360,7 @@ describe("TokenDetails.vue", () => {
         expect((wrapper.vm as any).tokenBalanceTableController.mounted.value).toBe(true)
         expect((wrapper.vm as any).nftHolderTableController.mounted.value).toBe(true)
 
-        expect(wrapper.text()).toContain("Non Fungible Token " + testTokenName + ' (' + testTokenSymbol + ')' + 'Token ID:' + testTokenId)
+        expect(wrapper.text()).toContain("NFT Collection" + testTokenName + ' (' + testTokenSymbol + ')' + 'Token ID:' + testTokenId)
 
         expect(wrapper.text()).toMatch("Token Keys")
         expect(wrapper.find("#adminKey").text()).toBe("Admin KeyNoneToken is immutable")
@@ -410,7 +410,7 @@ describe("TokenDetails.vue", () => {
         // console.log(wrapper.text())
 
         expect(wrapper.text()).toContain(
-            "Non Fungible Token " + testTokenName + ' (' + testTokenSymbol + ')' + 'Token ID:' + testTokenIdWithChecksum
+            "NFT Collection" + testTokenName + ' (' + testTokenSymbol + ')' + 'Token ID:' + testTokenIdWithChecksum
                 + 'EVM Address:' + testTokenEVMAddress + "Copy")
         expect(wrapper.text()).toMatch("Token is deleted")
 
@@ -448,7 +448,7 @@ describe("TokenDetails.vue", () => {
         await flushPromises()
         // console.log(wrapper.text())
 
-        expect(wrapper.text()).toContain("Fungible Token " + testTokenName + ' (' + testTokenSymbol + ')' + 'Token ID:' + testTokenId)
+        expect(wrapper.text()).toContain("Fungible Token" + testTokenName + ' (' + testTokenSymbol + ')' + 'Token ID:' + testTokenId)
 
         const customFees = wrapper.findComponent(TokenCustomFees)
         expect(customFees.exists()).toBe(true)
@@ -506,7 +506,7 @@ describe("TokenDetails.vue", () => {
         await flushPromises()
         // console.log(wrapper.text())
 
-        expect(wrapper.text()).toContain("Non Fungible Token " + testTokenName + ' (' + testTokenSymbol + ')' + 'Token ID:' + testTokenId)
+        expect(wrapper.text()).toContain("NFT Collection" + testTokenName + ' (' + testTokenSymbol + ')' + 'Token ID:' + testTokenId)
 
         const customFees = wrapper.findComponent(TokenCustomFees)
         expect(customFees.exists()).toBe(true)
@@ -562,7 +562,7 @@ describe("TokenDetails.vue", () => {
         await flushPromises()
         // console.log(wrapper.text())
 
-        expect(wrapper.text()).toContain("Non Fungible Token " + testTokenName + ' (' + testTokenSymbol + ')' + 'Token ID:' + testTokenId)
+        expect(wrapper.text()).toContain("NFT Collection" + testTokenName + ' (' + testTokenSymbol + ')' + 'Token ID:' + testTokenId)
 
         const customFees = wrapper.findComponent(TokenCustomFees)
         expect(customFees.exists()).toBe(false)

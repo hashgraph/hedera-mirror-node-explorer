@@ -232,8 +232,7 @@ import {WalletDriverCancelError, WalletDriverError} from "@/utils/wallet/WalletD
 import {TokenInfoCache} from "@/utils/cache/TokenInfoCache";
 import {AccountByIdCache} from "@/utils/cache/AccountByIdCache";
 import {ContractByIdCache} from "@/utils/cache/ContractByIdCache";
-import {formatTokenAmount} from "@/components/values/TokenAmount.vue";
-import {makeTokenSymbol} from "@/schemas/HederaUtils";
+import {formatTokenAmount, makeTokenSymbol} from "@/schemas/HederaUtils";
 
 const VALID_ACCOUNT_MESSAGE = "Account found"
 const VALID_CONTRACT_MESSAGE = "Contract found"

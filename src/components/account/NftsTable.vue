@@ -39,14 +39,14 @@
       aria-page-label="Page"
       aria-previous-label="Previous page"
   >
-    <o-table-column v-slot="props" field="token_id" label="Token">
+    <o-table-column v-slot="props" field="token_id" label="NFT Collection">
       <TokenLink
           v-bind:show-extra="true"
           v-bind:token-id="props.row.tokenId"
           v-bind:no-anchor="true"
       />
     </o-table-column>
-    <o-table-column v-slot="props" field="owned" label="Owned" position="right">
+    <o-table-column v-slot="props" field="owned" label="Nb of NFTs" position="right">
       {{ props.row.collectionSize }}
     </o-table-column>
   </o-table>
