@@ -29,12 +29,9 @@ export class HederaMetricsLoader extends EntityLoaderV2<HederaMetrics> {
     // Public
     //
 
-    public readonly deltaSeconds: number | null
-
-    public constructor(deltaSeconds: number | null = null) {
+    public constructor() {
         // Refresh every 10 min, forever
         super(60*10*1000, EntityLoaderV2.HUGE_COUNT)
-        this.deltaSeconds = deltaSeconds
     }
 
     public readonly hbarPriceText = computed(() => {
