@@ -34,7 +34,7 @@ export class BalanceAnalyzer extends EntityLoaderV2<BalancesResponse> {
     //
 
     public constructor(accountId = ref<string | null>(null), updatePeriod: number) {
-        super(updatePeriod, 1_000_000 /* refresh forever */)
+        super(updatePeriod, EntityLoaderV2.HUGE_COUNT /* refresh forever */)
         this.accountId = accountId
     }
 
