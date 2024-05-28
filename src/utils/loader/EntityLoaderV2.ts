@@ -133,8 +133,8 @@ export abstract class EntityLoaderV2<E> {
         // else silently exits because unmount() has been called during load
     }
 
-    private loadDidFail(reason: unknown, capturedSessionId: number) {
-        if (this.requestCount.value == capturedSessionId) {
+    private loadDidFail(reason: unknown, captureRequestCount: number) {
+        if (this.requestCount.value == captureRequestCount) {
             this.entityRef.value = null
             this.errorRef.value = reason
             this.concludeLoad()
