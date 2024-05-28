@@ -42,7 +42,7 @@
       aria-previous-label="Previous page"
       @cell-click="handleClick"
   >
-    <o-table-column v-slot="props" field="serial" label="Serial">
+    <o-table-column v-slot="props" field="serial" label="Serial #">
       {{ props.row.serial_number }}
     </o-table-column>
   </o-table>
