@@ -125,6 +125,11 @@ class TestProvider extends NameServiceProvider {
         this.resolutionCount += result !== null ? 1 : 0
         return Promise.resolve(result)
     }
+
+    public reset(): void {
+        this.requestCount = 0
+        this.resolutionCount = 0
+    }
 }
 
 const castor = new TestProvider("P1", [
@@ -142,4 +147,6 @@ function installTestProviders() {
     nameServiceProviders.splice(0)
     nameServiceProviders.push(castor)
     nameServiceProviders.push(pollux)
+    castor.reset()
+    pollux.reset()
 }
