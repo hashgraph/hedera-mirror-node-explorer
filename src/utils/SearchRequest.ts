@@ -40,6 +40,7 @@ import {NameService} from "@/utils/name_service/NameService";
 import {Timestamp} from "@/utils/Timestamp";
 import {networkRegistry} from "@/schemas/NetworkRegistry";
 import {routeManager} from "@/router";
+import {AppStorage} from "@/AppStorage";
 
 export class SearchRequest {
 
@@ -334,12 +335,14 @@ export class SearchRequest {
     }
 
     private async searchNamingService(name: string): Promise<void> {
+        const network = routeManager.currentNetwork.value
         try {
-            const records = await NameService.instance.resolve(name, routeManager.currentNetwork.value)
-            const accountId = records.length > 0 ? records[0].entityId : null
-            if (accountId !== null) {
+            const records = await NameService.instance.resolve(name, network)
+            if (records.length > 0) {
+                const accountId = records[0].entityId
                 const r = await axios.get<AccountBalanceTransactions>("api/v1/accounts/" + accountId)
                 this.account = r.data
+                AppStorage.setNameRecord(accountId, network, records[0])
             } else {
                 this.account = null
             }
