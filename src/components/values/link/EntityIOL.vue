@@ -60,7 +60,7 @@
 import {computed, defineComponent, inject, PropType, ref} from "vue";
 import {initialLoadingKey} from "@/AppKeys";
 
-export const MAX_LABEL_SIZE = 35
+export const DEFAULT_LABEL_SIZE = 18
 
 export default defineComponent({
 
@@ -77,7 +77,7 @@ export default defineComponent({
     },
     slice: {
       type: Number as PropType<number | null>,
-      default: MAX_LABEL_SIZE
+      default: DEFAULT_LABEL_SIZE
     },
     compact: {
       type: Boolean,
@@ -92,14 +92,13 @@ export default defineComponent({
   setup(props) {
     const initialLoading = inject(initialLoadingKey, ref(false))
 
-    const slice = computed(() => props.compact ? 12 : props.slice)
     const actualLabel = computed(() => {
       let result = props.label
       if (result != null
-          && slice.value != null
-          && slice.value > 0
-          && slice.value < result.length) {
-        result = result.slice(0, slice.value) + '…'
+          && props.slice != null
+          && props.slice > 0
+          && props.slice < result.length) {
+        result = result.slice(0, props.slice) + '…'
       }
       return result
     })
