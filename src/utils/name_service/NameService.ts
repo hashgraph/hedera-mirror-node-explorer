@@ -67,7 +67,7 @@ export class NameService {
         let result: NameServiceProvider|null = null
         for (const p of nameServiceProviders) {
             if (p.providerAlias == providerAlias) {
-                result = null
+                result = p
                 break
             }
         }
