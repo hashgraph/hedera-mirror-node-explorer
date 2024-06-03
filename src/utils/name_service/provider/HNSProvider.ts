@@ -30,7 +30,7 @@ export class HNSProvider extends NameServiceProvider {
     //
 
     public constructor() {
-        super("HNS", "Hashgraph Name Service", null);
+        super("HNS", "Hashgraph Name Service", "https://www.hashgraph.name");
     }
 
     //
