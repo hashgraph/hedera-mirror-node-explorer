@@ -51,7 +51,8 @@
           <div class="is-inline-block h-is-property-text has-text-weight-light" style="min-width: 115px">Domain:</div>
           <div class="is-inline-block h-is-property-text">
             <EntityIOL :label="domainName"/>
-          </div>
+            <NameServiceProviderLabel :provider-alias="nameProviderAlias"/>
+         </div>
         </div>
         <div v-if="!isMediumScreen && accountRoute" id="showAccountLink" class="is-inline-block mt-2">
           <router-link :to="accountRoute">
@@ -226,12 +227,14 @@ import InlineBalancesValue from "@/components/values/InlineBalancesValue.vue";
 import MirrorLink from "@/components/MirrorLink.vue";
 import {NameQuery} from "@/utils/name_service/NameQuery";
 import EntityIOL from "@/components/values/link/EntityIOL.vue";
+import NameServiceProviderLabel from "@/components/values/NameServiceProviderLabel.vue";
 
 export default defineComponent({
 
   name: 'ContractDetails',
 
   components: {
+    NameServiceProviderLabel,
     EntityIOL,
     InlineBalancesValue,
     MirrorLink,
@@ -354,7 +357,8 @@ export default defineComponent({
       accountRoute,
       contractAnalyzer,
       logs: contractResultsLogsAnalyzer.logs,
-      domainName: nameQuery.name
+      domainName: nameQuery.name,
+      nameProviderAlias: nameQuery.providerAlias,
     }
   },
 });

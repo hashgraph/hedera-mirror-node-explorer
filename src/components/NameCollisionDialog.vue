@@ -36,7 +36,7 @@
         <p class="mb-5">Choose which one you want to use:</p>
           <template v-for="r in nameRecords">
             <div class="columns">
-              <div class="column is-one-fifth">
+              <div class="column is-one-quarter">
                 <label class="radio">
                   <input type="radio" class="mr-1" name="provider" :value="r" v-model="selectedRecord"/>
                   {{ r.entityId }}

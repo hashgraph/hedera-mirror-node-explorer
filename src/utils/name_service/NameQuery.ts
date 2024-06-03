@@ -53,6 +53,7 @@ export class NameQuery {
 
     public readonly name = computed(() => this.nameRecord.value?.name ?? null)
 
+    public readonly providerAlias = computed(() => this.nameRecord.value?.providerAlias ?? null)
 
     //
     // Private
