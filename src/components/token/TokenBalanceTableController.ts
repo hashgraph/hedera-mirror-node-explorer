@@ -51,9 +51,10 @@ export class TokenBalanceTableController extends TableController<TokenDistributi
                 'account.id': string | undefined
             }
             params.limit = limit
-            params.order = order
+            params.order = TableController.invertSortOrder(order)
+            const keyOperator = TableController.invertKeyOperator(operator)
             if (accountId !== null) {
-                params['account.id'] = operator + ":" + accountId
+                params['account.id'] = keyOperator + ":" + accountId
             }
             const cb = (r: AxiosResponse<TokenBalancesResponse>): Promise<TokenDistribution[] | null> => {
                 return Promise.resolve(r.data.balances ?? [])

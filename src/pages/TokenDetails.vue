@@ -197,6 +197,29 @@
 
     </DashboardCard>
 
+    <DashboardCard v-if="tokenInfo" collapsible-key="nftHolders">
+
+      <template v-slot:title>
+        <div v-if="tokenInfo.type === 'NON_FUNGIBLE_UNIQUE'" class="h-is-secondary-title mb-2">NFTs</div>
+        <div v-else class="h-is-secondary-title mb-2">Balances</div>
+      </template>
+
+      <template v-slot:control>
+        <PlayPauseButton v-if="isNft" :controller="nftHolderTableController"/>
+        <PlayPauseButton v-else :controller="tokenBalanceTableController"/>
+      </template>
+
+      <template v-slot:content>
+        <div v-if="isNft" id="nft-holder-table">
+          <NftHolderTable :controller="nftHolderTableController"/>
+        </div>
+        <div v-else id="token-balance-table">
+          <TokenBalanceTable :controller="tokenBalanceTableController"/>
+        </div>
+      </template>
+
+    </DashboardCard>
+
     <DashboardCard v-if="tokenInfo" collapsible-key="tokenKeys">
 
       <template v-slot:title>
@@ -284,29 +307,6 @@
     </DashboardCard>
 
     <TokenCustomFees v-if="hasCustomFees" :analyzer="analyzer"/>
-
-    <DashboardCard v-if="tokenInfo" collapsible-key="nftHolders">
-
-      <template v-slot:title>
-        <div v-if="tokenInfo.type === 'NON_FUNGIBLE_UNIQUE'" class="h-is-secondary-title mb-2">NFTs</div>
-        <div v-else class="h-is-secondary-title mb-2">Balances</div>
-      </template>
-
-      <template v-slot:control>
-        <PlayPauseButton v-if="isNft" :controller="nftHolderTableController"/>
-        <PlayPauseButton v-else :controller="tokenBalanceTableController"/>
-      </template>
-
-      <template v-slot:content>
-        <div v-if="isNft" id="nft-holder-table">
-          <NftHolderTable :controller="nftHolderTableController"/>
-        </div>
-        <div v-else id="token-balance-table">
-          <TokenBalanceTable :controller="tokenBalanceTableController"/>
-        </div>
-      </template>
-
-    </DashboardCard>
 
     <ContractResultsSection :contract-id="normalizedTokenId ?? undefined"/>
 

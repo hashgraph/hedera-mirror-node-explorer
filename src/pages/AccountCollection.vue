@@ -28,13 +28,15 @@
 
     <DashboardCard>
       <template v-slot:title>
-        <span v-if="tokenInfo" class="h-is-primary-title mr-2">
+        <span v-if="tokenInfo" class="h-is-primary-title mr-3">
           <span v-if="tokenInfo.type === 'NON_FUNGIBLE_UNIQUE'">NFT Collection</span>
           <span v-else>Fungible Token</span>
         </span>
-        <div class="is-inline-block h-is-tertiary-text h-is-extra-text should-wrap" style="word-break: break-all">
-          {{ `${displayName} (${displaySymbol})` }}
-        </div>
+        <router-link :to="tokenRoute">
+          <div class="is-inline-block h-is-tertiary-text h-is-extra-text should-wrap" style="word-break: break-all">
+            {{ `${displayName} (${displaySymbol})` }}
+          </div>
+        </router-link>
       </template>
 
       <template v-slot:subtitle>
@@ -74,6 +76,7 @@ import {TokenInfoAnalyzer} from "@/components/token/TokenInfoAnalyzer";
 import {makeTokenName, makeTokenSymbol} from "@/schemas/HederaUtils";
 import AccountIOL from "@/components/values/link/AccountIOL.vue";
 import AccountLink from "@/components/values/link/AccountLink.vue";
+import {routeManager} from "@/router";
 
 export default defineComponent({
 
@@ -133,6 +136,8 @@ export default defineComponent({
       collectionTableController.unmount()
     })
 
+    const tokenRoute = computed(() => routeManager.makeRouteToToken(props.tokenId))
+
     return {
       isSmallScreen,
       isTouchDevice,
@@ -141,6 +146,7 @@ export default defineComponent({
       displaySymbol,
       collectionTableController,
       normalizedAccountId,
+      tokenRoute
     }
   }
 });

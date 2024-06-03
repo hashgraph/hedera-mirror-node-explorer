@@ -51,9 +51,10 @@ export class NftHolderTableController extends TableController<Nft, string> {
                 serialnumber: string | undefined
             }
             params.limit = limit
-            params.order = order
+            params.order = TableController.invertSortOrder(order)
+            const keyOperator = TableController.invertKeyOperator(operator)
             if (serialNumber !== null) {
-                params.serialnumber = operator + ":" + serialNumber
+                params.serialnumber = keyOperator + ":" + serialNumber
             }
             const cb = (r: AxiosResponse<Nfts>): Promise<Nft[] | null> => {
                 return Promise.resolve(r.data.nfts ?? [])

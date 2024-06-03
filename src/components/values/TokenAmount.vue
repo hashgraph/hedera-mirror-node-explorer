@@ -23,7 +23,7 @@
 <!-- --------------------------------------------------------------------------------------------------------------- -->
 
 <template>
-  <div class="is-flex is is-align-items-baseline">
+  <div>
     <span v-if="decimalOverflow" :class="{'mr-2': showExtra && tokenId}">
       ?
     </span>

@@ -55,11 +55,12 @@ export class CollectionTableController extends TableController<Nft, number> {
             order: string
         }
         params.limit = limit
-        params.order = order
+        params.order = TableController.invertSortOrder(order)
+        const keyOperator = TableController.invertKeyOperator(operator)
         params["token.id"] = this.tokenId
 
         if (serialNumber !== null) {
-            params.serialnumber = operator + ":" + serialNumber
+            params.serialnumber = keyOperator + ":" + serialNumber
         }
 
         const {data} = await axios.get<Nfts>(
