@@ -59,6 +59,7 @@ export function makeSummaryLabel(row: Transaction): string {
         case TransactionType.TOKENPAUSE:
         case TransactionType.TOKENUNPAUSE:
         case TransactionType.TOKENUPDATE:
+        case TransactionType.TOKENUPDATENFTS:
         case TransactionType.TOKENWIPE:
             result = row.entity_id ? "Token ID: " + row.entity_id : ""
             break
@@ -247,6 +248,9 @@ export function makeTypeLabel(type: TransactionType | undefined): string {
             break;
         case TransactionType.TOKENUPDATE:
             result = "Token Update";
+            break;
+        case TransactionType.TOKENUPDATENFTS:
+            result = "Token Update NFTs";
             break;
         case TransactionType.TOKENASSOCIATE:
             result = "Token Associate";

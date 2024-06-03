@@ -18,7 +18,7 @@
  *
  */
 
-import {describe, test, expect} from 'vitest'
+import {describe, expect, test} from 'vitest'
 import {flushPromises, mount} from "@vue/test-utils"
 import router from "@/router";
 import axios from "axios";
@@ -82,7 +82,7 @@ describe("Transactions.vue", () => {
             "UPDATE TOPICNODE STAKE UPDATEPSEUDORANDOM NUMBER GENERATESCHEDULE CREATESCHEDULE DELETESCHEDULE SIGNSYSTEM DELETESYSTEM UNDELETETOKEN " +
             "ASSOCIATETOKEN BURNTOKEN CREATETOKEN DELETETOKEN DISSOCIATETOKEN FEE SCHEDULE UPDATETOKEN FREEZETOKEN " +
             "KYC GRANTTOKEN KYC REVOKETOKEN MINTTOKEN PAUSETOKEN UNFREEZETOKEN UNPAUSETOKEN " +
-            "UPDATETOKEN WIPEUNCHECKED SUBMIT")
+            "UPDATETOKEN UPDATE NFTSTOKEN WIPEUNCHECKED SUBMIT")
 
         const table = card.findComponent(TransactionTable)
         expect(table.exists()).toBe(true)

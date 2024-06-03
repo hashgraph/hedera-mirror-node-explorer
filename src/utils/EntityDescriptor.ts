@@ -102,6 +102,7 @@ export class EntityDescriptor {
             case TransactionType.TOKENCREATION:
             case TransactionType.TOKENDELETION:
             case TransactionType.TOKENUPDATE:
+            case TransactionType.TOKENUPDATENFTS:
             case TransactionType.TOKENFEESCHEDULEUPDATE:
             case TransactionType.TOKENMINT:
             case TransactionType.TOKENPAUSE:
