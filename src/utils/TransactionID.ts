@@ -31,9 +31,10 @@ export class TransactionID {
     // Public
     //
 
-    public static parse(value: string): TransactionID | null {
+    public static parse(value: string, autoComplete = false): TransactionID | null {
         // 0.0.88-1640084590-665216882                      useArobas == false
         // 0.0.88@1640084590.665216882                      useArobas == true
+        // 0.0.88@1640084590                                useArobas == true
         // 00881640084590665216882
 
         let result: TransactionID | null
@@ -44,7 +45,7 @@ export class TransactionID {
         const i1 = value.indexOf(sep1)
         const i2 = i1 != -1 ? value.indexOf(sep2, i1 + 1) : -1
 
-        if (i1 != -1 && i2 != -1) {
+        if (i1 != -1 && i2 != -1) { // 0.0.88-1640084590-665216882 or 0.0.88@1640084590.665216882 ?
             const s0 = value.substring(0, i1)
             const s1 = value.substring(i1 + 1, i2)
             const s2 = value.substring(i2 + 1)
@@ -56,7 +57,17 @@ export class TransactionID {
             } else {
                 result = new TransactionID(v0, v1, v2)
             }
-        } else if (i1 == -1 && i2 == -1) {
+        } else if (i1 != -1 && i2 == -1 && autoComplete) { // 0.0.88@1640084590 ?
+            const s0 = value.substring(0, i1)
+            const s1 = value.substring(i1 + 1)
+            const v0 = EntityID.parse(s0)
+            const v1 = EntityID.parsePositiveInt(s1)
+            if (v0 == null || v1 == null) {
+                result = null;
+            } else {
+                result = new TransactionID(v0, v1, 0)
+            }
+        } else if (i1 == -1 && i2 == -1) { // 00881640084590665216882 ?
             // 00881640084590665216882
             // 0088 1640084590 665216882
             const i2 = value.length - 9
