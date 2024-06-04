@@ -42,7 +42,7 @@
                   {{ r.entityId }}
                 </label>
               </div>
-              <div class="column">
+              <div class="column has-text-grey">
                 {{ findProviderDescription(r.providerAlias) }}
               </div>
             </div>
