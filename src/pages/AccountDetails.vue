@@ -60,7 +60,9 @@
           <div class="is-inline-block h-is-property-text has-text-weight-light" style="min-width: 115px">Domain:</div>
           <div class="is-inline-block h-is-property-text">
             <EntityIOL :label="domainName"/>
-            <NameServiceProviderLabel :provider-alias="nameProviderAlias"/>
+            <span class="ml-2">
+              <InfoTooltip v-if="domainProviderName" :label="domainProviderName"/>
+            </span>
           </div>
         </div>
 
@@ -348,14 +350,14 @@ import {DialogController} from "@/components/dialog/DialogController";
 import TransactionDownloadDialog from "@/components/download/TransactionDownloadDialog.vue";
 import {NameQuery} from "@/utils/name_service/NameQuery";
 import EntityIOL from "@/components/values/link/EntityIOL.vue";
-import NameServiceProviderLabel from "@/components/values/NameServiceProviderLabel.vue";
+import InfoTooltip from "@/components/InfoTooltip.vue";
 
 export default defineComponent({
 
   name: 'AccountDetails',
 
   components: {
-    NameServiceProviderLabel,
+    InfoTooltip,
     EntityIOL,
     TransactionDownloadDialog,
     DownloadButton,
@@ -553,7 +555,7 @@ export default defineComponent({
       timeSelection,
       onDateCleared,
       domainName: nameQuery.name,
-      nameProviderAlias: nameQuery.providerAlias,
+      domainProviderName: nameQuery.providerName,
     }
   }
 });

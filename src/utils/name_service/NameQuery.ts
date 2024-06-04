@@ -53,7 +53,17 @@ export class NameQuery {
 
     public readonly name = computed(() => this.nameRecord.value?.name ?? null)
 
-    public readonly providerAlias = computed(() => this.nameRecord.value?.providerAlias ?? null)
+    public readonly providerName = computed(() => {
+        let result: string|null
+        const providerAlias = this.nameRecord.value?.providerAlias ?? null
+        if (providerAlias !== null) {
+            const p = NameService.instance.lookupProvider(providerAlias)
+            result = p !== null ? p.providerDisplayName : providerAlias
+        } else {
+            result = null
+        }
+        return result
+    })
 
     //
     // Private
