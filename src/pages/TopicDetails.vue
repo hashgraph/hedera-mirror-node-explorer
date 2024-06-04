@@ -26,12 +26,77 @@
 
   <section class="section" :class="{'h-mobile-background': isTouchDevice || !isSmallScreen}">
 
-    <DashboardCard>
-
+    <DashboardCard collapsible-key="topicDetails">
       <template v-slot:title>
-        <span class="h-is-primary-title">Messages for Topic </span>
+        <span class="h-is-primary-title">Topic </span>
         <span v-if="validEntityId" class="h-is-secondary-text">{{ normalizedTopicId }}</span>
         <span v-if="topicChecksum" class="has-text-grey" style="font-size: 14px">-{{ topicChecksum }}</span>
+      </template>
+
+      <template v-slot:content>
+        <NotificationBanner v-if="!initialLoading && notification" :message="notification"/>
+
+        <Property id="memo" :full-width="true">
+          <template v-slot:name>Memo</template>
+          <template v-slot:value>
+            <BlobValue :blob-value="topic?.memo" :show-none="true" :base64="true" :show-base64-as-extra="true"/>
+          </template>
+        </Property>
+        <Property id="valid-from" :full-width="true">
+          <template v-slot:name>Valid from</template>
+          <template v-slot:value>
+            <TimestampValue :timestamp="topic?.timestamp?.from" :show-none="true"/>
+          </template>
+        </Property>
+        <Property id="valid-until" :full-width="true">
+          <template v-slot:name>Valid until</template>
+          <template v-slot:value>
+            <TimestampValue :timestamp="topic?.timestamp?.to" :show-none="true"/>
+          </template>
+        </Property>
+        <Property v-if="topic?.created_timestamp" id="creation-date" :full-width="true">
+          <template v-slot:name>
+            <span>Created</span>
+          </template>
+          <template v-slot:value>
+            <TimestampValue v-bind:timestamp="topic?.created_timestamp" v-bind:show-none="true"/>
+          </template>
+        </Property>
+        <Property v-if="topic?.auto_renew_period" id="auto-renew-period" :full-width="true">
+          <template v-slot:name>
+            <span>Auto Renew Period</span>
+          </template>
+          <template v-slot:value>
+            <DurationValue v-bind:number-value="topic?.auto_renew_period ?? undefined" :show-none="true"/>
+          </template>
+        </Property>
+        <Property v-if="topic?.auto_renew_account" id="auto-renew-account" :full-width="true">
+          <template v-slot:name>
+            <span>Auto Renew Account</span>
+          </template>
+          <template v-slot:value>
+            <AccountLink :account-id="topic?.auto_renew_account"/>
+          </template>
+        </Property>
+        <Property v-if="topic?.admin_key" id="admin-key" :full-width="true">
+          <template v-slot:name>Admin Key</template>
+          <template v-slot:value>
+            <KeyValue :key-bytes="topic?.admin_key?.key" :key-type="topic?.admin_key?._type" :show-none="true"/>
+          </template>
+        </Property>
+        <Property v-if="topic?.submit_key" id="submit-key" :full-width="true">
+          <template v-slot:name>Submit Key</template>
+          <template v-slot:value>
+            <KeyValue :key-bytes="topic?.submit_key?.key" :key-type="topic?.submit_key?._type" :show-none="true"/>
+          </template>
+        </Property>
+      </template>
+    </DashboardCard>
+
+    <DashboardCard collapsible-key="topicMessages">
+
+      <template v-slot:title>
+        <span class="h-is-secondary-title">Topic Messages</span>
       </template>
 
       <template v-slot:control>
@@ -39,7 +104,6 @@
       </template>
 
       <template v-slot:content>
-        <NotificationBanner v-if="notification" :message="notification"/>
         <TopicMessageTable v-if="validEntityId" v-bind:controller="messageTableController"/>
       </template>
 
@@ -57,7 +121,7 @@
 
 <script lang="ts">
 
-import {computed, defineComponent, inject, onBeforeUnmount, onMounted} from 'vue';
+import {computed, defineComponent, inject, onBeforeUnmount, onMounted, ref} from 'vue';
 import {useRouter} from "vue-router";
 import PlayPauseButton from "@/components/PlayPauseButton.vue";
 import TopicMessageTable from "@/components/topic/TopicMessageTable.vue";
@@ -66,8 +130,18 @@ import Footer from "@/components/Footer.vue";
 import NotificationBanner from "@/components/NotificationBanner.vue";
 import {EntityID} from "@/utils/EntityID";
 import {TopicMessageTableController} from "@/components/topic/TopicMessageTableController";
-import {networkRegistry} from "@/schemas/NetworkRegistry";
-import router from "@/router";
+import {NetworkRegistry, networkRegistry} from "@/schemas/NetworkRegistry";
+import router, {routeManager} from "@/router";
+import {TopicByIdCache} from "@/utils/cache/TopicByIdCache";
+import AccountLink from "@/components/values/link/AccountLink.vue";
+import Property from "@/components/Property.vue";
+import DurationValue from "@/components/values/DurationValue.vue";
+import BlobValue from "@/components/values/BlobValue.vue";
+import KeyValue from "@/components/values/KeyValue.vue";
+import TimestampValue from "@/components/values/TimestampValue.vue";
+import StringValue from "@/components/values/StringValue.vue";
+import TransactionLink from "@/components/values/TransactionLink.vue";
+import {initialLoadingKey} from "@/AppKeys";
 
 export default defineComponent({
 
@@ -82,6 +156,7 @@ export default defineComponent({
   },
 
   components: {
+    TransactionLink, StringValue, TimestampValue, KeyValue, BlobValue, DurationValue, Property, AccountLink,
     NotificationBanner,
     Footer,
     DashboardCard,
@@ -93,6 +168,7 @@ export default defineComponent({
     const isSmallScreen = inject('isSmallScreen', true)
     const isMediumScreen = inject('isMediumScreen', true)
     const isTouchDevice = inject('isTouchDevice', false)
+    const initialLoading = inject(initialLoadingKey, ref(false))
 
     const validEntityId = computed(() => {
       return props.topicId ? EntityID.parse(props.topicId, true) != null : false
@@ -111,11 +187,23 @@ export default defineComponent({
       let result
       if (!validEntityId.value) {
         result = "Invalid topic ID: " + props.topicId
+      } else if (topicLookup.entity.value?.deleted === true) {
+        result = "Topic is deleted"
+      } else if (topicLookup.entity.value === null && routeManager.currentNetwork.value === NetworkRegistry.PREVIEW_NETWORK) {
+        result = "Topic with ID " + props.topicId + " was not found"
       } else {
         result = null
       }
       return result
     })
+
+    //
+    // topic
+    //
+
+    const topicLookup = TopicByIdCache.instance.makeLookup(normalizedTopicId)
+    onMounted(() => topicLookup.mount())
+    onBeforeUnmount(() => topicLookup.unmount())
 
     //
     // messageTableController
@@ -129,11 +217,13 @@ export default defineComponent({
     return {
       isSmallScreen,
       isTouchDevice,
+      initialLoading,
       messageTableController,
       validEntityId,
       normalizedTopicId,
       topicChecksum,
-      notification
+      notification,
+      topic: topicLookup.entity,
     }
   }
 });
