@@ -109,6 +109,8 @@
 
     </DashboardCard>
 
+    <MirrorLink :network="network" entityUrl="topics" :loc="topicId"/>
+
   </section>
 
   <Footer/>
@@ -142,6 +144,7 @@ import TimestampValue from "@/components/values/TimestampValue.vue";
 import StringValue from "@/components/values/StringValue.vue";
 import TransactionLink from "@/components/values/TransactionLink.vue";
 import {initialLoadingKey} from "@/AppKeys";
+import MirrorLink from "@/components/MirrorLink.vue";
 
 export default defineComponent({
 
@@ -156,6 +159,7 @@ export default defineComponent({
   },
 
   components: {
+    MirrorLink,
     TransactionLink, StringValue, TimestampValue, KeyValue, BlobValue, DurationValue, Property, AccountLink,
     NotificationBanner,
     Footer,
