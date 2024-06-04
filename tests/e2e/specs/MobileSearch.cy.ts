@@ -137,7 +137,7 @@ describe('Search Bar', () => {
 
     it('should find the topic ID', () => {
         const searchTopic = "0.0.1750326"
-        testBody(searchTopic, '/mainnet/topic/' + searchTopic, 'Messages for Topic ', true)
+        testBody(searchTopic, '/mainnet/topic/' + searchTopic, 'Topic ', true)
     })
 
     it('should find the contract ID', () => {
@@ -198,9 +198,9 @@ describe('Search Bar', () => {
 
 const testBody = (searchID: string,
                   expectedPath: string,
-                  expectedTitle: string = null,
+                  expectedTitle: string|null = null,
                   expectTable = false,
-                  searchString: string = null) => {
+                  searchString: string|null = null) => {
     cy.get('[data-cy=searchBar]').within(() => {
         if (searchString !== null) {
             cy.get('input').type(searchString)

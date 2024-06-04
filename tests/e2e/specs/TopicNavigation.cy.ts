@@ -37,7 +37,7 @@ describe('Topic Navigation', () => {
             .then(($id) => {
                 // cy.log('Selected topic Id: ' + $id.text())
                 cy.url().should('include', '/testnet/topic/' + $id.text())
-                cy.contains('Messages for Topic ' + $id.text())
+                cy.contains('Topic ' + $id.text())
             })
     })
 
@@ -54,7 +54,7 @@ describe('Topic Navigation', () => {
             .click()
             .then(($topicId) => {
                 cy.url().should('include', '/mainnet/topic/' + $topicId.text())
-                cy.contains('Messages for Topic ' + $topicId.text())
+                cy.contains('Topic ' + $topicId.text())
 
                 cy.get('table')
                     .find('tbody tr')
