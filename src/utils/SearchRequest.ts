@@ -75,7 +75,10 @@ export class SearchRequest {
                                              |                  | api/v1/tokens/0.0.{integer}
                                              |                  | api/v1/topics/0.0.{integer}/messages
         -------------------------------------+------------------+------------------------------------------------------
-        shard.realm.num@seconds.nanoseconds  | Transaction ID   | api/v1/transactions/normalize({searchId}
+        shard.realm.num@seconds.nanoseconds  | Transaction ID   | api/v1/transactions/normalize({searchId})
+        -------------------------------------+------------------+------------------------------------------------------
+        shard.realm.num@seconds              | Incomplete       | api/v1/transactions/normalize({searchId}.000000000)
+                                             | Transaction ID   |
         -------------------------------------+------------------+------------------------------------------------------
         shard.realm.num-seconds-nanoseconds  | Transaction ID   | api/v1/transactions/{searchId}
                                              | (normalized)     |
@@ -109,7 +112,7 @@ export class SearchRequest {
 
 
         const entityID = EntityID.parseWithChecksum(this.searchedId, true)
-        const transactionID = TransactionID.parse(this.searchedId)
+        const transactionID = TransactionID.parse(this.searchedId, true)
         const hexBytes = hexToByte(this.searchedId)
         const alias = base32ToAlias(this.searchedId) != null ? this.searchedId : null
         const timestamp = Timestamp.parse(this.searchedId)
