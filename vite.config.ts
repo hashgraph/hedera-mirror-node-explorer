@@ -44,5 +44,8 @@ export default defineConfig({
   },
   worker: {
     format: "es",
+  },
+  test: {
+    environment: "jsdom" // https://vitest.dev/config/#environment
   }
 })
