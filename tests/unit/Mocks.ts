@@ -2971,6 +2971,36 @@ export const SAMPLE_CONTRACT_ACTIONS = {
     }
 }
 
+export const SAMPLE_TOPIC = {
+    "admin_key": {
+        "_type": "ED25519",
+        "key": "c249a323c878f5b5e2daccda6d731e6fdc32f870228d1cd4fae559d947dbc36c"
+    },
+    "auto_renew_account": "0.0.31393",
+    "auto_renew_period": 8000000,
+    "created_timestamp": "1717507875.076772003",
+    "deleted": false,
+    "memo": "Mirror Node acceptance test: 2024-06-04T13:31:14.587755893Z Create Topic",
+    "submit_key": {"_type": "ED25519", "key": "8ebc7a7fa141bae14ce76669f6f91d533f3365d6a9a465741f7e6e4abbf7aaf3"},
+    "timestamp": {"from": "1717507965.841820555", "to": null},
+    "topic_id": "0.0.31407"
+}
+
+export const SAMPLE_DELETED_TOPIC = {
+    "admin_key": {
+        "_type": "ED25519",
+        "key": "c249a323c878f5b5e2daccda6d731e6fdc32f870228d1cd4fae559d947dbc36c"
+    },
+    "auto_renew_account": "0.0.31393",
+    "auto_renew_period": 8000000,
+    "created_timestamp": "1717507875.076772003",
+    "deleted": true,
+    "memo": "Mirror Node acceptance test: 2024-06-04T13:31:14.587755893Z Create Topic",
+    "submit_key": {"_type": "ED25519", "key": "8ebc7a7fa141bae14ce76669f6f91d533f3365d6a9a465741f7e6e4abbf7aaf3"},
+    "timestamp": {"from": "1717507965.841820555", "to": null},
+    "topic_id": "0.0.31407"
+}
+
 //
 // https://mainnet-public.mirrornode.hedera.com/api/v1/topics/0.0.642394/messages
 //

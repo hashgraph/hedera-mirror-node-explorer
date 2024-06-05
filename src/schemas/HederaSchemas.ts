@@ -451,6 +451,22 @@ export interface Nft {
 }
 
 // ---------------------------------------------------------------------------------------------------------------------
+//                                               Topic
+// ---------------------------------------------------------------------------------------------------------------------
+
+export interface Topic {
+    admin_key: Key | null
+    auto_renew_account: string | null // Network entity ID in the format of shard.realm.num
+    auto_renew_period: number | null
+    created_timestamp: string | null
+    deleted: boolean | null
+    memo: string
+    submit_key: Key | null
+    timestamp: TimestampRange   // timestamp range the entity is valid for
+    topic_id: string | null // Network entity ID in the format of shard.realm.num
+}
+
+// ---------------------------------------------------------------------------------------------------------------------
 //                                               TopicMessagesResponse
 // ---------------------------------------------------------------------------------------------------------------------
 
