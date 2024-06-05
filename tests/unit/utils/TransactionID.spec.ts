@@ -1,3 +1,5 @@
+// noinspection DuplicatedCode
+
 /*-
  *
  * Hedera Mirror Node Explorer
@@ -47,6 +49,23 @@ describe("TransactionID.ts", () => {
         expect(obj?.seconds).toBe(1640084590)
         expect(obj?.nanoSeconds).toBe(665216882)
         expect(obj?.toString(true)).toBe(str)
+    })
+
+    test("0.0.88@1640084590 (without autocomplete)", () => {
+        const str = "0.0.88@1640084590"
+        const obj = TransactionID.parse(str) // autocomplete
+        expect(obj).toBeNull()
+    })
+
+    test("0.0.88@1640084590 (with autocomplete)", () => {
+        const str = "0.0.88@1640084590"
+        const obj = TransactionID.parse(str, true)
+        expect(obj?.entityID.shard).toBe(0)
+        expect(obj?.entityID.realm).toBe(0)
+        expect(obj?.entityID.num).toBe(88)
+        expect(obj?.seconds).toBe(1640084590)
+        expect(obj?.nanoSeconds).toBe(0)
+        expect(obj?.toString(true)).toBe(str + ".000000000")
     })
 
     test("00881640084590665216882", () => {
