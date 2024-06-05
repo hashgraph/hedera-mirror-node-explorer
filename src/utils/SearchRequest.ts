@@ -37,10 +37,11 @@ import axios from "axios";
 import {TransactionID} from "@/utils/TransactionID";
 import {EntityID} from "@/utils/EntityID";
 import {aliasToBase32, base32ToAlias, byteToHex, hexToByte, paddedBytes} from "@/utils/B64Utils";
-import {NameService} from "@/utils/name_service/NameService";
+import {NameRecord, NameService} from "@/utils/name_service/NameService";
 import {Timestamp} from "@/utils/Timestamp";
 import {networkRegistry} from "@/schemas/NetworkRegistry";
 import {routeManager} from "@/router";
+import {AppStorage} from "@/AppStorage";
 
 export class SearchRequest {
 
@@ -53,6 +54,7 @@ export class SearchRequest {
     public contract: ContractResponse | null = null
     public block: Block | null = null
     public ethereumAddress: string | null = null
+    public collidingNameRecords: NameRecord[] = []
 
     private errorCount = 0
 
@@ -338,18 +340,41 @@ export class SearchRequest {
     }
 
     private async searchNamingService(name: string): Promise<void> {
+        const network = routeManager.currentNetwork.value
         try {
-            const records = await NameService.instance.resolve(name, routeManager.currentNetwork.value)
-            const accountId = records.length > 0 ? records[0].entityId : null
-            if (accountId !== null) {
+            const records = await NameService.instance.resolve(name, network)
+            if (records.length == 1) {
+                const accountId = records[0].entityId
                 const r = await axios.get<AccountBalanceTransactions>("api/v1/accounts/" + accountId)
                 this.account = r.data
+                AppStorage.setNameRecord(accountId, network, records[0])
+            } else if (records.length >= 2) {
+                const chosenRecord = this.findChosenRecord(records, network)
+                if (chosenRecord !== null) {
+                    const accountId = chosenRecord.entityId
+                    const r = await axios.get<AccountBalanceTransactions>("api/v1/accounts/" + accountId)
+                    this.account = r.data
+                } else {
+                    this.collidingNameRecords = records
+                }
             } else {
-                this.account = null
+                this.collidingNameRecords = []
             }
         } catch (reason: unknown) {
             this.updateErrorCount(reason)
         }
         return Promise.resolve()
+    }
+
+    private findChosenRecord(nameRecords: NameRecord[], network: string): NameRecord|null {
+        let result: NameRecord|null = null
+        for (const r of nameRecords) {
+            const p = AppStorage.getNameRecord(r.entityId, network)
+            if (p !== null && r.name == p.name && r.providerAlias == p.providerAlias) {
+                result = r
+                break
+            }
+        }
+        return result
     }
 }

@@ -57,13 +57,7 @@ export class NameService {
         return Promise.resolve(result)
     }
 
-    //
-    // Private
-    //
-
-    private constructor() {}
-
-    private lookupProvider(providerAlias: string): NameServiceProvider|null {
+    public lookupProvider(providerAlias: string): NameServiceProvider|null {
         let result: NameServiceProvider|null = null
         for (const p of nameServiceProviders) {
             if (p.providerAlias == providerAlias) {
@@ -73,6 +67,12 @@ export class NameService {
         }
         return result
     }
+
+    //
+    // Private
+    //
+
+    private constructor() {}
 
     private async resolveWithProvider(name: string, network: string, provider: NameServiceProvider): Promise<NameRecord|null> {
         let result: NameRecord|null

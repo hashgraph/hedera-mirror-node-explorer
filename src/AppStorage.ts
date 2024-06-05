@@ -19,6 +19,8 @@
  */
 
 import {NetworkEntry, networkRegistry} from "@/schemas/NetworkRegistry";
+import {NameRecord} from "@/utils/name_service/NameService";
+import {ref} from "vue";
 
 export class AppStorage {
 
@@ -280,4 +282,46 @@ export class AppStorage {
         }
         return result
     }
+
+    //
+    // name resolution
+    //
+
+    private static readonly NAMING = "naming"
+
+    public static getNameRecord(entityId: string, network: string): NameRecord|null {
+        const key = this.makeNamingKey(entityId, network)
+        const jsonText = this.getLocalStorageItem(key)
+        let result: unknown|null
+        if (jsonText !== null) {
+            try {
+                result = JSON.parse(jsonText)
+            } catch {
+                result = null
+            }
+        } else {
+            result = null
+        }
+        return result as NameRecord|null
+    }
+
+    public static setNameRecord(entityId: string, network: string, newRecord: NameRecord): void {
+        const jsonText = JSON.stringify(newRecord)
+        this.setLocalStorageItem(this.makeNamingKey(entityId, network), jsonText)
+        this.nameRecordChangeCounter.value += 1
+    }
+
+    public static clearNameRecord(entityId: string, network: string): void {
+        this.setLocalStorageItem(this.makeNamingKey(entityId, network), null)
+        this.nameRecordChangeCounter.value += 1
+    }
+
+    public static readonly nameRecordChangeCounter = ref(0)
+
+    private static makeNamingKey(entityId: string, network: string): string {
+        return this.NAMING + "/" + network + "/" + entityId
+    }
+
+
+
 }

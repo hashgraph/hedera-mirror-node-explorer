@@ -30,7 +30,7 @@ export class KNSProvider extends NameServiceProvider {
     //
 
     public constructor() {
-        super("KNS", "Kabuto Name Service", null);
+        super("KNS", "Kabuto Name Service", "https://kabuto.sh");
     }
 
     //

@@ -55,6 +55,10 @@
     </form>
   </div>
 
+  <NameCollisionDialog v-if="collidingRecords.length >= 2"
+      :controller="collisionController"
+      v-model:name-records="collidingRecords"/>
+
 </template>
 
 <!-- --------------------------------------------------------------------------------------------------------------- -->
@@ -67,6 +71,9 @@ import {defineComponent, inject, onMounted, ref, watch} from "vue";
 import {SearchRequest} from "@/utils/SearchRequest";
 import {routeManager} from "@/router";
 import {gtagSearch} from "@/gtag";
+import NameCollisionDialog from "@/components/NameCollisionDialog.vue";
+import {DialogController} from "@/components/dialog/DialogController";
+import {NameRecord} from "@/utils/name_service/NameService";
 
 
 const STYLE_SEARCH_ICON = "fa fa-search"
@@ -75,6 +82,7 @@ const STYLE_BUSY_ICON = "fa fa-spinner fa-spin"
 
 export default defineComponent({
   name: "SearchBar",
+  components: {NameCollisionDialog},
   setup() {
     const isMediumScreen = inject('isMediumScreen', true)
     const isTouchDevice = inject('isTouchDevice', false)
@@ -171,8 +179,13 @@ export default defineComponent({
                 routeManager.routeToAccount(r.ethereumAddress) // Will display inactive
                 searchDidEnd(true)
               } else {
-                routeManager.routeToNoSearchResult(searchedId.value, r.getErrorCount())
-                searchDidEnd(false)
+                if (r.collidingNameRecords.length >= 2) {
+                  collidingRecords.value = r.collidingNameRecords // Will display NameCollisionDialog
+                  searchDidEnd(true)
+                } else {
+                  routeManager.routeToNoSearchResult(searchedId.value, r.getErrorCount())
+                  searchDidEnd(false)
+                }
               }
             }
           } catch {
@@ -193,6 +206,12 @@ export default defineComponent({
       document.title = 'Hedera Dashboard'
     })
 
+    const collidingRecords = ref<NameRecord[]>([])
+    const collisionController = new DialogController()
+    watch(collidingRecords, () => {
+      collisionController.visible.value = collidingRecords.value.length >= 1
+    })
+
     return {
       isMediumScreen,
       isTouchDevice,
@@ -200,7 +219,9 @@ export default defineComponent({
       searchInputDisabled,
       searchButtonDisabled,
       searchButtonIconStyle,
-      performSearch
+      performSearch,
+      collisionController,
+      collidingRecords
     }
   }
 })
