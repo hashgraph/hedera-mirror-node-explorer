@@ -120,7 +120,7 @@
           </label>
         </div>
         <div v-else-if="selectedOption==='abi'" class="is-flex is-justify-content-end is-align-items-center">
-          <template v-if="logicModeAvailable" class="ml-2">
+          <template v-if="logicModeAvailable">
             <p class="mr-2 h-is-text-size-3">Show Logic Contract ABI</p>
             <o-switch v-model="showLogicABI"/>
           </template>

@@ -49,6 +49,7 @@ export class WalletDriver_Mock extends WalletDriver_Hedera {
     // WalletDriver
     //
 
+    // eslint-disable-next-line @typescript-eslint/no-unused-vars
     public async connect(network: string): Promise<string[]> {
         let result: string[]
         if (!this.connected) {
@@ -74,6 +75,7 @@ export class WalletDriver_Mock extends WalletDriver_Hedera {
     // WalletDriver_Hedera
     //
 
+    // eslint-disable-next-line @typescript-eslint/no-unused-vars
     public makeSigner(accountId: string): Signer | null {
         return null
     }
@@ -116,6 +118,7 @@ export class WalletDriver_Mock extends WalletDriver_Hedera {
         return Promise.resolve(result)
     }
 
+    // eslint-disable-next-line @typescript-eslint/no-unused-vars
     isCancelError(reason: unknown): boolean {
         return false;
     }

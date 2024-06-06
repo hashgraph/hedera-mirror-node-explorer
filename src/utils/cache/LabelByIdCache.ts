@@ -24,23 +24,18 @@ export class LabelByIdCache extends EntityCache<string, string | null> {
 
     public static readonly instance = new LabelByIdCache()
 
-    private static sampleLabel : string | null = 'sample-label'
-
+    // eslint-disable-next-line @typescript-eslint/no-unused-vars
     protected async load(key: string): Promise<string | null> {
-        let label: string | null
-        const lastDigit = key.slice(-1)
-        if (lastDigit === '4' || lastDigit === '5' || lastDigit === '6' || lastDigit === '7' || lastDigit === '8') {
-            label = LabelByIdCache.sampleLabel
-        } else {
-            label = null
-        }
-        await sleep(800)
+        // let label: string | null
+        // const lastDigit = key.slice(-1)
+        // if (lastDigit === '4' || lastDigit === '5' || lastDigit === '6' || lastDigit === '7' || lastDigit === '8') {
+        //     label = LabelByIdCache.sampleLabel
+        // } else {
+        //     label = null
+        // }
+        // await sleep(800)
         // return Promise.resolve(label)
         return Promise.resolve(null)
     }
-}
-
-function sleep(ms: number) {
-    return new Promise(resolve => setTimeout(resolve, ms));
 }
 

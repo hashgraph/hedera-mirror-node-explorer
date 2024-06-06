@@ -31,22 +31,27 @@ export abstract class WalletDriver {
     // Public (to be subclassed)
     //
 
+    // eslint-disable-next-line @typescript-eslint/no-unused-vars
     public async connect(network: string): Promise<string[]> {
         throw this.toBeImplemented("connect")
     }
 
+    // eslint-disable-next-line @typescript-eslint/no-unused-vars
     public async disconnect(): Promise<void> {
         throw this.toBeImplemented("disconnect")
     }
 
+    // eslint-disable-next-line @typescript-eslint/no-unused-vars
     public async associateToken(accountId: string, tokenId: string): Promise<string> {
         throw this.toBeImplemented("associateToken")
     }
 
+    // eslint-disable-next-line @typescript-eslint/no-unused-vars
     public async dissociateToken(accountId: string, tokenId: string): Promise<string> {
         throw this.toBeImplemented("dissociateToken")
     }
 
+    // eslint-disable-next-line @typescript-eslint/no-unused-vars
     public async callContract(contractId: string, contractAddress: string, functionData: string, payerId: string): Promise<ContractResultDetails | string> {
         throw this.toBeImplemented("callContract")
     }

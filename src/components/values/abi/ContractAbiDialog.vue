@@ -30,7 +30,7 @@
     </template>
     <template v-slot:dialogInput>
       <div class="dialog-grid">
-        <template v-for="b of contractCallBuilder.paramBuilders">
+        <template v-for="b of contractCallBuilder.paramBuilders" :key="b.paramType.name">
           <div class="has-text-weight-light" style="align-self: center">{{ b.paramType.name }}</div>
           <ParamTypeEditor :param-builder="b"/>
           <div/>
