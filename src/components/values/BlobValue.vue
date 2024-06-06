@@ -135,22 +135,30 @@ export default defineComponent({
       return result
     })
 
-    const b64EncodingFound = ref(false)
+    const b64EncodingFound = computed(() => b64DecodedValue.value !== null)
+
+    const b64DecodedValue = computed(() => {
+      let result: string|null
+      const base64regex = /^([0-9a-zA-Z+/]{4})*(([0-9a-zA-Z+/]{2}==)|([0-9a-zA-Z+/]{3}=))?$/;
+      if (props.blobValue && props.base64 && base64regex.test(props.blobValue)) {
+        try {
+          result = Buffer.from(props.blobValue, 'base64').toString()
+        } catch {
+          result = null
+        }
+      } else {
+        result = null
+      }
+      return result
+    })
 
     const decodedValue = computed(() => {
 
-      const base64regex = /^([0-9a-zA-Z+/]{4})*(([0-9a-zA-Z+/]{2}==)|([0-9a-zA-Z+/]{3}=))?$/;
       let result: string
-      b64EncodingFound.value = false
 
       if (props.blobValue) {
-        if (props.base64 && base64regex.test(props.blobValue)) {
-          try {
-            result = Buffer.from(props.blobValue, 'base64').toString()
-            b64EncodingFound.value = true
-          } catch {
-            result = props.blobValue
-          }
+        if (props.base64) {
+          result = b64DecodedValue.value ?? props.blobValue
         } else {
           result = props.blobValue
         }
