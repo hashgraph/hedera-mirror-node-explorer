@@ -141,8 +141,6 @@ import DurationValue from "@/components/values/DurationValue.vue";
 import BlobValue from "@/components/values/BlobValue.vue";
 import KeyValue from "@/components/values/KeyValue.vue";
 import TimestampValue from "@/components/values/TimestampValue.vue";
-import StringValue from "@/components/values/StringValue.vue";
-import TransactionLink from "@/components/values/TransactionLink.vue";
 import {initialLoadingKey} from "@/AppKeys";
 import MirrorLink from "@/components/MirrorLink.vue";
 
@@ -160,7 +158,7 @@ export default defineComponent({
 
   components: {
     MirrorLink,
-    TransactionLink, StringValue, TimestampValue, KeyValue, BlobValue, DurationValue, Property, AccountLink,
+    TimestampValue, KeyValue, BlobValue, DurationValue, Property, AccountLink,
     NotificationBanner,
     Footer,
     DashboardCard,

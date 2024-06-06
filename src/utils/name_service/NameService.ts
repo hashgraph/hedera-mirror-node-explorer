@@ -35,7 +35,7 @@ export class NameService {
             promises.push(this.resolveWithProvider(name, network, p))
         }
 
-        let result: NameRecord[] = []
+        const result: NameRecord[] = []
         const responses = await Promise.allSettled(promises)
         for (const r of responses) {
             if (r.status == "fulfilled" && r.value !== null) {
