@@ -187,6 +187,7 @@ export abstract class WalletDriver_Ethereum extends WalletDriver {
         return Promise.resolve(result)
     }
 
+    // eslint-disable-next-line @typescript-eslint/no-unused-vars
     public async callContract(contractId: string, contractAddress: string, functionData: string, payerId: string): Promise<ContractResultDetails | string> {
         let result: ContractResultDetails | string
 

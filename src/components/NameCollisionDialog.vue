@@ -34,7 +34,7 @@
           Domain name "{{ matchedDomain }}" is registered with multiple naming services.
         </p>
         <p class="mb-5">Choose which one you want to use:</p>
-          <template v-for="r in nameRecords">
+          <template v-for="r in nameRecords" :key="r.entityId">
             <div class="columns">
               <div class="column is-one-quarter">
                 <label class="radio">

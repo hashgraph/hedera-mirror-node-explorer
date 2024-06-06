@@ -73,8 +73,7 @@
               placeholder="SELECT A DATE"
               :is-24="false"
               :enable-time-picker="false" dark
-              :teleport="true"
-              @closed="" @cleared=""/>
+              :teleport="true"/>
         </div>
         <div v-if="!isStartDateValid" class="column icon is-small has-text-danger">
           <i class="fas fa-times"></i>
@@ -90,8 +89,7 @@
               placeholder="SELECT A DATE"
               :is-24="false"
               :enable-time-picker="false" dark
-              :teleport="true"
-              @closed="" @cleared=""/>
+              :teleport="true"/>
         </div>
         <div v-if="!isEndDateValid" class="column icon is-small has-text-danger">
           <i class="fas fa-times"></i>

@@ -26,9 +26,11 @@
   <div v-if="disassembly" id="disassembly"
        class="h-code-box h-has-page-background is-family-monospace mt-2 px-3 py-1"
        style="max-height: 400px;">
-    <div v-for="opcode in disassembly" v-if="disassembly && disassembly.length > 0" :key="opcode.index16">
-      <OpcodeValue :opcode="opcode" :show-hexa-opcode="showHexaOpcode"/>
-    </div>
+    <template v-if="disassembly.length > 0">
+      <div v-for="opcode in disassembly" :key="opcode.index16">
+        <OpcodeValue :opcode="opcode" :show-hexa-opcode="showHexaOpcode"/>
+      </div>
+    </template>
     <p v-else class="has-text-grey is-italic has-text-weight-medium">{{ disassembledError }}</p>
   </div>
 
