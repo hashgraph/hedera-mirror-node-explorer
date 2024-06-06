@@ -184,7 +184,7 @@ describe("TransactionDetails.vue", () => {
         const matcher4 = "/api/v1/contracts/" + SAMPLE_CONTRACT_RESULT_DETAILS.contract_id + "/results/" + timestamp
         mock.onGet(matcher4).reply(200, SAMPLE_CONTRACT_RESULT_DETAILS);
 
-        const matcher5 = "/api/v1/contracts/results/" + transactionId + "/actions"
+        const matcher5 = "/api/v1/contracts/results/" + SAMPLE_CONTRACT_RESULT_DETAILS.hash + "/actions?limit=100"
         mock.onGet(matcher5).reply(200, "[]")
 
         const fromContract = {
@@ -288,7 +288,7 @@ describe("TransactionDetails.vue", () => {
         mock.onGet(matcher4).reply(200, SAMPLE_CONTRACT_RESULT_DETAILS);
 
         const hash = SAMPLE_CONTRACT_RESULT_DETAILS.hash
-        const matcher5 = "/api/v1/contracts/results/" + hash + "/actions"
+        const matcher5 = "/api/v1/contracts/results/" + hash + "/actions?limit=100"
         mock.onGet(matcher5).reply(200, "[]")
 
         const matcher7 = "api/v1/network/nodes"
