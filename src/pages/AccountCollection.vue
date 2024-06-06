@@ -70,11 +70,9 @@ import {useRouter} from "vue-router";
 import {EntityID} from "@/utils/EntityID";
 import {CollectionTableController} from "@/components/account/CollectionTableController";
 import CollectionTable from "@/components/account/CollectionTable.vue";
-import TokenLink from "@/components/values/link/TokenLink.vue";
 import {TokenInfoCache} from "@/utils/cache/TokenInfoCache";
 import {TokenInfoAnalyzer} from "@/components/token/TokenInfoAnalyzer";
 import {makeTokenName, makeTokenSymbol} from "@/schemas/HederaUtils";
-import AccountIOL from "@/components/values/link/AccountIOL.vue";
 import AccountLink from "@/components/values/link/AccountLink.vue";
 import {routeManager} from "@/router";
 
@@ -84,8 +82,6 @@ export default defineComponent({
 
   components: {
     AccountLink,
-    AccountIOL,
-    TokenLink,
     CollectionTable,
     Footer,
     DashboardCard
