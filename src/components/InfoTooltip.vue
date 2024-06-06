@@ -23,12 +23,17 @@
 <!-- --------------------------------------------------------------------------------------------------------------- -->
 
 <template>
-  <o-tooltip :label="label"
-             :delay="delay"
-             multiline="multiline"
-             :position="position ?? 'auto'"
-             class="h-tooltip">
-    <span class="icon is-small h-is-property-text h-is-extra-text"><i class="fas fa-info-circle"></i></span>
+  <o-tooltip
+      v-if="warningLabel || label"
+      :label="warningLabel ?? label"
+      :delay="delay"
+      multiline="multiline"
+      :position="position ?? 'auto'"
+      class="h-tooltip">
+    <span class="icon is-small h-is-property-text h-is-extra-text">
+      <i v-if="warningLabel" class="fa fa-exclamation-triangle has-text-danger"/>
+      <i v-else class="fas fa-info-circle"></i>
+    </span>
   </o-tooltip>
 </template>
 
@@ -38,12 +43,19 @@
 
 <script lang="ts">
 
-import {defineComponent} from "vue";
+import {defineComponent, PropType} from "vue";
 
 export default defineComponent({
   name: "InfoTooltip",
   props: {
-    label: String,
+    warningLabel: {
+      type: String as PropType<string | null>,
+      default: null
+    },
+    label: {
+      type: String as PropType<string | null>,
+      default: null
+    },
     delay: {
       type: Number,
       default: 200
