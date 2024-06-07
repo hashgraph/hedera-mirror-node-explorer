@@ -153,6 +153,11 @@ describe("EVMAddress", () => {
 
     test("Constructing with System Contract address", async () => {
 
+        const abi = require('../../../public/abi/IHederaTokenService.json')
+        const mock = new MockAdapter(axios);
+        const matcher1 = "http://localhost:3000/abi/IHederaTokenService.json"
+        mock.onGet(matcher1).reply(200, abi)
+
         await router.push("/") // To avoid "missing required param 'network'" error
         const wrapper = mount(EVMAddress, {
             global: {
@@ -168,6 +173,7 @@ describe("EVMAddress", () => {
 
         wrapper.unmount()
         await flushPromises()
+        mock.restore()
     })
 
 })
