@@ -63,7 +63,7 @@
 import {computed, defineComponent, inject, PropType, ref} from "vue";
 import {initialLoadingKey} from "@/AppKeys";
 
-export const IPFS_GATEWAY_PREFIX = 'https://cloudflare-ipfs.com/ipfs/'
+const ipfsGatewayPrefix = import.meta.env.VITE_APP_IPFS_GATEWAY_URL_PREFIX
 
 export default defineComponent({
   name: "BlobValue",
@@ -170,7 +170,7 @@ export default defineComponent({
 
     const ipfsAddress = computed(() => {
       if (decodedValue.value.startsWith("ipfs://") && decodedValue.value.length > 7) {
-        return `${IPFS_GATEWAY_PREFIX}${decodedValue.value.substring(7)}`
+        return `${ipfsGatewayPrefix}${decodedValue.value.substring(7)}`
       }
       return null
     })
