@@ -18,10 +18,10 @@
  *
  */
 
-import {describe, it, expect} from 'vitest'
+import {describe, expect, it} from 'vitest'
 import {flushPromises, mount} from "@vue/test-utils"
 import router from "@/router";
-import BlobValue from "@/components/values/BlobValue.vue";
+import BlobValue from '../../../src/components/values/BlobValue.vue';
 
 describe("BlobValue.vue", () => {
 
@@ -216,6 +216,7 @@ describe("BlobValue.vue", () => {
     //
 
     const BLOB_URL = "https://hedera.com"
+    const IPFS_GATEWAY_PREFIX = 'https://gateway.pinata.cloud/ipfs/'
 
     it("blobValue url", async () => {
 
@@ -230,8 +231,50 @@ describe("BlobValue.vue", () => {
 
         await flushPromises()
 
-        expect(wrapper.findComponent("a").text()).toBe(BLOB_URL)
-        expect(wrapper.findComponent("a").attributes("href")).toBe(BLOB_URL)
+        expect(wrapper.find("a").text()).toBe(BLOB_URL)
+        expect(wrapper.find("a").attributes("href")).toBe(BLOB_URL)
+
+        const encodedUrl = btoa(BLOB_URL)
+        const resultingUrl = (new URL(BLOB_URL)).toString()
+
+        await wrapper.setProps({
+            blobValue: encodedUrl,
+            base64: true
+        })
+
+        expect(wrapper.find("a").text()).toBe(resultingUrl)
+        expect(wrapper.find("a").attributes("href")).toBe(resultingUrl)
+
+        wrapper.unmount()
+        await flushPromises()
+    })
+
+    //
+    // Encoded HTTPS and IPFS URL
+    //
+
+    const BLOB_IPFS_URL = "ipfs://bafkreibvlezrqebhb57weqec4g2npf7yfskpcpmfq2cy3c336x7exqvjsq"
+    const BLOB_RESULTING_URL= IPFS_GATEWAY_PREFIX + "bafkreibvlezrqebhb57weqec4g2npf7yfskpcpmfq2cy3c336x7exqvjsq"
+
+
+    it("blobValue IPFS URL", async () => {
+
+        const encodedUrl = btoa(BLOB_IPFS_URL)
+
+        const wrapper = mount(BlobValue, {
+            global: {
+                plugins: [router]
+            },
+            props: {
+                blobValue: encodedUrl,
+                base64: true
+            },
+        });
+
+        await flushPromises()
+
+        expect(wrapper.find("a").text()).toBe(BLOB_IPFS_URL)
+        expect(wrapper.find("a").attributes("href")).toBe(BLOB_RESULTING_URL)
 
         wrapper.unmount()
         await flushPromises()

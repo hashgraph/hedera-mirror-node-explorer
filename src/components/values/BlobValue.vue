@@ -23,35 +23,58 @@
 <!-- --------------------------------------------------------------------------------------------------------------- -->
 
 <template>
-  <a v-if="isURL && blobValue" v-bind:href="blobValue">{{ blobValue }}</a>
-  <a v-else-if="decodedURL" :href="decodedURL.toString()">{{ decodedURL }}</a>
-  <a v-else-if="ipfsAddress" :href="ipfsAddress">{{ decodedValue }}</a>
-  <div v-else-if="jsonValue"
-       class="h-is-json is-inline-block has-text-left is-family-monospace h-is-text-size-3 should-wrap">{{ jsonValue }}
+  <div class="should-wrap">
+
+    <template v-if="blobValue">
+
+      <template v-if="isURL">
+        <span v-if="noAnchor">{{ blobValue }}</span>
+        <a v-else :href="blobValue">{{ blobValue }}</a>
+      </template>
+
+      <template v-else-if="decodedURL">
+        <span v-if="noAnchor">{{ decodedURL }}</span>
+        <a v-else :href="decodedURL.toString()">{{ decodedURL }}</a>
+      </template>
+
+      <template v-else-if="ipfsAddress">
+        <span v-if="noAnchor">{{ decodedValue }}</span>
+        <a v-else :href="ipfsAddress">{{ decodedValue }}</a>
+      </template>
+
+      <template v-else-if="jsonValue && isNaN(jsonValue)">
+        <div style="max-height: 200px; padding: 10px"
+             class="h-is-json mt-1 h-code-box h-has-page-background is-inline-block has-text-left h-is-text-size-3 should-wrap"
+        >
+          {{ jsonValue }}
+        </div>
+      </template>
+
+      <template v-else>
+        <div v-if="decodedValue.length > 512" style="max-height: 200px; padding: 10px"
+             class="h-is-json mt-1 h-code-box h-has-page-background is-inline-block has-text-left h-is-text-size-3 should-wrap">
+          <span id="blob-main">
+            {{ (b64EncodingFound && showBase64AsExtra) ? blobValue : decodedValue }}
+          </span>
+        </div>
+        <div v-else style="word-break: break-word">
+          <span id="blob-main">
+            {{ (b64EncodingFound && showBase64AsExtra) ? blobValue : decodedValue }}
+          </span>
+          <div v-if="b64EncodingFound && showBase64AsExtra" class="h-is-extra-text h-is-text-size-3 mt-1">
+            <span class="has-text-grey">Base64:</span>
+            <span id="blob-extra">{{ decodedValue }}</span>
+          </div>
+        </div>
+      </template>
+
+    </template>
+
+    <span v-else-if="showNone && !initialLoading" class="has-text-grey">None</span>
+
+    <span v-else/>
+
   </div>
-  <template v-else-if="blobValue">
-    <div v-if="limitingFactor && isMediumScreen" class="h-is-one-line is-inline-block"
-         :style="{'max-width': windowWidth-limitingFactor + 'px'}">{{ decodedValue }}
-    </div>
-    <div v-else-if="limitingFactor" class="h-is-one-line is-inline-block"
-         :style="{'max-width': windowWidth-limitingFactor+200 + 'px'}">{{ decodedValue }}
-    </div>
-    <div v-else style="word-break: break-word">
-      <span id="blob-main">
-        {{ (b64EncodingFound && showBase64AsExtra) ? blobValue : decodedValue }}
-      </span>
-      <div v-if="b64EncodingFound && showBase64AsExtra" class="h-is-extra-text h-is-text-size-3 mt-1">
-        <span class="has-text-grey">
-          Base64:
-        </span>
-        <span id="blob-extra">
-          {{ decodedValue }}
-        </span>
-      </div>
-    </div>
-  </template>
-  <span v-else-if="showNone && !initialLoading" class="has-text-grey">None</span>
-  <span v-else/>
 </template>
 
 <!-- --------------------------------------------------------------------------------------------------------------- -->
@@ -89,12 +112,17 @@ export default defineComponent({
       type: Boolean,
       default: false
     },
-    limitingFactor: Number
+    noAnchor: {
+      type: Boolean,
+      default: false
+    }
   },
 
   setup(props) {
     const isMediumScreen = inject('isMediumScreen', true)
     const windowWidth = inject('windowWidth', 1280)
+    const initialLoading = inject(initialLoadingKey, ref(false))
+
     const isURL = computed(() => {
       let result: boolean
       if (props.blobValue) {
@@ -123,7 +151,7 @@ export default defineComponent({
 
     const jsonValue = computed(() => {
       let result
-      if (decodedValue.value && props.pretty) {
+      if (decodedValue.value && decodedValue.value != '{}' && props.pretty) {
         try {
           result = JSON.parse(decodedValue.value)
         } catch (e) {
@@ -174,8 +202,6 @@ export default defineComponent({
       }
       return null
     })
-
-    const initialLoading = inject(initialLoadingKey, ref(false))
 
     return {
       isMediumScreen,
