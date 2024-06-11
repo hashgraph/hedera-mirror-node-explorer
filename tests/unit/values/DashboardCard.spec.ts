@@ -18,7 +18,7 @@
  *
  */
 
-import {describe, it, expect} from 'vitest'
+import {describe, expect, it} from 'vitest'
 import {mount} from "@vue/test-utils"
 import DashboardCard from "@/components/DashboardCard.vue";
 
@@ -40,20 +40,35 @@ describe("DashboardCard.vue", () => {
     it("should have all slots setup", async () => {
 
         const sampleTitle = "ZeTitle"
+        const sampleSubtitle = "ZeSubTitle"
         const sampleControl = "ZeControl"
+        const sampleMediaContent = "ZeMediaContent"
+        const sampleMediaDescription = "ZeMediaDescription"
         const sampleContent = "ZeContent"
+        const sampleLeftContent = "ZeLeftContent"
+        const sampleRightContent = "ZeRightContent"
 
         const wrapper = mount(DashboardCard, {
             slots: {
                 title: sampleTitle,
+                subtitle: sampleSubtitle,
                 control: sampleControl,
+                mediaContent: sampleMediaContent,
+                mediaDescription: sampleMediaDescription,
                 content: sampleContent,
+                leftContent: sampleLeftContent,
+                rightContent: sampleRightContent,
             }
         });
 
         expect(wrapper.text()).toContain(sampleTitle)
+        expect(wrapper.text()).toContain(sampleSubtitle)
         expect(wrapper.text()).toContain(sampleControl)
+        expect(wrapper.text()).toContain(sampleMediaContent)
+        expect(wrapper.text()).toContain(sampleMediaDescription)
         expect(wrapper.text()).toContain(sampleContent)
+        expect(wrapper.text()).toContain(sampleLeftContent)
+        expect(wrapper.text()).toContain(sampleRightContent)
 
         wrapper.unmount()
     })

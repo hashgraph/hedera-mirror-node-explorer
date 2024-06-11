@@ -47,11 +47,27 @@
     <div v-if="!isCollapsed">
       <hr class="h-card-separator mb-3"/>
 
-      <div class="h-is-property-text">
+      <div v-if="slots.content" class="h-is-property-text">
         <slot name="content"></slot>
       </div>
 
-      <div class="columns is-multiline h-is-property-text">
+      <div v-if="slots.mediaContent || slots.mediaDescription"
+           class="h-is-property-text"
+           :class="{'is-flex':isMediumScreen}"
+           style="gap: 20px"
+      >
+
+        <div class="is-flex is-justify-content-center" :class="{'my-4':!isMediumScreen}">
+          <slot name="mediaContent"></slot>
+        </div>
+
+        <div style="flex-grow: 0.8" :class="{'h-has-column-separator': isMediumScreen}">
+          <slot name="mediaDescription"></slot>
+        </div>
+
+      </div>
+
+      <div v-if="slots.leftContent || slots.rightContent" class="columns is-multiline h-is-property-text">
 
         <div :class="{'is-full': !isMediumScreen}" class="column is-6-desktop">
           <slot name="leftContent"></slot>
