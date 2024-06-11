@@ -2445,7 +2445,7 @@ export const SAMPLE_CONTRACT_DUDE = {
     "contract_id": "0.0.803295",
     "created_timestamp": "1648377044.798291252",
     "deleted": false,
-    "evm_address": "0x00000000000000000000000000000000000b70cf",
+    "evm_address": "0x00000000000000000000000000000000000c41df",
     "expiration_timestamp": "1649648001.410978000",
     "file_id": "0.0.803267",
     "memo": "",
@@ -3269,14 +3269,14 @@ export const SAMPLE_BLOCK_ZERO = {
 // Contract state
 //
 
-export const SAMPLE_PROXY_ADDRESS_RESPONSE: ContractStateResponse = {
+export const SAMPLE_LOGIC_ADDRESS_RESPONSE: ContractStateResponse = {
     state: [
         {
             "address": SAMPLE_CONTRACT.evm_address,
             "contract_id": SAMPLE_CONTRACT.contract_id,
             "timestamp": "1706044673.266736003",
             "slot": "0xb53127684a568b3173ae13b9f8a6016e243e63b6e8ee1178d6a717850b5d6103",
-            "value": "0x00000000000000000000000000000000000000000000000000000000000b70cf"
+            "value": "0x00000000000000000000000000000000000000000000000000000000000c41df" // SAMPLE_CONTRACT_DUDE
         }
     ]
 }
@@ -3288,7 +3288,7 @@ export const SAMPLE_ADMIN_ADDRESS_RESPONSE: ContractStateResponse = {
             "contract_id": SAMPLE_CONTRACT.contract_id,
             "timestamp": "1706044673.266736003",
             "slot": "0x360894a13ba1a3210667c828492db98dca3e2076cc3735a920a3ca505d382bbc",
-            "value": "0x000000000000000000000000000000000000000000000000000000000002294a"
+            "value": "0x000000000000000000000000000000000000000000000000000000000002294a" // SAMPLE_CONTRACT_WITH_SWARM_HASH
         }
     ]
 }

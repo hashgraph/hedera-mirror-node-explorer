@@ -20,20 +20,22 @@
  *
  */
 
-import {describe, it, expect} from 'vitest'
+import {describe, expect, it} from 'vitest'
 import {ContractAnalyzer} from "@/utils/analyzer/ContractAnalyzer";
 import {ref} from "vue";
 import {ABIAnalyzer} from "../../../../src/utils/analyzer/ABIAnalyzer";
 import {
     SAMPLE_ADMIN_ADDRESS_RESPONSE,
     SAMPLE_CONTRACT,
-    SAMPLE_CONTRACT_DUDE, SAMPLE_CONTRACT_WITH_SWARM_HASH,
-    SAMPLE_PROXY_ADDRESS_RESPONSE
+    SAMPLE_CONTRACT_DUDE,
+    SAMPLE_CONTRACT_WITH_SWARM_HASH,
+    SAMPLE_LOGIC_ADDRESS_RESPONSE
 } from "../../Mocks";
 import {flushPromises} from "@vue/test-utils";
 import {fetchGetURLs} from "./ContractResultAnalyzer.spec";
 import MockAdapter from "axios-mock-adapter";
 import axios from "axios";
+import {ABIController, ABIMode} from "../../../../src/components/contract/ABIController";
 
 
 describe("ABIAnalyzer.ts", async () => {
@@ -41,6 +43,9 @@ describe("ABIAnalyzer.ts", async () => {
     it("Non proxy contract", async () => {
 
         const mock = new MockAdapter(axios)
+        const matcher0 = "api/v1/contracts/" + SAMPLE_CONTRACT.contract_id
+        mock.onGet(matcher0).reply(200, SAMPLE_CONTRACT);
+
         const matcher1 = "api/v1/contracts/" + SAMPLE_CONTRACT.contract_id + "/state?slot=0x360894a13ba1a3210667c828492db98dca3e2076cc3735a920a3ca505d382bbc"
         mock.onGet(matcher1).reply(200, []);
 
@@ -51,11 +56,16 @@ describe("ABIAnalyzer.ts", async () => {
         const contractId = ref<string|null>(null)
         const contractAnalyzer = new ContractAnalyzer(contractId)
         const abiAnalyzer = new ABIAnalyzer(contractAnalyzer)
+        const abiMode = ref<ABIMode>(ABIMode.Normal)
+        const abiController = new ABIController(abiAnalyzer, abiMode)
         expect(abiAnalyzer.contractAnalyzer).toBe(contractAnalyzer)
         expect(abiAnalyzer.logicContractId.value).toBeNull()
         expect(abiAnalyzer.adminContractId.value).toBeNull()
         expect(abiAnalyzer.logicInterface.value).toBeNull()
         expect(abiAnalyzer.logicContractName.value).toBeNull()
+        expect(abiController.logicModeAvailable.value).toBe(false)
+        expect(abiController.targetInterface.value).toBeNull()
+        expect(abiController.targetContractName.value).toBeNull()
 
         // 2) setup with SAMPLE_CONTRACT
         contractId.value = SAMPLE_CONTRACT.contract_id
@@ -64,12 +74,18 @@ describe("ABIAnalyzer.ts", async () => {
         expect(abiAnalyzer.adminContractId.value).toBeNull()
         expect(abiAnalyzer.logicInterface.value).toBeNull()
         expect(abiAnalyzer.logicContractName.value).toBeNull()
+        expect(abiController.logicModeAvailable.value).toBe(false)
+        expect(abiController.targetInterface.value).toBeNull()
+        expect(abiController.targetContractName.value).toBeNull()
         await flushPromises()
         expect(abiAnalyzer.contractAnalyzer).toBe(contractAnalyzer)
         expect(abiAnalyzer.logicContractId.value).toBeNull()
         expect(abiAnalyzer.adminContractId.value).toBeNull()
         expect(abiAnalyzer.logicInterface.value).toBeNull()
         expect(abiAnalyzer.logicContractName.value).toBeNull()
+        expect(abiController.logicModeAvailable.value).toBe(false)
+        expect(abiController.targetInterface.value).toBe(null)
+        expect(abiController.targetContractName.value).toBe(null)
 
         // 3) mount
         abiAnalyzer.mount()
@@ -78,12 +94,18 @@ describe("ABIAnalyzer.ts", async () => {
         expect(abiAnalyzer.adminContractId.value).toBeNull()
         expect(abiAnalyzer.logicInterface.value).toBeNull()
         expect(abiAnalyzer.logicContractName.value).toBeNull()
+        expect(abiController.logicModeAvailable.value).toBe(false)
+        expect(abiController.targetInterface.value).toBeNull()
+        expect(abiController.targetContractName.value).toBeNull()
         await flushPromises()
         expect(abiAnalyzer.contractAnalyzer).toBe(contractAnalyzer)
         expect(abiAnalyzer.logicContractId.value).toBeNull()
         expect(abiAnalyzer.adminContractId.value).toBeNull()
         expect(abiAnalyzer.logicInterface.value).toBeNull()
         expect(abiAnalyzer.logicContractName.value).toBeNull()
+        expect(abiController.logicModeAvailable.value).toBe(false)
+        expect(abiController.targetInterface.value).toBeNull()
+        expect(abiController.targetContractName.value).toBeNull()
 
         // 4) unmount
         abiAnalyzer.unmount()
@@ -92,12 +114,18 @@ describe("ABIAnalyzer.ts", async () => {
         expect(abiAnalyzer.adminContractId.value).toBeNull()
         expect(abiAnalyzer.logicInterface.value).toBeNull()
         expect(abiAnalyzer.logicContractName.value).toBeNull()
+        expect(abiController.logicModeAvailable.value).toBe(false)
+        expect(abiController.targetInterface.value).toBeNull()
+        expect(abiController.targetContractName.value).toBeNull()
         await flushPromises()
         expect(abiAnalyzer.contractAnalyzer).toBe(contractAnalyzer)
         expect(abiAnalyzer.logicContractId.value).toBeNull()
         expect(abiAnalyzer.adminContractId.value).toBeNull()
         expect(abiAnalyzer.logicInterface.value).toBeNull()
         expect(abiAnalyzer.logicContractName.value).toBeNull()
+        expect(abiController.logicModeAvailable.value).toBe(false)
+        expect(abiController.targetInterface.value).toBeNull()
+        expect(abiController.targetContractName.value).toBeNull()
 
         // 5) check history
         expect(fetchGetURLs(mock)).toStrictEqual([
@@ -110,8 +138,11 @@ describe("ABIAnalyzer.ts", async () => {
     it("Unverified proxy and logic contracts", async () => {
 
         const mock = new MockAdapter(axios)
+        const matcher0 = "api/v1/contracts/" + SAMPLE_CONTRACT.contract_id
+        mock.onGet(matcher0).reply(200, SAMPLE_CONTRACT);
+
         const matcher1 = "api/v1/contracts/" + SAMPLE_CONTRACT.contract_id + "/state?slot=0x360894a13ba1a3210667c828492db98dca3e2076cc3735a920a3ca505d382bbc"
-        mock.onGet(matcher1).reply(200, SAMPLE_PROXY_ADDRESS_RESPONSE);
+        mock.onGet(matcher1).reply(200, SAMPLE_LOGIC_ADDRESS_RESPONSE);
 
         const matcher2 = "api/v1/contracts/" + SAMPLE_CONTRACT.contract_id + "/state?slot=0xb53127684a568b3173ae13b9f8a6016e243e63b6e8ee1178d6a717850b5d6103"
         mock.onGet(matcher2).reply(200, SAMPLE_ADMIN_ADDRESS_RESPONSE);
@@ -127,11 +158,16 @@ describe("ABIAnalyzer.ts", async () => {
         const contractId = ref<string|null>(null)
         const contractAnalyzer = new ContractAnalyzer(contractId)
         const abiAnalyzer = new ABIAnalyzer(contractAnalyzer)
+        const abiMode = ref<ABIMode>(ABIMode.Normal)
+        const abiController = new ABIController(abiAnalyzer, abiMode)
         expect(abiAnalyzer.contractAnalyzer).toBe(contractAnalyzer)
         expect(abiAnalyzer.logicContractId.value).toBeNull()
         expect(abiAnalyzer.adminContractId.value).toBeNull()
         expect(abiAnalyzer.logicInterface.value).toBeNull()
         expect(abiAnalyzer.logicContractName.value).toBeNull()
+        expect(abiController.logicModeAvailable.value).toBe(false)
+        expect(abiController.targetInterface.value).toBeNull()
+        expect(abiController.targetContractName.value).toBeNull()
 
         // 2) setup with SAMPLE_CONTRACT
         contractId.value = SAMPLE_CONTRACT.contract_id
@@ -146,42 +182,64 @@ describe("ABIAnalyzer.ts", async () => {
         expect(abiAnalyzer.adminContractId.value).toBeNull()
         expect(abiAnalyzer.logicInterface.value).toBeNull()
         expect(abiAnalyzer.logicContractName.value).toBeNull()
+        expect(abiController.logicModeAvailable.value).toBe(false)
+        expect(abiController.targetInterface.value).toBeNull()
+        expect(abiController.targetContractName.value).toBeNull()
+        expect(abiController.logicModeAvailable.value).toBe(false)
+        expect(abiController.targetInterface.value).toBeNull()
+        expect(abiController.targetContractName.value).toBeNull()
 
         // 3) mount
+        contractAnalyzer.mount()
         abiAnalyzer.mount()
         expect(abiAnalyzer.contractAnalyzer).toBe(contractAnalyzer)
         expect(abiAnalyzer.logicContractId.value).toBeNull()
         expect(abiAnalyzer.adminContractId.value).toBeNull()
         expect(abiAnalyzer.logicInterface.value).toBeNull()
         expect(abiAnalyzer.logicContractName.value).toBeNull()
+        expect(abiController.logicModeAvailable.value).toBe(false)
+        expect(abiController.targetInterface.value).toBeNull()
+        expect(abiController.targetContractName.value).toBeNull()
         await flushPromises()
         expect(abiAnalyzer.contractAnalyzer).toBe(contractAnalyzer)
         expect(abiAnalyzer.logicContractId.value).toBe(SAMPLE_CONTRACT_DUDE.contract_id)
         expect(abiAnalyzer.adminContractId.value).toBe(SAMPLE_CONTRACT_WITH_SWARM_HASH.contract_id)
         expect(abiAnalyzer.logicInterface.value).toBeNull()
         expect(abiAnalyzer.logicContractName.value).toBeNull()
+        expect(abiController.logicModeAvailable.value).toBe(false)
+        expect(abiController.targetInterface.value).toBeNull()
+        expect(abiController.targetContractName.value).toBeNull()
 
         // 4) unmount
         abiAnalyzer.unmount()
+        contractAnalyzer.unmount()
         expect(abiAnalyzer.contractAnalyzer).toBe(contractAnalyzer)
         expect(abiAnalyzer.logicContractId.value).toBeNull()
         expect(abiAnalyzer.adminContractId.value).toBeNull()
         expect(abiAnalyzer.logicInterface.value).toBeNull()
         expect(abiAnalyzer.logicContractName.value).toBeNull()
+        expect(abiController.logicModeAvailable.value).toBe(false)
+        expect(abiController.targetInterface.value).toBeNull()
+        expect(abiController.targetContractName.value).toBeNull()
         await flushPromises()
         expect(abiAnalyzer.contractAnalyzer).toBe(contractAnalyzer)
         expect(abiAnalyzer.logicContractId.value).toBeNull()
         expect(abiAnalyzer.adminContractId.value).toBeNull()
         expect(abiAnalyzer.logicInterface.value).toBeNull()
         expect(abiAnalyzer.logicContractName.value).toBeNull()
+        expect(abiController.logicModeAvailable.value).toBe(false)
+        expect(abiController.targetInterface.value).toBeNull()
+        expect(abiController.targetContractName.value).toBeNull()
 
         // 5) check history
         // console.log(JSON.stringify(fetchGetURLs(mock), null, "  "))
         expect(fetchGetURLs(mock)).toStrictEqual([
+            "api/v1/contracts/" + SAMPLE_CONTRACT.contract_id,
             "api/v1/contracts/" + SAMPLE_CONTRACT.contract_id + "/state?slot=0x360894a13ba1a3210667c828492db98dca3e2076cc3735a920a3ca505d382bbc",
             "api/v1/contracts/" + SAMPLE_CONTRACT_DUDE.evm_address,
+            "files/any/295/" + SAMPLE_CONTRACT.evm_address,
             "api/v1/contracts/" + SAMPLE_CONTRACT.contract_id + "/state?slot=0xb53127684a568b3173ae13b9f8a6016e243e63b6e8ee1178d6a717850b5d6103",
-            "files/any/295/" + SAMPLE_CONTRACT_DUDE.evm_address,
+            "files/any/295/0x00000000000000000000000000000000000C41Df",
             "api/v1/contracts/" + SAMPLE_CONTRACT_WITH_SWARM_HASH.evm_address,
             "files/any/295/0x000000000000000000000000000000000002294A",
         ])
@@ -191,8 +249,11 @@ describe("ABIAnalyzer.ts", async () => {
     it("Verified proxy and logic contracts", async () => {
 
         const mock = new MockAdapter(axios)
+        const matcher0 = "api/v1/contracts/" + SAMPLE_CONTRACT.contract_id
+        mock.onGet(matcher0).reply(200, SAMPLE_CONTRACT);
+
         const matcher1 = "api/v1/contracts/" + SAMPLE_CONTRACT.contract_id + "/state?slot=0x360894a13ba1a3210667c828492db98dca3e2076cc3735a920a3ca505d382bbc"
-        mock.onGet(matcher1).reply(200, SAMPLE_PROXY_ADDRESS_RESPONSE);
+        mock.onGet(matcher1).reply(200, SAMPLE_LOGIC_ADDRESS_RESPONSE);
 
         const matcher2 = "api/v1/contracts/" + SAMPLE_CONTRACT.contract_id + "/state?slot=0xb53127684a568b3173ae13b9f8a6016e243e63b6e8ee1178d6a717850b5d6103"
         mock.onGet(matcher2).reply(200, SAMPLE_ADMIN_ADDRESS_RESPONSE);
@@ -206,7 +267,7 @@ describe("ABIAnalyzer.ts", async () => {
         const matcher5 = "files/any/295/0x00000000000000000000000000000000000b70cf"
         mock.onGet(matcher5).reply(200, PROXY_SOURCIFY_RESPONSE);
 
-        const matcher6 = "files/any/295/0x000000000000000000000000000000000002294a"
+        const matcher6 = "files/any/295/0x00000000000000000000000000000000000C41Df"
         mock.onGet(matcher6).reply(200, LOGIC_SOURCIFY_RESPONSE);
 
 
@@ -214,11 +275,16 @@ describe("ABIAnalyzer.ts", async () => {
         const contractId = ref<string|null>(null)
         const contractAnalyzer = new ContractAnalyzer(contractId)
         const abiAnalyzer = new ABIAnalyzer(contractAnalyzer)
+        const abiMode = ref<ABIMode>(ABIMode.Normal)
+        const abiController = new ABIController(abiAnalyzer, abiMode)
         expect(abiAnalyzer.contractAnalyzer).toBe(contractAnalyzer)
         expect(abiAnalyzer.logicContractId.value).toBeNull()
         expect(abiAnalyzer.adminContractId.value).toBeNull()
         expect(abiAnalyzer.logicInterface.value).toBeNull()
         expect(abiAnalyzer.logicContractName.value).toBeNull()
+        expect(abiController.logicModeAvailable.value).toBe(false)
+        expect(abiController.targetInterface.value).toBeNull()
+        expect(abiController.targetContractName.value).toBeNull()
 
         // 2) setup with SAMPLE_CONTRACT
         contractId.value = SAMPLE_CONTRACT.contract_id
@@ -227,49 +293,76 @@ describe("ABIAnalyzer.ts", async () => {
         expect(abiAnalyzer.adminContractId.value).toBeNull()
         expect(abiAnalyzer.logicInterface.value).toBeNull()
         expect(abiAnalyzer.logicContractName.value).toBeNull()
+        expect(abiController.logicModeAvailable.value).toBe(false)
+        expect(abiController.targetInterface.value).toBeNull()
+        expect(abiController.targetContractName.value).toBeNull()
         await flushPromises()
         expect(abiAnalyzer.contractAnalyzer).toBe(contractAnalyzer)
         expect(abiAnalyzer.logicContractId.value).toBeNull()
         expect(abiAnalyzer.adminContractId.value).toBeNull()
         expect(abiAnalyzer.logicInterface.value).toBeNull()
         expect(abiAnalyzer.logicContractName.value).toBeNull()
+        expect(abiController.logicModeAvailable.value).toBe(false)
+        expect(abiController.targetInterface.value).toBeNull()
+        expect(abiController.targetContractName.value).toBeNull()
 
         // 3) mount
+        contractAnalyzer.mount()
         abiAnalyzer.mount()
         expect(abiAnalyzer.contractAnalyzer).toBe(contractAnalyzer)
         expect(abiAnalyzer.logicContractId.value).toBeNull()
         expect(abiAnalyzer.adminContractId.value).toBeNull()
         expect(abiAnalyzer.logicInterface.value).toBeNull()
         expect(abiAnalyzer.logicContractName.value).toBeNull()
+        expect(abiController.logicModeAvailable.value).toBe(false)
+        expect(abiController.targetInterface.value).toBeNull()
+        expect(abiController.targetContractName.value).toBeNull()
         await flushPromises()
         expect(abiAnalyzer.contractAnalyzer).toBe(contractAnalyzer)
         expect(abiAnalyzer.logicContractId.value).toBe(SAMPLE_CONTRACT_DUDE.contract_id)
         expect(abiAnalyzer.adminContractId.value).toBe(SAMPLE_CONTRACT_WITH_SWARM_HASH.contract_id)
         expect(abiAnalyzer.logicInterface.value).not.toBeNull()
-        expect(abiAnalyzer.logicInterface.value?.fragments.length).toBe(6)
-        expect(abiAnalyzer.logicContractName.value).toBe("TransparentUpgradeableProxy")
+        expect(abiAnalyzer.logicInterface.value?.fragments.length).toBe(49)
+        expect(abiAnalyzer.logicContractName.value).toBe("RebalancerFactory")
+        expect(abiController.logicModeAvailable.value).toBe(true)
+        expect(abiController.targetInterface.value).not.toBeNull()
+        expect(abiController.targetInterface.value?.fragments.length).toBe(6)
+        expect(abiController.targetContractName.value).toBe("TransparentUpgradeableProxy")
+        abiMode.value = ABIMode.Logic
+        expect(abiController.targetInterface.value).not.toBeNull()
+        expect(abiController.targetInterface.value?.fragments.length).toBe(49)
+        expect(abiController.targetContractName.value).toBe("RebalancerFactory")
 
         // 4) unmount
         abiAnalyzer.unmount()
+        contractAnalyzer.unmount()
         expect(abiAnalyzer.contractAnalyzer).toBe(contractAnalyzer)
         expect(abiAnalyzer.logicContractId.value).toBeNull()
         expect(abiAnalyzer.adminContractId.value).toBeNull()
         expect(abiAnalyzer.logicInterface.value).toBeNull()
         expect(abiAnalyzer.logicContractName.value).toBeNull()
+        expect(abiController.logicModeAvailable.value).toBe(false)
+        expect(abiController.targetInterface.value).toBeNull()
+        expect(abiController.targetContractName.value).toBeNull()
         await flushPromises()
         expect(abiAnalyzer.contractAnalyzer).toBe(contractAnalyzer)
         expect(abiAnalyzer.logicContractId.value).toBeNull()
         expect(abiAnalyzer.adminContractId.value).toBeNull()
         expect(abiAnalyzer.logicInterface.value).toBeNull()
         expect(abiAnalyzer.logicContractName.value).toBeNull()
+        expect(abiController.logicModeAvailable.value).toBe(false)
+        expect(abiController.targetInterface.value).toBeNull()
+        expect(abiController.targetContractName.value).toBeNull()
 
         // 5) check history
         // console.log(JSON.stringify(fetchGetURLs(mock), null, "  "))
         expect(fetchGetURLs(mock)).toStrictEqual([
+            "api/v1/contracts/" + SAMPLE_CONTRACT.contract_id,
             "api/v1/contracts/" + SAMPLE_CONTRACT.contract_id + "/state?slot=0x360894a13ba1a3210667c828492db98dca3e2076cc3735a920a3ca505d382bbc",
             "api/v1/contracts/" + SAMPLE_CONTRACT_DUDE.evm_address,
+            "files/any/295/" + SAMPLE_CONTRACT.evm_address,
             "api/v1/contracts/" + SAMPLE_CONTRACT.contract_id + "/state?slot=0xb53127684a568b3173ae13b9f8a6016e243e63b6e8ee1178d6a717850b5d6103",
-            "files/any/295/" + SAMPLE_CONTRACT_DUDE.evm_address,
+            "files/any/295/0x00000000000000000000000000000000000C41Df",
             "api/v1/contracts/" + SAMPLE_CONTRACT_WITH_SWARM_HASH.evm_address,
             "files/any/295/0x000000000000000000000000000000000002294A",
         ])
