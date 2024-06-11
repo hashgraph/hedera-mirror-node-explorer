@@ -153,7 +153,8 @@ export default defineComponent({
     const mediaLoaded = ref(false)
     const onLoadSuccess = () => {
       mediaLoaded.value = true
-      ctx.emit('onLoadError')
+      stopTimeout()
+      ctx.emit('onLoadSuccess')
     }
 
     const mediaError = ref(false)
