@@ -22,6 +22,7 @@ import {describe, expect, test} from 'vitest'
 import {flushPromises, mount} from "@vue/test-utils"
 import NftAttribute from '../../../src/components/token/NftAttribute.vue';
 import router from "../../../src/router";
+import {HMSF} from "../../../src/utils/HMSF";
 
 /*
   POSSIBLE DISPLAY TYPES:
@@ -33,6 +34,8 @@ import router from "../../../src/router";
     date (for a number which represents the unix timestamp in seconds)
     color (for a hexadecimal or rgb string color sequence such as #00ff44 or rgb(0,255,0))
 */
+
+HMSF.forceUTC = true
 
 describe("NftAttribute.vue", () => {
 
@@ -179,7 +182,7 @@ describe("NftAttribute.vue", () => {
         });
         await flushPromises()
 
-        expect(wrapper.text()).toBe("DateTime1:00:00.0000 AMMar 23, 1993, GMT+1")
+        expect(wrapper.text()).toBe("DateTime12:00:00.0000 AMMar 23, 1993, UTC")
 
         wrapper.unmount()
         await flushPromises()
