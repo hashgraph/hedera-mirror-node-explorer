@@ -24,23 +24,23 @@
 
 <template>
 
-  <div id="media-placeholder"
-       class="media-container mt-1"
+  <div class="media-container mt-1"
        :class="{'media-container-background': !mediaLoaded}"
        :style="containerStyle"
        @click="onClick"
   >
 
     <!--  PLACE-HOLDER  -->
-    <div :class="{'is-invisible': !showPlaceHolder}"
+    <div id="media-placeholder"
+         :class="{'is-invisible': !showPlaceHolder}"
          class="media-content is-flex is-align-items-center"
     >
       <slot name="placeHolder"></slot>
     </div>
 
     <!--  SPINNER  -->
-    <span :class="{'is-invisible': !showSpinner}"
-          class="loader media-content is-inline-block h-is-primary-title"
+    <span :class="{'is-invisible': !showSpinner, 'h-is-primary-title': size >= 100}"
+          class="media-content loader is-inline-block"
     />
 
     <!--  IMAGE PREVIEW  -->
