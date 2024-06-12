@@ -47,31 +47,44 @@
         aria-previous-label="Previous page"
         customRowKey="serial_number"
     >
-      <o-table-column v-slot="props" field="serial_number" label="Serial #">
-        <div class="is-numeric">
-          {{ props.row.serial_number }}
-        </div>
+      <o-table-column v-slot="props" field="image" label="Preview">
+        <NftCell
+            class="w400"
+            :token-id="props.row.token_id"
+            :serial-number="props.row.serial_number"
+            :property="NftCellItem.image"/>
       </o-table-column>
 
-      <o-table-column v-slot="props" field="account_id" label="Account ID">
+      <o-table-column v-slot="props" field="serial" label="#">
+        {{ props.row.serial_number }}
+      </o-table-column>
+
+      <o-table-column v-slot="props" field="name" label="Name">
+        <NftCell
+            :token-id="props.row.token_id"
+            :serial-number="props.row.serial_number"
+            :property="NftCellItem.name"/>
+      </o-table-column>
+
+      <o-table-column v-slot="props" field="creator" label="Creator">
+        <NftCell
+            :token-id="props.row.token_id"
+            :serial-number="props.row.serial_number"
+            :property="NftCellItem.creator"/>
+      </o-table-column>
+
+      <o-table-column v-slot="props" field="account_id" label="Owner">
         <AccountIOL :account-id="props.row.account_id"/>
       </o-table-column>
 
-      <o-table-column v-slot="props" field="deleted" label="Deleted">
-        {{ props.row.deleted }}
+      <o-table-column v-slot="props" field="description" label="Description">
+        <NftCell
+            :token-id="props.row.token_id"
+            :serial-number="props.row.serial_number"
+            :property="NftCellItem.description"/>
       </o-table-column>
-
-      <o-table-column v-slot="props" field="modified_timestamp" label="Modification Time">
-        <TimestampValue v-bind:timestamp="props.row.modified_timestamp"/>
-      </o-table-column>
-
-      <o-table-column v-slot="props" field="metadata" label="Metadata">
-        <div class="should-wrap">
-          <BlobValue v-bind:base64="true" v-bind:blob-value="props.row.metadata" v-bind:show-none="true"/>
-        </div>
-      </o-table-column>
-
     </o-table>
+
     <EmptyTable v-if="!nfts.length"/>
   </div>
 
@@ -85,18 +98,17 @@
 
 import {ComputedRef, defineComponent, inject, PropType, Ref} from 'vue';
 import {Nft} from "@/schemas/HederaSchemas";
-import TimestampValue from "@/components/values/TimestampValue.vue";
-import BlobValue from "@/components/values/BlobValue.vue";
 import {ORUGA_MOBILE_BREAKPOINT} from '@/App.vue';
 import EmptyTable from "@/components/EmptyTable.vue";
 import {NftHolderTableController} from "@/components/token/NftHolderTableController";
 import {routeManager} from "@/router";
 import AccountIOL from "@/components/values/link/AccountIOL.vue";
+import NftCell, {NftCellItem} from "@/components/token/NftCell.vue";
 
 export default defineComponent({
   name: 'NftHolderTable',
 
-  components: {AccountIOL, EmptyTable, TimestampValue, BlobValue},
+  components: {NftCell, AccountIOL, EmptyTable},
 
   props: {
     controller: {
@@ -135,6 +147,7 @@ export default defineComponent({
       onPageChange: props.controller.onPageChange,
       perPage: props.controller.pageSize as Ref<number>,
       ORUGA_MOBILE_BREAKPOINT,
+      NftCellItem,
       handleClick,
     }
   }
