@@ -186,7 +186,7 @@ export const SAMPLE_TOKEN_WITH_KEYS = {
     "kyc_key": {"_type": "ED25519", "key": "c539536f9599daefeeb777677aa1aeea2242dfc7cca92348c228a5187a0faf2b"},
     "max_supply": "0",
     "memo": "Mirror Node acceptance test: 2022-09-14T05:35:30.365404855Z Update token",
-    "metadata": "YmFma3JlaWJ1MjVhamFhbmtiM2J4aWh1bG9iZDI3ZGEyaW5xeTZreW10bjVtemxjdDZyZTdkaG9oNG0=",
+    "metadata": "Unusable metadata",
     "metadata_key": {"_type": "ED25519", "key": "c539536f9599daefeeb777677aa1aeea2242dfc7cca92348c228a5187a0faf2b"},
     "modified_timestamp": "1663133730.475752003",
     "name": "QEYB_name",

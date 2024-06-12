@@ -22,6 +22,7 @@ import {describe, expect, test} from 'vitest'
 import {flushPromises, mount} from "@vue/test-utils";
 import NftPreview from "../../../src/components/token/NftPreview.vue";
 import router from "../../../src/router";
+import Oruga from "@oruga-ui/oruga-next";
 
 describe("NftPreview.vue", () => {
 
@@ -33,7 +34,7 @@ describe("NftPreview.vue", () => {
 
         const wrapper = mount(NftPreview, {
             global: {
-                plugins: [router]
+                plugins: [router, Oruga]
             },
             props: {},
         })
@@ -58,9 +59,10 @@ describe("NftPreview.vue", () => {
 
         await router.push("/") // To avoid "missing required param 'network'" error
 
+        const tooltipText = 'The NFT metadata does not provide any image'
         const wrapper = mount(NftPreview, {
             global: {
-                plugins: [router]
+                plugins: [router, Oruga]
             },
             props: {
                 size: 250
@@ -71,14 +73,15 @@ describe("NftPreview.vue", () => {
         // console.log(wrapper.html())
         // console.log(wrapper.text())
 
-        expect(wrapper.text()).toBe('Non Fungible Token')
+        expect(wrapper.text()).toBe('Non Fungible Token' + tooltipText)
         const hbarLogo = wrapper.find('img')
         expect(hbarLogo.exists()).toBe(true)
         expect(hbarLogo.attributes('src')).toBe('/src/assets/hedera-hashgraph-hbar.svg')
 
-        const tooltip = wrapper.findComponent('o-tooltip')
+        const tooltip = wrapper.find('#info-tooltip')
         expect(tooltip.exists()).toBe(true)
-        expect(tooltip.attributes('label')).toBe('The NFT metadata does not provide any image')
+        expect(tooltip.text()).toBe(tooltipText)
+        expect(tooltip.get('i').attributes('class')).toContain('fa-info-circle')
 
         expect(wrapper.find('figure').exists()).toBe(false)
         expect(wrapper.find('video').exists()).toBe(false)
@@ -92,7 +95,7 @@ describe("NftPreview.vue", () => {
 
         const wrapper = mount(NftPreview, {
             global: {
-                plugins: [router]
+                plugins: [router, Oruga]
             },
             props: {
                 url: contentUrl,
@@ -126,7 +129,7 @@ describe("NftPreview.vue", () => {
 
         const wrapper = mount(NftPreview, {
             global: {
-                plugins: [router]
+                plugins: [router, Oruga]
             },
             props: {
                 url: contentUrl,
@@ -161,7 +164,7 @@ describe("NftPreview.vue", () => {
 
         const wrapper = mount(NftPreview, {
             global: {
-                plugins: [router]
+                plugins: [router, Oruga]
             },
             props: {
                 url: contentUrl,

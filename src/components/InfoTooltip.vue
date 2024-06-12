@@ -25,6 +25,7 @@
 <template>
   <o-tooltip
       v-if="warningLabel || label"
+      id="info-tooltip"
       :label="warningLabel ?? label"
       :delay="delay"
       multiline="multiline"
