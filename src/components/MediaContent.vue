@@ -24,7 +24,8 @@
 
 <template>
 
-  <div class="media-container mt-1"
+  <div id="media-placeholder"
+       class="media-container mt-1"
        :class="{'media-container-background': !mediaLoaded}"
        :style="containerStyle"
        @click="onClick"
