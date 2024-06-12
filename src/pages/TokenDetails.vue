@@ -220,6 +220,8 @@
 
     </DashboardCard>
 
+    <MetadataSection :metadata-analyzer="metadataAnalyzer"/>
+
     <DashboardCard v-if="tokenInfo" collapsible-key="tokenKeys">
 
       <template v-slot:title>
@@ -353,6 +355,8 @@ import {TokenInfoAnalyzer} from "@/components/token/TokenInfoAnalyzer";
 import ContractResultsSection from "@/components/contracts/ContractResultsSection.vue";
 import Copyable from "@/components/Copyable.vue";
 import MirrorLink from "@/components/MirrorLink.vue";
+import {TokenMetadataAnalyzer} from "@/components/token/TokenMetadataAnalyzer";
+import MetadataSection from "@/components/token/MetadataSection.vue";
 import TransactionLink from "@/components/values/TransactionLink.vue";
 
 export default defineComponent({
@@ -360,6 +364,7 @@ export default defineComponent({
   name: 'TokenDetails',
 
   components: {
+    MetadataSection,
     TransactionLink,
     MirrorLink,
     Copyable,
@@ -409,6 +414,11 @@ export default defineComponent({
     const tokenAnalyzer = new TokenInfoAnalyzer(tokenLookup.entity)
     onMounted(() => tokenAnalyzer.mount())
     onBeforeUnmount(() => tokenAnalyzer.unmount())
+
+    const metadata = computed(() => tokenLookup.entity.value?.metadata ?? '')
+    const metadataAnalyzer = new TokenMetadataAnalyzer(metadata)
+    onMounted(() => metadataAnalyzer.mount())
+    onBeforeUnmount(() => metadataAnalyzer.unmount())
 
     const displayName = computed(() => makeTokenName(tokenLookup.entity.value, 80))
     const displaySymbol = computed(() => makeTokenSymbol(tokenLookup.entity.value, 80))
@@ -477,6 +487,8 @@ export default defineComponent({
       isWalletConnected,
       tokenBalanceTableController,
       nftHolderTableController,
+      metadata,
+      metadataAnalyzer,
     }
   },
 });
