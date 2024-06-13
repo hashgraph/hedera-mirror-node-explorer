@@ -123,9 +123,9 @@ import PlainAmount from "@/components/values/PlainAmount.vue";
 import EVMAddress from "@/components/values/EVMAddress.vue";
 import FunctionInput from "@/components/values/FunctionInput.vue";
 import FunctionResult from "@/components/values/FunctionResult.vue";
-import {ContractResultAnalyzer} from "@/utils/analyzer/ContractResultAnalyzer";
 import FunctionError from "@/components/values/FunctionError.vue";
 import HbarAmount from "@/components/values/HbarAmount.vue";
+import {ContractActionAnalyzer} from "@/utils/analyzer/ContractActionAnalyzer";
 
 export default defineComponent({
   name: 'ContractActionDetails',
@@ -147,9 +147,9 @@ export default defineComponent({
     const isMediumScreen = inject('isMediumScreen', ref(false))
     const propertySizeClass = 'is-one-fifth'
 
-    const contractResultAnalyzer = new ContractResultAnalyzer(computed(() => props.action?.timestamp ?? null))
-    onMounted(() => contractResultAnalyzer.mount())
-    onBeforeUnmount(() => contractResultAnalyzer.unmount())
+    const contractActionAnalyzer = new ContractActionAnalyzer(computed(() => props.action ?? null))
+    onMounted(() => contractActionAnalyzer.mount())
+    onBeforeUnmount(() => contractActionAnalyzer.unmount())
 
     return {
       isTouchDevice,
@@ -157,9 +157,9 @@ export default defineComponent({
       isMediumScreen,
       propertySizeClass,
       ORUGA_MOBILE_BREAKPOINT,
-      functionCallAnalyzer: contractResultAnalyzer.functionCallAnalyzer,
-      functionHash: contractResultAnalyzer.functionCallAnalyzer.functionHash,
-      signature: contractResultAnalyzer.functionCallAnalyzer.signature,
+      functionCallAnalyzer: contractActionAnalyzer.functionCallAnalyzer,
+      functionHash: contractActionAnalyzer.functionCallAnalyzer.functionHash,
+      signature: contractActionAnalyzer.functionCallAnalyzer.signature,
     }
   }
 });
