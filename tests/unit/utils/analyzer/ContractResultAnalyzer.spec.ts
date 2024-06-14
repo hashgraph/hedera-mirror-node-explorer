@@ -26,6 +26,7 @@ import {ContractResultAnalyzer} from "@/utils/analyzer/ContractResultAnalyzer";
 import {flushPromises} from "@vue/test-utils";
 import MockAdapter from "axios-mock-adapter";
 import axios from "axios";
+import {fetchGetURLs} from "../../MockUtils";
 
 describe("ContractResultAnalyzer.spec.ts", () => {
 
@@ -319,14 +320,6 @@ describe("ContractResultAnalyzer.spec.ts", () => {
     })
 
 })
-
-export function fetchGetURLs(mock: MockAdapter): string[] {
-    const result: string[] = []
-    for (const e of mock.history.get) {
-        result.push(e.url)
-    }
-    return result
-}
 
 const CONTRACT = {
     admin_key: null,

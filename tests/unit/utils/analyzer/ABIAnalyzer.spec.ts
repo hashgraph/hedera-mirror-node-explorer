@@ -32,7 +32,7 @@ import {
     SAMPLE_LOGIC_ADDRESS_RESPONSE
 } from "../../Mocks";
 import {flushPromises} from "@vue/test-utils";
-import {fetchGetURLs} from "./ContractResultAnalyzer.spec";
+import {fetchGetURLs} from "../../MockUtils";
 import MockAdapter from "axios-mock-adapter";
 import axios from "axios";
 import {ABIController, ABIMode} from "../../../../src/components/contract/ABIController";
