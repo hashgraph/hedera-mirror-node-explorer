@@ -27,6 +27,7 @@ import {
     ContractResponse,
     ContractResultDetails,
     TokenInfo,
+    Topic,
     TopicMessage,
     TopicMessagesResponse,
     Transaction,
@@ -48,6 +49,7 @@ export class SearchRequest {
     public accountsWithKey = Array<AccountInfo>()
     public transactions = Array<Transaction>()
     public tokenInfo: TokenInfo | null = null
+    public topic: Topic | null = null
     public topicMessages = Array<TopicMessage>()
     public contract: ContractResponse | null = null
     public block: Block | null = null
@@ -67,11 +69,13 @@ export class SearchRequest {
         shard.realm.num[-checksum]           | Entity ID        | api/v1/accounts/{shard.realm.num}
                                              |                  | api/v1/contracts/{shard.realm.num}
                                              |                  | api/v1/tokens/{shard.realm.num}
+                                             |                  | api/v1/topics/{shard.realm.num}
                                              |                  | api/v1/topics/{shard.realm.num}/messages
         -------------------------------------+------------------+------------------------------------------------------
         integer[-checksum]                   | Incomplete       | api/v1/accounts/0.0.{integer}
                                              | Entity ID        | api/v1/contracts/0.0.{integer}
                                              |                  | api/v1/tokens/0.0.{integer}
+                                             |                  | api/v1/topics/0.0.{integer}
                                              |                  | api/v1/topics/0.0.{integer}/messages
         -------------------------------------+------------------+------------------------------------------------------
         shard.realm.num@seconds.nanoseconds  | Transaction ID   | api/v1/transactions/normalize({searchId})
@@ -285,10 +289,15 @@ export class SearchRequest {
 
     private async searchTopic(topicID: EntityID): Promise<void> {
         try {
-            const params = {order: "desc", limit: "1"}
-            // https://testnet.mirrornode.hedera.com/api/v1/docs/#/topics/listTopicMessagesById
-            const r = await axios.get<TopicMessagesResponse>("api/v1/topics/" + topicID.toString() + "/messages", {params})
-            this.topicMessages = r.data.messages ?? []
+            if (this.network === "previewnet") {
+                const r = await axios.get<Topic>("api/v1/topics/" + topicID.toString())
+                this.topic = r.data
+            } else {
+                const params = {order: "desc", limit: "1"}
+                // https://testnet.mirrornode.hedera.com/api/v1/docs/#/topics/listTopicMessagesById
+                const r = await axios.get<TopicMessagesResponse>("api/v1/topics/" + topicID.toString() + "/messages", {params})
+                this.topicMessages = r.data.messages ?? []
+            }
         } catch (reason: unknown) {
             this.updateErrorCount(reason)
         }
