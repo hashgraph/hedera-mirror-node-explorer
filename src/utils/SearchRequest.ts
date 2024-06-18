@@ -40,12 +40,10 @@ import {aliasToBase32, base32ToAlias, byteToHex, hexToByte, paddedBytes} from "@
 import {NameRecord, NameService} from "@/utils/name_service/NameService";
 import {Timestamp} from "@/utils/Timestamp";
 import {networkRegistry} from "@/schemas/NetworkRegistry";
-import {routeManager} from "@/router";
 import {AppStorage} from "@/AppStorage";
 
 export class SearchRequest {
 
-    public readonly searchedId: string
     public account: AccountInfo | null = null
     public accountsWithKey = Array<AccountInfo>()
     public transactions = Array<Transaction>()
@@ -58,9 +56,7 @@ export class SearchRequest {
 
     private errorCount = 0
 
-    constructor(searchedId: string) {
-        this.searchedId = searchedId
-    }
+    constructor(readonly searchedId: string, readonly network: string) {}
 
     async run(): Promise<void> {
 
@@ -126,8 +122,7 @@ export class SearchRequest {
             let safeEntityID: EntityID | null
             if (entityID.checksum !== null) {
                 // Search string is an entity id with a checksum : we check it's valid
-                const network = routeManager.currentNetwork.value
-                if (networkRegistry.isValidChecksum(entityID.toString(), entityID.checksum, network)) {
+                if (networkRegistry.isValidChecksum(entityID.toString(), entityID.checksum, this.network)) {
                     safeEntityID = entityID.cloneWithoutChecksum()
                 } else {
                     safeEntityID = null
@@ -340,16 +335,15 @@ export class SearchRequest {
     }
 
     private async searchNamingService(name: string): Promise<void> {
-        const network = routeManager.currentNetwork.value
         try {
-            const records = await NameService.instance.resolve(name, network)
+            const records = await NameService.instance.resolve(name, this.network)
             if (records.length == 1) {
                 const accountId = records[0].entityId
                 const r = await axios.get<AccountBalanceTransactions>("api/v1/accounts/" + accountId)
                 this.account = r.data
-                AppStorage.setNameRecord(accountId, network, records[0])
+                AppStorage.setNameRecord(accountId, this.network, records[0])
             } else if (records.length >= 2) {
-                const chosenRecord = this.findChosenRecord(records, network)
+                const chosenRecord = this.findChosenRecord(records, this.network)
                 if (chosenRecord !== null) {
                     const accountId = chosenRecord.entityId
                     const r = await axios.get<AccountBalanceTransactions>("api/v1/accounts/" + accountId)

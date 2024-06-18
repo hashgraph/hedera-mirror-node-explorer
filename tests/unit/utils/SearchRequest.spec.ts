@@ -101,6 +101,8 @@ const INVALID_EVM_ADDRESS = "0102030405060708090102030405060708"; // 19 bytes : 
 const matcher_contracts_with_invalid_evm_address = "/api/v1/contracts/" + INVALID_EVM_ADDRESS
 mock.onGet(matcher_contracts_with_invalid_evm_address).reply(400)
 
+const TEST_NETWORK = "mainnet"
+
 describe("SearchRequest.ts", () => {
 
     //
@@ -108,10 +110,11 @@ describe("SearchRequest.ts", () => {
     //
 
     test("account", async () => {
-        const r = new SearchRequest(SAMPLE_ACCOUNT.account ?? "")
+        const r = new SearchRequest(SAMPLE_ACCOUNT.account ?? "", TEST_NETWORK)
         await r.run()
 
         expect(r.searchedId).toBe(SAMPLE_ACCOUNT.account)
+        expect(r.network).toBe(TEST_NETWORK)
         expect(r.account).toStrictEqual(SAMPLE_ACCOUNT)
         expect(r.accountsWithKey).toStrictEqual([])
         expect(r.transactions).toStrictEqual([])
@@ -125,10 +128,11 @@ describe("SearchRequest.ts", () => {
     })
 
     test("account (with eth address)", async () => {
-        const r = new SearchRequest(SAMPLE_ACCOUNT_ADDRESS)
+        const r = new SearchRequest(SAMPLE_ACCOUNT_ADDRESS, TEST_NETWORK)
         await r.run()
 
         expect(r.searchedId).toBe(SAMPLE_ACCOUNT_ADDRESS)
+        expect(r.network).toBe(TEST_NETWORK)
         expect(r.account).toStrictEqual(SAMPLE_ACCOUNT)
         expect(r.accountsWithKey).toStrictEqual([])
         expect(r.transactions).toStrictEqual([])
@@ -142,10 +146,11 @@ describe("SearchRequest.ts", () => {
     })
 
     test("account (with public key)", async () => {
-        const r = new SearchRequest(SAMPLE_ACCOUNT.key.key)
+        const r = new SearchRequest(SAMPLE_ACCOUNT.key.key, TEST_NETWORK)
         await r.run()
 
         expect(r.searchedId).toBe(SAMPLE_ACCOUNT.key.key)
+        expect(r.network).toBe(TEST_NETWORK)
         expect(r.account).toBeNull()
         expect(r.accountsWithKey).toStrictEqual([SAMPLE_ACCOUNT])
         expect(r.transactions).toStrictEqual([])
@@ -159,10 +164,11 @@ describe("SearchRequest.ts", () => {
     })
 
     test("account (with alias)", async () => {
-        const r = new SearchRequest(SAMPLE_ACCOUNT.alias)
+        const r = new SearchRequest(SAMPLE_ACCOUNT.alias, TEST_NETWORK)
         await r.run()
 
         expect(r.searchedId).toBe(SAMPLE_ACCOUNT.alias)
+        expect(r.network).toBe(TEST_NETWORK)
         expect(r.account).toStrictEqual(SAMPLE_ACCOUNT)
         expect(r.accountsWithKey).toStrictEqual([])
         expect(r.transactions).toStrictEqual([])
@@ -177,10 +183,11 @@ describe("SearchRequest.ts", () => {
 
     test("account (with alias expressed in hex)", async () => {
         const SAMPLE_ALIAS_HEX = byteToHex(base32ToAlias(SAMPLE_ACCOUNT.alias)!)
-        const r = new SearchRequest(SAMPLE_ALIAS_HEX)
+        const r = new SearchRequest(SAMPLE_ALIAS_HEX, TEST_NETWORK)
         await r.run()
 
         expect(r.searchedId).toBe(SAMPLE_ALIAS_HEX)
+        expect(r.network).toBe(TEST_NETWORK)
         expect(r.account).toStrictEqual(SAMPLE_ACCOUNT)
         expect(r.accountsWithKey).toStrictEqual([])
         expect(r.transactions).toStrictEqual([])
@@ -198,10 +205,11 @@ describe("SearchRequest.ts", () => {
     //
 
     test("transaction", async () => {
-        const r = new SearchRequest(SAMPLE_TRANSACTION.transaction_id ?? "")
+        const r = new SearchRequest(SAMPLE_TRANSACTION.transaction_id ?? "", TEST_NETWORK)
         await r.run()
 
         expect(r.searchedId).toBe(SAMPLE_TRANSACTION.transaction_id)
+        expect(r.network).toBe(TEST_NETWORK)
         expect(r.account).toBeNull()
         expect(r.accountsWithKey).toStrictEqual([])
         expect(r.transactions).toStrictEqual([SAMPLE_TRANSACTION])
@@ -215,10 +223,11 @@ describe("SearchRequest.ts", () => {
     })
 
     test("transaction (with hedera hash)", async () => {
-        const r = new SearchRequest(TRANSACTION_HASH)
+        const r = new SearchRequest(TRANSACTION_HASH, TEST_NETWORK)
         await r.run()
 
         expect(r.searchedId).toBe(TRANSACTION_HASH)
+        expect(r.network).toBe(TEST_NETWORK)
         expect(r.account).toBeNull()
         expect(r.accountsWithKey).toStrictEqual([])
         expect(r.transactions).toStrictEqual([SAMPLE_TRANSACTION])
@@ -232,10 +241,11 @@ describe("SearchRequest.ts", () => {
     })
 
     test("transaction (with evm hash)", async () => {
-        const r = new SearchRequest(SAMPLE_CONTRACT_RESULT_DETAILS.hash)
+        const r = new SearchRequest(SAMPLE_CONTRACT_RESULT_DETAILS.hash, TEST_NETWORK)
         await r.run()
 
         expect(r.searchedId).toBe(SAMPLE_CONTRACT_RESULT_DETAILS.hash)
+        expect(r.network).toBe(TEST_NETWORK)
         expect(r.account).toBeNull()
         expect(r.accountsWithKey).toStrictEqual([])
         expect(r.transactions).toStrictEqual([SAMPLE_TRANSACTION])
@@ -253,10 +263,11 @@ describe("SearchRequest.ts", () => {
     //
 
     test("block (with hash)", async () => {
-        const r = new SearchRequest(BLOCK_HASH)
+        const r = new SearchRequest(BLOCK_HASH, TEST_NETWORK)
         await r.run()
 
         expect(r.searchedId).toBe(BLOCK_HASH)
+        expect(r.network).toBe(TEST_NETWORK)
         expect(r.account).toBeNull()
         expect(r.accountsWithKey).toStrictEqual([])
         expect(r.transactions).toStrictEqual([])
@@ -270,10 +281,11 @@ describe("SearchRequest.ts", () => {
     })
 
     test("block (with hash prefix)", async () => {
-        const r = new SearchRequest(BLOCK_HASH_PREFIX)
+        const r = new SearchRequest(BLOCK_HASH_PREFIX, TEST_NETWORK)
         await r.run()
 
         expect(r.searchedId).toBe(BLOCK_HASH_PREFIX)
+        expect(r.network).toBe(TEST_NETWORK)
         expect(r.account).toBeNull()
         expect(r.accountsWithKey).toStrictEqual([])
         expect(r.transactions).toStrictEqual([])
@@ -291,10 +303,11 @@ describe("SearchRequest.ts", () => {
     //
 
     test("token", async () => {
-        const r = new SearchRequest(SAMPLE_TOKEN.token_id)
+        const r = new SearchRequest(SAMPLE_TOKEN.token_id, TEST_NETWORK)
         await r.run()
 
         expect(r.searchedId).toBe(SAMPLE_TOKEN.token_id)
+        expect(r.network).toBe(TEST_NETWORK)
         expect(r.account).toBeNull()
         expect(r.accountsWithKey).toStrictEqual([])
         expect(r.transactions).toStrictEqual([])
@@ -308,10 +321,11 @@ describe("SearchRequest.ts", () => {
     })
 
     test("token (with ethereum address)", async () => {
-        const r = new SearchRequest(SAMPLE_TOKEN_ADDRESS)
+        const r = new SearchRequest(SAMPLE_TOKEN_ADDRESS, TEST_NETWORK)
         await r.run()
 
         expect(r.searchedId).toBe(SAMPLE_TOKEN_ADDRESS)
+        expect(r.network).toBe(TEST_NETWORK)
         expect(r.account).toBeNull()
         expect(r.accountsWithKey).toStrictEqual([])
         expect(r.transactions).toStrictEqual([])
@@ -329,10 +343,11 @@ describe("SearchRequest.ts", () => {
     //
 
     test("topic", async () => {
-        const r = new SearchRequest(SAMPLE_TOPIC_ID)
+        const r = new SearchRequest(SAMPLE_TOPIC_ID, TEST_NETWORK)
         await r.run()
 
         expect(r.searchedId).toBe(SAMPLE_TOPIC_ID)
+        expect(r.network).toBe(TEST_NETWORK)
         expect(r.account).toBeNull()
         expect(r.accountsWithKey).toStrictEqual([])
         expect(r.transactions).toStrictEqual([])
@@ -350,10 +365,11 @@ describe("SearchRequest.ts", () => {
     //
 
     test("contract", async () => {
-        const r = new SearchRequest(SAMPLE_CONTRACT.contract_id)
+        const r = new SearchRequest(SAMPLE_CONTRACT.contract_id, TEST_NETWORK)
         await r.run()
 
         expect(r.searchedId).toBe(SAMPLE_CONTRACT.contract_id)
+        expect(r.network).toBe(TEST_NETWORK)
         expect(r.account).toBeNull()
         expect(r.accountsWithKey).toStrictEqual([])
         expect(r.transactions).toStrictEqual([])
@@ -367,10 +383,11 @@ describe("SearchRequest.ts", () => {
     })
 
     test("contract (with evm address)", async () => {
-        const r = new SearchRequest(SAMPLE_CONTRACT.evm_address)
+        const r = new SearchRequest(SAMPLE_CONTRACT.evm_address, TEST_NETWORK)
         await r.run()
 
         expect(r.searchedId).toBe(SAMPLE_CONTRACT.evm_address)
+        expect(r.network).toBe(TEST_NETWORK)
         expect(r.account).toBeNull()
         expect(r.accountsWithKey).toStrictEqual([])
         expect(r.transactions).toStrictEqual([])
@@ -385,10 +402,11 @@ describe("SearchRequest.ts", () => {
 
     test("unknown id", async () => {
         const UNKNOWN_ID = "1.2.3"
-        const r = new SearchRequest(UNKNOWN_ID)
+        const r = new SearchRequest(UNKNOWN_ID, TEST_NETWORK)
         await r.run()
 
         expect(r.searchedId).toBe(UNKNOWN_ID)
+        expect(r.network).toBe(TEST_NETWORK)
         expect(r.account).toBeNull()
         expect(r.accountsWithKey).toStrictEqual([])
         expect(r.transactions).toStrictEqual([])
@@ -402,10 +420,11 @@ describe("SearchRequest.ts", () => {
     })
 
     test("unknown account alias and invalid evm address", async () => {
-        const r = new SearchRequest(INVALID_EVM_ADDRESS)
+        const r = new SearchRequest(INVALID_EVM_ADDRESS, TEST_NETWORK)
         await r.run()
 
         expect(r.searchedId).toBe(INVALID_EVM_ADDRESS)
+        expect(r.network).toBe(TEST_NETWORK)
         expect(r.account).toBeNull()
         expect(r.accountsWithKey).toStrictEqual([])
         expect(r.transactions).toStrictEqual([])
@@ -417,12 +436,13 @@ describe("SearchRequest.ts", () => {
         expect(r.getErrorCount()).toBe(0)
 
         const aliasHex2 = "0x" + INVALID_EVM_ADDRESS
-        const r2 = new SearchRequest(aliasHex2)
+        const r2 = new SearchRequest(aliasHex2, TEST_NETWORK)
         await r2.run()
 
         expect(r2.searchedId).toBe(aliasHex2)
+        expect(r2.network).toBe(TEST_NETWORK)
         expect(r2.account).toBeNull()
-        expect(r.accountsWithKey).toStrictEqual([])
+        expect(r2.accountsWithKey).toStrictEqual([])
         expect(r2.transactions).toStrictEqual([])
         expect(r2.tokenInfo).toBeNull()
         expect(r2.topicMessages).toStrictEqual([])
@@ -435,10 +455,11 @@ describe("SearchRequest.ts", () => {
 
     test("invalid id", async () => {
         const INVAlID_ID = "a.b.c"
-        const r = new SearchRequest(INVAlID_ID)
+        const r = new SearchRequest(INVAlID_ID, TEST_NETWORK)
         await r.run()
 
         expect(r.searchedId).toBe(INVAlID_ID)
+        expect(r.network).toBe(TEST_NETWORK)
         expect(r.account).toBeNull()
         expect(r.accountsWithKey).toStrictEqual([])
         expect(r.transactions).toStrictEqual([])
@@ -449,7 +470,7 @@ describe("SearchRequest.ts", () => {
         expect(r.ethereumAddress).toBeNull()
         expect(r.getErrorCount()).toBe(0)
 
-    })
+    }, 50 * 1000)
 
 })
 

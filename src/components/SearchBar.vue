@@ -126,7 +126,8 @@ export default defineComponent({
       const searchedValue = searchedId.value.trim()
       if (searchedValue != "") {
         gtagSearch(searchedValue)
-        const r = new SearchRequest(searchedValue)
+        const network = routeManager.currentNetwork.value
+        const r = new SearchRequest(searchedValue, network)
         r.run().then(() => {
           try {
             if (r.contract != null) {
