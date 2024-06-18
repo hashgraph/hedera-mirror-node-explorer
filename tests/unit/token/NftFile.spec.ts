@@ -22,6 +22,7 @@ import {describe, expect, test} from 'vitest'
 import {flushPromises, mount} from "@vue/test-utils";
 import NftFile from "../../../src/components/token/NftFile.vue";
 import router from "../../../src/router";
+import Oruga from "@oruga-ui/oruga-next";
 
 describe("NftFile.vue", () => {
 
@@ -33,7 +34,7 @@ describe("NftFile.vue", () => {
 
         const wrapper = mount(NftFile, {
             global: {
-                plugins: [router]
+                plugins: [router, Oruga]
             },
             props: {},
         })
@@ -59,7 +60,7 @@ describe("NftFile.vue", () => {
 
         const wrapper = mount(NftFile, {
             global: {
-                plugins: [router]
+                plugins: [router, Oruga]
             },
             props: {
                 url: contentUrl
@@ -90,7 +91,7 @@ describe("NftFile.vue", () => {
 
         const wrapper = mount(NftFile, {
             global: {
-                plugins: [router]
+                plugins: [router, Oruga]
             },
             props: {
                 url: contentUrl,
@@ -124,7 +125,7 @@ describe("NftFile.vue", () => {
 
         const wrapper = mount(NftFile, {
             global: {
-                plugins: [router]
+                plugins: [router, Oruga]
             },
             props: {
                 url: contentUrl,
@@ -156,7 +157,7 @@ describe("NftFile.vue", () => {
 
         const wrapper = mount(NftFile, {
             global: {
-                plugins: [router]
+                plugins: [router, Oruga]
             },
             props: {
                 url: contentUrl,
@@ -190,7 +191,7 @@ describe("NftFile.vue", () => {
 
         const wrapper = mount(NftFile, {
             global: {
-                plugins: [router]
+                plugins: [router, Oruga]
             },
             props: {
                 url: contentUrl,
@@ -199,7 +200,7 @@ describe("NftFile.vue", () => {
         })
 
         await flushPromises()
-        console.log(wrapper.html())
+        // console.log(wrapper.html())
         // console.log(wrapper.text())
 
         expect(wrapper.text()).toBe('foo/bar')
