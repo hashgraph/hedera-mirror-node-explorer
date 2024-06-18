@@ -29,6 +29,7 @@ import {
     SAMPLE_BLOCKSRESPONSE,
     SAMPLE_CONTRACT, SAMPLE_CONTRACT_RESULT_DETAILS,
     SAMPLE_TOKEN,
+    SAMPLE_TOPIC,
     SAMPLE_TOPIC_MESSAGES,
     SAMPLE_TRANSACTION,
     SAMPLE_TRANSACTIONS
@@ -59,6 +60,7 @@ describe("SearchRequest.ts", () => {
         expect(r.accountsWithKey).toStrictEqual([])
         expect(r.transactions).toStrictEqual([])
         expect(r.tokenInfo).toBeNull()
+        expect(r.topic).toBeNull()
         expect(r.topicMessages).toStrictEqual([])
         expect(r.contract).toBeNull()
         expect(r.block).toBeNull()
@@ -87,6 +89,7 @@ describe("SearchRequest.ts", () => {
         expect(r.accountsWithKey).toStrictEqual([])
         expect(r.transactions).toStrictEqual([])
         expect(r.tokenInfo).toBeNull()
+        expect(r.topic).toBeNull()
         expect(r.topicMessages).toStrictEqual([])
         expect(r.contract).toBeNull()
         expect(r.block).toBeNull()
@@ -114,6 +117,7 @@ describe("SearchRequest.ts", () => {
         expect(r.accountsWithKey).toStrictEqual([SAMPLE_ACCOUNT])
         expect(r.transactions).toStrictEqual([])
         expect(r.tokenInfo).toBeNull()
+        expect(r.topic).toBeNull()
         expect(r.topicMessages).toStrictEqual([])
         expect(r.contract).toBeNull()
         expect(r.block).toBeNull()
@@ -141,6 +145,7 @@ describe("SearchRequest.ts", () => {
         expect(r.accountsWithKey).toStrictEqual([])
         expect(r.transactions).toStrictEqual([])
         expect(r.tokenInfo).toBeNull()
+        expect(r.topic).toBeNull()
         expect(r.topicMessages).toStrictEqual([])
         expect(r.contract).toBeNull()
         expect(r.block).toBeNull()
@@ -167,6 +172,7 @@ describe("SearchRequest.ts", () => {
         expect(r.accountsWithKey).toStrictEqual([])
         expect(r.transactions).toStrictEqual([])
         expect(r.tokenInfo).toBeNull()
+        expect(r.topic).toBeNull()
         expect(r.topicMessages).toStrictEqual([])
         expect(r.contract).toBeNull()
         expect(r.block).toBeNull()
@@ -196,6 +202,7 @@ describe("SearchRequest.ts", () => {
         expect(r.accountsWithKey).toStrictEqual([])
         expect(r.transactions).toStrictEqual([SAMPLE_TRANSACTION])
         expect(r.tokenInfo).toBeNull()
+        expect(r.topic).toBeNull()
         expect(r.topicMessages).toStrictEqual([])
         expect(r.contract).toBeNull()
         expect(r.block).toBeNull()
@@ -221,6 +228,7 @@ describe("SearchRequest.ts", () => {
         expect(r.accountsWithKey).toStrictEqual([])
         expect(r.transactions).toStrictEqual([SAMPLE_TRANSACTION])
         expect(r.tokenInfo).toBeNull()
+        expect(r.topic).toBeNull()
         expect(r.topicMessages).toStrictEqual([])
         expect(r.contract).toBeNull()
         expect(r.block).toBeNull()
@@ -247,6 +255,7 @@ describe("SearchRequest.ts", () => {
         expect(r.accountsWithKey).toStrictEqual([])
         expect(r.transactions).toStrictEqual([SAMPLE_TRANSACTION])
         expect(r.tokenInfo).toBeNull()
+        expect(r.topic).toBeNull()
         expect(r.topicMessages).toStrictEqual([])
         expect(r.contract).toBeNull()
         expect(r.block).toBeNull()
@@ -279,6 +288,7 @@ describe("SearchRequest.ts", () => {
         expect(r.accountsWithKey).toStrictEqual([])
         expect(r.transactions).toStrictEqual([])
         expect(r.tokenInfo).toBeNull()
+        expect(r.topic).toBeNull()
         expect(r.topicMessages).toStrictEqual([])
         expect(r.contract).toBeNull()
         expect(r.block).toStrictEqual(SAMPLE_BLOCKSRESPONSE.blocks[0])
@@ -304,6 +314,7 @@ describe("SearchRequest.ts", () => {
         expect(r.accountsWithKey).toStrictEqual([])
         expect(r.transactions).toStrictEqual([])
         expect(r.tokenInfo).toBeNull()
+        expect(r.topic).toBeNull()
         expect(r.topicMessages).toStrictEqual([])
         expect(r.contract).toBeNull()
         expect(r.block).toStrictEqual(SAMPLE_BLOCKSRESPONSE.blocks[0])
@@ -334,6 +345,7 @@ describe("SearchRequest.ts", () => {
         expect(r.accountsWithKey).toStrictEqual([])
         expect(r.transactions).toStrictEqual([])
         expect(r.tokenInfo).toStrictEqual(SAMPLE_TOKEN)
+        expect(r.topic).toBeNull()
         expect(r.topicMessages).toStrictEqual([])
         expect(r.contract).toBeNull()
         expect(r.block).toBeNull()
@@ -361,6 +373,7 @@ describe("SearchRequest.ts", () => {
         expect(r.accountsWithKey).toStrictEqual([])
         expect(r.transactions).toStrictEqual([])
         expect(r.tokenInfo).toStrictEqual(SAMPLE_TOKEN)
+        expect(r.topic).toBeNull()
         expect(r.topicMessages).toStrictEqual([])
         expect(r.contract).toBeNull()
         expect(r.block).toBeNull()
@@ -378,19 +391,23 @@ describe("SearchRequest.ts", () => {
     //
     // Topic
     //
+    // Once api/v1/topics/{topicId} is deployed on mainnet,
+    // all three tests below will collapse in a single one (the previewnet case)
+    //
 
-    test("topic", async () => {
+    test("topic (mainnet)", async () => {
+
         const mock = makeMockAdapter(axios)
-
-        const r = new SearchRequest(SAMPLE_TOPIC_ID, TEST_NETWORK)
+        const r = new SearchRequest(SAMPLE_TOPIC_ID, "mainnet")
         await r.run()
 
         expect(r.searchedId).toBe(SAMPLE_TOPIC_ID)
-        expect(r.network).toBe(TEST_NETWORK)
+        expect(r.network).toBe("mainnet")
         expect(r.account).toBeNull()
         expect(r.accountsWithKey).toStrictEqual([])
         expect(r.transactions).toStrictEqual([])
         expect(r.tokenInfo).toBeNull()
+        expect(r.topic).toBeNull()
         expect(r.topicMessages).toStrictEqual(SAMPLE_TOPIC_MESSAGES.messages)
         expect(r.contract).toBeNull()
         expect(r.block).toBeNull()
@@ -402,6 +419,64 @@ describe("SearchRequest.ts", () => {
             "api/v1/contracts/" + SAMPLE_TOPIC_ID,
             "api/v1/tokens/" + SAMPLE_TOPIC_ID,
             "api/v1/topics/" + SAMPLE_TOPIC_ID + "/messages",
+        ])
+        mock.restore()
+    })
+
+
+    test("topic (testnet)", async () => {
+
+        const mock = makeMockAdapter(axios)
+        const r = new SearchRequest(SAMPLE_TOPIC_ID, "testnet")
+        await r.run()
+
+        expect(r.searchedId).toBe(SAMPLE_TOPIC_ID)
+        expect(r.network).toBe("testnet")
+        expect(r.account).toBeNull()
+        expect(r.accountsWithKey).toStrictEqual([])
+        expect(r.transactions).toStrictEqual([])
+        expect(r.tokenInfo).toBeNull()
+        expect(r.topic).toBeNull()
+        expect(r.topicMessages).toStrictEqual(SAMPLE_TOPIC_MESSAGES.messages)
+        expect(r.contract).toBeNull()
+        expect(r.block).toBeNull()
+        expect(r.ethereumAddress).toBeNull()
+        expect(r.getErrorCount()).toBe(0)
+
+        expect(fetchGetURLs(mock)).toStrictEqual([
+            "api/v1/accounts/" + SAMPLE_TOPIC_ID,
+            "api/v1/contracts/" + SAMPLE_TOPIC_ID,
+            "api/v1/tokens/" + SAMPLE_TOPIC_ID,
+            "api/v1/topics/" + SAMPLE_TOPIC_ID + "/messages",
+        ])
+        mock.restore()
+    })
+
+
+    test("topic (previewnet)", async () => {
+
+        const mock = makeMockAdapter(axios)
+        const r = new SearchRequest(SAMPLE_TOPIC.topic_id, "previewnet")
+        await r.run()
+
+        expect(r.searchedId).toBe(SAMPLE_TOPIC.topic_id)
+        expect(r.network).toBe("previewnet")
+        expect(r.account).toBeNull()
+        expect(r.accountsWithKey).toStrictEqual([])
+        expect(r.transactions).toStrictEqual([])
+        expect(r.tokenInfo).toBeNull()
+        expect(r.topic).toStrictEqual(SAMPLE_TOPIC)
+        expect(r.topicMessages).toStrictEqual([])
+        expect(r.contract).toBeNull()
+        expect(r.block).toBeNull()
+        expect(r.ethereumAddress).toBeNull()
+        expect(r.getErrorCount()).toBe(0)
+
+        expect(fetchGetURLs(mock)).toStrictEqual([
+            "api/v1/accounts/" + SAMPLE_TOPIC.topic_id,
+            "api/v1/contracts/" + SAMPLE_TOPIC.topic_id,
+            "api/v1/tokens/" + SAMPLE_TOPIC.topic_id,
+            "api/v1/topics/" + SAMPLE_TOPIC.topic_id,
         ])
         mock.restore()
     })
@@ -422,6 +497,7 @@ describe("SearchRequest.ts", () => {
         expect(r.accountsWithKey).toStrictEqual([])
         expect(r.transactions).toStrictEqual([])
         expect(r.tokenInfo).toBeNull()
+        expect(r.topic).toBeNull()
         expect(r.topicMessages).toStrictEqual([])
         expect(r.contract).toStrictEqual(SAMPLE_CONTRACT)
         expect(r.block).toBeNull()
@@ -449,6 +525,7 @@ describe("SearchRequest.ts", () => {
         expect(r.accountsWithKey).toStrictEqual([])
         expect(r.transactions).toStrictEqual([])
         expect(r.tokenInfo).toBeNull()
+        expect(r.topic).toBeNull()
         expect(r.topicMessages).toStrictEqual([])
         expect(r.contract).toStrictEqual(SAMPLE_CONTRACT)
         expect(r.block).toBeNull()
@@ -476,6 +553,7 @@ describe("SearchRequest.ts", () => {
         expect(r.accountsWithKey).toStrictEqual([])
         expect(r.transactions).toStrictEqual([])
         expect(r.tokenInfo).toBeNull()
+        expect(r.topic).toBeNull()
         expect(r.topicMessages).toStrictEqual([])
         expect(r.contract).toBeNull()
         expect(r.block).toBeNull()
@@ -503,6 +581,7 @@ describe("SearchRequest.ts", () => {
         expect(r.accountsWithKey).toStrictEqual([])
         expect(r.transactions).toStrictEqual([])
         expect(r.tokenInfo).toBeNull()
+        expect(r.topic).toBeNull()
         expect(r.topicMessages).toStrictEqual([])
         expect(r.contract).toBeNull()
         expect(r.block).toBeNull()
@@ -526,6 +605,7 @@ describe("SearchRequest.ts", () => {
         expect(r2.accountsWithKey).toStrictEqual([])
         expect(r2.transactions).toStrictEqual([])
         expect(r2.tokenInfo).toBeNull()
+        expect(r2.topic).toBeNull()
         expect(r2.topicMessages).toStrictEqual([])
         expect(r2.contract).toBeNull()
         expect(r.block).toBeNull()
@@ -554,6 +634,7 @@ describe("SearchRequest.ts", () => {
         expect(r.accountsWithKey).toStrictEqual([])
         expect(r.transactions).toStrictEqual([])
         expect(r.tokenInfo).toBeNull()
+        expect(r.topic).toBeNull()
         expect(r.topicMessages).toStrictEqual([])
         expect(r.contract).toBeNull()
         expect(r.block).toBeNull()
@@ -623,9 +704,13 @@ function makeMockAdapter(axiosInstance: AxiosInstance): MockAdapter {
     const matcher_token = "/api/v1/tokens/" + SAMPLE_TOKEN.token_id
     mock.onGet(matcher_token).reply(200, SAMPLE_TOKEN)
 
-    const matcher_topic = "/api/v1/topics/" + SAMPLE_TOPIC_ID + "/messages"
-    mock.onGet(matcher_topic).reply(200, SAMPLE_TOPIC_MESSAGES)
+// Topic
+    const matcher_topic = "/api/v1/topics/" + SAMPLE_TOPIC.topic_id
+    mock.onGet(matcher_topic).reply(200, SAMPLE_TOPIC)
+    const matcher_topic2 = "/api/v1/topics/" + SAMPLE_TOPIC_ID + "/messages"
+    mock.onGet(matcher_topic2).reply(200, SAMPLE_TOPIC_MESSAGES)
 
+// Contract
     const matcher_contracts = "/api/v1/contracts/" + SAMPLE_CONTRACT.contract_id
     mock.onGet(matcher_contracts).reply(200, SAMPLE_CONTRACT)
 
