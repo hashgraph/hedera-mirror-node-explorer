@@ -132,8 +132,8 @@ import Footer from "@/components/Footer.vue";
 import NotificationBanner from "@/components/NotificationBanner.vue";
 import {EntityID} from "@/utils/EntityID";
 import {TopicMessageTableController} from "@/components/topic/TopicMessageTableController";
-import {NetworkRegistry, networkRegistry} from "@/schemas/NetworkRegistry";
-import router, {routeManager} from "@/router";
+import {networkRegistry} from "@/schemas/NetworkRegistry";
+import router from "@/router";
 import {TopicByIdCache} from "@/utils/cache/TopicByIdCache";
 import AccountLink from "@/components/values/link/AccountLink.vue";
 import Property from "@/components/Property.vue";
@@ -189,10 +189,14 @@ export default defineComponent({
       let result
       if (!validEntityId.value) {
         result = "Invalid topic ID: " + props.topicId
-      } else if (topicLookup.entity.value?.deleted === true) {
+      } else if (topicLookup.entity.value === null) {
+        if (topicLookup.isLoaded()) {
+          result = "Topic with ID " + props.topicId + " was not found"
+        } else {
+          result = null
+        }
+      } else if (topicLookup.entity.value.deleted) {
         result = "Topic is deleted"
-      } else if (topicLookup.entity.value === null && routeManager.currentNetwork.value === NetworkRegistry.PREVIEW_NETWORK) {
-        result = "Topic with ID " + props.topicId + " was not found"
       } else {
         result = null
       }

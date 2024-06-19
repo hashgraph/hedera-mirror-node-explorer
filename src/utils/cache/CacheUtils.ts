@@ -51,6 +51,7 @@ import {VerifiedContractsByAccountIdCache} from "@/utils/cache/VerifiedContracts
 import {VerifiedContractsCache} from "@/utils/cache/VerifiedContractsCache";
 import {LogicContractCache} from "@/utils/cache/LogicContractCache";
 import {AdminContractCache} from "@/utils/cache/AdminContractCache";
+import {TopicByIdCache} from "@/utils/cache/TopicByIdCache";
 
 export class CacheUtils {
 
@@ -81,6 +82,7 @@ export class CacheUtils {
         TokenAssociationCache.instance.clear()
         TokenInfoCache.instance.clear()
         TokenRelationshipCache.instance.clear()
+        TopicByIdCache.instance.clear()
         TransactionByHashCache.instance.clear()
         TransactionByIdCache.instance.clear()
         TransactionByTsCache.instance.clear()
