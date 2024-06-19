@@ -18,12 +18,11 @@
  *
  */
 
-import {Ref} from "vue";
 import {EntityID} from "@/utils/EntityID";
 import {networkRegistry} from "@/schemas/NetworkRegistry";
 
-export function inputEntityID(event: Event, entityID: Ref<string | null>,) {
-    const previousValue = entityID.value
+export function inputEntityID(event: Event, entityID: string | null): string | null {
+    let result: string | null
     let isValidInput = true
     let isValidID = false
     let isPastDash = false
@@ -51,15 +50,15 @@ export function inputEntityID(event: Event, entityID: Ref<string | null>,) {
     }
 
     if (isValidInput) {
-        entityID.value = value
+        result = value
     } else {
-        entityID.value = ""
-        entityID.value = previousValue
+        result = entityID
     }
+    return result
 }
 
-export function inputAmount(event: Event, amount: Ref<string | null>) {
-    const previousValue = amount.value
+export function inputAmount(event: Event, amount: string | null): string | null {
+    let result: string | null
     let isValidInput = true
     let isDecimal = false
 
@@ -77,15 +76,15 @@ export function inputAmount(event: Event, amount: Ref<string | null>) {
     }
 
     if (isValidInput) {
-        amount.value = value
+        result = value
     } else {
-        amount.value = ""
-        amount.value = previousValue
+        result = amount
     }
+    return result
 }
 
-export function inputIntList(event: Event, list: Ref<string | null>) {
-    const previousValue = list.value
+export function inputIntList(event: Event, list: string | null): string | null {
+    let result: string | null
     let isValidInput = true
     let previousWasComma = false
 
@@ -105,9 +104,9 @@ export function inputIntList(event: Event, list: Ref<string | null>) {
     }
 
     if (isValidInput) {
-        list.value = value
+        result = value
     } else {
-        list.value = ""
-        list.value = previousValue
+        result = list
     }
+    return result
 }
